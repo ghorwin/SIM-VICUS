@@ -59,10 +59,11 @@ public:
 			of buildings, levels, zones.
 		*/
 		BuildingTopologyChanged,
-		/*! Selection has changed (color due to style settings, or selected objects) -
-			update of entire selection object is requested (only the visual part).
+		/*! Building component instance definitions have changed, that means surfaces - component associations.
+			Usually requires just recoloring of surfaces if in property edit mode, and if in "show surface-surface links"-mode,
+			update of the link 3D objects.
 		*/
-		SelectionModified,
+		ComponentInstancesModified,
 		/*! Network hydraulic component changed. */
 		NetworkHydraulicComponentModified,
 		/*! The state (visibility/selection) of a node in the tree view/surface in the scene has changed.

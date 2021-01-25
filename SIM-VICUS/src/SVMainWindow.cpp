@@ -53,11 +53,12 @@
 #include "SVViewStateHandler.h"
 #include "SVImportIDFDialog.h"
 #include "SVPropVertexListWidget.h"
+#include "SVPropModeSelectionWidget.h"
 #include "SVStyle.h"
 
 #include "SVDBMaterialEditDialog.h"
 #include "SVDBConstructionEditDialog.h"
-#include "SVDBWindowEditWidget.h"
+#include "SVDBWindowEditDialog.h"
 #include "SVDBComponentEditDialog.h"
 #include "SVDBBoundaryConditionEditDialog.h"
 #include "SVDBPipeEditDialog.h"
@@ -205,10 +206,23 @@ SVDBConstructionEditDialog * SVMainWindow::dbConstructionEditDialog() {
 	return m_dbConstructionEditDialog;
 }
 
+SVDBComponentEditDialog * SVMainWindow::dbComponentEditDialog() {
+	if (m_dbComponentEditDialog == nullptr)
+		m_dbComponentEditDialog = new SVDBComponentEditDialog(this);
+	return m_dbComponentEditDialog;
+
+}
+
 SVDBBoundaryConditionEditDialog * SVMainWindow::dbBoundaryConditionEditDialog() {
 	if (m_dbBoundaryConditionEditDialog == nullptr)
 		m_dbBoundaryConditionEditDialog = new SVDBBoundaryConditionEditDialog(this);
 	return m_dbBoundaryConditionEditDialog;
+}
+
+SVDBWindowEditDialog * SVMainWindow::dbWindowEditDialog() {
+	if (m_dbWindowEditDialog == nullptr)
+		m_dbWindowEditDialog = new SVDBWindowEditDialog(this);
+	return m_dbWindowEditDialog;
 }
 
 SVDBPipeEditDialog *SVMainWindow::dbPipeEditDialog(){
@@ -233,17 +247,12 @@ void SVMainWindow::on_actionDBConstructions_triggered() {
 
 
 void SVMainWindow::on_actionDBWindows_triggered() {
-	if (m_dbWindowEditWidget == nullptr) {
-		m_dbWindowEditWidget = new SVDBWindowEditWidget(nullptr); // global widget, not inside main window
-	}
-	m_dbWindowEditWidget->edit();
+	dbWindowEditDialog()->edit();
 }
 
 
 void SVMainWindow::on_actionDBComponents_triggered() {
-	if (m_dbComponentEditDialog == nullptr)
-		m_dbComponentEditDialog = new SVDBComponentEditDialog(nullptr);
-	m_dbComponentEditDialog->edit();
+	dbComponentEditDialog()->edit();
 	// update all widgets that show the components somewhere (in a combo box or else)
 	if (SVViewStateHandler::instance().m_propVertexListWidget != nullptr) // guard against not yet created property widget
 		SVViewStateHandler::instance().m_propVertexListWidget->updateComponentComboBoxes();
@@ -255,8 +264,7 @@ void SVMainWindow::on_actionDBBoundaryConditions_triggered() {
 }
 
 
-void SVMainWindow::on_actionPipes_triggered()
-{
+void SVMainWindow::on_actionPipes_triggered() {
 	dbPipeEditDialog()->edit();
 }
 // *** protected functions ***
@@ -413,6 +421,8 @@ void SVMainWindow::setup() {
 	connect(m_navigationTreeWidget, SIGNAL(removeSelected()), sv, SLOT(onDeleteSelected()));
 	connect(m_navigationTreeWidget, SIGNAL(showSelected()), sv, SLOT(onShowSelected()));
 	connect(m_navigationTreeWidget, SIGNAL(hideSelected()), sv, SLOT(onHideSelected()));
+	connect(m_navigationTreeWidget, SIGNAL(selectAll()), sv, SLOT(onSelectAll()));
+	connect(m_navigationTreeWidget, SIGNAL(deselectAll()), sv, SLOT(onDeselectAll()));
 
 	// *** setup tool bar (add actions for undo and redo) ***
 
@@ -1137,7 +1147,7 @@ void SVMainWindow::onOpenTemplateByFilename(const QString & filename) {
 
 void SVMainWindow::onWorkerThreadFinished() {
 
-	/// \todo Figure out why thread sends finished signal twice when terminated
+	/// \todo Andreas: Figure out why thread sends finished signal twice when terminated
 	//SVThreadBase * b = (SVThreadBase *)sender();
 	if ( m_threadPool.isEmpty() ) {
 		return;
@@ -1161,7 +1171,7 @@ void SVMainWindow::onWorkerThreadFinished() {
 void SVMainWindow::onFixProjectAfterRead() {
 	// here we do all entry checks that will tell users about suggested changes in project
 
-	/// \todo implement interactive fixes here with dialogs and user-confirmations
+	/// \todo Andreas: implement interactive fixes here with dialogs and user-confirmations
 
 }
 
@@ -1172,6 +1182,7 @@ void SVMainWindow::on_actionViewToggleGeometryMode_triggered() {
 	vs.m_viewMode = SVViewState::VM_GeometryEditMode;
 	vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
 	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	vs.m_objectColorMode = SVViewState::OCM_None;
 	SVViewStateHandler::instance().setViewState(vs);
 	m_ui->actionViewToggleGeometryMode->setChecked(true);
 	m_ui->actionViewToggleParametrizationMode->setChecked(false);
@@ -1180,15 +1191,18 @@ void SVMainWindow::on_actionViewToggleGeometryMode_triggered() {
 
 void SVMainWindow::on_actionViewToggleParametrizationMode_triggered() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
+	// switch to property edit mode
 	vs.m_viewMode = SVViewState::VM_PropertyEditMode;
-	vs.m_propertyWidgetMode = SVViewState::PM_SiteProperties;
+	// turn off any special scene modes
 	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	// select property mode based on what's being selected in the mode selection
+	// property widget (this sets m_propertyWidgetMode and m_objectColorMode)
+	SVViewStateHandler::instance().m_propModeSelectionWidget->viewStateProperties(vs);
 	SVViewStateHandler::instance().setViewState(vs);
 
 	m_ui->actionViewToggleParametrizationMode->setChecked(true);
 	m_ui->actionViewToggleGeometryMode->setChecked(false);
 }
-
 
 
 void SVMainWindow::on_actionFileExportNANDRAD_triggered() {
@@ -1389,8 +1403,6 @@ void SVMainWindow::processThread() {
 
 	// for now we expect the thread to
 	m_threadPool[0]->start(QThread::LowPriority); // always start on low priority
-
-	/// \todo What happens if the thread fails to start?
 }
 
 

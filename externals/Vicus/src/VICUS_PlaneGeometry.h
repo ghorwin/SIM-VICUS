@@ -68,6 +68,12 @@ public:
 
 	const IBKMK::Vector3D & normal() const { return m_normal; }
 
+	/*! Return the inclination in Deg. 0° -> Roof; 90° -> Wall; 180° -> Floor. */
+	double inclination() const;
+
+	/*! Return the orientation in Deg. 0° -> North; 90° -> East; 180° -> South; etc. */
+	double orientation() const;
+
 	/*! Adds a new 2D vertex in the plane of the polygon.
 		Calculates 3D vertex coordinates.
 	*/

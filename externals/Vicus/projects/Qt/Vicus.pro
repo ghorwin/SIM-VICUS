@@ -71,6 +71,7 @@ HEADERS += \
 
 SOURCES += \
 	../../src/VICUS_ArgsParser.cpp \
+	../../src/VICUS_BoundaryCondition.cpp \
 	../../src/VICUS_Component.cpp \
 	../../src/VICUS_Constants.cpp \
 	../../src/VICUS_Construction.cpp \

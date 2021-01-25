@@ -138,12 +138,76 @@ Desweiteren gibt es noch temperaturabhängige Parameter, welche in linear interp
 
 ## Rohreigenschaften
 
-TODO 
+Die Rohreigenschaften `HydraulicNetworkPipeProperties` legen die physikalische/geometrischen Eigenschaften eines Rohrtyps fest. Diese werden in dem Katalog `PipeProperties` mit eindeutigen IDs aufgelistet. 
 
+.Definition von Rohreigenschaften
+====
+[source,xml]
+----
+<PipeProperties>
+	<HydraulicNetworkPipeProperties id="1">
+		<IBK:Parameter name="PipeRoughness" unit="m">0.007</IBK:Parameter>
+		<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
+		<IBK:Parameter name="PipeOuterDiameter" unit="mm">32</IBK:Parameter>
+		<IBK:Parameter name="UValuePipeWall" unit="W/m2K">5</IBK:Parameter>
+	</HydraulicNetworkPipeProperties>
+</PipeProperties>
+----
+====
+
+Ein Rohrtyp kann einem `HydraulicNetworkElement` über dessen XML-tag `pipePropertyId` zugewiesen werden. 
+
+.Attributes
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribute  | Description | Format | Usage 
+| `id` |  Unique identifier of the pipe properties. | ({nbsp}>{nbsp}0{nbsp})  | _required_
+|====================
+
+Parameter der Rohreigenschaftem (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
+
+[options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
+|====================
+|Name|Unit|Description|Value Range |Usage
+| `PipeRoughness` | mm | Roughness of pipe wall | ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `PipeInnerDiameter` | mm | Inner diameter of pipe | ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `PipeOuterDiameter` | mm | Outer diameter of pipe | ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `UValuePipeWall` | W/m2K | U-Value of pipe wall (including insulation) | ({nbsp}>{nbsp}0{nbsp})  | _required_
+|====================
 ## Komponentendefinitionen
 
-TODO 
+Eine `HydraulicNetworkComponent` definiert die Basiseigenschaften eines Strömungselements. Diese werden in dem Katalog `Components` mit eindeutigen IDs aufgelistet.
 
+.Definition einer Komponente
+====
+[source,xml]
+----
+<HydraulicNetworkComponent id="1" modelType="ConstantPressurePumpModel">
+	<IBK:Parameter name="PressureHead" unit="Pa">1000</IBK:Parameter>
+	<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
+</HydraulicNetworkComponent>
+----
+====
+
+Ein Rohrtyp kann einem `HydraulicNetworkElement` über dessen XML-tag `pipePropertyId` zugewiesen werden. 
+
+.Attributes
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribute  | Description | Format | Usage 
+| `id` |  Unique identifier of the pipe properties. | ({nbsp}>{nbsp}0{nbsp})  | _required_
+|====================
+
+Parameter der Rohreigenschaftem (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
+
+[options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
+|====================
+|Name|Unit|Description|Value Range |Usage
+| `PipeRoughness` | mm | Roughness of pipe wall | ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `PipeInnerDiameter` | mm | Inner diameter of pipe | ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `PipeOuterDiameter` | mm | Outer diameter of pipe | ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `UValuePipeWall` | W/m2K | U-Value of pipe wall (including insulation) | ({nbsp}>{nbsp}0{nbsp})  | _required_
+|====================
 [[HydraulicNetworkElement]]
 ## Strömungselemente
 

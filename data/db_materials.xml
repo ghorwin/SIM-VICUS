@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Materials>
-	<Material id="9999" displayName="de:Konstruktionseditor-Testmaterial|en:Construction editor test material"  color="#729fcf">
-		<Notes>en:Contrete to be used in SimQuality test cases.|de:Beton zur Verwendung in SimQuality.</Notes>
-		<Manufacturer>generic</Manufacturer>
-		<DataSource>SimQuality</DataSource>
-		<Category>Cementitious</Category>
-		<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
-		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
-		<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
-	</Material>
 	<Material id="10000" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete"  color="#a29f2f">
 		<Notes>en:Contrete to be used in SimQuality test cases.|de:Beton zur Verwendung in SimQuality.</Notes>
 		<Manufacturer>generic</Manufacturer>

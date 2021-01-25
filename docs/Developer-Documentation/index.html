@@ -73,7 +73,7 @@ table {
 <div class="details">
 <span id="author" class="author">Andreas Nicolai</span><br>
 <span id="email" class="email"><a href="mailto:andreas.nicolai@tu-dresden.de">andreas.nicolai@tu-dresden.de</a></span><br>
-<span id="revdate">0.2.0 (11.01.2021)</span>
+<span id="revdate">0.2.0 (24.01.2021)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -144,8 +144,9 @@ table {
 <li><a href="#_3d_engine">4.1. 3D Engine</a>
 <ul class="sectlevel3">
 <li><a href="#_camera">4.1.1. Camera</a></li>
-<li><a href="#_data_transfer">4.1.2. Data transfer</a></li>
-<li><a href="#_shaders">4.1.3. Shaders</a></li>
+<li><a href="#_navigation">4.1.2. Navigation</a></li>
+<li><a href="#_data_transfer">4.1.3. Data transfer</a></li>
+<li><a href="#_shaders">4.1.4. Shaders</a></li>
 </ul>
 </li>
 <li><a href="#_3d_calculations">4.2. 3D Calculations</a>
@@ -465,6 +466,51 @@ With code-checking-while-typing (see clang checks in Qt Creator), you&#8217;ll c
 <p>Header guards: <code>#ifndef &lt;filenameWithoutExtension&gt;H</code>, example: <code>#ifndef NANDRAD_ArgsParserH</code></p>
 </li>
 </ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Rationale</strong></p>
+</div>
+<div class="paragraph">
+<p>When header guards, filenames and class names use all the same strings (case-sensitive same strings), this makes refactoring a lot easier! And refactoring is something we need to do quite often. For example, if you need to fix a spelling mistake in:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="n">NANDRAD_GlasingModel</span><span class="p">.</span><span class="n">h</span>
+
+<span class="n">with</span>
+
+<span class="cp">#ifndef NANDRAD_GlasingModelH
+#define NANDRAD_GlasingModelH
+</span>
+<span class="p">...</span>
+
+<span class="k">namespace</span> <span class="n">NANDRAD</span> <span class="p">{</span>
+
+<span class="k">class</span> <span class="nc">GlasingModel</span> <span class="p">{</span>
+
+<span class="p">...</span>
+
+<span class="p">};</span> <span class="c1">// GlasingModel</span>
+
+<span class="p">}</span> <span class="c1">// namespace NANDRAD</span>
+
+<span class="cp">#endif // NANDRAD_GlasingModelH
+</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and similar for <code>NANDRAD_GlasingModel.cpp</code>, renaming everything in a consistent way is just a matter of search and replace "GlasingModel" with, for example, "GlazingSystem". This way you will not forget to rename include guards or comments - something, that otherwise happens very freqently during refactoring.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect3">
@@ -945,12 +991,52 @@ Physical variables used for calculation should always be stored in base SI units
 </div>
 <div class="sect3">
 <h4 id="_efficient_use_of_the_qt_creator_ide">2.3.5. Efficient use of the Qt Creator IDE</h4>
-<div class="olist lowerroman">
-<ol class="lowerroman" type="i">
+<div class="ulist">
+<ul>
 <li>
-<p>TODO &#8230;&#8203; (maybe a video will be better?)</p>
+<p>Use F2 to lookup declaration/definitions of symbols (that means: variable, function declaration, type, &#8230;&#8203;)</p>
 </li>
-</ol>
+<li>
+<p>Use F4 to switch between header and cpp file</p>
+</li>
+<li>
+<p>Use Shift-F4 to switch between UI-designer and h/cpp file</p>
+</li>
+<li>
+<p>Ctrl+Shift+R - rename symbol using refacturing (i.e. everywhere that this symbol occurs in the source code)</p>
+</li>
+<li>
+<p>"Alle Verweise" anzeigen im Kontextmenü (wenn man auf ein Symbol rechts-klickt)</p>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="_refactoring_feature">Refactoring feature</h5>
+<div class="paragraph">
+<p>See <a href="https://doc.qt.io/qtcreator/creator-editor-refactoring.html" class="bare">https://doc.qt.io/qtcreator/creator-editor-refactoring.html</a> for a comprehensive list!</p>
+</div>
+<div class="paragraph">
+<p>Make use of the refactoring feature (right-click on a symbol/variable/function/switch&#8230;&#8203;) and select "Refacture" in the context menu.</p>
+</div>
+<div class="paragraph">
+<p>Useful features are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>add definition in C++-File (when clicking on a function declaration)</p>
+</li>
+<li>
+<p>add getter/setter functions (when clicking on a member variable with m_xxxYyyyZzzz naming)</p>
+</li>
+<li>
+<p>complete switch clause (when clicking on a switch clause)</p>
+</li>
+<li>
+<p>rename (Ctrl+Shift+R shortcut)</p>
+</li>
+</ul>
+</div>
 </div>
 </div>
 </div>
@@ -1654,7 +1740,38 @@ Total initialization time: 802 ms
 </div>
 </div>
 <div class="sect3">
-<h4 id="_data_transfer">4.1.2. Data transfer</h4>
+<h4 id="_navigation">4.1.2. Navigation</h4>
+<div class="paragraph">
+<p>Die Kamera kann mittels Tastatur- und Mauseingaben verschoben und gedreht werden.</p>
+</div>
+<div class="paragraph">
+<p>Tastaturnavigation erfolgt mit den Tasten W, A (Vor- und Zurück), S, D (nach links, nach rechts verschieben), R, F (hoch oder runter verschieben), Q, E (links oder rechts um die globale Z-Achse drehen).</p>
+</div>
+<div class="paragraph">
+<p>Mit der Maus sind 4 verschiedene Operationen möglich:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>First-Persion-View-Modus: beim Halten der rechten Maustaste führt die Mausbewegung um einen Kameraschwenk um die Kameraposition</p>
+</li>
+<li>
+<p>Verschieben der Kamera: beim Halten der mittleren Maustaste wird die Kamera so verschoben, sodass der angeklickte Punkt unter dem Cursor bleibt.</p>
+</li>
+<li>
+<p>Orbit-Modus: beim Halten der linken Maustaste bewegt und rotiert sich die Kamera um den angeklickten Punkt.</p>
+</li>
+<li>
+<p>Schneller Vor-/Zurück-Modus: beim Bewegen des Scroll-Rads bewegt sich die Kamera schnell vor/zurück entlang der aktuellen Sichtrichtung. Ist gleichzeitig die linke Maustaste gedrückt, so bewegt sich die Kamera entlang der Sichtline auf den angeklickten Punkt zu.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Die Operation 1-3 sind exclusive, d.h. man kann stets nur eine gleichzeitig ausführen.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_data_transfer">4.1.3. Data transfer</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -1773,7 +1890,7 @@ Total initialization time: 802 ms
 </div>
 </div>
 <div class="sect3">
-<h4 id="_shaders">4.1.3. Shaders</h4>
+<h4 id="_shaders">4.1.4. Shaders</h4>
 <div class="paragraph">
 <p>Vertex-Layout notation:</p>
 </div>
@@ -2008,7 +2125,7 @@ n = a x b = (0,0,-6)  (pointing downwards)</pre>
 <p>So, just picking a random point and computing the cross product between the adjacent edges <em>does not work</em>.</p>
 </div>
 <div class="paragraph">
-<p>Since we do a triangulation for any valid polygon anyways (needed for drawing purposes), we can then easily just take the any of the generated triangles and compute the normal of the triangle (all triangles will have the same normal vector).</p>
+<p>Since we do a triangulation for any valid polygon anyways (needed for drawing purposes), we can then easily just take any of the generated triangles and compute the normal of the triangle (all triangles will have the same normal vector).</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2146,7 +2263,7 @@ erfolgt in folgenden Schritten:</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-01-11 12:27:43 +0100
+Last updated 2021-01-24 11:37:56 +0100
 </div>
 </div>
 <style>

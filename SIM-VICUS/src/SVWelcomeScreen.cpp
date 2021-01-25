@@ -175,7 +175,7 @@ void SVWelcomeScreen::updateWelcomePage() {
 			QPixmap p;
 			// check if file exists
 			if (thumbFileInfo.exists() && p.load(thumbPath)) {
-				/// \todo fix warning about bad resource loading
+				/// \todo Andreas: fix warning about bad resource loading (related to image files)
 				thumbPath = "<a href=\"pfile:${PROJECT_FULL_PATH}\"><img src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
 				thumbPath = thumbPath.replace("${PROJECT_FULL_PATH}", finfo.filePath());
 				// Example projects may have larger thumbnails - hence we set the thumbnailsize based on the image size
@@ -235,7 +235,7 @@ void SVWelcomeScreen::updateWelcomePage() {
 			QPixmap p;
 			// check if file exists
 			if (thumbFileInfo.exists() && p.load(thumbPath)) {
-				/// \todo fix warning about bad resource loading
+				/// \todo Andreas: fix warning about bad resource loading (related to image files)
 				thumbPath = "<a href=\"pfile:${PROJECT_FULL_PATH}\"><img src=\"" + thumbFileInfo.absoluteFilePath() + "\"></a>&nbsp;";
 				thumbPath = thumbPath.replace("${PROJECT_FULL_PATH}", finfo.filePath());
 

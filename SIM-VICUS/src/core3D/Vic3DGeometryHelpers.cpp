@@ -597,7 +597,8 @@ void addIkosaeder(const IBKMK::Vector3D & p, const std::vector<QColor> & cols, d
 // This adds two planes, one after another, with the second one facing the opposite direction.
 void addSurface(const VICUS::Surface & s,
 				unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
-				std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLuint> & indexBufferData)
+				std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
+				std::vector<GLuint> & indexBufferData)
 {
 	// skip invalid geometry
 	if (!s.m_geometry.isValid())

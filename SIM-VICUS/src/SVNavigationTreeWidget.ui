@@ -44,6 +44,7 @@
      <addaction name="actionRemoveSelected"/>
      <addaction name="actionShowSelected"/>
      <addaction name="actionHideSelected"/>
+     <addaction name="actionSelect_all"/>
     </widget>
    </item>
    <item>
@@ -52,7 +53,7 @@
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>
      <property name="selectionMode">
-      <enum>QAbstractItemView::SingleSelection</enum>
+      <enum>QAbstractItemView::NoSelection</enum>
      </property>
      <property name="headerHidden">
       <bool>true</bool>
@@ -117,6 +118,26 @@
    </property>
    <property name="shortcut">
     <string>F7</string>
+   </property>
+  </action>
+  <action name="actionSelect_all">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/16x16/checkbox-full.png</normaloff>:/gfx/actions/16x16/checkbox-full.png</iconset>
+   </property>
+   <property name="text">
+    <string>Select all</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="actionDeselect_all">
+   <property name="text">
+    <string>Deselect all</string>
+   </property>
+   <property name="shortcut">
+    <string>Esc</string>
    </property>
   </action>
  </widget>

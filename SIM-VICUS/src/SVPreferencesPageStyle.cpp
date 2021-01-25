@@ -66,7 +66,9 @@ void SVPreferencesPageStyle::on_comboBoxTheme_activated(const QString &theme) {
 	SVStyle & style = SVStyle::instance();
 	SVSettings & s = SVSettings::instance();
 
-	/// \todo Improve this with item data
+	/// \todo Stephan: instead of comparing against (translated) strings, use item data for
+	///		  each combo box entry to compare against, like addItem(string, enum value)
+	///       and (ThemeType)currentData().toInt().
 	if ( theme == "White" ) {
 		s.m_theme = SVSettings::TT_White;
 	}

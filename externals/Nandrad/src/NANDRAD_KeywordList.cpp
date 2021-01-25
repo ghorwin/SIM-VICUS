@@ -48,12 +48,12 @@ namespace NANDRAD {
 		"HydraulicNetworkPipeProperties::para_t",
 		"InterfaceAirFlow::splinePara_t",
 		"InterfaceAirFlow::modelType_t",
-		"InterfaceHeatConduction::para_t",
 		"InterfaceHeatConduction::modelType_t",
-		"InterfaceLongWaveEmission::para_t",
+		"InterfaceHeatConduction::para_t",
 		"InterfaceLongWaveEmission::modelType_t",
-		"InterfaceSolarAbsorption::para_t",
+		"InterfaceLongWaveEmission::para_t",
 		"InterfaceSolarAbsorption::modelType_t",
+		"InterfaceSolarAbsorption::para_t",
 		"InterfaceVaporDiffusion::para_t",
 		"InterfaceVaporDiffusion::modelType_t",
 		"InternalLoadsModel::modelType_t",
@@ -213,35 +213,38 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "WindFlow";
 			} break;
-			// InterfaceHeatConduction::para_t
+			// InterfaceHeatConduction::modelType_t
 			case 13 :
+			switch (t) {
+				case 0 : return "Constant";
+				case 1 : return "None";
+			} break;
+			// InterfaceHeatConduction::para_t
+			case 14 :
 			switch (t) {
 				case 0 : return "HeatTransferCoefficient";
 			} break;
-			// InterfaceHeatConduction::modelType_t
-			case 14 :
+			// InterfaceLongWaveEmission::modelType_t
+			case 15 :
 			switch (t) {
 				case 0 : return "Constant";
+				case 1 : return "None";
 			} break;
 			// InterfaceLongWaveEmission::para_t
-			case 15 :
+			case 16 :
 			switch (t) {
 				case 0 : return "Emissivity";
 			} break;
-			// InterfaceLongWaveEmission::modelType_t
-			case 16 :
-			switch (t) {
-				case 0 : return "Constant";
-			} break;
-			// InterfaceSolarAbsorption::para_t
+			// InterfaceSolarAbsorption::modelType_t
 			case 17 :
 			switch (t) {
-				case 0 : return "AbsorptionCoefficient";
+				case 0 : return "Constant";
+				case 1 : return "None";
 			} break;
-			// InterfaceSolarAbsorption::modelType_t
+			// InterfaceSolarAbsorption::para_t
 			case 18 :
 			switch (t) {
-				case 0 : return "Constant";
+				case 0 : return "AbsorptionCoefficient";
 			} break;
 			// InterfaceVaporDiffusion::para_t
 			case 19 :
@@ -676,35 +679,38 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "WindFlow";
 			} break;
-			// InterfaceHeatConduction::para_t
+			// InterfaceHeatConduction::modelType_t
 			case 13 :
+			switch (t) {
+				case 0 : return "Constant";
+				case 1 : return "None";
+			} break;
+			// InterfaceHeatConduction::para_t
+			case 14 :
 			switch (t) {
 				case 0 : return "HeatTransferCoefficient";
 			} break;
-			// InterfaceHeatConduction::modelType_t
-			case 14 :
+			// InterfaceLongWaveEmission::modelType_t
+			case 15 :
 			switch (t) {
 				case 0 : return "Constant";
+				case 1 : return "None";
 			} break;
 			// InterfaceLongWaveEmission::para_t
-			case 15 :
+			case 16 :
 			switch (t) {
 				case 0 : return "Emissivity";
 			} break;
-			// InterfaceLongWaveEmission::modelType_t
-			case 16 :
-			switch (t) {
-				case 0 : return "Constant";
-			} break;
-			// InterfaceSolarAbsorption::para_t
+			// InterfaceSolarAbsorption::modelType_t
 			case 17 :
 			switch (t) {
-				case 0 : return "AbsorptionCoefficient";
+				case 0 : return "Constant";
+				case 1 : return "None";
 			} break;
-			// InterfaceSolarAbsorption::modelType_t
+			// InterfaceSolarAbsorption::para_t
 			case 18 :
 			switch (t) {
-				case 0 : return "Constant";
+				case 0 : return "AbsorptionCoefficient";
 			} break;
 			// InterfaceVaporDiffusion::para_t
 			case 19 :
@@ -1140,35 +1146,38 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "Use results from external wind flow calculation.";
 			} break;
-			// InterfaceHeatConduction::para_t
+			// InterfaceHeatConduction::modelType_t
 			case 13 :
 			switch (t) {
-				case 0 : return "Constant heat transfer coefficient.";
+				case 0 : return "Constant heat exchange coefficient";
+				case 1 : return "No convective heat exchange";
 			} break;
-			// InterfaceHeatConduction::modelType_t
+			// InterfaceHeatConduction::para_t
 			case 14 :
 			switch (t) {
-				case 0 : return "Constant model.";
-			} break;
-			// InterfaceLongWaveEmission::para_t
-			case 15 :
-			switch (t) {
-				case 0 : return "Constant Long wave emissivity.";
+				case 0 : return "Convective heat transfer coefficient";
 			} break;
 			// InterfaceLongWaveEmission::modelType_t
+			case 15 :
+			switch (t) {
+				case 0 : return "Constant model";
+				case 1 : return "No long wave radiation exchange";
+			} break;
+			// InterfaceLongWaveEmission::para_t
 			case 16 :
 			switch (t) {
-				case 0 : return "Constant model.";
-			} break;
-			// InterfaceSolarAbsorption::para_t
-			case 17 :
-			switch (t) {
-				case 0 : return "Constant Absorption coefficient [0,...,1].";
+				case 0 : return "Long wave emissivity";
 			} break;
 			// InterfaceSolarAbsorption::modelType_t
+			case 17 :
+			switch (t) {
+				case 0 : return "Constant model";
+				case 1 : return "No short wave radiation exchange";
+			} break;
+			// InterfaceSolarAbsorption::para_t
 			case 18 :
 			switch (t) {
-				case 0 : return "Constant model.";
+				case 0 : return "Solar absorption coefficient";
 			} break;
 			// InterfaceVaporDiffusion::para_t
 			case 19 :
@@ -1603,35 +1612,38 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "";
 			} break;
-			// InterfaceHeatConduction::para_t
+			// InterfaceHeatConduction::modelType_t
 			case 13 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+			} break;
+			// InterfaceHeatConduction::para_t
+			case 14 :
 			switch (t) {
 				case 0 : return "W/m2K";
 			} break;
-			// InterfaceHeatConduction::modelType_t
-			case 14 :
-			switch (t) {
-				case 0 : return "";
-			} break;
-			// InterfaceLongWaveEmission::para_t
+			// InterfaceLongWaveEmission::modelType_t
 			case 15 :
 			switch (t) {
-				case 0 : return "---";
-			} break;
-			// InterfaceLongWaveEmission::modelType_t
-			case 16 :
-			switch (t) {
 				case 0 : return "";
+				case 1 : return "";
 			} break;
-			// InterfaceSolarAbsorption::para_t
-			case 17 :
+			// InterfaceLongWaveEmission::para_t
+			case 16 :
 			switch (t) {
 				case 0 : return "---";
 			} break;
 			// InterfaceSolarAbsorption::modelType_t
-			case 18 :
+			case 17 :
 			switch (t) {
 				case 0 : return "";
+				case 1 : return "";
+			} break;
+			// InterfaceSolarAbsorption::para_t
+			case 18 :
+			switch (t) {
+				case 0 : return "---";
 			} break;
 			// InterfaceVaporDiffusion::para_t
 			case 19 :
@@ -2066,32 +2078,35 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
-			// InterfaceHeatConduction::para_t
+			// InterfaceHeatConduction::modelType_t
 			case 13 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
 			} break;
-			// InterfaceHeatConduction::modelType_t
+			// InterfaceHeatConduction::para_t
 			case 14 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
-			// InterfaceLongWaveEmission::para_t
+			// InterfaceLongWaveEmission::modelType_t
 			case 15 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
 			} break;
-			// InterfaceLongWaveEmission::modelType_t
+			// InterfaceLongWaveEmission::para_t
 			case 16 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
-			// InterfaceSolarAbsorption::para_t
+			// InterfaceSolarAbsorption::modelType_t
 			case 17 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
 			} break;
-			// InterfaceSolarAbsorption::modelType_t
+			// InterfaceSolarAbsorption::para_t
 			case 18 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -2529,32 +2544,35 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// InterfaceHeatConduction::para_t
+			// InterfaceHeatConduction::modelType_t
 			case 13 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// InterfaceHeatConduction::modelType_t
+			// InterfaceHeatConduction::para_t
 			case 14 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// InterfaceLongWaveEmission::para_t
+			// InterfaceLongWaveEmission::modelType_t
 			case 15 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// InterfaceLongWaveEmission::modelType_t
+			// InterfaceLongWaveEmission::para_t
 			case 16 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// InterfaceSolarAbsorption::para_t
+			// InterfaceSolarAbsorption::modelType_t
 			case 17 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// InterfaceSolarAbsorption::modelType_t
+			// InterfaceSolarAbsorption::para_t
 			case 18 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -2918,17 +2936,17 @@ namespace NANDRAD {
 			case 11 : return 1;
 			// InterfaceAirFlow::modelType_t
 			case 12 : return 1;
-			// InterfaceHeatConduction::para_t
-			case 13 : return 1;
 			// InterfaceHeatConduction::modelType_t
+			case 13 : return 2;
+			// InterfaceHeatConduction::para_t
 			case 14 : return 1;
-			// InterfaceLongWaveEmission::para_t
-			case 15 : return 1;
 			// InterfaceLongWaveEmission::modelType_t
+			case 15 : return 2;
+			// InterfaceLongWaveEmission::para_t
 			case 16 : return 1;
-			// InterfaceSolarAbsorption::para_t
-			case 17 : return 1;
 			// InterfaceSolarAbsorption::modelType_t
+			case 17 : return 2;
+			// InterfaceSolarAbsorption::para_t
 			case 18 : return 1;
 			// InterfaceVaporDiffusion::para_t
 			case 19 : return 1;
@@ -3050,17 +3068,17 @@ namespace NANDRAD {
 			case 11 : return 0;
 			// InterfaceAirFlow::modelType_t
 			case 12 : return 0;
-			// InterfaceHeatConduction::para_t
-			case 13 : return 0;
 			// InterfaceHeatConduction::modelType_t
+			case 13 : return 1;
+			// InterfaceHeatConduction::para_t
 			case 14 : return 0;
-			// InterfaceLongWaveEmission::para_t
-			case 15 : return 0;
 			// InterfaceLongWaveEmission::modelType_t
+			case 15 : return 1;
+			// InterfaceLongWaveEmission::para_t
 			case 16 : return 0;
-			// InterfaceSolarAbsorption::para_t
-			case 17 : return 0;
 			// InterfaceSolarAbsorption::modelType_t
+			case 17 : return 1;
+			// InterfaceSolarAbsorption::para_t
 			case 18 : return 0;
 			// InterfaceVaporDiffusion::para_t
 			case 19 : return 0;

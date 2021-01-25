@@ -11,6 +11,7 @@ SVPropSiteWidget::SVPropSiteWidget(QWidget *parent) :
 	m_ui(new Ui::SVPropSiteWidget)
 {
 	m_ui->setupUi(this);
+	m_ui->verticalLayout->setMargin(0);
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropSiteWidget::onModified);
@@ -25,7 +26,7 @@ SVPropSiteWidget::~SVPropSiteWidget() {
 }
 
 
-void SVPropSiteWidget::onModified(int modificationType, ModificationInfo * data) {
+void SVPropSiteWidget::onModified(int modificationType, ModificationInfo * /*data*/) {
 	switch (modificationType) {
 		case SVProjectHandler::AllModified :
 		case SVProjectHandler::GridModified :

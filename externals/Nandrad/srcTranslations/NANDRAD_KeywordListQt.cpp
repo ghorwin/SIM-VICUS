@@ -73,12 +73,15 @@ KeywordListQt::KeywordListQt() {
 	tr("Length specific U-Value of pipe wall incl. insulation");
 	tr("Pressure coeffient.");
 	tr("Use results from external wind flow calculation.");
-	tr("Constant heat transfer coefficient.");
-	tr("Constant model.");
-	tr("Constant Long wave emissivity.");
-	tr("Constant model.");
-	tr("Constant Absorption coefficient [0,...,1].");
-	tr("Constant model.");
+	tr("Constant heat exchange coefficient");
+	tr("No convective heat exchange");
+	tr("Convective heat transfer coefficient");
+	tr("Constant model");
+	tr("No long wave radiation exchange");
+	tr("Long wave emissivity");
+	tr("Constant model");
+	tr("No short wave radiation exchange");
+	tr("Solar absorption coefficient");
 	tr("Vapor Transfer Coefficient.");
 	tr("Constant model.");
 	tr("Constant internal loads");
@@ -235,7 +238,7 @@ KeywordListQt::KeywordListQt() {
 }
 
 
-QString KeywordListQt::Description( const std::string & category, unsigned int keywordId) { 
+QString KeywordListQt::Description( const std::string & category, int keywordId) { 
 
 	std::string description = KeywordList::Description(category.c_str(), keywordId);
 	return tr(description.c_str());

@@ -42,6 +42,9 @@ SVDBBoundaryConditionEditDialog::SVDBBoundaryConditionEditDialog(QWidget *parent
 	// set item delegate for coloring built-ins
 	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn);
 	m_ui->tableView->setItemDelegate(dg);
+
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColCheck, QHeaderView::Fixed);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColColor, QHeaderView::Fixed);
 }
 
 

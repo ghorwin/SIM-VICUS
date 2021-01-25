@@ -13,6 +13,19 @@ bool Component::isValid(const VICUS::Database<Material> & materials, const VICUS
 	if (!con->isValid(materials))
 		return false;
 
+	const BoundaryCondition *bcA = bcs[m_idSideABoundaryCondition];
+	const BoundaryCondition *bcB = bcs[m_idSideBBoundaryCondition];
+
+	if(bcA == nullptr && bcB == nullptr)
+		return false;
+
+	if(bcA != nullptr && !bcA->isValid())
+		return false;
+
+	if(bcB != nullptr && !bcB->isValid())
+		return false;
+
+
 	// TODO : Dirk, add other checks for valid/complete parametrization
 	return true;
 }

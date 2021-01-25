@@ -1,7 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Components>
-	<Component id="1" displayName="DE: Außenwand, Ziegel |EN: Outside wall, brick" color="#000000">
+	<Component id="1001" displayName="DE: [SimQuality] Komponente für TF03.1 |EN: [SimQuality] Component for TF03.1" color="#f57900">
 		<Type>OutsideWall</Type>
-		<IdOpaqueConstruction>1</IdOpaqueConstruction>
+		<IdConstruction>1001</IdConstruction>
+		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1002" displayName="DE: [SimQuality] Komponente für TF03.2 |EN: [SimQuality] Component for TF03.2" color="#a40000">
+		<Type>OutsideWall</Type>
+		<IdConstruction>1002</IdConstruction>
+		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1003" displayName="DE: [SimQuality] Komponente für TF03.3 |EN: [SimQuality] Component for TF03.3" color="#73d216">
+		<Type>OutsideWall</Type>
+		<IdConstruction>1003</IdConstruction>
+		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1004" displayName="DE: [SimQuality] Komponente für TF03.4 |EN: [SimQuality] Component for TF03.4" color="#1672fd">
+		<Type>OutsideWall</Type>
+		<IdConstruction>1004</IdConstruction>
+		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 	</Component>
 </Components>

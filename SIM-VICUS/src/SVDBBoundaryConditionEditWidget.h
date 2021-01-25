@@ -48,6 +48,11 @@ private slots:
 	void on_lineEditHeatTransferCoefficient_editingFinished();
 	void on_lineEditSolarAbsorptionCoefficient_editingFinished();
 	void on_lineEditLongWaveEmissivity_editingFinished();
+	void on_comboBoxHeatTransferCoeffModelType_currentIndexChanged(int index);
+	void on_comboBoxLWModelType_currentIndexChanged(int index);
+	void on_comboBoxSWModelType_currentIndexChanged(int index);
+
+	void on_pushButtonColor_colorChanged();
 
 
 private:

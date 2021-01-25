@@ -93,9 +93,12 @@ SOURCES += \
 	../../src/SVDBPipeEditDialog.cpp \
 	../../src/SVDBPipeEditWidget.cpp \
 	../../src/SVDBPipeTableModel.cpp \
+	../../src/SVDBWindowEditDialog.cpp \
 		../../src/SVDatabase.cpp \
 		../../src/SVDialogHydraulicComponents.cpp \
 		../../src/SVHydraulicComponentParameterModel.cpp \
+	../../src/SVPropBuildingEditWidget.cpp \
+	../../src/SVPropModeSelectionWidget.cpp \
 		../../src/SVPropNetworkEditWidget.cpp \
 		../../src/SVSimulationLocationOptions.cpp \
 		../../src/SVSimulationModelOptions.cpp \
@@ -110,6 +113,7 @@ SOURCES += \
 		../../src/actions/SVUndoAddZone.cpp \
 		../../src/actions/SVUndoCommandBase.cpp \
 		../../src/actions/SVUndoDeleteSelected.cpp \
+	../../src/actions/SVUndoModifyComponentInstances.cpp \
 		../../src/actions/SVUndoModifySurfaceGeometry.cpp \
 		../../src/actions/SVUndoProject.cpp \
 		../../src/actions/SVUndoSiteDataChanged.cpp \
@@ -188,9 +192,12 @@ HEADERS  += \
 	../../src/SVDBPipeEditDialog.h \
 	../../src/SVDBPipeEditWidget.h \
 	../../src/SVDBPipeTableModel.h \
+	../../src/SVDBWindowEditDialog.h \
 		../../src/SVDatabase.h \
 		../../src/SVDialogHydraulicComponents.h \
 		../../src/SVHydraulicComponentParameterModel.h \
+	../../src/SVPropBuildingEditWidget.h \
+	../../src/SVPropModeSelectionWidget.h \
 		../../src/SVPropNetworkEditWidget.h \
 		../../src/SVSimulationLocationOptions.h \
 		../../src/SVSimulationModelOptions.h \
@@ -205,6 +212,7 @@ HEADERS  += \
 		../../src/actions/SVUndoAddZone.h \
 		../../src/actions/SVUndoCommandBase.h \
 		../../src/actions/SVUndoDeleteSelected.h \
+	../../src/actions/SVUndoModifyComponentInstances.h \
 		../../src/actions/SVUndoModifySurfaceGeometry.h \
 		../../src/actions/SVUndoProject.h \
 		../../src/actions/SVUndoSiteDataChanged.h \
@@ -278,6 +286,7 @@ FORMS    += \
 		../../src/SVDBMaterialEditWidget.ui \
 		../../src/SVDBPipeEditDialog.ui \
 		../../src/SVDBPipeEditWidget.ui \
+		../../src/SVDBWindowEditDialog.ui \
 		../../src/SVDBWindowEditWidget.ui \
 		../../src/SVDialogHydraulicComponents.ui \
 		../../src/SVImportIDFDialog.ui \
@@ -288,7 +297,9 @@ FORMS    += \
 		../../src/SVPreferencesDialog.ui \
 		../../src/SVPreferencesPageStyle.ui \
 		../../src/SVPreferencesPageTools.ui \
+		../../src/SVPropBuildingEditWidget.ui \
 		../../src/SVPropEditGeometry.ui \
+		../../src/SVPropModeSelectionWidget.ui \
 		../../src/SVPropNetworkEditWidget.ui \
 		../../src/SVPropSiteWidget.ui \
 		../../src/SVPropVertexListWidget.ui \

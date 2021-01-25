@@ -1,4 +1,4 @@
-#include "Vic3DScene.h"
+﻿#include "Vic3DScene.h"
 
 #include <QOpenGLShaderProgram>
 #include <QDebug>
@@ -34,7 +34,7 @@ const float MOUSE_ROTATION_SPEED = 0.5f;
 // Size of the local coordinate system window
 const int SUBWINDOWSIZE = 150;
 
-/// \todo adjust the THRESHOLD based on DPI/Screenresolution or have it as user option
+/// \todo All: adjust the THRESHOLD based on DPI/Screenresolution or have it as user option
 const float MOUSE_MOVE_DISTANCE_ORBIT_CONTROLLER = 1;
 
 namespace Vic3D {
@@ -88,10 +88,12 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			updateSelection = true;
 			// clear new polygon drawing object
 			m_newGeometryObject.clear();
-			// set scene operation mode to "normal"
+			// set scene operation mode to "normal" if we are in place vertex mode
 			SVViewState vs = SVViewStateHandler::instance().viewState();
-			vs.m_sceneOperationMode = SVViewState::NUM_OM;
-			vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+			if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
+				vs.m_sceneOperationMode = SVViewState::NUM_OM;
+				vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+			}
 
 			// clear selection object, to avoid accessing invalidated pointers
 			m_selectedGeometryObject.m_selectedObjects.clear();
@@ -112,9 +114,13 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			updateSelection = true;
 			break;
 
-		case SVProjectHandler::SelectionModified :
-			updateSelection = true;
-			break;
+		case SVProjectHandler::ComponentInstancesModified : {
+			const SVViewState & vs = SVViewStateHandler::instance().viewState();
+			if (vs.m_viewMode == SVViewState::VM_PropertyEditMode) {
+				recolorObjects(vs.m_objectColorMode, vs.m_colorModePropertyID);
+			}
+			return;
+		}
 
 		// *** selection and visibility properties changed ***
 		case SVProjectHandler::NodeStateModified : {
@@ -218,6 +224,8 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 		m_selectedGeometryObject.create(m_fixedColorTransformShader);
 		m_selectedGeometryObject.updateBuffers();
 
+		// TODO : Stephan, move the bounding box calculation code and m_propEditGeometryWidget update to SVPropEditGeometry and call this from
+		//        SVPropertyWidget::onModified()
 		// if we are in "Geometry editing" mode, we also show and update the property widget
 		SVViewState vs = SVViewStateHandler::instance().viewState();
 		if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
@@ -250,13 +258,15 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 				vs.m_sceneOperationMode = SVViewState::NUM_OM;
 				vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
 			}
+
+
 			// now tell all UI components to toggle their view state
 			SVViewStateHandler::instance().setViewState(vs);
 		}
 	}
 
-	// create geometry object (if already existing, nothing happens here)
 	if (updateBuilding) {
+		// create geometry object (if already existing, nothing happens here)
 		m_opaqueGeometryObject.create(m_buildingShader->shaderProgram()); // Note: does nothing, if already existing
 
 		// transfer data from building geometry to vertex array caches
@@ -273,11 +283,15 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 	}
 
 	// update all GPU buffers (transfer cached data to GPU)
-	m_opaqueGeometryObject.updateBuffers();
-	m_networkGeometryObject.updateBuffers();
+	if (updateBuilding || updateSelection)
+		m_opaqueGeometryObject.updateBuffers();
 
-	// transfer other properties
+	if (updateNetwork || updateSelection)
+		m_networkGeometryObject.updateBuffers();
 
+	// store current coloring mode
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	m_lastColorMode = vs.m_objectColorMode;
 }
 
 
@@ -366,25 +380,27 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 	// *** Keyboard navigation ***
 
-	// translation and rotation works always (no trigger key)
+	// translation and rotation works always (no trigger key) unless the Ctrl-key is held at the same time
+	if (!keyboardHandler.keyDown(Qt::Key_Control)) {
 
-	// Handle translations
-	QVector3D translation;
-	QVector3D rotationAxis;
-	if (keyboardHandler.keyDown(Qt::Key_W)) 		translation += m_camera.forward();
-	if (keyboardHandler.keyDown(Qt::Key_S)) 		translation -= m_camera.forward();
-	if (keyboardHandler.keyDown(Qt::Key_A)) 		translation -= m_camera.right();
-	if (keyboardHandler.keyDown(Qt::Key_D)) 		translation += m_camera.right();
-	if (keyboardHandler.keyDown(Qt::Key_F)) 		translation -= m_camera.up();
-	if (keyboardHandler.keyDown(Qt::Key_R))			translation += m_camera.up();
-	if (keyboardHandler.keyDown(Qt::Key_Q))			rotationAxis = QVector3D(.0f,.0f,1.f);
-	if (keyboardHandler.keyDown(Qt::Key_E))			rotationAxis = -QVector3D(.0f,.0f,1.f);
+		// Handle translations
+		QVector3D translation;
+		QVector3D rotationAxis;
+		if (keyboardHandler.keyDown(Qt::Key_W)) 		translation += m_camera.forward();
+		if (keyboardHandler.keyDown(Qt::Key_S)) 		translation -= m_camera.forward();
+		if (keyboardHandler.keyDown(Qt::Key_A)) 		translation -= m_camera.right();
+		if (keyboardHandler.keyDown(Qt::Key_D)) 		translation += m_camera.right();
+		if (keyboardHandler.keyDown(Qt::Key_F)) 		translation -= m_camera.up();
+		if (keyboardHandler.keyDown(Qt::Key_R))			translation += m_camera.up();
+		if (keyboardHandler.keyDown(Qt::Key_Q))			rotationAxis = QVector3D(.0f,.0f,1.f);
+		if (keyboardHandler.keyDown(Qt::Key_E))			rotationAxis = -QVector3D(.0f,.0f,1.f);
 
-	float transSpeed = TRANSLATION_SPEED;
-	if (keyboardHandler.keyDown(Qt::Key_Shift))
-		transSpeed = 0.1f;
-	m_camera.translate(transSpeed * translation);
-	m_camera.rotate(transSpeed, rotationAxis);
+		float transSpeed = TRANSLATION_SPEED;
+		if (keyboardHandler.keyDown(Qt::Key_Shift))
+			transSpeed = 0.1f;
+		m_camera.translate(transSpeed * translation);
+		m_camera.rotate(transSpeed, rotationAxis);
+	}
 
 	// To avoid duplicate picking operation, we create the pick object here.
 	// Then, when we actually need picking, we check if the pick was already executed, and then only
@@ -456,7 +472,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 				IBKMK::Vector3D nearestPoint = pickObject.m_candidates.front().m_pickPoint;
 				// if we hit the a plane, limit the orbit controller to the extends of the grid
 				if (pickObject.m_candidates.front().m_snapPointType == PickObject::RT_GridPlane) {
-					/// \todo add support for several grid planes
+					/// \todo Andreas: add support for several grid planes
 					nearestPoint.m_x = std::min(nearestPoint.m_x, m_gridObject.m_maxGrid);
 					nearestPoint.m_y = std::min(nearestPoint.m_y, m_gridObject.m_maxGrid);
 					nearestPoint.m_x = std::max(nearestPoint.m_x, m_gridObject.m_minGrid);
@@ -819,7 +835,7 @@ void Vic3DScene::render() {
 	// tell OpenGL to show only faces whose normal vector points towards us
 	glEnable(GL_CULL_FACE);
 
-	/// \todo render dumb background geometry
+	/// \todo Andreas: render dumb background geometry
 
 
 	// *** opaque building geometry ***
@@ -900,8 +916,52 @@ void Vic3DScene::render() {
 void Vic3DScene::setViewState(const SVViewState & vs) {
 	// if we are currently constructing geometry, and we switch the view mode to
 	// "Parameter edit" mode, reset the new polygon object
+	bool colorUpdateNeeded = false;
 	if (vs.m_viewMode == SVViewState::VM_PropertyEditMode) {
 		m_newGeometryObject.clear();
+		// update scene coloring if in property edit mode
+		if (m_lastColorMode != vs.m_objectColorMode ||
+			m_lastColorObjectID != vs.m_colorModePropertyID)
+		{
+			colorUpdateNeeded = true;
+		}
+	}
+	else {
+		Q_ASSERT(vs.m_objectColorMode == SVViewState::OCM_None);
+		if (m_lastColorMode != vs.m_objectColorMode) {
+			colorUpdateNeeded = true;
+		}
+	}
+	if (colorUpdateNeeded) {
+
+		// different update handling
+		bool updateBuilding = false;
+		bool updateNetwork = false;
+		if (m_lastColorMode > 0 && m_lastColorMode < SVViewState::OCM_NodeComponent)
+			updateBuilding = true;
+		if (vs.m_objectColorMode > 0 && vs.m_objectColorMode < SVViewState::OCM_NodeComponent)
+			updateBuilding = true;
+		if (m_lastColorMode >= SVViewState::OCM_NodeComponent)
+			updateNetwork = true;
+		if (vs.m_objectColorMode >= SVViewState::OCM_NodeComponent)
+			updateNetwork = true;
+
+		recolorObjects(vs.m_objectColorMode, vs.m_colorModePropertyID);
+		if (updateBuilding) {
+			qDebug() << "Updating surface coloring of buildings";
+			// TODO : Andreas, Performance update, only update and transfer color buffer
+			generateBuildingGeometry();
+			m_opaqueGeometryObject.updateBuffers();
+		}
+		if (updateNetwork) {
+			qDebug() << "Updating surface coloring of networks";
+			// TODO : Andreas, Performance update, only update and transfer color buffer
+			generateNetworkGeometry();
+			m_networkGeometryObject.updateBuffers();
+		}
+
+		m_lastColorMode = vs.m_objectColorMode;
+		m_lastColorObjectID = vs.m_colorModePropertyID;
 	}
 }
 
@@ -976,6 +1036,8 @@ void Vic3DScene::generateBuildingGeometry() {
 
 
 void Vic3DScene::generateNetworkGeometry() {
+	QElapsedTimer t;
+	t.start();
 	// get VICUS project data
 	const VICUS::Project & p = project();
 
@@ -1003,7 +1065,7 @@ void Vic3DScene::generateNetworkGeometry() {
 		for (const VICUS::NetworkEdge & e : network.m_edges) {
 			double radius = e.m_visualizationRadius;
 			QColor pipeColor = Qt::red;
-			if (!e.m_visible || !network.m_visible || e.m_selected)
+			if (!e.m_visible || e.m_selected)
 				pipeColor.setAlpha(0);
 
 			m_networkGeometryObject.m_vertexStartMap[e.uniqueID()] = currentVertexIndex;
@@ -1030,19 +1092,166 @@ void Vic3DScene::generateNetworkGeometry() {
 		}
 	}
 
+	qDebug() << t.elapsed() << "ms for network generation";
+}
+
+
+void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm, int id) const {
+	// get VICUS project data
+	const VICUS::Project & p = project();
+
+	// process all surfaces and initialize colors
+	for (const VICUS::Building & b : p.m_buildings) {
+		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+			for (const VICUS::Room & r : bl.m_rooms) {
+				for (const VICUS::Surface & s : r.m_surfaces) {
+
+					// update surface opaque color
+					// here, it does not matter if the surfaces is selected or invisible -
+					// we just update the color that would be used if the surface would be drawn
+
+					switch (ocm) {
+						case SVViewState::OCM_None:
+							// const cast is ok here, since color is not a project property
+							const_cast<VICUS::Surface&>(s).updateColor();
+						break;
+						case SVViewState::OCM_Components:
+							s.m_color = QColor(64,64,64); // dark gray
+						break;
+						case SVViewState::OCM_ComponentOrientation:
+							s.m_color = QColor(128,128,128); // gray (later semi-transparent)
+						break;
+						case SVViewState::OCM_BoundaryConditions:
+							s.m_color = QColor(64,64,64); // dark gray
+						break;
+
+						// the other cases are just to get rid of compiler warnings
+						case SVViewState::OCM_NodeComponent:
+						case SVViewState::OCM_EdgePipe: break;
+					}
+				}
+			}
+		}
+	}
+
+	const SVDatabase & db = SVSettings::instance().m_db;
+	if (ocm > 0 && ocm < SVViewState::OCM_NodeComponent) {
+		// now color all surfaces, this works by first looking up the components, associated with each surface
+		for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+			// lookup component definition
+			const VICUS::Component * comp = db.m_components[ci.m_componentID];
+			if (comp == nullptr)
+				continue; // no component definition - keep default (gray) color
+			switch (ocm) {
+				case SVViewState::OCM_Components:
+					if (ci.m_sideASurface != nullptr)
+						ci.m_sideASurface->m_color = comp->m_color;
+					if (ci.m_sideBSurface != nullptr)
+						ci.m_sideBSurface->m_color = comp->m_color;
+				break;
+				case SVViewState::OCM_ComponentOrientation:
+					// color surfaces when either filtering is off (id == 0)
+					// or when component ID matches selected id
+					if (id == 0 || ci.m_componentID == id) {
+						// color side A surfaces with blue,
+						// side B surfaces with orange
+						if (ci.m_sideASurface != nullptr)
+							ci.m_sideASurface->m_color = QColor(47,125,212);
+						if (ci.m_sideBSurface != nullptr)
+							ci.m_sideBSurface->m_color = QColor(255, 206, 48);
+					}
+				break;
+				case SVViewState::OCM_BoundaryConditions:
+					if (ci.m_sideASurface != nullptr && comp->m_idSideABoundaryCondition != VICUS::INVALID_ID) {
+						// lookup boundary condition definition
+						const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
+						if (bc != nullptr)
+							ci.m_sideASurface->m_color = bc->m_color;
+					}
+					if (ci.m_sideBSurface != nullptr && comp->m_idSideBBoundaryCondition != VICUS::INVALID_ID) {
+						// lookup boundary condition definition
+						const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
+						if (bc != nullptr)
+							ci.m_sideBSurface->m_color = bc->m_color;
+					}
+				break;
+				case SVViewState::OCM_None:
+				case SVViewState::OCM_NodeComponent:
+				case SVViewState::OCM_EdgePipe: break;
+			}
+		}
+	}
+
+}
+
+
+void Vic3DScene::selectAll() {
+	std::set<const VICUS::Object *> selObjects;
+	// select all objects, wether they are selected already or not, and whether they are visible or not
+	project().selectObjects(selObjects, VICUS::Project::SG_All, false, false);
+
+	// get a list of IDs of nodes to be selected (only those who are not yet selected)
+	std::set<unsigned int> nodeIDs;
+	for (const VICUS::Object * o : selObjects) {
+		if (!o->m_selected)
+			nodeIDs.insert(o->uniqueID());
+	}
+
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("All objects selected"),
+														 SVUndoTreeNodeState::SelectedState, nodeIDs, true);
+	// select all
+	undo->push();
 }
 
 
 void Vic3DScene::deselectAll() {
-	// compose undo-action of objects currently selected
-	if (m_selectedGeometryObject.m_selectedObjects.empty())
-		return; // nothing selected, nothing to do
+	std::set<unsigned int> objIDs;
+	// add all selected objects, whether they are visible or not
 
-	std::set<unsigned int> nodeIDs;
-	for (const VICUS::Object * o : m_selectedGeometryObject.m_selectedObjects)
-		nodeIDs.insert(o->uniqueID());
+	// get VICUS project data
+	const VICUS::Project & p = project();
+	for (const VICUS::Building & b : p.m_buildings) {
+		if (b.m_selected)
+			objIDs.insert(b.uniqueID());
+		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+			if (bl.m_selected)
+				objIDs.insert(bl.uniqueID());
+			for (const VICUS::Room & r : bl.m_rooms) {
+				if (r.m_selected)
+					objIDs.insert(r.uniqueID());
+				for (const VICUS::Surface & s : r.m_surfaces) {
+					if (s.m_selected)
+						objIDs.insert(s.uniqueID());
+				}
+			}
+		}
+	}
+
+	// now the plain geometry
+	for (const VICUS::Surface & s : p.m_plainGeometry) {
+		if (s.m_selected)
+			objIDs.insert(s.uniqueID());
+	}
+
+	// now network stuff
+
+	// add cylinders for all pipes
+	for (const VICUS::Network & network : p.m_geometricNetworks) {
+		for (const VICUS::NetworkEdge & e : network.m_edges) {
+			if (e.m_selected)
+				objIDs.insert(e.uniqueID());
+		}
+
+		// add spheres for nodes
+		for (const VICUS::NetworkNode & no : network.m_nodes) {
+			if (no.m_selected)
+				objIDs.insert(no.uniqueID());
+		}
+		if (network.m_selected)
+			objIDs.insert(network.uniqueID());
+	}
 	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Selected cleared"),
-														 SVUndoTreeNodeState::SelectedState, nodeIDs, false);
+														 SVUndoTreeNodeState::SelectedState, objIDs, false);
 	undo->push();
 }
 
@@ -1057,7 +1266,6 @@ void Vic3DScene::deleteSelected() {
 		return;
 
 	// clear selected objects (since they are now removed)
-//	m_selectedGeometryObject.m_selectedObjects.clear();
 	SVUndoDeleteSelected * undo = new SVUndoDeleteSelected(tr("Removing selected geometry"),
 														   selectedObjectIDs);
 	// clear selection
@@ -1412,7 +1620,7 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 				if (snapOptions & SVViewState::Snap_GridPlane) {
 					// now determine which grid line is closest
 					QVector3D closestPoint;
-					/// \todo add support for several grid objects, or one grid object with several planes
+					/// \todo Andreas: add support for several grid objects, or one grid object with several planes
 					///		  r.m_uniqueObjectID -> index of plane that we hit.
 					if (m_gridObject.closestSnapPoint(VICUS::IBKVector2QVector(r.m_pickPoint), closestPoint)) {
 						// this is in world coordinates, use this as transformation vector for the

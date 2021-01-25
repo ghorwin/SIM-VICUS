@@ -17,6 +17,8 @@
 #include "Vic3DNewGeometryObject.h"
 #include "Vic3DPickObject.h"
 
+#include "SVViewState.h"
+
 class ModificationInfo;
 
 namespace VICUS {
@@ -70,6 +72,8 @@ public:
 	*/
 	void setViewState(const SVViewState & vs);
 
+	/*! Select all objects like surfaces, rooms, buildings, etc. */
+	void selectAll();
 	/*! When Escape was pressed, all selected objects become un-selected again. */
 	void deselectAll();
 	/*! Removes all selected geometry (creates an undo-action on the selected geometry). */
@@ -78,6 +82,7 @@ public:
 	void showSelected();
 	/*! Shows all selected geometry. */
 	void hideSelected();
+
 
 	/*! Toggles "align coordinate system" mode on. */
 	void enterCoordinateSystemAdjustmentMode();
@@ -89,6 +94,9 @@ public:
 private:
 	void generateBuildingGeometry();
 	void generateNetworkGeometry();
+
+	/*! Processes all surfaces and assigns colors based on current object color mode. */
+	void recolorObjects(SVViewState::ObjectColorMode ocm, int id) const;
 
 	/*! Mouse pick handler: collects all pickable objects/surfaces/planes along the line-of-sight and stores all possible
 		pick candidates in pickObject.
@@ -227,6 +235,12 @@ private:
 	QMatrix4x4				m_panOriginalTransformMatrix;
 
 	double					m_panCABARatio;
+
+	/*! Cached last scene coloring mode. Updated in onModified() and setViewState(). Used
+		to prevent excessive updates of geometry when unrelated view state properties change.
+	*/
+	SVViewState::ObjectColorMode	m_lastColorMode = SVViewState::OCM_None;
+	int								m_lastColorObjectID = 0;
 
 	// vector with drawing helping planes
 	std::vector<VICUS::PlaneGeometry>	m_gridPlanes;

@@ -14,8 +14,8 @@ bool SVDebugApplication::notify( QObject *recv, QEvent *e ) {
 		ex.writeMsgStackToError();
 		IBK::IBK_Message("IBK::Exception caught.", IBK::MSG_ERROR, FUNC_ID);
 		m_aboutToTerminate = true;
+		/// \todo Andreas: do emergency project save - to avoid data loss
 		QApplication::exit(1); // can't go on, quit here
-		/// \todo do emergency project save - to avoid data loss
 	}
 	catch (IBK::Exception &ex) {
 		ex.writeMsgStackToError();

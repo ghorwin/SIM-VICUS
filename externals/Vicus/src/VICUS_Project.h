@@ -46,9 +46,12 @@ class Project {
 	VICUS_READWRITE
 public:
 
-	enum ViewFlags {
-		VF_All,			// Keyword: All
-		NUM_VF
+	/*! Bitmasks for different selection groups used in selectObjects(). */
+	enum SelectionGroups {
+		SG_Building			= 0x001,
+		SG_Network			= 0x002,
+		SG_All				= SG_Building | SG_Network,
+		NUM_SG
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -93,11 +96,26 @@ public:
 	/*! This function checks all surfaces in the project if they are selected or not.
 		\returns Returns true, if any surface is selected, and if so, stores the arithmetic average of all
 				 surface vertexes in variable centerPoint.
+		\todo Stephan, remove and use selectObjects() with subsequent bounding box calculation instead.
 	*/
 	bool haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const;
 
-	/*! This function collects the pointers to all selected surfaces
-		\returns Returns true if any surface is selected
+	/*! Selects objects and return set with pointers according to additional filters.
+		\param selectedObjs Here the pointers to selected objects are returned.
+		\param sg			Selection group, that the object belongs to.
+		\param takeSelected	If true, only objects with "selected" property enabled are taken. If false,
+			selection property is ignored.
+		\param takeVisible	If true, only objects with "visible" property enabled are taken. If false,
+			visible property is ignored.
+	*/
+	void selectObjects(std::set<const Object *> &selectedObjs, SelectionGroups sg,
+					   bool takeSelected,
+					   bool takeVisible) const;
+
+	/*! This function collects the pointers to all selected surfaces.
+		This is a convenience function which essentially does the same as selectObjects, but
+		only returns visible and selected objects of type Surface.
+		\returns Returns true if any surface is selected (same as surfaces.size() > 0).
 	*/
 	bool selectedSurfaces(std::vector<const Surface*> & surfaces) const;
 
@@ -128,9 +146,9 @@ public:
 			return &(*it);
 	}
 
-	/*! Function to generate unique ID */
+	/*! Function to generate unique ID (const-version). */
 	template <typename T>
-	static unsigned uniqueId(std::vector<T>& vec) {
+	static unsigned int uniqueId(const std::vector<T>& vec) {
 		for (unsigned id=1; id<std::numeric_limits<unsigned>::max(); ++id){
 			if (std::find(vec.begin(), vec.end(), id) == vec.end())
 				return id;
@@ -138,15 +156,17 @@ public:
 		return 999999; // just to make compiler happy, we will find an unused ID in the loop above
 	}
 
-	/*! Function to generate unique ID (const-version). */
+	/*! Function to generate a unique ID that is larger than all the other IDs used.
+		This is useful if a series of objects with newly generated IDs shall be added to a container.
+	*/
 	template <typename T>
-	static unsigned uniqueId(const std::vector<T>& vec) {
-		for (unsigned id=1; id<std::numeric_limits<unsigned>::max(); ++id){
-			if (std::find(vec.begin(), vec.end(), id) == vec.end())
-				return id;
-		}
-		return 999999; // just to make compiler happy, we will find an unused ID in the loop above
+	static unsigned int largestUniqueId(const std::vector<T>& vec) {
+		unsigned int largest = 0;
+		for (typename std::vector<T>::const_iterator it = vec.begin(); it != vec.end(); ++it)
+			largest = std::max(largest, it->m_id);
+		return largest+1; // Mind: plus one, to get past the largest _existing_ ID
 	}
+
 
 
 	/*! Generates a new unique name in format "basename" or "basename [<nr>]" with increasing numbers until

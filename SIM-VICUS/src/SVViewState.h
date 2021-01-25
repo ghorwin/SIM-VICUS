@@ -21,7 +21,6 @@
 */
 class SVViewState {
 public:
-	SVViewState();
 
 	/*! Different basic view modes.
 		Depending on the view mode, different actions are available and
@@ -80,17 +79,43 @@ public:
 		PM_VertexList,
 		/*! Shows the widget with global site (and view) properties. */
 		PM_SiteProperties,
+		/*! Shows the widget with building properties. */
+		PM_BuildingProperties,
 		/*! Shows the widget with network properties. */
-		PM_NetworkProperties,
-		/*! Shows the widget with network properties. */
-		PM_NetworkNodeProperties,
-		/*! Shows the widget with network properties. */
-		PM_NetworkEdgeProperties,
-
-
-		NUM_PM
+		PM_NetworkProperties
 	};
 
+	/*! These enum values indicate what kind of coloring/highlighting shall be applied
+		when drawing opaque building/network geometry.
+		The coloring will only be applied when in property-edit mode, otherwise the default
+		surface color will be used.
+
+		Note: when a "building property" color mode is selected, the network geometry (nodes/edges) will
+			  be shown using standard colors. Similarly, when a network coloring mode is selected, the building
+			  geometry is shown in standard colors. To distinguish easily between building/network color modes,
+			  the enumerations for node properties start with 0x1000.
+	*/
+	enum ObjectColorMode {
+		/*! Use default colors (whatever that means). This is used when property edit mode "Site" is active,
+			or in geometry edit mode.
+		*/
+		OCM_None					=	0x0000,
+		/*! In this mode the surfaces are colored based on the color assigned to their associated component, or a default
+			gray value, if they are not yet associated with a component.
+		*/
+		OCM_Components,
+		/*! All surfaces that have a specific component assigned (m_propertyHighlightID) are colored based on whether they
+			are mapped to side A or B of the component, with a given color. All other surfaces are drawn semi-transparent
+			gray.
+		*/
+		OCM_ComponentOrientation,
+		/*! All surfaces that have a component assigned which has a boundary condition ID are colored based on the
+			boundary condition color.
+		*/
+		OCM_BoundaryConditions,
+		OCM_NodeComponent			=	0x1000,
+		OCM_EdgePipe
+	};
 
 	/*! Snapping/navigation locks, apply to movement of the
 		local coordinate system when in "place vertex" mode.
@@ -117,10 +142,13 @@ public:
 		Snap_ObjectEdgeCenter	= 0x0008
 	};
 
-	ViewMode			m_viewMode					= VM_GeometryEditMode;
-	SceneOperationMode	m_sceneOperationMode		= NUM_OM;
-	PropertyWidgetMode	m_propertyWidgetMode		= PM_EditGeometry;
-
+	ViewMode				m_viewMode				= VM_GeometryEditMode;
+	SceneOperationMode		m_sceneOperationMode	= NUM_OM;
+	PropertyWidgetMode		m_propertyWidgetMode	= PM_EditGeometry;
+	/*! Indicates which color mode shall be used to color opaque geometry. */
+	ObjectColorMode			m_objectColorMode		= OCM_None;
+	/*! Some color modes require an additional ID property. */
+	int						m_colorModePropertyID	= 0;
 	/*! Bitmask with selected snap options. */
 	int						m_snapOptionMask		= Snap_GridPlane | Snap_ObjectVertex | Snap_ObjectCenter | Snap_ObjectEdgeCenter;
 	/*! Whether snapping is enabled or not. */

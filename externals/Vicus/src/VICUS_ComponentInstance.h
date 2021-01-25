@@ -33,7 +33,7 @@ public:
 	/*! ID of component instance (will be used for NANDRAD::ConstructionInstance). */
 	unsigned int						m_id = INVALID_ID;					// XML:A:required
 	/*! ID of referenced component. */
-	unsigned int						m_componentID = INVALID_ID;			// XML:A:required
+	unsigned int						m_componentID = INVALID_ID;			// XML:A
 	/*! ID of surface at side A (optional, ID = 0 reserved for "ambient", INVALID_ID means adiabatic). */
 	unsigned int						m_sideASurfaceID = INVALID_ID;		// XML:A
 	/*! ID of surface at side B (optional, ID = 0 reserved for "ambient", INVALID_ID means adiabatic). */
@@ -45,7 +45,6 @@ public:
 	// These pointers are updated in VICUS::Project::updatePointers() and can be used
 	// to quicky travers the data model.
 
-	VICUS::Component	*m_component		= nullptr;
 	VICUS::Surface		*m_sideASurface		= nullptr;
 	VICUS::Surface		*m_sideBSurface		= nullptr;
 };

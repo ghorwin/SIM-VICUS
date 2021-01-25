@@ -76,6 +76,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 		m_ui->lineEditDaylightName->setText("");
 		m_ui->lineEditRoughness->setText("");
 		m_ui->lineEditSpecularity->setText("");
+		m_ui->pushButtonComponentColor->setColor(Qt::black);
 
 		return;
 	}
@@ -92,14 +93,49 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	m_ui->comboBoxComponentType->setCurrentIndex(typeIdx);
 	m_ui->comboBoxComponentType->blockSignals(false);
 
+	m_ui->pushButtonComponentColor->blockSignals(true);
+	m_ui->pushButtonComponentColor->setColor(m_current->m_color);
+	m_ui->pushButtonComponentColor->blockSignals(false);
+
 	m_ui->lineEditBoundaryConditionSideAName->setEnabled(true);
 	m_ui->lineEditBoundaryConditionSideBName->setEnabled(true);
+
+	double surfaceResistanceSideA = 0;
+	double surfaceResistanceSideB = 0;
+
+	const VICUS::BoundaryCondition *bcA = m_db->m_boundaryConditions[comp->m_idSideABoundaryCondition];
+	if (bcA != nullptr){
+		m_ui->lineEditBoundaryConditionSideAName->setText(QString::fromStdString(bcA->m_displayName.string(QtExt::LanguageHandler::langId().toStdString(), std::string("en"))));
+		// TODO : generate HTML description text with info about boundary condition
+		if(bcA->m_heatConduction.m_modelType == NANDRAD::InterfaceHeatConduction::MT_Constant){
+			double hc = bcA->m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
+			surfaceResistanceSideA = hc > 0 ? 1/hc : 0;
+		}
+	}
+
+	const VICUS::BoundaryCondition *bcB = m_db->m_boundaryConditions[comp->m_idSideBBoundaryCondition];
+	if (bcB != nullptr){
+		m_ui->lineEditBoundaryConditionSideBName->setText(QString::fromStdString(bcB->m_displayName.string(QtExt::LanguageHandler::langId().toStdString(), std::string("en"))));
+		// TODO : generate HTML description text with info about boundary condition
+		if(bcB->m_heatConduction.m_modelType == NANDRAD::InterfaceHeatConduction::MT_Constant){
+			double hc = bcB->m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
+			surfaceResistanceSideB = hc > 0 ? 1/hc : 0;
+		}
+	}
 
 	const VICUS::Construction *con = m_db->m_constructions[comp->m_idConstruction];
 	if (con != nullptr) {
 		m_ui->lineEditConstructionName->setText(QString::fromStdString(con->m_displayName.string(QtExt::LanguageHandler::langId().toStdString(), "en")));
 		double UValue;
-		bool validUValue = con->calculateUValue(UValue, m_db->m_materials, 0.13, 0.04);
+		/* Take for uvalue calculation the surface resistance from the side A and B if this exist.
+			If all resistance are zero -> take standard resistance of 0.17+0.04 = 0.21
+		*/
+		bool validUValue = false;
+		if(surfaceResistanceSideA>0 || surfaceResistanceSideB>0)
+			validUValue = con->calculateUValue(UValue, m_db->m_materials, surfaceResistanceSideA, surfaceResistanceSideB);
+		else
+			validUValue = con->calculateUValue(UValue, m_db->m_materials, 0.13, 0.04);
+
 		if (validUValue)
 			m_ui->lineEditUValue->setText(QString("%L1").arg(UValue, 0, 'f', 4));
 	}
@@ -108,27 +144,18 @@ void SVDBComponentEditWidget::updateInput(int id) {
 		m_ui->lineEditConstructionName->setText("");
 	}
 
-	const VICUS::BoundaryCondition *bcA = m_db->m_boundaryConditions[comp->m_idSideABoundaryCondition];
-	if (bcA != nullptr){
-		m_ui->lineEditBoundaryConditionSideAName->setText(QString::fromStdString(bcA->m_displayName.string(QtExt::LanguageHandler::langId().toStdString(), std::string("en"))));
-		// TODO : generate HTML description text with info about boundary condition
-	}
-
-	const VICUS::BoundaryCondition *bcB = m_db->m_boundaryConditions[comp->m_idSideBBoundaryCondition];
-	if (bcB != nullptr){
-		m_ui->lineEditBoundaryConditionSideBName->setText(QString::fromStdString(bcB->m_displayName.string(QtExt::LanguageHandler::langId().toStdString(), std::string("en"))));
-		// TODO : generate HTML description text with info about boundary condition
-	}
-
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !comp->m_builtIn;
-	m_ui->lineEditName->setEnabled(true);
+	m_ui->lineEditName->setReadOnly(!isEditable);
+	m_ui->pushButtonComponentColor->setReadOnly(!isEditable);
 	m_ui->comboBoxComponentType->setEnabled(isEditable);
 	m_ui->toolButtonSelectConstruction->setEnabled(isEditable);
-	m_ui->pushButtonComponentColor->setEnabled(isEditable);
 	m_ui->toolButtonSelectBoundaryConditionSideAName->setEnabled(isEditable);
 	m_ui->toolButtonSelectBoundaryConditionSideBName->setEnabled(isEditable);
 	m_ui->pushButtonDaylight->setEnabled(isEditable);
+
+	m_ui->lineEditBoundaryConditionSideAName->setReadOnly(!isEditable);
+	m_ui->lineEditBoundaryConditionSideBName->setReadOnly(!isEditable);
 
 	///TODO Dirk später durchführen wenn datenbanken da sind
 
@@ -139,8 +166,6 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	m_ui->lineEditRoughness->setText("---");
 	m_ui->lineEditSpecularity->setText("---");
 
-	//read only?
-	m_ui->lineEditName->setReadOnly(!isEditable);
 
 }
 
@@ -203,5 +228,18 @@ void SVDBComponentEditWidget::on_toolButtonSelectBoundaryConditionSideBName_clic
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		updateInput(m_current->m_id);
 	}
+}
+
+
+void SVDBComponentEditWidget::on_pushButtonComponentColor_colorChanged() {
+	Q_ASSERT(m_current != nullptr);
+
+	if (m_current->m_color != m_ui->pushButtonComponentColor->color()) {
+		m_current->m_color = m_ui->pushButtonComponentColor->color();
+		m_db->m_components.m_modified = true;
+		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		emit tableDataChanged();
+	}
+
 }
 

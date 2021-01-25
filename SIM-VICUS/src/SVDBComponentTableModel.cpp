@@ -58,9 +58,16 @@ QVariant SVDBComponentTableModel::data ( const QModelIndex & index, int role) co
 			}
 		} break;
 
+		case Qt::BackgroundRole : {
+			if (index.column() == ColColor) {
+				return it->second.m_color;
+			}
+		} break;
+
 		case Qt::SizeHintRole :
 			switch (index.column()) {
 				case ColCheck :
+				case ColColor :
 					return QSize(22, 16);
 			} // switch
 			break;
@@ -93,6 +100,7 @@ QVariant SVDBComponentTableModel::headerData(int section, Qt::Orientation orient
 				default: ;
 			}
 		} break;
+
 		case Qt::FontRole : {
 			QFont f;
 			f.setBold(true);
@@ -121,6 +129,17 @@ QModelIndex SVDBComponentTableModel::addNewItem(VICUS::Component c) {
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;
+}
+
+
+QModelIndex SVDBComponentTableModel::findItem(unsigned int componentId) const {
+	// select component with given matId
+	for (int i=0, count = rowCount(); i<count; ++i) {
+		QModelIndex sourceIndex = index(i,0);
+		if (data(sourceIndex, Role_Id).toUInt() == componentId)
+			return sourceIndex;
+	}
+	return QModelIndex();
 }
 
 

@@ -18,12 +18,21 @@ class SVDBComponentEditDialog : public QDialog {
 
 public:
 	explicit SVDBComponentEditDialog(QWidget *parent = nullptr);
-	~SVDBComponentEditDialog();
+	~SVDBComponentEditDialog() override;
 
-	/*! Starts the dialog in "edit components" mode. */
-	void edit();
+	/*! Starts the dialog in "edit" mode.
+		\param id Optional id of element to be initially selected.
+	*/
+	void edit(unsigned int initialId = 0);
 
-	// QWidget interface
+	/*! Starts the dialog in "select mode".
+		\param initialId The component indicated by this ID is initially selected.
+		\return If a component was selected and double-clicked/or the "Select" button was
+				pressed, the function returns the ID of the selected component. Otherwise, if the
+				dialog was aborted, the function returns -1.
+	*/
+	int select(unsigned int initialId);
+
 protected:
 	void showEvent(QShowEvent * event) override;
 

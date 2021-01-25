@@ -310,10 +310,6 @@ void Project::updatePointers() {
 					s.m_componentInstance = nullptr;
 	// update pointers
 	for (VICUS::ComponentInstance & ci : m_componentInstances) {
-		ci.m_component = nullptr;
-		// Note: we cannot set the component pointer here, since we do not have access to the
-		//       component database here.
-
 		// lookup surfaces
 		ci.m_sideASurface = surfaceByID(ci.m_sideASurfaceID);
 		if (ci.m_sideASurface != nullptr) {
@@ -435,34 +431,74 @@ bool Project::haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const {
 }
 
 
-bool Project::selectedSurfaces(std::vector<const Surface*> &surfaces) const {
-	bool haveSelectedPolys = false;
+bool selectionCheck(const VICUS::Object & o, bool takeSelected, bool takeVisible) {
+	bool selCheck = takeSelected ? o.m_selected : true;
+	bool visCheck = takeVisible ? o.m_visible : true;
+	return (selCheck && visCheck);
+}
 
-	// we go through all dump surfaces in m_plaingeometry
-	// if surface is selected and visible, we store its coordinates and its coordinates count
-	for (const Surface &s : m_plainGeometry) {
-		if ( s.m_visible && s.m_selected ) {
-			!haveSelectedPolys ? haveSelectedPolys = true : haveSelectedPolys;
-			surfaces.push_back(&s);
-		}
-	}
-
-	// we go through all surfaces inside the buildings
-	// if surface is selected and visible, we store its coordinates and its coordinates count
-	for (const  Building & b : m_buildings) {
-		for (const BuildingLevel & bl : b.m_buildingLevels) {
-			for (const Room & r : bl.m_rooms) {
-				for (const Surface & s : r.m_surfaces) {
-					if ( s.m_visible && s.m_selected ) {
-						!haveSelectedPolys ? haveSelectedPolys = true : haveSelectedPolys;
-						surfaces.push_back(&s);
+void Project::selectObjects(std::set<const Object*> &selectedObjs, SelectionGroups sg,
+							bool takeSelected, bool takeVisible) const
+{
+	// Buildings
+	if (sg & SG_Building) {
+		for (const VICUS::Building & b : m_buildings) {
+			for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+				for (const VICUS::Room & r : bl.m_rooms) {
+					for (const VICUS::Surface & s : r.m_surfaces) {
+						if (selectionCheck(s, takeSelected, takeVisible))
+							selectedObjs.insert(&s);
 					}
+					if (selectionCheck(r, takeSelected, takeVisible))
+						selectedObjs.insert(&r);
 				}
+				if (selectionCheck(bl, takeSelected, takeVisible))
+					selectedObjs.insert(&bl);
 			}
+			if (selectionCheck(b, takeSelected, takeVisible))
+				selectedObjs.insert(&b);
 		}
 	}
 
-	return haveSelectedPolys;
+	// Networks
+	if (sg & SG_Network) {
+		for (const VICUS::Network & n : m_geometricNetworks) {
+			for (const VICUS::NetworkEdge & e : n.m_edges) {
+				if (selectionCheck(e, takeSelected, takeVisible))
+					selectedObjs.insert(&e);
+			}
+
+			for (const VICUS::NetworkNode & nod : n.m_nodes) {
+				if (selectionCheck(nod, takeSelected, takeVisible))
+					selectedObjs.insert(&nod);
+			}
+			if (selectionCheck(n, takeSelected, takeVisible))
+				selectedObjs.insert(&n);
+		}
+	}
+
+	// Dumb plain geometry
+	if (sg == SG_All) {
+		for (const VICUS::Surface & s : m_plainGeometry) {
+			if (selectionCheck(s, takeSelected, takeVisible))
+				selectedObjs.insert(&s);
+		}
+	}
+}
+
+
+bool Project::selectedSurfaces(std::vector<const Surface*> &surfaces) const {
+	std::set<const Object*> objs;
+	selectObjects(objs, SG_Building, true, true);
+
+	surfaces.clear();
+	for (const Object * o : objs) {
+		const Surface * s = dynamic_cast<const Surface *>(o);
+		if (s != nullptr)
+			surfaces.push_back(s);
+	}
+
+	return !surfaces.empty();
 }
 
 

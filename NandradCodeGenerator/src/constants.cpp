@@ -46,7 +46,7 @@ const char * const QT_HEADER_TEMPLATE =
 		"		\\param no_description	The optional argument is set to true, if there was no description\n"
 		"		for this keyword, otherwise to false.\n"
 		"	*/\n"
-		"	static QString Description(const std::string & category, unsigned int keywordId);\n\n"
+		"	static QString Description(const std::string & category, int keywordId);\n\n"
 		"	/*! Returns a default unit for an enum value t of type enumtype.\n"
 		"		This function throws an exception if the enumeration type is invalid or unknown.\n"
 		"		Returns an empty string if no default unit was specified.\n"
@@ -134,7 +134,7 @@ const char * const QT_CPP_HEADER_TEMPLATE =
 const char * const QT_CPP_FOOTER_TEMPLATE =
 
 		"}\n\n\n"
-		"QString KeywordListQt::Description( const std::string & category, unsigned int keywordId) { \n\n"
+		"QString KeywordListQt::Description( const std::string & category, int keywordId) { \n\n"
 		"	std::string description = KeywordList::Description(category.c_str(), keywordId);\n"
 		"	return tr(description.c_str());\n\n"
 		"}\n\n"

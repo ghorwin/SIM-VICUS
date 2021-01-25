@@ -48,8 +48,12 @@ int main(int argc, char *argv[]) {
 	setlocale(LC_NUMERIC,"C");
 #endif
 
+	// Compose program name using the always use the major.minor version variant,
+	// since this string is used to identify the registry/config file location.
+	const QString ProgramVersionName = QString("SIM-VICUS %1").arg(VICUS::VERSION);
+
 	qApp->setWindowIcon(QIcon(":/gfx/sim-vicus_icon_x64x64.png"));
-	qApp->setApplicationName(PROGRAM_NAME);
+	qApp->setApplicationName(ProgramVersionName);
 
 	// disable ? button in windows
 #if QT_VERSION >= 0x050A00
@@ -62,7 +66,8 @@ int main(int argc, char *argv[]) {
 	Q_INIT_RESOURCE(QtExt);
 
 	// *** Create and initialize setting object of DSix Application ***
-	SVSettings settings(ORG_NAME, PROGRAM_NAME);
+
+	SVSettings settings(ORG_NAME, ProgramVersionName);
 	settings.setDefaults();
 	settings.read();
 
@@ -73,7 +78,7 @@ int main(int argc, char *argv[]) {
 	// *** Initialize Command Line Argument Parser ***
 	IBK::ArgParser argParser;
 	settings.updateArgParser(argParser);
-	argParser.setAppName(PROGRAM_NAME);
+	argParser.setAppName(ProgramVersionName.toStdString());
 
 	// *** Apply command line arguments ***
 	argParser.parse(argc, argv);

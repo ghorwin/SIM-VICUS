@@ -39,7 +39,7 @@ public:
 	static const char * Keyword(const char * const enumtype, int t){ return KeywordList::Keyword( enumtype, t ); }
 
 	/*! Returns a formate keyword string as in "Keyword [Unit]" for an enum value t of type enumtype. */
-	static QString FormatedKeyword(const char * const enumtype, int t){ return QString("%1 [%2]").arg( KeywordList::Keyword( enumtype, t ) ).arg(KeywordList::Unit( enumtype, t ) ); } 
+	static QString FormatedKeyword(const char * const enumtype, int t){ return QString("%1 [%2]").arg( KeywordList::Keyword( enumtype, t ) ).arg(KeywordList::Unit( enumtype, t ) ); }
 
 	/*! Returns a translated description for an enum value t of type enumtype.
 		This function throws an exception if the enumeration type is invalid or unknown.
@@ -49,7 +49,7 @@ public:
 		\param no_description	The optional argument is set to true, if there was no description
 		for this keyword, otherwise to false.
 	*/
-	static QString Description(const std::string & category, unsigned int keywordId);
+	static QString Description(const std::string & category, int keywordId);
 
 	/*! Returns a default unit for an enum value t of type enumtype.
 		This function throws an exception if the enumeration type is invalid or unknown.
@@ -112,7 +112,7 @@ public:
 
 }; // class
 
-} // namespace 
+} // namespace
 /*!
 	\file NANDRAD_KeywordList.h
 	\brief Contains the declaration of class KeywordListQt.

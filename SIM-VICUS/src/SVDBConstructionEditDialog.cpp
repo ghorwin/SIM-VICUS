@@ -64,11 +64,11 @@ void SVDBConstructionEditDialog::edit() {
 
 	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
 
-	// resize columns
 	m_ui->tableView->resizeColumnsToContents();
 
 	exec();
 }
+
 
 int SVDBConstructionEditDialog::select(unsigned int initialId) {
 
@@ -90,8 +90,6 @@ int SVDBConstructionEditDialog::select(unsigned int initialId) {
 		}
 	}
 
-	// ask database model to update its content
-	// TODO : smart resizing of columns - restore user-defined column widths if adjusted by user
 	m_ui->tableView->resizeColumnsToContents();
 
 	int res = exec();

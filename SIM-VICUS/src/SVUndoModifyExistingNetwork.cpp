@@ -1,36 +1,24 @@
 #include "SVUndoModifyExistingNetwork.h"
 
-SVUndoModifyExistingNetwork::SVUndoModifyExistingNetwork(const QString &label, const VICUS::Network &modNetwork):
-	m_oldNetwork(*theProject().element(theProject().m_geometricNetworks, modNetwork.m_id)),
-	m_newNetwork(modNetwork)
+SVUndoModifyExistingNetwork::SVUndoModifyExistingNetwork(const QString &label, unsigned int networkIndex, const VICUS::Network & modNetwork) :
+	m_networkIndex(networkIndex),
+	m_network(modNetwork)
 {
 	setText( label );
-	m_gridWidth = std::max(m_newNetwork.m_extends.width(), m_newNetwork.m_extends.height());
-	m_gridWidth = std::max(100., m_gridWidth);
-	m_gridSpacing = 100; // 100 m major grid
-	m_farDistance = 2*m_gridWidth;
 }
 
-void SVUndoModifyExistingNetwork::undo()
-{
-	VICUS::Network * nw = theProject().element(theProject().m_geometricNetworks, m_newNetwork.m_id);
-	IBK_ASSERT(nw != nullptr);
-	*nw = m_newNetwork;
-	nw->updateNodeEdgeConnectionPointers();
-	nw->updateVisualizationData();
+
+void SVUndoModifyExistingNetwork::undo() {
+	IBK_ASSERT(m_networkIndex < project().m_geometricNetworks.size());
+	std::swap(theProject().m_geometricNetworks[m_networkIndex], m_network); // exchange network in project with network stored in this class
+	theProject().m_geometricNetworks[m_networkIndex].updateNodeEdgeConnectionPointers();
+	theProject().m_geometricNetworks[m_networkIndex].updateVisualizationData();
 
 	// tell project that the network has changed
 	SVProjectHandler::instance().setModified( SVProjectHandler::NetworkModified);
 }
 
-void SVUndoModifyExistingNetwork::redo()
-{
-	VICUS::Network * nw = theProject().element(theProject().m_geometricNetworks, m_newNetwork.m_id);
-	IBK_ASSERT(nw != nullptr);
-	*nw = m_newNetwork;
-	nw->updateNodeEdgeConnectionPointers();
-	nw->updateVisualizationData();
 
-	// tell project that the network has changed
-	SVProjectHandler::instance().setModified( SVProjectHandler::NetworkModified);
+void SVUndoModifyExistingNetwork::redo() {
+	undo(); // same as undo
 }

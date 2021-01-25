@@ -102,7 +102,6 @@ KeywordListQt::KeywordListQt() {
 	tr("Triangle");
 	tr("Rectangle");
 	tr("Polygon");
-	tr("All");
 	tr("Floor area of the zone.");
 	tr("Volume of the zone.");
 	tr("Specularity of the material.");
@@ -134,7 +133,7 @@ KeywordListQt::KeywordListQt() {
 }
 
 
-QString KeywordListQt::Description( const std::string & category, unsigned int keywordId) { 
+QString KeywordListQt::Description( const std::string & category, int keywordId) { 
 
 	std::string description = KeywordList::Description(category.c_str(), keywordId);
 	return tr(description.c_str());

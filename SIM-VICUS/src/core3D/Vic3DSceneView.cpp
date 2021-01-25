@@ -29,6 +29,7 @@ SceneView::SceneView() :
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_R);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_F);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Shift);
+	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Control);
 
 	// *** create scene (no OpenGL calls are being issued below, just the data structures are created.
 
@@ -163,7 +164,8 @@ void SceneView::onStyleChanged() {
 
 void SceneView::onViewStateChanged() {
 	// tell scene view about the viewstate change
-	m_mainScene.setViewState(SVViewStateHandler::instance().viewState());
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	m_mainScene.setViewState(vs);
 
 	// and call renderLater(), to update the view when geometry modification is through or objects have been added
 	renderLater();
@@ -182,6 +184,16 @@ void SceneView::onShowSelected() {
 
 void SceneView::onDeleteSelected() {
 	m_mainScene.deleteSelected();
+}
+
+
+void SceneView::onSelectAll() {
+	m_mainScene.selectAll();
+}
+
+
+void SceneView::onDeselectAll() {
+	m_mainScene.deselectAll();
 }
 
 
@@ -448,6 +460,12 @@ void SceneView::keyReleaseEvent(QKeyEvent *event) {
 		// *** Delete selected geometry ***
 		case Qt::Key_Delete : {
 			m_mainScene.deleteSelected();
+		} break;
+
+		// *** Selected all selectable objects (i.e. objects shown in the scene) ***
+		case Qt::Key_A : {
+			if (event->modifiers() & Qt::ControlModifier)
+				m_mainScene.selectAll();
 		} break;
 
 		default :; // ignore the rest

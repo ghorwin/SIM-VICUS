@@ -57,7 +57,7 @@ public:
 		return m_depObjects;
 	}
 
-	/*! Function creating Euler routes and euler pathes interpreting current group as directed subgraph. 
+	/*! Function creating Euler routes and euler pathes interpreting current group as directed subgraph.
 	We accept node with different inlet and outlet connections in a cycle. In this case,
 	we create invalid connections that will be destroyed later. At the end, a path through all
 	edges of the graph (including some necessary backward connections) will be returned.
@@ -102,20 +102,6 @@ private:
 
 }; // DependencyGroup
 
-
-inline bool operator==(const DependencyGroup &grp1, const DependencyGroup &grp2) {
-	if (grp1.type() != grp2.type())
-		return false;
-
-	if (grp1.depObjects().size() != grp2.depObjects().size())
-		return false;
-
-	for (unsigned int i = 0; i < grp1.depObjects().size(); ++i) {
-		if (std::find(grp2.depObjects().begin(),grp2.depObjects().end(),grp1.depObjects()[i]) == grp2.depObjects().end())
-			return false;
-	}
-	return true;
-}
 
 } // namespace ZEPPELIN
 

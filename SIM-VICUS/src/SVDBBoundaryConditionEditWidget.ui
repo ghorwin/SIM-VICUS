@@ -6,14 +6,64 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>542</width>
-    <height>230</height>
+    <width>342</width>
+    <height>416</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout_4">
+   <item row="0" column="2">
+    <widget class="QtExt::ColorButton" name="pushButtonColor">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="3">
+    <widget class="QGroupBox" name="groupBoxShortWaveRad">
+     <property name="title">
+      <string>Short Wave Model</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QLabel" name="labelSWModelType">
+          <property name="text">
+           <string>Type:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBoxSWModelType">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelSolarAbsorptionCoefficient">
+        <property name="text">
+         <string>Absorption coefficient [---]:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditSolarAbsorptionCoefficient"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QLabel" name="labelDisplayName">
      <property name="minimumSize">
@@ -27,57 +77,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
-   </item>
-   <item row="0" column="3">
-    <widget class="QtExt::ColorButton" name="pushButtonColor">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" colspan="2">
-    <widget class="QLabel" name="labelSolarAbsorption">
-     <property name="text">
-      <string>Solar absorption coefficient:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditSolarAbsorptionCoefficient"/>
-   </item>
-   <item row="2" column="0" colspan="2">
-    <widget class="QLabel" name="labelThermalAbsorption">
-     <property name="text">
-      <string>Long wave emissivity:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditLongWaveEmissivity"/>
-   </item>
-   <item row="3" column="0" colspan="2">
-    <widget class="QLabel" name="labelHeatTransferCoefficient">
-     <property name="text">
-      <string>Heat transfer coefficient:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="2">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditHeatTransferCoefficient"/>
-   </item>
-   <item row="3" column="3">
-    <widget class="QLabel" name="labelHeatTransferCoefficientUnit">
-     <property name="text">
-      <string>W/m2K</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="2">
+   <item row="4" column="1">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -90,18 +90,94 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="3">
-    <widget class="QLabel" name="labelHeatTransferCoefficientUnit_2">
-     <property name="text">
-      <string>---</string>
+   <item row="1" column="0" colspan="3">
+    <widget class="QGroupBox" name="groupBoxHeatTransfer">
+     <property name="title">
+      <string>Heat Transfer Model</string>
      </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="labelHeatTransferCoeffModelType">
+          <property name="text">
+           <string>Type:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBoxHeatTransferCoeffModelType">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelHeatTransferCoefficient">
+        <property name="text">
+         <string>Coefficient [W/m2K]:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditHeatTransferCoefficient"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="labelHeatTransferCoefficientUnit">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="2" column="3">
-    <widget class="QLabel" name="labelHeatTransferCoefficientUnit_3">
-     <property name="text">
-      <string>---</string>
+   <item row="0" column="1">
+    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
+   </item>
+   <item row="2" column="0" colspan="3">
+    <widget class="QGroupBox" name="groupBoxLongWaveExchange">
+     <property name="title">
+      <string>Long Wave Model</string>
      </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="labelLWModelType">
+          <property name="text">
+           <string>Type:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBoxLWModelType">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelLongWaveEmissivity">
+        <property name="text">
+         <string>Emissivity [---]:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditLongWaveEmissivity"/>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>

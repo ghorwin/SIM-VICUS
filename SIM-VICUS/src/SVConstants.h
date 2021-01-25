@@ -5,11 +5,6 @@
 
 /*! To be used as institution/organization in SVSettings. */
 extern const char * const ORG_NAME;
-/*! Program name, also used as registry/settings key for saving the user
-	defined settings and the MRU list.
-	To be used as application name in SVSettings.
-*/
-extern const char * const PROGRAM_NAME;
 /*! E-mail address for support requests. */
 extern const char * const SUPPORT_EMAIL;
 
@@ -47,6 +42,16 @@ enum DataRoles {
 
 /*! Threshold to accept distance/area/volume parameters as equal */
 extern const double SAME_DISTANCE_PARAMETER_ABSTOL;
+
+/*! Different edit/coloring modes. */
+enum BuildingPropertyTypes {
+	/*! Assigned component. */
+	BT_Components,
+	/*! Orientation of component (side A/B colors). */
+	BT_ComponentOrientation,
+	/*! Boundary conditions of component. */
+	BT_BoundaryConditions
+};
 
 /*! \file SVConstants.h
 	Contains constants which are used in several ui files. This is to

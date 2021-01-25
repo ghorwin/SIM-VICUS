@@ -109,7 +109,8 @@ bool SVNetworkImportDialog::edit() {
 	}
 	else{
 		m_network.updateExtends();
-		SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Added network"), m_network);
+		unsigned int networkIndex = m_ui->comboBoxNetworkSelectionBox->currentIndex();
+		SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network modified"), networkIndex, m_network);
 		undo->push(); // modifies project and updates views
 	}
 

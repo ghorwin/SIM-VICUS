@@ -36,7 +36,9 @@ SVStyle::SVStyle() {
 		qApp->setFont(f);
 	}
 
-	/// \todo anyone up to creating a "dark" style?
+	/// \todo Stephan: identify all style/layout/icon/graphical elements that need to be
+	///       specific to either the dark or bright style. Everything not handled in
+	///       the style sheet, needs to be in SVStyle-member variables (like the colors).
 
 	// *** Style Customization ***
 
@@ -93,7 +95,7 @@ void SVStyle::formatDatabaseTableView(QTableView * v) {
 	v->setAlternatingRowColors(true);
 	v->setSortingEnabled(true);
 	v->sortByColumn(0, Qt::AscendingOrder);
-	QFont f = v->font();
+	QFont f;
 	f.setPointSizeF(f.pointSizeF()*0.8);
 	v->setFont(f);
 	v->horizontalHeader()->setFont(f);
