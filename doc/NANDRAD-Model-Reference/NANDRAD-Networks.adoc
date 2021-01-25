@@ -28,7 +28,7 @@ In einer Projektdatei kann es mehrere Netzwerke geben. Diese sind im XML tag `Hy
 
 [IMPORTANT]
 ====
-Die einzelnen Netzwerke sind hydraulisch unabhängig, d.h. es gibt keinen Fluidaustausch zwischen Netzwerken. Die Netzwerke können aber thermisch verknüpft sein, z.B. kann ein Quartierswärmenetz mit einem Gebäudeanlagennetz Wärme austauschen.
+Die einzelnen Netzwerke sind hydraulisch unabhängig, d.h. es gibt keinen Fluidaustausch zwischen Netzwerken. Die Netzwerke können aber thermisch verknüpft sein, z.B. kann ein Quartierswärmenetz mit einem Gebäudeanlagennetz Wärme austauschen. Dies bedingt auch eine ID Wahl der hydraulischen Netzwerkkomponenten.
 ====
 
 ## Definition eines hydraulischen Netzwerks
@@ -136,6 +136,10 @@ Desweiteren gibt es noch temperaturabhängige Parameter, welche in linear interp
 | `KinematicViscosity` | m2/s | Kinematische Viscosität | {nbsp}>{nbsp}0.0{nbsp} | _required_
 |====================
 
+
+
+
+
 ## Rohreigenschaften
 
 Die Rohreigenschaften `HydraulicNetworkPipeProperties` legen die physikalische/geometrischen Eigenschaften eines Rohrtyps fest. Diese werden in dem Katalog `PipeProperties` mit eindeutigen IDs aufgelistet. 
@@ -151,6 +155,8 @@ Die Rohreigenschaften `HydraulicNetworkPipeProperties` legen die physikalische/g
 		<IBK:Parameter name="PipeOuterDiameter" unit="mm">32</IBK:Parameter>
 		<IBK:Parameter name="UValuePipeWall" unit="W/m2K">5</IBK:Parameter>
 	</HydraulicNetworkPipeProperties>
+	
+	...
 </PipeProperties>
 ----
 ====
@@ -174,6 +180,10 @@ Parameter der Rohreigenschaftem (see section <<IBK_Parameter>> for a description
 | `PipeOuterDiameter` | mm | Outer diameter of pipe | ({nbsp}>{nbsp}0{nbsp})  | _required_
 | `UValuePipeWall` | W/m2K | U-Value of pipe wall (including insulation) | ({nbsp}>{nbsp}0{nbsp})  | _required_
 |====================
+
+
+
+[[component_definition]]
 ## Komponentendefinitionen
 
 Eine `HydraulicNetworkComponent` definiert die Basiseigenschaften eines Strömungselements. Diese werden in dem Katalog `Components` mit eindeutigen IDs aufgelistet.
@@ -182,10 +192,14 @@ Eine `HydraulicNetworkComponent` definiert die Basiseigenschaften eines Strömun
 ====
 [source,xml]
 ----
-<HydraulicNetworkComponent id="1" modelType="ConstantPressurePumpModel">
-	<IBK:Parameter name="PressureHead" unit="Pa">1000</IBK:Parameter>
-	<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
-</HydraulicNetworkComponent>
+<Components>
+    <HydraulicNetworkComponent id="1" modelType="ConstantPressurePumpModel">
+    	<IBK:Parameter name="PressureHead" unit="Pa">1000</IBK:Parameter>
+    	<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
+    </HydraulicNetworkComponent>
+    
+    ...
+</Components>
 ----
 ====
 
@@ -196,7 +210,15 @@ Ein Rohrtyp kann einem `HydraulicNetworkElement` über dessen XML-tag `pipePrope
 |====================
 | Attribute  | Description | Format | Usage 
 | `id` |  Unique identifier of the pipe properties. | ({nbsp}>{nbsp}0{nbsp})  | _required_
+| `modelType` |  ... | ...  | _required_
 |====================
+
+
+Die Parameter und Attribute sind dann abhängig vom jeweiligen Modelltyp.
+
+### TODO 
+
+...
 
 Parameter der Rohreigenschaftem (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
 
@@ -208,6 +230,9 @@ Parameter der Rohreigenschaftem (see section <<IBK_Parameter>> for a description
 | `PipeOuterDiameter` | mm | Outer diameter of pipe | ({nbsp}>{nbsp}0{nbsp})  | _required_
 | `UValuePipeWall` | W/m2K | U-Value of pipe wall (including insulation) | ({nbsp}>{nbsp}0{nbsp})  | _required_
 |====================
+
+
+
 [[HydraulicNetworkElement]]
 ## Strömungselemente
 
