@@ -17,30 +17,15 @@ TNPipeElement::TNPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 							const NANDRAD::HydraulicFluid & fluid):
 	m_fluid(&fluid)
 {
-	FUNCID(TNPipeElement::TNPipeElement);
-
-	m_length = elem.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
 	m_innerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
 	m_outerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeOuterDiameter].value;
 	m_UValuePipeWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_UValuePipeWall].value;
 	m_outerHeatTransferCoefficient =
 			comp.m_para[NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].value;
 
-	// TODO : perform parameter checking inide NANDRAD data structure, so that we avoid
-	// exceptions at this place
-	if (m_length<=0)
-		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has length <= 0").arg(elem.m_id),FUNC_ID);
-	if (m_innerDiameter<=0)
-		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has inner diameter <= 0").arg(elem.m_id),FUNC_ID);
-	if (m_outerDiameter<=0)
-		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has outer diameter <= 0").arg(elem.m_id),FUNC_ID);
 	// check thermal parameters only if heat transfer is enabled
 	if (comp.m_heatExchangeType != NANDRAD::HydraulicNetworkComponent::NUM_HT) {
 		m_haveHeatExchange = true;
-		if (m_UValuePipeWall<=0)
-			throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has U-Value <= 0").arg(elem.m_id),FUNC_ID);
-		if (m_outerHeatTransferCoefficient<=0)
-			throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has outer heat transfer coefficient <= 0").arg(elem.m_id),FUNC_ID);
 	}
 	else {
 		m_haveHeatExchange = false;
@@ -153,13 +138,6 @@ TNHeatExchanger::TNHeatExchanger(const NANDRAD::HydraulicNetworkElement & elem,
 	m_volume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
 	m_UAValue = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_UAValue].value;
 	m_heatFluxToAmbient = elem.m_para[NANDRAD::HydraulicNetworkElement::P_HeatFlux].value;
-
-	// TODO : perform parameter checking inide NANDRAD data structure, so that we avoid
-	// exceptions at this place
-	if (m_volume<=0)
-		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has volume <= 0").arg(elem.m_id),FUNC_ID);
-	if (m_UAValue<=0)
-		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has UA-Value <= 0").arg(elem.m_id),FUNC_ID);
 }
 
 TNHeatExchanger::~TNHeatExchanger()
@@ -226,13 +204,7 @@ TNPump::TNPump(const NANDRAD::HydraulicNetworkElement & elem,
 							const NANDRAD::HydraulicFluid & fluid):
 	m_fluid(&fluid)
 {
-	FUNCID(TNPump::TNPump);
-
 	m_volume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
-	// TODO : perform parameter checking inide NANDRAD data structure, so that we avoid
-	// exceptions at this place
-	if (m_volume<=0)
-		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has volume <= 0").arg(elem.m_id),FUNC_ID);
 }
 
 TNPump::~TNPump()

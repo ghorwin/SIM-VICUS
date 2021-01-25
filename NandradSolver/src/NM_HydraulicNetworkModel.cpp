@@ -1,5 +1,4 @@
 #include "NM_HydraulicNetworkModel.h"
-#include "NM_HydraulicNetworkModel_p.h"
 
 #include <NANDRAD_HydraulicNetwork.h>
 #include <NANDRAD_HydraulicNetworkComponent.h>
@@ -14,7 +13,7 @@
 #include <klu.h>
 
 #include "NM_HydraulicNetworkFlowElements.h"
-
+#include "NM_HydraulicNetworkModel_p.h"
 
 namespace NANDRAD_MODEL {
 
@@ -171,33 +170,17 @@ void HydraulicNetworkModel::setup() {
 		// - fluid property object from m_hydraulicNetwork->m_fluid
 		// - component definition (via reference from e.m_componentId) and component DB stored
 		//   in network
+		IBK_ASSERT(e.m_component != nullptr);
 
-		// retrieve component - this is mandatory
-
-		std::vector<NANDRAD::HydraulicNetworkComponent>::const_iterator it =
-				std::find(m_hydraulicNetwork->m_components.begin(),
-						  m_hydraulicNetwork->m_components.end(), e.m_componentId);
-		if (it == m_hydraulicNetwork->m_components.end()) {
-			throw IBK::Exception(IBK::FormatString("Missing component reference in hydraulic network element '%1' (id=%2).")
-								 .arg(e.m_displayName).arg(e.m_id), FUNC_ID);
-		}
-
-		switch (it->m_modelType) {
+		switch (e.m_component->m_modelType) {
 			case NANDRAD::HydraulicNetworkComponent::MT_StaticPipe:
 			case NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe :
 			case NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe :
 			case NANDRAD::HydraulicNetworkComponent::MT_DynamicAdiabaticPipe :
 			{
-				// lookup pipe
-				std::vector<NANDRAD::HydraulicNetworkPipeProperties>::const_iterator pipe_it =
-						std::find(m_hydraulicNetwork->m_pipeProperties.begin(), m_hydraulicNetwork->m_pipeProperties.end(), e.m_pipePropertiesId);
-				if (pipe_it == m_hydraulicNetwork->m_pipeProperties.end()) {
-					throw IBK::Exception(IBK::FormatString("Missing pipe properties reference in hydraulic network element '%1' (id=%2).")
-										 .arg(e.m_displayName).arg(e.m_id), FUNC_ID);
-				}
-
+				IBK_ASSERT(e.m_pipeProperties != nullptr);
 				// create hydraulic pipe model
-				HNPipeElement * pipeElement = new HNPipeElement(e, *it, *pipe_it, m_hydraulicNetwork->m_fluid);
+				HNPipeElement * pipeElement = new HNPipeElement(e, *e.m_component, *e.m_pipeProperties, m_hydraulicNetwork->m_fluid);
 				// add to flow elements
 				m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 			} break;
@@ -205,7 +188,7 @@ void HydraulicNetworkModel::setup() {
 			case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel :
 			{
 				// create pump model
-				HNConstantPressurePump * pumpElement = new HNConstantPressurePump(e, *it, m_hydraulicNetwork->m_fluid);
+				HNConstantPressurePump * pumpElement = new HNConstantPressurePump(e, *e.m_component, m_hydraulicNetwork->m_fluid);
 				// add to flow elements
 				m_p->m_flowElements.push_back(pumpElement); // transfer ownership
 			} break;
@@ -213,7 +196,7 @@ void HydraulicNetworkModel::setup() {
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
 			{
 				// create pump model
-				HNFixedPressureLossCoeffElement * hxElement = new HNFixedPressureLossCoeffElement(e, *it, m_hydraulicNetwork->m_fluid);
+				HNFixedPressureLossCoeffElement * hxElement = new HNFixedPressureLossCoeffElement(e, *e.m_component, m_hydraulicNetwork->m_fluid);
 				// add to flow elements
 				m_p->m_flowElements.push_back(hxElement); // transfer ownership
 			} break;
@@ -228,7 +211,7 @@ void HydraulicNetworkModel::setup() {
 				throw IBK::Exception(IBK::FormatString("Model type '%1' for HydraulicNetworkComponent "
 									 "with id %2 is still not supported")
 									.arg(NANDRAD::KeywordList::Keyword(
-									"HydraulicNetworkComponent::modelType_t",it->m_modelType))
+									"HydraulicNetworkComponent::modelType_t",e.m_component->m_modelType))
 									.arg(e.m_componentId),FUNC_ID);
 			}
 			default:{
@@ -303,6 +286,11 @@ void HydraulicNetworkModel::resultValueRefs(std::vector<const double *> & res) c
 	// mass flux vector is a result quantity
 	for(unsigned int i = 0; i < m_p->m_fluidMassFluxes.size(); ++i)
 		res.push_back(&m_p->m_fluidMassFluxes[i]);
+	// inlet and outlet node pressure are result quantities
+	for(unsigned int i = 0; i < m_p->m_inletNodePressures.size(); ++i)
+		res.push_back(&m_p->m_inletNodePressures[i]);
+	for(unsigned int i = 0; i < m_p->m_outletNodePressures.size(); ++i)
+		res.push_back(&m_p->m_outletNodePressures[i]);
 }
 
 

@@ -1,5 +1,7 @@
 #include "NANDRAD_HydraulicFluid.h"
 
+#include "NANDRAD_HydraulicNetwork.h"
+
 namespace NANDRAD {
 
 void HydraulicFluid::defaultFluidWater(unsigned int id){
@@ -19,8 +21,28 @@ void HydraulicFluid::defaultFluidWater(unsigned int id){
 }
 
 
-void HydraulicFluid::checkParameters() const {
+void HydraulicFluid::checkParameters(int networkModelType) {
 
+	FUNCID(HydraulicFluid::checkParameters);
+	// check for required parameters and meaningful value ranges
+	m_para[P_Density].checkedValue("kg/m3", "kg/m3", 0, false, std::numeric_limits<double>::max(), false,
+								   "Density must be > 0 kg/m3.");
+	// check thermal properties
+	HydraulicNetwork::ModelType modelType = (HydraulicNetwork::ModelType) networkModelType;
+
+	if(modelType == HydraulicNetwork::MT_ThermalHydraulicNetwork) {
+		m_para[P_HeatCapacity].checkedValue("J/kgK", "J/kgK", 0, false, std::numeric_limits<double>::max(), false,
+									   "Heat capacity must be > 0 J/kgK.");
+		m_para[P_Conductivity].checkedValue("W/mK", "W/mK", 0, false, std::numeric_limits<double>::max(), false,
+									   "Thermal conductivity must be > 0 W/mK.");
+	}
+
+	if (m_kinematicViscosity.m_name.empty())
+		throw IBK::Exception("Missing parameter 'KinematicViscosity'.", FUNC_ID);
+	// check that spline units match
+	m_kinematicViscosity.checkAndInitialize("KinematicViscosity", IBK::Unit("K"), IBK::Unit("m2/s"), IBK::Unit("m2/s"),
+										0, false, std::numeric_limits<double>::max(), false,
+									   "Kinematic viscosity must be > 0 m2/s.");
 }
 
 } // namespace NANDRAD

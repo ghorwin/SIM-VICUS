@@ -39,7 +39,7 @@ public:
 	NANDRAD_COMPARE_WITH_ID
 
 	/*! Checks for valid and required parameters (value ranges). */
-	void checkParameters() const;
+	void checkParameters() ;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

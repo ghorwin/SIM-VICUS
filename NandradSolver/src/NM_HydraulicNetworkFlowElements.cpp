@@ -28,21 +28,9 @@ HNPipeElement::HNPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 							const NANDRAD::HydraulicFluid & fluid):
 	m_fluid(&fluid)
 {
-	FUNCID(HNPipeElement::HNPipeElement);
-
-	// TODO : Hauke, check if parameters are actually given and issue error message like "Missing 'xxx' parameter in
-	//        network element 'displayname (id=xxx)'." so that users know how to fix the problem.
-
 	m_length = elem.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
 	m_diameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
 	m_roughness = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeRoughness].value;
-
-	if (m_length<=0)
-		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has length <= 0").arg(elem.m_id),FUNC_ID);
-	if (m_diameter<=0)
-		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has diameter <= 0").arg(elem.m_id),FUNC_ID);
-	if (m_roughness<=0)
-		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has roughness <= 0").arg(elem.m_id),FUNC_ID);
 }
 
 
@@ -80,8 +68,7 @@ double HNPipeElement::pressureLossFriction(const double &mdot) const{
 double HNPipeElement::frictionFactorSwamee(const double &Re, const double &diameter, const double &roughness){
 	if (Re < RE_LAMINAR)
 		return 64/Re;
-	else if (Re < RE_TURBULENT) {
-		// TODO : rewrite
+	else if (Re < RE_TURBULENT){
 		double fTurb = std::log10((roughness / diameter) / 3.7 + 5.74 / std::pow(RE_TURBULENT, 0.9) );
 		return 64/RE_LAMINAR + (Re - RE_LAMINAR) * (0.25/(fTurb*fTurb) - 64/RE_LAMINAR) / (RE_TURBULENT - RE_LAMINAR);
 	}
@@ -110,15 +97,8 @@ HNFixedPressureLossCoeffElement::HNFixedPressureLossCoeffElement(const NANDRAD::
 																 const NANDRAD::HydraulicFluid &fluid):
 	m_fluid(&fluid)
 {
-	FUNCID(HNFixedPressureLossCoeffElement::HNFixedPressureLossCoeffElement);
-
 	m_zeta = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient].value;
 	m_diameter = component.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].value;
-
-	if (m_diameter<=0)
-		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has diameter <= 0").arg(elem.m_id),FUNC_ID);
-	if (m_zeta<=0)
-		throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id %1 has PressureLossCoefficient <= 0").arg(elem.m_id),FUNC_ID);
 }
 
 
@@ -157,13 +137,13 @@ HNConstantPressurePump::HNConstantPressurePump(const NANDRAD::HydraulicNetworkEl
 }
 
 
-double HNConstantPressurePump::systemFunction(double /*mdot*/, double p_inlet, double p_outlet) const
+double HNConstantPressurePump::systemFunction(double mdot, double p_inlet, double p_outlet) const
 {
 	return p_inlet - p_outlet + m_pressureHead;
 
 }
 
-void HNConstantPressurePump::partials(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/,
+void HNConstantPressurePump::partials(double mdot, double p_inlet, double p_outlet,
 							 double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
 {
 	// partial derivatives of the system function to pressures are constants

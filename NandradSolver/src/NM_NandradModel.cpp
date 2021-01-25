@@ -1368,10 +1368,18 @@ void NandradModel::initNetworks() {
 		IBK::IBK_Message(IBK::FormatString("Initializing Networks\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		IBK_MSG_INDENT;
 		// process all networks and create NM::HydraulicNetworkModel instances
-		for (const NANDRAD::HydraulicNetwork & nw : m_project->m_hydraulicNetworks) {
+		for (NANDRAD::HydraulicNetwork & nw : m_project->m_hydraulicNetworks) {
 			IBK::IBK_Message(IBK::FormatString("Initializing network #%1 '%2'\n").arg(nw.m_id).arg(nw.m_displayName),
 							 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 			IBK_MSG_INDENT;
+			// check network parameters
+			try {
+				nw.checkParameters();
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString("Error initializing hydraulic network with id %1.")
+									.arg(nw.m_id), FUNC_ID);
+			}
 			// create a network model object
 			HydraulicNetworkModel * nwmodel = new HydraulicNetworkModel(nw, nw.m_id, nw.m_displayName);
 			m_modelContainer.push_back(nwmodel); // transfer ownership
