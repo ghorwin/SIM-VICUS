@@ -23,6 +23,9 @@ public:
 		MT_DynamicPipe,						// Keyword: DynamicPipe					'Pipe with a discretized fluid volume and heat exchange'
 		MT_ConstantPressurePumpModel,		// Keyword: ConstantPressurePumpModel	'Pump with constant pressure'
 		MT_HeatExchanger,					// Keyword: HeatExchanger				'Simple heat exchanger with given heat flux'
+
+		// models below not supported yet
+
 		MT_HeatPump,						// Keyword: HeatPump					'Heat pump'
 		MT_GasBoiler,						// Keyword: GasBoiler					'Gas boiler'
 		MT_ControlValve,					// Keyword: ControlValve				'Control valve'
@@ -76,6 +79,11 @@ public:
 	/*! Compares two component definitions by parameters only, without comparing ID. */
 	bool sameParametersAs(const HydraulicNetworkComponent & other) const;
 
+	/*! Checks for valid and required parameters (value ranges).
+		\param networkModelType Type of network calculation model (HydraulicNetwork::ModelType).
+	*/
+	void checkParameters(int networkModelType) const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID for this component. */
@@ -108,6 +116,8 @@ public:
 		}
 	}
 
+
+	/*! Needed for user interface, not for solver. */
 	static std::vector<unsigned int> requiredParameter(const ModelType modelType){
 		switch (modelType) {
 			case MT_ConstantPressurePumpModel:

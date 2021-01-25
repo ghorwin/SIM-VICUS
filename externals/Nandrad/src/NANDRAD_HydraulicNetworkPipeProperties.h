@@ -27,6 +27,9 @@ public:
 	NANDRAD_COMPARE_WITH_ID
 	NANDRAD_COMP(HydraulicNetworkPipeProperties)
 
+	/*! Checks for valid and required parameters (value ranges). */
+	void checkParameters() const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID for this component. */

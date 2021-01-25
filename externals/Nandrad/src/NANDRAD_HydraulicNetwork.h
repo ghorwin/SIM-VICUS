@@ -19,25 +19,49 @@ class HydraulicNetwork {
 	NANDRAD_READWRITE_PRIVATE
 public:
 
+	/*! The various types (equations) of the hydraulic component. */
+	enum ModelType {
+		MT_HydraulicNetwork,				// Keyword: HydraulicNetwork				'Temperature in entire network is constant, and predefined'
+		MT_ThermalHydraulicNetwork,			// Keyword: ThermalHydraulicNetwork			'A thermo-hydraulic network is calculated'
+		NUM_MT
+	};
+
+	/*! Parameters for the element . */
+	enum para_t {
+		P_DefaultFluidTemperature,			// Keyword: DefaultFluidTemperature	[C]		'Default temperature for HydraulicNetwork models'
+		P_InitialFluidTemperature,			// Keyword: InitialFluidTemperature	[C]		'Initial temperature of the fluid'
+		NUM_P
+	};
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE_IFNOT_INVALID_ID
 	NANDRAD_COMPARE_WITH_ID
 
-	/*! Unique ID for this network. */
-	unsigned int									m_id			= NANDRAD::INVALID_ID;		// XML:A:required
-	/*! Descriptive name. */
-	std::string										m_displayName;								// XML:A
+	/*! Checks for valid and required parameters (value ranges). */
+	void checkParameters() const;
 
-	HydraulicFluid									m_fluid;									// XML:E
+	// *** PUBLIC MEMBER VARIABLES ***
+
+	/*! Unique ID for this network. */
+	unsigned int									m_id			= NANDRAD::INVALID_ID;			// XML:A:required
+	/*! Descriptive name. */
+	std::string										m_displayName;									// XML:A
+
+	ModelType										m_modelType		= MT_ThermalHydraulicNetwork;	// XML:A:required
+
+	HydraulicFluid									m_fluid;										// XML:E
+
+	/*! Global network parameters. */
+	IBK::Parameter									m_para[NUM_P];									// XML:E
 
 	/*! Pipes used in this network. */
-	std::vector<HydraulicNetworkPipeProperties>		m_pipeProperties;							// XML:E
+	std::vector<HydraulicNetworkPipeProperties>		m_pipeProperties;								// XML:E
 	/*! Hydraulic components used in this network. */
-	std::vector<HydraulicNetworkComponent>			m_components;								// XML:E
+	std::vector<HydraulicNetworkComponent>			m_components;									// XML:E
 
 	/*! List of flow elements that make up this network. */
-	std::vector<HydraulicNetworkElement>			m_elements;									// XML:E
+	std::vector<HydraulicNetworkElement>			m_elements;										// XML:E
 };
 
 } // namespace NANDRAD

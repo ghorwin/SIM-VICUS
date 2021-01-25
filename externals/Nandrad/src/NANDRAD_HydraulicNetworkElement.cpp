@@ -16,4 +16,9 @@ HydraulicNetworkElement::HydraulicNetworkElement(unsigned int id, unsigned int i
 }
 
 
+void HydraulicNetworkElement::checkParameters(int networkModelType) const {
+
+}
+
+
 } // namespace NANDRAD

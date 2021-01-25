@@ -24,4 +24,9 @@ bool HydraulicNetworkComponent::sameParametersAs(const HydraulicNetworkComponent
 	return true;
 }
 
+
+void HydraulicNetworkComponent::checkParameters(int networkModelType) const {
+
+}
+
 } // namespace NANDRAD

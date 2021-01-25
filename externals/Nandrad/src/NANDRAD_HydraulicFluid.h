@@ -26,11 +26,13 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	void defaultFluidWater(unsigned int id);
-
-
 	NANDRAD_READWRITE
 	NANDRAD_COMPARE_WITH_ID
+
+	void defaultFluidWater(unsigned int id);
+
+	/*! Checks for valid and required parameters (value ranges). */
+	void checkParameters() const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

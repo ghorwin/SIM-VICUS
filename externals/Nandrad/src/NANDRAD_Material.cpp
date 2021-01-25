@@ -46,7 +46,7 @@ bool Material::behavesLike(const Material & other) const {
 }
 
 
-void Material::checkParameters() {
+void Material::checkParameters() const {
 	// check for mandatory and required parameters
 	// check for meaningful value ranges
 	m_para[P_Density].checkedValue("kg/m3", "kg/m3", 0.01, false, std::numeric_limits<double>::max(), true,

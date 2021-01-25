@@ -3,4 +3,9 @@
 namespace NANDRAD {
 
 
+void HydraulicNetwork::checkParameters() const {
+
+}
+
+
 } // namespace NANDRAD

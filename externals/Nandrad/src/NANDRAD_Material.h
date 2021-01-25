@@ -53,7 +53,7 @@ public:
 	bool behavesLike(const Material & other) const;
 
 	/*! Checks for valid parameters (value ranges). */
-	void checkParameters();
+	void checkParameters() const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
