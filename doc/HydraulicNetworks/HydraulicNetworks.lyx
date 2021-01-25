@@ -138,7 +138,7 @@ Modeling and Numerical Solution of Thermo-Hydraulic Networks
 \end_layout
 
 \begin_layout Author
-Hauke Hirsch, Andreas Nicolai and the SIM-VICUS Developers
+Hauke Hirsch, Andreas Nicolai, Anne Paepcke and the SIM-VICUS Developers
 \begin_inset Foot
 status collapsed
 
@@ -393,6 +393,14 @@ element
 \end_layout
 
 \begin_layout Itemize
+Each 
+\shape italic
+node
+\shape default
+ has minimum one inlet element (left) and one outlet element (right)
+\end_layout
+
+\begin_layout Itemize
 Nodes connect elements and hold a pressure and temperature state (no flow,
  no pressure drop)
 \end_layout
@@ -403,11 +411,104 @@ Mass flux through an element is conserved, i.e.
 \end_layout
 
 \begin_layout Subsection
-Abstract Governing Equations
+Hydraulic Network Equations
+\end_layout
+
+\begin_layout Standard
+Hydraulic equations set into relation pressures 
+\begin_inset Formula $p_{i}$
+\end_inset
+
+ at all network nodes 
+\begin_inset Formula $i$
+\end_inset
+
+ and mass fluxes 
+\begin_inset Formula $\dot{m}_{i}$
+\end_inset
+
+ through all elements 
+\begin_inset Formula $i$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Nodes
+\end_layout
+
+\begin_layout Standard
+Each node 
+\begin_inset Formula $i$
+\end_inset
+
+ is characterized by mass fluxes at inlet element 
+\begin_inset Formula $\dot{m}_{in,i,j}$
+\end_inset
+
+ and at outlet element 
+\begin_inset Formula $\dot{m}_{out,i,j}$
+\end_inset
+
+ (with 
+\begin_inset Formula $j$
+\end_inset
+
+ counting the number of inlet and outlet elements).
+ Indeed, mass flux direction is defined negative for inlet nodes and positive
+ for outlet nodes.
+ With this assumption conservation equations may be formulated as:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+\sum_{j}\dot{m}_{out,i,j}-\sum_{j}\dot{m}_{in,i,j} & =0
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Also, the pressure 
+\begin_inset Formula $p_{i}$
+\end_inset
+
+ at some node 
+\begin_inset Formula $i$
+\end_inset
+
+ is equal to all inlet/outlet pressures of the connected flow elements (no
+ pressure drop/change across a node).
+ This equation is not explicitely formulation but will be used to eliminate
+ variables in the solution process.
 \end_layout
 
 \begin_layout Subsubsection
 Elements
+\end_layout
+
+\begin_layout Standard
+Each element 
+\begin_inset Formula $i$
+\end_inset
+
+ has one inlet pressure 
+\begin_inset Formula $p_{in,i}$
+\end_inset
+
+, one outlet pressure 
+\begin_inset Formula $p_{out,i}$
+\end_inset
+
+ and mass flux 
+\begin_inset Formula $\dot{m_{i}}$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -486,7 +587,7 @@ noprefix "false"
 
 .
  For a typical pipe, the pressure drop would be formulated as 
-\begin_inset Formula $\Delta p=p_{in}-p_{out}$
+\begin_inset Formula $\Delta p_{i}=p_{in,i}-p_{out,i}$
 \end_inset
 
 .
@@ -496,62 +597,8 @@ noprefix "false"
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align}
-0 & =f\left(\dot{m},p_{in},p_{out}\right)\label{eq:pressureDropFunction}\\
-0 & =\dot{Q}_{in}-\dot{Q}_{out}-\dot{Q}_{loss}\label{eq:energyBalance}
+0 & =f_{i}\left(\dot{m}_{i},p_{in,i},p_{out,i}\right)\label{eq:pressureDropFunction}
 \end{align}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Equation
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand eqref
-reference "eq:energyBalance"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
- is the energy balance across the flow element, which typically involves
- the energy quantities/enthalpies transported with the mass flow across
- the inlet and outlet.
- Optionally, there may be other energy fluxes between the flow element and
- its environment, for example through heat conduction over its surface,
- denoted by the 
-\begin_inset Formula $\dot{Q}_{loss}$
-\end_inset
-
- term in the equation.
-\end_layout
-
-\begin_layout Standard
-The enthalpies transported across the inlet/outlet are
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\[
-\dot{Q}_{in}=\dot{m}c_{p}T_{in}
-\]
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\[
-\dot{Q}_{out}=\dot{m}c_{p}T_{out}
-\]
 
 \end_inset
 
@@ -570,41 +617,6 @@ Note that the actual pressure drop equation may be a function of temperature
 upwinding
 \emph default
 .
-\end_layout
-
-\begin_layout Subsubsection
-Nodes
-\end_layout
-
-\begin_layout Standard
-For each node the following conservation equations are defined:
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\begin{align}
-\sum\dot{m_{i}} & =0\\
-\sum\dot{Q_{i}} & =0
-\end{align}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Also, the pressure 
-\begin_inset Formula $p_{i}$
-\end_inset
-
- at some node 
-\begin_inset Formula $i$
-\end_inset
-
- is equal to all inlet/outlet pressures of the connected flow elements (no
- pressure drop/change across a node).
- This equation is not explicitely formulation but will be used to eliminate
- variables in the solution process.
 \end_layout
 
 \begin_layout Subsubsection
@@ -651,7 +663,7 @@ ons can be softened by introducing typical time scales of reaction.
 
 \begin_layout Standard
 Suppose we name a control variable 
-\begin_inset Formula $r\left(p,T\right)$
+\begin_inset Formula $r_{i}\left(p,T\right)$
 \end_inset
 
  and denote by the parameters 
@@ -666,7 +678,7 @@ Suppose we name a control variable
  Then the system equation for a pump might read:
 \begin_inset Formula 
 \[
-0=f\left(\dot{m},p_{in},p_{out},r\left(p,T\right)\right)
+0=f_{i}\left(\dot{m}_{i},p_{in,i},p_{out,i},r_{i}\left(p_{i},T_{i}\right)\right)
 \]
 
 \end_inset
@@ -680,7 +692,7 @@ and the resulting network will be fully coupled.
  obtain a differential equation:
 \begin_inset Formula 
 \[
-\frac{dr}{dt}=\tau\left(r_{set}\left(p,T\right)-r\right)
+\frac{dr_{i}}{dt}=\tau\left(r_{set}\left(p_{i},T_{i}\right)-r_{i}\left(t,p_{i},T_{i}\right)\right)
 \]
 
 \end_inset
@@ -695,13 +707,13 @@ with
 
  being some time constant parameter.
  
-\begin_inset Formula $r_{set}\left(p,T\right)$
+\begin_inset Formula $r_{set}\left(p_{i},T_{i}\right)$
 \end_inset
 
  will be the target control signal obtained from the control algorithm equations
  that use the current network's state.
  
-\begin_inset Formula $r\left(t\right)$
+\begin_inset Formula $r_{i}\left(t,p_{i},T_{i}\right)$
 \end_inset
 
  will be a transient quantity that more or less slowly (depending on 
@@ -717,8 +729,8 @@ with
  is a constant, which simplifies solution of the equation system significantly.
 \end_layout
 
-\begin_layout Section
-Solution procedure
+\begin_layout Subsection
+Solution of the hydraulic equations
 \end_layout
 
 \begin_layout Standard
@@ -795,11 +807,11 @@ Example 1: Simple flow network with a pump and two pipes
 \begin_layout Standard
 For each of the flow elements we have the system equation.
  When formulating the equations, we already substitute 
-\begin_inset Formula $p_{in}$
+\begin_inset Formula $p_{in,i}$
 \end_inset
 
  and 
-\begin_inset Formula $p_{out}$
+\begin_inset Formula $p_{out,i}$
 \end_inset
 
  with the pressure at the connected node.
@@ -1188,6 +1200,307 @@ This non-linear equation system can be solved efficiently with a Newton-Raphson
  can be easily evaluated.
 \end_layout
 
+\begin_layout Subsection
+Thermal network equations
+\end_layout
+
+\begin_layout Standard
+Thermal equations calulate specific enthalpies 
+\begin_inset Formula $h_{i}$
+\end_inset
+
+ and temperatures 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ at all network nodes 
+\begin_inset Formula $i$
+\end_inset
+
+ as well as heat losses 
+\begin_inset Formula $\dot{Q}_{i}$
+\end_inset
+
+ through all elements 
+\begin_inset Formula $i$
+\end_inset
+
+.
+ Note, that conservation equations are transient.
+ For this purpose, additionally we take into consideration internal volumetric
+ states of the fluid inside a fluid element as enthalpy 
+\begin_inset Formula $H_{j}$
+\end_inset
+
+ and temperature 
+\begin_inset Formula $T_{j}$
+\end_inset
+
+.
+ An element may either be associated with a single volume or a selection
+ of discretization volumes 
+\begin_inset Formula $j$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Nodes
+\end_layout
+
+\begin_layout Standard
+In generall, conservation equation at each node covers entalpy fluxes at
+ inlet element 
+\begin_inset Formula $\dot{H}_{in,i,j}$
+\end_inset
+
+ and at outlet element 
+\begin_inset Formula $\dot{H}_{out,i,j}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\sum_{j}\dot{H}_{out,i,j}-\sum_{j}\dot{H}_{in,i,j} & =0
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In this context, enthalpy fluxes are defined in the direction of mass fluxes
+ (negative for inlet nodes and positive for outlet nodes).
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename imgs/schematics_element.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Schematics-flow-element-2"
+
+\end_inset
+
+Schematics of an abstract flow element and sign definition of fluxes across
+ model boundary
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+We relate enthalphy flux to specific enthalpy 
+\begin_inset Formula $h$
+\end_inset
+
+ and temperature 
+\begin_inset Formula $T$
+\end_inset
+
+ and first formulate all fluxes with positve direction into the node.
+\begin_inset Formula 
+\begin{eqnarray*}
+\dot{H}_{in,i,j}|_{>0} & =\dot{m}_{in,i,j}h_{in,i,j} & =\dot{m}_{in,i,j}c_{p}T_{in,i,j}\\
+\dot{H}_{out,i,j}|_{<0} & =\dot{m}_{out,i,j}h_{out,i,j} & =\dot{m}_{out,i,j}c_{p}T_{out,i,j}.
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Hereby, 
+\begin_inset Formula $c_{P}$
+\end_inset
+
+ denotes heat capacity of the fluid.
+ With respect to numerical stability of the solution procedure, the temperature
+ of the inflowing fluid is used when evaluating the media properties in
+ the node's and element's system equation, a method called 
+\emph on
+upwinding
+\emph default
+.
+ 
+\end_layout
+
+\begin_layout Standard
+Consequently, for all outflows (fluxes with negative direction into the
+ node) fluid temperature and specific enthalpy are set equal to nodal values
+ 
+\begin_inset Formula $h_{i}$
+\end_inset
+
+ and 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{eqnarray*}
+\dot{H}_{in,i,j}|_{<0} & =\dot{m}_{in,i,j}h_{i} & =\dot{m}_{in,i,j}c_{p}T_{i}\\
+\dot{H}_{out,i,j}|_{>0} & =\dot{m}_{out,i,j}h_{i} & =\dot{m}_{out,i,j}c_{p}T_{i}.
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+As a result, nodal values are evaluated using the following equation:
+\begin_inset Formula 
+\begin{equation}
+h_{i}=\frac{\sum_{j}\dot{H}_{in,i,j}|_{>0}-\sum_{j}\dot{H}_{out,i,j}|_{<0}}{-\sum_{j}\dot{m}_{in,i,j}|_{<0}+\sum_{j}\dot{m}_{out,i,j}|_{>0}}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+T_{i}=\frac{h_{i}}{c_{P}}.
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Elements
+\end_layout
+
+\begin_layout Standard
+For each network element the following .
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+\frac{\partial h_{i}}{\partial t} & =\dot{H}_{in,i}-\dot{H}_{out,i}-\dot{Q}_{loss,i}\label{eq:energyBalance-1}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Equation
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:energyBalance-1"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ is the energy balance across the flow element, which typically involves
+ the energy quantities/enthalpies transported with the mass flow across
+ the inlet and outlet.
+ Optionally, there may be other energy fluxes between the flow element and
+ its environment, for example through heat conduction over its surface,
+ denoted by the 
+\begin_inset Formula $\dot{Q}_{loss}$
+\end_inset
+
+ term in the equation.
+\begin_inset Formula $\dot{m_{i}}>0$
+\end_inset
+
+
+\begin_inset Formula 
+\begin{eqnarray}
+\dot{H}_{in,i} & =\dot{m}_{in,i}h_{in,i} & =\dot{m}_{in,i}c_{p}T_{in,i}\nonumber \\
+\dot{H}_{out,i} & =\dot{m}_{out,i}h_{i} & =\dot{m}_{out,i}c_{p}T_{i}.
+\end{eqnarray}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+\frac{\partial h_{j}}{\partial t} & =\dot{H}_{in,j}-\dot{H}_{out,j}-\dot{Q}_{loss,j}\label{eq:energyBalance-1-1}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The enthalpies transported across the inlet/outlet are 
+\begin_inset Formula 
+\begin{eqnarray}
+\dot{H}_{in,0} & =\dot{H}_{in,i}\nonumber \\
+\nonumber \\
+\dot{H}_{in,j} & =\dot{H}_{out,j-1}\nonumber \\
+\dot{H}_{out,j} & =\dot{m}_{i}h_{j} & =\dot{m}c_{p}T_{j}\nonumber \\
+\nonumber \\
+\dot{H}_{out,i} & =\dot{H}_{out,n-1}
+\end{eqnarray}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that the actual pressure drop equation may be a function of temperature
+ as well.
+ Since a flow element is connected to two nodes, it is hence also in contact
+ with two node temperatures.
+ 
+\end_layout
+
+\begin_layout Subsection
+Solution of the thermal network equations
+\end_layout
+
 \begin_layout Section
 Flow Element Equations
 \end_layout
@@ -1198,7 +1511,7 @@ The sections below detail the flow equations for the various elements in
 \end_layout
 
 \begin_layout Subsection
-Basic equations
+Fluid properties
 \end_layout
 
 \begin_layout Standard
