@@ -113,6 +113,52 @@ TiXmlElement * LinearSplineParameter::writeXML(TiXmlElement * parent) const {
 }
 
 
+void LinearSplineParameter::checkAndInitialize(const std::string & expectedName, const IBK::Unit & targetXUnit, const IBK::Unit & targetYUnit,
+											   const IBK::Unit & limitYUnit, double minYVal, bool isGreaterEqual,
+											   double maxYVal, bool isLessEqual, const char * const errmsg)
+{
+	FUNCID(LinearSplineParameter::checkAndInitialize);
+
+	std::string suffix = (errmsg == nullptr) ? "" : "\n" + std::string(errmsg);
+
+	// check 0: parameter name must not be empty
+	if (m_name.empty())
+		throw IBK::Exception(IBK::FormatString("Linear spline parameter '%1' is missing/undefined.").arg(expectedName), FUNC_ID);
+
+	// check 1: check if name is correct
+	if (m_name != expectedName)
+		throw IBK::Exception(IBK::FormatString("Name '%1' expected, but '%2' given.").arg(expectedName).arg(m_name), FUNC_ID);
+
+	// argument checks
+	if (targetXUnit.id() != targetXUnit.base_id() ||
+		targetYUnit.id() != targetYUnit.base_id())
+	{
+		throw IBK::Exception("Target units must be base SI units.", FUNC_ID);
+	}
+	if (targetYUnit.base_id() != limitYUnit.base_id())
+		throw IBK::Exception(IBK::FormatString("Incompatible y target unit '%1' and limit unit '%2'.")
+							 .arg(targetYUnit).arg(limitYUnit), FUNC_ID);
+
+	// now check m_xUnit and m_yUnit
+
+	// check 2: units convertible?
+	if (targetXUnit.base_id() != m_xUnit.base_id())
+		throw IBK::Exception( IBK::FormatString("Mismatching x units, cannot convert from '%1' to '%2'.")
+							  .arg(m_xUnit.name()).arg(targetXUnit).arg(suffix), FUNC_ID);
+	if (targetYUnit.base_id() != m_yUnit.base_id())
+		throw IBK::Exception( IBK::FormatString("Mismatching y units, cannot convert from '%1' to '%2'.")
+							  .arg(m_yUnit.name()).arg(targetYUnit).arg(suffix), FUNC_ID);
+
+	// check 3: convert to base unit
+	convert2BaseUnits();
+
+	// check 4: range check?
+//	for (double d : m_values.y()) {
+
+//	}
+}
+
+
 void LinearSplineParameter::convert2BaseUnits() {
 	FUNCID(LinearSplineParameter::convert2BaseUnits);
 	try {

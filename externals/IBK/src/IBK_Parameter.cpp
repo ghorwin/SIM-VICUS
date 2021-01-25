@@ -261,7 +261,7 @@ double Parameter::checkedValue(const std::string & targetUnit, const std::string
 
 	// check 0: parameter name must not be empty
 	if (name.empty())
-		throw IBK::Exception(IBK::FormatString("Parameter '%1' is missing/undefined.").arg(name), FUNC_ID);
+		throw IBK::Exception(IBK::FormatString("Parameter is missing/undefined."), FUNC_ID);
 
 	std::string suffix = (errmsg == nullptr) ? "" : "\n" + std::string(errmsg);
 	// check 1: valid unit
