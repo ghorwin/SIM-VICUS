@@ -93,6 +93,7 @@ HEADERS += \
 	../../src/NM_HydraulicNetworkAbstractFlowElement.h \
 	../../src/NM_HydraulicNetworkFlowElements.h \
 	../../src/NM_HydraulicNetworkModel.h \
+	../../src/NM_HydraulicNetworkModel_p.h \
 	../../src/NM_InputReference.h \
 	../../src/NM_KeywordList.h \
 	../../src/NM_Loads.h \

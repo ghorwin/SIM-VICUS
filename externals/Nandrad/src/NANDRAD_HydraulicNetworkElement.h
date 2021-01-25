@@ -11,6 +11,10 @@
 
 namespace NANDRAD {
 
+class HydraulicNetworkComponent;
+class HydraulicNetworkPipeProperties;
+class HydraulicNetwork;
+
 /*! Contains data of a flow element inside a network.
 	Pipe-specific parameters are stored in HydraulicNetworkPipeProperties objects, referenced via m_pipeID. For
 	other elements, this ID is unused.
@@ -53,10 +57,8 @@ public:
 	NANDRAD_READWRITE
 	NANDRAD_COMPARE_WITH_ID
 
-	/*! Checks for valid and required parameters (value ranges).
-		\param networkModelType Type of network calculation model (HydraulicNetwork::ModelType).
-	*/
-	void checkParameters(int networkModelType) const;
+	/*! Checks for valid and required parameters (value ranges). */
+	void checkParameters(const HydraulicNetwork & nw);
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -82,6 +84,11 @@ public:
 
 	/*! Integer parameters. */
 	IBK::IntPara					m_intPara[NUM_IP];										// XML:E
+
+	// *** Variables used only during simulation ***
+
+	const HydraulicNetworkComponent			*m_component	= nullptr;
+	const HydraulicNetworkPipeProperties	*m_pipe			= nullptr;
 
 };
 

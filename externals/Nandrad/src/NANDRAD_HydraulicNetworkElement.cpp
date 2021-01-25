@@ -16,7 +16,7 @@ HydraulicNetworkElement::HydraulicNetworkElement(unsigned int id, unsigned int i
 }
 
 
-void HydraulicNetworkElement::checkParameters(int networkModelType) const {
+void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw) {
 
 }
 

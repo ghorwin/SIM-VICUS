@@ -102,6 +102,7 @@ public:
 	IBK::Parameter					m_para[NUM_P];										// XML:E
 
 
+	// *** STATIC FUNCTIONS ***
 
 	static bool hasHeatExchange(const ModelType modelType) {
 		switch (modelType) {

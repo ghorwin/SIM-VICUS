@@ -1,4 +1,5 @@
 #include "NM_HydraulicNetworkModel.h"
+#include "NM_HydraulicNetworkModel_p.h"
 
 #include <NANDRAD_HydraulicNetwork.h>
 #include <NANDRAD_HydraulicNetworkComponent.h>
@@ -13,6 +14,7 @@
 #include <klu.h>
 
 #include "NM_HydraulicNetworkFlowElements.h"
+
 
 namespace NANDRAD_MODEL {
 
@@ -456,7 +458,6 @@ HydraulicNetworkModelImpl::HydraulicNetworkModelImpl(const std::vector<Element> 
 	m_network.m_nodes.resize(nodeCount+1);
 	for (unsigned int i=0; i<elems.size(); ++i) {
 		const Element &fe = elems[i];
-		// TODO : check inlet must be different from outlet
 		m_network.m_nodes[fe.m_nInlet].m_elementIndexesOutlet.push_back(i);
 		m_network.m_nodes[fe.m_nOutlet].m_elementIndexesInlet.push_back(i);
 		m_network.m_nodes[fe.m_nInlet].m_elementIndexes.push_back(i);
@@ -467,94 +468,16 @@ HydraulicNetworkModelImpl::HydraulicNetworkModelImpl(const std::vector<Element> 
 	m_elementCount = m_network.m_elements.size();
 	IBK::IBK_Message(IBK::FormatString("Nodes:         %1\n").arg(m_nodeCount), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK::IBK_Message(IBK::FormatString("Flow elements: %1\n").arg(m_elementCount), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-
-#if 0
-	// create a minimalistic network with 3 nodes
-
-#if 0
-	m_flowElements.push_back(new Pump(0, 1) );				// 0 - pump, between nodes 0 and 1
-	m_flowElements.push_back(new PipeElement(1, 0,2000));	// 1 - pipe, between nodes 1 and 2
-//	m_flowElements.push_back(new PipeElement(2, 0,6000));	// 2 - pipe, between nodes 2 and 0
-
-
-	// sample flow element system functions to get an idea about value range
-//	for (unsigned int i=0; i<10; ++i) {
-//		std::cout << i*0.8 << "  " << m_flowElements[0]->systemFunction(i*0.08, 0, 0) << "   " << m_flowElements[1]->systemFunction(i*0.08, 0, 0) << std::endl;
-//	}
-	std::cout << "pump " << m_flowElements[0]->systemFunction(0.7, 0, 1100) << std::endl;
-	std::cout << "pipe " << m_flowElements[1]->systemFunction(0.7, 1100, 0) << std::endl;
-#else
-	m_flowElements.push_back(new Pump(0, 1) );				// 0 - pump, between nodes 0 and 1
-	m_flowElements.push_back(new PipeElement(1, 2,1400));	// 1 - pipe, between nodes 1 and 2
-	m_flowElements.push_back(new PipeElement(1, 2,2400));	// 2 - second pipe, between nodes 1 and 2
-	m_flowElements.push_back(new PipeElement(2, 0,1000));
-	m_flowElements.push_back(new PipeElement(2, 3,1400));
-	m_flowElements.push_back(new PipeElement(3, 4,2400));
-	m_flowElements.push_back(new PipeElement(4, 0,2400));
-//	m_flowElements.push_back(new Pump(2, 4) );				// 0 - pump, between nodes 0 and 1
-#endif
-
-
-	// everything else is generic
-
-
-	unsigned int nodeCount = 0;
-	for (HydraulicNetworkAbstractFlowElement * fe : m_flowElements) {
-		nodeCount = std::max(nodeCount, fe->m_nInlet);
-		nodeCount = std::max(nodeCount, fe->m_nOutlet);
-	}
-
-	writeNetworkGraph();
-
-	m_nodes.resize(nodeCount+1);
-	for (unsigned int i=0; i<m_flowElements.size(); ++i) {
-		HydraulicNetworkAbstractFlowElement * fe = m_flowElements[i];
-		m_nodes[fe->m_nInlet].m_flowElementIndexes.push_back(i);
-		m_nodes[fe->m_nOutlet].m_flowElementIndexes.push_back(i);
-	}
-
-	m_nodeCount = m_nodes.size();
-	m_elementCount = m_flowElements.size();
-	unsigned int n = m_nodeCount + m_elementCount;
-
-	m_y.resize(n, 0.2*MASS_FLUX_SCALE);
-//	m_y[0] = 0;
-//	m_y[1] = 1000;
-//	m_y[2] = 0;
-
-#if 0
-//	m_y[0] = 5000;
-//	m_y[1] = 0;
-//	m_y[2] = 0.4;
-//	m_y[3] = 0.1;
-
-//	m_y[0] = 0;
-//	m_y[1] = 0;
-//	m_y[2] = 0.1;
-//	m_y[3] = 0.1;
-
-	m_y[0] = 0.1;
-	m_y[1] = 0.1;
-	m_y[2] = 0;
-	m_y[3] = 0;
-#endif
-	m_G.resize(n);
-	m_massFluxes.resize(m_elementCount);
-	m_nodePressures.resize(m_nodeCount);
-
-	// create jacobian
-	jacobianInit();
-#endif
-
 }
+
 
 HydraulicNetworkModelImpl::~HydraulicNetworkModelImpl() {
 	// delete KLU specific pointer
-	if(m_sparseSolver.m_KLUSymbolic !=  nullptr) {
+	if (m_sparseSolver.m_KLUSymbolic !=  nullptr) {
 		klu_free_symbolic(&(m_sparseSolver.m_KLUSymbolic), &(m_sparseSolver.m_KLUParas));
 		delete m_sparseSolver.m_KLUSymbolic;
 	}
-	if(m_sparseSolver.m_KLUNumeric !=  nullptr) {
+	if (m_sparseSolver.m_KLUNumeric !=  nullptr) {
 		klu_free_numeric(&(m_sparseSolver.m_KLUNumeric), &(m_sparseSolver.m_KLUParas));
 		delete m_sparseSolver.m_KLUNumeric;
 	}
