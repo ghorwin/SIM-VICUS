@@ -1,3 +1,3 @@
-Time [h]	NetworkElement(id=1).FluidMassFlux [kg/s]	NetworkElement(id=2).FluidMassFlux [kg/s]	NetworkElement(id=3).FluidMassFlux [kg/s]	NetworkElement(id=4).FluidMassFlux [kg/s]	NetworkElement(id=1).OutletNodePressure [Pa]	NetworkElement(id=2).OutletNodePressure [Pa]	NetworkElement(id=3).OutletNodePressure [Pa]	NetworkElement(id=4).OutletNodePressure [Pa]
-0	0.0426415	0.0426415	0.0426415	0.0426415	6.61363e-18	-491.404	-508.596	-1000
-1	0.0426415	0.0426415	0.0426415	0.0426415	6.61363e-18	-491.404	-508.596	-1000
+Time [h]	NetworkElement(id=101).FluidMassFlux [kg/s]	NetworkElement(id=102).FluidMassFlux [kg/s]	NetworkElement(id=201).FluidMassFlux [kg/s]	NetworkElement(id=301).FluidMassFlux [kg/s]	NetworkElement(id=101).OutletNodePressure [Pa]	NetworkElement(id=102).OutletNodePressure [Pa]	NetworkElement(id=201).OutletNodePressure [Pa]	NetworkElement(id=301).OutletNodePressure [Pa]
+0	0.0426415	0.0426415	0.0426415	0.0426415	508.596	-1.94072e-17	1000	491.404
+1	0.0426415	0.0426415	0.0426415	0.0426415	508.596	-1.94072e-17	1000	491.404

@@ -2,7 +2,7 @@
 <NandradProject fileVersion="1.999">
 	<Project>
 		<ProjectInfo>
-			<Comment>Minimalistic hydraulic network example.
+			<Comment>Hydraulic network (only) example with two loops and one splitter and one mixer.
 			</Comment>
 		</ProjectInfo>
 		<Location>
@@ -47,23 +47,33 @@
 					<HydraulicNetworkComponent id="1" modelType="ConstantPressurePumpModel">
 						<IBK:Parameter name="PressureHead" unit="Pa">1000</IBK:Parameter>
 					</HydraulicNetworkComponent>
-					<HydraulicNetworkComponent id="2" modelType="HeatExchanger">
-						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
-						<IBK:Parameter name="PressureLossCoefficient" unit="-">5</IBK:Parameter>
-					</HydraulicNetworkComponent>
+					<!-- Pipes are all the same -->
 					<HydraulicNetworkComponent id="3" modelType="StaticAdiabaticPipe">
 					</HydraulicNetworkComponent>
 				</Components>
 				<Elements>
-					<HydraulicNetworkElement id="201" inletNodeId="1" outletNodeId="2" componentId="1" displayName="Pump" />
+					<HydraulicNetworkElement id="201" inletNodeId="1" outletNodeId="2" componentId="1" displayName="Pump 201" />
 					<HydraulicNetworkElement id="101" inletNodeId="2" outletNodeId="3" componentId="3" pipePropertiesId="1">
-						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+						<IBK:Parameter name="Length" unit="m">10</IBK:Parameter>
 					</HydraulicNetworkElement>
-					<HydraulicNetworkElement id="301" inletNodeId="3" outletNodeId="4" componentId="2" displayName="Heat Exchanger">
-						<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+					<HydraulicNetworkElement id="102" inletNodeId="3" outletNodeId="4" componentId="3" pipePropertiesId="1">
+						<IBK:Parameter name="Length" unit="m">10</IBK:Parameter>
 					</HydraulicNetworkElement>
-					<HydraulicNetworkElement id="102" inletNodeId="4" outletNodeId="1" componentId="3" pipePropertiesId="1">
-						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+					<!-- the next pipe will be the long pipe with the large resistance -->
+					<HydraulicNetworkElement id="103" inletNodeId="4" outletNodeId="6" componentId="3" pipePropertiesId="1">
+						<IBK:Parameter name="Length" unit="m">200</IBK:Parameter>
+					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="104" inletNodeId="4" outletNodeId="8" componentId="3" pipePropertiesId="1">
+						<IBK:Parameter name="Length" unit="m">10</IBK:Parameter>
+					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="105" inletNodeId="8" outletNodeId="7" componentId="3" pipePropertiesId="1">
+						<IBK:Parameter name="Length" unit="m">10</IBK:Parameter>
+					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="106" inletNodeId="7" outletNodeId="6" componentId="3" pipePropertiesId="1">
+						<IBK:Parameter name="Length" unit="m">10</IBK:Parameter>
+					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="107" inletNodeId="6" outletNodeId="1" componentId="3" pipePropertiesId="1">
+						<IBK:Parameter name="Length" unit="m">10</IBK:Parameter>
 					</HydraulicNetworkElement>
 				</Elements>
 			</HydraulicNetwork>
@@ -72,22 +82,14 @@
 		
 		<Outputs>
 			<Definitions>
-				<!-- Outputs go to file 'network.tsv' -->
-				<OutputDefinition>
-					<Quantity>FluidMassFluxes</Quantity>
-					<ObjectListName>Entire network</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<!-- Outputs go to file 'network_elements.tsv' -->
 				<OutputDefinition>
 					<Quantity>FluidMassFlux</Quantity>
-					<ObjectListName>All flow elements</ObjectListName>
+					<ObjectListName>the Network</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
-				<!-- Outputs go to file 'network_elements.tsv' -->
 				<OutputDefinition>
 					<Quantity>OutletNodePressure</Quantity>
-					<ObjectListName>All flow elements</ObjectListName>
+					<ObjectListName>the Network</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 			</Definitions>
@@ -102,11 +104,7 @@
 			</Grids>
 		</Outputs>
 		<ObjectLists>
-			<ObjectList name="Entire network">
-				<FilterID>*</FilterID>
-				<ReferenceType>Network</ReferenceType>
-			</ObjectList>
-			<ObjectList name="All flow elements">
+			<ObjectList name="the Network">
 				<FilterID>*</FilterID>
 				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>
