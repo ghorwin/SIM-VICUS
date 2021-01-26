@@ -408,10 +408,12 @@ Das Netzwerk-Objekt liefert eine Vielzahl von Ergebnisgrößen für die einzelne
 
 Die Anforderungen an die Netzwerkausgaben richten sich allerdings nach der späteren Visualisierungsebene. Grundlegend ist davon auszugehen, dass im Postprozessing eine weitere Sicht erforderlich sein wird, welche neben dem Gebäude eine Auswertung der hydraulischen Netzwerke erlaubt. Um die Übersichtlichkeit zu wahren, wird diese Sicht von derjenigen des Gebäudes getrennt sein. 
 
-Die Netzwerkausgaben werden von daher räumlich getrennt in einer eigenen Datei abgelegt. Dafür wird ein neuer Ausgabetyp eingeführt:
+Die Netzwerkausgaben werden daher räumlich getrennt in eigenen Dateien mit dem Namensschema:
 
-* network -> `network_<gridname>.tsv`
+- `network_<gridname>.tsv` (für Ausgaben mit Referenztyp `Network`)
+- `network_elements_<gridname>.tsv` (für Ausgaben mit Referenztyp `NetworkElement`)
 
+angelegt. Wie bei regulären Ausgaben (siehe <<output_filenames>>) wird der Suffix `_<gridname>` weggelassen, wenn es nur eine Ausgabedatei mit einem Ausgaberaster gibt.
 
 Für Analyse der Netzwerke und Übergabesysteme sind sowohl die Masseströme und Temperaturen im Innere eines Verbindungselementes, aber auch an den Verbindungsstellen zwischen zwei Elementen von Interesse. Letzerer Fall ist beispielsweise typisch für gekoppelte Erzeuger- und Verbraucherkreisläufe, wobei eine Kontrolle der Zulauf- und Rücklauftemperatur möglich sein muss. 
 
@@ -424,14 +426,24 @@ Es wird bei der Topologiedefinition eines Netzwerks mittels der `HydraulicNetwor
 Je nach Bedingungen im Netzwerk ist es jedoch auch möglich, dass sich die Strömungsrichtung umkehrt, und das Medium nun auf der Einströmseite eines Rohres ausströmt. Dies wirkt sich zwar im Vorzeichen des Massestroms aus, jedoch nicht in der Bezeichung der _geometrischen_ Ein- und Auslässe eines Strömungselements.
 ====
 
-Es sind folgenden Ergebnisgrößen definiert:
+[TIP]
+====
+Mächte man alle Knotendrücke oder Knotentemperaturen erhalten, so kann man einfach von allen Strömungselementen die Drück am Auslass erfragen. Darüber erhält man dann alle Drücke an den jeweiligen Knoten.
+====
+
+#### Ausgaben der hydraulischen Netzwerkberechnung
+
+Für jedes Strömungselement kann ein Massestrom ausgegen werden, wobei die Strömungsrichtung immer von _inletNode_ zu _outletNode_ positiv definiert ist. Der Massestrom kann über die Größe `FluidMassFlux` (in kg/s) abgefragt werden (Referenztyp `NetworkElement`).
+
+Ebenso sind für jedes Strömungselement die Drücke am Ein- und Auslass abrufbar: 
+
+- `InletNodePressure` in Pa
+- `OutletNodePressure` in Pa
 
 
-TODO Andreas
+#### Ausgaben der thermo-hydraulischen Berechnung
 
-
-
-Jedes Strömungselement hat eine (mittlere) Temperatur, welche über die Ausgabegröße `FluidTemperature[<id>]` abgefragt werden kann. Die ID entspricht hier der Element-ID (siehe <<HydraulicNetworkElement>>).
+Jedes Strömungselement hat eine (mittlere) Temperatur, welche über die Ausgabegröße `FluidTemperature` abgefragt werden kann (Referenztyp `NetworkElement`).
 
 [NOTE]
 ====
@@ -443,74 +455,19 @@ Die mittlere Temperatur einen Strömungselements kann zur Visualisierung/Farbgeb
 Je nach physikalischer Modellierung eines Strömungselements muss die Mitteltemperatur einen Strömungselements nicht mit der Auslasstemperatur übereinstimmen (siehe Modelldokumentation). Beispiele dafür sind Speicher oder lange verlustbehaftete Rohre.
 ====
 
-Jedes Strömungselement hat auch einen Massestrom, wobei die Strömungsrichtung immer von _inletNode_ zu _outletNode_ positiv definiert ist. Der Massestrom kann über die Größe `FluidMassFlux[<id>]` abgefragt werden.
+#### Ausgaben des Netzwerks
+
+Zur Vereinfachung dienen die Variablennamen `FluidTemperatures` und `FluidMassFluxes`, welche für ein gesamtes Netzwerk abgerufen werden können (Referenztyp `Network`). Diese enthalten jeweils Ausgaben für alle Strömungselemente.
 
 
-Zur Vereinfachung dienen die Variablennamen `FluidTemperatures` und `FluidMassFluxes`, welche jeweils Ausgaben für alle Strömungselemente anfordern.
+### Variablennamen in Ausgabedateien
 
-
-Die Variablen werden in den Ausgabedateien wie folgt angegeben: `Network(id=3).FluidTemperature(id=101)` wobei hier `id=3` die ID des ausgewählten Netzwerks angibt und `id=101` das Strömungselement, dessen Temperatur ausgegeben wird.
-
-Des Weiteren sind die Fluidtemperaturen an Anschlussstellen von Interesse. Hierbei werden die Einlassknoten und Auslassknoten eines Elementes verwendet, um eine eindeutige Zuordnung zu erlauben. In der Ausgabe erscheinen dann die zusätzlichen Einträge:
-
-`Network(id=3).InletNodeTemperature(id=101)`, `Network(id=3).OutletNodeTemperature(id=101)`.
-
-Die Temperaturpunkte entsprechen dabei exakt den mit `inletNodeId` und `outletNodeId` gekennzeichneten Anschlussstellen.
-
-
-### Spezielle Ausgaben
-
-Bei Strömungselementen mit mehreren Segmenten und Temperaturverteilungen werden bei Abfrage der Temperatur mittels `Temperature[<id>]` stets alle Segmenttemperaturen ausgegeben. In der Ausgabedatei werden diese wie folgt kodiert:
-
-`Network(id=3).FluidTemperature(id=101).1`, `Network(id=3).FluidTemperature(id=101).2`, ...,  `Network(id=3).FluidTemperature(id=101).<n>`
+Variablen für Ausgaben vom Referenztyp `NetworkElement` werden in den Ausgabedateien wie folgt angegeben: `NetworkElement(id=1).FluidMassFlux` wobei hier `id=1` die ID des ausgewählten Netzwerkelements.
 
 
 
+TODO : document Network results once they work
 
-[NOTE]
-====
-Die Benennung der Variablennamen wird intern in einer `InputReference` Klasse beschrieben. `Network` entspricht dem Referenzierungstyp, `FluidTemperature` ist der `QuantityName` und `id=<id>` ergibt sich bei vektorwertigen Größen aus der ID/Index.
-
-DAHER GIBT ES DERZEIT KEINE MÖGLICHKEIT, VEKTORWERTIGE ERGEBNISSE EINER VEKTORVERTIGEN AUSGABE AUSZUGEBEN!!! Das funktioniert also so nicht...
-====
-
-Alternative 1:
-
-Es kann davon ausgegangen werden, dass die Temperaturstratifierung in einem einzelnen Strömungselement nur auf der Ebene des einzelnen Bauteils von Interesse ist, so zum Beispiel, wenn die Temperaturverteilung in einem Speicher verfolgt werden soll. 
-Solche Analysen finden nicht auf der globalen Netzwerkebene statt, sondern haben stets das Einzelbauteil im Fokus.
- 
-Passend dazu kann die Ausgabe der Segmenttemperaturen als raumaufgelöste Spezialinformation gedeutet werden, die auch in einer späteren Visualisierung eine eigene vom Netzwerk unabhängige Sicht erhält. 
-
-Daher erscheint die Ausgabe von Segmenttemperaturen in vom Netzwerk unabhängige Dateien schlüssig:
-
-* networkelement -> `networkelement(id=101)_<gridname>.tsv`
-
-Innerhalb der Datei kann die Benennung der Temperaturen wie folgt vorgenommen werden:
-
-`Temperature[0]`, `Temperature[1]`, ..., `Temperature[n]` 
-
-
-[NOTE]
-====
-Um die Namensgebung für diesen Fall nicht zu sehr zu überfrachten, wäre ja ein gemeinsamer Id-Raum für alle Netzwerkelemente - unabhängig von der Zugehörigkeit zu einem konkreten Netzwerk - u.U. zielführend. Bei Betrachtung einer Einzelkomponente interessiert ja nicht ihre Netzwerkzugehörigkeit, sondern ihre speziellen physikalischen Eigenschaften. 
-
-Die eindeutige Identifierung einer Netzwerkkomponente via Id - auch ohne Kenntnis des umgebenden Netzwerkes - erscheint auch in diesem Zusammenhang als zielführend. Auch andere Argumente sprechen dafür:
-
-Beispielsweise können Komponenten wie Wärmetauscher auftreten, die zu zwei unterschiedlichen Netzwerken gehören, aber trotzdem als eine Einheit sichtbar sein müssen. Es gilt zu klären, wie damit umzugehen ist.
-
-
-TODO: Ideen gesucht
-====
-
-Alternative 2:
-
-Mehrere Elemente werden in einer Datei zusammengefasst, also
-
-* network -> `network(id=1)_<gridname>.tsv`
-
-mit den Dateieinträgen
-
-`Networkelement(id=101).Temperature[0]`, `Networkelement(id=101).Temperature[1]`, ..., `Networkelement(id=101).Temperature[n]` 
 
 
 :xrefstyle: basic

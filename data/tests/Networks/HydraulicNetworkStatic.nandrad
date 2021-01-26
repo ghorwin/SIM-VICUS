@@ -73,13 +73,18 @@
 		<Outputs>
 			<Definitions>
 				<OutputDefinition>
+					<Quantity>FluidMassFluxes</Quantity>
+					<ObjectListName>Entire network</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
 					<Quantity>FluidMassFlux</Quantity>
-					<ObjectListName>the Network</ObjectListName>
+					<ObjectListName>All flow elements</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>OutletNodePressure</Quantity>
-					<ObjectListName>the Network</ObjectListName>
+					<ObjectListName>All flow elements</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 			</Definitions>
@@ -94,7 +99,11 @@
 			</Grids>
 		</Outputs>
 		<ObjectLists>
-			<ObjectList name="the Network">
+			<ObjectList name="Entire network">
+				<FilterID>*</FilterID>
+				<ReferenceType>Network</ReferenceType>
+			</ObjectList>
+			<ObjectList name="All flow elements">
 				<FilterID>*</FilterID>
 				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>
