@@ -180,7 +180,7 @@ void HydraulicNetworkModel::setup() {
 			{
 				IBK_ASSERT(e.m_pipeProperties != nullptr);
 				// create hydraulic pipe model
-				HNPipeElement * pipeElement = new HNPipeElement(e, *e.m_component, *e.m_pipeProperties, m_hydraulicNetwork->m_fluid);
+				HNPipeElement * pipeElement = new HNPipeElement(e, *e.m_pipeProperties, m_hydraulicNetwork->m_fluid);
 				// add to flow elements
 				m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 			} break;
@@ -188,7 +188,7 @@ void HydraulicNetworkModel::setup() {
 			case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel :
 			{
 				// create pump model
-				HNConstantPressurePump * pumpElement = new HNConstantPressurePump(e, *e.m_component, m_hydraulicNetwork->m_fluid);
+				HNConstantPressurePump * pumpElement = new HNConstantPressurePump(*e.m_component);
 				// add to flow elements
 				m_p->m_flowElements.push_back(pumpElement); // transfer ownership
 			} break;
@@ -196,10 +196,11 @@ void HydraulicNetworkModel::setup() {
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
 			{
 				// create pump model
-				HNFixedPressureLossCoeffElement * hxElement = new HNFixedPressureLossCoeffElement(e, *e.m_component, m_hydraulicNetwork->m_fluid);
+				HNFixedPressureLossCoeffElement * hxElement = new HNFixedPressureLossCoeffElement(*e.m_component, m_hydraulicNetwork->m_fluid);
 				// add to flow elements
 				m_p->m_flowElements.push_back(hxElement); // transfer ownership
 			} break;
+
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPump :
 			case NANDRAD::HydraulicNetworkComponent::MT_GasBoiler :
 			case NANDRAD::HydraulicNetworkComponent::MT_ControlValve :
@@ -222,9 +223,14 @@ void HydraulicNetworkModel::setup() {
 		}
 		// fill ids
 		m_elementIds.push_back(e.m_id);
-	}
+	} // for m_hydraulicNetwork->m_elements
 
-	// set
+	// set initial temperature in case of HydraulicNetwork
+	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_HydraulicNetwork) {
+		double fluidTemp = m_hydraulicNetwork->m_para[NANDRAD::HydraulicNetwork::P_DefaultFluidTemperature].value;
+		for (HydraulicNetworkAbstractFlowElement * e : m_p->m_flowElements)
+			e->setFluidTemperature(fluidTemp);
+	}
 
 	// setup the equation system
 	try {
