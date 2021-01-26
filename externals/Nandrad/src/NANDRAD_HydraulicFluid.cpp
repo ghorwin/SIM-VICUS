@@ -2,6 +2,8 @@
 
 #include "NANDRAD_HydraulicNetwork.h"
 
+#include <IBK_UnitList.h>
+
 namespace NANDRAD {
 
 void HydraulicFluid::defaultFluidWater(unsigned int id){
@@ -39,6 +41,16 @@ void HydraulicFluid::checkParameters(int networkModelType) {
 
 	if (m_kinematicViscosity.m_name.empty())
 		throw IBK::Exception("Missing parameter 'KinematicViscosity'.", FUNC_ID);
+
+	// convert into base unit
+	try {
+		m_kinematicViscosity.convert2BaseUnits();
+	}
+	catch(IBK::Exception &) {
+		throw IBK::Exception(IBK::FormatString("Kinematic viscosity has wrong units '%1' and '%2'.")
+							 .arg(m_kinematicViscosity.m_xUnit)
+							 .arg(m_kinematicViscosity.m_yUnit), FUNC_ID);
+	}
 	// check that spline units match
 	m_kinematicViscosity.checkAndInitialize("KinematicViscosity", IBK::Unit("K"), IBK::Unit("m2/s"), IBK::Unit("m2/s"),
 										0, false, std::numeric_limits<double>::max(), false,
