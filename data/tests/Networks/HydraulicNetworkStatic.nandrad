@@ -72,16 +72,19 @@
 		
 		<Outputs>
 			<Definitions>
+				<!-- Outputs go to file 'network.tsv' -->
 				<OutputDefinition>
 					<Quantity>FluidMassFluxes</Quantity>
 					<ObjectListName>Entire network</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
+				<!-- Outputs go to file 'network_elements.tsv' -->
 				<OutputDefinition>
 					<Quantity>FluidMassFlux</Quantity>
 					<ObjectListName>All flow elements</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
+				<!-- Outputs go to file 'network_elements.tsv' -->
 				<OutputDefinition>
 					<Quantity>OutletNodePressure</Quantity>
 					<ObjectListName>All flow elements</ObjectListName>
