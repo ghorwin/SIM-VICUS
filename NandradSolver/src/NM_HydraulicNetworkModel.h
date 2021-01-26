@@ -9,7 +9,7 @@ namespace NANDRAD {
 	class HydraulicNetworkComponent;
 }
 
-//#define BIDIRECTIONAL
+#define BIDIRECTIONAL
 
 namespace NANDRAD_MODEL {
 
