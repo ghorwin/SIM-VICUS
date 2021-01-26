@@ -21,13 +21,11 @@ HydraulicNetworkElement::HydraulicNetworkElement(unsigned int id, unsigned int i
 
 
 void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw) {
-
 	FUNCID(HydraulicNetworkElement::checkParameters);
 
 	// retrieve network component
 	std::vector<NANDRAD::HydraulicNetworkComponent>::const_iterator coit =
-			std::find(nw.m_components.begin(),
-					  nw.m_components.end(), m_componentId);
+			std::find(nw.m_components.begin(), nw.m_components.end(), m_componentId);
 	if (coit == nw.m_components.end()) {
 		throw IBK::Exception(IBK::FormatString("Missing component reference to id%1.")
 							 .arg(m_componentId), FUNC_ID);
@@ -43,8 +41,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw) {
 		case NANDRAD::HydraulicNetworkComponent::MT_DynamicAdiabaticPipe : {
 			// retrieve pipe properties
 			std::vector<NANDRAD::HydraulicNetworkPipeProperties>::const_iterator pit =
-					std::find(nw.m_pipeProperties.begin(),
-							  nw.m_pipeProperties.end(), m_pipePropertiesId);
+					std::find(nw.m_pipeProperties.begin(), nw.m_pipeProperties.end(), m_pipePropertiesId);
 			if (pit == nw.m_pipeProperties.end()) {
 				throw IBK::Exception(IBK::FormatString("Missing/invalid pipe properties reference with id %1.")
 									 .arg(m_pipePropertiesId), FUNC_ID);

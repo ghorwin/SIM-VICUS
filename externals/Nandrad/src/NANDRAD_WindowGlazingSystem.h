@@ -63,6 +63,7 @@ public:
 	void checkParameters();
 	/*! Computes flux density towards glazing system in [W/m2]for both window sides and stores
 		results in solarLeft and solarRight.
+		\param incidenceAngle Incidence angle in [Rad].
 	*/
 	void computeSolarFluxDensity(double qDir, double qDiff, double incidenceAngle, double &solarLeft, double &solarRight,
 								 bool solarLoadsLeft) const;

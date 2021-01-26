@@ -4,14 +4,14 @@ namespace NANDRAD {
 
 
 void HydraulicNetwork::checkParameters()  {
-
 	FUNCID(HydraulicNetwork::checkParameters);
+
 	// check parameters of fluid
 	try {
 		m_fluid.checkParameters(m_modelType);
 	}
 	catch(IBK::Exception &ex) {
-		throw IBK::Exception(ex, IBK::FormatString("Error intializing flui with id #%1.")
+		throw IBK::Exception(ex, IBK::FormatString("Error intializing fluid with id #%1.")
 							 .arg(m_fluid.m_id), FUNC_ID);
 	}
 	// check all elements and fill references to components and pipe properties

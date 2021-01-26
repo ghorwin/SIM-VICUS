@@ -38,20 +38,12 @@ void WindowGlazingSystem::checkParameters() {
 														"W/m2K", 0, true, std::numeric_limits<double>::max(), true,
 														"Thermal transmittance must be >= 0 W/m2K.");
 
-			// we need an SHGC value
-			if (m_splinePara[SP_SHGC].m_name.empty())
-				throw IBK::Exception("Missing parameter 'SHGC'.", FUNC_ID);
-			// check that spline units match
-			if (m_splinePara[SP_SHGC].m_xUnit.base_id() != IBK::Unit("Deg").base_id() ||
-				m_splinePara[SP_SHGC].m_yUnit.base_id() != IBK::Unit("---").base_id())
-				throw IBK::Exception("Invalid units for parameter 'SHGC' (expected 'Deg' and '---').", FUNC_ID);
+			// we need an SHGC value; in the next call the input spline will be converted to base units,
+			// i.e. xUnit will be "Rad" and y-Unit will be "---".
+			m_splinePara[SP_SHGC].checkAndInitialize("SHGC", IBK::Unit("Rad"), IBK::Unit("---"),
+													 IBK::Unit("---"), 0, true, 1, true,
+													 "SGGC values must be in the range of 0..1.");
 
-			// convert to base SI unit and check units along the way
-			try {
-				m_splinePara[SP_SHGC].convert2BaseUnits();
-			} catch (IBK::Exception & ex) {
-				throw IBK::Exception(ex, "Invalid data for parameter 'SHGC'.", FUNC_ID);
-			}
 		} break;
 
 		case MT_Detailed : {

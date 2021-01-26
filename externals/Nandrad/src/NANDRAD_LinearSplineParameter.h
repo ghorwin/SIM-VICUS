@@ -89,19 +89,14 @@ public:
 		Note: the m_xUnit and m_yUnit members are not modified here!
 		Then, the spline is generated, hereby testing for monotonically increasing x-values.
 		Finally, the y-value ranges are being checked.
+
+		\note To ensure consistent object state, the x and y units are updated after the value conversion. Hence,
+			if you need m_xUnit and m_yUnit to represent input/output units, do not call this function!
 	*/
 	void checkAndInitialize(const std::string & expectedName,
 							const IBK::Unit & targetXUnit, const IBK::Unit & targetYUnit,
 							const IBK::Unit & limitYUnit, double minYVal, bool isGreaterEqual,
 							double maxYVal, bool isLessEqual, const char * const errmsg);
-
-	/*! Converts x and y values from display/input/output units (m_xUnit and m_yUnit) to their respective
-		base SI units.
-
-		\warning The m_xUnit and m_yUnit will not be changed and thus be inconsistent afterwards with
-			the values in the m_values spline (similarly to IBK::Parameter).
-	*/
-	void convert2BaseUnits();
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -121,6 +116,16 @@ public:
 	IBK::Unit				m_xUnit;
 	/*! Unit of the y-values. */
 	IBK::Unit				m_yUnit;
+
+private:
+	/*! Converts x and y values from display/input/output units (m_xUnit and m_yUnit) to their respective
+		base SI units.
+
+		\warning The m_xUnit and m_yUnit will not be changed and thus be inconsistent afterwards with
+			the values in the m_values spline (similarly to IBK::Parameter).
+	*/
+	void convert2BaseUnits();
+
 };
 
 } // namespace NANDRAD

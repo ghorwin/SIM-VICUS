@@ -9,13 +9,11 @@
 
 namespace NANDRAD {
 
-/*! Contains data of a flow element inside a network.
-
-*/
+/*! Properties of a fluid within a network. */
 class HydraulicFluid {
 public:
 
-		/*! Basic parameters. */
+	/*! Basic parameters. */
 	enum para_t {
 		P_Density,					// Keyword: Density				[kg/m3]	'Dry density of the material.'
 		P_HeatCapacity,				// Keyword: HeatCapacity		[J/kgK]	'Specific heat capacity of the material.'

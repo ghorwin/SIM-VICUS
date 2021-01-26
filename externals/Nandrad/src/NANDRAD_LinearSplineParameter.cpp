@@ -150,7 +150,10 @@ void LinearSplineParameter::checkAndInitialize(const std::string & expectedName,
 							  .arg(m_yUnit.name()).arg(targetYUnit).arg(suffix), FUNC_ID);
 
 	// check 3: convert to base unit
-	convert2BaseUnits();
+	convert2BaseUnits(); // throws an exception if invalid
+	// and update units if successful
+	m_xUnit = targetXUnit;
+	m_yUnit = targetYUnit;
 
 	// check 4: range check?
 //	for (double d : m_values.y()) {

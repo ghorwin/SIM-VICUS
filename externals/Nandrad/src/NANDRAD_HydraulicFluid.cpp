@@ -19,19 +19,22 @@ void HydraulicFluid::defaultFluidWater(unsigned int id){
 	m_kinematicViscosity.m_yUnit = IBK::Unit("m2/s");
 	m_kinematicViscosity.m_values.setValues(std::vector<double>{0,10,20,30,40,50,60,70,80,90},
 											std::vector<double>{1.793e-6,1.307e-6,1.004e-6,0.801e-6,0.658e-6,0.554e-6,0.475e-6,0.413e-6,0.365e-6,0.326e-6});
-
 }
 
 
 void HydraulicFluid::checkParameters(int networkModelType) {
-	FUNCID(HydraulicFluid::checkParameters);
 
 	// check for required parameters and meaningful value ranges
 	m_para[P_Density].checkedValue("Density", "kg/m3", "kg/m3", 0, false, std::numeric_limits<double>::max(), false,
 								   "Density must be > 0 kg/m3.");
-	// check thermal properties
-	HydraulicNetwork::ModelType modelType = (HydraulicNetwork::ModelType) networkModelType;
 
+	// kinematic viscosity is always needed, here we check the spline and convert it to base units automatically
+	m_kinematicViscosity.checkAndInitialize("KinematicViscosity", IBK::Unit("K"), IBK::Unit("m2/s"),
+											IBK::Unit("m2/s"), 0, false, std::numeric_limits<double>::max(), false,
+											"Kinematic viscosity must be > 0 m2/s.");
+
+	// check thermal properties, but only when required
+	HydraulicNetwork::ModelType modelType = (HydraulicNetwork::ModelType) networkModelType;
 	if (modelType == HydraulicNetwork::MT_ThermalHydraulicNetwork) {
 		m_para[P_HeatCapacity].checkedValue("HeatCapacity", "J/kgK", "J/kgK", 0, false, std::numeric_limits<double>::max(), false,
 									   "Heat capacity must be > 0 J/kgK.");
@@ -39,27 +42,6 @@ void HydraulicFluid::checkParameters(int networkModelType) {
 									   "Thermal conductivity must be > 0 W/mK.");
 	}
 
-	if (m_kinematicViscosity.m_name.empty())
-		throw IBK::Exception("Missing parameter 'KinematicViscosity'.", FUNC_ID);
-
-	IBK::Unit &xUnit = m_kinematicViscosity.m_xUnit;
-	IBK::Unit &yUnit = m_kinematicViscosity.m_yUnit;
-	// convert into base unit
-	try {
-		m_kinematicViscosity.convert2BaseUnits();
-		// correct units
-		xUnit = xUnit.base_unit();
-		yUnit = yUnit.base_unit();
-	}
-	catch(IBK::Exception &) {
-		throw IBK::Exception(IBK::FormatString("Kinematic viscosity has wrong units '%1' and '%2'.")
-							 .arg(m_kinematicViscosity.m_xUnit)
-							 .arg(m_kinematicViscosity.m_yUnit), FUNC_ID);
-	}
-	// check that spline units match
-	m_kinematicViscosity.checkAndInitialize("KinematicViscosity", xUnit, yUnit, IBK::Unit("m2/s"),
-										0, false, std::numeric_limits<double>::max(), false,
-									   "Kinematic viscosity must be > 0 m2/s.");
 }
 
 } // namespace NANDRAD
