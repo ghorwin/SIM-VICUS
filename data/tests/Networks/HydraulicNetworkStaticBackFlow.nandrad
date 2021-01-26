@@ -48,7 +48,7 @@
 						<IBK:Parameter name="PressureHead" unit="Pa">1000</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" modelType="ConstantPressurePumpModel">
-						<IBK:Parameter name="PressureHead" unit="Pa">100</IBK:Parameter>
+						<IBK:Parameter name="PressureHead" unit="Pa">800</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<!-- Pipes are all the same -->
 					<HydraulicNetworkComponent id="3" modelType="StaticAdiabaticPipe">
