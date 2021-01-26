@@ -29,6 +29,7 @@ public:
 	NANDRAD_READWRITE
 	NANDRAD_COMPARE_WITH_ID
 
+	/*! Populates the HydraulicFluid object with properties of water. */
 	void defaultFluidWater(unsigned int id);
 
 	/*! Checks for valid and required parameters (value ranges). */

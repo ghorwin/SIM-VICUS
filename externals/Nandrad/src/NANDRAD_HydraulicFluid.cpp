@@ -24,18 +24,18 @@ void HydraulicFluid::defaultFluidWater(unsigned int id){
 
 
 void HydraulicFluid::checkParameters(int networkModelType) {
-
 	FUNCID(HydraulicFluid::checkParameters);
+
 	// check for required parameters and meaningful value ranges
-	m_para[P_Density].checkedValue("kg/m3", "kg/m3", 0, false, std::numeric_limits<double>::max(), false,
+	m_para[P_Density].checkedValue("Density", "kg/m3", "kg/m3", 0, false, std::numeric_limits<double>::max(), false,
 								   "Density must be > 0 kg/m3.");
 	// check thermal properties
 	HydraulicNetwork::ModelType modelType = (HydraulicNetwork::ModelType) networkModelType;
 
-	if(modelType == HydraulicNetwork::MT_ThermalHydraulicNetwork) {
-		m_para[P_HeatCapacity].checkedValue("J/kgK", "J/kgK", 0, false, std::numeric_limits<double>::max(), false,
+	if (modelType == HydraulicNetwork::MT_ThermalHydraulicNetwork) {
+		m_para[P_HeatCapacity].checkedValue("HeatCapacity", "J/kgK", "J/kgK", 0, false, std::numeric_limits<double>::max(), false,
 									   "Heat capacity must be > 0 J/kgK.");
-		m_para[P_Conductivity].checkedValue("W/mK", "W/mK", 0, false, std::numeric_limits<double>::max(), false,
+		m_para[P_Conductivity].checkedValue("Conductivity", "W/mK", "W/mK", 0, false, std::numeric_limits<double>::max(), false,
 									   "Thermal conductivity must be > 0 W/mK.");
 	}
 

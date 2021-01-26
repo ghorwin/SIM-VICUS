@@ -57,7 +57,9 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) const {
 			default: break;
 		}
 		// check values: at the moment all are > 0
-		m_para[paraEnum].checkedValue(KeywordList::Unit(category.c_str(), paraEnum), KeywordList::Unit(category.c_str(), paraEnum),
+		m_para[paraEnum].checkedValue(
+					KeywordList::Keyword(category.c_str(), paraEnum), KeywordList::Unit(category.c_str(), paraEnum),
+					KeywordList::Unit(category.c_str(), paraEnum),
 							   0, false, std::numeric_limits<double>::max(), true,
 							   IBK::FormatString("'%1' must be > 0 %2.")
 							   .arg(KeywordList::Keyword(category.c_str(), paraEnum))
