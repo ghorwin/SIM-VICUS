@@ -28,7 +28,7 @@ In einer Projektdatei kann es mehrere Netzwerke geben. Diese sind im XML tag `Hy
 
 [IMPORTANT]
 ====
-Die einzelnen Netzwerke sind hydraulisch unabhängig, d.h. es gibt keinen Fluidaustausch zwischen Netzwerken. Die Netzwerke können aber thermisch verknüpft sein, z.B. kann ein Quartierswärmenetz mit einem Gebäudeanlagennetz Wärme austauschen. Dies bedingt auch eine ID Wahl der hydraulischen Netzwerkkomponenten.
+Die einzelnen Netzwerke sind hydraulisch unabhängig, d.h. es gibt keinen Fluidaustausch zwischen Netzwerken. Die Netzwerke können aber thermisch verknüpft sein, z.B. kann ein Quartierswärmenetz mit einem Gebäudeanlagennetz Wärme austauschen. Dies bedingt auch _eindeutige ID_ der in _allen_ Netzwerken definierten hydraulischen Netzwerkkomponenten.
 ====
 
 
@@ -74,8 +74,11 @@ XML-tag `HydraulicNetwork` hat folgende Attribute:
  (defaults to `ThermalHydraulicNetwork`)
 |====================
 
-Das optionale Attribut `modelType` beschreibt konkret, welches Berechnungsmodell zu verwenden ist. Folgende Optionen sind möglich:
+:xrefstyle: short
 
+Das optionale Attribut `modelType` beschreibt, welches Berechnungsmodell zu verwenden ist (<<tab_network_modelType>>):
+
+[[tab_network_modelType]]
 .Werte für Attribut `modelType`
 [options="header",cols="30%,70%",width="100%"]
 |====================
@@ -88,9 +91,9 @@ Die Wahl des Netzwerkberechnungsmodells hat Auswirkungen auf die benötigte Para
 
 ### Parameter
 
-Je nach Modelltyp können mehrere Netzwerkparameter definiert werden. 
+Je nach Modelltyp können mehrere globale Netzwerkparameter definiert werden. 
 
-[options="header",cols="30%,^ 10%, 30%,^ 12%,^ 18%",width="100%"]
+[options="header",cols="30%,^ 10%, 30%,^ 10%,^ 20%",width="100%"]
 |====================
 |Name|Unit|Description|Value Range |Usage
 | `DefaultFluidTemperature` | C | einheitliche, konstante Fluidtemperatur zur Verwendung mit einem rein hydraulischen Modell | {nbsp}>{nbsp}0.0{nbsp} | _required for model type_  `HydraulicNetwork`
@@ -117,8 +120,8 @@ In jedem Netzwerk gibt es nur ein einziges Fluid, und deshalb ist auch nur eine 
 	<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
 	<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
 	<LinearSplineParameter name="KinematicViscosity" interpolationMethod="linear">
-		<X unit="C">0 10 20 30 40 50 60 70 80 90 </X>
-		<Y unit="m2/s">1.793e-06 1.307e-06 1.004e-06 8.01e-07 6.58e-07 5.54e-07 4.75e-07 4.13e-07 3.65e-07 3.26e-07 </Y>
+		<X unit="C">0 10 20 30 40 50 60 70 80 </X>
+		<Y unit="m2/s">1.793e-06 1.307e-06 1.004e-06 8.01e-07 6.58e-07 5.54e-07 4.75e-07 4.13e-07 3.65e-07 </Y>
 	</LinearSplineParameter>
 </HydraulicFluid>
 ----
@@ -131,13 +134,15 @@ XML-tag `HydraulicFluid` hat folgende Attribute:
 |====================
 | Attribute  | Description | Format | Usage 
 | `id` |  Unique identifier of the fluid | {nbsp}>{nbsp}0{nbsp}  | _required_
-| `displayName`  |  Display name of the network. | string | _optional_
+| `displayName`  |  Display name of the network | string | _optional_
 |====================
 
 [NOTE]
 ====
 Da es nur eine Fluid-Definition per Netzwerk geben darf, ist das _id_ Attribut eigentlich überflüssig. Es wird lediglich zur Aktualisierung der Programmdatenbank beim Import eines Projekts benötigt.
 ====
+
+:xrefstyle: basic
 
 Parameter des Netzwerkfluids (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
 
@@ -190,7 +195,7 @@ Wenn ein `HydraulicNetworkElement` ein Rohr repräsentiert, können ihm über de
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribute  | Description | Format | Usage 
-| `id` |  Unique identifier of the pipe properties. | {nbsp}>{nbsp}0{nbsp}  | _required_
+| `id` |  Unique identifier of the pipe properties | {nbsp}>{nbsp}0{nbsp}  | _required_
 |====================
 
 Parameter der Rohreigenschaftem (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
@@ -231,7 +236,7 @@ Eine `HydraulicNetworkComponent` definiert die Basiseigenschaften eines Strömun
 |====================
 | Attribute  | Description | Format | Usage 
 | `id` |  Unique identifier of the component | {nbsp}>{nbsp}0{nbsp}  | _required_
-| `modelType` |  Type of component  | - | _required_
+| `modelType` |  Type of component  | string | _required_
 |====================
 
 
@@ -250,8 +255,8 @@ Für das Model `ConstantPressurePump` werden diese Parameter benötigt:
 |====================
 |Name|Unit|Description|Value Range | Usage 
 | `PressureHead` | Pa | Constant pressure added by the pump | any | 
-| _(*)_ `PumpEfficiency` | - | Hydraulic efficiency of pump | 0{nbsp}<{nbsp}...1 | only `ThermalHydraulicNetwork`
-| _(*)_ `MotorEfficiency` | - | Efficiency of motor | 0{nbsp}<{nbsp}...1 | only `ThermalHydraulicNetwork`
+| _(*)_ `PumpEfficiency` | - | Hydraulic efficiency of pump | 0...1,{nbsp}>{nbsp}0.0 | only `ThermalHydraulicNetwork`
+| _(*)_ `MotorEfficiency` | - | Efficiency of motor | 0...1,{nbsp}>{nbsp}0.0 | only `ThermalHydraulicNetwork`
 | _(*)_ `Volume` | m3 | Fluid volume inside the pump | {nbsp}>{nbsp}0.0{nbsp} | only `ThermalHydraulicNetwork`
 |====================
 
@@ -292,7 +297,7 @@ _(*) - not yet used_
 ----
 ====
 
-Die tatsächlichen Strömungselemente des Netzwerks, werden unter `Elements` mit dem XML-tag `HydraulicNetworkElement` definiert. Diese haben die folgenden Attribute:
+Die tatsächlichen Strömungselemente des Netzwerks werden innerhalb des XML-tags `Elements` mit dem XML-tag `HydraulicNetworkElement` definiert. Diese haben die folgenden Attribute:
 
 .Attributes
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
@@ -302,16 +307,43 @@ Die tatsächlichen Strömungselemente des Netzwerks, werden unter `Elements` mit
 | `inletNodeId` |  Unique ID of inlet node  | {nbsp}>{nbsp}0{nbsp}  | _required_
 | `outletNodeId` |  Unique ID of outlet node  | {nbsp}>{nbsp}0{nbsp}  | _required_
 | `componentId` |  Unique ID of referenced `HydraulicNetworkComponent`  | {nbsp}>{nbsp}0{nbsp}  | _required_
-| `pipePropertiesId` |  Unique ID of referenced `HydraulicNetworkPipeProperties` | {nbsp}>{nbsp}0{nbsp}  | _optional_ (_required_ for pipes)
-| `displayName`  |  Display name of the element (used for error/informative messages) | string | _optional_
+| `pipePropertiesId` |  Unique ID of referenced `HydraulicNetworkPipeProperties` | {nbsp}>{nbsp}0{nbsp}  | optional (_required_ for pipes)
+| `displayName`  |  Display name of the element (used for error/informative messages) | string | optional
 |====================
 
 [IMPORTANT]
 ====
-Die ID eines `HydraulicNetworkElement` muss global eindeutig sein, d.h. Netzwerkübergreifend müssen `HydraulicNetworkElement`s mit einer eindeutigen ID bezeichnet werden.
+Die ID eines `HydraulicNetworkElement` muss global eindeutig sein, d.h. Strömungselemente müssen netzwerkübergreifend mit einer eindeutigen ID bezeichnet werden.
 ====
 
-Die Strömungselemente sind miteinander durch Knoten verknüpft. In jedem Strömungselement fließt das Fluid von dem Knoten mit der `inletNodeId` zu dem Knoten mit der `outletNodeId`. 
+:xrefstyle: short
+
+[[fig_network_example1]]
+.Einfaches Strömungsnetzwerk mit 3 Knoten und 3 Elementen
+image::network_example.png[pdfwidth=8cm]
+
+Die Strömungselemente sind miteinander durch Knoten verknüpft. In jedem Strömungselement fließt das Fluid von dem Knoten mit der `inletNodeId` zu dem Knoten mit der `outletNodeId`. <<fig_network_example1>> zeigt ein einfaches Netzwerk bestehend aus 3 Elementen.  Ein solches Netzwerk würde wie folgt definiert werden (<<ex_network_example1>>).
+
+[[ex_network_example1]]
+.XML-Definition eines einfachen Strömungsnetzwerks mit 3 Knoten und 3 Elementen
+====
+[source,xml]
+----
+<Elements>
+    <!-- Pump -->
+	<HydraulicNetworkElement id="1" inletNodeId="1" outletNodeId="2" componentId="1"/>
+	<!-- Pipe id=2-->
+	<HydraulicNetworkElement id="2" inletNodeId="2" outletNodeId="3" componentId="2">
+		<IBK:Parameter name="Length" unit="m">10</IBK:Parameter>
+	</HydraulicNetworkElement>
+	<!-- Pipe id=3-->
+    <HydraulicNetworkElement id="3" inletNodeId="3" outletNodeId="1" componentId="2">
+		<IBK:Parameter name="Length" unit="m">6</IBK:Parameter>
+	</HydraulicNetworkElement>
+</Elements>
+----
+====
+
 
 [NOTE]
 ====
