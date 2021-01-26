@@ -29,7 +29,8 @@ void NaturalVentilationModel::setup(const NANDRAD::NaturalVentilationModel & ven
 	// check for mandatory parameters
 	switch (m_ventilationModel->m_modelType) {
 		case NANDRAD::NaturalVentilationModel::MT_Constant :
-			m_ventilationRate = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_VentilationRate].checkedValue("1/s",
+			m_ventilationRate = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_VentilationRate].checkedValue(
+				"VentilationRate", "1/s",
 				"1/h", 0, false, std::numeric_limits<double>::max(), false, "Invalid parameter.");
 		break;
 

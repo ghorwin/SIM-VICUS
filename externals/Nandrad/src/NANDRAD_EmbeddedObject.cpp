@@ -43,7 +43,7 @@ EmbeddedObject::objectType_t EmbeddedObject::objectType() const {
 
 void EmbeddedObject::checkParameters(const Project & prj) {
 	FUNCID(EmbeddedObject::checkParameters);
-	double area = m_para[P_Area].checkedValue("m2", "m2", 0, true, std::numeric_limits<double>::max(), true,
+	double area = m_para[P_Area].checkedValue("Area", "m2", "m2", 0, true, std::numeric_limits<double>::max(), true,
 											  "Cross section area of embedded object must be >= 0 m2.");
 
 	if (objectType() == NUM_OT)

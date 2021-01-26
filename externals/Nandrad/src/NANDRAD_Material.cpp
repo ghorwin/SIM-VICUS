@@ -49,11 +49,11 @@ bool Material::behavesLike(const Material & other) const {
 void Material::checkParameters() const {
 	// check for mandatory and required parameters
 	// check for meaningful value ranges
-	m_para[P_Density].checkedValue("kg/m3", "kg/m3", 0.01, false, std::numeric_limits<double>::max(), true,
+	m_para[P_Density].checkedValue("Density", "kg/m3", "kg/m3", 0.01, false, std::numeric_limits<double>::max(), true,
 								   "Density must be > 0.01 kg/m3.");
-	m_para[P_HeatCapacity].checkedValue("J/kgK", "J/kgK", 100, true, std::numeric_limits<double>::max(), true,
+	m_para[P_HeatCapacity].checkedValue("HeatCapacity", "J/kgK", "J/kgK", 100, true, std::numeric_limits<double>::max(), true,
 								   "Heat capacity must be > 100 J/kgK.");
-	m_para[P_Conductivity].checkedValue("W/mK", "W/mK", 1e-5, true, std::numeric_limits<double>::max(), true,
+	m_para[P_Conductivity].checkedValue("Conductivity", "W/mK", "W/mK", 1e-5, true, std::numeric_limits<double>::max(), true,
 								   "Thermal conductivity must be > 1e-5 W/mK.");
 }
 

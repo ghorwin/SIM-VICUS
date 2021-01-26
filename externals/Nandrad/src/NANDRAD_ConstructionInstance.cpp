@@ -48,7 +48,7 @@ void ConstructionInstance::checkParameters(const Project & prj) {
 	m_constructionType = &(*it); // store pointer
 
 	// check parameters
-	double area = m_para[P_Area].checkedValue("m2", "m2", 0, true, std::numeric_limits<double>::max(), true,
+	double area = m_para[P_Area].checkedValue("Area", "m2", "m2", 0, true, std::numeric_limits<double>::max(), true,
 											  "Cross section area of construction instance must be >= 0 m2.");
 
 	// Note: parameters orientation and inclination are only needed when an outdoor interface with solar radiation

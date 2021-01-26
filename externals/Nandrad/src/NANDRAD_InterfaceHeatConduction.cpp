@@ -37,7 +37,7 @@ void InterfaceHeatConduction::checkParameters() const {
 
 	switch (m_modelType) {
 		case MT_Constant:
-			m_para[P_HeatTransferCoefficient].checkedValue("W/m2K", "W/m2K",
+			m_para[P_HeatTransferCoefficient].checkedValue("HeatTransferCoefficient", "W/m2K", "W/m2K",
 													   0, true,
 													   std::numeric_limits<double>::max(), true,
 													   "Heat transfer coefficient must be >= 0 W/m2K.");

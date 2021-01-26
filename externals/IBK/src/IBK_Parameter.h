@@ -250,9 +250,10 @@ public:
 
 		\return If checks are successful, the function returns the value converted to targetUnit.
 	*/
-	double checkedValue(const std::string & targetUnit, const std::string & limitUnit,
+	double checkedValue(const std::string & expectedName,
+						const std::string & targetUnit, const std::string & limitUnit,
 						double minVal, bool isGreaterEqual, double maxVal, bool isLessEqual,
-						const char * const errmsg = nullptr) const;
+						const char * const errmsg) const;
 
 
 	// ****** member variables *************************************************

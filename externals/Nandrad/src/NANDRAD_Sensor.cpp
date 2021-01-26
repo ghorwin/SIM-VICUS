@@ -31,12 +31,12 @@ bool Sensor::operator!=(const Sensor & other) const {
 
 
 void Sensor::checkParameters() const {
-	m_inclination.checkedValue("Deg", "Deg",
+	m_inclination.checkedValue("Inclination", "Deg", "Deg",
 							   0, true,
 							   180, true,
 							   "Inclination must be between 0 and 180 Deg.");
 
-	m_orientation.checkedValue("Deg", "Deg",
+	m_orientation.checkedValue("Orientation","Deg", "Deg",
 							   0, true,
 							   360, true,
 							   "Inclination must be between 0 and 360 Deg.");

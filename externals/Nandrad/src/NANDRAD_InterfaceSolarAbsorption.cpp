@@ -38,7 +38,7 @@ void InterfaceSolarAbsorption::checkParameters() const {
 
 	switch (m_modelType) {
 		case MT_Constant:
-			m_para[P_AbsorptionCoefficient].checkedValue("---", "---",
+			m_para[P_AbsorptionCoefficient].checkedValue("AbsorptionCoefficient", "---", "---",
 													   0, true,
 													   1, true,
 									   "Solar absorption coefficient must between 0 and 1.");

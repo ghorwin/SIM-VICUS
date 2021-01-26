@@ -254,17 +254,22 @@ void Parameter::checkIfValueIsUpperBound (	const IBK::Parameter& limit,
 }
 
 
-double Parameter::checkedValue(const std::string & targetUnit, const std::string & limitUnit, double minVal, bool isGreaterEqual,
+double Parameter::checkedValue(const std::string & expectedName, const std::string & targetUnit, const std::string & limitUnit, double minVal, bool isGreaterEqual,
 							   double maxVal, bool isLessEqual, const char * const errmsg) const
 {
 	FUNCID(Parameter::checkedValue);
 
 	// check 0: parameter name must not be empty
 	if (name.empty())
-		throw IBK::Exception(IBK::FormatString("Parameter is missing/undefined."), FUNC_ID);
+		throw IBK::Exception(IBK::FormatString("Parameter '%1' is missing/undefined.").arg(expectedName), FUNC_ID);
+
+	// check 1: name correctly set?
+	if (name != expectedName)
+		throw IBK::Exception(IBK::FormatString("Parameter '%1' has invalid name (got '%2').")
+							 .arg(expectedName).arg(name), FUNC_ID);
 
 	std::string suffix = (errmsg == nullptr) ? "" : "\n" + std::string(errmsg);
-	// check 1: valid unit
+	// check 2: valid unit
 	if (IO_unit.id() == 0)
 		throw IBK::Exception(IBK::FormatString("Undefined unit in parameter '%1'.%2").arg(name).arg(suffix), FUNC_ID);
 
@@ -284,7 +289,7 @@ double Parameter::checkedValue(const std::string & targetUnit, const std::string
 		throw IBK::Exception(IBK::FormatString("Incompatible target unit '%1' and limit unit '%2'.")
 							 .arg(targetUnit).arg(limitUnit), FUNC_ID);
 
-	// check 2: unit convertible
+	// check 3: unit convertible
 	double val = value;
 	double valLimit = value;
 	try {

@@ -19,8 +19,10 @@ void SolarLoadsDistributionModel::checkParameters() const {
 
 	// check radiation load fractions
 	for (unsigned int i=0; i<4; ++i)
-		m_para[P_RadiationLoadFractionZone+i].checkedValue("---", "---", 0, true, 1, true,
-													 "Radiation load fraction must be between 0 and 1.");
+		m_para[P_RadiationLoadFractionZone+i].checkedValue(
+					NANDRAD::KeywordList::Keyword("SolarLoadsDistributionModel::para_t", P_RadiationLoadFractionZone+i),
+					"---", "---", 0, true, 1, true,
+					"Radiation load fraction must be between 0 and 1.");
 
 	// check that the latter three add up to 1
 	double fractionSum = m_para[P_RadiationLoadFractionFloor].value +

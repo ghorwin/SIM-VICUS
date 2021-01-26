@@ -38,7 +38,7 @@ void InterfaceLongWaveEmission::checkParameters() const{
 
 	switch (m_modelType) {
 		case MT_Constant:
-			m_para[P_Emissivity].checkedValue("---", "---",
+			m_para[P_Emissivity].checkedValue("Emissivity", "---", "---",
 											   0, true,
 											   1, true,
 											   "Long wave emissivity must between 0 and 1.");

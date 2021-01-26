@@ -42,47 +42,35 @@ void InternalLoadsModel::checkParameters() const {
 	}
 
 	// check fixed parameters
-	m_para[P_EquipmentRadiationFraction].checkedValue("---", "---",
+	m_para[P_EquipmentRadiationFraction].checkedValue("EquipmentRadiationFraction", "---", "---",
 												   0, true,
 												   1, true,
 								   "Equipment radiant faction must between 0 and 1.");
 
-	m_para[P_PersonRadiationFraction].checkedValue("---", "---",
+	m_para[P_PersonRadiationFraction].checkedValue("PersonRadiationFraction", "---", "---",
 												   0, true,
 												   1, true,
 								   "Person radiant faction must between 0 and 1.");
 
-	m_para[P_LightingRadiationFraction].checkedValue("---", "---",
+	m_para[P_LightingRadiationFraction].checkedValue("LightingRadiationFraction", "---", "---",
 												   0, true,
 												   1, true,
 								   "Lighting radiant faction must between 0 and 1.");
 
 	// check parameters for constant model
-	if(m_modelType == MT_Constant) {
-		if(m_para[P_EquipmentHeatLoadPerArea].name.empty()) {
-			throw IBK::Exception("Missing parameter 'EquipmentHeatLoadPerArea' for "
-								 "model of type 'Constant'", FUNC_ID);
-		}
-		if(m_para[P_PersonHeatLoadPerArea].name.empty()) {
-			throw IBK::Exception("Missing parameter 'PersonHeatLoadPerArea' for "
-								 "model of type 'Constant'", FUNC_ID);
-		}
-		if(m_para[P_LightingHeatLoadPerArea].name.empty()) {
-			throw IBK::Exception("Missing parameter 'LightingHeatLoadPerArea' for "
-								 "model of type 'Constant'", FUNC_ID);
-		}
+	if (m_modelType == MT_Constant) {
 		// check fixed parameters
-		m_para[P_EquipmentHeatLoadPerArea].checkedValue("W/m2", "W/m2",
+		m_para[P_EquipmentHeatLoadPerArea].checkedValue("EquipmentHeatLoadPerArea", "W/m2", "W/m2",
 													   0, true,
 													   std::numeric_limits<double>::max(), true,
 								   "Equipment heat load per area must be >= 0 W/m2.");
 
-		m_para[P_PersonHeatLoadPerArea].checkedValue("W/m2", "W/m2",
+		m_para[P_PersonHeatLoadPerArea].checkedValue("PersonHeatLoadPerArea", "W/m2", "W/m2",
 													 0, true,
 													 std::numeric_limits<double>::max(), true,
 								 "Person heat load per area must be >= 0 W/m2.");
 
-		m_para[P_LightingHeatLoadPerArea].checkedValue("W/m2", "W/m2",
+		m_para[P_LightingHeatLoadPerArea].checkedValue("LightingHeatLoadPerArea", "W/m2", "W/m2",
 													   0, true,
 													   std::numeric_limits<double>::max(), true,
 								   "Lighting heat load per area must be >= 0 W/m2.");

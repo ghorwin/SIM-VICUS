@@ -34,7 +34,7 @@ void WindowGlazingSystem::checkParameters() {
 	switch (m_modelType) {
 		case MT_Simple : {
 			// check thermal transmittance parameter
-			m_para[P_ThermalTransmittance].checkedValue("W/m2K",
+			m_para[P_ThermalTransmittance].checkedValue("ThermalTransmittance", "W/m2K",
 														"W/m2K", 0, true, std::numeric_limits<double>::max(), true,
 														"Thermal transmittance must be >= 0 W/m2K.");
 
