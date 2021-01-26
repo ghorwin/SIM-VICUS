@@ -69,7 +69,14 @@ const char * const FLUX_QUANTITIES[] = {
 
 };
 
+// The quantities listed below will be stored in file "network.tsv" or "network_<gridname>.tsv"
 const char * const NETWORK_QUANTITIES[] = {
+	"FluidMassFluxes",
+	"FluidTemperatures"
+};
+
+// The quantities listed below will be stored in file "network_elements.tsv" or "network_elements_<gridname>.tsv"
+const char * const NETWORK_ELEMENT_QUANTITIES[] = {
 	"FluidMassFlux",
 	"FluidTemperature",
 	"InletNodeTemperature",
@@ -273,6 +280,19 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 			continue;
 		}
 
+		// network element quantity?
+		found = false;
+		for (const char * const quantityName : NETWORK_ELEMENT_QUANTITIES) {
+			if (qn.m_name == quantityName) {
+				found = true;
+				break;
+			}
+		}
+		if (found) {
+			groupMap[od.m_gridName][OFN_NetworkElements].push_back(od);
+			continue;
+		}
+
 		// network quantity?
 		found = false;
 		for (const char * const quantityName : NETWORK_QUANTITIES) {
@@ -282,7 +302,7 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 			}
 		}
 		if (found) {
-			groupMap[od.m_gridName][OFN_NetworkElements].push_back(od);
+			groupMap[od.m_gridName][OFN_Network].push_back(od);
 			continue;
 		}
 
