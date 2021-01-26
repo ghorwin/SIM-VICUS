@@ -26,6 +26,7 @@
 		</Zones>
 		<HydraulicNetworks>
 			<HydraulicNetwork id="1" displayName="simple test" modelType="HydraulicNetwork">
+				<IBK:Parameter name="DefaultFluidTemperature" unit="C">20</IBK:Parameter>
 				<HydraulicFluid id="1" displayName="Water">
 					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
