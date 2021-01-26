@@ -119,6 +119,13 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw) {
 								FUNC_ID);
 				}
 			} break;
+			case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile:
+			case NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithFMUTemperature: {
+				throw IBK::Exception(IBK::FormatString("Heat exchange type %1 is not supported, yet!")
+							.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
+							m_component->m_heatExchangeType)),
+							FUNC_ID);
+			}
 			case NANDRAD::HydraulicNetworkComponent::NUM_HT:
 				// No thermal exchange, nothing to initialize
 			break;
