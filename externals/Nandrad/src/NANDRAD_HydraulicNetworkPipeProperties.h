@@ -17,7 +17,8 @@ public:
 		P_PipeRoughness,					// Keyword: PipeRoughness						[mm]		'Roughness of pipe material.'
 		P_PipeInnerDiameter,				// Keyword: PipeInnerDiameter					[mm]		'Inner diameter of pipe.'
 		P_PipeOuterDiameter,				// Keyword: PipeOuterDiameter					[mm]		'Outer diameter of pipe.'
-		P_UValuePipeWall,					// Keyword: UValuePipeWall						[W/mK]  'Length specific U-Value of pipe wall incl. insulation'
+		P_UValuePipeWall,					// Keyword: UValuePipeWall						[W/mK]		'Length specific U-Value of pipe wall incl. insulation'
+		P_MaxDiscretizationWidth,			// Keyword: MaxDiscretizationWidth				[m]			'Maximum width of discretized volumes, needed for DynamicPipe'
 		NUM_P
 	};
 
