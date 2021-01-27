@@ -40,10 +40,14 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw) {
 		case NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe :
 		case NANDRAD::HydraulicNetworkComponent::MT_DynamicAdiabaticPipe : {
 			// retrieve pipe properties
+			if(m_pipePropertiesId == NANDRAD::INVALID_ID) {
+				throw IBK::Exception("Missing pipe property reference!", FUNC_ID);
+			}
+			// invalid id
 			std::vector<NANDRAD::HydraulicNetworkPipeProperties>::const_iterator pit =
 					std::find(nw.m_pipeProperties.begin(), nw.m_pipeProperties.end(), m_pipePropertiesId);
 			if (pit == nw.m_pipeProperties.end()) {
-				throw IBK::Exception(IBK::FormatString("Missing/invalid pipe properties reference with id %1.")
+				throw IBK::Exception(IBK::FormatString("Invalid pipe properties reference with id %1.")
 									 .arg(m_pipePropertiesId), FUNC_ID);
 			}
 			// set reference
