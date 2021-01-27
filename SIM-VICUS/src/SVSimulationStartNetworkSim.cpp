@@ -187,7 +187,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	pump.m_id = 1;
 	pump.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel;
 	NANDRAD::KeywordList::setParameter(pump.m_para, "HydraulicNetworkComponent::para_t",
-									   NANDRAD::HydraulicNetworkComponent::P_PressureHead, -1000);
+									   NANDRAD::HydraulicNetworkComponent::P_PressureHead, 1000);
 	NANDRAD::KeywordList::setParameter(pump.m_para, "HydraulicNetworkComponent::para_t",
 									   NANDRAD::HydraulicNetworkComponent::P_Volume, 0.01);
 	pump.m_heatExchangeType = NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant;
@@ -221,17 +221,17 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	VICUS::NetworkPipe pipe1;
 	pipe1.m_id = 1;
 	pipe1.m_displayName = IBK::MultiLanguageString("PE 32 x 3.2");
-	pipe1.m_diameterOutside = 0.032;
-	pipe1.m_wallThickness = 3.2/1000;
-	pipe1.m_roughness = 0.007/1000;
+	pipe1.m_diameterOutside = 32;
+	pipe1.m_wallThickness = 3.2;
+	pipe1.m_roughness = 0.007;
 	pipe1.m_lambdaWall = 0.4;
 	geoNetwork.m_networkPipeDB.push_back(pipe1);
 	VICUS::NetworkPipe pipe2;
 	pipe2.m_id = 2;
 	pipe2.m_displayName = IBK::MultiLanguageString("PE 50 x 4.6");
-	pipe2.m_diameterOutside = 0.05;
-	pipe2.m_wallThickness = 4.6/1000;
-	pipe2.m_roughness = 0.007/1000;
+	pipe2.m_diameterOutside = 50;
+	pipe2.m_wallThickness = 4.6;
+	pipe2.m_roughness = 0.007;
 	pipe2.m_lambdaWall = 0.4;
 	geoNetwork.m_networkPipeDB.push_back(pipe2);
 
@@ -275,8 +275,11 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 
 	// create Nandrad Network
 	NANDRAD::HydraulicNetwork hydraulicNetwork;
+	hydraulicNetwork.m_modelType = NANDRAD::HydraulicNetwork::MT_HydraulicNetwork;
 	hydraulicNetwork.m_id = geoNetwork.m_id;
 	hydraulicNetwork.m_displayName = geoNetwork.m_name;
+	NANDRAD::KeywordList::setParameter(hydraulicNetwork.m_para,"HydraulicNetwork::para_t",
+									   NANDRAD::HydraulicNetwork::P_DefaultFluidTemperature, 20);
 
 	geoNetwork.createNandradHydraulicNetwork(hydraulicNetwork);
 
