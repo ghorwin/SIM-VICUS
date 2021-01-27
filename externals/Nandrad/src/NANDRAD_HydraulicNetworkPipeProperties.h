@@ -18,7 +18,6 @@ public:
 		P_PipeInnerDiameter,				// Keyword: PipeInnerDiameter					[mm]		'Inner diameter of pipe.'
 		P_PipeOuterDiameter,				// Keyword: PipeOuterDiameter					[mm]		'Outer diameter of pipe.'
 		P_UValuePipeWall,					// Keyword: UValuePipeWall						[W/mK]		'Length specific U-Value of pipe wall incl. insulation'
-		P_MaxDiscretizationWidth,			// Keyword: MaxDiscretizationWidth				[m]			'Maximum width of discretized volumes, needed for DynamicPipe'
 		NUM_P
 	};
 
@@ -29,7 +28,7 @@ public:
 	NANDRAD_COMP(HydraulicNetworkPipeProperties)
 
 	/*! Checks for valid and required parameters (value ranges). */
-	void checkParameters(int networkModelType) const;
+	void checkParameters(int networkModelType, int pipeModelType) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

@@ -48,7 +48,7 @@ public:
 		P_Volume,							// Keyword: Volume								[m3]	'Water or air volume of the component.'
 		P_COP,								// Keyword: COP									[-]		'Coefficient of performance of the component.'
 		P_UAValue,							// Keyword: UAValue								[W/m2K]	'UA-Value of heat exchanger'
-
+		P_PipeMaxDiscretizationWidth,		// Keyword: PipeMaxDiscretizationWidth			[m]		'Maximum width of discretized volumes in pipe'
 		// we can add those, once we know what to do with them
 
 //		P_TemperatureTolerance,				// xKxeyword: TemperatureTolerance				[K]		'Temperature tolerance for e.g. thermostats.'

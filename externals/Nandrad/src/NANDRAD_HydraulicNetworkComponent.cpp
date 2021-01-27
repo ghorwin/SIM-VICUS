@@ -35,12 +35,12 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) const {
 	std::vector<unsigned int> para = requiredParameter(m_modelType);
 
 	// filter necessary parameters for network model types
-	HydraulicNetwork::ModelType modelType = (HydraulicNetwork::ModelType) networkModelType;
+	HydraulicNetwork::ModelType netModelType = (HydraulicNetwork::ModelType) networkModelType;
 
 	for(unsigned int i = 0; i < para.size(); ++i) {
 
 		para_t paraEnum = (para_t)(para[i]);
-		switch(modelType) {
+		switch(netModelType) {
 			case HydraulicNetwork::MT_HydraulicNetwork: {
 				// skip thermal only parameters
 				if(paraEnum == P_PumpEfficiency)
@@ -56,15 +56,22 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) const {
 			} break;
 			default: break;
 		}
-		// check values: at the moment all are > 0
-		m_para[paraEnum].checkedValue(
-					KeywordList::Keyword(category.c_str(), paraEnum), KeywordList::Unit(category.c_str(), paraEnum),
-					KeywordList::Unit(category.c_str(), paraEnum),
-							   0, false, std::numeric_limits<double>::max(), true,
-							   IBK::FormatString("'%1' must be > 0 %2.")
-							   .arg(KeywordList::Keyword(category.c_str(), paraEnum))
-							   .arg(KeywordList::Unit(category.c_str(), paraEnum)).str().c_str() );
-		// TODO: specify conditions
+
+		if (m_modelType == MT_DynamicPipe)
+			m_para[P_PipeMaxDiscretizationWidth].checkedValue("PipeMaxDiscretizationWidth", "m", "m", 0, false,
+															   std::numeric_limits<double>::max(), true,
+															   "PipeMaxDiscretizationWidth must be > 0 m.");
+		if (paraEnum != P_PipeMaxDiscretizationWidth){
+			// check values: at the moment all are > 0
+			m_para[paraEnum].checkedValue(
+						KeywordList::Keyword(category.c_str(), paraEnum), KeywordList::Unit(category.c_str(), paraEnum),
+						KeywordList::Unit(category.c_str(), paraEnum),
+								   0, false, std::numeric_limits<double>::max(), true,
+								   IBK::FormatString("'%1' must be > 0 %2.")
+								   .arg(KeywordList::Keyword(category.c_str(), paraEnum))
+								   .arg(KeywordList::Unit(category.c_str(), paraEnum)).str().c_str() );
+			// TODO: specify conditions
+		}
 	}
 
 }
