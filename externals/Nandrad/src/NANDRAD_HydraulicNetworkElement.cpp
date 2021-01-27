@@ -87,7 +87,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw) {
 				}
 				else if(!m_para[P_HeatFlux].name.empty()) {
 					m_para[P_HeatFlux].checkedValue("HeatFlux", "W",
-						"W", std::numeric_limits<double>::min(), false, std::numeric_limits<double>::max(), false,
+						"W", std::numeric_limits<double>::lowest(), false, std::numeric_limits<double>::max(), false,
 						nullptr);
 				}
 			} break;
