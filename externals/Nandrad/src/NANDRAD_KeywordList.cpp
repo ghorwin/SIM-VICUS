@@ -1647,9 +1647,9 @@ namespace NANDRAD {
 			// HydraulicNetworkPipeProperties::para_t
 			case 12 :
 			switch (t) {
-				case 0 : return "m";
-				case 1 : return "m";
-				case 2 : return "m";
+				case 0 : return "mm";
+				case 1 : return "mm";
+				case 2 : return "mm";
 				case 3 : return "W/mK";
 			} break;
 			// InterfaceAirFlow::splinePara_t
