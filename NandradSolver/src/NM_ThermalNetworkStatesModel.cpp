@@ -225,12 +225,13 @@ void ThermalNetworkStatesModel::resultDescriptions(std::vector<QuantityDescripti
 	if(!resDesc.empty())
 		resDesc.clear();
 	// mass flux vector is a result
-	QuantityDescription desc("FluidTemperature", "C", "Internal fluid temperatures fo all network elements", false);
+	QuantityDescription desc("FluidTemperatures", "C", "Internal fluid temperatures fo all network elements", false);
 	// deactivate description;
 	if(m_p->m_flowElements.empty())
 		desc.m_size = 0;
 	resDesc.push_back(desc);
 	// set a description for each flow element
+	desc.m_name = "FluidTemperature";
 	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	// loop through all flow elements
 	for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
@@ -249,7 +250,7 @@ const double * ThermalNetworkStatesModel::resultValueRef(const InputReference & 
 			return &m_y[0];
 		return nullptr;
 	}
-	if(quantityName == std::string("FluidTemperature")) {
+	if(quantityName == std::string("FluidTemperatures")) {
 		// reference to network
 		if(quantity.m_id == id() && quantity.m_referenceType ==
 		   NANDRAD::ModelInputReference::MRT_NETWORK) {
@@ -257,7 +258,10 @@ const double * ThermalNetworkStatesModel::resultValueRef(const InputReference & 
 				return &m_fluidTemperatures[0];
 			return nullptr;
 		}
-		IBK_ASSERT(quantity.m_referenceType == NANDRAD::ModelInputReference::MRT_NETWORKELEMENT);
+	}
+	if(quantityName == std::string("FluidTemperature")) {
+		if(quantity.m_referenceType != NANDRAD::ModelInputReference::MRT_NETWORKELEMENT)
+			return nullptr;
 		// access to an element temperature
 		std::vector<unsigned int>::const_iterator fIt =
 				std::find(m_elementIds.begin(), m_elementIds.end(),
