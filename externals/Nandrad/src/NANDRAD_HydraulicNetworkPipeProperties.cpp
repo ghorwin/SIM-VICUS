@@ -13,7 +13,7 @@ bool HydraulicNetworkPipeProperties::operator!=(const HydraulicNetworkPipeProper
 }
 
 
-void HydraulicNetworkPipeProperties::checkParameters(int networkModelType, int pipeModelType) const {
+void HydraulicNetworkPipeProperties::checkParameters(int networkModelType) const {
 
 	FUNCID(HydraulicNetworkPipeProperties::checkParameters);
 	// check for mandatory and required parameters, check value ranges

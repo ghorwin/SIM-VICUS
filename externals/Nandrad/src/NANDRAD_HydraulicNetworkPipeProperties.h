@@ -28,7 +28,7 @@ public:
 	NANDRAD_COMP(HydraulicNetworkPipeProperties)
 
 	/*! Checks for valid and required parameters (value ranges). */
-	void checkParameters(int networkModelType, int pipeModelType) const;
+	void checkParameters(int networkModelType) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
