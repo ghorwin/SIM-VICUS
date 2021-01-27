@@ -231,6 +231,11 @@ void HydraulicNetworkModel::setup() {
 		for (HydraulicNetworkAbstractFlowElement * e : m_p->m_flowElements)
 			e->setFluidTemperature(fluidTemp);
 	}
+	else {
+		double fluidTemp = m_hydraulicNetwork->m_para[NANDRAD::HydraulicNetwork::P_InitialFluidTemperature].value;
+		for (HydraulicNetworkAbstractFlowElement * e : m_p->m_flowElements)
+			e->setFluidTemperature(fluidTemp);
+	}
 
 	// setup the equation system
 	try {
