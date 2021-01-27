@@ -6,6 +6,10 @@ namespace NANDRAD {
 void HydraulicNetwork::checkParameters()  {
 	FUNCID(HydraulicNetwork::checkParameters);
 
+	if(m_elements.empty()) {
+		throw IBK::Exception("Empty network is not allowed!", FUNC_ID);
+	}
+
 	// check our own properties, first
 	switch (m_modelType) {
 		case MT_HydraulicNetwork :
@@ -23,6 +27,7 @@ void HydraulicNetwork::checkParameters()  {
 		case NANDRAD::HydraulicNetwork::NUM_MT: break; // just to make compiler warnings disappear
 	}
 
+	// do not allow an empty network
 	// check parameters of fluid
 	try {
 		m_fluid.checkParameters(m_modelType);
