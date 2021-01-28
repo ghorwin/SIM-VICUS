@@ -67,9 +67,13 @@ public:
 	/*! Function retrieving number of internal states.*/
 	virtual unsigned int nInternalStates() const = 0;
 
-	/*! Function for retreiving initial temperatures
-	 * from each model.*/
-	virtual void initialTemperatures(double *T0) const = 0;
+	/*! Function for setting initial temperature
+	 * for each model.*/
+	virtual void setInitialTemperature(double T0) = 0;
+
+	/*! Function for retrieving initial states
+	 * of each model after initial temperature is set.*/
+	virtual void initialInternalStates(double *y0) = 0;
 
 	/*! Function for setting internal states.*/
 	virtual void setInternalStates(const double *y) = 0;
@@ -77,26 +81,36 @@ public:
 	/*! Function for retrieving heat fluxes out of the flow element.*/
 	virtual void internalDerivatives(double *ydot) = 0;
 
+	/*! Set fluid inlet and outlet nodal conditions. */
+	virtual void setNodalConditions(double mdot, double hInlet, double hOutlet) = 0;
+
+	/*! Set ambient conditions. */
+	virtual void setAmbientConditions(double Tamb, double alphaAmb) = 0;
+
+	/*! Returns fluid mean temperature. */
+	virtual double meanTemperature() const = 0;
+
+	/*! Returns fluid inlet side states: specific enthalpy. */
+	virtual double inletSpecificEnthalpy() const = 0;
+
+	/*! Returns fluid outlet side states: specific enthalpy. */
+	virtual double outletSpecificEnthalpy() const = 0;
+
+	/*! Returns fluid inlet side states: temperature. */
+	virtual double inletTemperature() const = 0;
+
+	/*! Returns fluid outlet side states: temperature. */
+	virtual double outletTemperature() const = 0;
+
+	/*! Returns overall heat loss along the flow element. */
+	virtual double heatLoss() const = 0;
+
 	/*! Optional function for registering dependencies between derivaites, internal states
 		and model results.*/
 	virtual void dependencies(const double */*ydot*/, const double */*y*/,
 							  std::vector<std::pair<const double *, const double *> > & ) const
 	{ }
 
-	/*! Set fluid inlet conditions: inlet depends on mass flux direction. */
-	virtual void setInletFluxes(double mdot, double Hdot) = 0;
-
-	/*! Set ambient conditions. */
-	virtual void setAmbientConditions(double Tamb, double alphaAmb) = 0;
-
-	/*! Returns fluid outlet states: specific enthalpy. */
-	virtual double outletSpecificEnthalpy() const = 0;
-
-	/*! Returns overall heat loss along the flow element. */
-	virtual double heatLoss() const = 0;
-
-	/*! Returns fluid volume inside the flow element. */
-	virtual double volume() const = 0;
 };
 
 

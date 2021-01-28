@@ -130,17 +130,11 @@ int ThermalNetworkModelImpl::updateFluxes() 	{
 		const double massFlux = m_fluidMassFluxes[i];
 		const double specEnthalpInlet = m_nodalSpecificEnthalpies[fe.m_nInlet];
 		const double specEnthalpOutlet = m_nodalSpecificEnthalpies[fe.m_nOutlet];
-		// positive mass flux
-		if(massFlux >= 0) {
-			flowElem->setInletFluxes(massFlux, specEnthalpInlet * massFlux);
-		}
-		// negative mass flux
-		else {
-			flowElem->setInletFluxes(massFlux, specEnthalpOutlet * massFlux);
-		}
+		// set all nodal conditions
+		flowElem->setNodalConditions(massFlux, specEnthalpInlet, specEnthalpOutlet);
 		// copy nodal temperatures
-		m_inletNodeTemperatures[i] = specEnthalpInlet/m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
-		m_outletNodeTemperatures[i] = specEnthalpOutlet/m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+		m_inletNodeTemperatures[i] = flowElem->inletTemperature();
+		m_outletNodeTemperatures[i] = flowElem->outletTemperature();
 		// copy heat fluxes
 		m_fluidHeatFluxes[i] = flowElem->heatLoss();
 	}

@@ -31,30 +31,43 @@ public:
 	/*! Function retrieving number of internal states.*/
 	unsigned int nInternalStates() const;
 
-	/*! Function for retreiving initial temperatures
-	 * from each model.*/
-	void initialTemperatures(double *T0) const;
+	/*! Function for retrieving initial states
+	 * of each model after initial temperature is set.*/
+	void initialInternalStates(double *y0);
 
 	/*! Function for setting internal states.*/
 	void setInternalStates(const double *y);
 
+	/*! Function for setting initial temperature
+	 * for each model.*/
+	void setInitialTemperature(double T0);
+
 	/*! Function for retrieving heat fluxes out of the flow element.*/
 	void internalDerivatives(double *ydot);
 
-	/*! Set fluid inlet conditions. */
-	void setInletFluxes(double mdot, double Hdot);
+	/*! Set fluid inlet and outlet nodal conditions. */
+	void setNodalConditions(double mdot, double hInlet, double hOutlet);
 
 	/*! Set ambient conditions. */
 	void setAmbientConditions(double Tamb, double alphaAmb);
 
+	/*! Returns fluid mean temperature. */
+	double meanTemperature() const;
+
+	/*! Returns fluid inlet states: spcific enthalpy. */
+	double inletSpecificEnthalpy() const;
+
 	/*! Returns fluid outlet states: spcific enthalpy. */
 	double outletSpecificEnthalpy() const;
 
+	/*! Returns fluid inlet side states: temperature. */
+	double inletTemperature() const;
+
+	/*! Returns fluid outlet side states: temperature. */
+	double outletTemperature() const;
+
 	/*! Returns overall heat loss along the flow element. */
 	double heatLoss() const;
-
-	/*! Returns fluid volume inside the flow element. */
-	double volume() const;
 
 private:
 
@@ -88,6 +101,12 @@ private:
 	/*! Fluid inlet specific enthalpy */
 	double							m_inletSpecificEnthalpy = 0.0;
 
+	/*! Fluid outlet temperature */
+	double							m_outletTemperature = 273.15;
+
+	/*! Fluid outlet specific enthalpy */
+	double							m_outletSpecificEnthalpy = 0.0;
+
 	/*! Environamental temperature */
 	double							m_ambientTemperature = 273.15;
 
@@ -96,6 +115,9 @@ private:
 
 	/*! Fluid specific enthalpy */
 	double							m_specificEnthalpy = 0.0;
+
+	/*! Fluid temperature */
+	double							m_temperature = 273.15;
 
 	/*! Heat loss through the pipe */
 	double							m_heatLoss = 0.0;
@@ -123,9 +145,13 @@ public:
 	/*! Function retrieving number of internal states.*/
 	unsigned int nInternalStates() const;
 
-	/*! Function for retreiving initial temperatures
-	 * from each model.*/
-	void initialTemperatures(double *T0) const;
+	/*! Function for setting initial temperature
+	 * for each model.*/
+	void setInitialTemperature(double T0);
+
+	/*! Function for retrieving initial states
+	 * of each model after initial temperature is set.*/
+	void initialInternalStates(double *y0);
 
 	/*! Function for setting internal states.*/
 	void setInternalStates(const double *y);
@@ -133,20 +159,29 @@ public:
 	/*! Function for retrieving heat fluxes out of the flow element.*/
 	void internalDerivatives(double *ydot);
 
-	/*! Set fluid inlet conditions. */
-	void setInletFluxes(double mdot, double Hdot);
+	/*! Set fluid inlet and outlet nodal conditions. */
+	void setNodalConditions(double mdot, double hInlet, double hOutlet);
 
 	/*! Set ambient conditions. */
 	void setAmbientConditions(double Tamb, double alphaAmb);
 
+	/*! Returns fluid mean temperature. */
+	double meanTemperature() const;
+
+	/*! Returns fluid inlet states: spcific enthalpy. */
+	double inletSpecificEnthalpy() const;
+
 	/*! Returns fluid outlet states: spcific enthalpy. */
 	double outletSpecificEnthalpy() const;
 
+	/*! Returns fluid inlet side states: temperature. */
+	double inletTemperature() const;
+
+	/*! Returns fluid outlet side states: temperature. */
+	double outletTemperature() const;
+
 	/*! Returns overall heat loss along the flow element. */
 	double heatLoss() const;
-
-	/*! Returns fluid volume inside the flow element. */
-	double volume() const;
 
 private:
 
@@ -166,11 +201,20 @@ private:
 	/*! Fluid inlet specific enthalpy */
 	double							m_inletSpecificEnthalpy = 0.0;
 
+	/*! Fluid outlet temperature */
+	double							m_outletTemperature = 273.15;
+
+	/*! Fluid outlet specific enthalpy */
+	double							m_outletSpecificEnthalpy = 0.0;
+
 	/*! Fluid mass flux */
 	double							m_massFlux = 0.0;
 
 	/*! Fluid specific enthalpy */
 	double							m_specificEnthalpy = 0.0;
+
+	/*! Fluid temperature */
+	double							m_temperature = 273.15;
 
 };
 
@@ -194,9 +238,13 @@ public:
 	/*! Function retrieving number of internal states.*/
 	unsigned int nInternalStates() const;
 
-	/*! Function for retreiving initial temperatures
-	 * from each model.*/
-	void initialTemperatures(double *T0) const;
+	/*! Function for setting initial temperature
+	 * for each model.*/
+	void setInitialTemperature(double T0);
+
+	/*! Function for retrieving initial states
+	 * of each model after initial temperature is set.*/
+	void initialInternalStates(double *y0);
 
 	/*! Function for setting internal states.*/
 	void setInternalStates(const double *y);
@@ -204,23 +252,29 @@ public:
 	/*! Function for retrieving heat fluxes out of the flow element.*/
 	void internalDerivatives(double *ydot);
 
-	/*! Set fluid inlet conditions. */
-	void setInletFluxes(double mdot, double Hdot);
+	/*! Set fluid inlet and outlet nodal conditions. */
+	void setNodalConditions(double mdot, double hInlet, double hOutlet);
 
 	/*! Set ambient conditions. */
 	void setAmbientConditions(double Tamb, double alphaAmb);
 
+	/*! Returns fluid mean temperature. */
+	double meanTemperature() const;
+
 	/*! Returns fluid inlet states: spcific enthalpy. */
-	const double &inletSpecificEnthalpy() const;
+	double inletSpecificEnthalpy() const;
 
 	/*! Returns fluid outlet states: spcific enthalpy. */
 	double outletSpecificEnthalpy() const;
 
+	/*! Returns fluid inlet side states: temperature. */
+	double inletTemperature() const;
+
+	/*! Returns fluid outlet side states: temperature. */
+	double outletTemperature() const;
+
 	/*! Returns overall heat loss along the flow element. */
 	double heatLoss() const;
-
-	/*! Returns fluid volume inside the flow element. */
-	double volume() const;
 
 private:
 
@@ -236,11 +290,21 @@ private:
 	/*! Fluid inlet specific enthalpy */
 	double							m_inletSpecificEnthalpy = 0.0;
 
+	/*! Fluid outlet temperature */
+	double							m_outletTemperature = 273.15;
+
+	/*! Fluid outlet specific enthalpy */
+	double							m_outletSpecificEnthalpy = 0.0;
+
 	/*! Fluid mass flux */
 	double							m_massFlux = 0.0;
 
 	/*! Fluid specific enthalpy */
 	double							m_specificEnthalpy = 0.0;
+
+	/*! Fluid temperature */
+	double							m_temperature = 273.15;
+
 };
 
 

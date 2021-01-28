@@ -105,7 +105,7 @@ public:
 
 		\param Pointer to the memory array holding all initial states for this network model (to be written into).
 	*/
-	void yInitial(double * y) const;
+	void yInitial(double * y);
 
 	/*! Computes fluid temperatures.
 		This function is called directly from NandradModel as first step in the model evaluation.
