@@ -85,17 +85,45 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 			switch (e.m_component->m_modelType) {
 				case NANDRAD::HydraulicNetworkComponent::MT_StaticPipe :
-				case NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe :
-				case NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe :
-				case NANDRAD::HydraulicNetworkComponent::MT_DynamicAdiabaticPipe :
 				{
 					IBK_ASSERT(e.m_pipeProperties != nullptr);
 					// create hydraulic pipe model
-					TNPipeElement * pipeElement = new TNPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
+					TNStaticPipeElement * pipeElement = new TNStaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
 					// add to flow elements
 					m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 				} break;
 
+				case NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe :
+				{
+					IBK_ASSERT(e.m_pipeProperties != nullptr);
+					// create hydraulic pipe model
+					TNDynamicPipeElement * pipeElement = new TNDynamicPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
+					// add to flow elements
+					m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+					break;
+				}
+
+
+				case NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe :
+				{
+					IBK_ASSERT(e.m_pipeProperties != nullptr);
+					// create hydraulic pipe model
+					TNStaticPipeElement * pipeElement = new TNStaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
+					// add to flow elements
+					m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+					break;
+				}
+
+
+				case NANDRAD::HydraulicNetworkComponent::MT_DynamicAdiabaticPipe :
+				{
+					IBK_ASSERT(e.m_pipeProperties != nullptr);
+					// create hydraulic pipe model
+					TNDynamicAdiabaticPipeElement * pipeElement = new TNDynamicAdiabaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
+					// add to flow elements
+					m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+					break;
+				}
 
 				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel :
 				{
