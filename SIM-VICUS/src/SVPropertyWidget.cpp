@@ -39,9 +39,6 @@ SVPropertyWidget::SVPropertyWidget(QWidget * parent) :
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
 			this, &SVPropertyWidget::onViewStateChanged);
 
-	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
-			this, &SVPropertyWidget::onModified);
-
 	onViewStateChanged();
 }
 
@@ -107,32 +104,4 @@ void SVPropertyWidget::onViewStateChanged() {
 	}
 }
 
-
-void SVPropertyWidget::onModified(int modificationType, ModificationInfo * ) {
-	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
-	switch (modType) {
-		case SVProjectHandler::NetworkModified:
-		case SVProjectHandler::AllModified:
-		case SVProjectHandler::NodeStateModified:
-			// Tell mode selection widget that the selection property has changed.
-			// This is used to switch into a specific building/network edit mode
-			// based on the current selection. For example, when "Network" mode is selected
-			// and a node is selected, we automatically switch to "Node" edit mode.
-			m_propModeSelectionWidget->selectionChanged();
-			// Note: the call above may results in a view state change, when the selection causes
-			//		 the network property selection to change.
-
-			// Note: the individual property widgets should listen themselves to onModified() signals
-			//		 and react on selection/visibility changed signals accordingly. Alternatively,
-			//		 the modification info can be triggered from here as well, but not both at the same time.
-			break;
-		case SVProjectHandler::BuildingGeometryChanged:
-			// We have to call to update the properties in edit geometry mode
-			// therefore we need to store a pointer to it
-			qobject_cast<SVPropEditGeometry *>(m_propWidgets[M_Geometry])->update();
-		break;
-
-		default: ; // just to make compiler happy
-	}
-}
 

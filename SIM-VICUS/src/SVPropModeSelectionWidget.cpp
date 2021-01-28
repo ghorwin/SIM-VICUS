@@ -23,6 +23,9 @@ SVPropModeSelectionWidget::SVPropModeSelectionWidget(QWidget *parent) :
 	m_ui->comboBoxBuildingProperties->addItem(tr("Boundary conditions"), BT_BoundaryConditions);
 	m_ui->comboBoxBuildingProperties->blockSignals(false);
 
+	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
+			this, &SVPropModeSelectionWidget::onModified);
+
 	// we are in "Site" mode initially, so the rest is hidden
 	updateWidgetVisibility();
 }
@@ -30,6 +33,24 @@ SVPropModeSelectionWidget::SVPropModeSelectionWidget(QWidget *parent) :
 
 SVPropModeSelectionWidget::~SVPropModeSelectionWidget() {
 	delete m_ui;
+}
+
+
+void SVPropModeSelectionWidget::onModified(int modificationType, ModificationInfo * ) {
+	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
+	switch (modType) {
+		case SVProjectHandler::NetworkModified:
+		case SVProjectHandler::AllModified:
+		case SVProjectHandler::NodeStateModified:
+			// Based on current selection, switch into a specific building/network edit mode. For example, when
+			// "Network" mode is selected and a node is selected, we automatically switch to "Node" edit mode.
+			selectionChanged();
+			// Note: the call above may results in a view state change, when the selection causes
+			//		 the network property selection to change.
+			break;
+
+		default: ; // just to make compiler happy
+	}
 }
 
 

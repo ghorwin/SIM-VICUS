@@ -30,12 +30,6 @@ public:
 	explicit SVPropModeSelectionWidget(QWidget *parent = nullptr);
 	~SVPropModeSelectionWidget();
 
-	/*! Based on selected properties, switch to one of the specific edit modes, based on
-		the selected objects. Sends only out a view state change event, if the combo box value
-		has been modified.
-	*/
-	void selectionChanged();
-
 	/*! Returns the currently selected choice in the building property selection combo. */
 	BuildingPropertyTypes currentBuildingPropertyType() const;
 
@@ -44,6 +38,10 @@ public:
 
 	/*! Sets the properties m_propertyWidgetMode and m_objectColorMode based on current selections in the widget. */
 	void viewStateProperties(SVViewState & vs) const;
+
+public slots:
+	/*! Connected to SVProjectHandler::modified() */
+	void onModified(int modificationType, ModificationInfo * );
 
 private slots:
 	void on_pushButtonBuilding_toggled(bool checked);
@@ -57,6 +55,12 @@ private slots:
 	void on_comboBoxBuildingProperties_currentIndexChanged(int);
 
 private:
+	/*! Based on selected properties, switch to one of the specific edit modes, based on
+		the selected objects. Sends only out a view state change event, if the combo box value
+		has been modified.
+	*/
+	void selectionChanged();
+
 	/*! This is called whenever the user has made changes to any of the components in
 		this widget and updates the enabled/disabled states of all controls.
 	*/

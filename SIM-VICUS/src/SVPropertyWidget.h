@@ -48,9 +48,6 @@ public slots:
 	*/
 	void onViewStateChanged();
 
-	/*! Connected to SVProjectHandler::modified() */
-	void onModified( int modificationType, ModificationInfo * data );
-
 private:
 	/*! Convenience function for creating a widget, if not existing yet, adding it to
 		the layout and showing it.

@@ -21,12 +21,12 @@ class SVPropEditGeometry;
 
 class SVProjectHandler;
 class SVUndoModifySurfaceGeometry;
-class VICUS_Project;
+class ModificationInfo;
+
 
 /*! This widget is shown when the scene is put into geometry editing mode. */
 class SVPropEditGeometry : public QWidget {
 	Q_OBJECT
-
 
 public:
 	enum TabState {
@@ -58,10 +58,11 @@ public:
 	*/
 	void setRotation(const IBKMK::Vector3D &normal);
 
-	/*! Updates the property widget regarding to all geometry data
-		Takes a vector of pointers to all selected surfaces
-	*/
-	void update();
+public slots:
+
+	/*! Connected to SVProjectHandler::modified() */
+	void onModified(int modificationType, ModificationInfo * );
+
 
 private slots:
 
@@ -84,6 +85,11 @@ private slots:
 	void on_radioButtonAbsolute_toggled(bool checked);
 
 private:
+	/*! Updates the property widget regarding to all geometry data
+		Takes a vector of pointers to all selected surfaces
+	*/
+	void update();
+
 	Ui::SVPropEditGeometry *m_ui;
 };
 

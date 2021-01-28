@@ -46,6 +46,9 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui->doubleSpinBoxRotateX->setSuffix(" °");
 	m_ui->doubleSpinBoxRotateY->setSuffix(" °");
 	m_ui->doubleSpinBoxRotateZ->setSuffix(" °");
+
+	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
+			this, &SVPropEditGeometry::onModified);
 }
 
 
@@ -112,45 +115,21 @@ void SVPropEditGeometry::setRotation(const IBKMK::Vector3D &normal) {
 
 }
 
-void SVPropEditGeometry::update()
-{
-	// first we get how many surfaces are selected
-	std::vector<const VICUS::Surface *> surfaces;
-	project().selectedSurfaces(surfaces, VICUS::Project::SG_All);
-//	project().selectObjects(surfaces, VICUS::Project::SG_All, true, true);
-	SVViewState vs = SVViewStateHandler::instance().viewState();
 
-	if ( surfaces.size() > 0 ) {
-		// we get the view state
-		vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-		vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
 
-		if ( surfaces.size() == 1 ) {
-			const VICUS::Surface *s = surfaces[0];
-			SVViewStateHandler::instance().m_propEditGeometryWidget->setRotation(s->m_geometry.normal() );
-		}
-		else
-			SVViewStateHandler::instance().m_propEditGeometryWidget->setRotation(
-						VICUS::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localXAxis() ) );
-		IBKMK::Vector3D center;
+void SVPropEditGeometry::onModified(int modificationType, ModificationInfo * ) {
+	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
+	switch (modType) {
+		case SVProjectHandler::BuildingGeometryChanged:
+			// when the building geometry has changed, we need to update the geometrical info
+			// in the widget based on the current selection
+			update(); // this might update the location of the local coordinate system!
+		break;
 
-		// update local coordinates
-		setBoundingBox(project().boundingBox(surfaces, center));
-		Vic3D::Transform3D t;
-		t.setTranslation(VICUS::IBKVector2QVector(center) );
-		setCoordinates( t );
-
-		SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(VICUS::IBKVector2QVector(center) );
+		default: ; // just to make compiler happy
 	}
-	else {
-		vs.m_sceneOperationMode = SVViewState::NUM_OM;
-		vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
-
-	}
-
-	SVViewStateHandler::instance().setViewState(vs);
-
 }
+
 
 
 // *** slots ***
@@ -566,4 +545,45 @@ void SVPropEditGeometry::on_radioButtonAbsolute_toggled(bool absTrans)
 		m_ui->labelTranslationY->setText("ΔY");
 		m_ui->labelTranslationZ->setText("ΔZ");
 	}
+}
+
+
+// *** private functions ***
+
+void SVPropEditGeometry::update() {
+	// first we get how many surfaces are selected
+	std::vector<const VICUS::Surface *> surfaces;
+	project().selectedSurfaces(surfaces, VICUS::Project::SG_All);
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+
+	if ( surfaces.size() > 0 ) {
+		// we get the view state
+		vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+		vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
+
+		if ( surfaces.size() == 1 ) {
+			const VICUS::Surface *s = surfaces[0];
+			SVViewStateHandler::instance().m_propEditGeometryWidget->setRotation(s->m_geometry.normal() );
+		}
+		else
+			SVViewStateHandler::instance().m_propEditGeometryWidget->setRotation(
+						VICUS::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localXAxis() ) );
+		IBKMK::Vector3D center;
+
+		// update local coordinates
+		setBoundingBox(project().boundingBox(surfaces, center));
+		Vic3D::Transform3D t;
+		t.setTranslation(VICUS::IBKVector2QVector(center) );
+		setCoordinates( t );
+
+		SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(VICUS::IBKVector2QVector(center) );
+	}
+	else {
+		vs.m_sceneOperationMode = SVViewState::NUM_OM;
+		vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+
+	}
+
+	SVViewStateHandler::instance().setViewState(vs);
+
 }
