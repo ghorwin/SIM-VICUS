@@ -66,20 +66,15 @@ void SVPropModeSelectionWidget::selectionChanged() {
 		for (const VICUS::Object* o : objs) {
 			if (dynamic_cast<const VICUS::NetworkNode*>(o) != nullptr)
 				haveNode = true;
-			else if (dynamic_cast<const VICUS::NetworkEdge*>(o) != nullptr) {
+			else if (dynamic_cast<const VICUS::NetworkEdge*>(o) != nullptr)
 				haveEdge = true;
-			}
-			if (haveNode && haveEdge)
-				return; // both selected, cannot do anything
 		}
 		// only nodes selected?
 		blockSignals(true);
-		if (haveNode) {
+		if (haveNode)
 			m_ui->comboBoxNetworkProperties->setCurrentIndex(1);	// sends a signal to change property widget itself
-		}
-		else if (haveEdge) {
+		else if (haveEdge)
 			m_ui->comboBoxNetworkProperties->setCurrentIndex(2);	// sends a signal to change property widget itself
-		}
 		blockSignals(false);
 		updateViewState();
 	}

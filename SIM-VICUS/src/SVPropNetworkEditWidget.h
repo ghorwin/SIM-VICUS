@@ -106,6 +106,10 @@ private:
 
 	bool setNetwork();
 
+	void clearUI();
+
+	void setAllEnabled(bool enabled);
+
 	/*! modifies the given property of selected edge(s).
 	 * Encapsulates the process of retrieving the according edge and conducting the undo */
 	template <typename TEdgeProp, typename Tval>
@@ -139,10 +143,10 @@ private:
 	QMap<QString, unsigned>			m_mapDBPipes;
 
 	/*! Contains the currently selected network, or the network, of the currently selected nodes/edges.	*/
-	const VICUS::Network *			m_currentNetwork = nullptr;
+	const VICUS::Network *			m_currentConstNetwork = nullptr;
 
 	/*! Contains the currently selected network, or the network, of the currently selected nodes/edges.	*/
-	VICUS::Network					m_network;
+	VICUS::Network					m_currentNetwork;
 
 	std::vector<const VICUS::NetworkEdge *> m_currentEdges;
 
