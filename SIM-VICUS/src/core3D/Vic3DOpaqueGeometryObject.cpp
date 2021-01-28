@@ -119,9 +119,9 @@ void OpaqueGeometryObject::updateColorBuffer(unsigned int startIndex, unsigned i
 	if (m_colorBufferData.empty())
 		return;
 	m_colorBufferObject.bind();
-	if (count != 0)
-		m_colorBufferObject.allocate(m_colorBufferData.data()+startIndex, count*sizeof(ColorRGBA) );
-	else
+//	if (count != 0)
+//		m_colorBufferObject.allocate(m_colorBufferData.data()+startIndex, count*sizeof(ColorRGBA) );
+//	else
 		m_colorBufferObject.allocate(m_colorBufferData.data(), m_colorBufferData.size()*sizeof(ColorRGBA) );
 	m_colorBufferObject.release();
 }

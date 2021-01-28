@@ -137,8 +137,12 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			// and only copy the affected color buffer into GPU memory.
 
 			// we need to update the colors of some building elements
-			unsigned int smallestVertexIndex = m_opaqueGeometryObject.m_vertexBufferData.size();
-			unsigned int largestVertexIndex = 0;
+			bool updateOpaqueGeometryNeeded = false;
+			unsigned int smallestVertexIndexOpaqueGeometry = m_opaqueGeometryObject.m_vertexBufferData.size();
+			unsigned int largestVertexIndexOpaqueGeometry = 0;
+			bool updateNetworkGeometryNeeded = false;
+			unsigned int smallestVertexIndexNetworks = m_networkGeometryObject.m_vertexBufferData.size();
+			unsigned int largestVertexIndexNetworks = 0;
 			// first decode the modification info object
 			const SVUndoTreeNodeState::ModifiedNodes * info = dynamic_cast<SVUndoTreeNodeState::ModifiedNodes *>(data);
 			Q_ASSERT(info != nullptr);
@@ -155,11 +159,13 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 					// get vertex start address of selected node
 					Q_ASSERT(m_opaqueGeometryObject.m_vertexStartMap.find(id) != m_opaqueGeometryObject.m_vertexStartMap.end());
 					unsigned int vertexStart = m_opaqueGeometryObject.m_vertexStartMap[id];
-					smallestVertexIndex = std::min(smallestVertexIndex, vertexStart);
+					smallestVertexIndexOpaqueGeometry = std::min(smallestVertexIndexOpaqueGeometry, vertexStart);
 					// now update the color buffer for this surface
 					// color will be fully transparent if surface is either invisible or selected
 					updateColors(*s, vertexStart, m_opaqueGeometryObject.m_colorBufferData);
-					largestVertexIndex = std::min(smallestVertexIndex, vertexStart);
+					// Mind: vertexStart has been moved to next object buffer start
+					largestVertexIndexOpaqueGeometry = std::max(largestVertexIndexOpaqueGeometry, vertexStart);
+					updateOpaqueGeometryNeeded = true;
 				}
 
 				// is it a NetworkNode or NetworkEdge?
@@ -169,7 +175,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 					// get vertex start address of selected node/edge
 					Q_ASSERT(m_networkGeometryObject.m_vertexStartMap.find(id) != m_networkGeometryObject.m_vertexStartMap.end());
 					unsigned int vertexStart = m_networkGeometryObject.m_vertexStartMap[id];
-					smallestVertexIndex = std::min(smallestVertexIndex, vertexStart);
+					smallestVertexIndexNetworks = std::min(smallestVertexIndexNetworks, vertexStart);
 					// now update the color buffer for this object depending on type
 					if (edge != nullptr) {
 						/// TODO : switch color based on current property mode
@@ -187,12 +193,16 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 							col.setAlpha(0);
 						updateSphereColors(col, vertexStart, m_networkGeometryObject.m_colorBufferData);
 					}
-					largestVertexIndex = std::min(smallestVertexIndex, vertexStart);
+					largestVertexIndexNetworks = std::max(largestVertexIndexNetworks, vertexStart);
+					updateNetworkGeometryNeeded = true;
 				}
 			}
 
 			// finally, transfer only the modified portion of the color buffer to GPU memory
-			m_opaqueGeometryObject.updateColorBuffer(smallestVertexIndex, largestVertexIndex-smallestVertexIndex);
+			if (updateOpaqueGeometryNeeded)
+				m_opaqueGeometryObject.updateColorBuffer(smallestVertexIndexOpaqueGeometry, largestVertexIndexOpaqueGeometry-smallestVertexIndexOpaqueGeometry);
+			if (updateNetworkGeometryNeeded)
+				m_networkGeometryObject.updateColorBuffer(smallestVertexIndexNetworks, largestVertexIndexNetworks-smallestVertexIndexNetworks);
 
 			// Now check if our new selection set is different from the previous selection set.
 			std::set<const VICUS::Object*> selectedObjects;
