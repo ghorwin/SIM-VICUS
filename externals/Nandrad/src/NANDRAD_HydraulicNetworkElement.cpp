@@ -53,7 +53,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw) {
 			// set reference
 			m_pipeProperties = &(*pit);
 
-			// all pipes need parameter 'Lenght
+			// all pipes need parameter Length
 			m_para[P_Length].checkedValue("Length", "m", "m", 0, false, std::numeric_limits<double>::max(), true,
 										   "Length must be > 0 m.");
 
@@ -73,29 +73,26 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw) {
 		// decide which heat exchange is chosen
 		switch(m_component->m_heatExchangeType) {
 
-			case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant: {
-				// retrieve constant temperature
-				if(!m_para[P_Temperature].name.empty()) {
-					// check temperature
-					m_para[P_Temperature].checkedValue("Temperature", "C", "C", -200.0, true, std::numeric_limits<double>::max(), true,
-												   "Temperature must be >= -200 C.");
-					// check external heat transfer coefficient
-					if(m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].name.empty()){
-						throw IBK::Exception(IBK::FormatString("Missing parameteter '%1 for exchange type %2!")
-									.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::para_t",
-									NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient))
-									.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
-									m_component->m_heatExchangeType)),
-									FUNC_ID);
-					}
-				}
-				else if(!m_para[P_HeatFlux].name.empty()) {
-					m_para[P_HeatFlux].checkedValue("HeatFlux", "W",
-						"W", std::numeric_limits<double>::lowest(), false, std::numeric_limits<double>::max(), false,
-						nullptr);
+			case NANDRAD::HydraulicNetworkComponent::HT_TemperatureConstant: {
+				// check temperature
+				m_para[P_Temperature].checkedValue("Temperature", "C", "C", -200.0, true, std::numeric_limits<double>::max(), true,
+											   "Temperature must be >= -200 C.");
+				// check external heat transfer coefficient
+				if(m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].name.empty()){
+					throw IBK::Exception(IBK::FormatString("Missing parameteter '%1 for exchange type %2!")
+								.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::para_t",
+								NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient))
+								.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
+								m_component->m_heatExchangeType)),
+								FUNC_ID);
 				}
 			} break;
 
+			case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant: {
+				// check heat flux
+				m_para[P_HeatFlux].checkedValue("HeatFlux", "W", "W",
+							std::numeric_limits<double>::lowest(), false, std::numeric_limits<double>::max(), false, nullptr);
+			} break;
 
 			case NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature: {
 
