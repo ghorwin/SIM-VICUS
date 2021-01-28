@@ -232,6 +232,8 @@ void HydraulicNetworkModel::setup() {
 			e->setFluidTemperature(fluidTemp);
 	}
 	else {
+		// TODO : Anne, brauchen wir hier wirklich eine Initialisierung? Die Temperatur wird doch vor der Berechnung
+		//        immer gesetzt?
 		double fluidTemp = m_hydraulicNetwork->m_para[NANDRAD::HydraulicNetwork::P_InitialFluidTemperature].value;
 		for (HydraulicNetworkAbstractFlowElement * e : m_p->m_flowElements)
 			e->setFluidTemperature(fluidTemp);
