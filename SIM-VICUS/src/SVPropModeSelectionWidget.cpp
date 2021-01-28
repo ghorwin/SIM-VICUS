@@ -54,13 +54,13 @@ void SVPropModeSelectionWidget::selectionChanged() {
 		// only nodes selected?
 		if (haveNode && !haveEdge) {
 			if (m_ui->comboBoxNetworkProperties->currentIndex() == 1)
-				emit on_comboBoxNetworkProperties_currentIndexChanged(1);
+				updateViewState();
 			else
 				m_ui->comboBoxNetworkProperties->setCurrentIndex(1);	// sends a signal to change property widget itself
 		}
 		if (!haveNode && haveEdge) {
 			if (m_ui->comboBoxNetworkProperties->currentIndex() == 2)
-				emit on_comboBoxNetworkProperties_currentIndexChanged(2);
+				updateViewState();
 			else
 				m_ui->comboBoxNetworkProperties->setCurrentIndex(2);	// sends a signal to change property widget itself
 
