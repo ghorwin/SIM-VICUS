@@ -114,8 +114,14 @@ void SVPropNetworkEditWidget::selectionChanged() {
 
 void SVPropNetworkEditWidget::updateNodeProperties()
 {
-	if (m_currentNodes.size() == 0)
+	if (m_currentNodes.size() == 0){
+		// clear all
+		m_ui->lineEditNodeHeatingDemand->clear();
+		m_ui->labelNodeId->clear();
+		m_ui->lineEditNodeX->clear();
+		m_ui->lineEditNodeY->clear();
 		return;
+	}
 
 	setupComboBoxComponents();
 
@@ -162,8 +168,13 @@ void SVPropNetworkEditWidget::updateNodeProperties()
 
 void SVPropNetworkEditWidget::updateEdgeProperties() {
 
-	if (m_currentEdges.size() == 0)
+	if (m_currentEdges.size() == 0){
+		// clear all
+		m_ui->labelPipeLength->clear();
+		m_ui->labelPipeLength->clear();
+		m_ui->checkBoxSupplyPipe->setChecked(false);
 		return;
+	}
 
 	setupComboBoxComponents();
 	setupComboboxPipeDB();
@@ -208,8 +219,16 @@ void SVPropNetworkEditWidget::updateEdgeProperties() {
 
 void SVPropNetworkEditWidget::updateNetworkProperties()
 {
-	if (m_currentNetwork == nullptr)
+	if (m_currentNetwork == nullptr){
+		// clear all
+		m_ui->labelEdgeCount->setText("");
+		m_ui->labelNodeCount->setText("");
+		m_ui->labelNetworkConnected->setText("");
+		m_ui->labelLargestDiameter->setText("");
+		m_ui->labelSmallestDiameter->setText("");
+		m_ui->labelTotalLength->setText("");
 		return;
+	}
 
 	m_ui->labelEdgeCount->setText(QString("%1").arg(m_currentNetwork->m_edges.size()));
 	m_ui->labelNodeCount->setText(QString("%1").arg(m_currentNetwork->m_nodes.size()));
