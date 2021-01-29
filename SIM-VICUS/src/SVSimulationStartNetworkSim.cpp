@@ -161,7 +161,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 
 
 
-//#if 0
+#if 0
 	// *** test example 2: bit larger ***
 
 	// geometric network
@@ -171,14 +171,10 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	unsigned id1 = geoNetwork.addNodeExt(IBKMK::Vector3D(0,0,0), VICUS::NetworkNode::NT_Source);
 	unsigned id2 = geoNetwork.addNodeExt(IBKMK::Vector3D(0,100,0), VICUS::NetworkNode::NT_Mixer);
 	unsigned id3 = geoNetwork.addNodeExt(IBKMK::Vector3D(100,100,0), VICUS::NetworkNode::NT_Building);
-	unsigned id4 = geoNetwork.addNodeExt(IBKMK::Vector3D(0,200,0), VICUS::NetworkNode::NT_Mixer);
-	unsigned id5 = geoNetwork.addNodeExt(IBKMK::Vector3D(100,200,0), VICUS::NetworkNode::NT_Building);
-	unsigned id6 = geoNetwork.addNodeExt(IBKMK::Vector3D(-50,200,0), VICUS::NetworkNode::NT_Building);
+	unsigned id4 = geoNetwork.addNodeExt(IBKMK::Vector3D(100,-100,0), VICUS::NetworkNode::NT_Building);
 	geoNetwork.addEdge(id1, id2, true);
 	geoNetwork.addEdge(id2, id3, true);
 	geoNetwork.addEdge(id2, id4, true);
-	geoNetwork.addEdge(id4, id5, true);
-	geoNetwork.addEdge(id4, id6, true);
 
 	//	*** Components
 
@@ -239,39 +235,35 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	geoNetwork.m_nodes[id1].m_componentId = pump.m_id;
 	geoNetwork.m_nodes[id3].m_componentId = heatExchanger.m_id;
 	geoNetwork.m_nodes[id3].m_heatFlux = IBK::Parameter("heat flux", -100, IBK::Unit("W"));
-	geoNetwork.m_nodes[id5].m_componentId = heatExchanger.m_id;
-	geoNetwork.m_nodes[id5].m_heatFlux = IBK::Parameter("heat flux", -200, IBK::Unit("W"));
-	geoNetwork.m_nodes[id6].m_componentId = heatExchanger.m_id;
-	geoNetwork.m_nodes[id6].m_heatFlux = IBK::Parameter("heat flux", -300, IBK::Unit("W"));
+	geoNetwork.m_nodes[id4].m_componentId = heatExchanger.m_id;
+	geoNetwork.m_nodes[id4].m_heatFlux = IBK::Parameter("heat flux", -200, IBK::Unit("W"));
 
 	IBK::Parameter temp10("Temperature", 10, IBK::Unit("C"));
+
 	geoNetwork.edge(id1, id2)->m_pipeId = pipe2.m_id;
 	geoNetwork.edge(id1, id2)->m_componentId = pipeComponent.m_id;
 	geoNetwork.edge(id1, id2)->m_ambientTemperature = temp10;
+
 	geoNetwork.edge(id2, id3)->m_pipeId = pipe1.m_id;
 	geoNetwork.edge(id2, id3)->m_componentId = pipeComponent.m_id;
 	geoNetwork.edge(id2, id3)->m_ambientTemperature = temp10;
+
 	geoNetwork.edge(id2, id4)->m_pipeId = pipe1.m_id;
 	geoNetwork.edge(id2, id4)->m_componentId = pipeComponent.m_id;
 	geoNetwork.edge(id2, id4)->m_ambientTemperature = temp10;
-	geoNetwork.edge(id4, id5)->m_pipeId = pipe1.m_id;
-	geoNetwork.edge(id4, id5)->m_componentId = pipeComponent.m_id;
-	geoNetwork.edge(id4, id5)->m_ambientTemperature = temp10;
-	geoNetwork.edge(id4, id6)->m_pipeId = pipe1.m_id;
-	geoNetwork.edge(id4, id6)->m_componentId = pipeComponent.m_id;
-	geoNetwork.edge(id4, id6)->m_ambientTemperature = temp10;
+
 
 	geoNetwork.updateNodeEdgeConnectionPointers();
 
 	// *** test example 2 until here ***
 
-//#endif
+#endif
 
 
 
-//	VICUS::Project proj = project();
-//	unsigned int networkId = m_networksMap.value(m_ui->comboBoxNetwork->currentText());
-//	const VICUS::Network geoNetwork = *proj.element(proj.m_geometricNetworks, networkId);
+	VICUS::Project proj = project();
+	unsigned int networkId = m_networksMap.value(m_ui->comboBoxNetwork->currentText());
+	const VICUS::Network geoNetwork = *proj.element(proj.m_geometricNetworks, networkId);
 
 	// create Nandrad Network
 	NANDRAD::HydraulicNetwork hydraulicNetwork;

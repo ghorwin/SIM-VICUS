@@ -303,7 +303,6 @@ void SVPropNetworkEditWidget::setupComboboxPipeDB()
 
 void SVPropNetworkEditWidget::setupComboBoxComponents()
 {
-	m_ui->pushButtonEditComponents->setEnabled(!m_currentConstNetwork->m_hydraulicComponents.empty());
 	m_mapComponents.clear();
 	m_mapComponents.insert("", VICUS::INVALID_ID);
 	for (const NANDRAD::HydraulicNetworkComponent &comp: m_currentConstNetwork->m_hydraulicComponents)
@@ -456,18 +455,16 @@ void SVPropNetworkEditWidget::on_horizontalSliderScaleEdges_valueChanged(int val
 
 
 void SVPropNetworkEditWidget::on_pushButtonEditComponents_clicked() {
-	const VICUS::Network * network = m_currentConstNetwork;
-	std::vector<const VICUS::NetworkNode *> nodes = m_currentNodes;
-	std::vector<const VICUS::NetworkEdge *> edges = m_currentEdges;
+
 	unsigned int componentId = 0;
-	if (nodes[0] != nullptr)
-		componentId = nodes[0]->m_componentId;
-	else if (edges[0] != nullptr)
-		componentId = edges[0]->m_componentId;
+	if (m_currentNodes[0] != nullptr)
+		componentId = m_currentNodes[0]->m_componentId;
+	else if (m_currentEdges[0] != nullptr)
+		componentId = m_currentEdges[0]->m_componentId;
 	else
 		return;
 	SVDialogHydraulicComponents *dialog = new SVDialogHydraulicComponents(this);
-	if (dialog->edit(network->m_id, componentId) == QDialog::Accepted){
+	if (dialog->edit(m_currentConstNetwork->m_id, componentId) == QDialog::Accepted){
 		setupComboBoxComponents();
 		m_ui->comboBoxComponent->setCurrentText(m_mapComponents.key(dialog->currentComponentId()));
 	}
