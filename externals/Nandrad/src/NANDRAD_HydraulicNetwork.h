@@ -30,6 +30,7 @@ public:
 	enum para_t {
 		P_DefaultFluidTemperature,			// Keyword: DefaultFluidTemperature	[C]		'Default temperature for HydraulicNetwork models'
 		P_InitialFluidTemperature,			// Keyword: InitialFluidTemperature	[C]		'Initial temperature of the fluid'
+		P_ReferencePressure,				// Keyword: ReferencePressure [Pa]			'Reference pressure of network'
 		NUM_P
 	};
 
@@ -44,11 +45,15 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID for this network. */
-	unsigned int									m_id			= NANDRAD::INVALID_ID;			// XML:A:required
+	unsigned int									m_id			= INVALID_ID;					// XML:A:required
 	/*! Descriptive name. */
 	std::string										m_displayName;									// XML:A
 
 	ModelType										m_modelType		= MT_ThermalHydraulicNetwork;	// XML:A:required
+
+	/*! at the inlet node of the reference element,
+	 * the reference pressure will be applied (usually should be the pump) */
+	unsigned int									m_referenceElementId = INVALID_ID;				// XML:A:required
 
 	HydraulicFluid									m_fluid;										// XML:E
 
@@ -62,6 +67,7 @@ public:
 
 	/*! List of flow elements that make up this network. */
 	std::vector<HydraulicNetworkElement>			m_elements;										// XML:E
+
 };
 
 } // namespace NANDRAD

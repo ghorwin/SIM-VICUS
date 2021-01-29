@@ -27,7 +27,20 @@ void HydraulicNetwork::checkParameters()  {
 		case NANDRAD::HydraulicNetwork::NUM_MT: break; // just to make compiler warnings disappear
 	}
 
+	// check reference pressure
+	if (m_para[P_ReferencePressure].empty())
+		throw IBK::Exception(IBK::FormatString("ReferencePressure must be determined"), FUNC_ID);
+
 	// do not allow an empty network
+	if (m_elements.empty())
+		throw IBK::Exception(IBK::FormatString("Network has no elements"), FUNC_ID);
+	if (m_components.empty())
+		throw IBK::Exception(IBK::FormatString("Network has no components"), FUNC_ID);
+
+	// check reference element id
+	if (std::find(m_elements.begin(), m_elements.end(), m_referenceElementId) == m_elements.end())
+		throw IBK::Exception(IBK::FormatString("referenceElementId must be the id of an existing element"), FUNC_ID);
+
 	// check parameters of fluid
 	try {
 		m_fluid.checkParameters(m_modelType);
@@ -46,6 +59,7 @@ void HydraulicNetwork::checkParameters()  {
 								 .arg(e.m_id), FUNC_ID);
 		}
 	}
+
 	// check parameters of all network elements
 	for(HydraulicNetworkComponent &c : m_components) {
 		try {

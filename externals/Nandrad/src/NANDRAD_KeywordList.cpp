@@ -157,6 +157,7 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "DefaultFluidTemperature";
 				case 1 : return "InitialFluidTemperature";
+				case 2 : return "ReferencePressure";
 			} break;
 			// HydraulicNetworkComponent::ModelType
 			case 7 :
@@ -637,6 +638,7 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "DefaultFluidTemperature";
 				case 1 : return "InitialFluidTemperature";
+				case 2 : return "ReferencePressure";
 			} break;
 			// HydraulicNetworkComponent::ModelType
 			case 7 :
@@ -1118,6 +1120,7 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "Default temperature for HydraulicNetwork models";
 				case 1 : return "Initial temperature of the fluid";
+				case 2 : return "Reference pressure of network";
 			} break;
 			// HydraulicNetworkComponent::ModelType
 			case 7 :
@@ -1598,6 +1601,7 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "C";
 				case 1 : return "C";
+				case 2 : return "Pa";
 			} break;
 			// HydraulicNetworkComponent::ModelType
 			case 7 :
@@ -2078,6 +2082,7 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkComponent::ModelType
 			case 7 :
@@ -2558,6 +2563,7 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkComponent::ModelType
 			case 7 :
@@ -3009,7 +3015,7 @@ namespace NANDRAD {
 			// HydraulicNetwork::ModelType
 			case 5 : return 2;
 			// HydraulicNetwork::para_t
-			case 6 : return 2;
+			case 6 : return 3;
 			// HydraulicNetworkComponent::ModelType
 			case 7 : return 14;
 			// HydraulicNetworkComponent::para_t
@@ -3145,7 +3151,7 @@ namespace NANDRAD {
 			// HydraulicNetwork::ModelType
 			case 5 : return 1;
 			// HydraulicNetwork::para_t
-			case 6 : return 1;
+			case 6 : return 2;
 			// HydraulicNetworkComponent::ModelType
 			case 7 : return 13;
 			// HydraulicNetworkComponent::para_t

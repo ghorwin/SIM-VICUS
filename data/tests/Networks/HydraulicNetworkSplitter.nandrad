@@ -25,7 +25,8 @@
 			</Zone>
 		</Zones>
 		<HydraulicNetworks>
-			<HydraulicNetwork id="1" displayName="simple test" modelType="HydraulicNetwork">
+			<HydraulicNetwork id="1" displayName="simple test" modelType="HydraulicNetwork" referenceElementId="201">
+				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
 				<IBK:Parameter name="DefaultFluidTemperature" unit="C">20</IBK:Parameter>
 				<HydraulicFluid id="1" displayName="Water">
 					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>

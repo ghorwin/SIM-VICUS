@@ -47,6 +47,10 @@ void HydraulicNetwork::readXMLPrivate(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'modelType' attribute.") ), FUNC_ID);
 
+		if (!TiXmlAttribute::attributeByName(element, "referenceElementId"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'referenceElementId' attribute.") ), FUNC_ID);
+
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
@@ -63,6 +67,8 @@ void HydraulicNetwork::readXMLPrivate(const TiXmlElement * element) {
 				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 					IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
 			}
+			else if (attribName == "referenceElementId")
+				m_referenceElementId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -148,6 +154,8 @@ TiXmlElement * HydraulicNetwork::writeXMLPrivate(TiXmlElement * parent) const {
 		e->SetAttribute("displayName", m_displayName);
 	if (m_modelType != NUM_MT)
 		e->SetAttribute("modelType", KeywordList::Keyword("HydraulicNetwork::ModelType",  m_modelType));
+	if (m_referenceElementId != NANDRAD::INVALID_ID)
+		e->SetAttribute("referenceElementId", IBK::val2string<unsigned int>(m_referenceElementId));
 
 	m_fluid.writeXML(e);
 

@@ -26,7 +26,8 @@
 			</Zone>
 		</Zones>
 		<HydraulicNetworks>
-			<HydraulicNetwork id="1" displayName="static network" modelType="ThermalHydraulicNetwork">
+			<HydraulicNetwork id="1" displayName="static network" modelType="ThermalHydraulicNetwork" referenceElementId="1001">
+				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
 				<IBK:Parameter name="InitialFluidTemperature" unit="C">20</IBK:Parameter>
 				<HydraulicFluid id="1" displayName="Water">
 					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
@@ -80,7 +81,8 @@
 					</HydraulicNetworkElement>
 				</Elements>
 			</HydraulicNetwork>
-			<HydraulicNetwork id="2" displayName="dynamic network" modelType="ThermalHydraulicNetwork">
+			<HydraulicNetwork id="2" displayName="dynamic network" modelType="ThermalHydraulicNetwork" referenceElementId="20301">
+				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
 				<IBK:Parameter name="InitialFluidTemperature" unit="C">20</IBK:Parameter>
 				<HydraulicFluid id="1" displayName="Water">
 					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
@@ -126,7 +128,7 @@
 						<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="2003" inletNodeId="1" outletNodeId="100" componentId="2" displayName="node 1">
-						<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+						<IBK:Parameter name="HeatFlux" unit="W">-300</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="2004" inletNodeId="100" outletNodeId="101" componentId="3" pipePropertiesId="1">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
