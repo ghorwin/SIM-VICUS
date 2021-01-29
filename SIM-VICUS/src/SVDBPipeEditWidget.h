@@ -40,6 +40,12 @@ private slots:
 	void on_lineEditName_editingFinished();
 	void on_lineEditOuterDiameter_editingFinished();
 
+	void on_lineEditWallThickness_editingFinished();
+
+	void on_lineEditWallLambda_editingFinished();
+
+	void on_lineEditWallRoughness_editingFinished();
+
 private:
 	Ui::SVDBPipeEditWidget *m_ui;
 

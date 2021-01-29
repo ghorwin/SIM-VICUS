@@ -10,6 +10,8 @@
 #include <VICUS_Database.h>
 #include <VICUS_KeywordListQt.h>
 
+#include <QtExt_LanguageHandler.h>
+
 #include <NANDRAD_KeywordList.h>
 
 
@@ -47,18 +49,29 @@ QVariant SVDBPipeTableModel::data ( const QModelIndex & index, int role) const {
 
 	switch (role) {
 		case Qt::DisplayRole : {
+			// Note: when accessing multilanguage strings below, take name in current language or if missing, "all"
+			std::string langId = QtExt::LanguageHandler::instance().langId().toStdString();
+			std::string fallBackLangId = "en";
+
 			switch (index.column()) {
 				case ColId					: return it->first;
-				case ColName				: return QString::fromStdString(it->second.m_displayName.string());
+				case ColName				: return QString::fromStdString(it->second.m_displayName.string(langId, fallBackLangId));
 			}
 		} break;
 
 		case Qt::SizeHintRole :
 			switch (index.column()) {
 				case ColCheck :
+				case ColColor :
 					return QSize(22, 16);
 			} // switch
 			break;
+
+		case Qt::BackgroundRole : {
+			if (index.column() == ColColor) {
+				return it->second.m_color;
+			}
+		} break;
 
 		case Role_Id :
 			return it->first;
@@ -100,7 +113,7 @@ QVariant SVDBPipeTableModel::headerData(int section, Qt::Orientation orientation
 
 QModelIndex SVDBPipeTableModel::addNewItem() {
 	VICUS::NetworkPipe pipe;
-	pipe.m_displayName.setEncodedString("en:<new boundary condition>");
+	pipe.m_displayName.setEncodedString("en:<new pipe>");
 
 	pipe.m_roughness = 7e-6;
 	pipe.m_lambdaWall = 0.4;

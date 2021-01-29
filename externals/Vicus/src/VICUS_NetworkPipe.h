@@ -10,6 +10,8 @@
 
 #include <IBK_MultiLanguageString.h>
 
+#include <QColor>
+
 namespace VICUS {
 
 class NetworkPipe: public AbstractDBElement {
@@ -30,6 +32,10 @@ public:
 	unsigned int						m_id = INVALID_ID;				// XML:A:required
 	/*! Display name of fluid. */
 	IBK::MultiLanguageString			m_displayName;					// XML:A
+	/*! Identification color. */
+	QColor								m_color;						// XML:E
+
+
 	/*! Outside diameter pipe in [mm]. */
 	double								m_diameterOutside;				// XML:A:required
 	/*! Wall thickness pipe in [mm]. */
@@ -42,6 +48,7 @@ public:
 	double								m_insulationThickness = 0.0;	// XML:A
 	/*! thermal conductivity of insulation in [W/mK] */
 	double								m_lambdaInsulation = 0.0;		// XML:A
+
 };
 
 
