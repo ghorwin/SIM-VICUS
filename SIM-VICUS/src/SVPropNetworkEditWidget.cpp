@@ -72,7 +72,7 @@ void SVPropNetworkEditWidget::selectionChanged() {
 	// cast objects to nodes, edges and network
 	for (const VICUS::Object* o : objs) {
 		const VICUS::Network * network = dynamic_cast<const VICUS::Network*>(o);
-		if (network != nullptr) {
+		if (network != nullptr && std::find(networks.begin(), networks.end(), network) == networks.end()) {
 			networks.push_back(network);
 			continue;
 		}
@@ -535,12 +535,11 @@ void SVPropNetworkEditWidget::on_pushButtonReduceDeadEnds_clicked()
 {
 	if (!setNetwork())
 		return;
-	VICUS::Network tmp = m_currentNetwork;
-	tmp.clear();
+	VICUS::Network newNetwork = m_currentNetwork.copyWithBaseParameters(); // makes a copy without edges, nodes
 	m_currentNetwork.updateNodeEdgeConnectionPointers();
-	m_currentNetwork.cleanDeadEnds(tmp);
+	m_currentNetwork.cleanDeadEnds(newNetwork);
 	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
-	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network modified"), networkIndex, newNetwork);
 	undo->push(); // modifies project and updates views
 	updateNetworkProperties();
 }
@@ -557,17 +556,16 @@ void SVPropNetworkEditWidget::on_pushButtonReduceRedundantNodes_clicked()
 	undoMod->push(); // modifies project and updates views
 
 	// make copy with reduced edges
-	VICUS::Network tmp = m_currentNetwork;
-	tmp.clear();
+	VICUS::Network newNetwork = m_currentNetwork.copyWithBaseParameters(); // makes a copy without edges, nodes
 	m_currentNetwork.updateNodeEdgeConnectionPointers();
-	m_currentNetwork.cleanRedundantEdges(tmp);
-	tmp.m_visible = true;
-	tmp.m_name += "_reduced";
+	m_currentNetwork.cleanRedundantEdges(newNetwork);
+	newNetwork.m_visible = true;
+	newNetwork.m_name += "_reduced";
 	const VICUS::Project & p = project();
-	tmp.m_id = p.uniqueId(p.m_geometricNetworks);
-	tmp.updateNodeEdgeConnectionPointers();
+	newNetwork.m_id = p.uniqueId(p.m_geometricNetworks);
+	newNetwork.updateNodeEdgeConnectionPointers();
 
-	SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("modified network"), tmp);
+	SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("modified network"), newNetwork);
 	undo->push(); // modifies project and updates views
 	updateNetworkProperties();
 }

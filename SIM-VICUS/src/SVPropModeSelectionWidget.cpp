@@ -62,19 +62,33 @@ void SVPropModeSelectionWidget::selectionChanged() {
 		std::set<const VICUS::Object*> objs;
 		project().selectObjects(objs, VICUS::Project::SG_Network, true, true);
 		bool haveNode = false;
-		bool haveEdge = false;
-		for (const VICUS::Object* o : objs) {
-			if (dynamic_cast<const VICUS::NetworkNode*>(o) != nullptr)
-				haveNode = true;
-			else if (dynamic_cast<const VICUS::NetworkEdge*>(o) != nullptr)
-				haveEdge = true;
-		}
-		// only nodes selected?
+		bool haveNetwork = false;
 		blockSignals(true);
-		if (haveNode)
-			m_ui->comboBoxNetworkProperties->setCurrentIndex(1);	// sends a signal to change property widget itself
-		else if (haveEdge)
-			m_ui->comboBoxNetworkProperties->setCurrentIndex(2);	// sends a signal to change property widget itself
+		for (const VICUS::Object* o : objs) {
+			if (dynamic_cast<const VICUS::Network*>(o) != nullptr){
+				m_ui->comboBoxNetworkProperties->setCurrentIndex(0);
+				haveNetwork = true;
+				break;
+			}
+		}
+		if (!haveNetwork){
+			for (const VICUS::Object* o : objs) {
+				if (dynamic_cast<const VICUS::NetworkNode*>(o) != nullptr){
+					m_ui->comboBoxNetworkProperties->setCurrentIndex(1);
+					break;
+				}
+				if (dynamic_cast<const VICUS::NetworkEdge*>(o) != nullptr){
+					m_ui->comboBoxNetworkProperties->setCurrentIndex(2);
+					break;
+				}
+			}
+		}
+//		// only nodes selected?
+//		blockSignals(true);
+//		if (haveNode)
+//			m_ui->comboBoxNetworkProperties->setCurrentIndex(1);
+//		else if (haveEdge)
+//			m_ui->comboBoxNetworkProperties->setCurrentIndex(2);
 		blockSignals(false);
 		updateViewState();
 	}

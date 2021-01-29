@@ -27,6 +27,26 @@ Network::Network() {
 	setDefaultSizingParams();
 }
 
+Network Network::copyWithBaseParameters()
+{
+	Network copy = *this;
+	copy.m_edges.clear();
+	copy.m_nodes.clear();
+	return copy;
+	// TODO: Hauke  implement this later for better performance
+//	copy.m_id = orig.m_id;
+//	copy.m_name = orig.m_name;
+//	copy.m_type = orig.m_type;
+//	copy.m_origin = orig.m_origin;
+//	copy.m_extends = orig.m_extends;
+//	copy.m_fluidID = orig.m_fluidID;
+//	copy.m_scaleEdges = orig.m_scaleEdges;
+//	copy.m_scaleNodes = orig.m_scaleNodes;
+//	copy.m_sizingPara = orig.m_sizingPara;
+//	copy.m_networkPipeDB = orig.m_networkPipeDB;
+
+}
+
 unsigned Network::addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool consistentCoordinates) {
 
 	// if there is an existing node with identical coordinates, return its id and dont add a new one

@@ -56,6 +56,9 @@ public:
 
 	Network();
 
+	/*! copies all member except nodes and edges */
+	Network copyWithBaseParameters();
+
 	/*! call private addNode and set position relative to orign.
 	 * ALWAYS use this funtion If you add nodes in original coordinates to a network where m_origin may has been already set */
 	unsigned addNodeExt(const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool considerCoordinates=true){
