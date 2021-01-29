@@ -49,7 +49,8 @@ public:
 		P_COP,								// Keyword: COP									[-]		'Coefficient of performance of the component.'
 		P_UAValue,							// Keyword: UAValue								[W/m2K]	'UA-Value of heat exchanger'
 		P_PipeMaxDiscretizationWidth,		// Keyword: PipeMaxDiscretizationWidth			[m]		'Maximum width of discretized volumes in pipe'
-		// we can add those, once we know what to do with them
+
+// we can add those, once we know what to do with them
 
 //		P_TemperatureTolerance,				// xKxeyword: TemperatureTolerance				[K]		'Temperature tolerance for e.g. thermostats.'
 //		P_RatedHeatingCapacity,				// xKxeyword: RatedHeatingCapacity				[W]		'Rated heating capacity of the component.'

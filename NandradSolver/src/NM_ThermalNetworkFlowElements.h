@@ -277,6 +277,12 @@ private:
 	/*! Number of discretization volumes */
 	unsigned int					m_nVolumes;
 
+	/*! Volume of all pipe deiscretization elements*/
+	double							m_discVolume = 0.0;
+
+	/*! Lengths of of all pipe volumes*/
+	double							m_discLength = 0.0;
+
 	/*! Fluid specific enthalpies for all discretization volumes J/kg */
 	std::vector<double>				m_specificEnthalpies;
 
@@ -393,6 +399,9 @@ private:
 
 	/*! Number of discretization volumes */
 	unsigned int					m_nVolumes;
+
+	/*! Volume of all pipe deiscretization elements*/
+	double							m_discVolume = 0.0;
 
 	/*! Fluid specific enthalpies for all discretization volumes J/kg */
 	std::vector<double>				m_specificEnthalpies;

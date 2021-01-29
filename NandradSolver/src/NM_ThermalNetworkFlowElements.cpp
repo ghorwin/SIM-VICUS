@@ -23,8 +23,6 @@ TNStaticPipeElement::TNStaticPipeElement(const NANDRAD::HydraulicNetworkElement 
 	m_UValuePipeWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_UValuePipeWall].value;
 	m_outerHeatTransferCoefficient =
 			comp.m_para[NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].value;
-	// calculate fluid volume inside the pipe
-//	m_volume = PI/4. * m_innerDiameter * m_innerDiameter * m_length;
 	// set a small volume
 	m_volume = 0.01;
 }
@@ -42,6 +40,11 @@ unsigned int TNStaticPipeElement::nInternalStates() const
 void TNStaticPipeElement::setInitialTemperature(double T0) {
 	m_temperature = T0;
 	m_specificEnthalpy = T0 * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+	// set inlet and outölet tenoeratures and specific enthalpies
+	m_inletTemperature = T0;
+	m_outletTemperature = T0;
+	m_inletSpecificEnthalpy = m_specificEnthalpy;
+	m_outletSpecificEnthalpy = m_specificEnthalpy;
 }
 
 void TNStaticPipeElement::initialInternalStates(double * y0) {
@@ -173,8 +176,6 @@ TNStaticAdiabaticPipeElement::TNStaticAdiabaticPipeElement(const NANDRAD::Hydrau
 							const NANDRAD::HydraulicFluid & fluid):
 	m_fluid(&fluid)
 {
-	// calculate fluid volume inside the pipe
-//	m_volume = PI/4. * m_innerDiameter * m_innerDiameter * m_length;
 	// set a small volume
 	m_volume = 0.01;
 }
@@ -192,6 +193,11 @@ unsigned int TNStaticAdiabaticPipeElement::nInternalStates() const
 void TNStaticAdiabaticPipeElement::setInitialTemperature(double T0) {
 	m_temperature = T0;
 	m_specificEnthalpy = T0 * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+	// set inlet and outölet tenoeratures and specific enthalpies
+	m_inletTemperature = T0;
+	m_outletTemperature = T0;
+	m_inletSpecificEnthalpy = m_specificEnthalpy;
+	m_outletSpecificEnthalpy = m_specificEnthalpy;
 }
 
 void TNStaticAdiabaticPipeElement::initialInternalStates(double * y0) {
@@ -303,9 +309,13 @@ TNDynamicPipeElement::TNDynamicPipeElement(const NANDRAD::HydraulicNetworkElemen
 	// resize all vectors
 	m_specificEnthalpies.resize(m_nVolumes, 0.0);
 	m_temperatures.resize(m_nVolumes, 273.15);
-
+	m_heatLosses.resize(m_nVolumes, 0.0);
 	// calculate fluid volume inside the pipe
 	m_volume = PI/4. * m_innerDiameter * m_innerDiameter * m_length;
+
+	// calculate segment specific quantities
+	m_discLength = m_length/(double) m_nVolumes;
+	m_discVolume = m_volume/(double) m_nVolumes;
 }
 
 TNDynamicPipeElement::~TNDynamicPipeElement()
@@ -324,12 +334,17 @@ void TNDynamicPipeElement::setInitialTemperature(double T0) {
 	// calculte specific enthalpy
 	double specificEnthalpy = T0 * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 	std::fill(m_specificEnthalpies.begin(), m_specificEnthalpies.end(), specificEnthalpy);
+	// set inlet and outölet tenoeratures and specific enthalpies
+	m_inletTemperature = T0;
+	m_outletTemperature = T0;
+	m_inletSpecificEnthalpy = specificEnthalpy;
+	m_outletSpecificEnthalpy = specificEnthalpy;
 }
 
 void TNDynamicPipeElement::initialInternalStates(double * y0) {
 	// copy internal states
 	for(unsigned int i = 0; i < m_nVolumes; ++i)
-		y0[i] = m_specificEnthalpies[i] * m_volume/(double) m_nVolumes * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value;
+		y0[i] = m_specificEnthalpies[i] * m_discVolume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value;
 }
 
 void TNDynamicPipeElement::setInternalStates(const double * y)
@@ -337,7 +352,7 @@ void TNDynamicPipeElement::setInternalStates(const double * y)
 	double temp = 0.0;
 	// calculate specific enthalpy
 	for(unsigned int i = 0; i < m_nVolumes; ++i) {
-		m_specificEnthalpies[i] = y[i] / ( m_volume/(double) m_nVolumes * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value);
+		m_specificEnthalpies[i] = y[i] / ( m_discVolume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value);
 		m_temperatures[i] = m_specificEnthalpies[i] / m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 		temp += m_temperatures[i];
 	}
@@ -413,12 +428,12 @@ void TNDynamicPipeElement::setNodalConditions(double mdot, double hInlet, double
 		double innerHeatTransferCoefficient = nusselt * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Conductivity].value/m_innerDiameter;
 
 		// calculate heat transfer
-		const double totalUValuePipe = (PI*m_length) / (1.0/(innerHeatTransferCoefficient * m_innerDiameter)
+		const double UValue = (PI*m_discLength) / (1.0/(innerHeatTransferCoefficient * m_innerDiameter)
 														+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter)
 														+ 1.0/(2.0*m_UValuePipeWall) );
 
 		// calculate heat loss with given parameters
-		m_heatLosses[i] = totalUValuePipe * (m_temperatures[i] - m_ambientTemperature) * m_length/(double) m_nVolumes;
+		m_heatLosses[i] = UValue * (m_temperatures[i] - m_ambientTemperature);
 		// sum up heat losses
 		m_heatLoss += m_heatLosses[i];
 	}
@@ -486,6 +501,9 @@ TNDynamicAdiabaticPipeElement::TNDynamicAdiabaticPipeElement(const NANDRAD::Hydr
 
 	// calculate fluid volume inside the pipe
 	m_volume = PI/4. * innerDiameter * innerDiameter * length;
+
+	// calculate segment specific quantities
+	m_discVolume = m_volume/(double) m_nVolumes;
 }
 
 TNDynamicAdiabaticPipeElement::~TNDynamicAdiabaticPipeElement()
@@ -504,12 +522,17 @@ void TNDynamicAdiabaticPipeElement::setInitialTemperature(double T0) {
 	// calculte specific enthalpy
 	double specificEnthalpy = T0 * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 	std::fill(m_specificEnthalpies.begin(), m_specificEnthalpies.end(), specificEnthalpy);
+	// set inlet and outölet tenoeratures and specific enthalpies
+	m_inletTemperature = T0;
+	m_outletTemperature = T0;
+	m_inletSpecificEnthalpy = specificEnthalpy;
+	m_outletSpecificEnthalpy = specificEnthalpy;
 }
 
 void TNDynamicAdiabaticPipeElement::initialInternalStates(double * y0) {
 	// copy internal states
 	for(unsigned int i = 0; i < m_nVolumes; ++i)
-		y0[i] = m_specificEnthalpies[i] * m_volume/(double) m_nVolumes * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value;
+		y0[i] = m_specificEnthalpies[i] * m_discVolume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value;
 }
 
 void TNDynamicAdiabaticPipeElement::setInternalStates(const double * y)
@@ -517,7 +540,7 @@ void TNDynamicAdiabaticPipeElement::setInternalStates(const double * y)
 	double temp = 0.0;
 	// calculate specific enthalpy
 	for(unsigned int i = 0; i < m_nVolumes; ++i) {
-		m_specificEnthalpies[i] = y[i] / ( m_volume/(double) m_nVolumes * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value);
+		m_specificEnthalpies[i] = y[i] / ( m_discVolume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value);
 		m_temperatures[i] = m_specificEnthalpies[i] / m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 		temp += m_temperatures[i];
 	}
@@ -636,6 +659,11 @@ unsigned int TNHeatExchanger::nInternalStates() const
 void TNHeatExchanger::setInitialTemperature(double T0) {
 	m_temperature = T0;
 	m_specificEnthalpy = T0 * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+	// set inlet and outölet tenoeratures and specific enthalpies
+	m_inletTemperature = T0;
+	m_outletTemperature = T0;
+	m_inletSpecificEnthalpy = m_specificEnthalpy;
+	m_outletSpecificEnthalpy = m_specificEnthalpy;
 }
 
 void TNHeatExchanger::initialInternalStates(double * y0) {
@@ -763,6 +791,11 @@ void TNPump::internalDerivatives(double * ydot)
 void TNPump::setInitialTemperature(double T0) {
 	m_temperature = T0;
 	m_specificEnthalpy = T0 * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+	// set inlet and outölet tenoeratures and specific enthalpies
+	m_inletTemperature = T0;
+	m_outletTemperature = T0;
+	m_inletSpecificEnthalpy = m_specificEnthalpy;
+	m_outletSpecificEnthalpy = m_specificEnthalpy;
 }
 
 void TNPump::setNodalConditions(double mdot, double hInlet, double hOutlet)
