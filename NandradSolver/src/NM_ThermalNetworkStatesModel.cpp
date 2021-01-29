@@ -148,6 +148,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 			}
 			// decide which heat exchange is chosen
 			switch(e.m_component->m_heatExchangeType) {
+				case NANDRAD::HydraulicNetworkComponent::HT_TemperatureConstant:
 				case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant: {
 					// retrieve constant temperature
 					if(!e.m_para[NANDRAD::HydraulicNetworkElement::P_Temperature].name.empty()) {
