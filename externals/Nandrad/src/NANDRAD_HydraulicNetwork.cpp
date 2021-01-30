@@ -1,5 +1,7 @@
 #include "NANDRAD_HydraulicNetwork.h"
 
+#include <algorithm>
+
 namespace NANDRAD {
 
 
