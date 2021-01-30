@@ -188,7 +188,7 @@ void SVDBComponentEditWidget::on_comboBoxComponentType_currentIndexChanged(int i
 	VICUS::Component::ComponentType ct = static_cast<VICUS::Component::ComponentType>(m_ui->comboBoxComponentType->currentData().toInt());
 	if (ct != m_current->m_type) {
 		m_current->m_type = ct;
-		m_db->m_constructions.m_modified = true;
+		m_db->m_components.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		emit tableDataChanged();
 	}
