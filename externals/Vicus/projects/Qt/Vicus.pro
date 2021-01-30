@@ -49,6 +49,7 @@ HEADERS += \
 	../../src/VICUS_Material.h \
 	../../src/VICUS_MaterialLayer.h \
 	../../src/VICUS_Network.h \
+	../../src/VICUS_NetworkComponent.h \
 	../../src/VICUS_NetworkEdge.h \
 	../../src/VICUS_NetworkFluid.h \
 	../../src/VICUS_NetworkLine.h \
@@ -80,6 +81,7 @@ SOURCES += \
 	../../src/VICUS_KeywordList.cpp \
 	../../src/VICUS_Material.cpp \
 	../../src/VICUS_Network.cpp \
+	../../src/VICUS_NetworkComponent.cpp \
 	../../src/VICUS_NetworkEdge.cpp \
 	../../src/VICUS_NetworkFluid.cpp \
 	../../src/VICUS_NetworkLine.cpp \

@@ -18,6 +18,7 @@ SVDatabase::SVDatabase() :
 	m_components(USER_ID_SPACE_START),
 	m_pipes(USER_ID_SPACE_START),
 	m_fluids(USER_ID_SPACE_START),
+	m_networkComponents(USER_ID_SPACE_START),
 	m_EPDElements(USER_ID_SPACE_START)
 {
 }

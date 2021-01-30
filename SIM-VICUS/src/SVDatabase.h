@@ -12,6 +12,7 @@
 #include <VICUS_BoundaryCondition.h>
 #include <VICUS_NetworkPipe.h>
 #include <VICUS_NetworkFluid.h>
+#include <VICUS_NetworkComponent.h>
 #include <VICUS_EPDDataset.h>
 
 #include <VICUS_Database.h>
@@ -32,6 +33,7 @@ public:
 		DT_Components,
 		DT_BoundaryConditions,
 		DT_Pipes,
+		DT_NetworkComponents,
 		NUM_DT // used for "all"
 	};
 
@@ -76,6 +78,9 @@ public:
 
 	/*! Map of all database fluids */
 	VICUS::Database<VICUS::NetworkFluid>				m_fluids;
+
+	/*! Map of all network components */
+	VICUS::Database<VICUS::NetworkComponent>			m_networkComponents;
 
 	/*! Map of all database EPD elements */
 	VICUS::Database<VICUS::EPDDataset>					m_EPDElements;
