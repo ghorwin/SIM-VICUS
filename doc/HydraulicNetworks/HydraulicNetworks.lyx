@@ -2161,25 +2161,20 @@ For turbulent flows (
 \begin_inset Formula $Re>1e4)$
 \end_inset
 
- we use the equation from Colebrook (
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-TODO, Gleichung aktualisieren
-\end_layout
-
-\end_inset
-
-)
+ we use the swamee-jain equation is used
 \begin_inset Formula 
 \begin{align}
-f & =\left[-2log_{10}\left(\frac{2.51}{Re\sqrt{f}}+\frac{k}{3,71d}\right)\right]^{-2}\label{eq:Reynolds_turbulentColebrook}
+f & =\frac{0.25}{\left[log_{10}\left(\frac{\epsilon/D}{3.7}+\frac{5.74}{Re^{0.9}}\right)\right]^{2}}\label{eq:Reynolds_turbulentColebrook}
 \end{align}
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+which is an approximation of the commonly used implicit equation from Colebrook-
+white with the benefit that it can be solved directly.
 \end_layout
 
 \begin_layout Standard
@@ -2189,19 +2184,14 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Hauke
-\end_layout
+\begin_inset Graphics
+	filename imgs/pipe friction factor.png
+	lyxscale 50
+	scale 60
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Plain Layout
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
@@ -2211,10 +2201,6 @@ Illustratration of friction factor vs.
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Plain Layout
 
 \end_layout
 
@@ -2240,7 +2226,7 @@ For
 
 \begin_inset CommandInset ref
 LatexCommand eqref
-reference "eq:Reynolds_laminar"
+reference "eq:Reynolds_turbulentSwamee"
 plural "false"
 caps "false"
 noprefix "false"
@@ -2457,134 +2443,16 @@ Static pipe with heat exchange with the surroundings
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-only introduce new parameters
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 parameters
 \end_layout
 
 \begin_layout Standard
 \begin_inset Tabular
-<lyxtabular version="3" rows="6" columns="3">
+<lyxtabular version="3" rows="3" columns="3">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-length
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $l$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $m$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-inner diameter
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $d$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $m$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-roughness
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $k$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $m$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
 <row>
 <cell alignment="center" valignment="top" topline="true" usebox="none">
 \begin_inset Text
@@ -3918,20 +3786,6 @@ noprefix "false"
  is an equivalent diameter, specific to the heat exchanger component, and
  is provided as constant parameter.
  
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Hauke, check if use of equivalent flow cross section as parameter is more
- common.
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Subsubsection
