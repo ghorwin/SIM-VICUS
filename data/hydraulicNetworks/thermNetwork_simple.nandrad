@@ -82,7 +82,7 @@
 			</HydraulicNetwork>
 			<HydraulicNetwork id="2" displayName="dynamic network" modelType="ThermalHydraulicNetwork" referenceElementId="2001">
 				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
-				<IBK:Parameter name="InitialFluidTemperature" unit="C">10</IBK:Parameter>
+				<IBK:Parameter name="InitialFluidTemperature" unit="C">20</IBK:Parameter>
 				<HydraulicFluid id="1" displayName="Water">
 					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
@@ -102,7 +102,7 @@
 				</PipeProperties>
 				<Components>
 					<HydraulicNetworkComponent id="1" modelType="ConstantPressurePumpModel">
-						<IBK:Parameter name="PressureHead" unit="Pa">100000</IBK:Parameter>
+						<IBK:Parameter name="PressureHead" unit="Pa">10000</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
 						<IBK:Parameter name="MotorEfficiency" unit="---">1</IBK:Parameter>
@@ -126,7 +126,7 @@
 						<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="2003" inletNodeId="1" outletNodeId="100" componentId="2" displayName="node 1">
-						<IBK:Parameter name="HeatFlux" unit="W">-500</IBK:Parameter>
+						<IBK:Parameter name="HeatFlux" unit="W">-300</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="2004" inletNodeId="100" outletNodeId="101" componentId="3" pipePropertiesId="1">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
@@ -169,7 +169,7 @@
 				<OutputGrid name="hourly">
 					<Intervals>
 						<Interval>
-							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
 						</Interval>
 					</Intervals>
 				</OutputGrid>
