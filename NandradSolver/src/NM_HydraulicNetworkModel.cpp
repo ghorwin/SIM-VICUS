@@ -21,7 +21,7 @@ namespace NANDRAD_MODEL {
 
 class HydraulicNetworkModelImpl {
 public:
-	HydraulicNetworkModelImpl(const std::vector<Element> &elems);
+	HydraulicNetworkModelImpl(const std::vector<Element> &elems, unsigned int referenceElemIdx);
 	~HydraulicNetworkModelImpl();
 
 	/*! Initialized solver based on current content of m_flowElements.
@@ -38,6 +38,10 @@ public:
 		Need to be populated before calling setup.
 	*/
 	std::vector<HydraulicNetworkAbstractFlowElement*>	m_flowElements;
+	/*! Index of node with reference pressure. */
+	unsigned int										m_pressureRefNodeIdx = NANDRAD::INVALID_ID;
+	/*! Reference pressure. */
+	double												m_referencePressure = 0.0;
 	/*! Network structure. */
 	Network												m_network;
 	/*! Mass fluxes through all elements*/
@@ -139,15 +143,19 @@ HydraulicNetworkModel::HydraulicNetworkModel(const NANDRAD::HydraulicNetwork & n
 	std::vector<Element> elems;
 	// process all hydraulic network elements and copy index
 	for (const NANDRAD::HydraulicNetworkElement & e : nw.m_elements) {
-		unsigned int nInlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_inletNodeId));
-		unsigned int nOutlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_outletNodeId));
-		elems.push_back(Element(nInlet, nOutlet) );
+		unsigned int idxInlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_inletNodeId));
+		unsigned int idxOutlet = std::distance(nodeIds.begin(), nodeIds.find(e.m_outletNodeId));
+		elems.push_back(Element(idxInlet, idxOutlet) );
 	}
 
+	// set reference pressure node
+	std::vector<NANDRAD::HydraulicNetworkElement>::const_iterator refFeIt = std::find(nw.m_elements.begin(), nw.m_elements.end(),
+														   nw.m_referenceElementId);
+	unsigned int refElemeIdx = std::distance(nw.m_elements.begin(), refFeIt);
 	// create implementation instance
-	m_p = new HydraulicNetworkModelImpl(elems); // we take ownership
-
+	m_p = new HydraulicNetworkModelImpl(elems, refElemeIdx); // we take ownership
 }
+
 
 HydraulicNetworkModel::~HydraulicNetworkModel() {
 	delete m_p; // delete pimpl object
@@ -238,6 +246,9 @@ void HydraulicNetworkModel::setup() {
 		for (HydraulicNetworkAbstractFlowElement * e : m_p->m_flowElements)
 			e->setFluidTemperature(fluidTemp);
 	}
+
+	// set reference pressure
+	m_p->m_referencePressure = m_hydraulicNetwork->m_para[NANDRAD::HydraulicNetwork::P_ReferencePressure].value;
 
 	// setup the equation system
 	try {
@@ -418,26 +429,29 @@ const double THRESHOLD = 1;
 const double MASS_FLUX_SCALE = 1000;
 
 
-HydraulicNetworkModelImpl::HydraulicNetworkModelImpl(const std::vector<Element> &elems) {
+HydraulicNetworkModelImpl::HydraulicNetworkModelImpl(const std::vector<Element> &elems, unsigned int referenceElemIdx) {
 	FUNCID(HydraulicNetworkModelImpl::HydraulicNetworkModelImpl);
 	// copy elements vector
 	m_network.m_elements = elems;
 	// count number of nodes
 	unsigned int nodeCount = 0;
 	for (const Element &fe :elems) {
-		nodeCount = std::max(nodeCount, fe.m_nInlet);
-		nodeCount = std::max(nodeCount, fe.m_nOutlet);
+		nodeCount = std::max(nodeCount, fe.m_nodeIndexInlet);
+		nodeCount = std::max(nodeCount, fe.m_nodeIndexOutlet);
 	}
 
 	// create fast access connections between nodes and flow elements
 	m_network.m_nodes.resize(nodeCount+1);
 	for (unsigned int i=0; i<elems.size(); ++i) {
 		const Element &fe = elems[i];
-		m_network.m_nodes[fe.m_nInlet].m_elementIndexesOutlet.push_back(i);
-		m_network.m_nodes[fe.m_nOutlet].m_elementIndexesInlet.push_back(i);
-		m_network.m_nodes[fe.m_nInlet].m_elementIndexes.push_back(i);
-		m_network.m_nodes[fe.m_nOutlet].m_elementIndexes.push_back(i);
+		m_network.m_nodes[fe.m_nodeIndexInlet].m_elementIndexesOutlet.push_back(i);
+		m_network.m_nodes[fe.m_nodeIndexOutlet].m_elementIndexesInlet.push_back(i);
+		m_network.m_nodes[fe.m_nodeIndexInlet].m_elementIndexes.push_back(i);
+		m_network.m_nodes[fe.m_nodeIndexOutlet].m_elementIndexes.push_back(i);
 	}
+
+	// set reference nodeindex: inlet node of reference element
+	m_pressureRefNodeIdx = elems[referenceElemIdx].m_nodeIndexInlet;
 
 	m_nodeCount = m_network.m_nodes.size();
 	m_elementCount = m_network.m_elements.size();
@@ -500,8 +514,8 @@ void HydraulicNetworkModelImpl::setup() {
 	for (unsigned int k=0; k<m_network.m_elements.size(); ++k) {
 		const Element &fe = m_network.m_elements[k];
 
-		unsigned int i = fe.m_nInlet;
-		unsigned int j = fe.m_nOutlet;
+		unsigned int i = fe.m_nodeIndexInlet;
+		unsigned int j = fe.m_nodeIndexOutlet;
 		// set a pattern entry for connected nodes
 		if(!connectivity.test(i,j))
 			connectivity.set(i,j);
@@ -751,8 +765,8 @@ int HydraulicNetworkModelImpl::solve() {
 	// update nodal values
 	for(unsigned int i = 0; i < m_network.m_elements.size(); ++i) {
 		const Element &e = m_network.m_elements[i];
-		m_inletNodePressures[i] = m_nodalPressures[e.m_nInlet];
-		m_outletNodePressures[i] = m_nodalPressures[e.m_nOutlet];
+		m_inletNodePressures[i] = m_nodalPressures[e.m_nodeIndexInlet];
+		m_outletNodePressures[i] = m_nodalPressures[e.m_nodeIndexOutlet];
 	}
 
 
@@ -789,8 +803,8 @@ void HydraulicNetworkModelImpl::jacobianInit() {
 		}
 
 		// nodal constraint to first node
-		if (!pattern.test(0, 0))
-			pattern.set(0, 0);
+		if (!pattern.test(m_pressureRefNodeIdx, m_pressureRefNodeIdx))
+			pattern.set(m_pressureRefNodeIdx, m_pressureRefNodeIdx);
 
 		// flow element equations
 		for (unsigned int i=0; i<m_elementCount; ++i) {
@@ -817,9 +831,9 @@ void HydraulicNetworkModelImpl::jacobianInit() {
 			}
 		}
 
-		// nodal constraint to first node
-		if (!pattern.test(0 + m_elementCount, 0 + m_elementCount))
-			pattern.set(0 + m_elementCount, 0 + m_elementCount);
+		// set entry for reference pressure
+		if (!pattern.test(m_pressureRefNodeIdx + m_elementCount, m_pressureRefNodeIdx + m_elementCount))
+			pattern.set(m_pressureRefNodeIdx + m_elementCount, m_pressureRefNodeIdx + m_elementCount);
 
 		// flow element equations
 		for (unsigned int i=0; i<m_elementCount; ++i) {
@@ -828,10 +842,10 @@ void HydraulicNetworkModelImpl::jacobianInit() {
 			if (!pattern.test(i, i))
 				pattern.set(i, i);
 			// element is connected to inlet and outlet node
-			if (!pattern.test(i, fe.m_nInlet + m_elementCount))
-				pattern.set(i, fe.m_nInlet + m_elementCount);
-			if (!pattern.test(i, fe.m_nOutlet + m_elementCount))
-				pattern.set(i, fe.m_nOutlet + m_elementCount);
+			if (!pattern.test(i, fe.m_nodeIndexInlet + m_elementCount))
+				pattern.set(i, fe.m_nodeIndexInlet + m_elementCount);
+			if (!pattern.test(i, fe.m_nodeIndexOutlet + m_elementCount))
+				pattern.set(i, fe.m_nodeIndexOutlet + m_elementCount);
 		}
 
 #endif
@@ -1102,8 +1116,8 @@ void HydraulicNetworkModelImpl::updateG() {
 
 	}
 
-	// nodal constraint to first node
-	m_G[0] += m_nodePressures[0] - 0; // 0 Pa on first node
+	// nodal constraint to reference node
+	m_G[m_pressureRefNodeIdx] += m_nodePressures[m_pressureRefNodeIdx] - m_referencePressure; // 0 Pa on first node
 
 	// now evaluate the flow system equations
 	for (unsigned int i=0; i<m_elementCount; ++i) {
@@ -1132,7 +1146,7 @@ void HydraulicNetworkModelImpl::updateG() {
 			const Element &fe = m_network.m_elements[ feIndex ];
 			// if the flow element is connected to the node via inlet, the mass goes from node to flow element
 			// and hence has a negative sign
-			if (fe.m_nInlet == i)
+			if (fe.m_nodeIndexInlet == i)
 				massSum -= m_fluidMassFluxes[feIndex];
 			else
 				massSum += m_fluidMassFluxes[feIndex]; // otherwise flux goes into the node -> positive sign
@@ -1142,13 +1156,13 @@ void HydraulicNetworkModelImpl::updateG() {
 
 	}
 
-	// nodal constraint to first node
-	m_G[0 + m_elementCount] += m_nodalPressures[0] - 0; // 0 Pa on first node
+	// nodal constraint to reference node
+	m_G[m_pressureRefNodeIdx + m_elementCount] += m_nodalPressures[m_pressureRefNodeIdx] - m_referencePressure;
 
 	// now evaluate the flow system equations
 	for (unsigned int i=0; i<m_elementCount; ++i) {
 		const Element &fe = m_network.m_elements[i];
-		m_G[i] = m_flowElements[i]->systemFunction( m_fluidMassFluxes[i], m_nodalPressures[fe.m_nInlet], m_nodalPressures[fe.m_nOutlet]);
+		m_G[i] = m_flowElements[i]->systemFunction( m_fluidMassFluxes[i], m_nodalPressures[fe.m_nodeIndexInlet], m_nodalPressures[fe.m_nodeIndexOutlet]);
 	}
 
 }

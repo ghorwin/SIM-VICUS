@@ -8,13 +8,13 @@ namespace NANDRAD_MODEL {
 /*! Define a network connection. */
 struct Element {
 	Element() {}
-	Element(unsigned int n_inlet, unsigned int n_outlet) :
-		m_nInlet(n_inlet), m_nOutlet(n_outlet) {}
+	Element(unsigned int i1, unsigned int i2) :
+		m_nodeIndexInlet(i1), m_nodeIndexOutlet(i2) {}
 
 	/*! Index of inlet node. */
-	unsigned int m_nInlet;
+	unsigned int m_nodeIndexInlet;
 	/*! Index of outlet node. */
-	unsigned int m_nOutlet;
+	unsigned int m_nodeIndexOutlet;
 };
 
 /*! Defines a network node including connected elements. */

@@ -128,8 +128,8 @@ int ThermalNetworkModelImpl::updateFluxes() 	{
 		const Element &fe = m_network->m_elements[i];
 		// get inlet node
 		const double massFlux = m_fluidMassFluxes[i];
-		const double specEnthalpInlet = m_nodalSpecificEnthalpies[fe.m_nInlet];
-		const double specEnthalpOutlet = m_nodalSpecificEnthalpies[fe.m_nOutlet];
+		const double specEnthalpInlet = m_nodalSpecificEnthalpies[fe.m_nodeIndexInlet];
+		const double specEnthalpOutlet = m_nodalSpecificEnthalpies[fe.m_nodeIndexOutlet];
 		// set all nodal conditions
 		flowElem->setNodalConditions(massFlux, specEnthalpInlet, specEnthalpOutlet);
 		// copy nodal temperatures
@@ -175,7 +175,7 @@ void ThermalNetworkModelImpl::dependencies(std::vector<std::pair<const double *,
 		const Element &fe = m_network->m_elements[i];
 		// get inlet node
 		const double *massFluxRef = m_fluidMassFluxes + i;
-		const double *specEnthalpRef = &m_nodalSpecificEnthalpies[fe.m_nInlet];
+		const double *specEnthalpRef = &m_nodalSpecificEnthalpies[fe.m_nodeIndexInlet];
 		const double *tempInletRef = &m_inletNodeTemperatures[i];
 		// enthalpy and heat flux dependencies
 		const double *heatFluxRef = &m_fluidHeatFluxes[i];
@@ -184,7 +184,7 @@ void ThermalNetworkModelImpl::dependencies(std::vector<std::pair<const double *,
 		// temperature dependencies
 		resultInputValueReferences.push_back(std::make_pair(tempInletRef, specEnthalpRef) );
 		// inverse direction
-		specEnthalpRef = &m_nodalSpecificEnthalpies[fe.m_nOutlet];
+		specEnthalpRef = &m_nodalSpecificEnthalpies[fe.m_nodeIndexOutlet];
 		const double *tempOutletRef = &m_outletNodeTemperatures[i];
 		// enthalpy dependencies
 		resultInputValueReferences.push_back(std::make_pair(heatFluxRef, specEnthalpRef) );
