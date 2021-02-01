@@ -152,8 +152,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant: {
 					// retrieve constant temperature
 					if(!e.m_para[NANDRAD::HydraulicNetworkElement::P_Temperature].name.empty()) {
-						m_p->m_ambientTemperatureRefs.push_back(
-							&e.m_para[NANDRAD::HydraulicNetworkElement::P_Temperature].value);
+						m_p->m_ambientTemperatureRefs[i] =
+							&e.m_para[NANDRAD::HydraulicNetworkElement::P_Temperature].value;
 						// retrieve external heat transfer coefficient
 						IBK_ASSERT(!e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].name.empty());
 						m_p->m_ambientHeatTransferRefs[i] = &e.m_component->m_para[
