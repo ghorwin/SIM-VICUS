@@ -1,4 +1,5 @@
 #include "NM_HydraulicNetworkFlowElements.h"
+#include "NM_Physics.h"
 
 #include "NANDRAD_HydraulicNetworkElement.h"
 #include "NANDRAD_HydraulicNetworkPipeProperties.h"
@@ -7,11 +8,6 @@
 
 #define PI				3.141592653589793238
 
-/*! Reynolds number where flow switches from laminar to transition state. */
-#define RE_LAMINAR		1700
-
-/*! Reynolds number where flow switches from transition state to turbulent */
-#define RE_TURBULENT	4000
 
 namespace NANDRAD_MODEL {
 
@@ -61,35 +57,9 @@ double HNPipeElement::pressureLossFriction(const double &mdot) const {
 	double fluidDensity = m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value;
 	double velocity = mdot / (fluidDensity * m_diameter * m_diameter * PI / 4);
 	double Re = std::abs(velocity) * m_diameter / m_fluid->m_kinematicViscosity.m_values.value(m_fluidTemperature);
-	double zeta = m_length / m_diameter * frictionFactorSwamee(Re, m_diameter, m_roughness);
+	double zeta = m_length / m_diameter * FrictionFactorSwamee(Re, m_diameter, m_roughness);
 	return zeta * fluidDensity / 2 * std::abs(velocity) * velocity;
 }
-
-double HNPipeElement::frictionFactorSwamee(const double &Re, const double &diameter, const double &roughness) {
-	if (Re < RE_LAMINAR)
-		return 64/Re;
-	else if (Re < RE_TURBULENT){
-		double fLam = 64/RE_LAMINAR; // f(RE_LAMINAR)
-		double fTurb = std::log10((roughness / diameter) / 3.7 + 5.74 / std::pow(RE_TURBULENT, 0.9) );
-		fTurb = 0.25/(fTurb*fTurb); // f(RE_TURBULENT)
-		// now interpolate linearly between fLam and fTurb
-		return fLam + (Re - RE_LAMINAR) * (fTurb - fLam) / (RE_TURBULENT - RE_LAMINAR);
-	}
-	else{
-		double f = std::log10( (roughness / diameter) / 3.7 + 5.74 / std::pow(Re, 0.9) ) ;
-		return	0.25 / (f*f);
-	}
-}
-
-/*! this one is probably quite expensive ? */
-double HNPipeElement::frictionFactorCheng(const double &Re, const double &diameter, const double &roughness){
-	double delta = diameter / roughness;
-	double a = 1 / (1 + std::pow(Re/RE_LAMINAR, 9));
-	double b = 1 / (1 + (Re / (160 * delta)) * (Re / (160 * delta)) );
-	return 1 / ( std::pow(Re/64, a) * std::pow( 1.8*std::log10(Re / 6.8), 2*(1-a)*b )
-			* std::pow( 2*std::log10(3.7*delta), 2*(1-a)*(1-b) ) );
-}
-
 
 
 

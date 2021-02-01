@@ -1,9 +1,12 @@
 #include "NM_ThermalNetworkFlowElements.h"
+#include "NM_Physics.h"
 
 #include "NANDRAD_HydraulicFluid.h"
 #include "NANDRAD_HydraulicNetworkElement.h"
 #include "NANDRAD_HydraulicNetworkPipeProperties.h"
 #include "NANDRAD_HydraulicNetworkComponent.h"
+
+#include "numeric"
 
 #define PI				3.141592653589793238
 
@@ -94,24 +97,19 @@ void TNStaticPipeElement::setNodalConditions(double mdot, double hInlet, double 
 		m_inletTemperature = m_temperature;
 	}
 
-	// calculate inner heat transfer and for simpicity use laminar flow equations
-	// TODO Hauke: add turbulent flow equations
-	// first calculate reynolds number
+	// calculate inner heat transfer coefficient
 	const double velocity = std::fabs(m_massFlux)/(m_volume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value);
-	// TODO Anne: we use the kinematic viscosity based on inlet temperature? Should be ok.
-	const double reynolds = velocity * m_innerDiameter/m_fluid->m_kinematicViscosity.m_values.value(m_temperature);
-	// calculate prandtl number
-	const double prandtl = velocity * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value *
-			m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value/
-			m_fluid->m_para[NANDRAD::HydraulicFluid::P_Conductivity].value;
-	// calculate laminar nusselt number
-	double val = 1.615 * (reynolds*prandtl * m_innerDiameter/m_length-0.7);
-	const double nusselt = std::pow(49.37 + val*val*val,0.33333);
-	// calculate convection coefficient for the inner side
-	m_innerHeatTransferCoefficient = nusselt * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Conductivity].value/m_innerDiameter;
+	const double viscosity = m_fluid->m_kinematicViscosity.m_values.value(m_temperature);
+	const double reynolds = ReynoldsNumber(velocity, viscosity, m_innerDiameter);
+	const double prandtl = PrandtlNumber(viscosity, m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value,
+			m_fluid->m_para[NANDRAD::HydraulicFluid::P_Conductivity].value,
+			m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value);
+	double nusselt = NusseltNumber(reynolds, prandtl, m_length, m_innerDiameter);
+	double innerHeatTransferCoefficient = nusselt * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Conductivity].value /
+											m_innerDiameter;
 
 	// calculate heat transfer
-	const double totalUValuePipe = (PI*m_length) / (1.0/(m_innerHeatTransferCoefficient * m_innerDiameter)
+	const double UAValueTotal = (PI*m_length) / (1.0/(innerHeatTransferCoefficient * m_innerDiameter)
 													+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter)
 													+ 1.0/(2.0*m_UValuePipeWall) );
 
@@ -119,13 +117,13 @@ void TNStaticPipeElement::setNodalConditions(double mdot, double hInlet, double 
 		// calculate heat loss with given parameters
 		m_heatLoss = m_massFlux * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value *
 				(m_inletTemperature - m_ambientTemperature) *
-				(1. - std::exp(-totalUValuePipe / (std::fabs(m_massFlux) * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value )));
+				(1. - std::exp(-UAValueTotal / (std::fabs(m_massFlux) * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value )));
 	}
 	else {
 		// calculate heat loss with given parameters
 		m_heatLoss = std::fabs(m_massFlux) * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value *
 				(m_outletTemperature - m_ambientTemperature) *
-				(1. - std::exp(-totalUValuePipe / (std::fabs(m_massFlux) * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value )));
+				(1. - std::exp(-UAValueTotal / (std::fabs(m_massFlux) * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value )));
 	}
 }
 
@@ -409,31 +407,28 @@ void TNDynamicPipeElement::setNodalConditions(double mdot, double hInlet, double
 	}
 
 	m_heatLoss = 0.0;
-	// velocity is the same along each pipe segment
+
+	// assume constant heat transfer coefficient along pipe, using average temperature
 	const double velocity = std::fabs(mdot)/(m_volume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value);
+	const double avgTemperature = std::accumulate(m_temperatures.begin(), m_temperatures.end(), 0) /
+								(double) m_temperatures.size();
+	const double viscosity = m_fluid->m_kinematicViscosity.m_values.value(avgTemperature);
+	const double reynolds = ReynoldsNumber(velocity, viscosity, m_innerDiameter);
+	const double prandtl = PrandtlNumber(viscosity, m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value,
+			m_fluid->m_para[NANDRAD::HydraulicFluid::P_Conductivity].value,
+			m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value);
+	double nusselt = NusseltNumber(reynolds, prandtl, m_length, m_innerDiameter);
+	double innerHeatTransferCoefficient = nusselt * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Conductivity].value /
+											m_innerDiameter;
+
+	// UA value for one volume
+	const double UAValue = (PI*m_discLength) / (1.0/(innerHeatTransferCoefficient * m_innerDiameter)
+												+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter)
+												+ 1.0/(2.0*m_UValuePipeWall) );
 
 	for(unsigned int i = 0; i < m_nVolumes; ++i) {
-		// calculate inner heat transfer and for simpicity use laminar flow equations
-		// TODO Hauke: add turbulent flow equations
-		// first calculate reynolds number
-		const double reynolds = velocity * m_innerDiameter/m_fluid->m_kinematicViscosity.m_values.value(m_temperatures[i]);
-		// calculate prandtl number
-		const double prandtl = velocity * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value *
-				m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value/
-				m_fluid->m_para[NANDRAD::HydraulicFluid::P_Conductivity].value;
-		// calculate laminar nusselt number
-		double val = 1.615 * (reynolds*prandtl * m_innerDiameter/m_length-0.7);
-		const double nusselt = std::pow(49.37 + val*val*val,0.33333);
-		// calculate convection coefficient for the inner side
-		double innerHeatTransferCoefficient = nusselt * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Conductivity].value/m_innerDiameter;
-
-		// calculate heat transfer
-		const double UValue = (PI*m_discLength) / (1.0/(innerHeatTransferCoefficient * m_innerDiameter)
-														+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter)
-														+ 1.0/(2.0*m_UValuePipeWall) );
-
 		// calculate heat loss with given parameters
-		m_heatLosses[i] = UValue * (m_temperatures[i] - m_ambientTemperature);
+		m_heatLosses[i] = UAValue * (m_temperatures[i] - m_ambientTemperature);
 		// sum up heat losses
 		m_heatLoss += m_heatLosses[i];
 	}

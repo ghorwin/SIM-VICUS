@@ -49,6 +49,7 @@ SOURCES += \
 #	../../../NandradDevTests/src/main.cpp \
 	../../src/NM_HydraulicNetworkFlowElements.cpp \
 	../../src/NM_HydraulicNetworkModel.cpp \
+	../../src/NM_Physics.cpp \
 	../../src/NM_RoomRadiationLoadsModel.cpp \
 	../../src/NM_WindowModel.cpp \
 	../../src/main.cpp \

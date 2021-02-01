@@ -89,9 +89,6 @@ private:
 	/*! thermal resistance of the pipe wall in Km2/W */
 	double							m_UValuePipeWall;
 
-	/*! Heat transfer coeffient from fluid towards the wall in W/m2K */
-	double							m_innerHeatTransferCoefficient;
-
 	/*! Heat transfer coefficient from outer pipe wall to environment in W/m2K */
 	double							m_outerHeatTransferCoefficient;
 
