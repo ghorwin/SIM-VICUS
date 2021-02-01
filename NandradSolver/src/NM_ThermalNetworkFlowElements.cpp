@@ -40,7 +40,7 @@ unsigned int TNStaticPipeElement::nInternalStates() const
 void TNStaticPipeElement::setInitialTemperature(double T0) {
 	m_temperature = T0;
 	m_specificEnthalpy = T0 * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
-	// set inlet and outölet tenoeratures and specific enthalpies
+	// set inlet and outlet temperatures and specific enthalpies
 	m_inletTemperature = T0;
 	m_outletTemperature = T0;
 	m_inletSpecificEnthalpy = m_specificEnthalpy;
@@ -72,7 +72,7 @@ void TNStaticPipeElement::setNodalConditions(double mdot, double hInlet, double 
 	m_massFlux = mdot;
 
 	// mass flux from inlet to outlet
-	if(mdot >= 0) {
+	if(m_massFlux >= 0) {
 		// retrieve inlet specific enthalpy
 		m_inletSpecificEnthalpy = hInlet;
 		// calculate inlet temperature
@@ -97,7 +97,7 @@ void TNStaticPipeElement::setNodalConditions(double mdot, double hInlet, double 
 	// calculate inner heat transfer and for simpicity use laminar flow equations
 	// TODO Hauke: add turbulent flow equations
 	// first calculate reynolds number
-	const double velocity = std::fabs(mdot)/(m_volume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value);
+	const double velocity = std::fabs(m_massFlux)/(m_volume * m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value);
 	// TODO Anne: we use the kinematic viscosity based on inlet temperature? Should be ok.
 	const double reynolds = velocity * m_innerDiameter/m_fluid->m_kinematicViscosity.m_values.value(m_temperature);
 	// calculate prandtl number
@@ -115,7 +115,7 @@ void TNStaticPipeElement::setNodalConditions(double mdot, double hInlet, double 
 													+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter)
 													+ 1.0/(2.0*m_UValuePipeWall) );
 
-	if(mdot >= 0) {
+	if(m_massFlux >= 0) {
 		// calculate heat loss with given parameters
 		m_heatLoss = m_massFlux * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value *
 				(m_inletTemperature - m_ambientTemperature) *

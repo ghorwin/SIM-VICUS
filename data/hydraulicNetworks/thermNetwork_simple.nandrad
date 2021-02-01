@@ -73,7 +73,7 @@
 						<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="1003" inletNodeId="1" outletNodeId="100" componentId="2" displayName="node 1">
-						<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+						<IBK:Parameter name="HeatFlux" unit="W">-300</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="1004" inletNodeId="100" outletNodeId="101" componentId="3" pipePropertiesId="1">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
@@ -128,7 +128,7 @@
 						<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="2003" inletNodeId="1" outletNodeId="100" componentId="2" displayName="node 1">
-						<IBK:Parameter name="HeatFlux" unit="W">-300</IBK:Parameter>
+						<IBK:Parameter name="HeatFlux" unit="W">200</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="2004" inletNodeId="100" outletNodeId="101" componentId="3" pipePropertiesId="1">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
