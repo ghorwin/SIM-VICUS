@@ -42,15 +42,30 @@ double NusseltNumber(const double &reynolds, const double &prandtl, const double
 
 double NusseltNumberTurbulent(const double &reynolds, const double &prandtl, const double &l, const double &d)
 {
-	double f = frictionFactorSimple(reynolds);
-	return  std::max<double>(3.66, f / 8. * (reynolds - 1000.)*prandtl /
-		(1. + 12.7 * IBK::f_sqrt(f / 8.) * (IBK::f_pow(prandtl, 0.6667) - 1.)) *
-							 (1. + IBK::f_pow(d / l, 0.6667)));
+	double f = FrictionFactorSimple(reynolds);
+	return f / 8. * (reynolds - 1000.)*prandtl /
+		(1. + 12.7 * std::sqrt(f / 8.) * (std::pow(prandtl, 0.6667) - 1.)) *
+							 (1. + std::pow(d / l, 0.6667));
 }
 
 double NusseltNumberLaminar(const double &reynolds, const double &prandtl, const double &l, const double &d)
 {
 	return std::pow( 49.37 + std::pow(1.615 * std::pow(reynolds * prandtl * d/l, 1/3) - 0.7, 3.0) , 1/3);
+}
+
+double FrictionFactorSimple(const double &reynolds)
+{
+	return std::pow(0.79 * std::log(reynolds) - 1.64, -2.0);
+}
+
+double PrandtlNumber(const double &kinVis, const double &cp, const double &lambda, const double &rho)
+{
+	return kinVis * cp * rho / lambda;
+}
+
+double ReynoldsNumber(const double &v, const double &kinVis, const double &l)
+{
+	return  v * l / kinVis;
 }
 
 

@@ -23,8 +23,6 @@
 #define NM_PhysicsH
 
 #include <algorithm>
-#include <IBK_math.h>
-
 
 namespace NANDRAD_MODEL {
 
@@ -41,9 +39,7 @@ const double MolarMassCO2 = 44.01e-03;
 	\param kinVis fluid kinematic viscosity
 	\param l characteristic length
 */
-inline double ReynoldsNumber(const double &v, const double &kinVis, const double &l) {
-	return  v * l / kinVis;
-}
+double ReynoldsNumber(const double &v, const double &kinVis, const double &l);
 
 /*! Calculates Prandtl number of a moving fluid.
 	\param kinVis fluid kinematic viscosity
@@ -51,16 +47,12 @@ inline double ReynoldsNumber(const double &v, const double &kinVis, const double
 	\param lambda fluid thermal conductivity
 	\param rho fluid mass density
 */
-inline double PrandtlNumber(const double &kinVis, const double &cp, const double &lambda, const double &rho) {
-	return kinVis * cp * rho / lambda;
-}
+double PrandtlNumber(const double &kinVis, const double &cp, const double &lambda, const double &rho);
 
 /*! Simple relation for friction factor for a turbulent fluid through a pipe. Only used for Nusselt calculation.
 	\param reynolds Reynolds number
 */
-inline double frictionFactorSimple(const double &reynolds) {
-	return std::pow(0.79 * std::log(reynolds) - 1.64, -2.0);
-}
+double FrictionFactorSimple(const double &reynolds);
 
 /*! Calculates nusselt number for laminar fluid flow through a pipe.
 	Nusselt number has fixed minimum to laminar
@@ -70,7 +62,7 @@ inline double frictionFactorSimple(const double &reynolds) {
 	\param l Characteristic length
 	\param d Pipe outside diameter
 */
-inline double NusseltNumberLaminar(const double &reynolds, const double &prandtl, const double &l, const double &d);
+double NusseltNumberLaminar(const double &reynolds, const double &prandtl, const double &l, const double &d);
 
 /*! Calculates nusselt number for a turbulent fluid through a pipe.
 	Nusselt number has fixed minimum to laminar
