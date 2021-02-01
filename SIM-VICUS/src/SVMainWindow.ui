@@ -105,7 +105,7 @@
      <string>&amp;Networks</string>
     </property>
     <addaction name="actionNetworkImport"/>
-    <addaction name="actionNetwork_Hydraulic_Components"/>
+    <addaction name="actionNetworkHydraulicComponents"/>
    </widget>
    <widget class="QMenu" name="menuDatabases">
     <property name="title">
@@ -116,8 +116,8 @@
     <addaction name="actionDBComponents"/>
     <addaction name="actionDBWindows"/>
     <addaction name="actionDBBoundaryConditions"/>
-    <addaction name="actionPipes"/>
-    <addaction name="actionHydraulic_Components"/>
+    <addaction name="actionDBNetworkPipes"/>
+    <addaction name="actionDBHydraulicComponents"/>
    </widget>
    <widget class="QMenu" name="menuSimulation">
     <property name="title">
@@ -249,6 +249,47 @@
     <string>Recent &amp;projects</string>
    </property>
   </action>
+  <action name="actionFileImportEneryPlusIDF">
+   <property name="text">
+    <string>EneryPlus IDF...</string>
+   </property>
+  </action>
+  <action name="actionFileReload">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/24x24/reload.png</normaloff>:/gfx/actions/24x24/reload.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Reload project</string>
+   </property>
+  </action>
+  <action name="actionFileOpenProjectDir">
+   <property name="text">
+    <string>Go to project directory...</string>
+   </property>
+   <property name="toolTip">
+    <string>Opens file manager with path to project file.</string>
+   </property>
+   <property name="shortcut">
+    <string>F8</string>
+   </property>
+  </action>
+  <action name="actionFileExportNANDRAD">
+   <property name="text">
+    <string>Export NANDRAD project...</string>
+   </property>
+   <property name="toolTip">
+    <string>Exports NANDRAD simulation project and input data.</string>
+   </property>
+  </action>
+  <action name="actionFileExportEnergyPlus">
+   <property name="text">
+    <string>Export EnergyPlus project...</string>
+   </property>
+   <property name="toolTip">
+    <string>Exports EnergyPlus project.</string>
+   </property>
+  </action>
   <action name="actionEditTextEditProject">
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
@@ -261,26 +302,6 @@
     <string>F2</string>
    </property>
   </action>
-  <action name="actionHelpAboutQt">
-   <property name="text">
-    <string>About &amp;Qt...</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::AboutQtRole</enum>
-   </property>
-  </action>
-  <action name="actionHelpAbout">
-   <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/32x32/info_32x32.png</normaloff>:/gfx/actions/32x32/info_32x32.png</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;About SIM-VICUS...</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::AboutRole</enum>
-   </property>
-  </action>
   <action name="actionEditPreferences">
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
@@ -291,15 +312,6 @@
    </property>
    <property name="menuRole">
     <enum>QAction::PreferencesRole</enum>
-   </property>
-  </action>
-  <action name="actionFileReload">
-   <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/24x24/reload.png</normaloff>:/gfx/actions/24x24/reload.png</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Reload project</string>
    </property>
   </action>
   <action name="actionEditCleanProject">
@@ -322,24 +334,6 @@
     <string>Launches the external Post-Processing.</string>
    </property>
   </action>
-  <action name="actionHelpCheckForUpdates">
-   <property name="text">
-    <string>Check for updates...</string>
-   </property>
-  </action>
-  <action name="actionHelpBugReport">
-   <property name="text">
-    <string>Feature request or bug report...</string>
-   </property>
-   <property name="toolTip">
-    <string>Post a feature request or submit a bug report.</string>
-   </property>
-  </action>
-  <action name="actionHelpVisitDiscussionForum">
-   <property name="text">
-    <string>Visit discussion forum...</string>
-   </property>
-  </action>
   <action name="actionViewCCMeditor">
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
@@ -350,27 +344,6 @@
    </property>
    <property name="toolTip">
     <string>Launches external climate editor (CCMEditor).</string>
-   </property>
-  </action>
-  <action name="actionNetworkImport">
-   <property name="text">
-    <string>Import Network...</string>
-   </property>
-  </action>
-  <action name="actionFileOpenProjectDir">
-   <property name="text">
-    <string>Go to project directory...</string>
-   </property>
-   <property name="toolTip">
-    <string>Opens file manager with path to project file.</string>
-   </property>
-   <property name="shortcut">
-    <string>F8</string>
-   </property>
-  </action>
-  <action name="actionNetworkEdit">
-   <property name="text">
-    <string>Edit Network...</string>
    </property>
   </action>
   <action name="actionViewToggleGeometryMode">
@@ -388,66 +361,6 @@
     <string>Turns on geometry edit mode</string>
    </property>
   </action>
-  <action name="actionDBMaterials">
-   <property name="text">
-    <string>Materials...</string>
-   </property>
-  </action>
-  <action name="actionDBConstructions">
-   <property name="text">
-    <string>Constructions...</string>
-   </property>
-  </action>
-  <action name="actionFileImportEneryPlusIDF">
-   <property name="text">
-    <string>EneryPlus IDF...</string>
-   </property>
-  </action>
-  <action name="actionDBWindows">
-   <property name="text">
-    <string>Windows...</string>
-   </property>
-   <property name="toolTip">
-    <string>Edit window database</string>
-   </property>
-  </action>
-  <action name="actionFileExportNANDRAD">
-   <property name="text">
-    <string>Export NANDRAD project...</string>
-   </property>
-   <property name="toolTip">
-    <string>Exports NANDRAD simulation project and input data.</string>
-   </property>
-  </action>
-  <action name="actionFileExportEnergyPlus">
-   <property name="text">
-    <string>Export EnergyPlus project...</string>
-   </property>
-   <property name="toolTip">
-    <string>Exports EnergyPlus project.</string>
-   </property>
-  </action>
-  <action name="actionSimulationNANDRAD">
-   <property name="text">
-    <string>Building Energy Simulation (NANDRAD)...</string>
-   </property>
-   <property name="toolTip">
-    <string>Opens the simulation start dialog.</string>
-   </property>
-   <property name="shortcut">
-    <string>F9</string>
-   </property>
-  </action>
-  <action name="actionHelpKeyboardAndMouseControls">
-   <property name="text">
-    <string>Keyboard and mouse controls...</string>
-   </property>
-  </action>
-  <action name="actionHelpOnlineManual">
-   <property name="text">
-    <string>Online manual...</string>
-   </property>
-  </action>
   <action name="actionViewToggleParametrizationMode">
    <property name="checkable">
     <bool>true</bool>
@@ -463,12 +376,22 @@
     <string>Turns on geometry edit mode</string>
    </property>
   </action>
-  <action name="actionSimulationHydraulicNetwork">
+  <action name="actionDBMaterials">
    <property name="text">
-    <string>Hydraulic network calculation...</string>
+    <string>Materials...</string>
+   </property>
+  </action>
+  <action name="actionDBConstructions">
+   <property name="text">
+    <string>Constructions...</string>
+   </property>
+  </action>
+  <action name="actionDBWindows">
+   <property name="text">
+    <string>Windows...</string>
    </property>
    <property name="toolTip">
-    <string>Opens the simulation start dialog.</string>
+    <string>Edit window database</string>
    </property>
   </action>
   <action name="actionDBComponents">
@@ -481,19 +404,96 @@
     <string>Boundary conditions...</string>
    </property>
   </action>
-  <action name="actionNetwork_Hydraulic_Components">
-   <property name="text">
-    <string>Network Hydraulic Components...</string>
-   </property>
-  </action>
-  <action name="actionPipes">
+  <action name="actionDBNetworkPipes">
    <property name="text">
     <string>Pipes...</string>
    </property>
   </action>
-  <action name="actionHydraulic_Components">
+  <action name="actionDBHydraulicComponents">
    <property name="text">
-    <string>Hydraulic Components</string>
+    <string>Hydraulic components...</string>
+   </property>
+  </action>
+  <action name="actionNetworkEdit">
+   <property name="text">
+    <string>Edit Network...</string>
+   </property>
+  </action>
+  <action name="actionNetworkImport">
+   <property name="text">
+    <string>Import Network...</string>
+   </property>
+  </action>
+  <action name="actionNetworkHydraulicComponents">
+   <property name="text">
+    <string>Network Hydraulic Components...</string>
+   </property>
+  </action>
+  <action name="actionSimulationNANDRAD">
+   <property name="text">
+    <string>Building Energy Simulation (NANDRAD)...</string>
+   </property>
+   <property name="toolTip">
+    <string>Opens the simulation start dialog.</string>
+   </property>
+   <property name="shortcut">
+    <string>F9</string>
+   </property>
+  </action>
+  <action name="actionSimulationHydraulicNetwork">
+   <property name="text">
+    <string>Hydraulic network calculation...</string>
+   </property>
+   <property name="toolTip">
+    <string>Opens the simulation start dialog.</string>
+   </property>
+  </action>
+  <action name="actionHelpKeyboardAndMouseControls">
+   <property name="text">
+    <string>Keyboard and mouse controls...</string>
+   </property>
+  </action>
+  <action name="actionHelpOnlineManual">
+   <property name="text">
+    <string>Online manual...</string>
+   </property>
+  </action>
+  <action name="actionHelpAboutQt">
+   <property name="text">
+    <string>About &amp;Qt...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::AboutQtRole</enum>
+   </property>
+  </action>
+  <action name="actionHelpAbout">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/32x32/info_32x32.png</normaloff>:/gfx/actions/32x32/info_32x32.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;About SIM-VICUS...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::AboutRole</enum>
+   </property>
+  </action>
+  <action name="actionHelpCheckForUpdates">
+   <property name="text">
+    <string>Check for updates...</string>
+   </property>
+  </action>
+  <action name="actionHelpBugReport">
+   <property name="text">
+    <string>Feature request or bug report...</string>
+   </property>
+   <property name="toolTip">
+    <string>Post a feature request or submit a bug report.</string>
+   </property>
+  </action>
+  <action name="actionHelpVisitDiscussionForum">
+   <property name="text">
+    <string>Visit discussion forum...</string>
    </property>
   </action>
  </widget>

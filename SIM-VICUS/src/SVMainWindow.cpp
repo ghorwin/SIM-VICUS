@@ -272,13 +272,12 @@ void SVMainWindow::on_actionDBBoundaryConditions_triggered() {
 }
 
 
-void SVMainWindow::on_actionPipes_triggered() {
+void SVMainWindow::on_actionDBNetworkPipes_triggered() {
 	dbPipeEditDialog()->edit();
 }
 
 
-void SVMainWindow::on_actionHydraulic_Components_triggered()
-{
+void SVMainWindow::on_actionDBHydraulicComponents_triggered() {
 	dbNetworkComponentEditDialog()->edit();
 }
 
@@ -1276,7 +1275,7 @@ void SVMainWindow::on_actionHelpKeyboardAndMouseControls_triggered() {
 }
 
 
-void SVMainWindow::on_actionNetwork_Hydraulic_Components_triggered()
+void SVMainWindow::on_actionNetworkHydraulicComponents_triggered()
 {
 
 	// TODO Andreas : this menu entry should be disabled when there is no network

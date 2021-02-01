@@ -117,6 +117,8 @@ public slots:
 	void on_actionDBConstructions_triggered();
 	void on_actionDBComponents_triggered();
 	void on_actionDBBoundaryConditions_triggered();
+	void on_actionDBHydraulicComponents_triggered();
+	void on_actionDBNetworkPipes_triggered();
 
 protected:
 	/*! Checks if project file has been changed by external application. */
@@ -198,8 +200,6 @@ private slots:
 	void on_actionEditPreferences_triggered();
 	void on_actionEditCleanProject_triggered();
 
-	void on_actionNetworkImport_triggered();
-
 	void on_actionViewExternalPostProcessing_triggered();
 	void on_actionViewCCMeditor_triggered();
 	void on_actionViewToggleGeometryMode_triggered();
@@ -210,18 +210,15 @@ private slots:
 
 	void on_actionHelpAboutQt_triggered();
 	void on_actionHelpAbout_triggered();
-
 	void on_actionHelpBugReport_triggered();
 	void on_actionHelpVisitDiscussionForum_triggered();
 	void on_actionHelpCheckForUpdates_triggered();
 	void on_actionHelpOnlineManual_triggered();
 	void on_actionHelpKeyboardAndMouseControls_triggered();
 
-	void on_actionNetwork_Hydraulic_Components_triggered();
+	void on_actionNetworkImport_triggered();
+	void on_actionNetworkHydraulicComponents_triggered();
 
-	void on_actionPipes_triggered();
-
-	void on_actionHydraulic_Components_triggered();
 
 private:
 	/*! Sets up all dock widgets with definition lists. */
