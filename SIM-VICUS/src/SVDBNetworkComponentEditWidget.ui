@@ -76,15 +76,11 @@
        <item>
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
-          <string>Heat pump model parameters</string>
+          <string>Model parameters</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>TODO : Hauke</string>
-            </property>
-           </widget>
+           <widget class="QTableView" name="tableViewParameters"/>
           </item>
           <item>
            <spacer name="verticalSpacer">

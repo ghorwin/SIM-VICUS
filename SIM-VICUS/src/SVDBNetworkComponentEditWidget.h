@@ -11,6 +11,7 @@ class NetworkComponent;
 
 class SVDBNetworkComponentTableModel;
 class SVDatabase;
+class SVHydraulicComponentParameterModel;
 
 namespace Ui {
 class SVDBNetworkComponentEditWidget;
@@ -60,11 +61,13 @@ private:
 	/*! Pointer to the database model, to modify items when data has changed in the widget. */
 	SVDBNetworkComponentTableModel		*m_dbModel;
 
+	SVHydraulicComponentParameterModel *m_parameterModel;
+
 	/*! Pointer to currently edited component.
 		The pointer is updated whenever updateInput() is called.
 		A nullptr pointer means that there is no component to edit.
 	*/
-	VICUS::NetworkComponent				*m_current;
+	VICUS::NetworkComponent				*m_currentComponent;
 };
 
 #endif // SVDBNetworkComponentEditWidgetH

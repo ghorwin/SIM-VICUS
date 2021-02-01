@@ -12,6 +12,7 @@
 #include "SVDBConstructionEditDialog.h"
 #include "SVDBBoundaryConditionEditDialog.h"
 #include "SVMainWindow.h"
+#include "SVHydraulicComponentParameterModel.h"
 
 SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) :
 	QWidget(parent),
@@ -31,6 +32,8 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 	m_ui->comboBoxComponentType->blockSignals(false);
 
 	// TODO : Hauke, initial edit widget setup (combo boxes etc.)
+	m_parameterModel = new SVHydraulicComponentParameterModel(this);
+	m_ui->tableViewParameters->setModel(m_parameterModel);
 
 	updateInput(-1);
 }
@@ -48,7 +51,7 @@ void SVDBNetworkComponentEditWidget::setup(SVDatabase * db, SVDBNetworkComponent
 
 
 void SVDBNetworkComponentEditWidget::updateInput(int id) {
-	m_current = nullptr; // disable edit triggers
+	m_currentComponent = nullptr; // disable edit triggers
 
 	if (id == -1) {
 		// disable all controls
@@ -67,7 +70,7 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	setEnabled(true);
 
 	VICUS::NetworkComponent * comp = const_cast<VICUS::NetworkComponent*>(m_db->m_networkComponents[(unsigned int)id]);
-	m_current = comp;
+	m_currentComponent = comp;
 
 	// now update the GUI controls
 	m_ui->comboBoxComponentType->blockSignals(true);
@@ -77,9 +80,8 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	m_ui->comboBoxComponentType->blockSignals(false);
 
 	m_ui->pushButtonComponentColor->blockSignals(true);
-	m_ui->pushButtonComponentColor->setColor(m_current->m_color);
+	m_ui->pushButtonComponentColor->setColor(m_currentComponent->m_color);
 	m_ui->pushButtonComponentColor->blockSignals(false);
-
 
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !comp->m_builtIn;
@@ -87,30 +89,30 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	m_ui->pushButtonComponentColor->setReadOnly(!isEditable);
 	m_ui->comboBoxComponentType->setEnabled(isEditable);
 
-	// TODO : other widgets
+	m_parameterModel->setComponent(*m_currentComponent);
 }
 
 
 void SVDBNetworkComponentEditWidget::on_lineEditName_editingFinished(){
-	Q_ASSERT(m_current != nullptr);
+	Q_ASSERT(m_currentComponent != nullptr);
 
-	if (m_current->m_displayName != m_ui->lineEditName->string()) {
-		m_current->m_displayName = m_ui->lineEditName->string();
+	if (m_currentComponent->m_displayName != m_ui->lineEditName->string()) {
+		m_currentComponent->m_displayName = m_ui->lineEditName->string();
 		m_db->m_networkComponents.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		m_dbModel->setItemModified(m_currentComponent->m_id); // tell model that we changed the data
 		emit tableDataChanged();
 	}
 }
 
 
 void SVDBNetworkComponentEditWidget::on_comboBoxComponentType_currentIndexChanged(int index){
-	if (m_current == nullptr) return; // m_current is nullptr, when nothing is selected and controls are defaulted to "empty"
+	if (m_currentComponent == nullptr) return; // m_current is nullptr, when nothing is selected and controls are defaulted to "empty"
 
 	NANDRAD::HydraulicNetworkComponent::ModelType ct = static_cast<NANDRAD::HydraulicNetworkComponent::ModelType>(m_ui->comboBoxComponentType->currentData().toInt());
-	if (ct != m_current->m_modelType) {
-		m_current->m_modelType = ct;
+	if (ct != m_currentComponent->m_modelType) {
+		m_currentComponent->m_modelType = ct;
 		m_db->m_networkComponents.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		m_dbModel->setItemModified(m_currentComponent->m_id); // tell model that we changed the data
 		emit tableDataChanged();
 	}
 }
@@ -118,12 +120,12 @@ void SVDBNetworkComponentEditWidget::on_comboBoxComponentType_currentIndexChange
 
 
 void SVDBNetworkComponentEditWidget::on_pushButtonComponentColor_colorChanged() {
-	Q_ASSERT(m_current != nullptr);
+	Q_ASSERT(m_currentComponent != nullptr);
 
-	if (m_current->m_color != m_ui->pushButtonComponentColor->color()) {
-		m_current->m_color = m_ui->pushButtonComponentColor->color();
+	if (m_currentComponent->m_color != m_ui->pushButtonComponentColor->color()) {
+		m_currentComponent->m_color = m_ui->pushButtonComponentColor->color();
 		m_db->m_networkComponents.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		m_dbModel->setItemModified(m_currentComponent->m_id); // tell model that we changed the data
 		emit tableDataChanged();
 	}
 
