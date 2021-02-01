@@ -81,7 +81,7 @@
 					</HydraulicNetworkElement>
 				</Elements>
 			</HydraulicNetwork>
-			<HydraulicNetwork id="2" displayName="dynamic network" modelType="ThermalHydraulicNetwork" referenceElementId="20301">
+			<HydraulicNetwork id="2" displayName="dynamic network" modelType="ThermalHydraulicNetwork" referenceElementId="2001">
 				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
 				<IBK:Parameter name="InitialFluidTemperature" unit="C">20</IBK:Parameter>
 				<HydraulicFluid id="1" displayName="Water">
