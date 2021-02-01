@@ -477,6 +477,35 @@ double TNDynamicPipeElement::heatLoss() const  {
 	return m_heatLoss;
 }
 
+void TNDynamicPipeElement::dependencies(const double *ydot, const double *y,
+										const double *mdot, const double* hInlet, const double*hOutlet,
+										const double *Qdot,
+										std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const {
+
+	// set dependency to inlet and outlet enthalpy
+	resultInputDependencies.push_back(std::make_pair(hInlet, y) );
+	resultInputDependencies.push_back(std::make_pair(hOutlet, y + nInternalStates() - 1) );
+	resultInputDependencies.push_back(std::make_pair(ydot, hInlet) );
+	resultInputDependencies.push_back(std::make_pair(ydot + nInternalStates() - 1, hOutlet) );
+
+
+	for(unsigned int n = 0; n < nInternalStates(); ++n) {
+
+		// heat balance per default sums up heat fluxes and entahpy flux differences through the pipe
+		if(n > 0)
+			resultInputDependencies.push_back(std::make_pair(ydot + n, y + n - 1) );
+
+		resultInputDependencies.push_back(std::make_pair(ydot + n, y + n) );
+
+		if(n < nInternalStates() - 1)
+			resultInputDependencies.push_back(std::make_pair(ydot + n, y + n + 1) );
+
+		// set depedency to mdot
+		resultInputDependencies.push_back(std::make_pair(ydot + n, mdot) );
+		// set dependeny to Qdot
+		resultInputDependencies.push_back(std::make_pair(Qdot, y + n) );
+	}
+}
 
 // *** DynamicAdiabaticPipeElement ***
 
@@ -631,6 +660,34 @@ double TNDynamicAdiabaticPipeElement::outletTemperature() const
 
 double TNDynamicAdiabaticPipeElement::heatLoss() const  {
 	return 0.0;
+}
+
+void TNDynamicAdiabaticPipeElement::dependencies(const double *ydot, const double *y,
+										const double *mdot, const double* hInlet, const double*hOutlet,
+										const double */*Qdot*/,
+										std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const {
+
+	// set dependency to inlet and outlet enthalpy
+	resultInputDependencies.push_back(std::make_pair(hInlet, y) );
+	resultInputDependencies.push_back(std::make_pair(hOutlet, y + nInternalStates() - 1) );
+	resultInputDependencies.push_back(std::make_pair(ydot, hInlet) );
+	resultInputDependencies.push_back(std::make_pair(ydot + nInternalStates() - 1, hOutlet) );
+
+
+	for(unsigned int n = 0; n < nInternalStates(); ++n) {
+
+		// heat balance per default sums up heat fluxes and entahpy flux differences through the pipe
+		if(n > 0)
+			resultInputDependencies.push_back(std::make_pair(ydot + n, y + n - 1) );
+
+		resultInputDependencies.push_back(std::make_pair(ydot + n, y + n) );
+
+		if(n < nInternalStates() - 1)
+			resultInputDependencies.push_back(std::make_pair(ydot + n, y + n + 1) );
+
+		// set depedency to mdot
+		resultInputDependencies.push_back(std::make_pair(ydot + n, mdot) );
+	}
 }
 
 

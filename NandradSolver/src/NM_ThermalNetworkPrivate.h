@@ -71,6 +71,9 @@ public:
 	/*! Container with specific enthalpy for each node.
 	*/
 	std::vector<double>								m_nodalSpecificEnthalpies;
+	/*! Container with temperatures for each node.
+	*/
+	std::vector<double>								m_nodalTemperatures;
 	/*! Heat heat fluxes out of each flow element. */
 	std::vector<double>								m_fluidHeatFluxes;
 	/*! Container with temperatures for inlet node of each flow element.
@@ -96,9 +99,6 @@ private:
 
 	/*! Constant access to fluid. */
 	const NANDRAD::HydraulicFluid					*m_fluid = nullptr;
-	/*! Container with temperatures for each node.
-	*/
-	std::vector<double>								m_nodalTemperatures;
 };
 
 

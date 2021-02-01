@@ -148,24 +148,20 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 			}
 			// decide which heat exchange is chosen
 			switch(e.m_component->m_heatExchangeType) {
-				case NANDRAD::HydraulicNetworkComponent::HT_TemperatureConstant:
-				case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant: {
+				case NANDRAD::HydraulicNetworkComponent::HT_TemperatureConstant: {
 					// retrieve constant temperature
-					if(!e.m_para[NANDRAD::HydraulicNetworkElement::P_Temperature].name.empty()) {
-						m_p->m_ambientTemperatureRefs[i] =
-							&e.m_para[NANDRAD::HydraulicNetworkElement::P_Temperature].value;
-						// retrieve external heat transfer coefficient
-						IBK_ASSERT(!e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].name.empty());
-						m_p->m_ambientHeatTransferRefs[i] = &e.m_component->m_para[
-							NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].value;
-					}
-					else if(!e.m_para[NANDRAD::HydraulicNetworkElement::P_HeatFlux].name.empty()) {
-						m_p->m_ambientHeatFluxRefs[i] =
-							&e.m_para[NANDRAD::HydraulicNetworkElement::P_HeatFlux].value;
-					}
+					m_p->m_ambientTemperatureRefs[i] =
+						&e.m_para[NANDRAD::HydraulicNetworkElement::P_Temperature].value;
+					// retrieve external heat transfer coefficient
+					IBK_ASSERT(!e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].name.empty());
+					m_p->m_ambientHeatTransferRefs[i] = &e.m_component->m_para[
+						NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].value;
+				} break;
+				case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant: {
+					m_p->m_ambientHeatFluxRefs[i] =
+						&e.m_para[NANDRAD::HydraulicNetworkElement::P_HeatFlux].value;
 				} break;
 				case NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature: {
-
 					// check for zone id
 					IBK_ASSERT(!e.m_intPara[NANDRAD::HydraulicNetworkElement::IP_ZoneId].name.empty());
 					// parameters are checked, already

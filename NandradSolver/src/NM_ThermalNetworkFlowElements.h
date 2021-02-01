@@ -269,6 +269,12 @@ public:
 	/*! Returns overall heat loss along the flow element. */
 	double heatLoss() const;
 
+	/*! Function for registering dependencies between derivaites, internal states and modelinputs.*/
+	void dependencies(const double *ydot, const double *y,
+					  const double *mdot, const double* hInlet, const double*hOutlet,
+					  const double *Qdot,
+					  std::vector<std::pair<const double *, const double *> > &resultInputDependencies ) const;
+
 private:
 
 	/*! the fluid, containing all physical parameters */
@@ -391,6 +397,12 @@ public:
 
 	/*! Returns overall heat loss along the flow element. */
 	double heatLoss() const;
+
+	/*! Function for registering dependencies between derivaites, internal states and modelinputs.*/
+	void dependencies(const double *ydot, const double *y,
+					  const double *mdot, const double* hInlet, const double*hOutlet,
+					  const double *Qdot,
+					  std::vector<std::pair<const double *, const double *> > &resultInputDependencies ) const;
 
 private:
 

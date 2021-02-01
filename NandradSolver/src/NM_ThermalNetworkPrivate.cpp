@@ -149,6 +149,9 @@ void ThermalNetworkModelImpl::dependencies(std::vector<std::pair<const double *,
 		// result quantities
 		const double* specEnthPtr = &m_nodalSpecificEnthalpies[i];
 		const double* tempPtr = &m_nodalTemperatures[i];
+		// set dependency between specific enthalpy and tempretuare
+		resultInputValueReferences.push_back(std::make_pair(tempPtr, specEnthPtr) );
+		resultInputValueReferences.push_back(std::make_pair(specEnthPtr, tempPtr) );
 
 		std::vector<unsigned int> inletIdxs =
 				m_network->m_nodes[i].m_elementIndexesInlet;
@@ -159,13 +162,11 @@ void ThermalNetworkModelImpl::dependencies(std::vector<std::pair<const double *,
 			// mass flux dependencies
 			const double* massFluxRef = m_fluidMassFluxes +idx;
 			resultInputValueReferences.push_back(std::make_pair(specEnthPtr, massFluxRef) );
-			resultInputValueReferences.push_back(std::make_pair(tempPtr, massFluxRef) );
 		}
 		for(unsigned int idx : outletIdxs) {
 			// mass flux dependencies
 			const double* massFluxRef = m_fluidMassFluxes +idx;
 			resultInputValueReferences.push_back(std::make_pair(specEnthPtr, massFluxRef) );
-			resultInputValueReferences.push_back(std::make_pair(tempPtr, massFluxRef) );
 		}
 	}
 	// dependencies of flow element inlet enthalpies
