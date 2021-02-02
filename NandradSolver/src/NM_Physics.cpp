@@ -1,5 +1,7 @@
 #include "NM_Physics.h"
 
+#include <cmath>
+
 /*! Reynolds number where flow switches from laminar to transition state. */
 #define RE_LAMINAR		1700
 
