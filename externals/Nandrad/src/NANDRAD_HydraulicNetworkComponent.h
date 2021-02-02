@@ -121,7 +121,7 @@ public:
 	}
 
 
-	/*! Needed for user interface, not for solver. */
+	/*! Needed both in user interface and for valid parameter checking in solver. */
 	static std::vector<unsigned int> requiredParameter(const ModelType modelType){
 		switch (modelType) {
 			case MT_ConstantPressurePumpModel:
