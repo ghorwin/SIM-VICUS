@@ -41,12 +41,6 @@ public:
 	/*! Called whenever the user selects a new construction type. */
 	void updateInput(int id);
 
-signals:
-	/*! Emitted, whenever model data has been changed that is shown in the table
-		and may have an effect on sorting.
-	*/
-	void tableDataChanged();
-
 private:
 	/*! Updates the content of the table. */
 	void updateTable();

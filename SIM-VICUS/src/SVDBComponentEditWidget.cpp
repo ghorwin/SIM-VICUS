@@ -165,8 +165,6 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	m_ui->lineEditDaylightName->setText("");
 	m_ui->lineEditRoughness->setText("---");
 	m_ui->lineEditSpecularity->setText("---");
-
-
 }
 
 
@@ -177,7 +175,6 @@ void SVDBComponentEditWidget::on_lineEditName_editingFinished(){
 		m_current->m_displayName = m_ui->lineEditName->string();
 		m_db->m_components.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		emit tableDataChanged();
 	}
 }
 
@@ -190,7 +187,6 @@ void SVDBComponentEditWidget::on_comboBoxComponentType_currentIndexChanged(int i
 		m_current->m_type = ct;
 		m_db->m_components.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		emit tableDataChanged();
 	}
 }
 
@@ -238,7 +234,6 @@ void SVDBComponentEditWidget::on_pushButtonComponentColor_colorChanged() {
 		m_current->m_color = m_ui->pushButtonComponentColor->color();
 		m_db->m_components.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		emit tableDataChanged();
 	}
 
 }

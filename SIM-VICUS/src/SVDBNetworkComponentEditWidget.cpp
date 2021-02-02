@@ -139,7 +139,6 @@ void SVDBNetworkComponentEditWidget::on_lineEditName_editingFinished(){
 		m_currentComponent->m_displayName = m_ui->lineEditName->string();
 		m_db->m_networkComponents.m_modified = true;
 		m_dbModel->setItemModified(m_currentComponent->m_id); // tell model that we changed the data
-		emit tableDataChanged();
 	}
 }
 
@@ -152,10 +151,8 @@ void SVDBNetworkComponentEditWidget::on_comboBoxComponentType_currentIndexChange
 		m_currentComponent->m_modelType = ct;
 		m_db->m_networkComponents.m_modified = true;
 		m_dbModel->setItemModified(m_currentComponent->m_id); // tell model that we changed the data
-		emit tableDataChanged();
 	}
 }
-
 
 
 void SVDBNetworkComponentEditWidget::on_pushButtonComponentColor_colorChanged() {
@@ -165,8 +162,6 @@ void SVDBNetworkComponentEditWidget::on_pushButtonComponentColor_colorChanged() 
 		m_currentComponent->m_color = m_ui->pushButtonComponentColor->color();
 		m_db->m_networkComponents.m_modified = true;
 		m_dbModel->setItemModified(m_currentComponent->m_id); // tell model that we changed the data
-		emit tableDataChanged();
 	}
-
 }
 

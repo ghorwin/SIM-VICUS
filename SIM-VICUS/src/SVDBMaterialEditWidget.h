@@ -38,12 +38,6 @@ public:
 	/*! Activates a tab by index. */
 	void setCurrentTabIndex(int idx);
 
-signals:
-	/*! Emitted, whenever model data has been changed that is shown in the table
-		and may have an effect on sorting.
-	*/
-	void tableDataChanged();
-
 private slots:
 	void on_lineEditName_editingFinished();
 	void on_lineEditDataSource_editingFinished();

@@ -122,7 +122,6 @@ void SVDBMaterialEditWidget::on_lineEditName_editingFinished() {
 		m_current->m_displayName = m_ui->lineEditName->string();
 		m_db->m_materials.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		emit tableDataChanged();
 	}
 }
 
@@ -134,7 +133,6 @@ void SVDBMaterialEditWidget::on_lineEditDataSource_editingFinished() {
 		m_current->m_dataSource = m_ui->lineEditDataSource->string();
 		m_db->m_materials.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		emit tableDataChanged();
 	}
 }
 
@@ -146,7 +144,6 @@ void SVDBMaterialEditWidget::on_lineEditManufacturer_editingFinished() {
 		m_current->m_manufacturer = m_ui->lineEditManufacturer->string();
 		m_db->m_materials.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		emit tableDataChanged();
 	}
 }
 
@@ -158,7 +155,6 @@ void SVDBMaterialEditWidget::on_lineEditNotes_editingFinished() {
 		m_current->m_notes = m_ui->lineEditNotes->string();
 		m_db->m_materials.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		emit tableDataChanged();
 	}
 }
 
@@ -175,7 +171,6 @@ void SVDBMaterialEditWidget::on_lineEditConductivity_editingFinished() {
 			VICUS::KeywordList::setParameter(m_current->m_para, "Material::para_t", VICUS::Material::P_Conductivity, val);
 			m_db->m_materials.m_modified = true;
 			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-			emit tableDataChanged();
 		}
 	}
 }
@@ -194,7 +189,6 @@ void SVDBMaterialEditWidget::on_lineEditDensity_editingFinished() {
 			VICUS::KeywordList::setParameter(m_current->m_para, "Material::para_t", paraName, val);
 			m_db->m_materials.m_modified = true;
 			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-			emit tableDataChanged();
 		}
 	}
 
@@ -213,7 +207,6 @@ void SVDBMaterialEditWidget::on_lineEditSpecHeatCapacity_editingFinished() {
 			VICUS::KeywordList::setParameter(m_current->m_para, "Material::para_t", paraName, val);
 			m_db->m_materials.m_modified = true;
 			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-			emit tableDataChanged();
 		}
 	}
 }
@@ -228,7 +221,6 @@ void SVDBMaterialEditWidget::on_comboBoxCategory_currentIndexChanged(int index){
 		m_current->m_category = static_cast<VICUS::Material::Category>(index);
 		m_db->m_materials.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		emit tableDataChanged();
 	}
 }
 
@@ -238,7 +230,6 @@ void SVDBMaterialEditWidget::on_pushButtonOpaqueMaterialColor_colorChanged() {
 		m_current->m_color = m_ui->pushButtonOpaqueMaterialColor->color();
 		m_db->m_materials.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-//		emit tableDataChanged();
 	}
 }
 

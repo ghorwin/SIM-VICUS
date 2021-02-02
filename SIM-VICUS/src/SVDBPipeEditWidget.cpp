@@ -17,10 +17,11 @@ SVDBPipeEditWidget::SVDBPipeEditWidget(QWidget *parent) :
 	m_ui->setupUi(this);
 }
 
-SVDBPipeEditWidget::~SVDBPipeEditWidget()
-{
+
+SVDBPipeEditWidget::~SVDBPipeEditWidget() {
 	delete m_ui;
 }
+
 
 void SVDBPipeEditWidget::setup(SVDatabase * db, SVDBPipeTableModel * dbModel) {
 	m_db = db;
@@ -72,54 +73,49 @@ void SVDBPipeEditWidget::updateInput(int id) {
 	m_ui->lineEditWallRoughness->setReadOnly(!isEditable);
 }
 
-void SVDBPipeEditWidget::on_lineEditOuterDiameter_editingFinished()
-{
+
+void SVDBPipeEditWidget::on_lineEditOuterDiameter_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 	if (m_ui->lineEditOuterDiameter->isValid()) {
 		m_current->m_diameterOutside = m_ui->lineEditOuterDiameter->value();
 		m_db->m_pipes.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		emit tableDataChanged();
 	}
 }
 
-void SVDBPipeEditWidget::on_lineEditName_editingFinished()
-{
+
+void SVDBPipeEditWidget::on_lineEditName_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {
 		m_current->m_displayName = m_ui->lineEditName->string();
 		m_db->m_pipes.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		emit tableDataChanged();
 	}
 }
 
-void SVDBPipeEditWidget::on_lineEditWallThickness_editingFinished()
-{
+
+void SVDBPipeEditWidget::on_lineEditWallThickness_editingFinished() {
 	if (m_ui->lineEditWallThickness->isValid()) {
 		m_current->m_wallThickness = m_ui->lineEditWallThickness->value();
 		m_db->m_pipes.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		emit tableDataChanged();
 	}
 }
 
-void SVDBPipeEditWidget::on_lineEditWallLambda_editingFinished()
-{
+
+void SVDBPipeEditWidget::on_lineEditWallLambda_editingFinished() {
 	if (m_ui->lineEditWallLambda->isValid()) {
 		m_current->m_lambdaWall = m_ui->lineEditWallLambda->value();
 		m_db->m_pipes.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		emit tableDataChanged();
 	}
 }
 
-void SVDBPipeEditWidget::on_lineEditWallRoughness_editingFinished()
-{
+
+void SVDBPipeEditWidget::on_lineEditWallRoughness_editingFinished() {
 	if (m_ui->lineEditWallRoughness->isValid()) {
 		m_current->m_roughness = m_ui->lineEditWallRoughness->value();
 		m_db->m_pipes.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		emit tableDataChanged();
 	}
 }

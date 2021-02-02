@@ -346,7 +346,6 @@ void SVDBConstructionEditWidget::on_spinBoxLayerCount_valueChanged(int val) {
 		m_current->m_materialLayers.resize(val);
 		m_db->m_constructions.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		emit tableDataChanged();
 		updateTable();
 		updateConstructionView();
 	}
@@ -360,7 +359,6 @@ void SVDBConstructionEditWidget::on_lineEditName_editingFinished() {
 		m_current->m_displayName = m_ui->lineEditName->string();
 		m_db->m_constructions.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		emit tableDataChanged();
 	}
 }
 
@@ -372,7 +370,6 @@ void SVDBConstructionEditWidget::on_comboBoxInsulationKind_currentIndexChanged(i
 		m_current->m_insulationKind = ik;
 		m_db->m_constructions.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		emit tableDataChanged();
 	}
 }
 
@@ -384,7 +381,6 @@ void SVDBConstructionEditWidget::on_comboBoxMaterialKind_currentIndexChanged(int
 		m_current->m_materialKind = mk;
 		m_db->m_constructions.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		emit tableDataChanged();
 	}
 }
 
@@ -397,7 +393,6 @@ void SVDBConstructionEditWidget::on_comboBoxConstructionUsage_currentIndexChange
 		m_current->m_usageType = ut;
 		m_db->m_constructions.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		emit tableDataChanged();
 	}
 }
 
