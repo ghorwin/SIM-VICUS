@@ -5,6 +5,8 @@
 #include <VICUS_KeywordListQt.h>
 #include <VICUS_NetworkComponent.h>
 
+#include <NANDRAD_HydraulicNetworkComponent.h>
+
 #include <QtExt_LanguageHandler.h>
 
 #include "SVSettings.h"
@@ -30,6 +32,11 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 		m_ui->comboBoxComponentType->addItem(VICUS::KeywordListQt::Description("NetworkComponent::ModelType", i), i);
 	m_ui->comboBoxComponentType->blockSignals(false);
 
+	// no headers
+	m_ui->tableWidgetParameters->horizontalHeader()->setVisible(false);
+	m_ui->tableWidgetParameters->verticalHeader()->setVisible(false);
+	m_ui->tableWidgetParameters->setColumnCount(3);
+
 	updateInput(-1);
 }
 
@@ -46,6 +53,8 @@ void SVDBNetworkComponentEditWidget::setup(SVDatabase * db, SVDBNetworkComponent
 
 
 void SVDBNetworkComponentEditWidget::updateInput(int id) {
+	FUNCID(SVDBNetworkComponentEditWidget::updateInput);
+
 	m_currentComponent = nullptr; // disable edit triggers
 
 	if (id == -1) {
@@ -81,11 +90,44 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	m_ui->pushButtonComponentColor->setColor(m_currentComponent->m_color);
 	m_ui->pushButtonComponentColor->blockSignals(false);
 
+	// populate table widget with properties
+	m_ui->tableWidgetParameters->clearContents();
+
+	// only insert parameters that are actually needed for the current model type
+
+	// NOTE: we assume that ModelType enums are the same in both objects!
+	NANDRAD::HydraulicNetworkComponent::ModelType nandradModelType = (NANDRAD::HydraulicNetworkComponent::ModelType)m_currentComponent->m_modelType;
+
+	std::vector<unsigned int> para = NANDRAD::HydraulicNetworkComponent::requiredParameter(nandradModelType);
+
+	m_ui->tableWidgetParameters->setRowCount(para.size());
+	for (unsigned int i=0; i<para.size(); ++i) {
+		QTableWidgetItem * item = new QTableWidgetItem(VICUS::KeywordListQt::Keyword("NetworkComponent::para_t", (int)para[i]));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->tableWidgetParameters->setItem((int)i, 0, item);
+		try {
+			IBK::Unit ioUnit(VICUS::KeywordListQt::Unit("NetworkComponent::para_t", (int)para[i]));
+			// Mind: unit conversion needed if keyword-list unit does not match base SI unit
+			item = new QTableWidgetItem(QString("%L1").arg(m_currentComponent->m_para[i].get_value(ioUnit)));
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
+			m_ui->tableWidgetParameters->setItem((int)i, 1, item);
+			item = new QTableWidgetItem();
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			m_ui->tableWidgetParameters->setItem((int)i, 2, item);
+		}
+		catch (IBK::Exception & ex) {
+			IBK::IBK_Message(ex.what(), IBK::MSG_ERROR, FUNC_ID);
+		}
+	}
+
+	// TODO : Hauke, implement table item delegate if needed
+
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !comp->m_builtIn;
 	m_ui->lineEditName->setReadOnly(!isEditable);
 	m_ui->pushButtonComponentColor->setReadOnly(!isEditable);
 	m_ui->comboBoxComponentType->setEnabled(isEditable);
+
 
 }
 
@@ -102,7 +144,7 @@ void SVDBNetworkComponentEditWidget::on_lineEditName_editingFinished(){
 }
 
 
-void SVDBNetworkComponentEditWidget::on_comboBoxComponentType_currentIndexChanged(int /*index*/){
+void SVDBNetworkComponentEditWidget::on_comboBoxComponentType_currentIndexChanged(int /*index*/) {
 	if (m_currentComponent == nullptr) return; // m_current is nullptr, when nothing is selected and controls are defaulted to "empty"
 
 	VICUS::NetworkComponent::ModelType ct = static_cast<VICUS::NetworkComponent::ModelType>(m_ui->comboBoxComponentType->currentData().toInt());

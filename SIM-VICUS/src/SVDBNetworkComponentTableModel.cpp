@@ -4,8 +4,6 @@
 #include <VICUS_Database.h>
 #include <VICUS_KeywordListQt.h>
 
-#include <NANDRAD_KeywordList.h>
-
 #include <QtExt_LanguageHandler.h>
 
 #include "SVConstants.h"
@@ -47,7 +45,7 @@ QVariant SVDBNetworkComponentTableModel::data ( const QModelIndex & index, int r
 			switch (index.column()) {
 				case ColId					: return it->first;
 				case ColName				: return QString::fromStdString(it->second.m_displayName.string(langId, fallBackLangId));
-				case ColType				: return NANDRAD::KeywordList::Description("HydraulicNetworkComponent::modelType", it->second.m_modelType);
+				case ColType				: return VICUS::KeywordList::Description("NetworkComponent::ModelType", it->second.m_modelType);
 			}
 		} break;
 
