@@ -74,6 +74,7 @@ INCLUDEPATH = \
 	../../../externals/sundials/src/include
 
 SOURCES += \
+	../../../NandradSolver/src/NM_Physics.cpp \
 	../../src/InstanceData.cpp \
 	../../src/NandradModelFMU.cpp \
 	../../src/fmi2common/fmi2Functions.cpp \

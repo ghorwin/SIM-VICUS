@@ -84,6 +84,7 @@ double NusseltNumberTurbulent(const double &reynolds, const double &prandtl, con
 */
 double NusseltNumber(const double &reynolds, const double &prandtl, const double &l, const double &d);
 
+/*! friction factor according to swamee-jain euqation (approximation of colebrook-white) */
 double FrictionFactorSwamee(const double &reynolds, const double &diameter, const double &roughness);
 
 } // namespace NANDRAD_MODEL
