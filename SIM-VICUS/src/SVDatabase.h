@@ -32,7 +32,9 @@ public:
 		DT_Constructions,
 		DT_Components,
 		DT_BoundaryConditions,
+		DT_Windows,
 		DT_Pipes,
+		DT_Fluids,
 		DT_NetworkComponents,
 		NUM_DT // used for "all"
 	};
@@ -64,9 +66,6 @@ public:
 //	/*! Map of all database glazing systems. */
 //	VICUS::Database<VICUS::WindowGlazingSystem>			m_windowGlazingSystems;
 
-//	/*! Map of all database surface properties. */
-//	VICUS::Database<VICUS::SurfaceProperties>			m_surfaceProperty;
-
 	/*! Map of all database boundary conditions. */
 	VICUS::Database<VICUS::BoundaryCondition>			m_boundaryConditions;
 
@@ -79,7 +78,7 @@ public:
 	/*! Map of all database fluids */
 	VICUS::Database<VICUS::NetworkFluid>				m_fluids;
 
-	/*! Map of all network components */
+	/*! Map of all hydraulic network components */
 	VICUS::Database<VICUS::NetworkComponent>			m_networkComponents;
 
 	/*! Map of all database EPD elements */
