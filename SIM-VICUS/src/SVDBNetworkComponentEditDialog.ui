@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>854</width>
-    <height>782</height>
+    <width>1161</width>
+    <height>556</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -106,20 +106,7 @@
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
-        <widget class="SVDBNetworkComponentEditWidget" name="editWidget" native="true">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="baseSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-        </widget>
+        <widget class="SVDBNetworkComponentEditWidget" name="editWidget" native="true"/>
        </item>
       </layout>
      </widget>

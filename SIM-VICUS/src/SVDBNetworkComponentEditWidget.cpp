@@ -27,7 +27,7 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 	m_ui->comboBoxComponentType->blockSignals(true);
 	for (int i=0; i<VICUS::NetworkComponent::NUM_MT; ++i)
 		// TODO : Hauke, update next line as described in email
-		m_ui->comboBoxComponentType->addItem(VICUS::KeywordListQt::Description("HydraulicNetworkComponent::ModelType", i), i);
+		m_ui->comboBoxComponentType->addItem(VICUS::KeywordListQt::Description("NetworkComponent::ModelType", i), i);
 	m_ui->comboBoxComponentType->blockSignals(false);
 
 	updateInput(-1);
@@ -48,41 +48,44 @@ void SVDBNetworkComponentEditWidget::setup(SVDatabase * db, SVDBNetworkComponent
 void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	m_currentComponent = nullptr; // disable edit triggers
 
-	// disable all controls - this also disables all change signals for the widgets adjusted below
-	setEnabled(false);
 	if (id == -1) {
+		// disable all controls - note: this does not disable signals of the components below
+		setEnabled(false);
 
 		// clear input controls
 		m_ui->lineEditName->setString(IBK::MultiLanguageString());
 
 		// construction property info fields
-		m_ui->comboBoxComponentType->setCurrentText("");
-		m_ui->pushButtonComponentColor->setColor(Qt::black);
+		m_ui->comboBoxComponentType->blockSignals(true);
+		m_ui->comboBoxComponentType->setCurrentIndex(-1);
+		m_ui->comboBoxComponentType->blockSignals(false);
+
+		// Note: color button is disabled, hence color is gray
 		return;
 	}
+	// re-enable all controls
+	setEnabled(true);
 
 	VICUS::NetworkComponent * comp = const_cast<VICUS::NetworkComponent*>(m_db->m_networkComponents[(unsigned int)id]);
 	m_currentComponent = comp;
 
 	// now update the GUI controls
-//	m_ui->comboBoxComponentType->blockSignals(true);
 	m_ui->lineEditName->setString(comp->m_displayName);
+
+	m_ui->comboBoxComponentType->blockSignals(true);
 	int typeIdx = m_ui->comboBoxComponentType->findData(comp->m_modelType);
 	m_ui->comboBoxComponentType->setCurrentIndex(typeIdx);
-//	m_ui->comboBoxComponentType->blockSignals(false);
+	m_ui->comboBoxComponentType->blockSignals(false);
 
-//	m_ui->pushButtonComponentColor->blockSignals(true);
+	m_ui->pushButtonComponentColor->blockSignals(true);
 	m_ui->pushButtonComponentColor->setColor(m_currentComponent->m_color);
-//	m_ui->pushButtonComponentColor->blockSignals(false);
+	m_ui->pushButtonComponentColor->blockSignals(false);
 
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !comp->m_builtIn;
 	m_ui->lineEditName->setReadOnly(!isEditable);
 	m_ui->pushButtonComponentColor->setReadOnly(!isEditable);
 	m_ui->comboBoxComponentType->setEnabled(isEditable);
-
-	// re-enable all controls
-	setEnabled(true);
 
 }
 
