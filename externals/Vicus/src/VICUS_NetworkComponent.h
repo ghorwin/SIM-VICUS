@@ -94,7 +94,7 @@ public:
 	unsigned int					m_id				= VICUS::INVALID_ID;			// XML:A:required
 
 	/*! Model type. */
-	ModelType						m_modelType			= NUM_MT;						// XML:A:required
+	ModelType						m_modelType			= MT_StaticAdiabaticPipe;		// XML:A:required
 
 	/*! Type of interface to external data or model */
 	HeatExchangeType				m_heatExchangeType	= NUM_HT;						// XML:E
