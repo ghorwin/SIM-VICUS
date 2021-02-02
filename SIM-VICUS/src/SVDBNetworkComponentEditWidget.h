@@ -43,6 +43,8 @@ private slots:
 
 	void on_pushButtonComponentColor_colorChanged();
 
+	void on_tableWidgetParameters_cellChanged(int row, int column);
+
 private:
 	Ui::SVDBNetworkComponentEditWidget *m_ui;
 
