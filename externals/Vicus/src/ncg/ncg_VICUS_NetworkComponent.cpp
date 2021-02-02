@@ -26,21 +26,42 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <VICUS_Constants.h>
+#include <NANDRAD_Utilities.h>
+#include <VICUS_Constants.h>
+#include <VICUS_KeywordList.h>
 
 #include <tinyxml.h>
 
 namespace VICUS {
 
-void NetworkComponent::readXMLPrivate(const TiXmlElement * element) {
-	FUNCID(NetworkComponent::readXMLPrivate);
+void NetworkComponent::readXML(const TiXmlElement * element) {
+	FUNCID(NetworkComponent::readXML);
 
 	try {
 		// search for mandatory attributes
+		if (!TiXmlAttribute::attributeByName(element, "id"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
+
+		if (!TiXmlAttribute::attributeByName(element, "modelType"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'modelType' attribute.") ), FUNC_ID);
+
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
-			if (attribName == "displayName")
+			if (attribName == "id")
+				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "modelType")
+			try {
+				m_modelType = (ModelType)KeywordList::Enumeration("NetworkComponent::ModelType", attrib->ValueStr());
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+					IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
+			}
+			else if (attribName == "displayName")
 				m_displayName.setEncodedString(attrib->ValueStr());
 			else if (attribName == "color")
 				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
@@ -54,12 +75,34 @@ void NetworkComponent::readXMLPrivate(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "Notes")
+			if (cName == "IBK:Parameter") {
+				IBK::Parameter p;
+				NANDRAD::readParameterElement(c, p);
+				bool success = false;
+				para_t ptype;
+				try {
+					ptype = (para_t)KeywordList::Enumeration("NetworkComponent::para_t", p.name);
+					m_para[ptype] = p; success = true;
+				}
+				catch (...) { /* intentional fail */  }
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			else if (cName == "Notes")
 				m_notes.setEncodedString(c->GetText());
 			else if (cName == "Manufacturer")
 				m_manufacturer.setEncodedString(c->GetText());
 			else if (cName == "DataSource")
 				m_dataSource.setEncodedString(c->GetText());
+			else if (cName == "HeatExchangeType") {
+				try {
+					m_heatExchangeType = (HeatExchangeType)KeywordList::Enumeration("NetworkComponent::HeatExchangeType", c->GetText());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
+				}
+			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -74,14 +117,27 @@ void NetworkComponent::readXMLPrivate(const TiXmlElement * element) {
 	}
 }
 
-TiXmlElement * NetworkComponent::writeXMLPrivate(TiXmlElement * parent) const {
+TiXmlElement * NetworkComponent::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("NetworkComponent");
 	parent->LinkEndChild(e);
 
+	if (m_id != VICUS::INVALID_ID)
+		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
+	if (m_modelType != NUM_MT)
+		e->SetAttribute("modelType", KeywordList::Keyword("NetworkComponent::ModelType",  m_modelType));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
+
+	if (m_heatExchangeType != NUM_HT)
+		TiXmlElement::appendSingleAttributeElement(e, "HeatExchangeType", nullptr, std::string(), KeywordList::Keyword("NetworkComponent::HeatExchangeType",  m_heatExchangeType));
+
+	for (unsigned int i=0; i<NUM_P; ++i) {
+		if (!m_para[i].name.empty()) {
+			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
+		}
+	}
 	if (!m_notes.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.encodedString());
 	if (!m_manufacturer.empty())
