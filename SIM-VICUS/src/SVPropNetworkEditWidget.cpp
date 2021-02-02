@@ -8,7 +8,6 @@
 #include "SVUndoAddNetwork.h"
 #include "SVUndoModifyExistingNetwork.h"
 #include "SVProjectHandler.h"
-#include "SVDialogHydraulicComponents.h"
 #include "Vic3DWireFrameObject.h"
 
 #include <NANDRAD_HydraulicNetworkComponent.h>
@@ -463,7 +462,8 @@ void SVPropNetworkEditWidget::on_pushButtonEditComponents_clicked() {
 		componentId = m_currentEdges[0]->m_componentId;
 	else
 		return;
-	SVDialogHydraulicComponents *dialog = new SVDialogHydraulicComponents(this);
+
+#if 0
 	if (dialog->edit(m_currentConstNetwork->m_id, componentId) == QDialog::Accepted){
 		setupComboBoxComponents();
 		m_ui->comboBoxComponent->setCurrentText(m_mapComponents.key(dialog->currentComponentId()));
@@ -474,6 +474,7 @@ void SVPropNetworkEditWidget::on_pushButtonEditComponents_clicked() {
 
 	modifyEdgeProperty(&VICUS::NetworkEdge::m_componentId, m_mapComponents.value(m_ui->comboBoxComponent->currentText()));
 	modifyNodeProperty(&VICUS::NetworkNode::m_componentId, m_mapComponents.value(m_ui->comboBoxComponent->currentText()));
+#endif
 }
 
 void SVPropNetworkEditWidget::on_lineEditNodeHeatingDemand_editingFinished()

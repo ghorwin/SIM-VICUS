@@ -217,7 +217,6 @@ private slots:
 	void on_actionHelpKeyboardAndMouseControls_triggered();
 
 	void on_actionNetworkImport_triggered();
-	void on_actionNetworkHydraulicComponents_triggered();
 
 
 private:

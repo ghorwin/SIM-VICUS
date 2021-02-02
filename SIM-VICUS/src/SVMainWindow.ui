@@ -105,7 +105,6 @@
      <string>&amp;Networks</string>
     </property>
     <addaction name="actionNetworkImport"/>
-    <addaction name="actionNetworkHydraulicComponents"/>
    </widget>
    <widget class="QMenu" name="menuDatabases">
     <property name="title">
@@ -422,11 +421,6 @@
   <action name="actionNetworkImport">
    <property name="text">
     <string>Import Network...</string>
-   </property>
-  </action>
-  <action name="actionNetworkHydraulicComponents">
-   <property name="text">
-    <string>Network Hydraulic Components...</string>
    </property>
   </action>
   <action name="actionSimulationNANDRAD">

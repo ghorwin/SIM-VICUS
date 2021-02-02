@@ -98,8 +98,6 @@ SOURCES += \
 	../../src/SVDBPipeTableModel.cpp \
 	../../src/SVDBWindowEditDialog.cpp \
 		../../src/SVDatabase.cpp \
-		../../src/SVDialogHydraulicComponents.cpp \
-		../../src/SVHydraulicComponentParameterModel.cpp \
 	../../src/SVPropBuildingEditWidget.cpp \
 	../../src/SVPropModeSelectionWidget.cpp \
 		../../src/SVPropNetworkEditWidget.cpp \
@@ -200,8 +198,6 @@ HEADERS  += \
 	../../src/SVDBPipeTableModel.h \
 	../../src/SVDBWindowEditDialog.h \
 		../../src/SVDatabase.h \
-		../../src/SVDialogHydraulicComponents.h \
-		../../src/SVHydraulicComponentParameterModel.h \
 	../../src/SVPropBuildingEditWidget.h \
 	../../src/SVPropModeSelectionWidget.h \
 		../../src/SVPropNetworkEditWidget.h \
@@ -296,7 +292,6 @@ FORMS    += \
 		../../src/SVDBPipeEditWidget.ui \
 		../../src/SVDBWindowEditDialog.ui \
 		../../src/SVDBWindowEditWidget.ui \
-		../../src/SVDialogHydraulicComponents.ui \
 		../../src/SVImportIDFDialog.ui \
 		../../src/SVLogFileDialog.ui \
 		../../src/SVMainWindow.ui \

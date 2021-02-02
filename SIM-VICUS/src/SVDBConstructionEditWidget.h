@@ -39,7 +39,7 @@ public:
 	void setup(SVDatabase * db, SVDBConstructionTableModel * dbModel);
 
 	/*! Called whenever the user selects a new construction type. */
-	virtual void updateInput(int id);
+	void updateInput(int id);
 
 signals:
 	/*! Emitted, whenever model data has been changed that is shown in the table

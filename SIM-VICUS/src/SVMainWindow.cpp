@@ -48,7 +48,6 @@
 #include "SVNavigationTreeWidget.h"
 //#include "SVFMIExportDialog.h"
 #include "SVNetworkImportDialog.h"
-#include "SVDialogHydraulicComponents.h"
 #include "SVPreferencesPageStyle.h"
 #include "SVViewStateHandler.h"
 #include "SVImportIDFDialog.h"
@@ -1272,17 +1271,6 @@ void SVMainWindow::on_actionHelpKeyboardAndMouseControls_triggered() {
 	w->setHtml(manual);
 	dlg.resize(1400,800);
 	dlg.exec();
-}
-
-
-void SVMainWindow::on_actionNetworkHydraulicComponents_triggered()
-{
-
-	// TODO Andreas : this menu entry should be disabled when there is no network
-	if (project().m_geometricNetworks.empty())
-		return;
-	SVDialogHydraulicComponents *dialog = new SVDialogHydraulicComponents(this);
-	dialog->edit(0);
 }
 
 

@@ -3,18 +3,15 @@
 
 #include <QWidget>
 
-
-
 namespace VICUS {
-class NetworkComponent;
+	class NetworkComponent;
 }
 
 class SVDBNetworkComponentTableModel;
 class SVDatabase;
-class SVHydraulicComponentParameterModel;
 
 namespace Ui {
-class SVDBNetworkComponentEditWidget;
+	class SVDBNetworkComponentEditWidget;
 }
 
 /*! Edit widget for network components.
@@ -56,12 +53,10 @@ private:
 	Ui::SVDBNetworkComponentEditWidget *m_ui;
 
 	/*! Cached pointer to database object. */
-	SVDatabase					*m_db;
+	SVDatabase							*m_db;
 
 	/*! Pointer to the database model, to modify items when data has changed in the widget. */
 	SVDBNetworkComponentTableModel		*m_dbModel;
-
-	SVHydraulicComponentParameterModel *m_parameterModel;
 
 	/*! Pointer to currently edited component.
 		The pointer is updated whenever updateInput() is called.
