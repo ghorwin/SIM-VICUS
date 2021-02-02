@@ -45,13 +45,13 @@ QVariant SVDBNetworkComponentTableModel::data ( const QModelIndex & index, int r
 			switch (index.column()) {
 				case ColId					: return it->first;
 				case ColName				: return QString::fromStdString(it->second.m_displayName.string(langId, fallBackLangId));
-				case ColType				: return VICUS::KeywordList::Description("NetworkComponent::ModelType", it->second.m_modelType);
+					// Note: description is too long here for "Type"
+				case ColType				: return VICUS::KeywordList::Keyword("NetworkComponent::ModelType", it->second.m_modelType);
 			}
 		} break;
 
 		case Qt::DecorationRole : {
 			if (index.column() == ColCheck) {
-				// TODO: HAUke implement isValid
 				if (it->second.isValid())
 					return QIcon("://gfx/actions/16x16/ok.png");
 				else

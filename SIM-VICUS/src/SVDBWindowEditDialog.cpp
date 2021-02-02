@@ -212,9 +212,10 @@ void SVDBWindowEditDialog::on_pushButtonReloadUserDB_clicked() {
 	{
 		// tell db to drop all user-defined materials and re-read the construction DB
 		SVSettings::instance().m_db.m_constructions.removeUserElements();
-		SVSettings::instance().m_db.readDatabases(SVDatabase::DT_Constructions);
+		SVSettings::instance().m_db.readDatabases(SVDatabase::DT_Windows);
 		// tell model to reset completely
 		m_dbModel->resetModel();
+		m_ui->editWidget->updateInput(-1);
 	}
 #endif
 }

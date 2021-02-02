@@ -46,6 +46,8 @@ private slots:
 
 	void on_tableView_doubleClicked(const QModelIndex &index);
 
+	void on_pushButtonReloadUserDB_clicked();
+
 private:
 	Ui::SVDBPipeEditDialog *m_ui;
 

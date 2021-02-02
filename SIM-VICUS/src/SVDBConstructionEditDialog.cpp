@@ -195,6 +195,7 @@ void SVDBConstructionEditDialog::on_pushButtonReloadUserDB_clicked() {
 		SVSettings::instance().m_db.readDatabases(SVDatabase::DT_Constructions);
 		// tell model to reset completely
 		m_dbModel->resetModel();
+		m_ui->editWidget->updateInput(-1);
 	}
 
 }

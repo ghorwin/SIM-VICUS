@@ -183,21 +183,23 @@ void SVDBPipeEditDialog::onCurrentIndexChanged(const QModelIndex &current, const
 }
 
 
-//void SVDBPipeEditDialog::on_pushButtonReloadUserDB_clicked() {
-//	if (QMessageBox::question(this, QString(), tr("Reloading the user database from file will revert all changes made in this dialog since the program was started. Continue?"),
-//							  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-//	{
-//		// tell db to drop all user-defined elements and re-read the DB
-//		SVSettings::instance().m_db.m_pipes.removeUserElements();
-//		SVSettings::instance().m_db.readDatabases(SVDatabase::DT_Pipes);
-//		// tell model to reset completely
-//		m_dbModel->resetModel();
-//	}
-
-//}
+void SVDBPipeEditDialog::on_pushButtonReloadUserDB_clicked() {
+	if (QMessageBox::question(this, QString(), tr("Reloading the user database from file will revert all changes made in this dialog since the program was started. Continue?"),
+							  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+	{
+		// tell db to drop all user-defined elements and re-read the DB
+		SVSettings::instance().m_db.m_pipes.removeUserElements();
+		SVSettings::instance().m_db.readDatabases(SVDatabase::DT_Pipes);
+		// tell model to reset completely
+		m_dbModel->resetModel();
+		m_ui->editWidget->updateInput(-1);
+	}
+}
 
 
 void SVDBPipeEditDialog::on_tableView_doubleClicked(const QModelIndex &index) {
 	if (m_ui->pushButtonSelect->isVisible() && index.isValid())
 		accept();
 }
+
+

@@ -196,9 +196,10 @@ void SVDBNetworkComponentEditDialog::on_pushButtonReloadUserDB_clicked() {
 	{
 		// tell db to drop all user-defined elements and re-read the DB
 		SVSettings::instance().m_db.m_networkComponents.removeUserElements();
-		SVSettings::instance().m_db.readDatabases(SVDatabase::DT_Components);
+		SVSettings::instance().m_db.readDatabases(SVDatabase::DT_NetworkComponents);
 		// tell model to reset completely
 		m_dbModel->resetModel();
+		m_ui->editWidget->updateInput(-1);
 	}
 }
 

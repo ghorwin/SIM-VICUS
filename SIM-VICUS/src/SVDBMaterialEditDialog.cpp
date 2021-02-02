@@ -195,7 +195,6 @@ void SVDBMaterialEditDialog::onCurrentIndexChanged(const QModelIndex &current, c
 }
 
 
-
 void SVDBMaterialEditDialog::on_pushButtonReloadUserDB_clicked() {
 	if (QMessageBox::question(this, QString(), tr("Reloading the user database from file will revert all changes made in this dialog since the program was started. Continue?"),
 							  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
@@ -205,8 +204,8 @@ void SVDBMaterialEditDialog::on_pushButtonReloadUserDB_clicked() {
 		SVSettings::instance().m_db.readDatabases(SVDatabase::DT_Materials);
 		// tell model to reset completely
 		m_dbModel->resetModel();
+		m_ui->editWidget->updateInput(-1);
 	}
-
 }
 
 
