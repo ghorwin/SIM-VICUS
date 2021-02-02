@@ -61,8 +61,10 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 		m_ui->lineEditName->setString(IBK::MultiLanguageString());
 
 		// construction property info fields
+		m_ui->comboBoxComponentType->blockSignals(true);
 		m_ui->comboBoxComponentType->setCurrentText("");
 		m_ui->pushButtonComponentColor->setColor(Qt::black);
+		m_ui->comboBoxComponentType->blockSignals(false);
 
 		return;
 	}
@@ -90,6 +92,7 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	m_ui->comboBoxComponentType->setEnabled(isEditable);
 
 	m_parameterModel->setComponent(*m_currentComponent);
+
 }
 
 

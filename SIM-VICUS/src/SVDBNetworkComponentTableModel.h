@@ -44,7 +44,7 @@ public:
 	/*! Inserts a new item and returns the model index of the new item.
 		\note Pass-by-value is intended.
 	*/
-	QModelIndex addNewItem(VICUS::Component c);
+	QModelIndex addNewItem(VICUS::NetworkComponent c);
 
 	/*! Locates the item with the requested ID and returns the matching model index (to first column), or
 		an invalid model index, if item cannot be found.

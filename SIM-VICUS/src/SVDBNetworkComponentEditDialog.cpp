@@ -146,7 +146,7 @@ void SVDBNetworkComponentEditDialog::on_toolButtonCopy_clicked() {
 	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
 
 	unsigned int id = m_dbModel->data(sourceIndex, Role_Id).toUInt();
-	const VICUS::Component * comp = SVSettings::instance().m_db.m_components[id];
+	const VICUS::NetworkComponent * comp = SVSettings::instance().m_db.m_networkComponents[id];
 
 	// add item as copy
 	sourceIndex = m_dbModel->addNewItem(*comp);
@@ -195,12 +195,11 @@ void SVDBNetworkComponentEditDialog::on_pushButtonReloadUserDB_clicked() {
 							  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
 	{
 		// tell db to drop all user-defined elements and re-read the DB
-		SVSettings::instance().m_db.m_components.removeUserElements();
+		SVSettings::instance().m_db.m_networkComponents.removeUserElements();
 		SVSettings::instance().m_db.readDatabases(SVDatabase::DT_Components);
 		// tell model to reset completely
 		m_dbModel->resetModel();
 	}
-
 }
 
 

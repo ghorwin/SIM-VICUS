@@ -4,6 +4,8 @@
 #include <VICUS_Database.h>
 #include <VICUS_KeywordListQt.h>
 
+#include <NANDRAD_KeywordList.h>
+
 #include <QtExt_LanguageHandler.h>
 
 #include "SVConstants.h"
@@ -27,13 +29,13 @@ QVariant SVDBNetworkComponentTableModel::data ( const QModelIndex & index, int r
 		return QVariant();
 
 	// readability improvement
-	const VICUS::Database<VICUS::Component> & comDB = m_db->m_components;
+	const VICUS::Database<VICUS::NetworkComponent> & comDB = m_db->m_networkComponents;
 
 	int row = index.row();
 	if (row >= (int)comDB.size())
 		return QVariant();
 
-	std::map<unsigned int, VICUS::Component>::const_iterator it = comDB.begin();
+	std::map<unsigned int, VICUS::NetworkComponent>::const_iterator it = comDB.begin();
 	std::advance(it, row);
 
 	switch (role) {
@@ -45,13 +47,14 @@ QVariant SVDBNetworkComponentTableModel::data ( const QModelIndex & index, int r
 			switch (index.column()) {
 				case ColId					: return it->first;
 				case ColName				: return QString::fromStdString(it->second.m_displayName.string(langId, fallBackLangId));
-				case ColType				: return VICUS::KeywordListQt::Description("Component::ComponentType", it->second.m_type);
+				case ColType				: return NANDRAD::KeywordList::Description("HydraulicNetworkComponent::modelType", it->second.m_modelType);
 			}
 		} break;
 
 		case Qt::DecorationRole : {
 			if (index.column() == ColCheck) {
-				if (it->second.isValid(m_db->m_materials, m_db->m_constructions, m_db->m_boundaryConditions))
+				// TODO: HAUke implement isValid
+				if (it->second.isValid())
 					return QIcon("://gfx/actions/16x16/ok.png");
 				else
 					return QIcon("://gfx/actions/16x16/error.png");
@@ -84,7 +87,7 @@ QVariant SVDBNetworkComponentTableModel::data ( const QModelIndex & index, int r
 
 
 int SVDBNetworkComponentTableModel::rowCount ( const QModelIndex & ) const {
-	return (int)m_db->m_components.size();
+	return (int)m_db->m_networkComponents.size();
 }
 
 
@@ -123,9 +126,9 @@ QModelIndex SVDBNetworkComponentTableModel::addNewItem() {
 }
 
 
-QModelIndex SVDBNetworkComponentTableModel::addNewItem(VICUS::Component c) {
+QModelIndex SVDBNetworkComponentTableModel::addNewItem(VICUS::NetworkComponent c) {
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
-	unsigned int id = m_db->m_components.add( c );
+	unsigned int id = m_db->m_networkComponents.add( c );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;
@@ -148,7 +151,7 @@ bool SVDBNetworkComponentTableModel::deleteItem(QModelIndex index) {
 		return false;
 	unsigned int id = data(index, Role_Id).toUInt();
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	m_db->m_components.remove(id);
+	m_db->m_networkComponents.remove(id);
 	endRemoveRows();
 	return true;
 }
