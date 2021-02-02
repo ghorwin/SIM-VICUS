@@ -66,7 +66,8 @@ public:
 	enum HeatExchangeType {
 		HT_TemperatureConstant,				// Keyword: TemperatureConstant					[-]		'Constant temperature'
 		HT_HeatFluxConstant,				// Keyword: HeatFluxConstant					[-]		'Constant heat flux'
-		HT_HeatFluxDataFile,				// Keyword: HeatFluxDataFile					[-]		'Heat flux from data file '
+		HT_HeatFluxDataFile,				// Keyword: HeatFluxDataFile					[-]		'Heat flux from data file'
+		HT_TemperatureDataFile,				// Keyword: TemperatureDataFile					[-]		'Temperature from data file'
 		HT_HeatExchangeWithZoneTemperature,	// Keyword: HeatExchangeWithZoneTemperature		[-]		'Heat exchange with zone'
 		HT_HeatExchangeWithFMUTemperature,	// Keyword: HeatExchangeWithFMUTemperature		[-]		'Heat exchange with FMU which requires temperature and provides heat flux'
 		NUM_HT

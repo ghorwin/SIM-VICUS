@@ -9,6 +9,7 @@
 #include "NANDRAD_CodeGenMacros.h"
 #include "NANDRAD_Constants.h"
 
+
 namespace NANDRAD {
 
 class HydraulicNetworkComponent;
@@ -47,10 +48,9 @@ public:
 
 	/*! Integer/whole number parameters. */
 	enum intPara_t {
-		IP_ZoneId,							// Keyword: ZoneId								[-]		'ID of coupled zone for thermal exchange'
+		IP_ZoneId,						// Keyword: ZoneId								[-]		'ID of coupled zone for thermal exchange'
 		NUM_IP
 	};
-
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -84,6 +84,12 @@ public:
 
 	/*! Integer parameters. */
 	IBK::IntPara					m_intPara[NUM_IP];										// XML:E
+
+	/*! data file in tsv-format with time-series of heat flux (e.g. a heating demand) */
+	IBK::Path						m_heatFluxDataFile;										// XML:E
+
+	/*! data file in tsv-format with time-series of temperature  */
+	IBK::Path						m_temperatureDataFile;									// XML:E
 
 	// *** Variables used only during simulation ***
 

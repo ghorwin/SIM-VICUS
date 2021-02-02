@@ -117,7 +117,19 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw) {
 				}
 			} break;
 
-			case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile:
+			case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile:{
+				if (!m_heatFluxDataFile.exists())
+					throw IBK::Exception(IBK::FormatString("File '%1' does not exist").arg(m_heatFluxDataFile.str()),
+														   FUNC_ID);
+				// TODO Hauke: use csv-reader to check file?
+			}
+
+			case NANDRAD::HydraulicNetworkComponent::HT_TemperatureDataFile:{
+				if (!m_temperatureDataFile.exists())
+					throw IBK::Exception(IBK::FormatString("File '%1' does not exist").arg(m_heatFluxDataFile.str()),
+														   FUNC_ID);
+				// TODO Hauke: use csv-reader to check file?
+			}
 
 			case NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithFMUTemperature: {
 				throw IBK::Exception(IBK::FormatString("Heat exchange type %1 is not supported, yet!")
