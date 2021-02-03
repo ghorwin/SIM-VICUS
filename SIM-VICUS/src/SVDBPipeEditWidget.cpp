@@ -119,3 +119,19 @@ void SVDBPipeEditWidget::on_lineEditWallRoughness_editingFinished() {
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 }
+
+void SVDBPipeEditWidget::on_lineEditInsulationThickness_editingFinished(){
+	if (m_ui->lineEditInsulationThickness->isValid()) {
+		m_current->m_insulationThickness = m_ui->lineEditInsulationThickness->value();
+		m_db->m_pipes.m_modified = true;
+		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+	}
+}
+
+void SVDBPipeEditWidget::on_lineEditInsulationLambda_editingFinished(){
+	if (m_ui->lineEditInsulationLambda->isValid()) {
+		m_current->m_lambdaInsulation = m_ui->lineEditInsulationLambda->value();
+		m_db->m_pipes.m_modified = true;
+		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+	}
+}

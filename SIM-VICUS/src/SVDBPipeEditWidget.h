@@ -40,6 +40,10 @@ private slots:
 
 	void on_lineEditWallRoughness_editingFinished();
 
+	void on_lineEditInsulationThickness_editingFinished();
+
+	void on_lineEditInsulationLambda_editingFinished();
+
 private:
 	Ui::SVDBPipeEditWidget *m_ui;
 
