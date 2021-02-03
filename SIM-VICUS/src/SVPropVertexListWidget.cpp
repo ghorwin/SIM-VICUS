@@ -512,9 +512,13 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 				// when looked from above, floor vertexes go clock-wise,
 				// and ceiling vertices go anti-clockwise
 				unsigned int vIdx2 = (i+1) % nVert;
-				IBKMK::Vector3D p0 = floor.vertexes()[ i ];
-				IBKMK::Vector3D p1 = floor.vertexes()[ vIdx2 ];
-				IBKMK::Vector3D p2 = floor.vertexes()[ i ] + offset;	//take offset as last point for rectangle; rounding errors by vector-sum?
+				//IBKMK::Vector3D p0 = floor.vertexes()[ i ];
+				//IBKMK::Vector3D p1 = floor.vertexes()[ vIdx2 ];
+				//IBKMK::Vector3D p2 = floor.vertexes()[ i ] + offset;	//take offset as last point for rectangle; rounding errors by vector-sum?
+
+				IBKMK::Vector3D p0 = floor.vertexes()[ vIdx2 ];
+				IBKMK::Vector3D p1 = floor.vertexes()[ i ];
+				IBKMK::Vector3D p2 = floor.vertexes()[ vIdx2 ] + offset;	//take offset as last point for rectangle; rounding errors by vector-sum?
 
 				//				IBKMK::Vector3D a = p1-p0;
 				//				IBKMK::Vector3D b = p2-p0;
