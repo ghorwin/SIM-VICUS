@@ -17,7 +17,7 @@ class SVDBMaterialEditDialog : public QDialog {
 
 public:
 	explicit SVDBMaterialEditDialog(QWidget *parent = nullptr);
-	~SVDBMaterialEditDialog();
+	~SVDBMaterialEditDialog() override;
 
 	/*! Starts the dialog in "edit materials" mode. */
 	void edit();
