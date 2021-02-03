@@ -188,6 +188,9 @@ void SVDBNetworkComponentEditWidget::on_pushButtonComponentColor_colorChanged() 
 
 
 void SVDBNetworkComponentEditWidget::on_tableWidgetParameters_cellChanged(int row, int column) {
+
+	QString errMsg("");
+
 	// first check if it is a double
 	QString text = m_ui->tableWidgetParameters->item(row, column)->text();
 	bool ok = false;
@@ -196,27 +199,35 @@ void SVDBNetworkComponentEditWidget::on_tableWidgetParameters_cellChanged(int ro
 	if (!ok)
 		val = text.toDouble(&ok);
 	if (!ok){
-		m_ui->tableWidgetParameters->blockSignals(true);
-		m_ui->tableWidgetParameters->item(row, column)->setText("");
-		m_ui->tableWidgetParameters->blockSignals(false);
-		QMessageBox msgBox(QMessageBox::Information, "Invalid value", "Only numbers allowed!", QMessageBox::Ok, this);
-		msgBox.exec();
-		return;
+		errMsg = "Only numbers allowed!";
 	}
 
-	// now do parameter specific checks
 	std::string parName = m_ui->tableWidgetParameters->item(row, 0)->text().toStdString();
 	VICUS::NetworkComponent::para_t paraNum = VICUS::NetworkComponent::para_t(
 												VICUS::KeywordList::Enumeration("NetworkComponent::para_t", parName));
-	IBK::Parameter parameter(VICUS::KeywordList::Keyword("NetworkComponent::para_t", paraNum), val,
-							 VICUS::KeywordList::Unit("NetworkComponent::para_t", paraNum));
-	try {
-		NANDRAD::HydraulicNetworkComponent::checkModelParameter(parameter, paraNum);
-	} catch (IBK::Exception &ex) {
+
+	// now do parameter specific checks
+	if (ok){
+		IBK::Parameter parameter(VICUS::KeywordList::Keyword("NetworkComponent::para_t", paraNum), val,
+								 VICUS::KeywordList::Unit("NetworkComponent::para_t", paraNum));
+		try {
+			NANDRAD::HydraulicNetworkComponent::checkModelParameter(parameter, paraNum);
+		} catch (IBK::Exception &ex) {
+			errMsg = ex.what();
+			ok = false;
+		}
+	}
+
+	// modify item and show message box
+	if (!ok){
 		m_ui->tableWidgetParameters->blockSignals(true);
-		m_ui->tableWidgetParameters->item(row, column)->setText("");
+		if (m_currentComponent->m_para[paraNum].empty())
+			m_ui->tableWidgetParameters->item(row, column)->setText("");
+		else
+			m_ui->tableWidgetParameters->item(row, column)->setText(QString("%1")
+																	.arg(m_currentComponent->m_para[paraNum].value));
 		m_ui->tableWidgetParameters->blockSignals(false);
-		QMessageBox msgBox(QMessageBox::Critical, "Invalid Value", ex.what(), QMessageBox::Ok, this);
+		QMessageBox msgBox(QMessageBox::Critical, "Invalid Value", errMsg, QMessageBox::Ok, this);
 		msgBox.exec();
 		return;
 	}
