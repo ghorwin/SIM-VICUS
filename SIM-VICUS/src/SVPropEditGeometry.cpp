@@ -111,6 +111,10 @@ void SVPropEditGeometry::setRotation(const IBKMK::Vector3D &normal) {
 	normal.normalized();
 	if ( m_ui->radioButtonRotateAbsolute->isChecked() ) {
 		m_ui->doubleSpinBoxRotateInclinationAbs->setValue( std::acos(normal.m_z)/IBK::DEG2RAD );
+
+		// positive y Richtung = Norden = Orientation 0°
+		// positive x Richtung = Osten = Orientation 90°
+
 		double orientation = std::atan2(normal.m_x, ( normal.m_y == 0 ? 1E-8 : normal.m_y ) ) /IBK::DEG2RAD ;
 		m_ui->doubleSpinBoxRotateOrientationAbs->setValue( orientation < 0 ? ( orientation + 360 ) : orientation );
 	}
