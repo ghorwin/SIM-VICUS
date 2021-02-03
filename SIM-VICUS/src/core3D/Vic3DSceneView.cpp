@@ -333,7 +333,7 @@ void SceneView::keyPressEvent(QKeyEvent *event) {
 		Qt::Key k = static_cast<Qt::Key>(event->key());
 		if ((k >= Qt::Key_0 && k <= Qt::Key_9) ||
 			k == Qt::Key_Comma || k == Qt::Key_Period ||
-			k == Qt::Key_Space || k == Qt::Key_Return ||
+			k == Qt::Key_Space || k == Qt::Key_Return || k == Qt::Key_Enter ||
 			k == Qt::Key_Backspace || k == Qt::Key_Minus )
 		{
 			emit numberKeyPressed(k);
