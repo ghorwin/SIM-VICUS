@@ -122,18 +122,9 @@ public:
 
 
 	/*! Needed both in user interface and for valid parameter checking in solver. */
-	static std::vector<unsigned int> requiredParameter(const ModelType modelType){
-		switch (modelType) {
-			case MT_ConstantPressurePumpModel:
-				return {P_PressureHead, P_PumpEfficiency, P_MotorEfficiency, P_Volume};
-			case MT_HeatPump:
-				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_COP, P_Volume};
-			case MT_HeatExchanger:
-				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
-			default:
-				return {};
-		}
-	}
+	static std::vector<unsigned int> requiredParameter(const ModelType modelType, int networkModelType);
+
+	static void checkModelParameter(const IBK::Parameter &para, const unsigned int numPara);
 
 };
 

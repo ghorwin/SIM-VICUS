@@ -107,7 +107,7 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	// NOTE: we assume that ModelType enums are the same in both objects!
 	NANDRAD::HydraulicNetworkComponent::ModelType nandradModelType = (NANDRAD::HydraulicNetworkComponent::ModelType)m_currentComponent->m_modelType;
 
-	std::vector<unsigned int> paraVec = NANDRAD::HydraulicNetworkComponent::requiredParameter(nandradModelType);
+	std::vector<unsigned int> paraVec = NANDRAD::HydraulicNetworkComponent::requiredParameter(nandradModelType, 1);
 	m_ui->tableWidgetParameters->setRowCount(paraVec.size());
 
 	if (paraVec.empty())
@@ -196,28 +196,33 @@ void SVDBNetworkComponentEditWidget::on_tableWidgetParameters_cellChanged(int ro
 	if (!ok)
 		val = text.toDouble(&ok);
 	if (!ok){
+		m_ui->tableWidgetParameters->blockSignals(true);
 		m_ui->tableWidgetParameters->item(row, column)->setText("");
+		m_ui->tableWidgetParameters->blockSignals(false);
 		QMessageBox msgBox(QMessageBox::Information, "Invalid value", "Only numbers allowed!", QMessageBox::Ok, this);
 		msgBox.exec();
 		return;
 	}
 
-	std::string parName = m_ui->tableWidgetParameters->item(row, 0)->text().toStdString();
-	VICUS::NetworkComponent::para_t para = VICUS::NetworkComponent::para_t(
-											VICUS::KeywordList::Enumeration("NetworkComponent::para_t", parName));
 	// now do parameter specific checks
-	if (para == VICUS::NetworkComponent::P_COP)
-		if (val < 0){
-			m_ui->tableWidgetParameters->item(row, column)->setText("");
-			QMessageBox msgBox(QMessageBox::Information, "Invalid value", "COP must be >0", QMessageBox::Ok, this);
-			msgBox.exec();
-			return;
-		}
-	//...
-
+	std::string parName = m_ui->tableWidgetParameters->item(row, 0)->text().toStdString();
+	VICUS::NetworkComponent::para_t paraNum = VICUS::NetworkComponent::para_t(
+												VICUS::KeywordList::Enumeration("NetworkComponent::para_t", parName));
+	IBK::Parameter parameter(VICUS::KeywordList::Keyword("NetworkComponent::para_t", paraNum), val,
+							 VICUS::KeywordList::Unit("NetworkComponent::para_t", paraNum));
+	try {
+		NANDRAD::HydraulicNetworkComponent::checkModelParameter(parameter, paraNum);
+	} catch (IBK::Exception &ex) {
+		m_ui->tableWidgetParameters->blockSignals(true);
+		m_ui->tableWidgetParameters->item(row, column)->setText("");
+		m_ui->tableWidgetParameters->blockSignals(false);
+		QMessageBox msgBox(QMessageBox::Critical, "Invalid Value", ex.what(), QMessageBox::Ok, this);
+		msgBox.exec();
+		return;
+	}
 
 	// finally set value
-	VICUS::KeywordList::setParameter(m_currentComponent->m_para, "NetworkComponent::para_t", para, val);
+	VICUS::KeywordList::setParameter(m_currentComponent->m_para, "NetworkComponent::para_t", paraNum, val);
 	m_db->m_networkComponents.m_modified = true;
 	m_dbModel->setItemModified(m_currentComponent->m_id);
 }

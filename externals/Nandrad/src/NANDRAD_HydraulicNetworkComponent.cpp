@@ -31,49 +31,89 @@ bool HydraulicNetworkComponent::sameParametersAs(const HydraulicNetworkComponent
 void HydraulicNetworkComponent::checkParameters(int networkModelType) const {
 
 	std::string category = "HydraulicNetworkComponent::para_t";
-	// check for all necessary parameters of current model type
-	std::vector<unsigned int> para = requiredParameter(m_modelType);
 
-	// filter necessary parameters for network model types
-	HydraulicNetwork::ModelType netModelType = (HydraulicNetwork::ModelType) networkModelType;
+	// get all necessary parameters of current model type
+	std::vector<unsigned int> para = requiredParameter(m_modelType, networkModelType);
 
-	for(unsigned int i = 0; i < para.size(); ++i) {
-
-		para_t paraEnum = (para_t)(para[i]);
-		switch(netModelType) {
-			case HydraulicNetwork::MT_HydraulicNetwork: {
-				// skip thermal only parameters
-				if(paraEnum == P_PumpEfficiency)
-					continue;
-				if(paraEnum == P_MotorEfficiency)
-					continue;
-				if(paraEnum == P_Volume)
-					continue;
-				if(paraEnum == P_COP)
-					continue;
-				if(paraEnum == P_UAValue)
-					continue;
-			} break;
-			default: break;
-		}
-
-		if (m_modelType == MT_DynamicPipe)
-			m_para[P_PipeMaxDiscretizationWidth].checkedValue("PipeMaxDiscretizationWidth", "m", "m", 0, false,
-															   std::numeric_limits<double>::max(), true,
-															   "PipeMaxDiscretizationWidth must be > 0 m.");
-		if (paraEnum != P_PipeMaxDiscretizationWidth){
-			// check values: at the moment all are > 0
-			m_para[paraEnum].checkedValue(
-						KeywordList::Keyword(category.c_str(), paraEnum), KeywordList::Unit(category.c_str(), paraEnum),
-						KeywordList::Unit(category.c_str(), paraEnum),
-								   0, false, std::numeric_limits<double>::max(), true,
-								   IBK::FormatString("'%1' must be > 0 %2.")
-								   .arg(KeywordList::Keyword(category.c_str(), paraEnum))
-								   .arg(KeywordList::Unit(category.c_str(), paraEnum)).str().c_str() );
-			// TODO: specify conditions
-		}
+	// check the parameters
+	for (unsigned int i: para){
+		checkModelParameter(m_para[i], i);
 	}
 
 }
+
+
+std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const HydraulicNetworkComponent::ModelType modelType,
+																	   int networkModelType){
+	HydraulicNetwork::ModelType netModelType = (HydraulicNetwork::ModelType) networkModelType;
+	if (netModelType == HydraulicNetwork::MT_HydraulicNetwork){
+		switch (modelType) {
+			case MT_ConstantPressurePumpModel:
+				return {P_PressureHead, P_PumpEfficiency, P_MotorEfficiency};
+			case MT_HeatPump:
+				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_COP};
+			case MT_HeatExchanger:
+				return {P_PressureLossCoefficient, P_HydraulicDiameter};
+			case MT_DynamicPipe:
+			case MT_DynamicAdiabaticPipe:
+				return {P_PipeMaxDiscretizationWidth};
+			default:
+				return {};
+		}
+	}
+	else {
+		switch (modelType) {
+			case MT_ConstantPressurePumpModel:
+				return {P_PressureHead, P_PumpEfficiency, P_MotorEfficiency, P_Volume};
+			case MT_HeatPump:
+				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_COP, P_Volume};
+			case MT_HeatExchanger:
+				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
+			case MT_DynamicPipe:
+			case MT_DynamicAdiabaticPipe:
+				return {P_PipeMaxDiscretizationWidth};
+			default:
+				return {};
+		}
+	}
+}
+
+
+void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, const unsigned int numPara)
+{
+	const char * enumName = "HydraulicNetworkComponent::para_t";
+	const char * name = KeywordList::Keyword(enumName, numPara);
+	const char * unit = KeywordList::Unit(enumName, numPara);
+
+	switch (numPara) {
+		// value must be >0
+		case P_HydraulicDiameter:
+		case P_PressureLossCoefficient:
+		case P_ExternalHeatTransferCoefficient:
+		case P_Volume:
+		case P_UAValue:
+		case P_PipeMaxDiscretizationWidth:
+		case P_COP:{
+			const char * errMsg = "";
+			para.checkedValue(name, unit, unit, 0, false, std::numeric_limits<double>::max(), true, errMsg);
+			break;
+		}
+		// value must be >0 and <1
+		case P_PumpEfficiency:
+		case P_MotorEfficiency: {
+			const char * errMsg = "";
+			para.checkedValue(name, unit, unit, 0, false, 1.0, true, errMsg);
+			break;
+		}
+		// value can be negative
+		case P_PressureHead: {
+			const char * errMsg = "";
+			para.checkedValue(name, unit, unit, std::numeric_limits<double>::lowest(), true,
+							  std::numeric_limits<double>::max(), true, errMsg);
+			break;
+		}
+	}
+}
+
 
 } // namespace NANDRAD
