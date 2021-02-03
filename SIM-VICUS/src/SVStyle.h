@@ -36,12 +36,12 @@ public:
 
 	QString				m_styleSheet;
 
-	QColor				m_alternativeBackgroundDark;
-	QColor				m_alternativeBackgroundBright;
-	QColor				m_alternativeBackgroundText;
-	QColor				m_readOnlyEditFieldBackground;
-	QColor				m_alternativeReadOnlyEditFieldBackground;
-	QColor				m_errorEditFieldBackground;
+	QColor				m_alternativeBackgroundDark; // TODO
+	QColor				m_alternativeBackgroundBright; // TODO
+	QColor				m_alternativeBackgroundText; // TODO
+	QColor				m_readOnlyEditFieldBackground;		// TODO : subtitute with QtExt::Style::ReadOnlyEditFieldBackground
+	QColor				m_alternativeReadOnlyEditFieldBackground; // TODO
+	QColor				m_errorEditFieldBackground; // TODO
 
 
 	QColor				m_logProgressText;
