@@ -159,7 +159,8 @@ void SVGeometryView::onNumberKeyPressed(Qt::Key k) {
 				text = text.left(text.length()-1);
 		}
 		break;
-		case Qt::Key_Return : {
+		case Qt::Key_Return :
+		case Qt::Key_Enter : {
 			coordinateInputFinished();
 			return;
 		}
