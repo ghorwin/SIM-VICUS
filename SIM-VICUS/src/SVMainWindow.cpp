@@ -53,6 +53,7 @@
 #include "SVImportIDFDialog.h"
 #include "SVPropVertexListWidget.h"
 #include "SVPropModeSelectionWidget.h"
+#include "SVPropEditGeometry.h"
 #include "SVStyle.h"
 
 #include "SVDBMaterialEditDialog.h"
@@ -478,8 +479,13 @@ void SVMainWindow::setup() {
 	// TODO : other dock widgets
 	m_dockWidgetVisibility[m_logDockWidget] = SVSettings::instance().m_visibleDockWidgets.contains("Log");
 
-	// initialize view mode
-	on_actionViewToggleGeometryMode_triggered();
+	// initialize view mode buttons
+	m_ui->actionViewToggleGeometryMode->blockSignals(true);
+	m_ui->actionViewToggleGeometryMode->setChecked(true);
+	m_ui->actionViewToggleGeometryMode->blockSignals(false);
+	m_ui->actionViewToggleParametrizationMode->blockSignals(true);
+	m_ui->actionViewToggleParametrizationMode->setChecked(false);
+	m_ui->actionViewToggleParametrizationMode->blockSignals(false);
 
 	// *** Populate language menu ***
 	addLanguageAction("en", "English");
@@ -1198,6 +1204,11 @@ void SVMainWindow::on_actionViewToggleGeometryMode_triggered() {
 	SVViewStateHandler::instance().setViewState(vs);
 	m_ui->actionViewToggleGeometryMode->setChecked(true);
 	m_ui->actionViewToggleParametrizationMode->setChecked(false);
+	// switch to add geometry mode, if we do not have a selection, otherwise use edit geometry widget
+	// let this change do the SVPropEditGeometry widget, which at the same time can update the local coordinate
+	// system; since update() is private, we trick the widget into believing a selection has changed
+	Q_ASSERT(SVViewStateHandler::instance().m_propEditGeometryWidget != nullptr);
+	SVViewStateHandler::instance().m_propEditGeometryWidget->onModified(SVProjectHandler::NodeStateModified, nullptr);
 }
 
 

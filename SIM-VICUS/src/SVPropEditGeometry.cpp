@@ -78,6 +78,8 @@ void SVPropEditGeometry::setCurrentTab(const SVPropEditGeometry::TabState & stat
 
 
 void SVPropEditGeometry::setCoordinates(const Vic3D::Transform3D &t) {
+	// is being call from local coordinate system object, whenever this has changed location (regardless of
+	// its own visibility)
 	m_ui->lineEditXValue->setText( QString("%L1").arg( t.translation().x() ) );
 	m_ui->lineEditYValue->setText( QString("%L1").arg( t.translation().y() ) );
 	m_ui->lineEditZValue->setText( QString("%L1").arg( t.translation().z() ) );
@@ -121,8 +123,11 @@ void SVPropEditGeometry::onModified(int modificationType, ModificationInfo * ) {
 	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
 	switch (modType) {
 		case SVProjectHandler::BuildingGeometryChanged:
+		case SVProjectHandler::NodeStateModified:
 			// when the building geometry has changed, we need to update the geometrical info
 			// in the widget based on the current selection
+			// also, we assume any change in node states (visibility/selection) may impact our local
+			// coordinate system position
 			update(); // this might update the location of the local coordinate system!
 		break;
 
@@ -554,12 +559,18 @@ void SVPropEditGeometry::update() {
 	// first we get how many surfaces are selected
 	std::vector<const VICUS::Surface *> surfaces;
 	project().selectedSurfaces(surfaces, VICUS::Project::SG_All);
+	// we get the view state
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 
 	if ( surfaces.size() > 0 ) {
-		// we get the view state
-		vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-		vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
+		// adjust the view state to show selected geometry (i.e. local coordinate system is visible)
+		// and edit geometry property widget (makes us visible), but only, if we are in
+		// geometry editing mode
+		if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
+			vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+			vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
+			SVViewStateHandler::instance().setViewState(vs);
+		}
 
 		if ( surfaces.size() == 1 ) {
 			const VICUS::Surface *s = surfaces[0];
@@ -579,11 +590,12 @@ void SVPropEditGeometry::update() {
 		SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(VICUS::IBKVector2QVector(center) );
 	}
 	else {
-		vs.m_sceneOperationMode = SVViewState::NUM_OM;
-		vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
-
+		// only switch view state back to "Add geometry", when we are in geometry mode
+		if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
+			vs.m_sceneOperationMode = SVViewState::NUM_OM;
+			vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+			SVViewStateHandler::instance().setViewState(vs);
+		}
 	}
-
-	SVViewStateHandler::instance().setViewState(vs);
 
 }

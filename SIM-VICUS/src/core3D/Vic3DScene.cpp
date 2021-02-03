@@ -206,7 +206,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 
 			// Now check if our new selection set is different from the previous selection set.
 			std::set<const VICUS::Object*> selectedObjects;
-			WireFrameObject::updateSelectedObjectsFromProject(selectedObjects);
+			WireFrameObject::updateSelectedObjectsFromProject(selectedObjects); // TODO : substitute
 			if (selectedObjects != m_selectedGeometryObject.m_selectedObjects)
 				updateSelection = true;
 		} break;
@@ -234,6 +234,9 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 		m_selectedGeometryObject.create(m_fixedColorTransformShader);
 		m_selectedGeometryObject.updateBuffers();
 
+		// if we have a selection, switch scene operation mode to P_EditGeometry,
+		// this is done by SVPropEditGeometryWidget, which also listens to
+		// node state changes
 	}
 
 	if (updateBuilding) {
