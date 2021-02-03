@@ -509,9 +509,9 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces, IBKM
 	if ( surfaces.empty() )
 		return IBKMK::Vector3D ( 0,0,0 );
 
-	double maxX = std::numeric_limits<double>::min();
-	double maxY = std::numeric_limits<double>::min();
-	double maxZ = std::numeric_limits<double>::min();
+	double maxX = std::numeric_limits<double>::lowest();
+	double maxY = std::numeric_limits<double>::lowest();
+	double maxZ = std::numeric_limits<double>::lowest();
 	double minX = std::numeric_limits<double>::max();
 	double minY = std::numeric_limits<double>::max();
 	double minZ = std::numeric_limits<double>::max();
