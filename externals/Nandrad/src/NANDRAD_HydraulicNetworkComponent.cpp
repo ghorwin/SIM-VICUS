@@ -30,8 +30,6 @@ bool HydraulicNetworkComponent::sameParametersAs(const HydraulicNetworkComponent
 
 void HydraulicNetworkComponent::checkParameters(int networkModelType) const {
 
-	std::string category = "HydraulicNetworkComponent::para_t";
-
 	// get all necessary parameters of current model type
 	std::vector<unsigned int> para = requiredParameter(m_modelType, networkModelType);
 
@@ -39,6 +37,9 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) const {
 	for (unsigned int i: para){
 		checkModelParameter(m_para[i], i);
 	}
+
+	// TODO Hauke, read tsv file, check and convert units, create linear spline; always check spline
+	//      if file path is given
 
 }
 
@@ -94,6 +95,7 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 		case P_UAValue:
 		case P_PipeMaxDiscretizationWidth:
 		case P_COP:{
+			// TODO : Hauke, nullptr or detailed error
 			const char * errMsg = "";
 			para.checkedValue(name, unit, unit, 0, false, std::numeric_limits<double>::max(), true, errMsg);
 			break;

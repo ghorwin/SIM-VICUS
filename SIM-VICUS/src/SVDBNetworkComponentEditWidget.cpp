@@ -47,6 +47,9 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 	// TODO : Hauke, implement table item delegate if needed
 
 	updateInput(-1);
+
+	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_COP == (int)VICUS::NetworkComponent::P_COP);
+	// TODO : Hauke, add other mappings
 }
 
 
