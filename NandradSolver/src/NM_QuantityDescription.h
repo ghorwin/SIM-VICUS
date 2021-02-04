@@ -155,8 +155,19 @@ public:
 	*/
 	unsigned int							m_id = 0;
 
-	/*! Quantity/variable name */
+	/*! Quantity/variable name.
+		This is used together with the reference type name and object id to form the output variable name. This
+		ensure a consistent and unqiue naming of output variables across all generated output files.
+	*/
 	std::string								m_name;
+	/*! The display name to use in the output variable mapping table.
+		When composing the QuantityDescription, it is possible to set an object-specific display name, which will
+		then be written into the global variable mapping table file. Leaving the display name empty does not generate
+		an entry in the mapping table.
+		\note Regardless of the output variable name, the variable name for each result value is always composed
+			with the standard, unqiue naming convention.
+	*/
+	std::string								m_displayName;
 	/*! Quantity unit, which is actually the input/output unit used for logging value in output files.
 		\note The value stored in the actual memory location corresponding to this variable is *always*
 			in the base SI unit.

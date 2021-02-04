@@ -60,6 +60,7 @@ void WindowModel::resultDescriptions(std::vector<QuantityDescription> & resDesc)
 		result.m_constant = false;
 		result.m_description = NANDRAD_MODEL::KeywordList::Description("WindowModel::Results", i);
 		result.m_name = NANDRAD_MODEL::KeywordList::Keyword("WindowModel::Results", i);
+		result.m_displayName = m_displayName;
 		result.m_unit = NANDRAD_MODEL::KeywordList::Unit("WindowModel::Results", i);
 
 		resDesc.push_back(result);

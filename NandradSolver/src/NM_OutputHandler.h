@@ -23,12 +23,15 @@
 #define NM_OutputHandlerH
 
 #include <vector>
+#include <map>
 
 #include <IBK_Unit.h>
+#include <IBK_Path.h>
+
+#include "NM_QuantityDescription.h"
 
 namespace IBK {
 	class StopWatch;
-	class Path;
 }
 
 namespace NANDRAD {
@@ -38,6 +41,7 @@ namespace NANDRAD {
 namespace NANDRAD_MODEL {
 
 class OutputFile;
+class AbstractModel;
 
 /*! Handles all output file initialization and the process of caching and writing
 	outputs.
@@ -91,6 +95,13 @@ public:
 	*/
 	void setup(bool restart, NANDRAD::Project & prj, const IBK::Path & outputPath);
 
+	/*! Creates a variable mapping file, that links the generic variable name to the display name
+		of an element. Function is called when first output is made.
+		Function expects fully configured OutputFile objects (i.e. input refs have already been given and
+		files have been created).
+	*/
+	void writeMappingFile() const;
+
 	/*! Appends outputs to files.
 		Actually, this function only caches current output values. Only when a certain
 		time has passed (or cached output data exceeds a certain limit), the data is actually written to file.
@@ -102,6 +113,11 @@ public:
 
 	/*! When called, asks all output files to flush their cached data to file. */
 	void flushCache();
+
+
+
+	/*! Cached path to mapping file, so that we may later create the file once all information is available. */
+	IBK::Path									m_mappingFilePath;
 
 	/*! Vector with output file objects.
 		Objects are not owned by us, but rather by NandradModel, since the output file objects

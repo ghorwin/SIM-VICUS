@@ -27,6 +27,7 @@
 #include <IBK_Path.h>
 #include <IBK_assert.h>
 #include <IBK_UnitList.h>
+#include <IBK_FileUtils.h>
 
 #include <NANDRAD_ObjectList.h>
 #include <NANDRAD_KeywordList.h>
@@ -221,30 +222,10 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 	if (restart) {
 		if (outFilePath.exists()) {
 			// try to re-open the file
-			if (binary) {
-#if defined(_WIN32)
-	#if defined(_MSC_VER)
-				m_ofstream = new std::ofstream(outFilePath.wstr().c_str(), std::ios_base::binary | std::ios_base::app);
-	#else
-				std::string filenameAnsi = IBK::WstringToANSI(outFilePath.wstr(), false);
-				m_ofstream = new std::ofstream(filenameAnsi.c_str(), std::ios_base::binary | std::ios_base::app);
-	#endif
-#else
-				m_ofstream = new std::ofstream(outFilePath.str().c_str(), std::ios_base::binary | std::ios_base::app);
-#endif
-			}
-			else {
-#if defined(_WIN32)
-	#if defined(_MSC_VER)
-				m_ofstream = new std::ofstream(outFilePath.wstr().c_str(), std::ios_base::app);
-	#else
-				std::string filenameAnsi = IBK::WstringToANSI(outFilePath.wstr(), false);
-				m_ofstream = new std::ofstream(filenameAnsi.c_str(), std::ios_base::app);
-	#endif
-#else
-				m_ofstream = new std::ofstream(outFilePath.str().c_str(), std::ios_base::app);
-#endif
-			}
+			if (binary)
+				m_ofstream = IBK::create_ofstream(outFilePath, std::ios_base::binary | std::ios_base::app);
+			else
+				m_ofstream = IBK::create_ofstream(outFilePath, std::ios_base::app);
 			if (!m_ofstream) {
 				throw IBK::Exception(IBK::FormatString("Error re-opening file %1 for writing.").arg(outFilePath), FUNC_ID);
 			}
@@ -262,33 +243,10 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 	}
 
 	// create file now and write header
-	/// \todo refactor and use IBK::create_ofstream() from IBK_FileUtils.h
-	if (binary) {
-#if defined(_WIN32)
-	#if defined(_MSC_VER)
-		std::wstring wfname = outFilePath.wstr();
-		m_ofstream = new std::ofstream(wfname.c_str(), std::ios_base::binary);
-	#else
-		std::string filenameAnsi = IBK::WstringToANSI(outFilePath.wstr(), false);
-		m_ofstream = new std::ofstream(filenameAnsi.c_str(), std::ios_base::binary);
-	#endif
-#else
-		m_ofstream = new std::ofstream(outFilePath.c_str(), std::ios_base::binary);
-#endif
-	}
-	else {
-#if defined(_WIN32)
-	#if defined(_MSC_VER)
-		std::wstring wfname = outFilePath.wstr();
-		m_ofstream = new std::ofstream(wfname.c_str());
-	#else
-		std::string filenameAnsi = IBK::WstringToANSI(outFilePath.wstr(), false);
-		m_ofstream = new std::ofstream(filenameAnsi.c_str());
-	#endif
-#else
-		m_ofstream = new std::ofstream(outFilePath.c_str());
-#endif
-	}
+	if (binary)
+		m_ofstream = IBK::create_ofstream(outFilePath, std::ios_base::binary | std::ios_base::trunc);
+	else
+		m_ofstream = IBK::create_ofstream(outFilePath);
 
 	if (!m_ofstream) {
 		throw IBK::Exception(IBK::FormatString("Error creating file %1.").arg(outFilePath), FUNC_ID);

@@ -70,6 +70,7 @@ void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescript
 
 	// set a description for each flow element
 	desc.m_name = "FluidHeatFlux";
+	desc.m_displayName = m_displayName;
 	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	// loop through all flow elements
 	for(unsigned int i = 0; i < m_statesModel->m_elementIds.size(); ++i) {

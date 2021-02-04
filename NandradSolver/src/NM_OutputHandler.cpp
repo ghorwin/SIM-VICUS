@@ -30,6 +30,7 @@
 #include <IBK_Exception.h>
 #include <IBK_StopWatch.h>
 #include <IBK_UnitList.h>
+#include <IBK_FileUtils.h>
 
 #include <NANDRAD_Project.h>
 
@@ -101,6 +102,8 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 	// cache parameters needed to create output files
 	m_restart = restart; // store restart info flag
 	m_outputPath = &outputPath;
+	m_mappingFilePath = (outputPath / "../var/variableMapping.txt");
+	m_mappingFilePath.removeRelativeParts();
 	m_binaryFiles = prj.m_outputs.m_binaryFormat.isEnabled();
 	m_timeUnit = prj.m_outputs.m_timeUnit;
 	if (m_timeUnit.base_id() != IBK_UNIT_ID_SECONDS) {
@@ -411,6 +414,26 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 
 }
 
+void OutputHandler::writeMappingFile() const {
+	// create the mapping file
+	std::unique_ptr<std::ofstream> vapMapStream( IBK::create_ofstream(m_mappingFilePath) );
+	// now write a line with variable mappings for each of the variables in question
+
+	// TODO Andreas: das ist knifflig!
+	//      Wir haben hier zwar die QuantityDescriptions, und für skalare Variablen auch einen DisplayName ->
+	//      für vektorwertige müssten wir eigentlich einen passenden Vektor mit DisplayNamen haben.
+	//      Der Code für das Generieren eindeutiger IDs steckt in OutputFile::createFile(). Damit die hier raus-
+	//      geschriebenen eindeutigen Namen auch wirklich stimmen, sollte man dies vereinheitlichen.
+	//      Wenn die Mappingtabelle durch die OutputFile-Klassen befüllt werden würde, dann wären die Variablen-
+	//      namen schonmal eindeutig. Aber dann müsste jede OutputFile-Klasse wissen welche QuantityDescription
+	//      für das Auflösen der angefragten InputReferences benutzt würde.
+	//      Die Information gibt's nur in der Funktion OutputFile::setInputValueRefs(), d.h. dies wäre der ideale
+	//      Ort, die Variablen-Mapping-Info zu erstellen.
+	//      Jedes OutputFile-Objekt würde dort eine eigene std::map<std::string "output var name", std::string "display name">
+	//      map befüllen und speichern. Und wir würden hier diese abgreifen und rausschreiben.
+
+}
+
 
 void OutputHandler::writeOutputs(double t_out, double t_secondsOfYear) {
 	FUNCID(OutputHandler::writeOutputs);
@@ -446,6 +469,8 @@ void OutputHandler::writeOutputs(double t_out, double t_secondsOfYear) {
 		// now create timer (becomes owned by us)
 		m_outputTimer = new IBK::StopWatch; // timer starts automatically
 
+		// *** write result variable mapping file ***
+		writeMappingFile();
 	}
 
 	// convert to output time unit

@@ -34,6 +34,7 @@ void RoomRadiationLoadsModel::resultDescriptions(std::vector<QuantityDescription
 	result.m_constant = false;
 	result.m_description = NANDRAD_MODEL::KeywordList::Description("RoomRadiationLoadsModel::Results", R_WindowSolarRadiationFluxSum);
 	result.m_name = NANDRAD_MODEL::KeywordList::Keyword("RoomRadiationLoadsModel::Results", R_WindowSolarRadiationFluxSum);
+	result.m_displayName = m_displayName;
 	result.m_unit = NANDRAD_MODEL::KeywordList::Unit("RoomRadiationLoadsModel::Results", R_WindowSolarRadiationFluxSum);
 
 	resDesc.push_back(result);

@@ -271,6 +271,7 @@ void HydraulicNetworkModel::resultDescriptions(std::vector<QuantityDescription> 
 
 	// set a description for each flow element
 	desc.m_name = "FluidMassFlux";
+	desc.m_displayName = m_displayName;
 	desc.m_description = "Fluid mass flux through a flow element";
 
 	// Important: change reftype to MRT_NETWORKELEMENT, because it otherwise defaults to the reftype of this
