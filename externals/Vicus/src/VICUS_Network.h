@@ -163,9 +163,6 @@ public:
 	 * before calling sizePipeDimensions() */
 	void setDefaultSizingParams();
 
-	// TODO Hauke, move to SVPropNetworkEditWidget
-	double largestDiameter() const {return 1; }
-	double smallestDiameter() const {return 1; }
 
 
 	// *** PUBLIC MEMBER VARIABLES ***
@@ -192,9 +189,6 @@ public:
 	/*! vector with edges */
 	std::vector<NetworkEdge>				m_edges;									// XML:E
 
-	/*! Pipe database, pipe dimensioning algorithm may use any pipes defined in this list. */
-//	std::vector<NetworkPipe>				m_networkPipeDB;
-
 	/*! List of pipes (ids) that may be used in this network. */
 	std::vector<unsigned int>				m_availablePipes;							// XML:E
 
@@ -203,9 +197,6 @@ public:
 
 	/*! hydraulic sub networks in the Network */
 	std::vector<NANDRAD::HydraulicNetwork>	m_hydraulicSubNetworks;						// XML:E
-
-	/*! the catalog of hydraulic components */
-//	std::vector<NANDRAD::HydraulicNetworkComponent>	m_hydraulicComponents;
 
 	NetworkType								m_type = NET_DoublePipe;					// XML:E
 

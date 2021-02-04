@@ -30,16 +30,13 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 	m_ui->groupBoxHeatExchange->setEnabled(false);
 
 	// setup combobox node types
-	// TODO Hauke
-//	m_mapNodeTypes.clear();
-//	m_mapNodeTypes.insert(VICUS::KeywordList::Keyword("NetworkNode::NodeType", VICUS::NetworkNode::NT_Mixer),
-//						  VICUS::NetworkNode::NT_Mixer);
-//	m_mapNodeTypes.insert(VICUS::KeywordList::Keyword("NetworkNode::NodeType", VICUS::NetworkNode::NT_Source),
-//						  VICUS::NetworkNode::NT_Source);
-//	m_mapNodeTypes.insert(VICUS::KeywordList::Keyword("NetworkNode::NodeType", VICUS::NetworkNode::NT_Building),
-//						  VICUS::NetworkNode::NT_Building);
-//	m_ui->comboBoxNodeType->clear();
-//	m_ui->comboBoxNodeType->addItems(m_mapNodeTypes.keys());
+	m_ui->comboBoxNodeType->clear();
+	m_ui->comboBoxNodeType->addItem(VICUS::KeywordList::Keyword("NetworkNode::NodeType", VICUS::NetworkNode::NT_Mixer),
+									VICUS::NetworkNode::NT_Mixer);
+	m_ui->comboBoxNodeType->addItem(VICUS::KeywordList::Keyword("NetworkNode::NodeType", VICUS::NetworkNode::NT_Source),
+									VICUS::NetworkNode::NT_Source);
+	m_ui->comboBoxNodeType->addItem(VICUS::KeywordList::Keyword("NetworkNode::NodeType", VICUS::NetworkNode::NT_Building),
+									VICUS::NetworkNode::NT_Building);
 }
 
 
@@ -144,8 +141,7 @@ void SVPropNetworkEditWidget::updateNodeProperties() {
 	bool uniformNodeType = uniformProperty(m_currentNodes, &VICUS::NetworkNode::m_type);
 	m_ui->groupBoxNode->setEnabled(uniformNodeType);
 	m_ui->groupBoxComponent->setEnabled(uniformNodeType);
-	// TODO Hauke
-//	m_ui->comboBoxNodeType->setCurrentText(m_mapNodeTypes.key(m_currentNodes[0]->m_type));
+	m_ui->comboBoxNodeType->setCurrentIndex(m_ui->comboBoxNodeType->findData(m_currentNodes[0]->m_type));
 	m_ui->lineEditNodeHeatingDemand->setEnabled(m_currentNodes[0]->m_type == VICUS::NetworkNode::NT_Building);
 
 	if (m_currentNodes.size() == 1){
@@ -164,11 +160,8 @@ void SVPropNetworkEditWidget::updateNodeProperties() {
 	else
 		m_ui->lineEditNodeHeatingDemand->clear();
 
-	// TODO Hauke
-	#if 0
 	if (uniformProperty(m_currentNodes, &VICUS::NetworkNode::m_componentId)){
-		QString test = m_mapComponents.key(m_currentNodes[0]->m_componentId);
-		m_ui->comboBoxComponent->setCurrentText(m_mapComponents.key(m_currentNodes[0]->m_componentId));
+		m_ui->comboBoxComponent->setCurrentIndex(m_ui->comboBoxComponent->findData(m_currentNodes[0]->m_componentId));
 		const VICUS::NetworkComponent *comp = db.m_networkComponents[m_currentNodes[0]->m_componentId];
 		if (comp != nullptr)
 			m_ui->groupBoxHeatExchange->setEnabled(
@@ -178,9 +171,8 @@ void SVPropNetworkEditWidget::updateNodeProperties() {
 			m_ui->groupBoxHeatExchange->setEnabled(false);
 	}
 	else{
-		m_ui->comboBoxComponent->setCurrentText(m_mapComponents.key(VICUS::INVALID_ID));
+		m_ui->comboBoxComponent->setCurrentIndex(-1);
 	}
-#endif
 }
 
 
@@ -205,15 +197,14 @@ void SVPropNetworkEditWidget::updateEdgeProperties() {
 	else
 		m_ui->comboBoxPipeDB->setCurrentIndex(-1);
 
-// TODO Hauke
-#if 0
+
 	if (uniformProperty(m_currentEdges, &VICUS::NetworkEdge::m_supply))
 		m_ui->checkBoxSupplyPipe->setChecked(m_currentEdges[0]->m_supply);
 	else
 		m_ui->checkBoxSupplyPipe->setCheckState(Qt::CheckState::PartiallyChecked);
 
 	if (uniformProperty(m_currentEdges, &VICUS::NetworkEdge::m_componentId)){
-		m_ui->comboBoxComponent->setCurrentText(m_mapComponents.key(m_currentEdges[0]->m_componentId));
+		m_ui->comboBoxComponent->setCurrentIndex(m_ui->comboBoxComponent->findData(m_currentEdges[0]->m_componentId));
 		const VICUS::NetworkComponent *comp = db.m_networkComponents[m_currentEdges[0]->m_componentId];
 		if (comp != nullptr)
 			m_ui->groupBoxHeatExchange->setEnabled(
@@ -223,10 +214,8 @@ void SVPropNetworkEditWidget::updateEdgeProperties() {
 			m_ui->groupBoxHeatExchange->setEnabled(false);
 	}
 	else{
-		m_ui->comboBoxComponent->setCurrentText(m_mapComponents.key(VICUS::INVALID_ID));
+		m_ui->comboBoxComponent->setCurrentIndex(-1);
 	}
-#endif
-
 //	m_ui->comboBoxHeatExchangeType->setCurrentText(m_mapHeatExchangeType.key(edge->m_heatExchangeType));
 //	m_ui->comboBoxHeatExchangeType->setEnabled(NANDRAD::HydraulicNetworkComponent::hasHeatExchange(edge->m_modelType));
 //	m_ui->groupBoxHeatExchange->setEnabled(NANDRAD::HydraulicNetworkComponent::hasHeatExchange(edge->m_modelType)
@@ -253,11 +242,11 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 	m_ui->labelTotalLength->setText(QString("%1 m").arg(m_currentConstNetwork->totalLength()));
 	m_ui->pushButtonConnectBuildings->setEnabled(m_currentConstNetwork->nextUnconnectedBuilding()>=0);
 	m_ui->pushButtonReduceDeadEnds->setEnabled(m_currentConstNetwork->checkConnectedGraph() && m_currentConstNetwork->numberOfBuildings() > 0);
-	m_ui->labelLargestDiameter->setText(QString("%1 mm").arg(m_currentConstNetwork->largestDiameter()));
-	m_ui->labelSmallestDiameter->setText(QString("%1 mm").arg(m_currentConstNetwork->smallestDiameter()));
+	m_ui->labelLargestDiameter->setText(largestDiameter());
+	m_ui->labelSmallestDiameter->setText(smallestDiameter());
 
-	m_ui->horizontalSliderScaleEdges->setValue(m_currentConstNetwork->m_scaleEdges);
-	m_ui->horizontalSliderScaleNodes->setValue(m_currentConstNetwork->m_scaleNodes);
+	m_ui->horizontalSliderScaleEdges->setValue((int)m_currentConstNetwork->m_scaleEdges);
+	m_ui->horizontalSliderScaleNodes->setValue((int)m_currentConstNetwork->m_scaleNodes);
 }
 
 
@@ -300,9 +289,38 @@ void SVPropNetworkEditWidget::setAllEnabled(bool enabled)
 }
 
 
+QString SVPropNetworkEditWidget::largestDiameter() const
+{
+	const SVDatabase & db = SVSettings::instance().m_db;
+	double dMax = 0;
+	for (const VICUS::NetworkEdge &edge: m_currentConstNetwork->m_edges){
+		const VICUS::NetworkPipe * p = db.m_pipes[edge.m_pipeId];
+		if (p == nullptr)
+			return QString();
+		if (p->m_diameterOutside > dMax)
+			dMax = p->m_diameterOutside;
+	}
+	return QString("%1").arg(dMax);
+}
+
+
+QString SVPropNetworkEditWidget::smallestDiameter() const
+{
+	const SVDatabase & db = SVSettings::instance().m_db;
+	double dMin = std::numeric_limits<double>::max();
+	for (const VICUS::NetworkEdge &edge: m_currentConstNetwork->m_edges){
+		const VICUS::NetworkPipe * p = db.m_pipes[edge.m_pipeId];
+		if (p == nullptr)
+			return QString();
+		if (p->m_diameterOutside < dMin)
+			dMin = p->m_diameterOutside;
+	}
+	return QString("%1").arg(dMin);
+}
+
+
 void SVPropNetworkEditWidget::setupComboboxPipeDB()
 {
-
 	const SVDatabase  & db = SVSettings::instance().m_db;
 
 	m_ui->comboBoxPipeDB->blockSignals(true);
@@ -323,13 +341,12 @@ void SVPropNetworkEditWidget::setupComboboxPipeDB()
 
 void SVPropNetworkEditWidget::setupComboBoxComponents()
 {
-	// TODO Hauke wie oben
-//	m_mapComponents.clear();
-//	m_mapComponents.insert("", VICUS::INVALID_ID);
-//	for (const NANDRAD::HydraulicNetworkComponent &comp: m_currentConstNetwork->m_hydraulicComponents)
-//		m_mapComponents.insert(QString::fromStdString(comp.m_displayName), comp.m_id);
-//	m_ui->comboBoxComponent->clear();
-//	m_ui->comboBoxComponent->addItems(m_mapComponents.keys());
+	const SVDatabase & db = SVSettings::instance().m_db;
+	m_ui->comboBoxComponent->clear();
+	for (auto comp = db.m_networkComponents.begin(); comp!=db.m_networkComponents.end(); ++comp)
+		m_ui->comboBoxComponent->addItem(QString::fromStdString(
+										comp->second.m_displayName.string(IBK::MultiLanguageString::m_language, "en")),
+										comp->second.m_id);
 }
 
 
@@ -439,8 +456,7 @@ void SVPropNetworkEditWidget::on_lineEditNodeY_editingFinished()
 
 void SVPropNetworkEditWidget::on_comboBoxPipeDB_activated(int index)
 {
-	// TODO Hauke
-//	modifyEdgeProperty(&VICUS::NetworkEdge::m_pipeId, m_mapDBPipes.value(m_ui->comboBoxPipeDB->currentText()));
+	modifyEdgeProperty(&VICUS::NetworkEdge::m_pipeId, m_ui->comboBoxPipeDB->currentData().toUInt());
 }
 
 void SVPropNetworkEditWidget::on_checkBoxSupplyPipe_clicked()
@@ -451,9 +467,8 @@ void SVPropNetworkEditWidget::on_checkBoxSupplyPipe_clicked()
 void SVPropNetworkEditWidget::on_comboBoxComponent_activated(const QString &arg1)
 {
 	// the functions will simply return in case it is not a Node/Edge
-	// TODO Hauke
-//		modifyEdgeProperty(&VICUS::NetworkEdge::m_componentId, m_mapComponents.value(m_ui->comboBoxComponent->currentText()));
-//	modifyNodeProperty(&VICUS::NetworkNode::m_componentId, m_mapComponents.value(m_ui->comboBoxComponent->currentText()));
+	modifyEdgeProperty(&VICUS::NetworkEdge::m_componentId, m_ui->comboBoxComponent->currentData().toUInt());
+	modifyNodeProperty(&VICUS::NetworkNode::m_componentId, m_ui->comboBoxComponent->currentData().toUInt());
 }
 
 void SVPropNetworkEditWidget::on_horizontalSliderScaleNodes_valueChanged(int value)

@@ -37,10 +37,6 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) const {
 	for (unsigned int i: para){
 		checkModelParameter(m_para[i], i);
 	}
-
-	// TODO Hauke, read tsv file, check and convert units, create linear spline; always check spline
-	//      if file path is given
-
 }
 
 
@@ -83,8 +79,8 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, const unsigned int numPara)
 {
 	const char * enumName = "HydraulicNetworkComponent::para_t";
-	const char * name = KeywordList::Keyword(enumName, numPara);
-	const char * unit = KeywordList::Unit(enumName, numPara);
+	const char * name = KeywordList::Keyword(enumName, (int)numPara);
+	const char * unit = KeywordList::Unit(enumName, (int)numPara);
 
 	switch (numPara) {
 		// value must be >0
@@ -95,23 +91,19 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 		case P_UAValue:
 		case P_PipeMaxDiscretizationWidth:
 		case P_COP:{
-			// TODO : Hauke, nullptr or detailed error
-			const char * errMsg = "";
-			para.checkedValue(name, unit, unit, 0, false, std::numeric_limits<double>::max(), true, errMsg);
+			para.checkedValue(name, unit, unit, 0, false, std::numeric_limits<double>::max(), true, nullptr);
 			break;
 		}
 		// value must be >0 and <1
 		case P_PumpEfficiency:
 		case P_MotorEfficiency: {
-			const char * errMsg = "";
-			para.checkedValue(name, unit, unit, 0, false, 1.0, true, errMsg);
+			para.checkedValue(name, unit, unit, 0, false, 1.0, true, nullptr);
 			break;
 		}
 		// value can be negative
 		case P_PressureHead: {
-			const char * errMsg = "";
 			para.checkedValue(name, unit, unit, std::numeric_limits<double>::lowest(), true,
-							  std::numeric_limits<double>::max(), true, errMsg);
+							  std::numeric_limits<double>::max(), true, nullptr);
 			break;
 		}
 	}

@@ -65,7 +65,53 @@ void SVSimulationStartNetworkSim::updateCmdLine() {
 }
 
 
+void SVSimulationStartNetworkSim::on_pushButtonRun_clicked() {
+
+	// generate NANDRAD project
+	NANDRAD::Project p;
+
+	generateNandradProject(p);
+
+	// save project
+	p.writeXML(IBK::Path(m_targetProjectFile.toStdString()));
+
+	// launch solver
+	bool success = SVSettings::startProcess(m_solverExecutable, m_cmdLine, m_targetProjectFile);
+	if (!success) {
+		QMessageBox::critical(this, QString(), tr("Could not run solver '%1'").arg(m_solverExecutable));
+		return;
+	}
+
+	close(); // finally close dialog
+}
+
+
 bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) const {
+	FUNCID(SVSimulationStartNetworkSim::generateNandradProject);
+
+	// get selected Vicus Network
+	VICUS::Project proj = project();
+	unsigned int networkId = m_networksMap.value(m_ui->comboBoxNetwork->currentText());
+	const VICUS::Network vicusNetwork = *proj.element(proj.m_geometricNetworks, networkId);
+
+	// node can have only one: componentId or subNetworkId
+	for (const VICUS::NetworkNode &n: vicusNetwork.m_nodes){
+		if (n.m_componentId != VICUS::INVALID_ID && n.m_subNetworkId != VICUS::INVALID_ID)
+			throw IBK::Exception(IBK::FormatString("node with id '%1' has both subnetworkId and componentId.").arg(n.m_id), FUNC_ID);
+	}
+
+	// sources and buildings can only have one connected edge
+	for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes){
+		if ((node.m_type == VICUS::NetworkNode::NT_Source || node.m_type == VICUS::NetworkNode::NT_Building)
+				&& node.m_edges.size()>1 )
+			throw IBK::Exception(IBK::FormatString("Node %1 has more than onde edge connected, but is a source or building.")
+								 .arg(node.m_id), FUNC_ID);
+	}
+
+	// check network type
+	if (vicusNetwork.m_type != VICUS::Network::NET_DoublePipe)
+		throw IBK::Exception("This NetworkType is not yet implemented. Use networkType 'DoublePipe'", FUNC_ID);
+
 
 	// create dummy zone
 	NANDRAD::Zone z;
@@ -89,8 +135,196 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 
 
 
+	// *** create Nandrad Network
+	// TODO Hauke: UI selection widgets for modelType, P_DefaultFluidTemperature, initial fluid temp, ref pressure
+	p.m_hydraulicNetworks.clear();
+	NANDRAD::HydraulicNetwork nandradNetwork;
+	nandradNetwork.m_modelType = NANDRAD::HydraulicNetwork::MT_HydraulicNetwork;
+	nandradNetwork.m_id = vicusNetwork.m_id;
+	nandradNetwork.m_displayName = vicusNetwork.m_name;
+	NANDRAD::KeywordList::setParameter(nandradNetwork.m_para,"HydraulicNetwork::para_t",
+									   NANDRAD::HydraulicNetwork::P_DefaultFluidTemperature, 20);
+	NANDRAD::KeywordList::setParameter(nandradNetwork.m_para,"HydraulicNetwork::para_t",
+									   NANDRAD::HydraulicNetwork::P_InitialFluidTemperature, 20);
+	NANDRAD::KeywordList::setParameter(nandradNetwork.m_para,"HydraulicNetwork::para_t",
+									   NANDRAD::HydraulicNetwork::P_ReferencePressure, 0);
 
-	// generate NANDRAD hydraulic network
+
+	// *** Transfer fluid from Vicus to Nandrad
+	const SVDatabase  & db = SVSettings::instance().m_db;
+	const VICUS::NetworkFluid *fluid = db.m_fluids[vicusNetwork.m_fluidID];
+	Q_ASSERT(fluid != nullptr);
+	nandradNetwork.m_fluid.m_id = fluid->m_id;
+	nandradNetwork.m_fluid.m_displayName = fluid->m_displayName;
+	nandradNetwork.m_fluid.m_kinematicViscosity = fluid->m_kinematicViscosity;
+	for (int i=0; i<VICUS::NetworkFluid::NUM_P; ++i)
+		nandradNetwork.m_fluid.m_para[i] = fluid->m_para[i];
+
+
+	// *** Transfer components from Vicus to Nandrad
+	// --> collect all componentIDs used in vicus network
+	std::vector<unsigned int> componentIds;
+	for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes)
+		componentIds.push_back(node.m_componentId);
+	for (const VICUS::NetworkEdge &edge: vicusNetwork.m_edges)
+		componentIds.push_back(edge.m_componentId);
+	// --> transfer
+	for (unsigned int id: componentIds){
+		const VICUS::NetworkComponent *comp = db.m_networkComponents[id];
+		Q_ASSERT(comp != nullptr);
+		NANDRAD::HydraulicNetworkComponent nandradComp;
+		nandradComp.m_id = comp->m_id;
+		nandradComp.m_displayName = comp->m_displayName.string(IBK::MultiLanguageString::m_language, "en");
+		nandradComp.m_modelType = (NANDRAD::HydraulicNetworkComponent::ModelType) comp->m_modelType;
+		nandradComp.m_heatExchangeType = (NANDRAD::HydraulicNetworkComponent::HeatExchangeType) comp->m_heatExchangeType;
+		for (int i=0; i<VICUS::NetworkComponent::NUM_P; ++i)
+			nandradComp.m_para[i] = comp->m_para[i];
+		nandradNetwork.m_components.push_back(nandradComp);
+	}
+
+
+	// *** Transform pipes from Vicus to NANDRAD
+	// --> collect all pipeIds used in vicus network
+	std::vector<unsigned int> pipeIds;
+	for (const VICUS::NetworkEdge &edge: vicusNetwork.m_edges)
+		pipeIds.push_back(edge.m_pipeId);
+
+	// --> transfer
+	for(unsigned int id: pipeIds){
+		const VICUS::NetworkPipe *pipe = db.m_pipes[id];
+		Q_ASSERT(pipe != nullptr);
+		NANDRAD::HydraulicNetworkPipeProperties pipeProp;
+		pipeProp.m_id = pipe->m_id;
+
+		// calculate pipe wall U-Value
+		double UValue;
+		if (pipe->m_insulationThickness>0 && pipe->m_lambdaInsulation>0){
+			UValue = 1/ ( 1/pipe->m_lambdaWall * IBK::f_log(pipe->m_diameterOutside / pipe->diameterInside())
+						+ 1/pipe->m_lambdaInsulation *
+						  IBK::f_log((pipe->m_diameterOutside + 2*pipe->m_insulationThickness) / pipe->m_diameterOutside) );
+		}
+		else {
+			UValue = 1/ ( 1/pipe->m_lambdaWall * IBK::f_log(pipe->m_diameterOutside / pipe->diameterInside()) );
+		}
+
+		// set pipe properties
+		NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
+										   NANDRAD::HydraulicNetworkPipeProperties::P_PipeOuterDiameter, pipe->m_diameterOutside);
+		NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
+										   NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter, pipe->diameterInside());
+		NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
+										   NANDRAD::HydraulicNetworkPipeProperties::P_PipeRoughness, pipe->m_roughness);
+		NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
+										   NANDRAD::HydraulicNetworkPipeProperties::P_UValuePipeWall, UValue);
+		nandradNetwork.m_pipeProperties.push_back(pipeProp);
+	}
+
+
+	// *** Transfer elements of nodes from Vicus to Nandrad
+	nandradNetwork.m_elements.reserve(vicusNetwork.m_nodes.size() + 2 * vicusNetwork.m_edges.size()); // subnetworks are not taken into account here
+
+	// --> offset for ids of return pipes
+	unsigned int idOffsetOutlet = (unsigned int) std::pow( 10, std::ceil( std::log10(vicusNetwork.m_nodes.size())) + 1 );
+
+	for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes) {
+
+		if (node.m_type == VICUS::NetworkNode::NT_Mixer)
+			continue;
+
+		// create element
+		NANDRAD::HydraulicNetworkElement elem;
+		elem.m_displayName = "node " + IBK::val2string(node.m_id);
+
+		// place the source in reverse order
+		if (node.m_type == VICUS::NetworkNode::NT_Source){
+			elem = NANDRAD::HydraulicNetworkElement(node.m_id, node.m_id+ idOffsetOutlet, node.m_id, node.m_componentId);
+			nandradNetwork.m_referenceElementId = node.m_id;
+		}
+		else{
+			elem = NANDRAD::HydraulicNetworkElement(node.m_id, node.m_id, node.m_id + idOffsetOutlet, node.m_componentId);
+		}
+
+		// TODO Hauke: transform heatExchange properties
+//				NANDRAD::KeywordList::setParameter(elem.m_para, "HydraulicNetworkElement::para_t",
+//												   NANDRAD::HydraulicNetworkElement::P_HeatFlux, node.m_heatFlux.value);
+		nandradNetwork.m_elements.push_back(elem);
+
+		// write subnetworks
+		if (node.m_subNetworkId != VICUS::INVALID_ID){
+			throw IBK::Exception("SubNetworks are not possible yet!", FUNC_ID);
+			// TODO Hauke: continue algorithm for subnetworks
+		}
+	}
+
+
+	// find source node and create set of edges, which are ordered according to their distance to the source node
+	std::set<const VICUS::NetworkNode *> dummyNodeSet;
+	std::set<VICUS::NetworkEdge *> orderedEdges;
+	for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes){
+		if (node.m_type == VICUS::NetworkNode::NT_Source){
+			node.setInletOutletNode(dummyNodeSet, orderedEdges);
+			break;
+		}
+	}
+
+
+	// *** Transfer elements of edges from Vicus to Nandrad
+	for (const VICUS::NetworkEdge *edge: orderedEdges) {
+
+		// check if the component has a model type which corresponds to a pipe
+		const VICUS::NetworkComponent *comp = db.m_networkComponents[edge->m_componentId];
+		if ( ! (comp->m_modelType == VICUS::NetworkComponent ::MT_StaticPipe ||
+				comp->m_modelType == VICUS::NetworkComponent ::MT_StaticAdiabaticPipe ||
+				comp->m_modelType == VICUS::NetworkComponent ::MT_DynamicPipe ||
+				comp->m_modelType == VICUS::NetworkComponent ::MT_DynamicAdiabaticPipe) )
+			throw IBK::Exception(IBK::FormatString("Component of edge %1->%2 does not represent a pipe")
+													.arg(edge->nodeId1()).arg(edge->nodeId2()), FUNC_ID);
+
+		// check if there is a reference to a pipe from DB
+		const VICUS::NetworkPipe *pipe = db.m_pipes[edge->m_pipeId];
+		if (pipe == nullptr)
+			throw IBK::Exception(IBK::FormatString("Edge  %1->%2 has no defined pipe from database")
+								 .arg(edge->m_node1->m_id).arg(edge->m_node2->m_id), FUNC_ID);
+
+
+
+		// add inlet pipe element
+		NANDRAD::HydraulicNetworkElement inletPipe(VICUS::Project::largestUniqueId(nandradNetwork.m_elements),
+													edge->m_nodeIdInlet,
+													edge->m_nodeIdOutlet,
+													edge->m_componentId,
+													edge->m_pipeId,
+													edge->length());
+		inletPipe.m_pipePropertiesId = edge->m_pipeId;
+		// TODO Hauke: transfer heat exchange parameter
+//		NANDRAD::KeywordList::setParameter(inletPipe.m_para, "HydraulicNetworkElement::para_t",
+//										   NANDRAD::HydraulicNetworkElement::P_Temperature,
+//										   edge->m_ambientTemperature.get_value(IBK::Unit("C")));
+		nandradNetwork.m_elements.push_back(inletPipe);
+
+		// add outlet pipe element
+		NANDRAD::HydraulicNetworkElement outletPipe(VICUS::Project::largestUniqueId(nandradNetwork.m_elements),
+													edge->m_nodeIdOutlet + idOffsetOutlet,
+													edge->m_nodeIdInlet + idOffsetOutlet,
+													edge->m_componentId,
+													edge->m_pipeId,
+													edge->length());
+		// TODO Hauke: transfer heat exchange parameter
+//		NANDRAD::KeywordList::setParameter(outletPipe.m_para, "HydraulicNetworkElement::para_t",
+//										   NANDRAD::HydraulicNetworkElement::P_Temperature,
+//										   edge->m_ambientTemperature.get_value(IBK::Unit("C")));
+		outletPipe.m_pipePropertiesId = edge->m_pipeId;
+		nandradNetwork.m_elements.push_back(outletPipe);
+
+	}
+
+	// DONE !!!
+	// finally add to nandrad project
+	p.m_hydraulicNetworks.push_back(nandradNetwork);
+
+}
+
+
 
 
 
@@ -258,53 +492,4 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	// *** test example 2 until here ***
 
 #endif
-
-
-
-	VICUS::Project proj = project();
-	unsigned int networkId = m_networksMap.value(m_ui->comboBoxNetwork->currentText());
-	const VICUS::Network geoNetwork = *proj.element(proj.m_geometricNetworks, networkId);
-
-	// create Nandrad Network
-	NANDRAD::HydraulicNetwork hydraulicNetwork;
-	hydraulicNetwork.m_modelType = NANDRAD::HydraulicNetwork::MT_HydraulicNetwork;
-	hydraulicNetwork.m_id = geoNetwork.m_id;
-	hydraulicNetwork.m_displayName = geoNetwork.m_name;
-	NANDRAD::KeywordList::setParameter(hydraulicNetwork.m_para,"HydraulicNetwork::para_t",
-									   NANDRAD::HydraulicNetwork::P_DefaultFluidTemperature, 20);
-
-	// TODO Hauke, move createNandradHydraulicNetwork() to this class
-	//createNandradHydraulicNetwork(hydraulicNetwork);
-
-	hydraulicNetwork.m_fluid.defaultFluidWater(1);
-
-	// finally add to nandrad project
-	p.m_hydraulicNetworks.clear();
-	p.m_hydraulicNetworks.push_back(hydraulicNetwork);
-
-
-	return true; // no errors, signal ok
-}
-
-
-void SVSimulationStartNetworkSim::on_pushButtonRun_clicked() {
-
-	// generate NANDRAD project
-	NANDRAD::Project p;
-
-	generateNandradProject(p);
-
-	// save project
-	p.writeXML(IBK::Path(m_targetProjectFile.toStdString()));
-
-	// launch solver
-	bool success = SVSettings::startProcess(m_solverExecutable, m_cmdLine, m_targetProjectFile);
-	if (!success) {
-		QMessageBox::critical(this, QString(), tr("Could not run solver '%1'").arg(m_solverExecutable));
-		return;
-	}
-
-	close(); // finally close dialog
-}
-
 

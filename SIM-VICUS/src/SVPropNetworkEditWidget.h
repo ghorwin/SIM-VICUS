@@ -110,6 +110,10 @@ private:
 
 	void setAllEnabled(bool enabled);
 
+	QString largestDiameter() const;
+
+	QString smallestDiameter() const;
+
 	/*! modifies the given property of selected edge(s).
 	 * Encapsulates the process of retrieving the according edge and conducting the undo */
 	template <typename TEdgeProp, typename Tval>
@@ -135,10 +139,6 @@ private:
 	}
 
 	Ui::SVPropNetworkEditWidget		*m_ui;
-
-//	QMap<QString, unsigned>			m_mapComponents;
-
-//	QMap<QString, unsigned>			m_mapNodeTypes;
 
 	/*! Contains the currently selected network, or the network, of the currently selected nodes/edges.	*/
 	const VICUS::Network *			m_currentConstNetwork = nullptr;

@@ -48,8 +48,18 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 
 	updateInput(-1);
 
+	// check if enums are identical
+	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter == (int)VICUS::NetworkComponent::P_HydraulicDiameter);
+	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient == (int)VICUS::NetworkComponent::P_PressureLossCoefficient);
+	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient == (int)VICUS::NetworkComponent::P_ExternalHeatTransferCoefficient);
+	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_PressureHead == (int)VICUS::NetworkComponent::P_PressureHead);
+	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency == (int)VICUS::NetworkComponent::P_PumpEfficiency);
+	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_MotorEfficiency == (int)VICUS::NetworkComponent::P_MotorEfficiency);
+	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_Volume == (int)VICUS::NetworkComponent::P_Volume);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_COP == (int)VICUS::NetworkComponent::P_COP);
-	// TODO : Hauke, add other mappings
+	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_UAValue == (int)VICUS::NetworkComponent::P_UAValue);
+	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_PipeMaxDiscretizationWidth == (int)VICUS::NetworkComponent::P_PipeMaxDiscretizationWidth);
+	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::NUM_P == (int)VICUS::NetworkComponent::NUM_P);
 }
 
 

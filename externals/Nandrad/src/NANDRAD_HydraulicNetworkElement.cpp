@@ -183,10 +183,10 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw) {
 		else
 			m_heatExchangeSpline.m_wrapMethod = LinearSplineParameter::C_CONTINUOUS;
 	}
-	else if (!m_heatExchangeDataFile.exists())
-		throw IBK::Exception(IBK::FormatString("Invalid parameter file '%1'").arg(m_heatExchangeDataFile.str()), FUNC_ID);
+	else if (!m_heatExchangeDataFile.isValid())
+		throw IBK::Exception(IBK::FormatString("File '%1' can not be used with given HeatExchangeType")
+							 .arg(m_heatExchangeDataFile.str()), FUNC_ID);
 
-	// TODO Hauke: use csv-reader to check file?
 }
 
 
