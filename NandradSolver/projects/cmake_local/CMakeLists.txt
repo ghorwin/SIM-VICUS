@@ -26,6 +26,7 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/../../../externals/SuiteSparse/src/include
 )
 
+# gather all cpp files in NandradSolver directory
 file( GLOB NandradSolver_SRCS ${PROJECT_SOURCE_DIR}/../../src/*.cpp )
 
 # add NANDRAD_KeywordList.cpp
@@ -38,7 +39,7 @@ set( NandradSolver_SRCS
 file( GLOB NandradModel_HDRS ${PROJECT_SOURCE_DIR}/../../src/*.h )
 
 # run the KeywordListCreator tool whenever the header files have changed
-# to update the NANDRAD_KeywordList.h and NANDRAD_KeywordList.cpp file
+# to update the NM_KeywordList.h and NM_KeywordList.cpp file
 add_custom_command (
 	OUTPUT   ${PROJECT_SOURCE_DIR}/../../src/NM_KeywordList.cpp
 	DEPENDS  ${NandradModel_HDRS} NandradCodeGenerator
@@ -46,12 +47,23 @@ add_custom_command (
 	ARGS     NANDRAD_MODEL ${PROJECT_SOURCE_DIR}/../../src 0 NM ncg
 )
 
+
+# remove the main.cpp from the list of source files
+list(REMOVE_ITEM NandradSolver_SRCS ${PROJECT_SOURCE_DIR}/../../../NandradSolver/src/main.cpp)
+
+# build the library NandradModel
+add_library( NandradModel STATIC
+	${NandradSolver_SRCS}
+)
+
+
 if (OPENMP_FOUND)
 	set( SUNDIALS_OMP_LINK_LIBS sundials_nvecopenmp_static )
 endif (OPENMP_FOUND)
 
 # set variable for dependent libraries
 set( LINK_LIBS
+	NandradModel
 	IntegratorFramework 
 	Nandrad 
 	IBKMK
@@ -66,17 +78,12 @@ set( LINK_LIBS
 	SuiteSparse
 )
 
-#if( WIN32 )
-#	set (LINK_LIBS ${LINK_LIBS} zlibstatic)
-#else( WIN32 )
-#	set (LINK_LIBS ${LINK_LIBS} zlibstatic dl)
-#endif( WIN32 )
-
+# now build the NandradSolver executable - this only requires compiling the main.cpp
 add_executable( ${PROJECT_NAME}
-	${NandradSolver_SRCS}
+	${PROJECT_SOURCE_DIR}/../../src/main.cpp
 )
 
-# link against the dependent libraries
+# and link it against the dependent libraries
 target_link_libraries( ${PROJECT_NAME} 
 	${LINK_LIBS}
 )

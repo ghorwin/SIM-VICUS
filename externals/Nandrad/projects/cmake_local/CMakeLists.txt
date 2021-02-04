@@ -35,7 +35,6 @@ add_custom_command (
 	ARGS     NANDRAD ${PROJECT_SOURCE_DIR}/../../src 1 NANDRAD ncg
 )
 
-
 # build the library
 add_library( Nandrad STATIC
 	${Nandrad_LIB_SRCS}
