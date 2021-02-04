@@ -102,7 +102,7 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 	// cache parameters needed to create output files
 	m_restart = restart; // store restart info flag
 	m_outputPath = &outputPath;
-	m_mappingFilePath = (outputPath / "../var/variableMapping.txt");
+	m_mappingFilePath = (outputPath / "../var/VariableSubstitutions.txt");
 	m_mappingFilePath.removeRelativeParts();
 	m_binaryFiles = prj.m_outputs.m_binaryFormat.isEnabled();
 	m_timeUnit = prj.m_outputs.m_timeUnit;
@@ -419,19 +419,11 @@ void OutputHandler::writeMappingFile() const {
 	std::unique_ptr<std::ofstream> vapMapStream( IBK::create_ofstream(m_mappingFilePath) );
 	// now write a line with variable mappings for each of the variables in question
 
-	// TODO Andreas: das ist knifflig!
-	//      Wir haben hier zwar die QuantityDescriptions, und für skalare Variablen auch einen DisplayName ->
-	//      für vektorwertige müssten wir eigentlich einen passenden Vektor mit DisplayNamen haben.
-	//      Der Code für das Generieren eindeutiger IDs steckt in OutputFile::createFile(). Damit die hier raus-
-	//      geschriebenen eindeutigen Namen auch wirklich stimmen, sollte man dies vereinheitlichen.
-	//      Wenn die Mappingtabelle durch die OutputFile-Klassen befüllt werden würde, dann wären die Variablen-
-	//      namen schonmal eindeutig. Aber dann müsste jede OutputFile-Klasse wissen welche QuantityDescription
-	//      für das Auflösen der angefragten InputReferences benutzt würde.
-	//      Die Information gibt's nur in der Funktion OutputFile::setInputValueRefs(), d.h. dies wäre der ideale
-	//      Ort, die Variablen-Mapping-Info zu erstellen.
-	//      Jedes OutputFile-Objekt würde dort eine eigene std::map<std::string "output var name", std::string "display name">
-	//      map befüllen und speichern. Und wir würden hier diese abgreifen und rausschreiben.
-
+	// the maps OutputFile::m_variableMapping have been populated already
+	for (OutputFile * of : m_outputFiles) {
+		for (auto m : of->m_variableMapping)
+			*vapMapStream << m.first << '\t' << m.second << '\n';
+	}
 }
 
 

@@ -230,6 +230,9 @@ private:
 	/*! Output file stream (owned and initialized in createFile()). */
 	std::ofstream								*m_ofstream = nullptr;
 
+	/*! Stores variable mapping of created variable ID names (key) versus display names (values). */
+	std::map<std::string, std::string>			m_variableMapping;
+
 	friend class OutputHandler;
 };
 

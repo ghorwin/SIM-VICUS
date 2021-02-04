@@ -265,6 +265,8 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 	for (unsigned int i=0; i<m_valueRefs.size(); ++i) {
 		if (m_valueRefs[i] == nullptr) continue; // skip unavailable vars
 
+		const std::string & displayName = m_quantityDescs[i].m_displayName;
+
 		const NANDRAD::OutputDefinition & od = m_outputDefinitions[ m_outputDefMap[i] ];
 
 		// quantity suffix depends on time type
@@ -277,24 +279,32 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 		IBK::Unit u(m_valueUnits[i]);
 
 		// compose column title
-		std::string header;
 		std::string quantityString = m_inputRefs[i].m_name.m_name;
 		if (m_inputRefs[i].m_name.m_index != -1)
 			quantityString += "(id=" + IBK::val2string(m_inputRefs[i].m_name.m_index) + ")";
 
+		std::string variableName;
 		if (m_inputRefs[i].m_id != 0)
-			header = IBK::FormatString("%1(id=%2).%3%4 [%5]")
+			variableName = IBK::FormatString("%1(id=%2).%3%4")
 					.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_inputRefs[i].m_referenceType))
 					.arg(m_inputRefs[i].m_id)
 					.arg(quantityString)
-					.arg(quantitySuffix)
-					.arg(u.name()).str();
+					.arg(quantitySuffix).str();
 		else
-			header = IBK::FormatString("%1.%2%3 [%4]")
+			variableName = IBK::FormatString("%1.%2%3")
 					.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_inputRefs[i].m_referenceType))
 					.arg(quantityString)
-					.arg(quantitySuffix)
-					.arg(u.name()).str();
+					.arg(quantitySuffix).str();
+
+		// if displayname is given, store variable - displayname mapping
+		if (!displayName.empty())
+			m_variableMapping[variableName] = IBK::FormatString("%1.%2%3")
+					.arg(displayName)
+					.arg(quantityString)
+					.arg(quantitySuffix).str();
+
+		// append unit to variable name and add to header
+		std::string header = variableName + " [" + u.name() + "]";
 		headerLabels.push_back(header);
 		++col; // increase var counter
 	}
