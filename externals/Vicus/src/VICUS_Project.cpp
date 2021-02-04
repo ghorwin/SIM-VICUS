@@ -340,7 +340,6 @@ void Project::updatePointers() {
 
 	for (VICUS::Network & n : m_geometricNetworks) {
 		n.updateNodeEdgeConnectionPointers();
-		n.updateVisualizationData();
 	}
 }
 

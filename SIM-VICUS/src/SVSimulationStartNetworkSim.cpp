@@ -41,7 +41,7 @@ void SVSimulationStartNetworkSim::edit() {
 }
 
 
-void SVSimulationStartNetworkSim::on_checkBoxCloseConsoleWindow_toggled(bool checked) {
+void SVSimulationStartNetworkSim::on_checkBoxCloseConsoleWindow_toggled(bool /*checked*/) {
 	updateCmdLine();
 }
 
@@ -273,7 +273,8 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	NANDRAD::KeywordList::setParameter(hydraulicNetwork.m_para,"HydraulicNetwork::para_t",
 									   NANDRAD::HydraulicNetwork::P_DefaultFluidTemperature, 20);
 
-	geoNetwork.createNandradHydraulicNetwork(hydraulicNetwork);
+	// TODO Hauke, move createNandradHydraulicNetwork() to this class
+	//createNandradHydraulicNetwork(hydraulicNetwork);
 
 	hydraulicNetwork.m_fluid.defaultFluidWater(1);
 

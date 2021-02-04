@@ -105,6 +105,10 @@ void HydraulicNetworkElement::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
+			else if (cName == "HeatFluxDataFile")
+				m_heatFluxDataFile = IBK::Path(c->GetText());
+			else if (cName == "TemperatureDataFile")
+				m_temperatureDataFile = IBK::Path(c->GetText());
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -147,6 +151,10 @@ TiXmlElement * HydraulicNetworkElement::writeXML(TiXmlElement * parent) const {
 			TiXmlElement::appendSingleAttributeElement(e, "IBK:IntPara", "name", m_intPara[i].name, IBK::val2string(m_intPara[i].value));
 		}
 	}
+	if (m_heatFluxDataFile.isValid())
+		TiXmlElement::appendSingleAttributeElement(e, "HeatFluxDataFile", nullptr, std::string(), m_heatFluxDataFile.str());
+	if (m_temperatureDataFile.isValid())
+		TiXmlElement::appendSingleAttributeElement(e, "TemperatureDataFile", nullptr, std::string(), m_temperatureDataFile.str());
 	return e;
 }
 

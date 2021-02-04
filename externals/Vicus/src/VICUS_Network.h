@@ -94,12 +94,6 @@ public:
 	/*! Should be called whenever m_nodes or m_edges has been modified. */
 	void updateNodeEdgeConnectionPointers();
 
-	/*! Processes all nodes and edges and updates the runtime properties needed for visualization.
-		Call this function whenever the scale factors for edges/nodes in the network have changed,
-		or any pipe IDs or nodal properties related to visualization have changed.
-	*/
-	void updateVisualizationData();
-
 	/*! Checks that all edges and nodes are connected with each other (i.e. single graph network). */
 	bool checkConnectedGraph() const;
 
@@ -121,7 +115,7 @@ public:
 	/*! calculate pipe dimensions using a maximum pressure loss per length and fixed temperature difference
 	 * the mass flow rate of each pipe will be calculated based on the heatDemand of connected consumer loads (e.g. buildings)
 	 */
-	void sizePipeDimensions(const NetworkFluid *fluid);
+	void sizePipeDimensions(const NetworkFluid *fluid, const std::vector<NetworkPipe> & availablePipes);
 
 	void findSourceNodes(std::vector<NetworkNode> &sources) const;
 
@@ -165,15 +159,13 @@ public:
 
 	double numberOfBuildings() const;
 
-	void createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &network) const;
-
 	/*! sets defauklt values for m_sizingPara. If m_sizingPara[0].empty(), call this function (e.g. to fill GUI)
 	 * before calling sizePipeDimensions() */
 	void setDefaultSizingParams();
 
-	double largestDiameter() const;
-
-	double smallestDiameter() const;
+	// TODO Hauke, move to SVPropNetworkEditWidget
+	double largestDiameter() const {return 1; }
+	double smallestDiameter() const {return 1; }
 
 	/*! removes components from catalog if there is no node which holds an according componentId */
 	void cleanHydraulicComponentCatalog();
@@ -203,7 +195,10 @@ public:
 	std::vector<NetworkEdge>				m_edges;									// XML:E
 
 	/*! Pipe database, pipe dimensioning algorithm may use any pipes defined in this list. */
-	std::vector<NetworkPipe>				m_networkPipeDB;							// XML:E
+//	std::vector<NetworkPipe>				m_networkPipeDB;
+
+	/*! List of pipes (ids) that may be used in this network. */
+	std::vector<unsigned int>				m_availablePipes;							// XML:E
 
 	/*! origin of the network */
 	IBKMK::Vector3D							m_origin = IBKMK::Vector3D(0.0, 0.0, 0.0);	// XML:E
@@ -212,7 +207,7 @@ public:
 	std::vector<NANDRAD::HydraulicNetwork>	m_hydraulicSubNetworks;						// XML:E
 
 	/*! the catalog of hydraulic components */
-	std::vector<NANDRAD::HydraulicNetworkComponent>	m_hydraulicComponents;				// XML:E
+//	std::vector<NANDRAD::HydraulicNetworkComponent>	m_hydraulicComponents;
 
 	NetworkType								m_type = NET_DoublePipe;					// XML:E
 

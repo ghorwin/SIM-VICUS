@@ -43,7 +43,7 @@ Network Network::copyWithBaseParameters()
 //	copy.m_scaleEdges = orig.m_scaleEdges;
 //	copy.m_scaleNodes = orig.m_scaleNodes;
 //	copy.m_sizingPara = orig.m_sizingPara;
-//	copy.m_networkPipeDB = orig.m_networkPipeDB;
+//	copy.availablePipes = orig.availablePipes;
 
 }
 
@@ -128,13 +128,15 @@ void Network::updateNodeEdgeConnectionPointers() {
 
 }
 
+#if 0
 
+TODO : Move to Vic3DScene::recolorObjects()
 void Network::updateVisualizationData() {
 	// process all edges and update their display radius
 	for (VICUS::NetworkEdge & e : m_edges) {
 		double radius = 0.5;
 		if (e.m_pipeId != VICUS::INVALID_ID){
-			const VICUS::NetworkPipe * pipe = VICUS::Project::element(m_networkPipeDB, e.m_pipeId);
+			const VICUS::NetworkPipe * pipe = VICUS::Project::element(availablePipes, e.m_pipeId);
 			if (pipe != nullptr)
 				radius *= pipe->m_diameterOutside/1000 * m_scaleEdges;
 		}
@@ -177,7 +179,7 @@ void Network::updateVisualizationData() {
 		no.m_visualizationRadius = radius;
 	}
 }
-
+#endif
 
 bool Network::checkConnectedGraph() const {
 	if (m_edges.size()==0 || m_nodes.size()==0)
@@ -435,13 +437,13 @@ void Network::cleanShortEdges(Network &cleanNetwork, const double &threshold)
 }
 
 
-void Network::sizePipeDimensions(const NetworkFluid *fluid){
+void Network::sizePipeDimensions(const NetworkFluid *fluid, const std::vector<NetworkPipe> & availablePipes) {
 FUNCID(Network::sizePipeDimensions);
 
 	updateNodeEdgeConnectionPointers();
 
 	// check pipe database
-	if (m_networkPipeDB.empty())
+	if (availablePipes.empty())
 		throw IBK::Exception(IBK::FormatString("The pipe database of network '%1' is empty."
 												"Please add pipes to this network").arg(m_id), FUNC_ID);
 
@@ -499,7 +501,7 @@ FUNCID(Network::sizePipeDimensions);
 	double deltaPMax = m_sizingPara[SP_MaxPressureLoss].get_value("Pa/m");
 	for (NetworkEdge &e: m_edges){
 		e.m_pipeId = INVALID_ID;
-		for (NetworkPipe &pipe: m_networkPipeDB){
+		for (const NetworkPipe & pipe: availablePipes){
 			double massFlow = e.m_maxHeatingDemand / (m_sizingPara[SP_TemperatureDifference].get_value("K")
 													  * fluid->m_para[NetworkFluid::P_HeatCapacity].get_value("J/kgK"));
 			//  pressure loss per length (Pa/m)
@@ -508,7 +510,7 @@ FUNCID(Network::sizePipeDimensions);
 			if (dp < deltaPMax){
 				if (e.m_pipeId == INVALID_ID)
 					e.m_pipeId = pipe.m_id;
-				else if (pipe.m_diameterInside() < VICUS::Project::element(m_networkPipeDB, e.m_pipeId)->m_diameterInside())
+				else if (pipe.m_diameterInside() < VICUS::Project::element(availablePipes, e.m_pipeId)->m_diameterInside())
 					e.m_pipeId = pipe.m_id;
 			}
 		}
@@ -517,8 +519,8 @@ FUNCID(Network::sizePipeDimensions);
 	// if no pipe found: take largest pipe
 	for (NetworkEdge &e: m_edges){
 		if (e.m_pipeId == INVALID_ID){
-			NetworkPipe largestPipe = m_networkPipeDB[0];
-			for (NetworkPipe &pipe: m_networkPipeDB){
+			NetworkPipe largestPipe = availablePipes[0];
+			for (const NetworkPipe & pipe: availablePipes){
 				if (pipe.m_diameterInside() > largestPipe.m_diameterInside())
 					largestPipe = pipe;
 			}
@@ -650,6 +652,9 @@ double Network::numberOfBuildings() const{
 }
 
 
+#if 0
+
+Move to export dialog
 void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulicNetwork) const{
 	FUNCID(Network::createNandradHydraulicNetwork);
 
@@ -751,7 +756,7 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulic
 														.arg(edge->nodeId1()).arg(edge->nodeId2()), FUNC_ID);
 
 			// check if there is a reference to a pipe from DB
-			const NetworkPipe *pipe = Project::element(m_networkPipeDB, edge->m_pipeId);
+			const NetworkPipe *pipe = Project::element(availablePipes, edge->m_pipeId);
 			if (pipe == nullptr)
 				throw IBK::Exception(IBK::FormatString("Edge  %1->%2 has no defined pipe from database")
 									 .arg(edge->m_node1->m_id).arg(edge->m_node2->m_id), FUNC_ID);
@@ -814,7 +819,7 @@ void Network::createNandradHydraulicNetwork(NANDRAD::HydraulicNetwork &hydraulic
 		}
 	}
 }
-
+#endif
 
 void Network::setDefaultSizingParams() {
 	m_sizingPara[Network::SizingParam::SP_TemperatureSetpoint] = IBK::Parameter("TemperatureSetpoint", 5, IBK::Unit("C"));
@@ -822,12 +827,13 @@ void Network::setDefaultSizingParams() {
 	KeywordList::setParameter(m_sizingPara, "Network::SizingParam", Network::SizingParam::SP_MaxPressureLoss, 150);
 }
 
-
+#if 0
+//move to SVPropNetworkEditWidget
 double Network::largestDiameter() const
 {
 	double dMax = 0;
 	for (const NetworkEdge &edge: m_edges){
-		const NetworkPipe * p = Project::element(m_networkPipeDB, edge.m_pipeId);
+		const NetworkPipe * p = Project::element(availablePipes, edge.m_pipeId);
 		if (p == nullptr)
 			return -1;
 		if (p->m_diameterOutside > dMax)
@@ -841,7 +847,7 @@ double Network::smallestDiameter() const
 {
 	double dMin = std::numeric_limits<double>::max();
 	for (const NetworkEdge &edge: m_edges){
-		const NetworkPipe * p = Project::element(m_networkPipeDB, edge.m_pipeId);
+		const NetworkPipe * p = Project::element(availablePipes, edge.m_pipeId);
 		if (p == nullptr)
 			return -1;
 		if (p->m_diameterOutside < dMin)
@@ -849,7 +855,7 @@ double Network::smallestDiameter() const
 	}
 	return dMin;
 }
-
+#endif
 
 void Network::cleanHydraulicComponentCatalog()
 {

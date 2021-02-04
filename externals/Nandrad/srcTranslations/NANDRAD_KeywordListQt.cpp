@@ -68,6 +68,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Constant temperature");
 	tr("Constant heat flux");
 	tr("Heat flux from data file");
+	tr("Temperature from data file");
 	tr("Heat exchange with zone");
 	tr("Heat exchange with FMU which requires temperature and provides heat flux");
 	tr("Pipe length");

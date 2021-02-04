@@ -1033,6 +1033,8 @@ void Vic3DScene::generateNetworkGeometry() {
 	unsigned int currentVertexIndex = 0;
 	unsigned int currentElementIndex = 0;
 
+	// TODO : update visualization info (pipe/node sizes and colors) based on current
+	//        highlighting mode
 
 	// add cylinders for all pipes
 	for (const VICUS::Network & network : p.m_geometricNetworks) {
@@ -1156,6 +1158,7 @@ void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm, int id) const 
 		}
 	}
 
+	// TODO : update node colors/geometries
 }
 
 

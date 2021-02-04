@@ -500,6 +500,12 @@ void SVPropNetworkEditWidget::on_pushButtonSizePipeDimensions_clicked()
 	if (fluid == nullptr)
 		throw IBK::Exception(IBK::FormatString("Could not find fluid with id %1 in fluid database")
 							.arg(m_currentNetwork.m_fluidID), FUNC_ID);
+
+	// filter out list of available pipes -> woher kommt diese Liste?
+	// m_currentNetwork.m_availablePipes   (liste/set von PipeIDs)
+	// loop SVSettings::instance().m_db.m_pipes -> erstelle std::vector<pipes> availablePipes
+	// m_currentNetwork.sizePipeDimensions(fluid, availablePipes);
+
 	m_currentNetwork.sizePipeDimensions(fluid);
 	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network modified"), networkIndex, m_currentNetwork);

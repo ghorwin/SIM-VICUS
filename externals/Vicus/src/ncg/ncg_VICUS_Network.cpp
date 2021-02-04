@@ -96,18 +96,8 @@ void Network::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
-			else if (cName == "NetworkPipeDB") {
-				const TiXmlElement * c2 = c->FirstChildElement();
-				while (c2) {
-					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "NetworkPipe")
-						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					NetworkPipe obj;
-					obj.readXML(c2);
-					m_networkPipeDB.push_back(obj);
-					c2 = c2->NextSiblingElement();
-				}
-			}
+			else if (cName == "AvailablePipes")
+				NANDRAD::readVector(c, "AvailablePipes", m_availablePipes);
 			else if (cName == "Origin") {
 				try {
 					std::vector<double> vals;
@@ -130,18 +120,6 @@ void Network::readXML(const TiXmlElement * element) {
 					NANDRAD::HydraulicNetwork obj;
 					obj.readXML(c2);
 					m_hydraulicSubNetworks.push_back(obj);
-					c2 = c2->NextSiblingElement();
-				}
-			}
-			else if (cName == "HydraulicComponents") {
-				const TiXmlElement * c2 = c->FirstChildElement();
-				while (c2) {
-					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "NANDRAD::HydraulicNetworkComponent")
-						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					NANDRAD::HydraulicNetworkComponent obj;
-					obj.readXML(c2);
-					m_hydraulicComponents.push_back(obj);
 					c2 = c2->NextSiblingElement();
 				}
 			}
@@ -221,18 +199,7 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 		}
 	}
 
-
-	if (!m_networkPipeDB.empty()) {
-		TiXmlElement * child = new TiXmlElement("NetworkPipeDB");
-		e->LinkEndChild(child);
-
-		for (std::vector<NetworkPipe>::const_iterator it = m_networkPipeDB.begin();
-			it != m_networkPipeDB.end(); ++it)
-		{
-			it->writeXML(child);
-		}
-	}
-
+	NANDRAD::writeVector(e, "AvailablePipes", m_availablePipes);
 	{
 		std::vector<double> v = { m_origin.m_x, m_origin.m_y, m_origin.m_z};
 		TiXmlElement::appendSingleAttributeElement(e, "Origin", nullptr, std::string(), IBK::vector2string<double>(v," "));
@@ -244,18 +211,6 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 
 		for (std::vector<NANDRAD::HydraulicNetwork>::const_iterator it = m_hydraulicSubNetworks.begin();
 			it != m_hydraulicSubNetworks.end(); ++it)
-		{
-			it->writeXML(child);
-		}
-	}
-
-
-	if (!m_hydraulicComponents.empty()) {
-		TiXmlElement * child = new TiXmlElement("HydraulicComponents");
-		e->LinkEndChild(child);
-
-		for (std::vector<NANDRAD::HydraulicNetworkComponent>::const_iterator it = m_hydraulicComponents.begin();
-			it != m_hydraulicComponents.end(); ++it)
 		{
 			it->writeXML(child);
 		}
