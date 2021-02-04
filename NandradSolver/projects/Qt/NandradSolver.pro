@@ -51,6 +51,8 @@ SOURCES += \
 	../../src/NM_HydraulicNetworkModel.cpp \
 	../../src/NM_Physics.cpp \
 	../../src/NM_RoomRadiationLoadsModel.cpp \
+	../../src/NM_ThermalNetworkAbstractFlowElement.cpp \
+	../../src/NM_ThermalNetworkAbstractFlowElementWithHeatLoss.cpp \
 	../../src/NM_WindowModel.cpp \
 	../../src/main.cpp \
 	../../src/NM_AbstractModel.cpp \
@@ -111,6 +113,7 @@ HEADERS += \
 	../../src/NM_Schedules.h \
 	../../src/NM_StateModelGroup.h \
 	../../src/NM_SteadyStateSolver.h \
+	../../src/NM_ThermalNetworkAbstractFlowElementWithHeatLoss.h \
 	../../src/NM_ThermalNetworkBalanceModel.h \
 	../../src/NM_ThermalNetworkStatesModel.h \
 	../../src/NM_VectorValuedQuantity.h \
