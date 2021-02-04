@@ -57,7 +57,10 @@ public:
 	NANDRAD_READWRITE
 	NANDRAD_COMPARE_WITH_ID
 
-	/*! Checks for valid and required parameters (value ranges). */
+	/*! Checks for valid and required parameters (value ranges).
+		If referenced TSV file is given, this is read and checked and data is transferred into
+		variable m_tsvFileContent.
+	*/
 	void checkParameters(const HydraulicNetwork & nw);
 
 	// *** PUBLIC MEMBER VARIABLES ***
@@ -91,10 +94,15 @@ public:
 	/*! data file in tsv-format with time-series of temperature  */
 	IBK::Path						m_temperatureDataFile;									// XML:E
 
+	// TODO Hauke, merge file variables
+
 	// *** Variables used only during simulation ***
 
 	const HydraulicNetworkComponent			*m_component				= nullptr;
 	const HydraulicNetworkPipeProperties	*m_pipeProperties			= nullptr;
+
+	// TODO Hauke, data members to store content of TSV file in IBK::LinearSpline m_tsvData where
+	//      x and y values are always in base SI units.
 
 };
 
