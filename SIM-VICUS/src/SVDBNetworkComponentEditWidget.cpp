@@ -201,9 +201,8 @@ void SVDBNetworkComponentEditWidget::on_tableWidgetParameters_cellChanged(int ro
 	// but also allow fall-back on C-locale
 	if (!ok)
 		val = text.toDouble(&ok);
-	if (!ok){
+	if (!ok)
 		errMsg = "Only numbers allowed!";
-	}
 
 	std::string parName = m_ui->tableWidgetParameters->item(row, 0)->text().toStdString();
 	VICUS::NetworkComponent::para_t paraNum = VICUS::NetworkComponent::para_t(

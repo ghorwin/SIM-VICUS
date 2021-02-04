@@ -4,8 +4,8 @@
 #include <IBK_Parameter.h>
 #include <IBK_IntPara.h>
 #include <IBK_Path.h>
-#include <IBK_LinearSpline.h>
 
+#include "NANDRAD_LinearSplineParameter.h"
 #include "NANDRAD_CodeGenMacros.h"
 #include "NANDRAD_Constants.h"
 
@@ -88,21 +88,20 @@ public:
 	/*! Integer parameters. */
 	IBK::IntPara					m_intPara[NUM_IP];										// XML:E
 
-	/*! data file in tsv-format with time-series of heat flux (e.g. a heating demand) */
-	IBK::Path						m_heatFluxDataFile;										// XML:E
+	/*! data file in tsv-format with time-series of heat flux or temperature */
+	IBK::Path						m_heatExchangeDataFile;									// XML:E
 
-	/*! data file in tsv-format with time-series of temperature  */
-	IBK::Path						m_temperatureDataFile;									// XML:E
+	/*! if true: m_heatExchangeDataFile is interpreted annually cyclic, else it is assumed continuous */
+	bool							m_heatExchangeDataFileIsCyclic = false;					// XML:E
 
-	// TODO Hauke, merge file variables
 
 	// *** Variables used only during simulation ***
 
 	const HydraulicNetworkComponent			*m_component				= nullptr;
 	const HydraulicNetworkPipeProperties	*m_pipeProperties			= nullptr;
 
-	// TODO Hauke, data members to store content of TSV file in IBK::LinearSpline m_tsvData where
-	//      x and y values are always in base SI units.
+	LinearSplineParameter					m_heatExchangeSpline;
+
 
 };
 
