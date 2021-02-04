@@ -59,21 +59,22 @@ void ThermalNetworkModelImpl::setup(const Network &nw,
 
 int ThermalNetworkModelImpl::updateStates() {
 
-	// set ambient conditions and calculate outlet temperatures
-	for(unsigned int i = 0; i < m_flowElements.size(); ++i) {
-		ThermalNetworkAbstractFlowElement *flowElem = m_flowElements[i];
+	// TODO: shift into setup and transfer pointers
+//	// set ambient conditions and calculate outlet temperatures
+//	for(unsigned int i = 0; i < m_flowElements.size(); ++i) {
+//		ThermalNetworkAbstractFlowElement *flowElem = m_flowElements[i];
 
-		// set ambient conditions
-		const double* Tamb = m_ambientTemperatureRefs[i];
-		const double* alphaAmb = m_ambientHeatTransferRefs[i];
+//		// set ambient conditions
+//		const double* Tamb = m_ambientTemperatureRefs[i];
+//		const double* alphaAmb = m_ambientHeatTransferRefs[i];
 
-		// ambient temperature is given
-		if(Tamb != nullptr) {
-			IBK_ASSERT(alphaAmb != nullptr);
+//		// ambient temperature is given
+//		if(Tamb != nullptr) {
+//			IBK_ASSERT(alphaAmb != nullptr);
 
-			flowElem->setAmbientConditions(*Tamb, *alphaAmb);
-		}
-	}
+//			flowElem->setAmbientConditions(*Tamb, *alphaAmb);
+//		}
+//	}
 
 	// calculate enthalpy fluxes for all nodes
 	for(unsigned int i = 0; i < m_network->m_nodes.size(); ++i) {
@@ -92,7 +93,7 @@ int ThermalNetworkModelImpl::updateStates() {
 			if(massFlux > 0) {
 				massFluxInlet += massFlux;
 				// and retrieve specfic enthalpy
-				double specEnthalpy = m_flowElements[idx]->outletSpecificEnthalpy();
+				double specEnthalpy = m_flowElements[idx]->m_outletSpecificEnthalpy;
 				// sum up
 				specEnthalp += massFlux * specEnthalpy;
 			}
@@ -103,7 +104,7 @@ int ThermalNetworkModelImpl::updateStates() {
 			if(massFlux < 0) {
 				massFluxInlet -= massFlux;
 				// and retrieve specfic enthalpy
-				double specEnthalpy = m_flowElements[idx]->outletSpecificEnthalpy();
+				double specEnthalpy = m_flowElements[idx]->m_outletSpecificEnthalpy;
 				// sum up
 				specEnthalp -= massFlux * specEnthalpy;
 			}
@@ -133,10 +134,11 @@ int ThermalNetworkModelImpl::updateFluxes() 	{
 		// set all nodal conditions
 		flowElem->setNodalConditions(massFlux, specEnthalpInlet, specEnthalpOutlet);
 		// copy nodal temperatures
-		m_inletNodeTemperatures[i] = flowElem->inletTemperature();
-		m_outletNodeTemperatures[i] = flowElem->outletTemperature();
+		m_inletNodeTemperatures[i] = flowElem->m_inletTemperature;
+		m_outletNodeTemperatures[i] = flowElem->m_outletTemperature;
 		// copy heat fluxes
-		m_fluidHeatFluxes[i] = flowElem->heatLoss();
+		// TODO: decide whether heat flux will be calculated or not
+//		m_fluidHeatFluxes[i] = flowElem->heatLoss();
 	}
 	return 0;
 }

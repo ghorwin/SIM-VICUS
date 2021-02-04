@@ -326,7 +326,7 @@ int ThermalNetworkStatesModel::update(const double * y) {
 		fe->setInternalStates(y + offset);
 		// retrieve fluid temperatures
 		unsigned int nStates = fe->nInternalStates();
-		m_fluidTemperatures[i] = fe->meanTemperature();
+		m_fluidTemperatures[i] = fe->m_meanTemperature;
 		offset += nStates;
 	}
 	return 0;
