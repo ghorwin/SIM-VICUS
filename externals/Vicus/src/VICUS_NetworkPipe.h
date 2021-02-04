@@ -22,7 +22,7 @@ public:
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
-	double m_diameterInside() const{
+	double diameterInside() const{
 		return m_diameterOutside - 2 * m_wallThickness;
 	}
 

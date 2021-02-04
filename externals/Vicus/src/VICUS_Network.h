@@ -115,7 +115,7 @@ public:
 	/*! calculate pipe dimensions using a maximum pressure loss per length and fixed temperature difference
 	 * the mass flow rate of each pipe will be calculated based on the heatDemand of connected consumer loads (e.g. buildings)
 	 */
-	void sizePipeDimensions(const NetworkFluid *fluid, const std::vector<NetworkPipe> & availablePipes);
+	void sizePipeDimensions(const NetworkFluid *fluid, std::vector<const NetworkPipe *> & availablePipes);
 
 	void findSourceNodes(std::vector<NetworkNode> &sources) const;
 
@@ -167,8 +167,6 @@ public:
 	double largestDiameter() const {return 1; }
 	double smallestDiameter() const {return 1; }
 
-	/*! removes components from catalog if there is no node which holds an according componentId */
-	void cleanHydraulicComponentCatalog();
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

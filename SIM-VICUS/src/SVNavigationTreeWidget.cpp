@@ -150,6 +150,8 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		}
 	}
 
+	const SVDatabase  & db = SVSettings::instance().m_db;
+
 	// Networks
 	for (const VICUS::Network & n : prj.m_geometricNetworks) {
 		QTreeWidgetItem * networkItem = new QTreeWidgetItem(QStringList() << tr("Network: %1").arg(QString::fromStdString(n.m_name)), QTreeWidgetItem::Type);
@@ -165,7 +167,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		/// TODO : Hauke, think about grouping for larger networks
 		for (const VICUS::NetworkEdge & e : n.m_edges) {
 			QString name = QString("[%1->%2]").arg(e.nodeId1()).arg(e.nodeId2());
-			const VICUS::NetworkPipe * pipe = prj.element(n.m_networkPipeDB, e.m_pipeId);
+			const VICUS::NetworkPipe * pipe = db.m_pipes[e.m_pipeId];
 			if (pipe != nullptr)
 				name += " "  + QString::fromStdString(pipe->m_displayName.string());
 			QTreeWidgetItem * en = new QTreeWidgetItem(QStringList() << name, QTreeWidgetItem::Type);

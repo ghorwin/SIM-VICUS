@@ -136,11 +136,9 @@ private:
 
 	Ui::SVPropNetworkEditWidget		*m_ui;
 
-	QMap<QString, unsigned>			m_mapComponents;
+//	QMap<QString, unsigned>			m_mapComponents;
 
-	QMap<QString, unsigned>			m_mapNodeTypes;
-
-	QMap<QString, unsigned>			m_mapDBPipes;
+//	QMap<QString, unsigned>			m_mapNodeTypes;
 
 	/*! Contains the currently selected network, or the network, of the currently selected nodes/edges.	*/
 	const VICUS::Network *			m_currentConstNetwork = nullptr;

@@ -437,7 +437,7 @@ void Network::cleanShortEdges(Network &cleanNetwork, const double &threshold)
 }
 
 
-void Network::sizePipeDimensions(const NetworkFluid *fluid, const std::vector<NetworkPipe> & availablePipes) {
+void Network::sizePipeDimensions(const NetworkFluid *fluid, std::vector<const VICUS::NetworkPipe*> & availablePipes) {
 FUNCID(Network::sizePipeDimensions);
 
 	updateNodeEdgeConnectionPointers();
@@ -497,36 +497,43 @@ FUNCID(Network::sizePipeDimensions);
 		}
 	}
 
+	// determine pipe with largest inner diameter
+	const NetworkPipe * largestPipe = availablePipes[0];
+	for (const NetworkPipe * pipe: availablePipes) {
+		if (pipe->diameterInside() > largestPipe->diameterInside())
+			largestPipe = pipe;
+	}
+
+
 	// for each edge: find the smallest pipe from DB that has a pressure loss below deltapMax
 	double deltaPMax = m_sizingPara[SP_MaxPressureLoss].get_value("Pa/m");
-	for (NetworkEdge &e: m_edges){
-		e.m_pipeId = INVALID_ID;
-		for (const NetworkPipe & pipe: availablePipes){
+	for (NetworkEdge &e: m_edges) {
+		const NetworkPipe * currentPipe = nullptr; // here we store the candidate for the pipe to use
+
+		for (const NetworkPipe * pipe : availablePipes){
 			double massFlow = e.m_maxHeatingDemand / (m_sizingPara[SP_TemperatureDifference].get_value("K")
 													  * fluid->m_para[NetworkFluid::P_HeatCapacity].get_value("J/kgK"));
 			//  pressure loss per length (Pa/m)
-			double dp = pressureLossColebrook(1.0, massFlow, fluid, pipe, m_sizingPara[SP_TemperatureSetpoint].get_value("C"));
+			double dp = pressureLossColebrook(1.0, massFlow, fluid, *pipe, m_sizingPara[SP_TemperatureSetpoint].get_value("C"));
 			// select smallest possible pipe
 			if (dp < deltaPMax){
-				if (e.m_pipeId == INVALID_ID)
-					e.m_pipeId = pipe.m_id;
-				else if (pipe.m_diameterInside() < VICUS::Project::element(availablePipes, e.m_pipeId)->m_diameterInside())
-					e.m_pipeId = pipe.m_id;
+				// if still unset, use this pipe
+				if (currentPipe == nullptr)
+					currentPipe = pipe;
+				// otherwise compare inside diameter and only take if smaller
+				else if (pipe->diameterInside() < currentPipe->diameterInside())
+					currentPipe = pipe;
 			}
 		}
+
+		// if we found a pipe, store its id
+		if (currentPipe != nullptr)
+			e.m_pipeId = currentPipe->m_id;
+		// otherwise store ID of biggest pipe
+		else
+			e.m_pipeId = largestPipe->m_id;
 	}
 
-	// if no pipe found: take largest pipe
-	for (NetworkEdge &e: m_edges){
-		if (e.m_pipeId == INVALID_ID){
-			NetworkPipe largestPipe = availablePipes[0];
-			for (const NetworkPipe & pipe: availablePipes){
-				if (pipe.m_diameterInside() > largestPipe.m_diameterInside())
-					largestPipe = pipe;
-			}
-			e.m_pipeId = largestPipe.m_id;
-		}
-	}
 }
 
 
@@ -594,19 +601,19 @@ void Network::updateExtends() {
 double Network::pressureLossColebrook(const double &length, const double &massFlow, const NetworkFluid *fluid,
 										const NetworkPipe &pipe, const double &temperature){
 
-	double velocity = massFlow / (fluid->m_para[NetworkFluid::P_Density].value * pipe.m_diameterInside()/1000
-			* pipe.m_diameterInside()/1000  * 3.14159 / 4);
-	double Re = velocity * pipe.m_diameterInside()/1000 / fluid->m_kinematicViscosity.m_values.value(temperature);
+	double velocity = massFlow / (fluid->m_para[NetworkFluid::P_Density].value * pipe.diameterInside()/1000
+			* pipe.diameterInside()/1000  * 3.14159 / 4);
+	double Re = velocity * pipe.diameterInside()/1000 / fluid->m_kinematicViscosity.m_values.value(temperature);
 	double lambda = 0.05;
 	double lambda_new = lambda;
 	for (unsigned n=0; n<100; ++n){
 		lambda_new = std::pow(-2 * std::log10(2.51 / (Re * std::sqrt(lambda)) + pipe.m_roughness/1000 /
-											  (3.71 * pipe.m_diameterInside()/1000 )), -2);
+											  (3.71 * pipe.diameterInside()/1000 )), -2);
 		if (abs(lambda_new - lambda) / lambda < 1e-3)
 			break;
 		lambda = lambda_new;
 	}
-	return lambda_new * length / (pipe.m_diameterInside()/1000)  * fluid->m_para[NetworkFluid::P_Density].value
+	return lambda_new * length / (pipe.diameterInside()/1000)  * fluid->m_para[NetworkFluid::P_Density].value
 			/ 2 * velocity * velocity;
 }
 
@@ -856,19 +863,6 @@ double Network::smallestDiameter() const
 	return dMin;
 }
 #endif
-
-void Network::cleanHydraulicComponentCatalog()
-{
-	std::vector<unsigned int> collectedIds;
-	for (const NetworkNode & node: m_nodes)	{
-		if (node.m_componentId != INVALID_ID)
-			collectedIds.push_back(node.m_componentId);
-	}
-	// remove components if there id can not be found in the collectedIds (we use a lambda capture here)
-	std::remove_if(m_hydraulicComponents.begin(), m_hydraulicComponents.end(),
-				   [collectedIds](const NANDRAD::HydraulicNetworkComponent & c) {
-		return std::find(collectedIds.begin(), collectedIds.end(), c.m_id) == collectedIds.end(); } );
-}
 
 
 void Network::writeNetworkCSV(const IBK::Path &file) const{

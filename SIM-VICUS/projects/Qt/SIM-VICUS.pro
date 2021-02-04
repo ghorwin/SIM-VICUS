@@ -105,8 +105,6 @@ SOURCES += \
 		../../src/SVSimulationModelOptions.cpp \
 		../../src/SVSimulationOutputOptions.cpp \
 	../../src/SVSimulationRunRequestDialog.cpp \
-		../../src/SVUndoDeleteNetworkHydraulicComponent.cpp \
-		../../src/SVUndoModifyNetworkHydraulicComponent.cpp \
 		../../src/actions/SVUndoAddBuilding.cpp \
 		../../src/actions/SVUndoAddBuildingLevel.cpp \
 		../../src/actions/SVUndoAddNetwork.cpp \
@@ -164,7 +162,6 @@ SOURCES += \
 		../../src/SVSimulationStartNetworkSim.cpp \
 		../../src/SVStyle.cpp \
 		../../src/SVThreadBase.cpp \
-		../../src/SVUndoAddFluid.cpp \
 		../../src/SVUndoDeleteNetwork.cpp \
 		../../src/SVUndoModifyExistingNetwork.cpp \
 		../../src/SVUndoTreeNodeState.cpp \
@@ -205,8 +202,6 @@ HEADERS  += \
 		../../src/SVSimulationModelOptions.h \
 		../../src/SVSimulationOutputOptions.h \
 	../../src/SVSimulationRunRequestDialog.h \
-		../../src/SVUndoDeleteNetworkHydraulicComponent.h \
-		../../src/SVUndoModifyNetworkHydraulicComponent.h \
 		../../src/actions/SVUndoAddBuilding.h \
 		../../src/actions/SVUndoAddBuildingLevel.h \
 		../../src/actions/SVUndoAddNetwork.h \
@@ -266,7 +261,6 @@ HEADERS  += \
 		../../src/SVSimulationStartNetworkSim.h \
 		../../src/SVStyle.h \
 		../../src/SVThreadBase.h \
-		../../src/SVUndoAddFluid.h \
 		../../src/SVUndoDeleteNetwork.h \
 		../../src/SVUndoModifyExistingNetwork.h \
 		../../src/SVUndoTreeNodeState.h \

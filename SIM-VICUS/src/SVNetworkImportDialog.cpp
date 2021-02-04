@@ -14,10 +14,7 @@
 #include <VICUS_NetworkLine.h>
 #include <VICUS_Project.h>
 
-
-// TODO Hauke: remove this later
 #include "SVSettings.h"
-#include "SVUndoAddFluid.h"
 
 
 SVNetworkImportDialog::SVNetworkImportDialog(QWidget *parent) :
@@ -80,21 +77,18 @@ bool SVNetworkImportDialog::edit() {
 
 		// write database
 		SVSettings &settings = SVSettings::instance();
-		settings.m_db.m_fluids.add(fluid, fluid.m_id);
-		settings.m_db.writeDatabases();
-
-		// read database, add pipes to network
-		for (auto it = settings.m_db.m_pipes.begin(); it != settings.m_db.m_pipes.end(); ++it)
-			m_network.m_networkPipeDB.push_back(it->second);
-
-		// add fluid to project
-		fluid = settings.m_db.m_fluids.begin()->second;
-		SVUndoAddFluid * undoF = new SVUndoAddFluid(tr("Added fluid"), fluid);
-		undoF->push();
-
+		unsigned int newFluidID = settings.m_db.m_fluids.add(fluid, fluid.m_id); // Mind: if ID already exists in DB, we generate a new one
 		// set network fluid id
-		m_network.m_fluidID = project().m_networkFluids[0].m_id;
+		m_network.m_fluidID = newFluidID;
 
+		// read database, add pipes to user database
+		for (auto it = settings.m_db.m_pipes.begin(); it != settings.m_db.m_pipes.end(); ++it) {
+			// TODO Hauke
+//			m_network.m_networkPipeDB.push_back(it->second);
+		}
+
+
+		settings.m_db.writeDatabases();
 
 		// TODO Hauke: rmeove this later
 //		m_network.assignSourceNode(IBKMK::Vector3D(481691, 5577509.9, 0));
