@@ -231,6 +231,7 @@ void HydraulicNetworkModel::setup() {
 		}
 		// fill ids
 		m_elementIds.push_back(e.m_id);
+		m_elementDisplayNames.push_back(e.m_displayName);
 	} // for m_hydraulicNetwork->m_elements
 
 	// set initial temperature in case of HydraulicNetwork
@@ -262,6 +263,7 @@ void HydraulicNetworkModel::setup() {
 void HydraulicNetworkModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 	// mass flux vector is a result
 	QuantityDescription desc("FluidMassFluxes", "kg/s", "Fluid mass flux trough all flow elements", false);
+	desc.m_displayName = m_displayName; // this is the displayname of the network itself
 	// this has been checked already in NANDRAD::HydraulicNetwork::checkParameters()
 	IBK_ASSERT(!m_p->m_flowElements.empty());
 	resDesc.push_back(desc);
@@ -271,7 +273,6 @@ void HydraulicNetworkModel::resultDescriptions(std::vector<QuantityDescription> 
 
 	// set a description for each flow element
 	desc.m_name = "FluidMassFlux";
-	desc.m_displayName = m_displayName;
 	desc.m_description = "Fluid mass flux through a flow element";
 
 	// Important: change reftype to MRT_NETWORKELEMENT, because it otherwise defaults to the reftype of this
@@ -280,6 +281,7 @@ void HydraulicNetworkModel::resultDescriptions(std::vector<QuantityDescription> 
 	// loop through all flow elements
 	for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
 		desc.m_id = m_elementIds[i];
+		desc.m_displayName = m_elementDisplayNames[i];
 		resDesc.push_back(desc);
 	}
 
@@ -291,6 +293,7 @@ void HydraulicNetworkModel::resultDescriptions(std::vector<QuantityDescription> 
 	// loop through all flow elements
 	for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
 		desc.m_id = m_elementIds[i];
+		desc.m_displayName = m_elementDisplayNames[i];
 		resDesc.push_back(desc);
 	}
 
@@ -302,6 +305,7 @@ void HydraulicNetworkModel::resultDescriptions(std::vector<QuantityDescription> 
 	// loop through all flow elements
 	for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
 		desc.m_id = m_elementIds[i];
+		desc.m_displayName = m_elementDisplayNames[i];
 		resDesc.push_back(desc);
 	}
 }
