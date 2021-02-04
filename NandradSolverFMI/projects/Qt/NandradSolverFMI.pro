@@ -75,6 +75,8 @@ INCLUDEPATH = \
 
 SOURCES += \
 	../../../NandradSolver/src/NM_Physics.cpp \
+	../../../NandradSolver/src/NM_ThermalNetworkAbstractFlowElement.cpp \
+	../../../NandradSolver/src/NM_ThermalNetworkAbstractFlowElementWithHeatLoss.cpp \
 	../../src/InstanceData.cpp \
 	../../src/NandradModelFMU.cpp \
 	../../src/fmi2common/fmi2Functions.cpp \
@@ -111,6 +113,7 @@ SOURCES += \
     ../../../NandradSolver/src/NM_WindowModel.cpp
 
 HEADERS += \
+	../../../NandradSolver/src/NM_ThermalNetworkAbstractFlowElementWithHeatLoss.h \
 	../../src/InstanceData.h \
 	../../src/NandradModelFMU.h \
 	../../src/fmi2common/fmi2Functions.h \
