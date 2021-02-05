@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NetworkPipes>
+	<NetworkPipe id="0" displayName="PE 25 x 2.3" diameterOutside="25" wallThickness="2.3" lambdaWall="0.4" roughness="0.007" insulationThickness="0" lambdaInsulation="0" />
+	<NetworkPipe id="1" displayName="PE 32 x 2.9" diameterOutside="32" wallThickness="2.9" lambdaWall="0.4" roughness="0.007" insulationThickness="0" lambdaInsulation="0" />
+	<NetworkPipe id="2" displayName="PE 40 x 3.7" diameterOutside="40" wallThickness="3.7" lambdaWall="0.4" roughness="0.007" insulationThickness="0" lambdaInsulation="0" />
+	<NetworkPipe id="3" displayName="PE 50 x 4.6" diameterOutside="50" wallThickness="4.6" lambdaWall="0.4" roughness="0.007" insulationThickness="0" lambdaInsulation="0" />
+	<NetworkPipe id="4" displayName="PE 63 x 5.8" diameterOutside="63" wallThickness="5.8" lambdaWall="0.4" roughness="0.007" insulationThickness="0" lambdaInsulation="0" />
+	<NetworkPipe id="5" displayName="PE 75 x 6.8" diameterOutside="75" wallThickness="6.8" lambdaWall="0.4" roughness="0.007" insulationThickness="0" lambdaInsulation="0" />
+	<NetworkPipe id="6" displayName="PE 90 x 8.2" diameterOutside="90" wallThickness="8.2" lambdaWall="0.4" roughness="0.007" insulationThickness="0" lambdaInsulation="0" />
+	<NetworkPipe id="7" displayName="PE 110 x 10.0" diameterOutside="110" wallThickness="10" lambdaWall="0.4" roughness="0.007" insulationThickness="0" lambdaInsulation="0" />
+	<NetworkPipe id="8" displayName="PE 125 x 11.4" diameterOutside="125" wallThickness="11.4" lambdaWall="0.4" roughness="0.007" insulationThickness="0" lambdaInsulation="0" />
+	<NetworkPipe id="9" displayName="PE 160 x 14.6" diameterOutside="160" wallThickness="14.6" lambdaWall="0.4" roughness="0.007" insulationThickness="0" lambdaInsulation="0" />
+	<NetworkPipe id="10" displayName="PE 180 x 16.4" diameterOutside="180" wallThickness="16.4" lambdaWall="0.4" roughness="0.007" insulationThickness="0" lambdaInsulation="0" />
+	<NetworkPipe id="11" displayName="PE 200 x 18.2" diameterOutside="200" wallThickness="18.2" lambdaWall="0.4" roughness="0.007" insulationThickness="0" lambdaInsulation="0" />
+	<NetworkPipe id="12" displayName="PE 225x 20.5" diameterOutside="225" wallThickness="20.5" lambdaWall="0.4" roughness="0.007" insulationThickness="0" lambdaInsulation="0" />
+	<NetworkPipe id="13" displayName="PE 280 x 22.7" diameterOutside="280" wallThickness="22.7" lambdaWall="0.4" roughness="0.007" insulationThickness="0" lambdaInsulation="0" />
+	<NetworkPipe id="14" displayName="PE 315 x 28.6" diameterOutside="315" wallThickness="28.6" lambdaWall="0.4" roughness="0.007" insulationThickness="0" lambdaInsulation="0" />
+	<NetworkPipe id="15" displayName="PE 355 x 32.2" diameterOutside="355" wallThickness="32.2" lambdaWall="0.4" roughness="0.007" insulationThickness="0" lambdaInsulation="0" />
+	<NetworkPipe id="16" displayName="PE 400 x 36.3" diameterOutside="400" wallThickness="36.3" lambdaWall="0.4" roughness="0.007" insulationThickness="0" lambdaInsulation="0" />
+</NetworkPipes>
