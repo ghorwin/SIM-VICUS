@@ -5,6 +5,7 @@
 #include "VICUS_NetworkNode.h"
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_NetworkPipe.h"
+#include "VICUS_Database.h"
 
 #include <vector>
 #include <set>
@@ -163,7 +164,7 @@ public:
 	 * before calling sizePipeDimensions() */
 	void setDefaultSizingParams();
 
-
+	void updateVisualizationData(const VICUS::Database<VICUS::NetworkPipe> & pipeDB);
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

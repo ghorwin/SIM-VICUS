@@ -1012,8 +1012,9 @@ void Vic3DScene::generateBuildingGeometry() {
 void Vic3DScene::generateNetworkGeometry() {
 	QElapsedTimer t;
 	t.start();
-	// get VICUS project data
-	const VICUS::Project & p = project();
+	// get VICUS project data and database
+	VICUS::Project p = project();
+	const SVDatabase & db = SVSettings::instance().m_db;
 
 	// we rebuild the entire geometry here, so this may be slow
 
@@ -1033,11 +1034,11 @@ void Vic3DScene::generateNetworkGeometry() {
 	unsigned int currentVertexIndex = 0;
 	unsigned int currentElementIndex = 0;
 
-	// TODO : update visualization info (pipe/node sizes and colors) based on current
-	//        highlighting mode
-
 	// add cylinders for all pipes
-	for (const VICUS::Network & network : p.m_geometricNetworks) {
+	for (VICUS::Network & network : p.m_geometricNetworks) {
+
+		network.updateVisualizationData(db.m_pipes);
+
 		for (const VICUS::NetworkEdge & e : network.m_edges) {
 			double radius = e.m_visualizationRadius;
 			QColor pipeColor = Qt::red;

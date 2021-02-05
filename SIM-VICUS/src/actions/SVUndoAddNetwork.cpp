@@ -1,5 +1,6 @@
 #include "SVUndoAddNetwork.h"
 #include "SVProjectHandler.h"
+#include "SVSettings.h"
 
 SVUndoAddNetwork::SVUndoAddNetwork(	const QString & label,
 								const VICUS::Network & addedNetwork) :
@@ -22,6 +23,8 @@ void SVUndoAddNetwork::undo() {
 	if (theProject().m_geometricNetworks.empty())
 		return;
 	theProject().m_geometricNetworks.back().updateNodeEdgeConnectionPointers(); // ensure pointers are correctly set
+	const SVDatabase & db = SVSettings::instance().m_db;
+	theProject().m_geometricNetworks.back().updateVisualizationData(db.m_pipes);
 
 	std::swap(theProject().m_viewSettings.m_gridWidth, m_gridWidth);
 	std::swap(theProject().m_viewSettings.m_gridSpacing, m_gridSpacing);

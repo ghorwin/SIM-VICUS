@@ -128,21 +128,23 @@ void Network::updateNodeEdgeConnectionPointers() {
 
 }
 
-#if 0
 
-TODO : Move to Vic3DScene::recolorObjects()
-void Network::updateVisualizationData() {
+void Network::updateVisualizationData(const VICUS::Database<VICUS::NetworkPipe> & pipeDB) {
+
+	updateNodeEdgeConnectionPointers();
+
 	// process all edges and update their display radius
 	for (VICUS::NetworkEdge & e : m_edges) {
 		double radius = 0.5;
 		if (e.m_pipeId != VICUS::INVALID_ID){
-			const VICUS::NetworkPipe * pipe = VICUS::Project::element(availablePipes, e.m_pipeId);
+			const VICUS::NetworkPipe * pipe = pipeDB[e.m_pipeId];
 			if (pipe != nullptr)
 				radius *= pipe->m_diameterOutside/1000 * m_scaleEdges;
 		}
 		e.m_visualizationRadius = radius;
 	}
 
+	// process all nodes and update their display color and radius
 	for (VICUS::NetworkNode & no : m_nodes) {
 		// color
 		QColor color("#0e4355");
@@ -153,6 +155,9 @@ void Network::updateVisualizationData() {
 			case VICUS::NetworkNode::NT_Building:
 				color = Qt::blue;
 			break;
+			case VICUS::NetworkNode::NT_Mixer:
+				color = Qt::darkGray;
+			break;
 			default:;
 		}
 		no.m_visualizationColor = color;
@@ -162,24 +167,25 @@ void Network::updateVisualizationData() {
 		// default radius = 1 cm
 		double radius = 1 * m_scaleNodes / 100; /// TODO : why not have scalenodes in same order of magnitude as scaleEdges?
 		switch (no.m_type) {
-			case NetworkNode::NT_Source:
 			case NetworkNode::NT_Building: {
 				// scale node by heating demand - 1 mm / 1000 W; 4800 W -> 48 * 0.01 = radius = 0.48
 				if (no.m_maxHeatingDemand > 0)
 					radius *= no.m_maxHeatingDemand / 1000;
 			} break;
+			case NetworkNode::NT_Source:
+			case NetworkNode::NT_Mixer: {
+				// if we have connected pipes, compute max radius of adjacent pipes (our node should be larger than the pipes)
+				for (const VICUS::NetworkEdge * edge: no.m_edges)
+					radius = std::max(radius, edge->m_visualizationRadius*1.2); // enlarge by 20 %  over edge diameter
+			} break;
 			default:;
 		}
-
-		// if we have connected pipes, compute max radius of adjacent pipes (our node should be larger than the pipes)
-		for (const VICUS::NetworkEdge * edge: no.m_edges)
-			radius = std::max(radius, edge->m_visualizationRadius*1.2); // enlarge by 20 %  over edge diameter
 
 		// store values
 		no.m_visualizationRadius = radius;
 	}
 }
-#endif
+
 
 bool Network::checkConnectedGraph() const {
 	if (m_edges.size()==0 || m_nodes.size()==0)
