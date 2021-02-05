@@ -3,6 +3,8 @@
 
 #include "NM_ThermalNetworkAbstractFlowElementWithHeatLoss.h"
 
+#include <IBK_LinearSpline.h>
+
 namespace NANDRAD {
 	class HydraulicNetworkElement;
 	class HydraulicNetworkComponent;
@@ -46,6 +48,9 @@ private:
 		Cached value from fluid properties.
 	*/
 	double							m_fluidConductivity = 0.01;
+
+	/*! Fluid dynamic viscosity [m/s] (temperature dependend).*/
+	IBK::LinearSpline				m_fluidViscosity;
 
 	/*! thermal resistance of the pipe wall in Km2/W */
 	double							m_UValuePipeWall;
@@ -113,7 +118,6 @@ public:
 	/*! Function for registering dependencies between derivaites, internal states and modelinputs.*/
 	void dependencies(const double *ydot, const double *y,
 					  const double *mdot, const double* hInlet, const double*hOutlet,
-					  const double *Qdot,
 					  std::vector<std::pair<const double *, const double *> > &resultInputDependencies ) const;
 
 private:
@@ -149,6 +153,9 @@ private:
 		Cached value from fluid properties.
 	*/
 	double							m_fluidConductivity = 0.01;
+
+	/*! Fluid dynamic viscosity [m/s] (temperature dependend).*/
+	IBK::LinearSpline				m_fluidViscosity;
 
 	/*! thermal resistance of the pipe wall in Km2/W */
 	double							m_UValuePipeWall;
@@ -196,7 +203,6 @@ public:
 	/*! Function for registering dependencies between derivaites, internal states and modelinputs.*/
 	void dependencies(const double *ydot, const double *y,
 					  const double *mdot, const double* TInlet, const double*TOutlet,
-					  const double *Qdot,
 					  std::vector<std::pair<const double *, const double *> > &resultInputDependencies ) const;
 
 private:

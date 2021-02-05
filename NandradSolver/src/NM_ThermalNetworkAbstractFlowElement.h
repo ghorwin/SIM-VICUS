@@ -98,8 +98,7 @@ public:
 
 	/*! Optional function for registering dependencies between derivatives and internal states.*/
 	virtual void dependencies(const double */*ydot*/, const double */*y*/,
-							  const double */*mdot*/, const double* /*hInlet*/, const double*/*hOutlet*/,
-							  const double */*Qdot*/,
+							  const double */*mdot*/, const double* /*TInlet*/, const double*/*TOutlet*/,
 							  std::vector<std::pair<const double *, const double *> > & ) const
 	{ }
 

@@ -22,7 +22,7 @@
 #ifndef NM_ThermalNetworkPrivateH
 #define NM_ThermalNetworkPrivateH
 
-#include "NM_ThermalNetworkAbstractFlowElement.h"
+#include "NM_ThermalNetworkAbstractFlowElementWithHeatLoss.h"
 
 #include <vector>
 
@@ -66,6 +66,12 @@ public:
 	*/
 	std::vector<ThermalNetworkAbstractFlowElement*>	m_flowElements;
 
+	/*! Container for flow element object copies with heat loss.
+		Elements are nullptr if no heat loss exists.
+	*/
+	std::vector<const ThermalNetworkAbstractFlowElementWithHeatLoss*>
+													m_heatLossElements;
+
 	/*! Constant access to network. */
 	const Network									*m_network = nullptr;
 	/*! Container with specific enthalpy for each node.
@@ -74,14 +80,14 @@ public:
 	/*! Container with temperatures for each node.
 	*/
 	std::vector<double>								m_nodalTemperatures;
-	/*! Heat heat fluxes out of each flow element. */
-	std::vector<double>								m_fluidHeatFluxes;
-	/*! Container with temperatures for inlet node of each flow element.
+	/*! References to heat fluxes out of each heat flow element. */
+	std::vector<const double*>						m_fluidHeatFluxRefs;
+	/*! References to temperatures for inlet node of each flow element.
 	*/
-	std::vector<double>								m_inletNodeTemperatures;
-	/*! Container with temperatures for each node.
+	std::vector<const double*>						m_inletNodeTemperatureRefs;
+	/*! References to with temperatures for outlet node of each flow element.
 	*/
-	std::vector<double>								m_outletNodeTemperatures;
+	std::vector<const double*>						m_outletNodeTemperatureRefs;
 	/*! Container with global pointer to calculated mass fluxes.
 	*/
 	const double									*m_fluidMassFluxes;

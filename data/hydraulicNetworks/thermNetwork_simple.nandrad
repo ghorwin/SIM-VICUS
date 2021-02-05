@@ -62,7 +62,6 @@
 					<HydraulicNetworkComponent id="3" modelType="StaticPipe">
 						<HeatExchangeType>TemperatureConstant</HeatExchangeType>
 						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
-						<IBK:Parameter name="PipeMaxDiscretizationWidth" unit="m">10</IBK:Parameter>
 					</HydraulicNetworkComponent>
 				</Components>
 				<Elements>

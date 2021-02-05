@@ -91,6 +91,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 					TNStaticPipeElement * pipeElement = new TNStaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
 					// add to flow elements
 					m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+					m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
 				} break;
 
 				case NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe :
@@ -100,6 +101,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 					TNDynamicPipeElement * pipeElement = new TNDynamicPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
 					// add to flow elements
 					m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+					m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
 					break;
 				}
 
@@ -108,9 +110,10 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				{
 					IBK_ASSERT(e.m_pipeProperties != nullptr);
 					// create hydraulic pipe model
-					TNStaticPipeElement * pipeElement = new TNStaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
+					TNStaticAdiabaticPipeElement * pipeElement = new TNStaticAdiabaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
 					// add to flow elements
 					m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+					m_p->m_heatLossElements.push_back(nullptr); // no heat loss
 					break;
 				}
 
@@ -122,6 +125,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 					TNDynamicAdiabaticPipeElement * pipeElement = new TNDynamicAdiabaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
 					// add to flow elements
 					m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+					m_p->m_heatLossElements.push_back(nullptr); // no heat loss
 					break;
 				}
 
@@ -129,6 +133,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				{
 					TNPump * pumpElement = new TNPump(e, *e.m_component, m_network->m_fluid);
 					m_p->m_flowElements.push_back(pumpElement);
+					m_p->m_heatLossElements.push_back(nullptr); // no heat loss
 					break;
 				}
 
@@ -137,6 +142,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				{
 					TNHeatExchanger * heatEx = new TNHeatExchanger(e, *e.m_component, m_network->m_fluid);
 					m_p->m_flowElements.push_back(heatEx);
+					m_p->m_heatLossElements.push_back(heatEx); // copy element pointer
 					break;
 				}
 				default: {
@@ -224,7 +230,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 	}
 	m_y.resize(m_n,0.0);
 	m_fluidTemperatures.resize(m_p->m_flowElements.size(), 293.15);
-
+	m_meanTemperatureRefs.resize(m_p->m_flowElements.size(), nullptr);
 
 	// initialize all fluid temperatures
 	for(unsigned int i = 0; i < m_p->m_flowElements.size(); ++i) {
@@ -232,9 +238,9 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 		double fluidTemp = m_network->m_para[NANDRAD::HydraulicNetwork::P_InitialFluidTemperature].value;
 		fe->setInitialTemperature(fluidTemp);
+		m_meanTemperatureRefs[i] = &fe->m_meanTemperature;
 		m_fluidTemperatures[i] = fluidTemp;
 	}
-
 }
 
 
@@ -287,7 +293,7 @@ const double * ThermalNetworkStatesModel::resultValueRef(const InputReference & 
 		if(fIt == m_elementIds.end())
 			return nullptr;
 		unsigned int pos = (unsigned int) std::distance(m_elementIds.begin(), fIt);
-		return &m_fluidTemperatures[pos];
+		return m_meanTemperatureRefs[pos];
 	}
 	return nullptr;
 }

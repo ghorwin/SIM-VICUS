@@ -3,6 +3,7 @@
 
 #include "NM_ThermalNetworkAbstractFlowElement.h"
 
+
 namespace NANDRAD_MODEL {
 
 /*! Defines the interface for an abstract flow element with heat loss over the boundary.
@@ -27,6 +28,9 @@ public:
 		This is a loss, i.e. positive means reduction of energy in flow element.
 	*/
 	double							m_heatLoss = 0.0;
+	/*! Heat exchange type of hydraulic component.
+	*/
+	int								m_heatExchangeType = -1;
 };
 
 
