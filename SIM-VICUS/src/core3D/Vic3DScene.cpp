@@ -1013,7 +1013,7 @@ void Vic3DScene::generateNetworkGeometry() {
 	QElapsedTimer t;
 	t.start();
 	// get VICUS project data and database
-	VICUS::Project p = project();
+	const VICUS::Project & p = project();
 	const SVDatabase & db = SVSettings::instance().m_db;
 
 	// we rebuild the entire geometry here, so this may be slow
@@ -1035,10 +1035,13 @@ void Vic3DScene::generateNetworkGeometry() {
 	unsigned int currentElementIndex = 0;
 
 	// add cylinders for all pipes
-	for (VICUS::Network & network : p.m_geometricNetworks) {
+	for (const VICUS::Network & network : p.m_geometricNetworks) {
 
 		// update colors and sizes of network geometry objects
-		network.updateVisualizationData(db.m_pipes);
+		// Note: the visualization data (radius/colors) is not "project data", i.e.
+		//       does not require undo actions to change. Hence, we can
+		//       alter these values without worrying about constness
+		const_cast<VICUS::Network &>(network).updateVisualizationData(db.m_pipes);
 
 		for (const VICUS::NetworkEdge & e : network.m_edges) {
 			double radius = e.m_visualizationRadius;
