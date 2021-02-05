@@ -1037,6 +1037,7 @@ void Vic3DScene::generateNetworkGeometry() {
 	// add cylinders for all pipes
 	for (VICUS::Network & network : p.m_geometricNetworks) {
 
+		// update colors and sizes of network geometry objects
 		network.updateVisualizationData(db.m_pipes);
 
 		for (const VICUS::NetworkEdge & e : network.m_edges) {
