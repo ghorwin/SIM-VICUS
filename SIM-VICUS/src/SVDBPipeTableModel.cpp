@@ -59,6 +59,21 @@ QVariant SVDBPipeTableModel::data ( const QModelIndex & index, int role) const {
 			}
 		} break;
 
+		case Qt::DecorationRole : {
+			if (index.column() == ColCheck) {
+				if (it->second.isValid())
+					return QIcon("://gfx/actions/16x16/ok.png");
+				else
+					return QIcon("://gfx/actions/16x16/error.png");
+			}
+		} break;
+
+		case Qt::BackgroundRole : {
+			if (index.column() == ColColor) {
+				return it->second.m_color;
+			}
+		} break;
+
 		case Qt::SizeHintRole :
 			switch (index.column()) {
 				case ColCheck :
@@ -66,12 +81,6 @@ QVariant SVDBPipeTableModel::data ( const QModelIndex & index, int role) const {
 					return QSize(22, 16);
 			} // switch
 			break;
-
-		case Qt::BackgroundRole : {
-			if (index.column() == ColColor) {
-				return it->second.m_color;
-			}
-		} break;
 
 		case Role_Id :
 			return it->first;

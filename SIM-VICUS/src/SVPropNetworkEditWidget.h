@@ -77,6 +77,8 @@ private slots:
 
 	void on_horizontalSliderScaleEdges_valueChanged(int value);
 
+	void on_pushButtonSelectPipes_clicked();
+
 private:
 	/*! This function is called whenever the current selection of edges/nodes/objects has changed.
 		This can be due to user interaction with the scene, or because objects were added/deleted or

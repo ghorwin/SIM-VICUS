@@ -26,6 +26,9 @@ public:
 		return m_diameterOutside - 2 * m_wallThickness;
 	}
 
+	/*! Checks if all parameters are valid. */
+	bool isValid() const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique id number. */

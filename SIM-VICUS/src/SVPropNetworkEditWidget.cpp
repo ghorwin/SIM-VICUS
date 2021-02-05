@@ -9,6 +9,7 @@
 #include "SVUndoModifyExistingNetwork.h"
 #include "SVProjectHandler.h"
 #include "SVSettings.h"
+#include "SVDialogSelectNetworkPipes.h"
 #include "Vic3DWireFrameObject.h"
 
 #include <NANDRAD_HydraulicNetworkComponent.h>
@@ -473,6 +474,7 @@ void SVPropNetworkEditWidget::on_comboBoxComponent_activated(const QString &arg1
 
 void SVPropNetworkEditWidget::on_horizontalSliderScaleNodes_valueChanged(int value)
 {
+
 	if (!setNetwork())
 		return;
 	m_currentNetwork.m_scaleNodes = value;
@@ -623,6 +625,20 @@ void SVPropNetworkEditWidget::on_pushButtonReduceRedundantNodes_clicked()
 }
 
 
+void SVPropNetworkEditWidget::on_pushButtonSelectPipes_clicked()
+{
+	if (!setNetwork())
+		return;
+
+	SVDialogSelectNetworkPipes *dialog = new SVDialogSelectNetworkPipes(this);
+	dialog->edit(m_currentNetwork);
+
+	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
+	undo->push(); // modifies project and updates views
+}
+
+
 template <typename TEdgeProp, typename Tval>
 void SVPropNetworkEditWidget::modifyEdgeProperty(TEdgeProp property, const Tval & value)
 {
@@ -659,4 +675,3 @@ void SVPropNetworkEditWidget::modifyNodeProperty(TNodeProp property, const Tval 
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
 	undo->push(); // modifies project and updates views
 }
-

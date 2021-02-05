@@ -98,6 +98,7 @@ SOURCES += \
 	../../src/SVDBPipeTableModel.cpp \
 	../../src/SVDBWindowEditDialog.cpp \
 		../../src/SVDatabase.cpp \
+	../../src/SVDialogSelectNetworkPipes.cpp \
 	../../src/SVPropBuildingEditWidget.cpp \
 	../../src/SVPropModeSelectionWidget.cpp \
 		../../src/SVPropNetworkEditWidget.cpp \
@@ -195,6 +196,7 @@ HEADERS  += \
 	../../src/SVDBPipeTableModel.h \
 	../../src/SVDBWindowEditDialog.h \
 		../../src/SVDatabase.h \
+	../../src/SVDialogSelectNetworkPipes.h \
 	../../src/SVPropBuildingEditWidget.h \
 	../../src/SVPropModeSelectionWidget.h \
 		../../src/SVPropNetworkEditWidget.h \
@@ -286,6 +288,7 @@ FORMS    += \
 		../../src/SVDBPipeEditWidget.ui \
 		../../src/SVDBWindowEditDialog.ui \
 		../../src/SVDBWindowEditWidget.ui \
+		../../src/SVDialogSelectNetworkPipes.ui \
 		../../src/SVImportIDFDialog.ui \
 		../../src/SVLogFileDialog.ui \
 		../../src/SVMainWindow.ui \
