@@ -56,7 +56,7 @@ SceneView::SceneView() :
 	lines.m_uniformNames.append("worldToView");
 	lines.m_uniformNames.append("modelToWorld");
 	lines.m_uniformNames.append("fixedColor");
-	m_shaderPrograms[SHADER_LINES] = lines;
+	m_shaderPrograms[SHADER_WIREFRAME] = lines;
 
 	// Shaderprogram : vertices with position and color, additional modelToWorld transformation matrix
 	ShaderProgram coordSystem(":/shaders/VertexNormalColorWithTransform.vert",":/shaders/phong_lighting.frag");

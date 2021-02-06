@@ -43,7 +43,7 @@ void Vic3DScene::create(SceneView * parent, std::vector<ShaderProgram> & shaderP
 	m_parent = parent;
 	m_gridShader = &shaderPrograms[SHADER_GRID];
 	m_buildingShader = &shaderPrograms[SHADER_OPAQUE_GEOMETRY];
-	m_fixedColorTransformShader = &shaderPrograms[SHADER_LINES];
+	m_fixedColorTransformShader = &shaderPrograms[SHADER_WIREFRAME];
 	m_coordinateSystemShader = &shaderPrograms[SHADER_COORDINATE_SYSTEM];
 	m_transparencyShader = &shaderPrograms[SHADER_TRANSPARENT_GEOMETRY];
 

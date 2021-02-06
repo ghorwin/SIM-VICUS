@@ -38,7 +38,7 @@ enum Shaders {
 
 		Note: Used to draw selected geometry with wireframe.
 	*/
-	SHADER_LINES,
+	SHADER_WIREFRAME,
 
 	/*! VertexNormalColorWithTransform.vert:
 		layout(location = 0) in vec3 position; // input:  attribute with index '0' with 3 elements per vertex
