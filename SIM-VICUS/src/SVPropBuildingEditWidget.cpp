@@ -46,6 +46,14 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->labelComponentSelection->setEnabled(false);
 	m_ui->comboBoxComponentSelection->setEnabled(false);
 
+	m_ui->frameSideA->setStyleSheet(".QFrame { background-color: #2f7dd4; }");
+	m_ui->frameSideB->setStyleSheet(".QFrame { background-color: #ffce30; }");
+
+	QPalette p;
+	p.setColor(QPalette::Window, QColor(47,125,212));
+	m_ui->frameSideA->setPalette(p);
+	p.setColor(QPalette::Window, QColor(255, 206, 48));
+	m_ui->frameSideB->setPalette(p);
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropBuildingEditWidget::onModified);
@@ -70,6 +78,7 @@ void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
 	project().selectObjects(objs, VICUS::Project::SG_Building, false, true);
 	// now build a map of component IDs versus visible surfaces
 	m_componentSurfacesMap.clear();
+	unsigned int selectedSurfacesWithComponent = 0;
 	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
 		// component ID assigned?
 		if (ci.m_componentID == VICUS::INVALID_ID)
@@ -80,17 +89,27 @@ void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
 			// invalid component ID... should we notify the user about that somehow?
 			// for now we keep the nullptr and use this to identify "invalid component" in the table
 		}
+
+		// now test the surfaces associated with this component instance
+
 		// side A
 		if (ci.m_sideASurface != nullptr) {
+			// is this surface visible? then it must be in the set 'obj'
 			std::set<const VICUS::Object * >::const_iterator it_A = objs.find(ci.m_sideASurface);
-			if (it_A != objs.end())
+			if (it_A != objs.end()) {
 				m_componentSurfacesMap[comp].push_back(ci.m_sideASurface);
+				if (ci.m_sideASurface->m_selected)
+					++selectedSurfacesWithComponent;
+			}
 		}
 		// side B
 		if (ci.m_sideBSurface != nullptr) {
 			std::set<const VICUS::Object * >::const_iterator it_B = objs.find(ci.m_sideBSurface);
-			if (it_B != objs.end())
+			if (it_B != objs.end()) {
 				m_componentSurfacesMap[comp].push_back(ci.m_sideBSurface);
+				if (ci.m_sideBSurface->m_selected)
+					++selectedSurfacesWithComponent;
+			}
 		}
 	}
 
@@ -138,6 +157,16 @@ void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
 			}
 			m_ui->comboBoxComponentSelection->setCurrentIndex(m_ui->comboBoxComponentSelection->count()-1);
 			m_ui->comboBoxComponentSelection->blockSignals(false);
+			if (selectedSurfacesWithComponent == 0) {
+				m_ui->labelComponentOrientationInfo->setText(tr("No surfaces with components selected"));
+				m_ui->pushButtonAlignComponentToSideA->setEnabled(false);
+				m_ui->pushButtonAlignComponentToSideB->setEnabled(false);
+			}
+			else {
+				m_ui->labelComponentOrientationInfo->setText(tr("%1 surfaces with components selected").arg(selectedSurfacesWithComponent));
+				m_ui->pushButtonAlignComponentToSideA->setEnabled(true);
+				m_ui->pushButtonAlignComponentToSideB->setEnabled(true);
+			}
 		break;
 
 		case BT_BoundaryConditions: {
@@ -414,6 +443,13 @@ void SVPropBuildingEditWidget::on_checkBoxShowAllComponentOrientations_toggled(b
 
 
 void SVPropBuildingEditWidget::on_pushButtonAlignComponentToSideA_clicked() {
+	// create a copy of the component instances
+	std::vector<VICUS::ComponentInstance> compInstances = project().m_componentInstances;
+
+	// loop over all components and look for a selected side - if there is more than one side of a component
+	// instance selected, show an error message
+
+
 
 }
 

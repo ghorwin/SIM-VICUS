@@ -95,6 +95,7 @@ private:
 	int								m_propertyType = -1;
 	/*! This maps holds component->surface associations when in BM_Components mode. */
 	std::map<const VICUS::Component*, std::vector<const VICUS::Surface *> >			m_componentSurfacesMap;
+	/*! This map links boundary conditions to surfaces. */
 	std::map<const VICUS::BoundaryCondition*, std::vector<const VICUS::Surface *> > m_bcSurfacesMap;
 
 };
