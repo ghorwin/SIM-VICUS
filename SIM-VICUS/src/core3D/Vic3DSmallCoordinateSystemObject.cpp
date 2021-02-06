@@ -16,7 +16,7 @@ License    : BSD License,
 #include "Vic3DShaderProgram.h"
 #include "Vic3DVertex.h"
 #include "Vic3DGeometryHelpers.h"
-#include <VICUS_Conversions.h>
+#include <QtExt_Conversions.h>
 
 #include "SVViewStateHandler.h"
 #include "SVPropEditGeometry.h"
@@ -214,7 +214,7 @@ void SmallCoordinateSystemObject::render() {
 
 	// set light position
 	m_opaquePhongShaderProgram->shaderProgram()->setUniformValue(m_opaquePhongShaderProgram->m_uniformIDs[1], viewPos); // lightpos
-	m_opaquePhongShaderProgram->shaderProgram()->setUniformValue(m_opaquePhongShaderProgram->m_uniformIDs[2], VICUS::QVector3DFromQColor(Qt::white));
+	m_opaquePhongShaderProgram->shaderProgram()->setUniformValue(m_opaquePhongShaderProgram->m_uniformIDs[2], QtExt::QVector3DFromQColor(Qt::white));
 	m_opaquePhongShaderProgram->shaderProgram()->setUniformValue(m_opaquePhongShaderProgram->m_uniformIDs[3], viewPos); // viewpos
 
 	// set transformation matrix

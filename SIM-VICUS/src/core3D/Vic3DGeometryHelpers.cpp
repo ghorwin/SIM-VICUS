@@ -1,6 +1,6 @@
 #include "Vic3DGeometryHelpers.h"
 
-#include <VICUS_Conversions.h>
+#include <QtExt_Conversions.h>
 #include <VICUS_NetworkLine.h>
 
 #include <QQuaternion>
@@ -28,11 +28,11 @@ void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
 	vertexBufferData.resize(vertexBufferData.size()+nVertexes);
 	colorBufferData.resize(colorBufferData.size()+nVertexes);
 	// set data
-	QVector3D n = VICUS::IBKVector2QVector(g.normal());
+	QVector3D n = QtExt::IBKVector2QVector(g.normal());
 	if (inverted)
 		n *= -1;
 	for (unsigned int i=0; i<nVertexes; ++i) {
-		vertexBufferData[currentVertexIndex + i].m_coords = VICUS::IBKVector2QVector(g.vertexes()[i]);
+		vertexBufferData[currentVertexIndex + i].m_coords = QtExt::IBKVector2QVector(g.vertexes()[i]);
 		vertexBufferData[currentVertexIndex + i].m_normal = n;
 		colorBufferData[currentVertexIndex  + i] = col;
 	}
@@ -125,7 +125,7 @@ void addPlane(const VICUS::PlaneGeometry & g, unsigned int & currentVertexIndex,
 	vertexBufferData.resize(vertexBufferData.size()+nVertexes);
 	// set data
 	for (unsigned int i=0; i<nVertexes; ++i)
-		vertexBufferData[currentVertexIndex + i].m_coords = VICUS::IBKVector2QVector(g.vertexes()[i]);
+		vertexBufferData[currentVertexIndex + i].m_coords = QtExt::IBKVector2QVector(g.vertexes()[i]);
 
 	// index buffer is populated differently, depending on geometry type
 	switch (g.type()) {
@@ -234,8 +234,8 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const Q
 	double L = cylinderAxis.magnitude();
 
 	// this is the rotation matrix to be applied to each generated vertex and normal vector
-	QQuaternion rot = QQuaternion::rotationTo(QVector3D(1,0,0), VICUS::IBKVector2QVector(cylinderAxis));
-	QVector3D trans = VICUS::IBKVector2QVector(p1);
+	QQuaternion rot = QQuaternion::rotationTo(QVector3D(1,0,0), QtExt::IBKVector2QVector(cylinderAxis));
+	QVector3D trans = QtExt::IBKVector2QVector(p1);
 
 	// add the first two vertices (which are also the last)
 
@@ -295,8 +295,8 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, double 
 	double L = cylinderAxis.magnitude();
 
 	// this is the rotation matrix to be applied to each generated vertex and normal vector
-	QQuaternion rot = QQuaternion::rotationTo(QVector3D(1,0,0), VICUS::IBKVector2QVector(cylinderAxis));
-	QVector3D trans = VICUS::IBKVector2QVector(p1);
+	QQuaternion rot = QQuaternion::rotationTo(QVector3D(1,0,0), QtExt::IBKVector2QVector(cylinderAxis));
+	QVector3D trans = QtExt::IBKVector2QVector(p1);
 
 	// add the first two vertices (which are also the last)
 
@@ -353,7 +353,7 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 			   std::vector<GLuint> & indexBufferData)
 {
 
-	QVector3D trans = VICUS::IBKVector2QVector(p);
+	QVector3D trans = QtExt::IBKVector2QVector(p);
 
 	unsigned int nSeg = SPHERE_SEGMENTS; // number of segments to split 180° into
 	unsigned int nSeg2 = SPHERE_SEGMENTS*2; // number of segments to split 360° into
@@ -444,7 +444,7 @@ void addSphere(const IBKMK::Vector3D & p, double radius,
 			   std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData)
 {
 
-	QVector3D trans = VICUS::IBKVector2QVector(p);
+	QVector3D trans = QtExt::IBKVector2QVector(p);
 
 	unsigned int nSeg = SPHERE_SEGMENTS; // number of segments to split 180° into
 	unsigned int nSeg2 = nSeg*2; // number of segments to split 360° into
@@ -543,7 +543,7 @@ void addIkosaeder(const IBKMK::Vector3D & p, const std::vector<QColor> & cols, d
 				  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 				  std::vector<VertexCR> & vertexBufferData, std::vector<GLuint> & indexBufferData)
 {
-	QVector3D trans = VICUS::IBKVector2QVector(p);
+	QVector3D trans = QtExt::IBKVector2QVector(p);
 
 	unsigned int nVertices = 12;
 	vertexBufferData.resize(vertexBufferData.size() + nVertices);
@@ -570,7 +570,7 @@ void addIkosaeder(const IBKMK::Vector3D & p, const std::vector<QColor> & cols, d
 	vertexBufferData[currentVertexIndex+11 ].m_coords = QVector3D(-phi, 0.0,  1.0)*radius + trans;//11
 
 	for (unsigned int i=0; i<12; ++i)
-	vertexBufferData[currentVertexIndex+i  ].m_colors = VICUS::QVector3DFromQColor(cols[i]);
+	vertexBufferData[currentVertexIndex+i  ].m_colors = QtExt::QVector3DFromQColor(cols[i]);
 
 	for (unsigned int i=0; i<v0.size(); ++i)
 		indexBufferData[currentElementIndex+i] = currentVertexIndex+ v0[i];
@@ -647,9 +647,9 @@ void addPlaneAsStrip(const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const
 	vertexBufferData.resize(vertexBufferData.size()+nVertexes);
 	colorBufferData.resize(colorBufferData.size()+nVertexes);
 	// set data
-	QVector3D n = VICUS::IBKVector2QVector(g.normal());
+	QVector3D n = QtExt::IBKVector2QVector(g.normal());
 	for (unsigned int i=0; i<nVertexes; ++i) {
-		vertexBufferData[currentVertexIndex + i].m_coords = VICUS::IBKVector2QVector(g.vertexes()[i]);
+		vertexBufferData[currentVertexIndex + i].m_coords = QtExt::IBKVector2QVector(g.vertexes()[i]);
 		vertexBufferData[currentVertexIndex + i].m_normal = n;
 		colorBufferData[currentVertexIndex  + i] = col;
 	}

@@ -1,5 +1,5 @@
-#ifndef VICUS_CONVERSIONS_H
-#define VICUS_CONVERSIONS_H
+#ifndef QtExt_ConversionsH
+#define QtExt_ConversionsH
 
 #include <QVector3D>
 #include <QVector4D>
@@ -7,7 +7,7 @@
 #include <QColor>
 #include <IBK_MultiLanguageString.h>
 
-namespace VICUS {
+namespace QtExt {
 
 /*! IBKMK::Vector3D to QVector3D conversion macro. */
 inline QVector3D IBKVector2QVector(const IBKMK::Vector3D & v) {
@@ -35,6 +35,6 @@ inline QString MultiLangString2QString(const IBK::MultiLanguageString & mls) {
 	return QString::fromStdString(mls.string(IBK::MultiLanguageString::m_language, "en"));
 }
 
-} // VICUS
+} // QtExt
 
-#endif // VICUS_CONVERSIONS_H
+#endif // QtExt_ConversionsH

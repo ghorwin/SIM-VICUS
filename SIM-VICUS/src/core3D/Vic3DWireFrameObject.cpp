@@ -5,7 +5,7 @@
 #include <QElapsedTimer>
 
 #include <VICUS_Project.h>
-#include <VICUS_Conversions.h>
+#include <QtExt_Conversions.h>
 
 #include "SVProjectHandler.h"
 #include "SVViewStateHandler.h"

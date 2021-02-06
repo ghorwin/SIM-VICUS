@@ -22,7 +22,8 @@ unix|mac {
 LIBS += -lIBK
 
 INCLUDEPATH += ../../src/ \
-		../../../IBK/src
+		../../../IBK/src \
+		../../../IBKMK/src
 
 DEPENDPATH = $${INCLUDEPATH}
 
@@ -44,6 +45,7 @@ HEADERS += \
 	../../src/QtExt_ConstructionLayer.h \
 	../../src/QtExt_ConstructionView.h \
 	../../src/QtExt_ConstructionViewWidget.h \
+	../../src/QtExt_Conversions.h \
 	../../src/QtExt_Directories.h \
 	../../src/QtExt_FeatureWidget.h \
 	../../src/QtExt_GraphicsRectItemWithHatch.h \

@@ -9,7 +9,7 @@
 #include <QtExt_LanguageHandler.h>
 
 #include <VICUS_Project.h>
-#include <VICUS_Conversions.h>
+#include <QtExt_Conversions.h>
 #include <VICUS_KeywordList.h>
 #include <VICUS_ComponentInstance.h>
 
@@ -739,9 +739,9 @@ void SVPropVertexListWidget::on_pushButtonFloorDone_clicked() {
 	IBKMK::Vector3D y = po->planeGeometry().localY();
 	IBKMK::Vector3D z = po->planeGeometry().normal();
 
-	QQuaternion q2 = QQuaternion::fromAxes(VICUS::IBKVector2QVector(x.normalized()),
-										   VICUS::IBKVector2QVector(y.normalized()),
-										   VICUS::IBKVector2QVector(z.normalized()));
+	QQuaternion q2 = QQuaternion::fromAxes(QtExt::IBKVector2QVector(x.normalized()),
+										   QtExt::IBKVector2QVector(y.normalized()),
+										   QtExt::IBKVector2QVector(z.normalized()));
 	SVViewStateHandler::instance().m_coordinateSystemObject->setRotation(q2);
 
 	// now also enable the z snap operation
@@ -764,7 +764,7 @@ void SVPropVertexListWidget::on_lineEditZoneHeight_editingFinished() {
 			IBKMK::Vector3D a = po->planeGeometry().vertexes()[0];
 			IBKMK::Vector3D offset = val*po->planeGeometry().normal();
 			IBKMK::Vector3D newLocalCoordinateSystemPos = a+offset;
-			po->updateLocalCoordinateSystemPosition(VICUS::IBKVector2QVector(newLocalCoordinateSystemPos));
+			po->updateLocalCoordinateSystemPosition(QtExt::IBKVector2QVector(newLocalCoordinateSystemPos));
 			// we need to trigger a redraw here
 			SVViewStateHandler::instance().m_geometryView->refreshSceneView();
 		}

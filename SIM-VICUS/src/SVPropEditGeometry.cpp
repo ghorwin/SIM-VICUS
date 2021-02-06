@@ -1,10 +1,10 @@
 #include "SVPropEditGeometry.h"
 #include "ui_SVPropEditGeometry.h"
 
-#include "IBK_physics.h"
+#include <IBK_physics.h>
 
-#include "VICUS_Project.h"
-#include "VICUS_Conversions.h"
+#include <VICUS_Project.h>
+#include <QtExt_Conversions.h>
 
 #include "SVViewStateHandler.h"
 #include "SVProjectHandler.h"
@@ -16,7 +16,7 @@
 #include "Vic3DCoordinateSystemObject.h"
 #include "Vic3DTransform3D.h"
 
-#include "QLocale"
+#include <QLocale>
 
 /*! helper function to compare two IBKMK vectors */
 template <int digits>
@@ -293,7 +293,7 @@ void SVPropEditGeometry::on_pushButtonScale_clicked() {
 				t.setTranslation( centerPoint.m_x + scaleVec.x() * ( v.m_x - centerPoint.m_x ),
 								  centerPoint.m_y + scaleVec.y() * ( v.m_y - centerPoint.m_y ),
 								  centerPoint.m_z + scaleVec.z() * ( v.m_z - centerPoint.m_z ) );
-				vs.push_back( VICUS::QVector2IBKVector( t.translation() ) );
+				vs.push_back( QtExt::QVector2IBKVector( t.translation() ) );
 			}
 			VICUS::Surface newS(*s);
 			newS.m_geometry.setVertexes(vs);
@@ -325,11 +325,11 @@ void SVPropEditGeometry::on_pushButtonScale_clicked() {
 										   ( v.m_z - centerPointLocal.m_z ) / ( IBK::nearly_equal<4>(zAxis.z(), 0.0) ? 1E10 : zAxis.z() );
 
 				// then we scale our points
-				QVector3D p = VICUS::IBKVector2QVector(centerPointLocal)+ localScaleFactorX * scaleVec.x() * xAxis
+				QVector3D p = QtExt::IBKVector2QVector(centerPointLocal)+ localScaleFactorX * scaleVec.x() * xAxis
 																		+ localScaleFactorY * scaleVec.y() * yAxis
 																		+ localScaleFactorZ * scaleVec.z() * zAxis;
 				t.setTranslation(p);
-				vs.push_back(VICUS::QVector2IBKVector(t.translation() ) );
+				vs.push_back(QtExt::QVector2IBKVector(t.translation() ) );
 			}
 			VICUS::Surface newS(*s);
 			newS.m_geometry.setVertexes(vs);
@@ -351,7 +351,7 @@ void SVPropEditGeometry::on_pushButtonScale_clicked() {
 				t.setTranslation( centerPointLocal.m_x + newScale.m_x * ( v.m_x - centerPointLocal.m_x ),
 								  centerPointLocal.m_y + newScale.m_y * ( v.m_y - centerPointLocal.m_y),
 								  centerPointLocal.m_z + newScale.m_z * ( v.m_z - centerPointLocal.m_z) );
-				vs.push_back( VICUS::QVector2IBKVector( t.translation() ) );
+				vs.push_back( QtExt::QVector2IBKVector( t.translation() ) );
 			}
 			VICUS::Surface newS(*s);
 			newS.m_geometry.setVertexes(vs);
@@ -391,13 +391,13 @@ void SVPropEditGeometry::on_pushButtonRotate_clicked() {
 
 		IBKMK::Vector3D normal = ( surfaces.size() == 1 ?
 									s->m_geometry.normal() :
-									VICUS::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localXAxis() ) );
+									QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localXAxis() ) );
 
 		for ( IBKMK::Vector3D v : s->m_geometry.vertexes() ) {
 			Vic3D::Transform3D tTrans, tRota;
 
 			// translate point back to coordinate center
-			QVector3D v3D ( VICUS::IBKVector2QVector(v) );
+			QVector3D v3D ( QtExt::IBKVector2QVector(v) );
 
 			if ( m_ui->radioButtonRotateAbsolute->isChecked() ) {
 
@@ -413,9 +413,9 @@ void SVPropEditGeometry::on_pushButtonRotate_clicked() {
 				if ( checkVectors<4>( normal, newNormal ) )
 					return; // do nothing
 
-				QVector3D rotationAxis ( VICUS::IBKVector2QVector(normal.crossProduct(newNormal) ) ) ;
+				QVector3D rotationAxis ( QtExt::IBKVector2QVector(normal.crossProduct(newNormal) ) ) ;
 
-				tTrans.setTranslation( VICUS::IBKVector2QVector(-1*centerPoint) );
+				tTrans.setTranslation( QtExt::IBKVector2QVector(-1*centerPoint) );
 				v3D = tTrans.toMatrix() * v3D;
 
 				tRota.rotate( angleBetweenVectorsDeg( normal, newNormal ), rotationAxis );
@@ -425,7 +425,7 @@ void SVPropEditGeometry::on_pushButtonRotate_clicked() {
 
 				centerPoint = centerPointLocal;
 
-				tTrans.setTranslation( VICUS::IBKVector2QVector(-1*centerPoint) );
+				tTrans.setTranslation( QtExt::IBKVector2QVector(-1*centerPoint) );
 				v3D = tTrans.toMatrix() * v3D;
 
 				QVector3D xAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localXAxis();
@@ -445,14 +445,14 @@ void SVPropEditGeometry::on_pushButtonRotate_clicked() {
 			else {
 				centerPoint = s->m_geometry.centerPoint();
 
-				tTrans.setTranslation( VICUS::IBKVector2QVector(-1*centerPoint) );
+				tTrans.setTranslation( QtExt::IBKVector2QVector(-1*centerPoint) );
 				v3D = tTrans.toMatrix() * v3D;
 
 				// rotate around specified axis
 				if ( !IBK::nearly_equal<3>( rotateVecDeg.x(), 0.0 ) )
-					tRota.rotate( rotateVecDeg.x(), VICUS::IBKVector2QVector(s->m_geometry.localX() ) );
+					tRota.rotate( rotateVecDeg.x(), QtExt::IBKVector2QVector(s->m_geometry.localX() ) );
 				if ( !IBK::nearly_equal<3>( rotateVecDeg.y(), 0.0 ) )
-					tRota.rotate( rotateVecDeg.y(), VICUS::IBKVector2QVector(s->m_geometry.localY() ) );
+					tRota.rotate( rotateVecDeg.y(), QtExt::IBKVector2QVector(s->m_geometry.localY() ) );
 				if ( !IBK::nearly_equal<3>( rotateVecDeg.z(), 0.0 ) )
 					tRota.rotate( rotateVecDeg.z(), normal.m_x, normal.m_y, normal.m_z );
 				v3D = tRota.toMatrix() * v3D;
@@ -517,7 +517,7 @@ void SVPropEditGeometry::on_radioButtonRotateAbsolute_toggled(bool absRotate)
 			setRotation(s->m_geometry.normal());
 		}
 		else
-			setRotation(VICUS::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis() ) );
+			setRotation(QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis() ) );
 	}
 	else {
 		m_ui->labelRotateInclinationAbs->setEnabled(false);
@@ -582,16 +582,16 @@ void SVPropEditGeometry::update() {
 		}
 		else
 			SVViewStateHandler::instance().m_propEditGeometryWidget->setRotation(
-						VICUS::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localXAxis() ) );
+						QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localXAxis() ) );
 		IBKMK::Vector3D center;
 
 		// update local coordinates
 		setBoundingBox(project().boundingBox(surfaces, center));
 		Vic3D::Transform3D t;
-		t.setTranslation(VICUS::IBKVector2QVector(center) );
+		t.setTranslation(QtExt::IBKVector2QVector(center) );
 		setCoordinates( t );
 
-		SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(VICUS::IBKVector2QVector(center) );
+		SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(QtExt::IBKVector2QVector(center) );
 	}
 	else {
 		// only switch view state back to "Add geometry", when we are in geometry mode

@@ -2,7 +2,7 @@
 #include "ui_SVPropBuildingEditWidget.h"
 
 #include <VICUS_Component.h>
-#include <VICUS_Conversions.h>
+#include <QtExt_Conversions.h>
 
 #include "SVViewStateHandler.h"
 #include "SVProjectHandler.h"
@@ -237,7 +237,7 @@ void SVPropBuildingEditWidget::on_pushButtonExchangeComponents_clicked() {
 	Q_ASSERT(comp != nullptr); // if nullptr, the button should be disabled!
 	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoReplaceComponent",
 		tr("Replace component"), tr("This will replace all associations with component '%1 [%2]' with another component.")
-			 .arg(VICUS::MultiLangString2QString(comp->m_displayName)).arg(comp->m_id));
+			 .arg(QtExt::MultiLangString2QString(comp->m_displayName)).arg(comp->m_id));
 	unsigned int oldId = comp->m_id;
 	int newId = SVMainWindow::instance().dbComponentEditDialog()->select(oldId);
 	if (newId == -1)
@@ -277,7 +277,7 @@ void SVPropBuildingEditWidget::on_pushButtonSelectObjectsWithComponent_clicked()
 		objs.insert(s->uniqueID());
 
 	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Select objects with component '%1'")
-		.arg(VICUS::MultiLangString2QString(comp->m_displayName)), SVUndoTreeNodeState::SelectedState,
+		.arg(QtExt::MultiLangString2QString(comp->m_displayName)), SVUndoTreeNodeState::SelectedState,
 														 objs, true);
 	undo->push();
 }
@@ -301,6 +301,7 @@ const VICUS::Component * SVPropBuildingEditWidget::currentlySelectedComponent() 
 	std::advance(cit, r);
 	return cit->first;
 }
+
 
 void SVPropBuildingEditWidget::objectSelectionChanged() {
 	switch ((BuildingPropertyTypes)m_propertyType) {
@@ -327,7 +328,7 @@ void SVPropBuildingEditWidget::objectSelectionChanged() {
 			}
 			else if (selectedComponents.size() == 1) {
 				m_ui->labelSelectedComponents->setText(tr("Component %1 [%2]")
-				   .arg(VICUS::MultiLangString2QString((*selectedComponents.begin())->m_displayName)).arg((*selectedComponents.begin())->m_id));
+				   .arg(QtExt::MultiLangString2QString((*selectedComponents.begin())->m_displayName)).arg((*selectedComponents.begin())->m_id));
 			}
 			else {
 				m_ui->labelSelectedComponents->setText(tr("%1 different components")

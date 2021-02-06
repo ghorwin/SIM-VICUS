@@ -16,7 +16,7 @@ License    : BSD License,
 #include "Vic3DShaderProgram.h"
 #include "Vic3DVertex.h"
 #include "Vic3DGeometryHelpers.h"
-#include <VICUS_Conversions.h>
+#include <QtExt_Conversions.h>
 
 #include "SVViewStateHandler.h"
 #include "SVPropEditGeometry.h"

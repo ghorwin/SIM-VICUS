@@ -41,7 +41,6 @@ HEADERS += \
 	../../src/VICUS_ComponentInstance.h \
 	../../src/VICUS_Constants.h \ \
 	../../src/VICUS_Construction.h \
-	../../src/VICUS_Conversions.h \
 	../../src/VICUS_Database.h \
 	../../src/VICUS_EPDCategroySet.h \
 	../../src/VICUS_EPDDataset.h \
