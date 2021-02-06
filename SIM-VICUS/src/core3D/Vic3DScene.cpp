@@ -42,6 +42,7 @@ namespace Vic3D {
 void Vic3DScene::create(SceneView * parent, std::vector<ShaderProgram> & shaderPrograms) {
 	m_parent = parent;
 	m_gridShader = &shaderPrograms[SHADER_GRID];
+	m_surfaceNormalsShader = &shaderPrograms[SHADER_LINES];
 	m_buildingShader = &shaderPrograms[SHADER_OPAQUE_GEOMETRY];
 	m_fixedColorTransformShader = &shaderPrograms[SHADER_WIREFRAME];
 	m_coordinateSystemShader = &shaderPrograms[SHADER_COORDINATE_SYSTEM];
@@ -58,6 +59,9 @@ void Vic3DScene::create(SceneView * parent, std::vector<ShaderProgram> & shaderP
 
 	// we create the new geometry object here, but data is added once it is used
 	m_newGeometryObject.create(m_fixedColorTransformShader);
+
+	// create surface normals object already, though we update vertex buffer object later when we actually have geometry
+	m_surfaceNormalsObject.create(m_surfaceNormalsShader);
 
 	m_gridPlanes.push_back( VICUS::PlaneGeometry(VICUS::PlaneGeometry::T_Triangle,
 												 IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(1,0,0), IBKMK::Vector3D(0,1,0)) );
@@ -257,8 +261,11 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 	}
 
 	// update all GPU buffers (transfer cached data to GPU)
-	if (updateBuilding || updateSelection)
+	if (updateBuilding || updateSelection) {
 		m_opaqueGeometryObject.updateBuffers();
+		if (m_surfaceNormalsVisible)
+			m_surfaceNormalsObject.updateVertexBuffers();
+	}
 
 	if (updateNetwork || updateSelection)
 		m_networkGeometryObject.updateBuffers();
@@ -278,6 +285,7 @@ void Vic3DScene::destroy() {
 	m_coordinateSystemObject.destroy();
 	m_smallCoordinateSystemObject.destroy();
 	m_newGeometryObject.destroy();
+	m_surfaceNormalsObject.destroy();
 }
 
 
@@ -731,6 +739,9 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 
 void Vic3DScene::render() {
+	// we must have a valid project to render
+	Q_ASSERT(SVProjectHandler::instance().isValid());
+
 	glViewport(m_viewPort.x(), m_viewPort.y(), m_viewPort.width(), m_viewPort.height());
 
 	// set the background color = clear color
@@ -839,6 +850,15 @@ void Vic3DScene::render() {
 
 	m_buildingShader->release();
 
+
+	// *** surface normals
+
+	if (m_surfaceNormalsVisible) {
+		m_surfaceNormalsShader->bind();
+		m_surfaceNormalsShader->shaderProgram()->setUniformValue(m_surfaceNormalsShader->m_uniformIDs[0], m_worldToView);
+		m_surfaceNormalsObject.render();
+		m_surfaceNormalsShader->release();
+	}
 
 	// *** grid ***
 

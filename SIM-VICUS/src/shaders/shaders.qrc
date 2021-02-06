@@ -9,5 +9,6 @@
         <file>VertexWithTransform.vert</file>
         <file>VertexNormalColorWithTransform.vert</file>
         <file>fixed_color.frag</file>
+        <file>Vertex.vert</file>
     </qresource>
 </RCC>

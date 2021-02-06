@@ -15,6 +15,15 @@ enum Shaders {
 	*/
 	SHADER_GRID,
 
+	/*! Vertex.vert:
+		in vec3 position  (x,y,z)
+		uniform mat4 worldToView
+
+		fixed_color.frag:
+		uniform vec3 fixedColor;               // parameter: grid color as rgb triple
+	*/
+	SHADER_LINES,
+
 	/*! VertexNormalColor.vert:
 		layout(location = 0) in vec3 position; // input:  attribute with index '0' with 3 elements per vertex (coordinates)
 		layout(location = 1) in vec3 normal;   // input:  attribute with index '1' with 3 elements per vertex (normal)

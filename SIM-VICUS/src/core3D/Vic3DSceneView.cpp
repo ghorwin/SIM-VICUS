@@ -51,12 +51,18 @@ SceneView::SceneView() :
 	blocks.m_uniformNames.append("viewPos");
 	m_shaderPrograms[SHADER_OPAQUE_GEOMETRY] = blocks;
 
-	// Shaderprogram : simple lines with uniform/fixed color, but additional model2world transformation matrix
-	ShaderProgram lines(":/shaders/VertexWithTransform.vert",":/shaders/fixed_color.frag");
+	// Shaderprogram : simple lines with uniform/fixed color
+	ShaderProgram lines(":/shaders/Vertex.vert",":/shaders/fixed_color.frag");
 	lines.m_uniformNames.append("worldToView");
-	lines.m_uniformNames.append("modelToWorld");
 	lines.m_uniformNames.append("fixedColor");
-	m_shaderPrograms[SHADER_WIREFRAME] = lines;
+	m_shaderPrograms[SHADER_LINES] = lines;
+
+	// Shaderprogram : simple lines with uniform/fixed color, but additional model2world transformation matrix
+	ShaderProgram wireframe(":/shaders/VertexWithTransform.vert",":/shaders/fixed_color.frag");
+	wireframe.m_uniformNames.append("worldToView");
+	wireframe.m_uniformNames.append("modelToWorld");
+	wireframe.m_uniformNames.append("fixedColor");
+	m_shaderPrograms[SHADER_WIREFRAME] = wireframe;
 
 	// Shaderprogram : vertices with position and color, additional modelToWorld transformation matrix
 	ShaderProgram coordSystem(":/shaders/VertexNormalColorWithTransform.vert",":/shaders/phong_lighting.frag");
@@ -96,6 +102,8 @@ SceneView::~SceneView() {
 
 
 void SceneView::dumpScreenshot(const QString & imgFilePath) {
+	Q_ASSERT(SVProjectHandler::instance().isValid());
+
 	if (m_screenShotMultiSampleFrameBuffer == nullptr)
 		return; // not initialized yet
 	// store current scene size
@@ -104,6 +112,8 @@ void SceneView::dumpScreenshot(const QString & imgFilePath) {
 	// resize main scene
 	m_mainScene.resize(m_screenShotMultiSampleFrameBuffer->size().width(), m_screenShotMultiSampleFrameBuffer->size().height(), 1);
 	m_mainScene.m_smallCoordinateSystemObjectVisible = false;
+	bool surfaceNormalsVisible = m_mainScene.m_surfaceNormalsVisible;
+	m_mainScene.m_surfaceNormalsVisible = false;
 
 	// make framebuffer (for multi-sample rendering) active
 	m_screenShotMultiSampleFrameBuffer->bind();
@@ -125,10 +135,12 @@ void SceneView::dumpScreenshot(const QString & imgFilePath) {
 		GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
 	m_mainScene.m_smallCoordinateSystemObjectVisible = true;
+	m_mainScene.m_surfaceNormalsVisible = surfaceNormalsVisible;
 
 	// finally dump buffer to file
 	QImage screenShot = m_screenShotDownSampleFrameBuffer->toImage();
 	screenShot.save(imgFilePath);
+
 }
 
 
@@ -273,6 +285,12 @@ void SceneView::paintGL() {
 	m_cpuTimer.start();
 #endif
 	if (((SVDebugApplication *)qApp)->m_aboutToTerminate)
+		return;
+
+	// prevent rendering if there is no project anylonger (this can happen, if
+	// the project was destroyed and the event loop still has a pending update() call before
+	// the slot is called that toggles scene view visibility)
+	if (!SVProjectHandler::instance().isValid())
 		return;
 
 	// process input, i.e. check if any keys have been pressed

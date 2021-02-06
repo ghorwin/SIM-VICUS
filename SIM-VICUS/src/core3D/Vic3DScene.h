@@ -15,6 +15,7 @@
 #include "Vic3DSmallCoordinateSystemObject.h"
 #include "Vic3DWireFrameObject.h"
 #include "Vic3DNewGeometryObject.h"
+#include "Vic3DSurfaceNormalsObject.h"
 #include "Vic3DPickObject.h"
 
 #include "SVViewState.h"
@@ -90,6 +91,8 @@ public:
 	void leaveCoordinateSystemAdjustmentMode(bool abort);
 
 	bool m_smallCoordinateSystemObjectVisible = true;
+	/*! If true, the surface normals (lines) are shown for each visible surface. */
+	bool m_surfaceNormalsVisible = true;
 
 private:
 	void generateBuildingGeometry();
@@ -145,6 +148,8 @@ private:
 
 	/*! Shader program 'Grid' (managed by SceneView). */
 	ShaderProgram			*m_gridShader				= nullptr;
+	/*! Shader program 'SurfaceNormals' (managed by SceneView). */
+	ShaderProgram			*m_surfaceNormalsShader		= nullptr;
 	/*! Shader program 'Opaque Surfaces' (managed by SceneView). */
 	ShaderProgram			*m_buildingShader			= nullptr;
 	/*! Shader program 'Orbit controller' (managed by SceneView). */
@@ -192,6 +197,9 @@ private:
 
 	/*! The small coordinate system at the bottom/left. */
 	SmallCoordinateSystemObject	m_smallCoordinateSystemObject;
+
+	/*! The surface normals (lines) shown for visible surfaces when enabled. */
+	SurfaceNormalsObject	m_surfaceNormalsObject;
 
 
 	// *** Navigation stuff ***
