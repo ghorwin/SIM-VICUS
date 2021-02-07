@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<VicusProject fileVersion="0.2">
+	<ProjectInfo>
+		<Created>So. Feb. 7 11:40:55 2021</Created>
+		<LastEdited>So. Feb. 7 12:15:41 2021</LastEdited>
+	</ProjectInfo>
+	<Project>
+		<SolverParameter />
+		<SimulationParameter>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<Location>
+			<TimeZone>13</TimeZone>
+		</Location>
+		<ViewSettings>
+			<GridSpacing>10</GridSpacing>
+			<GridWidth>1000</GridWidth>
+			<CameraTranslation>-49.3197 -18.1676 18.9186</CameraTranslation>
+			<RotationMatrix>
+				<Wp>0.655698</Wp>
+				<X>0.458897</X>
+				<Y>-0.343772</Y>
+				<Z>-0.491207</Z>
+			</RotationMatrix>
+			<FarDistance>1000</FarDistance>
+		</ViewSettings>
+		<Buildings>
+			<Building id="1" displayName="Building">
+				<BuildingLevels>
+					<BuildingLevel id="1" displayName="Level">
+						<Rooms>
+							<Room id="10" displayName="New zone">
+								<IBK:Parameter name="Area" unit="m2">3</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">4.190631866</IBK:Parameter>
+								<Surfaces>
+									<Surface id="11" displayName="Floor">
+										<PlaneGeometry type="Triangle">2 3 0, 2 0 0, 0 0 0</PlaneGeometry>
+									</Surface>
+									<Surface id="12" displayName="Ceiling">
+										<PlaneGeometry type="Triangle">0 0 1.39688, 2 0 1.39688, 2 3 1.39688</PlaneGeometry>
+									</Surface>
+									<Surface id="13" displayName="Wall 1">
+										<PlaneGeometry type="Rectangle">2 0 0, 2 3 0, 2 3 1.39688, 2 0 1.39688</PlaneGeometry>
+									</Surface>
+									<Surface id="14" displayName="Wall 2">
+										<PlaneGeometry type="Rectangle">0 0 0, 2 0 0, 2 0 1.39688, 0 0 1.39688</PlaneGeometry>
+									</Surface>
+									<Surface id="15" displayName="Wall 3">
+										<PlaneGeometry type="Rectangle">2 3 0, 0 0 0, 0 0 1.39688, 2 3 1.39688</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+						</Rooms>
+					</BuildingLevel>
+				</BuildingLevels>
+			</Building>
+		</Buildings>
+		<ComponentInstances>
+			<ComponentInstance id="2" componentID="0" sideASurfaceID="11" />
+			<ComponentInstance id="3" componentID="0" sideASurfaceID="12" />
+			<ComponentInstance id="4" componentID="1001" sideASurfaceID="13" />
+			<ComponentInstance id="5" componentID="1001" sideASurfaceID="14" />
+			<ComponentInstance id="6" componentID="1001" sideASurfaceID="15" />
+		</ComponentInstances>
+	</Project>
+</VicusProject>

@@ -1,6 +1,8 @@
 #include "SVPropBuildingEditWidget.h"
 #include "ui_SVPropBuildingEditWidget.h"
 
+#include <QMessageBox>
+
 #include <VICUS_Component.h>
 #include <QtExt_Conversions.h>
 
@@ -69,182 +71,30 @@ SVPropBuildingEditWidget::~SVPropBuildingEditWidget() {
 
 
 void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
+
+	// TODO : Andreas, there is quite some overhead and duplicate work involved in
+	//        this function. When this becomes a performance issue, improve this
+	//        by moving all the data collection stuff to front and let the UI update
+	//        only based on cached quantities.
+
 	m_propertyType = buildingPropertyType;
-	m_ui->stackedWidget->setCurrentIndex(0);
-	const SVDatabase & db = SVSettings::instance().m_db;
-
-	// get all visible "building" type objects in the scene
-	std::set<const VICUS::Object * > objs;
-	project().selectObjects(objs, VICUS::Project::SG_Building, false, true);
-	// now build a map of component IDs versus visible surfaces
-	m_componentSurfacesMap.clear();
-	unsigned int selectedSurfacesWithComponent = 0;
-	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
-		// component ID assigned?
-		if (ci.m_componentID == VICUS::INVALID_ID)
-			continue; // no component, skip
-		// lookup component in DB
-		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_componentID];
-		if (comp == nullptr) {
-			// invalid component ID... should we notify the user about that somehow?
-			// for now we keep the nullptr and use this to identify "invalid component" in the table
-		}
-
-		// now test the surfaces associated with this component instance
-
-		// side A
-		if (ci.m_sideASurface != nullptr) {
-			// is this surface visible? then it must be in the set 'obj'
-			std::set<const VICUS::Object * >::const_iterator it_A = objs.find(ci.m_sideASurface);
-			if (it_A != objs.end()) {
-				m_componentSurfacesMap[comp].push_back(ci.m_sideASurface);
-				if (ci.m_sideASurface->m_selected)
-					++selectedSurfacesWithComponent;
-			}
-		}
-		// side B
-		if (ci.m_sideBSurface != nullptr) {
-			std::set<const VICUS::Object * >::const_iterator it_B = objs.find(ci.m_sideBSurface);
-			if (it_B != objs.end()) {
-				m_componentSurfacesMap[comp].push_back(ci.m_sideBSurface);
-				if (ci.m_sideBSurface->m_selected)
-					++selectedSurfacesWithComponent;
-			}
-		}
-	}
 
 	switch ((BuildingPropertyTypes)buildingPropertyType) {
-		case BT_Components: {
-			m_ui->stackedWidget->setCurrentIndex(1);
-			// now put the data of the map into the table
-			m_ui->tableWidgetComponents->clearContents();
-			m_ui->tableWidgetComponents->setRowCount(m_componentSurfacesMap.size());
-			int row=0;
-			for (std::map<const VICUS::Component*, std::vector<const VICUS::Surface *> >::const_iterator
-				 it = m_componentSurfacesMap.begin(); it != m_componentSurfacesMap.end(); ++it, ++row)
-			{
-				QTableWidgetItem * item = new QTableWidgetItem();
-				// special handling for components with "invalid" component id
-				if (it->first == nullptr)
-					item->setBackground(QColor(255,128,128));
-				else
-					item->setBackground(it->first->m_color);
-				item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
-				m_ui->tableWidgetComponents->setItem(row, 0, item);
-
-				item = new QTableWidgetItem();
-				if (it->first == nullptr)
-					item->setText(tr("<invalid component id>"));
-				else
-					item->setText(QString::fromStdString(it->first->m_displayName.string(IBK::MultiLanguageString::m_language, "en")));
-				item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-				m_ui->tableWidgetComponents->setItem(row, 1, item);
-			}
-			// update button states
-			on_tableWidgetComponents_itemSelectionChanged();
-		} break;
-
-		case BT_ComponentOrientation:
-			m_ui->stackedWidget->setCurrentIndex(2);
-			m_ui->comboBoxComponentSelection->blockSignals(true);
-			m_ui->comboBoxComponentSelection->clear();
-			for (std::map<const VICUS::Component*, std::vector<const VICUS::Surface *> >::const_iterator
-				 it = m_componentSurfacesMap.begin(); it != m_componentSurfacesMap.end(); ++it)
-			{
-				if (it->first == nullptr)
-					return;
-				m_ui->comboBoxComponentSelection->addItem(QString::fromStdString(it->first->m_displayName.string(IBK::MultiLanguageString::m_language, "en")), it->first->m_id);
-			}
-			m_ui->comboBoxComponentSelection->setCurrentIndex(m_ui->comboBoxComponentSelection->count()-1);
-			m_ui->comboBoxComponentSelection->blockSignals(false);
-			if (selectedSurfacesWithComponent == 0) {
-				m_ui->labelComponentOrientationInfo->setText(tr("No surfaces with components selected"));
-				m_ui->pushButtonAlignComponentToSideA->setEnabled(false);
-				m_ui->pushButtonAlignComponentToSideB->setEnabled(false);
-			}
-			else {
-				m_ui->labelComponentOrientationInfo->setText(tr("%1 surfaces with components selected").arg(selectedSurfacesWithComponent));
-				m_ui->pushButtonAlignComponentToSideA->setEnabled(true);
-				m_ui->pushButtonAlignComponentToSideB->setEnabled(true);
-			}
-		break;
-
-		case BT_BoundaryConditions: {
-			m_ui->stackedWidget->setCurrentIndex(3);
-			// get all visible "building" type objects in the scene
-			std::set<const VICUS::Object * > objs;
-			project().selectObjects(objs, VICUS::Project::SG_Building, false, true);
-			// now build a map of component IDs versus visible surfaces
-			m_bcSurfacesMap.clear();
-			for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
-				// component ID assigned?
-				if (ci.m_componentID == VICUS::INVALID_ID)
-					continue; // no component, skip
-				// lookup component in DB
-				const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_componentID];
-				const VICUS::BoundaryCondition * bcSideA = nullptr;
-				const VICUS::BoundaryCondition * bcSideB = nullptr;
-				if (comp != nullptr) {
-					// lookup boundary condition pointers
-					if (comp->m_idSideABoundaryCondition != VICUS::INVALID_ID)
-						bcSideA = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
-					if (comp->m_idSideBBoundaryCondition != VICUS::INVALID_ID)
-						bcSideB = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
-				}
-				// side A
-				if (ci.m_sideASurface != nullptr) {
-					std::set<const VICUS::Object * >::const_iterator it_A = objs.find(ci.m_sideASurface);
-					if (it_A != objs.end()) {
-						m_bcSurfacesMap[bcSideA].push_back(ci.m_sideASurface);
-					}
-				}
-				// side B
-				if (ci.m_sideBSurface != nullptr) {
-					std::set<const VICUS::Object * >::const_iterator it_B = objs.find(ci.m_sideBSurface);
-					if (it_B != objs.end())
-						m_bcSurfacesMap[bcSideB].push_back(ci.m_sideBSurface);
-				}
-			}
-			// now put the data of the map into the table
-			m_ui->tableWidgetBoundaryConditions->clearContents();
-			m_ui->tableWidgetBoundaryConditions->setRowCount(m_bcSurfacesMap.size());
-			int row=0;
-			for (std::map<const VICUS::BoundaryCondition*, std::vector<const VICUS::Surface *> >::const_iterator
-				 it = m_bcSurfacesMap.begin(); it != m_bcSurfacesMap.end(); ++it, ++row)
-			{
-				QTableWidgetItem * item = new QTableWidgetItem();
-				// special handling for surfaces without bc assigned
-				if (it->first == nullptr)
-					item->setBackground(QColor(64,64,64));
-				else
-					item->setBackground(it->first->m_color);
-				item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
-				m_ui->tableWidgetBoundaryConditions->setItem(row, 0, item);
-
-				item = new QTableWidgetItem();
-				if (it->first == nullptr)
-					item->setText(tr("<no/invalid boundary condition>"));
-				else
-					item->setText(QString::fromStdString(it->first->m_displayName.string(IBK::MultiLanguageString::m_language, "en")));
-				item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-				m_ui->tableWidgetBoundaryConditions->setItem(row, 1, item);
-			}
-		} break;
+		case BT_Components				: m_ui->stackedWidget->setCurrentIndex(1); break;
+		case BT_ComponentOrientation	: m_ui->stackedWidget->setCurrentIndex(2); break;
+		case BT_BoundaryConditions		: m_ui->stackedWidget->setCurrentIndex(3); break;
 	}
-	// finally update everything related to selection
-	objectSelectionChanged();
 }
 
 
-void SVPropBuildingEditWidget::onModified(int modificationType, ModificationInfo * data) {
+void SVPropBuildingEditWidget::onModified(int modificationType, ModificationInfo * /*data*/) {
 	// react on selection changes only, then update properties
 	switch ((SVProjectHandler::ModificationTypes)modificationType) {
 		case SVProjectHandler::AllModified:
 		case SVProjectHandler::BuildingGeometryChanged:
 		case SVProjectHandler::ComponentInstancesModified:
 		case SVProjectHandler::NodeStateModified:
-			// the selection has changed, update widgets related to selection
-			setPropertyType(m_propertyType);
+			updateUi(); // we do not change the property type here
 		break;
 	}
 }
@@ -321,62 +171,6 @@ void SVPropBuildingEditWidget::on_tableWidgetComponents_itemSelectionChanged() {
 }
 
 
-const VICUS::Component * SVPropBuildingEditWidget::currentlySelectedComponent() const {
-	// check if selected "component" is actually a missing component
-	int r = m_ui->tableWidgetComponents->currentRow();
-	if (r == -1 || m_componentSurfacesMap.empty())
-		return nullptr;
-	std::map<const VICUS::Component*, std::vector<const VICUS::Surface *> >::const_iterator cit = m_componentSurfacesMap.begin();
-	std::advance(cit, r);
-	return cit->first;
-}
-
-
-void SVPropBuildingEditWidget::objectSelectionChanged() {
-	switch ((BuildingPropertyTypes)m_propertyType) {
-		case BT_Components: {
-			// process all selected surfaces and determine which component they have assigned
-			std::vector<const VICUS::Surface*> surfaces;
-			project().selectedSurfaces(surfaces, VICUS::Project::SG_Building);
-			if (surfaces.empty()) {
-				m_ui->labelSelectedComponents->setText("");
-				m_ui->groupBoxSelectedComponent->setEnabled(false);
-				return;
-			}
-			m_ui->groupBoxSelectedComponent->setEnabled(true);
-			std::set<const VICUS::Component *> selectedComponents;
-			const SVDatabase & db = SVSettings::instance().m_db;
-			for (const VICUS::Surface* s : surfaces) {
-				if (s->m_componentInstance != nullptr) {
-					const VICUS::Component * surfcomp = db.m_components[s->m_componentInstance->m_componentID];
-					selectedComponents.insert(surfcomp);
-				}
-			}
-			if (selectedComponents.empty()) {
-				m_ui->labelSelectedComponents->setText(tr("No components"));
-			}
-			else if (selectedComponents.size() == 1) {
-				m_ui->labelSelectedComponents->setText(tr("Component %1 [%2]")
-				   .arg(QtExt::MultiLangString2QString((*selectedComponents.begin())->m_displayName)).arg((*selectedComponents.begin())->m_id));
-			}
-			else {
-				m_ui->labelSelectedComponents->setText(tr("%1 different components")
-				   .arg(selectedComponents.size()));
-			}
-		} break;
-
-		case BT_ComponentOrientation:
-			// TODO : Andreas
-		break;
-
-		case BT_BoundaryConditions:
-			// TODO : Andreas
-		break;
-	}
-
-}
-
-
 void SVPropBuildingEditWidget::on_pushButtonAssignComponent_clicked() {
 	// ask user to select a new component
 	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignComponent",
@@ -443,19 +237,12 @@ void SVPropBuildingEditWidget::on_checkBoxShowAllComponentOrientations_toggled(b
 
 
 void SVPropBuildingEditWidget::on_pushButtonAlignComponentToSideA_clicked() {
-	// create a copy of the component instances
-	std::vector<VICUS::ComponentInstance> compInstances = project().m_componentInstances;
-
-	// loop over all components and look for a selected side - if there is more than one side of a component
-	// instance selected, show an error message
-
-
-
+	alignSelectedComponents(true);
 }
 
 
 void SVPropBuildingEditWidget::on_pushButtonAlignComponentToSideB_clicked() {
-
+	alignSelectedComponents(false);
 }
 
 
@@ -471,3 +258,262 @@ void SVPropBuildingEditWidget::on_comboBoxComponentSelection_currentIndexChanged
 	m_ui->comboBoxComponentSelection->setCurrentIndex(index);
 	m_ui->comboBoxComponentSelection->blockSignals(false);
 }
+
+
+// *** PRIVATE FUNCTIONS ***
+
+
+const VICUS::Component * SVPropBuildingEditWidget::currentlySelectedComponent() const {
+	// check if selected "component" is actually a missing component
+	int r = m_ui->tableWidgetComponents->currentRow();
+	if (r == -1 || m_componentSurfacesMap.empty())
+		return nullptr;
+	std::map<const VICUS::Component*, std::vector<const VICUS::Surface *> >::const_iterator cit = m_componentSurfacesMap.begin();
+	std::advance(cit, r);
+	return cit->first;
+}
+
+
+void SVPropBuildingEditWidget::updateUi() {
+	const SVDatabase & db = SVSettings::instance().m_db;
+
+	// get all visible "building" type objects in the scene
+	std::set<const VICUS::Object * > objs;
+	project().selectObjects(objs, VICUS::Project::SG_Building, false, true);
+	// now build a map of component IDs versus visible surfaces
+	m_componentSurfacesMap.clear();
+	m_selectedComponentInstances.clear();
+	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+		// component ID assigned?
+		if (ci.m_componentID == VICUS::INVALID_ID)
+			continue; // no component, skip
+		// lookup component in DB
+		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_componentID];
+		if (comp == nullptr) {
+			// invalid component ID... should we notify the user about that somehow?
+			// for now we keep the nullptr and use this to identify "invalid component" in the table
+		}
+
+		// now test the surfaces associated with this component instance
+
+		// side A
+		if (ci.m_sideASurface != nullptr) {
+			// is this surface visible? then it must be in the set 'obj'
+			std::set<const VICUS::Object * >::const_iterator it_A = objs.find(ci.m_sideASurface);
+			if (it_A != objs.end()) {
+				m_componentSurfacesMap[comp].push_back(ci.m_sideASurface);
+				if (ci.m_sideASurface->m_selected)
+					m_selectedComponentInstances.insert(&ci);
+			}
+		}
+		// side B
+		if (ci.m_sideBSurface != nullptr) {
+			std::set<const VICUS::Object * >::const_iterator it_B = objs.find(ci.m_sideBSurface);
+			if (it_B != objs.end()) {
+				m_componentSurfacesMap[comp].push_back(ci.m_sideBSurface);
+				if (ci.m_sideBSurface->m_selected)
+					m_selectedComponentInstances.insert(&ci);
+			}
+		}
+	}
+
+
+
+	// *** Update Component Page ***
+
+	// now put the data of the map into the table
+	m_ui->tableWidgetComponents->clearContents();
+	m_ui->tableWidgetComponents->setRowCount(m_componentSurfacesMap.size());
+	int row=0;
+	for (std::map<const VICUS::Component*, std::vector<const VICUS::Surface *> >::const_iterator
+		 it = m_componentSurfacesMap.begin(); it != m_componentSurfacesMap.end(); ++it, ++row)
+	{
+		QTableWidgetItem * item = new QTableWidgetItem();
+		// special handling for components with "invalid" component id
+		if (it->first == nullptr)
+			item->setBackground(QColor(255,128,128));
+		else
+			item->setBackground(it->first->m_color);
+		item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
+		m_ui->tableWidgetComponents->setItem(row, 0, item);
+
+		item = new QTableWidgetItem();
+		if (it->first == nullptr)
+			item->setText(tr("<invalid component id>"));
+		else
+			item->setText(QString::fromStdString(it->first->m_displayName.string(IBK::MultiLanguageString::m_language, "en")));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->tableWidgetComponents->setItem(row, 1, item);
+	}
+	// process all selected surfaces and determine which component they have assigned
+	std::vector<const VICUS::Surface*> surfaces;
+	project().selectedSurfaces(surfaces, VICUS::Project::SG_Building);
+	if (surfaces.empty()) {
+		m_ui->labelSelectedComponents->setText("");
+		m_ui->groupBoxSelectedComponent->setEnabled(false);
+	}
+	else {
+		m_ui->groupBoxSelectedComponent->setEnabled(true);
+	}
+
+	// update selection-related info
+	std::set<const VICUS::Component *> selectedComponents;
+	for (const VICUS::Surface* s : surfaces) {
+		if (s->m_componentInstance != nullptr) {
+			const VICUS::Component * surfcomp = db.m_components[s->m_componentInstance->m_componentID];
+			selectedComponents.insert(surfcomp);
+		}
+	}
+	if (selectedComponents.empty()) {
+		m_ui->labelSelectedComponents->setText(tr("No components"));
+	}
+	else if (selectedComponents.size() == 1) {
+		m_ui->labelSelectedComponents->setText(tr("Component %1 [%2]")
+		   .arg(QtExt::MultiLangString2QString((*selectedComponents.begin())->m_displayName)).arg((*selectedComponents.begin())->m_id));
+	}
+	else {
+		m_ui->labelSelectedComponents->setText(tr("%1 different components")
+		   .arg(selectedComponents.size()));
+	}
+	// update button states
+	on_tableWidgetComponents_itemSelectionChanged();
+
+
+
+	// *** Update ComponentOrientation Page ***
+
+	m_ui->comboBoxComponentSelection->blockSignals(true);
+	m_ui->comboBoxComponentSelection->clear();
+	for (std::map<const VICUS::Component*, std::vector<const VICUS::Surface *> >::const_iterator
+		 it = m_componentSurfacesMap.begin(); it != m_componentSurfacesMap.end(); ++it)
+	{
+		if (it->first == nullptr)
+			continue;
+		m_ui->comboBoxComponentSelection->addItem(QString::fromStdString(it->first->m_displayName.string(IBK::MultiLanguageString::m_language, "en")), it->first->m_id);
+	}
+	m_ui->comboBoxComponentSelection->setCurrentIndex(m_ui->comboBoxComponentSelection->count()-1);
+	m_ui->comboBoxComponentSelection->blockSignals(false);
+
+	// selection-related info
+	if (m_selectedComponentInstances.empty()) {
+		m_ui->labelComponentOrientationInfo->setText(tr("No surfaces with components selected"));
+		m_ui->pushButtonAlignComponentToSideA->setEnabled(false);
+		m_ui->pushButtonAlignComponentToSideB->setEnabled(false);
+	}
+	else {
+		m_ui->labelComponentOrientationInfo->setText(tr("%1 surfaces with components selected").arg(m_selectedComponentInstances.size()));
+		m_ui->pushButtonAlignComponentToSideA->setEnabled(true);
+		m_ui->pushButtonAlignComponentToSideB->setEnabled(true);
+	}
+
+
+	// *** Update BoundaryCondition Page ***
+
+	// now build a map of component IDs versus visible surfaces
+	m_bcSurfacesMap.clear();
+	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+		// component ID assigned?
+		if (ci.m_componentID == VICUS::INVALID_ID)
+			continue; // no component, skip
+		// lookup component in DB
+		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_componentID];
+		const VICUS::BoundaryCondition * bcSideA = nullptr;
+		const VICUS::BoundaryCondition * bcSideB = nullptr;
+		if (comp != nullptr) {
+			// lookup boundary condition pointers
+			if (comp->m_idSideABoundaryCondition != VICUS::INVALID_ID)
+				bcSideA = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
+			if (comp->m_idSideBBoundaryCondition != VICUS::INVALID_ID)
+				bcSideB = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
+		}
+		// side A
+		if (ci.m_sideASurface != nullptr) {
+			std::set<const VICUS::Object * >::const_iterator it_A = objs.find(ci.m_sideASurface);
+			if (it_A != objs.end()) {
+				m_bcSurfacesMap[bcSideA].push_back(ci.m_sideASurface);
+			}
+		}
+		// side B
+		if (ci.m_sideBSurface != nullptr) {
+			std::set<const VICUS::Object * >::const_iterator it_B = objs.find(ci.m_sideBSurface);
+			if (it_B != objs.end())
+				m_bcSurfacesMap[bcSideB].push_back(ci.m_sideBSurface);
+		}
+	}
+	// now put the data of the map into the table
+	m_ui->tableWidgetBoundaryConditions->clearContents();
+	m_ui->tableWidgetBoundaryConditions->setRowCount(m_bcSurfacesMap.size());
+	row=0;
+	for (std::map<const VICUS::BoundaryCondition*, std::vector<const VICUS::Surface *> >::const_iterator
+		 it = m_bcSurfacesMap.begin(); it != m_bcSurfacesMap.end(); ++it, ++row)
+	{
+		QTableWidgetItem * item = new QTableWidgetItem();
+		// special handling for surfaces without bc assigned
+		if (it->first == nullptr)
+			item->setBackground(QColor(64,64,64));
+		else
+			item->setBackground(it->first->m_color);
+		item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
+		m_ui->tableWidgetBoundaryConditions->setItem(row, 0, item);
+
+		item = new QTableWidgetItem();
+		if (it->first == nullptr)
+			item->setText(tr("<no/invalid boundary condition>"));
+		else
+			item->setText(QString::fromStdString(it->first->m_displayName.string(IBK::MultiLanguageString::m_language, "en")));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->tableWidgetBoundaryConditions->setItem(row, 1, item);
+	}
+}
+
+
+
+
+void SVPropBuildingEditWidget::alignSelectedComponents(bool toSideA) {
+	// create a copy of the component instances
+	std::vector<VICUS::ComponentInstance> compInstances = project().m_componentInstances;
+
+	std::set<unsigned int> surfacesToDDeselect;
+	// loop over all components and look for a selected side - if there is more than one side of a component
+	// instance selected, show an error message
+	for (const VICUS::ComponentInstance * c : m_selectedComponentInstances) {
+		// both sides selected?
+		bool sideASelected = (c->m_sideASurface != nullptr && c->m_sideASurface->m_selected);
+		bool sideBSelected = (c->m_sideBSurface != nullptr && c->m_sideBSurface->m_selected);
+		if (sideASelected && sideBSelected) {
+			QMessageBox::critical(this, QString(), tr("You must not select both surfaces of the same component!"));
+			return;
+		}
+		// now lookup copied componentInstance by ID and swap sides if:
+		// - the selected side is side B and should be switched to side A
+		// - the selected side is side A and should be switched to side B
+		if ((toSideA && sideBSelected) ||
+			(!toSideA && sideASelected))
+		{
+			std::vector<VICUS::ComponentInstance>::iterator it = std::find(compInstances.begin(), compInstances.end(), c->m_id);
+			Q_ASSERT(it != compInstances.end());
+
+			if (sideASelected)
+				surfacesToDDeselect.insert(it->m_sideASurfaceID);
+			if (sideBSelected)
+				surfacesToDDeselect.insert(it->m_sideBSurfaceID);
+			std::swap(it->m_sideASurfaceID, it->m_sideBSurfaceID);
+		}
+	}
+
+	// if there was no change, inform the user and abort
+	if (surfacesToDDeselect.empty()) {
+		QMessageBox::information(this, QString(), tr("All of the selected surfaces are already aligned as requested."));
+		return;
+	}
+
+	// compose undo action
+	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Aligning component sides"), compInstances);
+	undo->push(); // Note: this invalidates all pointers in the project, calls onModified() and rebuilds our maps
+
+	// now deselect all surfaces that have been touched
+	SVUndoTreeNodeState * undoSelect = new SVUndoTreeNodeState(tr("Deselecting modified surfaces"),
+															   SVUndoTreeNodeState::SelectedState, surfacesToDDeselect, false);
+	undoSelect->push();
+}
+

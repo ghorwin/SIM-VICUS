@@ -3,12 +3,15 @@
 
 #include <QWidget>
 
+#include <set>
+
 namespace Ui {
 	class SVPropBuildingEditWidget;
 }
 
 namespace VICUS {
 	class Component;
+	class ComponentInstance;
 	class Surface;
 	class BoundaryCondition;
 }
@@ -84,10 +87,11 @@ private:
 	/*! Returns a pointer to the currently selected component in the component table. */
 	const VICUS::Component * currentlySelectedComponent() const;
 
-	/*! Called when the visibility/selection state of objects has changed.
-		Updates the selection-specific properties.
-	*/
-	void objectSelectionChanged();
+	/*! Updates widget to current project state. */
+	void updateUi();
+
+	/*! This function toggles side assignments in component instances for selected components. */
+	void alignSelectedComponents(bool toSideA);
 
 	Ui::SVPropBuildingEditWidget	*m_ui;
 
@@ -97,6 +101,8 @@ private:
 	std::map<const VICUS::Component*, std::vector<const VICUS::Surface *> >			m_componentSurfacesMap;
 	/*! This map links boundary conditions to surfaces. */
 	std::map<const VICUS::BoundaryCondition*, std::vector<const VICUS::Surface *> > m_bcSurfacesMap;
+	/*! This set contains all shown component instances that have one or more sides selected. */
+	std::set<const VICUS::ComponentInstance*>										m_selectedComponentInstances;
 
 };
 
