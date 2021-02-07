@@ -24,4 +24,22 @@
 		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 		<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 	</Component>
+	<Component id="1005" displayName="DE: [SimQuality] Komponente für TF04.3 Raum A |EN: [SimQuality] Component for TF04.3 Room A" color="#4e9a06">
+		<Type>OutsideWall</Type>
+		<IdConstruction>1003</IdConstruction>
+		<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1006" displayName="DE: [SimQuality] Komponente für TF04.3 Raum B |EN: [SimQuality] Component for TF04.3 Room B" color="#cc0000">
+		<Type>OutsideWall</Type>
+		<IdConstruction>1004</IdConstruction>
+		<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1007" displayName="DE: [SimQuality] Komponente für TF04.3 Innenwand |EN: [SimQuality] Component for TF04.3 Inside wall" color="#c4a000">
+		<Type>InsideWall</Type>
+		<IdConstruction>1002</IdConstruction>
+		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
+	</Component>
 </Components>

@@ -83,12 +83,21 @@ private slots:
 
 	void on_comboBoxComponentSelection_currentIndexChanged(int);
 
+
+	void on_pushButtonAssignInsideComponent_clicked();
+
 private:
 	/*! Returns a pointer to the currently selected component in the component table. */
 	const VICUS::Component * currentlySelectedComponent() const;
 
 	/*! Updates widget to current project state. */
 	void updateUi();
+
+	/*! This function opens the component DB dialog and lets the user select a component.
+		Then, it creates new component instances for all selected surfaces.
+		If insideWall is true, the two selected surfaces are connected to each other with an inside-wall-component.
+	*/
+	void assignComponent(bool insideWall);
 
 	/*! This function toggles side assignments in component instances for selected components. */
 	void alignSelectedComponents(bool toSideA);

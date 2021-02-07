@@ -172,53 +172,12 @@ void SVPropBuildingEditWidget::on_tableWidgetComponents_itemSelectionChanged() {
 
 
 void SVPropBuildingEditWidget::on_pushButtonAssignComponent_clicked() {
-	// ask user to select a new component
-	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignComponent",
-		tr("Assign component"), tr("You may now select a component from the component database, which will then be"
-								   "assigned to all selected surfaces."));
-	int newId = SVMainWindow::instance().dbComponentEditDialog()->select(0);
-	if (newId == -1)
-		return; // user aborted the dialog
+	assignComponent(false);
+}
 
-	std::vector<const VICUS::Surface*> surfaces;
-	project().selectedSurfaces(surfaces, VICUS::Project::SG_Building);
-	Q_ASSERT(!surfaces.empty());
-	std::set<const VICUS::Surface*> selSurfaces(surfaces.begin(), surfaces.end());
 
-	// now create a copy of the currently defined componentInstances
-	std::vector<VICUS::ComponentInstance> compInstances = project().m_componentInstances;
-	// process all componentInstances and for all that reference any of the selected surfaces, replace component
-	for (VICUS::ComponentInstance & ci : compInstances) {
-		std::set<const VICUS::Surface*>::iterator it = selSurfaces.find(ci.m_sideASurface);
-		if (it != selSurfaces.end()) {
-			ci.m_componentID = (unsigned int)newId;
-			selSurfaces.erase(it);
-			continue;
-		}
-		it = selSurfaces.find(ci.m_sideBSurface);
-		if (it != selSurfaces.end()) {
-			ci.m_componentID = (unsigned int)newId;
-			selSurfaces.erase(it);
-		}
-	}
-
-	// now all surfaces still left in selSurfaces are not yet referenced in ComponentInstances
-	// hence, we need to create a new componentInstance for each of them
-	if (!selSurfaces.empty()) {
-		unsigned int nextId = VICUS::Project::largestUniqueId(compInstances);
-		for (const VICUS::Surface * s : selSurfaces) {
-			VICUS::ComponentInstance c;
-			c.m_id = nextId++;
-			c.m_sideASurfaceID = s->m_id;
-			c.m_componentID = (unsigned int)newId;
-			compInstances.push_back(c);
-		}
-	}
-
-	// create the undo action and modify project
-	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Components assigned"), compInstances);
-	undo->push();
-
+void SVPropBuildingEditWidget::on_pushButtonAssignInsideComponent_clicked() {
+	assignComponent(true);
 }
 
 
@@ -355,6 +314,7 @@ void SVPropBuildingEditWidget::updateUi() {
 	else {
 		m_ui->groupBoxSelectedComponent->setEnabled(true);
 	}
+	m_ui->pushButtonAssignInsideComponent->setEnabled(surfaces.size() == 2);
 
 	// update selection-related info
 	std::set<const VICUS::Component *> selectedComponents;
@@ -368,14 +328,17 @@ void SVPropBuildingEditWidget::updateUi() {
 		m_ui->labelSelectedComponents->setText(tr("No components"));
 	}
 	else if (selectedComponents.size() == 1) {
-		m_ui->labelSelectedComponents->setText(tr("Component %1 [%2]")
-		   .arg(QtExt::MultiLangString2QString((*selectedComponents.begin())->m_displayName)).arg((*selectedComponents.begin())->m_id));
+		if (*selectedComponents.begin() == nullptr)
+			m_ui->labelSelectedComponents->setText(tr("Component with invalid/unknown ID"));
+		else
+			m_ui->labelSelectedComponents->setText(tr("Component %1 [%2]")
+			   .arg(QtExt::MultiLangString2QString((*selectedComponents.begin())->m_displayName)).arg((*selectedComponents.begin())->m_id));
 	}
 	else {
 		m_ui->labelSelectedComponents->setText(tr("%1 different components")
 		   .arg(selectedComponents.size()));
 	}
-	// update button states
+	// update table related button states
 	on_tableWidgetComponents_itemSelectionChanged();
 
 
@@ -515,5 +478,122 @@ void SVPropBuildingEditWidget::alignSelectedComponents(bool toSideA) {
 	SVUndoTreeNodeState * undoSelect = new SVUndoTreeNodeState(tr("Deselecting modified surfaces"),
 															   SVUndoTreeNodeState::SelectedState, surfacesToDDeselect, false);
 	undoSelect->push();
+}
+
+
+void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
+	// ask user to select a new component
+	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignComponent",
+		tr("Assign component"), tr("You may now select a component from the component database, which will then be"
+								   "assigned to the selected surfaces."));
+	int selectedComponentId = SVMainWindow::instance().dbComponentEditDialog()->select(0);
+	if (selectedComponentId == -1)
+		return; // user aborted the dialog
+
+	std::vector<const VICUS::Surface*> surfaces;
+	project().selectedSurfaces(surfaces, VICUS::Project::SG_Building);
+	Q_ASSERT(!surfaces.empty());
+	std::set<const VICUS::Surface*> selSurfaces(surfaces.begin(), surfaces.end());
+
+
+	std::vector<VICUS::ComponentInstance> compInstances;
+	if (insideWall) {
+		Q_ASSERT(surfaces.size() == 2); // must have exactly two
+		// we handle the following cases
+		// - both surfaces are not yet used in a componentInstance -> we create a new one
+		// - both surfaces are already used in the same componentInstance -> we just replace the component
+		// - both surfaces are already used in different componentInstances -> we modify the first and delete the second
+		// - only one surface is already used in a componentInstance -> we modify it
+
+		// we achieve all that with just one loop
+		bool compInstanceFound = false;
+		// process all component instances
+		for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+			// does the component instance reference either of our selected surfaces/or both?
+			std::set<const VICUS::Surface*>::iterator it = selSurfaces.find(ci.m_sideASurface);
+			std::set<const VICUS::Surface*>::iterator it2 = selSurfaces.find(ci.m_sideBSurface);
+			if (it != selSurfaces.end() || it2 != selSurfaces.end()) {
+				// yes, but did we already have a component instance with these surfaces?
+				if (compInstanceFound) {
+					// already handled, so we can just skip this component instance
+					continue;
+				}
+				// remember, that we handled a componentInstance already
+				compInstanceFound = true;
+				VICUS::ComponentInstance newCi(ci);
+				// set the selected component
+				newCi.m_componentID = (unsigned int)selectedComponentId;
+				// no, first time a component instance references the selected surfaces, modify it such,
+				// that any original assignment remains untouched
+				if (it != selSurfaces.end()) {
+					// side A connected?, set side B to the other surface
+					if (it == selSurfaces.begin())
+						newCi.m_sideBSurfaceID = (*selSurfaces.rbegin())->m_id;
+					else
+						newCi.m_sideBSurfaceID = (*selSurfaces.begin())->m_id;
+				}
+				else {
+					// must be side B connected, set side A to the other surface
+					if (it2 == selSurfaces.begin())
+						newCi.m_sideASurfaceID = (*selSurfaces.rbegin())->m_id;
+					else
+						newCi.m_sideASurfaceID = (*selSurfaces.begin())->m_id;
+				}
+				// remember modified component instance
+				compInstances.push_back(newCi);
+			}
+			else {
+				// not related to our surfaces, just dump to the new compInstances vector
+				compInstances.push_back(ci);
+			}
+		}
+		// if we didn't have a component instance yet, create a new one
+		if (!compInstanceFound) {
+			VICUS::ComponentInstance newCi;
+			unsigned int nextId = VICUS::Project::largestUniqueId(compInstances);
+			newCi.m_id = nextId;
+			newCi.m_componentID = (unsigned int)selectedComponentId;
+			newCi.m_sideASurfaceID = (*selSurfaces.begin())->m_id;
+			newCi.m_sideBSurfaceID = (*selSurfaces.rbegin())->m_id;
+			compInstances.push_back(newCi);
+		}
+
+	}
+	else {
+		// now create a copy of the currently defined componentInstances
+		compInstances = project().m_componentInstances;
+
+		// process all componentInstances and for all that reference any of the selected surfaces, replace component
+		for (VICUS::ComponentInstance & ci : compInstances) {
+			std::set<const VICUS::Surface*>::iterator it = selSurfaces.find(ci.m_sideASurface);
+			if (it != selSurfaces.end()) {
+				ci.m_componentID = (unsigned int)selectedComponentId;
+				selSurfaces.erase(it);
+				continue;
+			}
+			it = selSurfaces.find(ci.m_sideBSurface);
+			if (it != selSurfaces.end()) {
+				ci.m_componentID = (unsigned int)selectedComponentId;
+				selSurfaces.erase(it);
+			}
+		}
+
+		// now all surfaces still left in selSurfaces are not yet referenced in ComponentInstances
+		// hence, we need to create a new componentInstance for each of them
+		if (!selSurfaces.empty()) {
+			unsigned int nextId = VICUS::Project::largestUniqueId(compInstances);
+			for (const VICUS::Surface * s : selSurfaces) {
+				VICUS::ComponentInstance c;
+				c.m_id = nextId++;
+				c.m_sideASurfaceID = s->m_id;
+				c.m_componentID = (unsigned int)selectedComponentId;
+				compInstances.push_back(c);
+			}
+		}
+
+	}
+	// create the undo action and modify project
+	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Components assigned"), compInstances);
+	undo->push();
 }
 

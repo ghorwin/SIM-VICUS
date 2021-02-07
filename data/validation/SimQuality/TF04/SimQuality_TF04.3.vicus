@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<VicusProject fileVersion="0.2">
+	<ProjectInfo>
+		<Created>Mo. Feb. 8 00:07:46 2021</Created>
+		<LastEdited>Mo. Feb. 8 00:35:43 2021</LastEdited>
+	</ProjectInfo>
+	<Project>
+		<SolverParameter />
+		<SimulationParameter>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<Location>
+			<TimeZone>13</TimeZone>
+		</Location>
+		<ViewSettings>
+			<GridSpacing>10</GridSpacing>
+			<GridWidth>100</GridWidth>
+			<CameraTranslation>-1.08329 -32.5015 15.9941</CameraTranslation>
+			<RotationMatrix>
+				<Wp>0.805059</Wp>
+				<X>0.558785</X>
+				<Y>-0.113411</Y>
+				<Z>-0.16362</Z>
+			</RotationMatrix>
+			<FarDistance>10000</FarDistance>
+		</ViewSettings>
+		<Buildings>
+			<Building id="1" displayName="SimQ Building">
+				<BuildingLevels>
+					<BuildingLevel id="1" displayName="Level 1">
+						<Rooms>
+							<Room id="10" displayName="New zone">
+								<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+								<Surfaces>
+									<Surface id="11" displayName="Floor">
+										<PlaneGeometry type="Rectangle">0 5 0, 2 5 0, 2 0 0, 0 0 0</PlaneGeometry>
+									</Surface>
+									<Surface id="12" displayName="Ceiling">
+										<PlaneGeometry type="Rectangle">0 0 3, 2 0 3, 2 5 3, 0 5 3</PlaneGeometry>
+									</Surface>
+									<Surface id="13" displayName="Wall 1">
+										<PlaneGeometry type="Rectangle">2 5 0, 0 5 0, 0 5 3, 2 5 3</PlaneGeometry>
+									</Surface>
+									<Surface id="14" displayName="Wall 2">
+										<PlaneGeometry type="Rectangle">2 0 0, 2 5 0, 2 5 3, 2 0 3</PlaneGeometry>
+									</Surface>
+									<Surface id="15" displayName="Wall 3">
+										<PlaneGeometry type="Rectangle">0 0 0, 2 0 0, 2 0 3, 0 0 3</PlaneGeometry>
+									</Surface>
+									<Surface id="16" displayName="Wall 4">
+										<PlaneGeometry type="Rectangle">0 5 0, 0 0 0, 0 0 3, 0 5 3</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="17" displayName="New zone">
+								<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+								<Surfaces>
+									<Surface id="18" displayName="Floor">
+										<PlaneGeometry type="Rectangle">3 5 0, 5 5 0, 5 0 0, 3 0 0</PlaneGeometry>
+									</Surface>
+									<Surface id="19" displayName="Ceiling">
+										<PlaneGeometry type="Rectangle">3 0 3, 5 0 3, 5 5 3, 3 5 3</PlaneGeometry>
+									</Surface>
+									<Surface id="20" displayName="Wall 1">
+										<PlaneGeometry type="Rectangle">5 5 0, 3 5 0, 3 5 3, 5 5 3</PlaneGeometry>
+									</Surface>
+									<Surface id="21" displayName="Wall 2">
+										<PlaneGeometry type="Rectangle">5 0 0, 5 5 0, 5 5 3, 5 0 3</PlaneGeometry>
+									</Surface>
+									<Surface id="22" displayName="Wall 3">
+										<PlaneGeometry type="Rectangle">3 0 0, 5 0 0, 5 0 3, 3 0 3</PlaneGeometry>
+									</Surface>
+									<Surface id="23" displayName="Wall 4">
+										<PlaneGeometry type="Rectangle">3 5 0, 3 0 0, 3 0 3, 3 5 3</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+						</Rooms>
+					</BuildingLevel>
+				</BuildingLevels>
+			</Building>
+		</Buildings>
+		<ComponentInstances>
+			<ComponentInstance id="2" componentID="1005" sideBSurfaceID="11" />
+			<ComponentInstance id="3" componentID="1005" sideBSurfaceID="12" />
+			<ComponentInstance id="4" componentID="1005" sideBSurfaceID="13" />
+			<ComponentInstance id="5" componentID="1007" sideASurfaceID="14" sideBSurfaceID="23" />
+			<ComponentInstance id="6" componentID="1005" sideBSurfaceID="15" />
+			<ComponentInstance id="7" componentID="1005" sideBSurfaceID="16" />
+			<ComponentInstance id="9" componentID="1006" sideBSurfaceID="18" />
+			<ComponentInstance id="10" componentID="1006" sideBSurfaceID="19" />
+			<ComponentInstance id="11" componentID="1006" sideBSurfaceID="20" />
+			<ComponentInstance id="12" componentID="1006" sideBSurfaceID="21" />
+			<ComponentInstance id="13" componentID="1006" sideBSurfaceID="22" />
+		</ComponentInstances>
+	</Project>
+</VicusProject>
