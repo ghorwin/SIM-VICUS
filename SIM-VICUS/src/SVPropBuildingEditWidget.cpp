@@ -494,9 +494,9 @@ void SVPropBuildingEditWidget::alignSelectedComponents(bool toSideA) {
 			Q_ASSERT(it != compInstances.end());
 
 			if (sideASelected)
-				surfacesToDDeselect.insert(it->m_sideASurfaceID);
+				surfacesToDDeselect.insert(it->m_sideASurface->uniqueID()); // Mind: use uniqueID here for selection change!
 			if (sideBSelected)
-				surfacesToDDeselect.insert(it->m_sideBSurfaceID);
+				surfacesToDDeselect.insert(it->m_sideBSurface->uniqueID());
 			std::swap(it->m_sideASurfaceID, it->m_sideBSurfaceID);
 		}
 	}
