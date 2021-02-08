@@ -21,7 +21,7 @@ public:
 
 	/*! The various types (equations) of the hydraulic component. */
 	enum ModelType {
-		MT_HydraulicNetwork,				// Keyword: HydraulicNetwork				'Hydraulic calculation with constant temperature'
+		MT_HydraulicNetwork,				// Keyword: HydraulicNetwork				'Only Hydraulic calculation with constant temperature'
 		MT_ThermalHydraulicNetwork,			// Keyword: ThermalHydraulicNetwork			'Thermo-hydraulic calculation'
 		NUM_MT
 	};

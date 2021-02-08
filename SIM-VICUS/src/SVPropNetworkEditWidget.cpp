@@ -143,6 +143,10 @@ void SVPropNetworkEditWidget::updateNodeProperties() {
 	bool uniformNodeType = uniformProperty(m_currentNodes, &VICUS::NetworkNode::m_type);
 	m_ui->groupBoxNode->setEnabled(uniformNodeType);
 	m_ui->groupBoxComponent->setEnabled(uniformNodeType);
+	for (const VICUS::NetworkNode *node: m_currentNodes){
+		if (node->m_type== VICUS::NetworkNode::NT_Mixer)
+			m_ui->groupBoxComponent->setEnabled(false);
+	}
 	m_ui->comboBoxNodeType->setCurrentIndex(m_ui->comboBoxNodeType->findData(m_currentNodes[0]->m_type));
 	m_ui->lineEditNodeHeatingDemand->setEnabled(m_currentNodes[0]->m_type == VICUS::NetworkNode::NT_Building);
 
@@ -489,30 +493,17 @@ void SVPropNetworkEditWidget::on_horizontalSliderScaleEdges_valueChanged(int val
 
 void SVPropNetworkEditWidget::on_pushButtonEditComponents_clicked() {
 
-	unsigned int componentId = 0;
-	if (m_currentNodes[0] != nullptr)
-		componentId = m_currentNodes[0]->m_componentId;
-	else if (m_currentEdges[0] != nullptr)
-		componentId = m_currentEdges[0]->m_componentId;
-	else
-		return;
-
+	unsigned int currentId  = m_ui->comboBoxComponent->currentData().toUInt();
 	SVDBNetworkComponentEditDialog *dialog = new SVDBNetworkComponentEditDialog(this);
-	int idx = dialog->select(componentId);
-	setupComboBoxComponents();
-	m_ui->comboBoxComponent->setCurrentIndex(m_ui->comboBoxComponent->findData(idx));
-#if 0
-	if (dialog->edit(m_currentConstNetwork->m_id, componentId) == QDialog::Accepted){
+	int newId = dialog->select(currentId);
+	if (newId > 0){
 		setupComboBoxComponents();
-		m_ui->comboBoxComponent->setCurrentText(m_mapComponents.key(dialog->currentComponentId()));
+		m_ui->comboBoxComponent->setCurrentIndex(m_ui->comboBoxComponent->findData(newId));
+		if (!m_currentEdges.empty())
+			modifyEdgeProperty(&VICUS::NetworkEdge::m_componentId, newId);
+		if (!m_currentNodes.empty())
+			modifyNodeProperty(&VICUS::NetworkNode::m_componentId, newId);
 	}
-	else{
-		setupComboBoxComponents();
-	}
-
-	modifyEdgeProperty(&VICUS::NetworkEdge::m_componentId, m_mapComponents.value(m_ui->comboBoxComponent->currentText()));
-	modifyNodeProperty(&VICUS::NetworkNode::m_componentId, m_mapComponents.value(m_ui->comboBoxComponent->currentText()));
-#endif
 }
 
 void SVPropNetworkEditWidget::on_lineEditNodeHeatingDemand_editingFinished()

@@ -86,7 +86,13 @@ void SVSimulationStartNetworkSim::on_pushButtonRun_clicked() {
 	// generate NANDRAD project
 	NANDRAD::Project p;
 
-	generateNandradProject(p);
+	try {
+		generateNandradProject(p);
+	} catch (IBK::Exception &e) {
+		QMessageBox msgBox(QMessageBox::Critical, "Error", e.what(), QMessageBox::Ok, this);
+		msgBox.exec();
+	}
+
 
 	// save project
 	p.writeXML(IBK::Path(m_targetProjectFile.toStdString()));
@@ -155,7 +161,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	// TODO Hauke: UI selection widgets for modelType, P_DefaultFluidTemperature, initial fluid temp, ref pressure
 	p.m_hydraulicNetworks.clear();
 	NANDRAD::HydraulicNetwork nandradNetwork;
-	nandradNetwork.m_modelType = NANDRAD::HydraulicNetwork::MT_HydraulicNetwork;
+	nandradNetwork.m_modelType = NANDRAD::HydraulicNetwork::ModelType(m_ui->comboBoxModelType->currentData().toUInt());
 	nandradNetwork.m_id = vicusNetwork.m_id;
 	nandradNetwork.m_displayName = vicusNetwork.m_name;
 	NANDRAD::KeywordList::setParameter(nandradNetwork.m_para,"HydraulicNetwork::para_t",
@@ -174,7 +180,6 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	const SVDatabase  & db = SVSettings::instance().m_db;
 	VICUS::NetworkFluid fluid;
 	fluid.defaultFluidWater(1);
-//	Q_ASSERT(fluid != nullptr);
 	nandradNetwork.m_fluid.m_id = fluid.m_id;
 	nandradNetwork.m_fluid.m_displayName = fluid.m_displayName;
 	nandradNetwork.m_fluid.m_kinematicViscosity = fluid.m_kinematicViscosity;

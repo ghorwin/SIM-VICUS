@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Do Dez 10 12:42:13 2020</Created>
-		<LastEdited>Mo Feb 8 15:34:46 2021</LastEdited>
+		<LastEdited>Mo Feb 8 20:08:05 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -17,25 +17,25 @@
 		<ViewSettings>
 			<GridSpacing>100</GridSpacing>
 			<GridWidth>500</GridWidth>
-			<CameraTranslation>-47.8744 191.229 164.281</CameraTranslation>
+			<CameraTranslation>-30.0994 226.235 204.317</CameraTranslation>
 			<RotationMatrix>
-				<Wp>-0.265053</Wp>
-				<X>-0.174655</X>
-				<Y>0.521782</Y>
-				<Z>0.791793</Z>
+				<Wp>-0.244033</Wp>
+				<X>-0.153406</X>
+				<Y>0.509288</Y>
+				<Z>0.810857</Z>
 			</RotationMatrix>
 			<FarDistance>1700</FarDistance>
 		</ViewSettings>
 		<GeometricNetworks>
 			<Network id="0" fluidID="0" name="Mini Netzwerk">
 				<Nodes>
-					<NetworkNode id="0" type="Source" maxHeatingDemand="0">
+					<NetworkNode id="0" type="Source" maxHeatingDemand="0" componentId="100003">
 						<Position>0 0 0</Position>
 					</NetworkNode>
-					<NetworkNode id="1" type="Building" maxHeatingDemand="4800">
+					<NetworkNode id="1" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>200 -70 0</Position>
 					</NetworkNode>
-					<NetworkNode id="2" type="Building" maxHeatingDemand="4800">
+					<NetworkNode id="2" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>250 0 0</Position>
 					</NetworkNode>
 					<NetworkNode id="3" type="Mixer" maxHeatingDemand="0">
@@ -45,14 +45,17 @@
 				<Edges>
 					<NetworkEdge supply="1" nodeId1="0" nodeId2="3">
 						<PipeId>10</PipeId>
+						<ComponentId>100001</ComponentId>
 						<Length>4</Length>
 					</NetworkEdge>
 					<NetworkEdge supply="1" nodeId1="3" nodeId2="1">
 						<PipeId>7</PipeId>
+						<ComponentId>100001</ComponentId>
 						<Length>4</Length>
 					</NetworkEdge>
 					<NetworkEdge supply="1" nodeId1="3" nodeId2="2">
 						<PipeId>3</PipeId>
+						<ComponentId>100001</ComponentId>
 						<Length>4</Length>
 					</NetworkEdge>
 				</Edges>
