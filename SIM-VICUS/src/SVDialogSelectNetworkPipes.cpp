@@ -21,6 +21,8 @@ void SVDialogSelectNetworkPipes::edit(VICUS::Network &network)
 {
 	if (exec() == QDialog::Accepted){
 
+		// TODO Hauke: implement list widget
+
 		// add all pipes
 		network.m_availablePipes.clear();
 		const SVDatabase & db = SVSettings::instance().m_db;

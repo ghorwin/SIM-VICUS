@@ -150,10 +150,10 @@ void Network::updateVisualizationData(const VICUS::Database<VICUS::NetworkPipe> 
 		QColor color("#0e4355");
 		switch (no.m_type) {
 			case VICUS::NetworkNode::NT_Source:
-				color = Qt::green;
+				color = Qt::black;
 			break;
 			case VICUS::NetworkNode::NT_Building:
-				color = Qt::blue;
+				color = Qt::lightGray;
 			break;
 			case VICUS::NetworkNode::NT_Mixer:
 				color = Qt::darkGray;

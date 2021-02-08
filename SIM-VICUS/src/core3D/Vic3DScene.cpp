@@ -1065,7 +1065,7 @@ void Vic3DScene::generateNetworkGeometry() {
 
 		for (const VICUS::NetworkEdge & e : network.m_edges) {
 			double radius = e.m_visualizationRadius;
-			QColor pipeColor = Qt::red;
+			QColor pipeColor = Qt::gray;
 			if (!e.m_visible || e.m_selected)
 				pipeColor.setAlpha(0);
 

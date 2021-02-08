@@ -10,11 +10,13 @@
 #include "SVProjectHandler.h"
 #include "SVSettings.h"
 #include "SVDialogSelectNetworkPipes.h"
+#include "SVDBNetworkComponentEditDialog.h"
 #include "Vic3DWireFrameObject.h"
 
 #include <NANDRAD_HydraulicNetworkComponent.h>
 
 #include <VICUS_KeywordList.h>
+
 
 SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 	QWidget(parent),
@@ -467,9 +469,10 @@ void SVPropNetworkEditWidget::on_checkBoxSupplyPipe_clicked()
 
 void SVPropNetworkEditWidget::on_comboBoxComponent_activated(const QString &arg1)
 {
-	// the functions will simply return in case it is not a Node/Edge
-	modifyEdgeProperty(&VICUS::NetworkEdge::m_componentId, m_ui->comboBoxComponent->currentData().toUInt());
-	modifyNodeProperty(&VICUS::NetworkNode::m_componentId, m_ui->comboBoxComponent->currentData().toUInt());
+	if (!m_currentEdges.empty())
+		modifyEdgeProperty(&VICUS::NetworkEdge::m_componentId, m_ui->comboBoxComponent->currentData().toUInt());
+	if (!m_currentNodes.empty())
+		modifyNodeProperty(&VICUS::NetworkNode::m_componentId, m_ui->comboBoxComponent->currentData().toUInt());
 }
 
 void SVPropNetworkEditWidget::on_horizontalSliderScaleNodes_valueChanged(int value)
@@ -504,6 +507,10 @@ void SVPropNetworkEditWidget::on_pushButtonEditComponents_clicked() {
 	else
 		return;
 
+	SVDBNetworkComponentEditDialog *dialog = new SVDBNetworkComponentEditDialog(this);
+	int idx = dialog->select(componentId);
+	setupComboBoxComponents();
+	m_ui->comboBoxComponent->setCurrentIndex(m_ui->comboBoxComponent->findData(idx));
 #if 0
 	if (dialog->edit(m_currentConstNetwork->m_id, componentId) == QDialog::Accepted){
 		setupComboBoxComponents();
@@ -644,10 +651,8 @@ void SVPropNetworkEditWidget::modifyEdgeProperty(TEdgeProp property, const Tval 
 {
 	if (!setNetwork())
 		return;
-	const std::vector<const VICUS::NetworkEdge *> & edges = m_currentEdges;
-	if (edges[0] == nullptr)
-		return;
-	for (const VICUS::NetworkEdge * edgeConst: edges){
+	Q_ASSERT(!m_currentEdges.empty());
+	for (const VICUS::NetworkEdge * edgeConst: m_currentEdges){
 		VICUS::NetworkEdge * edge = m_currentNetwork.edge(edgeConst->nodeId1(), edgeConst->nodeId2());
 		Q_ASSERT(edge != nullptr);
 		edge->*property = value;
@@ -664,10 +669,8 @@ void SVPropNetworkEditWidget::modifyNodeProperty(TNodeProp property, const Tval 
 {
 	if (!setNetwork())
 		return;
-	std::vector<const VICUS::NetworkNode *> nodes = m_currentNodes;
-	if (nodes[0] == nullptr)
-		return;
-	for (const VICUS::NetworkNode * nodeConst: nodes){
+	Q_ASSERT(!m_currentNodes.empty());
+	for (const VICUS::NetworkNode * nodeConst: m_currentNodes){
 		m_currentNetwork.m_nodes[nodeConst->m_id].*property = value;
 	}
 	m_currentNetwork.updateNodeEdgeConnectionPointers();
