@@ -42,11 +42,13 @@ public:
 		NUM_NET
 	};
 
-	enum SizingParam{
-		SP_TemperatureSetpoint,				// Keyword: TemperatureSetpoint					[C]		'Temperature for pipe dimensioning algorithm'
-		SP_TemperatureDifference,			// Keyword: TemperatureDifference				[K]		'Temperature difference for pipe dimensioning algorithm'
-		SP_MaxPressureLoss,					// Keyword: MaxPressureLoss						[Pa/m]	'Maximum pressure loss for pipe dimensioning algorithm'
-		NUM_SP
+	enum para_t{
+		P_TemperatureSetpoint,				// Keyword: TemperatureSetpoint					[C]		'Temperature for pipe dimensioning algorithm'
+		P_TemperatureDifference,			// Keyword: TemperatureDifference				[K]		'Temperature difference for pipe dimensioning algorithm'
+		P_MaxPressureLoss,					// Keyword: MaxPressureLoss						[Pa/m]	'Maximum pressure loss for pipe dimensioning algorithm'
+		P_ReferencePressure,				// Keyword: ReferencePressure					[Pa]	'Reference pressure applied to reference element'
+		P_DefaultFluidTemperature,			// Keyword: DefaultFluidTemperature				[C]		'Fluid temperature for hydraulic calculation, else initial temperature'
+		NUM_P
 	};
 
 	enum HeatExchangeParameter {
@@ -203,12 +205,13 @@ public:
 
 	NetworkType								m_type = NET_DoublePipe;					// XML:E
 
-	/*! Parameters used for pipe sizing algorithm. Will be stored only when the algorithm was used */
-	IBK::Parameter							m_sizingPara[NUM_SP];						// XML:E
+	/*! Network Parameters (e.g. for pipe sizing algorithm) */
+	IBK::Parameter							m_para[NUM_P];						// XML:E
 
 	double									m_scaleNodes = 30;							// XML:E
 
 	double									m_scaleEdges = 30;							// XML:E
+
 
 	/*! Stores visibility information for this network.
 		Note: keep the next line - this will cause the code generator to create serialization code

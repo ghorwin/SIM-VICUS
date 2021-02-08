@@ -30,10 +30,20 @@ private slots:
 
 	void on_pushButtonRun_clicked();
 
+	void on_lineEditReferencePressure_editingFinished();
+
+	void on_lineEditDefaultFluidTemperature_editingFinished();
+
 private:
 	void updateCmdLine();
 
 	bool generateNandradProject(NANDRAD::Project & p) const;
+
+	void modifyLineEdits();
+
+	void updateLineEdits();
+
+	void toggleRunButton();
 
 	Ui::SVSimulationStartNetworkSim		*m_ui;
 

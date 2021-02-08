@@ -44,7 +44,7 @@ namespace VICUS {
 		"Material::para_t",
 		"Material::Category",
 		"Network::NetworkType",
-		"Network::SizingParam",
+		"Network::para_t",
 		"NetworkComponent::ModelType",
 		"NetworkComponent::para_t",
 		"NetworkComponent::HeatExchangeType",
@@ -178,12 +178,14 @@ namespace VICUS {
 				case 0 : return "SinglePipe";
 				case 1 : return "DoublePipe";
 			} break;
-			// Network::SizingParam
+			// Network::para_t
 			case 9 :
 			switch (t) {
 				case 0 : return "TemperatureSetpoint";
 				case 1 : return "TemperatureDifference";
 				case 2 : return "MaxPressureLoss";
+				case 3 : return "ReferencePressure";
+				case 4 : return "DefaultFluidTemperature";
 			} break;
 			// NetworkComponent::ModelType
 			case 10 :
@@ -432,12 +434,14 @@ namespace VICUS {
 				case 0 : return "SinglePipe";
 				case 1 : return "DoublePipe";
 			} break;
-			// Network::SizingParam
+			// Network::para_t
 			case 9 :
 			switch (t) {
 				case 0 : return "TemperatureSetpoint";
 				case 1 : return "TemperatureDifference";
 				case 2 : return "MaxPressureLoss";
+				case 3 : return "ReferencePressure";
+				case 4 : return "DefaultFluidTemperature";
 			} break;
 			// NetworkComponent::ModelType
 			case 10 :
@@ -687,12 +691,14 @@ namespace VICUS {
 				case 0 : if (no_description != nullptr) *no_description = true; return "SinglePipe";
 				case 1 : if (no_description != nullptr) *no_description = true; return "DoublePipe";
 			} break;
-			// Network::SizingParam
+			// Network::para_t
 			case 9 :
 			switch (t) {
 				case 0 : return "Temperature for pipe dimensioning algorithm";
 				case 1 : return "Temperature difference for pipe dimensioning algorithm";
 				case 2 : return "Maximum pressure loss for pipe dimensioning algorithm";
+				case 3 : return "Reference pressure applied to reference element";
+				case 4 : return "Fluid temperature for hydraulic calculation, else initial temperature";
 			} break;
 			// NetworkComponent::ModelType
 			case 10 :
@@ -941,12 +947,14 @@ namespace VICUS {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
-			// Network::SizingParam
+			// Network::para_t
 			case 9 :
 			switch (t) {
 				case 0 : return "C";
 				case 1 : return "K";
 				case 2 : return "Pa/m";
+				case 3 : return "Pa";
+				case 4 : return "C";
 			} break;
 			// NetworkComponent::ModelType
 			case 10 :
@@ -1195,12 +1203,14 @@ namespace VICUS {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
-			// Network::SizingParam
+			// Network::para_t
 			case 9 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
+				case 4 : return "#FFFFFF";
 			} break;
 			// NetworkComponent::ModelType
 			case 10 :
@@ -1449,12 +1459,14 @@ namespace VICUS {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Network::SizingParam
+			// Network::para_t
 			case 9 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
+				case 4 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkComponent::ModelType
 			case 10 :
@@ -1622,8 +1634,8 @@ namespace VICUS {
 			case 7 : return 13;
 			// Network::NetworkType
 			case 8 : return 2;
-			// Network::SizingParam
-			case 9 : return 3;
+			// Network::para_t
+			case 9 : return 5;
 			// NetworkComponent::ModelType
 			case 10 : return 14;
 			// NetworkComponent::para_t
@@ -1686,8 +1698,8 @@ namespace VICUS {
 			case 7 : return 12;
 			// Network::NetworkType
 			case 8 : return 1;
-			// Network::SizingParam
-			case 9 : return 2;
+			// Network::para_t
+			case 9 : return 4;
 			// NetworkComponent::ModelType
 			case 10 : return 13;
 			// NetworkComponent::para_t

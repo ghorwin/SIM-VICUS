@@ -255,9 +255,9 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 
 void SVPropNetworkEditWidget::updateSizingParams() {
 	if (m_currentConstNetwork != nullptr){
-		m_ui->doubleSpinBoxTemperatureSetpoint->setValue(m_currentConstNetwork->m_sizingPara[VICUS::Network::SP_TemperatureSetpoint].get_value(IBK::Unit("C")));
-		m_ui->doubleSpinBoxTemperatureDifference->setValue(m_currentConstNetwork->m_sizingPara[VICUS::Network::SP_TemperatureDifference].value);
-		m_ui->doubleSpinBoxMaximumPressureLoss->setValue(m_currentConstNetwork->m_sizingPara[VICUS::Network::SP_MaxPressureLoss].value);
+		m_ui->doubleSpinBoxTemperatureSetpoint->setValue(m_currentConstNetwork->m_para[VICUS::Network::P_TemperatureSetpoint].get_value(IBK::Unit("C")));
+		m_ui->doubleSpinBoxTemperatureDifference->setValue(m_currentConstNetwork->m_para[VICUS::Network::P_TemperatureDifference].value);
+		m_ui->doubleSpinBoxMaximumPressureLoss->setValue(m_currentConstNetwork->m_para[VICUS::Network::P_MaxPressureLoss].value);
 	}
 }
 
@@ -357,12 +357,12 @@ void SVPropNetworkEditWidget::modifySizingParams()
 {
 	if (!setNetwork())
 		return;
-	m_currentNetwork.m_sizingPara[VICUS::Network::SP_TemperatureSetpoint].set(VICUS::KeywordList::Keyword("Network::SizingParam", VICUS::Network::SP_TemperatureSetpoint),
+	m_currentNetwork.m_para[VICUS::Network::P_TemperatureSetpoint].set(VICUS::KeywordList::Keyword("Network::SizingParam", VICUS::Network::P_TemperatureSetpoint),
 																	   m_ui->doubleSpinBoxTemperatureSetpoint->value(),
 																	   IBK::Unit("C"));
-	VICUS::KeywordList::setParameter(m_currentNetwork.m_sizingPara, "Network::SizingParam", VICUS::Network::SP_TemperatureDifference,
+	VICUS::KeywordList::setParameter(m_currentNetwork.m_para, "Network::SizingParam", VICUS::Network::P_TemperatureDifference,
 									 m_ui->doubleSpinBoxTemperatureDifference->value());
-	VICUS::KeywordList::setParameter(m_currentNetwork.m_sizingPara, "Network::SizingParam", VICUS::Network::SP_MaxPressureLoss,
+	VICUS::KeywordList::setParameter(m_currentNetwork.m_para, "Network::SizingParam", VICUS::Network::P_MaxPressureLoss,
 									 m_ui->doubleSpinBoxMaximumPressureLoss->value());
 	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network sizing parameters modified"), networkIndex, m_currentNetwork);

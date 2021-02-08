@@ -8,8 +8,10 @@
 
 #include "SVSettings.h"
 #include "SVProjectHandler.h"
+#include "SVUndoModifyExistingNetwork.h"
 
 #include <VICUS_Project.h>
+#include <VICUS_KeywordList.h>
 
 SVSimulationStartNetworkSim::SVSimulationStartNetworkSim(QWidget *parent) :
 	QDialog(parent),
@@ -30,12 +32,24 @@ SVSimulationStartNetworkSim::~SVSimulationStartNetworkSim() {
 void SVSimulationStartNetworkSim::edit() {
 	// transfer network names to ui and select the first
 
+	// populate networks combobox
 	m_networksMap.clear();
 	for (const VICUS::Network & n : project().m_geometricNetworks)
 		m_networksMap.insert(QString::fromStdString(n.m_name), n.m_id);
 	m_ui->comboBoxNetwork->clear();
 	m_ui->comboBoxNetwork->addItems(m_networksMap.keys());
 	m_ui->comboBoxNetwork->setCurrentIndex(0);
+
+	// populate model type combobox
+	m_ui->comboBoxModelType->clear();
+	m_ui->comboBoxModelType->addItem(NANDRAD::KeywordList::Description("HydraulicNetwork::ModelType",
+																		NANDRAD::HydraulicNetwork::MT_HydraulicNetwork),
+																		NANDRAD::HydraulicNetwork::MT_HydraulicNetwork);
+	m_ui->comboBoxModelType->addItem(NANDRAD::KeywordList::Description("HydraulicNetwork::ModelType",
+																		NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork),
+																		NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork);
+	updateLineEdits();
+	toggleRunButton();
 	updateCmdLine();
 	exec();
 }
@@ -66,6 +80,8 @@ void SVSimulationStartNetworkSim::updateCmdLine() {
 
 
 void SVSimulationStartNetworkSim::on_pushButtonRun_clicked() {
+
+	modifyLineEdits();
 
 	// generate NANDRAD project
 	NANDRAD::Project p;
@@ -143,11 +159,14 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	nandradNetwork.m_id = vicusNetwork.m_id;
 	nandradNetwork.m_displayName = vicusNetwork.m_name;
 	NANDRAD::KeywordList::setParameter(nandradNetwork.m_para,"HydraulicNetwork::para_t",
-									   NANDRAD::HydraulicNetwork::P_DefaultFluidTemperature, 20);
+									   NANDRAD::HydraulicNetwork::P_DefaultFluidTemperature,
+									   vicusNetwork.m_para[VICUS::Network::P_DefaultFluidTemperature].value);
 	NANDRAD::KeywordList::setParameter(nandradNetwork.m_para,"HydraulicNetwork::para_t",
-									   NANDRAD::HydraulicNetwork::P_InitialFluidTemperature, 20);
+									   NANDRAD::HydraulicNetwork::P_InitialFluidTemperature,
+									   vicusNetwork.m_para[VICUS::Network::P_DefaultFluidTemperature].value);
 	NANDRAD::KeywordList::setParameter(nandradNetwork.m_para,"HydraulicNetwork::para_t",
-									   NANDRAD::HydraulicNetwork::P_ReferencePressure, 0);
+									   NANDRAD::HydraulicNetwork::P_ReferencePressure,
+									   vicusNetwork.m_para[VICUS::Network::P_ReferencePressure].value);
 
 
 	// *** Transfer fluid from Vicus to Nandrad
@@ -324,9 +343,52 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 
 }
 
+void SVSimulationStartNetworkSim::modifyLineEdits()
+{
+	VICUS::Project proj = project();
+	unsigned int networkId = m_networksMap.value(m_ui->comboBoxNetwork->currentText());
+	VICUS::Network network = *proj.element(proj.m_geometricNetworks, networkId);
+	if (m_ui->lineEditReferencePressure->isValid())
+		VICUS::KeywordList::setParameter(network.m_para, "Network:para_t", VICUS::Network::P_ReferencePressure,
+										 m_ui->lineEditReferencePressure->value());
+	if (m_ui->lineEditDefaultFluidTemperature->isValid())
+		VICUS::KeywordList::setParameter(network.m_para, "Network:para_t", VICUS::Network::P_DefaultFluidTemperature,
+										 m_ui->lineEditDefaultFluidTemperature->value());
+	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), const_cast<const VICUS::Network*>(&network));
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network visualization properties updated"), networkIndex, network);
+	undo->push(); // modifies project and updates views
+}
+
+void SVSimulationStartNetworkSim::updateLineEdits()
+{
+	const VICUS::Project &proj = project();
+	unsigned int networkId = m_networksMap.value(m_ui->comboBoxNetwork->currentText());
+	const VICUS::Network *network = proj.element(proj.m_geometricNetworks, networkId);
+	if (!network->m_para[VICUS::Network::P_ReferencePressure].empty())
+		m_ui->lineEditReferencePressure->setValue(network->m_para[VICUS::Network::P_ReferencePressure].value);
+	if (!network->m_para[VICUS::Network::P_DefaultFluidTemperature].empty())
+		m_ui->lineEditDefaultFluidTemperature->setValue(network->m_para[VICUS::Network::P_DefaultFluidTemperature].value);
+}
 
 
+void SVSimulationStartNetworkSim::toggleRunButton()
+{
+	bool check = m_ui->lineEditReferencePressure->isValid() && m_ui->lineEditDefaultFluidTemperature->isValid();
+	m_ui->pushButtonRun->setEnabled(check);
+}
 
+
+void SVSimulationStartNetworkSim::on_lineEditReferencePressure_editingFinished()
+{
+	modifyLineEdits();
+	toggleRunButton();
+}
+
+void SVSimulationStartNetworkSim::on_lineEditDefaultFluidTemperature_editingFinished()
+{
+	modifyLineEdits();
+	toggleRunButton();
+}
 
 #if 0
 
@@ -492,4 +554,5 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	// *** test example 2 until here ***
 
 #endif
+
 

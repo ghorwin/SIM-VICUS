@@ -448,8 +448,8 @@ FUNCID(Network::sizePipeDimensions);
 												"Please add pipes to this network").arg(m_id), FUNC_ID);
 
 	// check parameters
-	for (unsigned int n = 0; n < NUM_SP; ++n){
-		if (m_sizingPara[n].empty())
+	for (unsigned int n = 0; n < NUM_P; ++n){
+		if (m_para[n].empty())
 			throw IBK::Exception(IBK::FormatString("'%1' not set").arg(VICUS::KeywordList::Keyword("Network::sizingParam", n)), FUNC_ID);
 	}
 
@@ -506,15 +506,15 @@ FUNCID(Network::sizePipeDimensions);
 
 
 	// for each edge: find the smallest pipe from DB that has a pressure loss below deltapMax
-	double deltaPMax = m_sizingPara[SP_MaxPressureLoss].get_value("Pa/m");
+	double deltaPMax = m_para[P_MaxPressureLoss].get_value("Pa/m");
 	for (NetworkEdge &e: m_edges) {
 		const NetworkPipe * currentPipe = nullptr; // here we store the candidate for the pipe to use
 
 		for (const NetworkPipe * pipe : availablePipes){
-			double massFlow = e.m_maxHeatingDemand / (m_sizingPara[SP_TemperatureDifference].get_value("K")
+			double massFlow = e.m_maxHeatingDemand / (m_para[P_TemperatureDifference].get_value("K")
 													  * fluid->m_para[NetworkFluid::P_HeatCapacity].get_value("J/kgK"));
 			//  pressure loss per length (Pa/m)
-			double dp = pressureLossColebrook(1.0, massFlow, fluid, *pipe, m_sizingPara[SP_TemperatureSetpoint].get_value("C"));
+			double dp = pressureLossColebrook(1.0, massFlow, fluid, *pipe, m_para[P_TemperatureSetpoint].get_value("C"));
 			// select smallest possible pipe
 			if (dp < deltaPMax){
 				// if still unset, use this pipe
@@ -660,9 +660,9 @@ double Network::numberOfBuildings() const{
 
 
 void Network::setDefaultSizingParams() {
-	m_sizingPara[Network::SizingParam::SP_TemperatureSetpoint] = IBK::Parameter("TemperatureSetpoint", 5, IBK::Unit("C"));
-	KeywordList::setParameter(m_sizingPara, "Network::SizingParam", Network::SizingParam::SP_TemperatureDifference, 5);
-	KeywordList::setParameter(m_sizingPara, "Network::SizingParam", Network::SizingParam::SP_MaxPressureLoss, 150);
+	m_para[Network::para_t::P_TemperatureSetpoint] = IBK::Parameter("TemperatureSetpoint", 5, IBK::Unit("C"));
+	KeywordList::setParameter(m_para, "Network::SizingParam", Network::para_t::P_TemperatureDifference, 5);
+	KeywordList::setParameter(m_para, "Network::SizingParam", Network::para_t::P_MaxPressureLoss, 150);
 }
 
 

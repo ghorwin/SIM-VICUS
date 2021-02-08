@@ -127,10 +127,10 @@ void Network::readXML(const TiXmlElement * element) {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
 				bool success = false;
-				SizingParam ptype;
+				para_t ptype;
 				try {
-					ptype = (SizingParam)KeywordList::Enumeration("Network::SizingParam", p.name);
-					m_sizingPara[ptype] = p; success = true;
+					ptype = (para_t)KeywordList::Enumeration("Network::para_t", p.name);
+					m_para[ptype] = p; success = true;
 				}
 				catch (...) { /* intentional fail */  }
 				if (!success)
@@ -220,9 +220,9 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 	if (m_type != NUM_NET)
 		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("Network::NetworkType",  m_type));
 
-	for (unsigned int i=0; i<NUM_SP; ++i) {
-		if (!m_sizingPara[i].name.empty()) {
-			TiXmlElement::appendIBKParameterElement(e, m_sizingPara[i].name, m_sizingPara[i].IO_unit.name(), m_sizingPara[i].get_value());
+	for (unsigned int i=0; i<NUM_P; ++i) {
+		if (!m_para[i].name.empty()) {
+			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 		}
 	}
 	TiXmlElement::appendSingleAttributeElement(e, "ScaleNodes", nullptr, std::string(), IBK::val2string<double>(m_scaleNodes));

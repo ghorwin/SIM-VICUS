@@ -91,6 +91,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Temperature for pipe dimensioning algorithm");
 	tr("Temperature difference for pipe dimensioning algorithm");
 	tr("Maximum pressure loss for pipe dimensioning algorithm");
+	tr("Reference pressure applied to reference element");
+	tr("Fluid temperature for hydraulic calculation, else initial temperature");
 	tr("Simple pipe at stationary flow conditions without heat exchange");
 	tr("Simple pipe at stationary flow conditions with heat exchange");
 	tr("Pipe with a discretized fluid volume, without heat exchange");
