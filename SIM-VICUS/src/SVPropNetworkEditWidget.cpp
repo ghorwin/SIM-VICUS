@@ -24,7 +24,6 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
-	m_ui->labelSelectionInfo->setVisible(false);
 	m_ui->groupBoxNode->setVisible(false);
 	m_ui->groupBoxEdge->setVisible(false);
 	m_ui->groupBoxComponent->setVisible(false);
@@ -357,12 +356,12 @@ void SVPropNetworkEditWidget::modifySizingParams()
 {
 	if (!setNetwork())
 		return;
-	m_currentNetwork.m_para[VICUS::Network::P_TemperatureSetpoint].set(VICUS::KeywordList::Keyword("Network::SizingParam", VICUS::Network::P_TemperatureSetpoint),
+	m_currentNetwork.m_para[VICUS::Network::P_TemperatureSetpoint].set(VICUS::KeywordList::Keyword("Network::para_t", VICUS::Network::P_TemperatureSetpoint),
 																	   m_ui->doubleSpinBoxTemperatureSetpoint->value(),
 																	   IBK::Unit("C"));
-	VICUS::KeywordList::setParameter(m_currentNetwork.m_para, "Network::SizingParam", VICUS::Network::P_TemperatureDifference,
+	VICUS::KeywordList::setParameter(m_currentNetwork.m_para, "Network::para_t", VICUS::Network::P_TemperatureDifference,
 									 m_ui->doubleSpinBoxTemperatureDifference->value());
-	VICUS::KeywordList::setParameter(m_currentNetwork.m_para, "Network::SizingParam", VICUS::Network::P_MaxPressureLoss,
+	VICUS::KeywordList::setParameter(m_currentNetwork.m_para, "Network::para_t", VICUS::Network::P_MaxPressureLoss,
 									 m_ui->doubleSpinBoxMaximumPressureLoss->value());
 	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network sizing parameters modified"), networkIndex, m_currentNetwork);
@@ -380,7 +379,6 @@ bool SVPropNetworkEditWidget::setNetwork() {
 
 
 void SVPropNetworkEditWidget::showNetworkProperties() {
-	m_ui->labelSelectionInfo->setVisible(false);
 	m_ui->groupBoxNode->setVisible(false);
 	m_ui->groupBoxEdge->setVisible(false);
 	m_ui->groupBoxSizePipes->setVisible(true);
@@ -392,7 +390,6 @@ void SVPropNetworkEditWidget::showNetworkProperties() {
 
 
 void SVPropNetworkEditWidget::showNodeProperties() {
-	m_ui->labelSelectionInfo->setVisible(false);
 	m_ui->groupBoxNode->setVisible(true);
 	m_ui->groupBoxEdge->setVisible(false);
 	m_ui->groupBoxSizePipes->setVisible(false);
@@ -404,7 +401,6 @@ void SVPropNetworkEditWidget::showNodeProperties() {
 
 
 void SVPropNetworkEditWidget::showEdgeProperties() {
-	m_ui->labelSelectionInfo->setVisible(false);
 	m_ui->groupBoxNode->setVisible(false);
 	m_ui->groupBoxEdge->setVisible(true);
 	m_ui->groupBoxSizePipes->setVisible(false);
@@ -412,12 +408,6 @@ void SVPropNetworkEditWidget::showEdgeProperties() {
 	m_ui->groupBoxEditNetwork->setVisible(false);
 	m_ui->groupBoxHeatExchange->setVisible(true);
 	m_ui->groupBoxComponent->setVisible(true);
-}
-
-
-void SVPropNetworkEditWidget::showMixedSelectionInfo() {
-	showNetworkProperties();
-	m_ui->labelSelectionInfo->setVisible(true);
 }
 
 

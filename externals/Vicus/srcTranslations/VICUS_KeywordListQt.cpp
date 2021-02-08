@@ -93,20 +93,11 @@ KeywordListQt::KeywordListQt() {
 	tr("Maximum pressure loss for pipe dimensioning algorithm");
 	tr("Reference pressure applied to reference element");
 	tr("Fluid temperature for hydraulic calculation, else initial temperature");
-	tr("Simple pipe at stationary flow conditions without heat exchange");
 	tr("Simple pipe at stationary flow conditions with heat exchange");
-	tr("Pipe with a discretized fluid volume, without heat exchange");
 	tr("Pipe with a discretized fluid volume and heat exchange");
 	tr("Pump with constant pressure");
 	tr("Simple heat exchanger with given heat flux");
 	tr("Heat pump");
-	tr("Gas boiler");
-	tr("Control valve");
-	tr("Water storage");
-	tr("Component conditioning system is a system for heating or cooling of components");
-	tr("Radiator");
-	tr("Mixer component");
-	tr("Flow characteristics provided by FMU");
 	tr("Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes).");
 	tr("Pressure loss coefficient for the component (zeta-value).");
 	tr("External heat transfer coeffient for the outside boundary.");
@@ -120,6 +111,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Constant temperature");
 	tr("Constant heat flux");
 	tr("Heat flux from data file");
+	tr("Temperature from data file");
 	tr("Heat exchange with zone");
 	tr("Heat exchange with FMU which requires temperature and provides heat flux");
 	tr("Dry density of the material.");

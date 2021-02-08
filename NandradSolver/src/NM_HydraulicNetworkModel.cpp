@@ -191,7 +191,7 @@ void HydraulicNetworkModel::setup() {
 				m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 			} break;
 
-			case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel :
+			case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump :
 			{
 				// create pump model
 				HNConstantPressurePump * pumpElement = new HNConstantPressurePump(*e.m_component);
@@ -207,14 +207,7 @@ void HydraulicNetworkModel::setup() {
 				m_p->m_flowElements.push_back(hxElement); // transfer ownership
 			} break;
 
-			case NANDRAD::HydraulicNetworkComponent::MT_HeatPump :
-			case NANDRAD::HydraulicNetworkComponent::MT_GasBoiler :
-			case NANDRAD::HydraulicNetworkComponent::MT_ControlValve :
-			case NANDRAD::HydraulicNetworkComponent::MT_WaterStorage :
-			case NANDRAD::HydraulicNetworkComponent::MT_ComponentConditionSystem :
-			case NANDRAD::HydraulicNetworkComponent::MT_Radiator :
-			case NANDRAD::HydraulicNetworkComponent::MT_Mixer :
-			case NANDRAD::HydraulicNetworkComponent::MT_FMU : {
+			case NANDRAD::HydraulicNetworkComponent::MT_HeatPump : {
 				throw IBK::Exception(IBK::FormatString("Model type '%1' for HydraulicNetworkComponent "
 									 "with id %2 is still not supported")
 									.arg(NANDRAD::KeywordList::Keyword(

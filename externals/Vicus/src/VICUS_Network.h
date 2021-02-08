@@ -206,7 +206,7 @@ public:
 	NetworkType								m_type = NET_DoublePipe;					// XML:E
 
 	/*! Network Parameters (e.g. for pipe sizing algorithm) */
-	IBK::Parameter							m_para[NUM_P];						// XML:E
+	IBK::Parameter							m_para[NUM_P];								// XML:E
 
 	double									m_scaleNodes = 30;							// XML:E
 

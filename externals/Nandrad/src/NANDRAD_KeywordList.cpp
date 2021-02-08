@@ -164,16 +164,9 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "StaticPipe";
 				case 1 : return "DynamicPipe";
-				case 2 : return "ConstantPressurePumpModel";
+				case 2 : return "ConstantPressurePump";
 				case 3 : return "HeatExchanger";
 				case 4 : return "HeatPump";
-				case 5 : return "GasBoiler";
-				case 6 : return "ControlValve";
-				case 7 : return "WaterStorage";
-				case 8 : return "ComponentConditionSystem";
-				case 9 : return "Radiator";
-				case 10 : return "Mixer";
-				case 11 : return "FMU";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 8 :
@@ -192,12 +185,13 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::HeatExchangeType
 			case 9 :
 			switch (t) {
-				case 0 : return "TemperatureConstant";
-				case 1 : return "HeatFluxConstant";
-				case 2 : return "HeatFluxDataFile";
-				case 3 : return "TemperatureDataFile";
-				case 4 : return "HeatExchangeWithZoneTemperature";
-				case 5 : return "HeatExchangeWithFMUTemperature";
+				case 0 : return "Adiabatic";
+				case 1 : return "TemperatureConstant";
+				case 2 : return "HeatFluxConstant";
+				case 3 : return "HeatFluxDataFile";
+				case 4 : return "TemperatureDataFile";
+				case 5 : return "HeatExchangeWithZoneTemperature";
+				case 6 : return "HeatExchangeWithFMUTemperature";
 			} break;
 			// HydraulicNetworkElement::para_t
 			case 10 :
@@ -644,16 +638,9 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "StaticPipe";
 				case 1 : return "DynamicPipe";
-				case 2 : return "ConstantPressurePumpModel";
+				case 2 : return "ConstantPressurePump";
 				case 3 : return "HeatExchanger";
 				case 4 : return "HeatPump";
-				case 5 : return "GasBoiler";
-				case 6 : return "ControlValve";
-				case 7 : return "WaterStorage";
-				case 8 : return "ComponentConditionSystem";
-				case 9 : return "Radiator";
-				case 10 : return "Mixer";
-				case 11 : return "FMU";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 8 :
@@ -672,12 +659,13 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::HeatExchangeType
 			case 9 :
 			switch (t) {
-				case 0 : return "TemperatureConstant";
-				case 1 : return "HeatFluxConstant";
-				case 2 : return "HeatFluxDataFile";
-				case 3 : return "TemperatureDataFile";
-				case 4 : return "HeatExchangeWithZoneTemperature";
-				case 5 : return "HeatExchangeWithFMUTemperature";
+				case 0 : return "Adiabatic";
+				case 1 : return "TemperatureConstant";
+				case 2 : return "HeatFluxConstant";
+				case 3 : return "HeatFluxDataFile";
+				case 4 : return "TemperatureDataFile";
+				case 5 : return "HeatExchangeWithZoneTemperature";
+				case 6 : return "HeatExchangeWithFMUTemperature";
 			} break;
 			// HydraulicNetworkElement::para_t
 			case 10 :
@@ -1110,8 +1098,8 @@ namespace NANDRAD {
 			// HydraulicNetwork::ModelType
 			case 5 :
 			switch (t) {
-				case 0 : return "Temperature in entire network is constant, and predefined";
-				case 1 : return "A thermo-hydraulic network is calculated";
+				case 0 : return "Hydraulic calculation with constant temperature";
+				case 1 : return "Thermo-hydraulic calculation";
 			} break;
 			// HydraulicNetwork::para_t
 			case 6 :
@@ -1128,13 +1116,6 @@ namespace NANDRAD {
 				case 2 : return "Pump with constant pressure";
 				case 3 : return "Simple heat exchanger with given heat flux";
 				case 4 : return "Heat pump";
-				case 5 : return "Gas boiler";
-				case 6 : return "Control valve";
-				case 7 : return "Water storage";
-				case 8 : return "Component conditioning system is a system for heating or cooling of components";
-				case 9 : return "Radiator";
-				case 10 : return "Mixer component";
-				case 11 : return "Flow characteristics provided by FMU";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 8 :
@@ -1153,12 +1134,13 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::HeatExchangeType
 			case 9 :
 			switch (t) {
-				case 0 : return "Constant temperature";
-				case 1 : return "Constant heat flux";
-				case 2 : return "Heat flux from data file";
-				case 3 : return "Temperature from data file";
-				case 4 : return "Heat exchange with zone";
-				case 5 : return "Heat exchange with FMU which requires temperature and provides heat flux";
+				case 0 : return "Adiabatic";
+				case 1 : return "Constant temperature";
+				case 2 : return "Constant heat flux";
+				case 3 : return "Heat flux from data file";
+				case 4 : return "Temperature from data file";
+				case 5 : return "Heat exchange with zone";
+				case 6 : return "Heat exchange with FMU which requires temperature and provides heat flux";
 			} break;
 			// HydraulicNetworkElement::para_t
 			case 10 :
@@ -1608,13 +1590,6 @@ namespace NANDRAD {
 				case 2 : return "";
 				case 3 : return "";
 				case 4 : return "";
-				case 5 : return "";
-				case 6 : return "";
-				case 7 : return "";
-				case 8 : return "";
-				case 9 : return "";
-				case 10 : return "";
-				case 11 : return "";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 8 :
@@ -1639,6 +1614,7 @@ namespace NANDRAD {
 				case 3 : return "";
 				case 4 : return "";
 				case 5 : return "";
+				case 6 : return "";
 			} break;
 			// HydraulicNetworkElement::para_t
 			case 10 :
@@ -2088,13 +2064,6 @@ namespace NANDRAD {
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
-				case 5 : return "#FFFFFF";
-				case 6 : return "#FFFFFF";
-				case 7 : return "#FFFFFF";
-				case 8 : return "#FFFFFF";
-				case 9 : return "#FFFFFF";
-				case 10 : return "#FFFFFF";
-				case 11 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 8 :
@@ -2119,6 +2088,7 @@ namespace NANDRAD {
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
 				case 5 : return "#FFFFFF";
+				case 6 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkElement::para_t
 			case 10 :
@@ -2568,13 +2538,6 @@ namespace NANDRAD {
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
-				case 5 : return std::numeric_limits<double>::quiet_NaN();
-				case 6 : return std::numeric_limits<double>::quiet_NaN();
-				case 7 : return std::numeric_limits<double>::quiet_NaN();
-				case 8 : return std::numeric_limits<double>::quiet_NaN();
-				case 9 : return std::numeric_limits<double>::quiet_NaN();
-				case 10 : return std::numeric_limits<double>::quiet_NaN();
-				case 11 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 8 :
@@ -2599,6 +2562,7 @@ namespace NANDRAD {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
+				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkElement::para_t
 			case 10 :
@@ -3011,11 +2975,11 @@ namespace NANDRAD {
 			// HydraulicNetwork::para_t
 			case 6 : return 3;
 			// HydraulicNetworkComponent::ModelType
-			case 7 : return 12;
+			case 7 : return 5;
 			// HydraulicNetworkComponent::para_t
 			case 8 : return 10;
 			// HydraulicNetworkComponent::HeatExchangeType
-			case 9 : return 6;
+			case 9 : return 7;
 			// HydraulicNetworkElement::para_t
 			case 10 : return 3;
 			// HydraulicNetworkElement::intPara_t
@@ -3147,11 +3111,11 @@ namespace NANDRAD {
 			// HydraulicNetwork::para_t
 			case 6 : return 2;
 			// HydraulicNetworkComponent::ModelType
-			case 7 : return 11;
+			case 7 : return 4;
 			// HydraulicNetworkComponent::para_t
 			case 8 : return 9;
 			// HydraulicNetworkComponent::HeatExchangeType
-			case 9 : return 5;
+			case 9 : return 6;
 			// HydraulicNetworkElement::para_t
 			case 10 : return 2;
 			// HydraulicNetworkElement::intPara_t

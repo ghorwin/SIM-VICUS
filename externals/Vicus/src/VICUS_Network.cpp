@@ -450,7 +450,7 @@ FUNCID(Network::sizePipeDimensions);
 	// check parameters
 	for (unsigned int n = 0; n < NUM_P; ++n){
 		if (m_para[n].empty())
-			throw IBK::Exception(IBK::FormatString("'%1' not set").arg(VICUS::KeywordList::Keyword("Network::sizingParam", n)), FUNC_ID);
+			throw IBK::Exception(IBK::FormatString("'%1' not set").arg(VICUS::KeywordList::Keyword("Network::para_t", n)), FUNC_ID);
 	}
 
 	// check for source
@@ -661,8 +661,8 @@ double Network::numberOfBuildings() const{
 
 void Network::setDefaultSizingParams() {
 	m_para[Network::para_t::P_TemperatureSetpoint] = IBK::Parameter("TemperatureSetpoint", 5, IBK::Unit("C"));
-	KeywordList::setParameter(m_para, "Network::SizingParam", Network::para_t::P_TemperatureDifference, 5);
-	KeywordList::setParameter(m_para, "Network::SizingParam", Network::para_t::P_MaxPressureLoss, 150);
+	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_TemperatureDifference, 5);
+	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_MaxPressureLoss, 150);
 }
 
 

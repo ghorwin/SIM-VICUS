@@ -36,8 +36,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Dry density of the material.");
 	tr("Specific heat capacity of the material.");
 	tr("Thermal conductivity of the dry material.");
-	tr("Temperature in entire network is constant, and predefined");
-	tr("A thermo-hydraulic network is calculated");
+	tr("Hydraulic calculation with constant temperature");
+	tr("Thermo-hydraulic calculation");
 	tr("Default temperature for HydraulicNetwork models");
 	tr("Initial temperature of the fluid");
 	tr("Reference pressure of network");
@@ -46,13 +46,6 @@ KeywordListQt::KeywordListQt() {
 	tr("Pump with constant pressure");
 	tr("Simple heat exchanger with given heat flux");
 	tr("Heat pump");
-	tr("Gas boiler");
-	tr("Control valve");
-	tr("Water storage");
-	tr("Component conditioning system is a system for heating or cooling of components");
-	tr("Radiator");
-	tr("Mixer component");
-	tr("Flow characteristics provided by FMU");
 	tr("Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes).");
 	tr("Pressure loss coefficient for the component (zeta-value).");
 	tr("External heat transfer coeffient for the outside boundary.");
@@ -63,6 +56,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Coefficient of performance of the component.");
 	tr("UA-Value of heat exchanger");
 	tr("Maximum width of discretized volumes in pipe");
+	tr("Adiabatic");
 	tr("Constant temperature");
 	tr("Constant heat flux");
 	tr("Heat flux from data file");

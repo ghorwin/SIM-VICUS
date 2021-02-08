@@ -169,28 +169,41 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 									   vicusNetwork.m_para[VICUS::Network::P_ReferencePressure].value);
 
 
+	// TODO Hauke: fluid editing from database
 	// *** Transfer fluid from Vicus to Nandrad
 	const SVDatabase  & db = SVSettings::instance().m_db;
-	const VICUS::NetworkFluid *fluid = db.m_fluids[vicusNetwork.m_fluidID];
-	Q_ASSERT(fluid != nullptr);
-	nandradNetwork.m_fluid.m_id = fluid->m_id;
-	nandradNetwork.m_fluid.m_displayName = fluid->m_displayName;
-	nandradNetwork.m_fluid.m_kinematicViscosity = fluid->m_kinematicViscosity;
+	VICUS::NetworkFluid fluid;
+	fluid.defaultFluidWater(1);
+//	Q_ASSERT(fluid != nullptr);
+	nandradNetwork.m_fluid.m_id = fluid.m_id;
+	nandradNetwork.m_fluid.m_displayName = fluid.m_displayName;
+	nandradNetwork.m_fluid.m_kinematicViscosity = fluid.m_kinematicViscosity;
 	for (int i=0; i<VICUS::NetworkFluid::NUM_P; ++i)
-		nandradNetwork.m_fluid.m_para[i] = fluid->m_para[i];
+		nandradNetwork.m_fluid.m_para[i] = fluid.m_para[i];
 
 
 	// *** Transfer components from Vicus to Nandrad
 	// --> collect all componentIDs used in vicus network
 	std::vector<unsigned int> componentIds;
-	for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes)
+	for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes){
+		if (node.m_type == VICUS::NetworkNode::NT_Mixer)
+			continue;
+		if(node.m_componentId == VICUS::INVALID_ID)
+				throw IBK::Exception(IBK::FormatString("Node '%1' has no referenced component").arg(node.m_id),
+									 FUNC_ID);
 		componentIds.push_back(node.m_componentId);
-	for (const VICUS::NetworkEdge &edge: vicusNetwork.m_edges)
+	}
+	for (const VICUS::NetworkEdge &edge: vicusNetwork.m_edges){
+		if(edge.m_componentId == VICUS::INVALID_ID)
+				throw IBK::Exception(IBK::FormatString("Edge '%1'->'%2' has no referenced component")
+									 .arg(edge.nodeId1()).arg(edge.nodeId2()), FUNC_ID);
 		componentIds.push_back(edge.m_componentId);
+	}
 	// --> transfer
 	for (unsigned int id: componentIds){
 		const VICUS::NetworkComponent *comp = db.m_networkComponents[id];
-		Q_ASSERT(comp != nullptr);
+		if(comp == nullptr)
+			throw IBK::Exception(IBK::FormatString("Component '%1' does not exist in database").arg(comp->m_id), FUNC_ID);
 		NANDRAD::HydraulicNetworkComponent nandradComp;
 		nandradComp.m_id = comp->m_id;
 		nandradComp.m_displayName = comp->m_displayName.string(IBK::MultiLanguageString::m_language, "en");
@@ -205,13 +218,18 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	// *** Transform pipes from Vicus to NANDRAD
 	// --> collect all pipeIds used in vicus network
 	std::vector<unsigned int> pipeIds;
-	for (const VICUS::NetworkEdge &edge: vicusNetwork.m_edges)
+	for (const VICUS::NetworkEdge &edge: vicusNetwork.m_edges){
+		if(edge.m_pipeId == VICUS::INVALID_ID)
+				throw IBK::Exception(IBK::FormatString("Edge '%1'->'%2' has no referenced pipe")
+									 .arg(edge.nodeId1()).arg(edge.nodeId2()), FUNC_ID);
 		pipeIds.push_back(edge.m_pipeId);
+	}
 
 	// --> transfer
 	for(unsigned int id: pipeIds){
 		const VICUS::NetworkPipe *pipe = db.m_pipes[id];
-		Q_ASSERT(pipe != nullptr);
+		if (pipe == nullptr)
+			throw IBK::Exception(IBK::FormatString("Pipe '%1' does not exist in databse").arg(pipe->m_id), FUNC_ID);
 		NANDRAD::HydraulicNetworkPipeProperties pipeProp;
 		pipeProp.m_id = pipe->m_id;
 
@@ -293,9 +311,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		// check if the component has a model type which corresponds to a pipe
 		const VICUS::NetworkComponent *comp = db.m_networkComponents[edge->m_componentId];
 		if ( ! (comp->m_modelType == VICUS::NetworkComponent ::MT_StaticPipe ||
-				comp->m_modelType == VICUS::NetworkComponent ::MT_StaticAdiabaticPipe ||
-				comp->m_modelType == VICUS::NetworkComponent ::MT_DynamicPipe ||
-				comp->m_modelType == VICUS::NetworkComponent ::MT_DynamicAdiabaticPipe) )
+				comp->m_modelType == VICUS::NetworkComponent ::MT_DynamicPipe) )
 			throw IBK::Exception(IBK::FormatString("Component of edge %1->%2 does not represent a pipe")
 													.arg(edge->nodeId1()).arg(edge->nodeId2()), FUNC_ID);
 
@@ -343,18 +359,22 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 
 }
 
+
+
 void SVSimulationStartNetworkSim::modifyLineEdits()
 {
 	VICUS::Project proj = project();
 	unsigned int networkId = m_networksMap.value(m_ui->comboBoxNetwork->currentText());
 	VICUS::Network network = *proj.element(proj.m_geometricNetworks, networkId);
 	if (m_ui->lineEditReferencePressure->isValid())
-		VICUS::KeywordList::setParameter(network.m_para, "Network:para_t", VICUS::Network::P_ReferencePressure,
+		VICUS::KeywordList::setParameter(network.m_para, "Network::para_t", VICUS::Network::P_ReferencePressure,
 										 m_ui->lineEditReferencePressure->value());
 	if (m_ui->lineEditDefaultFluidTemperature->isValid())
-		VICUS::KeywordList::setParameter(network.m_para, "Network:para_t", VICUS::Network::P_DefaultFluidTemperature,
+		VICUS::KeywordList::setParameter(network.m_para, "Network::para_t", VICUS::Network::P_DefaultFluidTemperature,
 										 m_ui->lineEditDefaultFluidTemperature->value());
-	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), const_cast<const VICUS::Network*>(&network));
+
+	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(),
+											  project().element(project().m_geometricNetworks, networkId));
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network visualization properties updated"), networkIndex, network);
 	undo->push(); // modifies project and updates views
 }
@@ -367,7 +387,7 @@ void SVSimulationStartNetworkSim::updateLineEdits()
 	if (!network->m_para[VICUS::Network::P_ReferencePressure].empty())
 		m_ui->lineEditReferencePressure->setValue(network->m_para[VICUS::Network::P_ReferencePressure].value);
 	if (!network->m_para[VICUS::Network::P_DefaultFluidTemperature].empty())
-		m_ui->lineEditDefaultFluidTemperature->setValue(network->m_para[VICUS::Network::P_DefaultFluidTemperature].value);
+		m_ui->lineEditDefaultFluidTemperature->setValue(network->m_para[VICUS::Network::P_DefaultFluidTemperature].get_value("C"));
 }
 
 

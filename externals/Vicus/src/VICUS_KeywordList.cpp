@@ -190,20 +190,11 @@ namespace VICUS {
 			// NetworkComponent::ModelType
 			case 10 :
 			switch (t) {
-				case 0 : return "StaticAdiabaticPipe";
-				case 1 : return "StaticPipe";
-				case 2 : return "DynamicAdiabaticPipe";
-				case 3 : return "DynamicPipe";
-				case 4 : return "ConstantPressurePumpModel";
-				case 5 : return "HeatExchanger";
-				case 6 : return "HeatPump";
-				case 7 : return "GasBoiler";
-				case 8 : return "ControlValve";
-				case 9 : return "WaterStorage";
-				case 10 : return "ComponentConditionSystem";
-				case 11 : return "Radiator";
-				case 12 : return "Mixer";
-				case 13 : return "FMU";
+				case 0 : return "StaticPipe";
+				case 1 : return "DynamicPipe";
+				case 2 : return "ConstantPressurePump";
+				case 3 : return "HeatExchanger";
+				case 4 : return "HeatPump";
 			} break;
 			// NetworkComponent::para_t
 			case 11 :
@@ -225,8 +216,9 @@ namespace VICUS {
 				case 0 : return "TemperatureConstant";
 				case 1 : return "HeatFluxConstant";
 				case 2 : return "HeatFluxDataFile";
-				case 3 : return "HeatExchangeWithZoneTemperature";
-				case 4 : return "HeatExchangeWithFMUTemperature";
+				case 3 : return "TemperatureDataFile";
+				case 4 : return "HeatExchangeWithZoneTemperature";
+				case 5 : return "HeatExchangeWithFMUTemperature";
 			} break;
 			// NetworkFluid::para_t
 			case 13 :
@@ -446,20 +438,11 @@ namespace VICUS {
 			// NetworkComponent::ModelType
 			case 10 :
 			switch (t) {
-				case 0 : return "StaticAdiabaticPipe";
-				case 1 : return "StaticPipe";
-				case 2 : return "DynamicAdiabaticPipe";
-				case 3 : return "DynamicPipe";
-				case 4 : return "ConstantPressurePumpModel";
-				case 5 : return "HeatExchanger";
-				case 6 : return "HeatPump";
-				case 7 : return "GasBoiler";
-				case 8 : return "ControlValve";
-				case 9 : return "WaterStorage";
-				case 10 : return "ComponentConditionSystem";
-				case 11 : return "Radiator";
-				case 12 : return "Mixer";
-				case 13 : return "FMU";
+				case 0 : return "StaticPipe";
+				case 1 : return "DynamicPipe";
+				case 2 : return "ConstantPressurePump";
+				case 3 : return "HeatExchanger";
+				case 4 : return "HeatPump";
 			} break;
 			// NetworkComponent::para_t
 			case 11 :
@@ -481,8 +464,9 @@ namespace VICUS {
 				case 0 : return "TemperatureConstant";
 				case 1 : return "HeatFluxConstant";
 				case 2 : return "HeatFluxDataFile";
-				case 3 : return "HeatExchangeWithZoneTemperature";
-				case 4 : return "HeatExchangeWithFMUTemperature";
+				case 3 : return "TemperatureDataFile";
+				case 4 : return "HeatExchangeWithZoneTemperature";
+				case 5 : return "HeatExchangeWithFMUTemperature";
 			} break;
 			// NetworkFluid::para_t
 			case 13 :
@@ -703,20 +687,11 @@ namespace VICUS {
 			// NetworkComponent::ModelType
 			case 10 :
 			switch (t) {
-				case 0 : return "Simple pipe at stationary flow conditions without heat exchange";
-				case 1 : return "Simple pipe at stationary flow conditions with heat exchange";
-				case 2 : return "Pipe with a discretized fluid volume, without heat exchange";
-				case 3 : return "Pipe with a discretized fluid volume and heat exchange";
-				case 4 : return "Pump with constant pressure";
-				case 5 : return "Simple heat exchanger with given heat flux";
-				case 6 : return "Heat pump";
-				case 7 : return "Gas boiler";
-				case 8 : return "Control valve";
-				case 9 : return "Water storage";
-				case 10 : return "Component conditioning system is a system for heating or cooling of components";
-				case 11 : return "Radiator";
-				case 12 : return "Mixer component";
-				case 13 : return "Flow characteristics provided by FMU";
+				case 0 : return "Simple pipe at stationary flow conditions with heat exchange";
+				case 1 : return "Pipe with a discretized fluid volume and heat exchange";
+				case 2 : return "Pump with constant pressure";
+				case 3 : return "Simple heat exchanger with given heat flux";
+				case 4 : return "Heat pump";
 			} break;
 			// NetworkComponent::para_t
 			case 11 :
@@ -738,8 +713,9 @@ namespace VICUS {
 				case 0 : return "Constant temperature";
 				case 1 : return "Constant heat flux";
 				case 2 : return "Heat flux from data file";
-				case 3 : return "Heat exchange with zone";
-				case 4 : return "Heat exchange with FMU which requires temperature and provides heat flux";
+				case 3 : return "Temperature from data file";
+				case 4 : return "Heat exchange with zone";
+				case 5 : return "Heat exchange with FMU which requires temperature and provides heat flux";
 			} break;
 			// NetworkFluid::para_t
 			case 13 :
@@ -964,15 +940,6 @@ namespace VICUS {
 				case 2 : return "";
 				case 3 : return "";
 				case 4 : return "";
-				case 5 : return "";
-				case 6 : return "";
-				case 7 : return "";
-				case 8 : return "";
-				case 9 : return "";
-				case 10 : return "";
-				case 11 : return "";
-				case 12 : return "";
-				case 13 : return "";
 			} break;
 			// NetworkComponent::para_t
 			case 11 :
@@ -991,11 +958,12 @@ namespace VICUS {
 			// NetworkComponent::HeatExchangeType
 			case 12 :
 			switch (t) {
-				case 0 : return "-";
-				case 1 : return "-";
-				case 2 : return "-";
-				case 3 : return "-";
-				case 4 : return "-";
+				case 0 : return "";
+				case 1 : return "";
+				case 2 : return "";
+				case 3 : return "";
+				case 4 : return "";
+				case 5 : return "";
 			} break;
 			// NetworkFluid::para_t
 			case 13 :
@@ -1220,15 +1188,6 @@ namespace VICUS {
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
-				case 5 : return "#FFFFFF";
-				case 6 : return "#FFFFFF";
-				case 7 : return "#FFFFFF";
-				case 8 : return "#FFFFFF";
-				case 9 : return "#FFFFFF";
-				case 10 : return "#FFFFFF";
-				case 11 : return "#FFFFFF";
-				case 12 : return "#FFFFFF";
-				case 13 : return "#FFFFFF";
 			} break;
 			// NetworkComponent::para_t
 			case 11 :
@@ -1252,6 +1211,7 @@ namespace VICUS {
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
+				case 5 : return "#FFFFFF";
 			} break;
 			// NetworkFluid::para_t
 			case 13 :
@@ -1476,15 +1436,6 @@ namespace VICUS {
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
-				case 5 : return std::numeric_limits<double>::quiet_NaN();
-				case 6 : return std::numeric_limits<double>::quiet_NaN();
-				case 7 : return std::numeric_limits<double>::quiet_NaN();
-				case 8 : return std::numeric_limits<double>::quiet_NaN();
-				case 9 : return std::numeric_limits<double>::quiet_NaN();
-				case 10 : return std::numeric_limits<double>::quiet_NaN();
-				case 11 : return std::numeric_limits<double>::quiet_NaN();
-				case 12 : return std::numeric_limits<double>::quiet_NaN();
-				case 13 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkComponent::para_t
 			case 11 :
@@ -1508,6 +1459,7 @@ namespace VICUS {
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
+				case 5 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkFluid::para_t
 			case 13 :
@@ -1637,11 +1589,11 @@ namespace VICUS {
 			// Network::para_t
 			case 9 : return 5;
 			// NetworkComponent::ModelType
-			case 10 : return 14;
+			case 10 : return 5;
 			// NetworkComponent::para_t
 			case 11 : return 10;
 			// NetworkComponent::HeatExchangeType
-			case 12 : return 5;
+			case 12 : return 6;
 			// NetworkFluid::para_t
 			case 13 : return 3;
 			// NetworkNode::NodeType
@@ -1701,11 +1653,11 @@ namespace VICUS {
 			// Network::para_t
 			case 9 : return 4;
 			// NetworkComponent::ModelType
-			case 10 : return 13;
+			case 10 : return 4;
 			// NetworkComponent::para_t
 			case 11 : return 9;
 			// NetworkComponent::HeatExchangeType
-			case 12 : return 4;
+			case 12 : return 5;
 			// NetworkFluid::para_t
 			case 13 : return 2;
 			// NetworkNode::NodeType

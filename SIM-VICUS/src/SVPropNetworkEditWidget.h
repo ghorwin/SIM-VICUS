@@ -36,8 +36,6 @@ public:
 
 	void showEdgeProperties();
 
-	void showMixedSelectionInfo();
-
 public slots:
 
 	/*! Connected to SVProjectHandler::modified(), we listen to changes in selections. */

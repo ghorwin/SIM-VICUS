@@ -123,8 +123,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 					break;
 				}
 
-
-				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel :
+				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump :
 				{
 					TNPump * pumpElement = new TNPump(e, *e.m_component, m_network->m_fluid);
 					m_p->m_flowElements.push_back(pumpElement);

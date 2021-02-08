@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Do Dez 10 12:42:13 2020</Created>
-		<LastEdited>Mo Feb 8 11:19:19 2021</LastEdited>
+		<LastEdited>Mo Feb 8 15:12:44 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -2764,6 +2764,8 @@
 				<IBK:Parameter name="TemperatureSetpoint" unit="C">20</IBK:Parameter>
 				<IBK:Parameter name="TemperatureDifference" unit="K">4</IBK:Parameter>
 				<IBK:Parameter name="MaxPressureLoss" unit="Pa/m">150</IBK:Parameter>
+				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
+				<IBK:Parameter name="DefaultFluidTemperature" unit="C">10</IBK:Parameter>
 				<ScaleNodes>25</ScaleNodes>
 				<ScaleEdges>30</ScaleEdges>
 			</Network>

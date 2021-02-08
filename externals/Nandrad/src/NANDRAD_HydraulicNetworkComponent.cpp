@@ -45,7 +45,7 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 	HydraulicNetwork::ModelType netModelType = (HydraulicNetwork::ModelType) networkModelType;
 	if (netModelType == HydraulicNetwork::MT_HydraulicNetwork){
 		switch (modelType) {
-			case MT_ConstantPressurePumpModel:
+			case MT_ConstantPressurePump:
 				return {P_PressureHead};
 			case MT_HeatPump:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_COP};
@@ -59,7 +59,7 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 	}
 	else {
 		switch (modelType) {
-			case MT_ConstantPressurePumpModel:
+			case MT_ConstantPressurePump:
 				return {P_PressureHead, P_PumpEfficiency, P_MotorEfficiency, P_Volume};
 			case MT_HeatPump:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_COP, P_Volume};

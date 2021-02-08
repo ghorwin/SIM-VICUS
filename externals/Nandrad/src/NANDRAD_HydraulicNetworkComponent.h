@@ -19,19 +19,19 @@ public:
 	enum ModelType {
 		MT_StaticPipe,						// Keyword: StaticPipe					'Simple pipe at stationary flow conditions with heat exchange'
 		MT_DynamicPipe,						// Keyword: DynamicPipe					'Pipe with a discretized fluid volume and heat exchange'
-		MT_ConstantPressurePumpModel,		// Keyword: ConstantPressurePumpModel	'Pump with constant pressure'
+		MT_ConstantPressurePump,			// Keyword: ConstantPressurePump		'Pump with constant pressure'
 		MT_HeatExchanger,					// Keyword: HeatExchanger				'Simple heat exchanger with given heat flux'
 
 		// models below not supported yet
 
 		MT_HeatPump,						// Keyword: HeatPump					'Heat pump'
-		MT_GasBoiler,						// Keyword: GasBoiler					'Gas boiler'
-		MT_ControlValve,					// Keyword: ControlValve				'Control valve'
-		MT_WaterStorage,					// Keyword: WaterStorage				'Water storage'
-		MT_ComponentConditionSystem,		// Keyword: ComponentConditionSystem	'Component conditioning system is a system for heating or cooling of components'
-		MT_Radiator,						// Keyword: Radiator					'Radiator'
-		MT_Mixer,							// Keyword: Mixer						'Mixer component'
-		MT_FMU,								// Keyword: FMU							'Flow characteristics provided by FMU'
+//		MT_GasBoiler,						// xKeyword: GasBoiler					'Gas boiler'
+//		MT_ControlValve,					// xKeyword: ControlValve				'Control valve'
+//		MT_WaterStorage,					// xKeyword: WaterStorage				'Water storage'
+//		MT_ComponentConditionSystem,		// xKeyword: ComponentConditionSystem	'Component conditioning system is a system for heating or cooling of components'
+//		MT_Radiator,						// xKeyword: Radiator					'Radiator'
+//		MT_Mixer,							// xKeyword: Mixer						'Mixer component'
+//		MT_FMU,								// xKeyword: FMU						'Flow characteristics provided by FMU'
 		NUM_MT
 	};
 
@@ -112,7 +112,6 @@ public:
 			case MT_DynamicPipe:
 			case MT_HeatPump:
 			case MT_HeatExchanger:
-			case MT_Radiator:
 				return true;
 			default:
 				return false;
