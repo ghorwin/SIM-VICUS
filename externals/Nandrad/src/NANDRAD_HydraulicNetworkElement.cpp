@@ -131,6 +131,17 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw) {
 							m_component->m_heatExchangeType)),
 							FUNC_ID);
 			}
+			case HydraulicNetworkComponent::HT_Adiabatic: {
+				// only allowed for pipes
+				if(m_component->m_modelType != HydraulicNetworkComponent::MT_StaticPipe ||
+				   m_component->m_modelType != HydraulicNetworkComponent::MT_DynamicPipe) {
+					throw IBK::Exception(IBK::FormatString("Heat exchange type %1 is only allowed for model type 'StaticPipe' "
+														   "and 'DynamicPipe'!")
+										 .arg(KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
+										 m_component->m_heatExchangeType)),
+										 FUNC_ID);
+				}
+			} break;
 			case HydraulicNetworkComponent::NUM_HT:
 				// No thermal exchange, nothing to initialize
 			break;
