@@ -6,6 +6,7 @@
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Object.h"
 #include "VICUS_NetworkPipe.h"
+#include "VICUS_NetworkHeatExchange.h"
 
 #include <NANDRAD_HydraulicNetworkComponent.h>
 
@@ -84,8 +85,7 @@ public:
 	/*! ID of component parameters. */
 	unsigned int										m_componentId = INVALID_ID;		// XML:E
 
-	// not final !!! //
-	IBK::Parameter										m_ambientTemperature;
+	NetworkHeatExchange									m_heatExchange;
 
 	/*! Whether the node is visible or not.
 		Note: keep the next line - this will cause the code generator to create serialization code

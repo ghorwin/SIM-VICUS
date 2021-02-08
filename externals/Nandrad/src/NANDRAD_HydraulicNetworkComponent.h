@@ -106,15 +106,17 @@ public:
 
 	// *** STATIC FUNCTIONS ***
 
-	static bool hasHeatExchange(const ModelType modelType) {
+	static std::vector<unsigned int> availableHeatExchangeTypes(const ModelType modelType) {
 		switch (modelType) {
 			case MT_StaticPipe:
+				return {HT_Adiabatic, HT_TemperatureConstant, HT_TemperatureDataFile};
 			case MT_DynamicPipe:
+				return {HT_Adiabatic, HT_TemperatureConstant, HT_TemperatureDataFile};
 			case MT_HeatPump:
 			case MT_HeatExchanger:
-				return true;
+				return {HT_HeatFluxConstant, HT_HeatFluxDataFile};
 			default:
-				return false;
+				return {};
 		}
 	}
 

@@ -6,6 +6,7 @@
 #include <VICUS_NetworkComponent.h>
 
 #include <NANDRAD_HydraulicNetworkComponent.h>
+#include <NANDRAD_KeywordList.h>
 
 #include <QtExt_LanguageHandler.h>
 #include "QtExt_Locale.h"
@@ -65,6 +66,14 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe == (int)VICUS::NetworkComponent::MT_DynamicPipe);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger == (int)VICUS::NetworkComponent::MT_HeatExchanger);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_HeatPump == (int)VICUS::NetworkComponent::MT_HeatPump);
+
+	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::HT_Adiabatic == (int)VICUS::NetworkComponent::HT_Adiabatic);
+	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant == (int)VICUS::NetworkComponent::HT_HeatFluxConstant);
+	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile == (int)VICUS::NetworkComponent::HT_HeatFluxDataFile);
+	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::HT_TemperatureConstant == (int)VICUS::NetworkComponent::HT_TemperatureConstant);
+	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::HT_TemperatureDataFile == (int)VICUS::NetworkComponent::HT_TemperatureDataFile);
+	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithFMUTemperature == (int)VICUS::NetworkComponent::HT_HeatExchangeWithFMUTemperature);
+	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature == (int)VICUS::NetworkComponent::HT_HeatExchangeWithZoneTemperature);
 }
 
 
@@ -160,6 +169,10 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	m_ui->tableWidgetParameters->blockSignals(false);
 	m_ui->tableWidgetParameters->resizeColumnsToContents();
 
+	// heat exchange type
+	setupComboboxHeatExchangeType();
+	m_ui->comboBoxHeatExchangeType->setCurrentIndex(m_ui->comboBoxHeatExchangeType->findData(
+														m_currentComponent->m_heatExchangeType));
 
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !comp->m_builtIn;
@@ -167,6 +180,17 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	m_ui->pushButtonComponentColor->setReadOnly(!isEditable);
 	m_ui->comboBoxComponentType->setEnabled(isEditable);
 
+}
+
+
+void SVDBNetworkComponentEditWidget::setupComboboxHeatExchangeType()
+{
+	m_ui->comboBoxHeatExchangeType->clear();
+	std::vector<unsigned int> hxTypes = NANDRAD::HydraulicNetworkComponent::availableHeatExchangeTypes(
+				NANDRAD::HydraulicNetworkComponent::ModelType((int)m_currentComponent->m_modelType));
+	for (unsigned int type: hxTypes)
+		m_ui->comboBoxHeatExchangeType->addItem(
+					NANDRAD::KeywordList::Description("HydraulicNetworkComponent::HeatExchangeType", (int)type), type);
 }
 
 
@@ -202,6 +226,17 @@ void SVDBNetworkComponentEditWidget::on_pushButtonComponentColor_colorChanged() 
 		m_db->m_networkComponents.m_modified = true;
 		m_dbModel->setItemModified(m_currentComponent->m_id); // tell model that we changed the data
 	}
+}
+
+
+void SVDBNetworkComponentEditWidget::on_comboBoxHeatExchangeType_activated(const QString &arg1)
+{
+	Q_ASSERT(m_currentComponent != nullptr);
+
+	m_currentComponent->m_heatExchangeType = VICUS::NetworkComponent::HeatExchangeType(
+				m_ui->comboBoxHeatExchangeType->currentData().toUInt());
+	m_db->m_networkComponents.m_modified = true;
+	m_dbModel->setItemModified(m_currentComponent->m_id); // tell model that we changed the data
 }
 
 
@@ -254,3 +289,5 @@ void SVDBNetworkComponentEditWidget::on_tableWidgetParameters_cellChanged(int ro
 	m_db->m_networkComponents.m_modified = true;
 	m_dbModel->setItemModified(m_currentComponent->m_id);
 }
+
+

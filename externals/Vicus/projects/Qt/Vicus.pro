@@ -51,6 +51,7 @@ HEADERS += \
 	../../src/VICUS_NetworkComponent.h \
 	../../src/VICUS_NetworkEdge.h \
 	../../src/VICUS_NetworkFluid.h \
+	../../src/VICUS_NetworkHeatExchange.h \
 	../../src/VICUS_NetworkLine.h \
 	../../src/VICUS_NetworkNode.h \
 	../../src/VICUS_NetworkPipe.h \
@@ -83,6 +84,7 @@ SOURCES += \
 	../../src/VICUS_NetworkComponent.cpp \
 	../../src/VICUS_NetworkEdge.cpp \
 	../../src/VICUS_NetworkFluid.cpp \
+	../../src/VICUS_NetworkHeatExchange.cpp \
 	../../src/VICUS_NetworkLine.cpp \
 	../../src/VICUS_NetworkNode.cpp \
 	../../src/VICUS_NetworkPipe.cpp \

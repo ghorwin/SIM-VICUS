@@ -9,6 +9,7 @@
 namespace VICUS {
 	class NetworkEdge;
 	class NetworkNode;
+	class NetworkComponent;
 }
 
 namespace Ui {
@@ -63,8 +64,6 @@ private slots:
 
 	void on_pushButtonReduceRedundantNodes_clicked();
 
-	void on_comboBoxComponent_activated(const QString &arg1);
-
 	void on_pushButtonEditComponents_clicked();
 
 	void on_lineEditHeatFlux_editingFinished();
@@ -76,6 +75,8 @@ private slots:
 	void on_horizontalSliderScaleEdges_valueChanged(int value);
 
 	void on_pushButtonSelectPipes_clicked();
+
+	void on_comboBoxComponent_currentIndexChanged(int index);
 
 private:
 	/*! This function is called whenever the current selection of edges/nodes/objects has changed.
@@ -109,6 +110,8 @@ private:
 	void clearUI();
 
 	void setAllEnabled(bool enabled);
+
+	void toggleHeatExchangeGroupBox();
 
 	QString largestDiameter() const;
 

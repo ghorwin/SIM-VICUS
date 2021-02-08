@@ -4,6 +4,7 @@
 #include "VICUS_Constants.h"
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Object.h"
+#include "VICUS_NetworkHeatExchange.h"
 
 #include "NANDRAD_HydraulicNetworkElement.h"
 
@@ -104,8 +105,7 @@ public:
 
 	std::string						m_displayName;													// XML:A
 
-	// not final !!! //
-	IBK::Parameter					m_heatFlux;
+	NetworkHeatExchange				m_heatExchange;
 
 	/*! Whether the node is visible or not
 		Note: keep the next line - this will cause the code generator to create serialization code

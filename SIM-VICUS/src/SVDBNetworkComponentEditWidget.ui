@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>619</width>
-    <height>491</height>
+    <height>427</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -72,6 +72,20 @@
       <string>Model parameters</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Type of heat exchange</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBoxHeatExchangeType"/>
+        </item>
+       </layout>
+      </item>
       <item>
        <widget class="QTableWidget" name="tableWidgetParameters"/>
       </item>
