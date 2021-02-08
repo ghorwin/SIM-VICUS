@@ -87,47 +87,42 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				case NANDRAD::HydraulicNetworkComponent::MT_StaticPipe :
 				{
 					IBK_ASSERT(e.m_pipeProperties != nullptr);
-					// create hydraulic pipe model
-					TNStaticPipeElement * pipeElement = new TNStaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
-					// add to flow elements
-					m_p->m_flowElements.push_back(pipeElement); // transfer ownership
-					m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
+					// craete adiabatic pipe model
+					if(e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_Adiabatic) {
+						TNStaticAdiabaticPipeElement * pipeElement = new TNStaticAdiabaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
+						// add to flow elements
+						m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+						m_p->m_heatLossElements.push_back(nullptr); // no heat loss
+					}
+					else {
+						// create pipe model with heat exchange
+						TNStaticPipeElement * pipeElement = new TNStaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
+						// add to flow elements
+						m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+						m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
+					}
 				} break;
 
 				case NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe :
 				{
 					IBK_ASSERT(e.m_pipeProperties != nullptr);
-					// create hydraulic pipe model
-					TNDynamicPipeElement * pipeElement = new TNDynamicPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
-					// add to flow elements
-					m_p->m_flowElements.push_back(pipeElement); // transfer ownership
-					m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
+					// craete adiabatic pipe model
+					if(e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_Adiabatic) {
+						TNDynamicAdiabaticPipeElement * pipeElement = new TNDynamicAdiabaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
+						// add to flow elements
+						m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+						m_p->m_heatLossElements.push_back(nullptr); // no heat loss
+					}
+					else {
+						// create pipe model with heat exchange
+						TNDynamicPipeElement * pipeElement = new TNDynamicPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
+						// add to flow elements
+						m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+						m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
+					}
 					break;
 				}
 
-
-//				case NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe :
-//				{
-//					IBK_ASSERT(e.m_pipeProperties != nullptr);
-//					// create hydraulic pipe model
-//					TNStaticAdiabaticPipeElement * pipeElement = new TNStaticAdiabaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
-//					// add to flow elements
-//					m_p->m_flowElements.push_back(pipeElement); // transfer ownership
-//					m_p->m_heatLossElements.push_back(nullptr); // no heat loss
-//					break;
-//				}
-
-
-//				case NANDRAD::HydraulicNetworkComponent::MT_DynamicAdiabaticPipe :
-//				{
-//					IBK_ASSERT(e.m_pipeProperties != nullptr);
-//					// create hydraulic pipe model
-//					TNDynamicAdiabaticPipeElement * pipeElement = new TNDynamicAdiabaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
-//					// add to flow elements
-//					m_p->m_flowElements.push_back(pipeElement); // transfer ownership
-//					m_p->m_heatLossElements.push_back(nullptr); // no heat loss
-//					break;
-//				}
 
 				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel :
 				{
