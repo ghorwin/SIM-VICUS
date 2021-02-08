@@ -164,7 +164,9 @@ public:
 	 * before calling sizePipeDimensions() */
 	void setDefaultSizingParams();
 
-	void updateVisualizationData(const VICUS::Database<VICUS::NetworkPipe> & pipeDB);
+	void updateVisualizationRadius(const VICUS::Database<VICUS::NetworkPipe> & pipeDB) const;
+
+	void updateColor() const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

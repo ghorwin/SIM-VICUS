@@ -118,9 +118,9 @@ public:
 	/*! The radius used for the visualization of this node in the 3D scene
 		Updated whenever the scale factor Network::m_scaleNodes changes.
 	*/
-	double							m_visualizationRadius;
+	mutable double					m_visualizationRadius;
 	/*! Color to be used for displaying (visible) nodes. */
-	QColor							m_visualizationColor;
+	mutable QColor					m_color;
 
 
 	double							m_distanceToStart = std::numeric_limits<double>::max();

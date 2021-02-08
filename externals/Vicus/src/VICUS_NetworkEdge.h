@@ -75,9 +75,6 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	NetworkNode											*m_node1 = nullptr;
-	NetworkNode											*m_node2 = nullptr;
-
 	/*! If false, this is a branch. */
 	bool												m_supply;						// XML:A
 
@@ -101,10 +98,15 @@ public:
 	/*! The radius used for the visualization of this edge in the 3D scene
 		Updated whenever the scale factor Network::m_scaleEdges changes, or the pipe ID.
 	*/
-	double												m_visualizationRadius;
+	mutable double										m_visualizationRadius;
+	/*! Color to be used for displaying (visible) nodes. */
+	mutable QColor										m_color;
 
 	/*! heating demand of all connected buildings */
 	double												m_maxHeatingDemand = 0;
+
+	NetworkNode									* m_node1 = nullptr;
+	NetworkNode									* m_node2 = nullptr;
 
 	unsigned int										m_nodeIdInlet = INVALID_ID;
 	unsigned int										m_nodeIdOutlet = INVALID_ID;

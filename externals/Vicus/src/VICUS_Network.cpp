@@ -129,12 +129,10 @@ void Network::updateNodeEdgeConnectionPointers() {
 }
 
 
-void Network::updateVisualizationData(const VICUS::Database<VICUS::NetworkPipe> & pipeDB) {
-
-	updateNodeEdgeConnectionPointers();
+void Network::updateVisualizationRadius(const VICUS::Database<VICUS::NetworkPipe> & pipeDB) const{
 
 	// process all edges and update their display radius
-	for (VICUS::NetworkEdge & e : m_edges) {
+	for (const VICUS::NetworkEdge & e : m_edges) {
 		double radius = 0.5;
 		if (e.m_pipeId != VICUS::INVALID_ID){
 			const VICUS::NetworkPipe * pipe = pipeDB[e.m_pipeId];
@@ -144,28 +142,9 @@ void Network::updateVisualizationData(const VICUS::Database<VICUS::NetworkPipe> 
 		e.m_visualizationRadius = radius;
 	}
 
-	// process all nodes and update their display color and radius
-	for (VICUS::NetworkNode & no : m_nodes) {
-		// color
-		QColor color("#0e4355");
-		switch (no.m_type) {
-			case VICUS::NetworkNode::NT_Source:
-				color = Qt::black;
-			break;
-			case VICUS::NetworkNode::NT_Building:
-				color = Qt::lightGray;
-			break;
-			case VICUS::NetworkNode::NT_Mixer:
-				color = Qt::darkGray;
-			break;
-			default:;
-		}
-		no.m_visualizationColor = color;
-
-		// radius
-
-		// default radius = 1 cm
-		double radius = 1 * m_scaleNodes / 100; /// TODO : why not have scalenodes in same order of magnitude as scaleEdges?
+	// process all nodes and update their display radius, default radius = 1 cm
+	for (const VICUS::NetworkNode & no : m_nodes) {
+		double radius = 1 * m_scaleNodes / 100;
 		switch (no.m_type) {
 			case NetworkNode::NT_Building: {
 				// scale node by heating demand - 1 mm / 1000 W; 4800 W -> 48 * 0.01 = radius = 0.48
@@ -180,9 +159,29 @@ void Network::updateVisualizationData(const VICUS::Database<VICUS::NetworkPipe> 
 			} break;
 			default:;
 		}
-
 		// store values
 		no.m_visualizationRadius = radius;
+	}
+}
+
+
+void Network::updateColor() const
+{
+	for (const NetworkEdge & edge: m_edges)
+		edge.m_color = Qt::lightGray;
+	for (const NetworkNode & node: m_nodes) {
+		switch (node.m_type) {
+			case VICUS::NetworkNode::NT_Source:
+				node.m_color = Qt::darkGray;
+			break;
+			case VICUS::NetworkNode::NT_Building:
+				node.m_color = Qt::darkGray;
+			break;
+			case VICUS::NetworkNode::NT_Mixer:
+				node.m_color = Qt::lightGray;
+			break;
+			default:;
+		}
 	}
 }
 

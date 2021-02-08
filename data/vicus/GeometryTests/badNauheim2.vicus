@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Do Dez 10 12:42:13 2020</Created>
-		<LastEdited>Fr Feb 5 20:42:22 2021</LastEdited>
+		<LastEdited>Mo Feb 8 11:19:19 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -17,12 +17,12 @@
 		<ViewSettings>
 			<GridSpacing>100</GridSpacing>
 			<GridWidth>1000</GridWidth>
-			<CameraTranslation>-211.224 -359.325 318.661</CameraTranslation>
+			<CameraTranslation>-245.469 -292.655 326.012</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.868217</Wp>
-				<X>0.431823</X>
-				<Y>-0.108815</Y>
-				<Z>-0.218789</Z>
+				<Wp>0.843376</Wp>
+				<X>0.410195</X>
+				<Y>-0.151756</Y>
+				<Z>-0.312103</Z>
 			</RotationMatrix>
 			<FarDistance>1700</FarDistance>
 		</ViewSettings>
@@ -1187,10 +1187,10 @@
 					<NetworkNode id="385" type="Mixer" maxHeatingDemand="0">
 						<Position>170.408 -134.971 0</Position>
 					</NetworkNode>
-					<NetworkNode id="386" type="Building" maxHeatingDemand="28800">
+					<NetworkNode id="386" type="Building" maxHeatingDemand="28800" componentId="100002">
 						<Position>170.618 -147.964 0</Position>
 					</NetworkNode>
-					<NetworkNode id="387" type="Building" maxHeatingDemand="28800">
+					<NetworkNode id="387" type="Building" maxHeatingDemand="28800" componentId="100002">
 						<Position>197.401 -146.61 0</Position>
 					</NetworkNode>
 					<NetworkNode id="388" type="Building" maxHeatingDemand="28800">

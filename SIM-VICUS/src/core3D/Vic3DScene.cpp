@@ -183,7 +183,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 					// now update the color buffer for this object depending on type
 					if (edge != nullptr) {
 						/// TODO : switch color based on current property mode
-						QColor col = Qt::red;
+						QColor col = edge->m_color;
 						// color will be fully transparent if surface is either invisible or selected
 						if (!edge->m_visible || edge->m_selected)
 							col.setAlpha(0);
@@ -191,7 +191,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 					}
 					else {
 						/// TODO : switch color based on current property mode
-						QColor col = node->m_visualizationColor;
+						QColor col = node->m_color;
 						// color will be fully transparent if surface is either invisible or selected
 						if (!node->m_visible || node->m_selected)
 							col.setAlpha(0);
@@ -1057,15 +1057,16 @@ void Vic3DScene::generateNetworkGeometry() {
 	// add cylinders for all pipes
 	for (const VICUS::Network & network : p.m_geometricNetworks) {
 
-		// update colors and sizes of network geometry objects
-		// Note: the visualization data (radius/colors) is not "project data", i.e.
-		//       does not require undo actions to change. Hence, we can
-		//       alter these values without worrying about constness
-		const_cast<VICUS::Network &>(network).updateVisualizationData(db.m_pipes);
+		// update pointers of network elements, they are only runtime and not part of the project data
+		// so they can be modified with const_cast
+		const_cast<VICUS::Network &>(network).updateNodeEdgeConnectionPointers();
+		// the visualization radius is also only runtime.
+		// it is mutable so no const_cast needed
+		network.updateVisualizationRadius(db.m_pipes);
 
 		for (const VICUS::NetworkEdge & e : network.m_edges) {
 			double radius = e.m_visualizationRadius;
-			QColor pipeColor = Qt::gray;
+			QColor pipeColor = e.m_color;
 			if (!e.m_visible || e.m_selected)
 				pipeColor.setAlpha(0);
 
@@ -1080,7 +1081,7 @@ void Vic3DScene::generateNetworkGeometry() {
 		// add spheres for nodes
 		for (const VICUS::NetworkNode & no : network.m_nodes) {
 			double radius = no.m_visualizationRadius;
-			QColor col = no.m_visualizationColor;
+			QColor col = no.m_color;
 			if (!no.m_visible || !network.m_visible)
 				col.setAlpha(0);
 
@@ -1135,6 +1136,13 @@ void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm, int id) const 
 		}
 	}
 
+	// initialize network colors, independent of current color mode
+	for (const VICUS::Network & net: p.m_geometricNetworks){
+		// updateColor is a const-function, this is possible since
+		// the m_color property of edges and nodes is mutable
+		net.updateColor();
+	}
+
 	const SVDatabase & db = SVSettings::instance().m_db;
 	if (ocm > 0 && ocm < SVViewState::OCM_NodeComponent) {
 		// now color all surfaces, this works by first looking up the components, associated with each surface
@@ -1183,7 +1191,21 @@ void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm, int id) const 
 		}
 	}
 
-	// TODO : update node colors/geometries
+
+	// set network edge and node colors according to network components
+	if (ocm == SVViewState::OCM_NodeComponent)
+		for (const VICUS::Network &net: p.m_geometricNetworks){
+			for (const VICUS::NetworkEdge & edge: net.m_edges){
+				unsigned int id = edge.m_componentId;
+				if (db.m_networkComponents[id] != nullptr)
+					edge.m_color = db.m_networkComponents[id]->m_color;
+			}
+			for (const VICUS::NetworkNode & node: net.m_nodes){
+				unsigned int id = node.m_componentId;
+				if (db.m_networkComponents[id] != nullptr)
+					node.m_color = db.m_networkComponents[id]->m_color;
+			}
+		}
 }
 
 
