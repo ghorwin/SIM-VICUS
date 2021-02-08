@@ -37,9 +37,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw) {
 	// search for all hydraulic parameters
 	switch (m_component->m_modelType) {
 		case HydraulicNetworkComponent::MT_StaticPipe:
-		case HydraulicNetworkComponent::MT_StaticAdiabaticPipe :
-		case HydraulicNetworkComponent::MT_DynamicPipe :
-		case HydraulicNetworkComponent::MT_DynamicAdiabaticPipe : {
+		case HydraulicNetworkComponent::MT_DynamicPipe : {
 			// retrieve pipe properties
 			if(m_pipePropertiesId == INVALID_ID) {
 				throw IBK::Exception("Missing pipe property reference!", FUNC_ID);

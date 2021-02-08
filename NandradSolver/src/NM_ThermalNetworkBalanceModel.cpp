@@ -240,7 +240,7 @@ void ThermalNetworkBalanceModel::setInputValueRefs(const std::vector<QuantityDes
 
 void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
 
-	unsigned int offset = 0;
+	// set dependencies between fluid temperatures and mean temperature references
 	for(unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
 		resultInputValueReferences.push_back(std::make_pair(&m_statesModel->m_fluidTemperatures[i], m_statesModel->m_meanTemperatureRefs[i]));
 	}
@@ -250,7 +250,7 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 		resultInputValueReferences.push_back(std::make_pair(&m_statesModel->m_p->m_nodalSpecificEnthalpies[n], &m_statesModel->m_p->m_nodalTemperatures[n]) );
 	}
 
-	offset = 0;
+	unsigned int offset = 0;
 	// we at first try use dense pattern between all element results and internal states
 	for(unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
 

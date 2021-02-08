@@ -47,9 +47,9 @@ void ThermalNetworkModelImpl::setup(const Network &nw,
 	// resize specific enthalpy
 	m_nodalSpecificEnthalpies.resize(nw.m_nodes.size());
 	// resize temperatures
-	m_inletNodeTemperatureRefs.resize(nw.m_elements.size());
+	m_inletNodeTemperatureRefs.resize(nw.m_elements.size(), nullptr);
 	// resize temperatures
-	m_outletNodeTemperatureRefs.resize(nw.m_elements.size());
+	m_outletNodeTemperatureRefs.resize(nw.m_elements.size(), nullptr);
 	// resize heat fluxes
 	m_fluidHeatFluxRefs.resize(nw.m_elements.size(), nullptr);
 

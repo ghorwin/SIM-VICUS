@@ -106,28 +106,28 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				}
 
 
-				case NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe :
-				{
-					IBK_ASSERT(e.m_pipeProperties != nullptr);
-					// create hydraulic pipe model
-					TNStaticAdiabaticPipeElement * pipeElement = new TNStaticAdiabaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
-					// add to flow elements
-					m_p->m_flowElements.push_back(pipeElement); // transfer ownership
-					m_p->m_heatLossElements.push_back(nullptr); // no heat loss
-					break;
-				}
+//				case NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe :
+//				{
+//					IBK_ASSERT(e.m_pipeProperties != nullptr);
+//					// create hydraulic pipe model
+//					TNStaticAdiabaticPipeElement * pipeElement = new TNStaticAdiabaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
+//					// add to flow elements
+//					m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+//					m_p->m_heatLossElements.push_back(nullptr); // no heat loss
+//					break;
+//				}
 
 
-				case NANDRAD::HydraulicNetworkComponent::MT_DynamicAdiabaticPipe :
-				{
-					IBK_ASSERT(e.m_pipeProperties != nullptr);
-					// create hydraulic pipe model
-					TNDynamicAdiabaticPipeElement * pipeElement = new TNDynamicAdiabaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
-					// add to flow elements
-					m_p->m_flowElements.push_back(pipeElement); // transfer ownership
-					m_p->m_heatLossElements.push_back(nullptr); // no heat loss
-					break;
-				}
+//				case NANDRAD::HydraulicNetworkComponent::MT_DynamicAdiabaticPipe :
+//				{
+//					IBK_ASSERT(e.m_pipeProperties != nullptr);
+//					// create hydraulic pipe model
+//					TNDynamicAdiabaticPipeElement * pipeElement = new TNDynamicAdiabaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
+//					// add to flow elements
+//					m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+//					m_p->m_heatLossElements.push_back(nullptr); // no heat loss
+//					break;
+//				}
 
 				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePumpModel :
 				{

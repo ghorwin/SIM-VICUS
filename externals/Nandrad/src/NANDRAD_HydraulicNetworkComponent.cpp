@@ -52,7 +52,6 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 			case MT_HeatExchanger:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter};
 			case MT_DynamicPipe:
-			case MT_DynamicAdiabaticPipe:
 				return {P_PipeMaxDiscretizationWidth};
 			default:
 				return {};
@@ -67,7 +66,6 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 			case MT_HeatExchanger:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
 			case MT_DynamicPipe:
-			case MT_DynamicAdiabaticPipe:
 				return {P_PipeMaxDiscretizationWidth};
 			default:
 				return {};

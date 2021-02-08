@@ -182,9 +182,7 @@ void HydraulicNetworkModel::setup() {
 
 		switch (e.m_component->m_modelType) {
 			case NANDRAD::HydraulicNetworkComponent::MT_StaticPipe:
-			case NANDRAD::HydraulicNetworkComponent::MT_StaticAdiabaticPipe :
 			case NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe :
-			case NANDRAD::HydraulicNetworkComponent::MT_DynamicAdiabaticPipe :
 			{
 				IBK_ASSERT(e.m_pipeProperties != nullptr);
 				// create hydraulic pipe model
