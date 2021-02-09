@@ -53,5 +53,6 @@
         <file>gfx/actions/icon-file-file-empty.svg</file>
         <file>gfx/actions/icon-filter-slider-circle-h-dark.svg</file>
         <file>gfx/actions/icon-shape-shape-cube-dark.svg</file>
+        <file>gfx/actions/24x24/arrow.png</file>
     </qresource>
 </RCC>

@@ -9,6 +9,7 @@ class SVNavigationTreeWidget;
 
 class ModificationInfo;
 class QTreeWidgetItem;
+class SVSmartSelectDialog;
 
 /*! The tree widget with all building/rooms/etc.. */
 class SVNavigationTreeWidget : public QWidget {
@@ -43,6 +44,8 @@ private slots:
 
 	void on_actionDeselect_all_triggered();
 
+	void on_actionSmartSelect_triggered();
+
 private:
 	/*! Recursively collapses all children. */
 	void collapseTreeWidgetItem(QTreeWidgetItem * parent);
@@ -55,6 +58,8 @@ private:
 	/*! Ui pointer. */
 	Ui::SVNavigationTreeWidget			*m_ui;
 
+	/*! The smart selection dialog. */
+	SVSmartSelectDialog					*m_smartSelectDialog = nullptr;
 };
 
 #endif // SVNavigationTreeWidgetH

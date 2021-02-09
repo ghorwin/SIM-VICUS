@@ -106,6 +106,7 @@ SOURCES += \
 		../../src/SVSimulationModelOptions.cpp \
 		../../src/SVSimulationOutputOptions.cpp \
 	../../src/SVSimulationRunRequestDialog.cpp \
+	../../src/SVSmartSelectDialog.cpp \
 		../../src/actions/SVUndoAddBuilding.cpp \
 		../../src/actions/SVUndoAddBuildingLevel.cpp \
 		../../src/actions/SVUndoAddNetwork.cpp \
@@ -205,6 +206,7 @@ HEADERS  += \
 		../../src/SVSimulationModelOptions.h \
 		../../src/SVSimulationOutputOptions.h \
 	../../src/SVSimulationRunRequestDialog.h \
+	../../src/SVSmartSelectDialog.h \
 		../../src/actions/SVUndoAddBuilding.h \
 		../../src/actions/SVUndoAddBuildingLevel.h \
 		../../src/actions/SVUndoAddNetwork.h \
@@ -312,6 +314,7 @@ FORMS    += \
 		../../src/SVSimulationRunRequestDialog.ui \
 		../../src/SVSimulationStartNandrad.ui \
 		../../src/SVSimulationStartNetworkSim.ui \
+		../../src/SVSmartSelectDialog.ui \
 		../../src/SVWelcomeScreen.ui
 
 TRANSLATIONS += ../../resources/translations/SIM-VICUS_de.ts

@@ -11,6 +11,7 @@
 #include "SVNavigationTreeItemDelegate.h"
 #include "SVUndoTreeNodeState.h"
 #include "SVViewStateHandler.h"
+#include "SVSmartSelectDialog.h"
 
 SVNavigationTreeWidget::SVNavigationTreeWidget(QWidget *parent) :
 	QWidget(parent),
@@ -246,4 +247,15 @@ void SVNavigationTreeWidget::on_actionSelect_all_triggered() {
 
 void SVNavigationTreeWidget::on_actionDeselect_all_triggered() {
 	emit deselectAll();
+}
+
+
+void SVNavigationTreeWidget::on_actionSmartSelect_triggered() {
+	// show smart select dialog
+	if (m_smartSelectDialog == nullptr)
+		m_smartSelectDialog = new SVSmartSelectDialog(this);
+	if (m_smartSelectDialog->exec() == QDialog::Accepted) {
+
+		// TODO : Hauke, evaluate choice in dialog and select matching objects in project
+	}
 }

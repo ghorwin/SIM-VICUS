@@ -45,6 +45,7 @@
      <addaction name="actionShowSelected"/>
      <addaction name="actionHideSelected"/>
      <addaction name="actionSelect_all"/>
+     <addaction name="actionSmartSelect"/>
     </widget>
    </item>
    <item>
@@ -138,6 +139,21 @@
    </property>
    <property name="shortcut">
     <string>Esc</string>
+   </property>
+  </action>
+  <action name="actionSmartSelect">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/24x24/arrow.png</normaloff>:/gfx/actions/24x24/arrow.png</iconset>
+   </property>
+   <property name="text">
+    <string>Smart select</string>
+   </property>
+   <property name="toolTip">
+    <string>Select objects based on properties.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+.</string>
    </property>
   </action>
  </widget>
