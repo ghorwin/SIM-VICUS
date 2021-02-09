@@ -317,6 +317,7 @@ FORMS    += \
 				../../src/SVSimulationRunRequestDialog.ui \
 				../../src/SVSimulationStartNandrad.ui \
 				../../src/SVSimulationStartNetworkSim.ui \
+				../../src/SVSmartSelectDialog.ui \
 				../../src/SVWelcomeScreen.ui
 
 TRANSLATIONS += ../../resources/translations/SIM-VICUS_de.ts

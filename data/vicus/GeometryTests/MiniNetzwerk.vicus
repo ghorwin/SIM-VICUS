@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Do Dez 10 12:42:13 2020</Created>
-		<LastEdited>Di Feb 9 19:21:57 2021</LastEdited>
+		<LastEdited>Di Feb 9 21:55:08 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -17,12 +17,12 @@
 		<ViewSettings>
 			<GridSpacing>100</GridSpacing>
 			<GridWidth>500</GridWidth>
-			<CameraTranslation>83.5613 196.945 204.581</CameraTranslation>
+			<CameraTranslation>135.437 269.676 329.391</CameraTranslation>
 			<RotationMatrix>
-				<Wp>-0.0712863</Wp>
-				<X>-0.0366129</X>
-				<Y>0.454681</Y>
-				<Z>0.887012</Z>
+				<Wp>0.0649555</Wp>
+				<X>0.0427583</X>
+				<Y>0.411041</Y>
+				<Z>0.908263</Z>
 			</RotationMatrix>
 			<FarDistance>1700</FarDistance>
 		</ViewSettings>
@@ -31,31 +31,42 @@
 				<Nodes>
 					<NetworkNode id="0" type="Source" maxHeatingDemand="0" componentId="100003" displayName="Quelle">
 						<Position>0 0 0</Position>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="1" type="Building" maxHeatingDemand="10000" componentId="100002" displayName="EFH3">
 						<Position>200 -70 0</Position>
+						<NetworkHeatExchange>
+							<IBK:Parameter name="HeatFlux" unit="W">500</IBK:Parameter>
+						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="2" type="Building" maxHeatingDemand="10000" componentId="100002" displayName="EFH1">
 						<Position>250 0 0</Position>
+						<NetworkHeatExchange>
+							<IBK:Parameter name="HeatFlux" unit="W">500</IBK:Parameter>
+						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="3" type="Mixer" maxHeatingDemand="0">
 						<Position>150 -40 0</Position>
+						<NetworkHeatExchange />
 					</NetworkNode>
 				</Nodes>
 				<Edges>
 					<NetworkEdge supply="1" displayName="leitung1" nodeId1="0" nodeId2="3">
-						<PipeId>10</PipeId>
+						<PipeId>14</PipeId>
 						<ComponentId>100001</ComponentId>
+						<NetworkHeatExchange />
 						<Length>40</Length>
 					</NetworkEdge>
 					<NetworkEdge supply="1" displayName="leitung2" nodeId1="3" nodeId2="1">
-						<PipeId>70</PipeId>
+						<PipeId>13</PipeId>
 						<ComponentId>100001</ComponentId>
-						<Length>4</Length>
+						<NetworkHeatExchange />
+						<Length>40</Length>
 					</NetworkEdge>
 					<NetworkEdge supply="1" displayName="leitung3" nodeId1="3" nodeId2="2">
-						<PipeId>3</PipeId>
+						<PipeId>12</PipeId>
 						<ComponentId>100001</ComponentId>
+						<NetworkHeatExchange />
 						<Length>40</Length>
 					</NetworkEdge>
 				</Edges>

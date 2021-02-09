@@ -101,6 +101,8 @@ void NetworkNode::readXML(const TiXmlElement * element) {
 										  .arg("Invalid vector data."), FUNC_ID);
 				}
 			}
+			else if (cName == "NetworkHeatExchange")
+				m_heatExchange.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -136,6 +138,8 @@ TiXmlElement * NetworkNode::writeXML(TiXmlElement * parent) const {
 		std::vector<double> v = { m_position.m_x, m_position.m_y, m_position.m_z};
 		TiXmlElement::appendSingleAttributeElement(e, "Position", nullptr, std::string(), IBK::vector2string<double>(v," "));
 	}
+
+	m_heatExchange.writeXML(e);
 	return e;
 }
 

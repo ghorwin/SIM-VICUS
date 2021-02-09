@@ -23,8 +23,6 @@ public:
 		NUM_P
 	};
 
-	unsigned int			m_id  = INVALID_ID;			// XML:E
-
 	IBK::Parameter			m_para[NUM_P];				// XML:E
 
 	IBK::Path				m_dataFile;					// XML:E

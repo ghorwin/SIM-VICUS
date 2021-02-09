@@ -105,7 +105,7 @@ public:
 
 	std::string						m_displayName;													// XML:A
 
-	NetworkHeatExchange				m_heatExchange;													// XML:A
+	NetworkHeatExchange				m_heatExchange;													// XML:E
 
 	/*! Whether the node is visible or not
 		Note: keep the next line - this will cause the code generator to create serialization code

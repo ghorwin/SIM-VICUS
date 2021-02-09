@@ -85,7 +85,7 @@ public:
 	/*! ID of component parameters. */
 	unsigned int										m_componentId = INVALID_ID;		// XML:E
 
-	NetworkHeatExchange									m_heatExchange;					// XML:A
+	NetworkHeatExchange									m_heatExchange;					// XML:E
 
 	std::string											m_displayName;					// XML:A
 

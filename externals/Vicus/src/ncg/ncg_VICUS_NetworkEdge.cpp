@@ -76,6 +76,8 @@ void NetworkEdge::readXML(const TiXmlElement * element) {
 				m_componentId = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "Length")
 				m_length = NANDRAD::readPODElement<double>(c, cName);
+			else if (cName == "NetworkHeatExchange")
+				m_heatExchange.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -108,6 +110,8 @@ TiXmlElement * NetworkEdge::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "PipeId", nullptr, std::string(), IBK::val2string<unsigned int>(m_pipeId));
 	if (m_componentId != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "ComponentId", nullptr, std::string(), IBK::val2string<unsigned int>(m_componentId));
+
+	m_heatExchange.writeXML(e);
 	TiXmlElement::appendSingleAttributeElement(e, "Length", nullptr, std::string(), IBK::val2string<double>(m_length));
 	return e;
 }

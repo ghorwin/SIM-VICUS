@@ -185,7 +185,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	NANDRAD::OutputDefinition def2;
 	def2.m_quantity = "InletNodePressure";
 	NANDRAD::OutputDefinition def3;
-	def3.m_quantity = "InletTemperature";
+	def3.m_quantity = "InletNodeTemperature";
 
 	NANDRAD::Outputs outputs;
 	outputs.m_timeUnit = IBK::Unit("h");
@@ -279,8 +279,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	// --> transfer
 	for(unsigned int id: pipeIds){
 		const VICUS::NetworkPipe *pipe = db.m_pipes[id];
-		if (pipe == nullptr)
-			throw IBK::Exception(IBK::FormatString("Pipe '%1' does not exist in databse").arg(pipe->m_id), FUNC_ID);
+		Q_ASSERT(pipe != nullptr);
 		NANDRAD::HydraulicNetworkPipeProperties pipeProp;
 		pipeProp.m_id = pipe->m_id;
 
