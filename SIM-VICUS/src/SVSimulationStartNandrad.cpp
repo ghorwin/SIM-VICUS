@@ -15,8 +15,8 @@
 #include "SVSimulationModelOptions.h"
 #include "SVSimulationRunRequestDialog.h"
 #include "SVConstants.h"
-
 #include "SVLogFileDialog.h"
+#include "SVUndoProject.h"
 
 SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 	QDialog(parent),
@@ -183,7 +183,6 @@ void SVSimulationStartNandrad::on_pushButtonRun_clicked() {
 	if (!startSimulation(false))
 		return; // keep dialog open
 
-	// TODO : should we keep the dialog open if simulation crashed?
 	storeInput();
 	close(); // finally close dialog
 }
@@ -661,8 +660,17 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 
 void SVSimulationStartNandrad::storeInput() {
 
-	/// TODO : create an undo action for modification of the project
+	// get a copy of the project
+	VICUS::Project p = project();
 
+	// now process all input and transfer data into the project
+	p.m_location = m_location;
+	p.m_solverParameter = m_solverParams;
+	p.m_simulationParameter = m_simParams;
+
+	// create an undo action for modification of the (entire) project
+	SVUndoProject * undo = new SVUndoProject(tr("Updated simulation parameters"), p);
+	undo->push();
 }
 
 

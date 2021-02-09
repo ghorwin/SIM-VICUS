@@ -159,8 +159,10 @@ void SVSimulationLocationOptions::onCurrentIndexChanged(const QModelIndex &curre
 void SVSimulationLocationOptions::updateLocationInfo(const SVClimateFileInfo * climateInfoPtr) {
 	if (climateInfoPtr == nullptr)
 		m_location->m_climateFileName.clear();
-	else
+	else {
+		// TODO : try to resolve a path to the climate DB path placeholders
 		m_location->m_climateFileName = climateInfoPtr->m_file.absoluteFilePath().toStdString();
+	}
 
 	// update info text on climate location
 	m_ui->textBrowserDescription->clear();
