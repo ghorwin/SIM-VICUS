@@ -254,8 +254,5 @@ void SVNavigationTreeWidget::on_actionSmartSelect_triggered() {
 	// show smart select dialog
 	if (m_smartSelectDialog == nullptr)
 		m_smartSelectDialog = new SVSmartSelectDialog(this);
-	if (m_smartSelectDialog->exec() == QDialog::Accepted) {
-
-		// TODO : Hauke, evaluate choice in dialog and select matching objects in project
-	}
+	m_smartSelectDialog->exec(); // selection undo actions are created in the dialog, nothing else to do here
 }
