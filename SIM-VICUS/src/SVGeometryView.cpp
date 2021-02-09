@@ -8,6 +8,9 @@
 #include <QAction>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QToolButton>
+#include <QDockWidget>
+#include <QLine>
 
 #include <IBK_StringUtils.h>
 
@@ -15,6 +18,7 @@
 #include "SVPropertyWidget.h"
 #include "SVPropVertexListWidget.h"
 #include "SVViewStateHandler.h"
+#include "SVLocalCoordinateView.h"
 #include "Vic3DNewGeometryObject.h"
 
 SVGeometryView::SVGeometryView(QWidget *parent) :
@@ -42,14 +46,21 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	m_sceneViewContainerWidget->setFocusPolicy(Qt::TabFocus);
 	m_sceneViewContainerWidget->setMinimumSize(QSize(640,400));
 
-	// *** create toolbar and place it above the scene
+	m_localCoordinateSystemView = new SVLocalCoordinateView;
+
+	// *** create toolbar and place it below the scene
 
 	m_toolBar = new QToolBar(this);
 	m_toolBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-	m_toolBar->setMaximumHeight(32);
+	m_toolBar->setMaximumHeight(50);
+
+//	m_dockWidget = new QWidget(this);
+//	m_dockWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+//	m_dockWidget->setMaximumHeight(120);
+
 	QVBoxLayout * vbLay = new QVBoxLayout;
-	vbLay->addWidget(m_toolBar);
 	vbLay->addWidget(m_sceneViewContainerWidget);
+	vbLay->addWidget(m_toolBar);
 	vbLay->setMargin(0);
 
 	QWidget* w = new QWidget(this);
@@ -84,6 +95,8 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	m_sceneViewContainerWidget->setFocusPolicy(Qt::StrongFocus); // we want to get all keyboard/mouse events
 
 	setupToolBar();
+//	setupDockWidget();
+
 
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
 			this, &SVGeometryView::onViewStateChanged);
@@ -288,9 +301,13 @@ void SVGeometryView::on_actionZLock_toggled(bool on) {
 
 
 void SVGeometryView::setupToolBar() {
+
 	m_snapAction = new QAction(tr("Snap"), this);
 	m_snapAction->setCheckable(true);
+	m_snapAction->setIcon(QIcon(":/gfx/actions/icon-gesture-drag.svg") );
+
 	m_toolBar->addAction(m_snapAction);
+	m_toolBar->setIconSize(QSize(32,32) );
 	connect(m_snapAction, &QAction::toggled, this, &SVGeometryView::on_actionSnap_toggled);
 
 	m_xLockAction = new QAction(tr("X"), this);
@@ -315,10 +332,35 @@ void SVGeometryView::setupToolBar() {
 	connect(m_lineEditCoordinateInput, &QLineEdit::returnPressed,
 			this, &SVGeometryView::coordinateInputFinished);
 
-//	QWidget* stretch = new QWidget();
-//	stretch->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
-//	m_toolBar->addWidget(stretch);
+	m_toolBar->addWidget(m_localCoordinateSystemView);
 
+	m_lineEditCoordinateInput->setMaximumWidth(400);
+}
+
+void SVGeometryView::setupDockWidget()
+{
+	QHBoxLayout *lay = new QHBoxLayout;
+	lay->setMargin(0);
+
+	QToolButton *b = new QToolButton();
+	b->setText(tr("Snap"));
+	b->setCheckable(true);
+	m_snapAction = new QAction(tr("Snap"), this);
+	b->addAction(m_snapAction);
+	connect(m_snapAction, &QAction::toggled, this, &SVGeometryView::on_actionSnap_toggled);
+
+	lay->addWidget(b);
+
+	QFrame *line;
+	line = new QFrame();
+	line->setFrameShape(QFrame::HLine);
+	line->setFrameShadow(QFrame::Sunken);
+
+	lay->addWidget(line);
+
+	lay->addWidget(m_localCoordinateSystemView);
+
+	m_dockWidget->setLayout(lay);
 
 }
 

@@ -84,13 +84,45 @@ private slots:
 
 	void on_radioButtonAbsolute_toggled(bool checked);
 
+	void on_lineEditX_finishedSuccessfully();
+
+	void on_lineEditY_finishedSuccessfully();
+
+	void on_lineEditZ_finishedSuccessfully();
+
+	void on_toolButtonTrans_toggled(bool checked);
+
+	void on_toolButtonRotate_toggled(bool checked);
+
+	void on_toolButtonScale_toggled(bool checked);
+
+	void on_comboBox_currentIndexChanged(int index);
+
 private:
 	/*! Updates the property widget regarding to all geometry data
 		Takes a vector of pointers to all selected surfaces
 	*/
 	void update();
 
-	Ui::SVPropEditGeometry *m_ui;
+	// holding all the translation values
+	int									m_transIdx;
+	double								m_xTransValue;
+	double								m_yTransValue;
+	double								m_zTransValue;
+
+	// holding all the rotation values
+	int									m_rotaIdx;
+	double								m_xRotaValue;
+	double								m_yRotaValue;
+	double								m_zRotaValue;
+
+	// holding all the scaling values
+	int									m_scaleIdx;
+	double								m_xScaleValue;
+	double								m_yScaleValue;
+	double								m_zScaleValue;
+
+	Ui::SVPropEditGeometry				*m_ui;
 };
 
 #endif // SVPropEditGeometryH

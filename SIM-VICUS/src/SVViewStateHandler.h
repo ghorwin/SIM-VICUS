@@ -16,6 +16,7 @@ class SVPropEditGeometry;
 class SVPropVertexListWidget;
 class SVGeometryView;
 class SVPropModeSelectionWidget;
+class SVLocalCoordinateView;
 
 /*! This singleton makes the current UI view state available to all.
 	Widgets that need to be informed from view state changes, should
@@ -71,6 +72,9 @@ public:
 
 	/*! Pointer to geometry edit widget - is needed to set the absolute scale factor ( bounding box) on selection change. */
 	SVPropEditGeometry					*m_propEditGeometryWidget = nullptr;
+
+	/*! Pointer to local coordinate system view widget. */
+	SVLocalCoordinateView				*m_localCoordinateViewWidget = nullptr;
 
 	/*! Pointer to "place vertex" widget - is needed to clear the vertex list when a new polygon/geometrical object is being drawn. */
 	SVPropVertexListWidget				*m_propVertexListWidget = nullptr;

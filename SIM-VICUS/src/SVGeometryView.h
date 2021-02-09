@@ -9,10 +9,12 @@ namespace Vic3D {
 }
 
 class SVPropertyWidget;
+class SVLocalCoordinateView;
 class QSplitter;
 class QToolBar;
 class QAction;
 class QLineEdit;
+class QDockWidget;
 
 /*! The main geometry view.
 	The 3D scene view is embedded into this widget.
@@ -57,9 +59,13 @@ private slots:
 private:
 	void setupToolBar();
 
+	void setupDockWidget();
+
 	/*! The scene view, that shows our world and allows navigation */
 	Vic3D::SceneView			*m_sceneView								= nullptr;
 	QWidget						*m_sceneViewContainerWidget					= nullptr;
+	/*! Local Coordinate System View Widget */
+	QWidget						*m_localCoordinateSystemView				= nullptr;
 	/*! The property widget is located to the right of the view and is layouted in a splitter. */
 	SVPropertyWidget			*m_propertyWidget							= nullptr;
 	/*! Splitter that contains the scene view and the property widget. */
@@ -67,6 +73,8 @@ private:
 
 
 	QToolBar					*m_toolBar									= nullptr;
+
+	QWidget						*m_dockWidget								= nullptr;
 
 	QAction						*m_snapAction								= nullptr;
 	QAction						*m_xLockAction								= nullptr;
