@@ -92,7 +92,7 @@ public:
 	IBK::Path						m_heatExchangeDataFile;									// XML:E
 
 	/*! if true: m_heatExchangeDataFile is interpreted annually cyclic, else it is assumed continuous */
-	bool							m_heatExchangeDataFileIsCyclic = false;					// XML:E
+	bool							m_heatExchangeDataFileIsCyclic = false;					// XML:A
 
 
 	// *** Variables used only during simulation ***

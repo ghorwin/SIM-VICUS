@@ -78,6 +78,10 @@ private slots:
 
 	void on_comboBoxComponent_currentIndexChanged(int index);
 
+	void on_lineEditNodeDisplayName_editingFinished();
+
+	void on_lineEditEdgeDisplayName_editingFinished();
+
 private:
 	/*! This function is called whenever the current selection of edges/nodes/objects has changed.
 		This can be due to user interaction with the scene, or because objects were added/deleted or
@@ -99,7 +103,7 @@ private:
 
 	void updateNetworkProperties();
 
-	void updateHeatExchangeParams();
+	void updateHxProperties();
 
 	void modifyStatus();
 
@@ -112,6 +116,10 @@ private:
 	void setAllEnabled(bool enabled);
 
 	void toggleHeatExchangeGroupBox();
+
+	void showPropertiesHeatExchange(bool visible);
+
+	const VICUS::NetworkComponent *currentComponent();
 
 	QString largestDiameter() const;
 

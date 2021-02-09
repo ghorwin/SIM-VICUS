@@ -34,8 +34,8 @@ void HydraulicNetworkPipeProperties::checkParameters(int networkModelType) const
 		// retrieve constant temperature
 		if (!m_para[P_UValuePipeWall].name.empty()) {
 			// check wall u-value
-			m_para[P_UValuePipeWall].checkedValue("UValuePipeWall", "W/m2K", "W/m2K", 0, false, std::numeric_limits<double>::max(), true,
-									"Pipe UValue must be > 0 W/m2K.");
+			m_para[P_UValuePipeWall].checkedValue("UValuePipeWall", "W/mK", "W/mK", 0, false, std::numeric_limits<double>::max(), true,
+									"Pipe UValue must be > 0 W/mK.");
 		}
 	}
 }

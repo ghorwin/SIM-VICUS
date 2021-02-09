@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>616</width>
-    <height>951</height>
+    <height>1032</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -335,7 +335,30 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2">
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="lineEditNodeDisplayName"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_13">
+        <property name="text">
+         <string>Maximum heating demand [W]</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeMaxHeatingDemand"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_14">
+        <property name="text">
+         <string>Type</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QComboBox" name="comboBoxNodeType"/>
+      </item>
+      <item row="4" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QLabel" name="label_17">
@@ -357,37 +380,14 @@
         <item>
          <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeY"/>
         </item>
-        <item>
-         <widget class="QLabel" name="label_19">
-          <property name="text">
-           <string>z</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeZ"/>
-        </item>
        </layout>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_14">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_19">
         <property name="text">
-         <string>Type</string>
+         <string>Name</string>
         </property>
        </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="comboBoxNodeType"/>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_13">
-        <property name="text">
-         <string>Maximum heating demand [W]</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeHeatingDemand"/>
       </item>
      </layout>
     </widget>
@@ -395,20 +395,20 @@
    <item>
     <widget class="QGroupBox" name="groupBoxEdge">
      <property name="title">
-      <string>Edit Pipe</string>
+      <string>Edit Edge</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="0">
+      <item row="3" column="0">
        <widget class="QCheckBox" name="checkBoxSupplyPipe">
         <property name="text">
          <string>supply pipe</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_11">
+      <item row="1" column="2">
+       <widget class="QLabel" name="labelPipeLength">
         <property name="text">
-         <string>Length</string>
+         <string/>
         </property>
        </widget>
       </item>
@@ -419,15 +419,25 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="comboBoxPipeDB"/>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLabel" name="labelPipeLength">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_11">
         <property name="text">
-         <string/>
+         <string>Length</string>
         </property>
        </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLineEdit" name="lineEditEdgeDisplayName"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_22">
+        <property name="text">
+         <string>Name</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QComboBox" name="comboBoxPipeDB"/>
       </item>
      </layout>
     </widget>

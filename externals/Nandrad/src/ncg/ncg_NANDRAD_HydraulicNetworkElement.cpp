@@ -70,6 +70,8 @@ void HydraulicNetworkElement::readXML(const TiXmlElement * element) {
 				m_pipePropertiesId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName = attrib->ValueStr();
+			else if (attribName == "heatExchangeDataFileIsCyclic")
+				m_heatExchangeDataFileIsCyclic = NANDRAD::readPODAttributeValue<bool>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -107,8 +109,6 @@ void HydraulicNetworkElement::readXML(const TiXmlElement * element) {
 			}
 			else if (cName == "HeatExchangeDataFile")
 				m_heatExchangeDataFile = IBK::Path(c->GetText());
-			else if (cName == "HeatExchangeDataFileIsCyclic")
-				m_heatExchangeDataFileIsCyclic = NANDRAD::readPODElement<bool>(c, cName);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -139,6 +139,8 @@ TiXmlElement * HydraulicNetworkElement::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("pipePropertiesId", IBK::val2string<unsigned int>(m_pipePropertiesId));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
+	if (m_heatExchangeDataFileIsCyclic != HydraulicNetworkElement().m_heatExchangeDataFileIsCyclic)
+		e->SetAttribute("heatExchangeDataFileIsCyclic", IBK::val2string<bool>(m_heatExchangeDataFileIsCyclic));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {
@@ -153,7 +155,6 @@ TiXmlElement * HydraulicNetworkElement::writeXML(TiXmlElement * parent) const {
 	}
 	if (m_heatExchangeDataFile.isValid())
 		TiXmlElement::appendSingleAttributeElement(e, "HeatExchangeDataFile", nullptr, std::string(), m_heatExchangeDataFile.str());
-	TiXmlElement::appendSingleAttributeElement(e, "HeatExchangeDataFileIsCyclic", nullptr, std::string(), IBK::val2string<bool>(m_heatExchangeDataFileIsCyclic));
 	return e;
 }
 

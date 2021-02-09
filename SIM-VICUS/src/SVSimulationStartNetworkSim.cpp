@@ -39,14 +39,19 @@ void SVSimulationStartNetworkSim::edit() {
 	m_ui->comboBoxNetwork->clear();
 	m_ui->comboBoxNetwork->addItems(m_networksMap.keys());
 	m_ui->comboBoxNetwork->setCurrentIndex(0);
+	m_ui->lineEditEndTime->setValue(30);
 
 	// populate model type combobox
 	m_ui->comboBoxModelType->clear();
-	m_ui->comboBoxModelType->addItem(NANDRAD::KeywordList::Description("HydraulicNetwork::ModelType",
-																		NANDRAD::HydraulicNetwork::MT_HydraulicNetwork),
+	m_ui->comboBoxModelType->addItem(QString("%1 [%2]").arg(NANDRAD::KeywordList::Description("HydraulicNetwork::ModelType",
+																		NANDRAD::HydraulicNetwork::MT_HydraulicNetwork))
+														.arg(NANDRAD::KeywordList::Keyword("HydraulicNetwork::ModelType",
+																		NANDRAD::HydraulicNetwork::MT_HydraulicNetwork)),
 																		NANDRAD::HydraulicNetwork::MT_HydraulicNetwork);
-	m_ui->comboBoxModelType->addItem(NANDRAD::KeywordList::Description("HydraulicNetwork::ModelType",
-																		NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork),
+	m_ui->comboBoxModelType->addItem(QString("%1 [%2]").arg(NANDRAD::KeywordList::Description("HydraulicNetwork::ModelType",
+																		NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork))
+														.arg(NANDRAD::KeywordList::Keyword("HydraulicNetwork::ModelType",
+																		NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork)),
 																		NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork);
 	updateLineEdits();
 	toggleRunButton();
@@ -150,12 +155,52 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	NANDRAD::KeywordList::setParameter(p.m_location.m_para, "Location::para_t", NANDRAD::Location::P_Latitude, 53); // Deg
 	NANDRAD::KeywordList::setParameter(p.m_location.m_para, "Location::para_t", NANDRAD::Location::P_Longitude, 13); // Deg
 
+	if(!m_ui->lineEditEndTime->isValid())
+		return false;
+	double endTime = m_ui->lineEditEndTime->value();
+
 	// set simulation duration and solver parameters
 	NANDRAD::KeywordList::setParameter(p.m_simulationParameter.m_para, "SimulationParameter::para_t", NANDRAD::SimulationParameter::P_InitialTemperature, 20); // C
 	NANDRAD::KeywordList::setParameter(p.m_simulationParameter.m_interval.m_para,
-									   "Interval::para_t", NANDRAD::Interval::P_End, 0.5); // d
+									   "Interval::para_t", NANDRAD::Interval::P_End, endTime); // d
 
+	NANDRAD::Interval inter;
+	NANDRAD::KeywordList::setParameter(inter.m_para, "Interval::para_t", NANDRAD::Interval::P_Start, 0); // d
+	NANDRAD::KeywordList::setParameter(inter.m_para, "Interval::para_t", NANDRAD::Interval::P_End, endTime); // d
+	NANDRAD::KeywordList::setParameter(inter.m_para, "Interval::para_t", NANDRAD::Interval::P_StepSize, 1); // h
 
+	NANDRAD::OutputGrid grid;
+	grid.m_name = "hourly";
+	grid.m_intervals.push_back(inter);
+	NANDRAD::IDGroup ids;
+	ids.m_allIDs = true;
+
+	NANDRAD::ObjectList objList;
+	objList.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	objList.m_filterID = ids;
+	objList.m_name = "the objects";
+
+	NANDRAD::OutputDefinition def;
+	def.m_quantity = "FluidMassFlux";
+	NANDRAD::OutputDefinition def2;
+	def2.m_quantity = "InletNodePressure";
+	NANDRAD::OutputDefinition def3;
+	def3.m_quantity = "InletTemperature";
+
+	NANDRAD::Outputs outputs;
+	outputs.m_timeUnit = IBK::Unit("h");
+	outputs.m_definitions.push_back(def);
+	outputs.m_definitions.push_back(def2);
+	outputs.m_definitions.push_back(def3);
+	for (auto &def: outputs.m_definitions){
+		def.m_timeType = NANDRAD::OutputDefinition::OTT_NONE;
+		def.m_gridName = grid.m_name;
+		def.m_objectListName = objList.m_name;
+	}
+	outputs.m_grids.push_back(grid);
+
+	p.m_outputs = outputs;
+	p.m_objectLists.push_back(objList);
 
 	// *** create Nandrad Network
 	// TODO Hauke: UI selection widgets for modelType, P_DefaultFluidTemperature, initial fluid temp, ref pressure
@@ -196,19 +241,20 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		if(node.m_componentId == VICUS::INVALID_ID)
 				throw IBK::Exception(IBK::FormatString("Node '%1' has no referenced component").arg(node.m_id),
 									 FUNC_ID);
-		componentIds.push_back(node.m_componentId);
+		if (std::find(componentIds.begin(), componentIds.end(), node.m_componentId) == componentIds.end())
+			componentIds.push_back(node.m_componentId);
 	}
 	for (const VICUS::NetworkEdge &edge: vicusNetwork.m_edges){
 		if(edge.m_componentId == VICUS::INVALID_ID)
 				throw IBK::Exception(IBK::FormatString("Edge '%1'->'%2' has no referenced component")
 									 .arg(edge.nodeId1()).arg(edge.nodeId2()), FUNC_ID);
-		componentIds.push_back(edge.m_componentId);
+		if (std::find(componentIds.begin(), componentIds.end(), edge.m_componentId) == componentIds.end())
+			componentIds.push_back(edge.m_componentId);
 	}
 	// --> transfer
 	for (unsigned int id: componentIds){
 		const VICUS::NetworkComponent *comp = db.m_networkComponents[id];
-		if(comp == nullptr)
-			throw IBK::Exception(IBK::FormatString("Component '%1' does not exist in database").arg(comp->m_id), FUNC_ID);
+		Q_ASSERT(comp != nullptr);
 		NANDRAD::HydraulicNetworkComponent nandradComp;
 		nandradComp.m_id = comp->m_id;
 		nandradComp.m_displayName = comp->m_displayName.string(IBK::MultiLanguageString::m_language, "en");
@@ -275,20 +321,33 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 
 		// create element
 		NANDRAD::HydraulicNetworkElement elem;
-		elem.m_displayName = "node " + IBK::val2string(node.m_id);
 
 		// place the source in reverse order
 		if (node.m_type == VICUS::NetworkNode::NT_Source){
 			elem = NANDRAD::HydraulicNetworkElement(node.m_id, node.m_id+ idOffsetOutlet, node.m_id, node.m_componentId);
+			elem.m_displayName = node.m_displayName;
 			nandradNetwork.m_referenceElementId = node.m_id;
 		}
 		else{
 			elem = NANDRAD::HydraulicNetworkElement(node.m_id, node.m_id, node.m_id + idOffsetOutlet, node.m_componentId);
+			elem.m_displayName = node.m_displayName;
 		}
 
 		// TODO Hauke: transform heatExchange properties
-//				NANDRAD::KeywordList::setParameter(elem.m_para, "HydraulicNetworkElement::para_t",
-//												   NANDRAD::HydraulicNetworkElement::P_HeatFlux, node.m_heatFlux.value);
+		const VICUS::NetworkComponent *comp = db.m_networkComponents[node.m_componentId];
+		switch (comp->m_heatExchangeType) {
+			case VICUS::NetworkComponent::HT_HeatFluxConstant:
+				elem.m_para[NANDRAD::HydraulicNetworkElement::P_HeatFlux] =
+				node.m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_HeatFlux]; break;
+			case VICUS::NetworkComponent::HT_TemperatureConstant:
+				elem.m_para[NANDRAD::HydraulicNetworkElement::P_Temperature] =
+				node.m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_Temperature]; break;
+			case VICUS::NetworkComponent::HT_HeatFluxDataFile:
+				elem.m_heatExchangeDataFile =
+				node.m_heatExchange.m_dataFile; break;
+			default:;
+		}
+
 		nandradNetwork.m_elements.push_back(elem);
 
 		// write subnetworks
@@ -327,7 +386,6 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 								 .arg(edge->m_node1->m_id).arg(edge->m_node2->m_id), FUNC_ID);
 
 
-
 		// add inlet pipe element
 		NANDRAD::HydraulicNetworkElement inletPipe(VICUS::Project::largestUniqueId(nandradNetwork.m_elements),
 													edge->m_nodeIdInlet,
@@ -335,11 +393,20 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 													edge->m_componentId,
 													edge->m_pipeId,
 													edge->length());
-		inletPipe.m_pipePropertiesId = edge->m_pipeId;
+		inletPipe.m_displayName = edge->m_displayName;
 		// TODO Hauke: transfer heat exchange parameter
-//		NANDRAD::KeywordList::setParameter(inletPipe.m_para, "HydraulicNetworkElement::para_t",
-//										   NANDRAD::HydraulicNetworkElement::P_Temperature,
-//										   edge->m_ambientTemperature.get_value(IBK::Unit("C")));
+		switch (comp->m_heatExchangeType) {
+			case VICUS::NetworkComponent::HT_HeatFluxConstant:
+				inletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_HeatFlux] =
+				edge->m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_HeatFlux]; break;
+			case VICUS::NetworkComponent::HT_TemperatureConstant:
+				inletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_Temperature] =
+				edge->m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_Temperature]; break;
+			case VICUS::NetworkComponent::HT_HeatFluxDataFile:
+				inletPipe.m_heatExchangeDataFile =
+				edge->m_heatExchange.m_dataFile; break;
+			default:;
+		}
 		nandradNetwork.m_elements.push_back(inletPipe);
 
 		// add outlet pipe element
@@ -349,11 +416,21 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 													edge->m_componentId,
 													edge->m_pipeId,
 													edge->length());
+		outletPipe.m_displayName = edge->m_displayName;
 		// TODO Hauke: transfer heat exchange parameter
-//		NANDRAD::KeywordList::setParameter(outletPipe.m_para, "HydraulicNetworkElement::para_t",
-//										   NANDRAD::HydraulicNetworkElement::P_Temperature,
-//										   edge->m_ambientTemperature.get_value(IBK::Unit("C")));
-		outletPipe.m_pipePropertiesId = edge->m_pipeId;
+		switch (comp->m_heatExchangeType) {
+			case VICUS::NetworkComponent::HT_HeatFluxConstant:
+				outletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_HeatFlux] =
+				edge->m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_HeatFlux]; break;
+			case VICUS::NetworkComponent::HT_TemperatureConstant:
+				outletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_Temperature] =
+				edge->m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_Temperature]; break;
+			case VICUS::NetworkComponent::HT_HeatFluxDataFile:
+				outletPipe.m_heatExchangeDataFile =
+				edge->m_heatExchange.m_dataFile; break;
+			default:;
+		}
+
 		nandradNetwork.m_elements.push_back(outletPipe);
 
 	}
@@ -362,6 +439,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	// finally add to nandrad project
 	p.m_hydraulicNetworks.push_back(nandradNetwork);
 
+	return true;
 }
 
 

@@ -192,6 +192,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].value;
 
 				} break;
+				case NANDRAD::HydraulicNetworkComponent::HT_Adiabatic:
 				case NANDRAD::HydraulicNetworkComponent::NUM_HT:
 					// No thermal exchange, nothing to initialize
 				break;

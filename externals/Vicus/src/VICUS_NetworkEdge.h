@@ -85,7 +85,9 @@ public:
 	/*! ID of component parameters. */
 	unsigned int										m_componentId = INVALID_ID;		// XML:E
 
-	NetworkHeatExchange									m_heatExchange;
+	NetworkHeatExchange									m_heatExchange;					// XML:A
+
+	std::string											m_displayName;					// XML:A
 
 	/*! Whether the node is visible or not.
 		Note: keep the next line - this will cause the code generator to create serialization code

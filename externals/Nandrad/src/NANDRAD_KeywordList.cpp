@@ -1098,7 +1098,7 @@ namespace NANDRAD {
 			// HydraulicNetwork::ModelType
 			case 5 :
 			switch (t) {
-				case 0 : return "Hydraulic calculation with constant temperature";
+				case 0 : return "Only Hydraulic calculation with constant temperature";
 				case 1 : return "Thermo-hydraulic calculation";
 			} break;
 			// HydraulicNetwork::para_t

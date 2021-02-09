@@ -36,7 +36,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Dry density of the material.");
 	tr("Specific heat capacity of the material.");
 	tr("Thermal conductivity of the dry material.");
-	tr("Hydraulic calculation with constant temperature");
+	tr("Only Hydraulic calculation with constant temperature");
 	tr("Thermo-hydraulic calculation");
 	tr("Default temperature for HydraulicNetwork models");
 	tr("Initial temperature of the fluid");

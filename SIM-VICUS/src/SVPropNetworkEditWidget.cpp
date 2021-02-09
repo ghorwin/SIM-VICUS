@@ -30,6 +30,7 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 	m_ui->groupBoxSizePipes->setVisible(false);
 	m_ui->groupBoxEditNetwork->setVisible(false);
 	m_ui->groupBoxHeatExchange->setVisible(false);
+	showPropertiesHeatExchange(false);
 
 	// setup combobox node types
 	m_ui->comboBoxNodeType->clear();
@@ -149,23 +150,28 @@ void SVPropNetworkEditWidget::updateNodeProperties() {
 			m_ui->groupBoxComponent->setEnabled(false);
 	}
 	m_ui->comboBoxNodeType->setCurrentIndex(m_ui->comboBoxNodeType->findData(m_currentNodes[0]->m_type));
-	m_ui->lineEditNodeHeatingDemand->setEnabled(m_currentNodes[0]->m_type == VICUS::NetworkNode::NT_Building);
+	m_ui->lineEditNodeMaxHeatingDemand->setEnabled(m_currentNodes[0]->m_type == VICUS::NetworkNode::NT_Building);
+
+	m_ui->lineEditNodeX->setEnabled(m_currentNodes.size() == 1);
+	m_ui->lineEditNodeY->setEnabled(m_currentNodes.size() == 1);
 
 	if (m_currentNodes.size() == 1){
 		m_ui->labelNodeId->setText(QString("%1").arg(m_currentNodes[0]->m_id));
+		m_ui->lineEditNodeDisplayName->setText(QString::fromStdString(m_currentNodes[0]->m_displayName));
 		m_ui->lineEditNodeX->setValue(m_currentNodes[0]->m_position.m_x);
 		m_ui->lineEditNodeY->setValue(m_currentNodes[0]->m_position.m_y);
 	}
 	else{
-		m_ui->labelNodeId->setText("");
+		m_ui->labelNodeId->clear();
+		m_ui->lineEditNodeDisplayName->clear();
 		m_ui->lineEditNodeX->clear();
 		m_ui->lineEditNodeY->clear();
 	}
 
 	if (uniformProperty(m_currentNodes, &VICUS::NetworkNode::m_maxHeatingDemand))
-		m_ui->lineEditNodeHeatingDemand->setValue(m_currentNodes[0]->m_maxHeatingDemand);
+		m_ui->lineEditNodeMaxHeatingDemand->setValue(m_currentNodes[0]->m_maxHeatingDemand);
 	else
-		m_ui->lineEditNodeHeatingDemand->clear();
+		m_ui->lineEditNodeMaxHeatingDemand->clear();
 
 	m_ui->comboBoxComponent->blockSignals(true);
 	if (uniformProperty(m_currentNodes, &VICUS::NetworkNode::m_componentId))
@@ -173,6 +179,8 @@ void SVPropNetworkEditWidget::updateNodeProperties() {
 	else
 		m_ui->comboBoxComponent->setCurrentIndex(-1);
 	m_ui->comboBoxComponent->blockSignals(false);
+
+	updateHxProperties();
 }
 
 
@@ -186,10 +194,14 @@ void SVPropNetworkEditWidget::updateEdgeProperties() {
 	toggleHeatExchangeGroupBox();
 	setupComboboxPipeDB();
 
-	if (m_currentEdges.size() == 1)
+	if (m_currentEdges.size() == 1){
 		m_ui->labelPipeLength->setText(QString("%1 m").arg(m_currentEdges[0]->length()));
-	else
-		m_ui->labelPipeLength->setText("");
+		m_ui->lineEditEdgeDisplayName->setText(QString::fromStdString(m_currentEdges[0]->m_displayName));
+	}
+	else{
+		m_ui->labelPipeLength->clear();
+		m_ui->lineEditEdgeDisplayName->clear();
+	}
 
 	if (uniformProperty(m_currentEdges, &VICUS::NetworkEdge::m_pipeId)) {
 		int idx = m_ui->comboBoxPipeDB->findData(m_currentEdges[0]->m_pipeId);
@@ -210,6 +222,8 @@ void SVPropNetworkEditWidget::updateEdgeProperties() {
 	else
 		m_ui->comboBoxComponent->setCurrentIndex(-1);
 	m_ui->comboBoxComponent->blockSignals(false);
+
+	updateHxProperties();
 }
 
 
@@ -239,6 +253,22 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 }
 
 
+void SVPropNetworkEditWidget::updateHxProperties()
+{
+	VICUS::NetworkHeatExchange hx;
+	if(!m_currentNodes.empty()){
+		hx = m_currentNodes[0]->m_heatExchange;
+	}
+	else if (!m_currentEdges.empty())
+		hx = m_currentEdges[0]->m_heatExchange;
+	else
+		return;
+
+	m_ui->lineEditHeatFlux->setValue(hx.m_para[VICUS::NetworkHeatExchange::P_HeatFlux].value);
+
+}
+
+
 void SVPropNetworkEditWidget::updateSizingParams() {
 	if (m_currentConstNetwork != nullptr){
 		m_ui->doubleSpinBoxTemperatureSetpoint->setValue(m_currentConstNetwork->m_para[VICUS::Network::P_TemperatureSetpoint].get_value(IBK::Unit("C")));
@@ -249,7 +279,7 @@ void SVPropNetworkEditWidget::updateSizingParams() {
 
 
 void SVPropNetworkEditWidget::clearUI(){
-	m_ui->lineEditNodeHeatingDemand->clear();
+	m_ui->lineEditNodeMaxHeatingDemand->clear();
 	m_ui->labelNodeId->clear();
 	m_ui->lineEditNodeX->clear();
 	m_ui->lineEditNodeY->clear();
@@ -257,12 +287,14 @@ void SVPropNetworkEditWidget::clearUI(){
 	m_ui->labelPipeLength->clear();
 	m_ui->checkBoxSupplyPipe->setChecked(false);
 	m_ui->comboBoxPipeDB->setCurrentIndex(-1);
-	m_ui->labelEdgeCount->setText("");
-	m_ui->labelNodeCount->setText("");
-	m_ui->labelNetworkConnected->setText("");
-	m_ui->labelLargestDiameter->setText("");
-	m_ui->labelSmallestDiameter->setText("");
-	m_ui->labelTotalLength->setText("");
+	m_ui->labelEdgeCount->clear();
+	m_ui->labelNodeCount->clear();
+	m_ui->labelNetworkConnected->clear();
+	m_ui->labelLargestDiameter->clear();
+	m_ui->labelSmallestDiameter->clear();
+	m_ui->labelTotalLength->clear();
+	m_ui->lineEditHeatFlux->clear();
+	m_ui->lineEditTemperature->clear();
 	// TODO Hauke, clear other elements
 }
 
@@ -275,23 +307,70 @@ void SVPropNetworkEditWidget::setAllEnabled(bool enabled)
 	m_ui->groupBoxVisualisation->setEnabled(enabled);
 	m_ui->groupBoxEditNetwork->setEnabled(enabled);
 	m_ui->groupBoxComponent->setEnabled(enabled);
+	m_ui->groupBoxHeatExchange->setEnabled(enabled);
 }
 
 
 void SVPropNetworkEditWidget::toggleHeatExchangeGroupBox()
 {
-	const SVDatabase & db = SVSettings::instance().m_db;
-	const VICUS::NetworkComponent *comp = nullptr;
-	if (!m_currentNodes.empty())
-		comp = db.m_networkComponents[m_currentNodes[0]->m_componentId];
-	else if (!m_currentEdges.empty())
-		comp = db.m_networkComponents[m_currentEdges[0]->m_componentId];
+	showPropertiesHeatExchange(false);
+
+	const VICUS::NetworkComponent *comp = currentComponent();
+
 	if (comp == nullptr){
 		m_ui->groupBoxHeatExchange->setVisible(false);
 		return;
 	}
 	m_ui->groupBoxHeatExchange->setVisible( comp->m_heatExchangeType != VICUS::NetworkComponent::NUM_HT &&
 											comp->m_heatExchangeType != VICUS::NetworkComponent::HT_Adiabatic);
+
+	switch (comp->m_heatExchangeType) {
+		case VICUS::NetworkComponent::HT_HeatFluxConstant:{
+			m_ui->labelHeatFlux->setVisible(true);
+			m_ui->lineEditHeatFlux->setVisible(true);
+			break;
+		}
+		case VICUS::NetworkComponent::HT_TemperatureConstant:{
+			m_ui->labelTemperature->setVisible(true);
+			m_ui->lineEditTemperature->setVisible(true);
+			break;
+		}
+		case VICUS::NetworkComponent::HT_HeatFluxDataFile:
+		case VICUS::NetworkComponent::HT_TemperatureDataFile:{
+			m_ui->labelDataFile->setVisible(true);
+			m_ui->widgetBrowseFileNameData->setVisible(true);
+			break;
+		}
+		default:;
+	}
+}
+
+
+void SVPropNetworkEditWidget::showPropertiesHeatExchange(bool visible)
+{
+	m_ui->labelTemperature->setVisible(visible);
+	m_ui->lineEditTemperature->setVisible(visible);
+	m_ui->labelHeatFlux->setVisible(visible);
+	m_ui->lineEditHeatFlux->setVisible(visible);
+	m_ui->labelDataFile->setVisible(visible);
+	m_ui->widgetBrowseFileNameData->setVisible(visible);
+	m_ui->labelFMUFile->setVisible(visible);
+	m_ui->widgetBrowseFileNameFMU->setVisible(visible);
+	m_ui->labelZoneId->setVisible(visible);
+	m_ui->comboBoxZoneId->setVisible(visible);
+}
+
+
+const VICUS::NetworkComponent *SVPropNetworkEditWidget::currentComponent()
+{
+	const SVDatabase & db = SVSettings::instance().m_db;
+
+	if (!m_currentNodes.empty())
+		return db.m_networkComponents[m_currentNodes[0]->m_componentId];
+	else if (!m_currentEdges.empty())
+		return db.m_networkComponents[m_currentEdges[0]->m_componentId];
+	else
+		return nullptr;
 }
 
 
@@ -390,9 +469,7 @@ void SVPropNetworkEditWidget::showNetworkProperties() {
 	m_ui->groupBoxSizePipes->setVisible(true);
 	m_ui->groupBoxEditNetwork->setVisible(true);
 	m_ui->groupBoxVisualisation->setVisible(true);
-	m_ui->groupBoxHeatExchange->setVisible(false);
 	m_ui->groupBoxComponent->setVisible(false);
-	m_ui->groupBoxHeatExchange->setVisible(false);
 }
 
 
@@ -402,9 +479,7 @@ void SVPropNetworkEditWidget::showNodeProperties() {
 	m_ui->groupBoxSizePipes->setVisible(false);
 	m_ui->groupBoxVisualisation->setVisible(false);
 	m_ui->groupBoxEditNetwork->setVisible(false);
-	m_ui->groupBoxHeatExchange->setVisible(true);
 	m_ui->groupBoxComponent->setVisible(true);
-	m_ui->groupBoxHeatExchange->setVisible(false);
 }
 
 
@@ -414,9 +489,7 @@ void SVPropNetworkEditWidget::showEdgeProperties() {
 	m_ui->groupBoxSizePipes->setVisible(false);
 	m_ui->groupBoxVisualisation->setVisible(false);
 	m_ui->groupBoxEditNetwork->setVisible(false);
-	m_ui->groupBoxHeatExchange->setVisible(true);
 	m_ui->groupBoxComponent->setVisible(true);
-	m_ui->groupBoxHeatExchange->setVisible(false);
 }
 
 
@@ -510,15 +583,47 @@ void SVPropNetworkEditWidget::on_pushButtonEditComponents_clicked() {
 
 void SVPropNetworkEditWidget::on_lineEditNodeHeatingDemand_editingFinished()
 {
-	if (m_ui->lineEditNodeHeatingDemand->isValid())
-		modifyNodeProperty(&VICUS::NetworkNode::m_maxHeatingDemand, m_ui->lineEditNodeHeatingDemand->value());
+	if (m_ui->lineEditNodeMaxHeatingDemand->isValid())
+		modifyNodeProperty(&VICUS::NetworkNode::m_maxHeatingDemand, m_ui->lineEditNodeMaxHeatingDemand->value());
 }
 
 
 void SVPropNetworkEditWidget::on_lineEditHeatFlux_editingFinished()
 {
+	if (!m_ui->lineEditHeatFlux->isValid())
+		return;
+
+	VICUS::NetworkHeatExchange hx;
+	hx.m_para[VICUS::NetworkHeatExchange::P_HeatFlux] = IBK::Parameter("HeatFlux", m_ui->lineEditHeatFlux->value(),
+																	   IBK::Unit("W"));
+	if (!setNetwork())
+		return;
+	Q_ASSERT(!m_currentNodes.empty());
+	for (const VICUS::NetworkNode * nodeConst: m_currentNodes){
+		m_currentNetwork.m_nodes[nodeConst->m_id].m_heatExchange = hx;
+	}
+	m_currentNetwork.updateNodeEdgeConnectionPointers();
+	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
+	undo->push(); // modifies project and updates views
+
+//	if (!m_currentNodes.empty())
+//		modifyNodeProperty(&VICUS::NetworkNode::m_heatExchange, hx);
+//	else if (!m_currentEdges.empty())
+//		modifyEdgeProperty(&VICUS::NetworkEdge::m_heatExchange, hx);
 }
 
+
+void SVPropNetworkEditWidget::on_lineEditNodeDisplayName_editingFinished()
+{
+	modifyNodeProperty(&VICUS::NetworkNode::m_displayName, m_ui->lineEditNodeDisplayName->text().toStdString());
+}
+
+
+void SVPropNetworkEditWidget::on_lineEditEdgeDisplayName_editingFinished()
+{
+	modifyEdgeProperty(&VICUS::NetworkEdge::m_displayName, m_ui->lineEditEdgeDisplayName->text().toStdString());
+}
 
 void SVPropNetworkEditWidget::on_pushButtonSizePipeDimensions_clicked()
 {

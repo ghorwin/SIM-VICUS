@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Do Dez 10 12:42:13 2020</Created>
-		<LastEdited>Mo Feb 8 20:08:05 2021</LastEdited>
+		<LastEdited>Di Feb 9 19:21:57 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -17,25 +17,25 @@
 		<ViewSettings>
 			<GridSpacing>100</GridSpacing>
 			<GridWidth>500</GridWidth>
-			<CameraTranslation>-30.0994 226.235 204.317</CameraTranslation>
+			<CameraTranslation>83.5613 196.945 204.581</CameraTranslation>
 			<RotationMatrix>
-				<Wp>-0.244033</Wp>
-				<X>-0.153406</X>
-				<Y>0.509288</Y>
-				<Z>0.810857</Z>
+				<Wp>-0.0712863</Wp>
+				<X>-0.0366129</X>
+				<Y>0.454681</Y>
+				<Z>0.887012</Z>
 			</RotationMatrix>
 			<FarDistance>1700</FarDistance>
 		</ViewSettings>
 		<GeometricNetworks>
-			<Network id="0" fluidID="0" name="Mini Netzwerk">
+			<Network id="1" fluidID="1" name="Mini Netzwerk">
 				<Nodes>
-					<NetworkNode id="0" type="Source" maxHeatingDemand="0" componentId="100003">
+					<NetworkNode id="0" type="Source" maxHeatingDemand="0" componentId="100003" displayName="Quelle">
 						<Position>0 0 0</Position>
 					</NetworkNode>
-					<NetworkNode id="1" type="Building" maxHeatingDemand="4800" componentId="100002">
+					<NetworkNode id="1" type="Building" maxHeatingDemand="10000" componentId="100002" displayName="EFH3">
 						<Position>200 -70 0</Position>
 					</NetworkNode>
-					<NetworkNode id="2" type="Building" maxHeatingDemand="4800" componentId="100002">
+					<NetworkNode id="2" type="Building" maxHeatingDemand="10000" componentId="100002" displayName="EFH1">
 						<Position>250 0 0</Position>
 					</NetworkNode>
 					<NetworkNode id="3" type="Mixer" maxHeatingDemand="0">
@@ -43,22 +43,23 @@
 					</NetworkNode>
 				</Nodes>
 				<Edges>
-					<NetworkEdge supply="1" nodeId1="0" nodeId2="3">
+					<NetworkEdge supply="1" displayName="leitung1" nodeId1="0" nodeId2="3">
 						<PipeId>10</PipeId>
 						<ComponentId>100001</ComponentId>
-						<Length>4</Length>
+						<Length>40</Length>
 					</NetworkEdge>
-					<NetworkEdge supply="1" nodeId1="3" nodeId2="1">
-						<PipeId>7</PipeId>
+					<NetworkEdge supply="1" displayName="leitung2" nodeId1="3" nodeId2="1">
+						<PipeId>70</PipeId>
 						<ComponentId>100001</ComponentId>
 						<Length>4</Length>
 					</NetworkEdge>
-					<NetworkEdge supply="1" nodeId1="3" nodeId2="2">
+					<NetworkEdge supply="1" displayName="leitung3" nodeId1="3" nodeId2="2">
 						<PipeId>3</PipeId>
 						<ComponentId>100001</ComponentId>
-						<Length>4</Length>
+						<Length>40</Length>
 					</NetworkEdge>
 				</Edges>
+				<AvailablePipes>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16</AvailablePipes>
 				<Origin>0 0 0</Origin>
 				<Type>DoublePipe</Type>
 				<IBK:Parameter name="TemperatureSetpoint" unit="C">20</IBK:Parameter>
@@ -71,7 +72,7 @@
 			</Network>
 		</GeometricNetworks>
 		<NetworkFluids>
-			<NetworkFluid id="0" displayName="Water">
+			<NetworkFluid id="1" displayName="Water">
 				<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
 				<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
 				<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
