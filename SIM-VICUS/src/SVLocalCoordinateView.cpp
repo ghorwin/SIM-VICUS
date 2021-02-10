@@ -7,7 +7,6 @@
 
 #include "ui_SVLocalCoordinateView.h"
 
-
 SVLocalCoordinateView::SVLocalCoordinateView(QWidget *parent) :
 	QWidget(parent),
 	m_ui(new Ui::SVLocalCoordinateView)
@@ -17,23 +16,47 @@ SVLocalCoordinateView::SVLocalCoordinateView(QWidget *parent) :
 	QPixmap mypix (":/gfx/actions/icons8-coordinate-system-32.png");
 //	m_ui->labelIcon->setPixmap( mypix.scaledToHeight(32) );
 
+	// make us known to the world
 	SVViewStateHandler::instance().m_localCoordinateViewWidget = this;
 }
 
-SVLocalCoordinateView::~SVLocalCoordinateView()
-{
+
+SVLocalCoordinateView::~SVLocalCoordinateView() {
 	delete m_ui;
 }
 
 
-void SVLocalCoordinateView::setCoordinates(const Vic3D::Transform3D &t)
-{
-		// is being call from local coordinate system object, whenever this has changed location (regardless of
-		// its own visibility)
-		m_ui->lineEditXValue->setText( QString("%L1").arg( t.translation().x(), 4, 'f' ) );
-		m_ui->lineEditYValue->setText( QString("%L1").arg( t.translation().y(), 4, 'f' ) );
-		m_ui->lineEditZValue->setText( QString("%L1").arg( t.translation().z(), 4, 'f' ) );
+void SVLocalCoordinateView::setCoordinates(const Vic3D::Transform3D &t) {
+
+	// is being call from local coordinate system object, whenever this has changed location (regardless of
+	// its own visibility)
+	m_ui->lineEditXValue->setText( QString("%L1").arg( t.translation().x(), 4, 'f' ) );
+	m_ui->lineEditYValue->setText( QString("%L1").arg( t.translation().y(), 4, 'f' ) );
+	m_ui->lineEditZValue->setText( QString("%L1").arg( t.translation().z(), 4, 'f' ) );
+
+	QVector3D localXAxis = t.rotation().rotatedVector(QVector3D(1,0,0));
+	QVector3D localYAxis = t.rotation().rotatedVector(QVector3D(0,1,0));
+	QVector3D localZAxis = t.rotation().rotatedVector(QVector3D(0,0,1));
+
+	// TODO : Stephan, show alignment of the local coordinate system
+
+/*	if ( m_ui->comboBoxAxis->currentIndex() == 0 ) //x-Axis
+		 t = x;
+	else if ( m_ui->comboBoxAxis->currentIndex() == 1 ) // y-Axis
+		t = y;
+	else
+		t = z;
+
+	m_ui->lineEditInclination->setText( QString("%L1").arg( std::acos(t.z())/IBK::DEG2RAD, 3, 'f' ) );
+
+	// positive y Richtung = Norden = Orientation 0°
+	// positive x Richtung = Osten = Orientation 90°
+
+	double orientation = std::atan2(t.x(), ( t.y() == 0 ? 1E-8 : t.y() ) ) /IBK::DEG2RAD ;
+	m_ui->lineEditOrientation->setText( QString("%L1").arg( orientation < 0 ? ( orientation + 360 ) : orientation , 3, 'f') );
+*/
 }
+
 
 void SVLocalCoordinateView::setOrientation(const QVector3D &x, const QVector3D &y, const QVector3D &z)
 {	QVector3D t;

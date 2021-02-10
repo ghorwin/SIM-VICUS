@@ -73,7 +73,7 @@ public:
 	/*! Pointer to geometry edit widget - is needed to set the absolute scale factor ( bounding box) on selection change. */
 	SVPropEditGeometry					*m_propEditGeometryWidget = nullptr;
 
-	/*! Pointer to local coordinate system view widget. */
+	/*! Pointer to local coordinate system view widget (shown in tool bar), only visible when local coordinate system is shown. */
 	SVLocalCoordinateView				*m_localCoordinateViewWidget = nullptr;
 
 	/*! Pointer to "place vertex" widget - is needed to clear the vertex list when a new polygon/geometrical object is being drawn. */

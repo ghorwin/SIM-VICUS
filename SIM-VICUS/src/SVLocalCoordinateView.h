@@ -1,5 +1,5 @@
-#ifndef SVLOCALCOORDINATEVIEW_H
-#define SVLOCALCOORDINATEVIEW_H
+#ifndef SVLocalCoordinateViewH
+#define SVLocalCoordinateViewH
 
 #include <QWidget>
 
@@ -9,12 +9,9 @@ namespace Ui {
 class SVLocalCoordinateView;
 }
 
-class SVLocalCoordinateView : public QWidget
-{
+/*! A widget that shows the location and orientation of the local coordinate system. */
+class SVLocalCoordinateView : public QWidget {
 	Q_OBJECT
-
-
-
 public:
 	explicit SVLocalCoordinateView(QWidget *parent = nullptr);
 	~SVLocalCoordinateView();
@@ -26,6 +23,8 @@ public:
 
 	/*! Sets the Orienation of an given Axis in regard to the
 		absolute coordinate system
+
+		TODO : Remove?
 	*/
 	void setOrientation(const QVector3D &x, const QVector3D &y, const QVector3D &z);
 
@@ -44,4 +43,4 @@ private:
 	QVector3D				m_zAxis;
 };
 
-#endif // SVLOCALCOORDINATEVIEW_H
+#endif // SVLocalCoordinateViewH
