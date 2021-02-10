@@ -44,7 +44,7 @@ private slots:
 	void on_filepathClimateDataFile_editingFinished();
 
 private:
-	void updateLocationInfo(const SVClimateFileInfo * dataPtr);
+	void updateLocationInfo(const SVClimateFileInfo * dataPtr, bool databaseFile);
 	void updateUserClimateFileInfo();
 
 	void storeCustomLocationInputs();

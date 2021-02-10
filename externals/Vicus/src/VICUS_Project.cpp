@@ -378,8 +378,6 @@ void Project::writeDirectoryPlaceholdersXML(TiXmlElement * parent) const {
 		// write placeholder to file
 		TiXmlElement::appendSingleAttributeElement(e1, "Placeholder", "name", *it, pit->second.str());
 	}
-
-	TiXmlComment::addSeparatorComment(parent);
 }
 // ----------------------------------------------------------------------------
 

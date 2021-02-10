@@ -101,7 +101,14 @@ void SVSimulationLocationOptions::updateUi() {
 		QModelIndex idx;
 		for (int i=0, count = m_climateDataModel->rowCount(QModelIndex()); i< count; ++i) {
 			QModelIndex curIdx = m_climateDataModel->index(i, 0);
+			// get the path including potential placeholders
 			IBK::Path p(m_climateDataModel->data(curIdx, Role_FilePath).toString().toStdString());
+			if (p == m_location->m_climateFilePath) {
+				idx = curIdx;
+				break;
+			}
+			// now try the absolute path, maybe that matches
+			p = m_climateDataModel->data(curIdx, Role_AbsoluteFilePath).toString().toStdString();
 			if (p == m_location->m_climateFilePath) {
 				idx = curIdx;
 				break;
@@ -130,13 +137,14 @@ void SVSimulationLocationOptions::updateUi() {
 
 		}
 		else {
+			// file is not contained in the database or user database, assume absolute file path
 			m_ui->filepathClimateDataFile->blockSignals(true);
 			m_ui->filepathClimateDataFile->setFilename(QString::fromStdString(m_location->m_climateFilePath.str()));
 			// try to read the user-defined climate data file - if this fails, the m_userClimateFile info structure
 			// will be empty
 			updateUserClimateFileInfo();
 			// now update the
-			updateLocationInfo(&m_userClimateFile);
+			updateLocationInfo(&m_userClimateFile, false); // false = no database file
 			m_ui->filepathClimateDataFile->blockSignals(false);
 		}
 	}
@@ -151,17 +159,24 @@ void SVSimulationLocationOptions::onCurrentIndexChanged(const QModelIndex &curre
 	if (m_ui->radioButtonFromDB->isChecked()) {
 		// get filename from current model and then update the climate station info text box
 		const SVClimateFileInfo * p = (const SVClimateFileInfo *)current.data(Role_RawPointer).value<void*>();
-		updateLocationInfo(p);
+		updateLocationInfo(p, true);
 	}
 }
 
 
-void SVSimulationLocationOptions::updateLocationInfo(const SVClimateFileInfo * climateInfoPtr) {
+void SVSimulationLocationOptions::updateLocationInfo(const SVClimateFileInfo * climateInfoPtr, bool databaseFile) {
 	if (climateInfoPtr == nullptr)
 		m_location->m_climateFilePath.clear();
 	else {
-		// TODO : try to resolve a path to the climate DB path placeholders
-		m_location->m_climateFilePath = climateInfoPtr->m_file.absoluteFilePath().toStdString();
+		// store file with placeholder, if it is from database or user database
+		if (databaseFile) {
+			if (climateInfoPtr->m_builtIn)
+				m_location->m_climateFilePath = QString("${%1}/%2").arg(VICUS::DATABASE_PLACEHOLDER_NAME, climateInfoPtr->m_filename).toStdString();
+			else
+				m_location->m_climateFilePath = QString("${%1}/%2").arg(VICUS::USER_DATABASE_PLACEHOLDER_NAME, climateInfoPtr->m_filename).toStdString();
+		}
+		else
+			m_location->m_climateFilePath = climateInfoPtr->m_file.absoluteFilePath().toStdString();
 	}
 
 	// update info text on climate location
@@ -248,7 +263,7 @@ void SVSimulationLocationOptions::on_radioButtonFromDB_toggled(bool checked) {
 	}
 	else {
 		updateUserClimateFileInfo();
-		updateLocationInfo(&m_userClimateFile);
+		updateLocationInfo(&m_userClimateFile, false);
 	}
 }
 
@@ -266,7 +281,7 @@ void SVSimulationLocationOptions::on_lineEditTextFilter_textChanged(const QStrin
 
 void SVSimulationLocationOptions::on_filepathClimateDataFile_editingFinished() {
 	updateUserClimateFileInfo();
-	updateLocationInfo(&m_userClimateFile);
+	updateLocationInfo(&m_userClimateFile, false);
 }
 
 void SVSimulationLocationOptions::on_checkBoxCustomLocation_toggled(bool checked) {

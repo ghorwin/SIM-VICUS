@@ -7,6 +7,8 @@
 #include <IBK_Path.h>
 #include <IBK_messages.h>
 
+#include <VICUS_Constants.h>
+
 #include "SVSettings.h"
 #include "SVConstants.h" // for the custom roles
 
@@ -71,13 +73,13 @@ QVariant SVClimateDataTableModel::data(const QModelIndex & index, int role) cons
 			return f.m_builtIn;
 
 		case Role_FileName :
-			return f.m_filename;
+			return f.m_filename; // just the filename
 
 		case Role_FilePath :
 			if (f.m_builtIn)
-				return f.m_filename;
+				return QString("${%1}/%2").arg(VICUS::DATABASE_PLACEHOLDER_NAME, f.m_filename);
 			else
-				return f.m_filename;
+				return QString("${%1}/%2").arg(VICUS::USER_DATABASE_PLACEHOLDER_NAME, f.m_filename);
 
 		case Role_AbsoluteFilePath :
 			return f.m_file.absoluteFilePath();
@@ -212,12 +214,3 @@ void SVClimateDataTableModel::updateClimateFileList() {
 	endResetModel();
 }
 
-
-IBK::Path SVClimateDataTableModel::withPlaceholder(const IBK::Path & filepath) const {
-	for (const SVClimateFileInfo & cinfo : m_climateFiles) {
-		if (cinfo.m_file.absoluteFilePath().toStdString() == filepath.absolutePath().str()) {
-
-		}
-	}
-
-}

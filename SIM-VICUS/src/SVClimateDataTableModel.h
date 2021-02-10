@@ -5,7 +5,12 @@
 
 #include "SVClimateFileInfo.h"
 
-/*! A table model that provides a table/list of available climate data files. */
+/*! A table model that provides a table/list of available climate data files.
+	Use the Role_FileName to get just the filename. Use Role_FilePath to get the
+	file path including a database placeholder (this should be used to store the location in the project file).
+	Finally, use Role_AbsoluteFilePath to get the absolute file path, in case the climate data file needs to be
+	read for diagram display.
+*/
 class SVClimateDataTableModel : public QAbstractTableModel {
 public:
 	/*! Different columns provided by the model.
@@ -43,13 +48,6 @@ public:
 		This also resets the model.
 	*/
 	void updateClimateFileList();
-
-	/*! Looks up the path provided in the list of climate data files, and if existent,
-		subsitutes the data base path part with ${Climate Database} or ${User Climate Database} and
-		returns the modified path.
-		If the file is not in either of the databases, the original path is returned.
-	*/
-	IBK::Path withPlaceholder(const IBK::Path & filepath) const;
 
 private:
 	/*! Available climate data files (updated in updateClimateFileList()). */
