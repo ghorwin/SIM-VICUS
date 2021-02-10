@@ -70,8 +70,17 @@ QVariant SVClimateDataTableModel::data(const QModelIndex & index, int role) cons
 		case Role_BuiltIn :
 			return f.m_builtIn;
 
-		case Role_FilePath :
+		case Role_FileName :
 			return f.m_filename;
+
+		case Role_FilePath :
+			if (f.m_builtIn)
+				return f.m_filename;
+			else
+				return f.m_filename;
+
+		case Role_AbsoluteFilePath :
+			return f.m_file.absoluteFilePath();
 
 		case Role_Value : {
 			switch ((Columns)index.column()) {
@@ -157,7 +166,7 @@ void SVClimateDataTableModel::updateClimateFileList() {
 	}
 
 	IBK::Path ccPath(ccDir.toStdString());
-	foreach(const QString& file, defaultFiles) {
+	for (const QString& file : defaultFiles) {
 		QFileInfo fileInfo(file);
 		SVClimateFileInfo item(fileInfo.baseName(),
 							   fileInfo.fileName(),
@@ -179,7 +188,7 @@ void SVClimateDataTableModel::updateClimateFileList() {
 	}
 
 	IBK::Path uccPath(uccDir.toStdString());
-	foreach(const QString& file, userFiles) {
+	for (const QString& file : userFiles) {
 		QFileInfo fileInfo(file);
 		SVClimateFileInfo item(fileInfo.baseName(),
 							   fileInfo.fileName(),
@@ -201,4 +210,14 @@ void SVClimateDataTableModel::updateClimateFileList() {
 	}
 
 	endResetModel();
+}
+
+
+IBK::Path SVClimateDataTableModel::withPlaceholder(const IBK::Path & filepath) const {
+	for (const SVClimateFileInfo & cinfo : m_climateFiles) {
+		if (cinfo.m_file.absoluteFilePath().toStdString() == filepath.absolutePath().str()) {
+
+		}
+	}
+
 }

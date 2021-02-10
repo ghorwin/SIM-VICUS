@@ -56,6 +56,14 @@ public:
 		TE_GnomeTerminal
 	};
 
+	/*! Database types known to the user interface.
+		When a project is stored, these database paths are always written to file.
+	*/
+	enum DBType {
+		DB_Database,
+		DB_UserDatabase,
+		NUM_DB
+	};
 
 	/*! Keywords used for serialization of the properties. */
 	static const char * const			PROPERTY_KEYWORDS[NUM_PT];

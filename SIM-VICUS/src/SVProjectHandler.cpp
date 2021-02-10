@@ -286,6 +286,10 @@ SVProjectHandler::SaveResult SVProjectHandler::saveProject(QWidget * parent, con
 		m_project->m_projectInfo.m_created = QDateTime::currentDateTime().toString(Qt::TextDate).toUtf8().data();
 	m_project->m_projectInfo.m_lastEdited = QDateTime::currentDateTime().toString(Qt::TextDate).toUtf8().data();
 
+	// update standard placeholders in project file
+	m_project->m_placeholders[VICUS::DATABASE_PLACEHOLDER_NAME]			= QtExt::Directories::databasesDir().toStdString();
+	m_project->m_placeholders[VICUS::USER_DATABASE_PLACEHOLDER_NAME]	= QtExt::Directories::userDataDir().toStdString();
+
 	// save project file
 	if (!write(fname)) {
 
@@ -473,8 +477,6 @@ bool SVProjectHandler::write(const QString & fname) const {
 			// invalid old path -> we shouldn't have "Project Directory" placeholder in this case...
 		}
 
-
-		/// \todo Andreas: replace all absolute file names with relative file paths (using placeholders)
 
 		// filename is converted to utf8 before calling writeXML
 		m_project->writeXML(IBK::Path(fname.toStdString()) );

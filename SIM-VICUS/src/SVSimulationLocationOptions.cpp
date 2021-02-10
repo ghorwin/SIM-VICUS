@@ -96,13 +96,13 @@ void SVSimulationLocationOptions::updateUi() {
 	m_ui->checkBoxCustomLocation->blockSignals(false);
 	on_checkBoxCustomLocation_toggled(m_ui->checkBoxCustomLocation->isChecked());
 
-	if (m_location->m_climateFileName.isValid()) {
+	if (m_location->m_climateFilePath.isValid()) {
 		// is the referenced file in the climate database?
 		QModelIndex idx;
 		for (int i=0, count = m_climateDataModel->rowCount(QModelIndex()); i< count; ++i) {
 			QModelIndex curIdx = m_climateDataModel->index(i, 0);
 			IBK::Path p(m_climateDataModel->data(curIdx, Role_FilePath).toString().toStdString());
-			if (p == m_location->m_climateFileName) {
+			if (p == m_location->m_climateFilePath) {
 				idx = curIdx;
 				break;
 			}
@@ -131,7 +131,7 @@ void SVSimulationLocationOptions::updateUi() {
 		}
 		else {
 			m_ui->filepathClimateDataFile->blockSignals(true);
-			m_ui->filepathClimateDataFile->setFilename(QString::fromStdString(m_location->m_climateFileName.str()));
+			m_ui->filepathClimateDataFile->setFilename(QString::fromStdString(m_location->m_climateFilePath.str()));
 			// try to read the user-defined climate data file - if this fails, the m_userClimateFile info structure
 			// will be empty
 			updateUserClimateFileInfo();
@@ -158,10 +158,10 @@ void SVSimulationLocationOptions::onCurrentIndexChanged(const QModelIndex &curre
 
 void SVSimulationLocationOptions::updateLocationInfo(const SVClimateFileInfo * climateInfoPtr) {
 	if (climateInfoPtr == nullptr)
-		m_location->m_climateFileName.clear();
+		m_location->m_climateFilePath.clear();
 	else {
 		// TODO : try to resolve a path to the climate DB path placeholders
-		m_location->m_climateFileName = climateInfoPtr->m_file.absoluteFilePath().toStdString();
+		m_location->m_climateFilePath = climateInfoPtr->m_file.absoluteFilePath().toStdString();
 	}
 
 	// update info text on climate location

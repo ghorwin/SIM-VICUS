@@ -44,6 +44,13 @@ public:
 	*/
 	void updateClimateFileList();
 
+	/*! Looks up the path provided in the list of climate data files, and if existent,
+		subsitutes the data base path part with ${Climate Database} or ${User Climate Database} and
+		returns the modified path.
+		If the file is not in either of the databases, the original path is returned.
+	*/
+	IBK::Path withPlaceholder(const IBK::Path & filepath) const;
+
 private:
 	/*! Available climate data files (updated in updateClimateFileList()). */
 	QList<SVClimateFileInfo>	m_climateFiles;

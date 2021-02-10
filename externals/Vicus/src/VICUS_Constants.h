@@ -37,6 +37,9 @@ extern const char * XML_READ_UNKNOWN_ATTRIBUTE;
 extern const char * XML_READ_UNKNOWN_ELEMENT;
 extern const char * XML_READ_UNKNOWN_NAME;
 
+extern const char * DATABASE_PLACEHOLDER_NAME;
+extern const char * USER_DATABASE_PLACEHOLDER_NAME;
+
 } // namespace VICUS
 
 /*!

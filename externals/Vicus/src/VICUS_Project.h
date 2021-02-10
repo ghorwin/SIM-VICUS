@@ -75,6 +75,12 @@ public:
 	*/
 	void writeXML(const IBK::Path & filename) const;
 
+	/*! Reads the placeholder section into m_placeholders map. */
+	void readDirectoryPlaceholdersXML(const TiXmlElement * element);
+
+	/*! Writes the section with directory place holders. */
+	void writeDirectoryPlaceholdersXML(TiXmlElement * parent) const;
+
 	/*! Removes un-referenced/un-needed data structures. */
 	void clean();
 
@@ -92,13 +98,6 @@ public:
 		is not the uniqueID, but the persistant id from the data model.
 	*/
 	VICUS::Surface * surfaceByID(unsigned int surfaceID);
-
-//	/*! This function checks all surfaces in the project if they are selected or not.
-//		\returns Returns true, if any surface is selected, and if so, stores the arithmetic average of all
-//				 surface vertexes in variable centerPoint.
-//		\todo Stephan, remove and use selectObjects() with subsequent bounding box calculation instead.
-//	*/
-//	bool haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const;
 
 	/*! Selects objects and return set with pointers according to additional filters.
 		\param selectedObjs Here the pointers to selected objects are returned.
@@ -226,6 +225,17 @@ public:
 
 	/*! Database of fluids */
 	std::vector<NetworkFluid>							m_networkFluids;			// XML:E
+
+	/*! Path placeholder mappings used to substitute placeholders for database and user databases.
+		These placeholders are read from the path placeholders section of the project file and hold
+		a full directory path for a given placeholder name. You can compose a placeholder yourself:
+		\code
+		m_placeholders["Database"] = "/path/to/databases";
+		// and then use this to resolve a relative path defined in the project file as
+		string relative_path = "${Database}/db_materials.xml";
+		\endcode
+	*/
+	std::map< std::string, IBK::Path >	m_placeholders;
 
 };
 

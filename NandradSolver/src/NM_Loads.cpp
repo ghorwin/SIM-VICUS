@@ -64,10 +64,10 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 		// for now we require a climate data file
 		// if dummy values are needed, it is possible to create a simple dummy climate data file
 		// with constant values throughout the year
-		if (location.m_climateFileName.str().empty())
+		if (location.m_climateFilePath.str().empty())
 			throw IBK::Exception("Climate data location required (Location.ClimateReference).", FUNC_ID);
 
-		IBK::Path climateFile = IBK::Path(location.m_climateFileName).withReplacedPlaceholders(pathPlaceHolders);
+		IBK::Path climateFile = IBK::Path(location.m_climateFilePath).withReplacedPlaceholders(pathPlaceHolders);
 
 		try {
 			IBK::IBK_Message(IBK::FormatString("Reading climate data file '%1'\n").arg(climateFile), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);

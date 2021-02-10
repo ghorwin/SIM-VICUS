@@ -33,5 +33,8 @@ const char * XML_READ_UNKNOWN_ATTRIBUTE = "Unknown/unsupported attribute '%1' in
 const char * XML_READ_UNKNOWN_ELEMENT = "Unknown/unsupported tag '%1' in line %2.";
 const char * XML_READ_UNKNOWN_NAME = "Name '%1' for tag '%2' in line %3 is invalid/unknown.";
 
+const char * DATABASE_PLACEHOLDER_NAME			= "Database";
+const char * USER_DATABASE_PLACEHOLDER_NAME		= "User Database";
+
 } // namespace VICUS
 

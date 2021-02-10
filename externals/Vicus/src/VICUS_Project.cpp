@@ -256,6 +256,13 @@ void Project::readXML(const IBK::Path & filename) {
 		if (xmlElem) {
 			m_projectInfo.readXML(xmlElem);
 		}
+
+		// Directory Placeholders
+		xmlElem = xmlRoot.FirstChild( "DirectoryPlaceholders" ).Element();
+		if (xmlElem) {
+			readDirectoryPlaceholdersXML(xmlElem);
+		}
+
 		xmlElem = xmlRoot.FirstChild("Project").Element();
 		if (xmlElem) {
 			readXML(xmlElem);
@@ -282,6 +289,8 @@ void Project::writeXML(const IBK::Path & filename) const {
 
 	if (m_projectInfo != NANDRAD::ProjectInfo())
 		m_projectInfo.writeXML(root);
+	writeDirectoryPlaceholdersXML(root);
+
 	writeXML(root);
 
 	// other files
@@ -290,6 +299,89 @@ void Project::writeXML(const IBK::Path & filename) const {
 
 }
 
+
+void Project::readDirectoryPlaceholdersXML(const TiXmlElement * element) {
+
+	// loop over all elements in this XML element
+	for (const TiXmlElement * e=element->FirstChildElement(); e; e = e->NextSiblingElement()) {
+		// get element name
+		std::string name = e->Value();
+		// handle known elements
+		if (name == "Placeholder") {
+			// search for attribute with given name
+			const TiXmlAttribute* attrib = TiXmlAttribute::attributeByName(e, "name");
+			if (attrib == nullptr) {
+				IBK::IBK_Message(IBK::FormatString(
+						"Missing '%1' attribute in Placeholder element.").arg("name"), IBK::MSG_WARNING);
+				continue;
+			}
+			m_placeholders[attrib->Value()] = e->GetText();
+		}
+		else {
+			IBK::IBK_Message(IBK::FormatString(
+					"Unknown element '%1' in DirectoryPlaceholders section.").arg(name), IBK::MSG_WARNING);
+		}
+	}
+}
+
+
+void Project::writeDirectoryPlaceholdersXML(TiXmlElement * parent) const {
+	const char * const FUNC_ID = "[Project::writeDirectoryPlaceholdersXML]";
+
+	// lookup all used path placeholders
+	std::set<std::string> usedPlaceholders;
+
+	// first glob filenames used anywhere in the project
+	std::vector<IBK::Path> fnames;
+	fnames.push_back( m_location.m_climateFilePath );
+
+	// TODO : add more file references with placeholders
+
+	// now we extract all the placeholders
+	for (std::vector<IBK::Path>::const_iterator it = fnames.begin(); it != fnames.end(); ++it) {
+		std::string placeholder;
+		IBK::Path myPath(*it);
+		IBK::Path dummy;
+		if ( myPath.extractPlaceholder( placeholder, dummy ) )
+			usedPlaceholders.insert(placeholder);
+	}
+
+	// remove default placeholders for project directory
+	usedPlaceholders.erase(IBK::PLACEHOLDER_PROJECT_DIR);
+
+	// no placeholders used? nothing to write
+	if (usedPlaceholders.empty())
+		return;
+
+	TiXmlComment::addComment(parent,
+		"DirectoryPlaceholders section defines strings to be substituted with directories");
+
+	TiXmlElement * e1 = new TiXmlElement( "DirectoryPlaceholders" );
+	parent->LinkEndChild( e1 );
+
+	for (std::set<std::string>::const_iterator it = usedPlaceholders.begin();
+		 it != usedPlaceholders.end(); ++it)
+	{
+
+		std::map<std::string, IBK::Path>::const_iterator pit = m_placeholders.find(*it);
+		// placeholder should exist, if not user may have tempered with the file and
+		// manually inserted a placeholder without adding it to the placeholder section
+		// This typically occurs when typos are present in the placeholder name.
+		// In such cases, we silently ignore writing the placeholder, but simply write
+		// a warning to the user.
+		if (pit == m_placeholders.end()) {
+			IBK::IBK_Message(IBK::FormatString("Placeholder '%1' is being used in one or more "
+											   "referenced files, but not defined within the placeholder section")
+							 .arg(*it), IBK::MSG_WARNING, FUNC_ID);
+			continue;
+		}
+		// write placeholder to file
+		TiXmlElement::appendSingleAttributeElement(e1, "Placeholder", "name", *it, pit->second.str());
+	}
+
+	TiXmlComment::addSeparatorComment(parent);
+}
+// ----------------------------------------------------------------------------
 
 void Project::clean() {
 

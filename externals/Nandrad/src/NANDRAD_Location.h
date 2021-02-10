@@ -65,8 +65,8 @@ public:
 	*/
 	int							m_timeZone = 13;						// XML:E
 
-	/*! Name of the climate data file. */
-	IBK::Path					m_climateFileName;						// XML:E
+	/*! Path to the climate data file (may contain placeholders). */
+	IBK::Path					m_climateFilePath;						// XML:E
 
 	/*! Optional: name of the external shading factor data file. */
 	IBK::Path					m_shadingFactorFileName;				// XML:E

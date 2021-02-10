@@ -31,8 +31,12 @@ enum DataRoles {
 	Role_Id				= Qt::UserRole,
 	/*! Role to be used to identify built-in database components. */
 	Role_BuiltIn,
-	/*! Role to be used when a file path is to be returned.*/
+	/*! Role to be used when a file name (without path) is to be returned.*/
+	Role_FileName,
+	/*! Role to be used when a file path (with placeholder) is to be returned.*/
 	Role_FilePath,
+	/*! Role to be used when a file path is to be returned as absolute file path.*/
+	Role_AbsoluteFilePath,
 	/*! Role to use for double values needed for comparisions. */
 	Role_Value,
 	/*! Role to use for passing raw data pointers to whatever data structure

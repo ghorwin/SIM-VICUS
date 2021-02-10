@@ -302,7 +302,7 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 	// location settings
 	p.m_location = m_location;
 	// do we have a climate path?
-	if (!m_location.m_climateFileName.isValid()) {
+	if (!m_location.m_climateFilePath.isValid()) {
 		m_ui->tabWidget->setCurrentWidget(m_ui->tabClimate);
 		QMessageBox::critical(this, tr("Starting NANDRAD simulation"), tr("A climate data file is needed. Please select a climate data file!"));
 		return false;

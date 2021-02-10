@@ -57,7 +57,7 @@ void Location::readXML(const TiXmlElement * element) {
 			else if (cName == "TimeZone")
 				m_timeZone = NANDRAD::readPODElement<int>(c, cName);
 			else if (cName == "ClimateFileName")
-				m_climateFileName = IBK::Path(c->GetText());
+				m_climateFilePath = IBK::Path(c->GetText());
 			else if (cName == "ShadingFactorFileName")
 				m_shadingFactorFileName = IBK::Path(c->GetText());
 			else if (cName == "IBK:Flag") {
@@ -107,8 +107,8 @@ TiXmlElement * Location::writeXML(TiXmlElement * parent) const {
 		}
 	}
 	TiXmlElement::appendSingleAttributeElement(e, "TimeZone", nullptr, std::string(), IBK::val2string<int>(m_timeZone));
-	if (m_climateFileName.isValid())
-		TiXmlElement::appendSingleAttributeElement(e, "ClimateFileName", nullptr, std::string(), m_climateFileName.str());
+	if (m_climateFilePath.isValid())
+		TiXmlElement::appendSingleAttributeElement(e, "ClimateFileName", nullptr, std::string(), m_climateFilePath.str());
 	if (m_shadingFactorFileName.isValid())
 		TiXmlElement::appendSingleAttributeElement(e, "ShadingFactorFileName", nullptr, std::string(), m_shadingFactorFileName.str());
 	if (!m_perezDiffuseRadiationModel.name().empty()) {
