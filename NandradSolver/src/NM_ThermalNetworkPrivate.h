@@ -91,15 +91,6 @@ public:
 	/*! Container with global pointer to calculated mass fluxes.
 	*/
 	const double									*m_fluidMassFluxes;
-	/*! Container with pointers to heat fluxes.
-	*/
-	std::vector<const double*>						m_ambientHeatFluxRefs;
-	/*! Container with pointers to ambient temperatures.
-	*/
-	std::vector<const double*>						m_ambientTemperatureRefs;
-	/*! Container with pointers to ambient heat transfer.
-	*/
-	std::vector<const double*>						m_ambientHeatTransferRefs;
 
 private:
 

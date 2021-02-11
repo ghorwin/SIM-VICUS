@@ -8,7 +8,6 @@
 
 #include "numeric"
 
-#define PI				3.141592653589793238
 
 namespace NANDRAD_MODEL {
 
@@ -17,7 +16,8 @@ namespace NANDRAD_MODEL {
 TNStaticPipeElement::TNStaticPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 							 const NANDRAD::HydraulicNetworkComponent & comp,
 							const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
-							const NANDRAD::HydraulicFluid & fluid)
+							const NANDRAD::HydraulicFluid & fluid,
+							const double &TExt)
 {
 	m_length = elem.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
 	m_innerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
@@ -32,12 +32,8 @@ TNStaticPipeElement::TNStaticPipeElement(const NANDRAD::HydraulicNetworkElement 
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 	m_fluidConductivity = fluid.m_para[NANDRAD::HydraulicFluid::P_Conductivity].value;
 	m_fluidViscosity = fluid.m_kinematicViscosity.m_values;
-	// copy heat exchange properties
-	m_heatExchangeType = (int) comp.m_heatExchangeType;
-
-	if(m_heatExchangeType == (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant) {
-		m_heatLoss = elem.m_para[NANDRAD::HydraulicNetworkElement::P_HeatFlux].value;
-	}
+	// set reference to external temperature
+	m_externalTemperatureRef = &TExt;
 }
 
 TNStaticPipeElement::~TNStaticPipeElement()
@@ -47,9 +43,6 @@ TNStaticPipeElement::~TNStaticPipeElement()
 
 void TNStaticPipeElement::setNodalConditions(double mdot, double TInlet, double TOutlet)
 {
-	// TODO: add initialization
-	const double ambientTemperature = 273.15;
-
 	// copy mass flux
 	ThermalNetworkAbstractFlowElementWithHeatLoss::setNodalConditions(mdot, TInlet, TOutlet);
 
@@ -71,6 +64,7 @@ void TNStaticPipeElement::setNodalConditions(double mdot, double TInlet, double 
 														+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter)
 														+ 1.0/(2.0*m_UValuePipeWall) );
 
+		const double ambientTemperature = *m_externalTemperatureRef;
 		if(m_massFlux >= 0) {
 			// calculate heat loss with given parameters
 			m_heatLoss = m_massFlux * m_fluidHeatCapacity *
@@ -112,7 +106,8 @@ TNStaticAdiabaticPipeElement::~TNStaticAdiabaticPipeElement()
 TNDynamicPipeElement::TNDynamicPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 							 const NANDRAD::HydraulicNetworkComponent & comp,
 							const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
-							const NANDRAD::HydraulicFluid & fluid)
+							const NANDRAD::HydraulicFluid & fluid,
+							const double &TExt)
 {
 	m_length = elem.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
 	m_innerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
@@ -142,11 +137,8 @@ TNDynamicPipeElement::TNDynamicPipeElement(const NANDRAD::HydraulicNetworkElemen
 	// calculate segment specific quantities
 	m_discLength = m_length/(double) m_nVolumes;
 	m_discVolume = m_fluidVolume/(double) m_nVolumes;
-
-	if(m_heatExchangeType == (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant) {
-		m_heatLoss = elem.m_para[NANDRAD::HydraulicNetworkElement::P_HeatFlux].value;
-		std::fill(m_heatLosses.begin(), m_heatLosses.end(), m_heatLoss/(double) m_nVolumes);
-	}
+	// set reference to external temperature
+	m_externalTemperatureRef = &TExt;
 }
 
 TNDynamicPipeElement::~TNDynamicPipeElement()
@@ -210,8 +202,6 @@ void TNDynamicPipeElement::internalDerivatives(double * ydot)
 
 void TNDynamicPipeElement::setNodalConditions(double mdot, double TInlet, double TOutlet)
 {
-	// TODO: add initialization
-	const double ambientTemperature = 273.15;
 
 	// copy mass flux
 	m_massFlux = mdot;
@@ -259,6 +249,7 @@ void TNDynamicPipeElement::setNodalConditions(double mdot, double TInlet, double
 													+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter)
 													+ 1.0/(2.0*m_UValuePipeWall) );
 
+		const double ambientTemperature = *m_externalTemperatureRef;
 		for(unsigned int i = 0; i < m_nVolumes; ++i) {
 			// calculate heat loss with given parameters
 			m_heatLosses[i] = UAValue * (m_temperatures[i] - ambientTemperature);
@@ -300,6 +291,7 @@ void TNDynamicPipeElement::dependencies(const double *ydot, const double *y,
 		resultInputDependencies.push_back(std::make_pair(&m_heatLoss, mdot) );
 	}
 }
+
 
 // *** DynamicAdiabaticPipeElement ***
 
@@ -448,42 +440,52 @@ void TNDynamicAdiabaticPipeElement::dependencies(const double *ydot, const doubl
 	}
 }
 
-// *** HeatExchanger ***
 
-TNHeatExchanger::TNHeatExchanger(const NANDRAD::HydraulicNetworkElement & elem,
-							 const NANDRAD::HydraulicNetworkComponent & comp,
-							const NANDRAD::HydraulicFluid & fluid)
+
+// *** AdiabaticElement ***
+
+TNAdiabaticElement::TNAdiabaticElement(const NANDRAD::HydraulicFluid & fluid,
+									double fluidVolume) {
+	// copy fluid parameters
+	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
+	// store fluid volume
+	m_fluidVolume = fluidVolume;
+}
+
+TNAdiabaticElement::~TNAdiabaticElement()
 {
-	m_fluidVolume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
-//	m_UAValue = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_UAValue].value;
-	m_heatLoss = elem.m_para[NANDRAD::HydraulicNetworkElement::P_HeatFlux].value;
+
+}
+
+
+// *** ElementWithExternalHeatLoss ***
+
+TNElementWithExternalHeatLoss::TNElementWithExternalHeatLoss(
+							 const NANDRAD::HydraulicFluid & fluid,
+							 double fluidVolume,
+							 const double &QExt)
+{
+	m_fluidVolume = fluidVolume;
 	// copy fluid properties
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+	// set reference to external heat loss
+	m_externalHeatLossRef = &QExt;
 }
 
-TNHeatExchanger::~TNHeatExchanger()
+TNElementWithExternalHeatLoss::~TNElementWithExternalHeatLoss()
 {
 
 }
 
-
-
-// *** Pump ***
-
-TNPump::TNPump(const NANDRAD::HydraulicNetworkElement & /*elem*/,
-							 const NANDRAD::HydraulicNetworkComponent & comp,
-							const NANDRAD::HydraulicFluid & fluid)
+void TNElementWithExternalHeatLoss::internalDerivatives(double * ydot)
 {
-	m_fluidVolume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
-	// copy fluid properties
-	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
-	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+	// set heat loss
+	m_heatLoss = *m_externalHeatLossRef;
+	// use basic routine
+	ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(ydot);
 }
 
-TNPump::~TNPump()
-{
-
-}
 
 } // namespace NANDRAD_MODEL

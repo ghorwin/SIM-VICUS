@@ -23,10 +23,16 @@
 #define NM_ThermalNetworkStatesModelH
 
 #include "NM_AbstractModel.h"
+#include "NM_AbstractTimeDependency.h"
+
+namespace IBK {
+	class LinearSpline;
+}
 
 namespace NANDRAD {
 	class HydraulicNetwork;
 	class HydraulicNetworkComponent;
+	class SimulationParameter;
 }
 
 
@@ -49,7 +55,7 @@ class ThermalNetworkModelImpl;
 	Quantities:
 	  - FlowElementTemperatures: in [K], vector-valued, access via flow element ID
 */
-class ThermalNetworkStatesModel : public AbstractModel {
+class ThermalNetworkStatesModel : public AbstractModel, public AbstractTimeDependency {
 public:
 
 	/*! Constructor. */
@@ -64,7 +70,8 @@ public:
 	/*! Initializes model.
 	*/
 	void setup(const NANDRAD::HydraulicNetwork & nw,
-			   const HydraulicNetworkModel &networkModel);
+			   const HydraulicNetworkModel &networkModel,
+			   const NANDRAD::SimulationParameter &simPara);
 
 	// *** Re-implemented from AbstractModel
 
@@ -90,6 +97,9 @@ public:
 		\return Returns pointer to memory location with this quantity, otherwise NULL if parameter ID was not found.
 	*/
 	virtual const double * resultValueRef(const InputReference & quantity) const override;
+
+	// *** Re-implemented from AbstractStateDependency
+	virtual int setTime(double t) override;
 
 	// *** Other public member functions
 
@@ -135,7 +145,12 @@ private:
 	std::vector<double>								m_fluidTemperatures;
 	/*! Vectorwith references to mean temperatures, size = elements.size(). */
 	std::vector<const double*>						m_meanTemperatureRefs;
-
+	/*! References to heat exchange spline: nullptr if not needed.*/
+	std::vector<const IBK::LinearSpline*>			m_heatExchangeSplineRefs;
+	/*! References to zone temperatures.*/
+	std::vector<const double*>						m_zoneTemperatureRefs;
+	/*! Container with current spline or refernce values: either temperature [k] or heat flux [W].*/
+	std::vector<double>								m_heatExchangeValues;
 
 	// for each flow element instantiate an appropriate NetworkThermalBalanceFlowElement
 	/*! Total number of unknowns.*/

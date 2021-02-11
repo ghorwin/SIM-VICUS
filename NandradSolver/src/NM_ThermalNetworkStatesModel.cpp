@@ -19,6 +19,7 @@
 	Lesser General Public License for more details.
 */
 
+#include <IBK_LinearSpline.h>
 #include <IBK_messages.h>
 
 #include "NM_ThermalNetworkStatesModel.h"
@@ -31,6 +32,7 @@
 #include <NANDRAD_HydraulicNetwork.h>
 #include <NANDRAD_HydraulicNetworkComponent.h>
 #include <NANDRAD_KeywordList.h>
+#include <NANDRAD_SimulationParameter.h>
 
 #include <IBKMK_SparseMatrixPattern.h>
 
@@ -48,7 +50,8 @@ ThermalNetworkStatesModel::~ThermalNetworkStatesModel() {
 
 
 void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
-									  const HydraulicNetworkModel &networkModel) {
+									  const HydraulicNetworkModel &networkModel,
+									  const NANDRAD::SimulationParameter &simPara) {
 	FUNCID(ThermalNetworkStatesModel::setup);
 
 	// store network pointer
@@ -65,13 +68,9 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 	}
 
 	// resize vectors
-	m_p->m_ambientHeatFluxRefs.resize(nw.m_elements.size(),nullptr);
-	m_p->m_ambientTemperatureRefs.resize(nw.m_elements.size(),nullptr);
-	m_p->m_ambientHeatTransferRefs.resize(nw.m_elements.size(),nullptr);
+	m_heatExchangeValues.resize(nw.m_elements.size(), 0.0);
+	m_heatExchangeSplineRefs.resize(nw.m_elements.size(),nullptr);
 
-	// now populate the m_edges vector of the network solver
-
-	// process all hydraulic network elements and instatiate respective flow equation classes
 	for (unsigned int i =0; i < nw.m_elements.size(); ++i) {
 		const NANDRAD::HydraulicNetworkElement & e = nw.m_elements[i];
 		// - instance-specific parameters from HydraulicNetworkElement e
@@ -81,8 +80,17 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 		IBK_ASSERT(e.m_component != nullptr);
 
 		try {
-			// retrieve component
+			// set reference to heat exchange value
+			double &heatExchangeValue = m_heatExchangeValues[i];
 
+			// now populate the m_edges vector of the network solver
+			// - instance-specific parameters from HydraulicNetworkElement e
+			// - fluid property object from nw.m_fluid
+			// - component definition (via reference from e.m_componentId) and component DB stored
+			//   in network
+			IBK_ASSERT(e.m_component != nullptr);
+
+			// special case: heat flux is given
 			switch (e.m_component->m_modelType) {
 				case NANDRAD::HydraulicNetworkComponent::MT_StaticPipe :
 				{
@@ -94,9 +102,23 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 						m_p->m_heatLossElements.push_back(nullptr); // no heat loss
 					}
+					else if (e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant ||
+							 e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile) {
+						// set a small fluid volume
+						double volume = 0.01;
+
+						// create pipe model with given heat flux
+						TNElementWithExternalHeatLoss * pipeElement = new TNElementWithExternalHeatLoss(
+																			m_network->m_fluid,
+																			volume, heatExchangeValue);
+						// add to flow elements
+						m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+						m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
+					}
 					else {
 						// create pipe model with heat exchange
-						TNStaticPipeElement * pipeElement = new TNStaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
+						TNStaticPipeElement * pipeElement = new TNStaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid,
+																					heatExchangeValue);
 						// add to flow elements
 						m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 						m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
@@ -113,53 +135,70 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 						m_p->m_heatLossElements.push_back(nullptr); // no heat loss
 					}
-					else {
-						// create pipe model with heat exchange
-						TNDynamicPipeElement * pipeElement = new TNDynamicPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
+					else if (e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant ||
+							 e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile) {
+						// calulate fluid volume
+						const double d = e.m_pipeProperties->m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
+						const double l = e.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
+						double volume = PI/4. * d * d * l;
+
+						// create pipe model with given heat flux
+						TNElementWithExternalHeatLoss * pipeElement = new TNElementWithExternalHeatLoss(
+																			m_network->m_fluid,
+																			volume, heatExchangeValue);
 						// add to flow elements
 						m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 						m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
 					}
-					break;
-				}
-
-				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump :
-				{
-					TNPump * pumpElement = new TNPump(e, *e.m_component, m_network->m_fluid);
-					m_p->m_flowElements.push_back(pumpElement);
-					m_p->m_heatLossElements.push_back(nullptr); // no heat loss
-					break;
-				}
-
-
-				case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger:
-				{
-					TNHeatExchanger * heatEx = new TNHeatExchanger(e, *e.m_component, m_network->m_fluid);
-					m_p->m_flowElements.push_back(heatEx);
-					m_p->m_heatLossElements.push_back(heatEx); // copy element pointer
-					break;
-				}
-				default: {
-					throw IBK::Exception(IBK::FormatString("Model of type %1 is not supported, yet!")
-								.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::ModelType",
-								e.m_component->m_modelType)),
-								FUNC_ID);
-				}
-			}
-			// decide which heat exchange is chosen
-			switch(e.m_component->m_heatExchangeType) {
-				case NANDRAD::HydraulicNetworkComponent::HT_TemperatureConstant: {
-					// retrieve constant temperature
-					m_p->m_ambientTemperatureRefs[i] =
-						&e.m_para[NANDRAD::HydraulicNetworkElement::P_Temperature].value;
-					// retrieve external heat transfer coefficient
-					IBK_ASSERT(!e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].name.empty());
-					m_p->m_ambientHeatTransferRefs[i] = &e.m_component->m_para[
-						NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].value;
+					else {
+						// create pipe model with heat exchange
+						TNDynamicPipeElement * pipeElement = new TNDynamicPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid,
+																					  heatExchangeValue);
+						// add to flow elements
+						m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+						m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
+					}
 				} break;
-				case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant: {
-					m_p->m_ambientHeatFluxRefs[i] =
-						&e.m_para[NANDRAD::HydraulicNetworkElement::P_HeatFlux].value;
+
+				default: {
+					// only heat flux models sare supported at the moment
+					if (e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant ||
+							 e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile) {
+						// create pipe model with given heat flux
+						TNElementWithExternalHeatLoss * element = new TNElementWithExternalHeatLoss(m_network->m_fluid,
+																		e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value,
+																		heatExchangeValue);
+						// add to flow elements
+						m_p->m_flowElements.push_back(element); // transfer ownership
+						m_p->m_heatLossElements.push_back(element); // copy of pointer
+					}
+					else {
+						throw IBK::Exception(IBK::FormatString("Model of type %1 is not supported, yet!")
+									.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::ModelType",
+									e.m_component->m_modelType)),
+									FUNC_ID);
+					}
+				} break;
+			}
+
+			// retrieve component
+			// and decide which heat exchange is chosen
+			switch(e.m_component->m_heatExchangeType) {
+				case NANDRAD::HydraulicNetworkComponent::HT_TemperatureConstant:
+					heatExchangeValue = e.m_para[NANDRAD::HydraulicNetworkElement::P_Temperature].value;
+				break;
+				case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant:
+					heatExchangeValue = e.m_para[NANDRAD::HydraulicNetworkElement::P_HeatFlux].value;
+				break;
+				case NANDRAD::HydraulicNetworkComponent::HT_TemperatureDataFile: {
+					// store heat flux spline
+					m_heatExchangeSplineRefs[i] = &e.m_heatExchangeSpline.m_values;
+					// set initial temperature
+					heatExchangeValue = simPara.m_para[NANDRAD::SimulationParameter::P_InitialTemperature].value;
+				} break;
+				case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile: {
+					// store heat flux spline and construct data value
+					m_heatExchangeSplineRefs[i] = &e.m_heatExchangeSpline.m_values;
 				} break;
 				case NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature: {
 					// check for zone id
@@ -186,11 +225,10 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						m_zoneIdxs[i] = 0;
 						m_zoneIds.push_back(zoneId);
 					}
-					// retrieve external heat transfer coefficient
-					IBK_ASSERT(!e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].name.empty());
-					m_p->m_ambientHeatTransferRefs[i] = &e.m_component->m_para[
-						NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].value;
-
+					// reserve reference vector
+					m_zoneTemperatureRefs.push_back(nullptr);
+					// set initial temperature
+					heatExchangeValue = simPara.m_para[NANDRAD::SimulationParameter::P_InitialTemperature].value;
 				} break;
 				case NANDRAD::HydraulicNetworkComponent::HT_Adiabatic:
 				case NANDRAD::HydraulicNetworkComponent::NUM_HT:
@@ -319,6 +357,15 @@ void ThermalNetworkStatesModel::yInitial(double * y) {
 int ThermalNetworkStatesModel::update(const double * y) {
 	// copy states vector
 	std::memcpy(&m_y[0], y, m_n*sizeof(double));
+	// update zone temperatures
+	for(unsigned int i = 0; i < m_zoneIdxs.size(); ++i) {
+		// skip invalid elements without access to zone temperature
+		unsigned int refIdx = m_zoneIdxs[i];
+		if(refIdx == (unsigned int)(-1))
+			continue;
+		IBK_ASSERT(m_zoneTemperatureRefs[refIdx] != nullptr);
+		m_heatExchangeValues[i] = *m_zoneTemperatureRefs[refIdx];
+	}
 	// set internal states
 	unsigned int offset = 0;
 	for(unsigned int i = 0; i < m_p->m_flowElements.size(); ++i) {
@@ -329,6 +376,17 @@ int ThermalNetworkStatesModel::update(const double * y) {
 		unsigned int nStates = fe->nInternalStates();
 		m_fluidTemperatures[i] = fe->m_meanTemperature;
 		offset += nStates;
+	}
+	return 0;
+}
+
+int ThermalNetworkStatesModel::setTime(double t) {
+	// update all spline values
+	for(unsigned int i = 0; i < m_heatExchangeSplineRefs.size(); ++i) {
+		// no spline
+		if(m_heatExchangeSplineRefs[i] == nullptr)
+			continue;
+		m_heatExchangeValues[i] = m_heatExchangeSplineRefs[i]->value(t);
 	}
 	return 0;
 }

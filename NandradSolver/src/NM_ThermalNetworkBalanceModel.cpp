@@ -227,13 +227,9 @@ void ThermalNetworkBalanceModel::setInputValueRefs(const std::vector<QuantityDes
 	// copy references into mass flux vector
 	m_statesModel->m_p->m_fluidMassFluxes = resultValueRefs[0];
 	//set ambient temparture references inside network
-	for(unsigned int i = 0; i < m_statesModel->m_zoneIdxs.size(); ++i) {
-		unsigned int zoneIdx = m_statesModel->m_zoneIdxs[i];
-		// skip invalid zone ids
-		if(zoneIdx == (unsigned int)(-1))
-			continue;
+	for(unsigned int i = 0; i < m_statesModel->m_zoneIds.size(); ++i) {
 		// set reference to zone temperature
-		m_statesModel->m_p->m_ambientTemperatureRefs[i] = resultValueRefs[1 + zoneIdx];
+		m_statesModel->m_zoneTemperatureRefs[i] = resultValueRefs[1 + i];
 	}
 }
 

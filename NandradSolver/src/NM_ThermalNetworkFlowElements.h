@@ -12,6 +12,7 @@ namespace NANDRAD {
 	class HydraulicFluid;
 }
 
+#define PI				3.141592653589793238
 
 namespace NANDRAD_MODEL {
 
@@ -25,7 +26,8 @@ public:
 	TNStaticPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 				  const NANDRAD::HydraulicNetworkComponent & comp,
 				  const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
-				  const NANDRAD::HydraulicFluid & fluid);
+				  const NANDRAD::HydraulicFluid & fluid,
+				  const double &TExt);
 
 	/*! D'tor, definition is in NM_HydraulicNetworkFlowElements.cpp. */
 	~TNStaticPipeElement();
@@ -57,6 +59,9 @@ private:
 
 	/*! Heat transfer coefficient from outer pipe wall to environment in W/m2K */
 	double							m_outerHeatTransferCoefficient;
+
+	/*! Reference to external temperature in K */
+	const double*					m_externalTemperatureRef = nullptr;
 };
 
 
@@ -90,7 +95,8 @@ public:
 	TNDynamicPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 				  const NANDRAD::HydraulicNetworkComponent & comp,
 				  const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
-				  const NANDRAD::HydraulicFluid & fluid);
+				  const NANDRAD::HydraulicFluid & fluid,
+				  const double &TExt);
 
 	/*! D'tor, definition is in NM_HydraulicNetworkFlowElements.cpp. */
 	~TNDynamicPipeElement();
@@ -162,6 +168,9 @@ private:
 
 	/*! Heat transfer coefficient from outer pipe wall to environment in W/m2K */
 	double							m_outerHeatTransferCoefficient;
+
+	/*! Reference to external temperature in K */
+	const double*					m_externalTemperatureRef = nullptr;
 };
 
 
@@ -221,43 +230,44 @@ private:
 };
 
 
-// **** HeatExchanger ***
+// **** General adiabativ element ***
 
-class TNHeatExchanger : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
+class TNAdiabaticElement : public ThermalNetworkAbstractFlowElement { // NO KEYWORDS
 public:
-	TNHeatExchanger() { }
+	TNAdiabaticElement() { }
 
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	TNHeatExchanger(const NANDRAD::HydraulicNetworkElement & elem,
-				  const NANDRAD::HydraulicNetworkComponent & comp,
-				  const NANDRAD::HydraulicFluid & fluid);
+	TNAdiabaticElement(const NANDRAD::HydraulicFluid & fluid,
+				  double fluidVolume);
 
 	/*! D'tor, definition is in NM_HydraulicNetworkFlowElements.cpp. */
-	~TNHeatExchanger();
-
-//private:
-
-//	double							m_UAValue;
+	~TNAdiabaticElement();
 };
 
 
 
+// **** General element with given heat loss ***
 
-// **** Pump ***
-
-class TNPump: public ThermalNetworkAbstractFlowElement { // NO KEYWORDS
+class TNElementWithExternalHeatLoss : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
 public:
-	TNPump() { }
+	TNElementWithExternalHeatLoss() { }
 
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	TNPump(const NANDRAD::HydraulicNetworkElement & elem,
-				const NANDRAD::HydraulicNetworkComponent & comp,
-				const NANDRAD::HydraulicFluid & fluid);
+	TNElementWithExternalHeatLoss(const NANDRAD::HydraulicFluid & fluid,
+				  double fluidVolume,
+				  const double &QExt);
 
 	/*! D'tor, definition is in NM_HydraulicNetworkFlowElements.cpp. */
-	~TNPump();
+	~TNElementWithExternalHeatLoss();
 
+	/*! Function for retrieving heat fluxes out of the flow element.*/
+	void internalDerivatives(double *ydot);
+
+	/*! Reference to external heat loss in W */
+	const double*					m_externalHeatLossRef = nullptr;
 };
+
+
 
 
 } // namespace NANDRAD_MODEL
