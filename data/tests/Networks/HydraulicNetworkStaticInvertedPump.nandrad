@@ -46,7 +46,7 @@
 					</HydraulicNetworkPipeProperties>
 				</PipeProperties>
 				<Components>
-					<HydraulicNetworkComponent id="1" modelType="ConstantPressurePumpModel">
+					<HydraulicNetworkComponent id="1" modelType="ConstantPressurePump">
 						<IBK:Parameter name="PressureHead" unit="Pa">1000</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" modelType="HeatExchanger">
