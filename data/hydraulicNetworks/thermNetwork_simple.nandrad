@@ -43,11 +43,12 @@
 						<IBK:Parameter name="PipeRoughness" unit="m">0.007</IBK:Parameter>
 						<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PipeOuterDiameter" unit="mm">32</IBK:Parameter>
-						<IBK:Parameter name="UValuePipeWall" unit="W/m2K">5</IBK:Parameter>
+						<IBK:Parameter name="UValuePipeWall" unit="W/mK">5</IBK:Parameter>
 					</HydraulicNetworkPipeProperties>
 				</PipeProperties>
 				<Components>
-					<HydraulicNetworkComponent id="1" modelType="ConstantPressurePumpModel">
+					<HydraulicNetworkComponent id="1" modelType="ConstantPressurePump">
+						<HeatExchangeType>HeatFluxConstant</HeatExchangeType>
 						<IBK:Parameter name="PressureHead" unit="Pa">1000</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
@@ -65,7 +66,9 @@
 					</HydraulicNetworkComponent>
 				</Components>
 				<Elements>
-					<HydraulicNetworkElement id="1001" inletNodeId="101" outletNodeId="0" componentId="1" displayName="node 0" />
+					<HydraulicNetworkElement id="1001" inletNodeId="101" outletNodeId="0" componentId="1" displayName="node 0">
+						<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="1002" inletNodeId="0" outletNodeId="1" componentId="3" pipePropertiesId="1">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 						<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
@@ -96,11 +99,12 @@
 						<IBK:Parameter name="PipeRoughness" unit="m">0.007</IBK:Parameter>
 						<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PipeOuterDiameter" unit="mm">32</IBK:Parameter>
-						<IBK:Parameter name="UValuePipeWall" unit="W/m2K">5</IBK:Parameter>
+						<IBK:Parameter name="UValuePipeWall" unit="W/mK">5</IBK:Parameter>
 					</HydraulicNetworkPipeProperties>
 				</PipeProperties>
 				<Components>
-					<HydraulicNetworkComponent id="1" modelType="ConstantPressurePumpModel">
+					<HydraulicNetworkComponent id="1" modelType="ConstantPressurePump">
+						<HeatExchangeType>HeatFluxConstant</HeatExchangeType>
 						<IBK:Parameter name="PressureHead" unit="Pa">10000</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
@@ -119,7 +123,9 @@
 					</HydraulicNetworkComponent>
 				</Components>
 				<Elements>
-					<HydraulicNetworkElement id="2001" inletNodeId="101" outletNodeId="0" componentId="1" displayName="node 0" />
+					<HydraulicNetworkElement id="2001" inletNodeId="101" outletNodeId="0" componentId="1" displayName="node 0">
+						<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="2002" inletNodeId="0" outletNodeId="1" componentId="3" pipePropertiesId="1">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 						<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
