@@ -7,7 +7,7 @@
 			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="%">20</IBK:Parameter>
 			<TimeZone>13</TimeZone>
-			<ClimateFileName>${Project Directory}/../tests/climate/Konstantopol_20C.c6b</ClimateFileName>
+			<ClimateFilePath>${Project Directory}/../tests/climate/Konstantopol_20C.c6b</ClimateFilePath>
 		</Location>
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
@@ -64,6 +64,10 @@
 						<HeatExchangeType>TemperatureConstant</HeatExchangeType>
 						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
 					</HydraulicNetworkComponent>
+					<HydraulicNetworkComponent id="4" modelType="StaticPipe">
+						<HeatExchangeType>TemperatureDataFile</HeatExchangeType>
+						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
+					</HydraulicNetworkComponent>
 				</Components>
 				<Elements>
 					<HydraulicNetworkElement id="1001" inletNodeId="101" outletNodeId="0" componentId="1" displayName="node 0">
@@ -76,9 +80,9 @@
 					<HydraulicNetworkElement id="1003" inletNodeId="1" outletNodeId="100" componentId="2" displayName="node 1">
 						<IBK:Parameter name="HeatFlux" unit="W">-300</IBK:Parameter>
 					</HydraulicNetworkElement>
-					<HydraulicNetworkElement id="1004" inletNodeId="100" outletNodeId="101" componentId="3" pipePropertiesId="1">
+					<HydraulicNetworkElement id="1004" inletNodeId="100" outletNodeId="101" componentId="4" pipePropertiesId="1">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
-						<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+						<HeatExchangeDataFile>${Project Directory}/DB_climate/Temperature.csv</HeatExchangeDataFile>
 					</HydraulicNetworkElement>
 				</Elements>
 			</HydraulicNetwork>
@@ -121,6 +125,11 @@
 						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
 						<IBK:Parameter name="PipeMaxDiscretizationWidth" unit="m">5</IBK:Parameter>
 					</HydraulicNetworkComponent>
+					<HydraulicNetworkComponent id="4" modelType="DynamicPipe">
+						<HeatExchangeType>TemperatureDataFile</HeatExchangeType>
+						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
+						<IBK:Parameter name="PipeMaxDiscretizationWidth" unit="m">5</IBK:Parameter>
+					</HydraulicNetworkComponent>
 				</Components>
 				<Elements>
 					<HydraulicNetworkElement id="2001" inletNodeId="101" outletNodeId="0" componentId="1" displayName="node 0">
@@ -133,9 +142,9 @@
 					<HydraulicNetworkElement id="2003" inletNodeId="1" outletNodeId="100" componentId="2" displayName="node 1">
 						<IBK:Parameter name="HeatFlux" unit="W">-300</IBK:Parameter>
 					</HydraulicNetworkElement>
-					<HydraulicNetworkElement id="2004" inletNodeId="100" outletNodeId="101" componentId="3" pipePropertiesId="1">
+					<HydraulicNetworkElement id="2004" inletNodeId="100" outletNodeId="101" componentId="4" pipePropertiesId="1">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
-						<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+						<HeatExchangeDataFile>${Project Directory}/DB_climate/Temperature.csv</HeatExchangeDataFile>
 					</HydraulicNetworkElement>
 				</Elements>
 			</HydraulicNetwork>
