@@ -150,7 +150,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw) {
 
 	// check and read csv file
 	if (heatExchangeDataFileMustExist){
-		if (m_heatExchangeDataFile.isValid())
+		if (!m_heatExchangeDataFile.isValid())
 			throw IBK::Exception("Missing heat exchange data file path.", FUNC_ID);
 		if (!m_heatExchangeDataFile.exists())
 			throw IBK::Exception(IBK::FormatString("File '%1' does not exist").arg(m_heatExchangeDataFile.str()), FUNC_ID);
