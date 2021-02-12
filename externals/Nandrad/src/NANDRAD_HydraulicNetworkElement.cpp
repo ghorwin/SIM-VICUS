@@ -21,7 +21,8 @@ HydraulicNetworkElement::HydraulicNetworkElement(unsigned int id, unsigned int i
 }
 
 
-void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw) {
+void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
+											  const std::map<std::string, IBK::Path> &placeholders) {
 	FUNCID(HydraulicNetworkElement::checkParameters);
 
 	// retrieve network component
@@ -150,6 +151,8 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw) {
 
 	// check and read csv file
 	if (heatExchangeDataFileMustExist){
+		// replace place holders
+		m_heatExchangeDataFile = m_heatExchangeDataFile.withReplacedPlaceholders(placeholders);
 		if (!m_heatExchangeDataFile.isValid())
 			throw IBK::Exception("Missing heat exchange data file path.", FUNC_ID);
 		if (!m_heatExchangeDataFile.exists())
@@ -178,7 +181,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw) {
 								 .arg(m_heatExchangeDataFile.str()), FUNC_ID);
 
 		if (m_component->m_heatExchangeType == HydraulicNetworkComponent::HT_TemperatureDataFile){
-			if (yUnit.base_unit() != IBK::Unit("C"))
+			if (yUnit.base_unit() != IBK::Unit("K"))
 				throw IBK::Exception(IBK::FormatString("File '%1': unit of first column must be a temperature unit")
 									 .arg(m_heatExchangeDataFile.str()), FUNC_ID);
 		}

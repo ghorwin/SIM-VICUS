@@ -5,7 +5,7 @@
 namespace NANDRAD {
 
 
-void HydraulicNetwork::checkParameters()  {
+void HydraulicNetwork::checkParameters( const std::map<std::string, IBK::Path> &placeholders)  {
 	FUNCID(HydraulicNetwork::checkParameters);
 
 	if(m_elements.empty()) {
@@ -55,7 +55,7 @@ void HydraulicNetwork::checkParameters()  {
 	// check all elements and fill references to components and pipe properties
 	for(HydraulicNetworkElement &e : m_elements) {
 		try {
-			e.checkParameters(*this);
+			e.checkParameters(*this, placeholders);
 		}
 		catch(IBK::Exception &ex) {
 			throw IBK::Exception(ex, IBK::FormatString("Error intializing network element with id #%1.")

@@ -61,7 +61,8 @@ public:
 		If referenced TSV file is given, this is read and checked and data is transferred into
 		variable m_tsvFileContent.
 	*/
-	void checkParameters(const HydraulicNetwork & nw);
+	void checkParameters(const HydraulicNetwork & nw,
+						 const std::map<std::string, IBK::Path> &placeholders);
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
