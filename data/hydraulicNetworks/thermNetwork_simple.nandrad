@@ -154,15 +154,10 @@
 		<Outputs>
 			<Definitions>
 			<OutputDefinition>
-				<Quantity>InletNodeTemperature</Quantity>
-				<ObjectListName>Network Elements</ObjectListName>
-				<GridName>hourly</GridName>
-			</OutputDefinition>			
-			<OutputDefinition>
 				<Quantity>OutletNodeTemperature</Quantity>
 				<ObjectListName>Network Elements</ObjectListName>
 				<GridName>hourly</GridName>
-			</OutputDefinition>
+			</OutputDefinition>			
 			<OutputDefinition>
 				<Quantity>OutletNodePressure</Quantity>
 				<ObjectListName>Network Elements</ObjectListName>
@@ -172,6 +167,11 @@
 					<Quantity>FluidMassFlux</Quantity>
 					<ObjectListName>Network Elements</ObjectListName>
 					<GridName>hourly</GridName>
+			</OutputDefinition>
+			<OutputDefinition>
+				<Quantity>FluidTemperature</Quantity>
+				<ObjectListName>Network Elements</ObjectListName>
+				<GridName>hourly</GridName>
 			</OutputDefinition>
 			<OutputDefinition>
 				<Quantity>FluidHeatFlux</Quantity>

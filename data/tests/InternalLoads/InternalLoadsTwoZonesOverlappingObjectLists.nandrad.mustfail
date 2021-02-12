@@ -11,7 +11,7 @@
 			<IBK:Parameter name="Latitude" unit="Deg">51</IBK:Parameter>
 			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
-			<ClimateFileName>${Project Directory}/../climate/Konstantopol_20C.c6b</ClimateFileName>
+			<ClimateFilePath>${Project Directory}/../climate/Konstantopol_20C.c6b</ClimateFilePath>
 		</Location>
 
 		<SimulationParameter>

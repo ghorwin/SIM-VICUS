@@ -6,7 +6,7 @@
 		</ProjectInfo>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
-			<ClimateFileName>${Project Directory}/../climate/DEU_Potsdam_60.c6b</ClimateFileName>
+			<ClimateFilePath>${Project Directory}/../climate/DEU_Potsdam_60.c6b</ClimateFilePath>
 		</Location>
 		<SimulationParameter>
 			<IBK:IntPara name="StartYear">2015</IBK:IntPara>
