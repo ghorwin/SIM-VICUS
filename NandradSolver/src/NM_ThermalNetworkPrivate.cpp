@@ -204,15 +204,6 @@ void ThermalNetworkModelImpl::dependencies(std::vector<std::pair<const double *,
 		resultInputValueReferences.push_back(std::make_pair(heatFluxRef, specEnthalpRef) );
 		// temperature dependencies
 		resultInputValueReferences.push_back(std::make_pair(tempOutletRef, specEnthalpRef) );
-
-//		// set dependencies to ambient conditions
-//		const double* Tamb = m_ambientTemperatureRefs[i];
-//		const double* alphaAmb = m_ambientHeatTransferRefs[i];
-//		// ambient temperature is given
-//		if(Tamb != nullptr) {
-//			resultInputValueReferences.push_back(std::make_pair(heatFluxRef, Tamb) );
-//			resultInputValueReferences.push_back(std::make_pair(heatFluxRef, alphaAmb) );
-//		}
 	}
 	// dependencies of flow element heat fluxes
 	for(unsigned int i = 0; i < m_flowElements.size(); ++i) {

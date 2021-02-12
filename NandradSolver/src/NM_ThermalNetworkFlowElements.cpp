@@ -275,6 +275,7 @@ void TNDynamicPipeElement::dependencies(const double *ydot, const double *y,
 		// set dependency to mean temperatures
 		resultInputDependencies.push_back(std::make_pair(&m_meanTemperature, y + n) );
 
+		// set depedency to ydot
 		// heat balance per default sums up heat fluxes and entahpy flux differences through the pipe
 		if(n > 0)
 			resultInputDependencies.push_back(std::make_pair(ydot + n, y + n - 1) );
@@ -284,12 +285,16 @@ void TNDynamicPipeElement::dependencies(const double *ydot, const double *y,
 		if(n < nInternalStates() - 1)
 			resultInputDependencies.push_back(std::make_pair(ydot + n, y + n + 1) );
 
-		// set depedency to mdot
 		resultInputDependencies.push_back(std::make_pair(ydot + n, mdot) );
+		resultInputDependencies.push_back(std::make_pair(ydot + n, m_externalTemperatureRef));
+
 		// set dependeny to Qdot
 		resultInputDependencies.push_back(std::make_pair(&m_heatLoss, y + n) );
-		resultInputDependencies.push_back(std::make_pair(&m_heatLoss, mdot) );
 	}
+
+	// set dependeny to Qdot
+	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, mdot) );
+	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, m_externalTemperatureRef) );
 }
 
 
