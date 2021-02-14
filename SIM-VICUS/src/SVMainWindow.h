@@ -30,6 +30,7 @@ class SVNetworkEditDialog;
 class SVViewStateHandler;
 class SVSimulationStartNandrad;
 class SVSimulationStartNetworkSim;
+class SVFloorManagerWidget;
 
 class SVDBMaterialEditDialog;
 class SVDBWindowEditDialog;
@@ -200,6 +201,10 @@ private slots:
 	void on_actionEditPreferences_triggered();
 	void on_actionEditCleanProject_triggered();
 
+	void on_actionBuildingFloorManager_triggered();
+
+	void on_actionNetworkImport_triggered();
+
 	void on_actionViewExternalPostProcessing_triggered();
 	void on_actionViewCCMeditor_triggered();
 	void on_actionViewToggleGeometryMode_triggered();
@@ -215,8 +220,6 @@ private slots:
 	void on_actionHelpCheckForUpdates_triggered();
 	void on_actionHelpOnlineManual_triggered();
 	void on_actionHelpKeyboardAndMouseControls_triggered();
-
-	void on_actionNetworkImport_triggered();
 
 
 private:
@@ -323,6 +326,8 @@ private:
 
 	/*! IDF import dialog */
 	SVImportIDFDialog			*m_importIDFDialog										= nullptr;
+
+	SVFloorManagerWidget		*m_floorManagerWidget									= nullptr;
 
 	/*! Network import dialog */
 	SVNetworkImportDialog		*m_networkImportDialog									= nullptr;

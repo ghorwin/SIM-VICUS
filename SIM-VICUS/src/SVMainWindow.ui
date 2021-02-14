@@ -125,9 +125,16 @@
     <addaction name="actionSimulationNANDRAD"/>
     <addaction name="actionSimulationHydraulicNetwork"/>
    </widget>
+   <widget class="QMenu" name="menu_Buildings">
+    <property name="title">
+     <string>&amp;Buildings</string>
+    </property>
+    <addaction name="actionBuildingFloorManager"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
    <addaction name="menuDatabases"/>
+   <addaction name="menu_Buildings"/>
    <addaction name="menuNetworks"/>
    <addaction name="menu_View"/>
    <addaction name="menuSimulation"/>
@@ -488,6 +495,11 @@
   <action name="actionHelpVisitDiscussionForum">
    <property name="text">
     <string>Visit discussion forum...</string>
+   </property>
+  </action>
+  <action name="actionBuildingFloorManager">
+   <property name="text">
+    <string>Floor manager...</string>
    </property>
   </action>
  </widget>

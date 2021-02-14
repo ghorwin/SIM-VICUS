@@ -55,6 +55,7 @@
 #include "SVPropModeSelectionWidget.h"
 #include "SVPropEditGeometry.h"
 #include "SVStyle.h"
+#include "SVFloorManagerWidget.h"
 
 #include "SVDBMaterialEditDialog.h"
 #include "SVDBConstructionEditDialog.h"
@@ -122,8 +123,8 @@ SVMainWindow::~SVMainWindow() {
 	delete m_postProcHandler;
 	delete m_viewStateHandler;
 
-	// explicitely delete all top-level DB edit widgets
-	delete m_dbMaterialEditDialog;
+	// explicitely delete all top-level widgets
+	delete m_floorManagerWidget;
 
 	m_self = nullptr;
 }
@@ -522,6 +523,25 @@ void SVMainWindow::setup() {
 }
 
 
+void SVMainWindow::onStyleChanged() {
+	m_welcomeScreen->updateWelcomePage();
+	m_welcomeScreen->update();
+
+	// manually change icons
+	// if we have, at some point, really different icon sets for dark and bright themes, we
+	// may just centrally replace the entire icon set, but this is tricky and also would require
+	// a lot of work maintaining two icon themes. So for now, we just manually switch between the icon sets
+	if (SVSettings::instance().m_theme == SVSettings::TT_Dark) {
+		m_ui->actionViewToggleGeometryMode->setIcon(QIcon(":/gfx/actions/icon-shape-shape-cube.svg"));
+		m_ui->actionViewToggleParametrizationMode->setIcon(QIcon(":/gfx/actions/icon-filter-slider-circle-h.svg"));
+	}
+	else {
+		m_ui->actionViewToggleGeometryMode->setIcon(QIcon(":/gfx/actions/icon-shape-shape-cube-dark.svg"));
+		m_ui->actionViewToggleParametrizationMode->setIcon(QIcon(":/gfx/actions/icon-filter-slider-circle-h-dark.svg"));
+	}
+}
+
+
 void SVMainWindow::on_actionFileNew_triggered() {
 	// move input focus away from any input fields (to allow editingFinished() events to fire)
 	setFocus();
@@ -694,25 +714,6 @@ void SVMainWindow::on_actionFileOpenProjectDir_triggered() {
 }
 
 
-void SVMainWindow::onStyleChanged() {
-	m_welcomeScreen->updateWelcomePage();
-	m_welcomeScreen->update();
-
-	// manually change icons
-	// if we have, at some point, really different icon sets for dark and bright themes, we
-	// may just centrally replace the entire icon set, but this is tricky and also would require
-	// a lot of work maintaining two icon themes. So for now, we just manually switch between the icon sets
-	if (SVSettings::instance().m_theme == SVSettings::TT_Dark) {
-		m_ui->actionViewToggleGeometryMode->setIcon(QIcon(":/gfx/actions/icon-shape-shape-cube.svg"));
-		m_ui->actionViewToggleParametrizationMode->setIcon(QIcon(":/gfx/actions/icon-filter-slider-circle-h.svg"));
-	}
-	else {
-		m_ui->actionViewToggleGeometryMode->setIcon(QIcon(":/gfx/actions/icon-shape-shape-cube-dark.svg"));
-		m_ui->actionViewToggleParametrizationMode->setIcon(QIcon(":/gfx/actions/icon-filter-slider-circle-h-dark.svg"));
-	}
-}
-
-
 void SVMainWindow::on_actionFileExport_triggered() {
 	// project must have been saved once already
 	if (!saveProject())
@@ -804,6 +805,13 @@ void SVMainWindow::on_actionEditCleanProject_triggered() {
 	SVUndoProject * undo = new SVUndoProject( tr("Removed unused definitions"), cleanProject );
 	undo->push();
 
+}
+
+
+void SVMainWindow::on_actionBuildingFloorManager_triggered() {
+	if (m_floorManagerWidget == nullptr)
+		m_floorManagerWidget = new SVFloorManagerWidget(nullptr); // make it a top-level widget without parent
+	m_floorManagerWidget->show();
 }
 
 
@@ -968,6 +976,8 @@ void SVMainWindow::onUpdateActions() {
 
 	m_ui->actionEditTextEditProject->setEnabled(have_project);
 	m_ui->actionEditCleanProject->setEnabled(have_project);
+
+	m_ui->actionBuildingFloorManager->setEnabled(have_project);
 
 	m_ui->actionNetworkImport->setEnabled(have_project);
 	m_ui->actionNetworkEdit->setEnabled(have_project);
@@ -1544,4 +1554,5 @@ static bool copyRecursively(const QString &srcFilePath,
 	}
 	return true;
 }
+
 
