@@ -136,7 +136,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 				// only allowed for pipes
 				if(m_component->m_modelType != HydraulicNetworkComponent::MT_StaticPipe &&
 				   m_component->m_modelType != HydraulicNetworkComponent::MT_DynamicPipe) {
-					throw IBK::Exception(IBK::FormatString("Heat exchange type %1 i^^^^s only allowed for model type 'StaticPipe' "
+					throw IBK::Exception(IBK::FormatString("Heat exchange type %1 is only allowed for model type 'StaticPipe' "
 														   "and 'DynamicPipe'!")
 										 .arg(KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
 										 m_component->m_heatExchangeType)),
@@ -187,20 +187,25 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 		else
 			m_heatExchangeSpline.m_wrapMethod = LinearSplineParameter::C_CONTINUOUS;
 
-		if (m_component->m_heatExchangeType == HydraulicNetworkComponent::HT_TemperatureDataFile){
-			//  check the spline and convert it to base units automatically
-			m_heatExchangeSpline.checkAndInitialize("TemperatureDataFile", IBK::Unit("s"), IBK::Unit("K"),
-													IBK::Unit("K"), 0, false, std::numeric_limits<double>::max(), false,
-													"Temperature must be > 0 K.");
+		try {
+			if (m_component->m_heatExchangeType == HydraulicNetworkComponent::HT_TemperatureDataFile){
+				//  check the spline and convert it to base units automatically
+				m_heatExchangeSpline.checkAndInitialize("TemperatureDataFile", IBK::Unit("s"), IBK::Unit("K"),
+														IBK::Unit("K"), 0, false, std::numeric_limits<double>::max(), false,
+														"Temperature must be > 0 K.");
+			}
+
+			else if (m_component->m_heatExchangeType == HydraulicNetworkComponent::HT_HeatFluxDataFile){
+				//  check the spline and convert it to base units automatically
+				m_heatExchangeSpline.checkAndInitialize("HeatFluxDataFile", IBK::Unit("s"), IBK::Unit("J/s"),
+														IBK::Unit("J/s"), std::numeric_limits<double>::lowest(), false,
+														std::numeric_limits<double>::max(), false,
+														nullptr);
+			}
+		} catch (IBK::Exception &ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error reading file '%1'.").arg(m_heatExchangeDataFile.str()), FUNC_ID);
 		}
 
-		else if (m_component->m_heatExchangeType == HydraulicNetworkComponent::HT_HeatFluxDataFile){
-			//  check the spline and convert it to base units automatically
-			m_heatExchangeSpline.checkAndInitialize("HeatFluxDataFile", IBK::Unit("s"), IBK::Unit("W"),
-													IBK::Unit("W"), std::numeric_limits<double>::lowest(), false,
-													std::numeric_limits<double>::max(), false,
-													nullptr);
-		}
 	}
 	else if (m_heatExchangeDataFile.isValid()) {
 		throw IBK::Exception(IBK::FormatString("Invalid/unexpected heat exchange data file parameter with value '%1'.")

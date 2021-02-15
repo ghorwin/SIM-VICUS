@@ -62,7 +62,11 @@ void BuildingLevel::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "Rooms") {
+			if (cName == "Elevation")
+				m_elevation = NANDRAD::readPODElement<double>(c, cName);
+			else if (cName == "Height")
+				m_height = NANDRAD::readPODElement<double>(c, cName);
+			else if (cName == "Rooms") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
@@ -98,6 +102,8 @@ TiXmlElement * BuildingLevel::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (m_visible != BuildingLevel().m_visible)
 		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
+	TiXmlElement::appendSingleAttributeElement(e, "Elevation", nullptr, std::string(), IBK::val2string<double>(m_elevation));
+	TiXmlElement::appendSingleAttributeElement(e, "Height", nullptr, std::string(), IBK::val2string<double>(m_height));
 
 	if (!m_rooms.empty()) {
 		TiXmlElement * child = new TiXmlElement("Rooms");

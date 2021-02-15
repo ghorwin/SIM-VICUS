@@ -127,13 +127,13 @@
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="4" modelType="DynamicPipe">
 						<HeatExchangeType>TemperatureDataFile</HeatExchangeType>
-						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
+						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">100</IBK:Parameter>
 						<IBK:Parameter name="PipeMaxDiscretizationWidth" unit="m">5</IBK:Parameter>
 					</HydraulicNetworkComponent>
 				</Components>
 				<Elements>
 					<HydraulicNetworkElement id="2001" inletNodeId="101" outletNodeId="0" componentId="1" displayName="node 0">
-						<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+						<IBK:Parameter name="HeatFlux" unit="W">50</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="2002" inletNodeId="0" outletNodeId="1" componentId="3" pipePropertiesId="1">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
