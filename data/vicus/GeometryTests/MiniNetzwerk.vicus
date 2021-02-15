@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Do Dez 10 12:42:13 2020</Created>
-		<LastEdited>Di Feb 9 21:55:08 2021</LastEdited>
+		<LastEdited>Mo Feb 15 19:47:12 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -17,12 +17,12 @@
 		<ViewSettings>
 			<GridSpacing>100</GridSpacing>
 			<GridWidth>500</GridWidth>
-			<CameraTranslation>135.437 269.676 329.391</CameraTranslation>
+			<CameraTranslation>100.959 259.095 277.28</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.0649555</Wp>
-				<X>0.0427583</X>
-				<Y>0.411041</Y>
-				<Z>0.908263</Z>
+				<Wp>-0.0730848</Wp>
+				<X>-0.0370729</X>
+				<Y>0.450818</Y>
+				<Z>0.888813</Z>
 			</RotationMatrix>
 			<FarDistance>1700</FarDistance>
 		</ViewSettings>
@@ -31,7 +31,9 @@
 				<Nodes>
 					<NetworkNode id="0" type="Source" maxHeatingDemand="0" componentId="100003" displayName="Quelle">
 						<Position>0 0 0</Position>
-						<NetworkHeatExchange />
+						<NetworkHeatExchange>
+							<IBK:Parameter name="HeatFlux" unit="W">10</IBK:Parameter>
+						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="1" type="Building" maxHeatingDemand="10000" componentId="100002" displayName="EFH3">
 						<Position>200 -70 0</Position>
@@ -54,19 +56,25 @@
 					<NetworkEdge supply="1" displayName="leitung1" nodeId1="0" nodeId2="3">
 						<PipeId>14</PipeId>
 						<ComponentId>100001</ComponentId>
-						<NetworkHeatExchange />
+						<NetworkHeatExchange>
+							<IBK:Parameter name="Temperature" unit="C">12</IBK:Parameter>
+						</NetworkHeatExchange>
 						<Length>40</Length>
 					</NetworkEdge>
 					<NetworkEdge supply="1" displayName="leitung2" nodeId1="3" nodeId2="1">
 						<PipeId>13</PipeId>
 						<ComponentId>100001</ComponentId>
-						<NetworkHeatExchange />
+						<NetworkHeatExchange>
+							<IBK:Parameter name="Temperature" unit="C">12</IBK:Parameter>
+						</NetworkHeatExchange>
 						<Length>40</Length>
 					</NetworkEdge>
 					<NetworkEdge supply="1" displayName="leitung3" nodeId1="3" nodeId2="2">
 						<PipeId>12</PipeId>
 						<ComponentId>100001</ComponentId>
-						<NetworkHeatExchange />
+						<NetworkHeatExchange>
+							<IBK:Parameter name="Temperature" unit="C">12</IBK:Parameter>
+						</NetworkHeatExchange>
 						<Length>40</Length>
 					</NetworkEdge>
 				</Edges>
