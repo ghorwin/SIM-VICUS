@@ -86,6 +86,8 @@ class QtExt_ValidatingLineEdit;r Point of the local
 
 	void setComboBox(const ModificationType &type, const ModificationState &state);
 
+	void setRelativeScalingSurfaces();
+
 	void showDeg(const bool &show=true);
 
 	void showRotation(const bool &abs=true);
@@ -107,7 +109,7 @@ private slots:
 
 	void translate(const QVector3D & transVec, const ModificationState &state);
 
-	void scale(const QVector3D & scaleVec, const ModificationState &state);
+	void scale(const QVector3D & scaleVec, const ModificationState &state, const bool &wheel = false);
 
 	void rotate(const QVector3D & rotaVec, const ModificationState &state);
 
@@ -161,11 +163,13 @@ private slots:
 
 	void on_lineEditInclination_editingFinished();
 
+	void on_lineEditX_selectionChanged();
+
 private:
 	/*! Updates the property widget regarding to all geometry data
 		Takes a vector of pointers to all selected surfaces
 	*/
-	void update();
+	void update(const bool &updateScalingSurfaces);
 
 	ModificationType					m_modificationType = MT_Translate;
 	ModificationState					m_modificationState[NUM_MT];
@@ -180,19 +184,23 @@ private:
 	double								m_orientation = 0.0;
 	double								m_inclination = 0.0;
 
+	// storing all the translation values
 	double								m_xTransValue = 0.0;
 	double								m_yTransValue = 0.0;
 	double								m_zTransValue = 0.0;
 
-	// holding all the rotation values
+	// storing all the rotation values
 	double								m_xRotaValue = 0.0;
 	double								m_yRotaValue = 0.0;
 	double								m_zRotaValue = 0.0;
 
-	// holding all the scaling values
+	// storing all the scaling values
 	double								m_xScaleValue = 0.0;
 	double								m_yScaleValue = 0.0;
 	double								m_zScaleValue = 0.0;
+
+	// storing the original measurements for scaling if wheel event is used
+	std::vector<VICUS::Surface>	m_relScaleSurfaces;
 
 	Ui::SVPropEditGeometry				*m_ui;
 };

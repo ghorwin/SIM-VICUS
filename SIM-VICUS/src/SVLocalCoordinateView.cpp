@@ -30,9 +30,9 @@ void SVLocalCoordinateView::setCoordinates(const Vic3D::Transform3D &t) {
 
 	// is being call from local coordinate system object, whenever this has changed location (regardless of
 	// its own visibility)
-	m_ui->lineEditXValue->setText( QString("%L1").arg( t.translation().x(), 4, 'f' ) );
-	m_ui->lineEditYValue->setText( QString("%L1").arg( t.translation().y(), 4, 'f' ) );
-	m_ui->lineEditZValue->setText( QString("%L1").arg( t.translation().z(), 4, 'f' ) );
+	m_ui->lineEditXValue->setText( QString("%L1").arg( t.translation().x(), 0, 'f', 3 ) );
+	m_ui->lineEditYValue->setText( QString("%L1").arg( t.translation().y(), 0, 'f', 3 ) );
+	m_ui->lineEditZValue->setText( QString("%L1").arg( t.translation().z(), 0, 'f', 3 ) );
 
 	QVector3D localXAxis = t.rotation().rotatedVector(QVector3D(1,0,0));
 	QVector3D localYAxis = t.rotation().rotatedVector(QVector3D(0,1,0));
