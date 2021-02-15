@@ -36,6 +36,9 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayoutNetwork">
        <item>
+        <widget class="QComboBox" name="comboBoxNetwork"/>
+       </item>
+       <item>
         <widget class="QTabWidget" name="tabWidgetNetworkSelections">
          <property name="currentIndex">
           <number>1</number>
@@ -47,7 +50,7 @@
           <attribute name="title">
            <string>Nodes</string>
           </attribute>
-          <layout class="QGridLayout" name="gridLayout">
+          <layout class="QFormLayout" name="formLayout_2">
            <item row="0" column="0">
             <widget class="QLabel" name="label">
              <property name="text">
@@ -58,7 +61,27 @@
            <item row="0" column="1">
             <widget class="QComboBox" name="comboBoxNodeType"/>
            </item>
+           <item row="1" column="0">
+            <widget class="QCheckBox" name="checkBoxMaxHeatingDemandBelow">
+             <property name="text">
+              <string>Max heating demand [W] &lt;</string>
+             </property>
+            </widget>
+           </item>
            <item row="1" column="1">
+            <widget class="QtExt::ValidatingLineEdit" name="lineEditMaxHeatingDemandBelow"/>
+           </item>
+           <item row="2" column="0">
+            <widget class="QCheckBox" name="checkBoxMaxHeatingDemandAbove">
+             <property name="text">
+              <string>Max heating demand [W] &gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QtExt::ValidatingLineEdit" name="lineEditMaxHeatingDemandAbove"/>
+           </item>
+           <item row="3" column="1">
             <spacer name="verticalSpacer">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -77,6 +100,28 @@
           <attribute name="title">
            <string>Edges</string>
           </attribute>
+          <layout class="QFormLayout" name="formLayout">
+           <item row="0" column="0">
+            <widget class="QCheckBox" name="checkBoxLengthBelow">
+             <property name="text">
+              <string>Length [m] &lt;</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QtExt::ValidatingLineEdit" name="lineEditLengthBelow"/>
+           </item>
+           <item row="1" column="0">
+            <widget class="QCheckBox" name="checkBoxLengthAbove">
+             <property name="text">
+              <string>Length [m] &gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QtExt::ValidatingLineEdit" name="lineEditLengthAbove"/>
+           </item>
+          </layout>
          </widget>
         </widget>
        </item>
@@ -96,6 +141,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QtExt::ValidatingLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_ValidatingLineEdit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
