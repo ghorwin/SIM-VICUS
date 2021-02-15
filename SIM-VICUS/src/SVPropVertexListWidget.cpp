@@ -324,8 +324,8 @@ void SVPropVertexListWidget::onModified(int modificationType, ModificationInfo *
 		return;
 	SVProjectHandler::ModificationTypes mod = (SVProjectHandler::ModificationTypes)modificationType;
 	switch (mod) {
-		/*! We only need to handle changes of the building topology, in all other cases
-			the "create new geometry" action is aborted and the widget will be hidden. */
+		// We only need to handle changes of the building topology, in all other cases
+		// the "create new geometry" action is aborted and the widget will be hidden.
 		case SVProjectHandler::BuildingTopologyChanged:
 			updateBuildingComboBox(); // this will also update the other combo boxes
 		break;

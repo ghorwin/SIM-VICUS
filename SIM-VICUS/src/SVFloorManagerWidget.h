@@ -7,6 +7,11 @@ namespace Ui {
 class SVFloorManagerWidget;
 }
 
+namespace VICUS {
+	class Building;
+	class BuildingLevel;
+}
+
 class ModificationInfo;
 
 /*! A widget to edit buildings/building levels and associate rooms with building levels. */
@@ -26,8 +31,15 @@ public slots:
 private slots:
 	void on_treeWidget_itemSelectionChanged();
 
+	void on_lineEditBuildingName_editingFinished();
+
 private:
-	Ui::SVFloorManagerWidget *m_ui;
+	Ui::SVFloorManagerWidget	*m_ui;
+
+	/*! Pointer to currently selected building, updated in on_treeWidget_itemSelectionChanged(). */
+	const VICUS::Building		*m_currentBuilding;
+	/*! Pointer to currently selected building level, updated in on_treeWidget_itemSelectionChanged(). */
+	const VICUS::BuildingLevel	*m_currentBuildingLevel;
 };
 
 #endif // SVFloorManagerWidgetH
