@@ -67,12 +67,12 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 
 
 	// check parameters required for thermal balances/heat exchange
+	// Note: We ONLY check the required PARAMETERS here! Wether this is a correct heat exchange type or not is
+	// checked in the HydraulicComponent!
 
 	bool heatExchangeDataFileMustExist = false;
 
 	if(nw.m_modelType == HydraulicNetwork::MT_ThermalHydraulicNetwork) {
-
-		// TODO : clarify which parameters are required for which model and check accordingly
 
 		// decide which heat exchange is chosen
 		switch(m_component->m_heatExchangeType) {
@@ -132,17 +132,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 							m_component->m_heatExchangeType)),
 							FUNC_ID);
 			}
-			case HydraulicNetworkComponent::HT_Adiabatic: {
-				// only allowed for pipes
-				if(m_component->m_modelType != HydraulicNetworkComponent::MT_StaticPipe &&
-				   m_component->m_modelType != HydraulicNetworkComponent::MT_DynamicPipe) {
-					throw IBK::Exception(IBK::FormatString("Heat exchange type %1 is only allowed for model type 'StaticPipe' "
-														   "and 'DynamicPipe'!")
-										 .arg(KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
-										 m_component->m_heatExchangeType)),
-										 FUNC_ID);
-				}
-			} break;
+			case HydraulicNetworkComponent::HT_Adiabatic:
 			case HydraulicNetworkComponent::NUM_HT:
 				// No thermal exchange, nothing to initialize
 			break;

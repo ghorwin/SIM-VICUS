@@ -29,6 +29,7 @@ bool HydraulicNetworkComponent::sameParametersAs(const HydraulicNetworkComponent
 
 
 void HydraulicNetworkComponent::checkParameters(int networkModelType) const {
+	FUNCID(HydraulicNetworkComponent::checkParameters);
 
 	// get all necessary parameters of current model type
 	std::vector<unsigned int> para = requiredParameter(m_modelType, networkModelType);
@@ -37,12 +38,21 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) const {
 	for (unsigned int i: para){
 		checkModelParameter(m_para[i], i);
 	}
+
+	// check if heat exchange type is supported
+	std::vector<unsigned int> availableHXTypes = availableHeatExchangeTypes(m_modelType);
+	if (std::find(availableHXTypes.begin(), availableHXTypes.end(), m_heatExchangeType) == availableHXTypes.end())
+		throw IBK::Exception(IBK::FormatString("Heat exchange type %1 is not allowed for '%2'")
+						 .arg(KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType", m_heatExchangeType))
+						 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
 }
 
 
 std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const HydraulicNetworkComponent::ModelType modelType,
 																	   int networkModelType){
 	HydraulicNetwork::ModelType netModelType = (HydraulicNetwork::ModelType) networkModelType;
+
+	// Hydraulic network with constant temperature
 	if (netModelType == HydraulicNetwork::MT_HydraulicNetwork){
 		switch (modelType) {
 			case MT_ConstantPressurePump:
@@ -57,6 +67,7 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 				return {};
 		}
 	}
+	// Therm-Hydraulic network with heat exchange
 	else {
 		switch (modelType) {
 			case MT_ConstantPressurePump:
@@ -66,7 +77,9 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 			case MT_HeatExchanger:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
 			case MT_DynamicPipe:
-				return {P_PipeMaxDiscretizationWidth};
+				return {P_PipeMaxDiscretizationWidth, P_ExternalHeatTransferCoefficient};
+			case MT_StaticPipe:
+				return {P_ExternalHeatTransferCoefficient};
 			default:
 				return {};
 		}
