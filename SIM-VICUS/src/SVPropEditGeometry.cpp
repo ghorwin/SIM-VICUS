@@ -66,7 +66,7 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_modificationState[MT_Rotate] = MS_Absolute;
 	m_modificationState[MT_Scale] = MS_Absolute;
 
-	m_ui->toolButtonTrans->setChecked(true);
+	setState(MT_Translate, MS_Absolute);
 	showDeg(false);
 	showRotation(false);
 }
@@ -405,22 +405,15 @@ void SVPropEditGeometry::rotate(const QVector3D & rotateVecDeg, const Modificati
 
 				centerPoint = centerPointLocal;
 
-				double oriRad = m_ui->lineEditOrientation->value() * IBK::DEG2RAD;
-				double incliRad = m_ui->lineEditInclination->value() * IBK::DEG2RAD;
-
-				IBKMK::Vector3D newNormal (std::sin( oriRad ) * std::sin( incliRad ),
-										   std::cos( oriRad ) * std::sin( incliRad ),
-										   std::cos( incliRad ) );
-
-				if ( checkVectors<4>( normal, newNormal ) )
+				if ( checkVectors<4>( normal, QtExt::QVector2IBKVector(rotateVecDeg) ) )
 					return; // do nothing
 
-				QVector3D rotationAxis ( QtExt::IBKVector2QVector(normal.crossProduct(newNormal) ) ) ;
+				QVector3D rotationAxis ( QtExt::IBKVector2QVector(normal.crossProduct(QtExt::QVector2IBKVector(rotateVecDeg) ) ) ) ;
 
 				tTrans.setTranslation( QtExt::IBKVector2QVector(-1*centerPoint) );
 				v3D = tTrans.toMatrix() * v3D;
 
-				tRota.rotate( angleBetweenVectorsDeg( normal, newNormal ), rotationAxis );
+				tRota.rotate( angleBetweenVectorsDeg( normal, QtExt::QVector2IBKVector(rotateVecDeg) ), rotationAxis );
 				v3D = tRota.toMatrix() * v3D;
 
 			} else if ( state == MS_Local ) {
@@ -450,13 +443,15 @@ void SVPropEditGeometry::rotate(const QVector3D & rotateVecDeg, const Modificati
 				tTrans.setTranslation( QtExt::IBKVector2QVector(-1*centerPoint) );
 				v3D = tTrans.toMatrix() * v3D;
 
+				Vic3D::CoordinateSystemObject coordinateSystem;
+
 				// rotate around specified axis
 				if ( !IBK::nearly_equal<3>( rotateVecDeg.x(), 0.0 ) )
-					tRota.rotate( rotateVecDeg.x(), QtExt::IBKVector2QVector(s->m_geometry.localX() ) );
+					tRota.rotate( rotateVecDeg.x(), 1, 0, 0 );
 				if ( !IBK::nearly_equal<3>( rotateVecDeg.y(), 0.0 ) )
-					tRota.rotate( rotateVecDeg.y(), QtExt::IBKVector2QVector(s->m_geometry.localY() ) );
+					tRota.rotate( rotateVecDeg.y(), 0, 1, 0 );
 				if ( !IBK::nearly_equal<3>( rotateVecDeg.z(), 0.0 ) )
-					tRota.rotate( rotateVecDeg.z(), normal.m_x, normal.m_y, normal.m_z );
+					tRota.rotate( rotateVecDeg.z(), 0, 0, 1 );
 				v3D = tRota.toMatrix() * v3D;
 			}
 			// translatae back to original center point
@@ -630,10 +625,11 @@ void SVPropEditGeometry::update() {
 			m_ui->labelIndication->setText("Normal:");
 			SVViewStateHandler::instance().m_propEditGeometryWidget->setRotation(s->m_geometry.normal() );
 		}
-		else
+		else {
 			m_ui->labelIndication->setText("z-Achse:");
 			SVViewStateHandler::instance().m_propEditGeometryWidget->setRotation(
-						QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localXAxis() ) );
+						QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis() ) );
+		}
 		IBKMK::Vector3D center;
 
 		// update local coordinates
@@ -1112,18 +1108,18 @@ void SVPropEditGeometry::setComboBox(const ModificationType & type, const Modifi
 	switch (type) {
 		case MT_Translate:
 			m_ui->comboBox->addItem( tr("move to position:") );
-			m_ui->comboBox->addItem( tr("move relative:") );
+			m_ui->comboBox->addItem( tr("move relative using global coordinate system:") );
 			m_ui->comboBox->addItem( tr("move relative using local coordinate system:") );
 			break;
 		case MT_Rotate:
 			m_ui->comboBox->addItem( tr("rotate absolute:") );
-			m_ui->comboBox->addItem( tr("rotate relative:") );
+			m_ui->comboBox->addItem( tr("rotate relative using global coordinate system:") );
 			m_ui->comboBox->addItem( tr("rotate relative using local coordinate system:") );
 			break;
 		case MT_Scale:
 			m_ui->comboBox->addItem( tr("resize surfaces:") );
+			m_ui->comboBox->addItem( tr("scale relative to center of each surface:") );
 			m_ui->comboBox->addItem( tr("scale relative to local coordinate system:") );
-			m_ui->comboBox->addItem( tr("scale relative to relative coordinate system:") );
 			break;
 	}
 
@@ -1152,6 +1148,7 @@ void SVPropEditGeometry::showRotation(const bool & abs)
 		m_ui->lineEditInclination->show();
 		m_ui->lineEditOrientation->show();
 
+		m_ui->labelIndication->show();
 		m_ui->labelOrientationDeg->show();
 		m_ui->labelInclinationDeg->show();
 
@@ -1169,6 +1166,7 @@ void SVPropEditGeometry::showRotation(const bool & abs)
 		m_ui->lineEditInclination->hide();
 		m_ui->lineEditOrientation->hide();
 
+		m_ui->labelIndication->hide();
 		m_ui->labelOrientationDeg->hide();
 		m_ui->labelInclinationDeg->hide();
 
@@ -1194,4 +1192,50 @@ void SVPropEditGeometry::on_toolButtonRotate_clicked()
 void SVPropEditGeometry::on_toolButtonScale_clicked()
 {
 	setState(MT_Scale, m_modificationState[MT_Rotate], true);
+}
+
+void SVPropEditGeometry::on_lineEditOrientation_returnPressed()
+{
+	if ( m_ui->lineEditOrientation->isValid() && m_ui->lineEditInclination->isValid() ) {
+		double oriRad = m_ui->lineEditOrientation->value() * IBK::DEG2RAD;
+		double incliRad = m_ui->lineEditInclination->value() * IBK::DEG2RAD;
+
+		m_orientation = oriRad / IBK::DEG2RAD;
+		m_inclination = incliRad / IBK::DEG2RAD;
+
+		QVector3D newNormal (std::sin( oriRad ) * std::sin( incliRad ),
+												   std::cos( oriRad ) * std::sin( incliRad ),
+												   std::cos( incliRad ) );
+		rotate(newNormal, m_modificationState[m_modificationType]);
+
+	}
+
+}
+
+void SVPropEditGeometry::on_lineEditInclination_returnPressed()
+{
+	if ( m_ui->lineEditOrientation->isValid() && m_ui->lineEditInclination->isValid() ) {
+		double oriRad = m_ui->lineEditOrientation->value() * IBK::DEG2RAD;
+		double incliRad = m_ui->lineEditInclination->value() * IBK::DEG2RAD;
+
+		m_orientation = oriRad / IBK::DEG2RAD;
+		m_inclination = incliRad / IBK::DEG2RAD;
+
+		QVector3D newNormal (std::sin( oriRad ) * std::sin( incliRad ),
+												   std::cos( oriRad ) * std::sin( incliRad ),
+												   std::cos( incliRad ) );
+		rotate(newNormal, m_modificationState[m_modificationType]);
+	}
+}
+
+void SVPropEditGeometry::on_lineEditOrientation_editingFinished()
+{
+	if ( m_ui->lineEditOrientation->isValid() )
+		m_orientation = m_ui->lineEditOrientation->value();
+}
+
+void SVPropEditGeometry::on_lineEditInclination_editingFinished()
+{
+	if ( m_ui->lineEditInclination->isValid() )
+		m_orientation = m_ui->lineEditInclination->value();
 }

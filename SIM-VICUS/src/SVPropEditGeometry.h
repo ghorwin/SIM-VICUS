@@ -153,6 +153,14 @@ private slots:
 
 	void on_toolButtonScale_clicked();
 
+	void on_lineEditOrientation_returnPressed();
+
+	void on_lineEditInclination_returnPressed();
+
+	void on_lineEditOrientation_editingFinished();
+
+	void on_lineEditInclination_editingFinished();
+
 private:
 	/*! Updates the property widget regarding to all geometry data
 		Takes a vector of pointers to all selected surfaces
@@ -168,6 +176,9 @@ private:
 	double								m_xValue[NUM_MT];
 	double								m_yValue[NUM_MT];
 	double								m_zValue[NUM_MT];
+
+	double								m_orientation = 0.0;
+	double								m_inclination = 0.0;
 
 	double								m_xTransValue = 0.0;
 	double								m_yTransValue = 0.0;
