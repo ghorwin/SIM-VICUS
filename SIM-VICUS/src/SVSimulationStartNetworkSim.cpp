@@ -337,13 +337,15 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		switch (comp->m_heatExchangeType) {
 			case VICUS::NetworkComponent::HT_HeatFluxConstant:
 				elem.m_para[NANDRAD::HydraulicNetworkElement::P_HeatFlux] =
-				node.m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_HeatFlux]; break;
+				node.m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_HeatFlux];
+				break;
 			case VICUS::NetworkComponent::HT_TemperatureConstant:
 				elem.m_para[NANDRAD::HydraulicNetworkElement::P_Temperature] =
-				node.m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_Temperature]; break;
+				node.m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_Temperature];
+				break;
 			case VICUS::NetworkComponent::HT_HeatFluxDataFile:
-				elem.m_heatExchangeDataFile =
-				node.m_heatExchange.m_dataFile; break;
+				elem.m_heatExchangeDataFile = node.m_heatExchange.m_dataFile;
+				break;
 			default:;
 		}
 

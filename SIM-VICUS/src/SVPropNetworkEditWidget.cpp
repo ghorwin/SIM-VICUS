@@ -255,16 +255,21 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 
 void SVPropNetworkEditWidget::updateHxProperties()
 {
+	m_ui->lineEditHeatFlux->clear();
+	m_ui->lineEditTemperature->clear();
+
 	VICUS::NetworkHeatExchange hx;
-	if(!m_currentNodes.empty()){
+	if(!m_currentNodes.empty() && uniformProperty(m_currentNodes, &VICUS::NetworkNode::m_heatExchange)){
 		hx = m_currentNodes[0]->m_heatExchange;
 	}
-	else if (!m_currentEdges.empty())
+	else if (!m_currentEdges.empty() && uniformProperty(m_currentEdges, &VICUS::NetworkEdge::m_heatExchange))
 		hx = m_currentEdges[0]->m_heatExchange;
 	else
 		return;
 
 	m_ui->lineEditHeatFlux->setValue(hx.m_para[VICUS::NetworkHeatExchange::P_HeatFlux].value);
+	if (!hx.m_para[VICUS::NetworkHeatExchange::P_Temperature].empty())
+		m_ui->lineEditTemperature->setValue(hx.m_para[VICUS::NetworkHeatExchange::P_Temperature].get_value("C"));
 
 }
 
@@ -598,19 +603,58 @@ void SVPropNetworkEditWidget::on_lineEditHeatFlux_editingFinished()
 																	   IBK::Unit("W"));
 	if (!setNetwork())
 		return;
-	Q_ASSERT(!m_currentNodes.empty());
-	for (const VICUS::NetworkNode * nodeConst: m_currentNodes){
-		m_currentNetwork.m_nodes[nodeConst->m_id].m_heatExchange = hx;
+
+	// set node hx
+	if (!m_currentNodes.empty()){
+		for (const VICUS::NetworkNode * nodeConst: m_currentNodes){
+			m_currentNetwork.m_nodes[nodeConst->m_id].m_heatExchange = hx;
+		}
 	}
+
+	// set edge hx
+	if (!m_currentEdges.empty()){
+		for (const VICUS::NetworkEdge * edge: m_currentEdges){
+			m_currentNetwork.edge(edge->nodeId1(), edge->nodeId2())->m_heatExchange = hx;
+		}
+	}
+
 	m_currentNetwork.updateNodeEdgeConnectionPointers();
 	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
 	undo->push(); // modifies project and updates views
 
-//	if (!m_currentNodes.empty())
-//		modifyNodeProperty(&VICUS::NetworkNode::m_heatExchange, hx);
-//	else if (!m_currentEdges.empty())
-//		modifyEdgeProperty(&VICUS::NetworkEdge::m_heatExchange, hx);
+}
+
+
+void SVPropNetworkEditWidget::on_lineEditTemperature_editingFinished()
+{
+	if (!m_ui->lineEditTemperature->isValid())
+		return;
+
+	VICUS::NetworkHeatExchange hx;
+	hx.m_para[VICUS::NetworkHeatExchange::P_Temperature] = IBK::Parameter("Temperature", m_ui->lineEditTemperature->value(),
+																	   IBK::Unit("C"));
+	if (!setNetwork())
+		return;
+
+	// set node hx
+	if (!m_currentNodes.empty()){
+		for (const VICUS::NetworkNode * nodeConst: m_currentNodes){
+			m_currentNetwork.m_nodes[nodeConst->m_id].m_heatExchange = hx;
+		}
+	}
+
+	// set edge hx
+	if (!m_currentEdges.empty()){
+		for (const VICUS::NetworkEdge * edge: m_currentEdges){
+			m_currentNetwork.edge(edge->nodeId1(), edge->nodeId2())->m_heatExchange = hx;
+		}
+	}
+
+	m_currentNetwork.updateNodeEdgeConnectionPointers();
+	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
+	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
+	undo->push(); // modifies project and updates views
 }
 
 
@@ -766,5 +810,4 @@ void SVPropNetworkEditWidget::modifyNodeProperty(TNodeProp property, const Tval 
 	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
 	undo->push(); // modifies project and updates views
 }
-
 

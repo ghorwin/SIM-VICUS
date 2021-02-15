@@ -82,6 +82,8 @@ private slots:
 
 	void on_lineEditEdgeDisplayName_editingFinished();
 
+	void on_lineEditTemperature_editingFinished();
+
 private:
 	/*! This function is called whenever the current selection of edges/nodes/objects has changed.
 		This can be due to user interaction with the scene, or because objects were added/deleted or
