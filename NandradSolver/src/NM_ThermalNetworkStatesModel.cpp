@@ -115,6 +115,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 						m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
 					}
+					// HT_TemperatureConstant, HT_TemperatureDataFile, HT_HeatExchangeWithZoneTemperature
 					else {
 						// create pipe model with heat exchange
 						TNStaticPipeElement * pipeElement = new TNStaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid,
@@ -150,6 +151,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 						m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
 					}
+					// HT_TemperatureConstant, HT_TemperatureDataFile, HT_HeatExchangeWithZoneTemperature
 					else {
 						// create pipe model with heat exchange
 						TNDynamicPipeElement * pipeElement = new TNDynamicPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid,
@@ -163,8 +165,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				default: {
 					// only heat flux models sare supported at the moment
 					if (e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant ||
-							 e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile) {
-						// create pipe model with given heat flux
+						e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile) {
+						// create general model with given heat flux
 						TNElementWithExternalHeatLoss * element = new TNElementWithExternalHeatLoss(m_network->m_fluid,
 																		e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value,
 																		heatExchangeValue);
@@ -172,10 +174,20 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						m_p->m_flowElements.push_back(element); // transfer ownership
 						m_p->m_heatLossElements.push_back(element); // copy of pointer
 					}
+					else if (e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_Adiabatic){
+						// create general adiabatic model
+						TNAdiabaticElement * element = new TNAdiabaticElement(m_network->m_fluid,
+																		e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value);
+						// add to flow elements
+						m_p->m_flowElements.push_back(element); // transfer ownership
+						m_p->m_heatLossElements.push_back(nullptr); // no heat loss
+					}
 					else {
-						throw IBK::Exception(IBK::FormatString("Model of type %1 is not supported, yet!")
+						throw IBK::Exception(IBK::FormatString("Model '%1' does currently not support heatExchangeType '%2'")
 									.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::ModelType",
-									e.m_component->m_modelType)),
+									e.m_component->m_modelType))
+									.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
+									e.m_component->m_heatExchangeType)),
 									FUNC_ID);
 					}
 				} break;
