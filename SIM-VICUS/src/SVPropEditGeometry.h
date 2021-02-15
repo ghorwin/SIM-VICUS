@@ -3,9 +3,13 @@
 
 #include <QWidget>
 
+#include <QtExt_ValidatingLineEdit.h>
+
 #include <IBKMK_Vector3D.h>
 
 #include <VICUS_Surface.h>
+
+#include <Vic3DTransform3D.h>
 
 namespace Vic3D {
 class Transform3D;
@@ -18,6 +22,8 @@ class Project;
 namespace Ui {
 class SVPropEditGeometry;
 }
+
+class QLineEdit;
 
 class SVProjectHandler;
 class SVUndoModifySurfaceGeometry;
@@ -35,6 +41,20 @@ public:
 		NUM_TS
 	};
 
+	enum ModificationType {
+		MT_Translate,
+		MT_Rotate,
+		MT_Scale,
+		NUM_MT
+	};
+
+	enum ModificationState {
+		MS_Absolute,
+		MS_Relative,
+		MS_Local,
+		NUM_MS
+	};
+
 	explicit SVPropEditGeometry(QWidget *parent = nullptr);
 	~SVPropEditGeometry();
 
@@ -42,7 +62,8 @@ public:
 	*/
 	void setCurrentTab(const TabState &state);
 
-	/*! Sets the Coordinates of the Center Point of the local
+	/*! Sets the Coordinates of the Cente
+class QtExt_ValidatingLineEdit;r Point of the local
 		Coordinate System
 	*/
 	void setCoordinates(const Vic3D::Transform3D &t);
@@ -58,6 +79,17 @@ public:
 	*/
 	void setRotation(const IBKMK::Vector3D &normal);
 
+	void setState(const ModificationType &type, const ModificationState &state,
+				  const bool &updateComboBox = false);
+
+	void setToolButton(const ModificationType &type);
+
+	void setComboBox(const ModificationType &type, const ModificationState &state);
+
+	void showDeg(const bool &show=true);
+
+	void showRotation(const bool &abs=true);
+
 public slots:
 
 	/*! Connected to SVProjectHandler::modified() */
@@ -72,11 +104,13 @@ private slots:
 
 	void on_pushButtonAddZoneBox_clicked();
 
-	void on_pushButtonTranslate_clicked();
 
-	void on_pushButtonScale_clicked();
+	void translate(const QVector3D & transVec, const ModificationState &state);
 
-	void on_pushButtonRotate_clicked();
+	void scale(const QVector3D & scaleVec, const ModificationState &state);
+
+	void rotate(const QVector3D & rotaVec, const ModificationState &state);
+
 
 	void on_radioButtonScaleAbsolute_toggled(bool absScale);
 
@@ -84,11 +118,13 @@ private slots:
 
 	void on_radioButtonAbsolute_toggled(bool checked);
 
-	void on_lineEditX_finishedSuccessfully();
 
-	void on_lineEditY_finishedSuccessfully();
+	void on_lineEditX_editingFinished();
 
-	void on_lineEditZ_finishedSuccessfully();
+	void on_lineEditY_editingFinished();
+
+	void on_lineEditZ_editingFinished();
+
 
 	void on_toolButtonTrans_toggled(bool checked);
 
@@ -96,7 +132,26 @@ private slots:
 
 	void on_toolButtonScale_toggled(bool checked);
 
-	void on_comboBox_currentIndexChanged(int index);
+
+	void on_comboBox_activated(int index);
+
+
+	bool eventFilter(QObject *target, QEvent *event) override;
+
+	void on_lineEditX_returnPressed();
+
+	void on_lineEditY_returnPressed();
+
+	void on_lineEditZ_returnPressed();
+
+
+
+
+	void on_toolButtonTrans_clicked();
+
+	void on_toolButtonRotate_clicked();
+
+	void on_toolButtonScale_clicked();
 
 private:
 	/*! Updates the property widget regarding to all geometry data
@@ -104,23 +159,29 @@ private:
 	*/
 	void update();
 
-	// holding all the translation values
-	int									m_transIdx;
-	double								m_xTransValue;
-	double								m_yTransValue;
-	double								m_zTransValue;
+	ModificationType					m_modificationType = MT_Translate;
+	ModificationState					m_modificationState[NUM_MT];
+
+	Vic3D::Transform3D					m_localCoordinatePosition;
+
+	// holding all the values
+	double								m_xValue[NUM_MT];
+	double								m_yValue[NUM_MT];
+	double								m_zValue[NUM_MT];
+
+	double								m_xTransValue = 0.0;
+	double								m_yTransValue = 0.0;
+	double								m_zTransValue = 0.0;
 
 	// holding all the rotation values
-	int									m_rotaIdx;
-	double								m_xRotaValue;
-	double								m_yRotaValue;
-	double								m_zRotaValue;
+	double								m_xRotaValue = 0.0;
+	double								m_yRotaValue = 0.0;
+	double								m_zRotaValue = 0.0;
 
 	// holding all the scaling values
-	int									m_scaleIdx;
-	double								m_xScaleValue;
-	double								m_yScaleValue;
-	double								m_zScaleValue;
+	double								m_xScaleValue = 0.0;
+	double								m_yScaleValue = 0.0;
+	double								m_zScaleValue = 0.0;
 
 	Ui::SVPropEditGeometry				*m_ui;
 };

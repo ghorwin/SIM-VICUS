@@ -52,7 +52,7 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 
 	m_toolBar = new QToolBar(this);
 	m_toolBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-	m_toolBar->setMaximumHeight(50);
+	m_toolBar->setMaximumHeight(32);
 
 //	m_dockWidget = new QWidget(this);
 //	m_dockWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -307,7 +307,7 @@ void SVGeometryView::setupToolBar() {
 	m_snapAction->setIcon(QIcon(":/gfx/actions/icon-gesture-drag.svg") );
 
 	m_toolBar->addAction(m_snapAction);
-	m_toolBar->setIconSize(QSize(32,32) );
+	m_toolBar->setIconSize(QSize(24,24) );
 	connect(m_snapAction, &QAction::toggled, this, &SVGeometryView::on_actionSnap_toggled);
 
 	m_xLockAction = new QAction(tr("X"), this);
