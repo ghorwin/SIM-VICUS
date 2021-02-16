@@ -34,11 +34,11 @@ public:
 
 	QString								m_displayName;				// XML:A
 
-	/*! The nominal elevation of the floor's surface above ground in [m]. */
+	/*! The nominal elevation [m] of the floor's surface above ground. */
 	double								m_elevation = 0;			// XML:E
 
-	/*! The nominal height (floor surface to ceiling) of the building level. */
-	double								m_height = 0;				// XML:E
+	/*! The nominal height [m] (floor surface to ceiling) of the building level. */
+	double								m_height = 2.7;				// XML:E
 
 	/*! Stores visibility information for this surface.
 		Note: keep the next line - this will cause the code generator to create serialization code
