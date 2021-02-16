@@ -205,6 +205,8 @@ void SVDBBoundaryConditionEditWidget::on_comboBoxHeatTransferCoeffModelType_curr
 	// update database but only if different from original
 	if (index != (int)m_current->m_heatConduction.m_modelType) {
 		m_current->m_heatConduction.m_modelType = static_cast<NANDRAD::InterfaceHeatConduction::modelType_t>(index);
+		if (m_current->m_heatConduction.m_modelType == NANDRAD::InterfaceHeatConduction::NUM_MT)
+			m_current->m_heatConduction = NANDRAD::InterfaceHeatConduction(); // reset entire object
 		m_db->m_boundaryConditions.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
@@ -229,6 +231,8 @@ void SVDBBoundaryConditionEditWidget::on_comboBoxLWModelType_currentIndexChanged
 	// update database but only if different from original
 	if (index != (int)m_current->m_longWaveEmission.m_modelType) {
 		m_current->m_longWaveEmission.m_modelType = static_cast<NANDRAD::InterfaceLongWaveEmission::modelType_t>(index);
+		if (m_current->m_longWaveEmission.m_modelType == NANDRAD::InterfaceLongWaveEmission::NUM_MT)
+			m_current->m_longWaveEmission = NANDRAD::InterfaceLongWaveEmission(); // reset entire object
 		m_db->m_boundaryConditions.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
@@ -254,6 +258,8 @@ void SVDBBoundaryConditionEditWidget::on_comboBoxSWModelType_currentIndexChanged
 	if (index != (int)m_current->m_solarAbsorption.m_modelType)
 	{
 		m_current->m_solarAbsorption.m_modelType = static_cast<NANDRAD::InterfaceSolarAbsorption::modelType_t>(index);
+		if (m_current->m_solarAbsorption.m_modelType == NANDRAD::InterfaceSolarAbsorption::NUM_MT)
+			m_current->m_solarAbsorption = NANDRAD::InterfaceSolarAbsorption(); // reset entire object
 		m_db->m_boundaryConditions.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
