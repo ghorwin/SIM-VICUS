@@ -122,8 +122,8 @@ SOURCES += \
 	../../src/actions/SVUndoModifyBuilding.cpp \
 	../../src/actions/SVUndoModifyBuildingLevel.cpp \
 		../../src/actions/SVUndoModifyComponentInstances.cpp \
+	../../src/actions/SVUndoModifyProject.cpp \
 				../../src/actions/SVUndoModifySurfaceGeometry.cpp \
-				../../src/actions/SVUndoProject.cpp \
 				../../src/actions/SVUndoSiteDataChanged.cpp \
 				../../src/core3D/Vic3DCoordinateSystemObject.cpp \
 				../../src/core3D/Vic3DGeometryHelpers.cpp \
@@ -229,8 +229,8 @@ HEADERS  += \
 	../../src/actions/SVUndoModifyBuilding.h \
 	../../src/actions/SVUndoModifyBuildingLevel.h \
 		../../src/actions/SVUndoModifyComponentInstances.h \
+	../../src/actions/SVUndoModifyProject.h \
 				../../src/actions/SVUndoModifySurfaceGeometry.h \
-				../../src/actions/SVUndoProject.h \
 				../../src/actions/SVUndoSiteDataChanged.h \
 				../../src/core3D/Vic3DCamera.h \
 				../../src/core3D/Vic3DConstants.h \

@@ -16,7 +16,7 @@
 #include "SVSimulationRunRequestDialog.h"
 #include "SVConstants.h"
 #include "SVLogFileDialog.h"
-#include "SVUndoProject.h"
+#include "SVUndoModifyProject.h"
 
 SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 	QDialog(parent),

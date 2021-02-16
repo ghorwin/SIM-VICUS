@@ -72,7 +72,7 @@
 #include "Vic3DSceneView.h"
 
 
-#include "SVUndoProject.h"
+#include "SVUndoModifyProject.h"
 #include "SVUndoAddNetwork.h"
 #include "SVUndoAddBuilding.h"
 

@@ -1,4 +1,4 @@
-#include "SVUndoProject.h"
+#include "SVUndoModifyProject.h"
 #include "SVProjectHandler.h"
 
 SVUndoProject::SVUndoProject(	const QString & label,
