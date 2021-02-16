@@ -193,7 +193,10 @@ void SVFloorManagerWidget::on_lineEditBuildingName_editingFinished() {
 			// compose undo action for modifying building data
 			VICUS::Building building = *m_currentBuilding;
 			building.m_buildingLevels.clear(); // no need to store these, since they are not modified
-			building.m_displayName = m_ui->lineEditBuildingName->text().trimmed();
+			QString newName = m_ui->lineEditBuildingName->text().trimmed();
+			if (newName == building.m_displayName)
+				return; // nothing changed
+			building.m_displayName = newName;
 			SVUndoModifyBuilding * undo = new SVUndoModifyBuilding(tr("Renamed building"), building, i, true);
 			undo->push();
 			return;
@@ -215,7 +218,10 @@ void SVFloorManagerWidget::on_lineEditLevelName_editingFinished() {
 				// compose undo action for modifying building data
 				VICUS::BuildingLevel bl = *m_currentBuildingLevel;
 				bl.m_rooms.clear(); // no need to store these, since they are not modified
-				bl.m_displayName = m_ui->lineEditLevelName->text().trimmed();
+				QString newName = m_ui->lineEditLevelName->text().trimmed();
+				if (newName == bl.m_displayName)
+					return; // nothing changed
+				bl.m_displayName = newName;
 				SVUndoModifyBuildingLevel * undo = new SVUndoModifyBuildingLevel(tr("Renamed building level"), bl, j, i, true);
 				undo->push();
 				return;
