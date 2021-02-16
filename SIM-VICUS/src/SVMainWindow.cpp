@@ -327,6 +327,10 @@ void SVMainWindow::changeEvent(QEvent *event) {
 void SVMainWindow::closeEvent(QCloseEvent * event) {
 	FUNCID(SVMainWindow::closeEvent);
 
+	// close any other top-level free windows
+	if (m_floorManagerWidget != nullptr)
+		m_floorManagerWidget->close();
+
 	// move input focus away from any input fields (to allow editingFinished() events to fire)
 	setFocus();
 
@@ -811,6 +815,8 @@ void SVMainWindow::on_actionEditCleanProject_triggered() {
 void SVMainWindow::on_actionBuildingFloorManager_triggered() {
 	if (m_floorManagerWidget == nullptr)
 		m_floorManagerWidget = new SVFloorManagerWidget(nullptr); // make it a top-level widget without parent
+	if (m_floorManagerWidget->isVisible())
+		m_floorManagerWidget->close();
 	m_floorManagerWidget->show();
 }
 

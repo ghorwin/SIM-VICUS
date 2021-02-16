@@ -26,7 +26,7 @@ void SVUndoDeleteBuilding::undo() {
 
 
 void SVUndoDeleteBuilding::redo() {
-	Q_ASSERT(!theProject().m_geometricNetworks.empty());
+	Q_ASSERT(!theProject().m_buildings.empty());
 
 	theProject().m_buildings.erase(theProject().m_buildings.begin() + m_buildingIndex);
 	theProject().updatePointers();

@@ -9,6 +9,7 @@
 #include "SVProjectHandler.h"
 #include "SVUndoAddBuilding.h"
 #include "SVUndoAddBuildingLevel.h"
+#include "SVUndoDeleteBuilding.h"
 #include "SVUndoModifyBuilding.h"
 #include "SVUndoModifyBuildingLevel.h"
 
@@ -40,11 +41,11 @@ void SVFloorManagerWidget::onModified(int modificationType, ModificationInfo * /
 		case SVProjectHandler::ClimateLocationModified:
 		case SVProjectHandler::GridModified:
 		case SVProjectHandler::NetworkModified:
-		case SVProjectHandler::BuildingGeometryChanged:
 		case SVProjectHandler::ComponentInstancesModified:
 			return; // unrelated changes, do nothing
 
 		case SVProjectHandler::NodeStateModified: // need to listen to selection changes
+		case SVProjectHandler::BuildingGeometryChanged:
 		case SVProjectHandler::BuildingTopologyChanged:
 		case SVProjectHandler::AllModified:
 		break;
@@ -317,7 +318,12 @@ void SVFloorManagerWidget::on_pushButtonRemoveBuilding_clicked() {
 	}
 	// compose undo action
 
-	unsigned int buildingUniqueID = m_currentBuilding->uniqueID();
-
-
+	// find index in project's building vector
+	for (unsigned int i=0; i<project().m_buildings.size(); ++i) {
+		if (&project().m_buildings[i] == m_currentBuilding) {
+			SVUndoDeleteBuilding * undo = new SVUndoDeleteBuilding(tr("Removed building"), i);
+			undo->push();
+			return;
+		}
+	}
 }
