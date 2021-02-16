@@ -77,7 +77,7 @@
         <item>
          <widget class="QLabel" name="label">
           <property name="text">
-           <string>Type of heat exchange</string>
+           <string>Type of heat exchange:</string>
           </property>
          </widget>
         </item>

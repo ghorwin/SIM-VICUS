@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SVScheduleEditWidget</class>
+ <widget class="QWidget" name="SVScheduleEditWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1596</width>
+    <height>913</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="labelScheduleType">
+       <property name="text">
+        <string>Schedule Type:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBoxScheduleType">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="labelScheduleType_2">
+       <property name="text">
+        <string>Interpolation Method:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="radioButton">
+       <property name="text">
+        <string>linear</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="radioButton_2">
+       <property name="text">
+        <string>continuous</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="Line" name="line_6">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,4">
+     <item>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="title">
+        <string>Periods</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0" colspan="4">
+         <widget class="QTableWidget" name="tableWidget">
+          <row>
+           <property name="text">
+            <string>1</string>
+           </property>
+          </row>
+          <row>
+           <property name="text">
+            <string>2</string>
+           </property>
+          </row>
+          <column>
+           <property name="text">
+            <string>Neue Spalte</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Periodenende</string>
+           </property>
+          </column>
+          <item row="0" column="0">
+           <property name="text">
+            <string>P1</string>
+           </property>
+          </item>
+          <item row="0" column="1">
+           <property name="text">
+            <string>31.03.</string>
+           </property>
+          </item>
+          <item row="1" column="0">
+           <property name="text">
+            <string>P2</string>
+           </property>
+          </item>
+          <item row="1" column="1">
+           <property name="text">
+            <string>31.12.</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QToolButton" name="toolButtonAddPeriod">
+          <property name="icon">
+           <iconset resource="../resources/SIM-VICUS.qrc">
+            <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QToolButton" name="toolButtonCopyPeriod">
+          <property name="icon">
+           <iconset resource="../resources/SIM-VICUS.qrc">
+            <normaloff>:/gfx/actions/24x24/editcopy.png</normaloff>:/gfx/actions/24x24/editcopy.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QToolButton" name="toolButtonRemovePeriode">
+          <property name="icon">
+           <iconset resource="../resources/SIM-VICUS.qrc">
+            <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3">
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>173</width>
+            <height>48</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox_2">
+       <property name="title">
+        <string>Schedule based on daily scheme</string>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,1,1">
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Hier kommt SCI Chart rein mit Interaktion, Abbildung der X-Y Daten mit Balken oder Linien je nach Einstellung Interpolations Methode</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0" colspan="3">
+           <widget class="QTableWidget" name="tableWidget_2">
+            <row>
+             <property name="text">
+              <string>1</string>
+             </property>
+            </row>
+            <column>
+             <property name="text">
+              <string>Zeitraum</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Wert</string>
+             </property>
+            </column>
+            <item row="0" column="0">
+             <property name="text">
+              <string>0:00 - 1:00</string>
+             </property>
+            </item>
+            <item row="0" column="1">
+             <property name="text">
+              <string>3.5</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>139</width>
+              <height>48</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="1">
+           <widget class="QToolButton" name="toolButtonBackward">
+            <property name="icon">
+             <iconset resource="../resources/SIM-VICUS.qrc">
+              <normaloff>:/gfx/actions/24x24/undo.png</normaloff>:/gfx/actions/24x24/undo.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QToolButton" name="toolButtonForward">
+            <property name="icon">
+             <iconset resource="../resources/SIM-VICUS.qrc">
+              <normaloff>:/gfx/actions/24x24/redo.png</normaloff>:/gfx/actions/24x24/redo.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QCheckBox" name="checkBoxMonday">
+            <property name="text">
+             <string>Monday</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxTuesday">
+            <property name="text">
+             <string>Tuesday</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxWednesday">
+            <property name="text">
+             <string>Wednesday</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxThursday">
+            <property name="text">
+             <string>Thursday</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxFriday">
+            <property name="text">
+             <string>Friday</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxSaturday">
+            <property name="text">
+             <string>Saturday</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxSunday">
+            <property name="text">
+             <string>Sunday</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxWeekday">
+            <property name="text">
+             <string>Weekday</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxWeekend">
+            <property name="text">
+             <string>Weekend</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxHoliday">
+            <property name="text">
+             <string>Holiday</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxCustomDay1">
+            <property name="text">
+             <string>CustomDay1</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxSummerDesignDay">
+            <property name="text">
+             <string>SummerDesignDay</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxWinterDesignDay">
+            <property name="text">
+             <string>WinterDesignDay</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxWinterDesignDay_2">
+            <property name="text">
+             <string>AllOtherDays</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../resources/SIM-VICUS.qrc"/>
+ </resources>
+ <connections/>
+</ui>
