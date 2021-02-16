@@ -4,7 +4,7 @@
 #include <VICUS_Project.h>
 
 #include "SVProjectHandler.h"
-#include "SVUndoSiteDataChanged.h"
+#include "SVUndoModifySiteData.h"
 
 SVPropSiteWidget::SVPropSiteWidget(QWidget *parent) :
 	QWidget(parent),
@@ -47,7 +47,7 @@ void SVPropSiteWidget::on_lineEditMaxDimensions_editingFinished() {
 	bool ok;
 	double d = QLocale().toDouble(m_ui->lineEditMaxDimensions->text(), &ok);
 	if (ok && d > 10) {
-		SVUndoSiteDataChanged * undo = new SVUndoSiteDataChanged(tr("Grid property changed"),
+		SVUndoModifySiteData * undo = new SVUndoModifySiteData(tr("Grid property changed"),
 																 d,
 																 project().m_viewSettings.m_gridSpacing,
 																 project().m_viewSettings.m_farDistance);
@@ -61,7 +61,7 @@ void SVPropSiteWidget::on_lineEditGridLineSpacing_editingFinished() {
 	bool ok;
 	double d = QLocale().toDouble(m_ui->lineEditGridLineSpacing->text(), &ok);
 	if (ok && d > 0.1) {
-		SVUndoSiteDataChanged * undo = new SVUndoSiteDataChanged(tr("Grid property changed"),
+		SVUndoModifySiteData * undo = new SVUndoModifySiteData(tr("Grid property changed"),
 																 project().m_viewSettings.m_gridWidth,
 																 d,
 																 project().m_viewSettings.m_farDistance);
@@ -75,7 +75,7 @@ void SVPropSiteWidget::on_lineEditViewDepth_editingFinished() {
 	bool ok;
 	double d = QLocale().toDouble(m_ui->lineEditViewDepth->text(), &ok);
 	if (ok && d > 100) {
-		SVUndoSiteDataChanged * undo = new SVUndoSiteDataChanged(tr("Grid property changed"),
+		SVUndoModifySiteData * undo = new SVUndoModifySiteData(tr("Grid property changed"),
 																 project().m_viewSettings.m_gridWidth,
 																 project().m_viewSettings.m_gridSpacing,
 																 d);

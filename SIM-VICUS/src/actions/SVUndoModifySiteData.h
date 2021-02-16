@@ -1,14 +1,14 @@
-#ifndef SVUndoSiteDataChangedH
-#define SVUndoSiteDataChangedH
+#ifndef SVUndoModifySiteDataH
+#define SVUndoModifySiteDataH
 
 #include <VICUS_Project.h>
 
 #include "SVUndoCommandBase.h"
 
-class SVUndoSiteDataChanged : public SVUndoCommandBase {
-	Q_DECLARE_TR_FUNCTIONS(SVUndoSiteDataChanged)
+class SVUndoModifySiteData : public SVUndoCommandBase {
+	Q_DECLARE_TR_FUNCTIONS(SVUndoModifySiteData)
 public:
-	SVUndoSiteDataChanged(const QString & label,
+	SVUndoModifySiteData(const QString & label,
 				   double gridWidth, double gridSpacing, double farDistance);
 
 	virtual void undo();
@@ -22,4 +22,4 @@ private:
 
 };
 
-#endif // SVUndoSiteDataChangedH
+#endif // SVUndoModifySiteDataH

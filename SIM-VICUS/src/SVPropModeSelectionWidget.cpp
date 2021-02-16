@@ -5,7 +5,7 @@
 
 #include "SVProjectHandler.h"
 #include "SVViewStateHandler.h"
-#include "SVUndoSiteDataChanged.h"
+#include "SVUndoModifySiteData.h"
 
 SVPropModeSelectionWidget::SVPropModeSelectionWidget(QWidget *parent) :
 	QWidget(parent),

@@ -1,7 +1,7 @@
-#include "SVUndoSiteDataChanged.h"
+#include "SVUndoModifySiteData.h"
 #include "SVProjectHandler.h"
 
-SVUndoSiteDataChanged::SVUndoSiteDataChanged(	const QString & label,
+SVUndoModifySiteData::SVUndoModifySiteData(	const QString & label,
 								double gridWidth, double gridSpacing, double farDistance) :
 	m_gridWidth(gridWidth),
 	m_gridSpacing(gridSpacing),
@@ -11,7 +11,7 @@ SVUndoSiteDataChanged::SVUndoSiteDataChanged(	const QString & label,
 }
 
 
-void SVUndoSiteDataChanged::undo() {
+void SVUndoModifySiteData::undo() {
 
 	// exchange Project
 	std::swap( theProject().m_viewSettings.m_gridWidth, m_gridWidth );
@@ -23,6 +23,6 @@ void SVUndoSiteDataChanged::undo() {
 }
 
 
-void SVUndoSiteDataChanged::redo() {
+void SVUndoModifySiteData::redo() {
 	undo();
 }
