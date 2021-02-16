@@ -86,6 +86,10 @@ void SVFloorManagerWidget::onModified(int modificationType, ModificationInfo * /
 	m_ui->treeWidget->expandAll();
 
 	on_treeWidget_itemSelectionChanged();
+
+	// need a resize?
+	if (m_ui->treeWidget->header()->sectionSizeHint(2) != m_ui->treeWidget->header()->sectionSize(2))
+		resizeEvent(nullptr);
 }
 
 
@@ -209,4 +213,17 @@ void SVFloorManagerWidget::on_lineEditLevelName_editingFinished() {
 			}
 		} // loop leves
 	} // loop buildings
+}
+
+
+void SVFloorManagerWidget::resizeEvent(QResizeEvent * event) {
+	if (event != nullptr)
+		QWidget::resizeEvent(event);
+	m_ui->treeWidget->resizeColumnToContents(1);
+	m_ui->treeWidget->resizeColumnToContents(2);
+	// resize first column to stretch entire available space
+	int width = m_ui->treeWidget->width()-2;
+	width -= m_ui->treeWidget->header()->sectionSize(1);
+	width -= m_ui->treeWidget->header()->sectionSize(2);
+	m_ui->treeWidget->header()->resizeSection(0, width);
 }

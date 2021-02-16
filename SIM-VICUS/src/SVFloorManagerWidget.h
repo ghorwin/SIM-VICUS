@@ -28,6 +28,9 @@ public slots:
 	/*! Connected to SVProjectHandler::modified() */
 	void onModified( int modificationType, ModificationInfo * data );
 
+protected:
+	void resizeEvent(QResizeEvent * event) override;
+
 private slots:
 	void on_treeWidget_itemSelectionChanged();
 
@@ -42,6 +45,7 @@ private:
 	const VICUS::Building		*m_currentBuilding;
 	/*! Pointer to currently selected building level, updated in on_treeWidget_itemSelectionChanged(). */
 	const VICUS::BuildingLevel	*m_currentBuildingLevel;
+
 };
 
 #endif // SVFloorManagerWidgetH

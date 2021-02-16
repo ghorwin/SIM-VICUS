@@ -28,6 +28,9 @@
         <property name="columnCount">
          <number>3</number>
         </property>
+        <attribute name="headerStretchLastSection">
+         <bool>false</bool>
+        </attribute>
         <column>
          <property name="text">
           <string notr="true">1</string>
@@ -108,7 +111,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="page">
       <layout class="QVBoxLayout" name="verticalLayout">
