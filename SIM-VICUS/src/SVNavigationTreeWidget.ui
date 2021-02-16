@@ -40,7 +40,6 @@
      <property name="floatable">
       <bool>false</bool>
      </property>
-     <addaction name="actionAdd"/>
      <addaction name="actionRemoveSelected"/>
      <addaction name="actionShowSelected"/>
      <addaction name="actionHideSelected"/>
@@ -75,6 +74,9 @@
    <property name="text">
     <string>Add...</string>
    </property>
+   <property name="toolTip">
+    <string>Add something?</string>
+   </property>
   </action>
   <action name="actionRemoveSelected">
    <property name="icon">
@@ -100,7 +102,7 @@
     <string>Show selected objects</string>
    </property>
    <property name="toolTip">
-    <string>Makes all selected objects visible.</string>
+    <string>Makes all selected objects visible</string>
    </property>
    <property name="shortcut">
     <string>F6</string>
@@ -115,7 +117,7 @@
     <string>Hides selected objects</string>
    </property>
    <property name="toolTip">
-    <string>Hides all selected objects.</string>
+    <string>Hides all selected objects</string>
    </property>
    <property name="shortcut">
     <string>F7</string>
@@ -129,6 +131,9 @@
    <property name="text">
     <string>Select all</string>
    </property>
+   <property name="toolTip">
+    <string>Selects all selectable objects</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+A</string>
    </property>
@@ -136,6 +141,9 @@
   <action name="actionDeselect_all">
    <property name="text">
     <string>Deselect all</string>
+   </property>
+   <property name="toolTip">
+    <string>Deselects all objects</string>
    </property>
    <property name="shortcut">
     <string>Esc</string>
@@ -150,7 +158,7 @@
     <string>Smart select</string>
    </property>
    <property name="toolTip">
-    <string>Select objects based on properties.</string>
+    <string>Select objects based on properties</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+.</string>
