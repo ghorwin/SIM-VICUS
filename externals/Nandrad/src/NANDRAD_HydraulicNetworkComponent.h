@@ -109,11 +109,11 @@ public:
 	static std::vector<unsigned int> availableHeatExchangeTypes(const ModelType modelType) {
 		switch (modelType) {
 			case MT_ConstantPressurePump:
-				return {HT_Adiabatic, HT_HeatFluxConstant};
+				return {HT_Adiabatic, HT_HeatFluxConstant, HT_HeatFluxDataFile};
 			case MT_StaticPipe:
-				return {HT_Adiabatic, HT_TemperatureConstant, HT_TemperatureDataFile};
+				return {HT_Adiabatic, HT_TemperatureConstant, HT_TemperatureDataFile, HT_HeatFluxConstant, HT_HeatFluxDataFile};
 			case MT_DynamicPipe:
-				return {HT_Adiabatic, HT_TemperatureConstant, HT_TemperatureDataFile};
+				return {HT_Adiabatic, HT_TemperatureConstant, HT_TemperatureDataFile, HT_HeatFluxConstant, HT_HeatFluxDataFile};
 			case MT_HeatPump:
 			case MT_HeatExchanger:
 				return {HT_HeatFluxConstant, HT_HeatFluxDataFile};

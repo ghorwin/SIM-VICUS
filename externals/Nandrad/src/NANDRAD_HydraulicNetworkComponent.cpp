@@ -78,6 +78,8 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 			case MT_ConstantPressurePump: {
 				switch(heatExchangeType) {
 					case HT_Adiabatic:
+					case HT_HeatFluxConstant:
+					case HT_HeatFluxDataFile:
 						return {P_PressureHead, P_Volume};
 					default:
 						return {P_PressureHead, P_PumpEfficiency, P_MotorEfficiency, P_Volume};
@@ -90,8 +92,9 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 			case MT_DynamicPipe: {
 				switch(heatExchangeType) {
 					case HT_Adiabatic:
-//					case HT_HeatFluxConstant:
-//					case HT_HeatFluxDataFile:
+						return {P_PipeMaxDiscretizationWidth};
+					case HT_HeatFluxConstant:
+					case HT_HeatFluxDataFile:
 						return {};
 					default:
 						return {P_PipeMaxDiscretizationWidth, P_ExternalHeatTransferCoefficient};
@@ -100,8 +103,8 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 			case MT_StaticPipe: {
 				switch(heatExchangeType) {
 					case HT_Adiabatic:
-//					case HT_HeatFluxConstant:
-//					case HT_HeatFluxDataFile:
+					case HT_HeatFluxConstant:
+					case HT_HeatFluxDataFile:
 						return {};
 					default:
 						return {P_ExternalHeatTransferCoefficient};

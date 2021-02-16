@@ -163,16 +163,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				} break;
 
 				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump : {
-					if (e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant ) {
-						// create pump model witzh heat loss
-						TNPumpWithPerformanceLoss * element = new TNPumpWithPerformanceLoss(m_network->m_fluid,
-																			*e.m_component,
-																			e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value);
-						// add to flow elements
-						m_p->m_flowElements.push_back(element); // transfer ownership
-						m_p->m_heatLossElements.push_back(element); // no heat loss
-					}
-					else if (e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_Adiabatic){
+					if (e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_Adiabatic){
 						// create general adiabatic model
 						TNAdiabaticElement * element = new TNAdiabaticElement(m_network->m_fluid,
 																		e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value);
@@ -180,13 +171,24 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						m_p->m_flowElements.push_back(element); // transfer ownership
 						m_p->m_heatLossElements.push_back(nullptr); // no heat loss
 					}
+					else if (e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant ||
+							 e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile) {
+						// create general model with given heat flux
+						TNElementWithExternalHeatLoss * element = new TNElementWithExternalHeatLoss(m_network->m_fluid,
+																		e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value,
+																		heatExchangeValue);
+						// add to flow elements
+						m_p->m_flowElements.push_back(element); // transfer ownership
+						m_p->m_heatLossElements.push_back(element); // copy of pointer
+					}
 					else {
-						throw IBK::Exception(IBK::FormatString("Model '%1' does currently not support heatExchangeType '%2'")
-									.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::ModelType",
-									e.m_component->m_modelType))
-									.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
-									e.m_component->m_heatExchangeType)),
-									FUNC_ID);
+						// create pump model witzh heat loss
+						TNPumpWithPerformanceLoss * element = new TNPumpWithPerformanceLoss(m_network->m_fluid,
+																			*e.m_component,
+																			e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value);
+						// add to flow elements
+						m_p->m_flowElements.push_back(element); // transfer ownership
+						m_p->m_heatLossElements.push_back(element); // no heat loss
 					}
 				} break;
 
