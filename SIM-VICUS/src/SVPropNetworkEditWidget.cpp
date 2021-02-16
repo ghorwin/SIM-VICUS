@@ -6,7 +6,7 @@
 #include "SVViewStateHandler.h"
 #include "SVNavigationTreeWidget.h"
 #include "SVUndoAddNetwork.h"
-#include "SVUndoModifyExistingNetwork.h"
+#include "SVUndoModifyNetwork.h"
 #include "SVProjectHandler.h"
 #include "SVSettings.h"
 #include "SVDialogSelectNetworkPipes.h"

@@ -8,7 +8,7 @@
 
 #include "SVSettings.h"
 #include "SVProjectHandler.h"
-#include "SVUndoModifyExistingNetwork.h"
+#include "SVUndoModifyNetwork.h"
 
 #include <VICUS_Project.h>
 #include <VICUS_KeywordList.h>

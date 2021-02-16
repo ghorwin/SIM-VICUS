@@ -1,4 +1,4 @@
-#include "SVUndoModifyExistingNetwork.h"
+#include "SVUndoModifyNetwork.h"
 
 #include "SVSettings.h"
 

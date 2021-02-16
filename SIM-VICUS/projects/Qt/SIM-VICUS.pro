@@ -111,6 +111,7 @@ SOURCES += \
 				../../src/SVSimulationOutputOptions.cpp \
 		../../src/SVSimulationRunRequestDialog.cpp \
 		../../src/SVSmartSelectDialog.cpp \
+	../../src/SVUndoModifyNetwork.cpp \
 				../../src/actions/SVUndoAddBuilding.cpp \
 				../../src/actions/SVUndoAddBuildingLevel.cpp \
 				../../src/actions/SVUndoAddNetwork.cpp \
@@ -173,7 +174,6 @@ SOURCES += \
 				../../src/SVStyle.cpp \
 				../../src/SVThreadBase.cpp \
 				../../src/SVUndoDeleteNetwork.cpp \
-				../../src/SVUndoModifyExistingNetwork.cpp \
 				../../src/SVUndoTreeNodeState.cpp \
 				../../src/SVUtils.cpp \
 				../../src/SVViewState.cpp \
@@ -218,6 +218,7 @@ HEADERS  += \
 				../../src/SVSimulationOutputOptions.h \
 		../../src/SVSimulationRunRequestDialog.h \
 		../../src/SVSmartSelectDialog.h \
+	../../src/SVUndoModifyNetwork.h \
 				../../src/actions/SVUndoAddBuilding.h \
 				../../src/actions/SVUndoAddBuildingLevel.h \
 				../../src/actions/SVUndoAddNetwork.h \
@@ -282,7 +283,6 @@ HEADERS  += \
 				../../src/SVStyle.h \
 				../../src/SVThreadBase.h \
 				../../src/SVUndoDeleteNetwork.h \
-				../../src/SVUndoModifyExistingNetwork.h \
 				../../src/SVUndoTreeNodeState.h \
 				../../src/SVUtils.h \
 				../../src/SVViewState.h \
