@@ -411,3 +411,15 @@ void SVFloorManagerWidget::on_pushButtonRemoveLevel_clicked() {
 }
 
 
+void SVFloorManagerWidget::on_pushButtonAssignRooms_clicked() {
+	// collect list of all selected rooms and move them to the currently selected building level
+	// this means we are modifying one or more buildings, but only the topology (since the surfaces are drawn just the same)
+
+	// collect all selected rooms, and only if they are visible
+	std::set<const VICUS::Object*> objs;
+	project().selectObjects(objs, VICUS::Project::SG_Building, true, true);
+
+	// create a copy of the buildings vector
+
+
+}

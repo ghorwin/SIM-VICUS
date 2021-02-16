@@ -39,6 +39,8 @@ private slots:
 	void on_pushButtonRemoveBuilding_clicked();
 	void on_pushButtonRemoveLevel_clicked();
 
+	void on_pushButtonAssignRooms_clicked();
+
 private:
 	Ui::SVFloorManagerWidget	*m_ui;
 

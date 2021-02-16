@@ -123,6 +123,7 @@ SOURCES += \
 				../../src/actions/SVUndoDeleteSelected.cpp \
 	../../src/actions/SVUndoModifyBuilding.cpp \
 	../../src/actions/SVUndoModifyBuildingLevel.cpp \
+	../../src/actions/SVUndoModifyBuildingTopology.cpp \
 		../../src/actions/SVUndoModifyComponentInstances.cpp \
 	../../src/actions/SVUndoModifyProject.cpp \
 	../../src/actions/SVUndoModifySiteData.cpp \
@@ -232,6 +233,7 @@ HEADERS  += \
 				../../src/actions/SVUndoDeleteSelected.h \
 	../../src/actions/SVUndoModifyBuilding.h \
 	../../src/actions/SVUndoModifyBuildingLevel.h \
+	../../src/actions/SVUndoModifyBuildingTopology.h \
 		../../src/actions/SVUndoModifyComponentInstances.h \
 	../../src/actions/SVUndoModifyProject.h \
 	../../src/actions/SVUndoModifySiteData.h \
