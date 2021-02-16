@@ -6,7 +6,7 @@
 #include "SVUndoCommandBase.h"
 
 /*! An undo action for deleting selected geometric shapes (things that are shown in the scene).
-	Currently, these are surfaces, anonymouse planes, edges, network nodes.
+	Currently, these are surfaces, anonymous planes, edges, network nodes.
 
 	This UNDO action is a little tricky, since we identify removed surfaces by their unique ID.
 	Hence, when we call undo(), we must ensure that the re-added objects will get the same IDs back.
