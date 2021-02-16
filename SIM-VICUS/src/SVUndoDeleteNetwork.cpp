@@ -3,11 +3,11 @@
 SVUndoDeleteNetwork::SVUndoDeleteNetwork(const QString & label, const VICUS::Network & deletedNetwork):
 m_deletedNetwork(deletedNetwork)
 {
-setText( label );
-m_gridWidth = std::max(m_deletedNetwork.m_extends.width(), m_deletedNetwork.m_extends.height());
-m_gridWidth = std::max(100., m_gridWidth);
-m_gridSpacing = 100; // 100 m major grid
-m_farDistance = 2*m_gridWidth;
+	setText( label );
+	m_gridWidth = std::max(m_deletedNetwork.m_extends.width(), m_deletedNetwork.m_extends.height());
+	m_gridWidth = std::max(100., m_gridWidth);
+	m_gridSpacing = 100; // 100 m major grid
+	m_farDistance = 2*m_gridWidth;
 }
 
 
