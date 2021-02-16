@@ -5,6 +5,7 @@
 
 #include "SVProjectHandler.h"
 #include "SVUndoModifyBuilding.h"
+#include "SVUndoModifyBuildingLevel.h"
 
 SVFloorManagerWidget::SVFloorManagerWidget(QWidget *parent) :
 	QWidget(parent),
@@ -58,6 +59,8 @@ void SVFloorManagerWidget::onModified(int modificationType, ModificationInfo * /
 	QTreeWidgetItem * selectedItem = nullptr;
 	for (const VICUS::Building & b : project().m_buildings) {
 		QTreeWidgetItem * item = new QTreeWidgetItem(QStringList() << QString("%1 [%2]").arg(b.m_displayName).arg(b.m_id));
+		if (selectedItem == nullptr)
+			selectedItem = item; // by default, always select the first one
 		item->setData(0, Qt::UserRole, b.uniqueID());
 		m_ui->treeWidget->addTopLevelItem(item);
 		if (selObjectUniqueId == b.uniqueID())
@@ -95,10 +98,6 @@ void SVFloorManagerWidget::on_treeWidget_itemSelectionChanged() {
 	m_ui->pushButtonRemoveLevel->setVisible(false);
 	m_ui->pushButtonRemoveBuilding->setVisible(false);
 
-	// hide property widgets
-	m_ui->groupBoxBuildingProperties->setVisible(false);
-	m_ui->groupBoxLevelProperties->setVisible(false);
-
 	if (sel.isEmpty())
 		return;
 
@@ -108,12 +107,18 @@ void SVFloorManagerWidget::on_treeWidget_itemSelectionChanged() {
 	m_currentBuilding = nullptr;
 	m_currentBuildingLevel = nullptr;
 
+	// default appearance - disabled building properties
+	m_ui->stackedWidget->setEnabled(false);
+	m_ui->stackedWidget->setCurrentIndex(0);
+	m_ui->lineEditBuildingName->setText("");
+
 	// and lookup object in project
 	const VICUS::Object * obj = project().objectById(selObjectUniqueId);
 	const VICUS::Building * b = dynamic_cast<const VICUS::Building *>(obj);
 	if (b != nullptr) {
 		m_currentBuilding = b;
-		m_ui->groupBoxBuildingProperties->setVisible(true);
+		m_ui->stackedWidget->setEnabled(true);
+		m_ui->stackedWidget->setCurrentIndex(0);
 		// update group box with properties
 		m_ui->lineEditBuildingName->setText(b->m_displayName);
 
@@ -141,7 +146,8 @@ void SVFloorManagerWidget::on_treeWidget_itemSelectionChanged() {
 	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel *>(obj);
 	if (bl != nullptr) {
 		m_currentBuildingLevel = bl;
-		m_ui->groupBoxLevelProperties->setVisible(true);
+		m_ui->stackedWidget->setEnabled(true);
+		m_ui->stackedWidget->setCurrentIndex(1);
 		// update group box with properties
 		m_ui->lineEditLevelName->setText(bl->m_displayName);
 		m_ui->lineEditLevel->setText(QString("%L1").arg(bl->m_elevation));
@@ -176,10 +182,31 @@ void SVFloorManagerWidget::on_lineEditBuildingName_editingFinished() {
 		if (&project().m_buildings[i] == m_currentBuilding) {
 			// compose undo action for modifying building data
 			VICUS::Building building = *m_currentBuilding;
+			building.m_buildingLevels.clear(); // no need to store these, since they are not modified
 			building.m_displayName = m_ui->lineEditBuildingName->text().trimmed();
-			SVUndoModifyBuilding * undo = new SVUndoModifyBuilding(tr("Renaming building"), building, i);
+			SVUndoModifyBuilding * undo = new SVUndoModifyBuilding(tr("Renamed building"), building, i, true);
 			undo->push();
 			return;
 		}
 	}
+}
+
+
+void SVFloorManagerWidget::on_lineEditLevelName_editingFinished() {
+	Q_ASSERT(m_currentBuildingLevel != nullptr);
+	// find index of building level in project
+	for (unsigned int j=0; j<project().m_buildings.size(); ++j) {
+		const VICUS::Building & b = project().m_buildings[j];
+		for (unsigned int i=0; i<b.m_buildingLevels.size(); ++i) {
+			if (&b.m_buildingLevels[i] == m_currentBuildingLevel) {
+				// compose undo action for modifying building data
+				VICUS::BuildingLevel bl = *m_currentBuildingLevel;
+				bl.m_rooms.clear(); // no need to store these, since they are not modified
+				bl.m_displayName = m_ui->lineEditLevelName->text().trimmed();
+				SVUndoModifyBuildingLevel * undo = new SVUndoModifyBuildingLevel(tr("Renamed building level"), bl, j, i, true);
+				undo->push();
+				return;
+			}
+		} // loop leves
+	} // loop buildings
 }

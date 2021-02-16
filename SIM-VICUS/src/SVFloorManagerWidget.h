@@ -33,6 +33,8 @@ private slots:
 
 	void on_lineEditBuildingName_editingFinished();
 
+	void on_lineEditLevelName_editingFinished();
+
 private:
 	Ui::SVFloorManagerWidget	*m_ui;
 
