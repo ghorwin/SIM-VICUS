@@ -10,6 +10,7 @@
 #include "SVUndoAddBuilding.h"
 #include "SVUndoAddBuildingLevel.h"
 #include "SVUndoDeleteBuilding.h"
+#include "SVUndoDeleteBuildingLevel.h"
 #include "SVUndoModifyBuilding.h"
 #include "SVUndoModifyBuildingLevel.h"
 
@@ -326,4 +327,34 @@ void SVFloorManagerWidget::on_pushButtonRemoveBuilding_clicked() {
 			return;
 		}
 	}
+}
+
+
+void SVFloorManagerWidget::on_pushButtonRemoveLevel_clicked() {
+	Q_ASSERT(m_currentBuildingLevel != nullptr);
+	// warn user if building level has rooms
+	if (!m_currentBuildingLevel->m_rooms.empty()) {
+		int res = QMessageBox::question(this, QString(), tr("The selected building level still contains rooms, which will also be removed including all surfaces they contain. Continue?"),
+							  QMessageBox::Yes | QMessageBox::No);
+		if (res != QMessageBox::Yes)
+			return;
+	}
+	// compose undo action
+
+	// get parent building object (Note: do not use m_currentBuilding here!)
+	const VICUS::Building * building = dynamic_cast<const VICUS::Building *>(m_currentBuildingLevel->m_parent);
+
+	// find index in project's building vector
+	for (unsigned int i=0; i<project().m_buildings.size(); ++i) {
+		if (&project().m_buildings[i] == building) {
+			// now we have the index of the modified building, now also find the index of the deleted building level
+			for (unsigned int j=0; j<building->m_buildingLevels.size(); ++j) {
+				if (&building->m_buildingLevels[j] == m_currentBuildingLevel) {
+					SVUndoDeleteBuildingLevel * undo = new SVUndoDeleteBuildingLevel(tr("Removed building level"), i, j);
+					undo->push();
+					return;
+				}
+			} // loop levels
+		}
+	} // loop buildings
 }
