@@ -222,6 +222,8 @@ private slots:
 	void on_actionHelpKeyboardAndMouseControls_triggered();
 
 
+	void on_actionViewShowSurfaceNormals_toggled(bool visible);
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();

@@ -263,8 +263,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 	// update all GPU buffers (transfer cached data to GPU)
 	if (updateBuilding || updateSelection) {
 		m_opaqueGeometryObject.updateBuffers();
-		if (m_surfaceNormalsVisible)
-			m_surfaceNormalsObject.updateVertexBuffers();
+		m_surfaceNormalsObject.updateVertexBuffers();
 	}
 
 	if (updateNetwork || updateSelection)

@@ -144,6 +144,12 @@ void SceneView::dumpScreenshot(const QString & imgFilePath) {
 }
 
 
+void SceneView::setNormalVectorsVisible(bool visible) {
+	m_mainScene.m_surfaceNormalsVisible = visible;
+	renderLater();
+}
+
+
 void SceneView::onModified(int modificationType, ModificationInfo * data) {
 	// relay change notification to scene objects
 	m_mainScene.onModified(modificationType, data);

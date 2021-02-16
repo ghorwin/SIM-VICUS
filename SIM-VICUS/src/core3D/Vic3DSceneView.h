@@ -31,6 +31,11 @@ public:
 	/*! Renders current scene into a framebuffer and saves it to file. */
 	void dumpScreenshot(const QString & imgFilePath);
 
+	/*! This function can be used to toggle the visibility of the surface normal vectors.
+		Called from SVMainWindow::on_actionViewShowSurfaceNormals_toggled().
+	*/
+	void setNormalVectorsVisible(bool visible);
+
 public slots:
 
 	/*! Connected to SVProjectHandler::modified() */

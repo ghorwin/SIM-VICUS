@@ -92,6 +92,8 @@
      <string>&amp;View</string>
     </property>
     <addaction name="separator"/>
+    <addaction name="actionViewShowSurfaceNormals"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menu_Tools">
     <property name="title">
@@ -500,6 +502,14 @@
   <action name="actionBuildingFloorManager">
    <property name="text">
     <string>Floor manager...</string>
+   </property>
+  </action>
+  <action name="actionViewShowSurfaceNormals">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show surface normals</string>
    </property>
   </action>
  </widget>

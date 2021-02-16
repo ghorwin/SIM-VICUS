@@ -92,7 +92,7 @@ public:
 
 	bool m_smallCoordinateSystemObjectVisible = true;
 	/*! If true, the surface normals (lines) are shown for each visible surface. */
-	bool m_surfaceNormalsVisible = true;
+	bool m_surfaceNormalsVisible = false;
 
 private:
 	void generateBuildingGeometry();

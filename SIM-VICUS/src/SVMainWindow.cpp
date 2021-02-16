@@ -1556,3 +1556,7 @@ static bool copyRecursively(const QString &srcFilePath,
 }
 
 
+void SVMainWindow::on_actionViewShowSurfaceNormals_toggled(bool visible) {
+	// set corresponding flag in View
+	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->setNormalVectorsVisible(visible);
+}
