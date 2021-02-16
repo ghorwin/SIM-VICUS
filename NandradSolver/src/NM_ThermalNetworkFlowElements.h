@@ -230,6 +230,35 @@ private:
 };
 
 
+// **** Pump element with losses ***
+
+class TNPumpWithPerformanceLoss : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
+public:
+	TNPumpWithPerformanceLoss() { }
+
+	/*! C'tor, takes and caches parameters needed for function evaluation. */
+	TNPumpWithPerformanceLoss(const NANDRAD::HydraulicFluid & fluid,
+							  const NANDRAD::HydraulicNetworkComponent & comp,
+							  const double &pRef);
+
+	/*! D'tor, definition is in NM_HydraulicNetworkFlowElements.cpp. */
+	~TNPumpWithPerformanceLoss();
+
+	/*! Set fluid inlet and outlet nodal conditions. */
+	void setNodalConditions(double mdot, double hInlet, double hOutlet);
+
+private:
+	/*! Reference to pressure head */
+	const double *					m_pressureHeadRef = nullptr;
+
+	/*! Pump efficiency */
+	double							m_pumpEfficiency;
+
+	/*! Motor efficiency*/
+	double							m_motorEfficiency = 0.0;
+};
+
+
 // **** General adiabativ element ***
 
 class TNAdiabaticElement : public ThermalNetworkAbstractFlowElement { // NO KEYWORDS
@@ -242,6 +271,8 @@ public:
 
 	/*! D'tor, definition is in NM_HydraulicNetworkFlowElements.cpp. */
 	~TNAdiabaticElement();
+
+
 };
 
 

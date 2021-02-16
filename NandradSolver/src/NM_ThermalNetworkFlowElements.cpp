@@ -447,6 +447,40 @@ void TNDynamicAdiabaticPipeElement::dependencies(const double *ydot, const doubl
 
 
 
+// *** PumpWithPerformanceLoss ***
+
+TNPumpWithPerformanceLoss::TNPumpWithPerformanceLoss(
+							 const NANDRAD::HydraulicFluid & fluid,
+							const NANDRAD::HydraulicNetworkComponent & comp,
+							const double &pRef)
+{
+	// copy component properties
+	m_fluidVolume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
+	m_pumpEfficiency = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency].value;
+	m_motorEfficiency = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_MotorEfficiency].value;
+	// copy fluid properties
+	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
+	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+	// copy references to hydraulic simulation
+	m_pressureHeadRef = &pRef;
+}
+
+TNPumpWithPerformanceLoss::~TNPumpWithPerformanceLoss()
+{
+
+}
+
+void TNPumpWithPerformanceLoss::setNodalConditions(double mdot, double hInlet, double hOutlet)
+{
+	// copy pareameters
+	ThermalNetworkAbstractFlowElementWithHeatLoss::setNodalConditions(mdot, hInlet, hOutlet);
+	// calculate pump performance
+	double Pel = mdot * (*m_pressureHeadRef);
+	// calculate heat flux into fluid
+	m_heatLoss = - Pel * (1.0 - m_pumpEfficiency * m_motorEfficiency);
+}
+
+
 // *** AdiabaticElement ***
 
 TNAdiabaticElement::TNAdiabaticElement(const NANDRAD::HydraulicFluid & fluid,

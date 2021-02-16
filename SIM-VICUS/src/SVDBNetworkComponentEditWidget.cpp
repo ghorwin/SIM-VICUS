@@ -133,8 +133,10 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 
 	// NOTE: we assume that ModelType enums are the same in both objects!
 	NANDRAD::HydraulicNetworkComponent::ModelType nandradModelType = (NANDRAD::HydraulicNetworkComponent::ModelType)m_currentComponent->m_modelType;
+	NANDRAD::HydraulicNetworkComponent::HeatExchangeType heatExchangeType = (NANDRAD::HydraulicNetworkComponent::HeatExchangeType)
+			m_currentComponent->m_heatExchangeType;
 
-	std::vector<unsigned int> paraVec = NANDRAD::HydraulicNetworkComponent::requiredParameter(nandradModelType, 1);
+	std::vector<unsigned int> paraVec = NANDRAD::HydraulicNetworkComponent::requiredParameter(nandradModelType, heatExchangeType, 1);
 	m_ui->tableWidgetParameters->setRowCount(paraVec.size());
 
 	if (paraVec.empty())

@@ -124,7 +124,7 @@ public:
 
 
 	/*! Needed both in user interface and for valid parameter checking in solver. */
-	static std::vector<unsigned int> requiredParameter(const ModelType modelType, int networkModelType);
+	static std::vector<unsigned int> requiredParameter(const ModelType modelType, int heatExchangeType, int networkModelType);
 
 	static void checkModelParameter(const IBK::Parameter &para, const unsigned int numPara);
 

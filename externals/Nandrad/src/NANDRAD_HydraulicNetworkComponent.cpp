@@ -34,23 +34,26 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) const {
 	FUNCID(HydraulicNetworkComponent::checkParameters);
 
 	// get all necessary parameters of current model type
-	std::vector<unsigned int> para = requiredParameter(m_modelType, networkModelType);
+	std::vector<unsigned int> para = requiredParameter(m_modelType, m_heatExchangeType, networkModelType);
 
 	// check the parameters
 	for (unsigned int i: para){
 		checkModelParameter(m_para[i], i);
 	}
 
-	// check if heat exchange type is supported
-	std::vector<unsigned int> availableHXTypes = availableHeatExchangeTypes(m_modelType);
-	if (std::find(availableHXTypes.begin(), availableHXTypes.end(), m_heatExchangeType) == availableHXTypes.end())
-		throw IBK::Exception(IBK::FormatString("Heat exchange type %1 is not allowed for '%2'")
-						 .arg(KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType", m_heatExchangeType))
-						 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
+	if(networkModelType == HydraulicNetwork::MT_ThermalHydraulicNetwork) {
+		// check if heat exchange type is supported
+		std::vector<unsigned int> availableHXTypes = availableHeatExchangeTypes(m_modelType);
+		if (std::find(availableHXTypes.begin(), availableHXTypes.end(), m_heatExchangeType) == availableHXTypes.end())
+			throw IBK::Exception(IBK::FormatString("Heat exchange type %1 is not allowed for '%2'")
+							 .arg(KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType", m_heatExchangeType))
+							 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
+	}
 }
 
 
 std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const HydraulicNetworkComponent::ModelType modelType,
+																	   int heatExchangeType,
 																	   int networkModelType){
 	HydraulicNetwork::ModelType netModelType = (HydraulicNetwork::ModelType) networkModelType;
 
@@ -72,16 +75,38 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 	// Therm-Hydraulic network with heat exchange
 	else {
 		switch (modelType) {
-			case MT_ConstantPressurePump:
-				return {P_PressureHead, P_PumpEfficiency, P_MotorEfficiency, P_Volume};
+			case MT_ConstantPressurePump: {
+				switch(heatExchangeType) {
+					case HT_Adiabatic:
+						return {P_PressureHead, P_Volume};
+					default:
+						return {P_PressureHead, P_PumpEfficiency, P_MotorEfficiency, P_Volume};
+				}
+			}
 			case MT_HeatPump:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_COP, P_Volume};
 			case MT_HeatExchanger:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
-			case MT_DynamicPipe:
-				return {P_PipeMaxDiscretizationWidth, P_ExternalHeatTransferCoefficient};
-			case MT_StaticPipe:
-				return {P_ExternalHeatTransferCoefficient};
+			case MT_DynamicPipe: {
+				switch(heatExchangeType) {
+					case HT_Adiabatic:
+//					case HT_HeatFluxConstant:
+//					case HT_HeatFluxDataFile:
+						return {};
+					default:
+						return {P_PipeMaxDiscretizationWidth, P_ExternalHeatTransferCoefficient};
+				}
+			}
+			case MT_StaticPipe: {
+				switch(heatExchangeType) {
+					case HT_Adiabatic:
+//					case HT_HeatFluxConstant:
+//					case HT_HeatFluxDataFile:
+						return {};
+					default:
+						return {P_ExternalHeatTransferCoefficient};
+				}
+			}
 			default:
 				return {};
 		}
