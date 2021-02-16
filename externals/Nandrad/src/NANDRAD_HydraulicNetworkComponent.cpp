@@ -1,5 +1,7 @@
 #include "NANDRAD_HydraulicNetworkComponent.h"
 
+#include <algorithm>
+
 #include "NANDRAD_HydraulicNetwork.h"
 #include "NANDRAD_KeywordList.h"
 
