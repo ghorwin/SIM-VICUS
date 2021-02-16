@@ -1540,7 +1540,19 @@ W]
 \end_layout
 
 \begin_layout Standard
-Equation
+In the special case of an adiabatic element the equation reduces to
+\begin_inset Formula 
+\begin{align}
+\rho V\frac{\partial h_{i}}{\partial t} & =\dot{H}_{in,i}-\dot{H}_{out,i}\label{eq:energyBalanceSingleVolumeAdiabatic}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Equations
 \begin_inset space ~
 \end_inset
 
@@ -1554,7 +1566,17 @@ noprefix "false"
 
 \end_inset
 
- is the energy balance across the flow element, which typically involves
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:energyBalanceSingleVolumeAdiabatic"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ are the energy balances across the flow element, which typically involves
  the energy quantities/enthalpies transported with the mass flow across
  the inlet and outlet.
  Optionally, there may be other energy fluxes between the flow element and
@@ -1703,6 +1725,18 @@ W]
 \end_inset
 
  number of discretization elements
+\end_layout
+
+\begin_layout Standard
+The special case of an daiabatic element leads to the modified equation
+\begin_inset Formula 
+\begin{align}
+\rho V_{k}\frac{\partial h_{k}}{\partial t} & =\dot{m}_{i}\left(h_{k-1}-h_{k}\right)=\dot{m}_{i}c_{P}\left(T_{k-1}-T_{k}\right)\label{eq:energyBalanceDiscVolumeAdiabatic}
+\end{align}
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
