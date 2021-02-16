@@ -78,7 +78,7 @@ void SVLocalCoordinateView::setOrientation(const QVector3D &x, const QVector3D &
 	// positive x Richtung = Osten = Orientation 90°
 
 	double orientation = std::atan2(t.x(), ( t.y() == 0 ? 1E-8 : t.y() ) ) /IBK::DEG2RAD ;
-	m_ui->lineEditOrientation->setText( QString("%L1").arg( orientation < 0 ? ( orientation + 360 ) : orientation , 0, 'f', 2 ) );
+	m_ui->lineEditOrientation->setText( QString("%L1").arg( orientation < 0 ? ( orientation + 360 ) : orientation , 0, 'f', 3 ) );
 }
 
 void SVLocalCoordinateView::on_comboBoxAxis_currentIndexChanged(int index)

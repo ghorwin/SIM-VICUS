@@ -30,8 +30,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>474</width>
-        <height>571</height>
+        <width>468</width>
+        <height>545</height>
        </rect>
       </property>
       <attribute name="label">
@@ -155,8 +155,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>474</width>
-        <height>571</height>
+        <width>468</width>
+        <height>545</height>
        </rect>
       </property>
       <attribute name="label">
@@ -419,7 +419,7 @@
           </widget>
          </item>
          <item row="1" column="4">
-          <widget class="QLineEdit" name="lineEditCopyY"/>
+          <widget class="QtExt::ValidatingLineEdit" name="lineEditCopyY"/>
          </item>
          <item row="0" column="0" colspan="2">
           <widget class="QLabel" name="labelCount">
@@ -436,7 +436,7 @@
           </widget>
          </item>
          <item row="1" column="2">
-          <widget class="QLineEdit" name="lineEditCopyX"/>
+          <widget class="QtExt::ValidatingLineEdit" name="lineEditCopyX"/>
          </item>
          <item row="1" column="3">
           <widget class="QLabel" name="label_4">
@@ -453,10 +453,10 @@
           </widget>
          </item>
          <item row="1" column="6">
-          <widget class="QLineEdit" name="lineEditCopyZ"/>
+          <widget class="QtExt::ValidatingLineEdit" name="lineEditCopyZ"/>
          </item>
          <item row="0" column="2">
-          <widget class="QSpinBox" name="spinBox"/>
+          <widget class="QSpinBox" name="spinBoxCount"/>
          </item>
         </layout>
        </item>

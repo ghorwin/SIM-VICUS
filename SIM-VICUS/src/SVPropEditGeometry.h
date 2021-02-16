@@ -120,7 +120,7 @@ class QtExt_ValidatingLineEdit;r Point of the local
 	void rotate(const QVector3D & rotaVec, const ModificationState &state);
 
 	/*! Translates the selected surfaces with the specified
-		\param transVec - Translation Vector
+		\param copyVec - Translation Vector
 	*/
 	void copy(const QVector3D & transVec);
 
@@ -183,6 +183,12 @@ private slots:
 
 	void on_lineEditCopyZ_returnPressed();
 
+	void on_lineEditCopyX_editingFinished();
+
+	void on_lineEditCopyY_editingFinished();
+
+	void on_lineEditCopyZ_editingFinished();
+
 private:
 	/*! Updates the property widget regarding to all geometry data
 		Takes a vector of pointers to all selected surfaces
@@ -193,11 +199,6 @@ private:
 	ModificationState					m_modificationState[NUM_MT];
 
 	Vic3D::Transform3D					m_localCoordinatePosition;
-
-	// holding all the values
-	double								m_xValue[NUM_MT];
-	double								m_yValue[NUM_MT];
-	double								m_zValue[NUM_MT];
 
 	double								m_orientation = 0.0;
 	double								m_inclination = 0.0;
@@ -217,8 +218,13 @@ private:
 	double								m_yScaleValue = 0.0;
 	double								m_zScaleValue = 0.0;
 
+	// storing all the copiing values
+	double								m_xCopyValue = 0.0;
+	double								m_yCopyValue = 0.0;
+	double								m_zCopyValue = 0.0;
+
 	// storing the original measurements for scaling if wheel event is used
-	std::vector<VICUS::Surface>	m_relScaleSurfaces;
+	std::vector<VICUS::Surface>			m_relScaleSurfaces;
 
 	Ui::SVPropEditGeometry				*m_ui;
 };
