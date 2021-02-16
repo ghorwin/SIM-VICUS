@@ -111,6 +111,7 @@ SOURCES += \
 				../../src/SVSimulationOutputOptions.cpp \
 		../../src/SVSimulationRunRequestDialog.cpp \
 		../../src/SVSmartSelectDialog.cpp \
+	../../src/SVUndoDeleteBuilding.cpp \
 	../../src/SVUndoModifyNetwork.cpp \
 				../../src/actions/SVUndoAddBuilding.cpp \
 				../../src/actions/SVUndoAddBuildingLevel.cpp \
@@ -218,6 +219,7 @@ HEADERS  += \
 				../../src/SVSimulationOutputOptions.h \
 		../../src/SVSimulationRunRequestDialog.h \
 		../../src/SVSmartSelectDialog.h \
+	../../src/SVUndoDeleteBuilding.h \
 	../../src/SVUndoModifyNetwork.h \
 				../../src/actions/SVUndoAddBuilding.h \
 				../../src/actions/SVUndoAddBuildingLevel.h \

@@ -19,7 +19,10 @@ public:
 private:
 	VICUS::Building m_building;
 	unsigned int	m_buildingIndex;
-	/*! If true, the building levels vector member variable won't be modified (saves memory). */
+	/*! If true, the building levels vector member variable won't be modified (saves memory).
+		Also, the notification type BuildingTopologyChanged is used when levels are not modified, which
+		speeds up UI updates.
+	*/
 	bool			m_withoutLevels;
 };
 
