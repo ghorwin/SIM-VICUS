@@ -669,7 +669,7 @@ void SVSimulationStartNandrad::storeInput() {
 	p.m_simulationParameter = m_simParams;
 
 	// create an undo action for modification of the (entire) project
-	SVUndoProject * undo = new SVUndoProject(tr("Updated simulation parameters"), p);
+	SVUndoModifyProject * undo = new SVUndoModifyProject(tr("Updated simulation parameters"), p);
 	undo->push();
 }
 

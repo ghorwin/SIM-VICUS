@@ -1,14 +1,14 @@
-#ifndef SVUndoProjectH
-#define SVUndoProjectH
+#ifndef SVUndoModifyProjectH
+#define SVUndoModifyProjectH
 
 #include <VICUS_Project.h>
 
 #include "SVUndoCommandBase.h"
 
-class SVUndoProject : public SVUndoCommandBase {
-	Q_DECLARE_TR_FUNCTIONS(SVUndoProject)
+class SVUndoModifyProject : public SVUndoCommandBase {
+	Q_DECLARE_TR_FUNCTIONS(SVUndoModifyProject)
 public:
-	SVUndoProject(const QString & label,
+	SVUndoModifyProject(const QString & label,
 				   const VICUS::Project & newProject
 	);
 
@@ -22,4 +22,4 @@ private:
 
 };
 
-#endif // SVUndoProjectH
+#endif // SVUndoModifyProjectH

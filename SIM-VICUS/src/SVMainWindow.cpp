@@ -802,7 +802,7 @@ void SVMainWindow::on_actionEditCleanProject_triggered() {
 	cleanProject.clean();
 
 	// create undo action and push it
-	SVUndoProject * undo = new SVUndoProject( tr("Removed unused definitions"), cleanProject );
+	SVUndoModifyProject * undo = new SVUndoModifyProject( tr("Removed unused definitions"), cleanProject );
 	undo->push();
 
 }

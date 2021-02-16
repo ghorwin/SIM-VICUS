@@ -1,7 +1,7 @@
 #include "SVUndoModifyProject.h"
 #include "SVProjectHandler.h"
 
-SVUndoProject::SVUndoProject(	const QString & label,
+SVUndoModifyProject::SVUndoModifyProject(	const QString & label,
 								const VICUS::Project & newProject) :
 	m_project(newProject)
 {
@@ -9,7 +9,7 @@ SVUndoProject::SVUndoProject(	const QString & label,
 }
 
 
-void SVUndoProject::undo() {
+void SVUndoModifyProject::undo() {
 
 	// exchange Project
 	std::swap( theProject(), m_project );
@@ -19,6 +19,6 @@ void SVUndoProject::undo() {
 }
 
 
-void SVUndoProject::redo() {
+void SVUndoModifyProject::redo() {
 	undo();
 }
