@@ -79,18 +79,50 @@ class QtExt_ValidatingLineEdit;r Point of the local
 	*/
 	void setRotation(const IBKMK::Vector3D &normal);
 
+	/*! Sets all states of tool buttons and comboBox
+		\param ModificationType - specifies the type of which is toggled
+		\param ModificationState - specifies the modification state
+		\param updateComboxo - if true updates the combox box to the specifies type
+	*/
 	void setState(const ModificationType &type, const ModificationState &state,
 				  const bool &updateComboBox = false);
 
+	/*! Set up the tool button to the specified type */
 	void setToolButton(const ModificationType &type);
 
+	/*! Sets the items of the comboBox */
 	void setComboBox(const ModificationType &type, const ModificationState &state);
 
+	/*! Sets the currently selected surfaces in a vector with temporary copy of selected surfaces
+		Allows to use wheel event in relative mode
+	*/
 	void setRelativeScalingSurfaces();
 
+	/*! Shows all lineEdit/Label fiels that are necessary to sho absolute rotation */
 	void showDeg(const bool &show=true);
 
+	/*! Show the specified rotation/orientation of the selected surfaces */
 	void showRotation(const bool &abs=true);
+
+	/*! Translates the selected surfaces with the specified
+		\param transVec - Translation Vector
+	*/
+	void translate(const QVector3D & transVec, const ModificationState &state);
+
+	/*! Scales the selected surfaces with the specified
+		\param scaleVec - Translation Vector
+	*/
+	void scale(const QVector3D & scaleVec, const ModificationState &state, const bool &wheel = false);
+
+	/*! Translates the selected surfaces with the specified
+		\param rotaVec - Translation Vector
+	*/
+	void rotate(const QVector3D & rotaVec, const ModificationState &state);
+
+	/*! Translates the selected surfaces with the specified
+		\param transVec - Translation Vector
+	*/
+	void copy(const QVector3D & transVec);
 
 public slots:
 
@@ -107,32 +139,12 @@ private slots:
 	void on_pushButtonAddZoneBox_clicked();
 
 
-	void translate(const QVector3D & transVec, const ModificationState &state);
-
-	void scale(const QVector3D & scaleVec, const ModificationState &state, const bool &wheel = false);
-
-	void rotate(const QVector3D & rotaVec, const ModificationState &state);
-
-
-	void on_radioButtonScaleAbsolute_toggled(bool absScale);
-
-	void on_radioButtonRotateAbsolute_toggled(bool absRotate);
-
-	void on_radioButtonAbsolute_toggled(bool checked);
-
 
 	void on_lineEditX_editingFinished();
 
 	void on_lineEditY_editingFinished();
 
 	void on_lineEditZ_editingFinished();
-
-
-	void on_toolButtonTrans_toggled(bool checked);
-
-	void on_toolButtonRotate_toggled(bool checked);
-
-	void on_toolButtonScale_toggled(bool checked);
 
 
 	void on_comboBox_activated(int index);
@@ -147,23 +159,29 @@ private slots:
 	void on_lineEditZ_returnPressed();
 
 
-
-
 	void on_toolButtonTrans_clicked();
 
 	void on_toolButtonRotate_clicked();
 
 	void on_toolButtonScale_clicked();
 
+
 	void on_lineEditOrientation_returnPressed();
 
 	void on_lineEditInclination_returnPressed();
+
 
 	void on_lineEditOrientation_editingFinished();
 
 	void on_lineEditInclination_editingFinished();
 
-	void on_lineEditX_selectionChanged();
+
+
+	void on_lineEditCopyX_returnPressed();
+
+	void on_lineEditCopyY_returnPressed();
+
+	void on_lineEditCopyZ_returnPressed();
 
 private:
 	/*! Updates the property widget regarding to all geometry data
