@@ -2,7 +2,7 @@
 
 #include "SVSettings.h"
 
-SVUndoModifyExistingNetwork::SVUndoModifyExistingNetwork(const QString &label, unsigned int networkIndex, const VICUS::Network & modNetwork) :
+SVUndoModifyNetwork::SVUndoModifyNetwork(const QString &label, unsigned int networkIndex, const VICUS::Network & modNetwork) :
 	m_networkIndex(networkIndex),
 	m_network(modNetwork)
 {
@@ -10,7 +10,7 @@ SVUndoModifyExistingNetwork::SVUndoModifyExistingNetwork(const QString &label, u
 }
 
 
-void SVUndoModifyExistingNetwork::undo() {
+void SVUndoModifyNetwork::undo() {
 	IBK_ASSERT(m_networkIndex < project().m_geometricNetworks.size());
 	std::swap(theProject().m_geometricNetworks[m_networkIndex], m_network); // exchange network in project with network stored in this class
 	theProject().m_geometricNetworks[m_networkIndex].updateNodeEdgeConnectionPointers();
@@ -22,6 +22,6 @@ void SVUndoModifyExistingNetwork::undo() {
 }
 
 
-void SVUndoModifyExistingNetwork::redo() {
+void SVUndoModifyNetwork::redo() {
 	undo(); // same as undo
 }

@@ -459,7 +459,7 @@ void SVSimulationStartNetworkSim::modifyLineEdits()
 
 	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(),
 											  project().element(project().m_geometricNetworks, networkId));
-	SVUndoModifyExistingNetwork * undo = new SVUndoModifyExistingNetwork(tr("Network visualization properties updated"), networkIndex, network);
+	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network visualization properties updated"), networkIndex, network);
 	undo->push(); // modifies project and updates views
 }
 
