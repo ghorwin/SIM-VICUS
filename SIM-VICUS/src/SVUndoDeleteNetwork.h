@@ -1,28 +1,25 @@
-#ifndef SVUNDODELETENETWORK_H
-#define SVUNDODELETENETWORK_H
+#ifndef SVUndoDeleteNetworkH
+#define SVUndoDeleteNetworkH
 
 #include "SVUndoCommandBase.h"
+
+#include <VICUS_Network.h>
 
 class SVUndoDeleteNetwork: public SVUndoCommandBase {
 	Q_DECLARE_TR_FUNCTIONS(SVUndoDeleteNetwork)
 public:
-	SVUndoDeleteNetwork(const QString & label, const VICUS::Network & deletedNetwork);
+	SVUndoDeleteNetwork(const QString & label, unsigned int networkIndex);
 
 	virtual void undo();
 	virtual void redo();
 
 private:
 
-	/*! Cache for added network. */
+	/*! Cache for deleted network. */
 	VICUS::Network	m_deletedNetwork;
 
-	// TODO : Hauke, why are grid properties also modified when networks are removed?
-	//        These are site-properties....
-	//        Actually, this applies to
-
-	double			m_gridWidth;
-	double			m_gridSpacing;
-	double			m_farDistance;
+	/*! Index of network in project's network vector to be removed. */
+	unsigned int	m_networkIndex;
 };
 
-#endif // SVUNDODELETENETWORK_H
+#endif // SVUndoDeleteNetworkH
