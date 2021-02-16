@@ -1,9 +1,14 @@
 #include "SVFloorManagerWidget.h"
 #include "ui_SVFloorManagerWidget.h"
 
+#include <QInputDialog>
+#include <QMessageBox>
+
 #include <VICUS_Project.h>
 
 #include "SVProjectHandler.h"
+#include "SVUndoAddBuilding.h"
+#include "SVUndoAddBuildingLevel.h"
 #include "SVUndoModifyBuilding.h"
 #include "SVUndoModifyBuildingLevel.h"
 
@@ -55,10 +60,11 @@ void SVFloorManagerWidget::onModified(int modificationType, ModificationInfo * /
 	}
 
 	// now populate the tree widget
+	m_ui->treeWidget->blockSignals(true);
 	m_ui->treeWidget->clear();
 	QTreeWidgetItem * selectedItem = nullptr;
 	for (const VICUS::Building & b : project().m_buildings) {
-		QTreeWidgetItem * item = new QTreeWidgetItem(QStringList() << QString("%1 [%2]").arg(b.m_displayName).arg(b.m_id));
+		QTreeWidgetItem * item = new QTreeWidgetItem(QStringList() << b.m_displayName);
 		if (selectedItem == nullptr)
 			selectedItem = item; // by default, always select the first one
 		item->setData(0, Qt::UserRole, b.uniqueID());
@@ -67,7 +73,7 @@ void SVFloorManagerWidget::onModified(int modificationType, ModificationInfo * /
 			selectedItem = item;
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			QStringList columns;
-			columns << QString("%1 [%2]").arg(bl.m_displayName).arg(bl.m_id);
+			columns << bl.m_displayName;
 			columns << QString("%L1").arg(bl.m_elevation, 0, 'g', 2);
 			columns << QString("%L1").arg(bl.m_height, 0, 'g', 2);
 			QTreeWidgetItem * levelItem = new QTreeWidgetItem(columns);
@@ -79,17 +85,12 @@ void SVFloorManagerWidget::onModified(int modificationType, ModificationInfo * /
 	}
 	// reselect the previously selected item
 	if (selectedItem != nullptr) {
-		m_ui->treeWidget->blockSignals(true);
 		selectedItem->setSelected(true);
-		m_ui->treeWidget->blockSignals(false);
 	}
 	m_ui->treeWidget->expandAll();
+	m_ui->treeWidget->blockSignals(false);
 
 	on_treeWidget_itemSelectionChanged();
-
-	// need a resize?
-	if (m_ui->treeWidget->header()->sectionSizeHint(2) != m_ui->treeWidget->header()->sectionSize(2))
-		resizeEvent(nullptr);
 }
 
 
@@ -98,9 +99,9 @@ void SVFloorManagerWidget::on_treeWidget_itemSelectionChanged() {
 	QList<QTreeWidgetItem*> sel = m_ui->treeWidget->selectedItems();
 
 	// hide all buttons first
-	m_ui->pushButtonAddLevel->setVisible(false);
-	m_ui->pushButtonRemoveLevel->setVisible(false);
-	m_ui->pushButtonRemoveBuilding->setVisible(false);
+	m_ui->pushButtonAddLevel->setEnabled(false);
+	m_ui->pushButtonRemoveLevel->setEnabled(false);
+	m_ui->pushButtonRemoveBuilding->setEnabled(false);
 
 	if (sel.isEmpty())
 		return;
@@ -126,8 +127,8 @@ void SVFloorManagerWidget::on_treeWidget_itemSelectionChanged() {
 		// update group box with properties
 		m_ui->lineEditBuildingName->setText(b->m_displayName);
 
-		m_ui->pushButtonAddLevel->setVisible(true);
-		m_ui->pushButtonRemoveBuilding->setVisible(true);
+		m_ui->pushButtonAddLevel->setEnabled(true);
+		m_ui->pushButtonRemoveBuilding->setEnabled(true);
 
 		std::set<const VICUS::Object *> selObjs;
 		project().selectObjects(selObjs, VICUS::Project::SG_Building, true, true);
@@ -157,7 +158,7 @@ void SVFloorManagerWidget::on_treeWidget_itemSelectionChanged() {
 		m_ui->lineEditLevel->setText(QString("%L1").arg(bl->m_elevation));
 		m_ui->lineEditHeight->setText(QString("%L1").arg(bl->m_height));
 
-		m_ui->pushButtonRemoveLevel->setVisible(true);
+		m_ui->pushButtonRemoveLevel->setEnabled(true);
 
 		std::set<const VICUS::Object *> selObjs;
 		project().selectObjects(selObjs, VICUS::Project::SG_Building, true, true);
@@ -180,7 +181,10 @@ void SVFloorManagerWidget::on_treeWidget_itemSelectionChanged() {
 
 
 void SVFloorManagerWidget::on_lineEditBuildingName_editingFinished() {
-	Q_ASSERT(m_currentBuilding != nullptr);
+	// guard against focus-out events calling with function when switching stacked widget
+	if (m_currentBuilding == nullptr)
+		return;
+	m_ui->pushButtonAssignLevel->setFocus();
 	// find index of building in project
 	for (unsigned int i=0; i<project().m_buildings.size(); ++i) {
 		if (&project().m_buildings[i] == m_currentBuilding) {
@@ -197,7 +201,10 @@ void SVFloorManagerWidget::on_lineEditBuildingName_editingFinished() {
 
 
 void SVFloorManagerWidget::on_lineEditLevelName_editingFinished() {
-	Q_ASSERT(m_currentBuildingLevel != nullptr);
+	// guard against focus-out events calling with function when switching stacked widget
+	if (m_currentBuildingLevel == nullptr)
+		return;
+	m_ui->lineEditLevel->setFocus();
 	// find index of building level in project
 	for (unsigned int j=0; j<project().m_buildings.size(); ++j) {
 		const VICUS::Building & b = project().m_buildings[j];
@@ -226,4 +233,91 @@ void SVFloorManagerWidget::resizeEvent(QResizeEvent * event) {
 	width -= m_ui->treeWidget->header()->sectionSize(1);
 	width -= m_ui->treeWidget->header()->sectionSize(2);
 	m_ui->treeWidget->header()->resizeSection(0, width);
+}
+
+
+void SVFloorManagerWidget::showEvent(QShowEvent * event) {
+	QWidget::showEvent(event);
+	resizeEvent(nullptr);
+}
+
+
+void SVFloorManagerWidget::on_pushButtonAddBuilding_clicked() {
+	std::set<QString> existingNames;
+	for (const VICUS::Building & b : project().m_buildings)
+		existingNames.insert(b.m_displayName);
+	QString defaultName = VICUS::Project::uniqueName(tr("Building"), existingNames);
+	QString text = QInputDialog::getText(this, tr("Add building"), tr("New building name:"), QLineEdit::Normal, defaultName).trimmed();
+	if (text.isEmpty()) return;
+	// modify project
+	VICUS::Building b;
+	b.m_id = VICUS::Project::uniqueId(project().m_buildings);
+	b.m_displayName = text;
+	SVUndoAddBuilding * undo = new SVUndoAddBuilding(tr("Adding building '%1'").arg(b.m_displayName), b, true);
+	undo->push(); // this will update our tree widget
+	// now select the newly created building node
+
+	Q_ASSERT(m_ui->treeWidget->topLevelItemCount() > 0);
+	QTreeWidgetItem * lastTopLevelNode = m_ui->treeWidget->topLevelItem( m_ui->treeWidget->topLevelItemCount()-1);
+	m_ui->treeWidget->blockSignals(true);
+	m_ui->treeWidget->selectionModel()->clearSelection();
+	lastTopLevelNode->setSelected(true);
+	m_ui->treeWidget->blockSignals(false);
+	on_treeWidget_itemSelectionChanged();
+}
+
+
+
+void SVFloorManagerWidget::on_pushButtonAddLevel_clicked() {
+	// get currently selected building
+	Q_ASSERT(m_currentBuilding != nullptr);
+	unsigned int buildingUniqueID = m_currentBuilding->uniqueID();
+
+	std::set<QString> existingNames;
+	for (const VICUS::BuildingLevel & bl : m_currentBuilding->m_buildingLevels)
+		existingNames.insert(bl.m_displayName);
+	QString defaultName = VICUS::Project::uniqueName(tr("Level"), existingNames);
+	QString text = QInputDialog::getText(this, tr("Add building level"), tr("New building level/floor name:"), QLineEdit::Normal, defaultName).trimmed();
+	if (text.isEmpty()) return;
+
+	// modify project
+	VICUS::BuildingLevel bl;
+	bl.m_id = VICUS::Project::uniqueId(m_currentBuilding->m_buildingLevels);
+	bl.m_displayName = text;
+	SVUndoAddBuildingLevel * undo = new SVUndoAddBuildingLevel(tr("Adding building level '%1'").arg(bl.m_displayName), buildingUniqueID, bl, true);
+	undo->push(); // this will update our tree widget
+
+	// find newly added tree node
+
+	QTreeWidgetItem * blNode = nullptr;
+	for (int i=0; i<m_ui->treeWidget->topLevelItemCount(); ++i) {
+		QTreeWidgetItem * buildingNode = m_ui->treeWidget->topLevelItem(i);
+		if (buildingNode->data(0, Qt::UserRole).toUInt() == buildingUniqueID) {
+			blNode = buildingNode->child( buildingNode->childCount()-1);
+			break;
+		}
+	}
+	Q_ASSERT(blNode != nullptr);
+	m_ui->treeWidget->blockSignals(true);
+	m_ui->treeWidget->selectionModel()->clearSelection();
+	blNode->setSelected(true);
+	m_ui->treeWidget->blockSignals(false);
+	on_treeWidget_itemSelectionChanged();
+}
+
+
+void SVFloorManagerWidget::on_pushButtonRemoveBuilding_clicked() {
+	Q_ASSERT(m_currentBuilding != nullptr);
+	// warn user if building has building levels
+	if (!m_currentBuilding->m_buildingLevels.empty()) {
+		int res = QMessageBox::question(this, QString(), tr("The selected building still contains building levels, which will also be removed including all rooms they contain. Continue?"),
+							  QMessageBox::Yes | QMessageBox::No);
+		if (res != QMessageBox::Yes)
+			return;
+	}
+	// compose undo action
+
+	unsigned int buildingUniqueID = m_currentBuilding->uniqueID();
+
+
 }
