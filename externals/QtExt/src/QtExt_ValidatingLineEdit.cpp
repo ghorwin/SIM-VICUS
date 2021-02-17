@@ -59,10 +59,7 @@ bool ValidatingLineEdit::isValidNumber(double & val) const {
 	}
 	else {
 		// first try current locale
-		val = QtExt::Locale().toDouble(textTemp, &ok);
-		// but also allow fall-back on C-locale
-		if (!ok)
-			val = textTemp.toDouble(&ok);
+		val = QtExt::Locale().toDoubleWithFallback(textTemp, &ok);
 	}
 	return ok;
 }
@@ -70,7 +67,7 @@ bool ValidatingLineEdit::isValidNumber(double & val) const {
 
 void ValidatingLineEdit::setValue(double value) {
 	QString textTemp;
-	if (m_formatter.get() != NULL) {
+	if (m_formatter.get() != nullptr) {
 		textTemp = m_formatter->formatted(value);
 	}
 	else if(m_format != 'a' ) {
@@ -184,7 +181,7 @@ void ValidatingLineEdit::onTextChanged ( const QString& ) {
 		QPalette palEdit;
 		palEdit.setColor(QPalette::Base, Style::ErrorEditFieldBackground);
 		setPalette(palEdit);
-		if( m_validator.get() != NULL && !m_validator->toolTip().isEmpty()) {
+		if( m_validator.get() != nullptr && !m_validator->toolTip().isEmpty()) {
 			setToolTip(m_validator->toolTip());
 		}
 		else {

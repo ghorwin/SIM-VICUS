@@ -11,12 +11,19 @@ namespace QtExt {
 	// instead of QLocale().toDouble() simply use
 
 	bool ok;
+	// convert only using the current locale
 	double val = QtExt::Locale().toDouble(text, &ok);
+
+	// convert using current locale and fall-back to C-locale
+	double val2 = QtExt::Locale().toDoubleWithFallback(text, &ok);
 	\endcode
 */
 class Locale : public QLocale {
 public:
 	Locale();
+
+	/*! If conversion fails, 0 is returned. */
+	double toDoubleWithFallback(const QString & text, bool * ok);
 };
 
 } // namespace QtExt
