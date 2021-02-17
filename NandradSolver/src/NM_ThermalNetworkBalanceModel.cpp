@@ -274,8 +274,10 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 				// dependencyies to ydot
 				// all elements depend on mass flux
 				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + n], m_statesModel->m_p->m_fluidMassFluxes + i) );
-				// all elements depend on heat flux
-				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + n], m_statesModel->m_p->m_fluidHeatFluxRefs[i]) );
+
+				if(m_statesModel->m_p->m_fluidHeatFluxRefs[i] != nullptr)
+					// all elements depend on heat flux
+					resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + n], m_statesModel->m_p->m_fluidHeatFluxRefs[i]) );
 				// all elements depend on external conditions
 				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + n], &m_statesModel->m_heatExchangeValues[i]) );
 
@@ -289,8 +291,9 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + n], &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexOutlet]) );
 
 				// dependency to Qdot
-				resultInputValueReferences.push_back(std::make_pair(m_statesModel->m_p->m_fluidHeatFluxRefs[i],
-																	&m_statesModel->m_y[offset + n] ) );
+				if(m_statesModel->m_p->m_fluidHeatFluxRefs[i] != nullptr)
+					resultInputValueReferences.push_back(std::make_pair(m_statesModel->m_p->m_fluidHeatFluxRefs[i],
+																		&m_statesModel->m_y[offset + n] ) );
 			}
 		}
 		offset += fe->nInternalStates();

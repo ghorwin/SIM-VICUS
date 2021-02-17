@@ -2418,6 +2418,10 @@ void NandradModel::initSolverMatrix() {
 				const double * resultRef = dependencyIJ->first;
 				const double * inputRef = dependencyIJ->second;
 
+				// do not allow nullptr
+				IBK_ASSERT(resultRef != nullptr);
+				IBK_ASSERT(inputRef != nullptr);
+
 				// search for input value reference inside result vector
 				std::map<const double*, unsigned int>::const_iterator inputRefIt =
 					resultValueRefs.find(inputRef);
@@ -2461,6 +2465,10 @@ void NandradModel::initSolverMatrix() {
 				const double * resultRef = dependencyIJ->first;
 				const double * inputRef = dependencyIJ->second;
 
+				// do not allow nullptr
+				IBK_ASSERT(resultRef != nullptr);
+				IBK_ASSERT(inputRef != nullptr);
+
 				// search for input value reference inside result vector
 				std::map<const double*, unsigned int>::const_iterator inputRefIt =
 					resultValueRefs.find(inputRef);
@@ -2502,6 +2510,10 @@ void NandradModel::initSolverMatrix() {
 				// retrieve row and column storage adresses
 				const double * resultRef = dependencyIJ->first;
 				const double * inputRef = dependencyIJ->second;
+
+				// do not allow nullptr
+				IBK_ASSERT(resultRef != nullptr);
+				IBK_ASSERT(inputRef != nullptr);
 
 				// search for input value reference inside result vector
 				std::map<const double*, unsigned int>::const_iterator inputRefIt =
@@ -2545,6 +2557,9 @@ void NandradModel::initSolverMatrix() {
 				// retrieve row and column storage adresses
 				const double * resultRef = dependencyIJ->first;
 				const double * inputRef = dependencyIJ->second;
+				// do not allow nullptr
+				IBK_ASSERT(resultRef != nullptr);
+				IBK_ASSERT(inputRef != nullptr);
 
 				// search for input value reference inside result vector
 				std::map<const double*, unsigned int>::const_iterator inputRefIt =

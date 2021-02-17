@@ -193,15 +193,20 @@ void ThermalNetworkModelImpl::dependencies(std::vector<std::pair<const double *,
 		const double *tempInletRef = m_inletNodeTemperatureRefs[i];
 		// enthalpy and heat flux dependencies
 		const double *heatFluxRef = m_fluidHeatFluxRefs[i];
-		resultInputValueReferences.push_back(std::make_pair(heatFluxRef, massFluxRef) );
-		resultInputValueReferences.push_back(std::make_pair(heatFluxRef, specEnthalpRef) );
+
+		if(heatFluxRef != nullptr) {
+			resultInputValueReferences.push_back(std::make_pair(heatFluxRef, massFluxRef) );
+			resultInputValueReferences.push_back(std::make_pair(heatFluxRef, specEnthalpRef) );
+		}
 		// temperature dependencies
 		resultInputValueReferences.push_back(std::make_pair(tempInletRef, specEnthalpRef) );
 		// inverse direction
 		specEnthalpRef = &m_nodalSpecificEnthalpies[fe.m_nodeIndexOutlet];
 		const double *tempOutletRef = m_outletNodeTemperatureRefs[i];
-		// enthalpy dependencies
-		resultInputValueReferences.push_back(std::make_pair(heatFluxRef, specEnthalpRef) );
+		if(heatFluxRef != nullptr) {
+			// enthalpy dependencies
+			resultInputValueReferences.push_back(std::make_pair(heatFluxRef, specEnthalpRef) );
+		}
 		// temperature dependencies
 		resultInputValueReferences.push_back(std::make_pair(tempOutletRef, specEnthalpRef) );
 	}
@@ -216,15 +221,19 @@ void ThermalNetworkModelImpl::dependencies(std::vector<std::pair<const double *,
 		const double *tempInletRef = m_inletNodeTemperatureRefs[i];
 		// enthalpy and heat flux dependencies
 		const double *heatFluxRef = m_fluidHeatFluxRefs[i];
-		resultInputValueReferences.push_back(std::make_pair(heatFluxRef, massFluxRef) );
-		resultInputValueReferences.push_back(std::make_pair(heatFluxRef, specEnthalpRef) );
+		if(heatFluxRef != nullptr) {
+			resultInputValueReferences.push_back(std::make_pair(heatFluxRef, massFluxRef) );
+			resultInputValueReferences.push_back(std::make_pair(heatFluxRef, specEnthalpRef) );
+		}
 		// temperature dependencies
 		resultInputValueReferences.push_back(std::make_pair(tempInletRef, specEnthalpRef) );
 		// inverse direction
 		specEnthalpRef = &m_nodalSpecificEnthalpies[fe.m_nodeIndexOutlet];
 		const double *tempOutletRef = m_outletNodeTemperatureRefs[i];
 		// enthalpy dependencies
-		resultInputValueReferences.push_back(std::make_pair(heatFluxRef, specEnthalpRef) );
+		if(heatFluxRef != nullptr) {
+			resultInputValueReferences.push_back(std::make_pair(heatFluxRef, specEnthalpRef) );
+		}
 		// temperature dependencies
 		resultInputValueReferences.push_back(std::make_pair(tempOutletRef, specEnthalpRef) );
 
