@@ -79,24 +79,22 @@ class QtExt_ValidatingLineEdit;r Point of the local
 	*/
 	void setRotation(const IBKMK::Vector3D &normal);
 
-	/*! Sets all states of tool buttons and comboBox
-		\param ModificationType - specifies the type of which is toggled
-		\param ModificationState - specifies the modification state
-		\param updateComboxo - if true updates the combox box to the specifies type
+	/*! Sets all states of tool buttons and updates comboBox, also calls updateInputs().
+		\param type - specifies the type of which is toggled
+		\param state - specifies the modification state
 	*/
-	void setState(const ModificationType &type, const ModificationState &state,
-				  const bool &updateComboBox = false);
+	void setState(const ModificationType &type, const ModificationState &state);
 
-	/*! Set up the tool button to the specified type */
+	/*! Depending on currently selected modification type and state, the line edits and labels are updated accordingly. */
+	void updateInputs();
+
+	/*! Checks/unchecks the tool buttons depending on the specified type.
+		Has no side-effects.
+	*/
 	void setToolButton(const ModificationType &type);
 
 	/*! Sets the items of the comboBox */
 	void setComboBox(const ModificationType &type, const ModificationState &state);
-
-	/*! Sets the currently selected surfaces in a vector with temporary copy of selected surfaces
-		Allows to use wheel event in relative mode
-	*/
-	void setRelativeScalingSurfaces();
 
 	/*! Shows all lineEdit/Label fiels that are necessary to sho absolute rotation */
 	void showDeg(const bool &show=true);
@@ -197,36 +195,45 @@ private slots:
 	void on_lineEditZ_textChanged(const QString &);
 
 private:
-	/*! Updates the property widget regarding to all geometry data
-		Takes a vector of pointers to all selected surfaces
+	/*! Updates the property widget regarding to all geometry data.
+		This function is called whenever the selection has changed, and when surface geometry (of selected surfaces)
+		has changed.
+
+		This function switches also between AddGeometry and EditGeometry mode, when first selection is made or
+		everything is deselected.
 	*/
-	void update(const bool &updateScalingSurfaces);
+	void update();
 
 	/*! Increases/decreases value in line edit depending on scroll wheel. */
 	void onWheelTurned(double offset, QtExt::ValidatingLineEdit * lineEdit);
 
+	/*! Identifies which transformation operation is currently selected and is updated,
+		whenever an operation button is toggled.
+	*/
 	ModificationType					m_modificationType = MT_Translate;
+
+	/*! For each transformation operation we cache the current mode choice from the combo box.
+		The value is updated when user changes the combo-box, and when operation is changed,
+		the value is used to update the combo box's current index.
+	*/
 	ModificationState					m_modificationState[NUM_MT];
 
+	/*! Contains position and rotation of local coordinate system object. */
 	Vic3D::Transform3D					m_localCoordinatePosition;
 
 	double								m_orientation = 0.0;
 	double								m_inclination = 0.0;
 
-	// storing all the translation values
-	double								m_xTransValue = 0.0;
-	double								m_yTransValue = 0.0;
-	double								m_zTransValue = 0.0;
+	/*! Cached initial values for translation line edits. */
+	QVector3D							m_transValue;
 
 	// storing all the rotation values
 	double								m_xRotaValue = 0.0;
 	double								m_yRotaValue = 0.0;
 	double								m_zRotaValue = 0.0;
 
-	// storing all the scaling values
-	double								m_xScaleValue = 0.0;
-	double								m_yScaleValue = 0.0;
-	double								m_zScaleValue = 0.0;
+	/*! This is the dimension of the bounding box (dx, dy, dz). */
+	IBKMK::Vector3D						m_scaleValue;
 
 	// storing all the copiing values
 	double								m_xCopyValue = 0.0;
