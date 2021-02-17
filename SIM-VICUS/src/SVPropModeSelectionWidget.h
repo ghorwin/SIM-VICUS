@@ -30,6 +30,11 @@ public:
 	explicit SVPropModeSelectionWidget(QWidget *parent = nullptr);
 	~SVPropModeSelectionWidget();
 
+	/*! Checks the "Building" button and selects the requested building property type programmatically, but without
+		firing any signals.
+	*/
+	void setBuildingPropertyType(BuildingPropertyTypes pt);
+
 	/*! Returns the currently selected choice in the building property selection combo. */
 	BuildingPropertyTypes currentBuildingPropertyType() const;
 

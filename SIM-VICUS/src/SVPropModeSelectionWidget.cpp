@@ -37,6 +37,25 @@ SVPropModeSelectionWidget::~SVPropModeSelectionWidget() {
 }
 
 
+void SVPropModeSelectionWidget::setBuildingPropertyType(BuildingPropertyTypes pt) {
+	m_ui->pushButtonSite->blockSignals(true);
+	m_ui->pushButtonNetwork->blockSignals(true);
+	m_ui->pushButtonBuilding->blockSignals(true);
+
+	m_ui->pushButtonSite->setChecked(false);
+	m_ui->pushButtonNetwork->setChecked(false);
+	m_ui->pushButtonBuilding->setChecked(true);
+
+	m_ui->pushButtonSite->blockSignals(false);
+	m_ui->pushButtonNetwork->blockSignals(false);
+	m_ui->pushButtonBuilding->blockSignals(false);
+
+	m_ui->comboBoxBuildingProperties->blockSignals(true);
+	m_ui->comboBoxBuildingProperties->setCurrentIndex( m_ui->comboBoxBuildingProperties->findData(pt) );
+	m_ui->comboBoxBuildingProperties->blockSignals(false);
+}
+
+
 void SVPropModeSelectionWidget::onModified(int modificationType, ModificationInfo * ) {
 	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
 	switch (modType) {

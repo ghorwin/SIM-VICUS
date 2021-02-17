@@ -813,11 +813,18 @@ void SVMainWindow::on_actionEditCleanProject_triggered() {
 
 
 void SVMainWindow::on_actionBuildingFloorManager_triggered() {
-	if (m_floorManagerWidget == nullptr)
-		m_floorManagerWidget = new SVPropFloorManagerWidget(nullptr); // make it a top-level widget without parent
-	if (m_floorManagerWidget->isVisible())
-		m_floorManagerWidget->close();
-	m_floorManagerWidget->show();
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	// switch to property edit mode
+	vs.m_viewMode = SVViewState::VM_PropertyEditMode;
+	// turn off any special scene modes
+	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	vs.m_propertyWidgetMode = SVViewState::PM_BuildingProperties;
+	// adjust appearance of selector widget
+	SVViewStateHandler::instance().m_propModeSelectionWidget->setBuildingPropertyType(BT_FloorManager);
+	SVViewStateHandler::instance().setViewState(vs);
+
+	m_ui->actionViewToggleParametrizationMode->setChecked(true);
+	m_ui->actionViewToggleGeometryMode->setChecked(false);
 }
 
 
