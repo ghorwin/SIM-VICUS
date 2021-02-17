@@ -102,6 +102,7 @@ SOURCES += \
 	../../src/SVInternalLoadsPersonDetailedWidget.cpp \
 	../../src/SVInternalLoadsPersonManagerWidget.cpp \
 		../../src/SVPropBuildingEditWidget.cpp \
+	../../src/SVPropFloorManagerItemDelegate.cpp \
 	../../src/SVPropFloorManagerWidget.cpp \
 		../../src/SVPropModeSelectionWidget.cpp \
 				../../src/SVPropNetworkEditWidget.cpp \
@@ -214,6 +215,7 @@ HEADERS  += \
 	../../src/SVInternalLoadsPersonDetailedWidget.h \
 	../../src/SVInternalLoadsPersonManagerWidget.h \
 		../../src/SVPropBuildingEditWidget.h \
+	../../src/SVPropFloorManagerItemDelegate.h \
 	../../src/SVPropFloorManagerWidget.h \
 		../../src/SVPropModeSelectionWidget.h \
 				../../src/SVPropNetworkEditWidget.h \

@@ -19,6 +19,7 @@
 #include "SVUndoDeleteBuildingLevel.h"
 #include "SVUndoModifyBuilding.h"
 #include "SVUndoModifyBuildingLevel.h"
+#include "SVPropFloorManagerItemDelegate.h"
 
 SVPropFloorManagerWidget::SVPropFloorManagerWidget(QWidget *parent) :
 	QWidget(parent),
@@ -30,6 +31,7 @@ SVPropFloorManagerWidget::SVPropFloorManagerWidget(QWidget *parent) :
 	QStringList header;
 	header << tr("Building/Floor") << tr("Elevation [m]") << tr("Height [m]");
 	m_ui->treeWidget->setHeaderLabels(header);
+	m_ui->treeWidget->setItemDelegate(new SVPropFloorManagerItemDelegate);
 
 	m_ui->treeWidget->header()->setSectionResizeMode(0, QHeaderView::Stretch);
 	m_ui->treeWidget->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
@@ -160,6 +162,7 @@ void SVPropFloorManagerWidget::on_treeWidget_itemSelectionChanged() {
 		m_currentBuildingLevel = bl;
 
 		m_ui->pushButtonRemoveLevel->setEnabled(true);
+		m_ui->pushButtonAddLevel->setEnabled(true);
 
 		std::set<const VICUS::Object *> selObjs;
 		project().selectObjects(selObjs, VICUS::Project::SG_Building, true, true);
@@ -208,7 +211,12 @@ void SVPropFloorManagerWidget::on_pushButtonAddBuilding_clicked() {
 
 void SVPropFloorManagerWidget::on_pushButtonAddLevel_clicked() {
 	// get currently selected building
+	if (m_currentBuilding == nullptr) {
+		Q_ASSERT(m_currentBuildingLevel != nullptr);
+		m_currentBuilding = dynamic_cast<VICUS::Building*>(m_currentBuildingLevel->m_parent);
+	}
 	Q_ASSERT(m_currentBuilding != nullptr);
+
 	unsigned int buildingUniqueID = m_currentBuilding->uniqueID();
 
 	std::set<QString> existingNames;
@@ -312,7 +320,8 @@ void SVPropFloorManagerWidget::on_pushButtonAssignRooms_clicked() {
 void SVPropFloorManagerWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, int column) {
 	// different handling for top-level items and child items
 	if (item->parent() == nullptr) {
-		Q_ASSERT(column == 0);
+		if (column != 0)
+			return;
 		QString newName = item->text(0);
 		if (newName == m_currentBuilding->m_displayName)
 			return; // nothing changed
