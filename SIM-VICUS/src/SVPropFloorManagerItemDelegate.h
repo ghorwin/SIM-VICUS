@@ -11,7 +11,6 @@ public:
 
 	// QAbstractItemDelegate interface
 
-	void paint(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const override;
 	QWidget* createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 };
 

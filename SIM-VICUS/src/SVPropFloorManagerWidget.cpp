@@ -440,8 +440,9 @@ void SVPropFloorManagerWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, 
 		case 1 : {
 			bool ok;
 			double val = QtExt::Locale().toDoubleWithFallback(item->text(column), &ok);
-			if (!ok)
-				return; // ignore, delegate handles highlighting of invalid values
+			if (!ok) {
+				return;
+			}
 			// find index of building level in project
 			for (unsigned int j=0; j<project().m_buildings.size(); ++j) {
 				const VICUS::Building & b = project().m_buildings[j];
