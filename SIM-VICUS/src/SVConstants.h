@@ -54,7 +54,9 @@ enum BuildingPropertyTypes {
 	/*! Orientation of component (side A/B colors). */
 	BT_ComponentOrientation,
 	/*! Boundary conditions of component. */
-	BT_BoundaryConditions
+	BT_BoundaryConditions,
+	/*! Floor manager. */
+	BT_FloorManager
 };
 
 /*! \file SVConstants.h

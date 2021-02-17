@@ -8,6 +8,8 @@
 #include <QInputDialog>
 #include <QMessageBox>
 
+#include <QtExt_Locale.h>
+
 #include <VICUS_Project.h>
 
 #include "SVProjectHandler.h"
@@ -78,6 +80,7 @@ void SVFloorManagerWidget::onModified(int modificationType, ModificationInfo * /
 	QTreeWidgetItem * selectedItem = nullptr;
 	for (const VICUS::Building & b : project().m_buildings) {
 		QTreeWidgetItem * item = new QTreeWidgetItem(QStringList() << b.m_displayName);
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
 		if (selectedItem == nullptr)
 			selectedItem = item; // by default, always select the first one
 		item->setData(0, Qt::UserRole, b.uniqueID());
@@ -91,6 +94,7 @@ void SVFloorManagerWidget::onModified(int modificationType, ModificationInfo * /
 			columns << QString("%L1").arg(bl.m_height, 0, 'g', 2);
 			QTreeWidgetItem * levelItem = new QTreeWidgetItem(columns);
 			levelItem->setData(0, Qt::UserRole, bl.uniqueID());
+			levelItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
 			item->addChild(levelItem);
 			if (selObjectUniqueId == bl.uniqueID())
 				selectedItem = levelItem;
@@ -421,5 +425,99 @@ void SVFloorManagerWidget::on_pushButtonAssignRooms_clicked() {
 
 	// create a copy of the buildings vector
 
+
+}
+
+void SVFloorManagerWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, int column) {
+	// different handling for top-level items and child items
+	if (item->parent() == nullptr) {
+		Q_ASSERT(column == 0);
+		QString newName = item->text(0);
+		if (newName == m_currentBuilding->m_displayName)
+			return; // nothing changed
+		for (unsigned int i=0; i<project().m_buildings.size(); ++i) {
+			if (&project().m_buildings[i] == m_currentBuilding) {
+				// compose undo action for modifying building data
+				VICUS::Building building = *m_currentBuilding;
+				building.m_buildingLevels.clear(); // no need to store these, since they are not modified
+				building.m_displayName = newName;
+				SVUndoModifyBuilding * undo = new SVUndoModifyBuilding(tr("Renamed building"), building, i, true);
+				undo->push();
+				return;
+			}
+		}
+		return;
+	}
+	Q_ASSERT(m_currentBuildingLevel != nullptr);
+	switch (column) {
+		case 0 : {
+			QString newName = item->text(0);
+			if (newName == m_currentBuildingLevel->m_displayName)
+				return; // nothing changed
+			// find index of building level in project
+			for (unsigned int j=0; j<project().m_buildings.size(); ++j) {
+				const VICUS::Building & b = project().m_buildings[j];
+				for (unsigned int i=0; i<b.m_buildingLevels.size(); ++i) {
+					if (&b.m_buildingLevels[i] == m_currentBuildingLevel) {
+						// compose undo action for modifying building data
+						VICUS::BuildingLevel bl = *m_currentBuildingLevel;
+						bl.m_rooms.clear(); // no need to store these, since they are not modified
+						bl.m_displayName = newName;
+						SVUndoModifyBuildingLevel * undo = new SVUndoModifyBuildingLevel(tr("Renamed building level"), bl, j, i, true);
+						undo->push();
+						return;
+					}
+				} // loop levels
+			} // loop buildings
+		} break;
+
+		case 1 : {
+			bool ok;
+			double val = QtExt::Locale().toDoubleWithFallback(item->text(column), &ok);
+			if (!ok)
+				return; // ignore, delegate handles highlighting of invalid values
+			// find index of building level in project
+			for (unsigned int j=0; j<project().m_buildings.size(); ++j) {
+				const VICUS::Building & b = project().m_buildings[j];
+				for (unsigned int i=0; i<b.m_buildingLevels.size(); ++i) {
+					if (&b.m_buildingLevels[i] == m_currentBuildingLevel) {
+						if (IBK::near_equal(val, m_currentBuildingLevel->m_elevation, 1e-6))
+							return; // nothing changed
+						// compose undo action for modifying building data
+						VICUS::BuildingLevel bl = *m_currentBuildingLevel;
+						bl.m_rooms.clear(); // no need to store these, since they are not modified
+						bl.m_elevation = val;
+						SVUndoModifyBuildingLevel * undo = new SVUndoModifyBuildingLevel(tr("Modified floor elevation"), bl, j, i, true);
+						undo->push();
+						return;
+					}
+				} // loop levels
+			} // loop buildings
+		} break;
+
+		case 2 : {
+			bool ok;
+			double val = QtExt::Locale().toDoubleWithFallback(item->text(column), &ok);
+			if (!ok)
+				return; // ignore, delegate handles highlighting of invalid values
+			// find index of building level in project
+			for (unsigned int j=0; j<project().m_buildings.size(); ++j) {
+				const VICUS::Building & b = project().m_buildings[j];
+				for (unsigned int i=0; i<b.m_buildingLevels.size(); ++i) {
+					if (&b.m_buildingLevels[i] == m_currentBuildingLevel) {
+						if (IBK::near_equal(val, m_currentBuildingLevel->m_height, 1e-6))
+							return; // nothing changed
+						// compose undo action for modifying building data
+						VICUS::BuildingLevel bl = *m_currentBuildingLevel;
+						bl.m_rooms.clear(); // no need to store these, since they are not modified
+						bl.m_height = val;
+						SVUndoModifyBuildingLevel * undo = new SVUndoModifyBuildingLevel(tr("Modified floor height"), bl, j, i, true);
+						undo->push();
+						return;
+					}
+				} // loop levels
+			} // loop buildings
+		} break;
+	}
 
 }

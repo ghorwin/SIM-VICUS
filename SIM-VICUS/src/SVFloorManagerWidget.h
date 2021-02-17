@@ -13,6 +13,7 @@ namespace VICUS {
 }
 
 class ModificationInfo;
+class QTreeWidgetItem;
 
 /*! A widget to edit buildings/building levels and associate rooms with building levels. */
 class SVFloorManagerWidget : public QWidget {
@@ -40,6 +41,8 @@ private slots:
 	void on_pushButtonRemoveLevel_clicked();
 
 	void on_pushButtonAssignRooms_clicked();
+
+	void on_treeWidget_itemChanged(QTreeWidgetItem *item, int column);
 
 private:
 	Ui::SVFloorManagerWidget	*m_ui;
