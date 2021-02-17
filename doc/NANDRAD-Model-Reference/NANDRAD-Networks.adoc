@@ -280,7 +280,7 @@ _(*) - not yet used_
 [[HydraulicNetworkElement]]
 ## Strömungselemente
 
-.Definition einer Komponente
+.Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)
 ====
 [source,xml]
 ----
