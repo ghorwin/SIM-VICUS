@@ -101,6 +101,7 @@ SOURCES += \
 		../../src/SVDialogSelectNetworkPipes.cpp \
 	../../src/SVFloorManagerWidget.cpp \
 	../../src/SVInternalLoadsPersonDetailedWidget.cpp \
+	../../src/SVInternalLoadsPersonManagerWidget.cpp \
 		../../src/SVPropBuildingEditWidget.cpp \
 		../../src/SVPropModeSelectionWidget.cpp \
 				../../src/SVPropNetworkEditWidget.cpp \
@@ -212,6 +213,7 @@ HEADERS  += \
 		../../src/SVDialogSelectNetworkPipes.h \
 	../../src/SVFloorManagerWidget.h \
 	../../src/SVInternalLoadsPersonDetailedWidget.h \
+	../../src/SVInternalLoadsPersonManagerWidget.h \
 		../../src/SVPropBuildingEditWidget.h \
 		../../src/SVPropModeSelectionWidget.h \
 				../../src/SVPropNetworkEditWidget.h \
@@ -318,6 +320,7 @@ FORMS    += \
 				../../src/SVFloorManagerWidget.ui \
 				../../src/SVImportIDFDialog.ui \
 				../../src/SVInternalLoadsPersonDetailedWidget.ui \
+				../../src/SVInternalLoadsPersonManagerWidget.ui \
 				../../src/SVLogFileDialog.ui \
 				../../src/SVLocalCoordinateView.ui \
 				../../src/SVMainWindow.ui \
