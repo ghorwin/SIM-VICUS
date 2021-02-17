@@ -395,7 +395,9 @@ void SceneView::keyReleaseEvent(QKeyEvent *event) {
 				case SVViewState::OM_AlignLocalCoordinateSystem :
 					m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
 				break;
-
+				case SVViewState::OM_MoveLocalCoordinateSystem :
+					m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
+				break;
 				default:
 					// default mode - Escape clears selection
 					m_mainScene.deselectAll();
@@ -414,6 +416,9 @@ void SceneView::keyReleaseEvent(QKeyEvent *event) {
 
 				// *** align coordinate system ***
 				case SVViewState::OM_AlignLocalCoordinateSystem : {
+					m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
+				} break;
+				case SVViewState::OM_MoveLocalCoordinateSystem : {
 					m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
 				} break;
 
@@ -443,6 +448,14 @@ void SceneView::keyReleaseEvent(QKeyEvent *event) {
 		case Qt::Key_F4 : {
 			SVViewState vs = SVViewStateHandler::instance().viewState();
 			if (vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem)
+				m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
+			else
+				m_mainScene.enterCoordinateSystemAdjustmentMode();
+		} break;
+		// *** F - toggle "align coordinate system" mode ****
+		case Qt::Key_F5 : {
+			SVViewState vs = SVViewStateHandler::instance().viewState();
+			if (vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem)
 				m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
 			else
 				m_mainScene.enterCoordinateSystemAdjustmentMode();
@@ -524,7 +537,8 @@ void SceneView::checkInput() {
 	// special handling for moving coordinate system (only during place vertex mode, since this will
 	// cause the scene to update at monitor refresh rate)
 	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
-		SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem)
+		SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
+		SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem )
 	{
 		m_inputEventReceived = true;
 		renderLater();

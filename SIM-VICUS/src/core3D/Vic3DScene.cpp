@@ -785,7 +785,8 @@ void Vic3DScene::render() {
 
 	if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
 		vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry ||
-		vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem)
+		vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
+		vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem )
 	{
 		m_coordinateSystemShader->bind();
 
@@ -1826,6 +1827,16 @@ void Vic3DScene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandl
 			// switch back to previous view state
 			SVViewStateHandler::instance().restoreLastViewState();
 			qDebug() << "Leaving 'Align coordinate system' mode";
+			return;
+		}
+		// *** move coordinate system ***
+		case SVViewState::OM_MoveLocalCoordinateSystem : {
+			// finish moving coordinate system and keep selected rotation in coordinate system
+			// but restore origin of local coordinate system object
+//			m_coordinateSystemObject.setTranslation(m_oldCoordinateSystemTransform.translation());
+			// switch back to previous view state
+			SVViewStateHandler::instance().restoreLastViewState();
+			qDebug() << "Leaving 'Move coordinate system' mode";
 			return;
 		}
 	}

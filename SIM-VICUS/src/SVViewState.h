@@ -64,6 +64,11 @@ public:
 			Typically, when this operation is complete, the view state switches back to the previous view state.
 		*/
 		OM_AlignLocalCoordinateSystem,
+		/*! In this mode, the local coordinate system is shown, and the user can move the coordinate
+			system by clicking on any surface.
+			Typically, when this operation is complete, the view state switches back to the previous view state.
+		*/
+		OM_MoveLocalCoordinateSystem,
 		/*! The scene is in passive mode - user can navigate and click on object to change selection. */
 		NUM_OM
 	};

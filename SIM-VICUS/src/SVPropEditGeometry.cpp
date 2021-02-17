@@ -4,6 +4,8 @@
 #include <IBK_physics.h>
 
 #include <VICUS_Project.h>
+#include <VICUS_Object.h>
+
 #include <QtExt_Conversions.h>
 
 #include "SVViewStateHandler.h"
@@ -87,20 +89,6 @@ SVPropEditGeometry::~SVPropEditGeometry() {
 
 void SVPropEditGeometry::setCurrentTab(const SVPropEditGeometry::TabState & state) {
 	m_ui->toolBoxGeometry->setCurrentIndex(state);
-	//	if (state != TS_EditGeometry) {
-	//		// clear edit page
-	//		m_ui->lineEditXValue->clear();
-	//		m_ui->lineEditYValue->clear();
-	//		m_ui->lineEditZValue->clear();
-	//		m_ui->lineEditXValue->setEnabled(false);
-	//		m_ui->lineEditYValue->setEnabled(false);
-	//		m_ui->lineEditZValue->setEnabled(false);
-	//	}
-	//	else {
-	//		m_ui->lineEditXValue->setEnabled(true);
-	//		m_ui->lineEditYValue->setEnabled(true);
-	//		m_ui->lineEditZValue->setEnabled(true);
-	//	}
 }
 
 
@@ -570,7 +558,50 @@ void SVPropEditGeometry::copy(const QVector3D &transVec)
 
 	IBKMK::Vector3D centerPoint;
 	std::vector<const VICUS::Surface*> surfaces;
+	std::set<const VICUS::Object*> objects;
 	project().selectedSurfaces(surfaces, VICUS::Project::SG_All);
+	project().selectObjects(objects, VICUS::Project::SG_All, true, true);
+
+	std::set<QString> existingRoomNames;
+
+	for (const VICUS::Object *o : objects) {
+		if (const VICUS::Room *room = dynamic_cast<const VICUS::Room*>(o))
+			existingRoomNames.insert(room->m_displayName);
+	}
+
+	for ( const VICUS::Object *o : objects ){
+		// check if also a room or building is selected
+		if( const VICUS::Room *room = dynamic_cast<const VICUS::Room*>(o) ) {
+			// room is also selected
+			int i=0;
+			std::set<unsigned int> surfs;
+
+			VICUS::Room newRoom;
+			newRoom = *room;
+			newRoom.m_id = VICUS::Project::uniqueId(project().m_plainGeometry);
+			newRoom.m_displayName = VICUS::Project::uniqueName(room->m_displayName, existingRoomNames);
+			o->collectChildIDs(surfs);
+
+			for (size_t i=0; i<surfs.size(); ++i) {
+				for ( unsigned int ID : surfs ) {
+					for ( const VICUS::Surface *s : surfaces ) {
+						if ( s->m_id == ID ) {
+							// copy surface
+							// set new ID
+							// new name
+
+
+							VICUS::Surface newS = *s;
+						}
+					}
+				}
+			}
+		}
+		if( const VICUS::Building *building = dynamic_cast<const VICUS::Building*>( o ) ) {
+			// building is also selected
+			int i=0;
+		}
+	}
 
 
 	for (const VICUS::Surface* s : surfaces ) {
@@ -620,7 +651,7 @@ void SVPropEditGeometry::update(const bool &updateScalingSurfaces) {
 			SVViewStateHandler::instance().m_propEditGeometryWidget->setRotation(s->m_geometry.normal() );
 		}
 		else {
-			m_ui->labelIndication->setText("z-Achse:");
+			m_ui->labelIndication->setText(tr("z-Axis:"));
 			SVViewStateHandler::instance().m_propEditGeometryWidget->setRotation(
 						QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis() ) );
 		}
@@ -676,7 +707,7 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event)
 
 				switch (m_modificationType) {
 					case MT_Translate:
-						m_xTransValue = m_xTransValue + sign*0.01;
+						m_xTransValue = std::floor( (m_xTransValue + sign*0.01+0.005)*100)/100;
 						m_ui->lineEditX->setText( QString("%L1").arg(m_xTransValue,0, 'f', 3) );
 						switch (state) {
 							case MS_Absolute:
@@ -696,7 +727,7 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event)
 						break;
 					case MT_Scale:
 
-						m_xScaleValue = m_xScaleValue + sign*0.1;
+						m_xScaleValue = std::floor( (m_xScaleValue + sign*0.1+0.05)*10)/10;
 						m_ui->lineEditX->setText( QString("%L1").arg(m_xScaleValue,0, 'f', 3) );
 						switch (state) {
 							case MS_Absolute:
@@ -714,7 +745,7 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event)
 						}
 						break;
 					case MT_Rotate:
-						m_xRotaValue = m_xRotaValue + sign*1;
+						m_xRotaValue = std::floor(m_xRotaValue + sign*1+0.5);
 						m_ui->lineEditX->setText( QString("%L1").arg(m_xRotaValue,0, 'f', 3) );
 						switch (state) {
 							case MS_Absolute:
@@ -737,12 +768,12 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event)
 		else if (target == m_ui->lineEditY){
 			if (m_ui->lineEditY->isValid()) {
 				int sign = -1;
-				if ( wheelEvent->delta()>0 )
+				if ( wheelEvent->angleDelta().ry()>0 )
 					sign = 1;
 
 				switch (m_modificationType) {
 					case MT_Translate:
-						m_yTransValue = m_yTransValue + sign*0.01;
+						m_yTransValue = std::floor( (m_yTransValue + sign*0.01+0.005)*100)/100;
 						m_ui->lineEditY->setText( QString("%L1").arg(m_yTransValue,0, 'f', 3) );
 						switch (state) {
 							case MS_Absolute:
@@ -760,7 +791,7 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event)
 						}
 						break;
 					case MT_Scale:
-						m_yScaleValue = m_yScaleValue + sign*0.1;
+						m_yScaleValue = std::floor( (m_yScaleValue + sign*0.1+0.05)*10)/10;
 						m_ui->lineEditY->setText( QString("%L1").arg(m_yScaleValue,0, 'f', 3) );
 						switch (state) {
 							case MS_Absolute:
@@ -778,7 +809,7 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event)
 						}
 						break;
 					case MT_Rotate:
-						m_yRotaValue = m_yRotaValue + sign*1;
+						m_yRotaValue = std::floor(m_yRotaValue + sign*1+0.5);
 						m_ui->lineEditY->setText( QString("%L1").arg(m_yRotaValue,0, 'f', 3) );
 						switch (state) {
 							case MS_Absolute:
@@ -806,7 +837,7 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event)
 
 				switch (m_modificationType) {
 					case MT_Translate:
-						m_zTransValue = m_zTransValue + sign*0.01;
+						m_zTransValue = std::floor( (m_zTransValue + sign*0.01+0.005)*100 )/100;
 						m_ui->lineEditZ->setText( QString("%L1").arg(m_zTransValue,0, 'f', 3) );
 						switch (state) {
 							case MS_Absolute:
@@ -824,7 +855,7 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event)
 						}
 						break;
 					case MT_Scale:
-						m_zScaleValue = m_zScaleValue + sign*0.1;
+						m_zScaleValue = std::floor( (m_zScaleValue + sign*0.1+0.05)*10 )/10;
 						m_ui->lineEditZ->setText( QString("%L1").arg(m_zScaleValue,0, 'f', 3) );
 						switch (state) {
 							case MS_Absolute:
@@ -842,7 +873,7 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event)
 						}
 						break;
 					case MT_Rotate:
-						m_zRotaValue = m_zRotaValue + sign*1;
+						m_zRotaValue = std::floor(m_zRotaValue + sign*1+0.5);
 						m_ui->lineEditZ->setText( QString("%L1").arg(m_zRotaValue,0, 'f', 3) );
 						switch (state) {
 							case MS_Absolute:
@@ -1207,7 +1238,7 @@ void SVPropEditGeometry::setComboBox(const ModificationType & type, const Modifi
 			break;
 		case MT_Rotate:
 			m_ui->comboBox->addItem( tr("rotate absolute:") );
-			m_ui->comboBox->addItem( tr("rotate relative using global coordinate system:") );
+			m_ui->comboBox->addItem( tr("rotate relative to center of each surface:") );
 			m_ui->comboBox->addItem( tr("rotate relative using local coordinate system:") );
 			break;
 		case MT_Scale:
