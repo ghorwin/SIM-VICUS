@@ -20,7 +20,7 @@ Information about location and climate data is stored in the `Location` section 
 	<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 	<IBK:Parameter name="Altitude" unit="m">100</IBK:Parameter>
 	<IBK:Flag name="PerezDiffuseRadiationModel">false</IBK:Flag>
-	<ClimateFileName>${Project Directory}/climate/GER_Potsdam_2017.c6b</ClimateFileName>
+	<ClimateFilePath>${Project Directory}/climate/GER_Potsdam_2017.c6b</ClimateFilePath>
 </Location>
 ----
 ====
@@ -44,20 +44,20 @@ Flags and options (see section <<IBK_Flag>> for a description of the `IBK:Flag` 
 | `PerezDiffuseRadiationModel` |  Defines whether to use the Perez-Model for diffuse solar radiation calculation | _false_ | _optional_
 |====================
 
-Lastly, the `<ClimateFileName>` tag defines the path to the climate data file.
+Lastly, the `<ClimateFilePath>` tag defines the path to the climate data file.
 
 [[loads_climate_files]]
 ### Climate Data Files
 
 Currently, `c6b`, `wac` and `epw` files are supported (see also help for the https://bauklimatik-dresden.de/ccmeditor/help[CCM-Editor] tool).
 
-You need to specify the path to the climate data file in the `<ClimateFileName>` tag. Hereby, you can specify an absolute or relative path.
+You need to specify the path to the climate data file in the `<ClimateFilePath>` tag. Hereby, you can specify an absolute or relative path.
 
 If a relative path is provided, it will be resolved using the current working directory as reference. For example, if you have specified 
 
 [source,xml]
 ----
-<ClimateFileName>GER_Potsdam_2017.c6b</ClimateFileName>
+<ClimateFilePath>GER_Potsdam_2017.c6b</ClimateFilePath>
 ----
 
 and the solver is run from the directory `/home/user/sim/Project1`, the climate data file will be searched in `/home/user/sim/Project1/GER_Potsdam_2017.c6b`. If the solver is run from a different directory, the referenced climate data file won't be found and an error message is raised.
@@ -66,7 +66,7 @@ To avoid this problem, you may specify directory placeholders to locate the clim
 
 [source,xml]
 ----
-<ClimateFileName>${Project Directory}/climate/GER_Potsdam_2017.c6b</ClimateFileName>
+<ClimateFilePath>${Project Directory}/climate/GER_Potsdam_2017.c6b</ClimateFilePath>
 ----
 
 It is possible to define custom placeholders in the project for all externally referenced files, see <<path_placeholders>>.
