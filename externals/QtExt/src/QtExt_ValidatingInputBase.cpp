@@ -82,7 +82,7 @@ void ValidatingInputBase::setFormat(char format, int precision) {
 
 
 bool ValidatingInputBase::isValidImpl(double val) const {
-	if (m_validator.get() != NULL) {
+	if (m_validator.get() != nullptr) {
 		if (!m_validator->isValid(val))
 			return false;
 	}
@@ -108,5 +108,9 @@ bool ValidatingInputBase::isValidImpl(double val) const {
 	m_value = val;
 	return true;
 }
+
+
+FormatterBase::~FormatterBase() {}
+
 
 } // namespace QtExt

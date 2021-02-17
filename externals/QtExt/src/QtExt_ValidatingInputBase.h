@@ -54,7 +54,7 @@ namespace QtExt {
 	class FormatterBase {
 	public:
 		/*! If derived classes hold members. */
-		virtual ~FormatterBase() {}
+		virtual ~FormatterBase();
 
 		/*! This function returns a string representing the value.
 			\param value Double value for formatting.
@@ -69,7 +69,7 @@ namespace QtExt {
 class ValidatingInputBase {
 public:
 	ValidatingInputBase();
-	~ValidatingInputBase();
+	virtual ~ValidatingInputBase();
 
 	/*! Set the range for validating and the tool tip string.
 		\param minVal Minimum Value.
