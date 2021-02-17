@@ -68,11 +68,6 @@ class QtExt_ValidatingLineEdit;r Point of the local
 	*/
 	void setCoordinates(const Vic3D::Transform3D &t);
 
-	/*! Sets the Bounding Box Measurements of the selected surfaces
-		if absolute mode is clicked in scale groupbox
-	*/
-	void setBoundingBox(const IBKMK::Vector3D &v);
-
 	/*! Sets the Rotation and Inclination of the selected surfaces
 		if more then one surface is selected it takes the z-value of the local coordinate system
 		as normal
@@ -102,10 +97,8 @@ class QtExt_ValidatingLineEdit;r Point of the local
 	/*! Show the specified rotation/orientation of the selected surfaces */
 	void showRotation(const bool &abs=true);
 
-	/*! Translates the selected surfaces with the specified
-		\param transVec - Translation Vector
-	*/
-	void translate(const QVector3D & transVec, const ModificationState &state);
+	/*! Applies current translation (from selected geometry object) into project. */
+	void translate();
 
 	/*! Scales the selected surfaces with the specified
 		\param scaleVec - Translation Vector
@@ -221,19 +214,26 @@ private:
 	/*! Contains position and rotation of local coordinate system object. */
 	Vic3D::Transform3D					m_localCoordinatePosition;
 
+	/*! This is the dimension of the bounding box (dx, dy, dz). */
+	IBKMK::Vector3D						m_boundingBoxDimension;
+
 	double								m_orientation = 0.0;
 	double								m_inclination = 0.0;
 
-	/*! Cached initial values for translation line edits. */
-	QVector3D							m_transValue;
+	/*! Cached initial values to be used when user had entered invalid values.
+		These values depend on current modification type and state.
+	*/
+	QVector3D							m_originalValues;
 
-	// storing all the rotation values
-	double								m_xRotaValue = 0.0;
-	double								m_yRotaValue = 0.0;
-	double								m_zRotaValue = 0.0;
 
-	/*! This is the dimension of the bounding box (dx, dy, dz). */
-	IBKMK::Vector3D						m_scaleValue;
+//	/*! Cached initial values for translation line edits. */
+//	QVector3D							m_transValue;
+
+//	// storing all the rotation values
+//	double								m_xRotaValue = 0.0;
+//	double								m_yRotaValue = 0.0;
+//	double								m_zRotaValue = 0.0;
+
 
 	// storing all the copiing values
 	double								m_xCopyValue = 0.0;
