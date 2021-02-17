@@ -503,119 +503,103 @@ void HydraulicNetworkModelImpl::setup() {
 
 	// 3.) no distinct networks
 	// -> each node must connect to any other
-	// -> transitive closure of connectivity must form a dense matrix
-	IBKMK::SparseMatrixPattern connectivity(m_network.m_nodes.size());
-#ifdef BIDIRECTIONAL
+
+	// create adjancency information between connected nodes
+	std::vector<std::vector<unsigned int> > nodeConnections(m_network.m_nodes.size());
 
 	for (unsigned int k=0; k<m_network.m_elements.size(); ++k) {
 		const Element &fe = m_network.m_elements[k];
 
 		unsigned int i = fe.m_nodeIndexInlet;
 		unsigned int j = fe.m_nodeIndexOutlet;
-		// set a pattern entry for connected nodes
-		if(!connectivity.test(i,j))
-			connectivity.set(i,j);
+		// node connection may not be registered already
+		IBK_ASSERT(nodeConnections[i].empty() ||
+		   std::find(nodeConnections[i].begin(), nodeConnections[i].end(), j) ==
+		   nodeConnections[i].end());
+		// set connect inlet and outlet node
+		nodeConnections[i].push_back(j);
 		// as well as for the transposed
-		if(!connectivity.test(j,i))
-			connectivity.set(j,i);
+		nodeConnections[j].push_back(i);
 	}
 
-	// calculate transitive closure
-	for(unsigned int k = 0; k < m_network.m_nodes.size(); ++k) {
-		// set a connection (i,j) for each entry (i,k), (k,j)
-		std::vector<unsigned int> rows;
-		std::vector<unsigned int> cols;
-		connectivity.indexesPerRow(k,cols);
-		connectivity.indexesPerRow(k,rows);
+	// use Cuthill McKee algorithm in order to check connectivity
+	// create path vector
+	std::vector<unsigned int>	path(m_nodeCount, (unsigned int)(-1));
+	std::vector<unsigned int>   nodeList(m_nodeCount, (unsigned int)(-1));
+	unsigned int subPathLen = 1; // remaining length of path is 1
+	// set path index (index of node
+	unsigned int subPathStartIdx = 0;
 
-		// set all entries (rows[iIdx], cols[jIdx])
-		for(unsigned int iIdx = 0; iIdx < rows.size(); ++iIdx) {
-			unsigned int i = rows[iIdx];
-			for(unsigned int jIdx = 0; jIdx < cols.size(); ++jIdx) {
-				unsigned int j = cols[jIdx];
-				// set entry
-				if(!connectivity.test(i,j))
-					connectivity.set(i,j);
-				// set symmetric entry
-				if(!connectivity.test(j,i))
-					connectivity.set(j,i);
-			}
-		}
-	}
+	// we start numbering using CMK algorithm
+	path[0] = 0;
 
-#else
-	IBKMK::SparseMatrixPattern connectivityTranspose(m_network.m_nodes.size());
+	// number all nodes, n is the new node number
+	for (unsigned int n = 0; n < m_nodeCount; ++n) {
 
-	for (unsigned int k=0; k<m_network.m_elements.size(); ++k) {
-		const Element &fe = m_network.m_elements[k];
-
-		unsigned int i = fe.m_nInlet;
-		unsigned int j = fe.m_nOutlet;
-		// set a pattern entry for connected nodes
-		if(!connectivity.test(i,j))
-			connectivity.set(i,j);
-		// as well as for the transposed
-		if(!connectivityTranspose.test(j,i))
-			connectivityTranspose.set(j,i);
-	}
-
-	// calculate transitive closure
-	for(unsigned int k = 0; k < m_network.m_nodes.size(); ++k) {
-		// set a connection (i,j) for each entry (i,k), (k,j)
-		std::vector<unsigned int> rows;
-		std::vector<unsigned int> cols;
-		connectivity.indexesPerRow(k,cols);
-		connectivityTranspose.indexesPerRow(k,rows);
-
-		// set all entries (rows[iIdx], cols[jIdx])
-		for(unsigned int iIdx = 0; iIdx < rows.size(); ++iIdx) {
-			unsigned int i = rows[iIdx];
-			for(unsigned int jIdx = 0; jIdx < cols.size(); ++jIdx) {
-				unsigned int j = cols[jIdx];
-				// set entry
-				if(!connectivity.test(i,j))
-					connectivity.set(i,j);
-				// set symmetric entry
-				if(!connectivityTranspose.test(j,i))
-					connectivityTranspose.set(j,i);
-			}
-		}
-	}
-
-#endif
-	// now assume, that we have a dense matrix pattern for a connected graph
-	for(unsigned int i = 0; i < m_network.m_nodes.size(); ++i) {
-		// count column entries for each row
-		std::vector<unsigned int> cols;
-		connectivity.indexesPerRow(i,cols);
-
-		// error: missing connections
-		if(cols.size() != m_network.m_nodes.size()) {
-			// isolated nodes are not allowed
-			IBK_ASSERT(!cols.empty());
-
+		// if path is empty and we still have nodes (k<n) registert, than
+		// the graph is not fully connected
+		if (subPathLen == 0) {
+			std::set<unsigned int> disjunctElements;
 			// find out disjunct network elements
-			std::vector<unsigned int> disjunctElements;
-			for(unsigned int j = 0; j < cols.size(); ++j) {
-				const Node &node = m_network.m_nodes[cols[j]];
-
-				for(unsigned int k =0; k < node.m_elementIndexes.size(); ++k)
-					disjunctElements.push_back(node.m_elementIndexes[k]);
+			for (unsigned int j = 0; j < m_nodeCount; ++j) {
+				disjunctElements.insert(j);
 			}
-
-			// create an error message string
+			for (unsigned int j = 0; j < m_nodeCount; ++j) {
+				if (nodeList[j] != (unsigned int)(-1)) {
+					disjunctElements.erase(nodeList[j]);
+				}
+			}
+			// create a string for all missing elements
 			IBK_ASSERT(!disjunctElements.empty());
-			std::string networkStr(IBK::val2string<unsigned int>(disjunctElements[0]));
+			std::string networkStr(IBK::val2string<unsigned int>(*disjunctElements.begin()));
 
-			for(unsigned int k = 1; k < disjunctElements.size(); ++k)
-				networkStr += std::string(",") + IBK::val2string<unsigned int>(disjunctElements[k]);
+			for(std::set<unsigned int>::const_iterator elemIt = disjunctElements.begin();
+				elemIt != disjunctElements.end(); ++elemIt)
+				networkStr += std::string(",") + IBK::val2string<unsigned int>(*elemIt);
 
 			throw IBK::Exception(IBK::FormatString(
 					"Network is not completely connected! Distinct network formed by flow elements (%1)!")
 					.arg(networkStr).str(),
 					FUNC_ID);
 		}
+
+		// get next node number from registered path
+		unsigned int nodeIdx = path[subPathStartIdx++]; // increase path index
+		--subPathLen; // decrease length of remaining path
+
+		// relabel node and store node mapping
+		nodeList[nodeIdx] = n;
+
+		// create convenience pointer to node numbers connected to this node
+		const std::vector<unsigned int> &nodeConnect = nodeConnections[nodeIdx];
+
+		// get degree of this node
+		unsigned int nNeighbors = nodeConnect.size();
+
+		// loop through all neighbors and connect to corresponding nodes
+		for (unsigned int j=0; j < nNeighbors; ++j) {
+			// get node number of neighboring node (nnn == old numbering)
+			unsigned int nextNodeIdx = nodeConnect[j];
+
+			// check if this node has already been renumbered
+			if (nodeList[nextNodeIdx] != (unsigned int)(-1) )
+				continue; // skip this node
+
+			// check if this node is already in the list
+			unsigned int k = subPathStartIdx;
+			for (; k < subPathStartIdx + subPathLen; ++k) {
+				if (path[k] == nextNodeIdx)
+					break;
+			}
+			if (k != subPathStartIdx + subPathLen)
+				continue;
+			// register node in path
+			path[k] = nextNodeIdx;
+			// correct sub path lenght from current node
+			++subPathLen;
+		}
 	}
+
 	// count number of nodes
 	unsigned int n = m_nodeCount + m_elementCount;
 
