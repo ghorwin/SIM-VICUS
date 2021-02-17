@@ -30,7 +30,6 @@ class SVNetworkEditDialog;
 class SVViewStateHandler;
 class SVSimulationStartNandrad;
 class SVSimulationStartNetworkSim;
-class SVPropFloorManagerWidget;
 
 class SVDBMaterialEditDialog;
 class SVDBWindowEditDialog;
@@ -328,8 +327,6 @@ private:
 
 	/*! IDF import dialog */
 	SVImportIDFDialog			*m_importIDFDialog										= nullptr;
-
-	SVPropFloorManagerWidget		*m_floorManagerWidget									= nullptr;
 
 	/*! Network import dialog */
 	SVNetworkImportDialog		*m_networkImportDialog									= nullptr;

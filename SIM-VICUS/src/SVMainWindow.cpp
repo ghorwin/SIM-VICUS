@@ -123,9 +123,6 @@ SVMainWindow::~SVMainWindow() {
 	delete m_postProcHandler;
 	delete m_viewStateHandler;
 
-	// explicitely delete all top-level widgets
-	delete m_floorManagerWidget;
-
 	m_self = nullptr;
 }
 
@@ -326,10 +323,6 @@ void SVMainWindow::changeEvent(QEvent *event) {
 
 void SVMainWindow::closeEvent(QCloseEvent * event) {
 	FUNCID(SVMainWindow::closeEvent);
-
-	// close any other top-level free windows
-	if (m_floorManagerWidget != nullptr)
-		m_floorManagerWidget->close();
 
 	// move input focus away from any input fields (to allow editingFinished() events to fire)
 	setFocus();
