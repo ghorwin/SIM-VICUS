@@ -31,10 +31,6 @@ public slots:
 
 private slots:
 	void on_treeWidget_itemSelectionChanged();
-	void on_lineEditBuildingName_editingFinished();
-	void on_lineEditLevelName_editingFinished();
-	void on_lineEditLevel_editingFinishedSuccessfully();
-	void on_lineEditHeight_editingFinishedSuccessfully();
 	void on_pushButtonAddBuilding_clicked();
 	void on_pushButtonAddLevel_clicked();
 	void on_pushButtonRemoveBuilding_clicked();

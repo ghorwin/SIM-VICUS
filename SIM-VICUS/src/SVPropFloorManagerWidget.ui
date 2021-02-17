@@ -7,20 +7,20 @@
     <x>0</x>
     <y>0</y>
     <width>910</width>
-    <height>551</height>
+    <height>743</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Floor manager</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Building structure</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0" colspan="5">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
        <widget class="QTreeWidget" name="treeWidget">
         <property name="alternatingRowColors">
          <bool>true</bool>
@@ -48,195 +48,120 @@
         </column>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QPushButton" name="pushButtonAddBuilding">
-        <property name="text">
-         <string>Add building</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../resources/SIM-VICUS.qrc">
-          <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
-        </property>
-       </widget>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QPushButton" name="pushButtonAddBuilding">
+          <property name="text">
+           <string>Add building</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources/SIM-VICUS.qrc">
+            <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButtonAddLevel">
+          <property name="text">
+           <string>Add level</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources/SIM-VICUS.qrc">
+            <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButtonRemoveBuilding">
+          <property name="text">
+           <string>Remove building</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources/SIM-VICUS.qrc">
+            <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
-      <item row="1" column="3">
-       <widget class="QPushButton" name="pushButtonRemoveLevel">
-        <property name="text">
-         <string>Remove level</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../resources/SIM-VICUS.qrc">
-          <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
-        </property>
-       </widget>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QPushButton" name="pushButtonAssignLevel">
+          <property name="text">
+           <string>Assign selected levels</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>51</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="pushButtonAddLevel">
-        <property name="text">
-         <string>Add level</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../resources/SIM-VICUS.qrc">
-          <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QPushButton" name="pushButtonRemoveBuilding">
-        <property name="text">
-         <string>Remove building</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../resources/SIM-VICUS.qrc">
-          <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="4">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>79</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="pushButtonRemoveLevel">
+          <property name="text">
+           <string>Remove level</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources/SIM-VICUS.qrc">
+            <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButtonAssignRooms">
+          <property name="text">
+           <string>Assign selected rooms</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
    </item>
-   <item>
-    <widget class="QStackedWidget" name="stackedWidget">
-     <property name="currentIndex">
-      <number>1</number>
-     </property>
-     <widget class="QWidget" name="page">
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QGroupBox" name="groupBoxBuildingProperties">
-         <property name="title">
-          <string>Building properties</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_4">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Name:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEditBuildingName"/>
-          </item>
-          <item row="1" column="1">
-           <spacer name="verticalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="2" column="0" colspan="2">
-           <widget class="QPushButton" name="pushButtonAssignLevel">
-            <property name="text">
-             <string>Assign selected levels</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="page_2">
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QGroupBox" name="groupBoxLevelProperties">
-         <property name="title">
-          <string>Building level/floor properties</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Name:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEditLevelName">
-            <property name="minimumSize">
-             <size>
-              <width>200</width>
-              <height>0</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>Level [m]:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QtExt::ValidatingLineEdit" name="lineEditLevel"/>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Height [m]:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QtExt::ValidatingLineEdit" name="lineEditHeight"/>
-          </item>
-          <item row="3" column="1">
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="4" column="0" colspan="2">
-           <widget class="QPushButton" name="pushButtonAssignRooms">
-            <property name="text">
-             <string>Assign selected rooms</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-   </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>QtExt::ValidatingLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header location="global">QtExt_ValidatingLineEdit.h</header>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="../resources/SIM-VICUS.qrc"/>
  </resources>

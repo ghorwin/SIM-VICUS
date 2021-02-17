@@ -1,5 +1,5 @@
 #include "SVPropFloorManagerWidget.h"
-#include "ui_SVFloorManagerWidget.h"
+#include "ui_SVPropFloorManagerWidget.h"
 
 #include <limits>
 
@@ -25,6 +25,8 @@ SVPropFloorManagerWidget::SVPropFloorManagerWidget(QWidget *parent) :
 	m_ui(new Ui::SVPropFloorManagerWidget)
 {
 	m_ui->setupUi(this);
+
+	m_ui->verticalLayout->setMargin(0);
 	QStringList header;
 	header << tr("Building/Floor") << tr("Elevation [m]") << tr("Height [m]");
 	m_ui->treeWidget->setHeaderLabels(header);
@@ -32,9 +34,6 @@ SVPropFloorManagerWidget::SVPropFloorManagerWidget(QWidget *parent) :
 	m_ui->treeWidget->header()->setSectionResizeMode(0, QHeaderView::Stretch);
 	m_ui->treeWidget->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
 	m_ui->treeWidget->header()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
-
-	m_ui->lineEditHeight->setup(0, std::numeric_limits<double>::max(), tr("A positive number is required."), false, false);
-	m_ui->lineEditLevel->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("A number is required."), false, false);
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropFloorManagerWidget::onModified);
@@ -129,20 +128,11 @@ void SVPropFloorManagerWidget::on_treeWidget_itemSelectionChanged() {
 	m_currentBuilding = nullptr;
 	m_currentBuildingLevel = nullptr;
 
-	// default appearance - disabled building properties
-	m_ui->stackedWidget->setEnabled(false);
-	m_ui->stackedWidget->setCurrentIndex(0);
-	m_ui->lineEditBuildingName->setText("");
-
 	// and lookup object in project
 	const VICUS::Object * obj = project().objectById(selObjectUniqueId);
 	const VICUS::Building * b = dynamic_cast<const VICUS::Building *>(obj);
 	if (b != nullptr) {
 		m_currentBuilding = b;
-		m_ui->stackedWidget->setEnabled(true);
-		m_ui->stackedWidget->setCurrentIndex(0);
-		// update group box with properties
-		m_ui->lineEditBuildingName->setText(b->m_displayName);
 
 		m_ui->pushButtonAddLevel->setEnabled(true);
 		m_ui->pushButtonRemoveBuilding->setEnabled(true);
@@ -168,12 +158,6 @@ void SVPropFloorManagerWidget::on_treeWidget_itemSelectionChanged() {
 	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel *>(obj);
 	if (bl != nullptr) {
 		m_currentBuildingLevel = bl;
-		m_ui->stackedWidget->setEnabled(true);
-		m_ui->stackedWidget->setCurrentIndex(1);
-		// update group box with properties
-		m_ui->lineEditLevelName->setText(bl->m_displayName);
-		m_ui->lineEditLevel->setText(QString("%L1").arg(bl->m_elevation));
-		m_ui->lineEditHeight->setText(QString("%L1").arg(bl->m_height));
 
 		m_ui->pushButtonRemoveLevel->setEnabled(true);
 
@@ -195,108 +179,6 @@ void SVPropFloorManagerWidget::on_treeWidget_itemSelectionChanged() {
 		return;
 	}
 }
-
-
-void SVPropFloorManagerWidget::on_lineEditBuildingName_editingFinished() {
-	// guard against focus-out events calling with function when switching stacked widget
-	if (m_currentBuilding == nullptr)
-		return;
-	// find index of building in project
-	for (unsigned int i=0; i<project().m_buildings.size(); ++i) {
-		if (&project().m_buildings[i] == m_currentBuilding) {
-			QString newName = m_ui->lineEditBuildingName->text().trimmed();
-			if (newName == m_currentBuilding->m_displayName)
-				return; // nothing changed
-			// compose undo action for modifying building data
-			VICUS::Building building = *m_currentBuilding;
-			building.m_buildingLevels.clear(); // no need to store these, since they are not modified
-			building.m_displayName = newName;
-			SVUndoModifyBuilding * undo = new SVUndoModifyBuilding(tr("Renamed building"), building, i, true);
-			undo->push();
-			return;
-		}
-	}
-}
-
-
-void SVPropFloorManagerWidget::on_lineEditLevelName_editingFinished() {
-	// guard against focus-out events calling with function when switching stacked widget
-	if (m_currentBuildingLevel == nullptr)
-		return;
-	m_ui->lineEditLevel->setFocus();
-	// find index of building level in project
-	for (unsigned int j=0; j<project().m_buildings.size(); ++j) {
-		const VICUS::Building & b = project().m_buildings[j];
-		for (unsigned int i=0; i<b.m_buildingLevels.size(); ++i) {
-			if (&b.m_buildingLevels[i] == m_currentBuildingLevel) {
-				QString newName = m_ui->lineEditLevelName->text().trimmed();
-				if (newName == m_currentBuildingLevel->m_displayName)
-					return; // nothing changed
-				// compose undo action for modifying building data
-				VICUS::BuildingLevel bl = *m_currentBuildingLevel;
-				bl.m_rooms.clear(); // no need to store these, since they are not modified
-				bl.m_displayName = newName;
-				SVUndoModifyBuildingLevel * undo = new SVUndoModifyBuildingLevel(tr("Renamed building level"), bl, j, i, true);
-				undo->push();
-				m_ui->lineEditLevel->setFocus();
-				return;
-			}
-		} // loop levels
-	} // loop buildings
-}
-
-
-void SVPropFloorManagerWidget::on_lineEditLevel_editingFinishedSuccessfully() {
-	// guard against focus-out events calling with function when switching stacked widget
-	if (m_currentBuildingLevel == nullptr)
-		return;
-	// find index of building level in project
-	for (unsigned int j=0; j<project().m_buildings.size(); ++j) {
-		const VICUS::Building & b = project().m_buildings[j];
-		for (unsigned int i=0; i<b.m_buildingLevels.size(); ++i) {
-			if (&b.m_buildingLevels[i] == m_currentBuildingLevel) {
-				double val = m_ui->lineEditLevel->value();
-				if (IBK::near_equal(val, m_currentBuildingLevel->m_elevation, 1e-6))
-					return; // nothing changed
-				// compose undo action for modifying building data
-				VICUS::BuildingLevel bl = *m_currentBuildingLevel;
-				bl.m_rooms.clear(); // no need to store these, since they are not modified
-				bl.m_elevation = val;
-				SVUndoModifyBuildingLevel * undo = new SVUndoModifyBuildingLevel(tr("Modified building level"), bl, j, i, true);
-				undo->push();
-				m_ui->lineEditHeight->setFocus();
-				return;
-			}
-		} // loop levels
-	} // loop buildings
-}
-
-
-
-void SVPropFloorManagerWidget::on_lineEditHeight_editingFinishedSuccessfully() {
-	// guard against focus-out events calling with function when switching stacked widget
-	if (m_currentBuildingLevel == nullptr)
-		return;
-	// find index of building level in project
-	for (unsigned int j=0; j<project().m_buildings.size(); ++j) {
-		const VICUS::Building & b = project().m_buildings[j];
-		for (unsigned int i=0; i<b.m_buildingLevels.size(); ++i) {
-			if (&b.m_buildingLevels[i] == m_currentBuildingLevel) {
-				double val = m_ui->lineEditHeight->value();
-				if (IBK::near_equal(val, m_currentBuildingLevel->m_height, 1e-6))
-					return; // nothing changed
-				// compose undo action for modifying building data
-				VICUS::BuildingLevel bl = *m_currentBuildingLevel;
-				bl.m_rooms.clear(); // no need to store these, since they are not modified
-				bl.m_height = val;
-				SVUndoModifyBuildingLevel * undo = new SVUndoModifyBuildingLevel(tr("Modified building level"), bl, j, i, true);
-				undo->push();
-				return;
-			}
-		} // loop levels
-	} // loop buildings
-}
-
 
 
 void SVPropFloorManagerWidget::on_pushButtonAddBuilding_clicked() {
@@ -322,7 +204,6 @@ void SVPropFloorManagerWidget::on_pushButtonAddBuilding_clicked() {
 	m_ui->treeWidget->blockSignals(false);
 	on_treeWidget_itemSelectionChanged();
 }
-
 
 
 void SVPropFloorManagerWidget::on_pushButtonAddLevel_clicked() {
