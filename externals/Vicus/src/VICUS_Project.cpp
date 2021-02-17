@@ -578,8 +578,11 @@ void Project::selectObjects(std::set<const Object*> &selectedObjs, SelectionGrou
 
 bool Project::selectedSurfaces(std::vector<const Surface*> &surfaces, const VICUS::Project::SelectionGroups &sg) const {
 	std::set<const Object*> objs;
-//	selectObjects(objs, SG_Building, true, true);
 	selectObjects(objs, sg, true, true);
+
+	// Note: sg = SG_Building will only select surfaces in the building hierarchy
+	//       sg = SG_All will also select anonymous surfaces
+	//       sg = SG_Network does nothing (network doesn't have any surfaces)
 
 	surfaces.clear();
 	for (const Object * o : objs) {

@@ -121,8 +121,8 @@ public:
 	*/
 	bool selectedSurfaces(std::vector<const Surface*> & surfaces, const VICUS::Project::SelectionGroups &sg) const;
 
-	/*! This function returns the Bounding Box of all selected surfaces
-		\returns Returns true, if any surface is selected
+	/*! This function computes the bounding box of all selected surfaces and the center point.
+		\returns Returns the dimensions of the bounding box and its center point in argument 'center'.
 	*/
 	static IBKMK::Vector3D boundingBox(std::vector<const Surface*> &surfaces, IBKMK::Vector3D &center);
 
