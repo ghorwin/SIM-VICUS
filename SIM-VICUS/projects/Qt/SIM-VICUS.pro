@@ -99,10 +99,10 @@ SOURCES += \
 		../../src/SVDBWindowEditDialog.cpp \
 				../../src/SVDatabase.cpp \
 		../../src/SVDialogSelectNetworkPipes.cpp \
-	../../src/SVFloorManagerWidget.cpp \
 	../../src/SVInternalLoadsPersonDetailedWidget.cpp \
 	../../src/SVInternalLoadsPersonManagerWidget.cpp \
 		../../src/SVPropBuildingEditWidget.cpp \
+	../../src/SVPropFloorManagerWidget.cpp \
 		../../src/SVPropModeSelectionWidget.cpp \
 				../../src/SVPropNetworkEditWidget.cpp \
 	../../src/SVScheduleEditWidget.cpp \
@@ -211,10 +211,10 @@ HEADERS  += \
 		../../src/SVDBWindowEditDialog.h \
 				../../src/SVDatabase.h \
 		../../src/SVDialogSelectNetworkPipes.h \
-	../../src/SVFloorManagerWidget.h \
 	../../src/SVInternalLoadsPersonDetailedWidget.h \
 	../../src/SVInternalLoadsPersonManagerWidget.h \
 		../../src/SVPropBuildingEditWidget.h \
+	../../src/SVPropFloorManagerWidget.h \
 		../../src/SVPropModeSelectionWidget.h \
 				../../src/SVPropNetworkEditWidget.h \
 	../../src/SVScheduleEditWidget.h \
@@ -317,7 +317,6 @@ FORMS    += \
 				../../src/SVDBWindowEditDialog.ui \
 				../../src/SVDBWindowEditWidget.ui \
 				../../src/SVDialogSelectNetworkPipes.ui \
-				../../src/SVFloorManagerWidget.ui \
 				../../src/SVImportIDFDialog.ui \
 				../../src/SVInternalLoadsPersonDetailedWidget.ui \
 				../../src/SVInternalLoadsPersonManagerWidget.ui \
@@ -331,6 +330,7 @@ FORMS    += \
 				../../src/SVPreferencesPageTools.ui \
 				../../src/SVPropBuildingEditWidget.ui \
 				../../src/SVPropEditGeometry.ui \
+				../../src/SVPropFloorManagerWidget.ui \
 				../../src/SVPropModeSelectionWidget.ui \
 				../../src/SVPropNetworkEditWidget.ui \
 				../../src/SVPropSiteWidget.ui \

@@ -4,7 +4,7 @@
 #include <QWidget>
 
 namespace Ui {
-class SVFloorManagerWidget;
+class SVPropFloorManagerWidget;
 }
 
 namespace VICUS {
@@ -16,12 +16,12 @@ class ModificationInfo;
 class QTreeWidgetItem;
 
 /*! A widget to edit buildings/building levels and associate rooms with building levels. */
-class SVFloorManagerWidget : public QWidget {
+class SVPropFloorManagerWidget : public QWidget {
 	Q_OBJECT
 
 public:
-	explicit SVFloorManagerWidget(QWidget *parent = nullptr);
-	~SVFloorManagerWidget();
+	explicit SVPropFloorManagerWidget(QWidget *parent = nullptr);
+	~SVPropFloorManagerWidget();
 
 
 public slots:
@@ -45,7 +45,7 @@ private slots:
 	void on_treeWidget_itemChanged(QTreeWidgetItem *item, int column);
 
 private:
-	Ui::SVFloorManagerWidget	*m_ui;
+	Ui::SVPropFloorManagerWidget	*m_ui;
 
 	/*! Pointer to currently selected building, updated in on_treeWidget_itemSelectionChanged(). */
 	const VICUS::Building		*m_currentBuilding;

@@ -55,7 +55,7 @@
 #include "SVPropModeSelectionWidget.h"
 #include "SVPropEditGeometry.h"
 #include "SVStyle.h"
-#include "SVFloorManagerWidget.h"
+#include "SVPropFloorManagerWidget.h"
 
 #include "SVDBMaterialEditDialog.h"
 #include "SVDBConstructionEditDialog.h"
@@ -814,7 +814,7 @@ void SVMainWindow::on_actionEditCleanProject_triggered() {
 
 void SVMainWindow::on_actionBuildingFloorManager_triggered() {
 	if (m_floorManagerWidget == nullptr)
-		m_floorManagerWidget = new SVFloorManagerWidget(nullptr); // make it a top-level widget without parent
+		m_floorManagerWidget = new SVPropFloorManagerWidget(nullptr); // make it a top-level widget without parent
 	if (m_floorManagerWidget->isVisible())
 		m_floorManagerWidget->close();
 	m_floorManagerWidget->show();

@@ -1,4 +1,4 @@
-#include "SVFloorManagerWidget.h"
+#include "SVPropFloorManagerWidget.h"
 #include "ui_SVFloorManagerWidget.h"
 
 #include <limits>
@@ -20,9 +20,9 @@
 #include "SVUndoModifyBuilding.h"
 #include "SVUndoModifyBuildingLevel.h"
 
-SVFloorManagerWidget::SVFloorManagerWidget(QWidget *parent) :
+SVPropFloorManagerWidget::SVPropFloorManagerWidget(QWidget *parent) :
 	QWidget(parent),
-	m_ui(new Ui::SVFloorManagerWidget)
+	m_ui(new Ui::SVPropFloorManagerWidget)
 {
 	m_ui->setupUi(this);
 	QStringList header;
@@ -37,19 +37,19 @@ SVFloorManagerWidget::SVFloorManagerWidget(QWidget *parent) :
 	m_ui->lineEditLevel->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("A number is required."), false, false);
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
-			this, &SVFloorManagerWidget::onModified);
+			this, &SVPropFloorManagerWidget::onModified);
 
 	onModified(SVProjectHandler::AllModified, nullptr); // update user interface to current project's state
 }
 
 
-SVFloorManagerWidget::~SVFloorManagerWidget() {
+SVPropFloorManagerWidget::~SVPropFloorManagerWidget() {
 	delete m_ui;
 }
 
 
 
-void SVFloorManagerWidget::onModified(int modificationType, ModificationInfo * /*data*/) {
+void SVPropFloorManagerWidget::onModified(int modificationType, ModificationInfo * /*data*/) {
 	switch ((SVProjectHandler::ModificationTypes)modificationType) {
 		case SVProjectHandler::SolverParametersModified:
 		case SVProjectHandler::ClimateLocationModified:
@@ -111,7 +111,7 @@ void SVFloorManagerWidget::onModified(int modificationType, ModificationInfo * /
 }
 
 
-void SVFloorManagerWidget::on_treeWidget_itemSelectionChanged() {
+void SVPropFloorManagerWidget::on_treeWidget_itemSelectionChanged() {
 	// show/hide buttons depending on selection
 	QList<QTreeWidgetItem*> sel = m_ui->treeWidget->selectedItems();
 
@@ -197,7 +197,7 @@ void SVFloorManagerWidget::on_treeWidget_itemSelectionChanged() {
 }
 
 
-void SVFloorManagerWidget::on_lineEditBuildingName_editingFinished() {
+void SVPropFloorManagerWidget::on_lineEditBuildingName_editingFinished() {
 	// guard against focus-out events calling with function when switching stacked widget
 	if (m_currentBuilding == nullptr)
 		return;
@@ -219,7 +219,7 @@ void SVFloorManagerWidget::on_lineEditBuildingName_editingFinished() {
 }
 
 
-void SVFloorManagerWidget::on_lineEditLevelName_editingFinished() {
+void SVPropFloorManagerWidget::on_lineEditLevelName_editingFinished() {
 	// guard against focus-out events calling with function when switching stacked widget
 	if (m_currentBuildingLevel == nullptr)
 		return;
@@ -246,7 +246,7 @@ void SVFloorManagerWidget::on_lineEditLevelName_editingFinished() {
 }
 
 
-void SVFloorManagerWidget::on_lineEditLevel_editingFinishedSuccessfully() {
+void SVPropFloorManagerWidget::on_lineEditLevel_editingFinishedSuccessfully() {
 	// guard against focus-out events calling with function when switching stacked widget
 	if (m_currentBuildingLevel == nullptr)
 		return;
@@ -273,7 +273,7 @@ void SVFloorManagerWidget::on_lineEditLevel_editingFinishedSuccessfully() {
 
 
 
-void SVFloorManagerWidget::on_lineEditHeight_editingFinishedSuccessfully() {
+void SVPropFloorManagerWidget::on_lineEditHeight_editingFinishedSuccessfully() {
 	// guard against focus-out events calling with function when switching stacked widget
 	if (m_currentBuildingLevel == nullptr)
 		return;
@@ -299,7 +299,7 @@ void SVFloorManagerWidget::on_lineEditHeight_editingFinishedSuccessfully() {
 
 
 
-void SVFloorManagerWidget::on_pushButtonAddBuilding_clicked() {
+void SVPropFloorManagerWidget::on_pushButtonAddBuilding_clicked() {
 	std::set<QString> existingNames;
 	for (const VICUS::Building & b : project().m_buildings)
 		existingNames.insert(b.m_displayName);
@@ -325,7 +325,7 @@ void SVFloorManagerWidget::on_pushButtonAddBuilding_clicked() {
 
 
 
-void SVFloorManagerWidget::on_pushButtonAddLevel_clicked() {
+void SVPropFloorManagerWidget::on_pushButtonAddLevel_clicked() {
 	// get currently selected building
 	Q_ASSERT(m_currentBuilding != nullptr);
 	unsigned int buildingUniqueID = m_currentBuilding->uniqueID();
@@ -363,7 +363,7 @@ void SVFloorManagerWidget::on_pushButtonAddLevel_clicked() {
 }
 
 
-void SVFloorManagerWidget::on_pushButtonRemoveBuilding_clicked() {
+void SVPropFloorManagerWidget::on_pushButtonRemoveBuilding_clicked() {
 	Q_ASSERT(m_currentBuilding != nullptr);
 	// warn user if building has building levels
 	if (!m_currentBuilding->m_buildingLevels.empty()) {
@@ -385,7 +385,7 @@ void SVFloorManagerWidget::on_pushButtonRemoveBuilding_clicked() {
 }
 
 
-void SVFloorManagerWidget::on_pushButtonRemoveLevel_clicked() {
+void SVPropFloorManagerWidget::on_pushButtonRemoveLevel_clicked() {
 	Q_ASSERT(m_currentBuildingLevel != nullptr);
 	// warn user if building level has rooms
 	if (!m_currentBuildingLevel->m_rooms.empty()) {
@@ -415,7 +415,7 @@ void SVFloorManagerWidget::on_pushButtonRemoveLevel_clicked() {
 }
 
 
-void SVFloorManagerWidget::on_pushButtonAssignRooms_clicked() {
+void SVPropFloorManagerWidget::on_pushButtonAssignRooms_clicked() {
 	// collect list of all selected rooms and move them to the currently selected building level
 	// this means we are modifying one or more buildings, but only the topology (since the surfaces are drawn just the same)
 
@@ -428,7 +428,7 @@ void SVFloorManagerWidget::on_pushButtonAssignRooms_clicked() {
 
 }
 
-void SVFloorManagerWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, int column) {
+void SVPropFloorManagerWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, int column) {
 	// different handling for top-level items and child items
 	if (item->parent() == nullptr) {
 		Q_ASSERT(column == 0);

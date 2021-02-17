@@ -36,6 +36,7 @@ public:
 		M_SiteProperties,
 		M_NetworkProperties,
 		M_BuildingProperties,
+		M_FloorManager,
 		NUM_M
 	};
 

@@ -15,6 +15,7 @@
 #include "SVPropNetworkEditWidget.h"
 #include "SVPropModeSelectionWidget.h"
 #include "SVPropBuildingEditWidget.h"
+#include "SVPropFloorManagerWidget.h"
 
 
 #include "Vic3DNewGeometryObject.h"
@@ -89,10 +90,15 @@ void SVPropertyWidget::onViewStateChanged() {
 		break;
 
 		case SVViewState::PM_BuildingProperties : {
-			showPropertyWidget<SVPropBuildingEditWidget>(M_BuildingProperties);
 			// select highlighting/edit mode -> this will send a signal to update the scene's geometry coloring
 			BuildingPropertyTypes buildingPropertyType = m_propModeSelectionWidget->currentBuildingPropertyType();
-			qobject_cast<SVPropBuildingEditWidget*>(m_propWidgets[M_BuildingProperties])->setPropertyType(buildingPropertyType);
+			if (buildingPropertyType == BT_FloorManager) {
+				showPropertyWidget<SVPropFloorManagerWidget>(M_FloorManager);
+			}
+			else {
+				showPropertyWidget<SVPropBuildingEditWidget>(M_BuildingProperties);
+				qobject_cast<SVPropBuildingEditWidget*>(m_propWidgets[M_BuildingProperties])->setPropertyType(buildingPropertyType);
+			}
 		} break;
 
 		case SVViewState::PM_NetworkProperties : {
