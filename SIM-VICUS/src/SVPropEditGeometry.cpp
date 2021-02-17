@@ -17,7 +17,9 @@
 
 #include "Vic3DNewGeometryObject.h"
 #include "Vic3DCoordinateSystemObject.h"
+#include "Vic3DWireFrameObject.h"
 #include "Vic3DTransform3D.h"
+#include "Vic3DSceneView.h"
 
 #include <QLocale>
 #include <QWheelEvent>
@@ -35,6 +37,17 @@ static double angleBetweenVectorsDeg ( const IBKMK::Vector3D &v1, const IBKMK::V
 	return std::acos( v1.scalarProduct(v2) / sqrt(v1.magnitude() * v2.magnitude() ) ) / IBK::DEG2RAD;
 }
 
+
+class LineEditFormater : public QtExt::FormatterBase {
+public:
+	QString formatted(double value) override {
+		return QString("%L1").arg(value, 0, 'f', 3);
+	}
+};
+
+
+// *** Widget implementation ***
+
 SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	QWidget(parent),
 	m_ui(new Ui::SVPropEditGeometry)
@@ -43,11 +56,6 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 
 	SVViewStateHandler::instance().m_propEditGeometryWidget = this;
 
-
-	//	m_ui->doubleSpinBoxRotateX->setSuffix(" °");
-	//	m_ui->doubleSpinBoxRotateY->setSuffix(" °");
-	//	m_ui->doubleSpinBoxRotateZ->setSuffix(" °");
-
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropEditGeometry::onModified);
 
@@ -55,18 +63,9 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui->lineEditY->setup(-1E5,1E5,tr("Y Value"),true, true);
 	m_ui->lineEditZ->setup(-1E5,1E5,tr("Z Value"),true, true);
 
-	// not needed anymore
-	//	connect(m_ui->lineEditX, SIGNAL(editingFinishedSuccessfully()), this, SLOT(on_lineEditX_editingFinished() ) );
-	//	connect(m_ui->lineEditY, SIGNAL(editingFinishedSuccessfully()), this, SLOT(on_lineEditY_editingFinished() ) );
-	//	connect(m_ui->lineEditZ, SIGNAL(editingFinishedSuccessfully()), this, SLOT(on_lineEditZ_editingFinished() ) );
-
-	m_ui->lineEditX->setText( QString("%L1").arg( 0.0, 0, 'f', 3) );
-	m_ui->lineEditY->setText( QString("%L1").arg( 0.0, 0, 'f', 3) );
-	m_ui->lineEditZ->setText( QString("%L1").arg( 0.0, 0, 'f', 3) );
-
-	m_ui->lineEditCopyX->setText( QString("%L1").arg( 0.0, 0, 'f', 3) );
-	m_ui->lineEditCopyY->setText( QString("%L1").arg( 0.0, 0, 'f', 3) );
-	m_ui->lineEditCopyZ->setText( QString("%L1").arg( 0.0, 0, 'f', 3) );
+	m_ui->lineEditX->setFormatter(new LineEditFormater);
+	m_ui->lineEditY->setFormatter(new LineEditFormater);
+	m_ui->lineEditZ->setFormatter(new LineEditFormater);
 
 	m_ui->lineEditX->installEventFilter(this);
 	m_ui->lineEditY->installEventFilter(this);
@@ -685,6 +684,16 @@ void SVPropEditGeometry::update(const bool &updateScalingSurfaces) {
 }
 
 
+void SVPropEditGeometry::onWheelTurned(double offset, QtExt::ValidatingLineEdit * lineEdit) {
+	if (!lineEdit->isValid())
+		return; // invalid input, do nothing
+	double val = lineEdit->value();
+	val += offset;
+	lineEdit->setValue(val); // this does not trigger any signals, so we need to send change info manually
+	onLineEditTextChanged(lineEdit);
+}
+
+
 void SVPropEditGeometry::on_comboBox_activated(int newIndex)
 {
 	// set new state
@@ -694,12 +703,21 @@ void SVPropEditGeometry::on_comboBox_activated(int newIndex)
 }
 
 
-bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event)
-{	const ModificationState &state = m_modificationState[m_modificationType];
+bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event) {
 
 	if ( event->type() == QEvent::Wheel ) {
-		QWheelEvent *wheelEvent = static_cast<QWheelEvent*>(event);
-		if (target == m_ui->lineEditX){
+		// we listen to scroll wheel turns only for some line edits
+		if (target == m_ui->lineEditX ||
+			target == m_ui->lineEditY ||
+			target == m_ui->lineEditZ)
+		{
+			QWheelEvent *wheelEvent = static_cast<QWheelEvent*>(event);
+			// offset are changed in 0.01 steps
+			double offset = (wheelEvent->delta()>0) ? 0.01 : -0.01;
+			onWheelTurned(offset, (QtExt::ValidatingLineEdit*)target); // we know that target points to a ValidatingLineEdit
+		}
+
+#if 0
 			if (m_ui->lineEditX->isValid()) {
 				int sign = -1;
 				if ( wheelEvent->delta()>0 )
@@ -893,7 +911,7 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event)
 				}
 			}
 		}
-
+#endif
 	}
 	return false;
 }
@@ -1417,4 +1435,43 @@ void SVPropEditGeometry::on_lineEditCopyZ_editingFinished()
 {
 	if ( m_ui->lineEditCopyZ->isValid() )
 		m_zCopyValue = m_ui->lineEditCopyZ->value();
+}
+
+
+void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineEdit) {
+	// take transformation value, and if valid, modify transform in wire frame object
+
+	if (!lineEdit->isValid())
+		return;
+
+	// compose translation vector depending on translation mode
+	switch (m_ui->comboBox->currentIndex()) {
+		// Move local coordinate system to given global coordinates.
+		case 0 : {
+			// for this operation, we need all three coordinates
+			QVector3D targetPos((float)m_ui->lineEditX->value(), (float)m_ui->lineEditY->value(), (float)m_ui->lineEditZ->value());
+			// compute offset from current local coordinate system position
+			QVector3D translation = targetPos - m_localCoordinatePosition.translation();
+			// now compose a transform object and set it in the wireframe object
+			Vic3D::Transform3D trans;
+			trans.setTranslation(translation);
+			SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = trans;
+			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+		}
+
+	}
+
+}
+
+
+void SVPropEditGeometry::on_lineEditX_textChanged(const QString &) {
+	onLineEditTextChanged(m_ui->lineEditX);
+}
+
+void SVPropEditGeometry::on_lineEditY_textChanged(const QString &) {
+	onLineEditTextChanged(m_ui->lineEditY);
+}
+
+void SVPropEditGeometry::on_lineEditZ_textChanged(const QString &) {
+	onLineEditTextChanged(m_ui->lineEditZ);
 }

@@ -189,11 +189,21 @@ private slots:
 
 	void on_lineEditCopyZ_editingFinished();
 
+	/*! Triggered when anything changes in one of the line edits X, Y or Z */
+	void onLineEditTextChanged(QtExt::ValidatingLineEdit * lineEdit);
+
+	void on_lineEditX_textChanged(const QString &);
+	void on_lineEditY_textChanged(const QString &);
+	void on_lineEditZ_textChanged(const QString &);
+
 private:
 	/*! Updates the property widget regarding to all geometry data
 		Takes a vector of pointers to all selected surfaces
 	*/
 	void update(const bool &updateScalingSurfaces);
+
+	/*! Increases/decreases value in line edit depending on scroll wheel. */
+	void onWheelTurned(double offset, QtExt::ValidatingLineEdit * lineEdit);
 
 	ModificationType					m_modificationType = MT_Translate;
 	ModificationState					m_modificationState[NUM_MT];
