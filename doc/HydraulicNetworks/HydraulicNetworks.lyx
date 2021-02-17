@@ -1299,18 +1299,17 @@ with
 \end_layout
 
 \begin_layout Itemize
-\begin_inset Formula $\dot{H}$
-\end_inset
-
- enthalpy flux in (
 \begin_inset Formula $\dot{H}_{in}$
 \end_inset
 
-) and out of the node (
+ enthalpy flux into node [W]
+\end_layout
+
+\begin_layout Itemize
 \begin_inset Formula $\dot{H}_{out}$
 \end_inset
 
-) [W]
+ enthalpy flux out of the node [W]
 \end_layout
 
 \begin_layout Standard
@@ -1358,7 +1357,7 @@ Schematics of an abstract flow element and sign definition of fluxes across
 
 \end_inset
 
-We first formulate all fluxes with positve direction into the node (
+We first formulate all fluxes with positive direction into the node (
 \begin_inset Formula $\dot{m}_{i}\geq0$
 \end_inset
 
@@ -1382,11 +1381,10 @@ with
 \end_layout
 
 \begin_layout Itemize
-specific enthalpy at node inlet (
 \begin_inset Formula $h_{in}$
 \end_inset
 
-) [J/kg]
+ specific enthalpy at node inlet [J/kg]
 \end_layout
 
 \begin_layout Itemize
@@ -1418,8 +1416,8 @@ With respect to numerical stability of the solution procedure, the temperature
 upwinding
 \emph default
 .
- Consequently, for all outflows fluid temperature and specific enthalpy
- are set equal to nodal values 
+ Consequently, for all outflows (from node into elements) the fluid temperature
+ and specific enthalpy are set equal to nodal values 
 \begin_inset Formula $h_{i}$
 \end_inset
 
@@ -1431,7 +1429,7 @@ upwinding
 \end_layout
 
 \begin_layout Standard
-Fluxes with negative direction are fromulated analogue:
+Fluxes with negative direction are formulated analogue:
 \begin_inset Formula 
 \begin{eqnarray*}
 \dot{H}_{in,i,j}|_{\dot{m}_{in,i,j}<0} & =\dot{m}_{in,i,j}h_{i} & =\dot{m}_{in,i,j}c_{p}T_{i}\\
@@ -1498,6 +1496,13 @@ with
 \end_layout
 
 \begin_layout Itemize
+\begin_inset Formula $\rho$
+\end_inset
+
+ fluid density
+\end_layout
+
+\begin_layout Itemize
 \begin_inset Formula $\dot{H}$
 \end_inset
 
@@ -1540,7 +1545,18 @@ W]
 \end_layout
 
 \begin_layout Standard
-In the special case of an adiabatic element the equation reduces to
+
+\series bold
+Note: 
+\series default
+Mass and energy storage capacity of the element itself (i.e.
+ pipe walls/body of heat exchangers/coils) is ignored.
+ This might be quite an error source and should be investigated!
+\end_layout
+
+\begin_layout Standard
+In the special case of an adiabatic element (adiabatic with respect to heat
+ exchange towards surroundings) the equation reduces to
 \begin_inset Formula 
 \begin{align}
 \rho V\frac{\partial h_{i}}{\partial t} & =\dot{H}_{in,i}-\dot{H}_{out,i}\label{eq:energyBalanceSingleVolumeAdiabatic}
@@ -1614,11 +1630,10 @@ with
 \end_layout
 
 \begin_layout Itemize
-specific enthalpy at elements inlet (
 \begin_inset Formula $h_{in}$
 \end_inset
 
-) [J/kg]
+ specific enthalpy at elements inlet [J/kg]
 \end_layout
 
 \begin_layout Itemize
@@ -1728,7 +1743,7 @@ W]
 \end_layout
 
 \begin_layout Standard
-The special case of an daiabatic element leads to the modified equation
+The special case of an adiabatic element leads to the modified equation
 \begin_inset Formula 
 \begin{align}
 \rho V_{k}\frac{\partial h_{k}}{\partial t} & =\dot{m}_{i}\left(h_{k-1}-h_{k}\right)=\dot{m}_{i}c_{P}\left(T_{k-1}-T_{k}\right)\label{eq:energyBalanceDiscVolumeAdiabatic}
@@ -1870,6 +1885,24 @@ CVODE Solver requests
 \end_inset
 
  function
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Questions: from given 
+\begin_inset Formula $\boldsymbol{y}$
+\end_inset
+
+ vector, how are nodal temperatures resolved, since upwinding needs known
+ mass fluxes, which are only available at later steps of the algorithm.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -2219,7 +2252,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename imgs/pipe friction factor.png
+	filename imgs/Rohrreibungszahl_equations.png
 	lyxscale 50
 	scale 60
 
@@ -2229,7 +2262,7 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Illustratration of friction factor vs.
+Illustration of friction factor vs.
  Reynolds number
 \end_layout
 
@@ -2260,7 +2293,7 @@ For
 
 \begin_inset CommandInset ref
 LatexCommand eqref
-reference "eq:Reynolds_turbulentSwamee"
+reference "eq:Reynolds_turbulentColebrook"
 plural "false"
 caps "false"
 noprefix "false"
