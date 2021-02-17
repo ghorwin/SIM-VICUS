@@ -42,7 +42,7 @@ public:
 		Note: keep the next line - this will cause the code generator to create serialization code
 			  for the inherited m_visible variable.
 	*/
-	//:inherited	bool								m_visible = true;			// XML:A
+	//:inherited	bool				m_visible = true;			// XML:A
 
 	/*! Vector of building levels. */
 	std::vector<BuildingLevel>			m_buildingLevels;			// XML:E
@@ -50,11 +50,11 @@ public:
 
 	// *** RUNTIME VARIABLE ***
 
-	/*! Hole building net floor area in m2.
-		Therefor we  need a update function and/or a
-		user input.
+	/*! Whole building net floor area in m2.
+		We need a update function and/or user input.
+		TODO : how is this used?
 	*/
-	double								m_netFloorArea;
+	double								m_netFloorArea = -1;
 };
 
 } // namespace VICUS

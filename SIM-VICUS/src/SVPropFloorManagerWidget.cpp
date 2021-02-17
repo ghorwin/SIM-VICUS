@@ -19,6 +19,7 @@
 #include "SVUndoDeleteBuildingLevel.h"
 #include "SVUndoModifyBuilding.h"
 #include "SVUndoModifyBuildingLevel.h"
+#include "SVUndoModifyBuildingTopology.h"
 #include "SVPropFloorManagerItemDelegate.h"
 
 SVPropFloorManagerWidget::SVPropFloorManagerWidget(QWidget *parent) :
@@ -120,6 +121,8 @@ void SVPropFloorManagerWidget::on_treeWidget_itemSelectionChanged() {
 	m_ui->pushButtonAddLevel->setEnabled(false);
 	m_ui->pushButtonRemoveLevel->setEnabled(false);
 	m_ui->pushButtonRemoveBuilding->setEnabled(false);
+	m_ui->pushButtonAssignLevel->setEnabled(false);
+	m_ui->pushButtonAssignRooms->setEnabled(false);
 
 	if (sel.isEmpty())
 		return;
@@ -145,7 +148,6 @@ void SVPropFloorManagerWidget::on_treeWidget_itemSelectionChanged() {
 		int selectedLevels = 0;
 		for (const VICUS::Object * o : selObjs)
 			if (dynamic_cast<const VICUS::BuildingLevel*>(o) != nullptr) {
-				++selectedLevels;
 				if (++selectedLevels > 1)
 					break;
 			}
@@ -170,7 +172,6 @@ void SVPropFloorManagerWidget::on_treeWidget_itemSelectionChanged() {
 		int selectedRooms = 0;
 		for (const VICUS::Object * o : selObjs)
 			if (dynamic_cast<const VICUS::Room*>(o) != nullptr) {
-				++selectedRooms;
 				if (++selectedRooms > 1)
 					break;
 			}
@@ -312,10 +313,85 @@ void SVPropFloorManagerWidget::on_pushButtonAssignRooms_clicked() {
 	std::set<const VICUS::Object*> objs;
 	project().selectObjects(objs, VICUS::Project::SG_Building, true, true);
 
-	// create a copy of the buildings vector
+	// filter out all rooms
+	std::vector<const VICUS::Room*> rooms;
+	for (const VICUS::Object * o : objs) {
+		const VICUS::Room* r = dynamic_cast<const VICUS::Room*>(o);
+		if (r != nullptr)
+			rooms.push_back(r);
+	}
 
+	// create a copy of the buildings vector and build levels, but skip over all selected rooms
+	std::vector<VICUS::Building> buildingsCopy;
+	for (const VICUS::Building & b : project().m_buildings) {
+		VICUS::Building newB(b); // copy building including uniqueID
+		newB.m_buildingLevels.clear();
+		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+			VICUS::BuildingLevel newBl(bl);
+			newBl.m_rooms.clear();  // copy building level including uniqueID
+			for (const VICUS::Room & r : bl.m_rooms) {
+				// if room is not selected, append it
+				if (std::find(rooms.begin(), rooms.end(), &r) == rooms.end()) {
+					newBl.m_rooms.push_back(r);
+				}
+			}
+			// if this is our selected building level, add all selected rooms to it
+			if (&bl == m_currentBuildingLevel) {
+				for (const VICUS::Room* r : rooms)
+					newBl.m_rooms.push_back(*r);
+			}
+			// finally add building level
+			newB.m_buildingLevels.push_back(newBl);
+		}
+		buildingsCopy.push_back(newB);
+	}
 
+	// now compose an undo action to update the geometry
+	SVUndoModifyBuildingTopology * undo = new SVUndoModifyBuildingTopology(tr("Assigned rooms to level"), buildingsCopy);
+	undo->push();
 }
+
+
+void SVPropFloorManagerWidget::on_pushButtonAssignLevel_clicked() {
+	// collect list of all selected levels and move them to the currently selected building
+	// this means we are modifying at least two buildings, but only the topology (since the surfaces are drawn just the same)
+
+	// collect all selected levels, and only if they are visible
+	std::set<const VICUS::Object*> objs;
+	project().selectObjects(objs, VICUS::Project::SG_Building, true, true);
+
+	// filter out all levels
+	std::vector<const VICUS::BuildingLevel*> levels;
+	for (const VICUS::Object * o : objs) {
+		const VICUS::BuildingLevel* r = dynamic_cast<const VICUS::BuildingLevel*>(o);
+		if (r != nullptr)
+			levels.push_back(r);
+	}
+
+	// create a copy of the buildings vector and build levels, but skip over all selected building levels
+	std::vector<VICUS::Building> buildingsCopy;
+	for (const VICUS::Building & b : project().m_buildings) {
+		VICUS::Building newB(b); // copy building including uniqueID
+		newB.m_buildingLevels.clear();
+		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+			// if level is not selected, append it
+			if (std::find(levels.begin(), levels.end(), &bl) == levels.end()) {
+				newB.m_buildingLevels.push_back(bl);
+			}
+		}
+		// if this is our selected building, add all selected levels to it
+		if (&b == m_currentBuilding) {
+			for (const VICUS::BuildingLevel* r : levels)
+				newB.m_buildingLevels.push_back(*r);
+		}
+		buildingsCopy.push_back(newB);
+	}
+
+	// now compose an undo action to update the geometry
+	SVUndoModifyBuildingTopology * undo = new SVUndoModifyBuildingTopology(tr("Assigned levels to building"), buildingsCopy);
+	undo->push();
+}
+
 
 void SVPropFloorManagerWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, int column) {
 	// different handling for top-level items and child items
@@ -411,3 +487,5 @@ void SVPropFloorManagerWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, 
 	}
 
 }
+
+

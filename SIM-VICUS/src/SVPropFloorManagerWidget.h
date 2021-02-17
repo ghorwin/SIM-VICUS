@@ -40,6 +40,8 @@ private slots:
 
 	void on_treeWidget_itemChanged(QTreeWidgetItem *item, int column);
 
+	void on_pushButtonAssignLevel_clicked();
+
 private:
 	Ui::SVPropFloorManagerWidget	*m_ui;
 

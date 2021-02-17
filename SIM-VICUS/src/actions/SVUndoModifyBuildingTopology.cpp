@@ -11,6 +11,7 @@ SVUndoModifyBuildingTopology::SVUndoModifyBuildingTopology(const QString & label
 void SVUndoModifyBuildingTopology::undo() {
 	// exchange building meta data
 	std::swap( theProject().m_buildings, m_buildings);
+	theProject().updatePointers();
 	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingTopologyChanged);
 }
 
