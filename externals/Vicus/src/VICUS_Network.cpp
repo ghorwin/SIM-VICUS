@@ -165,7 +165,7 @@ void Network::updateVisualizationRadius(const VICUS::Database<VICUS::NetworkPipe
 }
 
 
-void Network::updateColor() const
+void Network::defaultColors() const
 {
 	for (const NetworkEdge & edge: m_edges)
 		edge.m_color = Qt::lightGray;

@@ -61,6 +61,10 @@ void SVDBPipeEditWidget::updateInput(int id) {
 	m_ui->lineEditWallThickness->setValue(pipe->m_wallThickness);
 	m_ui->lineEditWallRoughness->setValue(pipe->m_roughness);
 
+	m_ui->pushButtonPipeColor->blockSignals(true);
+	m_ui->pushButtonPipeColor->setColor(pipe->m_color);
+	m_ui->pushButtonPipeColor->blockSignals(false);
+
 	// for built-ins, disable editing/make read-only
 	bool isEditable = true;
 	if (pipe->m_builtIn)
@@ -71,6 +75,7 @@ void SVDBPipeEditWidget::updateInput(int id) {
 	m_ui->lineEditOuterDiameter->setReadOnly(!isEditable);
 	m_ui->lineEditWallThickness->setReadOnly(!isEditable);
 	m_ui->lineEditWallRoughness->setReadOnly(!isEditable);
+	m_ui->pushButtonPipeColor->setReadOnly(!isEditable);
 }
 
 
@@ -131,6 +136,15 @@ void SVDBPipeEditWidget::on_lineEditInsulationThickness_editingFinished(){
 void SVDBPipeEditWidget::on_lineEditInsulationLambda_editingFinished(){
 	if (m_ui->lineEditInsulationLambda->isValid()) {
 		m_current->m_lambdaInsulation = m_ui->lineEditInsulationLambda->value();
+		m_db->m_pipes.m_modified = true;
+		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+	}
+}
+
+void SVDBPipeEditWidget::on_pushButtonPipeColor_colorChanged() {
+
+	if (m_current->m_color != m_ui->pushButtonPipeColor->color()) {
+		m_current->m_color = m_ui->pushButtonPipeColor->color();
 		m_db->m_pipes.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}

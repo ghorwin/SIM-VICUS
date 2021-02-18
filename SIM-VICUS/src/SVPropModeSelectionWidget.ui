@@ -117,6 +117,11 @@
             <string>Edge</string>
            </property>
           </item>
+          <item>
+           <property name="text">
+            <string>Component</string>
+           </property>
+          </item>
          </widget>
         </item>
        </layout>

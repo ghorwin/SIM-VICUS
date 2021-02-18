@@ -931,16 +931,17 @@ void Vic3DScene::setViewState(const SVViewState & vs) {
 		// different update handling
 		bool updateBuilding = false;
 		bool updateNetwork = false;
-		if (m_lastColorMode > 0 && m_lastColorMode < SVViewState::OCM_NodeComponent)
+		if (m_lastColorMode > 0 && m_lastColorMode < SVViewState::OCM_Network)
 			updateBuilding = true;
-		if (vs.m_objectColorMode > 0 && vs.m_objectColorMode < SVViewState::OCM_NodeComponent)
+		if (vs.m_objectColorMode > 0 && vs.m_objectColorMode < SVViewState::OCM_Network)
 			updateBuilding = true;
-		if (m_lastColorMode >= SVViewState::OCM_NodeComponent)
+		if (m_lastColorMode >= SVViewState::OCM_Network)
 			updateNetwork = true;
-		if (vs.m_objectColorMode >= SVViewState::OCM_NodeComponent)
+		if (vs.m_objectColorMode >= SVViewState::OCM_Network)
 			updateNetwork = true;
 
 		recolorObjects(vs.m_objectColorMode, vs.m_colorModePropertyID);
+
 		if (updateBuilding) {
 			qDebug() << "Updating surface coloring of buildings";
 			// TODO : Andreas, Performance update, only update and transfer color buffer
@@ -1128,8 +1129,8 @@ void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm, int id) const 
 						break;
 
 						// the other cases are just to get rid of compiler warnings
-						case SVViewState::OCM_NodeComponent:
-						case SVViewState::OCM_EdgePipe: break;
+						case SVViewState::OCM_Network:
+						case SVViewState::OCM_NetworkEdge: break;
 					}
 				}
 			}
@@ -1140,11 +1141,11 @@ void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm, int id) const 
 	for (const VICUS::Network & net: p.m_geometricNetworks){
 		// updateColor is a const-function, this is possible since
 		// the m_color property of edges and nodes is mutable
-		net.updateColor();
+		net.defaultColors();
 	}
 
 	const SVDatabase & db = SVSettings::instance().m_db;
-	if (ocm > 0 && ocm < SVViewState::OCM_NodeComponent) {
+	if (ocm > 0 && ocm < SVViewState::OCM_Network) {
 		// now color all surfaces, this works by first looking up the components, associated with each surface
 		for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
 			// lookup component definition
@@ -1185,27 +1186,55 @@ void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm, int id) const 
 					}
 				break;
 				case SVViewState::OCM_None:
-				case SVViewState::OCM_NodeComponent:
-				case SVViewState::OCM_EdgePipe: break;
+				case SVViewState::OCM_Network:
+				case SVViewState::OCM_NetworkEdge: break;
 			}
 		}
 	}
 
 
 	// set network edge and node colors according to network components
-	if (ocm == SVViewState::OCM_NodeComponent)
-		for (const VICUS::Network &net: p.m_geometricNetworks){
-			for (const VICUS::NetworkEdge & edge: net.m_edges){
-				unsigned int id = edge.m_componentId;
-				if (db.m_networkComponents[id] != nullptr)
-					edge.m_color = db.m_networkComponents[id]->m_color;
-			}
-			for (const VICUS::NetworkNode & node: net.m_nodes){
-				unsigned int id = node.m_componentId;
-				if (db.m_networkComponents[id] != nullptr)
-					node.m_color = db.m_networkComponents[id]->m_color;
+	if (ocm >= SVViewState::OCM_Network)
+		for (const VICUS::Network & net: p.m_geometricNetworks){
+
+			switch (ocm) {
+				case SVViewState::OCM_NetworkNode: {
+					for (const VICUS::NetworkNode & node: net.m_nodes){
+						if (node.m_type == VICUS::NetworkNode::NT_Source)
+							node.m_color = QColor(230, 138, 0); // orange
+						else if (node.m_type == VICUS::NetworkNode::NT_Mixer)
+							node.m_color = QColor(119, 179, 0); // green
+						else // Building
+							node.m_color = QColor(0, 107, 179); // blue
+					}
+				}
+				break;
+				case SVViewState::OCM_NetworkEdge: {
+					for (const VICUS::NetworkEdge & edge: net.m_edges){
+						unsigned int id = edge.m_pipeId;
+						if (db.m_pipes[id] != nullptr)
+							edge.m_color = db.m_pipes[id]->m_color;
+					}
+				}
+				break;
+				case SVViewState::OCM_NetworkComponents: {
+					for (const VICUS::NetworkEdge & edge: net.m_edges){
+						unsigned int id = edge.m_componentId;
+						if (db.m_networkComponents[id] != nullptr)
+							edge.m_color = db.m_networkComponents[id]->m_color;
+					}
+					for (const VICUS::NetworkNode & node: net.m_nodes){
+						unsigned int id = node.m_componentId;
+						if (db.m_networkComponents[id] != nullptr)
+							node.m_color = db.m_networkComponents[id]->m_color;
+					}
+				}
+				break;
 			}
 		}
+
+
+
 }
 
 

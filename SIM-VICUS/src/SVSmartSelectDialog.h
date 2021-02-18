@@ -20,13 +20,13 @@ private slots:
 
 	void on_comboBoxNodeType_currentIndexChanged(int index);
 
-	void on_checkBoxMaxHeatingDemandBelow_clicked(bool checked);
+	void on_checkBoxMaxHeatingDemandBelow_stateChanged(int arg1);
 
-	void on_checkBoxMaxHeatingDemandAbove_clicked(bool checked);
+	void on_checkBoxMaxHeatingDemandAbove_stateChanged(int arg1);
 
-	void on_checkBoxLengthBelow_clicked(bool checked);
+	void on_checkBoxLengthBelow_stateChanged(int arg1);
 
-	void on_checkBoxLengthAbove_clicked(bool checked);
+	void on_checkBoxLengthAbove_stateChanged(int arg1);
 
 private:
 	Ui::SVSmartSelectDialog *m_ui;

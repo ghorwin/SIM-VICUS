@@ -44,6 +44,8 @@ private slots:
 
 	void on_lineEditInsulationLambda_editingFinished();
 
+	void on_pushButtonPipeColor_colorChanged();
+
 private:
 	Ui::SVDBPipeEditWidget *m_ui;
 

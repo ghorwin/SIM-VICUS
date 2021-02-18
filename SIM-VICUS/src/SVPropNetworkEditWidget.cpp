@@ -24,13 +24,8 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
-	m_ui->groupBoxNode->setVisible(false);
-	m_ui->groupBoxEdge->setVisible(false);
-	m_ui->groupBoxComponent->setVisible(false);
-	m_ui->groupBoxSizePipes->setVisible(false);
-	m_ui->groupBoxEditNetwork->setVisible(false);
-	m_ui->groupBoxHeatExchange->setVisible(false);
-	showPropertiesHeatExchange(false);
+	showNetworkProperties();
+	setAllHeatExchangeWidgetsVisible(false);
 
 	// setup combobox node types
 	m_ui->comboBoxNodeType->clear();
@@ -55,6 +50,7 @@ void SVPropNetworkEditWidget::setPropertyMode(int propertyIndex) {
 		case 0 : showNetworkProperties(); break;
 		case 1 : showNodeProperties(); break;
 		case 2 : showEdgeProperties(); break;
+		case 3 : showComponentProperties(); break;
 	}
 
 	selectionChanged();
@@ -106,24 +102,34 @@ void SVPropNetworkEditWidget::selectionChanged() {
 		m_currentConstNetwork = networks[0];
 
 	// now update UI
+	setAllEnabled(false);
 	if (m_currentConstNetwork != nullptr){
-		setAllEnabled(true);
+		m_ui->groupBoxProperties->setEnabled(true);
+		m_ui->groupBoxEditNetwork->setEnabled(true);
+		m_ui->groupBoxVisualisation->setEnabled(true);
 		updateNetworkProperties();
 		updateSizingParams();
 	}
 	else{
 		clearUI();
-		setAllEnabled(false);
 		return;
 	}
+
+	// node(s) selected
 	if (!m_currentNodes.empty() && m_currentEdges.empty()){
-		setAllEnabled(true);
+		m_ui->groupBoxNode->setEnabled(true);
+		m_ui->groupBoxComponent->setEnabled(true);
+		m_ui->groupBoxHeatExchange->setEnabled(true);
 		updateNodeProperties();
 	}
+	// edge(s) selected
 	else if(m_currentNodes.empty() && !m_currentEdges.empty()){
-		setAllEnabled(true);
+		m_ui->groupBoxEdge->setEnabled(true);
+		m_ui->groupBoxComponent->setEnabled(true);
+		m_ui->groupBoxHeatExchange->setEnabled(true);
 		updateEdgeProperties();
 	}
+	// none selected
 	else{
 		m_ui->groupBoxNode->setEnabled(false);
 		m_ui->groupBoxEdge->setEnabled(false);
@@ -136,10 +142,7 @@ void SVPropNetworkEditWidget::selectionChanged() {
 void SVPropNetworkEditWidget::updateNodeProperties() {
 	Q_ASSERT(!m_currentNodes.empty());
 
-	const SVDatabase  & db = SVSettings::instance().m_db;
-
 	setupComboBoxComponents();
-	toggleHeatExchangeGroupBox();
 
 	// if node type is not uniform, no editing will be allowed
 	bool uniformNodeType = uniformProperty(m_currentNodes, &VICUS::NetworkNode::m_type);
@@ -180,7 +183,7 @@ void SVPropNetworkEditWidget::updateNodeProperties() {
 		m_ui->comboBoxComponent->setCurrentIndex(-1);
 	m_ui->comboBoxComponent->blockSignals(false);
 
-	updateHxProperties();
+	updateHeatExchangeProperties();
 }
 
 
@@ -188,10 +191,7 @@ void SVPropNetworkEditWidget::updateEdgeProperties() {
 
 	Q_ASSERT(!m_currentEdges.empty());
 
-	const SVDatabase  & db = SVSettings::instance().m_db;
-
 	setupComboBoxComponents();
-	toggleHeatExchangeGroupBox();
 	setupComboboxPipeDB();
 
 	if (m_currentEdges.size() == 1){
@@ -223,7 +223,7 @@ void SVPropNetworkEditWidget::updateEdgeProperties() {
 		m_ui->comboBoxComponent->setCurrentIndex(-1);
 	m_ui->comboBoxComponent->blockSignals(false);
 
-	updateHxProperties();
+	updateHeatExchangeProperties();
 }
 
 
@@ -253,8 +253,34 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 }
 
 
-void SVPropNetworkEditWidget::updateHxProperties()
+void SVPropNetworkEditWidget::updateHeatExchangeProperties()
 {
+	// visibility of widgets
+	setAllHeatExchangeWidgetsVisible(false);
+
+	const VICUS::NetworkComponent *comp = currentComponent();
+
+	switch (comp->m_heatExchangeType) {
+		case VICUS::NetworkComponent::HT_HeatFluxConstant:{
+			m_ui->labelHeatFlux->setVisible(true);
+			m_ui->lineEditHeatFlux->setVisible(true);
+			break;
+		}
+		case VICUS::NetworkComponent::HT_TemperatureConstant:{
+			m_ui->labelTemperature->setVisible(true);
+			m_ui->lineEditTemperature->setVisible(true);
+			break;
+		}
+		case VICUS::NetworkComponent::HT_HeatFluxDataFile:
+		case VICUS::NetworkComponent::HT_TemperatureDataFile:{
+			m_ui->labelDataFile->setVisible(true);
+			m_ui->widgetBrowseFileNameData->setVisible(true);
+			break;
+		}
+		default:;
+	}
+
+	// content of widgets
 	m_ui->lineEditHeatFlux->clear();
 	m_ui->lineEditTemperature->clear();
 
@@ -315,43 +341,7 @@ void SVPropNetworkEditWidget::setAllEnabled(bool enabled)
 	m_ui->groupBoxHeatExchange->setEnabled(enabled);
 }
 
-
-void SVPropNetworkEditWidget::toggleHeatExchangeGroupBox()
-{
-	showPropertiesHeatExchange(false);
-
-	const VICUS::NetworkComponent *comp = currentComponent();
-
-	if (comp == nullptr){
-		m_ui->groupBoxHeatExchange->setVisible(false);
-		return;
-	}
-	m_ui->groupBoxHeatExchange->setVisible( comp->m_heatExchangeType != VICUS::NetworkComponent::NUM_HT &&
-											comp->m_heatExchangeType != VICUS::NetworkComponent::HT_Adiabatic);
-
-	switch (comp->m_heatExchangeType) {
-		case VICUS::NetworkComponent::HT_HeatFluxConstant:{
-			m_ui->labelHeatFlux->setVisible(true);
-			m_ui->lineEditHeatFlux->setVisible(true);
-			break;
-		}
-		case VICUS::NetworkComponent::HT_TemperatureConstant:{
-			m_ui->labelTemperature->setVisible(true);
-			m_ui->lineEditTemperature->setVisible(true);
-			break;
-		}
-		case VICUS::NetworkComponent::HT_HeatFluxDataFile:
-		case VICUS::NetworkComponent::HT_TemperatureDataFile:{
-			m_ui->labelDataFile->setVisible(true);
-			m_ui->widgetBrowseFileNameData->setVisible(true);
-			break;
-		}
-		default:;
-	}
-}
-
-
-void SVPropNetworkEditWidget::showPropertiesHeatExchange(bool visible)
+void SVPropNetworkEditWidget::setAllHeatExchangeWidgetsVisible(bool visible)
 {
 	m_ui->labelTemperature->setVisible(visible);
 	m_ui->lineEditTemperature->setVisible(visible);
@@ -469,32 +459,49 @@ bool SVPropNetworkEditWidget::setNetwork() {
 
 
 void SVPropNetworkEditWidget::showNetworkProperties() {
+	m_ui->groupBoxProperties->setVisible(true);
+	m_ui->groupBoxSizePipes->setVisible(true);
+	m_ui->groupBoxVisualisation->setVisible(true);
+	m_ui->groupBoxEditNetwork->setVisible(true);
 	m_ui->groupBoxNode->setVisible(false);
 	m_ui->groupBoxEdge->setVisible(false);
-	m_ui->groupBoxSizePipes->setVisible(true);
-	m_ui->groupBoxEditNetwork->setVisible(true);
-	m_ui->groupBoxVisualisation->setVisible(true);
 	m_ui->groupBoxComponent->setVisible(false);
+	m_ui->groupBoxHeatExchange->setVisible(false);
 }
 
 
 void SVPropNetworkEditWidget::showNodeProperties() {
-	m_ui->groupBoxNode->setVisible(true);
-	m_ui->groupBoxEdge->setVisible(false);
+	m_ui->groupBoxProperties->setVisible(false);
 	m_ui->groupBoxSizePipes->setVisible(false);
 	m_ui->groupBoxVisualisation->setVisible(false);
 	m_ui->groupBoxEditNetwork->setVisible(false);
-	m_ui->groupBoxComponent->setVisible(true);
+	m_ui->groupBoxNode->setVisible(true);
+	m_ui->groupBoxEdge->setVisible(false);
+	m_ui->groupBoxComponent->setVisible(false);
+	m_ui->groupBoxHeatExchange->setVisible(false);
 }
 
 
 void SVPropNetworkEditWidget::showEdgeProperties() {
-	m_ui->groupBoxNode->setVisible(false);
-	m_ui->groupBoxEdge->setVisible(true);
+	m_ui->groupBoxProperties->setVisible(false);
 	m_ui->groupBoxSizePipes->setVisible(false);
 	m_ui->groupBoxVisualisation->setVisible(false);
 	m_ui->groupBoxEditNetwork->setVisible(false);
+	m_ui->groupBoxNode->setVisible(false);
+	m_ui->groupBoxEdge->setVisible(true);
+	m_ui->groupBoxComponent->setVisible(false);
+	m_ui->groupBoxHeatExchange->setVisible(false);
+}
+
+void SVPropNetworkEditWidget::showComponentProperties(){
+	m_ui->groupBoxProperties->setVisible(false);
+	m_ui->groupBoxSizePipes->setVisible(false);
+	m_ui->groupBoxVisualisation->setVisible(false);
+	m_ui->groupBoxEditNetwork->setVisible(false);
+	m_ui->groupBoxNode->setVisible(false);
+	m_ui->groupBoxEdge->setVisible(false);
 	m_ui->groupBoxComponent->setVisible(true);
+	m_ui->groupBoxHeatExchange->setVisible(true);
 }
 
 
@@ -550,7 +557,7 @@ void SVPropNetworkEditWidget::on_comboBoxComponent_currentIndexChanged(int index
 		modifyEdgeProperty(&VICUS::NetworkEdge::m_componentId, m_ui->comboBoxComponent->currentData().toUInt());
 	if (!m_currentNodes.empty())
 		modifyNodeProperty(&VICUS::NetworkNode::m_componentId, m_ui->comboBoxComponent->currentData().toUInt());
-	toggleHeatExchangeGroupBox();
+	updateHeatExchangeProperties();
 }
 
 void SVPropNetworkEditWidget::on_horizontalSliderScaleNodes_valueChanged(int value)

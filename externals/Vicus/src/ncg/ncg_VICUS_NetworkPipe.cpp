@@ -66,6 +66,8 @@ void NetworkPipe::readXML(const TiXmlElement * element) {
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName.setEncodedString(attrib->ValueStr());
+			else if (attribName == "color")
+				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
 			else if (attribName == "diameterOutside")
 				m_diameterOutside = NANDRAD::readPODAttributeValue<double>(element, attrib);
 			else if (attribName == "wallThickness")
@@ -82,18 +84,6 @@ void NetworkPipe::readXML(const TiXmlElement * element) {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			attrib = attrib->Next();
-		}
-		// search for mandatory elements
-		// reading elements
-		const TiXmlElement * c = element->FirstChildElement();
-		while (c) {
-			const std::string & cName = c->ValueStr();
-			if (cName == "Color")
-				m_color.setNamedColor(QString::fromStdString(c->GetText()));
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			c = c->NextSiblingElement();
 		}
 	}
 	catch (IBK::Exception & ex) {
@@ -112,14 +102,14 @@ TiXmlElement * NetworkPipe::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName.encodedString());
+	if (m_color.isValid())
+		e->SetAttribute("color", m_color.name().toStdString());
 	e->SetAttribute("diameterOutside", IBK::val2string<double>(m_diameterOutside));
 	e->SetAttribute("wallThickness", IBK::val2string<double>(m_wallThickness));
 	e->SetAttribute("lambdaWall", IBK::val2string<double>(m_lambdaWall));
 	e->SetAttribute("roughness", IBK::val2string<double>(m_roughness));
 	e->SetAttribute("insulationThickness", IBK::val2string<double>(m_insulationThickness));
 	e->SetAttribute("lambdaInsulation", IBK::val2string<double>(m_lambdaInsulation));
-	if (m_color.isValid())
-		TiXmlElement::appendSingleAttributeElement(e, "Color", nullptr, std::string(), m_color.name().toStdString());
 	return e;
 }
 

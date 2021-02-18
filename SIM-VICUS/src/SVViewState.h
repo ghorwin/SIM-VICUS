@@ -118,8 +118,10 @@ public:
 			boundary condition color.
 		*/
 		OCM_BoundaryConditions,
-		OCM_NodeComponent			=	0x1000,
-		OCM_EdgePipe
+		OCM_Network			=	0x1000,
+		OCM_NetworkNode,
+		OCM_NetworkEdge,
+		OCM_NetworkComponents
 	};
 
 	/*! Snapping/navigation locks, apply to movement of the

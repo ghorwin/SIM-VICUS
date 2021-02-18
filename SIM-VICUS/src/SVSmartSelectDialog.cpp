@@ -42,8 +42,15 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 	m_ui->comboBoxNodeType->blockSignals(false);
 	m_ui->comboBoxNodeType->setCurrentIndex(0);
 
-	m_ui->lineEditMaxHeatingDemandBelow->setEnabled(m_ui->checkBoxMaxHeatingDemandBelow->isChecked());
-	m_ui->lineEditMaxHeatingDemandAbove->setEnabled(m_ui->checkBoxMaxHeatingDemandAbove->isChecked());
+	m_ui->checkBoxMaxHeatingDemandBelow->setChecked(false);
+	m_ui->checkBoxMaxHeatingDemandAbove->setChecked(false);
+	m_ui->checkBoxLengthBelow->setChecked(false);
+	m_ui->checkBoxLengthAbove->setChecked(false);
+
+	m_ui->lineEditMaxHeatingDemandAbove->setEnabled(false);
+	m_ui->lineEditMaxHeatingDemandBelow->setEnabled(false);
+	m_ui->lineEditLengthAbove->setEnabled(false);
+	m_ui->lineEditLengthBelow->setEnabled(false);
 }
 
 
@@ -155,31 +162,30 @@ void SVSmartSelectDialog::on_comboBoxNodeType_currentIndexChanged(int index)
 {
 	bool noBuilding = index==1 || index==2;
 	m_ui->checkBoxMaxHeatingDemandAbove->setEnabled(!noBuilding);
-	m_ui->lineEditMaxHeatingDemandAbove->setEnabled(!noBuilding);
 	m_ui->checkBoxMaxHeatingDemandBelow->setEnabled(!noBuilding);
-	m_ui->lineEditMaxHeatingDemandBelow->setEnabled(!noBuilding);
 	if (noBuilding){
 		m_ui->checkBoxMaxHeatingDemandBelow->setChecked(false);
 		m_ui->checkBoxMaxHeatingDemandAbove->setChecked(false);
 	}
 }
 
-void SVSmartSelectDialog::on_checkBoxMaxHeatingDemandBelow_clicked(bool checked)
+
+void SVSmartSelectDialog::on_checkBoxMaxHeatingDemandBelow_stateChanged(int arg1)
 {
-	m_ui->lineEditMaxHeatingDemandBelow->setEnabled(checked);
+	m_ui->lineEditMaxHeatingDemandBelow->setEnabled(arg1);
 }
 
-void SVSmartSelectDialog::on_checkBoxMaxHeatingDemandAbove_clicked(bool checked)
+void SVSmartSelectDialog::on_checkBoxMaxHeatingDemandAbove_stateChanged(int arg1)
 {
-	m_ui->lineEditMaxHeatingDemandAbove->setEnabled(checked);
+	m_ui->lineEditMaxHeatingDemandAbove->setEnabled(arg1);
 }
 
-void SVSmartSelectDialog::on_checkBoxLengthBelow_clicked(bool checked)
+void SVSmartSelectDialog::on_checkBoxLengthBelow_stateChanged(int arg1)
 {
-	m_ui->lineEditLengthBelow->setEnabled(checked);
+	m_ui->lineEditLengthBelow->setEnabled(arg1);
 }
 
-void SVSmartSelectDialog::on_checkBoxLengthAbove_clicked(bool checked)
+void SVSmartSelectDialog::on_checkBoxLengthAbove_stateChanged(int arg1)
 {
-	m_ui->lineEditLengthAbove->setEnabled(checked);
+	m_ui->lineEditLengthAbove->setEnabled(arg1);
 }

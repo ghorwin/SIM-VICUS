@@ -129,7 +129,7 @@
     </widget>
    </item>
    <item row="0" column="4">
-    <widget class="QtExt::ColorButton" name="pushButtonColor">
+    <widget class="QtExt::ColorButton" name="pushButtonPipeColor">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>

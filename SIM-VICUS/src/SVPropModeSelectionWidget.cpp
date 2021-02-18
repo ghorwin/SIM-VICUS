@@ -81,35 +81,29 @@ void SVPropModeSelectionWidget::selectionChanged() {
 
 		std::set<const VICUS::Object*> objs;
 		project().selectObjects(objs, VICUS::Project::SG_Network, true, true);
-		bool haveNode = false;
-		bool haveNetwork = false;
-		blockSignals(true);
-		for (const VICUS::Object* o : objs) {
-			if (dynamic_cast<const VICUS::Network*>(o) != nullptr){
-				m_ui->comboBoxNetworkProperties->setCurrentIndex(0);
-				haveNetwork = true;
-				break;
-			}
-		}
-		if (!haveNetwork){
-			for (const VICUS::Object* o : objs) {
-				if (dynamic_cast<const VICUS::NetworkNode*>(o) != nullptr){
-					m_ui->comboBoxNetworkProperties->setCurrentIndex(1);
-					break;
-				}
-				if (dynamic_cast<const VICUS::NetworkEdge*>(o) != nullptr){
-					m_ui->comboBoxNetworkProperties->setCurrentIndex(2);
-					break;
-				}
-			}
-		}
-//		// only nodes selected?
+//		bool haveNode = false;
+//		bool haveNetwork = false;
 //		blockSignals(true);
-//		if (haveNode)
-//			m_ui->comboBoxNetworkProperties->setCurrentIndex(1);
-//		else if (haveEdge)
-//			m_ui->comboBoxNetworkProperties->setCurrentIndex(2);
-		blockSignals(false);
+//		for (const VICUS::Object* o : objs) {
+//			if (dynamic_cast<const VICUS::Network*>(o) != nullptr){
+//				m_ui->comboBoxNetworkProperties->setCurrentIndex(0);
+//				haveNetwork = true;
+//				break;
+//			}
+//		}
+//		if (!haveNetwork){
+//			for (const VICUS::Object* o : objs) {
+//				if (dynamic_cast<const VICUS::NetworkNode*>(o) != nullptr){
+//					m_ui->comboBoxNetworkProperties->setCurrentIndex(1);
+//					break;
+//				}
+//				if (dynamic_cast<const VICUS::NetworkEdge*>(o) != nullptr){
+//					m_ui->comboBoxNetworkProperties->setCurrentIndex(2);
+//					break;
+//				}
+//			}
+//		}
+//		blockSignals(false);
 		updateViewState();
 	}
 
@@ -155,13 +149,16 @@ void SVPropModeSelectionWidget::viewStateProperties(SVViewState & vs) const {
 		case SVViewState::PM_NetworkProperties:
 			switch (m_ui->comboBoxNetworkProperties->currentIndex()) {
 				// network
-				case 0 : vs.m_objectColorMode = SVViewState::OCM_None; break;
+				case 0 : vs.m_objectColorMode = SVViewState::OCM_Network; break;
 
-				// node: show component association
-				case 1 : vs.m_objectColorMode = SVViewState::OCM_NodeComponent; break;
+				// node: show node association
+				case 1 : vs.m_objectColorMode = SVViewState::OCM_NetworkNode; break;
 
 				// pipe : show pipe association
-				case 2 : vs.m_objectColorMode = SVViewState::OCM_EdgePipe; break;
+				case 2 : vs.m_objectColorMode = SVViewState::OCM_NetworkEdge; break;
+
+				// component: show network component association
+				case 3 : vs.m_objectColorMode = SVViewState::OCM_NetworkComponents; break;
 			}
 		break;
 

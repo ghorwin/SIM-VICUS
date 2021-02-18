@@ -36,7 +36,7 @@ public:
 	/*! Display name of fluid. */
 	IBK::MultiLanguageString			m_displayName;					// XML:A
 	/*! Identification color. */
-	QColor								m_color;						// XML:E
+	QColor								m_color;						// XML:A
 
 
 	/*! Outside diameter pipe in [mm]. */

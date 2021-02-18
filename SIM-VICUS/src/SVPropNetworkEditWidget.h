@@ -37,6 +37,8 @@ public:
 
 	void showEdgeProperties();
 
+	void showComponentProperties();
+
 public slots:
 
 	/*! Connected to SVProjectHandler::modified(), we listen to changes in selections. */
@@ -105,7 +107,7 @@ private:
 
 	void updateNetworkProperties();
 
-	void updateHxProperties();
+	void updateHeatExchangeProperties();
 
 	void modifyStatus();
 
@@ -117,9 +119,7 @@ private:
 
 	void setAllEnabled(bool enabled);
 
-	void toggleHeatExchangeGroupBox();
-
-	void showPropertiesHeatExchange(bool visible);
+	void setAllHeatExchangeWidgetsVisible(bool visible);
 
 	const VICUS::NetworkComponent *currentComponent();
 
