@@ -168,7 +168,7 @@ public:
 
 	void updateVisualizationRadius(const VICUS::Database<VICUS::NetworkPipe> & pipeDB) const;
 
-	void defaultColors() const;
+	void setDefaultColors() const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

@@ -1146,7 +1146,7 @@ void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm, int id) const 
 	for (const VICUS::Network & net: p.m_geometricNetworks){
 		// updateColor is a const-function, this is possible since
 		// the m_color property of edges and nodes is mutable
-		net.defaultColors();
+		net.setDefaultColors();
 	}
 
 	const SVDatabase & db = SVSettings::instance().m_db;
