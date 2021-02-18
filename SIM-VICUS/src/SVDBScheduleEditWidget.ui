@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SVScheduleEditWidget</class>
- <widget class="QWidget" name="SVScheduleEditWidget">
+ <class>SVDBScheduleEditWidget</class>
+ <widget class="QWidget" name="SVDBScheduleEditWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -342,72 +342,9 @@
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="checkBoxWeekday">
-            <property name="text">
-             <string>Weekday</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="checkBoxWeekend">
-            <property name="text">
-             <string>Weekend</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="Line" name="line_3">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
            <widget class="QCheckBox" name="checkBoxHoliday">
             <property name="text">
              <string>Holiday</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="checkBoxCustomDay1">
-            <property name="text">
-             <string>CustomDay1</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="Line" name="line_4">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="checkBoxSummerDesignDay">
-            <property name="text">
-             <string>SummerDesignDay</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="checkBoxWinterDesignDay">
-            <property name="text">
-             <string>WinterDesignDay</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="Line" name="line_5">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="checkBoxWinterDesignDay_2">
-            <property name="text">
-             <string>AllOtherDays</string>
             </property>
            </widget>
           </item>
