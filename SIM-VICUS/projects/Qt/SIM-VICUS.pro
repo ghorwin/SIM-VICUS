@@ -108,7 +108,6 @@ SOURCES += \
 				../../src/SVPropNetworkEditWidget.cpp \
 	../../src/SVScheduleEditWidget.cpp \
 	../../src/SVScheduleHolidayWidget.cpp \
-	../../src/SVScheduleManagerWidget.cpp \
 				../../src/SVSimulationLocationOptions.cpp \
 				../../src/SVSimulationModelOptions.cpp \
 				../../src/SVSimulationOutputOptions.cpp \
@@ -221,7 +220,6 @@ HEADERS  += \
 				../../src/SVPropNetworkEditWidget.h \
 	../../src/SVScheduleEditWidget.h \
 	../../src/SVScheduleHolidayWidget.h \
-	../../src/SVScheduleManagerWidget.h \
 				../../src/SVSimulationLocationOptions.h \
 				../../src/SVSimulationModelOptions.h \
 				../../src/SVSimulationOutputOptions.h \
@@ -339,7 +337,6 @@ FORMS    += \
 				../../src/SVPropVertexListWidget.ui \
 				../../src/SVScheduleEditWidget.ui \
 				../../src/SVScheduleHolidayWidget.ui \
-				../../src/SVScheduleManagerWidget.ui \
 				../../src/SVSimulationLocationOptions.ui \
 				../../src/SVSimulationModelOptions.ui \
 				../../src/SVSimulationOutputOptions.ui \
