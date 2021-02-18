@@ -41,6 +41,7 @@ HEADERS += \
 	../../src/VICUS_ComponentInstance.h \
 	../../src/VICUS_Constants.h \ \
 	../../src/VICUS_Construction.h \
+	../../src/VICUS_DailyCycle.h \
 	../../src/VICUS_Database.h \
 	../../src/VICUS_EPDCategroySet.h \
 	../../src/VICUS_EPDDataset.h \
@@ -61,6 +62,8 @@ HEADERS += \
 	../../src/VICUS_Project.h \
 	../../src/VICUS_Room.h \
 	../../src/VICUS_RotationMatrix.h \
+	../../src/VICUS_Schedule.h \
+	../../src/VICUS_ScheduleInterval.h \
 	../../src/VICUS_Surface.h \
 	../../src/VICUS_SurfaceProperties.h \
 	../../src/VICUS_ViewSettings.h \
@@ -76,6 +79,7 @@ SOURCES += \
 	../../src/VICUS_Component.cpp \
 	../../src/VICUS_Constants.cpp \
 	../../src/VICUS_Construction.cpp \
+	../../src/VICUS_DailyCycle.cpp \
 	../../src/VICUS_EPDCategroySet.cpp \
 	../../src/VICUS_EPDDataset.cpp \
 	../../src/VICUS_KeywordList.cpp \
@@ -92,6 +96,8 @@ SOURCES += \
 	../../src/VICUS_Outputs.cpp \
 	../../src/VICUS_PlaneGeometry.cpp \
 	../../src/VICUS_Project.cpp \
+	../../src/VICUS_Schedule.cpp \
+	../../src/VICUS_ScheduleInterval.cpp \
 	../../src/VICUS_Surface.cpp \
 	../../src/ncg/ncg_VICUS_BoundaryCondition.cpp \
 	../../src/ncg/ncg_VICUS_Building.cpp \

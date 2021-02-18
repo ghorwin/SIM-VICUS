@@ -49,7 +49,7 @@ public:
 				 also the lookup priority - for example, a holiday schedule takes precedence before
 				 a specific day schedule.
 	*/
-	enum type_t {
+	enum ScheduledDayType {
 		ST_ALLDAYS,		// Keyword: AllDays		'All days (Weekend days and Weekdays).'
 		ST_WEEKDAY,		// Keyword: WeekDay		'Weekday schedule.'
 		ST_WEEKEND,		// Keyword: WeekEnd		'Weekend schedule.'
@@ -84,7 +84,7 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Type of day this schedule is defined for. */
-	type_t					m_type = NUM_ST;								// XML:A:required
+	ScheduledDayType		m_type = NUM_ST;								// XML:A:required
 
 	/*! Start day of the year for the schedule, if not given, defaults to 0 = 1.1. */
 	unsigned int			m_startDayOfTheYear = 0;						// XML:E

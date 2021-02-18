@@ -19,41 +19,39 @@
 	Lesser General Public License for more details.
 */
 
-#include <NANDRAD_Schedule.h>
-#include <NANDRAD_KeywordList.h>
+#include <VICUS_Schedule.h>
+#include <VICUS_KeywordList.h>
 
 #include <IBK_messages.h>
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
-#include <NANDRAD_Constants.h>
-#include <NANDRAD_Constants.h>
-#include <NANDRAD_KeywordList.h>
+#include <VICUS_Constants.h>
 #include <NANDRAD_Utilities.h>
+#include <VICUS_Constants.h>
 
 #include <tinyxml.h>
 
-namespace NANDRAD {
+namespace VICUS {
 
 void Schedule::readXML(const TiXmlElement * element) {
 	FUNCID(Schedule::readXML);
 
 	try {
 		// search for mandatory attributes
-		if (!TiXmlAttribute::attributeByName(element, "type"))
+		if (!TiXmlAttribute::attributeByName(element, "id"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'type' attribute.") ), FUNC_ID);
+				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
 
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
-			if (attribName == "type")
-			try {
-				m_type = (ScheduledDayType)KeywordList::Enumeration("Schedule::ScheduledDayType", attrib->ValueStr());
-			}
-			catch (IBK::Exception & ex) {
-				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-					IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
+			if (attribName == "id")
+				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "displayName")
+				m_displayName.setEncodedString(attrib->ValueStr());
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			attrib = attrib->Next();
 		}
@@ -62,19 +60,31 @@ void Schedule::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "StartDayOfTheYear")
-				m_startDayOfTheYear = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "EndDayOfTheYear")
-				m_endDayOfTheYear = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "DailyCycles") {
+			if (cName == "Notes")
+				m_notes.setEncodedString(c->GetText());
+			else if (cName == "DataSource")
+				m_dataSource.setEncodedString(c->GetText());
+			else if (cName == "UseLinearInterpolation")
+				m_useLinearInterpolation = NANDRAD::readPODElement<bool>(c, cName);
+			else if (cName == "LinearSplineParameter") {
+				NANDRAD::LinearSplineParameter p;
+				p.readXML(c);
+				bool success = false;
+				if (p.m_name == "AnnualSchedule") {
+					m_annualSchedule = p; success = true;
+				}
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.m_name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			else if (cName == "Periods") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "DailyCycle")
+					if (c2Name != "ScheduleInterval")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					DailyCycle obj;
+					ScheduleInterval obj;
 					obj.readXML(c2);
-					m_dailyCycles.push_back(obj);
+					m_periods.push_back(obj);
 					c2 = c2->NextSiblingElement();
 				}
 			}
@@ -96,19 +106,26 @@ TiXmlElement * Schedule::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("Schedule");
 	parent->LinkEndChild(e);
 
-	if (m_type != NUM_ST)
-		e->SetAttribute("type", KeywordList::Keyword("Schedule::ScheduledDayType",  m_type));
-	if (m_startDayOfTheYear != NANDRAD::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "StartDayOfTheYear", nullptr, std::string(), IBK::val2string<unsigned int>(m_startDayOfTheYear));
-	if (m_endDayOfTheYear != NANDRAD::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "EndDayOfTheYear", nullptr, std::string(), IBK::val2string<unsigned int>(m_endDayOfTheYear));
+	if (m_id != VICUS::INVALID_ID)
+		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
+	if (!m_displayName.empty())
+		e->SetAttribute("displayName", m_displayName.encodedString());
+	if (!m_notes.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.encodedString());
+	if (!m_dataSource.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.encodedString());
+	TiXmlElement::appendSingleAttributeElement(e, "UseLinearInterpolation", nullptr, std::string(), IBK::val2string<bool>(m_useLinearInterpolation));
+	if (!m_annualSchedule.m_name.empty()) {
+		IBK_ASSERT("AnnualSchedule" == m_annualSchedule.m_name);
+		m_annualSchedule.writeXML(e);
+	}
 
-	if (!m_dailyCycles.empty()) {
-		TiXmlElement * child = new TiXmlElement("DailyCycles");
+	if (!m_periods.empty()) {
+		TiXmlElement * child = new TiXmlElement("Periods");
 		e->LinkEndChild(child);
 
-		for (std::vector<DailyCycle>::const_iterator it = m_dailyCycles.begin();
-			it != m_dailyCycles.end(); ++it)
+		for (std::vector<ScheduleInterval>::const_iterator it = m_periods.begin();
+			it != m_periods.end(); ++it)
 		{
 			it->writeXML(child);
 		}
@@ -117,4 +134,4 @@ TiXmlElement * Schedule::writeXML(TiXmlElement * parent) const {
 	return e;
 }
 
-} // namespace NANDRAD
+} // namespace VICUS

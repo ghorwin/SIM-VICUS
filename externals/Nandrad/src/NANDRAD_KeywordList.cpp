@@ -70,7 +70,7 @@ namespace NANDRAD {
 		"NaturalVentilationModel::modelType_t",
 		"NaturalVentilationModel::para_t",
 		"OutputDefinition::timeType_t",
-		"Schedule::type_t",
+		"Schedule::ScheduledDayType",
 		"Schedules::day_t",
 		"Schedules::flag_t",
 		"SerializationTest::test_t",
@@ -355,7 +355,7 @@ namespace NANDRAD {
 				case 1 : return "Mean";
 				case 2 : return "Integral";
 			} break;
-			// Schedule::type_t
+			// Schedule::ScheduledDayType
 			case 35 :
 			switch (t) {
 				case 0 : return "AllDays";
@@ -829,7 +829,7 @@ namespace NANDRAD {
 				case 1 : return "Mean";
 				case 2 : return "Integral";
 			} break;
-			// Schedule::type_t
+			// Schedule::ScheduledDayType
 			case 35 :
 			switch (t) {
 				case 0 : return "AllDays";
@@ -1304,7 +1304,7 @@ namespace NANDRAD {
 				case 1 : return "Average values in time (mean value in output step).";
 				case 2 : return "Integrate values in time.";
 			} break;
-			// Schedule::type_t
+			// Schedule::ScheduledDayType
 			case 35 :
 			switch (t) {
 				case 0 : return "All days (Weekend days and Weekdays).";
@@ -1778,7 +1778,7 @@ namespace NANDRAD {
 				case 1 : return "";
 				case 2 : return "";
 			} break;
-			// Schedule::type_t
+			// Schedule::ScheduledDayType
 			case 35 :
 			switch (t) {
 				case 0 : return "";
@@ -2252,7 +2252,7 @@ namespace NANDRAD {
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
-			// Schedule::type_t
+			// Schedule::ScheduledDayType
 			case 35 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -2726,7 +2726,7 @@ namespace NANDRAD {
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Schedule::type_t
+			// Schedule::ScheduledDayType
 			case 35 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -3030,7 +3030,7 @@ namespace NANDRAD {
 			case 33 : return 1;
 			// OutputDefinition::timeType_t
 			case 34 : return 3;
-			// Schedule::type_t
+			// Schedule::ScheduledDayType
 			case 35 : return 11;
 			// Schedules::day_t
 			case 36 : return 7;
@@ -3166,7 +3166,7 @@ namespace NANDRAD {
 			case 33 : return 0;
 			// OutputDefinition::timeType_t
 			case 34 : return 2;
-			// Schedule::type_t
+			// Schedule::ScheduledDayType
 			case 35 : return 10;
 			// Schedules::day_t
 			case 36 : return 6;
