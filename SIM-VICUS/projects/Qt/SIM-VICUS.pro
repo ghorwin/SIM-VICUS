@@ -96,6 +96,9 @@ SOURCES += \
 		../../src/SVDBPipeEditDialog.cpp \
 		../../src/SVDBPipeEditWidget.cpp \
 		../../src/SVDBPipeTableModel.cpp \
+	../../src/SVDBScheduleEditDialog.cpp \
+	../../src/SVDBScheduleEditWidget.cpp \
+	../../src/SVDBScheduleTableModel.cpp \
 		../../src/SVDBWindowEditDialog.cpp \
 				../../src/SVDatabase.cpp \
 		../../src/SVDialogSelectNetworkPipes.cpp \
@@ -106,7 +109,6 @@ SOURCES += \
 	../../src/SVPropFloorManagerWidget.cpp \
 		../../src/SVPropModeSelectionWidget.cpp \
 				../../src/SVPropNetworkEditWidget.cpp \
-	../../src/SVScheduleEditWidget.cpp \
 	../../src/SVScheduleHolidayWidget.cpp \
 				../../src/SVSimulationLocationOptions.cpp \
 				../../src/SVSimulationModelOptions.cpp \
@@ -208,6 +210,9 @@ HEADERS  += \
 		../../src/SVDBPipeEditDialog.h \
 		../../src/SVDBPipeEditWidget.h \
 		../../src/SVDBPipeTableModel.h \
+	../../src/SVDBScheduleEditDialog.h \
+	../../src/SVDBScheduleEditWidget.h \
+	../../src/SVDBScheduleTableModel.h \
 		../../src/SVDBWindowEditDialog.h \
 				../../src/SVDatabase.h \
 		../../src/SVDialogSelectNetworkPipes.h \
@@ -218,7 +223,6 @@ HEADERS  += \
 	../../src/SVPropFloorManagerWidget.h \
 		../../src/SVPropModeSelectionWidget.h \
 				../../src/SVPropNetworkEditWidget.h \
-	../../src/SVScheduleEditWidget.h \
 	../../src/SVScheduleHolidayWidget.h \
 				../../src/SVSimulationLocationOptions.h \
 				../../src/SVSimulationModelOptions.h \
@@ -314,6 +318,8 @@ FORMS    += \
 				../../src/SVDBNetworkComponentEditWidget.ui \
 				../../src/SVDBPipeEditDialog.ui \
 				../../src/SVDBPipeEditWidget.ui \
+				../../src/SVDBScheduleEditDialog.ui \
+				../../src/SVDBScheduleEditWidget.ui \
 				../../src/SVDBWindowEditDialog.ui \
 				../../src/SVDBWindowEditWidget.ui \
 				../../src/SVDialogSelectNetworkPipes.ui \
@@ -335,7 +341,6 @@ FORMS    += \
 				../../src/SVPropNetworkEditWidget.ui \
 				../../src/SVPropSiteWidget.ui \
 				../../src/SVPropVertexListWidget.ui \
-				../../src/SVScheduleEditWidget.ui \
 				../../src/SVScheduleHolidayWidget.ui \
 				../../src/SVSimulationLocationOptions.ui \
 				../../src/SVSimulationModelOptions.ui \
