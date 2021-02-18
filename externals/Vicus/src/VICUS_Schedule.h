@@ -1,7 +1,7 @@
 #ifndef VICUS_ScheduleH
 #define VICUS_ScheduleH
 
-#include <NANDRAD_LinearSplineParameter.h>
+#include <IBK_LinearSpline.h>
 
 #include <QString>
 #include <QColor>
@@ -51,9 +51,11 @@ public:
 	bool							m_useLinearInterpolation = true;	// XML:E
 
 	/*! Annual schedules are simply stored as linear spline. */
-	NANDRAD::LinearSplineParameter	m_annualSchedule;					// XML:E
+	IBK::LinearSpline				m_annualSchedule;					// XML:E
 
-	/*! Data is organized in periods of data. */
+	/*! Data is organized in periods of data.
+		Periods in vector must be consecutive in time.
+	*/
 	std::vector<ScheduleInterval>	m_periods;							// XML:E
 
 };

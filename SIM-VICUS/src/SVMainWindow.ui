@@ -117,6 +117,8 @@
     <addaction name="actionDBComponents"/>
     <addaction name="actionDBWindows"/>
     <addaction name="actionDBBoundaryConditions"/>
+    <addaction name="actionDBSchedules"/>
+    <addaction name="separator"/>
     <addaction name="actionDBNetworkPipes"/>
     <addaction name="actionDBHydraulicComponents"/>
    </widget>
@@ -510,6 +512,14 @@
    </property>
    <property name="text">
     <string>Show surface normals</string>
+   </property>
+  </action>
+  <action name="actionDBSchedules">
+   <property name="text">
+    <string>Schedules...</string>
+   </property>
+   <property name="toolTip">
+    <string>Schedules</string>
    </property>
   </action>
  </widget>

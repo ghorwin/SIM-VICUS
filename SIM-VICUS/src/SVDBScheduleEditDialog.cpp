@@ -21,33 +21,34 @@ SVDBScheduleEditDialog::SVDBScheduleEditDialog(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
-//	SVStyle::formatDatabaseTableView(m_ui->tableView);
-//	m_ui->tableView->horizontalHeader()->setVisible(true);
+	SVStyle::formatDatabaseTableView(m_ui->tableView);
+	m_ui->tableView->horizontalHeader()->setVisible(true);
 
-//	m_dbModel = new SVDBBoundaryConditionTableModel(this, SVSettings::instance().m_db);
+	m_dbModel = new SVDBScheduleTableModel(this, SVSettings::instance().m_db);
 
-//	m_proxyModel = new QSortFilterProxyModel(this);
-//	m_proxyModel->setSourceModel(m_dbModel);
-//	m_ui->tableView->setModel(m_proxyModel);
+	m_proxyModel = new QSortFilterProxyModel(this);
+	m_proxyModel->setSourceModel(m_dbModel);
+	m_ui->tableView->setModel(m_proxyModel);
 
-//	m_ui->editWidget->setup(&SVSettings::instance().m_db, m_dbModel);
+	m_ui->editWidget->setup(&SVSettings::instance().m_db, m_dbModel);
 
-//	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColId, QHeaderView::Fixed);
-//	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColCheck, QHeaderView::Fixed);
-//	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColName, QHeaderView::Stretch);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBScheduleTableModel::ColId, QHeaderView::Fixed);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBScheduleTableModel::ColCheck, QHeaderView::Fixed);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBScheduleTableModel::ColAnnualSplineData, QHeaderView::Fixed);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBScheduleTableModel::ColInterpolation, QHeaderView::Fixed);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBScheduleTableModel::ColName, QHeaderView::Stretch);
 
-//	connect(m_ui->tableView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)),
-//			this, SLOT(onCurrentIndexChanged(const QModelIndex &, const QModelIndex &)) );
+	connect(m_ui->tableView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)),
+			this, SLOT(onCurrentIndexChanged(const QModelIndex &, const QModelIndex &)) );
 
-//	resize(1200,600);
+	resize(1200,600);
 
-//	// set item delegate for coloring built-ins
-//	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn);
-//	m_ui->tableView->setItemDelegate(dg);
-
-//	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColCheck, QHeaderView::Fixed);
-//	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColColor, QHeaderView::Fixed);
+	// set item delegate for coloring built-ins
+	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn);
+	m_ui->tableView->setItemDelegate(dg);
 }
+
+
 SVDBScheduleEditDialog::~SVDBScheduleEditDialog() {
 	delete m_ui;
 }
@@ -89,7 +90,6 @@ int SVDBScheduleEditDialog::select(unsigned int initialId) {
 	}
 
 	// ask database model to update its content
-	// TODO : smart resizing of columns - restore user-defined column widths if adjusted by user
 	m_ui->tableView->resizeColumnsToContents();
 
 	int res = exec();
@@ -144,7 +144,7 @@ void SVDBScheduleEditDialog::on_toolButtonCopy_clicked() {
 	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
 
 	unsigned int id = m_dbModel->data(sourceIndex, Role_Id).toUInt();
-	const VICUS::BoundaryCondition * comp = SVSettings::instance().m_db.m_boundaryConditions[id];
+	const VICUS::Schedule * comp = SVSettings::instance().m_db.m_schedules[id];
 
 	// add item as copy
 	sourceIndex = m_dbModel->addNewItem(*comp);
@@ -180,7 +180,7 @@ void SVDBScheduleEditDialog::onCurrentIndexChanged(const QModelIndex &current, c
 
 		m_ui->toolButtonCopy->setEnabled(true);
 		m_ui->tableView->selectRow(current.row());
-		// retrieve current boundary condition ID
+		// retrieve current schedule ID
 		int compId = current.data(Role_Id).toInt();
 		m_ui->editWidget->updateInput(compId);
 	}
@@ -192,8 +192,8 @@ void SVDBScheduleEditDialog::on_pushButtonReloadUserDB_clicked() {
 							  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
 	{
 		// tell db to drop all user-defined elements and re-read the DB
-		SVSettings::instance().m_db.m_boundaryConditions.removeUserElements();
-		SVSettings::instance().m_db.readDatabases(SVDatabase::DT_BoundaryConditions);
+		SVSettings::instance().m_db.m_schedules.removeUserElements();
+		SVSettings::instance().m_db.readDatabases(SVDatabase::DT_Schedules);
 		// tell model to reset completely
 		m_dbModel->resetModel();
 		m_ui->editWidget->updateInput(-1);

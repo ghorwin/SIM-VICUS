@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>693</width>
-    <height>472</height>
+    <height>476</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -112,7 +112,7 @@
       </property>
       <layout class="QGridLayout" name="gridLayout_6">
        <item row="0" column="0">
-        <widget class="SVDBBoundaryConditionEditWidget" name="editWidget" native="true">
+        <widget class="SVDBScheduleEditWidget" name="editWidget" native="true">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -180,9 +180,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>SVDBBoundaryConditionEditWidget</class>
+   <class>SVDBScheduleEditWidget</class>
    <extends>QWidget</extends>
-   <header>SVDBBoundaryConditionEditWidget.h</header>
+   <header>SVDBScheduleEditWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

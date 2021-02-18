@@ -30,15 +30,15 @@ SVDBComponentEditDialog::SVDBComponentEditDialog(QWidget *parent) :
 
 	m_ui->editWidget->setup(&SVSettings::instance().m_db, m_dbModel);
 
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBComponentTableModel::ColCheck, QHeaderView::Fixed);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBComponentTableModel::ColColor, QHeaderView::Fixed);
+
 	connect(m_ui->tableView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)),
 			this, SLOT(onCurrentIndexChanged(const QModelIndex &, const QModelIndex &)) );
 
 	// set item delegate for coloring built-ins
 	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn);
 	m_ui->tableView->setItemDelegate(dg);
-
-	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBComponentTableModel::ColCheck, QHeaderView::Fixed);
-	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBComponentTableModel::ColColor, QHeaderView::Fixed);
 }
 
 

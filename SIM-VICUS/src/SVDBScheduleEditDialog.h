@@ -24,9 +24,9 @@ public:
 	void edit();
 
 	/*! Starts the dialog in "select schedule mode".
-		\param initialId The boundary condition indicated by this ID is initially selected.
-		\return If a boundary condition was selected and double-clicked/or the "Select" button was
-				pressed, the function returns the ID of the selected schedule condition. Otherwise, if the
+		\param initialId The schedule indicated by this ID is initially selected.
+		\return If a schedule was selected and double-clicked/or the "Select" button was
+				pressed, the function returns the ID of the selected schedule. Otherwise, if the
 				dialog was aborted, the function returns -1.
 	*/
 	int select(unsigned int initialId);

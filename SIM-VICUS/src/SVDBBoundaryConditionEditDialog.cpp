@@ -32,6 +32,7 @@ SVDBBoundaryConditionEditDialog::SVDBBoundaryConditionEditDialog(QWidget *parent
 
 	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColId, QHeaderView::Fixed);
 	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColCheck, QHeaderView::Fixed);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColColor, QHeaderView::Fixed);
 	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColName, QHeaderView::Stretch);
 
 	connect(m_ui->tableView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)),
@@ -42,9 +43,6 @@ SVDBBoundaryConditionEditDialog::SVDBBoundaryConditionEditDialog(QWidget *parent
 	// set item delegate for coloring built-ins
 	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn);
 	m_ui->tableView->setItemDelegate(dg);
-
-	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColCheck, QHeaderView::Fixed);
-	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColColor, QHeaderView::Fixed);
 }
 
 

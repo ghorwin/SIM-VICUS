@@ -87,7 +87,7 @@ void SVDatabase::writeDatabases() const {
 	m_pipes.writeXML(				userDbDir / "db_pipes.xml", "NetworkPipes");
 	m_fluids.writeXML(				userDbDir / "db_fluids.xml", "NetworkFluids");
 	m_networkComponents.writeXML(	userDbDir / "db_networkComponents.xml", "NetworkComponents");
-	m_networkComponents.writeXML(	userDbDir / "db_schedules.xml", "Schedules");
+	m_schedules.writeXML(			userDbDir / "db_schedules.xml", "Schedules");
 
 //	writeXMLDB(userDbDir / "db_epdElements.xml", "EPDDatasets", m_dbEPDElements);
 }

@@ -64,6 +64,7 @@
 #include "SVDBBoundaryConditionEditDialog.h"
 #include "SVDBPipeEditDialog.h"
 #include "SVDBNetworkComponentEditDialog.h"
+#include "SVDBScheduleEditDialog.h"
 
 #include "SVSimulationStartNandrad.h"
 #include "SVSimulationStartNetworkSim.h"
@@ -230,13 +231,17 @@ SVDBPipeEditDialog *SVMainWindow::dbPipeEditDialog(){
 	return m_dbPipeEditDialog;
 }
 
-SVDBNetworkComponentEditDialog *SVMainWindow::dbNetworkComponentEditDialog()
-{
+SVDBNetworkComponentEditDialog *SVMainWindow::dbNetworkComponentEditDialog() {
 	if (m_dbNetworkComponentEditDialog == nullptr)
 		m_dbNetworkComponentEditDialog = new SVDBNetworkComponentEditDialog(this);
 	return m_dbNetworkComponentEditDialog;
 }
 
+SVDBScheduleEditDialog *SVMainWindow::dbScheduleEditDialog() {
+	if (m_dbScheduleEditDialog == nullptr)
+		m_dbScheduleEditDialog = new SVDBScheduleEditDialog(this);
+	return m_dbScheduleEditDialog;
+}
 
 
 // *** public slots ***
@@ -267,6 +272,11 @@ void SVMainWindow::on_actionDBComponents_triggered() {
 
 void SVMainWindow::on_actionDBBoundaryConditions_triggered() {
 	dbBoundaryConditionEditDialog()->edit();
+}
+
+
+void SVMainWindow::on_actionDBSchedules_triggered() {
+	dbScheduleEditDialog()->edit();
 }
 
 
@@ -1566,3 +1576,4 @@ void SVMainWindow::on_actionViewShowSurfaceNormals_toggled(bool visible) {
 	// set corresponding flag in View
 	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->setNormalVectorsVisible(visible);
 }
+

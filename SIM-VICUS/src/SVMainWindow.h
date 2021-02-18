@@ -38,6 +38,7 @@ class SVDBComponentEditDialog;
 class SVDBBoundaryConditionEditDialog;
 class SVDBPipeEditDialog;
 class SVDBNetworkComponentEditDialog;
+class SVDBScheduleEditDialog;
 
 /*! Main window class. */
 class SVMainWindow : public QMainWindow {
@@ -109,6 +110,8 @@ public:
 	SVDBPipeEditDialog *dbPipeEditDialog();
 	/*! Returns the network component edit dialog. */
 	SVDBNetworkComponentEditDialog *dbNetworkComponentEditDialog();
+	/*! Returns the schedule edit dialog. */
+	SVDBScheduleEditDialog *dbScheduleEditDialog();
 
 
 public slots:
@@ -117,6 +120,7 @@ public slots:
 	void on_actionDBConstructions_triggered();
 	void on_actionDBComponents_triggered();
 	void on_actionDBBoundaryConditions_triggered();
+	void on_actionDBSchedules_triggered();
 	void on_actionDBHydraulicComponents_triggered();
 	void on_actionDBNetworkPipes_triggered();
 
@@ -222,6 +226,7 @@ private slots:
 
 
 	void on_actionViewShowSurfaceNormals_toggled(bool visible);
+
 
 private:
 	/*! Sets up all dock widgets with definition lists. */
@@ -361,6 +366,7 @@ private:
 	SVDBBoundaryConditionEditDialog		*m_dbBoundaryConditionEditDialog				= nullptr;
 	SVDBPipeEditDialog					*m_dbPipeEditDialog								= nullptr;
 	SVDBNetworkComponentEditDialog		*m_dbNetworkComponentEditDialog					= nullptr;
+	SVDBScheduleEditDialog				*m_dbScheduleEditDialog					= nullptr;
 
 	friend class SVThreadBase;
 

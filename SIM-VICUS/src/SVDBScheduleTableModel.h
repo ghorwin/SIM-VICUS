@@ -19,8 +19,9 @@ public:
 	/*! Columns shown in the table view. */
 	enum Columns {
 		ColId,
-		ColColor,
 		ColCheck,
+		ColAnnualSplineData,
+		ColInterpolation,
 		ColName,
 		NumColumns
 	};
@@ -49,7 +50,7 @@ public:
 	/*! Inserts a new item and returns the model index of the new item.
 		\note Pass-by-value is intended.
 	*/
-	QModelIndex addNewItem(VICUS::BoundaryCondition bc);
+	QModelIndex addNewItem(VICUS::Schedule sched);
 
 	/*! Removes a selected item.
 		\return Returns true on success, false if the item wasn't deleted (invalid index etc.)

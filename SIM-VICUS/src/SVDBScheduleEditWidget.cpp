@@ -64,8 +64,8 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 	updateInput(-1);
 }
 
-SVDBScheduleEditWidget::~SVDBScheduleEditWidget()
-{
+
+SVDBScheduleEditWidget::~SVDBScheduleEditWidget() {
 	delete m_ui;
 }
 
@@ -150,4 +150,18 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 void SVDBScheduleEditWidget::on_toolButtonAddPeriod_clicked(){
 	Q_ASSERT(m_current != nullptr);
 
+	// show start date input widget
+
+	// convert date to dayofyear
+
+	// check if such a period starting day has already been used, and if yes,
+	// show error message
+
+
+	// now create a new ScheduleInverval and insert into vector at appropriate position (sorted) and
+	// get resulting index of new ScheduleInverval in vector
+
+	// update table widget
+
+	// select ScheduleInverval table row by ScheduleInverval index -> this will show the editor for the newly created schedule
 }

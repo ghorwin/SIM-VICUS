@@ -19,7 +19,7 @@ SVDBScheduleTableModel::SVDBScheduleTableModel(QObject *parent, SVDatabase &db) 
 	QAbstractTableModel(parent),
 	m_db(&db)
 {
-	// must only be created from SVDBBoundaryConditionEditDialog
+	// must only be created from SVDBScheduleEditDialog
 	Q_ASSERT(dynamic_cast<SVDBScheduleEditDialog*>(parent) != nullptr);
 	Q_ASSERT(m_db != nullptr);
 }
@@ -38,13 +38,13 @@ QVariant SVDBScheduleTableModel::data ( const QModelIndex & index, int role) con
 		return QVariant();
 
 	// readability improvement
-	const VICUS::Database<VICUS::BoundaryCondition> & bcDB = m_db->m_boundaryConditions;
+	const VICUS::Database<VICUS::Schedule> & db = m_db->m_schedules;
 
 	int row = index.row();
-	if (row >= (int)bcDB.size())
+	if (row >= (int)db.size())
 		return QVariant();
 
-	std::map<unsigned int, VICUS::BoundaryCondition>::const_iterator it = bcDB.begin();
+	std::map<unsigned int, VICUS::Schedule>::const_iterator it = db.begin();
 	std::advance(it, row);
 
 	switch (role) {
@@ -62,25 +62,29 @@ QVariant SVDBScheduleTableModel::data ( const QModelIndex & index, int role) con
 		case Qt::SizeHintRole :
 			switch (index.column()) {
 				case ColCheck :
-				case ColColor :
+				case ColAnnualSplineData :
+				case ColInterpolation :
 					return QSize(22, 16);
 			} // switch
 		break;
 
 		case Qt::DecorationRole : {
-			if (index.column() == ColCheck) {
-				// TODO : Dirk, add isValid() function to VICUS::BoundaryCondition
-//				if (it->second.isValid(m_db->m_materials, m_db->m_constructions, m_db->m_boundaryConditions))
-					return QIcon("://gfx/actions/16x16/ok.png");
-//					else
-//					return QIcon("://gfx/actions/16x16/error.png");
-			}
-		} break;
+			switch (index.column()) {
+				case ColCheck:
+					if (it->second.isValid())
+						return QIcon("://gfx/actions/16x16/ok.png");
+					else
+						return QIcon("://gfx/actions/16x16/error.png");
 
-		case Qt::BackgroundRole : {
-			if (index.column() == ColColor) {
-				return it->second.m_color;
-			}
+				case ColAnnualSplineData :
+					// TODO : Dirk, select icon
+					return QIcon();
+
+				case ColInterpolation :
+					// TODO : Dirk, select icon
+					return QIcon();
+
+			} // switch
 		} break;
 
 		case Role_Id :
@@ -95,7 +99,7 @@ QVariant SVDBScheduleTableModel::data ( const QModelIndex & index, int role) con
 
 
 int SVDBScheduleTableModel::rowCount ( const QModelIndex & ) const {
-	return (int)m_db->m_boundaryConditions.size();
+	return (int)m_db->m_schedules.size();
 }
 
 
@@ -122,30 +126,20 @@ QVariant SVDBScheduleTableModel::headerData(int section, Qt::Orientation orienta
 
 
 QModelIndex SVDBScheduleTableModel::addNewItem() {
-	VICUS::BoundaryCondition bc;
-	bc.m_displayName.setEncodedString("en:<new boundary condition>");
-
-	//set default parameters
-	bc.m_heatConduction.m_modelType = NANDRAD::InterfaceHeatConduction::MT_Constant;
-	NANDRAD::KeywordList::setParameter(bc.m_heatConduction.m_para, "InterfaceHeatConduction::para_t", NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient, 8);
-
-	bc.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::MT_Constant;
-	NANDRAD::KeywordList::setParameter(bc.m_solarAbsorption.m_para, "InterfaceSolarAbsorption::para_t", NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient, 0.6);
-
-	bc.m_longWaveEmission.m_modelType = NANDRAD::InterfaceLongWaveEmission::MT_Constant;
-	NANDRAD::KeywordList::setParameter(bc.m_longWaveEmission.m_para, "InterfaceLongWaveEmission::para_t", NANDRAD::InterfaceLongWaveEmission::P_Emissivity, 0.9);
+	VICUS::Schedule sched;
+	sched.m_displayName.setEncodedString("en:<new schedule>");
 
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
-	unsigned int id = m_db->m_boundaryConditions.add( bc );
+	unsigned int id = m_db->m_schedules.add( sched );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;
 }
 
 
-QModelIndex SVDBScheduleTableModel::addNewItem(VICUS::BoundaryCondition bc) {
+QModelIndex SVDBScheduleTableModel::addNewItem(VICUS::Schedule sched) {
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
-	unsigned int id = m_db->m_boundaryConditions.add( bc );
+	unsigned int id = m_db->m_schedules.add( sched );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;
@@ -157,7 +151,7 @@ bool SVDBScheduleTableModel::deleteItem(QModelIndex index) {
 		return false;
 	unsigned int id = data(index, Role_Id).toUInt();
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	m_db->m_boundaryConditions.remove(id);
+	m_db->m_schedules.remove(id);
 	endRemoveRows();
 	return true;
 }
