@@ -12,7 +12,7 @@ class QModelIndex;
 
 class SVDBBoundaryConditionTableModel;
 
-/*! The edit dialog for component types. */
+/*! The edit dialog for boundary types. */
 class SVDBBoundaryConditionEditDialog : public QDialog{
 	Q_OBJECT
 
