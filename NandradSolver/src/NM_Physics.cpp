@@ -1,6 +1,7 @@
 #include "NM_Physics.h"
 
 #include <cmath>
+#include <IBK_assert.h>
 
 /*! Reynolds number where flow switches from laminar to transition state. */
 #define RE_LAMINAR		1700
@@ -44,20 +45,19 @@ double NusseltNumber(const double &reynolds, const double &prandtl, const double
 
 double NusseltNumberTurbulent(const double &reynolds, const double &prandtl, const double &l, const double &d)
 {
-	double f = FrictionFactorSimple(reynolds);
-	return f / 8. * (reynolds - 1000.)*prandtl /
-		(1. + 12.7 * std::sqrt(f / 8.) * (std::pow(prandtl, 0.6667) - 1.)) *
+	IBK_ASSERT(reynolds>0);
+	double zeta = std::pow(1.8 * std::log10(reynolds) - 1.5, -2.0);
+	return zeta / 8. * reynolds*prandtl /
+		(1. + 12.7 * std::sqrt(zeta / 8.) * (std::pow(prandtl, 0.6667) - 1.)) *
 							 (1. + std::pow(d / l, 0.6667));
 }
 
 double NusseltNumberLaminar(const double &reynolds, const double &prandtl, const double &l, const double &d)
 {
-	return std::pow( 49.37 + std::pow(1.615 * std::pow(reynolds * prandtl * d/l, 1/3) - 0.7, 3.0) , 1/3);
-}
-
-double FrictionFactorSimple(const double &reynolds)
-{
-	return std::pow(0.79 * std::log(reynolds) - 1.64, -2.0);
+	if (reynolds <=0)
+		return 3.66; // for velocity=0
+	else
+		return std::pow( 49.37 + std::pow(1.615 * std::pow(reynolds * prandtl * d/l, 1/3) - 0.7, 3.0) , 1/3);
 }
 
 double PrandtlNumber(const double &kinVis, const double &cp, const double &lambda, const double &rho)

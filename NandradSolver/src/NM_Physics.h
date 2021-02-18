@@ -49,11 +49,6 @@ double ReynoldsNumber(const double &v, const double &kinVis, const double &l);
 */
 double PrandtlNumber(const double &kinVis, const double &cp, const double &lambda, const double &rho);
 
-/*! Simple relation for friction factor for a turbulent fluid through a pipe. Only used for Nusselt calculation.
-	\param reynolds Reynolds number
-*/
-double FrictionFactorSimple(const double &reynolds);
-
 /*! Calculates nusselt number for laminar fluid flow through a pipe.
 	Nusselt number has fixed minimum to laminar
 	\param reynolds Reynolds number
@@ -64,7 +59,8 @@ double FrictionFactorSimple(const double &reynolds);
 */
 double NusseltNumberLaminar(const double &reynolds, const double &prandtl, const double &l, const double &d);
 
-/*! Calculates nusselt number for a turbulent fluid through a pipe.
+/*! Calculates nusselt number for a turbulent fluid through a pipe. Reynolds should not be 0! This function is only
+ * called by NusseltNumber() in case Re > RE_LAMINAR.
 	Nusselt number has fixed minimum to laminar
 	\param reynolds Reynolds number
 	\param prandtl Prandtl number

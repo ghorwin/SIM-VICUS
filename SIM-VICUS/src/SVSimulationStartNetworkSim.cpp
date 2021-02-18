@@ -53,6 +53,8 @@ void SVSimulationStartNetworkSim::edit() {
 														.arg(NANDRAD::KeywordList::Keyword("HydraulicNetwork::ModelType",
 																		NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork)),
 																		NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork);
+	m_ui->comboBoxModelType->setCurrentIndex(
+				m_ui->comboBoxModelType->findData(NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork));
 	updateLineEdits();
 	toggleRunButton();
 	updateCmdLine();
