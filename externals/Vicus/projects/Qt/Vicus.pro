@@ -105,6 +105,7 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_Component.cpp \
 	../../src/ncg/ncg_VICUS_ComponentInstance.cpp \
 	../../src/ncg/ncg_VICUS_Construction.cpp \
+	../../src/ncg/ncg_VICUS_DailyCycle.cpp \
 	../../src/ncg/ncg_VICUS_EPDDataset.cpp \
 	../../src/ncg/ncg_VICUS_Material.cpp \
 	../../src/ncg/ncg_VICUS_MaterialLayer.cpp \
@@ -119,6 +120,8 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_Room.cpp \
 	../../src/ncg/ncg_VICUS_Project.cpp \
 	../../src/ncg/ncg_VICUS_RotationMatrix.cpp \
+	../../src/ncg/ncg_VICUS_Schedule.cpp \
+	../../src/ncg/ncg_VICUS_ScheduleInterval.cpp \
 	../../src/ncg/ncg_VICUS_Surface.cpp \
 	../../src/ncg/ncg_VICUS_SurfaceProperties.cpp \
 	../../src/ncg/ncg_VICUS_ViewSettings.cpp \
