@@ -19,7 +19,8 @@ SVDatabase::SVDatabase() :
 	m_pipes(USER_ID_SPACE_START),
 	m_fluids(USER_ID_SPACE_START),
 	m_networkComponents(USER_ID_SPACE_START),
-	m_EPDElements(USER_ID_SPACE_START)
+	m_EPDElements(USER_ID_SPACE_START),
+	m_schedules(USER_ID_SPACE_START)
 {
 }
 
@@ -39,6 +40,7 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_pipes.readXML(			dbDir / "db_pipes.xml", "NetworkPipes", "NetworkPipe", true);
 		m_fluids.readXML(			dbDir / "db_fluids.xml", "NetworkFluids", "NetworkFluid", true);
 		m_networkComponents.readXML(dbDir / "db_networkComponents.xml", "NetworkComponents", "NetworkComponent", true);
+		m_schedules.readXML(		dbDir / "db_schedules.xml", "Schedules", "Schedule", true);
 
 	//	readXML(dbDir / "db_epdElements.xml", "EPDDatasets", "EPDDataset", m_dbEPDElements, true);
 	}
@@ -65,6 +67,8 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_fluids.readXML(			userDbDir / "db_fluids.xml", "NetworkFluids", "NetworkFluid", false);
 	if (t == NUM_DT || t == DT_NetworkComponents)
 		m_networkComponents.readXML(userDbDir / "db_networkComponents.xml", "NetworkComponents", "NetworkComponent", false);
+	if (t == NUM_DT || t == DT_Schedules)
+		m_schedules.readXML(		userDbDir / "db_schedules.xml", "Schedules", "Schedule", false);
 
 //	readXMLDB(userDbDir / "db_epdElements.xml", "EPDDatasets", "EPDDataset", m_dbEPDElements);
 }
@@ -83,6 +87,7 @@ void SVDatabase::writeDatabases() const {
 	m_pipes.writeXML(				userDbDir / "db_pipes.xml", "NetworkPipes");
 	m_fluids.writeXML(				userDbDir / "db_fluids.xml", "NetworkFluids");
 	m_networkComponents.writeXML(	userDbDir / "db_networkComponents.xml", "NetworkComponents");
+	m_networkComponents.writeXML(	userDbDir / "db_schedules.xml", "Schedules");
 
 //	writeXMLDB(userDbDir / "db_epdElements.xml", "EPDDatasets", m_dbEPDElements);
 }

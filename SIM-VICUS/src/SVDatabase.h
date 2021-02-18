@@ -14,6 +14,7 @@
 #include <VICUS_NetworkFluid.h>
 #include <VICUS_NetworkComponent.h>
 #include <VICUS_EPDDataset.h>
+#include <VICUS_Schedule.h>
 
 #include <VICUS_Database.h>
 
@@ -36,6 +37,7 @@ public:
 		DT_Pipes,
 		DT_Fluids,
 		DT_NetworkComponents,
+		DT_Schedules,
 		NUM_DT // used for "all"
 	};
 
@@ -83,6 +85,9 @@ public:
 
 	/*! Map of all database EPD elements */
 	VICUS::Database<VICUS::EPDDataset>					m_EPDElements;
+
+	/*! Map of all database schedules */
+	VICUS::Database<VICUS::Schedule>					m_schedules;
 
 private:
 	/*! Flag signaling whether any item in the database was modified or not. */
