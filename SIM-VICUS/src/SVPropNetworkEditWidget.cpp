@@ -259,25 +259,26 @@ void SVPropNetworkEditWidget::updateHeatExchangeProperties()
 	setAllHeatExchangeWidgetsVisible(false);
 
 	const VICUS::NetworkComponent *comp = currentComponent();
-
-	switch (comp->m_heatExchangeType) {
-		case VICUS::NetworkComponent::HT_HeatFluxConstant:{
-			m_ui->labelHeatFlux->setVisible(true);
-			m_ui->lineEditHeatFlux->setVisible(true);
-			break;
+	if (comp != nullptr) {
+		switch (comp->m_heatExchangeType) {
+			case VICUS::NetworkComponent::HT_HeatFluxConstant:{
+				m_ui->labelHeatFlux->setVisible(true);
+				m_ui->lineEditHeatFlux->setVisible(true);
+				break;
+			}
+			case VICUS::NetworkComponent::HT_TemperatureConstant:{
+				m_ui->labelTemperature->setVisible(true);
+				m_ui->lineEditTemperature->setVisible(true);
+				break;
+			}
+			case VICUS::NetworkComponent::HT_HeatFluxDataFile:
+			case VICUS::NetworkComponent::HT_TemperatureDataFile:{
+				m_ui->labelDataFile->setVisible(true);
+				m_ui->widgetBrowseFileNameData->setVisible(true);
+				break;
+			}
+			default:;
 		}
-		case VICUS::NetworkComponent::HT_TemperatureConstant:{
-			m_ui->labelTemperature->setVisible(true);
-			m_ui->lineEditTemperature->setVisible(true);
-			break;
-		}
-		case VICUS::NetworkComponent::HT_HeatFluxDataFile:
-		case VICUS::NetworkComponent::HT_TemperatureDataFile:{
-			m_ui->labelDataFile->setVisible(true);
-			m_ui->widgetBrowseFileNameData->setVisible(true);
-			break;
-		}
-		default:;
 	}
 
 	// content of widgets
