@@ -253,6 +253,11 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 
 	// create network
 	if (updateNetwork) {
+		// recolor
+		const SVViewState & vs = SVViewStateHandler::instance().viewState();
+		if (vs.m_viewMode == SVViewState::VM_PropertyEditMode) {
+			recolorObjects(vs.m_objectColorMode, vs.m_colorModePropertyID);
+		}
 		// we use the same shader as for building elements
 		m_networkGeometryObject.create(m_buildingShader->shaderProgram()); // Note: does nothing, if already existing
 
