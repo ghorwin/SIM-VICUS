@@ -66,10 +66,14 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui->lineEditX->setFormatter(new LineEditFormater);
 	m_ui->lineEditY->setFormatter(new LineEditFormater);
 	m_ui->lineEditZ->setFormatter(new LineEditFormater);
+	m_ui->lineEditInclination->setFormatter(new LineEditFormater);
+	m_ui->lineEditOrientation->setFormatter(new LineEditFormater);
 
 	m_ui->lineEditX->installEventFilter(this);
 	m_ui->lineEditY->installEventFilter(this);
 	m_ui->lineEditZ->installEventFilter(this);
+	m_ui->lineEditInclination->installEventFilter(this);
+	m_ui->lineEditOrientation->installEventFilter(this);
 
 	m_modificationState[MT_Translate] = MS_Absolute;
 	m_modificationState[MT_Rotate] = MS_Absolute;
@@ -103,7 +107,8 @@ void SVPropEditGeometry::setRotation(const IBKMK::Vector3D &normal) {
 	// TODO nochmal nachdenken
 
 
-	normal.normalized();
+	m_normal = normal.normalized();
+
 	m_ui->lineEditInclination->setText( QString("%L1").arg(std::acos(normal.m_z)/IBK::DEG2RAD, 0, 'f', 3) );
 
 	// positive y Richtung = Norden = Orientation 0°
@@ -116,16 +121,16 @@ void SVPropEditGeometry::setRotation(const IBKMK::Vector3D &normal) {
 void SVPropEditGeometry::onModified(int modificationType, ModificationInfo * ) {
 	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
 	switch (modType) {
-		case SVProjectHandler::BuildingGeometryChanged:
-		case SVProjectHandler::NodeStateModified:
-			// when the building geometry has changed, we need to update the geometrical info
-			// in the widget based on the current selection
-			// also, we assume any change in node states (visibility/selection) may impact our local
-			// coordinate system position
-			update(); // this might update the location of the local coordinate system!
-			break;
+	case SVProjectHandler::BuildingGeometryChanged:
+	case SVProjectHandler::NodeStateModified:
+		// when the building geometry has changed, we need to update the geometrical info
+		// in the widget based on the current selection
+		// also, we assume any change in node states (visibility/selection) may impact our local
+		// coordinate system position
+		update(); // this might update the location of the local coordinate system!
+		break;
 
-		default: ; // just to make compiler happy
+	default: ; // just to make compiler happy
 	}
 }
 
@@ -182,72 +187,16 @@ void SVPropEditGeometry::on_pushButtonAddZoneBox_clicked() {
 
 void SVPropEditGeometry::on_lineEditX_editingFinished() {
 	on_lineEditX_returnPressed();
-#if 0
-	if ( m_ui->lineEditX->isValid()){
-
-		double tempXValue = m_ui->lineEditX->value();
-		m_ui->lineEditX->setText( QString("%L1").arg(tempXValue,0, 'f', 3 ) );
-
-		switch ( m_modificationType ) {
-			case ( MT_Translate ):	m_xTransValue = tempXValue; break;
-			case ( MT_Rotate ):		m_xRotaValue = tempXValue; break;
-			case ( MT_Scale ):		m_xScaleValue = tempXValue; break;
-		}
-	}
-	else {
-		switch ( m_modificationType ) {
-			case ( MT_Translate ):	m_ui->lineEditX->setText( QString("%L1").arg(m_xTransValue,0, 'f', 3 ) ); break;
-			case ( MT_Rotate ):		m_ui->lineEditX->setText( QString("%L1").arg(m_xRotaValue,0, 'f', 3 ) ); break;
-			case ( MT_Scale ):		m_ui->lineEditX->setText( QString("%L1").arg(m_xScaleValue,0, 'f', 3 ) ); break;
-		}
-	}
-#endif
 }
 
 void SVPropEditGeometry::on_lineEditY_editingFinished()
 {
-#if 0
-	if ( m_ui->lineEditY->isValid()){
-		double tempYValue = m_ui->lineEditY->value();
-		m_ui->lineEditY->setText( QString("%L1").arg(tempYValue,0, 'f', 3 ) );
-		switch ( m_modificationType ) {
-			case ( MT_Translate ):	m_yTransValue = tempYValue; break;
-			case ( MT_Rotate ):		m_yRotaValue = tempYValue; break;
-			case ( MT_Scale ):		m_yScaleValue = tempYValue; break;
-		}
-	}
-	else {
-		switch ( m_modificationType ) {
-			case ( MT_Translate ):	m_ui->lineEditY->setText( QString("%L1").arg(m_yTransValue,0, 'f', 3 ) ); break;
-			case ( MT_Rotate ):		m_ui->lineEditY->setText( QString("%L1").arg(m_yRotaValue,0, 'f', 3 ) ); break;
-			case ( MT_Scale ):		m_ui->lineEditY->setText( QString("%L1").arg(m_yScaleValue,0, 'f', 3 ) ); break;
-		}
-	}
-#endif
+	on_lineEditY_returnPressed();
 }
 
 void SVPropEditGeometry::on_lineEditZ_editingFinished()
 {
-#if 0
-
-	if ( m_ui->lineEditZ->isValid()){
-		double tempZValue = m_ui->lineEditZ->value();
-		m_ui->lineEditZ->setText( QString("%L1").arg(tempZValue,0, 'f', 3 ) );
-
-		switch ( m_modificationType ) {
-			case ( MT_Translate ):	m_zTransValue = tempZValue; break;
-			case ( MT_Rotate ):		m_zRotaValue = tempZValue; break;
-			case ( MT_Scale ):		m_zScaleValue = tempZValue; break;
-		}
-	}
-	else {
-		switch ( m_modificationType ) {
-			case ( MT_Translate ):	m_ui->lineEditY->setText( QString("%L1").arg(m_yTransValue,0, 'f', 3 ) ); break;
-			case ( MT_Rotate ):		m_ui->lineEditY->setText( QString("%L1").arg(m_yRotaValue,0, 'f', 3 ) ); break;
-			case ( MT_Scale ):		m_ui->lineEditY->setText( QString("%L1").arg(m_yScaleValue,0, 'f', 3 ) ); break;
-		}
-	}
-#endif
+	on_lineEditZ_returnPressed();
 }
 
 
@@ -285,213 +234,86 @@ void SVPropEditGeometry::translate() {
 }
 
 
-void SVPropEditGeometry::scale(const QVector3D & scaleVec, const ModificationState &state, const bool &wheel) {
+void SVPropEditGeometry::scale() {
 
-	// now we update all selected surfaces
-	Vic3D::Transform3D trans;
+	// get translation and scale vector from selected geometry object
+	IBKMK::Vector3D scale = QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.scale());
+	IBKMK::Vector3D trans = QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.translation());
+
+	if (scale == IBKMK::Vector3D())
+		return;
 
 	// compose vector of modified surface geometries
 	std::vector<VICUS::Surface> modifiedSurfaces;
-	std::vector<const VICUS::Surface*> surfaces;
 
-	IBKMK::Vector3D centerPoint;
-	IBKMK::Vector3D centerPointLocal;
-
-	project().selectedSurfaces(surfaces, VICUS::Project::SG_All);
-	IBKMK::Vector3D boundingBox = project().boundingBox(surfaces, centerPointLocal);
-
-	if ( wheel ){
-		for ( VICUS::Surface s : m_relScaleSurfaces) {
-			for (const VICUS::Surface *surf : surfaces) {
-				if ( s.m_id == surf->m_id ) {
-					VICUS::Surface* surfNonConst = const_cast<VICUS::Surface*>(surf);
-					surfNonConst->m_geometry.setVertexes(s.m_geometry.vertexes());
-				}
-			}
-		}
-	}
-
-
-	// check if scale factor is not Null
-	if ( IBK::nearly_equal<3>( scaleVec.length(), 0.0 ) )
-		return;
-
-	if ( state == MS_Relative ) {
-		for (const VICUS::Surface* s : surfaces ) {
-			centerPoint = s->m_geometry.centerPoint();
-			std::vector<IBKMK::Vector3D> vs;
-			for ( IBKMK::Vector3D v : s->m_geometry.vertexes() ) {
+	// process all selected objects
+	for (const VICUS::Object * o : SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects) {
+		// handle surfaces
+		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
+		if (s != nullptr) {
+			VICUS::Surface modS(*s);
+			std::vector<IBKMK::Vector3D> vertexes = modS.m_geometry.vertexes();
+			for ( IBKMK::Vector3D & v : vertexes ) {
+				// use just this instead of making a QVetor3D
 				Vic3D::Transform3D t;
-				t.setTranslation( centerPoint.m_x + scaleVec.x() * ( v.m_x - centerPoint.m_x ),
-								  centerPoint.m_y + scaleVec.y() * ( v.m_y - centerPoint.m_y ),
-								  centerPoint.m_z + scaleVec.z() * ( v.m_z - centerPoint.m_z ) );
-				vs.push_back( QtExt::QVector2IBKVector( t.translation() ) );
+				t.scale(QtExt::IBKVector2QVector(scale) );
+				t.translate(QtExt::IBKVector2QVector(trans) );
+				t.setTranslation(t.toMatrix()*QtExt::IBKVector2QVector(v) );
+				v = QtExt::QVector2IBKVector(t.translation());
 			}
-			VICUS::Surface newS(*s);
-			newS.m_geometry.setVertexes(vs);
-			modifiedSurfaces.push_back(newS);
+			modS.m_geometry.setVertexes(vertexes);
+			modifiedSurfaces.push_back(modS);
 		}
-	}
-	else if ( state == MS_Local ) {
-
-		QVector3D xAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localXAxis();
-		QVector3D yAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localYAxis();
-		QVector3D zAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis();
-
-		for (const VICUS::Surface* s : surfaces ) {
-			std::vector<IBKMK::Vector3D> vs;
-			for ( IBKMK::Vector3D v : s->m_geometry.vertexes() ) {
-				Vic3D::Transform3D t;
-
-				// first we find the scaling factors of our local cooridnate system
-				double localScaleFactorX = ( v.m_x - centerPointLocal.m_x ) / ( IBK::nearly_equal<4>(xAxis.x(), 0.0) ? 1E10 : xAxis.x() ) +
-						( v.m_y - centerPointLocal.m_y ) / ( IBK::nearly_equal<4>(xAxis.y(), 0.0) ? 1E10 : xAxis.y() ) +
-						( v.m_z - centerPointLocal.m_z ) / ( IBK::nearly_equal<4>(xAxis.z(), 0.0) ? 1E10 : xAxis.z() );
-
-				double localScaleFactorY = ( v.m_x - centerPointLocal.m_x ) / ( IBK::nearly_equal<4>(yAxis.x(), 0.0) ? 1E10 : yAxis.x() ) +
-						( v.m_y - centerPointLocal.m_y ) / ( IBK::nearly_equal<4>(yAxis.y(), 0.0) ? 1E10 : yAxis.y() ) +
-						( v.m_z - centerPointLocal.m_z ) / ( IBK::nearly_equal<4>(yAxis.z(), 0.0) ? 1E10 : yAxis.z() );
-
-				double localScaleFactorZ = ( v.m_x - centerPointLocal.m_x ) / ( IBK::nearly_equal<4>(zAxis.x(), 0.0) ? 1E10 : zAxis.x() ) +
-						( v.m_y - centerPointLocal.m_y ) / ( IBK::nearly_equal<4>(zAxis.y(), 0.0) ? 1E10 : zAxis.y() ) +
-						( v.m_z - centerPointLocal.m_z ) / ( IBK::nearly_equal<4>(zAxis.z(), 0.0) ? 1E10 : zAxis.z() );
-
-				// then we scale our points
-				QVector3D p = QtExt::IBKVector2QVector(centerPointLocal)+ localScaleFactorX * scaleVec.x() * xAxis
-						+ localScaleFactorY * scaleVec.y() * yAxis
-						+ localScaleFactorZ * scaleVec.z() * zAxis;
-				t.setTranslation(p);
-				vs.push_back(QtExt::QVector2IBKVector(t.translation() ) );
-			}
-			VICUS::Surface newS(*s);
-			newS.m_geometry.setVertexes(vs);
-			modifiedSurfaces.push_back(newS);
-		}
-	}
-	else {
-
-		for (const VICUS::Surface* s : surfaces ) {
-			std::vector<IBKMK::Vector3D> vs;
-			for ( IBKMK::Vector3D v : s->m_geometry.vertexes() ) {
-				Vic3D::Transform3D t;
-				IBKMK::Vector3D newScale;
-
-				newScale.m_x = ( boundingBox.m_x == 0.0 ) ?  0 : ( scaleVec.x() / boundingBox.m_x );
-				newScale.m_y = ( boundingBox.m_y == 0.0 ) ?  0 : ( scaleVec.y() / boundingBox.m_y );
-				newScale.m_z = ( boundingBox.m_z == 0.0 ) ?  0 : ( scaleVec.z() / boundingBox.m_z );
-
-				t.setTranslation( centerPointLocal.m_x + newScale.m_x * ( v.m_x - centerPointLocal.m_x ),
-								  centerPointLocal.m_y + newScale.m_y * ( v.m_y - centerPointLocal.m_y),
-								  centerPointLocal.m_z + newScale.m_z * ( v.m_z - centerPointLocal.m_z) );
-				vs.push_back( QtExt::QVector2IBKVector( t.translation() ) );
-			}
-			VICUS::Surface newS(*s);
-			newS.m_geometry.setVertexes(vs);
-			modifiedSurfaces.push_back(newS);
-		}
-
+		// TODO : Netzwerk zeugs
 	}
 
-	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("modified surfaces"), modifiedSurfaces );
+	// also reset translation vector in selected geometry object
+	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.setTranslation(0,0,0);
+	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.setScale(1,1,1);
+	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Scaled geometry"), modifiedSurfaces );
 	undo->push();
-
 }
 
 
-void SVPropEditGeometry::rotate(const QVector3D & rotateVecDeg, const ModificationState &state) {
+void SVPropEditGeometry::rotate() {
 
-	// now we update all selected surfaces
-	VICUS::Project p = project();
-	Vic3D::Transform3D trans;
+	// get translation and scale vector from selected geometry object
+	QQuaternion rotate = SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.rotation();
+	QVector3D trans = SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.translation();
+
+	if (rotate == QQuaternion())
+		return;
 
 	// compose vector of modified surface geometries
 	std::vector<VICUS::Surface> modifiedSurfaces;
-	std::vector<const VICUS::Surface*> surfaces;
 
-	IBKMK::Vector3D centerPoint (0,0,0);
-	IBKMK::Vector3D centerPointLocal;
+	// process all selected objects
+	for (const VICUS::Object * o : SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects) {
+		// handle surfaces
+		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
+		if (s != nullptr) {
+			VICUS::Surface modS(*s);
+			std::vector<IBKMK::Vector3D> vertexes = modS.m_geometry.vertexes();
+			for ( IBKMK::Vector3D & v : vertexes ) {
+				// use just this instead of making a QVetor3D
+				QVector3D v3D = rotate.rotatedVector(QtExt::IBKVector2QVector(v) );
 
-	project().selectedSurfaces(surfaces, VICUS::Project::SG_All);
-	project().boundingBox(surfaces, centerPointLocal);
+				Vic3D::Transform3D t;
+				t.setTranslation( v3D );
+				t.translate(trans);
 
-	for (const VICUS::Surface* s : surfaces ) {
-		std::vector<IBKMK::Vector3D> vs;
-
-		IBKMK::Vector3D normal = ( surfaces.size() == 1 ?
-									   s->m_geometry.normal() :
-									   QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localXAxis() ) );
-
-		for ( IBKMK::Vector3D v : s->m_geometry.vertexes() ) {
-			Vic3D::Transform3D tTrans, tRota;
-
-			// translate point back to coordinate center
-			QVector3D v3D ( QtExt::IBKVector2QVector(v) );
-
-			if ( state == MS_Absolute ) {
-
-				centerPoint = centerPointLocal;
-
-				if ( checkVectors<4>( normal, QtExt::QVector2IBKVector(rotateVecDeg) ) )
-					return; // do nothing
-
-				QVector3D rotationAxis ( QtExt::IBKVector2QVector(normal.crossProduct(QtExt::QVector2IBKVector(rotateVecDeg) ) ) ) ;
-
-				tTrans.setTranslation( QtExt::IBKVector2QVector(-1*centerPoint) );
-				v3D = tTrans.toMatrix() * v3D;
-
-				tRota.rotate( angleBetweenVectorsDeg( normal, QtExt::QVector2IBKVector(rotateVecDeg) ), rotationAxis );
-				v3D = tRota.toMatrix() * v3D;
-
-			} else if ( state == MS_Local ) {
-
-				centerPoint = centerPointLocal;
-
-				tTrans.setTranslation( QtExt::IBKVector2QVector(-1*centerPoint) );
-				v3D = tTrans.toMatrix() * v3D;
-
-				QVector3D xAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localXAxis();
-				QVector3D yAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localYAxis();
-				QVector3D zAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis();
-
-				// rotate around specified axis
-				if ( !IBK::nearly_equal<3>( rotateVecDeg.x(), 0.0 ) )
-					tRota.rotate( rotateVecDeg.x(), xAxis );
-				if ( !IBK::nearly_equal<3>( rotateVecDeg.y(), 0.0 ) )
-					tRota.rotate( rotateVecDeg.y(), yAxis );
-				if ( !IBK::nearly_equal<3>( rotateVecDeg.z(), 0.0 ) )
-					tRota.rotate( rotateVecDeg.z(), zAxis );
-				v3D = tRota.toMatrix() * v3D;
+				v = QtExt::QVector2IBKVector(t.translation() );
 			}
-
-			else {
-				centerPoint = s->m_geometry.centerPoint();
-
-				tTrans.setTranslation( QtExt::IBKVector2QVector(-1*centerPoint) );
-				v3D = tTrans.toMatrix() * v3D;
-
-				Vic3D::CoordinateSystemObject coordinateSystem;
-
-				// rotate around specified axis
-				if ( !IBK::nearly_equal<3>( rotateVecDeg.x(), 0.0 ) )
-					tRota.rotate( rotateVecDeg.x(), 1, 0, 0 );
-				if ( !IBK::nearly_equal<3>( rotateVecDeg.y(), 0.0 ) )
-					tRota.rotate( rotateVecDeg.y(), 0, 1, 0 );
-				if ( !IBK::nearly_equal<3>( rotateVecDeg.z(), 0.0 ) )
-					tRota.rotate( rotateVecDeg.z(), 0, 0, 1 );
-				v3D = tRota.toMatrix() * v3D;
-			}
-			// translatae back to original center point
-			tTrans.setTranslation( centerPoint.m_x, centerPoint.m_y, centerPoint.m_z );
-			v3D = tTrans.toMatrix() * v3D;
-			vs.push_back( IBKMK::Vector3D( v3D.x(), v3D.y(), v3D.z() ) );
+			modS.m_geometry.setVertexes(vertexes);
+			modifiedSurfaces.push_back(modS);
 		}
-		VICUS::Surface newS(*s);
-		newS.m_geometry.setVertexes(vs);
-		modifiedSurfaces.push_back(newS);
-
+		// TODO : Netzwerk zeugs
 	}
 
-	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("modified surfaces"), modifiedSurfaces );
+	// also reset translation vector in selected geometry object
+	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.setTranslation(0,0,0);
+	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.setRotation(QQuaternion());
+	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Rotated geometry"), modifiedSurfaces );
 	undo->push();
 }
 
@@ -602,16 +424,15 @@ void SVPropEditGeometry::update() {
 			setRotation( QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis() ) );
 		}
 		// compute dimensions of bounding box (dx, dy, dz) and center point of all selected surfaces
-		IBKMK::Vector3D center;
-		m_boundingBoxDimension = project().boundingBox(surfaces, center);
+		m_boundingBoxDimension = project().boundingBox(surfaces, m_boundingBoxCenter);
 
 		// update local coordinates
 		Vic3D::Transform3D t;
-		t.setTranslation(QtExt::IBKVector2QVector(center) );
+		t.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
 		setCoordinates( t ); // calls updateInputs() internally
 
 		// update scaling factor
-		SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(QtExt::IBKVector2QVector(center) );
+		SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
 	}
 	else {
 		// only switch view state back to "Add geometry", when we are in geometry mode
@@ -649,212 +470,221 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event) {
 	if ( event->type() == QEvent::Wheel ) {
 		// we listen to scroll wheel turns only for some line edits
 		if (target == m_ui->lineEditX ||
-			target == m_ui->lineEditY ||
-			target == m_ui->lineEditZ)
-		{
+				target == m_ui->lineEditY ||
+				target == m_ui->lineEditZ ||
+				target == m_ui->lineEditInclination ||
+				target == m_ui->lineEditOrientation )
+		{	double delta = 0.0;
+
+			switch (m_modificationType) {
+			case MT_Translate:
+			case MT_Scale : delta = 0.01; break;
+			case MT_Rotate : delta = 1; break;
+			}
+
 			QWheelEvent *wheelEvent = static_cast<QWheelEvent*>(event);
 			// offset are changed in 0.01 steps
-			double offset = (wheelEvent->delta()>0) ? 0.01 : -0.01;
+			double offset = (wheelEvent->delta()>0) ? delta : -delta;
 			onWheelTurned(offset, (QtExt::ValidatingLineEdit*)target); // we know that target points to a ValidatingLineEdit
 		}
 
 #if 0
-			if (m_ui->lineEditX->isValid()) {
-				int sign = -1;
-				if ( wheelEvent->delta()>0 )
-					sign = 1;
+		if (m_ui->lineEditX->isValid()) {
+			int sign = -1;
+			if ( wheelEvent->delta()>0 )
+				sign = 1;
 
-				switch (m_modificationType) {
-					case MT_Translate:
-						m_xTransValue = std::floor( (m_xTransValue + sign*0.01+0.005)*100)/100;
-						m_ui->lineEditX->setText( QString("%L1").arg(m_xTransValue,0, 'f', 3) );
-						switch (state) {
-							case MS_Absolute:
-								translate( QVector3D ( m_xTransValue, m_yTransValue, m_zTransValue ),
-										   m_modificationState[MT_Translate] );
-								break;
+			switch (m_modificationType) {
+			case MT_Translate:
+				m_xTransValue = std::floor( (m_xTransValue + sign*0.01+0.005)*100)/100;
+				m_ui->lineEditX->setText( QString("%L1").arg(m_xTransValue,0, 'f', 3) );
+				switch (state) {
+				case MS_Absolute:
+					translate( QVector3D ( m_xTransValue, m_yTransValue, m_zTransValue ),
+							   m_modificationState[MT_Translate] );
+					break;
 
-							case MS_Relative:
-								translate( QVector3D ( sign*0.01, 0, 0 ),
-										   m_modificationState[MT_Translate] );
-								break;
-							case MS_Local:
-								translate( QVector3D ( sign*0.01, 0, 0 ),
-										   m_modificationState[MT_Translate] );
-								break;
-						}
-						break;
-					case MT_Scale:
-
-						m_xScaleValue = std::floor( (m_xScaleValue + sign*0.1+0.05)*10)/10;
-						m_ui->lineEditX->setText( QString("%L1").arg(m_xScaleValue,0, 'f', 3) );
-						switch (state) {
-							case MS_Absolute:
-								scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-									   m_modificationState[MT_Scale] );
-								break;
-							case MS_Local:
-								scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-									   m_modificationState[MT_Scale], true );
-								break;
-							case MS_Relative:
-								scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-									   m_modificationState[MT_Scale], true );
-								break;
-						}
-						break;
-					case MT_Rotate:
-						m_xRotaValue = std::floor(m_xRotaValue + sign*1+0.5);
-						m_ui->lineEditX->setText( QString("%L1").arg(m_xRotaValue,0, 'f', 3) );
-						switch (state) {
-							case MS_Absolute:
-								rotate( QVector3D ( sign, m_yRotaValue, m_zRotaValue ),
-										m_modificationState[MT_Rotate] );
-								break;
-							case MS_Local:
-								rotate( QVector3D ( sign, 0, 0 ),
-										m_modificationState[MT_Rotate] );
-								break;
-							case MS_Relative:
-								rotate( QVector3D ( sign, 0, 0 ),
-										m_modificationState[MT_Rotate] );
-								break;
-						}
-						break;
+				case MS_Relative:
+					translate( QVector3D ( sign*0.01, 0, 0 ),
+							   m_modificationState[MT_Translate] );
+					break;
+				case MS_Local:
+					translate( QVector3D ( sign*0.01, 0, 0 ),
+							   m_modificationState[MT_Translate] );
+					break;
 				}
+				break;
+			case MT_Scale:
+
+				m_xScaleValue = std::floor( (m_xScaleValue + sign*0.1+0.05)*10)/10;
+				m_ui->lineEditX->setText( QString("%L1").arg(m_xScaleValue,0, 'f', 3) );
+				switch (state) {
+				case MS_Absolute:
+					scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
+						   m_modificationState[MT_Scale] );
+					break;
+				case MS_Local:
+					scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
+						   m_modificationState[MT_Scale], true );
+					break;
+				case MS_Relative:
+					scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
+						   m_modificationState[MT_Scale], true );
+					break;
+				}
+				break;
+			case MT_Rotate:
+				m_xRotaValue = std::floor(m_xRotaValue + sign*1+0.5);
+				m_ui->lineEditX->setText( QString("%L1").arg(m_xRotaValue,0, 'f', 3) );
+				switch (state) {
+				case MS_Absolute:
+					rotate( QVector3D ( sign, m_yRotaValue, m_zRotaValue ),
+							m_modificationState[MT_Rotate] );
+					break;
+				case MS_Local:
+					rotate( QVector3D ( sign, 0, 0 ),
+							m_modificationState[MT_Rotate] );
+					break;
+				case MS_Relative:
+					rotate( QVector3D ( sign, 0, 0 ),
+							m_modificationState[MT_Rotate] );
+					break;
+				}
+				break;
 			}
 		}
-		else if (target == m_ui->lineEditY){
-			if (m_ui->lineEditY->isValid()) {
-				int sign = -1;
-				if ( wheelEvent->angleDelta().ry()>0 )
-					sign = 1;
-
-				switch (m_modificationType) {
-					case MT_Translate:
-						m_yTransValue = std::floor( (m_yTransValue + sign*0.01+0.005)*100)/100;
-						m_ui->lineEditY->setText( QString("%L1").arg(m_yTransValue,0, 'f', 3) );
-						switch (state) {
-							case MS_Absolute:
-								translate( QVector3D ( m_xTransValue, m_yTransValue, m_zTransValue ),
-										   m_modificationState[MT_Translate] );
-								break;
-							case MS_Relative:
-								translate( QVector3D ( 0, sign*0.01, 0 ),
-										   m_modificationState[MT_Translate] );
-								break;
-							case MS_Local:
-								translate( QVector3D ( 0, sign*0.01, 0),
-										   m_modificationState[MT_Translate] );
-								break;
-						}
-						break;
-					case MT_Scale:
-						m_yScaleValue = std::floor( (m_yScaleValue + sign*0.1+0.05)*10)/10;
-						m_ui->lineEditY->setText( QString("%L1").arg(m_yScaleValue,0, 'f', 3) );
-						switch (state) {
-							case MS_Absolute:
-								scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-									   m_modificationState[MT_Scale] );
-								break;
-							case MS_Local:
-								scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-									   m_modificationState[MT_Scale], true );
-								break;
-							case MS_Relative:
-								scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-									   m_modificationState[MT_Scale], true );
-								break;
-						}
-						break;
-					case MT_Rotate:
-						m_yRotaValue = std::floor(m_yRotaValue + sign*1+0.5);
-						m_ui->lineEditY->setText( QString("%L1").arg(m_yRotaValue,0, 'f', 3) );
-						switch (state) {
-							case MS_Absolute:
-								rotate( QVector3D ( 0, sign, 0 ),
-										m_modificationState[MT_Rotate] );
-								break;
-							case MS_Local:
-								rotate( QVector3D (0, sign, 0 ),
-										m_modificationState[MT_Rotate] );
-								break;
-							case MS_Relative:
-								rotate( QVector3D ( 0, sign, 0 ),
-										m_modificationState[MT_Rotate] );
-								break;
-						}
-						break;
-				}
-			}
-		}
-		else if (target == m_ui->lineEditZ){
-			if (m_ui->lineEditZ->isValid()) {
-				int sign = -1;
-				if ( wheelEvent->delta()>0 )
-					sign = 1;
-
-				switch (m_modificationType) {
-					case MT_Translate:
-						m_zTransValue = std::floor( (m_zTransValue + sign*0.01+0.005)*100 )/100;
-						m_ui->lineEditZ->setText( QString("%L1").arg(m_zTransValue,0, 'f', 3) );
-						switch (state) {
-							case MS_Absolute:
-								translate( QVector3D ( m_xTransValue, m_yTransValue, m_zTransValue ),
-										   m_modificationState[MT_Translate] );
-								break;
-							case MS_Relative:
-								translate( QVector3D ( 0, 0, sign*0.01 ),
-										   m_modificationState[MT_Translate] );
-								break;
-							case MS_Local:
-								translate( QVector3D ( 0, 0, sign*0.01 ),
-										   m_modificationState[MT_Translate] );
-								break;
-						}
-						break;
-					case MT_Scale:
-						m_zScaleValue = std::floor( (m_zScaleValue + sign*0.1+0.05)*10 )/10;
-						m_ui->lineEditZ->setText( QString("%L1").arg(m_zScaleValue,0, 'f', 3) );
-						switch (state) {
-							case MS_Absolute:
-								scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-									   m_modificationState[MT_Scale] );
-								break;
-							case MS_Local:
-								scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-									   m_modificationState[MT_Scale], true );
-								break;
-							case MS_Relative:
-								scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-									   m_modificationState[MT_Scale], true );
-								break;
-						}
-						break;
-					case MT_Rotate:
-						m_zRotaValue = std::floor(m_zRotaValue + sign*1+0.5);
-						m_ui->lineEditZ->setText( QString("%L1").arg(m_zRotaValue,0, 'f', 3) );
-						switch (state) {
-							case MS_Absolute:
-								rotate( QVector3D ( m_xRotaValue, m_yRotaValue, m_zRotaValue ),
-										m_modificationState[MT_Rotate] );
-								break;
-							case MS_Local:
-								rotate( QVector3D ( 0, 0, sign ),
-										m_modificationState[MT_Rotate] );
-								break;
-							case MS_Relative:
-								rotate( QVector3D ( 0, 0, sign ),
-										m_modificationState[MT_Rotate] );
-								break;
-						}
-						break;
-				}
-			}
-		}
-#endif
 	}
-	return false;
+	else if (target == m_ui->lineEditY){
+		if (m_ui->lineEditY->isValid()) {
+			int sign = -1;
+			if ( wheelEvent->angleDelta().ry()>0 )
+				sign = 1;
+
+			switch (m_modificationType) {
+			case MT_Translate:
+				m_yTransValue = std::floor( (m_yTransValue + sign*0.01+0.005)*100)/100;
+				m_ui->lineEditY->setText( QString("%L1").arg(m_yTransValue,0, 'f', 3) );
+				switch (state) {
+				case MS_Absolute:
+					translate( QVector3D ( m_xTransValue, m_yTransValue, m_zTransValue ),
+							   m_modificationState[MT_Translate] );
+					break;
+				case MS_Relative:
+					translate( QVector3D ( 0, sign*0.01, 0 ),
+							   m_modificationState[MT_Translate] );
+					break;
+				case MS_Local:
+					translate( QVector3D ( 0, sign*0.01, 0),
+							   m_modificationState[MT_Translate] );
+					break;
+				}
+				break;
+			case MT_Scale:
+				m_yScaleValue = std::floor( (m_yScaleValue + sign*0.1+0.05)*10)/10;
+				m_ui->lineEditY->setText( QString("%L1").arg(m_yScaleValue,0, 'f', 3) );
+				switch (state) {
+				case MS_Absolute:
+					scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
+						   m_modificationState[MT_Scale] );
+					break;
+				case MS_Local:
+					scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
+						   m_modificationState[MT_Scale], true );
+					break;
+				case MS_Relative:
+					scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
+						   m_modificationState[MT_Scale], true );
+					break;
+				}
+				break;
+			case MT_Rotate:
+				m_yRotaValue = std::floor(m_yRotaValue + sign*1+0.5);
+				m_ui->lineEditY->setText( QString("%L1").arg(m_yRotaValue,0, 'f', 3) );
+				switch (state) {
+				case MS_Absolute:
+					rotate( QVector3D ( 0, sign, 0 ),
+							m_modificationState[MT_Rotate] );
+					break;
+				case MS_Local:
+					rotate( QVector3D (0, sign, 0 ),
+							m_modificationState[MT_Rotate] );
+					break;
+				case MS_Relative:
+					rotate( QVector3D ( 0, sign, 0 ),
+							m_modificationState[MT_Rotate] );
+					break;
+				}
+				break;
+			}
+		}
+	}
+	else if (target == m_ui->lineEditZ){
+		if (m_ui->lineEditZ->isValid()) {
+			int sign = -1;
+			if ( wheelEvent->delta()>0 )
+				sign = 1;
+
+			switch (m_modificationType) {
+			case MT_Translate:
+				m_zTransValue = std::floor( (m_zTransValue + sign*0.01+0.005)*100 )/100;
+				m_ui->lineEditZ->setText( QString("%L1").arg(m_zTransValue,0, 'f', 3) );
+				switch (state) {
+				case MS_Absolute:
+					translate( QVector3D ( m_xTransValue, m_yTransValue, m_zTransValue ),
+							   m_modificationState[MT_Translate] );
+					break;
+				case MS_Relative:
+					translate( QVector3D ( 0, 0, sign*0.01 ),
+							   m_modificationState[MT_Translate] );
+					break;
+				case MS_Local:
+					translate( QVector3D ( 0, 0, sign*0.01 ),
+							   m_modificationState[MT_Translate] );
+					break;
+				}
+				break;
+			case MT_Scale:
+				m_zScaleValue = std::floor( (m_zScaleValue + sign*0.1+0.05)*10 )/10;
+				m_ui->lineEditZ->setText( QString("%L1").arg(m_zScaleValue,0, 'f', 3) );
+				switch (state) {
+				case MS_Absolute:
+					scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
+						   m_modificationState[MT_Scale] );
+					break;
+				case MS_Local:
+					scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
+						   m_modificationState[MT_Scale], true );
+					break;
+				case MS_Relative:
+					scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
+						   m_modificationState[MT_Scale], true );
+					break;
+				}
+				break;
+			case MT_Rotate:
+				m_zRotaValue = std::floor(m_zRotaValue + sign*1+0.5);
+				m_ui->lineEditZ->setText( QString("%L1").arg(m_zRotaValue,0, 'f', 3) );
+				switch (state) {
+				case MS_Absolute:
+					rotate( QVector3D ( m_xRotaValue, m_yRotaValue, m_zRotaValue ),
+							m_modificationState[MT_Rotate] );
+					break;
+				case MS_Local:
+					rotate( QVector3D ( 0, 0, sign ),
+							m_modificationState[MT_Rotate] );
+					break;
+				case MS_Relative:
+					rotate( QVector3D ( 0, 0, sign ),
+							m_modificationState[MT_Rotate] );
+					break;
+				}
+				break;
+			}
+		}
+	}
+#endif
+}
+return false;
 }
 
 
@@ -866,160 +696,44 @@ void SVPropEditGeometry::on_lineEditX_returnPressed() {
 		return;
 	}
 
-//	double tempXValue = m_ui->lineEditX->value();
+	//	double tempXValue = m_ui->lineEditX->value();
 	switch ( m_modificationType ) {
-		case MT_Translate:
-			translate(); break;
-#if 0
-			case ( MT_Rotate ): {
-				m_xRotaValue = tempXValue;
-				rotate( QVector3D ( m_xRotaValue, m_yRotaValue, m_zRotaValue ),
-						m_modificationState[MT_Rotate]);
-				break;
-			}
-			case MT_Scale: {
-
-				m_xScaleValue = tempXValue;
-
-				// reset line edits
-				switch (m_modificationState[MT_Scale]) {
-					case MS_Absolute: {
-						scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-							   m_modificationState[MT_Scale] );
-						IBKMK::Vector3D boundingBox;
-						std::vector<const VICUS::Surface*> surfaces;
-						project().selectedSurfaces(surfaces, VICUS::Project::SG_All);
-						project().boundingBox(surfaces, boundingBox);
-
-//						m_ui->lineEditX->setText( QString("%L1").arg( boundingBox.m_x,0, 'f', 3 ) );
-//						m_ui->lineEditY->setText( QString("%L1").arg( boundingBox.m_y,0, 'f', 3 ) );
-//						m_ui->lineEditZ->setText( QString("%L1").arg( boundingBox.m_z,0, 'f', 3 ) );
-
-						break;
-					}
-					case MS_Relative:
-					case MS_Local:
-						scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-							   m_modificationState[MT_Scale], true );
-						setRelativeScalingSurfaces();
-						m_ui->lineEditX->setText( QString("%L1").arg( 1.0,0, 'f', 3 ) );
-						m_ui->lineEditY->setText( QString("%L1").arg( 1.0,0, 'f', 3 ) );
-						m_ui->lineEditZ->setText( QString("%L1").arg( 1.0,0, 'f', 3 ) );
-						break;
-				}
-				break;
-			}
-		}
-#endif
+	case MT_Translate: translate(); break;
+	case MT_Scale: scale(); break;
+	case MT_Rotate: rotate(); break;
 	}
 }
 
-void SVPropEditGeometry::on_lineEditY_returnPressed()
-{
-#if 0
-	if ( m_ui->lineEditY->isValid()){
-		double tempYValue = m_ui->lineEditY->value();
-		switch ( m_modificationType ) {
-			case ( MT_Translate ):
-				m_yTransValue = tempYValue;
-				translate( QVector3D ( m_xTransValue, m_yTransValue, m_zTransValue ),
-						   m_modificationState[MT_Translate] );
-				break;
-			case ( MT_Rotate ):
-				m_yRotaValue = tempYValue;
-				rotate( QVector3D ( m_xRotaValue, m_yRotaValue, m_zRotaValue ),
-						m_modificationState[MT_Rotate]);
-				break;
-			case MT_Scale: {
+void SVPropEditGeometry::on_lineEditY_returnPressed() {
+	// check if entered value is valid, if not reset it to its default
 
-				m_yScaleValue = tempYValue;
-
-				// reset line edits
-				switch (m_modificationState[MT_Scale]) {
-					case MS_Absolute: {
-						scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-							   m_modificationState[MT_Scale] );
-						IBKMK::Vector3D center;
-						std::vector<const VICUS::Surface*> surfaces;
-						project().selectedSurfaces(surfaces, VICUS::Project::SG_All);
-						project().boundingBox(surfaces, center);
-
-//						m_ui->lineEditX->setText( QString("%L1").arg( center.m_x,0, 'f', 3 ) );
-//						m_ui->lineEditY->setText( QString("%L1").arg( center.m_y,0, 'f', 3 ) );
-//						m_ui->lineEditZ->setText( QString("%L1").arg( center.m_z,0, 'f', 3 ) );
-
-						break;
-					}
-					case MS_Relative:
-					case MS_Local:
-						scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-							   m_modificationState[MT_Scale], true );
-						setRelativeScalingSurfaces();
-						m_ui->lineEditX->setText( QString("%L1").arg( 1.0,0, 'f', 3 ) );
-						m_ui->lineEditY->setText( QString("%L1").arg( 1.0,0, 'f', 3 ) );
-						m_ui->lineEditZ->setText( QString("%L1").arg( 1.0,0, 'f', 3 ) );
-						break;
-				}
-				break;
-			}
-		}
+	if ( !m_ui->lineEditY->isValid() ) {
+		m_ui->lineEditY->setValue( m_originalValues.y() );
+		return;
 	}
-#endif
+
+	//	double tempXValue = m_ui->lineEditX->value();
+	switch ( m_modificationType ) {
+	case MT_Translate: translate(); break;
+	case MT_Scale: scale(); break;
+	case MT_Rotate: rotate(); break;
+	}
 }
 
-void SVPropEditGeometry::on_lineEditZ_returnPressed()
-{
-#if 0
-	if ( m_ui->lineEditZ->isValid()){
-		double tempZValue = m_ui->lineEditZ->value();
-		switch ( m_modificationType ) {
-			case ( MT_Translate ):
-				m_zTransValue = tempZValue;
-				translate( QVector3D ( m_xTransValue, m_yTransValue, m_zTransValue ),
-						   m_modificationState[MT_Translate] );
-				break;
-			case ( MT_Rotate ):
-				m_zRotaValue = tempZValue;
-				rotate( QVector3D ( m_xRotaValue, m_yRotaValue, m_zRotaValue ),
-						m_modificationState[MT_Rotate]);
-				break;
-			case MT_Scale: {
+void SVPropEditGeometry::on_lineEditZ_returnPressed(){
+	// check if entered value is valid, if not reset it to its default
 
-				m_zScaleValue = tempZValue;
-
-				// reset line edits
-				switch (m_modificationState[MT_Scale]) {
-					case MS_Absolute: {
-						scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-							   m_modificationState[MT_Scale] );
-						IBKMK::Vector3D center;
-						std::vector<const VICUS::Surface*> surfaces;
-						project().selectedSurfaces(surfaces, VICUS::Project::SG_All);
-						project().boundingBox(surfaces, center);
-
-//						m_ui->lineEditX->setText( QString("%L1").arg( center.m_x,0, 'f', 3 ) );
-//						m_ui->lineEditY->setText( QString("%L1").arg( center.m_y,0, 'f', 3 ) );
-//						m_ui->lineEditZ->setText( QString("%L1").arg( center.m_z,0, 'f', 3 ) );
-
-						break;
-					}
-					case MS_Relative:
-					case MS_Local:
-						scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-							   m_modificationState[MT_Scale], true );
-						setRelativeScalingSurfaces();
-						m_ui->lineEditX->setText( QString("%L1").arg( 1.0,0, 'f', 3 ) );
-						m_ui->lineEditY->setText( QString("%L1").arg( 1.0,0, 'f', 3 ) );
-						m_ui->lineEditZ->setText( QString("%L1").arg( 1.0,0, 'f', 3 ) );
-						break;
-				}
-				break;
-			}
-		}
+	if ( !m_ui->lineEditZ->isValid() ) {
+		m_ui->lineEditZ->setValue( m_originalValues.z() );
+		return;
 	}
-#endif
-}
 
+	switch ( m_modificationType ) {
+	case MT_Translate: translate(); break;
+	case MT_Scale: scale(); break;
+	case MT_Rotate: rotate(); break;
+	}
+}
 
 
 
@@ -1043,136 +757,105 @@ void SVPropEditGeometry::updateInputs() {
 	ModificationState state = m_modificationState[m_modificationType];
 
 	switch (m_modificationType) {
-		case MT_Translate : {
-			showDeg(false);
-			showRotation(false);
-			switch (state) {
+	case MT_Translate : {
+		showDeg(false);
+		showRotation(false);
+		switch (state) {
 
-				case MS_Absolute:
+		case MS_Absolute:
 
-					m_ui->labelX->setText("X");
-					m_ui->labelY->setText("Y");
-					m_ui->labelZ->setText("Z");
-
-					// cache current local coordinate systems position as fall-back values
-					m_originalValues = m_localCoordinatePosition.translation();
-
-					m_ui->lineEditX->setValue(m_localCoordinatePosition.translation().x() );
-					m_ui->lineEditY->setValue(m_localCoordinatePosition.translation().y() );
-					m_ui->lineEditZ->setValue(m_localCoordinatePosition.translation().z() );
-				break;
-
-				default:
-
-					m_ui->labelX->setText("ΔX");
-					m_ui->labelY->setText("ΔY");
-					m_ui->labelZ->setText("ΔZ");
-
-					m_originalValues = QVector3D();
-
-					m_ui->lineEditX->setValue(0);
-					m_ui->lineEditY->setValue(0);
-					m_ui->lineEditZ->setValue(0);
-
-			}
-
-		} break;
-
-
-		case MT_Rotate: {
-			showDeg();
-			showRotation(false);
-
-#if 0
 			m_ui->labelX->setText("X");
 			m_ui->labelY->setText("Y");
 			m_ui->labelZ->setText("Z");
 
-			switch (state) {
-				case MS_Absolute: {
-					showRotation();
-					showDeg(false);
-					m_ui->horizontalLayoutAbsRotate->setEnabled(true);
+			// cache current local coordinate systems position as fall-back values
+			m_originalValues = m_localCoordinatePosition.translation();
 
-					std::vector<const VICUS::Surface*> surfaces;
+			m_ui->lineEditX->setValue(m_localCoordinatePosition.translation().x() );
+			m_ui->lineEditY->setValue(m_localCoordinatePosition.translation().y() );
+			m_ui->lineEditZ->setValue(m_localCoordinatePosition.translation().z() );
+			break;
 
-					IBKMK::Vector3D centerPoint (0,0,0);
-					IBKMK::Vector3D centerPointLocal;
+		default:
 
-					project().selectedSurfaces(surfaces, VICUS::Project::SG_All);
+			m_ui->labelX->setText("ΔX");
+			m_ui->labelY->setText("ΔY");
+			m_ui->labelZ->setText("ΔZ");
 
-					m_ui->labelRotateInclinationAbs->setEnabled(true);
-					m_ui->labelRotateOrientationAbs->setEnabled(true);
-					m_ui->lineEditInclination->setEnabled(true);
-					m_ui->lineEditOrientation->setEnabled(true);
+			m_originalValues = QVector3D();
 
-					if ( surfaces.size() == 1 )
-						const VICUS::Surface* s = surfaces[0];
-					else
-						setRotation(QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis() ) );
+			m_ui->lineEditX->setValue(0);
+			m_ui->lineEditY->setValue(0);
+			m_ui->lineEditZ->setValue(0);
 
+		}
 
-					m_ui->lineEditX->setValue(0);
-					m_ui->lineEditY->setValue(0);
-					m_ui->lineEditZ->setValue(0);
-				}
-					break;
-
-				default:
-					m_ui->lineEditX->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
-					m_ui->lineEditY->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
-					m_ui->lineEditZ->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
-
-			}
-#endif
-		} break;
+	} break;
 
 
-		case MT_Scale: {
-#if 0
+	case MT_Rotate: {
+		showDeg();
+		showRotation(false);
+
+
+		m_ui->labelX->setText("X");
+		m_ui->labelY->setText("Y");
+		m_ui->labelZ->setText("Z");
+
+		switch (state) {
+		case MS_Absolute: {
+			showRotation();
 			showDeg(false);
-			showRotation(false);
 
-			switch (state) {
-				case MS_Absolute: {
+			m_ui->lineEditX->setValue(0);
+			m_ui->lineEditY->setValue(0);
+			m_ui->lineEditZ->setValue(0);
+		}
+			break;
 
-					m_ui->labelX->setText("L<sub>X</sub>");
-					m_ui->labelY->setText("W<sub>Y</sub>");
-					m_ui->labelZ->setText("H<sub>Z</sub>");
+		default:
+			m_ui->lineEditX->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
+			m_ui->lineEditY->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
+			m_ui->lineEditZ->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
 
-					IBKMK::Vector3D centerPoint;
-					std::vector<const VICUS::Surface*> surfaces;
-					project().selectedSurfaces(surfaces, VICUS::Project::SG_All);
-					IBKMK::Vector3D v = project().boundingBox(surfaces, centerPoint);
-					m_ui->lineEditX->setText( QString("%L1").arg( v.m_x,0, 'f', 3 ) );
-					m_ui->lineEditY->setText( QString("%L1").arg( v.m_y,0, 'f', 3 ) );
-					m_ui->lineEditZ->setText( QString("%L1").arg( v.m_z,0, 'f', 3 ) );
+		}
 
-					m_xScaleValue = v.m_x;
-					m_yScaleValue = v.m_y;
-					m_zScaleValue = v.m_z;
+	} break;
 
-					break;
-				}
-				default:
-					m_ui->labelX->setText("X");
-					m_ui->labelY->setText("Y");
-					m_ui->labelZ->setText("Z");
 
-					setRelativeScalingSurfaces();
+	case MT_Scale: {
 
-					m_xScaleValue = 1.0;
-					m_yScaleValue = 1.0;
-					m_zScaleValue = 1.0;
+		showDeg(false);
+		showRotation(false);
 
-					m_ui->lineEditX->setText( QString("%L1").arg( 1.0,0, 'f', 3 ) );
-					m_ui->lineEditY->setText( QString("%L1").arg( 1.0,0, 'f', 3 ) );
-					m_ui->lineEditZ->setText( QString("%L1").arg( 1.0,0, 'f', 3 ) );
+		switch (state) {
+		case MS_Absolute: {
 
-			}
-		} break;
-#endif
-		} break;
+			m_ui->labelX->setText("L<sub>X</sub>");
+			m_ui->labelY->setText("W<sub>Y</sub>");
+			m_ui->labelZ->setText("H<sub>Z</sub>");
+
+			m_originalValues = QtExt::IBKVector2QVector(m_boundingBoxCenter);
+
+			m_ui->lineEditX->setValue(m_boundingBoxDimension.m_x);
+			m_ui->lineEditY->setValue(m_boundingBoxDimension.m_y);
+			m_ui->lineEditZ->setValue(m_boundingBoxDimension.m_z);
+
+			break;
+		}
+		default:
+			m_ui->labelX->setText("X");
+			m_ui->labelY->setText("Y");
+			m_ui->labelZ->setText("Z");
+
+			m_originalValues = QVector3D( 1,1,1 );
+
+			m_ui->lineEditX->setValue(m_originalValues.x() );
+			m_ui->lineEditY->setValue(m_originalValues.y() );
+			m_ui->lineEditZ->setValue(m_originalValues.z() );
+
+		}
+	} break;
 	}
 }
 
@@ -1184,16 +867,16 @@ void SVPropEditGeometry::setToolButton(const SVPropEditGeometry::ModificationTyp
 	m_ui->toolButtonScale->setChecked(false);
 
 	switch (type) {
-		case MT_Translate:
-			m_ui->toolButtonTrans->setChecked(true);
-			break;
-		case MT_Rotate:
-			m_ui->toolButtonRotate->setChecked(true);
-			break;
-		case MT_Scale:
-			m_ui->toolButtonScale->setChecked(true);
-			break;
-		case NUM_MT:; // just to make compiler happy
+	case MT_Translate:
+		m_ui->toolButtonTrans->setChecked(true);
+		break;
+	case MT_Rotate:
+		m_ui->toolButtonRotate->setChecked(true);
+		break;
+	case MT_Scale:
+		m_ui->toolButtonScale->setChecked(true);
+		break;
+	case NUM_MT:; // just to make compiler happy
 	}
 }
 
@@ -1202,22 +885,22 @@ void SVPropEditGeometry::setComboBox(const ModificationType & type, const Modifi
 	m_ui->comboBox->clear();
 
 	switch (type) {
-		case MT_Translate:
-			m_ui->comboBox->addItem( tr("move to position:") );
-			m_ui->comboBox->addItem( tr("move relative using global coordinate system:") );
-			m_ui->comboBox->addItem( tr("move relative using local coordinate system:") );
-			break;
-		case MT_Rotate:
-			m_ui->comboBox->addItem( tr("rotate absolute:") );
-			m_ui->comboBox->addItem( tr("rotate relative to center of each surface:") );
-			m_ui->comboBox->addItem( tr("rotate relative using local coordinate system:") );
-			break;
-		case MT_Scale:
-			m_ui->comboBox->addItem( tr("resize surfaces:") );
-			m_ui->comboBox->addItem( tr("scale relative to center of each surface:") );
-			m_ui->comboBox->addItem( tr("scale relative to local coordinate system:") );
-			break;
-		case NUM_MT: ;// avoid compiler warning
+	case MT_Translate:
+		m_ui->comboBox->addItem( tr("move to position:") );
+		m_ui->comboBox->addItem( tr("move relative using global coordinate system:") );
+		m_ui->comboBox->addItem( tr("move relative using local coordinate system:") );
+		break;
+	case MT_Rotate:
+		m_ui->comboBox->addItem( tr("rotate absolute:") );
+		m_ui->comboBox->addItem( tr("rotate relative to center of each surface:") );
+		m_ui->comboBox->addItem( tr("rotate relative using local coordinate system:") );
+		break;
+	case MT_Scale:
+		m_ui->comboBox->addItem( tr("resize surfaces:") );
+		m_ui->comboBox->addItem( tr("scale relative to center of each surface:") );
+		m_ui->comboBox->addItem( tr("scale relative to local coordinate system:") );
+		break;
+	case NUM_MT: ;// avoid compiler warning
 	}
 
 	m_ui->comboBox->setCurrentIndex((int)state);
@@ -1292,50 +975,31 @@ void SVPropEditGeometry::on_toolButtonScale_clicked() {
 }
 
 
-void SVPropEditGeometry::on_lineEditOrientation_returnPressed()
-{
-	if ( m_ui->lineEditOrientation->isValid() && m_ui->lineEditInclination->isValid() ) {
-		double oriRad = m_ui->lineEditOrientation->value() * IBK::DEG2RAD;
-		double incliRad = m_ui->lineEditInclination->value() * IBK::DEG2RAD;
-
-		m_orientation = oriRad / IBK::DEG2RAD;
-		m_inclination = incliRad / IBK::DEG2RAD;
-
-		QVector3D newNormal (std::sin( oriRad ) * std::sin( incliRad ),
-							 std::cos( oriRad ) * std::sin( incliRad ),
-							 std::cos( incliRad ) );
-		rotate(newNormal, m_modificationState[m_modificationType]);
-
+void SVPropEditGeometry::on_lineEditOrientation_returnPressed() {
+	if ( !m_ui->lineEditOrientation->isValid() ) {
+		m_ui->lineEditOrientation->setValue( m_originalValues.x() );
+		return;
 	}
 
+	rotate();
 }
 
-void SVPropEditGeometry::on_lineEditInclination_returnPressed()
-{
-	if ( m_ui->lineEditOrientation->isValid() && m_ui->lineEditInclination->isValid() ) {
-		double oriRad = m_ui->lineEditOrientation->value() * IBK::DEG2RAD;
-		double incliRad = m_ui->lineEditInclination->value() * IBK::DEG2RAD;
+void SVPropEditGeometry::on_lineEditInclination_returnPressed() {
 
-		m_orientation = oriRad / IBK::DEG2RAD;
-		m_inclination = incliRad / IBK::DEG2RAD;
-
-		QVector3D newNormal (std::sin( oriRad ) * std::sin( incliRad ),
-							 std::cos( oriRad ) * std::sin( incliRad ),
-							 std::cos( incliRad ) );
-		rotate(newNormal, m_modificationState[m_modificationType]);
+	if ( !m_ui->lineEditInclination->isValid() ) {
+		m_ui->lineEditInclination->setValue( m_originalValues.x() );
+		return;
 	}
+
+	rotate();
 }
 
-void SVPropEditGeometry::on_lineEditOrientation_editingFinished()
-{
-	if ( m_ui->lineEditOrientation->isValid() )
-		m_orientation = m_ui->lineEditOrientation->value();
+void SVPropEditGeometry::on_lineEditOrientation_editingFinished() {
+	on_lineEditOrientation_returnPressed();
 }
 
-void SVPropEditGeometry::on_lineEditInclination_editingFinished()
-{
-	if ( m_ui->lineEditInclination->isValid() )
-		m_orientation = m_ui->lineEditInclination->value();
+void SVPropEditGeometry::on_lineEditInclination_editingFinished() {
+	on_lineEditInclination_returnPressed();
 }
 
 
@@ -1354,13 +1018,11 @@ void SVPropEditGeometry::on_lineEditCopyX_returnPressed()
 
 }
 
-void SVPropEditGeometry::on_lineEditCopyY_returnPressed()
-{
+void SVPropEditGeometry::on_lineEditCopyY_returnPressed() {
 
 }
 
-void SVPropEditGeometry::on_lineEditCopyZ_returnPressed()
-{
+void SVPropEditGeometry::on_lineEditCopyZ_returnPressed() {
 
 }
 
@@ -1389,9 +1051,14 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 		return;
 
 	ModificationState state = m_modificationState[m_modificationType];
+	ModificationType type = m_modificationType;
 
-	// compose translation vector depending on translation mode
-	switch (state) {
+	// compose all transformation values
+	switch (type) {
+	case MT_Translate: {
+
+		// compose translation vector depending on translation mode
+		switch (state) {
 		// Move local coordinate system to given global coordinates.
 		case MS_Absolute : {
 			// for this operation, we need all three coordinates
@@ -1406,7 +1073,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
 		} break;
 
-		// inputs are global coordinate offsets
+			// inputs are global coordinate offsets
 		case MS_Relative : {
 			// for this operation, we need all three coordinates
 			QVector3D translation((float)m_ui->lineEditX->value(), (float)m_ui->lineEditY->value(), (float)m_ui->lineEditZ->value());
@@ -1414,10 +1081,11 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 			Vic3D::Transform3D trans;
 			trans.setTranslation(translation);
 			SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = trans;
+			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
 			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
 		} break;
 
-		// inputs are local coordinate offsets
+			// inputs are local coordinate offsets
 		case MS_Local : {
 			// for this operation, we need all three coordinates
 			const QVector3D LocalX(1.0f, 0.0f, 0.0f);
@@ -1434,10 +1102,173 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 			Vic3D::Transform3D trans;
 			trans.setTranslation(translation);
 			SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = trans;
+			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
 			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
 		} break;
-	}
+		}
+	} break;
+	case MT_Scale: {
+		switch (state) {
+		case MS_Absolute: {
+			// for this operation, we need at first the dimensions of the bounding box from
+			QVector3D targetScale((float)m_ui->lineEditX->value(), (float)m_ui->lineEditY->value(), (float)m_ui->lineEditZ->value());
+			// compute offset from current local coordinate system position
+			QVector3D scale;
 
+			scale.setX(targetScale.x() / ( m_boundingBoxDimension.m_x < 1E-4 ? 1.0 : m_boundingBoxDimension.m_x ) );
+			scale.setY(targetScale.y() / ( m_boundingBoxDimension.m_y < 1E-4 ? 1.0 : m_boundingBoxDimension.m_y ) );
+			scale.setZ(targetScale.z() / ( m_boundingBoxDimension.m_z < 1E-4 ? 1.0 : m_boundingBoxDimension.m_z ) );
+			// now compose a transform object and set it in the wireframe object
+			// first we scale our selected objects
+			Vic3D::Transform3D scaling;
+			scaling.setScale(scale);
+
+			// and the we also hav to guarantee that the center point of the bounding box stays at the same position
+			// this can be achieved since the center points are also just scaled by the specified scaling factors
+			// so we know how big the absolute translation has to be
+			QVector3D trans;
+			trans.setX( m_boundingBoxDimension.m_x < 1E-4 ? 0.0 : m_boundingBoxCenter.m_x * ( 1 - scale.x() ) );
+			trans.setY( m_boundingBoxDimension.m_y < 1E-4 ? 0.0 : m_boundingBoxCenter.m_y * ( 1 - scale.y() ) );
+			trans.setZ( m_boundingBoxDimension.m_z < 1E-4 ? 0.0 : m_boundingBoxCenter.m_z * ( 1 - scale.z() ) );
+			scaling.setTranslation(trans);
+
+			// we give our transformation to the wire frame object
+			SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = scaling;
+			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow(); // needed right now since two surfaces are shown
+			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+		} break;
+		case MS_Local: {
+			// for this operation, we get directly the surface scaling factors from the line edits
+			// so it is basically like the absolute scaling, but we do not have to calculate the scaling factors
+			// compute offset from current local coordinate system position
+			const QVector3D xAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localXAxis();
+			const QVector3D yAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localYAxis();
+			const QVector3D zAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis();
+
+			QVector3D scale((float)m_ui->lineEditX->value()*( xAxis.x()+yAxis.x()+zAxis.x() ),
+							(float)m_ui->lineEditY->value()*( xAxis.y()+yAxis.y()+zAxis.y() ),
+							(float)m_ui->lineEditZ->value()*( xAxis.z()+yAxis.z()+zAxis.z() ));
+
+			Vic3D::Transform3D scaling;
+			scaling.setScale(scale);
+
+			// and the we also hav to guarantee that the center point of the bounding box stays at the same position
+			// this can be achieved since the center points are also just scaled by the specified scaling factors
+			// so we know how big the absolute translation has to be
+			QVector3D trans;
+			trans.setX( m_boundingBoxDimension.m_x < 1E-4 ? 0.0 : m_boundingBoxCenter.m_x * ( 1 - scale.x() ) );
+			trans.setY( m_boundingBoxDimension.m_y < 1E-4 ? 0.0 : m_boundingBoxCenter.m_y * ( 1 - scale.y() ) );
+			trans.setZ( m_boundingBoxDimension.m_z < 1E-4 ? 0.0 : m_boundingBoxCenter.m_z * ( 1 - scale.z() ) );
+
+			// we give our transformation to the wire frame object
+			scaling.setTranslation(trans);
+			SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = scaling;
+			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
+			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+		} break;
+		case MS_Relative: {
+			// for this operation, we get directly the surface scaling factors from the line edits
+			// so it is basically like the absolute scaling, but we do not have to calculate the scaling factors
+			QVector3D scale((float)m_ui->lineEditX->value(), (float)m_ui->lineEditY->value(), (float)m_ui->lineEditZ->value());
+			// compute offset from current local coordinate system position
+			Vic3D::Transform3D scaling;
+			scaling.setScale(scale);
+
+			// and the we also hav to guarantee that the center point of the bounding box stays at the same position
+			// this can be achieved since the center points are also just scaled by the specified scaling factors
+			// so we know how big the absolute translation has to be
+			QVector3D trans;
+			trans.setX( m_boundingBoxDimension.m_x < 1E-4 ? 0.0 : m_boundingBoxCenter.m_x * ( 1 - scale.x() ) );
+			trans.setY( m_boundingBoxDimension.m_y < 1E-4 ? 0.0 : m_boundingBoxCenter.m_y * ( 1 - scale.y() ) );
+			trans.setZ( m_boundingBoxDimension.m_z < 1E-4 ? 0.0 : m_boundingBoxCenter.m_z * ( 1 - scale.z() ) );
+
+			// we give our transformation to the wire frame object
+			scaling.setTranslation(trans);
+			SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = scaling;
+			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
+			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+		} break;
+		}
+	} break;
+	case MT_Rotate: {
+		switch (state) {
+		case MS_Absolute: {
+
+			double oriRad = m_ui->lineEditOrientation->value() * IBK::DEG2RAD;
+			double incliRad = m_ui->lineEditInclination->value() * IBK::DEG2RAD;
+
+			QVector3D newNormal (std::sin( oriRad ) * std::sin( incliRad ),
+										 std::cos( oriRad ) * std::sin( incliRad ),
+										 std::cos( incliRad ) );
+
+			if ( checkVectors<4>( m_normal, QtExt::QVector2IBKVector(newNormal) ) )
+				return; // do nothing
+
+			QVector3D rotationAxis ( QtExt::IBKVector2QVector(m_normal.crossProduct(QtExt::QVector2IBKVector(newNormal) ) ) ) ;
+
+			Vic3D::Transform3D rota;
+			rota.rotate( angleBetweenVectorsDeg( m_normal, QtExt::QVector2IBKVector(newNormal) ), rotationAxis );
+
+			QQuaternion centerRota = rota.rotation();
+			QVector3D newCenter = centerRota.rotatedVector(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+
+			rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) - newCenter );
+
+			SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
+			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
+			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+		} break;
+		case MS_Local: {
+			// now compose a transform object and set it in the wireframe object
+			const QVector3D xAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localXAxis();
+			const QVector3D yAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localYAxis();
+			const QVector3D zAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis();
+
+			Vic3D::Transform3D rota;
+			if ( lineEdit == m_ui->lineEditX )
+				rota.setRotation((float)m_ui->lineEditX->value(), xAxis);
+			else if ( lineEdit == m_ui->lineEditY )
+				rota.setRotation((float)m_ui->lineEditY->value(), yAxis);
+			else if ( lineEdit == m_ui->lineEditZ )
+				rota.setRotation((float)m_ui->lineEditZ->value(), zAxis);
+
+			// and the we also hav to guarantee that the center point of the bounding box stays at the same position
+			// this can be achieved since the center points are also just scaled by the specified scaling factors
+			// so we know how big the absolute translation has to be
+			QQuaternion centerRota = rota.rotation();
+			QVector3D newCenter = centerRota.rotatedVector(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+
+			rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) - newCenter );
+
+			SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
+			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
+			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+		} break;
+		case MS_Relative: {
+			// now compose a transform object and set it in the wireframe object
+			Vic3D::Transform3D rota;
+			if ( lineEdit == m_ui->lineEditX )
+				rota.setRotation((float)m_ui->lineEditX->value(), 1, 0, 0);
+			else if ( lineEdit == m_ui->lineEditY )
+				rota.setRotation((float)m_ui->lineEditY->value(), 0, 1, 0);
+			else if ( lineEdit == m_ui->lineEditZ )
+				rota.setRotation((float)m_ui->lineEditZ->value(), 0, 0, 1);
+
+			// and the we also hav to guarantee that the center point of the bounding box stays at the same position
+			// this can be achieved since the center points are also just scaled by the specified scaling factors
+			// so we know how big the absolute translation has to be
+			QQuaternion centerRota = rota.rotation();
+			QVector3D newCenter = centerRota.rotatedVector(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+
+			rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) - newCenter );
+
+			SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
+			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
+			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+		} break;
+		}
+	} break;
+	}
 }
 
 

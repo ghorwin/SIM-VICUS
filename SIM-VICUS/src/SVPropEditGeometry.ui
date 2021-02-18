@@ -30,8 +30,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>468</width>
-        <height>545</height>
+        <width>474</width>
+        <height>571</height>
        </rect>
       </property>
       <attribute name="label">
@@ -155,8 +155,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>468</width>
-        <height>545</height>
+        <width>474</width>
+        <height>571</height>
        </rect>
       </property>
       <attribute name="label">
@@ -348,7 +348,7 @@
          <item>
           <widget class="QLabel" name="labelRotateOrientationAbs">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="text">
             <string>Orientation</string>
@@ -358,7 +358,7 @@
          <item>
           <widget class="QtExt::ValidatingLineEdit" name="lineEditOrientation">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -372,7 +372,7 @@
          <item>
           <widget class="QLabel" name="labelRotateInclinationAbs">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="text">
             <string>Inclination</string>
@@ -382,7 +382,7 @@
          <item>
           <widget class="QtExt::ValidatingLineEdit" name="lineEditInclination">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
           </widget>
          </item>

@@ -100,15 +100,11 @@ class QtExt_ValidatingLineEdit;r Point of the local
 	/*! Applies current translation (from selected geometry object) into project. */
 	void translate();
 
-	/*! Scales the selected surfaces with the specified
-		\param scaleVec - Translation Vector
-	*/
-	void scale(const QVector3D & scaleVec, const ModificationState &state, const bool &wheel = false);
+	/*! Applies current scaling (from selected geometry object) into project. */
+	void scale();
 
-	/*! Translates the selected surfaces with the specified
-		\param rotaVec - Translation Vector
-	*/
-	void rotate(const QVector3D & rotaVec, const ModificationState &state);
+	/*! Applies current rotation (from selected geometry object) into project. */
+	void rotate();
 
 	/*! Translates the selected surfaces with the specified
 		\param copyVec - Translation Vector
@@ -217,6 +213,12 @@ private:
 	/*! This is the dimension of the bounding box (dx, dy, dz). */
 	IBKMK::Vector3D						m_boundingBoxDimension;
 
+	/*! Cached center point of boinding box. */
+	IBKMK::Vector3D						m_boundingBoxCenter;
+
+	/*! Cached normal for absolute rotation */
+	IBKMK::Vector3D						m_normal;
+
 	double								m_orientation = 0.0;
 	double								m_inclination = 0.0;
 
@@ -224,6 +226,7 @@ private:
 		These values depend on current modification type and state.
 	*/
 	QVector3D							m_originalValues;
+
 
 
 //	/*! Cached initial values for translation line edits. */
