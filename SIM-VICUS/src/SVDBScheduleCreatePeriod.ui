@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SVDBScheduleCreatePeriod</class>
+ <widget class="QWidget" name="SVDBScheduleCreatePeriod">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>301</width>
+    <height>109</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Start day for period ...</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Enter start date (MM.dd):</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDateEdit" name="dateEdit">
+       <property name="maximumDate">
+        <date>
+         <year>2021</year>
+         <month>12</month>
+         <day>31</day>
+        </date>
+       </property>
+       <property name="minimumDate">
+        <date>
+         <year>2021</year>
+         <month>1</month>
+         <day>1</day>
+        </date>
+       </property>
+       <property name="displayFormat">
+        <string>MM.dd</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>303</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QToolButton" name="toolButtonApply">
+       <property name="icon">
+        <iconset resource="../resources/SIM-VICUS.qrc">
+         <normaloff>:/gfx/actions/16x16/ok.png</normaloff>:/gfx/actions/16x16/ok.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="toolButtonRemove">
+       <property name="icon">
+        <iconset resource="../resources/SIM-VICUS.qrc">
+         <normaloff>:/gfx/actions/16x16/error.png</normaloff>:/gfx/actions/16x16/error.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>15</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>toolButtonApply</tabstop>
+  <tabstop>toolButtonRemove</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../resources/SIM-VICUS.qrc"/>
+ </resources>
+ <connections/>
+</ui>
