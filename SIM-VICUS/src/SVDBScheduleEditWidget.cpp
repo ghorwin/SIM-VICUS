@@ -114,7 +114,7 @@ void SVDBScheduleEditWidget::setup(SVDatabase * db, SVDBScheduleTableModel * dbM
 void SVDBScheduleEditWidget::updateInput(int id) {
 	m_current = nullptr; // disable edit triggers
 
-	bool isEnabled = id == -1 ? false : true;
+	bool isEnabled = (id == -1 ? false : true);
 
 	//set buttons
 	m_ui->toolButtonForward->setEnabled(false);
@@ -145,6 +145,9 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 	}
 
 	m_current = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) id ]);
+
+	// update table widget with periods
+	// select first period -> call selectionChangedSlot() which sets up the remainder of the UI
 
 	//period schedule
 	if(m_current->m_annualSchedule.x().empty()){

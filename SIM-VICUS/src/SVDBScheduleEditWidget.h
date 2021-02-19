@@ -33,7 +33,7 @@ public:
 	/*! Needs to be called once, before the widget is being used. */
 	void setup(SVDatabase * db, SVDBScheduleTableModel * dbModel);
 
-	/*! Update widget with this. */
+	/*! Sets up the widget for a Schedule with a given ID. */
 	void updateInput(int id);
 
 private slots:
