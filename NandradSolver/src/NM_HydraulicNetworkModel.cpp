@@ -189,6 +189,8 @@ void HydraulicNetworkModel::setup() {
 				HNPipeElement * pipeElement = new HNPipeElement(e, *e.m_pipeProperties, m_hydraulicNetwork->m_fluid);
 				// add to flow elements
 				m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+				// register a temperature dependend element
+				m_elementIdsWithTemperature.push_back(e.m_id);
 			} break;
 
 			case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump :
@@ -359,27 +361,42 @@ void HydraulicNetworkModel::inputReferences(std::vector<InputReference> & inputR
 	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
 		// use hydraulic network model to generate temperature references
 		InputReference inputRef;
-		inputRef.m_id = id();
-		inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORK;
-		inputRef.m_name = std::string("FluidTemperatures");
+		inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+		inputRef.m_name = std::string("FluidTemperature");
 		inputRef.m_required = true;
-		// register reference
-		inputRefs.push_back(inputRef);
+		for(unsigned int i = 0; i < m_elementIdsWithTemperature.size(); ++i) {
+			inputRef.m_id = m_elementIdsWithTemperature[i];
+			// register reference
+			inputRefs.push_back(inputRef);
+		}
 	}
 }
 
 
 void HydraulicNetworkModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/, const std::vector<const double *> & resultValueRefs) {
-	if (resultValueRefs.size() == 1) {
-		// copy references into mass flux vector
-		m_fluidTemperatures = resultValueRefs[0];
+	if (resultValueRefs.size() == m_elementIdsWithTemperature.size()) {
+		// copy references into fluid temperature vector
+		for(const double* resRef : resultValueRefs)
+			m_fluidTemperatureRefs.push_back(resRef);
 	}
 }
 
 
-void HydraulicNetworkModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & /*resultInputValueReferences*/) const {
-	// no state dependencies for now
-	// TODO : thermal-interactions
+void HydraulicNetworkModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
+	// register thermal-interactions
+	if(m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
+		unsigned int count = 0;
+		for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
+			IBK_ASSERT(count < m_elementIdsWithTemperature.size());
+			// skip elements without temperature
+			if(m_elementIdsWithTemperature[count] != m_elementIds[i])
+				continue;
+			// register dependency to mass flux and nodal pressures
+			resultInputValueReferences.push_back(std::make_pair(&m_p->m_fluidMassFluxes[i], m_fluidTemperatureRefs[count] ));
+			resultInputValueReferences.push_back(std::make_pair(&m_p->m_inletNodePressures[i], m_fluidTemperatureRefs[count] ));
+			resultInputValueReferences.push_back(std::make_pair(&m_p->m_outletNodePressures[i], m_fluidTemperatureRefs[count++] ));
+		}
+	}
 }
 
 
@@ -388,9 +405,14 @@ int HydraulicNetworkModel::update() {
 
 	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
 		// set all fluid temperatures
-		for(unsigned int i = 0; i < m_p->m_flowElements.size(); ++i) {
+		unsigned int count = 0;
+		for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
 			HydraulicNetworkAbstractFlowElement *fe = m_p->m_flowElements[i];
-			fe->setFluidTemperature(m_fluidTemperatures[i]);
+			IBK_ASSERT(count < m_elementIdsWithTemperature.size());
+			// skip elements without temperature
+			if(m_elementIdsWithTemperature[count] != m_elementIds[i])
+				continue;
+			fe->setFluidTemperature(*m_fluidTemperatureRefs[count++]);
 		}
 	}
 

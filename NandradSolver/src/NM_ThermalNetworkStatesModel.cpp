@@ -304,7 +304,6 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 		m_n += fe->nInternalStates();
 	}
 	m_y.resize(m_n,0.0);
-	m_fluidTemperatures.resize(m_p->m_flowElements.size(), 293.15);
 	m_meanTemperatureRefs.resize(m_p->m_flowElements.size(), nullptr);
 
 	// initialize all fluid temperatures
@@ -314,7 +313,6 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 		double fluidTemp = m_network->m_para[NANDRAD::HydraulicNetwork::P_InitialFluidTemperature].value;
 		fe->setInitialTemperature(fluidTemp);
 		m_meanTemperatureRefs[i] = &fe->m_meanTemperature;
-		m_fluidTemperatures[i] = fluidTemp;
 	}
 }
 
@@ -347,15 +345,6 @@ const double * ThermalNetworkStatesModel::resultValueRef(const InputReference & 
 		if(quantityName.m_index == -1)
 			return &m_y[0];
 		return nullptr;
-	}
-	if(quantityName == std::string("FluidTemperatures")) {
-		// reference to network
-		if(quantity.m_id == id() && quantity.m_referenceType ==
-		   NANDRAD::ModelInputReference::MRT_NETWORK) {
-			if(!m_fluidTemperatures.empty())
-				return &m_fluidTemperatures[0];
-			return nullptr;
-		}
 	}
 	if(quantityName == std::string("FluidTemperature")) {
 		if(quantity.m_referenceType != NANDRAD::ModelInputReference::MRT_NETWORKELEMENT)
@@ -416,7 +405,6 @@ int ThermalNetworkStatesModel::update(const double * y) {
 		fe->setInternalStates(y + offset);
 		// retrieve fluid temperatures
 		unsigned int nStates = fe->nInternalStates();
-		m_fluidTemperatures[i] = fe->m_meanTemperature;
 		offset += nStates;
 	}
 	return 0;

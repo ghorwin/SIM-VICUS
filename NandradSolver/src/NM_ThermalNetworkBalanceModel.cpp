@@ -237,8 +237,6 @@ void ThermalNetworkBalanceModel::setInputValueRefs(const std::vector<QuantityDes
 void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
 
 	for(unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
-		// set dependencies between fluid temperatures and mean temperature references
-		resultInputValueReferences.push_back(std::make_pair(&m_statesModel->m_fluidTemperatures[i], m_statesModel->m_meanTemperatureRefs[i]));
 		// set dependencies between heat exchange values and zone inputs
 		if(!m_statesModel->m_zoneIdxs.empty() && m_statesModel->m_zoneIdxs[i] != (unsigned int) (-1)) {
 			// zone temperature is requested
@@ -289,6 +287,10 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 				// heat balance per default sums up heat fluxes and entahpy flux differences through the pipe
 				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + n], &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexInlet]) );
 				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + n], &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexOutlet]) );
+
+				// dependency to temperature
+				resultInputValueReferences.push_back(std::make_pair(m_statesModel->m_meanTemperatureRefs[i],
+																	&m_statesModel->m_y[offset + n] ) );
 
 				// dependency to Qdot
 				if(m_statesModel->m_p->m_fluidHeatFluxRefs[i] != nullptr)
@@ -369,8 +371,8 @@ void ThermalNetworkBalanceModel::printVars() const {
 	}
 
 	std::cout << "Fluid tempertaures [C]" << std::endl;
-	for (unsigned int i=0; i<m_statesModel->m_fluidTemperatures.size(); ++i)
-		std::cout << "  " << i << "   " << m_statesModel->m_fluidTemperatures[i] - 273.15 << std::endl;
+	for (unsigned int i=0; i<m_statesModel->m_meanTemperatureRefs.size(); ++i)
+		std::cout << "  " << i << "   " << *m_statesModel->m_meanTemperatureRefs[i] - 273.15 << std::endl;
 }
 
 

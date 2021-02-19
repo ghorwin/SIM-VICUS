@@ -141,8 +141,6 @@ private:
 
 	/*! Cached input data vector (size nPrimaryStateResults()). */
 	std::vector<double>								m_y;
-	/*! Vector of internal fluid temperatures, size = elements.size(). */
-	std::vector<double>								m_fluidTemperatures;
 	/*! Vectorwith references to mean temperatures, size = elements.size(). */
 	std::vector<const double*>						m_meanTemperatureRefs;
 	/*! References to heat exchange spline: nullptr if not needed.*/
