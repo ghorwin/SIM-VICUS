@@ -1,6 +1,8 @@
 #include "SVDBScheduleEditWidget.h"
 #include "ui_SVDBScheduleEditWidget.h"
 
+#include <QDate>
+
 #include "SVConstants.h"
 #include "SVSettings.h"
 
@@ -10,9 +12,9 @@
 #include <VICUS_Schedule.h>
 
 #include <QtExt_LanguageHandler.h>
+#include <QtExt_DateTimeInputDialog.h>
 
 #include "SVDBScheduleTableModel.h"
-#include "SVDBScheduleCreatePeriod.h"
 
 /*
 SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
@@ -92,12 +94,6 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 		m_ui->labelScheduleType->setVisible(false);
 		m_ui->labelScheduleType_2->setVisible(false);
 	}
-
-	m_createPeriod = new SVDBScheduleCreatePeriod(this);
-
-	//Signal slot connection for create period
-	connect(m_createPeriod, &SVDBScheduleCreatePeriod::dayChanged,
-			this, &SVDBScheduleEditWidget::on_updateStartDayPeriod );
 
 	// initial state is "nothing selected"
 	updateInput(-1);
@@ -221,15 +217,15 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 void SVDBScheduleEditWidget::on_toolButtonAddPeriod_clicked(){
 	Q_ASSERT(m_current != nullptr);
 
-	// show start date input widget
-	m_createPeriod->show();
-
+	// request start date
+	QDate initialDate(2021,1,1);
+	QDate startDate = QtExt::DateTimeInputDialog::requestDate(tr("Select start date of period"), tr("Enter start date (dd.MM.):"), tr("dd.MM."), &initialDate);
 
 	// convert date to dayofyear
-	unsigned int input;
+	unsigned int input = startDate.dayOfYear();
 	// check if such a period starting day has already been used, and if yes,
 	for(const VICUS::ScheduleInterval &schedInt : m_current->m_periods){
-		if(schedInt.m_intervalStartDay == 0){
+		if(schedInt.m_intervalStartDay == 0) {
 			//QMessageBox("Error", "A Period with this start day already exists.");
 		}
 	}
@@ -244,6 +240,4 @@ void SVDBScheduleEditWidget::on_toolButtonAddPeriod_clicked(){
 	// select ScheduleInverval table row by ScheduleInverval index -> this will show the editor for the newly created schedule
 }
 
-void SVDBScheduleEditWidget::on_updateStartDayPeriod(int startDay){
-	m_startDay = static_cast<unsigned int>(startDay);
-}
+

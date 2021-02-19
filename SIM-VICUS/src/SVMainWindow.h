@@ -366,7 +366,7 @@ private:
 	SVDBBoundaryConditionEditDialog		*m_dbBoundaryConditionEditDialog				= nullptr;
 	SVDBPipeEditDialog					*m_dbPipeEditDialog								= nullptr;
 	SVDBNetworkComponentEditDialog		*m_dbNetworkComponentEditDialog					= nullptr;
-	SVDBScheduleEditDialog				*m_dbScheduleEditDialog					= nullptr;
+	SVDBScheduleEditDialog				*m_dbScheduleEditDialog							= nullptr;
 
 	friend class SVThreadBase;
 
