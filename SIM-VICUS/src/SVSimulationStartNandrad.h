@@ -52,6 +52,9 @@ private:
 	void updateCmdLine();
 	/*! Generates a NANDRAD project from the currently given VICUS project data. */
 	bool generateNandradProject(NANDRAD::Project & p);
+
+	bool generateBuildingProjectData(NANDRAD::Project & p);
+	bool generateNetworkProjectData(NANDRAD::Project & p);
 	/*! Stores current input into project data structure. */
 	void storeInput();
 	void updateTimeFrameEdits();
