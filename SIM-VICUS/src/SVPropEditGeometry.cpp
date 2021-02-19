@@ -700,7 +700,7 @@ void SVPropEditGeometry::setComboBox(const ModificationType & type, const Modifi
 		break;
 	case MT_Rotate:
 		m_ui->comboBox->addItem( tr("rotate absolute:") );
-		m_ui->comboBox->addItem( tr("rotate relative to center of each surface:") );
+		m_ui->comboBox->addItem( tr("rotate relative using global coordinate system:") );
 		m_ui->comboBox->addItem( tr("rotate relative using local coordinate system:") );
 		break;
 	case MT_Scale:
