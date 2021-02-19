@@ -7,7 +7,7 @@
 		
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.0</IBK:Parameter>
-			<ClimateFileName>${Project Directory}/../climate/SimQuality_Testfall08_Klima.c6b</ClimateFileName>
+			<ClimateFilePath>${Project Directory}/../climate/SimQuality_Testfall08_Klima.c6b</ClimateFilePath>
 		</Location>
 		
 		<SimulationParameter>

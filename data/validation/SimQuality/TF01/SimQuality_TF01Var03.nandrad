@@ -14,7 +14,7 @@
 		</Zones>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
-			<ClimateFileName>${Project Directory}/../climate/CHN_Xinjiang.Uygur.Kashi.517090_CSWD.c6b</ClimateFileName>
+			<ClimateFilePath>${Project Directory}/../climate/CHN_Xinjiang.Uygur.Kashi.517090_CSWD.c6b</ClimateFilePath>
 		</Location>
 		<Outputs>
 			<TimeUnit>min</TimeUnit>

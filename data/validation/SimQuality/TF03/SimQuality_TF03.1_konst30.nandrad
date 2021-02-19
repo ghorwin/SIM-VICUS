@@ -9,7 +9,7 @@
 		</ProjectInfo>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
-			<ClimateFileName>${Project Directory}/../climate/TF03-Konstant30.c6b</ClimateFileName>
+			<ClimateFilePath>${Project Directory}/../climate/TF03-Konstant30.c6b</ClimateFilePath>
 		</Location>
 		<SolverParameter>
 			<IBK:Parameter name="InitialTimeStep" unit="s">1</IBK:Parameter>

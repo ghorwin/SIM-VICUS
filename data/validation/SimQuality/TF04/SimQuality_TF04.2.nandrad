@@ -6,7 +6,7 @@
 		</ProjectInfo>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
-			<ClimateFileName>${Project Directory}/../climate/TF04-periodisch.c6b</ClimateFileName>
+			<ClimateFilePath>${Project Directory}/../climate/TF04-periodisch.c6b</ClimateFilePath>
 		</Location>
 		<Zones>
 			<Zone id="1" displayName="Var01" type="Active">

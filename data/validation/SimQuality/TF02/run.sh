@@ -1,5 +1,4 @@
 #!/bin/bash
 
-../../../../bin/release/NandradSolver SimQuality_TF02.nandrad
-../../../../bin/release/NandradSolver SimQuality_TF02_Perez.nandrad
+python ../../../../scripts/TestSuite/run_tests.py --run-all -s ../../../../bin/release/NandradSolver -p . -e nandrad
 

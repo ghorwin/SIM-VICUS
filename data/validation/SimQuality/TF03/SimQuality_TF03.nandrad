@@ -7,7 +7,7 @@
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<IBK:Parameter name="Altitude" unit="m">100</IBK:Parameter>
-			<ClimateFileName>${Project Directory}/../climate/TF03-Sprung.c6b</ClimateFileName>
+			<ClimateFilePath>${Project Directory}/../climate/TF03-Sprung.c6b</ClimateFilePath>
 		</Location>
 		<Zones>
 			<Zone id="1" displayName="TF03.1" type="Active">

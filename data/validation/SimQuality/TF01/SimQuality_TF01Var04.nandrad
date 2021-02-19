@@ -14,7 +14,7 @@
 		</Zones>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
-			<ClimateFileName>${Project Directory}/../climate/SGP_Singapore.486980_IWEC.c6b</ClimateFileName>
+			<ClimateFilePath>${Project Directory}/../climate/SGP_Singapore.486980_IWEC.c6b</ClimateFilePath>
 		</Location>
 		<Outputs>
 			<TimeUnit>min</TimeUnit>
