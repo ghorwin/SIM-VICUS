@@ -1940,12 +1940,27 @@ The vector
 \vdots\\
 y_{i}\\
 \vdots
-\end{array}\right) & \textrm{with }y_{i}=\rho V_{i}c_{p}T_{i},\nonumber \\
+\end{array}\right) & =\rho\left(\begin{array}{c}
+\vdots\\
+V_{i}c_{p}T_{i}\\
+\vdots
+\end{array}\right),\nonumber \\
 \boldsymbol{f}\left(\mathbf{y},t\right) & =\left(\begin{array}{c}
 \vdots\\
 f_{i}(y_{i},t)\\
 \vdots
-\end{array}\right) & .\label{eq:ODEElement}
+\end{array}\right) & =\begin{cases}
+\left(\begin{array}{c}
+\vdots\\
+\dot{m}_{i}\left(c_{p}T_{node(in,i)}-\text{c_{p}T_{i}}\right)-\dot{Q}_{loss,i}\\
+\vdots
+\end{array}\right) & \textrm{for }\dot{m}_{i}\geq0\\
+\left(\begin{array}{c}
+\vdots\\
+\dot{m}_{i}\left(\text{\text{c_{p}T_{i}}}-c_{P}T_{node(out,i)}\right)-\dot{Q}_{loss,i}\\
+\vdots
+\end{array}\right) & \textrm{for }\dot{m}_{i}<0
+\end{cases}.\label{eq:ODEElement}
 \end{eqnarray}
 
 \end_inset
@@ -1955,25 +1970,59 @@ A discretized element (i.e.pipe) generates
 \end_inset
 
  vector entries.
- 
+ We store an index offset 
+\begin_inset Formula $offset,i$
+\end_inset
+
+ for each element in order to store the correct position in global solution
+ vector.
 \begin_inset Formula 
 \begin{eqnarray}
 \mathbf{y} & =\left(\begin{array}{c}
 \vdots\\
-\mathbf{y}_{i}\\
+y_{offset,i}\\
+\vdots\\
+y_{offset,i+k}\\
+\vdots\\
+y_{offset,i+n-1}\\
 \vdots
-\end{array}\right) & \textrm{with  }\mathbf{y}_{i}=\rho\left(\begin{array}{c}
-V_{0}c_{P}T_{0}\\
+\end{array}\right) & =\rho\left(\begin{array}{c}
 \vdots\\
-V_{k}c_{P}T_{k}\\
+V_{0}c_{P}T_{offset,i}\\
 \vdots\\
-V_{n-1}c_{P}T_{n-1}
+V_{k}c_{P}T_{offset,i+k}\\
+\vdots\\
+V_{n-1}c_{P}T_{offset,i+n-1}\\
+\vdots
 \end{array}\right),\nonumber \\
 \boldsymbol{f}\left(\mathbf{y},t\right) & =\left(\begin{array}{c}
 \vdots\\
-\mathbf{f}_{i}(\mathbf{y}_{i},t)\\
+f_{offset,i}(y_{offset,i+k},t)\\
+\vdots\\
+f_{offset,i+k}(y_{offset,i},t)\\
+\vdots\\
+f_{offset,i+n-1}(y_{offset,i+n-1},t)\\
 \vdots
-\end{array}\right) & .\label{eq:ODEDiscElement}
+\end{array}\right) & =\begin{cases}
+\left(\begin{array}{c}
+\vdots\\
+\dot{m}_{i}c_{p}\left(T_{node(in,i)}-T_{offset,i}\right)-\dot{Q}_{loss,offset,i}\\
+\vdots\\
+\dot{m}_{i}c_{p}\left(T_{offset,i+k-1}-T_{offset,i+k}\right)-\dot{Q}_{loss,offset,i+k}\\
+\vdots\\
+\dot{m}_{i}c_{p}\left(T_{offset,i+n-2}-T_{offset,i+n-1}\right)-\dot{Q}_{loss,offset,i+n-1}\\
+\vdots
+\end{array}\right) & \textrm{for }\dot{m}_{i}\geq0\\
+\left(\begin{array}{c}
+\vdots\\
+\dot{m}_{i}c_{p}\left(T_{offset,i}-T_{offset,i+1}\right)-\dot{Q}_{loss,offset,i}\\
+\vdots\\
+\dot{m}_{i}c_{p}\left(T_{offset,i+k}-T_{offset,i+k+1}\right)-\dot{Q}_{loss,offset,i+k}\\
+\vdots\\
+\dot{m}_{i}c_{p}\left(T_{offset,i+n-1}-T_{node(out,i)}\right)-\dot{Q}_{loss,offset,i+n-1}\\
+\vdots
+\end{array}\right) & \textrm{for }\dot{m}_{i}<0
+\end{cases}.\label{eq:ODEDiscElement}
 \end{eqnarray}
 
 \end_inset
@@ -2009,23 +2058,11 @@ noprefix "false"
 \end_inset
 
  for discretized elements.
- For single equations, we transfer the shiftet vector 
-\begin_inset Formula $\tilde{\mathbf{y}}=\mathbf{y}_{i}$
-\end_inset
-
- and calculate all quantities refering to local temperature 
-\begin_inset Formula $T\widehat{=}T_{i}$
-\end_inset
-
- or 
-\begin_inset Formula $\mathbf{T}$
-\end_inset
-
-:
+ 
 \begin_inset Formula 
 \begin{eqnarray}
-T & = & \frac{\tilde{y}_{0}}{\rho Vc_{P}}\label{eq:DecompositionElement}\\
-T_{k} & = & \frac{\tilde{y}_{k}}{\rho V_{k}c_{P}}\label{eq:DecompositionDiscElement}
+T_{i} & = & \frac{y_{i}}{\rho V_{i}c_{P}}\label{eq:DecompositionElement}\\
+T_{offset,i+k} & = & \frac{y_{offset,i+k}}{\rho V_{k}c_{P}}\label{eq:DecompositionDiscElement}
 \end{eqnarray}
 
 \end_inset
@@ -2077,41 +2114,24 @@ noprefix "false"
 \end_inset
 
 .
- Afterwards, all nodal inlet and outlet temperatures are current.
- We locally store 
-\begin_inset Formula $\dot{m}=\dot{m_{i}}$
+ Afterwards, all nodal inlet and outlet temperatures 
+\begin_inset Formula $T_{i,in}$
 \end_inset
 
-, 
-\begin_inset Formula $T_{in}=T_{node(in,i)}$
+ and 
+\begin_inset Formula $T_{i,out}$
 \end_inset
 
-, 
-\begin_inset Formula $T_{out}=T_{node(out,i)}$
-\end_inset
-
-.
- 
+ are current.
 \end_layout
 
 \begin_layout Enumerate
-Calculate current individual heat loss 
-\begin_inset Formula $\dot{Q}_{loss}\widehat{=}\dot{Q}_{loss,i}$
+Update of mass flux, inlet and outlet nodal enthalpies, all models calulate
+ current individual heat loss 
+\begin_inset Formula $\dot{Q}_{loss}$
 \end_inset
 
  along the element or its discretization volumes.
- Equations are listet in section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:Thermohydraulic-flow-Element"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
-.
- 
 \end_layout
 
 \begin_layout Enumerate
@@ -2121,17 +2141,17 @@ CVODE Solver requests
 
  vector, all models calculate and publish local right hand side function
  
-\begin_inset Formula $\tilde{f}(\tilde{y},t)$
+\begin_inset Formula $f_{i}(y_{i},t)$
 \end_inset
 
  or 
-\begin_inset Formula $\tilde{\mathbf{f}}\left(\tilde{\mathbf{y}},t\right)$
+\begin_inset Formula $f_{offset,i+k}(y_{offset,i+k},t)$
 \end_inset
 
  due to equations 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "eq:DivergencesElement"
+reference "eq:ODEElement"
 plural "false"
 caps "false"
 noprefix "false"
@@ -2141,7 +2161,7 @@ noprefix "false"
  and 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "eq:DivergencesDiscElement"
+reference "eq:ODEDiscElement"
 plural "false"
 caps "false"
 noprefix "false"
@@ -2149,82 +2169,15 @@ noprefix "false"
 \end_inset
 
 .
- 
-\begin_inset Formula 
-\begin{eqnarray}
-\dot{y}_{i}=\tilde{f}(\tilde{y}_{0},t) & = & \begin{cases}
-\dot{m}\left(c_{p}T_{in}-\text{c_{p}}T\right)-\dot{Q}_{loss} & \textrm{for }\dot{m}\geq0\\
-\dot{m}\left(\text{\text{c_{p}}}T-c_{P}T_{out}\right)-\dot{Q}_{loss} & \textrm{for }\dot{m}<0
-\end{cases}.\label{eq:DivergencesElement}\\
-\dot{\mathbf{y}}_{i}=\tilde{\mathbf{f}}\left(\tilde{\mathbf{y}},t\right) & = & \begin{cases}
-\left(\begin{array}{c}
-\dot{m}c_{p}\left(T_{in}-T_{0}\right)-\dot{Q}_{loss,0}\\
-\vdots\\
-\dot{m}c_{p}-\dot{Q}_{loss,k}\\
-\vdots\\
-\dot{m}c_{p}\left(T_{n-2}-T_{n-1}\right)-\dot{Q}_{loss,n-1}
-\end{array}\right) & \textrm{for }\dot{m}\geq0\\
-\left(\begin{array}{c}
-\dot{m}c_{p}\left(T_{0}-T_{1}\right)-\dot{Q}_{loss,0}\\
-\vdots\\
-\dot{m}c_{p}\left(T_{k}-T_{k+1}\right)-\dot{Q}_{loss,k}\\
-\vdots\\
-\dot{m}c_{p}\left(T_{n-1}-T_{out}\right)-\dot{Q}_{loss,n-1}
-\end{array}\right) & \textrm{for }\dot{m}<0
-\end{cases}.\label{eq:DivergencesDiscElement}
-\end{eqnarray}
-
-\end_inset
-
-
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\noindent
-\align center
-\begin_inset Graphics
-	filename imgs/dynamicPipeLoss.png
-	scale 50
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:Energy-balance-dynamic"
-
-\end_inset
-
-Energy balance discretized element
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Section
-Hydraulic flow Element Equations
+Flow Element Equations
 \end_layout
 
 \begin_layout Standard
-The sections below detail the hydraulic flow equations for the various elements
- in the network.
- 
+The sections below detail the flow equations for the various elements in
+ the network.
 \end_layout
 
 \begin_layout Subsection
@@ -2389,25 +2342,10 @@ General system function for friction-based flow elements
 \end_layout
 
 \begin_layout Standard
-Each flow element evaluates its individual sytsem funtion.
- In local view, only one inlet and one outlet node exist for a single flow
- element, and we set 
-\begin_inset Formula $\dot{m}=\dot{m_{i}}$
-\end_inset
-
-, 
-\begin_inset Formula $p_{in}=p_{node(in,i)}$
-\end_inset
-
- 
-\begin_inset Formula $p_{out}=p_{node(out,i)}$
-\end_inset
-
-.
- The system equation for general flow elements is
+The system equation for general flow elements is
 \begin_inset Formula 
 \begin{equation}
-f\left(\dot{m},p_{in,}p_{out}\right)=p_{in}-p_{out}-\Delta p\left(\dot{m}\right)\label{eq:FlowElementSystemFunctionFriction}
+0=p_{in}-p_{out}-\Delta p\left(\dot{m}\right)\label{eq:FlowElementSystemFunctionFriction}
 \end{equation}
 
 \end_inset
@@ -2452,7 +2390,7 @@ Flow equations for pipes
 \end_layout
 
 \begin_layout Subsubsection
-Pipe Flow Equations
+General Hydraulic Pipe Flow Equations
 \begin_inset CommandInset label
 LatexCommand label
 name "subsec:General-Hydraulic-Pipe"
@@ -2714,324 +2652,6 @@ noprefix "false"
 \end_layout
 
 \begin_layout Subsubsection
-Pump flow equations
-\end_layout
-
-\begin_layout Standard
-The system function for pumps
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\begin{equation}
-f\text{\left(\dot{m},p_{in},p_{out}\right)}=p_{in}-p_{out}-\Delta p
-\end{equation}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-uses a fixed, predefined pressure drop 
-\begin_inset Formula $\Delta p$
-\end_inset
-
- (can be negative).
- Different pump models are used to compute this pressure difference.
-\end_layout
-
-\begin_layout Subsubsection
-Constant pressure pump
-\end_layout
-
-\begin_layout Standard
-The pressure difference is a constant pump parameter.
-\end_layout
-
-\begin_layout Subsubsection
-Ideal heat exchanger
-\end_layout
-
-\begin_layout Standard
-parameter
-\end_layout
-
-\begin_layout Standard
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\xout off
-\uuline off
-\uwave off
-\noun off
-\color none
-\begin_inset Tabular
-<lyxtabular version="3" rows="1" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-pressure loss
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\Delta p_{fix}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $Pa$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\end_layout
-
-\begin_layout Standard
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\xout off
-\uuline off
-\uwave off
-\noun off
-\color none
-The system function is
-\begin_inset Formula 
-\[
-f\text{\left(\dot{m},p_{in},p_{out}\right)}=p_{in}-p_{out}-\Delta p_{fix}
-\]
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Section
-Thermohydraulic flow Element Equations
-\begin_inset CommandInset label
-LatexCommand label
-name "sec:Thermohydraulic-flow-Element"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Thermohydraulic properties may differ from pure hydraulic properties and
- are therefore grouped and listet in this special section.
-\end_layout
-
-\begin_layout Subsection
-Element with external heat loss 
-\end_layout
-
-\begin_layout Standard
-inputs
-\end_layout
-
-\begin_layout Standard
-\begin_inset Tabular
-<lyxtabular version="3" rows="1" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-heat flux to ambient
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\dot{Q}_{loss,ext}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-W
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\xout off
-\uuline off
-\uwave off
-\noun off
-\color none
-
-\begin_inset Newline newline
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\xout off
-\uuline off
-\uwave off
-\noun off
-\color none
-outputs
-\end_layout
-
-\begin_layout Standard
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\xout off
-\uuline off
-\uwave off
-\noun off
-\color none
-\begin_inset Tabular
-<lyxtabular version="3" rows="1" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-heat flux to ambient
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\dot{Q}_{loss}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-W
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-For a simple element with given external heat loss we just transfer values:
-\begin_inset Formula 
-\[
-\dot{Q}_{loss}=\dot{Q}_{loss,ext}
-\]
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection
-Heat loss in pipes
-\end_layout
-
-\begin_layout Subsubsection
 Convection coefficient inside pipe
 \begin_inset CommandInset label
 LatexCommand label
@@ -3153,17 +2773,12 @@ The fluid properties are evaluated using the temperature from the inlet
 There is no heat exchange with the surrounding, thus
 \begin_inset Formula 
 \[
-\dot{Q}_{loss}=0.
+\dot{Q}_{loss}=0
 \]
 
 \end_inset
 
-Static pipe ignores thermal storage effects of the fluid setting a very
- small fluid volume of 
-\begin_inset Formula $V=0.01m²$
-\end_inset
 
-.
 \end_layout
 
 \begin_layout Subsubsection
@@ -3538,11 +3153,6 @@ noprefix "false"
 \end_inset
 
 .
- As for static adiabatic pipe the volume is set to a small value of 
-\begin_inset Formula $V=0.01m²$
-\end_inset
-
-.
 \end_layout
 
 \begin_layout Subsubsection
@@ -3562,7 +3172,7 @@ parameters
 
 \begin_layout Standard
 \begin_inset Tabular
-<lyxtabular version="3" rows="2" columns="3">
+<lyxtabular version="3" rows="4" columns="3">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
@@ -3582,6 +3192,76 @@ length
 
 \begin_layout Plain Layout
 \begin_inset Formula $l$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+inner diameter
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $d$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+roughness
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $k$
 \end_inset
 
 
@@ -3646,13 +3326,79 @@ m
 \end_layout
 
 \begin_layout Standard
-This model has no heat exchange to the surrounding, thus
+This model considers pressure loss according to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:General-Hydraulic-Pipe"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ 
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\dot{Q}_{loss,k}=0
+p_{in}-p_{out}=\Delta p(T_{in},l,d,k)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+but has no heat exchange to the surrounding, thus
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\dot{Q}_{loss}=0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+As shown in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Energy-balance-dynamic"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, for each elemenet 
+\begin_inset Formula $n$
+\end_inset
+
+ in the pipe, there is a separate energy balance
+\begin_inset Formula 
+\begin{equation}
+\dot{Q}_{n}=\dot{Q}_{n-1}-\dot{Q}_{n+1},\;n=1...N\label{eq:energy-balance-dyn-pipe}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\dot{Q}_{n}=\dot{m}c_{p}T_{n},\;n=1...N
 \]
 
 \end_inset
@@ -3662,14 +3408,82 @@ This model has no heat exchange to the surrounding, thus
 
 \begin_layout Standard
 The number of Elements is 
-\begin_inset Formula $n=l/dx$
+\begin_inset Formula $N=l/dx$
 \end_inset
 
 .
- 
+ The boundary conditions are, 
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Standard
+for the first element
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\dot{Q}_{n=1}=\dot{Q}_{in}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and for the last element
+\begin_inset Formula 
+\[
+\dot{Q}_{n=N}=\dot{Q}_{out}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename imgs/dynamicPipe.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Energy-balance-dynamic"
+
+\end_inset
+
+Energy balance dynamic pipe
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
 Dynamic pipe with heat exchange
 \end_layout
 
@@ -4085,6 +3899,57 @@ W
 \end_inset
 
 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename imgs/dynamicPipeLoss.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Energy-balance-dynamic-loss"
+
+\end_inset
+
+Energy balance dynamic pipe with losses
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -4099,7 +3964,33 @@ noprefix "false"
 \end_inset
 
 .
- However, there is heat exchange to the environment
+ However, there is heat exchange to the environment, so that the energy
+ balance 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:energy-balance-dyn-pipe"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ changes to
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\dot{Q}_{n}=\dot{Q}_{n-1}-\dot{Q}_{n+1}-\dot{Q}_{loss,n},\;n=1...N
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where
 \begin_inset Formula 
 \[
 \dot{Q}_{loss,n}=dx\,U_{p}\left(T_{amb}-T_{n}\right)
@@ -4126,7 +4017,7 @@ U_{p}=\frac{\pi}{\frac{1}{h_{i}d}+\frac{1}{h_{o}d_{o}}+\frac{1}{2\lambda_{pipe}}
 The total heat flux to the ambient is
 \begin_inset Formula 
 \[
-\dot{Q}_{loss}=\sum_{k=1}^{n}\dot{Q}_{loss,k}
+\dot{Q}_{loss}=\sum_{n=1}^{N}\dot{Q}_{loss,n}
 \]
 
 \end_inset
@@ -4139,261 +4030,39 @@ Pumps
 \end_layout
 
 \begin_layout Subsubsection
-Ideal pump
+System function
 \end_layout
 
 \begin_layout Standard
-An ideal pump is an adiabatic element with
+The system function for pumps
+\end_layout
+
+\begin_layout Standard
 \begin_inset Formula 
-\[
-\dot{Q}_{loss}=0.
-\]
+\begin{equation}
+0=p_{in}-p_{out}-\Delta p
+\end{equation}
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+uses a fixed, predefined pressure drop 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ (can be negative).
+ Different pump models are used to compute this pressure difference.
 \end_layout
 
 \begin_layout Subsubsection
-Pump with performance loss
+Constant pressure pump
 \end_layout
 
 \begin_layout Standard
-parameters
-\end_layout
-
-\begin_layout Standard
-\begin_inset Tabular
-<lyxtabular version="3" rows="2" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-pump efficency
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\eta_{pump}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $---$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-motor efficiency
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\eta_{motor}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $---$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\xout off
-\uuline off
-\uwave off
-\noun off
-\color none
-
-\begin_inset Newline newline
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\xout off
-\uuline off
-\uwave off
-\noun off
-\color none
-outputs
-\end_layout
-
-\begin_layout Standard
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\xout off
-\uuline off
-\uwave off
-\noun off
-\color none
-\begin_inset Tabular
-<lyxtabular version="3" rows="1" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-heat flux to ambient
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\dot{Q}_{loss}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-W
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\xout off
-\uuline off
-\uwave off
-\noun off
-\color none
-A pump with performance loss produces heat that is transfered directly to
- the fluid volume.
- We calculate heat loss as factor of electrical power
-\begin_inset Formula 
-\[
-P_{el}=\Delta p\dot{V}=\frac{\Delta p\dot{m}}{\rho}
-\]
-
-\end_inset
-
-with
-\end_layout
-
-\begin_layout Itemize
-\begin_inset Formula $P_{el}$
-\end_inset
-
- pump electrical power [W]
-\end_layout
-
-\begin_layout Itemize
-\begin_inset Formula $\dot{V}$
-\end_inset
-
- fluid volume flux [m³/s]
-\end_layout
-
-\begin_layout Standard
-Heat losses is directed positive into the fluid and therefore we obtain
-\begin_inset Formula 
-\[
-\dot{Q}_{loss}=-\left(1-\eta_{pump}\right)\left(1-\eta_{motor}\right)P_{el}.
-\]
-
-\end_inset
-
- 
+The pressure difference is a constant pump parameter.
 \end_layout
 
 \begin_layout Subsection
@@ -4467,8 +4136,179 @@ Ideal heat exchanger
 \end_layout
 
 \begin_layout Standard
-An ideal heat exchanger is modelled as element with a predefined external
- heat loss.
+parameter
+\end_layout
+
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Tabular
+<lyxtabular version="3" rows="1" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+pressure loss
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\Delta p_{fix}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $Pa$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+inputs
+\end_layout
+
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Tabular
+<lyxtabular version="3" rows="1" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+heat flux to ambient
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\dot{Q}_{loss,in}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $W$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+The pressure difference is 
+\begin_inset Formula 
+\[
+p_{in}-p_{out}=\Delta p_{fix}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The energy balance is 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\dot{Q}_{loss}=\dot{Q}_{loss,in}
+\]
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
