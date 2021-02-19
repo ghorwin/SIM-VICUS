@@ -6,8 +6,6 @@ SVDBScheduleCreatePeriod::SVDBScheduleCreatePeriod(QWidget *parent) :
 	m_ui(new Ui::SVDBScheduleCreatePeriod)
 {
 	m_ui->setupUi(this);
-	hide();
-	setWindowFlag(Qt::WindowStaysOnTopHint);
 }
 
 SVDBScheduleCreatePeriod::~SVDBScheduleCreatePeriod()

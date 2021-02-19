@@ -12,6 +12,7 @@
 #include <QtExt_LanguageHandler.h>
 
 #include "SVDBScheduleTableModel.h"
+#include "SVDBScheduleCreatePeriod.h"
 
 /*
 SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
@@ -60,6 +61,44 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
+	//add header to periods table
+	m_ui->tableWidgetPeriods->setColumnCount(2);
+	m_ui->tableWidgetPeriods->setHorizontalHeaderItem(0, new QTableWidgetItem("Date"));
+	m_ui->tableWidgetPeriods->setHorizontalHeaderItem(1, new QTableWidgetItem("Name"));
+
+	//add header to day cycle table
+	m_ui->tableWidgetDayCycle->setColumnCount(2);
+	m_ui->tableWidgetDayCycle->setHorizontalHeaderItem(0, new QTableWidgetItem("Time"));
+	m_ui->tableWidgetDayCycle->setHorizontalHeaderItem(1, new QTableWidgetItem("Value"));
+
+	//set all table items in day cycle
+	m_ui->tableWidgetDayCycle->setRowCount(24);
+	for(unsigned int i=0; i<24; ++i){
+		QString time = i < 9 ? "0" + QString::number(i) : QString::number(i);
+		time += ":00 - ";
+		time += i+1 < 9 ? "0" + QString::number(i+1) : QString::number(i+1);
+		time += ":00";
+
+		m_ui->tableWidgetDayCycle->setItem(i,0, new QTableWidgetItem(time));
+		m_ui->tableWidgetDayCycle->setItem(i,1, new QTableWidgetItem("---"));
+	}
+
+	//aufheben für später
+	//muss in ein separaten Dialog ausgelagert werden
+	{
+		m_ui->comboBoxScheduleType->setVisible(false);
+		m_ui->radioButtonConstant->setVisible(false);
+		m_ui->radioButtonLinearInterpolation->setVisible(false);
+		m_ui->labelScheduleType->setVisible(false);
+		m_ui->labelScheduleType_2->setVisible(false);
+	}
+
+	m_createPeriod = new SVDBScheduleCreatePeriod(this);
+
+	//Signal slot connection for create period
+	connect(m_createPeriod, &SVDBScheduleCreatePeriod::dayChanged,
+			this, &SVDBScheduleEditWidget::on_updateStartDayPeriod );
+
 	// initial state is "nothing selected"
 	updateInput(-1);
 }
@@ -80,24 +119,56 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 	m_current = nullptr; // disable edit triggers
 
 	bool isEnabled = id == -1 ? false : true;
-/*
-	m_ui->lineEditName->setEnabled(isEnabled);
-	m_ui->pushButtonColor->setEnabled(isEnabled);
-	m_ui->labelDisplayName->setEnabled(isEnabled);
-	// disable all the group boxes - this disables all their subwidgets as well
-	m_ui->groupBoxHeatTransfer->setEnabled(isEnabled);
-	m_ui->groupBoxLongWaveExchange->setEnabled(isEnabled);
-	m_ui->groupBoxShortWaveRad->setEnabled(isEnabled);
+
+	//set buttons
+	m_ui->toolButtonForward->setEnabled(false);
+	m_ui->toolButtonBackward->setEnabled(false);
+	m_ui->toolButtonAddPeriod->setEnabled(isEnabled);
+	m_ui->toolButtonCopyPeriod->setEnabled(isEnabled);
+	m_ui->toolButtonRemovePeriode->setEnabled(isEnabled);
+	m_ui->horizontalLayout_3->setEnabled(isEnabled);
+
+	//set checkboxes
+	m_ui->checkBoxMonday->setEnabled(false);
+	m_ui->checkBoxTuesday->setEnabled(false);
+	m_ui->checkBoxWednesday->setEnabled(false);
+	m_ui->checkBoxThursday->setEnabled(false);
+	m_ui->checkBoxFriday->setEnabled(false);
+	m_ui->checkBoxSaturday->setEnabled(false);
+	m_ui->checkBoxSunday->setEnabled(false);
+	m_ui->checkBoxHoliday->setEnabled(false);
+
+	//set table views
+	m_ui->tableWidgetDayCycle->setEnabled(false);
+	m_ui->tableWidgetPeriods->setEnabled(isEnabled);
 
 	if (!isEnabled) {
 		// clear input controls
-		m_ui->lineEditName->setString(IBK::MultiLanguageString());
-		m_ui->lineEditSolarAbsorptionCoefficient->setText("");
-		m_ui->lineEditLongWaveEmissivity->setText("");
-		m_ui->lineEditHeatTransferCoefficient->setText("");
 
 		return;
 	}
+
+	m_current = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) id ]);
+
+	//period schedule
+	if(m_current->m_annualSchedule.x().empty()){
+		//check that this schedule has a period
+		//if not create first period
+		if(m_current->m_periods.empty()){
+			m_current->m_periods.push_back(VICUS::ScheduleInterval());
+			//set start day to first day of year (0)
+			m_current->m_periods.front().m_intervalStartDay = 0;
+		}
+	}
+	//annualSchedule
+	else{
+
+	}
+
+
+
+/*
+
 
 	VICUS::BoundaryCondition * bc = const_cast<VICUS::BoundaryCondition *>(m_db->m_boundaryConditions[(unsigned int)id]);
 	m_current = bc;
@@ -151,10 +222,17 @@ void SVDBScheduleEditWidget::on_toolButtonAddPeriod_clicked(){
 	Q_ASSERT(m_current != nullptr);
 
 	// show start date input widget
+	m_createPeriod->show();
+
 
 	// convert date to dayofyear
-
+	unsigned int input;
 	// check if such a period starting day has already been used, and if yes,
+	for(const VICUS::ScheduleInterval &schedInt : m_current->m_periods){
+		if(schedInt.m_intervalStartDay == 0){
+			//QMessageBox("Error", "A Period with this start day already exists.");
+		}
+	}
 	// show error message
 
 
@@ -164,4 +242,8 @@ void SVDBScheduleEditWidget::on_toolButtonAddPeriod_clicked(){
 	// update table widget
 
 	// select ScheduleInverval table row by ScheduleInverval index -> this will show the editor for the newly created schedule
+}
+
+void SVDBScheduleEditWidget::on_updateStartDayPeriod(int startDay){
+	m_startDay = static_cast<unsigned int>(startDay);
 }

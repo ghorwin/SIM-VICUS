@@ -144,10 +144,10 @@ void SVDBScheduleEditDialog::on_toolButtonCopy_clicked() {
 	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
 
 	unsigned int id = m_dbModel->data(sourceIndex, Role_Id).toUInt();
-	const VICUS::Schedule * comp = SVSettings::instance().m_db.m_schedules[id];
+	const VICUS::Schedule * sched = SVSettings::instance().m_db.m_schedules[id];
 
 	// add item as copy
-	sourceIndex = m_dbModel->addNewItem(*comp);
+	sourceIndex = m_dbModel->addNewItem(*sched);
 	QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
 	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
 }
@@ -181,8 +181,8 @@ void SVDBScheduleEditDialog::onCurrentIndexChanged(const QModelIndex &current, c
 		m_ui->toolButtonCopy->setEnabled(true);
 		m_ui->tableView->selectRow(current.row());
 		// retrieve current schedule ID
-		int compId = current.data(Role_Id).toInt();
-		m_ui->editWidget->updateInput(compId);
+		int schedId = current.data(Role_Id).toInt();
+		m_ui->editWidget->updateInput(schedId);
 	}
 }
 

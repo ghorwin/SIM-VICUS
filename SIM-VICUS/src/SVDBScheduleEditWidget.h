@@ -10,6 +10,7 @@ class Schedule;
 
 class SVDBScheduleTableModel;
 class SVDatabase;
+class SVDBScheduleCreatePeriod;
 
 
 namespace Ui {
@@ -40,6 +41,8 @@ private slots:
 
 	void on_toolButtonAddPeriod_clicked();
 
+	void on_updateStartDayPeriod(int startDay);
+
 private:
 	Ui::SVDBScheduleEditWidget			*m_ui;
 
@@ -54,6 +57,12 @@ private:
 		A nullptr pointer means that there is no schedule to edit.
 	*/
 	VICUS::Schedule						*m_current;
+
+	/*! Pointer to create period dialog. */
+	SVDBScheduleCreatePeriod			*m_createPeriod;
+
+	/*! Start day for new period. */
+	unsigned int						m_startDay;
 };
 
 #endif // SVDBScheduleEditWidget_H
