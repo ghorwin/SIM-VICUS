@@ -600,7 +600,7 @@ noprefix "false"
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align}
-0 & =f_{i}\left(\dot{m}_{i},p_{in,i},p_{out,i}\right)\label{eq:pressureDropFunction}
+0 & =f_{i}\left(\dot{m}_{i},p_{in,i},p_{out,i},T_{i}\right)\label{eq:pressureDropFunction}
 \end{align}
 
 \end_inset
@@ -613,21 +613,28 @@ with
 \end_inset
 
  pressure head of the fluid at inlet (
-\begin_inset Formula $p_{in}$
+\begin_inset Formula $p_{in,i}$
 \end_inset
 
 ) and outlet node (
-\begin_inset Formula $p_{out}$
+\begin_inset Formula $p_{out,i}$
 \end_inset
 
 ) [Pa]
 \end_layout
 
 \begin_layout Itemize
-\begin_inset Formula $\dot{m}$
+\begin_inset Formula $\dot{m}_{i}$
 \end_inset
 
  mass flux through the element [kg/s]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ mean fluid temperature along the flow element
 \end_layout
 
 \begin_layout Standard
@@ -1206,7 +1213,82 @@ The equation system is complemented by the flow element system equations,
 
 \end_inset
 
+In general, we need to differ system indexes between node counter 
+\begin_inset Formula $node$
+\end_inset
 
+ and element counter 
+\begin_inset Formula $i$
+\end_inset
+
+.
+ Each element is connected to inlet node 
+\begin_inset Formula $node(in,i)$
+\end_inset
+
+ and outlet node 
+\begin_inset Formula $node(out,i).$
+\end_inset
+
+ With this assumptions, the system may be formulated as follows
+\begin_inset Formula 
+\begin{align}
+\boldsymbol{G}\left(\boldsymbol{y}\right)=0=\left\{ \begin{array}{cclc}
+ & \vdots\\
+0 & = & \sum_{inlet}\dot{m}_{i}\left(p_{node},p_{node(out,i)}\right)-\sum_{outlet}\dot{m}_{i}\left(p_{node(in,i)},p_{node}\right) & +p_{node}-p_{ref}\\
+ & \vdots\\
+0 & = & f_{i}\left(\dot{m}_{i},p_{node(in,i)},p_{node(out,i)}\right)\\
+ & \vdots
+\end{array}\right.\label{eq:HydraulicBalances}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+with
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\dot{m}_{i}$
+\end_inset
+
+ mass flux through element 
+\begin_inset Formula $i$
+\end_inset
+
+ [kg/s]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $p_{node}$
+\end_inset
+
+ nodal pressure [Pa]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $p_{node(in,i)}$
+\end_inset
+
+ nodal pressure at inlet of element 
+\begin_inset Formula $i$
+\end_inset
+
+ [Pa]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $p_{node(out,i)}$
+\end_inset
+
+ nodal pressure at outlet of element 
+\begin_inset Formula $i$
+\end_inset
+
+ [Pa]
 \end_layout
 
 \begin_layout Standard
@@ -1276,21 +1358,23 @@ Nodes
 \end_layout
 
 \begin_layout Standard
-In generall, conservation equation at each node 
-\begin_inset Formula $i$
+In generall, ceach node is inlet and outlet node for minimim one element
+ 
+\begin_inset Formula $in,i$
 \end_inset
 
- covers entalpy fluxes at inlet and at outlet element 
-\begin_inset Formula $j$
+ and 
+\begin_inset Formula $out,i$
 \end_inset
 
-:
+.
+ Conservation equation covers correcponding entalpy fluxes:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-\sum_{j}\dot{H}_{out,i,j}-\sum_{j}\dot{H}_{in,i,j} & =0
+\sum_{i}\dot{H}_{in,i}-\sum_{i}\dot{H}_{out,i} & =0
 \end{align*}
 
 \end_inset
@@ -1299,17 +1383,25 @@ with
 \end_layout
 
 \begin_layout Itemize
-\begin_inset Formula $\dot{H}_{in}$
+\begin_inset Formula $\dot{H}_{in,i}$
 \end_inset
 
- enthalpy flux into node [W]
+ enthalpy flux into element 
+\begin_inset Formula $i$
+\end_inset
+
+ [W]
 \end_layout
 
 \begin_layout Itemize
-\begin_inset Formula $\dot{H}_{out}$
+\begin_inset Formula $\dot{H}_{out,i}$
 \end_inset
 
- enthalpy flux out of the node [W]
+ enthalpy flux out of element 
+\begin_inset Formula $i$
+\end_inset
+
+ [W]
 \end_layout
 
 \begin_layout Standard
@@ -1364,8 +1456,8 @@ We first formulate all fluxes with positive direction into the node (
 ):
 \begin_inset Formula 
 \begin{eqnarray*}
-\dot{H}_{in,i,j}|_{\dot{m}_{in,i,j}\geq0} & =\dot{m}_{in,i,j}h_{in,i,j} & =\dot{m}_{in,i,j}c_{p}T_{in,i,j}\\
-\dot{H}_{out,i,j}|_{\dot{m}_{out,i,j}\geq0} & =\dot{m}_{out,i,j}h_{i} & =\dot{m}_{out,i,j}c_{p}T_{i}.
+\dot{H}_{in,i}|_{\dot{m}_{i}\geq0} & =\dot{m}_{i}h_{node} & =\dot{m}_{i}c_{p}T_{node}\\
+\dot{H}_{out,i}|_{\dot{m}_{i}\geq0} & =\dot{m}_{i}h_{i} & =\dot{m}_{i}c_{p}T_{i}.
 \end{eqnarray*}
 
 \end_inset
@@ -1374,31 +1466,58 @@ with
 \end_layout
 
 \begin_layout Itemize
-\begin_inset Formula $h$
+\begin_inset Formula $\dot{m}_{i}$
 \end_inset
 
- nodal specific enthalpy [J/kg]
+ mass flux through element 
+\begin_inset Formula $i$
+\end_inset
+
+ [kg/s]
 \end_layout
 
 \begin_layout Itemize
-\begin_inset Formula $h_{in}$
+\begin_inset Formula $h_{i}$
 \end_inset
 
- specific enthalpy at node inlet [J/kg]
+ fluid specific enthalpy of element 
+\begin_inset Formula $i$
+\end_inset
+
+ [J/kg]
 \end_layout
 
 \begin_layout Itemize
-\begin_inset Formula $T$
+\begin_inset Formula $h_{node}$
 \end_inset
 
- nodal temperature [K]
+ nodal specific enthalpy = specific enthalpy at inlet of element 
+\begin_inset Formula $i$
+\end_inset
+
+ [J/kg]
 \end_layout
 
 \begin_layout Itemize
-\begin_inset Formula $T_{in}$
+\begin_inset Formula $T_{i}$
 \end_inset
 
- temperature at node inlet [K]
+ fluid temperature of element 
+\begin_inset Formula $i$
+\end_inset
+
+ [K]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $T_{node}$
+\end_inset
+
+ nodal temperature = temperature at inlet of element 
+\begin_inset Formula $i$
+\end_inset
+
+ [K]
 \end_layout
 
 \begin_layout Itemize
@@ -1409,31 +1528,40 @@ with
 \end_layout
 
 \begin_layout Standard
-With respect to numerical stability of the solution procedure, the temperature
- of the inflowing fluid is used when evaluating the media properties in
- the node's and element's system equation, a method called 
+Note, that we use upwinding with respect to numerical stability of the solution
+ procedure.
+ In other words, the specific enthalpy and temperature of the outflowing
+ fluid is set equal to element's fluid specifc enthalpy 
+\begin_inset Formula $h_{i}$
+\end_inset
+
+ and temperature 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+, a method called 
 \emph on
 upwinding
 \emph default
 .
- Consequently, for all outflows (from node into elements) the fluid temperature
+ Consequently, for all inflows (from node into elements) the fluid temperature
  and specific enthalpy are set equal to nodal values 
-\begin_inset Formula $h_{i}$
+\begin_inset Formula $h_{in,i}$
 \end_inset
 
  and 
-\begin_inset Formula $T_{i}$
+\begin_inset Formula $T_{in,i}$
 \end_inset
 
 .
 \end_layout
 
-\begin_layout Standard
+\begin_layout Enumerate
 Fluxes with negative direction are formulated analogue:
 \begin_inset Formula 
 \begin{eqnarray*}
-\dot{H}_{in,i,j}|_{\dot{m}_{in,i,j}<0} & =\dot{m}_{in,i,j}h_{i} & =\dot{m}_{in,i,j}c_{p}T_{i}\\
-\dot{H}_{out,i,j}|_{\dot{m}_{out,i,j}<0} & =\dot{m}_{out,i,j}h_{out,i,j} & =\dot{m}_{out,i,j}c_{p}T_{out,i,j}
+\dot{H}_{in,i}|_{\dot{m}_{i}<0} & =\dot{m}_{i}h_{i} & =\dot{m}_{i}c_{p}T_{i}\\
+\dot{H}_{out,i}|_{\dot{m}_{i}<0} & =\dot{m}_{i}h_{node} & =\dot{m}_{i}c_{p}T_{node}
 \end{eqnarray*}
 
 \end_inset
@@ -1441,11 +1569,34 @@ Fluxes with negative direction are formulated analogue:
 
 \end_layout
 
+\begin_layout Itemize
+\begin_inset Formula $h_{node}$
+\end_inset
+
+ nodal specific enthalpy = specific enthalpy at outlet of element 
+\begin_inset Formula $i$
+\end_inset
+
+ [J/kg]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $T_{node}$
+\end_inset
+
+ nodal temperature = temperature at outlet of element 
+\begin_inset Formula $i$
+\end_inset
+
+ [K]
+\end_layout
+
 \begin_layout Standard
-As a result, nodal values are evaluated using the following equation:
+As a result, nodal temperature and enthalpy values at the inlet and outlet
+ of all connected elements are evaluated using the following equations:
 \begin_inset Formula 
 \begin{equation}
-h_{i}=\frac{\sum_{j}\dot{H}_{in,i,j}|_{\dot{m}_{in,i,j}\geq0}-\sum_{j}\dot{H}_{out,i,j}|_{\dot{m}_{out,i,j}<0}}{-\sum_{j}\dot{m}_{in,i,j}|_{\dot{m}_{in,i,j}<0}+\sum_{j}\dot{m}_{out,i,j}|_{\dot{m}_{out,i,j}\geq0}}\label{eq:NodalSpecificEnthalpy}
+h_{node}=\frac{\sum_{i}\dot{m}_{i}c_{p}T_{i}|_{\dot{m}_{i}\geq0}-\sum_{i}\dot{m}_{i}c_{p}T_{i}|_{\dot{m}_{i}<0}}{-\sum_{i}\dot{m}_{i}|_{\dot{m}_{i}<0}+\sum_{i}\dot{m}_{i}|_{\dot{m}_{i}\geq0}}\label{eq:NodalSpecificEnthalpy}
 \end{equation}
 
 \end_inset
@@ -1456,7 +1607,7 @@ h_{i}=\frac{\sum_{j}\dot{H}_{in,i,j}|_{\dot{m}_{in,i,j}\geq0}-\sum_{j}\dot{H}_{o
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-T_{i}=\frac{h_{i}}{c_{P}}.
+T_{node}=\frac{h_{node}}{c_{P}}.\label{eq:NodalTemperature}
 \end{equation}
 
 \end_inset
@@ -1476,7 +1627,7 @@ For each network element the following transient equation is fulfilled:
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align}
-\rho V\frac{\partial h_{i}}{\partial t} & =\dot{H}_{in,i}-\dot{H}_{out,i}-\dot{Q}_{loss,i}\label{eq:energyBalanceSingleVolume}
+\rho Vc_{P}\frac{\partial T_{i}}{\partial t} & =\dot{H}_{in,i}-\dot{H}_{out,i}-\dot{Q}_{loss,i}\label{eq:energyBalanceSingleVolume}
 \end{align}
 
 \end_inset
@@ -1489,10 +1640,17 @@ with
 \end_layout
 
 \begin_layout Itemize
-\begin_inset Formula $h$
+\begin_inset Formula $T$
 \end_inset
 
- specific enthalpy of the fluid volume [J/kg]
+ temperature of the fluid volume [K]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $c_{p}$
+\end_inset
+
+ specific heat capacity (at constant pressure) [J/kgK]
 \end_layout
 
 \begin_layout Itemize
@@ -1559,7 +1717,7 @@ In the special case of an adiabatic element (adiabatic with respect to heat
  exchange towards surroundings) the equation reduces to
 \begin_inset Formula 
 \begin{align}
-\rho V\frac{\partial h_{i}}{\partial t} & =\dot{H}_{in,i}-\dot{H}_{out,i}\label{eq:energyBalanceSingleVolumeAdiabatic}
+\rho Vc_{p}\frac{\partial T_{i}}{\partial t} & =\dot{H}_{in,i}-\dot{H}_{out,i}\label{eq:energyBalanceSingleVolumeAdiabatic}
 \end{align}
 
 \end_inset
@@ -1609,8 +1767,8 @@ noprefix "false"
 ) we use the following equation:
 \begin_inset Formula 
 \begin{eqnarray}
-\dot{H}_{in,i} & =\dot{m}_{i}h_{in,i} & =\dot{m}_{i}c_{p}T_{in,i}\nonumber \\
-\dot{H}_{out,i} & =\dot{m}_{i}h_{i} & =\dot{m}_{i}c_{p}T_{i}.\label{eq:EnthalpyFluxSingleVolume}
+\dot{H}_{in,i} & = & \dot{m}_{i}c_{p}T_{node(in,i)}\nonumber \\
+\dot{H}_{out,i} & = & \dot{m}_{i}c_{p}T_{i}.\label{eq:EnthalpyFluxSingleVolume}
 \end{eqnarray}
 
 \end_inset
@@ -1623,20 +1781,6 @@ with
 \end_layout
 
 \begin_layout Itemize
-\begin_inset Formula $h$
-\end_inset
-
- specific enthalpy of element volume [J/kg]
-\end_layout
-
-\begin_layout Itemize
-\begin_inset Formula $h_{in}$
-\end_inset
-
- specific enthalpy at elements inlet [J/kg]
-\end_layout
-
-\begin_layout Itemize
 \begin_inset Formula $T$
 \end_inset
 
@@ -1644,28 +1788,37 @@ with
 \end_layout
 
 \begin_layout Itemize
-\begin_inset Formula $T_{in}$
+\begin_inset Formula $T_{node(in,i)}$
 \end_inset
 
- temperature at elements inlet [K]
+ nodal temperature at elements inlet [K]
 \end_layout
 
 \begin_layout Standard
-We use upwinding for the formulation of enthalpy fluxes so that fluid leaves
- the element at its outket node with internal fluid temperature.
- For negative mass fluxes (
+For negative mass fluxes (
 \begin_inset Formula $\dot{m_{i}}<0$
 \end_inset
 
 ) we obtain:
 \begin_inset Formula 
 \begin{eqnarray}
-\dot{H}_{in,i} & =\dot{m}_{i}h_{i} & =\dot{m}_{i}c_{p}T_{i}\nonumber \\
-\dot{H}_{out,i} & =\dot{m}_{i}h_{out,i} & =\dot{m}_{i}c_{p}T_{out,i}.\label{eq:EnthalpyFluxSingleVolumeNeg}
+\dot{H}_{in,i} & = & \dot{m}_{i}c_{p}T_{i}\nonumber \\
+\dot{H}_{out,i} & = & \dot{m}_{i}c_{p}T_{node(out,i)}.\label{eq:EnthalpyFluxSingleVolumeNeg}
 \end{eqnarray}
 
 \end_inset
 
+with
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $T_{node(out,i)}$
+\end_inset
+
+ nodal temperature at elements outlet [K]
+\end_layout
+
+\begin_layout Standard
 In the case of a discretized element we formulate the same balance equation
  for each partial volume 
 \begin_inset Formula $k$
@@ -1677,7 +1830,7 @@ In the case of a discretized element we formulate the same balance equation
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align}
-\rho V_{k}\frac{\partial h_{k}}{\partial t} & =\dot{m}_{i}\left(h_{k-1}-h_{k}\right)-\dot{Q}_{loss,k}=\dot{m}_{i}c_{P}\left(T_{k-1}-T_{k}\right)-\dot{Q}_{loss,k}\label{eq:energyBalanceDiscVolume}
+\rho V_{k}c_{P}\frac{\partial T_{k}}{\partial t} & =\dot{m}_{i}c_{P}\left(T_{k-1}-T_{k}\right)-\dot{Q}_{loss,k}\label{eq:energyBalanceDiscVolume}
 \end{align}
 
 \end_inset
@@ -1685,8 +1838,8 @@ In the case of a discretized element we formulate the same balance equation
 with the boundary conditions
 \begin_inset Formula 
 \begin{eqnarray*}
-h_{0}=h_{in,i},T_{0}=T_{in,i} & \textrm{ for} & \dot{m_{i}}\geq0\\
-h_{n-1}=h_{out,i},T_{n-1}=T_{out,i} & \textrm{ for} & \dot{m_{i}}<0
+T_{0}=T_{node(in,i)} & \textrm{ for} & \dot{m_{i}}\geq0\\
+T_{n-1}=T_{node(out,i)} & \textrm{ for} & \dot{m_{i}}<0
 \end{eqnarray*}
 
 \end_inset
@@ -1695,21 +1848,14 @@ with
 \end_layout
 
 \begin_layout Itemize
-\begin_inset Formula $h$
-\end_inset
-
- specific enthalpy of discretization element [J/kg]
-\end_layout
-
-\begin_layout Itemize
-\begin_inset Formula $T$
+\begin_inset Formula $T_{k}$
 \end_inset
 
  temperature of discretization element [K]
 \end_layout
 
 \begin_layout Itemize
-\begin_inset Formula $\dot{Q}_{loss}$
+\begin_inset Formula $\dot{Q}_{loss,k}$
 \end_inset
 
  heat loss of the fluid along the discretization element [
@@ -1746,7 +1892,7 @@ W]
 The special case of an adiabatic element leads to the modified equation
 \begin_inset Formula 
 \begin{align}
-\rho V_{k}\frac{\partial h_{k}}{\partial t} & =\dot{m}_{i}\left(h_{k-1}-h_{k}\right)=\dot{m}_{i}c_{P}\left(T_{k-1}-T_{k}\right)\label{eq:energyBalanceDiscVolumeAdiabatic}
+\rho V_{k}c_{P}\frac{\partial T_{k}}{\partial t} & =\dot{m}_{i}c_{P}\left(T_{k-1}-T_{k}\right)\label{eq:energyBalanceDiscVolumeAdiabatic}
 \end{align}
 
 \end_inset
@@ -1790,19 +1936,28 @@ The vector
 \begin_layout Standard
 \begin_inset Formula 
 \begin{eqnarray}
-\mathbf{y}=\rho\left(\begin{array}{c}
+\mathbf{y} & =\left(\begin{array}{c}
 \vdots\\
-V_{i}h_{i}\\
+y_{i}\\
 \vdots
-\end{array}\right), &  & \boldsymbol{f}\left(\mathbf{y},t\right)=\begin{cases}
+\end{array}\right) & =\rho\left(\begin{array}{c}
+\vdots\\
+V_{i}c_{p}T_{i}\\
+\vdots
+\end{array}\right),\nonumber \\
+\boldsymbol{f}\left(\mathbf{y},t\right) & =\left(\begin{array}{c}
+\vdots\\
+f_{i}(y_{i},t)\\
+\vdots
+\end{array}\right) & =\begin{cases}
 \left(\begin{array}{c}
 \vdots\\
-\dot{m}_{i}\left(\text{h_{in,i}-h_{i}}\right)-\dot{Q}_{loss,i}\\
+\dot{m}_{i}\left(c_{p}T_{node(in,i)}-\text{c_{p}T_{i}}\right)-\dot{Q}_{loss,i}\\
 \vdots
 \end{array}\right) & \textrm{for }\dot{m}_{i}\geq0\\
 \left(\begin{array}{c}
 \vdots\\
-\dot{m}_{i}\left(\text{h_{i}-h_{out,i}}\right)-\dot{Q}_{loss,i}\\
+\dot{m}_{i}\left(\text{\text{c_{p}T_{i}}}-c_{P}T_{node(out,i)}\right)-\dot{Q}_{loss,i}\\
 \vdots
 \end{array}\right) & \textrm{for }\dot{m}_{i}<0
 \end{cases}.\label{eq:ODEElement}
@@ -1814,34 +1969,57 @@ A discretized element (i.e.pipe) generates
 \begin_inset Formula $n$
 \end_inset
 
- vector entries:
+ vector entries.
+ We store an index offset 
+\begin_inset Formula $offset,i$
+\end_inset
+
+ for each element in order to store the correct position in global solution
+ vector.
 \begin_inset Formula 
 \begin{eqnarray}
-\mathbf{y}=\rho\left(\begin{array}{c}
+\mathbf{y} & =\left(\begin{array}{c}
 \vdots\\
-V_{0}h_{0}\\
+y_{offset,i}\\
 \vdots\\
-V_{k}h_{k}\\
+y_{offset,i+k}\\
 \vdots\\
-V_{n-1}h_{n-1}\\
+y_{offset,i+n-1}\\
 \vdots
-\end{array}\right), &  & \boldsymbol{f}\left(\mathbf{y},t\right)=\begin{cases}
+\end{array}\right) & =\rho\left(\begin{array}{c}
+\vdots\\
+V_{0}c_{P}T_{offset,i}\\
+\vdots\\
+V_{k}c_{P}T_{offset,i+k}\\
+\vdots\\
+V_{n-1}c_{P}T_{offset,i+n-1}\\
+\vdots
+\end{array}\right),\nonumber \\
+\boldsymbol{f}\left(\mathbf{y},t\right) & =\left(\begin{array}{c}
+\vdots\\
+f_{offset,i}(y_{offset,i+k},t)\\
+\vdots\\
+f_{offset,i+k}(y_{offset,i},t)\\
+\vdots\\
+f_{offset,i+n-1}(y_{offset,i+n-1},t)\\
+\vdots
+\end{array}\right) & =\begin{cases}
 \left(\begin{array}{c}
 \vdots\\
-\dot{m}_{i}\left(h_{in}-h_{0}\right)-\dot{Q}_{loss,0}\\
+\dot{m}_{i}c_{p}\left(T_{node(in,i)}-T_{offset,i}\right)-\dot{Q}_{loss,offset,i}\\
 \vdots\\
-\dot{m}_{i}\left(h_{k-1}-h_{k}\right)-\dot{Q}_{loss,k}\\
+\dot{m}_{i}c_{p}\left(T_{offset,i+k-1}-T_{offset,i+k}\right)-\dot{Q}_{loss,offset,i+k}\\
 \vdots\\
-\dot{m}_{i}\left(h_{n-2}-h_{n-1}\right)-\dot{Q}_{loss,n-1}\\
+\dot{m}_{i}c_{p}\left(T_{offset,i+n-2}-T_{offset,i+n-1}\right)-\dot{Q}_{loss,offset,i+n-1}\\
 \vdots
 \end{array}\right) & \textrm{for }\dot{m}_{i}\geq0\\
 \left(\begin{array}{c}
 \vdots\\
-\dot{m}_{i}\left(h_{0}-h_{1}\right)-\dot{Q}_{loss,0}\\
+\dot{m}_{i}c_{p}\left(T_{offset,i}-T_{offset,i+1}\right)-\dot{Q}_{loss,offset,i}\\
 \vdots\\
-\dot{m}_{i}\left(h_{k}-h_{k+1}\right)-\dot{Q}_{loss,k}\\
+\dot{m}_{i}c_{p}\left(T_{offset,i+k}-T_{offset,i+k+1}\right)-\dot{Q}_{loss,offset,i+k}\\
 \vdots\\
-\dot{m}_{i}\left(h_{n-1}-h_{out}\right)-\dot{Q}_{loss,n-1}\\
+\dot{m}_{i}c_{p}\left(T_{offset,i+n-1}-T_{node(out,i)}\right)-\dot{Q}_{loss,offset,i+n-1}\\
 \vdots
 \end{array}\right) & \textrm{for }\dot{m}_{i}<0
 \end{cases}.\label{eq:ODEDiscElement}
@@ -1859,20 +2037,101 @@ CVODE Solver suggests
 \end_inset
 
  vector, all models calculate internal specific enthalpies and temperatures
+ due 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:DecompositionElement"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ for single elements or 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:DecompositionDiscElement"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ for discretized elements.
+ 
+\begin_inset Formula 
+\begin{eqnarray}
+T_{i} & = & \frac{y_{i}}{\rho V_{i}c_{P}}\label{eq:DecompositionElement}\\
+T_{offset,i+k} & = & \frac{y_{offset,i+k}}{\rho V_{k}c_{P}}\label{eq:DecompositionDiscElement}
+\end{eqnarray}
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Enumerate
-Boundary conditions are updated, all models store necessary calculation
- quantities
+Global update of all models.
+ The hydraulic calculation is performed before updating thermal network
+ equations.
+ The equations 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:HydraulicBalances"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ are solved.
+ As a result, current values for 
+\begin_inset Formula $\dot{m}_{i}$
+\end_inset
+
+ are available.
 \end_layout
 
 \begin_layout Enumerate
-Mass flux, inlet and outlet nodal enthalpies are updated, all models calulate
- heat loss 
+Update of thermal network node states due to equations 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:NodalSpecificEnthalpy"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:NodalTemperature"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ Afterwards, all nodal inlet and outlet temperatures 
+\begin_inset Formula $T_{i,in}$
+\end_inset
+
+ and 
+\begin_inset Formula $T_{i,out}$
+\end_inset
+
+ are current.
+\end_layout
+
+\begin_layout Enumerate
+Update of mass flux, inlet and outlet nodal enthalpies, all models calulate
+ current individual heat loss 
 \begin_inset Formula $\dot{Q}_{loss}$
 \end_inset
 
- along the element or its discretization volumes
+ along the element or its discretization volumes.
 \end_layout
 
 \begin_layout Enumerate
@@ -1880,11 +2139,36 @@ CVODE Solver requests
 \begin_inset Formula $\dot{\mathbf{y}}$
 \end_inset
 
- vector, all models calculate and publish local 
-\begin_inset Formula $f_{i}(h_{i},t)$
+ vector, all models calculate and publish local right hand side function
+ 
+\begin_inset Formula $f_{i}(y_{i},t)$
 \end_inset
 
- function
+ or 
+\begin_inset Formula $f_{offset,i+k}(y_{offset,i+k},t)$
+\end_inset
+
+ due to equations 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ODEElement"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ODEDiscElement"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Section
