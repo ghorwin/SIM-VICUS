@@ -81,6 +81,10 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 
 	// set initial states
 	setState(MT_Translate, MS_Absolute);
+
+	m_ui->widgetXYZ->layout()->setMargin(0);
+	m_ui->widgetRota->layout()->setMargin(0);
+
 }
 
 
@@ -105,8 +109,6 @@ void SVPropEditGeometry::setCoordinates(const Vic3D::Transform3D &t) {
 
 void SVPropEditGeometry::setRotation(const IBKMK::Vector3D &normal) {
 	// TODO nochmal nachdenken
-
-
 	m_normal = normal.normalized();
 
 	m_ui->lineEditInclination->setText( QString("%L1").arg(std::acos(normal.m_z)/IBK::DEG2RAD, 0, 'f', 3) );
@@ -235,7 +237,7 @@ void SVPropEditGeometry::translate() {
 
 
 void SVPropEditGeometry::scale() {
-
+	// we now apply the already specified transformation
 	// get translation and scale vector from selected geometry object
 	IBKMK::Vector3D scale = QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.scale());
 	IBKMK::Vector3D trans = QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.translation());
@@ -276,8 +278,8 @@ void SVPropEditGeometry::scale() {
 
 
 void SVPropEditGeometry::rotate() {
-
-	// get translation and scale vector from selected geometry object
+	// we now apply the already specified transformation
+	// get rotation and scale vector from selected geometry object
 	QQuaternion rotate = SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.rotation();
 	QVector3D trans = SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.translation();
 
@@ -319,6 +321,7 @@ void SVPropEditGeometry::rotate() {
 
 void SVPropEditGeometry::copy(const QVector3D &transVec)
 {
+#if 0
 	// now we update all selected surfaces
 	Vic3D::Transform3D trans;
 
@@ -391,6 +394,7 @@ void SVPropEditGeometry::copy(const QVector3D &transVec)
 	VICUS::ComponentInstance ci;
 	//	SVUndoAddSurface * undo = new SVUndoAddSurface(tr("modified surfaces"), modifiedSurfaces,, );
 	//	undo->push();
+#endif
 }
 
 
@@ -487,204 +491,8 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event) {
 			double offset = (wheelEvent->delta()>0) ? delta : -delta;
 			onWheelTurned(offset, (QtExt::ValidatingLineEdit*)target); // we know that target points to a ValidatingLineEdit
 		}
-
-#if 0
-		if (m_ui->lineEditX->isValid()) {
-			int sign = -1;
-			if ( wheelEvent->delta()>0 )
-				sign = 1;
-
-			switch (m_modificationType) {
-			case MT_Translate:
-				m_xTransValue = std::floor( (m_xTransValue + sign*0.01+0.005)*100)/100;
-				m_ui->lineEditX->setText( QString("%L1").arg(m_xTransValue,0, 'f', 3) );
-				switch (state) {
-				case MS_Absolute:
-					translate( QVector3D ( m_xTransValue, m_yTransValue, m_zTransValue ),
-							   m_modificationState[MT_Translate] );
-					break;
-
-				case MS_Relative:
-					translate( QVector3D ( sign*0.01, 0, 0 ),
-							   m_modificationState[MT_Translate] );
-					break;
-				case MS_Local:
-					translate( QVector3D ( sign*0.01, 0, 0 ),
-							   m_modificationState[MT_Translate] );
-					break;
-				}
-				break;
-			case MT_Scale:
-
-				m_xScaleValue = std::floor( (m_xScaleValue + sign*0.1+0.05)*10)/10;
-				m_ui->lineEditX->setText( QString("%L1").arg(m_xScaleValue,0, 'f', 3) );
-				switch (state) {
-				case MS_Absolute:
-					scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-						   m_modificationState[MT_Scale] );
-					break;
-				case MS_Local:
-					scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-						   m_modificationState[MT_Scale], true );
-					break;
-				case MS_Relative:
-					scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-						   m_modificationState[MT_Scale], true );
-					break;
-				}
-				break;
-			case MT_Rotate:
-				m_xRotaValue = std::floor(m_xRotaValue + sign*1+0.5);
-				m_ui->lineEditX->setText( QString("%L1").arg(m_xRotaValue,0, 'f', 3) );
-				switch (state) {
-				case MS_Absolute:
-					rotate( QVector3D ( sign, m_yRotaValue, m_zRotaValue ),
-							m_modificationState[MT_Rotate] );
-					break;
-				case MS_Local:
-					rotate( QVector3D ( sign, 0, 0 ),
-							m_modificationState[MT_Rotate] );
-					break;
-				case MS_Relative:
-					rotate( QVector3D ( sign, 0, 0 ),
-							m_modificationState[MT_Rotate] );
-					break;
-				}
-				break;
-			}
-		}
 	}
-	else if (target == m_ui->lineEditY){
-		if (m_ui->lineEditY->isValid()) {
-			int sign = -1;
-			if ( wheelEvent->angleDelta().ry()>0 )
-				sign = 1;
-
-			switch (m_modificationType) {
-			case MT_Translate:
-				m_yTransValue = std::floor( (m_yTransValue + sign*0.01+0.005)*100)/100;
-				m_ui->lineEditY->setText( QString("%L1").arg(m_yTransValue,0, 'f', 3) );
-				switch (state) {
-				case MS_Absolute:
-					translate( QVector3D ( m_xTransValue, m_yTransValue, m_zTransValue ),
-							   m_modificationState[MT_Translate] );
-					break;
-				case MS_Relative:
-					translate( QVector3D ( 0, sign*0.01, 0 ),
-							   m_modificationState[MT_Translate] );
-					break;
-				case MS_Local:
-					translate( QVector3D ( 0, sign*0.01, 0),
-							   m_modificationState[MT_Translate] );
-					break;
-				}
-				break;
-			case MT_Scale:
-				m_yScaleValue = std::floor( (m_yScaleValue + sign*0.1+0.05)*10)/10;
-				m_ui->lineEditY->setText( QString("%L1").arg(m_yScaleValue,0, 'f', 3) );
-				switch (state) {
-				case MS_Absolute:
-					scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-						   m_modificationState[MT_Scale] );
-					break;
-				case MS_Local:
-					scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-						   m_modificationState[MT_Scale], true );
-					break;
-				case MS_Relative:
-					scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-						   m_modificationState[MT_Scale], true );
-					break;
-				}
-				break;
-			case MT_Rotate:
-				m_yRotaValue = std::floor(m_yRotaValue + sign*1+0.5);
-				m_ui->lineEditY->setText( QString("%L1").arg(m_yRotaValue,0, 'f', 3) );
-				switch (state) {
-				case MS_Absolute:
-					rotate( QVector3D ( 0, sign, 0 ),
-							m_modificationState[MT_Rotate] );
-					break;
-				case MS_Local:
-					rotate( QVector3D (0, sign, 0 ),
-							m_modificationState[MT_Rotate] );
-					break;
-				case MS_Relative:
-					rotate( QVector3D ( 0, sign, 0 ),
-							m_modificationState[MT_Rotate] );
-					break;
-				}
-				break;
-			}
-		}
-	}
-	else if (target == m_ui->lineEditZ){
-		if (m_ui->lineEditZ->isValid()) {
-			int sign = -1;
-			if ( wheelEvent->delta()>0 )
-				sign = 1;
-
-			switch (m_modificationType) {
-			case MT_Translate:
-				m_zTransValue = std::floor( (m_zTransValue + sign*0.01+0.005)*100 )/100;
-				m_ui->lineEditZ->setText( QString("%L1").arg(m_zTransValue,0, 'f', 3) );
-				switch (state) {
-				case MS_Absolute:
-					translate( QVector3D ( m_xTransValue, m_yTransValue, m_zTransValue ),
-							   m_modificationState[MT_Translate] );
-					break;
-				case MS_Relative:
-					translate( QVector3D ( 0, 0, sign*0.01 ),
-							   m_modificationState[MT_Translate] );
-					break;
-				case MS_Local:
-					translate( QVector3D ( 0, 0, sign*0.01 ),
-							   m_modificationState[MT_Translate] );
-					break;
-				}
-				break;
-			case MT_Scale:
-				m_zScaleValue = std::floor( (m_zScaleValue + sign*0.1+0.05)*10 )/10;
-				m_ui->lineEditZ->setText( QString("%L1").arg(m_zScaleValue,0, 'f', 3) );
-				switch (state) {
-				case MS_Absolute:
-					scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-						   m_modificationState[MT_Scale] );
-					break;
-				case MS_Local:
-					scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-						   m_modificationState[MT_Scale], true );
-					break;
-				case MS_Relative:
-					scale( QVector3D ( m_xScaleValue, m_yScaleValue, m_zScaleValue ),
-						   m_modificationState[MT_Scale], true );
-					break;
-				}
-				break;
-			case MT_Rotate:
-				m_zRotaValue = std::floor(m_zRotaValue + sign*1+0.5);
-				m_ui->lineEditZ->setText( QString("%L1").arg(m_zRotaValue,0, 'f', 3) );
-				switch (state) {
-				case MS_Absolute:
-					rotate( QVector3D ( m_xRotaValue, m_yRotaValue, m_zRotaValue ),
-							m_modificationState[MT_Rotate] );
-					break;
-				case MS_Local:
-					rotate( QVector3D ( 0, 0, sign ),
-							m_modificationState[MT_Rotate] );
-					break;
-				case MS_Relative:
-					rotate( QVector3D ( 0, 0, sign ),
-							m_modificationState[MT_Rotate] );
-					break;
-				}
-				break;
-			}
-		}
-	}
-#endif
-}
-return false;
+	return false;
 }
 
 
@@ -925,40 +733,14 @@ void SVPropEditGeometry::showDeg(const bool & show)
 
 void SVPropEditGeometry::showRotation(const bool & abs)
 {
+	// we show all that is necessary for absolute Rotation Mode
 	if ( abs ) {
-		m_ui->labelRotateInclinationAbs->show();
-		m_ui->labelRotateOrientationAbs->show();
-		m_ui->lineEditInclination->show();
-		m_ui->lineEditOrientation->show();
-
-		m_ui->labelIndication->show();
-		m_ui->labelOrientationDeg->show();
-		m_ui->labelInclinationDeg->show();
-
-		m_ui->labelX->hide();
-		m_ui->labelY->hide();
-		m_ui->labelZ->hide();
-		m_ui->lineEditX->hide();
-		m_ui->lineEditY->hide();
-		m_ui->lineEditZ->hide();
-
+		m_ui->widgetXYZ->hide();
+		m_ui->widgetRota->show();
 	}
 	else {
-		m_ui->labelRotateInclinationAbs->hide();
-		m_ui->labelRotateOrientationAbs->hide();
-		m_ui->lineEditInclination->hide();
-		m_ui->lineEditOrientation->hide();
-
-		m_ui->labelIndication->hide();
-		m_ui->labelOrientationDeg->hide();
-		m_ui->labelInclinationDeg->hide();
-
-		m_ui->labelX->show();
-		m_ui->labelY->show();
-		m_ui->labelZ->show();
-		m_ui->lineEditX->show();
-		m_ui->lineEditY->show();
-		m_ui->lineEditZ->show();
+		m_ui->widgetXYZ->show();
+		m_ui->widgetRota->hide();
 	}
 }
 
@@ -1005,16 +787,16 @@ void SVPropEditGeometry::on_lineEditInclination_editingFinished() {
 
 void SVPropEditGeometry::on_lineEditCopyX_returnPressed()
 {
-	if ( m_ui->lineEditCopyX->isValid() )
-		m_xCopyValue = m_ui->lineEditCopyX->value();
+////	if ( m_ui->lineEditCopyX->isValid() )
+////		m_xCopyValue = m_ui->lineEditCopyX->value();
 
-	int count = m_ui->spinBoxCount->value();
+//	int count = m_ui->spinBoxCount->value();
 
-	for ( size_t i = 0; i<count; ++i ) {
-		copy(QVector3D (i*m_xCopyValue,
-						i*m_yCopyValue,
-						i*m_zCopyValue) );
-	}
+//	for ( size_t i = 0; i<count; ++i ) {
+////		copy(QVector3D (i*m_xCopyValue,
+////						i*m_yCopyValue,
+////						i*m_zCopyValue) );
+//	}
 
 }
 
@@ -1033,14 +815,14 @@ void SVPropEditGeometry::on_lineEditCopyX_editingFinished() {
 
 void SVPropEditGeometry::on_lineEditCopyY_editingFinished()
 {
-	if ( m_ui->lineEditCopyY->isValid() )
-		m_yCopyValue = m_ui->lineEditCopyY->value();
+//	if ( m_ui->lineEditCopyY->isValid() )
+//		m_yCopyValue = m_ui->lineEditCopyY->value();
 }
 
 void SVPropEditGeometry::on_lineEditCopyZ_editingFinished()
 {
-	if ( m_ui->lineEditCopyZ->isValid() )
-		m_zCopyValue = m_ui->lineEditCopyZ->value();
+//	if ( m_ui->lineEditCopyZ->isValid() )
+//		m_zCopyValue = m_ui->lineEditCopyZ->value();
 }
 
 
@@ -1201,19 +983,26 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 										 std::cos( oriRad ) * std::sin( incliRad ),
 										 std::cos( incliRad ) );
 
+			// we only want to rotate if the normal vectors are not the same
 			if ( checkVectors<4>( m_normal, QtExt::QVector2IBKVector(newNormal) ) )
 				return; // do nothing
 
+			// we find the rotation axis by taking the cross product of the normal vector and the normal vector we want to
+			// rotate to
 			QVector3D rotationAxis ( QtExt::IBKVector2QVector(m_normal.crossProduct(QtExt::QVector2IBKVector(newNormal) ) ) ) ;
 
 			Vic3D::Transform3D rota;
+			// we now also have to find the angle between both normals
 			rota.rotate( angleBetweenVectorsDeg( m_normal, QtExt::QVector2IBKVector(newNormal) ), rotationAxis );
 
+			// we take the QQuarternion to rotate
 			QQuaternion centerRota = rota.rotation();
 			QVector3D newCenter = centerRota.rotatedVector(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
 
+			// we also have to find the center point after rotation and translate our center back to its origin
 			rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) - newCenter );
 
+			// we give our tranfsformation to the wire frame object
 			SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
 			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
 			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
@@ -1233,13 +1022,14 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 				rota.setRotation((float)m_ui->lineEditZ->value(), zAxis);
 
 			// and the we also hav to guarantee that the center point of the bounding box stays at the same position
-			// this can be achieved since the center points are also just scaled by the specified scaling factors
+			// this can be achieved since the center points are also just rotated by the specified rotation
 			// so we know how big the absolute translation has to be
 			QQuaternion centerRota = rota.rotation();
 			QVector3D newCenter = centerRota.rotatedVector(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
 
 			rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) - newCenter );
 
+			// we give our tranfsformation to the wire frame object
 			SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
 			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
 			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
@@ -1255,11 +1045,12 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 				rota.setRotation((float)m_ui->lineEditZ->value(), 0, 0, 1);
 
 			// and the we also hav to guarantee that the center point of the bounding box stays at the same position
-			// this can be achieved since the center points are also just scaled by the specified scaling factors
+			// this can be achieved since the center points are also just rotated by the specified rotation
 			// so we know how big the absolute translation has to be
 			QQuaternion centerRota = rota.rotation();
 			QVector3D newCenter = centerRota.rotatedVector(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
 
+			// we also have to find the center point after rotation and translate our center back to its origin
 			rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) - newCenter );
 
 			SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
@@ -1282,4 +1073,13 @@ void SVPropEditGeometry::on_lineEditY_textChanged(const QString &) {
 
 void SVPropEditGeometry::on_lineEditZ_textChanged(const QString &) {
 	onLineEditTextChanged(m_ui->lineEditZ);
+}
+
+void SVPropEditGeometry::on_lineEditOrientation_textChanged(const QString &){
+	 onLineEditTextChanged(m_ui->lineEditOrientation);
+}
+
+void SVPropEditGeometry::on_lineEditInclination_textChanged(const QString &)
+{
+	onLineEditTextChanged(m_ui->lineEditInclination);
 }

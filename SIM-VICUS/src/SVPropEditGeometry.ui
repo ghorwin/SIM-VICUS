@@ -25,13 +25,13 @@
      <property name="currentIndex">
       <number>1</number>
      </property>
-     <widget class="QWidget" name="page">
+     <widget class="QWidget" name="pageAdd">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
         <width>474</width>
-        <height>571</height>
+        <height>549</height>
        </rect>
       </property>
       <attribute name="label">
@@ -150,317 +150,413 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_2">
+     <widget class="QWidget" name="pageModify">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
         <width>474</width>
-        <height>571</height>
+        <height>549</height>
        </rect>
       </property>
       <attribute name="label">
        <string>Edit Geometry</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_5">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0" colspan="2">
+        <widget class="QGroupBox" name="groupBoxModify">
+         <property name="title">
           <string>Modify selected surfaces:</string>
          </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayoutToolCombo">
+            <item>
+             <widget class="QToolButton" name="toolButtonTrans">
+              <property name="toolTip">
+               <string>Translation</string>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <disabledon>:/gfx/actions/icon-arrow-expand-alt.svg</disabledon>
+               </iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>24</width>
+                <height>24</height>
+               </size>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="toolButtonRotate">
+              <property name="toolTip">
+               <string>Rotation</string>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <disabledoff>:/gfx/actions/icon-arrow-refresh-double.svg</disabledoff>
+               </iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>24</width>
+                <height>24</height>
+               </size>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="toolButtonScale">
+              <property name="toolTip">
+               <string>Scaling/Resizing</string>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <disabledoff>:/gfx/actions/icon-resize-resize-alt.svg</disabledoff>
+               </iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>24</width>
+                <height>24</height>
+               </size>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="comboBox">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>32</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QWidget" name="widgetXYZ" native="true">
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <item>
+              <widget class="QLabel" name="labelX">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>ΔX</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QtExt::ValidatingLineEdit" name="lineEditX">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>50</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="clearButtonEnabled">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelXDeg">
+               <property name="text">
+                <string>°</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelY">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>ΔY</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QtExt::ValidatingLineEdit" name="lineEditY">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>100</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelYDeg">
+               <property name="text">
+                <string>°</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelZ">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>ΔZ</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QtExt::ValidatingLineEdit" name="lineEditZ">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>100</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelZDeg">
+               <property name="text">
+                <string>°</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QWidget" name="widgetRota" native="true">
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QLabel" name="labelIndication">
+               <property name="text">
+                <string>TextLabel</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelRotateOrientationAbs">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="text">
+                <string>Orientation</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QtExt::ValidatingLineEdit" name="lineEditOrientation">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelOrientationDeg">
+               <property name="text">
+                <string>°</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelRotateInclinationAbs">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="text">
+                <string>Inclination</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QtExt::ValidatingLineEdit" name="lineEditInclination">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelInclinationDeg">
+               <property name="text">
+                <string>°</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
-       <item row="1" column="0">
-        <layout class="QGridLayout" name="gridLayout_3">
-         <item row="3" column="0" colspan="6">
-          <layout class="QHBoxLayout" name="horizontalLayoutRelRotate">
-           <item>
-            <widget class="QLabel" name="labelX">
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>ΔX</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QtExt::ValidatingLineEdit" name="lineEditX">
-             <property name="clearButtonEnabled">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="labelXDeg">
-             <property name="text">
-              <string>°</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="labelY">
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>ΔY</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QtExt::ValidatingLineEdit" name="lineEditY"/>
-           </item>
-           <item>
-            <widget class="QLabel" name="labelYDeg">
-             <property name="text">
-              <string>°</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="labelZ">
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>ΔZ</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QtExt::ValidatingLineEdit" name="lineEditZ"/>
-           </item>
-           <item>
-            <widget class="QLabel" name="labelZDeg">
-             <property name="text">
-              <string>°</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="1" column="1">
-          <widget class="QToolButton" name="toolButtonRotate">
-           <property name="toolTip">
-            <string>Rotation</string>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="icon">
-            <iconset>
-             <disabledoff>:/gfx/actions/icon-arrow-refresh-double.svg</disabledoff>
-            </iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>24</width>
-             <height>24</height>
-            </size>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="3" colspan="3">
-          <widget class="QComboBox" name="comboBox">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>32</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QToolButton" name="toolButtonTrans">
-           <property name="toolTip">
-            <string>Translation</string>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="icon">
-            <iconset>
-             <disabledon>:/gfx/actions/icon-arrow-expand-alt.svg</disabledon>
-            </iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>24</width>
-             <height>24</height>
-            </size>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QToolButton" name="toolButtonScale">
-           <property name="toolTip">
-            <string>Scaling/Resizing</string>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="icon">
-            <iconset>
-             <disabledoff>:/gfx/actions/icon-resize-resize-alt.svg</disabledoff>
-            </iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>24</width>
-             <height>24</height>
-            </size>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="2" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayoutAbsRotate">
-         <item>
-          <widget class="QLabel" name="labelIndication">
-           <property name="text">
-            <string>TextLabel</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="labelRotateOrientationAbs">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="text">
-            <string>Orientation</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QtExt::ValidatingLineEdit" name="lineEditOrientation">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="labelOrientationDeg">
-           <property name="text">
-            <string>°</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="labelRotateInclinationAbs">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="text">
-            <string>Inclination</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QtExt::ValidatingLineEdit" name="lineEditInclination">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="labelInclinationDeg">
-           <property name="text">
-            <string>°</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="3" column="0">
+       <item row="1" column="0" colspan="2">
         <widget class="Line" name="line_7">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
         </widget>
        </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Copy selected surfaces:</string>
+       <item row="2" column="0" colspan="2">
+        <widget class="QGroupBox" name="groupBoxCopy">
+         <property name="title">
+          <string>Copy selected surfaces</string>
          </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QLabel" name="labelX_2">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>ΔX</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QtExt::ValidatingLineEdit" name="lineEditXCopy">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelY_2">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>ΔY</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QtExt::ValidatingLineEdit" name="lineEditYCopy">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>0</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelZ_2">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>ΔZ</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QtExt::ValidatingLineEdit" name="lineEditZCopy">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>0</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton">
+            <property name="text">
+             <string>Copy Surfaces</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
-       <item row="5" column="0">
-        <layout class="QGridLayout" name="gridLayout_4">
-         <item row="1" column="0">
-          <widget class="QLabel" name="labelOffset">
-           <property name="text">
-            <string>Offset:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="4">
-          <widget class="QtExt::ValidatingLineEdit" name="lineEditCopyY"/>
-         </item>
-         <item row="0" column="0" colspan="2">
-          <widget class="QLabel" name="labelCount">
-           <property name="text">
-            <string>Count:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>X</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QtExt::ValidatingLineEdit" name="lineEditCopyX"/>
-         </item>
-         <item row="1" column="3">
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>Y</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="5">
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>Z</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="6">
-          <widget class="QtExt::ValidatingLineEdit" name="lineEditCopyZ"/>
-         </item>
-         <item row="0" column="2">
-          <widget class="QSpinBox" name="spinBoxCount"/>
-         </item>
-        </layout>
-       </item>
-       <item row="6" column="0">
+       <item row="3" column="1">
         <spacer name="verticalSpacer_2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -473,7 +569,17 @@
          </property>
         </spacer>
        </item>
+       <item row="4" column="0">
+        <widget class="QWidget" name="widget_3" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_4"/>
+        </widget>
+       </item>
       </layout>
+     </widget>
+     <widget class="QWidget" name="pageCopy">
+      <attribute name="label">
+       <string>Seite</string>
+      </attribute>
      </widget>
     </widget>
    </item>

@@ -119,25 +119,25 @@ public slots:
 
 private slots:
 
+	/*! Event Filter
+		Needed for all scroll specifiy inputs
+	*/
+	bool eventFilter(QObject *target, QEvent *event) override;
+
+	/*! All push buttons specific functions */
 	void on_pushButtonAddPolygon_clicked();
 
 	void on_pushButtonAddRect_clicked();
 
 	void on_pushButtonAddZoneBox_clicked();
 
-
-
+	/*! all line edit specific functions */
 	void on_lineEditX_editingFinished();
 
 	void on_lineEditY_editingFinished();
 
 	void on_lineEditZ_editingFinished();
 
-
-	void on_comboBox_activated(int index);
-
-
-	bool eventFilter(QObject *target, QEvent *event) override;
 
 	void on_lineEditX_returnPressed();
 
@@ -146,11 +146,11 @@ private slots:
 	void on_lineEditZ_returnPressed();
 
 
-	void on_toolButtonTrans_clicked();
+	void on_lineEditX_textChanged(const QString &);
 
-	void on_toolButtonRotate_clicked();
+	void on_lineEditY_textChanged(const QString &);
 
-	void on_toolButtonScale_clicked();
+	void on_lineEditZ_textChanged(const QString &);
 
 
 	void on_lineEditOrientation_returnPressed();
@@ -158,10 +158,13 @@ private slots:
 	void on_lineEditInclination_returnPressed();
 
 
+	void on_lineEditOrientation_textChanged(const QString &);
+
+	void on_lineEditInclination_textChanged(const QString &);
+
 	void on_lineEditOrientation_editingFinished();
 
 	void on_lineEditInclination_editingFinished();
-
 
 
 	void on_lineEditCopyX_returnPressed();
@@ -176,12 +179,20 @@ private slots:
 
 	void on_lineEditCopyZ_editingFinished();
 
+	/*! ComboBox Functions */
+	void on_comboBox_activated(int index);
+
+	/*! All tool button specific functions */
+	void on_toolButtonTrans_clicked();
+
+	void on_toolButtonRotate_clicked();
+
+	void on_toolButtonScale_clicked();
+
 	/*! Triggered when anything changes in one of the line edits X, Y or Z */
 	void onLineEditTextChanged(QtExt::ValidatingLineEdit * lineEdit);
 
-	void on_lineEditX_textChanged(const QString &);
-	void on_lineEditY_textChanged(const QString &);
-	void on_lineEditZ_textChanged(const QString &);
+
 
 private:
 	/*! Updates the property widget regarding to all geometry data.
@@ -219,33 +230,12 @@ private:
 	/*! Cached normal for absolute rotation */
 	IBKMK::Vector3D						m_normal;
 
-	double								m_orientation = 0.0;
-	double								m_inclination = 0.0;
-
 	/*! Cached initial values to be used when user had entered invalid values.
 		These values depend on current modification type and state.
 	*/
 	QVector3D							m_originalValues;
 
-
-
-//	/*! Cached initial values for translation line edits. */
-//	QVector3D							m_transValue;
-
-//	// storing all the rotation values
-//	double								m_xRotaValue = 0.0;
-//	double								m_yRotaValue = 0.0;
-//	double								m_zRotaValue = 0.0;
-
-
-	// storing all the copiing values
-	double								m_xCopyValue = 0.0;
-	double								m_yCopyValue = 0.0;
-	double								m_zCopyValue = 0.0;
-
-	// storing the original measurements for scaling if wheel event is used
-	std::vector<VICUS::Surface>			m_relScaleSurfaces;
-
+	/*! Pointer to UI */
 	Ui::SVPropEditGeometry				*m_ui;
 };
 
