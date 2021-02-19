@@ -30,6 +30,7 @@ DEPENDPATH = $${INCLUDEPATH}
 FORMS += \
 	../../src/QtExt_AutoUpdateDialog.ui \
 	../../src/QtExt_ConstructionViewWidget.ui \
+	../../src/QtExt_DateTimeInputDialog.ui \
 	../../src/QtExt_LanguageStringEditWidget1.ui \
 	../../src/QtExt_LanguageStringEditWidget3.ui \
 	../../src/QtExt_MaterialDatabaseSelectionWidget.ui
@@ -46,6 +47,7 @@ HEADERS += \
 	../../src/QtExt_ConstructionView.h \
 	../../src/QtExt_ConstructionViewWidget.h \
 	../../src/QtExt_Conversions.h \
+	../../src/QtExt_DateTimeInputDialog.h \
 	../../src/QtExt_Directories.h \
 	../../src/QtExt_FeatureWidget.h \
 	../../src/QtExt_GraphicsRectItemWithHatch.h \
@@ -81,6 +83,7 @@ SOURCES += \
 	../../src/QtExt_ConstructionLayer.cpp \
 	../../src/QtExt_ConstructionView.cpp \
 	../../src/QtExt_ConstructionViewWidget.cpp \
+	../../src/QtExt_DateTimeInputDialog.cpp \
 	../../src/QtExt_Directories.cpp \
 	../../src/QtExt_FeatureWidget.cpp \
 	../../src/QtExt_GraphicsRectItemWithHatch.cpp \
