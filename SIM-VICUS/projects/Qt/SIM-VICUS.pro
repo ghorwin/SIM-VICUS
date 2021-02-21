@@ -96,6 +96,7 @@ SOURCES += \
 		../../src/SVDBPipeEditDialog.cpp \
 		../../src/SVDBPipeEditWidget.cpp \
 		../../src/SVDBPipeTableModel.cpp \
+	../../src/SVDBScheduleDailyCycleEditWidget.cpp \
 	../../src/SVDBScheduleEditDialog.cpp \
 	../../src/SVDBScheduleEditWidget.cpp \
 	../../src/SVDBScheduleTableModel.cpp \
@@ -210,6 +211,7 @@ HEADERS  += \
 		../../src/SVDBPipeEditDialog.h \
 		../../src/SVDBPipeEditWidget.h \
 		../../src/SVDBPipeTableModel.h \
+	../../src/SVDBScheduleDailyCycleEditWidget.h \
 	../../src/SVDBScheduleEditDialog.h \
 	../../src/SVDBScheduleEditWidget.h \
 	../../src/SVDBScheduleTableModel.h \
@@ -318,6 +320,7 @@ FORMS    += \
 				../../src/SVDBNetworkComponentEditWidget.ui \
 				../../src/SVDBPipeEditDialog.ui \
 				../../src/SVDBPipeEditWidget.ui \
+				../../src/SVDBScheduleDailyCycleEditWidget.ui \
 				../../src/SVDBScheduleEditDialog.ui \
 				../../src/SVDBScheduleEditWidget.ui \
 				../../src/SVDBWindowEditDialog.ui \
