@@ -25,10 +25,11 @@ public:
 	/*! Holds one or more day types from NANDRAD::Schedule::type_t enum.
 		Only the days (Mo, ... , Fr, .. So) and ST_HOLIDAY.
 	*/
-	std::vector<int>			m_dayTypes;															// XML:E
+	std::vector<int>		m_dayTypes;																// XML:E
 
 	/*! Vector with time points. First value must always be 0. */
 	std::vector<double>		m_timePoints;															// XML:E
+
 	/*! Vector with corresponding values (same size as m_timePoints vector).
 		When data is interpreted as linearly interpolated, the values are taken as given directly
 		at the matching time points. Otherwise, the value is taken constant during the interval starting
