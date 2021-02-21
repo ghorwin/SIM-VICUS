@@ -33,21 +33,31 @@ bool HydraulicNetworkComponent::sameParametersAs(const HydraulicNetworkComponent
 void HydraulicNetworkComponent::checkParameters(int networkModelType) const {
 	FUNCID(HydraulicNetworkComponent::checkParameters);
 
-	// get all necessary parameters of current model type
-	std::vector<unsigned int> para = requiredParameter(m_modelType, m_heatExchangeType, networkModelType);
+	try {
 
-	// check the parameters
-	for (unsigned int i: para){
-		checkModelParameter(m_para[i], i);
+		// get all necessary parameters of current model type
+		std::vector<unsigned int> para = requiredParameter(m_modelType, m_heatExchangeType, networkModelType);
+
+		// check the parameters
+		for (unsigned int i: para){
+			checkModelParameter(m_para[i], i);
+		}
+
+		if (networkModelType == HydraulicNetwork::MT_ThermalHydraulicNetwork) {
+			// check if heat exchange type is supported
+			std::vector<unsigned int> availableHXTypes = availableHeatExchangeTypes(m_modelType);
+			if (std::find(availableHXTypes.begin(), availableHXTypes.end(), m_heatExchangeType) == availableHXTypes.end())
+				throw IBK::Exception(IBK::FormatString("Heat exchange type %1 is not allowed for this component.")
+								 .arg(KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType", m_heatExchangeType))
+								 , FUNC_ID);
+		}
+
+
 	}
-
-	if(networkModelType == HydraulicNetwork::MT_ThermalHydraulicNetwork) {
-		// check if heat exchange type is supported
-		std::vector<unsigned int> availableHXTypes = availableHeatExchangeTypes(m_modelType);
-		if (std::find(availableHXTypes.begin(), availableHXTypes.end(), m_heatExchangeType) == availableHXTypes.end())
-			throw IBK::Exception(IBK::FormatString("Heat exchange type %1 is not allowed for '%2'")
-							 .arg(KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType", m_heatExchangeType))
-							 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, IBK::FormatString("Missing/invalid parameters for component '%1' [%2] of type %3.")
+			.arg(m_displayName).arg(m_id)
+			.arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
 	}
 }
 
