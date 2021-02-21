@@ -44,12 +44,14 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) const {
 		}
 
 		if (networkModelType == HydraulicNetwork::MT_ThermalHydraulicNetwork) {
-			// check if heat exchange type is supported
-			std::vector<unsigned int> availableHXTypes = availableHeatExchangeTypes(m_modelType);
-			if (std::find(availableHXTypes.begin(), availableHXTypes.end(), m_heatExchangeType) == availableHXTypes.end())
-				throw IBK::Exception(IBK::FormatString("Heat exchange type %1 is not allowed for this component.")
-								 .arg(KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType", m_heatExchangeType))
-								 , FUNC_ID);
+			if (m_heatExchangeType != NUM_HT) {
+				// check if heat exchange type is supported
+				std::vector<unsigned int> availableHXTypes = availableHeatExchangeTypes(m_modelType);
+				if (std::find(availableHXTypes.begin(), availableHXTypes.end(), m_heatExchangeType) == availableHXTypes.end())
+					throw IBK::Exception(IBK::FormatString("Heat exchange type %1 is not allowed for this component.")
+									 .arg(KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType", m_heatExchangeType))
+									 , FUNC_ID);
+			}
 		}
 
 
@@ -127,8 +129,7 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 }
 
 
-void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, const unsigned int numPara)
-{
+void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, const unsigned int numPara) {
 	const char * enumName = "HydraulicNetworkComponent::para_t";
 	const char * name = KeywordList::Keyword(enumName, (int)numPara);
 	const char * unit = KeywordList::Unit(enumName, (int)numPara);
