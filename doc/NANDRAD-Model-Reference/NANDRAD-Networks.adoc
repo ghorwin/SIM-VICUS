@@ -41,7 +41,7 @@ Ein einzelnes Netzwerk wird im XML-tag `HydraulicNetwork` definiert, wie im folg
 ====
 [source,xml]
 ----
-<HydraulicNetwork id="1" displayName="Simple network" modelType="ThermoHydraulicNetwork">
+<HydraulicNetwork id="1" displayName="Simple network" modelType="ThermalHydraulicNetwork">
 	<HydraulicFluid id="1" displayName="Water">
         ... <!-- fluid parameters -->
     </HydraulicFluid>
@@ -84,7 +84,7 @@ Das optionale Attribut `modelType` beschreibt, welches Berechnungsmodell zu verw
 |====================
 | Attribute  | Description  
 | `HydraulicNetwork` |  Only the hydraulic network calculation is done, i.e. mass flux and pressure calculation.
-| `ThermoHydraulicNetwork`  |  Network is calculated with thermal balances enabled. Each flow element corresponds to at least one energy/enthalpy balance equation.
+| `ThermalHydraulicNetwork`  |  Network is calculated with thermal balances enabled. Each flow element corresponds to at least one energy/enthalpy balance equation.
 |====================
 
 Die Wahl des Netzwerkberechnungsmodells hat Auswirkungen auf die benötigte Parametrisierung der beteiligten Komponenten.
@@ -97,7 +97,7 @@ Je nach Modelltyp können mehrere globale Netzwerkparameter definiert werden.
 |====================
 |Name|Unit|Description|Value Range |Usage
 | `DefaultFluidTemperature` | C | einheitliche, konstante Fluidtemperatur zur Verwendung mit einem rein hydraulischen Modell | {nbsp}>{nbsp}0.0{nbsp} | _required for model type_  `HydraulicNetwork`
-| `InitialFluidTemperature` | C | Anfangsfluidtemperatur | {nbsp}>{nbsp}0.0{nbsp} | _required for model type_ `ThermoHydraulicNetwork`
+| `InitialFluidTemperature` | C | Anfangsfluidtemperatur | {nbsp}>{nbsp}0.0{nbsp} | _required for model type_ `ThermalHydraulicNetwork`
 |====================
 
 Innerhalb des Netzwerk-Definitionsblocks gibt es vier Kind-Elemente.
