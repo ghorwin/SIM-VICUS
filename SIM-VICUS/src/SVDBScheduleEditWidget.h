@@ -40,7 +40,16 @@ private slots:
 
 	void on_toolButtonAddPeriod_clicked();
 
+	void on_toolButtonRemovePeriode_clicked();
+
+	void on_tableWidgetPeriods_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
+
 private:
+	/*! Update the period table. */
+	void updatePeriodTable();
+
+
+
 	Ui::SVDBScheduleEditWidget			*m_ui;
 
 	/*! Cached pointer to database object. */
@@ -54,6 +63,21 @@ private:
 		A nullptr pointer means that there is no schedule to edit.
 	*/
 	VICUS::Schedule						*m_current;
+
+	/*! Actual row index of period table. (-1 no row selected)*/
+	int									m_rowIdx=-1;
+
+
+
 };
+
+//class SVDBScheduleDailyCycleEditWidget : public QWidget{
+//	Q_OBJECT
+
+//public:
+//	explicit SVDBScheduleDailyCycleEditWidget(QWidget *parent = nullptr);
+//	~SVDBScheduleDailyCycleEditWidget();
+
+//};
 
 #endif // SVDBScheduleEditWidget_H
