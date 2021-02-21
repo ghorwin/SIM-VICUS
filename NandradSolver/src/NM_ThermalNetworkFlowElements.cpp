@@ -60,6 +60,7 @@ void TNStaticPipeElement::setNodalConditions(double mdot, double TInlet, double 
 												m_innerDiameter;
 
 		// calculate heat transfer
+		// TODO : Fixme, check units!
 		const double UAValueTotal = (PI*m_length) / (1.0/(innerHeatTransferCoefficient * m_innerDiameter)
 														+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter)
 														+ 1.0/(2.0*m_UValuePipeWall) );
