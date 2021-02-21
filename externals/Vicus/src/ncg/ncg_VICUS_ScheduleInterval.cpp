@@ -42,7 +42,9 @@ void ScheduleInterval::readXML(const TiXmlElement * element) {
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
-			if (attribName == "intervalStartDay")
+			if (attribName == "displayName")
+				m_displayName.setEncodedString(attrib->ValueStr());
+			else if (attribName == "intervalStartDay")
 				m_intervalStartDay = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
@@ -84,6 +86,8 @@ TiXmlElement * ScheduleInterval::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("ScheduleInterval");
 	parent->LinkEndChild(e);
 
+	if (!m_displayName.empty())
+		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (m_intervalStartDay != VICUS::INVALID_ID)
 		e->SetAttribute("intervalStartDay", IBK::val2string<unsigned int>(m_intervalStartDay));
 

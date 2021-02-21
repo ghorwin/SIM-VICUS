@@ -29,7 +29,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 	std::vector<HydraulicNetworkComponent>::const_iterator coit =
 			std::find(nw.m_components.begin(), nw.m_components.end(), m_componentId);
 	if (coit == nw.m_components.end()) {
-		throw IBK::Exception(IBK::FormatString("Missing component reference to id%1.")
+		throw IBK::Exception(IBK::FormatString("Missing/invalid reference to component with id #%1.")
 							 .arg(m_componentId), FUNC_ID);
 	}
 	// set reference
@@ -47,7 +47,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 			std::vector<HydraulicNetworkPipeProperties>::const_iterator pit =
 					std::find(nw.m_pipeProperties.begin(), nw.m_pipeProperties.end(), m_pipePropertiesId);
 			if (pit == nw.m_pipeProperties.end()) {
-				throw IBK::Exception(IBK::FormatString("Invalid pipe properties reference with id %1.")
+				throw IBK::Exception(IBK::FormatString("Missing/invalid reference to pipe property with id #%1.")
 									 .arg(m_pipePropertiesId), FUNC_ID);
 			}
 			// set reference
@@ -74,68 +74,64 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 
 	if(nw.m_modelType == HydraulicNetwork::MT_ThermalHydraulicNetwork) {
 
-		// decide which heat exchange is chosen
-		switch(m_component->m_heatExchangeType) {
+		try {
+			// decide which heat exchange is chosen
+			switch(m_component->m_heatExchangeType) {
 
-			case HydraulicNetworkComponent::HT_TemperatureConstant: {
-				// check temperature
-				m_para[P_Temperature].checkedValue("Temperature", "C", "C", -200.0, true, std::numeric_limits<double>::max(), true,
-											   "Temperature must be >= -200 C.");
-				// check external heat transfer coefficient
-				if(m_component->m_para[HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].name.empty()){
-					throw IBK::Exception(IBK::FormatString("Missing parameteter '%1 for exchange type %2!")
-								.arg(KeywordList::Keyword("HydraulicNetworkComponent::para_t",
-								HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient))
-								.arg(KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
-								m_component->m_heatExchangeType)),
+				case HydraulicNetworkComponent::HT_TemperatureConstant: {
+						// check temperature
+						m_para[P_Temperature].checkedValue("Temperature", "C", "C", -200.0, true, std::numeric_limits<double>::max(), true,
+													   "Temperature must be >= -200 C.");
+						// check for existance of external heat transfer coefficient (the parameter itself was checked already by the component)
+						if (m_component->m_para[HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].name.empty()){
+							throw IBK::Exception(IBK::FormatString("Missing parameter '%1' in definition of network component '%2' [%3].")
+										.arg(KeywordList::Keyword("HydraulicNetworkComponent::para_t",
+										HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient))
+										.arg(m_component->m_displayName).arg(m_component->m_id),
+										FUNC_ID);
+						}
+				} break;
+
+				case HydraulicNetworkComponent::HT_HeatFluxConstant: {
+					// check heat flux
+					m_para[P_HeatFlux].checkedValue("HeatFlux", "W", "W",
+								std::numeric_limits<double>::lowest(), false, std::numeric_limits<double>::max(), false, nullptr);
+				} break;
+
+				case HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature: {
+					// check for zone id
+					if (m_intPara[IP_ZoneId].name.empty())
+						throw IBK::Exception(IBK::FormatString("Missing IntParameter 'ZoneId'."), FUNC_ID);
+
+					// check for existance of external heat transfer coefficient (the parameter itself was checked already by the component)
+					if (m_component->m_para[HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].name.empty()){
+						throw IBK::Exception(IBK::FormatString("Missing parameter '%1' in definition of network component '%2' [%3].")
+									.arg(KeywordList::Keyword("HydraulicNetworkComponent::para_t",
+									HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient))
+									.arg(m_component->m_displayName).arg(m_component->m_id),
+									FUNC_ID);
+					}
+				} break;
+
+				case HydraulicNetworkComponent::HT_HeatFluxDataFile:
+				case HydraulicNetworkComponent::HT_TemperatureDataFile:{
+					heatExchangeDataFileMustExist = true;
+					break;
+				}
+
+				case HydraulicNetworkComponent::HT_HeatExchangeWithFMUTemperature: {
+					throw IBK::Exception(IBK::FormatString("Heat exchange type 'HeatExchangeWithFMUTemperature' is not supported, yet!"),
 								FUNC_ID);
 				}
-			} break;
-
-			case HydraulicNetworkComponent::HT_HeatFluxConstant: {
-				// check heat flux
-				m_para[P_HeatFlux].checkedValue("HeatFlux", "W", "W",
-							std::numeric_limits<double>::lowest(), false, std::numeric_limits<double>::max(), false, nullptr);
-			} break;
-
-			case HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature: {
-
-				// check for zone id
-				if(m_intPara[IP_ZoneId].name.empty()) {
-					throw IBK::Exception(IBK::FormatString("Missing IntParameter '%1 for exchange type %2!")
-								.arg(KeywordList::Keyword("HydraulicNetworkElement::intpara_t",
-								IP_ZoneId))
-								.arg(KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
-								m_component->m_heatExchangeType)),
-								FUNC_ID);
-
-				}
-				// check for external heat transfer coefficient
-				if(m_component->m_para[HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].name.empty()){
-					throw IBK::Exception(IBK::FormatString("Missing parameteter '%1 for exchange type %2!")
-								.arg(KeywordList::Keyword("HydraulicNetworkComponent::para_t",
-								HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient))
-								.arg(KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
-								m_component->m_heatExchangeType)),
-								FUNC_ID);
-				}
-			} break;
-
-			case HydraulicNetworkComponent::HT_HeatFluxDataFile:
-			case HydraulicNetworkComponent::HT_TemperatureDataFile:{
-				heatExchangeDataFileMustExist = true;
+				case HydraulicNetworkComponent::HT_Adiabatic:
+				case HydraulicNetworkComponent::NUM_HT:
+					// No thermal exchange, nothing to initialize
 				break;
-			}
-			case HydraulicNetworkComponent::HT_HeatExchangeWithFMUTemperature: {
-				throw IBK::Exception(IBK::FormatString("Heat exchange type %1 is not supported, yet!")
-							.arg(KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
-							m_component->m_heatExchangeType)),
-							FUNC_ID);
-			}
-			case HydraulicNetworkComponent::HT_Adiabatic:
-			case HydraulicNetworkComponent::NUM_HT:
-				// No thermal exchange, nothing to initialize
-			break;
+			} // switch
+		} catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Missing/invalid parameters for heat exchange model '%1'.")
+				 .arg(KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType", m_component->m_heatExchangeType)),
+				 FUNC_ID);
 		}
 	}
 
