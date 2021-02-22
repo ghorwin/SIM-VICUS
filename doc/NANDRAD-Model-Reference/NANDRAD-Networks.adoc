@@ -245,7 +245,26 @@ Die Parameter und Attribute sind dann abhängig vom `modelType` der Komponente u
 [[HydraulicElement_StaticPipe]]
 ### StaticPipe
 
-Für das Model `StaticAdiabaticPipe` werden keine weiteren Parameter benötigt.
+`StaticPipe` beschreibt ein Rohrmodell, wobei das gesamte Rohr als ein zusammenhängendes Fluidvolumen mit entsprechend gemittelten Eigenschaften beschrieben wird.
+
+Im thermischen Rohrmodell wird angenommen, dass das Rohr vorwiegend konstant durchströmt wird, und die Randbedingungen ebenfalls dem stationären Prozess weitgehend ähnlich sind (vorwiegend gleichbleibende Eingangstemperatur und Umgebungstemperatur). Deshalb wird bei der Berechnung des Wärmeübergangs an die Umgebung das stationäre Wärmeübergangsmodell verwendent.
+
+Für das Model `StaticPipe` werden im nicht-thermischen Modell keine weiteren Parameter benötigt.
+
+Im thermischen Modell kann noch das Wärmeaustauschmodell definiert werden (siehe <<HeatExchangeType>>).
+
+
+### MixedVolumePipe
+
+... TODO : Strömungsberechnung identisch zu `StaticPipe`, Verwendung des "ideal mixing"-Modells für Temperaturaustausch mit Umgebung. Wäre äquivalent zu Dynamic Pipe mit nur einem Segment.
+
+
+[[HydraulicElement_DynamicPipe]]
+### DynamicPipe
+
+... TODO : Milestone 2
+
+Note.  `HeatExchangeType` verpflichtend!
 
 
 ### ConstantPressurePump
@@ -263,6 +282,7 @@ Für das Model `ConstantPressurePump` werden diese Parameter benötigt:
 
 _(*) - not yet used_
 
+
 ### HeatExchanger
 
 Für das Model `HeatExchanger` werden diese Parameter benötigt:
@@ -276,6 +296,49 @@ Für das Model `HeatExchanger` werden diese Parameter benötigt:
 |====================
 
 _(*) - not yet used_
+
+
+[[HeatExchangeType]]
+## Definition der Wärmeaustauschmodells (HeatExchangeType)
+
+Für thermische Netzwerken kann je Komponte der Wärmeaustausch mit der Umgebung/anderen Komponenten/Zonen etc. definiert werden.
+Dafür muss innerhalb der Komponentendefinition ein XML-Element `HeatExchangeType` definiert werden. Dieses kann folgenden Werte haben:
+
+[options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
+|====================
+|Heat exchange type|Description|Used for component
+| `TemperatureConstant` | Konstante Umgebungstemperatur ist als Parameter im `HydraulicNetworkElement` gegeben | `StaticPipe`, `DynamicPipe` 
+| `TemperatureDataFile` | Umgebungstemperatur ist als Zeitreihe in einer tsv-Datei gegeben (im `HydraulicNetworkElement` definiert) | `StaticPipe`, `DynamicPipe`
+| `HeatFluxConstant` | Wärmestrom (positiv aus dem Element) ist Parameter im `HydraulicNetworkElement` gegeben | `StaticPipe`, `DynamicPipe`, `HeatExchanger`
+| `HeatFluxDataFile` | Wärmestrom (positiv aus dem Element) ist als Zeitreihe in einer tsv-Datei gegeben (im `HydraulicNetworkElement` definiert) | `StaticPipe`, `DynamicPipe`, `HeatExchanger`
+| `HeatExchangeWithZoneTemperature` | Temperatur wird aus Zone (definiert in `HydraulicNetworkElement`) definiert | `StaticPipe`, `DynamicPipe`
+|====================
+
+[IMPORTANT]
+====
+Wenn des XML-Element `HeatExchangeType` fehlt, wird die entsprechende Komponente als adiabat behandelt und verlangt entsprechend auch keine weiteren Parameter.
+====
+
+### `TemperatureConstant`
+
+TODO : MileStone 1, Hauke
+
+### `TemperatureDataFile`
+
+TODO : MileStone 1, Hauke
+
+### `HeatFluxConstant`
+
+TODO : MileStone 1, Hauke
+
+### `HeatFluxDataFile`
+
+TODO : MileStone 1, Hauke
+
+### `HeatExchangeWithZoneTemperature`
+
+TODO : MileStone 2
+
 
 
 [[HydraulicNetworkElement]]
@@ -456,6 +519,16 @@ Die mittlere Temperatur einen Strömungselements kann zur Visualisierung/Farbgeb
 Je nach physikalischer Modellierung eines Strömungselements muss die Mitteltemperatur einen Strömungselements nicht mit der Auslasstemperatur übereinstimmen (siehe Modelldokumentation). Beispiele dafür sind Speicher oder lange verlustbehaftete Rohre.
 ====
 
+TODO : 
+
+- `InletNodeTemperature` in C
+- `OutletNodeTemperature` in C
+
+- `FluidHeatFluxes`
+- `FluidHeatFlux`
+- `ZoneHeatFluxes`
+- 
+
 #### Ausgaben des Netzwerks
 
 Zur Vereinfachung dienen die Variablennamen `FluidTemperatures` und `FluidMassFluxes`, welche für ein gesamtes Netzwerk abgerufen werden können (Referenztyp `Network`). Diese enthalten jeweils Ausgaben für alle Strömungselemente.
@@ -467,7 +540,6 @@ Variablen für Ausgaben vom Referenztyp `NetworkElement` werden in den Ausgabeda
 
 
 
-TODO : document Network results once they work
 
 
 
