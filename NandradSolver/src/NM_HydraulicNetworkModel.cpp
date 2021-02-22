@@ -189,8 +189,6 @@ void HydraulicNetworkModel::setup() {
 				HNPipeElement * pipeElement = new HNPipeElement(e, *e.m_pipeProperties, m_hydraulicNetwork->m_fluid);
 				// add to flow elements
 				m_p->m_flowElements.push_back(pipeElement); // transfer ownership
-				// register a temperature dependend element
-				m_elementIdsWithTemperature.push_back(e.m_id);
 			} break;
 
 			case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump :
@@ -364,8 +362,8 @@ void HydraulicNetworkModel::inputReferences(std::vector<InputReference> & inputR
 		inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 		inputRef.m_name = std::string("FluidTemperature");
 		inputRef.m_required = true;
-		for(unsigned int i = 0; i < m_elementIdsWithTemperature.size(); ++i) {
-			inputRef.m_id = m_elementIdsWithTemperature[i];
+		for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
+			inputRef.m_id = m_elementIds[i];
 			// register reference
 			inputRefs.push_back(inputRef);
 		}
@@ -374,7 +372,7 @@ void HydraulicNetworkModel::inputReferences(std::vector<InputReference> & inputR
 
 
 void HydraulicNetworkModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/, const std::vector<const double *> & resultValueRefs) {
-	if (resultValueRefs.size() == m_elementIdsWithTemperature.size()) {
+	if (resultValueRefs.size() == m_elementIds.size()) {
 		// copy references into fluid temperature vector
 		for(const double* resRef : resultValueRefs)
 			m_fluidTemperatureRefs.push_back(resRef);
@@ -406,11 +404,7 @@ int HydraulicNetworkModel::update() {
 		unsigned int count = 0;
 		for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
 			HydraulicNetworkAbstractFlowElement *fe = m_p->m_flowElements[i];
-			IBK_ASSERT(count < m_elementIdsWithTemperature.size());
-			// skip elements without temperature
-			if(m_elementIdsWithTemperature[count] != m_elementIds[i])
-				continue;
-			fe->setFluidTemperature(*m_fluidTemperatureRefs[count++]);
+			fe->setFluidTemperature(*m_fluidTemperatureRefs[i]);
 		}
 	}
 

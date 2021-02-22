@@ -99,8 +99,6 @@ private:
 	std::string										m_displayName;
 	/*! Storage of all network element ids, used for vector output. */
 	std::vector<unsigned int>						m_elementIds;
-	/*! Storage of all network element ids, used for vector output. */
-	std::vector<unsigned int>						m_elementIdsWithTemperature;
 	/*! Stores the displaynames of all elements referenced in m_elementIds (vectors have same size and same ordering). */
 	std::vector<std::string>						m_elementDisplayNames;
 	/*! Constant reference to NANDRAD network data structure */
