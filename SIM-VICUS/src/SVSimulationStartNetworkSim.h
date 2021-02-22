@@ -12,6 +12,8 @@ namespace NANDRAD {
 	class Project;
 }
 
+#define PI				3.141592653589793238
+
 /*! Dialog for starting a simulation.
 	It generates a NANDRAD project based on the current VICUS project contents.
 */

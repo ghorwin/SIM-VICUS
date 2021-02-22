@@ -69,13 +69,6 @@ void TNStaticPipeElement::setNodalConditions(double mdot, double TInlet, double 
 
 		// calculate heat transfer
 
-		// resistances = resistance_inside + resistance_pipewall + resistance_outside
-		//             = 1/(innerHeatTransferCoefficient * m_innerDiameter * PI)           W/mK
-		//             + 1/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)         W/mK
-		//             + 1/U_equivalent;                                                   W/mK
-
-		// where U_equivalent = 2*lambda*ln(d0/d)
-
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
 		const double UAValueTotal = m_length / (
 					  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI

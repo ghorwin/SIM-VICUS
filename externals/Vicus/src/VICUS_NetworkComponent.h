@@ -69,7 +69,6 @@ public:
 
 
 	enum HeatExchangeType {
-		HT_Adiabatic,
 		HT_TemperatureConstant,				// Keyword: TemperatureConstant					'Constant temperature'
 		HT_HeatFluxConstant,				// Keyword: HeatFluxConstant					'Constant heat flux'
 		HT_HeatFluxDataFile,				// Keyword: HeatFluxDataFile					'Heat flux from data file'

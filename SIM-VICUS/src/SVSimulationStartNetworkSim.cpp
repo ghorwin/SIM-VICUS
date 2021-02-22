@@ -285,15 +285,15 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		NANDRAD::HydraulicNetworkPipeProperties pipeProp;
 		pipeProp.m_id = pipe->m_id;
 
-		// calculate pipe wall U-Value
+		// calculate length-specific pipe wall U-Value in W/mK
 		double UValue;
 		if (pipe->m_insulationThickness>0 && pipe->m_lambdaInsulation>0){
-			UValue = 1/ ( 1/pipe->m_lambdaWall * IBK::f_log(pipe->m_diameterOutside / pipe->diameterInside())
+			UValue = 2*PI/ ( 1/pipe->m_lambdaWall * IBK::f_log(pipe->m_diameterOutside / pipe->diameterInside())
 						+ 1/pipe->m_lambdaInsulation *
 						  IBK::f_log((pipe->m_diameterOutside + 2*pipe->m_insulationThickness) / pipe->m_diameterOutside) );
 		}
 		else {
-			UValue = 1/ ( 1/pipe->m_lambdaWall * IBK::f_log(pipe->m_diameterOutside / pipe->diameterInside()) );
+			UValue = 2*PI/ ( 1/pipe->m_lambdaWall * IBK::f_log(pipe->m_diameterOutside / pipe->diameterInside()) );
 		}
 
 		// set pipe properties

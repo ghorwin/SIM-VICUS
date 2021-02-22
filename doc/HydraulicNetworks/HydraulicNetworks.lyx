@@ -3065,35 +3065,31 @@ which has the unit
 \end_layout
 
 \begin_layout Itemize
-outer diameter of pipe wall 
 \begin_inset Formula $d_{o}$
 \end_inset
 
-in [m]
+ outer diameter of pipe wall in [m]
 \end_layout
 
 \begin_layout Itemize
-thermal conductivity of pipe wall 
-\begin_inset Formula $\lambda$
+\begin_inset Formula $\lambda_{pipe}$
 \end_inset
 
-in [W/mK]
+ thermal conductivity of pipe wall in [W/mK]
 \end_layout
 
 \begin_layout Itemize
-outer diameter of pipe insulation 
 \begin_inset Formula $s_{insulation}$
 \end_inset
 
-in [m]
+ thickness of pipe insulation in [m]
 \end_layout
 
 \begin_layout Itemize
-thermal conductivity of pipe insulation 
 \begin_inset Formula $\lambda_{insulation}$
 \end_inset
 
-in [W/mK]
+ thermal conductivity of pipe insulation in [W/mK]
 \end_layout
 
 \begin_layout Subsubsection
@@ -3170,11 +3166,11 @@ where
 \end_layout
 
 \begin_layout Itemize
-the convection coefficient inside the pipe 
 \begin_inset Formula $h_{i}(T_{in})$
 \end_inset
 
- [W/m²K] can be calculated according to 
+ the convection coefficient inside the pipe in [W/m²K], calculated according
+ to 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "subsec:Convection-coefficient-inside"
@@ -3188,11 +3184,11 @@ noprefix "false"
 \end_layout
 
 \begin_layout Itemize
-the length-specific U-Value of the pipe wall including insulation 
 \begin_inset Formula $U_{pipe}$
 \end_inset
 
- can be calculated according to 
+ the length-specific U-Value of the pipe wall including insulation in [W/mK],
+ calculated according to 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "subsec:Length-specific-U-Value-pipe"
@@ -3206,11 +3202,10 @@ noprefix "false"
 \end_layout
 
 \begin_layout Itemize
-the convection coefficient at the exterior pipe surface 
 \begin_inset Formula $h_{o}$
 \end_inset
 
- in [W/m²K] 
+ the convection coefficient at the exterior pipe surface in [W/m²K] 
 \end_layout
 
 \begin_layout Standard
@@ -3272,7 +3267,7 @@ p_{in}-p_{out}=\Delta p(\dot{m},T_{in},l,d,k)
 \end_layout
 
 \begin_layout Standard
-The heat exchange between each single volume and the amient is 
+The heat exchange between each single volume and the ambient is 
 \begin_inset Formula 
 \[
 \dot{Q}_{loss,n}=dx\,UA_{pipe}\left(T_{amb}-T_{n}\right)
@@ -3303,11 +3298,11 @@ where
 \end_layout
 
 \begin_layout Itemize
-the convection coefficient inside the pipe 
 \begin_inset Formula $h_{i}(T_{in})$
 \end_inset
 
- [W/m²K] can be calculated according to 
+ the convection coefficient inside the pipe in [W/m²K], calculated according
+ to 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "subsec:Convection-coefficient-inside"
@@ -3321,11 +3316,11 @@ noprefix "false"
 \end_layout
 
 \begin_layout Itemize
-the length-specific U-Value of the pipe wall including insulation 
 \begin_inset Formula $U_{pipe}$
 \end_inset
 
- can be calculated according to 
+ the length-specific U-Value of the pipe wall including insulation in [W/mK],
+ calculated according to 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "subsec:Length-specific-U-Value-pipe"
@@ -3339,35 +3334,31 @@ noprefix "false"
 \end_layout
 
 \begin_layout Itemize
-the convection coefficient at the exterior pipe surface 
 \begin_inset Formula $h_{o}$
 \end_inset
 
- in [W/m²K] 
+ the convection coefficient at the exterior pipe surface in [W/m²K] 
 \end_layout
 
 \begin_layout Itemize
-the ambient temperature 
 \begin_inset Formula $T_{amb}$
 \end_inset
 
- in [°C]
+ the ambient temperature in [°C]
 \end_layout
 
 \begin_layout Itemize
-the temperature of each volume 
 \begin_inset Formula $T_{n}$
 \end_inset
 
-in [°C]
+ the temperature of each volume in [°C]
 \end_layout
 
 \begin_layout Itemize
-the spatial discrtization along the pipe 
 \begin_inset Formula $dx$
 \end_inset
 
- in [m]
+ the spatial discretization along the pipe in [m]
 \end_layout
 
 \begin_layout Standard
@@ -3404,191 +3395,6 @@ An ideal pump is an adiabatic element with
 
 \begin_layout Subsubsection
 Pump with performance loss
-\end_layout
-
-\begin_layout Standard
-parameters
-\end_layout
-
-\begin_layout Standard
-\begin_inset Tabular
-<lyxtabular version="3" rows="2" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-pump efficency
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\eta_{pump}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $---$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-motor efficiency
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\eta_{motor}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $---$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\xout off
-\uuline off
-\uwave off
-\noun off
-\color none
-
-\begin_inset Newline newline
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\xout off
-\uuline off
-\uwave off
-\noun off
-\color none
-outputs
-\end_layout
-
-\begin_layout Standard
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\xout off
-\uuline off
-\uwave off
-\noun off
-\color none
-\begin_inset Tabular
-<lyxtabular version="3" rows="1" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-heat flux to ambient
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\dot{Q}_{loss}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-W
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -3633,15 +3439,26 @@ with
 \end_layout
 
 \begin_layout Standard
-Heat losses is directed positive into the fluid and therefore we obtain
+Heat loss is directed positive into the fluid and therefore we obtain
 \begin_inset Formula 
 \[
-\dot{Q}_{loss}=-\left(1-\eta_{pump}\right)\left(1-\eta_{motor}\right)P_{el}.
+\dot{Q}_{loss}=-\left(1-\eta_{pump}\right)P_{el}
 \]
 
 \end_inset
 
- 
+
+\end_layout
+
+\begin_layout Standard
+with 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\eta_{pump}$
+\end_inset
+
+ pump efficiency [-]
 \end_layout
 
 \begin_layout Subsection

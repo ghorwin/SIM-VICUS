@@ -304,9 +304,9 @@ _(*) - not yet used_
 Für thermische Netzwerken kann je Komponte der Wärmeaustausch mit der Umgebung/anderen Komponenten/Zonen etc. definiert werden.
 Dafür muss innerhalb der Komponentendefinition ein XML-Element `HeatExchangeType` definiert werden. Dieses kann folgenden Werte haben:
 
-[options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
+[options="header",cols="25%,^ 50%, ^ 25%",width="100%"]
 |====================
-|Heat exchange type|Description|Used for component
+|Heat exchange type| Description| Used for component
 | `TemperatureConstant` | Konstante Umgebungstemperatur ist als Parameter im `HydraulicNetworkElement` gegeben | `StaticPipe`, `DynamicPipe` 
 | `TemperatureDataFile` | Umgebungstemperatur ist als Zeitreihe in einer tsv-Datei gegeben (im `HydraulicNetworkElement` definiert) | `StaticPipe`, `DynamicPipe`
 | `HeatFluxConstant` | Wärmestrom (positiv aus dem Element) ist Parameter im `HydraulicNetworkElement` gegeben | `StaticPipe`, `DynamicPipe`, `HeatExchanger`
@@ -321,19 +321,19 @@ Wenn des XML-Element `HeatExchangeType` fehlt, wird die entsprechende Komponente
 
 ### `TemperatureConstant`
 
-TODO : MileStone 1, Hauke
+Dieser Typ ist nur für Rohre definiert. Es gibt einen Wärmeaustausch zwischen der Fluidtemperatur im Rohr und einer konstanten Umgebungstemperatur. Dabei muss der Wärmeübergangskoeffizient an der Rohraußenwand angegeben werden.
 
 ### `TemperatureDataFile`
 
-TODO : MileStone 1, Hauke
+Dieser Typ ist nur für Rohre definiert. Es gibt einen Wärmeaustausch zwischen der Fluidtemperatur im Rohr und einer zeitabhängigen Umgebungstemperatur. Dabei muss der Wärmeübergangskoeffizient an der Rohraußenwand angegeben werden.
 
 ### `HeatFluxConstant`
 
-TODO : MileStone 1, Hauke
+Dem Element wird ein konstanter Wärmestrom entzogen. Positive Werte bedeuten Wärmeentzug.
 
 ### `HeatFluxDataFile`
 
-TODO : MileStone 1, Hauke
+Dem Element wird ein zeitabhängiger Wärmestrom entzogen. Positive Werte bedeuten Wärmeentzug.
 
 ### `HeatExchangeWithZoneTemperature`
 
@@ -519,10 +519,12 @@ Die mittlere Temperatur einen Strömungselements kann zur Visualisierung/Farbgeb
 Je nach physikalischer Modellierung eines Strömungselements muss die Mitteltemperatur einen Strömungselements nicht mit der Auslasstemperatur übereinstimmen (siehe Modelldokumentation). Beispiele dafür sind Speicher oder lange verlustbehaftete Rohre.
 ====
 
-TODO : 
+Die Temperaturen am Ein- bzw. Auslass sind (wie die Drücke) an den physischen Positionen _inletNode_ und _outletNode_ definiert und können ausgegeben werden mit 
 
-- `InletNodeTemperature` in C
+- `InletNodeTemperature` in C 
 - `OutletNodeTemperature` in C
+
+TODO Anne....
 
 - `FluidHeatFluxes`
 - `FluidHeatFlux`
