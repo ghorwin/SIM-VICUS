@@ -2569,7 +2569,7 @@ TODO: QUELLE
 
 \begin_inset Formula 
 \begin{align}
-f & =\frac{0.25}{\left[log_{10}\left(\frac{\epsilon/D}{3.7}+\frac{5.74}{Re^{0.9}}\right)\right]^{2}}\label{eq:Reynolds_turbulentColebrook}
+f & =\frac{0.25}{\left[log_{10}\left(\frac{\epsilon/D}{3.7}+\frac{5.74}{Re^{0.9}}\right)\right]^{2}}\label{eq:swamee-jain}
 \end{align}
 
 \end_inset
@@ -2624,14 +2624,10 @@ For
 \begin_inset Formula $f\left(2300\right)$
 \end_inset
 
- obtained with equation
-\begin_inset space ~
-\end_inset
-
-
+ obtained with equation 
 \begin_inset CommandInset ref
 LatexCommand eqref
-reference "eq:Reynolds_turbulentColebrook"
+reference "eq:Reynolds_laminar"
 plural "false"
 caps "false"
 noprefix "false"
@@ -2649,7 +2645,7 @@ noprefix "false"
 
 \begin_inset CommandInset ref
 LatexCommand eqref
-reference "eq:Reynolds_turbulentColebrook"
+reference "eq:swamee-jain"
 plural "false"
 caps "false"
 noprefix "false"
@@ -2750,69 +2746,10 @@ The pressure difference is a constant pump parameter.
 \end_layout
 
 \begin_layout Subsubsection
-Ideal heat exchanger
-\end_layout
-
-\begin_layout Standard
-parameter
-\end_layout
-
-\begin_layout Standard
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\xout off
-\uuline off
-\uwave off
-\noun off
-\color none
-\begin_inset Tabular
-<lyxtabular version="3" rows="1" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-pressure loss
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\Delta p_{fix}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $Pa$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
+Fixed pressure loss coefficient
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Fixed-pressure-loss"
 
 \end_inset
 
@@ -2820,7 +2757,12 @@ pressure loss
 \end_layout
 
 \begin_layout Standard
+Thuis model uses a fixed pressure loss coefficient 
+\begin_inset Formula $\zeta_{const}$
+\end_inset
 
+ to compute the pressure loss through an element.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -2837,11 +2779,34 @@ pressure loss
 \uwave off
 \noun off
 \color none
-The system function is
+The presure drop can be calculated similar as in 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:pressureLossPipe"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+
 \begin_inset Formula 
-\[
-f\text{\left(\dot{m},p_{in},p_{out}\right)}=p_{in}-p_{out}-\Delta p_{fix}
-\]
+\begin{align}
+\Delta p & =\zeta_{const}\frac{\rho}{2}\left|v\right|v\label{eq:fixed pressure loss coeff}
+\end{align}
 
 \end_inset
 
@@ -2866,73 +2831,25 @@ Thermohydraulic properties may differ from pure hydraulic properties and
 
 \begin_layout Subsection
 Element with external heat loss 
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Element-with-external"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 inputs
 \end_layout
 
-\begin_layout Standard
-\begin_inset Tabular
-<lyxtabular version="3" rows="1" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-heat flux to ambient
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
+\begin_layout Itemize
+heat flux to ambient 
 \begin_inset Formula $\dot{Q}_{loss,ext}$
 \end_inset
 
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-W
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\xout off
-\uuline off
-\uwave off
-\noun off
-\color none
-
-\begin_inset Newline newline
-\end_inset
-
-
+ in [W]
 \end_layout
 
 \begin_layout Standard
@@ -2952,67 +2869,12 @@ W
 outputs
 \end_layout
 
-\begin_layout Standard
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\xout off
-\uuline off
-\uwave off
-\noun off
-\color none
-\begin_inset Tabular
-<lyxtabular version="3" rows="1" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-heat flux to ambient
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
+\begin_layout Itemize
+heat flux to ambient 
 \begin_inset Formula $\dot{Q}_{loss}$
 \end_inset
 
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-W
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
+ in [W]
 \end_layout
 
 \begin_layout Standard
@@ -3043,16 +2905,26 @@ name "subsec:Convection-coefficient-inside"
 \end_layout
 
 \begin_layout Standard
-Heat transfer from fluid to pipe surface is expressed in terms of the convective
- heat transfer coefficient, which depends also on the flow regime.
+The heat transfer from fluid to pipe surface is expressed through the Nusselt
+ number, which depends on the flow regime.
 \end_layout
 
 \begin_layout Standard
-For laminar flows (
+We use the following equation for fully developed laminar flows (
 \begin_inset Formula $Re<2300$
 \end_inset
 
-)
+) with constant wall temperature according to 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+TODO: QUELLE VDI Wärmeatlas
+\end_layout
+
+\end_inset
+
+
 \begin_inset Formula 
 \[
 Nu_{lam}=\left(49.37+\left(1.615\cdot\left(Re\,Pr\frac{d}{l}\right)-0.7\right)^{3}\right)^{\frac{1}{3}}
@@ -3064,14 +2936,46 @@ Nu_{lam}=\left(49.37+\left(1.615\cdot\left(Re\,Pr\frac{d}{l}\right)-0.7\right)^{
 \end_layout
 
 \begin_layout Standard
+where Pr is the Prandtl number (determined by fluid properties).
+\end_layout
+
+\begin_layout Standard
 For turbulent flows (
 \begin_inset Formula $Re>1e4$
 \end_inset
 
-)
+), we use the equation for fully developed turbulent flows according to
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+TODO: QUELLE VDI Wärmeatlas
+\end_layout
+
+\end_inset
+
+
 \begin_inset Formula 
 \[
-Nu_{turb}=\frac{\left(\zeta/8\right)Re\,Pr}{1+12.7\sqrt{\zeta/8}\,\left(Pr^{^{2/3}}-1\right)}\left(1+\left(\frac{d}{l}\right)^{2/3}\right)
+Nu_{turb}=\frac{\frac{\zeta}{8}Re\:Pr}{1+12.7\sqrt{\frac{\zeta}{8}}\,\left(Pr^{^{2/3}}-1\right)}\left(1+\left(\frac{d}{l}\right)^{2/3}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $\zeta$
+\end_inset
+
+ is the pressure loss coefficient, which is calculated with the simplified
+ equation
+\begin_inset Formula 
+\[
+\zeta=\left(1.8\:log_{10}\left(Re\right)-1.5\right)^{-2}
 \]
 
 \end_inset
@@ -3087,19 +2991,7 @@ For
  we use linear interpolation
 \begin_inset Formula 
 \[
-Nu_{int}=\left(1-a\right)Nu{}_{lam,Re=2300}+a\,Nu{}_{turb,Re=1e4}
-\]
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-where
-\begin_inset Formula 
-\[
-a=\frac{Re-2300}{1e4-2300}
+Nu_{int}=Nu_{lam,Re=2300}+\frac{Re-2300}{1e4-2300}\:\left(Nu_{turb,Re=1e4}-Nu_{lam,Re=2300}\right)
 \]
 
 \end_inset
@@ -3137,314 +3029,75 @@ h_{i}=Nu\frac{\lambda}{d}
 \end_layout
 
 \begin_layout Subsubsection
-Static adiabatic pipe
-\end_layout
+Length-specific U-Value pipe wa
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Length-specific-U-Value-pipe"
 
-\begin_layout Standard
-The fluid properties are evaluated using the temperature from the inlet
- node (
-\begin_inset Formula $T=T_{in}$
 \end_inset
 
-), which is assumed to be the same in the entire pipe.
+ll
 \end_layout
 
 \begin_layout Standard
-There is no heat exchange with the surrounding, thus
+For the calculation of pipe heat losses, we need the length-specific U-Value
+ for the pipe wall 
+\end_layout
+
+\begin_layout Standard
 \begin_inset Formula 
 \[
-\dot{Q}_{loss}=0.
+U_{pipe}=\frac{2\pi}{\frac{1}{\lambda_{pipe}}ln\left(\frac{d_{o}}{d}\right)+\frac{1}{\lambda_{insulation}}ln\left(\frac{d_{o}+2s_{insulation}}{d_{o}}\right)}
 \]
 
 \end_inset
 
-Static pipe ignores thermal storage effects of the fluid setting a very
- small fluid volume of 
-\begin_inset Formula $V=0.01m²$
+
+\end_layout
+
+\begin_layout Standard
+which has the unit 
+\begin_inset Formula $W/(Km)$
 \end_inset
 
 .
+ It requires the following properties 
 \end_layout
 
-\begin_layout Subsubsection
-Static pipe with heat exchange with the surroundings
-\end_layout
-
-\begin_layout Standard
-parameters
-\end_layout
-
-\begin_layout Standard
-\begin_inset Tabular
-<lyxtabular version="3" rows="3" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-outer diameter
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
+\begin_layout Itemize
+outer diameter of pipe wall 
 \begin_inset Formula $d_{o}$
 \end_inset
 
-
+in [m]
 \end_layout
 
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $m$
+\begin_layout Itemize
+thermal conductivity of pipe wall 
+\begin_inset Formula $\lambda$
 \end_inset
 
-
+in [W/mK]
 \end_layout
 
+\begin_layout Itemize
+outer diameter of pipe insulation 
+\begin_inset Formula $s_{insulation}$
 \end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
 
-\begin_layout Plain Layout
-outer heat exchange coefficient
+in [m]
 \end_layout
 
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $h_{o}$
+\begin_layout Itemize
+thermal conductivity of pipe insulation 
+\begin_inset Formula $\lambda_{insulation}$
 \end_inset
 
-
+in [W/mK]
 \end_layout
 
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $m$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-thermal conductivity pipe wall
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\lambda_{pipe}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $W/mK$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-inputs
-\end_layout
-
-\begin_layout Standard
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\xout off
-\uuline off
-\uwave off
-\noun off
-\color none
-\begin_inset Tabular
-<lyxtabular version="3" rows="1" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-ambient temperature
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $T_{amb}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $C$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\xout off
-\uuline off
-\uwave off
-\noun off
-\color none
-outputs
-\end_layout
-
-\begin_layout Standard
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\xout off
-\uuline off
-\uwave off
-\noun off
-\color none
-\begin_inset Tabular
-<lyxtabular version="3" rows="1" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-heat flux to ambient
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\dot{Q}_{loss}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-W
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
+\begin_layout Subsubsection
+Static pipe with heat exchange with the ambient
 \end_layout
 
 \begin_layout Standard
@@ -3458,29 +3111,8 @@ noprefix "false"
 
 \end_inset
 
- 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Annahme des Temperaturverlaufs im Rohr diskutieren.
- Auswirkung auf Fluid-Eigenschaften diskutieren: Annahme 
-\begin_inset Quotes eld
-\end_inset
-
-Einlasstemperatur
-\begin_inset Quotes erd
-\end_inset
-
- konstant für Auswertung der Fluid-Eigenschaften? Warum?
-\end_layout
-
-\end_inset
-
-
+ For simplification, we use the inlet temperature to determine the fluid
+ properties.
 \end_layout
 
 \begin_layout Standard
@@ -3495,9 +3127,17 @@ p_{in}-p_{out}=\Delta p(\dot{m},T_{in},l,d,k)
 \end_layout
 
 \begin_layout Standard
+This models assumes steady flow conditions for reasons of simplification.
+ The inlet temperature and mass flow are assumed constant over a period
+ long enough that the outlet temperature does not change anymore.
+ This leads to a logarithmic temperature profile along the pipe, so that
+ the heat exchange is given by 
+\end_layout
+
+\begin_layout Standard
 \begin_inset Formula 
 \[
-\dot{Q}_{loss}=\dot{m}c_{fl}\left(T_{in}-T_{amb}\right)\left(1-e^{\left(-\frac{U_{p}}{\dot{m}c_{p}}l\right)}\right)
+\dot{Q}_{loss}=\dot{m}c_{fl}\left(T_{in}-T_{amb}\right)\left(1-e^{\left(-\frac{UA_{pipe}}{\dot{m}c_{p}}l\right)}\right)
 \]
 
 \end_inset
@@ -3507,13 +3147,17 @@ p_{in}-p_{out}=\Delta p(\dot{m},T_{in},l,d,k)
 
 \begin_layout Standard
 where 
-\begin_inset Formula $U_{R}$
+\begin_inset Formula $UA_{pipe}$
 \end_inset
 
-is the length-related heat transfer coefficient 
+is the UA-Value of the pipe including insulation and heat transfer coefficients
+ at the inner and outer surface 
+\end_layout
+
+\begin_layout Standard
 \begin_inset Formula 
 \[
-U_{p}=\frac{\pi}{\frac{1}{h_{i}d}+\frac{1}{h_{o}d_{o}}+\frac{1}{2\lambda_{pipe}}ln\left(\frac{d_{o}}{d}\right)}
+UA_{pipe}=\frac{l}{\frac{1}{h_{i}d}+\frac{1}{h_{o}d_{o}}+U_{pipe}}
 \]
 
 \end_inset
@@ -3523,11 +3167,14 @@ U_{p}=\frac{\pi}{\frac{1}{h_{i}d}+\frac{1}{h_{o}d_{o}}+\frac{1}{2\lambda_{pipe}}
 
 \begin_layout Standard
 where 
+\end_layout
+
+\begin_layout Itemize
+the convection coefficient inside the pipe 
 \begin_inset Formula $h_{i}(T_{in})$
 \end_inset
 
- is the convection coefficient inside the pipe, which can be calculated
- according to 
+ [W/m²K] can be calculated according to 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "subsec:Convection-coefficient-inside"
@@ -3537,585 +3184,86 @@ noprefix "false"
 
 \end_inset
 
-.
- As for static adiabatic pipe the volume is set to a small value of 
-\begin_inset Formula $V=0.01m²$
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Dokumentation mehrschichtige Rohre -> U-Wertberechnung
-\end_layout
-
-\end_inset
-
 
 \end_layout
 
-\begin_layout Subsubsection
-Dynamic adiabatic pipe
-\begin_inset CommandInset label
-LatexCommand label
-name "subsec:Dynamic-adiabatic-pipe"
-
+\begin_layout Itemize
+the length-specific U-Value of the pipe wall including insulation 
+\begin_inset Formula $U_{pipe}$
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
-parameters
-\end_layout
-
-\begin_layout Standard
-\begin_inset Tabular
-<lyxtabular version="3" rows="2" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-length
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $l$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $m$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-spatial discretization along the pipe
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $dx$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-m
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-This model has no heat exchange to the surrounding, thus
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\[
-\dot{Q}_{loss,k}=0
-\]
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-The number of Elements is 
-\begin_inset Formula $n=l/dx$
-\end_inset
-
-.
- 
-\end_layout
-
-\begin_layout Subsubsection
-Dynamic pipe with heat exchange
-\end_layout
-
-\begin_layout Standard
-parameters
-\end_layout
-
-\begin_layout Standard
-\begin_inset Tabular
-<lyxtabular version="3" rows="7" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-length
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $l$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $m$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-inner diameter
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $d$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $m$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-roughness
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $k$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $m$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-outer diameter
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $d_{o}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $m$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-outer heat exchange coefficient
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $h_{o}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $m$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-thermal conductivity pipe wall
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\lambda_{pipe}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $W/mK$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-spatial discretization along the pipe
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $dx$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-m
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-inputs
-\end_layout
-
-\begin_layout Standard
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\xout off
-\uuline off
-\uwave off
-\noun off
-\color none
-\begin_inset Tabular
-<lyxtabular version="3" rows="1" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-ambient temperature
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $T_{amb}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $C$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\xout off
-\uuline off
-\uwave off
-\noun off
-\color none
-outputs
-\end_layout
-
-\begin_layout Standard
-
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\xout off
-\uuline off
-\uwave off
-\noun off
-\color none
-\begin_inset Tabular
-<lyxtabular version="3" rows="1" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-heat flux to ambient
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\dot{Q}_{loss}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-W
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-This model is almost identical to 
+ can be calculated according to 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "subsec:Dynamic-adiabatic-pipe"
+reference "subsec:Length-specific-U-Value-pipe"
 plural "false"
 caps "false"
 noprefix "false"
 
 \end_inset
 
+ 
+\end_layout
+
+\begin_layout Itemize
+the convection coefficient at the exterior pipe surface 
+\begin_inset Formula $h_{o}$
+\end_inset
+
+ in [W/m²K] 
+\end_layout
+
+\begin_layout Standard
+In order to neglect dynamic effects, the volume is set to a small value
+ of 
+\begin_inset Formula $V=0.01m^{3}$
+\end_inset
+
 .
- However, there is heat exchange to the environment
+\end_layout
+
+\begin_layout Subsubsection
+Dynamic pipe with heat exchange
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This model represents a pipe, which is discretized with finite volumes in
+ one dimension along the pipe length.
+ The model considers pressure loss according to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:General-Hydraulic-Pipe"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ For simplification, we use the inlet temperature to determine the fluid
+ properties.
+\end_layout
+
+\begin_layout Standard
 \begin_inset Formula 
 \[
-\dot{Q}_{loss,n}=dx\,U_{p}\left(T_{amb}-T_{n}\right)
+p_{in}-p_{out}=\Delta p(\dot{m},T_{in},l,d,k)
 \]
 
 \end_inset
@@ -4124,15 +3272,102 @@ noprefix "false"
 \end_layout
 
 \begin_layout Standard
-with 
+The heat exchange between each single volume and the amient is 
 \begin_inset Formula 
 \[
-U_{p}=\frac{\pi}{\frac{1}{h_{i}d}+\frac{1}{h_{o}d_{o}}+\frac{1}{2\lambda_{pipe}}ln\left(\frac{d_{o}}{d}\right)}
+\dot{Q}_{loss,n}=dx\,UA_{pipe}\left(T_{amb}-T_{n}\right)
 \]
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+with the UA-Value for each pipe volume 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+UA_{pipe}=\frac{dx}{\frac{1}{h_{i}d}+\frac{1}{h_{o}d_{o}}+U_{pipe}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\end_layout
+
+\begin_layout Itemize
+the convection coefficient inside the pipe 
+\begin_inset Formula $h_{i}(T_{in})$
+\end_inset
+
+ [W/m²K] can be calculated according to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Convection-coefficient-inside"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+the length-specific U-Value of the pipe wall including insulation 
+\begin_inset Formula $U_{pipe}$
+\end_inset
+
+ can be calculated according to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Length-specific-U-Value-pipe"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+the convection coefficient at the exterior pipe surface 
+\begin_inset Formula $h_{o}$
+\end_inset
+
+ in [W/m²K] 
+\end_layout
+
+\begin_layout Itemize
+the ambient temperature 
+\begin_inset Formula $T_{amb}$
+\end_inset
+
+ in [°C]
+\end_layout
+
+\begin_layout Itemize
+the temperature of each volume 
+\begin_inset Formula $T_{n}$
+\end_inset
+
+in [°C]
+\end_layout
+
+\begin_layout Itemize
+the spatial discrtization along the pipe 
+\begin_inset Formula $dx$
+\end_inset
+
+ in [m]
 \end_layout
 
 \begin_layout Standard
@@ -4433,25 +3668,17 @@ noprefix "false"
 \begin_inset Formula $\Delta p$
 \end_inset
 
- is computed with equation
-\begin_inset space ~
-\end_inset
-
-
+ is computed according to 
 \begin_inset CommandInset ref
 LatexCommand eqref
-reference "eq:pressureLossPipe"
+reference "subsec:Fixed-pressure-loss"
 plural "false"
 caps "false"
 noprefix "false"
 
 \end_inset
 
-, yet with fixed, predefined 
-\begin_inset Formula $\zeta$
-\end_inset
-
- (constant parameter).
+.
  The diameter 
 \begin_inset Formula $d$
 \end_inset
@@ -4481,7 +3708,17 @@ Ideal heat exchanger
 
 \begin_layout Standard
 An ideal heat exchanger is modelled as element with a predefined external
- heat loss.
+ heat loss, see 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "subsec:Element-with-external"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
