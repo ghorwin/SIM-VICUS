@@ -18,6 +18,8 @@ namespace NANDRAD_MODEL {
 
 // **** Static Pipe ***
 
+
+/*! Instantiated for StaticPipe elements with HeatExchangeType set. */
 class TNStaticPipeElement : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
 public:
 	TNStaticPipeElement() { }
@@ -37,13 +39,13 @@ public:
 
 private:
 
-	/*! pipe length in m */
+	/*! pipe length in [m] */
 	double							m_length;
 
-	/*! hydraulic (inner) diameter of pipe in m */
+	/*! hydraulic (inner) diameter of pipe in [m] */
 	double							m_innerDiameter;
 
-	/*! outer diameter of pipe in m */
+	/*! outer diameter of pipe in [m] */
 	double							m_outerDiameter;
 
 	/*! Fluid conductivity [W/mK].
@@ -54,10 +56,10 @@ private:
 	/*! Fluid dynamic viscosity [m/s] (temperature dependend).*/
 	IBK::LinearSpline				m_fluidViscosity;
 
-	/*! thermal resistance of the pipe wall in Km2/W */
+	/*! Equivalent u-value of the pipe wall and insulation per length of pipe in [W/mK] */
 	double							m_UValuePipeWall;
 
-	/*! Heat transfer coefficient from outer pipe wall to environment in W/m2K */
+	/*! Heat transfer coefficient from outer pipe wall to environment in [W/m2K] */
 	double							m_outerHeatTransferCoefficient;
 
 	/*! Reference to external temperature in K */
@@ -68,6 +70,7 @@ private:
 
 // **** Static Adiabatic Pipe ***
 
+/*! Instantiated for StaticPipe elements without HeatExchangeType set. */
 class TNStaticAdiabaticPipeElement : public ThermalNetworkAbstractFlowElement { // NO KEYWORDS
 public:
 	TNStaticAdiabaticPipeElement() { }
@@ -87,6 +90,7 @@ public:
 
 // **** Dynamic Pipe ***
 
+/*! Instantiated for DynamicPipe elements with HeatExchangeType set. */
 class TNDynamicPipeElement : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
 public:
 	TNDynamicPipeElement() { }

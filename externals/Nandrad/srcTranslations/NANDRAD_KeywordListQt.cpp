@@ -56,7 +56,6 @@ KeywordListQt::KeywordListQt() {
 	tr("Coefficient of performance of the component.");
 	tr("UA-Value of heat exchanger");
 	tr("Maximum width of discretized volumes in pipe");
-	tr("Adiabatic");
 	tr("Constant temperature");
 	tr("Constant heat flux");
 	tr("Heat flux from data file");

@@ -96,7 +96,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				{
 					IBK_ASSERT(e.m_pipeProperties != nullptr);
 					// craete adiabatic pipe model
-					if(e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_Adiabatic) {
+					if(e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::NUM_HT) {
 						TNStaticAdiabaticPipeElement * pipeElement = new TNStaticAdiabaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
 						// add to flow elements
 						m_p->m_flowElements.push_back(pipeElement); // transfer ownership
@@ -105,6 +105,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 					else if (e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant ||
 							 e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile) {
 						// set a small fluid volume
+						// TODO : check this!
 						double volume = 0.01;
 
 						// create pipe model with given heat flux
@@ -130,7 +131,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				{
 					IBK_ASSERT(e.m_pipeProperties != nullptr);
 					// craete adiabatic pipe model
-					if(e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_Adiabatic) {
+					if(e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::NUM_HT) {
 						TNDynamicAdiabaticPipeElement * pipeElement = new TNDynamicAdiabaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
 						// add to flow elements
 						m_p->m_flowElements.push_back(pipeElement); // transfer ownership
@@ -163,7 +164,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				} break;
 
 				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump : {
-					if (e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_Adiabatic){
+					if (e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::NUM_HT){
 						// create general adiabatic model
 						TNAdiabaticElement * element = new TNAdiabaticElement(m_network->m_fluid,
 																		e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value);
@@ -204,7 +205,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						m_p->m_flowElements.push_back(element); // transfer ownership
 						m_p->m_heatLossElements.push_back(element); // copy of pointer
 					}
-					else if (e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_Adiabatic){
+					else if (e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::NUM_HT){
 						// create general adiabatic model
 						TNAdiabaticElement * element = new TNAdiabaticElement(m_network->m_fluid,
 																		e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value);
@@ -272,7 +273,6 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 					// set initial temperature
 					heatExchangeValue = simPara.m_para[NANDRAD::SimulationParameter::P_InitialTemperature].value;
 				} break;
-				case NANDRAD::HydraulicNetworkComponent::HT_Adiabatic:
 				case NANDRAD::HydraulicNetworkComponent::NUM_HT:
 					// No thermal exchange, nothing to initialize
 				break;

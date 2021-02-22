@@ -62,7 +62,6 @@ public:
 
 
 	enum HeatExchangeType {
-		HT_Adiabatic,						// Keyword: Adiabatic							'Adiabatic'
 		HT_TemperatureConstant,				// Keyword: TemperatureConstant					'Constant temperature'
 		HT_HeatFluxConstant,				// Keyword: HeatFluxConstant					'Constant heat flux'
 		HT_HeatFluxDataFile,				// Keyword: HeatFluxDataFile					'Heat flux from data file'
@@ -109,15 +108,15 @@ public:
 	static std::vector<unsigned int> availableHeatExchangeTypes(const ModelType modelType) {
 		switch (modelType) {
 			case MT_ConstantPressurePump:
-				return {HT_Adiabatic, HT_HeatFluxConstant, HT_HeatFluxDataFile};
+				return {HT_HeatFluxConstant, HT_HeatFluxDataFile};
 			case MT_StaticPipe:
-				return {HT_Adiabatic, HT_TemperatureConstant, HT_TemperatureDataFile, HT_HeatFluxConstant, HT_HeatFluxDataFile};
+				return {HT_TemperatureConstant, HT_TemperatureDataFile, HT_HeatFluxConstant, HT_HeatFluxDataFile};
 			case MT_DynamicPipe:
-				return {HT_Adiabatic, HT_TemperatureConstant, HT_TemperatureDataFile, HT_HeatFluxConstant, HT_HeatFluxDataFile};
+				return {HT_TemperatureConstant, HT_TemperatureDataFile, HT_HeatFluxConstant, HT_HeatFluxDataFile};
 			case MT_HeatPump:
 			case MT_HeatExchanger:
 				return {HT_HeatFluxConstant, HT_HeatFluxDataFile};
-			default:
+			case NUM_MT:
 				return {};
 		}
 	}

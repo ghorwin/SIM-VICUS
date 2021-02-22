@@ -38,10 +38,10 @@ private:
 	/*! The fluid, containing all physical parameters */
 	const NANDRAD::HydraulicFluid	*m_fluid = nullptr;
 
-	/*! pipe length in m */
+	/*! pipe length in [m] */
 	double							m_length;
 
-	/*! hydraulic (inner) diameter of pipe in m */
+	/*! hydraulic (inner) diameter of pipe in [m] */
 	double							m_diameter;
 
 	/*! roughness of pipe wall in [m] */

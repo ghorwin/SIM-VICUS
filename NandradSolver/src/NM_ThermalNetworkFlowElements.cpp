@@ -8,6 +8,8 @@
 
 #include "numeric"
 
+#define USE_STEADY_STATE_HEAT_TRANSFER
+
 
 namespace NANDRAD_MODEL {
 
@@ -26,7 +28,12 @@ TNStaticPipeElement::TNStaticPipeElement(const NANDRAD::HydraulicNetworkElement 
 	m_outerHeatTransferCoefficient =
 			comp.m_para[NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].value;
 	// set a small volume
+	// TODO : Discuss with Hauke
+#ifdef USE_STEADY_STATE_HEAT_TRANSFER
 	m_fluidVolume = 0.01;
+#else
+	// compute
+#endif
 	// copy fluid properties
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
@@ -62,9 +69,9 @@ void TNStaticPipeElement::setNodalConditions(double mdot, double TInlet, double 
 		// calculate heat transfer
 
 		// resistances = resistance_inside + resistance_pipewall + resistance_outside
-		//             = 1/(innerHeatTransferCoefficient * m_innerDiameter * PI)
-		//             + 1/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)
-		//             + 1/U_equivalent;
+		//             = 1/(innerHeatTransferCoefficient * m_innerDiameter * PI)           W/mK
+		//             + 1/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)         W/mK
+		//             + 1/U_equivalent;                                                   W/mK
 
 		// where U_equivalent = 2*lambda*ln(d0/d)
 
@@ -84,6 +91,7 @@ void TNStaticPipeElement::setNodalConditions(double mdot, double TInlet, double 
 			m_heatLoss = m_massFlux * m_fluidHeatCapacity *
 					(m_inletTemperature - ambientTemperature) *
 					(1. - std::exp(-UAValueTotal / (std::fabs(m_massFlux) * m_fluidHeatCapacity )));
+			// TODO: set a new outlet tempertaure
 		}
 		else {
 			// calculate heat loss with given parameters
@@ -93,7 +101,7 @@ void TNStaticPipeElement::setNodalConditions(double mdot, double TInlet, double 
 		}
 	}
 #else
-
+	// TODO : test mixed volume flow calculation as in dynamic pipe
 #endif
 }
 
@@ -261,10 +269,13 @@ void TNDynamicPipeElement::setNodalConditions(double mdot, double TInlet, double
 		double innerHeatTransferCoefficient = nusselt * m_fluidConductivity /
 												m_innerDiameter;
 
-		// UA value for one volume
-		const double UAValue = (PI*m_discLength) / (1.0/(innerHeatTransferCoefficient * m_innerDiameter)
-													+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter)
-													+ 1.0/(2.0*m_UValuePipeWall) );
+		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
+		// see documentation above
+		const double UAValue = m_discLength / (
+					  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
+					+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)
+					+ 1.0/m_UValuePipeWall )
+			);
 
 		const double ambientTemperature = *m_externalTemperatureRef;
 		for(unsigned int i = 0; i < m_nVolumes; ++i) {

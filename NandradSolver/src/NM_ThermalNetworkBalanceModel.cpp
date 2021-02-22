@@ -63,12 +63,9 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 
 	// heat flux vector is a result
-	QuantityDescription desc("FluidHeatFluxes", "W", "Heat flux from all flow elements into environment", false);
-//	desc.resize(m_statesModel->m_elementIds, VectorValuedQuantityIndex::IK_ModelID);
-//	resDesc.push_back(desc);
+	QuantityDescription desc("FluidHeatFlux", "W", "Heat flux from flow element into environment", false);
 
 	// set a description for each flow element
-	desc.m_name = "FluidHeatFlux";
 	desc.m_displayName = m_displayName;
 	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	// loop through all flow elements
@@ -77,7 +74,8 @@ void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescript
 		resDesc.push_back(desc);
 	}
 
-	if(!m_statesModel->m_zoneIds.empty()) {
+	// add output
+	if (!m_statesModel->m_zoneIds.empty()) {
 		// set a description for each zone
 		desc = QuantityDescription("ZoneHeatFluxes", "W", "Heat flux into all zones from flow elements", false);
 		// add current index to description
@@ -86,7 +84,7 @@ void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescript
 	}
 
 	// inlet node temperature is a result
-	desc = QuantityDescription("InletNodeTemperature", "C", "Inlet node temperatures of a flow elements", false);
+	desc = QuantityDescription("InletNodeTemperature", "C", "Inlet node temperature of a flow element", false);
 	// set a description for each flow element
 	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	// loop through all flow elements
@@ -96,7 +94,7 @@ void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescript
 	}
 
 	// outlet node temperature is a result
-	desc = QuantityDescription("OutletNodeTemperature", "C", "Outlet node temperatures of a flow elements", false);
+	desc = QuantityDescription("OutletNodeTemperature", "C", "Outlet node temperature of a flow element", false);
 	// set a description for each flow element
 	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	// loop through all flow elements

@@ -123,7 +123,6 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 					throw IBK::Exception(IBK::FormatString("Heat exchange type 'HeatExchangeWithFMUTemperature' is not supported, yet!"),
 								FUNC_ID);
 				}
-				case HydraulicNetworkComponent::HT_Adiabatic:
 				case HydraulicNetworkComponent::NUM_HT:
 					// No thermal exchange, nothing to initialize
 				break;

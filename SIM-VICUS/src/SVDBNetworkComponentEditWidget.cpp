@@ -67,7 +67,6 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger == (int)VICUS::NetworkComponent::MT_HeatExchanger);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_HeatPump == (int)VICUS::NetworkComponent::MT_HeatPump);
 
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::HT_Adiabatic == (int)VICUS::NetworkComponent::HT_Adiabatic);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant == (int)VICUS::NetworkComponent::HT_HeatFluxConstant);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile == (int)VICUS::NetworkComponent::HT_HeatFluxDataFile);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::HT_TemperatureConstant == (int)VICUS::NetworkComponent::HT_TemperatureConstant);
