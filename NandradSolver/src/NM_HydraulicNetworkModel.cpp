@@ -383,20 +383,18 @@ void HydraulicNetworkModel::setInputValueRefs(const std::vector<QuantityDescript
 
 
 void HydraulicNetworkModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
-	// register thermal-interactions
-	if(m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
-		unsigned int count = 0;
-		for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
-			IBK_ASSERT(count < m_elementIdsWithTemperature.size());
-			// skip elements without temperature
-			if(m_elementIdsWithTemperature[count] != m_elementIds[i])
-				continue;
-			// register dependency to mass flux and nodal pressures
-			resultInputValueReferences.push_back(std::make_pair(&m_p->m_fluidMassFluxes[i], m_fluidTemperatureRefs[count] ));
-			resultInputValueReferences.push_back(std::make_pair(&m_p->m_inletNodePressures[i], m_fluidTemperatureRefs[count] ));
-			resultInputValueReferences.push_back(std::make_pair(&m_p->m_outletNodePressures[i], m_fluidTemperatureRefs[count++] ));
-		}
-	}
+	// we ignore dependencies
+//	// register thermal-interactions
+//	if(m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
+//		for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
+//			for(unsigned int count = 0; count < m_elementIdsWithTemperature.size(); ++count) {
+//				// all mass flux and nodal pressures depend on all temperatures (complete system of implicit equations) {
+//				resultInputValueReferences.push_back(std::make_pair(&m_p->m_fluidMassFluxes[i], m_fluidTemperatureRefs[count] ));
+//				resultInputValueReferences.push_back(std::make_pair(&m_p->m_inletNodePressures[i], m_fluidTemperatureRefs[count] ));
+//				resultInputValueReferences.push_back(std::make_pair(&m_p->m_outletNodePressures[i], m_fluidTemperatureRefs[count] ));
+//			}
+//		}
+//	}
 }
 
 
