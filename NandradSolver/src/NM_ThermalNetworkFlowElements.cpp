@@ -32,7 +32,8 @@ TNStaticPipeElement::TNStaticPipeElement(const NANDRAD::HydraulicNetworkElement 
 #ifdef USE_STEADY_STATE_HEAT_TRANSFER
 	m_fluidVolume = 0.01;
 #else
-	// compute
+	// compute fluid volume
+	m_fluidVolume = PI/4. * m_innerDiameter * m_innerDiameter * m_length;
 #endif
 	// copy fluid properties
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
@@ -87,22 +88,21 @@ void TNStaticPipeElement::setNodalConditions(double mdot, double TInlet, double 
 #ifdef USE_STEADY_STATE_HEAT_TRANSFER
 		const double ambientTemperature = *m_externalTemperatureRef;
 		if(m_massFlux >= 0) {
-			// calculate heat loss with given parameters
-			m_heatLoss = m_massFlux * m_fluidHeatCapacity *
-					(m_inletTemperature - ambientTemperature) *
-					(1. - std::exp(-UAValueTotal / (std::fabs(m_massFlux) * m_fluidHeatCapacity )));
-			// TODO: set a new outlet tempertaure
+			// calculate new outlet temperature
+			m_outletTemperature = (m_inletTemperature - ambientTemperature) *
+					std::exp(-UAValueTotal / (std::fabs(m_massFlux) * m_fluidHeatCapacity ))
+					+ ambientTemperature;
 		}
 		else {
-			// calculate heat loss with given parameters
-			m_heatLoss = std::fabs(m_massFlux) * m_fluidHeatCapacity *
-					(m_outletTemperature - ambientTemperature) *
-					(1. - std::exp(-UAValueTotal / (std::fabs(m_massFlux) * m_fluidHeatCapacity )));
+			// calculate new inlet temperature
+			m_inletTemperature = (m_outletTemperature - ambientTemperature) *
+					std::exp(-UAValueTotal / (std::fabs(m_massFlux) * m_fluidHeatCapacity ))
+					+ ambientTemperature;
 		}
-	}
-#else
-	// TODO : test mixed volume flow calculation as in dynamic pipe
 #endif
+		// calculate heat loss with given parameters
+		m_heatLoss = m_massFlux * m_fluidHeatCapacity *	(m_inletTemperature - m_outletTemperature);
+	}
 }
 
 
