@@ -88,7 +88,7 @@ void SVSimulationStartNetworkSim::updateCmdLine() {
 
 void SVSimulationStartNetworkSim::on_pushButtonRun_clicked() {
 
-	modifyLineEdits();
+	modifyParameters();
 
 	// generate NANDRAD project
 	NANDRAD::Project p;
@@ -117,6 +117,8 @@ void SVSimulationStartNetworkSim::on_pushButtonRun_clicked() {
 
 bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) const {
 	FUNCID(SVSimulationStartNetworkSim::generateNandradProject);
+
+
 
 	// get selected Vicus Network
 	VICUS::Project proj = project();
@@ -211,16 +213,12 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	nandradNetwork.m_modelType = NANDRAD::HydraulicNetwork::ModelType(m_ui->comboBoxModelType->currentData().toUInt());
 	nandradNetwork.m_id = vicusNetwork.m_id;
 	nandradNetwork.m_displayName = vicusNetwork.m_name;
-	NANDRAD::KeywordList::setParameter(nandradNetwork.m_para,"HydraulicNetwork::para_t",
-									   NANDRAD::HydraulicNetwork::P_DefaultFluidTemperature,
-									   vicusNetwork.m_para[VICUS::Network::P_DefaultFluidTemperature].value);
-	NANDRAD::KeywordList::setParameter(nandradNetwork.m_para,"HydraulicNetwork::para_t",
-									   NANDRAD::HydraulicNetwork::P_InitialFluidTemperature,
-									   vicusNetwork.m_para[VICUS::Network::P_DefaultFluidTemperature].value);
-	NANDRAD::KeywordList::setParameter(nandradNetwork.m_para,"HydraulicNetwork::para_t",
-									   NANDRAD::HydraulicNetwork::P_ReferencePressure,
-									   vicusNetwork.m_para[VICUS::Network::P_ReferencePressure].value);
-
+	nandradNetwork.m_para[NANDRAD::HydraulicNetwork::P_DefaultFluidTemperature] =
+			vicusNetwork.m_para[VICUS::Network::P_DefaultFluidTemperature];
+	nandradNetwork.m_para[NANDRAD::HydraulicNetwork::P_InitialFluidTemperature] =
+			vicusNetwork.m_para[VICUS::Network::P_InitialFluidTemperature];
+	nandradNetwork.m_para[NANDRAD::HydraulicNetwork::P_ReferencePressure] =
+			vicusNetwork.m_para[VICUS::Network::P_ReferencePressure];
 
 	// TODO Hauke: fluid editing from database
 	// *** Transfer fluid from Vicus to Nandrad
@@ -275,7 +273,8 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		if(edge.m_pipeId == VICUS::INVALID_ID)
 				throw IBK::Exception(IBK::FormatString("Edge '%1'->'%2' has no referenced pipe")
 									 .arg(edge.nodeId1()).arg(edge.nodeId2()), FUNC_ID);
-		pipeIds.push_back(edge.m_pipeId);
+		if (std::find(pipeIds.begin(), pipeIds.end(), edge.m_pipeId) == pipeIds.end())
+			pipeIds.push_back(edge.m_pipeId);
 	}
 
 	// --> transfer
@@ -447,7 +446,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 
 
 
-void SVSimulationStartNetworkSim::modifyLineEdits()
+void SVSimulationStartNetworkSim::modifyParameters()
 {
 	VICUS::Project proj = project();
 	unsigned int networkId = m_networksMap.value(m_ui->comboBoxNetwork->currentText());
@@ -455,9 +454,12 @@ void SVSimulationStartNetworkSim::modifyLineEdits()
 	if (m_ui->lineEditReferencePressure->isValid())
 		VICUS::KeywordList::setParameter(network.m_para, "Network::para_t", VICUS::Network::P_ReferencePressure,
 										 m_ui->lineEditReferencePressure->value());
-	if (m_ui->lineEditDefaultFluidTemperature->isValid())
-		VICUS::KeywordList::setParameter(network.m_para, "Network::para_t", VICUS::Network::P_DefaultFluidTemperature,
-										 m_ui->lineEditDefaultFluidTemperature->value());
+	if (m_ui->lineEditDefaultFluidTemperature->isValid()){
+		network.m_para[VICUS::Network::P_DefaultFluidTemperature] =
+				IBK::Parameter("DefaultFluidTemperature", m_ui->lineEditDefaultFluidTemperature->value(), IBK::Unit("C"));
+		network.m_para[VICUS::Network::P_InitialFluidTemperature] =
+				IBK::Parameter("InitialFluidTemperature", m_ui->lineEditDefaultFluidTemperature->value(), IBK::Unit("C"));
+	}
 
 	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(),
 											  project().element(project().m_geometricNetworks, networkId));
@@ -486,13 +488,13 @@ void SVSimulationStartNetworkSim::toggleRunButton()
 
 void SVSimulationStartNetworkSim::on_lineEditReferencePressure_editingFinished()
 {
-	modifyLineEdits();
+	modifyParameters();
 	toggleRunButton();
 }
 
 void SVSimulationStartNetworkSim::on_lineEditDefaultFluidTemperature_editingFinished()
 {
-	modifyLineEdits();
+	modifyParameters();
 	toggleRunButton();
 }
 

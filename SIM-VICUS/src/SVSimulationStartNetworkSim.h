@@ -41,7 +41,7 @@ private:
 
 	bool generateNandradProject(NANDRAD::Project & p) const;
 
-	void modifyLineEdits();
+	void modifyParameters();
 
 	void updateLineEdits();
 

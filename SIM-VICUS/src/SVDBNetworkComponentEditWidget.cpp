@@ -189,9 +189,12 @@ void SVDBNetworkComponentEditWidget::setupComboboxHeatExchangeType()
 	m_ui->comboBoxHeatExchangeType->clear();
 	std::vector<unsigned int> hxTypes = NANDRAD::HydraulicNetworkComponent::availableHeatExchangeTypes(
 				NANDRAD::HydraulicNetworkComponent::ModelType((int)m_currentComponent->m_modelType));
+	m_ui->comboBoxHeatExchangeType->addItem("No Heat Exchange", NANDRAD::HydraulicNetworkComponent::NUM_HT);
 	for (unsigned int type: hxTypes)
 		m_ui->comboBoxHeatExchangeType->addItem(
 					NANDRAD::KeywordList::Description("HydraulicNetworkComponent::HeatExchangeType", (int)type), type);
+
+
 }
 
 
