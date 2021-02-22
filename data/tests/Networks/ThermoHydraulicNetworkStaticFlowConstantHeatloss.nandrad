@@ -15,9 +15,13 @@
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 			<Interval>
-				<IBK:Parameter name="End" unit="h">1</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">2</IBK:Parameter>
 			</Interval>
 		</SimulationParameter>
+		<SolverParameter>
+			<IBK:Parameter name="RelTol" unit="---">1e-06</IBK:Parameter>
+			<LesSolver>Dense</LesSolver>
+  		</SolverParameter>
 		<Zones>
 			<Zone id="1" displayName="dummy" type="Active">
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
@@ -45,13 +49,6 @@
 						<IBK:Parameter name="PipeRoughness" unit="mm">0.007</IBK:Parameter>
 						<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PipeOuterDiameter" unit="mm">32</IBK:Parameter>
-						<IBK:Parameter name="UValuePipeWall" unit="W/mK">5</IBK:Parameter>
-					</HydraulicNetworkPipeProperties>
-					<!-- Second pipe is much bigger - slower flow speed, smaller heat exchange to surroundings -->
-					<HydraulicNetworkPipeProperties id="2">
-						<IBK:Parameter name="PipeRoughness" unit="mm">0.007</IBK:Parameter>
-						<IBK:Parameter name="PipeInnerDiameter" unit="mm">55.6</IBK:Parameter>
-						<IBK:Parameter name="PipeOuterDiameter" unit="mm">60</IBK:Parameter>
 						<IBK:Parameter name="UValuePipeWall" unit="W/mK">5</IBK:Parameter>
 					</HydraulicNetworkPipeProperties>
 				</PipeProperties>
@@ -83,13 +80,8 @@
 						<!-- Pipe outside is fixed at 0 C -->
 						<IBK:Parameter name="Temperature" unit="C">0</IBK:Parameter>
 					</HydraulicNetworkElement>
-					<HydraulicNetworkElement id="301" inletNodeId="3" outletNodeId="4" componentId="2" displayName="Heat Exchanger">
-						<IBK:Parameter name="HeatFlux" unit="W">200</IBK:Parameter>
-					</HydraulicNetworkElement>
-					<HydraulicNetworkElement id="102" inletNodeId="4" outletNodeId="1" componentId="3" pipePropertiesId="2">
-						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
-						<!-- Pipe outside is fixed at 0 C -->
-						<IBK:Parameter name="Temperature" unit="C">0</IBK:Parameter>
+					<HydraulicNetworkElement id="301" inletNodeId="3" outletNodeId="1" componentId="2" displayName="Heat Exchanger">
+						<IBK:Parameter name="HeatFlux" unit="W">-200</IBK:Parameter>
 					</HydraulicNetworkElement>
 				</Elements>
 			</HydraulicNetwork>
@@ -107,13 +99,27 @@
 				<!-- Outputs go to file 'network_elements.tsv' -->
 				<OutputDefinition>
 					<Quantity>FluidMassFlux</Quantity>
-					<ObjectListName>All flow elements</ObjectListName>
+					<ObjectListName>Network Elements</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
-				<!-- Outputs go to file 'network_elements.tsv' -->
 				<OutputDefinition>
 					<Quantity>OutletNodePressure</Quantity>
-					<ObjectListName>All flow elements</ObjectListName>
+					<ObjectListName>Network Elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>OutletNodeTemperature</Quantity>
+					<ObjectListName>Network Elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>			
+				<OutputDefinition>
+					<Quantity>FluidTemperature</Quantity>
+					<ObjectListName>Network Elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FluidHeatFlux</Quantity>
+					<ObjectListName>Network Elements</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 			</Definitions>
@@ -132,8 +138,8 @@
 				<FilterID>*</FilterID>
 				<ReferenceType>Network</ReferenceType>
 			</ObjectList>
-			<ObjectList name="All flow elements">
-				<FilterID>*</FilterID>
+			<ObjectList name="Network Elements">
+				<FilterID>101</FilterID>
 				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
