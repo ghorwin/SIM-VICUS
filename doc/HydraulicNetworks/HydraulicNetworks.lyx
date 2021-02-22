@@ -1962,7 +1962,7 @@ A discretized element (i.e.pipe) generates
 \vdots\\
 \mathbf{y}_{i}\\
 \vdots
-\end{array}\right) & \textrm{with  }\mathbf{y}_{i}=\rho\left(\begin{array}{c}
+\end{array}\right) & \textrm{with }\mathbf{y}_{i}=\rho\left(\begin{array}{c}
 V_{0}c_{P}T_{0}\\
 \vdots\\
 V_{k}c_{P}T_{k}\\
@@ -3543,6 +3543,19 @@ noprefix "false"
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Dokumentation mehrschichtige Rohre -> U-Wertberechnung
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection

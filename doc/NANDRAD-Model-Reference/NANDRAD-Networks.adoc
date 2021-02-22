@@ -206,10 +206,10 @@ Parameter der Rohreigenschaftem (see section <<IBK_Parameter>> for a description
 | `PipeRoughness` | mm | Roughness of pipe wall | {nbsp}>{nbsp}0.0{nbsp}  | _required_
 | `PipeInnerDiameter` | mm | Inner diameter of pipe | {nbsp}>{nbsp}0.0{nbsp}  | _required_
 | `PipeOuterDiameter` | mm | Outer diameter of pipe | {nbsp}>{nbsp}0.0{nbsp}  | _required_
-|_(*)_ `UValuePipeWall` | W/m2K | U-Value of pipe wall (including insulation) | {nbsp}>{nbsp}0.0{nbsp}  | _required_ 
+| `UValuePipeWall` | W/mK | Length-related equivalent U-Value of pipe wall (including insulation) | {nbsp}>{nbsp}0.0{nbsp}  | _required (for pipe with heat transfer)_ 
 |====================
 
-_(*) - not yet used_
+Der längenbezogene äquivalente U-Wert der Rohrwand (einschließlich möglicher Dämmung) ist in der Berechnung so definiert, dass eine Multiplikation mit der Temperaturdifferenz zwischen Fluidtemperatur und Außentemperatur zum Wärmeström pro m Rohrlänge führt. D.h. bei der Berechnung dieses äquivalenten U-Werts müssen Zylinderkoordinaten berücksichtigt werden. Der tatsächlichen Wärmestrom von Fluid zu Umgebung wird noch durch Übergangskoeffizienten (siehe Abschnitt <<HydraulicElement_StaticPipe>>) abgemindert.
 
 [[component_definition]]
 ## Komponentendefinitionen
@@ -242,7 +242,8 @@ Eine `HydraulicNetworkComponent` definiert die Basiseigenschaften eines Strömun
 
 Die Parameter und Attribute sind dann abhängig vom `modelType` der Komponente und dem `modelType` des Netzwerks.
 
-### StaticAdiabaticPipe
+[[HydraulicElement_StaticPipe]]
+### StaticPipe
 
 Für das Model `StaticAdiabaticPipe` werden keine weiteren Parameter benötigt.
 

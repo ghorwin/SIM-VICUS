@@ -47,8 +47,8 @@ void TNStaticPipeElement::setNodalConditions(double mdot, double TInlet, double 
 	ThermalNetworkAbstractFlowElementWithHeatLoss::setNodalConditions(mdot, TInlet, TOutlet);
 
 	// check heat transfer type
-	if(m_heatExchangeType != (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant &&
-	   m_heatExchangeType != (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile) {
+	if (m_heatExchangeType != (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant &&
+		m_heatExchangeType != (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile) {
 
 		// calculate inner heat transfer coefficient
 		const double velocity = std::fabs(m_massFlux)/(m_fluidVolume * m_fluidDensity);
@@ -60,11 +60,24 @@ void TNStaticPipeElement::setNodalConditions(double mdot, double TInlet, double 
 												m_innerDiameter;
 
 		// calculate heat transfer
-		// TODO : Fixme, check units!
-		const double UAValueTotal = (PI*m_length) / (1.0/(innerHeatTransferCoefficient * m_innerDiameter)
-														+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter)
-														+ 1.0/(2.0*m_UValuePipeWall) );
 
+		// resistances = resistance_inside + resistance_pipewall + resistance_outside
+		//             = 1/(innerHeatTransferCoefficient * m_innerDiameter * PI)
+		//             + 1/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)
+		//             + 1/U_equivalent;
+
+		// where U_equivalent = 2*lambda*ln(d0/d)
+
+		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
+		const double UAValueTotal = m_length / (
+					  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
+					+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)
+					+ 1.0/m_UValuePipeWall )
+			);
+
+		// Q in [W] = DeltaT * UAValueTotal
+#define USE_STEADY_STATE_HEAT_TRANSFER
+#ifdef USE_STEADY_STATE_HEAT_TRANSFER
 		const double ambientTemperature = *m_externalTemperatureRef;
 		if(m_massFlux >= 0) {
 			// calculate heat loss with given parameters
@@ -79,6 +92,9 @@ void TNStaticPipeElement::setNodalConditions(double mdot, double TInlet, double 
 					(1. - std::exp(-UAValueTotal / (std::fabs(m_massFlux) * m_fluidHeatCapacity )));
 		}
 	}
+#else
+
+#endif
 }
 
 
