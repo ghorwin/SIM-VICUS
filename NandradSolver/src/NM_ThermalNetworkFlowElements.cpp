@@ -145,7 +145,10 @@ TNDynamicPipeElement::TNDynamicPipeElement(const NANDRAD::HydraulicNetworkElemen
 
 	// caluclate discretization
 	double minDiscLength = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_PipeMaxDiscretizationWidth].value;
-	IBK_ASSERT(minDiscLength <= m_length);
+	// in case given discretization length is larger than pipe length:
+	// set discretization length to pipe length, so we have just one volume
+	if (minDiscLength > m_length)
+		minDiscLength = m_length;
 
 	// claculte number of discretization elements
 	m_nVolumes = (unsigned int) (m_length/minDiscLength);
