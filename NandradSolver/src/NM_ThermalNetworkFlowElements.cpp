@@ -84,8 +84,8 @@ void TNStaticPipeElement::setNodalConditions(double mdot, double TInlet, double 
 			);
 
 		// Q in [W] = DeltaT * UAValueTotal
-#ifdef USE_STEADY_STATE_HEAT_TRANSFER
 		const double ambientTemperature = *m_externalTemperatureRef;
+#ifdef USE_STEADY_STATE_HEAT_TRANSFER
 		if(m_massFlux >= 0) {
 			// calculate new outlet temperature
 			m_outletTemperature = (m_inletTemperature - ambientTemperature) *
@@ -98,9 +98,12 @@ void TNStaticPipeElement::setNodalConditions(double mdot, double TInlet, double 
 					std::exp(-UAValueTotal / (std::fabs(m_massFlux) * m_fluidHeatCapacity ))
 					+ ambientTemperature;
 		}
-#endif
 		// calculate heat loss with given parameters
 		m_heatLoss = m_massFlux * m_fluidHeatCapacity *	(m_inletTemperature - m_outletTemperature);
+#else
+		// calculate heat loss with given parameters
+		m_heatLoss = UAValueTotal * (m_meanTemperature - ambientTemperature);
+#endif
 	}
 }
 
