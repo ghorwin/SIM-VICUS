@@ -84,7 +84,6 @@ void TNStaticPipeElement::setNodalConditions(double mdot, double TInlet, double 
 			);
 
 		// Q in [W] = DeltaT * UAValueTotal
-#define USE_STEADY_STATE_HEAT_TRANSFER
 #ifdef USE_STEADY_STATE_HEAT_TRANSFER
 		const double ambientTemperature = *m_externalTemperatureRef;
 		if(m_massFlux >= 0) {
