@@ -204,7 +204,7 @@ Die Rohreigenschaften legen die physikalische/geometrischen Eigenschaften eines 
 ----
 ====
 
-Rohreigenschaften werden über das Attribut `pipePropertyId` eines Netzwerkelements (siehe <<HydraulicNetworkElement>>) referenziert.
+Rohreigenschaften werden über das Attribut `pipePropertyId` eines Netzwerkelements (siehe <<HydraulicNetworkElements>>) referenziert.
 
 .Attribute
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
@@ -368,7 +368,7 @@ TODO : MileStone 2
 
 
 
-[[HydraulicNetworkElement]]
+[[HydraulicNetworkElements]]
 ## Strömungselemente
 
 Das eigentliche Netzwerk wird durch die Definition konkreter Strömungselemente aufgebaut. Diese sind untereinander durch Einlass- und Auslassknoten verknüpft. 
