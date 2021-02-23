@@ -65,7 +65,7 @@
 						<IBK:Parameter name="MotorEfficiency" unit="---">1</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.1</IBK:Parameter>
 					</HydraulicNetworkComponent>
-					<HydraulicNetworkComponent id="2" displayName="Heat exchanger without heat exchange" modelType="HeatExchanger">
+					<HydraulicNetworkComponent id="2" displayName="Heat exchanger with imposed flux as heat exchange" modelType="HeatExchanger">
 						<!-- Specify heat exchange type -->
 						<HeatExchangeType>HeatFluxConstant</HeatExchangeType>
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>

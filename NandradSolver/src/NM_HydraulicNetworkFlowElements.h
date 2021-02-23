@@ -38,13 +38,13 @@ private:
 	/*! The fluid, containing all physical parameters */
 	const NANDRAD::HydraulicFluid	*m_fluid = nullptr;
 
-	/*! pipe length in [m] */
+	/*! Pipe length in [m] */
 	double							m_length;
 
-	/*! hydraulic (inner) diameter of pipe in [m] */
+	/*! Hydraulic (inner) diameter of pipe in [m] */
 	double							m_diameter;
 
-	/*! roughness of pipe wall in [m] */
+	/*! Roughness of pipe wall in [m] */
 	double							m_roughness;
 
 	/*! Fluid temperature [K], will be updated in each call to setFluidTemperature(). */

@@ -264,7 +264,7 @@ Eine `HydraulicNetworkComponent` definiert die Basiseigenschaften eines Strömun
 
 Die Parameter und Attribute sind dann abhängig vom `modelType` der Komponente und dem `modelType` des Netzwerks.
 
-
+Im thermischen Modell kann für jeden Modelltyp noch ein (optionales) Wärmeaustauschmodell definiert werden (siehe <<HeatExchangeType>>).
 
 [[HydraulicElement_SimplePipe]]
 ### Modelltyp: SimplePipe
@@ -272,8 +272,6 @@ Die Parameter und Attribute sind dann abhängig vom `modelType` der Komponente u
 `SimplePipe` beschreibt ein Rohrmodell, wobei das gesamte Rohr als ein zusammenhängendes Fluidvolumen mit entsprechend gemittelten Eigenschaften beschrieben wird.
 
 Für das Model `SimplePipe` werden im nicht-thermischen Modell keine weiteren Parameter benötigt.
-
-Im thermischen Modell kann noch das Wärmeaustauschmodell definiert werden (siehe <<HeatExchangeType>>).
 
 
 [[HydraulicElement_DynamicPipe]]
@@ -305,13 +303,11 @@ Für das Model `HeatExchanger` werden diese Parameter benötigt:
 
 [options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
 |====================
-|Name|Unit|Description|Value Range | Usage 
-| `HydraulicDiameter` | mm | equivalent hydraulic diameter (needed to compute flow cross section and flow velocity) | {nbsp}>{nbsp}0.0{nbsp} | _required_
-| `PressureLossCoefficient` | --- | effective pressure loss coefficient | {nbsp}>{nbsp}0.0{nbsp} | _required_
-| _(*)_ `Volume` | m3 | Fluid volume inside the heat exchanger | {nbsp}>{nbsp}0.0{nbsp} | only `ThermalHydraulicNetwork`
+|Name | Einheit | Beschreibung | Wertebereich | Verwendung
+| `HydraulicDiameter` | mm | Äquivalenter hydraulischer Durchmesser (wird für die Berechnung des Strömungsquerschnitts und der Strömungsgeschwindigkeit benötigt) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `Volume` | m3 | Fluidvolumen im Wärmetauscher | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
 |====================
-
-_(*) - not yet used_
 
 
 
@@ -323,7 +319,7 @@ Dafür muss innerhalb der Komponentendefinition ein XML-Element `HeatExchangeTyp
 
 [options="header",cols="25%,^ 50%, ^ 25%",width="100%"]
 |====================
-|Heat exchange type| Description| Used for component
+|HeatExchangeType| Beschreibung| Verwendbar für Modelltyp
 | `TemperatureConstant` | Konstante Umgebungstemperatur ist als Parameter im `HydraulicNetworkElement` gegeben | `SimplePipe`, `DynamicPipe` 
 | `TemperatureDataFile` | Umgebungstemperatur ist als Zeitreihe in einer tsv-Datei gegeben (im `HydraulicNetworkElement` definiert) | `SimplePipe`, `DynamicPipe`
 | `HeatFluxConstant` | Wärmestrom (positiv aus dem Element) ist als Parameter im `HydraulicNetworkElement` gegeben | `SimplePipe`, `DynamicPipe`, `HeatExchanger`
@@ -340,17 +336,30 @@ Wenn des XML-Element `HeatExchangeType` fehlt, wird die entsprechende Komponente
 
 Dieser Typ ist nur für Rohre definiert. Es gibt einen Wärmeaustausch zwischen der Fluidtemperatur im Rohr und einer konstanten Umgebungstemperatur. Dabei muss der Wärmeübergangskoeffizient an der Rohraußenwand angegeben werden.
 
+Im XML-Tag `HydraulicNetworkElement` des jeweiligen Rohres muss der Parameter `Temperature` gesetzt sein.
+
+>> Anne/Hauke: Namensgebung "Temperature" zu unspezifisch.
+
+
 ### `TemperatureDataFile`
+
+TODO : Milestone 2
 
 Dieser Typ ist nur für Rohre definiert. Es gibt einen Wärmeaustausch zwischen der Fluidtemperatur im Rohr und einer zeitabhängigen Umgebungstemperatur. Dabei muss der Wärmeübergangskoeffizient an der Rohraußenwand angegeben werden.
 
 ### `HeatFluxConstant`
 
-Dem Element wird ein konstanter Wärmestrom entzogen. Positive Werte bedeuten Wärmeentzug.
+Dem Element wird ein konstanter Wärmestrom entzogen. Positive Werte bedeuten Wärmeentzug. 
+
+Im XML-Tag `HydraulicNetworkElement` des jeweiligen Elements muss der Parameter `HeatFlux` gesetzt sein.
+
 
 ### `HeatFluxDataFile`
 
 Dem Element wird ein zeitabhängiger Wärmestrom entzogen. Positive Werte bedeuten Wärmeentzug.
+
+
+TODO : Milestone 2
 
 ### `HeatExchangeWithZoneTemperature`
 
@@ -361,6 +370,10 @@ TODO : MileStone 2
 
 [[HydraulicNetworkElement]]
 ## Strömungselemente
+
+Das eigentliche Netzwerk wird durch die Definition konkreter Strömungselemente aufgebaut. Diese sind untereinander durch Einlass- und Auslassknoten verknüpft. 
+
+Die tatsächlichen Strömungselemente des Netzwerks werden innerhalb des XML-tags `Elements` mit dem XML-tag `HydraulicNetworkElement` definiert. 
 
 .Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)
 ====
@@ -379,31 +392,32 @@ TODO : MileStone 2
 ----
 ====
 
-Die tatsächlichen Strömungselemente des Netzwerks werden innerhalb des XML-tags `Elements` mit dem XML-tag `HydraulicNetworkElement` definiert. Diese haben die folgenden Attribute:
+`HydraulicNetworkElement` Tags haben die folgenden Attribute:
 
-.Attributes
+.Attribute
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
-| Attribute  | Description | Format | Usage 
-| `id` |  Unique ID of the `HydraulicNetworkElement` | {nbsp}>{nbsp}0{nbsp}  | _required_
-| `inletNodeId` |  Unique ID of inlet node  | {nbsp}>{nbsp}0{nbsp}  | _required_
-| `outletNodeId` |  Unique ID of outlet node  | {nbsp}>{nbsp}0{nbsp}  | _required_
-| `componentId` |  Unique ID of referenced `HydraulicNetworkComponent`  | {nbsp}>{nbsp}0{nbsp}  | _required_
-| `pipePropertiesId` |  Unique ID of referenced `HydraulicNetworkPipeProperties` | {nbsp}>{nbsp}0{nbsp}  | optional (_required_ for pipes)
-| `displayName`  |  Display name of the element (used for error/informative messages) | string | optional
+| Attribut  | Beschreibung | Format | Verwendung
+| `id` |  Eindeutige Identifikationsnummer des Strömungselements | {nbsp}>{nbsp}0{nbsp}  | _benötigt_
+| `displayName`  |  Anzeigename/Beschreibung (verwendet für Ausgaben) | string | optional
+| `inletNodeId` |  ID des Einlassknotens  | {nbsp}>{nbsp}0{nbsp}  | _benötigt_
+| `outletNodeId` |  ID des Einlassknotens  | {nbsp}>{nbsp}0{nbsp}  | _benötigt_
+| `componentId` |  ID des referenzierten  `HydraulicNetworkComponent`  | {nbsp}>{nbsp}0{nbsp}  | _benötigt_
+| `pipePropertiesId` |  ID des referenzierten `HydraulicNetworkPipeProperties` | {nbsp}>{nbsp}0{nbsp}  | optional (_benötigt für Rohre_)
 |====================
 
 [IMPORTANT]
 ====
-Die ID eines `HydraulicNetworkElement` muss global eindeutig sein, d.h. Strömungselemente müssen netzwerkübergreifend mit einer eindeutigen ID bezeichnet werden.
+Die ID eines `HydraulicNetworkElement` muss global eindeutig sein, d.h. Strömungselemente müssen netzwerkübergreifend mit einer eindeutigen ID bezeichnet werden. Komponenten-IDs/Rohreigenschaften-IDs müssen nur innerhalb eines Netzwerkes eindeutig sein.
 ====
-
 
 [[fig_network_example1]]
 .Einfaches Strömungsnetzwerk mit 3 Knoten und 3 Elementen
 image::network_example.png[pdfwidth=8cm]
 
-Die Strömungselemente sind miteinander durch Knoten verknüpft. In jedem Strömungselement fließt das Fluid von dem Knoten mit der `inletNodeId` zu dem Knoten mit der `outletNodeId`. <<fig_network_example1>> zeigt ein einfaches Netzwerk bestehend aus 3 Elementen.  Ein solches Netzwerk würde wie folgt definiert werden (<<ex_network_example1>>).
+Die Strömungselemente sind miteinander durch Knoten verknüpft. In jedem Strömungselement fließt das Fluid (geplant) von dem Knoten mit der `inletNodeId` zu dem Knoten mit der `outletNodeId`. Während der Berechnung ist es jedoch möglich, dass sich der Massestrom umkehrt. Dies ändert aber nichts an der Topologiedefinition des Netzwerkes. Man könnte `inletNodeId` auch mit "Knoten 1 des Elements" und `outletNodeId` mit "Knoten 2 des Elements" bezeichnen.
+
+<<fig_network_example1>> zeigt ein einfaches Netzwerk bestehend aus 3 Elementen.  Ein solches Netzwerk würde wie folgt definiert werden (<<ex_network_example1>>).
 
 [[ex_network_example1]]
 .XML-Definition eines einfachen Strömungsnetzwerks mit 3 Knoten und 3 Elementen
@@ -438,14 +452,12 @@ Jedes Strömungselement referenziert jeweils eine Komponente mit der `componentI
 
 Ist eine Komponente ein Rohr (z.B. `DynamicPipe`), **müssen** entsprechende Rohrparameter mit der `pipePropertiesId` referenziert werden. 
 
-:xrefstyle: short
-
 Weiterhin **muss** für ein Rohrelement der Parameter `Length` definiert werden (siehe auch <<ex_pipe_element>>):
 
 [options="header",cols="18%,^ 15%,38%,^ 20%, ^ 10%",width="100%"]
 |====================
-|Name|Unit|Description|Value Range | Usage 
-| `Length` | m | Length of pipe | {nbsp}>{nbsp}0.0{nbsp} | _optional_
+|Name | Einheit | Beschreibung | Wertebereich | Verwendung
+| `Length` | m | Rohrlänge | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
 |====================
 
 [[ex_pipe_element]]
