@@ -55,7 +55,7 @@ private slots:
 private:
 
 	/*! Update the period table. */
-	void updatePeriodTable();
+	void updatePeriodTable(const int &activeRow = 0);
 
 	/*! Called when a new daily cycle has been selected,i.e. m_currentDailyCycleIndex has changed. */
 	void selectDailyCycle();

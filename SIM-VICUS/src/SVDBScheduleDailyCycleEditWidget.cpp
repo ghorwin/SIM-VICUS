@@ -22,6 +22,9 @@ SVDBScheduleDailyCycleEditWidget::SVDBScheduleDailyCycleEditWidget(QWidget *pare
 	//set all table items in day cycle
 	m_ui->tableWidgetDayCycle->setRowCount(24);
 
+	m_ui->tableWidgetDayCycle->setSelectionBehavior(QAbstractItemView::SelectRows);
+	m_ui->tableWidgetDayCycle->setSelectionMode(QAbstractItemView::ExtendedSelection);
+
 	m_delegate = new QItemDelegate();
 	m_ui->tableWidgetDayCycle->blockSignals(true);
 	for(unsigned int i=0; i<24; ++i){

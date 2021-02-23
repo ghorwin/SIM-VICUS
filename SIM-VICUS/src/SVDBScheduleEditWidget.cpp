@@ -60,7 +60,7 @@ void SVDBScheduleEditWidget::setup(SVDatabase * db, SVDBScheduleTableModel * dbM
 	m_dbModel = dbModel;
 }
 
-void SVDBScheduleEditWidget::updatePeriodTable(){
+void SVDBScheduleEditWidget::updatePeriodTable(const int &activeRow){
 	//int currRow = m_ui->tableWidgetPeriods->currentRow();
 	m_ui->tableWidgetPeriods->blockSignals(true);
 
@@ -81,10 +81,9 @@ void SVDBScheduleEditWidget::updatePeriodTable(){
 	}
 	///TODO reselect row default to row 0
 
-	on_tableWidgetPeriods_currentCellChanged(0,0,0,0);
-
 	m_ui->tableWidgetPeriods->blockSignals(false);
 
+	on_tableWidgetPeriods_currentCellChanged(activeRow,0,0,0);
 
 	//is more than one period left
 	//remove button activate
@@ -332,12 +331,10 @@ void SVDBScheduleEditWidget::on_toolButtonAddPeriod_clicked(){
 	m_current->m_periods.insert(m_current->m_periods.begin()+idx+1,schedInt);
 
 	// update table widget
-	updatePeriodTable();
+	updatePeriodTable(m_current->m_periods.size()-1 );
 
-	m_ui->tableWidgetPeriods->blockSignals(true);
 	// select ScheduleInverval table row by ScheduleInverval index -> this will show the editor for the newly created schedule
 	m_ui->tableWidgetPeriods->selectRow(idx+1);
-	m_ui->tableWidgetPeriods->blockSignals(false);
 }
 
 
@@ -363,6 +360,7 @@ void SVDBScheduleEditWidget::on_tableWidgetPeriods_currentCellChanged(int curren
 	Q_ASSERT(m_current != nullptr);
 
 	///TODO Stephan
+	Q_ASSERT(currentRow < m_ui->tableWidgetPeriods->rowCount() );
 
 	m_rowIdx = currentRow;
 	m_ui->widgetDailyCycleAndDayTypes->setEnabled(m_rowIdx >= 0);
