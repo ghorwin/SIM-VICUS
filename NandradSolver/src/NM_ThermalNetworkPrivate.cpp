@@ -190,7 +190,7 @@ void ThermalNetworkModelImpl::dependencies(std::vector<std::pair<const double *,
 		// get inlet node
 		const double *massFluxRef = m_fluidMassFluxes + i;
 		const double *specEnthalpRef = &m_nodalSpecificEnthalpies[fe.m_nodeIndexInlet];
-		const double *tempInletRef = m_inletNodeTemperatureRefs[i];
+		const double *tempInletRef = m_statesModel->m_p->[i];
 		// enthalpy and heat flux dependencies
 		const double *heatFluxRef = m_fluidHeatFluxRefs[i];
 

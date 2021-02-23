@@ -307,13 +307,12 @@ int ThermalNetworkBalanceModel::update() {
 
 	//update all network internal calulation quantities
 	int res = m_statesModel->m_p->updateStates();
-
-	if(res != 0)
+	if (res != 0)
 		return res;
-	// TODO: call m_statesModel->m_p->
+
 	res = m_statesModel->m_p->updateFluxes();
 
-	if(res != 0)
+	if (res != 0)
 		return res;
 
 

@@ -83,67 +83,56 @@ public:
 	*/
 	virtual void internalDerivatives(double *ydot);
 
-	/*! Set fluid inlet and outlet nodal conditions.
-		Convenience function to setting m_inletTemperature ... m_massFlux manually.
-		Also computes m_inletSpecificEnthalpy and m_outletSpecificEnthalpy.
-		\param TInletNode Temperature at inlet node [K].
-		\param TOutletNode Temperature at outlet node [K].
-
-		\note The calculated inletXXX and outletXXX values depend on flow direction, because
-			we are implementing upwinding. That means for positive mdot, the provided
-			values of TOutletNode is ignored.
+	/*! Sets the computed mass flux in the element.
+		The function may compute the temperature of outflowing fluid, whether it flows out at node 1 or 2.
+		The energy/enthalpy has been set already in setInternalStates(), so a very simple implementation may
+		just use the mean temperature as outflow temperature.
+		\param massFlux Mass flux in [kg/s].
 	*/
-	virtual void setNodalConditions(double mdot, double TInletNode, double TOutletNode);
+	virtual void setMassFlux(double massFlux) { m_massFlux = massFlux; }
 
+	/*! Returns the temperature of outflowing fluid in [K].
+		The energy/enthalpy has been set already in setInternalStates(). The default implementation assumes a
+		single, well-mixed volume and simply returns the mean temperature as outflow temperature.
+
+		This function is called from the node temperature calculation routine to compute the mixed temperatures at nodes.
+	*/
+	virtual double outflowTemperature() { return m_meanTemperature; }
+
+	/*! Once all node temperatures have been computed, the flow element gets the temperature of the inlowing fluid. */
+	virtual void setInflowTemperature(double Tinflow) { m_inflowTemperature = Tinflow; }
 
 	/*! Optional function for registering dependencies between derivatives and internal states.*/
 	virtual void dependencies(const double */*ydot*/, const double */*y*/,
-							  const double */*mdot*/, const double* /*TInlet*/, const double*/*TOutlet*/,
+							  const double */*mdot*/, const double* /*TInflowLeft*/, const double*/*TInflowRight*/,
 							  std::vector<std::pair<const double *, const double *> > & ) const
 	{ }
 
+
 	// Common variables for flow elements
 
-	/*! Fluid inlet temperature */
-	double							m_inletTemperature = 273.15;
-
-	/*! Fluid inlet specific enthalpy [J/kg].
-		The value depends on flow direction (upwinding).
-	*/
-	double							m_inletSpecificEnthalpy = 0.0;
-
-	/*! Fluid outlet temperature
-		The value depends on flow direction (upwinding).
-	*/
-	double							m_outletTemperature = 273.15;
-
-	/*! Fluid outlet specific enthalpy [J/kg]. */
-	double							m_outletSpecificEnthalpy = 0.0;
+	/*! Temperature of inflowing fluid in [K], regardless where it flows into element (depends on massFlux sign). */
+	double							m_inflowTemperature = -999;
 
 	/*! Fluid mass flux (positively defined from inlet to outlet). */
-	double							m_massFlux = 0.0;
+	double							m_massFlux = -999;
 
 	/*! Fluid heat capacity [J/kgK].
 		Cached value from fluid properties.
 	*/
-	double							m_fluidHeatCapacity = 0.0;
-
-	/*! Fluid specific enthalpy [J/kg].
-	*/
-	double							m_fluidSpecificEnthalpy = 0.0;
+	double							m_fluidHeatCapacity = -999;
 
 	/*! Fluid density [kg/m3].
 		Cached value from fluid properties.
 	*/
-	double							m_fluidDensity = 1000;
+	double							m_fluidDensity = -999;
 
 	/*! Fluid volume [m3].
 	*/
-	double							m_fluidVolume = 1000;
+	double							m_fluidVolume = -999;
 
-
-	/*! Fluid temperature */
-	double							m_meanTemperature = 273.15;
+	/*! Fluid (well-mixed) temperature in [K]. */
+	double							m_meanTemperature = -999;
 
 };
 

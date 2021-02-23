@@ -103,7 +103,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						m_p->m_heatLossElements.push_back(nullptr); // no heat loss
 					}
 					else if (e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant ||
-							 e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile) {
+							 e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile)
+					{
 						// set a small fluid volume
 						// TODO : check this!
 						double volume = 0.01;

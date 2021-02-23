@@ -18,12 +18,9 @@ namespace NANDRAD_MODEL {
 
 // **** Static Pipe ***
 
-
 /*! Instantiated for StaticPipe elements with HeatExchangeType set. */
 class TNStaticPipeElement : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
 public:
-	TNStaticPipeElement() { }
-
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	TNStaticPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 				  const NANDRAD::HydraulicNetworkComponent & comp,
@@ -31,11 +28,8 @@ public:
 				  const NANDRAD::HydraulicFluid & fluid,
 				  const double &TExt);
 
-	/*! D'tor, definition is in NM_HydraulicNetworkFlowElements.cpp. */
-	~TNStaticPipeElement();
-
-	/*! Set fluid inlet and outlet nodal conditions. */
-	void setNodalConditions(double mdot, double TInlet, double TOutlet);
+	/*! Overloaded from ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
+	void setInflowTemperature(double Tinflow) override;
 
 private:
 
@@ -64,6 +58,7 @@ private:
 
 	/*! Reference to external temperature in K */
 	const double*					m_externalTemperatureRef = nullptr;
+
 };
 
 
@@ -73,17 +68,11 @@ private:
 /*! Instantiated for StaticPipe elements without HeatExchangeType set. */
 class TNStaticAdiabaticPipeElement : public ThermalNetworkAbstractFlowElement { // NO KEYWORDS
 public:
-	TNStaticAdiabaticPipeElement() { }
-
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	TNStaticAdiabaticPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 				  const NANDRAD::HydraulicNetworkComponent & comp,
 				  const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
 				  const NANDRAD::HydraulicFluid & fluid);
-
-	/*! D'tor, definition is in NM_HydraulicNetworkFlowElements.cpp. */
-	~TNStaticAdiabaticPipeElement();
-
 };
 
 
@@ -102,33 +91,33 @@ public:
 				  const NANDRAD::HydraulicFluid & fluid,
 				  const double &TExt);
 
-	/*! D'tor, definition is in NM_HydraulicNetworkFlowElements.cpp. */
-	~TNDynamicPipeElement();
-
 	/*! Function retrieving number of internal states.*/
-	unsigned int nInternalStates() const;
+	unsigned int nInternalStates() const override;
 
 	/*! Function for retrieving initial states
 	 * of each model after initial temperature is set.*/
-	void initialInternalStates(double *y0);
+	void initialInternalStates(double *y0) override;
 
 	/*! Function for setting internal states.*/
-	void setInternalStates(const double *y);
+	void setInternalStates(const double *y) override;
 
 	/*! Function for setting initial temperature
 	 * for each model.*/
-	void setInitialTemperature(double T0);
+	void setInitialTemperature(double T0) override;
+
+	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
+	void setInflowTemperature(double Tinflow) override;
 
 	/*! Function for retrieving heat fluxes out of the flow element.*/
-	void internalDerivatives(double *ydot);
+	void internalDerivatives(double *ydot) override;
 
-	/*! Set fluid inlet and outlet nodal conditions. */
-	void setNodalConditions(double mdot, double TInlet, double TOutlet);
+	/*! Overrides ThermalNetworkAbstractFlowElement::outflowTemperature(). */
+	double outflowTemperature() override;
 
 	/*! Function for registering dependencies between derivaites, internal states and modelinputs.*/
 	void dependencies(const double *ydot, const double *y,
-					  const double *mdot, const double* hInlet, const double*hOutlet,
-					  std::vector<std::pair<const double *, const double *> > &resultInputDependencies ) const;
+					  const double *mdot, const double* TInflowLeft, const double*TInflowRight,
+					  std::vector<std::pair<const double *, const double *> > &resultInputDependencies ) const override;
 
 private:
 
@@ -136,13 +125,10 @@ private:
 	unsigned int					m_nVolumes;
 
 	/*! Volume of all pipe deiscretization elements*/
-	double							m_discVolume = 0.0;
+	double							m_discVolume = -999;
 
 	/*! Lengths of of all pipe volumes*/
-	double							m_discLength = 0.0;
-
-	/*! Fluid specific enthalpies for all discretization volumes J/kg */
-	std::vector<double>				m_specificEnthalpies;
+	double							m_discLength = -999;
 
 	/*! Fluid temperatures for all discretization volumes J/kg */
 	std::vector<double>				m_temperatures;
@@ -151,72 +137,67 @@ private:
 	std::vector<double>				m_heatLosses;
 
 	/*! pipe length in m */
-	double							m_length;
+	double							m_length = -999;
 
 	/*! hydraulic (inner) diameter of pipe in m */
-	double							m_innerDiameter;
+	double							m_innerDiameter = -999;
 
 	/*! outer diameter of pipe in m */
-	double							m_outerDiameter;
+	double							m_outerDiameter = -999;
 
 	/*! Fluid conductivity [W/mK].
 		Cached value from fluid properties.
 	*/
-	double							m_fluidConductivity = 0.01;
+	double							m_fluidConductivity = -999;
 
 	/*! Fluid dynamic viscosity [m/s] (temperature dependend).*/
 	IBK::LinearSpline				m_fluidViscosity;
 
 	/*! thermal resistance of the pipe wall in Km2/W */
-	double							m_UValuePipeWall;
+	double							m_UValuePipeWall = -999;
 
 	/*! Heat transfer coefficient from outer pipe wall to environment in W/m2K */
-	double							m_outerHeatTransferCoefficient;
+	double							m_outerHeatTransferCoefficient = -999;
 
 	/*! Reference to external temperature in K */
 	const double*					m_externalTemperatureRef = nullptr;
+
 };
+
 
 
 // **** Dynamic Adiabatic Pipe ***
 
 class TNDynamicAdiabaticPipeElement : public ThermalNetworkAbstractFlowElement { // NO KEYWORDS
 public:
-	TNDynamicAdiabaticPipeElement() { }
-
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	TNDynamicAdiabaticPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 				  const NANDRAD::HydraulicNetworkComponent & comp,
 				  const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
 				  const NANDRAD::HydraulicFluid & fluid);
 
-	/*! D'tor, definition is in NM_HydraulicNetworkFlowElements.cpp. */
-	~TNDynamicAdiabaticPipeElement();
-
 	/*! Function retrieving number of internal states.*/
-	unsigned int nInternalStates() const;
+	unsigned int nInternalStates() const override { return m_nVolumes; }
 
-	/*! Function for retrieving initial states
-	 * of each model after initial temperature is set.*/
-	void initialInternalStates(double *y0);
+	/*! Function for retrieving initial states of each volume after initial temperature is set. */
+	void initialInternalStates(double *y0) override;
 
 	/*! Function for setting internal states.*/
-	void setInternalStates(const double *y);
+	void setInternalStates(const double *y) override;
 
-	/*! Function for setting initial temperature
-	 * for each model.*/
-	void setInitialTemperature(double T0);
+	/*! Function for setting initial temperature for each volume. */
+	void setInitialTemperature(double T0) override;
 
 	/*! Function for retrieving heat fluxes out of the flow element.*/
-	void internalDerivatives(double *ydot);
+	void internalDerivatives(double *ydot) override;
 
-	/*! Set fluid inlet and outlet nodal conditions. */
-	void setNodalConditions(double mdot, double TInlet, double TOutlet);
+	/*! Overrides ThermalNetworkAbstractFlowElement::outflowTemperature(). */
+	double outflowTemperature() override;
 
 	/*! Function for registering dependencies between derivaites, internal states and modelinputs.*/
 	void dependencies(const double *ydot, const double *y,
-					  const double *mdot, const double* TInlet, const double*TOutlet,
-					  std::vector<std::pair<const double *, const double *> > &resultInputDependencies ) const;
+					  const double *mdot, const double* TInflowLeft, const double*TInflowRight,
+					  std::vector<std::pair<const double *, const double *> > &resultInputDependencies ) const override;
 
 private:
 
@@ -224,10 +205,7 @@ private:
 	unsigned int					m_nVolumes;
 
 	/*! Volume of all pipe deiscretization elements*/
-	double							m_discVolume = 0.0;
-
-	/*! Fluid specific enthalpies for all discretization volumes J/kg */
-	std::vector<double>				m_specificEnthalpies;
+	double							m_discVolume = -999;
 
 	/*! Fluid temperatures for all discretization volumes J/kg */
 	std::vector<double>				m_temperatures;
@@ -238,18 +216,13 @@ private:
 
 class TNPumpWithPerformanceLoss : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
 public:
-	TNPumpWithPerformanceLoss() { }
-
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	TNPumpWithPerformanceLoss(const NANDRAD::HydraulicFluid & fluid,
 							  const NANDRAD::HydraulicNetworkComponent & comp,
 							  const double &pRef);
 
-	/*! D'tor, definition is in NM_HydraulicNetworkFlowElements.cpp. */
-	~TNPumpWithPerformanceLoss();
-
-	/*! Set fluid inlet and outlet nodal conditions. */
-	void setNodalConditions(double mdot, double TInlet, double TOutlet);
+	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
+	void setInflowTemperature(double Tinflow) override;
 
 private:
 	/*! Reference to pressure head */
@@ -263,20 +236,12 @@ private:
 };
 
 
-// **** General adiabatic element ***
+// **** General adiabativ element ***
 
 class TNAdiabaticElement : public ThermalNetworkAbstractFlowElement { // NO KEYWORDS
 public:
-	TNAdiabaticElement() { }
-
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	TNAdiabaticElement(const NANDRAD::HydraulicFluid & fluid,
-				  double fluidVolume);
-
-	/*! D'tor, definition is in NM_HydraulicNetworkFlowElements.cpp. */
-	~TNAdiabaticElement();
-
-
+	TNAdiabaticElement(const NANDRAD::HydraulicFluid & fluid, double fluidVolume);
 };
 
 
@@ -285,15 +250,10 @@ public:
 
 class TNElementWithExternalHeatLoss : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
 public:
-	TNElementWithExternalHeatLoss() { }
-
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	TNElementWithExternalHeatLoss(const NANDRAD::HydraulicFluid & fluid,
 				  double fluidVolume,
 				  const double &QExt);
-
-	/*! D'tor, definition is in NM_HydraulicNetworkFlowElements.cpp. */
-	~TNElementWithExternalHeatLoss();
 
 	/*! Function for retrieving heat fluxes out of the flow element.*/
 	void internalDerivatives(double *ydot);
@@ -303,37 +263,6 @@ public:
 };
 
 
-
-
-// **** TNHeatPumpIdealCarnot ***
-
-class TNHeatPumpIdealCarnot : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
-public:
-	TNHeatPumpIdealCarnot() { }
-
-	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	TNHeatPumpIdealCarnot(const NANDRAD::HydraulicNetworkComponent & comp,
-						const NANDRAD::HydraulicFluid & fluid,
-						const double &heatFluxExtern);
-
-	/*! D'tor, definition is in NM_HydraulicNetworkFlowElements.cpp. */
-	~TNHeatPumpIdealCarnot();
-
-	/*! Set fluid inlet and outlet nodal conditions. */
-	void setNodalConditions(double mdot, double TInlet, double TOutlet);
-
-	/*! Function for retrieving heat fluxes out of the flow element.*/
-	void internalDerivatives(double *ydot);
-
-	/*! Reference to external heat loss in W */
-	const double*			m_externalHeatLoss = nullptr;
-
-	/*! mean fluid temperature in condenser [C] */
-	double					m_condenserMeanTemperature;
-
-	/*! carnot efficiency factor [-] */
-	double					m_carnotEfficiency;
-};
 
 
 } // namespace NANDRAD_MODEL

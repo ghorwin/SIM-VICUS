@@ -6,29 +6,19 @@
 
 namespace NANDRAD_MODEL {
 
-/*! Defines the interface for an abstract flow element with heat loss over the boundary.
-
+/*! Defines the interface for an abstract flow element with heat loss (over the boundary).
 */
 class ThermalNetworkAbstractFlowElementWithHeatLoss : public ThermalNetworkAbstractFlowElement {
 public:
 	/*! Function for retrieving heat fluxes out of the flow element.*/
 	virtual void internalDerivatives(double *ydot) override;
 
-//	// Functions below are needed when model has exchange with environment
-
-//	/*! Set ambient conditions. DISCUSS
-//		Only for models with heat exchange to surrounding (earth, air, water...).
-//		\param Tamb Temperature [K]
-//		\param alphaAmb Heat exchange coefficient  [W/m2K]
-//	*/
-//	virtual void setAmbientConditions(double Tamb, double alphaAmb) = 0;
-
-
 	/*! Heat loss over surface of flow element towards the environment in [W].
 		This is a loss, i.e. positive means reduction of energy in flow element.
 	*/
-	double							m_heatLoss = 0.0;
+	double							m_heatLoss = 0.0; // Important: initialize with 0, since some models may never change it!
 	/*! Heat exchange type of hydraulic component.
+		Corresponds to NANDRAD::HydraulicComponent::HeatExchangeType enum.
 	*/
 	int								m_heatExchangeType = -1;
 };
