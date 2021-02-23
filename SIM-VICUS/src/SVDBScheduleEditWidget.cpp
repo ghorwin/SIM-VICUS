@@ -235,10 +235,8 @@ void SVDBScheduleEditWidget::on_toolButtonAddPeriod_clicked(){
 	QDate startDate = QtExt::DateTimeInputDialog::requestDate(tr("Select start date of period"),
 															  tr("Enter start date (dd.MM.):"), tr("dd.MM."), &initialDate);
 
-	if(!startDate.isValid()){
-		//The period is not valid. Action canceled.
-		return;
-	}
+	if(!startDate.isValid())
+		return;		//The period is not valid. Action canceled.
 
 	// convert date to dayofyear
 	unsigned int startDateInt = startDate.dayOfYear()-1;
@@ -336,6 +334,9 @@ void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellClicked(int row, int colu
 	unsigned int shift = m_current->m_periods[schedIdx].m_intervalStartDay;
 	periodStartDate = periodStartDate.addDays(shift);
 	periodStartDate = QtExt::DateTimeInputDialog::requestDate(tr("Modify start date of period"), tr("Enter start date (dd.MM.):"), tr("dd.MM."),									&periodStartDate);
+
+	if ( !periodStartDate.isValid() )
+		return; // no input has been done by user
 
 	// convert date to dayofyear
 	unsigned int startDateInt = periodStartDate.dayOfYear()-1;
