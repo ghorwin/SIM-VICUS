@@ -481,50 +481,58 @@ Surface * Project::surfaceByID(unsigned int surfaceID) {
 	return nullptr;
 }
 
-
-//bool Project::haveSelectedSurfaces(IBKMK::Vector3D & centerPoint) const {
-//	size_t coordsCount=0;
-
-//	// we go through all dump surfaces in m_plaingeometry
-//	// if surface is selected and visible, we store its coordinates and its coordinates count
-//	for ( const Surface &s : m_plainGeometry) {
-//		if ( s.m_visible && s.m_selected ) {
-//			for ( const IBKMK::Vector3D &v : s.m_geometry.vertexes()  ) {
-//				centerPoint += v;
-//				++coordsCount;
-//			}
-//		}
-//	}
-
-//	// we go through all surfaces inside the buildings
-//	// if surface is selected and visible, we store its coordinates and its coordinates count
-//	for ( const Building &b : m_buildings) {
-//		for ( const BuildingLevel &bl : b.m_buildingLevels) {
-//			for ( const Room &r : bl.m_rooms) {
-//				for ( const Surface &s : r.m_surfaces) {
-//					if ( s.m_visible && s.m_selected ) {
-//						for ( const IBKMK::Vector3D &v : s.m_geometry.vertexes()  ) {
-//							centerPoint += v;
-//							++coordsCount;
-//						}
-//					}
-//				}
-//			}
-//		}
-//	}
-
-//	if (coordsCount > 0)
-//		centerPoint/=static_cast<double>(coordsCount);
-
-//	return (coordsCount > 0);
-//}
-
-
 bool selectionCheck(const VICUS::Object & o, bool takeSelected, bool takeVisible) {
 	bool selCheck = takeSelected ? o.m_selected : true;
 	bool visCheck = takeVisible ? o.m_visible : true;
 	return (selCheck && visCheck);
 }
+
+void Project::selectedBuildingObjects(std::set<const Object *> &selectedObjs, Object *obj) const {
+
+	bool takeSelected = true;
+	bool takeVisible = true;
+
+	for (const VICUS::Building & b : m_buildings) {
+		//
+		VICUS::Building *bcheck = dynamic_cast<VICUS::Building *>(obj);
+		if ( bcheck != nullptr) {
+			 if (selectionCheck(b, takeSelected, takeVisible) )
+				selectedObjs.insert(&b);
+			 continue;
+		}
+
+		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+
+			VICUS::BuildingLevel *blcheck = dynamic_cast<VICUS::BuildingLevel *>(obj);
+			if ( blcheck != nullptr ) {
+				if (selectionCheck(bl, takeSelected, takeVisible) )
+					selectedObjs.insert(&bl);
+				continue;
+			}
+
+			for (const VICUS::Room & r : bl.m_rooms) {
+
+				VICUS::Room *rcheck = dynamic_cast<VICUS::Room *>(obj);
+				if ( rcheck != nullptr){
+					if (selectionCheck(r, takeSelected, takeVisible) )
+						selectedObjs.insert(&r);
+					continue;
+				}
+
+				for (const VICUS::Surface & s : r.m_surfaces) {
+
+					VICUS::Surface *scheck = dynamic_cast<VICUS::Surface *>(obj);
+					if ( scheck != nullptr ) {
+						if ( selectionCheck(s, takeSelected, takeVisible) )
+							selectedObjs.insert(&s);
+						continue;
+					}
+				}
+			}
+		}
+	}
+}
+
 
 void Project::selectObjects(std::set<const Object*> &selectedObjs, SelectionGroups sg,
 							bool takeSelected, bool takeVisible) const

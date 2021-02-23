@@ -468,7 +468,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QtExt::ValidatingLineEdit" name="lineEditXCopy">
+             <widget class="QtExt::ValidatingLineEdit" name="lineEditCopyX">
               <property name="sizePolicy">
                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -577,6 +577,14 @@
       </layout>
      </widget>
      <widget class="QWidget" name="pageCopy">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>474</width>
+        <height>549</height>
+       </rect>
+      </property>
       <attribute name="label">
        <string>Seite</string>
       </attribute>

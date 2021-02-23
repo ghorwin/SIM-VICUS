@@ -109,7 +109,7 @@ class QtExt_ValidatingLineEdit;r Point of the local
 	/*! Translates the selected surfaces with the specified
 		\param copyVec - Translation Vector
 	*/
-	void copy(const QVector3D & transVec);
+	void copy(const QVector3D & trans, const int &count);
 
 public slots:
 

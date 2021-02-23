@@ -116,6 +116,7 @@ SOURCES += \
 				../../src/SVSimulationOutputOptions.cpp \
 		../../src/SVSimulationRunRequestDialog.cpp \
 		../../src/SVSmartSelectDialog.cpp \
+    ../../src/SVUndoCopySurfaces.cpp \
 	../../src/SVUndoDeleteBuilding.cpp \
 	../../src/SVUndoDeleteBuildingLevel.cpp \
 	../../src/SVUndoModifyNetwork.cpp \
@@ -125,6 +126,7 @@ SOURCES += \
 				../../src/actions/SVUndoAddSurface.cpp \
 				../../src/actions/SVUndoAddZone.cpp \
 				../../src/actions/SVUndoCommandBase.cpp \
+    ../../src/actions/SVUndoCopyZones.cpp \
 				../../src/actions/SVUndoDeleteSelected.cpp \
 	../../src/actions/SVUndoModifyBuilding.cpp \
 	../../src/actions/SVUndoModifyBuildingLevel.cpp \
@@ -231,6 +233,7 @@ HEADERS  += \
 				../../src/SVSimulationOutputOptions.h \
 		../../src/SVSimulationRunRequestDialog.h \
 		../../src/SVSmartSelectDialog.h \
+    ../../src/SVUndoCopySurfaces.h \
 	../../src/SVUndoDeleteBuilding.h \
 	../../src/SVUndoDeleteBuildingLevel.h \
 	../../src/SVUndoModifyNetwork.h \
@@ -240,6 +243,7 @@ HEADERS  += \
 				../../src/actions/SVUndoAddSurface.h \
 				../../src/actions/SVUndoAddZone.h \
 				../../src/actions/SVUndoCommandBase.h \
+    ../../src/actions/SVUndoCopyZones.h \
 				../../src/actions/SVUndoDeleteSelected.h \
 	../../src/actions/SVUndoModifyBuilding.h \
 	../../src/actions/SVUndoModifyBuildingLevel.h \
