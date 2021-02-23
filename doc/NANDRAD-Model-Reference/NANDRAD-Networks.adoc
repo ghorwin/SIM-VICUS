@@ -553,17 +553,19 @@ Die mittlere Temperatur einen Strömungselements kann zur Visualisierung/Farbgeb
 Je nach physikalischer Modellierung eines Strömungselements muss die Mitteltemperatur einen Strömungselements nicht mit der Auslasstemperatur übereinstimmen (siehe Modelldokumentation). Beispiele dafür sind Speicher oder lange verlustbehaftete Rohre.
 ====
 
-Die Temperaturen am Ein- bzw. Auslass sind (wie die Drücke) an den physischen Positionen _inletNode_ und _outletNode_ definiert und können ausgegeben werden mit 
+Die Temperaturen am Ein- bzw. Auslass sind (wie die Drücke) an den physischen Positionen _inletNode_ und _outletNode_ definiert und können ausgegeben werden. Es sind folgende Ausgabevariablen für den Referenztyp `NetworkElement` definiert:
 
 - `InletNodeTemperature` in C 
 - `OutletNodeTemperature` in C
 
 TODO Anne....
 
-- `FluidHeatFluxes`
-- `FluidHeatFlux`
-- `ZoneHeatFluxes`
+- `FluidHeatFlux` -> TODO : Rename
+
+
+- `ZoneHeatFluxes` : Milestone 3
 - 
+
 
 #### Ausgaben des Netzwerks
 

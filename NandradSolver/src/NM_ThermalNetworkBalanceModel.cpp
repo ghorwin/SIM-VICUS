@@ -63,6 +63,9 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 
 	// heat flux vector is a result
+
+	// TODO : Anne, der Name is irreführend, wir brauchen hier was anderes, was besser ausdrückt, dass es sich um
+	//        eine Wärmeverlust durch Wärmeabgabe an die Umgebung handelt.
 	QuantityDescription desc("FluidHeatFlux", "W", "Heat flux from flow element into environment", false);
 
 	// set a description for each flow element
@@ -77,6 +80,8 @@ void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescript
 	// add output
 	if (!m_statesModel->m_zoneIds.empty()) {
 		// set a description for each zone
+
+		// TODO : rename?
 		desc = QuantityDescription("ZoneHeatFluxes", "W", "Heat flux into all zones from flow elements", false);
 		// add current index to description
 		desc.resize(m_statesModel->m_zoneIds, VectorValuedQuantityIndex::IK_ModelID);

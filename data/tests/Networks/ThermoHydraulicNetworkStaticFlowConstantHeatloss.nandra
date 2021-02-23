@@ -102,6 +102,11 @@
 					<ObjectListName>Entire network</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FluidTemperatures</Quantity>
+					<ObjectListName>Entire network</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
 				<!-- Outputs go to file 'network_elements.tsv' -->
 				<OutputDefinition>
 					<Quantity>FluidMassFlux</Quantity>
@@ -113,6 +118,13 @@
 					<ObjectListName>Network Elements</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
+				
+				<!-- Outputs only for Thermal-Hydraulic networks -->
+				<OutputDefinition>
+					<Quantity>InletNodeTemperature</Quantity>
+					<ObjectListName>Network Elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>			
 				<OutputDefinition>
 					<Quantity>OutletNodeTemperature</Quantity>
 					<ObjectListName>Network Elements</ObjectListName>
