@@ -43,7 +43,7 @@ private slots:
 
 	void on_toolButtonRemovePeriode_clicked();
 
-	void on_tableWidgetPeriods_currentCellChanged(int currentRow, int, int, int);
+	void on_tableWidgetPeriods_currentCellChanged(int currentRow, int currentColumn, int, int);
 
 private:
 	/*! Update the period table. */

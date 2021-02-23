@@ -79,21 +79,32 @@ void SVDBScheduleEditWidget::updatePeriodTable(){
 	m_ui->tableWidgetPeriods->blockSignals(false);
 
 	on_tableWidgetPeriods_currentCellChanged(currRow,0,0,0);
+
 	//is more than one period left
 	//remove button activate
+	m_ui->toolButtonRemovePeriode->setEnabled(m_current->m_periods.size()>1);
 
 }
 
 void SVDBScheduleEditWidget::selectDailyCycle() {
 	// create first daily cycle if none exist yet
+	if(m_currentInterval->m_dailyCycles.empty())
+		m_currentInterval->m_dailyCycles.emplace_back(VICUS::DailyCycle());
 
 	// enable/disable arrow buttons based
+	m_ui->toolButtonBackward->setEnabled(m_currentDailyCycleIndex!=0);
+//	if()
+//	m_ui->toolButtonBackward->setEnabled(m_currentDailyCycleIndex!=0);
 
+
+	m_currentInterval->m_dailyCycles[m_currentDailyCycleIndex];
 	// check/uncheck day checkbox (with blocked signals)
 
 	// update current daily cycle data type and chartt
 
 	//m_ui->widgetDailyCycle->updateInput(m_currentInterval, m_currentDailyCycleIndex, m_db);
+
+	m_db->m_schedules.m_modified=true;
 }
 
 
@@ -134,20 +145,23 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 	// we must a valid schedule pointer
 	Q_ASSERT(m_current != nullptr);
 
-	//initialize period with with one period
-	if(m_current->m_periods.empty()){
-		m_current->m_periods.push_back(VICUS::ScheduleInterval());
-		m_db->m_schedules.m_modified=true;
-	}
 
 
-
+	///TODO Annual Schedule ...
 
 	// update table widget with periods
 	// select first period -> call selectionChangedSlot() which sets up the remainder of the UI
 
 	//period schedule
 	if(m_current->m_annualSchedule.x().empty()){
+
+		//initialize period with one period
+		if(m_current->m_periods.empty()){
+			m_current->m_periods.push_back(VICUS::ScheduleInterval());
+			m_db->m_schedules.m_modified=true;
+		}
+
+
 		//check that this schedule has a period
 		//if not create first period
 		updatePeriodTable();
@@ -270,9 +284,15 @@ void SVDBScheduleEditWidget::on_toolButtonRemovePeriode_clicked(){
 
 
 
-void SVDBScheduleEditWidget::on_tableWidgetPeriods_currentCellChanged(int currentRow, int /*currentColumn*/, int /*previousRow*/, int /*previousColumn*/)
+void SVDBScheduleEditWidget::on_tableWidgetPeriods_currentCellChanged(int currentRow, int currentColumn, int /*previousRow*/, int /*previousColumn*/)
 {
 	Q_ASSERT(m_current != nullptr);
+
+	///TODO Stephan
+	//save information text in column at index 1 for data structure
+
+	//if
+
 
 	m_rowIdx = currentRow;
 	m_ui->widgetDailyCycleAndDayTypes->setEnabled(m_rowIdx >= 0);
