@@ -67,6 +67,9 @@ void SVDBScheduleEditWidget::updatePeriodTable(){
 	//create a julian day to get the right date in dd.MM.
 	qint64 julianD = QDate(2021,1,1).toJulianDay();
 
+	///TODO Stephan
+	//sort the periods
+
 	//set up all periods with name and day
 	m_ui->tableWidgetPeriods->setRowCount(m_current->m_periods.size());
 	for(unsigned int i=0; i<m_current->m_periods.size(); ++i){
@@ -107,7 +110,7 @@ void SVDBScheduleEditWidget::selectDailyCycle() {
 	m_ui->widgetDayTypes->blockSignals(true);
 
 	//all button active and enabled
-	m_ui->checkBoxMonday->setEnabled(false);
+	m_ui->checkBoxMonday->setEnabled(true);
 	m_ui->checkBoxTuesday->setEnabled(true);
 	m_ui->checkBoxWednesday->setEnabled(true);
 	m_ui->checkBoxThursday->setEnabled(true);
@@ -425,8 +428,7 @@ void SVDBScheduleEditWidget::on_toolButtonBackward_clicked()
 	selectDailyCycle();
 }
 
-void SVDBScheduleEditWidget::on_toolButtonForward_clicked()
-{
+void SVDBScheduleEditWidget::on_toolButtonForward_clicked() {
 	if(m_currentDailyCycleIndex < m_currentInterval->m_dailyCycles.size()-1 ||
 			m_currentInterval->freeDayTypes().size()>0){
 
@@ -440,6 +442,7 @@ void SVDBScheduleEditWidget::on_toolButtonForward_clicked()
 			++m_currentDailyCycleIndex;
 	}
 	selectDailyCycle();
+}
 
 void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellChanged(int row, int column) {
 	size_t colIdx = (size_t)column;
@@ -454,8 +457,7 @@ void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellChanged(int row, int colu
 
 
 
-void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellClicked(int row, int column)
-{
+void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellClicked(int row, int column) {
 	size_t colIdx = (size_t)column;
 	size_t schedIdx = (size_t)row;
 

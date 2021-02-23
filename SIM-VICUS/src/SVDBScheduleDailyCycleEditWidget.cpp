@@ -57,18 +57,24 @@ void SVDBScheduleDailyCycleEditWidget::updateInput(VICUS::DailyCycle *dc, SVData
 	m_dailyCycle = dc;
 	m_db = db;
 
+	if(m_dailyCycle->m_timePoints.empty()){
+		m_dailyCycle->m_timePoints.push_back(0);
+		m_dailyCycle->m_values.push_back(0);
+		m_db->m_schedules.m_modified;
+	}
+
 	//check time point in schedule interval and write the table values
 	for (unsigned int j=0;j<24 ; ++j) {
 		double currTP = j*3600;
+		double val=0;
 		for (unsigned int i=0; i<dc->m_timePoints.size(); ++i) {
 			double intervalTp = dc->m_timePoints[i];
-			double val=0;
-			if(currTP<=intervalTp)
+			if(currTP>=intervalTp)
 				val=dc->m_values[i];
 			else
 				break;
-			m_ui->tableWidgetDayCycle->item(i, 1)->setText(QString::number(val,'g', 3));
 		}
+		m_ui->tableWidgetDayCycle->item(j, 1)->setText(QString::number(val,'g', 3));
 	}
 }
 
