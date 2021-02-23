@@ -36,7 +36,7 @@ void SolverParameter::initDefaults() {
 	m_para[P_RelTol].set( KeywordList::Keyword("SolverParameter::para_t", P_RelTol),												1e-5, IBK::Unit("---"));
 	m_para[P_AbsTol].set( KeywordList::Keyword("SolverParameter::para_t", P_AbsTol),												1e-10, IBK::Unit("---"));
 	m_para[P_MaxTimeStep].set( KeywordList::Keyword("SolverParameter::para_t", P_MaxTimeStep),										1, IBK::Unit("h"));
-	m_para[P_MinTimeStep].set( KeywordList::Keyword("SolverParameter::para_t", P_MinTimeStep),										1e-12, IBK::Unit("s"));
+	m_para[P_MinTimeStep].set( KeywordList::Keyword("SolverParameter::para_t", P_MinTimeStep),										1e-8, IBK::Unit("s"));
 	m_para[P_InitialTimeStep].set( KeywordList::Keyword("SolverParameter::para_t", P_InitialTimeStep),								0.1, IBK::Unit("s"));
 
 	m_para[P_NonlinSolverConvCoeff].set( KeywordList::Keyword("SolverParameter::para_t", P_NonlinSolverConvCoeff),					0.1, IBK::Unit("---"));
