@@ -24,6 +24,12 @@ public:
 	/*! Checks if all referenced materials exist and if their parameters are valid. */
 	bool isValid() const;
 
+	/*! Check if all day type are used in a Schedule interval. Option with or without holyday. */
+	bool usedAllDayTypes(bool withHolyday = true) const;
+
+	/*! Returns a set of all unused day types. */
+	std::set<int> freeDayTypes();
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Display name of period. */

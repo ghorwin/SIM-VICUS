@@ -58,5 +58,62 @@ bool ScheduleInterval::isValid() const {
 	return true;
 }
 
+bool ScheduleInterval::usedAllDayTypes(bool withHolyday) const
+{
+	unsigned int count=0;
+	//set for all day types
+	std::set<int> allDayTypes;
+
+	for(const DailyCycle & dc : m_dailyCycles){
+		//save size of set for compare later
+		unsigned int dtSizeBefore = allDayTypes.size();
+		//add all current day types to set
+		for(int dt : dc.m_dayTypes)
+			allDayTypes.insert(dt);
+		//check if a day type was already in this set
+		if(dtSizeBefore == allDayTypes.size() &&dc.m_dayTypes.size()>0){
+
+		}
+	}
+
+	//create a set of all valid day types
+	std::set<int> allValidDayTypes;
+	allValidDayTypes.insert(NANDRAD::Schedule::ST_MONDAY);
+	allValidDayTypes.insert(NANDRAD::Schedule::ST_TUESDAY);
+	allValidDayTypes.insert(NANDRAD::Schedule::ST_WEDNESDAY);
+	allValidDayTypes.insert(NANDRAD::Schedule::ST_THURSDAY);
+	allValidDayTypes.insert(NANDRAD::Schedule::ST_FRIDAY);
+	allValidDayTypes.insert(NANDRAD::Schedule::ST_SATURDAY);
+	allValidDayTypes.insert(NANDRAD::Schedule::ST_SUNDAY);
+	if(withHolyday)
+		allValidDayTypes.insert(NANDRAD::Schedule::ST_HOLIDAY);
+
+	//compare the two sets
+	return allDayTypes == allValidDayTypes;
+
+}
+
+std::set<int> ScheduleInterval::freeDayTypes(){
+	std::set<int> allValidDayTypes;
+	allValidDayTypes.insert(NANDRAD::Schedule::ST_MONDAY);
+	allValidDayTypes.insert(NANDRAD::Schedule::ST_TUESDAY);
+	allValidDayTypes.insert(NANDRAD::Schedule::ST_WEDNESDAY);
+	allValidDayTypes.insert(NANDRAD::Schedule::ST_THURSDAY);
+	allValidDayTypes.insert(NANDRAD::Schedule::ST_FRIDAY);
+	allValidDayTypes.insert(NANDRAD::Schedule::ST_SATURDAY);
+	allValidDayTypes.insert(NANDRAD::Schedule::ST_SUNDAY);
+	allValidDayTypes.insert(NANDRAD::Schedule::ST_HOLIDAY);
+
+	for(const DailyCycle & dc : m_dailyCycles){
+		//delete all current day types in set
+		for(int dt : dc.m_dayTypes){
+			if(allValidDayTypes.find(dt) != allValidDayTypes.end()){
+				allValidDayTypes.erase(dt);
+			}
+		}
+	}
+	return allValidDayTypes;
+}
+
 
 } // namespace VICUS
