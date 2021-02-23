@@ -43,6 +43,11 @@ SVDBScheduleEditDialog::SVDBScheduleEditDialog(QWidget *parent) :
 
 	resize(1200,600);
 
+	QList<int> sizes;
+	int availableWidth = width();
+	sizes << 250 << availableWidth - 250;
+	m_ui->splitter->setSizes(sizes);
+
 	// set item delegate for coloring built-ins
 	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn);
 	m_ui->tableView->setItemDelegate(dg);

@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>693</width>
-    <height>476</height>
+    <height>279</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Boundary Condition Database</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
    <item>
     <widget class="QSplitter" name="splitter">
      <property name="orientation">
