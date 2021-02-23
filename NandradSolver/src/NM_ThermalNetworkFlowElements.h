@@ -233,7 +233,7 @@ private:
 };
 
 
-// **** Pump element with losses ***
+// **** TNHeatPumpIdealCarnot ***
 
 class TNHeatPumpIdealCarnot : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
 public:
@@ -281,41 +281,6 @@ public:
 	/*! Reference to external heat loss in W */
 	const double*					m_externalHeatLossRef = nullptr;
 };
-
-
-
-
-// **** TNHeatPumpIdealCarnot ***
-
-class TNHeatPumpIdealCarnot : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
-public:
-	TNHeatPumpIdealCarnot() { }
-
-	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	TNHeatPumpIdealCarnot(const NANDRAD::HydraulicNetworkComponent & comp,
-						const NANDRAD::HydraulicFluid & fluid,
-						const double &heatFluxExtern);
-
-	/*! D'tor, definition is in NM_HydraulicNetworkFlowElements.cpp. */
-	~TNHeatPumpIdealCarnot();
-
-	/*! Set fluid inlet and outlet nodal conditions. */
-	void setNodalConditions(double mdot, double TInlet, double TOutlet);
-
-	/*! Function for retrieving heat fluxes out of the flow element.*/
-	void internalDerivatives(double *ydot);
-
-	/*! Reference to external heat loss in W */
-	const double*			m_externalHeatLoss = nullptr;
-
-	/*! mean fluid temperature in condenser [C] */
-	double					m_condenserMeanTemperature;
-
-	/*! carnot efficiency factor [-] */
-	double					m_carnotEfficiency;
-};
-
-
 
 
 } // namespace NANDRAD_MODEL
