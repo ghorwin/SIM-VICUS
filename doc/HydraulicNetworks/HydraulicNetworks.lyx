@@ -3232,7 +3232,10 @@ Dynamic pipe with heat exchange
 \noun off
 \color none
 
-\begin_inset Newline newline
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Dynamic-pipe-with"
+
 \end_inset
 
 
@@ -3269,9 +3272,9 @@ p_{in}-p_{out}=\Delta p(\dot{m},T_{in},l,d,k)
 \begin_layout Standard
 The heat exchange between each single volume and the ambient is 
 \begin_inset Formula 
-\[
-\dot{Q}_{loss,n}=dx\,UA_{pipe}\left(T_{amb}-T_{n}\right)
-\]
+\begin{equation}
+\dot{Q}_{loss,n}=dx\,UA_{pipe}\left(T_{amb}-T_{n}\right)\label{eq:Qloss_dynamic_pipe}
+\end{equation}
 
 \end_inset
 
@@ -3374,6 +3377,105 @@ The total heat flux to the ambient is
 \end_layout
 
 \begin_layout Subsection
+Ground heat exchanger pipe
+\end_layout
+
+\begin_layout Standard
+This model represents a number of 
+\begin_inset Formula $N_{parallel}$
+\end_inset
+
+ pipes, which are connected parallel and have identical pressure losses
+ and heat losses.
+ It aims modelling a common horizontal ground heat exchanger, where each
+ pipe has the same length and the same adjacent soil temperature.
+\end_layout
+
+\begin_layout Standard
+Hence, it is similar to 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "subsec:Dynamic-pipe-with"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, but with some modifications.
+ The pressure loss is considered as described in 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "subsec:General-Hydraulic-Pipe"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, however the fluid velocity is 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+v=\frac{\dot{m}}{\rho\frac{\pi}{4}d^{2}N_{parallel}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The heat exchange between pipe and soil is identical to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Qloss_dynamic_pipe"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, however the UA-Value for each pipe volume does not take into account an
+ exterior heat exchange coefficient: 
+\begin_inset Formula 
+\[
+UA_{pipe}=\frac{dx}{\frac{1}{h_{i}d}+U_{pipe}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Other than in 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "subsec:Dynamic-pipe-with"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, the total heat flux to the ambient is 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\dot{Q}_{loss}=N_{parallel}\sum_{k=1}^{n}\dot{Q}_{loss,k}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
 Pumps
 \end_layout
 
@@ -3462,7 +3564,7 @@ with
 \end_layout
 
 \begin_layout Subsection
-Heat Exchangers
+Heat Exchangers and Heat Pumps
 \end_layout
 
 \begin_layout Standard
@@ -3532,6 +3634,123 @@ reference "subsec:Element-with-external"
 plural "false"
 caps "false"
 noprefix "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Ideal heat pump based on carnot efficiency
+\end_layout
+
+\begin_layout Standard
+This model represents a heat pump with unlimited heating capacity.
+ The COP is calculated based on a constant carnot efficieny.
+\end_layout
+
+\begin_layout Standard
+The maximum possible COP of a heat pump according to Carnots theorem is
+ 
+\begin_inset Formula 
+\[
+COP_{max}=\frac{T_{cond,m}}{T_{cond,m}-T_{evap,m}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Hence, the actual COP of the heat pump can be described as 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+COP=\eta_{carnot}COP_{max}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $T_{cond,m}$
+\end_inset
+
+ is the average fluid temperature in the condenser in [C]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $T_{evap,m}$
+\end_inset
+
+ is the average fluid temperature in the evaporator in [C]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\eta_{carnot}$
+\end_inset
+
+ is the Carnot efficiency (a common value is 
+\begin_inset Formula $\eta_{carnot}=0.4$
+\end_inset
+
+) in [-]
+\end_layout
+
+\begin_layout Standard
+For a given condenser heat flux 
+\begin_inset Formula $\dot{Q}_{cond}$
+\end_inset
+
+, the model calculates the heat flux at the evaporator 
+\begin_inset Formula $\dot{Q}_{evap}$
+\end_inset
+
+ using
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\dot{Q}_{evap}=\dot{Q}_{cond}\frac{COP-1}{COP}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which is the heat loss of this element, as we assume the evaporator to exchange
+ heat with the network
+\begin_inset Formula 
+\[
+\dot{Q}_{loss}=\dot{Q}_{evap}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Futhermore, we can calculate the electrical energy demand 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P_{el}=\frac{\dot{Q}_{cond}}{COP}
+\]
 
 \end_inset
 
@@ -3924,10 +4143,6 @@ COP=c_{1}+c_{2}T_{in}+c_{3}T_{cond,out}+c_{4}T_{in}T_{cond,out}+c_{5}T_{in}^{2}+
 \end_inset
 
 
-\end_layout
-
-\begin_layout Subsection
-Soil Heat Collectors
 \end_layout
 
 \begin_layout Subsection
