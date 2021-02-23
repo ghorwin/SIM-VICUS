@@ -291,7 +291,8 @@ void SVDBScheduleEditWidget::on_tableWidgetPeriods_currentCellChanged(int curren
 	///TODO Stephan
 	//save information text in column at index 1 for data structure
 
-	//if
+	//if date is edited
+	//load date dialog and enter a date
 
 
 	m_rowIdx = currentRow;
