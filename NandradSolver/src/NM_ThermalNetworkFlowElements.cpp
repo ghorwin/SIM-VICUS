@@ -336,7 +336,10 @@ TNDynamicAdiabaticPipeElement::TNDynamicAdiabaticPipeElement(const NANDRAD::Hydr
 
 	// caluclate discretization
 	double minDiscLength = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_PipeMaxDiscretizationWidth].value;
-	IBK_ASSERT(minDiscLength <= length);
+	// in case given discretization length is larger than pipe length:
+	// set discretization length to pipe length, so we have just one volume
+	if (minDiscLength > length)
+		minDiscLength = length;
 
 	// claculte number of discretization elements
 	m_nVolumes = (unsigned int) (length/minDiscLength);
@@ -496,10 +499,10 @@ TNPumpWithPerformanceLoss::~TNPumpWithPerformanceLoss()
 
 }
 
-void TNPumpWithPerformanceLoss::setNodalConditions(double mdot, double hInlet, double hOutlet)
+void TNPumpWithPerformanceLoss::setNodalConditions(double mdot, double TInlet, double TOutlet)
 {
 	// copy pareameters
-	ThermalNetworkAbstractFlowElementWithHeatLoss::setNodalConditions(mdot, hInlet, hOutlet);
+	ThermalNetworkAbstractFlowElementWithHeatLoss::setNodalConditions(mdot, TInlet, TOutlet);
 	// calculate pump performance
 	double Pel = mdot * (*m_pressureHeadRef);
 	// calculate heat flux into fluid
@@ -552,5 +555,45 @@ void TNElementWithExternalHeatLoss::internalDerivatives(double * ydot)
 	ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(ydot);
 }
 
+
+
+// *** TNHeatPumpIdealCarnot ***
+
+TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(const NANDRAD::HydraulicNetworkComponent & comp,
+											 const NANDRAD::HydraulicFluid & fluid,
+											 const double &heatFluxExtern)
+{
+	m_fluidVolume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
+	m_condenserMeanTemperature = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_CondenserMeanTemperature].value;
+	m_carnotEfficiency = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiencyFactor].value;
+
+	// copy fluid properties
+	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
+	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+
+	// set reference to external heat loss
+	m_externalHeatLoss = &heatFluxExtern;
+}
+
+TNHeatPumpIdealCarnot::~TNHeatPumpIdealCarnot()
+{
+
+}
+
+void TNHeatPumpIdealCarnot::setNodalConditions(double mdot, double TInlet, double TOutlet)
+{
+	// TODO Hauke: use mean evaporator temperature instead of evaporator inlet temperature?
+	const double COPMax = m_condenserMeanTemperature / (m_condenserMeanTemperature - TInlet);
+	const double COP = m_carnotEfficiency * COPMax;
+	m_heatLoss = *m_externalHeatLoss * (COP - 1)/COP;
+}
+
+void TNHeatPumpIdealCarnot::internalDerivatives(double * ydot)
+{
+	// set heat loss
+	m_heatLoss = *m_externalHeatLoss;
+	// use basic routine
+	ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(ydot);
+}
 
 } // namespace NANDRAD_MODEL

@@ -74,39 +74,34 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 		switch (modelType) {
 			case MT_ConstantPressurePump:
 				return {P_PressureHead};
-			case MT_HeatPump:
-				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_COP};
+			case MT_HeatPumpIdealCarnot:
+				return {P_PressureLossCoefficient, P_HydraulicDiameter};
 			case MT_HeatExchanger:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter};
 			case MT_DynamicPipe:
 				return {P_PipeMaxDiscretizationWidth};
-			default:
+			case MT_StaticPipe:
+				return {};
+			case NUM_MT:
 				return {};
 		}
 	}
-	// Therm-Hydraulic network with heat exchange
+	// Thermo-Hydraulic network with heat exchange
 	else {
 		switch (modelType) {
-			case MT_ConstantPressurePump: {
-				switch(heatExchangeType) {
-					case HT_HeatFluxConstant:
-					case HT_HeatFluxDataFile:
-						return {P_PressureHead, P_Volume};
-					default:
-						return {P_PressureHead, P_PumpEfficiency, P_MotorEfficiency, P_Volume};
-				}
-			}
-			case MT_HeatPump:
-				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_COP, P_Volume};
+			case MT_ConstantPressurePump:
+				return {P_PressureHead, P_PumpEfficiency, P_MotorEfficiency, P_Volume};
+			case MT_HeatPumpIdealCarnot:
+				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
 			case MT_HeatExchanger:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
 			case MT_DynamicPipe: {
 				switch(heatExchangeType) {
-						return {P_PipeMaxDiscretizationWidth};
 					case HT_HeatFluxConstant:
 					case HT_HeatFluxDataFile:
-						return {};
-					default:
+						return {P_PipeMaxDiscretizationWidth};
+					case HT_TemperatureConstant:
+					case HT_TemperatureDataFile:
 						return {P_PipeMaxDiscretizationWidth, P_ExternalHeatTransferCoefficient};
 				}
 			}
@@ -115,11 +110,12 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 					case HT_HeatFluxConstant:
 					case HT_HeatFluxDataFile:
 						return {};
-					default:
+					case HT_TemperatureConstant:
+					case HT_TemperatureDataFile:
 						return {P_ExternalHeatTransferCoefficient};
 				}
 			}
-			default:
+			case NUM_MT:
 				return {};
 		}
 	}
@@ -138,8 +134,7 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 		case P_ExternalHeatTransferCoefficient:
 		case P_Volume:
 		case P_UAValue:
-		case P_PipeMaxDiscretizationWidth:
-		case P_COP:{
+		case P_PipeMaxDiscretizationWidth:{
 			para.checkedValue(name, unit, unit, 0, false, std::numeric_limits<double>::max(), true, nullptr);
 			break;
 		}

@@ -163,7 +163,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 					}
 				} break;
 
-				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump : {
+				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump :
+				{
 					if (e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::NUM_HT){
 						// create general adiabatic model
 						TNAdiabaticElement * element = new TNAdiabaticElement(m_network->m_fluid,
@@ -193,7 +194,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 					}
 				} break;
 
-				default: {
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
+				{
 					// only heat flux models sare supported at the moment
 					if (e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant ||
 						e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile) {
@@ -222,6 +224,18 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 									FUNC_ID);
 					}
 				} break;
+
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot :
+				{
+					// create general model with given heat flux
+					TNElementWithExternalHeatLoss * element = new TNElementWithExternalHeatLoss(m_network->m_fluid,
+																	e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value,
+																	heatExchangeValue);
+					// add to flow elements
+					m_p->m_flowElements.push_back(element); // transfer ownership
+					m_p->m_heatLossElements.push_back(element); // copy of pointer
+				}
+				break;
 			}
 
 			// retrieve component

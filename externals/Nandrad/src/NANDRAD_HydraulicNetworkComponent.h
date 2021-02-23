@@ -24,7 +24,7 @@ public:
 
 		// models below not supported yet
 
-		MT_HeatPump,						// Keyword: HeatPump					'Heat pump'
+		MT_HeatPumpIdealCarnot,				// Keyword: HeatPumpIdealCarnot			'Heat pump with unlimited heating power and constant carnot efficiency'
 //		MT_GasBoiler,						// xKeyword: GasBoiler					'Gas boiler'
 //		MT_ControlValve,					// xKeyword: ControlValve				'Control valve'
 //		MT_WaterStorage,					// xKeyword: WaterStorage				'Water storage'
@@ -44,9 +44,10 @@ public:
 		P_PumpEfficiency,					// Keyword: PumpEfficiency						[---]	'Pump efficiency.'
 		P_MotorEfficiency,					// Keyword: MotorEfficiency						[---]	'Motor efficiency for a pump.'
 		P_Volume,							// Keyword: Volume								[m3]	'Water or air volume of the component.'
-		P_COP,								// Keyword: COP									[-]		'Coefficient of performance of the component.'
 		P_UAValue,							// Keyword: UAValue								[W/m2K]	'UA-Value of heat exchanger'
 		P_PipeMaxDiscretizationWidth,		// Keyword: PipeMaxDiscretizationWidth			[m]		'Maximum width of discretized volumes in pipe'
+		P_CarnotEfficiencyFactor,			// Keyword: CarnotEfficiencyFactor				[---]	'Carnot efficiency'
+		P_CondenserMeanTemperature,			// Keyword: CondenserMeanTemperature			[C]		'Mean fluid temperature in condenser'
 
 // we can add those, once we know what to do with them
 
@@ -113,7 +114,7 @@ public:
 				return {HT_TemperatureConstant, HT_TemperatureDataFile, HT_HeatFluxConstant, HT_HeatFluxDataFile};
 			case MT_DynamicPipe:
 				return {HT_TemperatureConstant, HT_TemperatureDataFile, HT_HeatFluxConstant, HT_HeatFluxDataFile};
-			case MT_HeatPump:
+			case MT_HeatPumpIdealCarnot:
 			case MT_HeatExchanger:
 				return {HT_HeatFluxConstant, HT_HeatFluxDataFile};
 			case NUM_MT:

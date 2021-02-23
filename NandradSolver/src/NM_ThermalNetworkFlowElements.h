@@ -211,7 +211,7 @@ public:
 	void internalDerivatives(double *ydot);
 
 	/*! Set fluid inlet and outlet nodal conditions. */
-	void setNodalConditions(double mdot, double hInlet, double hOutlet);
+	void setNodalConditions(double mdot, double TInlet, double TOutlet);
 
 	/*! Function for registering dependencies between derivaites, internal states and modelinputs.*/
 	void dependencies(const double *ydot, const double *y,
@@ -249,7 +249,7 @@ public:
 	~TNPumpWithPerformanceLoss();
 
 	/*! Set fluid inlet and outlet nodal conditions. */
-	void setNodalConditions(double mdot, double hInlet, double hOutlet);
+	void setNodalConditions(double mdot, double TInlet, double TOutlet);
 
 private:
 	/*! Reference to pressure head */
@@ -263,7 +263,7 @@ private:
 };
 
 
-// **** General adiabativ element ***
+// **** General adiabatic element ***
 
 class TNAdiabaticElement : public ThermalNetworkAbstractFlowElement { // NO KEYWORDS
 public:
@@ -303,6 +303,37 @@ public:
 };
 
 
+
+
+// **** TNHeatPumpIdealCarnot ***
+
+class TNHeatPumpIdealCarnot : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
+public:
+	TNHeatPumpIdealCarnot() { }
+
+	/*! C'tor, takes and caches parameters needed for function evaluation. */
+	TNHeatPumpIdealCarnot(const NANDRAD::HydraulicNetworkComponent & comp,
+						const NANDRAD::HydraulicFluid & fluid,
+						const double &heatFluxExtern);
+
+	/*! D'tor, definition is in NM_HydraulicNetworkFlowElements.cpp. */
+	~TNHeatPumpIdealCarnot();
+
+	/*! Set fluid inlet and outlet nodal conditions. */
+	void setNodalConditions(double mdot, double TInlet, double TOutlet);
+
+	/*! Function for retrieving heat fluxes out of the flow element.*/
+	void internalDerivatives(double *ydot);
+
+	/*! Reference to external heat loss in W */
+	const double*			m_externalHeatLoss = nullptr;
+
+	/*! mean fluid temperature in condenser [C] */
+	double					m_condenserMeanTemperature;
+
+	/*! carnot efficiency factor [-] */
+	double					m_carnotEfficiency;
+};
 
 
 } // namespace NANDRAD_MODEL

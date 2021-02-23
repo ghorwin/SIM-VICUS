@@ -207,7 +207,7 @@ void HydraulicNetworkModel::setup() {
 				m_p->m_flowElements.push_back(hxElement); // transfer ownership
 			} break;
 
-			case NANDRAD::HydraulicNetworkComponent::MT_HeatPump : {
+			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot : {
 				throw IBK::Exception(IBK::FormatString("Model type '%1' for HydraulicNetworkComponent "
 									 "with id %2 is still not supported")
 									.arg(NANDRAD::KeywordList::Keyword(
