@@ -547,11 +547,36 @@
            </layout>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton">
-            <property name="text">
-             <string>Copy Surfaces</string>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <widget class="QPushButton" name="pushButtonCopySurfaces">
+              <property name="text">
+               <string>Copy Surfaces</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushCopyRooms">
+              <property name="text">
+               <string>Copy Rooms</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonCopyBuildingLvls">
+              <property name="text">
+               <string>Copy Building Levels</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonCopyBuilding">
+              <property name="text">
+               <string>Copy Building</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
