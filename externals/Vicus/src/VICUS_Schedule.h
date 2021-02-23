@@ -19,6 +19,7 @@
 namespace VICUS {
 
 /*! Describes the course of a *single* scheduled quantity (basically a value over time data set).
+ *  This schedule does not have a unit.
 */
 class Schedule : public AbstractDBElement {
 public:
