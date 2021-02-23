@@ -18,7 +18,6 @@ public:
 	/*! The various types (equations) of the hydraulic component. */
 	enum ModelType {
 		MT_SimplePipe,						// Keyword: SimplePipe					'Pipe with a single fluid volume and with heat exchange'
-		MT_StaticPipe,						// Keyword: StaticPipe					'Pipe at stationary flow conditions with heat exchange'
 		MT_DynamicPipe,						// Keyword: DynamicPipe					'Pipe with a discretized fluid volume and heat exchange'
 		MT_ConstantPressurePump,			// Keyword: ConstantPressurePump		'Pump with constant pressure'
 		MT_HeatExchanger,					// Keyword: HeatExchanger				'Simple heat exchanger with given heat flux'
@@ -38,13 +37,13 @@ public:
 
 	/*! Parameters for the component. */
 	enum para_t {
-		P_HydraulicDiameter,				// Keyword: HydraulicDiameter					[mm]	'Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes).'
-		P_PressureLossCoefficient,			// Keyword: PressureLossCoefficient				[-]		'Pressure loss coefficient for the component (zeta-value).'
-		P_ExternalHeatTransferCoefficient,	// Keyword: ExternalHeatTransferCoefficient		[W/m2K]	'External heat transfer coeffient for the outside boundary.'
-		P_PressureHead,						// Keyword: PressureHead						[Pa]	'Pressure head form a pump.'
-		P_PumpEfficiency,					// Keyword: PumpEfficiency						[---]	'Pump efficiency.'
-		P_MotorEfficiency,					// Keyword: MotorEfficiency						[---]	'Motor efficiency for a pump.'
-		P_Volume,							// Keyword: Volume								[m3]	'Water or air volume of the component.'
+		P_HydraulicDiameter,				// Keyword: HydraulicDiameter					[mm]	'Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)'
+		P_PressureLossCoefficient,			// Keyword: PressureLossCoefficient				[-]		'Pressure loss coefficient for the component (zeta-value)'
+		P_ExternalHeatTransferCoefficient,	// Keyword: ExternalHeatTransferCoefficient		[W/m2K]	'External heat transfer coeffient for the outside boundary'
+		P_PressureHead,						// Keyword: PressureHead						[Pa]	'Pressure head form a pump'
+		P_PumpEfficiency,					// Keyword: PumpEfficiency						[---]	'Pump efficiency'
+		P_MotorEfficiency,					// Keyword: MotorEfficiency						[---]	'Motor efficiency for a pump'
+		P_Volume,							// Keyword: Volume								[m3]	'Water or air volume of the component'
 		P_UAValue,							// Keyword: UAValue								[W/m2K]	'UA-Value of heat exchanger'
 		P_PipeMaxDiscretizationWidth,		// Keyword: PipeMaxDiscretizationWidth			[m]		'Maximum width of discretized volumes in pipe'
 		P_CarnotEfficiency,					// Keyword: CarnotEfficiency					[---]	'Carnot efficiency'
@@ -52,12 +51,12 @@ public:
 
 // we can add those, once we know what to do with them
 
-//		P_TemperatureTolerance,				// xKxeyword: TemperatureTolerance				[K]		'Temperature tolerance for e.g. thermostats.'
-//		P_RatedHeatingCapacity,				// xKxeyword: RatedHeatingCapacity				[W]		'Rated heating capacity of the component.'
-//		P_RatedCoolingCapacity,				// xKxeyword: RatedCoolingCapacity				[W]		'Rated Cooling capacity of the component.'
-//		P_AuxiliaryPower,					// xKxeyword: AuxiliaryPower						[W]		'Auxiliary power of the component.'
-//		P_ConvectiveFraction,				// xKxeyword: ConvectiveFraction					[---]	'Convective fraction for heating or cooling.'
-//		P_ExternalSurfaceArea,				// xKxeyword: ExternalSurfaceArea					[m2]	'External surface area of the component.'
+//		P_TemperatureTolerance,				// xKxeyword: TemperatureTolerance				[K]		'Temperature tolerance for e.g. thermostats'
+//		P_RatedHeatingCapacity,				// xKxeyword: RatedHeatingCapacity				[W]		'Rated heating capacity of the component'
+//		P_RatedCoolingCapacity,				// xKxeyword: RatedCoolingCapacity				[W]		'Rated Cooling capacity of the component'
+//		P_AuxiliaryPower,					// xKxeyword: AuxiliaryPower						[W]		'Auxiliary power of the component'
+//		P_ConvectiveFraction,				// xKxeyword: ConvectiveFraction					[---]	'Convective fraction for heating or cooling'
+//		P_ExternalSurfaceArea,				// xKxeyword: ExternalSurfaceArea					[m2]	'External surface area of the component'
 
 		NUM_P
 	};
@@ -112,7 +111,6 @@ public:
 			case MT_ConstantPressurePump:
 				return {HT_HeatFluxConstant, HT_HeatFluxDataFile};
 			case MT_SimplePipe:
-			case MT_StaticPipe:
 				return {HT_TemperatureConstant, HT_TemperatureDataFile, HT_HeatFluxConstant, HT_HeatFluxDataFile};
 			case MT_DynamicPipe:
 				return {HT_TemperatureConstant, HT_TemperatureDataFile, HT_HeatFluxConstant, HT_HeatFluxDataFile};

@@ -24,7 +24,7 @@ public:
 
 	/*! The various types (equations) of the hydraulic component. */
 	enum ModelType {
-		MT_StaticPipe,						// Keyword: StaticPipe					'Simple pipe at stationary flow conditions with heat exchange'
+		MT_SimplePipe,						// Keyword: SimplePipe					'Simple pipe at stationary flow conditions with heat exchange'
 		MT_DynamicPipe,						// Keyword: DynamicPipe					'Pipe with a discretized fluid volume and heat exchange'
 		MT_ConstantPressurePump,			// Keyword: ConstantPressurePump		'Pump with constant pressure'
 		MT_HeatExchanger,					// Keyword: HeatExchanger				'Simple heat exchanger with given heat flux'
@@ -94,7 +94,7 @@ public:
 	unsigned int					m_id				= VICUS::INVALID_ID;			// XML:A:required
 
 	/*! Model type. */
-	ModelType						m_modelType			= MT_StaticPipe;				// XML:A:required
+	ModelType						m_modelType			= MT_SimplePipe;				// XML:A:required
 
 	/*! Type of interface to external data or model */
 	HeatExchangeType				m_heatExchangeType	= NUM_HT;						// XML:E

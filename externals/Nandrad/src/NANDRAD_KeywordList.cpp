@@ -162,7 +162,7 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::ModelType
 			case 7 :
 			switch (t) {
-				case 0 : return "StaticPipe";
+				case 0 : return "SimplePipe";
 				case 1 : return "DynamicPipe";
 				case 2 : return "ConstantPressurePump";
 				case 3 : return "HeatExchanger";
@@ -636,7 +636,7 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::ModelType
 			case 7 :
 			switch (t) {
-				case 0 : return "StaticPipe";
+				case 0 : return "SimplePipe";
 				case 1 : return "DynamicPipe";
 				case 2 : return "ConstantPressurePump";
 				case 3 : return "HeatExchanger";
@@ -1111,7 +1111,7 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::ModelType
 			case 7 :
 			switch (t) {
-				case 0 : return "Simple pipe at stationary flow conditions with heat exchange";
+				case 0 : return "Pipe with a single fluid volume and with heat exchange";
 				case 1 : return "Pipe with a discretized fluid volume and heat exchange";
 				case 2 : return "Pump with constant pressure";
 				case 3 : return "Simple heat exchanger with given heat flux";

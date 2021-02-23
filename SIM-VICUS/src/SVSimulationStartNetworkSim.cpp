@@ -379,7 +379,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 
 		// check if the component has a model type which corresponds to a pipe
 		const VICUS::NetworkComponent *comp = db.m_networkComponents[edge->m_componentId];
-		if ( ! (comp->m_modelType == VICUS::NetworkComponent ::MT_StaticPipe ||
+		if ( ! (comp->m_modelType == VICUS::NetworkComponent ::MT_SimplePipe ||
 				comp->m_modelType == VICUS::NetworkComponent ::MT_DynamicPipe) )
 			throw IBK::Exception(IBK::FormatString("Component of edge %1->%2 does not represent a pipe")
 													.arg(edge->nodeId1()).arg(edge->nodeId2()), FUNC_ID);

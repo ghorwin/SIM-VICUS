@@ -34,6 +34,7 @@ double  HNPipeElement::systemFunction(double mdot, double p_inlet, double p_outl
 	return p_inlet - p_outlet - pressureLossFriction(mdot);	// this is the system function
 }
 
+
 void HNPipeElement::partials(double mdot, double p_inlet, double p_outlet,
 							 double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
 {
@@ -48,9 +49,11 @@ void HNPipeElement::partials(double mdot, double p_inlet, double p_outlet,
 	df_dmdot = (f_eps - f)/EPS;
 }
 
+
 void HNPipeElement::setFluidTemperature(double fluidTemp) {
 	m_fluidTemperature = fluidTemp;
 }
+
 
 double HNPipeElement::pressureLossFriction(const double &mdot) const {
 	// for negative mass flow: Reynolds number is positive, velocity and pressure loss are negative
@@ -73,6 +76,7 @@ HNFixedPressureLossCoeffElement::HNFixedPressureLossCoeffElement(const NANDRAD::
 	m_diameter = component.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].value;
 }
 
+
 double HNFixedPressureLossCoeffElement::systemFunction(double mdot, double p_inlet, double p_outlet) const {
 	// for negative mass flow: dp is negative
 	double area = PI / 4 * m_diameter * m_diameter;
@@ -80,6 +84,7 @@ double HNFixedPressureLossCoeffElement::systemFunction(double mdot, double p_inl
 	double dp = m_zeta * m_fluidDensity / 2 * std::abs(velocity) * velocity;
 	return p_inlet - p_outlet - dp;
 }
+
 
 void HNFixedPressureLossCoeffElement::partials(double mdot, double p_inlet, double p_outlet,
 							 double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
@@ -102,9 +107,11 @@ HNConstantPressurePump::HNConstantPressurePump(const NANDRAD::HydraulicNetworkCo
 	m_pressureHead = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value;
 }
 
+
 double HNConstantPressurePump::systemFunction(double /*mdot*/, double p_inlet, double p_outlet) const {
 	return p_inlet - p_outlet + m_pressureHead;
 }
+
 
 void HNConstantPressurePump::partials(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/,
 							 double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const

@@ -181,7 +181,7 @@ void HydraulicNetworkModel::setup() {
 		IBK_ASSERT(e.m_component != nullptr);
 
 		switch (e.m_component->m_modelType) {
-			case NANDRAD::HydraulicNetworkComponent::MT_StaticPipe:
+			case NANDRAD::HydraulicNetworkComponent::MT_SimplePipe :
 			case NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe :
 			{
 				IBK_ASSERT(e.m_pipeProperties != nullptr);
@@ -232,13 +232,6 @@ void HydraulicNetworkModel::setup() {
 		for (HydraulicNetworkAbstractFlowElement * e : m_p->m_flowElements)
 			e->setFluidTemperature(fluidTemp);
 	}
-	else {
-		// TODO : Anne, brauchen wir hier wirklich eine Initialisierung? Die Temperatur wird doch vor der Berechnung
-		//        immer gesetzt?
-		double fluidTemp = m_hydraulicNetwork->m_para[NANDRAD::HydraulicNetwork::P_InitialFluidTemperature].value;
-		for (HydraulicNetworkAbstractFlowElement * e : m_p->m_flowElements)
-			e->setFluidTemperature(fluidTemp);
-	}
 
 	// set reference pressure
 	m_p->m_referencePressure = m_hydraulicNetwork->m_para[NANDRAD::HydraulicNetwork::P_ReferencePressure].value;
@@ -267,8 +260,7 @@ void HydraulicNetworkModel::resultDescriptions(std::vector<QuantityDescription> 
 	desc.m_name = "FluidMassFlux";
 	desc.m_description = "Fluid mass flux through a flow element";
 
-	// Important: change reftype to MRT_NETWORKELEMENT, because it otherwise defaults to the reftype of this
-	//            object.
+	// Important: change reftype to MRT_NETWORKELEMENT, because it otherwise defaults to the reftype of this object.
 	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	// loop through all flow elements
 	for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
@@ -279,8 +271,7 @@ void HydraulicNetworkModel::resultDescriptions(std::vector<QuantityDescription> 
 
 	// inlet node pressure vector is a result
 	desc = QuantityDescription("InletNodePressure", "Pa", "Fluid pressure at inlet node of a flow element", false);
-	// Important: change reftype to MRT_NETWORKELEMENT, because it otherwise defaults to the reftype of this
-	//            object.
+	// Important: change reftype to MRT_NETWORKELEMENT, because it otherwise defaults to the reftype of this object.
 	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	// loop through all flow elements
 	for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
@@ -291,8 +282,7 @@ void HydraulicNetworkModel::resultDescriptions(std::vector<QuantityDescription> 
 
 	// outlet node pressure vector is a result
 	desc = QuantityDescription("OutletNodePressure", "Pa", "Fluid pressure at outlet node of a flow element", false);
-	// Important: change reftype to MRT_NETWORKELEMENT, because it otherwise defaults to the reftype of this
-	//            object.
+	// Important: change reftype to MRT_NETWORKELEMENT, because it otherwise defaults to the reftype of this object.
 	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	// loop through all flow elements
 	for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
@@ -372,7 +362,9 @@ void HydraulicNetworkModel::inputReferences(std::vector<InputReference> & inputR
 }
 
 
-void HydraulicNetworkModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/, const std::vector<const double *> & resultValueRefs) {
+void HydraulicNetworkModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
+											  const std::vector<const double *> & resultValueRefs)
+{
 	if (resultValueRefs.size() == m_elementIds.size()) {
 		// copy references into fluid temperature vector
 		for(const double* resRef : resultValueRefs)

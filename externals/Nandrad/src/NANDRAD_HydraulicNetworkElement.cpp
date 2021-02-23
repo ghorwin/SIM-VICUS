@@ -38,7 +38,6 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 	// search for all hydraulic parameters
 	switch (m_component->m_modelType) {
 		case HydraulicNetworkComponent::MT_SimplePipe:
-		case HydraulicNetworkComponent::MT_StaticPipe:
 		case HydraulicNetworkComponent::MT_DynamicPipe : {
 			// retrieve pipe properties
 			if(m_pipePropertiesId == INVALID_ID) {

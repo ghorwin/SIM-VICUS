@@ -41,7 +41,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Default temperature for HydraulicNetwork models");
 	tr("Initial temperature of the fluid");
 	tr("Reference pressure of network");
-	tr("Simple pipe at stationary flow conditions with heat exchange");
+	tr("Pipe with a single fluid volume and with heat exchange");
 	tr("Pipe with a discretized fluid volume and heat exchange");
 	tr("Pump with constant pressure");
 	tr("Simple heat exchanger with given heat flux");

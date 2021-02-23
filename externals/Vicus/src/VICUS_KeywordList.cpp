@@ -192,7 +192,7 @@ namespace VICUS {
 			// NetworkComponent::ModelType
 			case 10 :
 			switch (t) {
-				case 0 : return "StaticPipe";
+				case 0 : return "SimplePipe";
 				case 1 : return "DynamicPipe";
 				case 2 : return "ConstantPressurePump";
 				case 3 : return "HeatExchanger";
@@ -448,7 +448,7 @@ namespace VICUS {
 			// NetworkComponent::ModelType
 			case 10 :
 			switch (t) {
-				case 0 : return "StaticPipe";
+				case 0 : return "SimplePipe";
 				case 1 : return "DynamicPipe";
 				case 2 : return "ConstantPressurePump";
 				case 3 : return "HeatExchanger";

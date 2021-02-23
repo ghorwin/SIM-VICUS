@@ -48,7 +48,7 @@ private:
 	double							m_roughness;
 
 	/*! Fluid temperature [K], will be updated in each call to setFluidTemperature(). */
-	double							m_fluidTemperature = 293.15;
+	double							m_fluidTemperature = -999;
 
 }; // HNPipeElement
 
@@ -70,13 +70,13 @@ public:
 
 private:
 	/*! Cached fluid density [kg/m3] */
-	double							m_fluidDensity;
+	double							m_fluidDensity = -999;
 
 	/*! The pressure loss coefficient [-] */
-	double							m_zeta;
+	double							m_zeta = -999;
 
 	/*! Effective hydraulic (inner) diameter of pipe in [m] */
-	double							m_diameter;
+	double							m_diameter = -999;
 
 }; // HNFixedPressureLossCoeffElement
 
@@ -95,7 +95,7 @@ public:
 
 private:
 	/*! Constant pressure head [Pa] to be added. */
-	double							m_pressureHead;
+	double							m_pressureHead = -999;
 
 }; // HNConstantPressurePump
 

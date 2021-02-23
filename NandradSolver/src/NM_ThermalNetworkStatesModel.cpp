@@ -136,47 +136,6 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 					}
 				} break;
 
-				case NANDRAD::HydraulicNetworkComponent::MT_StaticPipe :
-				{
-					IBK_ASSERT(e.m_pipeProperties != nullptr);
-					// craete adiabatic pipe model
-					if(e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::NUM_HT) {
-						// set a small fluid volume
-						// TODO : check this!
-						double volume = 0.01;
-						// create pipe model with given heat flux
-						TNAdiabaticElement * pipeElement = new TNAdiabaticElement(
-															m_network->m_fluid,
-															volume);
-						// add to flow elements
-						m_p->m_flowElements.push_back(pipeElement); // transfer ownership
-						m_p->m_heatLossElements.push_back(nullptr); // no heat loss
-					}
-					else if (e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant ||
-							 e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile)
-					{
-						// set a small fluid volume
-						// TODO : check this!
-						double volume = 0.01;
-
-						// create pipe model with given heat flux
-						TNElementWithExternalHeatLoss * pipeElement = new TNElementWithExternalHeatLoss(
-																			m_network->m_fluid,
-																			volume, heatExchangeValue);
-						// add to flow elements
-						m_p->m_flowElements.push_back(pipeElement); // transfer ownership
-						m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
-					}
-					// HT_TemperatureConstant, HT_TemperatureDataFile, HT_HeatExchangeWithZoneTemperature
-					else {
-						// create pipe model with heat exchange
-						TNStaticPipeElement * pipeElement = new TNStaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid,
-																					heatExchangeValue);
-						// add to flow elements
-						m_p->m_flowElements.push_back(pipeElement); // transfer ownership
-						m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
-					}
-				} break;
 
 				case NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe :
 				{
