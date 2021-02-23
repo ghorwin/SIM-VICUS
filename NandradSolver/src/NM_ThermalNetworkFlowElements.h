@@ -16,6 +16,53 @@ namespace NANDRAD {
 
 namespace NANDRAD_MODEL {
 
+// **** Pipe with single fluid volume***
+
+/*! Instantiated for SimplePipe elements with HeatExchangeType set. */
+class TNSimplePipeElement : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
+public:
+	/*! C'tor, takes and caches parameters needed for function evaluation. */
+	TNSimplePipeElement(const NANDRAD::HydraulicNetworkElement & elem,
+				  const NANDRAD::HydraulicNetworkComponent & comp,
+				  const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
+				  const NANDRAD::HydraulicFluid & fluid,
+				  const double &TExt);
+
+	/*! Overloaded from ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
+	void setInflowTemperature(double Tinflow) override;
+
+private:
+
+	/*! pipe length in [m] */
+	double							m_length;
+
+	/*! hydraulic (inner) diameter of pipe in [m] */
+	double							m_innerDiameter;
+
+	/*! outer diameter of pipe in [m] */
+	double							m_outerDiameter;
+
+	/*! Fluid conductivity [W/mK].
+		Cached value from fluid properties.
+	*/
+	double							m_fluidConductivity = 0.01;
+
+	/*! Fluid dynamic viscosity [m/s] (temperature dependend).*/
+	IBK::LinearSpline				m_fluidViscosity;
+
+	/*! Equivalent u-value of the pipe wall and insulation per length of pipe in [W/mK] */
+	double							m_UValuePipeWall;
+
+	/*! Heat transfer coefficient from outer pipe wall to environment in [W/m2K] */
+	double							m_outerHeatTransferCoefficient;
+
+	/*! Reference to external temperature in K */
+	const double*					m_externalTemperatureRef = nullptr;
+
+};
+
+
+
 // **** Static Pipe ***
 
 /*! Instantiated for StaticPipe elements with HeatExchangeType set. */
@@ -60,21 +107,6 @@ private:
 	const double*					m_externalTemperatureRef = nullptr;
 
 };
-
-
-
-// **** Static Adiabatic Pipe ***
-
-/*! Instantiated for StaticPipe elements without HeatExchangeType set. */
-class TNStaticAdiabaticPipeElement : public ThermalNetworkAbstractFlowElement { // NO KEYWORDS
-public:
-	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	TNStaticAdiabaticPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
-				  const NANDRAD::HydraulicNetworkComponent & comp,
-				  const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
-				  const NANDRAD::HydraulicFluid & fluid);
-};
-
 
 
 // **** Dynamic Pipe ***
@@ -165,6 +197,7 @@ private:
 
 // **** Dynamic Adiabatic Pipe ***
 
+/*! Instantiated for DynamicPipe elements without HeatExchangeType. */
 class TNDynamicAdiabaticPipeElement : public ThermalNetworkAbstractFlowElement { // NO KEYWORDS
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */

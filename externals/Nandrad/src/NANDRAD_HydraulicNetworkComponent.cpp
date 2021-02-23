@@ -80,6 +80,7 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 				return {P_PressureLossCoefficient, P_HydraulicDiameter};
 			case MT_DynamicPipe:
 				return {P_PipeMaxDiscretizationWidth};
+			case MT_SimplePipe:
 			case MT_StaticPipe:
 				return {};
 			case NUM_MT:
@@ -105,6 +106,7 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 						return {P_PipeMaxDiscretizationWidth, P_ExternalHeatTransferCoefficient};
 				}
 			}
+			case MT_SimplePipe:
 			case MT_StaticPipe: {
 				switch(heatExchangeType) {
 					case HT_HeatFluxConstant:

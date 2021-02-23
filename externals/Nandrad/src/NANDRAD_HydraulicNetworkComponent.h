@@ -17,7 +17,8 @@ public:
 
 	/*! The various types (equations) of the hydraulic component. */
 	enum ModelType {
-		MT_StaticPipe,						// Keyword: StaticPipe					'Simple pipe at stationary flow conditions with heat exchange'
+		MT_SimplePipe,						// Keyword: SimplePipe					'Pipe with a single fluid volume and with heat exchange'
+		MT_StaticPipe,						// Keyword: StaticPipe					'Pipe at stationary flow conditions with heat exchange'
 		MT_DynamicPipe,						// Keyword: DynamicPipe					'Pipe with a discretized fluid volume and heat exchange'
 		MT_ConstantPressurePump,			// Keyword: ConstantPressurePump		'Pump with constant pressure'
 		MT_HeatExchanger,					// Keyword: HeatExchanger				'Simple heat exchanger with given heat flux'
@@ -110,6 +111,7 @@ public:
 		switch (modelType) {
 			case MT_ConstantPressurePump:
 				return {HT_HeatFluxConstant, HT_HeatFluxDataFile};
+			case MT_SimplePipe:
 			case MT_StaticPipe:
 				return {HT_TemperatureConstant, HT_TemperatureDataFile, HT_HeatFluxConstant, HT_HeatFluxDataFile};
 			case MT_DynamicPipe:
