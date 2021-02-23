@@ -6,7 +6,7 @@
 
 #include "SVUndoCommandBase.h"
 
-/*! Undo action for adding a new or copied zone/room to an existing building level. */
+/*! Undo action for adding a vector with copied zones/rooms to an existing building level. */
 class SVUndoCopyZone : public SVUndoCommandBase {
 	Q_DECLARE_TR_FUNCTIONS(SVUndoCopyZone)
 public:
