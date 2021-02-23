@@ -401,7 +401,6 @@ int HydraulicNetworkModel::update() {
 
 	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
 		// set all fluid temperatures
-		unsigned int count = 0;
 		for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
 			HydraulicNetworkAbstractFlowElement *fe = m_p->m_flowElements[i];
 			fe->setFluidTemperature(*m_fluidTemperatureRefs[i]);
@@ -415,8 +414,10 @@ int HydraulicNetworkModel::update() {
 		// TODO : check input ref values vs. old input ref values - no change, no recomputation needed
 		int res = m_p->solve();
 		// signal an error
-		if(res != 0)
+		if (res != 0) {
+			IBK_FastMessage(IBK::VL_DETAILED)("Network solver returned recoverable error.", IBK::MSG_ERROR, FUNC_ID, IBK::VL_DETAILED);
 			return res;
+		}
 
 		// TODO : add support for return values (e.g. recoverable convergence errors)
 	}
@@ -674,6 +675,8 @@ void HydraulicNetworkModelImpl::writeNetworkGraph() const {
 
 
 int HydraulicNetworkModelImpl::solve() {
+	FUNCID(HydraulicNetworkModelImpl::solve);
+
 	unsigned int n = m_nodeCount + m_elementCount;
 
 	std::vector<double> rhs(n);
@@ -702,8 +705,10 @@ int HydraulicNetworkModelImpl::solve() {
 		// error signaled:
 		// may be result of a diverging Newton iteration
 		// -> regsiter a recoverable error and allow a retry
-		if(res != 0)
+		if (res != 0) {
+			IBK_FastMessage(IBK::VL_DETAILED)("Error during Jacobian setup.", IBK::MSG_ERROR, FUNC_ID, IBK::VL_DETAILED);
 			return 1;
+		}
 
 //		std::cout << "\n\n*** Iter " << 100-iterations  << std::endl;
 
@@ -717,8 +722,10 @@ int HydraulicNetworkModelImpl::solve() {
 		// now solve the equation system
 		res = jacobianBacksolve(rhs);
 		// backsolving problems imply coarse structural errors
-		if(res != 0)
+		if (res != 0) {
+			IBK_FastMessage(IBK::VL_DETAILED)("Error solving equation system.", IBK::MSG_ERROR, FUNC_ID, IBK::VL_DETAILED);
 			return 2;
+		}
 
 //		std::cout << "deltaY" << std::endl;
 //		for (unsigned int i=0; i<n; ++i)
@@ -768,8 +775,10 @@ int HydraulicNetworkModelImpl::solve() {
 		return 0;
 	// we register a recoverable error if the system did not converge
 	// (and allow a retry with a new guess)
-	else
+	else {
+		IBK_FastMessage(IBK::VL_DETAILED)("Not converged within given number of iterations.", IBK::MSG_ERROR, FUNC_ID, IBK::VL_DETAILED);
 		return 1;
+	}
 
 }
 
