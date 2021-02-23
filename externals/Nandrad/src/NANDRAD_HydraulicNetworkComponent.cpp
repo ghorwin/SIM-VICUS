@@ -115,10 +115,10 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 						return {P_ExternalHeatTransferCoefficient};
 				}
 			}
-			case NUM_MT:
-				return {};
+			case NUM_MT: ;
 		}
 	}
+	return {};
 }
 
 

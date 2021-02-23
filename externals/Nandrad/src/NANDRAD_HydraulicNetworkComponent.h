@@ -117,9 +117,9 @@ public:
 			case MT_HeatPumpIdealCarnot:
 			case MT_HeatExchanger:
 				return {HT_HeatFluxConstant, HT_HeatFluxDataFile};
-			case NUM_MT:
-				return {};
+			case NUM_MT: ;
 		}
+		return {};
 	}
 
 

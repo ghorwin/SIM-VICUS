@@ -1120,13 +1120,13 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::para_t
 			case 8 :
 			switch (t) {
-				case 0 : return "Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes).";
-				case 1 : return "Pressure loss coefficient for the component (zeta-value).";
-				case 2 : return "External heat transfer coeffient for the outside boundary.";
-				case 3 : return "Pressure head form a pump.";
-				case 4 : return "Pump efficiency.";
-				case 5 : return "Motor efficiency for a pump.";
-				case 6 : return "Water or air volume of the component.";
+				case 0 : return "Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)";
+				case 1 : return "Pressure loss coefficient for the component (zeta-value)";
+				case 2 : return "External heat transfer coeffient for the outside boundary";
+				case 3 : return "Pressure head form a pump";
+				case 4 : return "Pump efficiency";
+				case 5 : return "Motor efficiency for a pump";
+				case 6 : return "Water or air volume of the component";
 				case 7 : return "UA-Value of heat exchanger";
 				case 8 : return "Maximum width of discretized volumes in pipe";
 				case 9 : return "Carnot efficiency";
@@ -1157,10 +1157,10 @@ namespace NANDRAD {
 			// HydraulicNetworkPipeProperties::para_t
 			case 12 :
 			switch (t) {
-				case 0 : return "Roughness of pipe material.";
-				case 1 : return "Inner diameter of pipe.";
-				case 2 : return "Outer diameter of pipe.";
-				case 3 : return "Length specific U-Value of pipe wall incl. insulation";
+				case 0 : return "Roughness of pipe material";
+				case 1 : return "Inner diameter of pipe";
+				case 2 : return "Outer diameter of pipe";
+				case 3 : return "Length-specific U-Value of pipe wall incl. insulation";
 			} break;
 			// InterfaceAirFlow::splinePara_t
 			case 13 :
