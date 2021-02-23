@@ -233,6 +233,29 @@ private:
 };
 
 
+// **** Pump element with losses ***
+
+class TNHeatPumpIdealCarnot : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
+public:
+	/*! C'tor, takes and caches parameters needed for function evaluation. */
+	TNHeatPumpIdealCarnot(const NANDRAD::HydraulicFluid & fluid,
+							  const NANDRAD::HydraulicNetworkComponent & comp,
+							  const double &QExt);
+
+	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
+	void setInflowTemperature(double Tinflow) override;
+
+private:
+	/*! Reference to external heat loss in W */
+	const double*					m_externalHeatLossRef = nullptr;
+	/*! Mean condender temperature [K]*/
+	double							m_condenserMeanTemperature = 999;
+
+	/*! Carnot effiency*/
+	double							m_carnotEfficiency = 999;
+};
+
+
 // **** General adiabativ element ***
 
 class TNAdiabaticElement : public ThermalNetworkAbstractFlowElement { // NO KEYWORDS

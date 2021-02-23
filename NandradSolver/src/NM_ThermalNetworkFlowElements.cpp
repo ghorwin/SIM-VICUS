@@ -464,9 +464,9 @@ void TNElementWithExternalHeatLoss::internalDerivatives(double * ydot) {
 
 // *** TNHeatPumpIdealCarnot ***
 
-TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(const NANDRAD::HydraulicNetworkComponent & comp,
-											 const NANDRAD::HydraulicFluid & fluid,
-											 const double &heatFluxExtern)
+TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(const NANDRAD::HydraulicFluid & fluid,
+											 const NANDRAD::HydraulicNetworkComponent & comp,
+											 const double &QExt)
 {
 	m_fluidVolume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
 	m_condenserMeanTemperature = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_CondenserMeanTemperature].value;
@@ -477,26 +477,17 @@ TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(const NANDRAD::HydraulicNetworkComp
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 
 	// set reference to external heat loss
-	m_externalHeatLoss = &heatFluxExtern;
+	m_externalHeatLossRef = &QExt;
 }
 
-TNHeatPumpIdealCarnot::~TNHeatPumpIdealCarnot()
+void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow)
 {
-
-}
-
-void TNHeatPumpIdealCarnot::setNodalConditions(double mdot, double TInlet, double TOutlet)
-{
+	// copy ionflow temperature
+	m_inflowTemperature = Tinflow;
 	// TODO Hauke: use mean evaporator temperature instead of evaporator inlet temperature?
-	const double COPMax = m_condenserMeanTemperature / (m_condenserMeanTemperature - TInlet);
+	const double COPMax = m_condenserMeanTemperature / (m_condenserMeanTemperature - Tinflow);
 	const double COP = m_carnotEfficiency * COPMax;
-	m_heatLoss = *m_externalHeatLoss * (COP - 1)/COP;
-}
-
-void TNHeatPumpIdealCarnot::internalDerivatives(double * ydot)
-{
-	// use basic routine
-	ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(ydot);
+	m_heatLoss = *m_externalHeatLossRef * (COP - 1)/COP;
 }
 
 } // namespace NANDRAD_MODEL
