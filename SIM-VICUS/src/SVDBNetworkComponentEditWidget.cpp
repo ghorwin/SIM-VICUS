@@ -55,7 +55,6 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient == (int)VICUS::NetworkComponent::P_ExternalHeatTransferCoefficient);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_PressureHead == (int)VICUS::NetworkComponent::P_PressureHead);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency == (int)VICUS::NetworkComponent::P_PumpEfficiency);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_MotorEfficiency == (int)VICUS::NetworkComponent::P_MotorEfficiency);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_Volume == (int)VICUS::NetworkComponent::P_Volume);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_UAValue == (int)VICUS::NetworkComponent::P_UAValue);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_PipeMaxDiscretizationWidth == (int)VICUS::NetworkComponent::P_PipeMaxDiscretizationWidth);

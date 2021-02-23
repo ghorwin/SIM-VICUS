@@ -206,10 +206,10 @@ Die Rohreigenschaften legen die physikalische/geometrischen Eigenschaften eines 
 
 Rohreigenschaften werden über das Attribut `pipePropertyId` eines Netzwerkelements (siehe <<HydraulicNetworkElement>>) referenziert.
 
-.Attributes
+.Attribute
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
-| Attribute  | Beschreibung | Format | Verwendung
+| Attribut  | Beschreibung | Format | Verwendung
 | `id` |  Eindeutige Identifikationsnummer des Rohrdatensatzes | {nbsp}>{nbsp}0{nbsp}  | _benötigt_
 |====================
 
@@ -221,7 +221,7 @@ Parameter der Rohreigenschaftem (siehe Abschnitt <<IBK_Parameter>> für eine Bes
 
 [options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
 |====================
-|Name|Unit|Description|Value Range |Usage
+|Name | Einheit | Beschreibung | Wertebereich | Verwendung
 | `PipeRoughness` | mm | Rauhheit der inneren Rohroberfläche | {nbsp}>{nbsp}0.0{nbsp}  | _benötigt_
 | `PipeInnerDiameter` | mm | Innendurchmesser des Rohres | {nbsp}>{nbsp}0.0{nbsp}  | _benötigt_
 | `PipeOuterDiameter` | mm | Außendurchmesser des Rohres | {nbsp}>{nbsp}0.0{nbsp}  | _benötigt_
@@ -254,19 +254,20 @@ Eine `HydraulicNetworkComponent` definiert die Basiseigenschaften eines Strömun
 ----
 ====
 
-.Attributes
+.Attribute
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
-| Attribute  | Description | Format | Usage 
-| `id` |  Unique identifier of the component | {nbsp}>{nbsp}0{nbsp}  | _required_
-| `modelType` |  Type of component  | string | _required_
+| Attribut  | Beschreibung | Format | Verwendung
+| `id` |  Eindeutige Identifikationsnummer der Komponente | {nbsp}>{nbsp}0{nbsp}  | _benötigt_
+| `modelType` |  Modelltyp  | string | _benötigt_
 |====================
-
 
 Die Parameter und Attribute sind dann abhängig vom `modelType` der Komponente und dem `modelType` des Netzwerks.
 
+
+
 [[HydraulicElement_SimplePipe]]
-### SimplePipe
+### Modelltyp: SimplePipe
 
 `SimplePipe` beschreibt ein Rohrmodell, wobei das gesamte Rohr als ein zusammenhängendes Fluidvolumen mit entsprechend gemittelten Eigenschaften beschrieben wird.
 
@@ -275,37 +276,30 @@ Für das Model `SimplePipe` werden im nicht-thermischen Modell keine weiteren Pa
 Im thermischen Modell kann noch das Wärmeaustauschmodell definiert werden (siehe <<HeatExchangeType>>).
 
 
-[[HydraulicElement_SimpleAdiabaticPipe]]
-### SimpleAdiabaticPipe
-
-`SimpleAdiabaticPipe` beschreibt ein Rohrmodell, wobei das gesamte Rohr als ein zusammenhängendes Fluidvolumen mit entsprechend gemittelten Eigenschaften beschrieben wird. Im Gegensatz zum `SimplePipe` gibt es aber keinen Wärmeaustausch mit der Umgebung (perfekt gedämmtes Rohr). Es werden keine weiteren Parameter benötigt.
-
-
 [[HydraulicElement_DynamicPipe]]
-### DynamicPipe
+### Modelltyp: DynamicPipe
 
 ... TODO : Milestone 2
 
 Note.  `HeatExchangeType` verpflichtend!
 
 
-### ConstantPressurePump
+### Modelltyp: ConstantPressurePump
 
 Für das Model `ConstantPressurePump` werden diese Parameter benötigt:
 
 [options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
 |====================
-|Name|Unit|Description|Value Range | Usage 
-| `PressureHead` | Pa | Constant pressure added by the pump | any | 
-| _(*)_ `PumpEfficiency` | - | Hydraulic efficiency of pump | 0...1,{nbsp}>{nbsp}0.0 | only `ThermalHydraulicNetwork`
-| _(*)_ `MotorEfficiency` | - | Efficiency of motor | 0...1,{nbsp}>{nbsp}0.0 | only `ThermalHydraulicNetwork`
-| _(*)_ `Volume` | m3 | Fluid volume inside the pump | {nbsp}>{nbsp}0.0{nbsp} | only `ThermalHydraulicNetwork`
+|Name | Einheit | Beschreibung | Wertebereich | Verwendung
+| `PressureHead` | Pa | Konstante Druckhöhe, welche die Pumpe erzeugt | beliebig | 
+| `PumpEfficiency` | - | Gesamtwirkungsgrad der Pumpe | 0...1,{nbsp}>{nbsp}0.0 | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `Volume` | m3 | Fluid volume inside the pump | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
 |====================
 
-_(*) - not yet used_
+Die Pumpeneffizient ist als der mechanische Gesamtwirkungsgrad der Pumpe definiert. D.h. die durch Volumenstrom und Druckhöhe gegebene mechanische Arbeit entspricht diesem Anteil der Gesamtarbeit. Die Differenz der Leistungen wird als Wärmequelle dem Fluid aufgeprägt.
 
 
-### HeatExchanger
+### ModellTyp: HeatExchanger
 
 Für das Model `HeatExchanger` werden diese Parameter benötigt:
 
@@ -330,11 +324,11 @@ Dafür muss innerhalb der Komponentendefinition ein XML-Element `HeatExchangeTyp
 [options="header",cols="25%,^ 50%, ^ 25%",width="100%"]
 |====================
 |Heat exchange type| Description| Used for component
-| `TemperatureConstant` | Konstante Umgebungstemperatur ist als Parameter im `HydraulicNetworkElement` gegeben | `StaticPipe`, `DynamicPipe` 
-| `TemperatureDataFile` | Umgebungstemperatur ist als Zeitreihe in einer tsv-Datei gegeben (im `HydraulicNetworkElement` definiert) | `StaticPipe`, `DynamicPipe`
-| `HeatFluxConstant` | Wärmestrom (positiv aus dem Element) ist Parameter im `HydraulicNetworkElement` gegeben | `StaticPipe`, `DynamicPipe`, `HeatExchanger`
-| `HeatFluxDataFile` | Wärmestrom (positiv aus dem Element) ist als Zeitreihe in einer tsv-Datei gegeben (im `HydraulicNetworkElement` definiert) | `StaticPipe`, `DynamicPipe`, `HeatExchanger`
-| `HeatExchangeWithZoneTemperature` | Temperatur wird aus Zone (definiert in `HydraulicNetworkElement`) definiert | `StaticPipe`, `DynamicPipe`
+| `TemperatureConstant` | Konstante Umgebungstemperatur ist als Parameter im `HydraulicNetworkElement` gegeben | `SimplePipe`, `DynamicPipe` 
+| `TemperatureDataFile` | Umgebungstemperatur ist als Zeitreihe in einer tsv-Datei gegeben (im `HydraulicNetworkElement` definiert) | `SimplePipe`, `DynamicPipe`
+| `HeatFluxConstant` | Wärmestrom (positiv aus dem Element) ist als Parameter im `HydraulicNetworkElement` gegeben | `SimplePipe`, `DynamicPipe`, `HeatExchanger`
+| `HeatFluxDataFile` | Wärmestrom (positiv aus dem Element) ist als Zeitreihe in einer tsv-Datei gegeben (im `HydraulicNetworkElement` definiert) | `SimplePipe`, `DynamicPipe`, `HeatExchanger`
+| `HeatExchangeWithZoneTemperature` | Temperatur wird aus Zone (definiert in `HydraulicNetworkElement`) definiert | `SimplePipe`, `DynamicPipe`
 |====================
 
 [IMPORTANT]

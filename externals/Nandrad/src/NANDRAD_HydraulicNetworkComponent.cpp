@@ -90,7 +90,7 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 	else {
 		switch (modelType) {
 			case MT_ConstantPressurePump:
-				return {P_PressureHead, P_PumpEfficiency, P_MotorEfficiency, P_Volume};
+				return {P_PressureHead, P_PumpEfficiency, P_Volume};
 			case MT_HeatPumpIdealCarnot:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume, P_CarnotEfficiency};
 			case MT_HeatExchanger:
@@ -139,8 +139,7 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 			break;
 		}
 		// value must be >0 and <1
-		case P_PumpEfficiency:
-		case P_MotorEfficiency: {
+		case P_PumpEfficiency: {
 			para.checkedValue(name, unit, unit, 0, false, 1.0, true, nullptr);
 			break;
 		}

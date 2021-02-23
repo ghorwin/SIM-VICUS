@@ -51,7 +51,6 @@ KeywordListQt::KeywordListQt() {
 	tr("External heat transfer coeffient for the outside boundary");
 	tr("Pressure head form a pump");
 	tr("Pump efficiency");
-	tr("Motor efficiency for a pump");
 	tr("Water or air volume of the component");
 	tr("UA-Value of heat exchanger");
 	tr("Maximum width of discretized volumes in pipe");
