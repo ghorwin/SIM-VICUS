@@ -62,6 +62,7 @@ private:
 };
 
 
+#if 0
 
 // **** Static Pipe ***
 
@@ -80,21 +81,21 @@ public:
 
 private:
 
-	/*! pipe length in [m] */
+	/*! Pipe length in [m] */
 	double							m_length;
 
-	/*! hydraulic (inner) diameter of pipe in [m] */
+	/*! Hydraulic (inner) diameter of pipe in [m] */
 	double							m_innerDiameter;
 
-	/*! outer diameter of pipe in [m] */
+	/*! Outer diameter of pipe in [m] */
 	double							m_outerDiameter;
 
 	/*! Fluid conductivity [W/mK].
 		Cached value from fluid properties.
 	*/
-	double							m_fluidConductivity = 0.01;
+	double							m_fluidConductivity = -999;
 
-	/*! Fluid dynamic viscosity [m/s] (temperature dependend).*/
+	/*! Fluid dynamic viscosity [m/s] (temperature dependent).*/
 	IBK::LinearSpline				m_fluidViscosity;
 
 	/*! Equivalent u-value of the pipe wall and insulation per length of pipe in [W/mK] */
@@ -103,10 +104,11 @@ private:
 	/*! Heat transfer coefficient from outer pipe wall to environment in [W/m2K] */
 	double							m_outerHeatTransferCoefficient;
 
-	/*! Reference to external temperature in K */
+	/*! Reference to external temperature [K] */
 	const double*					m_externalTemperatureRef = nullptr;
 
 };
+#endif
 
 
 // **** Dynamic Pipe ***
@@ -153,25 +155,25 @@ private:
 	/*! Number of discretization volumes */
 	unsigned int					m_nVolumes;
 
-	/*! Volume of all pipe deiscretization elements*/
+	/*! Volume of all pipe deiscretization element [m3] s*/
 	double							m_discVolume = -999;
 
-	/*! Lengths of of all pipe volumes*/
+	/*! Lengths of of all pipe volumes [m] */
 	double							m_discLength = -999;
 
-	/*! Fluid temperatures for all discretization volumes J/kg */
+	/*! Fluid temperatures for all discretization volumes [K] */
 	std::vector<double>				m_temperatures;
 
-	/*! Fluid temperatures for all discretization volumes  W */
+	/*! Fluid temperatures for all discretization volumes [W] */
 	std::vector<double>				m_heatLosses;
 
-	/*! pipe length in m */
+	/*! Pipe length in [m] */
 	double							m_length = -999;
 
-	/*! hydraulic (inner) diameter of pipe in m */
+	/*! hydraulic (inner) diameter of pipe [m] */
 	double							m_innerDiameter = -999;
 
-	/*! outer diameter of pipe in m */
+	/*! outer diameter of pipe [m] */
 	double							m_outerDiameter = -999;
 
 	/*! Fluid conductivity [W/mK].
@@ -179,16 +181,16 @@ private:
 	*/
 	double							m_fluidConductivity = -999;
 
-	/*! Fluid dynamic viscosity [m/s] (temperature dependend).*/
+	/*! Fluid dynamic viscosity [m/s] (temperature dependent).*/
 	IBK::LinearSpline				m_fluidViscosity;
 
-	/*! thermal resistance of the pipe wall in Km2/W */
+	/*! thermal resistance of the pipe wall in [W/mK] */
 	double							m_UValuePipeWall = -999;
 
-	/*! Heat transfer coefficient from outer pipe wall to environment in W/m2K */
+	/*! Heat transfer coefficient from outer pipe wall to environment in [W/m2K] */
 	double							m_outerHeatTransferCoefficient = -999;
 
-	/*! Reference to external temperature in K */
+	/*! Reference to external temperature in [K] */
 	const double*					m_externalTemperatureRef = nullptr;
 
 };
@@ -234,10 +236,10 @@ private:
 	/*! Number of discretization volumes */
 	unsigned int					m_nVolumes;
 
-	/*! Volume of all pipe deiscretization elements*/
+	/*! Volume of all pipe deiscretization elements [m3] */
 	double							m_discVolume = -999;
 
-	/*! Fluid temperatures for all discretization volumes J/kg */
+	/*! Fluid temperatures for all discretization volumes [K] */
 	std::vector<double>				m_temperatures;
 };
 
@@ -255,14 +257,11 @@ public:
 	void setInflowTemperature(double Tinflow) override;
 
 private:
-	/*! Reference to pressure head */
+	/*! Reference to pressure head [Pa] */
 	const double *					m_pressureHeadRef = nullptr;
 
-	/*! Pump efficiency */
-	double							m_pumpEfficiency;
-
-	/*! Motor efficiency*/
-	double							m_motorEfficiency = 0.0;
+	/*! Pump efficiency [0...1] */
+	double							m_pumpEfficiency = -999;
 };
 
 
@@ -279,17 +278,17 @@ public:
 	void setInflowTemperature(double Tinflow) override;
 
 private:
-	/*! Reference to external heat loss in W */
+	/*! Reference to external heat loss in [W] */
 	const double*					m_externalHeatLossRef = nullptr;
 	/*! Mean condender temperature [K]*/
 	double							m_condenserMeanTemperature = 999;
 
-	/*! Carnot effiency*/
+	/*! Carnot efficiency [0...1] */
 	double							m_carnotEfficiency = 999;
 };
 
 
-// **** General adiabativ element ***
+// **** General adiabatic element ***
 
 class TNAdiabaticElement : public ThermalNetworkAbstractFlowElement { // NO KEYWORDS
 public:
@@ -311,7 +310,7 @@ public:
 	/*! Function for retrieving heat fluxes out of the flow element.*/
 	void internalDerivatives(double *ydot);
 
-	/*! Reference to external heat loss in W */
+	/*! Reference to external heat loss [W] */
 	const double*					m_externalHeatLossRef = nullptr;
 };
 

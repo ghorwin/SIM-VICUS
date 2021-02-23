@@ -73,6 +73,7 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 }
 
 
+#if 0
 // *** TNStaticPipeElement ***
 
 TNStaticPipeElement::TNStaticPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
@@ -135,7 +136,7 @@ void TNStaticPipeElement::setInflowTemperature(double Tinflow) {
 				(1. - std::exp(-UAValueTotal / (std::fabs(m_massFlux) * m_fluidHeatCapacity )));
 	}
 }
-
+#endif
 
 // *** DynamicPipeElement ***
 
@@ -434,7 +435,6 @@ TNPumpWithPerformanceLoss::TNPumpWithPerformanceLoss(
 	// copy component properties
 	m_fluidVolume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
 	m_pumpEfficiency = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency].value;
-	m_motorEfficiency = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_MotorEfficiency].value;
 	// copy fluid properties
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
@@ -453,8 +453,8 @@ void TNPumpWithPerformanceLoss::setInflowTemperature(double Tinflow) {
 	double Pmechanical = m_massFlux/m_fluidDensity * (*m_pressureHeadRef);
 
 	// efficiency is defined as portion of total electrical power used for mechanical
-	// Pelectrical * m_pumpEfficiency * m_motorEfficiency = Pmechanical
-	double Pelectrical = Pmechanical/(m_pumpEfficiency * m_motorEfficiency);
+	// Pelectrical * m_pumpEfficiency = Pmechanical
+	double Pelectrical = Pmechanical/m_pumpEfficiency;
 	// calculate heat flux into fluid
 	m_heatLoss = - (Pelectrical- Pmechanical);
 }
