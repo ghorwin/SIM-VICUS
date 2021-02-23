@@ -45,17 +45,28 @@ private slots:
 
 	void on_tableWidgetPeriods_currentCellChanged(int currentRow, int currentColumn, int, int);
 
+	void on_toolButtonBackward_clicked();
+
+	void on_toolButtonForward_clicked();
 	void on_tableWidgetPeriods_cellChanged(int row, int column);
 
 	void on_tableWidgetPeriods_cellClicked(int row, int column);
 
 private:
+
 	/*! Update the period table. */
 	void updatePeriodTable();
+
 	/*! Called when a new daily cycle has been selected,i.e. m_currentDailyCycleIndex has changed. */
 	void selectDailyCycle();
 
+	/*! Delete a daily cycle if no day type is checked. Can not delete daily cycle if only one daily cycle exists.
+		Return true if a daily cycle was deleted.
+	*/
+	bool deleteDailyCycle();
 
+	/*! If minimum one day type is enabled and checked this function returns true.*/
+	bool isDayTypeChecked();
 
 	Ui::SVDBScheduleEditWidget			*m_ui;
 

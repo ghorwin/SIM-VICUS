@@ -8,6 +8,7 @@
 
 #include <NANDRAD_KeywordListQt.h>
 #include <NANDRAD_KeywordList.h>
+#include <NANDRAD_Schedule.h>
 
 #include <VICUS_Schedule.h>
 
@@ -60,7 +61,7 @@ void SVDBScheduleEditWidget::setup(SVDatabase * db, SVDBScheduleTableModel * dbM
 }
 
 void SVDBScheduleEditWidget::updatePeriodTable(){
-	int currRow = m_ui->tableWidgetPeriods->currentRow();
+	//int currRow = m_ui->tableWidgetPeriods->currentRow();
 	m_ui->tableWidgetPeriods->blockSignals(true);
 
 	//create a julian day to get the right date in dd.MM.
@@ -91,20 +92,86 @@ void SVDBScheduleEditWidget::updatePeriodTable(){
 void SVDBScheduleEditWidget::selectDailyCycle() {
 	// create first daily cycle if none exist yet
 	if(m_currentInterval->m_dailyCycles.empty())
-		m_currentInterval->m_dailyCycles.emplace_back(VICUS::DailyCycle());
+		m_currentInterval->m_dailyCycles.push_back(VICUS::DailyCycle());
 
 	// enable/disable arrow buttons based
 	m_ui->toolButtonBackward->setEnabled(m_currentDailyCycleIndex!=0);
-//	if()
-//	m_ui->toolButtonBackward->setEnabled(m_currentDailyCycleIndex!=0);
 
+	// enable forward button:
+	//
+	if(m_currentDailyCycleIndex<m_currentInterval->m_dailyCycles.size()-1 || m_currentInterval->freeDayTypes().size()>0){
+		m_ui->toolButtonBackward->setEnabled(m_currentDailyCycleIndex!=0);
+	}
 
-	m_currentInterval->m_dailyCycles[m_currentDailyCycleIndex];
 	// check/uncheck day checkbox (with blocked signals)
+	m_ui->widgetDayTypes->blockSignals(true);
 
+	//all button active and enabled
+	m_ui->checkBoxMonday->setEnabled(false);
+	m_ui->checkBoxTuesday->setEnabled(true);
+	m_ui->checkBoxWednesday->setEnabled(true);
+	m_ui->checkBoxThursday->setEnabled(true);
+	m_ui->checkBoxFriday->setEnabled(true);
+	m_ui->checkBoxSaturday->setEnabled(true);
+	m_ui->checkBoxSunday->setEnabled(true);
+	m_ui->checkBoxHoliday->setEnabled(true);
+	m_ui->checkBoxMonday->setChecked(false);
+	m_ui->checkBoxTuesday->setChecked(false);
+	m_ui->checkBoxWednesday->setChecked(false);
+	m_ui->checkBoxThursday->setChecked(false);
+	m_ui->checkBoxFriday->setChecked(false);
+	m_ui->checkBoxSaturday->setChecked(false);
+	m_ui->checkBoxSunday->setChecked(false);
+	m_ui->checkBoxHoliday->setChecked(false);
+
+	for(unsigned int i=0; i< m_currentInterval->m_dailyCycles.size(); ++i){
+		bool enabled = false;
+		if(i==m_currentDailyCycleIndex)
+			enabled = true;
+
+		for(unsigned int j=0; j<m_currentInterval->m_dailyCycles[i].m_dayTypes.size(); ++j){
+			int dt = m_currentInterval->m_dailyCycles[i].m_dayTypes[j];
+			switch (dt) {
+				case NANDRAD::Schedule::ST_MONDAY:{
+					m_ui->checkBoxMonday->setChecked(true);
+					m_ui->checkBoxMonday->setEnabled(enabled);
+				} break;
+				case NANDRAD::Schedule::ST_TUESDAY:{
+					m_ui->checkBoxTuesday->setChecked(true);
+					m_ui->checkBoxTuesday->setEnabled(enabled);
+				} break;
+				case NANDRAD::Schedule::ST_WEDNESDAY:{
+					m_ui->checkBoxWednesday->setChecked(true);
+					m_ui->checkBoxWednesday->setEnabled(enabled);
+				} break;
+				case NANDRAD::Schedule::ST_THURSDAY:{
+					m_ui->checkBoxThursday->setChecked(true);
+					m_ui->checkBoxThursday->setEnabled(enabled);
+				} break;
+				case NANDRAD::Schedule::ST_FRIDAY:{
+					m_ui->checkBoxFriday->setChecked(true);
+					m_ui->checkBoxFriday->setEnabled(enabled);
+				} break;
+				case NANDRAD::Schedule::ST_SATURDAY:{
+					m_ui->checkBoxSaturday->setChecked(true);
+					m_ui->checkBoxSaturday->setEnabled(enabled);
+				} break;
+				case NANDRAD::Schedule::ST_SUNDAY:{
+					m_ui->checkBoxSunday->setChecked(true);
+					m_ui->checkBoxSunday->setEnabled(enabled);
+				} break;
+				case NANDRAD::Schedule::ST_HOLIDAY:{
+					m_ui->checkBoxHoliday->setChecked(true);
+					m_ui->checkBoxHoliday->setEnabled(enabled);
+				} break;
+			}
+		}
+	}
+	m_ui->widgetDayTypes->blockSignals(false);
 	// update current daily cycle data type and chartt
 
-	//m_ui->widgetDailyCycle->updateInput(m_currentInterval, m_currentDailyCycleIndex, m_db);
+	VICUS::DailyCycle *dc = &m_currentInterval->m_dailyCycles[m_currentDailyCycleIndex];
+	m_ui->widgetDailyCycle->updateInput( dc , m_db);
 
 	m_db->m_schedules.m_modified=true;
 }
@@ -302,6 +369,77 @@ void SVDBScheduleEditWidget::on_tableWidgetPeriods_currentCellChanged(int curren
 
 	selectDailyCycle();
 }
+
+bool SVDBScheduleEditWidget::isDayTypeChecked(){
+	if(!((m_ui->checkBoxMonday->isChecked() && m_ui->checkBoxMonday->isEnabled()) ||
+		(m_ui->checkBoxTuesday->isChecked() && m_ui->checkBoxTuesday->isEnabled()) ||
+			(m_ui->checkBoxWednesday->isChecked() && m_ui->checkBoxWednesday->isEnabled()) ||
+			(m_ui->checkBoxThursday->isChecked() && m_ui->checkBoxThursday->isEnabled()) ||
+			(m_ui->checkBoxFriday->isChecked() && m_ui->checkBoxFriday->isEnabled()) ||
+			(m_ui->checkBoxSaturday->isChecked() && m_ui->checkBoxSaturday->isEnabled()) ||
+			(m_ui->checkBoxSunday->isChecked() && m_ui->checkBoxSunday->isEnabled()) ||
+		 (m_ui->checkBoxHoliday->isChecked() && m_ui->checkBoxHoliday->isEnabled())))
+		return false;
+
+	return true;
+
+}
+
+bool SVDBScheduleEditWidget::deleteDailyCycle(){
+
+	//if only one daily cycle exist we need a day type
+	if(m_currentInterval->m_dailyCycles.size()==1){
+		QMessageBox::critical(this,QString(), "Please check one or more day types for this daily cycle.");
+		return false;
+	}
+	//check that on checkbox of day types is checked
+	//if not return a message that the daily cycle is delete
+		///TODO Dirk->Andreas wie frage ich jetzt ab mit übernahme bei ok des wertes
+
+	if(isDayTypeChecked()){
+		bool deleteAction = true;
+		if(deleteAction){
+
+			if(m_currentDailyCycleIndex!=0)
+				--m_currentDailyCycleIndex;
+			return true;
+		}
+	}
+
+	return false;
+
+}
+
+void SVDBScheduleEditWidget::on_toolButtonBackward_clicked()
+{
+	Q_ASSERT(m_currentDailyCycleIndex !=0);
+	//delete a daily cycle when no day type is selected and we have more than one daily cycle
+	//set daily cycle index new
+	if(!isDayTypeChecked() && m_currentInterval->m_dailyCycles.size()>1){
+		///TODO Dirk->Andreas soll hier eine Abfrage rein ob der Tages-Zeitplan gelöscht werden soll?
+		if(QMessageBox::critical(this, QString(), "Do you want to delete this daily cycle?") != QMessageBox::Ok)
+			return;
+		m_currentInterval->m_dailyCycles.erase(m_currentInterval->m_dailyCycles.begin()+m_currentDailyCycleIndex);
+	}
+	--m_currentDailyCycleIndex;
+	selectDailyCycle();
+}
+
+void SVDBScheduleEditWidget::on_toolButtonForward_clicked()
+{
+	if(m_currentDailyCycleIndex < m_currentInterval->m_dailyCycles.size()-1 ||
+			m_currentInterval->freeDayTypes().size()>0){
+
+		if(!isDayTypeChecked()){
+			///TODO Dirk->Andreas soll hier eine Abfrage rein ob der Tages-Zeitplan gelöscht werden soll?
+			if(QMessageBox::critical(this, QString(), "Do you want to delete this daily cycle?") != QMessageBox::Ok)
+				return;
+			m_currentInterval->m_dailyCycles.erase(m_currentInterval->m_dailyCycles.begin()+m_currentDailyCycleIndex);
+		}
+		else
+			++m_currentDailyCycleIndex;
+	}
+	selectDailyCycle();
 
 void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellChanged(int row, int column) {
 	size_t colIdx = (size_t)column;
