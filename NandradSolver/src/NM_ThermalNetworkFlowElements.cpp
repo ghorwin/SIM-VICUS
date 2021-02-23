@@ -8,7 +8,7 @@
 
 #include "numeric"
 
-//#define USE_STEADY_STATE_HEAT_TRANSFER
+#define USE_STEADY_STATE_HEAT_TRANSFER
 
 
 namespace NANDRAD_MODEL {
