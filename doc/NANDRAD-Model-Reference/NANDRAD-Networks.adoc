@@ -41,7 +41,8 @@ Ein einzelnes Netzwerk wird im XML-tag `HydraulicNetwork` definiert, wie im folg
 ====
 [source,xml]
 ----
-<HydraulicNetwork id="1" displayName="Simple network" modelType="ThermalHydraulicNetwork">
+<HydraulicNetwork id="1" displayName="Simple network" modelType="ThermalHydraulicNetwork"
+        referenceElementId="201">
 	<HydraulicFluid id="1" displayName="Water">
         ... <!-- fluid parameters -->
     </HydraulicFluid>
@@ -62,46 +63,56 @@ Ein einzelnes Netzwerk wird im XML-tag `HydraulicNetwork` definiert, wie im folg
 ----
 ====
 
-XML-tag `HydraulicNetwork` hat folgende Attribute:
+Der XML-tag `HydraulicNetwork` hat folgende Attribute:
 
 .Attributes
 [options="header",cols="20%,40%,^ 10%,^ 30%",width="100%"]
 |====================
-| Attribute  | Description | Format | Usage 
-| `id` |  Unique identifier of the network | {nbsp}>{nbsp}0{nbsp}  | _required_
-| `displayName`  |  Display name of the network. | string | _optional_
-| `modelType`  |  Specifies a particular network calculation mode. | string | _optional_ 
+| Attribut  | Beschreibung | Format | Verwendung
+| `id` |  Eindeutige Identifizierungsnummer | {nbsp}>{nbsp}0{nbsp}  | _benötigt_
+| `displayName`  |  Anzeigename/Beschreibung des Netzwerks | string | _optional_
+| `modelType`  |  Legt das Berechnungsmodell fest | string | _optional_ 
  (defaults to `ThermalHydraulicNetwork`)
+| `referenceElementId` | ID des Referenzelements | {nbsp}>{nbsp}0{nbsp}  | _benötigt_
 |====================
 
 :xrefstyle: short
 
-Das optionale Attribut `modelType` beschreibt, welches Berechnungsmodell zu verwenden ist (<<tab_network_modelType>>):
+Das optionale Attribut `modelType` beschreibt, welches Berechnungsmodell zu verwenden ist, siehe <<tab_network_modelType>>:
 
 [[tab_network_modelType]]
 .Werte für Attribut `modelType`
 [options="header",cols="30%,70%",width="100%"]
 |====================
-| Attribute  | Description  
-| `HydraulicNetwork` |  Only the hydraulic network calculation is done, i.e. mass flux and pressure calculation.
-| `ThermalHydraulicNetwork`  |  Network is calculated with thermal balances enabled. Each flow element corresponds to at least one energy/enthalpy balance equation.
+| Attribut  | Beschreibung
+| `HydraulicNetwork` |  Nur die hydraulische Berechnung (Masseströme und Drücke) wird durchgeführt.
+| `ThermalHydraulicNetwork`  |  Netzwerk wird mit eingeschalteten Energiebilanzen berechnet. Jedes Strömungselement entspricht mindestens einer Energiebilanzgleichung.
 |====================
 
 Die Wahl des Netzwerkberechnungsmodells hat Auswirkungen auf die benötigte Parametrisierung der beteiligten Komponenten.
 
 ### Parameter
 
-Je nach Modelltyp können mehrere globale Netzwerkparameter definiert werden. 
+Je nach Modelltyp können mehrere globale Netzwerkparameter definiert werden (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des `IBK:Parameter` Tags):
 
 [options="header",cols="30%,^ 10%, 30%,^ 10%,^ 20%",width="100%"]
 |====================
-|Name|Unit|Description|Value Range |Usage
-| `DefaultFluidTemperature` | C | einheitliche, konstante Fluidtemperatur zur Verwendung mit einem rein hydraulischen Modell | {nbsp}>{nbsp}0.0{nbsp} | _required for model type_  `HydraulicNetwork`
-| `InitialFluidTemperature` | C | Anfangsfluidtemperatur | {nbsp}>{nbsp}0.0{nbsp} | _required for model type_ `ThermalHydraulicNetwork`
+|Name | Einheit | Beschreibung | Wertebereich | Verwendung
+| `DefaultFluidTemperature` | C | einheitliche, konstante Fluidtemperatur zur Verwendung mit einem rein hydraulischen Modell | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_  `HydraulicNetwork`
+| `InitialFluidTemperature` | C | Anfangsfluidtemperatur | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `ReferencePressure` | Pa | Druck hinter dem Referenzelement | {nbsp}>{nbsp}0.0{nbsp} | _optional_ (Standardwert ist 0 Pa)
 |====================
 
-Innerhalb des Netzwerk-Definitionsblocks gibt es vier Kind-Elemente.
+Innerhalb des Netzwerk-Definitionsblocks gibt es vier Kind-Elemente:
 
+- `HydraulicFluid` - <<HydraulicFluid, definiert Medieneigenschaften>>
+- `PipeProperties` - <<PipeProperties, Rohreigenschaften>>
+- `Components` - <<HydraulicNetworkComponents, Komponentendefinitionen>> 
+- `Elements` - <<HydraulicNetworkElements, Netzwerkelemente und Netzwerktopologie>>
+
+
+
+[[HydraulicFluid]]
 ## Medieneigenschaften
 
 Der XML-tag `HydraulicFluid` enthält die Definition des im Netzwerk strömenden Mediums. 
@@ -127,14 +138,14 @@ In jedem Netzwerk gibt es nur ein einziges Fluid, und deshalb ist auch nur eine 
 ----
 ====
 
-XML-tag `HydraulicFluid` hat folgende Attribute:
+Der XML-tag `HydraulicFluid` hat folgende Attribute:
 
 .Attributes
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
-| Attribute  | Description | Format | Usage 
-| `id` |  Unique identifier of the fluid | {nbsp}>{nbsp}0{nbsp}  | _required_
-| `displayName`  |  Display name of the network | string | _optional_
+| Attribut  | Beschreibung | Format | Verwendung
+| `id` |  Eindeutige Identifikationsnummer | {nbsp}>{nbsp}0{nbsp}  | _benötigt_
+| `displayName`  |  Beschreibung des Fluids | string | _optional_
 |====================
 
 [NOTE]
@@ -144,33 +155,37 @@ Da es nur eine Fluid-Definition per Netzwerk geben darf, ist das _id_ Attribut e
 
 :xrefstyle: basic
 
-Parameter des Netzwerkfluids (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
+Parameter des Netzwerkfluids (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des `IBK:Parameter` Tags):
 
 [options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
 |====================
-|Name|Unit|Description|Value Range |Usage
-| `Density` | kg/m3 | Dichte bei Referenztemperatur | {nbsp}>{nbsp}0.0{nbsp} | _required_
-| `HeatCapacity` | J/kgK | Spezifische Wärmekapazität | {nbsp}>{nbsp}0.0{nbsp} | _required_
-| `Conductivity` | W/mK | Wärmeleitfähigkeit bei Referenztemperatur | {nbsp}>={nbsp}0.0{nbsp} | _required_
+|Name | Einheit | Beschreibung | Wertebereich | Verwendung
+| `Density` | kg/m3 | Dichte bei Referenztemperatur | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `HeatCapacity` | J/kgK | Spezifische Wärmekapazität | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `Conductivity` | W/mK | Wärmeleitfähigkeit bei Referenztemperatur | {nbsp}>={nbsp}0.0{nbsp} | _benötigt_
 |====================
 
 [NOTE]
 ====
-Die obigen Eigenschaften, insbesondere die Dichte, werden zur Vereinfachung als temperaturunabhänig konstant angenommen. Für die meisten Anwendungsfälle der thermo-hydraulischen Simulation im Gebäude-/Quartierskontext wird die thermische Ausdehnung des Fluids nicht benötigt. Und die Auslegung des Ausdehngefäßes erfolgt nicht mit der Simulation.
+Die obigen Eigenschaften, insbesondere die Dichte, werden zur Vereinfachung als temperaturunabhängig konstant angenommen. Für die meisten Anwendungsfälle der thermo-hydraulischen Simulation im Gebäude-/Quartierskontext wird die thermische Ausdehnung des Fluids nicht benötigt. Und die Auslegung des Ausdehngefäßes erfolgt nicht mit der Simulation.
 ====
 
 Desweiteren gibt es noch temperaturabhängige Parameter, welche in linear interpolierten Datentabellen abgelegt werden (siehe Abschnitt <<LinearSplineParameter>> für eine Beschreibung des  `LinearSplineParameter` Elements):
 
 [options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
 |====================
-|Name|Unit|Description|Value Range |Usage
-| `KinematicViscosity` | m2/s | Kinematische Viscosität | {nbsp}>{nbsp}0.0{nbsp} | _required_
+|Name | Einheit | Beschreibung | Wertebereich | Verwendung
+| `KinematicViscosity` | m2/s | Kinematische Viscosität | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
 |====================
 
+:xrefstyle: short
 
+
+
+[[PipeProperties]]
 ## Rohreigenschaften
 
-Die Rohreigenschaften `HydraulicNetworkPipeProperties` legen die physikalische/geometrischen Eigenschaften eines Rohrtyps fest. Diese werden in dem Katalog `PipeProperties` mit eindeutigen IDs aufgelistet. 
+Die Rohreigenschaften legen die physikalische/geometrischen Eigenschaften eines Rohrtyps fest. Diese werden in XML-tags we `HydraulicNetworkPipeProperties` im Katalog `PipeProperties` mit eindeutigen IDs aufgelistet. 
 
 .Definition von Rohreigenschaften
 ====
@@ -181,7 +196,7 @@ Die Rohreigenschaften `HydraulicNetworkPipeProperties` legen die physikalische/g
 		<IBK:Parameter name="PipeRoughness" unit="m">0.007</IBK:Parameter>
 		<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
 		<IBK:Parameter name="PipeOuterDiameter" unit="mm">32</IBK:Parameter>
-		<IBK:Parameter name="UValuePipeWall" unit="W/m2K">5</IBK:Parameter>
+		<IBK:Parameter name="UValuePipeWall" unit="W/mK">5</IBK:Parameter>
 	</HydraulicNetworkPipeProperties>
 	
 	...
@@ -189,29 +204,37 @@ Die Rohreigenschaften `HydraulicNetworkPipeProperties` legen die physikalische/g
 ----
 ====
 
-Wenn ein `HydraulicNetworkElement` ein Rohr repräsentiert, können ihm über den den XML-tag `pipePropertyId` entsprechende  `HydraulicNetworkPipeProperties` zugewiesen werden. 
+Rohreigenschaften werden über das Attribut `pipePropertyId` eines Netzwerkelements (siehe <<HydraulicNetworkElement>>) referenziert.
 
 .Attributes
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
-| Attribute  | Description | Format | Usage 
-| `id` |  Unique identifier of the pipe properties | {nbsp}>{nbsp}0{nbsp}  | _required_
+| Attribute  | Beschreibung | Format | Verwendung
+| `id` |  Eindeutige Identifikationsnummer des Rohrdatensatzes | {nbsp}>{nbsp}0{nbsp}  | _benötigt_
 |====================
 
-Parameter der Rohreigenschaftem (see section <<IBK_Parameter>> for a description of the `IBK:Parameter` tag):
+:xrefstyle: basic
+
+Parameter der Rohreigenschaftem (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des `IBK:Parameter` Tags):
+
+:xrefstyle: short
 
 [options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
 |====================
 |Name|Unit|Description|Value Range |Usage
-| `PipeRoughness` | mm | Roughness of pipe wall | {nbsp}>{nbsp}0.0{nbsp}  | _required_
-| `PipeInnerDiameter` | mm | Inner diameter of pipe | {nbsp}>{nbsp}0.0{nbsp}  | _required_
-| `PipeOuterDiameter` | mm | Outer diameter of pipe | {nbsp}>{nbsp}0.0{nbsp}  | _required_
-| `UValuePipeWall` | W/mK | Length-related equivalent U-Value of pipe wall (including insulation) | {nbsp}>{nbsp}0.0{nbsp}  | _required (for pipe with heat transfer)_ 
+| `PipeRoughness` | mm | Rauhheit der inneren Rohroberfläche | {nbsp}>{nbsp}0.0{nbsp}  | _benötigt_
+| `PipeInnerDiameter` | mm | Innendurchmesser des Rohres | {nbsp}>{nbsp}0.0{nbsp}  | _benötigt_
+| `PipeOuterDiameter` | mm | Außendurchmesser des Rohres | {nbsp}>{nbsp}0.0{nbsp}  | _benötigt_
+| `UValuePipeWall` | W/mK | Längenbezogener äquivalenter U-Wert der Rohrwand (einschließlich Dämmung, wenn vorhanen) | {nbsp}>{nbsp}0.0{nbsp}  | _benötigt (für Rohre mit Wärmeleitung nach Außen)_ 
 |====================
 
-Der längenbezogene äquivalente U-Wert der Rohrwand (einschließlich möglicher Dämmung) ist in der Berechnung so definiert, dass eine Multiplikation mit der Temperaturdifferenz zwischen Fluidtemperatur und Außentemperatur zum Wärmeström pro m Rohrlänge führt. D.h. bei der Berechnung dieses äquivalenten U-Werts müssen Zylinderkoordinaten berücksichtigt werden. Der tatsächlichen Wärmestrom von Fluid zu Umgebung wird noch durch Übergangskoeffizienten (siehe Abschnitt <<HydraulicElement_StaticPipe>>) abgemindert.
+Der Außendurchmesser muss größer als der Innendurchmesser sein.
 
-[[component_definition]]
+Der längenbezogene äquivalente U-Wert der Rohrwand (einschließlich möglicher Dämmung) ist in der Berechnung so definiert, dass eine Multiplikation mit der Temperaturdifferenz zwischen Fluidtemperatur und Außentemperatur zum Wärmeström pro m Rohrlänge führt. D.h. bei der Berechnung dieses äquivalenten U-Werts müssen Zylinderkoordinaten berücksichtigt werden. Der tatsächlichen Wärmestrom von Fluid zu Umgebung wird noch durch Übergangskoeffizienten (siehe u.A. Abschnitt <<HydraulicElement_SimplePipe>>) abgemindert.
+
+
+
+[[HydraulicNetworkComponents]]
 ## Komponentendefinitionen
 
 Eine `HydraulicNetworkComponent` definiert die Basiseigenschaften eines Strömungselements. Diese werden in dem Katalog `Components` mit eindeutigen IDs aufgelistet.
@@ -242,21 +265,20 @@ Eine `HydraulicNetworkComponent` definiert die Basiseigenschaften eines Strömun
 
 Die Parameter und Attribute sind dann abhängig vom `modelType` der Komponente und dem `modelType` des Netzwerks.
 
-[[HydraulicElement_StaticPipe]]
-### StaticPipe
+[[HydraulicElement_SimplePipe]]
+### SimplePipe
 
-`StaticPipe` beschreibt ein Rohrmodell, wobei das gesamte Rohr als ein zusammenhängendes Fluidvolumen mit entsprechend gemittelten Eigenschaften beschrieben wird.
+`SimplePipe` beschreibt ein Rohrmodell, wobei das gesamte Rohr als ein zusammenhängendes Fluidvolumen mit entsprechend gemittelten Eigenschaften beschrieben wird.
 
-Im thermischen Rohrmodell wird angenommen, dass das Rohr vorwiegend konstant durchströmt wird, und die Randbedingungen ebenfalls dem stationären Prozess weitgehend ähnlich sind (vorwiegend gleichbleibende Eingangstemperatur und Umgebungstemperatur). Deshalb wird bei der Berechnung des Wärmeübergangs an die Umgebung das stationäre Wärmeübergangsmodell verwendent.
-
-Für das Model `StaticPipe` werden im nicht-thermischen Modell keine weiteren Parameter benötigt.
+Für das Model `SimplePipe` werden im nicht-thermischen Modell keine weiteren Parameter benötigt.
 
 Im thermischen Modell kann noch das Wärmeaustauschmodell definiert werden (siehe <<HeatExchangeType>>).
 
 
-### MixedVolumePipe
+[[HydraulicElement_SimpleAdiabaticPipe]]
+### SimpleAdiabaticPipe
 
-... TODO : Strömungsberechnung identisch zu `StaticPipe`, Verwendung des "ideal mixing"-Modells für Temperaturaustausch mit Umgebung. Wäre äquivalent zu Dynamic Pipe mit nur einem Segment.
+`SimpleAdiabaticPipe` beschreibt ein Rohrmodell, wobei das gesamte Rohr als ein zusammenhängendes Fluidvolumen mit entsprechend gemittelten Eigenschaften beschrieben wird. Im Gegensatz zum `SimplePipe` gibt es aber keinen Wärmeaustausch mit der Umgebung (perfekt gedämmtes Rohr). Es werden keine weiteren Parameter benötigt.
 
 
 [[HydraulicElement_DynamicPipe]]
@@ -296,6 +318,7 @@ Für das Model `HeatExchanger` werden diese Parameter benötigt:
 |====================
 
 _(*) - not yet used_
+
 
 
 [[HeatExchangeType]]
@@ -341,6 +364,7 @@ TODO : MileStone 2
 
 
 
+
 [[HydraulicNetworkElement]]
 ## Strömungselemente
 
@@ -380,7 +404,6 @@ Die tatsächlichen Strömungselemente des Netzwerks werden innerhalb des XML-tag
 Die ID eines `HydraulicNetworkElement` muss global eindeutig sein, d.h. Strömungselemente müssen netzwerkübergreifend mit einer eindeutigen ID bezeichnet werden.
 ====
 
-:xrefstyle: short
 
 [[fig_network_example1]]
 .Einfaches Strömungsnetzwerk mit 3 Knoten und 3 Elementen
@@ -466,6 +489,10 @@ Die Ergebnisgrößen eines thermo-hydraulischen Netzwerkmodells werden wie folgt
 ----
 ====
 
+
+
+
+
 ### Verfügbare Ausgaben
 
 Das Netzwerk-Objekt liefert eine Vielzahl von Ergebnisgrößen für die einzelnen Strömungselemente.
@@ -494,6 +521,7 @@ Je nach Bedingungen im Netzwerk ist es jedoch auch möglich, dass sich die Strö
 ====
 Mächte man alle Knotendrücke oder Knotentemperaturen erhalten, so kann man einfach von allen Strömungselementen die Drück am Auslass erfragen. Darüber erhält man dann alle Drücke an den jeweiligen Knoten.
 ====
+
 
 #### Ausgaben der hydraulischen Netzwerkberechnung
 

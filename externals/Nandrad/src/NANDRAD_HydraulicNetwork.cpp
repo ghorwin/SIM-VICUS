@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include "NANDRAD_KeywordList.h"
+
 namespace NANDRAD {
 
 
@@ -29,9 +31,9 @@ void HydraulicNetwork::checkParameters( const std::map<std::string, IBK::Path> &
 		case NANDRAD::HydraulicNetwork::NUM_MT: break; // just to make compiler warnings disappear
 	}
 
-	// check reference pressure
+	// check reference pressure and set default if missing
 	if (m_para[P_ReferencePressure].empty())
-		throw IBK::Exception(IBK::FormatString("ReferencePressure must be determined"), FUNC_ID);
+		NANDRAD::KeywordList::setParameter(m_para, "HydraulicNetwork::para_t", P_ReferencePressure, 0);
 
 	// do not allow an empty network
 	if (m_elements.empty())
@@ -41,7 +43,7 @@ void HydraulicNetwork::checkParameters( const std::map<std::string, IBK::Path> &
 
 	// check reference element id
 	if (std::find(m_elements.begin(), m_elements.end(), m_referenceElementId) == m_elements.end())
-		throw IBK::Exception(IBK::FormatString("Invalid referenceElementId #%1, must be the id of an existing element!")
+		throw IBK::Exception(IBK::FormatString("Invalid referenceElementId #%1, must be the id of an existing flow element!")
 							 .arg(m_referenceElementId), FUNC_ID);
 
 	// check parameters of fluid
@@ -52,6 +54,7 @@ void HydraulicNetwork::checkParameters( const std::map<std::string, IBK::Path> &
 		throw IBK::Exception(ex, IBK::FormatString("Error intializing fluid with id #%1.")
 							 .arg(m_fluid.m_id), FUNC_ID);
 	}
+
 	// check all elements and fill references to components and pipe properties
 	for(HydraulicNetworkElement &e : m_elements) {
 		try {
