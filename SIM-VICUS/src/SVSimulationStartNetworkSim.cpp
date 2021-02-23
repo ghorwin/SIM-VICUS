@@ -227,6 +227,9 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	fluid.defaultFluidWater(1);
 	nandradNetwork.m_fluid.m_id = fluid.m_id;
 	nandradNetwork.m_fluid.m_displayName = fluid.m_displayName;
+
+	fluid.m_kinematicViscosity.m_values.setValues(std::vector<double>{0,20}, std::vector<double>{1.793e-6,1.793e-6});
+
 	nandradNetwork.m_fluid.m_kinematicViscosity = fluid.m_kinematicViscosity;
 	for (int i=0; i<VICUS::NetworkFluid::NUM_P; ++i)
 		nandradNetwork.m_fluid.m_para[i] = fluid.m_para[i];

@@ -425,6 +425,7 @@ void SVPropNetworkEditWidget::setupComboBoxComponents()
 	m_ui->comboBoxComponent->blockSignals(true);
 	const SVDatabase & db = SVSettings::instance().m_db;
 	m_ui->comboBoxComponent->clear();
+	m_ui->comboBoxComponent->addItem(tr("<None>"), VICUS::INVALID_ID);
 	for (auto comp = db.m_networkComponents.begin(); comp!=db.m_networkComponents.end(); ++comp)
 		m_ui->comboBoxComponent->addItem(QString::fromStdString(
 										comp->second.m_displayName.string(IBK::MultiLanguageString::m_language, "en")),
