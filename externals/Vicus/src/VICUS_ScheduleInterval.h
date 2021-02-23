@@ -33,7 +33,7 @@ public:
 	/*! Day index (0) where schedule period starts (max. 364). First period always starts with 0.
 		Each period lasts until begin of next interval, or until end of year (if it is the last period).
 	*/
-	unsigned int				m_intervalStartDay;								// XML:A
+	unsigned int				m_intervalStartDay=0;							// XML:A
 
 	/*! Vector with daily cycles. */
 	std::vector<DailyCycle>		m_dailyCycles;									// XML:E

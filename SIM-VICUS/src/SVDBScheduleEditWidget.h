@@ -5,7 +5,8 @@
 
 
 namespace VICUS {
-class Schedule;
+	class Schedule;
+	class ScheduleInterval;
 }
 
 class SVDBScheduleTableModel;
@@ -42,11 +43,13 @@ private slots:
 
 	void on_toolButtonRemovePeriode_clicked();
 
-	void on_tableWidgetPeriods_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
+	void on_tableWidgetPeriods_currentCellChanged(int currentRow, int, int, int);
 
 private:
 	/*! Update the period table. */
 	void updatePeriodTable();
+	/*! Called when a new daily cycle has been selected,i.e. m_currentDailyCycleIndex has changed. */
+	void selectDailyCycle();
 
 
 
@@ -63,6 +66,11 @@ private:
 		A nullptr pointer means that there is no schedule to edit.
 	*/
 	VICUS::Schedule						*m_current;
+
+	/*! Pointer to currently selected interval, updated in on_tableWidgetPeriods_currentCellChanged(). */
+	VICUS::ScheduleInterval				*m_currentInterval;
+	/*! Index of currently selected daily cycle, initialized with 0 in on_tableWidgetPeriods_currentCellChanged(), modified with arrow buttons. */
+	unsigned int						m_currentDailyCycleIndex;
 
 	/*! Actual row index of period table. (-1 no row selected)*/
 	int									m_rowIdx=-1;

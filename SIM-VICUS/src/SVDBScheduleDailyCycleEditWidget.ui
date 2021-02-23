@@ -38,6 +38,12 @@
    </item>
    <item>
     <widget class="QTableWidget" name="tableWidgetDayCycle">
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="verticalHeaderVisible">
+      <bool>false</bool>
+     </attribute>
      <row>
       <property name="text">
        <string>1</string>

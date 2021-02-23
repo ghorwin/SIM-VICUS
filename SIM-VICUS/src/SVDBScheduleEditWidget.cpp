@@ -13,8 +13,11 @@
 
 #include <QtExt_LanguageHandler.h>
 #include <QtExt_DateTimeInputDialog.h>
+#include <QtExt_Conversions.h>
 
 #include "SVDBScheduleTableModel.h"
+#include "SVDBScheduleDailyCycleEditWidget.h"
+#include "SVStyle.h"
 
 SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 	QWidget(parent),
@@ -27,8 +30,8 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 	m_ui->tableWidgetPeriods->setHorizontalHeaderItem(0, new QTableWidgetItem(tr("Date")));
 	m_ui->tableWidgetPeriods->setHorizontalHeaderItem(1, new QTableWidgetItem(tr("Name")));
 
-	///TODO Dirk->Andreas wie bringe ich jetzt das Widget hier rein?
-
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetPeriods);
+	m_ui->tableWidgetPeriods->setSortingEnabled(false);
 
 	///TODO Dirk
 	//aufheben für später
@@ -57,11 +60,8 @@ void SVDBScheduleEditWidget::setup(SVDatabase * db, SVDBScheduleTableModel * dbM
 }
 
 void SVDBScheduleEditWidget::updatePeriodTable(){
-	if(m_current->m_periods.empty()){
-		m_current->m_periods.push_back(VICUS::ScheduleInterval());
-		//set start day to first day of year (0)
-		m_current->m_periods.front().m_intervalStartDay = 0;
-	}
+	int currRow = m_ui->tableWidgetPeriods->currentRow();
+	m_ui->tableWidgetPeriods->blockSignals(true);
 
 	//create a julian day to get the right date in dd.MM.
 	qint64 julianD = QDate(2021,1,1).toJulianDay();
@@ -69,14 +69,31 @@ void SVDBScheduleEditWidget::updatePeriodTable(){
 	//set up all periods with name and day
 	m_ui->tableWidgetPeriods->setRowCount(m_current->m_periods.size());
 	for(unsigned int i=0; i<m_current->m_periods.size(); ++i){
-		///TODO Dirk->Andreas wo wird der Name der Periode gespeichert? Ich habe diesen jetzt im Scheduleinterval hinzugefügt. Ist das richtig?
-
 		unsigned int startDay =m_current->m_periods[i].m_intervalStartDay;
 
-		m_ui->tableWidgetPeriods->setItem(i,0,new QTableWidgetItem(QDate::fromJulianDay(julianD+startDay).toString("dd.MM.")));
-		///TODO Dirk->Andreas wie gehen wir hier mit Multilanguage strings um oder soll das umgebaut werden?
-		m_ui->tableWidgetPeriods->setItem(i,1,new QTableWidgetItem(QString::fromStdString(m_current->m_periods[i].m_displayName.string())));
+		m_ui->tableWidgetPeriods->setItem(i,0,new QTableWidgetItem(QDate::fromJulianDay(julianD+startDay).toString(tr("dd.MM."))));
+		m_ui->tableWidgetPeriods->setItem(i,1,new QTableWidgetItem(QtExt::MultiLangString2QString(m_current->m_periods[i].m_displayName)));
 	}
+	///TODO reselect row default to row 0
+
+	m_ui->tableWidgetPeriods->blockSignals(false);
+
+	on_tableWidgetPeriods_currentCellChanged(currRow,0,0,0);
+	//is more than one period left
+	//remove button activate
+
+}
+
+void SVDBScheduleEditWidget::selectDailyCycle() {
+	// create first daily cycle if none exist yet
+
+	// enable/disable arrow buttons based
+
+	// check/uncheck day checkbox (with blocked signals)
+
+	// update current daily cycle data type and chartt
+
+	//m_ui->widgetDailyCycle->updateInput(m_currentInterval, m_currentDailyCycleIndex, m_db);
 }
 
 
@@ -113,8 +130,18 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 
 		return;
 	}
-
 	m_current = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) id ]);
+	// we must a valid schedule pointer
+	Q_ASSERT(m_current != nullptr);
+
+	//initialize period with with one period
+	if(m_current->m_periods.empty()){
+		m_current->m_periods.push_back(VICUS::ScheduleInterval());
+		m_db->m_schedules.m_modified=true;
+	}
+
+
+
 
 	// update table widget with periods
 	// select first period -> call selectionChangedSlot() which sets up the remainder of the UI
@@ -191,8 +218,8 @@ void SVDBScheduleEditWidget::on_toolButtonAddPeriod_clicked(){
 	QDate startDate = QtExt::DateTimeInputDialog::requestDate(tr("Select start date of period"), tr("Enter start date (dd.MM.):"), tr("dd.MM."), &initialDate);
 
 	if(!startDate.isValid()){
-		///TODO Fehlermeldung für den Nutzer ohne Exception oder mit?
 		//The period is not valid. Action canceled.
+		return;
 	}
 
 	// convert date to dayofyear
@@ -202,17 +229,13 @@ void SVDBScheduleEditWidget::on_toolButtonAddPeriod_clicked(){
 	for(unsigned int i=0; i<m_current->m_periods.size(); ++i){
 		const VICUS::ScheduleInterval &schedInt = m_current->m_periods[i];
 		if(schedInt.m_intervalStartDay == startDateInt) {
-			///TODO Dirk Fehlermeldung
-			//QMessageBox("Error", "A Period with this start day already exists.");
-
-			//abort function do not enter a new scheduleInterval
+			QMessageBox::critical(this,QString(), "A period with this start day already exists.");
 			return;
 		}
 		//save index for later adding schedule interval
 		if(schedInt.m_intervalStartDay < startDateInt)
 			idx=i;
 	}
-	// show error message
 
 	// now create a new ScheduleInverval and insert into vector at appropriate position (sorted) and
 	VICUS::ScheduleInterval schedInt;
@@ -236,41 +259,27 @@ void SVDBScheduleEditWidget::on_toolButtonRemovePeriode_clicked(){
 
 	int rowIdx = m_ui->tableWidgetPeriods->currentRow();
 
-	//also look for one period
-	if(m_current->m_periods.size()<=1){
-		///TODO Dirk->Andreas
-		// "The period cannot be deleted. One period must necessarily exist!"
-		return;
-	}
-
 	//erase period
-	if(rowIdx >= 0){
-		//erase period
-		m_current->m_periods.erase(m_current->m_periods.begin() + rowIdx);
-		//if first period is erased then change startDay of the next period to 0
-		if( rowIdx == 0)
-			m_current->m_periods.front().m_intervalStartDay = 0;
-		updatePeriodTable();
-	}
-	else{
-		///TODO Dirk->Andreas kann das passieren und wie würde dann eine Fehlermeldung aussehen?
-		//Fehler
-	}
+	m_current->m_periods.erase(m_current->m_periods.begin() + rowIdx);
+	//if first period is erased then change startDay of the next period to 0
+	if( rowIdx == 0)
+		m_current->m_periods.front().m_intervalStartDay = 0;
+	updatePeriodTable();
 
 }
 
 
 
-void SVDBScheduleEditWidget::on_tableWidgetPeriods_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn)
+void SVDBScheduleEditWidget::on_tableWidgetPeriods_currentCellChanged(int currentRow, int /*currentColumn*/, int /*previousRow*/, int /*previousColumn*/)
 {
-	Q_ASSERT(m_current == nullptr);
+	Q_ASSERT(m_current != nullptr);
 
 	m_rowIdx = currentRow;
 	m_ui->widgetDailyCycleAndDayTypes->setEnabled(m_rowIdx >= 0);
 
-	VICUS::ScheduleInterval &schedInt = m_current->m_periods[m_rowIdx];
-	if(schedInt.m_dailyCycles.empty()){
-		schedInt.m_dailyCycles.emplace_back(VICUS::DailyCycle());
-	}
+	m_currentInterval = &m_current->m_periods[m_rowIdx];
+	m_currentDailyCycleIndex = 0;
 
+	selectDailyCycle();
 }
+
