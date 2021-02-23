@@ -53,7 +53,7 @@ public:
 		P_Volume,							// Keyword: Volume								[m3]	'Water or air volume of the component.'
 		P_UAValue,							// Keyword: UAValue								[W/m2K]	'UA-Value of heat exchanger'
 		P_PipeMaxDiscretizationWidth,		// Keyword: PipeMaxDiscretizationWidth			[m]		'Maximum width of discretized volumes in pipe'
-		P_CarnotEfficiencyFactor,			// Keyword: CarnotEfficiencyFactor				[---]	'Carnot efficiency'
+		P_CarnotEfficiency,					// Keyword: CarnotEfficiency					[---]	'Carnot efficiency'
 		P_CondenserMeanTemperature,			// Keyword: CondenserMeanTemperature			[C]		'Mean fluid temperature in condenser'
 
 // we can add those, once we know what to do with them

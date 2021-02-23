@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Do Dez 10 12:42:13 2020</Created>
-		<LastEdited>Mo Feb 22 21:02:09 2021</LastEdited>
+		<LastEdited>Di Feb 23 17:10:31 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -17,7 +17,7 @@
 		<ViewSettings>
 			<GridSpacing>100</GridSpacing>
 			<GridWidth>1000</GridWidth>
-			<CameraTranslation>-451.145 -605.632 620.099</CameraTranslation>
+			<CameraTranslation>-450.222 -605.094 618.549</CameraTranslation>
 			<RotationMatrix>
 				<Wp>0.842117</Wp>
 				<X>0.408653</X>
@@ -382,7 +382,7 @@
 					<NetworkNode id="87" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-275.682 -76.8687 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="88" type="Mixer" maxHeatingDemand="0">
@@ -396,7 +396,7 @@
 					<NetworkNode id="90" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-257.325 -69.9473 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="91" type="Mixer" maxHeatingDemand="0">
@@ -406,7 +406,7 @@
 					<NetworkNode id="92" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-236.561 -68.1417 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="93" type="Mixer" maxHeatingDemand="0">
@@ -416,13 +416,13 @@
 					<NetworkNode id="94" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-217.903 -66.3361 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="95" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-192.926 -72.3547 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="96" type="Mixer" maxHeatingDemand="0">
@@ -436,7 +436,7 @@
 					<NetworkNode id="98" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-191.121 -51.8914 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="99" type="Mixer" maxHeatingDemand="0">
@@ -450,19 +450,19 @@
 					<NetworkNode id="101" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-160.726 -54.2988 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="102" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-195.033 -25.1084 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="103" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-169.152 -23.6038 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="104" type="Mixer" maxHeatingDemand="0">
@@ -472,7 +472,7 @@
 					<NetworkNode id="105" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-153.805 -73.2575 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="106" type="Mixer" maxHeatingDemand="0">
@@ -486,7 +486,7 @@
 					<NetworkNode id="108" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-130.633 -72.9566 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="109" type="Mixer" maxHeatingDemand="0">
@@ -496,7 +496,7 @@
 					<NetworkNode id="110" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-128.527 -47.0764 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="111" type="Mixer" maxHeatingDemand="0">
@@ -506,19 +506,19 @@
 					<NetworkNode id="112" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-97.2298 -46.1737 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="113" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-121.003 -23.6038 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="114" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-146.282 -23.3028 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="115" type="Mixer" maxHeatingDemand="0">
@@ -532,7 +532,7 @@
 					<NetworkNode id="117" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-201.954 12.2071 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="118" type="Mixer" maxHeatingDemand="0">
@@ -546,7 +546,7 @@
 					<NetworkNode id="120" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-185.403 13.7117 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="121" type="Mixer" maxHeatingDemand="0">
@@ -560,7 +560,7 @@
 					<NetworkNode id="123" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-169.152 13.7117 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="124" type="Mixer" maxHeatingDemand="0">
@@ -574,7 +574,7 @@
 					<NetworkNode id="126" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-151.999 15.8183 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="127" type="Mixer" maxHeatingDemand="0">
@@ -588,7 +588,7 @@
 					<NetworkNode id="129" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-134.846 15.8183 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="130" type="Mixer" maxHeatingDemand="0">
@@ -602,43 +602,43 @@
 					<NetworkNode id="132" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-117.392 17.022 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="133" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-209.327 35.3788 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="134" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-191.873 37.7863 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="135" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-175.472 37.9367 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="136" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-158.469 37.9367 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="137" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-141.166 39.8928 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="138" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-124.916 38.8395 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="139" type="Mixer" maxHeatingDemand="0">
@@ -648,7 +648,7 @@
 					<NetworkNode id="140" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-108.364 40.0433 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="141" type="Mixer" maxHeatingDemand="0">
@@ -658,13 +658,13 @@
 					<NetworkNode id="142" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-91.8131 40.4947 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="143" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-91.3617 17.022 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="144" type="Mixer" maxHeatingDemand="0">
@@ -678,7 +678,7 @@
 					<NetworkNode id="146" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-90.4589 1.52402 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="147" type="Mixer" maxHeatingDemand="0">
@@ -688,31 +688,31 @@
 					<NetworkNode id="148" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-88.9542 -18.4879 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="149" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-67.1367 -5.69834 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="150" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-68.6413 15.6678 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="151" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-66.9862 40.6451 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="152" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-47.5761 41.9993 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="153" type="Mixer" maxHeatingDemand="0">
@@ -722,7 +722,7 @@
 					<NetworkNode id="154" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-46.5228 14.6145 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="155" type="Mixer" maxHeatingDemand="0">
@@ -732,37 +732,37 @@
 					<NetworkNode id="156" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-46.0714 -10.8142 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="157" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-45.0182 -29.9233 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="158" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-65.3311 -32.4813 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="159" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-97.5308 -71.4519 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="160" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-64.4283 -68.5931 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="161" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-44.2659 -68.4426 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="162" type="Mixer" maxHeatingDemand="0">
@@ -772,7 +772,7 @@
 					<NetworkNode id="163" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-3.18868 -65.2828 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="164" type="Mixer" maxHeatingDemand="0">
@@ -782,13 +782,13 @@
 					<NetworkNode id="165" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>16.2214 -61.9726 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="166" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>45.4118 -65.2828 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="167" type="Mixer" maxHeatingDemand="0">
@@ -802,7 +802,7 @@
 					<NetworkNode id="169" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>45.7127 -44.0671 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="170" type="Mixer" maxHeatingDemand="0">
@@ -816,19 +816,19 @@
 					<NetworkNode id="172" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>76.5582 -41.6597 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="173" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>36.3838 -17.2842 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="174" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>61.3612 -16.5319 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="175" type="Mixer" maxHeatingDemand="0">
@@ -842,13 +842,13 @@
 					<NetworkNode id="177" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>85.5862 -13.974 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="178" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>82.2759 -64.0791 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="179" type="Mixer" maxHeatingDemand="0">
@@ -858,7 +858,7 @@
 					<NetworkNode id="180" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>105.899 -62.2735 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="181" type="Mixer" maxHeatingDemand="0">
@@ -868,7 +868,7 @@
 					<NetworkNode id="182" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>106.952 -37.7476 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="183" type="Mixer" maxHeatingDemand="0">
@@ -878,7 +878,7 @@
 					<NetworkNode id="184" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>111.165 -14.5758 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="185" type="Mixer" maxHeatingDemand="0">
@@ -888,13 +888,13 @@
 					<NetworkNode id="186" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>135.691 -11.5665 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="187" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>136.444 -38.3494 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="188" type="Mixer" maxHeatingDemand="0">
@@ -904,7 +904,7 @@
 					<NetworkNode id="189" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>137.346 9.9501 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="190" type="Mixer" maxHeatingDemand="0">
@@ -918,7 +918,7 @@
 					<NetworkNode id="192" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>140.657 -61.5212 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="193" type="Mixer" maxHeatingDemand="0">
@@ -932,19 +932,19 @@
 					<NetworkNode id="195" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>142.161 -94.9246 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="196" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>138.249 -111.777 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="197" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>142.161 -130.585 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="198" type="Mixer" maxHeatingDemand="0">
@@ -954,7 +954,7 @@
 					<NetworkNode id="199" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>140.055 -155.261 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="200" type="Mixer" maxHeatingDemand="0">
@@ -964,7 +964,7 @@
 					<NetworkNode id="201" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>135.691 26.6518 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="202" type="Mixer" maxHeatingDemand="0">
@@ -978,7 +978,7 @@
 					<NetworkNode id="204" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>113.723 23.3416 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="205" type="Mixer" maxHeatingDemand="0">
@@ -992,7 +992,7 @@
 					<NetworkNode id="207" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>95.3664 22.4388 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="208" type="Mixer" maxHeatingDemand="0">
@@ -1006,7 +1006,7 @@
 					<NetworkNode id="210" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>79.718 23.0406 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="211" type="Mixer" maxHeatingDemand="0">
@@ -1020,7 +1020,7 @@
 					<NetworkNode id="213" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>61.3612 19.7304 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="214" type="Mixer" maxHeatingDemand="0">
@@ -1030,7 +1030,7 @@
 					<NetworkNode id="215" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>46.465 18.6019 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="216" type="Mixer" maxHeatingDemand="0">
@@ -1040,7 +1040,7 @@
 					<NetworkNode id="217" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>29.2367 21.3855 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="218" type="Mixer" maxHeatingDemand="0">
@@ -1050,13 +1050,13 @@
 					<NetworkNode id="219" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>24.0456 46.3628 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="220" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>44.6595 48.3941 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="221" type="Mixer" maxHeatingDemand="0">
@@ -1070,7 +1070,7 @@
 					<NetworkNode id="223" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>23.9704 72.9953 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="224" type="Mixer" maxHeatingDemand="0">
@@ -1080,7 +1080,7 @@
 					<NetworkNode id="225" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>45.0356 75.8541 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="226" type="Mixer" maxHeatingDemand="0">
@@ -1090,13 +1090,13 @@
 					<NetworkNode id="227" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>64.7466 77.0579 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="228" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>68.5083 46.2124 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="229" type="Mixer" maxHeatingDemand="0">
@@ -1106,61 +1106,61 @@
 					<NetworkNode id="230" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>87.6174 47.717 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="231" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>88.6707 77.6597 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="232" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>106.576 78.2616 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="233" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>109.736 47.5666 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="234" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>132.456 45.6105 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="235" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>130.049 78.1111 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="236" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-15.903 176.215 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="237" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-14.0975 156.504 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="238" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-9.13208 136.492 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="239" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>11.7827 147.626 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="240" type="Mixer" maxHeatingDemand="0">
@@ -1170,7 +1170,7 @@
 					<NetworkNode id="241" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>28.9358 149.883 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="242" type="Mixer" maxHeatingDemand="0">
@@ -1184,7 +1184,7 @@
 					<NetworkNode id="244" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>47.2926 151.689 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="245" type="Mixer" maxHeatingDemand="0">
@@ -1198,7 +1198,7 @@
 					<NetworkNode id="247" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>63.5429 153.946 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="248" type="Mixer" maxHeatingDemand="0">
@@ -1208,31 +1208,31 @@
 					<NetworkNode id="249" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>80.8465 156.504 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="250" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>72.8718 177.268 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="251" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>56.3206 176.516 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="252" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>40.6721 175.011 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="253" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>23.2181 173.807 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="254" type="Mixer" maxHeatingDemand="0">
@@ -1242,7 +1242,7 @@
 					<NetworkNode id="255" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-22.0721 256.865 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="256" type="Mixer" maxHeatingDemand="0">
@@ -1252,25 +1252,25 @@
 					<NetworkNode id="257" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-19.5142 238.508 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="258" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-14.8498 221.355 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="259" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>0.196799 259.723 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="260" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>5.01171 227.373 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="261" type="Mixer" maxHeatingDemand="0">
@@ -1280,7 +1280,7 @@
 					<NetworkNode id="262" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>20.6602 228.426 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="263" type="Mixer" maxHeatingDemand="0">
@@ -1294,7 +1294,7 @@
 					<NetworkNode id="265" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>35.7067 230.082 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="266" type="Mixer" maxHeatingDemand="0">
@@ -1308,25 +1308,25 @@
 					<NetworkNode id="268" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>50.4524 232.79 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="269" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>68.3578 237.454 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="270" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>45.9384 258.369 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="271" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>28.4844 255.962 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="272" type="Mixer" maxHeatingDemand="0">
@@ -1340,7 +1340,7 @@
 					<NetworkNode id="274" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>73.4737 261.83 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="275" type="Mixer" maxHeatingDemand="0">
@@ -1354,7 +1354,7 @@
 					<NetworkNode id="277" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>71.8185 278.833 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="278" type="Mixer" maxHeatingDemand="0">
@@ -1364,7 +1364,7 @@
 					<NetworkNode id="279" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>65.499 293.428 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="280" type="Mixer" maxHeatingDemand="0">
@@ -1378,7 +1378,7 @@
 					<NetworkNode id="282" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>42.6282 293.277 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="283" type="Mixer" maxHeatingDemand="0">
@@ -1392,7 +1392,7 @@
 					<NetworkNode id="285" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>25.0237 290.569 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="286" type="Mixer" maxHeatingDemand="0">
@@ -1402,7 +1402,7 @@
 					<NetworkNode id="287" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>8.47242 288.312 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="288" type="Mixer" maxHeatingDemand="0">
@@ -1412,49 +1412,49 @@
 					<NetworkNode id="289" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-16.204 282.143 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="290" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-20.718 299.145 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="291" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-22.2226 314.042 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="292" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>19.1555 312.838 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="293" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>37.6628 315.546 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="294" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>52.5589 318.856 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="295" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>49.3991 376.485 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="296" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>32.0956 373.175 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="297" type="Mixer" maxHeatingDemand="0">
@@ -1464,7 +1464,7 @@
 					<NetworkNode id="298" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>14.1901 371.068 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="299" type="Mixer" maxHeatingDemand="0">
@@ -1474,13 +1474,13 @@
 					<NetworkNode id="300" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-2.66205 366.253 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="301" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-24.4796 359.482 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="302" type="Mixer" maxHeatingDemand="0">
@@ -1490,7 +1490,7 @@
 					<NetworkNode id="303" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-27.7898 378.742 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="304" type="Mixer" maxHeatingDemand="0">
@@ -1500,13 +1500,13 @@
 					<NetworkNode id="305" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-26.1347 396.497 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="306" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-3.71531 397.851 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="307" type="Mixer" maxHeatingDemand="0">
@@ -1516,7 +1516,7 @@
 					<NetworkNode id="308" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-27.3384 422.828 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="309" type="Mixer" maxHeatingDemand="0">
@@ -1530,7 +1530,7 @@
 					<NetworkNode id="311" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>-6.57416 424.032 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="312" type="Mixer" maxHeatingDemand="0">
@@ -1544,7 +1544,7 @@
 					<NetworkNode id="314" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>13.7387 425.687 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="315" type="Mixer" maxHeatingDemand="0">
@@ -1558,31 +1558,31 @@
 					<NetworkNode id="317" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>16.2966 409.136 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="318" type="Building" maxHeatingDemand="4800" componentId="100002">
 						<Position>23.0676 394.24 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="319" type="Building" maxHeatingDemand="3600" componentId="100002">
 						<Position>6.15901 -39.6284 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="320" type="Building" maxHeatingDemand="3600" componentId="100002">
 						<Position>5.85808 -29.2462 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="321" type="Building" maxHeatingDemand="3600" componentId="100002">
 						<Position>4.65435 -18.8641 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="322" type="Mixer" maxHeatingDemand="0">
@@ -1592,7 +1592,7 @@
 					<NetworkNode id="323" type="Building" maxHeatingDemand="3600" componentId="100002">
 						<Position>4.65435 -8.63243 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="324" type="Mixer" maxHeatingDemand="0">
@@ -1602,19 +1602,19 @@
 					<NetworkNode id="325" type="Building" maxHeatingDemand="3600" componentId="100002">
 						<Position>4.80482 7.61788 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="326" type="Building" maxHeatingDemand="3600" componentId="100002">
 						<Position>3.75155 18.7524 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="327" type="Building" maxHeatingDemand="3600" componentId="100002">
 						<Position>3.45062 29.285 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="328" type="Mixer" maxHeatingDemand="0">
@@ -1624,7 +1624,7 @@
 					<NetworkNode id="329" type="Building" maxHeatingDemand="3600" componentId="100002">
 						<Position>4.35342 47.1904 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="330" type="Mixer" maxHeatingDemand="0">
@@ -1634,37 +1634,37 @@
 					<NetworkNode id="331" type="Building" maxHeatingDemand="3600" componentId="100002">
 						<Position>2.84876 58.1744 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="332" type="Building" maxHeatingDemand="3600" componentId="100002">
 						<Position>3.14969 67.9547 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="333" type="Building" maxHeatingDemand="3600" componentId="100002">
 						<Position>98.846 252.426 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="334" type="Building" maxHeatingDemand="3600" componentId="100002">
 						<Position>99.5983 262.958 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="335" type="Building" maxHeatingDemand="3600" componentId="100002">
 						<Position>97.7927 271.986 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="336" type="Building" maxHeatingDemand="3600" componentId="100002">
 						<Position>97.9432 282.218 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="337" type="Mixer" maxHeatingDemand="0">
@@ -1674,7 +1674,7 @@
 					<NetworkNode id="338" type="Building" maxHeatingDemand="3600" componentId="100002">
 						<Position>96.8899 291.396 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="339" type="Mixer" maxHeatingDemand="0">
@@ -1688,25 +1688,25 @@
 					<NetworkNode id="341" type="Building" maxHeatingDemand="3600" componentId="100002">
 						<Position>47.4995 425.8 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="342" type="Building" maxHeatingDemand="3600" componentId="100002">
 						<Position>47.4995 415.869 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="343" type="Building" maxHeatingDemand="3600" componentId="100002">
 						<Position>49.1546 405.638 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="344" type="Building" maxHeatingDemand="3600" componentId="100002">
 						<Position>50.0574 396.911 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="345" type="Mixer" maxHeatingDemand="0">
@@ -1720,7 +1720,7 @@
 					<NetworkNode id="347" type="Building" maxHeatingDemand="21600" componentId="100002">
 						<Position>108.984 148.078 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="348" type="Mixer" maxHeatingDemand="0">
@@ -1734,43 +1734,43 @@
 					<NetworkNode id="350" type="Building" maxHeatingDemand="21600" componentId="100002">
 						<Position>135.917 150.335 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="351" type="Building" maxHeatingDemand="21600" componentId="100002">
 						<Position>129.898 179.826 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="352" type="Building" maxHeatingDemand="21600" componentId="100002">
 						<Position>102.363 175.914 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="353" type="Building" maxHeatingDemand="21600" componentId="100002">
 						<Position>104.169 200.44 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="354" type="Building" maxHeatingDemand="21600" componentId="100002">
 						<Position>128.544 202.697 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="355" type="Building" maxHeatingDemand="21600" componentId="100002">
 						<Position>121.322 232.489 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="356" type="Building" maxHeatingDemand="21600" componentId="100002">
 						<Position>94.9903 227.975 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="357" type="Mixer" maxHeatingDemand="0">
@@ -1780,7 +1780,7 @@
 					<NetworkNode id="358" type="Building" maxHeatingDemand="21600" componentId="100002">
 						<Position>81.8997 327.283 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="359" type="Mixer" maxHeatingDemand="0">
@@ -1790,7 +1790,7 @@
 					<NetworkNode id="360" type="Building" maxHeatingDemand="21600" componentId="100002">
 						<Position>80.696 350.153 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="361" type="Mixer" maxHeatingDemand="0">
@@ -1800,7 +1800,7 @@
 					<NetworkNode id="362" type="Building" maxHeatingDemand="21600" componentId="100002">
 						<Position>77.3858 375.582 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="363" type="Mixer" maxHeatingDemand="0">
@@ -1810,31 +1810,31 @@
 					<NetworkNode id="364" type="Building" maxHeatingDemand="21600" componentId="100002">
 						<Position>29.6881 453.072 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="365" type="Building" maxHeatingDemand="21600" componentId="100002">
 						<Position>-1.60879 467.216 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="366" type="Building" maxHeatingDemand="21600" componentId="100002">
 						<Position>-28.0908 443.141 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="367" type="Building" maxHeatingDemand="6000" componentId="100002">
 						<Position>-265.244 -38.8761 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="368" type="Building" maxHeatingDemand="6000" componentId="100002">
 						<Position>-230.938 -39.4779 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="369" type="Mixer" maxHeatingDemand="0">
@@ -1844,13 +1844,13 @@
 					<NetworkNode id="370" type="Building" maxHeatingDemand="6000" componentId="100002">
 						<Position>-262.234 -12.9959 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="371" type="Building" maxHeatingDemand="6000" componentId="100002">
 						<Position>-231.69 -13.2969 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="372" type="Mixer" maxHeatingDemand="0">
@@ -1860,7 +1860,7 @@
 					<NetworkNode id="373" type="Building" maxHeatingDemand="6000" componentId="100002">
 						<Position>-255.313 13.9374 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="374" type="Mixer" maxHeatingDemand="0">
@@ -1870,31 +1870,31 @@
 					<NetworkNode id="375" type="Building" maxHeatingDemand="6000" componentId="100002">
 						<Position>-229.884 15.1412 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="376" type="Building" maxHeatingDemand="6000" componentId="100002">
 						<Position>-254.109 37.5606 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="377" type="Building" maxHeatingDemand="6000" componentId="100002">
 						<Position>-232.292 37.4101 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="378" type="Building" maxHeatingDemand="28800" componentId="100002">
 						<Position>175.734 -42.4872 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="379" type="Building" maxHeatingDemand="28800" componentId="100002">
 						<Position>182.204 -64.9066 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="380" type="Mixer" maxHeatingDemand="0">
@@ -1904,25 +1904,25 @@
 					<NetworkNode id="381" type="Building" maxHeatingDemand="28800" componentId="100002">
 						<Position>184.01 -90.1849 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="382" type="Building" maxHeatingDemand="28800" componentId="100002">
 						<Position>161.741 2.95344 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="383" type="Building" maxHeatingDemand="28800" componentId="100002">
 						<Position>163.546 31.8429 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="384" type="Building" maxHeatingDemand="28800" componentId="100002">
 						<Position>158.43 67.3528 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="385" type="Mixer" maxHeatingDemand="0">
@@ -1932,25 +1932,25 @@
 					<NetworkNode id="386" type="Building" maxHeatingDemand="28800" componentId="100002">
 						<Position>170.618 -147.964 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="387" type="Building" maxHeatingDemand="28800" componentId="100002">
 						<Position>197.401 -146.61 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="388" type="Building" maxHeatingDemand="28800" componentId="100002">
 						<Position>224.334 -145.255 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="389" type="Building" maxHeatingDemand="28800" componentId="100002">
 						<Position>186.116 -113.808 0</Position>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+							<IBK:Parameter name="HeatFlux" unit="W">-100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 				</Nodes>

@@ -93,6 +93,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Maximum pressure loss for pipe dimensioning algorithm");
 	tr("Reference pressure applied to reference element");
 	tr("Fluid temperature for hydraulic calculation, else initial temperature");
+	tr("Initial Fluid temperature for thermo-hydraulic calculation");
 	tr("Simple pipe at stationary flow conditions with heat exchange");
 	tr("Pipe with a discretized fluid volume and heat exchange");
 	tr("Pump with constant pressure");
@@ -105,9 +106,10 @@ KeywordListQt::KeywordListQt() {
 	tr("Pump efficiency.");
 	tr("Motor efficiency for a pump.");
 	tr("Water or air volume of the component.");
-	tr("Coefficient of performance of the component.");
 	tr("UA-Value of heat exchanger");
 	tr("Maximum width of discretized volumes in pipe");
+	tr("Carnot efficiency");
+	tr("Mean fluid temperature in condenser");
 	tr("Constant temperature");
 	tr("Constant heat flux");
 	tr("Heat flux from data file");

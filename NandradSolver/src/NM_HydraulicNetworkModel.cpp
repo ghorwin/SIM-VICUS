@@ -201,20 +201,21 @@ void HydraulicNetworkModel::setup() {
 
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
 			{
-				// create pump model
+				// create fixed pressure loss model
 				HNFixedPressureLossCoeffElement * hxElement = new HNFixedPressureLossCoeffElement(*e.m_component, m_hydraulicNetwork->m_fluid);
 				// add to flow elements
 				m_p->m_flowElements.push_back(hxElement); // transfer ownership
 			} break;
 
-			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot : {
-				throw IBK::Exception(IBK::FormatString("Model type '%1' for HydraulicNetworkComponent "
-									 "with id %2 is still not supported")
-									.arg(NANDRAD::KeywordList::Keyword(
-									"HydraulicNetworkComponent::modelType_t",e.m_component->m_modelType))
-									.arg(e.m_componentId),FUNC_ID);
-			}
-			default:{
+			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot :
+			{
+				// create fixed pressure loss model
+				HNFixedPressureLossCoeffElement * hxElement = new HNFixedPressureLossCoeffElement(*e.m_component, m_hydraulicNetwork->m_fluid);
+				// add to flow elements
+				m_p->m_flowElements.push_back(hxElement); // transfer ownership
+			} break;
+
+			case NANDRAD::HydraulicNetworkComponent::NUM_MT:{
 				throw IBK::Exception(IBK::FormatString("Unsupported model type for "
 									"HydraulicNetworkComponent with id %1!")
 									.arg(e.m_componentId),FUNC_ID);

@@ -93,7 +93,7 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 			case MT_ConstantPressurePump:
 				return {P_PressureHead, P_PumpEfficiency, P_MotorEfficiency, P_Volume};
 			case MT_HeatPumpIdealCarnot:
-				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
+				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume, P_CarnotEfficiency};
 			case MT_HeatExchanger:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
 			case MT_DynamicPipe: {

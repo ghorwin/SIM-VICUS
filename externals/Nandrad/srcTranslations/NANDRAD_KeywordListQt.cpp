@@ -45,7 +45,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Pipe with a discretized fluid volume and heat exchange");
 	tr("Pump with constant pressure");
 	tr("Simple heat exchanger with given heat flux");
-	tr("Heat pump");
+	tr("Heat pump with unlimited heating power and constant carnot efficiency");
 	tr("Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes).");
 	tr("Pressure loss coefficient for the component (zeta-value).");
 	tr("External heat transfer coeffient for the outside boundary.");
@@ -53,9 +53,10 @@ KeywordListQt::KeywordListQt() {
 	tr("Pump efficiency.");
 	tr("Motor efficiency for a pump.");
 	tr("Water or air volume of the component.");
-	tr("Coefficient of performance of the component.");
 	tr("UA-Value of heat exchanger");
 	tr("Maximum width of discretized volumes in pipe");
+	tr("Carnot efficiency");
+	tr("Mean fluid temperature in condenser");
 	tr("Constant temperature");
 	tr("Constant heat flux");
 	tr("Heat flux from data file");

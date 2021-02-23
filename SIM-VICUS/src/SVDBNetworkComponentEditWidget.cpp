@@ -60,7 +60,7 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_UAValue == (int)VICUS::NetworkComponent::P_UAValue);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_PipeMaxDiscretizationWidth == (int)VICUS::NetworkComponent::P_PipeMaxDiscretizationWidth);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_CondenserMeanTemperature == (int)VICUS::NetworkComponent::P_CondenserMeanTemperature);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiencyFactor == (int)VICUS::NetworkComponent::P_CarnotEfficiencyFactor);
+	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiency == (int)VICUS::NetworkComponent::P_CarnotEfficiency);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::NUM_P == (int)VICUS::NetworkComponent::NUM_P);
 
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_StaticPipe == (int)VICUS::NetworkComponent::MT_StaticPipe);

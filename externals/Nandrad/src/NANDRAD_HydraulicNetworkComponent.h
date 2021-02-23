@@ -22,10 +22,10 @@ public:
 		MT_DynamicPipe,						// Keyword: DynamicPipe					'Pipe with a discretized fluid volume and heat exchange'
 		MT_ConstantPressurePump,			// Keyword: ConstantPressurePump		'Pump with constant pressure'
 		MT_HeatExchanger,					// Keyword: HeatExchanger				'Simple heat exchanger with given heat flux'
+		MT_HeatPumpIdealCarnot,				// Keyword: HeatPumpIdealCarnot			'Heat pump with unlimited heating power and constant carnot efficiency'
 
 		// models below not supported yet
 
-		MT_HeatPumpIdealCarnot,				// Keyword: HeatPumpIdealCarnot			'Heat pump with unlimited heating power and constant carnot efficiency'
 //		MT_GasBoiler,						// xKeyword: GasBoiler					'Gas boiler'
 //		MT_ControlValve,					// xKeyword: ControlValve				'Control valve'
 //		MT_WaterStorage,					// xKeyword: WaterStorage				'Water storage'
@@ -47,7 +47,7 @@ public:
 		P_Volume,							// Keyword: Volume								[m3]	'Water or air volume of the component.'
 		P_UAValue,							// Keyword: UAValue								[W/m2K]	'UA-Value of heat exchanger'
 		P_PipeMaxDiscretizationWidth,		// Keyword: PipeMaxDiscretizationWidth			[m]		'Maximum width of discretized volumes in pipe'
-		P_CarnotEfficiencyFactor,			// Keyword: CarnotEfficiencyFactor				[---]	'Carnot efficiency'
+		P_CarnotEfficiency,					// Keyword: CarnotEfficiency					[---]	'Carnot efficiency'
 		P_CondenserMeanTemperature,			// Keyword: CondenserMeanTemperature			[C]		'Mean fluid temperature in condenser'
 
 // we can add those, once we know what to do with them

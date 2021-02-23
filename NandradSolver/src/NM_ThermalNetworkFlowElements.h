@@ -272,8 +272,8 @@ class TNHeatPumpIdealCarnot : public ThermalNetworkAbstractFlowElementWithHeatLo
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	TNHeatPumpIdealCarnot(const NANDRAD::HydraulicFluid & fluid,
-							  const NANDRAD::HydraulicNetworkComponent & comp,
-							  const double &QExt);
+							const NANDRAD::HydraulicNetworkComponent & comp,
+							const double &QExt);
 
 	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
 	void setInflowTemperature(double Tinflow) override;

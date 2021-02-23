@@ -279,9 +279,9 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot :
 				{
 					// create general model with given heat flux
-					TNElementWithExternalHeatLoss * element = new TNElementWithExternalHeatLoss(m_network->m_fluid,
-																	e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value,
-																	heatExchangeValue);
+					TNHeatPumpIdealCarnot * element = new TNHeatPumpIdealCarnot(m_network->m_fluid,
+																				*e.m_component,
+																				heatExchangeValue);
 					// add to flow elements
 					m_p->m_flowElements.push_back(element); // transfer ownership
 					m_p->m_heatLossElements.push_back(element); // copy of pointer
