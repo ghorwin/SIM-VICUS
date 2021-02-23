@@ -45,6 +45,10 @@ private slots:
 
 	void on_tableWidgetPeriods_currentCellChanged(int currentRow, int currentColumn, int, int);
 
+	void on_tableWidgetPeriods_cellChanged(int row, int column);
+
+	void on_tableWidgetPeriods_cellClicked(int row, int column);
+
 private:
 	/*! Update the period table. */
 	void updatePeriodTable();
