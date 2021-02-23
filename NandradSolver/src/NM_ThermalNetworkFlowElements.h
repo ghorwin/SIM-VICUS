@@ -82,8 +82,6 @@ public:
 /*! Instantiated for DynamicPipe elements with HeatExchangeType set. */
 class TNDynamicPipeElement : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
 public:
-	TNDynamicPipeElement() { }
-
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	TNDynamicPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 				  const NANDRAD::HydraulicNetworkComponent & comp,
@@ -92,32 +90,31 @@ public:
 				  const double &TExt);
 
 	/*! Function retrieving number of internal states.*/
-	unsigned int nInternalStates() const override;
-
-	/*! Function for retrieving initial states
-	 * of each model after initial temperature is set.*/
-	void initialInternalStates(double *y0) override;
-
-	/*! Function for setting internal states.*/
-	void setInternalStates(const double *y) override;
+	unsigned int nInternalStates() const override { return m_nVolumes;}
 
 	/*! Function for setting initial temperature
 	 * for each model.*/
-	void setInitialTemperature(double T0) override;
+	virtual void setInitialTemperature(double T0) override;
 
-	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
-	void setInflowTemperature(double Tinflow) override;
+	/*! Function for retrieving initial states.*/
+	virtual void initialInternalStates(double *y0) override;
+
+	/*! Function for setting internal states.*/
+	virtual void setInternalStates(const double *y) override;
 
 	/*! Function for retrieving heat fluxes out of the flow element.*/
-	void internalDerivatives(double *ydot) override;
+	virtual void internalDerivatives(double *ydot) override;
 
 	/*! Overrides ThermalNetworkAbstractFlowElement::outflowTemperature(). */
-	double outflowTemperature() override;
+	virtual double outflowTemperature() override;
+
+	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
+	virtual void setInflowTemperature(double Tinflow) override;
 
 	/*! Function for registering dependencies between derivaites, internal states and modelinputs.*/
-	void dependencies(const double *ydot, const double *y,
-					  const double *mdot, const double* TInflowLeft, const double*TInflowRight,
-					  std::vector<std::pair<const double *, const double *> > &resultInputDependencies ) const override;
+	virtual void dependencies(const double *ydot, const double *y,
+							  const double *mdot, const double* TInflowLeft, const double*TInflowRight,
+							  std::vector<std::pair<const double *, const double *> > & ) const override;
 
 private:
 

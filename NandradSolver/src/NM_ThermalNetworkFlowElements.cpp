@@ -70,18 +70,17 @@ void TNStaticPipeElement::setInflowTemperature(double Tinflow) {
 		const double ambientTemperature = *m_externalTemperatureRef;
 		// calculate heat loss with given parameters
 		m_heatLoss = UAValueTotal * (m_meanTemperature - ambientTemperature);
-//#ifdef USE_STEADY_STATE_HEAT_TRANSFER
-//		// correct outlet temperature/inlet temperature for steady state model
-//		if(m_massFlux >= 0) {
-//			m_outletTemperature = m_inletTemperature - 1.0/(m_massFlux * m_fluidHeatCapacity) *
-//					m_heatLoss;
-//		}
-//		else {
-//			// calculate new inlet temperature
-//			m_inletTemperature = m_outletTemperature + 1.0/(m_massFlux * m_fluidHeatCapacity) *
-//					m_heatLoss;
-//		}
-//#endif
+#ifdef USE_STEADY_STATE_HEAT_TRANSFER
+		if(m_massFlux >= 0) {
+		}
+		// calculate heat loss with given (for steady state model we interpret mean temperature as
+		// outflow temperature and calculate a corresponding heat flux)
+		m_heatLoss = m_massFlux * m_fluidHeatCapacity *
+				(m_inflowTemperature - ambientTemperature) *
+				(1. - std::exp(-UAValueTotal / (std::fabs(m_massFlux) * m_fluidHeatCapacity )));
+#else
+		m_heatLoss = UAValueTotal * (m_meanTemperature - ambientTemperature);
+#endif
 	}
 }
 

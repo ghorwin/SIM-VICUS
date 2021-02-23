@@ -380,7 +380,7 @@ void HydraulicNetworkModel::setInputValueRefs(const std::vector<QuantityDescript
 }
 
 
-void HydraulicNetworkModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
+void HydraulicNetworkModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & /*resultInputValueReferences*/) const {
 	// we ignore dependencies
 //	// register thermal-interactions
 //	if(m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {

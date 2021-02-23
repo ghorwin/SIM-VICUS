@@ -237,6 +237,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 					m_p->m_heatLossElements.push_back(element); // copy of pointer
 				}
 				break;
+				case NANDRAD::HydraulicNetworkComponent::NUM_MT:
+				break;
 			}
 
 			// retrieve component
