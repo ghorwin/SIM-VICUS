@@ -8,6 +8,9 @@
 
 #include "numeric"
 
+//#define USE_STEADY_STATE_HEAT_TRANSFER
+
+
 namespace NANDRAD_MODEL {
 
 // *** TNStaticPipeElement ***
@@ -67,6 +70,18 @@ void TNStaticPipeElement::setInflowTemperature(double Tinflow) {
 		const double ambientTemperature = *m_externalTemperatureRef;
 		// calculate heat loss with given parameters
 		m_heatLoss = UAValueTotal * (m_meanTemperature - ambientTemperature);
+//#ifdef USE_STEADY_STATE_HEAT_TRANSFER
+//		// correct outlet temperature/inlet temperature for steady state model
+//		if(m_massFlux >= 0) {
+//			m_outletTemperature = m_inletTemperature - 1.0/(m_massFlux * m_fluidHeatCapacity) *
+//					m_heatLoss;
+//		}
+//		else {
+//			// calculate new inlet temperature
+//			m_inletTemperature = m_outletTemperature + 1.0/(m_massFlux * m_fluidHeatCapacity) *
+//					m_heatLoss;
+//		}
+//#endif
 	}
 }
 

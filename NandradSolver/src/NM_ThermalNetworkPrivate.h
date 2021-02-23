@@ -49,13 +49,9 @@ public:
 	void setup(const Network &nw,
 			   const NANDRAD::HydraulicFluid &fluid);
 
-	/*! Updates all states at network nodes.
+	/*! Updates all states and fluxes.
 	*/
-	int updateStates();
-
-	/*! Updates all heat fluxes through the pipes.
-	*/
-	int updateFluxes();
+	int update();
 
 	/*! Vector of dependencies.
 	*/
