@@ -72,7 +72,7 @@
 						<IBK:Parameter name="PressureLossCoefficient" unit="-">5</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.4</IBK:Parameter>
 					</HydraulicNetworkComponent>
-					<HydraulicNetworkComponent id="3" displayName="Pipe with heat exchange" modelType="StaticPipe">
+					<HydraulicNetworkComponent id="3" displayName="Pipe with heat exchange" modelType="SimplePipe">
 						<!-- Specify heat exchange type -->
 						<HeatExchangeType>TemperatureConstant</HeatExchangeType>
 						<!-- TemperatureConstant requires ExternalHeatTransferCoefficient -->

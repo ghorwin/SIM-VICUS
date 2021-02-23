@@ -53,7 +53,7 @@
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PressureLossCoefficient" unit="-">5</IBK:Parameter>
 					</HydraulicNetworkComponent>
-					<HydraulicNetworkComponent id="3" modelType="StaticPipe">
+					<HydraulicNetworkComponent id="3" modelType="SimplePipe">
 					</HydraulicNetworkComponent>
 				</Components>
 				<Elements>
