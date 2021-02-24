@@ -62,11 +62,10 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 
 void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 
-	// heat flux vector is a result
+	// publish heat loss from flow element towards environment
+	QuantityDescription desc("FlowElementHeatLoss", "W", "Heat flux from flow element into environment", false);
 
-	// TODO : Anne, der Name is irreführend, wir brauchen hier was anderes, was besser ausdrückt, dass es sich um
-	//        eine Wärmeverlust durch Wärmeabgabe an die Umgebung handelt.
-	QuantityDescription desc("FluidHeatFlux", "W", "Heat flux from flow element into environment", false);
+	// TODO : Anne, update descriptions below
 
 	// set a description for each flow element
 	desc.m_displayName = m_displayName;
@@ -131,15 +130,7 @@ void ThermalNetworkBalanceModel::resultValueRefs(std::vector<const double *> &re
 
 const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference & quantity) const {
 	const QuantityName & quantityName = quantity.m_name;
-	// return vector of heat fluxes
 
-//	if(quantityName == std::string("FluidHeatFluxes")) {
-//		if(quantity.m_id == id() && quantity.m_referenceType ==
-//		   NANDRAD::ModelInputReference::MRT_NETWORK) {
-//				return m_statesModel->m_p->m_fluidHeatFluxRefs[0];
-//		}
-//		return nullptr;
-//	}
 	// return ydot
 	if(quantityName == std::string("ydot")) {
 		// whole vector access
@@ -181,7 +172,7 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference &
 		return m_statesModel->m_p->m_inletNodeTemperatureRefs[pos];
 	else if (quantityName == std::string("OutletNodeTemperature"))
 		return m_statesModel->m_p->m_outletNodeTemperatureRefs[pos];
-	else if (quantityName == std::string("FluidHeatFlux"))
+	else if (quantityName == std::string("FlowElementHeatLoss"))
 		return m_statesModel->m_p->m_fluidHeatFluxRefs[pos];
 	return nullptr;
 }

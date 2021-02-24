@@ -401,14 +401,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 void ThermalNetworkStatesModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 	if(!resDesc.empty())
 		resDesc.clear();
-	// mass flux vector is a result
-	QuantityDescription desc("FluidTemperatures", "C", "Internal fluid temperatures fo all network elements", false);
-	// deactivate description;
-	if(m_p->m_flowElements.empty())
-		desc.m_size = 0;
-	resDesc.push_back(desc);
-	// set a description for each flow element
-	desc.m_name = "FluidTemperature";
+	QuantityDescription desc("FluidTemperature", "C", "Internal fluid temperature of network element", false);
+	// adjust reference type
 	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	// loop through all flow elements
 	for(unsigned int i = 0; i < m_elementIds.size(); ++i) {

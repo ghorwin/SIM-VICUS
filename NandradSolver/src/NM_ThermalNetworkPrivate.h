@@ -77,7 +77,9 @@ public:
 	/*! Container with temperatures for each node.
 	*/
 	std::vector<double>								m_nodalTemperatures;
-	/*! References to heat fluxes out of each heat flow element. */
+	/*! References to heat fluxes out of each heat flow element.
+		TODO : Anne, rename flowElementHeatLossRefs
+	*/
 	std::vector<const double*>						m_fluidHeatFluxRefs;
 	/*! References to temperatures for inlet node of each flow element.
 	*/

@@ -1896,7 +1896,12 @@ void NandradModel::initOutputReferenceList() {
 				std::stringstream description;
 				if (varDescs[j].m_size == 0)
 					continue;
-				description << refTypeName << "." << varDescs[j].m_name;
+				// if different reference type is given, use this reference type instead
+				if (varDescs[j].m_referenceType != NANDRAD::ModelInputReference::NUM_MRT)
+					description << NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", varDescs[j].m_referenceType)
+								<< "." << varDescs[j].m_name;
+				else
+					description << refTypeName << "." << varDescs[j].m_name;
 				if (!varDescs[j].m_indexKeys.empty()) {
 					description << "(";
 					if (varDescs[j].m_indexKeyType == VectorValuedQuantityIndex::IK_Index)
@@ -1931,6 +1936,8 @@ void NandradModel::initOutputReferenceList() {
 
 	/// \todo append scheduled quantities
 
+
+	// TODO Andreas, refactor to use IBK::file_utils
 	// dump output reference list to file
 #ifdef _WIN32
 	#if defined(_MSC_VER)
@@ -1947,7 +1954,7 @@ void NandradModel::initOutputReferenceList() {
 		it != refDescs.end(); ++it)
 	{
 		std::stringstream strm;
-		strm << std::setw(30) << std::left << it->first << '\t'
+		strm << std::setw(50) << std::left << it->first << '\t'
 			 << std::setw(10) << std::left << ("[" + it->second.m_unit + "]") << '\t'
 			 << it->second.m_description << std::endl;
 		IBK::IBK_Message( IBK::FormatString("%1").arg(strm.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
