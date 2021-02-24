@@ -69,22 +69,17 @@
 						<IBK:Parameter name="Volume" unit="m3">0.1</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="3" displayName="Heat exchanger without heat exchange" modelType="HeatExchanger">
-						<!-- Specify heat exchange type -->
 						<HeatExchangeType>HeatFluxConstant</HeatExchangeType>
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PressureLossCoefficient" unit="-">0.01</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.4</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="4" displayName="Pipe 1" modelType="SimplePipe">
-						<!-- Specify heat exchange type -->
 						<HeatExchangeType>TemperatureConstant</HeatExchangeType>
-						<!-- TemperatureConstant requires ExternalHeatTransferCoefficient -->
 						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="5" displayName="Pipe 2" modelType="SimplePipe">
-						<!-- Specify heat exchange type -->
 						<HeatExchangeType>TemperatureConstant</HeatExchangeType>
-						<!-- TemperatureConstant requires ExternalHeatTransferCoefficient -->
 						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</HydraulicNetworkComponent>
 				</Components>
@@ -93,12 +88,10 @@
 					<HydraulicNetworkElement id="202" inletNodeId="1" outletNodeId="3" componentId="2" displayName="Parallel pump" />
 					<HydraulicNetworkElement id="101" inletNodeId="2" outletNodeId="4" componentId="4" pipePropertiesId="1">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
-						<!-- Pipe outside is fixed at 0 C -->
 						<IBK:Parameter name="Temperature" unit="C">0</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="102" inletNodeId="3" outletNodeId="4" componentId="5" pipePropertiesId="2">
 						<IBK:Parameter name="Length" unit="m">200</IBK:Parameter>
-						<!-- Pipe outside is fixed at 0 C -->
 						<IBK:Parameter name="Temperature" unit="C">0</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="301" inletNodeId="4" outletNodeId="1" componentId="3" displayName="Heat Exchanger">
@@ -111,23 +104,11 @@
 		
 		<Outputs>
 			<Definitions>
-				<!-- Outputs go to file 'network.tsv' -->
-				<OutputDefinition>
-					<Quantity>FluidMassFluxes</Quantity>
-					<ObjectListName>Entire network</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<!-- Outputs go to file 'network_elements.tsv' -->
 				<OutputDefinition>
 					<Quantity>FluidMassFlux</Quantity>
 					<ObjectListName>Network Elements</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>OutletNodeTemperature</Quantity>
-					<ObjectListName>Network Elements</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>			
 				<OutputDefinition>
 					<Quantity>FluidTemperature</Quantity>
 					<ObjectListName>Network Elements</ObjectListName>
