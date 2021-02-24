@@ -56,7 +56,7 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 		double innerHeatTransferCoefficient = nusselt * m_fluidConductivity /
 												m_innerDiameter;
 
-		// calculate heat transfer
+		// calculate heat transmittance
 
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
 		const double UAValueTotal = m_length / (
@@ -65,9 +65,9 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 					+ 1.0/m_UValuePipeWall )
 			);
 
-		// Q in [W] = DeltaT * UAValueTotal
 		const double ambientTemperature = *m_externalTemperatureRef;
 		// calculate heat loss with given parameters
+		// Q in [W] = DeltaT * UAValueTotal
 		m_heatLoss = UAValueTotal * (m_meanTemperature - ambientTemperature);
 	}
 }
@@ -480,8 +480,8 @@ TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(const NANDRAD::HydraulicFluid & flu
 	m_externalHeatLossRef = &QExt;
 }
 
-void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow)
-{
+
+void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 	// copy ionflow temperature
 	m_inflowTemperature = Tinflow;
 	// TODO Hauke: use mean evaporator temperature instead of evaporator inlet temperature?
@@ -490,10 +490,10 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow)
 	m_heatLoss = *m_externalHeatLossRef * (COP - 1)/COP;
 }
 
+
 // *** AdiabaticElement ***
 
-TNAdiabaticElement::TNAdiabaticElement(const NANDRAD::HydraulicFluid & fluid,
-									double fluidVolume) {
+TNAdiabaticElement::TNAdiabaticElement(const NANDRAD::HydraulicFluid & fluid, double fluidVolume) {
 	// copy fluid parameters
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;

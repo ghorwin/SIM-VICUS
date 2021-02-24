@@ -357,6 +357,7 @@ int ThermalNetworkBalanceModel::ydot(double* ydot) {
 	return 0;
 }
 
+
 void ThermalNetworkBalanceModel::printVars() const {
 	std::cout << "Heat fluxes [W]" << std::endl;
 	for (unsigned int i=0; i<m_statesModel->m_p->m_fluidHeatFluxRefs.size(); ++i) {
@@ -370,8 +371,6 @@ void ThermalNetworkBalanceModel::printVars() const {
 	for (unsigned int i=0; i<m_statesModel->m_meanTemperatureRefs.size(); ++i)
 		std::cout << "  " << i << "   " << *m_statesModel->m_meanTemperatureRefs[i] - 273.15 << std::endl;
 }
-
-
 
 
 } // namespace NANDRAD_MODEL

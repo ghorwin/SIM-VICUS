@@ -400,13 +400,11 @@ int HydraulicNetworkModel::update() {
 			IBK_FastMessage(IBK::VL_DETAILED)("Network solver returned recoverable error.", IBK::MSG_ERROR, FUNC_ID, IBK::VL_DETAILED);
 			return res;
 		}
-
-		// TODO : add support for return values (e.g. recoverable convergence errors)
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex,
-							 IBK::FormatString("Error solving hydraulic network equations for network #%1 '%2'.")
-							 .arg(m_id).arg(m_displayName), FUNC_ID);
+							 IBK::FormatString("Error solving hydraulic network equations for network '%1' (#%2).")
+							 .arg(m_displayName).arg(m_id), FUNC_ID);
 
 	}
 

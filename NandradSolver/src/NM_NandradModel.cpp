@@ -1369,7 +1369,7 @@ void NandradModel::initNetworks() {
 		IBK_MSG_INDENT;
 		// process all networks and create NM::HydraulicNetworkModel instances
 		for (NANDRAD::HydraulicNetwork & nw : m_project->m_hydraulicNetworks) {
-			IBK::IBK_Message(IBK::FormatString("Initializing network '%1' [%2]\n").arg(nw.m_displayName).arg(nw.m_id),
+			IBK::IBK_Message(IBK::FormatString("Initializing network '%1' (#%2)\n").arg(nw.m_displayName).arg(nw.m_id),
 							 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 			IBK_MSG_INDENT;
 			// check network parameters
