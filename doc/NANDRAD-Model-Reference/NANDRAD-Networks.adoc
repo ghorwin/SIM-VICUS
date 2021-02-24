@@ -571,6 +571,31 @@ TODO : Anne Milestone 3
 Zur Vereinfachung gibt es Variablen, welche für ein gesamtes Netzwerk abgerufen werden können (Referenztyp `Network`). Diese enthalten jeweils Ausgaben für alle Strömungselemente.
 
 - `FluidMassFluxes` - Masseströme durch alle Strömungselemente des Netzwerks
+- `FluidTemperatures` - Mittlere Temperaturen alle Strömungselemente des Netzwerks
+
+Die Variablen sind vektor-wertige Größen und es muss der __Index__ des jeweils angeforderten Vektorelements verwendet werden. Die Indizierung entspricht der Reihenfolge der  `HydraulicNetworkElement` Tags. <<ex_network_outputs>> zeigt die Definition einer indexbasierten Ausgabe für Masseströme des Netzwerks.
+
+[[ex_network_outputs]]
+.Beispiel für Ausgabedefinitionen mit Network als Referenztyp
+====
+[source,xml]
+----
+<!-- Outputs go to file 'network.tsv' -->
+<OutputDefinition>
+	<!-- We choose the flow through the second element (pipe 101) as reference flux
+		 for the entire network -->
+	<Quantity>FluidMassFluxes[1]</Quantity>
+	<ObjectListName>Entire network</ObjectListName>
+	<GridName>hourly</GridName>
+</OutputDefinition>
+----
+====
+
+
+[TIP]
+====
+Die Auswahl einzelner Elemente via ID kann über Objektlisten recht flexibel erfolgen.
+====
 
 
 ### Variablennamen in Ausgabedateien
