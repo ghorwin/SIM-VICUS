@@ -508,8 +508,8 @@ void HydraulicNetworkModelImpl::setup() {
 		unsigned int i = fe.m_nodeIndexInlet;
 		unsigned int j = fe.m_nodeIndexOutlet;
 		// node connection may not be registered already
-		if(nodeConnections[i].empty() ||
-		   std::find(nodeConnections[i].begin(), nodeConnections[i].end(), j) ==
+		if(!nodeConnections[i].empty() &&
+		   std::find(nodeConnections[i].begin(), nodeConnections[i].end(), j) !=
 		   nodeConnections[i].end())
 			continue;
 		// set connect inlet and outlet node
