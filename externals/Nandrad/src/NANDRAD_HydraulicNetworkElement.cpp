@@ -84,7 +84,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 													   "Temperature must be >= -200 C.");
 						// check for existance of external heat transfer coefficient (the parameter itself was checked already by the component)
 						if (m_component->m_para[HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].name.empty()){
-							throw IBK::Exception(IBK::FormatString("Missing parameter '%1' in definition of network component '%2' [%3].")
+							throw IBK::Exception(IBK::FormatString("Missing parameter %1 in definition of network component '%2' (#%3).")
 										.arg(KeywordList::Keyword("HydraulicNetworkComponent::para_t",
 										HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient))
 										.arg(m_component->m_displayName).arg(m_component->m_id),
@@ -105,7 +105,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 
 					// check for existance of external heat transfer coefficient (the parameter itself was checked already by the component)
 					if (m_component->m_para[HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].name.empty()){
-						throw IBK::Exception(IBK::FormatString("Missing parameter '%1' in definition of network component '%2' [%3].")
+						throw IBK::Exception(IBK::FormatString("Missing parameter %1 in definition of network component '%2' (#%3).")
 									.arg(KeywordList::Keyword("HydraulicNetworkComponent::para_t",
 									HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient))
 									.arg(m_component->m_displayName).arg(m_component->m_id),
@@ -128,7 +128,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 				break;
 			} // switch
 		} catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Missing/invalid parameters for heat exchange model '%1'.")
+			throw IBK::Exception(ex, IBK::FormatString("Missing/invalid parameters for heat exchange model %1.")
 				 .arg(KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType", m_component->m_heatExchangeType)),
 				 FUNC_ID);
 		}
@@ -193,7 +193,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 
 	}
 	else if (m_heatExchangeDataFile.isValid()) {
-		throw IBK::Exception(IBK::FormatString("Invalid/unexpected heat exchange data file parameter with value '%1'.")
+		throw IBK::Exception(IBK::FormatString("Invalid/unexpected heat exchange data file '%1'.")
 							 .arg(m_heatExchangeDataFile.str()), FUNC_ID);
 	}
 

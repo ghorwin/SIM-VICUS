@@ -43,7 +43,7 @@ void HydraulicNetwork::checkParameters( const std::map<std::string, IBK::Path> &
 
 	// check reference element id
 	if (std::find(m_elements.begin(), m_elements.end(), m_referenceElementId) == m_elements.end())
-		throw IBK::Exception(IBK::FormatString("Invalid referenceElementId #%1, must be the id of an existing flow element!")
+		throw IBK::Exception(IBK::FormatString("Invalid reference #%1 in referenceElementId, must be the id of an existing flow element!")
 							 .arg(m_referenceElementId), FUNC_ID);
 
 	// check parameters of fluid

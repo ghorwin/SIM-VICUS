@@ -57,7 +57,7 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) const {
 
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception(ex, IBK::FormatString("Missing/invalid parameters for component '%1' [%2] of type %3.")
+		throw IBK::Exception(ex, IBK::FormatString("Missing/invalid parameters for component '%1' (#%2) of type %3.")
 			.arg(m_displayName).arg(m_id)
 			.arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
 	}
