@@ -54,6 +54,10 @@
 				</OutputDefinition>
 
 				<OutputDefinition>
+					<!-- IncidenceAngleOnPlane is a vector-valued quantity, the argument [1] is the
+						*index* in that vector. The actual surface is indicated in the output file
+						by the id printed in the header.
+					-->
 					<Quantity>IncidenceAngleOnPlane[1]</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>minutely</GridName>
