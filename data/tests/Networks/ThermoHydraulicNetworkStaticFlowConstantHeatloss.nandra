@@ -146,7 +146,11 @@
 				<OutputGrid name="hourly">
 					<Intervals>
 						<Interval>
-							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="s">10</IBK:Parameter>
+						</Interval>
+						<Interval>
+							<IBK:Parameter name="Start" unit="min">30</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">5</IBK:Parameter>
 						</Interval>
 					</Intervals>
 				</OutputGrid>
@@ -158,7 +162,7 @@
 				<ReferenceType>Network</ReferenceType>
 			</ObjectList>
 			<ObjectList name="Network Elements">
-				<FilterID>101</FilterID>
+				<FilterID>*</FilterID>
 				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
