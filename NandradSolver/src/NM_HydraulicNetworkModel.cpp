@@ -508,9 +508,10 @@ void HydraulicNetworkModelImpl::setup() {
 		unsigned int i = fe.m_nodeIndexInlet;
 		unsigned int j = fe.m_nodeIndexOutlet;
 		// node connection may not be registered already
-		IBK_ASSERT(nodeConnections[i].empty() ||
+		if(nodeConnections[i].empty() ||
 		   std::find(nodeConnections[i].begin(), nodeConnections[i].end(), j) ==
-		   nodeConnections[i].end());
+		   nodeConnections[i].end())
+			continue;
 		// set connect inlet and outlet node
 		nodeConnections[i].push_back(j);
 		// as well as for the transposed

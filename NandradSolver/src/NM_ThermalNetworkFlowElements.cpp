@@ -68,75 +68,19 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 		const double ambientTemperature = *m_externalTemperatureRef;
 		// calculate heat loss with given parameters
 		// Q in [W] = DeltaT * UAValueTotal
-		m_heatLoss = UAValueTotal * (m_meanTemperature - ambientTemperature);
-	}
-}
-
-
 #if 0
-// *** TNStaticPipeElement ***
-
-TNStaticPipeElement::TNStaticPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
-							 const NANDRAD::HydraulicNetworkComponent & comp,
-							const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
-							const NANDRAD::HydraulicFluid & fluid,
-							const double &TExt)
-{
-	m_length = elem.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
-	m_innerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
-	m_outerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeOuterDiameter].value;
-	m_UValuePipeWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_UValuePipeWall].value;
-	m_outerHeatTransferCoefficient =
-			comp.m_para[NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].value;
-	// compute fluid volume
-	m_fluidVolume = 0.01;
-
-	// copy fluid properties
-	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
-	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
-	m_fluidConductivity = fluid.m_para[NANDRAD::HydraulicFluid::P_Conductivity].value;
-	m_fluidViscosity = fluid.m_kinematicViscosity.m_values;
-	// set reference to external temperature
-	m_externalTemperatureRef = &TExt;
-}
-
-
-void TNStaticPipeElement::setInflowTemperature(double Tinflow) {
-	m_inflowTemperature = Tinflow;
-
-	// check heat transfer type
-	if (m_heatExchangeType != (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant &&
-		m_heatExchangeType != (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile)
-	{
-
-		// calculate inner heat transfer coefficient
-		const double velocity = std::fabs(m_massFlux)/(m_fluidVolume * m_fluidDensity);
-		const double viscosity = m_fluidViscosity.value(m_meanTemperature);
-		const double reynolds = ReynoldsNumber(velocity, viscosity, m_innerDiameter);
-		const double prandtl = PrandtlNumber(viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
-		double nusselt = NusseltNumber(reynolds, prandtl, m_length, m_innerDiameter);
-		double innerHeatTransferCoefficient = nusselt * m_fluidConductivity /
-												m_innerDiameter;
-
-		// calculate heat transfer
-
-		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-		const double UAValueTotal = m_length / (
-					  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
-					+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)
-					+ 1.0/m_UValuePipeWall )
-			);
-
-		// Q in [W] = DeltaT * UAValueTotal
-		const double ambientTemperature = *m_externalTemperatureRef;
+		m_heatLoss = UAValueTotal * (m_meanTemperature - ambientTemperature);
+#else
 		// calculate heat loss with given (for steady state model we interpret mean temperature as
 		// outflow temperature and calculate a corresponding heat flux)
 		m_heatLoss = m_massFlux * m_fluidHeatCapacity *
 				(m_inflowTemperature - ambientTemperature) *
 				(1. - std::exp(-UAValueTotal / (std::fabs(m_massFlux) * m_fluidHeatCapacity )));
+#endif
 	}
 }
-#endif
+
+
 
 // *** DynamicPipeElement ***
 
