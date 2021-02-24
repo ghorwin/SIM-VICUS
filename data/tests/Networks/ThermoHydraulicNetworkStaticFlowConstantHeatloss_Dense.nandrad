@@ -20,13 +20,7 @@
 			</Interval>
 		</SimulationParameter>
 		<SolverParameter>
-			<IBK:Parameter name="InitialTimeStep" unit="s">1</IBK:Parameter>
-			<IBK:Parameter name="MinTimeStep" unit="s">1e-05</IBK:Parameter>
-			<IBK:Parameter name="MaxTimeStep" unit="s">100</IBK:Parameter>
 			<IBK:Parameter name="RelTol" unit="---">1e-05</IBK:Parameter>
-			<IBK:Parameter name="AbsTol" unit="---">1e-10</IBK:Parameter>
-			<IBK:Parameter name="NonlinSolverConvCoeff" unit="---">0.0001</IBK:Parameter>
-			<Integrator>ExplicitEuler</Integrator>
 			<LesSolver>Dense</LesSolver>
   		</SolverParameter>
 		<Zones>
@@ -41,7 +35,6 @@
 				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
 				<!-- Use InitialFluidTemperature instead of DefaultFluidTemperature for thermal-hydraulic networks -->
 				<IBK:Parameter name="InitialFluidTemperature" unit="C">20</IBK:Parameter>
-				<IBK:Parameter name="DefaultFluidTemperature" unit="C">20</IBK:Parameter>
 				<HydraulicFluid id="1" displayName="Water">
 					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
@@ -63,7 +56,6 @@
 					<HydraulicNetworkComponent id="1" displayName="Pump 0815 (constant pressure)" modelType="ConstantPressurePump">
 						<IBK:Parameter name="PressureHead" unit="Pa">1000</IBK:Parameter>
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
-						<IBK:Parameter name="MotorEfficiency" unit="---">1</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.1</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" displayName="Heat exchanger with imposed flux as heat exchange" modelType="HeatExchanger">
@@ -88,7 +80,8 @@
 						<IBK:Parameter name="Temperature" unit="C">0</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="301" inletNodeId="3" outletNodeId="1" componentId="2" displayName="Heat Exchanger">
-						<IBK:Parameter name="HeatFlux" unit="W">-200</IBK:Parameter>
+						<!-- Heat exchanger has constant 500 W imposed heat gain (mind the sign) -->
+						<IBK:Parameter name="HeatFlux" unit="W">-500</IBK:Parameter>
 					</HydraulicNetworkElement>
 				</Elements>
 			</HydraulicNetwork>
@@ -97,17 +90,6 @@
 		
 		<Outputs>
 			<Definitions>
-				<!-- Outputs go to file 'network.tsv' -->
-				<OutputDefinition>
-					<Quantity>FluidMassFluxes</Quantity>
-					<ObjectListName>Entire network</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>FluidTemperatures</Quantity>
-					<ObjectListName>Entire network</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
 				<!-- Outputs go to file 'network_elements.tsv' -->
 				<OutputDefinition>
 					<Quantity>FluidMassFlux</Quantity>
@@ -137,7 +119,7 @@
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>FluidHeatFlux</Quantity>
+					<Quantity>FlowElementHeatLoss</Quantity>
 					<ObjectListName>Network Elements</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>

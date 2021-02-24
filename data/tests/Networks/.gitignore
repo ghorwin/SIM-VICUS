@@ -4,3 +4,5 @@
 /HydraulicNetworkStaticInvertedPump/
 /ThermoHydraulicNetworkStaticFlowCooling/
 /ThermoHydraulicNetworkStaticFlowConstantHeatloss/
+/ThermoHydraulicNetworkStaticFlowConstantHeatloss_Dense/
+/ThermoHydraulicNetworkStaticFlowParallelPipes/
