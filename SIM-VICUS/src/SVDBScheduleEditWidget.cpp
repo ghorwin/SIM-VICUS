@@ -8,7 +8,6 @@
 
 #include <NANDRAD_KeywordListQt.h>
 #include <NANDRAD_KeywordList.h>
-#include <NANDRAD_Schedule.h>
 
 #include <VICUS_Schedule.h>
 
@@ -81,6 +80,9 @@ void SVDBScheduleEditWidget::updatePeriodTable(const int &activeRow){
 	}
 	///TODO reselect row default to row 0
 
+	on_tableWidgetPeriods_currentCellChanged(0,0,0,0);
+	if(!m_current->m_periods.empty())
+		m_ui->tableWidgetPeriods->selectRow(0);
 	m_ui->tableWidgetPeriods->blockSignals(false);
 
 	on_tableWidgetPeriods_currentCellChanged(activeRow,0,0,0);
@@ -229,7 +231,7 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 			m_current->m_periods.push_back(VICUS::ScheduleInterval());
 			m_db->m_schedules.m_modified=true;
 		}
-
+		m_ui->tableWidgetPeriods->selectRow(0);
 
 		//check that this schedule has a period
 		//if not create first period
@@ -436,8 +438,15 @@ void SVDBScheduleEditWidget::on_toolButtonForward_clicked() {
 				return;
 			m_currentInterval->m_dailyCycles.erase(m_currentInterval->m_dailyCycles.begin()+m_currentDailyCycleIndex);
 		}
-		else
+		else{
+			//if last daily cycle is selected but we have unused day type
+			//create a new daily cycle
+			if(m_currentDailyCycleIndex == m_currentInterval->m_dailyCycles.size()-1){
+				m_db->m_schedules.m_modified;
+				m_currentInterval->m_dailyCycles.push_back(VICUS::DailyCycle());
+			}
 			++m_currentDailyCycleIndex;
+		}
 	}
 	selectDailyCycle();
 }
@@ -494,4 +503,70 @@ void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellClicked(int row, int colu
 	// update table widget
 	updatePeriodTable();
 
+}
+
+void SVDBScheduleEditWidget::updateDayTypes(const NANDRAD::Schedule::ScheduledDayType &dt, bool checked){
+	VICUS::DailyCycle &dc = m_currentInterval->m_dailyCycles[m_currentDailyCycleIndex];
+	//find current indx in vector
+	int idx=-1;
+	int dayIdx = (int)dt;
+	for(unsigned int i=0; i<dc.m_dayTypes.size(); ++i) {
+		if( dayIdx == dc.m_dayTypes[i]){
+			idx=i;
+			break;
+		}
+	}
+	//add day type
+	if(checked && idx==-1)
+		dc.m_dayTypes.push_back(dayIdx);
+	//delete day type
+	else if(!checked && idx!=-1)
+		dc.m_dayTypes.erase(dc.m_dayTypes.begin()+idx);
+	else
+		return;
+
+	m_db->m_schedules.m_modified;
+}
+
+
+void SVDBScheduleEditWidget::on_checkBoxMonday_stateChanged(int arg1)
+{
+	//0 unchecked
+	//2 checked
+	updateDayTypes(NANDRAD::Schedule::ST_MONDAY, arg1==2);
+}
+
+void SVDBScheduleEditWidget::on_checkBoxTuesday_stateChanged(int arg1)
+{
+	updateDayTypes(NANDRAD::Schedule::ST_TUESDAY, arg1==2);
+}
+
+void SVDBScheduleEditWidget::on_checkBoxHoliday_stateChanged(int arg1)
+{
+	updateDayTypes(NANDRAD::Schedule::ST_HOLIDAY, arg1==2);
+}
+
+void SVDBScheduleEditWidget::on_checkBoxWednesday_stateChanged(int arg1)
+{
+	updateDayTypes(NANDRAD::Schedule::ST_WEDNESDAY, arg1==2);
+}
+
+void SVDBScheduleEditWidget::on_checkBoxThursday_stateChanged(int arg1)
+{
+	updateDayTypes(NANDRAD::Schedule::ST_THURSDAY, arg1==2);
+}
+
+void SVDBScheduleEditWidget::on_checkBoxFriday_stateChanged(int arg1)
+{
+	updateDayTypes(NANDRAD::Schedule::ST_WEDNESDAY, arg1==2);
+}
+
+void SVDBScheduleEditWidget::on_checkBoxSaturday_stateChanged(int arg1)
+{
+	updateDayTypes(NANDRAD::Schedule::ST_SATURDAY, arg1==2);
+}
+
+void SVDBScheduleEditWidget::on_checkBoxSunday_stateChanged(int arg1)
+{
+	updateDayTypes(NANDRAD::Schedule::ST_SUNDAY, arg1==2);
 }

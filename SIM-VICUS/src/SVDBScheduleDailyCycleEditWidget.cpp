@@ -28,9 +28,9 @@ SVDBScheduleDailyCycleEditWidget::SVDBScheduleDailyCycleEditWidget(QWidget *pare
 	m_delegate = new QItemDelegate();
 	m_ui->tableWidgetDayCycle->blockSignals(true);
 	for(unsigned int i=0; i<24; ++i){
-		QString time = i < 9 ? "0" + QString::number(i) : QString::number(i);
+		QString time = i < 10 ? "0" + QString::number(i) : QString::number(i);
 		time += ":00 - ";
-		time += i+1 < 9 ? "0" + QString::number(i+1) : QString::number(i+1);
+		time += i+1 < 10 ? "0" + QString::number(i+1) : QString::number(i+1);
 		time += ":00";
 
 		m_ui->tableWidgetDayCycle->setItem(i,0, new QTableWidgetItem(time));
@@ -65,10 +65,10 @@ void SVDBScheduleDailyCycleEditWidget::updateInput(VICUS::DailyCycle *dc, SVData
 		m_dailyCycle->m_values.push_back(0);
 		m_db->m_schedules.m_modified;
 	}
-
+	m_ui->tableWidgetDayCycle->blockSignals(true);
 	//check time point in schedule interval and write the table values
 	for (unsigned int j=0;j<24 ; ++j) {
-		double currTP = j*3600;
+		double currTP = j/**3600*/;
 		double val=0;
 		for (unsigned int i=0; i<dc->m_timePoints.size(); ++i) {
 			double intervalTp = dc->m_timePoints[i];
@@ -79,6 +79,7 @@ void SVDBScheduleDailyCycleEditWidget::updateInput(VICUS::DailyCycle *dc, SVData
 		}
 		m_ui->tableWidgetDayCycle->item(j, 1)->setText(QString::number(val,'g', 3));
 	}
+	m_ui->tableWidgetDayCycle->blockSignals(false);
 }
 
 void SVDBScheduleDailyCycleEditWidget::on_tableWidgetDayCycle_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn) {
@@ -104,13 +105,39 @@ void SVDBScheduleDailyCycleEditWidget::on_tableWidgetDayCycle_cellChanged(int ro
 		return;
 	}
 
+//	//create a timeval element and a vector
+//	struct timeVal{
+//		double m_timepoint = 0;
+//		double m_val = 0;
+//	};
+
+//	std::vector<timeVal> timeVals;
+//	//import the table view
+//	for(unsigned int i=0; i<m_ui->tableWidgetDayCycle->rowCount();++i){
+//		timeVal tV;
+//		tV.m_timepoint = i*3600;
+//		tV.m_val = m_ui->tableWidgetDayCycle->item(i,1)->text().toDouble();
+
+//		if(i==0 || !IBK::near_equal(timeVals.back().m_val,tV.m_val))
+//			timeVals.push_back(tV);
+
+//	}
+
+//	//delete redundant objects
+//	QStringList strL;
+//	for (auto tv : timeVals ) {
+//		strL << QString::number(tv.m_timepoint) + " | " + QString::number(tv.m_val);
+//	}
+
+
+
 	std::vector<double> timepoints(1,0), values(1, m_ui->tableWidgetDayCycle->item(0,1)->text().toDouble());
 	unsigned int lastIdx=0;
 	for(unsigned int i=1; i<m_ui->tableWidgetDayCycle->rowCount(); ++i){
 		double currVal = m_ui->tableWidgetDayCycle->item(i,1)->text().toDouble();
 		if(IBK::nearly_equal<3>(values[lastIdx],currVal))
 			continue;
-		timepoints.push_back(i*3600);
+		timepoints.push_back(i/**3600*/);
 		values.push_back(currVal);
 		++lastIdx;
 	}

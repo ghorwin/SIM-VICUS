@@ -3,6 +3,7 @@
 
 #include <QWidget>
 
+#include <NANDRAD_Schedule.h>
 
 namespace VICUS {
 	class Schedule;
@@ -52,6 +53,22 @@ private slots:
 
 	void on_tableWidgetPeriods_cellClicked(int row, int column);
 
+	void on_checkBoxMonday_stateChanged(int arg1);
+
+	void on_checkBoxTuesday_stateChanged(int arg1);
+
+	void on_checkBoxHoliday_stateChanged(int arg1);
+
+	void on_checkBoxWednesday_stateChanged(int arg1);
+
+	void on_checkBoxThursday_stateChanged(int arg1);
+
+	void on_checkBoxFriday_stateChanged(int arg1);
+
+	void on_checkBoxSaturday_stateChanged(int arg1);
+
+	void on_checkBoxSunday_stateChanged(int arg1);
+
 private:
 
 	/*! Update the period table. */
@@ -67,6 +84,8 @@ private:
 
 	/*! If minimum one day type is enabled and checked this function returns true.*/
 	bool isDayTypeChecked();
+
+	void updateDayTypes(const NANDRAD::Schedule::ScheduledDayType &dt, bool checked);
 
 	Ui::SVDBScheduleEditWidget			*m_ui;
 
