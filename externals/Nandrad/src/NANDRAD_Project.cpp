@@ -112,6 +112,23 @@ void Project::readXML(const IBK::Path & filename) {
 	checkForUniqueIDs(m_zones, "Zone");
 	checkForUniqueIDs(m_constructionInstances, "ConstructionInstance");
 
+	if(!m_hydraulicNetworks.empty()) {
+		// put all flow elements into a common id space
+		std::vector<HydraulicNetworkElement> flowElems;
+		// check all networks
+		for(const HydraulicNetwork &nw : m_hydraulicNetworks) {
+			checkForUniqueIDs(nw.m_components, "HydraulicNetworkComponent");
+			checkForUniqueIDs(nw.m_pipeProperties, "HydraulicNetworkPipeProperties");
+			// at the moment just store elements into vector
+			if(!flowElems.empty())
+				flowElems.insert(flowElems.end(), nw.m_elements.begin(), nw.m_elements.end());
+			else
+				flowElems = nw.m_elements;
+		}
+		// enforce a unique id for flow elements of all networks
+		checkForUniqueIDs(flowElems,"HydraulicNetworkElement");
+	}
+
 	// we check for duplicate object lists here, because these are referenced by name, rather than ID
 	checkForUniqueNames(m_outputs.m_grids, "OutputGrid");
 	checkForUniqueNames(m_objectLists, "ObjectList");
