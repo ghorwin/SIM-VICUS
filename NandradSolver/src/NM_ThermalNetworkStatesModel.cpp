@@ -83,126 +83,164 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 			// set reference to heat exchange value
 			double &heatExchangeValue = m_heatExchangeValues[i];
 
-			// now populate the m_edges vector of the network solver
-			// - instance-specific parameters from HydraulicNetworkElement e
-			// - fluid property object from nw.m_fluid
-			// - component definition (via reference from e.m_componentId) and component DB stored
-			//   in network
-			IBK_ASSERT(e.m_component != nullptr);
+			// instantiate thermal flow element calculation objects
 
-			// special case: heat flux is given
 			switch (e.m_component->m_modelType) {
 				case NANDRAD::HydraulicNetworkComponent::MT_SimplePipe :
 				{
 					IBK_ASSERT(e.m_pipeProperties != nullptr);
-					// craete adiabatic pipe model
-					if(e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::NUM_HT) {
-						// calculate pipe volume
-						const double d = e.m_pipeProperties->m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
-						const double l = e.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
-						double volume = PI/4. * d * d * l;
-						// create pipe model with given heat flux
-						TNAdiabaticElement * pipeElement = new TNAdiabaticElement(
-															m_network->m_fluid,
-															volume);
-						// add to flow elements
-						m_p->m_flowElements.push_back(pipeElement); // transfer ownership
-						m_p->m_heatLossElements.push_back(nullptr); // no heat loss
-					}
-					else if (e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant ||
-							 e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile)
-					{
-						// calculate pipe volume
-						const double d = e.m_pipeProperties->m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
-						const double l = e.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
-						double volume = PI/4. * d * d * l;
 
-						// create pipe model with given heat flux
-						TNElementWithExternalHeatLoss * pipeElement = new TNElementWithExternalHeatLoss(
-																			m_network->m_fluid,
-																			volume, heatExchangeValue);
-						// add to flow elements
-						m_p->m_flowElements.push_back(pipeElement); // transfer ownership
-						m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
-					}
-					// HT_TemperatureConstant, HT_TemperatureDataFile, HT_HeatExchangeWithZoneTemperature
-					else {
-						// create pipe model with heat exchange
-						TNSimplePipeElement * pipeElement = new TNSimplePipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid,
-																					heatExchangeValue);
-						// add to flow elements
-						m_p->m_flowElements.push_back(pipeElement); // transfer ownership
-						m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
-					}
-				} break;
+					// distinguish based on heat exchange type
+					switch (e.m_component->m_heatExchangeType) {
+						// create adiabatic pipe model
+						case NANDRAD::HydraulicNetworkComponent::NUM_HT : {
+							// calculate pipe volume
+							const double d = e.m_pipeProperties->m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
+							const double l = e.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
+							double volume = PI/4. * d * d * l;
+							// create pipe model with given heat flux
+							TNAdiabaticElement * pipeElement = new TNAdiabaticElement(
+									m_network->m_fluid, volume);
+							// add to flow elements
+							m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+							m_p->m_heatLossElements.push_back(nullptr); // no heat loss
+						} break;
+
+						case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant :
+						case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile :
+						{
+							// calculate pipe volume
+							const double d = e.m_pipeProperties->m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
+							const double l = e.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
+							double volume = PI/4. * d * d * l;
+
+							// create generic flow element with given heat flux
+							TNElementWithExternalHeatLoss * pipeElement = new TNElementWithExternalHeatLoss(
+									m_network->m_fluid, volume, heatExchangeValue);
+							// add to flow elements
+							m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+							m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
+						} break;
+
+						case NANDRAD::HydraulicNetworkComponent::HT_TemperatureConstant:
+						case NANDRAD::HydraulicNetworkComponent::HT_TemperatureDataFile:
+						case NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature:
+						{
+							// create pipe model with heat exchange
+							TNSimplePipeElement * pipeElement = new TNSimplePipeElement(e, *e.m_component,
+									*e.m_pipeProperties, m_network->m_fluid, heatExchangeValue);
+							// add to flow elements
+							m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+							m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
+						} break;
+
+						case NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithFMUTemperature :
+							// TODO : Andreas, Milestone FMU-Networks
+						break;
+
+					} // switch heat exchange type
+
+				} break; // NANDRAD::HydraulicNetworkComponent::MT_SimplePipe
 
 
 				case NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe :
 				{
 					IBK_ASSERT(e.m_pipeProperties != nullptr);
-					// craete adiabatic pipe model
-					if(e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::NUM_HT) {
-						TNDynamicAdiabaticPipeElement * pipeElement = new TNDynamicAdiabaticPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
-						// add to flow elements
-						m_p->m_flowElements.push_back(pipeElement); // transfer ownership
-						m_p->m_heatLossElements.push_back(nullptr); // no heat loss
-					}
-					else if (e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant ||
-							 e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile) {
-						// calulate fluid volume
-						const double d = e.m_pipeProperties->m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
-						const double l = e.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
-						double volume = PI/4. * d * d * l;
+					// distinguish based on heat exchange type
+					switch (e.m_component->m_heatExchangeType) {
+						// create adiabatic pipe model
+						case NANDRAD::HydraulicNetworkComponent::NUM_HT : {
+							// TODO FIXME: Anne, this should be different for dynamic pipe
+							TNDynamicAdiabaticPipeElement * pipeElement = new TNDynamicAdiabaticPipeElement(e,
+									*e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
+							// add to flow elements
+							m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+							m_p->m_heatLossElements.push_back(nullptr); // no heat loss
+						} break;
 
-						// create pipe model with given heat flux
-						TNElementWithExternalHeatLoss * pipeElement = new TNElementWithExternalHeatLoss(
-																			m_network->m_fluid,
-																			volume, heatExchangeValue);
-						// add to flow elements
-						m_p->m_flowElements.push_back(pipeElement); // transfer ownership
-						m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
-					}
-					// HT_TemperatureConstant, HT_TemperatureDataFile, HT_HeatExchangeWithZoneTemperature
-					else {
-						// create pipe model with heat exchange
-						TNDynamicPipeElement * pipeElement = new TNDynamicPipeElement(e, *e.m_component,  *e.m_pipeProperties, m_network->m_fluid,
-																					  heatExchangeValue);
-						// add to flow elements
-						m_p->m_flowElements.push_back(pipeElement); // transfer ownership
-						m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
-					}
-				} break;
+						case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant :
+						case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile :
+						{
+							// TODO FIXME: Anne, this should be different for dynamic pipe
+							// calulate fluid volume
+							const double d = e.m_pipeProperties->m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
+							const double l = e.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
+							double volume = PI/4. * d * d * l;
+
+							// create generic flow element with given heat flux
+							TNElementWithExternalHeatLoss * pipeElement = new TNElementWithExternalHeatLoss(
+																				m_network->m_fluid,
+																				volume, heatExchangeValue);
+							// add to flow elements
+							m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+							m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
+						} break;
+
+						case NANDRAD::HydraulicNetworkComponent::HT_TemperatureConstant:
+						case NANDRAD::HydraulicNetworkComponent::HT_TemperatureDataFile:
+						case NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature:
+						{
+							// create pipe model with heat exchange
+							TNDynamicPipeElement * pipeElement = new TNDynamicPipeElement(e, *e.m_component,
+									*e.m_pipeProperties, m_network->m_fluid, heatExchangeValue);
+							// add to flow elements
+							m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+							m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
+						} break;
+
+						case NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithFMUTemperature :
+							// TODO : Andreas, Milestone FMU-Networks
+						break;
+
+					} // switch heat exchange type
+
+				} break; // NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe
+
 
 				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump :
 				{
-					if (e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::NUM_HT){
-						// create general adiabatic model
-						TNAdiabaticElement * element = new TNAdiabaticElement(m_network->m_fluid,
-																		e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value);
-						// add to flow elements
-						m_p->m_flowElements.push_back(element); // transfer ownership
-						m_p->m_heatLossElements.push_back(nullptr); // no heat loss
-					}
-					else if (e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant ||
-							 e.m_component->m_heatExchangeType == NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile) {
-						// create general model with given heat flux
-						TNElementWithExternalHeatLoss * element = new TNElementWithExternalHeatLoss(m_network->m_fluid,
-																		e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value,
-																		heatExchangeValue);
-						// add to flow elements
-						m_p->m_flowElements.push_back(element); // transfer ownership
-						m_p->m_heatLossElements.push_back(element); // copy of pointer
-					}
-					else {
-						// create pump model witzh heat loss
-						TNPumpWithPerformanceLoss * element = new TNPumpWithPerformanceLoss(m_network->m_fluid,
-																			*e.m_component,
-																			e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value);
-						// add to flow elements
-						m_p->m_flowElements.push_back(element); // transfer ownership
-						m_p->m_heatLossElements.push_back(element); // no heat loss
-					}
-				} break;
+					// distinguish based on heat exchange type
+					switch (e.m_component->m_heatExchangeType) {
+						// create adiabatic pipe model
+						case NANDRAD::HydraulicNetworkComponent::NUM_HT : {
+							// create general adiabatic model
+							TNAdiabaticElement * element = new TNAdiabaticElement(m_network->m_fluid,
+									e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value);
+							// add to flow elements
+							m_p->m_flowElements.push_back(element); // transfer ownership
+							m_p->m_heatLossElements.push_back(nullptr); // no heat loss
+						} break;
+
+						case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant :
+						case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile :
+						{
+							// create general model with given heat flux
+							TNElementWithExternalHeatLoss * element = new TNElementWithExternalHeatLoss(m_network->m_fluid,
+									e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value, heatExchangeValue);
+							// add to flow elements
+							m_p->m_flowElements.push_back(element); // transfer ownership
+							m_p->m_heatLossElements.push_back(element); // copy of pointer
+						} break;
+
+						case NANDRAD::HydraulicNetworkComponent::HT_TemperatureConstant:
+						case NANDRAD::HydraulicNetworkComponent::HT_TemperatureDataFile:
+						case NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature:
+						{
+							// create pump model witzh heat loss
+							TNPumpWithPerformanceLoss * element = new TNPumpWithPerformanceLoss(m_network->m_fluid,
+									*e.m_component, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value);
+							// add to flow elements
+							m_p->m_flowElements.push_back(element); // transfer ownership
+							m_p->m_heatLossElements.push_back(element); // no heat loss
+						} break;
+
+						case NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithFMUTemperature :
+							// TODO : Andreas, Milestone FMU-Networks
+						break;
+					} // switch heat exchange type
+
+				} break; // NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump
+
 
 				case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
 				{

@@ -2,7 +2,8 @@
 <NandradProject fileVersion="1.999">
 	<Project>
 		<ProjectInfo>
-			<Comment>Minimalistic hydraulic network example.
+			<Comment>Network with one pipe (heat exchange to constant temperature) and heat exchanger (constant energy gain).
+				Viscosity is constant in this case.
 			</Comment>
 		</ProjectInfo>
 		<Location>
@@ -35,7 +36,7 @@
 			</Zone>
 		</Zones>
 		<HydraulicNetworks>
-			<HydraulicNetwork id="1" displayName="Network with two pipes (different diameter) and heat exchange" 
+			<HydraulicNetwork id="1" displayName="Network with one pipe (heat exchange to ground) and heat exchanger (constant energy gain)" 
 						modelType="ThermalHydraulicNetwork" referenceElementId="201">
 				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
 				<!-- Use InitialFluidTemperature instead of DefaultFluidTemperature for thermal-hydraulic networks -->

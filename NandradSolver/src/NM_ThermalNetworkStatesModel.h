@@ -147,7 +147,9 @@ private:
 	std::vector<const IBK::LinearSpline*>			m_heatExchangeSplineRefs;
 	/*! References to zone temperatures.*/
 	std::vector<const double*>						m_zoneTemperatureRefs;
-	/*! Container with current spline or refernce values: either temperature [k] or heat flux [W].*/
+	/*! Container with current spline or reference values: either temperature [k] or heat flux [W].
+		TODO Anne ???
+	*/
 	std::vector<double>								m_heatExchangeValues;
 
 	// for each flow element instantiate an appropriate NetworkThermalBalanceFlowElement
