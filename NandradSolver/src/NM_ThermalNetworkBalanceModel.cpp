@@ -115,7 +115,7 @@ void ThermalNetworkBalanceModel::resultValueRefs(std::vector<const double *> &re
 		res.clear();
 	// heat flux vector is a result quantity
 	for(unsigned int i = 0; i < m_statesModel->m_p->m_flowElements.size(); ++i)
-		res.push_back(m_statesModel->m_p->m_fluidHeatFluxRefs[i]);
+		res.push_back(m_statesModel->m_p->m_flowElementHeatLossRefs[i]);
 	// heat flux vector is a result quantity
 	for(unsigned int i = 0; i < m_zoneHeatFluxes.size(); ++i)
 		res.push_back(&m_zoneHeatFluxes[i]);
@@ -173,7 +173,7 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference &
 	else if (quantityName == std::string("OutletNodeTemperature"))
 		return m_statesModel->m_p->m_outletNodeTemperatureRefs[pos];
 	else if (quantityName == std::string("FlowElementHeatLoss"))
-		return m_statesModel->m_p->m_fluidHeatFluxRefs[pos];
+		return m_statesModel->m_p->m_flowElementHeatLossRefs[pos];
 	return nullptr;
 }
 
@@ -184,7 +184,6 @@ int ThermalNetworkBalanceModel::priorityOfModelEvaluation() const {
 }
 
 void ThermalNetworkBalanceModel::initInputReferences(const std::vector<AbstractModel *> & /*models*/) {
-	// TODO: implement
 }
 
 
@@ -241,60 +240,68 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 	}
 
 	unsigned int offset = 0;
-	// we at first try use dense pattern between all element results and internal states
+	// we at first try use dense pattern between all internal element divergences and internal states
 	for(unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
 
 		const ThermalNetworkAbstractFlowElement *fe = m_statesModel->m_p->m_flowElements[i];
 
 
 		const Element &elem = m_statesModel->m_p->m_network->m_elements[i];
-		// try to retrieve individual dependencies from flow model itself
+
+		// try to retrieve individual dependencies of ydot and y
 		std::vector<std::pair<const double *, const double *> > deps;
 		fe->dependencies(&m_ydot[offset], &m_statesModel->m_y[offset],
 						 m_statesModel->m_p->m_fluidMassFluxes + i,
-						 &m_statesModel->m_p->m_nodalSpecificEnthalpies[elem.m_nodeIndexInlet],
-						 &m_statesModel->m_p->m_nodalSpecificEnthalpies[elem.m_nodeIndexOutlet],
+						 &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexInlet],
+						 &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexOutlet],
 						 deps);
 
 		// copy dependencies
 		if(!deps.empty()) {
 			resultInputValueReferences.insert(resultInputValueReferences.end(), deps.begin(), deps.end());
 		}
-		// not implemented: assume all results to depend on all inputs
+		// not implemented: assume all ydot and y values to depend on all inputs and result quantities
 		else {
 			for(unsigned int n = 0; n < fe->nInternalStates(); ++n) {
-				// dependencyies to ydot
-				// all elements depend on mass flux
-				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + n], m_statesModel->m_p->m_fluidMassFluxes + i) );
-
-				if(m_statesModel->m_p->m_fluidHeatFluxRefs[i] != nullptr)
-					// all elements depend on heat flux
-					resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + n], m_statesModel->m_p->m_fluidHeatFluxRefs[i]) );
-				// all elements depend on external conditions
-				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + n], &m_statesModel->m_heatExchangeValues[i]) );
-
+				// dependencyies to ydot: y
 				// assume a dense matrix between ydot and y
 				for(unsigned int l = 0; l < fe->nInternalStates(); ++l) {
 					resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + n], &m_statesModel->m_y[offset + l]) );
 				}
 
-				// heat balance per default sums up heat fluxes and entahpy flux differences through the pipe
+				// dependencyies to ydot: mass flux
+				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + n], m_statesModel->m_p->m_fluidMassFluxes + i) );
+
+				// dependencyies to ydot: nodal temperatures at inlet and outlet
 				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + n], &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexInlet]) );
 				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + n], &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexOutlet]) );
 
-				// dependency to temperature
+				// dependencyies to ydot: heat loss
+				if(m_statesModel->m_p->m_flowElementHeatLossRefs[i] != nullptr)
+					resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + n], m_statesModel->m_p->m_flowElementHeatLossRefs[i]) );
+
+				// dependencyies to ydot: heat exchange values (either externbal temperature or heat flux)
+				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + n], &m_statesModel->m_heatExchangeValues[i]) );
+
+				// dependencies of y to result quantities: mean air temperature
 				resultInputValueReferences.push_back(std::make_pair(m_statesModel->m_meanTemperatureRefs[i],
 																	&m_statesModel->m_y[offset + n] ) );
 
-				// dependency to Qdot
-				if(m_statesModel->m_p->m_fluidHeatFluxRefs[i] != nullptr)
-					resultInputValueReferences.push_back(std::make_pair(m_statesModel->m_p->m_fluidHeatFluxRefs[i],
+				// dependencyies of y to result quantities:nodal temperatures
+				resultInputValueReferences.push_back(std::make_pair(&m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexInlet],
+													 &m_statesModel->m_y[offset + n] ) );
+				resultInputValueReferences.push_back(std::make_pair(&m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexOutlet],
+													 &m_statesModel->m_y[offset + n] ) );
+
+				// dependencies of y to result quantities: heat loss
+				if(m_statesModel->m_p->m_flowElementHeatLossRefs[i] != nullptr)
+					resultInputValueReferences.push_back(std::make_pair(m_statesModel->m_p->m_flowElementHeatLossRefs[i],
 																		&m_statesModel->m_y[offset + n] ) );
 			}
 		}
 		offset += fe->nInternalStates();
 	}
-	// ertrieve refereces for network model results
+	// retrieve dependencies of network connections
 	m_statesModel->m_p->dependencies(resultInputValueReferences);
 }
 
@@ -311,17 +318,17 @@ int ThermalNetworkBalanceModel::update() {
 		// set zone heat fluxes to 0
 		std::fill(m_zoneHeatFluxes.begin(), m_zoneHeatFluxes.end(), 0);
 
-		IBK_ASSERT(m_statesModel->m_zoneIdxs.size() == m_statesModel->m_p->m_fluidHeatFluxRefs.size());
+		IBK_ASSERT(m_statesModel->m_zoneIdxs.size() == m_statesModel->m_p->m_flowElementHeatLossRefs.size());
 
 		for(unsigned int i = 0; i < m_statesModel->m_zoneIdxs.size(); ++i) {
 			unsigned int index = m_statesModel->m_zoneIdxs[i];
 			// invaid index
 			if(index == (unsigned int)(-1))
 				continue;
-			IBK_ASSERT(m_statesModel->m_p->m_fluidHeatFluxRefs[i] != nullptr);
+			IBK_ASSERT(m_statesModel->m_p->m_flowElementHeatLossRefs[i] != nullptr);
 			// we sum up heat flux of all zones
 			IBK_ASSERT(index < m_zoneHeatFluxes.size());
-			m_zoneHeatFluxes[index] += *m_statesModel->m_p->m_fluidHeatFluxRefs[i];
+			m_zoneHeatFluxes[index] += *m_statesModel->m_p->m_flowElementHeatLossRefs[i];
 		}
 	}
 
@@ -351,11 +358,11 @@ int ThermalNetworkBalanceModel::ydot(double* ydot) {
 
 void ThermalNetworkBalanceModel::printVars() const {
 	std::cout << "Heat fluxes [W]" << std::endl;
-	for (unsigned int i=0; i<m_statesModel->m_p->m_fluidHeatFluxRefs.size(); ++i) {
+	for (unsigned int i=0; i<m_statesModel->m_p->m_flowElementHeatLossRefs.size(); ++i) {
 		// skip adiabatic models
-		if(m_statesModel->m_p->m_fluidHeatFluxRefs[i] == nullptr)
+		if(m_statesModel->m_p->m_flowElementHeatLossRefs[i] == nullptr)
 			continue;
-		std::cout << "  " << i << "   " << m_statesModel->m_p->m_fluidHeatFluxRefs[i]  << std::endl;
+		std::cout << "  " << i << "   " << m_statesModel->m_p->m_flowElementHeatLossRefs[i]  << std::endl;
 	}
 
 	std::cout << "Fluid tempertaures [C]" << std::endl;

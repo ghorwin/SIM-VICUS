@@ -70,17 +70,12 @@ public:
 
 	/*! Constant access to network. */
 	const Network									*m_network = nullptr;
-	/*! Container with specific enthalpy for each node.
-		TODO : Anne, remove
-	*/
-	std::vector<double>								m_nodalSpecificEnthalpies;
 	/*! Container with temperatures for each node.
 	*/
 	std::vector<double>								m_nodalTemperatures;
 	/*! References to heat fluxes out of each heat flow element.
-		TODO : Anne, rename flowElementHeatLossRefs
 	*/
-	std::vector<const double*>						m_fluidHeatFluxRefs;
+	std::vector<const double*>						m_flowElementHeatLossRefs;
 	/*! References to temperatures for inlet node of each flow element.
 	*/
 	std::vector<const double*>						m_inletNodeTemperatureRefs;
