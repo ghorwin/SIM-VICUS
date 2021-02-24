@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.999">
+	<Project>
+		<ProjectInfo>
+			<Comment>Network with one pipe (heat exchange to constant temperature) and heat exchanger (constant energy gain).
+				Viscosity is constant in this case.
+			</Comment>
+		</ProjectInfo>
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">53</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="%">20</IBK:Parameter>
+			<TimeZone>13</TimeZone>
+			<ClimateFilePath>${Project Directory}/../climate/Konstantopol_20C.c6b</ClimateFilePath>
+		</Location>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<Interval>
+				<IBK:Parameter name="End" unit="d">2</IBK:Parameter>
+			</Interval>
+		</SimulationParameter>
+		<SolverParameter>
+			<IBK:Parameter name="RelTol" unit="---">1e-05</IBK:Parameter>
+			<LesSolver>KLU</LesSolver>
+  		</SolverParameter>
+		<Zones>
+			<Zone id="1" displayName="dummy" type="Active">
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">100</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<HydraulicNetworks>
+			<HydraulicNetwork id="1" displayName="Network with one pipe (heat exchange to ground) and heat exchanger (constant energy gain)" 
+						modelType="ThermalHydraulicNetwork" referenceElementId="201">
+				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
+				<!-- Use InitialFluidTemperature instead of DefaultFluidTemperature for thermal-hydraulic networks -->
+				<IBK:Parameter name="InitialFluidTemperature" unit="C">20</IBK:Parameter>
+				<HydraulicFluid id="1" displayName="Water">
+					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
+					<LinearSplineParameter name="KinematicViscosity" interpolationMethod="linear">
+						<X unit="C">0 90 </X>
+						<Y unit="m2/s">1.793e-06 1.793e-06</Y>
+					</LinearSplineParameter>
+				</HydraulicFluid>
+				<PipeProperties>
+					<HydraulicNetworkPipeProperties id="1">
+						<IBK:Parameter name="PipeRoughness" unit="mm">0.007</IBK:Parameter>
+						<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
+						<IBK:Parameter name="PipeOuterDiameter" unit="mm">32</IBK:Parameter>
+						<IBK:Parameter name="UValuePipeWall" unit="W/mK">5</IBK:Parameter>
+					</HydraulicNetworkPipeProperties>
+				</PipeProperties>
+				<Components>
+					<HydraulicNetworkComponent id="1" displayName="Pump 0815 (constant pressure)" modelType="ConstantPressurePump">
+						<IBK:Parameter name="PressureHead" unit="Pa">1000</IBK:Parameter>
+						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
+						<IBK:Parameter name="Volume" unit="m3">0.1</IBK:Parameter>
+					</HydraulicNetworkComponent>
+					<HydraulicNetworkComponent id="2" displayName="Heat exchanger with imposed flux as heat exchange" modelType="HeatExchanger">
+						<!-- Specify heat exchange type -->
+						<HeatExchangeType>HeatFluxConstant</HeatExchangeType>
+						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
+						<IBK:Parameter name="PressureLossCoefficient" unit="-">5</IBK:Parameter>
+						<IBK:Parameter name="Volume" unit="m3">0.4</IBK:Parameter>
+					</HydraulicNetworkComponent>
+					<HydraulicNetworkComponent id="3" displayName="Pipe with heat exchange" modelType="SimplePipe">
+						<!-- Specify heat exchange type -->
+						<HeatExchangeType>TemperatureConstant</HeatExchangeType>
+						<!-- TemperatureConstant requires ExternalHeatTransferCoefficient -->
+						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
+					</HydraulicNetworkComponent>
+				</Components>
+				<Elements>
+					<HydraulicNetworkElement id="201" inletNodeId="1" outletNodeId="2" componentId="1" displayName="Pump" />
+					<HydraulicNetworkElement id="101" inletNodeId="2" outletNodeId="3" componentId="3" pipePropertiesId="1">
+						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+						<!-- Pipe outside is fixed at 0 C -->
+						<IBK:Parameter name="Temperature" unit="C">0</IBK:Parameter>
+					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="301" inletNodeId="3" outletNodeId="1" componentId="2" displayName="Heat Exchanger">
+						<!-- Heat exchanger has constant 500 W imposed heat gain (mind the sign) -->
+						<IBK:Parameter name="HeatFlux" unit="W">-500</IBK:Parameter>
+					</HydraulicNetworkElement>
+				</Elements>
+			</HydraulicNetwork>
+		</HydraulicNetworks>
+		<Schedules />
+		
+		<Outputs>
+			<Definitions>
+				<!-- Outputs go to file 'network_elements.tsv' -->
+				<OutputDefinition>
+					<Quantity>FluidMassFlux</Quantity>
+					<ObjectListName>Network Elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>OutletNodePressure</Quantity>
+					<ObjectListName>Network Elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				
+				<!-- Outputs only for Thermal-Hydraulic networks -->
+				<OutputDefinition>
+					<Quantity>InletNodeTemperature</Quantity>
+					<ObjectListName>Network Elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>			
+				<OutputDefinition>
+					<Quantity>OutletNodeTemperature</Quantity>
+					<ObjectListName>Network Elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>			
+				<OutputDefinition>
+					<Quantity>FluidTemperature</Quantity>
+					<ObjectListName>Network Elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FlowElementHeatLoss</Quantity>
+					<ObjectListName>Network Elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+			</Definitions>
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="s">10</IBK:Parameter>
+						</Interval>
+						<Interval>
+							<IBK:Parameter name="Start" unit="min">30</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">5</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="Entire network">
+				<FilterID>*</FilterID>
+				<ReferenceType>Network</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Network Elements">
+				<FilterID>*</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+		
+	</Project>
+</NandradProject>

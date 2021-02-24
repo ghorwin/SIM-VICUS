@@ -6,3 +6,5 @@
 /ThermoHydraulicNetworkStaticFlowConstantHeatloss/
 /ThermoHydraulicNetworkStaticFlowConstantHeatloss_Dense/
 /ThermoHydraulicNetworkStaticFlowParallelPipes/
+/ThermoHydraulicNetworkStaticFlowConstantHeatloss_KLU/
+/ThermoHydraulicNetworkStaticFlowParallelPipesMixer/
