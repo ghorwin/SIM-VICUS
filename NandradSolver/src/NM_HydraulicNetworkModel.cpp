@@ -5,6 +5,7 @@
 #include <NANDRAD_KeywordList.h>
 
 #include <IBK_messages.h>
+#include <IBK_Exception.h>
 
 #include <IBKMK_DenseMatrix.h>
 #include <IBKMK_SparseMatrixCSR.h>
@@ -304,12 +305,23 @@ void HydraulicNetworkModel::resultValueRefs(std::vector<const double *> & res) c
 
 
 const double * HydraulicNetworkModel::resultValueRef(const InputReference & quantity) const {
+	FUNCID(HydraulicNetworkModel::resultValueRef);
+
 	const QuantityName & quantityName = quantity.m_name;
 	// return vector of mass fluxes
-	if (quantityName == std::string("FluidMassFluxes")) {
+	if (quantityName.m_name == std::string("FluidMassFluxes")) {
 		// id must be ID of network, and reftype must be NETWORK
 		if (quantity.m_id == id() && quantity.m_referenceType == NANDRAD::ModelInputReference::MRT_NETWORK) {
-			return &m_p->m_fluidMassFluxes[0];
+
+			// no element index? maybe the entire vector is requested
+			if (quantity.m_name.m_index == -1)
+				return &m_p->m_fluidMassFluxes[0];
+			else {
+				if ((unsigned int)quantity.m_name.m_index >= m_p->m_fluidMassFluxes.size())
+					throw IBK::Exception(IBK::FormatString("Index out of range in requested output quantity '%1'")
+										 .arg(quantity.m_name.encodedString()), FUNC_ID);
+				return &m_p->m_fluidMassFluxes[quantity.m_name.m_index];
+			}
 		}
 		return nullptr; // invalid ID or reftype...
 	}
