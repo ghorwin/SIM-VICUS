@@ -54,16 +54,16 @@
 						<IBK:Parameter name="PipeRoughness" unit="mm">0.014</IBK:Parameter>
 						<IBK:Parameter name="PipeInnerDiameter" unit="mm">51.2</IBK:Parameter>
 						<IBK:Parameter name="PipeOuterDiameter" unit="mm">64</IBK:Parameter>
-						<IBK:Parameter name="UValuePipeWall" unit="W/mK">10</IBK:Parameter>
+						<IBK:Parameter name="UValuePipeWall" unit="W/mK">5</IBK:Parameter>
 					</HydraulicNetworkPipeProperties>
 				</PipeProperties>
 				<Components>
-					<HydraulicNetworkComponent id="1" displayName="Pump 0815 (constant pressure)" modelType="ConstantPressurePump">
+					<HydraulicNetworkComponent id="1" displayName="Pump 1 0815 (constant pressure)" modelType="ConstantPressurePump">
 						<IBK:Parameter name="PressureHead" unit="Pa">1000</IBK:Parameter>
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.1</IBK:Parameter>
 					</HydraulicNetworkComponent>
-					<HydraulicNetworkComponent id="2" displayName="Parallel pump 0815 (constant pressure)" modelType="ConstantPressurePump">
+					<HydraulicNetworkComponent id="2" displayName="Pump 2 0815 (constant pressure)" modelType="ConstantPressurePump">
 						<IBK:Parameter name="PressureHead" unit="Pa">250</IBK:Parameter>
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.1</IBK:Parameter>
@@ -75,11 +75,17 @@
 						<IBK:Parameter name="PressureLossCoefficient" unit="-">0.01</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.4</IBK:Parameter>
 					</HydraulicNetworkComponent>
-					<HydraulicNetworkComponent id="4" displayName="Pipe" modelType="SimplePipe">
+					<HydraulicNetworkComponent id="4" displayName="Pipe 1" modelType="SimplePipe">
 						<!-- Specify heat exchange type -->
 						<HeatExchangeType>TemperatureConstant</HeatExchangeType>
 						<!-- TemperatureConstant requires ExternalHeatTransferCoefficient -->
 						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
+					</HydraulicNetworkComponent>
+					<HydraulicNetworkComponent id="5" displayName="Pipe 2" modelType="SimplePipe">
+						<!-- Specify heat exchange type -->
+						<HeatExchangeType>TemperatureConstant</HeatExchangeType>
+						<!-- TemperatureConstant requires ExternalHeatTransferCoefficient -->
+						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</HydraulicNetworkComponent>
 				</Components>
 				<Elements>
@@ -90,7 +96,7 @@
 						<!-- Pipe outside is fixed at 0 C -->
 						<IBK:Parameter name="Temperature" unit="C">0</IBK:Parameter>
 					</HydraulicNetworkElement>
-					<HydraulicNetworkElement id="102" inletNodeId="3" outletNodeId="4" componentId="4" pipePropertiesId="2">
+					<HydraulicNetworkElement id="102" inletNodeId="3" outletNodeId="4" componentId="5" pipePropertiesId="2">
 						<IBK:Parameter name="Length" unit="m">200</IBK:Parameter>
 						<!-- Pipe outside is fixed at 0 C -->
 						<IBK:Parameter name="Temperature" unit="C">0</IBK:Parameter>
