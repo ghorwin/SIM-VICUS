@@ -251,14 +251,12 @@ void HydraulicNetworkModel::resultDescriptions(std::vector<QuantityDescription> 
 	desc.m_displayName = m_displayName; // this is the displayname of the network itself
 	// this has been checked already in NANDRAD::HydraulicNetwork::checkParameters()
 	IBK_ASSERT(!m_p->m_flowElements.empty());
+	desc.resize(m_elementIds, NANDRAD_MODEL::VectorValuedQuantityIndex::IK_ModelID);
 	resDesc.push_back(desc);
 
 	// we cannot use IndexKeyType Index for vector value quantities below,
 	// because we want to request flow element properties by providing flow element IDs!
-
-	// set a description for each flow element
-	desc.m_name = "FluidMassFlux";
-	desc.m_description = "Fluid mass flux through a flow element";
+	desc = QuantityDescription("FluidMassFlux", "kg/s", "Fluid mass flux through a flow element", false);
 
 	// Important: change reftype to MRT_NETWORKELEMENT, because it otherwise defaults to the reftype of this object.
 	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
