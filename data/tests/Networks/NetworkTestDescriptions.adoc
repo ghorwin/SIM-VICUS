@@ -101,12 +101,35 @@ Bilanz über Vor- und Rücklauf des Rohres ist:
 ```
 
 Der Wärmeverlust im Rohr kommt durch Wärmeübertragung zur 0 C kalten Außenseite
-zu stande. Es wird die Rohrmitteltemperatur = T_out verwendet, d.h.
+zu stande. Für alle Temperaturen in der Berechnung (Viskosität, 
+Temperaturdifferenz zur Außenseite) wird die Rohrmitteltemperatur = T_out verwendet.
 
 ```
    dT = 1.2272 K
-```
 
+   din         = 0.00256 m
+   length      = 100 m
+   fluidVolume = 0.05147 m3   = din*din * Pi/4 * length
+   fluidDensity = 998 kg/m3
+   
+   velocity = 0.001109 m/s = mdot/(volume*density)
+   viscosity = 1.793e-6   (konstant)
+   
+   reynolds = 15.84
+   prandtl = 12.466
+   nusselt = 1
+
+   fluidConductivity = 0.6
+   innerHeatTransferCoefficient = 23.4375 = nusselt * fluidConductivity/din
+   outerHeatTransferCoefficient =  5
+   UValuePipeWall               =  5
+
+   UValueTotal                  = 4.0744
+   
+   UAValueTotal                 = 407.4392 W/K = UValueTotal * length
+
+   m_heatLoss                   = 500.2 W 
+```
 
 
 ### Test1 Mixer
