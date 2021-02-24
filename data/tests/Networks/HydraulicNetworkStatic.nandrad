@@ -76,7 +76,9 @@
 			<Definitions>
 				<!-- Outputs go to file 'network.tsv' -->
 				<OutputDefinition>
-					<Quantity>FluidMassFluxes</Quantity>
+					<!-- We choose the flow through the second element (pipe 101) as reference flux
+						 for the entire network -->
+					<Quantity>FluidMassFluxes[1]</Quantity>
 					<ObjectListName>Entire network</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
