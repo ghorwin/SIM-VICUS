@@ -90,10 +90,17 @@ int ThermalNetworkModelImpl::update() {
 		// set enthalpy flux to 0
 		double specEnthalp = 0;
 
+		// vector of elements that push fluid into the node
 		std::vector<unsigned int> inletIdxs =
 				m_network->m_nodes[i].m_elementIndexesInlet;
+		// vector of elements where the node fluid goes into
 		std::vector<unsigned int> outletIdxs =
 				m_network->m_nodes[i].m_elementIndexesOutlet;
+
+		// Note: the actual mass flux direction determines what will be inlet/outlet.
+
+		// first we sum up all mass fluxes *into* the node, wether they flow from 'inlet' or 'outlet' elements
+		// we also sum up the enthalpies
 
 		double massFluxInlet = 0.0;
 		// select all pipes with positive flux into element
@@ -101,7 +108,7 @@ int ThermalNetworkModelImpl::update() {
 			const double massFlux = m_fluidMassFluxes[idx];
 			if(massFlux > 0) {
 				massFluxInlet += massFlux;
-				// and retrieve specfic enthalpy
+				// and retrieve specific enthalpy
 				double temp = m_flowElements[idx]->outflowTemperature();
 				// sum up
 				specEnthalp += massFlux * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value * temp;
@@ -111,18 +118,21 @@ int ThermalNetworkModelImpl::update() {
 		for(unsigned int idx : outletIdxs) {
 			const double massFlux = m_fluidMassFluxes[idx];
 			if(massFlux < 0) {
-				massFluxInlet -= massFlux;
-				// and retrieve specfic enthalpy
+				massFluxInlet -= massFlux; // mind negative sign of mass flux
+				// and retrieve specific enthalpy
 				double temp = m_flowElements[idx]->outflowTemperature();
-				// sum up
-				specEnthalp += massFlux * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value * temp;
+				// sum up (mind negative sign of mass flux!)
+				specEnthalp += -massFlux * m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value * temp;
 			}
 		}
-		IBK_ASSERT(massFluxInlet != 0.0);
-		specEnthalp/=massFluxInlet;
 
-		m_nodalSpecificEnthalpies[i] = specEnthalp;
-		m_nodalTemperatures[i] = specEnthalp/m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+		// if we encounter a trivial flow solution (massFluxes all zero), then we just keep the temperatures the same
+		if (massFluxInlet != 0.0) {
+			specEnthalp /= massFluxInlet;
+
+			m_nodalSpecificEnthalpies[i] = specEnthalp;
+			m_nodalTemperatures[i] = specEnthalp/m_fluid->m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+		}
 	}
 
 	for(unsigned int i = 0; i < m_flowElements.size(); ++i) {

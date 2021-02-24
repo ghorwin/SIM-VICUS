@@ -71,6 +71,7 @@ public:
 	/*! Constant access to network. */
 	const Network									*m_network = nullptr;
 	/*! Container with specific enthalpy for each node.
+		TODO : Anne, remove
 	*/
 	std::vector<double>								m_nodalSpecificEnthalpies;
 	/*! Container with temperatures for each node.

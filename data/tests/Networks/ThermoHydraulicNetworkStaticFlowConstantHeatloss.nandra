@@ -20,7 +20,7 @@
 			</Interval>
 		</SimulationParameter>
 		<SolverParameter>
-			<IBK:Parameter name="InitialTimeStep" unit="s">10</IBK:Parameter>
+			<IBK:Parameter name="InitialTimeStep" unit="s">1</IBK:Parameter>
 			<IBK:Parameter name="MinTimeStep" unit="s">1e-05</IBK:Parameter>
 			<IBK:Parameter name="MaxTimeStep" unit="s">100</IBK:Parameter>
 			<IBK:Parameter name="RelTol" unit="---">1e-05</IBK:Parameter>
