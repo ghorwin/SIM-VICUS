@@ -68,7 +68,9 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 
 	// check parameters required for thermal balances/heat exchange
 	// Note: We ONLY check the required PARAMETERS here! Wether this is a correct heat exchange type or not is
-	// checked in the HydraulicComponent!
+	//       checked in the HydraulicComponent!
+	//       Also, we do not check for implemented combinations of model type and heat exchange type - this is handled
+	//       when the models are instantiated.
 
 	bool heatExchangeDataFileMustExist = false;
 
