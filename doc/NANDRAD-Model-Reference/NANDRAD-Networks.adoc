@@ -555,13 +555,12 @@ Je nach physikalischer Modellierung eines Strömungselements muss die Mitteltemp
 
 Die Temperaturen am Ein- bzw. Auslass sind (wie die Drücke) an den physischen Positionen _inletNode_ und _outletNode_ definiert und können ausgegeben werden. Es sind folgende Ausgabevariablen für den Referenztyp `NetworkElement` definiert:
 
-- `InletNodeTemperature` in C 
+- `InletNodeTemperature` in C
 - `OutletNodeTemperature` in C
+- `FlowElementHeatLoss` in W - Wärmestrom abgegeben vom Strömungselement (Energie wird dem Fluid in diesem Element entzogen). Positive Werte bedeuten Abkühlen des Mediums (Wärmeverlust).
 
-TODO Anne....
 
-- `FluidHeatFlux` -> TODO : Rename
-
+TODO : Anne Milestone 3
 
 - `ZoneHeatFluxes` : Milestone 3
 - 
@@ -569,7 +568,9 @@ TODO Anne....
 
 #### Ausgaben des Netzwerks
 
-Zur Vereinfachung dienen die Variablennamen `FluidTemperatures` und `FluidMassFluxes`, welche für ein gesamtes Netzwerk abgerufen werden können (Referenztyp `Network`). Diese enthalten jeweils Ausgaben für alle Strömungselemente.
+Zur Vereinfachung gibt es Variablen, welche für ein gesamtes Netzwerk abgerufen werden können (Referenztyp `Network`). Diese enthalten jeweils Ausgaben für alle Strömungselemente.
+
+- `FluidMassFluxes` - Masseströme durch alle Strömungselemente des Netzwerks
 
 
 ### Variablennamen in Ausgabedateien
