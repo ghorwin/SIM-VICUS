@@ -82,7 +82,31 @@ Ein Kreis, 3 Elemente:
 Abkühlung des Systems von einer einheitlichen Fluidtemperatur von 20 C
 - Anfänglich erwärmt der Wärmetauscher das Fluid in der Pumpe etwas, bis 
   sich das im Rohr abgekühlte Fluid auswirkt
-- nach 
+- nach Einlaufen in den stationären Zustand (ca. 40 h), gibt es eine analytische Lösung
+
+500 W = Wärmeverlust im Rohr, bei einer Temperaturspreizung von:
+
+```
+  T_in    = 3.3263 C
+  T_out   = 1.2272 C
+  dT      = 2.0991 K
+  
+  mdot     = 0.0569877 kg/s
+  cTFluid  = 4180 J/kgK
+```
+
+Bilanz über Vor- und Rücklauf des Rohres ist:  
+```
+  Q_heatloss = 2.0991 * 0.0569877 * 4180 J/kgK  = 500.0236428726 W
+```
+
+Der Wärmeverlust im Rohr kommt durch Wärmeübertragung zur 0 C kalten Außenseite
+zu stande. Es wird die Rohrmitteltemperatur = T_out verwendet, d.h.
+
+```
+   dT = 1.2272 K
+```
+
 
 
 ### Test1 Mixer
