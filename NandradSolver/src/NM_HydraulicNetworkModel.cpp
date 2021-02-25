@@ -424,9 +424,12 @@ int HydraulicNetworkModel::update() {
 
 // *** HydraulicNetworkModelImpl members ***
 
+// constants that control Jacobian matrix generation
+const double JACOBIAN_EPS_RELTOL = 1e-6;
+const double JACOBIAN_EPS_ABSTOL = 1e-8; // in Pa and scaled kg/s
 
-const double JACOBIAN_EPS = 1e-6; // in Pa and scaled kg/s
-const double THRESHOLD = 1;
+// convergence threshold for WRMS norm
+const double THRESHOLD = 0.1;
 const double MASS_FLUX_SCALE = 1000;
 
 
@@ -937,10 +940,10 @@ int HydraulicNetworkModelImpl::jacobianSetup() {
 		// loop over all variables
 		for (unsigned int j=0; j<n; ++j) {
 			// modify y_j by a small EPS
-			double eps = JACOBIAN_EPS;
+			double eps = std::fabs(m_y[j])*JACOBIAN_EPS_RELTOL + JACOBIAN_EPS_ABSTOL;
 			// for mass fluxes, if y > eps, rather subtract the eps
 			if (j > m_nodeCount && m_y[j] > eps)
-				eps = -JACOBIAN_EPS;
+				eps = -eps;
 			m_y[j] += eps;
 			// evaluate G(y_mod)
 			updateG();
@@ -978,10 +981,10 @@ int HydraulicNetworkModelImpl::jacobianSetup() {
 			for (unsigned int jind=0; jind<colors[i].size(); ++jind) {
 				unsigned int j = colors[i][jind];
 				// modify y_j by a small EPS
-				double eps = JACOBIAN_EPS;
+				double eps = std::fabs(m_y[j])*JACOBIAN_EPS_RELTOL + JACOBIAN_EPS_ABSTOL;
 				// for mass fluxes, if y > eps, rather subtract the eps
 				if (j > m_nodeCount && m_y[j] > eps)
-					eps = -JACOBIAN_EPS;
+					eps = -eps;
 				m_y[j] += eps;
 			}
 			// evaluate G(y_mod)
@@ -990,10 +993,10 @@ int HydraulicNetworkModelImpl::jacobianSetup() {
 			for (unsigned int jind=0; jind<colors[i].size(); ++jind) {
 				unsigned int j = colors[i][jind];
 				// compute finite-differences column j in row i
-				double eps = JACOBIAN_EPS;
+				double eps = std::fabs(m_y[j])*JACOBIAN_EPS_RELTOL + JACOBIAN_EPS_ABSTOL;
 				// for mass fluxes, if y > eps, rather subtract the eps
 				if (j > m_nodeCount && m_y[j] > eps)
-					eps = -JACOBIAN_EPS;
+					eps = -eps;
 				// we compute now all Jacobian elements in the column j
 				for (unsigned int k = iaIdxT[j]; k < iaIdxT[j + 1]; ++k) {
 					unsigned int rowIdx = jaIdxT[k];
@@ -1007,10 +1010,10 @@ int HydraulicNetworkModelImpl::jacobianSetup() {
 			for (unsigned int jind=0; jind<colors[i].size(); ++jind) {
 				unsigned int j = colors[i][jind];
 				// modify y_j by a small EPS
-				double eps = JACOBIAN_EPS;
+				double eps = std::fabs(m_y[j])*JACOBIAN_EPS_RELTOL + JACOBIAN_EPS_ABSTOL;
 				// for mass fluxes, if y > eps, rather subtract the eps
 				if (j > m_nodeCount && m_y[j] > eps)
-					eps = -JACOBIAN_EPS;
+					eps = -eps;
 				m_y[j] -= eps;
 			}
 		} // for i
@@ -1021,7 +1024,7 @@ int HydraulicNetworkModelImpl::jacobianSetup() {
 					 m_sparseSolver.m_KLUSymbolic,
 					 &(m_sparseSolver.m_KLUParas));
 		// error treatment: singular matrix
-		if(m_sparseSolver.m_KLUNumeric == nullptr)
+		if (m_sparseSolver.m_KLUNumeric == nullptr)
 			return 1;
 	}
 	return 0;
