@@ -120,31 +120,6 @@ void SVDBScheduleDailyCycleEditWidget::on_tableWidgetDayCycle_cellChanged(int ro
 			m_ui->tableWidgetDayCycle->blockSignals(false);
 		}
 	}
-//	//create a timeval element and a vector
-//	struct timeVal{
-//		double m_timepoint = 0;
-//		double m_val = 0;
-//	};
-
-//	std::vector<timeVal> timeVals;
-//	//import the table view
-//	for(unsigned int i=0; i<m_ui->tableWidgetDayCycle->rowCount();++i){
-//		timeVal tV;
-//		tV.m_timepoint = i*3600;
-//		tV.m_val = m_ui->tableWidgetDayCycle->item(i,1)->text().toDouble();
-
-//		if(i==0 || !IBK::near_equal(timeVals.back().m_val,tV.m_val))
-//			timeVals.push_back(tV);
-
-//	}
-
-//	//delete redundant objects
-//	QStringList strL;
-//	for (auto tv : timeVals ) {
-//		strL << QString::number(tv.m_timepoint) + " | " + QString::number(tv.m_val);
-//	}
-
-
 
 	std::vector<double> timepoints(1,0), values(1, m_ui->tableWidgetDayCycle->item(0,1)->text().toDouble());
 	unsigned int lastIdx=0;

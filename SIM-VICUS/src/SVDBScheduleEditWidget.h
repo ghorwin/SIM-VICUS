@@ -109,6 +109,9 @@ private:
 	/*! Actual row index of period table. (-1 no row selected)*/
 	int									m_rowIdx=-1;
 
+	/*! Block StateChange of checkboxes. */
+	bool								m_blockCheckBox=true;
+
 
 
 };

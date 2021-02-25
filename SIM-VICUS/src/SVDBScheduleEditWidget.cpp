@@ -44,6 +44,8 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 		m_ui->labelScheduleType_2->setVisible(false);
 	}
 
+	m_ui->widgetDailyCycleAndDayTypes->layout()->setMargin(0);
+
 	// initial state is "nothing selected"
 	updateInput(-1);
 }
@@ -66,9 +68,6 @@ void SVDBScheduleEditWidget::updatePeriodTable(const int &activeRow){
 	//create a julian day to get the right date in dd.MM.
 	qint64 julianD = QDate(2021,1,1).toJulianDay();
 
-	///TODO Stephan
-	//sort the periods
-
 	//set up all periods with name and day
 	m_ui->tableWidgetPeriods->setRowCount(m_current->m_periods.size());
 	for(unsigned int i=0; i<m_current->m_periods.size(); ++i){
@@ -77,20 +76,20 @@ void SVDBScheduleEditWidget::updatePeriodTable(const int &activeRow){
 		itemDate->setFlags(itemDate->flags() ^ Qt::ItemIsEditable);
 		m_ui->tableWidgetPeriods->setItem(i,0,itemDate);
 		m_ui->tableWidgetPeriods->setItem(i,1,new QTableWidgetItem(QtExt::MultiLangString2QString(m_current->m_periods[i].m_displayName)));
-	}
-	///TODO reselect row default to row 0
 
-	on_tableWidgetPeriods_currentCellChanged(0,0,0,0);
-	if(!m_current->m_periods.empty())
-		m_ui->tableWidgetPeriods->selectRow(0);
-	m_ui->tableWidgetPeriods->blockSignals(false);
+		//if schedule interval is valid -> green background
+		m_ui->tableWidgetPeriods->item(i,0)->setBackgroundColor(m_current->m_periods[i].isValid() ? Qt::green : Qt::red);
+		m_ui->tableWidgetPeriods->item(i,1)->setBackgroundColor(m_current->m_periods[i].isValid() ? Qt::green : Qt::red);
+	}
 
 	on_tableWidgetPeriods_currentCellChanged(activeRow,0,0,0);
+	//m_ui->tableWidgetPeriods->selectRow(activeRow);
+
+	m_ui->tableWidgetPeriods->blockSignals(false);
 
 	//is more than one period left
 	//remove button activate
 	m_ui->toolButtonRemovePeriode->setEnabled(m_current->m_periods.size()>1);
-
 }
 
 void SVDBScheduleEditWidget::selectDailyCycle() {
@@ -103,14 +102,15 @@ void SVDBScheduleEditWidget::selectDailyCycle() {
 
 	// enable forward button:
 	//
-	if(m_currentDailyCycleIndex<m_currentInterval->m_dailyCycles.size()-1 || m_currentInterval->freeDayTypes().size()>0){
-		m_ui->toolButtonBackward->setEnabled(m_currentDailyCycleIndex!=0);
-	}
+	m_ui->toolButtonForward->setEnabled(m_currentDailyCycleIndex<m_currentInterval->m_dailyCycles.size()-1
+										|| m_currentInterval->freeDayTypes().size()>0);
+
 
 	// check/uncheck day checkbox (with blocked signals)
 	m_ui->widgetDayTypes->blockSignals(true);
-
+	m_blockCheckBox =false;
 	//all button active and enabled
+	///TODO Stephan in for packen
 	m_ui->checkBoxMonday->setEnabled(true);
 	m_ui->checkBoxTuesday->setEnabled(true);
 	m_ui->checkBoxWednesday->setEnabled(true);
@@ -119,6 +119,7 @@ void SVDBScheduleEditWidget::selectDailyCycle() {
 	m_ui->checkBoxSaturday->setEnabled(true);
 	m_ui->checkBoxSunday->setEnabled(true);
 	m_ui->checkBoxHoliday->setEnabled(true);
+
 	m_ui->checkBoxMonday->setChecked(false);
 	m_ui->checkBoxTuesday->setChecked(false);
 	m_ui->checkBoxWednesday->setChecked(false);
@@ -127,6 +128,7 @@ void SVDBScheduleEditWidget::selectDailyCycle() {
 	m_ui->checkBoxSaturday->setChecked(false);
 	m_ui->checkBoxSunday->setChecked(false);
 	m_ui->checkBoxHoliday->setChecked(false);
+
 
 	for(unsigned int i=0; i< m_currentInterval->m_dailyCycles.size(); ++i){
 		bool enabled = false;
@@ -171,6 +173,7 @@ void SVDBScheduleEditWidget::selectDailyCycle() {
 			}
 		}
 	}
+	m_blockCheckBox =true;
 	m_ui->widgetDayTypes->blockSignals(false);
 	// update current daily cycle data type and chartt
 
@@ -187,31 +190,17 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 	bool isEnabled = (id == -1 ? false : true);
 
 	//set buttons
-	//m_ui->toolButtonForward->setEnabled(false);
-	//m_ui->toolButtonBackward->setEnabled(false);
 	m_ui->toolButtonAddPeriod->setEnabled(isEnabled);
 	m_ui->toolButtonCopyPeriod->setEnabled(isEnabled);
 	m_ui->toolButtonRemovePeriode->setEnabled(isEnabled);
 
 	m_ui->widgetDailyCycleAndDayTypes->setEnabled(false);
 
-	//set checkboxes
-//	m_ui->checkBoxMonday->setEnabled(false);
-//	m_ui->checkBoxTuesday->setEnabled(false);
-//	m_ui->checkBoxWednesday->setEnabled(false);
-//	m_ui->checkBoxThursday->setEnabled(false);
-//	m_ui->checkBoxFriday->setEnabled(false);
-//	m_ui->checkBoxSaturday->setEnabled(false);
-//	m_ui->checkBoxSunday->setEnabled(false);
-//	m_ui->checkBoxHoliday->setEnabled(false);
-
 	//set table views
-//	m_ui->tableWidgetDayCycle->setEnabled(false);
 	m_ui->tableWidgetPeriods->setEnabled(isEnabled);
 
 	if (!isEnabled) {
 		// clear input controls
-
 		return;
 	}
 	m_current = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) id ]);
@@ -219,9 +208,6 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 	Q_ASSERT(m_current != nullptr);
 
 	///TODO Annual Schedule ...
-
-	// update table widget with periods
-	// select first period -> call selectionChangedSlot() which sets up the remainder of the UI
 
 	//period schedule
 	if(m_current->m_annualSchedule.x().empty()){
@@ -242,57 +228,6 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 
 	}
 
-
-
-/*
-
-
-	VICUS::BoundaryCondition * bc = const_cast<VICUS::BoundaryCondition *>(m_db->m_boundaryConditions[(unsigned int)id]);
-	m_current = bc;
-
-	// now update the GUI controls
-	m_ui->lineEditName->setString(bc->m_displayName);
-
-	m_ui->comboBoxHeatTransferCoeffModelType->blockSignals(true);
-	m_ui->comboBoxHeatTransferCoeffModelType->setCurrentIndex(m_ui->comboBoxHeatTransferCoeffModelType->findData(bc->m_heatConduction.m_modelType));
-	m_ui->comboBoxHeatTransferCoeffModelType->blockSignals(false);
-	// update model-specific input states
-	on_comboBoxHeatTransferCoeffModelType_currentIndexChanged(m_ui->comboBoxHeatTransferCoeffModelType->currentIndex());
-
-	m_ui->comboBoxLWModelType->blockSignals(true);
-	m_ui->comboBoxLWModelType->setCurrentIndex(m_ui->comboBoxLWModelType->findData(bc->m_longWaveEmission.m_modelType));
-	m_ui->comboBoxLWModelType->blockSignals(false);
-	// update model-specific input states
-	on_comboBoxLWModelType_currentIndexChanged(m_ui->comboBoxLWModelType->currentIndex());
-
-	m_ui->comboBoxSWModelType->blockSignals(true);
-	m_ui->comboBoxSWModelType->setCurrentIndex(m_ui->comboBoxSWModelType->findData(bc->m_solarAbsorption.m_modelType));
-	m_ui->comboBoxSWModelType->blockSignals(false);
-	// update model-specific input states
-	on_comboBoxSWModelType_currentIndexChanged(m_ui->comboBoxSWModelType->currentIndex());
-
-	m_ui->lineEditHeatTransferCoefficient->setValue(bc->m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value);
-	m_ui->lineEditSolarAbsorptionCoefficient->setValue(bc->m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].value);
-	m_ui->lineEditLongWaveEmissivity->setValue(bc->m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value);
-
-	m_ui->pushButtonColor->blockSignals(true);
-	m_ui->pushButtonColor->setColor(m_current->m_color);
-	m_ui->pushButtonColor->blockSignals(false);
-
-	// for built-ins, disable editing/make read-only
-	bool isEditable = true;
-	if (bc->m_builtIn)
-		isEditable = false;
-
-	m_ui->lineEditName->setReadOnly(!isEditable);
-	m_ui->pushButtonColor->setReadOnly(!isEditable);
-	m_ui->lineEditSolarAbsorptionCoefficient->setReadOnly(!isEditable);
-	m_ui->lineEditLongWaveEmissivity->setReadOnly(!isEditable);
-	m_ui->lineEditHeatTransferCoefficient->setReadOnly(!isEditable);
-	m_ui->comboBoxHeatTransferCoeffModelType->setEnabled(isEditable);
-	m_ui->comboBoxLWModelType->setEnabled(isEditable);
-	m_ui->comboBoxSWModelType->setEnabled(isEditable);
-*/
 }
 
 void SVDBScheduleEditWidget::on_toolButtonAddPeriod_clicked(){
@@ -352,7 +287,6 @@ void SVDBScheduleEditWidget::on_toolButtonRemovePeriode_clicked(){
 	if( rowIdx == 0)
 		m_current->m_periods.front().m_intervalStartDay = 0;
 	updatePeriodTable();
-
 }
 
 
@@ -360,8 +294,6 @@ void SVDBScheduleEditWidget::on_toolButtonRemovePeriode_clicked(){
 void SVDBScheduleEditWidget::on_tableWidgetPeriods_currentCellChanged(int currentRow, int currentColumn, int /*previousRow*/, int /*previousColumn*/)
 {
 	Q_ASSERT(m_current != nullptr);
-
-	///TODO Stephan
 	Q_ASSERT(currentRow < m_ui->tableWidgetPeriods->rowCount() );
 
 	m_rowIdx = currentRow;
@@ -486,7 +418,9 @@ void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellClicked(int row, int colu
 
 	unsigned int shift = periode.m_intervalStartDay;
 	periodStartDate = periodStartDate.addDays(shift);
-	periodStartDate = QtExt::DateTimeInputDialog::requestDate(tr("Modify start date of period"), tr("Enter start date (dd.MM.):"), tr("dd.MM."),									&periodStartDate);
+	periodStartDate = QtExt::DateTimeInputDialog::requestDate(tr("Modify start date of period"),
+															  tr("Enter start date (dd.MM.):"), tr("dd.MM."),
+															  &periodStartDate);
 
 	if ( !periodStartDate.isValid() ) {
 		m_current->m_periods.insert(m_current->m_periods.begin()+row, periode);
@@ -520,6 +454,10 @@ void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellClicked(int row, int colu
 }
 
 void SVDBScheduleEditWidget::updateDayTypes(const NANDRAD::Schedule::ScheduledDayType &dt, bool checked){
+
+	if(!m_blockCheckBox)
+		return;
+
 	VICUS::DailyCycle &dc = m_currentInterval->m_dailyCycles[m_currentDailyCycleIndex];
 	//find current indx in vector
 	int idx=-1;
@@ -539,10 +477,21 @@ void SVDBScheduleEditWidget::updateDayTypes(const NANDRAD::Schedule::ScheduledDa
 	else
 		return;
 
+	//update the forward button for each set checked
+	m_ui->toolButtonForward->setEnabled(m_currentDailyCycleIndex<m_currentInterval->m_dailyCycles.size()-1
+										|| m_currentInterval->freeDayTypes().size()>0);
+
 	m_db->m_schedules.m_modified;
+
+	//if schedule interval is valid -> green background
+	int row = m_ui->tableWidgetPeriods->currentRow();
+	if(row>=0){
+		m_ui->tableWidgetPeriods->item(row,0)->setBackgroundColor(m_currentInterval->isValid() ? Qt::green : Qt::red);
+		m_ui->tableWidgetPeriods->item(row,1)->setBackgroundColor(m_currentInterval->isValid() ? Qt::green : Qt::red);
+	}
 }
 
-
+///TODO Stephan geht das auch in einer for?
 void SVDBScheduleEditWidget::on_checkBoxMonday_stateChanged(int arg1) {
 	//0 unchecked
 	//2 checked
@@ -566,7 +515,7 @@ void SVDBScheduleEditWidget::on_checkBoxThursday_stateChanged(int arg1) {
 }
 
 void SVDBScheduleEditWidget::on_checkBoxFriday_stateChanged(int arg1) {
-	updateDayTypes(NANDRAD::Schedule::ST_WEDNESDAY, arg1==2);
+	updateDayTypes(NANDRAD::Schedule::ST_FRIDAY, arg1==2);
 }
 
 void SVDBScheduleEditWidget::on_checkBoxSaturday_stateChanged(int arg1) {
