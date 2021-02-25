@@ -452,7 +452,7 @@ void TNPumpWithPerformanceLoss::setInflowTemperature(double Tinflow) {
 	// Pelectrical * m_pumpEfficiency = Pmechanical
 	double Pelectrical = Pmechanical/m_pumpEfficiency;
 	// calculate heat flux into fluid
-	m_heatLoss = - (Pelectrical- Pmechanical);
+	m_heatLoss = - (Pelectrical - Pmechanical);
 }
 
 
@@ -478,7 +478,7 @@ TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(const NANDRAD::HydraulicFluid & flu
 
 
 void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
-	// copy ionflow temperature
+	// copy inflow temperature
 	m_inflowTemperature = Tinflow;
 	// TODO Hauke: use mean evaporator temperature instead of evaporator inlet temperature?
 	const double COPMax = m_condenserMeanTemperature / (m_condenserMeanTemperature - Tinflow);

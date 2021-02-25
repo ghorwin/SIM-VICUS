@@ -64,6 +64,22 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) const {
 }
 
 
+std::vector<unsigned int> HydraulicNetworkComponent::availableHeatExchangeTypes(const HydraulicNetworkComponent::ModelType modelType) {
+	switch (modelType) {
+		case MT_SimplePipe:
+			return {HT_TemperatureConstant, HT_TemperatureDataFile, HT_HeatFluxConstant, HT_HeatFluxDataFile};
+		case MT_DynamicPipe:
+			return {HT_TemperatureConstant, HT_TemperatureDataFile, HT_HeatFluxConstant, HT_HeatFluxDataFile};
+		case MT_HeatPumpIdealCarnot:
+		case MT_HeatExchanger:
+			return {HT_HeatFluxConstant, HT_HeatFluxDataFile};
+		case MT_ConstantPressurePump:
+		case NUM_MT: ;
+	}
+	return {};
+}
+
+
 std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const HydraulicNetworkComponent::ModelType modelType,
 																	   int heatExchangeType,
 																	   int networkModelType){

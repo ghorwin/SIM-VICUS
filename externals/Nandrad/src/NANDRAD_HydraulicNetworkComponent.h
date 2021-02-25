@@ -42,7 +42,6 @@ public:
 		P_ExternalHeatTransferCoefficient,	// Keyword: ExternalHeatTransferCoefficient		[W/m2K]	'External heat transfer coeffient for the outside boundary'
 		P_PressureHead,						// Keyword: PressureHead						[Pa]	'Pressure head form a pump'
 		P_PumpEfficiency,					// Keyword: PumpEfficiency						[---]	'Pump efficiency'
-//		P_MotorEfficiency,					// xKeyword: MotorEfficiency						[---]	'Motor efficiency for a pump'
 		P_Volume,							// Keyword: Volume								[m3]	'Water or air volume of the component'
 		P_UAValue,							// Keyword: UAValue								[W/m2K]	'UA-Value of heat exchanger'
 		P_PipeMaxDiscretizationWidth,		// Keyword: PipeMaxDiscretizationWidth			[m]		'Maximum width of discretized volumes in pipe'
@@ -106,22 +105,7 @@ public:
 
 	// *** STATIC FUNCTIONS ***
 
-	static std::vector<unsigned int> availableHeatExchangeTypes(const ModelType modelType) {
-		switch (modelType) {
-			case MT_ConstantPressurePump:
-				return {HT_HeatFluxConstant, HT_HeatFluxDataFile};
-			case MT_SimplePipe:
-				return {HT_TemperatureConstant, HT_TemperatureDataFile, HT_HeatFluxConstant, HT_HeatFluxDataFile};
-			case MT_DynamicPipe:
-				return {HT_TemperatureConstant, HT_TemperatureDataFile, HT_HeatFluxConstant, HT_HeatFluxDataFile};
-			case MT_HeatPumpIdealCarnot:
-			case MT_HeatExchanger:
-				return {HT_HeatFluxConstant, HT_HeatFluxDataFile};
-			case NUM_MT: ;
-		}
-		return {};
-	}
-
+	static std::vector<unsigned int> availableHeatExchangeTypes(const ModelType modelType);
 
 	/*! Needed both in user interface and for valid parameter checking in solver. */
 	static std::vector<unsigned int> requiredParameter(const ModelType modelType, int heatExchangeType, int networkModelType);

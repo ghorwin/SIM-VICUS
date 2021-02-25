@@ -207,45 +207,12 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump :
 				{
-					// distinguish based on heat exchange type
-					switch (e.m_component->m_heatExchangeType) {
-						// create adiabatic pipe model
-						case NANDRAD::HydraulicNetworkComponent::NUM_HT : {
-							// create general adiabatic model
-							TNAdiabaticElement * element = new TNAdiabaticElement(m_network->m_fluid,
-									e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value);
-							// add to flow elements
-							m_p->m_flowElements.push_back(element); // transfer ownership
-							m_p->m_heatLossElements.push_back(nullptr); // no heat loss
-						} break;
-
-						case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant :
-						case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile :
-						{
-							// create general model with given heat flux
-							TNElementWithExternalHeatLoss * element = new TNElementWithExternalHeatLoss(m_network->m_fluid,
-									e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value, heatExchangeValue);
-							// add to flow elements
-							m_p->m_flowElements.push_back(element); // transfer ownership
-							m_p->m_heatLossElements.push_back(element); // copy of pointer
-						} break;
-
-						case NANDRAD::HydraulicNetworkComponent::HT_TemperatureConstant:
-						case NANDRAD::HydraulicNetworkComponent::HT_TemperatureDataFile:
-						case NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature:
-						{
-							// create pump model witzh heat loss
-							TNPumpWithPerformanceLoss * element = new TNPumpWithPerformanceLoss(m_network->m_fluid,
-									*e.m_component, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value);
-							// add to flow elements
-							m_p->m_flowElements.push_back(element); // transfer ownership
-							m_p->m_heatLossElements.push_back(element); // no heat loss
-						} break;
-
-						case NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithFMUTemperature :
-							// TODO : Andreas, Milestone FMU-Networks
-						break;
-					} // switch heat exchange type
+					// create pump model with heat loss
+					TNPumpWithPerformanceLoss * element = new TNPumpWithPerformanceLoss(m_network->m_fluid,
+							*e.m_component, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value);
+					// add to flow elements
+					m_p->m_flowElements.push_back(element); // transfer ownership
+					m_p->m_heatLossElements.push_back(element); // no heat loss
 
 				} break; // NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump
 

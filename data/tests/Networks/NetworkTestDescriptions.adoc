@@ -68,7 +68,31 @@
 - In diesem Beispiel zirkuliert ein Teil des Fluids immer nur im oberen Kreis.
 
 
+
 ## Thermo-Hydraulic Tests
+
+
+### ThermoHydraulicNetworkSimplePipeAdiabat.nandrad
+
+Einfaches Modell mit nur einer Pumpe mit Wirkungsgrad 100% und einem adiabaten Rohr.
+
+- Pumpe (1001) mit 100% Wirkungsgrad
+- Rohr (1002), Modell SimplePipe, adiabat
+
+Ergebnis:
+Alle Temperaturen bleiben konstant bei 20°C.
+
+
+### ThermoHydraulicNetworkPumpWithLosses.nandrad
+
+Fast identisch mit ThermoHydraulicNetworkSimplePipeAdiabat, jetzt hat die Pumpe aber einen Wirkungsrad von 40%.
+
+Die meachnische Leistung ist
+
+```
+W = dp  m_dot/rho = 10000   
+
+
 
 ### ThermoHydraulicNetworkStaticFlowConstantHeatloss_Dense.nandrad
 
