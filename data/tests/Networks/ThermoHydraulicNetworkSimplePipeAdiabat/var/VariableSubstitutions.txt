@@ -1,0 +1,4 @@
+NetworkElement(id=1001).FluidMassFlux	pump.FluidMassFlux
+NetworkElement(id=1001).OutletNodePressure	pump.OutletNodePressure
+NetworkElement(id=1002).FluidMassFlux	pipe.FluidMassFlux
+NetworkElement(id=1002).OutletNodePressure	pipe.OutletNodePressure

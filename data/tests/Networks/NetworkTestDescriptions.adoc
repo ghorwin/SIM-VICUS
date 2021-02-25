@@ -80,18 +80,111 @@ Einfaches Modell mit nur einer Pumpe mit Wirkungsgrad 100% und einem adiabaten R
 - Rohr (1002), Modell SimplePipe, adiabat
 
 Ergebnis:
-Alle Temperaturen bleiben konstant bei 20°C.
-
+FluidTemperature und OutletNodeTemperature von 1001 und 1002
+```
+20.0°C
+```
+FluidMassFlux von 1001 und 1002
+```
+0.0478246 kg/s
+```
 
 ### ThermoHydraulicNetworkPumpWithLosses.nandrad
 
 Fast identisch mit ThermoHydraulicNetworkSimplePipeAdiabat, jetzt hat die Pumpe aber einen Wirkungsrad von 40%.
 
-Die meachnische Leistung ist
+Der abgegebene Wärmestrom berechnet sich zu  
 
 ```
-W = dp  m_dot/rho = 10000   
+Q_heatloss = (1-0.4) / 0.4 * dp * m_dot / rho = (1-0.4)/ 0.4 * 10000 * 0.0818862 / 998 = 1.23075 W
+```
 
+und stimmt mit der Wärmeabgabe der Pumpe überein.
+```
+NetworkElement(id=1001).FlowElementHeatLoss [W] = 
+-1.23076
+```
+
+Die OutletNodeTemperature steigt linear an und beträgt nach 24 h Simulationszeit 
+```
+NetworkElement(id=1001).OutletNodeTemperature [C] =
+20.4893
+```
+
+
+### ThermoHydraulicNetworkSimplePipeTemperatureDataFile.nandrad
+
+2 Elemente:
+
+- Pumpe (1001) mit 100% Wirkungsgrad
+- Rohr (1002), Modell SimplePipe, Wärmeaustausch mit zeitlichem Temperaturverlauf, gegeben in einer tsv-Datei
+
+Der Temperaturverlauf in der tsv-Datei ist
+```
+Time[h]	Temperature[C]
+0	0
+12	0
+20	20.0
+```
+
+Die Austrittstemperatur des Rohrs bei t=0 h 
+```
+NetworkElement(id=1002).OutletNodeTemperature [C]
+20
+```
+
+Die Austrittstemperatur des Rohrs bei t=12 h 
+```
+NetworkElement(id=1002).OutletNodeTemperature [C]
+-6.77998e-07
+```
+
+Die Austrittstemperatur des Rohrs bei t=24 h 
+```
+NetworkElement(id=1002).OutletNodeTemperature [C]
+20.0001
+```
+
+
+### ThermoHydraulicNetworkHeatExchangerHeatFluxConst.nandrad
+
+Einfacher Kreis, 2 Elemente:
+
+- Pumpe (1001)
+- HeatExchanger (1003) mit konstantem Wärmestrom
+
+Der Wärmestom beträgt -50 W. Entsprechend:
+```
+Zeit [h]	NetworkElement(id=1003).FlowElementHeatLoss [W]
+0	-50
+1	-50
+```
+
+Ergebnis: Die Fluidtemperatur steigt auf 41.58°C:
+```
+Zeit [h]	NetworkElement(id=1003).OutletNodeTemperature [C]
+0	20
+1	41.5834
+```
+
+
+### ThermoHydraulicNetworkHeatExchangerHeatFluxDataFile.nandrad
+
+Wie ThermoHydraulicNetworkHeatExchangerHeatFluxConst, nur mit einem zeitabhängigen Wärmestrom, gegeben in der tsv-Datei:
+```
+Time[h]	Flux[W]
+0	0
+1	-50
+2	0
+```
+
+Der Wärmestrom stimmt mit der Wärmeabgabe des Wärmetauschers überein
+```
+Zeit [h]	NetworkElement(id=1003).FlowElementHeatLoss [W]
+0	0
+1	-50
+2	0
+```
 
 
 ### ThermoHydraulicNetworkStaticFlowConstantHeatloss_Dense.nandrad

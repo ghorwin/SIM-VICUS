@@ -1,0 +1,4 @@
+NetworkElement(id=1001).FlowElementHeatLoss	static network.FlowElementHeatLoss
+NetworkElement(id=1001).FluidMassFlux	pump.FluidMassFlux
+NetworkElement(id=1003).FlowElementHeatLoss	static network.FlowElementHeatLoss
+NetworkElement(id=1003).FluidMassFlux	hx.FluidMassFlux
