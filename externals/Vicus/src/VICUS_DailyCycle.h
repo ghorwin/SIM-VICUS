@@ -16,6 +16,7 @@ public:
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	VICUS_READWRITE
+	VICUS_COMP(DailyCycle)
 
 	/*! Checks if all referenced materials exist and if their parameters are valid. */
 	bool isValid() const;

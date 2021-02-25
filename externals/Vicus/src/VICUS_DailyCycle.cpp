@@ -32,4 +32,12 @@ bool DailyCycle::isValid() const {
 }
 
 
+bool DailyCycle::operator!=(const DailyCycle & other) const {
+	if (m_values != other.m_values)  return true;
+	if (m_dayTypes != other.m_dayTypes)  return true;
+	if (m_timePoints != other.m_timePoints)  return true;
+	return false;
+}
+
+
 } // namespace VICUS
