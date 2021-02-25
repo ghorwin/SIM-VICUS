@@ -1,3 +1,0 @@
-Time [h]	NetworkElement(id=1001).OutletNodeTemperature [C]	NetworkElement(id=1003).OutletNodeTemperature [C]	NetworkElement(id=1001).FluidMassFlux [kg/s]	NetworkElement(id=1003).FluidMassFlux [kg/s]	NetworkElement(id=1001).FlowElementHeatLoss [W]	NetworkElement(id=1003).FlowElementHeatLoss [W]
-0	20	20	0.325458	0.325458	-0	-50
-1	41.5651	41.5834	0.325458	0.325458	-0	-50
