@@ -222,7 +222,7 @@ template<>
 void readVector<double>(const TiXmlElement * element, const std::string & name, std::vector<double> & vec) {
 	FUNCID(NANDRAD::readVector);
 	std::string text = element->GetText();
-	IBK::replace_string(text, ",", " ");
+	text = IBK::replace_string(text, ",", " ");
 	try {
 		IBK::string2valueVector(text, vec);
 	} catch (IBK::Exception & ex) {
