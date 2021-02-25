@@ -41,8 +41,8 @@ public:
 	/*! Parameters for the element . */
 	enum para_t {
 		P_Length,						// Keyword: Length									[m]		'Pipe length'
-		P_Temperature,					// Keyword: Temperature								[C]		'Temperature for heat exchange'
-		P_HeatFlux,						// Keyword: HeatFlux								[W]		'Heat flux for heat exchange'
+		P_AmbientTemperature,			// Keyword: AmbientTemperature						[C]		'Temperature for heat exchange'
+		P_HeatLoss,						// Keyword: HeatLoss								[W]		'Constant heat flux out of the element (heat loss)'
 		NUM_P
 	};
 

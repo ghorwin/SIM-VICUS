@@ -82,8 +82,8 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 
 				case HydraulicNetworkComponent::HT_TemperatureConstant: {
 						// check temperature
-						m_para[P_Temperature].checkedValue("Temperature", "C", "C", -200.0, true, std::numeric_limits<double>::max(), true,
-													   "Temperature must be >= -200 C.");
+						m_para[P_AmbientTemperature].checkedValue("AmbientTemperature", "C", "C", -200.0, true, std::numeric_limits<double>::max(), true,
+													   "Ambient temperature must be >= -200 C.");
 						// check for existance of external heat transfer coefficient (the parameter itself was checked already by the component)
 						if (m_component->m_para[HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].name.empty()){
 							throw IBK::Exception(IBK::FormatString("Missing parameter %1 in definition of network component '%2' (#%3).")
@@ -96,7 +96,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 
 				case HydraulicNetworkComponent::HT_HeatFluxConstant: {
 					// check heat flux
-					m_para[P_HeatFlux].checkedValue("HeatFlux", "W", "W",
+					m_para[P_HeatLoss].checkedValue("HeatLoss", "W", "W",
 								std::numeric_limits<double>::lowest(), false, std::numeric_limits<double>::max(), false, nullptr);
 				} break;
 

@@ -161,7 +161,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 					switch (e.m_component->m_heatExchangeType) {
 						// create adiabatic pipe model
 						case NANDRAD::HydraulicNetworkComponent::NUM_HT : {
-							// TODO FIXME: Anne, this should be different for dynamic pipe
+							// FIXME: Anne, this should be different for dynamic pipe
 							TNDynamicAdiabaticPipeElement * pipeElement = new TNDynamicAdiabaticPipeElement(e,
 									*e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
 							// add to flow elements
@@ -172,7 +172,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant :
 						case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile :
 						{
-							// TODO FIXME: Anne, this should be different for dynamic pipe
+							// FIXME: Anne, this should be different for dynamic pipe
 							// calulate fluid volume
 							const double d = e.m_pipeProperties->m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
 							const double l = e.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
@@ -287,11 +287,11 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 			// and decide which heat exchange is chosen
 			switch(e.m_component->m_heatExchangeType) {
 				case NANDRAD::HydraulicNetworkComponent::HT_TemperatureConstant:
-					heatExchangeValue = e.m_para[NANDRAD::HydraulicNetworkElement::P_Temperature].value;
+					heatExchangeValue = e.m_para[NANDRAD::HydraulicNetworkElement::P_AmbientTemperature].value;
 				break;
 
 				case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant:
-					heatExchangeValue = e.m_para[NANDRAD::HydraulicNetworkElement::P_HeatFlux].value;
+					heatExchangeValue = e.m_para[NANDRAD::HydraulicNetworkElement::P_HeatLoss].value;
 				break;
 
 				case NANDRAD::HydraulicNetworkComponent::HT_TemperatureDataFile:

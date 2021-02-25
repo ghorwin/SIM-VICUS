@@ -64,7 +64,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Heat exchange with FMU which requires temperature and provides heat flux");
 	tr("Pipe length");
 	tr("Temperature for heat exchange");
-	tr("Heat flux for heat exchange");
+	tr("Constant heat flux out of the element (heat loss)");
 	tr("ID of coupled zone for thermal exchange");
 	tr("Roughness of pipe material");
 	tr("Inner diameter of pipe");

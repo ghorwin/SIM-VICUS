@@ -196,8 +196,8 @@ namespace NANDRAD {
 			case 10 :
 			switch (t) {
 				case 0 : return "Length";
-				case 1 : return "Temperature";
-				case 2 : return "HeatFlux";
+				case 1 : return "AmbientTemperature";
+				case 2 : return "HeatLoss";
 			} break;
 			// HydraulicNetworkElement::intPara_t
 			case 11 :
@@ -669,8 +669,8 @@ namespace NANDRAD {
 			case 10 :
 			switch (t) {
 				case 0 : return "Length";
-				case 1 : return "Temperature";
-				case 2 : return "HeatFlux";
+				case 1 : return "AmbientTemperature";
+				case 2 : return "HeatLoss";
 			} break;
 			// HydraulicNetworkElement::intPara_t
 			case 11 :
@@ -1144,7 +1144,7 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "Pipe length";
 				case 1 : return "Temperature for heat exchange";
-				case 2 : return "Heat flux for heat exchange";
+				case 2 : return "Constant heat flux out of the element (heat loss)";
 			} break;
 			// HydraulicNetworkElement::intPara_t
 			case 11 :
