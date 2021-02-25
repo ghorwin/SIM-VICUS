@@ -167,17 +167,11 @@ private slots:
 	void on_lineEditInclination_editingFinished();
 
 
-	void on_lineEditCopyX_returnPressed();
+	void on_lineEditXCopy_editingFinished();
 
-	void on_lineEditCopyY_returnPressed();
+	void on_lineEditYCopy_editingFinished();
 
-	void on_lineEditCopyZ_returnPressed();
-
-	void on_lineEditCopyX_editingFinished();
-
-	void on_lineEditCopyY_editingFinished();
-
-	void on_lineEditCopyZ_editingFinished();
+	void on_lineEditZCopy_editingFinished();
 
 	/*! ComboBox Functions */
 	void on_comboBox_activated(int index);
@@ -192,7 +186,7 @@ private slots:
 	/*! Triggered when anything changes in one of the line edits X, Y or Z */
 	void onLineEditTextChanged(QtExt::ValidatingLineEdit * lineEdit);
 
-
+	void on_pushButtonCopyRooms_clicked();
 
 private:
 	/*! Updates the property widget regarding to all geometry data.
@@ -206,6 +200,9 @@ private:
 
 	/*! Increases/decreases value in line edit depending on scroll wheel. */
 	void onWheelTurned(double offset, QtExt::ValidatingLineEdit * lineEdit);
+
+	/*! Initilizes the Copy Group Box */
+	void initializeCopy();
 
 	/*! Identifies which transformation operation is currently selected and is updated,
 		whenever an operation button is toggled.
@@ -234,6 +231,15 @@ private:
 		These values depend on current modification type and state.
 	*/
 	QVector3D							m_originalValues;
+
+	/*! Cached Translation vector for copy operations
+	*/
+	QVector3D							m_translation;
+
+	std::set<const VICUS::Object*>		m_selBuild;
+	std::set<const VICUS::Object*>		m_selBuildLvls;
+	std::set<const VICUS::Object*>		m_selRooms;
+	std::set<const VICUS::Object*>		m_selSurfaces;
 
 	/*! Pointer to UI */
 	Ui::SVPropEditGeometry				*m_ui;

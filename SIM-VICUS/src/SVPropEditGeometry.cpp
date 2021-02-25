@@ -14,8 +14,10 @@
 #include "SVUndoModifySurfaceGeometry.h"
 #include "SVUndoAddSurface.h"
 #include "SVUndoAddZone.h"
+#include "SVUndoCopyZones.h"
 #include "SVPropVertexListWidget.h"
 #include "SVGeometryView.h"
+#include "SVPropEditCopyDialog.h"
 
 #include "Vic3DNewGeometryObject.h"
 #include "Vic3DCoordinateSystemObject.h"
@@ -71,6 +73,10 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui->lineEditInclination->setFormatter(new LineEditFormater);
 	m_ui->lineEditOrientation->setFormatter(new LineEditFormater);
 
+	m_ui->lineEditXCopy->setFormatter(new LineEditFormater);
+	m_ui->lineEditYCopy->setFormatter(new LineEditFormater);
+	m_ui->lineEditZCopy->setFormatter(new LineEditFormater);
+
 	m_ui->lineEditX->installEventFilter(this);
 	m_ui->lineEditY->installEventFilter(this);
 	m_ui->lineEditZ->installEventFilter(this);
@@ -83,6 +89,8 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 
 	// set initial states
 	setState(MT_Translate, MS_Absolute);
+
+	initializeCopy();
 
 	m_ui->widgetXYZ->layout()->setMargin(0);
 	m_ui->widgetRota->layout()->setMargin(0);
@@ -323,51 +331,34 @@ void SVPropEditGeometry::rotate() {
 
 void SVPropEditGeometry::copy(const QVector3D &trans, const int &count){
 
-	// selected objects
-	std::set<const VICUS::Object*> allSelectedSurfs;
-	project().selectObjects(allSelectedSurfs, VICUS::Project::SG_Building, true, true);
 
-	// we collect all selected buildings
-	std::set<const VICUS::Object*> selBuild;
-	VICUS::Building b;
-	project().selectedBuildingObjects(selBuild, &b);
 
-	// we collect all selected building levels
-	std::set<const VICUS::Object*> selBuildLvls;
-	VICUS::BuildingLevel bl;
-	project().selectedBuildingObjects(selBuildLvls, &bl);
+//	std::vector<VICUS::Surface> allSurfaces;
 
-	// we collect ll selected rooms
-	std::set<const VICUS::Object*> selRooms;
-	VICUS::Room r;
-	project().selectedBuildingObjects(selRooms, &r);
+//	// we also find all that already exist
+//	std::set<QString> existingRoomNames;
+//	std::set<QString> existingBuildingNames;
+//	std::set<QString> existingBLNames;
+//	std::set<QString> existingSurfNames;
+//	for (const VICUS::Object *o : allSelectedSurfs) {
+//		if (const VICUS::Room *r = dynamic_cast<const VICUS::Room*>(o))
+//			existingRoomNames.insert(r->m_displayName);
+//		else if (const VICUS::Building *b = dynamic_cast<const VICUS::Building*>(o))
+//			existingBuildingNames.insert(b->m_displayName);
+//		else if (const VICUS::BuildingLevel *bl = dynamic_cast<const VICUS::BuildingLevel*>(o))
+//			existingBLNames.insert(bl->m_displayName);
+//		else if (const VICUS::Surface *s = dynamic_cast<const VICUS::Surface*>(o)) {
+//			existingSurfNames.insert(s->m_displayName);
+//			allSurfaces.push_back(*s);
+//		}
+//	}
 
-	std::vector<VICUS::Surface> allSurfaces;
+//	std::set<const VICUS::Object*> copiedObjects;
 
-	// we also find all that already exist
-	std::set<QString> existingRoomNames;
-	std::set<QString> existingBuildingNames;
-	std::set<QString> existingBLNames;
-	std::set<QString> existingSurfNames;
-	for (const VICUS::Object *o : allSelectedSurfs) {
-		if (const VICUS::Room *r = dynamic_cast<const VICUS::Room*>(o))
-			existingRoomNames.insert(r->m_displayName);
-		else if (const VICUS::Building *b = dynamic_cast<const VICUS::Building*>(o))
-			existingBuildingNames.insert(b->m_displayName);
-		else if (const VICUS::BuildingLevel *bl = dynamic_cast<const VICUS::BuildingLevel*>(o))
-			existingBLNames.insert(bl->m_displayName);
-		else if (const VICUS::Surface *s = dynamic_cast<const VICUS::Surface*>(o)) {
-			existingSurfNames.insert(s->m_displayName);
-			allSurfaces.push_back(*s);
-		}
-	}
+//	for ( const VICUS::Object *o : m_selBuild) {
+//		const VICUS::Building *b = dynamic_cast<const VICUS::Building*>(o);
 
-	std::set<const VICUS::Object*> copiedObjects;
-
-	for ( const VICUS::Object *o : selBuild) {
-		const VICUS::Building *b = dynamic_cast<const VICUS::Building*>(o);
-
-	}
+//	}
 
 
 
@@ -529,6 +520,16 @@ void SVPropEditGeometry::update() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 
 	if ( surfaces.size() > 0 ) {
+
+		// we collect all selected objects
+		project().selectedBuildingObjects(m_selBuild, new VICUS::Building);
+		project().selectedBuildingObjects(m_selBuildLvls, new VICUS::BuildingLevel);
+		project().selectedBuildingObjects(m_selRooms, new VICUS::Room);
+
+		m_ui->pushButtonCopyRooms->setEnabled(m_selRooms.size()>0);
+		m_ui->pushButtonCopyBuildingLvls->setEnabled(m_selBuildLvls.size()>0);
+		m_ui->pushButtonCopyBuilding->setEnabled(m_selBuild.size()>0);
+
 		// adjust the view state to show selected geometry (i.e. local coordinate system is visible)
 		// and edit geometry property widget (makes us visible), but only, if we are in
 		// geometry editing mode
@@ -577,6 +578,17 @@ void SVPropEditGeometry::onWheelTurned(double offset, QtExt::ValidatingLineEdit 
 	val += offset;
 	lineEdit->setValue(val); // this does not trigger any signals, so we need to send change info manually
 	onLineEditTextChanged(lineEdit);
+}
+
+void SVPropEditGeometry::initializeCopy()
+{
+	// initialize the translation vector
+	m_translation = QVector3D ( 0, 0, 0 );
+
+	// we set up the lineEdit fields
+	m_ui->lineEditXCopy->setValue(m_translation.x());
+	m_ui->lineEditYCopy->setValue(m_translation.y());
+	m_ui->lineEditZCopy->setValue(m_translation.z());
 }
 
 
@@ -904,35 +916,25 @@ void SVPropEditGeometry::on_lineEditInclination_editingFinished() {
 	on_lineEditInclination_returnPressed();
 }
 
+void SVPropEditGeometry::on_lineEditXCopy_editingFinished() {
+	if ( m_ui->lineEditXCopy->isValid() )
+		m_translation.setX( m_ui->lineEditXCopy->value() );
 
-void SVPropEditGeometry::on_lineEditCopyX_returnPressed()
-{
-	copy( QVector3D (0,0,0), 3 );
+	m_ui->lineEditXCopy->setValue(m_translation.x() );
 }
 
-void SVPropEditGeometry::on_lineEditCopyY_returnPressed() {
+void SVPropEditGeometry::on_lineEditYCopy_editingFinished() {
+	if ( m_ui->lineEditYCopy->isValid() )
+		m_translation.setY( m_ui->lineEditYCopy->value() );
 
+	m_ui->lineEditYCopy->setValue(m_translation.y() );
 }
 
-void SVPropEditGeometry::on_lineEditCopyZ_returnPressed() {
+void SVPropEditGeometry::on_lineEditZCopy_editingFinished() {
+	if ( m_ui->lineEditZCopy->isValid() )
+		m_translation.setZ( m_ui->lineEditZCopy->value() );
 
-}
-
-
-void SVPropEditGeometry::on_lineEditCopyX_editingFinished() {
-	on_lineEditX_returnPressed();
-}
-
-void SVPropEditGeometry::on_lineEditCopyY_editingFinished()
-{
-//	if ( m_ui->lineEditCopyY->isValid() )
-//		m_yCopyValue = m_ui->lineEditCopyY->value();
-}
-
-void SVPropEditGeometry::on_lineEditCopyZ_editingFinished()
-{
-//	if ( m_ui->lineEditCopyZ->isValid() )
-//		m_zCopyValue = m_ui->lineEditCopyZ->value();
+	m_ui->lineEditZCopy->setValue(m_translation.z() );
 }
 
 
@@ -1192,4 +1194,202 @@ void SVPropEditGeometry::on_lineEditOrientation_textChanged(const QString &){
 void SVPropEditGeometry::on_lineEditInclination_textChanged(const QString &)
 {
 	onLineEditTextChanged(m_ui->lineEditInclination);
+}
+
+void SVPropEditGeometry::on_pushButtonCopyRooms_clicked() {
+
+	// selected objects
+	std::set<const VICUS::Object*> allSelectedSurfs;
+	project().selectObjects(allSelectedSurfs, VICUS::Project::SG_Building, true, true);
+
+	std::vector<VICUS::Surface> allSurfaces;
+
+	// we also find all that already exist
+	std::set<QString> existingRoomNames;
+	std::set<QString> existingBuildingNames;
+	std::set<QString> existingBLNames;
+	std::set<QString> existingSurfNames;
+	for (const VICUS::Object *o : allSelectedSurfs) {
+		if (const VICUS::Room *r = dynamic_cast<const VICUS::Room*>(o))
+			existingRoomNames.insert(r->m_displayName);
+		else if (const VICUS::Building *b = dynamic_cast<const VICUS::Building*>(o))
+			existingBuildingNames.insert(b->m_displayName);
+		else if (const VICUS::BuildingLevel *bl = dynamic_cast<const VICUS::BuildingLevel*>(o))
+			existingBLNames.insert(bl->m_displayName);
+		else if (const VICUS::Surface *s = dynamic_cast<const VICUS::Surface*>(o)) {
+			existingSurfNames.insert(s->m_displayName);
+			allSurfaces.push_back(*s);
+		}
+	}
+
+	bool allSelected = true;
+
+	// are all subsurfaces of selected rooms selected?
+	for (const VICUS::Object *o : m_selRooms) {
+		const VICUS::Room *room = dynamic_cast<const VICUS::Room*>(o);
+		for(VICUS::Surface s : room->m_surfaces) {
+			if ( !s.m_selected || !s.m_visible ) {
+				allSelected = false;
+				break;
+			}
+		}
+	}
+
+	// we get our copy method
+	int copyAllSubSurfaces = 1;
+
+	if ( !allSelected )
+		copyAllSubSurfaces = SVPropEditCopyDialog::requestCopyMethod("Method for copying Rooms", tr("Copy all subsurfaces."),
+																   tr("Copy only shown and selected subsurfaces.") );
+	if (copyAllSubSurfaces == -1)
+		return;
+
+	std::vector<VICUS::Room> newRooms;
+
+	// we go through all objects and find the hierarchy
+	for ( const VICUS::Object *o : allSelectedSurfs ){
+		const VICUS::Room *room = dynamic_cast<const VICUS::Room*>(o);
+		const VICUS::BuildingLevel *buildinglvl = dynamic_cast<const VICUS::BuildingLevel*>(o);
+		const VICUS::Building *building = dynamic_cast<const VICUS::Building*>(o);
+		// check if also a room or building is selected
+		if( room != nullptr ) {
+			// we find a room
+			// we make a copy of the room
+			VICUS::Room newRoom;
+			newRoom.m_surfaces = room->m_surfaces;
+			newRoom.m_parent = room->m_parent;
+			newRoom.updateParents();
+			newRoom.m_id = VICUS::Project::uniqueId(project().m_plainGeometry);
+			newRoom.m_displayName = VICUS::Project::uniqueName(room->m_displayName, existingRoomNames);
+
+			VICUS::BuildingLevel * bl = dynamic_cast<VICUS::BuildingLevel*>(room->m_parent);
+			Q_ASSERT(bl != nullptr);
+
+		//	copiedObjects.insert(copiedObjects.end(), &newRoom);
+
+			std::set<unsigned int> childObjects;
+			newRoom.collectChildIDs(childObjects);
+
+			std::vector<VICUS::Surface> newSurfaces;
+			std::vector<VICUS::Surface*> newChilds;
+
+			for ( unsigned int id : childObjects) {
+				VICUS::Surface *s = dynamic_cast<VICUS::Surface*>(newRoom.findChild(id) );
+				if ( s != nullptr ){
+					if ( copyAllSubSurfaces == 0 && (!s->m_visible || !s->m_selected) )
+						continue; // skip deselected and hidden surfaces
+
+					VICUS::Surface newSurf;
+					newSurf.m_geometry = s->m_geometry;
+					newSurf.m_displayName = VICUS::Project::uniqueName(s->m_displayName, existingSurfNames);
+					newSurf.m_id = VICUS::Project::uniqueId(allSurfaces);
+					std::vector<IBKMK::Vector3D> vertexes = newSurf.m_geometry.vertexes();
+					for ( IBKMK::Vector3D &v : vertexes ) {
+						v += QtExt::QVector2IBKVector(m_translation);
+					}
+					newSurf.m_geometry.setVertexes(vertexes);
+					newSurf.m_parent = &newRoom;
+					newSurf.updateColor();
+					// copiedObjects.insert(copiedObjects.end(), &newSurf);
+					newSurfaces.push_back(newSurf);
+					allSurfaces.push_back(newSurf);
+					newChilds.push_back(&newSurf);
+
+
+				}
+			}
+
+			newRoom.m_surfaces = newSurfaces;
+			newRoom.updateParents();
+
+			newRooms.push_back(newRoom);
+
+		}
+		else if ( buildinglvl != nullptr ) {
+			// we find a building lvl
+
+		}
+		else if ( building != nullptr ) {
+			// we find a building
+
+		}
+	}
+
+	SVUndoCopyZones *undo = new SVUndoCopyZones("Copied Zones", 0, newRooms);
+	undo->push();
+
+#if 0
+	// now we update all selected surfaces
+	Vic3D::Transform3D trans;
+
+	// compose vector of modified surface geometries
+	std::vector<VICUS::Surface> modifiedSurfaces;
+
+	IBKMK::Vector3D centerPoint;
+	std::vector<const VICUS::Surface*> surfaces;
+	std::set<const VICUS::Object*> objects;
+	project().selectedSurfaces(surfaces, VICUS::Project::SG_All);
+	project().selectObjects(objects, VICUS::Project::SG_All, true, true);
+
+	std::set<QString> existingRoomNames;
+
+	for (const VICUS::Object *o : objects) {
+		if (const VICUS::Room *room = dynamic_cast<const VICUS::Room*>(o))
+			existingRoomNames.insert(room->m_displayName);
+	}
+
+	for ( const VICUS::Object *o : objects ){
+		// check if also a room or building is selected
+		if( const VICUS::Room *room = dynamic_cast<const VICUS::Room*>(o) ) {
+			// room is also selected
+			int i=0;
+			std::set<unsigned int> surfs;
+
+			VICUS::Room newRoom;
+			newRoom = *room;
+			newRoom.m_id = VICUS::Project::uniqueId(project().m_plainGeometry);
+			newRoom.m_displayName = VICUS::Project::uniqueName(room->m_displayName, existingRoomNames);
+			o->collectChildIDs(surfs);
+
+			for (size_t i=0; i<surfs.size(); ++i) {
+				for ( unsigned int ID : surfs ) {
+					for ( const VICUS::Surface *s : surfaces ) {
+						if ( s->m_id == ID ) {
+							// copy surface
+							// set new ID
+							// new name
+
+
+							VICUS::Surface newS = *s;
+						}
+					}
+				}
+			}
+		}
+		if( const VICUS::Building *building = dynamic_cast<const VICUS::Building*>( o ) ) {
+			// building is also selected
+			int i=0;
+		}
+	}
+
+
+	for (const VICUS::Surface* s : surfaces ) {
+		project().boundingBox(surfaces, centerPoint);
+		std::vector<IBKMK::Vector3D> vs;
+		for ( IBKMK::Vector3D v : s->m_geometry.vertexes() ) {
+			Vic3D::Transform3D t;
+			// use just this instead of making a QVetor3D
+			t.setTranslation( v.m_x, v.m_y, v.m_z );
+			t.translate( transVec );
+			vs.push_back( IBKMK::Vector3D ( t.translation().x(), t.translation().y(), t.translation().z() ) );
+		}
+		VICUS::Surface newS(*s);
+		newS.m_geometry.setVertexes(vs);
+		modifiedSurfaces.push_back(newS);
+	}
+
+	VICUS::ComponentInstance ci;
+	//	SVUndoAddSurface * undo = new SVUndoAddSurface(tr("modified surfaces"), modifiedSurfaces,, );
+	//	undo->push();
+#endif
 }

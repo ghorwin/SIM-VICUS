@@ -7,10 +7,10 @@
 #include "SVUndoCommandBase.h"
 
 /*! Undo action for adding a vector with copied zones/rooms to an existing building level. */
-class SVUndoCopyZone : public SVUndoCommandBase {
+class SVUndoCopyZones : public SVUndoCommandBase {
 	Q_DECLARE_TR_FUNCTIONS(SVUndoCopyZone)
 public:
-	SVUndoCopyZone(const QString & label, unsigned int buildingLevelUUID,
+	SVUndoCopyZones(const QString & label, unsigned int buildingLevelUUID,
 				  const std::vector<VICUS::Room> copiedRooms,
 				  const std::vector<VICUS::ComponentInstance> * componentInstances = nullptr);
 

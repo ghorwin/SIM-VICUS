@@ -52,6 +52,7 @@ private slots:
 	void on_toolButtonBackward_clicked();
 
 	void on_toolButtonForward_clicked();
+
 	void on_tableWidgetPeriods_cellChanged(int row, int column);
 
 	void on_checkBoxTuesday_stateChanged(int arg1);

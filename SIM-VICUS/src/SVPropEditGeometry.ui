@@ -468,7 +468,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QtExt::ValidatingLineEdit" name="lineEditCopyX">
+             <widget class="QtExt::ValidatingLineEdit" name="lineEditXCopy">
               <property name="sizePolicy">
                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -551,28 +551,28 @@
             <item>
              <widget class="QPushButton" name="pushButtonCopySurfaces">
               <property name="text">
-               <string>Copy Surfaces</string>
+               <string>surface</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushCopyRooms">
+             <widget class="QPushButton" name="pushButtonCopyRooms">
               <property name="text">
-               <string>Copy Rooms</string>
+               <string>room</string>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="pushButtonCopyBuildingLvls">
               <property name="text">
-               <string>Copy Building Levels</string>
+               <string>building level</string>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="pushButtonCopyBuilding">
               <property name="text">
-               <string>Copy Building</string>
+               <string>building</string>
               </property>
              </widget>
             </item>

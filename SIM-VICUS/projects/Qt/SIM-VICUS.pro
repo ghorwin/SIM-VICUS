@@ -74,6 +74,7 @@ PRE_TARGETDEPS += \
 
 
 SOURCES += \
+				../../src/SVPropEditCopyDialog.cpp \
 				../../src/main.cpp \
 				../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
 				../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
@@ -193,6 +194,7 @@ SOURCES += \
 				../../src/SVWelcomeScreen.cpp
 
 HEADERS  += \
+				../../src/SVPropEditCopyDialog.h \
 				../../src/actions/SVUndoAddBuilding.h \
 				../../src/actions/SVUndoAddBuildingLevel.h \
 				../../src/actions/SVUndoAddNetwork.h \
@@ -343,6 +345,7 @@ FORMS    += \
 				../../src/SVPreferencesPageStyle.ui \
 				../../src/SVPreferencesPageTools.ui \
 				../../src/SVPropBuildingEditWidget.ui \
+				../../src/SVPropEditCopyDialog.ui \
 				../../src/SVPropEditGeometry.ui \
 				../../src/SVPropFloorManagerWidget.ui \
 				../../src/SVPropModeSelectionWidget.ui \

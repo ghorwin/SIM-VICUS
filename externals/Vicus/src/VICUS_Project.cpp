@@ -492,6 +492,8 @@ void Project::selectedBuildingObjects(std::set<const Object *> &selectedObjs, Ob
 	bool takeSelected = true;
 	bool takeVisible = true;
 
+	selectedObjs.clear();
+
 	for (const VICUS::Building & b : m_buildings) {
 		//
 		VICUS::Building *bcheck = dynamic_cast<VICUS::Building *>(obj);
