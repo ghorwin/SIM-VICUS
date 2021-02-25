@@ -293,21 +293,6 @@ void SVDBScheduleEditWidget::on_tableWidgetPeriods_currentCellChanged(int curren
 	selectDailyCycle();
 }
 
-bool SVDBScheduleEditWidget::isDayTypeChecked(){
-	if(!((m_ui->checkBoxMonday->isChecked() && m_ui->checkBoxMonday->isEnabled()) ||
-		(m_ui->checkBoxTuesday->isChecked() && m_ui->checkBoxTuesday->isEnabled()) ||
-			(m_ui->checkBoxWednesday->isChecked() && m_ui->checkBoxWednesday->isEnabled()) ||
-			(m_ui->checkBoxThursday->isChecked() && m_ui->checkBoxThursday->isEnabled()) ||
-			(m_ui->checkBoxFriday->isChecked() && m_ui->checkBoxFriday->isEnabled()) ||
-			(m_ui->checkBoxSaturday->isChecked() && m_ui->checkBoxSaturday->isEnabled()) ||
-			(m_ui->checkBoxSunday->isChecked() && m_ui->checkBoxSunday->isEnabled()) ||
-		 (m_ui->checkBoxHoliday->isChecked() && m_ui->checkBoxHoliday->isEnabled())))
-		return false;
-
-	return true;
-
-}
-
 
 void SVDBScheduleEditWidget::on_toolButtonBackward_clicked() {
 	Q_ASSERT(m_currentDailyCycleIndex !=0);
@@ -347,10 +332,7 @@ void SVDBScheduleEditWidget::on_toolButtonForward_clicked() {
 
 void SVDBScheduleEditWidget::on_toolButtonDeleteCurrentDailyCycle_clicked() {
 	//if only one daily cycle exist we need a day type
-	if (m_currentInterval->m_dailyCycles.size()==1) {
-		QMessageBox::critical(this,QString(), tr("There must be at least one daily cycle."));
-		return;
-	}
+	Q_ASSERT(!m_currentInterval->m_dailyCycles.empty());
 
 	// ask user for confirmation to delete daily cycle
 	if (QMessageBox::question(this, QString(), tr("Delete currently selected daily cycle?"), QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
@@ -507,6 +489,9 @@ void SVDBScheduleEditWidget::updateDailyCycleSelectButtons() {
 		// navigation forward is always possible
 		m_ui->toolButtonForward->setEnabled(true);
 	}
+
+	// remove button requires more than one daily cycle
+	m_ui->toolButtonDeleteCurrentDailyCycle->setEnabled(m_currentInterval->m_dailyCycles.size() > 1);
 }
 
 

@@ -80,9 +80,6 @@ private:
 	/*! Called when a new daily cycle has been selected,i.e. m_currentDailyCycleIndex has changed. */
 	void selectDailyCycle();
 
-	/*! If minimum one day type is enabled and checked this function returns true.*/
-	bool isDayTypeChecked();
-
 	/*! Insertes/removes day times in currently edited daily cycle. Also calls updateDailyCycleSelectButtons(). */
 	void updateDayTypes(const NANDRAD::Schedule::ScheduledDayType &dt, bool checked);
 
