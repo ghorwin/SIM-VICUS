@@ -199,7 +199,7 @@ void writeVector3D(TiXmlElement * parent, const std::string & name, const std::v
 void readVector3D(const TiXmlElement * element, const std::string & name, std::vector<IBKMK::Vector3D> & vec) {
 	FUNCID(NANDRAD::readVector3D);
 	std::string text = element->GetText();
-	IBK::replace_string(text, ",", " ");
+	text = IBK::replace_string(text, ",", " ");
 	std::vector<double> vals;
 	try {
 		IBK::string2valueVector(text, vals);
