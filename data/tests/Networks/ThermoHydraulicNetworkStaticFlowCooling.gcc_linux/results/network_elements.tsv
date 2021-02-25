@@ -1,0 +1,3 @@
+Time [h]	NetworkElement(id=101).FluidMassFlux [kg/s]	NetworkElement(id=102).FluidMassFlux [kg/s]	NetworkElement(id=201).FluidMassFlux [kg/s]	NetworkElement(id=301).FluidMassFlux [kg/s]	NetworkElement(id=101).OutletNodeTemperature [C]	NetworkElement(id=102).OutletNodeTemperature [C]	NetworkElement(id=201).OutletNodeTemperature [C]	NetworkElement(id=301).OutletNodeTemperature [C]
+0	0.314593	0.314593	0.314593	0.314593	40	40	40	40
+1	0.293403	0.293403	0.293403	0.293403	15.7624	19.144	20.4672	21.0369
