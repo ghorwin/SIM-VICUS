@@ -543,44 +543,36 @@ void SVDBScheduleEditWidget::updateDayTypes(const NANDRAD::Schedule::ScheduledDa
 }
 
 
-void SVDBScheduleEditWidget::on_checkBoxMonday_stateChanged(int arg1)
-{
+void SVDBScheduleEditWidget::on_checkBoxMonday_stateChanged(int arg1) {
 	//0 unchecked
 	//2 checked
 	updateDayTypes(NANDRAD::Schedule::ST_MONDAY, arg1==2);
 }
 
-void SVDBScheduleEditWidget::on_checkBoxTuesday_stateChanged(int arg1)
-{
+void SVDBScheduleEditWidget::on_checkBoxTuesday_stateChanged(int arg1) {
 	updateDayTypes(NANDRAD::Schedule::ST_TUESDAY, arg1==2);
 }
 
-void SVDBScheduleEditWidget::on_checkBoxHoliday_stateChanged(int arg1)
-{
+void SVDBScheduleEditWidget::on_checkBoxHoliday_stateChanged(int arg1) {
 	updateDayTypes(NANDRAD::Schedule::ST_HOLIDAY, arg1==2);
 }
 
-void SVDBScheduleEditWidget::on_checkBoxWednesday_stateChanged(int arg1)
-{
+void SVDBScheduleEditWidget::on_checkBoxWednesday_stateChanged(int arg1) {
 	updateDayTypes(NANDRAD::Schedule::ST_WEDNESDAY, arg1==2);
 }
 
-void SVDBScheduleEditWidget::on_checkBoxThursday_stateChanged(int arg1)
-{
+void SVDBScheduleEditWidget::on_checkBoxThursday_stateChanged(int arg1) {
 	updateDayTypes(NANDRAD::Schedule::ST_THURSDAY, arg1==2);
 }
 
-void SVDBScheduleEditWidget::on_checkBoxFriday_stateChanged(int arg1)
-{
+void SVDBScheduleEditWidget::on_checkBoxFriday_stateChanged(int arg1) {
 	updateDayTypes(NANDRAD::Schedule::ST_WEDNESDAY, arg1==2);
 }
 
-void SVDBScheduleEditWidget::on_checkBoxSaturday_stateChanged(int arg1)
-{
+void SVDBScheduleEditWidget::on_checkBoxSaturday_stateChanged(int arg1) {
 	updateDayTypes(NANDRAD::Schedule::ST_SATURDAY, arg1==2);
 }
 
-void SVDBScheduleEditWidget::on_checkBoxSunday_stateChanged(int arg1)
-{
+void SVDBScheduleEditWidget::on_checkBoxSunday_stateChanged(int arg1) {
 	updateDayTypes(NANDRAD::Schedule::ST_SUNDAY, arg1==2);
 }
