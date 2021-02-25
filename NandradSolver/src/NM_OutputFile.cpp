@@ -142,7 +142,7 @@ void OutputFile::setInputValueRefs(const std::vector<QuantityDescription> & resu
 			IBK::IBK_Message(IBK::FormatString("Output for %1(id=%2).%3 not available, skipped.\n")
 							 .arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_inputRefs[i].m_referenceType))
 							 .arg(m_inputRefs[i].m_id)
-							 .arg(m_inputRefs[i].m_name.m_name), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
+							 .arg(m_inputRefs[i].m_name.m_name), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		}
 		else {
 			++m_numCols;
@@ -214,7 +214,7 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 			IBK::IBK_Message(IBK::FormatString("Output for %1(id=%2).%3 not available, skipped.")
 							 .arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_inputRefs[i].m_referenceType))
 							 .arg(m_inputRefs[i].m_id)
-							 .arg(m_inputRefs[i].m_name.m_name), IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
+							 .arg(m_inputRefs[i].m_name.m_name), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 		}
 	}
 
