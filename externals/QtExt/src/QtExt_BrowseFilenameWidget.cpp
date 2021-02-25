@@ -29,6 +29,8 @@
 
 #include <IBK_Path.h>
 
+#include "QtExt_configuration.h"
+
 namespace QtExt {
 
 BrowseFilenameWidget::BrowseFilenameWidget(QWidget *parent) :
@@ -83,8 +85,11 @@ void BrowseFilenameWidget::onToolBtnClicked() {
 	blockSignals(true);
 	if (m_filenameMode) {
 		if (m_fileMustExist) {
-			fn = QFileDialog::getOpenFileName(nullptr, tr("Select filename"), filename(), m_filter, nullptr,
-											  QFileDialog::DontUseNativeDialog);
+			fn = QFileDialog::getOpenFileName(nullptr, tr("Select filename"), filename(), m_filter, nullptr
+#ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
+											  ,QFileDialog::DontUseNativeDialog
+#endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
+											  );
 		}
 		else {
 			fn = QFileDialog::getSaveFileName(this, tr("Select filename"), filename(), m_filter);

@@ -34,6 +34,7 @@
 
 #include <QtExt_AutoUpdater.h>
 #include <QtExt_Directories.h>
+#include <QtExt_configuration.h>
 
 #include "SVMessageHandler.h"
 #include "SVConstants.h"
@@ -575,8 +576,10 @@ void SVMainWindow::on_actionFileOpen_triggered() {
 							tr("Select SIM-VICUS project"),
 							SVSettings::instance().m_propertyMap[SVSettings::PT_LastFileOpenDirectory].toString(),
 							tr("SIM-VICUS projects and project packages (*%1 *%2);;All files (*.*)")
-							.arg(SVSettings::instance().m_projectFileSuffix).arg(SVSettings::instance().m_projectPackageSuffix), nullptr,
-							QFileDialog::DontUseNativeDialog
+							.arg(SVSettings::instance().m_projectFileSuffix).arg(SVSettings::instance().m_projectPackageSuffix), nullptr
+#ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
+							,QFileDialog::DontUseNativeDialog
+#endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
 						);
 
 	if (filename.isEmpty()) return;
@@ -656,8 +659,10 @@ void SVMainWindow::on_actionFileImportEneryPlusIDF_triggered() {
 							this,
 							tr("Select IDF file"),
 							SVSettings::instance().m_propertyMap[SVSettings::PT_LastFileOpenDirectory].toString(),
-							tr("EnergyPlus IDF files (*.idf);;All files (*.*)"), nullptr,
-									QFileDialog::DontUseNativeDialog
+							tr("EnergyPlus IDF files (*.idf);;All files (*.*)"), nullptr
+#ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
+							,QFileDialog::DontUseNativeDialog
+#endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
 						);
 
 	if (filename.isEmpty()) return;

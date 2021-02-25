@@ -10,6 +10,8 @@
 #include <QDir>
 #include <QMessageBox>
 
+#include <QtExt_configuration.h>
+
 #include <VICUS_Network.h>
 #include <VICUS_NetworkLine.h>
 #include <VICUS_Project.h>
@@ -115,8 +117,11 @@ bool SVNetworkImportDialog::edit() {
 void SVNetworkImportDialog::on_pushButtonGISNetwork_clicked() {
 	// ask user to select csv file
 	QString fname = QFileDialog::getOpenFileName(this, tr("Select csv-file with GIS data"),
-												 "../../data/vicus/GeometryTests/Network", tr("CSV-Files (*.csv)"), nullptr,
-												 QFileDialog::DontUseNativeDialog);
+												 "../../data/vicus/GeometryTests/Network", tr("CSV-Files (*.csv)"), nullptr
+#ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
+												 ,QFileDialog::DontUseNativeDialog
+#endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
+												 );
 	if (fname.isEmpty())
 		return;
 
