@@ -166,7 +166,7 @@
        <item row="0" column="0" colspan="2">
         <widget class="QGroupBox" name="groupBoxModify">
          <property name="title">
-          <string>Modify selected surfaces:</string>
+          <string>Modify selected surfaces</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
@@ -449,7 +449,7 @@
        <item row="2" column="0" colspan="2">
         <widget class="QGroupBox" name="groupBoxCopy">
          <property name="title">
-          <string>Copy selected surfaces</string>
+          <string>Copy selected objects</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
