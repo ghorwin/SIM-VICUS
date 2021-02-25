@@ -13,8 +13,28 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
+  <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="labelDisplayName">
+       <property name="minimumSize">
+        <size>
+         <width>60</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Name:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QLabel" name="labelScheduleType">
@@ -367,6 +387,13 @@
       <item row="1" column="0">
        <widget class="SVDBScheduleDailyCycleEditWidget" name="widgetDailyCycle" native="true"/>
       </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="labelDaytypes">
+        <property name="text">
+         <string>Daytype x/y</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -378,6 +405,11 @@
    <extends>QWidget</extends>
    <header>SVDBScheduleDailyCycleEditWidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::LanguageStringEditWidget1</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_LanguageStringEditWidget1.h</header>
   </customwidget>
  </customwidgets>
  <resources>

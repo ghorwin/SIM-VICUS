@@ -12,7 +12,7 @@
 #include <VICUS_Schedule.h>
 
 #include <QtExt_LanguageHandler.h>
-#include <QtExt_DateTimeInputDialog.h>
+//#include <QtExt_DateTimeInputDialog.h>
 #include <QtExt_Conversions.h>
 
 #include "SVDBScheduleTableModel.h"
@@ -26,9 +26,14 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 	m_ui->setupUi(this);
 
 	//add header to periods table
-	m_ui->tableWidgetPeriods->setColumnCount(2);
+	m_ui->tableWidgetPeriods->setColumnCount(3);
 	m_ui->tableWidgetPeriods->setHorizontalHeaderItem(0, new QTableWidgetItem(tr("Date")));
 	m_ui->tableWidgetPeriods->setHorizontalHeaderItem(1, new QTableWidgetItem(tr("Name")));
+	m_ui->tableWidgetPeriods->setHorizontalHeaderItem(2, new QTableWidgetItem(tr("Valid")));
+
+	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
 
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetPeriods);
 	m_ui->tableWidgetPeriods->setSortingEnabled(false);
@@ -76,11 +81,16 @@ void SVDBScheduleEditWidget::updatePeriodTable(const int &activeRow){
 		itemDate->setFlags(itemDate->flags() ^ Qt::ItemIsEditable);
 		m_ui->tableWidgetPeriods->setItem(i,0,itemDate);
 		m_ui->tableWidgetPeriods->setItem(i,1,new QTableWidgetItem(QtExt::MultiLangString2QString(m_current->m_periods[i].m_displayName)));
+		m_ui->tableWidgetPeriods->setItem(i,2,new QTableWidgetItem());
+		if(m_isEditable){
+			m_ui->tableWidgetPeriods->item(i,1)->setFlags(m_ui->tableWidgetPeriods->item(i,1)->flags() ^ Qt::ItemIsEditable);
+			m_ui->tableWidgetPeriods->item(i,2)->setFlags(m_ui->tableWidgetPeriods->item(i,1)->flags() ^ Qt::ItemIsEditable);
+		}
 
-		//if schedule interval is valid -> green background
-		// TODO : Dirk, add icons for valid/invalid
-		m_ui->tableWidgetPeriods->item(i,0)->setBackgroundColor(m_current->m_periods[i].isValid() ? Qt::green : Qt::red);
-		m_ui->tableWidgetPeriods->item(i,1)->setBackgroundColor(m_current->m_periods[i].isValid() ? Qt::green : Qt::red);
+		m_ui->tableWidgetPeriods->item(i,2)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/error.png"));
+
+		if(m_current->m_periods[i].isValid())
+			m_ui->tableWidgetPeriods->item(i,2)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/ok.png"));
 	}
 
 	on_tableWidgetPeriods_currentCellChanged(activeRow,0,0,0);
@@ -108,14 +118,17 @@ void SVDBScheduleEditWidget::selectDailyCycle() {
 			c->blockSignals(true);
 			c->setEnabled(true);
 			c->setChecked(false);
+			///TODO Stephan SVStyle
+			/// farbe anpassen der checkboxen
+			c->setPalette(QPalette(Qt::black));
 		}
 	}
 
-
+	QPalette pal(Qt::blue);
 	for (unsigned int i=0; i< m_currentInterval->m_dailyCycles.size(); ++i){
 		bool enabled = false;
 		if(i==m_currentDailyCycleIndex)
-			enabled = true;
+			enabled = true && m_isEditable;
 
 		for(unsigned int j=0; j<m_currentInterval->m_dailyCycles[i].m_dayTypes.size(); ++j){
 			int dt = m_currentInterval->m_dailyCycles[i].m_dayTypes[j];
@@ -123,34 +136,42 @@ void SVDBScheduleEditWidget::selectDailyCycle() {
 				case NANDRAD::Schedule::ST_MONDAY:{
 					m_ui->checkBoxMonday->setChecked(true);
 					m_ui->checkBoxMonday->setEnabled(enabled);
+					m_ui->checkBoxMonday->setPalette(pal);
 				} break;
 				case NANDRAD::Schedule::ST_TUESDAY:{
 					m_ui->checkBoxTuesday->setChecked(true);
 					m_ui->checkBoxTuesday->setEnabled(enabled);
+					m_ui->checkBoxTuesday->setPalette(pal);
 				} break;
 				case NANDRAD::Schedule::ST_WEDNESDAY:{
 					m_ui->checkBoxWednesday->setChecked(true);
 					m_ui->checkBoxWednesday->setEnabled(enabled);
+					m_ui->checkBoxWednesday->setPalette(pal);
 				} break;
 				case NANDRAD::Schedule::ST_THURSDAY:{
 					m_ui->checkBoxThursday->setChecked(true);
 					m_ui->checkBoxThursday->setEnabled(enabled);
+					m_ui->checkBoxThursday->setPalette(pal);
 				} break;
 				case NANDRAD::Schedule::ST_FRIDAY:{
 					m_ui->checkBoxFriday->setChecked(true);
 					m_ui->checkBoxFriday->setEnabled(enabled);
+					m_ui->checkBoxFriday->setPalette(pal);
 				} break;
 				case NANDRAD::Schedule::ST_SATURDAY:{
 					m_ui->checkBoxSaturday->setChecked(true);
 					m_ui->checkBoxSaturday->setEnabled(enabled);
+					m_ui->checkBoxSaturday->setPalette(pal);
 				} break;
 				case NANDRAD::Schedule::ST_SUNDAY:{
 					m_ui->checkBoxSunday->setChecked(true);
 					m_ui->checkBoxSunday->setEnabled(enabled);
+					m_ui->checkBoxSunday->setPalette(pal);
 				} break;
 				case NANDRAD::Schedule::ST_HOLIDAY:{
 					m_ui->checkBoxHoliday->setChecked(true);
 					m_ui->checkBoxHoliday->setEnabled(enabled);
+					m_ui->checkBoxHoliday->setPalette(pal);
 				} break;
 			}
 		}
@@ -166,9 +187,12 @@ void SVDBScheduleEditWidget::selectDailyCycle() {
 	// update current daily cycle data type and chartt
 
 	VICUS::DailyCycle *dc = &m_currentInterval->m_dailyCycles[m_currentDailyCycleIndex];
-	m_ui->widgetDailyCycle->updateInput( dc , m_db);
+	m_ui->widgetDailyCycle->updateInput( dc , m_db, m_isEditable);
 
 	updateDailyCycleSelectButtons();
+
+	//update daily cycle label
+	m_ui->labelDaytypes->setText(tr("Daily cylce %1/%2").arg(m_currentDailyCycleIndex+1).arg(m_currentInterval->m_dailyCycles.size()));
 }
 
 
@@ -181,6 +205,7 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 	m_ui->toolButtonAddPeriod->setEnabled(isEnabled);
 	m_ui->toolButtonCopyPeriod->setEnabled(isEnabled);
 	m_ui->toolButtonRemovePeriode->setEnabled(isEnabled);
+	m_ui->lineEditName->setEnabled(isEnabled);
 
 	m_ui->widgetDailyCycleAndDayTypes->setEnabled(false);
 
@@ -189,11 +214,15 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 
 	if (!isEnabled) {
 		// clear input controls
+		m_ui->lineEditName->setString(IBK::MultiLanguageString());
+
 		return;
 	}
 	m_current = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) id ]);
 	// we must a valid schedule pointer
 	Q_ASSERT(m_current != nullptr);
+
+	m_ui->lineEditName->setString(m_current->m_displayName);
 
 	///TODO Annual Schedule ...
 
@@ -216,6 +245,27 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 
 	}
 
+	// for built-ins, disable editing/make read-only
+	m_isEditable = !m_current->m_builtIn;
+	m_ui->lineEditName->setReadOnly(!m_isEditable);
+
+	m_ui->toolButtonAddPeriod->setEnabled(m_isEditable);
+	m_ui->toolButtonCopyPeriod->setEnabled(m_isEditable);
+	m_ui->toolButtonRemovePeriode->setEnabled(m_isEditable);
+
+
+	/// TODO Dirk->Andreas wie kann ich alle Elemente der Tabelle auf nicht editierbar stellen?
+}
+
+void SVDBScheduleEditWidget::on_lineEditName_editingFinished()
+{
+	Q_ASSERT(m_current != nullptr);
+
+	if (m_current->m_displayName != m_ui->lineEditName->string()) {
+		m_current->m_displayName = m_ui->lineEditName->string();
+		m_db->m_schedules.m_modified = true;
+		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+	}
 }
 
 void SVDBScheduleEditWidget::on_toolButtonAddPeriod_clicked(){
@@ -361,62 +411,6 @@ void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellChanged(int row, int colu
 
 
 
-void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellClicked(int row, int column) {
-	size_t colIdx = (size_t)column;
-	size_t schedIdx = (size_t)row;
-
-	Q_ASSERT( m_current->m_periods.size() > schedIdx );
-
-	if ( colIdx == 1 )
-		return; // we only want to set a new start date for an intervall
-
-	if ( schedIdx == 0 )
-		return; // we cannot change the start date of the first period
-
-	// we cache our selected periode
-	VICUS::ScheduleInterval periode = m_current->m_periods[(size_t)row];
-
-	m_current->m_periods.erase(m_current->m_periods.begin()+row);
-
-	// we take from the periods our selected and take the interval start day
-	QDate periodStartDate(2021,1,1);
-
-	unsigned int shift = periode.m_intervalStartDay;
-	periodStartDate = periodStartDate.addDays(shift);
-	periodStartDate = QtExt::DateTimeInputDialog::requestDate(tr("Modify start date of period"),
-															  tr("Enter start date (dd.MM.):"), tr("dd.MM."),
-															  &periodStartDate);
-
-	if ( !periodStartDate.isValid() ) {
-		m_current->m_periods.insert(m_current->m_periods.begin()+row, periode);
-		return; // no input has been done by user
-	}
-
-	// convert date to dayofyear
-	unsigned int startDateInt = periodStartDate.dayOfYear()-1;
-	unsigned int idx=0;
-	// check if such a period starting day has already been used, and if yes,
-	for(unsigned int i=0; i<m_current->m_periods.size(); ++i){
-		const VICUS::ScheduleInterval &schedInt = m_current->m_periods[i];
-		if(schedInt.m_intervalStartDay == startDateInt) {
-			QMessageBox::critical(this,QString(), "A period with this start day already exists.");
-			m_current->m_periods.insert(m_current->m_periods.begin()+row, periode);
-			return;
-		}
-		//save index for later adding schedule interval
-		if(schedInt.m_intervalStartDay < startDateInt)
-			idx=i;
-	}
-
-	// set new start date
-	periode.m_intervalStartDay = startDateInt;
-
-	m_current->m_periods.insert(m_current->m_periods.begin()+idx+1, periode);
-
-	// update table widget
-	updatePeriodTable();
-
-}
 
 
 void SVDBScheduleEditWidget::updateDayTypes(const NANDRAD::Schedule::ScheduledDayType &dt, bool checked) {
@@ -448,12 +442,13 @@ void SVDBScheduleEditWidget::updateDayTypes(const NANDRAD::Schedule::ScheduledDa
 	m_db->m_schedules.m_modified = true;
 
 	// if schedule interval is valid -> green background
-	// TODO : Dirk, add icons for valid/invalid
 	int row = m_ui->tableWidgetPeriods->currentRow();
-	if(row>=0){
-		m_ui->tableWidgetPeriods->item(row,0)->setBackgroundColor(m_currentInterval->isValid() ? Qt::green : Qt::red);
-		m_ui->tableWidgetPeriods->item(row,1)->setBackgroundColor(m_currentInterval->isValid() ? Qt::green : Qt::red);
+	if(row>=0 && m_currentInterval->isValid()){
+
+		m_ui->tableWidgetPeriods->item(row,2)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/ok.png"));
 	}
+	else
+		m_ui->tableWidgetPeriods->item(row,2)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/error.png"));
 }
 
 
@@ -532,3 +527,60 @@ void SVDBScheduleEditWidget::on_checkBoxSunday_stateChanged(int arg1) {
 
 
 
+
+void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellDoubleClicked(int row, int column)
+{
+	size_t colIdx = (size_t)column;
+	size_t schedIdx = (size_t)row;
+
+	Q_ASSERT( m_current->m_periods.size() > schedIdx );
+
+	if ( colIdx == 1 )
+		return; // we only want to set a new start date for an intervall
+
+	if ( schedIdx == 0 )
+		return; // we cannot change the start date of the first period
+
+	// we cache our selected periode
+	VICUS::ScheduleInterval periode = m_current->m_periods[(size_t)row];
+
+	m_current->m_periods.erase(m_current->m_periods.begin()+row);
+
+	// we take from the periods our selected and take the interval start day
+	QDate periodStartDate(2021,1,1);
+
+	unsigned int shift = periode.m_intervalStartDay;
+	periodStartDate = periodStartDate.addDays(shift);
+	periodStartDate = QtExt::DateTimeInputDialog::requestDate(tr("Modify start date of period"),
+															  tr("Enter start date (dd.MM.):"), tr("dd.MM."),
+															  &periodStartDate);
+
+	if ( !periodStartDate.isValid() ) {
+		m_current->m_periods.insert(m_current->m_periods.begin()+row, periode);
+		return; // no input has been done by user
+	}
+
+	// convert date to dayofyear
+	unsigned int startDateInt = periodStartDate.dayOfYear()-1;
+	unsigned int idx=0;
+	// check if such a period starting day has already been used, and if yes,
+	for(unsigned int i=0; i<m_current->m_periods.size(); ++i){
+		const VICUS::ScheduleInterval &schedInt = m_current->m_periods[i];
+		if(schedInt.m_intervalStartDay == startDateInt) {
+			QMessageBox::critical(this,QString(), "A period with this start day already exists.");
+			m_current->m_periods.insert(m_current->m_periods.begin()+row, periode);
+			return;
+		}
+		//save index for later adding schedule interval
+		if(schedInt.m_intervalStartDay < startDateInt)
+			idx=i;
+	}
+
+	// set new start date
+	periode.m_intervalStartDay = startDateInt;
+
+	m_current->m_periods.insert(m_current->m_periods.begin()+idx+1, periode);
+
+	// update table widget
+	updatePeriodTable(idx+1);
+}

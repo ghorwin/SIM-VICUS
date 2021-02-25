@@ -23,7 +23,7 @@ public:
 	explicit SVDBScheduleDailyCycleEditWidget(QWidget *parent = nullptr);
 	~SVDBScheduleDailyCycleEditWidget();
 
-	void updateInput(VICUS::DailyCycle *dc, SVDatabase *db);
+	void updateInput(VICUS::DailyCycle *dc, SVDatabase *db, bool isEditable);
 
 private slots:
 	void on_tableWidgetDayCycle_cellChanged(int row, int);
@@ -39,6 +39,7 @@ private:
 
 	/*! Cached pointer to item delegate. */
 	QItemDelegate						*m_delegate;
+
 };
 
 #endif // SVDBSCHEDULEDAILYCYCLEEDITWIDGET_H

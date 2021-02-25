@@ -4,6 +4,8 @@
 #include <QWidget>
 
 #include <NANDRAD_Schedule.h>
+///TODO Dirk->Andreas warum wird das hier gebraucht und nicht in der cpp nur?
+#include <QtExt_DateTimeInputDialog.h>
 
 namespace VICUS {
 	class Schedule;
@@ -39,6 +41,7 @@ public:
 	void updateInput(int id);
 
 private slots:
+	void on_lineEditName_editingFinished();
 
 	void on_toolButtonAddPeriod_clicked();
 
@@ -50,9 +53,6 @@ private slots:
 
 	void on_toolButtonForward_clicked();
 	void on_tableWidgetPeriods_cellChanged(int row, int column);
-
-	void on_tableWidgetPeriods_cellClicked(int row, int column);
-
 
 	void on_checkBoxTuesday_stateChanged(int arg1);
 
@@ -71,6 +71,8 @@ private slots:
 	void on_checkBoxMonday_toggled(bool checked);
 
 	void on_toolButtonDeleteCurrentDailyCycle_clicked();
+
+	void on_tableWidgetPeriods_cellDoubleClicked(int row, int column);
 
 private:
 
@@ -107,6 +109,9 @@ private:
 
 	/*! Actual row index of period table. (-1 no row selected)*/
 	int									m_rowIdx=-1;
+
+	/*! Is built in schedule. */
+	bool								m_isEditable=true;
 };
 
 

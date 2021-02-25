@@ -19,6 +19,9 @@ SVDBScheduleDailyCycleEditWidget::SVDBScheduleDailyCycleEditWidget(QWidget *pare
 	m_ui->tableWidgetDayCycle->setHorizontalHeaderItem(0, new QTableWidgetItem(tr("Time")));
 	m_ui->tableWidgetDayCycle->setHorizontalHeaderItem(1, new QTableWidgetItem(tr("Value")));
 
+	m_ui->tableWidgetDayCycle->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+	m_ui->tableWidgetDayCycle->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+
 	//set all table items in day cycle
 	m_ui->tableWidgetDayCycle->setRowCount(24);
 
@@ -53,7 +56,7 @@ SVDBScheduleDailyCycleEditWidget::~SVDBScheduleDailyCycleEditWidget(){
 
 
 
-void SVDBScheduleDailyCycleEditWidget::updateInput(VICUS::DailyCycle *dc, SVDatabase *db){
+void SVDBScheduleDailyCycleEditWidget::updateInput(VICUS::DailyCycle *dc, SVDatabase *db, bool isEditable){
 
 	//timepoints in seconds
 	//set values
@@ -78,6 +81,8 @@ void SVDBScheduleDailyCycleEditWidget::updateInput(VICUS::DailyCycle *dc, SVData
 				break;
 		}
 		m_ui->tableWidgetDayCycle->item(j, 1)->setText(QString::number(val,'g', 3));
+		if(isEditable)
+			m_ui->tableWidgetDayCycle->item(j,1)->setFlags(m_ui->tableWidgetDayCycle->item(j,1)->flags() &~Qt::ItemIsEditable);
 	}
 	m_ui->tableWidgetDayCycle->blockSignals(false);
 }
