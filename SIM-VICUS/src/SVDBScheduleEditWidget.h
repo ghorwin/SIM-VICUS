@@ -53,7 +53,6 @@ private slots:
 
 	void on_tableWidgetPeriods_cellClicked(int row, int column);
 
-	void on_checkBoxMonday_stateChanged(int arg1);
 
 	void on_checkBoxTuesday_stateChanged(int arg1);
 
@@ -69,6 +68,10 @@ private slots:
 
 	void on_checkBoxSunday_stateChanged(int arg1);
 
+	void on_checkBoxMonday_toggled(bool checked);
+
+	void on_toolButtonDeleteCurrentDailyCycle_clicked();
+
 private:
 
 	/*! Update the period table. */
@@ -77,15 +80,14 @@ private:
 	/*! Called when a new daily cycle has been selected,i.e. m_currentDailyCycleIndex has changed. */
 	void selectDailyCycle();
 
-	/*! Delete a daily cycle if no day type is checked. Can not delete daily cycle if only one daily cycle exists.
-		Return true if a daily cycle was deleted.
-	*/
-	bool deleteDailyCycle();
-
 	/*! If minimum one day type is enabled and checked this function returns true.*/
 	bool isDayTypeChecked();
 
+	/*! Insertes/removes day times in currently edited daily cycle. Also calls updateDailyCycleSelectButtons(). */
 	void updateDayTypes(const NANDRAD::Schedule::ScheduledDayType &dt, bool checked);
+
+	/*! Updates enabled/disabled state of buttons based on content of m_currentInterval and current user interface state. */
+	void updateDailyCycleSelectButtons();
 
 	Ui::SVDBScheduleEditWidget			*m_ui;
 
@@ -108,21 +110,7 @@ private:
 
 	/*! Actual row index of period table. (-1 no row selected)*/
 	int									m_rowIdx=-1;
-
-	/*! Block StateChange of checkboxes. */
-	bool								m_blockCheckBox=true;
-
-
-
 };
 
-//class SVDBScheduleDailyCycleEditWidget : public QWidget{
-//	Q_OBJECT
-
-//public:
-//	explicit SVDBScheduleDailyCycleEditWidget(QWidget *parent = nullptr);
-//	~SVDBScheduleDailyCycleEditWidget();
-
-//};
 
 #endif // SVDBScheduleEditWidget_H

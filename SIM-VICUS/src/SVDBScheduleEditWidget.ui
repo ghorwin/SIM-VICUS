@@ -345,6 +345,20 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QToolButton" name="toolButtonDeleteCurrentDailyCycle">
+             <property name="icon">
+              <iconset resource="../resources/SIM-VICUS.qrc">
+               <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
         </layout>

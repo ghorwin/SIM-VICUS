@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>693</width>
-    <height>279</height>
+    <width>1087</width>
+    <height>657</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Boundary Condition Database</string>
+   <string>Schedule Database</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
    <item>

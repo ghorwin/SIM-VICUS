@@ -78,6 +78,7 @@ void SVDBScheduleEditWidget::updatePeriodTable(const int &activeRow){
 		m_ui->tableWidgetPeriods->setItem(i,1,new QTableWidgetItem(QtExt::MultiLangString2QString(m_current->m_periods[i].m_displayName)));
 
 		//if schedule interval is valid -> green background
+		// TODO : Dirk, add icons for valid/invalid
 		m_ui->tableWidgetPeriods->item(i,0)->setBackgroundColor(m_current->m_periods[i].isValid() ? Qt::green : Qt::red);
 		m_ui->tableWidgetPeriods->item(i,1)->setBackgroundColor(m_current->m_periods[i].isValid() ? Qt::green : Qt::red);
 	}
@@ -92,45 +93,26 @@ void SVDBScheduleEditWidget::updatePeriodTable(const int &activeRow){
 	m_ui->toolButtonRemovePeriode->setEnabled(m_current->m_periods.size()>1);
 }
 
+
 void SVDBScheduleEditWidget::selectDailyCycle() {
 	// create first daily cycle if none exist yet
-	if(m_currentInterval->m_dailyCycles.empty())
+	if (m_currentInterval->m_dailyCycles.empty()) {
 		m_currentInterval->m_dailyCycles.push_back(VICUS::DailyCycle());
+		m_db->m_schedules.m_modified=true;
+	}
 
-	// enable/disable arrow buttons based
-	m_ui->toolButtonBackward->setEnabled(m_currentDailyCycleIndex!=0);
-
-	// enable forward button:
-	//
-	m_ui->toolButtonForward->setEnabled(m_currentDailyCycleIndex<m_currentInterval->m_dailyCycles.size()-1
-										|| m_currentInterval->freeDayTypes().size()>0);
-
-
-	// check/uncheck day checkbox (with blocked signals)
-	m_ui->widgetDayTypes->blockSignals(true);
-	m_blockCheckBox =false;
-	//all button active and enabled
-	///TODO Stephan in for packen
-	m_ui->checkBoxMonday->setEnabled(true);
-	m_ui->checkBoxTuesday->setEnabled(true);
-	m_ui->checkBoxWednesday->setEnabled(true);
-	m_ui->checkBoxThursday->setEnabled(true);
-	m_ui->checkBoxFriday->setEnabled(true);
-	m_ui->checkBoxSaturday->setEnabled(true);
-	m_ui->checkBoxSunday->setEnabled(true);
-	m_ui->checkBoxHoliday->setEnabled(true);
-
-	m_ui->checkBoxMonday->setChecked(false);
-	m_ui->checkBoxTuesday->setChecked(false);
-	m_ui->checkBoxWednesday->setChecked(false);
-	m_ui->checkBoxThursday->setChecked(false);
-	m_ui->checkBoxFriday->setChecked(false);
-	m_ui->checkBoxSaturday->setChecked(false);
-	m_ui->checkBoxSunday->setChecked(false);
-	m_ui->checkBoxHoliday->setChecked(false);
+	// block signals in all check boxes, set then enabled and unchecked
+	for (QObject * w : m_ui->widgetDayTypes->children()) {
+		QCheckBox * c = qobject_cast<QCheckBox *>(w);
+		if (c != nullptr) {
+			c->blockSignals(true);
+			c->setEnabled(true);
+			c->setChecked(false);
+		}
+	}
 
 
-	for(unsigned int i=0; i< m_currentInterval->m_dailyCycles.size(); ++i){
+	for (unsigned int i=0; i< m_currentInterval->m_dailyCycles.size(); ++i){
 		bool enabled = false;
 		if(i==m_currentDailyCycleIndex)
 			enabled = true;
@@ -173,14 +155,20 @@ void SVDBScheduleEditWidget::selectDailyCycle() {
 			}
 		}
 	}
-	m_blockCheckBox =true;
-	m_ui->widgetDayTypes->blockSignals(false);
+
+	// enable signals again in check boxes
+	for (QObject * w : m_ui->widgetDayTypes->children()) {
+		QCheckBox * c = qobject_cast<QCheckBox *>(w);
+		if (c != nullptr)
+			c->blockSignals(false);
+	}
+
 	// update current daily cycle data type and chartt
 
 	VICUS::DailyCycle *dc = &m_currentInterval->m_dailyCycles[m_currentDailyCycleIndex];
 	m_ui->widgetDailyCycle->updateInput( dc , m_db);
 
-	m_db->m_schedules.m_modified=true;
+	updateDailyCycleSelectButtons();
 }
 
 
@@ -320,68 +308,63 @@ bool SVDBScheduleEditWidget::isDayTypeChecked(){
 
 }
 
-bool SVDBScheduleEditWidget::deleteDailyCycle(){
 
-	//if only one daily cycle exist we need a day type
-	if(m_currentInterval->m_dailyCycles.size()==1){
-		QMessageBox::critical(this,QString(), "Please check one or more day types for this daily cycle.");
-		return false;
-	}
-	//check that on checkbox of day types is checked
-	//if not return a message that the daily cycle is delete
-		///TODO Dirk->Andreas wie frage ich jetzt ab mit übernahme bei ok des wertes
-
-	if(isDayTypeChecked()){
-		bool deleteAction = true;
-		if(deleteAction){
-
-			if(m_currentDailyCycleIndex!=0)
-				--m_currentDailyCycleIndex;
-			return true;
-		}
-	}
-
-	return false;
-
-}
-
-void SVDBScheduleEditWidget::on_toolButtonBackward_clicked()
-{
+void SVDBScheduleEditWidget::on_toolButtonBackward_clicked() {
 	Q_ASSERT(m_currentDailyCycleIndex !=0);
-	//delete a daily cycle when no day type is selected and we have more than one daily cycle
-	//set daily cycle index new
-	if(!isDayTypeChecked() && m_currentInterval->m_dailyCycles.size()>1){
-		///TODO Dirk->Andreas soll hier eine Abfrage rein ob der Tages-Zeitplan gelöscht werden soll?
-		if(QMessageBox::critical(this, QString(), "Do you want to delete this daily cycle?") != QMessageBox::Ok)
-			return;
-		m_currentInterval->m_dailyCycles.erase(m_currentInterval->m_dailyCycles.begin()+m_currentDailyCycleIndex);
+
+	// if we just left a cycle, and this has no daytypes set, remove it
+	if (m_currentDailyCycleIndex == m_currentInterval->m_dailyCycles.size()-1)
+	{
+		// we can delete the last cycle, if no daytypes are checked and if all
+		// values are zero
+		if (m_currentInterval->m_dailyCycles[m_currentDailyCycleIndex].m_dayTypes.empty() &&
+			m_currentInterval->m_dailyCycles[m_currentDailyCycleIndex].m_values.size() == 1 &&
+				m_currentInterval->m_dailyCycles[m_currentDailyCycleIndex].m_values[0] == 0.0)
+		{
+			m_currentInterval->m_dailyCycles.resize(m_currentDailyCycleIndex);
+		}
 	}
 	--m_currentDailyCycleIndex;
+
 	selectDailyCycle();
 }
+
 
 void SVDBScheduleEditWidget::on_toolButtonForward_clicked() {
-	if(m_currentDailyCycleIndex < m_currentInterval->m_dailyCycles.size()-1 ||
-			m_currentInterval->freeDayTypes().size()>0){
+	// we have two cases:
+	// m_currentDailyCycleIndex points to the last daily cycle -> in this case we add a new daily cycle
+	// otherwise we just switch to the next daily cycle
 
-		if(!isDayTypeChecked()){
-			///TODO Dirk->Andreas soll hier eine Abfrage rein ob der Tages-Zeitplan gelöscht werden soll?
-			if(QMessageBox::critical(this, QString(), "Do you want to delete this daily cycle?") != QMessageBox::Ok)
-				return;
-			m_currentInterval->m_dailyCycles.erase(m_currentInterval->m_dailyCycles.begin()+m_currentDailyCycleIndex);
-		}
-		else{
-			//if last daily cycle is selected but we have unused day type
-			//create a new daily cycle
-			if(m_currentDailyCycleIndex == m_currentInterval->m_dailyCycles.size()-1){
-				m_db->m_schedules.m_modified  =true;
-				m_currentInterval->m_dailyCycles.push_back(VICUS::DailyCycle());
-			}
-			++m_currentDailyCycleIndex;
-		}
+	//create a new daily cycle
+	if (m_currentDailyCycleIndex == m_currentInterval->m_dailyCycles.size()-1) {
+		m_db->m_schedules.m_modified  =true;
+		m_currentInterval->m_dailyCycles.push_back(VICUS::DailyCycle());
 	}
+	++m_currentDailyCycleIndex;
 	selectDailyCycle();
 }
+
+
+void SVDBScheduleEditWidget::on_toolButtonDeleteCurrentDailyCycle_clicked() {
+	//if only one daily cycle exist we need a day type
+	if (m_currentInterval->m_dailyCycles.size()==1) {
+		QMessageBox::critical(this,QString(), tr("There must be at least one daily cycle."));
+		return;
+	}
+
+	// ask user for confirmation to delete daily cycle
+	if (QMessageBox::question(this, QString(), tr("Delete currently selected daily cycle?"), QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+		return;
+
+	// remove current daily cycle - index won't change
+	m_currentInterval->m_dailyCycles.erase(m_currentInterval->m_dailyCycles.begin() + m_currentDailyCycleIndex);
+	if (m_currentDailyCycleIndex == m_currentInterval->m_dailyCycles.size())
+		--m_currentDailyCycleIndex;
+
+	selectDailyCycle();
+}
+
+
 
 void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellChanged(int row, int column) {
 	size_t colIdx = (size_t)column;
@@ -453,12 +436,11 @@ void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellClicked(int row, int colu
 
 }
 
-void SVDBScheduleEditWidget::updateDayTypes(const NANDRAD::Schedule::ScheduledDayType &dt, bool checked){
 
-	if(!m_blockCheckBox)
-		return;
+void SVDBScheduleEditWidget::updateDayTypes(const NANDRAD::Schedule::ScheduledDayType &dt, bool checked) {
 
 	VICUS::DailyCycle &dc = m_currentInterval->m_dailyCycles[m_currentDailyCycleIndex];
+
 	//find current indx in vector
 	int idx=-1;
 	int dayIdx = (int)dt;
@@ -469,21 +451,22 @@ void SVDBScheduleEditWidget::updateDayTypes(const NANDRAD::Schedule::ScheduledDa
 		}
 	}
 	//add day type
-	if(checked && idx==-1)
+	if (checked) {
+		Q_ASSERT(idx==-1);
 		dc.m_dayTypes.push_back(dayIdx);
+	}
 	//delete day type
-	else if(!checked && idx!=-1)
+	else {
+		Q_ASSERT(idx!=-1);
 		dc.m_dayTypes.erase(dc.m_dayTypes.begin()+idx);
-	else
-		return;
+	}
 
-	//update the forward button for each set checked
-	m_ui->toolButtonForward->setEnabled(m_currentDailyCycleIndex<m_currentInterval->m_dailyCycles.size()-1
-										|| m_currentInterval->freeDayTypes().size()>0);
+	updateDailyCycleSelectButtons();
 
 	m_db->m_schedules.m_modified = true;
 
-	//if schedule interval is valid -> green background
+	// if schedule interval is valid -> green background
+	// TODO : Dirk, add icons for valid/invalid
 	int row = m_ui->tableWidgetPeriods->currentRow();
 	if(row>=0){
 		m_ui->tableWidgetPeriods->item(row,0)->setBackgroundColor(m_currentInterval->isValid() ? Qt::green : Qt::red);
@@ -491,11 +474,47 @@ void SVDBScheduleEditWidget::updateDayTypes(const NANDRAD::Schedule::ScheduledDa
 	}
 }
 
-///TODO Stephan geht das auch in einer for?
-void SVDBScheduleEditWidget::on_checkBoxMonday_stateChanged(int arg1) {
-	//0 unchecked
-	//2 checked
-	updateDayTypes(NANDRAD::Schedule::ST_MONDAY, arg1==2);
+
+void SVDBScheduleEditWidget::updateDailyCycleSelectButtons() {
+	// enable/disable arrow buttons
+
+	m_ui->toolButtonBackward->setEnabled(m_currentDailyCycleIndex!=0);
+
+	// enable forward button when:
+	// - the currently edited daily cycle must have at least one extra day checked
+	// - we edit the last daily cycle and we can add still one more (when the full set of days has not yet been checked)
+	// - we edit not the last daily cycle
+
+	// last daily cycle?
+	if (m_currentDailyCycleIndex == m_currentInterval->m_dailyCycles.size()-1) {
+		bool enableButton = false;
+		// check that we have at least one new day checked
+		for (QObject * w : m_ui->widgetDayTypes->children()) {
+			QCheckBox * c = qobject_cast<QCheckBox *>(w);
+			if (c != nullptr) {
+				if (c->isEnabled() && c->isChecked()) {
+					enableButton = true;
+					break;
+				}
+			}
+		}
+		// any days free?
+		enableButton = enableButton && !m_currentInterval->freeDayTypes().empty();
+		// check all check boxes and if we find one that is enabled and checked we have a modified
+		m_ui->toolButtonForward->setEnabled(enableButton);
+	}
+	else {
+		// navigation forward is always possible
+		m_ui->toolButtonForward->setEnabled(true);
+	}
+}
+
+
+// TODO : Dirk, use toggled for all check boxes
+
+
+void SVDBScheduleEditWidget::on_checkBoxMonday_toggled(bool checked) {
+	updateDayTypes(NANDRAD::Schedule::ST_MONDAY, checked);
 }
 
 void SVDBScheduleEditWidget::on_checkBoxTuesday_stateChanged(int arg1) {
@@ -525,3 +544,6 @@ void SVDBScheduleEditWidget::on_checkBoxSaturday_stateChanged(int arg1) {
 void SVDBScheduleEditWidget::on_checkBoxSunday_stateChanged(int arg1) {
 	updateDayTypes(NANDRAD::Schedule::ST_SUNDAY, arg1==2);
 }
+
+
+
