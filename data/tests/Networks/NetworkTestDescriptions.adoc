@@ -38,6 +38,12 @@
 - Konstanter Massenstrom:  -0.0570908 kg/s
 
 
+### HydraulicNetworkStaticZeroPump.nandrad
+
+- wie `HydraulicNetworkStatic.nandrad`
+- aber Triviallösungstests, Pumpe mit dp = 0 pa
+
+
 ### HydraulicNetworkSplitter.nandrad
 
 - Zwei Kreise (parallele Rohre), siehe `NetworkWithSplitter.pdf`
@@ -278,6 +284,13 @@ LESTimeRHSEvals              4.00E-06   1.00E-06
 Identische Counter!
 
 
+### ThermoHydraulicNetworkStaticFlowParallelPipes.nandrad
+
+TODO : Anne, Beschreibung, erwartete Ergebnisse
+
+### ThermoHydraulicNetworkStaticFlowParallelPipesMixer.nandrad
+
+TODO : Anne, Beschreibung, erwartete Ergebnisse
 
 
 
