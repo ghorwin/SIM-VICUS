@@ -75,7 +75,7 @@
 
 
 
-## Thermo-Hydraulic Tests
+## Thermo-Hydraulic Tests - Milestone 1
 
 
 ### ThermoHydraulicNetworkSimplePipeAdiabat.nandrad
@@ -118,6 +118,40 @@ NetworkElement(id=1001).OutletNodeTemperature [C] =
 ```
 
 
+
+
+### ThermoHydraulicNetworkHeatExchangerHeatFluxConst.nandrad
+
+Einfacher Kreis, 2 Elemente:
+
+- Pumpe (1001)
+- HeatExchanger (1003) mit konstantem Wärmestrom
+
+Der Wärmestom beträgt -50 W. Entsprechend:
+```
+Zeit [h]	NetworkElement(id=1003).FlowElementHeatLoss [W]
+0	-50
+1	-50
+```
+
+Ergebnis: Die Fluidtemperatur steigt auf 41.58°C:
+```
+Zeit [h]	NetworkElement(id=1003).OutletNodeTemperature [C]
+0	20
+1	41.5834
+```
+
+
+
+
+
+
+
+
+
+
+
+
 ### ThermoHydraulicNetworkSimplePipeTemperatureDataFile.nandrad
 
 2 Elemente:
@@ -150,29 +184,6 @@ Die Austrittstemperatur des Rohrs bei t=24 h
 NetworkElement(id=1002).OutletNodeTemperature [C]
 20.0001
 ```
-
-
-### ThermoHydraulicNetworkHeatExchangerHeatFluxConst.nandrad
-
-Einfacher Kreis, 2 Elemente:
-
-- Pumpe (1001)
-- HeatExchanger (1003) mit konstantem Wärmestrom
-
-Der Wärmestom beträgt -50 W. Entsprechend:
-```
-Zeit [h]	NetworkElement(id=1003).FlowElementHeatLoss [W]
-0	-50
-1	-50
-```
-
-Ergebnis: Die Fluidtemperatur steigt auf 41.58°C:
-```
-Zeit [h]	NetworkElement(id=1003).OutletNodeTemperature [C]
-0	20
-1	41.5834
-```
-
 
 ### ThermoHydraulicNetworkHeatExchangerHeatFluxDataFile.nandrad
 

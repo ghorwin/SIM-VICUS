@@ -12,7 +12,7 @@
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 			<Interval>
-				<IBK:Parameter name="End" unit="d">1</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">2</IBK:Parameter>
 			</Interval>
 			<SolarLoadsDistributionModel>
 				<DistributionType>AreaWeighted</DistributionType>
