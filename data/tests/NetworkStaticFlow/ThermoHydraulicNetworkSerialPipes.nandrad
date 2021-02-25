@@ -15,7 +15,7 @@
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 			<Interval>
-				<IBK:Parameter name="End" unit="h">1</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">2</IBK:Parameter>
 			</Interval>
 		</SimulationParameter>
 		<Zones>
@@ -82,7 +82,7 @@
 						<IBK:Parameter name="AmbientTemperature" unit="C">0</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="301" inletNodeId="3" outletNodeId="4" componentId="2" displayName="Heat Exchanger">
-						<IBK:Parameter name="HeatLoss" unit="W">200</IBK:Parameter>
+						<IBK:Parameter name="HeatLoss" unit="W">2000</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="102" inletNodeId="4" outletNodeId="1" componentId="3" pipePropertiesId="2">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
@@ -105,6 +105,11 @@
 				<!-- Outputs go to file 'network_elements.tsv' -->
 				<OutputDefinition>
 					<Quantity>OutletNodeTemperature</Quantity>
+					<ObjectListName>All flow elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FlowElementHeatLoss</Quantity>
 					<ObjectListName>All flow elements</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>

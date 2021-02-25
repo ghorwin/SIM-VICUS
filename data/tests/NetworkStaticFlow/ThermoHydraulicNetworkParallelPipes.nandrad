@@ -59,12 +59,12 @@
 				</PipeProperties>
 				<Components>
 					<HydraulicNetworkComponent id="1" displayName="Pump 1 0815 (constant pressure)" modelType="ConstantPressurePump">
-						<IBK:Parameter name="PressureHead" unit="Pa">1000</IBK:Parameter>
+						<IBK:Parameter name="PressureHead" unit="Pa">10000</IBK:Parameter>
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.1</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" displayName="Pump 2 0815 (constant pressure)" modelType="ConstantPressurePump">
-						<IBK:Parameter name="PressureHead" unit="Pa">250</IBK:Parameter>
+						<IBK:Parameter name="PressureHead" unit="Pa">2500</IBK:Parameter>
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.1</IBK:Parameter>
 					</HydraulicNetworkComponent>
@@ -95,7 +95,7 @@
 						<IBK:Parameter name="AmbientTemperature" unit="C">0</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="301" inletNodeId="4" outletNodeId="1" componentId="3" displayName="Heat Exchanger">
-						<IBK:Parameter name="HeatLoss" unit="W">-200</IBK:Parameter>
+						<IBK:Parameter name="HeatLoss" unit="W">-2000</IBK:Parameter>
 					</HydraulicNetworkElement>
 				</Elements>
 			</HydraulicNetwork>

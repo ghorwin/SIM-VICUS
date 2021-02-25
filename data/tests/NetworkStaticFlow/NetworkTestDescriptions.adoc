@@ -4,9 +4,9 @@
 
 ## Hydraulic Tests
 
-### HydraulicNetworkStatic.nandrad
+### HydraulicNetwork.nandrad
 
-- Einzelner Kreis, 4 Komponenten, siehe `Network.pdf`
+- Einzelner Kreis, 4 Komponenten, siehe `HydraulicNetwork.pdf`
 - Referenzelement ist 201 (die Pumpe), d.h. Referenzdruck von 0 Pa
   liegt am Einlauf der Pumpe an
 - Druckabfall in Strömungsrichtung, jeweils nach dem Strömungselement:
@@ -20,9 +20,9 @@
 - Konstanter Massenstrom:  0.0570898 kg/s
 
 
-### HydraulicNetworkStaticInvertedPump.nandrad
+### HydraulicNetworkInvertedPump.nandrad
 
-- wie `HydraulicNetworkStatic.nandrad`
+- wie `HydraulicNetwork.nandrad`
 - Pumpe entgegengesetzt eingebaut
 - Massestrom sollte anderes Vorzeichen haben
 - Druckverteilung sollte entsprechend anders herum abnehmen
@@ -38,15 +38,15 @@
 - Konstanter Massenstrom:  -0.0570908 kg/s
 
 
-### HydraulicNetworkStaticZeroPump.nandrad
+### HydraulicNetworkZeroPump.nandrad
 
-- wie `HydraulicNetworkStatic.nandrad`
+- wie `HydraulicNetwork.nandrad`
 - aber Triviallösungstests, Pumpe mit dp = 0 pa
 
 
 ### HydraulicNetworkSplitter.nandrad
 
-- Zwei Kreise (parallele Rohre), siehe `NetworkWithSplitter.pdf`
+- Zwei Kreise (parallele Rohre), siehe `HydraulicNetworkSplitter.pdf`
 - Dadurch, dass das Rohr 103 einen deutlich höheren Strömungswiderstand hat,
   fließt dort weniger Fluid durch.
 - Masseströme durch Rohre 103 und 105 summieren sich zum Massestrom durch Pumpe und
@@ -59,9 +59,9 @@
 ```
 
 
-### HydraulicNetworkStaticBackFlow.nandrad
+### HydraulicNetworkBackFlow.nandrad
 
-- Zwei Kreise, zwei Pumpen (eine dezentral), siehe `NetworkWithBackFlow.pdf`
+- Zwei Kreise, zwei Pumpen (eine dezentral), siehe `HydraulicNetworkBackFlow.pdf`
 - kleine Pumpe (202) erzeugt lokal einen Druckanstieg, der die Strömungsrichtung 
   in Rohr 103 umkehrt.
   
@@ -158,7 +158,7 @@ dT =
 
 
 
-### ThermoHydraulicNetworkStaticFlowConstantHeatloss_Dense.nandrad
+### ThermoHydraulicNetworkConstantHeatloss_Dense.nandrad
 
 Ein Kreis, 3 Elemente:
 
@@ -219,9 +219,9 @@ Temperaturdifferenz zur Außenseite) wird die Rohrmitteltemperatur = T_out verwe
    m_heatLoss                   = 500.2 W 
 ```
 
-### ThermoHydraulicNetworkStaticFlowConstantHeatloss_KLU.nandrad
+### ThermoHydraulicNetworkConstantHeatloss_KLU.nandrad
 
-- exakt gleich wie `ThermoHydraulicNetworkStaticFlowConstantHeatloss_Dense.nandrad`, 
+- exakt gleich wie `ThermoHydraulicNetworkConstantHeatloss_Dense.nandrad`, 
   aber mit KLU als direktem Gleichungssystemlöser
 - Testfall prüft, ob bei der KLU die Besetzung der Matrix korrekt bestimmt wurde
 
@@ -249,15 +249,25 @@ LESTimeRHSEvals              4.00E-06   1.00E-06
 Identische Counter!
 
 
-### ThermoHydraulicNetworkStaticFlowParallelPipes.nandrad
+### ThermoHydraulicNetworkSerialPipes.nandrad
 
-TODO : Anne, Beschreibung, erwartete Ergebnisse
+Zwei unterschiedliche Rohre in einem Kreis zusammen mit Pumpe und Wärmetauscher. Nur letzterer interagiert thermisch (konstant 200 W Wärmeabgabe).
+
+
+### ThermoHydraulicNetworkParallelPipes.nandrad
+
+- Test Plausibilität Wärmeabgabe und Druckverlust durch unterschiiedlich parametrierte Rohre im stationären Zustand
+- 2 parallele Rohre mit unterschiedlicher Dimension (Rohr 2 hat doppelte Länge und doppelten Durchmesser)
+- 2 Pumpen mit angespasster Druckdifferenz (Pumpe 1 liefert die vierfache Druckdifferenz)
+- Konstante Außentemperatur
+- Konstanter Leistungsverlust im Netzwerk, provisorisch abgebildet durch Wärmetauscher mit Wärmeverlust und geringem Druckverlustbeiwert
+
+Erwartungshaltung: doppelter Massestrom und doppelter Wärmeverlust durch Rohr 2, identische Fluidaustrittstemperaturen für beide Rohrstränge. Die Summe der Rohrwärmeverluste muss der aufgenommenen Wärmemenge (Wärmestrom) im Wärmetauscher entsprechen und somit die thermische Bilanz im Netzwerk erhalten.
+
 
 ### ThermoHydraulicNetworkStaticFlowParallelPipesMixer.nandrad
 
 TODO : Anne, Beschreibung, erwartete Ergebnisse
-
-
 
 
 
