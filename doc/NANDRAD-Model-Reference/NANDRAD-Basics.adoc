@@ -155,7 +155,7 @@ a| Specifies the interpolation method between the defined y values.
 
 | key | _required_
 
-| `WrapMethod` 
+| `wrapMethod` 
 a| Specifies what should be done if values are requested with x values outside the x-value range.
 
 * `continuous` - constant extrapolation (take first or last value, respectively)
