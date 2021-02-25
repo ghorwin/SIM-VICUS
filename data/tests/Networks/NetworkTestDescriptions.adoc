@@ -141,9 +141,20 @@ Zeit [h]	NetworkElement(id=1003).OutletNodeTemperature [C]
 1	41.5834
 ```
 
+Fluidvolumen im Netzwerk bekannt, da Dichte und spezifische Wärmekapazität bekannt ist,
+kann Temperaturerhöhung nach einer Stunde analytisch berechnet werden.
 
+TODO : Hauke
 
+```
 
+V = 
+rho = 998
+ct = 4180
+
+dT = 
+
+```
 
 
 
