@@ -179,7 +179,7 @@ void SVDBComponentEditWidget::on_lineEditName_editingFinished(){
 }
 
 
-void SVDBComponentEditWidget::on_comboBoxComponentType_currentIndexChanged(int index){
+void SVDBComponentEditWidget::on_comboBoxComponentType_currentIndexChanged(int /*index*/){
 	if (m_current == nullptr) return; // m_current is nullptr, when nothing is selected and controls are defaulted to "empty"
 
 	VICUS::Component::ComponentType ct = static_cast<VICUS::Component::ComponentType>(m_ui->comboBoxComponentType->currentData().toInt());

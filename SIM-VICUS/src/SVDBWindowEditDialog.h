@@ -29,7 +29,7 @@ public:
 				pressed, the function returns the ID of the selected window. Otherwise, if the
 				dialog was aborted, the function returns -1.
 	*/
-	int select(unsigned int initialId);
+	int select(unsigned int);
 
 private slots:
 	void on_pushButtonSelect_clicked();

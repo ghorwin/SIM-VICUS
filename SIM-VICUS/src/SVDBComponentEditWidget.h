@@ -41,7 +41,7 @@ public:
 
 private slots:
 	void on_lineEditName_editingFinished();
-	void on_comboBoxComponentType_currentIndexChanged(int index);
+	void on_comboBoxComponentType_currentIndexChanged(int);
 
 	void on_toolButtonSelectConstruction_clicked();
 	void on_toolButtonSelectBoundaryConditionSideAName_clicked();

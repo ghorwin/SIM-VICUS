@@ -75,7 +75,7 @@ void SVDBWindowEditDialog::edit() {
 	exec();
 }
 
-int SVDBWindowEditDialog::select(unsigned int initialId) {
+int SVDBWindowEditDialog::select(unsigned int /*initialId*/) {
 
 	m_ui->pushButtonClose->setVisible(false);
 	m_ui->pushButtonSelect->setVisible(true);

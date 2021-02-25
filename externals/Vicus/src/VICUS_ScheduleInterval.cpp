@@ -60,7 +60,6 @@ bool ScheduleInterval::isValid() const {
 
 bool ScheduleInterval::usedAllDayTypes(bool withHolyday) const
 {
-	unsigned int count=0;
 	//set for all day types
 	std::set<int> allDayTypes;
 
@@ -107,9 +106,8 @@ std::set<int> ScheduleInterval::freeDayTypes(){
 	for(const DailyCycle & dc : m_dailyCycles){
 		//delete all current day types in set
 		for(int dt : dc.m_dayTypes){
-			if(allValidDayTypes.find(dt) != allValidDayTypes.end()){
+			if(allValidDayTypes.find(dt) != allValidDayTypes.end())
 				allValidDayTypes.erase(dt);
-			}
 		}
 	}
 	return allValidDayTypes;
