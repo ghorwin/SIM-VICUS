@@ -340,11 +340,11 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		const VICUS::NetworkComponent *comp = db.m_networkComponents[node.m_componentId];
 		switch (comp->m_heatExchangeType) {
 			case VICUS::NetworkComponent::HT_HeatFluxConstant:
-				elem.m_para[NANDRAD::HydraulicNetworkElement::P_HeatFlux] =
+				elem.m_para[NANDRAD::HydraulicNetworkElement::P_HeatLoss] =
 				node.m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_HeatFlux];
 				break;
 			case VICUS::NetworkComponent::HT_TemperatureConstant:
-				elem.m_para[NANDRAD::HydraulicNetworkElement::P_Temperature] =
+				elem.m_para[NANDRAD::HydraulicNetworkElement::P_AmbientTemperature] =
 				node.m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_Temperature];
 				break;
 			case VICUS::NetworkComponent::HT_HeatFluxDataFile:
@@ -402,10 +402,10 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		// TODO Hauke: transfer heat exchange parameter
 		switch (comp->m_heatExchangeType) {
 			case VICUS::NetworkComponent::HT_HeatFluxConstant:
-				inletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_HeatFlux] =
+				inletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_HeatLoss] =
 				edge->m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_HeatFlux]; break;
 			case VICUS::NetworkComponent::HT_TemperatureConstant:
-				inletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_Temperature] =
+				inletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_AmbientTemperature] =
 				edge->m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_Temperature]; break;
 			case VICUS::NetworkComponent::HT_HeatFluxDataFile:
 				inletPipe.m_heatExchangeDataFile =
@@ -425,10 +425,10 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		// TODO Hauke: transfer heat exchange parameter
 		switch (comp->m_heatExchangeType) {
 			case VICUS::NetworkComponent::HT_HeatFluxConstant:
-				outletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_HeatFlux] =
+				outletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_HeatLoss] =
 				edge->m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_HeatFlux]; break;
 			case VICUS::NetworkComponent::HT_TemperatureConstant:
-				outletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_Temperature] =
+				outletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_AmbientTemperature] =
 				edge->m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_Temperature]; break;
 			case VICUS::NetworkComponent::HT_HeatFluxDataFile:
 				outletPipe.m_heatExchangeDataFile =
