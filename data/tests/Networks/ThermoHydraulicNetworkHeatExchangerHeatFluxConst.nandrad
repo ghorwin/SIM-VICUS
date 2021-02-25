@@ -55,7 +55,7 @@
 					<HydraulicNetworkElement id="1001" inletNodeId="101" outletNodeId="0" componentId="1" displayName="pump">
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="1003" inletNodeId="0" outletNodeId="101" componentId="2" pipePropertiesId="1" displayName="hx">
-						<IBK:Parameter name="HeatFlux" unit="W">-50</IBK:Parameter>
+						<IBK:Parameter name="HeatLoss" unit="W">-50</IBK:Parameter>
 					</HydraulicNetworkElement>
 				</Elements>
 			</HydraulicNetwork>

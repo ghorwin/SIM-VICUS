@@ -65,7 +65,7 @@
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="301" inletNodeId="3" outletNodeId="4" componentId="2" displayName="Heat Exchanger">
-						<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
+						<IBK:Parameter name="HeatLoss" unit="W">0</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="102" inletNodeId="4" outletNodeId="1" componentId="3" pipePropertiesId="1">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>

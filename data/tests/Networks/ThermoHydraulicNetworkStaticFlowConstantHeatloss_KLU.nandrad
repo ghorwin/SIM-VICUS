@@ -77,11 +77,11 @@
 					<HydraulicNetworkElement id="101" inletNodeId="2" outletNodeId="3" componentId="3" pipePropertiesId="1">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 						<!-- Pipe outside is fixed at 0 C -->
-						<IBK:Parameter name="Temperature" unit="C">0</IBK:Parameter>
+						<IBK:Parameter name="AmbientTemperature" unit="C">0</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="301" inletNodeId="3" outletNodeId="1" componentId="2" displayName="Heat Exchanger">
 						<!-- Heat exchanger has constant 500 W imposed heat gain (mind the sign) -->
-						<IBK:Parameter name="HeatFlux" unit="W">-500</IBK:Parameter>
+						<IBK:Parameter name="HeatLoss" unit="W">-500</IBK:Parameter>
 					</HydraulicNetworkElement>
 				</Elements>
 			</HydraulicNetwork>
