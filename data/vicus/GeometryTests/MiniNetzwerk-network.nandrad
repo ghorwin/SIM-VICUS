@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.999">
+	<Project>
+		<ProjectInfo />
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">53</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="%">20</IBK:Parameter>
+			<TimeZone>13</TimeZone>
+			<ClimateFilePath>C:/Daten/git/SIMVICUS/data/DB_climate/Konstantopol_20C.c6b</ClimateFilePath>
+		</Location>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<Interval>
+				<IBK:Parameter name="End" unit="d">30</IBK:Parameter>
+			</Interval>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<SolverParameter />
+		<Zones>
+			<Zone id="1" displayName="dummy" type="Active">
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">100</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<HydraulicNetworks>
+			<HydraulicNetwork id="1" displayName="Mini Netzwerk" modelType="ThermalHydraulicNetwork" referenceElementId="0">
+				<HydraulicFluid id="1" displayName="Water">
+					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
+					<LinearSplineParameter name="KinematicViscosity" interpolationMethod="linear">
+						<X unit="C">0 10 20 30 40 50 60 70 80 90 </X>
+						<Y unit="m2/s">1.793e-06 1.307e-06 1.004e-06 8.01e-07 6.58e-07 5.54e-07 4.75e-07 4.13e-07 3.65e-07 3.26e-07 </Y>
+					</LinearSplineParameter>
+				</HydraulicFluid>
+				<IBK:Parameter name="DefaultFluidTemperature" unit="C">283.15</IBK:Parameter>
+				<IBK:Parameter name="InitialFluidTemperature" unit="C">283.15</IBK:Parameter>
+				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
+				<PipeProperties>
+					<HydraulicNetworkPipeProperties id="14">
+						<IBK:Parameter name="PipeRoughness" unit="mm">0.007</IBK:Parameter>
+						<IBK:Parameter name="PipeInnerDiameter" unit="mm">257.8</IBK:Parameter>
+						<IBK:Parameter name="PipeOuterDiameter" unit="mm">315</IBK:Parameter>
+						<IBK:Parameter name="UValuePipeWall" unit="W/mK">1.996122051</IBK:Parameter>
+					</HydraulicNetworkPipeProperties>
+					<HydraulicNetworkPipeProperties id="13">
+						<IBK:Parameter name="PipeRoughness" unit="mm">0.007</IBK:Parameter>
+						<IBK:Parameter name="PipeInnerDiameter" unit="mm">234.6</IBK:Parameter>
+						<IBK:Parameter name="PipeOuterDiameter" unit="mm">280</IBK:Parameter>
+						<IBK:Parameter name="UValuePipeWall" unit="W/mK">2.261066504</IBK:Parameter>
+					</HydraulicNetworkPipeProperties>
+					<HydraulicNetworkPipeProperties id="12">
+						<IBK:Parameter name="PipeRoughness" unit="mm">0.007</IBK:Parameter>
+						<IBK:Parameter name="PipeInnerDiameter" unit="mm">184</IBK:Parameter>
+						<IBK:Parameter name="PipeOuterDiameter" unit="mm">225</IBK:Parameter>
+						<IBK:Parameter name="UValuePipeWall" unit="W/mK">1.988420981</IBK:Parameter>
+					</HydraulicNetworkPipeProperties>
+				</PipeProperties>
+				<Components>
+					<HydraulicNetworkComponent id="100003" displayName="pump" modelType="ConstantPressurePump">
+						<HeatExchangeType>Adiabatic</HeatExchangeType>
+						<IBK:Parameter name="PressureHead" unit="Pa">10000</IBK:Parameter>
+						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
+						<IBK:Parameter name="MotorEfficiency" unit="---">1</IBK:Parameter>
+						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
+					</HydraulicNetworkComponent>
+					<HydraulicNetworkComponent id="100002" displayName="dimplex si1" modelType="HeatExchanger">
+						<HeatExchangeType>HeatFluxConstant</HeatExchangeType>
+						<IBK:Parameter name="HydraulicDiameter" unit="mm">22</IBK:Parameter>
+						<IBK:Parameter name="PressureLossCoefficient" unit="-">1</IBK:Parameter>
+						<IBK:Parameter name="Volume" unit="m3">0.1</IBK:Parameter>
+						<IBK:Parameter name="COP" unit="-">1</IBK:Parameter>
+					</HydraulicNetworkComponent>
+					<HydraulicNetworkComponent id="100001" displayName="discretized pipe" modelType="DynamicPipe">
+						<HeatExchangeType>TemperatureConstant</HeatExchangeType>
+						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">50</IBK:Parameter>
+						<IBK:Parameter name="PipeMaxDiscretizationWidth" unit="m">5</IBK:Parameter>
+					</HydraulicNetworkComponent>
+				</Components>
+				<Elements>
+					<HydraulicNetworkElement id="0" inletNodeId="100" outletNodeId="0" componentId="100003" displayName="Quelle" />
+					<HydraulicNetworkElement id="1" inletNodeId="1" outletNodeId="101" componentId="100002" displayName="EFH3">
+						<IBK:Parameter name="HeatFlux" unit="W">500</IBK:Parameter>
+					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="2" inletNodeId="2" outletNodeId="102" componentId="100002" displayName="EFH1">
+						<IBK:Parameter name="HeatFlux" unit="W">500</IBK:Parameter>
+					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="3" inletNodeId="0" outletNodeId="3" componentId="100001" pipePropertiesId="14" displayName="leitung1">
+						<IBK:Parameter name="Length" unit="m">40</IBK:Parameter>
+						<IBK:Parameter name="Temperature" unit="C">12</IBK:Parameter>
+					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="4" inletNodeId="103" outletNodeId="100" componentId="100001" pipePropertiesId="14" displayName="leitung1">
+						<IBK:Parameter name="Length" unit="m">40</IBK:Parameter>
+						<IBK:Parameter name="Temperature" unit="C">12</IBK:Parameter>
+					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="5" inletNodeId="3" outletNodeId="1" componentId="100001" pipePropertiesId="13" displayName="leitung2">
+						<IBK:Parameter name="Length" unit="m">40</IBK:Parameter>
+						<IBK:Parameter name="Temperature" unit="C">12</IBK:Parameter>
+					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="6" inletNodeId="101" outletNodeId="103" componentId="100001" pipePropertiesId="13" displayName="leitung2">
+						<IBK:Parameter name="Length" unit="m">40</IBK:Parameter>
+						<IBK:Parameter name="Temperature" unit="C">12</IBK:Parameter>
+					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="7" inletNodeId="3" outletNodeId="2" componentId="100001" pipePropertiesId="12" displayName="leitung3">
+						<IBK:Parameter name="Length" unit="m">40</IBK:Parameter>
+						<IBK:Parameter name="Temperature" unit="C">12</IBK:Parameter>
+					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="8" inletNodeId="102" outletNodeId="103" componentId="100001" pipePropertiesId="12" displayName="leitung3">
+						<IBK:Parameter name="Length" unit="m">40</IBK:Parameter>
+						<IBK:Parameter name="Temperature" unit="C">12</IBK:Parameter>
+					</HydraulicNetworkElement>
+				</Elements>
+			</HydraulicNetwork>
+		</HydraulicNetworks>
+		<Schedules />
+		<Outputs>
+			<Definitions>
+				<OutputDefinition>
+					<Quantity>FluidMassFlux</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>the objects</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>InletNodePressure</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>the objects</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>InletNodeTemperature</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>the objects</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+			</Definitions>
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+							<IBK:Parameter name="End" unit="d">30</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+			<TimeUnit>h</TimeUnit>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="the objects">
+				<FilterID>*</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+	</Project>
+</NandradProject>

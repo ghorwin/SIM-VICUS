@@ -144,15 +144,14 @@ Zeit [h]	NetworkElement(id=1003).OutletNodeTemperature [C]
 Fluidvolumen im Netzwerk bekannt, da Dichte und spezifische Wärmekapazität bekannt ist,
 kann Temperaturerhöhung nach einer Stunde analytisch berechnet werden.
 
-TODO : Hauke
 
 ```
 
-V = 
+V = 0.001 + 0.001 = 0.002
 rho = 998
-ct = 4180
-
-dT = 
+cp = 4180
+dT = Q_dot * dt /(cp*m) = 50 * 3600s/(4180*0.002*998) = 21.57K
+   = 41.583 - 20 
 
 ```
 

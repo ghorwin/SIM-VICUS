@@ -1,0 +1,201 @@
+2021-02-25 15:57:06	[Progress]	[main]                                          	NANDRAD Solver
+2021-02-25 15:57:06	[Progress]	[main]                                          	All rights reserved.
+2021-02-25 15:57:06	[Progress]	[main]                                          	
+2021-02-25 15:57:06	[Progress]	[main]                                          	The NANDRAD/SIM-VICUS Development Team.
+2021-02-25 15:57:06	[Progress]	[main]                                          	Core developers:
+2021-02-25 15:57:06	[Progress]	[main]                                          	Andreas Nicolai and Anne Paepcke
+2021-02-25 15:57:06	[Progress]	[main]                                          	Contact: 
+2021-02-25 15:57:06	[Progress]	[main]                                          	  andreas.nicolai [at] tu-dresden.de
+2021-02-25 15:57:06	[Progress]	[main]                                          	  anne.paepcke [at] tu-dresden.de
+2021-02-25 15:57:06	[Progress]	[main]                                          	
+2021-02-25 15:57:06	[Progress]	[Version::printCompilerVersion]                 	Compiled with Visual Studio 2015
+2021-02-25 15:57:06	[Progress]	[ModelImpl::printVersionStrings]                	
+2021-02-25 15:57:06	[Progress]	[ModelImpl::printVersionStrings]                	NANDRAD version                                  1.999.0
+2021-02-25 15:57:06	[Progress]	[ModelImpl::printVersionStrings]                	IBK library version                              4.3.0
+2021-02-25 15:57:06	[Progress]	[ModelImpl::printVersionStrings]                	CCM library version                              1.1.0
+2021-02-25 15:57:06	[Progress]	[SolverControlFramework::printVersionInfo]      	Integrator Framework Version                     0.9.6
+2021-02-25 15:57:06	[Progress]	[SolverControlFramework::printVersionInfo]      	SUNDIALS Release Version                         2.6.2
+2021-02-25 15:57:06	[Progress]	[main]                                          	
+2021-02-25 15:57:06	[Progress]	[NandradModel::init]                            	Project file:         'C:/Daten/git/SIMVICUS/data/vicus/GeometryTests/badNauheim2-network.nandrad'
+2021-02-25 15:57:06	[Progress]	[NandradModel::init]                            	Output root dir:      'C:/Daten/git/SIMVICUS/data/vicus/GeometryTests/badNauheim2-network'
+2021-02-25 15:57:07	[Progress]	[NandradModel::init]                            	Reading project file
+2021-02-25 15:57:07	[Progress]	[Project::mergeSameConstructions]               	Merging redundant construction instances
+2021-02-25 15:57:07	[Progress]	[NandradModel::init]                            	Initializing model
+2021-02-25 15:57:07	[Progress]	[NandradModel::initSolverParameter]             	  Initializing Solver Parameter
+2021-02-25 15:57:07	[Progress]	[NandradModel::initSolverParameter]             	    Auto-selecting KLU as linear equation system solver.
+2021-02-25 15:57:07	[Progress]	[NandradModel::initSimulationParameter]         	  Initializing Simulation Parameter
+2021-02-25 15:57:07	[Progress]	[NandradModel::initClimateData]                 	  Initializing Climatic Data
+2021-02-25 15:57:07	[Progress]	[Loads::setup]                                  	    Reading climate data file 'C:/Daten/git/SIMVICUS/data/DB_climate/Konstantopol_20C.c6b'
+2021-02-25 15:57:07	[Progress]	[NandradModel::initSchedules]                   	  Initializing Schedules
+2021-02-25 15:57:07	[Progress]	[NandradModel::initZones]                       	  Initializing Zones
+2021-02-25 15:57:07	[Progress]	[NandradModel::initWallsAndInterfaces]          	  Initializing Constructions and Interfaces
+2021-02-25 15:57:07	[Progress]	[NandradModel::initNetworks]                    	  Initializing Networks
+2021-02-25 15:57:07	[Progress]	[NandradModel::initNetworks]                    	    Initializing network 'Bad Nauheim' (#0)
+2021-02-25 15:57:08	[Progress]	[HydraulicNetworkModelImpl::HydraulicNetworkModelImpl]	      Nodes:         780
+2021-02-25 15:57:08	[Progress]	[HydraulicNetworkModelImpl::HydraulicNetworkModelImpl]	      Flow elements: 960
+2021-02-25 15:57:08	[Progress]	[NandradModel::initModels]                      	  Initializing Models
+2021-02-25 15:57:08	[Progress]	[NandradModel::initObjectLists]                 	  Initializing Object Lists
+2021-02-25 15:57:08	[Progress]	[NandradModel::initOutputs]                     	  Initializing Outputs
+2021-02-25 15:57:08	[Progress]	[OutputHandler::setup]                          	    Initializing output grids
+2021-02-25 15:57:08	[Progress]	[OutputHandler::setup]                          	      Checking output grid 'hourly'
+2021-02-25 15:57:08	[Progress]	[NandradModel::initModelDependencies]           	  Initializing all model results
+2021-02-25 15:57:09	[Progress]	[NandradModel::initModelDependencies]           	  Initializing all model input references
+2021-02-25 15:57:10	[Progress]	[NandradModel::initModelGraph]                  	  Creating Dependency Graph for 1 State-Dependent Models
+2021-02-25 15:57:10	[Progress]	[NandradModel::initOutputReferenceList]         	  Initializing Output Quantity List
+2021-02-25 15:57:10	[Progress]	[NandradModel::initSolverVariables]             	  Initializing Solver Variables
+2021-02-25 15:57:10	[Progress]	[NandradModel::initSolverVariables]             	    1299 unknowns
+2021-02-25 15:57:10	[Progress]	[NandradModel::initSolverMatrix]                	  Creating Jacobian matrix pattern
+2021-02-25 15:57:10	[Progress]	[NandradModel::initSolverMatrix]                	    Composing dependency pattern
+2021-02-25 15:57:13	[Progress]	[main]                                          	Model initialization complete, duration: 6.769 s
+2021-02-25 15:57:13	[Progress]	[main]                                          	
+2021-02-25 15:57:13	[Progress]	[main]                                          	Creating solver framework
+2021-02-25 15:57:13	[Progress]	[NandradModel::integratorInterface]             	
+2021-02-25 15:57:13	[Progress]	[NandradModel::integratorInterface]             	Creating Integrator
+2021-02-25 15:57:13	[Progress]	[NandradModel::integratorInterface]             	  Using CVODE integrator.
+2021-02-25 15:57:13	[Progress]	[NandradModel::lesInterface]                    	
+2021-02-25 15:57:13	[Progress]	[NandradModel::lesInterface]                    	Creating Linear Equation Solver Modules
+2021-02-25 15:57:13	[Progress]	[NandradModel::lesInterface]                    	  Number of unknowns: 1299
+2021-02-25 15:57:13	[Progress]	[NandradModel::lesInterface]                    	  Using generic KLU solver!
+2021-02-25 15:57:13	[Progress]	[IntegratorSundialsCVODE::init]                 	Initializing CVODE integrator
+2021-02-25 15:57:13	[Progress]	[IntegratorSundialsCVODE::init]                 	  Setting NonlinConvCoef to 0.1.
+2021-02-25 15:57:13	[Progress]	[IntegratorSundialsCVODE::init]                 	  Setting MaxNonLinIters (maxcor) to 3.
+2021-02-25 15:57:13	[Progress]	[IntegratorSundialsCVODE::init]                 	  Initializing Jacobian implementation
+2021-02-25 15:57:13	[Progress]	[JacobianSparseCSR::init]                       	  SparseMatrix: generating color arrays
+2021-02-25 15:57:13	[Progress]	[JacobianSparseCSR::init]                       	    8 colors
+2021-02-25 15:57:13	[Progress]	[IntegratorSundialsCVODE::init]                 	  Initializing LES solver implementation
+2021-02-25 15:57:13	[Progress]	[SolverControlFramework::run]                   	
+2021-02-25 15:57:13	[Progress]	[SolverControlFramework::run]                   	Running solver from time t=0 (01.01.01  0:00:00)
+2021-02-25 15:57:14	[Progress]	[OutputHandler::writeOutputs]                   	Creating output files:
+2021-02-25 15:57:14	[Progress]	[OutputFile::createFile]                        	  network_elements.tsv : 2880 values
+2021-02-25 15:57:14	[Progress]	[SolverFeedback::writeFeedback]                 	Simtime     Simdate           Realtime    MeanSpeed    CurrentSpeed ETC
+2021-02-25 15:57:14	[Progress]	[SolverFeedback::writeFeedback]                 	 0.000 s    01.01.01  0:00:00  0.902 s     0.000 s/s    0.000 s/s   ---
+2021-02-25 15:57:17	[Progress]	[SolverFeedback::writeFeedback]                 	 1.000 h    01.01.01  1:00:00  3.538 s    16.957 min/s 22.758 min/s 31.593 min
+2021-02-25 15:57:17	[Progress]	[SolverFeedback::writeFeedback]                 	 3.000 h    01.01.01  3:00:00  4.303 s    41.828 min/s 52.919 min/s 13.549 min
+2021-02-25 15:57:18	[Progress]	[SolverFeedback::writeFeedback]                 	 7.000 h    01.01.01  7:00:00  4.824 s     1.451 h/s    1.785 h/s    6.659 min
+2021-02-25 15:57:18	[Progress]	[SolverFeedback::writeFeedback]                 	12.000 h    01.01.01 12:00:00  5.342 s     2.246 h/s    2.702 h/s    4.366 min
+2021-02-25 15:57:19	[Progress]	[SolverFeedback::writeFeedback]                 	18.000 h    01.01.01 18:00:00  5.941 s     3.030 h/s    3.572 h/s    3.276 min
+2021-02-25 15:57:20	[Progress]	[SolverFeedback::writeFeedback]                 	 1.000 d    02.01.01  0:00:00  6.517 s     3.683 h/s    4.274 h/s    2.714 min
+2021-02-25 15:57:20	[Progress]	[SolverFeedback::writeFeedback]                 	 1.250 d    02.01.01  6:00:00  7.041 s     4.261 h/s    4.887 h/s    2.353 min
+2021-02-25 15:57:21	[Progress]	[SolverFeedback::writeFeedback]                 	 1.583 d    02.01.01 14:00:00  7.594 s     5.004 h/s    5.678 h/s    2.002 min
+2021-02-25 15:57:21	[Progress]	[SolverFeedback::writeFeedback]                 	 1.917 d    02.01.01 22:00:00  8.148 s     5.645 h/s    6.348 h/s    1.770 min
+2021-02-25 15:57:22	[Progress]	[SolverFeedback::writeFeedback]                 	 2.250 d    03.01.01  6:00:00  8.681 s     6.220 h/s    6.941 h/s    1.599 min
+2021-02-25 15:57:22	[Progress]	[SolverFeedback::writeFeedback]                 	 2.500 d    03.01.01 12:00:00  9.242 s     6.492 h/s    7.194 h/s    1.529 min
+2021-02-25 15:57:23	[Progress]	[SolverFeedback::writeFeedback]                 	 2.833 d    03.01.01 20:00:00  9.797 s     6.941 h/s    7.645 h/s    1.421 min
+2021-02-25 15:57:23	[Progress]	[SolverFeedback::writeFeedback]                 	 3.167 d    04.01.01  4:00:00 10.306 s     7.374 h/s    8.082 h/s    1.328 min
+2021-02-25 15:57:24	[Progress]	[SolverFeedback::writeFeedback]                 	 3.500 d    04.01.01 12:00:00 10.826 s     7.759 h/s    8.464 h/s    1.252 min
+2021-02-25 15:57:25	[Progress]	[SolverFeedback::writeFeedback]                 	 3.542 d    04.01.01 13:00:00 12.230 s     6.950 h/s    7.503 h/s    1.410 min
+2021-02-25 15:57:26	[Progress]	[SolverFeedback::writeFeedback]                 	 3.875 d    04.01.01 21:00:00 12.750 s     7.294 h/s    7.849 h/s    1.331 min
+2021-02-25 15:57:26	[Progress]	[SolverFeedback::writeFeedback]                 	 4.208 d    05.01.01  5:00:00 13.299 s     7.594 h/s    8.147 h/s    1.266 min
+2021-02-25 15:57:27	[Progress]	[SolverFeedback::writeFeedback]                 	 4.542 d    05.01.01 13:00:00 13.832 s     7.880 h/s    8.430 h/s    1.208 min
+2021-02-25 15:57:28	[Progress]	[SolverFeedback::writeFeedback]                 	 4.875 d    05.01.01 21:00:00 14.373 s     8.140 h/s    8.685 h/s    1.157 min
+2021-02-25 15:57:28	[Progress]	[SolverFeedback::writeFeedback]                 	C:/Daten/git/SIMVICUS/data/vicus/GeometryTests/badNauheim2-network.nandrad
+2021-02-25 15:57:28	[Progress]	[SolverFeedback::writeFeedback]                 	 5.083 d    06.01.01  2:00:00 14.892 s     8.193 h/s    8.721 h/s    1.143 min
+2021-02-25 15:57:29	[Progress]	[SolverFeedback::writeFeedback]                 	 5.417 d    06.01.01 10:00:00 15.439 s     8.420 h/s    8.943 h/s    1.100 min
+2021-02-25 15:57:29	[Progress]	[SolverFeedback::writeFeedback]                 	 5.750 d    06.01.01 18:00:00 15.977 s     8.637 h/s    9.154 h/s    1.060 min
+2021-02-25 15:57:30	[Progress]	[SolverFeedback::writeFeedback]                 	 6.083 d    07.01.01  2:00:00 16.505 s     8.846 h/s    9.357 h/s    1.022 min
+2021-02-25 15:57:30	[Progress]	[SolverFeedback::writeFeedback]                 	 6.375 d    07.01.01  9:00:00 17.037 s     8.980 h/s    9.482 h/s   59.796 s
+2021-02-25 15:57:31	[Progress]	[SolverFeedback::writeFeedback]                 	 6.625 d    07.01.01 15:00:00 17.558 s     9.056 h/s    9.546 h/s   58.768 s
+2021-02-25 15:57:31	[Progress]	[SolverFeedback::writeFeedback]                 	 6.875 d    07.01.01 21:00:00 18.110 s     9.111 h/s    9.588 h/s   57.883 s
+2021-02-25 15:57:32	[Progress]	[SolverFeedback::writeFeedback]                 	 7.125 d    08.01.01  3:00:00 18.638 s     9.175 h/s    9.641 h/s   56.944 s
+2021-02-25 15:57:32	[Progress]	[SolverFeedback::writeFeedback]                 	 7.375 d    08.01.01  9:00:00 19.187 s     9.225 h/s    9.680 h/s   56.095 s
+2021-02-25 15:57:33	[Progress]	[SolverFeedback::writeFeedback]                 	 7.542 d    08.01.01 13:00:00 19.764 s     9.158 h/s    9.596 h/s   56.168 s
+2021-02-25 15:57:33	[Progress]	[SolverFeedback::writeFeedback]                 	 7.792 d    08.01.01 19:00:00 20.333 s     9.197 h/s    9.624 h/s   55.385 s
+2021-02-25 15:57:34	[Progress]	[SolverFeedback::writeFeedback]                 	 8.042 d    09.01.01  1:00:00 20.891 s     9.238 h/s    9.655 h/s   54.582 s
+2021-02-25 15:57:35	[Progress]	[SolverFeedback::writeFeedback]                 	 8.292 d    09.01.01  7:00:00 21.448 s     9.278 h/s    9.685 h/s   53.792 s
+2021-02-25 15:57:35	[Progress]	[SolverFeedback::writeFeedback]                 	 8.542 d    09.01.01 13:00:00 21.997 s     9.320 h/s    9.718 h/s   52.994 s
+2021-02-25 15:57:38	[Progress]	[SolverFeedback::writeFeedback]                 	 8.667 d    09.01.01 16:00:00 24.952 s     8.336 h/s    8.649 h/s   59.200 s
+2021-02-25 15:57:39	[Progress]	[SolverFeedback::writeFeedback]                 	 8.917 d    09.01.01 22:00:00 25.501 s     8.392 h/s    8.700 h/s   58.164 s
+2021-02-25 15:57:39	[Progress]	[SolverFeedback::writeFeedback]                 	 9.167 d    10.01.01  4:00:00 26.099 s     8.430 h/s    8.731 h/s   57.266 s
+2021-02-25 15:57:40	[Progress]	[SolverFeedback::writeFeedback]                 	 9.417 d    10.01.01 10:00:00 26.654 s     8.479 h/s    8.776 h/s   56.291 s
+2021-02-25 15:57:40	[Progress]	[SolverFeedback::writeFeedback]                 	 9.667 d    10.01.01 16:00:00 27.240 s     8.517 h/s    8.809 h/s   55.401 s
+2021-02-25 15:57:41	[Progress]	[SolverFeedback::writeFeedback]                 	 9.917 d    10.01.01 22:00:00 27.906 s     8.529 h/s    8.814 h/s   54.688 s
+2021-02-25 15:57:42	[Progress]	[SolverFeedback::writeFeedback]                 	Simtime     Simdate           Realtime    MeanSpeed    CurrentSpeed ETC
+2021-02-25 15:57:42	[Progress]	[SolverFeedback::writeFeedback]                 	10.167 d    11.01.01  4:00:00 28.435 s     8.581 h/s    8.862 h/s   53.712 s
+2021-02-25 15:57:42	[Progress]	[SolverFeedback::writeFeedback]                 	10.417 d    11.01.01 10:00:00 28.980 s     8.627 h/s    8.904 h/s   52.787 s
+2021-02-25 15:57:43	[Progress]	[SolverFeedback::writeFeedback]                 	10.708 d    11.01.01 17:00:00 29.520 s     8.706 h/s    8.980 h/s   51.557 s
+2021-02-25 15:57:43	[Progress]	[SolverFeedback::writeFeedback]                 	11.000 d    12.01.01  0:00:00 30.060 s     8.782 h/s    9.054 h/s   50.364 s
+2021-02-25 15:57:44	[Progress]	[SolverFeedback::writeFeedback]                 	11.333 d    12.01.01  8:00:00 30.610 s     8.886 h/s    9.156 h/s   48.931 s
+2021-02-25 15:57:44	[Progress]	[SolverFeedback::writeFeedback]                 	11.667 d    12.01.01 16:00:00 31.133 s     8.994 h/s    9.262 h/s   47.506 s
+2021-02-25 15:57:45	[Progress]	[SolverFeedback::writeFeedback]                 	12.000 d    13.01.01  0:00:00 31.692 s     9.087 h/s    9.354 h/s   46.186 s
+2021-02-25 15:57:45	[Progress]	[SolverFeedback::writeFeedback]                 	12.333 d    13.01.01  8:00:00 32.241 s     9.181 h/s    9.445 h/s   44.890 s
+2021-02-25 15:57:46	[Progress]	[SolverFeedback::writeFeedback]                 	12.542 d    13.01.01 13:00:00 32.742 s     9.193 h/s    9.454 h/s   44.322 s
+2021-02-25 15:57:46	[Progress]	[SolverFeedback::writeFeedback]                 	12.875 d    13.01.01 21:00:00 33.303 s     9.278 h/s    9.537 h/s   43.097 s
+2021-02-25 15:57:47	[Progress]	[SolverFeedback::writeFeedback]                 	13.208 d    14.01.01  5:00:00 33.872 s     9.359 h/s    9.615 h/s   41.915 s
+2021-02-25 15:57:48	[Progress]	[SolverFeedback::writeFeedback]                 	13.542 d    14.01.01 13:00:00 34.441 s     9.437 h/s    9.690 h/s   40.762 s
+2021-02-25 15:57:51	[Progress]	[SolverFeedback::writeFeedback]                 	13.750 d    14.01.01 18:00:00 37.614 s     8.773 h/s    8.989 h/s   43.387 s
+2021-02-25 15:57:51	[Progress]	[SolverFeedback::writeFeedback]                 	13.958 d    14.01.01 23:00:00 38.190 s     8.772 h/s    8.984 h/s   42.853 s
+2021-02-25 15:57:52	[Progress]	[SolverFeedback::writeFeedback]                 	14.208 d    15.01.01  5:00:00 38.745 s     8.801 h/s    9.011 h/s   42.060 s
+2021-02-25 15:57:52	[Progress]	[SolverFeedback::writeFeedback]                 	14.458 d    15.01.01 11:00:00 39.298 s     8.830 h/s    9.037 h/s   41.274 s
+2021-02-25 15:57:53	[Progress]	[SolverFeedback::writeFeedback]                 	14.708 d    15.01.01 17:00:00 39.882 s     8.851 h/s    9.056 h/s   40.526 s
+2021-02-25 15:57:54	[Progress]	[SolverFeedback::writeFeedback]                 	14.917 d    15.01.01 22:00:00 40.445 s     8.852 h/s    9.053 h/s   39.985 s
+2021-02-25 15:57:54	[Progress]	[SolverFeedback::writeFeedback]                 	15.250 d    16.01.01  6:00:00 40.988 s     8.929 h/s    9.130 h/s   38.772 s
+2021-02-25 15:57:55	[Progress]	[SolverFeedback::writeFeedback]                 	15.583 d    16.01.01 14:00:00 41.531 s     9.005 h/s    9.205 h/s   37.588 s
+2021-02-25 15:57:55	[Progress]	[SolverFeedback::writeFeedback]                 	C:/Daten/git/SIMVICUS/data/vicus/GeometryTests/badNauheim2-network.nandrad
+2021-02-25 15:57:55	[Progress]	[SolverFeedback::writeFeedback]                 	15.917 d    16.01.01 22:00:00 42.078 s     9.078 h/s    9.277 h/s   36.433 s
+2021-02-25 15:57:56	[Progress]	[SolverFeedback::writeFeedback]                 	16.250 d    17.01.01  6:00:00 42.611 s     9.153 h/s    9.351 h/s   35.292 s
+2021-02-25 15:57:56	[Progress]	[SolverFeedback::writeFeedback]                 	16.542 d    17.01.01 13:00:00 43.120 s     9.207 h/s    9.403 h/s   34.349 s
+2021-02-25 15:57:57	[Progress]	[SolverFeedback::writeFeedback]                 	16.875 d    17.01.01 21:00:00 43.648 s     9.279 h/s    9.475 h/s   33.247 s
+2021-02-25 15:57:57	[Progress]	[SolverFeedback::writeFeedback]                 	17.208 d    18.01.01  5:00:00 44.184 s     9.347 h/s    9.542 h/s   32.173 s
+2021-02-25 15:57:58	[Progress]	[SolverFeedback::writeFeedback]                 	17.417 d    18.01.01 10:00:00 44.697 s     9.352 h/s    9.544 h/s   31.642 s
+2021-02-25 15:57:58	[Progress]	[SolverFeedback::writeFeedback]                 	17.667 d    18.01.01 16:00:00 45.272 s     9.366 h/s    9.556 h/s   30.975 s
+2021-02-25 15:57:59	[Progress]	[SolverFeedback::writeFeedback]                 	17.917 d    18.01.01 22:00:00 45.802 s     9.388 h/s    9.577 h/s   30.281 s
+2021-02-25 15:57:59	[Progress]	[SolverFeedback::writeFeedback]                 	18.208 d    19.01.01  5:00:00 46.337 s     9.431 h/s    9.618 h/s   29.423 s
+2021-02-25 15:58:00	[Progress]	[SolverFeedback::writeFeedback]                 	18.542 d    19.01.01 13:00:00 46.878 s     9.493 h/s    9.679 h/s   28.412 s
+2021-02-25 15:58:01	[Progress]	[SolverFeedback::writeFeedback]                 	18.875 d    19.01.01 21:00:00 47.408 s     9.555 h/s    9.741 h/s   27.411 s
+2021-02-25 15:58:03	[Progress]	[SolverFeedback::writeFeedback]                 	19.042 d    20.01.01  1:00:00 49.727 s     9.190 h/s    9.360 h/s   28.098 s
+2021-02-25 15:58:03	[Progress]	[SolverFeedback::writeFeedback]                 	19.375 d    20.01.01  9:00:00 50.284 s     9.247 h/s    9.416 h/s   27.081 s
+2021-02-25 15:58:04	[Progress]	[SolverFeedback::writeFeedback]                 	19.708 d    20.01.01 17:00:00 50.816 s     9.308 h/s    9.476 h/s   26.065 s
+2021-02-25 15:58:05	[Progress]	[SolverFeedback::writeFeedback]                 	19.958 d    20.01.01 23:00:00 51.369 s     9.325 h/s    9.491 h/s   25.392 s
+2021-02-25 15:58:05	[Progress]	[SolverFeedback::writeFeedback]                 	20.292 d    21.01.01  7:00:00 51.913 s     9.381 h/s    9.547 h/s   24.406 s
+2021-02-25 15:58:06	[Progress]	[SolverFeedback::writeFeedback]                 	20.625 d    21.01.01 15:00:00 52.451 s     9.437 h/s    9.602 h/s   23.431 s
+2021-02-25 15:58:06	[Progress]	[SolverFeedback::writeFeedback]                 	20.875 d    21.01.01 21:00:00 52.973 s     9.458 h/s    9.621 h/s   22.762 s
+2021-02-25 15:58:07	[Progress]	[SolverFeedback::writeFeedback]                 	21.125 d    22.01.01  3:00:00 53.502 s     9.476 h/s    9.639 h/s   22.098 s
+2021-02-25 15:58:07	[Progress]	[SolverFeedback::writeFeedback]                 	21.458 d    22.01.01 11:00:00 54.067 s     9.525 h/s    9.687 h/s   21.163 s
+2021-02-25 15:58:08	[Progress]	[SolverFeedback::writeFeedback]                 	Simtime     Simdate           Realtime    MeanSpeed    CurrentSpeed ETC
+2021-02-25 15:58:08	[Progress]	[SolverFeedback::writeFeedback]                 	21.792 d    22.01.01 19:00:00 54.607 s     9.578 h/s    9.738 h/s   20.229 s
+2021-02-25 15:58:08	[Progress]	[SolverFeedback::writeFeedback]                 	22.083 d    23.01.01  2:00:00 55.114 s     9.616 h/s    9.776 h/s   19.435 s
+2021-02-25 15:58:09	[Progress]	[SolverFeedback::writeFeedback]                 	22.417 d    23.01.01 10:00:00 55.790 s     9.643 h/s    9.802 h/s   18.568 s
+2021-02-25 15:58:09	[Progress]	[SolverFeedback::writeFeedback]                 	22.750 d    23.01.01 18:00:00 56.332 s     9.692 h/s    9.850 h/s   17.665 s
+2021-02-25 15:58:10	[Progress]	[SolverFeedback::writeFeedback]                 	23.083 d    24.01.01  2:00:00 56.882 s     9.739 h/s    9.896 h/s   16.774 s
+2021-02-25 15:58:11	[Progress]	[SolverFeedback::writeFeedback]                 	23.417 d    24.01.01 10:00:00 57.427 s     9.786 h/s    9.942 h/s   15.891 s
+2021-02-25 15:58:11	[Progress]	[SolverFeedback::writeFeedback]                 	23.750 d    24.01.01 18:00:00 57.961 s     9.834 h/s    9.990 h/s   15.016 s
+2021-02-25 15:58:12	[Progress]	[SolverFeedback::writeFeedback]                 	24.083 d    25.01.01  2:00:00 58.490 s     9.882 h/s   10.037 h/s   14.148 s
+2021-02-25 15:58:12	[Progress]	[SolverFeedback::writeFeedback]                 	24.417 d    25.01.01 10:00:00 59.030 s     9.927 h/s   10.081 h/s   13.292 s
+2021-02-25 15:58:13	[Progress]	[SolverFeedback::writeFeedback]                 	24.750 d    25.01.01 18:00:00 59.570 s     9.972 h/s   10.125 h/s   12.445 s
+2021-02-25 15:58:16	[Progress]	[SolverFeedback::writeFeedback]                 	24.875 d    25.01.01 21:00:00  1.041 min   9.555 h/s    9.695 h/s   12.687 s
+2021-02-25 15:58:16	[Progress]	[SolverFeedback::writeFeedback]                 	25.042 d    26.01.01  1:00:00  1.050 min   9.537 h/s    9.675 h/s   12.300 s
+2021-02-25 15:58:17	[Progress]	[SolverFeedback::writeFeedback]                 	25.292 d    26.01.01  7:00:00  1.059 min   9.550 h/s   10.096 h/s   11.193 s
+2021-02-25 15:58:17	[Progress]	[SolverFeedback::writeFeedback]                 	25.542 d    26.01.01 13:00:00  1.068 min   9.563 h/s   10.159 h/s   10.533 s
+2021-02-25 15:58:18	[Progress]	[SolverFeedback::writeFeedback]                 	25.792 d    26.01.01 19:00:00  1.077 min   9.577 h/s   10.222 h/s    9.881 s
+2021-02-25 15:58:18	[Progress]	[SolverFeedback::writeFeedback]                 	26.042 d    27.01.01  1:00:00  1.087 min   9.585 h/s   10.240 h/s    9.277 s
+2021-02-25 15:58:19	[Progress]	[SolverFeedback::writeFeedback]                 	26.292 d    27.01.01  7:00:00  1.096 min   9.597 h/s   10.244 h/s    8.688 s
+2021-02-25 15:58:19	[Progress]	[SolverFeedback::writeFeedback]                 	26.625 d    27.01.01 15:00:00  1.105 min   9.636 h/s   10.289 h/s    7.872 s
+2021-02-25 15:58:20	[Progress]	[SolverFeedback::writeFeedback]                 	26.958 d    27.01.01 23:00:00  1.114 min   9.678 h/s   10.328 h/s    7.068 s
+2021-02-25 15:58:21	[Progress]	[SolverFeedback::writeFeedback]                 	27.292 d    28.01.01  7:00:00  1.123 min   9.720 h/s   10.333 h/s    6.291 s
+2021-02-25 15:58:21	[Progress]	[SolverFeedback::writeFeedback]                 	C:/Daten/git/SIMVICUS/data/vicus/GeometryTests/badNauheim2-network.nandrad
+2021-02-25 15:58:21	[Progress]	[SolverFeedback::writeFeedback]                 	27.542 d    28.01.01 13:00:00  1.132 min   9.729 h/s   10.306 h/s    5.725 s
+2021-02-25 15:58:22	[Progress]	[SolverFeedback::writeFeedback]                 	27.875 d    28.01.01 21:00:00  1.141 min   9.769 h/s   10.305 h/s    4.949 s
+2021-02-25 15:58:22	[Progress]	[SolverFeedback::writeFeedback]                 	28.208 d    29.01.01  5:00:00  1.150 min   9.809 h/s   10.311 h/s    4.170 s
+2021-02-25 15:58:23	[Progress]	[SolverFeedback::writeFeedback]                 	28.542 d    29.01.01 13:00:00  1.160 min   9.846 h/s   10.332 h/s    3.387 s
+2021-02-25 15:58:23	[Progress]	[SolverFeedback::writeFeedback]                 	28.875 d    29.01.01 21:00:00  1.169 min   9.881 h/s   10.331 h/s    2.613 s
+2021-02-25 15:58:24	[Progress]	[SolverFeedback::writeFeedback]                 	29.208 d    30.01.01  5:00:00  1.178 min   9.919 h/s   10.324 h/s    1.840 s
+2021-02-25 15:58:24	[Progress]	[SolverFeedback::writeFeedback]                 	29.542 d    30.01.01 13:00:00  1.187 min   9.957 h/s   10.351 h/s    1.063 s
+2021-02-25 15:58:25	[Progress]	[SolverFeedback::writeFeedback]                 	29.875 d    30.01.01 21:00:00  1.196 min   9.992 h/s   10.389 h/s    0.289 s
+2021-02-25 15:58:27	[Progress]	[SolverControlFramework::writeStatistics]       	
+2021-02-25 15:58:27	[Progress]	[SolverControlFramework::writeStatistics]       	Solver statistics
+2021-02-25 15:58:27	[Progress]	[SolverControlFramework::writeStatistics]       	------------------------------------------------------------------------------
+2021-02-25 15:58:28	[Progress]	[SolverControlFramework::writeStatistics]       	Wall clock time                            =   74.310 s   
+2021-02-25 15:58:28	[Progress]	[SolverControlFramework::writeStatistics]       	------------------------------------------------------------------------------
+2021-02-25 15:58:28	[Progress]	[SolverControlFramework::writeStatistics]       	Framework: Output writing                  =   55.311 s    (74.43 %)    
+2021-02-25 15:58:28	[Progress]	[SolverControlFramework::writeStatistics]       	Framework: Step-completed calculations     =    0.006 s    ( 0.01 %)    
+2021-02-25 15:58:28	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Steps                          =                               840
+2021-02-25 15:58:28	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Newton iterations              =                               847
+2021-02-25 15:58:28	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Newton convergence failures    =                                 0
+2021-02-25 15:58:28	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Error test failures            =                                 0
+2021-02-25 15:58:28	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Function evaluation (Newton)   =   15.420 s    (20.75 %)       848
+2021-02-25 15:58:28	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: LES setup                      =    2.438 s    ( 3.28 %)        57
+2021-02-25 15:58:28	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: LES solve                      =    0.071 s    ( 0.10 %)       847
+2021-02-25 15:58:28	[Progress]	[LESInterfaceDirect::writeMetrics]              	LES: Jacobian matrix evaluations           =                                15
+2021-02-25 15:58:28	[Progress]	[LESInterfaceDirect::writeMetrics]              	LES: Matrix factorization                  =    0.018 s    ( 0.02 %)        57
+2021-02-25 15:58:28	[Progress]	[LESInterfaceDirect::writeMetrics]              	LES: Function evaluation (Jacobian gen.)   =    2.314 s    ( 3.11 %)       120
+2021-02-25 15:58:28	[Progress]	[SolverControlFramework::writeStatistics]       	------------------------------------------------------------------------------

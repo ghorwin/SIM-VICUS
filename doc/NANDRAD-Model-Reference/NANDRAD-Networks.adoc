@@ -336,7 +336,7 @@ Wenn des XML-Element `HeatExchangeType` fehlt, wird die entsprechende Komponente
 
 Dieser Typ ist nur für Rohre definiert. Es gibt einen Wärmeaustausch zwischen der Fluidtemperatur im Rohr und einer konstanten Umgebungstemperatur. Dabei muss der Wärmeübergangskoeffizient an der Rohraußenwand angegeben werden.
 
-Im XML-Tag `HydraulicNetworkElement` des jeweiligen Rohres muss der Parameter `AmbientTemperature` gesetzt sein.
+Im XML-Tag `HydraulicNetworkElement` des jeweiligen Rohres muss der Parameter `AmbientTemperature` gesetzt sein. Siehe das Beispiel <<xml_example_flow_element>>
 
 
 ### `TemperatureDataFile`
@@ -349,7 +349,10 @@ Dieser Typ ist nur für Rohre definiert. Es gibt einen Wärmeaustausch zwischen 
 
 Dem Element wird ein konstanter Wärmestrom entzogen. Positive Werte bedeuten Wärmeentzug. 
 
+<<<<<<< HEAD
 Im XML-Tag `HydraulicNetworkElement` des jeweiligen Elements muss der Parameter `HeatLoss` gesetzt sein, der den konstanten Wärmestrom aus dem Element angibt. Wärmegewinnen haben ein negatives Vorzeichen.
+Siehe das Beispiel <<xml_example_flow_element>>
+
 
 
 ### `HeatFluxDataFile`
@@ -375,6 +378,7 @@ Die tatsächlichen Strömungselemente des Netzwerks werden innerhalb des XML-tag
 
 .Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)
 ====
+[[xml_example_flow_element]]
 [source,xml]
 ----
 <Elements>

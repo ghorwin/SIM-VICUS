@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<VicusProject fileVersion="0.2">
+	<ProjectInfo>
+		<Created>Do Dez 10 12:42:13 2020</Created>
+		<LastEdited>Di Feb 23 16:19:26 2021</LastEdited>
+	</ProjectInfo>
+	<Project>
+		<SolverParameter />
+		<SimulationParameter>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<Location>
+			<TimeZone>13</TimeZone>
+		</Location>
+		<ViewSettings>
+			<GridSpacing>100</GridSpacing>
+			<GridWidth>500</GridWidth>
+			<CameraTranslation>-240.507 -360.926 361.516</CameraTranslation>
+			<RotationMatrix>
+				<Wp>-0.787612</Wp>
+				<X>-0.497235</X>
+				<Y>0.194204</Y>
+				<Z>0.307644</Z>
+			</RotationMatrix>
+			<FarDistance>1700</FarDistance>
+		</ViewSettings>
+		<GeometricNetworks>
+			<Network id="1" fluidID="1" name="Mini Netzwerk">
+				<Nodes>
+					<NetworkNode id="0" type="Source" maxHeatingDemand="0" componentId="100003" displayName="Quelle">
+						<Position>0 0 0</Position>
+						<NetworkHeatExchange>
+							<IBK:Parameter name="HeatFlux" unit="W">10</IBK:Parameter>
+						</NetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="1" type="Building" maxHeatingDemand="10000" componentId="100002" displayName="EFH3">
+						<Position>200 -70 0</Position>
+						<NetworkHeatExchange>
+							<IBK:Parameter name="HeatFlux" unit="W">10</IBK:Parameter>
+						</NetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="2" type="Building" maxHeatingDemand="10000" componentId="100002" displayName="EFH1">
+						<Position>250 0 0</Position>
+						<NetworkHeatExchange>
+							<IBK:Parameter name="HeatFlux" unit="W">10</IBK:Parameter>
+						</NetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="3" type="Mixer" maxHeatingDemand="0">
+						<Position>150 -40 0</Position>
+						<NetworkHeatExchange />
+					</NetworkNode>
+					<NetworkNode id="4" type="Building" maxHeatingDemand="10000" componentId="100002" displayName="EFH1">
+						<Position>250 -150 0</Position>
+						<NetworkHeatExchange>
+							<IBK:Parameter name="HeatFlux" unit="W">10</IBK:Parameter>
+						</NetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="5" type="Mixer" maxHeatingDemand="10000" displayName="EFH1">
+						<Position>350 0 0</Position>
+						<NetworkHeatExchange>
+							<IBK:Parameter name="HeatFlux" unit="W">500</IBK:Parameter>
+						</NetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="6" type="Building" maxHeatingDemand="10000" componentId="100002" displayName="EFH1">
+						<Position>150 150 0</Position>
+						<NetworkHeatExchange>
+							<IBK:Parameter name="HeatFlux" unit="W">10</IBK:Parameter>
+						</NetworkHeatExchange>
+					</NetworkNode>
+					<NetworkNode id="7" type="Building" maxHeatingDemand="10000" componentId="100002" displayName="EFH1">
+						<Position>250 100 0</Position>
+						<NetworkHeatExchange>
+							<IBK:Parameter name="HeatFlux" unit="W">10</IBK:Parameter>
+						</NetworkHeatExchange>
+					</NetworkNode>
+				</Nodes>
+				<Edges>
+					<NetworkEdge supply="1" displayName="leitung1" nodeId1="0" nodeId2="3">
+						<PipeId>9</PipeId>
+						<ComponentId>100001</ComponentId>
+						<NetworkHeatExchange>
+							<IBK:Parameter name="Temperature" unit="C">12</IBK:Parameter>
+						</NetworkHeatExchange>
+						<Length>40</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="1" displayName="leitung2" nodeId1="3" nodeId2="1">
+						<PipeId>5</PipeId>
+						<ComponentId>100001</ComponentId>
+						<NetworkHeatExchange>
+							<IBK:Parameter name="Temperature" unit="C">12</IBK:Parameter>
+						</NetworkHeatExchange>
+						<Length>40</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="1" displayName="leitung3" nodeId1="3" nodeId2="2">
+						<PipeId>5</PipeId>
+						<ComponentId>100001</ComponentId>
+						<NetworkHeatExchange>
+							<IBK:Parameter name="Temperature" unit="C">12</IBK:Parameter>
+						</NetworkHeatExchange>
+						<Length>40</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="1" displayName="leitung3" nodeId1="3" nodeId2="4">
+						<PipeId>5</PipeId>
+						<ComponentId>100001</ComponentId>
+						<NetworkHeatExchange>
+							<IBK:Parameter name="Temperature" unit="C">12</IBK:Parameter>
+						</NetworkHeatExchange>
+						<Length>40</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="1" displayName="leitung3" nodeId1="3" nodeId2="5">
+						<PipeId>5</PipeId>
+						<ComponentId>100001</ComponentId>
+						<NetworkHeatExchange>
+							<IBK:Parameter name="Temperature" unit="C">12</IBK:Parameter>
+						</NetworkHeatExchange>
+						<Length>40</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="1" displayName="leitung3" nodeId1="5" nodeId2="6">
+						<PipeId>2</PipeId>
+						<ComponentId>100001</ComponentId>
+						<NetworkHeatExchange>
+							<IBK:Parameter name="Temperature" unit="C">12</IBK:Parameter>
+						</NetworkHeatExchange>
+						<Length>40</Length>
+					</NetworkEdge>
+					<NetworkEdge supply="1" displayName="leitung3" nodeId1="5" nodeId2="7">
+						<PipeId>2</PipeId>
+						<ComponentId>100001</ComponentId>
+						<NetworkHeatExchange>
+							<IBK:Parameter name="Temperature" unit="C">12</IBK:Parameter>
+						</NetworkHeatExchange>
+						<Length>40</Length>
+					</NetworkEdge>
+				</Edges>
+				<AvailablePipes>0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16</AvailablePipes>
+				<Origin>0 0 0</Origin>
+				<Type>DoublePipe</Type>
+				<IBK:Parameter name="TemperatureSetpoint" unit="C">20</IBK:Parameter>
+				<IBK:Parameter name="TemperatureDifference" unit="K">4</IBK:Parameter>
+				<IBK:Parameter name="MaxPressureLoss" unit="Pa/m">150</IBK:Parameter>
+				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
+				<IBK:Parameter name="DefaultFluidTemperature" unit="C">10</IBK:Parameter>
+				<IBK:Parameter name="InitialFluidTemperature" unit="C">10</IBK:Parameter>
+				<ScaleNodes>41</ScaleNodes>
+				<ScaleEdges>32</ScaleEdges>
+			</Network>
+		</GeometricNetworks>
+		<NetworkFluids>
+			<NetworkFluid id="1" displayName="Water">
+				<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
+				<LinearSplineParameter name="KinematicViscosity" interpolationMethod="linear">
+					<X unit="C">0 10 20 30 40 50 60 70 80 90 </X>
+					<Y unit="m2/s">1.793e-06 1.307e-06 1.004e-06 8.01e-07 6.58e-07 5.54e-07 4.75e-07 4.13e-07 3.65e-07 3.26e-07 </Y>
+				</LinearSplineParameter>
+			</NetworkFluid>
+		</NetworkFluids>
+	</Project>
+</VicusProject>
