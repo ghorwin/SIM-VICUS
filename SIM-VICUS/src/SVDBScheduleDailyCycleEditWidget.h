@@ -26,9 +26,7 @@ public:
 	void updateInput(VICUS::DailyCycle *dc, SVDatabase *db);
 
 private slots:
-	void on_tableWidgetDayCycle_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
-
-	void on_tableWidgetDayCycle_cellChanged(int row, int column);
+	void on_tableWidgetDayCycle_cellChanged(int row, int);
 
 private:
 	Ui::SVDBScheduleDailyCycleEditWidget *m_ui;

@@ -63,7 +63,7 @@ void SVDBScheduleDailyCycleEditWidget::updateInput(VICUS::DailyCycle *dc, SVData
 	if(m_dailyCycle->m_timePoints.empty()){
 		m_dailyCycle->m_timePoints.push_back(0);
 		m_dailyCycle->m_values.push_back(0);
-		m_db->m_schedules.m_modified;
+		m_db->m_schedules.m_modified = true;
 	}
 	m_ui->tableWidgetDayCycle->blockSignals(true);
 	//check time point in schedule interval and write the table values
@@ -82,12 +82,8 @@ void SVDBScheduleDailyCycleEditWidget::updateInput(VICUS::DailyCycle *dc, SVData
 	m_ui->tableWidgetDayCycle->blockSignals(false);
 }
 
-void SVDBScheduleDailyCycleEditWidget::on_tableWidgetDayCycle_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn) {
 
-
-}
-
-void SVDBScheduleDailyCycleEditWidget::on_tableWidgetDayCycle_cellChanged(int row, int column)
+void SVDBScheduleDailyCycleEditWidget::on_tableWidgetDayCycle_cellChanged(int row, int /*column*/)
 {
 	if(m_dailyCycle == nullptr)
 		return;
@@ -111,7 +107,7 @@ void SVDBScheduleDailyCycleEditWidget::on_tableWidgetDayCycle_cellChanged(int ro
 	for (int i=0; i<range.size(); ++i) {
 		// can we hav two ranges?
 		int topRow = range[i].topRow();
-		int bottomRow = range[i].bottomRow()+1;
+		unsigned int bottomRow = static_cast<unsigned int>(range[i].bottomRow()+1);
 		double currVal = m_ui->tableWidgetDayCycle->item(row,1)->text().toDouble();
 
 		for (size_t j=topRow; j<bottomRow; ++j) {
@@ -123,7 +119,7 @@ void SVDBScheduleDailyCycleEditWidget::on_tableWidgetDayCycle_cellChanged(int ro
 
 	std::vector<double> timepoints(1,0), values(1, m_ui->tableWidgetDayCycle->item(0,1)->text().toDouble());
 	unsigned int lastIdx=0;
-	for(unsigned int i=1; i<m_ui->tableWidgetDayCycle->rowCount(); ++i){
+	for(unsigned int i=1; i<(unsigned int)m_ui->tableWidgetDayCycle->rowCount(); ++i){
 		double currVal = m_ui->tableWidgetDayCycle->item(i,1)->text().toDouble();
 		if(IBK::nearly_equal<3>(values[lastIdx],currVal))
 			continue;
@@ -136,5 +132,5 @@ void SVDBScheduleDailyCycleEditWidget::on_tableWidgetDayCycle_cellChanged(int ro
 	m_dailyCycle->m_values.swap(values);
 
 	//set database to modified
-	m_db->m_schedules.m_modified;
+	m_db->m_schedules.m_modified = true;
 }

@@ -291,7 +291,7 @@ void SVDBScheduleEditWidget::on_toolButtonRemovePeriode_clicked(){
 
 
 
-void SVDBScheduleEditWidget::on_tableWidgetPeriods_currentCellChanged(int currentRow, int currentColumn, int /*previousRow*/, int /*previousColumn*/)
+void SVDBScheduleEditWidget::on_tableWidgetPeriods_currentCellChanged(int currentRow, int /* currentColumn*/, int /*previousRow*/, int /*previousColumn*/)
 {
 	Q_ASSERT(m_current != nullptr);
 	Q_ASSERT(currentRow < m_ui->tableWidgetPeriods->rowCount() );
@@ -374,7 +374,7 @@ void SVDBScheduleEditWidget::on_toolButtonForward_clicked() {
 			//if last daily cycle is selected but we have unused day type
 			//create a new daily cycle
 			if(m_currentDailyCycleIndex == m_currentInterval->m_dailyCycles.size()-1){
-				m_db->m_schedules.m_modified;
+				m_db->m_schedules.m_modified  =true;
 				m_currentInterval->m_dailyCycles.push_back(VICUS::DailyCycle());
 			}
 			++m_currentDailyCycleIndex;
@@ -481,7 +481,7 @@ void SVDBScheduleEditWidget::updateDayTypes(const NANDRAD::Schedule::ScheduledDa
 	m_ui->toolButtonForward->setEnabled(m_currentDailyCycleIndex<m_currentInterval->m_dailyCycles.size()-1
 										|| m_currentInterval->freeDayTypes().size()>0);
 
-	m_db->m_schedules.m_modified;
+	m_db->m_schedules.m_modified = true;
 
 	//if schedule interval is valid -> green background
 	int row = m_ui->tableWidgetPeriods->currentRow();
