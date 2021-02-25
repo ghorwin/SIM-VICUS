@@ -121,14 +121,17 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						} break;
 
 						case NANDRAD::HydraulicNetworkComponent::HT_TemperatureConstant:
-//						{
-//							// create pipe model with heat exchange and static properties
-//							TNStaticPipeElement * pipeElement = new TNStaticPipeElement(e, *e.m_component,
-//									*e.m_pipeProperties, m_network->m_fluid, heatExchangeValue);
-//							// add to flow elements
-//							m_p->m_flowElements.push_back(pipeElement); // transfer ownership
-//							m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
-//						} break;
+// toggle the define in NM_ThermalNetworkFlowElements.h
+#ifdef STATIC_PIPE_MODEL_ENABLED
+						{
+							// create pipe model with heat exchange and static properties
+							TNStaticPipeElement * pipeElement = new TNStaticPipeElement(e, *e.m_component,
+									*e.m_pipeProperties, m_network->m_fluid, heatExchangeValue);
+							// add to flow elements
+							m_p->m_flowElements.push_back(pipeElement); // transfer ownership
+							m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
+						} break;
+#endif // STATIC_PIPE_MODEL_ENABLED
 
 
 						case NANDRAD::HydraulicNetworkComponent::HT_TemperatureDataFile:

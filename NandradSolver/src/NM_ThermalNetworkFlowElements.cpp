@@ -73,7 +73,8 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 }
 
 
-#if 1
+#ifdef STATIC_PIPE_MODEL_ENABLED
+
 // *** TNStaticPipeElement ***
 
 TNStaticPipeElement::TNStaticPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
@@ -130,7 +131,7 @@ void TNStaticPipeElement::setInflowTemperature(double Tinflow) {
 			(m_inflowTemperature - ambientTemperature) *
 			(1. - std::exp(-UAValueTotal / (std::fabs(m_massFlux) * m_fluidHeatCapacity )));
 }
-#endif
+#endif // STATIC_PIPE_MODEL_ENABLED
 
 
 

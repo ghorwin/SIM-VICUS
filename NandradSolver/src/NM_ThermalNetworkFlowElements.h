@@ -62,7 +62,8 @@ private:
 };
 
 
-#if 1
+//#define STATIC_PIPE_MODEL_ENABLED
+#ifdef STATIC_PIPE_MODEL_ENABLED
 
 // **** Static Pipe ***
 
@@ -108,7 +109,7 @@ private:
 	const double*					m_externalTemperatureRef = nullptr;
 
 };
-#endif
+#endif // STATIC_PIPE_MODEL_ENABLED
 
 
 // **** Dynamic Pipe ***
