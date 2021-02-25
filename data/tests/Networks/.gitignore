@@ -9,3 +9,8 @@
 /ThermoHydraulicNetworkStaticFlowConstantHeatloss_KLU/
 /ThermoHydraulicNetworkStaticFlowParallelPipesMixer/
 /HydraulicNetworkStaticZeroPump/
+/ThermoHydraulicNetworkHeatExchangerHeatFluxConst/
+/ThermoHydraulicNetworkHeatExchangerHeatFluxDataFile/
+/ThermoHydraulicNetworkPumpWithLosses/
+/ThermoHydraulicNetworkSimplePipeAdiabat/
+/ThermoHydraulicNetworkSimplePipeTemperatureDataFile/
