@@ -22,8 +22,6 @@ SVDBScheduleDailyCycleEditWidget::SVDBScheduleDailyCycleEditWidget(QWidget *pare
 	//set all table items in day cycle
 	m_ui->tableWidgetDayCycle->setRowCount(24);
 
-	m_ui->tableWidgetDayCycle->setSelectionBehavior(QAbstractItemView::SelectRows);
-	m_ui->tableWidgetDayCycle->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
 	m_delegate = new QItemDelegate();
 	m_ui->tableWidgetDayCycle->blockSignals(true);
@@ -45,6 +43,8 @@ SVDBScheduleDailyCycleEditWidget::SVDBScheduleDailyCycleEditWidget(QWidget *pare
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetDayCycle);
 	m_ui->tableWidgetDayCycle->setSortingEnabled(false);
 
+	m_ui->tableWidgetDayCycle->setSelectionBehavior(QAbstractItemView::SelectRows);
+	m_ui->tableWidgetDayCycle->setSelectionMode(QAbstractItemView::ExtendedSelection);
 }
 
 SVDBScheduleDailyCycleEditWidget::~SVDBScheduleDailyCycleEditWidget(){
@@ -105,6 +105,21 @@ void SVDBScheduleDailyCycleEditWidget::on_tableWidgetDayCycle_cellChanged(int ro
 		return;
 	}
 
+	// we set the value to all rows
+	QList<QTableWidgetSelectionRange> range = m_ui->tableWidgetDayCycle->selectedRanges();
+
+	for (int i=0; i<range.size(); ++i) {
+		// can we hav two ranges?
+		int topRow = range[i].topRow();
+		int bottomRow = range[i].bottomRow()+1;
+		double currVal = m_ui->tableWidgetDayCycle->item(row,1)->text().toDouble();
+
+		for (size_t j=topRow; j<bottomRow; ++j) {
+			m_ui->tableWidgetDayCycle->blockSignals(true);
+			m_ui->tableWidgetDayCycle->item(j,1)->setText(QString::number(currVal) );
+			m_ui->tableWidgetDayCycle->blockSignals(false);
+		}
+	}
 //	//create a timeval element and a vector
 //	struct timeVal{
 //		double m_timepoint = 0;

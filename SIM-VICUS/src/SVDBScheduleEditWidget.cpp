@@ -468,37 +468,50 @@ void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellClicked(int row, int colu
 	size_t colIdx = (size_t)column;
 	size_t schedIdx = (size_t)row;
 
+	Q_ASSERT( m_current->m_periods.size() > schedIdx );
+
 	if ( colIdx == 1 )
 		return; // we only want to set a new start date for an intervall
 
 	if ( schedIdx == 0 )
 		return; // we cannot change the start date of the first period
 
+	// we cache our selected periode
+	VICUS::ScheduleInterval periode = m_current->m_periods[(size_t)row];
+
+	m_current->m_periods.erase(m_current->m_periods.begin()+row);
+
 	// we take from the periods our selected and take the interval start day
 	QDate periodStartDate(2021,1,1);
 
-	Q_ASSERT( m_current->m_periods.size() > schedIdx );
-	unsigned int shift = m_current->m_periods[schedIdx].m_intervalStartDay;
+	unsigned int shift = periode.m_intervalStartDay;
 	periodStartDate = periodStartDate.addDays(shift);
 	periodStartDate = QtExt::DateTimeInputDialog::requestDate(tr("Modify start date of period"), tr("Enter start date (dd.MM.):"), tr("dd.MM."),									&periodStartDate);
 
 	if ( !periodStartDate.isValid() )
 		return; // no input has been done by user
 
+
 	// convert date to dayofyear
 	unsigned int startDateInt = periodStartDate.dayOfYear()-1;
+	unsigned int idx=0;
 	// check if such a period starting day has already been used, and if yes,
 	for(unsigned int i=0; i<m_current->m_periods.size(); ++i){
-		if ( i == schedIdx )
-			continue; // we want to test only the other schedules
 		const VICUS::ScheduleInterval &schedInt = m_current->m_periods[i];
 		if(schedInt.m_intervalStartDay == startDateInt) {
 			QMessageBox::critical(this,QString(), "A period with this start day already exists.");
+			m_current->m_periods.insert(m_current->m_periods.begin()+row, periode);
 			return;
 		}
+		//save index for later adding schedule interval
+		if(schedInt.m_intervalStartDay < startDateInt)
+			idx=i;
 	}
+
 	// set new start date
-	m_current->m_periods[schedIdx].m_intervalStartDay = startDateInt;
+	periode.m_intervalStartDay = startDateInt;
+
+	m_current->m_periods.insert(m_current->m_periods.begin()+idx+1, periode);
 
 	// update table widget
 	updatePeriodTable();
