@@ -251,7 +251,7 @@ Identische Counter!
 
 ### ThermoHydraulicNetworkSerialPipes.nandrad
 
-Zwei unterschiedliche Rohre in einem Kreis zusammen mit Pumpe und Wärmetauscher. Nur letzterer interagiert thermisch (konstant 200 W Wärmeabgabe).
+Zwei unterschiedliche Rohre in einem Kreis zusammen mit Pumpe und Wärmetauscher (konstant 2000 W Wärmeabgabe). Rohre geben Wärme an konstant temperiertes Erdreich ab.
 
 
 ### ThermoHydraulicNetworkParallelPipes.nandrad
@@ -262,19 +262,21 @@ Zwei unterschiedliche Rohre in einem Kreis zusammen mit Pumpe und Wärmetauscher
 - Konstante Außentemperatur
 - Konstanter Leistungsverlust im Netzwerk, provisorisch abgebildet durch Wärmetauscher mit Wärmeverlust und geringem Druckverlustbeiwert
 
-Erwartungshaltung: doppelter Massestrom und doppelter Wärmeverlust durch Rohr 2, identische Fluidaustrittstemperaturen für beide Rohrstränge. Die Summe der Rohrwärmeverluste muss der aufgenommenen Wärmemenge (Wärmestrom) im Wärmetauscher entsprechen und somit die thermische Bilanz im Netzwerk erhalten.
+**Erwartungshaltung**: doppelter Massestrom und doppelter Wärmeverlust durch Rohr 2, identische Fluidaustrittstemperaturen für beide Rohrstränge. Die Summe der Rohrwärmeverluste muss der aufgenommenen Wärmemenge (Wärmestrom) im Wärmetauscher entsprechen und somit die thermische Bilanz im Netzwerk erhalten.
 
 
 ### ThermoHydraulicNetworkStaticFlowParallelPipesMixer.nandrad
 
-TODO : Anne, Beschreibung, erwartete Ergebnisse
+- 2 parallele Kreise, Rohre mit unterschiedlichen Masseströmen, wie `ThermoHydraulicNetworkParallelPipes.nandrad` (Rohr 2 hat doppelt so viel Massestrom wie Rohr 1)
+- unterschiedliche Umgebungstemperaturen für beide Rohre
+- beim Mixer-Knoten muss die Mischtemperatur richtig berechnet werden
+
+**Erwartung**: Das Rohr mit der geringeren Umgebungstemperatur gibt diesselbe Wärme ab, welche das Rohr mit der wärmeren Umgebungstemperatur aufnimmt. Die Temperaturspreizung zwischen Fluidtemperatur und Außentemperatur im Rohr ist beim größeren Rohr (Rohr 2) doppelt so hoch wie beim kleineren (Rohr 1), allerdings mit umgekehrtem Vorzeichen. 
 
 
 
 
 ## Thermo-Hydraulic Tests - Milestone 2
-
-
 
 ### ThermoHydraulicNetworkSimplePipeTemperatureDataFile.nandrad
 
