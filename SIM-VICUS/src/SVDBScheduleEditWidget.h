@@ -75,6 +75,12 @@ private slots:
 
 	void on_tableWidgetPeriods_cellDoubleClicked(int row, int column);
 
+	void on_pushButton_clicked();
+
+	void on_pushButton_2_clicked();
+
+	void on_splitter_splitterMoved(int pos, int index);
+
 private:
 
 	/*! Update the period table. */

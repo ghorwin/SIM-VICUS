@@ -28,31 +28,30 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 	//add header to periods table
 	m_ui->tableWidgetPeriods->setColumnCount(3);
 	m_ui->tableWidgetPeriods->setHorizontalHeaderItem(0, new QTableWidgetItem(tr("Date")));
-	m_ui->tableWidgetPeriods->setHorizontalHeaderItem(1, new QTableWidgetItem(tr("Name")));
-	m_ui->tableWidgetPeriods->setHorizontalHeaderItem(2, new QTableWidgetItem(tr("Valid")));
+	m_ui->tableWidgetPeriods->setHorizontalHeaderItem(1, new QTableWidgetItem(tr("")));
+	m_ui->tableWidgetPeriods->setHorizontalHeaderItem(2, new QTableWidgetItem(tr("Name")));
 
-	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+//	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+//	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetPeriods);
+	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+
 	m_ui->tableWidgetPeriods->setSortingEnabled(false);
 
-	///TODO Dirk
-	//aufheben für später
-	//muss in ein separaten Dialog ausgelagert werden
-	{
-		m_ui->comboBoxScheduleType->setVisible(false);
-		m_ui->radioButtonConstant->setVisible(false);
-		m_ui->radioButtonLinearInterpolation->setVisible(false);
-		m_ui->labelScheduleType->setVisible(false);
-		m_ui->labelScheduleType_2->setVisible(false);
-	}
+	m_ui->tableWidgetPeriods->setColumnWidth(2,10);
 
+	m_ui->widgetDailyCycleAndDayTypes->layout()->setMargin(0);
 	m_ui->widgetDailyCycleAndDayTypes->layout()->setMargin(0);
 
 	// initial state is "nothing selected"
 	updateInput(-1);
+
+	QList<int> sizes;
+	int widthSchedule = 50;
+	int availableWidth = m_ui->splitter->width();
+	sizes << widthSchedule << (availableWidth - widthSchedule);
+	m_ui->splitter->setSizes(sizes);
 }
 
 
@@ -80,17 +79,18 @@ void SVDBScheduleEditWidget::updatePeriodTable(const int &activeRow){
 		QTableWidgetItem *itemDate = new QTableWidgetItem(QDate::fromJulianDay(julianD+startDay).toString(tr("dd.MM.") ) );
 		itemDate->setFlags(itemDate->flags() ^ Qt::ItemIsEditable);
 		m_ui->tableWidgetPeriods->setItem(i,0,itemDate);
-		m_ui->tableWidgetPeriods->setItem(i,1,new QTableWidgetItem(QtExt::MultiLangString2QString(m_current->m_periods[i].m_displayName)));
-		m_ui->tableWidgetPeriods->setItem(i,2,new QTableWidgetItem());
-		if(m_isEditable){
+		m_ui->tableWidgetPeriods->setItem(i,2,new QTableWidgetItem(QtExt::MultiLangString2QString(m_current->m_periods[i].m_displayName)));
+		m_ui->tableWidgetPeriods->setItem(i,1,new QTableWidgetItem());
+		if(!m_isEditable){
 			m_ui->tableWidgetPeriods->item(i,1)->setFlags(m_ui->tableWidgetPeriods->item(i,1)->flags() ^ Qt::ItemIsEditable);
 			m_ui->tableWidgetPeriods->item(i,2)->setFlags(m_ui->tableWidgetPeriods->item(i,1)->flags() ^ Qt::ItemIsEditable);
 		}
 
-		m_ui->tableWidgetPeriods->item(i,2)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/error.png"));
+		m_ui->tableWidgetPeriods->item(i,1)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/error.png"));
 
 		if(m_current->m_periods[i].isValid())
-			m_ui->tableWidgetPeriods->item(i,2)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/ok.png"));
+			m_ui->tableWidgetPeriods->item(i,1)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/ok.png"));
+
 	}
 
 	on_tableWidgetPeriods_currentCellChanged(activeRow,0,0,0);
@@ -120,11 +120,12 @@ void SVDBScheduleEditWidget::selectDailyCycle() {
 			c->setChecked(false);
 			///TODO Stephan SVStyle
 			/// farbe anpassen der checkboxen
-			c->setPalette(QPalette(Qt::black));
+			//c->setPalette(QPalette(QPalette::WindowText, Qt::black) );
 		}
 	}
 
-	QPalette pal(Qt::blue);
+	QPalette pal(QPalette::WindowText, Qt::blue);
+
 	for (unsigned int i=0; i< m_currentInterval->m_dailyCycles.size(); ++i){
 		bool enabled = false;
 		if(i==m_currentDailyCycleIndex)
@@ -136,42 +137,42 @@ void SVDBScheduleEditWidget::selectDailyCycle() {
 				case NANDRAD::Schedule::ST_MONDAY:{
 					m_ui->checkBoxMonday->setChecked(true);
 					m_ui->checkBoxMonday->setEnabled(enabled);
-					m_ui->checkBoxMonday->setPalette(pal);
+//					m_ui->checkBoxMonday->setPalette(pal);
 				} break;
 				case NANDRAD::Schedule::ST_TUESDAY:{
 					m_ui->checkBoxTuesday->setChecked(true);
 					m_ui->checkBoxTuesday->setEnabled(enabled);
-					m_ui->checkBoxTuesday->setPalette(pal);
+//					m_ui->checkBoxTuesday->setPalette(pal);
 				} break;
 				case NANDRAD::Schedule::ST_WEDNESDAY:{
 					m_ui->checkBoxWednesday->setChecked(true);
 					m_ui->checkBoxWednesday->setEnabled(enabled);
-					m_ui->checkBoxWednesday->setPalette(pal);
+//					m_ui->checkBoxWednesday->setPalette(pal);
 				} break;
 				case NANDRAD::Schedule::ST_THURSDAY:{
 					m_ui->checkBoxThursday->setChecked(true);
 					m_ui->checkBoxThursday->setEnabled(enabled);
-					m_ui->checkBoxThursday->setPalette(pal);
+//					m_ui->checkBoxThursday->setPalette(pal);
 				} break;
 				case NANDRAD::Schedule::ST_FRIDAY:{
 					m_ui->checkBoxFriday->setChecked(true);
 					m_ui->checkBoxFriday->setEnabled(enabled);
-					m_ui->checkBoxFriday->setPalette(pal);
+//					m_ui->checkBoxFriday->setPalette(pal);
 				} break;
 				case NANDRAD::Schedule::ST_SATURDAY:{
 					m_ui->checkBoxSaturday->setChecked(true);
 					m_ui->checkBoxSaturday->setEnabled(enabled);
-					m_ui->checkBoxSaturday->setPalette(pal);
+//					m_ui->checkBoxSaturday->setPalette(pal);
 				} break;
 				case NANDRAD::Schedule::ST_SUNDAY:{
 					m_ui->checkBoxSunday->setChecked(true);
 					m_ui->checkBoxSunday->setEnabled(enabled);
-					m_ui->checkBoxSunday->setPalette(pal);
+//					m_ui->checkBoxSunday->setPalette(pal);
 				} break;
 				case NANDRAD::Schedule::ST_HOLIDAY:{
 					m_ui->checkBoxHoliday->setChecked(true);
 					m_ui->checkBoxHoliday->setEnabled(enabled);
-					m_ui->checkBoxHoliday->setPalette(pal);
+//					m_ui->checkBoxHoliday->setPalette(pal);
 				} break;
 			}
 		}
@@ -444,10 +445,10 @@ void SVDBScheduleEditWidget::updateDayTypes(const NANDRAD::Schedule::ScheduledDa
 	int row = m_ui->tableWidgetPeriods->currentRow();
 	if(row>=0 && m_currentInterval->isValid()){
 
-		m_ui->tableWidgetPeriods->item(row,2)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/ok.png"));
+		m_ui->tableWidgetPeriods->item(row,1)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/ok.png"));
 	}
 	else
-		m_ui->tableWidgetPeriods->item(row,2)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/error.png"));
+		m_ui->tableWidgetPeriods->item(row,1)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/error.png"));
 }
 
 
@@ -523,8 +524,7 @@ void SVDBScheduleEditWidget::on_checkBoxSunday_toggled(bool checked) {
 
 
 
-void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellDoubleClicked(int row, int column)
-{
+void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellDoubleClicked(int row, int column) {
 	size_t colIdx = (size_t)column;
 	size_t schedIdx = (size_t)row;
 
@@ -578,4 +578,26 @@ void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellDoubleClicked(int row, in
 
 	// update table widget
 	updatePeriodTable(idx+1);
+}
+
+
+void SVDBScheduleEditWidget::on_pushButton_clicked() {
+	m_ui->checkBoxMonday->setChecked(true);
+	m_ui->checkBoxTuesday->setChecked(true);
+	m_ui->checkBoxWednesday->setChecked(true);
+	m_ui->checkBoxThursday->setChecked(true);
+	m_ui->checkBoxFriday->setChecked(true);
+}
+
+void SVDBScheduleEditWidget::on_pushButton_2_clicked() {
+	m_ui->checkBoxSaturday->setChecked(true);
+	m_ui->checkBoxSunday->setChecked(true);
+}
+
+void SVDBScheduleEditWidget::on_splitter_splitterMoved(int pos, int index) {
+	int width = m_ui->tableWidgetPeriods->width();
+
+	m_ui->tableWidgetPeriods->setColumnWidth(0, 50);
+	m_ui->tableWidgetPeriods->setColumnWidth(1, 24);
+	m_ui->tableWidgetPeriods->setColumnWidth(2, width-80);
 }
