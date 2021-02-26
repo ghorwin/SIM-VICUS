@@ -66,6 +66,7 @@
 #include "SVDBPipeEditDialog.h"
 #include "SVDBNetworkComponentEditDialog.h"
 #include "SVDBScheduleEditDialog.h"
+#include "SVDBInternalLoadsPersonEditDialog.h"
 
 #include "SVSimulationStartNandrad.h"
 #include "SVSimulationStartNetworkSim.h"
@@ -244,6 +245,12 @@ SVDBScheduleEditDialog *SVMainWindow::dbScheduleEditDialog() {
 	return m_dbScheduleEditDialog;
 }
 
+SVDBInternalLoadsPersonEditDialog *SVMainWindow::dbInternalLoadsPersonEditDialog() {
+	if (m_dbInternalLoadsPersonEditDialog == nullptr)
+		m_dbInternalLoadsPersonEditDialog = new SVDBInternalLoadsPersonEditDialog(this);
+	return m_dbInternalLoadsPersonEditDialog;
+}
+
 
 // *** public slots ***
 
@@ -278,6 +285,10 @@ void SVMainWindow::on_actionDBBoundaryConditions_triggered() {
 
 void SVMainWindow::on_actionDBSchedules_triggered() {
 	dbScheduleEditDialog()->edit();
+}
+
+void SVMainWindow::on_actionDBInternalLoadsPerson_triggered() {
+	dbInternalLoadsPersonEditDialog()->edit();
 }
 
 

@@ -112,12 +112,20 @@
     <property name="title">
      <string>&amp;Databases</string>
     </property>
+    <widget class="QMenu" name="menuInternal_Loads">
+     <property name="title">
+      <string>Internal Loads</string>
+     </property>
+     <addaction name="actionDBInternalLoadsPerson"/>
+     <addaction name="actionDBElectricEquipment"/>
+    </widget>
     <addaction name="actionDBMaterials"/>
     <addaction name="actionDBConstructions"/>
     <addaction name="actionDBComponents"/>
     <addaction name="actionDBWindows"/>
     <addaction name="actionDBBoundaryConditions"/>
     <addaction name="actionDBSchedules"/>
+    <addaction name="menuInternal_Loads"/>
     <addaction name="separator"/>
     <addaction name="actionDBNetworkPipes"/>
     <addaction name="actionDBHydraulicComponents"/>
@@ -520,6 +528,16 @@
    </property>
    <property name="toolTip">
     <string>Schedules</string>
+   </property>
+  </action>
+  <action name="actionDBInternalLoadsPerson">
+   <property name="text">
+    <string>Person</string>
+   </property>
+  </action>
+  <action name="actionDBElectricEquipment">
+   <property name="text">
+    <string>Electric Equipment</string>
    </property>
   </action>
  </widget>

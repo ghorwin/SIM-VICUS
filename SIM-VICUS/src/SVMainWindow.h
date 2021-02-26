@@ -39,6 +39,7 @@ class SVDBBoundaryConditionEditDialog;
 class SVDBPipeEditDialog;
 class SVDBNetworkComponentEditDialog;
 class SVDBScheduleEditDialog;
+class SVDBInternalLoadsPersonEditDialog;
 
 /*! Main window class. */
 class SVMainWindow : public QMainWindow {
@@ -112,6 +113,8 @@ public:
 	SVDBNetworkComponentEditDialog *dbNetworkComponentEditDialog();
 	/*! Returns the schedule edit dialog. */
 	SVDBScheduleEditDialog *dbScheduleEditDialog();
+	/*! Returns the internal loads person edit dialog. */
+	SVDBInternalLoadsPersonEditDialog *dbInternalLoadsPersonEditDialog();
 
 
 public slots:
@@ -121,6 +124,7 @@ public slots:
 	void on_actionDBComponents_triggered();
 	void on_actionDBBoundaryConditions_triggered();
 	void on_actionDBSchedules_triggered();
+	void on_actionDBInternalLoadsPerson_triggered();
 	void on_actionDBHydraulicComponents_triggered();
 	void on_actionDBNetworkPipes_triggered();
 
@@ -367,6 +371,7 @@ private:
 	SVDBPipeEditDialog					*m_dbPipeEditDialog								= nullptr;
 	SVDBNetworkComponentEditDialog		*m_dbNetworkComponentEditDialog					= nullptr;
 	SVDBScheduleEditDialog				*m_dbScheduleEditDialog							= nullptr;
+	SVDBInternalLoadsPersonEditDialog	*m_dbInternalLoadsPersonEditDialog				= nullptr;
 
 	friend class SVThreadBase;
 
