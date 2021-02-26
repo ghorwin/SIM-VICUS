@@ -167,6 +167,8 @@ a| Specifies what should be done if values are requested with x values outside t
 
 The child tags `X` and `Y` each hold a mandatory attribute `unit` with the respective value unit (see <<units>>).
 
+TODO : Hauke, document `TSVFile` and column indicator feature.
+
 
 [[path_placeholders]]
 # Path Placeholders

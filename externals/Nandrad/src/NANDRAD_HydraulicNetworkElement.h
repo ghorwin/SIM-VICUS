@@ -89,7 +89,10 @@ public:
 	/*! Integer parameters. */
 	IBK::IntPara					m_intPara[NUM_IP];										// XML:E
 
-	/*! time-series of heat flux or temperature (can be spline or tsv-file) */
+	/*! Time-series of heat flux or temperature (can be spline or tsv-file).
+		Note: the XML tag name is always the same "HeatExchangeSpline", yet the content (and physical units)
+		differ depending on selected heat exchange type.
+	*/
 	LinearSplineParameter			m_heatExchangeSpline;									// XML:E
 
 

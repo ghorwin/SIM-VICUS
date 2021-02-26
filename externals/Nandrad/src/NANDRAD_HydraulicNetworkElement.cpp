@@ -140,7 +140,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 	if (heatExchangeDataFileMustExist){
 
 		// replace place holders
-		m_heatExchangeSpline.m_tsvFile = m_heatExchangeSpline.m_tsvFile .withReplacedPlaceholders(placeholders);
+		m_heatExchangeSpline.m_tsvFile = m_heatExchangeSpline.m_tsvFile.withReplacedPlaceholders(placeholders);
 
 		try {
 			if (m_component->m_heatExchangeType == HydraulicNetworkComponent::HT_TemperatureDataFile){
