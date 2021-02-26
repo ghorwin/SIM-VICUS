@@ -79,7 +79,8 @@ private slots:
 
 	void on_pushButton_2_clicked();
 
-	void on_splitter_splitterMoved(int pos, int index);
+
+	void on_radioButtonLinear_toggled(bool checked);
 
 private:
 
@@ -94,6 +95,8 @@ private:
 
 	/*! Updates enabled/disabled state of buttons based on content of m_currentInterval and current user interface state. */
 	void updateDailyCycleSelectButtons();
+
+
 
 	Ui::SVDBScheduleEditWidget			*m_ui;
 

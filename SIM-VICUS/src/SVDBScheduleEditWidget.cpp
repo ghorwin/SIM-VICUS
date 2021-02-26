@@ -39,10 +39,10 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 
 	m_ui->tableWidgetPeriods->setSortingEnabled(false);
 
-	m_ui->tableWidgetPeriods->setColumnWidth(2,10);
+	m_ui->widgetDailyCycleAndDayTypes->layout()->setMargin(0);
+	m_ui->widgetPeriod->layout()->setMargin(0);
+	m_ui->widgetDayTypes->layout()->setMargin(0);
 
-	m_ui->widgetDailyCycleAndDayTypes->layout()->setMargin(0);
-	m_ui->widgetDailyCycleAndDayTypes->layout()->setMargin(0);
 
 	// initial state is "nothing selected"
 	updateInput(-1);
@@ -52,6 +52,14 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 	int availableWidth = m_ui->splitter->width();
 	sizes << widthSchedule << (availableWidth - widthSchedule);
 	m_ui->splitter->setSizes(sizes);
+
+
+	// set period table column sizes
+	int width = m_ui->tableWidgetPeriods->width();
+
+	m_ui->tableWidgetPeriods->setColumnWidth(0, 50);
+	m_ui->tableWidgetPeriods->setColumnWidth(1, 24);
+	m_ui->tableWidgetPeriods->setColumnWidth(2, width-80);
 }
 
 
@@ -224,7 +232,7 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 	Q_ASSERT(m_current != nullptr);
 
 	m_ui->lineEditName->setString(m_current->m_displayName);
-
+	m_ui->radioButtonLinear->setChecked(m_current->m_useLinearInterpolation);
 	///TODO Annual Schedule ...
 
 	//period schedule
@@ -594,10 +602,11 @@ void SVDBScheduleEditWidget::on_pushButton_2_clicked() {
 	m_ui->checkBoxSunday->setChecked(true);
 }
 
-void SVDBScheduleEditWidget::on_splitter_splitterMoved(int pos, int index) {
-	int width = m_ui->tableWidgetPeriods->width();
 
-	m_ui->tableWidgetPeriods->setColumnWidth(0, 50);
-	m_ui->tableWidgetPeriods->setColumnWidth(1, 24);
-	m_ui->tableWidgetPeriods->setColumnWidth(2, width-80);
+void SVDBScheduleEditWidget::on_radioButtonLinear_toggled(bool checked)
+{
+	if ( m_current == nullptr )
+		return;
+
+	m_current->m_useLinearInterpolation = (checked ? true : false);
 }
