@@ -188,6 +188,8 @@ private slots:
 
 	void on_pushButtonCopyRooms_clicked();
 
+	void on_pushButtonCopySurfaces_clicked();
+
 private:
 	/*! Updates the property widget regarding to all geometry data.
 		This function is called whenever the selection has changed, and when surface geometry (of selected surfaces)
@@ -240,6 +242,8 @@ private:
 	std::set<const VICUS::Object*>		m_selBuildLvls;
 	std::set<const VICUS::Object*>		m_selRooms;
 	std::set<const VICUS::Object*>		m_selSurfaces;
+
+
 
 	/*! Pointer to UI */
 	Ui::SVPropEditGeometry				*m_ui;
