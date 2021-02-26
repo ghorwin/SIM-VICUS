@@ -74,6 +74,9 @@ PRE_TARGETDEPS += \
 
 
 SOURCES += \
+				../../src/SVDBInternalLoadTableModel.cpp \
+				../../src/SVDBInternalLoadsPersonEditDialog.cpp \
+				../../src/SVDBInternalLoadsPersonEditWidget.cpp \
 				../../src/SVPropEditCopyDialog.cpp \
 				../../src/main.cpp \
 				../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
@@ -194,6 +197,9 @@ SOURCES += \
 				../../src/SVWelcomeScreen.cpp
 
 HEADERS  += \
+				../../src/SVDBInternalLoadTableModel.h \
+				../../src/SVDBInternalLoadsPersonEditDialog.h \
+				../../src/SVDBInternalLoadsPersonEditWidget.h \
 				../../src/SVPropEditCopyDialog.h \
 				../../src/actions/SVUndoAddBuilding.h \
 				../../src/actions/SVUndoAddBuildingLevel.h \
@@ -321,6 +327,8 @@ FORMS    += \
 				../../src/SVDBComponentEditWidget.ui \
 				../../src/SVDBConstructionEditDialog.ui \
 				../../src/SVDBConstructionEditWidget.ui \
+				../../src/SVDBInternalLoadsPersonEditDialog.ui \
+				../../src/SVDBInternalLoadsPersonEditWidget.ui \
 				../../src/SVDBMaterialEditDialog.ui \
 				../../src/SVDBMaterialEditWidget.ui \
 				../../src/SVDBNetworkComponentEditDialog.ui \
