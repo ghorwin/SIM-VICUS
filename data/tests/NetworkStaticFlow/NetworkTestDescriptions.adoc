@@ -493,44 +493,46 @@ Time[h]	Temperature[C]
 0	0
 12	0
 20	20.0
+20.5	40.0
+48	40.0
 ```
 
-Die Austrittstemperatur des Rohrs bei t=0 h 
-```
-NetworkElement(id=1002).OutletNodeTemperature [C]
-20
-```
+Die Austrittstemperatur des Rohrs kühlt sich zunächst von der Starttemperatur (20°C) ab bis auf 0°C, und schwingt sich dann auf 40°C ein. Am Simulationsende beträgt sie 40°C, identisch mit der außenanliegenden Temperatur. 
 
-Die Austrittstemperatur des Rohrs bei t=12 h 
-```
-NetworkElement(id=1002).OutletNodeTemperature [C]
--6.77998e-07
-```
 
-Die Austrittstemperatur des Rohrs bei t=24 h 
-```
-NetworkElement(id=1002).OutletNodeTemperature [C]
-20.0001
-```
 
 ### ThermoHydraulicNetworkHeatExchangerHeatFluxDataFile.nandrad
 
 Wie ThermoHydraulicNetworkHeatExchangerHeatFluxConst, nur mit einem zeitabhängigen Wärmestrom, gegeben in der tsv-Datei:
 ```
-Time[h]	Flux[W]
-0	0
-1	-50
-2	0
-```
+Time[h]	dummy[W]	Flux[W]
+0	0	0
+0.5	0	-100
+1	0	-100
+2	0	100
 
-Der Wärmestrom stimmt mit der Wärmeabgabe des Wärmetauschers überein
+```
+Es wird die zweite Spalte (nach der Zeitspalte) gelesen. Dies passiert durch die Angabe des tsv-files mit `HeatFlux.csv?2`.
+
+Das Fluid erwärmt sich und kühlt sich entsprechend ab und der Wärmestrom stimmt mit der Wärmeabgabe des Wärmetauschers überein. Als Ausgabezeitraster wurde 0.5 h gewählt.
+
 ```
 Zeit [h]	NetworkElement(id=1003).FlowElementHeatLoss [W]
 0	0
-1	-50
-2	0
+0.5	-100
+1	-100
+1.5	0
+2	100
 ```
 
+```
+Zeit [h]	NetworkElement(id=1003).OutletNodeTemperature [C]
+0	20
+0.5	30.8088
+1	52.378
+1.5	63.1411
+2	52.3364
+```
 
 
 

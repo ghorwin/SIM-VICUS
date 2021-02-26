@@ -162,12 +162,12 @@ void LinearSplineParameter::checkAndInitialize(const std::string & expectedName,
 		unsigned int colIndex = 1; // 1 means "first data column" (actually 2nd column in file, with 0-based index 1)
 		std::size_t pos = fpath.find('?');
 		if (pos != std::string::npos) {
-			fpath = fpath.substr(0, pos);
 			try {
 				colIndex = IBK::string2val<unsigned int>(fpath.substr(pos+1));
 			} catch (IBK::Exception & ex) {
 				throw IBK::Exception(IBK::FormatString("Malformed file name '%1' (invalid column indicator).").arg(m_tsvFile.str()), FUNC_ID);
 			}
+			fpath = fpath.substr(0, pos);
 		}
 
 		// this is now the path without column indicator
