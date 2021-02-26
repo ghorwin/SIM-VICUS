@@ -16,8 +16,8 @@
 
 namespace VICUS {
 
-/*! Describes the course of a *single* scheduled quantity (basically a value over time data set).
- *  This schedule does not have a unit.
+/*! Describes the course of all Internal Loads (Person, Lighting, Equipment, Other).
+
 */
 
 class InternalLoad : public AbstractDBElement {
@@ -26,20 +26,20 @@ public:
 	/*! Basic parameters. */
 	enum para_t {
 		//thermal paramters
-		/*! Dry density of the material. */
-		P_PersonCount,					// Keyword: Density					[-]		'Dry density of the material.'
-		/*! Specific heat capacity of the material. */
-		P_ConvectiveHeatFactor,			// Keyword: HeatCapacity			[---]	'Specific heat capacity of the material.'
+		/*! Person Count. */
+		P_PersonCount,					// Keyword: Density					[-]		'Person Count.'
+		/*! Convective Heat Factor. */
+		P_ConvectiveHeatFactor,			// Keyword: HeatCapacity			[---]	'Convective Heat Factor.'
 
 		NUM_P
 	};
 
 	/*! Internal load categories.*/
 	enum Category {
-		IC_Person,				// Keyword: Miscellaneous
-		IC_ElectricEquiment,	// Keyword: Miscellaneousa
-		IC_Lighting,			// Keyword: Miscellaneousaa
-		IC_Other,				// Keyword: Miscellaneousaaa
+		IC_Person,				// Keyword: Person							[-]		'Person'
+		IC_ElectricEquiment,	// Keyword: ElectricEquiment				[-]		'ElectricEquiment'
+		IC_Lighting,			// Keyword: Lighting						[-]		'Lighting'
+		IC_Other,				// Keyword: Other							[-]		'Other'
 		NUM_MC
 	};
 
@@ -61,10 +61,10 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID of material. */
+	/*! Unique ID of Intenal Load. */
 	unsigned int					m_id = INVALID_ID;						// XML:A:required
 
-	/*! Display name of material. */
+	/*! Display name of Intenal Load. */
 	IBK::MultiLanguageString		m_displayName;							// XML:A
 
 	/*! False color. */
@@ -76,7 +76,7 @@ public:
 	/*! Data source. */
 	IBK::MultiLanguageString		m_dataSource;							// XML:E
 
-	/*! Material category. */
+	/*! Intenal Load category. */
 	Category						m_category = NUM_MC;					// XML:E:required
 
 	/*! Person count method*/
@@ -84,7 +84,7 @@ public:
 
 	unsigned int					m_occupancyScheduleId = INVALID_ID;		// XML:E:required
 
-	/*! nur für personen erforderlich*/
+	/*! only required for person*/
 	unsigned int					m_activityScheduleId = INVALID_ID;		// XML:E:
 
 	/*! List of parameters. */
