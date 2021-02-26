@@ -161,7 +161,6 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 					switch (e.m_component->m_heatExchangeType) {
 						// create adiabatic pipe model
 						case NANDRAD::HydraulicNetworkComponent::NUM_HT : {
-							// FIXME: Anne, this should be different for dynamic pipe
 							TNDynamicAdiabaticPipeElement * pipeElement = new TNDynamicAdiabaticPipeElement(e,
 									*e.m_component,  *e.m_pipeProperties, m_network->m_fluid);
 							// add to flow elements
@@ -171,29 +170,16 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 						case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant :
 						case NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile :
-						{
-							// FIXME: Anne, this should be different for dynamic pipe
-							// calulate fluid volume
-							const double d = e.m_pipeProperties->m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
-							const double l = e.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
-							double volume = PI/4. * d * d * l;
-
-							// create generic flow element with given heat flux
-							TNElementWithExternalHeatLoss * pipeElement = new TNElementWithExternalHeatLoss(
-																				m_network->m_fluid,
-																				volume, heatExchangeValue);
-							// add to flow elements
-							m_p->m_flowElements.push_back(pipeElement); // transfer ownership
-							m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
-						} break;
+							throw IBK::Exception(IBK::FormatString("Heat exchange model %1 cannot be used with DynamicPipe components.")
+								.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType", e.m_component->m_heatExchangeType)), FUNC_ID);
 
 						case NANDRAD::HydraulicNetworkComponent::HT_TemperatureConstant:
 						case NANDRAD::HydraulicNetworkComponent::HT_TemperatureDataFile:
 						case NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature:
 						{
 							// create pipe model with heat exchange
-							TNDynamicPipeElement * pipeElement = new TNDynamicPipeElement(e, *e.m_component,
-									*e.m_pipeProperties, m_network->m_fluid, heatExchangeValue);
+							TNDynamicPipeElement * pipeElement = new TNDynamicPipeElement(e,
+									*e.m_component, *e.m_pipeProperties, m_network->m_fluid, heatExchangeValue);
 							// add to flow elements
 							m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 							m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
