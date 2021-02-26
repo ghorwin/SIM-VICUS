@@ -232,8 +232,8 @@ namespace VICUS {
 			// NetworkHeatExchange::Parameter
 			case 14 :
 			switch (t) {
-				case 0 : return "Temperature";
-				case 1 : return "HeatFlux";
+				case 0 : return "AmbientTemperature";
+				case 1 : return "HeatLoss";
 			} break;
 			// NetworkNode::NodeType
 			case 15 :
@@ -487,8 +487,8 @@ namespace VICUS {
 			// NetworkHeatExchange::Parameter
 			case 14 :
 			switch (t) {
-				case 0 : return "Temperature";
-				case 1 : return "HeatFlux";
+				case 0 : return "AmbientTemperature";
+				case 1 : return "HeatLoss";
 			} break;
 			// NetworkNode::NodeType
 			case 15 :
@@ -744,7 +744,7 @@ namespace VICUS {
 			case 14 :
 			switch (t) {
 				case 0 : return "Ambient temperature";
-				case 1 : return "Heat flux";
+				case 1 : return "Heat loss";
 			} break;
 			// NetworkNode::NodeType
 			case 15 :

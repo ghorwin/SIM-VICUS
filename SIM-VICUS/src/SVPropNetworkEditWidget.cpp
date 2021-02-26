@@ -35,6 +35,9 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 									VICUS::NetworkNode::NT_Source);
 	m_ui->comboBoxNodeType->addItem(VICUS::KeywordList::Keyword("NetworkNode::NodeType", VICUS::NetworkNode::NT_Building),
 									VICUS::NetworkNode::NT_Building);
+
+	// connect browse filename widgets
+	connect(m_ui->widgetBrowseFileNameTSVFile, SIGNAL(editingFinished()), this, SLOT(on_heatExchangeDataFile_editingFinished()));
 }
 
 
@@ -274,7 +277,7 @@ void SVPropNetworkEditWidget::updateHeatExchangeProperties()
 			case VICUS::NetworkComponent::HT_HeatFluxDataFile:
 			case VICUS::NetworkComponent::HT_TemperatureDataFile:{
 				m_ui->labelDataFile->setVisible(true);
-				m_ui->widgetBrowseFileNameData->setVisible(true);
+				m_ui->widgetBrowseFileNameTSVFile->setVisible(true);
 				break;
 			}
 			default:;
@@ -294,9 +297,9 @@ void SVPropNetworkEditWidget::updateHeatExchangeProperties()
 	else
 		return;
 
-	m_ui->lineEditHeatFlux->setValue(hx.m_para[VICUS::NetworkHeatExchange::P_HeatFlux].value);
-	if (!hx.m_para[VICUS::NetworkHeatExchange::P_Temperature].empty())
-		m_ui->lineEditTemperature->setValue(hx.m_para[VICUS::NetworkHeatExchange::P_Temperature].get_value("C"));
+	m_ui->lineEditHeatFlux->setValue(hx.m_para[VICUS::NetworkHeatExchange::P_HeatLoss].value);
+	if (!hx.m_para[VICUS::NetworkHeatExchange::P_AmbientTemperature].empty())
+		m_ui->lineEditTemperature->setValue(hx.m_para[VICUS::NetworkHeatExchange::P_AmbientTemperature].get_value("C"));
 
 }
 
@@ -349,7 +352,7 @@ void SVPropNetworkEditWidget::setAllHeatExchangeWidgetsVisible(bool visible)
 	m_ui->labelHeatFlux->setVisible(visible);
 	m_ui->lineEditHeatFlux->setVisible(visible);
 	m_ui->labelDataFile->setVisible(visible);
-	m_ui->widgetBrowseFileNameData->setVisible(visible);
+	m_ui->widgetBrowseFileNameTSVFile->setVisible(visible);
 	m_ui->labelFMUFile->setVisible(visible);
 	m_ui->widgetBrowseFileNameFMU->setVisible(visible);
 	m_ui->labelZoneId->setVisible(visible);
@@ -608,7 +611,7 @@ void SVPropNetworkEditWidget::on_lineEditHeatFlux_editingFinished()
 		return;
 
 	VICUS::NetworkHeatExchange hx;
-	hx.m_para[VICUS::NetworkHeatExchange::P_HeatFlux] = IBK::Parameter("HeatFlux", m_ui->lineEditHeatFlux->value(),
+	hx.m_para[VICUS::NetworkHeatExchange::P_HeatLoss] = IBK::Parameter("HeatLoss", m_ui->lineEditHeatFlux->value(),
 																	   IBK::Unit("W"));
 	if (!setNetwork())
 		return;
@@ -641,8 +644,38 @@ void SVPropNetworkEditWidget::on_lineEditTemperature_editingFinished()
 		return;
 
 	VICUS::NetworkHeatExchange hx;
-	hx.m_para[VICUS::NetworkHeatExchange::P_Temperature] = IBK::Parameter("Temperature", m_ui->lineEditTemperature->value(),
+	hx.m_para[VICUS::NetworkHeatExchange::P_AmbientTemperature] = IBK::Parameter("AmbientTemperature", m_ui->lineEditTemperature->value(),
 																	   IBK::Unit("C"));
+	if (!setNetwork())
+		return;
+
+	// set node hx
+	if (!m_currentNodes.empty()){
+		for (const VICUS::NetworkNode * nodeConst: m_currentNodes){
+			m_currentNetwork.m_nodes[nodeConst->m_id].m_heatExchange = hx;
+		}
+	}
+
+	// set edge hx
+	if (!m_currentEdges.empty()){
+		for (const VICUS::NetworkEdge * edge: m_currentEdges){
+			m_currentNetwork.edge(edge->nodeId1(), edge->nodeId2())->m_heatExchange = hx;
+		}
+	}
+
+	m_currentNetwork.updateNodeEdgeConnectionPointers();
+	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
+	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
+	undo->push(); // modifies project and updates views
+}
+
+
+void SVPropNetworkEditWidget::on_heatExchangeDataFile_editingFinished()
+{
+
+	VICUS::NetworkHeatExchange hx;
+	hx.m_dataFile = m_ui->widgetBrowseFileNameTSVFile->filename().toStdString();
+
 	if (!setNetwork())
 		return;
 

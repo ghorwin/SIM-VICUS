@@ -119,7 +119,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Specific heat capacity of the material.");
 	tr("Thermal conductivity of the dry material.");
 	tr("Ambient temperature");
-	tr("Heat flux");
+	tr("Heat loss");
 	tr("Building");
 	tr("Mixer");
 	tr("Source");

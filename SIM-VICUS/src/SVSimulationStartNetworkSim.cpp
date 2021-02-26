@@ -341,14 +341,16 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		switch (comp->m_heatExchangeType) {
 			case VICUS::NetworkComponent::HT_HeatFluxConstant:
 				elem.m_para[NANDRAD::HydraulicNetworkElement::P_HeatLoss] =
-				node.m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_HeatFlux];
+				node.m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_HeatLoss];
 				break;
 			case VICUS::NetworkComponent::HT_TemperatureConstant:
 				elem.m_para[NANDRAD::HydraulicNetworkElement::P_AmbientTemperature] =
-				node.m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_Temperature];
+				node.m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_AmbientTemperature];
 				break;
 			case VICUS::NetworkComponent::HT_HeatFluxDataFile:
-				elem.m_heatExchangeDataFile = node.m_heatExchange.m_dataFile;
+				elem.m_heatExchangeSpline = NANDRAD::LinearSplineParameter("HeatExchangeSpline",
+																		   NANDRAD::LinearSplineParameter::I_LINEAR,
+																		   node.m_heatExchange.m_dataFile);
 				break;
 			default:;
 		}
@@ -403,13 +405,13 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		switch (comp->m_heatExchangeType) {
 			case VICUS::NetworkComponent::HT_HeatFluxConstant:
 				inletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_HeatLoss] =
-				edge->m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_HeatFlux]; break;
+				edge->m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_HeatLoss]; break;
 			case VICUS::NetworkComponent::HT_TemperatureConstant:
 				inletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_AmbientTemperature] =
-				edge->m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_Temperature]; break;
+				edge->m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_AmbientTemperature]; break;
 			case VICUS::NetworkComponent::HT_HeatFluxDataFile:
-				inletPipe.m_heatExchangeDataFile =
-				edge->m_heatExchange.m_dataFile; break;
+//				inletPipe.m_heatExchangeDataFile =
+//				edge->m_heatExchange.m_dataFile; break;
 			default:;
 		}
 		nandradNetwork.m_elements.push_back(inletPipe);
@@ -426,13 +428,13 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		switch (comp->m_heatExchangeType) {
 			case VICUS::NetworkComponent::HT_HeatFluxConstant:
 				outletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_HeatLoss] =
-				edge->m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_HeatFlux]; break;
+				edge->m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_HeatLoss]; break;
 			case VICUS::NetworkComponent::HT_TemperatureConstant:
 				outletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_AmbientTemperature] =
-				edge->m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_Temperature]; break;
+				edge->m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_AmbientTemperature]; break;
 			case VICUS::NetworkComponent::HT_HeatFluxDataFile:
-				outletPipe.m_heatExchangeDataFile =
-				edge->m_heatExchange.m_dataFile; break;
+//				outletPipe.m_heatExchangeDataFile =
+//				edge->m_heatExchange.m_dataFile; break;
 			default:;
 		}
 

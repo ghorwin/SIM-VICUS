@@ -20,8 +20,8 @@ public:
 	bool operator!=(const NetworkHeatExchange &other) const;
 
 	enum Parameter{
-		P_Temperature,			// Keyword: Temperature			[C]		'Ambient temperature'
-		P_HeatFlux,				// Keyword: HeatFlux			[W]		'Heat flux'
+		P_AmbientTemperature,	// Keyword: AmbientTemperature			[C]		'Ambient temperature'
+		P_HeatLoss,				// Keyword: HeatLoss					[W]		'Heat loss'
 		NUM_P
 	};
 
