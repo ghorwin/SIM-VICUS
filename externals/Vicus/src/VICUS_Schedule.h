@@ -3,11 +3,6 @@
 
 #include <IBK_LinearSpline.h>
 
-#include <QString>
-#include <QColor>
-
-#include <vector>
-
 #include <IBK_Flag.h>
 #include <IBK_Parameter.h>
 
@@ -29,8 +24,11 @@ public:
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
-	/*! Checks if all referenced materials exist and if their parameters are valid. */
+	/*! Checks if all referenced schedule is valid. */
 	bool isValid() const;
+
+	/*! Multiply a schedule with another schedule. */
+	bool multiply(Schedule & other);
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

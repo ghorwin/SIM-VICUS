@@ -45,6 +45,17 @@ bool Schedule::isValid() const {
 	return true;
 }
 
+bool Schedule::multiply(Schedule &other) {
+	///TODO Katja
+
+	//compare periods
+
+	//add all periods to a new schedule
+
+	//multiply all values in loops
+	return true;
+}
+
 
 
 } // namespace VICUS
