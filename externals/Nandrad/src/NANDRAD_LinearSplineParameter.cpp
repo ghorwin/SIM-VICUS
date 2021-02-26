@@ -156,22 +156,36 @@ void LinearSplineParameter::checkAndInitialize(const std::string & expectedName,
 		throw IBK::Exception("Either a tsvFile or values can be specified. Both is not possible", FUNC_ID);
 
 	// if there is a valid tsv-file: read it and set values
-	if (m_tsvFile.isValid()){
-		if (!m_tsvFile.isValid())
-			throw IBK::Exception(IBK::FormatString("File '%1' is not a valid path").arg(m_tsvFile.str()), FUNC_ID);
-		if (!m_tsvFile.exists())
+	if (m_tsvFile.isValid()) {
+		// extract column identifier, if any
+		std::string fpath = m_tsvFile.str();
+		unsigned int colIndex = 1; // 1 means "first data column" (actually 2nd column in file, with 0-based index 1)
+		std::size_t pos = fpath.find('?');
+		if (pos != std::string::npos) {
+			fpath = fpath.substr(0, pos);
+			try {
+				colIndex = IBK::string2val<unsigned int>(fpath.substr(pos+1));
+			} catch (IBK::Exception & ex) {
+				throw IBK::Exception(IBK::FormatString("Malformed file name '%1' (invalid column indicator).").arg(m_tsvFile.str()), FUNC_ID);
+			}
+		}
+
+		// this is now the path without column indicator
+		IBK::Path tsvFilePath(fpath);
+
+		if (!IBK::Path(tsvFilePath).exists())
 			throw IBK::Exception(IBK::FormatString("File '%1' does not exist").arg(m_tsvFile.str()), FUNC_ID);
 		IBK::CSVReader reader;
-		reader.read(m_tsvFile, false, true);  // may throws exception
-		if (reader.m_nColumns != 2)
-			throw IBK::Exception(IBK::FormatString("File '%1' must have exactly 2 columns")
-								 .arg(m_tsvFile.str()), FUNC_ID);
+		reader.read(tsvFilePath, false, true);  // may throw exception
+		if (reader.m_nColumns <= colIndex)
+			throw IBK::Exception(IBK::FormatString("File '%1' must have exactly %2 columns")
+								 .arg(tsvFilePath.str()).arg(colIndex+1), FUNC_ID); // Mind: column count = 1 (time column) + colIndex
 		if (reader.m_nRows < 2)
 			throw IBK::Exception(IBK::FormatString("File '%1' must have at least 2 rows")
-								 .arg(m_tsvFile.str()), FUNC_ID);
+								 .arg(tsvFilePath.str()), FUNC_ID);
 		m_xUnit = IBK::Unit(reader.m_units[0]);
-		m_yUnit = IBK::Unit(reader.m_units[1]);
-		m_values.setValues(reader.colData(0), reader.colData(1));
+		m_yUnit = IBK::Unit(reader.m_units[colIndex]);
+		m_values.setValues(reader.colData(0), reader.colData(colIndex));
 	}
 
 	// argument checks
