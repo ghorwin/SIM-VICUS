@@ -1,4 +1,4 @@
-#ifndef SVUndoAddSurfaceH
+#ifndef SVUndoCopySurfaceH
 #define SVUndoCopySurfaceH
 
 #include <VICUS_Surface.h>
