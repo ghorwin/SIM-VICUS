@@ -84,7 +84,7 @@ void LinearSplineParameter::readXML(const TiXmlElement * element) {
 		// check if both x,y and TSVFile are given
 		if (!pathStr.empty() && !x.empty() && !y.empty()){
 			throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				 IBK::FormatString("Error reading 'LinearSplineParameter' tag. There must be either TSVFile or X,Y") ), FUNC_ID);
+				 IBK::FormatString("Error reading 'LinearSplineParameter' tag. There must be either TSVFile or X and Y") ), FUNC_ID);
 		}
 
 		// set either path

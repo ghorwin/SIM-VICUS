@@ -1460,7 +1460,7 @@ void TiXmlElement::readIBKLinearSplineParameterElement(const TiXmlElement *eleme
 		else {
 			std::stringstream strm;
 			strm << "Error in XML file, line " << e->Row() << ": ";
-			strm << "Undefined child element '"<< ename << "' in IBK:LinearSpline element, should be either X, Y or TSVFile.";
+			strm << "Undefined child element '"<< ename << "' in IBK:LinearSpline element, should be either 'X', 'Y' or 'TSVFile'.";
 			throw std::runtime_error(strm.str());
 		}
 	}
