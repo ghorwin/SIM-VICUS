@@ -129,9 +129,9 @@ A linear spline is effectively a data table of x and y values, where x values ar
 [[LinearSplineParameter]]
 ## LinearSplineParameter
 
-A linear spline parameter is effectively an extended `IBK:LinearSpline` parameter with additional attributes.
+A linear spline parameter is effectively an extended `IBK:LinearSpline` parameter with additional attributes. 
 
-.Linear Spline Parameter Definition
+.Linear Spline Parameter Definition (with given spline values)
 ====
 [source,xml]
 ----
@@ -141,6 +141,7 @@ A linear spline parameter is effectively an extended `IBK:LinearSpline` paramete
 </LinearSplineParameter>
 ----
 ====
+
 
 .Attributes
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
@@ -167,8 +168,37 @@ a| Specifies what should be done if values are requested with x values outside t
 
 The child tags `X` and `Y` each hold a mandatory attribute `unit` with the respective value unit (see <<units>>).
 
-TODO : Hauke, document `TSVFile` and column indicator feature.
+As an alternative, one can proivde a data file with tab-separated values, using the child tag `TSVFile`.
 
+.Linear Spline Parameter Definition (with given data file)
+====
+[source,xml]
+----
+<LinearSplineParameter name="HeatExchangeSpline" interpolationMethod="linear">
+   <TSVFile>${Project Directory}/climate/Temperature.csv?3</TSVFile>
+</LinearSplineParameter>
+----
+====
+.Example file `Temperature.csv`
+====
+----
+Time [h]	Temp [C]	otherTemp [C]	anotherTemp [C]
+0	0	0	0
+12	5	7	-9
+36	-8	12	65
+
+----
+====
+A file in tsv-format must contain time values in the first column and can have an abitrary number of data columns after that. Using the specifier `?3` at the end of the filename allows selecting a certain data column. The first data column has index 1. Hence, `?3` would be the third data column (`anotherTemp` in the example). 
+
+[NOTE]
+It is possible to use placeholders in the filename (see <<path_placeholders>>).
+
+
+[IMPORTANT]
+====
+You can specify either `X` AND `Y` values or, alternatively a `TSVFile`. Both is not possible and will give an error message.
+====
 
 [[path_placeholders]]
 # Path Placeholders
