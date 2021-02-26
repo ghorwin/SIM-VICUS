@@ -45,6 +45,7 @@ HEADERS += \
 	../../src/VICUS_Database.h \
 	../../src/VICUS_EPDCategroySet.h \
 	../../src/VICUS_EPDDataset.h \
+	../../src/VICUS_InternalLoad.h \
 	../../src/VICUS_KeywordList.h \
 	../../src/VICUS_Material.h \
 	../../src/VICUS_MaterialLayer.h \
@@ -82,6 +83,7 @@ SOURCES += \
 	../../src/VICUS_DailyCycle.cpp \
 	../../src/VICUS_EPDCategroySet.cpp \
 	../../src/VICUS_EPDDataset.cpp \
+	../../src/VICUS_InternalLoad.cpp \
 	../../src/VICUS_KeywordList.cpp \
 	../../src/VICUS_Material.cpp \
 	../../src/VICUS_Network.cpp \
@@ -107,6 +109,7 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_Construction.cpp \
 	../../src/ncg/ncg_VICUS_DailyCycle.cpp \
 	../../src/ncg/ncg_VICUS_EPDDataset.cpp \
+	../../src/ncg/ncg_VICUS_InternalLoad.cpp \
 	../../src/ncg/ncg_VICUS_Material.cpp \
 	../../src/ncg/ncg_VICUS_MaterialLayer.cpp \
 	../../src/ncg/ncg_VICUS_Network.cpp \
