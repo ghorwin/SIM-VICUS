@@ -15,6 +15,7 @@
 #include <VICUS_NetworkComponent.h>
 #include <VICUS_EPDDataset.h>
 #include <VICUS_Schedule.h>
+#include <VICUS_InternalLoad.h>
 
 #include <VICUS_Database.h>
 
@@ -38,6 +39,7 @@ public:
 		DT_Fluids,
 		DT_NetworkComponents,
 		DT_Schedules,
+		DT_InternalLoads,
 		NUM_DT // used for "all"
 	};
 
@@ -88,6 +90,9 @@ public:
 
 	/*! Map of all database schedules */
 	VICUS::Database<VICUS::Schedule>					m_schedules;
+
+	/*! Map of all database schedules */
+	VICUS::Database<VICUS::InternalLoad>				m_internalLoads;
 
 private:
 	/*! Flag signaling whether any item in the database was modified or not. */
