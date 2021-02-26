@@ -148,7 +148,6 @@ private:
 	/*! References to zone temperatures.*/
 	std::vector<const double*>						m_zoneTemperatureRefs;
 	/*! Container with current spline or reference values: either temperature [k] or heat flux [W].
-		TODO Anne ???
 	*/
 	std::vector<double>								m_heatExchangeValues;
 

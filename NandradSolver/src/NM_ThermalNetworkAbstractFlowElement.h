@@ -4,6 +4,7 @@
 #include <vector>
 #include <utility>
 
+#include "NM_QuantityDescription.h"
 
 namespace NANDRAD_MODEL {
 
@@ -67,6 +68,12 @@ public:
 	/*! Function retrieving number of internal states.*/
 	virtual unsigned int nInternalStates() const { return 1; }
 
+	/*! Publishes individual model quantities via descriptions. */
+	virtual void modelQuantities(std::vector<QuantityDescription> &/*quantities*/) const { }
+
+	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
+	virtual void modelQuantityValueRefs(std::vector<const double*> &/*valRefs*/) const { }
+
 	/*! Function for setting initial temperature
 		for each model.*/
 	virtual void setInitialTemperature(double T0);
@@ -97,7 +104,7 @@ public:
 
 		This function is called from the node temperature calculation routine to compute the mixed temperatures at nodes.
 	*/
-	virtual double outflowTemperature() { return m_meanTemperature; }
+	virtual double outflowTemperature() const { return m_meanTemperature; }
 
 	/*! Once all node temperatures have been computed, the flow element gets the temperature of the inlowing fluid. */
 	virtual void setInflowTemperature(double Tinflow) { m_inflowTemperature = Tinflow; }

@@ -134,8 +134,14 @@ private:
 	std::string										m_displayName;
 	/*! Vector with cached derivatives, updated at last call to update(). */
 	std::vector<double>								m_ydot;
-	/*! Heat heat fluxes towards all referenced zones [W]. */
+	/*! Heat fluxes towards all referenced zones [W]. */
 	std::vector<double>								m_zoneHeatFluxes;
+	/*! Vector of all additional model quantities for outputs. */
+	std::vector<QuantityDescription>				m_modelQuantities;
+	/*! Vector of all additional model quantity references. */
+	std::vector<const double *>						m_modelQuantityRefs;
+	/*! Offset of quantities for all models inside modelQuantities and mdoelQuantityRefs vector. */
+	std::vector<unsigned int>						m_modelQuantityOffset;
 
 	/*! Poiter to states model. */
 	ThermalNetworkStatesModel						*m_statesModel;

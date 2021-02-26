@@ -51,6 +51,26 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 	IBK_ASSERT(m_statesModel->m_network->m_elements.size() ==
 			   m_statesModel->m_p->m_flowElements.size());
 
+	// add individual model result value references
+
+	for(unsigned int elemIdx = 0; elemIdx < m_statesModel->m_elementIds.size(); ++elemIdx) {
+		// add offset
+		m_modelQuantityOffset.push_back(m_modelQuantities.size());
+		// retrieve current flow element
+		const ThermalNetworkAbstractFlowElement *fe = m_statesModel->m_p->m_flowElements[elemIdx];
+		fe->modelQuantities(m_modelQuantities);
+		fe->modelQuantityValueRefs(m_modelQuantityRefs);
+		// correct type and id of quantity description
+		for(unsigned int i = m_modelQuantityOffset.back(); i < m_modelQuantities.size(); ++i) {
+			m_modelQuantities[i].m_id = m_statesModel->m_elementIds[elemIdx];
+			m_modelQuantities[i].m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+		}
+		// implementation check
+		IBK_ASSERT(m_modelQuantities.size() == m_modelQuantityRefs.size());
+	}
+	// mark end of vector
+	m_modelQuantityOffset.push_back(m_modelQuantities.size());
+
 	// resize heat fluxes to zones
 	if(!statesModel->m_zoneIds.empty())
 		m_zoneHeatFluxes.resize(statesModel->m_zoneIds.size());
@@ -107,6 +127,9 @@ void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescript
 		resDesc.push_back(desc);
 	}
 
+	// add individual model results
+	if(!m_modelQuantities.empty())
+		resDesc.insert(resDesc.end(), m_modelQuantities.begin(), m_modelQuantities.end());
 }
 
 
@@ -125,6 +148,9 @@ void ThermalNetworkBalanceModel::resultValueRefs(std::vector<const double *> &re
 	// outlet node temperature vector is a result quantity
 	for(unsigned int i = 0; i < m_statesModel->m_p->m_flowElements.size(); ++i)
 		res.push_back(m_statesModel->m_p->m_outletNodeTemperatureRefs[i]);
+	// add individual model result value references
+	if(!m_modelQuantityRefs.empty())
+		res.insert(res.end(), m_modelQuantityRefs.begin(), m_modelQuantityRefs.end());
 }
 
 
@@ -174,6 +200,23 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference &
 		return m_statesModel->m_p->m_outletNodeTemperatureRefs[pos];
 	else if (quantityName == std::string("FlowElementHeatLoss"))
 		return m_statesModel->m_p->m_flowElementHeatLossRefs[pos];
+
+	// search for quantity inside individual element results
+	IBK_ASSERT(pos < m_modelQuantityOffset.size() - 1);
+	unsigned int startIdx = m_modelQuantityOffset[pos];
+	unsigned int endIdx = m_modelQuantityOffset[pos + 1];
+
+	// check if element contains requested quantity
+	for(unsigned int resIdx = startIdx; resIdx < endIdx; ++resIdx) {
+		const QuantityDescription &modelDesc = m_modelQuantities[resIdx];
+		if(modelDesc.m_name == quantityName.m_name) {
+			// index is not allowed for network element output
+			if(quantityName.m_index != -1)
+				return nullptr;
+			return m_modelQuantityRefs[resIdx];
+		}
+	}
+
 	return nullptr;
 }
 

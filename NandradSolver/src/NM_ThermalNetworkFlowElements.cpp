@@ -50,10 +50,10 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 		// calculate inner heat transfer coefficient
 		const double velocity = std::fabs(m_massFlux)/(m_fluidVolume * m_fluidDensity);
 		const double viscosity = m_fluidViscosity.value(m_meanTemperature);
-		const double reynolds = ReynoldsNumber(velocity, viscosity, m_innerDiameter);
-		const double prandtl = PrandtlNumber(viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
-		double nusselt = NusseltNumber(reynolds, prandtl, m_length, m_innerDiameter);
-		double innerHeatTransferCoefficient = nusselt * m_fluidConductivity /
+		m_reynolds = ReynoldsNumber(velocity, viscosity, m_innerDiameter);
+		m_prandtl = PrandtlNumber(viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
+		m_nusselt = NusseltNumber(m_reynolds, m_prandtl, m_length, m_innerDiameter);
+		double innerHeatTransferCoefficient = m_nusselt * m_fluidConductivity /
 												m_innerDiameter;
 
 		// calculate heat transmittance
@@ -261,7 +261,7 @@ void TNDynamicPipeElement::internalDerivatives(double * ydot) {
 }
 
 
-double TNDynamicPipeElement::outflowTemperature() {
+double TNDynamicPipeElement::outflowTemperature() const {
 	if (m_massFlux >= 0)
 		return m_temperatures[m_nVolumes-1];
 	else
@@ -383,7 +383,7 @@ void TNDynamicAdiabaticPipeElement::internalDerivatives(double * ydot) {
 }
 
 
-double TNDynamicAdiabaticPipeElement::outflowTemperature() {
+double TNDynamicAdiabaticPipeElement::outflowTemperature() const {
 	if (m_massFlux >= 0)
 		return m_temperatures[m_nVolumes-1];
 	else

@@ -28,19 +28,33 @@ public:
 				  const NANDRAD::HydraulicFluid & fluid,
 				  const double &TExt);
 
+	/*! Publishes individual model quantities via descriptions. */
+	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
+		quantities.push_back(QuantityDescription("Reynolds","---","Reynolds number", false));
+		quantities.push_back(QuantityDescription("Prandtl","---","Prandtl number", false));
+		quantities.push_back(QuantityDescription("Nusselt","---","Nusselt number", false));
+	}
+
+	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
+	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
+		valRefs.push_back(&m_reynolds);
+		valRefs.push_back(&m_prandtl);
+		valRefs.push_back(&m_nusselt);
+	}
+
 	/*! Overloaded from ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
 	void setInflowTemperature(double Tinflow) override;
 
 private:
 
 	/*! pipe length in [m] */
-	double							m_length;
+	double							m_length = -999;
 
 	/*! hydraulic (inner) diameter of pipe in [m] */
-	double							m_innerDiameter;
+	double							m_innerDiameter = -999;
 
 	/*! outer diameter of pipe in [m] */
-	double							m_outerDiameter;
+	double							m_outerDiameter = -999;
 
 	/*! Fluid conductivity [W/mK].
 		Cached value from fluid properties.
@@ -53,8 +67,17 @@ private:
 	/*! Equivalent u-value of the pipe wall and insulation per length of pipe in [W/mK] */
 	double							m_UValuePipeWall;
 
+	/*! Reynolds number in [---]*/
+	double							m_reynolds = -999;
+
+	/*! Prandl number in [---]*/
+	double							m_prandtl = -999;
+
+	/*! Nusselt number in [---]*/
+	double							m_nusselt = -999;
+
 	/*! Heat transfer coefficient from outer pipe wall to environment in [W/m2K] */
-	double							m_outerHeatTransferCoefficient;
+	double							m_outerHeatTransferCoefficient = -999;
 
 	/*! Reference to external temperature in K */
 	const double*					m_externalTemperatureRef = nullptr;
@@ -141,7 +164,7 @@ public:
 	virtual void internalDerivatives(double *ydot) override;
 
 	/*! Overrides ThermalNetworkAbstractFlowElement::outflowTemperature(). */
-	virtual double outflowTemperature() override;
+	virtual double outflowTemperature() const override;
 
 	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
 	virtual void setInflowTemperature(double Tinflow) override;
@@ -225,7 +248,7 @@ public:
 	void internalDerivatives(double *ydot) override;
 
 	/*! Overrides ThermalNetworkAbstractFlowElement::outflowTemperature(). */
-	double outflowTemperature() override;
+	double outflowTemperature() const override;
 
 	/*! Function for registering dependencies between derivaites, internal states and modelinputs.*/
 	void dependencies(const double *ydot, const double *y,
