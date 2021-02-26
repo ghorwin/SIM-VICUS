@@ -145,6 +145,11 @@ void SVDBScheduleEditDialog::on_toolButtonAdd_clicked() {
 	proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
 	if (proxyIndex.isValid())
 		m_ui->tableView->resizeColumnToContents(proxyIndex.column());
+	// finally select the newly added schedule
+	m_ui->tableView->selectionModel()->blockSignals(true);
+	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
+	m_ui->tableView->selectionModel()->blockSignals(false);
+	onCurrentIndexChanged(proxyIndex, QModelIndex());
 }
 
 
@@ -160,7 +165,10 @@ void SVDBScheduleEditDialog::on_toolButtonCopy_clicked() {
 	// add item as copy
 	sourceIndex = m_dbModel->addNewItem(*sched);
 	QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
+	m_ui->tableView->selectionModel()->blockSignals(true);
 	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
+	m_ui->tableView->selectionModel()->blockSignals(false);
+	onCurrentIndexChanged(proxyIndex, QModelIndex());
 }
 
 

@@ -201,7 +201,7 @@ void SVDBScheduleEditWidget::selectDailyCycle() {
 	updateDailyCycleSelectButtons();
 
 	//update daily cycle label
-	m_ui->labelDaytypes->setText(tr("Daily cylce %1/%2").arg(m_currentDailyCycleIndex+1).arg(m_currentInterval->m_dailyCycles.size()));
+	m_ui->groupBoxDailyCycle->setTitle(tr("Daily schedule %1 of %2").arg(m_currentDailyCycleIndex+1).arg(m_currentInterval->m_dailyCycles.size()));
 }
 
 

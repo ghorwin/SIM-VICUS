@@ -39,8 +39,10 @@ bool SVDBScheduleAddDialog::requestScheduleData(const QString &title, VICUS::Sch
 		return false;
 	else {
 		sched.m_displayName = dlg.m_ui->lineEditName->string();
-		if ( dlg.m_ui->comboBoxScheduleType->currentText() == "periodic (daily cycle based schemes)" )
+		if ( dlg.m_ui->comboBoxScheduleType->currentText() == "periodic (daily cycle based schemes)" ) {
 			sched.m_periods.push_back(VICUS::ScheduleInterval() );
+			sched.m_periods.back().m_displayName.setEncodedString("en:All year|de:Ganzes Jahr");
+		}
 		sched.m_useLinearInterpolation = (dlg.m_ui->comboBoxInterpolationMethod->currentText() == "linear");
 
 		return true;

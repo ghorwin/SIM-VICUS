@@ -78,15 +78,15 @@ QVariant SVDBScheduleTableModel::data ( const QModelIndex & index, int role) con
 
 				case ColAnnualSplineData :
 					if(it->second.m_periods.empty())
-						return QIcon("://gfx/actions/16x16/ok.png");
+						return QIcon("");
 					else
-						return QIcon("://gfx/actions/16x16/error.png");
+						return QIcon("");
 
 				case ColInterpolation :
 					if(it->second.m_useLinearInterpolation)
-						return QIcon("://gfx/actions/16x16/ok.png");		///TODO hier brauchen wir ein Bild für einen LINEARE Interpolationsdarstellung
+						return QIcon("://gfx/icons/16x16/interpolationMode_linear_bright_16.png");		///TODO hier brauchen wir ein Bild für einen LINEARE Interpolationsdarstellung
 					else
-						return QIcon("://gfx/actions/16x16/error.png");		///TODO hier brauchen wir ein Bild für einen KONSTANTE Interpolationsdarstellung
+						return QIcon("://gfx/icons/16x16/interpolationMode_constant_bright_16.png");		///TODO hier brauchen wir ein Bild für einen KONSTANTE Interpolationsdarstellung
 
 			} // switch
 		} break;
