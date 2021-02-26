@@ -256,12 +256,161 @@ Zwei unterschiedliche Rohre in einem Kreis zusammen mit Pumpe und Wärmetauscher
 ### ThermoHydraulicNetworkParallelPipes.nandrad
 
 - Test Plausibilität Wärmeabgabe und Druckverlust durch unterschiiedlich parametrierte Rohre im stationären Zustand
-- 2 parallele Rohre mit unterschiedlicher Dimension (Rohr 2 hat doppelte Länge und doppelten Durchmesser)
-- 2 Pumpen mit angespasster Druckdifferenz (Pumpe 1 liefert die vierfache Druckdifferenz)
+- 2 parallele Rohre mit unterschiedlicher Dimension (Rohr 2 hat doppelte Länge und doppelten Durchmesser):
 - Konstante Außentemperatur
 - Konstanter Leistungsverlust im Netzwerk, provisorisch abgebildet durch Wärmetauscher mit Wärmeverlust und geringem Druckverlustbeiwert
 
-**Erwartungshaltung**: doppelter Massestrom und doppelter Wärmeverlust durch Rohr 2, identische Fluidaustrittstemperaturen für beide Rohrstränge. Die Summe der Rohrwärmeverluste muss der aufgenommenen Wärmemenge (Wärmestrom) im Wärmetauscher entsprechen und somit die thermische Bilanz im Netzwerk erhalten.
+
+Ein Kreis, 5 Elemente:
+- Rohr 101 (`SimplePipe`), Wärmeaustauschmodell `TemperatureConstant`, 
+  Erdreichtemperatur 0 C
+- Rohr 102 (`SimplePipe`), Wärmeaustauschmodell `TemperatureConstant`, 
+  Erdreichtemperatur 0 C
+
+2 Pumpen mit angespasster Druckdifferenz (Pumpe 1 liefert die vierfache Druckdifferenz)
+- Pumpe 201 (`ConstantPressurePump`), Wirkungsgrad 100% mit Druckdifferenz von 1000 Pa
+- Pumpe 202 (`ConstantPressurePump`), Wirkungsgrad 100% mit Druckdifferenz von 250 Pa
+
+Wärmetauscher 301, Wärmeaustauschmodell `HeatFluxConstant`, 500 W konstante Energiequelle, 
+  Druckverlustbeiwert ~ 0 (0.01)
+
+**Erwartung**: doppelter Massestrom und doppelter Wärmeverlust durch Rohr 2, identische Fluidaustrittstemperaturen für beide Rohrstränge. Die Summe der Rohrwärmeverluste muss der aufgenommenen Wärmemenge (Wärmestrom) im Wärmetauscher entsprechen und somit die thermische Bilanz im Netzwerk erhalten.
+
+
+
+Rohrparametrisierung:
+- Rohr 101:    
+din1         = 0.00256 m
+dout1        = 0.0032 m
+length1      = 100 m
+UWall1       = 5 W/mK
+alphaExt1    = 5 W/m2K
+
+- Rohr 102: (doppelte Größe)    
+din2         = 0.00512 m
+dout2        = 0.0064 m
+length2      = 200 m
+UWall2       = 5 W/mK
+alphaExt2    = 2.5 W/m2K
+
+Pumpe 201 ist dem Rohr 101 vorgeschalten, Pumpe 202 dem Rohr 202, beide Rohrstränge verbinden sich
+und sind an den Wärmetauscher 301 angeschlossen. 
+Nach 24 Stunben Simulationszeit ist der stationäre Zustand erreicht.
+
+Es soll erreicht werden, dass im stationären Fall durch Rohr 102 der doppelte Massestrom wie durch Rohr 101 fließt (mdot2 = 2 * mdot1). 
+Für  die dimensionslosen Kennzahlen gilt dabei
+
+Rohr 101: 
+```
+reynolds1 = v1 * din1 / mue = mdot1 / (rho * Pi/4 * din1^2 ) * din1 / mue
+```
+Rohr 102: 
+```
+reynolds2 = v2 * din2 /mue = mdot2 / (rho * Pi/4 * din2^2 ) * din2 / mue,
+```
+
+also reynolds1 = reynolds2 = reynolds. Damit kann bei beiden Rohren identisches Strömungsverhalten vorausgesetzt werden. Unter Berücksichtigung eines
+identischen Reibungsfaktors (frictionFactor) kann ebenso die Gleichheit für den Druckverlustbeiwert zeta hergestellt werden:
+
+Rohr 101: 
+```
+zeta1 = length1/din1 * frictionFactor
+```
+Rohr 102: 
+```
+zeta2 = length2/din2 * frictionFactor,
+-> zeta1 = zeta2 = zeta.
+```
+
+Damit ist der Druckverlust
+
+Rohr 101: 
+```
+dp1 = zeta/2 * rho * v1 * v1 = zeta/2 * rho * mdot1^2 / (rho * Pi/4 * din1^2 )^2
+```
+Rohr 102: 
+```
+dp2 = zeta/2 * rho * v2 * v2 = zeta/2 * rho * mdot2^2 / (rho * Pi/4 * din2^2 )^2,
+```
+
+und es ergibt sich das Verhältnis dp2 = 1/4 * dp1. Durch die erzeugte Pumpendruckdifferenz wird dieser Druckverlust
+exakt erzeugt und somit sichergestellt, dass tatsächlich durch Rohr 102 die doppelte Menge an Fluid fließt.
+
+Die dimensionslosen Kennwerte für den konvektiven Wärmeübergang sind für Rohr 101 und Rohr 102 ebenfalls identisch:
+
+```
+prandtl = nue * Cp * rho/lambda (Fluideigenschaft)
+nusselt = f(reynolds, prandl, din/l) 
+```
+
+Für den UWert ergibt sich:
+
+Rohr 101:
+```
+   innerHeatTransferCoefficient1 = nusselt * fluidConductivity/din1
+   outerHeatTransferCoefficient1 =  5
+   UValuePipeWall1               =  5
+   UValueTotal1                  = 1/(1/(innerHeatTransferCoefficient1 * din1 * Pi) + 
+								      1/(outerHeatTransferCoefficient1 * dout1 * Pi) + 
+								      1/UValuePipeWall1)
+   
+   UAValueTotal1                  = UValueTotal1 * length1
+```
+
+Rohr 102:
+```
+   innerHeatTransferCoefficient1 = nusselt * fluidConductivity/din2
+   outerHeatTransferCoefficient1 =  2.5
+   UValuePipeWall2               =  5
+   UValueTotal2                  = 1/(1/(innerHeatTransferCoefficient1 * din2 * Pi) + 
+								      1/(outerHeatTransferCoefficient1 * dout2 * Pi) + 
+								      1/UValuePipeWall2)
+								 = UValueTotal1
+   
+   UAValueTotal2                 = UValueTotal2 * length2 = 2 * UValue1 * lenght1
+
+```
+
+ Bilanzgleichungen im Rohr im stationären Fall:
+```
+  mdot1 * Cp * (Tin - Tout1) = UValueTotal1 * (Tmean1 - Tambient)
+  mdot2 * Cp * (Tin - Tout2) = UValueTotal2 * (Tmean2 - Tambient)
+```
+
+bei gemeinsamer Einlasstemperatur Tin. Dies ergibt
+```
+  mdot1 * Cp * (Tin - Tout1) = UValueTotal1 * (Tmean1 - Tambient)
+  2 * mdot1 * Cp * (Tin - Tout2) = 2 * UValueTotal1 * (Tmean2 - Tambient)
+```
+
+Die dimensionsole Heizfläche
+```
+NTU = UValueTotal/(mdot * Cp)
+```
+
+ist in beiden Rohren identisch und garantiert denselben Temperaturverlauf über die Rohrlänge. 
+Somit ergibt sich diesselbe Temperaturspreizung zwischen Einlass- und Auslasstemperatur in beiden Rohren, 
+und es gilt:
+```
+Tout1 = Tout2, Tmean1 = Tmean2
+```
+
+Das Fluid tritt folglich aus beiden Rohren mit derselben Austrittstemperatur aus, es erfolgt also zunächst keine Mischung. 
+Allerdings kann der Wärmeverlust über beide Rohre ermittelt werden durch
+```
+  QheatLoss1 = UValueTotal1 * (Tmean1 - Tambient) 
+  QheatLoss2 = UValueTotal2 * (Tmean2 - Tambient)
+  -> QheatLoss2 = 2 *  QheatLoss1
+```
+
+Des Weiteren gilt aufgrund der thermischen Bilanz bim Netzwerk:
+```
+QheatLoss1 + QheatLoss2 = - QheatLossWT (Wärmetauscher) = 500W
+```
+
+Daraus folgt die Lösung:
+QheatLoss1 = -166.67 W
+QheatLoss2 = -233.33 W
 
 
 ### ThermoHydraulicNetworkStaticFlowParallelPipesMixer.nandrad
@@ -270,9 +419,63 @@ Zwei unterschiedliche Rohre in einem Kreis zusammen mit Pumpe und Wärmetauscher
 - unterschiedliche Umgebungstemperaturen für beide Rohre
 - beim Mixer-Knoten muss die Mischtemperatur richtig berechnet werden
 
-**Erwartung**: Das Rohr mit der geringeren Umgebungstemperatur gibt diesselbe Wärme ab, welche das Rohr mit der wärmeren Umgebungstemperatur aufnimmt. Die Temperaturspreizung zwischen Fluidtemperatur und Außentemperatur im Rohr ist beim größeren Rohr (Rohr 2) doppelt so hoch wie beim kleineren (Rohr 1), allerdings mit umgekehrtem Vorzeichen. 
+Ein Kreis, 4 Elemente:
+ 
+- Pumpe 201 wie vorher
+- Pumpe 202 wie vorher
+- Rohr 101  wie vorher, Erdreichtemperatur 0 C
+- Rohr 102  wie vorher, Erdreichtemperatur 10 C
+
+Pumpe 201 ist dem Rohr 101 vorgeschalten, Pumpe 202 dem Rohr 202, beide Rohrstränge verbinden sich
+an einem gemeinsamen Mischknoten. Wie im vorigen Beispiel fließt durch Rohr 102 der doppelte
+Massestrom im Vergleich zu Rohr 101. 
+
+**Erwartung**: Das Rohr mit der geringeren Umgebungstemperatur gibt diesselbe Wärme ab, welche das Rohr mit der wärmeren Umgebungstemperatur aufnimmt. 
+Die Temperaturspreizung zwischen Fluidtemperatur und Außentemperatur im Rohr ist beim größeren Rohr (Rohr 2) doppelt so hoch wie beim kleineren (Rohr 1), allerdings mit umgekehrtem Vorzeichen.
+Es ergibt sich eine Mischtemperatur zu 1/3 und 2/3 der Umgebungstemperaturen von kleinerem und größerem Rohr im Vorlauf- und Rücklaufknoten.
 
 
+ Die Wärmeverluste in den Rohren werden berechnet durch:
+```
+  Qheatloss1 = UValueTotal1 * (Tmean1 - Tambient1)
+  Qheatloss2 = 2 * UValueTotal1 * (Tmean2 - Tambient2)
+```
+
+Da im stationären Fall alle Wärmeverluste sich aufheben müssen, gilt die Beziehung
+```
+  0 = Qheatloss1 + Qheatloss2
+  -> Tmean1 - Tambient1 = - 2 * (Tmean2 - Tambient2)
+```
+
+Die Temperatur am gemeinsamen Splitterknoten (Tin) muss identische der Temperatur 
+am gemeinsamen Mixerknoten Tout sein. Die Mischtemperatur ergibt sich durch
+```
+  Tout = mdot1 * Cp * (Tout1 + 2 * Tout2)/((mdot1 + 2 * mdot1) * Cp
+       = 1/3 Tout1 + 2/3 Tout2,
+  Tout = Tin
+```
+
+Die Verteilungsannahme im stationären Fall
+```
+T(x) - Tambient = (Tin - Tambient) * exp(-NTU/L * x)
+ ```
+
+stellt den Zusammenhang
+```
+Tmean - Tambient = 1/NTU * (Tin - Tambient) * ( 1 - exp(-NTU) )
+
+```
+für beide Rohrverteilungen her. Aufgrund derselben dimensionslosen Wärmeübertragerfläche NTU in
+beiden Rohren gilt die Äquivalenz
+```
+(Tmean1 - Tambient1)/(Tmean2 - Tambient2) = (Tin - Tambient1)/(Tin - Tambient2)
+-> -2 (Tin - Tambient2) = (Tin - Tambient1)
+ ```
+ 
+Dies ergibt die Knotentemperaturen an Splitter und Mixer von
+```
+Tin = Tout = 1/3 Tambient1 + 2/3 Tambient2 = 6.6667 C.
+```
 
 
 ## Thermo-Hydraulic Tests - Milestone 2
