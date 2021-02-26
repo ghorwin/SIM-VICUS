@@ -12,8 +12,7 @@
 
 #include "SVDBScheduleTableModel.h"
 #include "SVDBScheduleEditWidget.h"
-
-
+#include "SVDBScheduleAddDialog.h"
 
 SVDBScheduleEditDialog::SVDBScheduleEditDialog(QWidget *parent) :
 	QDialog(parent),
@@ -41,11 +40,14 @@ SVDBScheduleEditDialog::SVDBScheduleEditDialog(QWidget *parent) :
 	connect(m_ui->tableView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)),
 			this, SLOT(onCurrentIndexChanged(const QModelIndex &, const QModelIndex &)) );
 
-	resize(1200,600);
+	resize(1400,600);
+
+	m_ui->editWidget->layout()->setMargin(0);
 
 	QList<int> sizes;
-	int availableWidth = width();
-	sizes << 250 << availableWidth - 250;
+	int widthSchedule = 250;
+	int availableWidth = m_ui->splitter->width();
+	sizes << widthSchedule << (availableWidth - widthSchedule);
 	m_ui->splitter->setSizes(sizes);
 
 	// set item delegate for coloring built-ins
@@ -131,7 +133,11 @@ void SVDBScheduleEditDialog::on_pushButtonClose_clicked() {
 
 void SVDBScheduleEditDialog::on_toolButtonAdd_clicked() {
 	// add new item
-	QModelIndex sourceIndex = m_dbModel->addNewItem();
+	VICUS::Schedule newSchedule;
+	newSchedule.m_displayName.setEncodedString("en:<new schedule>");
+	if (!SVDBScheduleAddDialog::requestScheduleData(tr("Add new Schedule"), newSchedule ) )
+		return;
+	QModelIndex sourceIndex = m_dbModel->addNewItem(newSchedule);
 	QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
 	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
 	// resize ID column

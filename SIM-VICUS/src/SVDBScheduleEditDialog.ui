@@ -19,25 +19,20 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
+     <property name="childrenCollapsible">
+      <bool>false</bool>
+     </property>
      <widget class="QGroupBox" name="groupBox">
+      <property name="maximumSize">
+       <size>
+        <width>300</width>
+        <height>16777215</height>
+       </size>
+      </property>
       <property name="title">
        <string>Schedules</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_5">
-       <item row="1" column="2">
-        <widget class="QToolButton" name="toolButtonRemove">
-         <property name="icon">
-          <iconset resource="../resources/SIM-VICUS.qrc">
-           <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>24</width>
-           <height>24</height>
-          </size>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="0" colspan="4">
         <widget class="QTableView" name="tableView">
          <property name="alternatingRowColors">
@@ -57,24 +52,25 @@
          </attribute>
         </widget>
        </item>
-       <item row="1" column="3">
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>1156</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
        <item row="1" column="1">
         <widget class="QToolButton" name="toolButtonCopy">
          <property name="icon">
           <iconset resource="../resources/SIM-VICUS.qrc">
            <normaloff>:/gfx/actions/24x24/editcopy.png</normaloff>:/gfx/actions/24x24/editcopy.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QToolButton" name="toolButtonRemove">
+         <property name="icon">
+          <iconset resource="../resources/SIM-VICUS.qrc">
+           <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -97,6 +93,19 @@
           </size>
          </property>
         </widget>
+       </item>
+       <item row="1" column="3">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>1156</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
