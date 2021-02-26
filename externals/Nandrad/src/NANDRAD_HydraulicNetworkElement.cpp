@@ -62,7 +62,13 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 		break;
 
 		// TODO : add checks for other components
-		default: break;
+		case HydraulicNetworkComponent::MT_ConstantPressurePump:
+		case HydraulicNetworkComponent::MT_HeatExchanger:
+		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:	{
+			if(m_pipePropertiesId != INVALID_ID) {
+				throw IBK::Exception("Invalid attribute pipePropertiesId. This is only possible for pipes!", FUNC_ID);
+			}
+		} break;
 	}
 
 
