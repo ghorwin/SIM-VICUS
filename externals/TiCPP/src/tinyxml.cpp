@@ -1412,6 +1412,61 @@ void TiXmlElement::readIBKLinearSplineElement( const TiXmlElement * element,
 }
 
 
+void TiXmlElement::readIBKLinearSplineParameterElement(const TiXmlElement *element,
+														std::string &name,
+														std::string &interpolationMethod,
+														std::string &xunit,
+														std::vector<double> &xdata,
+														std::string &yunit,
+														std::vector<double> &ydata,
+														std::string &path)
+
+{
+	const TiXmlAttribute* attrib = TiXmlAttribute::attributeByName(element, "name");
+	if (attrib == NULL) {
+		std::stringstream strm;
+		strm << "Error in XML file, line " << element->Row() << ": ";
+		strm << "Missing 'name' attribute in IBK:LinearSpline element.";
+		throw std::runtime_error(strm.str());
+	}
+	name = attrib->Value();
+	attrib = TiXmlAttribute::attributeByName(element, "interpolation");
+	if (attrib != NULL) {
+		interpolationMethod = attrib->Value();
+	}
+	else
+		interpolationMethod.clear();
+	for (const TiXmlElement * e = element->FirstChildElement(); e; e = e->NextSiblingElement()) {
+		std::string ename = e->Value();
+		std::string name;
+		if (ename == "X") {
+			TiXmlElement::readIBKUnitVectorElement(e, name, xunit, xdata, true);
+		}
+		else if (ename == "Y") {
+			TiXmlElement::readIBKUnitVectorElement(e, name, yunit, ydata, true);
+		}
+		else if (ename == "TSVFile") {
+			const TiXmlNode * child = e->FirstChild();
+			if (child == NULL){
+				std::stringstream strm;
+				strm << "Error in XML file, line " << e->Row() << ": ";
+				strm << "Missing 'TSVFile' element";
+				throw std::runtime_error(strm.str());
+			}
+			else{
+				path = child->Value();
+			}
+		}
+		else {
+			std::stringstream strm;
+			strm << "Error in XML file, line " << e->Row() << ": ";
+			strm << "Undefined child element '"<< ename << "' in IBK:LinearSpline element, should be either X, Y or TSVFile.";
+			throw std::runtime_error(strm.str());
+		}
+	}
+}
+
+
 void TiXmlElement::appendIBKPoint3DElement( TiXmlElement * parent,
 											const unsigned int & id,
 											const std::string & hint,

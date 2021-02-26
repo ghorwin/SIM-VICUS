@@ -138,65 +138,29 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 
 	// check and read csv file
 	if (heatExchangeDataFileMustExist){
+
 		// replace place holders
-		m_heatExchangeDataFile = m_heatExchangeDataFile.withReplacedPlaceholders(placeholders);
-		if (!m_heatExchangeDataFile.isValid())
-			throw IBK::Exception("Missing heat exchange data file path.", FUNC_ID);
-		if (!m_heatExchangeDataFile.exists())
-			throw IBK::Exception(IBK::FormatString("File '%1' does not exist").arg(m_heatExchangeDataFile.str()), FUNC_ID);
-		IBK::CSVReader reader;
-		try {
-			reader.read(m_heatExchangeDataFile, false, true);
-		}
-		catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error reading file '%1'.").arg(m_heatExchangeDataFile.str()), FUNC_ID);
-		}
-
-		if (reader.m_nColumns != 2)
-			throw IBK::Exception(IBK::FormatString("File '%1' must have exactly 2 columns")
-								 .arg(m_heatExchangeDataFile.str()), FUNC_ID);
-
-		if (reader.m_nRows < 2)
-			throw IBK::Exception(IBK::FormatString("File '%1' must have at least 2 rows")
-								 .arg(m_heatExchangeDataFile.str()), FUNC_ID);
-
-		IBK::Unit xUnit(reader.m_units[0]);
-		IBK::Unit yUnit(reader.m_units[1]);
-
-		// create spline
-		m_heatExchangeSpline = LinearSplineParameter(KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
-																			m_component->m_heatExchangeType),
-													 LinearSplineParameter::I_LINEAR,
-													 reader.colData(0), reader.colData(1), xUnit, yUnit);
-
-		if (m_heatExchangeDataFileIsCyclic)
-			m_heatExchangeSpline.m_wrapMethod = LinearSplineParameter::C_CYCLIC;
-		else
-			m_heatExchangeSpline.m_wrapMethod = LinearSplineParameter::C_CONTINUOUS;
+		m_heatExchangeSpline.m_tsvFile = m_heatExchangeSpline.m_tsvFile .withReplacedPlaceholders(placeholders);
 
 		try {
 			if (m_component->m_heatExchangeType == HydraulicNetworkComponent::HT_TemperatureDataFile){
 				//  check the spline and convert it to base units automatically
-				m_heatExchangeSpline.checkAndInitialize("TemperatureDataFile", IBK::Unit("s"), IBK::Unit("K"),
+				m_heatExchangeSpline.checkAndInitialize("HeatExchangeSpline", IBK::Unit("s"), IBK::Unit("K"),
 														IBK::Unit("K"), 0, false, std::numeric_limits<double>::max(), false,
 														"Temperature must be > 0 K.");
 			}
 
 			else if (m_component->m_heatExchangeType == HydraulicNetworkComponent::HT_HeatFluxDataFile){
 				//  check the spline and convert it to base units automatically
-				m_heatExchangeSpline.checkAndInitialize("HeatFluxDataFile", IBK::Unit("s"), IBK::Unit("J/s"),
+				m_heatExchangeSpline.checkAndInitialize("HeatExchangeSpline", IBK::Unit("s"), IBK::Unit("J/s"),
 														IBK::Unit("J/s"), std::numeric_limits<double>::lowest(), false,
 														std::numeric_limits<double>::max(), false,
 														nullptr);
 			}
 		} catch (IBK::Exception &ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error reading file '%1'.").arg(m_heatExchangeDataFile.str()), FUNC_ID);
+			throw IBK::Exception(ex, IBK::FormatString("Error reading spline '%1'.").arg(m_heatExchangeSpline.m_name), FUNC_ID);
 		}
 
-	}
-	else if (m_heatExchangeDataFile.isValid()) {
-		throw IBK::Exception(IBK::FormatString("Invalid/unexpected heat exchange data file '%1'.")
-							 .arg(m_heatExchangeDataFile.str()), FUNC_ID);
 	}
 
 }

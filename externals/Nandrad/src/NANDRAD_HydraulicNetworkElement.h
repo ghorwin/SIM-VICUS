@@ -90,7 +90,9 @@ public:
 	IBK::IntPara					m_intPara[NUM_IP];										// XML:E
 
 	/*! data file in tsv-format with time-series of heat flux or temperature */
-	IBK::Path						m_heatExchangeDataFile;									// XML:E
+//	IBK::Path						m_heatExchangeDataFile;
+
+	LinearSplineParameter			m_heatExchangeSpline;									// XML:E
 
 	/*! if true: m_heatExchangeDataFile is interpreted annually cyclic, else it is assumed continuous */
 	bool							m_heatExchangeDataFileIsCyclic = false;					// XML:A
@@ -101,7 +103,6 @@ public:
 	const HydraulicNetworkComponent			*m_component				= nullptr;
 	const HydraulicNetworkPipeProperties	*m_pipeProperties			= nullptr;
 
-	LinearSplineParameter					m_heatExchangeSpline;
 
 
 };

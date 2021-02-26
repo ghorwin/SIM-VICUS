@@ -1406,6 +1406,18 @@ public:
 										 std::string & yunit,
 										 std::vector<double> & ydata);
 
+	/*! Reads IBK::LinearSplineParameter, this is basically a copy of readIBKLinearSplineElement,
+	 * but additionally reads a tsv-filepath
+	 * */
+	static void readIBKLinearSplineParameterElement( const TiXmlElement * element,
+										 std::string & name,
+										 std::string & interpolationMethod,
+										 std::string & xunit,
+										 std::vector<double> & xdata,
+										 std::string & yunit,
+										 std::vector<double> & ydata,
+										 std::string & path);
+
 
 
 	/*! Appends an IBK:Point3D element.

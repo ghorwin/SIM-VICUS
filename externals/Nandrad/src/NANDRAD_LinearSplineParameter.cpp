@@ -25,6 +25,7 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <IBK_UnitVector.h>
+#include <IBK_CSVReader.h>
 #include <NANDRAD_Constants.h>
 #include <NANDRAD_KeywordList.h>
 #include <NANDRAD_Utilities.h>
@@ -68,24 +69,39 @@ void LinearSplineParameter::readXML(const TiXmlElement * element) {
 
 		// now read actual spline data
 		std::string name;
-		std::string xunitstr, yunitstr, interpolationMethod;
+		std::string xunitstr, yunitstr, interpolationMethod, pathStr;
 		std::vector<double> x,y;
 		try {
 			// note: interpolation method is not written or read, it will always be ""
-			TiXmlElement::readIBKLinearSplineElement(element, name, interpolationMethod, xunitstr, x, yunitstr, y);
+			TiXmlElement::readIBKLinearSplineParameterElement(element, name, interpolationMethod, xunitstr, x,
+															  yunitstr, y, pathStr);
 		}
 		catch (std::runtime_error & ex) {
 			throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Error reading 'LinearSplineParameter' tag.") ), FUNC_ID);
 		}
-		try {
-			m_xUnit = IBK::Unit(xunitstr); // may throw in case of invalid unit
-			m_yUnit = IBK::Unit(yunitstr);
-			m_values.setValues(x,y); // may throw in case of invalid data
+
+		// check if both x,y and TSVFile are given
+		if (!pathStr.empty() && !x.empty() && !y.empty()){
+			throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				 IBK::FormatString("Error reading 'LinearSplineParameter' tag. There must be either TSVFile or X,Y") ), FUNC_ID);
 		}
-		catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				 IBK::FormatString("Error reading 'LinearSplineParameter' tag.") ), FUNC_ID);
+
+		// set either path
+		if (!pathStr.empty()){
+			m_tsvFile = IBK::Path(pathStr);
+		}
+		// or set spline
+		else{
+			try {
+				m_xUnit = IBK::Unit(xunitstr); // may throw in case of invalid unit
+				m_yUnit = IBK::Unit(yunitstr);
+				m_values.setValues(x,y); // may throw in case of invalid data
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+					 IBK::FormatString("Error reading 'LinearSplineParameter' tag.") ), FUNC_ID);
+			}
 		}
 	}
 	catch (IBK::Exception & ex) {
@@ -106,8 +122,14 @@ TiXmlElement * LinearSplineParameter::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("wrapMethod", KeywordList::Keyword("LinearSplineParameter::wrapMethod_t",  m_wrapMethod));
 
 	// set attributes
-	TiXmlElement::appendIBKUnitVectorElement(e, "X", m_xUnit.name(), m_values.x(), true);
-	TiXmlElement::appendIBKUnitVectorElement(e, "Y", m_yUnit.name(), m_values.y(), true);
+	if (!m_values.empty()){
+		TiXmlElement::appendIBKUnitVectorElement(e, "X", m_xUnit.name(), m_values.x(), true);
+		TiXmlElement::appendIBKUnitVectorElement(e, "Y", m_yUnit.name(), m_values.y(), true);
+	}
+
+	if (m_tsvFile.isValid()){
+		TiXmlElement::appendSingleAttributeElement(e, "TSVFile", nullptr, std::string(), m_tsvFile.str());
+	}
 
 	return e;
 }
@@ -128,6 +150,29 @@ void LinearSplineParameter::checkAndInitialize(const std::string & expectedName,
 	// check 1: check if name is correct
 	if (m_name != expectedName)
 		throw IBK::Exception(IBK::FormatString("Name '%1' expected, but '%2' given.").arg(expectedName).arg(m_name), FUNC_ID);
+
+	// check 2: either tsvFile or values can exist
+	if (m_tsvFile.isValid() && !m_values.empty())
+		throw IBK::Exception("Either a tsvFile or values can be specified. Both is not possible", FUNC_ID);
+
+	// if there is a valid tsv-file: read it and set values
+	if (m_tsvFile.isValid()){
+		if (!m_tsvFile.isValid())
+			throw IBK::Exception(IBK::FormatString("File '%1' is not a valid path").arg(m_tsvFile.str()), FUNC_ID);
+		if (!m_tsvFile.exists())
+			throw IBK::Exception(IBK::FormatString("File '%1' does not exist").arg(m_tsvFile.str()), FUNC_ID);
+		IBK::CSVReader reader;
+		reader.read(m_tsvFile, false, true);  // may throws exception
+		if (reader.m_nColumns != 2)
+			throw IBK::Exception(IBK::FormatString("File '%1' must have exactly 2 columns")
+								 .arg(m_tsvFile.str()), FUNC_ID);
+		if (reader.m_nRows < 2)
+			throw IBK::Exception(IBK::FormatString("File '%1' must have at least 2 rows")
+								 .arg(m_tsvFile.str()), FUNC_ID);
+		m_xUnit = IBK::Unit(reader.m_units[0]);
+		m_yUnit = IBK::Unit(reader.m_units[1]);
+		m_values.setValues(reader.colData(0), reader.colData(1));
+	}
 
 	// argument checks
 	if (targetXUnit.id() != targetXUnit.base_id() ||
@@ -159,6 +204,7 @@ void LinearSplineParameter::checkAndInitialize(const std::string & expectedName,
 //	for (double d : m_values.y()) {
 
 //	}
+
 }
 
 
