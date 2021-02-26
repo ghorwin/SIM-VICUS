@@ -490,7 +490,7 @@ bool selectionCheck(const VICUS::Object & o, bool takeSelected, bool takeVisible
 void Project::selectedBuildingObjects(std::set<const Object *> &selectedObjs, Object *obj) const {
 
 	bool takeSelected = true;
-	bool takeVisible = true;
+	bool takeVisible = false;
 
 	selectedObjs.clear();
 
