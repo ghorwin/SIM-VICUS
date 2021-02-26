@@ -89,13 +89,9 @@ public:
 	/*! Integer parameters. */
 	IBK::IntPara					m_intPara[NUM_IP];										// XML:E
 
-	/*! data file in tsv-format with time-series of heat flux or temperature */
-//	IBK::Path						m_heatExchangeDataFile;
-
+	/*! time-series of heat flux or temperature (can be spline or tsv-file) */
 	LinearSplineParameter			m_heatExchangeSpline;									// XML:E
 
-	/*! if true: m_heatExchangeDataFile is interpreted annually cyclic, else it is assumed continuous */
-	bool							m_heatExchangeDataFileIsCyclic = false;					// XML:A
 
 
 	// *** Variables used only during simulation ***
