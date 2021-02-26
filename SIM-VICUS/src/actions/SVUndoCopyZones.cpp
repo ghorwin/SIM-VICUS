@@ -15,7 +15,6 @@ SVUndoCopyZones::SVUndoCopyZones(const QString & label, unsigned int buildingLev
 
 void SVUndoCopyZones::undo() {
 
-
 	// remove appended room
 	for ( VICUS::Room r : m_copiedRooms ) {
 		const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(r.m_parent);
