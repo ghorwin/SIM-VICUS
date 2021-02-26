@@ -488,40 +488,36 @@ void SVDBScheduleEditWidget::updateDailyCycleSelectButtons() {
 	m_ui->toolButtonDeleteCurrentDailyCycle->setEnabled(m_currentInterval->m_dailyCycles.size() > 1);
 }
 
-
-// TODO : Dirk, use toggled for all check boxes
-
-
 void SVDBScheduleEditWidget::on_checkBoxMonday_toggled(bool checked) {
 	updateDayTypes(NANDRAD::Schedule::ST_MONDAY, checked);
 }
 
-void SVDBScheduleEditWidget::on_checkBoxTuesday_stateChanged(int arg1) {
-	updateDayTypes(NANDRAD::Schedule::ST_TUESDAY, arg1==2);
+void SVDBScheduleEditWidget::on_checkBoxTuesday_toggled(bool checked) {
+	updateDayTypes(NANDRAD::Schedule::ST_TUESDAY, checked);
 }
 
-void SVDBScheduleEditWidget::on_checkBoxHoliday_stateChanged(int arg1) {
-	updateDayTypes(NANDRAD::Schedule::ST_HOLIDAY, arg1==2);
+void SVDBScheduleEditWidget::on_checkBoxHoliday_toggled(bool checked) {
+	updateDayTypes(NANDRAD::Schedule::ST_HOLIDAY, checked);
 }
 
-void SVDBScheduleEditWidget::on_checkBoxWednesday_stateChanged(int arg1) {
-	updateDayTypes(NANDRAD::Schedule::ST_WEDNESDAY, arg1==2);
+void SVDBScheduleEditWidget::on_checkBoxWednesday_toggled(bool checked) {
+	updateDayTypes(NANDRAD::Schedule::ST_WEDNESDAY, checked);
 }
 
-void SVDBScheduleEditWidget::on_checkBoxThursday_stateChanged(int arg1) {
-	updateDayTypes(NANDRAD::Schedule::ST_THURSDAY, arg1==2);
+void SVDBScheduleEditWidget::on_checkBoxThursday_toggled(bool checked) {
+	updateDayTypes(NANDRAD::Schedule::ST_THURSDAY, checked);
 }
 
-void SVDBScheduleEditWidget::on_checkBoxFriday_stateChanged(int arg1) {
-	updateDayTypes(NANDRAD::Schedule::ST_FRIDAY, arg1==2);
+void SVDBScheduleEditWidget::on_checkBoxFriday_toggled(bool checked) {
+	updateDayTypes(NANDRAD::Schedule::ST_FRIDAY, checked);
 }
 
-void SVDBScheduleEditWidget::on_checkBoxSaturday_stateChanged(int arg1) {
-	updateDayTypes(NANDRAD::Schedule::ST_SATURDAY, arg1==2);
+void SVDBScheduleEditWidget::on_checkBoxSaturday_toggled(bool checked) {
+	updateDayTypes(NANDRAD::Schedule::ST_SATURDAY, checked);
 }
 
-void SVDBScheduleEditWidget::on_checkBoxSunday_stateChanged(int arg1) {
-	updateDayTypes(NANDRAD::Schedule::ST_SUNDAY, arg1==2);
+void SVDBScheduleEditWidget::on_checkBoxSunday_toggled(bool checked) {
+	updateDayTypes(NANDRAD::Schedule::ST_SUNDAY, checked);
 }
 
 

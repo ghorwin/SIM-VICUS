@@ -55,19 +55,19 @@ private slots:
 
 	void on_tableWidgetPeriods_cellChanged(int row, int column);
 
-	void on_checkBoxTuesday_stateChanged(int arg1);
+	void on_checkBoxTuesday_toggled(bool checked);
 
-	void on_checkBoxHoliday_stateChanged(int arg1);
+	void on_checkBoxHoliday_toggled(bool checked);
 
-	void on_checkBoxWednesday_stateChanged(int arg1);
+	void on_checkBoxWednesday_toggled(bool checked);
 
-	void on_checkBoxThursday_stateChanged(int arg1);
+	void on_checkBoxThursday_toggled(bool checked);
 
-	void on_checkBoxFriday_stateChanged(int arg1);
+	void on_checkBoxFriday_toggled(bool checked);
 
-	void on_checkBoxSaturday_stateChanged(int arg1);
+	void on_checkBoxSaturday_toggled(bool checked);
 
-	void on_checkBoxSunday_stateChanged(int arg1);
+	void on_checkBoxSunday_toggled(bool checked);
 
 	void on_checkBoxMonday_toggled(bool checked);
 
