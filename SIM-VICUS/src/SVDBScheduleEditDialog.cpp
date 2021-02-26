@@ -82,7 +82,7 @@ int SVDBScheduleEditDialog::select(unsigned int initialId) {
 
 	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
 
-	// select boundary condition with given matId
+	// select boundary condition with given schedule Id
 	for (int i=0, count = m_dbModel->rowCount(); i<count; ++i) {
 		QModelIndex sourceIndex = m_dbModel->index(i,0);
 		if (m_dbModel->data(sourceIndex, Role_Id).toUInt() == initialId) {

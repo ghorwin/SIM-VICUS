@@ -254,7 +254,6 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 	m_ui->toolButtonRemovePeriode->setEnabled(m_isEditable);
 
 
-	/// TODO Dirk->Andreas wie kann ich alle Elemente der Tabelle auf nicht editierbar stellen?
 }
 
 void SVDBScheduleEditWidget::on_lineEditName_editingFinished()
