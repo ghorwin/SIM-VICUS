@@ -36,6 +36,7 @@ SVDBScheduleDailyCycleEditWidget::SVDBScheduleDailyCycleEditWidget(QWidget *pare
 
 		m_ui->tableWidgetDayCycle->setItem(i,0, new QTableWidgetItem(time));
 		m_ui->tableWidgetDayCycle->item(i,0)->setFlags(m_ui->tableWidgetDayCycle->item(i,0)->flags() & ~Qt::ItemIsEditable);
+		m_ui->tableWidgetDayCycle->item(i,0)->setTextAlignment(Qt::AlignCenter);
 
 
 		QTableWidgetItem *item = new QTableWidgetItem("0");
@@ -48,6 +49,12 @@ SVDBScheduleDailyCycleEditWidget::SVDBScheduleDailyCycleEditWidget(QWidget *pare
 
 	m_ui->tableWidgetDayCycle->setSelectionBehavior(QAbstractItemView::SelectRows);
 	m_ui->tableWidgetDayCycle->setSelectionMode(QAbstractItemView::ExtendedSelection);
+
+	// set period table column sizes
+	int width = m_ui->tableWidgetDayCycle->width();
+
+	m_ui->tableWidgetDayCycle->setColumnWidth(0, 100);
+	m_ui->tableWidgetDayCycle->setColumnWidth(1, width-100);
 }
 
 SVDBScheduleDailyCycleEditWidget::~SVDBScheduleDailyCycleEditWidget(){
@@ -81,6 +88,8 @@ void SVDBScheduleDailyCycleEditWidget::updateInput(VICUS::DailyCycle *dc, SVData
 				break;
 		}
 		m_ui->tableWidgetDayCycle->item(j, 1)->setText(QString::number(val,'g', 3));
+		m_ui->tableWidgetDayCycle->item(j, 1)->setTextAlignment(Qt::AlignCenter);
+
 		if(!isEditable)
 			m_ui->tableWidgetDayCycle->item(j,1)->setFlags(m_ui->tableWidgetDayCycle->item(j,1)->flags() ^ Qt::ItemIsEditable);
 	}
