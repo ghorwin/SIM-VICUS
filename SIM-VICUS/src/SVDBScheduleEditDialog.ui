@@ -109,7 +109,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QGroupBox" name="groupBox_2">
+     <widget class="QGroupBox" name="groupBoxScheduleProperties">
       <property name="minimumSize">
        <size>
         <width>500</width>

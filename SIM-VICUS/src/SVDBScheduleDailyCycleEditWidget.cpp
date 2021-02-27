@@ -64,11 +64,21 @@ SVDBScheduleDailyCycleEditWidget::~SVDBScheduleDailyCycleEditWidget(){
 
 
 void SVDBScheduleDailyCycleEditWidget::updateInput(VICUS::DailyCycle *dc, SVDatabase *db, bool isEditable){
+	m_dailyCycle = dc;
+	m_db = db;
+
+	// if dc == nullptr, clear inputs and return
+	if (dc == nullptr) {
+		m_ui->tableWidgetDayCycle->blockSignals(true);
+		for (int i=0; i<24; ++i) {
+			m_ui->tableWidgetDayCycle->item(i, 1)->setText("");
+		}
+		m_ui->tableWidgetDayCycle->blockSignals(false);
+		return;
+	}
 
 	//timepoints in seconds
 	//set values
-	m_dailyCycle = dc;
-	m_db = db;
 
 	if(m_dailyCycle->m_timePoints.empty()){
 		m_dailyCycle->m_timePoints.push_back(0);

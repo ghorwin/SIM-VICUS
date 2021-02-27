@@ -47,6 +47,9 @@
            <property name="text">
             <string>linear</string>
            </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
          <item>
@@ -160,7 +163,7 @@
      </widget>
      <widget class="QGroupBox" name="groupBoxDailyCycle">
       <property name="title">
-       <string>Daily schedule %1 of %2</string>
+       <string>Daily schedule</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">

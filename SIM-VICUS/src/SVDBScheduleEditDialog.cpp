@@ -68,10 +68,13 @@ void SVDBScheduleEditDialog::edit() {
 	m_ui->pushButtonSelect->setVisible(false);
 	m_ui->pushButtonCancel->setVisible(false);
 
+	m_ui->tableView->blockSignals(true);
 	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
+	m_ui->tableView->blockSignals(false);
 
 	// resize columns
 	m_ui->tableView->resizeColumnsToContents();
+	onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex());
 
 	exec();
 }
@@ -82,6 +85,7 @@ int SVDBScheduleEditDialog::select(unsigned int initialId) {
 	m_ui->pushButtonSelect->setVisible(true);
 	m_ui->pushButtonCancel->setVisible(true);
 
+	m_ui->tableView->blockSignals(true);
 	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
 
 	// select boundary condition with given schedule Id
@@ -95,9 +99,12 @@ int SVDBScheduleEditDialog::select(unsigned int initialId) {
 			break;
 		}
 	}
+	m_ui->tableView->blockSignals(false);
 
 	// ask database model to update its content
 	m_ui->tableView->resizeColumnsToContents();
+
+	onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex());
 
 	int res = exec();
 	if (res == QDialog::Accepted) {
@@ -189,9 +196,11 @@ void SVDBScheduleEditDialog::onCurrentIndexChanged(const QModelIndex &current, c
 		m_ui->pushButtonSelect->setEnabled(false);
 		m_ui->toolButtonRemove->setEnabled(false);
 		m_ui->toolButtonCopy->setEnabled(false);
+		m_ui->groupBoxScheduleProperties->setEnabled(false);
 		m_ui->editWidget->updateInput(-1); // nothing selected
 	}
 	else {
+		m_ui->groupBoxScheduleProperties->setEnabled(true);
 		m_ui->pushButtonSelect->setEnabled(true);
 		// remove is not allowed for built-ins
 		QModelIndex sourceIndex = m_proxyModel->mapToSource(current);
@@ -215,7 +224,7 @@ void SVDBScheduleEditDialog::on_pushButtonReloadUserDB_clicked() {
 		SVSettings::instance().m_db.readDatabases(SVDatabase::DT_Schedules);
 		// tell model to reset completely
 		m_dbModel->resetModel();
-		m_ui->editWidget->updateInput(-1);
+		onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex());
 	}
 }
 

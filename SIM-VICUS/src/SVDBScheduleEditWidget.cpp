@@ -208,22 +208,21 @@ void SVDBScheduleEditWidget::selectDailyCycle() {
 void SVDBScheduleEditWidget::updateInput(int id) {
 	m_current = nullptr; // disable edit triggers
 
-	bool isEnabled = (id == -1 ? false : true);
-
-	//set buttons
-	m_ui->toolButtonAddPeriod->setEnabled(isEnabled);
-	m_ui->toolButtonCopyPeriod->setEnabled(isEnabled);
-	m_ui->toolButtonRemovePeriode->setEnabled(isEnabled);
-	m_ui->lineEditName->setEnabled(isEnabled);
-
-	m_ui->widgetDailyCycleAndDayTypes->setEnabled(false);
-
-	//set table views
-	m_ui->tableWidgetPeriods->setEnabled(isEnabled);
-
-	if (!isEnabled) {
+	if (id == -1) {
 		// clear input controls
 		m_ui->lineEditName->setString(IBK::MultiLanguageString());
+		m_ui->tableWidgetPeriods->blockSignals(true);
+		m_ui->tableWidgetPeriods->setRowCount(0);
+		m_ui->tableWidgetPeriods->blockSignals(false);
+		for (QObject * w : m_ui->widgetDayTypes->children()) {
+			QCheckBox * c = qobject_cast<QCheckBox *>(w);
+			if (c != nullptr) {
+				c->blockSignals(true);
+				c->setChecked(false);
+				c->blockSignals(false);
+			}
+		}
+		m_ui->widgetDailyCycle->updateInput( nullptr , m_db, m_isEditable);
 
 		return;
 	}
