@@ -68,6 +68,16 @@ QVariant SVDBScheduleTableModel::data ( const QModelIndex & index, int role) con
 			} // switch
 		break;
 
+		case Qt::TextAlignmentRole :
+			switch (index.column()) {
+				case ColId					: return int(Qt::AlignLeft | Qt::AlignVCenter);
+				case ColName				: return int(Qt::AlignLeft | Qt::AlignVCenter);
+				case ColCheck				: return int(Qt::AlignCenter | Qt::AlignVCenter);
+				case ColAnnualSplineData	: return int(Qt::AlignCenter | Qt::AlignVCenter);
+				case ColInterpolation		: return int(Qt::AlignCenter | Qt::AlignVCenter);
+			}
+			break;
+
 		case Qt::DecorationRole : {
 			switch (index.column()) {
 				case ColCheck:
@@ -78,9 +88,9 @@ QVariant SVDBScheduleTableModel::data ( const QModelIndex & index, int role) con
 
 				case ColAnnualSplineData :
 					if(it->second.m_periods.empty())
-						return QIcon("");
+						return QIcon("");			///TODO hier brauchen wir ein Bild für einen jährliche Daten
 					else
-						return QIcon("");
+						return QIcon("");			///TODO hier brauchen wir ein Bild für einen periodische Daten
 
 				case ColInterpolation :
 					if(it->second.m_useLinearInterpolation)
@@ -115,6 +125,9 @@ QVariant SVDBScheduleTableModel::headerData(int section, Qt::Orientation orienta
 			switch ( section ) {
 				case ColId					: return tr("Id");
 				case ColName				: return tr("Name");
+				case ColCheck				: return tr("Valid");
+				case ColAnnualSplineData	: return tr("Type");
+				case ColInterpolation		: return tr("linear");
 			}
 		} break;
 

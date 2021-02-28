@@ -28,7 +28,7 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 	//add header to periods table
 	m_ui->tableWidgetPeriods->setColumnCount(3);
 	m_ui->tableWidgetPeriods->setHorizontalHeaderItem(0, new QTableWidgetItem(tr("Date")));
-	m_ui->tableWidgetPeriods->setHorizontalHeaderItem(1, new QTableWidgetItem(tr("")));
+	m_ui->tableWidgetPeriods->setHorizontalHeaderItem(1, new QTableWidgetItem(tr("Valid")));
 	m_ui->tableWidgetPeriods->setHorizontalHeaderItem(2, new QTableWidgetItem(tr("Name")));
 
 //	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
@@ -89,6 +89,10 @@ void SVDBScheduleEditWidget::updatePeriodTable(const int &activeRow){
 		m_ui->tableWidgetPeriods->setItem(i,0,itemDate);
 		m_ui->tableWidgetPeriods->setItem(i,2,new QTableWidgetItem(QtExt::MultiLangString2QString(m_current->m_periods[i].m_displayName)));
 		m_ui->tableWidgetPeriods->setItem(i,1,new QTableWidgetItem());
+		m_ui->tableWidgetPeriods->item(i,0)->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+		/// TODO Dirk->Andreas wie bekomme ich das bild in die mitte? über textAlignment funktioniert es nicht
+		m_ui->tableWidgetPeriods->item(i,1)->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+		m_ui->tableWidgetPeriods->item(i,2)->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 		if(!m_isEditable){
 			m_ui->tableWidgetPeriods->item(i,1)->setFlags(m_ui->tableWidgetPeriods->item(i,1)->flags() ^ Qt::ItemIsEditable);
 			m_ui->tableWidgetPeriods->item(i,2)->setFlags(m_ui->tableWidgetPeriods->item(i,1)->flags() ^ Qt::ItemIsEditable);
@@ -100,7 +104,7 @@ void SVDBScheduleEditWidget::updatePeriodTable(const int &activeRow){
 			m_ui->tableWidgetPeriods->item(i,1)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/ok.png"));
 
 	}
-
+	m_ui->tableWidgetPeriods->setCurrentCell(activeRow,1);
 	on_tableWidgetPeriods_currentCellChanged(activeRow,0,0,0);
 	//m_ui->tableWidgetPeriods->selectRow(activeRow);
 

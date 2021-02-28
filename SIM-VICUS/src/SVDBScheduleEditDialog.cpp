@@ -60,6 +60,8 @@ SVDBScheduleEditDialog::~SVDBScheduleEditDialog() {
 	delete m_ui;
 }
 
+///TODO Andreas es wird noch nicht direkt das valid symbol in der Auswahltabelle der Zeitpläne angepasst sobald der Zeitplan valid ist. Dazu muss man einmal die ScheduleZeile wechseln
+/// Bitte anpassen
 
 void SVDBScheduleEditDialog::edit() {
 
