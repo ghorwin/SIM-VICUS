@@ -125,7 +125,7 @@ QVariant SVDBScheduleTableModel::headerData(int section, Qt::Orientation orienta
 			switch ( section ) {
 				case ColId					: return tr("Id");
 				case ColName				: return tr("Name");
-				case ColCheck				: return tr("Valid");
+				case ColCheck				: break; // valid column is self-explanatory and does not need a caption
 				case ColAnnualSplineData	: return tr("Type");
 				case ColInterpolation		: return tr("linear");
 			}

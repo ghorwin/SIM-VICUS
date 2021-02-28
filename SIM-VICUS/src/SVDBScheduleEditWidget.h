@@ -82,6 +82,11 @@ private slots:
 
 	void on_radioButtonLinear_toggled(bool checked);
 
+	/*! Triggered, when editing of the current schedule requires re-evaluation of "valid" status and
+		update of symbol in table.
+	*/
+	void onValidityInfoUpdated();
+
 private:
 
 	/*! Update the period table. */

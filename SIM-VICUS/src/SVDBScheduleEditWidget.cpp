@@ -27,15 +27,13 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 
 	//add header to periods table
 	m_ui->tableWidgetPeriods->setColumnCount(3);
-	m_ui->tableWidgetPeriods->setHorizontalHeaderItem(0, new QTableWidgetItem(tr("Date")));
-	m_ui->tableWidgetPeriods->setHorizontalHeaderItem(1, new QTableWidgetItem(tr("Valid")));
-	m_ui->tableWidgetPeriods->setHorizontalHeaderItem(2, new QTableWidgetItem(tr("Name")));
-
-//	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-//	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+	// Note: valid column is self-explanatory and does not need a caption
+	m_ui->tableWidgetPeriods->setHorizontalHeaderLabels(QStringList() << tr("Start date") << QString() << tr("Name"));
 
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetPeriods);
-	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
 
 	m_ui->tableWidgetPeriods->setSortingEnabled(false);
 
@@ -68,10 +66,12 @@ SVDBScheduleEditWidget::~SVDBScheduleEditWidget() {
 	delete m_ui;
 }
 
+
 void SVDBScheduleEditWidget::setup(SVDatabase * db, SVDBScheduleTableModel * dbModel) {
 	m_db = db;
 	m_dbModel = dbModel;
 }
+
 
 void SVDBScheduleEditWidget::updatePeriodTable(const int &activeRow){
 	//int currRow = m_ui->tableWidgetPeriods->currentRow();
@@ -98,10 +98,11 @@ void SVDBScheduleEditWidget::updatePeriodTable(const int &activeRow){
 			m_ui->tableWidgetPeriods->item(i,2)->setFlags(m_ui->tableWidgetPeriods->item(i,1)->flags() ^ Qt::ItemIsEditable);
 		}
 
-		m_ui->tableWidgetPeriods->item(i,1)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/error.png"));
-
 		if(m_current->m_periods[i].isValid())
 			m_ui->tableWidgetPeriods->item(i,1)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/ok.png"));
+		else
+			m_ui->tableWidgetPeriods->item(i,1)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/error.png"));
+
 
 	}
 	m_ui->tableWidgetPeriods->setCurrentCell(activeRow,1);
@@ -453,13 +454,7 @@ void SVDBScheduleEditWidget::updateDayTypes(const NANDRAD::Schedule::ScheduledDa
 	m_db->m_schedules.m_modified = true;
 
 	// if schedule interval is valid -> green background
-	int row = m_ui->tableWidgetPeriods->currentRow();
-	if(row>=0 && m_currentInterval->isValid()){
-
-		m_ui->tableWidgetPeriods->item(row,1)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/ok.png"));
-	}
-	else
-		m_ui->tableWidgetPeriods->item(row,1)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/error.png"));
+	onValidityInfoUpdated();
 }
 
 
@@ -498,6 +493,7 @@ void SVDBScheduleEditWidget::updateDailyCycleSelectButtons() {
 
 	// remove button requires more than one daily cycle
 	m_ui->toolButtonDeleteCurrentDailyCycle->setEnabled(m_currentInterval->m_dailyCycles.size() > 1);
+	onValidityInfoUpdated();
 }
 
 void SVDBScheduleEditWidget::on_checkBoxMonday_toggled(bool checked) {
@@ -612,4 +608,19 @@ void SVDBScheduleEditWidget::on_radioButtonLinear_toggled(bool checked)
 		return;
 
 	m_current->m_useLinearInterpolation = (checked ? true : false);
+}
+
+
+void SVDBScheduleEditWidget::onValidityInfoUpdated() {
+	Q_ASSERT(m_current != nullptr);
+	// get index of currently edited item
+	int currentIdx = m_ui->tableWidgetPeriods->currentRow(); // Must be != -1
+	Q_ASSERT(currentIdx != -1);
+	if (m_current->m_periods[currentIdx].isValid())
+		m_ui->tableWidgetPeriods->item(currentIdx,1)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/ok.png"));
+	else
+		m_ui->tableWidgetPeriods->item(currentIdx,1)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/error.png"));
+
+	// since this function is called whenever the data was added, we also need to inform the model about our modification
+	m_dbModel->setItemModified(m_current->m_id);
 }
