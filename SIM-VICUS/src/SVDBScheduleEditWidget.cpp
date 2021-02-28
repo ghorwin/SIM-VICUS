@@ -31,9 +31,6 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 	m_ui->tableWidgetPeriods->setHorizontalHeaderLabels(QStringList() << tr("Start date") << QString() << tr("Name"));
 
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetPeriods);
-	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
-	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
 
 	m_ui->tableWidgetPeriods->setSortingEnabled(false);
 
@@ -53,11 +50,14 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 
 
 	// set period table column sizes
-	int width = m_ui->tableWidgetPeriods->width();
 
-	m_ui->tableWidgetPeriods->setColumnWidth(0, 50);
+	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+	QFontMetrics fm(m_ui->tableWidgetPeriods->horizontalHeader()->font());
+	int width = fm.boundingRect(tr("Start date")).width();
+	m_ui->tableWidgetPeriods->setColumnWidth(0, width);
+	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Fixed);
 	m_ui->tableWidgetPeriods->setColumnWidth(1, 24);
-	m_ui->tableWidgetPeriods->setColumnWidth(2, width-80);
+	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
 }
 
 

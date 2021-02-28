@@ -74,6 +74,7 @@ PRE_TARGETDEPS += \
 
 
 SOURCES += \
+				../../src/SVDBDailyCycleInputWidget.cpp \
 				../../src/SVDBScheduleAddDialog.cpp \
 				../../src/SVDBInternalLoadTableModel.cpp \
 				../../src/SVDBInternalLoadsPersonEditDialog.cpp \
@@ -198,6 +199,7 @@ SOURCES += \
 				../../src/SVWelcomeScreen.cpp
 
 HEADERS  += \
+				../../src/SVDBDailyCycleInputWidget.h \
 				../../src/SVDBScheduleAddDialog.h \
 				../../src/SVDBInternalLoadTableModel.h \
 				../../src/SVDBInternalLoadsPersonEditDialog.h \
