@@ -32,7 +32,7 @@ public:
 	static QDate requestDate(const QString & title, const QString & label, const QString & dateFormat = "dd.MM.", QDate * initialValue = nullptr);
 
 private:
-	Ui::DateTimeInputDialog *m_ui;
+	::Ui::DateTimeInputDialog *m_ui;
 };
 
 
