@@ -130,6 +130,12 @@ QVariant SVDBScheduleTableModel::headerData(int section, Qt::Orientation orienta
 				case ColInterpolation		: break; // icon columns are self-explanatory and do not need a caption
 			}
 		} break;
+		case Qt::ToolTipRole:{
+			switch (section){
+				///TODO Dirk->Andreas können wir dann wenigstens einen ToolTip einbauen? Wenn ja wie geht das?
+				case ColCheck				: QString(tr("Valid Schedule"));
+			}
+		} break;
 
 		case Qt::FontRole : {
 			QFont f;
