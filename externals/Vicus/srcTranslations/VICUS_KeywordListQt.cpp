@@ -65,12 +65,12 @@ KeywordListQt::KeywordListQt() {
 	tr("Eutrophication potential.");
 	tr("Total use of non-renewable primary energy resources.");
 	tr("Total use of renewable primary energy resources .");
-	tr("Dry density of the material.");
-	tr("Specific heat capacity of the material.");
-	tr("Miscellaneous");
-	tr("Miscellaneous");
-	tr("Miscellaneous");
-	tr("Miscellaneous");
+	tr("Person Count.");
+	tr("Convective Heat Factor.");
+	tr("Person");
+	tr("ElectricEquiment");
+	tr("Lighting");
+	tr("Other");
 	tr("Person per m2");
 	tr("m2 per Person");
 	tr("Person count");

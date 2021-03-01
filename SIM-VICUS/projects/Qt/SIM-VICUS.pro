@@ -26,7 +26,8 @@ LIBS += -L../../../lib$${DIR_PREFIX} \
 				-lQuaZIP \
 				-lTiCPP \
 				-lGenericBuildings \
-				-lVicus
+				-lVicus \
+				-lqwt6
 
 win32 {
 				LIBS += -luser32
@@ -51,6 +52,7 @@ INCLUDEPATH = \
 				../../../externals/Vicus/src \
 				../../../externals/Vicus/srcTranslations \
 				../../../externals/TiCPP/src \
+				../../../externals/qwt/src \
 				../../../externals/QuaZIP/src \
 				../../../externals/QuaZIP/src/zlib \
 				../../../externals/GenericBuildings/src \
@@ -74,6 +76,7 @@ PRE_TARGETDEPS += \
 
 
 SOURCES += \
+				../../src/SVChartUtils.cpp \
 				../../src/SVDBDailyCycleInputWidget.cpp \
 				../../src/SVDBScheduleAddDialog.cpp \
 				../../src/SVDBInternalLoadTableModel.cpp \
@@ -199,6 +202,7 @@ SOURCES += \
 				../../src/SVWelcomeScreen.cpp
 
 HEADERS  += \
+				../../src/SVChartUtils.h \
 				../../src/SVDBDailyCycleInputWidget.h \
 				../../src/SVDBScheduleAddDialog.h \
 				../../src/SVDBInternalLoadTableModel.h \

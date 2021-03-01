@@ -152,10 +152,10 @@ namespace VICUS {
 			// InternalLoad::Category
 			case 6 :
 			switch (t) {
-				case 0 : return "Miscellaneous";
-				case 1 : return "Miscellaneous";
-				case 2 : return "Miscellaneous";
-				case 3 : return "Miscellaneous";
+				case 0 : return "Person";
+				case 1 : return "ElectricEquiment";
+				case 2 : return "Lighting";
+				case 3 : return "Other";
 			} break;
 			// InternalLoad::PersonCountMethod
 			case 7 :
@@ -428,10 +428,10 @@ namespace VICUS {
 			// InternalLoad::Category
 			case 6 :
 			switch (t) {
-				case 0 : return "Miscellaneous";
-				case 1 : return "Miscellaneous";
-				case 2 : return "Miscellaneous";
-				case 3 : return "Miscellaneous";
+				case 0 : return "Person";
+				case 1 : return "ElectricEquiment";
+				case 2 : return "Lighting";
+				case 3 : return "Other";
 			} break;
 			// InternalLoad::PersonCountMethod
 			case 7 :
@@ -699,16 +699,16 @@ namespace VICUS {
 			// InternalLoad::para_t
 			case 5 :
 			switch (t) {
-				case 0 : return "Dry density of the material.";
-				case 1 : return "Specific heat capacity of the material.";
+				case 0 : return "Person Count.";
+				case 1 : return "Convective Heat Factor.";
 			} break;
 			// InternalLoad::Category
 			case 6 :
 			switch (t) {
-				case 0 : if (no_description != nullptr) *no_description = true; return "Miscellaneous";
-				case 1 : if (no_description != nullptr) *no_description = true; return "Miscellaneous";
-				case 2 : if (no_description != nullptr) *no_description = true; return "Miscellaneous";
-				case 3 : if (no_description != nullptr) *no_description = true; return "Miscellaneous";
+				case 0 : return "Person";
+				case 1 : return "ElectricEquiment";
+				case 2 : return "Lighting";
+				case 3 : return "Other";
 			} break;
 			// InternalLoad::PersonCountMethod
 			case 7 :
@@ -981,10 +981,10 @@ namespace VICUS {
 			// InternalLoad::Category
 			case 6 :
 			switch (t) {
-				case 0 : return "";
-				case 1 : return "";
-				case 2 : return "";
-				case 3 : return "";
+				case 0 : return "-";
+				case 1 : return "-";
+				case 2 : return "-";
+				case 3 : return "-";
 			} break;
 			// InternalLoad::PersonCountMethod
 			case 7 :

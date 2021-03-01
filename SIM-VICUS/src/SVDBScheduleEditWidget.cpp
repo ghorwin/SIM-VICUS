@@ -43,12 +43,6 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 	// initial state is "nothing selected"
 	updateInput(-1);
 
-	QList<int> sizes;
-	int widthSchedule = 50;
-	int availableWidth = m_ui->splitter->width();
-	sizes << widthSchedule << (availableWidth - widthSchedule);
-	m_ui->splitter->setSizes(sizes);
-
 
 	// set period table column sizes
 
