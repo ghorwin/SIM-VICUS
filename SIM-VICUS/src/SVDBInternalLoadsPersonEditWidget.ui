@@ -2,19 +2,11 @@
 <ui version="4.0">
  <class>SVDBInternalLoadsPersonEditWidget</class>
  <widget class="QWidget" name="SVDBInternalLoadsPersonEditWidget">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>655</width>
-    <height>311</height>
-   </rect>
-  </property>
-  <property name="minimumSize">
-   <size>
-    <width>600</width>
-    <height>0</height>
-   </size>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -36,22 +28,10 @@
    </item>
    <item row="3" column="1">
     <widget class="QtExt::ValidatingLineEdit" name="lineEditPersonCount">
-     <property name="minimumSize">
-      <size>
-       <width>100</width>
-       <height>0</height>
-      </size>
-     </property>
      <property name="maximumSize">
       <size>
        <width>100</width>
        <height>16777215</height>
-      </size>
-     </property>
-     <property name="baseSize">
-      <size>
-       <width>30</width>
-       <height>0</height>
       </size>
      </property>
     </widget>
@@ -70,14 +50,7 @@
     </widget>
    </item>
    <item row="1" column="1" colspan="3">
-    <widget class="QComboBox" name="comboBoxCategory">
-     <property name="minimumSize">
-      <size>
-       <width>300</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
+    <widget class="QComboBox" name="comboBoxCategory"/>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="labelCategory">
@@ -93,23 +66,10 @@
     </widget>
    </item>
    <item row="4" column="1" colspan="3">
-    <widget class="QLineEdit" name="lineEditOccupancyScheduleName">
-     <property name="minimumSize">
-      <size>
-       <width>300</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
+    <widget class="QLineEdit" name="lineEditOccupancyScheduleName"/>
    </item>
    <item row="6" column="1">
     <widget class="QtExt::ValidatingLineEdit" name="lineEditConvectiveFactor">
-     <property name="minimumSize">
-      <size>
-       <width>100</width>
-       <height>0</height>
-      </size>
-     </property>
      <property name="maximumSize">
       <size>
        <width>100</width>
@@ -136,24 +96,10 @@
     </widget>
    </item>
    <item row="2" column="1" colspan="3">
-    <widget class="QComboBox" name="comboBoxPersonMethod">
-     <property name="minimumSize">
-      <size>
-       <width>300</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
+    <widget class="QComboBox" name="comboBoxPersonMethod"/>
    </item>
    <item row="5" column="1" colspan="3">
-    <widget class="QLineEdit" name="lineEditActivityScheduleName">
-     <property name="minimumSize">
-      <size>
-       <width>300</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
+    <widget class="QLineEdit" name="lineEditActivityScheduleName"/>
    </item>
    <item row="3" column="2">
     <widget class="QLabel" name="labelPersonCountUnit">
@@ -189,7 +135,7 @@
      </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>195</width>
+       <width>50</width>
        <height>20</height>
       </size>
      </property>
@@ -222,34 +168,14 @@
      </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>195</width>
+       <width>50</width>
        <height>20</height>
       </size>
      </property>
     </spacer>
    </item>
-   <item row="8" column="1">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>30</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
    <item row="0" column="1" colspan="3">
-    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName">
-     <property name="minimumSize">
-      <size>
-       <width>300</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
+    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="labelDisplayName">
@@ -273,6 +199,19 @@
       <bool>true</bool>
      </property>
     </widget>
+   </item>
+   <item row="8" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>30</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>
