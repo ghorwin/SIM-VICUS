@@ -64,7 +64,7 @@ public:
 
 	//double adjustmentReferenceUnit(const QString &refQ);
 
-	/*! TODO Andreas das ist noch falsch ie bekomm ich hier das gebäude*/
+	/*! TODO Dirk, LCA -> Milestone anlegen und dort in Tickets/Discussion besprechen. */
 	VICUS::Building							m_building;
 
 	/*! EPD results for
