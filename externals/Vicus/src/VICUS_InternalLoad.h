@@ -9,11 +9,6 @@
 #include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
 
-
-///TODO Katja
-/// alle Beschreibungen verbessern
-/// Einheiten Info Keyword ...
-
 namespace VICUS {
 
 /*! Describes the course of all Internal Loads (Person, Lighting, Equipment, Other).
@@ -43,6 +38,7 @@ public:
 		NUM_MC
 	};
 
+	/*! The description is used to identify the unit in the gui. */
 	enum PersonCountMethod{
 		PCM_PersonPerArea,		// Keyword: PersonPerArea					[-]		'Person per m2'
 		PCM_AreaPerPerson,		// Keyword: AreaPerPerson					[-]		'm2 per Person'
