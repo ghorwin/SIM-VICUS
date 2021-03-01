@@ -56,7 +56,7 @@
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="1003" inletNodeId="0" outletNodeId="101" componentId="2" displayName="hx">
 						<LinearSplineParameter name="HeatExchangeSpline">
-							<TSVFile>${Project Directory}/0_climate/HeatFlux.csv</TSVFile>
+							<TSVFile>${Project Directory}/0_climate/HeatFlux.csv?2</TSVFile>
 						</LinearSplineParameter>
 					</HydraulicNetworkElement>
 				</Elements>
