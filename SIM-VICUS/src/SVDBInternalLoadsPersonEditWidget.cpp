@@ -119,9 +119,8 @@ void SVDBInternalLoadsPersonEditWidget::updateInput(int id) {
 }
 
 void SVDBInternalLoadsPersonEditWidget::on_lineEditName_editingFinished() {
-	///TODO Katja
 	Q_ASSERT(m_current != nullptr);
-	if (m_current->m_displayName != m_ui->lineEditName->string()) {  // currentdisplayname is multilanguage string..übersetzen notwendig für vergleich?
+	if (m_current->m_displayName != m_ui->lineEditName->string()) {  // currentdisplayname is multilanguage string
 		m_current->m_displayName = m_ui->lineEditName->string();
 		m_db->m_internalLoads.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data

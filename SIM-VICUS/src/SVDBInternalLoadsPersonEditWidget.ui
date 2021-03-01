@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>622</width>
-    <height>268</height>
+    <width>655</width>
+    <height>311</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -20,89 +20,17 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="labelDisplayName">
-     <property name="minimumSize">
-      <size>
-       <width>60</width>
-       <height>0</height>
-      </size>
-     </property>
+   <item row="4" column="4">
+    <widget class="QToolButton" name="toolButtonSelectOccupancy">
      <property name="text">
-      <string>Name:</string>
+      <string>...</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="1" colspan="3">
-    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName">
-     <property name="minimumSize">
-      <size>
-       <width>300</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="4">
-    <widget class="QtExt::ColorButton" name="pushButtonPersonColor">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="labelCategory">
-     <property name="minimumSize">
-      <size>
-       <width>60</width>
-       <height>0</height>
-      </size>
-     </property>
+   <item row="5" column="4">
+    <widget class="QToolButton" name="toolButtonSelectActivity">
      <property name="text">
-      <string>Level of Detail:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1" colspan="3">
-    <widget class="QComboBox" name="comboBoxCategory">
-     <property name="minimumSize">
-      <size>
-       <width>300</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="labelCategory_2">
-     <property name="minimumSize">
-      <size>
-       <width>60</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="text">
-      <string>Person Count Method:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1" colspan="3">
-    <widget class="QComboBox" name="comboBoxPersonMethod">
-     <property name="minimumSize">
-      <size>
-       <width>300</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="labelPersonCount">
-     <property name="text">
-      <string>Max. Person Count:</string>
+      <string>...</string>
      </property>
     </widget>
    </item>
@@ -128,56 +56,6 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="2">
-    <widget class="QLabel" name="labelPersonCountUnit">
-     <property name="text">
-      <string>Person</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="3">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>195</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="labelDisplayName_2">
-     <property name="minimumSize">
-      <size>
-       <width>60</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="text">
-      <string>Occupancy Schedule Name:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1" colspan="3">
-    <widget class="QLineEdit" name="lineEditOccupancyScheduleName">
-     <property name="minimumSize">
-      <size>
-       <width>300</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="4">
-    <widget class="QToolButton" name="toolButtonSelectOccupancy">
-     <property name="text">
-      <string>...</string>
-     </property>
-    </widget>
-   </item>
    <item row="5" column="0">
     <widget class="QLabel" name="labelDisplayName_3">
      <property name="minimumSize">
@@ -191,8 +69,8 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="1" colspan="3">
-    <widget class="QLineEdit" name="lineEditActivityScheduleName">
+   <item row="1" column="1" colspan="3">
+    <widget class="QComboBox" name="comboBoxCategory">
      <property name="minimumSize">
       <size>
        <width>300</width>
@@ -201,17 +79,26 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="4">
-    <widget class="QToolButton" name="toolButtonSelectActivity">
+   <item row="1" column="0">
+    <widget class="QLabel" name="labelCategory">
+     <property name="minimumSize">
+      <size>
+       <width>60</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="text">
-      <string>...</string>
+      <string>Level of Detail:</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="labelConvectiveFactor">
-     <property name="text">
-      <string>Convective Factor:</string>
+   <item row="4" column="1" colspan="3">
+    <widget class="QLineEdit" name="lineEditOccupancyScheduleName">
+     <property name="minimumSize">
+      <size>
+       <width>300</width>
+       <height>0</height>
+      </size>
      </property>
     </widget>
    </item>
@@ -231,10 +118,67 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="4">
+    <widget class="QtExt::ColorButton" name="pushButtonPersonColor">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
    <item row="6" column="2">
     <widget class="QLabel" name="labelConvectiveFactorUnit">
      <property name="text">
       <string>-</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="3">
+    <widget class="QComboBox" name="comboBoxPersonMethod">
+     <property name="minimumSize">
+      <size>
+       <width>300</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1" colspan="3">
+    <widget class="QLineEdit" name="lineEditActivityScheduleName">
+     <property name="minimumSize">
+      <size>
+       <width>300</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QLabel" name="labelPersonCountUnit">
+     <property name="text">
+      <string>Person</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="labelPersonCount">
+     <property name="text">
+      <string>Max. Person Count:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="labelDisplayName_2">
+     <property name="minimumSize">
+      <size>
+       <width>60</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Occupancy Schedule Name:</string>
      </property>
     </widget>
    </item>
@@ -251,7 +195,40 @@
      </property>
     </spacer>
    </item>
-   <item row="7" column="1">
+   <item row="2" column="0">
+    <widget class="QLabel" name="labelCategory_2">
+     <property name="minimumSize">
+      <size>
+       <width>60</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Person Count Method:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="labelConvectiveFactor">
+     <property name="text">
+      <string>Convective Factor:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="3">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>195</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="8" column="1">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -263,6 +240,39 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="0" column="1" colspan="3">
+    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName">
+     <property name="minimumSize">
+      <size>
+       <width>300</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="labelDisplayName">
+     <property name="minimumSize">
+      <size>
+       <width>60</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Name:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0" colspan="5">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Hier muss bitte ein SCI Chart wie im CCM für die Diagramme rein. Wichtig dabei man muss vom Jahresdatensatz alles sehen und rein bis zur Stundenauflösung.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
