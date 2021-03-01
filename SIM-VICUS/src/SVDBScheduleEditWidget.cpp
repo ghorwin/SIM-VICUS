@@ -18,6 +18,7 @@
 #include "SVDBScheduleTableModel.h"
 #include "SVDBScheduleDailyCycleEditWidget.h"
 #include "SVStyle.h"
+#include "SVChartUtils.h"
 
 SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 	QWidget(parent),
@@ -39,6 +40,7 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 	m_ui->widgetPeriod->layout()->setMargin(0);
 	m_ui->widgetDayTypes->layout()->setMargin(0);
 
+	configureChart(m_ui->plotWidget);
 
 	// initial state is "nothing selected"
 	updateInput(-1);
