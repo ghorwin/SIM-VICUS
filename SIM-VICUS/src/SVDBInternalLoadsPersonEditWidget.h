@@ -38,6 +38,8 @@ private slots:
 
 	void on_pushButtonPersonColor_colorChanged();
 
+	void on_toolButtonSelectOccupancy_clicked();
+
 private:
 	Ui::SVDBInternalLoadsPersonEditWidget	*m_ui;
 

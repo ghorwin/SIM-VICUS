@@ -167,7 +167,6 @@ void readFlagElement(const TiXmlElement * element, IBK::Flag & f) {
 		throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 			IBK::FormatString("Error reading 'IBK:Flag' tag, expected 'true' or 'false' as value.") ), FUNC_ID);
 	}
-
 }
 
 

@@ -11,7 +11,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayoutMaster">
    <item row="4" column="4">
     <widget class="QToolButton" name="toolButtonSelectOccupancy">
      <property name="text">

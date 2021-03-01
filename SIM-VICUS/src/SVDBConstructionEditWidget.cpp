@@ -25,7 +25,8 @@ SVDBConstructionEditWidget::SVDBConstructionEditWidget(QWidget * parent) :
 {
 	m_ui->setupUi(this);
 	layout()->setMargin(0);
-
+	m_ui->gridLayout->setMargin(4);
+	m_ui->verticalLayout->setMargin(4);
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), "fr", true);
 	m_ui->lineEditName->setDialog3Caption(tr("Construction identification name"));

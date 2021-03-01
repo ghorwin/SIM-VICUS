@@ -18,6 +18,7 @@ SVDBComponentEditDialog::SVDBComponentEditDialog(QWidget *parent) :
 	m_ui(new Ui::SVDBComponentEditDialog)
 {
 	m_ui->setupUi(this);
+	m_ui->gridLayoutTableView->setMargin(4);
 
 	SVStyle::formatDatabaseTableView(m_ui->tableView);
 	m_ui->tableView->horizontalHeader()->setVisible(true);
@@ -29,6 +30,7 @@ SVDBComponentEditDialog::SVDBComponentEditDialog(QWidget *parent) :
 	m_ui->tableView->setModel(m_proxyModel);
 
 	m_ui->editWidget->setup(&SVSettings::instance().m_db, m_dbModel);
+	m_ui->verticalLayoutEditWidget->setMargin(0);
 
 	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBComponentTableModel::ColCheck, QHeaderView::Fixed);
 	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBComponentTableModel::ColColor, QHeaderView::Fixed);

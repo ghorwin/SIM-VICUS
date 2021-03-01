@@ -18,8 +18,10 @@ SVDBInternalLoadsPersonEditDialog::SVDBInternalLoadsPersonEditDialog(QWidget *pa
 	QDialog(parent),
 	m_ui(new Ui::SVDBInternalLoadsPersonEditDialog)
 {
+	// Must only be created from main window. */
+	Q_ASSERT(dynamic_cast<SVMainWindow*>(parent) != nullptr);
 	m_ui->setupUi(this);
-	m_ui->gridLayout->setMargin(4);
+	m_ui->gridLayoutTableView->setMargin(4);
 
 	SVStyle::formatDatabaseTableView(m_ui->tableView);
 	m_ui->tableView->horizontalHeader()->setVisible(true);

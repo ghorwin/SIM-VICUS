@@ -26,7 +26,7 @@
       <property name="title">
        <string>Person Models</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout">
+      <layout class="QGridLayout" name="gridLayoutTableView">
        <item row="1" column="3">
         <spacer name="horizontalSpacer">
          <property name="orientation">

@@ -23,7 +23,7 @@
       <property name="title">
        <string>Components</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout">
+      <layout class="QGridLayout" name="gridLayoutTableView">
        <item row="1" column="2">
         <widget class="QToolButton" name="toolButtonRemove">
          <property name="icon">
@@ -104,8 +104,8 @@
       <property name="title">
        <string>Component properties</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
+      <layout class="QVBoxLayout" name="verticalLayoutEditWidget">
+       <item>
         <widget class="SVDBNetworkComponentEditWidget" name="editWidget" native="true"/>
        </item>
       </layout>

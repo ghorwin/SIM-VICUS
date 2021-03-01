@@ -12,6 +12,7 @@ SVDBInternalLoadsPersonEditWidget::SVDBInternalLoadsPersonEditWidget(QWidget *pa
 	m_ui(new Ui::SVDBInternalLoadsPersonEditWidget)
 {
 	m_ui->setupUi(this);
+	m_ui->gridLayoutMaster->setMargin(4);
 
 
 	// *** populate combo boxes ***
@@ -180,3 +181,8 @@ void SVDBInternalLoadsPersonEditWidget::on_pushButtonPersonColor_colorChanged() 
 }
 
 
+
+void SVDBInternalLoadsPersonEditWidget::on_toolButtonSelectOccupancy_clicked()
+{
+
+}

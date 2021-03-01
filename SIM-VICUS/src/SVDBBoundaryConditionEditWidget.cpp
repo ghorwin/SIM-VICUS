@@ -17,6 +17,7 @@ SVDBBoundaryConditionEditWidget::SVDBBoundaryConditionEditWidget(QWidget *parent
 	m_ui(new Ui::SVDBBoundaryConditionEditWidget)
 {
 	m_ui->setupUi(this);
+	m_ui->gridLayoutMaster->setMargin(4);
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), "fr", true);
 	m_ui->lineEditName->setDialog3Caption("Boundary condition identification name");

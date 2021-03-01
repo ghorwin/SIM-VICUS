@@ -29,7 +29,7 @@
       <property name="title">
        <string>Constructions</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout">
+      <layout class="QGridLayout" name="gridLayoutTableView">
        <item row="0" column="0" colspan="4">
         <widget class="QTableView" name="tableView">
          <property name="alternatingRowColors">

@@ -24,6 +24,7 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 	m_ui(new Ui::SVDBScheduleEditWidget)
 {
 	m_ui->setupUi(this);
+	m_ui->gridLayoutMaster->setMargin(4);
 
 	//add header to periods table
 	m_ui->tableWidgetPeriods->setColumnCount(3);

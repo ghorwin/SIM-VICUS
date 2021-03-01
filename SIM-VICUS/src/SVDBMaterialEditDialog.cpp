@@ -21,7 +21,7 @@ SVDBMaterialEditDialog::SVDBMaterialEditDialog(QWidget *parent) :
 	// dialog most only be created by main window
 	Q_ASSERT(dynamic_cast<SVMainWindow*>(parent) != nullptr);
 	m_ui->setupUi(this);
-	m_ui->gridLayout->setMargin(4);
+	m_ui->gridLayoutTableView->setMargin(4);
 
 	SVStyle::formatDatabaseTableView(m_ui->tableView);
 	m_ui->tableView->horizontalHeader()->setVisible(true);
@@ -47,7 +47,6 @@ SVDBMaterialEditDialog::SVDBMaterialEditDialog(QWidget *parent) :
 	// set item delegate for coloring built-ins
 	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn);
 	m_ui->tableView->setItemDelegate(dg);
-
 }
 
 
