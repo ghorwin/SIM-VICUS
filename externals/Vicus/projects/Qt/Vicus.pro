@@ -72,7 +72,8 @@ HEADERS += \
 	../../src/VICUS_WindowDivider.h \
 	../../src/VICUS_WindowFrame.h \
 	../../src/VICUS_WindowGlazingLayer.h \
-	../../src/VICUS_WindowGlazingSystem.h
+	../../src/VICUS_WindowGlazingSystem.h \
+	../../src/VICUS_ZoneTemplate.h
 
 SOURCES += \
 	../../src/VICUS_ArgsParser.cpp \
@@ -101,6 +102,7 @@ SOURCES += \
 	../../src/VICUS_Schedule.cpp \
 	../../src/VICUS_ScheduleInterval.cpp \
 	../../src/VICUS_Surface.cpp \
+	../../src/VICUS_ZoneTemplate.cpp \
 	../../src/ncg/ncg_VICUS_BoundaryCondition.cpp \
 	../../src/ncg/ncg_VICUS_Building.cpp \
 	../../src/ncg/ncg_VICUS_BuildingLevel.cpp \
