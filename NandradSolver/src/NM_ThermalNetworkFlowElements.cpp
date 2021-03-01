@@ -48,18 +48,16 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 	{
 
 		// calculate inner heat transfer coefficient
-		const double velocity = std::fabs(m_massFlux)/(m_fluidVolume * m_fluidDensity);
-		const double viscosity = m_fluidViscosity.value(m_meanTemperature);
-		m_reynolds = ReynoldsNumber(velocity, viscosity, m_innerDiameter);
-		m_prandtl = PrandtlNumber(viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
+		m_velocity = std::fabs(m_massFlux)/(m_fluidVolume * m_fluidDensity);
+		m_viscosity = m_fluidViscosity.value(m_meanTemperature);
+		m_reynolds = ReynoldsNumber(m_velocity, m_viscosity, m_innerDiameter);
+		m_prandtl = PrandtlNumber(m_viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
 		m_nusselt = NusseltNumber(m_reynolds, m_prandtl, m_length, m_innerDiameter);
 		double innerHeatTransferCoefficient = m_nusselt * m_fluidConductivity /
 												m_innerDiameter;
 
-		// calculate heat transmittance
-
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-		const double UAValueTotal = m_length / (
+		m_thermalTransmittance = m_length / (
 					  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
 					+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)
 					+ 1.0/m_UValuePipeWall )
@@ -68,7 +66,7 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 		const double ambientTemperature = *m_externalTemperatureRef;
 		// calculate heat loss with given parameters
 		// Q in [W] = DeltaT * UAValueTotal
-		m_heatLoss = UAValueTotal * (m_meanTemperature - ambientTemperature);
+		m_heatLoss = m_thermalTransmittance * (m_meanTemperature - ambientTemperature);
 	}
 }
 
@@ -197,16 +195,16 @@ void TNDynamicPipeElement::setInflowTemperature(double Tinflow) {
 		m_heatLoss = 0.0;
 
 		// assume constant heat transfer coefficient along pipe, using average temperature
-		const double velocity = std::fabs(m_massFlux)/(m_fluidVolume * m_fluidDensity);
-		const double viscosity = m_fluidViscosity.value(m_meanTemperature);
-		const double reynolds = ReynoldsNumber(velocity, viscosity, m_innerDiameter);
-		const double prandtl = PrandtlNumber(viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
-		double nusselt = NusseltNumber(reynolds, prandtl, m_length, m_innerDiameter);
-		double innerHeatTransferCoefficient = nusselt * m_fluidConductivity / m_innerDiameter;
+		m_velocity = std::fabs(m_massFlux)/(m_fluidVolume * m_fluidDensity);
+		m_viscosity = m_fluidViscosity.value(m_meanTemperature);
+		m_reynolds = ReynoldsNumber(m_velocity, m_viscosity, m_innerDiameter);
+		m_prandtl = PrandtlNumber(m_viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
+		m_nusselt = NusseltNumber(m_reynolds, m_prandtl, m_length, m_innerDiameter);
+		double innerHeatTransferCoefficient = m_nusselt * m_fluidConductivity / m_innerDiameter;
 
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
 		// see documentation above
-		const double UAValue = m_discLength / (
+		m_thermalTransmittance = m_discLength / (
 					  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
 					+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)
 					+ 1.0/m_UValuePipeWall )
@@ -215,7 +213,7 @@ void TNDynamicPipeElement::setInflowTemperature(double Tinflow) {
 		const double ambientTemperature = *m_externalTemperatureRef;
 		for(unsigned int i = 0; i < m_nVolumes; ++i) {
 			// calculate heat loss with given parameters
-			m_heatLosses[i] = UAValue * (m_temperatures[i] - ambientTemperature);
+			m_heatLosses[i] = m_thermalTransmittance * (m_temperatures[i] - ambientTemperature);
 			// sum up heat losses
 			m_heatLoss += m_heatLosses[i];
 		}
@@ -447,13 +445,13 @@ void TNPumpWithPerformanceLoss::setInflowTemperature(double Tinflow) {
 	// Pa * m3/s = N/m2 * m3/s = N*m/s
 
 	// calculate pump performance
-	double Pmechanical = m_massFlux/m_fluidDensity * (*m_pressureHeadRef);
+	double m_mechanicalPower = m_massFlux/m_fluidDensity * (*m_pressureHeadRef);
 
 	// efficiency is defined as portion of total electrical power used for mechanical
 	// Pelectrical * m_pumpEfficiency = Pmechanical
-	double Pelectrical = Pmechanical/m_pumpEfficiency;
+	double m_electricalPower = m_mechanicalPower/m_pumpEfficiency;
 	// calculate heat flux into fluid
-	m_heatLoss = - (Pelectrical - Pmechanical);
+	m_heatLoss = - (m_electricalPower - m_mechanicalPower);
 }
 
 
@@ -483,8 +481,8 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 	m_inflowTemperature = Tinflow;
 	// TODO Hauke: use mean evaporator temperature instead of evaporator inlet temperature?
 	const double COPMax = m_condenserMeanTemperature / (m_condenserMeanTemperature - Tinflow);
-	const double COP = m_carnotEfficiency * COPMax;
-	m_heatLoss = *m_externalHeatLossRef * (COP - 1)/COP;
+	const double m_COP = m_carnotEfficiency * COPMax;
+	m_heatLoss = *m_externalHeatLossRef * (m_COP - 1)/m_COP;
 }
 
 

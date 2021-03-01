@@ -30,16 +30,22 @@ public:
 
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
+		quantities.push_back(QuantityDescription("Velocity","m/s","Fluid velocity", false));
+		quantities.push_back(QuantityDescription("Viscosity","m^2/s","Fluid dynamic viscosity", false));
 		quantities.push_back(QuantityDescription("Reynolds","---","Reynolds number", false));
 		quantities.push_back(QuantityDescription("Prandtl","---","Prandtl number", false));
 		quantities.push_back(QuantityDescription("Nusselt","---","Nusselt number", false));
+		quantities.push_back(QuantityDescription("ThermalTransmittance","W/K","Total thermal transmittance of fluid and pipe wall", false));
 	}
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
 	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
+		valRefs.push_back(&m_velocity);
+		valRefs.push_back(&m_viscosity);
 		valRefs.push_back(&m_reynolds);
 		valRefs.push_back(&m_prandtl);
 		valRefs.push_back(&m_nusselt);
+		valRefs.push_back(&m_thermalTransmittance);
 	}
 
 	/*! Overloaded from ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
@@ -67,6 +73,12 @@ private:
 	/*! Equivalent u-value of the pipe wall and insulation per length of pipe in [W/mK] */
 	double							m_UValuePipeWall;
 
+	/*! Fluid velocity [m/s]*/
+	double							m_velocity = -999;
+
+	/*! Fluid dynamic viscosity in [m2/s]*/
+	double							m_viscosity = -999;
+
 	/*! Reynolds number in [---]*/
 	double							m_reynolds = -999;
 
@@ -75,6 +87,9 @@ private:
 
 	/*! Nusselt number in [---]*/
 	double							m_nusselt = -999;
+
+	/*! Total thermal resistance in [W/K]*/
+	double							m_thermalTransmittance = -999;
 
 	/*! Heat transfer coefficient from outer pipe wall to environment in [W/m2K] */
 	double							m_outerHeatTransferCoefficient = -999;
@@ -147,6 +162,26 @@ public:
 				  const NANDRAD::HydraulicFluid & fluid,
 				  const double &TExt);
 
+	/*! Publishes individual model quantities via descriptions. */
+	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
+		quantities.push_back(QuantityDescription("Velocity","m/s","Fluid velocity", false));
+		quantities.push_back(QuantityDescription("Viscosity","m^2/s","Fluid dynamic viscosity", false));
+		quantities.push_back(QuantityDescription("Reynolds","---","Reynolds number", false));
+		quantities.push_back(QuantityDescription("Prandtl","---","Prandtl number", false));
+		quantities.push_back(QuantityDescription("Nusselt","---","Nusselt number", false));
+		quantities.push_back(QuantityDescription("ThermalTransmittance","W/K","Total thermal transmittance of fluid and pipe wall", false));
+	}
+
+	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
+	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
+		valRefs.push_back(&m_velocity);
+		valRefs.push_back(&m_viscosity);
+		valRefs.push_back(&m_reynolds);
+		valRefs.push_back(&m_prandtl);
+		valRefs.push_back(&m_nusselt);
+		valRefs.push_back(&m_thermalTransmittance);
+	}
+
 	/*! Function retrieving number of internal states.*/
 	unsigned int nInternalStates() const override { return m_nVolumes;}
 
@@ -214,6 +249,24 @@ private:
 	/*! Heat transfer coefficient from outer pipe wall to environment in [W/m2K] */
 	double							m_outerHeatTransferCoefficient = -999;
 
+	/*! Fluid velocity [m/s]*/
+	double							m_velocity = -999;
+
+	/*! Fluid dynamic viscosity in [m2/s]*/
+	double							m_viscosity = -999;
+
+	/*! Reynolds number in [---]*/
+	double							m_reynolds = -999;
+
+	/*! Prandl number in [---]*/
+	double							m_prandtl = -999;
+
+	/*! Nusselt number in [---]*/
+	double							m_nusselt = -999;
+
+	/*! Total thermal resistance in [W/K]*/
+	double							m_thermalTransmittance = -999;
+
 	/*! Reference to external temperature in [K] */
 	const double*					m_externalTemperatureRef = nullptr;
 
@@ -277,6 +330,18 @@ public:
 							  const NANDRAD::HydraulicNetworkComponent & comp,
 							  const double &pRef);
 
+	/*! Publishes individual model quantities via descriptions. */
+	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
+		quantities.push_back(QuantityDescription("ElectricalPower","W","Requested electrical power for current working point", false));
+		quantities.push_back(QuantityDescription("MechanicalPower","W","Mechanical power for current working point", false));
+	}
+
+	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
+	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
+		valRefs.push_back(&m_electricalPower);
+		valRefs.push_back(&m_mechanicalPower);
+	}
+
 	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
 	void setInflowTemperature(double Tinflow) override;
 
@@ -286,6 +351,12 @@ private:
 
 	/*! Pump efficiency [0...1] */
 	double							m_pumpEfficiency = -999;
+
+	/*! Requested electrical power for current working point [W] */
+	double							m_electricalPower = -999;
+
+	/*! Mechanical power for current working point [W] */
+	double							m_mechanicalPower = -999;
 };
 
 
@@ -298,6 +369,16 @@ public:
 							const NANDRAD::HydraulicNetworkComponent & comp,
 							const double &QExt);
 
+	/*! Publishes individual model quantities via descriptions. */
+	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
+		quantities.push_back(QuantityDescription("PerformanceCoefficient","---","Performance coefficient for mechaniscal heat pumps", false));
+	}
+
+	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
+	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
+		valRefs.push_back(&m_COP);
+	}
+
 	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
 	void setInflowTemperature(double Tinflow) override;
 
@@ -309,6 +390,9 @@ private:
 
 	/*! Carnot efficiency [0...1] */
 	double							m_carnotEfficiency = 999;
+
+	/*! Performance coefficient for mechaniscal heat pumps [0...1] */
+	double							m_COP = 999;
 };
 
 
