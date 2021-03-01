@@ -195,36 +195,36 @@ void SVDBComponentEditWidget::on_comboBoxComponentType_currentIndexChanged(int /
 void SVDBComponentEditWidget::on_toolButtonSelectConstruction_clicked() {
 	// get construction edit dialog from mainwindow
 	SVDBConstructionEditDialog * conEditDialog = SVMainWindow::instance().dbConstructionEditDialog();
-	int conId = conEditDialog->select(m_current->m_idConstruction);
-	if (conId != -1) {
+	unsigned int conId = conEditDialog->select(m_current->m_idConstruction);
+	if (conId != m_current->m_idConstruction) {
 		m_current->m_idConstruction = conId;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		updateInput(m_current->m_id);
 	}
+	updateInput((int)m_current->m_id);
 }
 
 
 void SVDBComponentEditWidget::on_toolButtonSelectBoundaryConditionSideAName_clicked() {
 	// get boundary condition edit dialog from mainwindow
 	SVDBBoundaryConditionEditDialog * bcEditDialog = SVMainWindow::instance().dbBoundaryConditionEditDialog();
-	int bcId = bcEditDialog->select(m_current->m_idSideABoundaryCondition);
-	if (bcId != -1) {
-		m_current->m_idSideABoundaryCondition= bcId;
+	unsigned int bcId = bcEditDialog->select(m_current->m_idSideABoundaryCondition);
+	if (bcId != m_current->m_idSideABoundaryCondition) {
+		m_current->m_idSideABoundaryCondition = bcId;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		updateInput(m_current->m_id);
 	}
+	updateInput((int)m_current->m_id);
 }
 
 
 void SVDBComponentEditWidget::on_toolButtonSelectBoundaryConditionSideBName_clicked() {
 	// get boundary condition edit dialog from mainwindow
 	SVDBBoundaryConditionEditDialog * bcEditDialog = SVMainWindow::instance().dbBoundaryConditionEditDialog();
-	int bcId = bcEditDialog->select(m_current->m_idSideBBoundaryCondition);
-	if (bcId != -1) {
+	unsigned int bcId = bcEditDialog->select(m_current->m_idSideBBoundaryCondition);
+	if (bcId != m_current->m_idSideBBoundaryCondition) {
 		m_current->m_idSideBBoundaryCondition = bcId;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		updateInput(m_current->m_id);
 	}
+	updateInput((int)m_current->m_id);
 }
 
 

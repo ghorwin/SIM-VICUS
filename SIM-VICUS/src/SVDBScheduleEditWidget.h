@@ -4,8 +4,6 @@
 #include <QWidget>
 
 #include <NANDRAD_Schedule.h>
-///TODO Dirk->Andreas warum wird das hier gebraucht und nicht in der cpp nur?
-#include <QtExt_DateTimeInputDialog.h>
 
 namespace VICUS {
 	class Schedule;

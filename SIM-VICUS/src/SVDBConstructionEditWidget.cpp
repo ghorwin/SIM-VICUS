@@ -499,13 +499,13 @@ void SVDBConstructionEditWidget::showMaterialSelectionDialog(int index) {
 	// get material edit dialog (owned/managed by main window)
 	SVDBMaterialEditDialog * matSelect = SVMainWindow::instance().dbMaterialEditDialog();
 	// ask to select a material
-	int matId = matSelect->select(m_current->m_materialLayers[(unsigned int)index].m_matId);
-	if (matId != -1) {
-		m_current->m_materialLayers[(unsigned int)index].m_matId = (unsigned int)matId;
+	unsigned int matId = matSelect->select(m_current->m_materialLayers[(unsigned int)index].m_matId);
+	if (matId != m_current->m_materialLayers[(unsigned int)index].m_matId) {
+		m_current->m_materialLayers[(unsigned int)index].m_matId = matId;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		updateTable();
-		updateConstructionView();
 	}
+	updateTable();
+	updateConstructionView();
 }
 
 

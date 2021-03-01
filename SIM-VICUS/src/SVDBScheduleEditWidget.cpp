@@ -12,7 +12,7 @@
 #include <VICUS_Schedule.h>
 
 #include <QtExt_LanguageHandler.h>
-//#include <QtExt_DateTimeInputDialog.h>
+#include <QtExt_DateTimeInputDialog.h>
 #include <QtExt_Conversions.h>
 
 #include "SVDBScheduleTableModel.h"
@@ -149,8 +149,6 @@ void SVDBScheduleEditWidget::updatePeriodTable(const int &activeRow){
 		m_ui->tableWidgetPeriods->setItem(i,2,new QTableWidgetItem(QtExt::MultiLangString2QString(m_current->m_periods[i].m_displayName)));
 		m_ui->tableWidgetPeriods->setItem(i,1,new QTableWidgetItem());
 		m_ui->tableWidgetPeriods->item(i,0)->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
-		/// TODO Dirk->Andreas wie bekomme ich das bild in die mitte? über textAlignment funktioniert es nicht
-		m_ui->tableWidgetPeriods->item(i,1)->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
 		m_ui->tableWidgetPeriods->item(i,2)->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 		if(!m_isEditable){
 			m_ui->tableWidgetPeriods->item(i,1)->setFlags(m_ui->tableWidgetPeriods->item(i,1)->flags() ^ Qt::ItemIsEditable);

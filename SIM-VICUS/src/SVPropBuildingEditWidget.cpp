@@ -118,10 +118,10 @@ void SVPropBuildingEditWidget::on_pushButtonExchangeComponents_clicked() {
 		tr("Replace component"), tr("This will replace all associations with component '%1 [%2]' with another component.")
 			 .arg(QtExt::MultiLangString2QString(comp->m_displayName)).arg(comp->m_id));
 	unsigned int oldId = comp->m_id;
-	int newId = SVMainWindow::instance().dbComponentEditDialog()->select(oldId);
-	if (newId == -1)
+	unsigned int newId = SVMainWindow::instance().dbComponentEditDialog()->select(oldId);
+	if (newId == VICUS::INVALID_ID)
 		return; // user has aborted the dialog
-	// TODO : signal a "recoloring needed" signal to scene in case any of the colors have changed
+	// TODO Andreas: signal a "recoloring needed" signal to scene in case any of the colors have changed
 	// update table (in case user has deleted some components or changed colors
 	setPropertyType(BT_Components); // Note: this invalidates "comp"!
 
