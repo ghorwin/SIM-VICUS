@@ -30,6 +30,7 @@
 #include <IBK_Version.h>
 #include <IBK_messages.h>
 #include <IBK_FormatString.h>
+#include <IBK_FileUtils.h>
 
 #include <CCM_Constants.h>
 
@@ -1937,18 +1938,10 @@ void NandradModel::initOutputReferenceList() {
 	/// \todo append scheduled quantities
 
 
-	// TODO Andreas, refactor to use IBK::file_utils
 	// dump output reference list to file
-#ifdef _WIN32
-	#if defined(_MSC_VER)
-		std::ofstream outputList( (m_dirs.m_varDir / "output_reference_list.txt").wstr().c_str() );
-	#else
-		std::string outputStrAnsi = IBK::WstringToANSI((m_dirs.m_varDir / "output_reference_list.txt").wstr(), false);
-		std::ofstream outputList(outputStrAnsi.c_str());
-	#endif
-#else
-	std::ofstream outputList( (m_dirs.m_varDir / "output_reference_list.txt").str().c_str() );
-#endif
+	std::shared_ptr<std::ofstream> outputList(
+		IBK::create_ofstream(m_dirs.m_varDir / "output_reference_list.txt")
+	);
 
 	for (std::map<std::string, QuantityDescription>::const_iterator it = refDescs.begin();
 		it != refDescs.end(); ++it)
@@ -1959,10 +1952,10 @@ void NandradModel::initOutputReferenceList() {
 			 << it->second.m_description << std::endl;
 		IBK::IBK_Message( IBK::FormatString("%1").arg(strm.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 
-		outputList << strm.rdbuf();
+		(*outputList) << strm.rdbuf();
 	}
-	outputList.flush();
-	outputList.close();
+	outputList->flush();
+	outputList->close();
 }
 
 
