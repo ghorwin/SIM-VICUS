@@ -164,7 +164,10 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 														nullptr);
 			}
 		} catch (IBK::Exception &ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error reading spline '%1'.").arg(m_heatExchangeSpline.m_name), FUNC_ID);
+			if (m_heatExchangeSpline.m_name.empty())
+				throw IBK::Exception(ex, IBK::FormatString("Error initializing spline data."), FUNC_ID);
+			else
+				throw IBK::Exception(ex, IBK::FormatString("Error initializing spline '%1'.").arg(m_heatExchangeSpline.m_name), FUNC_ID);
 		}
 
 	}

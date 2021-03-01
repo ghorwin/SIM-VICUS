@@ -51,7 +51,7 @@ void HydraulicNetwork::checkParameters( const std::map<std::string, IBK::Path> &
 		m_fluid.checkParameters(m_modelType);
 	}
 	catch(IBK::Exception &ex) {
-		throw IBK::Exception(ex, IBK::FormatString("Error intializing fluid with id #%1.")
+		throw IBK::Exception(ex, IBK::FormatString("Error initializing fluid with id #%1.")
 							 .arg(m_fluid.m_id), FUNC_ID);
 	}
 
@@ -61,8 +61,13 @@ void HydraulicNetwork::checkParameters( const std::map<std::string, IBK::Path> &
 			e.checkParameters(*this, placeholders);
 		}
 		catch(IBK::Exception &ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error intializing network element with id #%1.")
-								 .arg(e.m_id), FUNC_ID);
+			if (e.m_component != nullptr)
+				throw IBK::Exception(ex, IBK::FormatString("Error initializing network element with id #%1 and type %2.")
+									 .arg(e.m_id).arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::ModelType",
+																					e.m_component->m_modelType)), FUNC_ID);
+			else
+				throw IBK::Exception(ex, IBK::FormatString("Error initializing network element with id #%1.")
+									 .arg(e.m_id), FUNC_ID);
 		}
 	}
 
@@ -72,7 +77,7 @@ void HydraulicNetwork::checkParameters( const std::map<std::string, IBK::Path> &
 			c.checkParameters(m_modelType);
 		}
 		catch(IBK::Exception &ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error intializing network component with id #%1.")
+			throw IBK::Exception(ex, IBK::FormatString("Error initializing network component with id #%1.")
 								 .arg(c.m_id), FUNC_ID);
 		}
 	}
@@ -82,7 +87,7 @@ void HydraulicNetwork::checkParameters( const std::map<std::string, IBK::Path> &
 			p.checkParameters(m_modelType);
 		}
 		catch(IBK::Exception &ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Error intializing pipe property with id #%1.")
+			throw IBK::Exception(ex, IBK::FormatString("Error initializing pipe property with id #%1.")
 								 .arg(p.m_id), FUNC_ID);
 		}
 	}

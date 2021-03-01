@@ -72,19 +72,16 @@ void LinearSplineParameter::readXML(const TiXmlElement * element) {
 		std::string xunitstr, yunitstr, interpolationMethod, pathStr;
 		std::vector<double> x,y;
 		try {
-			// note: interpolation method is not written or read, it will always be ""
+			// Note: interpolation method is not written or read, it will always be ""
 			TiXmlElement::readIBKLinearSplineParameterElement(element, name, interpolationMethod, xunitstr, x,
 															  yunitstr, y, pathStr);
+
+			// Note: the read function already checks that only xy or tsv-file are given. Also, it checks if
+			//       x and y vectors both have the same length.
 		}
 		catch (std::runtime_error & ex) {
 			throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Error reading 'LinearSplineParameter' tag.") ), FUNC_ID);
-		}
-
-		// check if both x,y and TSVFile are given
-		if (!pathStr.empty() && !x.empty() && !y.empty()){
-			throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				 IBK::FormatString("Error reading 'LinearSplineParameter' tag. There must be either TSVFile or X and Y") ), FUNC_ID);
 		}
 
 		// set either path
@@ -94,6 +91,10 @@ void LinearSplineParameter::readXML(const TiXmlElement * element) {
 		// or set spline
 		else{
 			try {
+				if (xunitstr.empty())
+					throw IBK::Exception("Missing x value unit.", FUNC_ID);
+				if (yunitstr.empty())
+					throw IBK::Exception("Missing y value unit.", FUNC_ID);
 				m_xUnit = IBK::Unit(xunitstr); // may throw in case of invalid unit
 				m_yUnit = IBK::Unit(yunitstr);
 				m_values.setValues(x,y); // may throw in case of invalid data

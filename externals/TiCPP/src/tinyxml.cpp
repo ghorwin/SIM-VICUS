@@ -1426,7 +1426,7 @@ void TiXmlElement::readIBKLinearSplineParameterElement(const TiXmlElement *eleme
 	if (attrib == NULL) {
 		std::stringstream strm;
 		strm << "Error in XML file, line " << element->Row() << ": ";
-		strm << "Missing 'name' attribute in IBK:LinearSpline element.";
+		strm << "Missing 'name' attribute in linear spline element.";
 		throw std::runtime_error(strm.str());
 	}
 	name = attrib->Value();
@@ -1460,9 +1460,29 @@ void TiXmlElement::readIBKLinearSplineParameterElement(const TiXmlElement *eleme
 		else {
 			std::stringstream strm;
 			strm << "Error in XML file, line " << e->Row() << ": ";
-			strm << "Undefined child element '"<< ename << "' in IBK:LinearSpline element, should be either 'X', 'Y' or 'TSVFile'.";
+			strm << "Undefined child element '"<< ename << "' in linear spline element, should be either 'X', 'Y' or 'TSVFile'.";
 			throw std::runtime_error(strm.str());
 		}
+	}
+	if (xdata.empty() && ydata.empty() && path.empty()) {
+		std::stringstream strm;
+		strm << "Error in XML file, line " << element->Row() << ": ";
+		strm << "Expected either X and Y, or TSVFile tag within linear spline element.";
+		throw std::runtime_error(strm.str());
+	}
+	// if we have x, we also need y
+	if (xdata.size() != ydata.size() ) {
+		std::stringstream strm;
+		strm << "Error in XML file, line " << element->Row() << ": ";
+		strm << "X and Y vectors in linear spline element must be both present and have the same number of values.";
+		throw std::runtime_error(strm.str());
+	}
+	// we have an exclusive "or" on XY or TSVFile
+	if (!xdata.empty() && !path.empty()) {
+		std::stringstream strm;
+		strm << "Error in XML file, line " << element->Row() << ": ";
+		strm << "Either X and Y, or TSVFile tag must be defined within linear spline element, bot not both.";
+		throw std::runtime_error(strm.str());
 	}
 }
 
