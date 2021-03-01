@@ -1,4 +1,0 @@
-NetworkElement(id=201).FluidMassFlux	Pump.FluidMassFlux
-NetworkElement(id=201).OutletNodePressure	Pump.OutletNodePressure
-NetworkElement(id=301).FluidMassFlux	Heat Exchanger.FluidMassFlux
-NetworkElement(id=301).OutletNodePressure	Heat Exchanger.OutletNodePressure
