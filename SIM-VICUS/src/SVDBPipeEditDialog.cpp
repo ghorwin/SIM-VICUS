@@ -65,7 +65,7 @@ void SVDBPipeEditDialog::edit() {
 }
 
 
-int SVDBPipeEditDialog::select(unsigned int initialId) {
+unsigned int SVDBPipeEditDialog::select(unsigned int initialId) {
 	m_ui->pushButtonClose->setVisible(false);
 	m_ui->pushButtonSelect->setVisible(true);
 	m_ui->pushButtonCancel->setVisible(true);
@@ -96,12 +96,11 @@ int SVDBPipeEditDialog::select(unsigned int initialId) {
 		QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
 
 		// return ID
-		return sourceIndex.data(Role_Id).toInt();
+		return sourceIndex.data(Role_Id).toUInt();
 	}
 
 	// nothing selected/dialog aborted
-	return -1;
-
+	return VICUS::INVALID_ID;
 }
 
 

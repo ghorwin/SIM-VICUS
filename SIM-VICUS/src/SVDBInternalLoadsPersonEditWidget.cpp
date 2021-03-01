@@ -4,8 +4,11 @@
 #include <VICUS_KeywordListQt.h>
 #include <VICUS_Schedule.h>
 
+#include <QtExt_Conversions.h>
 
 #include "SVDBInternalLoadTableModel.h"
+#include "SVMainWindow.h"
+#include "SVDBScheduleEditDialog.h"
 
 SVDBInternalLoadsPersonEditWidget::SVDBInternalLoadsPersonEditWidget(QWidget *parent) :
 	QWidget(parent),
@@ -60,13 +63,13 @@ void SVDBInternalLoadsPersonEditWidget::updateInput(int id) {
 
 	m_current = const_cast<VICUS::InternalLoad *>(m_db->m_internalLoads[(unsigned int) id ]);
 
-	// we must a valid internal load model pointer
+	// we must have a valid internal load model pointer
 	Q_ASSERT(m_current != nullptr);
 
 	m_ui->lineEditName->setString(m_current->m_displayName);
 	m_ui->pushButtonPersonColor->setColor(m_current->m_color);
 	//change invalid person count method to a valid one
-	if(m_current->m_personCountMethod == VICUS::InternalLoad::PersonCountMethod::NUM_PCM){
+	if (m_current->m_personCountMethod == VICUS::InternalLoad::PersonCountMethod::NUM_PCM){
 		m_current->m_personCountMethod = VICUS::InternalLoad::PersonCountMethod::PCM_PersonCount;
 		m_db->m_internalLoads.m_modified=true;
 	}
@@ -87,16 +90,16 @@ void SVDBInternalLoadsPersonEditWidget::updateInput(int id) {
 	}
 
 	VICUS::Schedule * occSched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_occupancyScheduleId ]);
-	if(occSched != nullptr)
-		m_ui->lineEditOccupancyScheduleName->setText(QString::fromStdString(occSched->m_displayName.string()));
+	if (occSched != nullptr)
+		m_ui->lineEditOccupancyScheduleName->setText(QtExt::MultiLangString2QString(occSched->m_displayName));
 	else
-		m_ui->lineEditOccupancyScheduleName->setText(tr("Schedule is missing."));
+		m_ui->lineEditOccupancyScheduleName->setText(tr("<select schedule>"));
 
-	VICUS::Schedule * actSched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_occupancyScheduleId ]);
-	if(occSched != nullptr)
-		m_ui->lineEditActivityScheduleName->setText(QString::fromStdString(actSched->m_displayName.string()));
+	VICUS::Schedule * actSched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_activityScheduleId ]);
+	if (actSched != nullptr)
+		m_ui->lineEditActivityScheduleName->setText(QtExt::MultiLangString2QString(actSched->m_displayName));
 	else
-		m_ui->lineEditActivityScheduleName->setText(tr("Schedule is missing."));
+		m_ui->lineEditActivityScheduleName->setText(tr("<select schedule>"));
 
 	// for built-ins, disable editing/make read-only
 	bool isbuiltIn = m_current->m_builtIn;
@@ -109,6 +112,7 @@ void SVDBInternalLoadsPersonEditWidget::updateInput(int id) {
 	m_ui->lineEditOccupancyScheduleName->setEnabled(!isbuiltIn);
 }
 
+
 void SVDBInternalLoadsPersonEditWidget::on_lineEditName_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {  // currentdisplayname is multilanguage string
@@ -117,7 +121,6 @@ void SVDBInternalLoadsPersonEditWidget::on_lineEditName_editingFinished() {
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 }
-
 
 
 void SVDBInternalLoadsPersonEditWidget::on_comboBoxPersonMethod_currentIndexChanged(int index) {
@@ -134,6 +137,7 @@ void SVDBInternalLoadsPersonEditWidget::on_comboBoxPersonMethod_currentIndexChan
 
 	m_ui->labelPersonCountUnit->setText(VICUS::KeywordListQt::Description("InternalLoad::PersonCountMethod", index));
 }
+
 
 void SVDBInternalLoadsPersonEditWidget::on_lineEditPersonCount_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
@@ -153,9 +157,7 @@ void SVDBInternalLoadsPersonEditWidget::on_lineEditPersonCount_editingFinished()
 }
 
 
-
-void SVDBInternalLoadsPersonEditWidget::on_lineEditConvectiveFactor_editingFinished()
-{
+void SVDBInternalLoadsPersonEditWidget::on_lineEditConvectiveFactor_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 
 	if ( m_ui->lineEditConvectiveFactor->isValid() ) {
@@ -172,6 +174,7 @@ void SVDBInternalLoadsPersonEditWidget::on_lineEditConvectiveFactor_editingFinis
 	}
 }
 
+
 void SVDBInternalLoadsPersonEditWidget::on_pushButtonPersonColor_colorChanged() {
 	if (m_current->m_color != m_ui->pushButtonPersonColor->color()) {
 		m_current->m_color = m_ui->pushButtonPersonColor->color();
@@ -181,8 +184,22 @@ void SVDBInternalLoadsPersonEditWidget::on_pushButtonPersonColor_colorChanged() 
 }
 
 
+void SVDBInternalLoadsPersonEditWidget::on_toolButtonSelectOccupancy_clicked() {
+	// open schedule edit dialog in selection mode
+	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_occupancyScheduleId);
+	if (m_current->m_occupancyScheduleId != newId) {
+		m_current->m_occupancyScheduleId = newId;
+		m_db->m_internalLoads.m_modified = true;
+	}
+	updateInput((int)m_current->m_id);
+}
 
-void SVDBInternalLoadsPersonEditWidget::on_toolButtonSelectOccupancy_clicked()
-{
-
+void SVDBInternalLoadsPersonEditWidget::on_toolButtonSelectActivity_clicked() {
+	// open schedule edit dialog in selection mode
+	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_activityScheduleId);
+	if (m_current->m_activityScheduleId != newId) {
+		m_current->m_activityScheduleId = newId;
+		m_db->m_internalLoads.m_modified = true;
+	}
+	updateInput((int)m_current->m_id);
 }

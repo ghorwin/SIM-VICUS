@@ -27,9 +27,9 @@ public:
 		\param initialId The boundary condition indicated by this ID is initially selected.
 		\return If a boundary condition was selected and double-clicked/or the "Select" button was
 				pressed, the function returns the ID of the selected boundary condition. Otherwise, if the
-				dialog was aborted, the function returns -1.
+				dialog was aborted, the function returns VICUS::INVALID_ID.
 	*/
-	int select(unsigned int initialId);
+	unsigned int select(unsigned int initialId);
 
 private slots:
 	void on_pushButtonSelect_clicked();

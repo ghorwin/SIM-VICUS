@@ -40,6 +40,8 @@ private slots:
 
 	void on_toolButtonSelectOccupancy_clicked();
 
+	void on_toolButtonSelectActivity_clicked();
+
 private:
 	Ui::SVDBInternalLoadsPersonEditWidget	*m_ui;
 

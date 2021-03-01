@@ -29,9 +29,9 @@ public:
 		\param initialId The component indicated by this ID is initially selected.
 		\return If a component was selected and double-clicked/or the "Select" button was
 				pressed, the function returns the ID of the selected component. Otherwise, if the
-				dialog was aborted, the function returns -1.
+				dialog was aborted, the function returns VICUS::INVALID_ID.
 	*/
-	int select(unsigned int initialId);
+	unsigned int select(unsigned int initialId);
 
 protected:
 	void showEvent(QShowEvent * event) override;
