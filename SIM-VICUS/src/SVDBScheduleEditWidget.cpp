@@ -73,6 +73,64 @@ void SVDBScheduleEditWidget::setup(SVDatabase * db, SVDBScheduleTableModel * dbM
 }
 
 
+void SVDBScheduleEditWidget::updateInput(int id) {
+	m_current = nullptr; // disable edit triggers
+
+	if (id == -1) {
+		// clear input controls
+		m_ui->lineEditName->setString(IBK::MultiLanguageString());
+		m_ui->tableWidgetPeriods->blockSignals(true);
+		m_ui->tableWidgetPeriods->setRowCount(0);
+		m_ui->tableWidgetPeriods->blockSignals(false);
+		for (QObject * w : m_ui->widgetDayTypes->children()) {
+			QCheckBox * c = qobject_cast<QCheckBox *>(w);
+			if (c != nullptr) {
+				c->blockSignals(true);
+				c->setChecked(false);
+				c->blockSignals(false);
+			}
+		}
+		m_ui->widgetDailyCycle->updateInput( nullptr , m_db, m_isEditable);
+
+		return;
+	}
+	m_current = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) id ]);
+	// we must a valid schedule pointer
+	Q_ASSERT(m_current != nullptr);
+
+	m_ui->lineEditName->setString(m_current->m_displayName);
+	m_ui->radioButtonLinear->setChecked(m_current->m_useLinearInterpolation);
+	///TODO Annual Schedule ...
+
+	//period schedule
+	if(m_current->m_annualSchedule.x().empty()){
+
+		//initialize period with one period
+		if(m_current->m_periods.empty()){
+			m_current->m_periods.push_back(VICUS::ScheduleInterval());
+			m_db->m_schedules.m_modified=true;
+		}
+		m_ui->tableWidgetPeriods->selectRow(0);
+
+		//check that this schedule has a period
+		//if not create first period
+		updatePeriodTable();
+	}
+	//annualSchedule
+	else{
+
+	}
+
+	// for built-ins, disable editing/make read-only
+	m_isEditable = !m_current->m_builtIn;
+	m_ui->lineEditName->setReadOnly(!m_isEditable);
+
+	m_ui->toolButtonAddPeriod->setEnabled(m_isEditable);
+	m_ui->toolButtonCopyPeriod->setEnabled(m_isEditable);
+	m_ui->toolButtonRemovePeriode->setEnabled(m_isEditable);
+}
+
+
 void SVDBScheduleEditWidget::updatePeriodTable(const int &activeRow){
 	//int currRow = m_ui->tableWidgetPeriods->currentRow();
 	m_ui->tableWidgetPeriods->blockSignals(true);
@@ -210,67 +268,7 @@ void SVDBScheduleEditWidget::selectDailyCycle() {
 }
 
 
-void SVDBScheduleEditWidget::updateInput(int id) {
-	m_current = nullptr; // disable edit triggers
-
-	if (id == -1) {
-		// clear input controls
-		m_ui->lineEditName->setString(IBK::MultiLanguageString());
-		m_ui->tableWidgetPeriods->blockSignals(true);
-		m_ui->tableWidgetPeriods->setRowCount(0);
-		m_ui->tableWidgetPeriods->blockSignals(false);
-		for (QObject * w : m_ui->widgetDayTypes->children()) {
-			QCheckBox * c = qobject_cast<QCheckBox *>(w);
-			if (c != nullptr) {
-				c->blockSignals(true);
-				c->setChecked(false);
-				c->blockSignals(false);
-			}
-		}
-		m_ui->widgetDailyCycle->updateInput( nullptr , m_db, m_isEditable);
-
-		return;
-	}
-	m_current = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) id ]);
-	// we must a valid schedule pointer
-	Q_ASSERT(m_current != nullptr);
-
-	m_ui->lineEditName->setString(m_current->m_displayName);
-	m_ui->radioButtonLinear->setChecked(m_current->m_useLinearInterpolation);
-	///TODO Annual Schedule ...
-
-	//period schedule
-	if(m_current->m_annualSchedule.x().empty()){
-
-		//initialize period with one period
-		if(m_current->m_periods.empty()){
-			m_current->m_periods.push_back(VICUS::ScheduleInterval());
-			m_db->m_schedules.m_modified=true;
-		}
-		m_ui->tableWidgetPeriods->selectRow(0);
-
-		//check that this schedule has a period
-		//if not create first period
-		updatePeriodTable();
-	}
-	//annualSchedule
-	else{
-
-	}
-
-	// for built-ins, disable editing/make read-only
-	m_isEditable = !m_current->m_builtIn;
-	m_ui->lineEditName->setReadOnly(!m_isEditable);
-
-	m_ui->toolButtonAddPeriod->setEnabled(m_isEditable);
-	m_ui->toolButtonCopyPeriod->setEnabled(m_isEditable);
-	m_ui->toolButtonRemovePeriode->setEnabled(m_isEditable);
-
-
-}
-
-void SVDBScheduleEditWidget::on_lineEditName_editingFinished()
-{
+void SVDBScheduleEditWidget::on_lineEditName_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {
@@ -279,6 +277,7 @@ void SVDBScheduleEditWidget::on_lineEditName_editingFinished()
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 }
+
 
 void SVDBScheduleEditWidget::on_toolButtonAddPeriod_clicked(){
 	Q_ASSERT(m_current != nullptr);

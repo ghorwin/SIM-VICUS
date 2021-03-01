@@ -19,6 +19,7 @@ SVDBScheduleEditDialog::SVDBScheduleEditDialog(QWidget *parent) :
 	m_ui(new Ui::SVDBScheduleEditDialog)
 {
 	m_ui->setupUi(this);
+	m_ui->gridLayoutTableView->setMargin(4);
 
 	SVStyle::formatDatabaseTableView(m_ui->tableView);
 	m_ui->tableView->horizontalHeader()->setVisible(true);
@@ -30,6 +31,7 @@ SVDBScheduleEditDialog::SVDBScheduleEditDialog(QWidget *parent) :
 	m_ui->tableView->setModel(m_proxyModel);
 
 	m_ui->editWidget->setup(&SVSettings::instance().m_db, m_dbModel);
+	m_ui->verticalLayoutEditWidget->setMargin(0);
 
 	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBScheduleTableModel::ColId, QHeaderView::Fixed);
 	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBScheduleTableModel::ColCheck, QHeaderView::Fixed);
@@ -41,8 +43,6 @@ SVDBScheduleEditDialog::SVDBScheduleEditDialog(QWidget *parent) :
 			this, SLOT(onCurrentIndexChanged(const QModelIndex &, const QModelIndex &)) );
 
 	resize(1400,600);
-
-	m_ui->editWidget->layout()->setMargin(0);
 
 	QList<int> sizes;
 	int widthSchedule = 250;
@@ -146,16 +146,16 @@ void SVDBScheduleEditDialog::on_toolButtonAdd_clicked() {
 	QModelIndex sourceIndex = m_dbModel->addNewItem(newSchedule);
 	QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
 	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
-	// resize ID column
-	sourceIndex = m_dbModel->index(0,SVDBScheduleTableModel::ColId);
-	proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
-	if (proxyIndex.isValid())
-		m_ui->tableView->resizeColumnToContents(proxyIndex.column());
 	// finally select the newly added schedule
 	m_ui->tableView->selectionModel()->blockSignals(true);
 	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
 	m_ui->tableView->selectionModel()->blockSignals(false);
 	onCurrentIndexChanged(proxyIndex, QModelIndex());
+	// resize ID column
+	sourceIndex = m_dbModel->index(0,SVDBScheduleTableModel::ColId);
+	proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
+	if (proxyIndex.isValid())
+		m_ui->tableView->resizeColumnToContents(proxyIndex.column());
 }
 
 

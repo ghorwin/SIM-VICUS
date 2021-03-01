@@ -23,50 +23,40 @@ SVDBInternalLoadsPersonEditWidget::SVDBInternalLoadsPersonEditWidget(QWidget *pa
 	m_ui->comboBoxPersonMethod->blockSignals(true);
 
 	for (unsigned int i=0; i<VICUS::InternalLoad::NUM_PCM; ++i) {
-		QString descrition = VICUS::KeywordListQt::Description("InternalLoad::PersonCountMethod", i);
-		m_ui->comboBoxPersonMethod->addItem(descrition, i);
+		m_ui->comboBoxPersonMethod->addItem(QString("%1 [%2]")
+			.arg(VICUS::KeywordListQt::Description("InternalLoad::PersonCountMethod", (int)i))
+			.arg(VICUS::KeywordListQt::Keyword("InternalLoad::PersonCountMethod", (int)i)), i);
 	}
 	m_ui->comboBoxPersonMethod->blockSignals(false);
 
 	// initial state is "nothing selected"
 	updateInput(-1);
-
 }
 
-SVDBInternalLoadsPersonEditWidget::~SVDBInternalLoadsPersonEditWidget()
-{
+
+SVDBInternalLoadsPersonEditWidget::~SVDBInternalLoadsPersonEditWidget() {
 	delete m_ui;
 }
+
 
 void SVDBInternalLoadsPersonEditWidget::setup(SVDatabase *db, SVDBInternalLoadTableModel *dbModel) {
 	m_db = db;
 	m_dbModel = dbModel;
 }
 
+
 void SVDBInternalLoadsPersonEditWidget::updateInput(int id) {
 	m_current = nullptr; // disable edit triggers
 
-	bool isEnabled = (id == -1 ? false : true);
-
-	//set buttons
-	m_ui->lineEditName->setEnabled(isEnabled);
-	m_ui->pushButtonPersonColor->setEnabled(isEnabled);
-	m_ui->lineEditPersonCount->setEnabled(isEnabled);
-	m_ui->lineEditConvectiveFactor->setEnabled(isEnabled);
-	m_ui->lineEditOccupancyScheduleName->setReadOnly(true);
-	m_ui->lineEditActivityScheduleName->setReadOnly(true);
-	m_ui->lineEditOccupancyScheduleName->setEnabled(isEnabled);
-	m_ui->lineEditActivityScheduleName->setEnabled(isEnabled);
-	m_ui->comboBoxPersonMethod->setEnabled(isEnabled);
-	m_ui->labelPersonCountUnit->setText("");
-
-	if (!isEnabled) {
+	if (id == -1) {
 		// clear input controls
 		m_ui->lineEditName->setString(IBK::MultiLanguageString());
-		m_ui->lineEditConvectiveFactor->setText("-");
+		m_ui->labelPersonCountUnit->setText("");
 		m_ui->lineEditPersonCount->setText("-");
+		m_ui->lineEditConvectiveFactor->setText("-");
 		return;
 	}
+
 	m_current = const_cast<VICUS::InternalLoad *>(m_db->m_internalLoads[(unsigned int) id ]);
 
 	// we must a valid internal load model pointer

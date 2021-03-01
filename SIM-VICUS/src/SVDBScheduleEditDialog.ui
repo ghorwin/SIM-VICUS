@@ -32,7 +32,7 @@
       <property name="title">
        <string>Schedules</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout_5">
+      <layout class="QGridLayout" name="gridLayoutTableView">
        <item row="0" column="0" colspan="4">
         <widget class="QTableView" name="tableView">
          <property name="alternatingRowColors">
@@ -119,8 +119,8 @@
       <property name="title">
        <string>Schedule properties</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout_6">
-       <item row="0" column="0">
+      <layout class="QVBoxLayout" name="verticalLayoutEditWidget">
+       <item>
         <widget class="SVDBScheduleEditWidget" name="editWidget" native="true">
          <property name="minimumSize">
           <size>

@@ -18,8 +18,6 @@ SVDBInternalLoadsPersonEditDialog::SVDBInternalLoadsPersonEditDialog(QWidget *pa
 	QDialog(parent),
 	m_ui(new Ui::SVDBInternalLoadsPersonEditDialog)
 {
-	// dialog most only be created by main window
-	Q_ASSERT(dynamic_cast<SVMainWindow*>(parent) != nullptr);
 	m_ui->setupUi(this);
 	m_ui->gridLayout->setMargin(4);
 
@@ -44,12 +42,11 @@ SVDBInternalLoadsPersonEditDialog::SVDBInternalLoadsPersonEditDialog(QWidget *pa
 	connect(m_ui->tableView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)),
 			this, SLOT(onCurrentIndexChanged(const QModelIndex &, const QModelIndex &)) );
 
+	resize(1400,600);
+
 	// set item delegate for coloring built-ins
 	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn);
 	m_ui->tableView->setItemDelegate(dg);
-
-
-
 }
 
 
@@ -65,13 +62,13 @@ void SVDBInternalLoadsPersonEditDialog::edit() {
 	m_ui->pushButtonSelect->setVisible(false);
 	m_ui->pushButtonCancel->setVisible(false);
 
+	m_ui->tableView->blockSignals(true);
 	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
+	m_ui->tableView->blockSignals(false);
 
 	// ask database model to update its content
-	// TODO : smart resizing of columns - restore user-defined column widths if adjusted by user
 	m_ui->tableView->resizeColumnsToContents();
-
-//	m_ui->editWidget->setCurrentTabIndex(0);
+	onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex());
 
 	exec();
 }
@@ -83,6 +80,7 @@ int SVDBInternalLoadsPersonEditDialog::select(unsigned int initialIntLoadId) {
 	m_ui->pushButtonSelect->setVisible(true);
 	m_ui->pushButtonCancel->setVisible(true);
 
+	m_ui->tableView->blockSignals(true);
 	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
 
 	// select InternalLoadsPerson with given internal loads Id
@@ -96,10 +94,12 @@ int SVDBInternalLoadsPersonEditDialog::select(unsigned int initialIntLoadId) {
 			break;
 		}
 	}
+	m_ui->tableView->blockSignals(false);
 
 	// ask database model to update its content
-	// TODO : smart resizing of columns - restore user-defined column widths if adjusted by user
 	m_ui->tableView->resizeColumnsToContents();
+
+	onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex());
 
 	int res = exec();
 	if (res == QDialog::Accepted) {
@@ -137,6 +137,11 @@ void SVDBInternalLoadsPersonEditDialog::on_toolButtonAdd_clicked() {
 	QModelIndex sourceIndex = m_dbModel->addNewItem();
 	QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
 	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
+	// finally select the newly added item
+	m_ui->tableView->selectionModel()->blockSignals(true);
+	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
+	m_ui->tableView->selectionModel()->blockSignals(false);
+	onCurrentIndexChanged(proxyIndex, QModelIndex());
 	// resize ID column
 	sourceIndex = m_dbModel->index(0,SVDBInternalLoadTableModel::ColId);
 	proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
@@ -159,6 +164,10 @@ void SVDBInternalLoadsPersonEditDialog::on_toolButtonCopy_clicked() {
 	sourceIndex = m_dbModel->addNewItem(*intLoad);
 	QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
 	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
+	m_ui->tableView->selectionModel()->blockSignals(true);
+	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
+	m_ui->tableView->selectionModel()->blockSignals(false);
+	onCurrentIndexChanged(proxyIndex, QModelIndex());
 }
 
 
@@ -180,9 +189,11 @@ void SVDBInternalLoadsPersonEditDialog::onCurrentIndexChanged(const QModelIndex 
 		m_ui->pushButtonSelect->setEnabled(false);
 		m_ui->toolButtonRemove->setEnabled(false);
 		m_ui->toolButtonCopy->setEnabled(false);
+		m_ui->groupBoxProperties->setEnabled(false);
 		m_ui->editWidget->updateInput(-1); // nothing selected
 	}
 	else {
+		m_ui->groupBoxProperties->setEnabled(true);
 		m_ui->pushButtonSelect->setEnabled(true);
 		// remove is not allowed for built-ins
 		QModelIndex sourceIndex = m_proxyModel->mapToSource(current);
@@ -206,17 +217,8 @@ void SVDBInternalLoadsPersonEditDialog::on_pushButtonReloadUserDB_clicked() {
 		SVSettings::instance().m_db.readDatabases(SVDatabase::DT_InternalLoads);
 		// tell model to reset completely
 		m_dbModel->resetModel();
-		m_ui->editWidget->updateInput(-1);
+		onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex());
 	}
-}
-
-
-void SVDBInternalLoadsPersonEditDialog::showEvent(QShowEvent * /*event*/) {
-	// resize splitter
-	QList<int> widgetSizes;
-	int w = width();
-	widgetSizes << w-400 << 400;
-	m_ui->splitter->setSizes(widgetSizes);
 }
 
 

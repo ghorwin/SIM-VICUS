@@ -30,9 +30,6 @@ public:
 	*/
 	int select(unsigned int initialIntLoadId);
 
-protected:
-	void showEvent(QShowEvent * event) override;
-
 private slots:
 	void on_pushButtonSelect_clicked();
 	void on_pushButtonCancel_clicked();
