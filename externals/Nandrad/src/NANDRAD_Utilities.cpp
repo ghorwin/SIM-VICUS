@@ -75,23 +75,34 @@ void readLinearSplineElement(const TiXmlElement * element,
 	FUNCID(NANDRAD::readLinearSplineElement);
 	std::string xunitstr, yunitstr, interpolationMethod;
 	std::vector<double> x,y;
+	std::string pathStr;
 	try {
-		TiXmlElement::readIBKLinearSplineElement(element, name, interpolationMethod, xunitstr, x, yunitstr, y);
+		TiXmlElement::readIBKLinearSplineParameterElement(element, name, interpolationMethod,
+														  xunitstr, x, yunitstr, y, pathStr);
 	}
 	catch (std::runtime_error & ex) {
 		throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 			IBK::FormatString("Error reading 'IBK:LinearSpline' tag.") ), FUNC_ID);
 	}
-	try {
-		if (xunit != nullptr)
-			*xunit = IBK::Unit(xunitstr);
-		if (yunit != nullptr)
-			*yunit = IBK::Unit(yunitstr);
-		spl.setValues(x,y);
-	}
-	catch (IBK::Exception & ex) {
-		throw IBK::Exception(ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-			 IBK::FormatString("Error reading 'IBK:LinearSpline' tag.") ), FUNC_ID);
+	// initialize spline already, but only if not a TSV-file is given
+	if (pathStr.empty()) {
+		try {
+			if (xunit != nullptr) {
+				if (xunitstr.empty())
+					throw IBK::Exception("Missing x value unit.", FUNC_ID);
+				*xunit = IBK::Unit(xunitstr);
+			}
+			if (yunit != nullptr) {
+				if (yunitstr.empty())
+					throw IBK::Exception("Missing y value unit.", FUNC_ID);
+				*yunit = IBK::Unit(yunitstr);
+			}
+			spl.setValues(x,y);
+		}
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				 IBK::FormatString("Error reading 'IBK:LinearSpline' tag.") ), FUNC_ID);
+		}
 	}
 }
 
