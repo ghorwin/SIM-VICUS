@@ -241,7 +241,7 @@ std::ofstream * create_ofstream(const IBK::Path& file, std::ios_base::openmode m
 #endif // _MSC_VER
 
 #else //_WIN32
-	return new std::ofstream(file.str().c_str(), mode);
+	return new std::ofstream(file.c_str(), mode);
 #endif // _WIN32
 }
 
