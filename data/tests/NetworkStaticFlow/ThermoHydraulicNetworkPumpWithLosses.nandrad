@@ -25,7 +25,7 @@
 			</Zone>
 		</Zones>
 		<HydraulicNetworks>
-			<HydraulicNetwork id="1" displayName="static network" modelType="ThermalHydraulicNetwork" referenceElementId="1001">
+			<HydraulicNetwork id="1" displayName="static network" modelType="ThermalHydraulicNetwork" referenceElementId="201">
 				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
 				<IBK:Parameter name="InitialFluidTemperature" unit="C">20</IBK:Parameter>
 				<HydraulicFluid id="1" displayName="Water">
@@ -47,7 +47,7 @@
 				</PipeProperties>
 				<Components>
 					<HydraulicNetworkComponent id="1" modelType="ConstantPressurePump">
-						<IBK:Parameter name="PressureHead" unit="Pa">10000</IBK:Parameter>
+						<IBK:Parameter name="PressureHead" unit="Pa">1000</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 						<IBK:Parameter name="PumpEfficiency" unit="---">0.4</IBK:Parameter>
 					</HydraulicNetworkComponent>
@@ -55,9 +55,9 @@
 					</HydraulicNetworkComponent>
 				</Components>
 				<Elements>
-					<HydraulicNetworkElement id="1001" inletNodeId="101" outletNodeId="0" componentId="1" displayName="pump">
+					<HydraulicNetworkElement id="201" inletNodeId="101" outletNodeId="0" componentId="1" displayName="pump">
 					</HydraulicNetworkElement>
-					<HydraulicNetworkElement id="1002" inletNodeId="0" outletNodeId="101" componentId="2" pipePropertiesId="1" displayName="pipe">
+					<HydraulicNetworkElement id="101" inletNodeId="0" outletNodeId="101" componentId="2" pipePropertiesId="1" displayName="pipe">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 					</HydraulicNetworkElement>
 				</Elements>
@@ -67,19 +67,9 @@
 		<Outputs>
 			<Definitions>
 			<OutputDefinition>
-				<Quantity>OutletNodeTemperature</Quantity>
+				<Quantity>FluidMassFlux</Quantity>
 				<ObjectListName>Network Elements</ObjectListName>
 				<GridName>hourly</GridName>
-			</OutputDefinition>			
-			<OutputDefinition>
-				<Quantity>OutletNodePressure</Quantity>
-				<ObjectListName>Network Elements</ObjectListName>
-				<GridName>hourly</GridName>
-			</OutputDefinition>
-			<OutputDefinition>
-					<Quantity>FluidMassFlux</Quantity>
-					<ObjectListName>Network Elements</ObjectListName>
-					<GridName>hourly</GridName>
 			</OutputDefinition>
 			<OutputDefinition>
 				<Quantity>FluidTemperature</Quantity>

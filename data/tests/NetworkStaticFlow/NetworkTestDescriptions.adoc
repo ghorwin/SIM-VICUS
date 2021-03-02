@@ -92,29 +92,29 @@ FluidTemperature und OutletNodeTemperature von 1001 und 1002
 ```
 FluidMassFlux von 1001 und 1002
 ```
-0.0478246 kg/s
+0.067 kg/s
 ```
 
 ### ThermoHydraulicNetworkPumpWithLosses.nandrad
 
-Fast identisch mit ThermoHydraulicNetworkSimplePipeAdiabat, jetzt hat die Pumpe aber einen Wirkungsrad von 40%.
+Fast identisch mit ThermoHydraulicNetworkSimplePipeAdiabat, jetzt hat die Pumpe aber einen Wirkungsrad von 40%. Dadurch erwärmt sich das Fluid langsam.
 
 Der abgegebene Wärmestrom berechnet sich zu  
 
 ```
-Q_heatloss = (1-0.4) / 0.4 * dp * m_dot / rho = (1-0.4)/ 0.4 * 10000 * 0.0818862 / 998 = 1.23075 W
+Q_heatloss = (1-0.4) / 0.4 * dp * m_dot / rho = (1-0.4)/ 0.4 * 1000 * 0.0666 / 998 = 0.1001 W
 ```
 
 und stimmt mit der Wärmeabgabe der Pumpe überein.
 ```
 NetworkElement(id=1001).FlowElementHeatLoss [W] = 
--1.23076
+-0.100132
 ```
 
 Die OutletNodeTemperature steigt linear an und beträgt nach 24 h Simulationszeit 
 ```
 NetworkElement(id=1001).OutletNodeTemperature [C] =
-20.4893
+20.0395
 ```
 
 

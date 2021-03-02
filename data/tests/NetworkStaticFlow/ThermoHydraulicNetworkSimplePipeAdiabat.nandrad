@@ -18,7 +18,6 @@
 				<DistributionType>AreaWeighted</DistributionType>
 			</SolarLoadsDistributionModel>
 		</SimulationParameter>
-		<SolverParameter />
 		<Zones>
 			<Zone id="1" displayName="dummy" type="Active">
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
