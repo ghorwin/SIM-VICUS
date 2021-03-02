@@ -1,0 +1,214 @@
+:imagesdir: ./images
+[[project_file]]
+# Struktur der Projektdatei
+
+Die NANDRAD-Projektspezifikation ist in einer XML-Datei mit der Erweiterung `nandrad` gespeichert. Der prinzipielle Aufbau der Datei sieht wie folgt aus:
+
+.Definition einer NANDRAD-Projektdatei
+====
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="2.0">
+	<!-- optional DirectoryPlaceholders section-->
+	<DirectoryPlaceholders>...</DirectoryPlaceholders>
+
+    <!-- the actual project specification -->
+	<Project>
+	    <ProjectInfo>...</ProjectInfo>
+	    <Location>...</Location>
+	    <SimulationParameter>...</SimulationParameter>
+	    <SolverParameter>...</SolverParameter>
+	    <Zones>...</Zones>
+	    <ConstructionInstances>...</ConstructionInstances>
+	    <HydraulicNetworks>...</HydraulicNetworks>
+	    <ConstructionTypes>...</ConstructionTypes>
+	    <Materials>...</Materials>
+	    <Models>...</Models>
+	    <Schedules>...</Schedules>
+	    <Outputs>...</Outputs>
+	    <ObjectLists>...</ObjectLists>
+	</Project>
+</NandradProject>
+----
+====
+
+Mit dem optionalen `DirectoryPlaceholders` können relative Pfadplatzhalter definiert werden, die für extern referenzierte Dateien verwendet werden sollen (siehe Abschnitt <<Pfad_Platzhalter>>).
+
+Alle Projektdaten werden in den `<Project>`-Tag eingeschlossen.
+
+Eine Projektdatei kann die folgenden untergeordneten Tags enthalten (die Reihenfolge ist beliebig):
+
+[width="100%",options="header", cols="15%,85%"]
+|====================
+| Child tag | Beschreibung
+| `ProjectInfo` | Allgemeine Projekt-Meta-Informationen -> <<project_info>>
+| `Location` | Klimadaten und Standorteinstellungen -> <<climatic_loads>>
+| `SimulationParameter` | Parameter des Simulationsmodells -> <<simulation_parameters>>
+| `SolverParameter` | Einstellungen und Leistung des numerischen Solvers -> <<solver_parameters>>
+| `Zones` | Zonenspezifikationen -> <<zones>>
+| `ConstructionInstances` | Gebäudekomponenten und Begrenzung conditions -> <<construction_instances>>
+| `HydraulicNetworks` | Thermohydraulische Netze -> <<networks>>
+| `ConstructionTypes` | Definition von mehrschichtigen Konstruktionen -> <<construction_types>>
+| `Materials` | Materialeigenschaften -> <<materials>>
+| `Models` | Modell-Parameterblöcke -> <<models>>
+| `Schedules` | Definition von geplanten Parametern -> <<schedules>>
+| `Outputs` | Definition von Ausgaben -> <<outputs>>
+| `ObjectLists` | Definition von Objektlisten/Objektreferenzgruppe -> <<object_lists>>
+|====================
+
+
+[[basic_types]]
+# Grundlegende Datentypen in der NANDRAD-Projektdatei-Spezifikation
+
+Innerhalb der verschiedenen Spezifikationsabschnitte der Projektdatei werden einige grundlegende Datentypen / xml-Tags häufig verwendet. Die Regeln für die Spezifikation dieser Parameter sind im Folgenden definiert.
+
+[[IBK_Parameter]]
+## IBK:Parameter
+
+Ein XML-Tag mit dem Namen `IBK:Parameter` definiert einen Fließkommaparameter (floating point value parameter), der durch einen Namen und eine physikalische Einheit identifiziert wird (obligatorische XML-Attribute `name` und `unit`). Der Wert des XML-Tags ist der eigentliche Parameterwert.
+
+.Parameter mit verschiedenen Einheiten
+====
+[source,xml]
+----
+<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+<IBK:Parameter name="Temperature" unit="C">20</IBK:Parameter>
+<IBK:Parameter name="Temperature" unit="K">293.15</IBK:Parameter>
+<!-- unitless parameters take the --- unit -->
+<IBK:Parameter name="RelTol" unit="---">0.7</IBK:Parameter>
+----
+====
+
+Die Einheiten müssen aus der globalen Einheitenliste ausgewählt werden, siehe Abschnitt <<Einheiten>>. Wird ein Parameter nicht definiert, wird er als _fehlend_ markiert, was bedeutet, dass entweder ein Standardwert verwendet wird oder - im Falle von obligatorischen Benutzerparametern - ein Fehler ausgelöst wird.
+
+[[IBK_IntPara]]
+## IBK:IntPara
+
+Wird für Flaggen verwendet. Das obligatorische Attribut `name` identifiziert das Flag. Wird ein Flag nicht definiert, wird es als _fehlend_ markiert, was bedeutet, dass entweder ein Standardwert verwendet wird oder - im Falle von obligatorischen Benutzerparametern - ein Fehler ausgelöst wird.
+
+Wird für ganzzahlige Parameter verwendet. Das obligatorische Attribut `Name` identifiziert den Parameter. XML-Tag value ist der Parameterwert. Wird ein Parameter nicht definiert, wird er als _missing_ markiert, was bedeutet, dass entweder ein Standardwert verwendet wird oder - im Falle von obligatorischen Benutzerparametern - ein Fehler ausgelöst wird.
+
+.Ganze Zahl (Integer) Parameter-Definition
+====
+[source,xml]
+----
+<IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
+----
+====
+
+[[IBK_Flag]]
+## IBK:Flag
+
+Wird für Flags verwendet. Das obligatorische Attribut `name` identifiziert das Flag. Wird ein Flag nicht definiert, wird es als _missing_ markiert, was bedeutet, dass entweder ein Standardwert verwendet wird oder - im Falle von obligatorischen Benutzerparametern - ein Fehler ausgelöst wird.
+
+.Flag Definition
+====
+[source,xml]
+----
+<IBK:Flag name="EnableCyclicSchedules">true</IBK:Flag>
+----
+====
+
+Erkannte Werte für Flag-Parameter sind `true` und `1` oder `false` und `0`.
+
+[[IBK_LinearSpline]]
+## IBK:LinearSpline
+
+Eine linearere Spline ist effektiv eine Datentabelle mit x- und y-Werten, wobei die x-Werte streng monoton steigende Werte sind. Das obligatorische Attribut `name` identifiziert die lineare Spline. Die untergeordneten Tags `X` und `Y` enthalten die tatsächlichen Werte, immer ohne Einheit. Die Anzahl der x- und y-Werte muss übereinstimmen.
+
+.Lineare Spline-Definition
+====
+[source,xml]
+----
+<IBK:LinearSpline name="ThermalLoad">
+  <X unit="-">0 6 8 10 17 18 19 20</X>
+  <Y unit="-">0 0,5 0,8 1,0 0,7 0,6 0,5 0</Y>
+</IBK:LinearSpline>
+----
+====
+
+[[LinearSplineParameter]]
+## LinearSplineParameter
+
+Ein LinearSpline-Parameter ist effektiv ein erweiterter `IBK:LinearSpline`-Parameter mit zusätzlichen Attributen.
+
+.LinearSplineParameter Definition
+====
+[source,xml]
+----
+<LinearSplineParameter name="ThermalLoad" interpolationMethod="linear">
+  <X unit="h">0 6 8 10 17 18 19 20</X>
+  <Y unit="W">0 0,5 0,8 1,0 0,7 0,6 0,5 0</Y>
+</LinearSplineParameter>
+----
+====
+
+.Attribute
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+|Attribut|Beschreibung|Format|Verwendung
+| `Name` | Spezifischer Name, der sich auf den Raumtyp bezieht, für den der Jahresplan gesetzt wird | string | _required_
+| `interpolationMethod` 
+a| Gibt die Interpolationsmethode zwischen den definierten y-Werten an.
+
+* `constant` - konstante Interpolation (Werte konstant während des Zeitschritts) 
+* `linear` - lineare Interpolation (Werte linear interpoliert zwischen Zeitschritten)  
+
+| key | _required_
+
+| `WrapMethod` 
+a| Gibt an, was getan werden soll, wenn Werte mit x-Werten außerhalb des x-Wertebereichs angefordert werden.
+
+* `continuous` - konstante Extrapolation (ersten bzw. letzten Wert nehmen)
+* `cyclic` - zyklische Anpassung mit der modellspezifischen Periodenlänge anwenden (z. B. ein Jahr)
+
+| key | _required_
+
+|====================
+
+Die Child-Tags `X` und `Y` enthalten jeweils ein obligatorisches Attribut `unit` mit der jeweiligen Werteinheit (siehe <<units>>).
+
+
+[[pfad_platzhalter]]
+# Pfadplatzhalter
+
+In einigen Teilen der NANDRAD-Projektdatei werden externe Dateien referenziert (z.B. Klimadaten-Dateien, siehe <<loads_climate_files>>).
+Um den Austausch von Projekten oder Referenzdatendateien in gemeinsamen Datenbankverzeichnissen zu vereinfachen, ist es möglich, Pfadplatzhalter in Dateipfaden zu verwenden.
+
+Sie können z. B. `${MyDatabase}` als `/home/sim/climate_DB` definieren und dann in Ihrem Projekt eine Klimadatendatei referenzieren
+über `${MyDatabase}/ClimateData.epw`.
+
+Diese Zuordnung der Platzhalter wird zu Beginn der Projektdatei vorgenommen, sodass beim Austausch von Projektdateien zwischen Computern
+die Platzhalterpfade zu den Verzeichnissen auf dem lokalen Rechner leicht geändert werden können, ohne dass weitere Änderungen in der Projektdatei erforderlich sind.
+
+Die einzelnen Pfadplatzhalter werden in den `DirectoryPlaceholders` definiert:
+
+.Benutzerdefinierte Directory Placeholders
+====
+[source,xml]
+----
+<DirectoryPlaceholders>
+  <Platzhalter name="Klima DB">/home/sim/climate_DB</Placeholder>
+  <Platzhalter name="DataFiles">/home/sim/data</Placeholder>
+</DirectoryPlaceholder>
+----
+====
+
+Es gibt einen eingebauten Platzhalter `${Project Directory}`, der automatisch mit dem Pfad zum Verzeichnis der Projektdatei definiert wird.
+
+[[projekt_info]]
+# Projektinformationen
+
+Dieser Abschnitt enthält Änderungszeiten/-daten und eine kurze Beschreibung des Projekts. Die folgenden untergeordneten Tags werden unterstützt.
+
+[width="100%",options="header", cols="15%,70%,^15%"]
+|====================
+| Child-Tag | Beschreibung | Format
+| `Comment` | Allgemeiner Kommentar zum Projekt. | _string_
+| `Created` | Datum/Uhrzeit der Erstellung dieses Projektes. | _string_
+| `LastEdited` | Datum/Uhrzeit der letzten Änderung des Projektes. | _string_
+|====================
+
+Die Datum/Uhrzeit-Strings für `Created` und `LastEdited` sollten das Datum und die Uhrzeit in einem für den Benutzer lesbaren Format speichern, da sie zum Anzeigen von Listen der Projekte mit Änderungs-/Erstellungsdatum verwendet werden können.
+

@@ -1,0 +1,145 @@
+---
+
+# Referenz
+
+[[units]]
+## Einheitendefinitionen
+
+Im gesamten NANDRAD-Solver werden Einheiten _nur_ für Ein-/Ausgabezwecke verwendet. Innerhalb der Berechnungsfunktionen werden _immer_ die SI-Basiseinheiten verwendet, wodurch Probleme durch Einheitenumrechnungen vermieden werden.
+
+Das Einheitensystem in NANDRAD verwendet die Konvention, dass maximal ein / (Schrägstrich) Teil des Einheitennamens sein darf. Alle Einheiten, die dem Schrägstrich folgen, stehen im Nenner der Einheit. Exponenten stehen nur hinter der Einheit, zum Beispiel `m2`. Punkte in Exponenten werden weggelassen, z. B. `h05` für die Quadratwurzel der Stunde. Mehrere Einheiten werden einfach ohne . oder *-Zeichen aneinandergereiht, z. B. `kWh` oder `kg/m2s`.
+
+[CAUTION]
+====
+Bei Einheiten wird zwischen Groß- und Kleinschreibung unterschieden! Zum Beispiel ist `Deg` korrekt, während `deg` nicht als korrekte Einheit erkannt wird.
+====
+
+[width="100%",options="header", cols="15%,85%"]
+|====================
+| SI-Basiseinheit | Konvertierbare Einheiten
+| - | 
+| --- | %, 1
+| ---/d | %/d
+| 1/K | 
+| 1/logcm | 
+| 1/m | 1/cm
+| 1/Pa | 
+| 1/s | 1/min, 1/h
+| J | kJ, MJ, MWh, kWh, Wh
+| J/K | kJ/K
+| J/kg | kJ/kg
+| J/kgK | kJ/kgK, Ws/kgK, J/gK, Ws/gK
+| J/m2 | kJ/m2, MJ/m2, GJ/m2, J/dm2, J/cm2, kWh/m2
+| J/m2s | W/m2, kW/m2, MW/m2, W/dm2, W/cm2
+| J/m3 | Ws/m3, kJ/m3, MJ/m3, GJ/m3, J/dm3, J/cm3, kWh/m3
+| J/m3K | kJ/m3K
+| J/m3s | kJ/m3s, MJ/m3s, J/dm3s, J/cm3s, J/m3h, W/m3, kW/m3, MW/m3, W/dm3, W/cm3, W/mm3
+| J/mol | kJ/mol
+| J/s | J/h, J/d, kJ/d, W, kW, MW, Nm/s
+| K | C
+| K/m | 
+| K/Pa | 
+| kg | g, mg
+| kg/kg | g/kg, mg/kg
+| kg/m | g/m, g/mm, kg/mm
+| kg/m2 | kg/dm2, g/dm2, g/cm2, mg/m2
+| kg/m2s | g/m2s, g/m2h, g/m2d, kg/m2h, mg/m2s, µg/m2s, mg/m2h, µg/m2h
+| kg/m2s05 | kg/m2h05
+| kg/m3 | kg/dm3, g/dm3, g/cm3, g/m3, mg/m3, µg/m3, log(kg/m3), log(g/m3), log(mg/m3), log(µg/m3)
+| kg/m3s | g/m3s, g/m3h, kg/m3h, mg/m3s, µg/m3s, mg/m3h, µg/m3h
+| kg/m3sK | g/m3sK, g/m3hK, kg/m3hK, mg/m3sK, µg/m3sK, mg/m3hK, µg/m3hK
+| kg/mol | g/mol
+| kg/ms | 
+| kg/s | kg/h, kg/d, g/d, g/a, mg/s, µg/s
+| kWh/a | 
+| kWh/m2a | 
+| l/m2s | l/m2h, l/m2d, mm/d, mm/h
+| l/m3s | l/m3h
+| logcm | 
+| logm | 
+| logPa | 
+| Lux | kLux
+| m | mm, cm, dm
+| m/s | cm/s, cm/h, cm/d
+| m/s2 | 
+| m2 | mm2, cm2, dm2
+| m2/kg | 
+| m2/m3 | 
+| m2/s | cm2/s, m2/h, cm2/h
+| m2K/W | 
+| m2s/kg | 
+| m3 | mm3, cm3, dm3
+| m3/m2s | m3/m2h, dm3/m2s, dm3/m2h
+| m3/m2sPa | m3/m2hPa
+| m3/m3 | Vol%
+| m3/m3d | Vol%/d
+| m3/s | m3/h, dm3/s, dm3/h
+| m3m/m3m | m3mm/m3m
+| mm/m | 
+| mol | mmol
+| mol/kg | mol/g
+| mol/m3 | mol/ltr, mol/dm3, mol/cm3
+| Pa | hPa, kPa, Bar, PSI, Torr
+| Pa/m | kPa/m
+| Person/m2 | 
+| Rad | Deg
+| s | min, h, d, a, sqrt(s), sqrt(h), ms
+| s/m | kg/m2sPa
+| s/s | min/s, h/s, d/s, a/s
+| s2/m2 | 
+| W/K | 
+| W/m2K | 
+| W/m2K2 | 
+| W/m2s | W/m2h, kW/m2s, MW/m2s, W/dm2s, W/cm2s
+| W/mK | kW/mK
+| W/mK2 | 
+| W/Person | kW/Person
+| _undefined_ | 
+|====================
+
+[IMPORTANT]
+====
+Die Einheit `undefined` bedeutet _nicht initialisiert_ (intern) und darf in Eingabedateien nicht verwendet werden.
+====
+
+[[quantities]]
+## Mengenreferenzen
+
+Die folgende Liste von Größen ist eine Übersicht über alle verfügbaren Ergebnisse, die als Ausgaben angefordert werden können. Welche Ausgaben tatsächlich verfügbar sind, hängt vom Projekt ab und wird in der Datei `var/output_reference_list.txt` ausgegeben (siehe Diskussion im Abschnitt <<outputs>>).
+
+Einige der Größen sind vektorwertige Größen, gekennzeichnet mit einem Suffix `(id,xxx)` oder `(index,xxx)`. Um auf diese Werte zuzugreifen, muss die id/der Index in der Ausgabedefinition angeben werden(siehe Erklärung und Beispiele im Abschnitt <<outputs>>).
+
+[width="100%",options="header", cols="15%,15%,5%,55%"]
+|====================
+|Referenz/Objekttyp|Menge|Einheit|Beschreibung
+|ConstructionInstance|FluxHeatConductionA|W|Wärmeleitungsfluss über die Schnittstelle A (in die Konstruktion).
+|ConstructionInstance|FluxHeatConductionB|W|Wärmeleitfluss über die Schnittstelle B (in die Konstruktion).
+|ConstructionInstance|LayerTemperature(index,xxx)|C|Mittlere Schichttemperatur für angeforderte Größen.
+|ConstructionInstance|SurfaceTemperatureA|C|Oberflächentemperatur an der Schnittstelle A.
+|ConstructionInstance|SurfaceTemperatureB|C|Oberflächentemperatur an Grenzfläche B.
+|Location|AirPressure |Pa|Luftdruck.
+|Location|Albedo |---|Albedo-Wert der Umgebung [0..1].
+|Location|AzimutWinkel |Deg|Solarer Azimut (0 - Nord).
+|Location|CO2-Konzentration |---|Umgebende CO2-Konzentration.
+|Location|CO2Dichte |kg/m3|Ambiente CO2-Dichte.
+|Location|DeclinationAngle |Deg|Solare Deklination (0 - Nord).
+|Location|ElevationAngle |Deg|Solare Elevation (0 - am Horizont, 90 - direkt darüber).
+|Location|LWSkyRadiation |W/m2|Langwellige Himmelsstrahlung.
+|Location|Latitude |Deg|Breitengrad.
+|Location|Longitude |Deg|Längengrad.
+|Location|MoistureDensity |kg/m3|Feuchtedichte der Umgebung.
+|Location|RelativeHumidity |%|Relative Feuchte.
+|Location|SWRadDiffuseHorizontal|W/m2|Diffuse kurzwellige Strahlungsflussdichte auf horizontaler Fläche.
+|Location|SWRadDirectNormal |W/m2|Direkte kurzwellige Strahlungsflussdichte in normaler Richtung.
+|Location|Temperatur |C|Außentemperatur.
+|Location|VaporPressure |Pa|Umgebungs-Dampfdruck.
+|Location|WindDirection |Deg|Windrichtung (0 - Nord).
+|Location|WindVelocity |m/s|Windgeschwindigkeit.
+|Model|InfiltrationHeatFlux(id,xxx)|W|Infiltrations-/Naturlüftungswärmestrom
+|Model|InfiltrationRate(id,xxx) |1/h|Natürliche Lüftung/Infiltration Luftwechselrate
+|Zone|LuftTemperatur |C|Raumlufttemperatur.
+|Zone|CompleteThermalLoad |W|Summe aller Wärmeströme in den Raum und Energiequellen.
+|Zone|ConstructionHeatConductionLoad|W|Summe der Wärmeleitungsflüsse von Konstruktionsoberflächen in den Raum.
+|Zone|InfiltrationHeatLoad |W|Infiltration/natürliche Lüftungswärmeströme in den Raum.
+|====================
+ 

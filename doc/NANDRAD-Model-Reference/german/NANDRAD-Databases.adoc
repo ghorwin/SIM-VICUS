@@ -1,0 +1,153 @@
+:imagesdir: ./images
+[[databases]]
+# Eingebettete Datenbanken
+
+Um Gebäudekomponenten wie Wände, Decken und Böden usw. zu modellieren, ist es notwendig, einige Parameter für die Materialien zu definieren. Damit ist es dann möglich Konstruktionen zu definieren, die aus solchen Materialien bestehen. Diese Parameter werden in Datenbanken gespeichert, die eigentlich Listen aus XML-Objekten sind.
+
+[[materials]]
+## Materialien
+
+In der NANDRAD-Projektdatei beginnt der Abschnitt der Materialdatenbank mit einem XML-Tag namens `materials`. 
+
+.Materialien mit Parametern
+====
+[source,xml]
+----
+<Materials>
+	<Material id="1001" displayName="Backstein">
+		<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+		<IBK:Parameter name="Conductivity" unit="W/mK">1,2</IBK:Parameter>
+	</Material>
+	<Material id="1004" displayName="Gute Dämmung">
+		<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
+		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+		<IBK:Parameter name="Conductivity" unit="W/mK">0,02</IBK:Parameter>
+	</Material>
+</Materials>
+----
+====
+
+In diesem tag beginnt jedes Materialeigenschaften-Set mit einem XML-Tag namens `Material` mit zwei XML-Attributen `id` und `displayName`.  
+
+.Attribute
+[options="header",cols="15%,55%,^ 20%,^ 10%",width="100%"]
+|====================
+| Attribut | Beschreibung | Format | Verwendung 
+| `id` | Eindeutige ID des Materials. | > 0 |  _erforderlich_ Informations-/Fehlermeldungen verwendet). | string | _optional_
+| `displayName`  |  Name des Materials (wird für Informations-/Fehlermeldungen verwendet) | string | _optional_
+|====================
+
+Für die Materialparameter wie Dichte, Wärmekapazität und Wärmeleitfähigkeit müssen diese im XML-Tag `IBK:Parameter` definiert werden (siehe <<IBK_Parameter>>):
+
+[options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
+|====================
+| Name | Standardeinheit | Beschreibung | Wertebereich | Verwendung 
+| `Density` | kg/m3 | Trockendichte des Materials. | > 0,01 | _erforderlich_
+| `HeatCapacity` | J/kgK | Spezifische Wärmekapazität des Materials. | >= 100 | _erforderlich_
+| `Conductivity` | W/mK | Wärmeleitfähigkeit des trockenen Materials.  | >= 1e-5 | _erforderlich_
+|====================
+
+
+[[construction_types]]
+## Konstruktionstypen
+
+Konstruktionen werden innerhalb des Abschnitts definiert, der mit einem XML-Tag `ConstructionTypes` beginnt.  
+
+.construction types mit Referenzen zu Materialobjekten
+====
+[source,xml]
+----
+<ConstructionTypes>
+	<ConstructionTypes id="10005" displayName="Testkonstruktion">
+		<MaterialLayers>
+			<MaterialLayer thickness="0.2" matId="1001" /> <!-- room side -->
+			<MaterialLayer thickness="0.3" matId="1004" /> 
+		</MaterialLayers>
+	</ConstructionTypes>
+</ConstructionTypes>
+----
+====
+
+Innerhalb dieses Abschnitts beginnt jede Konstruktionsdefinition mit dem XML-Tag `ConstructionType` mit den XML-Attributen `id` und optional `displayName`:
+
+.Attribute
+[options="header",cols="15%,55%,20%,^ 10%",width="100%"]
+|====================
+| Attribut | Beschreibung | Format | Verwendung 
+| `id` | Eindeutige Identifikationsnummer | positive Ganzzahl ( > 0 ) | _erforderlich_
+| `displayName` | Name der Konstruktion (wird für Informations-/Fehlermeldungen verwendet) | string | _optional_
+|====================
+
+Eine Konstruktion besteht aus einer oder mehreren Materialschichten. Diese werden im untergeordneten XML-Tag mit dem Namen `MaterialLayers` definiert. Jede Materialschicht wird mit dem XML-Tag `MaterialLayer` mit den folgenden XML-Attributen definiert:
+
+[options="header",cols="15%,55%,^ 20%,^ 10%",width="100%"]
+|====================
+| XML-Attribut | Beschreibung | Format | Verwendung 
+| `thickness` | definiert die Dicke der Schicht in `m` | > 0.0 | _erforderlich_
+| `matId` | verweist auf ein Material durch eine eindeutige Material-Identifikationsnummer (`id` wie in einem `Material`-Tag definiert) | string | _erforderlich_
+|====================
+
+Mit der Verwendung des Attributs _matId_ referenzieren Schichten von Konstruktionen die verwendeten Materialien:
+
+.Kollaborationsdiagramm für ConstructionType- und Material-Objekte
+image::Mat_ConstInst.png[]
+
+
+Das `MaterialLayer` hat keine Child-Tags, da alle benötigten Daten wie oben beschrieben als XML-Attribute definiert sind. 
+
+
+[[glazing_systems]]
+## Verglasungssysteme
+
+Verglasungssysteme werden in einer Liste innerhalb des XML-Tags `WindowGlazingSystems` definiert.
+
+.Parameterdefinition für ein Verglasungssystem
+[Quelle,xml, indent=0]
+====
+----
+<WindowGlazingSystems>
+	<WindowGlazingSystem id="123" modelType="Standard">
+		<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">0,4</IBK:Parameter>
+		<LinearSplineParameter name="SHGC" interpolationMethod="linear" wrapMethod="cyclic">
+			<!-- X incidence angle - 90 deg = Sonne steht senkrecht/normal zur Oberfläche -->
+			<X unit="Deg">0 90 </X>
+			<!-- Hinweis: kein konstanter Parameter - SHGC konstant wird wie unten definiert -->
+			<Y unit="---">0.6 0.6 </Y>
+		</LinearSplineParameter>
+	</WindowGlazingSystem>
+</WindowGlazingSystems>
+----
+====
+
+Innerhalb dieses Abschnitts beginnt jede Definition eines Verglasungssystem mit dem XML-Tag `WindowGlazingSystem` mit den XML-Attributen `id`, `modelType` und optional `displayName`:
+
+.Attribute
+[options="header",cols="15%,55%,20%,^ 10%",width="100%"]
+|====================
+| Attribut | Beschreibung | Format | Verwendung 
+| `id` | Eindeutige Identifikationsnummer | positive integer ( > 0 ) | _erforderlich_
+| `displayName` | Name des Verglasungssystems (wird für Informations-/Fehlermeldungen verwendet) | string | _optional_
+| `modelType`  
+a| Identifiziert die Modellkomplexität:
+
+* `Standard` - Standard-Verglasungsmodell, mit einem U-Wert (Wärmedurchgangskoeffizient) und einfallswinkelabhängigem SHGC-Wert
+| string | _optional_
+|====================
+
+
+Skalare Parameter werden innerhalb eines XML-Tags `IBK:Parameter` definiert (siehe <<IBK_Parameter>>):
+
+[options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
+|====================
+| Name | Standardeinheit | Beschreibung | Wertebereich | Verwendung 
+| `ThermalTransmittance` | W/m2K | Wärmedurchgangskoeffizient der Verglasung | > 0 | _erforderlich für Modelltyp Simple_
+|====================
+
+Parameter, die vom Einfallswinkel abhängen, werden in einem XML-Tag `LinearSplineParameter` definiert (siehe <<LinearSplineParameter>>):
+
+[options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
+|====================
+| Name | Standardeinheit | Beschreibung | Wertebereich | Verwendung 
+| `SHGC` | --- | Solarer Wärmegewinnkoeffizient | > 0 | _erforderlich für Modelltyp Simple_
+|====================

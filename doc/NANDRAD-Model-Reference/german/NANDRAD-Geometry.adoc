@@ -1,0 +1,591 @@
+:imagesdir: ./images
+[[zones]]
+# Zonen
+
+Um Gebäude modellieren zu können, ist es notwendig die einzelnen Räume mit den entsprechenden Parametern zu definieren. Eine Zone definiert einen thermisch gut durchmischten Bereich/Raum mit einer einzigen/einheitlichen Lufttemperatur.
+
+Objekte vom Typ `Zone` speichern alle Eigenschaften die benötigt werden, um die Zonentemperatur aus der Energiedichte (der Erhaltungsgröße) zu berechnen.
+
+.Definition der Zonen
+====
+[source,xml,indent=0]
+----
+<Zones>
+	<Zone id="1" displayName="Var01" type="Active">
+		<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+		<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+	</Zone>
+</Zones>
+----
+====
+
+Innerhalb des XML-Tags namens `Zones` beginnt jede Zone mit dem XML-Tag `Zone`. Die folgenden XML-Attribute müssen definiert werden:
+
+[source,xml]
+----
+<Zone id="1" displayName="Var01" type="Active">
+----
+
+.Attribute
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribut | Beschreibung | Format | Verwendung 
+| `id` | eindeutige Identifikationsnumer der Zone | ({nbsp}>{nbsp}0{nbsp}) | _erforderlich_
+| `displayName` | Anzeigename der Zone. Wird benötigt, um die Zone im Datenmodell und in Ausgaben leichter zu finden. | string | _optional_
+| `type`  
+a| Legt fest, ob die Zone ausgeglichen und in das Gleichungssystem einbezogen wird.
+
+* `Constant` als Zone mit konstanten/vordefinierten Temperaturen (Zeitplan)
+* `Active` als Zone, die durch einen Temperaturknoten im Raum beschrieben wird
+* `Ground` als Bodenzone (berechnet die Temperatur auf Basis des Standards) | key | _erforderlich_
+
+|====================
+
+Für _konstante_ Zonen wird angenommen, dass die Temperatur
+vorgegeben ist, während in _Active_ Zonen die Temperatur berechnet wird (d. h. in den
+ Unbekannten des Modells enthalten ist). Eine _konstante_ Zone benötigt nur den Temperaturparameter.
+
+Parameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des tags `IBK:Parameter`):
+
+[options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
+|====================
+|Name|Einheit|Beschreibung|Wertebereich |Verwendung
+| `Volume` | m3 | Zonenluftvolumen | {nbsp}>{nbsp}0.0{nbsp} | _erforderlich_
+| `Area` | m2 | Nettonutzfläche des Erdgeschosses (für flächenbezogene Leistungen und Lasten) | {nbsp}>{nbsp}0.0{nbsp} | _optional_
+| `HeatCapacity` | J/K | Zusätzliche Wärmekapazität (Möbel, etc.) | {nbsp}>={nbsp}0.0{nbsp} | _optional_
+| `Temperature` | C | Temperatur der Zone
+
+nur verwendet, wenn `constant` | -70...120 | (_erforderlich_)
+
+| `RelativeHumidity` | % | Relative Luftfeuchtigkeit der Zone
+
+nur verwendet, wenn `constant` | 0...100 | (_erforderlich_)
+
+| `CO2Concentration` | g/m3 | CO2-Konzentration der Zone
+
+nur verwendet, wenn `constant` | {nbsp}>{nbsp}0.0{nbsp} | (_erforderlich_)
+|====================
+
+[HINWEIS]
+====
+Die Parameter `RelativeHumidity` und `CO2Concentration` müssen nur für _konstante_ Zonen definiert werden, wenn die jeweilige Bilanzgleichung aktiviert ist.
+====
+
+
+[[construction_instances]]
+# Konstruktionsinstanzen
+
+Konstruktionsinstanzen repräsentieren tatsächlich gebaute eindimensionale Teile der Gebäudehülle, z.B. Wände, Böden, Decken, Dächer. Die Definition von Bauinstanzen enthält bauspezifische Parameter, die von mehreren Modellen benötigt werden.
+
+.Definition einer Außenwand nur mit der Randbedingung Wärmeleitung
+====
+[source,xml,indent=0]
+----
+<ConstructionInstances>
+	<!-- Oberfläche Var 01 -->
+	<ConstructionInstances id="1" displayName="All Surfaces Var01">
+		<ConstructionTypeId>10005</ConstructionTypeId>
+		<IBK:Parameter name="Area" unit="m2">62</IBK:Parameter>
+		<InterfaceA id="10" zoneId="1">
+			<!--Interface zu 'Room'-->
+			<InterfaceHeatConduction modelType="Constant">
+				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+			</InterfaceHeatConduction>
+		</InterfaceA>
+		<InterfaceB id="11" zoneId="0">
+			<!-Schnittstelle nach außen-->
+			<InterfaceHeatConduction modelType="Constant">
+				<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+			</InterfaceHeatConduction>
+		</InterfaceB>
+	</ConstructionInstances>
+</ConstructionInstances>
+----
+====
+
+
+Die Konstruktionsinstanzen werden innerhalb des XML-Tags `ConstructionInstances` definiert. Innerhalb des Abschnitts beginnt jede Konstruktionsdefinition mit dem XML-tag `ConstructionInstance` mit den Attributen `id` und `displayName`. 
+
+.Attribute
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribut | Beschreibung | Format | Verwendung 
+| `id` | Identifikationsnummer der Konstruktionsinstanz | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+| `displayName` | Anzeigename der Konstruktionsinstanz. Wird benötigt, um die Konstruktionsinstanz im Datenmodell und in der Ausgaben leichter zu finden. | string | _optional_
+|====================
+
+Die Konstruktionsinstanz hat das folgende _erforderliche_ Child-tag:
+
+.Construction Instance Child tags
+[options="header",cols="20%,60%",width="100%"]
+|====================
+| Tag | Beschreibung 
+| `ConstructionTypeId` | Referenz auf `ConstructionTypeId`
+| `IBK:Parameter` | Verschiedene `IBK:Parameter` für Konstruktionsinstanz
+| `InterfaceA` |Schnittstelle für Konstruktionsinstanz Seite A
+| `InterfaceB` |Interface für Konstruktionen
+|====================
+
+
+* `constructionTypeId` - eindeutige Id, die den Konstruktionstyp der Konstruktionsinstanz definiert
+
+Für die Parameter der Konstruktionsinstanz können die folgenden XML-Tags mit dem Namen `IBK:Parameters` mit den XML-Attributen `name` und `unit` mit den folgenden Einträgen definiert werden:
+
+[options="header",cols="15%,^ 10%,45%,^ 20%,^ 10%",width="100%"]
+|====================
+| Name | Einheit | Beschreibung | Wertebereich | Verwendung 
+| `Orientation` | Deg | Ausrichtung der Wand
+
+wenn eine Schnittstelle eine solare (kurzwellige) Strahlungs-Randbedingung hat, ist sie _erforderlich_ | 0...360 | _erforderlich_ / _optional_
+| `Inclination` | Deg 
+a| Neigung der Wand
+
+* 0 Deg - Dach
+* 90 Grad - senkrechte Wand
+* 180 Deg - nach unten gerichtet
+
+wenn eine Schnittstelle kurz- und/oder langwellige Strahlungsrandbedingung hat, ist sie _erforderlich_ | 0...180 | _erforderlich_ / _optional_
+| `Area` | m2 | Bruttofläche der Wand (inkl. evtl. vorhandener Fenster, Löcher etc.) | > 0 | _erforderlich_
+|====================
+
+Darin müssen die Schnittstellen mit dem XML-Tag `InterfaceA` und `InterfaceB` angegeben werden. Schließlich müssen die Interfaces mit dem XML-Tag `InterfaceA` und `InterfaceB` mit den XML-Attributen `id` und `zoneId` definiert werden.
+Im Folgenden wird dies im Detail beschrieben.
+
+[[construction_discretization]]
+## Räumliche Diskretisierung (Finite-Volumen-Methode)
+
+Während der Berechnung wird jede der Konstruktionen mit Hilfe eines Algorithmus zur Gittergenerierung räumlich diskretisiert. Dieser Algorithmus verwendet drei einflussreiche Parameter, die im Abschnitt <<solver_parameters>> definiert sind:
+
+- `DiscMinDx`
+- `DiscStretchFactor`
+- `DiscMaxElementsPerLayer`
+
+:xrefstyle: short
+
+<<fig_discretization>> veranschaulicht die Wirkung verschiedener Dehnungsfaktoren
+
+:xrefstyle: basic
+
+[[fig_discretization]]
+.verschiedene Diskretisierungsvarianten in Abhängigkeit vom Parameter DiscStretchFactor
+image::Discretization.png[]
+
+Grundsätzlich werden drei verschiedene Gittergenerierungsverfahren unterstützt:
+
+* **minimal grid:** bei `DiscStretchFactor = 0` erzeugt der Algorithmus ein Finites Volumen pro Materialschicht, mit Ausnahme der Randelemente, die immer in zwei aufgeteilt werden (notwendig für die Oberflächenwertextrapolation). So ergeben sich z. B. bei einem 4-Schicht-Aufbau 6 Finite Volumen.
+
+* *equidistant:* bei `DiscStretchFactor = 1` erzeugt der Algorithmus in jeder Schicht gleichmäßig verteilte Gitterelemente, deren Dicke nahe, aber immer kleiner als der Parameter `DiscMinDx` ist. Da Materialschichten unterschiedliche Breiten haben können, ist eine einheitliche Dicke der Gitterelemente in der gesamten Konstruktion möglicherweise nicht möglich. Wählen Sie einen `DiscMinDx`-Parameter, bei dem alle Materialschichtbreiten ganzzahlige Vielfache dieser Rasterelementdicke sind (z.B. __1 mm__)
+
+* *regular grid:* für jeden `DiscStretchFactor > 1` wird ein regelmäßiges, variabel beabstandetes Gitter erzeugt.
+
+### Algorithmus zur Erzeugung eines regulären Gitters
+
+Ein regelmäßiges Streckgitter wird mit einer doppelseitigen __tanh__-Streckfunktion erzeugt. Der Faktor `DiscStretchFactor` bestimmt dabei ungefähr das Verhältnis der ersten beiden Gitterelementbreiten. Natürlich variiert dieser Wachstumsfaktor und geht in der Mitte einer Materialschicht gegen Null, aber er bestimmt sehr schön den gesamten Gitterausschnitt. Ein Faktor von 4 ist ein guter Standardwert.
+
+Der Parameter `DiscMinDx` definiert die maximale Breite der äußersten Gitterelemente in jeder Schicht. Damit wird indirekt auch die Anzahl der Gitterelemente pro Materialschicht bestimmt. Mit zunehmender Anzahl von Gitterelementen pro Schicht werden die äußersten Gitterelemente kleiner. Auf diese Weise bestimmt der Algorithmus die Anzahl der Gitterzellen (für einen gegebenen `DiscStretchFactor`), bis die erzeugte Breite bei den äußersten Gitterelementen gleich oder kleiner als der Parameter `DiscMinDx` ist. Eine minimale Elementdicke von _2 mm_ ist ein guter Standardwert für sehr genaue Berechnungen, aber ein Wert von _5 mm_ kann in vielen Situationen ausreichen (dies reduziert die Anzahl der Unbekannten und eventuell die Simulationszeit erheblich).
+
+Schließlich gibt es noch den Parameter `DiscMaxElementsPerLayer`, mit dem die Anzahl der zu erzeugenden Gitterelemente in einer Materialschicht begrenzt werden kann. Dies ist besonders dann sinnvoll, wenn sehr dicke Materialschichten vorhanden sind und eine große Anzahl von Gitterzellen erzeugt wird. Oft wird diese Genauigkeit nicht benötigt (jedenfalls bei sehr dicken Materialschichten), so dass eine Begrenzung der Anzahl zur Beschleunigung der Berechnung sinnvoll sein kann. Solange die Anzahl der erzeugten Gitterzellen pro Materialschicht `DiscMaxElementsPerLayer` überschreitet, wird der Algorithmus den `DiscStretchFactor` schrittweise erhöhen, bis das Kriterium erfüllt ist. Der Solver wird für jede Konstruktionsschicht, auf die diese Anpassung angewendet wird, eine Warnmeldung ausgeben.
+
+[TIP]
+====
+Wie bei allen numerischen Lösern, die mit Rechengittern arbeiten, gibt es immer einen Kompromiss zwischen Geschwindigkeit und Genauigkeit. Eine Studie über die Empfindlichkeit des Gitters kann hilfreich sein, z. B. indem Sie mit `DiscMinDx = 5 mm` und `DiscStretchFactor = 8` beginnen und dann die Werte schrittweise reduzieren, bis sich die Lösung nicht mehr verändert. Für kleine Gebäude/Modelle, bei denen die Leistung keine Rolle spielt, können die Standardwerte `DiscMinDx = 2 mm` und `DiscStretchFactor = 4` verwendet werden.
+====
+
+
+[[construction_interfaces]]
+# Interfaces (Konstruktions-Randbedingungen)
+
+Die Interfaces definieren Randbedingungen und Parameter für die ein oder zwei Oberflächen `InterfaceA` und `InterfaceB` einer Konstruktionsinstanz. Wenn die Konstruktionsinstanz eine adiabatische Wand definiert, wird nur ein Interface benötigt. In allen anderen Fällen werden zwei Schnittstellen benötigt. Das `InterfaceA` verknüpft die erste Materialschicht aus dem Konstruktionstyp mit der zugeordneten Zone über die `zoneId`. Das `InterfaceB` verknüpft die letzte Materialschicht aus dem Konstruktionstyp mit der `zoneId` von `InterfaceB`. 
+
+.Schnittstellendefinitionen für eine Konstruktion mit Schnittstellen für beide Seiten
+====
+[source,xml]
+----
+<ConstructionInstance id="1" displayName="All Surfaces Var01">
+    ...
+    <InterfaceA id="10" zoneId="1">
+    	<InterfaceHeatConduction modelType="Constant">
+    		<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+    	</InterfaceHeatConduction>
+    </InterfaceA>
+    <InterfaceB id="11" zoneId="0">
+    	<InterfaceHeatConduction modelType="Constant">
+    		<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+    	</InterfaceHeatConduction>
+        <InterfaceSolarAbsorption model="Constant">
+            <IBK:Parameter name="AbsorptionCoefficient" unit="---">0,6</IBK:Parameter>
+        </InterfaceSolarAbsorption>
+        <InterfaceLongWaveEmission model="Constant">
+            <IBK:Parameter name="Emissivity" unit="---">0,9</IBK:Parameter>
+        </InterfaceLongWaveEmission>
+    </InterfaceB>
+</ConstructionInstance>
+----
+====
+
+`InterfaceA` und `InterfaceB` können ein oder mehrere untergeordnete tags haben.
+
+## Wärmeleitung
+
+Die konvektive Wärmeleitung über die Schnittstelle wird durch das XML-tag `InterfaceHeatConduction` beschrieben.
+
+image::convection.png[width=50%, scalewidth=17cm]
+
+.Parameterdefinition für die Randbedingung Wärmeleitung
+====
+[source,xml]
+----
+<InterfaceHeatConduction modelType="Constant">
+  <IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+</InterfaceHeatConduction>
+----
+====
+
+Die `InterfaceHeatConduction` muss mit dem folgenden XML-Attribut `modelType` definiert werden.
+
+.Attribute
+[.indent-me]
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribut | Beschreibung | Format | Verwendung 
+| `modelType` 
+a| Setzt den Typ des Wärmeleitungsmodells
+
+* `Constant` - es wird ein konstantes Modell verwendet (derzeit die einzige Option)
+
+| key | _erforderlich_
+|====================
+
+
+Fließkommaparameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des tags `IBK:Parameter`):
+
+[options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
+|====================
+|Name|Vorgabeeinheit|Beschreibung|Wertebereich |Verwendung
+| `HeatTransferCoefficient` | W/m2K | Konstanter konvektiver Wärmeübergangskoeffizient | {nbsp}>{nbsp}0.0{nbsp} | _erforderlich_
+|====================
+
+## Solare Absorption
+
+Die solare Absorption über die Schnittstelle wird durch das XML-tag `InterfaceSolarAbsorption` beschrieben. Dieser Koeffizient beschreibt die solare Kurzwellenstrahlung, die von der Grenzfläche absorbiert wird.
+
+image::shortwaverad.png[width=50%, scalewidth=17cm]
+
+.Parameterdefinition für die Randbedingung Solare Absorption
+====
+[source,xml]
+----
+<InterfaceSolarAbsorption modelType="Constant">
+  <IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
+</InterfaceHeatConduction>
+----
+====
+
+Das `InterfaceSolarAbsorption` muss mit dem folgenden XML-Attribut `modelType` definiert werden.
+
+.Attribute
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribut | Beschreibung | Format | Verwendung 
+| `modellType` 
+a| Setzt den Typ des Wärmeleitungsmodells 
+
+* `Constant` - es wird ein konstantes Modell verwendet (derzeit die einzige Option)
+
+| key | _erforderlich_
+|====================
+
+
+Es können XML-tags mit dem Namen `IBK:Parameter` mit den XML-Attributen `name` und `unit` mit den folgenden Einträgen definiert werden:
+
+[options="header"]
+[cols="25%,^ 8%,42%,^ 10%,^ 10%"]
+[width="100%"]
+|====================
+| Name | Einheit | Beschreibung | Wertebereich | Verwendung 
+| `AbsorptionCoefficient` | --- | Konstanter Absorptionskoeffizient | 0...1 | _erforderlich_
+|====================
+
+## Langwellige Emission
+
+Die langwellige Emission über die Schnittstelle wird durch das XML-tag `InterfaceLongWaveEmission` beschrieben. Dieser Koeffizient beschreibt die langwellige Absorption und Emission über die Schnittstelle.
+
+image::longwaverad.png[width=50%, scalewidth=17cm]
+
+.parameterdefinition für langwellige Emission
+====
+[source,xml, indent=0]
+----
+<InterfaceLongWaveEmission modelType="Constant">
+	<IBK:Parameter name="Emissivity" unit="---">0,9</IBK:Parameter>
+</InterfaceLongWaveEmission>
+----
+====
+
+Die `InterfaceLongWaveEmission` muss mit dem folgenden XML-Attribut `modelType` definiert werden.
+
+.Attribute
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribut | Beschreibung | Format | Verwendung 
+| `modellType` 
+a| Setzt den Typ des Wärmeleitungsmodells 
+
+* `Constant` - es wird ein konstantes Modell verwendet (derzeit die einzige Option)
+
+| key | _erforderlich_
+|====================
+
+
+Es können XML-tags mit dem Namen `IBK:Parameter` mit den XML-Attributen `name` und `unit` mit den folgenden Einträgen definiert werden:
+
+[options="header"]
+[cols="25%,^ 8%,42%,^ 10%,^ 10%"]
+[width="100%"]
+|====================
+| Name | Einheit | Beschreibung | Wertebereich | Verwendung 
+| `Emissivity` | --- | Konstanter Absorptionskoeffizient | 0...1 | _erforderlich_
+|====================
+
+## Dampfdiffusion
+
+[WARNUNG]
+====
+MUSS SPÄTER DEFINIERT WERDEN.
+====
+
+Die Dampfdiffusion über die Grenzfläche wird durch das XML-tag `InterfaceVaporDiffusion` beschrieben.
+
+.Parameterdefinition für Dampfdiffusion
+====
+[source,xml, indent=0]
+----
+<InterfaceVaporDiffusion modelType="Constant">
+	<IBK:Parameter name="VaporTransferCoefficient" unit="s/m">1</IBK:Parameter>
+</InterfaceVaporDiffusion>
+----
+====
+
+Das `InterfaceVaporDiffusion` muss mit dem folgenden XML-Attribut `modelType` definiert werden.
+
+.Parameter für das InterfaceVaporDiffusion-tag
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribut | Beschreibung | Format | Verwendung 
+| `modellType` 
+a| Setzt den Typ des Wärmeleitungsmodells 
+
+* `Constant` - es wird ein konstantes Modell verwendet (derzeit die einzige Option)
+
+| key | _erforderlich_
+|====================
+
+
+Es können XML-Tags mit dem Namen `IBK:Parameter` mit den XML-Attributen `name` und `unit` mit den folgenden Einträgen definiert werden:
+
+[options="header"]
+[cols="25%,^ 8%,42%,^ 10%,^ 10%"]
+[width="100%"]
+|====================
+| Name | Einheit | Beschreibung | Wertebereich | Verwendung 
+| `VaporTransferCoefficient` | s/m | Dampfübergangskoeffizient | {nbsp}>{nbsp}0.0{nbsp} | _erforderlich_
+|====================
+
+## Luftstrom
+
+[WARNUNG]
+====
+MUSS SPÄTER DEFINIERT WERDEN.
+====
+
+Der Luftstrom über die Schnittstelle wird mit einem Druckkoeffizienten berechnet. Er wird im XML-tag `InterfaceAirFlow` beschrieben.
+
+.Parameterdefinition für Luftstrom
+====
+[source,xml, indent=0]
+----
+<InterfaceAirFlow modelType="Constant">
+	<IBK:Parameter name="PressureCoefficient" unit="---">0.6</IBK:Parameter>
+</InterfaceAirFlow>
+----
+====
+
+Das `InterfaceAirFlow` muss mit dem folgenden XML-Attribut `modelType` definiert werden.
+
+.Attriubute
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribut | Beschreibung | Format | Verwendung 
+| `modellType` 
+a| Setzt den Typ des Luftstroms
+
+* `Constant` - es wird ein konstantes Modell verwendet (derzeit die einzige Option)
+
+| key | _erforderlich_
+|====================
+
+
+Es können XML-tags mit dem Namen `IBK:Parameter` mit den XML-Attributen `name` und `unit` mit den folgenden Einträgen definiert werden:
+
+[options="header"]
+[cols="25%,^ 8%,42%,^ 10%,^ 10%"]
+[width="100%"]
+|====================
+| Name | Einheit | Beschreibung | Wertebereich | Verwendung 
+| `PressureCoefficient` | --- | Druckkoeffizient | 0...1 | _erforderlich_
+|====================
+
+
+[[embedded_objects]]
+# Eingebettete Objekte (Fenster, Türen, Öffnungen...)
+
+Es kann mehrere Definitionen für eingebettete Objekte geben.
+
+.Definition eines Fensters innerhalb einer Bauinstanz
+[source,xml, indent=0]
+====
+----
+<ConstructionInstance id="1">
+	<IBK:Parameter name="Area" unit="m2">12</IBK:Parameter>
+    ...
+	<EmbeddedObjects>
+		<EmbeddedObject id="2000" displayName="Ein Fenster">
+		    <!-- Area-Parameter ist erforderlich. -->
+			<IBK:Parameter name="Area" unit="m2">8</IBK:Parameter>
+		    ...
+		</EmbeddedObject>
+	</EmbeddedObjects>
+</ConstructionInstance>
+----
+====
+
+Eingebettete Objekte müssen mindestens einen Parameter `Area` definiert haben. Diese Fläche darf die Bruttofläche der Konstruktionsinstanz nicht überschreiten.
+
+Ein eingebettetes Objekt wird durch eingebettete Datenobjekte weiter qualifiziert.
+
+## Fenster
+
+Ein Fenster besteht aus einer Verglasung und optional einem Rahmen und Trennwänden. Ohne Rahmen und Trennwände sieht die Definition für ein solches Fenster wie folgt aus:
+
+.Parameterdefinition für Basisfenster ohne Rahmen
+[source,xml, indent=0]
+====
+----
+<EmbeddedObject id="2000" displayName="Ein Fenster">
+	<IBK:Parameter name="Area" unit="m2">8</IBK:Parameter>
+    <Window glazingSystemID="123"/>
+</EmbeddedObject>
+----
+====
+
+Nur das Verglasungssystem wird über die ID referenziert. Verglasungssysteme sind in der Datenbankliste der Verglasungssysteme definiert, siehe <<glazing_systems>>.
+
+Das Fenster kann einen Rahmen und/oder Trennwände haben. Diese sind separate Entitäten, da das Material von Rahmen und Trennwänden (und damit die Wärmeleitfähigkeit zwischen diesen Materialien) unterschiedlich sein kann. Diese werden in den XML-Tags `Frame` und `Divider` definiert:
+
+.Parameterdefinition für Basisfenster mit Rahmen und Trennwand
+[source,xml, indent=0]
+====
+----
+<EmbeddedObject id="2000" displayName="Ein Fenster">
+	<IBK:Parameter name="Area" unit="m2">8</IBK:Parameter>
+	<Window glazingSystemID="123">
+		<Frame materialID="1001">
+			<IBK:Parameter name="Area" unit="m2">3</IBK:Parameter>
+		</Frame>
+		<Divider materialID="1002">
+			<IBK:Parameter name="Area" unit="m2">2</IBK:Parameter>
+		</Divider>
+	</Window>
+</EmbeddedObject>
+----
+====
+
+Die Materialeigenschaften (derzeit nur die Wärmeleitfähigkeit) von Rahmen- und Trennelementen werden aus dem über die ID referenzierten Material übernommen. 
+
+Die tatsächliche Geometrie von Rahmen- und Trennelementen ist nicht wichtig, aber ihre Gesamtquerschnittsfläche muss als Parameter `Area` angegeben werden.
+
+[WICHTIG]
+====
+Der von Rahmen und Trennwand belegte Querschnitt darf die Bruttofläche des eingebetteten Fensterobjekts nicht überschreiten. Die tatsächliche lichtdurchlässige Verglasungsfläche wird als Differenz zwischen der Fläche des eingebetteten Objekts und den Flächen von Rahmen und Trennwand berechnet.
+====
+
+[HINWEIS]
+====
+Wenn die Größe des Fensters (oder des eingebetteten Objekts) geändert wird, müssen die Größen von Rahmen und Trennwand entsprechend angepasst werden. Es wäre zwar möglich gewesen, Rahmen- und Trennwandquerschnitte auch als relativen Prozentsatz zu definieren, dennoch muss dieser Prozentsatz bei einer Größenänderung des Fensters aktualisiert werden.
+====
+
+
+### Fensterschattierung
+
+Es ist möglich, vorberechnete Schattierungen sowohl auf opake als auch auf transluzente Fassadenelemente anzuwenden. Die vorberechnete Schattierung wird im Allgemeinen als globale Eigenschaft im `Location`-tag definiert (siehe <<precomputed_shading>>).
+
+Wenn eine vorberechnete Schattierung definiert ist, wird für *jede* opake und transluzente Fläche ein Faktor angegeben.
+
+[HINWEIS]
+====
+Wie im Abschnitt <<precomputed_shading>> beschrieben, erfolgt die Zuordnung zwischen bereitgestellten Datenspalten und Objekt-ID über einen Identifikationsstring, der sich aus Objekttyp und ID-Nummer zusammensetzt. Zum Beispiel würde ein eingebettetes Objekt mit der ID 14 die Spaltenüberschrift/Bezeichnung _embObj.14_ erhalten und eine Konstruktionsinstanz (opake Oberfläche) mit der ID 29 die Bezeichnung _conInst.29_.
+====
+
+Alternativ oder zusätzlich zur vorberechneten Schattierung ist es möglich eine kontrollierte Schattierung für das Fenster zu definieren.
+
+.Parameterdefinition für kontrollierte Beschattung
+[source,xml, indent=0]
+====
+----
+<Window glazingSystemID="123">
+    ...
+	<Shading modelType="Standard">
+		<ControlModelID>555</ControlModelID>
+		<IBK:Parameter name="ReductionFactor" unit="---">0.7</IBK:Parameter>
+	</Shading>
+</Window>
+----
+====
+
+Die `Schattierung` muss mit den folgenden XML-Attributen definiert werden:
+
+.Attribute
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribut | Beschreibung | Format | Verwendung 
+| `modellType` 
+a| Setzt den Typ des Schattierungsmodells 
+
+* `Standard` - Standardmodell, das nur einen einzigen Reduktionsfaktor und ein separates Steuerungsmodell verwendet.
+
+| key | _erforderlich_
+|====================
+
+.Child-Tags
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Element | Beschreibung | Format | Verwendung 
+| `ControlModelID` | Referenz auf eine `ShadingControlModel`-Definition. | {nbsp}>{nbsp}0{nbsp} | _erforderlich für Standardmodell_
+|====================
+
+Es können XML-tags mit dem Namen `IBK:Parameters` mit den XML-Attributen `name` und `unit` mit den folgenden Einträgen definiert werden:
+
+[options="header"]
+[cols="25%,^ 8%,42%,^ 10%,^ 10%"]
+[width="100%"]
+|====================
+| Name | Einheit | Beschreibung | Wertebereich | Verwendung 
+| `ReductionFactor` | --- | Prozentualer Anteil der verbleibenden solaren Gewinne, wenn die Beschattung geschlossen ist | 0...1 | _erforderlich für Standardmodell_
+|====================
+
+
+Berechnung des Beschattungsfaktors auf Basis des Steuersignals
+====
+----
+ReductionFactor = 80%
+
+Fz in Abhängigkeit vom Steuersignal: 
+
+1 = voll beschattet:      Fz = 1 - (1 - 80%) * 1 = 0,8
+0 = unverschattet verschattet:  Fz = 1 - (1 - 80%) * 0 = 1
+0,5 = teilweise verschattet: Fz = 1 - (1 - 80%) * 0,5 = 0,9
+----
+====
+
+
+

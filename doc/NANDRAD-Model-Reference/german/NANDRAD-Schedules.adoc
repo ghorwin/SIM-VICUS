@@ -1,0 +1,453 @@
+:imagesdir: ./images
+[[schedules]]
+# Zeitpläne
+
+## Übersicht
+
+Zeitpläne liefern rein zeitabhängige Größen, ähnlich wie Klimabelastungen. Im Unterschied zu anderen ergebnisproduzierenden Modellen erzeugen Zeitpläne Variablen für Mengen von abhängigen Modellen. Als solches wird ein Zeitplan für eine Objektliste formuliert, die eine Menge von Objekten mit den vom Zeitplan vorgegebenen Werten auswählt.
+Sie werden z. B. in den folgenden Objekten oder Objektlisten verwendet:
+
+* **Belegungsraten**, **Wärmelasten**, *Bekleidungsfaktoren* im Personenlastmodell.
+* *Heiz-/Kühlsolltemperaturen* für Thermostatsteuerungen
+* *Massendurchflussraten* oder *Temperatursollwerte* für Anlagenteile
+* *Elektrische Leistungsraten* für Beleuchtung und elektrische Geräte
+
+Ein Zeitplan definiert z. B. einen Heizungssollwert `HeatingSetPoint` für bestimmte Zonen wie z. B. Wohnräume. Diese werden über eine Objektliste mit dem Namen "Living room" ausgewählt, die Objekte vom Typ `Zone` und einem bestimmten ID-Bereich (wird später noch genauer beschrieben) auswählt.
+
+Es gibt zwei Möglichkeiten, einen Zeitplan zu beschreiben:
+
+* `ScheduleGroups` 
+* `AnnualSchedules`. 
+
+Die beiden Möglichkeiten werden in <<regularSchedules>> und <<annualSchedules>> detailliert besprochen. 
+
+Außerdem können Zeitplandaten auf zwei verschiedene Arten behandelt werden, als
+
+* *Zyklische* Daten und
+* *Nicht-zyklische* Daten.
+
+*Zyklische Daten* bedeutet, dass die Zeitplanwerte nach dem Ende der Zeitplanperiode wiederholt werden. Das bedeutet zum Beispiel, dass ein jährlicher Zeitplan zweimal ausgeführt wird, wenn die Simulationszeit auf zwei Jahre eingestellt wird. *Zyklische Daten* können durch `ScheduleGroups` und `AnnualSchedules` definiert werden.
+
+*Nicht-zyklische* Daten werden immer nur einmal verwendet. Dies ist sinnvoll, wenn gemessene Daten (Monitoring) zum Einrichten von Zeitplänen verwendet werden sollen. Dann muss die Simulation nur für die Zeitspanne eingestellt werden, in der die gemessenen Daten vorhanden sind. *Nicht-zyklische* Daten können nur durch `AnnualSchedules` definiert werden.
+
+[[ex_Schedules]]
+.Definition eines Zeitplans
+====
+[source,xml,tabsize=4]
+----
+<Schedules>
+	<Holidays>5,10</Holidays>
+	<WeekEndDays>Fri,Sat</WeekEndDays>
+	<FirstDayOfYear>Fri</FirstDayOfYear>
+	<IBK:Flag name="EnableCyclicSchedules">true</IBK:Flag>
+
+	<ScheduleGroups>
+		...
+	</ScheduleGroups>
+	<AnnualSchedules>
+		...
+	</AnnualSchedules>
+</Schedules>
+----
+====
+
+Innerhalb des Objekts `Schedules` können auch die folgenden XML-Tags angegeben werden 
+
+* `FirstDayOfYear` 
+* `Holidays`
+* `WeekEndDays`
+* `Schedule` 
+* `IBK:Flag` mit dem Namen `EnableCyclicSchedules`
+
+.mögliche Definitionen von XML-tags
+[options="header", cols="15%, 55%, 20%, 10%", width="100%"]
+|====================
+| XML-Tags | Beschreibung| Format |Verwendung
+| `FirstDayOfYear` 
+a| Der Tagestyp des 1. Januar (Offset des Wochentages des Startjahres.  
+
+* `Mon` - Montag (_Standard_)
+* `Tue` - Dienstag
+* `Wed` - Mittwoch
+* `Thu` - Donnerstag
+* `Fri` - Freitag
+* `Sat` - Samstag
+* `Sun` - Sonntag
+
+| string | _optional_
+| `Holidays` 
+a| Liste der Feiertage, gespeichert in einer kommagetrennten Liste von Zahlen. Jede Zahl stellt den "Tag des Jahres" dar. Schalttage werden nicht eingeschlossen. | string | _optional_
+| `WeekEndDays` | Wochenendtage. | string | _optional_
+|`IBK:Flag`
+
+a| * Name `EnableCyclicSchedules` 
+- Wenn auf true gesetzt, werden die Zeitpläne nach einem Jahr wiederholt. 
+- Wenn auf false gesetzt (gilt nur für jährliche Zeitpläne), werden diese jährlichen Zeitpläne nur einmal abgetastet. 
+
+|_true (Standard) / false_ | _optional_
+
+|====================
+
+
+## Zeitplangruppen
+
+`ScheduleGroup`-tags gibt es sowohl in täglichen schema-basierten Zeitplänen als auch in jährlichen Zeitplänen. Sie identifizieren die Zielobjekte für geplante Parameter. Um Mehrdeutigkeiten zu vermeiden, ist es nicht erlaubt, mehrere Zeitplangruppen mit derselben Objektliste zu definieren.
+
+[IMPORTANT]
+====
+Definieren Sie nicht mehrere `ScheduleGroup`-Elemente mit der gleichen Objektliste!
+====
+
+[[regularSchedules]]
+## Tagesschema-basierte Zeitpläne
+
+:xrefstyle: short 
+
+Regelmäßige Zeitpläne werden auf Basis eines Tagesschemas definiert. Einige Parameter müssen wie in dem nachfolgenden  XML-tag definiert werden.
+
+[[ex_ScheduleGroup]]
+.Definition einer Zeitplangruppe
+====
+[source,xml,tabsize=4]
+----
+<ScheduleGroups>
+	<ScheduleGroup objectList="All Zones">
+		<!-- AllDays constant -->
+		<Schedule type="AllDays">
+			...
+		</Schedule>
+		<Schedule type="WeekDays">
+			...
+		</Schedule>
+	</ScheduleGroup>
+<ScheduleGroups>
+----
+====
+
+[[ex_ScheduleGroup_refObjList]]
+.ObjectList-Definition, die Zonenobjekte auswählt und "All Zones" heißt
+====
+[source,xml,tabsize=4]
+----
+<ObjektListen>
+    <ObjectList name="All Zones">
+        <FilterID>*</FilterID>
+        <ReferenzTyp>Zone</ReferenzTyp>
+    </ObjectList>
+</ObjectLists>
+----
+====
+
+Regelmäßige Zeitpläne werden innerhalb des XML-Tags `ScheduleGroup` mit einem obligatorischen XML-Attribut namens `objectList` definiert, das namentlich auf eine `ObjectList` verweist (siehe <<tab_ScheduleGroup>>): 
+
+
+[[tab_ScheduleGroup]]
+.Attribut für die ScheduleGroup
+[options="header",cols="15%,65%,^ 10%,^ 10%",width="100%"]
+|====================
+|Name|Beschreibung| Format |Verwendung
+| `objectList` | Verweise auf eine Objektliste mit dem angegebenen Namen | string | _required_
+|====================
+
+<<ex_ScheduleGroup>> zeigt eine solche Definition und <<ex_ScheduleGroup_refObjList>> die entsprechende Objektliste.
+
+### Tägliche Zyklen
+
+Innerhalb der `ScheduleGroup` können mehrere Objekte namens `Schedule` definiert werden. Die `Schedule`-Objekte benötigen ein XML-Attribut namens `type` mit unterschiedlichen Namen für bestimmte Tagestypen (siehe <<tab_ScheduleTypes>>). Innerhalb einer `ScheduleGroup` dürfen sich nicht zwei `Schedule`-Objekte mit demselben `type` befinden. Innerhalb jedes `Schedule`-Objekts wird ein Zeitplan definiert, der für alle Tage des angegebenen `Typs` im Laufe eines ganzen Jahres gilt. Bei der Konstruktion von Zeitplänen gelten die folgenden Regeln.
+
+In der ersten Priorität werden beim Typ `AllDays` angegebene tägliche Zeitplanwerte (z.B. `HeatingSetPoint`) auf alle Tage des ganzen Jahres gesetzt (Priorität 0). <<ex_schedule_alldays>> zeigt eine solche Zeitplandefinition.
+
+Danach überschreiben die `Typen` namens `WeekEnd` und `WeekDay`, falls definiert, die bereits definierten Zeitplanwerte nur für alle Wochentage oder Wochenendtage (Priorität 1). Weiterhin definieren die Wochentage namens `Monday`, `Tuesday`, ... für welche Tage die Zeitplanwerte wieder überschrieben werden (Priorität 2). Weiter geht es mit dem Tagestyp `Holiday` (Priorität 3) für die angegebenen Feiertage innerhalb des Objekts `Holidays`. 
+
+Es ist möglich, unterschiedliche Zeitpläne für einzelne Zeiträume des Jahres zu definieren, z. B. für das reguläre Jahr und die Sommerferien etc. Auf diese Weise kann ein Zeitplan für das gesamte Jahr definiert werden. 
+
+[[ex_schedule_alldays]]
+.Zeitplandefinition mit Typ "AllDays"
+====
+[source,xml,tabsize=4]
+----
+<ScheduleGroup objectList="Zone01">
+    <!-- Konstante "AllDays" -->
+    <Schedule type="AllDays">
+        <TagesZyklen>
+            <DailyCycle interpolation="Constant">
+                <ZeitPunkte>0</ZeitPunkte>
+                <Werte>InfiltrationRateSchedule [1/h]:0</Werte>
+            </DailyCycle>
+        </DailyCycles>
+    </Schedule>
+</ScheduleGroup>
+----
+====
+
+<<tab_ScheduleTypes>> zeigt die Tagestypen und die dazugehörigen Prioritäten.
+
+[[tab_ScheduleTypes]]
+.Beschreibung des Attributs "Schedule Type
+[options="header", cols="< 15, ^ 10, < 70", width="100%"]
+|====================
+| Type | Priority | Description
+| `AllDays`
+| 0 | Werte werden auf alle Tage der Periode gesetzt
+| `WeekEnd`
+| 1 | Werte werden auf alle Wochenendtage des Zeitraums gesetzt
+| `WeekDay` | 1 | Werte werden auf alle Wochentage des Zeitraums gesetzt
+| `Monday`
+| 2 | Werte werden auf alle Montage des Zeitraums gesetzt
+| `Tuesday` | 2 | Werte werden auf alle Dienstage des Zeitraums gesetzt
+| `Wednesday` | 2 | Werte werden auf alle Mittwoche des Zeitraums gesetzt
+| `Thursday` | 2 | Werte werden auf alle Donnerstage des Zeitraums gesetzt
+| `Friday` | 2 | Werte werden auf alle Freitage des Zeitraums gesetzt
+| `Saturday` | 2 | Werte werden auf alle Samstage des Zeitraums gesetzt
+| `Sunday` | 2 | Werte werden auf alle Sonntage des Zeitraums gesetzt
+| `Holiday`
+| 3 | Werte werden auf alle Feiertage des Zeitraums gesetzt, die im tag `holidays` angegeben sind
+|====================
+
+<<ex_schedule_week>> veranschaulicht die Verwendung verschiedener Zeitpläne zur Definition eines Wochenplans. Zunächst wird der grundlegende tägliche Zeitplan definiert. Dann werden spezielle Regeln für Dienstage und Wochenenden definiert. <<fig_schedule_week>> veranschaulicht den resultierenden Zeitplan.
+
+[[ex_schedule_week]]
+.Zeitplandefinition mit verschiedenen Tagestypen
+====
+[source,xml,tabsize=4]
+----
+<Schedules>
+	<WeekEndDays>Sat,Sun</WeekEndDays>
+	<ScheduleGroups>
+		<ScheduleGroup objectList="All zones">
+			<!-- jeden Tag zwischen 8-10 -->
+			<Schedule type="AllDays">
+				<DailyCycles>
+					<DailyCycle interpolation="Constant">
+						<TimePoints>0 6 10</TimePoints>
+						<Values>InfiltrationRateSchedule [1/h]:0 0.4 0</Values>
+					</DailyCycle>
+				</DailyCycles>
+			</Schedule>
+			<!-- Dienstag keine Lüftung -->
+			<Schedule type="Tuesday">
+				<DailyCycles>
+					<DailyCycle interpolation="Constant">
+						<TimePoints>0</TimePoints>
+						<Values>InfiltrationRateSchedule [1/h]:0</Values>
+					</DailyCycle>
+				</DailyCycles>
+			</Schedule>
+			<!-- Wochenende nur am Nachmittag -->
+			<Schedule type="WeekEnd">
+				<DailyCycles>
+					<DailyCycle interpolation="Constant">
+						<TimePoints>0 14 16</TimePoints>
+						<Values>InfiltrationRateSchedule [1/h]:0 0.1 0</Values>
+					</DailyCycle>
+				</DailyCycles>
+			</Schedule>
+		</ScheduleGroup>
+	</ScheduleGroups>
+</Schedules>
+----
+====
+
+[[fig_schedule_week]]
+.Abbildung des wöchentlichen Zeitplans, definiert durch das Beispiel <<ex_schedule_week>>
+image::ScheduleExample_weekly.png[pdfwidth=12cm]
+
+
+### DailyCycle Zeitintervalle
+
+Ein `DailyCycle` definiert, wie sich eine oder mehrere Größen im Laufe des Tages ändern. Das untergeordnete tag `TimePoints` definiert durch Leerzeichen getrennte Zeitpunkte in Stunden [h] und damit die verschiedenen Zeitintervalle des Tages.
+
+Wenn das Attribut `interpolation` `Constant` ist, dann gelten die folgenden Regeln:
+
+- die Zeitpunkte werden als *Startzeit* des nächsten Intervalls interpretiert
+- der erste Zeitpunkt muss immer 0 sein, der letzte muss < 24 h sein,
+- der entsprechende Wert wird während dieses Intervalls als konstant angenommen
+
+Ein Zeitpunktvektor "0 6 20" definiert z. B. drei Intervalle: 0-6, 6-20, 20-24 und
+die Datentabelle muss genau 3 Werte enthalten.
+
+Wenn das Attribut `interpolation` `Linear` ist, dann gelten die folgenden Regeln:
+
+- die Zeitpunkte sind Punkte in der Zeit, an denen zugehörige Werte gegeben sind
+- der erste Zeitpunkt muss immer 0 sein, der letzte muss < 24 h sein,
+  denn im zyklischen Betrieb ist der Zeitpunkt bei 24 h derselbe wie bei 0 h (und damit auch
+  die geplanten Werte)
+- zwischen den Zeitpunkten werden die Werte linear interpoliert
+
+<<fig_schedule_dailycycleconstant>> und <<fig_schedule_dailycycleconstant>> zeigen den resultierenden Werteverlauf für die Zeitintervalle _0, 6, 20_ und die entsprechenden Parameterwerte _2, 7, 1_.
+
+[[fig_schedule_dailycycleconstant]]
+.Tageszyklus mit konstantem Interpolationsmodus
+image::ScheduleDailyCycleConstant.png[pdfwidth=10cm]
+
+[[fig_schedule_dailycyclelinear]]
+.Tageszyklus mit linearem Interpolationsmodus
+image::ScheduleDailyCycleLinear.png[pdfwidth=10cm]
+
+[HINWEIS]
+====
+Bei der Verwendung des linearen Interpolationsmodus wird der Wert um 24 Uhr vom Beginn des nächsten Tageszyklus genommen, der im Zeitplan definiert ist. Zum Beispiel würde in <<fig_schedule_week>> der Wert am Montag 24:00 Uhr aus dem Zeitplan für Dienstag genommen werden, während der Wert am Mittwoch 24:00 Uhr aus dem regulären Zeitplan _AllDays_ genommen würde.
+====
+
+[TIPP]
+====
+Um ein einzelnes Intervall für den ganzen Tag zu definieren, geben Sie einfach "0" als Wert im XML-tag `TimePoints` an.
+====
+
+:xrefstyle: basic 
+
+
+### Tägliche Zyklusparameterwerte
+
+Für jedes im Tag `TimePoints` angegebene Intervall können eine oder mehrere Größen mit zugehörigen Einheiten angegeben werden. Dies geschieht durch die Definition der Datentabelle im XML-Tochtertag `Values` des `DailyCycle`-tags. Die Daten der Datentabelle werden wie folgt formatiert:
+
+----
+    quantity1 [unit]:val11 val12 val13; quantity2 [unit]:val21 val22 val23;...
+----
+
+Grundsätzlich wird jede physikalische Größe in einem string kodiert, wobei die strings für verschiedene Größen zu einem string mit ; (Semikolon) als Trennzeichen zusammengefasst werden.
+
+Jeder Mengenstring setzt sich aus einem Header und den eigentlichen Werten zusammen. Die Werte sind einfach durch Leerzeichen/Tabs oder Komma getrennte Werte (Dezimalzahlen werden mit . (Punkt) als Dezimaltrennzeichen geschrieben).
+
+
+Der Header ist ein Mengenstichwort (siehe auch <<Schedule_variable_list>>), gefolgt von seiner Einheit in Klammern. So hat z. B. eine Heizungssolltemperatur die Kopfzeile `HeatingSetPointTemperature [C]` und die Werte werden dann in Grad C angegeben.
+
+Es müssen _exakt_ so viele Werte angegeben werden, wie es Zeitpunkte im XML-Tag `TimePoints` gibt. In dieser Datentabelle können Sie so viele Größen angeben, wie Sie benötigen.
+
+:xrefstyle: short
+
+<<ex_schedule_dailycycle_quantities>> zeigt einen Tageszyklus mit zwei geplanten Mengen und drei Intervallen.
+
+[[ex_schedule_dailycycle_quantities]]
+.Tageszyklus mit zwei disponierten Mengen
+====
+[source,xml,tabsize=4]
+----
+<DailyCycle interpolation="Constant">
+    <TimePoints>0 6 10</TimePoints>
+    <Values>
+        InfiltrationRateSchedule [1/h]:0 0.4 0;
+        HeatingSetPointTemperature [C]:18 22 18
+    </Values>
+</DailyCycle>
+----
+====
+
+
+### Vermeidung von Sprüngen / Leistungsverbesserung
+
+Bei der Definition von Tageszyklen mit dem Interpolationsmodus `Constant` springen die Werte tatsächlich zwischen den Intervallen. Diese Diskontinuitäten sind sehr teuer in der Berechnung, da der Solver Zeitschritte um diese Sprünge herum gruppieren muss, um den Schrittfunktionen genau zu folgen.
+
+Für praktische Anwendungen sind diese Schritte jedoch oft nicht erwünscht - auch wenn ein Sollwert kurzzeitig auf einen neuen Wert umgeschaltet wird, kann es in der Tat einige Minuten dauern, bis der resultierende physikalische Effekt spürbar wird. Dies wird bei der Interpretation der Sollwerte durch den Solver berücksichtigt.
+
+Anstatt exakt die schrittweise geplanten Werte zu liefern, implementiert der Solver eine automatische 2-Minuten-Rampe kurz vor dem Intervallende. <<fig_schedule_dailycycle_jumpsmoothing>> veranschaulicht die 2-minütige lineare Rampe, die direkt vor jedem neuen Intervall angewendet wird.
+
+[[fig_schedule_dailycycle_jumpsmoothing]]
+.Rampen-/Schrittglättung angewandt auf Tageszyklen mit schrittweise definierten Werten
+image::ScheduleDailyCycleConstant_actual.png[pdfwidth=10cm]
+
+[TIP]
+====
+Der Rampenzeitabstand von 2 Minuten ist derzeit in der Zeitplan-Berechnungsroutine fest codiert und kann bei Bedarf auf einen größeren oder kleineren Wert geändert werden. Außerdem kann anstelle einer linearen Rampenfunktion eine polynomische Kurve 3. Ordnung verwendet werden (was immer der bester Kompromiss zwischen Leistung und Genauigkeit ist).
+====
+
+[CAUTION]
+====
+Intern wird die Schrittglättung realisiert, indem 2 Minuten vor dem Intervallende ein neuer Datenpunkt mit dem gleichen Wert wie im aktuellen Intervall eingefügt wird. Der Tageszyklus wird dann wie ein linear interpolierter Tageszyklus behandelt. Es gibt jedoch keine Prüfung für Intervalllängen kleiner als 2 Minuten. Daher *müssen* bei der Definition von Tageszyklen mit Interpolationsmodus `Linear` keine Intervalle kleiner oder gleich 2 Minuten definiert werden.
+====
+
+[[annualSchedules]]
+## Jahresschaltpläne 
+
+Jahrespläne sind im Grunde Datentabellen mit monoton ansteigenden X (Zeit)-Werten. Jeder Jahresplan definiert eine einzelne Größe. Es können z. B. stündliche Werte von Temperaturen oder Steuergrößen angegeben werden, die während des Jahres gemessen werden. 
+
+[TIP]
+====
+Der Name _annual schedule_ ist eigentlich etwas irreführend. In diesen Datentabellen können Sie Daten mit beliebigen Zeitspannen unterbringen, die nur wenige Wochen oder sogar mehrere Jahre umfassen (z. B. mit Überwachungsdaten). Die einzige Voraussetzung ist, dass das Zeitintervall der Simulation in die Zeitspanne des Zeitplans passt.
+====
+
+Die vom linearen Spline gelieferten Werte können als linear/konstant interpolierte Werte definiert werden, allerdings sollte aus Performance-Gründen der konstante Interpolationsmodus vermieden werden.
+
+[NOTE]
+====
+Bei linearen Splines wird die Schrittglättung *nicht* vom Solver angewendet. Es ist Sache des Anwenders, geeignete Daten bereitzustellen oder durch langsame Simulationszeiten bestraft zu werden.
+====
+
+Innerhalb des XML-tags `AnnualSchedules` gibt es ein oder mehrere XML-Tochter-tags `ScheduleGroup`, jedes mit einem obligatorischen XML-Attribut `objectList`. Dieses referenziert, genau wie bei den täglichen Zyklusplänen eine Objektliste und damit Objekte, auf die sich die geplanten Variablen beziehen. <<ex_AnnualSchedule>> zeigt ein Beispiel für jährliche Zeitpläne, die innerhalb einer einzigen `ScheduleGroup` definiert sind.
+
+:xrefstyle: basic 
+
+[[ex_AnnualSchedule]]
+.Definition von Jahresplänen
+====
+[source,xml,tabsize=4]
+----
+<AnnualSchedules>
+    ...
+	<ScheduleGroup objectList="All zones">
+    	<AnnualSchedule name="HeatingSetPointTemperature" interpolation="linear">
+    		<X unit="h"> 0 2183 2184 6576 6577 8760 </X>
+    		<Y unit="C"> 20 30 20 30 20 30 20 30 </Y>
+    	</AnnualSchedule>	
+    	<AnnualSchedule name="TotalEnergyProductionPerPerson" interpolation="linear">
+    		<X unit="h"> 0 2183 2184 6576 6577 8760 </X>
+    		<Y unit="W/Person"> 70 110 70 110 70 110 </Y>
+    	</AnnualSchedule>
+    	<AnnualSchedule name="EquipmentUtilizationRatio" interpolation="linear">
+    		<X unit="h"> 0 2183 2184 6576 6577 8760</X>
+    		<Y unit="W/Person"> 10 20 10 20 10 20 </Y>
+    	</AnnualSchedule>
+    </ScheduleGroup>
+    ...
+</AnnualSchedules>
+----
+====
+
+Die eigentlichen Daten werden in den XML-tags `AnnualSchedule` angegeben, die eigentlich ein <<LinearSplineParameter>> sind (siehe referenzierte Dokumentation für Details).
+
+Die Einheit des X-Wertes muss eine Zeiteinheit sein. Die Einheit des Y-Wertes ist die Einheit der geplanten Menge.
+
+
+
+[[schedule_variable_list]]
+## Variablenliste
+
+Die Variablenliste beschreibt alle Namen und die Einheiten, die in den Zeitplänen verwendet werden können. 
+
+[[tab_VariableList]]
+.Variablenliste
+[options="header",cols="35%,^ 10%,55%"]
+|====================
+|Name 
+|Einheit|Beschreibung
+|`HeatingSetPointTemperature`|C| Sollwerttemperatur für Heizung
+|`CoolingSetPointTemperature`|C| Sollwerttemperatur für Kühlen
+|`AirConditionSetPointTemperature`|C|Solltemperatur für die Klimatisierung
+|`AirConditionSetPointRelativeHumidity`|%|Sollwert der relativen Luftfeuchtigkeit für die Klimatisierung
+|`AirConditionSetPointMassFlux`|kg/s|Sollwert Massenstrom für die Klimatisierung
+|`HeatingLoad`|W|Heizlast
+|`ThermalLoad`|W|Thermische Last (positiv oder negativ)
+|`MoistureLoad`|g/h|Feuchtelast
+|`CoolingPower`|W|Kühlleistung
+|`LightingPower`|W|Beleuchtungsleistung
+|`DomesticWaterSetpointTemperature`|C|Solltemperatur für Brauchwasser
+|`DomesticWaterMassFlow`|kg/s|Massenstrom des Brauchwasserbedarfs für die gesamte Zone (Warmwasser und Geräte)
+|`ThermalEnergyLossPerPerson`|W/Person|Energie der Aktivitäten einer einzelnen Person, die nicht als Heizwärme zur Verfügung steht
+|`TotalEnergyProductionPerPerson`|W/Person|Gesamtenergieproduktion des Körpers einer einzelnen Person bei einer bestimmten Tätigkeit
+|`MoistureReleasePerPerson`|kg/s|Feuchtigkeitsabgabe eines einzelnen Personenkörpers bei einer bestimmten Tätigkeit
+|`CO2EmissionPerPerson`|kg/s|CO2-Emissionsmassenstrom einer einzelnen Person bei einer bestimmten Tätigkeit
+|`MassFluxRate`|---|Fraktion des realen Massenstroms zum maximalen Massenstrom für verschiedene Tageszeiten
+|`PressureHead`|Pa|Versorgungsdruckhöhe einer Pumpe
+|`OccupancyRate`|---|Fraktion der realen Belegung zur maximalen Belegung für verschiedene Tageszeiten
+|`EquipmentUtilizationRatio`|---|Verhältnis des Verbrauchs für vorhandene elektrische Geräte
+|`LightingUtilizationRatio`|---|Verhältnis des Verbrauchs für die Beleuchtung
+|`MaximumSolarRadiationIntensity`|W/m2|Maximale Sonneneinstrahlungsintensität bevor die Beschattung aktiviert wird
+|`UserVentilationAirChangeRate`|1/h|Austauschrate für natürliche Lüftung
+|`UserVentilationComfortAirChangeRate`|1/h|Maximale Luftwechselrate = Offset für Nutzerkomfort
+|`UserVentilationMinimumRoomTemperature`|C|Temperaturgrenze, ab der die Komfortlüftung aktiviert wird
+|`UserVentilationMaximumRoomTemperature`|C|Temperaturgrenzwert, unterhalb dessen die Komfortlüftung aktiviert wird
+|`InfiltrationAirChangeRate`|1/h|Austauschrate für Infiltration
+|`ShadingFactor`|---|Schattierungsfaktor [0...1]
+
+|====================
+

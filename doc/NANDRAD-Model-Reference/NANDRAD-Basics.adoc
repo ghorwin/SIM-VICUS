@@ -85,6 +85,8 @@ The units must be selected from the global unit list, see section <<units>>. Not
 [[IBK_IntPara]]
 ## IBK:IntPara
 
+Used for flags. Mandatory attribute `name` identifies the flag. Not defining a flag will mark it as _missing_, which means that either a default value is used or - in case of mandatory user parameters - an error is raised.
+
 Used for whole number parameters. Mandatory attribute `name` identifies the parameter. XML tag value is the parameter value. Not defining a parameter will mark it as _missing_, which means that either a default value is used or - in case of mandatory user parameters - an error is raised.
 
 .Whole Number (Integer) Parameter Definition

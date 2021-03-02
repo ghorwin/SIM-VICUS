@@ -80,7 +80,9 @@ a|  List of holiday days, stored in a comma-separated list of numbers, where eac
 | `WeekEndDays` | Weekend days. | string | _optional_
 |`IBK:Flag`
 
-a| * name `EnableCyclicSchedules` - If set to true, schedules will be repeated after one year. If set to false (only applicable to annual schedules), these annual schedules are sampled just once. 
+a| * name `EnableCyclicSchedules` 
+- If set to true, schedules will be repeated after one year. 
+- If set to false (only applicable to annual schedules), these annual schedules are sampled just once. 
 
 |_true (default) / false_ | _optional_
 

@@ -1,0 +1,199 @@
+:imagesdir: ./images
+
+[[models]]
+# Modellparametrisierung
+
+In diesem Abschnitt werden die verschiedenen Modellparametrisierungsblöcke beschrieben.
+
+## Natürliches Lüftungsmodell (Infiltration)
+
+Ein Modell für natürliche Lüftung/Infiltration definiert den Luftaustausch mit der Außenluft. Die natürliche Lüftung kann für bestimmte Zonen aktiviert werden, indem ein Modellparametersatz `NaturalVentilationModel` definiert wird. Über die Objektliste werden die Zonen mit natürlicher Lüftung ausgewählt.
+
+====
+[source,xml]
+----
+<NaturalVentilationModel id="501" displayName="Zone vent" modelType="Constant">
+	<ZoneObjectList>Office zones</ZoneObjectList>
+	<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
+</NaturalVentilationModel>
+<NaturalVentilationModel id="502" displayName="Zone vent" modelType="Scheduled">
+	<ZoneObjectList>Other zones</ZoneObjectList>
+</NaturalVentilationModel>
+----
+====
+
+[IMPORTANT]
+====
+Es darf nur ein Lüftungsmodellblock für eine Zone definiert werden. Es dürfen also nicht zwei Lüftungsmodellblöcke mit Objektlisten definiert werden, die beide die gleiche(n) Zone(n) enthalten.
+====
+
+Das `NaturalVentilationModel` muss mit den folgenden XML-Attributen definiert werden:
+
+.Attribute
+[.indent-me]
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribut | Beschreibung | Format | Verwendung 
+| `id` | Kennung des natürlichen Lüftungsmodells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+
+| `modelType` 
+a| Setzt den Typ des Lüftungsmodells 
+
+* `Konstant` - Konstante Luftwechselrate
+* `Scheduled` - Luftwechselrate ändert sich nach einem definierten Zeitplan
+
+| key | _erforderlich_
+|====================
+
+
+Fließkommaparameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des tags `IBK:Parameter`):
+
+[options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
+|====================
+|Name|Vorgabeeinheit|Beschreibung|Wertebereich |Verwendung
+| `VentilationRate` | 1/h | Konstante Luftwechselrate | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich für konstante Modelle_
+|====================
+
+Wenn der Modelltyp `Scheduled` verwendet wird, sind keine weiteren Parameter erforderlich, da die Luftwechselrate aus einem geplanten Parameter übernommen wird.
+
+Damit das Modell funktioniert, muss der Parameter `InfiltrationRateSchedule` in einem Zeitplan definiert sein (siehe <<Schedules>>).
+
+Nachfolgend finden Sie ein Beispiel für einen Zeitplan, der den Parameter `InfiltrationRateSchedule` für ein solches Modell der geplanten natürlichen Lüftung bereitstellt:
+
+Beispiel für einen Zeitplan, der den Parameter "InfiltrationRateSchedule" bereitstellt
+====
+[source,xml]
+----
+<ScheduleGroup objectList="All zones">
+	<!-- jeden Tag zwischen 8-10 -->
+	<Schedule type="AllDays">
+		<DailyCycles>
+			<DailyCycle interpolation="Constant">
+				<TimePoints>0 6 10</TimePoints>
+				<Values>InfiltrationRateSchedule [1/h]:0 0.4 0</Values>
+			</DailyCycle>
+		</DailyCycles>
+	</Schedule>
+	<!-- Dienstag keine Lüftung -->
+	<Schedule type="Tuesday">
+		<DailyCycles>
+			<DailyCycle interpolation="Constant">
+				<TimePoints>0</TimePoints>
+				<Values>InfiltrationRateSchedule [1/h]:0</Values>
+			</DailyCycle>
+		</DailyCycles>
+	</Schedule>
+	<!-- Wochenende nur am Nachmittag -->
+	<Schedule type="WeekEnd">
+		<DailyCycles>
+			<DailyCycle interpolation="Constant">
+				<TimePoints>0 14 16</TimePoints>
+				<Values>InfiltrationRateSchedule [1/h]:0 0.1 0</Values>
+			</DailyCycle>
+		</DailyCycles>
+	</Schedule>
+</ScheduleGroup>
+----
+====
+
+
+## Steuerungsmodell für Verschattung
+
+Ein Verschattungregelungsmodell ist eine spezielle Art von Regelungsmodell, das einen Signalwert zwischen 0 (keine Verschattung) und 1 (volle Verschattung) zurückgibt. Das tatsächliche Ausmaß der Verschattung bzw. die Reduzierung der solaren Gewinne wird durch den Verschattungs-Parameterblock bestimmt. Somit kann das gleiche Regelmodell für verschiedene Verschattungsarten verwendet werden.
+
+.Parameterdefinition für Verschattungsregelungsmodell
+[source,xml, indent=0]
+====
+----
+<Models>
+	<!-- ShadingControlModel liefert einen Wert zwischen 0 und 1 
+		0 = keine Reduktion (Verschattung offen)
+		1 = volle Reduktion (Verschattung geschlossen)
+	-->
+	<ShadingControlModel id="555" displayName="Roof sensor" modelType="SingleIntensityControlled">
+		<!-- Ruft die Globalstrahlung am gegebenen Sensor ab. -->
+		<SensorID>21</SensorID>
+		<IBK:Parameter name="MaxIntensity" unit="W/m2">200</IBK:Parameter>
+		<IBK:Parameter name="MinIntensity" unit="W/m2">100</IBK:Parameter>
+		<!-- Das Verschattungssteuerungsmodell liefert 1 für Werte unter Min und 0 für Werte über Max.
+			Eine Umschaltung ist nur erlaubt, wenn Max/Min überschritten wurde (hysteretische Steuerung).
+		-->
+	</ShadingControlModel>
+</Models>
+----
+====
+
+
+## Internal Loads Model
+
+Das interne Lastenmodell wird verwendet, um die Wärmelasten von Geräten, Personen und Beleuchtung für Zonen zu definieren. Interne Lasten werden genauso definiert wie natürliche Lüftungsmodelle. Der Objektlisten-tag `ZoneObjectList` identifiziert die Zonen, in denen interne Lasten berücksichtigt werden sollen.
+Es dürfen nicht zwei interne Lastmodelle existieren, die sich auf dieselben Zonen beziehen (nur eine interne Last pro Zone).
+
+Beispiel für ein Internes Lastmodell
+====
+[source,xml]
+----
+<InternalLoadsModel id="200" modelType="Scheduled">
+	<ZoneObjectList>Office zones</ZoneObjectList>
+	<IBK:Parameter name="RadiantFraction" unit="---">0.5</IBK:Parameter>
+</InternalLoadsModel>
+----
+====
+
+
+Das `InternalLoadsModel` muss mit den folgenden XML-Attributen definiert werden:
+
+.Attribute
+[.indent-me]
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribut | Beschreibung | Format | Verwendung 
+| `id` | Kennung des natürlichen Lüftungsmodells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+
+| `modelType` 
+a| Gibt an, wie die internen Lasten angesetzt werden sollen
+
+* `Konstant` - Konstante Geräte-, Personen- und Beleuchtungsenergielasten
+* `Scheduled` - Lasten werden über Zeitplanparameter bereitgestellt.
+
+| key | _erforderlich_
+|====================
+
+
+Fließkommaparameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des tags `IBK:Parameter`):
+
+[options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
+|====================
+|Name|Vorgabeeinheit|Beschreibung|Wertebereich |Verwendung
+| `EquipmentHeatLoadPerArea` | W/m2 | Komplette Gerätebelastung pro Bodenzonenfläche | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich für Konstantes Modell_
+| `PersonHeatLoadPerArea` | W/m2 | Komplette Gerätebelastung pro Bodenzonenfläche | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich für Konstantes Modell_
+| `LightingHeatLoadPerArea` | W/m2 | Komplette Gerätebelastung pro Bodenzonenfläche | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich für Konstantes Modell_
+| `EquipmentRadiationFraction` | --- | Prozentualer Anteil der Gerätelast, der durch Strahlung emittiert wird | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_
+| `PersonRadiationFraction` | --- | Prozentsatz der Gerätelast, der durch Strahlung emittiert wird | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_
+| `LightingRadiationFraction` | --- | Prozentsatz der Gerätelast, der durch Strahlung emittiert wird | {nbsp}>={nbsp}0,0{nbsp} | _erforderlich_
+|====================
+
+Der Modelltyp `Constant` übernimmt die internen Lasten aus den Parametern (siehe oben).
+Wenn der Modelltyp `Scheduled` verwendet wird, werden die tatsächlichen Lasten aus dem Zeitplan entnommen.
+
+Die folgenden Zeitplanparameter sind erforderlich:
+
+- `EquipmentHeatLoadPerAreaSchedule [W/m2]`
+- `PersonHeatLoadPerAreaSchedule [W/m2]`
+- `BeleuchtungWärmelastProFlächeRegel [W/m2]`
+
+Sowohl die geplanten als auch die konstanten internen Lastparameter sind relativ zum Nutzungsbereich, als Zonenparameter `Area` definiert. Dieser wird benötigt, sobald ein `InternalLoadsModel` definiert wurde. Daher unterscheiden sich die berechneten internen Lasten, wenn der Einsatzbereich der Zone unterschiedlich ist. Die zonenspezifischen Ausgangsgrößen heißen: 
+
+- `ConvectiveEquipmentHeatLoad [W]`
+- `ConvectivePersonHeatLoad [W]`
+- `ConvectiveLightingHeatLoad [W]`
+- `RadiantEquipmentHeatLoad [W]`
+- `RadiantPersonHeatLoad [W]`
+- `RadiantLightingHeatLoad [W]`
+
+Dies sind vektoriell dargestellte Größen, die in Ausgangsdefinitionen referenziert werden müssen, z. B. mit: `ConvectiveEquipmentHeatLoad[id=3]` für die konvektive Gerätelast in Zone #3.
+
+
+
+Die Parameter `xxxRadiationFraction` geben an, welcher Prozentsatz der berechneten internen Lasten als Strahlungsfluss flächengewichtet auf opake Oberflächen, die die Zone umschließen, aufgebracht werden soll. 
+

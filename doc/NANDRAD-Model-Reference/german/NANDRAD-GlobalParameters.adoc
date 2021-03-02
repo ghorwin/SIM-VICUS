@@ -1,0 +1,318 @@
+:imagesdir: ./images
+
+# Globale Parameter
+
+Durch die globalen Simulationsoptionen werden folgende Punkte gesteuert:
+
+- wie das Modell arbeitet
+- die Berechnungsgenauigkeit (wirkt sich auf die Leistung aus)
+- die Berechnungsleistung
+
+Die einzelnen Einstellungen sind aufgeteilt in _Simulationsparameter_ und _Solver-Parameter_, wobei sich letztere auf das numerische Lösungsverfahren beziehen.
+
+[[simulation_parameters]]
+## Simulationsparameter
+
+:xrefstyle: short
+
+Im Folgenden werden alle Simulationsparameter beschrieben, siehe <<ex_simpara>>. Alle Parameter werden als `IBK:Parameter`, `IBK:Flags` oder `IBK:IntPara` gesetzt.
+
+:xrefstyle: basic
+
+[[ex_simpara]]
+.Simulationsparameter
+====
+[source,xml]
+----
+<SimulationParameter>
+  <IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
+  <IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
+  <Interval>
+    <IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+    <IBK:Parameter name="End" unit="d">730</IBK:Parameter>
+  </Interval>
+</SimulationParameter>
+----
+====
+
+Das tag `SimulationParameter` enthält die folgenden untergeordneten tags:
+
+[options="header",cols="20%,70%,^ 10%",width="100%"]
+|====================
+|XML-tag|Beschreibung|Verwendung
+|`IBK:Parameter`|Schwebepunktwertparameter|mehrfach
+|`IBK:IntPara`|Ganzzahlige Parameter|vielfach
+|`IBK:Flag`|Flags|vielfach
+|`Interval`|Definiert das Simulationsintervall|kein/einmal
+|====================
+
+Fließkommaparameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des tags `IBK:Parameter`):
+
+[options="header",cols="20%,15%,35%,^ 20%,^ 10%",width="100%"]
+|====================
+|Name|Vorgabeeinheit|Beschreibung|Wertebereich |Verwendung
+| `InitialTemperature` | C | Globale Anfangstemperatur für alle Objekte (`Zonen`, `Bauinstanzen`, etc) | positive double ({nbsp}>{nbsp}0.0{nbsp}K) | _optional_
+| (*)`InitialRelativeHumidity` | % | Globale anfängliche relative Luftfeuchtigkeit für alle Objekte, die einen Feuchtewert gesetzt haben können (`Zonen`, Luftströme in `Modellen`, etc) | 0 ... 100% | _optional_
+| (*)`RadiationLoadFraction` | --- | Prozentualer Anteil der solaren Strahlungsgewinne, die direkt dem Raum zugerechnet werden 0..1. | 0...1 | _optional_
+| (*)`UserThermalRadiationFraction` | --- | Prozentualer Anteil der Wärme, die durch langwellige Strahlung von Personen abgegeben wird.  | 0...1 | _optional_
+| (*)`EquipmentThermalLossFraction` | --- | Prozentualer Anteil der Energie aus der Gerätebelastung, der nicht als thermische Wärme zur Verfügung steht.  | 0 ... 1 | _optional_
+| (*)`EquipmentThermalRadiationFraction` | --- | Prozentualer Anteil der Wärme, die durch langwellige Strahlung von Geräten abgegeben wird.  | 0...1 | _optional_
+| (*)`LightingVisibleRadiationFraction` | --- | Prozentualer Anteil der Energie der Beleuchtung, die in sichtbare kurzwellige Strahlung umgewandelt wird.  | 0...1 | _optional_
+| (*)`LightingThermalRadiationFraction` |--- | Prozentualer Anteil der Energie der Beleuchtung, die in langwellige Strahlung umgesetzt wird.  | 0...1 | _optional_
+| (*)`DomesticWaterSensitiveHeatGainFraction` |--- | Prozentualer Anteil der sensiblen Wärme des Brauchwassers, der an den Raum abgegeben wird.  | 0...1 | _optional_
+| (*)`AirExchangeRateN50` | 1/h | Luftwechselrate, die sich aus einer Druckdifferenz von 50 Pa zwischen innen und außen ergibt.  | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _optional_
+| (*)`ShieldingCoefficient` | --- | Abschirmkoeffizient für einen bestimmten Ort und Hüllentyp. | 0 ... 1 | _optional_
+| (*)`HeatingDesignAmbientTemperature` | C | Umgebungstemperatur für einen Auslegungstag. Parameter, der für den FMU-Export benötigt wird.  | positive double ({nbsp}>{nbsp}0.0{nbsp}) | _optional_
+|====================
+
+_(*) - bisher noch nicht verwendet_
+
+Ganzzahlige Parameter (siehe Abschnitt <<IBK_IntPara>> für eine Beschreibung des tags `IBK:IntPara`):
+
+[options="header",cols="20%,60%,10%,10%",width="100%"]
+|====================
+| Name | Beschreibung | Standard | Verwendung 
+| `StartJahr` | Startjahr der Simulation | _2001_ | _optional_
+|====================
+
+Flags und Optionen (siehe Abschnitt <<IBK_Flag>> für eine Beschreibung des tags `IBK:Flag`):
+
+[options="header",cols="20%,60%,10%,10%",width="100%"]
+|====================
+| Name | Beschreibung | Standard | Verwendung 
+| (*)`EnableMoistureBalance` | Flag, das die Berechnung der Feuchtigkeitsbilanz aktiviert, wenn diese aktiviert ist | _false_ | _optional_
+| (*)`EnableCO2Balance` | Flag, das die Berechnung der CO2-Bilanz aktiviert, wenn aktiviert | _false_ | _optional_
+| (*)`EnableJointVentilation` | Flag, das die Belüftung durch Fugen und Öffnungen aktiviert. | _false_ | _optional_
+| (*)`ExportClimateDataFMU` | Flag, die den FMU-Export von Klimadaten aktiviert. | _false_ | _optional_
+|====================
+
+_(*) - bisher noch nicht verwendet_
+
+
+[[simulation_interval]]
+### Simulationszeitintervall
+
+Der tag `SimulationParameters` enthält auch den Start und das Ende der Simulation. Standardmäßig ist das Simulationszeitintervall so eingestellt, dass es sich über ein ganzes Jahr erstreckt, beginnend um Mitternacht am 1. Januar. Es ist jedoch möglich, ein anderes Zeitintervall zu definieren und damit auch eine Simulation, die länger als ein Jahr läuft.
+
+Dies wird im untergeordneten tag `Interval` gemacht:
+
+Das Simulationsintervall beginnt am 1. Februar (kurz nachdem die ersten 31 Tage des Januars vorbei sind) und läuft 60 Tage.
+====
+[source,xml]
+----
+<Interval>
+  <IBK:Parameter name="Start" unit="d">31</IBK:Parameter>
+  <IBK:Parameter name="End" unit="d">91</IBK:Parameter>
+</Interval>
+----
+====
+
+Der Start und das Ende einer Simulation werden immer in __simulation time__ definiert, was im nächsten Abschnitt genauer erklärt wird.
+
+[[simulation_time]]
+### Simulationszeit und absoluter Zeitbezug
+
+NANDRAD verwendet zwei Zeitmaße:
+
+- *Simulationszeit*, die beim Start der Simulation immer bei 0 beginnt, und
+- *Absolute Zeit*, die die in ein reales Datum/Uhrzeit umgerechnete Zeit ist und auf dem tatsächlichen Startzeitpunkt der Simulation basiert.
+
+Die _Simulationszeit_ beschreibt grundsätzlich einen Zeitversatz relativ zum Startpunkt der Simulation und wird typischerweise nur als Zeitdelta ausgedrückt, z. B. "20 d" oder "15.5 h".
+
+Die _Absolute Zeit_ ist eine bestimmte Zeit/ein bestimmtes Datum, z. B. "20.09.2020 14:30", die/der sich durch Addition des Offsets der _Simulationszeit_ zu einem Startzeitpunkt ergibt.
+
+In NANDRAD wird dieser Simulationsstartzeitpunkt in zwei Parametern angegeben:
+
+- das `StartJahr` und 
+- das Offset der Zeit seit Beginn (Mitternacht 1. Januar) dieses Jahres als `Start` Intervallparameter.
+
+Ein `Start`-Offset von `1 d` lässt die Simulation am _Januar 2, 0:00_ beginnen. Wenn die Simulation z.B. am _15. Januar 2003, 6:00_ beginnen soll, muss folgendes angegeben werden:
+
+----
+StartYear = 2003
+Start = 14*24 + 6 = 342 h
+----
+
+Und für den letzten Tag des Jahres muss die Simulation bei `Start = 364 d` gestartet werden.
+
+[IMPORTANT]
+====
+In NANDRAD gibt es keine Schaltjahre. Selbst wenn Sie 2004 als Startjahr angeben, wird es keinen 29. Februar geben! Wenn Sie eine Mehrjahressimulation durchführen, hat jedes Jahr 365 Tage.
+====
+
+[[solver_parameters]]
+## Solver-Parameter
+
+Im Folgenden werden alle Parameter beschrieben, die für den Solver benötigt werden.
+
+Solver-Parameter
+====
+[source,xml]
+----
+<SolverParameter>
+  <IBK:Parameter name="MaxTimeStep" unit="min">30</IBK:Parameter>
+  <IBK:Parameter name="MinTimeStep" unit="s">1e-4</IBK:Parameter>
+  <IBK:Parameter name="RelTol" unit="---">1e-005</IBK:Parameter>
+  <IBK:Parameter name="AbsTol" unit="---">1e-006</IBK:Parameter>
+  <IBK:Parameter name="NonlinSolverConvCoeff" unit="---">1e-05</IBK:Parameter>
+  <IBK:IntPara name="MaxKrylovDim">30</IBK:IntPara>
+  <IBK:Parameter name="DiscMinDx" unit="mm">2</IBK:Parameter>
+  <IBK:Parameter name="DiscStretchFactor" unit="---">4</IBK:Parameter>
+  <IBK:Flag name="DetectMaxTimeStep">true</IBK:Flag>
+  <Integrator>CVODE</Integrator>
+  <LesSolver>Dense</LesSolver>
+</SolverParameter>
+----
+====
+
+Der tag `SolverParameter` enthält die folgenden untergeordneten tags:
+
+[options="header",cols="20%,70%,^ 10%",width="100%"]
+|====================
+|XML-tag|Beschreibung|Verwendung
+|`IBK:Parameter`|Parameter für Fließkommazahlen|mehrfach
+|`IBK:IntPara`|Ganzzahlige Parameter|vielfach
+|`IBK:Flag`|Flags|mehrfach
+|`Integrator`|Definiert Zeitintegrator|kein/einmal
+|`LesSolver`|Definiert Solver für lineare Gleichungssysteme (LES)|kein/einmal
+|`Preconditioner`|Definiert Vorkonditionierer (nur iterativer LES-Solver)|einzeln/einmal
+|====================
+
+Fließkommaparameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des tags `IBK:Parameter`):
+
+[options="header",cols="20%,15%,30%,20%,5%,10%",width="100%"]
+|====================
+|Name|Vorgabe Einheit|Beschreibung|Wertebereich|Vorgabe|Verwendung
+|`RelTol`|---|Relative Toleranz für die Fehlerprüfung des Solvers.|0...0.1|1E-04|_optional_
+|`AbsTol`|---|Absolute Toleranz für die Fehlerprüfung des Solvers.|0...1|1E-10|_optional_
+|`MaxTimeStep`|h|Maximal zulässiger Zeitschritt für die Integration.|positiv double ({nbsp}>{nbsp}0.0{nbsp})|1|_optional_
+|`MinTimeStep`|s|Minimal akzeptierter Zeitschritt, bevor der Solver mit einem Fehler abbricht.|positive double ({nbsp}>{nbsp}0.0{nbsp})|1E-12|_optional_
+|`InitialTimeStep`|s|Initiale Zeitschrittgröße (oder konstante Schrittgröße für ExplicitEuler-Integrator).|positive double ({nbsp}>{nbsp}0.0{nbsp})|0.1|_optional_
+|`NonlinSolverConvCoeff`|---|Koeffizient, der die Konvergenzgrenze des Solvers nichtlinearer Gleichungen reduziert. Wird von Implicit Euler nicht unterstützt. |0...1|0.1|_optional_
+|`IterativeSolverConvCoeff`|---|Koeffizientenreduzierende Konvergenzgrenze des iterativen Gleichungssolvers.|0...1|0.05|_optional_
+|`DiscMinDx`|mm|Minimale Elementbreite für Wanddiskretisierung.|positiv double ({nbsp}>{nbsp}0.0{nbsp})|2|_optional_
+|`DiscStretchFactor`|---
+a|Stretch-Faktor für variable Wanddiskretisierungen:
+
+- *0* - keine Diskretisierung
+- *1* - äquidistant
+- *> 1* - variabel
+
+siehe <<construction_discretization,spatial discretization algorithm>> für Details.
+|positive integer ({nbsp}>={nbsp}0{nbsp})|50|_optional_
+|(*)`ViewfactorTileWidth`|m|Maximale Abmessung einer Kachel für die Berechnung der Ansichtsfaktoren.|positive double ({nbsp}>{nbsp}0.0{nbsp})|50|_optional_
+|(*)`SurfaceDiscretizationDensity`|---|Anzahl der Oberflächendiskretisierungselemente einer Wand in jeder Richtung.|0...1|2|_optional_
+|(*)`ControlTemperatureTolerance`|K|Temperaturtoleranz für ideales Heizen oder Kühlen.|positiv double ({nbsp}>{nbsp}0.0{nbsp})|1E-05|_optional_
+|(*)`KinsolRelTol`|---|Relative Toleranz für Kinsol-Solver.|0...1|-|_optional_
+|(*)`KinsolAbsTol`|---|Absolute Toleranz für Kinsol-Löser.|0...1|-|_optional_
+|====================
+
+_(*) - bisher noch nicht verwendet_
+
+Ganzzahlige Parameter (siehe Abschnitt <<IBK_IntPara>> für eine Beschreibung des tags `IBK:IntPara`):
+
+[options="header",cols="20%,60%,10%,10%",width="100%"]
+|====================
+| Name | Beschreibung | Standard | Verwendung 
+| `PreILUWidth` | Anzahl der Nicht-Nullen in ILU | --- | _optional_
+| `MaxKrylovDim` | Max. Größe der Krylow-Dimension/max. Anzahl der linearen Iterationen (nur iterative LES) | 50 | _optional_
+| `MaxNonlinIter` | Max. Anzahl der nicht-linearen/Newton-Iterationen | 3 | _optional_
+| `MaxOrder` | Max. Methodenordnung | 5 | _optional_
+| `DiscMaxElementsPerLayer` | Max. Anzahl der Diskretisierungselemente pro Materialschicht | 20 | _optional_
+| (*)`KinsolMaxNonlinIter` | Max. Iterationen des Kinsol-Solvers | _auto_ | _optional_
+|====================
+
+_(*) - bisher noch nicht verwendet_
+
+Flags und Optionen (siehe Abschnitt <<IBK_Flag>> für eine Beschreibung des tags `IBK:Flag`):
+
+[options="header",cols="20%,60%,10%,10%",width="100%"]
+|====================
+| Name | Beschreibung | Standard | Verwendung 
+|(*)`DetectMaxTimeStep`|Zeitpläne prüfen, um Mindestabstände zwischen Schritten zu ermitteln und MaxTimeStep anzupassen.|_false_|_optional_
+|(*)`KinsolDisableLineSearch`|Deaktiviere Liniensuche für stationäre Zyklen.|_false_|_optional_
+|(*)`KinsolStrictNewton`|Strict Newton für stationäre Zyklen einschalten.|_false_|_optional_
+|====================
+
+_(*) - bisher noch nicht verwendet_
+
+[NOTE]
+====
+Die oben aufgeführten Optionen und Parameter hängen teilweise von den gewählten Zeitintegrationsalgorithmen, LES-Solvern und Vorkonditionierern ab, siehe Tabelle im Abschnitt <<solver_capabilities>> unten.
+====
+
+[[integrators]]
+### Integrator
+
+Der XML-tag `Integrator` enthält eine Zeichenkette zur Auswahl eines bestimmten Integrators (`CVODE` wird standardmäßig verwendet, wenn das tag fehlt).
+
+.verfügbare Integratoren
+[options="header", cols="20%, 80%", width="100%"]
+|====================
+|Name|Beschreibung
+|`CVODE`| Wählt den *CVODE*-Integrator aus der Sundials-Bibliothek: implizites Mehrschrittverfahren mit fehlertestbasierter Zeitschrittanpassung und modifiziertem Newton-Raphson für nichtlineare Gleichungssysteme
+|`ExplicitEuler`|Expliziter Euler-Integrator (nur zur Fehlersuche, der Parameter `InitialTimeStep` bestimmt die feste Schrittweite)
+|`ImplicitEuler`|Impliziter Euler-Integrator, Einzelschrittlöser mit fehlertestbasierter Zeitschrittanpassung und modifiziertem Newton-Raphson für nichtlineare Gleichungssysteme (nur zur Fehlersuche und für spezielle Tests)
+|====================
+
+Siehe <<solver_capabilities>> für gültige Kombinationen.
+
+### Linear equation system (LES) solver
+
+Der XML-tag `LesSolver` enthält eine Zeichenkette zur Auswahl eines bestimmten Solvers für die linearen Gleichungssysteme (`KLU` wird standardmäßig verwendet, wenn der tag fehlt).
+
+.verfügbare LES-Solver
+[options="header", cols="20%, 80%", width="100%"]
+|====================
+|Name|Beschreibung
+|`Dense`|Direkter dense Solver (nur zur Fehlersuche)
+|`KLU`|Direkter Sparse Solver
+|`GMRES`|Verallgemeinerte Minimale Residualmethode (iterativer Solver)
+|`BiCGStab`|Bikonjugierte stabilisierte Gradientenmethode (iterativer Solver)
+|====================
+
+Siehe <<solver_capabilities>> für gültige Kombinationen.
+
+### Präkonditionierer
+
+Der XML-tag `Preconditioner` enthält eine Zeichenkette zur Auswahl eines bestimmten Preconditioners, der für iterative LES-Solver verwendet werden soll (`ILU` wird standardmäßig verwendet, wenn das tag fehlt).
+
+
+.verfügbare Preconditioners
+[options="header", cols="20%, 80%", width="100%"]
+|====================
+|Name|Beschreibung
+|`ILU`|Unvollständige LU-Faktorisierung (wenn `PreILUWidth` angegeben ist, wird ILU-T verwendet)
+|====================
+
+Derzeit sind zwei Varianten des ILU-Preconditioners implementiert. Eine ohne Schwellenwert, bei der die Faktorisierung nur im ursprünglichen Jacobi-Matrixmuster gespeichert wird. Wenn der Benutzer `PreILUWidth` angegeben hat, berechnet die Routine die Faktorisierung und behält in jeder Zeile die höchsten n-Werte (wobei n durch `PreILUWidth` definiert ist). Diese Methode ist bekannt als __ILU mit Threashold__ (ILU-T).
+
+[IMPORTANT]
+====
+Eine ILU-T-Methode ist nur für `PreILUWidth` > 3 wirksam. Die minimale Anzahl von Nicht-Nullen in jeder Matrixzeile ist 3, da die Finite-Volumen-Diskretisierung der Wandkonstruktionen bereits ein 3-Diagonal-Muster erzeugt.
+====
+
+[[solver_capabilities]]
+### Solver-Fähigkeiten
+
+Nicht alle Integratoren und LES-Solver unterstützen alle oben genannten Optionen. Auch können nicht alle LES-Solver mit allen Integratoren kombiniert werden. Die folgende Tabelle gibt einen Überblick über die unterstützten Kombinationen und Optionen.
+
+.Fähigkeiten und unterstützte Flags/Parameter für die angebotenen Integratoren
+[options="header", cols="10%, 20%, 80%", width="100%"]
+|====================
+| Integrator | LES-Solver | Unterstützte Integratorparameter/Flags
+| CVODE | Dense, KLU, GMRES, BiCGStab | RelTol, AbsTol, MaxTimeStep, MinTimeStep, InitialTimeStep, MaxOrder, NonlinSolverConvCoeff, MaxNonlinIter 
+| ImplicitEuler | Dense | RelTol, AbsTol, MaxTimeStep, InitialTimeStep, NonlinSolverConvCoeff, MaxNonlinIter 
+| ExplicitEuler | --- | InitialTimeStep
+|====================
+
+
+.Fähigkeiten und unterstützte Flags/Parameter für die angebotenen LES-Solver
+[options="header", cols="10%, 20%, 80%", width="100%"]
+|====================
+| LES-Solver | Preconditioners | Unterstützte Integratorparameter/Flags
+| DENSE | --- | ---
+| KLU | --- | ---
+| GMRES | ILU | PreILUWidth, MaxKrylovDim, IterativeSolverConvCoeff
+| BiCGStab | ILU | PreILUWidth, MaxKrylovDim, IterativeSolverConvCoeff
+|====================
