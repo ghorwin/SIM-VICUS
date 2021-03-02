@@ -40,7 +40,7 @@
 				</HydraulicFluid>
 				<PipeProperties>
 					<HydraulicNetworkPipeProperties id="1">
-						<IBK:Parameter name="PipeRoughness" unit="m">0.007</IBK:Parameter>
+						<IBK:Parameter name="PipeRoughness" unit="mm">0.07</IBK:Parameter>
 						<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PipeOuterDiameter" unit="mm">32</IBK:Parameter>
 						<IBK:Parameter name="UValuePipeWall" unit="W/mK">5</IBK:Parameter>						
@@ -48,7 +48,7 @@
 				</PipeProperties>
 				<Components>
 					<HydraulicNetworkComponent id="1" modelType="ConstantPressurePump">
-						<IBK:Parameter name="PressureHead" unit="Pa">1000</IBK:Parameter>
+						<IBK:Parameter name="PressureHead" unit="Pa">500</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
 					</HydraulicNetworkComponent>
@@ -103,6 +103,11 @@
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
+					<Quantity>FluidVolumeFlow</Quantity>
+					<ObjectListName>Pipes</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
 					<Quantity>FluidViscosity</Quantity>
 					<ObjectListName>Pipes</ObjectListName>
 					<GridName>hourly</GridName>
@@ -112,7 +117,7 @@
 				<OutputGrid name="hourly">
 					<Intervals>
 						<Interval>
-							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">30</IBK:Parameter>
 						</Interval>
 <!-- Intervals to see effect of changing ambient temperature
 						<Interval>
