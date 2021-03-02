@@ -56,7 +56,8 @@
 				</PipeProperties>
 				<Components>
 					<HydraulicNetworkComponent id="1" displayName="Pump 0815 (constant pressure)" modelType="ConstantPressurePump">
-						<IBK:Parameter name="PressureHead" unit="Pa">20000</IBK:Parameter>
+						<!-- Pump with 10 Bar -> Reynolds number ~ 700 (pipe 101), 350 (pipe 102), velocity ~ 0.048 (pipe 101), 0.01 (pipe 102) -->
+						<IBK:Parameter name="PressureHead" unit="kPa">1000</IBK:Parameter>
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.1</IBK:Parameter>
 					</HydraulicNetworkComponent>
@@ -189,11 +190,11 @@
 				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>
 			<ObjectList name="Pipes">
-				<FilterID>101</FilterID>
+				<FilterID>101-199</FilterID>
 				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>
 			<ObjectList name="HeatExchangers">
-				<FilterID>101</FilterID>
+				<FilterID>301</FilterID>
 				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
