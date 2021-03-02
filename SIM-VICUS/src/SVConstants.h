@@ -18,6 +18,8 @@ extern const char * const BUG_REPORT_URL;
 extern const char * const MANUAL_URL;
 /*! URL for discussion forum. */
 extern const char * const FORUM_URL;
+/*! Third language for QtExt_lineEdits. */
+extern const char * const THIRD_LANGUAGE;
 
 
 /*! Fixed-size font family to be used in tables. */
