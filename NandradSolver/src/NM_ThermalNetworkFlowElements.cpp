@@ -46,13 +46,13 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 	if (m_heatExchangeType != (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant &&
 		m_heatExchangeType != (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile)
 	{
-
-		// calculate inner heat transfer coefficient
-		m_velocity = std::fabs(m_massFlux)/(PI/4. * m_innerDiameter * m_innerDiameter * m_fluidDensity);
+		m_volumeFlow = std::fabs(m_massFlux)/m_fluidDensity; // m3/s !!! unit conversion is done when writing outputs
+		m_velocity = m_volumeFlow/(PI/4. * m_innerDiameter * m_innerDiameter);
 		m_viscosity = m_fluidViscosity.value(m_meanTemperature);
 		m_reynolds = ReynoldsNumber(m_velocity, m_viscosity, m_innerDiameter);
 		m_prandtl = PrandtlNumber(m_viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
 		m_nusselt = NusseltNumber(m_reynolds, m_prandtl, m_length, m_innerDiameter);
+		// calculate inner heat transfer coefficient
 		double innerHeatTransferCoefficient = m_nusselt * m_fluidConductivity /
 												m_innerDiameter;
 

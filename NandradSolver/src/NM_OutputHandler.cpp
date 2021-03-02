@@ -92,7 +92,8 @@ const char * const NETWORK_ELEMENT_QUANTITIES[] = {
 	"Reynolds",
 	"ThermalTransmittance",
 	"FluidVelocity",
-	"FluidViscosity"
+	"FluidViscosity",
+	"FluidVolumeFlow"
 };
 
 

@@ -31,6 +31,7 @@ public:
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
 		quantities.push_back(QuantityDescription("FluidVelocity","m/s","Fluid velocity", false));
+		quantities.push_back(QuantityDescription("FluidVolumeFlow","m3/h","Fluid Volume flow", false));
 		quantities.push_back(QuantityDescription("FluidViscosity","m2/s","Fluid dynamic viscosity", false));
 		quantities.push_back(QuantityDescription("Reynolds","---","Reynolds number", false));
 		quantities.push_back(QuantityDescription("Prandtl","---","Prandtl number", false));
@@ -41,6 +42,7 @@ public:
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
 	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
 		valRefs.push_back(&m_velocity);
+		valRefs.push_back(&m_volumeFlow);
 		valRefs.push_back(&m_viscosity);
 		valRefs.push_back(&m_reynolds);
 		valRefs.push_back(&m_prandtl);
@@ -75,6 +77,9 @@ private:
 
 	/*! Fluid velocity [m/s]*/
 	double							m_velocity = -999;
+
+	/*! Fluid volume flow [m3/s]. */
+	double							m_volumeFlow = -999;
 
 	/*! Fluid dynamic viscosity in [m2/s]*/
 	double							m_viscosity = -999;
