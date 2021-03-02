@@ -48,7 +48,7 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 	{
 
 		// calculate inner heat transfer coefficient
-		m_velocity = std::fabs(m_massFlux)/(m_fluidVolume * m_fluidDensity);
+		m_velocity = std::fabs(m_massFlux)/(PI/4. * m_innerDiameter * m_innerDiameter * m_fluidDensity);
 		m_viscosity = m_fluidViscosity.value(m_meanTemperature);
 		m_reynolds = ReynoldsNumber(m_velocity, m_viscosity, m_innerDiameter);
 		m_prandtl = PrandtlNumber(m_viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
@@ -195,7 +195,7 @@ void TNDynamicPipeElement::setInflowTemperature(double Tinflow) {
 		m_heatLoss = 0.0;
 
 		// assume constant heat transfer coefficient along pipe, using average temperature
-		m_velocity = std::fabs(m_massFlux)/(m_fluidVolume * m_fluidDensity);
+		m_velocity = std::fabs(m_massFlux)/(PI/4. * m_innerDiameter * m_innerDiameter * m_fluidDensity);
 		m_viscosity = m_fluidViscosity.value(m_meanTemperature);
 		m_reynolds = ReynoldsNumber(m_velocity, m_viscosity, m_innerDiameter);
 		m_prandtl = PrandtlNumber(m_viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
