@@ -30,8 +30,8 @@ public:
 
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
-		quantities.push_back(QuantityDescription("Velocity","m/s","Fluid velocity", false));
-		quantities.push_back(QuantityDescription("Viscosity","m2/s","Fluid dynamic viscosity", false));
+		quantities.push_back(QuantityDescription("FluidVelocity","m/s","Fluid velocity", false));
+		quantities.push_back(QuantityDescription("FluidViscosity","m2/s","Fluid dynamic viscosity", false));
 		quantities.push_back(QuantityDescription("Reynolds","---","Reynolds number", false));
 		quantities.push_back(QuantityDescription("Prandtl","---","Prandtl number", false));
 		quantities.push_back(QuantityDescription("Nusselt","---","Nusselt number", false));
@@ -164,8 +164,8 @@ public:
 
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
-		quantities.push_back(QuantityDescription("Velocity","m/s","Fluid velocity", false));
-		quantities.push_back(QuantityDescription("Viscosity","m2/s","Fluid dynamic viscosity", false));
+		quantities.push_back(QuantityDescription("FluidVelocity","m/s","Fluid velocity", false));
+		quantities.push_back(QuantityDescription("FluidViscosity","m2/s","Fluid dynamic viscosity", false));
 		quantities.push_back(QuantityDescription("Reynolds","---","Reynolds number", false));
 		quantities.push_back(QuantityDescription("Prandtl","---","Prandtl number", false));
 		quantities.push_back(QuantityDescription("Nusselt","---","Nusselt number", false));

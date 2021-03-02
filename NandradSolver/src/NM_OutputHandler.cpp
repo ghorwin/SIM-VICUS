@@ -84,7 +84,15 @@ const char * const NETWORK_ELEMENT_QUANTITIES[] = {
 	"OutletNodeTemperature",
 	"InletNodePressure",
 	"OutletNodePressure",
-	"FlowElementHeatLoss"
+	"FlowElementHeatLoss",
+	"ElectricalPower",
+	"MechanicalPower",
+	"Nusselt",
+	"Prandtl",
+	"Reynolds",
+	"ThermalTransmittance",
+	"FluidVelocity",
+	"FluidViscosity"
 };
 
 
