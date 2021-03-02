@@ -169,6 +169,11 @@
 					<ObjectListName>Pipes</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FluidVolumeFlow</Quantity>
+					<ObjectListName>Pipes</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
 			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
