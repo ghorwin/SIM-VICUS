@@ -499,6 +499,33 @@ Time[h]	Temperature[C]
 
 Die Austrittstemperatur des Rohrs kühlt sich zunächst von der Starttemperatur (20°C) ab bis auf 0°C, und schwingt sich dann auf 40°C ein. Am Simulationsende beträgt sie 40°C, identisch mit der außenanliegenden Temperatur. 
 
+Berechnet (40 °C, bei t = 77400 s):
+```
+velocity = 0.162 m/s
+Reynolds = 6318
+zeta (Swamee) = 151
+Druckverlust = 2000 Pa  (gesamtes Rohr)
+```
+
+Vergleichsrechnung mit http://www.druckverlust.de/Online-Rechner:
+
+```
+Fördermedium:             Wasser 40 °C / flüssig
+Volumenstrom:             0,3 m³/h
+Dichte:                   998 kg/m³
+Kinematische Viskosität:  0,658 10-6 m²/s
+Rohrleitungselement:      Kreisrohr
+Elementabmessungen:       Rohrinnendurchmesser D: 25.6 mm
+Rohrlänge L:              100 m
+Strömungsgeschwindigkeit: 0,16 m/s
+Reynolds-Zahl:            6299
+Strömungsform:            laminar
+Rohrrauhigkeit:           0.07 mm
+Rohrreibungszahl:         0,04
+Zeta-Wert:                149,36
+Druckverlust:             19,54 mbar / m
+                          0,02 bar
+```
 
 
 ### ThermoHydraulicNetworkHeatExchangerHeatFluxDataFile.nandrad
