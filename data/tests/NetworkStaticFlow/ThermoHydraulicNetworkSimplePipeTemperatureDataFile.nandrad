@@ -26,7 +26,7 @@
 			</Zone>
 		</Zones>
 		<HydraulicNetworks>
-			<HydraulicNetwork id="1" displayName="static network" modelType="ThermalHydraulicNetwork" referenceElementId="1001">
+			<HydraulicNetwork id="1" displayName="static network" modelType="ThermalHydraulicNetwork" referenceElementId="201">
 				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
 				<IBK:Parameter name="InitialFluidTemperature" unit="C">20</IBK:Parameter>
 				<HydraulicFluid id="1" displayName="Water">
@@ -58,9 +58,9 @@
 					</HydraulicNetworkComponent>
 				</Components>
 				<Elements>
-					<HydraulicNetworkElement id="1001" inletNodeId="101" outletNodeId="0" componentId="1" displayName="pump">
+					<HydraulicNetworkElement id="201" inletNodeId="101" outletNodeId="0" componentId="1" displayName="pump">
 					</HydraulicNetworkElement>
-					<HydraulicNetworkElement id="1002" inletNodeId="0" outletNodeId="101" componentId="2" pipePropertiesId="1" displayName="pipe">
+					<HydraulicNetworkElement id="101" inletNodeId="0" outletNodeId="101" componentId="2" pipePropertiesId="1" displayName="pipe">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 						<LinearSplineParameter name="HeatExchangeSpline" interpolationMethod="linear">
 						   <TSVFile>${Project Directory}/0_climate/Temperature.csv</TSVFile>
@@ -72,31 +72,41 @@
 		
 		<Outputs>
 			<Definitions>
-			<OutputDefinition>
-				<Quantity>OutletNodeTemperature</Quantity>
-				<ObjectListName>Network Elements</ObjectListName>
-				<GridName>hourly</GridName>
-			</OutputDefinition>			
-			<OutputDefinition>
-				<Quantity>OutletNodePressure</Quantity>
-				<ObjectListName>Network Elements</ObjectListName>
-				<GridName>hourly</GridName>
-			</OutputDefinition>
-			<OutputDefinition>
-					<Quantity>FluidMassFlux</Quantity>
+				<OutputDefinition>
+					<Quantity>OutletNodePressure</Quantity>
 					<ObjectListName>Network Elements</ObjectListName>
 					<GridName>hourly</GridName>
-			</OutputDefinition>
-			<OutputDefinition>
-				<Quantity>FluidTemperature</Quantity>
-				<ObjectListName>Network Elements</ObjectListName>
-				<GridName>hourly</GridName>
-			</OutputDefinition>
-			<OutputDefinition>
-				<Quantity>FlowElementHeatLoss</Quantity>
-				<ObjectListName>Network Elements</ObjectListName>
-				<GridName>hourly</GridName>
-			</OutputDefinition>
+				</OutputDefinition>
+				<OutputDefinition>
+						<Quantity>FluidMassFlux</Quantity>
+						<ObjectListName>Network Elements</ObjectListName>
+						<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FluidTemperature</Quantity>
+					<ObjectListName>Network Elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FlowElementHeatLoss</Quantity>
+					<ObjectListName>Network Elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>Reynolds</Quantity>
+					<ObjectListName>Pipes</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FluidVelocity</Quantity>
+					<ObjectListName>Pipes</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FluidViscosity</Quantity>
+					<ObjectListName>Pipes</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
 			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
@@ -104,6 +114,23 @@
 						<Interval>
 							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
 						</Interval>
+<!-- Intervals to see effect of changing ambient temperature
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
+						</Interval>
+						<Interval>
+							<IBK:Parameter name="Start" unit="h">1</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+						<Interval>
+							<IBK:Parameter name="Start" unit="h">20</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
+						</Interval>
+						<Interval>
+							<IBK:Parameter name="Start" unit="h">21</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+-->
 					</Intervals>
 				</OutputGrid>
 			</Grids>
@@ -111,6 +138,10 @@
 		<ObjectLists>
 			<ObjectList name="Network Elements">
 				<FilterID>*</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Pipes">
+				<FilterID>101-199</FilterID>
 				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
