@@ -15,6 +15,7 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/../../../externals/Vicus/src
 	${PROJECT_SOURCE_DIR}/../../../externals/Vicus/srcTranslations
 	${PROJECT_SOURCE_DIR}/../../../externals/QtExt/src
+	${PROJECT_SOURCE_DIR}/../../../externals/qwt/src
 	${PROJECT_SOURCE_DIR}/../../../externals/QuaZIP/src
 	${PROJECT_SOURCE_DIR}/../../../externals/QuaZIP/src/zlib
 	${PROJECT_SOURCE_DIR}/../../../externals/CCM/src
