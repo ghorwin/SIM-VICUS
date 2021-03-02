@@ -220,7 +220,7 @@ namespace VICUS {
 				case 1 : return "DynamicPipe";
 				case 2 : return "ConstantPressurePump";
 				case 3 : return "HeatExchanger";
-				case 4 : return "HeatPump";
+				case 4 : return "HeatPumpIdealCarnot";
 			} break;
 			// NetworkComponent::para_t
 			case 14 :
@@ -496,7 +496,7 @@ namespace VICUS {
 				case 1 : return "DynamicPipe";
 				case 2 : return "ConstantPressurePump";
 				case 3 : return "HeatExchanger";
-				case 4 : return "HeatPump";
+				case 4 : return "HeatPumpIdealCarnot";
 			} break;
 			// NetworkComponent::para_t
 			case 14 :
@@ -773,7 +773,7 @@ namespace VICUS {
 				case 1 : return "Pipe with a discretized fluid volume and heat exchange";
 				case 2 : return "Pump with constant pressure";
 				case 3 : return "Simple heat exchanger with given heat flux";
-				case 4 : return "Heat pump";
+				case 4 : return "Heat pump with unlimited heating power and constant carnot efficiency";
 			} break;
 			// NetworkComponent::para_t
 			case 14 :
