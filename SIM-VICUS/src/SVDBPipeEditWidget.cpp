@@ -9,12 +9,24 @@
 #include <NANDRAD_KeywordList.h>
 
 #include <QtExt_LanguageHandler.h>
+#include <SVConstants.h>
 
 SVDBPipeEditWidget::SVDBPipeEditWidget(QWidget *parent) :
 	QWidget(parent),
 	m_ui(new Ui::SVDBPipeEditWidget)
 {
 	m_ui->setupUi(this);
+
+	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
+	m_ui->lineEditName->setDialog3Caption(tr("Pipe"));
+
+	m_ui->lineEditWallLambda->setup(0, 1000, tr("Thermal conductivity"), false, true);
+	m_ui->lineEditOuterDiameter->setup(0, 1, tr("Outer diameter"), true, true);
+	m_ui->lineEditWallRoughness->setup(0, 20, tr("Roughness"), true, true);
+	m_ui->lineEditWallThickness->setup(0, 10000, tr("Wall thickness"), true, true);
+	m_ui->lineEditInsulationLambda->setup(0, 1000, tr("Thermal conductivity of the insulation material"), true, true);
+	m_ui->lineEditInsulationThickness->setup(0, 1000, tr("Insulation thickness"), true, true);
+
 }
 
 

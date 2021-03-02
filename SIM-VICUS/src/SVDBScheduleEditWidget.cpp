@@ -14,11 +14,13 @@
 #include <QtExt_LanguageHandler.h>
 #include <QtExt_DateTimeInputDialog.h>
 #include <QtExt_Conversions.h>
+#include <SVConstants.h>
 
 #include "SVDBScheduleTableModel.h"
 #include "SVDBScheduleDailyCycleEditWidget.h"
 #include "SVStyle.h"
 #include "SVChartUtils.h"
+
 
 SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 	QWidget(parent),
@@ -27,7 +29,7 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 	m_ui->setupUi(this);
 	m_ui->gridLayoutMaster->setMargin(4);
 
-	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), "fr", true);
+	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Schedule identification name"));
 
 	//add header to periods table

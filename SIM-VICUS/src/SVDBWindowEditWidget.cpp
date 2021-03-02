@@ -4,6 +4,8 @@
 #include <QSortFilterProxyModel>
 
 #include <QtExt_LanguageStringEditWidget1.h>
+#include <QtExt_LanguageHandler.h>
+#include <SVConstants.h>
 
 #include "SVSettings.h"
 #include "SVUtils.h"
@@ -15,6 +17,9 @@ SVDBWindowEditWidget::SVDBWindowEditWidget(QWidget *parent) :
 	m_ui->setupUi(this);
 
 	// style the table widget
+
+	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
+	m_ui->lineEditName->setDialog3Caption(tr("Window"));
 
 	QStringList captions;
 	captions << tr("Name") << tr("Category"); // TODO other captions

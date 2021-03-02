@@ -10,6 +10,7 @@
 
 #include <QtExt_LanguageHandler.h>
 #include "QtExt_Locale.h"
+#include <SVConstants.h>
 
 #include "SVSettings.h"
 #include "SVDBNetworkComponentTableModel.h"
@@ -24,7 +25,7 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 {
 	m_ui->setupUi(this);
 
-	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), "fr", true);
+	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(),THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Component identification name"));
 
 	// enter categories into combo box

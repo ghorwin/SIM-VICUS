@@ -8,8 +8,10 @@
 #include <VICUS_KeywordListQt.h>
 
 #include <QtExt_LanguageHandler.h>
+#include <SVConstants.h>
 
 #include "SVDBMaterialTableModel.h"
+
 
 SVDBMaterialEditWidget::SVDBMaterialEditWidget(QWidget *parent) :
 	QWidget(parent),
@@ -20,13 +22,13 @@ SVDBMaterialEditWidget::SVDBMaterialEditWidget(QWidget *parent) :
 	// adjust color botton width
 	m_ui->pushButtonOpaqueMaterialColor->setMaximumSize(m_ui->lineEditName->height(), m_ui->lineEditName->height());
 
-	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), "fr", true);
+	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Material identification name"));
-	m_ui->lineEditDataSource->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), "fr", true);
+	m_ui->lineEditDataSource->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(),THIRD_LANGUAGE, true);
 	m_ui->lineEditDataSource->setDialog3Caption(tr("Data source information"));
-	m_ui->lineEditManufacturer->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), "fr", true);
+	m_ui->lineEditManufacturer->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditManufacturer->setDialog3Caption(tr("Manufacturer name"));
-	m_ui->lineEditNotes->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), "fr", true);
+	m_ui->lineEditNotes->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditNotes->setDialog3Caption(tr("Notes"));
 
 	m_ui->lineEditDensity->setup(1, 10000, tr("Density"), true, true);

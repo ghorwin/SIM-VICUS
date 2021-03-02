@@ -35,13 +35,11 @@ SVDBInternalLoadsPersonEditWidget::SVDBInternalLoadsPersonEditWidget(QWidget *pa
 	}
 	m_ui->comboBoxPersonMethod->blockSignals(false);
 
-	///TODO Katja
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Internal loads person model name"));
 
 	m_ui->lineEditPersonCount->setup(0, 10000, tr("Person count according to the given unit"), true, true);
 	m_ui->lineEditConvectiveFactor->setup(0, 1, tr("Convective heat factor"), true, true);
-	/// TODO Katja
 	// initial state is "nothing selected"
 	updateInput(-1);
 }
