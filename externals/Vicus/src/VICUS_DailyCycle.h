@@ -21,6 +21,10 @@ public:
 	/*! Checks if all referenced materials exist and if their parameters are valid. */
 	bool isValid() const;
 
+	DailyCycle multiply(const DailyCycle &other) const;
+
+	DailyCycle operator *(const DailyCycle &other) const {return multiply(other);}
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Holds one or more day types from NANDRAD::Schedule::type_t enum.

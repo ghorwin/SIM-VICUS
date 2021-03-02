@@ -113,5 +113,37 @@ std::set<int> ScheduleInterval::freeDayTypes(){
 	return allValidDayTypes;
 }
 
+ScheduleInterval ScheduleInterval::multiply(const ScheduleInterval &other, unsigned int startDay) const
+{
+	ScheduleInterval schedInt;
+	if(!isValid()){
+		//Schedule interval '%1' with (id=%2) is not valid.
+		return schedInt;
+	}
+
+	if(!other.isValid()){
+		//Schedule interval '%1' with (id=%2) is not valid.
+		return schedInt;
+	}
+
+
+	//multiply each daily cycle (dc) of the first dc with the second dc
+	for(unsigned int i=0; i<m_dailyCycles.size(); ++i){
+		for(unsigned int j=0; j<other.m_dailyCycles.size();++j){
+			DailyCycle dc = m_dailyCycles[i] * other.m_dailyCycles[j];
+			if(dc != DailyCycle())
+				schedInt.m_dailyCycles.push_back(dc);
+		}
+	}
+	if(!schedInt.m_dailyCycles.empty()){
+		return ScheduleInterval();
+	}
+
+	schedInt.m_displayName = m_displayName;
+	schedInt.m_intervalStartDay = startDay;
+
+	return schedInt;
+}
+
 
 } // namespace VICUS

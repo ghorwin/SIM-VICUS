@@ -45,17 +45,75 @@ bool Schedule::isValid() const {
 	return true;
 }
 
-bool Schedule::multiply(Schedule &other) {
-	///TODO Katja
+Schedule Schedule::multiply(const Schedule &other) {
+	Schedule sched;
 
+
+	if(!isValid()){
+		//Schedule '%1' with (id=%2) is not valid.
+		return sched;
+	}
+
+	if(!other.isValid()){
+		//Schedule '%1' with (id=%2) is not valid.
+		return sched;
+	}
+	//make a copy of the other schedule to the new schedule
+	sched = other;
 	//compare periods
+	unsigned int j=0;
+	unsigned int i=0;
+	while(i<sched.m_periods.size()){
+		const ScheduleInterval &period = m_periods[j];
+		ScheduleInterval period2 = sched.m_periods[i];
+		//for same start day make a multiply
+		if(period.m_intervalStartDay == period2.m_intervalStartDay){
+			if(j+1 >= m_periods.size())
+				//fertig
+				break;
+			++j;
+		}
+		//check for insert
+		else if(period.m_intervalStartDay > period2.m_intervalStartDay){
+			bool haveNext = i+1<sched.m_periods.size();
+			//insert a period from this schedule in the sched
+			if((haveNext && period.m_intervalStartDay < sched.m_periods[i+1].m_intervalStartDay) || !haveNext){
+				period2.m_intervalStartDay = period.m_intervalStartDay;
+				sched.m_periods.insert(sched.m_periods.begin()+i+1, period2);
+			}
+			++i;
+		}
+	}
 
-	//add all periods to a new schedule
 
-	//multiply all values in loops
-	return true;
+	//multi
+	i=0;
+	j=0;
+	//now sched holds all start days
+	//iterate sched periods and check for same or lower startdays in m_periods
+	//if true multiply
+	//otherwise increment
+	while(i<sched.m_periods.size()){
+		const ScheduleInterval &period = m_periods[j];
+		ScheduleInterval period2 = sched.m_periods[i];
+
+		if(period2.m_intervalStartDay == period.m_intervalStartDay ||
+				(period2.m_intervalStartDay > period.m_intervalStartDay &&
+				 j+1<m_periods.size() &&
+				 period2.m_intervalStartDay < m_periods[j+1].m_intervalStartDay) ||
+				j+1 >= m_periods.size()){
+			sched.m_periods[i].multiply(m_periods[j], sched.m_periods[i].m_intervalStartDay);
+			++i;
+		}
+		else if(j+1<m_periods.size() &&
+				period2.m_intervalStartDay >= m_periods[j+1].m_intervalStartDay){
+			++j;
+		}
+	}
+
+
+	return sched;
 }
-
 
 
 } // namespace VICUS

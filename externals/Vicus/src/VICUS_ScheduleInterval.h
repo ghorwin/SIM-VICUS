@@ -30,6 +30,11 @@ public:
 	/*! Returns a set of all unused day types. */
 	std::set<int> freeDayTypes();
 
+	/*! Multiply to schedule intervals and create a new one. */
+	ScheduleInterval multiply(const ScheduleInterval &other, unsigned int startDay) const;
+
+
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Display name of period. */
