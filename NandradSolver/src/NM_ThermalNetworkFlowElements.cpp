@@ -445,11 +445,11 @@ void TNPumpWithPerformanceLoss::setInflowTemperature(double Tinflow) {
 	// Pa * m3/s = N/m2 * m3/s = N*m/s
 
 	// calculate pump performance
-	double m_mechanicalPower = m_massFlux/m_fluidDensity * (*m_pressureHeadRef);
+	m_mechanicalPower = m_massFlux/m_fluidDensity * (*m_pressureHeadRef);
 
 	// efficiency is defined as portion of total electrical power used for mechanical
 	// Pelectrical * m_pumpEfficiency = Pmechanical
-	double m_electricalPower = m_mechanicalPower/m_pumpEfficiency;
+	m_electricalPower = m_mechanicalPower/m_pumpEfficiency;
 	// calculate heat flux into fluid
 	m_heatLoss = - (m_electricalPower - m_mechanicalPower);
 }
