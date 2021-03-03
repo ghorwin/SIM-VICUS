@@ -51,12 +51,10 @@
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
 					</HydraulicNetworkComponent>
-					<HydraulicNetworkComponent id="2" modelType="SimplePipe">
-					</HydraulicNetworkComponent>
+					<HydraulicNetworkComponent id="2" modelType="SimplePipe"/>
 				</Components>
 				<Elements>
-					<HydraulicNetworkElement id="1001" inletNodeId="101" outletNodeId="0" componentId="1" displayName="pump">
-					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="1001" inletNodeId="101" outletNodeId="0" componentId="1" displayName="pump"/>
 					<HydraulicNetworkElement id="1002" inletNodeId="0" outletNodeId="101" componentId="2" pipePropertiesId="1" displayName="pipe">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 					</HydraulicNetworkElement>

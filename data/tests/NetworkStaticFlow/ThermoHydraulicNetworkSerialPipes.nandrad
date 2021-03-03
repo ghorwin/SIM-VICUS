@@ -25,7 +25,7 @@
 			</Zone>
 		</Zones>
 		<HydraulicNetworks>
-			<HydraulicNetwork id="1" displayName="Network with two pipes (different diameter) and heat exchange" 
+			<HydraulicNetwork id="1" displayName="Network with two pipes (different diameter) and heat exchange"
 						modelType="ThermalHydraulicNetwork" referenceElementId="201">
 				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
 				<!-- Use InitialFluidTemperature instead of DefaultFluidTemperature for thermal-hydraulic networks -->
@@ -94,7 +94,7 @@
 			</HydraulicNetwork>
 		</HydraulicNetworks>
 		<Schedules />
-		
+
 		<Outputs>
 			<Definitions>
 				<!-- Outputs go to file 'network_elements.tsv' -->
@@ -203,6 +203,6 @@
 				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
-		
+
 	</Project>
 </NandradProject>

@@ -76,6 +76,7 @@ public:
 	/*! Parameters of the flow component. */
 	IBK::Parameter					m_para[NUM_P];											// XML:E
 
+	/*! Optional definition of heat exchange calculation model (if missing, flow element is adiabat). */
 	HydraulicNetworkHeatExchange	m_heatExchange;											// XML:E
 
 

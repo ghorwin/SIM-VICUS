@@ -82,7 +82,7 @@ public:
 	std::string						m_displayName;										// XML:A
 
 	/*! Model type. */
-	ModelType						m_modelType			= NUM_MT;						// XML:A:required
+	ModelType						m_modelType		= NUM_MT;							// XML:A:required
 
 	/*! Parameters of the flow component. */
 	IBK::Parameter					m_para[NUM_P];										// XML:E

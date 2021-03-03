@@ -5,11 +5,6 @@
 namespace NANDRAD {
 
 
-HydraulicNetworkHeatExchange::HydraulicNetworkHeatExchange()
-{
-
-}
-
 void HydraulicNetworkHeatExchange::checkParameters(const HydraulicNetworkComponent &comp,
 												   const std::map<std::string, IBK::Path> &placeholders)
 {
@@ -25,7 +20,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const HydraulicNetworkCompone
 
 	try {
 		// decide which heat exchange is chosen
-		switch(m_type) {
+		switch(m_modelType) {
 
 			case T_AmbientTemperatureConstant: {
 					// check temperature
@@ -72,7 +67,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const HydraulicNetworkCompone
 		} // switch
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Missing/invalid parameters for heat exchange model %1.")
-			 .arg(KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType", m_type)),
+			 .arg(KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType", m_modelType)),
 			 FUNC_ID);
 	}
 
@@ -81,12 +76,12 @@ void HydraulicNetworkHeatExchange::checkParameters(const HydraulicNetworkCompone
 	if (heatExchangeDataFileMustExist){
 
 		// replace place holders
-		m_spline.m_tsvFile = m_spline.m_tsvFile.withReplacedPlaceholders(placeholders);
+		m_heatExchangeSpline.m_tsvFile = m_heatExchangeSpline.m_tsvFile.withReplacedPlaceholders(placeholders);
 
 		try {
-			if (m_type == T_AmbientTemperatureSpline){
+			if (m_modelType == T_AmbientTemperatureSpline){
 				//  check the spline and convert it to base units automatically
-				m_spline.checkAndInitialize("Spline", IBK::Unit("s"), IBK::Unit("K"),
+				m_heatExchangeSpline.checkAndInitialize("Spline", IBK::Unit("s"), IBK::Unit("K"),
 														IBK::Unit("K"), 0, false, std::numeric_limits<double>::max(), false,
 														"Temperature must be > 0 K.");
 				// check for external heat transfer coefficient
@@ -96,18 +91,18 @@ void HydraulicNetworkHeatExchange::checkParameters(const HydraulicNetworkCompone
 																			true, nullptr);
 			}
 
-			else if (m_type == T_HeatLossSpline){
+			else if (m_modelType == T_HeatLossSpline){
 				//  check the spline and convert it to base units automatically
-				m_spline.checkAndInitialize("Spline", IBK::Unit("s"), IBK::Unit("J/s"),
+				m_heatExchangeSpline.checkAndInitialize("Spline", IBK::Unit("s"), IBK::Unit("J/s"),
 														IBK::Unit("J/s"), std::numeric_limits<double>::lowest(), false,
 														std::numeric_limits<double>::max(), false,
 														nullptr);
 			}
 		} catch (IBK::Exception &ex) {
-			if (m_spline.m_name.empty())
+			if (m_heatExchangeSpline.m_name.empty())
 				throw IBK::Exception(ex, IBK::FormatString("Error initializing spline data."), FUNC_ID);
 			else
-				throw IBK::Exception(ex, IBK::FormatString("Error initializing spline '%1'.").arg(m_spline.m_name), FUNC_ID);
+				throw IBK::Exception(ex, IBK::FormatString("Error initializing spline '%1'.").arg(m_heatExchangeSpline.m_name), FUNC_ID);
 		}
 
 	}

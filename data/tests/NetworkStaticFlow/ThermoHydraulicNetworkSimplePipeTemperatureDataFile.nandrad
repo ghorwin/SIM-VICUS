@@ -43,7 +43,7 @@
 						<IBK:Parameter name="PipeRoughness" unit="mm">0.07</IBK:Parameter>
 						<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PipeOuterDiameter" unit="mm">32</IBK:Parameter>
-						<IBK:Parameter name="UValuePipeWall" unit="W/mK">5</IBK:Parameter>						
+						<IBK:Parameter name="UValuePipeWall" unit="W/mK">5</IBK:Parameter>
 					</HydraulicNetworkPipeProperties>
 				</PipeProperties>
 				<Components>
@@ -52,28 +52,23 @@
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
 					</HydraulicNetworkComponent>
-					<HydraulicNetworkComponent id="2" modelType="SimplePipe">
-						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
-						<HeatExchangeType>TemperatureDataFile</HeatExchangeType>
-					</HydraulicNetworkComponent>
+					<HydraulicNetworkComponent id="2" modelType="SimplePipe"/>
 				</Components>
 				<Elements>
-					<HydraulicNetworkElement id="201" inletNodeId="101" outletNodeId="0" componentId="1" displayName="pump">
-					</HydraulicNetworkElement>
-					<HydraulicNetworkElement id="101" inletNodeId="0" outletNodeId="101" componentId="2" pipePropertiesId="1" displayName="pipe">						
-						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>						
-						<HydraulicNetworkHeatExchange>
-							<Type>AmbientTemperatureSpline</Type>
+					<HydraulicNetworkElement id="201" inletNodeId="101" outletNodeId="0" componentId="1" displayName="pump"/>
+					<HydraulicNetworkElement id="101" inletNodeId="0" outletNodeId="101" componentId="2" pipePropertiesId="1" displayName="pipe">
+						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="AmbientTemperatureSpline">
 							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
-							<LinearSplineParameter name="Spline" interpolationMethod="linear">
+							<LinearSplineParameter name="HeatExchangeSpline" interpolationMethod="linear">
 								<TSVFile>${Project Directory}/0_climate/Temperature.csv</TSVFile>
 							</LinearSplineParameter>
-						</HydraulicNetworkHeatExchange>						
+						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
 				</Elements>
 			</HydraulicNetwork>
 		</HydraulicNetworks>
-		
+
 		<Outputs>
 			<Definitions>
 				<OutputDefinition>
@@ -154,6 +149,6 @@
 				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
-		
+
 	</Project>
 </NandradProject>

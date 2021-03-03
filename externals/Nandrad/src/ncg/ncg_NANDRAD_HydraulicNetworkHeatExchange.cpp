@@ -37,6 +37,25 @@ void HydraulicNetworkHeatExchange::readXML(const TiXmlElement * element) {
 	FUNCID(HydraulicNetworkHeatExchange::readXML);
 
 	try {
+		// search for mandatory attributes
+		if (!TiXmlAttribute::attributeByName(element, "modelType"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'modelType' attribute.") ), FUNC_ID);
+
+		// reading attributes
+		const TiXmlAttribute * attrib = element->FirstAttribute();
+		while (attrib) {
+			const std::string & attribName = attrib->NameStr();
+			if (attribName == "modelType")
+			try {
+				m_modelType = (ModelType)KeywordList::Enumeration("HydraulicNetworkHeatExchange::ModelType", attrib->ValueStr());
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+					IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
+			}
+			attrib = attrib->Next();
+		}
 		// search for mandatory elements
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
@@ -71,20 +90,11 @@ void HydraulicNetworkHeatExchange::readXML(const TiXmlElement * element) {
 				NANDRAD::LinearSplineParameter p;
 				p.readXML(c);
 				bool success = false;
-				if (p.m_name == "Spline") {
-					m_spline = p; success = true;
+				if (p.m_name == "HeatExchangeSpline") {
+					m_heatExchangeSpline = p; success = true;
 				}
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.m_name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			else if (cName == "Type") {
-				try {
-					m_type = (Type)KeywordList::Enumeration("HydraulicNetworkHeatExchange::Type", c->GetText());
-				}
-				catch (IBK::Exception & ex) {
-					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
-						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
-				}
 			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
@@ -104,9 +114,8 @@ TiXmlElement * HydraulicNetworkHeatExchange::writeXML(TiXmlElement * parent) con
 	TiXmlElement * e = new TiXmlElement("HydraulicNetworkHeatExchange");
 	parent->LinkEndChild(e);
 
-
-	if (m_type != NUM_T)
-		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("HydraulicNetworkHeatExchange::Type",  m_type));
+	if (m_modelType != NUM_T)
+		e->SetAttribute("modelType", KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType",  m_modelType));
 
 	for (unsigned int i=0; i<NUM_IP; ++i) {
 		if (!m_intPara[i].name.empty()) {
@@ -119,9 +128,9 @@ TiXmlElement * HydraulicNetworkHeatExchange::writeXML(TiXmlElement * parent) con
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 		}
 	}
-	if (!m_spline.m_name.empty()) {
-		IBK_ASSERT("Spline" == m_spline.m_name);
-		m_spline.writeXML(e);
+	if (!m_heatExchangeSpline.m_name.empty()) {
+		IBK_ASSERT("HeatExchangeSpline" == m_heatExchangeSpline.m_name);
+		m_heatExchangeSpline.writeXML(e);
 	}
 	return e;
 }
