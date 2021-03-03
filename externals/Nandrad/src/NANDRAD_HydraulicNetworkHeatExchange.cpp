@@ -5,16 +5,12 @@
 namespace NANDRAD {
 
 
-void HydraulicNetworkHeatExchange::checkParameters(const HydraulicNetworkComponent &comp,
-												   const std::map<std::string, IBK::Path> &placeholders)
-{
+void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, IBK::Path> &placeholders) {
 	FUNCID(HydraulicNetworkHeatExchange::checkParameters);
 
 	// check parameters required for thermal balances/heat exchange
-	// Note: We ONLY check the required PARAMETERS here! Wether this is a correct heat exchange type or not is
-	//       checked in the HydraulicComponent!
-	//       Also, we do not check for implemented combinations of model type and heat exchange type - this is handled
-	//       when the models are instantiated.
+	// Note: We ONLY check the required PARAMETERS here! We do not check for implemented combinations of model type
+	//       and heat exchange type - this is handled when the models are instantiated.
 
 	bool heatExchangeDataFileMustExist = false;
 
@@ -111,7 +107,8 @@ void HydraulicNetworkHeatExchange::checkParameters(const HydraulicNetworkCompone
 
 
 
-std::vector<unsigned int> NANDRAD::HydraulicNetworkHeatExchange::availableHeatExchangeTypes(const NANDRAD::HydraulicNetworkComponent::ModelType modelType)
+std::vector<unsigned int> NANDRAD::HydraulicNetworkHeatExchange::availableHeatExchangeTypes(
+		const NANDRAD::HydraulicNetworkComponent::ModelType modelType)
 {
 	switch (modelType) {
 		case HydraulicNetworkComponent::MT_SimplePipe:

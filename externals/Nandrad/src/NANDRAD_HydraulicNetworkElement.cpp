@@ -74,8 +74,8 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 		}
 	}
 
-	m_heatExchange.checkParameters(*m_component, placeholders);
-
+	// finally check for valid heat exchange parameters
+	m_heatExchange.checkParameters(placeholders);
 }
 
 

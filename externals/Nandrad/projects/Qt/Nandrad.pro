@@ -36,18 +36,19 @@ HEADERS += \
 	../../src/NANDRAD_EmbeddedObject.h \
 	../../src/NANDRAD_EmbeddedObjectWindow.h \
 	../../src/NANDRAD_HydraulicFluid.h \
-	../../src/NANDRAD_HydraulicNetwork.h \
 	../../src/NANDRAD_HydraulicNetworkComponent.h \
 	../../src/NANDRAD_HydraulicNetworkElement.h \
+	../../src/NANDRAD_HydraulicNetwork.h \
 	../../src/NANDRAD_HydraulicNetworkHeatExchange.h \
 	../../src/NANDRAD_HydraulicNetworkPipeProperties.h \
 	../../src/NANDRAD_IDGroup.h \
-	../../src/NANDRAD_Interface.h \
 	../../src/NANDRAD_InterfaceAirFlow.h \
+	../../src/NANDRAD_Interface.h \
 	../../src/NANDRAD_InterfaceHeatConduction.h \
 	../../src/NANDRAD_InterfaceLongWaveEmission.h \
 	../../src/NANDRAD_InterfaceSolarAbsorption.h \
 	../../src/NANDRAD_InterfaceVaporDiffusion.h \
+	../../src/NANDRAD_InternalLoadsModel.h \
 	../../src/NANDRAD_Interval.h \
 	../../src/NANDRAD_KeywordList.h \
 	../../src/NANDRAD_LinearSplineParameter.h \
@@ -77,9 +78,7 @@ HEADERS += \
 	../../src/NANDRAD_WindowGlazingLayer.h \
 	../../src/NANDRAD_WindowGlazingSystem.h \
 	../../src/NANDRAD_WindowShading.h \
-	../../src/NANDRAD_Zone.h \
-    ../../src/NANDRAD_InternalLoadsModel.h \
-    ../../src/NANDRAD_HydraulicNetworkHeatExchange.h
+	../../src/NANDRAD_Zone.h
 
 SOURCES += \
 	../../src/NANDRAD_ArgsParser.cpp \
@@ -91,18 +90,19 @@ SOURCES += \
 	../../src/NANDRAD_EmbeddedObject.cpp \
 	../../src/NANDRAD_EmbeddedObjectWindow.cpp \
 	../../src/NANDRAD_HydraulicFluid.cpp \
-	../../src/NANDRAD_HydraulicNetwork.cpp \
 	../../src/NANDRAD_HydraulicNetworkComponent.cpp \
+	../../src/NANDRAD_HydraulicNetwork.cpp \
 	../../src/NANDRAD_HydraulicNetworkElement.cpp \
 	../../src/NANDRAD_HydraulicNetworkHeatExchange.cpp \
 	../../src/NANDRAD_HydraulicNetworkPipeProperties.cpp \
 	../../src/NANDRAD_IDGroup.cpp \
-	../../src/NANDRAD_Interface.cpp \
 	../../src/NANDRAD_InterfaceAirFlow.cpp \
+	../../src/NANDRAD_Interface.cpp \
 	../../src/NANDRAD_InterfaceHeatConduction.cpp \
 	../../src/NANDRAD_InterfaceLongWaveEmission.cpp \
 	../../src/NANDRAD_InterfaceSolarAbsorption.cpp \
 	../../src/NANDRAD_InterfaceVaporDiffusion.cpp \
+	../../src/NANDRAD_InternalLoadsModel.cpp \
 	../../src/NANDRAD_Interval.cpp \
 	../../src/NANDRAD_KeywordList.cpp \
 	../../src/NANDRAD_LinearSplineParameter.cpp \
@@ -126,18 +126,19 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_DailyCycle.cpp \
 	../../src/ncg/ncg_NANDRAD_EmbeddedObject.cpp \
 	../../src/ncg/ncg_NANDRAD_EmbeddedObjectWindow.cpp \
-	../../src/ncg/ncg_NANDRAD_HydraulicNetwork.cpp \
-	../../src/ncg/ncg_NANDRAD_HydraulicNetworkComponent.cpp \
-	../../src/ncg/ncg_NANDRAD_HydraulicNetworkElement.cpp \
 	../../src/ncg/ncg_NANDRAD_HydraulicFluid.cpp \
+	../../src/ncg/ncg_NANDRAD_HydraulicNetworkComponent.cpp \
+	../../src/ncg/ncg_NANDRAD_HydraulicNetwork.cpp \
+	../../src/ncg/ncg_NANDRAD_HydraulicNetworkElement.cpp \
 	../../src/ncg/ncg_NANDRAD_HydraulicNetworkHeatExchange.cpp \
 	../../src/ncg/ncg_NANDRAD_HydraulicNetworkPipeProperties.cpp \
-	../../src/ncg/ncg_NANDRAD_Interface.cpp \
 	../../src/ncg/ncg_NANDRAD_InterfaceAirFlow.cpp \
+	../../src/ncg/ncg_NANDRAD_Interface.cpp \
 	../../src/ncg/ncg_NANDRAD_InterfaceHeatConduction.cpp \
 	../../src/ncg/ncg_NANDRAD_InterfaceLongWaveEmission.cpp \
 	../../src/ncg/ncg_NANDRAD_InterfaceSolarAbsorption.cpp \
 	../../src/ncg/ncg_NANDRAD_InterfaceVaporDiffusion.cpp \
+	../../src/ncg/ncg_NANDRAD_InternalLoadsModel.cpp \
 	../../src/ncg/ncg_NANDRAD_Interval.cpp \
 	../../src/ncg/ncg_NANDRAD_Location.cpp \
 	../../src/ncg/ncg_NANDRAD_Material.cpp \
@@ -161,10 +162,7 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_WindowGlazingLayer.cpp \
 	../../src/ncg/ncg_NANDRAD_WindowGlazingSystem.cpp \
 	../../src/ncg/ncg_NANDRAD_WindowShading.cpp \
-	../../src/ncg/ncg_NANDRAD_Zone.cpp \
-    ../../src/ncg/ncg_NANDRAD_InternalLoadsModel.cpp \
-    ../../src/NANDRAD_InternalLoadsModel.cpp \
-    ../../src/NANDRAD_HydraulicNetworkHeatExchange.cpp
+	../../src/ncg/ncg_NANDRAD_Zone.cpp
 
 
 
