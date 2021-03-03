@@ -60,11 +60,15 @@
 				<Elements>
 					<HydraulicNetworkElement id="201" inletNodeId="101" outletNodeId="0" componentId="1" displayName="pump">
 					</HydraulicNetworkElement>
-					<HydraulicNetworkElement id="101" inletNodeId="0" outletNodeId="101" componentId="2" pipePropertiesId="1" displayName="pipe">
-						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
-						<LinearSplineParameter name="HeatExchangeSpline" interpolationMethod="linear">
-						   <TSVFile>${Project Directory}/0_climate/Temperature.csv</TSVFile>
-						</LinearSplineParameter>
+					<HydraulicNetworkElement id="101" inletNodeId="0" outletNodeId="101" componentId="2" pipePropertiesId="1" displayName="pipe">						
+						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>						
+						<HydraulicNetworkHeatExchange>
+							<Type>AmbientTemperatureSpline</Type>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
+							<LinearSplineParameter name="Spline" interpolationMethod="linear">
+								<TSVFile>${Project Directory}/0_climate/Temperature.csv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>						
 					</HydraulicNetworkElement>
 				</Elements>
 			</HydraulicNetwork>
