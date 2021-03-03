@@ -250,7 +250,24 @@ Identische Counter!
 
 ### ThermoHydraulicNetworkSerialPipes.nandrad
 
-Zwei unterschiedliche Rohre in einem Kreis zusammen mit Pumpe und Wärmetauscher (konstant 2000 W Wärmeabgabe). Rohre geben Wärme an konstant temperiertes Erdreich ab.
+Zwei unterschiedliche Rohre in einem Kreis zusammen mit Pumpe und Wärmetauscher (konstant 2000 W Wärmeabgabe). Rohre geben Wärme an konstant temperiertes Erdreich ab. In Summe muss die Bilanz im Kreislauf stimmig sein,
+das bedeutet, der Wärmegewinn über beide Rohre im stationären Zustand muss exakt 2000 W entsprechen. D
+Die Temperaturspreizung dT = Tin -Tout im Wärmetauscher ermittelt sich durch die Bilanzgleichung
+```
+Qdot = mdot * cP * dT
+```
+Es ergeben sich die Werte
+```
+   mdot = 0.275163 kg/s
+   cP   = 4180 J/kgK
+   Qdot = 2000
+   dT   = 1.74 K
+```
+
+Diese Temperaturdifferenz muss innerhalb des verbleibenden Kreislaufes ausgeglichen werden. Das erste Rohr muss dabei entscheidend mehr Wärme als das erste aufnehmen, passend zu einer 
+Temperatur < AmbientTemperature, die geringer ist als die des zweiten. Dieser Effekt wird verstärkt durch den größeren Rohrdurchmesser des zweiten Rohrs, welches in Folge eine geringere 
+Strömungsgeschwindigkeit und somit einen geringeren Wärmeaustausch aufweist. 
+ 
 
 
 ### ThermoHydraulicNetworkParallelPipes.nandrad
