@@ -24,7 +24,7 @@ void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & 
 	if (builtin && enabled) {
 		// draw background
 		QBrush b;
-		if (opt->features & QStyleOptionViewItemV2::Alternate)
+		if (opt->features & QStyleOptionViewItem::Alternate)
 			b = QBrush(SVStyle::instance().m_alternativeBackgroundDark);
 		else
 			b = QBrush(SVStyle::instance().m_alternativeBackgroundBright);

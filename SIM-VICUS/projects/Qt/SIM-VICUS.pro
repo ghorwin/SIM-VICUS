@@ -76,12 +76,14 @@ PRE_TARGETDEPS += \
 
 
 SOURCES += \
+				../../src/SVAbstractDatabaseEditWidget.cpp \
 				../../src/SVChartUtils.cpp \
 				../../src/SVDBDailyCycleInputWidget.cpp \
 				../../src/SVDBScheduleAddDialog.cpp \
 				../../src/SVDBInternalLoadTableModel.cpp \
 				../../src/SVDBInternalLoadsPersonEditDialog.cpp \
 				../../src/SVDBInternalLoadsPersonEditWidget.cpp \
+				../../src/SVDatabaseEditDialog.cpp \
 				../../src/SVPropEditCopyDialog.cpp \
 				../../src/main.cpp \
 				../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
@@ -202,12 +204,14 @@ SOURCES += \
 				../../src/SVWelcomeScreen.cpp
 
 HEADERS  += \
+				../../src/SVAbstractDatabaseEditWidget.h \
 				../../src/SVChartUtils.h \
 				../../src/SVDBDailyCycleInputWidget.h \
 				../../src/SVDBScheduleAddDialog.h \
 				../../src/SVDBInternalLoadTableModel.h \
 				../../src/SVDBInternalLoadsPersonEditDialog.h \
 				../../src/SVDBInternalLoadsPersonEditWidget.h \
+				../../src/SVDatabaseEditDialog.h \
 				../../src/SVPropEditCopyDialog.h \
 				../../src/actions/SVUndoAddBuilding.h \
 				../../src/actions/SVUndoAddBuildingLevel.h \
@@ -349,6 +353,7 @@ FORMS    += \
 				../../src/SVDBScheduleEditWidget.ui \
 				../../src/SVDBWindowEditDialog.ui \
 				../../src/SVDBWindowEditWidget.ui \
+				../../src/SVDatabaseEditDialog.ui \
 				../../src/SVDialogSelectNetworkPipes.ui \
 				../../src/SVImportIDFDialog.ui \
 				../../src/SVInternalLoadsPersonDetailedWidget.ui \
