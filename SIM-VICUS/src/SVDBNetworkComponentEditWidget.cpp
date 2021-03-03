@@ -53,11 +53,9 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 	// check if enums are identical
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter == (int)VICUS::NetworkComponent::P_HydraulicDiameter);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient == (int)VICUS::NetworkComponent::P_PressureLossCoefficient);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient == (int)VICUS::NetworkComponent::P_ExternalHeatTransferCoefficient);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_PressureHead == (int)VICUS::NetworkComponent::P_PressureHead);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency == (int)VICUS::NetworkComponent::P_PumpEfficiency);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_Volume == (int)VICUS::NetworkComponent::P_Volume);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_UAValue == (int)VICUS::NetworkComponent::P_UAValue);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_PipeMaxDiscretizationWidth == (int)VICUS::NetworkComponent::P_PipeMaxDiscretizationWidth);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_CondenserMeanTemperature == (int)VICUS::NetworkComponent::P_CondenserMeanTemperature);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiency == (int)VICUS::NetworkComponent::P_CarnotEfficiency);
@@ -68,12 +66,6 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger == (int)VICUS::NetworkComponent::MT_HeatExchanger);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot == (int)VICUS::NetworkComponent::MT_HeatPumpIdealCarnot);
 
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant == (int)VICUS::NetworkComponent::HT_HeatFluxConstant);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile == (int)VICUS::NetworkComponent::HT_HeatFluxDataFile);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::HT_TemperatureConstant == (int)VICUS::NetworkComponent::HT_TemperatureConstant);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::HT_TemperatureDataFile == (int)VICUS::NetworkComponent::HT_TemperatureDataFile);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithFMUTemperature == (int)VICUS::NetworkComponent::HT_HeatExchangeWithFMUTemperature);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::HT_HeatExchangeWithZoneTemperature == (int)VICUS::NetworkComponent::HT_HeatExchangeWithZoneTemperature);
 }
 
 
@@ -133,10 +125,8 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 
 	// NOTE: we assume that ModelType enums are the same in both objects!
 	NANDRAD::HydraulicNetworkComponent::ModelType nandradModelType = (NANDRAD::HydraulicNetworkComponent::ModelType)m_currentComponent->m_modelType;
-	NANDRAD::HydraulicNetworkComponent::HeatExchangeType heatExchangeType = (NANDRAD::HydraulicNetworkComponent::HeatExchangeType)
-			m_currentComponent->m_heatExchangeType;
 
-	std::vector<unsigned int> paraVec = NANDRAD::HydraulicNetworkComponent::requiredParameter(nandradModelType, heatExchangeType, 1);
+	std::vector<unsigned int> paraVec = NANDRAD::HydraulicNetworkComponent::requiredParameter(nandradModelType, 1);
 	m_ui->tableWidgetParameters->setRowCount(paraVec.size());
 
 	if (paraVec.empty())
@@ -171,30 +161,11 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	m_ui->tableWidgetParameters->blockSignals(false);
 	m_ui->tableWidgetParameters->resizeColumnsToContents();
 
-	// heat exchange type
-	setupComboboxHeatExchangeType();
-	m_ui->comboBoxHeatExchangeType->setCurrentIndex(m_ui->comboBoxHeatExchangeType->findData(
-														m_currentComponent->m_heatExchangeType));
-
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !comp->m_builtIn;
 	m_ui->lineEditName->setReadOnly(!isEditable);
 	m_ui->pushButtonComponentColor->setReadOnly(!isEditable);
 	m_ui->comboBoxComponentType->setEnabled(isEditable);
-
-}
-
-
-void SVDBNetworkComponentEditWidget::setupComboboxHeatExchangeType()
-{
-	m_ui->comboBoxHeatExchangeType->clear();
-	std::vector<unsigned int> hxTypes = NANDRAD::HydraulicNetworkComponent::availableHeatExchangeTypes(
-				NANDRAD::HydraulicNetworkComponent::ModelType((int)m_currentComponent->m_modelType));
-	m_ui->comboBoxHeatExchangeType->addItem("No Heat Exchange", NANDRAD::HydraulicNetworkComponent::NUM_HT);
-	for (unsigned int type: hxTypes)
-		m_ui->comboBoxHeatExchangeType->addItem(
-					NANDRAD::KeywordList::Description("HydraulicNetworkComponent::HeatExchangeType", (int)type), type);
-
 
 }
 
@@ -231,17 +202,6 @@ void SVDBNetworkComponentEditWidget::on_pushButtonComponentColor_colorChanged() 
 		m_db->m_networkComponents.m_modified = true;
 		m_dbModel->setItemModified(m_currentComponent->m_id); // tell model that we changed the data
 	}
-}
-
-
-void SVDBNetworkComponentEditWidget::on_comboBoxHeatExchangeType_activated(const QString &arg1)
-{
-	Q_ASSERT(m_currentComponent != nullptr);
-
-	m_currentComponent->m_heatExchangeType = VICUS::NetworkComponent::HeatExchangeType(
-				m_ui->comboBoxHeatExchangeType->currentData().toUInt());
-	m_db->m_networkComponents.m_modified = true;
-	m_dbModel->setItemModified(m_currentComponent->m_id); // tell model that we changed the data
 }
 
 

@@ -39,11 +39,9 @@ public:
 	enum para_t {
 		P_HydraulicDiameter,				// Keyword: HydraulicDiameter					[mm]	'Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)'
 		P_PressureLossCoefficient,			// Keyword: PressureLossCoefficient				[-]		'Pressure loss coefficient for the component (zeta-value)'
-		P_ExternalHeatTransferCoefficient,	// Keyword: ExternalHeatTransferCoefficient		[W/m2K]	'External heat transfer coeffient for the outside boundary'
 		P_PressureHead,						// Keyword: PressureHead						[Pa]	'Pressure head form a pump'
 		P_PumpEfficiency,					// Keyword: PumpEfficiency						[---]	'Pump efficiency'
 		P_Volume,							// Keyword: Volume								[m3]	'Water or air volume of the component'
-		P_UAValue,							// Keyword: UAValue								[W/m2K]	'UA-Value of heat exchanger'
 		P_PipeMaxDiscretizationWidth,		// Keyword: PipeMaxDiscretizationWidth			[m]		'Maximum width of discretized volumes in pipe'
 		P_CarnotEfficiency,					// Keyword: CarnotEfficiency					[---]	'Carnot efficiency'
 		P_CondenserMeanTemperature,			// Keyword: CondenserMeanTemperature			[C]		'Mean fluid temperature in condenser'
@@ -60,16 +58,6 @@ public:
 		NUM_P
 	};
 
-
-	enum HeatExchangeType {
-		HT_TemperatureConstant,				// Keyword: TemperatureConstant					'Constant temperature'
-		HT_HeatFluxConstant,				// Keyword: HeatFluxConstant					'Constant heat flux'
-		HT_HeatFluxDataFile,				// Keyword: HeatFluxDataFile					'Heat flux from data file'
-		HT_TemperatureDataFile,				// Keyword: TemperatureDataFile					'Temperature from data file'
-		HT_HeatExchangeWithZoneTemperature,	// Keyword: HeatExchangeWithZoneTemperature		'Heat exchange with zone'
-		HT_HeatExchangeWithFMUTemperature,	// Keyword: HeatExchangeWithFMUTemperature		'Heat exchange with FMU which requires temperature and provides heat flux'
-		NUM_HT
-	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -96,19 +84,14 @@ public:
 	/*! Model type. */
 	ModelType						m_modelType			= NUM_MT;						// XML:A:required
 
-	/*! Type of interface to external data or model */
-	HeatExchangeType				m_heatExchangeType = NUM_HT;						// XML:E
-
 	/*! Parameters of the flow component. */
 	IBK::Parameter					m_para[NUM_P];										// XML:E
 
 
 	// *** STATIC FUNCTIONS ***
 
-	static std::vector<unsigned int> availableHeatExchangeTypes(const ModelType modelType);
-
 	/*! Needed both in user interface and for valid parameter checking in solver. */
-	static std::vector<unsigned int> requiredParameter(const ModelType modelType, int heatExchangeType, int networkModelType);
+	static std::vector<unsigned int> requiredParameter(const ModelType modelType, int networkModelType);
 
 	static void checkModelParameter(const IBK::Parameter &para, const unsigned int numPara);
 

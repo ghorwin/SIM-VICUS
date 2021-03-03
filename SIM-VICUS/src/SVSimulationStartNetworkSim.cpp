@@ -206,8 +206,8 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	p.m_outputs = outputs;
 	p.m_objectLists.push_back(objList);
 
+
 	// *** create Nandrad Network
-	// TODO Hauke: UI selection widgets for modelType, P_DefaultFluidTemperature, initial fluid temp, ref pressure
 	p.m_hydraulicNetworks.clear();
 	NANDRAD::HydraulicNetwork nandradNetwork;
 	nandradNetwork.m_modelType = NANDRAD::HydraulicNetwork::ModelType(m_ui->comboBoxModelType->currentData().toUInt());
@@ -220,8 +220,8 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	nandradNetwork.m_para[NANDRAD::HydraulicNetwork::P_ReferencePressure] =
 			vicusNetwork.m_para[VICUS::Network::P_ReferencePressure];
 
-	// TODO Hauke: fluid editing from database
-	// *** Transfer fluid from Vicus to Nandrad
+
+	// *** Transfer FLUID from Vicus to Nandrad
 	const SVDatabase  & db = SVSettings::instance().m_db;
 	VICUS::NetworkFluid fluid;
 	fluid.defaultFluidWater(1);
@@ -235,7 +235,8 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		nandradNetwork.m_fluid.m_para[i] = fluid.m_para[i];
 
 
-	// *** Transfer components from Vicus to Nandrad
+	// *** Transfer COMPONENTS from Vicus to Nandrad
+
 	// --> collect all componentIDs used in vicus network
 	std::vector<unsigned int> componentIds;
 	for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes){
@@ -262,14 +263,14 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		nandradComp.m_id = comp->m_id;
 		nandradComp.m_displayName = comp->m_displayName.string(IBK::MultiLanguageString::m_language, "en");
 		nandradComp.m_modelType = (NANDRAD::HydraulicNetworkComponent::ModelType) comp->m_modelType;
-		nandradComp.m_heatExchangeType = (NANDRAD::HydraulicNetworkComponent::HeatExchangeType) comp->m_heatExchangeType;
 		for (int i=0; i<VICUS::NetworkComponent::NUM_P; ++i)
 			nandradComp.m_para[i] = comp->m_para[i];
 		nandradNetwork.m_components.push_back(nandradComp);
 	}
 
 
-	// *** Transform pipes from Vicus to NANDRAD
+	// *** Transform PIPES from Vicus to NANDRAD
+
 	// --> collect all pipeIds used in vicus network
 	std::vector<unsigned int> pipeIds;
 	for (const VICUS::NetworkEdge &edge: vicusNetwork.m_edges){
@@ -311,7 +312,8 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	}
 
 
-	// *** Transfer elements of nodes from Vicus to Nandrad
+	// *** Transfer ELEMENTS of NODES from Vicus to Nandrad
+
 	nandradNetwork.m_elements.reserve(vicusNetwork.m_nodes.size() + 2 * vicusNetwork.m_edges.size()); // subnetworks are not taken into account here
 
 	// --> offset for ids of return pipes
@@ -336,24 +338,14 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 			elem.m_displayName = node.m_displayName;
 		}
 
-		// TODO Hauke: transform heatExchange properties
+		// transform heatExchange properties
 		const VICUS::NetworkComponent *comp = db.m_networkComponents[node.m_componentId];
-		switch (comp->m_heatExchangeType) {
-			case VICUS::NetworkComponent::HT_HeatFluxConstant:
-				elem.m_para[NANDRAD::HydraulicNetworkElement::P_HeatLoss] =
-				node.m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_HeatLoss];
-				break;
-			case VICUS::NetworkComponent::HT_TemperatureConstant:
-				elem.m_para[NANDRAD::HydraulicNetworkElement::P_AmbientTemperature] =
-				node.m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_AmbientTemperature];
-				break;
-			case VICUS::NetworkComponent::HT_HeatFluxDataFile:
-				elem.m_heatExchangeSpline = NANDRAD::LinearSplineParameter("HeatExchangeSpline",
-																		   NANDRAD::LinearSplineParameter::I_LINEAR,
-																		   node.m_heatExchange.m_dataFile);
-				break;
-			default:;
-		}
+		elem.m_heatExchange.m_type = (NANDRAD::HydraulicNetworkHeatExchange::Type) node.m_heatExchange.m_type;
+		for (unsigned int i=0; i<=NANDRAD::HydraulicNetworkHeatExchange::NUM_P; ++i)
+			elem.m_heatExchange.m_para[i]  = node.m_heatExchange.m_para[i];
+		for (unsigned int i=0; i<=NANDRAD::HydraulicNetworkHeatExchange::NUM_IP; ++i)
+			elem.m_heatExchange.m_intPara[i]  = node.m_heatExchange.m_intPara[i];
+		elem.m_heatExchange.m_spline = node.m_heatExchange.m_spline;
 
 		nandradNetwork.m_elements.push_back(elem);
 
@@ -376,7 +368,8 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	}
 
 
-	// *** Transfer elements of edges from Vicus to Nandrad
+	// *** Transfer ELEMENTS of EDGES from Vicus to Nandrad
+
 	for (const VICUS::NetworkEdge *edge: orderedEdges) {
 
 		// check if the component has a model type which corresponds to a pipe
@@ -401,19 +394,14 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 													edge->m_pipeId,
 													edge->length());
 		inletPipe.m_displayName = edge->m_displayName;
-		// TODO Hauke: transfer heat exchange parameter
-		switch (comp->m_heatExchangeType) {
-			case VICUS::NetworkComponent::HT_HeatFluxConstant:
-				inletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_HeatLoss] =
-				edge->m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_HeatLoss]; break;
-			case VICUS::NetworkComponent::HT_TemperatureConstant:
-				inletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_AmbientTemperature] =
-				edge->m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_AmbientTemperature]; break;
-			case VICUS::NetworkComponent::HT_HeatFluxDataFile:
-//				inletPipe.m_heatExchangeDataFile =
-//				edge->m_heatExchange.m_dataFile; break;
-			default:;
-		}
+
+		inletPipe.m_heatExchange.m_type = (NANDRAD::HydraulicNetworkHeatExchange::Type) edge->m_heatExchange.m_type;
+		for (unsigned int i=0; i<=NANDRAD::HydraulicNetworkHeatExchange::NUM_P; ++i)
+			inletPipe.m_heatExchange.m_para[i]  = edge->m_heatExchange.m_para[i];
+		for (unsigned int i=0; i<=NANDRAD::HydraulicNetworkHeatExchange::NUM_IP; ++i)
+			inletPipe.m_heatExchange.m_intPara[i]  = edge->m_heatExchange.m_intPara[i];
+		inletPipe.m_heatExchange.m_spline = edge->m_heatExchange.m_spline;
+
 		nandradNetwork.m_elements.push_back(inletPipe);
 
 		// add outlet pipe element
@@ -424,19 +412,13 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 													edge->m_pipeId,
 													edge->length());
 		outletPipe.m_displayName = edge->m_displayName;
-		// TODO Hauke: transfer heat exchange parameter
-		switch (comp->m_heatExchangeType) {
-			case VICUS::NetworkComponent::HT_HeatFluxConstant:
-				outletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_HeatLoss] =
-				edge->m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_HeatLoss]; break;
-			case VICUS::NetworkComponent::HT_TemperatureConstant:
-				outletPipe.m_para[NANDRAD::HydraulicNetworkElement::P_AmbientTemperature] =
-				edge->m_heatExchange.m_para[VICUS::NetworkHeatExchange::P_AmbientTemperature]; break;
-			case VICUS::NetworkComponent::HT_HeatFluxDataFile:
-//				outletPipe.m_heatExchangeDataFile =
-//				edge->m_heatExchange.m_dataFile; break;
-			default:;
-		}
+
+		outletPipe.m_heatExchange.m_type = (NANDRAD::HydraulicNetworkHeatExchange::Type) edge->m_heatExchange.m_type;
+		for (unsigned int i=0; i<=NANDRAD::HydraulicNetworkHeatExchange::NUM_P; ++i)
+			outletPipe.m_heatExchange.m_para[i]  = edge->m_heatExchange.m_para[i];
+		for (unsigned int i=0; i<=NANDRAD::HydraulicNetworkHeatExchange::NUM_IP; ++i)
+			outletPipe.m_heatExchange.m_intPara[i]  = edge->m_heatExchange.m_intPara[i];
+		outletPipe.m_heatExchange.m_spline = edge->m_heatExchange.m_spline;
 
 		nandradNetwork.m_elements.push_back(outletPipe);
 

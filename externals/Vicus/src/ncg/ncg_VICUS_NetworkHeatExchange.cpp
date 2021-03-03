@@ -27,6 +27,7 @@
 #include <IBK_StringUtils.h>
 #include <VICUS_Constants.h>
 #include <NANDRAD_Utilities.h>
+#include <VICUS_KeywordList.h>
 
 #include <tinyxml.h>
 
@@ -54,10 +55,37 @@ void NetworkHeatExchange::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
-			else if (cName == "DataFile")
-				m_dataFile = IBK::Path(c->GetText());
-			else if (cName == "FmuFile")
-				m_fmuFile = IBK::Path(c->GetText());
+			else if (cName == "IBK:IntPara") {
+				IBK::IntPara p;
+				NANDRAD::readIntParaElement(c, p);
+				bool success = false;
+				try {
+					IntParameter ptype = (IntParameter)KeywordList::Enumeration("NetworkHeatExchange::IntParameter", p.name);
+					m_intPara[ptype] = p; success = true;
+				}
+				catch (...) { /* intentional fail */  }
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			else if (cName == "LinearSplineParameter") {
+				NANDRAD::LinearSplineParameter p;
+				p.readXML(c);
+				bool success = false;
+				if (p.m_name == "Spline") {
+					m_spline = p; success = true;
+				}
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.m_name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			else if (cName == "Type") {
+				try {
+					m_type = (Type)KeywordList::Enumeration("NetworkHeatExchange::Type", c->GetText());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
+				}
+			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -77,15 +105,24 @@ TiXmlElement * NetworkHeatExchange::writeXML(TiXmlElement * parent) const {
 	parent->LinkEndChild(e);
 
 
+	if (m_type != NUM_HT)
+		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("NetworkHeatExchange::Type",  m_type));
+
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 		}
 	}
-	if (m_dataFile.isValid())
-		TiXmlElement::appendSingleAttributeElement(e, "DataFile", nullptr, std::string(), m_dataFile.str());
-	if (m_fmuFile.isValid())
-		TiXmlElement::appendSingleAttributeElement(e, "FmuFile", nullptr, std::string(), m_fmuFile.str());
+
+	for (unsigned int i=0; i<NUM_IP; ++i) {
+		if (!m_intPara[i].name.empty()) {
+			TiXmlElement::appendSingleAttributeElement(e, "IBK:IntPara", "name", m_intPara[i].name, IBK::val2string(m_intPara[i].value));
+		}
+	}
+	if (!m_spline.m_name.empty()) {
+		IBK_ASSERT("Spline" == m_spline.m_name);
+		m_spline.writeXML(e);
+	}
 	return e;
 }
 

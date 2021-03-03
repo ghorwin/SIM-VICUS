@@ -73,20 +73,6 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>Type of heat exchange:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="comboBoxHeatExchangeType"/>
-        </item>
-       </layout>
-      </item>
-      <item>
        <widget class="QTableWidget" name="tableWidgetParameters"/>
       </item>
      </layout>

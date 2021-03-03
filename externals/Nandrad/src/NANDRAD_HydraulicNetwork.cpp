@@ -58,6 +58,7 @@ void HydraulicNetwork::checkParameters( const std::map<std::string, IBK::Path> &
 	// check all elements and fill references to components and pipe properties
 	for(HydraulicNetworkElement &e : m_elements) {
 		try {
+			// the checkParameters of HydraulicNetworkHeatExchange will be executed within this function
 			e.checkParameters(*this, placeholders);
 		}
 		catch(IBK::Exception &ex) {

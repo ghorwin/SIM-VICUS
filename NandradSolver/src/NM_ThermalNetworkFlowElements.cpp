@@ -25,7 +25,7 @@ TNSimplePipeElement::TNSimplePipeElement(const NANDRAD::HydraulicNetworkElement 
 	m_outerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeOuterDiameter].value;
 	m_UValuePipeWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_UValuePipeWall].value;
 	m_outerHeatTransferCoefficient =
-			comp.m_para[NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].value;
+			elem.m_heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_ExternalHeatTransferCoefficient].value;
 	// compute fluid volume
 	m_fluidVolume = PI/4. * m_innerDiameter * m_innerDiameter * m_length;
 
@@ -43,8 +43,8 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 	m_inflowTemperature = Tinflow;
 
 	// check heat transfer type
-	if (m_heatExchangeType != (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant &&
-		m_heatExchangeType != (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile)
+	if (m_heatExchangeType != (int) NANDRAD::HydraulicNetworkHeatExchange::T_HeatFluxConstant &&
+		m_heatExchangeType != (int) NANDRAD::HydraulicNetworkHeatExchange::T_HeatFluxDataFile)
 	{
 		m_volumeFlow = std::fabs(m_massFlux)/m_fluidDensity; // m3/s !!! unit conversion is done when writing outputs
 		m_velocity = m_volumeFlow/(PI/4. * m_innerDiameter * m_innerDiameter);
@@ -146,7 +146,7 @@ TNDynamicPipeElement::TNDynamicPipeElement(const NANDRAD::HydraulicNetworkElemen
 	m_outerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeOuterDiameter].value;
 	m_UValuePipeWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_UValuePipeWall].value;
 	m_outerHeatTransferCoefficient =
-			comp.m_para[NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].value;
+			elem.m_heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_ExternalHeatTransferCoefficient].value;
 	// calculate fluid volume inside the pipe
 	m_fluidVolume = PI/4. * m_innerDiameter * m_innerDiameter * m_length;
 	// copy fluid properties
@@ -191,8 +191,8 @@ void TNDynamicPipeElement::setInflowTemperature(double Tinflow) {
 	m_velocity = m_volumeFlow/(PI/4. * m_innerDiameter * m_innerDiameter);
 
 	// check heat transfer type
-	if (m_heatExchangeType != (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant &&
-		m_heatExchangeType != (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile)
+	if (m_heatExchangeType != (int) NANDRAD::HydraulicNetworkHeatExchange::T_HeatFluxConstant &&
+		m_heatExchangeType != (int) NANDRAD::HydraulicNetworkHeatExchange::T_HeatFluxDataFile)
 	{
 
 		m_heatLoss = 0.0;

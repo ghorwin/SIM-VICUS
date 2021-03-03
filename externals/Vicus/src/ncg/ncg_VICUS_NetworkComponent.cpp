@@ -94,15 +94,6 @@ void NetworkComponent::readXML(const TiXmlElement * element) {
 				m_manufacturer.setEncodedString(c->GetText());
 			else if (cName == "DataSource")
 				m_dataSource.setEncodedString(c->GetText());
-			else if (cName == "HeatExchangeType") {
-				try {
-					m_heatExchangeType = (HeatExchangeType)KeywordList::Enumeration("NetworkComponent::HeatExchangeType", c->GetText());
-				}
-				catch (IBK::Exception & ex) {
-					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
-						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
-				}
-			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -129,9 +120,6 @@ TiXmlElement * NetworkComponent::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
-
-	if (m_heatExchangeType != NUM_HT)
-		TiXmlElement::appendSingleAttributeElement(e, "HeatExchangeType", nullptr, std::string(), KeywordList::Keyword("NetworkComponent::HeatExchangeType",  m_heatExchangeType));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {

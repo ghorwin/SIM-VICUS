@@ -2,12 +2,10 @@
 #define NANDRAD_HydraulicNetworkElementH
 
 #include <IBK_Parameter.h>
-#include <IBK_IntPara.h>
-#include <IBK_Path.h>
 
-#include "NANDRAD_LinearSplineParameter.h"
 #include "NANDRAD_CodeGenMacros.h"
 #include "NANDRAD_Constants.h"
+#include "NANDRAD_HydraulicNetworkHeatExchange.h"
 
 
 namespace NANDRAD {
@@ -41,15 +39,7 @@ public:
 	/*! Parameters for the element . */
 	enum para_t {
 		P_Length,						// Keyword: Length									[m]		'Pipe length'
-		P_AmbientTemperature,			// Keyword: AmbientTemperature						[C]		'Temperature for heat exchange'
-		P_HeatLoss,						// Keyword: HeatLoss								[W]		'Constant heat flux out of the element (heat loss)'
 		NUM_P
-	};
-
-	/*! Integer/whole number parameters. */
-	enum intPara_t {
-		IP_ZoneId,						// Keyword: ZoneId								[-]		'ID of coupled zone for thermal exchange'
-		NUM_IP
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -86,23 +76,13 @@ public:
 	/*! Parameters of the flow component. */
 	IBK::Parameter					m_para[NUM_P];											// XML:E
 
-	/*! Integer parameters. */
-	IBK::IntPara					m_intPara[NUM_IP];										// XML:E
-
-	/*! Time-series of heat flux or temperature (can be spline or tsv-file).
-		Note: the XML tag name is always the same "HeatExchangeSpline", yet the content (and physical units)
-		differ depending on selected heat exchange type.
-	*/
-	LinearSplineParameter			m_heatExchangeSpline;									// XML:E
-
+	HydraulicNetworkHeatExchange	m_heatExchange;											// XML:E
 
 
 	// *** Variables used only during simulation ***
 
 	const HydraulicNetworkComponent			*m_component				= nullptr;
 	const HydraulicNetworkPipeProperties	*m_pipeProperties			= nullptr;
-
-
 
 };
 

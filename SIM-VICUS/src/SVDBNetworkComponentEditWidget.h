@@ -36,8 +36,6 @@ public:
 	/*! Update widget with this. */
 	void updateInput(int id);
 
-	void setupComboboxHeatExchangeType();
-
 private slots:
 	void on_lineEditName_editingFinished();
 	void on_comboBoxComponentType_currentIndexChanged(int index);
@@ -45,8 +43,6 @@ private slots:
 	void on_pushButtonComponentColor_colorChanged();
 
 	void on_tableWidgetParameters_cellChanged(int row, int column);
-
-	void on_comboBoxHeatExchangeType_activated(const QString &arg1);
 
 private:
 	Ui::SVDBNetworkComponentEditWidget *m_ui;

@@ -93,28 +93,8 @@ void HydraulicNetworkElement::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
-			else if (cName == "IBK:IntPara") {
-				IBK::IntPara p;
-				NANDRAD::readIntParaElement(c, p);
-				bool success = false;
-				try {
-					intPara_t ptype = (intPara_t)KeywordList::Enumeration("HydraulicNetworkElement::intPara_t", p.name);
-					m_intPara[ptype] = p; success = true;
-				}
-				catch (...) { /* intentional fail */  }
-				if (!success)
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			else if (cName == "LinearSplineParameter") {
-				NANDRAD::LinearSplineParameter p;
-				p.readXML(c);
-				bool success = false;
-				if (p.m_name == "HeatExchangeSpline") {
-					m_heatExchangeSpline = p; success = true;
-				}
-				if (!success)
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.m_name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
+			else if (cName == "HydraulicNetworkHeatExchange")
+				m_heatExchange.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -152,15 +132,7 @@ TiXmlElement * HydraulicNetworkElement::writeXML(TiXmlElement * parent) const {
 		}
 	}
 
-	for (unsigned int i=0; i<NUM_IP; ++i) {
-		if (!m_intPara[i].name.empty()) {
-			TiXmlElement::appendSingleAttributeElement(e, "IBK:IntPara", "name", m_intPara[i].name, IBK::val2string(m_intPara[i].value));
-		}
-	}
-	if (!m_heatExchangeSpline.m_name.empty()) {
-		IBK_ASSERT("HeatExchangeSpline" == m_heatExchangeSpline.m_name);
-		m_heatExchangeSpline.writeXML(e);
-	}
+	m_heatExchange.writeXML(e);
 	return e;
 }
 
