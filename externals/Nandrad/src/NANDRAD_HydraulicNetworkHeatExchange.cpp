@@ -31,7 +31,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const HydraulicNetworkCompone
 					// check temperature
 					m_para[P_AmbientTemperature].checkedValue("AmbientTemperature", "C", "C", -200.0, true, std::numeric_limits<double>::max(), true,
 												   "Ambient temperature must be >= -200 C.");
-					// check for existance of external heat transfer coefficient (the parameter itself was checked already by the component)
+					// check for external heat transfer coefficient
 					m_para[P_ExternalHeatTransferCoefficient].checkedValue("ExternalHeatTransferCoefficient",
 																				"W/m2K", "W/m2K", 0, false,
 																				std::numeric_limits<double>::max(),
@@ -49,13 +49,11 @@ void HydraulicNetworkHeatExchange::checkParameters(const HydraulicNetworkCompone
 				if (m_intPara[IP_ZoneId].name.empty())
 					throw IBK::Exception(IBK::FormatString("Missing IntParameter 'ZoneId'."), FUNC_ID);
 
-				// check for existance of external heat transfer coefficient (the parameter itself was checked already by the component)
-				if (m_para[P_ExternalHeatTransferCoefficient].name.empty()){
-					throw IBK::Exception(IBK::FormatString("Missing parameter %1 in definition of network component '%2' (#%3).")
-								.arg(KeywordList::Keyword("HydraulicNetworkHeatExchange::para_t",
-								P_ExternalHeatTransferCoefficient))
-								.arg(comp.m_displayName).arg(comp.m_id), FUNC_ID);
-				}
+				// check for external heat transfer coefficient
+				m_para[P_ExternalHeatTransferCoefficient].checkedValue("ExternalHeatTransferCoefficient",
+																			"W/m2K", "W/m2K", 0, false,
+																			std::numeric_limits<double>::max(),
+																			true, nullptr);
 			} break;
 
 			case T_HeatLossSpline:
@@ -91,6 +89,11 @@ void HydraulicNetworkHeatExchange::checkParameters(const HydraulicNetworkCompone
 				m_spline.checkAndInitialize("Spline", IBK::Unit("s"), IBK::Unit("K"),
 														IBK::Unit("K"), 0, false, std::numeric_limits<double>::max(), false,
 														"Temperature must be > 0 K.");
+				// check for external heat transfer coefficient
+				m_para[P_ExternalHeatTransferCoefficient].checkedValue("ExternalHeatTransferCoefficient",
+																			"W/m2K", "W/m2K", 0, false,
+																			std::numeric_limits<double>::max(),
+																			true, nullptr);
 			}
 
 			else if (m_type == T_HeatLossSpline){
