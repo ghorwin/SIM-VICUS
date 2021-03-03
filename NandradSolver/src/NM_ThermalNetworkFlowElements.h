@@ -2,7 +2,7 @@
 #define ThermalNetworkFlowElementsH
 
 #include "NM_ThermalNetworkAbstractFlowElementWithHeatLoss.h"
-#include "NANDRAD_HydraulicNetworkComponent.h"
+#include "NANDRAD_HydraulicNetworkHeatExchange.h"
 
 #include <IBK_LinearSpline.h>
 
@@ -174,8 +174,8 @@ public:
 		quantities.push_back(QuantityDescription("FluidVelocity","m/s","Fluid velocity", false));
 
 		// check heat transfer type
-		if (m_heatExchangeType != (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant &&
-			m_heatExchangeType != (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile)
+		if (m_heatExchangeType != (int) NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant &&
+			m_heatExchangeType != (int) NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline)
 		{
 			quantities.push_back(QuantityDescription("FluidViscosity","m2/s","Fluid dynamic viscosity", false));
 			quantities.push_back(QuantityDescription("Reynolds","---","Reynolds number", false));
@@ -190,8 +190,8 @@ public:
 		valRefs.push_back(&m_volumeFlow);
 		valRefs.push_back(&m_velocity);
 		// check heat transfer type
-		if (m_heatExchangeType != (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant &&
-			m_heatExchangeType != (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile)
+		if (m_heatExchangeType != (int) NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant &&
+			m_heatExchangeType != (int) NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline)
 		{
 		valRefs.push_back(&m_viscosity);
 			valRefs.push_back(&m_reynolds);

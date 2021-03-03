@@ -43,31 +43,27 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 	m_inflowTemperature = Tinflow;
 
 	// check heat transfer type
-	if (m_heatExchangeType != (int) NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant &&
-		m_heatExchangeType != (int) NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline)
-	{
-		m_volumeFlow = std::fabs(m_massFlux)/m_fluidDensity; // m3/s !!! unit conversion is done when writing outputs
-		m_velocity = m_volumeFlow/(PI/4. * m_innerDiameter * m_innerDiameter);
-		m_viscosity = m_fluidViscosity.value(m_meanTemperature);
-		m_reynolds = ReynoldsNumber(m_velocity, m_viscosity, m_innerDiameter);
-		m_prandtl = PrandtlNumber(m_viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
-		m_nusselt = NusseltNumber(m_reynolds, m_prandtl, m_length, m_innerDiameter);
-		// calculate inner heat transfer coefficient
-		double innerHeatTransferCoefficient = m_nusselt * m_fluidConductivity /
-												m_innerDiameter;
+	m_volumeFlow = std::fabs(m_massFlux)/m_fluidDensity; // m3/s !!! unit conversion is done when writing outputs
+	m_velocity = m_volumeFlow/(PI/4. * m_innerDiameter * m_innerDiameter);
+	m_viscosity = m_fluidViscosity.value(m_meanTemperature);
+	m_reynolds = ReynoldsNumber(m_velocity, m_viscosity, m_innerDiameter);
+	m_prandtl = PrandtlNumber(m_viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
+	m_nusselt = NusseltNumber(m_reynolds, m_prandtl, m_length, m_innerDiameter);
+	// calculate inner heat transfer coefficient
+	double innerHeatTransferCoefficient = m_nusselt * m_fluidConductivity /
+											m_innerDiameter;
 
-		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-		m_thermalTransmittance = m_length / (
-					  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
-					+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)
-					+ 1.0/m_UValuePipeWall )
-			);
+	// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
+	m_thermalTransmittance = m_length / (
+				  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
+				+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)
+				+ 1.0/m_UValuePipeWall )
+		);
 
-		const double ambientTemperature = *m_externalTemperatureRef;
-		// calculate heat loss with given parameters
-		// Q in [W] = DeltaT * UAValueTotal
-		m_heatLoss = m_thermalTransmittance * (m_meanTemperature - ambientTemperature);
-	}
+	const double ambientTemperature = *m_externalTemperatureRef;
+	// calculate heat loss with given parameters
+	// Q in [W] = DeltaT * UAValueTotal
+	m_heatLoss = m_thermalTransmittance * (m_meanTemperature - ambientTemperature);
 }
 
 
