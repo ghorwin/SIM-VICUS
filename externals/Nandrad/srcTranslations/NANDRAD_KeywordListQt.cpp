@@ -55,10 +55,10 @@ KeywordListQt::KeywordListQt() {
 	tr("Carnot efficiency");
 	tr("Mean fluid temperature in condenser");
 	tr("Pipe length");
-	tr("Constant temperature");
-	tr("Constant heat flux");
-	tr("Heat flux from data file");
-	tr("Temperature from data file");
+	tr("Constant ambient temperature");
+	tr("Ambient Temperature from spline");
+	tr("Constant heat loss");
+	tr("Heat loss from spline");
 	tr("Heat exchange with zone");
 	tr("Heat exchange with FMU which requires temperature and provides heat flux");
 	tr("Temperature for heat exchange");

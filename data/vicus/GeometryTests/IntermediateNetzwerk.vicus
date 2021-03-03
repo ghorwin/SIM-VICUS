@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Do Dez 10 12:42:13 2020</Created>
-		<LastEdited>Fr Feb 26 10:07:56 2021</LastEdited>
+		<LastEdited>Mi Mrz 3 15:29:49 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -17,12 +17,12 @@
 		<ViewSettings>
 			<GridSpacing>100</GridSpacing>
 			<GridWidth>500</GridWidth>
-			<CameraTranslation>-92.4973 -260.467 240.784</CameraTranslation>
+			<CameraTranslation>-104.496 -207.693 260.324</CameraTranslation>
 			<RotationMatrix>
-				<Wp>-0.786209</Wp>
-				<X>-0.496417</X>
-				<Y>0.196286</Y>
-				<Z>0.311213</Z>
+				<Wp>-0.785273</Wp>
+				<X>-0.458253</X>
+				<Y>0.209771</Y>
+				<Z>0.359559</Z>
 			</RotationMatrix>
 			<FarDistance>1700</FarDistance>
 		</ViewSettings>
@@ -33,13 +33,13 @@
 						<Position>0 0 0</Position>
 						<NetworkHeatExchange />
 					</NetworkNode>
-					<NetworkNode id="1" type="Building" maxHeatingDemand="10000" componentId="100002" displayName="EFH3">
+					<NetworkNode id="1" type="Building" maxHeatingDemand="10000" componentId="100004" displayName="EFH3">
 						<Position>200 -70 0</Position>
 						<NetworkHeatExchange>
 							<IBK:Parameter name="HeatLoss" unit="W">100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
-					<NetworkNode id="2" type="Building" maxHeatingDemand="10000" componentId="100002" displayName="EFH1">
+					<NetworkNode id="2" type="Building" maxHeatingDemand="10000" componentId="100004" displayName="EFH1">
 						<Position>250 0 0</Position>
 						<NetworkHeatExchange>
 							<IBK:Parameter name="HeatLoss" unit="W">100</IBK:Parameter>
@@ -51,21 +51,19 @@
 					</NetworkNode>
 					<NetworkNode id="4" type="Building" maxHeatingDemand="10000" componentId="100004" displayName="EFH1">
 						<Position>250 -150 0</Position>
-						<NetworkHeatExchange>
-							<DataFile>C:/Daten/Promotion/SimVicus_TestingDir/NANDRAD Tests/0_climate/HeatFlux.csv</DataFile>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="5" type="Mixer" maxHeatingDemand="10000" displayName="EFH1">
 						<Position>350 0 0</Position>
 						<NetworkHeatExchange />
 					</NetworkNode>
-					<NetworkNode id="6" type="Building" maxHeatingDemand="10000" componentId="100002" displayName="EFH1">
+					<NetworkNode id="6" type="Building" maxHeatingDemand="10000" componentId="100004" displayName="EFH1">
 						<Position>150 150 0</Position>
 						<NetworkHeatExchange>
 							<IBK:Parameter name="HeatLoss" unit="W">100</IBK:Parameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
-					<NetworkNode id="7" type="Building" maxHeatingDemand="10000" componentId="100002" displayName="EFH1">
+					<NetworkNode id="7" type="Building" maxHeatingDemand="10000" componentId="100004" displayName="EFH1">
 						<Position>250 100 0</Position>
 						<NetworkHeatExchange>
 							<IBK:Parameter name="HeatLoss" unit="W">100</IBK:Parameter>

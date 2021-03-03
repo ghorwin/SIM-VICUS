@@ -104,8 +104,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 							m_p->m_heatLossElements.push_back(nullptr); // no heat loss
 						} break;
 
-						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatFluxConstant :
-						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatFluxDataFile :
+						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant :
+						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline :
 						{
 							// calculate pipe volume
 							const double d = e.m_pipeProperties->m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
@@ -120,7 +120,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 							m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
 						} break;
 
-						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstant:
+						case NANDRAD::HydraulicNetworkHeatExchange::T_AmbientTemperatureConstant:
 // toggle the define in NM_ThermalNetworkFlowElements.h
 #ifdef STATIC_PIPE_MODEL_ENABLED
 						{
@@ -134,7 +134,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 #endif // STATIC_PIPE_MODEL_ENABLED
 
 
-						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureDataFile:
+						case NANDRAD::HydraulicNetworkHeatExchange::T_AmbientTemperatureSpline:
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatExchangeWithZoneTemperature:
 						{
 							// create pipe model with heat exchange
@@ -168,13 +168,13 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 							m_p->m_heatLossElements.push_back(nullptr); // no heat loss
 						} break;
 
-						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatFluxConstant :
-						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatFluxDataFile :
+						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant :
+						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline :
 							throw IBK::Exception(IBK::FormatString("Heat exchange model %1 cannot be used with DynamicPipe components.")
 								.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType", e.m_heatExchange.m_type)), FUNC_ID);
 
-						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstant:
-						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureDataFile:
+						case NANDRAD::HydraulicNetworkHeatExchange::T_AmbientTemperatureConstant:
+						case NANDRAD::HydraulicNetworkHeatExchange::T_AmbientTemperatureSpline:
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatExchangeWithZoneTemperature:
 						{
 							// create pipe model with heat exchange
@@ -218,8 +218,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 							m_p->m_heatLossElements.push_back(nullptr); // no heat loss
 						} break;
 
-						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatFluxConstant :
-						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatFluxDataFile :
+						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant :
+						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline :
 						{
 							// create general model with given heat flux
 							TNElementWithExternalHeatLoss * element = new TNElementWithExternalHeatLoss(m_network->m_fluid,
@@ -272,20 +272,20 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 			// retrieve component
 			// and decide which heat exchange is chosen
 			switch(e.m_heatExchange.m_type) {
-				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstant:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_AmbientTemperatureConstant:
 					heatExchangeValue = e.m_heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_AmbientTemperature].value;
 				break;
 
-				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatFluxConstant:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant:
 					heatExchangeValue = e.m_heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_HeatLoss].value;
 				break;
 
-				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureDataFile:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_AmbientTemperatureSpline:
 					// store heat flux spline
 					m_heatExchangeSplineRefs[i] = &e.m_heatExchange.m_spline.m_values;
 				break;
 
-				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatFluxDataFile:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
 					// store heat flux spline and construct data value
 					m_heatExchangeSplineRefs[i] = &e.m_heatExchange.m_spline.m_values;
 				break;

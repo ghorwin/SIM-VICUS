@@ -24,10 +24,10 @@ public:
 
 	/*! Defines the type of heat exchange */
 	enum Type {
-		T_TemperatureConstant,				// Keyword: TemperatureConstant					'Constant temperature'
-		T_HeatFluxConstant,					// Keyword: HeatFluxConstant					'Constant heat flux'
-		T_HeatFluxDataFile,					// Keyword: HeatFluxDataFile					'Heat flux from data file'
-		T_TemperatureDataFile,				// Keyword: TemperatureDataFile					'Temperature from data file'
+		T_AmbientTemperatureConstant,		// Keyword: AmbientTemperatureConstant			'Constant ambient temperature'
+		T_AmbientTemperatureSpline,			// Keyword: AmbientTemperatureSpline			'Ambient Temperature from spline'
+		T_HeatLossConstant,					// Keyword: HeatLossConstant					'Constant heat loss'
+		T_HeatLossSpline,					// Keyword: HeatLossSpline						'Heat loss from spline'
 		T_HeatExchangeWithZoneTemperature,	// Keyword: HeatExchangeWithZoneTemperature		'Heat exchange with zone'
 		T_HeatExchangeWithFMUTemperature,	// Keyword: HeatExchangeWithFMUTemperature		'Heat exchange with FMU which requires temperature and provides heat flux'
 		NUM_T

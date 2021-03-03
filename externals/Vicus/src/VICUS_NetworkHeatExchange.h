@@ -23,10 +23,10 @@ public:
 
 	/*! Defines the type of heat exchange */
 	enum Type {
-		HT_TemperatureConstant,				// Keyword: TemperatureConstant					'Constant temperature'
-		HT_HeatFluxConstant,				// Keyword: HeatFluxConstant					'Constant heat flux'
-		HT_HeatFluxDataFile,				// Keyword: HeatFluxDataFile					'Heat flux from data file'
-		HT_TemperatureDataFile,				// Keyword: TemperatureDataFile					'Temperature from data file'
+		T_AmbientTemperatureConstant,		// Keyword: AmbientTemperatureConstant			'Constant ambient temperature'
+		T_AmbientTemperatureSpline,			// Keyword: AmbientTemperatureSpline			'Ambient Temperature from spline'
+		T_HeatLossConstant,					// Keyword: HeatLossConstant					'Constant heat loss'
+		T_HeatLossSpline,					// Keyword: HeatLossSpline						'Heat loss from spline'
 		HT_HeatExchangeWithZoneTemperature,	// Keyword: HeatExchangeWithZoneTemperature		'Heat exchange with zone'
 		HT_HeatExchangeWithFMUTemperature,	// Keyword: HeatExchangeWithFMUTemperature		'Heat exchange with FMU which requires temperature and provides heat flux'
 		NUM_HT
@@ -34,8 +34,9 @@ public:
 
 
 	enum Parameter{
-		P_AmbientTemperature,	// Keyword: AmbientTemperature			[C]		'Ambient temperature'
-		P_HeatLoss,				// Keyword: HeatLoss					[W]		'Heat loss'
+		P_AmbientTemperature,				// Keyword: AmbientTemperature					[C]		'Ambient temperature'
+		P_HeatLoss,							// Keyword: HeatLoss							[W]		'Heat loss'
+		P_ExternalHeatTransferCoefficient,	// Keyword: ExternalHeatTransferCoefficient		[W/m2K]	'External heat transfer coeffient for the outside boundary'
 		NUM_P
 	};
 

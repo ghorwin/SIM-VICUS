@@ -27,7 +27,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const HydraulicNetworkCompone
 		// decide which heat exchange is chosen
 		switch(m_type) {
 
-			case T_TemperatureConstant: {
+			case T_AmbientTemperatureConstant: {
 					// check temperature
 					m_para[P_AmbientTemperature].checkedValue("AmbientTemperature", "C", "C", -200.0, true, std::numeric_limits<double>::max(), true,
 												   "Ambient temperature must be >= -200 C.");
@@ -38,7 +38,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const HydraulicNetworkCompone
 																				true, nullptr);
 			} break;
 
-			case T_HeatFluxConstant: {
+			case T_HeatLossConstant: {
 				// check heat flux
 				m_para[P_HeatLoss].checkedValue("HeatLoss", "W", "W",
 							std::numeric_limits<double>::lowest(), false, std::numeric_limits<double>::max(), false, nullptr);
@@ -58,8 +58,8 @@ void HydraulicNetworkHeatExchange::checkParameters(const HydraulicNetworkCompone
 				}
 			} break;
 
-			case T_HeatFluxDataFile:
-			case T_TemperatureDataFile:{
+			case T_HeatLossSpline:
+			case T_AmbientTemperatureSpline:{
 				heatExchangeDataFileMustExist = true;
 				break;
 			}
@@ -86,16 +86,16 @@ void HydraulicNetworkHeatExchange::checkParameters(const HydraulicNetworkCompone
 		m_spline.m_tsvFile = m_spline.m_tsvFile.withReplacedPlaceholders(placeholders);
 
 		try {
-			if (m_type == T_TemperatureDataFile){
+			if (m_type == T_AmbientTemperatureSpline){
 				//  check the spline and convert it to base units automatically
-				m_spline.checkAndInitialize("HeatExchangeSpline", IBK::Unit("s"), IBK::Unit("K"),
+				m_spline.checkAndInitialize("Spline", IBK::Unit("s"), IBK::Unit("K"),
 														IBK::Unit("K"), 0, false, std::numeric_limits<double>::max(), false,
 														"Temperature must be > 0 K.");
 			}
 
-			else if (m_type == T_HeatFluxDataFile){
+			else if (m_type == T_HeatLossSpline){
 				//  check the spline and convert it to base units automatically
-				m_spline.checkAndInitialize("HeatExchangeSpline", IBK::Unit("s"), IBK::Unit("J/s"),
+				m_spline.checkAndInitialize("Spline", IBK::Unit("s"), IBK::Unit("J/s"),
 														IBK::Unit("J/s"), std::numeric_limits<double>::lowest(), false,
 														std::numeric_limits<double>::max(), false,
 														nullptr);
@@ -117,12 +117,12 @@ std::vector<unsigned int> NANDRAD::HydraulicNetworkHeatExchange::availableHeatEx
 {
 	switch (modelType) {
 		case HydraulicNetworkComponent::MT_SimplePipe:
-			return {T_TemperatureConstant, T_TemperatureDataFile, T_HeatFluxConstant, T_HeatFluxDataFile};
+			return {T_AmbientTemperatureConstant, T_AmbientTemperatureSpline, T_HeatLossConstant, T_HeatLossSpline};
 		case HydraulicNetworkComponent::MT_DynamicPipe:
-			return {T_TemperatureConstant, T_TemperatureDataFile, T_HeatFluxConstant, T_HeatFluxDataFile};
+			return {T_AmbientTemperatureConstant, T_AmbientTemperatureSpline, T_HeatLossConstant, T_HeatLossSpline};
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:
 		case HydraulicNetworkComponent::MT_HeatExchanger:
-			return {T_HeatFluxConstant, T_HeatFluxDataFile};
+			return {T_HeatLossConstant, T_HeatLossSpline};
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
 		case HydraulicNetworkComponent::NUM_MT: ;
 	}

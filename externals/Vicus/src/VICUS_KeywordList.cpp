@@ -245,10 +245,10 @@ namespace VICUS {
 			// NetworkHeatExchange::Type
 			case 16 :
 			switch (t) {
-				case 0 : return "TemperatureConstant";
-				case 1 : return "HeatFluxConstant";
-				case 2 : return "HeatFluxDataFile";
-				case 3 : return "TemperatureDataFile";
+				case 0 : return "AmbientTemperatureConstant";
+				case 1 : return "AmbientTemperatureSpline";
+				case 2 : return "HeatLossConstant";
+				case 3 : return "HeatLossSpline";
 				case 4 : return "HeatExchangeWithZoneTemperature";
 				case 5 : return "HeatExchangeWithFMUTemperature";
 			} break;
@@ -257,6 +257,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "AmbientTemperature";
 				case 1 : return "HeatLoss";
+				case 2 : return "ExternalHeatTransferCoefficient";
 			} break;
 			// NetworkHeatExchange::IntParameter
 			case 18 :
@@ -524,10 +525,10 @@ namespace VICUS {
 			// NetworkHeatExchange::Type
 			case 16 :
 			switch (t) {
-				case 0 : return "TemperatureConstant";
-				case 1 : return "HeatFluxConstant";
-				case 2 : return "HeatFluxDataFile";
-				case 3 : return "TemperatureDataFile";
+				case 0 : return "AmbientTemperatureConstant";
+				case 1 : return "AmbientTemperatureSpline";
+				case 2 : return "HeatLossConstant";
+				case 3 : return "HeatLossSpline";
 				case 4 : return "HeatExchangeWithZoneTemperature";
 				case 5 : return "HeatExchangeWithFMUTemperature";
 			} break;
@@ -536,6 +537,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "AmbientTemperature";
 				case 1 : return "HeatLoss";
+				case 2 : return "ExternalHeatTransferCoefficient";
 			} break;
 			// NetworkHeatExchange::IntParameter
 			case 18 :
@@ -804,10 +806,10 @@ namespace VICUS {
 			// NetworkHeatExchange::Type
 			case 16 :
 			switch (t) {
-				case 0 : return "Constant temperature";
-				case 1 : return "Constant heat flux";
-				case 2 : return "Heat flux from data file";
-				case 3 : return "Temperature from data file";
+				case 0 : return "Constant ambient temperature";
+				case 1 : return "Ambient Temperature from spline";
+				case 2 : return "Constant heat loss";
+				case 3 : return "Heat loss from spline";
 				case 4 : return "Heat exchange with zone";
 				case 5 : return "Heat exchange with FMU which requires temperature and provides heat flux";
 			} break;
@@ -816,6 +818,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "Ambient temperature";
 				case 1 : return "Heat loss";
+				case 2 : return "External heat transfer coeffient for the outside boundary";
 			} break;
 			// NetworkHeatExchange::IntParameter
 			case 18 :
@@ -1095,6 +1098,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "C";
 				case 1 : return "W";
+				case 2 : return "W/m2K";
 			} break;
 			// NetworkHeatExchange::IntParameter
 			case 18 :
@@ -1374,6 +1378,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
 			} break;
 			// NetworkHeatExchange::IntParameter
 			case 18 :
@@ -1653,6 +1658,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkHeatExchange::IntParameter
 			case 18 :
@@ -1794,7 +1800,7 @@ namespace VICUS {
 			// NetworkHeatExchange::Type
 			case 16 : return 6;
 			// NetworkHeatExchange::Parameter
-			case 17 : return 2;
+			case 17 : return 3;
 			// NetworkHeatExchange::IntParameter
 			case 18 : return 1;
 			// NetworkNode::NodeType
@@ -1868,7 +1874,7 @@ namespace VICUS {
 			// NetworkHeatExchange::Type
 			case 16 : return 5;
 			// NetworkHeatExchange::Parameter
-			case 17 : return 1;
+			case 17 : return 2;
 			// NetworkHeatExchange::IntParameter
 			case 18 : return 0;
 			// NetworkNode::NodeType

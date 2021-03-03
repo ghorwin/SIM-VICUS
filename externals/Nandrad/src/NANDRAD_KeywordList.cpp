@@ -189,10 +189,10 @@ namespace NANDRAD {
 			// HydraulicNetworkHeatExchange::Type
 			case 10 :
 			switch (t) {
-				case 0 : return "TemperatureConstant";
-				case 1 : return "HeatFluxConstant";
-				case 2 : return "HeatFluxDataFile";
-				case 3 : return "TemperatureDataFile";
+				case 0 : return "AmbientTemperatureConstant";
+				case 1 : return "AmbientTemperatureSpline";
+				case 2 : return "HeatLossConstant";
+				case 3 : return "HeatLossSpline";
 				case 4 : return "HeatExchangeWithZoneTemperature";
 				case 5 : return "HeatExchangeWithFMUTemperature";
 			} break;
@@ -665,10 +665,10 @@ namespace NANDRAD {
 			// HydraulicNetworkHeatExchange::Type
 			case 10 :
 			switch (t) {
-				case 0 : return "TemperatureConstant";
-				case 1 : return "HeatFluxConstant";
-				case 2 : return "HeatFluxDataFile";
-				case 3 : return "TemperatureDataFile";
+				case 0 : return "AmbientTemperatureConstant";
+				case 1 : return "AmbientTemperatureSpline";
+				case 2 : return "HeatLossConstant";
+				case 3 : return "HeatLossSpline";
 				case 4 : return "HeatExchangeWithZoneTemperature";
 				case 5 : return "HeatExchangeWithFMUTemperature";
 			} break;
@@ -1142,10 +1142,10 @@ namespace NANDRAD {
 			// HydraulicNetworkHeatExchange::Type
 			case 10 :
 			switch (t) {
-				case 0 : return "Constant temperature";
-				case 1 : return "Constant heat flux";
-				case 2 : return "Heat flux from data file";
-				case 3 : return "Temperature from data file";
+				case 0 : return "Constant ambient temperature";
+				case 1 : return "Ambient Temperature from spline";
+				case 2 : return "Constant heat loss";
+				case 3 : return "Heat loss from spline";
 				case 4 : return "Heat exchange with zone";
 				case 5 : return "Heat exchange with FMU which requires temperature and provides heat flux";
 			} break;
