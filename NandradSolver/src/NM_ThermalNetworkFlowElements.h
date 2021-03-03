@@ -169,7 +169,10 @@ public:
 
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
+		quantities.push_back(QuantityDescription("FluidVolumeFlow","m3/h","Fluid Volume flow", false));
 		quantities.push_back(QuantityDescription("FluidVelocity","m/s","Fluid velocity", false));
+
+		// FIXME Anne, the quantities below are only available when HeatExchange has been parametrized
 		quantities.push_back(QuantityDescription("FluidViscosity","m2/s","Fluid dynamic viscosity", false));
 		quantities.push_back(QuantityDescription("Reynolds","---","Reynolds number", false));
 		quantities.push_back(QuantityDescription("Prandtl","---","Prandtl number", false));
@@ -179,6 +182,7 @@ public:
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
 	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
+		valRefs.push_back(&m_volumeFlow);
 		valRefs.push_back(&m_velocity);
 		valRefs.push_back(&m_viscosity);
 		valRefs.push_back(&m_reynolds);
@@ -219,7 +223,7 @@ private:
 	/*! Number of discretization volumes */
 	unsigned int					m_nVolumes;
 
-	/*! Volume of all pipe deiscretization element [m3] s*/
+	/*! Volume of all pipe discretization element [m3] s*/
 	double							m_discVolume = -999;
 
 	/*! Lengths of of all pipe volumes [m] */
@@ -234,10 +238,10 @@ private:
 	/*! Pipe length in [m] */
 	double							m_length = -999;
 
-	/*! hydraulic (inner) diameter of pipe [m] */
+	/*! Hydraulic (inner) diameter of pipe [m] */
 	double							m_innerDiameter = -999;
 
-	/*! outer diameter of pipe [m] */
+	/*! Outer diameter of pipe [m] */
 	double							m_outerDiameter = -999;
 
 	/*! Fluid conductivity [W/mK].
@@ -247,6 +251,9 @@ private:
 
 	/*! Fluid dynamic viscosity [m/s] (temperature dependent).*/
 	IBK::LinearSpline				m_fluidViscosity;
+
+	/*! Fluid volume flow [m3/s]. */
+	double							m_volumeFlow = -999;
 
 	/*! thermal resistance of the pipe wall in [W/mK] */
 	double							m_UValuePipeWall = -999;
@@ -290,6 +297,18 @@ public:
 				  const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
 				  const NANDRAD::HydraulicFluid & fluid);
 
+	/*! Publishes individual model quantities via descriptions. */
+	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
+		quantities.push_back(QuantityDescription("FluidVolumeFlow","m3/h","Fluid Volume flow", false));
+		quantities.push_back(QuantityDescription("FluidVelocity","m/s","Fluid velocity", false));
+	}
+
+	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
+	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
+		valRefs.push_back(&m_volumeFlow);
+		valRefs.push_back(&m_velocity);
+	}
+
 	/*! Function retrieving number of internal states.*/
 	unsigned int nInternalStates() const override { return m_nVolumes; }
 
@@ -321,8 +340,17 @@ private:
 	/*! Volume of all pipe deiscretization elements [m3] */
 	double							m_discVolume = -999;
 
+	/*! Cross section of pipe. */
+	double							m_flowCrossSection = -999;
+
 	/*! Fluid temperatures for all discretization volumes [K] */
 	std::vector<double>				m_temperatures;
+
+	/*! Fluid velocity [m/s]*/
+	double							m_velocity = -999;
+
+	/*! Fluid volume flow [m3/s]. */
+	double							m_volumeFlow = -999;
 };
 
 

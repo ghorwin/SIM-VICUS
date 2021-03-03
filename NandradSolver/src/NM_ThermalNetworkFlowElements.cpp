@@ -187,6 +187,9 @@ void TNDynamicPipeElement::setInitialTemperature(double T0) {
 void TNDynamicPipeElement::setInflowTemperature(double Tinflow) {
 	m_inflowTemperature = Tinflow;
 
+	m_volumeFlow = std::fabs(m_massFlux)/m_fluidDensity; // m3/s !!! unit conversion is done when writing outputs
+	m_velocity = m_volumeFlow/(PI/4. * m_innerDiameter * m_innerDiameter);
+
 	// check heat transfer type
 	if (m_heatExchangeType != (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant &&
 		m_heatExchangeType != (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile)
@@ -195,7 +198,6 @@ void TNDynamicPipeElement::setInflowTemperature(double Tinflow) {
 		m_heatLoss = 0.0;
 
 		// assume constant heat transfer coefficient along pipe, using average temperature
-		m_velocity = std::fabs(m_massFlux)/(PI/4. * m_innerDiameter * m_innerDiameter * m_fluidDensity);
 		m_viscosity = m_fluidViscosity.value(m_meanTemperature);
 		m_reynolds = ReynoldsNumber(m_velocity, m_viscosity, m_innerDiameter);
 		m_prandtl = PrandtlNumber(m_viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
@@ -315,6 +317,7 @@ TNDynamicAdiabaticPipeElement::TNDynamicAdiabaticPipeElement(const NANDRAD::Hydr
 	double length = elem.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
 	double innerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
 
+	m_flowCrossSection = PI/4. * innerDiameter * innerDiameter;
 	// caluclate discretization
 	double minDiscLength = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_PipeMaxDiscretizationWidth].value;
 	// in case given discretization length is larger than pipe length:
@@ -360,6 +363,9 @@ void TNDynamicAdiabaticPipeElement::setInternalStates(const double * y) {
 		temp += m_temperatures[i];
 	}
 	m_meanTemperature = temp/m_nVolumes;
+
+	m_volumeFlow = std::fabs(m_massFlux)/m_fluidDensity; // m3/s !!! unit conversion is done when writing outputs
+	m_velocity = m_volumeFlow/m_flowCrossSection;
 }
 
 
