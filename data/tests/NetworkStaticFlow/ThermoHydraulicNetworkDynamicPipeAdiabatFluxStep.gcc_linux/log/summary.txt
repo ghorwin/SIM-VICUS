@@ -1,0 +1,17 @@
+WallClockTime=0.065041
+FrameworkTimeWriteOutputs=0.007157
+FrameworkTimeStepCompleted=0.000344
+IntegratorSteps=1411
+IntegratorErrorTestFails=7
+IntegratorNonLinearConvFails=0
+IntegratorFunctionEvals=1515
+IntegratorTimeFunctionEvals=0.014236
+IntegratorLESSetup=84
+IntegratorTimeLESSetup=0.004433
+IntegratorLESSolve=1514
+IntegratorTimeLESSolve=0.009713
+LESSetups=84
+LESJacEvals=24
+LESTimeJacEvals=0.001914
+LESRHSEvals=96
+LESTimeRHSEvals=0.000761

@@ -18,11 +18,6 @@
 				<DistributionType>AreaWeighted</DistributionType>
 			</SolarLoadsDistributionModel>
 		</SimulationParameter>
-		<SolverParameter>
-			<!-- restrict the maximum time step so that we do not jump over the step pulse -->
-			<IBK:Parameter name="MaxTimeStep" unit="min">1</IBK:Parameter>
-			<LesSolver>Dense</LesSolver>
-  		</SolverParameter>
 		<Zones>
 			<Zone id="1" displayName="dummy" type="Active">
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
@@ -52,16 +47,16 @@
 				</PipeProperties>
 				<Components>
 					<HydraulicNetworkComponent id="1" modelType="ConstantPressurePump">
-						<IBK:Parameter name="PressureHead" unit="Pa">10000</IBK:Parameter>
+						<IBK:Parameter name="PressureHead" unit="Pa">4000</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" modelType="DynamicPipe">
 						<!-- 100 m with 0.5 m segments = 200 pipe segments -->
-						<IBK:Parameter name="PipeMaxDiscretizationWidth" unit="m">100</IBK:Parameter>
+						<IBK:Parameter name="PipeMaxDiscretizationWidth" unit="m">0.5</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="3" modelType="HeatExchanger">
-						<HeatExchangeType>HeatFluxDataFile</HeatExchangeType>
+						<HeatExchangeType>HeatFluxConstant</HeatExchangeType>
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PressureLossCoefficient" unit="-">0.001</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
@@ -74,9 +69,7 @@
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="301" inletNodeId="1" outletNodeId="101" componentId="3" displayName="hx">
-						<LinearSplineParameter name="HeatExchangeSpline" interpolationMethod="linear">
-							<TSVFile>${Project Directory}/0_climate/HeatFlux_Rechteck2.csv</TSVFile>
-						</LinearSplineParameter>
+						<IBK:Parameter name="HeatLoss" unit="W">-2000</IBK:Parameter>
 					</HydraulicNetworkElement>
 				</Elements>
 			</HydraulicNetwork>
@@ -84,42 +77,41 @@
 		
 		<Outputs>
 			<Definitions>
-			<OutputDefinition>
-				<Quantity>InletNodeTemperature</Quantity>
-				<ObjectListName>Network Elements</ObjectListName>
-				<GridName>hourly</GridName>
-			</OutputDefinition>		
-			<OutputDefinition>
-				<Quantity>OutletNodeTemperature</Quantity>
-				<ObjectListName>Network Elements</ObjectListName>
-				<GridName>hourly</GridName>
-			</OutputDefinition>			
-			<OutputDefinition>
-				<Quantity>OutletNodePressure</Quantity>
-				<ObjectListName>Network Elements</ObjectListName>
-				<GridName>hourly</GridName>
-			</OutputDefinition>
-			<OutputDefinition>
-					<Quantity>FluidMassFlux</Quantity>
+				<OutputDefinition>
+					<Quantity>OutletNodeTemperature</Quantity>
 					<ObjectListName>Network Elements</ObjectListName>
 					<GridName>hourly</GridName>
-			</OutputDefinition>
-			<OutputDefinition>
-				<Quantity>FluidTemperature</Quantity>
-				<ObjectListName>Network Elements</ObjectListName>
-				<GridName>hourly</GridName>
-			</OutputDefinition>
-			<OutputDefinition>
-				<Quantity>FlowElementHeatLoss</Quantity>
-				<ObjectListName>Network Elements</ObjectListName>
-				<GridName>hourly</GridName>
-			</OutputDefinition>
+				</OutputDefinition>			
+				<OutputDefinition>
+					<Quantity>OutletNodePressure</Quantity>
+					<ObjectListName>Network Elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+						<Quantity>FluidMassFlux</Quantity>
+						<ObjectListName>Network Elements</ObjectListName>
+						<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FluidTemperature</Quantity>
+					<ObjectListName>Network Elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FlowElementHeatLoss</Quantity>
+					<ObjectListName>Network Elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
 			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
 					<Intervals>
 						<Interval>
 							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
+						</Interval>
+						<Interval>
+							<IBK:Parameter name="Start" unit="h">1</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
 						</Interval>
 					</Intervals>
 				</OutputGrid>
