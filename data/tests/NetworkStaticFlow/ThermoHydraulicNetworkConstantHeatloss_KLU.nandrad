@@ -59,29 +59,27 @@
 						<IBK:Parameter name="Volume" unit="m3">0.1</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" displayName="Heat exchanger with imposed flux as heat exchange" modelType="HeatExchanger">
-						<!-- Specify heat exchange type -->
-						<HeatExchangeType>HeatFluxConstant</HeatExchangeType>
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PressureLossCoefficient" unit="-">5</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.4</IBK:Parameter>
 					</HydraulicNetworkComponent>
-					<HydraulicNetworkComponent id="3" displayName="Pipe with heat exchange" modelType="SimplePipe">
-						<!-- Specify heat exchange type -->
-						<HeatExchangeType>TemperatureConstant</HeatExchangeType>
-						<!-- TemperatureConstant requires ExternalHeatTransferCoefficient -->
-						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
-					</HydraulicNetworkComponent>
+					<HydraulicNetworkComponent id="3" displayName="Pipe with heat exchange" modelType="SimplePipe"/>
 				</Components>
 				<Elements>
 					<HydraulicNetworkElement id="201" inletNodeId="1" outletNodeId="2" componentId="1" displayName="Pump" />
 					<HydraulicNetworkElement id="101" inletNodeId="2" outletNodeId="3" componentId="3" pipePropertiesId="1">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 						<!-- Pipe outside is fixed at 0 C -->
-						<IBK:Parameter name="AmbientTemperature" unit="C">0</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="AmbientTemperatureConstant">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
+							<IBK:Parameter name="AmbientTemperature" unit="C">0</IBK:Parameter>
+						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="301" inletNodeId="3" outletNodeId="1" componentId="2" displayName="Heat Exchanger">
 						<!-- Heat exchanger has constant 500 W imposed heat gain (mind the sign) -->
-						<IBK:Parameter name="HeatLoss" unit="W">-500</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="HeatLossConstant">
+							<IBK:Parameter name="HeatLoss" unit="W">-500</IBK:Parameter>
+						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
 				</Elements>
 			</HydraulicNetwork>

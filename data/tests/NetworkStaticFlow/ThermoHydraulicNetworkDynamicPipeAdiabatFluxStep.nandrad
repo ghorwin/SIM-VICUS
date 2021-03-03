@@ -56,32 +56,32 @@
 						<IBK:Parameter name="PipeMaxDiscretizationWidth" unit="m">0.5</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="3" modelType="HeatExchanger">
-						<HeatExchangeType>HeatFluxConstant</HeatExchangeType>
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PressureLossCoefficient" unit="-">0.001</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
 					</HydraulicNetworkComponent>
 				</Components>
 				<Elements>
-					<HydraulicNetworkElement id="201" inletNodeId="101" outletNodeId="0" componentId="1" displayName="pump">
-					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="201" inletNodeId="101" outletNodeId="0" componentId="1" displayName="pump"/>
 					<HydraulicNetworkElement id="101" inletNodeId="0" outletNodeId="1" componentId="2" pipePropertiesId="1" displayName="pipe">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="301" inletNodeId="1" outletNodeId="101" componentId="3" displayName="hx">
-						<IBK:Parameter name="HeatLoss" unit="W">-2000</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="HeatLossConstant">
+							<IBK:Parameter name="HeatLoss" unit="W">-2000</IBK:Parameter>
+						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
 				</Elements>
 			</HydraulicNetwork>
 		</HydraulicNetworks>
-		
+
 		<Outputs>
 			<Definitions>
 				<OutputDefinition>
 					<Quantity>OutletNodeTemperature</Quantity>
 					<ObjectListName>Network Elements</ObjectListName>
 					<GridName>hourly</GridName>
-				</OutputDefinition>			
+				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>OutletNodePressure</Quantity>
 					<ObjectListName>Network Elements</ObjectListName>
@@ -123,6 +123,6 @@
 				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
-		
+
 	</Project>
 </NandradProject>

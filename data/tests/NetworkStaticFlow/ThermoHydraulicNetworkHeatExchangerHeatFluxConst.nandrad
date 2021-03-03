@@ -45,17 +45,17 @@
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" modelType="HeatExchanger">
-						<HeatExchangeType>HeatFluxConstant</HeatExchangeType>
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PressureLossCoefficient" unit="-">5</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 					</HydraulicNetworkComponent>
 				</Components>
 				<Elements>
-					<HydraulicNetworkElement id="1001" inletNodeId="101" outletNodeId="0" componentId="1" displayName="pump">
-					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="1001" inletNodeId="101" outletNodeId="0" componentId="1" displayName="pump"/>
 					<HydraulicNetworkElement id="1003" inletNodeId="0" outletNodeId="101" componentId="2" displayName="hx">
-						<IBK:Parameter name="HeatLoss" unit="W">-50</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="HeatLossConstant">
+							<IBK:Parameter name="HeatLoss" unit="W">-50</IBK:Parameter>
+						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
 				</Elements>
 			</HydraulicNetwork>

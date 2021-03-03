@@ -26,7 +26,7 @@
 			</Zone>
 		</Zones>
 		<HydraulicNetworks>
-			<HydraulicNetwork id="1" displayName="static network" modelType="ThermalHydraulicNetwork" referenceElementId="1001">
+			<HydraulicNetwork id="1" displayName="static network" modelType="ThermalHydraulicNetwork" referenceElementId="201">
 				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
 				<IBK:Parameter name="InitialFluidTemperature" unit="C">20</IBK:Parameter>
 				<HydraulicFluid id="1" displayName="Water">
@@ -45,24 +45,24 @@
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" modelType="HeatExchanger">
-						<HeatExchangeType>HeatFluxDataFile</HeatExchangeType>
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PressureLossCoefficient" unit="-">5</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 					</HydraulicNetworkComponent>
 				</Components>
 				<Elements>
-					<HydraulicNetworkElement id="1001" inletNodeId="101" outletNodeId="0" componentId="1" displayName="pump">
-					</HydraulicNetworkElement>
-					<HydraulicNetworkElement id="1003" inletNodeId="0" outletNodeId="101" componentId="2" displayName="hx">
-						<LinearSplineParameter name="HeatExchangeSpline">
-							<TSVFile>${Project Directory}/0_climate/HeatFlux.csv?2</TSVFile>
-						</LinearSplineParameter>
+					<HydraulicNetworkElement id="201" inletNodeId="101" outletNodeId="0" componentId="1" displayName="pump"/>
+					<HydraulicNetworkElement id="301" inletNodeId="0" outletNodeId="101" componentId="2" displayName="hx">
+						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
+							<LinearSplineParameter name="HeatExchangeSpline" interpolationMethod="linear">
+								<TSVFile>${Project Directory}/0_climate/HeatFlux.csv?2</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
 				</Elements>
 			</HydraulicNetwork>
 		</HydraulicNetworks>
-		
+
 		<Outputs>
 			<Definitions>
 			<OutputDefinition>
@@ -97,6 +97,6 @@
 				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
-		
+
 	</Project>
 </NandradProject>
