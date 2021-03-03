@@ -81,7 +81,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const HydraulicNetworkCompone
 		try {
 			if (m_modelType == T_AmbientTemperatureSpline){
 				//  check the spline and convert it to base units automatically
-				m_heatExchangeSpline.checkAndInitialize("Spline", IBK::Unit("s"), IBK::Unit("K"),
+				m_heatExchangeSpline.checkAndInitialize("HeatExchangeSpline", IBK::Unit("s"), IBK::Unit("K"),
 														IBK::Unit("K"), 0, false, std::numeric_limits<double>::max(), false,
 														"Temperature must be > 0 K.");
 				// check for external heat transfer coefficient
@@ -93,7 +93,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const HydraulicNetworkCompone
 
 			else if (m_modelType == T_HeatLossSpline){
 				//  check the spline and convert it to base units automatically
-				m_heatExchangeSpline.checkAndInitialize("Spline", IBK::Unit("s"), IBK::Unit("J/s"),
+				m_heatExchangeSpline.checkAndInitialize("HeatExchangeSpline", IBK::Unit("s"), IBK::Unit("J/s"),
 														IBK::Unit("J/s"), std::numeric_limits<double>::lowest(), false,
 														std::numeric_limits<double>::max(), false,
 														nullptr);
