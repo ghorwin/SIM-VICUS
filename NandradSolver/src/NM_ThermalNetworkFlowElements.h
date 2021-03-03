@@ -2,6 +2,7 @@
 #define ThermalNetworkFlowElementsH
 
 #include "NM_ThermalNetworkAbstractFlowElementWithHeatLoss.h"
+#include "NANDRAD_HydraulicNetworkComponent.h"
 
 #include <IBK_LinearSpline.h>
 
@@ -172,23 +173,32 @@ public:
 		quantities.push_back(QuantityDescription("FluidVolumeFlow","m3/h","Fluid Volume flow", false));
 		quantities.push_back(QuantityDescription("FluidVelocity","m/s","Fluid velocity", false));
 
-		// FIXME Anne, the quantities below are only available when HeatExchange has been parametrized
-		quantities.push_back(QuantityDescription("FluidViscosity","m2/s","Fluid dynamic viscosity", false));
-		quantities.push_back(QuantityDescription("Reynolds","---","Reynolds number", false));
-		quantities.push_back(QuantityDescription("Prandtl","---","Prandtl number", false));
-		quantities.push_back(QuantityDescription("Nusselt","---","Nusselt number", false));
-		quantities.push_back(QuantityDescription("ThermalTransmittance","W/K","Total thermal transmittance of fluid and pipe wall", false));
+		// check heat transfer type
+		if (m_heatExchangeType != (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant &&
+			m_heatExchangeType != (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile)
+		{
+			quantities.push_back(QuantityDescription("FluidViscosity","m2/s","Fluid dynamic viscosity", false));
+			quantities.push_back(QuantityDescription("Reynolds","---","Reynolds number", false));
+			quantities.push_back(QuantityDescription("Prandtl","---","Prandtl number", false));
+			quantities.push_back(QuantityDescription("Nusselt","---","Nusselt number", false));
+			quantities.push_back(QuantityDescription("ThermalTransmittance","W/K","Total thermal transmittance of fluid and pipe wall", false));
+		}
 	}
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
 	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
 		valRefs.push_back(&m_volumeFlow);
 		valRefs.push_back(&m_velocity);
+		// check heat transfer type
+		if (m_heatExchangeType != (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxConstant &&
+			m_heatExchangeType != (int) NANDRAD::HydraulicNetworkComponent::HT_HeatFluxDataFile)
+		{
 		valRefs.push_back(&m_viscosity);
-		valRefs.push_back(&m_reynolds);
-		valRefs.push_back(&m_prandtl);
-		valRefs.push_back(&m_nusselt);
-		valRefs.push_back(&m_thermalTransmittance);
+			valRefs.push_back(&m_reynolds);
+			valRefs.push_back(&m_prandtl);
+			valRefs.push_back(&m_nusselt);
+			valRefs.push_back(&m_thermalTransmittance);
+		}
 	}
 
 	/*! Function retrieving number of internal states.*/
