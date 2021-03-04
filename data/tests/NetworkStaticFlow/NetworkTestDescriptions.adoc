@@ -614,3 +614,22 @@ aber erst bei t=60 min gibt es einen trapezförmigen Wärmesenken-Puls. Der
 wandert dann durch das 200 m lange Rohr (200 Elemente) und wird dann
 weiter gedämpft.
 
+
+
+### ThermoHydraulicNetworkDynamicPipeFluxStep.nandrad
+
+
+100 m langes Rohr bekommt eine Vorlauftemperatur 23.8°C. Es wird Wärme an
+das umliegende konstant bei 20°C temperierte Erdreich abgegeben. Am 
+Rohrende hat das Medium eine Temperatur von 20°C. 
+
+Bei einem Massestrom von 0.126 kg/s ergibt die Energiebilanz des Rohres:
+
+```
+Q = 3.8K * 0.126 kg/s * 4186 J/kgK = 2004.26 W ~ 2000 W
+```
+
+also ca. 2000W Wärmeabgabe im Rohr.
+
+Der nachfolgende Wärmetauscher trägt konstant 2000W in das Medium ein. 
+Damit ist die Energiebilanz im stationären Zustand erfüllt.
