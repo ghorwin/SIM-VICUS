@@ -150,11 +150,8 @@ void SVDBMaterialEditDialog::on_toolButtonCopy_clicked() {
 	Q_ASSERT(currentProxyIndex.isValid());
 	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
 
-	unsigned int id = m_dbModel->data(sourceIndex, Role_Id).toUInt();
-	const VICUS::Material * mat = SVSettings::instance().m_db.m_materials[id];
-
 	// add item as copy
-	sourceIndex = m_dbModel->addNewItem(*mat);
+	sourceIndex = m_dbModel->copyItem(sourceIndex);
 	QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
 	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
 }

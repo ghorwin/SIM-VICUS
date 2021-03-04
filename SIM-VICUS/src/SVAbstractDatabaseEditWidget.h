@@ -14,14 +14,22 @@ class QTableView;
 */
 class SVAbstractDatabaseTableModel : public QAbstractTableModel {
 public:
+	SVAbstractDatabaseTableModel(QObject * parent) : QAbstractTableModel(parent) {}
 	virtual ~SVAbstractDatabaseTableModel();
-	virtual void setColumnResizeModes(QTableView * tableView) = 0;
-	virtual void resetModel() = 0;
-	virtual QModelIndex addNewItem() = 0;
-	virtual QModelIndex copyItem(const QModelIndex & existingItemIndex) = 0;
-	virtual void deleteItem(const QModelIndex & sourceIndex) = 0;
+	/*! Returns the index of the ID column. */
 	virtual int columnIndexId() const = 0;
+	/*! Returns the database type. */
 	virtual SVDatabase::DatabaseTypes databaseType() const = 0;
+	/*! Tells model to reset and thus update all views completely. */
+	virtual void resetModel() = 0;
+	/*! Inserts a new item and returns the model index of the new item. */
+	virtual QModelIndex addNewItem() = 0;
+	/*! Copies item for given item index and returns the model index of the new item. */
+	virtual QModelIndex copyItem(const QModelIndex & index) = 0;
+	/*! Removes an item, does nothing if index doesn exist. */
+	virtual void deleteItem(const QModelIndex & index) = 0;
+	/*! Sets the column-specific resize modes in the table view. */
+	virtual void setColumnResizeModes(QTableView * tableView) = 0;
 };
 
 

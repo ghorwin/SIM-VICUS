@@ -1,7 +1,7 @@
 #ifndef SVDBMaterialTableModelH
 #define SVDBMaterialTableModelH
 
-#include <QAbstractTableModel>
+#include "SVAbstractDatabaseEditWidget.h"
 
 #include "SVDatabase.h"
 
@@ -13,7 +13,7 @@
 	All columns (i.e. all model indexes) return custom role data for global
 	id and built-in roles (see SVConstants.h).
 */
-class SVDBMaterialTableModel : public QAbstractTableModel {
+class SVDBMaterialTableModel : public SVAbstractDatabaseTableModel {
 	Q_OBJECT
 public:
 
@@ -43,34 +43,29 @@ public:
 		\note Pointer to database must be valid throughout the lifetime of the Model!
 	*/
 	SVDBMaterialTableModel(QObject * parent, SVDatabase & db);
-	virtual ~SVDBMaterialTableModel();
+	virtual ~SVDBMaterialTableModel() override;
 
 	// ** QAbstractItemModel interface **
 
-	virtual int columnCount ( const QModelIndex & parent = QModelIndex() ) const;
-	virtual QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
-	virtual int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
-	virtual QVariant headerData ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+	virtual int columnCount ( const QModelIndex & parent = QModelIndex() ) const override;
+	virtual QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const override;
+	virtual int rowCount ( const QModelIndex & parent = QModelIndex() ) const override;
+	virtual QVariant headerData ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+
+	// ** SVAbstractDatabaseTableModel interface **
+
+	int columnIndexId() const override { return ColId; }
+	SVDatabase::DatabaseTypes databaseType() const override { return SVDatabase::DT_Materials; }
+	virtual void resetModel() override;
+	QModelIndex addNewItem() override;
+	QModelIndex copyItem(const QModelIndex & index) override;
+	void deleteItem(const QModelIndex & index) override;
+	void setColumnResizeModes(QTableView * tableView) override;
 
 	// ** other members **
 
 	/*! Tells the model that an item has been modified, triggers a dataChanged() signal. */
 	void setItemModified(unsigned int id);
-
-	/*! Inserts a new item and returns the model index of the new item. */
-	QModelIndex addNewItem();
-
-	/*! Inserts a new item and returns the model index of the new item.
-		\note Pass-by-value is intended.
-	*/
-	QModelIndex addNewItem(VICUS::Material m);
-
-	/*! Removes a selected item.
-		\return Returns true on success, false if the item wasn't deleted (invalid index etc.)
-	*/
-	bool deleteItem(QModelIndex index);
-
-	void resetModel();
 
 private:
 	/*! Returns an index for a given Id. */
@@ -78,6 +73,9 @@ private:
 
 	/*! Pointer to the entire database (not owned). */
 	SVDatabase	* m_db;
+
+	// SVAbstractDatabaseTableModel interface
+public:
 };
 
 #endif // SVDBMaterialTableModelH

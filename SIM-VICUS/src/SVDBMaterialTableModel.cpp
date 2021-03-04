@@ -1,10 +1,11 @@
 #include "SVDBMaterialTableModel.h"
 
-//#include <map>
 #include <algorithm>
 
 #include <QIcon>
 #include <QFont>
+#include <QTableView>
+#include <QHeaderView>
 
 #include <VICUS_Material.h>
 #include <VICUS_Database.h>
@@ -16,7 +17,7 @@
 #include "SVDBMaterialEditDialog.h"
 
 SVDBMaterialTableModel::SVDBMaterialTableModel(QObject * parent, SVDatabase & db) :
-	QAbstractTableModel(parent),
+	SVAbstractDatabaseTableModel(parent),
 	m_db(&db)
 {
 	// must only be created from SVDBMaterialEditDialog
@@ -140,6 +141,12 @@ QVariant SVDBMaterialTableModel::headerData(int section, Qt::Orientation orienta
 }
 
 
+void SVDBMaterialTableModel::resetModel() {
+	beginResetModel();
+	endResetModel();
+}
+
+
 QModelIndex SVDBMaterialTableModel::addNewItem() {
 	VICUS::Material m;
 	m.m_displayName.setEncodedString("en:<new material>");
@@ -151,8 +158,6 @@ QModelIndex SVDBMaterialTableModel::addNewItem() {
 
 	m.m_category = VICUS::Material::MC_Bricks;
 
-	///TODO HEIKO was sind default parameter bei den hygrischen Eigenschaften
-
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_materials.add( m );
 	endInsertRows();
@@ -161,29 +166,36 @@ QModelIndex SVDBMaterialTableModel::addNewItem() {
 }
 
 
-QModelIndex SVDBMaterialTableModel::addNewItem(VICUS::Material m) {
+QModelIndex SVDBMaterialTableModel::copyItem(const QModelIndex & existingItemIndex) {
+	// lookup existing item
+	const VICUS::Database<VICUS::Material> & matDB = m_db->m_materials;
+	Q_ASSERT(existingItemIndex.isValid() && existingItemIndex.row() < (int)matDB.size());
+	std::map<unsigned int, VICUS::Material>::const_iterator it = matDB.begin();
+	std::advance(it, existingItemIndex.row());
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
-	unsigned int id = m_db->m_materials.add( m );
+	VICUS::Material newMaterial(it->second);
+	// give the new material a unique ID
+	unsigned int id = m_db->m_materials.add( newMaterial );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;
 }
 
 
-bool SVDBMaterialTableModel::deleteItem(QModelIndex index) {
+void SVDBMaterialTableModel::deleteItem(const QModelIndex & index) {
 	if (!index.isValid())
-		return false;
+		return;
 	unsigned int id = data(index, Role_Id).toUInt();
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 	m_db->m_materials.remove(id);
 	endRemoveRows();
-	return true;
 }
 
 
-void SVDBMaterialTableModel::resetModel() {
-	beginResetModel();
-	endResetModel();
+void SVDBMaterialTableModel::setColumnResizeModes(QTableView * tableView) {
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBMaterialTableModel::ColId, QHeaderView::Fixed);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBMaterialTableModel::ColCheck, QHeaderView::Fixed);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBMaterialTableModel::ColName, QHeaderView::Stretch);
 }
 
 
@@ -203,4 +215,5 @@ QModelIndex SVDBMaterialTableModel::indexById(unsigned int id) const {
 	}
 	return QModelIndex();
 }
+
 
