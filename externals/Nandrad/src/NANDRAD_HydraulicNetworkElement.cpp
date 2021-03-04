@@ -4,6 +4,7 @@
 
 #include <NANDRAD_KeywordList.h>
 
+#include <algorithm>
 
 namespace NANDRAD {
 
