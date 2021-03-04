@@ -617,12 +617,13 @@ void SVPropNetworkEditWidget::on_lineEditHeatFlux_editingFinished()
 	if (!m_ui->lineEditHeatFlux->isValid())
 		return;
 
+	if (!setNetwork())
+		return;
+
 	VICUS::NetworkHeatExchange hx;
 	hx.m_modelType = VICUS::NetworkHeatExchange::ModelType(m_ui->comboBoxHeatExchangeType->currentData().toUInt());
 	hx.m_para[VICUS::NetworkHeatExchange::P_HeatLoss] = IBK::Parameter("HeatLoss", m_ui->lineEditHeatFlux->value(),
 																	   IBK::Unit("W"));
-	if (!setNetwork())
-		return;
 
 	// set node hx
 	if (!m_currentNodes.empty()){
@@ -651,12 +652,13 @@ void SVPropNetworkEditWidget::on_lineEditTemperature_editingFinished()
 	if (!m_ui->lineEditTemperature->isValid())
 		return;
 
+	if (!setNetwork())
+		return;
+
 	VICUS::NetworkHeatExchange hx;
 	hx.m_modelType = VICUS::NetworkHeatExchange::ModelType(m_ui->comboBoxHeatExchangeType->currentData().toUInt());
 	hx.m_para[VICUS::NetworkHeatExchange::P_AmbientTemperature] = IBK::Parameter("AmbientTemperature", m_ui->lineEditTemperature->value(),
 																	   IBK::Unit("C"));
-	if (!setNetwork())
-		return;
 
 	// set node hx
 	if (!m_currentNodes.empty()){
@@ -681,16 +683,16 @@ void SVPropNetworkEditWidget::on_lineEditTemperature_editingFinished()
 
 void SVPropNetworkEditWidget::on_heatExchangeDataFile_editingFinished()
 {
-
-	VICUS::NetworkHeatExchange hx;
-	hx.m_modelType = VICUS::NetworkHeatExchange::ModelType(m_ui->comboBoxHeatExchangeType->currentIndex());
-	hx.m_heatExchangeSpline = NANDRAD::LinearSplineParameter("HeatExchangeSpline",
-															 NANDRAD::LinearSplineParameter::I_LINEAR,
-															 IBK::Path(m_ui->widgetBrowseFileNameTSVFile->filename().toStdString()));
-
+	if (m_ui->widgetBrowseFileNameTSVFile->filename().toStdString().empty())
+		return;
 	if (!setNetwork())
 		return;
 
+	VICUS::NetworkHeatExchange hx;
+	hx.m_modelType = VICUS::NetworkHeatExchange::ModelType(m_ui->comboBoxHeatExchangeType->currentData().toUInt());
+	hx.m_heatExchangeSpline = NANDRAD::LinearSplineParameter("HeatExchangeSpline",
+															 NANDRAD::LinearSplineParameter::I_LINEAR,
+															 IBK::Path(m_ui->widgetBrowseFileNameTSVFile->filename().toStdString()));
 	// set node hx
 	if (!m_currentNodes.empty()){
 		for (const VICUS::NetworkNode * nodeConst: m_currentNodes){

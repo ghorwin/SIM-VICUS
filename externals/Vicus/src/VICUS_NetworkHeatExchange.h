@@ -47,14 +47,14 @@ public:
 	};
 
 
-	ModelType							m_modelType	= NUM_HT;						// XML:E
+	ModelType						m_modelType	= NUM_HT;					// XML:E
 
 	IBK::Parameter					m_para[NUM_P];							// XML:E
 
 	/*! Integer parameters. */
 	IBK::IntPara					m_intPara[NUM_IP];						// XML:E
 
-	NANDRAD::LinearSplineParameter	m_heatExchangeSpline;								// XML:E
+	NANDRAD::LinearSplineParameter	m_heatExchangeSpline;					// XML:E
 
 };
 

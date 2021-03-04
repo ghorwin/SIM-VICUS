@@ -88,7 +88,6 @@ private slots:
 
 	void on_heatExchangeDataFile_editingFinished();
 
-
 	void on_comboBoxHeatExchangeType_currentIndexChanged(int index);
 
 private:

@@ -51,7 +51,7 @@ namespace VICUS {
 		"NetworkComponent::ModelType",
 		"NetworkComponent::para_t",
 		"NetworkFluid::para_t",
-		"NetworkHeatExchange::Type",
+		"NetworkHeatExchange::ModelType",
 		"NetworkHeatExchange::Parameter",
 		"NetworkHeatExchange::IntParameter",
 		"NetworkNode::NodeType",
@@ -242,7 +242,7 @@ namespace VICUS {
 				case 1 : return "HeatCapacity";
 				case 2 : return "Conductivity";
 			} break;
-			// NetworkHeatExchange::Type
+			// NetworkHeatExchange::ModelType
 			case 16 :
 			switch (t) {
 				case 0 : return "AmbientTemperatureConstant";
@@ -522,7 +522,7 @@ namespace VICUS {
 				case 1 : return "HeatCapacity";
 				case 2 : return "Conductivity";
 			} break;
-			// NetworkHeatExchange::Type
+			// NetworkHeatExchange::ModelType
 			case 16 :
 			switch (t) {
 				case 0 : return "AmbientTemperatureConstant";
@@ -803,7 +803,7 @@ namespace VICUS {
 				case 1 : return "Specific heat capacity of the material.";
 				case 2 : return "Thermal conductivity of the dry material.";
 			} break;
-			// NetworkHeatExchange::Type
+			// NetworkHeatExchange::ModelType
 			case 16 :
 			switch (t) {
 				case 0 : return "Constant ambient temperature";
@@ -1083,7 +1083,7 @@ namespace VICUS {
 				case 1 : return "J/kgK";
 				case 2 : return "W/mK";
 			} break;
-			// NetworkHeatExchange::Type
+			// NetworkHeatExchange::ModelType
 			case 16 :
 			switch (t) {
 				case 0 : return "";
@@ -1363,7 +1363,7 @@ namespace VICUS {
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
-			// NetworkHeatExchange::Type
+			// NetworkHeatExchange::ModelType
 			case 16 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -1643,7 +1643,7 @@ namespace VICUS {
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// NetworkHeatExchange::Type
+			// NetworkHeatExchange::ModelType
 			case 16 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -1797,7 +1797,7 @@ namespace VICUS {
 			case 14 : return 8;
 			// NetworkFluid::para_t
 			case 15 : return 3;
-			// NetworkHeatExchange::Type
+			// NetworkHeatExchange::ModelType
 			case 16 : return 6;
 			// NetworkHeatExchange::Parameter
 			case 17 : return 3;
@@ -1871,7 +1871,7 @@ namespace VICUS {
 			case 14 : return 7;
 			// NetworkFluid::para_t
 			case 15 : return 2;
-			// NetworkHeatExchange::Type
+			// NetworkHeatExchange::ModelType
 			case 16 : return 5;
 			// NetworkHeatExchange::Parameter
 			case 17 : return 2;

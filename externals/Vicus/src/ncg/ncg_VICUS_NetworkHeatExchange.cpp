@@ -71,15 +71,15 @@ void NetworkHeatExchange::readXML(const TiXmlElement * element) {
 				NANDRAD::LinearSplineParameter p;
 				p.readXML(c);
 				bool success = false;
-				if (p.m_name == "Spline") {
+				if (p.m_name == "HeatExchangeSpline") {
 					m_heatExchangeSpline = p; success = true;
 				}
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.m_name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
-			else if (cName == "Type") {
+			else if (cName == "ModelType") {
 				try {
-					m_modelType = (ModelType)KeywordList::Enumeration("NetworkHeatExchange::Type", c->GetText());
+					m_modelType = (ModelType)KeywordList::Enumeration("NetworkHeatExchange::ModelType", c->GetText());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
@@ -106,7 +106,7 @@ TiXmlElement * NetworkHeatExchange::writeXML(TiXmlElement * parent) const {
 
 
 	if (m_modelType != NUM_HT)
-		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("NetworkHeatExchange::Type",  m_modelType));
+		TiXmlElement::appendSingleAttributeElement(e, "ModelType", nullptr, std::string(), KeywordList::Keyword("NetworkHeatExchange::ModelType",  m_modelType));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {
@@ -120,7 +120,7 @@ TiXmlElement * NetworkHeatExchange::writeXML(TiXmlElement * parent) const {
 		}
 	}
 	if (!m_heatExchangeSpline.m_name.empty()) {
-		IBK_ASSERT("Spline" == m_heatExchangeSpline.m_name);
+		IBK_ASSERT("HeatExchangeSpline" == m_heatExchangeSpline.m_name);
 		m_heatExchangeSpline.writeXML(e);
 	}
 	return e;
