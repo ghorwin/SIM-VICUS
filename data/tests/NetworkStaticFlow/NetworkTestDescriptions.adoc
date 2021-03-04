@@ -579,6 +579,38 @@ Zeit [h]	NetworkElement(id=1003).OutletNodeTemperature [C]
 ```
 
 
+### ThermoHydraulicNetworkDynamicPipeAdiabatFluxStep.nandrad
+
+Einfacher Kreis: Wärmetauscher -> Pumpe -> Dynamic Pipe (100 m, 200 Elemente)
+
+Anfangsbedingung: 20°C überall
+Ab t=0 sofort 2000W Entzugsleistung im Wärmetauscher (id=301).
+
+Die Auslasstemperatur sinkt im Wärmetauscher (schwarze Linie)
+sofort merklich ab - Zulauf (aus dem Rohr) ist ja weiterhin 20°,
+konstante Entnahmeleistung -> linearer Temperaturabfall.
+
+Am Ende der Pumpe ist schon ein gewisser Mixereffekt sichtbar, aber auch
+da ist in den ersten paar Minuten der Temperaturabfall konstant.
+
+Danach wird's interessant. Noch bevor das Temperatursignal aus dem
+langen Rohr wieder rauskommt, verlangsamt sich der Temperaturabfall -
+der Wärmetauscher nähert sich der stationären Lösung an, welche durch
+"konstant einfließendes 20° Wasser + -2000W konstant" definiert ist.
+Dies erklärt die Krümmung der Kurve bis 0.06 h, währenddessen die
+OutflowTemperature des Rohrs immer noch konstant 20°C ist.
+
+Nun kommt das kalte Wasser auch am Rohrende an und reduziert die
+Vorlauftemperatur im Wärmetauscher. Der kühlt sich entsprechend
+schneller ab und die Temperatur sinkt stärker.
+
+Dies führt dann zur beobachteten Wellenstruktur.
 
 
+### ThermoHydraulicNetworkDynamicPipeAdiabatHeatPulse.nandrad
+
+Ähnlich wie `ThermoHydraulicNetworkDynamicPipeAdiabatFluxStep.nandrad`,
+aber erst bei t=60 min gibt es einen trapezförmigen Wärmesenken-Puls. Der
+wandert dann durch das 200 m lange Rohr (200 Elemente) und wird dann
+weiter gedämpft.
 
