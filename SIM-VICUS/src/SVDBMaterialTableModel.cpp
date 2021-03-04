@@ -14,14 +14,11 @@
 #include <QtExt_LanguageHandler.h>
 
 #include "SVConstants.h"
-#include "SVDBMaterialEditDialog.h"
 
 SVDBMaterialTableModel::SVDBMaterialTableModel(QObject * parent, SVDatabase & db) :
 	SVAbstractDatabaseTableModel(parent),
 	m_db(&db)
 {
-	// must only be created from SVDBMaterialEditDialog
-	Q_ASSERT(dynamic_cast<SVDBMaterialEditDialog*>(parent) != nullptr);
 	Q_ASSERT(m_db != nullptr);
 }
 

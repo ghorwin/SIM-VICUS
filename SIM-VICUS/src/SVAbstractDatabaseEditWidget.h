@@ -39,6 +39,7 @@ public:
 class SVAbstractDatabaseEditWidget : public QWidget {
 	Q_OBJECT
 public:
+	explicit SVAbstractDatabaseEditWidget(QWidget *parent = nullptr) : QWidget(parent) {}
 	virtual ~SVAbstractDatabaseEditWidget();
 	virtual void updateInput(int id) = 0;
 	virtual void setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) = 0;

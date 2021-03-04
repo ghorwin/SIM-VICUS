@@ -14,6 +14,13 @@
 #include "SVMainWindow.h"
 #include "SVAbstractDatabaseEditWidget.h"
 
+// includes for all the dialogs
+
+#include "SVDBMaterialTableModel.h"
+#include "SVDBMaterialEditWidget.h"
+
+
+
 SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTableModel * tableModel,
 										   SVAbstractDatabaseEditWidget * editWidget,
 										   const QString & title, const QString & editWidgetTitle,
@@ -42,9 +49,11 @@ SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTa
 	m_editWidgetGroupBox->setTitle(editWidgetTitle);
 	if (horizontalLayout) {
 		m_ui->gridLayoutMaster->addWidget(m_editWidgetGroupBox, 0, 1);
+		m_ui->horizontalLayout->setParent(nullptr);
 		m_ui->gridLayoutMaster->addLayout(m_ui->horizontalLayout, 1, 0, 1, 2);
 	}
 	else {
+		m_ui->horizontalLayout->setParent(nullptr);
 		m_ui->gridLayoutMaster->addLayout(m_ui->horizontalLayout, 2, 0);
 		m_ui->gridLayoutMaster->addWidget(m_editWidgetGroupBox, 1, 0);
 	}
@@ -220,4 +229,17 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 void SVDatabaseEditDialog::on_tableView_doubleClicked(const QModelIndex &index) {
 	if (m_ui->pushButtonSelect->isVisible() && index.isValid())
 		accept();
+}
+
+
+// *** Factory functions ***
+
+SVDatabaseEditDialog * SVDatabaseEditDialog::createMaterialEditDialog(QWidget * parent) {
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBMaterialTableModel(parent, SVSettings::instance().m_db),
+		new SVDBMaterialEditWidget(parent),
+		tr("Material Database"), tr("Material properties"), true
+	);
+	dlg->resize(1400,600);
+	return dlg;
 }

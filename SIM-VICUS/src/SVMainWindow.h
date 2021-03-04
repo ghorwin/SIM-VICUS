@@ -31,7 +31,7 @@ class SVViewStateHandler;
 class SVSimulationStartNandrad;
 class SVSimulationStartNetworkSim;
 
-class SVDBMaterialEditDialog;
+class SVDatabaseEditDialog;
 class SVDBWindowEditDialog;
 class SVDBConstructionEditDialog;
 class SVDBComponentEditDialog;
@@ -98,7 +98,7 @@ public:
 	bool exportProjectPackage(const QString & exportFilePath, bool withTopLevelDir);
 
 	/*! Returns the material edit dialog. */
-	SVDBMaterialEditDialog * dbMaterialEditDialog();
+	SVDatabaseEditDialog * dbMaterialEditDialog();
 	/*! Returns the construction edit dialog. */
 	SVDBConstructionEditDialog * dbConstructionEditDialog();
 	/*! Returns the component edit dialog. */
@@ -363,7 +363,7 @@ private:
 	SVViewStateHandler			*m_viewStateHandler										= nullptr;
 
 
-	SVDBMaterialEditDialog				*m_dbMaterialEditDialog							= nullptr;
+	SVDatabaseEditDialog				*m_dbMaterialEditDialog							= nullptr;
 	SVDBConstructionEditDialog			*m_dbConstructionEditDialog						= nullptr;
 	SVDBWindowEditDialog				*m_dbWindowEditDialog							= nullptr;
 	SVDBComponentEditDialog				*m_dbComponentEditDialog						= nullptr;

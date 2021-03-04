@@ -14,7 +14,7 @@
 
 
 SVDBMaterialEditWidget::SVDBMaterialEditWidget(QWidget *parent) :
-	QWidget(parent),
+	SVAbstractDatabaseEditWidget(parent),
 	m_ui(new Ui::SVDBMaterialEditWidget)
 {
 	m_ui->setupUi(this);
@@ -54,9 +54,9 @@ SVDBMaterialEditWidget::~SVDBMaterialEditWidget() {
 }
 
 
-void SVDBMaterialEditWidget::setup(SVDatabase * db, SVDBMaterialTableModel * dbModel) {
+void SVDBMaterialEditWidget::setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) {
 	m_db = db;
-	m_dbModel = dbModel;
+	m_dbModel = dynamic_cast<SVDBMaterialTableModel*>(dbModel);
 }
 
 

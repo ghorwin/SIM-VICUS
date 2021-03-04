@@ -1,7 +1,7 @@
 #ifndef SVDBMaterialEditWidgetH
 #define SVDBMaterialEditWidgetH
 
-#include <QWidget>
+#include "SVAbstractDatabaseEditWidget.h"
 
 
 namespace VICUS {
@@ -22,18 +22,18 @@ namespace Ui {
 	is no longer valid or you want to resize the container (through adding new items)
 	call updateInput() with an invalid index and/or nullptr pointer to the model.
 */
-class SVDBMaterialEditWidget : public QWidget {
+class SVDBMaterialEditWidget : public SVAbstractDatabaseEditWidget {
 	Q_OBJECT
 
 public:
 	explicit SVDBMaterialEditWidget(QWidget *parent = nullptr);
-	~SVDBMaterialEditWidget();
+	~SVDBMaterialEditWidget() override;
 
 	/*! Needs to be called once, before the widget is being used. */
-	void setup(SVDatabase * db, SVDBMaterialTableModel * dbModel);
+	void setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) override;
 
 	/*! Update widget with this. */
-	void updateInput(int id);
+	void updateInput(int id) override;
 
 	/*! Activates a tab by index. */
 	void setCurrentTabIndex(int idx);

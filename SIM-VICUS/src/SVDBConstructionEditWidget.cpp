@@ -16,7 +16,7 @@
 #include <VICUS_KeywordListQt.h>
 
 #include "SVDBConstructionTableModel.h"
-#include "SVDBMaterialEditDialog.h"
+#include "SVDatabaseEditDialog.h"
 #include "SVMainWindow.h"
 
 SVDBConstructionEditWidget::SVDBConstructionEditWidget(QWidget * parent) :
@@ -498,7 +498,7 @@ void SVDBConstructionEditWidget::showMaterialSelectionDialog(int index) {
 	Q_ASSERT(index >= 0);
 
 	// get material edit dialog (owned/managed by main window)
-	SVDBMaterialEditDialog * matSelect = SVMainWindow::instance().dbMaterialEditDialog();
+	SVDatabaseEditDialog * matSelect = SVMainWindow::instance().dbMaterialEditDialog();
 	// ask to select a material
 	unsigned int matId = matSelect->select(m_current->m_materialLayers[(unsigned int)index].m_matId);
 	if (matId != m_current->m_materialLayers[(unsigned int)index].m_matId) {

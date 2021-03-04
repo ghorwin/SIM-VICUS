@@ -35,6 +35,7 @@ public:
 	*/
 	unsigned int select(unsigned int initialId);
 
+
 private slots:
 	void on_pushButtonSelect_clicked();
 	void on_pushButtonCancel_clicked();
@@ -54,6 +55,10 @@ private slots:
 	void on_tableView_doubleClicked(const QModelIndex &index);
 
 private:
+	// Factory functions to create all the individual dialogs
+	static SVDatabaseEditDialog * createMaterialEditDialog(QWidget * parent);
+
+
 	Ui::SVDatabaseEditDialog *m_ui;
 
 	/*! The sort filter model (owned). */
@@ -63,6 +68,8 @@ private:
 	/*! The edit widget (owned). */
 	SVAbstractDatabaseEditWidget	*m_editWidget	= nullptr;
 	QGroupBox						*m_editWidgetGroupBox = nullptr;
+
+	friend class SVMainWindow;
 };
 
 #endif // SVDatabaseEditDialogH

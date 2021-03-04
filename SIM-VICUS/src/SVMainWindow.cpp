@@ -58,7 +58,7 @@
 #include "SVStyle.h"
 #include "SVPropFloorManagerWidget.h"
 
-#include "SVDBMaterialEditDialog.h"
+#include "SVDatabaseEditDialog.h"
 #include "SVDBConstructionEditDialog.h"
 #include "SVDBWindowEditDialog.h"
 #include "SVDBComponentEditDialog.h"
@@ -195,9 +195,9 @@ bool SVMainWindow::exportProjectPackage(const QString & exportFilePath, bool wit
 }
 
 
-SVDBMaterialEditDialog * SVMainWindow::dbMaterialEditDialog() {
+SVDatabaseEditDialog * SVMainWindow::dbMaterialEditDialog() {
 	if (m_dbMaterialEditDialog == nullptr) {
-		m_dbMaterialEditDialog = new SVDBMaterialEditDialog(this);
+		m_dbMaterialEditDialog = SVDatabaseEditDialog::createMaterialEditDialog(this);
 	}
 	return m_dbMaterialEditDialog;
 }
