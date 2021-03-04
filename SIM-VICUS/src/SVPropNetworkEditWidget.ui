@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>616</width>
-    <height>1032</height>
+    <height>1060</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -473,55 +473,58 @@
       <string>Heat Exchange</string>
      </property>
      <layout class="QFormLayout" name="formLayout_4">
-      <item row="0" column="0">
+      <item row="1" column="0">
        <widget class="QLabel" name="labelHeatFlux">
         <property name="text">
          <string>Heat flux [W]</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
+      <item row="1" column="1">
        <widget class="QtExt::ValidatingLineEdit" name="lineEditHeatFlux"/>
       </item>
-      <item row="2" column="0">
+      <item row="3" column="0">
        <widget class="QLabel" name="labelDataFile">
         <property name="text">
          <string>Data file</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="3" column="1">
        <widget class="QtExt::BrowseFilenameWidget" name="widgetBrowseFileNameTSVFile" native="true"/>
       </item>
-      <item row="3" column="0">
+      <item row="4" column="0">
        <widget class="QLabel" name="labelFMUFile">
         <property name="text">
          <string>FMU file</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="4" column="1">
        <widget class="QtExt::BrowseFilenameWidget" name="widgetBrowseFileNameFMU" native="true"/>
       </item>
-      <item row="4" column="0">
+      <item row="5" column="0">
        <widget class="QLabel" name="labelZoneId">
         <property name="text">
          <string>Zone Id</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
+      <item row="5" column="1">
        <widget class="QComboBox" name="comboBoxZoneId"/>
       </item>
-      <item row="1" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="labelTemperature">
         <property name="text">
          <string>Temperature [C]</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="2" column="1">
        <widget class="QtExt::ValidatingLineEdit" name="lineEditTemperature"/>
+      </item>
+      <item row="0" column="0" colspan="2">
+       <widget class="QComboBox" name="comboBoxHeatExchangeType"/>
       </item>
      </layout>
     </widget>

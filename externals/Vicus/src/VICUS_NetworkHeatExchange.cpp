@@ -17,9 +17,9 @@ bool NetworkHeatExchange::operator!=(const NetworkHeatExchange &other) const{
 		if (m_intPara[i] != other.m_intPara[i])
 			return true;
 	}
-	if (m_type != other.m_type)
+	if (m_modelType != other.m_modelType)
 		return true;
-	if (m_spline != other.m_spline)
+	if (m_heatExchangeSpline != other.m_heatExchangeSpline)
 		return true;
 
 	return false;

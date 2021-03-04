@@ -22,7 +22,7 @@ public:
 	bool operator!=(const NetworkHeatExchange &other) const;
 
 	/*! Defines the type of heat exchange */
-	enum Type {
+	enum ModelType {
 		T_AmbientTemperatureConstant,		// Keyword: AmbientTemperatureConstant			'Constant ambient temperature'
 		T_AmbientTemperatureSpline,			// Keyword: AmbientTemperatureSpline			'Ambient Temperature from spline'
 		T_HeatLossConstant,					// Keyword: HeatLossConstant					'Constant heat loss'
@@ -47,14 +47,14 @@ public:
 	};
 
 
-	Type							m_type	= NUM_HT;						// XML:E
+	ModelType							m_modelType	= NUM_HT;						// XML:E
 
 	IBK::Parameter					m_para[NUM_P];							// XML:E
 
 	/*! Integer parameters. */
 	IBK::IntPara					m_intPara[NUM_IP];						// XML:E
 
-	NANDRAD::LinearSplineParameter	m_spline;								// XML:E
+	NANDRAD::LinearSplineParameter	m_heatExchangeSpline;								// XML:E
 
 };
 

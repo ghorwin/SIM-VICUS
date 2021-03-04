@@ -89,6 +89,8 @@ private slots:
 	void on_heatExchangeDataFile_editingFinished();
 
 
+	void on_comboBoxHeatExchangeType_currentIndexChanged(int index);
+
 private:
 	/*! This function is called whenever the current selection of edges/nodes/objects has changed.
 		This can be due to user interaction with the scene, or because objects were added/deleted or
@@ -101,6 +103,8 @@ private:
 	void setupComboBoxComponents();
 
 	void setupComboboxPipeDB();
+
+	void setupComboboxHeatExchangeType();
 
 	void updateSizingParams();
 

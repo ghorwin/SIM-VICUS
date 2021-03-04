@@ -258,49 +258,26 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 
 void SVPropNetworkEditWidget::updateHeatExchangeProperties()
 {
-//	// visibility of widgets
-//	setAllHeatExchangeWidgetsVisible(false);
+	VICUS::NetworkHeatExchange hx;
+	if(!m_currentNodes.empty() && uniformProperty(m_currentNodes, &VICUS::NetworkNode::m_heatExchange)){
+		hx = m_currentNodes[0]->m_heatExchange;
+	}
+	else if (!m_currentEdges.empty() && uniformProperty(m_currentEdges, &VICUS::NetworkEdge::m_heatExchange))
+		hx = m_currentEdges[0]->m_heatExchange;
+	else
+		return;
 
-//	const VICUS::NetworkComponent *comp = currentComponent();
-//	if (comp != nullptr) {
-//		switch (comp->m_heatExchangeType) {
-//			case VICUS::NetworkComponent::HT_HeatFluxConstant:{
-//				m_ui->labelHeatFlux->setVisible(true);
-//				m_ui->lineEditHeatFlux->setVisible(true);
-//				break;
-//			}
-//			case VICUS::NetworkComponent::HT_TemperatureConstant:{
-//				m_ui->labelTemperature->setVisible(true);
-//				m_ui->lineEditTemperature->setVisible(true);
-//				break;
-//			}
-//			case VICUS::NetworkComponent::HT_HeatFluxDataFile:
-//			case VICUS::NetworkComponent::HT_TemperatureDataFile:{
-//				m_ui->labelDataFile->setVisible(true);
-//				m_ui->widgetBrowseFileNameTSVFile->setVisible(true);
-//				break;
-//			}
-//			default:;
-//		}
-//	}
+	m_ui->comboBoxHeatExchangeType->setCurrentIndex(m_ui->comboBoxHeatExchangeType->findData(hx.m_modelType));
 
-//	// content of widgets
-//	m_ui->lineEditHeatFlux->clear();
-//	m_ui->lineEditTemperature->clear();
-
-//	VICUS::NetworkHeatExchange hx;
-//	if(!m_currentNodes.empty() && uniformProperty(m_currentNodes, &VICUS::NetworkNode::m_heatExchange)){
-//		hx = m_currentNodes[0]->m_heatExchange;
-//	}
-//	else if (!m_currentEdges.empty() && uniformProperty(m_currentEdges, &VICUS::NetworkEdge::m_heatExchange))
-//		hx = m_currentEdges[0]->m_heatExchange;
-//	else
-//		return;
-
-//	m_ui->lineEditHeatFlux->setValue(hx.m_para[VICUS::NetworkHeatExchange::P_HeatLoss].value);
-//	if (!hx.m_para[VICUS::NetworkHeatExchange::P_AmbientTemperature].empty())
-//		m_ui->lineEditTemperature->setValue(hx.m_para[VICUS::NetworkHeatExchange::P_AmbientTemperature].get_value("C"));
-
+	m_ui->lineEditHeatFlux->clear();
+	m_ui->lineEditTemperature->clear();
+	m_ui->widgetBrowseFileNameTSVFile->setFilename("");
+	if (!hx.m_para[VICUS::NetworkHeatExchange::P_HeatLoss].empty())
+		m_ui->lineEditHeatFlux->setValue(hx.m_para[VICUS::NetworkHeatExchange::P_HeatLoss].value);
+	if (!hx.m_para[VICUS::NetworkHeatExchange::P_AmbientTemperature].empty())
+		m_ui->lineEditTemperature->setValue(hx.m_para[VICUS::NetworkHeatExchange::P_AmbientTemperature].get_value("C"));
+	if (hx.m_heatExchangeSpline.m_tsvFile.isValid())
+		m_ui->widgetBrowseFileNameTSVFile->setFilename(QString::fromStdString(hx.m_heatExchangeSpline.m_tsvFile.str()));
 }
 
 
@@ -423,6 +400,33 @@ void SVPropNetworkEditWidget::setupComboboxPipeDB()
 }
 
 
+void SVPropNetworkEditWidget::setupComboboxHeatExchangeType()
+{
+	m_ui->comboBoxHeatExchangeType->blockSignals(true);
+	m_ui->comboBoxHeatExchangeType->clear();
+	m_ui->comboBoxHeatExchangeType->blockSignals(false);
+
+	const VICUS::NetworkComponent *comp = currentComponent();
+	if (comp==nullptr)
+		return;
+
+	std::vector<unsigned int> hxTypes = NANDRAD::HydraulicNetworkHeatExchange::availableHeatExchangeTypes(
+													(NANDRAD::HydraulicNetworkComponent::ModelType)comp->m_modelType);
+
+	m_ui->comboBoxHeatExchangeType->blockSignals(true);
+	m_ui->comboBoxHeatExchangeType->addItem(tr("Adiabatic"), NANDRAD::HydraulicNetworkHeatExchange::NUM_T);
+	for (unsigned int i: hxTypes){
+		m_ui->comboBoxHeatExchangeType->addItem(QString::fromStdString(
+													NANDRAD::KeywordList::Description("HydraulicNetworkHeatExchange::ModelType",
+																					  (int)i)), i);
+	}
+	m_ui->comboBoxHeatExchangeType->setCurrentIndex(-1);
+	m_ui->comboBoxHeatExchangeType->blockSignals(false);
+
+	on_comboBoxHeatExchangeType_currentIndexChanged(-1);
+}
+
+
 void SVPropNetworkEditWidget::setupComboBoxComponents()
 {
 	m_ui->comboBoxComponent->blockSignals(true);
@@ -434,6 +438,8 @@ void SVPropNetworkEditWidget::setupComboBoxComponents()
 										comp->second.m_displayName.string(IBK::MultiLanguageString::m_language, "en")),
 										comp->second.m_id);
 	m_ui->comboBoxComponent->blockSignals(false);
+
+	setupComboboxHeatExchangeType();
 }
 
 
@@ -562,6 +568,7 @@ void SVPropNetworkEditWidget::on_comboBoxComponent_currentIndexChanged(int index
 		modifyEdgeProperty(&VICUS::NetworkEdge::m_componentId, m_ui->comboBoxComponent->currentData().toUInt());
 	if (!m_currentNodes.empty())
 		modifyNodeProperty(&VICUS::NetworkNode::m_componentId, m_ui->comboBoxComponent->currentData().toUInt());
+
 	updateHeatExchangeProperties();
 }
 
@@ -611,6 +618,7 @@ void SVPropNetworkEditWidget::on_lineEditHeatFlux_editingFinished()
 		return;
 
 	VICUS::NetworkHeatExchange hx;
+	hx.m_modelType = VICUS::NetworkHeatExchange::ModelType(m_ui->comboBoxHeatExchangeType->currentData().toUInt());
 	hx.m_para[VICUS::NetworkHeatExchange::P_HeatLoss] = IBK::Parameter("HeatLoss", m_ui->lineEditHeatFlux->value(),
 																	   IBK::Unit("W"));
 	if (!setNetwork())
@@ -644,6 +652,7 @@ void SVPropNetworkEditWidget::on_lineEditTemperature_editingFinished()
 		return;
 
 	VICUS::NetworkHeatExchange hx;
+	hx.m_modelType = VICUS::NetworkHeatExchange::ModelType(m_ui->comboBoxHeatExchangeType->currentData().toUInt());
 	hx.m_para[VICUS::NetworkHeatExchange::P_AmbientTemperature] = IBK::Parameter("AmbientTemperature", m_ui->lineEditTemperature->value(),
 																	   IBK::Unit("C"));
 	if (!setNetwork())
@@ -674,7 +683,10 @@ void SVPropNetworkEditWidget::on_heatExchangeDataFile_editingFinished()
 {
 
 	VICUS::NetworkHeatExchange hx;
-//	hx.m_dataFile = m_ui->widgetBrowseFileNameTSVFile->filename().toStdString();
+	hx.m_modelType = VICUS::NetworkHeatExchange::ModelType(m_ui->comboBoxHeatExchangeType->currentIndex());
+	hx.m_heatExchangeSpline = NANDRAD::LinearSplineParameter("HeatExchangeSpline",
+															 NANDRAD::LinearSplineParameter::I_LINEAR,
+															 IBK::Path(m_ui->widgetBrowseFileNameTSVFile->filename().toStdString()));
 
 	if (!setNetwork())
 		return;
@@ -820,6 +832,38 @@ void SVPropNetworkEditWidget::on_pushButtonSelectPipes_clicked()
 }
 
 
+void SVPropNetworkEditWidget::on_comboBoxHeatExchangeType_currentIndexChanged(int index)
+{
+	// visibility of widgets
+	setAllHeatExchangeWidgetsVisible(false);
+
+	switch (VICUS::NetworkHeatExchange::ModelType(m_ui->comboBoxHeatExchangeType->currentData().toUInt())) {
+		case VICUS::NetworkHeatExchange::T_HeatLossConstant:{
+			m_ui->labelHeatFlux->setVisible(true);
+			m_ui->lineEditHeatFlux->setVisible(true);
+			break;
+		}
+		case VICUS::NetworkHeatExchange::T_AmbientTemperatureConstant:{
+			m_ui->labelTemperature->setVisible(true);
+			m_ui->lineEditTemperature->setVisible(true);
+			break;
+		}
+		case VICUS::NetworkHeatExchange::T_AmbientTemperatureSpline:
+		case VICUS::NetworkHeatExchange::T_HeatLossSpline:{
+			m_ui->labelDataFile->setVisible(true);
+			m_ui->widgetBrowseFileNameTSVFile->setVisible(true);
+			break;
+		}
+		default:;
+	}
+
+	// content of widgets
+	m_ui->lineEditHeatFlux->clear();
+	m_ui->lineEditTemperature->clear();
+	m_ui->widgetBrowseFileNameTSVFile->setFilename("");
+}
+
+
 template <typename TEdgeProp, typename Tval>
 void SVPropNetworkEditWidget::modifyEdgeProperty(TEdgeProp property, const Tval & value)
 {
@@ -852,4 +896,5 @@ void SVPropNetworkEditWidget::modifyNodeProperty(TNodeProp property, const Tval 
 	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
 	undo->push(); // modifies project and updates views
 }
+
 

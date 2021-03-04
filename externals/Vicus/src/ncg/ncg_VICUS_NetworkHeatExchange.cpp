@@ -72,14 +72,14 @@ void NetworkHeatExchange::readXML(const TiXmlElement * element) {
 				p.readXML(c);
 				bool success = false;
 				if (p.m_name == "Spline") {
-					m_spline = p; success = true;
+					m_heatExchangeSpline = p; success = true;
 				}
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.m_name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			else if (cName == "Type") {
 				try {
-					m_type = (Type)KeywordList::Enumeration("NetworkHeatExchange::Type", c->GetText());
+					m_modelType = (ModelType)KeywordList::Enumeration("NetworkHeatExchange::Type", c->GetText());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
@@ -105,8 +105,8 @@ TiXmlElement * NetworkHeatExchange::writeXML(TiXmlElement * parent) const {
 	parent->LinkEndChild(e);
 
 
-	if (m_type != NUM_HT)
-		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("NetworkHeatExchange::Type",  m_type));
+	if (m_modelType != NUM_HT)
+		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("NetworkHeatExchange::Type",  m_modelType));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {
@@ -119,9 +119,9 @@ TiXmlElement * NetworkHeatExchange::writeXML(TiXmlElement * parent) const {
 			TiXmlElement::appendSingleAttributeElement(e, "IBK:IntPara", "name", m_intPara[i].name, IBK::val2string(m_intPara[i].value));
 		}
 	}
-	if (!m_spline.m_name.empty()) {
-		IBK_ASSERT("Spline" == m_spline.m_name);
-		m_spline.writeXML(e);
+	if (!m_heatExchangeSpline.m_name.empty()) {
+		IBK_ASSERT("Spline" == m_heatExchangeSpline.m_name);
+		m_heatExchangeSpline.writeXML(e);
 	}
 	return e;
 }

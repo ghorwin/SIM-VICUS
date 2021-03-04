@@ -338,24 +338,16 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 			elem.m_displayName = node.m_displayName;
 		}
 
-		if (node.m_id==1){
-			elem.m_heatExchange = NANDRAD::HydraulicNetworkHeatExchange();
-			elem.m_heatExchange.m_modelType = NANDRAD::HydraulicNetworkHeatExchange::T_AmbientTemperatureConstant;
-			elem.m_heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_AmbientTemperature] = IBK::Parameter("AmbientTemperature", 277.7, IBK::Unit("C"));
-		}
-		else if (node.m_id==2){
-			elem.m_heatExchange = NANDRAD::HydraulicNetworkHeatExchange();
-			elem.m_heatExchange.m_modelType = NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline;
-			elem.m_heatExchange.m_heatExchangeSpline = NANDRAD::LinearSplineParameter("Spline", NANDRAD::LinearSplineParameter::I_LINEAR, IBK::Path("Temperature.tsv"));
-		}
 
-//		// transform heatExchange properties
-//		elem.m_heatExchange.m_type = (NANDRAD::HydraulicNetworkHeatExchange::Type) node.m_heatExchange.m_type;
-//		for (unsigned int i=0; i<NANDRAD::HydraulicNetworkHeatExchange::NUM_P; ++i)
-//			elem.m_heatExchange.m_para[i]  = node.m_heatExchange.m_para[i];
-//		for (unsigned int i=0; i<NANDRAD::HydraulicNetworkHeatExchange::NUM_IP; ++i)
-//			elem.m_heatExchange.m_intPara[i]  = node.m_heatExchange.m_intPara[i];
-//		elem.m_heatExchange.m_spline = node.m_heatExchange.m_spline;
+
+		// transform heatExchange properties
+		elem.m_heatExchange = NANDRAD::HydraulicNetworkHeatExchange();
+		elem.m_heatExchange.m_modelType = (NANDRAD::HydraulicNetworkHeatExchange::ModelType) node.m_heatExchange.m_modelType;
+		elem.m_heatExchange.m_heatExchangeSpline = node.m_heatExchange.m_heatExchangeSpline;
+		for (unsigned int i=0; i<NANDRAD::HydraulicNetworkHeatExchange::NUM_P; ++i)
+			elem.m_heatExchange.m_para[i]  = node.m_heatExchange.m_para[i];
+		for (unsigned int i=0; i<NANDRAD::HydraulicNetworkHeatExchange::NUM_IP; ++i)
+			elem.m_heatExchange.m_intPara[i]  = node.m_heatExchange.m_intPara[i];
 
 		nandradNetwork.m_elements.push_back(elem);
 
@@ -406,12 +398,12 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		inletPipe.m_displayName = edge->m_displayName;
 
 		inletPipe.m_heatExchange = NANDRAD::HydraulicNetworkHeatExchange();
-		inletPipe.m_heatExchange.m_modelType = (NANDRAD::HydraulicNetworkHeatExchange::ModelType) edge->m_heatExchange.m_type;
+		inletPipe.m_heatExchange.m_modelType = (NANDRAD::HydraulicNetworkHeatExchange::ModelType) edge->m_heatExchange.m_modelType;
+		inletPipe.m_heatExchange.m_heatExchangeSpline = edge->m_heatExchange.m_heatExchangeSpline;
 		for (unsigned int i=0; i<NANDRAD::HydraulicNetworkHeatExchange::NUM_P; ++i)
 			inletPipe.m_heatExchange.m_para[i]  = edge->m_heatExchange.m_para[i];
 		for (unsigned int i=0; i<NANDRAD::HydraulicNetworkHeatExchange::NUM_IP; ++i)
 			inletPipe.m_heatExchange.m_intPara[i]  = edge->m_heatExchange.m_intPara[i];
-		inletPipe.m_heatExchange.m_heatExchangeSpline = edge->m_heatExchange.m_spline;
 
 		nandradNetwork.m_elements.push_back(inletPipe);
 
@@ -425,12 +417,12 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		outletPipe.m_displayName = edge->m_displayName;
 
 		outletPipe.m_heatExchange = NANDRAD::HydraulicNetworkHeatExchange();
-		outletPipe.m_heatExchange.m_modelType = (NANDRAD::HydraulicNetworkHeatExchange::ModelType) edge->m_heatExchange.m_type;
+		outletPipe.m_heatExchange.m_modelType = (NANDRAD::HydraulicNetworkHeatExchange::ModelType) edge->m_heatExchange.m_modelType;
+		outletPipe.m_heatExchange.m_heatExchangeSpline = edge->m_heatExchange.m_heatExchangeSpline;
 		for (unsigned int i=0; i<NANDRAD::HydraulicNetworkHeatExchange::NUM_P; ++i)
 			outletPipe.m_heatExchange.m_para[i]  = edge->m_heatExchange.m_para[i];
 		for (unsigned int i=0; i<NANDRAD::HydraulicNetworkHeatExchange::NUM_IP; ++i)
 			outletPipe.m_heatExchange.m_intPara[i]  = edge->m_heatExchange.m_intPara[i];
-		outletPipe.m_heatExchange.m_heatExchangeSpline = edge->m_heatExchange.m_spline;
 
 		nandradNetwork.m_elements.push_back(outletPipe);
 
