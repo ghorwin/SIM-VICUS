@@ -1,5 +1,8 @@
 #include "SVDBComponentTableModel.h"
 
+#include <QTableView>
+#include <QHeaderView>
+
 #include <VICUS_Component.h>
 #include <VICUS_Database.h>
 #include <VICUS_KeywordListQt.h>
@@ -9,18 +12,12 @@
 #include "SVConstants.h"
 
 SVDBComponentTableModel::SVDBComponentTableModel(QObject * parent, SVDatabase & db) :
-	QAbstractTableModel(parent),
+	SVAbstractDatabaseTableModel(parent),
 	m_db(&db)
 {
 	Q_ASSERT(m_db != nullptr);
 }
 
-SVDBComponentTableModel::~SVDBComponentTableModel() {
-}
-
-int SVDBComponentTableModel::columnCount ( const QModelIndex & ) const {
-	return NumColumns;
-}
 
 QVariant SVDBComponentTableModel::data ( const QModelIndex & index, int role) const {
 	if (!index.isValid())
@@ -112,6 +109,12 @@ QVariant SVDBComponentTableModel::headerData(int section, Qt::Orientation orient
 }
 
 
+void SVDBComponentTableModel::resetModel() {
+	beginResetModel();
+	endResetModel();
+}
+
+
 QModelIndex SVDBComponentTableModel::addNewItem() {
 	VICUS::Component c;
 	c.m_displayName.setEncodedString("en:<new component type>");
@@ -123,40 +126,46 @@ QModelIndex SVDBComponentTableModel::addNewItem() {
 }
 
 
-QModelIndex SVDBComponentTableModel::addNewItem(VICUS::Component c) {
+QModelIndex SVDBComponentTableModel::copyItem(const QModelIndex & existingItemIndex) {
+	// lookup existing item
+	const VICUS::Database<VICUS::Component> & db = m_db->m_components;
+	Q_ASSERT(existingItemIndex.isValid() && existingItemIndex.row() < (int)db.size());
+	std::map<unsigned int, VICUS::Component>::const_iterator it = db.begin();
+	std::advance(it, existingItemIndex.row());
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
-	unsigned int id = m_db->m_components.add( c );
+	// create new item and insert into DB
+	VICUS::Component newItem(it->second);
+	unsigned int id = m_db->m_components.add( newItem );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;
 }
 
 
-QModelIndex SVDBComponentTableModel::findItem(unsigned int componentId) const {
-	// select component with given matId
-	for (int i=0, count = rowCount(); i<count; ++i) {
-		QModelIndex sourceIndex = index(i,0);
-		if (data(sourceIndex, Role_Id).toUInt() == componentId)
-			return sourceIndex;
-	}
-	return QModelIndex();
-}
+//QModelIndex SVDBComponentTableModel::findItem(unsigned int componentId) const {
+//	// select component with given matId
+//	for (int i=0, count = rowCount(); i<count; ++i) {
+//		QModelIndex sourceIndex = index(i,0);
+//		if (data(sourceIndex, Role_Id).toUInt() == componentId)
+//			return sourceIndex;
+//	}
+//	return QModelIndex();
+//}
 
 
-bool SVDBComponentTableModel::deleteItem(QModelIndex index) {
+void SVDBComponentTableModel::deleteItem(const QModelIndex & index) {
 	if (!index.isValid())
-		return false;
+		return;
 	unsigned int id = data(index, Role_Id).toUInt();
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	m_db->m_components.remove(id);
+	m_db->m_constructions.remove(id);
 	endRemoveRows();
-	return true;
 }
 
 
-void SVDBComponentTableModel::resetModel() {
-	beginResetModel();
-	endResetModel();
+void SVDBComponentTableModel::setColumnResizeModes(QTableView * tableView) {
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBComponentTableModel::ColCheck, QHeaderView::Fixed);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBComponentTableModel::ColColor, QHeaderView::Fixed);
 }
 
 

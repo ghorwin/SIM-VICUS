@@ -12,7 +12,7 @@
 #include "SVStyle.h"
 #include "SVSettings.h"
 #include "SVMainWindow.h"
-#include "SVDBComponentEditDialog.h"
+#include "SVDatabaseEditDialog.h"
 
 #include "SVUndoTreeNodeState.h"
 #include "SVUndoModifyComponentInstances.h"

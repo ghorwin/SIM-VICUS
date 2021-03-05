@@ -1,20 +1,19 @@
 #ifndef SVDBComponentEditWidgetH
 #define SVDBComponentEditWidgetH
 
-#include <QWidget>
+#include "SVAbstractDatabaseEditWidget.h"
 
-
-
-namespace VICUS {
-class Component;
+namespace Ui {
+	class SVDBComponentEditWidget;
 }
 
 class SVDBComponentTableModel;
 class SVDatabase;
 
-namespace Ui {
-	class SVDBComponentEditWidget;
+namespace VICUS {
+	class Component;
 }
+
 
 /*! Edit widget for components.
 
@@ -24,19 +23,19 @@ namespace Ui {
 	is no longer valid or you want to resize the container (through adding new items)
 	call updateInput() with an invalid index and/or nullptr pointer to the model.
 */
-class SVDBComponentEditWidget : public QWidget {
+class SVDBComponentEditWidget : public SVAbstractDatabaseEditWidget {
 	Q_OBJECT
 
 public:
 
 	explicit SVDBComponentEditWidget(QWidget *parent = nullptr);
-	~SVDBComponentEditWidget();
+	~SVDBComponentEditWidget() override;
 
 	/*! Needs to be called once, before the widget is being used. */
-	void setup(SVDatabase * db, SVDBComponentTableModel * dbModel);
+	void setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) override;
 
 	/*! Update widget with this. */
-	void updateInput(int id);
+	void updateInput(int id) override;
 
 
 private slots:
@@ -62,7 +61,7 @@ private:
 		The pointer is updated whenever updateInput() is called.
 		A nullptr pointer means that there is no component to edit.
 	*/
-	VICUS::Component				*m_current;
+	VICUS::Component			*m_current;
 };
 
 #endif // SVDBComponentEditWidgetH

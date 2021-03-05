@@ -128,7 +128,6 @@ SOURCES += \
 				../../src/SVDBBoundaryConditionEditDialog.cpp \
 				../../src/SVDBBoundaryConditionEditWidget.cpp \
 				../../src/SVDBBoundaryConditionTableModel.cpp \
-				../../src/SVDBComponentEditDialog.cpp \
 				../../src/SVDBComponentEditWidget.cpp \
 				../../src/SVDBComponentTableModel.cpp \
 				../../src/SVDBConstructionEditWidget.cpp \
@@ -254,7 +253,6 @@ HEADERS  += \
 				../../src/SVDBBoundaryConditionEditDialog.h \
 				../../src/SVDBBoundaryConditionEditWidget.h \
 				../../src/SVDBBoundaryConditionTableModel.h \
-				../../src/SVDBComponentEditDialog.h \
 				../../src/SVDBComponentEditWidget.h \
 				../../src/SVDBComponentTableModel.h \
 				../../src/SVDBConstructionEditWidget.h \
@@ -331,7 +329,6 @@ FORMS    += \
 				../../src/SVAboutDialog.ui \
 				../../src/SVDBBoundaryConditionEditDialog.ui \
 				../../src/SVDBBoundaryConditionEditWidget.ui \
-				../../src/SVDBComponentEditDialog.ui \
 				../../src/SVDBComponentEditWidget.ui \
 				../../src/SVDBConstructionEditWidget.ui \
 				../../src/SVDBInternalLoadsPersonEditDialog.ui \

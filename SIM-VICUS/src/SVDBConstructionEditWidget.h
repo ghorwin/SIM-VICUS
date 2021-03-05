@@ -60,16 +60,16 @@ private:
 	Ui::SVDBConstructionEditWidget	*m_ui;
 
 	/*! Cached pointer to database object. */
-	SVDatabase					*m_db;
+	SVDatabase						*m_db;
 
 	/*! Pointer to the database model, to modify items when data has changed in the widget. */
-	SVDBConstructionTableModel	*m_dbModel;
+	SVDBConstructionTableModel		*m_dbModel;
 
 	/*! Pointer to currently edited construction.
 		The pointer is updated whenever updateInput() is called.
 		A nullptr pointer means that there is no construction to edit.
 	*/
-	VICUS::Construction			*m_current;
+	VICUS::Construction				*m_current;
 
 private slots:
 	void on_lineEditName_editingFinished();

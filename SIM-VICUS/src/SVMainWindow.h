@@ -33,7 +33,6 @@ class SVSimulationStartNetworkSim;
 
 class SVDatabaseEditDialog;
 class SVDBWindowEditDialog;
-class SVDBComponentEditDialog;
 class SVDBBoundaryConditionEditDialog;
 class SVDBPipeEditDialog;
 class SVDBNetworkComponentEditDialog;
@@ -101,7 +100,7 @@ public:
 	/*! Returns the construction edit dialog. */
 	SVDatabaseEditDialog * dbConstructionEditDialog();
 	/*! Returns the component edit dialog. */
-	SVDBComponentEditDialog * dbComponentEditDialog();
+	SVDatabaseEditDialog * dbComponentEditDialog();
 	/*! Returns the boundary condition edit dialog. */
 	SVDBBoundaryConditionEditDialog * dbBoundaryConditionEditDialog();
 	/*! Returns the window edit dialog. */
@@ -365,7 +364,7 @@ private:
 	SVDatabaseEditDialog				*m_dbMaterialEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbConstructionEditDialog						= nullptr;
 	SVDBWindowEditDialog				*m_dbWindowEditDialog							= nullptr;
-	SVDBComponentEditDialog				*m_dbComponentEditDialog						= nullptr;
+	SVDatabaseEditDialog				*m_dbComponentEditDialog						= nullptr;
 	SVDBBoundaryConditionEditDialog		*m_dbBoundaryConditionEditDialog				= nullptr;
 	SVDBPipeEditDialog					*m_dbPipeEditDialog								= nullptr;
 	SVDBNetworkComponentEditDialog		*m_dbNetworkComponentEditDialog					= nullptr;

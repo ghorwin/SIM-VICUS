@@ -60,7 +60,6 @@
 
 #include "SVDatabaseEditDialog.h"
 #include "SVDBWindowEditDialog.h"
-#include "SVDBComponentEditDialog.h"
 #include "SVDBBoundaryConditionEditDialog.h"
 #include "SVDBPipeEditDialog.h"
 #include "SVDBNetworkComponentEditDialog.h"
@@ -209,9 +208,9 @@ SVDatabaseEditDialog * SVMainWindow::dbConstructionEditDialog() {
 	return m_dbConstructionEditDialog;
 }
 
-SVDBComponentEditDialog * SVMainWindow::dbComponentEditDialog() {
+SVDatabaseEditDialog * SVMainWindow::dbComponentEditDialog() {
 	if (m_dbComponentEditDialog == nullptr)
-		m_dbComponentEditDialog = new SVDBComponentEditDialog(this);
+		m_dbConstructionEditDialog = SVDatabaseEditDialog::createComponentEditDialog(this);
 	return m_dbComponentEditDialog;
 
 }

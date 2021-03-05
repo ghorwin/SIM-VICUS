@@ -20,6 +20,8 @@
 #include "SVDBMaterialEditWidget.h"
 #include "SVDBConstructionTableModel.h"
 #include "SVDBConstructionEditWidget.h"
+#include "SVDBComponentTableModel.h"
+#include "SVDBComponentEditWidget.h"
 
 
 
@@ -90,7 +92,7 @@ SVDatabaseEditDialog::~SVDatabaseEditDialog() {
 }
 
 
-void SVDatabaseEditDialog::edit() {
+void SVDatabaseEditDialog::edit(unsigned int initialId) {
 
 	// hide select/cancel buttons, and show "close" button
 	m_ui->pushButtonClose->setVisible(true);
@@ -99,6 +101,7 @@ void SVDatabaseEditDialog::edit() {
 
 	// ask database model to update its content
 	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
+	selectItemById(initialId);
 	onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex()); // select nothing
 
 	m_ui->tableView->resizeColumnsToContents();
@@ -114,18 +117,7 @@ unsigned int SVDatabaseEditDialog::select(unsigned int initialId) {
 	m_ui->pushButtonCancel->setVisible(true);
 
 	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
-
-	// select item with given id
-	for (int i=0, count = m_dbModel->rowCount(); i<count; ++i) {
-		QModelIndex sourceIndex = m_dbModel->index(i,0);
-		if (m_dbModel->data(sourceIndex, Role_Id).toUInt() == initialId) {
-			// get proxy index
-			QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
-			if (proxyIndex.isValid())
-				m_ui->tableView->setCurrentIndex(proxyIndex);
-			break;
-		}
-	}
+	selectItemById(initialId);
 	onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex()); // select nothing
 
 	m_ui->tableView->resizeColumnsToContents();
@@ -243,6 +235,23 @@ void SVDatabaseEditDialog::on_tableView_doubleClicked(const QModelIndex &index) 
 }
 
 
+void SVDatabaseEditDialog::selectItemById(unsigned int id) {
+	// select item with given id
+	for (int i=0, count = m_dbModel->rowCount(); i<count; ++i) {
+		QModelIndex sourceIndex = m_dbModel->index(i,0);
+		if (m_dbModel->data(sourceIndex, Role_Id).toUInt() == id) {
+			// get proxy index
+			QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
+			if (proxyIndex.isValid()) {
+				m_ui->tableView->blockSignals(true);
+				m_ui->tableView->setCurrentIndex(proxyIndex);
+				m_ui->tableView->blockSignals(false);
+			}
+			break;
+		}
+	}
+}
+
 // *** Factory functions ***
 
 SVDatabaseEditDialog * SVDatabaseEditDialog::createMaterialEditDialog(QWidget * parent) {
@@ -262,6 +271,17 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createConstructionEditDialog(QWidge
 		new SVDBConstructionEditWidget(parent),
 		tr("Construction Database"), QString(), false
 	);
-	dlg->resize(1300,800);
+	dlg->resize(1400,800);
+	return dlg;
+}
+
+
+SVDatabaseEditDialog * SVDatabaseEditDialog::createComponentEditDialog(QWidget * parent) {
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBComponentTableModel(parent, SVSettings::instance().m_db),
+		new SVDBComponentEditWidget(parent),
+		tr("Component Database"), QString(), false
+	);
+	dlg->resize(1400,800);
 	return dlg;
 }

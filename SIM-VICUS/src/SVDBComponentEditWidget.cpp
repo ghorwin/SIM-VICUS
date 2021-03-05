@@ -14,7 +14,7 @@
 #include "SVConstants.h"
 
 SVDBComponentEditWidget::SVDBComponentEditWidget(QWidget *parent) :
-	QWidget(parent),
+	SVAbstractDatabaseEditWidget(parent),
 	m_ui(new Ui::SVDBComponentEditWidget)
 {
 	m_ui->setupUi(this);
@@ -43,7 +43,6 @@ SVDBComponentEditWidget::SVDBComponentEditWidget(QWidget *parent) :
 	m_ui->lineEditRoughness->setReadOnly(true);
 	m_ui->lineEditSpecularity->setReadOnly(true);
 
-
 	updateInput(-1);
 }
 
@@ -53,9 +52,9 @@ SVDBComponentEditWidget::~SVDBComponentEditWidget() {
 }
 
 
-void SVDBComponentEditWidget::setup(SVDatabase * db, SVDBComponentTableModel * dbModel) {
+void SVDBComponentEditWidget::setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) {
 	m_db = db;
-	m_dbModel = dbModel;
+	m_dbModel = dynamic_cast<SVDBComponentTableModel*>(dbModel);
 }
 
 

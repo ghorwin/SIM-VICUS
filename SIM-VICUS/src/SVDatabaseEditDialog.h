@@ -13,6 +13,8 @@ class QModelIndex;
 class QGroupBox;
 class QSortFilterProxyModel;
 
+#include <VICUS_Constants.h>
+
 /*! The edit dialog for materials types. */
 class SVDatabaseEditDialog : public QDialog {
 	Q_OBJECT
@@ -30,7 +32,7 @@ public:
 	~SVDatabaseEditDialog() override;
 
 	/*! Starts the dialog in "edit" mode. */
-	void edit();
+	void edit(unsigned int initialId = VICUS::INVALID_ID);
 
 	/*! Starts the dialog in "select mode".
 		\param initialId The item indicated by this ID is initially selected.
@@ -60,9 +62,15 @@ private slots:
 	void on_tableView_doubleClicked(const QModelIndex &index);
 
 private:
+	/*! If table contains an element with matching ID, this row is made current.
+		Signals are blocked in this function.
+	*/
+	void selectItemById(unsigned int id);
+
 	// Factory functions to create all the individual dialogs
 	static SVDatabaseEditDialog * createMaterialEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createConstructionEditDialog(QWidget * parent);
+	static SVDatabaseEditDialog * createComponentEditDialog(QWidget * parent);
 
 
 	Ui::SVDatabaseEditDialog *m_ui;
