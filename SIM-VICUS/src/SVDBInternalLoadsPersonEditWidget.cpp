@@ -7,7 +7,7 @@
 #include <QtExt_Conversions.h>
 #include <QtExt_LanguageHandler.h>
 
-#include "SVDBInternalLoadTableModel.h"
+#include "SVDBInternalLoadsTableModel.h"
 #include "SVMainWindow.h"
 #include "SVDBScheduleEditDialog.h"
 #include "SVConstants.h"
@@ -50,7 +50,7 @@ SVDBInternalLoadsPersonEditWidget::~SVDBInternalLoadsPersonEditWidget() {
 }
 
 
-void SVDBInternalLoadsPersonEditWidget::setup(SVDatabase *db, SVDBInternalLoadTableModel *dbModel) {
+void SVDBInternalLoadsPersonEditWidget::setup(SVDatabase *db, SVDBInternalLoadsTableModel *dbModel) {
 	m_db = db;
 	m_dbModel = dbModel;
 }

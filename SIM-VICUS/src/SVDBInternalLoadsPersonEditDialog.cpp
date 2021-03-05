@@ -10,7 +10,7 @@
 #include "SVStyle.h"
 #include "SVConstants.h"
 #include "SVDBModelDelegate.h"
-#include "SVDBInternalLoadTableModel.h"
+#include "SVDBInternalLoadsTableModel.h"
 #include "SVDBInternalLoadsPersonEditWidget.h"
 #include "SVMainWindow.h"
 
@@ -26,7 +26,7 @@ SVDBInternalLoadsPersonEditDialog::SVDBInternalLoadsPersonEditDialog(QWidget *pa
 	SVStyle::formatDatabaseTableView(m_ui->tableView);
 	m_ui->tableView->horizontalHeader()->setVisible(true);
 
-	m_dbModel = new SVDBInternalLoadTableModel(this, SVSettings::instance().m_db, SVDBInternalLoadTableModel::T_Person);
+	m_dbModel = new SVDBInternalLoadsTableModel(this, SVSettings::instance().m_db, SVDBInternalLoadsTableModel::T_Person);
 
 	m_proxyModel = new QSortFilterProxyModel(this);
 	m_proxyModel->setSourceModel(m_dbModel);
@@ -37,9 +37,9 @@ SVDBInternalLoadsPersonEditDialog::SVDBInternalLoadsPersonEditDialog(QWidget *pa
 
 	// specific setup for internal loads DB table
 
-	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBInternalLoadTableModel::ColId, QHeaderView::Fixed);
-	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBInternalLoadTableModel::ColCheck, QHeaderView::Fixed);
-	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBInternalLoadTableModel::ColName, QHeaderView::Stretch);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBInternalLoadsTableModel::ColId, QHeaderView::Fixed);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBInternalLoadsTableModel::ColCheck, QHeaderView::Fixed);
+	m_ui->tableView->horizontalHeader()->setSectionResizeMode(SVDBInternalLoadsTableModel::ColName, QHeaderView::Stretch);
 
 	connect(m_ui->tableView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)),
 			this, SLOT(onCurrentIndexChanged(const QModelIndex &, const QModelIndex &)) );
@@ -145,7 +145,7 @@ void SVDBInternalLoadsPersonEditDialog::on_toolButtonAdd_clicked() {
 	m_ui->tableView->selectionModel()->blockSignals(false);
 	onCurrentIndexChanged(proxyIndex, QModelIndex());
 	// resize ID column
-	sourceIndex = m_dbModel->index(0,SVDBInternalLoadTableModel::ColId);
+	sourceIndex = m_dbModel->index(0,SVDBInternalLoadsTableModel::ColId);
 	proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
 	if (proxyIndex.isValid())
 		m_ui->tableView->resizeColumnToContents(proxyIndex.column());

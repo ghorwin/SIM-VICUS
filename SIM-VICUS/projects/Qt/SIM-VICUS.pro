@@ -79,8 +79,8 @@ SOURCES += \
 				../../src/SVAbstractDatabaseEditWidget.cpp \
 				../../src/SVChartUtils.cpp \
 				../../src/SVDBDailyCycleInputWidget.cpp \
+				../../src/SVDBInternalLoadsTableModel.cpp \
 				../../src/SVDBScheduleAddDialog.cpp \
-				../../src/SVDBInternalLoadTableModel.cpp \
 				../../src/SVDBInternalLoadsPersonEditDialog.cpp \
 				../../src/SVDBInternalLoadsPersonEditWidget.cpp \
 				../../src/SVDatabaseEditDialog.cpp \
@@ -204,8 +204,8 @@ HEADERS  += \
 				../../src/SVAbstractDatabaseEditWidget.h \
 				../../src/SVChartUtils.h \
 				../../src/SVDBDailyCycleInputWidget.h \
+				../../src/SVDBInternalLoadsTableModel.h \
 				../../src/SVDBScheduleAddDialog.h \
-				../../src/SVDBInternalLoadTableModel.h \
 				../../src/SVDBInternalLoadsPersonEditDialog.h \
 				../../src/SVDBInternalLoadsPersonEditWidget.h \
 				../../src/SVDatabaseEditDialog.h \

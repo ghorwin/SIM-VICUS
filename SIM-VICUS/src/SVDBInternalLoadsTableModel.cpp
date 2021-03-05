@@ -1,4 +1,4 @@
-#include "SVDBInternalLoadTableModel.h"
+#include "SVDBInternalLoadsTableModel.h"
 
 
 #include <VICUS_KeywordListQt.h>
@@ -8,7 +8,7 @@
 #include "SVConstants.h"
 #include "SVDBInternalLoadsPersonEditDialog.h"
 
-SVDBInternalLoadTableModel::SVDBInternalLoadTableModel(QObject * parent, SVDatabase & db, Type t) :
+SVDBInternalLoadsTableModel::SVDBInternalLoadsTableModel(QObject * parent, SVDatabase & db, Type t) :
 	QAbstractTableModel(parent),
 	m_db(&db)
 {
@@ -25,18 +25,18 @@ SVDBInternalLoadTableModel::SVDBInternalLoadTableModel(QObject * parent, SVDatab
 }
 
 
-SVDBInternalLoadTableModel::~SVDBInternalLoadTableModel() {
+SVDBInternalLoadsTableModel::~SVDBInternalLoadsTableModel() {
 }
 
-int SVDBInternalLoadTableModel::columnCount ( const QModelIndex & ) const {
+int SVDBInternalLoadsTableModel::columnCount ( const QModelIndex & ) const {
 	return NumColumns;
 }
 
-int SVDBInternalLoadTableModel::rowCount ( const QModelIndex & ) const {
+int SVDBInternalLoadsTableModel::rowCount ( const QModelIndex & ) const {
 	return (int)m_db->m_internalLoads.size();
 }
 
-QModelIndex SVDBInternalLoadTableModel::addNewItem(VICUS::InternalLoad intLoad) {
+QModelIndex SVDBInternalLoadsTableModel::addNewItem(VICUS::InternalLoad intLoad) {
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_internalLoads.add( intLoad );
 	endInsertRows();
@@ -45,7 +45,7 @@ QModelIndex SVDBInternalLoadTableModel::addNewItem(VICUS::InternalLoad intLoad) 
 }
 
 
-bool SVDBInternalLoadTableModel::deleteItem(QModelIndex index) {
+bool SVDBInternalLoadsTableModel::deleteItem(QModelIndex index) {
 	if (!index.isValid())
 		return false;
 	unsigned int id = data(index, Role_Id).toUInt();
@@ -56,13 +56,13 @@ bool SVDBInternalLoadTableModel::deleteItem(QModelIndex index) {
 }
 
 
-void SVDBInternalLoadTableModel::resetModel() {
+void SVDBInternalLoadsTableModel::resetModel() {
 	beginResetModel();
 	endResetModel();
 }
 
 
-void SVDBInternalLoadTableModel::setItemModified(unsigned int id) {
+void SVDBInternalLoadsTableModel::setItemModified(unsigned int id) {
 	QModelIndex idx = indexById(id);
 	QModelIndex left = index(idx.row(), 0);
 	QModelIndex right = index(idx.row(), NumColumns-1);
@@ -70,7 +70,7 @@ void SVDBInternalLoadTableModel::setItemModified(unsigned int id) {
 }
 
 
-QModelIndex SVDBInternalLoadTableModel::indexById(unsigned int id) const {
+QModelIndex SVDBInternalLoadsTableModel::indexById(unsigned int id) const {
 	for (int i=0; i<rowCount(); ++i) {
 		QModelIndex idx = index(i, 0);
 		if (data(idx, Role_Id).toUInt() == id)
@@ -79,7 +79,7 @@ QModelIndex SVDBInternalLoadTableModel::indexById(unsigned int id) const {
 	return QModelIndex();
 }
 
-QVariant SVDBInternalLoadTableModel::data ( const QModelIndex & index, int role) const {
+QVariant SVDBInternalLoadsTableModel::data ( const QModelIndex & index, int role) const {
 	if (!index.isValid())
 		return QVariant();
 
@@ -146,7 +146,7 @@ QVariant SVDBInternalLoadTableModel::data ( const QModelIndex & index, int role)
 
 
 
-QVariant SVDBInternalLoadTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
+QVariant SVDBInternalLoadsTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
 	if (orientation == Qt::Vertical)
 		return QVariant();
 	switch (role) {
@@ -170,7 +170,7 @@ QVariant SVDBInternalLoadTableModel::headerData(int section, Qt::Orientation ori
 }
 
 
-QModelIndex SVDBInternalLoadTableModel::addNewItem() {
+QModelIndex SVDBInternalLoadsTableModel::addNewItem() {
 	VICUS::InternalLoad intLoad;
 	intLoad.m_displayName.setEncodedString("en:<new internal load model>");
 

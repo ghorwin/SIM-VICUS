@@ -7,7 +7,7 @@ namespace Ui {
 class SVDBInternalLoadsPersonEditDialog;
 }
 
-class SVDBInternalLoadTableModel;
+class SVDBInternalLoadsTableModel;
 class QModelIndex;
 class QSortFilterProxyModel;
 
@@ -54,7 +54,7 @@ private:
 	/*! The sort filter model (owned). */
 	QSortFilterProxyModel					*m_proxyModel	= nullptr;
 	/*! The internal load table model (owned). */
-	SVDBInternalLoadTableModel				*m_dbModel		= nullptr;
+	SVDBInternalLoadsTableModel				*m_dbModel		= nullptr;
 
 };
 

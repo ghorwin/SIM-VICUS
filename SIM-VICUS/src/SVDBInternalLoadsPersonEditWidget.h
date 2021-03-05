@@ -11,7 +11,7 @@ namespace VICUS {
 class InternalLoad;
 }
 
-class SVDBInternalLoadTableModel;
+class SVDBInternalLoadsTableModel;
 class SVDatabase;
 
 class SVDBInternalLoadsPersonEditWidget : public QWidget {
@@ -22,7 +22,7 @@ public:
 	~SVDBInternalLoadsPersonEditWidget();
 
 	/*! Needs to be called once, before the widget is being used. */
-	void setup(SVDatabase * db, SVDBInternalLoadTableModel * dbModel);
+	void setup(SVDatabase * db, SVDBInternalLoadsTableModel * dbModel);
 
 	/*! Sets up the widget for a Schedule with a given ID. */
 	void updateInput(int id);
@@ -56,7 +56,7 @@ private:
 	SVDatabase								*m_db;
 
 	/*! Pointer to the database model, to modify items when data has changed in the widget. */
-	SVDBInternalLoadTableModel				*m_dbModel;
+	SVDBInternalLoadsTableModel				*m_dbModel;
 };
 
 #endif // SVDBInternalLoadsPersonEditWidgetH

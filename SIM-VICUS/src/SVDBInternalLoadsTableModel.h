@@ -1,5 +1,5 @@
-#ifndef SVDBInternalLoadTableModelH
-#define SVDBInternalLoadTableModelH
+#ifndef SVDBInternalLoadsTableModelH
+#define SVDBInternalLoadsTableModelH
 
 
 #include <QAbstractTableModel>
@@ -14,7 +14,7 @@
 	All columns (i.e. all model indexes) return custom role data for global
 	id and built-in roles (see SVConstants.h).
 */
-class SVDBInternalLoadTableModel : public QAbstractTableModel {
+class SVDBInternalLoadsTableModel : public QAbstractTableModel {
 public:
 
 	enum Type{
@@ -38,8 +38,8 @@ public:
 	/*! Constructor, requires a read/write pointer to the central database object.
 		\note Pointer to database must be valid throughout the lifetime of the Model!
 	*/
-	SVDBInternalLoadTableModel(QObject * parent, SVDatabase & db, Type t);
-	virtual ~SVDBInternalLoadTableModel();
+	SVDBInternalLoadsTableModel(QObject * parent, SVDatabase & db, Type t);
+	virtual ~SVDBInternalLoadsTableModel();
 
 
 	virtual int columnCount ( const QModelIndex & parent = QModelIndex() ) const;
@@ -75,4 +75,4 @@ private:
 	SVDatabase	* m_db;
 };
 
-#endif // SVDBInternalLoadTableModelH
+#endif // SVDBInternalLoadsTableModelH
