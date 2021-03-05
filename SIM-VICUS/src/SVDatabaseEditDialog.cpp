@@ -22,6 +22,8 @@
 #include "SVDBConstructionEditWidget.h"
 #include "SVDBComponentTableModel.h"
 #include "SVDBComponentEditWidget.h"
+#include "SVDBInternalLoadsTableModel.h"
+#include "SVDBInternalLoadsPersonEditWidget.h"
 
 
 
@@ -282,6 +284,23 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createComponentEditDialog(QWidget *
 		new SVDBComponentEditWidget(parent),
 		tr("Component Database"), QString(), false
 	);
+	dlg->resize(1400,800);
+	return dlg;
+}
+
+
+SVDatabaseEditDialog * SVDatabaseEditDialog::createInternalLoadsEditDialog(QWidget * parent, int type) {
+	SVDatabaseEditDialog * dlg = nullptr;
+	switch ((SVDBInternalLoadsTableModel::Type)type) {
+		case SVDBInternalLoadsTableModel::T_Person :
+			dlg = new SVDatabaseEditDialog(parent,
+				new SVDBInternalLoadsTableModel(parent, SVSettings::instance().m_db, (SVDBInternalLoadsTableModel::Type)type),
+				new SVDBInternalLoadsPersonEditWidget(parent),
+				tr("Person Loads Database"), tr("Person Load Properties"), false);
+			break;
+		default:
+			Q_ASSERT(false);
+	}
 	dlg->resize(1400,800);
 	return dlg;
 }

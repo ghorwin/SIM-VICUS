@@ -81,7 +81,6 @@ SOURCES += \
 				../../src/SVDBDailyCycleInputWidget.cpp \
 				../../src/SVDBInternalLoadsTableModel.cpp \
 				../../src/SVDBScheduleAddDialog.cpp \
-				../../src/SVDBInternalLoadsPersonEditDialog.cpp \
 				../../src/SVDBInternalLoadsPersonEditWidget.cpp \
 				../../src/SVDatabaseEditDialog.cpp \
 				../../src/SVPropEditCopyDialog.cpp \
@@ -206,7 +205,6 @@ HEADERS  += \
 				../../src/SVDBDailyCycleInputWidget.h \
 				../../src/SVDBInternalLoadsTableModel.h \
 				../../src/SVDBScheduleAddDialog.h \
-				../../src/SVDBInternalLoadsPersonEditDialog.h \
 				../../src/SVDBInternalLoadsPersonEditWidget.h \
 				../../src/SVDatabaseEditDialog.h \
 				../../src/SVPropEditCopyDialog.h \
@@ -331,7 +329,6 @@ FORMS    += \
 				../../src/SVDBBoundaryConditionEditWidget.ui \
 				../../src/SVDBComponentEditWidget.ui \
 				../../src/SVDBConstructionEditWidget.ui \
-				../../src/SVDBInternalLoadsPersonEditDialog.ui \
 				../../src/SVDBInternalLoadsPersonEditWidget.ui \
 				../../src/SVDBMaterialEditWidget.ui \
 				../../src/SVDBNetworkComponentEditDialog.ui \

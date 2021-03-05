@@ -1,83 +1,26 @@
 #include "SVDBInternalLoadsTableModel.h"
 
+#include <QTableView>
+#include <QHeaderView>
 
 #include <VICUS_KeywordListQt.h>
 
 #include <QtExt_LanguageHandler.h>
 
 #include "SVConstants.h"
-#include "SVDBInternalLoadsPersonEditDialog.h"
 
 SVDBInternalLoadsTableModel::SVDBInternalLoadsTableModel(QObject * parent, SVDatabase & db, Type t) :
-	QAbstractTableModel(parent),
+	SVAbstractDatabaseTableModel(parent),
 	m_db(&db)
 {
-	// must only be created from SVDBInternalLoadsPersonEditDialog
-	///TODO Dirk muss umgestellt werden wenn wir mehrere Modelle erstellen (Person, ElectricEquipment, Ligthing,...)
-	switch (t) {
-		case T_Person:				Q_ASSERT(dynamic_cast<SVDBInternalLoadsPersonEditDialog*>(parent) != nullptr); break;
-		//case T_ElectricEquipment:	Q_ASSERT(dynamic_cast<SVDB...*>(parent) != nullptr); break;
-		//case T_Ligthing:			Q_ASSERT(dynamic_cast<SVDB...*>(parent) != nullptr); break;
-		//case T_Other:				Q_ASSERT(dynamic_cast<SVDB...*>(parent) != nullptr); break;
-		case NUM_T:					Q_ASSERT(t != NUM_T);
-	}
 	Q_ASSERT(m_db != nullptr);
 }
 
-
-SVDBInternalLoadsTableModel::~SVDBInternalLoadsTableModel() {
-}
-
-int SVDBInternalLoadsTableModel::columnCount ( const QModelIndex & ) const {
-	return NumColumns;
-}
 
 int SVDBInternalLoadsTableModel::rowCount ( const QModelIndex & ) const {
 	return (int)m_db->m_internalLoads.size();
 }
 
-QModelIndex SVDBInternalLoadsTableModel::addNewItem(VICUS::InternalLoad intLoad) {
-	beginInsertRows(QModelIndex(), rowCount(), rowCount());
-	unsigned int id = m_db->m_internalLoads.add( intLoad );
-	endInsertRows();
-	QModelIndex idx = indexById(id);
-	return idx;
-}
-
-
-bool SVDBInternalLoadsTableModel::deleteItem(QModelIndex index) {
-	if (!index.isValid())
-		return false;
-	unsigned int id = data(index, Role_Id).toUInt();
-	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	m_db->m_internalLoads.remove(id);
-	endRemoveRows();
-	return true;
-}
-
-
-void SVDBInternalLoadsTableModel::resetModel() {
-	beginResetModel();
-	endResetModel();
-}
-
-
-void SVDBInternalLoadsTableModel::setItemModified(unsigned int id) {
-	QModelIndex idx = indexById(id);
-	QModelIndex left = index(idx.row(), 0);
-	QModelIndex right = index(idx.row(), NumColumns-1);
-	emit dataChanged(left, right);
-}
-
-
-QModelIndex SVDBInternalLoadsTableModel::indexById(unsigned int id) const {
-	for (int i=0; i<rowCount(); ++i) {
-		QModelIndex idx = index(i, 0);
-		if (data(idx, Role_Id).toUInt() == id)
-			return idx;
-	}
-	return QModelIndex();
-}
 
 QVariant SVDBInternalLoadsTableModel::data ( const QModelIndex & index, int role) const {
 	if (!index.isValid())
@@ -144,8 +87,6 @@ QVariant SVDBInternalLoadsTableModel::data ( const QModelIndex & index, int role
 }
 
 
-
-
 QVariant SVDBInternalLoadsTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
 	if (orientation == Qt::Vertical)
 		return QVariant();
@@ -170,11 +111,17 @@ QVariant SVDBInternalLoadsTableModel::headerData(int section, Qt::Orientation or
 }
 
 
+void SVDBInternalLoadsTableModel::resetModel() {
+	beginResetModel();
+	endResetModel();
+}
+
+
 QModelIndex SVDBInternalLoadsTableModel::addNewItem() {
 	VICUS::InternalLoad intLoad;
 	intLoad.m_displayName.setEncodedString("en:<new internal load model>");
 
-	//set default parameters
+	// set default parameters
 	VICUS::KeywordList::setParameter(intLoad.m_para, "InternalLoad::para_t", VICUS::InternalLoad::P_PersonCount, 1);
 	VICUS::KeywordList::setParameter(intLoad.m_para, "InternalLoad::para_t", VICUS::InternalLoad::P_ConvectiveHeatFactor, 0.8);
 
@@ -187,3 +134,53 @@ QModelIndex SVDBInternalLoadsTableModel::addNewItem() {
 	return idx;
 }
 
+
+QModelIndex SVDBInternalLoadsTableModel::copyItem(const QModelIndex & existingItemIndex) {
+	// lookup existing item
+	const VICUS::Database<VICUS::InternalLoad> & db = m_db->m_internalLoads;
+	Q_ASSERT(existingItemIndex.isValid() && existingItemIndex.row() < (int)db.size());
+	std::map<unsigned int, VICUS::InternalLoad>::const_iterator it = db.begin();
+	std::advance(it, existingItemIndex.row());
+	beginInsertRows(QModelIndex(), rowCount(), rowCount());
+	// create new item and insert into DB
+	VICUS::InternalLoad newItem(it->second);
+	unsigned int id = m_db->m_internalLoads.add( newItem );
+	endInsertRows();
+	QModelIndex idx = indexById(id);
+	return idx;
+}
+
+
+void SVDBInternalLoadsTableModel::deleteItem(const QModelIndex & index) {
+	if (!index.isValid())
+		return;
+	unsigned int id = data(index, Role_Id).toUInt();
+	beginRemoveRows(QModelIndex(), index.row(), index.row());
+	m_db->m_internalLoads.remove(id);
+	endRemoveRows();
+}
+
+
+void SVDBInternalLoadsTableModel::setColumnResizeModes(QTableView * tableView) {
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBInternalLoadsTableModel::ColId, QHeaderView::Fixed);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBInternalLoadsTableModel::ColCheck, QHeaderView::Fixed);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBInternalLoadsTableModel::ColName, QHeaderView::Stretch);
+}
+
+
+void SVDBInternalLoadsTableModel::setItemModified(unsigned int id) {
+	QModelIndex idx = indexById(id);
+	QModelIndex left = index(idx.row(), 0);
+	QModelIndex right = index(idx.row(), NumColumns-1);
+	emit dataChanged(left, right);
+}
+
+
+QModelIndex SVDBInternalLoadsTableModel::indexById(unsigned int id) const {
+	for (int i=0; i<rowCount(); ++i) {
+		QModelIndex idx = index(i, 0);
+		if (data(idx, Role_Id).toUInt() == id)
+			return idx;
+	}
+	return QModelIndex();
+}

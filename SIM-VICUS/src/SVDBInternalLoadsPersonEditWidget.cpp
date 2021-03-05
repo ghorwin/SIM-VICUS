@@ -13,12 +13,11 @@
 #include "SVConstants.h"
 
 SVDBInternalLoadsPersonEditWidget::SVDBInternalLoadsPersonEditWidget(QWidget *parent) :
-	QWidget(parent),
+	SVAbstractDatabaseEditWidget(parent),
 	m_ui(new Ui::SVDBInternalLoadsPersonEditWidget)
 {
 	m_ui->setupUi(this);
 	m_ui->gridLayoutMaster->setMargin(4);
-
 
 	// *** populate combo boxes ***
 
@@ -40,6 +39,7 @@ SVDBInternalLoadsPersonEditWidget::SVDBInternalLoadsPersonEditWidget(QWidget *pa
 
 	m_ui->lineEditPersonCount->setup(0, 10000, tr("Person count according to the given unit"), true, true);
 	m_ui->lineEditConvectiveFactor->setup(0, 1, tr("Convective heat factor"), true, true);
+
 	// initial state is "nothing selected"
 	updateInput(-1);
 }
@@ -50,9 +50,9 @@ SVDBInternalLoadsPersonEditWidget::~SVDBInternalLoadsPersonEditWidget() {
 }
 
 
-void SVDBInternalLoadsPersonEditWidget::setup(SVDatabase *db, SVDBInternalLoadsTableModel *dbModel) {
+void SVDBInternalLoadsPersonEditWidget::setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) {
 	m_db = db;
-	m_dbModel = dbModel;
+	m_dbModel = dynamic_cast<SVDBInternalLoadsTableModel*>(dbModel);
 }
 
 

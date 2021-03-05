@@ -64,7 +64,6 @@
 #include "SVDBPipeEditDialog.h"
 #include "SVDBNetworkComponentEditDialog.h"
 #include "SVDBScheduleEditDialog.h"
-#include "SVDBInternalLoadsPersonEditDialog.h"
 
 #include "SVSimulationStartNandrad.h"
 #include "SVSimulationStartNetworkSim.h"
@@ -245,9 +244,9 @@ SVDBScheduleEditDialog *SVMainWindow::dbScheduleEditDialog() {
 	return m_dbScheduleEditDialog;
 }
 
-SVDBInternalLoadsPersonEditDialog *SVMainWindow::dbInternalLoadsPersonEditDialog() {
+SVDatabaseEditDialog * SVMainWindow::dbInternalLoadsPersonEditDialog() {
 	if (m_dbInternalLoadsPersonEditDialog == nullptr)
-		m_dbInternalLoadsPersonEditDialog = new SVDBInternalLoadsPersonEditDialog(this);
+		m_dbInternalLoadsPersonEditDialog = SVDatabaseEditDialog::createInternalLoadsEditDialog(this, 0);
 	return m_dbInternalLoadsPersonEditDialog;
 }
 
