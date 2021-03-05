@@ -8,7 +8,7 @@
 
 #include "SVSettings.h"
 #include "SVDBComponentTableModel.h"
-#include "SVDBConstructionEditDialog.h"
+#include "SVDatabaseEditDialog.h"
 #include "SVDBBoundaryConditionEditDialog.h"
 #include "SVMainWindow.h"
 #include "SVConstants.h"
@@ -198,7 +198,7 @@ void SVDBComponentEditWidget::on_comboBoxComponentType_currentIndexChanged(int /
 
 void SVDBComponentEditWidget::on_toolButtonSelectConstruction_clicked() {
 	// get construction edit dialog from mainwindow
-	SVDBConstructionEditDialog * conEditDialog = SVMainWindow::instance().dbConstructionEditDialog();
+	SVDatabaseEditDialog * conEditDialog = SVMainWindow::instance().dbConstructionEditDialog();
 	unsigned int conId = conEditDialog->select(m_current->m_idConstruction);
 	if (conId != m_current->m_idConstruction) {
 		m_current->m_idConstruction = conId;

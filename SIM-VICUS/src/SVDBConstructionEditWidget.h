@@ -1,7 +1,7 @@
 #ifndef SVDBConstructionEditWidgetH
 #define SVDBConstructionEditWidgetH
 
-#include <QWidget>
+#include "SVAbstractDatabaseEditWidget.h"
 
 #include <QtExt_ConstructionLayer.h>
 
@@ -28,18 +28,18 @@ class SVDatabase;
 	is no longer valid or you want to resize the container (through adding new items)
 	call updateInput() with an invalid index and/or nullptr pointer to the model.
 */
-class SVDBConstructionEditWidget : public QWidget {
+class SVDBConstructionEditWidget : public SVAbstractDatabaseEditWidget {
 	Q_OBJECT
 public:
 	/*! Constructor, requires read/write access to database object. */
 	SVDBConstructionEditWidget(QWidget * parent);
-	~SVDBConstructionEditWidget();
+	~SVDBConstructionEditWidget() override;
 
 	/*! Needs to be called once, before the widget is being used. */
-	void setup(SVDatabase * db, SVDBConstructionTableModel * dbModel);
+	void setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) override;
 
 	/*! Called whenever the user selects a new construction type. */
-	void updateInput(int id);
+	void updateInput(int id) override;
 
 private:
 	/*! Updates the content of the table. */

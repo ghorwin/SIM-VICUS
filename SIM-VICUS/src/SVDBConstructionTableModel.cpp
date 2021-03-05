@@ -5,6 +5,8 @@
 
 #include <QIcon>
 #include <QFont>
+#include <QTableView>
+#include <QHeaderView>
 
 #include <VICUS_Construction.h>
 #include <VICUS_Database.h>
@@ -15,19 +17,10 @@
 #include "SVConstants.h"
 
 SVDBConstructionTableModel::SVDBConstructionTableModel(QObject * parent, SVDatabase & db) :
-	QAbstractTableModel(parent),
+	SVAbstractDatabaseTableModel(parent),
 	m_db(&db)
 {
 	Q_ASSERT(m_db != nullptr);
-}
-
-
-SVDBConstructionTableModel::~SVDBConstructionTableModel() {
-}
-
-
-int SVDBConstructionTableModel::columnCount ( const QModelIndex & ) const {
-	return NumColumns;
 }
 
 
@@ -135,6 +128,12 @@ QVariant SVDBConstructionTableModel::headerData(int section, Qt::Orientation ori
 }
 
 
+void SVDBConstructionTableModel::resetModel() {
+	beginResetModel();
+	endResetModel();
+}
+
+
 QModelIndex SVDBConstructionTableModel::addNewItem() {
 	VICUS::Construction c;
 	c.m_displayName.setEncodedString("en:<new construction type>");
@@ -146,29 +145,39 @@ QModelIndex SVDBConstructionTableModel::addNewItem() {
 }
 
 
-QModelIndex SVDBConstructionTableModel::addNewItem(VICUS::Construction c) {
+QModelIndex SVDBConstructionTableModel::copyItem(const QModelIndex & existingItemIndex) {
+	// lookup existing item
+	const VICUS::Database<VICUS::Construction> & db = m_db->m_constructions;
+	Q_ASSERT(existingItemIndex.isValid() && existingItemIndex.row() < (int)db.size());
+	std::map<unsigned int, VICUS::Construction>::const_iterator it = db.begin();
+	std::advance(it, existingItemIndex.row());
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
-	unsigned int id = m_db->m_constructions.add( c );
+	// create new item and insert into DB
+	VICUS::Construction newItem(it->second);
+	unsigned int id = m_db->m_constructions.add( newItem );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;
 }
 
 
-bool SVDBConstructionTableModel::deleteItem(QModelIndex index) {
+void SVDBConstructionTableModel::deleteItem(const QModelIndex & index) {
 	if (!index.isValid())
-		return false;
+		return;
 	unsigned int id = data(index, Role_Id).toUInt();
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 	m_db->m_constructions.remove(id);
 	endRemoveRows();
-	return true;
 }
 
 
-void SVDBConstructionTableModel::resetModel() {
-	beginResetModel();
-	endResetModel();
+
+void SVDBConstructionTableModel::setColumnResizeModes(QTableView * tableView) {
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBConstructionTableModel::ColId, QHeaderView::Fixed);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBConstructionTableModel::ColCheck, QHeaderView::Fixed);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBConstructionTableModel::ColName, QHeaderView::Stretch);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBConstructionTableModel::ColNumLayers, QHeaderView::ResizeToContents);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBConstructionTableModel::ColUValue, QHeaderView::ResizeToContents);
 }
 
 

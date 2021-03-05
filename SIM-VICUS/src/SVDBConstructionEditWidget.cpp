@@ -20,7 +20,7 @@
 #include "SVMainWindow.h"
 
 SVDBConstructionEditWidget::SVDBConstructionEditWidget(QWidget * parent) :
-	QWidget(parent),
+	SVAbstractDatabaseEditWidget(parent),
 	m_ui(new Ui::SVDBConstructionEditWidget),
 	m_current(nullptr)
 {
@@ -120,9 +120,9 @@ SVDBConstructionEditWidget::~SVDBConstructionEditWidget() {
 }
 
 
-void SVDBConstructionEditWidget::setup(SVDatabase * db, SVDBConstructionTableModel * dbModel) {
+void SVDBConstructionEditWidget::setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) {
 	m_db = db;
-	m_dbModel = dbModel;
+	m_dbModel = dynamic_cast<SVDBConstructionTableModel*>(dbModel);
 }
 
 

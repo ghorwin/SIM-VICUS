@@ -3,17 +3,17 @@
 
 #include "SVAbstractDatabaseEditWidget.h"
 
-
-namespace VICUS {
-class Material;
+namespace Ui {
+	class SVDBMaterialEditWidget;
 }
 
 class SVDBMaterialTableModel;
 class SVDatabase;
 
-namespace Ui {
-	class SVDBMaterialEditWidget;
+namespace VICUS {
+	class Material;
 }
+
 /*! Edit widget for materials.
 
 	A call to updateInput() initializes the widget and fill the GUI controls with data.

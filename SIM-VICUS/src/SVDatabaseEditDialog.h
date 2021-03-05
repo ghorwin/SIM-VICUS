@@ -18,6 +18,11 @@ class SVDatabaseEditDialog : public QDialog {
 	Q_OBJECT
 
 public:
+	/*! Constructor of the dialog.
+		The dialog is being configured with the arguments.
+
+		\note Passing an empty editWidgetTitle will not generate a groupbox, but a plain widget instead.
+	*/
 	explicit SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTableModel * tableModel,
 								  SVAbstractDatabaseEditWidget * editWidget,
 								  const QString & title, const QString & editWidgetTitle,
@@ -57,6 +62,7 @@ private slots:
 private:
 	// Factory functions to create all the individual dialogs
 	static SVDatabaseEditDialog * createMaterialEditDialog(QWidget * parent);
+	static SVDatabaseEditDialog * createConstructionEditDialog(QWidget * parent);
 
 
 	Ui::SVDatabaseEditDialog *m_ui;
@@ -67,7 +73,7 @@ private:
 	SVAbstractDatabaseTableModel	*m_dbModel		= nullptr;
 	/*! The edit widget (owned). */
 	SVAbstractDatabaseEditWidget	*m_editWidget	= nullptr;
-	QGroupBox						*m_editWidgetGroupBox = nullptr;
+	QWidget							*m_editWidgetContainerWidget = nullptr;
 
 	friend class SVMainWindow;
 };

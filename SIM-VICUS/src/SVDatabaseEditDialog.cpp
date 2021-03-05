@@ -18,6 +18,8 @@
 
 #include "SVDBMaterialTableModel.h"
 #include "SVDBMaterialEditWidget.h"
+#include "SVDBConstructionTableModel.h"
+#include "SVDBConstructionEditWidget.h"
 
 
 
@@ -45,22 +47,29 @@ SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTa
 	m_ui->tableView->setModel(m_proxyModel);
 
 	// create groupbox and adjust layout for edit widget
-	m_editWidgetGroupBox = new QGroupBox(this);
-	m_editWidgetGroupBox->setTitle(editWidgetTitle);
+	if (!editWidgetTitle.isEmpty()) {
+		QGroupBox * groupBox = new QGroupBox(this);
+		groupBox->setTitle(editWidgetTitle);
+		m_editWidgetContainerWidget = groupBox;
+	}
+	else {
+		QWidget * wg = new QWidget(this);
+		m_editWidgetContainerWidget = wg;
+	}
 	if (horizontalLayout) {
-		m_ui->gridLayoutMaster->addWidget(m_editWidgetGroupBox, 0, 1);
+		m_ui->gridLayoutMaster->addWidget(m_editWidgetContainerWidget, 0, 1);
 		m_ui->horizontalLayout->setParent(nullptr);
 		m_ui->gridLayoutMaster->addLayout(m_ui->horizontalLayout, 1, 0, 1, 2);
 	}
 	else {
 		m_ui->horizontalLayout->setParent(nullptr);
 		m_ui->gridLayoutMaster->addLayout(m_ui->horizontalLayout, 2, 0);
-		m_ui->gridLayoutMaster->addWidget(m_editWidgetGroupBox, 1, 0);
+		m_ui->gridLayoutMaster->addWidget(m_editWidgetContainerWidget, 1, 0);
 	}
 
-	QVBoxLayout * verticalLay = new QVBoxLayout(m_editWidgetGroupBox);
+	QVBoxLayout * verticalLay = new QVBoxLayout(m_editWidgetContainerWidget);
 	verticalLay->addWidget(editWidget);
-	m_editWidgetGroupBox->setLayout(verticalLay);
+	m_editWidgetContainerWidget->setLayout(verticalLay);
 	verticalLay->setMargin(0);
 	editWidget->setup(&SVSettings::instance().m_db, m_dbModel);
 
@@ -90,6 +99,7 @@ void SVDatabaseEditDialog::edit() {
 
 	// ask database model to update its content
 	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
+	onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex()); // select nothing
 
 	m_ui->tableView->resizeColumnsToContents();
 
@@ -116,6 +126,7 @@ unsigned int SVDatabaseEditDialog::select(unsigned int initialId) {
 			break;
 		}
 	}
+	onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex()); // select nothing
 
 	m_ui->tableView->resizeColumnsToContents();
 
@@ -191,11 +202,11 @@ void SVDatabaseEditDialog::onCurrentIndexChanged(const QModelIndex &current, con
 		m_ui->pushButtonSelect->setEnabled(false);
 		m_ui->toolButtonRemove->setEnabled(false);
 		m_ui->toolButtonCopy->setEnabled(false);
-		m_editWidgetGroupBox->setEnabled(false);
+		m_editWidgetContainerWidget->setEnabled(false);
 		m_editWidget->updateInput(-1); // nothing selected
 	}
 	else {
-		m_editWidgetGroupBox->setEnabled(true);
+		m_editWidgetContainerWidget->setEnabled(true);
 		m_ui->pushButtonSelect->setEnabled(true);
 		// remove is not allowed for built-ins
 		QModelIndex sourceIndex = m_proxyModel->mapToSource(current);
@@ -220,7 +231,7 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 		SVSettings::instance().m_db.readDatabases(m_dbModel->databaseType());
 		// tell model to reset completely
 		m_dbModel->resetModel();
-		m_editWidgetGroupBox->setEnabled(false);
+		onCurrentIndexChanged(QModelIndex(), QModelIndex());
 		m_editWidget->updateInput(-1);
 	}
 }
@@ -241,5 +252,16 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createMaterialEditDialog(QWidget * 
 		tr("Material Database"), tr("Material properties"), true
 	);
 	dlg->resize(1400,600);
+	return dlg;
+}
+
+
+SVDatabaseEditDialog * SVDatabaseEditDialog::createConstructionEditDialog(QWidget * parent) {
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBConstructionTableModel(parent, SVSettings::instance().m_db),
+		new SVDBConstructionEditWidget(parent),
+		tr("Construction Database"), QString(), false
+	);
+	dlg->resize(1300,800);
 	return dlg;
 }

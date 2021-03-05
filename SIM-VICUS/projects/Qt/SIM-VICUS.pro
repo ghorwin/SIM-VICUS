@@ -131,7 +131,6 @@ SOURCES += \
 				../../src/SVDBComponentEditDialog.cpp \
 				../../src/SVDBComponentEditWidget.cpp \
 				../../src/SVDBComponentTableModel.cpp \
-				../../src/SVDBConstructionEditDialog.cpp \
 				../../src/SVDBConstructionEditWidget.cpp \
 				../../src/SVDBConstructionTableModel.cpp \
 				../../src/SVDBMaterialEditWidget.cpp \
@@ -258,7 +257,6 @@ HEADERS  += \
 				../../src/SVDBComponentEditDialog.h \
 				../../src/SVDBComponentEditWidget.h \
 				../../src/SVDBComponentTableModel.h \
-				../../src/SVDBConstructionEditDialog.h \
 				../../src/SVDBConstructionEditWidget.h \
 				../../src/SVDBConstructionTableModel.h \
 				../../src/SVDBMaterialEditWidget.h \
@@ -335,7 +333,6 @@ FORMS    += \
 				../../src/SVDBBoundaryConditionEditWidget.ui \
 				../../src/SVDBComponentEditDialog.ui \
 				../../src/SVDBComponentEditWidget.ui \
-				../../src/SVDBConstructionEditDialog.ui \
 				../../src/SVDBConstructionEditWidget.ui \
 				../../src/SVDBInternalLoadsPersonEditDialog.ui \
 				../../src/SVDBInternalLoadsPersonEditWidget.ui \

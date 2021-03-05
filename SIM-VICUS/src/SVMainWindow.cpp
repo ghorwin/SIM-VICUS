@@ -59,7 +59,6 @@
 #include "SVPropFloorManagerWidget.h"
 
 #include "SVDatabaseEditDialog.h"
-#include "SVDBConstructionEditDialog.h"
 #include "SVDBWindowEditDialog.h"
 #include "SVDBComponentEditDialog.h"
 #include "SVDBBoundaryConditionEditDialog.h"
@@ -202,9 +201,11 @@ SVDatabaseEditDialog * SVMainWindow::dbMaterialEditDialog() {
 	return m_dbMaterialEditDialog;
 }
 
-SVDBConstructionEditDialog * SVMainWindow::dbConstructionEditDialog() {
-	if (m_dbConstructionEditDialog == nullptr)
-		m_dbConstructionEditDialog = new SVDBConstructionEditDialog(this);
+
+SVDatabaseEditDialog * SVMainWindow::dbConstructionEditDialog() {
+	if (m_dbConstructionEditDialog == nullptr) {
+		m_dbConstructionEditDialog = SVDatabaseEditDialog::createConstructionEditDialog(this);
+	}
 	return m_dbConstructionEditDialog;
 }
 

@@ -13,7 +13,7 @@ class SVDBComponentTableModel;
 class SVDatabase;
 
 namespace Ui {
-class SVDBComponentEditWidget;
+	class SVDBComponentEditWidget;
 }
 
 /*! Edit widget for components.

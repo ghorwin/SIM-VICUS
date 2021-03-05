@@ -23,14 +23,6 @@ SVDBMaterialTableModel::SVDBMaterialTableModel(QObject * parent, SVDatabase & db
 }
 
 
-SVDBMaterialTableModel::~SVDBMaterialTableModel() {
-}
-
-
-int SVDBMaterialTableModel::columnCount ( const QModelIndex & ) const {
-	return NumColumns;
-}
-
 
 QVariant SVDBMaterialTableModel::data ( const QModelIndex & index, int role) const {
 	if (!index.isValid())
@@ -165,14 +157,14 @@ QModelIndex SVDBMaterialTableModel::addNewItem() {
 
 QModelIndex SVDBMaterialTableModel::copyItem(const QModelIndex & existingItemIndex) {
 	// lookup existing item
-	const VICUS::Database<VICUS::Material> & matDB = m_db->m_materials;
-	Q_ASSERT(existingItemIndex.isValid() && existingItemIndex.row() < (int)matDB.size());
-	std::map<unsigned int, VICUS::Material>::const_iterator it = matDB.begin();
+	const VICUS::Database<VICUS::Material> & db = m_db->m_materials;
+	Q_ASSERT(existingItemIndex.isValid() && existingItemIndex.row() < (int)db.size());
+	std::map<unsigned int, VICUS::Material>::const_iterator it = db.begin();
 	std::advance(it, existingItemIndex.row());
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
-	VICUS::Material newMaterial(it->second);
-	// give the new material a unique ID
-	unsigned int id = m_db->m_materials.add( newMaterial );
+	// create new item and insert into DB
+	VICUS::Material newitem(it->second);
+	unsigned int id = m_db->m_materials.add( newitem );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;
