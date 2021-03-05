@@ -166,7 +166,7 @@ namespace NANDRAD_MODEL {
 				case 5 : return "ConstructionHeatConductionLoad";
 				case 6 : return "WindowHeatConductionLoad";
 				case 7 : return "WindowSolarRadiationLoad";
-				case 8 : return "HydraulicHeatingLoad";
+				case 8 : return "NetworkHeatLoad";
 				case 9 : return "CompleteMoistureLoad";
 			} break;
 			// RoomRadiationLoadsModel::Results
@@ -305,7 +305,7 @@ namespace NANDRAD_MODEL {
 				case 5 : return "ConstructionHeatConductionLoad";
 				case 6 : return "WindowHeatConductionLoad";
 				case 7 : return "WindowSolarRadiationLoad";
-				case 8 : return "HydraulicHeatingLoad";
+				case 8 : return "NetworkHeatLoad";
 				case 9 : return "CompleteMoistureLoad";
 			} break;
 			// RoomRadiationLoadsModel::Results
@@ -445,7 +445,7 @@ namespace NANDRAD_MODEL {
 				case 5 : return "Sum of heat conduction fluxes from construction surfaces into the room.";
 				case 6 : return "Sum of heat conduction fluxes through windows into the room.";
 				case 7 : return "Sum of solar radiation fluxes through windows into the room (only the fraction applied to room volume).";
-				case 8 : return "Sum of heat fluxes from components of a hydraulic network into the room (only the fraction applied to room volume).";
+				case 8 : return "Sum of heat load from components of a hydraulic network into the room (only the fraction applied to room volume).";
 				case 9 : return "Sum of all moisture fluxes into the room and moisture sources.";
 			} break;
 			// RoomRadiationLoadsModel::Results
