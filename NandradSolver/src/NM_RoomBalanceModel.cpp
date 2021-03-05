@@ -257,9 +257,9 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 		else if (model->referenceType() == NANDRAD::ModelInputReference::MRT_NETWORK) {
 			ThermalNetworkBalanceModel * thermNetworkModel = dynamic_cast<ThermalNetworkBalanceModel *>(model);
 			if (thermNetworkModel != nullptr) {
-				++m_hydraulicHeatingLoadsModelCount;
+				++m_networkHeatLoadsModelCount;
 				InputReference r;
-				r.m_name.m_name = "ZoneHeatFlux";
+				r.m_name.m_name = "NetworkHeatLoadPerZone";
 				// add current id as index so that we can sum uphat fluxes from all networks
 				r.m_name.m_index = (int) id();
 				r.m_id = model->id();
@@ -267,7 +267,7 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 				// this reference is only provided if the corresponding network with element
 				// heat flux into current zone
 				r.m_required = false;
-				m_hydraulicHeatingLoadValueRefs.push_back(nullptr);
+				m_networkHeatLoadValueRefs.push_back(nullptr);
 				networkLoadsRH.push_back(r);
 			}
 		}
@@ -354,8 +354,8 @@ void RoomBalanceModel::setInputValueRefs(const std::vector<QuantityDescription> 
 	}
 
 	// network loads
-	for (unsigned int i=0; i<m_hydraulicHeatingLoadsModelCount; ++i) {
-		m_hydraulicHeatingLoadValueRefs[i] = *(it++);
+	for (unsigned int i=0; i<m_networkHeatLoadsModelCount; ++i) {
+		m_networkHeatLoadValueRefs[i] = *(it++);
 	}
 	/// \todo other input fluxes that we sum up
 
@@ -377,10 +377,10 @@ void RoomBalanceModel::stateDependencies(std::vector<std::pair<const double *, c
 		for (const double * heatCondVars : m_windowHeatCondValueRefs)
 			resultInputValueReferences.push_back(std::make_pair(&m_results[R_WindowHeatConductionLoad], heatCondVars));
 		// Sum up all network loads
-		for (const double * networkVars : m_hydraulicHeatingLoadValueRefs) {
+		for (const double * networkVars : m_networkHeatLoadValueRefs) {
 			if(networkVars == nullptr)
 				continue;
-			resultInputValueReferences.push_back(std::make_pair(&m_results[R_HydraulicHeatingLoad], networkVars));
+			resultInputValueReferences.push_back(std::make_pair(&m_results[R_NetworkHeatLoad], networkVars));
 			resultInputValueReferences.push_back(std::make_pair(&m_results[R_CompleteThermalLoad], networkVars));
 		}
 
@@ -434,14 +434,14 @@ int RoomBalanceModel::update() {
 
 	double sumQHydraHeating = 0.0; // sum up all heat fluxes from hydraulic networks
 
-	for (const double * flux : m_hydraulicHeatingLoadValueRefs) {
+	for (const double * flux : m_networkHeatLoadValueRefs) {
 		if(flux == nullptr)
 			continue;
 		sumQHydraHeating += *flux;
 	}
 
 	// add network loads
-	m_results[R_HydraulicHeatingLoad] = sumQHydraHeating;
+	m_results[R_NetworkHeatLoad] = sumQHydraHeating;
 	SumQdot += sumQHydraHeating;
 
 	// add solar radiation flux load

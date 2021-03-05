@@ -7,7 +7,7 @@
 			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="%">20</IBK:Parameter>
 			<TimeZone>13</TimeZone>
-			<ClimateFileName>${Project Directory}/../tests/climate/Konstantopol_20C.c6b</ClimateFileName>
+			<ClimateFilePath>${Project Directory}/../tests/climate/Konstantopol_20C.c6b</ClimateFilePath>
 		</Location>
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
@@ -48,41 +48,37 @@
 				</PipeProperties>
 				<Components>
 					<HydraulicNetworkComponent id="1" modelType="ConstantPressurePump">
-						<HeatExchangeType>HeatFluxConstant</HeatExchangeType>
 						<IBK:Parameter name="PressureHead" unit="Pa">1000</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
-						<IBK:Parameter name="PressureHead" unit="Pa">1000</IBK:Parameter>
-						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
-						<IBK:Parameter name="MotorEfficiency" unit="---">1</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" modelType="HeatExchanger">
-						<HeatExchangeType>HeatFluxConstant</HeatExchangeType>
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PressureLossCoefficient" unit="-">5</IBK:Parameter>
-						<IBK:Parameter name="Volume" unit="m3">0.1</IBK:Parameter>
-						<IBK:Parameter name="UAValue" unit="W/m2K">1</IBK:Parameter>
-						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
+							<IBK:Parameter name="Volume" unit="m3">0.4</IBK:Parameter>
 					</HydraulicNetworkComponent>
-					<HydraulicNetworkComponent id="3" modelType="StaticPipe">
-						<HeatExchangeType>HeatExchangeWithZoneTemperature</HeatExchangeType>
-						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
-					</HydraulicNetworkComponent>
+					<HydraulicNetworkComponent id="3" modelType="SimplePipe"/>
 				</Components>
 				<Elements>
-					<HydraulicNetworkElement id="1" inletNodeId="101" outletNodeId="0" componentId="1" displayName="node 0">
-						<IBK:Parameter name="HeatFlux" unit="W">0</IBK:Parameter>
-					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="1" inletNodeId="101" outletNodeId="0" componentId="1" displayName="node 0"/>
 					<HydraulicNetworkElement id="2" inletNodeId="0" outletNodeId="1" componentId="3"  pipePropertiesId="1">
-						<IBK:IntPara name="ZoneId">1</IBK:IntPara>
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="HeatExchangeWithZoneTemperature">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
+							<IBK:IntPara name="ZoneId">1</IBK:IntPara>
+						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="3" inletNodeId="1" outletNodeId="100" componentId="2" displayName="node 1">
-						<IBK:Parameter name="HeatFlux" unit="W">100</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="HeatLossConstant">
+							<IBK:Parameter name="HeatLoss" unit="W">100</IBK:Parameter>
+						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="4" inletNodeId="100" outletNodeId="101" componentId="3"  pipePropertiesId="1">
-						<IBK:IntPara name="ZoneId">1</IBK:IntPara>
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="HeatExchangeWithZoneTemperature">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
+							<IBK:IntPara name="ZoneId">1</IBK:IntPara>
+						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
 				</Elements>
 			</HydraulicNetwork>
@@ -122,7 +118,7 @@
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>HydraulicHeatingLoad</Quantity>
+					<Quantity>NetworkHeatLoad</Quantity>
 					<ObjectListName>Zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>

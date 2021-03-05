@@ -135,7 +135,7 @@ private:
 	/*! Vector with cached derivatives, updated at last call to update(). */
 	std::vector<double>								m_ydot;
 	/*! Heat fluxes towards all referenced zones [W]. */
-	std::vector<double>								m_zoneHeatFluxes;
+	std::vector<double>								m_networkHeatLoadPerZone;
 	/*! Vector of all additional model quantities for outputs. */
 	std::vector<QuantityDescription>				m_modelQuantities;
 	/*! Vector of all additional model quantity references. */
