@@ -21,7 +21,8 @@ SVDatabase::SVDatabase() :
 	m_networkComponents(USER_ID_SPACE_START),
 	m_EPDElements(USER_ID_SPACE_START),
 	m_schedules(USER_ID_SPACE_START),
-	m_internalLoads(USER_ID_SPACE_START)
+	m_internalLoads(USER_ID_SPACE_START),
+	m_zoneTemplates(USER_ID_SPACE_START)
 {
 }
 

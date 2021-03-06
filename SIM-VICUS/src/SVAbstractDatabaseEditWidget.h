@@ -5,12 +5,10 @@
 #include <QAbstractTableModel>
 #include "SVDatabase.h"
 
-class SVDatabase;
-class SVDBComponentTableModel;
 class QTableView;
 
 /*! Abstract interface for tables used in database edit dialogs.
-	Needs to provide Role_BuiltIn and Role_Id.
+	Derived models need to provide at least Role_BuiltIn and Role_Id.
 */
 class SVAbstractDatabaseTableModel : public QAbstractTableModel {
 public:

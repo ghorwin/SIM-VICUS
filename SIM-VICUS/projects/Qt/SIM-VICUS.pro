@@ -76,15 +76,6 @@ PRE_TARGETDEPS += \
 
 
 SOURCES += \
-				../../src/SVAbstractDatabaseEditWidget.cpp \
-				../../src/SVChartUtils.cpp \
-				../../src/SVDBDailyCycleInputWidget.cpp \
-				../../src/SVDBInternalLoadsTableModel.cpp \
-				../../src/SVDBScheduleAddDialog.cpp \
-				../../src/SVDBInternalLoadsPersonEditWidget.cpp \
-				../../src/SVDatabaseEditDialog.cpp \
-				../../src/SVPropEditCopyDialog.cpp \
-				../../src/main.cpp \
 				../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
 				../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
 				../../src/actions/SVUndoAddBuilding.cpp \
@@ -118,18 +109,25 @@ SOURCES += \
 				../../src/core3D/Vic3DSurfaceNormalsObject.cpp \
 				../../src/core3D/Vic3DTransform3D.cpp \
 				../../src/core3D/Vic3DWireFrameObject.cpp \
+				../../src/main.cpp \
 				../../src/SVAboutDialog.cpp \
+				../../src/SVAbstractDatabaseEditWidget.cpp \
+				../../src/SVChartUtils.cpp \
 				../../src/SVClimateDataSortFilterProxyModel.cpp \
 				../../src/SVClimateDataTableModel.cpp \
 				../../src/SVClimateFileInfo.cpp \
 				../../src/SVConstants.cpp \
 				../../src/SVDatabase.cpp \
+				../../src/SVDatabaseEditDialog.cpp \
 				../../src/SVDBBoundaryConditionEditWidget.cpp \
 				../../src/SVDBBoundaryConditionTableModel.cpp \
 				../../src/SVDBComponentEditWidget.cpp \
 				../../src/SVDBComponentTableModel.cpp \
 				../../src/SVDBConstructionEditWidget.cpp \
 				../../src/SVDBConstructionTableModel.cpp \
+				../../src/SVDBDailyCycleInputWidget.cpp \
+				../../src/SVDBInternalLoadsPersonEditWidget.cpp \
+				../../src/SVDBInternalLoadsTableModel.cpp \
 				../../src/SVDBMaterialEditWidget.cpp \
 				../../src/SVDBMaterialTableModel.cpp \
 				../../src/SVDBModelDelegate.cpp \
@@ -137,10 +135,14 @@ SOURCES += \
 				../../src/SVDBNetworkComponentTableModel.cpp \
 				../../src/SVDBPipeEditWidget.cpp \
 				../../src/SVDBPipeTableModel.cpp \
+				../../src/SVDBScheduleAddDialog.cpp \
 				../../src/SVDBScheduleDailyCycleEditWidget.cpp \
 				../../src/SVDBScheduleEditWidget.cpp \
 				../../src/SVDBScheduleTableModel.cpp \
 				../../src/SVDBWindowEditWidget.cpp \
+				../../src/SVDBZoneTemplateEditDialog.cpp \
+				../../src/SVDBZoneTemplateEditWidget.cpp \
+				../../src/SVDBZoneTemplateTreeModel.cpp \
 				../../src/SVDebugApplication.cpp \
 				../../src/SVDialogSelectNetworkPipes.cpp \
 				../../src/SVGeometryView.cpp \
@@ -163,6 +165,7 @@ SOURCES += \
 				../../src/SVPreferencesPageTools.cpp \
 				../../src/SVProjectHandler.cpp \
 				../../src/SVPropBuildingEditWidget.cpp \
+				../../src/SVPropEditCopyDialog.cpp \
 				../../src/SVPropEditGeometry.cpp \
 				../../src/SVPropertyWidget.cpp \
 				../../src/SVPropFloorManagerItemDelegate.cpp \
@@ -195,14 +198,6 @@ SOURCES += \
 				../../src/SVWelcomeScreen.cpp
 
 HEADERS  += \
-				../../src/SVAbstractDatabaseEditWidget.h \
-				../../src/SVChartUtils.h \
-				../../src/SVDBDailyCycleInputWidget.h \
-				../../src/SVDBInternalLoadsTableModel.h \
-				../../src/SVDBScheduleAddDialog.h \
-				../../src/SVDBInternalLoadsPersonEditWidget.h \
-				../../src/SVDatabaseEditDialog.h \
-				../../src/SVPropEditCopyDialog.h \
 				../../src/actions/SVUndoAddBuilding.h \
 				../../src/actions/SVUndoAddBuildingLevel.h \
 				../../src/actions/SVUndoAddNetwork.h \
@@ -238,10 +233,13 @@ HEADERS  += \
 				../../src/core3D/Vic3DVertex.h \
 				../../src/core3D/Vic3DWireFrameObject.h \
 				../../src/SVAboutDialog.h \
+				../../src/SVAbstractDatabaseEditWidget.h \
+				../../src/SVChartUtils.h \
 				../../src/SVClimateDataSortFilterProxyModel.h \
 				../../src/SVClimateDataTableModel.h \
 				../../src/SVClimateFileInfo.h \
 				../../src/SVConstants.h \
+				../../src/SVDatabaseEditDialog.h \
 				../../src/SVDatabase.h \
 				../../src/SVDBBoundaryConditionEditWidget.h \
 				../../src/SVDBBoundaryConditionTableModel.h \
@@ -249,6 +247,9 @@ HEADERS  += \
 				../../src/SVDBComponentTableModel.h \
 				../../src/SVDBConstructionEditWidget.h \
 				../../src/SVDBConstructionTableModel.h \
+				../../src/SVDBDailyCycleInputWidget.h \
+				../../src/SVDBInternalLoadsPersonEditWidget.h \
+				../../src/SVDBInternalLoadsTableModel.h \
 				../../src/SVDBMaterialEditWidget.h \
 				../../src/SVDBMaterialTableModel.h \
 				../../src/SVDBModelDelegate.h \
@@ -256,10 +257,14 @@ HEADERS  += \
 				../../src/SVDBNetworkComponentTableModel.h \
 				../../src/SVDBPipeEditWidget.h \
 				../../src/SVDBPipeTableModel.h \
+				../../src/SVDBScheduleAddDialog.h \
 				../../src/SVDBScheduleDailyCycleEditWidget.h \
 				../../src/SVDBScheduleEditWidget.h \
 				../../src/SVDBScheduleTableModel.h \
 				../../src/SVDBWindowEditWidget.h \
+				../../src/SVDBZoneTemplateEditDialog.h \
+				../../src/SVDBZoneTemplateEditWidget.h \
+				../../src/SVDBZoneTemplateTreeModel.h \
 				../../src/SVDebugApplication.h \
 				../../src/SVDialogSelectNetworkPipes.h \
 				../../src/SVGeometryView.h \
@@ -282,6 +287,7 @@ HEADERS  += \
 				../../src/SVPreferencesPageTools.h \
 				../../src/SVProjectHandler.h \
 				../../src/SVPropBuildingEditWidget.h \
+				../../src/SVPropEditCopyDialog.h \
 				../../src/SVPropEditGeometry.h \
 				../../src/SVPropertyWidget.h \
 				../../src/SVPropFloorManagerItemDelegate.h \
@@ -315,6 +321,7 @@ HEADERS  += \
 
 FORMS    += \
 				../../src/SVAboutDialog.ui \
+				../../src/SVDatabaseEditDialog.ui \
 				../../src/SVDBBoundaryConditionEditWidget.ui \
 				../../src/SVDBComponentEditWidget.ui \
 				../../src/SVDBConstructionEditWidget.ui \
@@ -326,7 +333,8 @@ FORMS    += \
 				../../src/SVDBScheduleDailyCycleEditWidget.ui \
 				../../src/SVDBScheduleEditWidget.ui \
 				../../src/SVDBWindowEditWidget.ui \
-				../../src/SVDatabaseEditDialog.ui \
+				../../src/SVDBZoneTemplateEditDialog.ui \
+				../../src/SVDBZoneTemplateEditWidget.ui \
 				../../src/SVDialogSelectNetworkPipes.ui \
 				../../src/SVImportIDFDialog.ui \
 				../../src/SVInternalLoadsPersonDetailedWidget.ui \

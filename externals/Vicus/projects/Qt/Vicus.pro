@@ -134,4 +134,5 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_WindowDivider.cpp \
 	../../src/ncg/ncg_VICUS_WindowFrame.cpp \
 	../../src/ncg/ncg_VICUS_WindowGlazingLayer.cpp \
-	../../src/ncg/ncg_VICUS_WindowGlazingSystem.cpp
+	../../src/ncg/ncg_VICUS_WindowGlazingSystem.cpp \
+	../../src/ncg/ncg_VICUS_ZoneTemplate.cpp
