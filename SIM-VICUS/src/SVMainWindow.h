@@ -35,7 +35,6 @@ class SVDatabaseEditDialog;
 class SVDBWindowEditDialog;
 class SVDBPipeEditDialog;
 class SVDBNetworkComponentEditDialog;
-class SVDBScheduleEditDialog;
 
 /*! Main window class. */
 class SVMainWindow : public QMainWindow {
@@ -108,7 +107,7 @@ public:
 	/*! Returns the network component edit dialog. */
 	SVDBNetworkComponentEditDialog *dbNetworkComponentEditDialog();
 	/*! Returns the schedule edit dialog. */
-	SVDBScheduleEditDialog *dbScheduleEditDialog();
+	SVDatabaseEditDialog *dbScheduleEditDialog();
 	/*! Returns the internal loads person edit dialog. */
 	SVDatabaseEditDialog *dbInternalLoadsPersonEditDialog();
 
@@ -366,7 +365,7 @@ private:
 	SVDatabaseEditDialog				*m_dbBoundaryConditionEditDialog				= nullptr;
 	SVDBPipeEditDialog					*m_dbPipeEditDialog								= nullptr;
 	SVDBNetworkComponentEditDialog		*m_dbNetworkComponentEditDialog					= nullptr;
-	SVDBScheduleEditDialog				*m_dbScheduleEditDialog							= nullptr;
+	SVDatabaseEditDialog				*m_dbScheduleEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbInternalLoadsPersonEditDialog				= nullptr;
 
 	friend class SVThreadBase;

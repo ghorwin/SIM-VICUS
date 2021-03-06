@@ -23,7 +23,7 @@
 
 
 SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
-	QWidget(parent),
+	SVAbstractDatabaseEditWidget(parent),
 	m_ui(new Ui::SVDBScheduleEditWidget)
 {
 	m_ui->setupUi(this);
@@ -69,9 +69,9 @@ SVDBScheduleEditWidget::~SVDBScheduleEditWidget() {
 }
 
 
-void SVDBScheduleEditWidget::setup(SVDatabase * db, SVDBScheduleTableModel * dbModel) {
+void SVDBScheduleEditWidget::setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) {
 	m_db = db;
-	m_dbModel = dbModel;
+	m_dbModel = dynamic_cast<SVDBScheduleTableModel*>(dbModel);
 }
 
 

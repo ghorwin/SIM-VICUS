@@ -24,6 +24,8 @@
 #include "SVDBComponentEditWidget.h"
 #include "SVDBBoundaryConditionTableModel.h"
 #include "SVDBBoundaryConditionEditWidget.h"
+#include "SVDBScheduleTableModel.h"
+#include "SVDBScheduleEditWidget.h"
 #include "SVDBInternalLoadsTableModel.h"
 #include "SVDBInternalLoadsPersonEditWidget.h"
 
@@ -301,6 +303,16 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createBoundaryConditionsEditDialog(
 	return dlg;
 }
 
+
+SVDatabaseEditDialog * SVDatabaseEditDialog::createScheduleEditDialog(QWidget * parent) {
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBScheduleTableModel(parent, SVSettings::instance().m_db),
+		new SVDBScheduleEditWidget(parent),
+		tr("Schedule Database"), QString(), false
+	);
+	dlg->resize(1400,800);
+	return dlg;
+}
 
 SVDatabaseEditDialog * SVDatabaseEditDialog::createInternalLoadsEditDialog(QWidget * parent, int type) {
 	SVDatabaseEditDialog * dlg = nullptr;

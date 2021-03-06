@@ -2,6 +2,8 @@
 
 #include <QIcon>
 #include <QFont>
+#include <QTableView>
+#include <QHeaderView>
 
 #include <VICUS_Schedule.h>
 #include <VICUS_Database.h>
@@ -12,24 +14,12 @@
 #include <QtExt_LanguageHandler.h>
 
 #include "SVConstants.h"
-#include "SVDBScheduleEditDialog.h"
-
 
 SVDBScheduleTableModel::SVDBScheduleTableModel(QObject *parent, SVDatabase &db) :
-	QAbstractTableModel(parent),
+	SVAbstractDatabaseTableModel(parent),
 	m_db(&db)
 {
-	// must only be created from SVDBScheduleEditDialog
-	Q_ASSERT(dynamic_cast<SVDBScheduleEditDialog*>(parent) != nullptr);
 	Q_ASSERT(m_db != nullptr);
-}
-
-SVDBScheduleTableModel::~SVDBScheduleTableModel() {
-}
-
-
-int SVDBScheduleTableModel::columnCount ( const QModelIndex & ) const {
-	return NumColumns;
 }
 
 
@@ -150,6 +140,12 @@ QVariant SVDBScheduleTableModel::headerData(int section, Qt::Orientation orienta
 }
 
 
+void SVDBScheduleTableModel::resetModel() {
+	beginResetModel();
+	endResetModel();
+}
+
+
 QModelIndex SVDBScheduleTableModel::addNewItem() {
 	VICUS::Schedule sched;
 	sched.m_displayName.setEncodedString("en:<new schedule>");
@@ -162,29 +158,38 @@ QModelIndex SVDBScheduleTableModel::addNewItem() {
 }
 
 
-QModelIndex SVDBScheduleTableModel::addNewItem(VICUS::Schedule sched) {
+QModelIndex SVDBScheduleTableModel::copyItem(const QModelIndex & existingItemIndex) {
+	// lookup existing item
+	const VICUS::Database<VICUS::Schedule> & db = m_db->m_schedules;
+	Q_ASSERT(existingItemIndex.isValid() && existingItemIndex.row() < (int)db.size());
+	std::map<unsigned int, VICUS::Schedule>::const_iterator it = db.begin();
+	std::advance(it, existingItemIndex.row());
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
-	unsigned int id = m_db->m_schedules.add( sched );
+	// create new item and insert into DB
+	VICUS::Schedule newItem(it->second);
+	unsigned int id = m_db->m_schedules.add( newItem );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;
 }
 
 
-bool SVDBScheduleTableModel::deleteItem(QModelIndex index) {
+void SVDBScheduleTableModel::deleteItem(const QModelIndex & index) {
 	if (!index.isValid())
-		return false;
+		return;
 	unsigned int id = data(index, Role_Id).toUInt();
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 	m_db->m_schedules.remove(id);
 	endRemoveRows();
-	return true;
 }
 
 
-void SVDBScheduleTableModel::resetModel() {
-	beginResetModel();
-	endResetModel();
+void SVDBScheduleTableModel::setColumnResizeModes(QTableView * tableView) {
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBScheduleTableModel::ColId, QHeaderView::Fixed);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBScheduleTableModel::ColCheck, QHeaderView::Fixed);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBScheduleTableModel::ColAnnualSplineData, QHeaderView::Fixed);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBScheduleTableModel::ColInterpolation, QHeaderView::Fixed);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBScheduleTableModel::ColName, QHeaderView::Stretch);
 }
 
 

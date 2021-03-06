@@ -9,8 +9,8 @@
 
 #include "SVDBInternalLoadsTableModel.h"
 #include "SVMainWindow.h"
-#include "SVDBScheduleEditDialog.h"
 #include "SVConstants.h"
+#include "SVDatabaseEditDialog.h"
 
 SVDBInternalLoadsPersonEditWidget::SVDBInternalLoadsPersonEditWidget(QWidget *parent) :
 	SVAbstractDatabaseEditWidget(parent),

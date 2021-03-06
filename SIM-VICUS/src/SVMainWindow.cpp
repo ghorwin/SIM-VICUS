@@ -62,7 +62,6 @@
 #include "SVDBWindowEditDialog.h"
 #include "SVDBPipeEditDialog.h"
 #include "SVDBNetworkComponentEditDialog.h"
-#include "SVDBScheduleEditDialog.h"
 
 #include "SVSimulationStartNandrad.h"
 #include "SVSimulationStartNetworkSim.h"
@@ -235,9 +234,9 @@ SVDBNetworkComponentEditDialog *SVMainWindow::dbNetworkComponentEditDialog() {
 	return m_dbNetworkComponentEditDialog;
 }
 
-SVDBScheduleEditDialog *SVMainWindow::dbScheduleEditDialog() {
+SVDatabaseEditDialog *SVMainWindow::dbScheduleEditDialog() {
 	if (m_dbScheduleEditDialog == nullptr)
-		m_dbScheduleEditDialog = new SVDBScheduleEditDialog(this);
+		m_dbScheduleEditDialog = SVDatabaseEditDialog::createScheduleEditDialog(this);
 	return m_dbScheduleEditDialog;
 }
 

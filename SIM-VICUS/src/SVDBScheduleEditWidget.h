@@ -1,7 +1,11 @@
 #ifndef SVDBScheduleEditWidget_H
 #define SVDBScheduleEditWidget_H
 
-#include <QWidget>
+#include "SVAbstractDatabaseEditWidget.h"
+
+namespace Ui {
+	class SVDBScheduleEditWidget;
+}
 
 #include <NANDRAD_Schedule.h>
 
@@ -14,9 +18,6 @@ class SVDBScheduleTableModel;
 class SVDatabase;
 
 
-namespace Ui {
-class SVDBScheduleEditWidget;
-}
 /*! Edit widget for schedules.
 
 	A call to updateInput() initializes the widget and fill the GUI controls with data.
@@ -25,59 +26,39 @@ class SVDBScheduleEditWidget;
 	is no longer valid or you want to resize the container (through adding new items)
 	call updateInput() with an invalid index and/or nullptr pointer to the model.
 */
-class SVDBScheduleEditWidget : public QWidget{
+class SVDBScheduleEditWidget : public SVAbstractDatabaseEditWidget {
 	Q_OBJECT
 
 public:
 	explicit SVDBScheduleEditWidget(QWidget *parent = nullptr);
-	~SVDBScheduleEditWidget();
+	~SVDBScheduleEditWidget() override;
 
 	/*! Needs to be called once, before the widget is being used. */
-	void setup(SVDatabase * db, SVDBScheduleTableModel * dbModel);
+	void setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) override;
 
 	/*! Sets up the widget for a Schedule with a given ID. */
-	void updateInput(int id);
+	void updateInput(int id) override;
 
 private slots:
 	void on_lineEditName_editingFinished();
-
 	void on_toolButtonAddPeriod_clicked();
-
 	void on_toolButtonRemovePeriode_clicked();
-
 	void on_tableWidgetPeriods_currentCellChanged(int currentRow, int , int, int);
-
 	void on_toolButtonBackward_clicked();
-
 	void on_toolButtonForward_clicked();
-
 	void on_tableWidgetPeriods_cellChanged(int row, int column);
-
 	void on_checkBoxTuesday_toggled(bool checked);
-
 	void on_checkBoxHoliday_toggled(bool checked);
-
 	void on_checkBoxWednesday_toggled(bool checked);
-
 	void on_checkBoxThursday_toggled(bool checked);
-
 	void on_checkBoxFriday_toggled(bool checked);
-
 	void on_checkBoxSaturday_toggled(bool checked);
-
 	void on_checkBoxSunday_toggled(bool checked);
-
 	void on_checkBoxMonday_toggled(bool checked);
-
 	void on_toolButtonDeleteCurrentDailyCycle_clicked();
-
 	void on_tableWidgetPeriods_cellDoubleClicked(int row, int column);
-
 	void on_pushButton_clicked();
-
 	void on_pushButton_2_clicked();
-
-
 	void on_radioButtonLinear_toggled(bool checked);
 
 	/*! Triggered, when editing of the current schedule requires re-evaluation of "valid" status and
