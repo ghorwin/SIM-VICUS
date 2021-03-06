@@ -147,7 +147,7 @@ void SVDBComponentTableModel::deleteItem(const QModelIndex & index) {
 		return;
 	unsigned int id = data(index, Role_Id).toUInt();
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	m_db->m_constructions.remove(id);
+	m_db->m_components.remove(id);
 	endRemoveRows();
 }
 

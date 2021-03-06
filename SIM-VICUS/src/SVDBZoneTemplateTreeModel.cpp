@@ -10,6 +10,7 @@
 #include <QtExt_LanguageHandler.h>
 
 #include "SVConstants.h"
+#include "SVStyle.h"
 
 SVDBZoneTemplateTreeModel::SVDBZoneTemplateTreeModel(QObject * parent, SVDatabase & db) :
 	QAbstractItemModel(parent),
@@ -26,55 +27,58 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 	// readability improvement
 	const VICUS::Database<VICUS::ZoneTemplate> & db = m_db->m_zoneTemplates;
 
-	int row = index.row();
-	if (row >= (int)db.size())
-		return QVariant();
+	// index is a top-level item
+	if (index.internalPointer() == nullptr) {
 
-	std::map<unsigned int, VICUS::ZoneTemplate>::const_iterator it = db.begin();
-	std::advance(it, row);
+		int row = index.row();
+		if (row >= (int)db.size())
+			return QVariant();
 
-	switch (role) {
-		case Qt::DisplayRole : {
-			// Note: when accessing multilanguage strings below, take name in current language or if missing, "all"
-			std::string langId = QtExt::LanguageHandler::instance().langId().toStdString();
-			std::string fallBackLangId = "en";
+		std::map<unsigned int, VICUS::ZoneTemplate>::const_iterator it = db.begin();
+		std::advance(it, row);
 
-			switch (index.column()) {
-				case ColId					: return it->first;
-				case ColName				: return QString::fromStdString(it->second.m_displayName.string(langId, fallBackLangId));
-			}
-		} break;
+		switch (role) {
+			case Qt::DisplayRole : {
+				// Note: when accessing multilanguage strings below, take name in current language or if missing, "all"
+				std::string langId = QtExt::LanguageHandler::instance().langId().toStdString();
+				std::string fallBackLangId = "en";
 
-		case Qt::DecorationRole : {
-			if (index.column() == ColCheck) {
-				if (it->second.isValid())
-					return QIcon("://gfx/actions/16x16/ok.png");
-				else
-					return QIcon("://gfx/actions/16x16/error.png");
-			}
-		} break;
+				switch (index.column()) {
+					case ColId					: return it->first;
+					case ColName				: return QString::fromStdString(it->second.m_displayName.string(langId, fallBackLangId));
+				}
+			} break;
 
-		case Qt::BackgroundRole : {
-			if (index.column() == ColColor) {
-				return it->second.m_color;
-			}
-		} break;
+			case Qt::DecorationRole : {
+				if (index.column() == ColCheck) {
+					if (it->second.isValid())
+						return QIcon("://gfx/actions/16x16/ok.png");
+					else
+						return QIcon("://gfx/actions/16x16/error.png");
+				}
+			} break;
 
-		case Qt::SizeHintRole :
-			switch (index.column()) {
-				case ColCheck :
-				case ColColor :
-					return QSize(22, 16);
-			} // switch
-			break;
+			case Qt::BackgroundRole : {
+				if (index.column() == ColColor) {
+					return it->second.m_color;
+				}
+			} break;
 
-		case Role_Id :
-			return it->first;
+			case Qt::SizeHintRole :
+				switch (index.column()) {
+					case ColCheck :
+					case ColColor :
+						return QSize(22, 16);
+				} // switch
+				break;
 
-		case Role_BuiltIn :
-			return it->second.m_builtIn;
+			case Role_Id :
+				return it->first;
+
+			case Role_BuiltIn :
+				return it->second.m_builtIn;
+		}
 	}
-
 	return QVariant();
 }
 
@@ -92,7 +96,7 @@ int SVDBZoneTemplateTreeModel::rowCount ( const QModelIndex & parent) const {
 	std::advance(it, row);
 
 	// return number of assigned sub-templates
-	return it->second.subTemplateCount();
+	return (int)it->second.subTemplateCount();
 }
 
 
@@ -120,10 +124,34 @@ QVariant SVDBZoneTemplateTreeModel::headerData(int section, Qt::Orientation orie
 
 
 QModelIndex SVDBZoneTemplateTreeModel::index(int row, int column, const QModelIndex & parent) const {
+	if (!parent.isValid()) {
+		return createIndex(row, column, nullptr); // top-level items have a nullptr for identification
+	}
+	// child item,
+	int parentRow = parent.row();
+	// take pointer to item
+	const VICUS::Database<VICUS::ZoneTemplate> & db = m_db->m_zoneTemplates;
+	std::map<unsigned int, VICUS::ZoneTemplate>::const_iterator it = db.begin();
+	std::advance(it, parentRow);
+	// child items have a pointer to the zone template they belong to as identification
+	return createIndex(row, column, (void*)(&it->second));
 }
 
 
 QModelIndex SVDBZoneTemplateTreeModel::parent(const QModelIndex & child) const {
+	// nullptr means top-level it
+	if (child.internalPointer() == nullptr)
+		return QModelIndex();
+	else {
+		// get internal pointer and lookup item by id
+		const VICUS::ZoneTemplate * ptr = reinterpret_cast<const VICUS::ZoneTemplate *>(child.internalPointer());
+		// search DB and get the row index of this item
+		std::map<unsigned int, VICUS::ZoneTemplate>::const_iterator it = m_db->m_zoneTemplates.begin();
+		int i=0;
+		for (; ptr != &it->second && (unsigned int)i<m_db->m_zoneTemplates.size(); ++i, ++it);
+		Q_ASSERT((unsigned int)i != m_db->m_zoneTemplates.size());
+		return createIndex(i, 0, nullptr);
+	}
 }
 
 
@@ -134,10 +162,11 @@ void SVDBZoneTemplateTreeModel::resetModel() {
 
 
 QModelIndex SVDBZoneTemplateTreeModel::addNewItem() {
-	VICUS::Component c;
-	c.m_displayName.setEncodedString("en:<new component type>");
+	VICUS::ZoneTemplate c;
+	c.m_displayName.setEncodedString("en:<new zone template>");
+	c.m_color = SVStyle::randomColor();
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
-	unsigned int id = m_db->m_components.add( c );
+	unsigned int id = m_db->m_zoneTemplates.add( c );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;
@@ -146,14 +175,15 @@ QModelIndex SVDBZoneTemplateTreeModel::addNewItem() {
 
 QModelIndex SVDBZoneTemplateTreeModel::copyItem(const QModelIndex & existingItemIndex) {
 	// lookup existing item
-	const VICUS::Database<VICUS::Component> & db = m_db->m_components;
+	const VICUS::Database<VICUS::ZoneTemplate> & db = m_db->m_zoneTemplates;
 	Q_ASSERT(existingItemIndex.isValid() && existingItemIndex.row() < (int)db.size());
-	std::map<unsigned int, VICUS::Component>::const_iterator it = db.begin();
+	std::map<unsigned int, VICUS::ZoneTemplate>::const_iterator it = db.begin();
 	std::advance(it, existingItemIndex.row());
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	// create new item and insert into DB
-	VICUS::Component newItem(it->second);
-	unsigned int id = m_db->m_components.add( newItem );
+	VICUS::ZoneTemplate newItem(it->second);
+	newItem.m_color = SVStyle::randomColor();
+	unsigned int id = m_db->m_zoneTemplates.add( newItem );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;
@@ -165,25 +195,25 @@ void SVDBZoneTemplateTreeModel::deleteItem(const QModelIndex & index) {
 		return;
 	unsigned int id = data(index, Role_Id).toUInt();
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	m_db->m_constructions.remove(id);
+	m_db->m_zoneTemplates.remove(id);
 	endRemoveRows();
 }
 
 
 void SVDBZoneTemplateTreeModel::setItemModified(unsigned int id) {
 	QModelIndex idx = indexById(id);
-//	QModelIndex left = index(idx.row(), 0);
-//	QModelIndex right = index(idx.row(), NumColumns-1);
-//	emit dataChanged(left, right);
+	QModelIndex left = index(idx.row(), 0, QModelIndex());
+	QModelIndex right = index(idx.row(), NumColumns-1, QModelIndex());
+	emit dataChanged(left, right);
 }
 
 
 QModelIndex SVDBZoneTemplateTreeModel::indexById(unsigned int id) const {
-//	for (int i=0; i<rowCount(); ++i) {
-//		QModelIndex idx = index(i, 0);
-//		if (data(idx, Role_Id).toUInt() == id)
-//			return idx;
-//	}
+	for (int i=0; i<rowCount(); ++i) {
+		QModelIndex idx = index(i, 0, QModelIndex());
+		if (data(idx, Role_Id).toUInt() == id)
+			return idx;
+	}
 	return QModelIndex();
 }
 

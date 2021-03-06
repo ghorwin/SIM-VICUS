@@ -29,7 +29,7 @@ SVDBZoneTemplateEditDialog::SVDBZoneTemplateEditDialog(QWidget *parent) :
 	SVStyle::formatDatabaseTreeView(m_ui->treeView);
 
 	m_proxyModel = new QSortFilterProxyModel(this);
-	m_proxyModel->setSourceModel(dynamic_cast<QAbstractTableModel*>(m_dbModel));
+	m_proxyModel->setSourceModel(m_dbModel);
 	m_ui->treeView->setModel(m_proxyModel);
 
 	// create groupbox and adjust layout for edit widget
@@ -46,9 +46,9 @@ SVDBZoneTemplateEditDialog::SVDBZoneTemplateEditDialog(QWidget *parent) :
 	m_editWidget->setup(&SVSettings::instance().m_db, m_dbModel);
 
 	// specific setup for DB table view
-	m_ui->treeView->header()->setSectionResizeMode(SVDBZoneTemplateTreeModel::ColId, QHeaderView::Fixed);
-	m_ui->treeView->header()->setSectionResizeMode(SVDBZoneTemplateTreeModel::ColCheck, QHeaderView::Fixed);
-	m_ui->treeView->header()->setSectionResizeMode(SVDBZoneTemplateTreeModel::ColColor, QHeaderView::Fixed);
+//	m_ui->treeView->resizeColumnToContents(header()->setSectionResizeMode(SVDBZoneTemplateTreeModel::ColId, QHeaderView::Fixed);
+//	m_ui->treeView->header()->setSectionResizeMode(SVDBZoneTemplateTreeModel::ColCheck, QHeaderView::Fixed);
+//	m_ui->treeView->header()->setSectionResizeMode(SVDBZoneTemplateTreeModel::ColColor, QHeaderView::Fixed);
 
 	connect(m_ui->treeView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)),
 			this, SLOT(onCurrentIndexChanged(const QModelIndex &, const QModelIndex &)) );
@@ -77,6 +77,8 @@ void SVDBZoneTemplateEditDialog::edit(unsigned int initialId) {
 	onCurrentIndexChanged(m_ui->treeView->currentIndex(), QModelIndex()); // select nothing
 
 	m_ui->treeView->resizeColumnToContents(0);
+	m_ui->treeView->resizeColumnToContents(1);
+	m_ui->treeView->resizeColumnToContents(2);
 
 	exec();
 }
@@ -93,6 +95,8 @@ unsigned int SVDBZoneTemplateEditDialog::select(unsigned int initialId) {
 	onCurrentIndexChanged(m_ui->treeView->currentIndex(), QModelIndex()); // select nothing
 
 	m_ui->treeView->resizeColumnToContents(0);
+	m_ui->treeView->resizeColumnToContents(1);
+	m_ui->treeView->resizeColumnToContents(2);
 
 	int res = exec();
 	if (res == QDialog::Accepted) {

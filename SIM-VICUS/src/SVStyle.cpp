@@ -9,12 +9,17 @@
 #include <QTreeView>
 #include <QHeaderView>
 #include <QDebug>
+#if QT_VERSION >= 0x050a00
+#include <QRandomGenerator>
+#endif
 
 #include <QtExt_Style.h>
 
 #include "SVSettings.h"
 
 SVStyle * SVStyle::m_self = nullptr;
+
+double SVStyle::m_randomColorHueValue = 0.1;
 
 SVStyle & SVStyle::instance() {
 	Q_ASSERT_X(m_self != nullptr, "[SVStyle::instance]", "You must create an instance of "
@@ -27,6 +32,11 @@ SVStyle::SVStyle() {
 
 	Q_ASSERT(m_self == nullptr);
 	m_self = this;
+
+#if QT_VERSION < 0x050a00
+	qsrand(time(nullptr));
+#endif
+
 
 	// customize application font
 	unsigned int ps = SVSettings::instance().m_fontPointSize;
@@ -211,5 +221,25 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 
 	// Note: other, widget-specific adjustments, like change of action icons etc. is handled
 	//       in the individual format update slots connected to the SVPreferencesPageStyle::styleChanged() slots.
+}
+
+
+QColor SVStyle::randomColor() {
+	double s = 1;
+#if QT_VERSION >= 0x050a00
+	m_randomColorHueValue += QRandomGenerator().generateDouble();
+	s = QRandomGenerator().generateDouble();
+#else
+	m_randomColorHueValue += double(qrand())/RAND_MAX*0.4;
+	m_randomColorHueValue += 0.05;
+	s = std::floor(double(qrand())/RAND_MAX*4);
+	s = (s*2 + 2)/10;
+#endif
+
+	if (m_randomColorHueValue > 1)
+		m_randomColorHueValue -= 1;
+
+	QColor col = QColor::fromHsvF(m_randomColorHueValue, s, 1);
+	return col;
 }
 

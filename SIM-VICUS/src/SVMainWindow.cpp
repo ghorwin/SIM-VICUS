@@ -59,6 +59,7 @@
 #include "SVPropFloorManagerWidget.h"
 
 #include "SVDatabaseEditDialog.h"
+#include "SVDBZoneTemplateEditDialog.h"
 
 #include "SVSimulationStartNandrad.h"
 #include "SVSimulationStartNetworkSim.h"
@@ -243,6 +244,13 @@ SVDatabaseEditDialog * SVMainWindow::dbInternalLoadsPersonEditDialog() {
 }
 
 
+SVDBZoneTemplateEditDialog * SVMainWindow::dbZoneTemplateEditDialog() {
+	if (m_dbZoneTemplateEditDialog == nullptr)
+		m_dbZoneTemplateEditDialog = new SVDBZoneTemplateEditDialog(this);
+	return m_dbZoneTemplateEditDialog;
+}
+
+
 // *** public slots ***
 
 
@@ -279,8 +287,14 @@ void SVMainWindow::on_actionDBSchedules_triggered() {
 	dbScheduleEditDialog()->edit();
 }
 
+
 void SVMainWindow::on_actionDBInternalLoadsPerson_triggered() {
 	dbInternalLoadsPersonEditDialog()->edit();
+}
+
+
+void SVMainWindow::on_actionDBZoneTemplates_triggered() {
+	dbZoneTemplateEditDialog()->edit();
 }
 
 
@@ -1584,4 +1598,5 @@ void SVMainWindow::on_actionViewShowSurfaceNormals_toggled(bool visible) {
 	// set corresponding flag in View
 	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->setNormalVectorsVisible(visible);
 }
+
 

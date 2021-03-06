@@ -126,6 +126,7 @@
     <addaction name="actionDBBoundaryConditions"/>
     <addaction name="actionDBSchedules"/>
     <addaction name="menuInternal_Loads"/>
+    <addaction name="actionDBZoneTemplates"/>
     <addaction name="separator"/>
     <addaction name="actionDBNetworkPipes"/>
     <addaction name="actionDBHydraulicComponents"/>
@@ -532,12 +533,26 @@
   </action>
   <action name="actionDBInternalLoadsPerson">
    <property name="text">
-    <string>Person</string>
+    <string>Person...</string>
+   </property>
+   <property name="toolTip">
+    <string>Internal loads: Person loads.</string>
    </property>
   </action>
   <action name="actionDBElectricEquipment">
    <property name="text">
-    <string>Electric Equipment</string>
+    <string>Electric equipment...</string>
+   </property>
+   <property name="toolTip">
+    <string>Internal loads: Electric equipment loads.</string>
+   </property>
+  </action>
+  <action name="actionDBZoneTemplates">
+   <property name="text">
+    <string>Zone templates...</string>
+   </property>
+   <property name="toolTip">
+    <string>Zone templates...</string>
    </property>
   </action>
  </widget>

@@ -32,7 +32,7 @@ class SVSimulationStartNandrad;
 class SVSimulationStartNetworkSim;
 
 class SVDatabaseEditDialog;
-class SVDBPipeEditDialog;
+class SVDBZoneTemplateEditDialog;
 
 /*! Main window class. */
 class SVMainWindow : public QMainWindow {
@@ -108,6 +108,8 @@ public:
 	SVDatabaseEditDialog *dbScheduleEditDialog();
 	/*! Returns the internal loads person edit dialog. */
 	SVDatabaseEditDialog *dbInternalLoadsPersonEditDialog();
+	/*! Returns the zone template edit dialog. */
+	SVDBZoneTemplateEditDialog * dbZoneTemplateEditDialog();
 
 
 public slots:
@@ -224,6 +226,8 @@ private slots:
 
 	void on_actionViewShowSurfaceNormals_toggled(bool visible);
 
+
+	void on_actionDBZoneTemplates_triggered();
 
 private:
 	/*! Sets up all dock widgets with definition lists. */
@@ -365,6 +369,9 @@ private:
 	SVDatabaseEditDialog				*m_dbNetworkComponentEditDialog					= nullptr;
 	SVDatabaseEditDialog				*m_dbScheduleEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbInternalLoadsPersonEditDialog				= nullptr;
+
+	// special edit dialogs
+	SVDBZoneTemplateEditDialog			*m_dbZoneTemplateEditDialog						= nullptr;
 
 	friend class SVThreadBase;
 

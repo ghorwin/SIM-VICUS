@@ -36,6 +36,11 @@ public:
 	/*! Sets the application wide style sheet. */
 	void setStyle(SVSettings::ThemeType dark);
 
+	/*! Returns a randomized color.
+		Subsequent calls to this function generate sufficiently different colors.
+	*/
+	static QColor randomColor();
+
 	QString				m_styleSheet;
 
 	QColor				m_alternativeBackgroundDark; // TODO
@@ -53,6 +58,10 @@ public:
 
 private:
 	static SVStyle		*m_self;
+
+
+	/*! The hue value of the last randomly generated color. */
+	static double		m_randomColorHueValue;
 
 	unsigned int		m_fontMonoSpacePointSize;
 	QString				m_fontMonoSpace;
