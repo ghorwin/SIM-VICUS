@@ -28,6 +28,10 @@
 #include "SVDBScheduleEditWidget.h"
 #include "SVDBInternalLoadsTableModel.h"
 #include "SVDBInternalLoadsPersonEditWidget.h"
+#include "SVDBNetworkComponentTableModel.h"
+#include "SVDBNetworkComponentEditWidget.h"
+#include "SVDBPipeTableModel.h"
+#include "SVDBPipeEditWidget.h"
 
 
 
@@ -314,6 +318,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createScheduleEditDialog(QWidget * 
 	return dlg;
 }
 
+
 SVDatabaseEditDialog * SVDatabaseEditDialog::createInternalLoadsEditDialog(QWidget * parent, int type) {
 	SVDatabaseEditDialog * dlg = nullptr;
 	switch ((SVDBInternalLoadsTableModel::Type)type) {
@@ -326,6 +331,28 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createInternalLoadsEditDialog(QWidg
 		default:
 			Q_ASSERT(false);
 	}
+	dlg->resize(1400,800);
+	return dlg;
+}
+
+
+SVDatabaseEditDialog * SVDatabaseEditDialog::createNetworkComponentEditDialog(QWidget * parent) {
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBNetworkComponentTableModel(parent, SVSettings::instance().m_db),
+		new SVDBNetworkComponentEditWidget(parent),
+		tr("Network Component Database"), QString(), false
+	);
+	dlg->resize(1400,800);
+	return dlg;
+}
+
+
+SVDatabaseEditDialog * SVDatabaseEditDialog::createPipeEditDialog(QWidget * parent) {
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBPipeTableModel(parent, SVSettings::instance().m_db),
+		new SVDBPipeEditWidget(parent),
+		tr("Network Pipes Database"), QString(), false
+	);
 	dlg->resize(1400,800);
 	return dlg;
 }

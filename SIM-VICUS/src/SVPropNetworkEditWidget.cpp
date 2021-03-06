@@ -3,6 +3,12 @@
 
 #include <QMessageBox>
 
+#include <NANDRAD_HydraulicNetworkComponent.h>
+
+#include <VICUS_KeywordList.h>
+
+#include "Vic3DWireFrameObject.h"
+
 #include "SVViewStateHandler.h"
 #include "SVNavigationTreeWidget.h"
 #include "SVUndoAddNetwork.h"
@@ -10,12 +16,8 @@
 #include "SVProjectHandler.h"
 #include "SVSettings.h"
 #include "SVDialogSelectNetworkPipes.h"
-#include "SVDBNetworkComponentEditDialog.h"
-#include "Vic3DWireFrameObject.h"
-
-#include <NANDRAD_HydraulicNetworkComponent.h>
-
-#include <VICUS_KeywordList.h>
+#include "SVMainWindow.h"
+#include "SVDatabaseEditDialog.h"
 
 
 SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
@@ -595,9 +597,8 @@ void SVPropNetworkEditWidget::on_horizontalSliderScaleEdges_valueChanged(int val
 
 
 void SVPropNetworkEditWidget::on_pushButtonEditComponents_clicked() {
-
 	unsigned int currentId  = m_ui->comboBoxComponent->currentData().toUInt();
-	SVDBNetworkComponentEditDialog *dialog = new SVDBNetworkComponentEditDialog(this);
+	SVDatabaseEditDialog *dialog = SVMainWindow::instance().dbNetworkComponentEditDialog();
 	int newId = dialog->select(currentId);
 	if (newId > 0){
 		setupComboBoxComponents();

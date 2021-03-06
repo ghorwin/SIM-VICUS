@@ -142,17 +142,6 @@ QModelIndex SVDBComponentTableModel::copyItem(const QModelIndex & existingItemIn
 }
 
 
-//QModelIndex SVDBComponentTableModel::findItem(unsigned int componentId) const {
-//	// select component with given matId
-//	for (int i=0, count = rowCount(); i<count; ++i) {
-//		QModelIndex sourceIndex = index(i,0);
-//		if (data(sourceIndex, Role_Id).toUInt() == componentId)
-//			return sourceIndex;
-//	}
-//	return QModelIndex();
-//}
-
-
 void SVDBComponentTableModel::deleteItem(const QModelIndex & index) {
 	if (!index.isValid())
 		return;

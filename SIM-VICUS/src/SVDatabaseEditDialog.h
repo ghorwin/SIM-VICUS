@@ -75,6 +75,9 @@ private:
 	static SVDatabaseEditDialog * createScheduleEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createInternalLoadsEditDialog(QWidget * parent, int type);
 
+	static SVDatabaseEditDialog * createNetworkComponentEditDialog(QWidget * parent);
+	static SVDatabaseEditDialog * createPipeEditDialog(QWidget * parent);
+
 
 	Ui::SVDatabaseEditDialog *m_ui;
 

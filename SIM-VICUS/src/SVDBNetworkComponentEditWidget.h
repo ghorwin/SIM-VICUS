@@ -1,7 +1,11 @@
 #ifndef SVDBNetworkComponentEditWidgetH
 #define SVDBNetworkComponentEditWidgetH
 
-#include <QWidget>
+#include "SVAbstractDatabaseEditWidget.h"
+
+namespace Ui {
+	class SVDBNetworkComponentEditWidget;
+}
 
 namespace VICUS {
 	class NetworkComponent;
@@ -10,9 +14,6 @@ namespace VICUS {
 class SVDBNetworkComponentTableModel;
 class SVDatabase;
 
-namespace Ui {
-	class SVDBNetworkComponentEditWidget;
-}
 
 /*! Edit widget for network components.
 
@@ -22,19 +23,19 @@ namespace Ui {
 	is no longer valid or you want to resize the container (through adding new items)
 	call updateInput() with an invalid index and/or nullptr pointer to the model.
 */
-class SVDBNetworkComponentEditWidget : public QWidget {
+class SVDBNetworkComponentEditWidget : public SVAbstractDatabaseEditWidget {
 	Q_OBJECT
 
 public:
 
 	explicit SVDBNetworkComponentEditWidget(QWidget *parent = nullptr);
-	~SVDBNetworkComponentEditWidget();
+	~SVDBNetworkComponentEditWidget() override;
 
 	/*! Needs to be called once, before the widget is being used. */
-	void setup(SVDatabase * db, SVDBNetworkComponentTableModel * dbModel);
+	void setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) override;
 
 	/*! Update widget with this. */
-	void updateInput(int id);
+	void updateInput(int id) override;
 
 private slots:
 	void on_lineEditName_editingFinished();

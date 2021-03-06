@@ -1,10 +1,9 @@
 #include "SVDBPipeTableModel.h"
 
-#include "SVDBPipeEditDialog.h"
-#include "SVConstants.h"
-
 #include <QIcon>
 #include <QFont>
+#include <QTableView>
+#include <QHeaderView>
 
 #include <VICUS_NetworkPipe.h>
 #include <VICUS_Database.h>
@@ -14,22 +13,13 @@
 
 #include <NANDRAD_KeywordList.h>
 
+#include "SVConstants.h"
 
 SVDBPipeTableModel::SVDBPipeTableModel(QObject *parent, SVDatabase &db) :
-	QAbstractTableModel(parent),
+	SVAbstractDatabaseTableModel(parent),
 	m_db(&db)
 {
-	// must only be created from SVDBPipeEditDialog
-	Q_ASSERT(dynamic_cast<SVDBPipeEditDialog*>(parent) != nullptr);
 	Q_ASSERT(m_db != nullptr);
-}
-
-SVDBPipeTableModel::~SVDBPipeTableModel() {
-}
-
-
-int SVDBPipeTableModel::columnCount ( const QModelIndex & ) const {
-	return NumColumns;
 }
 
 
@@ -120,6 +110,12 @@ QVariant SVDBPipeTableModel::headerData(int section, Qt::Orientation orientation
 }
 
 
+void SVDBPipeTableModel::resetModel() {
+	beginResetModel();
+	endResetModel();
+}
+
+
 QModelIndex SVDBPipeTableModel::addNewItem() {
 	VICUS::NetworkPipe pipe;
 	pipe.m_displayName.setEncodedString("en:<new pipe>");
@@ -137,29 +133,37 @@ QModelIndex SVDBPipeTableModel::addNewItem() {
 }
 
 
-QModelIndex SVDBPipeTableModel::addNewItem(VICUS::NetworkPipe pipe) {
+QModelIndex SVDBPipeTableModel::copyItem(const QModelIndex & existingItemIndex) {
+	// lookup existing item
+	const VICUS::Database<VICUS::NetworkPipe> & db = m_db->m_pipes;
+	Q_ASSERT(existingItemIndex.isValid() && existingItemIndex.row() < (int)db.size());
+	std::map<unsigned int, VICUS::NetworkPipe>::const_iterator it = db.begin();
+	std::advance(it, existingItemIndex.row());
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
-	unsigned int id = m_db->m_pipes.add( pipe );
+	// create new item and insert into DB
+	VICUS::NetworkPipe newItem(it->second);
+	unsigned int id = m_db->m_pipes.add( newItem );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;
 }
 
 
-bool SVDBPipeTableModel::deleteItem(QModelIndex index) {
+
+void SVDBPipeTableModel::deleteItem(const QModelIndex & index) {
 	if (!index.isValid())
-		return false;
+		return;
 	unsigned int id = data(index, Role_Id).toUInt();
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 	m_db->m_pipes.remove(id);
 	endRemoveRows();
-	return true;
 }
 
 
-void SVDBPipeTableModel::resetModel() {
-	beginResetModel();
-	endResetModel();
+void SVDBPipeTableModel::setColumnResizeModes(QTableView * tableView) {
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBPipeTableModel::ColId, QHeaderView::Fixed);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBPipeTableModel::ColCheck, QHeaderView::Fixed);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBPipeTableModel::ColName, QHeaderView::Stretch);
 }
 
 

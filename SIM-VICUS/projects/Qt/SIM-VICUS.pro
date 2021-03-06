@@ -133,10 +133,8 @@ SOURCES += \
 				../../src/SVDBMaterialEditWidget.cpp \
 				../../src/SVDBMaterialTableModel.cpp \
 				../../src/SVDBModelDelegate.cpp \
-				../../src/SVDBNetworkComponentEditDialog.cpp \
 				../../src/SVDBNetworkComponentEditWidget.cpp \
 				../../src/SVDBNetworkComponentTableModel.cpp \
-				../../src/SVDBPipeEditDialog.cpp \
 				../../src/SVDBPipeEditWidget.cpp \
 				../../src/SVDBPipeTableModel.cpp \
 				../../src/SVDBScheduleDailyCycleEditWidget.cpp \
@@ -254,10 +252,8 @@ HEADERS  += \
 				../../src/SVDBMaterialEditWidget.h \
 				../../src/SVDBMaterialTableModel.h \
 				../../src/SVDBModelDelegate.h \
-				../../src/SVDBNetworkComponentEditDialog.h \
 				../../src/SVDBNetworkComponentEditWidget.h \
 				../../src/SVDBNetworkComponentTableModel.h \
-				../../src/SVDBPipeEditDialog.h \
 				../../src/SVDBPipeEditWidget.h \
 				../../src/SVDBPipeTableModel.h \
 				../../src/SVDBScheduleDailyCycleEditWidget.h \
@@ -324,9 +320,7 @@ FORMS    += \
 				../../src/SVDBConstructionEditWidget.ui \
 				../../src/SVDBInternalLoadsPersonEditWidget.ui \
 				../../src/SVDBMaterialEditWidget.ui \
-				../../src/SVDBNetworkComponentEditDialog.ui \
 				../../src/SVDBNetworkComponentEditWidget.ui \
-				../../src/SVDBPipeEditDialog.ui \
 				../../src/SVDBPipeEditWidget.ui \
 				../../src/SVDBScheduleAddDialog.ui \
 				../../src/SVDBScheduleDailyCycleEditWidget.ui \

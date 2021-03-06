@@ -19,7 +19,7 @@
 #include "SVStyle.h"
 
 SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) :
-	QWidget(parent),
+	SVAbstractDatabaseEditWidget(parent),
 	m_ui(new Ui::SVDBNetworkComponentEditWidget)
 {
 	m_ui->setupUi(this);
@@ -73,9 +73,9 @@ SVDBNetworkComponentEditWidget::~SVDBNetworkComponentEditWidget() {
 }
 
 
-void SVDBNetworkComponentEditWidget::setup(SVDatabase * db, SVDBNetworkComponentTableModel * dbModel) {
+void SVDBNetworkComponentEditWidget::setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) {
 	m_db = db;
-	m_dbModel = dbModel;
+	m_dbModel = dynamic_cast<SVDBNetworkComponentTableModel*>(dbModel);
 }
 
 

@@ -59,8 +59,6 @@
 #include "SVPropFloorManagerWidget.h"
 
 #include "SVDatabaseEditDialog.h"
-#include "SVDBPipeEditDialog.h"
-#include "SVDBNetworkComponentEditDialog.h"
 
 #include "SVSimulationStartNandrad.h"
 #include "SVSimulationStartNetworkSim.h"
@@ -220,15 +218,15 @@ SVDatabaseEditDialog * SVMainWindow::dbWindowEditDialog() {
 	return nullptr;
 }
 
-SVDBPipeEditDialog *SVMainWindow::dbPipeEditDialog(){
+SVDatabaseEditDialog * SVMainWindow::dbPipeEditDialog(){
 	if (m_dbPipeEditDialog == nullptr)
-		m_dbPipeEditDialog = new SVDBPipeEditDialog(this);
+		m_dbPipeEditDialog = SVDatabaseEditDialog::createPipeEditDialog(this);
 	return m_dbPipeEditDialog;
 }
 
-SVDBNetworkComponentEditDialog *SVMainWindow::dbNetworkComponentEditDialog() {
+SVDatabaseEditDialog *SVMainWindow::dbNetworkComponentEditDialog() {
 	if (m_dbNetworkComponentEditDialog == nullptr)
-		m_dbNetworkComponentEditDialog = new SVDBNetworkComponentEditDialog(this);
+		m_dbNetworkComponentEditDialog = SVDatabaseEditDialog::createNetworkComponentEditDialog(this);
 	return m_dbNetworkComponentEditDialog;
 }
 

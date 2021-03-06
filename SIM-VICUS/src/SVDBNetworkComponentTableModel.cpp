@@ -1,5 +1,8 @@
 #include "SVDBNetworkComponentTableModel.h"
 
+#include <QTableView>
+#include <QHeaderView>
+
 #include <VICUS_NetworkComponent.h>
 #include <VICUS_Database.h>
 #include <VICUS_KeywordListQt.h>
@@ -9,18 +12,12 @@
 #include "SVConstants.h"
 
 SVDBNetworkComponentTableModel::SVDBNetworkComponentTableModel(QObject * parent, SVDatabase & db) :
-	QAbstractTableModel(parent),
+	SVAbstractDatabaseTableModel(parent),
 	m_db(&db)
 {
 	Q_ASSERT(m_db != nullptr);
 }
 
-SVDBNetworkComponentTableModel::~SVDBNetworkComponentTableModel() {
-}
-
-int SVDBNetworkComponentTableModel::columnCount ( const QModelIndex & ) const {
-	return NumColumns;
-}
 
 QVariant SVDBNetworkComponentTableModel::data ( const QModelIndex & index, int role) const {
 	if (!index.isValid())
@@ -113,6 +110,12 @@ QVariant SVDBNetworkComponentTableModel::headerData(int section, Qt::Orientation
 }
 
 
+void SVDBNetworkComponentTableModel::resetModel() {
+	beginResetModel();
+	endResetModel();
+}
+
+
 QModelIndex SVDBNetworkComponentTableModel::addNewItem() {
 	VICUS::NetworkComponent c;
 	c.m_displayName.setEncodedString("en:<new component type>");
@@ -124,40 +127,35 @@ QModelIndex SVDBNetworkComponentTableModel::addNewItem() {
 }
 
 
-QModelIndex SVDBNetworkComponentTableModel::addNewItem(VICUS::NetworkComponent c) {
+QModelIndex SVDBNetworkComponentTableModel::copyItem(const QModelIndex & existingItemIndex) {
+	// lookup existing item
+	const VICUS::Database<VICUS::NetworkComponent> & db = m_db->m_networkComponents;
+	Q_ASSERT(existingItemIndex.isValid() && existingItemIndex.row() < (int)db.size());
+	std::map<unsigned int, VICUS::NetworkComponent>::const_iterator it = db.begin();
+	std::advance(it, existingItemIndex.row());
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
-	unsigned int id = m_db->m_networkComponents.add( c );
+	// create new item and insert into DB
+	VICUS::NetworkComponent newItem(it->second);
+	unsigned int id = m_db->m_networkComponents.add( newItem );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;
 }
 
 
-QModelIndex SVDBNetworkComponentTableModel::findItem(unsigned int componentId) const {
-	// select component with given matId
-	for (int i=0, count = rowCount(); i<count; ++i) {
-		QModelIndex sourceIndex = index(i,0);
-		if (data(sourceIndex, Role_Id).toUInt() == componentId)
-			return sourceIndex;
-	}
-	return QModelIndex();
-}
-
-
-bool SVDBNetworkComponentTableModel::deleteItem(QModelIndex index) {
+void SVDBNetworkComponentTableModel::deleteItem(const QModelIndex & index) {
 	if (!index.isValid())
-		return false;
+		return;
 	unsigned int id = data(index, Role_Id).toUInt();
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 	m_db->m_networkComponents.remove(id);
 	endRemoveRows();
-	return true;
 }
 
 
-void SVDBNetworkComponentTableModel::resetModel() {
-	beginResetModel();
-	endResetModel();
+void SVDBNetworkComponentTableModel::setColumnResizeModes(QTableView * tableView) {
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBNetworkComponentTableModel::ColCheck, QHeaderView::Fixed);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBNetworkComponentTableModel::ColColor, QHeaderView::Fixed);
 }
 
 

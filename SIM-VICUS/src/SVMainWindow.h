@@ -33,7 +33,6 @@ class SVSimulationStartNetworkSim;
 
 class SVDatabaseEditDialog;
 class SVDBPipeEditDialog;
-class SVDBNetworkComponentEditDialog;
 
 /*! Main window class. */
 class SVMainWindow : public QMainWindow {
@@ -102,9 +101,9 @@ public:
 	/*! Returns the window edit dialog. */
 	SVDatabaseEditDialog * dbWindowEditDialog();
 	/*! Returns the pipe edit dialog. */
-	SVDBPipeEditDialog *dbPipeEditDialog();
+	SVDatabaseEditDialog *dbPipeEditDialog();
 	/*! Returns the network component edit dialog. */
-	SVDBNetworkComponentEditDialog *dbNetworkComponentEditDialog();
+	SVDatabaseEditDialog *dbNetworkComponentEditDialog();
 	/*! Returns the schedule edit dialog. */
 	SVDatabaseEditDialog *dbScheduleEditDialog();
 	/*! Returns the internal loads person edit dialog. */
@@ -362,8 +361,8 @@ private:
 	SVDatabaseEditDialog				*m_dbWindowEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbComponentEditDialog						= nullptr;
 	SVDatabaseEditDialog				*m_dbBoundaryConditionEditDialog				= nullptr;
-	SVDBPipeEditDialog					*m_dbPipeEditDialog								= nullptr;
-	SVDBNetworkComponentEditDialog		*m_dbNetworkComponentEditDialog					= nullptr;
+	SVDatabaseEditDialog				*m_dbPipeEditDialog								= nullptr;
+	SVDatabaseEditDialog				*m_dbNetworkComponentEditDialog					= nullptr;
 	SVDatabaseEditDialog				*m_dbScheduleEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbInternalLoadsPersonEditDialog				= nullptr;
 

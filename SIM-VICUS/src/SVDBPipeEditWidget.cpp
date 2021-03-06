@@ -12,7 +12,7 @@
 #include <SVConstants.h>
 
 SVDBPipeEditWidget::SVDBPipeEditWidget(QWidget *parent) :
-	QWidget(parent),
+	SVAbstractDatabaseEditWidget(parent),
 	m_ui(new Ui::SVDBPipeEditWidget)
 {
 	m_ui->setupUi(this);
@@ -26,7 +26,6 @@ SVDBPipeEditWidget::SVDBPipeEditWidget(QWidget *parent) :
 	m_ui->lineEditWallThickness->setup(0, 10000, tr("Wall thickness"), true, true);
 	m_ui->lineEditInsulationLambda->setup(0, 1000, tr("Thermal conductivity of the insulation material"), true, true);
 	m_ui->lineEditInsulationThickness->setup(0, 1000, tr("Insulation thickness"), true, true);
-
 }
 
 
@@ -35,9 +34,9 @@ SVDBPipeEditWidget::~SVDBPipeEditWidget() {
 }
 
 
-void SVDBPipeEditWidget::setup(SVDatabase * db, SVDBPipeTableModel * dbModel) {
+void SVDBPipeEditWidget::setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) {
 	m_db = db;
-	m_dbModel = dbModel;
+	m_dbModel = dynamic_cast<SVDBPipeTableModel*>(dbModel);
 }
 
 
