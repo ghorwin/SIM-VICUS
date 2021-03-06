@@ -14,6 +14,22 @@ bool ZoneTemplate::isValid() const {
 }
 
 
+unsigned int ZoneTemplate::subTemplateCount() const {
+
+	unsigned int count = 0;
+	if (m_idIntLoadPerson != INVALID_ID) ++count;
+	if (m_idIntLoadElectricEquipment != INVALID_ID) ++count;
+	if (m_idIntLoadLighting != INVALID_ID) ++count;
+	if (m_idIntLoadOther != INVALID_ID) ++count;
+	if (m_idControlThermostat != INVALID_ID) ++count;
+	if (m_idControlShading != INVALID_ID) ++count;
+	if (m_idNaturalVentilation != INVALID_ID) ++count;
+	if (m_idMechanicalVentilation != INVALID_ID) ++count;
+	if (m_idInfiltration != INVALID_ID) ++count;
+	return count;
+
+}
+
 
 
 } // namespace VICUS

@@ -6,6 +6,8 @@
 #include <IBK_Flag.h>
 #include <IBK_Parameter.h>
 
+#include <QColor>
+
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
@@ -26,6 +28,8 @@ public:
 	/*! Checks if all referenced ZoneTemplate is valid. */
 	bool isValid() const;
 
+	/*! Returns number of assigned sub-templates (needed by tree-model). */
+	unsigned int subTemplateCount() const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -34,6 +38,9 @@ public:
 
 	/*! Display name of ZoneTemplate. */
 	IBK::MultiLanguageString		m_displayName;									// XML:A
+
+	/*! False color. */
+	QColor							m_color;										// XML:A
 
 	/*! Notes. */
 	IBK::MultiLanguageString		m_notes;										// XML:E
@@ -67,8 +74,8 @@ public:
 
 	/*! Infiltration model id. */
 	unsigned int					m_idInfiltration			= INVALID_ID;		// XML:E
-
 };
+
 
 } // namespace VICUS
 
