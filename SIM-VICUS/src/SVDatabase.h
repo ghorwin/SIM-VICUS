@@ -16,6 +16,7 @@
 #include <VICUS_EPDDataset.h>
 #include <VICUS_Schedule.h>
 #include <VICUS_InternalLoad.h>
+#include <VICUS_ZoneTemplate.h>
 
 #include <VICUS_Database.h>
 
@@ -40,6 +41,7 @@ public:
 		DT_NetworkComponents,
 		DT_Schedules,
 		DT_InternalLoads,
+		DT_ZoneTemplates,
 		NUM_DT // used for "all"
 	};
 
@@ -91,8 +93,11 @@ public:
 	/*! Map of all database schedules */
 	VICUS::Database<VICUS::Schedule>					m_schedules;
 
-	/*! Map of all database schedules */
+	/*! Internal loads. */
 	VICUS::Database<VICUS::InternalLoad>				m_internalLoads;
+
+	/*! Zone templates. */
+	VICUS::Database<VICUS::ZoneTemplate>				m_zoneTemplates;
 
 private:
 	/*! Flag signaling whether any item in the database was modified or not. */

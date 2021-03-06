@@ -42,7 +42,8 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_fluids.readXML(					dbDir / "db_fluids.xml", "NetworkFluids", "NetworkFluid", true);
 		m_networkComponents.readXML(		dbDir / "db_networkComponents.xml", "NetworkComponents", "NetworkComponent", true);
 		m_schedules.readXML(				dbDir / "db_schedules.xml", "Schedules", "Schedule", true);
-		m_internalLoads.readXML(			dbDir / "db_internalLoads.xml", "InternalLoads", "internalLoad", true);
+		m_internalLoads.readXML(			dbDir / "db_internalLoads.xml", "InternalLoads", "InternalLoad", true);
+		m_zoneTemplates.readXML(			dbDir / "db_zoneTemplates.xml", "ZoneTemplates", "ZoneTemplate", true);
 
 	//	readXML(dbDir / "db_epdElements.xml", "EPDDatasets", "EPDDataset", m_dbEPDElements, true);
 	}
@@ -73,6 +74,8 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_schedules.readXML(		userDbDir / "db_schedules.xml", "Schedules", "Schedule", false);
 	if (t == NUM_DT || t == DT_InternalLoads)
 		m_internalLoads.readXML(	userDbDir / "db_internalLoads.xml", "InternalLoads", "InternalLoad", false);
+	if (t == NUM_DT || t == DT_ZoneTemplates)
+		m_zoneTemplates.readXML(	userDbDir / "db_zoneTemplates.xml", "ZoneTemplates", "ZoneTemplate", false);
 
 //	readXMLDB(userDbDir / "db_epdElements.xml", "EPDDatasets", "EPDDataset", m_dbEPDElements);
 }
@@ -93,6 +96,7 @@ void SVDatabase::writeDatabases() const {
 	m_networkComponents.writeXML(	userDbDir / "db_networkComponents.xml", "NetworkComponents");
 	m_schedules.writeXML(			userDbDir / "db_schedules.xml", "Schedules");
 	m_internalLoads.writeXML(		userDbDir / "db_internalLoads.xml", "InternalLoads");
+	m_zoneTemplates.writeXML(		userDbDir / "db_zoneTemplates.xml", "ZoneTemplates");
 
 //	writeXMLDB(userDbDir / "db_epdElements.xml", "EPDDatasets", m_dbEPDElements);
 }
