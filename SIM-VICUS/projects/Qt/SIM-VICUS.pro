@@ -142,7 +142,6 @@ SOURCES += \
 				../../src/SVDBScheduleDailyCycleEditWidget.cpp \
 				../../src/SVDBScheduleEditWidget.cpp \
 				../../src/SVDBScheduleTableModel.cpp \
-				../../src/SVDBWindowEditDialog.cpp \
 				../../src/SVDBWindowEditWidget.cpp \
 				../../src/SVDebugApplication.cpp \
 				../../src/SVDialogSelectNetworkPipes.cpp \
@@ -264,7 +263,6 @@ HEADERS  += \
 				../../src/SVDBScheduleDailyCycleEditWidget.h \
 				../../src/SVDBScheduleEditWidget.h \
 				../../src/SVDBScheduleTableModel.h \
-				../../src/SVDBWindowEditDialog.h \
 				../../src/SVDBWindowEditWidget.h \
 				../../src/SVDebugApplication.h \
 				../../src/SVDialogSelectNetworkPipes.h \
@@ -333,7 +331,6 @@ FORMS    += \
 				../../src/SVDBScheduleAddDialog.ui \
 				../../src/SVDBScheduleDailyCycleEditWidget.ui \
 				../../src/SVDBScheduleEditWidget.ui \
-				../../src/SVDBWindowEditDialog.ui \
 				../../src/SVDBWindowEditWidget.ui \
 				../../src/SVDatabaseEditDialog.ui \
 				../../src/SVDialogSelectNetworkPipes.ui \

@@ -59,7 +59,6 @@
 #include "SVPropFloorManagerWidget.h"
 
 #include "SVDatabaseEditDialog.h"
-#include "SVDBWindowEditDialog.h"
 #include "SVDBPipeEditDialog.h"
 #include "SVDBNetworkComponentEditDialog.h"
 
@@ -216,10 +215,9 @@ SVDatabaseEditDialog * SVMainWindow::dbBoundaryConditionEditDialog() {
 	return m_dbBoundaryConditionEditDialog;
 }
 
-SVDBWindowEditDialog * SVMainWindow::dbWindowEditDialog() {
-	if (m_dbWindowEditDialog == nullptr)
-		m_dbWindowEditDialog = new SVDBWindowEditDialog(this);
-	return m_dbWindowEditDialog;
+SVDatabaseEditDialog * SVMainWindow::dbWindowEditDialog() {
+	Q_ASSERT(false); // not implemented yet
+	return nullptr;
 }
 
 SVDBPipeEditDialog *SVMainWindow::dbPipeEditDialog(){
@@ -261,7 +259,8 @@ void SVMainWindow::on_actionDBConstructions_triggered() {
 
 
 void SVMainWindow::on_actionDBWindows_triggered() {
-	dbWindowEditDialog()->edit();
+	// TODO Stephan, Window edit dialog with WINDOW data file referencing
+	//	dbWindowEditDialog()->edit();
 }
 
 
