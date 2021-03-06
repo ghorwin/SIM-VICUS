@@ -17,3 +17,6 @@
 /ThermoHydraulicNetworkDynamicPipeAdiabatHeatPulse/
 /ThermoHydraulicNetworkDynamicPipeAdiabatFluxStep/
 /ThermoHydraulicNetworkDynamicPipeFluxStep/
+/ThermoHydraulicNetworkParallelPipesZoneExchange/
+/ThermoHydraulicNetworkSerialPipesSingleZoneExchange/
+/ThermoHydraulicNetworkSingleZoneExchange/
