@@ -8,6 +8,7 @@
 class QPlainTextEdit;
 class QWidget;
 class QTableView;
+class QTreeView;
 
 /*! Central implementation and configuration of visual appearance of the software.
 	This class provides several member functions that can be used to tune the appearance of the software.
@@ -27,6 +28,7 @@ public:
 	static void formatWidgetWithLayout(QWidget * w);
 
 	static void formatDatabaseTableView(QTableView * v);
+	static void formatDatabaseTreeView(QTreeView * v);
 
 	/*! Replaces all color text placeholders with colors based on the current style sheet. */
 	static void formatWelcomePage(QString & htmlCode);

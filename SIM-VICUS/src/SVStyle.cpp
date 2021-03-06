@@ -6,6 +6,7 @@
 #include <QPlainTextEdit>
 #include <QLayout>
 #include <QTableView>
+#include <QTreeView>
 #include <QHeaderView>
 #include <QDebug>
 
@@ -20,7 +21,6 @@ SVStyle & SVStyle::instance() {
 		"SVStyle before accessing SVStyle::instance()!");
 	return *m_self;
 }
-
 
 
 SVStyle::SVStyle() {
@@ -101,6 +101,19 @@ void SVStyle::formatDatabaseTableView(QTableView * v) {
 	v->horizontalHeader()->setFont(f); // Note: on Linux/Mac this won't work until Qt 5.11.1 - this was a bug between Qt 4.8...5.11.1
 }
 
+
+void SVStyle::formatDatabaseTreeView(QTreeView * v) {
+	v->header()->setMinimumSectionSize(19);
+	v->setSelectionBehavior(QAbstractItemView::SelectRows);
+	v->setSelectionMode(QAbstractItemView::SingleSelection);
+	v->setAlternatingRowColors(true);
+	v->setSortingEnabled(true);
+	v->sortByColumn(0, Qt::AscendingOrder);
+	QFont f;
+	f.setPointSizeF(f.pointSizeF()*0.8);
+	v->setFont(f);
+	v->header()->setFont(f); // Note: on Linux/Mac this won't work until Qt 5.11.1 - this was a bug between Qt 4.8...5.11.1
+}
 
 void SVStyle::formatWelcomePage(QString & htmlCode) {
 	switch (SVSettings::instance().m_theme) {
