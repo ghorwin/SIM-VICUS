@@ -60,7 +60,6 @@
 
 #include "SVDatabaseEditDialog.h"
 #include "SVDBWindowEditDialog.h"
-#include "SVDBBoundaryConditionEditDialog.h"
 #include "SVDBPipeEditDialog.h"
 #include "SVDBNetworkComponentEditDialog.h"
 #include "SVDBScheduleEditDialog.h"
@@ -199,7 +198,6 @@ SVDatabaseEditDialog * SVMainWindow::dbMaterialEditDialog() {
 	return m_dbMaterialEditDialog;
 }
 
-
 SVDatabaseEditDialog * SVMainWindow::dbConstructionEditDialog() {
 	if (m_dbConstructionEditDialog == nullptr) {
 		m_dbConstructionEditDialog = SVDatabaseEditDialog::createConstructionEditDialog(this);
@@ -211,12 +209,11 @@ SVDatabaseEditDialog * SVMainWindow::dbComponentEditDialog() {
 	if (m_dbComponentEditDialog == nullptr)
 		m_dbConstructionEditDialog = SVDatabaseEditDialog::createComponentEditDialog(this);
 	return m_dbComponentEditDialog;
-
 }
 
-SVDBBoundaryConditionEditDialog * SVMainWindow::dbBoundaryConditionEditDialog() {
+SVDatabaseEditDialog * SVMainWindow::dbBoundaryConditionEditDialog() {
 	if (m_dbBoundaryConditionEditDialog == nullptr)
-		m_dbBoundaryConditionEditDialog = new SVDBBoundaryConditionEditDialog(this);
+		m_dbBoundaryConditionEditDialog = SVDatabaseEditDialog::createBoundaryConditionsEditDialog(this);
 	return m_dbBoundaryConditionEditDialog;
 }
 

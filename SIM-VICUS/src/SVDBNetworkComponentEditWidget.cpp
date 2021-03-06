@@ -14,7 +14,7 @@
 
 #include "SVSettings.h"
 #include "SVDBNetworkComponentTableModel.h"
-#include "SVDBBoundaryConditionEditDialog.h"
+#include "SVDatabaseEditDialog.h"
 #include "SVMainWindow.h"
 #include "SVStyle.h"
 

@@ -71,6 +71,7 @@ private:
 	static SVDatabaseEditDialog * createMaterialEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createConstructionEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createComponentEditDialog(QWidget * parent);
+	static SVDatabaseEditDialog * createBoundaryConditionsEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createInternalLoadsEditDialog(QWidget * parent, int type);
 
 

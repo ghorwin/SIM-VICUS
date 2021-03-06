@@ -22,6 +22,8 @@
 #include "SVDBConstructionEditWidget.h"
 #include "SVDBComponentTableModel.h"
 #include "SVDBComponentEditWidget.h"
+#include "SVDBBoundaryConditionTableModel.h"
+#include "SVDBBoundaryConditionEditWidget.h"
 #include "SVDBInternalLoadsTableModel.h"
 #include "SVDBInternalLoadsPersonEditWidget.h"
 
@@ -283,6 +285,17 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createComponentEditDialog(QWidget *
 		new SVDBComponentTableModel(parent, SVSettings::instance().m_db),
 		new SVDBComponentEditWidget(parent),
 		tr("Component Database"), QString(), false
+	);
+	dlg->resize(1400,800);
+	return dlg;
+}
+
+
+SVDatabaseEditDialog * SVDatabaseEditDialog::createBoundaryConditionsEditDialog(QWidget * parent) {
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBBoundaryConditionTableModel(parent, SVSettings::instance().m_db),
+		new SVDBBoundaryConditionEditWidget(parent),
+		tr("Boundary Condition Database"), QString(), false
 	);
 	dlg->resize(1400,800);
 	return dlg;

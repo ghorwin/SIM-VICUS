@@ -1,7 +1,4 @@
 #include "SVDBConstructionEditWidget.h"
-
-#include <QHeaderView>
-
 #include "ui_SVDBConstructionEditWidget.h"
 
 #include <QtExt_ConstructionLayer.h>
@@ -9,12 +6,11 @@
 #include <QtExt_ConstructionViewWidget.h>
 #include <QtExt_Locale.h>
 #include <QtExt_LanguageHandler.h>
-#include <SVConstants.h>
-
-#include "SVStyle.h"
 
 #include <VICUS_KeywordListQt.h>
 
+#include "SVStyle.h"
+#include "SVConstants.h"
 #include "SVDBConstructionTableModel.h"
 #include "SVDatabaseEditDialog.h"
 #include "SVMainWindow.h"

@@ -2,6 +2,8 @@
 
 #include <QIcon>
 #include <QFont>
+#include <QTableView>
+#include <QHeaderView>
 
 #include <VICUS_BoundaryCondition.h>
 #include <VICUS_Database.h>
@@ -12,24 +14,13 @@
 #include <QtExt_LanguageHandler.h>
 
 #include "SVConstants.h"
-#include "SVDBBoundaryConditionEditDialog.h"
 
 
 SVDBBoundaryConditionTableModel::SVDBBoundaryConditionTableModel(QObject *parent, SVDatabase &db) :
-	QAbstractTableModel(parent),
+	SVAbstractDatabaseTableModel(parent),
 	m_db(&db)
 {
-	// must only be created from SVDBBoundaryConditionEditDialog
-	Q_ASSERT(dynamic_cast<SVDBBoundaryConditionEditDialog*>(parent) != nullptr);
 	Q_ASSERT(m_db != nullptr);
-}
-
-SVDBBoundaryConditionTableModel::~SVDBBoundaryConditionTableModel() {
-}
-
-
-int SVDBBoundaryConditionTableModel::columnCount ( const QModelIndex & ) const {
-	return NumColumns;
 }
 
 
@@ -121,6 +112,12 @@ QVariant SVDBBoundaryConditionTableModel::headerData(int section, Qt::Orientatio
 }
 
 
+void SVDBBoundaryConditionTableModel::resetModel() {
+	beginResetModel();
+	endResetModel();
+}
+
+
 QModelIndex SVDBBoundaryConditionTableModel::addNewItem() {
 	VICUS::BoundaryCondition bc;
 	bc.m_displayName.setEncodedString("en:<new boundary condition>");
@@ -143,29 +140,37 @@ QModelIndex SVDBBoundaryConditionTableModel::addNewItem() {
 }
 
 
-QModelIndex SVDBBoundaryConditionTableModel::addNewItem(VICUS::BoundaryCondition bc) {
+QModelIndex SVDBBoundaryConditionTableModel::copyItem(const QModelIndex & existingItemIndex) {
+	// lookup existing item
+	const VICUS::Database<VICUS::BoundaryCondition> & db = m_db->m_boundaryConditions;
+	Q_ASSERT(existingItemIndex.isValid() && existingItemIndex.row() < (int)db.size());
+	std::map<unsigned int, VICUS::BoundaryCondition>::const_iterator it = db.begin();
+	std::advance(it, existingItemIndex.row());
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
-	unsigned int id = m_db->m_boundaryConditions.add( bc );
+	// create new item and insert into DB
+	VICUS::BoundaryCondition newItem(it->second);
+	unsigned int id = m_db->m_boundaryConditions.add( newItem );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;
 }
 
 
-bool SVDBBoundaryConditionTableModel::deleteItem(QModelIndex index) {
+void SVDBBoundaryConditionTableModel::deleteItem(const QModelIndex & index) {
 	if (!index.isValid())
-		return false;
+		return;
 	unsigned int id = data(index, Role_Id).toUInt();
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 	m_db->m_boundaryConditions.remove(id);
 	endRemoveRows();
-	return true;
 }
 
 
-void SVDBBoundaryConditionTableModel::resetModel() {
-	beginResetModel();
-	endResetModel();
+void SVDBBoundaryConditionTableModel::setColumnResizeModes(QTableView * tableView) {
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColId, QHeaderView::Fixed);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColCheck, QHeaderView::Fixed);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColColor, QHeaderView::Fixed);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColName, QHeaderView::Stretch);
 }
 
 

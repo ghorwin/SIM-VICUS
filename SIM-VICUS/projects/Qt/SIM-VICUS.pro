@@ -124,7 +124,6 @@ SOURCES += \
 				../../src/SVClimateFileInfo.cpp \
 				../../src/SVConstants.cpp \
 				../../src/SVDatabase.cpp \
-				../../src/SVDBBoundaryConditionEditDialog.cpp \
 				../../src/SVDBBoundaryConditionEditWidget.cpp \
 				../../src/SVDBBoundaryConditionTableModel.cpp \
 				../../src/SVDBComponentEditWidget.cpp \
@@ -248,7 +247,6 @@ HEADERS  += \
 				../../src/SVClimateFileInfo.h \
 				../../src/SVConstants.h \
 				../../src/SVDatabase.h \
-				../../src/SVDBBoundaryConditionEditDialog.h \
 				../../src/SVDBBoundaryConditionEditWidget.h \
 				../../src/SVDBBoundaryConditionTableModel.h \
 				../../src/SVDBComponentEditWidget.h \
@@ -325,7 +323,6 @@ HEADERS  += \
 
 FORMS    += \
 				../../src/SVAboutDialog.ui \
-				../../src/SVDBBoundaryConditionEditDialog.ui \
 				../../src/SVDBBoundaryConditionEditWidget.ui \
 				../../src/SVDBComponentEditWidget.ui \
 				../../src/SVDBConstructionEditWidget.ui \

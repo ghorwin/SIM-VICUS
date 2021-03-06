@@ -1,20 +1,19 @@
 #ifndef SVDBBoundaryConditionEditWidgetH
 #define SVDBBoundaryConditionEditWidgetH
 
-#include <QWidget>
+#include "SVAbstractDatabaseEditWidget.h"
 
+namespace Ui {
+	class SVDBBoundaryConditionEditWidget;
+}
 
 namespace VICUS {
-class BoundaryCondition;
+	class BoundaryCondition;
 }
 
 class SVDBBoundaryConditionTableModel;
 class SVDatabase;
 
-
-namespace Ui {
-class SVDBBoundaryConditionEditWidget;
-}
 /*! Edit widget for boundary condition.
 
 	A call to updateInput() initializes the widget and fill the GUI controls with data.
@@ -23,18 +22,18 @@ class SVDBBoundaryConditionEditWidget;
 	is no longer valid or you want to resize the container (through adding new items)
 	call updateInput() with an invalid index and/or nullptr pointer to the model.
 */
-class SVDBBoundaryConditionEditWidget : public QWidget {
+class SVDBBoundaryConditionEditWidget : public SVAbstractDatabaseEditWidget {
 	Q_OBJECT
 
 public:
 	explicit SVDBBoundaryConditionEditWidget(QWidget *parent = nullptr);
-	~SVDBBoundaryConditionEditWidget();
+	~SVDBBoundaryConditionEditWidget() override;
 
 	/*! Needs to be called once, before the widget is being used. */
-	void setup(SVDatabase * db, SVDBBoundaryConditionTableModel * dbModel);
+	void setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) override;
 
 	/*! Update widget with this. */
-	void updateInput(int id);
+	void updateInput(int id) override;
 
 
 private slots:

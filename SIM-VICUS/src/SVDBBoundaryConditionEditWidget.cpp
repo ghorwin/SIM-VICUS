@@ -1,19 +1,17 @@
 #include "SVDBBoundaryConditionEditWidget.h"
 #include "ui_SVDBBoundaryConditionEditWidget.h"
 
-#include "SVConstants.h"
-#include "SVSettings.h"
-
 #include <NANDRAD_KeywordListQt.h>
 #include <NANDRAD_KeywordList.h>
 
 #include <QtExt_LanguageHandler.h>
 
 #include "SVDBBoundaryConditionTableModel.h"
-
+#include "SVConstants.h"
+#include "SVSettings.h"
 
 SVDBBoundaryConditionEditWidget::SVDBBoundaryConditionEditWidget(QWidget *parent) :
-	QWidget(parent),
+	SVAbstractDatabaseEditWidget(parent),
 	m_ui(new Ui::SVDBBoundaryConditionEditWidget)
 {
 	m_ui->setupUi(this);
@@ -58,9 +56,9 @@ SVDBBoundaryConditionEditWidget::~SVDBBoundaryConditionEditWidget() {
 }
 
 
-void SVDBBoundaryConditionEditWidget::setup(SVDatabase * db, SVDBBoundaryConditionTableModel * dbModel) {
+void SVDBBoundaryConditionEditWidget::setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) {
 	m_db = db;
-	m_dbModel = dbModel;
+	m_dbModel = dynamic_cast<SVDBBoundaryConditionTableModel*>(dbModel);
 }
 
 

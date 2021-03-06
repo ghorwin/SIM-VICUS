@@ -9,7 +9,6 @@
 #include "SVSettings.h"
 #include "SVDBComponentTableModel.h"
 #include "SVDatabaseEditDialog.h"
-#include "SVDBBoundaryConditionEditDialog.h"
 #include "SVMainWindow.h"
 #include "SVConstants.h"
 
@@ -209,7 +208,7 @@ void SVDBComponentEditWidget::on_toolButtonSelectConstruction_clicked() {
 
 void SVDBComponentEditWidget::on_toolButtonSelectBoundaryConditionSideAName_clicked() {
 	// get boundary condition edit dialog from mainwindow
-	SVDBBoundaryConditionEditDialog * bcEditDialog = SVMainWindow::instance().dbBoundaryConditionEditDialog();
+	SVDatabaseEditDialog * bcEditDialog = SVMainWindow::instance().dbBoundaryConditionEditDialog();
 	unsigned int bcId = bcEditDialog->select(m_current->m_idSideABoundaryCondition);
 	if (bcId != m_current->m_idSideABoundaryCondition) {
 		m_current->m_idSideABoundaryCondition = bcId;
@@ -221,7 +220,7 @@ void SVDBComponentEditWidget::on_toolButtonSelectBoundaryConditionSideAName_clic
 
 void SVDBComponentEditWidget::on_toolButtonSelectBoundaryConditionSideBName_clicked() {
 	// get boundary condition edit dialog from mainwindow
-	SVDBBoundaryConditionEditDialog * bcEditDialog = SVMainWindow::instance().dbBoundaryConditionEditDialog();
+	SVDatabaseEditDialog * bcEditDialog = SVMainWindow::instance().dbBoundaryConditionEditDialog();
 	unsigned int bcId = bcEditDialog->select(m_current->m_idSideBBoundaryCondition);
 	if (bcId != m_current->m_idSideBBoundaryCondition) {
 		m_current->m_idSideBBoundaryCondition = bcId;
