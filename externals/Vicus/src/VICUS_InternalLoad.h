@@ -72,15 +72,16 @@ public:
 	/*! Data source. */
 	IBK::MultiLanguageString		m_dataSource;							// XML:E
 
-	/*! Intenal Load category. */
+	/*! Internal Load category. */
 	Category						m_category = NUM_MC;					// XML:E:required
 
 	/*! Person count method*/
 	PersonCountMethod				m_personCountMethod=NUM_PCM;			// XML:E
 
-	unsigned int					m_occupancyScheduleId = INVALID_ID;		// XML:E:required
+	/*! Schedule ID. */
+	unsigned int					m_occupancyScheduleId = INVALID_ID;		// XML:E
 
-	/*! only required for person*/
+	/*! Only required for person*/
 	unsigned int					m_activityScheduleId = INVALID_ID;		// XML:E:
 
 	/*! List of parameters. */
