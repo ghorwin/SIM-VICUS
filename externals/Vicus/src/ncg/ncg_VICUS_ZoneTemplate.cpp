@@ -66,24 +66,18 @@ void ZoneTemplate::readXML(const TiXmlElement * element) {
 				m_notes.setEncodedString(c->GetText());
 			else if (cName == "DataSource")
 				m_dataSource.setEncodedString(c->GetText());
-			else if (cName == "IdIntLoadPerson")
-				m_idIntLoadPerson = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "IdIntLoadElectricEquipment")
-				m_idIntLoadElectricEquipment = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "IdIntLoadLighting")
-				m_idIntLoadLighting = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "IdIntLoadOther")
-				m_idIntLoadOther = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "IdControlThermostat")
-				m_idControlThermostat = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "IdControlShading")
-				m_idControlShading = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "IdNaturalVentilation")
-				m_idNaturalVentilation = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "IdMechanicalVentilation")
-				m_idMechanicalVentilation = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "IdInfiltration")
-				m_idInfiltration = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "IBK:IntPara") {
+				IBK::IntPara p;
+				NANDRAD::readIntParaElement(c, p);
+				bool success = false;
+				try {
+					SubTemplateType ptype = (SubTemplateType)KeywordList::Enumeration("ZoneTemplate::SubTemplateType", p.name);
+					m_idReferences[ptype] = p; success = true;
+				}
+				catch (...) { /* intentional fail */  }
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -112,24 +106,12 @@ TiXmlElement * ZoneTemplate::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.encodedString());
 	if (!m_dataSource.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.encodedString());
-	if (m_idIntLoadPerson != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "IdIntLoadPerson", nullptr, std::string(), IBK::val2string<unsigned int>(m_idIntLoadPerson));
-	if (m_idIntLoadElectricEquipment != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "IdIntLoadElectricEquipment", nullptr, std::string(), IBK::val2string<unsigned int>(m_idIntLoadElectricEquipment));
-	if (m_idIntLoadLighting != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "IdIntLoadLighting", nullptr, std::string(), IBK::val2string<unsigned int>(m_idIntLoadLighting));
-	if (m_idIntLoadOther != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "IdIntLoadOther", nullptr, std::string(), IBK::val2string<unsigned int>(m_idIntLoadOther));
-	if (m_idControlThermostat != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "IdControlThermostat", nullptr, std::string(), IBK::val2string<unsigned int>(m_idControlThermostat));
-	if (m_idControlShading != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "IdControlShading", nullptr, std::string(), IBK::val2string<unsigned int>(m_idControlShading));
-	if (m_idNaturalVentilation != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "IdNaturalVentilation", nullptr, std::string(), IBK::val2string<unsigned int>(m_idNaturalVentilation));
-	if (m_idMechanicalVentilation != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "IdMechanicalVentilation", nullptr, std::string(), IBK::val2string<unsigned int>(m_idMechanicalVentilation));
-	if (m_idInfiltration != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "IdInfiltration", nullptr, std::string(), IBK::val2string<unsigned int>(m_idInfiltration));
+
+	for (unsigned int i=0; i<NUM_ST; ++i) {
+		if (!m_idReferences[i].name.empty()) {
+			TiXmlElement::appendSingleAttributeElement(e, "IBK:IntPara", "name", m_idReferences[i].name, IBK::val2string(m_idReferences[i].value));
+		}
+	}
 	return e;
 }
 

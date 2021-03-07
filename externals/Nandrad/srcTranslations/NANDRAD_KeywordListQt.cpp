@@ -93,8 +93,6 @@ KeywordListQt::KeywordListQt() {
 	tr("Start time point.");
 	tr("End time point.");
 	tr("StepSize.");
-	tr("Some temperatures");
-	tr("Some mass");
 	tr("constant");
 	tr("linear");
 	tr("Continuous data");
