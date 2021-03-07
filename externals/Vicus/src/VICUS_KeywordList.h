@@ -26,6 +26,7 @@
 #include <typeinfo>
 
 #include <IBK_Parameter.h>
+#include <IBK_IntPara.h>
 
 namespace VICUS {
 
@@ -147,6 +148,10 @@ public:
 		\param val The value (given in the unit specified for the parameter; requires a unit to be given)
 	*/
 	static void setParameter(IBK::Parameter para[], const char * const enumtype, int n, const double &val);
+
+	/*! As setParameter(), but for IBK::IntPara. */
+	static void setIntPara(IBK::IntPara para[], const char * const enumtype, int n, const int &val);
+
 };
 
 } // namespace VICUS

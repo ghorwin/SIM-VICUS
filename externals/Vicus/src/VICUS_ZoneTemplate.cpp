@@ -6,10 +6,6 @@ namespace VICUS {
 
 bool ZoneTemplate::isValid() const {
 
-	if( m_idIntLoadPerson != INVALID_ID){
-		///TODO Dirk->Andreas wie prüfe ich denn hier dieses Untertemplate?
-	}
-
 	return true;
 }
 
@@ -17,17 +13,22 @@ bool ZoneTemplate::isValid() const {
 unsigned int ZoneTemplate::subTemplateCount() const {
 
 	unsigned int count = 0;
-	if (m_idIntLoadPerson != INVALID_ID) ++count;
-	if (m_idIntLoadElectricEquipment != INVALID_ID) ++count;
-	if (m_idIntLoadLighting != INVALID_ID) ++count;
-	if (m_idIntLoadOther != INVALID_ID) ++count;
-	if (m_idControlThermostat != INVALID_ID) ++count;
-	if (m_idControlShading != INVALID_ID) ++count;
-	if (m_idNaturalVentilation != INVALID_ID) ++count;
-	if (m_idMechanicalVentilation != INVALID_ID) ++count;
-	if (m_idInfiltration != INVALID_ID) ++count;
+	for (int i=0; i<NUM_ST; ++i)
+		if (!m_idReferences[i].name.empty()) ++count;
 	return count;
 
+}
+
+
+ZoneTemplate::SubTemplateType ZoneTemplate::usedReference(unsigned int index) const {
+	int count = -1;
+	int i=0;
+	for (; i<NUM_ST && count < (int)index; ++i) {
+		// increase count for each used id reference
+		if (!m_idReferences[i].name.empty())
+			++count;
+	}
+	return (ZoneTemplate::SubTemplateType)i; // if index > number of used references, we return NUM_ST here
 }
 
 

@@ -1,10 +1,7 @@
 #ifndef VICUS_ZoneTemplateH
 #define VICUS_ZoneTemplateH
 
-#include <IBK_LinearSpline.h>
-
-#include <IBK_Flag.h>
-#include <IBK_Parameter.h>
+#include <IBK_IntPara.h>
 
 #include <QColor>
 
@@ -20,6 +17,16 @@ namespace VICUS {
 class ZoneTemplate : public AbstractDBElement {
 public:
 
+	/*! Types used to identify individual sub-templates. */
+	enum SubTemplateType {
+		ST_IntLoadPerson,
+		ST_IntLoadEquipment,
+		ST_IntLoadLighting,
+		ST_IntLoadOther,
+		ST_ControlThermostat,
+		NUM_ST
+	};
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	VICUS_READWRITE
@@ -30,6 +37,14 @@ public:
 
 	/*! Returns number of assigned sub-templates (needed by tree-model). */
 	unsigned int subTemplateCount() const;
+
+	/*! Returns the type of reference by index, counting only the used references, i.e. references not INVALID_ID.
+		For example, if m_idIntLoadPerson == INVALID_ID and m_idIntLoadElectricEquipment has a valid ID, than
+		usedReference(0) returns ST_IntLoadEquipment.
+		\return Returns type of corresponding id reference or NUM_ST, if index is larger than the number of non-empty
+				id references.
+	*/
+	SubTemplateType usedReference(unsigned int index) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -48,32 +63,37 @@ public:
 	/*! Data source. */
 	IBK::MultiLanguageString		m_dataSource;									// XML:E
 
+	/*! Stores id references for all sub-templates. */
+	IBK::IntPara					m_idReferences[NUM_ST];							// XML:E
+
+#if 0
 	/*! Internal loads person model id. */
-	unsigned int					m_idIntLoadPerson			= INVALID_ID;		// XML:E
+	unsigned int					m_idIntLoadPerson			= INVALID_ID;
 
 	/*! Internal loads electric equipment model id. */
-	unsigned int					m_idIntLoadElectricEquipment = INVALID_ID;		// XML:E
+	unsigned int					m_idIntLoadElectricEquipment = INVALID_ID;
 
 	/*! Internal loads electric lighting model id. */
-	unsigned int					m_idIntLoadLighting			= INVALID_ID;		// XML:E
+	unsigned int					m_idIntLoadLighting			= INVALID_ID;
 
 	/*! Internal loads other equipment model id. */
-	unsigned int					m_idIntLoadOther			= INVALID_ID;		// XML:E
+	unsigned int					m_idIntLoadOther			= INVALID_ID;
 
 	/*! Control thermostat model id. */
-	unsigned int					m_idControlThermostat		= INVALID_ID;		// XML:E
+	unsigned int					m_idControlThermostat		= INVALID_ID;
 
 	/*! Control shading model id. */
-	unsigned int					m_idControlShading			= INVALID_ID;		// XML:E
+	unsigned int					m_idControlShading			= INVALID_ID;
 
 	/*! Natural ventilation model id. */
-	unsigned int					m_idNaturalVentilation		= INVALID_ID;		// XML:E
+	unsigned int					m_idNaturalVentilation		= INVALID_ID;
 
 	/*! Mechanical ventilation model id. */
-	unsigned int					m_idMechanicalVentilation	= INVALID_ID;		// XML:E
+	unsigned int					m_idMechanicalVentilation	= INVALID_ID;
 
 	/*! Infiltration model id. */
-	unsigned int					m_idInfiltration			= INVALID_ID;		// XML:E
+	unsigned int					m_idInfiltration			= INVALID_ID;
+#endif
 };
 
 
