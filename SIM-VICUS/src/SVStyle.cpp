@@ -227,14 +227,15 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 QColor SVStyle::randomColor() {
 	double s = 1;
 #if QT_VERSION >= 0x050a00
-	m_randomColorHueValue += QRandomGenerator().generateDouble();
-	s = QRandomGenerator().generateDouble();
+	m_randomColorHueValue += QRandomGenerator().generateDouble()*0.4;
+	s = QRandomGenerator().generateDouble()*4;
+	s = (s*2 + 2)/10;
 #else
 	m_randomColorHueValue += double(qrand())/RAND_MAX*0.4;
-	m_randomColorHueValue += 0.05;
 	s = std::floor(double(qrand())/RAND_MAX*4);
 	s = (s*2 + 2)/10;
 #endif
+	m_randomColorHueValue += 0.05;
 
 	if (m_randomColorHueValue > 1)
 		m_randomColorHueValue -= 1;
