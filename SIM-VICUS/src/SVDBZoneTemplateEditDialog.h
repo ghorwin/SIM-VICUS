@@ -58,6 +58,8 @@ private slots:
 
 	void on_treeView_doubleClicked(const QModelIndex &index);
 
+	void onSelectSubTemplate(unsigned int zoneTemplateID, int subTemplateType);
+
 private:
 	/*! If table contains an element with matching ID, this row is made current.
 		Signals are blocked in this function.

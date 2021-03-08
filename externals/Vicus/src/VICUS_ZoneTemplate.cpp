@@ -4,6 +4,12 @@
 
 namespace VICUS {
 
+ZoneTemplate::ZoneTemplate() {
+	for (int i = 0; i<NUM_ST; ++i)
+		m_idReferences[i] = VICUS::INVALID_ID;
+}
+
+
 bool ZoneTemplate::isValid() const {
 
 	// TODO : Implement

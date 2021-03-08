@@ -35,6 +35,15 @@ public:
 	/*! Update widget with this. */
 	void updateInput(int id, int subTemplateId, int subTemplateType);
 
+signals:
+	/*! Emitted when the action in the widget shall cause the tree view to change selection.
+		In case of removal of a sub-template, the subTemplateType matches ZoneTemplate::NUM_ST and
+		in this case the top-level ZoneTemplate node shall be selected.
+		The selection change in the tree must cause a call to updateInput() afterwards, even if
+		the same item was re-selected.
+	*/
+	void selectSubTemplate(unsigned int id, int subTemplateType);
+
 private slots:
 	void on_lineEditName_editingFinished();
 	void on_pushButtonColor_colorChanged();

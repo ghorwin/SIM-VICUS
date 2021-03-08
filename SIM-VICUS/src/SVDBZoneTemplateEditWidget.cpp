@@ -98,7 +98,7 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, int subT
 		case VICUS::ZoneTemplate::ST_IntLoadPerson: {
 			m_ui->labelSubTemplate->setText(tr("Internal Loads - Person loads:"));
 			// lookup corresponding dataset entry in database
-			const VICUS::InternalLoad * iload = m_db->m_internalLoads[subTemplateId];
+			const VICUS::InternalLoad * iload = m_db->m_internalLoads[(unsigned int)subTemplateId];
 			if (iload == nullptr) {
 				m_ui->lineEditSubComponent->setText(tr("<select>"));
 				m_ui->toolButtonRemoveSubComponent->setEnabled(false);
@@ -116,6 +116,8 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, int subT
 		case VICUS::ZoneTemplate::ST_ControlThermostat:
 		break;
 
+		case VICUS::ZoneTemplate::NUM_ST:
+		break;
 	}
 
 }
@@ -161,9 +163,10 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddSubTemplate_clicked() {
 
 	unsigned int id = SVMainWindow::instance().dbInternalLoadsPersonEditDialog()->select(VICUS::INVALID_ID);
 	if (id == VICUS::INVALID_ID) return;
-	if (m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson].value != (int)id) {
-		VICUS::KeywordList::setIntPara(m_current->m_idReferences, "ZoneTemplate::SubTemplateType", VICUS::ZoneTemplate::ST_IntLoadPerson, (int)id);
+	if (m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson] != id) {
+		m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson] = id;
 		m_db->m_zoneTemplates.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		emit selectSubTemplate(m_current->m_id, (int)VICUS::ZoneTemplate::ST_IntLoadPerson);
 	}
 }

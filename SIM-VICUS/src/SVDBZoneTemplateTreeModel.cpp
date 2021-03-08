@@ -8,6 +8,7 @@
 #include <VICUS_KeywordListQt.h>
 
 #include <QtExt_LanguageHandler.h>
+#include <QtExt_Conversions.h>
 
 #include "SVConstants.h"
 #include "SVStyle.h"
@@ -40,13 +41,9 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 
 		switch (role) {
 			case Qt::DisplayRole : {
-				// Note: when accessing multilanguage strings below, take name in current language or if missing, "all"
-				std::string langId = QtExt::LanguageHandler::instance().langId().toStdString();
-				std::string fallBackLangId = "en";
-
 				switch (index.column()) {
 					case ColId					: return it->first;
-					case ColName				: return QString::fromStdString(it->second.m_displayName.string(langId, fallBackLangId));
+					case ColName				: return QtExt::MultiLangString2QString(it->second.m_displayName);
 				}
 			} break;
 
@@ -81,7 +78,41 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 		const VICUS::ZoneTemplate & zt = it->second;
 
 		int subTemplateIndex = index.row();
-		VICUS::ZoneTemplate::SubTemplateType subType = zt.usedReference(subTemplateIndex);
+		VICUS::ZoneTemplate::SubTemplateType subType = zt.usedReference((unsigned int)subTemplateIndex);
+
+		// subtype role
+		if (role == Qt::UserRole + 20) {
+			return subType;
+		}
+
+		if (role == Qt::DisplayRole && index.column() == ColId) {
+			return zt.m_idReferences[subType];
+		}
+
+		// different handling based on referenced sub-type
+		switch (subType) {
+			case VICUS::ZoneTemplate::ST_IntLoadPerson:  {
+				// lookup item in question
+				const VICUS::InternalLoad * iload = m_db->m_internalLoads[zt.m_idReferences[subType]];
+				// Mind: il might be a nullptr, if index wasn't given
+				if (role == Qt::DisplayRole && index.column() == ColName) {
+					if (iload == nullptr)
+						return tr("<invalid ID reference>");
+					else
+						return QtExt::MultiLangString2QString(iload->m_displayName);
+				}
+				else if (role == Qt::BackgroundRole && index.column() == ColColor) {
+					if (iload == nullptr) return QVariant();
+					else return iload->m_color;
+				}
+			} break;
+			case VICUS::ZoneTemplate::ST_IntLoadEquipment:
+			case VICUS::ZoneTemplate::ST_IntLoadLighting:
+			case VICUS::ZoneTemplate::ST_IntLoadOther:
+			case VICUS::ZoneTemplate::ST_ControlThermostat:
+			case VICUS::ZoneTemplate::NUM_ST:
+			break;
+		}
 
 	}
 
@@ -111,6 +142,9 @@ int SVDBZoneTemplateTreeModel::rowCount ( const QModelIndex & parent) const {
 	// top-level - number of zone templates
 	if (!parent.isValid())
 		return (int)m_db->m_zoneTemplates.size();
+	// sub-template nodes to not have children themselves
+	if (parent.internalPointer() != nullptr)
+		return 0;
 	// lookup currently selected zone template
 	int row = parent.row();
 	const VICUS::Database<VICUS::ZoneTemplate> & db = m_db->m_zoneTemplates;

@@ -29,6 +29,8 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
+	ZoneTemplate();
+
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 

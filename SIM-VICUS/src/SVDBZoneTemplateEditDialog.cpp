@@ -76,6 +76,7 @@ void SVDBZoneTemplateEditDialog::edit(unsigned int initialId) {
 	selectItemById(initialId);
 	onCurrentIndexChanged(m_ui->treeView->currentIndex(), QModelIndex()); // select nothing
 
+	m_ui->treeView->expandAll();
 	m_ui->treeView->resizeColumnToContents(0);
 	m_ui->treeView->resizeColumnToContents(1);
 	m_ui->treeView->resizeColumnToContents(2);
@@ -94,6 +95,7 @@ unsigned int SVDBZoneTemplateEditDialog::select(unsigned int initialId) {
 	selectItemById(initialId);
 	onCurrentIndexChanged(m_ui->treeView->currentIndex(), QModelIndex()); // select nothing
 
+	m_ui->treeView->expandAll();
 	m_ui->treeView->resizeColumnToContents(0);
 	m_ui->treeView->resizeColumnToContents(1);
 	m_ui->treeView->resizeColumnToContents(2);
@@ -248,4 +250,38 @@ void SVDBZoneTemplateEditDialog::on_treeView_doubleClicked(const QModelIndex &in
 		if (sourceIndex.internalPointer() == nullptr)
 			accept();
 	}
+}
+
+
+void SVDBZoneTemplateEditDialog::onSelectSubTemplate(unsigned int zoneTemplateID, int subTemplateType) {
+	// if subTemplateType is NUM_ST, select only the top item
+	if (subTemplateType == VICUS::ZoneTemplate::NUM_ST) {
+		selectItemById((unsigned int)zoneTemplateID);
+		m_editWidget->updateInput((int)zoneTemplateID, -1, 0);
+	}
+	else {
+		// first find the zone template index, then search its children for matching subTemplateType
+		for (int i=0, count = m_dbModel->rowCount(); i<count; ++i) {
+			QModelIndex sourceIndex = m_dbModel->index(i,0, QModelIndex());
+			if (sourceIndex.data(Role_Id).toUInt() == zoneTemplateID) {
+				// now loop over all children and pick the one with the correct subTemplateType
+				for (int j=0, count = m_dbModel->rowCount(sourceIndex); j<count; ++j) {
+					QModelIndex subTemplateSourceIndex = m_dbModel->index(j,0,sourceIndex);
+					if (subTemplateSourceIndex.data(Qt::UserRole + 20).toInt() == subTemplateType) {
+						QModelIndex proxyIndex = m_proxyModel->mapFromSource(subTemplateSourceIndex);
+						if (proxyIndex.isValid()) {
+							m_ui->treeView->blockSignals(true);
+							m_ui->treeView->setCurrentIndex(proxyIndex);
+							m_ui->treeView->blockSignals(false);
+						}
+						m_editWidget->updateInput((int)zoneTemplateID, subTemplateSourceIndex.data(Role_Id).toInt(), subTemplateType);
+						return;
+					}
+				}
+
+			}
+		}
+
+	}
+
 }
