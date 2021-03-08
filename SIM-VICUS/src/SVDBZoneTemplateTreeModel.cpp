@@ -234,6 +234,27 @@ QModelIndex SVDBZoneTemplateTreeModel::addNewItem() {
 }
 
 
+QModelIndex SVDBZoneTemplateTreeModel::addChildItem(const QModelIndex & templateIndex, int subTemplateType, unsigned int subTemplateID) {
+	const VICUS::Database<VICUS::ZoneTemplate> & db = m_db->m_zoneTemplates;
+	Q_ASSERT(templateIndex.isValid() && templateIndex.row() < (int)db.size());
+	std::map<unsigned int, VICUS::ZoneTemplate>::const_iterator it = db.begin();
+	std::advance(it, templateIndex.row());
+	// now determine which row needs to be inserted
+	int rowIndex = 0;
+	for (int i=0; subTemplateType != i && i<VICUS::ZoneTemplate::NUM_ST; ++i) {
+		if (it->second.m_idReferences[i] != VICUS::INVALID_ID)
+			++rowIndex;
+	}
+	beginInsertRows(templateIndex, rowIndex, rowIndex);
+	VICUS::ZoneTemplate * zt = const_cast<VICUS::ZoneTemplate*>(m_db->m_zoneTemplates[it->second.m_id]);
+	Q_ASSERT(zt != nullptr);
+	zt->m_idReferences[subTemplateType] = subTemplateID;
+	endInsertRows();
+	m_db->m_zoneTemplates.m_modified = true;
+	return index(rowIndex, 0, templateIndex);
+}
+
+
 QModelIndex SVDBZoneTemplateTreeModel::copyItem(const QModelIndex & existingItemIndex) {
 	// lookup existing item
 	const VICUS::Database<VICUS::ZoneTemplate> & db = m_db->m_zoneTemplates;

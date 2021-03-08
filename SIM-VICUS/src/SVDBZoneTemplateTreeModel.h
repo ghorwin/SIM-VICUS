@@ -39,6 +39,8 @@ public:
 
 	virtual void resetModel();
 	QModelIndex addNewItem();
+	/*! This modifies the model correctly so that the already modified data structure is correctly reflected in tree model changes. */
+	QModelIndex addChildItem(const QModelIndex & index, int subTemplateType, unsigned int subTemplateID);
 	QModelIndex copyItem(const QModelIndex & index);
 	void deleteItem(const QModelIndex & index);
 
@@ -47,9 +49,10 @@ public:
 	/*! Tells the model that an item has been modified, triggers a dataChanged() signal. */
 	void setItemModified(unsigned int id);
 
-private:
 	/*! Returns an index for a given Id. */
 	QModelIndex indexById(unsigned int id) const;
+
+private:
 
 	/*! Pointer to the entire database (not owned). */
 	SVDatabase	* m_db;

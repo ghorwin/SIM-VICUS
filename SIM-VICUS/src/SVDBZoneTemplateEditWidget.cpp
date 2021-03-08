@@ -177,9 +177,16 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddSubTemplate_clicked() {
 	unsigned int id = SVMainWindow::instance().dbInternalLoadsPersonEditDialog()->select(VICUS::INVALID_ID);
 	if (id == VICUS::INVALID_ID) return;
 	if (m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson] != id) {
-		m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson] = id;
-		m_db->m_zoneTemplates.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-		emit selectSubTemplate(m_current->m_id, (int)VICUS::ZoneTemplate::ST_IntLoadPerson);
+		if (m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson] == VICUS::INVALID_ID) {
+			// add new child
+			m_dbModel->addChildItem( m_dbModel->indexById(m_current->m_id), VICUS::ZoneTemplate::ST_IntLoadPerson, id);
+		}
+		else {
+			// modify existing
+			m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson] = id;
+			m_db->m_zoneTemplates.m_modified = true;
+			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+			emit selectSubTemplate(m_current->m_id, (int)VICUS::ZoneTemplate::ST_IntLoadPerson);
+		}
 	}
 }
