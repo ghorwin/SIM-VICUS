@@ -26,7 +26,6 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
-#include <NANDRAD_Constants.h>
 #include <NANDRAD_KeywordList.h>
 #include <NANDRAD_Utilities.h>
 
@@ -75,6 +74,8 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 						IBK::FormatString("Error converting '"+attrib->ValueStr()+"' attribute (unknown unit).") ), FUNC_ID);
 				}
+			else if (attribName == "someStuffIDAsAttrib")
+				m_someStuffIDAsAttrib = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -180,6 +181,8 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
+			else if (cName == "SomeStuffIDAsElement")
+				m_someStuffIDAsElement = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IBK:LinearSpline") {
 				IBK::LinearSpline p;
 				std::string name;
@@ -257,6 +260,7 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("path1", m_path1.str());
 	if (m_u1.id() != 0)
 		e->SetAttribute("u1", m_u1.name());
+	e->SetAttribute("someStuffIDAsAttrib", IBK::val2string<IDType>(m_someStuffIDAsAttrib));
 	TiXmlElement::appendSingleAttributeElement(e, "Id3", nullptr, std::string(), IBK::val2string<int>(m_id3));
 	if (m_id4 != NANDRAD::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "Id4", nullptr, std::string(), IBK::val2string<unsigned int>(m_id4));
@@ -334,6 +338,13 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 		if (!m_flags[i].name().empty()) {
 			TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_flags[i].name(), m_flags[i].isEnabled() ? "true" : "false");
 		}
+	}
+	if (m_someStuffIDAsElement != NANDRAD::INVALID_ID)
+			TiXmlElement::appendSingleAttributeElement(e, "SomeStuffIDAsElement", nullptr, std::string(), IBK::val2string<unsigned int>(m_someStuffIDAsElement));
+
+	for (int i=0; i<NUM_RefID; ++i) {
+		if (m_idReferences[i] != NANDRAD::INVALID_ID)
+				TiXmlElement::appendSingleAttributeElement(e, KeywordList::Keyword("SerializationTest::ReferencedIDTypes",  i), nullptr, std::string(), IBK::val2string<unsigned int>(m_idReferences[i]));
 	}
 	if (!m_linSpl.empty())
 		NANDRAD::writeLinearSplineElement(e, "LinSpl", m_linSpl, "-", "-");

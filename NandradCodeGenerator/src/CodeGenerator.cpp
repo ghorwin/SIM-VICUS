@@ -552,8 +552,8 @@ void CodeGenerator::generateReadWriteCode() {
 
 						elements += "\n"
 							"	for (int i=0; i<"+numType+"; ++i) {\n"
-							"		if (m_"+varName+" != "+m_prefix+"::INVALID_ID)\n	"
-							"			TiXmlElement::appendSingleAttributeElement(e, KeywordList::Keyword(\""+ keywordCategoryName + "\",  i), nullptr, std::string(), IBK::val2string<unsigned int>(m_"+varName+"));\n"
+							"		if (m_"+varName+"[i] != "+m_prefix+"::INVALID_ID)\n	"
+							"			TiXmlElement::appendSingleAttributeElement(e, KeywordList::Keyword(\""+ keywordCategoryName + "\",  i), nullptr, std::string(), IBK::val2string<unsigned int>(m_"+varName+"[i]));\n"
 							"	}\n";
 					}
 					else {
@@ -834,13 +834,12 @@ void CodeGenerator::generateReadWriteCode() {
 					std::string tagName = char(toupper(varName[0])) + varName.substr(1);
 
 					// special code for group-type elements like "<IBK:Parameter name="Length" ...>..</IBK:Parameter>
-					// here, we now simply check, that any parameter tag exists, and afterwards check, if it was
+					// here, we now simply check that any parameter tag exists, and afterwards check, if it was
 					// read
 					if (xmlInfo.typeStr == "IBK::Parameter" ||
 						xmlInfo.typeStr == "IBK::LinearSpline" ||
 						xmlInfo.typeStr == "IBK::Flag" ||
 						xmlInfo.typeStr == "IBK::IntPara" ||
-						xmlInfo.typeStr == "IDType" ||
 						xmlInfo.typeStr == "LinearSplineParameter")
 					{
 						// do nothing here, but at the end, we check if the respective value still has an empty
@@ -892,6 +891,37 @@ void CodeGenerator::generateReadWriteCode() {
 						elements +=
 							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
 							"				m_"+varName+" = NANDRAD::readPODElement<"+xmlInfo.typeStr+">(c, cName);\n";
+						handledVariables.insert(varName);
+					}
+					else if (xmlInfo.typeStr == "IDType") {
+						// we can have either a scalar ID type or something with a vector, we need to generate code for all of these
+						std::string::size_type pos1 = varName.find("[");
+						if (pos1 != std::string::npos) {
+							handledVariables.insert(varName);
+							// extract NUM type
+							std::string::size_type pos2 = varName.find("]");
+							std::string numType = varName.substr(pos1+1, pos2-pos1-1);
+							varName = varName.substr(0, pos1);
+
+							std::string keywordCategoryName;
+							for (const ClassInfo::EnumInfo & einfo : ci.m_enumInfo) {
+								if (einfo.enumNUM == numType) {
+									keywordCategoryName = einfo.categoryName;
+									break;
+								}
+							}
+							if (keywordCategoryName.empty())
+								throw IBK::Exception(IBK::FormatString("Invalid enumeration type in variable type '%1' of variable '%2' in writeXML.")
+													 .arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
+						}
+						else {
+							// scalar element, just generate the code
+							includes.insert("NANDRAD_Utilities.h");
+
+							elements +=
+								"			"+elseStr+"if (cName == \""+tagName+"\")\n"
+								"				m_"+varName+" = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);\n";
+						}
 						handledVariables.insert(varName);
 					}
 					else if (xmlInfo.typeStr == "std::string") {
@@ -1378,6 +1408,7 @@ void CodeGenerator::generateReadWriteCode() {
 
 			// *** Add header and footer and write file ****
 
+			includes.erase(m_prefix+"_Constants.h"); // is always added anyways
 			for (const std::string & inc : includes)
 				extraIncludes += "#include <"+inc+">\n";
 
