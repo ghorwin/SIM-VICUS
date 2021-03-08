@@ -133,26 +133,27 @@ private:
 	std::string										m_displayName;
 	/*! Storage of all network element ids, used for vector output. */
 	std::vector<unsigned int>						m_elementIds;
-	/*! All zone ids referenced by a fluid component. */
+	/*! All zone ids referenced by a fluid component (size = m_elementIDs.size()). */
 	std::vector<unsigned int>						m_zoneIds;
-	/*! Indexes of all zones for each network element, (unsigned int) (-1) for
-		missing zone. */
+	/*! Indexes of all zones for each network element (size = m_elementIDs.size()),
+		NANDRAD::INVALID_ID for missing zone.
+	*/
 	std::vector<unsigned int>						m_zoneIdxs;
 
 	/*! Cached input data vector (size nPrimaryStateResults()). */
 	std::vector<double>								m_y;
-	/*! Vectorwith references to mean temperatures, size = elements.size(). */
+	/*! Vectorwith references to mean temperatures (size = m_elementIDs.size()). */
 	std::vector<const double*>						m_meanTemperatureRefs;
-	/*! References to heat exchange spline: nullptr if not needed.*/
+	/*! References to heat exchange spline: nullptr if not needed (size = m_elementIDs.size()). */
 	std::vector<const IBK::LinearSpline*>			m_heatExchangeSplineRefs;
-	/*! References to zone temperatures.*/
+	/*! References to zone temperatures (size = m_elementIDs.size()). */
 	std::vector<const double*>						m_zoneTemperatureRefs;
-	/*! Container with current spline or reference values: either temperature [k] or heat flux [W].
+	/*! Container with current spline or reference values: either temperature [K] or heat flux [W]
+		(size = m_elementIDs.size()).
 	*/
 	std::vector<double>								m_heatExchangeValues;
 
-	// for each flow element instantiate an appropriate NetworkThermalBalanceFlowElement
-	/*! Total number of unknowns.*/
+	/*! Total number of unknowns. */
 	unsigned int									m_n;
 
 	/*! Pointer to NANDRAD network structure*/

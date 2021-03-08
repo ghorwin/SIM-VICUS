@@ -296,9 +296,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 					// parameters are checked, already
 					unsigned int zoneId = (unsigned int) e.m_heatExchange.m_intPara[NANDRAD::HydraulicNetworkHeatExchange::IP_ZoneId].value;
 					// check whether zone is registered
-					if(!m_zoneIds.empty()) {
-						std::vector<unsigned int>::iterator fIt = std::find(m_zoneIds.begin(),
-																				  m_zoneIds.end(),zoneId);
+					if (!m_zoneIds.empty()) {
+						std::vector<unsigned int>::iterator fIt = std::find(m_zoneIds.begin(), m_zoneIds.end(), zoneId);
 						// add a new entry
 						if(fIt == m_zoneIds.end()) {
 							m_zoneIdxs[i] = m_zoneIds.size();
@@ -311,7 +310,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 					}
 					else {
 						// resize zone idx vector
-						m_zoneIdxs.resize(m_network->m_elements.size(), (unsigned int) (-1));
+						m_zoneIdxs.resize(m_network->m_elements.size(), NANDRAD::INVALID_ID);
 						m_zoneIdxs[i] = 0;
 						m_zoneIds.push_back(zoneId);
 					}

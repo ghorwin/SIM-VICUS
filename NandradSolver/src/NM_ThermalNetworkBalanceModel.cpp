@@ -274,7 +274,7 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 
 	for(unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
 		// set dependencies between heat exchange values and zone inputs
-		if(!m_statesModel->m_zoneIdxs.empty() && m_statesModel->m_zoneIdxs[i] != (unsigned int) (-1)) {
+		if(!m_statesModel->m_zoneIdxs.empty() && m_statesModel->m_zoneIdxs[i] != NANDRAD::INVALID_ID) {
 			// zone temperature is requested
 			unsigned int refIdx = m_statesModel->m_zoneIdxs[i];
 			IBK_ASSERT(m_statesModel->m_zoneTemperatureRefs[refIdx] != nullptr);
