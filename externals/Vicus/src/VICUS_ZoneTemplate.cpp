@@ -29,12 +29,20 @@ unsigned int ZoneTemplate::subTemplateCount() const {
 
 
 ZoneTemplate::SubTemplateType ZoneTemplate::usedReference(unsigned int index) const {
-	int count = -1;
+	int count = 0;
 	int i=0;
-	for (; i<NUM_ST && count < (int)index; ++i) {
+	// Example  : index = 0 and we have the first id set
+	//            loop 1:   i = 0, count = 1 -> return i=0
+	// Example 2: index = 1 and we have the first and third id set:
+	//            loop 1:   i = 0, count = 1
+	//            loop 2:   i = 1, count = 1
+	//            loop 3:   i = 2, count = 2  -> return i=1
+	for (; i<NUM_ST; ++i) {
 		// increase count for each used id reference
 		if (m_idReferences[i] != VICUS::INVALID_ID)
 			++count;
+		if (count > (int)index)
+			break;
 	}
 	return (ZoneTemplate::SubTemplateType)i; // if index > number of used references, we return NUM_ST here
 }
