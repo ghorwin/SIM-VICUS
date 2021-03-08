@@ -229,7 +229,16 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 			else if (cName == "OtherSchedule")
 				m_sched2.readXML(c);
 			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+				bool found = false;
+				for (int i=0; i<NUM_RefID; ++i) {
+					if (cName == KeywordList::Keyword("SerializationTest::ReferencedIDTypes",i)) {
+						m_idReferences[i] = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
+						found = true;
+						break;
+					}
+				}
+				if (!found)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			c = c->NextSiblingElement();
 		}

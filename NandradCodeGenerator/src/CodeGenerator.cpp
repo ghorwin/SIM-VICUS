@@ -825,6 +825,8 @@ void CodeGenerator::generateReadWriteCode() {
 			}
 
 			if (haveTags) {
+				std::string elseBlock;
+
 				// now read-code for elements/tags
 				elements +=
 					"		// search for mandatory elements\n";
@@ -913,6 +915,17 @@ void CodeGenerator::generateReadWriteCode() {
 							if (keywordCategoryName.empty())
 								throw IBK::Exception(IBK::FormatString("Invalid enumeration type in variable type '%1' of variable '%2' in writeXML.")
 													 .arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
+
+							// now try all keywords of this enumeration type and see of anyone matches the current XML tag
+							elseBlock +=
+							"				for (int i=0; i<"+numType+"; ++i) {\n"
+							"					if (cName == KeywordList::Keyword(\""+keywordCategoryName+"\",i)) {\n"
+							"						m_"+varName+"[i] = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);\n"
+							"						found = true;\n"
+							"						break;\n"
+							"					}\n"
+							"				}\n";
+
 						}
 						else {
 							// scalar element, just generate the code
@@ -1391,7 +1404,15 @@ void CodeGenerator::generateReadWriteCode() {
 
 				if (!elseStr.empty()) {
 					elements +=
-							"			else {\n"
+							"			else {\n";
+
+					if (!elseBlock.empty()) {
+						elseBlock = "				bool found = false;\n" +
+								elseBlock +
+									"				if (!found)\n	";
+						elements += elseBlock;
+					}
+					elements +=
 							"				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
 							"			}\n";
 				}
