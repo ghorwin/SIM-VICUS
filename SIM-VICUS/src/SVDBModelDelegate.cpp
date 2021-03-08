@@ -6,6 +6,7 @@
 #include <QStyleOptionViewItemV4>
 
 #include "SVStyle.h"
+#include "SVConstants.h"
 
 SVDBModelDelegate::SVDBModelDelegate(QObject * parent, int builtInRole) :
 	QItemDelegate(parent),
@@ -18,6 +19,13 @@ SVDBModelDelegate::~SVDBModelDelegate() {
 
 void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const {
 	const QStyleOptionViewItem * opt = &option;
+	// if color column, just fill the background with the color and be gone
+	if (index.data(Role_Color).toBool()) {
+		// draw background
+		QBrush b(index.data(Qt::BackgroundRole).value<QColor>());
+		painter->fillRect(option.rect, b);
+		return;
+	}
 	// find out if our index is of a built-in element
 	bool builtin = index.data(m_builtInRole).toBool();
 	bool enabled = opt->widget->isEnabled();

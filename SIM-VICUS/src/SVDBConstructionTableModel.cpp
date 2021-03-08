@@ -15,6 +15,7 @@
 #include <QtExt_LanguageHandler.h>
 
 #include "SVConstants.h"
+#include "SVStyle.h"
 
 SVDBConstructionTableModel::SVDBConstructionTableModel(QObject * parent, SVDatabase & db) :
 	SVAbstractDatabaseTableModel(parent),
@@ -137,6 +138,8 @@ void SVDBConstructionTableModel::resetModel() {
 QModelIndex SVDBConstructionTableModel::addNewItem() {
 	VICUS::Construction c;
 	c.m_displayName.setEncodedString("en:<new construction type>");
+	c.m_color = SVStyle::randomColor();
+
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_constructions.add( c );
 	endInsertRows();
@@ -154,6 +157,7 @@ QModelIndex SVDBConstructionTableModel::copyItem(const QModelIndex & existingIte
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	// create new item and insert into DB
 	VICUS::Construction newItem(it->second);
+	newItem.m_color = SVStyle::randomColor();
 	unsigned int id = m_db->m_constructions.add( newItem );
 	endInsertRows();
 	QModelIndex idx = indexById(id);

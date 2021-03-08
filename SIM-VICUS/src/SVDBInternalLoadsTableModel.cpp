@@ -8,6 +8,7 @@
 #include <QtExt_LanguageHandler.h>
 
 #include "SVConstants.h"
+#include "SVStyle.h"
 
 SVDBInternalLoadsTableModel::SVDBInternalLoadsTableModel(QObject * parent, SVDatabase & db, Type t) :
 	SVAbstractDatabaseTableModel(parent),
@@ -126,6 +127,7 @@ QModelIndex SVDBInternalLoadsTableModel::addNewItem() {
 	VICUS::KeywordList::setParameter(intLoad.m_para, "InternalLoad::para_t", VICUS::InternalLoad::P_ConvectiveHeatFactor, 0.8);
 
 	intLoad.m_category = VICUS::InternalLoad::IC_Person;
+	intLoad.m_color = SVStyle::randomColor();
 
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_internalLoads.add( intLoad );
@@ -144,6 +146,7 @@ QModelIndex SVDBInternalLoadsTableModel::copyItem(const QModelIndex & existingIt
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	// create new item and insert into DB
 	VICUS::InternalLoad newItem(it->second);
+	newItem.m_color = SVStyle::randomColor();
 	unsigned int id = m_db->m_internalLoads.add( newItem );
 	endInsertRows();
 	QModelIndex idx = indexById(id);

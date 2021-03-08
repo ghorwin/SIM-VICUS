@@ -10,6 +10,7 @@
 #include <QtExt_LanguageHandler.h>
 
 #include "SVConstants.h"
+#include "SVStyle.h"
 
 SVDBComponentTableModel::SVDBComponentTableModel(QObject * parent, SVDatabase & db) :
 	SVAbstractDatabaseTableModel(parent),
@@ -22,6 +23,10 @@ SVDBComponentTableModel::SVDBComponentTableModel(QObject * parent, SVDatabase & 
 QVariant SVDBComponentTableModel::data ( const QModelIndex & index, int role) const {
 	if (!index.isValid())
 		return QVariant();
+
+	if (index.column() == ColColor && role == Role_Color) {
+		return true;
+	}
 
 	// readability improvement
 	const VICUS::Database<VICUS::Component> & comDB = m_db->m_components;
@@ -118,6 +123,7 @@ void SVDBComponentTableModel::resetModel() {
 QModelIndex SVDBComponentTableModel::addNewItem() {
 	VICUS::Component c;
 	c.m_displayName.setEncodedString("en:<new component type>");
+	c.m_color = SVStyle::randomColor();
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_components.add( c );
 	endInsertRows();
@@ -135,6 +141,7 @@ QModelIndex SVDBComponentTableModel::copyItem(const QModelIndex & existingItemIn
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	// create new item and insert into DB
 	VICUS::Component newItem(it->second);
+	newItem.m_color = SVStyle::randomColor();
 	unsigned int id = m_db->m_components.add( newItem );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
@@ -155,6 +162,7 @@ void SVDBComponentTableModel::deleteItem(const QModelIndex & index) {
 void SVDBComponentTableModel::setColumnResizeModes(QTableView * tableView) {
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBComponentTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBComponentTableModel::ColColor, QHeaderView::Fixed);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBComponentTableModel::ColName, QHeaderView::Stretch);
 }
 
 

@@ -43,7 +43,9 @@ enum DataRoles {
 	Role_Value,
 	/*! Role to use for passing raw data pointers to whatever data structure
 		the item corresponds to. */
-	Role_RawPointer
+	Role_RawPointer,
+	/*! Role to be used to identify color column. */
+	Role_Color
 };
 
 /*! Threshold to accept distance/area/volume parameters as equal */

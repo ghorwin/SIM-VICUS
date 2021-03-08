@@ -14,6 +14,7 @@
 #include <QtExt_LanguageHandler.h>
 
 #include "SVConstants.h"
+#include "SVStyle.h"
 
 SVDBMaterialTableModel::SVDBMaterialTableModel(QObject * parent, SVDatabase & db) :
 	SVAbstractDatabaseTableModel(parent),
@@ -146,6 +147,7 @@ QModelIndex SVDBMaterialTableModel::addNewItem() {
 	VICUS::KeywordList::setParameter(m.m_para, "Material::para_t", VICUS::Material::P_HeatCapacity, 840);
 
 	m.m_category = VICUS::Material::MC_Bricks;
+	m.m_color = SVStyle::randomColor();
 
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_materials.add( m );
@@ -163,8 +165,9 @@ QModelIndex SVDBMaterialTableModel::copyItem(const QModelIndex & existingItemInd
 	std::advance(it, existingItemIndex.row());
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	// create new item and insert into DB
-	VICUS::Material newitem(it->second);
-	unsigned int id = m_db->m_materials.add( newitem );
+	VICUS::Material newItem(it->second);
+	newItem.m_color = SVStyle::randomColor();
+	unsigned int id = m_db->m_materials.add( newItem );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;

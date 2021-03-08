@@ -204,7 +204,7 @@ SVDatabaseEditDialog * SVMainWindow::dbConstructionEditDialog() {
 
 SVDatabaseEditDialog * SVMainWindow::dbComponentEditDialog() {
 	if (m_dbComponentEditDialog == nullptr)
-		m_dbConstructionEditDialog = SVDatabaseEditDialog::createComponentEditDialog(this);
+		m_dbComponentEditDialog = SVDatabaseEditDialog::createComponentEditDialog(this);
 	return m_dbComponentEditDialog;
 }
 

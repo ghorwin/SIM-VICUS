@@ -290,7 +290,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createComponentEditDialog(QWidget *
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
 		new SVDBComponentTableModel(parent, SVSettings::instance().m_db),
 		new SVDBComponentEditWidget(parent),
-		tr("Component Database"), QString(), false
+		tr("Component Database"), QString(), true
 	);
 	dlg->resize(1400,800);
 	return dlg;
@@ -301,7 +301,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createBoundaryConditionsEditDialog(
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
 		new SVDBBoundaryConditionTableModel(parent, SVSettings::instance().m_db),
 		new SVDBBoundaryConditionEditWidget(parent),
-		tr("Boundary Condition Database"), QString(), false
+		tr("Boundary Condition Database"), QString(), true
 	);
 	dlg->resize(1400,800);
 	return dlg;
@@ -312,7 +312,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createScheduleEditDialog(QWidget * 
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
 		new SVDBScheduleTableModel(parent, SVSettings::instance().m_db),
 		new SVDBScheduleEditWidget(parent),
-		tr("Schedule Database"), QString(), false
+		tr("Schedule Database"), QString(), true
 	);
 	dlg->resize(1400,800);
 	return dlg;
@@ -326,7 +326,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createInternalLoadsEditDialog(QWidg
 			dlg = new SVDatabaseEditDialog(parent,
 				new SVDBInternalLoadsTableModel(parent, SVSettings::instance().m_db, (SVDBInternalLoadsTableModel::Type)type),
 				new SVDBInternalLoadsPersonEditWidget(parent),
-				tr("Person Loads Database"), tr("Person Load Properties"), false);
+				tr("Person Loads Database"), tr("Person Load Properties"), true);
 			break;
 		default:
 			Q_ASSERT(false);
@@ -340,7 +340,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createNetworkComponentEditDialog(QW
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
 		new SVDBNetworkComponentTableModel(parent, SVSettings::instance().m_db),
 		new SVDBNetworkComponentEditWidget(parent),
-		tr("Network Component Database"), QString(), false
+		tr("Network Component Database"), QString(), true
 	);
 	dlg->resize(1400,800);
 	return dlg;
@@ -351,7 +351,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createPipeEditDialog(QWidget * pare
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
 		new SVDBPipeTableModel(parent, SVSettings::instance().m_db),
 		new SVDBPipeEditWidget(parent),
-		tr("Network Pipes Database"), QString(), false
+		tr("Network Pipes Database"), QString(), true
 	);
 	dlg->resize(1400,800);
 	return dlg;

@@ -14,7 +14,7 @@
 #include <QtExt_LanguageHandler.h>
 
 #include "SVConstants.h"
-
+#include "SVStyle.h"
 
 SVDBBoundaryConditionTableModel::SVDBBoundaryConditionTableModel(QObject *parent, SVDatabase &db) :
 	SVAbstractDatabaseTableModel(parent),
@@ -27,6 +27,10 @@ SVDBBoundaryConditionTableModel::SVDBBoundaryConditionTableModel(QObject *parent
 QVariant SVDBBoundaryConditionTableModel::data ( const QModelIndex & index, int role) const {
 	if (!index.isValid())
 		return QVariant();
+
+	if (index.column() == ColColor && role == Role_Color) {
+		return true;
+	}
 
 	// readability improvement
 	const VICUS::Database<VICUS::BoundaryCondition> & bcDB = m_db->m_boundaryConditions;
@@ -121,6 +125,7 @@ void SVDBBoundaryConditionTableModel::resetModel() {
 QModelIndex SVDBBoundaryConditionTableModel::addNewItem() {
 	VICUS::BoundaryCondition bc;
 	bc.m_displayName.setEncodedString("en:<new boundary condition>");
+	bc.m_color = SVStyle::randomColor();
 
 	//set default parameters
 	bc.m_heatConduction.m_modelType = NANDRAD::InterfaceHeatConduction::MT_Constant;
@@ -149,6 +154,7 @@ QModelIndex SVDBBoundaryConditionTableModel::copyItem(const QModelIndex & existi
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	// create new item and insert into DB
 	VICUS::BoundaryCondition newItem(it->second);
+	newItem.m_color = SVStyle::randomColor();
 	unsigned int id = m_db->m_boundaryConditions.add( newItem );
 	endInsertRows();
 	QModelIndex idx = indexById(id);

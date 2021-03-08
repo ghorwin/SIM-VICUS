@@ -25,6 +25,10 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 	if (!index.isValid())
 		return QVariant();
 
+	if (index.column() == ColColor && role == Role_Color) {
+		return true;
+	}
+
 	// readability improvement
 	const VICUS::Database<VICUS::ZoneTemplate> & db = m_db->m_zoneTemplates;
 
