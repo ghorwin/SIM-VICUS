@@ -148,24 +148,7 @@ void SVDBZoneTemplateEditWidget::on_toolButtonSelectSubComponent_clicked() {
 
 
 void SVDBZoneTemplateEditWidget::on_toolButtonRemoveSubComponent_clicked() {
-	switch ((VICUS::ZoneTemplate::SubTemplateType)m_currentSubTemplateType) {
-		case VICUS::ZoneTemplate::ST_IntLoadPerson:
-			// remove the zone template association
-			m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson] = VICUS::INVALID_ID;
-			m_db->m_zoneTemplates.m_modified = true;
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-			emit selectSubTemplate(m_current->m_id, -1);
-		break;
-
-		// TODO Dirk: implement below
-
-		case VICUS::ZoneTemplate::ST_IntLoadEquipment:
-		case VICUS::ZoneTemplate::ST_IntLoadLighting:
-		case VICUS::ZoneTemplate::ST_IntLoadOther:
-		case VICUS::ZoneTemplate::ST_ControlThermostat:
-		case VICUS::ZoneTemplate::NUM_ST:
-		break;
-	}
+	m_dbModel->deleteChildItem( m_dbModel->indexById(m_current->m_id), m_currentSubTemplateType);
 }
 
 
@@ -180,13 +163,13 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddSubTemplate_clicked() {
 		if (m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson] == VICUS::INVALID_ID) {
 			// add new child
 			m_dbModel->addChildItem( m_dbModel->indexById(m_current->m_id), VICUS::ZoneTemplate::ST_IntLoadPerson, id);
+			emit selectSubTemplate(m_current->m_id, (int)VICUS::ZoneTemplate::ST_IntLoadPerson);
 		}
 		else {
 			// modify existing
 			m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson] = id;
 			m_db->m_zoneTemplates.m_modified = true;
 			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-			emit selectSubTemplate(m_current->m_id, (int)VICUS::ZoneTemplate::ST_IntLoadPerson);
 		}
 	}
 }

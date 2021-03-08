@@ -40,9 +40,10 @@ public:
 	virtual void resetModel();
 	QModelIndex addNewItem();
 	/*! This modifies the model correctly so that the already modified data structure is correctly reflected in tree model changes. */
-	QModelIndex addChildItem(const QModelIndex & index, int subTemplateType, unsigned int subTemplateID);
+	QModelIndex addChildItem(const QModelIndex & templateIndex, int subTemplateType, unsigned int subTemplateID);
 	QModelIndex copyItem(const QModelIndex & index);
 	void deleteItem(const QModelIndex & index);
+	void deleteChildItem(const QModelIndex & templateIndex, int subTemplateType);
 
 	// ** other members **
 

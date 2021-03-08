@@ -223,6 +223,7 @@ void SVDBZoneTemplateEditDialog::on_pushButtonReloadUserDB_clicked() {
 		// tell model to reset completely
 		m_dbModel->resetModel();
 		onCurrentIndexChanged(QModelIndex(), QModelIndex());
+		m_ui->treeView->expandAll();
 		m_editWidget->updateInput(-1, -1, 0);
 	}
 }

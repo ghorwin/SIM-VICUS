@@ -282,6 +282,27 @@ void SVDBZoneTemplateTreeModel::deleteItem(const QModelIndex & index) {
 }
 
 
+void SVDBZoneTemplateTreeModel::deleteChildItem(const QModelIndex & templateIndex, int subTemplateType) {
+	if (!templateIndex.isValid())
+		return;
+	const VICUS::Database<VICUS::ZoneTemplate> & db = m_db->m_zoneTemplates;
+	Q_ASSERT(templateIndex.isValid() && templateIndex.row() < (int)db.size());
+	std::map<unsigned int, VICUS::ZoneTemplate>::const_iterator it = db.begin();
+	std::advance(it, templateIndex.row());
+	// now determine which row needs to be removed
+	int rowIndex = 0;
+	for (int i=0; subTemplateType != i && i<VICUS::ZoneTemplate::NUM_ST; ++i) {
+		if (it->second.m_idReferences[i] != VICUS::INVALID_ID)
+			++rowIndex;
+	}
+	beginRemoveRows(templateIndex, rowIndex, rowIndex);
+	VICUS::ZoneTemplate * zt = const_cast<VICUS::ZoneTemplate*>(m_db->m_zoneTemplates[it->second.m_id]);
+	Q_ASSERT(zt != nullptr);
+	zt->m_idReferences[subTemplateType] = VICUS::INVALID_ID;
+	endRemoveRows();
+}
+
+
 void SVDBZoneTemplateTreeModel::setItemModified(unsigned int id) {
 	QModelIndex idx = indexById(id);
 	QModelIndex left = index(idx.row(), 0, QModelIndex());
