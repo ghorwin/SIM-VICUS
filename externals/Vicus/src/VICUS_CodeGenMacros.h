@@ -24,6 +24,9 @@
 
 class TiXmlElement;
 
+// IDType is used instead of unsigned int for special serialization feature
+typedef unsigned int IDType;
+
 #define VICUS_READWRITE \
 	void readXML(const TiXmlElement * element); \
 	TiXmlElement * writeXML(TiXmlElement * parent) const;

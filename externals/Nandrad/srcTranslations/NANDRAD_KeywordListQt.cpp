@@ -93,6 +93,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Start time point.");
 	tr("End time point.");
 	tr("StepSize.");
+	tr("Some temperatures");
+	tr("Some mass");
 	tr("constant");
 	tr("linear");
 	tr("Continuous data");
@@ -146,6 +148,10 @@ KeywordListQt::KeywordListQt() {
 	tr("I2");
 	tr("ParameterSet1");
 	tr("ParameterSet2");
+	tr("SomeStove");
+	tr("SomeOven");
+	tr("SomeHeater");
+	tr("SomeFurnace");
 	tr("Simple hysteretic shading control based on global radiation sensor");
 	tr("Maximum intensity allowed before shading is closed.");
 	tr("Intensity level below which shading is opened.");

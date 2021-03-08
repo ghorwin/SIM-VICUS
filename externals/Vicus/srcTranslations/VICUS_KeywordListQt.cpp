@@ -74,6 +74,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Person per m2");
 	tr("m2 per Person");
 	tr("Person count");
+	tr("Some temperatures");
+	tr("Some mass");
 	tr("Dry density of the material.");
 	tr("Specific heat capacity of the material.");
 	tr("Thermal conductivity of the dry material.");
@@ -163,6 +165,11 @@ KeywordListQt::KeywordListQt() {
 	tr("Detailed window model with layers.");
 	tr("Thermal transmittance");
 	tr("Short wave transmittance at outside directed surface.");
+	tr("IntLoadPerson");
+	tr("IntLoadEquipment");
+	tr("IntLoadLighting");
+	tr("IntLoadOther");
+	tr("ControlThermostat");
 }
 
 

@@ -108,7 +108,7 @@ TiXmlElement * ZoneTemplate::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.encodedString());
 
 	for (unsigned int i=0; i<NUM_ST; ++i) {
-		if (!m_idReferences[i].name.empty()) {
+		if (m_idReferences[i].name.empty()) {
 			TiXmlElement::appendSingleAttributeElement(e, "IBK:IntPara", "name", m_idReferences[i].name, IBK::val2string(m_idReferences[i].value));
 		}
 	}

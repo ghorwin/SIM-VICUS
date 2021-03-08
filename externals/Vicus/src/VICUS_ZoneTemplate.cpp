@@ -6,6 +6,8 @@ namespace VICUS {
 
 bool ZoneTemplate::isValid() const {
 
+	// TODO : Implement
+
 	return true;
 }
 
@@ -14,7 +16,7 @@ unsigned int ZoneTemplate::subTemplateCount() const {
 
 	unsigned int count = 0;
 	for (int i=0; i<NUM_ST; ++i)
-		if (!m_idReferences[i].name.empty()) ++count;
+		if (m_idReferences[i] != VICUS::INVALID_ID) ++count;
 	return count;
 
 }
@@ -25,7 +27,7 @@ ZoneTemplate::SubTemplateType ZoneTemplate::usedReference(unsigned int index) co
 	int i=0;
 	for (; i<NUM_ST && count < (int)index; ++i) {
 		// increase count for each used id reference
-		if (!m_idReferences[i].name.empty())
+		if (m_idReferences[i] != VICUS::INVALID_ID)
 			++count;
 	}
 	return (ZoneTemplate::SubTemplateType)i; // if index > number of used references, we return NUM_ST here

@@ -319,6 +319,7 @@ void CodeGenerator::generateReadWriteCode() {
 				// plain data types are always just written as attributes
 				if (xmlInfo.typeStr == "int" ||
 					xmlInfo.typeStr == "unsigned int" ||
+					xmlInfo.typeStr == "IDType" ||
 					xmlInfo.typeStr == "double" ||
 					xmlInfo.typeStr == "bool")
 				{
@@ -395,7 +396,7 @@ void CodeGenerator::generateReadWriteCode() {
 				std::string varName = xmlInfo.varName;
 				std::string tagName = char(toupper(varName[0])) + varName.substr(1);
 				// we have special handling for:
-				// - simple tags (no attributes) for PODs, int, unsigned int, double, bool
+				// - simple tags (no attributes) for PODs, int, unsigned int, IDType, double, bool
 				//   unsigned int with special code that INVALID_ID values are not written
 				// - std::string
 				// - QString
@@ -408,6 +409,7 @@ void CodeGenerator::generateReadWriteCode() {
 				// - IBK::Parameter and IBK::Parameter[NUM_xxx]
 				// - IBK::IntPara and IBK::IntPara[NUM_xxx]
 				// - IBK::Flag and IBK::Flag[NUM_xxx]
+				// - IDType[NUM_xxx]
 				// - std::vector<xxx> and special handling for:
 				//   - std::vector<double|int|unsigned int>
 				//   - std::vector<IBKMK::Vector3D>
@@ -526,6 +528,38 @@ void CodeGenerator::generateReadWriteCode() {
 							"		IBK_ASSERT(\""+tagName+"\" == m_"+varName+".name);\n"
 							"		TiXmlElement::appendSingleAttributeElement(e, \"IBK:IntPara\", \"name\", \""+tagName+"\", IBK::val2string(m_"+varName+".value));\n"
 							"	}\n";
+					}
+				}
+				else if (xmlInfo.typeStr == "IDType") {
+					// check for array syntax
+					std::string::size_type pos1 = varName.find("[");
+					if (pos1 != std::string::npos) {
+						// extract NUM type
+						std::string::size_type pos2 = varName.find("]");
+						std::string numType = varName.substr(pos1+1, pos2-pos1-1);
+						varName = varName.substr(0, pos1);
+
+						std::string keywordCategoryName;
+						for (const ClassInfo::EnumInfo & einfo : ci.m_enumInfo) {
+							if (einfo.enumNUM == numType) {
+								keywordCategoryName = einfo.categoryName;
+								break;
+							}
+						}
+						if (keywordCategoryName.empty())
+							throw IBK::Exception(IBK::FormatString("Invalid enumeration type in variable type '%1' of variable '%2' in writeXML.")
+												 .arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
+
+						elements += "\n"
+							"	for (int i=0; i<"+numType+"; ++i) {\n"
+							"		if (m_"+varName+" != "+m_prefix+"::INVALID_ID)\n	"
+							"			TiXmlElement::appendSingleAttributeElement(e, KeywordList::Keyword(\""+ keywordCategoryName + "\",  i), nullptr, std::string(), IBK::val2string<unsigned int>(m_"+varName+"));\n"
+							"	}\n";
+					}
+					else {
+						elements += "	if (m_"+varName+" != "+m_prefix+"::INVALID_ID)\n	"
+									"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), IBK::val2string<unsigned int>(m_"+varName+"));\n";
+						includes.insert(m_prefix+"_Constants.h");
 					}
 				}
 				else if (xmlInfo.typeStr == "IBK::Flag") {
@@ -710,6 +744,10 @@ void CodeGenerator::generateReadWriteCode() {
 							"				m_"+attribName+" = NANDRAD::readPODAttributeValue<"+xmlInfo.typeStr+">(element, attrib);\n";
 						includes.insert("NANDRAD_Utilities.h");
 					}
+					else if (xmlInfo.typeStr == "IDType") {
+						attribs +=
+							"				m_"+attribName+" = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);\n";
+					}
 					else if (xmlInfo.typeStr == "IBK::Path") {
 						attribs +=
 							"				m_"+attribName+" = IBK::Path(attrib->ValueStr());\n";
@@ -802,6 +840,7 @@ void CodeGenerator::generateReadWriteCode() {
 						xmlInfo.typeStr == "IBK::LinearSpline" ||
 						xmlInfo.typeStr == "IBK::Flag" ||
 						xmlInfo.typeStr == "IBK::IntPara" ||
+						xmlInfo.typeStr == "IDType" ||
 						xmlInfo.typeStr == "LinearSplineParameter")
 					{
 						// do nothing here, but at the end, we check if the respective value still has an empty

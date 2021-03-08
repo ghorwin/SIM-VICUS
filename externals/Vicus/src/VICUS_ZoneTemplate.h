@@ -19,11 +19,11 @@ public:
 
 	/*! Types used to identify individual sub-templates. */
 	enum SubTemplateType {
-		ST_IntLoadPerson,
-		ST_IntLoadEquipment,
-		ST_IntLoadLighting,
-		ST_IntLoadOther,
-		ST_ControlThermostat,
+		ST_IntLoadPerson,			// Keyword: IntLoadPerson
+		ST_IntLoadEquipment,		// Keyword: IntLoadEquipment
+		ST_IntLoadLighting,			// Keyword: IntLoadLighting
+		ST_IntLoadOther,			// Keyword: IntLoadOther
+		ST_ControlThermostat,		// Keyword: ControlThermostat
 		NUM_ST
 	};
 
@@ -64,7 +64,7 @@ public:
 	IBK::MultiLanguageString		m_dataSource;									// XML:E
 
 	/*! Stores id references for all sub-templates. */
-	IBK::IntPara					m_idReferences[NUM_ST];							// XML:E
+	IDType							m_idReferences[NUM_ST];							// XML:E
 
 #if 0
 	/*! Internal loads person model id. */
