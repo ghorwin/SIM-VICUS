@@ -95,6 +95,9 @@ public:
 		m_splinePara[SP_ParameterSet1] = m_splineParameter;
 		m_splinePara[SP_ParameterSet1].m_name = "ParameterSet1"; // name must match the keyword list name
 
+		for (unsigned int & a : m_idReferences) a = NANDRAD::INVALID_ID;
+		m_idReferences[SomeFurnace] = 2;
+		m_idReferences[SomeHeater] = 15;
 	}
 
 	NANDRAD_READWRITE
@@ -115,6 +118,15 @@ public:
 		SP_ParameterSet1,									// Keyword: ParameterSet1
 		SP_ParameterSet2,									// Keyword: ParameterSet2
 		NUM_SP
+	};
+
+
+	enum ReferencedIDTypes {
+		SomeStove,											// Keyword: SomeStove
+		SomeOven,											// Keyword: SomeOven
+		SomeHeater,											// Keyword: SomeHeater
+		SomeFurnace,										// Keyword: SomeFurnace
+		NUM_RefID
 	};
 
 	// -> id1="5"
@@ -195,6 +207,12 @@ public:
 
 	// -> <IBK:Flag name="X2">true</IBK:Flag>
 	IBK::Flag			m_flags[NUM_test];					// XML:E
+
+	IDType				m_someStuffIDAsAttrib;				// XML:A
+	IDType				m_someStuffIDAsElement;				// XML:E
+
+	// -> <SomeStove>231</SomeStove> : Keywords must be unique!
+	IDType				m_idReferences[NUM_RefID] = {NANDRAD::INVALID_ID};	// XML:E
 
 	// -> <IBK:LinearSpline name="LinSpl">...</IBK:LinearSpline>
 	IBK::LinearSpline	m_linSpl;							// XML:E
