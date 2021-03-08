@@ -306,7 +306,8 @@ void SVDBZoneTemplateTreeModel::deleteChildItem(const QModelIndex & templateInde
 void SVDBZoneTemplateTreeModel::setItemModified(unsigned int id) {
 	QModelIndex idx = indexById(id);
 	QModelIndex left = index(idx.row(), 0, QModelIndex());
-	QModelIndex right = index(idx.row(), NumColumns-1, QModelIndex());
+	int rows = rowCount(left);
+	QModelIndex right = index(rows-1, NumColumns-1, left);
 	emit dataChanged(left, right);
 }
 

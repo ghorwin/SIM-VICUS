@@ -35,6 +35,8 @@ public:
 	/*! Update widget with this. */
 	void updateInput(int id, int subTemplateId, int subTemplateType);
 
+	void on_toolButtonRemoveSubComponent_clicked();
+
 signals:
 	/*! Emitted when the action in the widget shall cause the tree view to change selection.
 		In case of removal of a sub-template, the subTemplateType matches ZoneTemplate::NUM_ST and
@@ -50,7 +52,6 @@ private slots:
 
 	void on_toolButtonSelectSubComponent_clicked();
 
-	void on_toolButtonRemoveSubComponent_clicked();
 
 	void on_pushButtonAddSubTemplate_clicked();
 

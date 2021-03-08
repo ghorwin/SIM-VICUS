@@ -58,6 +58,8 @@ SVDBZoneTemplateEditDialog::SVDBZoneTemplateEditDialog(QWidget *parent) :
 	// set item delegate for coloring built-ins
 	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn);
 	m_ui->treeView->setItemDelegate(dg);
+
+	resize(1400,600);
 }
 
 
@@ -169,8 +171,10 @@ void SVDBZoneTemplateEditDialog::on_toolButtonRemove_clicked() {
 	Q_ASSERT(currentProxyIndex.isValid());
 	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
 	// if this is a child index, get the index of the parent
-	if (sourceIndex.internalPointer() != nullptr)
-		sourceIndex = sourceIndex.parent();
+	if (sourceIndex.internalPointer() != nullptr) {
+		m_editWidget->on_toolButtonRemoveSubComponent_clicked();
+		return;
+	}
 	m_dbModel->deleteItem(sourceIndex);
 	// last construction removed? clear input widget
 	if (m_dbModel->rowCount() == 0)

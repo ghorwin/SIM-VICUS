@@ -143,7 +143,15 @@ void SVDBZoneTemplateEditWidget::on_pushButtonColor_colorChanged() {
 
 
 void SVDBZoneTemplateEditWidget::on_toolButtonSelectSubComponent_clicked() {
-
+	unsigned int id = SVMainWindow::instance().dbInternalLoadsPersonEditDialog()->select(m_current->m_idReferences[m_currentSubTemplateType]);
+	if (id != VICUS::INVALID_ID) {
+		// modify existing
+		m_current->m_idReferences[m_currentSubTemplateType] = id;
+		m_db->m_zoneTemplates.m_modified = true;
+	}
+	// we must assume that the name of the referenced sub-template has changed, so update controls accordingly
+	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+	updateInput((int)m_current->m_id, (int)m_current->m_idReferences[m_currentSubTemplateType], m_currentSubTemplateType);
 }
 
 
