@@ -200,22 +200,22 @@ public:
 	IBK::IntPara		m_singleIntegerPara = IBK::IntPara("blubb",12);	// XML:E
 
 	// -> <IBK:Parameter name="X1" unit="C">12</IBK:Parameter>
-	IBK::Parameter		m_para[NUM_test];					// XML:E
+	IBK::Parameter		m_para[NUM_test];						// XML:E
 
 	// -> <IBK:IntPara name="I1">13</IBK:IntPara>
-	IBK::IntPara		m_intPara[NUM_IP];					// XML:E
+	IBK::IntPara		m_intPara[NUM_IP];						// XML:E
 
 	// -> <IBK:Flag name="X2">true</IBK:Flag>
-	IBK::Flag			m_flags[NUM_test];					// XML:E
+	IBK::Flag			m_flags[NUM_test];						// XML:E
 
-	IDType				m_someStuffIDAsAttrib;				// XML:A
-	IDType				m_someStuffIDAsElement;				// XML:E
+	IDType				m_someStuffIDAsAttrib;					// XML:A
+	IDType				m_someStuffIDAsElement;					// XML:E
 
 	// -> <SomeStove>231</SomeStove> : Keywords must be unique!
-	IDType				m_idReferences[NUM_RefID] = {NANDRAD::INVALID_ID};	// XML:E
+	IDType				m_idReferences[NUM_RefID];				// XML:E
 
 	// -> <IBK:LinearSpline name="LinSpl">...</IBK:LinearSpline>
-	IBK::LinearSpline	m_linSpl;							// XML:E
+	IBK::LinearSpline	m_linSpl;								// XML:E
 
 	// -> <LinearSplineParameter name="SplineParameter">...</LinearSplineParameter>
 	NANDRAD::LinearSplineParameter	m_splineParameter;			// XML:E
@@ -223,15 +223,15 @@ public:
 	LinearSplineParameter			m_anotherSplineParameter;	// XML:E
 
 	// -> <LinearSplineParameter name="ParameterSet1">...</LinearSplineParameter>
-	NANDRAD::LinearSplineParameter m_splinePara[NUM_SP];	// XML:E
+	NANDRAD::LinearSplineParameter m_splinePara[NUM_SP];		// XML:E
 
 	// generic class with own readXML() and writeXML() function
 	// -> <Schedule...>...</Schedule>
-	Schedule			m_sched;							// XML:E
+	Schedule			m_sched;								// XML:E
 
 	// generic class with custom tag name
 	// -> <OtherSchedule...>...</OtherSchedule>
-	Schedule			m_sched2;							// XML:E:tag=OtherSchedule
+	Schedule			m_sched2;								// XML:E:tag=OtherSchedule
 };
 
 }

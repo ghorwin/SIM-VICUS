@@ -1,7 +1,7 @@
 The NANDRAD CodeGenerator
 =========================
 Andreas Nicolai <andreas.nicolai@tu-dresden.de>
-v1.1 (20.01.2021)
+v1.1 (08.03.2021)
 // v1.1 date_on_line_above
 :Author Initials: AN
 :toc: left
@@ -732,59 +732,119 @@ public:
 		NUM_SP
 	};
 
+
+	enum ReferencedIDTypes {
+		SomeStove,											// Keyword: SomeStove
+		SomeOven,											// Keyword: SomeOven
+		SomeHeater,											// Keyword: SomeHeater
+		SomeFurnace,										// Keyword: SomeFurnace
+		NUM_RefID
+	};
+
+	// -> id1="5"
 	int					m_id1		= 5;					// XML:A:required
+	// -> id2="10"
 	unsigned int		m_id2		= 10;					// XML:A
+	// -> flag1="0"
 	bool				m_flag1		= false;				// XML:A
+	// -> val1="42.42"
 	double				m_val1		= 42.42;				// XML:A
+	// -> testBla="X1"
 	test_t				m_testBla	= t_x1;					// XML:A
+	// -> str1="Blubb"
 	std::string			m_str1		= "Blubb";				// XML:A
+	// -> path1="/tmp"
 	IBK::Path			m_path1		= IBK::Path("/tmp");	// XML:A
+	// -> u1="K"
 	IBK::Unit			m_u1		= IBK::Unit("K");		// XML:A
 
+	// -> <Id3>10</Id3>
 	int					m_id3		= 10;					// XML:E:required
+	// -> <Id4>12</Id4>
 	unsigned int		m_id4		= 12;					// XML:E
+	// -> <Flag2>1</Flag2>
 	bool				m_flag2		= true;					// XML:E
+	// -> <Val2>41.41</Val2>
 	double				m_val2		= 41.41;				// XML:E
+	// -> <TestBlo>X2</TestBlo>
 	test_t				m_testBlo	= t_x2;					// XML:E
+	// -> <Str2>blabb</Str2>
 	std::string			m_str2		= "blabb";				// XML:E
 
+	// -> <Path2>/var</Path2>
 	IBK::Path			m_path2		= IBK::Path("/var");	// XML:E
+	// -> undefined/empty - not written
 	IBK::Path			m_path22;							// XML:E
 
+	// -> <U2>C</U2>
 	IBK::Unit			m_u2		= IBK::Unit("C");		// XML:E
+	// -> <X5>43.43</X5>
 	double				m_x5		= 43.43;				// XML:E
 
+	// -> <IBK:Flag name="F">true</IBK:Flag>  -> value of m_f.name is ignored
 	IBK::Flag			m_f;								// XML:E
+	// -> undefined/empty - not written
 	IBK::Flag			m_f2;								// XML:E
 
+	// -> <Time1>01.01.07 12:47:12</Time1>
 	IBK::Time			m_time1;							// XML:E
+	// -> undefined/empty - not written
 	IBK::Time			m_time2;							// XML:E
 
+	// -> <Table>Col1:1,5,3;Col2:7,2,2;</Table>
 	DataTable			m_table;							// XML:E
+	// -> undefined/empty - not written
 	DataTable			m_table2;							// XML:E
 
+	// -> 		<DblVec>0,12,24</DblVec>
 	std::vector<double>		m_dblVec;						// XML:E
 
+	// -> <Interfaces>...</Interfaces>
 	std::vector<Interface>	m_interfaces;					// XML:E
 
+	// -> <InterfaceA>....</InterfaceA>  instead of <Interface>..</Interface>
 	Interface				m_interfaceA;					// XML:E:tag=InterfaceA
 
-	IBK::Parameter		m_singlePara;						            // XML:E
-	IBK::IntPara		m_singleIntegerPara = IBK::IntPara("blubb",12);	// XML:E
-	IBK::LinearSpline	m_linSpl;							            // XML:E
-	NANDRAD::LinearSplineParameter	m_splineParameter;			        // XML:E
-	LinearSplineParameter			m_anotherSplineParameter;	        // XML:E
+	// -> <IBK:Parameter name="SinglePara" unit="C">20</IBK:Parameter>
+	IBK::Parameter		m_singlePara;						// XML:E
 
+	// -> <IBK:IntPara name="SingleIntegerPara">12</IBK:IntPara>
+	IBK::IntPara		m_singleIntegerPara = IBK::IntPara("blubb",12);	// XML:E
+
+	// -> <IBK:Parameter name="X1" unit="C">12</IBK:Parameter>
 	IBK::Parameter		m_para[NUM_test];					// XML:E
+
+	// -> <IBK:IntPara name="I1">13</IBK:IntPara>
 	IBK::IntPara		m_intPara[NUM_IP];					// XML:E
+
+	// -> <IBK:Flag name="X2">true</IBK:Flag>
 	IBK::Flag			m_flags[NUM_test];					// XML:E
+
+	IDType				m_someStuffIDAsAttrib;				// XML:A
+	IDType				m_someStuffIDAsElement;				// XML:E
+
+	// -> <SomeStove>231</SomeStove> : Keywords must be unique!
+	IDType				m_idReferences[NUM_RefID];	        // XML:E
+
+	// -> <IBK:LinearSpline name="LinSpl">...</IBK:LinearSpline>
+	IBK::LinearSpline	m_linSpl;							// XML:E
+
+	// -> <LinearSplineParameter name="SplineParameter">...</LinearSplineParameter>
+	NANDRAD::LinearSplineParameter	m_splineParameter;		// XML:E
+	// -> <LinearSplineParameter name="AnotherSplineParameter">...</LinearSplineParameter>
+	LinearSplineParameter			m_anotherSplineParameter;	// XML:E
+
+	// -> <LinearSplineParameter name="ParameterSet1">...</LinearSplineParameter>
 	NANDRAD::LinearSplineParameter m_splinePara[NUM_SP];	// XML:E
 
+	// generic class with own readXML() and writeXML() function
+	// -> <Schedule...>...</Schedule>
 	Schedule			m_sched;							// XML:E
+
+	// generic class with custom tag name
+	// -> <OtherSchedule...>...</OtherSchedule>
 	Schedule			m_sched2;							// XML:E:tag=OtherSchedule
-
 };
-
 ----
 
 The following conventions are used when composing the XML content:
@@ -876,6 +936,39 @@ The code generator creates additional code to prevent writing of undefined data:
 * `IBK::Time` with invalid time/date are not written
 * empty strings/paths are not written
 * undefined units (id=0) are not written
+
+#### IDType variables
+
+The variable type `IDType` is actually a typedef for `unsigned int` and should be used only for ID references. The typdef is declared in `NANDRAD_CodeGenMacros.h`. When the IDType is used for scalar variables, it is serialized exactly as `unsigned int`. However, it can also be used in a C-array with enumeration values, like in the following example:
+
+.IDType array variables
+[source,c++]
+----
+class SerializationTest {
+public:
+
+	NANDRAD_READWRITE
+
+	enum ReferencedIDTypes {
+		SomeStove,											// Keyword: SomeStove
+		SomeOven,											// Keyword: SomeOven
+		SomeHeater,											// Keyword: SomeHeater
+		SomeFurnace,										// Keyword: SomeFurnace
+		NUM_RefID
+	};
+
+	// -> <SomeStove>231</SomeStove> : Keywords must be unique!
+	IDType m_idReferences[NUM_RefID];	                    // XML:E
+};
+----
+The array size *must* be defined by an enumeration counter value that matches the size of the enumeration list.
+Also, the corresponding enumeration *must* have keywords for the keyword list.
+
+[NOTE]
+====
+Whether `IDType` variables are scalar variables or within a c-array, they are only written to XML if their value is not equal to `NANDRAD::INVALID_ID`.
+====
+
 
 [[xml_complexTypes]]
 #### Reading/writing custom complex types

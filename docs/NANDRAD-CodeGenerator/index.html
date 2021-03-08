@@ -73,7 +73,7 @@ table {
 <div class="details">
 <span id="author" class="author">Andreas Nicolai</span><br>
 <span id="email" class="email"><a href="mailto:andreas.nicolai@tu-dresden.de">andreas.nicolai@tu-dresden.de</a></span><br>
-<span id="revnumber">version 1.1 (20.01.2021)</span>
+<span id="revnumber">version 1.1 (08.03.2021)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -115,12 +115,13 @@ table {
 <li><a href="#_keyword_parameters">4.3. Keyword Parameters</a></li>
 <li><a href="#xml_serialization_rules">4.4. XML Serialization</a>
 <ul class="sectlevel3">
-<li><a href="#xml_complexTypes">4.4.1. Reading/writing custom complex types</a></li>
-<li><a href="#_readingwriting_custom_complex_types_with_user_defined_tag_names">4.4.2. Reading/writing custom complex types with user-defined tag names</a></li>
-<li><a href="#_handling_of_uninitialized_ids_nandradinvalid_id">4.4.3. Handling of uninitialized IDs (<code>= NANDRAD::INVALID_ID</code>)</a></li>
-<li><a href="#_unsupported_data_member_types">4.4.4. Unsupported data member types</a></li>
-<li><a href="#_xml_comments">4.4.5. XML Comments</a></li>
-<li><a href="#_serialization_of_inherited_data_members">4.4.6. Serialization of inherited data members</a></li>
+<li><a href="#_idtype_variables">4.4.1. IDType variables</a></li>
+<li><a href="#xml_complexTypes">4.4.2. Reading/writing custom complex types</a></li>
+<li><a href="#_readingwriting_custom_complex_types_with_user_defined_tag_names">4.4.3. Reading/writing custom complex types with user-defined tag names</a></li>
+<li><a href="#_handling_of_uninitialized_ids_nandradinvalid_id">4.4.4. Handling of uninitialized IDs (<code>= NANDRAD::INVALID_ID</code>)</a></li>
+<li><a href="#_unsupported_data_member_types">4.4.5. Unsupported data member types</a></li>
+<li><a href="#_xml_comments">4.4.6. XML Comments</a></li>
+<li><a href="#_serialization_of_inherited_data_members">4.4.7. Serialization of inherited data members</a></li>
 </ul>
 </li>
 </ul>
@@ -1020,57 +1021,118 @@ table {
 		<span class="n">NUM_SP</span>
 	<span class="p">};</span>
 
+
+	<span class="k">enum</span> <span class="n">ReferencedIDTypes</span> <span class="p">{</span>
+		<span class="n">SomeStove</span><span class="p">,</span>											<span class="c1">// Keyword: SomeStove</span>
+		<span class="n">SomeOven</span><span class="p">,</span>											<span class="c1">// Keyword: SomeOven</span>
+		<span class="n">SomeHeater</span><span class="p">,</span>											<span class="c1">// Keyword: SomeHeater</span>
+		<span class="n">SomeFurnace</span><span class="p">,</span>										<span class="c1">// Keyword: SomeFurnace</span>
+		<span class="n">NUM_RefID</span>
+	<span class="p">};</span>
+
+	<span class="c1">// -&gt; id1="5"</span>
 	<span class="kt">int</span>					<span class="n">m_id1</span>		<span class="o">=</span> <span class="mi">5</span><span class="p">;</span>					<span class="c1">// XML:A:required</span>
+	<span class="c1">// -&gt; id2="10"</span>
 	<span class="kt">unsigned</span> <span class="kt">int</span>		<span class="n">m_id2</span>		<span class="o">=</span> <span class="mi">10</span><span class="p">;</span>					<span class="c1">// XML:A</span>
+	<span class="c1">// -&gt; flag1="0"</span>
 	<span class="kt">bool</span>				<span class="n">m_flag1</span>		<span class="o">=</span> <span class="nb">false</span><span class="p">;</span>				<span class="c1">// XML:A</span>
+	<span class="c1">// -&gt; val1="42.42"</span>
 	<span class="kt">double</span>				<span class="n">m_val1</span>		<span class="o">=</span> <span class="mf">42.42</span><span class="p">;</span>				<span class="c1">// XML:A</span>
+	<span class="c1">// -&gt; testBla="X1"</span>
 	<span class="n">test_t</span>				<span class="n">m_testBla</span>	<span class="o">=</span> <span class="n">t_x1</span><span class="p">;</span>					<span class="c1">// XML:A</span>
+	<span class="c1">// -&gt; str1="Blubb"</span>
 	<span class="n">std</span><span class="o">::</span><span class="n">string</span>			<span class="n">m_str1</span>		<span class="o">=</span> <span class="s">"Blubb"</span><span class="p">;</span>				<span class="c1">// XML:A</span>
+	<span class="c1">// -&gt; path1="/tmp"</span>
 	<span class="n">IBK</span><span class="o">::</span><span class="n">Path</span>			<span class="n">m_path1</span>		<span class="o">=</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Path</span><span class="p">(</span><span class="s">"/tmp"</span><span class="p">);</span>	<span class="c1">// XML:A</span>
+	<span class="c1">// -&gt; u1="K"</span>
 	<span class="n">IBK</span><span class="o">::</span><span class="n">Unit</span>			<span class="n">m_u1</span>		<span class="o">=</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Unit</span><span class="p">(</span><span class="s">"K"</span><span class="p">);</span>		<span class="c1">// XML:A</span>
 
+	<span class="c1">// -&gt; &lt;Id3&gt;10&lt;/Id3&gt;</span>
 	<span class="kt">int</span>					<span class="n">m_id3</span>		<span class="o">=</span> <span class="mi">10</span><span class="p">;</span>					<span class="c1">// XML:E:required</span>
+	<span class="c1">// -&gt; &lt;Id4&gt;12&lt;/Id4&gt;</span>
 	<span class="kt">unsigned</span> <span class="kt">int</span>		<span class="n">m_id4</span>		<span class="o">=</span> <span class="mi">12</span><span class="p">;</span>					<span class="c1">// XML:E</span>
+	<span class="c1">// -&gt; &lt;Flag2&gt;1&lt;/Flag2&gt;</span>
 	<span class="kt">bool</span>				<span class="n">m_flag2</span>		<span class="o">=</span> <span class="nb">true</span><span class="p">;</span>					<span class="c1">// XML:E</span>
+	<span class="c1">// -&gt; &lt;Val2&gt;41.41&lt;/Val2&gt;</span>
 	<span class="kt">double</span>				<span class="n">m_val2</span>		<span class="o">=</span> <span class="mf">41.41</span><span class="p">;</span>				<span class="c1">// XML:E</span>
+	<span class="c1">// -&gt; &lt;TestBlo&gt;X2&lt;/TestBlo&gt;</span>
 	<span class="n">test_t</span>				<span class="n">m_testBlo</span>	<span class="o">=</span> <span class="n">t_x2</span><span class="p">;</span>					<span class="c1">// XML:E</span>
+	<span class="c1">// -&gt; &lt;Str2&gt;blabb&lt;/Str2&gt;</span>
 	<span class="n">std</span><span class="o">::</span><span class="n">string</span>			<span class="n">m_str2</span>		<span class="o">=</span> <span class="s">"blabb"</span><span class="p">;</span>				<span class="c1">// XML:E</span>
 
+	<span class="c1">// -&gt; &lt;Path2&gt;/var&lt;/Path2&gt;</span>
 	<span class="n">IBK</span><span class="o">::</span><span class="n">Path</span>			<span class="n">m_path2</span>		<span class="o">=</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Path</span><span class="p">(</span><span class="s">"/var"</span><span class="p">);</span>	<span class="c1">// XML:E</span>
+	<span class="c1">// -&gt; undefined/empty - not written</span>
 	<span class="n">IBK</span><span class="o">::</span><span class="n">Path</span>			<span class="n">m_path22</span><span class="p">;</span>							<span class="c1">// XML:E</span>
 
+	<span class="c1">// -&gt; &lt;U2&gt;C&lt;/U2&gt;</span>
 	<span class="n">IBK</span><span class="o">::</span><span class="n">Unit</span>			<span class="n">m_u2</span>		<span class="o">=</span> <span class="n">IBK</span><span class="o">::</span><span class="n">Unit</span><span class="p">(</span><span class="s">"C"</span><span class="p">);</span>		<span class="c1">// XML:E</span>
+	<span class="c1">// -&gt; &lt;X5&gt;43.43&lt;/X5&gt;</span>
 	<span class="kt">double</span>				<span class="n">m_x5</span>		<span class="o">=</span> <span class="mf">43.43</span><span class="p">;</span>				<span class="c1">// XML:E</span>
 
+	<span class="c1">// -&gt; &lt;IBK:Flag name="F"&gt;true&lt;/IBK:Flag&gt;  -&gt; value of m_f.name is ignored</span>
 	<span class="n">IBK</span><span class="o">::</span><span class="n">Flag</span>			<span class="n">m_f</span><span class="p">;</span>								<span class="c1">// XML:E</span>
+	<span class="c1">// -&gt; undefined/empty - not written</span>
 	<span class="n">IBK</span><span class="o">::</span><span class="n">Flag</span>			<span class="n">m_f2</span><span class="p">;</span>								<span class="c1">// XML:E</span>
 
+	<span class="c1">// -&gt; &lt;Time1&gt;01.01.07 12:47:12&lt;/Time1&gt;</span>
 	<span class="n">IBK</span><span class="o">::</span><span class="n">Time</span>			<span class="n">m_time1</span><span class="p">;</span>							<span class="c1">// XML:E</span>
+	<span class="c1">// -&gt; undefined/empty - not written</span>
 	<span class="n">IBK</span><span class="o">::</span><span class="n">Time</span>			<span class="n">m_time2</span><span class="p">;</span>							<span class="c1">// XML:E</span>
 
+	<span class="c1">// -&gt; &lt;Table&gt;Col1:1,5,3;Col2:7,2,2;&lt;/Table&gt;</span>
 	<span class="n">DataTable</span>			<span class="n">m_table</span><span class="p">;</span>							<span class="c1">// XML:E</span>
+	<span class="c1">// -&gt; undefined/empty - not written</span>
 	<span class="n">DataTable</span>			<span class="n">m_table2</span><span class="p">;</span>							<span class="c1">// XML:E</span>
 
+	<span class="c1">// -&gt; 		&lt;DblVec&gt;0,12,24&lt;/DblVec&gt;</span>
 	<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span>		<span class="n">m_dblVec</span><span class="p">;</span>						<span class="c1">// XML:E</span>
 
+	<span class="c1">// -&gt; &lt;Interfaces&gt;...&lt;/Interfaces&gt;</span>
 	<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Interface</span><span class="o">&gt;</span>	<span class="n">m_interfaces</span><span class="p">;</span>					<span class="c1">// XML:E</span>
 
+	<span class="c1">// -&gt; &lt;InterfaceA&gt;....&lt;/InterfaceA&gt;  instead of &lt;Interface&gt;..&lt;/Interface&gt;</span>
 	<span class="n">Interface</span>				<span class="n">m_interfaceA</span><span class="p">;</span>					<span class="c1">// XML:E:tag=InterfaceA</span>
 
-	<span class="n">IBK</span><span class="o">::</span><span class="n">Parameter</span>		<span class="n">m_singlePara</span><span class="p">;</span>						            <span class="c1">// XML:E</span>
-	<span class="n">IBK</span><span class="o">::</span><span class="n">IntPara</span>		<span class="n">m_singleIntegerPara</span> <span class="o">=</span> <span class="n">IBK</span><span class="o">::</span><span class="n">IntPara</span><span class="p">(</span><span class="s">"blubb"</span><span class="p">,</span><span class="mi">12</span><span class="p">);</span>	<span class="c1">// XML:E</span>
-	<span class="n">IBK</span><span class="o">::</span><span class="n">LinearSpline</span>	<span class="n">m_linSpl</span><span class="p">;</span>							            <span class="c1">// XML:E</span>
-	<span class="n">NANDRAD</span><span class="o">::</span><span class="n">LinearSplineParameter</span>	<span class="n">m_splineParameter</span><span class="p">;</span>			        <span class="c1">// XML:E</span>
-	<span class="n">LinearSplineParameter</span>			<span class="n">m_anotherSplineParameter</span><span class="p">;</span>	        <span class="c1">// XML:E</span>
+	<span class="c1">// -&gt; &lt;IBK:Parameter name="SinglePara" unit="C"&gt;20&lt;/IBK:Parameter&gt;</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">Parameter</span>		<span class="n">m_singlePara</span><span class="p">;</span>						<span class="c1">// XML:E</span>
 
+	<span class="c1">// -&gt; &lt;IBK:IntPara name="SingleIntegerPara"&gt;12&lt;/IBK:IntPara&gt;</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">IntPara</span>		<span class="n">m_singleIntegerPara</span> <span class="o">=</span> <span class="n">IBK</span><span class="o">::</span><span class="n">IntPara</span><span class="p">(</span><span class="s">"blubb"</span><span class="p">,</span><span class="mi">12</span><span class="p">);</span>	<span class="c1">// XML:E</span>
+
+	<span class="c1">// -&gt; &lt;IBK:Parameter name="X1" unit="C"&gt;12&lt;/IBK:Parameter&gt;</span>
 	<span class="n">IBK</span><span class="o">::</span><span class="n">Parameter</span>		<span class="n">m_para</span><span class="p">[</span><span class="n">NUM_test</span><span class="p">];</span>					<span class="c1">// XML:E</span>
+
+	<span class="c1">// -&gt; &lt;IBK:IntPara name="I1"&gt;13&lt;/IBK:IntPara&gt;</span>
 	<span class="n">IBK</span><span class="o">::</span><span class="n">IntPara</span>		<span class="n">m_intPara</span><span class="p">[</span><span class="n">NUM_IP</span><span class="p">];</span>					<span class="c1">// XML:E</span>
+
+	<span class="c1">// -&gt; &lt;IBK:Flag name="X2"&gt;true&lt;/IBK:Flag&gt;</span>
 	<span class="n">IBK</span><span class="o">::</span><span class="n">Flag</span>			<span class="n">m_flags</span><span class="p">[</span><span class="n">NUM_test</span><span class="p">];</span>					<span class="c1">// XML:E</span>
+
+	<span class="n">IDType</span>				<span class="n">m_someStuffIDAsAttrib</span><span class="p">;</span>				<span class="c1">// XML:A</span>
+	<span class="n">IDType</span>				<span class="n">m_someStuffIDAsElement</span><span class="p">;</span>				<span class="c1">// XML:E</span>
+
+	<span class="c1">// -&gt; &lt;SomeStove&gt;231&lt;/SomeStove&gt; : Keywords must be unique!</span>
+	<span class="n">IDType</span>				<span class="n">m_idReferences</span><span class="p">[</span><span class="n">NUM_RefID</span><span class="p">];</span>	        <span class="c1">// XML:E</span>
+
+	<span class="c1">// -&gt; &lt;IBK:LinearSpline name="LinSpl"&gt;...&lt;/IBK:LinearSpline&gt;</span>
+	<span class="n">IBK</span><span class="o">::</span><span class="n">LinearSpline</span>	<span class="n">m_linSpl</span><span class="p">;</span>							<span class="c1">// XML:E</span>
+
+	<span class="c1">// -&gt; &lt;LinearSplineParameter name="SplineParameter"&gt;...&lt;/LinearSplineParameter&gt;</span>
+	<span class="n">NANDRAD</span><span class="o">::</span><span class="n">LinearSplineParameter</span>	<span class="n">m_splineParameter</span><span class="p">;</span>		<span class="c1">// XML:E</span>
+	<span class="c1">// -&gt; &lt;LinearSplineParameter name="AnotherSplineParameter"&gt;...&lt;/LinearSplineParameter&gt;</span>
+	<span class="n">LinearSplineParameter</span>			<span class="n">m_anotherSplineParameter</span><span class="p">;</span>	<span class="c1">// XML:E</span>
+
+	<span class="c1">// -&gt; &lt;LinearSplineParameter name="ParameterSet1"&gt;...&lt;/LinearSplineParameter&gt;</span>
 	<span class="n">NANDRAD</span><span class="o">::</span><span class="n">LinearSplineParameter</span> <span class="n">m_splinePara</span><span class="p">[</span><span class="n">NUM_SP</span><span class="p">];</span>	<span class="c1">// XML:E</span>
 
+	<span class="c1">// generic class with own readXML() and writeXML() function</span>
+	<span class="c1">// -&gt; &lt;Schedule...&gt;...&lt;/Schedule&gt;</span>
 	<span class="n">Schedule</span>			<span class="n">m_sched</span><span class="p">;</span>							<span class="c1">// XML:E</span>
-	<span class="n">Schedule</span>			<span class="n">m_sched2</span><span class="p">;</span>							<span class="c1">// XML:E:tag=OtherSchedule</span>
 
+	<span class="c1">// generic class with custom tag name</span>
+	<span class="c1">// -&gt; &lt;OtherSchedule...&gt;...&lt;/OtherSchedule&gt;</span>
+	<span class="n">Schedule</span>			<span class="n">m_sched2</span><span class="p">;</span>							<span class="c1">// XML:E:tag=OtherSchedule</span>
 <span class="p">};</span></code></pre>
 </div>
 </div>
@@ -1216,7 +1278,52 @@ table {
 </ul>
 </div>
 <div class="sect3">
-<h4 id="xml_complexTypes">4.4.1. Reading/writing custom complex types</h4>
+<h4 id="_idtype_variables">4.4.1. IDType variables</h4>
+<div class="paragraph">
+<p>The variable type <code>IDType</code> is actually a typedef for <code>unsigned int</code> and should be used only for ID references. The typdef is declared in <code>NANDRAD_CodeGenMacros.h</code>. When the IDType is used for scalar variables, it is serialized exactly as <code>unsigned int</code>. However, it can also be used in a C-array with enumeration values, like in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="title">IDType array variables</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">SerializationTest</span> <span class="p">{</span>
+<span class="nl">public:</span>
+
+	<span class="n">NANDRAD_READWRITE</span>
+
+	<span class="k">enum</span> <span class="n">ReferencedIDTypes</span> <span class="p">{</span>
+		<span class="n">SomeStove</span><span class="p">,</span>											<span class="c1">// Keyword: SomeStove</span>
+		<span class="n">SomeOven</span><span class="p">,</span>											<span class="c1">// Keyword: SomeOven</span>
+		<span class="n">SomeHeater</span><span class="p">,</span>											<span class="c1">// Keyword: SomeHeater</span>
+		<span class="n">SomeFurnace</span><span class="p">,</span>										<span class="c1">// Keyword: SomeFurnace</span>
+		<span class="n">NUM_RefID</span>
+	<span class="p">};</span>
+
+	<span class="c1">// -&gt; &lt;SomeStove&gt;231&lt;/SomeStove&gt; : Keywords must be unique!</span>
+	<span class="n">IDType</span> <span class="n">m_idReferences</span><span class="p">[</span><span class="n">NUM_RefID</span><span class="p">];</span>	                    <span class="c1">// XML:E</span>
+<span class="p">};</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The array size <strong>must</strong> be defined by an enumeration counter value that matches the size of the enumeration list.
+Also, the corresponding enumeration <strong>must</strong> have keywords for the keyword list.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Whether <code>IDType</code> variables are scalar variables or within a c-array, they are only written to XML if their value is not equal to <code>NANDRAD::INVALID_ID</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="xml_complexTypes">4.4.2. Reading/writing custom complex types</h4>
 <div class="paragraph">
 <p>Any data type not listed in the example above and with <code>// XML:E</code> annotation is treated by the code generator as a complex type with own functions <code>readXML()</code> and <code>writeXML()</code> according to the <code>NANDRAD_READWRITE</code> macro. The code generator with create code to simply call these functions when writing such code.</p>
 </div>
@@ -1225,7 +1332,7 @@ table {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_readingwriting_custom_complex_types_with_user_defined_tag_names">4.4.2. Reading/writing custom complex types with user-defined tag names</h4>
+<h4 id="_readingwriting_custom_complex_types_with_user_defined_tag_names">4.4.3. Reading/writing custom complex types with user-defined tag names</h4>
 <div class="paragraph">
 <p>Normally, the tag names for complex types are generated based on the complex type&#8217;s class name. For example:</p>
 </div>
@@ -1280,7 +1387,7 @@ table {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_handling_of_uninitialized_ids_nandradinvalid_id">4.4.3. Handling of uninitialized IDs (<code>= NANDRAD::INVALID_ID</code>)</h4>
+<h4 id="_handling_of_uninitialized_ids_nandradinvalid_id">4.4.4. Handling of uninitialized IDs (<code>= NANDRAD::INVALID_ID</code>)</h4>
 <div class="paragraph">
 <p>The code generator automatically inserts code that compares unsigned int parameters with the constant <code>NANDRAD::INVALID_ID</code>. If the variable holds this default value, the variable will not be written.</p>
 </div>
@@ -1306,7 +1413,7 @@ table {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_unsupported_data_member_types">4.4.4. Unsupported data member types</h4>
+<h4 id="_unsupported_data_member_types">4.4.5. Unsupported data member types</h4>
 <div class="paragraph">
 <p>For any kind of special data types, like <code>std::map&lt;std::string, std::vector&lt;double&gt; &gt;</code> you cannot use the code generator to create read/write code for. When you add a read/write annotation to such variables, the code generator will complain about unsupported types and may generate not compiling code.</p>
 </div>
@@ -1325,7 +1432,7 @@ table {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_xml_comments">4.4.5. XML Comments</h4>
+<h4 id="_xml_comments">4.4.6. XML Comments</h4>
 <div class="paragraph">
 <p>Sometimes, it is nice to add comments about certain data members in the file. These are not xml tags, but merely xml comments and as such have no meaning for the project (only for humans reading the file in the text editor).</p>
 </div>
@@ -1395,7 +1502,7 @@ table {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_serialization_of_inherited_data_members">4.4.6. Serialization of inherited data members</h4>
+<h4 id="_serialization_of_inherited_data_members">4.4.7. Serialization of inherited data members</h4>
 <div class="paragraph">
 <p>Sometimes a base class holds data members that should be serialized in derived classes. Rather than manually implementing <code>readXML()</code> and <code>writeXML()</code> functions, you can simply copy the variable declaration into the derived class, add the <code>XML:...</code> serialization suffix and then prefix the entire line with <code>//:inherited</code> like in the following example.</p>
 </div>
@@ -1428,8 +1535,8 @@ table {
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.1 (20.01.2021)<br>
-Last updated 2021-01-20 17:37:16 +0100
+Version 1.1 (08.03.2021)<br>
+Last updated 2021-03-08 14:54:15 +0100
 </div>
 </div>
 <style>
