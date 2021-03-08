@@ -633,3 +633,95 @@ also ca. 2000W Wärmeabgabe im Rohr.
 
 Der nachfolgende Wärmetauscher trägt konstant 2000W in das Medium ein. 
 Damit ist die Energiebilanz im stationären Zustand erfüllt.
+
+
+### ThermoHydraulicNetworkSingleZoneExchange.nandrad
+
+Ein Rohr, verbunden mit einem Wärmetauscher, welcher einen Wärme von 500W aufnimmt,
+verläuft durch eine Zone. Die Zone (100 m³ Volumen) ist durch Infiltration mit der Außenluft
+von -10°C in Kontakt. Erwartet wird, dass 500W in die Zone abegeben und durch Infiltrationswärmeverluste
+ausgeglichen werden.
+
+Die Netzwerkelemente sind:
+Pumpe 1: Konstanter Druckverlust von 1kPa
+Wärmetauscher 2: konstante Wärmeabgabe von QLoss = -500W
+Rohr: Parametrisierung wie von Rohr 1 in ThermoHydraulicNetworkParallelPipes
+
+Die Zone wird wie folgt parametrisiert:
+```
+Volume = 100 m3
+VentilationRate = 0.5 1/h
+TAmbient = -10 C
+```
+
+Die Materialdaten von Luft sind:
+```
+cPAir = 1006 J/kgK
+rhoAir = 1.205 kg/s
+```
+
+Luftmassestrom und Tempertaurdifferenz zwischen Raumluft und AUßenlufttempertaur errechnen sich durch
+```
+mdotVentilation = Volume * VentilationRate * rhoAir
+TZone - TAmbient = QdotVentilation/(mdotVentilation * cPAir).
+```
+
+Der abgegebene Wärmestrom QdotVentilation entspricht dabei genau der durch das Netzwerk aufgenommenen
+Wärmemenge, und es ergeben sich die folgenden Werte
+
+```
+mdotVentilation = 0.0167 kg/s
+QdotVentilation = -QdotNetwork = 500 W
+TZone - TAmbient = 29.7 K
+TZone = 19.7 C
+```
+
+
+### ThermoHydraulicNetworkSerialPipesSingleZoneExchange.nandrad
+
+Test der korrektn Summierung von zonenbezogenen Wärmeströmen.
+Parametrisierung wie in ThermoHydraulicNetworkSingleZoneExchange, nur wird das Netzwerk um ein
+weiteres seriell geschaltenes Rohr 2 erweitert. Die Parametrsierung ist identische wie in
+ThermoHydraulicNetworkSerialPipes und unterscheidet sich lediglich in dem konstanten Wärmestrom 
+für den Wärmetauscher:
+
+```
+QLoss = -500W
+```
+
+Es ist zu erwarten, dass sich in der Zone die Wärmeströme aller Rohre summieren, und sich im stationären Zustand folglich dasselbe Regime 
+wie in ThermoHydraulicNetworkSingleZoneExchange einstellt.
+
+
+### ThermoHydraulicNetworkParallelPipesZoneExchange.nandrad
+
+Test der korrekten Zuordnung von Wärmeströmen in die entsprechenden Zonen.
+Die Netzwerkparamametrisierung erfolgt wie in ThermoHydraulicNetworkParallelPipes. Es werden also
+zwei Rohre parallel geschalten, wobei jeweils das zweite Rohr die doppelte Durchflussmenge und
+den doppelten Wärmeverluststrom an die Umgebung wie Rohr 1 aufweist.
+
+Rohr 2 (das Größere) durchläuft passend eine Zone 2 mit doppelter Größe wie Zone 1. Es gilt also für
+Zone 1 und Zone 2:
+```
+Volume1 = 100 m3
+Volume2 = 200 m3
+VentilationRate1 = VentilationRate2 = 0.5 1/h
+TAmbient = -10 C
+```
+
+Der Wärmetauscher wird den ANforderungen der Zonen gerecht und liefert einen Wärmeverluststrom von:
+```
+QLoss = -1500 W
+```
+
+Aufgrund der Dimensionierung ist zu erwarten, dass in Zone 2 die doppelte Menge an
+Wärmegewinne durch das Netzwerk auftreten, die wiederum durch einen doppelt hohen
+Infiltrationsluftstrom nach außen ausgeglichen werden. In beiden Zonen müssen sich
+folglich identische Tempertauren einstellen:
+```
+QdotVentilation1 = -QdotNetwork1 = 500 W
+TZone1 = -TZone2 = 19.7 C
+```
+
+
+

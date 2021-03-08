@@ -12,7 +12,7 @@
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 			<Interval>
-				<IBK:Parameter name="End" unit="d">7</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">20</IBK:Parameter>
 			</Interval>
 			<SolarLoadsDistributionModel>
 				<DistributionType>AreaWeighted</DistributionType>
@@ -20,6 +20,7 @@
 		</SimulationParameter>
 		<SolverParameter>
 			<IBK:Parameter name="RelTol" unit="---">1e-07</IBK:Parameter>
+			<IBK:Parameter name="MaxTimeStep" unit="min">10</IBK:Parameter>
 			<IBK:IntPara name="MaxOrder">2</IBK:IntPara>
 		</SolverParameter> 
 		<Zones>
