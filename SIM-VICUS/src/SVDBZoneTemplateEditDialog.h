@@ -56,7 +56,7 @@ private slots:
 
 	void on_pushButtonReloadUserDB_clicked();
 
-	void on_tableView_doubleClicked(const QModelIndex &index);
+	void on_treeView_doubleClicked(const QModelIndex &index);
 
 private:
 	/*! If table contains an element with matching ID, this row is made current.

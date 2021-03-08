@@ -28,13 +28,14 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 	const VICUS::Database<VICUS::ZoneTemplate> & db = m_db->m_zoneTemplates;
 
 	// index is a top-level item
+	std::map<unsigned int, VICUS::ZoneTemplate>::const_iterator it;
 	if (index.internalPointer() == nullptr) {
 
 		int row = index.row();
 		if (row >= (int)db.size())
 			return QVariant();
 
-		std::map<unsigned int, VICUS::ZoneTemplate>::const_iterator it = db.begin();
+		it = db.begin();
 		std::advance(it, row);
 
 		switch (role) {
@@ -63,22 +64,45 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 					return it->second.m_color;
 				}
 			} break;
-
-			case Qt::SizeHintRole :
-				switch (index.column()) {
-					case ColCheck :
-					case ColColor :
-						return QSize(22, 16);
-				} // switch
-				break;
-
-			case Role_Id :
-				return it->first;
-
-			case Role_BuiltIn :
-				return it->second.m_builtIn;
 		}
 	}
+	else {
+		// sub-template
+
+		QModelIndex templateIndex = index.parent();
+
+		int row = templateIndex.row();
+		if (row >= (int)db.size())
+			return QVariant();
+
+		it = db.begin();
+		std::advance(it, row);
+
+		const VICUS::ZoneTemplate & zt = it->second;
+
+		int subTemplateIndex = index.row();
+		VICUS::ZoneTemplate::SubTemplateType subType = zt.usedReference(subTemplateIndex);
+
+	}
+
+	// common handling for templates and sub-templates
+	switch (role) {
+
+		case Qt::SizeHintRole :
+			switch (index.column()) {
+				case ColCheck :
+				case ColColor :
+					return QSize(22, 16);
+			} // switch
+			break;
+
+		case Role_Id :
+			return it->first;
+
+		case Role_BuiltIn :
+			return it->second.m_builtIn;
+	}
+
 	return QVariant();
 }
 

@@ -33,11 +33,17 @@ public:
 	void setup(SVDatabase * db, SVDBZoneTemplateTreeModel * dbModel);
 
 	/*! Update widget with this. */
-	void updateInput(int id, int subTemplateId);
+	void updateInput(int id, int subTemplateId, int subTemplateType);
 
 private slots:
 	void on_lineEditName_editingFinished();
 	void on_pushButtonColor_colorChanged();
+
+	void on_toolButtonSelectSubComponent_clicked();
+
+	void on_toolButtonRemoveSubComponent_clicked();
+
+	void on_pushButtonAddSubTemplate_clicked();
 
 private:
 	Ui::SVDBZoneTemplateEditWidget *m_ui;

@@ -105,6 +105,10 @@ unsigned int SVDBZoneTemplateEditDialog::select(unsigned int initialId) {
 		Q_ASSERT(currentProxyIndex.isValid());
 		QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
 
+		// if this is a child index, get the index of the parent
+		if (sourceIndex.internalPointer() != nullptr)
+			sourceIndex = sourceIndex.parent();
+
 		// return ID
 		return sourceIndex.data(Role_Id).toUInt();
 	}
@@ -147,6 +151,9 @@ void SVDBZoneTemplateEditDialog::on_toolButtonCopy_clicked() {
 	QModelIndex currentProxyIndex = m_ui->treeView->currentIndex();
 	Q_ASSERT(currentProxyIndex.isValid());
 	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
+	// if this is a child index, get the index of the parent
+	if (sourceIndex.internalPointer() != nullptr)
+		sourceIndex = sourceIndex.parent();
 	sourceIndex = m_dbModel->copyItem(sourceIndex);
 	QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
 	m_ui->treeView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
@@ -157,6 +164,9 @@ void SVDBZoneTemplateEditDialog::on_toolButtonRemove_clicked() {
 	QModelIndex currentProxyIndex = m_ui->treeView->currentIndex();
 	Q_ASSERT(currentProxyIndex.isValid());
 	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
+	// if this is a child index, get the index of the parent
+	if (sourceIndex.internalPointer() != nullptr)
+		sourceIndex = sourceIndex.parent();
 	m_dbModel->deleteItem(sourceIndex);
 	// last construction removed? clear input widget
 	if (m_dbModel->rowCount() == 0)
@@ -171,7 +181,7 @@ void SVDBZoneTemplateEditDialog::onCurrentIndexChanged(const QModelIndex &curren
 		m_ui->toolButtonRemove->setEnabled(false);
 		m_ui->toolButtonCopy->setEnabled(false);
 		m_groupBox->setEnabled(false);
-		m_editWidget->updateInput(-1, -1); // nothing selected
+		m_editWidget->updateInput(-1, -1, 0); // nothing selected
 	}
 	else {
 		m_groupBox->setEnabled(true);
@@ -183,8 +193,17 @@ void SVDBZoneTemplateEditDialog::onCurrentIndexChanged(const QModelIndex &curren
 		m_ui->toolButtonCopy->setEnabled(true);
 		m_ui->treeView->setCurrentIndex(current);
 		// retrieve current ID
-		int id = current.data(Role_Id).toInt();
-		m_editWidget->updateInput(id, -1);
+		int id = sourceIndex.data(Role_Id).toInt();
+		int subTemplateID = -1;
+		int subTemplateType = 0;
+		// sub-template selected?
+		if (sourceIndex.internalPointer() != nullptr) {
+			subTemplateID = id;
+			QModelIndex parentIndex = sourceIndex.parent();
+			id = parentIndex.data(Role_Id).toInt();
+			subTemplateType = sourceIndex.data(Qt::UserRole + 20).toInt();
+		}
+		m_editWidget->updateInput(id, subTemplateID, subTemplateType);
 	}
 }
 
@@ -200,19 +219,13 @@ void SVDBZoneTemplateEditDialog::on_pushButtonReloadUserDB_clicked() {
 		// tell model to reset completely
 		m_dbModel->resetModel();
 		onCurrentIndexChanged(QModelIndex(), QModelIndex());
-		m_editWidget->updateInput(-1, -1);
+		m_editWidget->updateInput(-1, -1, 0);
 	}
 }
 
 
-void SVDBZoneTemplateEditDialog::on_tableView_doubleClicked(const QModelIndex &index) {
-	if (m_ui->pushButtonSelect->isVisible() && index.isValid())
-		accept();
-}
-
-
 void SVDBZoneTemplateEditDialog::selectItemById(unsigned int id) {
-	// select item with given id
+	// select top-level item with given id
 	for (int i=0, count = m_dbModel->rowCount(); i<count; ++i) {
 		QModelIndex sourceIndex = m_dbModel->index(i,0, QModelIndex());
 		if (m_dbModel->data(sourceIndex, Role_Id).toUInt() == id) {
@@ -228,3 +241,11 @@ void SVDBZoneTemplateEditDialog::selectItemById(unsigned int id) {
 	}
 }
 
+
+void SVDBZoneTemplateEditDialog::on_treeView_doubleClicked(const QModelIndex &index) {
+	if (m_ui->pushButtonSelect->isVisible() && index.isValid()) {
+		QModelIndex sourceIndex = m_proxyModel->mapToSource(index);
+		if (sourceIndex.internalPointer() == nullptr)
+			accept();
+	}
+}

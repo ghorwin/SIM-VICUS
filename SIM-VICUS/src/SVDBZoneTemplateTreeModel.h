@@ -6,7 +6,9 @@
 #include "SVDatabase.h"
 
 
-/*! Model for accessing the components in the component database. */
+/*! Model for accessing zone templates.
+	Child nodes correspond to sub-templates, role Qt::UserRole + 20 delivers the type of the sub-template.
+*/
 class SVDBZoneTemplateTreeModel : public QAbstractItemModel {
 	Q_OBJECT
 public:
