@@ -27,7 +27,6 @@
 #include <IBK_StringUtils.h>
 #include <VICUS_Constants.h>
 #include <NANDRAD_Utilities.h>
-#include <VICUS_Constants.h>
 
 #include <tinyxml.h>
 
@@ -66,20 +65,17 @@ void ZoneTemplate::readXML(const TiXmlElement * element) {
 				m_notes.setEncodedString(c->GetText());
 			else if (cName == "DataSource")
 				m_dataSource.setEncodedString(c->GetText());
-			else if (cName == "IBK:IntPara") {
-				IBK::IntPara p;
-				NANDRAD::readIntParaElement(c, p);
-				bool success = false;
-				try {
-					SubTemplateType ptype = (SubTemplateType)KeywordList::Enumeration("ZoneTemplate::SubTemplateType", p.name);
-					m_idReferences[ptype] = p; success = true;
-				}
-				catch (...) { /* intentional fail */  }
-				if (!success)
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
 			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+				bool found = false;
+				for (int i=0; i<NUM_ST; ++i) {
+					if (cName == KeywordList::Keyword("ZoneTemplate::SubTemplateType",i)) {
+						m_idReferences[i] = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
+						found = true;
+						break;
+					}
+				}
+				if (!found)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			c = c->NextSiblingElement();
 		}
@@ -107,10 +103,9 @@ TiXmlElement * ZoneTemplate::writeXML(TiXmlElement * parent) const {
 	if (!m_dataSource.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.encodedString());
 
-	for (unsigned int i=0; i<NUM_ST; ++i) {
-		if (m_idReferences[i].name.empty()) {
-			TiXmlElement::appendSingleAttributeElement(e, "IBK:IntPara", "name", m_idReferences[i].name, IBK::val2string(m_idReferences[i].value));
-		}
+	for (int i=0; i<NUM_ST; ++i) {
+		if (m_idReferences[i] != VICUS::INVALID_ID)
+				TiXmlElement::appendSingleAttributeElement(e, KeywordList::Keyword("ZoneTemplate::SubTemplateType",  i), nullptr, std::string(), IBK::val2string<unsigned int>(m_idReferences[i]));
 	}
 	return e;
 }

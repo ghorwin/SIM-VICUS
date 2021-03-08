@@ -27,7 +27,6 @@
 #include <IBK_StringUtils.h>
 #include <VICUS_Constants.h>
 #include <NANDRAD_Utilities.h>
-#include <VICUS_Constants.h>
 
 #include <tinyxml.h>
 

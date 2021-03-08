@@ -29,7 +29,6 @@
 #include <IBKMK_Vector3D.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Utilities.h>
-#include <VICUS_Constants.h>
 #include <VICUS_KeywordList.h>
 #include <vector>
 

@@ -26,7 +26,6 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
-#include <NANDRAD_Constants.h>
 #include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
