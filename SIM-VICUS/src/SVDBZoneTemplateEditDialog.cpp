@@ -46,9 +46,11 @@ SVDBZoneTemplateEditDialog::SVDBZoneTemplateEditDialog(QWidget *parent) :
 	m_editWidget->setup(&SVSettings::instance().m_db, m_dbModel);
 
 	// specific setup for DB table view
-//	m_ui->treeView->resizeColumnToContents(header()->setSectionResizeMode(SVDBZoneTemplateTreeModel::ColId, QHeaderView::Fixed);
-//	m_ui->treeView->header()->setSectionResizeMode(SVDBZoneTemplateTreeModel::ColCheck, QHeaderView::Fixed);
-//	m_ui->treeView->header()->setSectionResizeMode(SVDBZoneTemplateTreeModel::ColColor, QHeaderView::Fixed);
+	m_ui->treeView->header()->setSectionResizeMode(SVDBZoneTemplateTreeModel::ColCheck, QHeaderView::Fixed);
+	m_ui->treeView->header()->setSectionResizeMode(SVDBZoneTemplateTreeModel::ColColor, QHeaderView::Fixed);
+
+	connect(m_editWidget, &SVDBZoneTemplateEditWidget::selectSubTemplate,
+			this, &SVDBZoneTemplateEditDialog::onSelectSubTemplate);
 
 	connect(m_ui->treeView->selectionModel(), SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)),
 			this, SLOT(onCurrentIndexChanged(const QModelIndex &, const QModelIndex &)) );

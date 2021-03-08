@@ -67,7 +67,9 @@ private:
 		The pointer is updated whenever updateInput() is called.
 		A nullptr pointer means that there is nothing to edit.
 	*/
-	VICUS::ZoneTemplate			*m_current;
+	VICUS::ZoneTemplate					*m_current;
+
+	int									m_currentSubTemplateType;
 };
 
 #endif // SVDBZoneTemplateEditWidgetH

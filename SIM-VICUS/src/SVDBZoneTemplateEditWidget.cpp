@@ -20,7 +20,8 @@ SVDBZoneTemplateEditWidget::SVDBZoneTemplateEditWidget(QWidget *parent) :
 	m_ui(new Ui::SVDBZoneTemplateEditWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->gridLayout->setMargin(4);
+	m_ui->verticalLayout->setMargin(4);
+	m_ui->verticalLayoutWidget->setMargin(0);
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), "fr", true);
 	m_ui->lineEditName->setDialog3Caption("Boundary condition identification name");
@@ -46,20 +47,18 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, int subT
 
 	bool isEnabled = id == -1 ? false : true;
 
+	m_currentSubTemplateType = subTemplateType;
+
 	m_ui->lineEditName->setEnabled(isEnabled);
 	m_ui->pushButtonColor->setEnabled(isEnabled);
-	m_ui->labelDisplayName->setEnabled(isEnabled);
-	m_ui->pushButtonAddSubTemplate->setEnabled(isEnabled);
-	m_ui->lineEditSubComponent->setEnabled(isEnabled);
+
 
 	if (!isEnabled) {
 		// clear input controls
 		m_ui->lineEditName->setString(IBK::MultiLanguageString());
 		m_ui->lineEditSubComponent->setText(QString());
-		m_ui->labelSubTemplate->setText(QString());
-
-		m_ui->toolButtonSelectSubComponent->setEnabled(false);
-		m_ui->toolButtonRemoveSubComponent->setEnabled(false);
+		// hide widget with references
+		m_ui->widget->setVisible(false);
 		return;
 	}
 
@@ -84,14 +83,12 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, int subT
 
 	// now the sub-template stuff
 	if (subTemplateId == -1) {
-		m_ui->labelSubTemplate->setText(QString());
-		m_ui->lineEditSubComponent->setText(QString());
-		m_ui->toolButtonSelectSubComponent->setEnabled(false);
-		m_ui->toolButtonRemoveSubComponent->setEnabled(false);
+		// hide widget with references
+		m_ui->widget->setVisible(false);
 		return;
 	}
-	m_ui->toolButtonSelectSubComponent->setEnabled(isEditable);
-	m_ui->toolButtonRemoveSubComponent->setEnabled(isEditable);
+	// show widget with references
+	m_ui->widget->setVisible(true);
 
 	// determine which sub-template was selected
 	switch ((VICUS::ZoneTemplate::SubTemplateType)subTemplateType) {
@@ -101,7 +98,6 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, int subT
 			const VICUS::InternalLoad * iload = m_db->m_internalLoads[(unsigned int)subTemplateId];
 			if (iload == nullptr) {
 				m_ui->lineEditSubComponent->setText(tr("<select>"));
-				m_ui->toolButtonRemoveSubComponent->setEnabled(false);
 			}
 			else {
 				m_ui->lineEditSubComponent->setText( QtExt::MultiLangString2QString(iload->m_displayName) );
@@ -152,13 +148,30 @@ void SVDBZoneTemplateEditWidget::on_toolButtonSelectSubComponent_clicked() {
 
 
 void SVDBZoneTemplateEditWidget::on_toolButtonRemoveSubComponent_clicked() {
+	switch ((VICUS::ZoneTemplate::SubTemplateType)m_currentSubTemplateType) {
+		case VICUS::ZoneTemplate::ST_IntLoadPerson:
+			// remove the zone template association
+			m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson] = VICUS::INVALID_ID;
+			m_db->m_zoneTemplates.m_modified = true;
+			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+			emit selectSubTemplate(m_current->m_id, -1);
+		break;
 
+		// TODO Dirk: implement below
+
+		case VICUS::ZoneTemplate::ST_IntLoadEquipment:
+		case VICUS::ZoneTemplate::ST_IntLoadLighting:
+		case VICUS::ZoneTemplate::ST_IntLoadOther:
+		case VICUS::ZoneTemplate::ST_ControlThermostat:
+		case VICUS::ZoneTemplate::NUM_ST:
+		break;
+	}
 }
 
 
 void SVDBZoneTemplateEditWidget::on_pushButtonAddSubTemplate_clicked() {
 	Q_ASSERT(m_current != nullptr);
-	// TODO : ask user to select which sub-template to edit
+	// TODO Dirk: ask user to select which sub-template to edit
 	// for now, just open the Internal Loads DB dialog and let user select one
 
 	unsigned int id = SVMainWindow::instance().dbInternalLoadsPersonEditDialog()->select(VICUS::INVALID_ID);

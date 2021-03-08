@@ -40,6 +40,9 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 		std::advance(it, row);
 
 		switch (role) {
+			case Role_Id :
+				return it->first;
+
 			case Qt::DisplayRole : {
 				switch (index.column()) {
 					case ColId					: return it->first;
@@ -85,7 +88,10 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 			return subType;
 		}
 
-		if (role == Qt::DisplayRole && index.column() == ColId) {
+		// ID role
+		if (role == Role_Id ||
+			(role == Qt::DisplayRole && index.column() == ColId))
+		{
 			return zt.m_idReferences[subType];
 		}
 
@@ -126,9 +132,6 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 					return QSize(22, 16);
 			} // switch
 			break;
-
-		case Role_Id :
-			return it->first;
 
 		case Role_BuiltIn :
 			return it->second.m_builtIn;
