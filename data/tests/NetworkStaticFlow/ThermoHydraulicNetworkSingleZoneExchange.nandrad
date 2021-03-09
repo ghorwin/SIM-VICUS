@@ -72,9 +72,9 @@
 					<HydraulicNetworkElement id="1" inletNodeId="101" outletNodeId="0" componentId="1" displayName="node 0"/>
 					<HydraulicNetworkElement id="2" inletNodeId="0" outletNodeId="1" componentId="3"  pipePropertiesId="1">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
-						<HydraulicNetworkHeatExchange modelType="HeatExchangeWithZoneTemperature">
+						<HydraulicNetworkHeatExchange modelType="TemperatureZone">
 							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
-							<IBK:IntPara name="ZoneId">1</IBK:IntPara>
+							<ZoneId>1</ZoneId>
 						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="3" inletNodeId="1" outletNodeId="101" componentId="2" displayName="node 1">

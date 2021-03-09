@@ -70,9 +70,9 @@
 					<HydraulicNetworkElement id="101" inletNodeId="2" outletNodeId="3" componentId="3" pipePropertiesId="1">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 						<!-- Pipe outside is fixed at 0 C -->
-						<HydraulicNetworkHeatExchange modelType="AmbientTemperatureConstant">
+						<HydraulicNetworkHeatExchange modelType="TemperatureConstant">
 							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
-							<IBK:Parameter name="AmbientTemperature" unit="C">0</IBK:Parameter>
+							<IBK:Parameter name="Temperature" unit="C">0</IBK:Parameter>
 						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="301" inletNodeId="3" outletNodeId="1" componentId="2" displayName="Heat Exchanger">

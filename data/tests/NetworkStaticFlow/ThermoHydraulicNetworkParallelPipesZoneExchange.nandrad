@@ -89,16 +89,16 @@
 					<HydraulicNetworkElement id="2" inletNodeId="1" outletNodeId="3" componentId="2" displayName="Parallel pump" />
 					<HydraulicNetworkElement id="3" inletNodeId="2" outletNodeId="4" componentId="4" pipePropertiesId="1">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
-						<HydraulicNetworkHeatExchange modelType="HeatExchangeWithZoneTemperature">
+						<HydraulicNetworkHeatExchange modelType="TemperatureZone">
 							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
-							<IBK:IntPara name="ZoneId">1</IBK:IntPara>
+							<ZoneId>1</ZoneId>
 						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="4" inletNodeId="3" outletNodeId="4" componentId="4" pipePropertiesId="2">
 						<IBK:Parameter name="Length" unit="m">200</IBK:Parameter>
-						<HydraulicNetworkHeatExchange modelType="HeatExchangeWithZoneTemperature">
+						<HydraulicNetworkHeatExchange modelType="TemperatureZone">
 							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
-							<IBK:IntPara name="ZoneId">2</IBK:IntPara>
+							<ZoneId>2</ZoneId>
 						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="5" inletNodeId="4" outletNodeId="1" componentId="3" displayName="Heat Exchanger">

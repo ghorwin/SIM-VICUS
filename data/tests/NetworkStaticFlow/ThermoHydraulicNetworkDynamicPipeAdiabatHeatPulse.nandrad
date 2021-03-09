@@ -76,7 +76,7 @@
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="301" inletNodeId="1" outletNodeId="101" componentId="3" displayName="hx">
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
-						<LinearSplineParameter name="HeatExchangeSpline" interpolationMethod="linear">
+						<LinearSplineParameter name="HeatLoss" interpolationMethod="linear">
 							<TSVFile>${Project Directory}/0_climate/HeatFlux_Rechteck.csv</TSVFile>
 						</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
