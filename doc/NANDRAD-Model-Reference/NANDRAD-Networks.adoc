@@ -269,17 +269,23 @@ Im thermischen Modell kann für jeden Modelltyp noch ein (optionales) Wärmeaust
 [[HydraulicElement_SimplePipe]]
 ### Modelltyp: SimplePipe
 
-`SimplePipe` beschreibt ein Rohrmodell, wobei das gesamte Rohr als ein zusammenhängendes Fluidvolumen mit entsprechend gemittelten Eigenschaften beschrieben wird.
+`SimplePipe` ist ein einfaches Rohrmodell, bei dem das gesamte Rohr als ein zusammenhängendes Fluidvolumen mit entsprechend gemittelten Eigenschaften beschrieben wird.
 
-Für das Model `SimplePipe` werden im nicht-thermischen Modell keine weiteren Parameter benötigt.
+Für das Model `SimplePipe` werden keine weiteren Parameter benötigt.
 
 
 [[HydraulicElement_DynamicPipe]]
 ### Modelltyp: DynamicPipe
 
-... TODO : Milestone 2
+Die `DynamicPipe` ist ein detailliertes Rohrmodell, bei dem das Rohr entlang der Rohrlänge räumlich diskretisiert wird. 
 
-Note.  `HeatExchangeType` verpflichtend!
+Es werden die folgenden Parameter benötigt
+
+[options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
+|====================
+|Name | Einheit | Beschreibung | Wertebereich | Verwendung
+| `PipeMaxDiscretizationWidth` | m | Länge der diskretisierten Elemente | >0 |_benötigt_
+|====================
 
 
 ### Modelltyp: ConstantPressurePump
@@ -299,7 +305,7 @@ Die Pumpeneffizient ist als der mechanische Gesamtwirkungsgrad der Pumpe definie
 
 ### ModellTyp: HeatExchanger
 
-Für das Model `HeatExchanger` werden diese Parameter benötigt:
+Das Model `HeatExchanger` ist ein einfacher Wärmeübertrager, welcher mit dem Fluid einen vorgegebenen Wärmestrom austauscht. Es werden diese Parameter benötigt:
 
 [options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
 |====================
@@ -308,63 +314,6 @@ Für das Model `HeatExchanger` werden diese Parameter benötigt:
 | `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
 | `Volume` | m3 | Fluidvolumen im Wärmetauscher | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
 |====================
-
-
-
-[[HeatExchangeType]]
-## Definition der Wärmeaustauschmodells (HeatExchangeType)
-
-Für thermische Netzwerken kann je Komponte der Wärmeaustausch mit der Umgebung/anderen Komponenten/Zonen etc. definiert werden.
-Dafür muss innerhalb der Komponentendefinition ein XML-Element `HeatExchangeType` definiert werden. Dieses kann folgenden Werte haben:
-
-[options="header",cols="25%,^ 50%, ^ 25%",width="100%"]
-|====================
-|HeatExchangeType| Beschreibung| Verwendbar für Modelltyp
-| `TemperatureConstant` | Konstante Umgebungstemperatur ist als Parameter im `HydraulicNetworkElement` gegeben | `SimplePipe`, `DynamicPipe` 
-| `TemperatureDataFile` | Umgebungstemperatur ist als Zeitreihe in einer tsv-Datei gegeben (im `HydraulicNetworkElement` definiert) | `SimplePipe`, `DynamicPipe`
-| `HeatFluxConstant` | Wärmestrom (positiv aus dem Element) ist als Parameter im `HydraulicNetworkElement` gegeben | `SimplePipe`, `DynamicPipe`, `HeatExchanger`
-| `HeatFluxDataFile` | Wärmestrom (positiv aus dem Element) ist als Zeitreihe in einer tsv-Datei gegeben (im `HydraulicNetworkElement` definiert) | `SimplePipe`, `DynamicPipe`, `HeatExchanger`
-| `HeatExchangeWithZoneTemperature` | Temperatur wird aus Zone (definiert in `HydraulicNetworkElement`) definiert | `SimplePipe`, `DynamicPipe`
-|====================
-
-[IMPORTANT]
-====
-Wenn des XML-Element `HeatExchangeType` fehlt, wird die entsprechende Komponente als adiabat behandelt und verlangt entsprechend auch keine weiteren Parameter.
-====
-
-### `TemperatureConstant`
-
-Dieser Typ ist nur für Rohre definiert. Es gibt einen Wärmeaustausch zwischen der Fluidtemperatur im Rohr und einer konstanten Umgebungstemperatur. Dabei muss der Wärmeübergangskoeffizient an der Rohraußenwand angegeben werden.
-
-Im XML-Tag `HydraulicNetworkElement` des jeweiligen Rohres muss der Parameter `AmbientTemperature` gesetzt sein. Siehe das Beispiel <<xml_example_flow_element>>
-
-
-### `TemperatureDataFile`
-
-TODO : Milestone 2
-
-Dieser Typ ist nur für Rohre definiert. Es gibt einen Wärmeaustausch zwischen der Fluidtemperatur im Rohr und einer zeitabhängigen Umgebungstemperatur. Dabei muss der Wärmeübergangskoeffizient an der Rohraußenwand angegeben werden.
-
-### `HeatFluxConstant`
-
-Dem Element wird ein konstanter Wärmestrom entzogen. Positive Werte bedeuten Wärmeentzug. 
-
-<<<<<<< HEAD
-Im XML-Tag `HydraulicNetworkElement` des jeweiligen Elements muss der Parameter `HeatLoss` gesetzt sein, der den konstanten Wärmestrom aus dem Element angibt. Wärmegewinnen haben ein negatives Vorzeichen.
-Siehe das Beispiel <<xml_example_flow_element>>
-
-
-
-### `HeatFluxDataFile`
-
-Dem Element wird ein zeitabhängiger Wärmestrom entzogen. Positive Werte bedeuten Wärmeentzug.
-
-
-TODO : Milestone 2
-
-### `HeatExchangeWithZoneTemperature`
-
-TODO : MileStone 2
 
 
 
@@ -382,12 +331,10 @@ Die tatsächlichen Strömungselemente des Netzwerks werden innerhalb des XML-tag
 [source,xml]
 ----
 <Elements>
-	<HydraulicNetworkElement id="1" inletNodeId="5" outletNodeId="6" componentId="1">
+	<HydraulicNetworkElement id="1" inletNodeId="5" outletNodeId="6" componentId="1" pipePropertiesId="1">
 		<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
-		<IBK:Parameter name="AmbientTemperature" unit="C">10</IBK:Parameter>
 	</HydraulicNetworkElement>
 	<HydraulicNetworkElement id="2" inletNodeId="6" outletNodeId="7" componentId="2">
-		<IBK:Parameter name="HeatLoss" unit="W">100</IBK:Parameter>
 	</HydraulicNetworkElement>
 	...
 </Elements>
@@ -430,11 +377,11 @@ Die Strömungselemente sind miteinander durch Knoten verknüpft. In jedem Ström
     <!-- Pump -->
 	<HydraulicNetworkElement id="1" inletNodeId="1" outletNodeId="2" componentId="1"/>
 	<!-- Pipe id=2-->
-	<HydraulicNetworkElement id="2" inletNodeId="2" outletNodeId="3" componentId="2">
+	<HydraulicNetworkElement id="2" inletNodeId="2" outletNodeId="3" componentId="2" pipePropertiesId="1">
 		<IBK:Parameter name="Length" unit="m">10</IBK:Parameter>
 	</HydraulicNetworkElement>
 	<!-- Pipe id=3-->
-    <HydraulicNetworkElement id="3" inletNodeId="3" outletNodeId="1" componentId="2">
+    <HydraulicNetworkElement id="3" inletNodeId="3" outletNodeId="1" componentId="2" pipePropertiesId="1">
 		<IBK:Parameter name="Length" unit="m">6</IBK:Parameter>
 	</HydraulicNetworkElement>
 </Elements>
@@ -472,6 +419,57 @@ Weiterhin **muss** für ein Rohrelement der Parameter `Length` definiert werden 
 </HydraulicNetworkElement>
 ----
 ====
+
+
+
+[[HeatExchangeType]]
+## Definition der Wärmeaustauschmodells (HeatExchangeType)
+
+Für thermische Netzwerken kann für jedes Strömungselement (<<HydraulicNetworkElements>>) ein Wärmeaustausch definiert werden. Dafür muss innerhalb der Definition des Strömungselements ein XML-Element `HeatExchangeType` definiert werden. 
+
+[[ex_heat_exchange_type]]
+.Definition von Strömungselementen mit `HeatExchangeType`
+====
+[source,xml]
+----
+<HydraulicNetworkElement id="1" inletNodeId="1" outletNodeId="2" componentId="2" displayName="heat exchanger">
+	<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
+		<LinearSplineParameter name="HeatLoss" interpolationMethod="linear">
+			<TSVFile>${Project Directory}/climate/HeatFlux.csv?2</TSVFile>
+		</LinearSplineParameter>
+	</HydraulicNetworkHeatExchange>
+</HydraulicNetworkElement>
+<HydraulicNetworkElement id="2" inletNodeId="2" outletNodeId="3" componentId="3" pipePropertiesId="1" displayName="pipe">
+	<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+	<HydraulicNetworkHeatExchange modelType="TemperatureConstant">
+		<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
+		<IBK:Parameter name="Temperature" unit="C">0</IBK:Parameter>
+	</HydraulicNetworkHeatExchange>
+</HydraulicNetworkElement>
+----
+====
+
+
+Der `HeatExchangeType` kann folgende Werte haben:
+
+
+[options="header",cols="25%,^ 50%, ^ 25%",width="100%"]
+|====================
+|HeatExchangeType| Beschreibung| Verwendbar für Modelltyp
+| `TemperatureConstant` | Konstante Umgebungstemperatur ist als Parameter im `HydraulicNetworkElement` gegeben. Es muss Zusätzlich der Parameter `ExternalHeatTransferCoefficient` gegeben sein. | `SimplePipe`, `DynamicPipe` 
+| `TemperatureSpline` | Umgebungstemperatur ist als Zeitreihe in einer LinearSplineParameter (<<LinearSplineParameter>>) gegeben. Es muss Zusätzlich der Parameter `ExternalHeatTransferCoefficient` gegeben sein. | `SimplePipe`, `DynamicPipe`
+| `HeatLossConstant` | Konstanter Wärmestrom (positiv aus dem Element) ist als Parameter gegeben | `SimplePipe`, `DynamicPipe`, `HeatExchanger`
+| `HeatFluxSpline` | Wärmestrom (positiv aus dem Element) ist als Zeitreihe in einer LinearSplineParameter (<<LinearSplineParameter>>) gegeben | `SimplePipe`, `DynamicPipe`, `HeatExchanger`
+| `HeatExchangeWithZoneTemperature` | Temperatur wird aus Zone definiert | `SimplePipe`, `DynamicPipe`
+| `TemperatureFMUInterface` | Temperatur wird von FMU gegeben |
+|====================
+
+[IMPORTANT]
+====
+Wenn des XML-Element `HeatExchangeType` fehlt, wird die entsprechende Komponente als adiabat behandelt und verlangt entsprechend auch keine weiteren Parameter.
+====
+
+
 
 
 
