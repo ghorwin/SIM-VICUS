@@ -104,6 +104,11 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			SVViewStateHandler::instance().setViewState(vs);
 		} break;
 
+		case SVProjectHandler::BuildingTopologyChanged : {
+			const SVViewState & vs = SVViewStateHandler::instance().viewState();
+			recolorObjects(vs.m_objectColorMode, vs.m_colorModePropertyID);
+		} break;
+
 		case SVProjectHandler::BuildingGeometryChanged :
 			updateBuilding = true;
 			updateSelection = true;
@@ -1360,6 +1365,10 @@ void Vic3DScene::deselectAll() {
 		if (network.m_selected)
 			objIDs.insert(network.uniqueID());
 	}
+
+	// if nothing is selected, do nothing
+	if (objIDs.empty())
+		return;
 	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Selected cleared"),
 														 SVUndoTreeNodeState::SelectedState, objIDs, false);
 	undo->push();
