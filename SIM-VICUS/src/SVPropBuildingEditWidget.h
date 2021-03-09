@@ -14,6 +14,8 @@ namespace VICUS {
 	class ComponentInstance;
 	class Surface;
 	class BoundaryCondition;
+	class ZoneTemplate;
+	class Room;
 }
 
 class ModificationInfo;
@@ -112,6 +114,11 @@ private:
 	std::map<const VICUS::BoundaryCondition*, std::vector<const VICUS::Surface *> > m_bcSurfacesMap;
 	/*! This set contains all shown component instances that have one or more sides selected. */
 	std::set<const VICUS::ComponentInstance*>										m_selectedComponentInstances;
+
+	/*! Maps stores pointers to room objects grouped for assigned zone templates.
+		Note: rooms without zone template ID are ignored.
+	*/
+	std::map<const VICUS::ZoneTemplate*, std::vector<const VICUS::Room *> >			m_zoneTemplateAssignments;
 
 };
 

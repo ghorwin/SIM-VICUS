@@ -83,6 +83,8 @@ void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
 		case BT_Components				: m_ui->stackedWidget->setCurrentIndex(1); break;
 		case BT_ComponentOrientation	: m_ui->stackedWidget->setCurrentIndex(2); break;
 		case BT_BoundaryConditions		: m_ui->stackedWidget->setCurrentIndex(3); break;
+		case BT_ZoneTemplates			: m_ui->stackedWidget->setCurrentIndex(4); break;
+		case BT_FloorManager : break; // just to remove compiler warning, FloorManager is not handled here
 	}
 }
 
@@ -94,6 +96,8 @@ void SVPropBuildingEditWidget::onModified(int modificationType, ModificationInfo
 		case SVProjectHandler::BuildingGeometryChanged:
 		case SVProjectHandler::ComponentInstancesModified:
 		case SVProjectHandler::NodeStateModified:
+			// TODO Andreas, add modification type for invisible change of zone template association
+
 			updateUi(); // we do not change the property type here
 		break;
 	}
@@ -276,6 +280,20 @@ void SVPropBuildingEditWidget::updateUi() {
 		}
 	}
 
+	m_zoneTemplateAssignments.clear();
+	const VICUS::Database<VICUS::ZoneTemplate> & db_zt = SVSettings::instance().m_db.m_zoneTemplates;
+	// loop over all rooms and store zone template associations
+	for (const VICUS::Object * o : objs) {
+		const VICUS::Room * room = dynamic_cast<const VICUS::Room *>(o);
+		if (room == nullptr) continue; // skip all but rooms
+		// skip rooms without zone template
+		if (room->m_idZoneTemplate == VICUS::INVALID_ID)
+			continue;
+		// lookup zone template in DB
+		const VICUS::ZoneTemplate * zt = db_zt[room->m_idZoneTemplate];
+		// Note: might be a nullptr if id is invalid
+		m_zoneTemplateAssignments[zt].push_back(room);
+	}
 
 
 	// *** Update Component Page ***
@@ -423,10 +441,39 @@ void SVPropBuildingEditWidget::updateUi() {
 		if (it->first == nullptr)
 			item->setText(tr("<no/invalid boundary condition>"));
 		else
-			item->setText(QString::fromStdString(it->first->m_displayName.string(IBK::MultiLanguageString::m_language, "en")));
+			item->setText(QtExt::MultiLangString2QString(it->first->m_displayName) );
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetBoundaryConditions->setItem(row, 1, item);
 	}
+
+
+	// *** Update ZoneTemplates Page ***
+
+	// now put the data of the map into the table
+	m_ui->tableWidgetZoneTemplates->clearContents();
+	m_ui->tableWidgetZoneTemplates->setRowCount(m_zoneTemplateAssignments.size());
+	row=0;
+	for (std::map<const VICUS::ZoneTemplate*, std::vector<const VICUS::Room *> >::const_iterator
+		 it = m_zoneTemplateAssignments.begin(); it != m_zoneTemplateAssignments.end(); ++it, ++row)
+	{
+		QTableWidgetItem * item = new QTableWidgetItem();
+		// special handling for zone template with "invalid" id
+		if (it->first == nullptr)
+			item->setBackground(QColor(255,128,128));
+		else
+			item->setBackground(it->first->m_color);
+		item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
+		m_ui->tableWidgetZoneTemplates->setItem(row, 0, item);
+
+		item = new QTableWidgetItem();
+		if (it->first == nullptr)
+			item->setText(tr("<invalid zone template id>"));
+		else
+			item->setText(QtExt::MultiLangString2QString(it->first->m_displayName) );
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->tableWidgetZoneTemplates->setItem(row, 1, item);
+	}
+
 }
 
 

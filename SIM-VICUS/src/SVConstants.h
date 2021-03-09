@@ -60,7 +60,9 @@ enum BuildingPropertyTypes {
 	/*! Boundary conditions of component. */
 	BT_BoundaryConditions,
 	/*! Floor manager. */
-	BT_FloorManager
+	BT_FloorManager,
+	/*! Zone templates. */
+	BT_ZoneTemplates
 };
 
 /*! \file SVConstants.h

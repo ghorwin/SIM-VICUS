@@ -118,6 +118,9 @@ public:
 			boundary condition color.
 		*/
 		OCM_BoundaryConditions,
+		/*! All surfaces of rooms with associated zone template are colored based on that zone template color.
+		*/
+		OCM_ZoneTemplates,
 		OCM_Network			=	0x1000,
 		OCM_NetworkNode,
 		OCM_NetworkEdge,

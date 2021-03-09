@@ -591,9 +591,9 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 			pick(pickObject);
 
 		// move forward along camera's forward vector
-		float transSpeed = 5.f;
+		double transSpeed = 5.;
 		if (keyboardHandler.keyDown(Qt::Key_Shift))
-			transSpeed = 0.5f;
+			transSpeed = 0.5;
 		if (!pickObject.m_candidates.empty()) {
 			// 2% of translation distance from camera to selected object
 			IBKMK::Vector3D moveDist = 0.05*pickObject.m_candidates.front().m_depth*pickObject.m_lineOfSightDirection;
@@ -605,7 +605,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 			m_camera.translate(QtExt::IBKVector2QVector(wheelDelta*moveDist));
 		}
 		else {
-			m_camera.translate(wheelDelta * transSpeed * m_camera.forward());
+			m_camera.translate(wheelDelta * (float)transSpeed * m_camera.forward());
 		}
 	}
 
@@ -1105,6 +1105,8 @@ void Vic3DScene::generateNetworkGeometry() {
 
 
 void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm, int id) const {
+	// Note: the meaning of the filter id depends on the coloring mode
+
 	// get VICUS project data
 	const VICUS::Project & p = project();
 
@@ -1130,12 +1132,16 @@ void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm, int id) const 
 							s.m_color = QColor(128,128,128); // gray (later semi-transparent)
 						break;
 						case SVViewState::OCM_BoundaryConditions:
+						case SVViewState::OCM_ZoneTemplates:
 							s.m_color = QColor(64,64,64); // dark gray
 						break;
 
 						// the other cases are just to get rid of compiler warnings
 						case SVViewState::OCM_Network:
-						case SVViewState::OCM_NetworkEdge: break;
+						case SVViewState::OCM_NetworkEdge:
+						case SVViewState::OCM_NetworkNode:
+						case SVViewState::OCM_NetworkComponents:
+						break;
 					}
 				}
 			}
@@ -1150,94 +1156,140 @@ void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm, int id) const 
 	}
 
 	const SVDatabase & db = SVSettings::instance().m_db;
-	if (ocm > 0 && ocm < SVViewState::OCM_Network) {
-		// now color all surfaces, this works by first looking up the components, associated with each surface
-		for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
-			// lookup component definition
-			const VICUS::Component * comp = db.m_components[ci.m_componentID];
-			if (comp == nullptr)
-				continue; // no component definition - keep default (gray) color
-			switch (ocm) {
-				case SVViewState::OCM_Components:
-					if (ci.m_sideASurface != nullptr)
-						ci.m_sideASurface->m_color = comp->m_color;
-					if (ci.m_sideBSurface != nullptr)
-						ci.m_sideBSurface->m_color = comp->m_color;
-				break;
-				case SVViewState::OCM_ComponentOrientation:
-					// color surfaces when either filtering is off (id == 0)
-					// or when component ID matches selected id
-					if (id == 0 || ci.m_componentID == id) {
-						// color side A surfaces with blue,
-						// side B surfaces with orange
+
+	// different handling different color modes
+
+	switch (ocm) {
+		case SVViewState::OCM_None: break;
+
+		case SVViewState::OCM_Components:
+		case SVViewState::OCM_ComponentOrientation:
+		case SVViewState::OCM_BoundaryConditions: {
+			// now color all surfaces, this works by first looking up the components, associated with each surface
+			for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+				// lookup component definition
+				const VICUS::Component * comp = db.m_components[ci.m_componentID];
+				if (comp == nullptr)
+					continue; // no component definition - keep default (gray) color
+				switch (ocm) {
+					case SVViewState::OCM_Components:
 						if (ci.m_sideASurface != nullptr)
-							ci.m_sideASurface->m_color = QColor(47,125,212);
+							ci.m_sideASurface->m_color = comp->m_color;
 						if (ci.m_sideBSurface != nullptr)
-							ci.m_sideBSurface->m_color = QColor(255, 206, 48);
-					}
-				break;
-				case SVViewState::OCM_BoundaryConditions:
-					if (ci.m_sideASurface != nullptr && comp->m_idSideABoundaryCondition != VICUS::INVALID_ID) {
-						// lookup boundary condition definition
-						const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
-						if (bc != nullptr)
-							ci.m_sideASurface->m_color = bc->m_color;
-					}
-					if (ci.m_sideBSurface != nullptr && comp->m_idSideBBoundaryCondition != VICUS::INVALID_ID) {
-						// lookup boundary condition definition
-						const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
-						if (bc != nullptr)
-							ci.m_sideBSurface->m_color = bc->m_color;
-					}
-				break;
-				case SVViewState::OCM_None:
-				case SVViewState::OCM_Network:
-				case SVViewState::OCM_NetworkEdge: break;
+							ci.m_sideBSurface->m_color = comp->m_color;
+					break;
+					case SVViewState::OCM_ComponentOrientation:
+						// color surfaces when either filtering is off (id == 0)
+						// or when component ID matches selected id
+						if (id == 0 || ci.m_componentID == (unsigned int)id) {
+							// color side A surfaces with blue,
+							// side B surfaces with orange
+							if (ci.m_sideASurface != nullptr)
+								ci.m_sideASurface->m_color = QColor(47,125,212);
+							if (ci.m_sideBSurface != nullptr)
+								ci.m_sideBSurface->m_color = QColor(255, 206, 48);
+						}
+					break;
+					case SVViewState::OCM_BoundaryConditions:
+						if (ci.m_sideASurface != nullptr && comp->m_idSideABoundaryCondition != VICUS::INVALID_ID) {
+							// lookup boundary condition definition
+							const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
+							if (bc != nullptr)
+								ci.m_sideASurface->m_color = bc->m_color;
+						}
+						if (ci.m_sideBSurface != nullptr && comp->m_idSideBBoundaryCondition != VICUS::INVALID_ID) {
+							// lookup boundary condition definition
+							const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
+							if (bc != nullptr)
+								ci.m_sideBSurface->m_color = bc->m_color;
+						}
+					break;
+
+					// the color modes below are not handled here and are only added to get rid of compiler warnins
+					case SVViewState::OCM_ZoneTemplates:
+					case SVViewState::OCM_None:
+					case SVViewState::OCM_Network:
+					case SVViewState::OCM_NetworkEdge:
+					case SVViewState::OCM_NetworkNode:
+					case SVViewState::OCM_NetworkComponents:
+					break;
+				}
 			}
-		}
+		} break;
+
+		case SVViewState::OCM_ZoneTemplates: {
+			for (const VICUS::Building & b : p.m_buildings) {
+				for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+					for (const VICUS::Room & r : bl.m_rooms) {
+						// skip all without zone template
+						if (r.m_idZoneTemplate == VICUS::INVALID_ID)
+							continue; // they keep the default gray
+						// lookup zone template
+						const VICUS::ZoneTemplate * zt = db.m_zoneTemplates[r.m_idZoneTemplate];
+						if (zt == nullptr)
+							continue; // no definition - keep default (gray) color
+						// color all surfaces of room based on zone template color
+						for (const VICUS::Surface & s : r.m_surfaces) {
+							s.m_color = zt->m_color;
+						}
+					}
+				}
+			}
+		} break;
+
+
+		case SVViewState::OCM_Network:
+		case SVViewState::OCM_NetworkNode:
+		case SVViewState::OCM_NetworkEdge:
+		case SVViewState::OCM_NetworkComponents:
+			for (const VICUS::Network & net: p.m_geometricNetworks){
+
+				switch (ocm) {
+					case SVViewState::OCM_NetworkNode: {
+						for (const VICUS::NetworkNode & node: net.m_nodes){
+							if (node.m_type == VICUS::NetworkNode::NT_Source)
+								node.m_color = QColor(230, 138, 0); // orange
+							else if (node.m_type == VICUS::NetworkNode::NT_Mixer)
+								node.m_color = QColor(119, 179, 0); // green
+							else // Building
+								node.m_color = QColor(0, 107, 179); // blue
+						}
+					}
+					break;
+					case SVViewState::OCM_NetworkEdge: {
+						for (const VICUS::NetworkEdge & edge: net.m_edges){
+							unsigned int id = edge.m_pipeId;
+							if (db.m_pipes[id] != nullptr)
+								edge.m_color = db.m_pipes[id]->m_color;
+						}
+					}
+					break;
+					case SVViewState::OCM_NetworkComponents: {
+						for (const VICUS::NetworkEdge & edge: net.m_edges){
+							unsigned int id = edge.m_componentId;
+							if (db.m_networkComponents[id] != nullptr)
+								edge.m_color = db.m_networkComponents[id]->m_color;
+						}
+						for (const VICUS::NetworkNode & node: net.m_nodes){
+							unsigned int id = node.m_componentId;
+							if (db.m_networkComponents[id] != nullptr)
+								node.m_color = db.m_networkComponents[id]->m_color;
+						}
+					}
+					break;
+
+					// rest only to avoid compiler warnings
+					case SVViewState::OCM_None:
+					case SVViewState::OCM_Components:
+					case SVViewState::OCM_ComponentOrientation:
+					case SVViewState::OCM_BoundaryConditions:
+					case SVViewState::OCM_ZoneTemplates:
+					case SVViewState::OCM_Network:
+					break;
+				}
+			}
+		break;
 	}
-
-
-	// set network edge and node colors according to network components
-	if (ocm >= SVViewState::OCM_Network)
-		for (const VICUS::Network & net: p.m_geometricNetworks){
-
-			switch (ocm) {
-				case SVViewState::OCM_NetworkNode: {
-					for (const VICUS::NetworkNode & node: net.m_nodes){
-						if (node.m_type == VICUS::NetworkNode::NT_Source)
-							node.m_color = QColor(230, 138, 0); // orange
-						else if (node.m_type == VICUS::NetworkNode::NT_Mixer)
-							node.m_color = QColor(119, 179, 0); // green
-						else // Building
-							node.m_color = QColor(0, 107, 179); // blue
-					}
-				}
-				break;
-				case SVViewState::OCM_NetworkEdge: {
-					for (const VICUS::NetworkEdge & edge: net.m_edges){
-						unsigned int id = edge.m_pipeId;
-						if (db.m_pipes[id] != nullptr)
-							edge.m_color = db.m_pipes[id]->m_color;
-					}
-				}
-				break;
-				case SVViewState::OCM_NetworkComponents: {
-					for (const VICUS::NetworkEdge & edge: net.m_edges){
-						unsigned int id = edge.m_componentId;
-						if (db.m_networkComponents[id] != nullptr)
-							edge.m_color = db.m_networkComponents[id]->m_color;
-					}
-					for (const VICUS::NetworkNode & node: net.m_nodes){
-						unsigned int id = node.m_componentId;
-						if (db.m_networkComponents[id] != nullptr)
-							node.m_color = db.m_networkComponents[id]->m_color;
-					}
-				}
-				break;
-			}
-		}
-
 
 
 }
