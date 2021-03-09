@@ -17,8 +17,8 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 		switch (m_modelType) {
 			case T_TemperatureConstant: {
 				// check temperature
-				m_para[P_Temperature].checkedValue("AmbientTemperature", "C", "C", -200.0, true, std::numeric_limits<double>::max(), true,
-												   "Ambient temperature must be >= -200 C.");
+				m_para[P_Temperature].checkedValue("Temperature", "C", "C", -200.0, true, std::numeric_limits<double>::max(), true,
+												   "Temperature must be >= -200 C.");
 				// check for external heat transfer coefficient
 				m_para[P_ExternalHeatTransferCoefficient].checkedValue("ExternalHeatTransferCoefficient",
 																	   "W/m2K", "W/m2K", 0, false,
@@ -60,6 +60,8 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 			} break;
 
 			case T_TemperatureSpline: {
+				// replace place holders
+				m_splPara[SPL_Temperature].m_tsvFile = m_splPara[SPL_Temperature].m_tsvFile.withReplacedPlaceholders(placeholders);
 				try {
 					//  check the spline and convert it to base units automatically
 					m_splPara[SPL_Temperature].checkAndInitialize("Temperature", IBK::Unit("s"), IBK::Unit("K"),

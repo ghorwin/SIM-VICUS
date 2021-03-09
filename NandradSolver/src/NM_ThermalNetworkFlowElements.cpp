@@ -60,10 +60,10 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 				+ 1.0/m_UValuePipeWall )
 		);
 
-	const double ambientTemperature = *m_externalTemperatureRef;
+	const double externalTemperature = *m_externalTemperatureRef;
 	// calculate heat loss with given parameters
 	// Q in [W] = DeltaT * UAValueTotal
-	m_heatLoss = m_thermalTransmittance * (m_meanTemperature - ambientTemperature);
+	m_heatLoss = m_thermalTransmittance * (m_meanTemperature - externalTemperature);
 }
 
 
@@ -118,11 +118,11 @@ void TNStaticPipeElement::setInflowTemperature(double Tinflow) {
 		);
 
 	// Q in [W] = DeltaT * UAValueTotal
-	const double ambientTemperature = *m_externalTemperatureRef;
+	const double externalTemperature = *m_externalTemperatureRef;
 	// calculate heat loss with given (for steady state model we interpret mean temperature as
 	// outflow temperature and calculate a corresponding heat flux)
 	m_heatLoss = m_massFlux * m_fluidHeatCapacity *
-			(m_inflowTemperature - ambientTemperature) *
+			(m_inflowTemperature - externalTemperature) *
 			(1. - std::exp(-UAValueTotal / (std::fabs(m_massFlux) * m_fluidHeatCapacity )));
 }
 #endif // STATIC_PIPE_MODEL_ENABLED
@@ -208,10 +208,10 @@ void TNDynamicPipeElement::setInflowTemperature(double Tinflow) {
 					+ 1.0/m_UValuePipeWall )
 			);
 
-		const double ambientTemperature = *m_externalTemperatureRef;
+		const double externalTemperature = *m_externalTemperatureRef;
 		for(unsigned int i = 0; i < m_nVolumes; ++i) {
 			// calculate heat loss with given parameters
-			m_heatLosses[i] = m_thermalTransmittance * (m_temperatures[i] - ambientTemperature);
+			m_heatLosses[i] = m_thermalTransmittance * (m_temperatures[i] - externalTemperature);
 			// sum up heat losses
 			m_heatLoss += m_heatLosses[i];
 		}
