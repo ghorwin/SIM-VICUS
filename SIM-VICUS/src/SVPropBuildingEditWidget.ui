@@ -6,18 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>626</width>
-    <height>503</height>
+    <width>916</width>
+    <height>692</height>
    </rect>
-  </property>
-  <property name="toolTip">
-   <string>Selects all objects/surfaces which are associated with the selected component.</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="pageEmpty"/>
      <widget class="QWidget" name="pageComponents">
@@ -69,6 +66,9 @@
           </item>
           <item row="1" column="2">
            <widget class="QPushButton" name="pushButtonSelectObjectsWithComponent">
+            <property name="toolTip">
+             <string>Selects all objects/surfaces which are associated with the selected component.</string>
+            </property>
             <property name="text">
              <string>Select</string>
             </property>
@@ -358,13 +358,46 @@
       </layout>
      </widget>
      <widget class="QWidget" name="pageZoneTemplates">
-      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <layout class="QVBoxLayout" name="verticalLayoutZoneTemplates">
        <item>
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
           <string>Zone templates</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_7">
+          <item row="0" column="0" colspan="4">
+           <widget class="QTableWidget" name="tableWidgetZoneTemplates"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QPushButton" name="pushButtonExchangeZoneTemplates">
+            <property name="toolTip">
+             <string>Replaces the component association of all objects with the currently selected component.</string>
+            </property>
+            <property name="text">
+             <string>Exchange...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="pushButtonEditZoneTemplates">
+            <property name="text">
+             <string>Edit...</string>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="pushButtonSelectObjectsWithZoneTemplates">
+            <property name="text">
+             <string>Select</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="3">
            <spacer name="horizontalSpacer_5">
             <property name="orientation">
@@ -378,36 +411,62 @@
             </property>
            </spacer>
           </item>
-          <item row="1" column="1">
-           <widget class="QPushButton" name="pushButtonExchangeZoneTemplates">
-            <property name="toolTip">
-             <string>Replaces the component association of all objects with the currently selected component.</string>
-            </property>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBoxSelectedRooms">
+         <property name="title">
+          <string>Selected rooms</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_8">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>Exchange...</string>
+             <string>Selected zone template:</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
-           <widget class="QPushButton" name="pushButtonSelectObjectsWithZoneTemplates">
-            <property name="text">
-             <string>Select</string>
-            </property>
-           </widget>
+          <item row="1" column="0" colspan="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QPushButton" name="pushButtonAssignZoneTemplate">
+              <property name="text">
+               <string>Assign zone template...</string>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>24</width>
+                <height>24</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_6">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>558</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </item>
-          <item row="0" column="0" colspan="4">
-           <widget class="QTableWidget" name="tableWidgetZoneTemplates"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QPushButton" name="pushButtonEditZoneTemplates">
-            <property name="text">
-             <string>Edit...</string>
+          <item row="0" column="1">
+           <widget class="QLabel" name="labelSelectedZoneTemplates">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
-            <property name="iconSize">
-             <size>
-              <width>24</width>
-              <height>24</height>
-             </size>
+            <property name="text">
+             <string>TextLabel</string>
             </property>
            </widget>
           </item>

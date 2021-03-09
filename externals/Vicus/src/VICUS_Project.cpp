@@ -605,6 +605,21 @@ bool Project::selectedSurfaces(std::vector<const Surface*> &surfaces, const VICU
 }
 
 
+bool Project::selectedRooms(std::vector<const Room *> & rooms) const {
+	std::set<const Object*> objs;
+	selectObjects(objs, SG_Building, true, true);
+
+	rooms.clear();
+	for (const Object * o : objs) {
+		const Room * r = dynamic_cast<const Room *>(o);
+		if (r != nullptr)
+			rooms.push_back(r);
+	}
+
+	return !rooms.empty();
+}
+
+
 IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces, IBKMK::Vector3D &center) {
 
 	// store selected surfaces

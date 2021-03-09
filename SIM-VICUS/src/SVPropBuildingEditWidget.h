@@ -88,9 +88,15 @@ private slots:
 
 	void on_pushButtonAssignInsideComponent_clicked();
 
+	void on_pushButtonAssignZoneTemplate_clicked();
+
+	void on_tableWidgetZoneTemplates_itemSelectionChanged();
+
 private:
 	/*! Returns a pointer to the currently selected component in the component table. */
 	const VICUS::Component * currentlySelectedComponent() const;
+	/*! Returns a pointer to the currently selected zone template in the zone template table. */
+	const VICUS::ZoneTemplate * currentlySelectedZoneTemplate() const;
 
 	/*! Updates widget to current project state. */
 	void updateUi();

@@ -122,12 +122,17 @@ public:
 	/*! This function collects the pointers to all selected surfaces.
 		This is a convenience function which essentially does the same as selectObjects, but
 		only returns visible and selected objects of type Surface.
-		Type of wich should be returned can be set with
-		\param selectedObjects
-		\param sg				is the type of surfaces that has to be set
 		\returns Returns true if any surface is selected (same as surfaces.size() > 0).
 	*/
 	bool selectedSurfaces(std::vector<const Surface*> & surfaces, const VICUS::Project::SelectionGroups &sg) const;
+
+	/*! This function collects the pointers to all selected rooms.
+		This is a convenience function which essentially does the same as selectObjects, but
+		only returns visible and selected objects of type Room.
+		Type of wich should be returned can be set with
+		\returns Returns true if any room is selected (same as rooms.size() > 0).
+	*/
+	bool selectedRooms(std::vector<const Room*> & rooms) const;
 
 	/*! This function computes the bounding box of all selected surfaces and the center point.
 		\returns Returns the dimensions of the bounding box and its center point in argument 'center'.

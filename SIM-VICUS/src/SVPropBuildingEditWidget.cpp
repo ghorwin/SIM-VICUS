@@ -13,9 +13,11 @@
 #include "SVSettings.h"
 #include "SVMainWindow.h"
 #include "SVDatabaseEditDialog.h"
+#include "SVDBZoneTemplateEditDialog.h"
 
 #include "SVUndoTreeNodeState.h"
 #include "SVUndoModifyComponentInstances.h"
+#include "SVUndoModifyRoomZoneTemplateAssociation.h"
 
 SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	QWidget(parent),
@@ -26,6 +28,7 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->verticalLayoutComponents->setMargin(0);
 	m_ui->verticalLayoutComponentOrientation->setMargin(0);
 	m_ui->verticalLayoutBoundaryConditions->setMargin(0);
+	m_ui->verticalLayoutZoneTemplates->setMargin(0);
 
 	// configure tables
 	m_ui->tableWidgetComponents->setColumnCount(2);
@@ -43,6 +46,14 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->tableWidgetBoundaryConditions->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
 	m_ui->tableWidgetBoundaryConditions->horizontalHeader()->resizeSection(0,20);
 	m_ui->tableWidgetBoundaryConditions->horizontalHeader()->setStretchLastSection(true);
+
+	m_ui->tableWidgetZoneTemplates->setColumnCount(2);
+	m_ui->tableWidgetZoneTemplates->setHorizontalHeaderLabels(QStringList() << QString() << tr("Zone template"));
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetZoneTemplates);
+	m_ui->tableWidgetZoneTemplates->setSortingEnabled(false);
+	m_ui->tableWidgetZoneTemplates->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+	m_ui->tableWidgetZoneTemplates->horizontalHeader()->resizeSection(0,20);
+	m_ui->tableWidgetZoneTemplates->horizontalHeader()->setStretchLastSection(true);
 
 	// init widget to correct initial state
 	m_ui->labelComponentSelection->setEnabled(false);
@@ -94,6 +105,7 @@ void SVPropBuildingEditWidget::onModified(int modificationType, ModificationInfo
 	switch ((SVProjectHandler::ModificationTypes)modificationType) {
 		case SVProjectHandler::AllModified:
 		case SVProjectHandler::BuildingGeometryChanged:
+		case SVProjectHandler::BuildingTopologyChanged: // used when zone templates are assigned
 		case SVProjectHandler::ComponentInstancesModified:
 		case SVProjectHandler::NodeStateModified:
 			// TODO Andreas, add modification type for invisible change of zone template association
@@ -237,6 +249,17 @@ const VICUS::Component * SVPropBuildingEditWidget::currentlySelectedComponent() 
 }
 
 
+const VICUS::ZoneTemplate * SVPropBuildingEditWidget::currentlySelectedZoneTemplate() const {
+	// check if selected "template" is actually missing
+	int r = m_ui->tableWidgetZoneTemplates->currentRow();
+	if (r == -1 || m_zoneTemplateAssignments.empty())
+		return nullptr;
+	std::map<const VICUS::ZoneTemplate*, std::vector<const VICUS::Room *> >::const_iterator cit = m_zoneTemplateAssignments.begin();
+	std::advance(cit, r);
+	return cit->first;
+}
+
+
 void SVPropBuildingEditWidget::updateUi() {
 	const SVDatabase & db = SVSettings::instance().m_db;
 
@@ -343,13 +366,13 @@ void SVPropBuildingEditWidget::updateUi() {
 		}
 	}
 	if (selectedComponents.empty()) {
-		m_ui->labelSelectedComponents->setText(tr("No components"));
+		m_ui->labelSelectedComponents->setText(tr("None"));
 	}
 	else if (selectedComponents.size() == 1) {
 		if (*selectedComponents.begin() == nullptr)
 			m_ui->labelSelectedComponents->setText(tr("Component with invalid/unknown ID"));
 		else
-			m_ui->labelSelectedComponents->setText(tr("Component %1 [%2]")
+			m_ui->labelSelectedComponents->setText(tr("%1 [%2]")
 			   .arg(QtExt::MultiLangString2QString((*selectedComponents.begin())->m_displayName)).arg((*selectedComponents.begin())->m_id));
 	}
 	else {
@@ -474,6 +497,45 @@ void SVPropBuildingEditWidget::updateUi() {
 		m_ui->tableWidgetZoneTemplates->setItem(row, 1, item);
 	}
 
+	// process all selected rooms and determine which zone template they have assigned
+	std::vector<const VICUS::Room*> rooms;
+	project().selectedRooms(rooms);
+	if (rooms.empty()) {
+		m_ui->labelSelectedZoneTemplates->setText("");
+		m_ui->groupBoxSelectedRooms->setEnabled(false);
+	}
+	else {
+		m_ui->groupBoxSelectedRooms->setEnabled(true);
+	}
+
+	// update selection-related info
+	std::set<const VICUS::ZoneTemplate *> selectedZoneTemplate;
+	// loop over all selected rooms and store pointer to assigned zone template
+	for (const VICUS::Room* r : rooms) {
+		if (r->m_idZoneTemplate != VICUS::INVALID_ID) {
+			const VICUS::ZoneTemplate * zt= db.m_zoneTemplates[r->m_idZoneTemplate];
+			selectedZoneTemplate.insert(zt); // when ID is invalid/unknown, we store a nullptr
+		}
+	}
+	if (selectedZoneTemplate.empty()) {
+		m_ui->labelSelectedZoneTemplates->setText(tr("None"));
+	}
+	else if (selectedZoneTemplate.size() == 1) {
+		const VICUS::ZoneTemplate * zt = *selectedZoneTemplate.begin();
+		// special handling: exactly one room with invalid zone template ID is selected
+		if (zt == nullptr)
+			m_ui->labelSelectedZoneTemplates->setText(tr("Zone template with invalid/unknown ID"));
+		else // otherwise show info about the selected zone template
+			m_ui->labelSelectedZoneTemplates->setText(tr("%1 [%2]")
+			   .arg(QtExt::MultiLangString2QString(zt->m_displayName)).arg(zt->m_id) );
+	}
+	else {
+		m_ui->labelSelectedZoneTemplates->setText(tr("%1 different templates")
+		   .arg(selectedZoneTemplate.size()));
+	}
+	// update table related button states
+	on_tableWidgetZoneTemplates_itemSelectionChanged();
+
 }
 
 
@@ -533,8 +595,8 @@ void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
 	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignComponent",
 		tr("Assign component"), tr("You may now select a component from the component database, which will then be"
 								   "assigned to the selected surfaces."));
-	int selectedComponentId = SVMainWindow::instance().dbComponentEditDialog()->select(0);
-	if (selectedComponentId == -1)
+	unsigned int selectedComponentId = SVMainWindow::instance().dbComponentEditDialog()->select(0);
+	if (selectedComponentId == VICUS::INVALID_ID)
 		return; // user aborted the dialog
 
 	std::vector<const VICUS::Surface*> surfaces;
@@ -644,3 +706,39 @@ void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
 	undo->push();
 }
 
+
+void SVPropBuildingEditWidget::on_pushButtonAssignZoneTemplate_clicked() {
+	// ask user to select a the zone template to assign
+	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignZoneTemplate",
+		tr("Assign zone template"), tr("You may now select a zone template from the database, which will then be"
+								   "assigned to the selected rooms."));
+	unsigned int selectedId = SVMainWindow::instance().dbZoneTemplateEditDialog()->select(0);
+	if (selectedId == VICUS::INVALID_ID)
+		return; // user aborted the dialog
+
+	// get all visible "building" type objects in the scene
+	std::set<const VICUS::Object * > objs;
+	project().selectObjects(objs, VICUS::Project::SG_Building, true, true);
+
+	std::vector<unsigned int> modifiedRoomIDs; // unique IDs!!!
+	// loop over all rooms and store zone template associations
+	for (const VICUS::Object * o : objs) {
+		const VICUS::Room * room = dynamic_cast<const VICUS::Room *>(o);
+		if (room == nullptr) continue; // skip all but rooms
+		modifiedRoomIDs.push_back(room->uniqueID());
+	}
+	// now create an undo action for modifying zone template assignments
+	SVUndoModifyRoomZoneTemplateAssociation * undo = new SVUndoModifyRoomZoneTemplateAssociation(
+				tr("Assigned zone template"),
+				modifiedRoomIDs, selectedId);
+	undo->push();
+}
+
+
+void SVPropBuildingEditWidget::on_tableWidgetZoneTemplates_itemSelectionChanged() {
+	// enable/disable buttons based on selection changed signal
+	bool enabled = (currentlySelectedZoneTemplate() != nullptr);
+	m_ui->pushButtonEditZoneTemplates->setEnabled(enabled);
+	m_ui->pushButtonExchangeZoneTemplates->setEnabled(enabled);
+	m_ui->pushButtonSelectObjectsWithZoneTemplates->setEnabled(enabled);
+}
