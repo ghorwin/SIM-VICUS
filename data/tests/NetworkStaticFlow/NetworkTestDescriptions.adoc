@@ -660,7 +660,7 @@ cPAir = 1006 J/kgK
 rhoAir = 1.205 kg/s
 ```
 
-Luftmassestrom und Tempertaurdifferenz zwischen Raumluft und AUßenlufttempertaur errechnen sich durch
+Luftmassestrom und Tempertaurdifferenz zwischen Raumluft und Außenlufttempertaur errechnen sich durch
 ```
 mdotVentilation = Volume * VentilationRate * rhoAir
 TZone - TAmbient = QdotVentilation/(mdotVentilation * cPAir).

@@ -61,19 +61,7 @@ void HydraulicNetworkHeatExchange::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "IBK:IntPara") {
-				IBK::IntPara p;
-				NANDRAD::readIntParaElement(c, p);
-				bool success = false;
-				try {
-					intPara_t ptype = (intPara_t)KeywordList::Enumeration("HydraulicNetworkHeatExchange::intPara_t", p.name);
-					m_intPara[ptype] = p; success = true;
-				}
-				catch (...) { /* intentional fail */  }
-				if (!success)
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			else if (cName == "IBK:Parameter") {
+			if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
 				bool success = false;
@@ -90,14 +78,26 @@ void HydraulicNetworkHeatExchange::readXML(const TiXmlElement * element) {
 				NANDRAD::LinearSplineParameter p;
 				p.readXML(c);
 				bool success = false;
-				if (p.m_name == "HeatExchangeSpline") {
-					m_heatExchangeSpline = p; success = true;
+				try {
+					splinePara_t ptype;
+					ptype = (splinePara_t)KeywordList::Enumeration("HydraulicNetworkHeatExchange::splinePara_t", p.m_name);
+					m_splPara[ptype] = p; success = true;
 				}
+				catch (...) { /* intentional fail */  }
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.m_name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+				bool found = false;
+				for (int i=0; i<NUM_ID; ++i) {
+					if (cName == KeywordList::Keyword("HydraulicNetworkHeatExchange::References",i)) {
+						m_idReferences[i] = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
+						found = true;
+						break;
+					}
+				}
+				if (!found)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			c = c->NextSiblingElement();
 		}
@@ -117,10 +117,9 @@ TiXmlElement * HydraulicNetworkHeatExchange::writeXML(TiXmlElement * parent) con
 	if (m_modelType != NUM_T)
 		e->SetAttribute("modelType", KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType",  m_modelType));
 
-	for (unsigned int i=0; i<NUM_IP; ++i) {
-		if (!m_intPara[i].name.empty()) {
-			TiXmlElement::appendSingleAttributeElement(e, "IBK:IntPara", "name", m_intPara[i].name, IBK::val2string(m_intPara[i].value));
-		}
+	for (int i=0; i<NUM_ID; ++i) {
+		if (m_idReferences[i] != NANDRAD::INVALID_ID)
+				TiXmlElement::appendSingleAttributeElement(e, KeywordList::Keyword("HydraulicNetworkHeatExchange::References",  i), nullptr, std::string(), IBK::val2string<unsigned int>(m_idReferences[i]));
 	}
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
@@ -128,9 +127,10 @@ TiXmlElement * HydraulicNetworkHeatExchange::writeXML(TiXmlElement * parent) con
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 		}
 	}
-	if (!m_heatExchangeSpline.m_name.empty()) {
-		IBK_ASSERT("HeatExchangeSpline" == m_heatExchangeSpline.m_name);
-		m_heatExchangeSpline.writeXML(e);
+	for (int i=0; i<NUM_SPL; ++i) {
+		if (!m_splPara[i].m_name.empty()) {
+			m_splPara[i].writeXML(e);
+		}
 	}
 	return e;
 }
