@@ -25,6 +25,8 @@
 #include "NM_AbstractModel.h"
 #include "NM_AbstractTimeDependency.h"
 
+#include <NANDRAD_Constants.h>
+
 namespace IBK {
 	class LinearSpline;
 }
@@ -38,11 +40,50 @@ namespace NANDRAD {
 
 namespace NANDRAD_MODEL {
 
-/*!	A model that computes all temperature states of hydraulic network given the internal energy density.
-
-	The model publishes the temperatures for each flow element, so that these temperatures can be taken
-	as fluid temperature inputs by the hydraulic network elements.
+/*!	Struct for all value references exchanged between element model
+	and ThermalNetworkStatesModel/ThermalNetworkBalanceModel.
 */
+struct ThermalNetworkElementValueRefs {
+
+
+	// resizing
+	void resize(unsigned int nValues) {
+		m_nValues = nValues;
+		m_zoneIdxs.resize(nValues, NANDRAD::INVALID_ID);
+		m_meanTemperatureRefs.resize(nValues,nullptr);
+		m_heatExchangeSplineRefs.resize(nValues,nullptr);
+		m_flowElementHeatLossRefs.resize(nValues,nullptr);
+		m_inletNodeTemperatureRefs.resize(nValues,nullptr);
+		m_outletNodeTemperatureRefs.resize(nValues,nullptr);
+		m_heatExchangeRefValues.resize(nValues,-999);
+	}
+
+	/*! Number of vector valued for each quantity. */
+	unsigned int									m_nValues = 999;
+	/*! Indexes of all zones for each network element (size = m_nValues),
+		NANDRAD::INVALID_ID for missing zone.
+	*/
+	std::vector<unsigned int>						m_zoneIdxs;
+	/*! Vector with references to mean temperatures (size = m_nValues). */
+	std::vector<const double*>						m_meanTemperatureRefs;
+	/*! References to heat exchange spline: nullptr if not needed (size = m_nValues). */
+	std::vector<const IBK::LinearSpline*>			m_heatExchangeSplineRefs;
+	/*! References to heat fluxes out of each heat flow element (size = m_nValues).
+	*/
+	std::vector<const double*>						m_flowElementHeatLossRefs;
+	/*! References to temperatures for inlet node of each flow element (size = m_nValues).
+	*/
+	std::vector<const double*>						m_inletNodeTemperatureRefs;
+	/*! References to with temperatures for outlet node of each flow element (size = m_nValues).
+	*/
+	std::vector<const double*>						m_outletNodeTemperatureRefs;
+	/*! Container with current spline or reference values: either temperature [K] or heat flux [W]
+		 (size = m_nValues).
+	*/
+	std::vector<double>								m_heatExchangeRefValues;
+
+};
+
 
 class HydraulicNetworkModel;
 class ThermalNetworkModelImpl;
@@ -135,24 +176,13 @@ private:
 	std::vector<unsigned int>						m_elementIds;
 	/*! All zone ids referenced by a fluid component (size = m_elementIDs.size()). */
 	std::vector<unsigned int>						m_zoneIds;
-	/*! Indexes of all zones for each network element (size = m_elementIDs.size()),
-		NANDRAD::INVALID_ID for missing zone.
-	*/
-	std::vector<unsigned int>						m_zoneIdxs;
+	/*! References to zone temperatures (size = m_nValues). */
+	std::vector<const double*>						m_zoneTemperatureRefs;
+	/*! Container of all model value references.*/
+	ThermalNetworkElementValueRefs					m_elementValueRefs;
 
 	/*! Cached input data vector (size nPrimaryStateResults()). */
 	std::vector<double>								m_y;
-	/*! Vectorwith references to mean temperatures (size = m_elementIDs.size()). */
-	std::vector<const double*>						m_meanTemperatureRefs;
-	/*! References to heat exchange spline: nullptr if not needed (size = m_elementIDs.size()). */
-	std::vector<const IBK::LinearSpline*>			m_heatExchangeSplineRefs;
-	/*! References to zone temperatures (size = m_elementIDs.size()). */
-	std::vector<const double*>						m_zoneTemperatureRefs;
-	/*! Container with current spline or reference values: either temperature [K] or heat flux [W]
-		(size = m_elementIDs.size()).
-	*/
-	std::vector<double>								m_heatExchangeValues;
-
 	/*! Total number of unknowns. */
 	unsigned int									m_n;
 

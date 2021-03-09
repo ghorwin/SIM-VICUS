@@ -44,29 +44,6 @@ void ThermalNetworkModelImpl::setup(const Network &nw,
 	m_network = &nw;
 	// resize temperatures
 	m_nodalTemperatures.resize(nw.m_nodes.size());
-	// resize temperatures
-	m_inletNodeTemperatureRefs.resize(nw.m_elements.size(), nullptr);
-	// resize temperatures
-	m_outletNodeTemperatureRefs.resize(nw.m_elements.size(), nullptr);
-	// resize heat fluxes
-	m_flowElementHeatLossRefs.resize(nw.m_elements.size(), nullptr);
-
-	// copy nodal temperatures
-	for(unsigned int i = 0; i < nw.m_elements.size(); ++i) {
-		const Element &elem = nw.m_elements[i];
-		// copy heat fluxes
-		m_inletNodeTemperatureRefs[i] = &m_nodalTemperatures[elem.m_nodeIndexInlet];
-		m_outletNodeTemperatureRefs[i] = &m_nodalTemperatures[elem.m_nodeIndexOutlet];
-	}
-	for(unsigned int i = 0; i < m_heatLossElements.size(); ++i) {
-		const ThermalNetworkAbstractFlowElementWithHeatLoss *heatLossElem
-				= m_heatLossElements[i];
-		// skip empty elements
-		if(heatLossElem == nullptr)
-			continue;
-		// copy heat fluxes
-		m_flowElementHeatLossRefs[i] = &heatLossElem->m_heatLoss;
-	}
 	// get fluid heat capacity
 	m_fluid = &fluid;
 }

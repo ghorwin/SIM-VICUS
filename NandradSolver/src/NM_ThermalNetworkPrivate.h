@@ -63,7 +63,7 @@ public:
 	std::vector<ThermalNetworkAbstractFlowElement*>	m_flowElements;
 
 	/*! Container for flow element object copies with heat loss.
-		Elements are nullptr if no heat loss exists.
+		Elements are nullptr if no heat loss exists. Size = m_flowElements.size().
 	*/
 	std::vector<const ThermalNetworkAbstractFlowElementWithHeatLoss*>
 													m_heatLossElements;
@@ -73,15 +73,6 @@ public:
 	/*! Container with temperatures for each node.
 	*/
 	std::vector<double>								m_nodalTemperatures;
-	/*! References to heat fluxes out of each heat flow element.
-	*/
-	std::vector<const double*>						m_flowElementHeatLossRefs;
-	/*! References to temperatures for inlet node of each flow element.
-	*/
-	std::vector<const double*>						m_inletNodeTemperatureRefs;
-	/*! References to with temperatures for outlet node of each flow element.
-	*/
-	std::vector<const double*>						m_outletNodeTemperatureRefs;
 	/*! Container with global pointer to calculated mass fluxes.
 	*/
 	const double									*m_fluidMassFluxes;
