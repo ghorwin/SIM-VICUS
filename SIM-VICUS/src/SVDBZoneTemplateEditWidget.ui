@@ -69,9 +69,12 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QPushButton" name="pushButtonAddSubTemplate">
+      <widget class="QPushButton" name="pushButtonAddPersonLoad">
        <property name="text">
-        <string>Add parameter set...</string>
+        <string>Person</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

@@ -7,7 +7,7 @@
 
 
 /*! Model for accessing zone templates.
-	Child nodes correspond to sub-templates, role Qt::UserRole + 20 delivers the type of the sub-template.
+	Child nodes correspond to sub-templates, role Role_SubTemplateType delivers the type of the sub-template.
 */
 class SVDBZoneTemplateTreeModel : public QAbstractItemModel {
 	Q_OBJECT
@@ -19,6 +19,10 @@ public:
 		ColCheck,
 		ColName,
 		NumColumns
+	};
+
+	enum CustomRoles {
+		Role_SubTemplateType = Qt::UserRole + 20
 	};
 
 	/*! Constructor, requires a read/write pointer to the central database object.

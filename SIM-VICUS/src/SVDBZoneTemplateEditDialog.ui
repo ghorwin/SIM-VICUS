@@ -10,6 +10,9 @@
     <height>563</height>
    </rect>
   </property>
+  <property name="windowTitle">
+   <string>Zone Template Database</string>
+  </property>
   <layout class="QGridLayout" name="gridLayoutMaster">
    <item row="0" column="0">
     <widget class="QGroupBox" name="groupBoxTableView">

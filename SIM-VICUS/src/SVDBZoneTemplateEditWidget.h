@@ -35,6 +35,7 @@ public:
 	/*! Update widget with this. */
 	void updateInput(int id, int subTemplateId, int subTemplateType);
 
+public slots:
 	void on_toolButtonRemoveSubComponent_clicked();
 
 signals:
@@ -53,7 +54,7 @@ private slots:
 	void on_toolButtonSelectSubComponent_clicked();
 
 
-	void on_pushButtonAddSubTemplate_clicked();
+	void on_pushButtonAddPersonLoad_clicked();
 
 private:
 	Ui::SVDBZoneTemplateEditWidget *m_ui;

@@ -52,6 +52,8 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, int subT
 	m_ui->lineEditName->setEnabled(isEnabled);
 	m_ui->pushButtonColor->setEnabled(isEnabled);
 
+	m_ui->pushButtonAddPersonLoad->setEnabled(false);
+	m_ui->pushButtonAddPersonLoad->setChecked(false);
 
 	if (!isEnabled) {
 		// clear input controls
@@ -79,7 +81,15 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, int subT
 
 	m_ui->lineEditName->setReadOnly(!isEditable);
 	m_ui->pushButtonColor->setReadOnly(!isEditable);
-	m_ui->pushButtonAddSubTemplate->setEnabled(isEditable);
+
+	// re-enable add buttons only when not yet set
+	if (item->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson] == VICUS::INVALID_ID)
+		m_ui->pushButtonAddPersonLoad->setEnabled(true);
+	else
+	{
+		m_ui->pushButtonAddPersonLoad->setEnabled(false);
+		m_ui->pushButtonAddPersonLoad->setChecked(true);
+	}
 
 	// now the sub-template stuff
 	if (subTemplateId == -1) {
@@ -157,14 +167,14 @@ void SVDBZoneTemplateEditWidget::on_toolButtonSelectSubComponent_clicked() {
 
 void SVDBZoneTemplateEditWidget::on_toolButtonRemoveSubComponent_clicked() {
 	m_dbModel->deleteChildItem( m_dbModel->indexById(m_current->m_id), m_currentSubTemplateType);
+	emit selectSubTemplate(m_current->m_id, VICUS::ZoneTemplate::NUM_ST);
 }
 
 
-void SVDBZoneTemplateEditWidget::on_pushButtonAddSubTemplate_clicked() {
+void SVDBZoneTemplateEditWidget::on_pushButtonAddPersonLoad_clicked() {
 	Q_ASSERT(m_current != nullptr);
-	// TODO Dirk: ask user to select which sub-template to edit
-	// for now, just open the Internal Loads DB dialog and let user select one
 
+	// open the Internal Loads DB dialog and let user select one
 	unsigned int id = SVMainWindow::instance().dbInternalLoadsPersonEditDialog()->select(VICUS::INVALID_ID);
 	if (id == VICUS::INVALID_ID) return;
 	if (m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson] != id) {
@@ -181,3 +191,5 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddSubTemplate_clicked() {
 		}
 	}
 }
+
+

@@ -88,7 +88,7 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 		VICUS::ZoneTemplate::SubTemplateType subType = zt.usedReference((unsigned int)subTemplateIndex);
 
 		// subtype role
-		if (role == Qt::UserRole + 20) {
+		if (role == Role_SubTemplateType) {
 			return subType;
 		}
 

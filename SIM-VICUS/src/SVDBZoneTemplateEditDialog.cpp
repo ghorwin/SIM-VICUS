@@ -209,7 +209,7 @@ void SVDBZoneTemplateEditDialog::onCurrentIndexChanged(const QModelIndex &curren
 			subTemplateID = id;
 			QModelIndex parentIndex = sourceIndex.parent();
 			id = parentIndex.data(Role_Id).toInt();
-			subTemplateType = sourceIndex.data(Qt::UserRole + 20).toInt();
+			subTemplateType = sourceIndex.data(SVDBZoneTemplateTreeModel::Role_SubTemplateType).toInt();
 		}
 		m_editWidget->updateInput(id, subTemplateID, subTemplateType);
 	}
