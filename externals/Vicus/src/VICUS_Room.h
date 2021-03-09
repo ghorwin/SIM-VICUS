@@ -40,9 +40,12 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of building. */
-	unsigned int						m_id = INVALID_ID;			// XML:A:required
+	unsigned int						m_id = INVALID_ID;					// XML:A:required
 
-	QString								m_displayName;				// XML:A
+	QString								m_displayName;						// XML:A
+
+	/*! Reference to assigned zone template (optional). */
+	IDType								m_idZoneTemplate = INVALID_ID;		// XML:E
 
 	/*! Stores visibility information for this surface.
 		Note: keep the next line - this will cause the code generator to create serialization code
@@ -53,10 +56,10 @@ public:
 	/*! Stores zone parameters.
 		if area or volume is zero --> autocalulation from geometry
 	*/
-	IBK::Parameter						m_para[NUM_P];				// XML:E
+	IBK::Parameter						m_para[NUM_P];						// XML:E
 
 	/*! Surfaces of the room. */
-	std::vector<Surface>				m_surfaces;					// XML:E
+	std::vector<Surface>				m_surfaces;							// XML:E
 };
 
 } // namespace VICUS
