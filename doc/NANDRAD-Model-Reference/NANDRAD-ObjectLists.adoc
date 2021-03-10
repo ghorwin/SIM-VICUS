@@ -25,7 +25,7 @@ In NANDRAD werden physikalische Gleichungen in Form von Modellobjekten organisie
 [[ex_objectLists]]
 .Definition von mehreren Objektlisten
 ====
-[[Quelle,xml]]
+[source,xml]
 ----
 <ObjectLists>
 	<ObjectList name="All zones">
