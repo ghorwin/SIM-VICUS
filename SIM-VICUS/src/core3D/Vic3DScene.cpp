@@ -1128,7 +1128,7 @@ void Vic3DScene::generateNetworkGeometry() {
 }
 
 
-void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm, int id) const {
+void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) const {
 	// Note: the meaning of the filter id depends on the coloring mode
 
 	// get VICUS project data
@@ -1205,7 +1205,7 @@ void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm, int id) const 
 					case SVViewState::OCM_ComponentOrientation:
 						// color surfaces when either filtering is off (id == 0)
 						// or when component ID matches selected id
-						if (id == 0 || ci.m_componentID == (unsigned int)id) {
+						if (id == VICUS::INVALID_ID || ci.m_componentID == id) {
 							// color side A surfaces with blue,
 							// side B surfaces with orange
 							if (ci.m_sideASurface != nullptr)
@@ -1248,13 +1248,14 @@ void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm, int id) const 
 						// skip all without zone template
 						if (r.m_idZoneTemplate == VICUS::INVALID_ID)
 							continue; // they keep the default gray
-						// lookup zone template
-						const VICUS::ZoneTemplate * zt = db.m_zoneTemplates[r.m_idZoneTemplate];
-						if (zt == nullptr)
-							continue; // no definition - keep default (gray) color
-						// color all surfaces of room based on zone template color
-						for (const VICUS::Surface & s : r.m_surfaces) {
-							s.m_color = zt->m_color;
+						if (id == VICUS::INVALID_ID || r.m_idZoneTemplate == id) {
+							// lookup zone template
+							const VICUS::ZoneTemplate * zt = db.m_zoneTemplates[r.m_idZoneTemplate];
+							if (zt == nullptr)
+								continue; // no definition - keep default (gray) color
+							// color all surfaces of room based on zone template color
+							for (const VICUS::Surface & s : r.m_surfaces)
+								s.m_color = zt->m_color;
 						}
 					}
 				}

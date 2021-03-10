@@ -1,6 +1,8 @@
 #ifndef SVViewStateH
 #define SVViewStateH
 
+#include <VICUS_Constants.h>
+
 /*! This class defines the current state of the user interface.
 	This includes:
 
@@ -158,7 +160,7 @@ public:
 	/*! Indicates which color mode shall be used to color opaque geometry. */
 	ObjectColorMode			m_objectColorMode		= OCM_None;
 	/*! Some color modes require an additional ID property. */
-	int						m_colorModePropertyID	= 0;
+	unsigned int			m_colorModePropertyID	= VICUS::INVALID_ID;
 	/*! Bitmask with selected snap options. */
 	int						m_snapOptionMask		= Snap_GridPlane | Snap_ObjectVertex | Snap_ObjectCenter | Snap_ObjectEdgeCenter;
 	/*! Whether snapping is enabled or not. */

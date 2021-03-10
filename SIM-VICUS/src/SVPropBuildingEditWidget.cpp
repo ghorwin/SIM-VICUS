@@ -209,7 +209,7 @@ void SVPropBuildingEditWidget::on_checkBoxShowAllComponentOrientations_toggled(b
 	m_ui->comboBoxComponentSelection->setEnabled(!checked);
 	if (checked) {
 		SVViewState vs = SVViewStateHandler::instance().viewState();
-		vs.m_colorModePropertyID = 0; // disable filter
+		vs.m_colorModePropertyID = VICUS::INVALID_ID; // disable filter
 		SVViewStateHandler::instance().setViewState(vs);
 	}
 	else {
@@ -231,10 +231,7 @@ void SVPropBuildingEditWidget::on_pushButtonAlignComponentToSideB_clicked() {
 void SVPropBuildingEditWidget::on_comboBoxComponentSelection_currentIndexChanged(int index) {
 	// set index/id of selected component in view manager and update coloring
 	SVViewState vs = SVViewStateHandler::instance().viewState();
-	if (m_ui->comboBoxComponentSelection->currentIndex() == -1)
-		vs.m_colorModePropertyID = 0;
-	else
-		vs.m_colorModePropertyID = m_ui->comboBoxComponentSelection->currentData().toInt();
+	vs.m_colorModePropertyID = m_ui->comboBoxComponentSelection->currentData().toUInt();
 	SVViewStateHandler::instance().setViewState(vs);
 	m_ui->comboBoxComponentSelection->blockSignals(true);
 	m_ui->comboBoxComponentSelection->setCurrentIndex(index);
@@ -277,7 +274,7 @@ void SVPropBuildingEditWidget::updateUi() {
 
 	// get all visible "building" type objects in the scene
 	std::set<const VICUS::Object * > objs;
-	project().selectObjects(objs, VICUS::Project::SG_Building, false, true);
+	project().selectObjects(objs, VICUS::Project::SG_Building, false, false);
 	// now build a map of component IDs versus visible surfaces
 	m_componentSurfacesMap.clear();
 	m_selectedComponentInstances.clear();
@@ -608,6 +605,37 @@ void SVPropBuildingEditWidget::alignSelectedComponents(bool toSideA) {
 }
 
 
+void SVPropBuildingEditWidget::zoneTemplateVisibilityChanged() {
+	// set currently selected zone template ID in view state and trigger a recoloring
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	if (m_ui->checkBoxZoneTemplateColorOnlyActive->isChecked()) {
+		const VICUS::ZoneTemplate * selectedZoneTemplate = currentlySelectedZoneTemplate();
+		if (selectedZoneTemplate == nullptr)
+			vs.m_colorModePropertyID = VICUS::INVALID_ID;
+		else
+			vs.m_colorModePropertyID = selectedZoneTemplate->m_id;
+	}
+	else {
+		// disable coloring filter
+		vs.m_colorModePropertyID = VICUS::INVALID_ID;
+	}
+	SVViewStateHandler::instance().setViewState(vs);
+}
+
+
+void SVPropBuildingEditWidget::zoneTemplateSelectionChanged() {
+	// compose node states for all rooms and their surfaces based on template association
+
+	// get currently selected zone template
+	const VICUS::ZoneTemplate * zt = currentlySelectedZoneTemplate();
+
+	// compose a list of unique room IDs and respective on/off visibility states
+
+	// trigger undo-action
+
+}
+
+
 void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
 	// ask user to select a new component
 	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignComponent",
@@ -758,6 +786,11 @@ void SVPropBuildingEditWidget::on_tableWidgetZoneTemplates_itemSelectionChanged(
 	bool enabled = (currentlySelectedZoneTemplate() != nullptr);
 	m_ui->pushButtonEditZoneTemplates->setEnabled(enabled);
 	m_ui->pushButtonExchangeZoneTemplates->setEnabled(enabled);
+
+	if (m_ui->checkBoxZoneTemplateColorOnlyActive->isChecked())
+		zoneTemplateVisibilityChanged();
+	if (m_ui->checkBoxZoneTemplateShowOnlyActive->isChecked())
+		zoneTemplateSelectionChanged();
 }
 
 
@@ -814,3 +847,12 @@ void SVPropBuildingEditWidget::on_pushButtonExchangeZoneTemplates_clicked() {
 }
 
 
+
+void SVPropBuildingEditWidget::on_checkBoxZoneTemplateColorOnlyActive_toggled(bool) {
+	zoneTemplateVisibilityChanged();
+}
+
+
+void SVPropBuildingEditWidget::on_checkBoxZoneTemplateShowOnlyActive_toggled(bool) {
+	zoneTemplateSelectionChanged();
+}

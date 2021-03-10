@@ -365,7 +365,7 @@
           <string>Zone templates</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_7">
-          <item row="1" column="2">
+          <item row="3" column="2">
            <spacer name="horizontalSpacer_5">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -378,17 +378,10 @@
             </property>
            </spacer>
           </item>
-          <item row="1" column="1">
-           <widget class="QPushButton" name="pushButtonExchangeZoneTemplates">
-            <property name="toolTip">
-             <string>Replaces the component association of all objects with the currently selected component.</string>
-            </property>
-            <property name="text">
-             <string>Exchange...</string>
-            </property>
-           </widget>
+          <item row="0" column="0" colspan="3">
+           <widget class="QTableWidget" name="tableWidgetZoneTemplates"/>
           </item>
-          <item row="1" column="0">
+          <item row="3" column="0">
            <widget class="QPushButton" name="pushButtonEditZoneTemplates">
             <property name="text">
              <string>Edit...</string>
@@ -401,8 +394,29 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="0" colspan="3">
-           <widget class="QTableWidget" name="tableWidgetZoneTemplates"/>
+          <item row="1" column="0" colspan="3">
+           <widget class="QCheckBox" name="checkBoxZoneTemplateColorOnlyActive">
+            <property name="text">
+             <string>Color only selected</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QPushButton" name="pushButtonExchangeZoneTemplates">
+            <property name="toolTip">
+             <string>Replaces the component association of all objects with the currently selected component.</string>
+            </property>
+            <property name="text">
+             <string>Exchange...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="3">
+           <widget class="QCheckBox" name="checkBoxZoneTemplateShowOnlyActive">
+            <property name="text">
+             <string>Show only selected</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
