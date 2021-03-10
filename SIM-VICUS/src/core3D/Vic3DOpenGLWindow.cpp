@@ -20,6 +20,8 @@ Source code is based on Qt Example OpenGLWindow, but has been simplified a lot.
 #include <QtGui/QOpenGLPaintDevice>
 #include <QtGui/QPainter>
 
+#include <IBK_Exception.h>
+
 namespace Vic3D {
 
 OpenGLWindow::OpenGLWindow(QWindow *parent) :
@@ -82,6 +84,9 @@ void OpenGLWindow::exposeEvent(QExposeEvent * /*event*/) {
 void OpenGLWindow::resizeEvent(QResizeEvent * event) {
 //	qDebug() << "OpenGLWindow::resizeEvent()";
 	QWindow::resizeEvent(event);
+
+	if (!isExposed())
+		return;
 
 	// initialize on first call
 	if (m_context == nullptr)
@@ -165,7 +170,9 @@ void OpenGLWindow::initOpenGL() {
 	m_context->setFormat(requestedFormat());
 	m_context->create();
 
-	m_context->makeCurrent(this);
+	if (!m_context->makeCurrent(this)) {
+		throw IBK::Exception("Cannot make OpenGL context current (driver problem?).", "[OpenGLWindow::initOpenGL]");
+	}
 	Q_ASSERT(m_context->isValid());
 
 	initializeOpenGLFunctions();
