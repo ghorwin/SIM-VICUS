@@ -428,8 +428,6 @@ Weiterhin **muss** für ein Rohrelement der Parameter `Length` definiert werden 
 ----
 ====
 
-Weitere Parameter hängen von 
-
 
 
 [[HeatExchangeType]]
@@ -443,6 +441,7 @@ Für thermische Netzwerken kann für jedes Strömungselement (<<HydraulicNetwork
 [source,xml]
 ----
 <HydraulicNetworkElement id="1" inletNodeId="1" outletNodeId="2" componentId="2" displayName="heat exchanger">
+    <!-- Definition of pre-defined heat loss -->
 	<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 		<LinearSplineParameter name="HeatLoss" interpolationMethod="linear">
 			<TSVFile>${Project Directory}/climate/HeatFlux.csv?2</TSVFile>
@@ -451,6 +450,7 @@ Für thermische Netzwerken kann für jedes Strömungselement (<<HydraulicNetwork
 </HydraulicNetworkElement>
 <HydraulicNetworkElement id="2" inletNodeId="2" outletNodeId="3" componentId="3" pipePropertiesId="1" displayName="pipe">
 	<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+    <!-- Definition of heat exchange with environment -->
 	<HydraulicNetworkHeatExchange modelType="TemperatureConstant">
 		<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">5</IBK:Parameter>
 		<IBK:Parameter name="Temperature" unit="C">0</IBK:Parameter>
@@ -466,11 +466,12 @@ Der `HeatExchangeType` kann folgende Werte haben:
 [options="header",cols="25%,^ 50%, ^ 25%",width="100%"]
 |====================
 |HeatExchangeType| Beschreibung| Verwendbar für Modelltyp
-| `TemperatureConstant` | Konstante Umgebungstemperatur ist als Parameter im `HydraulicNetworkElement` gegeben. Es muss Zusätzlich der Parameter `ExternalHeatTransferCoefficient` gegeben sein. | `SimplePipe`, `DynamicPipe` 
-| `TemperatureSpline` | Umgebungstemperatur ist als Zeitreihe in einer LinearSplineParameter (<<LinearSplineParameter>>) gegeben. Es muss Zusätzlich der Parameter `ExternalHeatTransferCoefficient` gegeben sein. | `SimplePipe`, `DynamicPipe`
-| `HeatLossConstant` | Konstanter Wärmestrom (positiv aus dem Element) ist als Parameter gegeben | `SimplePipe`, `DynamicPipe`, `HeatExchanger`
-| `HeatFluxSpline` | Wärmestrom (positiv aus dem Element) ist als Zeitreihe in einer LinearSplineParameter (<<LinearSplineParameter>>) gegeben | `SimplePipe`, `DynamicPipe`, `HeatExchanger`
-| `HeatExchangeWithZoneTemperature` | Temperatur wird aus Zone definiert | `SimplePipe`, `DynamicPipe`
+| `TemperatureConstant` | Wärmeaustausch basierend auf Temperaturunterschied zwischen Medium und Umgebungstemperatur; Konstante Umgebungstemperatur ist als Parameter im `HydraulicNetworkElement` gegeben. Es muss zusätzlich der Parameter `ExternalHeatTransferCoefficient` gegeben sein. | `SimplePipe`, `DynamicPipe` 
+| `TemperatureSpline` | Wärmeaustausch basierend auf Temperaturunterschied zwischen Medium und Umgebungstemperatur; Umgebungstemperatur ist als Zeitreihe in einem LinearSplineParameter (<<LinearSplineParameter>>) gegeben. Es muss zusätzlich der Parameter `ExternalHeatTransferCoefficient` gegeben sein. | `SimplePipe`, `DynamicPipe`
+| `TemperatureZone` | Wärmeaustausch mit einer Zone; Raumlufttemperatur wird als Umgebungstemperatur verwendet.  | `SimplePipe`, `DynamicPipe`
+| `TemperatureConstructionLayer` | Wärmeaustausch mit einer Konstruktionsschicht (Fußbodenheizung/Flächenheizung); Schichttemperatur wird als Umgebungstemperatur verwendet.  | `SimplePipe`, `DynamicPipe`
+| `HeatLossConstant` | Konstanter Wärmestrom (positiv aus dem Element) ist als konstanter Parameter gegeben | `SimplePipe`, `DynamicPipe`, `HeatExchanger`
+| `HeatLossSpline` | Wärmestrom (positiv aus dem Element) ist als Zeitreihe in einem LinearSplineParameter (<<LinearSplineParameter>>) gegeben | `SimplePipe`, `DynamicPipe`, `HeatExchanger`
 | `TemperatureFMUInterface` | Temperatur wird von FMU gegeben |
 |====================
 
@@ -570,10 +571,9 @@ Die Temperaturen am Ein- bzw. Auslass sind (wie die Drücke) an den physischen P
 - `FlowElementHeatLoss` in W - Wärmestrom abgegeben vom Strömungselement (Energie wird dem Fluid in diesem Element entzogen). Positive Werte bedeuten Abkühlen des Mediums (Wärmeverlust).
 
 
-TODO : Anne Milestone 3
+TODO : Anne, Ausgaben für TemperatureZone und TemperatureConstructionLayer heat exchange types
 
-- `ZoneHeatFluxes` : Milestone 3
-- 
+
 
 
 #### Ausgaben des Netzwerks

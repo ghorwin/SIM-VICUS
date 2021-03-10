@@ -49,6 +49,7 @@ Für die Materialparameter wie Dichte, Wärmekapazität und Wärmeleitfähigkeit
 |====================
 
 
+
 [[construction_types]]
 ## Konstruktionstypen
 
@@ -79,6 +80,7 @@ Innerhalb dieses Abschnitts beginnt jede Konstruktionsdefinition mit dem XML-Tag
 | `displayName` | Name der Konstruktion (wird für Informations-/Fehlermeldungen verwendet) | string | _optional_
 |====================
 
+
 Eine Konstruktion besteht aus einer oder mehreren Materialschichten. Diese werden im untergeordneten XML-Tag mit dem Namen `MaterialLayers` definiert. Jede Materialschicht wird mit dem XML-Tag `MaterialLayer` mit den folgenden XML-Attributen definiert:
 
 [options="header",cols="15%,55%,^ 20%,^ 10%",width="100%"]
@@ -96,6 +98,13 @@ image::Mat_ConstInst.png[]
 
 Das `MaterialLayer` hat keine Child-Tags, da alle benötigten Daten wie oben beschrieben als XML-Attribute definiert sind. 
 
+
+[[construction_active_layer]]
+### Aktive/beheizte Schichten
+
+Jeder Konstruktionsaufbau kann genau eine aktive Schicht haben, welche mit einem Heizregister versehen wird. Falls eine solche Schicht existiert, muss das XML-Tag `ActiveLayerIndex` angegeben sein. Dieses XML-Element enthalt den 0-basierten Index der Schicht, d.h. Index 0 entspricht der ersten Schicht in der `MaterialLayers`-Liste.
+
+Falls eine aktive Schicht definiert wurde, muss es irgendwo ein Modell geben, welches passend dafür eine Heizleistung berechnet. Beispielsweise kann dies eine Fußbodenheizung sein (siehe <<network_floor_heating>>).
 
 [[glazing_systems]]
 ## Verglasungssysteme

@@ -166,7 +166,7 @@ Während der Berechnung wird jede der Konstruktionen mit Hilfe eines Algorithmus
 :xrefstyle: basic
 
 [[fig_discretization]]
-.verschiedene Diskretisierungsvarianten in Abhängigkeit vom Parameter DiscStretchFactor
+.Verschiedene Diskretisierungsvarianten in Abhängigkeit vom Parameter DiscStretchFactor
 image::Discretization.png[]
 
 Grundsätzlich werden drei verschiedene Gittergenerierungsverfahren unterstützt:
@@ -434,6 +434,12 @@ Es können XML-tags mit dem Namen `IBK:Parameter` mit den XML-Attributen `name` 
 | `PressureCoefficient` | --- | Druckkoeffizient | 0...1 | _erforderlich_
 |====================
 
+
+:xrefstyle: short
+
+# Aktive Schichten/Flächenheizungen
+
+Eine Konstruktion kann thermisch wechselwirken mit andern Modelle, bspw. als Fußbodenheizung. Dafür muss im verwendeten Konstruktionstyp eine aktive Schicht definiert sein (siehe <<construction_active_layer>>).
 
 [[embedded_objects]]
 # Eingebettete Objekte (Fenster, Türen, Öffnungen...)
