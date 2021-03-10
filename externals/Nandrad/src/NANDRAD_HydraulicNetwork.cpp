@@ -7,7 +7,9 @@
 namespace NANDRAD {
 
 
-void HydraulicNetwork::checkParameters( const std::map<std::string, IBK::Path> &placeholders)  {
+void HydraulicNetwork::checkParameters( const std::map<std::string, IBK::Path> &placeholders,
+										const std::vector<Zone> &zones,
+										const std::vector<ConstructionInstance> &conInstances)  {
 	FUNCID(HydraulicNetwork::checkParameters);
 
 	if(m_elements.empty()) {
@@ -59,7 +61,7 @@ void HydraulicNetwork::checkParameters( const std::map<std::string, IBK::Path> &
 	for(HydraulicNetworkElement &e : m_elements) {
 		try {
 			// the checkParameters of HydraulicNetworkHeatExchange will be executed within this function
-			e.checkParameters(*this, placeholders);
+			e.checkParameters(*this, placeholders, zones, conInstances);
 		}
 		catch(IBK::Exception &ex) {
 			if (e.m_component != nullptr)

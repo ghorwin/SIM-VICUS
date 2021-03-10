@@ -72,6 +72,7 @@ public:
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE
+	NANDRAD_COMPARE_WITH_ID
 
 	/*! Checks for valid parameters and stores quick-access pointer to associated construction type.
 		Material and ConstructionType objects have already been checked for correctness.

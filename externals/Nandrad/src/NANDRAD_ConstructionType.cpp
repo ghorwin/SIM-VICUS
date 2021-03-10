@@ -56,6 +56,11 @@ void ConstructionType::checkParameters(const std::vector<Material> & materials) 
 		ml.m_material = &(*it); // store pointer
 	}
 
+	// check validity of active layer
+	if(m_activeLayerIndex != NANDRAD::INVALID_ID &&
+	   m_activeLayerIndex >= m_materialLayers.size()) {
+		throw IBK::Exception( IBK::FormatString("Active layer index %1 exceeds number of material layers.").arg(m_activeLayerIndex), FUNC_ID);
+	}
 }
 
 } // namespace NANDRAD

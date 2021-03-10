@@ -21,7 +21,11 @@ class HydraulicNetwork;
 class HydraulicNetworkElement {
 public:
 
-	HydraulicNetworkElement() {}
+	HydraulicNetworkElement() 	{
+		for(IBK::IntPara &i : m_intPara)
+			i.value = (int) NANDRAD::INVALID_ID;
+	}
+
 
 	/*! C'tor for a network element other than pipes. */
 	HydraulicNetworkElement(unsigned int id, unsigned int inletNodeId, unsigned int outletNodeId, unsigned int componentId):
@@ -30,7 +34,10 @@ public:
 		m_outletNodeId(outletNodeId),
 		m_componentId(componentId),
 		m_pipePropertiesId(INVALID_ID)
-	{}
+	{
+		for(IBK::IntPara &i : m_intPara)
+			i.value = (int) NANDRAD::INVALID_ID;
+	}
 
 	/*! Specific constructor to create pipe elements. */
 	HydraulicNetworkElement(unsigned int id, unsigned int inletNodeId, unsigned int outletNodeId,
@@ -57,7 +64,9 @@ public:
 		variable m_tsvFileContent.
 	*/
 	void checkParameters(const HydraulicNetwork & nw,
-						 const std::map<std::string, IBK::Path> &placeholders);
+						 const std::map<std::string, IBK::Path> &placeholders,
+						 const std::vector<Zone> &zones,
+						 const std::vector<ConstructionInstance> &conInstances);
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

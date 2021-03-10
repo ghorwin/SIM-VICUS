@@ -40,7 +40,9 @@ public:
 	NANDRAD_COMPARE_WITH_ID
 
 	/*! Checks for valid and required parameters (value ranges). */
-	void checkParameters( const std::map<std::string, IBK::Path> &placeholders) ;
+	void checkParameters( const std::map<std::string, IBK::Path> &placeholders,
+						  const std::vector<Zone> &zones,
+						  const std::vector<ConstructionInstance> &conInstances) ;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

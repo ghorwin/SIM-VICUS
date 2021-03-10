@@ -8,6 +8,8 @@
 
 namespace NANDRAD {
 
+class ConstructionInstance;
+class Zone;
 
 /*! Encapsulates all data defining heat exchange between flow elements and
 	the environment or other models/elements.
@@ -29,7 +31,9 @@ public:
 	/*! Tests all parameter and initializes linear spline parameters for calculation,
 		including reading of potentially referenced TSV files.
 	*/
-	void checkParameters(const std::map<std::string, IBK::Path> &placeholders);
+	void checkParameters(const std::map<std::string, IBK::Path> &placeholders,
+						 const std::vector<Zone> &zones,
+						 const std::vector<ConstructionInstance> &conInstances);
 
 	/*! Defines the type of heat exchange */
 	enum ModelType {

@@ -21,7 +21,9 @@ HydraulicNetworkElement::HydraulicNetworkElement(unsigned int id, unsigned int i
 
 
 void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
-											  const std::map<std::string, IBK::Path> &placeholders) {
+											  const std::map<std::string, IBK::Path> &placeholders,
+											  const std::vector<Zone> &zones,
+											  const std::vector<ConstructionInstance> &conInstances) {
 	FUNCID(HydraulicNetworkElement::checkParameters);
 
 	// retrieve network component
@@ -56,7 +58,12 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 			m_para[P_Length].checkedValue("Length", "m", "m", 0, false, std::numeric_limits<double>::max(), true,
 										   "Length must be > 0 m.");
 
-			// Note: Pipe properties have been checked already.
+			// check number of parallel pipes, and if missing, default to 1
+			if(m_intPara[IP_NumberParallelPipes].value == 0)
+				throw IBK::Exception("Value 0 is not allowed for parameter 'NumberOfParallelPipes!", FUNC_ID);
+			if((unsigned int) m_intPara[IP_NumberParallelPipes].value == NANDRAD::INVALID_ID)
+				m_intPara[IP_NumberParallelPipes].set("NumberParallelPipes",1);
+
 		}
 		break;
 
@@ -73,10 +80,8 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 		}
 	}
 
-	// TODO Anne: check number of parallel pipes, and if missing, default to 1
-
 	// finally check for valid heat exchange parameters
-	m_heatExchange.checkParameters(placeholders);
+	m_heatExchange.checkParameters(placeholders, zones, conInstances);
 }
 
 

@@ -1,11 +1,16 @@
 #include "NANDRAD_HydraulicNetworkHeatExchange.h"
 
+#include "NANDRAD_ConstructionInstance.h"
 #include "NANDRAD_KeywordList.h"
+#include "NANDRAD_Zone.h"
+
 
 namespace NANDRAD {
 
 
-void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, IBK::Path> &placeholders) {
+void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, IBK::Path> &placeholders,
+												   const std::vector<Zone> &zones,
+												   const std::vector<ConstructionInstance> &conInstances) {
 	FUNCID(HydraulicNetworkHeatExchange::checkParameters);
 
 	// check parameters required for thermal balances/heat exchange
@@ -34,8 +39,13 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 
 			case T_TemperatureZone: {
 				// check for zone id
-				if (m_idReferences[ID_ZoneId] == INVALID_ID)
+				unsigned int zoneId = m_idReferences[ID_ZoneId];
+				if (zoneId == INVALID_ID)
 					throw IBK::Exception(IBK::FormatString("Missing IntParameter 'ZoneId'."), FUNC_ID);
+
+				// find zone id
+				if(std::find(zones.begin(), zones.end(), zoneId) == zones.end())
+					throw IBK::Exception(IBK::FormatString("Zone with id %1 does not exist.").arg(zoneId), FUNC_ID);
 
 				// check for external heat transfer coefficient
 				m_para[P_ExternalHeatTransferCoefficient].checkedValue("ExternalHeatTransferCoefficient",
@@ -88,8 +98,16 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 				// TODO : Hauke
 				throw IBK::Exception(IBK::FormatString("Heat exchange type 'HeatLossIdealHeatPump' is not supported, yet!"), FUNC_ID);
 
-			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer:
-				// TODO : Anne
+			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer: {
+				// check for construction instance id
+				unsigned int conInstanceId = m_idReferences[ID_ConstructionInstanceId];
+				// check for construction instance id
+				if (conInstanceId == INVALID_ID)
+					throw IBK::Exception(IBK::FormatString("Missing IntParameter 'ConstructionInstanceId'."), FUNC_ID);
+				// find zone id
+				if(std::find(conInstances.begin(), conInstances.end(), conInstanceId) == conInstances.end())
+					throw IBK::Exception(IBK::FormatString("ConstructionInstance with id %1 does not exist.").arg(conInstanceId), FUNC_ID);
+			}
 			break;
 
 			case NUM_T:
@@ -112,9 +130,9 @@ std::vector<unsigned int> NANDRAD::HydraulicNetworkHeatExchange::availableHeatEx
 {
 	switch (modelType) {
 		case HydraulicNetworkComponent::MT_SimplePipe:
-			return {T_TemperatureConstant, T_TemperatureSpline, T_HeatLossConstant, T_HeatLossSpline};
+			return {T_TemperatureConstant, T_TemperatureSpline, T_HeatLossConstant, T_HeatLossSpline, T_TemperatureZone, T_TemperatureConstructionLayer};
 		case HydraulicNetworkComponent::MT_DynamicPipe:
-			return {T_TemperatureConstant, T_TemperatureSpline, T_HeatLossConstant, T_HeatLossSpline};
+			return {T_TemperatureConstant, T_TemperatureSpline, T_HeatLossConstant, T_HeatLossSpline, T_TemperatureZone, T_TemperatureConstructionLayer};
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:
 		case HydraulicNetworkComponent::MT_HeatExchanger:
 			return {T_HeatLossConstant, T_HeatLossSpline};
