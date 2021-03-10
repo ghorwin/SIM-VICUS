@@ -21,10 +21,6 @@ SVDBInternalLoadsPersonEditWidget::SVDBInternalLoadsPersonEditWidget(QWidget *pa
 
 	// *** populate combo boxes ***
 
-	m_ui->comboBoxCategory->blockSignals(true);
-	//TODO Dirk later
-	m_ui->comboBoxCategory->blockSignals(false);
-
 	m_ui->comboBoxPersonMethod->blockSignals(true);
 
 	for (unsigned int i=0; i<VICUS::InternalLoad::NUM_PCM; ++i) {
