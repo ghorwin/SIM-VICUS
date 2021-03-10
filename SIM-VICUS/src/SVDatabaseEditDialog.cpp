@@ -6,6 +6,7 @@
 #include <QSortFilterProxyModel>
 #include <QDebug>
 #include <QGroupBox>
+#include <QTimer>
 
 #include "SVSettings.h"
 #include "SVStyle.h"
@@ -32,8 +33,10 @@
 #include "SVDBNetworkComponentEditWidget.h"
 #include "SVDBPipeTableModel.h"
 #include "SVDBPipeEditWidget.h"
+#include "SVViewStateHandler.h"
+#include "SVGeometryView.h"
 
-
+#include "Vic3DSceneView.h"
 
 SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTableModel * tableModel,
 										   SVAbstractDatabaseEditWidget * editWidget,
@@ -117,6 +120,7 @@ void SVDatabaseEditDialog::edit(unsigned int initialId) {
 	m_ui->tableView->resizeColumnsToContents();
 
 	exec();
+	QTimer::singleShot(0, this, &SVDatabaseEditDialog::onUpdateColoring);
 }
 
 
@@ -133,6 +137,7 @@ unsigned int SVDatabaseEditDialog::select(unsigned int initialId) {
 	m_ui->tableView->resizeColumnsToContents();
 
 	int res = exec();
+	QTimer::singleShot(0, this, &SVDatabaseEditDialog::onUpdateColoring);
 	if (res == QDialog::Accepted) {
 		// determine current item
 		QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
@@ -242,6 +247,11 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 void SVDatabaseEditDialog::on_tableView_doubleClicked(const QModelIndex &index) {
 	if (m_ui->pushButtonSelect->isVisible() && index.isValid())
 		accept();
+}
+
+
+void SVDatabaseEditDialog::onUpdateColoring() {
+	SVViewStateHandler::instance().refreshColors();
 }
 
 

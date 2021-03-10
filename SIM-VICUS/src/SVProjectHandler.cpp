@@ -325,6 +325,7 @@ void SVProjectHandler::setModified(int modificationType, ModificationInfo * data
 	m_modified = true;
 
 	emit modified(modificationType, data);
+	emit updateActions();
 }
 
 

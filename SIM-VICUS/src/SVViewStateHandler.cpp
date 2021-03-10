@@ -33,3 +33,8 @@ void SVViewStateHandler::setViewState(const SVViewState & newViewState) {
 void SVViewStateHandler::restoreLastViewState() {
 	setViewState(SVViewState(m_previousViewState)); // Mind: temporary object is needed here!
 }
+
+
+void SVViewStateHandler::refreshColors() {
+	emit colorRefreshNeeded();
+}

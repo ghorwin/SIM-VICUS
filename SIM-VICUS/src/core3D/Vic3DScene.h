@@ -68,10 +68,17 @@ public:
 	/*! Actually renders to the current OpenGL context. */
 	void render();
 
-	/*! Updates the view state based on the current operation.
+	/*! Updates the view state based on the current operation, which basically means that
+		the coloring is being updated.
 		\note This function should only be called from Vic3DSceneView::setViewState()!
 	*/
 	void setViewState(const SVViewState & vs);
+
+	/*! This function can be called to specifically update the coloring and/or the network geometry.
+		This function is meant to be called whenever the database element's colors have been changed,
+		or in the case of network components, also their geometry-size related properties.
+	*/
+	void refreshColors();
 
 	/*! Select all objects like surfaces, rooms, buildings, etc. */
 	void selectAll();

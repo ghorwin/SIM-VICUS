@@ -83,6 +83,9 @@ SceneView::SceneView() :
 
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
 			this, &SceneView::onViewStateChanged);
+
+	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::colorRefreshNeeded,
+			this, &SceneView::onColorRefreshNeeded);
 }
 
 
@@ -212,6 +215,15 @@ void SceneView::onSelectAll() {
 
 void SceneView::onDeselectAll() {
 	m_mainScene.deselectAll();
+}
+
+
+void SceneView::onColorRefreshNeeded() {
+	// no project? nothing to refresh (this is possible when database elements have been edited without a project loaded)
+	if (!SVProjectHandler::instance().isValid())
+		return;
+	m_mainScene.refreshColors();
+	renderLater();
 }
 
 

@@ -43,6 +43,12 @@ public:
 	/*! Restores the last viewstate that was set before the current view state. */
 	void restoreLastViewState();
 
+	/*! Call this function after modifying database elements that affect coloring. This is needed since
+		scene view and property widgets only listen to project data changes, and database elements do not belong
+		to the project.
+	*/
+	void refreshColors();
+
 	/*! Pointer to geometry view object - so that we can give focus to the scene view when we start a drawing operation. */
 	SVGeometryView						*m_geometryView		= nullptr;
 
@@ -87,6 +93,11 @@ public:
 signals:
 	/*! Emitted, when the state has changed. */
 	void viewStateChanged();
+
+	/*! Signal is emitted when a view should update its content because of color changes (or in the case of network
+		properties, also because of geometry changes).
+	*/
+	void colorRefreshNeeded();
 
 private:
 	/*! The global pointer to the SVViewStateHandler object.

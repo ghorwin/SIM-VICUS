@@ -62,6 +62,9 @@ public slots:
 	/*! Action to deselect all selected objects. */
 	void onDeselectAll();
 
+	/*! Connected to SVViewStateHandler::refreshColors(). */
+	void onColorRefreshNeeded();
+
 signals:
 	/*! Emitted when numbers where typed.
 		Only during "PlaceVertex" scene operation mode.

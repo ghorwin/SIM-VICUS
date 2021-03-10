@@ -106,7 +106,7 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 
 		case SVProjectHandler::BuildingTopologyChanged : {
 			const SVViewState & vs = SVViewStateHandler::instance().viewState();
-			recolorObjects(vs.m_objectColorMode, vs.m_colorModePropertyID);
+			refreshColors();
 		} break;
 
 		case SVProjectHandler::BuildingGeometryChanged :
@@ -125,9 +125,8 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 
 		case SVProjectHandler::ComponentInstancesModified : {
 			const SVViewState & vs = SVViewStateHandler::instance().viewState();
-			if (vs.m_viewMode == SVViewState::VM_PropertyEditMode) {
-				recolorObjects(vs.m_objectColorMode, vs.m_colorModePropertyID);
-			}
+			if (vs.m_viewMode == SVViewState::VM_PropertyEditMode)
+				refreshColors();
 			return;
 		}
 
@@ -260,9 +259,8 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 	if (updateNetwork) {
 		// recolor
 		const SVViewState & vs = SVViewStateHandler::instance().viewState();
-		if (vs.m_viewMode == SVViewState::VM_PropertyEditMode) {
-			recolorObjects(vs.m_objectColorMode, vs.m_colorModePropertyID);
-		}
+		if (vs.m_viewMode == SVViewState::VM_PropertyEditMode)
+			refreshColors();
 		// we use the same shader as for building elements
 		m_networkGeometryObject.create(m_buildingShader->shaderProgram()); // Note: does nothing, if already existing
 
@@ -950,6 +948,7 @@ void Vic3DScene::setViewState(const SVViewState & vs) {
 		if (vs.m_objectColorMode >= SVViewState::OCM_Network)
 			updateNetwork = true;
 
+		// update the color properties in the data objects (does not update GPU memory!)
 		recolorObjects(vs.m_objectColorMode, vs.m_colorModePropertyID);
 
 		if (updateBuilding) {
@@ -967,6 +966,26 @@ void Vic3DScene::setViewState(const SVViewState & vs) {
 
 		m_lastColorMode = vs.m_objectColorMode;
 		m_lastColorObjectID = vs.m_colorModePropertyID;
+	}
+}
+
+
+void Vic3DScene::refreshColors() {
+	Q_ASSERT(SVProjectHandler::instance().isValid()); // must have a valid project
+
+	const SVViewState & vs = SVViewStateHandler::instance().viewState();
+	recolorObjects(vs.m_objectColorMode, vs.m_colorModePropertyID);
+	if (vs.m_objectColorMode > SVViewState::OCM_None && vs.m_objectColorMode < SVViewState::OCM_Network) {
+		qDebug() << "Updating surface coloring of buildings";
+		// TODO : Andreas, Performance update, only update and transfer color buffer
+		generateBuildingGeometry();
+		m_opaqueGeometryObject.updateBuffers();
+	}
+	else if (vs.m_objectColorMode >= SVViewState::OCM_Network) {
+		qDebug() << "Updating surface coloring of networks";
+		// TODO : Andreas, Performance update, only update and transfer color buffer
+		generateNetworkGeometry();
+		m_networkGeometryObject.updateBuffers();
 	}
 }
 
