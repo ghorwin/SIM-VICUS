@@ -5,18 +5,11 @@
 
 #include "SVDatabase.h"
 
+#include <VICUS_InternalLoad.h>
+
 /*! Model for accessing the internal loads in the internal loads database. */
 class SVDBInternalLoadsTableModel : public SVAbstractDatabaseTableModel {
 public:
-
-	/*! Identifies which type of load is to be edited. */
-	enum Type {
-		T_Person,
-		T_ElectricEquipment,
-		T_Ligthing,
-		T_Other,
-		NUM_T
-	};
 
 	/*! Columns shown in the table view. */
 	enum Columns {
@@ -31,7 +24,7 @@ public:
 	/*! Constructor, requires a read/write pointer to the central database object.
 		\note Pointer to database must be valid throughout the lifetime of the Model!
 	*/
-	SVDBInternalLoadsTableModel(QObject * parent, SVDatabase & db, Type t);
+	SVDBInternalLoadsTableModel(QObject * parent, SVDatabase & db, VICUS::InternalLoad::Category t);
 
 	// ** QAbstractItemModel interface **
 
@@ -60,7 +53,10 @@ private:
 	QModelIndex indexById(unsigned int id) const;
 
 	/*! Pointer to the entire database (not owned). */
-	SVDatabase	* m_db;
+	SVDatabase		* m_db;
+
+	/*! Type of table model. */
+	VICUS::InternalLoad::Category			m_category;
 };
 
 #endif // SVDBInternalLoadsTableModelH

@@ -10,16 +10,26 @@
 #include "SVConstants.h"
 #include "SVStyle.h"
 
-SVDBInternalLoadsTableModel::SVDBInternalLoadsTableModel(QObject * parent, SVDatabase & db, Type t) :
+SVDBInternalLoadsTableModel::SVDBInternalLoadsTableModel(QObject * parent, SVDatabase & db, VICUS::InternalLoad::Category t) :
 	SVAbstractDatabaseTableModel(parent),
-	m_db(&db)
+	m_db(&db),
+	m_category(t)
 {
 	Q_ASSERT(m_db != nullptr);
 }
 
 
 int SVDBInternalLoadsTableModel::rowCount ( const QModelIndex & ) const {
-	return (int)m_db->m_internalLoads.size();
+	// count number of type-specific elements
+	const VICUS::Database<VICUS::InternalLoad> & intLoadDB = m_db->m_internalLoads;
+	unsigned int count=0;
+	for (std::map<unsigned int, VICUS::InternalLoad>::const_iterator it = intLoadDB.begin();
+		 it != intLoadDB.end(); ++it)
+	{
+		if(it->second.m_category == m_category)
+			++count;
+	}
+	return (int)count;
 }
 
 
@@ -35,7 +45,17 @@ QVariant SVDBInternalLoadsTableModel::data ( const QModelIndex & index, int role
 		return QVariant();
 
 	std::map<unsigned int, VICUS::InternalLoad>::const_iterator it = intLoadDB.begin();
-	std::advance(it, row);
+
+	unsigned int count=0;
+
+	for(; it != intLoadDB.end(); ++it){
+		if(it->second.m_category == m_category)
+			++count;
+		// if count exceeds searched index, stop
+		if(count > index.row())
+			break;
+	}
+	Q_ASSERT(it != intLoadDB.end());
 
 	switch (role) {
 		case Qt::DisplayRole : {
@@ -123,10 +143,31 @@ QModelIndex SVDBInternalLoadsTableModel::addNewItem() {
 	intLoad.m_displayName.setEncodedString("en:<new internal load model>");
 
 	// set default parameters
-	VICUS::KeywordList::setParameter(intLoad.m_para, "InternalLoad::para_t", VICUS::InternalLoad::P_PersonCount, 1);
-	VICUS::KeywordList::setParameter(intLoad.m_para, "InternalLoad::para_t", VICUS::InternalLoad::P_ConvectiveHeatFactor, 0.8);
+	//category dependent
 
-	intLoad.m_category = VICUS::InternalLoad::IC_Person;
+	switch(m_category){
+		case VICUS::InternalLoad::IC_Person:{
+			VICUS::KeywordList::setParameter(intLoad.m_para, "InternalLoad::para_t", VICUS::InternalLoad::P_PersonCount, 1);
+			VICUS::KeywordList::setParameter(intLoad.m_para, "InternalLoad::para_t", VICUS::InternalLoad::P_ConvectiveHeatFactor, 0.8);
+		}
+		break;
+		case VICUS::InternalLoad::IC_ElectricEquiment:
+			VICUS::KeywordList::setParameter(intLoad.m_para, "InternalLoad::para_t", VICUS::InternalLoad::P_Power, 0);
+			VICUS::KeywordList::setParameter(intLoad.m_para, "InternalLoad::para_t", VICUS::InternalLoad::P_ConvectiveHeatFactor, 0.8);
+			VICUS::KeywordList::setParameter(intLoad.m_para, "InternalLoad::para_t", VICUS::InternalLoad::P_LatentHeatFactor, 0.0);
+			VICUS::KeywordList::setParameter(intLoad.m_para, "InternalLoad::para_t", VICUS::InternalLoad::P_LossHeatFactor, 0.0);
+		break;
+		case VICUS::InternalLoad::IC_Lighting:
+		break;
+		case VICUS::InternalLoad::IC_Other:
+		break;
+		case VICUS::InternalLoad::NUM_MC:
+		break;
+
+	}
+	intLoad.m_category = m_category;
+
+
 	intLoad.m_color = SVStyle::randomColor();
 
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
@@ -140,9 +181,19 @@ QModelIndex SVDBInternalLoadsTableModel::addNewItem() {
 QModelIndex SVDBInternalLoadsTableModel::copyItem(const QModelIndex & existingItemIndex) {
 	// lookup existing item
 	const VICUS::Database<VICUS::InternalLoad> & db = m_db->m_internalLoads;
-	Q_ASSERT(existingItemIndex.isValid() && existingItemIndex.row() < (int)db.size());
+	Q_ASSERT(existingItemIndex.isValid());
 	std::map<unsigned int, VICUS::InternalLoad>::const_iterator it = db.begin();
-	std::advance(it, existingItemIndex.row());
+
+	unsigned int count=0;
+	for(; it != db.end(); ++it){
+		if(it->second.m_category == m_category)
+			++count;
+		// if count exceeds searched index, stop
+		if(count > existingItemIndex.row())
+			break;
+	}
+	Q_ASSERT(it != db.end());
+
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	// create new item and insert into DB
 	VICUS::InternalLoad newItem(it->second);
