@@ -284,12 +284,12 @@ image::ScheduleDailyCycleConstant.png[pdfwidth=10cm]
 .Tageszyklus mit linearem Interpolationsmodus
 image::ScheduleDailyCycleLinear.png[pdfwidth=10cm]
 
-[HINWEIS]
+[NOTE]
 ====
 Bei der Verwendung des linearen Interpolationsmodus wird der Wert um 24 Uhr vom Beginn des nächsten Tageszyklus genommen, der im Zeitplan definiert ist. Zum Beispiel würde in <<fig_schedule_week>> der Wert am Montag 24:00 Uhr aus dem Zeitplan für Dienstag genommen werden, während der Wert am Mittwoch 24:00 Uhr aus dem regulären Zeitplan _AllDays_ genommen würde.
 ====
 
-[TIPP]
+[TIP]
 ====
 Um ein einzelnes Intervall für den ganzen Tag zu definieren, geben Sie einfach "0" als Wert im XML-tag `TimePoints` an.
 ====

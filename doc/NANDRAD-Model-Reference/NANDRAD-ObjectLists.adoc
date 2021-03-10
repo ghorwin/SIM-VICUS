@@ -68,7 +68,7 @@ Das XML-tag `ObjectList` hat die folgenden untergeordneten tags.
 
 Objekte (mit gleichem Referenztyp) werden durch ihre ID-Nummer eindeutig identifiziert.
 
-[HINWEIS]
+[NOTE]
 ====
 ID-Nummern müssen nur für Objekte mit gleichem Referenztyp eindeutig sein. Daher ist es möglich, Zone #1 und ConstructionInstance #1 gleichzeitig zu definieren.
 ====

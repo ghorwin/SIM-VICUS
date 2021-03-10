@@ -66,7 +66,7 @@ nur verwendet, wenn `constant` | 0...100 | (_erforderlich_)
 nur verwendet, wenn `constant` | {nbsp}>{nbsp}0.0{nbsp} | (_erforderlich_)
 |====================
 
-[HINWEIS]
+[NOTE]
 ====
 Die Parameter `RelativeHumidity` und `CO2Concentration` müssen nur für _konstante_ Zonen definiert werden, wenn die jeweilige Bilanzgleichung aktiviert ist.
 ====
@@ -75,7 +75,7 @@ Die Parameter `RelativeHumidity` und `CO2Concentration` müssen nur für _konsta
 [[construction_instances]]
 # Konstruktionsinstanzen
 
-Konstruktionsinstanzen repräsentieren tatsächlich gebaute eindimensionale Teile der Gebäudehülle, z.B. Wände, Böden, Decken, Dächer. Die Definition von Bauinstanzen enthält bauspezifische Parameter, die von mehreren Modellen benötigt werden.
+Konstruktionsinstanzen repräsentieren tatsächlich verbaute eindimensionale Teile der Gebäudehülle, z.B. Wände, Böden, Decken, Dächer. 
 
 .Definition einer Außenwand nur mit der Randbedingung Wärmeleitung
 ====
@@ -103,7 +103,6 @@ Konstruktionsinstanzen repräsentieren tatsächlich gebaute eindimensionale Teil
 ----
 ====
 
-
 Die Konstruktionsinstanzen werden innerhalb des XML-Tags `ConstructionInstances` definiert. Innerhalb des Abschnitts beginnt jede Konstruktionsdefinition mit dem XML-tag `ConstructionInstance` mit den Attributen `id` und `displayName`. 
 
 .Attribute
@@ -114,7 +113,7 @@ Die Konstruktionsinstanzen werden innerhalb des XML-Tags `ConstructionInstances`
 | `displayName` | Anzeigename der Konstruktionsinstanz. Wird benötigt, um die Konstruktionsinstanz im Datenmodell und in der Ausgaben leichter zu finden. | string | _optional_
 |====================
 
-Die Konstruktionsinstanz hat das folgende _erforderliche_ Child-tag:
+Die Konstruktionsinstanz hat das folgende _erforderliche_ Child-tags:
 
 .Construction Instance Child tags
 [options="header",cols="20%,60%",width="100%"]
@@ -127,7 +126,7 @@ Die Konstruktionsinstanz hat das folgende _erforderliche_ Child-tag:
 |====================
 
 
-* `constructionTypeId` - eindeutige Id, die den Konstruktionstyp der Konstruktionsinstanz definiert
+`ConstructionTypeId` ist eindeutige Id, die den Konstruktionstyp (Schichtenaufbau) der Konstruktionsinstanz definiert.
 
 Für die Parameter der Konstruktionsinstanz können die folgenden XML-Tags mit dem Namen `IBK:Parameters` mit den XML-Attributen `name` und `unit` mit den folgenden Einträgen definiert werden:
 
@@ -349,7 +348,7 @@ Es können XML-tags mit dem Namen `IBK:Parameter` mit den XML-Attributen `name` 
 
 ## Dampfdiffusion
 
-[WARNUNG]
+[WARNING]
 ====
 MUSS SPÄTER DEFINIERT WERDEN.
 ====
@@ -393,7 +392,7 @@ Es können XML-Tags mit dem Namen `IBK:Parameter` mit den XML-Attributen `name` 
 
 ## Luftstrom
 
-[WARNUNG]
+[WARNING]
 ====
 MUSS SPÄTER DEFINIERT WERDEN.
 ====
@@ -504,12 +503,12 @@ Die Materialeigenschaften (derzeit nur die Wärmeleitfähigkeit) von Rahmen- und
 
 Die tatsächliche Geometrie von Rahmen- und Trennelementen ist nicht wichtig, aber ihre Gesamtquerschnittsfläche muss als Parameter `Area` angegeben werden.
 
-[WICHTIG]
+[IMPORTANT]
 ====
 Der von Rahmen und Trennwand belegte Querschnitt darf die Bruttofläche des eingebetteten Fensterobjekts nicht überschreiten. Die tatsächliche lichtdurchlässige Verglasungsfläche wird als Differenz zwischen der Fläche des eingebetteten Objekts und den Flächen von Rahmen und Trennwand berechnet.
 ====
 
-[HINWEIS]
+[NOTE]
 ====
 Wenn die Größe des Fensters (oder des eingebetteten Objekts) geändert wird, müssen die Größen von Rahmen und Trennwand entsprechend angepasst werden. Es wäre zwar möglich gewesen, Rahmen- und Trennwandquerschnitte auch als relativen Prozentsatz zu definieren, dennoch muss dieser Prozentsatz bei einer Größenänderung des Fensters aktualisiert werden.
 ====
@@ -521,7 +520,7 @@ Es ist möglich, vorberechnete Schattierungen sowohl auf opake als auch auf tran
 
 Wenn eine vorberechnete Schattierung definiert ist, wird für *jede* opake und transluzente Fläche ein Faktor angegeben.
 
-[HINWEIS]
+[NOTE]
 ====
 Wie im Abschnitt <<precomputed_shading>> beschrieben, erfolgt die Zuordnung zwischen bereitgestellten Datenspalten und Objekt-ID über einen Identifikationsstring, der sich aus Objekttyp und ID-Nummer zusammensetzt. Zum Beispiel würde ein eingebettetes Objekt mit der ID 14 die Spaltenüberschrift/Bezeichnung _embObj.14_ erhalten und eine Konstruktionsinstanz (opake Oberfläche) mit der ID 29 die Bezeichnung _conInst.29_.
 ====

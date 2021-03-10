@@ -169,6 +169,40 @@ a| Gibt an, was getan werden soll, wenn Werte mit x-Werten außerhalb des x-Wert
 
 Die Child-Tags `X` und `Y` enthalten jeweils ein obligatorisches Attribut `unit` mit der jeweiligen Werteinheit (siehe <<units>>).
 
+Alternativ kann man auch eine Datei mit Tabulator-getrennten Spalten angeben, unter Verwendung des XML-Tags `TSVFile`.
+
+.Linear Spline-Definition mit Angabe der Datei
+====
+[source,xml]
+----
+<LinearSplineParameter name="HeatExchangeSpline" interpolationMethod="linear">
+   <TSVFile>${Project Directory}/climate/Temperature.csv?3</TSVFile>
+</LinearSplineParameter>
+----
+====
+
+.Dazugehörige Datei `Temperature.csv`
+====
+----
+Time [h]	Temp [C]	otherTemp [C]	anotherTemp [C]
+0	0	0	0
+12	5	7	-9
+36	-8	12	65
+
+----
+====
+
+Eine Datei im tsv-Format enthält in der ersten Spalte Zeitwerte und haben danach eine beliebige Anzahl von Datenspalten. Gibt es mehr als eine Datenspalte, muss die Auswahl der Datenspalte durch Anhang des Spezifizierers `?<colIndex>` erfolgen. Die erste Datenspalte hat den Index 1. Daher bezeichnet `?3` wie im Beispiel oben die dritte Spalte (`anotherTemp` im Beispiel oben).
+
+
+[NOTE]
+Es ist möglich, Pfad-Platzhalter im Dateinamen zu verwenden (siehe <<path_placeholders>>).
+
+[IMPORTANT]
+====
+Man kann entweder `X` UND `Y` angeben, oder alternativ `TSVFile`. Beides ist nicht erlaubt und führt zu einem Fehler.
+====
+
 
 [[path_placeholders]]
 # Pfad-Platzhalter

@@ -78,7 +78,7 @@ Der XML-tag `HydraulicNetwork` hat folgende Attribute:
 
 :xrefstyle: short
 
-Das optionale Attribut `modelType` beschreibt, welches Berechnungsmodell zu verwenden ist, siehe <<tab_network_modelType>>:
+Das optionale Attribut `modelType` beschreibt, welches Berechnungsmodell zu verwenden ist ( <<tab_network_modelType>>).
 
 [[tab_network_modelType]]
 .Werte für Attribut `modelType`
@@ -93,6 +93,8 @@ Die Wahl des Netzwerkberechnungsmodells hat Auswirkungen auf die benötigte Para
 
 ### Parameter
 
+:xrefstyle: basic
+
 Je nach Modelltyp können mehrere globale Netzwerkparameter definiert werden (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des `IBK:Parameter` Tags):
 
 [options="header",cols="30%,^ 10%, 30%,^ 10%,^ 20%",width="100%"]
@@ -102,6 +104,7 @@ Je nach Modelltyp können mehrere globale Netzwerkparameter definiert werden (si
 | `InitialFluidTemperature` | C | Anfangsfluidtemperatur | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
 | `ReferencePressure` | Pa | Druck hinter dem Referenzelement | {nbsp}>{nbsp}0.0{nbsp} | _optional_ (Standardwert ist 0 Pa)
 |====================
+
 
 Innerhalb des Netzwerk-Definitionsblocks gibt es vier Kind-Elemente:
 
@@ -230,7 +233,7 @@ Parameter der Rohreigenschaftem (siehe Abschnitt <<IBK_Parameter>> für eine Bes
 
 Der Außendurchmesser muss größer als der Innendurchmesser sein.
 
-Der längenbezogene äquivalente U-Wert der Rohrwand (einschließlich möglicher Dämmung) ist in der Berechnung so definiert, dass eine Multiplikation mit der Temperaturdifferenz zwischen Fluidtemperatur und Außentemperatur zum Wärmeström pro m Rohrlänge führt. D.h. bei der Berechnung dieses äquivalenten U-Werts müssen Zylinderkoordinaten berücksichtigt werden. Der tatsächlichen Wärmestrom von Fluid zu Umgebung wird noch durch Übergangskoeffizienten (siehe u.A. Abschnitt <<HydraulicElement_SimplePipe>>) abgemindert.
+Der längenbezogene äquivalente U-Wert der Rohrwand (einschließlich möglicher Dämmung) ist in der Berechnung so definiert, dass eine Multiplikation mit der Temperaturdifferenz zwischen Fluidtemperatur und Außentemperatur zum Wärmeström pro m Rohrlänge führt. D.h. bei der Berechnung dieses äquivalenten U-Werts müssen Zylinderkoordinaten berücksichtigt werden. Der tatsächlichen Wärmestrom von Fluid zu Umgebung wird noch durch Übergangskoeffizienten (siehe u.A. Abschnitt <<HydraulicElement_SimplePipe>>) beinflusst.
 
 
 
@@ -266,12 +269,15 @@ Die Parameter und Attribute sind dann abhängig vom `modelType` der Komponente u
 
 Im thermischen Modell kann für jeden Modelltyp noch ein (optionales) Wärmeaustauschmodell definiert werden (siehe <<HeatExchangeType>>).
 
+
+
 [[HydraulicElement_SimplePipe]]
 ### Modelltyp: SimplePipe
 
 `SimplePipe` ist ein einfaches Rohrmodell, bei dem das gesamte Rohr als ein zusammenhängendes Fluidvolumen mit entsprechend gemittelten Eigenschaften beschrieben wird.
 
 Für das Model `SimplePipe` werden keine weiteren Parameter benötigt.
+
 
 
 [[HydraulicElement_DynamicPipe]]
@@ -288,6 +294,7 @@ Es werden die folgenden Parameter benötigt
 |====================
 
 
+
 ### Modelltyp: ConstantPressurePump
 
 Für das Model `ConstantPressurePump` werden diese Parameter benötigt:
@@ -300,7 +307,8 @@ Für das Model `ConstantPressurePump` werden diese Parameter benötigt:
 | `Volume` | m3 | Fluid volume inside the pump | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
 |====================
 
-Die Pumpeneffizient ist als der mechanische Gesamtwirkungsgrad der Pumpe definiert. D.h. die durch Volumenstrom und Druckhöhe gegebene mechanische Arbeit entspricht diesem Anteil der Gesamtarbeit. Die Differenz der Leistungen wird als Wärmequelle dem Fluid aufgeprägt.
+Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definiert. D.h. die durch Volumenstrom und Druckhöhe gegebene mechanische Arbeit entspricht diesem Anteil der Gesamtarbeit. Die Differenz der Leistungen wird als Wärmequelle dem Fluid aufgeprägt.
+
 
 
 ### ModellTyp: HeatExchanger
@@ -314,7 +322,6 @@ Das Model `HeatExchanger` ist ein einfacher Wärmeübertrager, welcher mit dem F
 | `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
 | `Volume` | m3 | Fluidvolumen im Wärmetauscher | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
 |====================
-
 
 
 
@@ -341,7 +348,7 @@ Die tatsächlichen Strömungselemente des Netzwerks werden innerhalb des XML-tag
 ----
 ====
 
-`HydraulicNetworkElement` Tags haben die folgenden Attribute:
+`HydraulicNetworkElement`-Tags haben die folgenden Attribute:
 
 .Attribute
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
@@ -397,6 +404,7 @@ Verschiedene Strömungselemente sind durch die Knoten IDs `inletNodeId` und `out
 Jedes Strömungselement referenziert jeweils eine Komponente mit der `componentId`. 
 
 
+
 ### Rohr-Elemente
 
 Ist eine Komponente ein Rohr (z.B. `DynamicPipe`), **müssen** entsprechende Rohrparameter mit der `pipePropertiesId` referenziert werden. 
@@ -419,6 +427,8 @@ Weiterhin **muss** für ein Rohrelement der Parameter `Length` definiert werden 
 </HydraulicNetworkElement>
 ----
 ====
+
+Weitere Parameter hängen von 
 
 
 

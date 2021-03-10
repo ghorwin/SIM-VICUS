@@ -132,14 +132,14 @@ image::CCM_Interpolation2.png[]
 
 Die Klimadatendatei enthält Datenpunkte (mindestens 2), die den frühesten Start- und spätesten Endpunkt der Simulation markieren.
 
-[HINWEIS]
+[NOTE]
 ====
 Wenn Sie die Simulation über die verfügbaren Klimadaten hinaus fortsetzen, werden die letzten Werte im Klimadatensatz konstant gehalten. Dies führt letztendlich zu sinnlosen Ergebnissen (es sei denn, dies ist in künstlichen Testfällen beabsichtigt).
 ====
 
 Da der Benutzer in den Klimadatendateien beliebige Zeitschritte bis hin zu winzigen Werten wählen kann, hängt die Genauigkeit der Eingabedaten von den Benutzereingaben ab. Zwischen den Zeitpunkten wird der Solver *alle Größen* in der Klimadatendatei linear interpolieren und nicht wie bei stündlichen Daten zwischen Zuständen und Lasten unterscheiden.
 
-[TIPP]
+[TIP]
 ====
 Um das gleiche Ergebnis wie bei jährlichen Stundendaten zu erzielen, müssen Klimadaten in 30-Minuten-Intervallen angegeben und interpolierte Werte am Ende und in der Mitte jeder Stunde selbst berechnet werden.
 ====
