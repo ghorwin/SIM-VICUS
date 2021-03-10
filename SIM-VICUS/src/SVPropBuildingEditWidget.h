@@ -99,6 +99,10 @@ private slots:
 
 	void on_tableWidgetZoneTemplates_itemSelectionChanged();
 
+	void on_pushButtonEditZoneTemplates_clicked();
+
+	void on_pushButtonExchangeZoneTemplates_clicked();
+
 private:
 	/*! Returns a pointer to the currently selected component in the component table. */
 	const VICUS::Component * currentlySelectedComponent() const;

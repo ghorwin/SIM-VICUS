@@ -14,7 +14,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="pageEmpty"/>
      <widget class="QWidget" name="pageComponents">
@@ -365,8 +365,18 @@
           <string>Zone templates</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_7">
-          <item row="0" column="0" colspan="4">
-           <widget class="QTableWidget" name="tableWidgetZoneTemplates"/>
+          <item row="1" column="2">
+           <spacer name="horizontalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>280</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
           <item row="1" column="1">
            <widget class="QPushButton" name="pushButtonExchangeZoneTemplates">
@@ -391,25 +401,8 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
-           <widget class="QPushButton" name="pushButtonSelectObjectsWithZoneTemplates">
-            <property name="text">
-             <string>Select</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3">
-           <spacer name="horizontalSpacer_5">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>280</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
+          <item row="0" column="0" colspan="3">
+           <widget class="QTableWidget" name="tableWidgetZoneTemplates"/>
           </item>
          </layout>
         </widget>

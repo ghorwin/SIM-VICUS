@@ -86,11 +86,6 @@ SVPropBuildingEditWidget::~SVPropBuildingEditWidget() {
 
 void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
 
-	// TODO : Andreas, there is quite some overhead and duplicate work involved in
-	//        this function. When this becomes a performance issue, improve this
-	//        by moving all the data collection stuff to front and let the UI update
-	//        only based on cached quantities.
-
 	m_propertyType = buildingPropertyType;
 
 	switch ((BuildingPropertyTypes)buildingPropertyType) {
@@ -111,9 +106,15 @@ void SVPropBuildingEditWidget::onModified(int modificationType, ModificationInfo
 		case SVProjectHandler::BuildingTopologyChanged: // used when zone templates are assigned
 		case SVProjectHandler::ComponentInstancesModified:
 		case SVProjectHandler::NodeStateModified:
-			// TODO Andreas, add modification type for invisible change of zone template association
 
 			updateUi(); // we do not change the property type here
+		break;
+
+		// nothing to do for the remaining modification types
+		case SVProjectHandler::SolverParametersModified:
+		case SVProjectHandler::ClimateLocationModified:
+		case SVProjectHandler::GridModified:
+		case SVProjectHandler::NetworkModified:
 		break;
 	}
 }
@@ -127,11 +128,12 @@ void SVPropBuildingEditWidget::onColorRefreshNeeded() {
 void SVPropBuildingEditWidget::on_pushButtonEditComponents_clicked() {
 	const VICUS::Component * comp = currentlySelectedComponent();
 	Q_ASSERT(comp != nullptr); // if nullptr, the button should be disabled!
+	int currentRow = m_ui->tableWidgetComponents->currentRow();
 	SVMainWindow::instance().dbComponentEditDialog()->edit(comp->m_id);
-	// TODO : signal a "recoloring needed" signal to scene in case any of the colors have changed
-	// update table (in case user has deleted some components or changed colors
-	setPropertyType(BT_Components);
 	// Note: project data isn't modified, since only user DB data was changed.
+	// reselect row, because closing the edit dialog recreates the table (due to possible color change)
+	if (m_ui->tableWidgetComponents->rowCount() > currentRow)
+		m_ui->tableWidgetComponents->selectRow(currentRow);
 }
 
 
@@ -145,9 +147,6 @@ void SVPropBuildingEditWidget::on_pushButtonExchangeComponents_clicked() {
 	unsigned int newId = SVMainWindow::instance().dbComponentEditDialog()->select(oldId);
 	if (newId == VICUS::INVALID_ID)
 		return; // user has aborted the dialog
-	// TODO Andreas: signal a "recoloring needed" signal to scene in case any of the colors have changed
-	// update table (in case user has deleted some components or changed colors
-	setPropertyType(BT_Components); // Note: this invalidates "comp"!
 
 	// now compose an undo action and modify the project
 
@@ -271,6 +270,11 @@ const VICUS::ZoneTemplate * SVPropBuildingEditWidget::currentlySelectedZoneTempl
 void SVPropBuildingEditWidget::updateUi() {
 	const SVDatabase & db = SVSettings::instance().m_db;
 
+	// TODO Andreas : this function currently updates all widgets in the stacked widget, regardless of which
+	//                is currently visible. This makes switching property modes very fast, but whenever the project
+	//                data changes, it takes a bit more time. If this becomes a performance issue at some point,
+	//                modify the update logic.
+
 	// get all visible "building" type objects in the scene
 	std::set<const VICUS::Object * > objs;
 	project().selectObjects(objs, VICUS::Project::SG_Building, false, true);
@@ -330,6 +334,7 @@ void SVPropBuildingEditWidget::updateUi() {
 	// *** Update Component Page ***
 
 	// now put the data of the map into the table
+	int currentRow = m_ui->tableWidgetComponents->currentRow();
 	m_ui->tableWidgetComponents->clearContents();
 	m_ui->tableWidgetComponents->setRowCount(m_componentSurfacesMap.size());
 	int row=0;
@@ -353,6 +358,8 @@ void SVPropBuildingEditWidget::updateUi() {
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetComponents->setItem(row, 1, item);
 	}
+	// reselect row
+	m_ui->tableWidgetComponents->selectRow(std::max(currentRow, m_ui->tableWidgetComponents->rowCount()-1));
 	// process all selected surfaces and determine which component they have assigned
 	std::vector<const VICUS::Surface*> surfaces;
 	project().selectedSurfaces(surfaces, VICUS::Project::SG_Building);
@@ -453,6 +460,7 @@ void SVPropBuildingEditWidget::updateUi() {
 		}
 	}
 	// now put the data of the map into the table
+	currentRow = m_ui->tableWidgetBoundaryConditions->currentRow();
 	m_ui->tableWidgetBoundaryConditions->clearContents();
 	m_ui->tableWidgetBoundaryConditions->setRowCount(m_bcSurfacesMap.size());
 	row=0;
@@ -476,11 +484,14 @@ void SVPropBuildingEditWidget::updateUi() {
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetBoundaryConditions->setItem(row, 1, item);
 	}
+	// reselect row
+	m_ui->tableWidgetBoundaryConditions->selectRow(std::max(currentRow, m_ui->tableWidgetBoundaryConditions->rowCount()-1));
 
 
 	// *** Update ZoneTemplates Page ***
 
 	// now put the data of the map into the table
+	currentRow = m_ui->tableWidgetZoneTemplates->currentRow();
 	m_ui->tableWidgetZoneTemplates->clearContents();
 	m_ui->tableWidgetZoneTemplates->setRowCount(m_zoneTemplateAssignments.size());
 	row=0;
@@ -504,6 +515,7 @@ void SVPropBuildingEditWidget::updateUi() {
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetZoneTemplates->setItem(row, 1, item);
 	}
+	m_ui->tableWidgetZoneTemplates->selectRow(std::max(currentRow, m_ui->tableWidgetZoneTemplates->rowCount()-1));
 
 	// process all selected rooms and determine which zone template they have assigned
 	std::vector<const VICUS::Room*> rooms;
@@ -545,8 +557,6 @@ void SVPropBuildingEditWidget::updateUi() {
 	on_tableWidgetZoneTemplates_itemSelectionChanged();
 
 }
-
-
 
 
 void SVPropBuildingEditWidget::alignSelectedComponents(bool toSideA) {
@@ -724,7 +734,7 @@ void SVPropBuildingEditWidget::on_pushButtonAssignZoneTemplate_clicked() {
 	if (selectedId == VICUS::INVALID_ID)
 		return; // user aborted the dialog
 
-	// get all visible "building" type objects in the scene
+	// get all visible _and_ selected "building" type objects in the scene
 	std::set<const VICUS::Object * > objs;
 	project().selectObjects(objs, VICUS::Project::SG_Building, true, true);
 
@@ -748,5 +758,59 @@ void SVPropBuildingEditWidget::on_tableWidgetZoneTemplates_itemSelectionChanged(
 	bool enabled = (currentlySelectedZoneTemplate() != nullptr);
 	m_ui->pushButtonEditZoneTemplates->setEnabled(enabled);
 	m_ui->pushButtonExchangeZoneTemplates->setEnabled(enabled);
-	m_ui->pushButtonSelectObjectsWithZoneTemplates->setEnabled(enabled);
 }
+
+
+void SVPropBuildingEditWidget::on_pushButtonEditZoneTemplates_clicked() {
+	const VICUS::ZoneTemplate * zt = currentlySelectedZoneTemplate();
+	Q_ASSERT(zt != nullptr); // if nullptr, the button should be disabled!
+	SVMainWindow::instance().dbZoneTemplateEditDialog()->edit(zt->m_id);
+	// Note: project data isn't modified, since only user DB data was changed.
+}
+
+
+void SVPropBuildingEditWidget::on_pushButtonExchangeZoneTemplates_clicked() {
+	const VICUS::ZoneTemplate * zt = currentlySelectedZoneTemplate();
+	Q_ASSERT(zt != nullptr); // if nullptr, the button should be disabled!
+	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoReplaceComponent",
+		tr("Replace template"), tr("This will replace all associations with zone template '%1 [%2]' with another template.")
+			 .arg(QtExt::MultiLangString2QString(zt->m_displayName)).arg(zt->m_id));
+	unsigned int oldId = zt->m_id;
+	unsigned int newId = SVMainWindow::instance().dbZoneTemplateEditDialog()->select(oldId);
+	if (newId == VICUS::INVALID_ID)
+		return; // user has aborted the dialog
+
+	// now compose an undo action and modify the project
+
+	// first, we need to find the component instances which reference the "old" id
+	zt = SVSettings::instance().m_db.m_zoneTemplates[oldId];
+	if (zt == nullptr) {
+		// the user has done something stupid and deleted the component that he wanted to replace. In this
+		// case there is no longer a component with this ID and we have a nullptr
+		QMessageBox::critical(this, tr("Replace template"), tr("Zone template with id %1 no longer found in DB.").arg(oldId));
+		return;
+	}
+
+	// get all visible "building" type objects in the scene
+	std::set<const VICUS::Object * > objs;
+	project().selectObjects(objs, VICUS::Project::SG_Building, false, true);
+
+	std::vector<unsigned int> modifiedRoomIDs; // unique IDs!!!
+	// loop over all rooms and if their current zone template matches the oldId, remember the room to be modified
+	for (const VICUS::Object * o : objs) {
+		const VICUS::Room * room = dynamic_cast<const VICUS::Room *>(o);
+		if (room == nullptr) continue; // skip all but rooms
+		if (room->m_idZoneTemplate == oldId)
+			modifiedRoomIDs.push_back(room->uniqueID()); // Mind: unique IDs!
+	}
+
+
+	// create the undo action and modify project
+	// now create an undo action for modifying zone template assignments
+	SVUndoModifyRoomZoneTemplateAssociation * undo = new SVUndoModifyRoomZoneTemplateAssociation(
+				tr("Exchange zone template"),
+				modifiedRoomIDs, newId);
+	undo->push();
+}
+
+
