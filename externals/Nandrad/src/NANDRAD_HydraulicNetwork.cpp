@@ -57,11 +57,24 @@ void HydraulicNetwork::checkParameters( const std::map<std::string, IBK::Path> &
 							 .arg(m_fluid.m_id), FUNC_ID);
 	}
 
+	std::set<unsigned int> conInstanceIds;
 	// check all elements and fill references to components and pipe properties
 	for(HydraulicNetworkElement &e : m_elements) {
 		try {
 			// the checkParameters of HydraulicNetworkHeatExchange will be executed within this function
 			e.checkParameters(*this, placeholders, zones, conInstances);
+			// select construction ids
+			unsigned int conInstanceId =
+					e.m_heatExchange.m_idReferences[HydraulicNetworkHeatExchange::ID_ConstructionInstanceId];
+			if(conInstanceId != INVALID_ID) {
+				if(!conInstanceIds.empty() && conInstanceIds.find(conInstanceId) != conInstanceIds.end())
+					// error: construction is already covered by a hydraulic element
+					throw IBK::Exception(IBK::FormatString("Construction instance with id %1 is referenced twice!")
+										 .arg(conInstanceId), FUNC_ID);
+				// register construction instance id
+				conInstanceIds.insert(conInstanceId);
+			}
+
 		}
 		catch(IBK::Exception &ex) {
 			if (e.m_component != nullptr)

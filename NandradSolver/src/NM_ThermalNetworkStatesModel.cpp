@@ -302,6 +302,26 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 					heatExchangeValue = simPara.m_para[NANDRAD::SimulationParameter::P_InitialTemperature].value;
 				} break;
 
+				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer: {
+					// check for zone id
+					unsigned int conInstanceId = e.m_heatExchange.m_idReferences[NANDRAD::HydraulicNetworkHeatExchange::ID_ConstructionInstanceId];
+					IBK_ASSERT(conInstanceId != NANDRAD::INVALID_ID);
+					// parameters are checked, already
+					// check whether zone is registered
+					std::vector<unsigned int>::iterator fIt = std::find(m_constructionInstanceIds.begin(), m_constructionInstanceIds.end(), conInstanceId);
+
+					// double entry is not allowed
+					IBK_ASSERT(fIt != m_constructionInstanceIds.end());
+
+					m_elementValueRefs.m_constructionInstanceIdxs[i] = m_constructionInstanceIds.size();
+					m_constructionInstanceIds.push_back(conInstanceId);
+
+					// reserve reference vector
+					m_activeLayerTemperatureRefs.push_back(nullptr);
+					// set initial temperature
+					heatExchangeValue = simPara.m_para[NANDRAD::SimulationParameter::P_InitialTemperature].value;
+				} break;
+
 				case NANDRAD::HydraulicNetworkHeatExchange::NUM_T:
 					// No thermal exchange, nothing to initialize
 				break;
@@ -432,10 +452,19 @@ int ThermalNetworkStatesModel::update(const double * y) {
 	for(unsigned int i = 0; i < m_elementValueRefs.m_nValues; ++i) {
 		// skip invalid elements without access to zone temperature
 		unsigned int refIdx = m_elementValueRefs.m_zoneIdxs[i];
-		if(refIdx == (unsigned int)(-1))
+		if(refIdx == NANDRAD::INVALID_ID)
 			continue;
 		IBK_ASSERT(m_zoneTemperatureRefs[refIdx] != nullptr);
 		m_elementValueRefs.m_heatExchangeRefValues[i] = *m_zoneTemperatureRefs[refIdx];
+	}
+	// update constrcution layer temperatures
+	for(unsigned int i = 0; i < m_elementValueRefs.m_nValues; ++i) {
+		// skip invalid elements without access to zone temperature
+		unsigned int refIdx = m_elementValueRefs.m_constructionInstanceIdxs[i];
+		if(refIdx == NANDRAD::INVALID_ID)
+			continue;
+		IBK_ASSERT(m_activeLayerTemperatureRefs[refIdx] != nullptr);
+		m_elementValueRefs.m_heatExchangeRefValues[i] = *m_activeLayerTemperatureRefs[refIdx];
 	}
 	// set internal states
 	unsigned int offset = 0;

@@ -50,6 +50,7 @@ struct ThermalNetworkElementValueRefs {
 	void resize(unsigned int nValues) {
 		m_nValues = nValues;
 		m_zoneIdxs.resize(nValues, NANDRAD::INVALID_ID);
+		m_constructionInstanceIdxs.resize(nValues, NANDRAD::INVALID_ID);
 		m_meanTemperatureRefs.resize(nValues,nullptr);
 		m_heatExchangeSplineRefs.resize(nValues,nullptr);
 		m_flowElementHeatLossRefs.resize(nValues,nullptr);
@@ -64,6 +65,10 @@ struct ThermalNetworkElementValueRefs {
 		NANDRAD::INVALID_ID for missing zone.
 	*/
 	std::vector<unsigned int>						m_zoneIdxs;
+	/*! Indexes of all construction instances for each network element (size = m_nValues),
+		NANDRAD::INVALID_ID for missing construction.
+	*/
+	std::vector<unsigned int>						m_constructionInstanceIdxs;
 	/*! Vector with references to mean temperatures (size = m_nValues). */
 	std::vector<const double*>						m_meanTemperatureRefs;
 	/*! References to heat exchange spline: nullptr if not needed (size = m_nValues). */
@@ -176,8 +181,12 @@ private:
 	std::vector<unsigned int>						m_elementIds;
 	/*! All zone ids referenced by a fluid component (size = m_elementIDs.size()). */
 	std::vector<unsigned int>						m_zoneIds;
-	/*! References to zone temperatures (size = m_nValues). */
+	/*! All construction instance ids referenced by a fluid component (size = m_elementIDs.size()). */
+	std::vector<unsigned int>						m_constructionInstanceIds;
+	/*! References to zone temperatures (size = m_zoneIds.size()). */
 	std::vector<const double*>						m_zoneTemperatureRefs;
+	/*! References to construction layer temperatures (size = m_constrctionInstanceIds.size()). */
+	std::vector<const double*>						m_activeLayerTemperatureRefs;
 	/*! Container of all model value references.*/
 	ThermalNetworkElementValueRefs					m_elementValueRefs;
 

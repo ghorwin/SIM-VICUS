@@ -73,7 +73,10 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 
 	// resize heat fluxes to zones
 	if(!statesModel->m_zoneIds.empty())
-		m_networkHeatLoadPerZone.resize(statesModel->m_zoneIds.size());
+		m_networkZoneHeatLoad.resize(statesModel->m_zoneIds.size());
+	// resize heat fluxes to construction layers
+	if(!statesModel->m_constructionInstanceIds.empty())
+		m_networkActiveLayerHeatLoad.resize(statesModel->m_constructionInstanceIds.size());
 
 	// resize vectors
 	m_ydot.resize(m_statesModel->nPrimaryStateResults());
@@ -101,9 +104,18 @@ void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescript
 		// set a description for each zone
 
 		// TODO : rename?
-		desc = QuantityDescription("NetworkHeatLoadPerZone", "W", "Heat load of all zones from hydraulic network", false);
+		desc = QuantityDescription("NetworkHeatLoadPerZone", "W", "Complete Heat load to zones from all hydraulic network elements", false);
 		// add current index to description
 		desc.resize(m_statesModel->m_zoneIds, VectorValuedQuantityIndex::IK_ModelID);
+		resDesc.push_back(desc);
+	}
+	if (!m_statesModel->m_constructionInstanceIds.empty()) {
+		// set a description for each zone
+
+		// TODO : rename?
+		desc = QuantityDescription("NetworkHeatLoadPerConstructionLayer", "W", "Heat load to the construction layers from all hydraulic network elements", false);
+		// add current index to description
+		desc.resize(m_statesModel->m_constructionInstanceIds, VectorValuedQuantityIndex::IK_ModelID);
 		resDesc.push_back(desc);
 	}
 
@@ -140,8 +152,11 @@ void ThermalNetworkBalanceModel::resultValueRefs(std::vector<const double *> &re
 	for(unsigned int i = 0; i < m_statesModel->m_elementValueRefs.m_nValues; ++i)
 		res.push_back(m_statesModel->m_elementValueRefs.m_flowElementHeatLossRefs[i]);
 	// heat flux vector is a result quantity
-	for(unsigned int i = 0; i < m_networkHeatLoadPerZone.size(); ++i)
-		res.push_back(&m_networkHeatLoadPerZone[i]);
+	for(unsigned int i = 0; i < m_networkZoneHeatLoad.size(); ++i)
+		res.push_back(&m_networkZoneHeatLoad[i]);
+	// heat flux vector is a result quantity
+	for(unsigned int i = 0; i < m_networkActiveLayerHeatLoad.size(); ++i)
+		res.push_back(&m_networkActiveLayerHeatLoad[i]);
 	// inlet node temperature vector is a result quantity
 	for(unsigned int i = 0; i < m_statesModel->m_elementValueRefs.m_nValues; ++i)
 		res.push_back(m_statesModel->m_elementValueRefs.m_inletNodeTemperatureRefs[i]);
@@ -164,7 +179,7 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference &
 			return &m_ydot[0];
 		return nullptr;
 	}
-	if(quantityName.m_name == std::string("NetworkHeatLoadPerZone")) {
+	if(quantityName.m_name == std::string("NetworkZoneHeatLoad")) {
 		// no zones are given
 		if(m_statesModel->m_zoneIds.empty())
 			return nullptr;
@@ -178,7 +193,24 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference &
 
 		unsigned int index = (unsigned int) std::distance(m_statesModel->m_zoneIds.begin(), fIt);
 		// found a valid entry
-		return &m_networkHeatLoadPerZone[index];
+		return &m_networkZoneHeatLoad[index];
+	}
+	if(quantityName.m_name == std::string("NetworkActiveLayerHeatLoad")) {
+		// no zones are given
+		if(m_statesModel->m_constructionInstanceIds.empty())
+			return nullptr;
+		// find zone id
+		std::vector<unsigned int>::iterator fIt =
+			std::find(m_statesModel->m_constructionInstanceIds.begin(),
+					  m_statesModel->m_constructionInstanceIds.end(),
+				  (unsigned int) quantityName.m_index);
+		// invalid index access
+		if(fIt == m_statesModel->m_constructionInstanceIds.end())
+			return nullptr;
+
+		unsigned int index = (unsigned int) std::distance(m_statesModel->m_constructionInstanceIds.begin(), fIt);
+		// found a valid entry
+		return &m_networkActiveLayerHeatLoad[index];
 	}
 
 
@@ -254,6 +286,17 @@ void ThermalNetworkBalanceModel::inputReferences(std::vector<InputReference> & i
 			inputRefs.push_back(inputRef);
 		}
 	}
+	// set references to construction layer temperatures
+	if(!m_statesModel->m_constructionInstanceIds.empty()) {
+		InputReference inputRef;
+		inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
+		inputRef.m_name = std::string("ActiveLayerTemperature");
+		inputRef.m_required = true;
+		for(unsigned int conInstanceId : m_statesModel->m_constructionInstanceIds) {
+			inputRef.m_id = conInstanceId;
+			inputRefs.push_back(inputRef);
+		}
+	}
 }
 
 
@@ -262,10 +305,15 @@ void ThermalNetworkBalanceModel::setInputValueRefs(const std::vector<QuantityDes
 {
 	// copy references into mass flux vector
 	m_statesModel->m_p->m_fluidMassFluxes = resultValueRefs[0];
-	//set ambient temparture references inside network
+	//set zone temparture references inside network
 	for(unsigned int i = 0; i < m_statesModel->m_zoneIds.size(); ++i) {
 		// set reference to zone temperature
 		m_statesModel->m_zoneTemperatureRefs[i] = resultValueRefs[1 + i];
+	}
+	//set active layer references inside network
+	for(unsigned int i = 0; i < m_statesModel->m_constructionInstanceIds.size(); ++i) {
+		// set reference to zone temperature
+		m_statesModel->m_activeLayerTemperatureRefs[i] = resultValueRefs[1 + i];
 	}
 }
 
@@ -281,6 +329,19 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 			IBK_ASSERT(m_statesModel->m_zoneTemperatureRefs[refIdx] != nullptr);
 			resultInputValueReferences.push_back(std::make_pair( &m_statesModel->m_elementValueRefs.m_heatExchangeRefValues[i],
 																 m_statesModel->m_zoneTemperatureRefs[refIdx]));
+			resultInputValueReferences.push_back(std::make_pair( &m_networkZoneHeatLoad[refIdx],
+																 m_statesModel->m_elementValueRefs.m_flowElementHeatLossRefs[i]));
+		}
+		// set dependencies between heat exchange values and active layer inputs
+		if(!m_statesModel->m_elementValueRefs.m_constructionInstanceIdxs.empty() &&
+		   m_statesModel->m_elementValueRefs.m_constructionInstanceIdxs[i] != NANDRAD::INVALID_ID) {
+			// zone temperature is requested
+			unsigned int refIdx = m_statesModel->m_elementValueRefs.m_constructionInstanceIdxs[i];
+			IBK_ASSERT(m_statesModel->m_activeLayerTemperatureRefs[refIdx] != nullptr);
+			resultInputValueReferences.push_back(std::make_pair( &m_statesModel->m_elementValueRefs.m_heatExchangeRefValues[i],
+																 m_statesModel->m_activeLayerTemperatureRefs[refIdx]));
+			resultInputValueReferences.push_back(std::make_pair( &m_networkActiveLayerHeatLoad[refIdx],
+																 m_statesModel->m_elementValueRefs.m_flowElementHeatLossRefs[i]));
 		}
 	}
 
@@ -361,17 +422,34 @@ int ThermalNetworkBalanceModel::update() {
 	// update zone specific fluxes
 	if(!m_statesModel->m_zoneIds.empty()) {
 		// set zone heat fluxes to 0
-		std::fill(m_networkHeatLoadPerZone.begin(), m_networkHeatLoadPerZone.end(), 0);
+		std::fill(m_networkZoneHeatLoad.begin(), m_networkZoneHeatLoad.end(), 0);
 
 		for(unsigned int i = 0; i < m_statesModel->m_elementValueRefs.m_nValues; ++i) {
 			unsigned int index = m_statesModel->m_elementValueRefs.m_zoneIdxs[i];
 			// invaid index
-			if(index == (unsigned int)(-1))
+			if(index == NANDRAD::INVALID_ID)
 				continue;
 			IBK_ASSERT(m_statesModel->m_elementValueRefs.m_flowElementHeatLossRefs[i] != nullptr);
 			// we sum up heat flux of all zones
-			IBK_ASSERT(index < m_networkHeatLoadPerZone.size());
-			m_networkHeatLoadPerZone[index] += *m_statesModel->m_elementValueRefs.m_flowElementHeatLossRefs[i];
+			IBK_ASSERT(index < m_networkZoneHeatLoad.size());
+			m_networkZoneHeatLoad[index] += *m_statesModel->m_elementValueRefs.m_flowElementHeatLossRefs[i];
+		}
+	}
+
+	// update construction layer specific fluxes
+	if(!m_statesModel->m_constructionInstanceIds.empty()) {
+		// set zone heat fluxes to 0
+		std::fill(m_networkActiveLayerHeatLoad.begin(), m_networkActiveLayerHeatLoad.end(), 0);
+
+		for(unsigned int i = 0; i < m_statesModel->m_elementValueRefs.m_nValues; ++i) {
+			unsigned int index = m_statesModel->m_elementValueRefs.m_constructionInstanceIdxs[i];
+			// invaid index
+			if(index == NANDRAD::INVALID_ID)
+				continue;
+			IBK_ASSERT(m_statesModel->m_elementValueRefs.m_flowElementHeatLossRefs[i] != nullptr);
+			// we sum up heat flux of all zones
+			IBK_ASSERT(index < m_networkActiveLayerHeatLoad.size());
+			m_networkActiveLayerHeatLoad[index] += *m_statesModel->m_elementValueRefs.m_flowElementHeatLossRefs[i];
 		}
 	}
 
