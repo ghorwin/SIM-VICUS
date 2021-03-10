@@ -72,9 +72,6 @@ public:
 	/*! Model/type of heat exchange. */
 	ModelType						m_modelType = NUM_T;									// XML:A:required
 
-	// TODO: Correct code generator and remove entry
-	unsigned int					m_fixMe = 999;											// XML:E
-
 	/*! Integer parameters. */
 	IDType							m_idReferences[NUM_ID];									// XML:E
 

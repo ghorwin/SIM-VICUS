@@ -925,7 +925,7 @@ void CodeGenerator::generateReadWriteCode() {
 							"						break;\n"
 							"					}\n"
 							"				}\n";
-
+							continue; // avoid adding an "else" to elseStr here
 						}
 						else {
 							// scalar element, just generate the code
@@ -1386,6 +1386,7 @@ void CodeGenerator::generateReadWriteCode() {
 						elements +=
 								"			"+elseStr+"if (cName == \""+tagName+"\")\n"
 								"				m_"+varName2+".readXML(c);\n";
+						elseStr = "else ";
 					}
 					else {
 						elements +=
@@ -1398,8 +1399,8 @@ void CodeGenerator::generateReadWriteCode() {
 								"						IBK::FormatString(\"Invalid or unknown keyword '\"+std::string(c->GetText())+\"'.\") ), FUNC_ID);\n"
 								"				}\n"
 								"			}\n";
+						elseStr = "else ";
 					}
-					elseStr = "else ";
 				}
 
 				if (!elseStr.empty()) {

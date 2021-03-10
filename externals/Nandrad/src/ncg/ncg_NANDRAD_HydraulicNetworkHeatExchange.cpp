@@ -61,9 +61,7 @@ void HydraulicNetworkHeatExchange::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "FixMe")
-				m_fixMe = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "IBK:Parameter") {
+			if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
 				bool success = false;
@@ -118,8 +116,6 @@ TiXmlElement * HydraulicNetworkHeatExchange::writeXML(TiXmlElement * parent) con
 
 	if (m_modelType != NUM_T)
 		e->SetAttribute("modelType", KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType",  m_modelType));
-	if (m_fixMe != NANDRAD::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "FixMe", nullptr, std::string(), IBK::val2string<unsigned int>(m_fixMe));
 
 	for (int i=0; i<NUM_ID; ++i) {
 		if (m_idReferences[i] != NANDRAD::INVALID_ID)
