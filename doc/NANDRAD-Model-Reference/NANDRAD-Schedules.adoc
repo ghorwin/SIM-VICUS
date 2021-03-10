@@ -310,7 +310,7 @@ Grundsätzlich wird jede physikalische Größe in einem string kodiert, wobei di
 Jeder Mengenstring setzt sich aus einem Header und den eigentlichen Werten zusammen. Die Werte sind einfach durch Leerzeichen/Tabs oder Komma getrennte Werte (Dezimalzahlen werden mit . (Punkt) als Dezimaltrennzeichen geschrieben).
 
 
-Der Header ist ein Mengenstichwort (siehe auch <<Schedule_variable_list>>), gefolgt von seiner Einheit in Klammern. So hat z. B. eine Heizungssolltemperatur die Kopfzeile `HeatingSetPointTemperature [C]` und die Werte werden dann in Grad C angegeben.
+Der Header ist ein Mengenstichwort (siehe auch <<schedule_variable_list>>), gefolgt von seiner Einheit in Klammern. So hat z. B. eine Heizungssolltemperatur die Kopfzeile `HeatingSetPointTemperature [C]` und die Werte werden dann in Grad C angegeben.
 
 Es müssen _exakt_ so viele Werte angegeben werden, wie es Zeitpunkte im XML-Tag `TimePoints` gibt. In dieser Datentabelle können Sie so viele Größen angeben, wie Sie benötigen.
 

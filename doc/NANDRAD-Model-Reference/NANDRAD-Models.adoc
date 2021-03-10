@@ -56,7 +56,7 @@ Fließkommaparameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung d
 
 Wenn der Modelltyp `Scheduled` verwendet wird, sind keine weiteren Parameter erforderlich, da die Luftwechselrate aus einem geplanten Parameter übernommen wird.
 
-Damit das Modell funktioniert, muss der Parameter `InfiltrationRateSchedule` in einem Zeitplan definiert sein (siehe <<Schedules>>).
+Damit das Modell funktioniert, muss der Parameter `InfiltrationRateSchedule` in einem Zeitplan definiert sein (siehe <<schedules>>).
 
 Nachfolgend finden Sie ein Beispiel für einen Zeitplan, der den Parameter `InfiltrationRateSchedule` für ein solches Modell der geplanten natürlichen Lüftung bereitstellt:
 

@@ -33,7 +33,7 @@ Die NANDRAD-Projektspezifikation ist in einer XML-Datei mit der Erweiterung `nan
 ----
 ====
 
-Mit dem optionalen `DirectoryPlaceholders` können relative Pfadplatzhalter definiert werden, die für extern referenzierte Dateien verwendet werden sollen (siehe Abschnitt <<Pfad_Platzhalter>>).
+Mit dem optionalen `DirectoryPlaceholders` können relative Pfadplatzhalter definiert werden, die für extern referenzierte Dateien verwendet werden sollen (siehe Abschnitt <<path_placeholders>>).
 
 Alle Projektdaten werden in den `<Project>`-Tag eingeschlossen.
 
@@ -41,16 +41,16 @@ Eine Projektdatei kann die folgenden untergeordneten Tags enthalten (die Reihenf
 
 [width="100%",options="header", cols="15%,85%"]
 |====================
-| Child tag | Beschreibung
-| `ProjectInfo` | Allgemeine Projekt-Meta-Informationen -> <<project_info>>
+| XML-Tag | Beschreibung
+| `ProjectInfo` | Allgemeine Projekt-Meta-Daten -> <<project_info>>
 | `Location` | Klimadaten und Standorteinstellungen -> <<climatic_loads>>
-| `SimulationParameter` | Parameter des Simulationsmodells -> <<simulation_parameters>>
-| `SolverParameter` | Einstellungen und Leistung des numerischen Solvers -> <<solver_parameters>>
+| `SimulationParameter` | Allgemeine Parameter des Simulationsmodells -> <<simulation_parameters>>
+| `SolverParameter` | Einstellungen der numerischen Algorithmen -> <<solver_parameters>>
 | `Zones` | Zonenspezifikationen -> <<zones>>
-| `ConstructionInstances` | Gebäudekomponenten und Begrenzung conditions -> <<construction_instances>>
+| `ConstructionInstances` | Gebäudekomponenten und Randbedingungen -> <<construction_instances>>
 | `HydraulicNetworks` | Thermohydraulische Netze -> <<networks>>
-| `ConstructionTypes` | Definition von mehrschichtigen Konstruktionen -> <<construction_types>>
-| `Materials` | Materialeigenschaften -> <<materials>>
+| `ConstructionTypes` | Datenbank von mehrschichtigen Konstruktionen -> <<construction_types>>
+| `Materials` | Materialdatenbank -> <<materials>>
 | `Models` | Modell-Parameterblöcke -> <<models>>
 | `Schedules` | Definition von geplanten Parametern -> <<schedules>>
 | `Outputs` | Definition von Ausgaben -> <<outputs>>
@@ -80,14 +80,14 @@ Ein XML-Tag mit dem Namen `IBK:Parameter` definiert einen Fließkommaparameter (
 ----
 ====
 
-Die Einheiten müssen aus der globalen Einheitenliste ausgewählt werden, siehe Abschnitt <<Einheiten>>. Wird ein Parameter nicht definiert, wird er als _fehlend_ markiert, was bedeutet, dass entweder ein Standardwert verwendet wird oder - im Falle von obligatorischen Benutzerparametern - ein Fehler ausgelöst wird.
+Die Einheiten müssen aus der globalen Einheitenliste ausgewählt werden, siehe Abschnitt <<units>>. Wird ein Parameter nicht definiert, wird er als _fehlend_ markiert, was bedeutet, dass entweder ein Standardwert verwendet wird oder - im Falle von obligatorischen Benutzerparametern - ein Fehler ausgelöst wird.
 
 [[IBK_IntPara]]
 ## IBK:IntPara
 
 Wird für Flaggen verwendet. Das obligatorische Attribut `name` identifiziert das Flag. Wird ein Flag nicht definiert, wird es als _fehlend_ markiert, was bedeutet, dass entweder ein Standardwert verwendet wird oder - im Falle von obligatorischen Benutzerparametern - ein Fehler ausgelöst wird.
 
-Wird für ganzzahlige Parameter verwendet. Das obligatorische Attribut `Name` identifiziert den Parameter. XML-Tag value ist der Parameterwert. Wird ein Parameter nicht definiert, wird er als _missing_ markiert, was bedeutet, dass entweder ein Standardwert verwendet wird oder - im Falle von obligatorischen Benutzerparametern - ein Fehler ausgelöst wird.
+Wird für ganzzahlige Parameter verwendet. Das obligatorische Attribut `Name` identifiziert den Parameter. XML-Tag value ist der Parameterwert. Wird ein Parameter nicht definiert, wird er als _fehlend_ markiert, was bedeutet, dass entweder ein Standardwert verwendet wird oder - im Falle von obligatorischen Benutzerparametern - ein Fehler ausgelöst wird.
 
 .Ganze Zahl (Integer) Parameter-Definition
 ====
@@ -100,7 +100,7 @@ Wird für ganzzahlige Parameter verwendet. Das obligatorische Attribut `Name` id
 [[IBK_Flag]]
 ## IBK:Flag
 
-Wird für Flags verwendet. Das obligatorische Attribut `name` identifiziert das Flag. Wird ein Flag nicht definiert, wird es als _missing_ markiert, was bedeutet, dass entweder ein Standardwert verwendet wird oder - im Falle von obligatorischen Benutzerparametern - ein Fehler ausgelöst wird.
+Wird für boolische Schalter (An/Aus-Optionen) verwendet. Das obligatorische Attribut `name` identifiziert das Flag. Wird ein Flag nicht definiert, wird es als _fehlend_ markiert, was bedeutet, dass entweder ein Standardwert verwendet wird oder - im Falle von obligatorischen Benutzerparametern - ein Fehler ausgelöst wird.
 
 .Flag Definition
 ====
@@ -155,7 +155,7 @@ a| Gibt die Interpolationsmethode zwischen den definierten y-Werten an.
 * `constant` - konstante Interpolation (Werte konstant während des Zeitschritts) 
 * `linear` - lineare Interpolation (Werte linear interpoliert zwischen Zeitschritten)  
 
-| key | _required_
+| Schlüsselwort | _required_
 
 | `WrapMethod` 
 a| Gibt an, was getan werden soll, wenn Werte mit x-Werten außerhalb des x-Wertebereichs angefordert werden.
@@ -170,8 +170,8 @@ a| Gibt an, was getan werden soll, wenn Werte mit x-Werten außerhalb des x-Wert
 Die Child-Tags `X` und `Y` enthalten jeweils ein obligatorisches Attribut `unit` mit der jeweiligen Werteinheit (siehe <<units>>).
 
 
-[[pfad_platzhalter]]
-# Pfadplatzhalter
+[[path_placeholders]]
+# Pfad-Platzhalter
 
 In einigen Teilen der NANDRAD-Projektdatei werden externe Dateien referenziert (z.B. Klimadaten-Dateien, siehe <<loads_climate_files>>).
 Um den Austausch von Projekten oder Referenzdatendateien in gemeinsamen Datenbankverzeichnissen zu vereinfachen, ist es möglich, Pfadplatzhalter in Dateipfaden zu verwenden.
@@ -197,7 +197,7 @@ Die einzelnen Pfadplatzhalter werden in den `DirectoryPlaceholders` definiert:
 
 Es gibt einen eingebauten Platzhalter `${Project Directory}`, der automatisch mit dem Pfad zum Verzeichnis der Projektdatei definiert wird.
 
-[[projekt_info]]
+[[project_info]]
 # Projektinformationen
 
 Dieser Abschnitt enthält Änderungszeiten/-daten und eine kurze Beschreibung des Projekts. Die folgenden untergeordneten Tags werden unterstützt.

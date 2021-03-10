@@ -30,7 +30,7 @@ Parameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des tags `IB
 [options="header",cols="18%,^ 15%,38%,^ 20%,10%",width="100%"]
 |====================
 |Name|Einheit|Beschreibung|Wertebereich |Verwendung
-|`Albedo`|---|Wird für die Berechnung der diffusen Sonneneinstrahlung verwendet (siehe <<Lasten_Sonneneinstrahlung>>)| 0...1 |_erforderlich_
+|`Albedo`|---|Wird für die Berechnung der diffusen Sonneneinstrahlung verwendet (siehe <<loads_solar_radiation>>)| 0...1 |_erforderlich_
 |`Altitude`|m|wird für bestimmte höhenbezogene Parameter benötigt (**TODO**)| >0 | _optional_
 |`Longitude`|Deg|Wenn angegeben, wird der Ortsparameter `Longitude` der Klimadatendatei überschrieben (siehe <<location_settings>>).|-180...180|_optional_
 |`Latitude`|Deg|Wenn angegeben, wird der Ortsparameter `Latitude` der Klimadatendatei überschrieben (siehe <<location_settings>>).|-90...90|_optional_
@@ -194,7 +194,7 @@ Parameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des tags `IB
  | 0...180 | _erforderlich_
 |====================
 
-Einem Sensor muss eine eindeutige ID-Nummer und die obligatorischen Parameter `Orientation` und `Inclination` gegeben werden (siehe Abschnitt <<onstruction_instances,Construction Instances>> für Details zu deren Definition).
+Einem Sensor muss eine eindeutige ID-Nummer und die obligatorischen Parameter `Orientation` und `Inclination` gegeben werden (siehe Abschnitt <<construction_instances,Construction Instances>> für Details zu deren Definition).
 
 Für jeden Sensor werden 4 Ausgangsgrößen erzeugt:
 
