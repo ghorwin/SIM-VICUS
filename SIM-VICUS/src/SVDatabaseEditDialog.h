@@ -3,15 +3,19 @@
 
 #include <QDialog>
 
+#include <VICUS_InternalLoad.h>
+
 namespace Ui {
 	class SVDatabaseEditDialog;
 }
 
 class SVAbstractDatabaseTableModel;
 class SVAbstractDatabaseEditWidget;
+//class SVInternalLoadsTableModel;
 class QModelIndex;
 class QGroupBox;
 class QSortFilterProxyModel;
+
 
 #include <VICUS_Constants.h>
 
@@ -73,7 +77,7 @@ private:
 	static SVDatabaseEditDialog * createComponentEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createBoundaryConditionsEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createScheduleEditDialog(QWidget * parent);
-	static SVDatabaseEditDialog * createInternalLoadsEditDialog(QWidget * parent, int type);
+	static SVDatabaseEditDialog * createInternalLoadsEditDialog(QWidget * parent, VICUS::InternalLoad::Category category);
 
 	static SVDatabaseEditDialog * createNetworkComponentEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createPipeEditDialog(QWidget * parent);

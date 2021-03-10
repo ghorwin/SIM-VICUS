@@ -117,7 +117,8 @@
       <string>Internal Loads</string>
      </property>
      <addaction name="actionDBInternalLoadsPerson"/>
-     <addaction name="actionDBElectricEquipment"/>
+     <addaction name="actionDBInternalLoadsElectricEquipment"/>
+     <addaction name="actionDBInternalLoadsLights"/>
     </widget>
     <addaction name="actionDBMaterials"/>
     <addaction name="actionDBConstructions"/>
@@ -536,15 +537,15 @@
     <string>Person...</string>
    </property>
    <property name="toolTip">
-    <string>Internal loads: Person loads.</string>
+    <string>Internal loads: Person</string>
    </property>
   </action>
-  <action name="actionDBElectricEquipment">
+  <action name="actionDBInternalLoadsElectricEquipment">
    <property name="text">
     <string>Electric equipment...</string>
    </property>
    <property name="toolTip">
-    <string>Internal loads: Electric equipment loads.</string>
+    <string>Internal loads: Electric equipment</string>
    </property>
   </action>
   <action name="actionDBZoneTemplates">
@@ -553,6 +554,14 @@
    </property>
    <property name="toolTip">
     <string>Zone templates...</string>
+   </property>
+  </action>
+  <action name="actionDBInternalLoadsLights">
+   <property name="text">
+    <string>Lights...</string>
+   </property>
+   <property name="toolTip">
+    <string>Internal loads: Lights</string>
    </property>
   </action>
  </widget>

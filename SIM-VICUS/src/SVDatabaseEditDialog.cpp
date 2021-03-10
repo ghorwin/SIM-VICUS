@@ -29,6 +29,7 @@
 #include "SVDBScheduleEditWidget.h"
 #include "SVDBInternalLoadsTableModel.h"
 #include "SVDBInternalLoadsPersonEditWidget.h"
+#include "SVDBInternalLoadsElectricEquipmentEditWidget.h"
 #include "SVDBNetworkComponentTableModel.h"
 #include "SVDBNetworkComponentEditWidget.h"
 #include "SVDBPipeTableModel.h"
@@ -324,15 +325,21 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createScheduleEditDialog(QWidget * 
 }
 
 
-SVDatabaseEditDialog * SVDatabaseEditDialog::createInternalLoadsEditDialog(QWidget * parent, int type) {
+SVDatabaseEditDialog * SVDatabaseEditDialog::createInternalLoadsEditDialog(QWidget * parent, VICUS::InternalLoad::Category category) {
 	SVDatabaseEditDialog * dlg = nullptr;
-	switch ((SVDBInternalLoadsTableModel::Type)type) {
-		case SVDBInternalLoadsTableModel::T_Person :
+	switch (category) {
+		case VICUS::InternalLoad::IC_Person :
 			dlg = new SVDatabaseEditDialog(parent,
-				new SVDBInternalLoadsTableModel(parent, SVSettings::instance().m_db, (SVDBInternalLoadsTableModel::Type)type),
+				new SVDBInternalLoadsTableModel(parent, SVSettings::instance().m_db, category),
 				new SVDBInternalLoadsPersonEditWidget(parent),
 				tr("Person Loads Database"), tr("Person Load Properties"), true);
 			break;
+		case VICUS::InternalLoad::IC_ElectricEquiment : {
+			dlg = new SVDatabaseEditDialog(parent,
+				new SVDBInternalLoadsTableModel(parent, SVSettings::instance().m_db, category),
+				new SVDBInternalLoadsElectricEquipmentEditWidget(parent),
+				tr("Electric Equipment Loads Database"), tr("Electric Equipment Load Properties"), true);
+		} break;
 		default:
 			Q_ASSERT(false);
 	}

@@ -108,6 +108,8 @@ public:
 	SVDatabaseEditDialog *dbScheduleEditDialog();
 	/*! Returns the internal loads person edit dialog. */
 	SVDatabaseEditDialog *dbInternalLoadsPersonEditDialog();
+	/*! Returns the internal loads electric equipment edit dialog. */
+	SVDatabaseEditDialog *dbInternalLoadsElectricEquipmentEditDialog();
 	/*! Returns the zone template edit dialog. */
 	SVDBZoneTemplateEditDialog * dbZoneTemplateEditDialog();
 
@@ -120,6 +122,7 @@ public slots:
 	void on_actionDBBoundaryConditions_triggered();
 	void on_actionDBSchedules_triggered();
 	void on_actionDBInternalLoadsPerson_triggered();
+	void on_actionDBInternalLoadsElectricEquipment_triggered();
 	void on_actionDBHydraulicComponents_triggered();
 	void on_actionDBNetworkPipes_triggered();
 
@@ -228,6 +231,7 @@ private slots:
 
 
 	void on_actionDBZoneTemplates_triggered();
+
 
 private:
 	/*! Sets up all dock widgets with definition lists. */
@@ -369,6 +373,7 @@ private:
 	SVDatabaseEditDialog				*m_dbNetworkComponentEditDialog					= nullptr;
 	SVDatabaseEditDialog				*m_dbScheduleEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbInternalLoadsPersonEditDialog				= nullptr;
+	SVDatabaseEditDialog				*m_dbInternalLoadsElectricEquipmentEditDialog	= nullptr;
 
 	// special edit dialogs
 	SVDBZoneTemplateEditDialog			*m_dbZoneTemplateEditDialog						= nullptr;

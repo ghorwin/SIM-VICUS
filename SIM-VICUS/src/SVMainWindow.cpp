@@ -63,6 +63,7 @@
 
 #include "SVSimulationStartNandrad.h"
 #include "SVSimulationStartNetworkSim.h"
+#include "SVDBInternalLoadsTableModel.h"
 
 #include "SVGeometryView.h"
 #include "Vic3DSceneView.h"
@@ -239,8 +240,14 @@ SVDatabaseEditDialog *SVMainWindow::dbScheduleEditDialog() {
 
 SVDatabaseEditDialog * SVMainWindow::dbInternalLoadsPersonEditDialog() {
 	if (m_dbInternalLoadsPersonEditDialog == nullptr)
-		m_dbInternalLoadsPersonEditDialog = SVDatabaseEditDialog::createInternalLoadsEditDialog(this, 0);
+		m_dbInternalLoadsPersonEditDialog = SVDatabaseEditDialog::createInternalLoadsEditDialog(this, VICUS::InternalLoad::IC_Person);
 	return m_dbInternalLoadsPersonEditDialog;
+}
+
+SVDatabaseEditDialog * SVMainWindow::dbInternalLoadsElectricEquipmentEditDialog() {
+	if (m_dbInternalLoadsElectricEquipmentEditDialog == nullptr)
+		m_dbInternalLoadsElectricEquipmentEditDialog = SVDatabaseEditDialog::createInternalLoadsEditDialog(this, VICUS::InternalLoad::IC_ElectricEquiment);
+	return m_dbInternalLoadsElectricEquipmentEditDialog;
 }
 
 
@@ -290,6 +297,10 @@ void SVMainWindow::on_actionDBSchedules_triggered() {
 
 void SVMainWindow::on_actionDBInternalLoadsPerson_triggered() {
 	dbInternalLoadsPersonEditDialog()->edit();
+}
+
+void SVMainWindow::on_actionDBInternalLoadsElectricEquipment_triggered() {
+	dbInternalLoadsElectricEquipmentEditDialog()->edit();
 }
 
 
@@ -1598,5 +1609,4 @@ void SVMainWindow::on_actionViewShowSurfaceNormals_toggled(bool visible) {
 	// set corresponding flag in View
 	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->setNormalVectorsVisible(visible);
 }
-
 
