@@ -66,7 +66,11 @@ KeywordListQt::KeywordListQt() {
 	tr("Total use of non-renewable primary energy resources.");
 	tr("Total use of renewable primary energy resources .");
 	tr("Person Count.");
+	tr("Power.");
+	tr("Power per area.");
 	tr("Convective Heat Factor.");
+	tr("Latent Heat Factor.");
+	tr("Loss Heat Factor.");
 	tr("Person");
 	tr("ElectricEquiment");
 	tr("Lighting");
@@ -74,6 +78,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Person per m2");
 	tr("m2 per Person");
 	tr("Person count");
+	tr("Power per m2");
+	tr("Power");
 	tr("Some temperatures");
 	tr("Some mass");
 	tr("Dry density of the material.");
