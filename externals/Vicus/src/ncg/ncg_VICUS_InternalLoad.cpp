@@ -74,6 +74,8 @@ void InternalLoad::readXML(const TiXmlElement * element) {
 				m_occupancyScheduleId = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "ActivityScheduleId")
 				m_activityScheduleId = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "PowerManagementScheduleId")
+				m_powerManagementScheduleId = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
@@ -99,6 +101,15 @@ void InternalLoad::readXML(const TiXmlElement * element) {
 			else if (cName == "PersonCountMethod") {
 				try {
 					m_personCountMethod = (PersonCountMethod)KeywordList::Enumeration("InternalLoad::PersonCountMethod", c->GetText());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
+				}
+			}
+			else if (cName == "PowerMethod") {
+				try {
+					m_powerMethod = (PowerMethod)KeywordList::Enumeration("InternalLoad::PowerMethod", c->GetText());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
@@ -139,10 +150,15 @@ TiXmlElement * InternalLoad::writeXML(TiXmlElement * parent) const {
 
 	if (m_personCountMethod != NUM_PCM)
 		TiXmlElement::appendSingleAttributeElement(e, "PersonCountMethod", nullptr, std::string(), KeywordList::Keyword("InternalLoad::PersonCountMethod",  m_personCountMethod));
+
+	if (m_powerMethod != NUM_PM)
+		TiXmlElement::appendSingleAttributeElement(e, "PowerMethod", nullptr, std::string(), KeywordList::Keyword("InternalLoad::PowerMethod",  m_powerMethod));
 	if (m_occupancyScheduleId != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "OccupancyScheduleId", nullptr, std::string(), IBK::val2string<unsigned int>(m_occupancyScheduleId));
 	if (m_activityScheduleId != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "ActivityScheduleId", nullptr, std::string(), IBK::val2string<unsigned int>(m_activityScheduleId));
+	if (m_powerManagementScheduleId != VICUS::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "PowerManagementScheduleId", nullptr, std::string(), IBK::val2string<unsigned int>(m_powerManagementScheduleId));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {
