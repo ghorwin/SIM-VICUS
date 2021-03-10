@@ -79,6 +79,7 @@ SOURCES += \
 				../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
 				../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
 				../../src/SVDBInternalLoadsElectricEquipmentEditWidget.cpp \
+				../../src/SVDBInternalLoadsLightsEditWidget.cpp \
 				../../src/actions/SVUndoAddBuilding.cpp \
 				../../src/actions/SVUndoAddBuildingLevel.cpp \
 				../../src/actions/SVUndoAddNetwork.cpp \
@@ -201,6 +202,7 @@ SOURCES += \
 
 HEADERS  += \
 				../../src/SVDBInternalLoadsElectricEquipmentEditWidget.h \
+				../../src/SVDBInternalLoadsLightsEditWidget.h \
 				../../src/actions/SVUndoAddBuilding.h \
 				../../src/actions/SVUndoAddBuildingLevel.h \
 				../../src/actions/SVUndoAddNetwork.h \
@@ -326,6 +328,7 @@ HEADERS  += \
 FORMS    += \
 				../../src/SVAboutDialog.ui \
 				../../src/SVDBInternalLoadsElectricEquipmentEditWidget.ui \
+				../../src/SVDBInternalLoadsLightsEditWidget.ui \
 				../../src/SVDatabaseEditDialog.ui \
 				../../src/SVDBBoundaryConditionEditWidget.ui \
 				../../src/SVDBComponentEditWidget.ui \

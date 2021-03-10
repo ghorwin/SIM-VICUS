@@ -30,6 +30,7 @@
 #include "SVDBInternalLoadsTableModel.h"
 #include "SVDBInternalLoadsPersonEditWidget.h"
 #include "SVDBInternalLoadsElectricEquipmentEditWidget.h"
+#include "SVDBInternalLoadsLightsEditWidget.h"
 #include "SVDBNetworkComponentTableModel.h"
 #include "SVDBNetworkComponentEditWidget.h"
 #include "SVDBPipeTableModel.h"
@@ -339,7 +340,14 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createInternalLoadsEditDialog(QWidg
 				new SVDBInternalLoadsTableModel(parent, SVSettings::instance().m_db, category),
 				new SVDBInternalLoadsElectricEquipmentEditWidget(parent),
 				tr("Electric Equipment Loads Database"), tr("Electric Equipment Load Properties"), true);
-		} break;
+			break;
+		case VICUS::InternalLoad::IC_Lighting :
+			dlg = new SVDatabaseEditDialog(parent,
+				new SVDBInternalLoadsTableModel(parent, SVSettings::instance().m_db, category),
+				new SVDBInternalLoadsLightsEditWidget(parent),
+				tr("Lights Loads Database"), tr("Lights Load Properties"), true);
+
+			} break;
 		default:
 			Q_ASSERT(false);
 	}
