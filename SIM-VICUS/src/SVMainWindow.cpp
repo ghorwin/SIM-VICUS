@@ -250,6 +250,11 @@ SVDatabaseEditDialog * SVMainWindow::dbInternalLoadsElectricEquipmentEditDialog(
 	return m_dbInternalLoadsElectricEquipmentEditDialog;
 }
 
+SVDatabaseEditDialog * SVMainWindow::dbInternalLoadsLightsEditDialog() {
+	if (m_dbInternalLoadsLightsEditDialog == nullptr)
+		m_dbInternalLoadsLightsEditDialog = SVDatabaseEditDialog::createInternalLoadsEditDialog(this, VICUS::InternalLoad::IC_Lighting);
+	return m_dbInternalLoadsLightsEditDialog;
+}
 
 SVDBZoneTemplateEditDialog * SVMainWindow::dbZoneTemplateEditDialog() {
 	if (m_dbZoneTemplateEditDialog == nullptr)
@@ -301,6 +306,10 @@ void SVMainWindow::on_actionDBInternalLoadsPerson_triggered() {
 
 void SVMainWindow::on_actionDBInternalLoadsElectricEquipment_triggered() {
 	dbInternalLoadsElectricEquipmentEditDialog()->edit();
+}
+
+void SVMainWindow::on_actionDBInternalLoadsLights_triggered() {
+	dbInternalLoadsLightsEditDialog()->edit();
 }
 
 
@@ -1609,4 +1618,5 @@ void SVMainWindow::on_actionViewShowSurfaceNormals_toggled(bool visible) {
 	// set corresponding flag in View
 	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->setNormalVectorsVisible(visible);
 }
+
 
