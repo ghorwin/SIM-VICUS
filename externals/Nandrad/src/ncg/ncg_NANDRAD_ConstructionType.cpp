@@ -59,7 +59,9 @@ void ConstructionType::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "MaterialLayers") {
+			if (cName == "ActiveLayerIndex")
+				m_activeLayerIndex = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "MaterialLayers") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
@@ -93,6 +95,8 @@ TiXmlElement * ConstructionType::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
+	if (m_activeLayerIndex != NANDRAD::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "ActiveLayerIndex", nullptr, std::string(), IBK::val2string<unsigned int>(m_activeLayerIndex));
 
 	if (!m_materialLayers.empty()) {
 		TiXmlElement * child = new TiXmlElement("MaterialLayers");

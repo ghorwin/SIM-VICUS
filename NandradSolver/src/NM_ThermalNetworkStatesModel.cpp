@@ -128,6 +128,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline:
 						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureZone:
+						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer:
 						{
 							// create pipe model with heat exchange
 							TNSimplePipeElement * pipeElement = new TNSimplePipeElement(e, *e.m_component,
@@ -163,11 +164,12 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant :
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline :
 							throw IBK::Exception(IBK::FormatString("Heat exchange model %1 cannot be used with DynamicPipe components.")
-								.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType", e.m_heatExchange.m_modelType)), FUNC_ID);
+								.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", e.m_heatExchange.m_modelType)), FUNC_ID);
 
 						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstant:
 						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline:
 						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureZone:
+						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer:
 						{
 							// create pipe model with heat exchange
 							TNDynamicPipeElement * pipeElement = new TNDynamicPipeElement(e,
@@ -223,10 +225,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 						default:
 							throw IBK::Exception(IBK::FormatString("Flow element model %1 does currently not support HeatExchangeType %2.")
-										.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::ModelType",
-										e.m_component->m_modelType))
-										.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
-										e.m_heatExchange.m_modelType)),
+										.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::ModelType", e.m_component->m_modelType))
+										.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", e.m_heatExchange.m_modelType)),
 										FUNC_ID);
 					} // switch heat exchange type
 
@@ -248,10 +248,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 						default:
 							throw IBK::Exception(IBK::FormatString("Flow element model %1 does currently not support HeatExchangeType %2.")
-										.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::ModelType",
-										e.m_component->m_modelType))
-										.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
-										e.m_heatExchange.m_modelType)),
+										.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::ModelType", e.m_component->m_modelType))
+										.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", e.m_heatExchange.m_modelType)),
 										FUNC_ID);
 					} // switch heat exchange type
 
@@ -310,7 +308,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 				default:
 					throw IBK::Exception(IBK::FormatString("Heat exchange type %1 is not supported, yet!")
-								.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType",
+								.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType",
 								e.m_heatExchange.m_modelType)), FUNC_ID);
 			}
 		}

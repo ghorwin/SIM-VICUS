@@ -27,6 +27,7 @@
 
 #include "NANDRAD_CodeGenMacros.h"
 #include "NANDRAD_MaterialLayer.h"
+#include "NANDRAD_Constants.h"
 
 namespace NANDRAD {
 
@@ -49,12 +50,15 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique id number. */
-	unsigned int				m_id;							// XML:A:required
+	unsigned int				m_id;									// XML:A:required
+
+	/*! Optional active layer index (use INVALID_ID to disable). */
+	unsigned int				m_activeLayerIndex = INVALID_ID;		// XML:E
 	/*! IBK-language encoded name of construction. */
-	std::string					m_displayName;					// XML:A
+	std::string					m_displayName;							// XML:A
 
 	/*! List of material layers. */
-	std::vector<MaterialLayer>	m_materialLayers;				// XML:E
+	std::vector<MaterialLayer>	m_materialLayers;						// XML:E
 };
 
 } // namespace NANDRAD

@@ -21,7 +21,7 @@ class HydraulicNetwork;
 class HydraulicNetworkElement {
 public:
 
-	HydraulicNetworkElement(){}
+	HydraulicNetworkElement() {}
 
 	/*! C'tor for a network element other than pipes. */
 	HydraulicNetworkElement(unsigned int id, unsigned int inletNodeId, unsigned int outletNodeId, unsigned int componentId):
@@ -40,6 +40,11 @@ public:
 	enum para_t {
 		P_Length,						// Keyword: Length									[m]		'Pipe length'
 		NUM_P
+	};
+
+	enum intPara_t {
+		IP_NumberParallelPipes,			// Keyword: NumberParallelPipes								'Number of parallel pipes'
+		NUM_IP
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -75,6 +80,9 @@ public:
 
 	/*! Parameters of the flow component. */
 	IBK::Parameter					m_para[NUM_P];											// XML:E
+
+	/*! Integer parameters. */
+	IBK::IntPara					m_intPara[NUM_IP];										// XML:E
 
 	/*! Optional definition of heat exchange calculation model (if missing, flow element is adiabat). */
 	HydraulicNetworkHeatExchange	m_heatExchange;											// XML:E

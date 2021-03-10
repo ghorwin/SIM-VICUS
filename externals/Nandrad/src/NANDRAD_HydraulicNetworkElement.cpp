@@ -73,6 +73,8 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 		}
 	}
 
+	// TODO Anne: check number of parallel pipes, and if missing, default to 1
+
 	// finally check for valid heat exchange parameters
 	m_heatExchange.checkParameters(placeholders);
 }

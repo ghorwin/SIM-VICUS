@@ -55,12 +55,14 @@ KeywordListQt::KeywordListQt() {
 	tr("Carnot efficiency");
 	tr("Mean fluid temperature in condenser");
 	tr("Pipe length");
+	tr("Number of parallel pipes");
 	tr("Difference to constant temperature");
 	tr("Difference to time-dependent temperature from spline");
 	tr("Constant heat loss");
 	tr("Heat loss from spline");
 	tr("Heat loss from ideal heat pump model");
 	tr("Difference to zone air temperature");
+	tr("Difference to active construction layer (floor heating)");
 	tr("Difference to temperature from FMU interface, provided heat flux to FMU");
 	tr("Temperature for heat exchange");
 	tr("Constant heat flux out of the element (heat loss)");
@@ -68,6 +70,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Temperature for heat exchange");
 	tr("Constant heat flux out of the element (heat loss)");
 	tr("ID of coupled zone for thermal exchange");
+	tr("ID of coupled construction instance for thermal exchange");
 	tr("Roughness of pipe material");
 	tr("Inner diameter of pipe");
 	tr("Outer diameter of pipe");

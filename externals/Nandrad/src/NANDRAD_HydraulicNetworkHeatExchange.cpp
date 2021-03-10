@@ -88,6 +88,9 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 				// TODO : Hauke
 				throw IBK::Exception(IBK::FormatString("Heat exchange type 'HeatLossIdealHeatPump' is not supported, yet!"), FUNC_ID);
 
+			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer:
+				// TODO : Anne
+			break;
 
 			case NUM_T:
 				// No thermal exchange, nothing to initialize
@@ -97,7 +100,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Missing/invalid parameters for heat exchange model %1.")
-			 .arg(KeywordList::Keyword("HydraulicNetworkComponent::HeatExchangeType", m_modelType)),
+			 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)),
 			 FUNC_ID);
 	}
 }
