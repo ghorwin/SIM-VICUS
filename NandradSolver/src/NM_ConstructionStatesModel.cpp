@@ -191,6 +191,18 @@ void ConstructionStatesModel::resultDescriptions(std::vector<QuantityDescription
 	res.resize(m_con->m_constructionType->m_materialLayers.size());
 	resDesc.push_back(res);
 
+	// in the case of an actiev construction add active temparture layer
+	if(m_con->m_constructionType->m_activeLayerIndex != NANDRAD::INVALID_ID) {
+		QuantityDescription result;
+		result.m_constant = true;
+		result.m_description = "Temperature of the active material layer";
+		result.m_name = "ActiveLayerTemperature";
+		result.m_displayName = m_displayName;
+		result.m_unit = "C";
+
+		resDesc.push_back(result);
+	}
+
 	/// \todo add layer temperatures (as alternative to element temperatures)
 }
 
@@ -201,6 +213,11 @@ void ConstructionStatesModel::resultValueRefs(std::vector<const double *> & res)
 
 	for (const VectorValuedQuantity & r : m_vectorValuedResults) {
 		res.push_back(&r.data()[0]);
+	}
+
+	if(m_con->m_constructionType->m_activeLayerIndex != NANDRAD::INVALID_ID) {
+		unsigned int idx = m_con->m_constructionType->m_activeLayerIndex;
+		res.push_back(&m_vectorValuedResults[VVR_ElementTemperature][idx]);
 	}
 }
 
@@ -213,6 +230,14 @@ const double * ConstructionStatesModel::resultValueRef(const InputReference & qu
 
 	if (quantityName.m_name == "y") {
 		return &m_y[0];
+	}
+	else if(quantityName.m_name == "ActiveLayerTemperature") {
+		// no active layer
+		if(m_con->m_constructionType->m_activeLayerIndex == NANDRAD::INVALID_ID)
+			return nullptr;
+
+		unsigned int idx = m_con->m_constructionType->m_activeLayerIndex;
+		return &m_vectorValuedResults[VVR_ElementTemperature][idx];
 	}
 	else if (KeywordList::KeywordExists(category, quantityName.m_name)) {
 		int resIdx = KeywordList::Enumeration(category, quantityName.m_name);

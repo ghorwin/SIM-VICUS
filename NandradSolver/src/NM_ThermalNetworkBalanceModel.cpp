@@ -104,16 +104,16 @@ void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescript
 		// set a description for each zone
 
 		// TODO : rename?
-		desc = QuantityDescription("NetworkHeatLoadPerZone", "W", "Complete Heat load to zones from all hydraulic network elements", false);
+		desc = QuantityDescription("NetworkZoneHeatLoad", "W", "Complete Heat load to zones from all hydraulic network elements", false);
 		// add current index to description
 		desc.resize(m_statesModel->m_zoneIds, VectorValuedQuantityIndex::IK_ModelID);
 		resDesc.push_back(desc);
 	}
 	if (!m_statesModel->m_constructionInstanceIds.empty()) {
-		// set a description for each zone
+		// set a description for each construction
 
 		// TODO : rename?
-		desc = QuantityDescription("NetworkHeatLoadPerConstructionLayer", "W", "Heat load to the construction layers from all hydraulic network elements", false);
+		desc = QuantityDescription("NetworkActiveLayerHeatLoad", "W", "Heat load to the construction layers from all hydraulic network elements", false);
 		// add current index to description
 		desc.resize(m_statesModel->m_constructionInstanceIds, VectorValuedQuantityIndex::IK_ModelID);
 		resDesc.push_back(desc);

@@ -29,6 +29,7 @@
 #include "NM_ConstructionStatesModel.h"
 #include "NM_InternalLoadsModel.h"
 #include "NM_KeywordList.h"
+#include "NM_ThermalNetworkBalanceModel.h"
 
 namespace NANDRAD_MODEL {
 
@@ -187,6 +188,9 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 	}
 	m_inputRefs[InputRef_SideBSolarRadiationFromWindowLoads] = ref;
 
+	// container for optional network heat loads
+	std::vector<InputReference> networkHeatLoadRH;
+
 	// *** internal loads radiation ***
 	// search all models for construction models that have an interface to this zone
 	for (AbstractModel * model : models) {
@@ -258,8 +262,27 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 				}
 			}
 		}
+		// create input references for heat fluxes out of hydraulic networks
+		else if (model->referenceType() == NANDRAD::ModelInputReference::MRT_NETWORK) {
+			ThermalNetworkBalanceModel * thermNetworkModel = dynamic_cast<ThermalNetworkBalanceModel *>(model);
+			if (thermNetworkModel != nullptr) {
+				++m_thermalNetworkModelCount;
+				InputReference r;
+				r.m_name.m_name = "NetworkActiveLayerHeatLoad";
+				// add current id as index so that we can sum uphat fluxes from all networks
+				r.m_name.m_index = (int) id();
+				r.m_id = model->id();
+				r.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORK;
+				// this reference is only provided if the corresponding network with element
+				// heat flux into current construction
+				r.m_required = false;
+				networkHeatLoadRH.push_back(r);
+			}
+		}
 	} // model object loop
 
+	// insert references to hydraulic network heat load
+	m_inputRefs.insert(m_inputRefs.end(), networkHeatLoadRH.begin(), networkHeatLoadRH.end());
 }
 
 void ConstructionBalanceModel::inputReferences(std::vector<InputReference> & inputRefs) const
@@ -271,7 +294,22 @@ void ConstructionBalanceModel::inputReferences(std::vector<InputReference> & inp
 void ConstructionBalanceModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
 												 const std::vector<const double *> & resultValueRefs)
 {
+	FUNCID(ConstructionBalanceModel::setInputValueRefs);
+
+	// copy required values
 	m_valueRefs = resultValueRefs;
+
+	// check network loads
+	bool foundActiveLayer = false;
+	for (unsigned int i= NUM_InputRef; i < NUM_InputRef + m_thermalNetworkModelCount; ++i) {
+		// check that only one active layer is references
+		if(m_valueRefs[i] != nullptr) {
+			if(foundActiveLayer)
+				throw IBK::Exception(IBK::FormatString("Active layer is referenced twice from a hydraulic network component "
+												   "for construction instance id=%1.").arg(m_id), FUNC_ID);
+
+		}
+	}
 }
 
 
