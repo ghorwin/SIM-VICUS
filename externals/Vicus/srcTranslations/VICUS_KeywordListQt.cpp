@@ -78,7 +78,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Person per m2");
 	tr("m2 per Person");
 	tr("Person count");
-	tr("Power per m2");
+	tr("Power");
 	tr("Power");
 	tr("Some temperatures");
 	tr("Some mass");

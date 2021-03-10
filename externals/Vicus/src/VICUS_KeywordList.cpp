@@ -773,7 +773,7 @@ namespace VICUS {
 			// InternalLoad::PowerMethod
 			case 8 :
 			switch (t) {
-				case 0 : return "Power per m2";
+				case 0 : return "Power";
 				case 1 : return "Power";
 			} break;
 			// KeywordList::MyParameters
