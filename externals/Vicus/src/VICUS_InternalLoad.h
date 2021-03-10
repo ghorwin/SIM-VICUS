@@ -22,9 +22,17 @@ public:
 	enum para_t {
 		//thermal paramters
 		/*! Person Count. */
-		P_PersonCount,					// Keyword: Density					[-]		'Person Count.'
+		P_PersonCount,					// Keyword: PersonCount				[-]		'Person Count.'
+		/*! Power. */
+		P_Power,						// Keyword: Power					[W]		'Power.'
+		/*! Power per Area. */
+		P_PowerPerArea,					// Keyword: PowerPerArea			[W/m2]	'Power per area.'
 		/*! Convective Heat Factor. */
-		P_ConvectiveHeatFactor,			// Keyword: HeatCapacity			[---]	'Convective Heat Factor.'
+		P_ConvectiveHeatFactor,			// Keyword: ConvectiveHeatFactor	[---]	'Convective Heat Factor.'
+		/*! Latent Heat Factor. */
+		P_LatentHeatFactor,				// Keyword: LatentHeatFactor		[---]	'Latent Heat Factor.'
+		/*! Loss Heat Factor. */
+		P_LossHeatFactor,				// Keyword: LossHeatFactor			[---]	'Loss Heat Factor.'
 
 		NUM_P
 	};
@@ -38,12 +46,19 @@ public:
 		NUM_MC
 	};
 
-	/*! The description is used to identify the unit in the gui. */
+	/*! The description is used to identify the unit in the gui for person. */
 	enum PersonCountMethod{
 		PCM_PersonPerArea,		// Keyword: PersonPerArea					[-]		'Person per m2'
 		PCM_AreaPerPerson,		// Keyword: AreaPerPerson					[-]		'm2 per Person'
 		PCM_PersonCount,		// Keyword: PersonCount						[-]		'Person count'
 		NUM_PCM
+	};
+
+	/*! The description is used to identify the unit in the gui for all other equipment (electric, lights, other, ...). */
+	enum PowerMethod{
+		PM_PowerPerArea,		// Keyword: PowerPerArea					[-]		'Power'
+		PM_Power,				// Keyword: Power							[-]		'Power'
+		NUM_PM
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -75,14 +90,20 @@ public:
 	/*! Internal Load category. */
 	Category						m_category = NUM_MC;					// XML:E:required
 
-	/*! Person count method*/
+	/*! Person count method. */
 	PersonCountMethod				m_personCountMethod=NUM_PCM;			// XML:E
+
+	/*! Power method. */
+	PowerMethod						m_powerMethod=NUM_PM;					// XML:E
 
 	/*! Schedule ID. */
 	unsigned int					m_occupancyScheduleId = INVALID_ID;		// XML:E
 
 	/*! Only required for person*/
-	unsigned int					m_activityScheduleId = INVALID_ID;		// XML:E:
+	unsigned int					m_activityScheduleId = INVALID_ID;		// XML:E
+
+	/*! Only required for electric equipment, lights, other. */
+	unsigned int					m_powerManagementScheduleId = INVALID_ID;		// XML:E
 
 	/*! List of parameters. */
 	IBK::Parameter					m_para[NUM_P];							// XML:E
