@@ -27,10 +27,13 @@ HNPipeElement::HNPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 	m_length = elem.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
 	m_diameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
 	m_roughness = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeRoughness].value;
+	// TODO Anne, add new member "numberOfPipes"
 }
 
 
 double  HNPipeElement::systemFunction(double mdot, double p_inlet, double p_outlet) const {
+	// In case of multiple parallel pipes, mdot is the mass flux through *all* pipes
+	// TODO Anne, scale mass flux
 	return p_inlet - p_outlet - pressureLossFriction(mdot);	// this is the system function
 }
 
@@ -38,6 +41,7 @@ double  HNPipeElement::systemFunction(double mdot, double p_inlet, double p_outl
 void HNPipeElement::partials(double mdot, double p_inlet, double p_outlet,
 							 double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
 {
+	// TODO Anne, scale mass flux
 	// partial derivatives of the system function to pressures are constants
 	df_dp_inlet = 1;
 	df_dp_outlet = -1;

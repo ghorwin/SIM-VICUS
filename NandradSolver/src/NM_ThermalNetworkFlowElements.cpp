@@ -28,6 +28,7 @@ TNSimplePipeElement::TNSimplePipeElement(const NANDRAD::HydraulicNetworkElement 
 			elem.m_heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_ExternalHeatTransferCoefficient].value;
 	// compute fluid volume
 	m_fluidVolume = PI/4. * m_innerDiameter * m_innerDiameter * m_length;
+	// TODO Anne, scale fluid volume
 
 	// copy fluid properties
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
@@ -44,7 +45,10 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 
 	// check heat transfer type
 	m_volumeFlow = std::fabs(m_massFlux)/m_fluidDensity; // m3/s !!! unit conversion is done when writing outputs
+
 	m_velocity = m_volumeFlow/(PI/4. * m_innerDiameter * m_innerDiameter);
+	// TODO Anne, scale velocity by n pipe!
+
 	m_viscosity = m_fluidViscosity.value(m_meanTemperature);
 	m_reynolds = ReynoldsNumber(m_velocity, m_viscosity, m_innerDiameter);
 	m_prandtl = PrandtlNumber(m_viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
