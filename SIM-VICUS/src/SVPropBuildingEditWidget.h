@@ -54,6 +54,13 @@ public slots:
 	/*! Connected to SVProjectHandler::modified() */
 	void onModified( int modificationType, ModificationInfo * data );
 
+	/*! Connected to SVViewHandler::colorRefreshNeeded() and is triggered whenever a database element was modified
+		which means that the color in the tables may have changed.
+		Basically updates the current user interface as if the selection-combo at the top of the property widgets has
+		changed.
+	*/
+	void onColorRefreshNeeded();
+
 private slots:
 
 	// *** Component property mode ***

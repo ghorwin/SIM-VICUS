@@ -5,12 +5,14 @@
 #include <QTableView>
 #include <QSortFilterProxyModel>
 #include <QDebug>
+#include <QTimer>
 #include <QGroupBox>
 
 #include "SVSettings.h"
 #include "SVStyle.h"
 #include "SVConstants.h"
 #include "SVDBModelDelegate.h"
+#include "SVViewStateHandler.h"
 
 #include "SVDBZoneTemplateEditWidget.h"
 #include "SVDBZoneTemplateTreeModel.h"
@@ -86,6 +88,7 @@ void SVDBZoneTemplateEditDialog::edit(unsigned int initialId) {
 	m_ui->treeView->resizeColumnToContents(2);
 
 	exec();
+	QTimer::singleShot(0, &SVViewStateHandler::instance(), &SVViewStateHandler::colorRefreshNeeded);
 }
 
 
@@ -105,6 +108,7 @@ unsigned int SVDBZoneTemplateEditDialog::select(unsigned int initialId) {
 	m_ui->treeView->resizeColumnToContents(2);
 
 	int res = exec();
+	QTimer::singleShot(0, &SVViewStateHandler::instance(), &SVViewStateHandler::colorRefreshNeeded);
 	if (res == QDialog::Accepted) {
 		// determine current item
 		QModelIndex currentProxyIndex = m_ui->treeView->currentIndex();

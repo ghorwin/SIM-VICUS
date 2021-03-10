@@ -61,11 +61,6 @@ private slots:
 
 	void on_tableView_doubleClicked(const QModelIndex &index);
 
-	/*! This slot is triggered by a timer when the dialog has been closed and
-		calls a view state update, which should recolor the scene.
-	*/
-	void onUpdateColoring();
-
 private:
 	/*! If table contains an element with matching ID, this row is made current.
 		Signals are blocked in this function.

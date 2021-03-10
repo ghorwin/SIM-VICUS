@@ -120,7 +120,7 @@ void SVDatabaseEditDialog::edit(unsigned int initialId) {
 	m_ui->tableView->resizeColumnsToContents();
 
 	exec();
-	QTimer::singleShot(0, this, &SVDatabaseEditDialog::onUpdateColoring);
+	QTimer::singleShot(0, &SVViewStateHandler::instance(), &SVViewStateHandler::colorRefreshNeeded);
 }
 
 
@@ -137,7 +137,7 @@ unsigned int SVDatabaseEditDialog::select(unsigned int initialId) {
 	m_ui->tableView->resizeColumnsToContents();
 
 	int res = exec();
-	QTimer::singleShot(0, this, &SVDatabaseEditDialog::onUpdateColoring);
+	QTimer::singleShot(0, &SVViewStateHandler::instance(), &SVViewStateHandler::colorRefreshNeeded);
 	if (res == QDialog::Accepted) {
 		// determine current item
 		QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
@@ -247,11 +247,6 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 void SVDatabaseEditDialog::on_tableView_doubleClicked(const QModelIndex &index) {
 	if (m_ui->pushButtonSelect->isVisible() && index.isValid())
 		accept();
-}
-
-
-void SVDatabaseEditDialog::onUpdateColoring() {
-	SVViewStateHandler::instance().refreshColors();
 }
 
 

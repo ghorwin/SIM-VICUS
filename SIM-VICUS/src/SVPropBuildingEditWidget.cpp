@@ -71,6 +71,9 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropBuildingEditWidget::onModified);
 
+	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::colorRefreshNeeded,
+			this, &SVPropBuildingEditWidget::onColorRefreshNeeded);
+
 	// update widget to current project's content
 	onModified(SVProjectHandler::AllModified, nullptr);
 }
@@ -113,6 +116,11 @@ void SVPropBuildingEditWidget::onModified(int modificationType, ModificationInfo
 			updateUi(); // we do not change the property type here
 		break;
 	}
+}
+
+
+void SVPropBuildingEditWidget::onColorRefreshNeeded() {
+	updateUi();
 }
 
 
