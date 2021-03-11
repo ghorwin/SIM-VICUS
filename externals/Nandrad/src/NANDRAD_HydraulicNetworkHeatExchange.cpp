@@ -41,10 +41,10 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 				// check for zone id
 				unsigned int zoneId = m_idReferences[ID_ZoneId];
 				if (zoneId == INVALID_ID)
-					throw IBK::Exception(IBK::FormatString("Missing IntParameter 'ZoneId'."), FUNC_ID);
+					throw IBK::Exception(IBK::FormatString("Missing ID reference 'ZoneId'."), FUNC_ID);
 
 				// find zone id
-				if(std::find(zones.begin(), zones.end(), zoneId) == zones.end())
+				if (std::find(zones.begin(), zones.end(), zoneId) == zones.end())
 					throw IBK::Exception(IBK::FormatString("Zone with id %1 does not exist.").arg(zoneId), FUNC_ID);
 
 				// check for external heat transfer coefficient
@@ -103,9 +103,9 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 				unsigned int conInstanceId = m_idReferences[ID_ConstructionInstanceId];
 				// check for construction instance id
 				if (conInstanceId == INVALID_ID)
-					throw IBK::Exception(IBK::FormatString("Missing IntParameter 'ConstructionInstanceId'."), FUNC_ID);
+					throw IBK::Exception(IBK::FormatString("Missing ID reference 'ConstructionInstanceId'."), FUNC_ID);
 				// find zone id
-				if(std::find(conInstances.begin(), conInstances.end(), conInstanceId) == conInstances.end())
+				if (std::find(conInstances.begin(), conInstances.end(), conInstanceId) == conInstances.end())
 					throw IBK::Exception(IBK::FormatString("ConstructionInstance with id %1 does not exist.").arg(conInstanceId), FUNC_ID);
 			}
 			break;

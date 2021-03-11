@@ -27,7 +27,9 @@ public:
 	NANDRAD_COMPARE_WITH_ID
 	NANDRAD_COMP(HydraulicNetworkPipeProperties)
 
-	/*! Checks for valid and required parameters (value ranges). */
+	/*! Checks for valid and required parameters (value ranges).
+		\param networkModelType Identifies basic network model type (see HydraulicNetwork::ModelType)
+	*/
 	void checkParameters(int networkModelType) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***

@@ -90,9 +90,15 @@ public:
 
 	// *** STATIC FUNCTIONS ***
 
-	/*! Needed both in user interface and for valid parameter checking in solver. */
+	/*! Needed both in user interface and for valid parameter checking in solver.
+		\param networkModelType Identifies network model (HydraulicNetwork::ModelType).
+	*/
 	static std::vector<unsigned int> requiredParameter(const ModelType modelType, int networkModelType);
 
+	/*! Helper function that implements specific rules for testing a single parameter.
+		This is useful if the same parameter is used by several models and we want to avoid implementing
+		the same checking rule multiple times.
+	*/
 	static void checkModelParameter(const IBK::Parameter &para, const unsigned int numPara);
 
 };
