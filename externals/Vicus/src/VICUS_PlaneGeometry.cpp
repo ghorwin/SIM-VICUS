@@ -462,7 +462,6 @@ void PlaneGeometry::updateLocalCoordinateSystem() {
 	if (n.magnitude() > 1e-4) {
 		m_normal = n;
 		m_normal.normalize();
-		return; // found a normal vector
 	}
 }
 
