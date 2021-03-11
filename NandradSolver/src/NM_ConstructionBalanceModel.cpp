@@ -23,6 +23,7 @@
 #include "NM_ConstructionBalanceModel.h"
 
 #include <NANDRAD_ConstructionInstance.h>
+#include <NANDRAD_ConstructionType.h>
 #include <NANDRAD_Constants.h>
 #include <NANDRAD_SimulationParameter.h>
 
@@ -60,6 +61,7 @@ void ConstructionBalanceModel::setup(const NANDRAD::ConstructionInstance & con,
 		m_results[i] = 0;
 	m_fluxDensityShortWaveRadiationA = 0;
 	m_fluxDensityShortWaveRadiationB = 0;
+
 }
 
 
@@ -299,15 +301,17 @@ void ConstructionBalanceModel::setInputValueRefs(const std::vector<QuantityDescr
 	// copy required values
 	m_valueRefs = resultValueRefs;
 
-	// check network loads
-	bool foundActiveLayer = false;
-	for (unsigned int i= NUM_InputRef; i < NUM_InputRef + m_thermalNetworkModelCount; ++i) {
-		// check that only one active layer is references
-		if(m_valueRefs[i] != nullptr) {
-			if(foundActiveLayer)
-				throw IBK::Exception(IBK::FormatString("Active layer is referenced twice from a hydraulic network component "
-												   "for construction instance id=%1.").arg(m_id), FUNC_ID);
-
+	if(m_statesModel->m_activeLayerIndex != NANDRAD::INVALID_ID) {
+		// check network loads
+		for (unsigned int i= NUM_InputRef; i < NUM_InputRef + m_thermalNetworkModelCount; ++i) {
+			// check that only one active layer is references
+			if(m_valueRefs[i] != nullptr) {
+				if(m_activeLayerHeatLoadRef != nullptr)
+					throw IBK::Exception(IBK::FormatString("Active layer is referenced twice from a hydraulic network component "
+													   "for construction instance id=%1.").arg(m_id), FUNC_ID);
+				// copy pointer
+				m_activeLayerHeatLoadRef = m_valueRefs[i];
+			}
 		}
 	}
 }
@@ -358,6 +362,21 @@ void ConstructionBalanceModel::stateDependencies(std::vector<std::pair<const dou
 			if (i > 0)
 				resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_ElementTemperature].dataPtr() + i-1 ) );
 		}
+
+		// add active layer heat source dependencies
+		if(m_activeLayerHeatLoadRef != nullptr ) {
+
+			IBK_ASSERT(m_statesModel->m_activeLayerIndex != NANDRAD::INVALID_ID);
+			// loop through all elements of active layer
+			unsigned int elemIdxStart = m_statesModel->m_materialLayerElementOffset[m_statesModel->m_activeLayerIndex];
+			unsigned int elemIdxEnd = m_statesModel->m_nElements;
+
+			if(m_statesModel->m_activeLayerIndex < m_con->m_constructionType->m_materialLayers.size() - 1)
+				elemIdxEnd = m_statesModel->m_materialLayerElementOffset[m_statesModel->m_activeLayerIndex + 1];
+
+			for(unsigned int i = elemIdxStart; i < elemIdxEnd; ++i)
+				resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_activeLayerHeatLoadRef) );
+		}
 	}
 	else {
 		/// \todo hygrothermal code
@@ -393,6 +412,24 @@ int ConstructionBalanceModel::update() {
 		}
 		ydot[nElements-1] -= m_fluxDensityHeatConductionB + m_fluxDensityShortWaveRadiationB; // right BC fluxes
 		ydot[nElements-1] /= E[nElements-1].dx;
+
+		// add active layer heat sources
+		if(m_activeLayerHeatLoadRef != nullptr ) {
+
+			IBK_ASSERT(m_statesModel->m_activeLayerIndex != NANDRAD::INVALID_ID);
+			// loop through all elements of active layer
+			unsigned int elemIdxStart = m_statesModel->m_materialLayerElementOffset[m_statesModel->m_activeLayerIndex];
+			unsigned int elemIdxEnd = nElements;
+
+			// calculate flux density [W/m3]
+			double layerLoadDensity = *m_activeLayerHeatLoadRef/m_statesModel->m_activeLayerVolume;
+
+			if(m_statesModel->m_activeLayerIndex < m_con->m_constructionType->m_materialLayers.size() - 1)
+				elemIdxEnd = m_statesModel->m_materialLayerElementOffset[m_statesModel->m_activeLayerIndex + 1];
+
+			for(unsigned int i = elemIdxStart; i < elemIdxEnd; ++i)
+				ydot[i] += layerLoadDensity;
+		}
 	}
 	return 0; // signal success
 }
