@@ -58,12 +58,21 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 	double innerHeatTransferCoefficient = m_nusselt * m_fluidConductivity /
 											m_innerDiameter;
 
-	// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-	m_thermalTransmittance = m_length / (
-				  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
-				+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)
-				+ 1.0/m_UValuePipeWall )
-		);
+	if(m_outerHeatTransferCoefficient == 0.) {
+		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
+		m_thermalTransmittance = m_length / (
+					  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
+					+ 1.0/m_UValuePipeWall )
+			);
+	}
+	else {
+		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
+		m_thermalTransmittance = m_length / (
+					  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
+					+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)
+					+ 1.0/m_UValuePipeWall )
+			);
+	}
 
 	const double externalTemperature = *m_externalTemperatureRef;
 	// calculate heat loss with given parameters
@@ -210,11 +219,22 @@ void TNDynamicPipeElement::setInflowTemperature(double Tinflow) {
 
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
 		// see documentation above
-		m_thermalTransmittance = m_discLength / (
-					  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
-					+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)
-					+ 1.0/m_UValuePipeWall )
-			);
+		if(m_outerHeatTransferCoefficient == 0.) {
+			// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
+			m_thermalTransmittance = m_length / (
+						  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
+						+ 1.0/m_UValuePipeWall )
+				);
+		}
+		else {
+			// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
+			m_thermalTransmittance = m_length / (
+						  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
+						+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)
+						+ 1.0/m_UValuePipeWall )
+				);
+		}
+
 
 		const double externalTemperature = *m_externalTemperatureRef;
 		for(unsigned int i = 0; i < m_nVolumes; ++i) {
