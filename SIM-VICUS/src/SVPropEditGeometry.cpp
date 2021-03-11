@@ -84,6 +84,10 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui->lineEditInclination->installEventFilter(this);
 	m_ui->lineEditOrientation->installEventFilter(this);
 
+	m_ui->lineEditXCopy->installEventFilter(this);
+	m_ui->lineEditYCopy->installEventFilter(this);
+	m_ui->lineEditZCopy->installEventFilter(this);
+
 	m_modificationState[MT_Translate] = MS_Absolute;
 	m_modificationState[MT_Rotate] = MS_Absolute;
 	m_modificationState[MT_Scale] = MS_Absolute;
@@ -613,8 +617,11 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event) {
 				target == m_ui->lineEditY ||
 				target == m_ui->lineEditZ ||
 				target == m_ui->lineEditInclination ||
-				target == m_ui->lineEditOrientation )
-		{	double delta = 0.0;
+				target == m_ui->lineEditOrientation ||
+				target == m_ui->lineEditXCopy ||
+				target == m_ui->lineEditYCopy||
+				target == m_ui->lineEditZCopy )
+		{	double delta = 0.1; // for copy operation
 
 			switch (m_modificationType) {
 			case MT_Translate:
@@ -841,7 +848,7 @@ void SVPropEditGeometry::setComboBox(const ModificationType & type, const Modifi
 		break;
 	case MT_Scale:
 		m_ui->comboBox->addItem( tr("resize surfaces:") );
-		m_ui->comboBox->addItem( tr("scale relative to center of each surface:") );
+		m_ui->comboBox->addItem( tr("scale relative to global coordinate system:") );
 		m_ui->comboBox->addItem( tr("scale relative to local coordinate system:") );
 		break;
 	case NUM_MT: ;// avoid compiler warning
@@ -1452,5 +1459,10 @@ void SVPropEditGeometry::on_pushButtonCopySurfaces_clicked() {
 	}
 	SVUndoCopySurfaces *undo = new SVUndoCopySurfaces("Copied Surfaces.", newSurfaces);
 	undo->push();
+
+}
+
+void SVPropEditGeometry::on_pushButtonCopyBuildingLvls_clicked()
+{
 
 }

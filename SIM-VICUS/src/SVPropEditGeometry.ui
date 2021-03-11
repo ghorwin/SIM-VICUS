@@ -31,7 +31,7 @@
         <x>0</x>
         <y>0</y>
         <width>474</width>
-        <height>549</height>
+        <height>571</height>
        </rect>
       </property>
       <attribute name="label">
@@ -156,13 +156,25 @@
         <x>0</x>
         <y>0</y>
         <width>474</width>
-        <height>549</height>
+        <height>571</height>
        </rect>
       </property>
       <attribute name="label">
        <string>Edit Geometry</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
+       <item row="1" column="0" colspan="2">
+        <widget class="Line" name="line_7">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QWidget" name="widget_3" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_4"/>
+        </widget>
+       </item>
        <item row="0" column="0" colspan="2">
         <widget class="QGroupBox" name="groupBoxModify">
          <property name="title">
@@ -439,12 +451,18 @@
          </layout>
         </widget>
        </item>
-       <item row="1" column="0" colspan="2">
-        <widget class="Line" name="line_7">
+       <item row="3" column="1">
+        <spacer name="verticalSpacer_2">
          <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+          <enum>Qt::Vertical</enum>
          </property>
-        </widget>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>311</height>
+          </size>
+         </property>
+        </spacer>
        </item>
        <item row="2" column="0" colspan="2">
         <widget class="QGroupBox" name="groupBoxCopy">
@@ -581,38 +599,7 @@
          </layout>
         </widget>
        </item>
-       <item row="3" column="1">
-        <spacer name="verticalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>311</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="4" column="0">
-        <widget class="QWidget" name="widget_3" native="true">
-         <layout class="QHBoxLayout" name="horizontalLayout_4"/>
-        </widget>
-       </item>
       </layout>
-     </widget>
-     <widget class="QWidget" name="pageCopy">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>474</width>
-        <height>549</height>
-       </rect>
-      </property>
-      <attribute name="label">
-       <string>Seite</string>
-      </attribute>
      </widget>
     </widget>
    </item>

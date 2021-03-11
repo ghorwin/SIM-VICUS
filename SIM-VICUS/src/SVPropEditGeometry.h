@@ -119,8 +119,7 @@ public slots:
 
 private slots:
 
-	/*! Event Filter
-		Needed for all scroll specifiy inputs
+	/*! Event Filter: Needed for all scrolling specific inputs
 	*/
 	bool eventFilter(QObject *target, QEvent *event) override;
 
@@ -189,6 +188,8 @@ private slots:
 	void on_pushButtonCopyRooms_clicked();
 
 	void on_pushButtonCopySurfaces_clicked();
+
+	void on_pushButtonCopyBuildingLvls_clicked();
 
 private:
 	/*! Updates the property widget regarding to all geometry data.
