@@ -393,7 +393,7 @@
     <string>Edit properties</string>
    </property>
    <property name="toolTip">
-    <string>Turns on geometry edit mode</string>
+    <string>Turns on parametrization edit mode</string>
    </property>
   </action>
   <action name="actionDBMaterials">
