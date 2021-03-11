@@ -60,10 +60,10 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 										   "Length must be > 0 m.");
 
 			// check number of parallel pipes, and if missing, default to 1
+			if (m_intPara[IP_NumberParallelPipes].name.empty())
+				m_intPara[IP_NumberParallelPipes].set("NumberParallelPipes", 1);
 			if (m_intPara[IP_NumberParallelPipes].value <= 0)
 				throw IBK::Exception("Parameter 'NumberParallelPipes' must be > 0!", FUNC_ID);
-			if ((unsigned int) m_intPara[IP_NumberParallelPipes].value == NANDRAD::INVALID_ID)
-				m_intPara[IP_NumberParallelPipes].set("NumberParallelPipes", 1);
 		}
 		break;
 

@@ -35,8 +35,6 @@ public:
 		m_componentId(componentId),
 		m_pipePropertiesId(INVALID_ID)
 	{
-		for(IBK::IntPara &i : m_intPara)
-			i.value = (int) NANDRAD::INVALID_ID;
 	}
 
 	/*! Specific constructor to create pipe elements. */
@@ -49,6 +47,7 @@ public:
 		NUM_P
 	};
 
+	/*! Whole number parameters. */
 	enum intPara_t {
 		IP_NumberParallelPipes,			// Keyword: NumberParallelPipes								'Number of parallel pipes'
 		NUM_IP
