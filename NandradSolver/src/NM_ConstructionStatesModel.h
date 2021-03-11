@@ -193,10 +193,6 @@ private:
 	std::vector<size_t>				m_materialLayerElementOffset;
 	/*! Total construction width [m]. */
 	double							m_constructionWidth;
-	/*! Storage of active layer index.*/
-	unsigned int					m_activeLayerIndex = 999;
-	/*! Active layer volume [m3]. */
-	double							m_activeLayerVolume = 6666;
 
 	/*! Cached conserved quantities (size nPrimaryStateResults() ) */
 	std::vector<double>				m_y;
