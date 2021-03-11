@@ -67,13 +67,16 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 		}
 		break;
 
-		// TODO : add checks for other components
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
 		case HydraulicNetworkComponent::MT_HeatExchanger:
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:
-		case HydraulicNetworkComponent::NUM_MT: {
+			// nothing to check for
+		break;
+
+		// TODO : add checks for other components
+
+		case HydraulicNetworkComponent::NUM_MT:
 			throw IBK::Exception("Invalid network component model type!", FUNC_ID);
-		}
 	}
 
 	// finally check for valid heat exchange parameters
