@@ -25,7 +25,6 @@
 
 #include "NM_AbstractModel.h"
 #include "NM_AbstractStateDependency.h"
-#include "NM_VectorValuedQuantity.h"
 
 namespace NANDRAD {
 	class ConstructionInstance;
@@ -174,9 +173,6 @@ private:
 		Index matches enum values of Results.
 	*/
 	std::vector<double>								m_results;
-	/*! Vector valued results, computed/updated during the calculation. */
-	std::vector<VectorValuedQuantity>				m_vectorValuedResults;
-
 
 	/*! Cached divergences of balance equations. */
 	std::vector<double>								m_ydot;

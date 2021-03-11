@@ -55,8 +55,6 @@ void ConstructionBalanceModel::setup(const NANDRAD::ConstructionInstance & con,
 	// resize storage vectors for divergences, sources, and initialize boundary conditions
 	m_ydot.resize(m_statesModel->m_n);
 	m_results.resize(NUM_R);
-	m_vectorValuedResults.resize(NUM_VVR);
-	m_vectorValuedResults[VVR_ThermalLoad] = VectorValuedQuantity(con.m_constructionType->m_materialLayers.size(), 0);
 
 	// Initialize results
 	for (unsigned int i=0; i<NUM_R; ++i)
@@ -79,23 +77,11 @@ void ConstructionBalanceModel::resultDescriptions(std::vector<QuantityDescriptio
 
 		resDesc.push_back(result);
 	}
-	// add vector valued quantities
-	QuantityDescription res;
-	res.m_constant = true;
-	res.m_description = NANDRAD_MODEL::KeywordList::Description("ConstructionBalanceModel::VectorValuedResults", VVR_ThermalLoad);
-	res.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionBalanceModel::VectorValuedResults", VVR_ThermalLoad);
-	res.m_unit = NANDRAD_MODEL::KeywordList::Unit("ConstructionBalanceModel::VectorValuedResults", VVR_ThermalLoad);
-	// this is a vector-valued quantity with as many elements as material layers
-	// and the temperatures returned are actually mean temperatures of the individual elements of the material layer
-	res.resize(m_con->m_constructionType->m_materialLayers.size());
-	resDesc.push_back(res);
 }
 
 
 void ConstructionBalanceModel::resultValueRefs(std::vector<const double *> & res) const {
 	for (const double & r : m_results)
-		res.push_back(&r);
-	for (const double &r : m_vectorValuedResults[VVR_ThermalLoad].data())
 		res.push_back(&r);
 }
 
@@ -112,18 +98,6 @@ const double * ConstructionBalanceModel::resultValueRef(const InputReference & q
 	else if (KeywordList::KeywordExists(category, quantityName.m_name)) {
 		int resIdx = KeywordList::Enumeration(category, quantityName.m_name);
 		return &m_results[(unsigned int)resIdx];
-	}
-	else if(quantityName.m_name == KeywordList::Keyword("ConstructionBalanceModel::VectorValuedResults",
-														VVR_ThermalLoad)) {
-		// index check
-		if(quantityName.m_index == -1)
-			return m_vectorValuedResults[VVR_ThermalLoad].dataPtr();
-
-		unsigned int index = (unsigned int) quantityName.m_index;
-		// index exceeds vector size
-		if(index >= m_vectorValuedResults[VVR_ThermalLoad].size())
-			return nullptr;
-		return &m_vectorValuedResults[VVR_ThermalLoad].data()[index];
 	}
 
 	return nullptr; // not found
@@ -441,9 +415,6 @@ int ConstructionBalanceModel::update() {
 
 		// add active layer heat sources
 		if(m_activeLayerHeatLoadRef != nullptr ) {
-			// store thermal load
-			m_vectorValuedResults[VVR_ThermalLoad].dataPtr()[m_statesModel->m_activeLayerIndex] =
-					*m_activeLayerHeatLoadRef;
 
 			IBK_ASSERT(m_statesModel->m_activeLayerIndex != NANDRAD::INVALID_ID);
 			// loop through all elements of active layer

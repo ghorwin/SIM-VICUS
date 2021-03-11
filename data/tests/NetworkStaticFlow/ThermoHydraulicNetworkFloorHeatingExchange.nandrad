@@ -12,7 +12,7 @@
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 			<Interval>
-				<IBK:Parameter name="End" unit="d">30</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">7</IBK:Parameter>
 			</Interval>
 			<SolarLoadsDistributionModel>
 				<DistributionType>AreaWeighted</DistributionType>
@@ -37,7 +37,7 @@
 				<InterfaceA id="1" zoneId="1">
 					<!--Interface to 'Room'-->
 					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</InterfaceA>
 			</ConstructionInstance>
@@ -47,7 +47,7 @@
 				<!-- Layer index starts with 0 (index matches index in MaterialLayers vector) -->
 				<ActiveLayerIndex>1</ActiveLayerIndex>
 				<MaterialLayers>
-					<MaterialLayer thickness="0.01" matId="1002" />
+					<MaterialLayer thickness="0.08" matId="1002" />
 					<MaterialLayer thickness="0.06" matId="1001" /> <!-- heated layer -->
 					<MaterialLayer thickness="0.12" matId="1001" />
 				</MaterialLayers>
@@ -150,13 +150,8 @@
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>ConstructionHeatConductionLoad</Quantity>
+					<Quantity>NetworkHeatLoad</Quantity>
 					<ObjectListName>Zones</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>ThermalLoad[1]</Quantity>
-					<ObjectListName>Floor</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
@@ -183,10 +178,6 @@
 			<ObjectList name="Zones">
 				<FilterID>*</FilterID>
 				<ReferenceType>Zone</ReferenceType>
-			</ObjectList>
-			<ObjectList name="Floor">
-				<FilterID>3001</FilterID>
-				<ReferenceType>ConstructionInstance</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
 		
