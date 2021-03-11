@@ -49,7 +49,8 @@ namespace IBKMK {
 */
 static bool solve(double a, double b, double c,  double d,  double e,  double f, double & x, double & y) {
 	double det = a*d - b*c;
-	if (det == 0.)
+	// Prevent division by very small numbers
+	if (std::fabs(det) < 1e-7)
 		return false;
 
 	x = (e*d - c*f)/det;
