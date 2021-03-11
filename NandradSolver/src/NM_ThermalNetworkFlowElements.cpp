@@ -221,14 +221,14 @@ void TNDynamicPipeElement::setInflowTemperature(double Tinflow) {
 		// see documentation above
 		if(m_outerHeatTransferCoefficient == 0.) {
 			// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-			m_thermalTransmittance = m_length / (
+			m_thermalTransmittance = m_discLength / (
 						  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
 						+ 1.0/m_UValuePipeWall )
 				);
 		}
 		else {
 			// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-			m_thermalTransmittance = m_length / (
+			m_thermalTransmittance = m_discLength / (
 						  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
 						+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)
 						+ 1.0/m_UValuePipeWall )
