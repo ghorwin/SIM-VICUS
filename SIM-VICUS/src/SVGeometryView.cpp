@@ -304,6 +304,7 @@ void SVGeometryView::setupToolBar() {
 
 	m_snapAction = new QAction(tr("Snap"), this);
 	m_snapAction->setCheckable(true);
+	m_snapAction->setToolTip(tr("Toggles object snap on/off (F3)"));
 	m_snapAction->setIcon(QIcon(":/gfx/actions/icon-gesture-drag.svg") );
 
 	m_toolBar->addAction(m_snapAction);
