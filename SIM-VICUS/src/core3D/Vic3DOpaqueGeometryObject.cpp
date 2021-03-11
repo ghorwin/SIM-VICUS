@@ -101,6 +101,10 @@ void OpaqueGeometryObject::updateBuffers() {
 	if (m_indexBufferData.empty())
 		return;
 
+	// TODO Andreas, if a performance issue arises with very large geometries, use the same memory mapping as
+	//               for the color buffer, in order to avoid the overhead for re-allocating when there is no
+	//               buffer size change.
+
 	// transfer data stored in m_vertexBufferData
 	m_vertexBufferObject.bind();
 	m_vertexBufferObject.allocate(m_vertexBufferData.data(), m_vertexBufferData.size()*sizeof(Vertex));
@@ -119,10 +123,16 @@ void OpaqueGeometryObject::updateColorBuffer(unsigned int startIndex, unsigned i
 	if (m_colorBufferData.empty())
 		return;
 	m_colorBufferObject.bind();
-//	if (count != 0)
-//		m_colorBufferObject.allocate(m_colorBufferData.data()+startIndex, count*sizeof(ColorRGBA) );
-//	else
+	// if color buffer size differs, do a full re-allocate : this expands/shrinks the memory on GPU when
+	// new projects are loaded or objects are created/removed
+	if ((unsigned int)m_colorBufferObject.size() != m_colorBufferData.size()*sizeof(ColorRGBA))
 		m_colorBufferObject.allocate(m_colorBufferData.data(), m_colorBufferData.size()*sizeof(ColorRGBA) );
+	else  {
+		auto ptr = m_colorBufferObject.mapRange(0, m_colorBufferData.size() * sizeof(ColorRGBA),
+												QOpenGLBuffer::RangeInvalidateBuffer | QOpenGLBuffer::RangeWrite);
+		std::memcpy(ptr, m_colorBufferData.data(),  m_colorBufferData.size()*sizeof(ColorRGBA));
+		m_colorBufferObject.unmap();
+	}
 	m_colorBufferObject.release();
 }
 

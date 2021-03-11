@@ -953,9 +953,9 @@ void Vic3DScene::setViewState(const SVViewState & vs) {
 
 		if (updateBuilding) {
 			qDebug() << "Updating surface coloring of buildings";
-			// TODO : Andreas, Performance update, only update and transfer color buffer
 			generateBuildingGeometry();
-			m_opaqueGeometryObject.updateBuffers();
+			// TODO : Andreas, Performance update, only update affected part of color buffer
+			m_opaqueGeometryObject.updateColorBuffer();
 		}
 		if (updateNetwork) {
 			qDebug() << "Updating surface coloring of networks";
@@ -979,7 +979,7 @@ void Vic3DScene::refreshColors() {
 		qDebug() << "Updating surface coloring of buildings";
 		// TODO : Andreas, Performance update, only update and transfer color buffer
 		generateBuildingGeometry();
-		m_opaqueGeometryObject.updateBuffers();
+		m_opaqueGeometryObject.updateColorBuffer();
 	}
 	else if (vs.m_objectColorMode >= SVViewState::OCM_Network) {
 		qDebug() << "Updating surface coloring of networks";
