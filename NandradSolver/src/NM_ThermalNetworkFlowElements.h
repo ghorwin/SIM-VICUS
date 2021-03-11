@@ -76,6 +76,9 @@ private:
 	/*! Equivalent u-value of the pipe wall and insulation per length of pipe in [W/mK] */
 	double							m_UValuePipeWall;
 
+	/*! Number of parallel pipes (=1 per default).*/
+	unsigned int					m_nParallelPipes;
+
 	/*! Fluid velocity [m/s]*/
 	double							m_velocity = -999;
 
@@ -239,6 +242,7 @@ private:
 	/*! Lengths of of all pipe volumes [m] */
 	double							m_discLength = -999;
 
+
 	/*! Fluid temperatures for all discretization volumes [K] */
 	std::vector<double>				m_temperatures;
 
@@ -253,6 +257,9 @@ private:
 
 	/*! Outer diameter of pipe [m] */
 	double							m_outerDiameter = -999;
+
+	/*! Number of parallel pipes (=1 per default).*/
+	unsigned int					m_nParallelPipes;
 
 	/*! Fluid conductivity [W/mK].
 		Cached value from fluid properties.

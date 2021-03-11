@@ -47,6 +47,9 @@ private:
 	/*! Roughness of pipe wall in [m] */
 	double							m_roughness;
 
+	/*! Number of parallel pipes (=1 per default).*/
+	unsigned int					m_nParallelPipes;
+
 	/*! Fluid temperature [K], will be updated in each call to setFluidTemperature(). */
 	double							m_fluidTemperature = -999;
 

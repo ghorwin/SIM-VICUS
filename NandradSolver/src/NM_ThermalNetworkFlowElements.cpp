@@ -28,7 +28,8 @@ TNSimplePipeElement::TNSimplePipeElement(const NANDRAD::HydraulicNetworkElement 
 			elem.m_heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_ExternalHeatTransferCoefficient].value;
 	// compute fluid volume
 	m_fluidVolume = PI/4. * m_innerDiameter * m_innerDiameter * m_length;
-	// TODO Anne, scale fluid volume
+	// copy number of pipes
+	m_nParallelPipes = (unsigned int) elem.m_intPara[NANDRAD::HydraulicNetworkElement::IP_NumberParallelPipes].value;
 
 	// copy fluid properties
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
@@ -46,8 +47,8 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 	// check heat transfer type
 	m_volumeFlow = std::fabs(m_massFlux)/m_fluidDensity; // m3/s !!! unit conversion is done when writing outputs
 
-	m_velocity = m_volumeFlow/(PI/4. * m_innerDiameter * m_innerDiameter);
-	// TODO Anne, scale velocity by n pipe!
+	// note: velcoty is caluclated for a single pipe (but mass flux interpreted as flux through all parallel pipes
+	m_velocity = m_volumeFlow/(PI/4. * m_innerDiameter * m_innerDiameter * m_nParallelPipes);
 
 	m_viscosity = m_fluidViscosity.value(m_meanTemperature);
 	m_reynolds = ReynoldsNumber(m_velocity, m_viscosity, m_innerDiameter);
@@ -149,6 +150,8 @@ TNDynamicPipeElement::TNDynamicPipeElement(const NANDRAD::HydraulicNetworkElemen
 			elem.m_heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_ExternalHeatTransferCoefficient].value;
 	// calculate fluid volume inside the pipe
 	m_fluidVolume = PI/4. * m_innerDiameter * m_innerDiameter * m_length;
+	// copy number of pipes
+	m_nParallelPipes = (unsigned int) elem.m_intPara[NANDRAD::HydraulicNetworkElement::IP_NumberParallelPipes].value;
 	// copy fluid properties
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
@@ -188,7 +191,8 @@ void TNDynamicPipeElement::setInflowTemperature(double Tinflow) {
 	m_inflowTemperature = Tinflow;
 
 	m_volumeFlow = std::fabs(m_massFlux)/m_fluidDensity; // m3/s !!! unit conversion is done when writing outputs
-	m_velocity = m_volumeFlow/(PI/4. * m_innerDiameter * m_innerDiameter);
+	// note: velcoty is caluclated for a single pipe (but mass flux interpreted as flux through all parallel pipes
+	m_velocity = m_volumeFlow/(PI/4. * m_innerDiameter * m_innerDiameter * m_nParallelPipes);
 
 	// check heat transfer type
 	if (m_heatExchangeType != (int) NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant &&
