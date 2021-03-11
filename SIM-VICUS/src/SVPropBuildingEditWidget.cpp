@@ -18,6 +18,7 @@
 #include "SVUndoTreeNodeState.h"
 #include "SVUndoModifyComponentInstances.h"
 #include "SVUndoModifyRoomZoneTemplateAssociation.h"
+#include "SVUndoTreeNodeState.h"
 
 SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	QWidget(parent),
@@ -332,6 +333,7 @@ void SVPropBuildingEditWidget::updateUi() {
 
 	// now put the data of the map into the table
 	int currentRow = m_ui->tableWidgetComponents->currentRow();
+	m_ui->tableWidgetComponents->blockSignals(true);
 	m_ui->tableWidgetComponents->clearContents();
 	m_ui->tableWidgetComponents->setRowCount(m_componentSurfacesMap.size());
 	int row=0;
@@ -356,7 +358,8 @@ void SVPropBuildingEditWidget::updateUi() {
 		m_ui->tableWidgetComponents->setItem(row, 1, item);
 	}
 	// reselect row
-	m_ui->tableWidgetComponents->selectRow(std::max(currentRow, m_ui->tableWidgetComponents->rowCount()-1));
+	m_ui->tableWidgetComponents->blockSignals(false);
+	m_ui->tableWidgetComponents->selectRow(std::min(currentRow, m_ui->tableWidgetComponents->rowCount()-1));
 	// process all selected surfaces and determine which component they have assigned
 	std::vector<const VICUS::Surface*> surfaces;
 	project().selectedSurfaces(surfaces, VICUS::Project::SG_Building);
@@ -458,6 +461,7 @@ void SVPropBuildingEditWidget::updateUi() {
 	}
 	// now put the data of the map into the table
 	currentRow = m_ui->tableWidgetBoundaryConditions->currentRow();
+	m_ui->tableWidgetBoundaryConditions->blockSignals(true);
 	m_ui->tableWidgetBoundaryConditions->clearContents();
 	m_ui->tableWidgetBoundaryConditions->setRowCount(m_bcSurfacesMap.size());
 	row=0;
@@ -482,13 +486,15 @@ void SVPropBuildingEditWidget::updateUi() {
 		m_ui->tableWidgetBoundaryConditions->setItem(row, 1, item);
 	}
 	// reselect row
-	m_ui->tableWidgetBoundaryConditions->selectRow(std::max(currentRow, m_ui->tableWidgetBoundaryConditions->rowCount()-1));
+	m_ui->tableWidgetBoundaryConditions->blockSignals(false);
+	m_ui->tableWidgetBoundaryConditions->selectRow(std::min(currentRow, m_ui->tableWidgetBoundaryConditions->rowCount()-1));
 
 
 	// *** Update ZoneTemplates Page ***
 
 	// now put the data of the map into the table
 	currentRow = m_ui->tableWidgetZoneTemplates->currentRow();
+	m_ui->tableWidgetZoneTemplates->blockSignals(true);
 	m_ui->tableWidgetZoneTemplates->clearContents();
 	m_ui->tableWidgetZoneTemplates->setRowCount(m_zoneTemplateAssignments.size());
 	row=0;
@@ -512,7 +518,8 @@ void SVPropBuildingEditWidget::updateUi() {
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetZoneTemplates->setItem(row, 1, item);
 	}
-	m_ui->tableWidgetZoneTemplates->selectRow(std::max(currentRow, m_ui->tableWidgetZoneTemplates->rowCount()-1));
+	m_ui->tableWidgetZoneTemplates->blockSignals(false);
+	m_ui->tableWidgetZoneTemplates->selectRow(std::min(currentRow, m_ui->tableWidgetZoneTemplates->rowCount()-1));
 
 	// process all selected rooms and determine which zone template they have assigned
 	std::vector<const VICUS::Room*> rooms;
@@ -624,15 +631,40 @@ void SVPropBuildingEditWidget::zoneTemplateVisibilityChanged() {
 
 
 void SVPropBuildingEditWidget::zoneTemplateSelectionChanged() {
+	// do nothing, if checkbox isn't active; that also means that when the checkbox is unchecked,
+	// we will not automatically show all hidden objects again
+	if (!m_ui->checkBoxZoneTemplateShowOnlyActive->isChecked())
+		return;
+
 	// compose node states for all rooms and their surfaces based on template association
 
 	// get currently selected zone template
 	const VICUS::ZoneTemplate * zt = currentlySelectedZoneTemplate();
 
+	// if not a valid template, do nothing here
+	if (zt == nullptr)
+		return;
+
 	// compose a list of unique room IDs and respective on/off visibility states
+	std::set<unsigned int> nodeIDs;
+
+	const VICUS::Project & p = project();
+
+	for (const VICUS::Building & b : p.m_buildings) {
+		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+			for (const VICUS::Room & r : bl.m_rooms) {
+				// skip all rooms that do not have the same zone template as we have
+				if (r.m_idZoneTemplate != zt->m_id) continue;
+				nodeIDs.insert(r.uniqueID()); // Mind: unique IDs!
+				for (const VICUS::Surface & s : r.m_surfaces)
+					nodeIDs.insert(s.uniqueID()); // Mind: unique IDs!
+			}
+		}
+	}
 
 	// trigger undo-action
-
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Exclusive selection by zone template"), SVUndoTreeNodeState::VisibilityState, nodeIDs, true, true);
+	undo->push();
 }
 
 
@@ -786,11 +818,6 @@ void SVPropBuildingEditWidget::on_tableWidgetZoneTemplates_itemSelectionChanged(
 	bool enabled = (currentlySelectedZoneTemplate() != nullptr);
 	m_ui->pushButtonEditZoneTemplates->setEnabled(enabled);
 	m_ui->pushButtonExchangeZoneTemplates->setEnabled(enabled);
-
-	if (m_ui->checkBoxZoneTemplateColorOnlyActive->isChecked())
-		zoneTemplateVisibilityChanged();
-	if (m_ui->checkBoxZoneTemplateShowOnlyActive->isChecked())
-		zoneTemplateSelectionChanged();
 }
 
 
@@ -855,4 +882,12 @@ void SVPropBuildingEditWidget::on_checkBoxZoneTemplateColorOnlyActive_toggled(bo
 
 void SVPropBuildingEditWidget::on_checkBoxZoneTemplateShowOnlyActive_toggled(bool) {
 	zoneTemplateSelectionChanged();
+}
+
+
+void SVPropBuildingEditWidget::on_tableWidgetZoneTemplates_itemClicked(QTableWidgetItem *) {
+	if (m_ui->checkBoxZoneTemplateColorOnlyActive->isChecked())
+		zoneTemplateVisibilityChanged();
+	if (m_ui->checkBoxZoneTemplateShowOnlyActive->isChecked())
+		zoneTemplateSelectionChanged();
 }

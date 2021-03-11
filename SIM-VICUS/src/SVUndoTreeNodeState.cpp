@@ -19,7 +19,7 @@ void setState(T & obj, const int & bitmask) {
 SVUndoTreeNodeState::SVUndoTreeNodeState(const QString & label,
 										 NodeState t,
 										 const std::set<unsigned int> & nodeIDs,
-										 bool on) :
+										 bool on, bool exclusive) :
 	m_changedStateType(t)
 {
 	setText( label );
@@ -27,18 +27,23 @@ SVUndoTreeNodeState::SVUndoTreeNodeState(const QString & label,
 	// store current node states
 	const VICUS::Project & p = theProject();
 
+	// we first search through all buildings and store the node states of all objects
+	// that need changing
+
+	// if exclusive is on, we just store all node states
+
 	// search buildings
 	for (const VICUS::Building & b : p.m_buildings) {
-		if (nodeIDs.find(b.uniqueID()) != nodeIDs.end())
+		if (exclusive || nodeIDs.find(b.uniqueID()) != nodeIDs.end())
 			storeState(b, m_nodeStates[b.uniqueID()]);
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
-			if (nodeIDs.find(bl.uniqueID()) != nodeIDs.end())
+			if (exclusive || nodeIDs.find(bl.uniqueID()) != nodeIDs.end())
 				storeState(bl, m_nodeStates[bl.uniqueID()]);
 			for (const VICUS::Room & r : bl.m_rooms) {
-				if (nodeIDs.find(r.uniqueID()) != nodeIDs.end())
+				if (exclusive || nodeIDs.find(r.uniqueID()) != nodeIDs.end())
 					storeState(r, m_nodeStates[r.uniqueID()]);
 				for (const VICUS::Surface & s : r.m_surfaces) {
-					if (nodeIDs.find(s.uniqueID()) != nodeIDs.end())
+					if (exclusive || nodeIDs.find(s.uniqueID()) != nodeIDs.end())
 						storeState(s, m_nodeStates[s.uniqueID()]);
 				}
 			}
@@ -47,27 +52,28 @@ SVUndoTreeNodeState::SVUndoTreeNodeState(const QString & label,
 
 	// search plain geometry
 	for (const VICUS::Surface & s : p.m_plainGeometry) {
-		if (nodeIDs.find(s.uniqueID()) != nodeIDs.end())
+		if (exclusive || nodeIDs.find(s.uniqueID()) != nodeIDs.end())
 			storeState(s, m_nodeStates[s.uniqueID()]);
 	}
 
 	// search in networks
 	for (const VICUS::Network & n : p.m_geometricNetworks) {
-		if (nodeIDs.find(n.uniqueID()) != nodeIDs.end())
+		if (exclusive || nodeIDs.find(n.uniqueID()) != nodeIDs.end())
 			storeState(n, m_nodeStates[n.uniqueID()]);
 		// search nodes
 		for (const VICUS::NetworkNode & no : n.m_nodes) {
-			if (nodeIDs.find(no.uniqueID()) != nodeIDs.end())
+			if (exclusive || nodeIDs.find(no.uniqueID()) != nodeIDs.end())
 				storeState(no, m_nodeStates[no.uniqueID()]);
 		}
 		// search edges
 		for (const VICUS::NetworkEdge & ne : n.m_edges) {
-			if (nodeIDs.find(ne.uniqueID()) != nodeIDs.end())
+			if (exclusive || nodeIDs.find(ne.uniqueID()) != nodeIDs.end())
 				storeState(ne, m_nodeStates[ne.uniqueID()]);
 		}
 	}
 
 	m_otherNodeStates = m_nodeStates;
+
 	// now set the "new" node states
 	for (auto & s : m_nodeStates) {
 		switch (t) {
@@ -84,6 +90,26 @@ SVUndoTreeNodeState::SVUndoTreeNodeState(const QString & label,
 				else
 					s.second &= ~SelectedState;
 			break;
+		}
+		// in exclusive mode, we turn all node states opposite, for nodes *not* in nodeIDs
+		if (exclusive) {
+			if (nodeIDs.find(s.first) == nodeIDs.end()) {
+				switch (t) {
+					case VisibilityState :
+						if (!on)
+							s.second |= VisibilityState;
+						else
+							s.second &= ~VisibilityState;
+					break;
+					case SelectedState :
+						if (!on) {
+							s.second |= SelectedState;
+						}
+						else
+							s.second &= ~SelectedState;
+					break;
+				}
+			}
 		}
 	}
 }

@@ -18,6 +18,7 @@ namespace VICUS {
 	class Room;
 }
 
+class QTableWidgetItem;
 class ModificationInfo;
 
 /*! A widget to edit building properties.
@@ -106,6 +107,8 @@ private slots:
 	void on_checkBoxZoneTemplateColorOnlyActive_toggled(bool checked);
 
 	void on_checkBoxZoneTemplateShowOnlyActive_toggled(bool checked);
+
+	void on_tableWidgetZoneTemplates_itemClicked(QTableWidgetItem *item);
 
 private:
 	/*! Returns a pointer to the currently selected component in the component table. */

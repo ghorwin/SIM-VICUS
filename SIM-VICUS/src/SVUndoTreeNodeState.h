@@ -24,8 +24,12 @@ public:
 	};
 
 
-	/*! Constructor, takes set of node IDs to change at the same time. */
-	SVUndoTreeNodeState(const QString & label, NodeState t, const std::set<unsigned int> & nodeIDs, bool on);
+	/*! Constructor, takes set of node IDs to change excusively at the same time. If exclusive is true,
+		all the others or changed into the opposite.
+		So, you may select a set of surfaces and set the node state "VisibilityState" to on, then all these will be set to
+		on, while all others not in the nodeIDs set will be hidden.
+	*/
+	SVUndoTreeNodeState(const QString & label, NodeState t, const std::set<unsigned int> & nodeIDs, bool on, bool exclusive=false);
 
 	/*! Factory function, takes single node ID and flag to also change all children and grand-children. */
 	static SVUndoTreeNodeState * createUndoAction(const QString & label, NodeState t, unsigned int nodeID, bool withChildren, bool on);
