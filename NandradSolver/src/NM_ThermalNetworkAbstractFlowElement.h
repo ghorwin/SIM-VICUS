@@ -134,8 +134,7 @@ public:
 	*/
 	double							m_fluidDensity = -999;
 
-	/*! Fluid volume [m3].
-	*/
+	/*! Fluid volume [m3]. */
 	double							m_fluidVolume = -999;
 
 	/*! Fluid (well-mixed) temperature in [K]. */

@@ -65,6 +65,11 @@ private:
 	/*! outer diameter of pipe in [m] */
 	double							m_outerDiameter = -999;
 
+	/*! Effective flow cross-section [m2].
+		\note This is the total cross section for fluid flow of all pipes (if m_nParallelPipes is larger than 1).
+	*/
+	double							m_fluidCrossSection = -999;
+
 	/*! Fluid conductivity [W/mK].
 		Cached value from fluid properties.
 	*/
@@ -242,6 +247,10 @@ private:
 	/*! Lengths of of all pipe volumes [m] */
 	double							m_discLength = -999;
 
+	/*! Effective flow cross-section [m2].
+		\note This is the total cross section for fluid flow of all pipes (if m_nParallelPipes is larger than 1).
+	*/
+	double							m_fluidCrossSection = -999;
 
 	/*! Fluid temperatures for all discretization volumes [K] */
 	std::vector<double>				m_temperatures;
