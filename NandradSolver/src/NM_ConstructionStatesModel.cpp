@@ -117,6 +117,14 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 				m_con->m_para[NANDRAD::ConstructionInstance::P_Orientation].value/DEG2RAD,
 				m_con->m_para[NANDRAD::ConstructionInstance::P_Inclination].value/DEG2RAD);
 
+
+	// store active layer
+	m_activeLayerIndex = m_con->m_constructionType->m_activeLayerIndex;
+	// calculate active layer volume
+	if(m_activeLayerIndex != NANDRAD::INVALID_ID) {
+		m_activeLayerVolume = con.m_netHeatTransferArea * con.m_constructionType->m_materialLayers[m_activeLayerIndex].m_thickness;
+	}
+
 	// *** storage member initialization
 
 	m_y.resize(nPrimaryStateResults());
@@ -215,9 +223,8 @@ void ConstructionStatesModel::resultValueRefs(std::vector<const double *> & res)
 		res.push_back(&r.data()[0]);
 	}
 
-	if(m_con->m_constructionType->m_activeLayerIndex != NANDRAD::INVALID_ID) {
-		unsigned int idx = m_con->m_constructionType->m_activeLayerIndex;
-		res.push_back(&m_vectorValuedResults[VVR_ElementTemperature][idx]);
+	if(m_activeLayerIndex != NANDRAD::INVALID_ID) {
+		res.push_back(&m_vectorValuedResults[VVR_ElementTemperature][m_activeLayerIndex]);
 	}
 }
 
@@ -233,11 +240,10 @@ const double * ConstructionStatesModel::resultValueRef(const InputReference & qu
 	}
 	else if(quantityName.m_name == "ActiveLayerTemperature") {
 		// no active layer
-		if(m_con->m_constructionType->m_activeLayerIndex == NANDRAD::INVALID_ID)
+		if(m_activeLayerIndex == NANDRAD::INVALID_ID)
 			return nullptr;
 
-		unsigned int idx = m_con->m_constructionType->m_activeLayerIndex;
-		return &m_vectorValuedResults[VVR_ElementTemperature][idx];
+		return &m_vectorValuedResults[VVR_ElementTemperature][m_activeLayerIndex];
 	}
 	else if (KeywordList::KeywordExists(category, quantityName.m_name)) {
 		int resIdx = KeywordList::Enumeration(category, quantityName.m_name);

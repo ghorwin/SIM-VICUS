@@ -311,7 +311,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 					std::vector<unsigned int>::iterator fIt = std::find(m_constructionInstanceIds.begin(), m_constructionInstanceIds.end(), conInstanceId);
 
 					// double entry is not allowed
-					IBK_ASSERT(fIt != m_constructionInstanceIds.end());
+					IBK_ASSERT(fIt == m_constructionInstanceIds.end());
 
 					m_elementValueRefs.m_constructionInstanceIdxs[i] = m_constructionInstanceIds.size();
 					m_constructionInstanceIds.push_back(conInstanceId);
