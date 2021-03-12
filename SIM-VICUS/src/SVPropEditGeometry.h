@@ -56,7 +56,7 @@ public:
 	};
 
 	explicit SVPropEditGeometry(QWidget *parent = nullptr);
-	~SVPropEditGeometry();
+	~SVPropEditGeometry() override;
 
 	/*! Sets the current tab index to the TabState specified
 	*/
