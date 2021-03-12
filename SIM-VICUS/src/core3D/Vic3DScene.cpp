@@ -104,10 +104,9 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			SVViewStateHandler::instance().setViewState(vs);
 		} break;
 
-		case SVProjectHandler::BuildingTopologyChanged : {
-			const SVViewState & vs = SVViewStateHandler::instance().viewState();
+		case SVProjectHandler::BuildingTopologyChanged :
 			refreshColors();
-		} break;
+		break;
 
 		case SVProjectHandler::BuildingGeometryChanged :
 			updateBuilding = true;
@@ -1978,12 +1977,18 @@ void Vic3DScene::handleSelection(const KeyboardMouseHandler & keyboardHandler, P
 		// find the selected object
 		const VICUS::Object * obj = project().objectById(uniqueID);
 
+		// if using shift-click, we go up one level, select the parent and all its children
+		if (keyboardHandler.keyDown(Qt::Key_Shift)) {
+			obj = obj->m_parent;
+			if (obj != nullptr) // can happen for anonymous geometry
+				uniqueID = obj->uniqueID();
+		}
+
 		// create undo-action that toggles the selection
-		bool withoutChildren = keyboardHandler.keyDown(Qt::Key_Shift);
 		SVUndoTreeNodeState * action = SVUndoTreeNodeState::createUndoAction(tr("Selection changed"),
 															   SVUndoTreeNodeState::SelectedState,
 															   uniqueID,
-															   !withoutChildren,
+															   true, // always select all children
 															   !obj->m_selected);
 		action->push();
 		return;
