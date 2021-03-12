@@ -24,6 +24,14 @@
 
 #include "NM_AbstractModel.h"
 #include "NM_AbstractStateDependency.h"
+#include "NM_AbstractTimeDependency.h"
+
+#include <NANDRAD_Constants.h>
+
+
+namespace IBK {
+	class LinearSpline;
+}
 
 namespace NANDRAD_MODEL {
 
@@ -47,10 +55,86 @@ namespace NANDRAD_MODEL {
 */
 class ThermalNetworkStatesModel;
 
+
+/*!	Struct for all value references exchanged between element model
+	and ThermalNetworkStatesModel/ThermalNetworkBalanceModel.
+*/
+struct ZoneProperties {
+	/*! Standard constructor. */
+	ZoneProperties(unsigned int id): m_zoneId(id) { }
+
+	/*! Comparison operator via id. */
+	bool operator==(unsigned int x) const { return m_zoneId == x; }
+
+	/*! Zone id. */
+	unsigned int						m_zoneId = NANDRAD::INVALID_ID;
+	/*! Heat flux of all flow elements into current zone.
+	*/
+	double								m_zoneHeatLoad = -999;
+	/*! Reference to temperatures of current zone.
+	*/
+	const double*						m_zoneTemperatureRef = nullptr;
+};
+
+/*!	Struct for all value references exchanged between element model
+	and ThermalNetworkStatesModel/ThermalNetworkBalanceModel.
+*/
+struct ActiveLayerProperties {
+	/*! Standard constructor. */
+	ActiveLayerProperties(unsigned int id): m_constructionInstanceId(id) { }
+
+	/*! Comparison operator via id. */
+	bool operator==(unsigned int x) const { return m_constructionInstanceId == x; }
+
+	/*! Construction instance id. */
+	unsigned int						m_constructionInstanceId = NANDRAD::INVALID_ID;
+	/*! Heat flux into current active layer.
+	*/
+	double								m_activeLayerHeatLoad = -999;
+	/*! Reference to temperatures of current layer.
+	*/
+	const double*						m_activeLayerTemperatureRef = nullptr;
+};
+
+
+/*!	Detailed description of flow element physical behaviour: calculated values, value
+	references and zone/construction references.
+*/
+struct FlowElementProperties {
+	/*! Standard constructor. */
+	FlowElementProperties(unsigned int id): m_elementId(id) { }
+
+	/*! Comparison operator via id. */
+	bool operator==(unsigned int x) const { return m_elementId == x; }
+
+	/*! Flow element id. */
+	unsigned int						m_elementId = NANDRAD::INVALID_ID;
+	/*! Zone properties for heat exchange to zone (nullptr if no zone is defined).
+	*/
+	ZoneProperties						*m_zoneProperties = nullptr;
+	/*! Active layer properties for heat exchange with a construction layer
+		(nullptr if no constrcutionlayer is defined).
+	*/
+	ActiveLayerProperties				*m_activeLayerProperties = nullptr;
+	/*! Reference to heat flux out of the flow element).
+	*/
+	const double*						m_heatLossRef = nullptr;
+	/*! Reference to temperatures for inlet node of the flow element.
+	*/
+	const double*						m_inletNodeTemperatureRef = nullptr;
+	/*! Reference to temperatures for outlet node of the flow element.
+	*/
+	const double*						m_outletNodeTemperatureRef = nullptr;
+
+	/*! Reference to heat exchange spline: nullptr if not needed. */
+	const IBK::LinearSpline*			m_heatExchangeSplineRef = nullptr;
+};
+
+
 /*!	The thermal network balance model manages the calculation of enrhalpy fuxes through
 	the network elements and correponding solver feedback.
 */
-class ThermalNetworkBalanceModel : public AbstractModel, public AbstractStateDependency {
+class ThermalNetworkBalanceModel : public AbstractModel, public AbstractStateDependency, public AbstractTimeDependency {
 public:
 
 	/*! Constructor */
@@ -90,6 +174,9 @@ public:
 	*/
 	virtual const double * resultValueRef(const InputReference & quantity) const override;
 
+
+	// *** Re-implemented from AbstractStateDependency
+	virtual int setTime(double t) override;
 
 	// *** Re-implemented from AbstractStateDependency
 
@@ -134,10 +221,14 @@ private:
 	std::string										m_displayName;
 	/*! Vector with cached derivatives, updated at last call to update(). */
 	std::vector<double>								m_ydot;
-	/*! Heat fluxes towards all referenced zones [W]. */
-	std::vector<double>								m_networkZoneHeatLoad;
-	/*! Heat fluxes towards all referenced construction layers [W]. */
-	std::vector<double>								m_networkActiveLayerHeatLoad;
+
+	/*! Properties of all zones involved in heat exchange to a network element. */
+	std::vector<ZoneProperties>						m_zoneProperties;
+	/*! Properties of all active layers involved in heat exchange to a network element. */
+	std::vector<ActiveLayerProperties>				m_activeProperties;
+	/*! Physical properties of all network elements (size = m_flowElements.size()).*/
+	std::vector<FlowElementProperties>				m_flowElementProperties;
+
 	/*! Vector of all additional model quantities for outputs. */
 	std::vector<QuantityDescription>				m_modelQuantities;
 	/*! Vector of all additional model quantity references. */

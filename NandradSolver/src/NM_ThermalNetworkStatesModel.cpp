@@ -60,8 +60,11 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 	// create implementation instance
 	m_p = new ThermalNetworkModelImpl; // we take ownership
 
-	// resize vectors
-	m_elementValueRefs.resize(nw.m_elements.size());
+	// copy element ids
+	m_elementIds = networkModel.m_elementIds;
+
+	// resize components
+	m_heatExchangeRefValues.resize(m_elementIds.size(), -999);
 
 	for (unsigned int i =0; i < nw.m_elements.size(); ++i) {
 		const NANDRAD::HydraulicNetworkElement & e = nw.m_elements[i];
@@ -69,7 +72,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 		try {
 			// set reference to heat exchange value
-			double &heatExchangeValue = m_elementValueRefs.m_heatExchangeRefValues[i];
+			double &heatExchangeValue = m_heatExchangeRefValues[i];
 
 			// Instantiate thermal flow element calculation objects.
 			// The objects are selected based on a **combination** of modelType and heatExchangeType and
@@ -282,58 +285,14 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 					heatExchangeValue = e.m_heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_HeatLoss].value;
 				break;
 
-				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline:
-					// store heat flux spline
-					 m_elementValueRefs.m_heatExchangeSplineRefs[i] = &e.m_heatExchange.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature].m_values;
-				break;
-
-				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
-					// store heat flux spline and construct data value
-					m_elementValueRefs.m_heatExchangeSplineRefs[i] = &e.m_heatExchange.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss].m_values;
-				break;
-
-				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureZone: {
-					// check for zone id
-					unsigned int zoneId = e.m_heatExchange.m_idReferences[NANDRAD::HydraulicNetworkHeatExchange::ID_ZoneId];
-					IBK_ASSERT(zoneId != NANDRAD::INVALID_ID);
-					// parameters are checked, already
-					// check whether zone is registered
-					std::vector<unsigned int>::iterator fIt = std::find(m_zoneIds.begin(), m_zoneIds.end(), zoneId);
-					// add a new entry
-					if(fIt == m_zoneIds.end()) {
-						m_elementValueRefs.m_zoneIdxs[i] = m_zoneIds.size();
-						m_zoneIds.push_back(zoneId);
-					}
-					else {
-						unsigned int index = std::distance(m_zoneIds.begin(), fIt);
-						m_elementValueRefs.m_zoneIdxs[i] = index;
-					}
-					// reserve reference vector
-					m_zoneTemperatureRefs.push_back(nullptr);
-					// set initial temperature
-					heatExchangeValue = simPara.m_para[NANDRAD::SimulationParameter::P_InitialTemperature].value;
-				} break;
-
+				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureZone:
 				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer: {
-					// check for zone id
-					unsigned int conInstanceId = e.m_heatExchange.m_idReferences[NANDRAD::HydraulicNetworkHeatExchange::ID_ConstructionInstanceId];
-					IBK_ASSERT(conInstanceId != NANDRAD::INVALID_ID);
-					// parameters are checked, already
-					// check whether zone is registered
-					std::vector<unsigned int>::iterator fIt = std::find(m_constructionInstanceIds.begin(), m_constructionInstanceIds.end(), conInstanceId);
-
-					// double entry is not allowed
-					IBK_ASSERT(fIt == m_constructionInstanceIds.end());
-
-					m_elementValueRefs.m_constructionInstanceIdxs[i] = m_constructionInstanceIds.size();
-					m_constructionInstanceIds.push_back(conInstanceId);
-
-					// reserve reference vector
-					m_activeLayerTemperatureRefs.push_back(nullptr);
 					// set initial temperature
 					heatExchangeValue = simPara.m_para[NANDRAD::SimulationParameter::P_InitialTemperature].value;
 				} break;
 
+				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
 				case NANDRAD::HydraulicNetworkHeatExchange::NUM_T:
 					// No thermal exchange, nothing to initialize
 				break;
@@ -350,8 +309,6 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 		}
 	}
 
-	m_elementIds = networkModel.m_elementIds;
-
 	// setup the enetwork
 	try {
 		m_p->setup(*networkModel.network(), nw.m_fluid);
@@ -359,23 +316,6 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 		throw IBK::Exception(ex, "Error setting up flow network.", FUNC_ID);
 	}
 
-	// set references to nodal temperatures
-	for(unsigned int i = 0; i < m_p->m_network->m_elements.size(); ++i) {
-		const Element &elem = m_p->m_network->m_elements[i];
-		// copy heat fluxes
-		m_elementValueRefs.m_inletNodeTemperatureRefs[i] = &m_p->m_nodalTemperatures[elem.m_nodeIndexInlet];
-		m_elementValueRefs.m_outletNodeTemperatureRefs[i] = &m_p->m_nodalTemperatures[elem.m_nodeIndexOutlet];
-	}
-	// set reference sto heat fluxes
-	for(unsigned int i = 0; i < m_p->m_heatLossElements.size(); ++i) {
-		const ThermalNetworkAbstractFlowElementWithHeatLoss *heatLossElem
-				= m_p->m_heatLossElements[i];
-		// skip empty elements
-		if(heatLossElem == nullptr)
-			continue;
-		// copy heat fluxes
-		m_elementValueRefs.m_flowElementHeatLossRefs[i] = &heatLossElem->m_heatLoss;
-	}
 
 	// resize vectors
 	m_n = 0;
@@ -384,13 +324,16 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 	}
 	m_y.resize(m_n,0.0);
 
+	// resize reference values
+	m_meanTemperatureRefs.resize(m_elementIds.size(), nullptr);
+
 	// initialize all fluid temperatures
 	for(unsigned int i = 0; i < m_p->m_flowElements.size(); ++i) {
 		ThermalNetworkAbstractFlowElement *fe = m_p->m_flowElements[i];
 
 		double fluidTemp = m_network->m_para[NANDRAD::HydraulicNetwork::P_InitialFluidTemperature].value;
 		fe->setInitialTemperature(fluidTemp);
-		m_elementValueRefs.m_meanTemperatureRefs[i] = &fe->m_meanTemperature;
+		m_meanTemperatureRefs[i] = &fe->m_meanTemperature;
 	}
 }
 
@@ -429,7 +372,7 @@ const double * ThermalNetworkStatesModel::resultValueRef(const InputReference & 
 		if(fIt == m_elementIds.end())
 			return nullptr;
 		unsigned int pos = (unsigned int) std::distance(m_elementIds.begin(), fIt);
-		return m_elementValueRefs.m_meanTemperatureRefs[pos];
+		return m_meanTemperatureRefs[pos];
 	}
 	return nullptr;
 }
@@ -460,24 +403,7 @@ void ThermalNetworkStatesModel::yInitial(double * y) {
 int ThermalNetworkStatesModel::update(const double * y) {
 	// copy states vector
 	std::memcpy(&m_y[0], y, m_n*sizeof(double));
-	// update zone temperatures
-	for(unsigned int i = 0; i < m_elementValueRefs.m_nValues; ++i) {
-		// skip invalid elements without access to zone temperature
-		unsigned int refIdx = m_elementValueRefs.m_zoneIdxs[i];
-		if(refIdx == NANDRAD::INVALID_ID)
-			continue;
-		IBK_ASSERT(m_zoneTemperatureRefs[refIdx] != nullptr);
-		m_elementValueRefs.m_heatExchangeRefValues[i] = *m_zoneTemperatureRefs[refIdx];
-	}
-	// update constrcution layer temperatures
-	for(unsigned int i = 0; i < m_elementValueRefs.m_nValues; ++i) {
-		// skip invalid elements without access to zone temperature
-		unsigned int refIdx = m_elementValueRefs.m_constructionInstanceIdxs[i];
-		if(refIdx == NANDRAD::INVALID_ID)
-			continue;
-		IBK_ASSERT(m_activeLayerTemperatureRefs[refIdx] != nullptr);
-		m_elementValueRefs.m_heatExchangeRefValues[i] = *m_activeLayerTemperatureRefs[refIdx];
-	}
+
 	// set internal states
 	unsigned int offset = 0;
 	for(unsigned int i = 0; i < m_p->m_flowElements.size(); ++i) {
@@ -490,18 +416,5 @@ int ThermalNetworkStatesModel::update(const double * y) {
 	}
 	return 0;
 }
-
-int ThermalNetworkStatesModel::setTime(double t) {
-	// update all spline values
-	for(unsigned int i = 0; i < m_elementValueRefs.m_nValues; ++i) {
-		// no spline
-		if(m_elementValueRefs.m_heatExchangeSplineRefs[i] == nullptr)
-			continue;
-		m_elementValueRefs.m_heatExchangeRefValues[i] =
-				m_elementValueRefs.m_heatExchangeSplineRefs[i]->value(t);
-	}
-	return 0;
-}
-
 
 } // namespace NANDRAD_MODEL

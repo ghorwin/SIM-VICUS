@@ -1392,8 +1392,6 @@ void NandradModel::initNetworks() {
 			if (nw.m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
 				ThermalNetworkStatesModel *statesModel = new ThermalNetworkStatesModel(nw.m_id, nw.m_displayName);
 				m_modelContainer.push_back(statesModel); // transfer ownership
-				// register model as time dependend (spline values update needed for each time step)
-				m_timeModelContainer.push_back(statesModel);
 				// initialize
 				statesModel->setup(nw, *nwmodel, m_project->m_simulationParameter);
 				// add to thermal network states container
@@ -1405,6 +1403,8 @@ void NandradModel::initNetworks() {
 				balanceModel->setup(statesModel);
 				// register model for evaluation
 				registerStateDependendModel(balanceModel);
+				// register model as time dependend (spline values update needed for each time step)
+				m_timeModelContainer.push_back(balanceModel);
 				// add to thermal network balance container
 				m_networkBalanceModelContainer.push_back(balanceModel);
 			}

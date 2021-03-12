@@ -74,6 +74,7 @@ public:
 	*/
 	std::vector<double>								m_nodalTemperatures;
 	/*! Container with global pointer to calculated mass fluxes.
+		Pointer maps to calculated fluid mass fluxes from HydraulicNetworkModel.
 	*/
 	const double									*m_fluidMassFluxes;
 

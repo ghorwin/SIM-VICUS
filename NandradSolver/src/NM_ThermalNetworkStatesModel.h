@@ -23,13 +23,7 @@
 #define NM_ThermalNetworkStatesModelH
 
 #include "NM_AbstractModel.h"
-#include "NM_AbstractTimeDependency.h"
 
-#include <NANDRAD_Constants.h>
-
-namespace IBK {
-	class LinearSpline;
-}
 
 namespace NANDRAD {
 	class HydraulicNetwork;
@@ -39,55 +33,6 @@ namespace NANDRAD {
 
 
 namespace NANDRAD_MODEL {
-
-/*!	Struct for all value references exchanged between element model
-	and ThermalNetworkStatesModel/ThermalNetworkBalanceModel.
-*/
-struct ThermalNetworkElementValueRefs {
-
-
-	// resizing
-	void resize(unsigned int nValues) {
-		m_nValues = nValues;
-		m_zoneIdxs.resize(nValues, NANDRAD::INVALID_ID);
-		m_constructionInstanceIdxs.resize(nValues, NANDRAD::INVALID_ID);
-		m_meanTemperatureRefs.resize(nValues,nullptr);
-		m_heatExchangeSplineRefs.resize(nValues,nullptr);
-		m_flowElementHeatLossRefs.resize(nValues,nullptr);
-		m_inletNodeTemperatureRefs.resize(nValues,nullptr);
-		m_outletNodeTemperatureRefs.resize(nValues,nullptr);
-		m_heatExchangeRefValues.resize(nValues,-999);
-	}
-
-	/*! Number of vector valued for each quantity. */
-	unsigned int									m_nValues = 999;
-	/*! Indexes of all zones for each network element (size = m_nValues),
-		NANDRAD::INVALID_ID for missing zone.
-	*/
-	std::vector<unsigned int>						m_zoneIdxs;
-	/*! Indexes of all construction instances for each network element (size = m_nValues),
-		NANDRAD::INVALID_ID for missing construction.
-	*/
-	std::vector<unsigned int>						m_constructionInstanceIdxs;
-	/*! Vector with references to mean temperatures (size = m_nValues). */
-	std::vector<const double*>						m_meanTemperatureRefs;
-	/*! References to heat exchange spline: nullptr if not needed (size = m_nValues). */
-	std::vector<const IBK::LinearSpline*>			m_heatExchangeSplineRefs;
-	/*! References to heat fluxes out of each heat flow element (size = m_nValues).
-	*/
-	std::vector<const double*>						m_flowElementHeatLossRefs;
-	/*! References to temperatures for inlet node of each flow element (size = m_nValues).
-	*/
-	std::vector<const double*>						m_inletNodeTemperatureRefs;
-	/*! References to with temperatures for outlet node of each flow element (size = m_nValues).
-	*/
-	std::vector<const double*>						m_outletNodeTemperatureRefs;
-	/*! Container with current spline or reference values: either temperature [K] or heat flux [W]
-		 (size = m_nValues).
-	*/
-	std::vector<double>								m_heatExchangeRefValues;
-
-};
 
 
 class HydraulicNetworkModel;
@@ -101,7 +46,7 @@ class ThermalNetworkModelImpl;
 	Quantities:
 	  - FlowElementTemperatures: in [K], vector-valued, access via flow element ID
 */
-class ThermalNetworkStatesModel : public AbstractModel, public AbstractTimeDependency {
+class ThermalNetworkStatesModel : public AbstractModel {
 public:
 
 	/*! Constructor. */
@@ -144,9 +89,6 @@ public:
 	*/
 	virtual const double * resultValueRef(const InputReference & quantity) const override;
 
-	// *** Re-implemented from AbstractStateDependency
-	virtual int setTime(double t) override;
-
 	// *** Other public member functions
 
 	/*! Returns number of conserved variables (i.e. length of y vector passed to yInitial() and update() ). */
@@ -177,29 +119,30 @@ private:
 	unsigned int									m_id;
 	/*! Display name (for error messages). */
 	std::string										m_displayName;
-	/*! Storage of all network element ids, used for vector output. */
-	std::vector<unsigned int>						m_elementIds;
-	/*! All zone ids referenced by a fluid component (size = m_elementIDs.size()). */
-	std::vector<unsigned int>						m_zoneIds;
-	/*! All construction instance ids referenced by a fluid component (size = m_elementIDs.size()). */
-	std::vector<unsigned int>						m_constructionInstanceIds;
-	/*! References to zone temperatures (size = m_zoneIds.size()). */
-	std::vector<const double*>						m_zoneTemperatureRefs;
-	/*! References to construction layer temperatures (size = m_constrctionInstanceIds.size()). */
-	std::vector<const double*>						m_activeLayerTemperatureRefs;
-	/*! Container of all model value references.*/
-	ThermalNetworkElementValueRefs					m_elementValueRefs;
+
 
 	/*! Cached input data vector (size nPrimaryStateResults()). */
 	std::vector<double>								m_y;
 	/*! Total number of unknowns. */
 	unsigned int									m_n;
 
+	/*! Storage of all network element ids, used for vector output. */
+	std::vector<unsigned int>						m_elementIds;
+	/*! Container with current spline or reference values: either temperature [K] or heat flux [W]
+		 (size = m_elementIds.size()). Is needed for initialization of flow element.
+	*/
+	std::vector<double>								m_heatExchangeRefValues;
+
+	/*! Vector with references to mean temperatures (size = m_elementIds.size()). Result
+		quantity of current model.*/
+	std::vector<const double*>						m_meanTemperatureRefs;
+
 	/*! Pointer to NANDRAD network structure*/
 	const NANDRAD::HydraulicNetwork					*m_network=nullptr;
 
 	/*! Private implementation (Pimpl) of the network solver. */
 	ThermalNetworkModelImpl							*m_p = nullptr;
+
 
 	friend class ThermalNetworkBalanceModel;
 };
