@@ -36,10 +36,10 @@ struct Node {
 
 /*! Defines a hydraulic network including nodes and elements.
 	Contrary to the NANDRAD data structure, indexes (not ids) of elements and nodes
-	are stored as well as their connecitivy information.
+	are stored as well as their connectivity information.
 */
 struct Network {
-	/*! Sorted list of elements*/
+	/*! Sorted list of elements */
 	std::vector<Element>	m_elements;
 	/*! Sorted list of Nodes*/
 	std::vector<Node>		m_nodes;

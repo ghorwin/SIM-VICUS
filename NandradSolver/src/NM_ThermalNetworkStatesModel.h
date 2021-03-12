@@ -40,11 +40,11 @@ class ThermalNetworkModelImpl;
 
 /*!	A model that computes all temperature states of hydraulic network given the internal energy density
 
-	Other models may request this quantities via:
-	ModelReferenceType = MRT_NETWORK
-	id = (id of network model)
-	Quantities:
-	  - FlowElementTemperatures: in [K], vector-valued, access via flow element ID
+	The following results are provided:
+
+	ModelReferenceType = MRT_NETWORKELEMENT
+	id = (id of flow element)
+	Quantity = FluidTemperature  (in [K])
 */
 class ThermalNetworkStatesModel : public AbstractModel {
 public:
@@ -58,8 +58,7 @@ public:
 	/*! D'tor, released pimpl object. */
 	~ThermalNetworkStatesModel() override;
 
-	/*! Initializes model.
-	*/
+	/*! Initializes model. */
 	void setup(const NANDRAD::HydraulicNetwork & nw,
 			   const HydraulicNetworkModel &networkModel,
 			   const NANDRAD::SimulationParameter &simPara);
@@ -85,14 +84,14 @@ public:
 
 	/*! Retrieves reference pointer to a value with given quantity ID name.
 		\note Quantity name of "y" returns pointer to start of local y data vector.
-		\return Returns pointer to memory location with this quantity, otherwise NULL if parameter ID was not found.
+		\return Returns pointer to memory location with this quantity, otherwise nullptr if parameter ID was not found.
 	*/
 	virtual const double * resultValueRef(const InputReference & quantity) const override;
 
 	// *** Other public member functions
 
 	/*! Returns number of conserved variables (i.e. length of y vector passed to yInitial() and update() ). */
-	unsigned int nPrimaryStateResults() const;
+	unsigned int nPrimaryStateResults() const { return m_n; }
 
 	/*! Returns a vector of dependencies of all result quantities from y input quantities). */
 	void stateDependencies(std::vector< std::pair<const double *, const double *> > & resultInputValueReferences) const;
@@ -105,7 +104,7 @@ public:
 	*/
 	void yInitial(double * y);
 
-	/*! Computes fluid temperatures.
+	/*! Passes states to flow element models and computes mean fluid temperature.
 		This function is called directly from NandradModel as first step in the model evaluation.
 
 		\param Pointer to the memory array holding all states for this room model.
@@ -121,20 +120,28 @@ private:
 	std::string										m_displayName;
 
 
-	/*! Cached input data vector (size nPrimaryStateResults()). */
-	std::vector<double>								m_y;
 	/*! Total number of unknowns. */
 	unsigned int									m_n;
+	/*! Cached input data vector (size m_n == nPrimaryStateResults()). */
+	std::vector<double>								m_y;
 
 	/*! Storage of all network element ids, used for vector output. */
 	std::vector<unsigned int>						m_elementIds;
-	/*! Container with current spline or reference values: either temperature [K] or heat flux [W]
-		 (size = m_elementIds.size()). Is needed for initialization of flow element.
+	/*! Container with current reference values for heat exchange calculation: either temperature [K] or heat flux [W]
+		(size = m_elementIds.size()). Is needed for initialization of flow element.
+
+		This vector contains pointer references to memory slots containing the temperatures/heat fluxes needed for calculation.
+		For the states model (and the flow element models) it does not matter if these are stored in constant IBK::Parameter,
+		or linear splines or any other data location.
+
+		These input values are actually not needed by the states model itself, but by the ThermalNetworkBalanceModel.
+		They are, however, already initialized in this model (in setup()), because they need to be available when
+		constructing the flow element calculation objects.
 	*/
 	std::vector<double>								m_heatExchangeRefValues;
 
-	/*! Vector with references to mean temperatures (size = m_elementIds.size()). Result
-		quantity of current model.*/
+	/*! Vector with references to mean fluid temperatures (size = m_elementIds.size()).
+		Result quantity of current model, published as 'FluidTemperature' result for each flow element. */
 	std::vector<const double*>						m_meanTemperatureRefs;
 
 	/*! Pointer to NANDRAD network structure*/

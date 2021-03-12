@@ -32,16 +32,16 @@ namespace NANDRAD {
 
 namespace NANDRAD_MODEL {
 
-/*!	A model that computes all temperature states of hydraulic network given the internal energy density.
-*/
-
 struct Network;
 
+/*!	This is a class that hides common variables and member functions used by both ThermalNetworkStatesModel
+	and ThermalNetworkBalanceModel, so that the declarations and includes do not clutter the interfaces of
+	the model.
+
+	When looking at the code, just think of these variables being part of ThermalNetworkStatesModel.
+*/
 class ThermalNetworkModelImpl {
 public:
-	ThermalNetworkModelImpl() { }
-	~ThermalNetworkModelImpl() { }
-
 	/*! Initialized solver based on current content of m_flowElements.
 		Setup needs to be called whenever m_flowElements vector changes
 		(but not, when parameters inside flow elements change!).
@@ -49,12 +49,10 @@ public:
 	void setup(const Network &nw,
 			   const NANDRAD::HydraulicFluid &fluid);
 
-	/*! Updates all states and fluxes.
-	*/
+	/*! Updates all states and fluxes. */
 	int update();
 
-	/*! Vector of dependencies.
-	*/
+	/*! Returns vector of dependencies. */
 	void dependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const;
 
 	/*! Container for flow element implementation objects.
@@ -70,8 +68,7 @@ public:
 
 	/*! Constant access to network. */
 	const Network									*m_network = nullptr;
-	/*! Container with temperatures for each node.
-	*/
+	/*! Container with temperatures for each node. */
 	std::vector<double>								m_nodalTemperatures;
 	/*! Container with global pointer to calculated mass fluxes.
 		Pointer maps to calculated fluid mass fluxes from HydraulicNetworkModel.

@@ -60,11 +60,19 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 	// create implementation instance
 	m_p = new ThermalNetworkModelImpl; // we take ownership
 
+	// The hydraulic network is already initialized, so the data in 'networkModel ' can
+	// be used during initialization.
+
 	// copy element ids
 	m_elementIds = networkModel.m_elementIds;
 
 	// resize components
 	m_heatExchangeRefValues.resize(m_elementIds.size(), -999);
+
+
+	// We now loop over all flow elements of the network and create a corresponding thermal
+	// model objects for _each_ of the hydraulic calculation objects.
+	// The model objects are stored in m_p->m_flowElements vector.
 
 	for (unsigned int i =0; i < nw.m_elements.size(); ++i) {
 		const NANDRAD::HydraulicNetworkElement & e = nw.m_elements[i];
@@ -378,13 +386,25 @@ const double * ThermalNetworkStatesModel::resultValueRef(const InputReference & 
 }
 
 
-unsigned int ThermalNetworkStatesModel::nPrimaryStateResults() const {
-	return m_n;
-}
-
-
 void ThermalNetworkStatesModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & /*resultInputValueReferences*/) const {
-	// TODO: implement
+	// the mean temperatures depend on the internal energies, but some elements like dynamic pipe
+	// have several states that impact a single mean temperature
+
+	// Note: This dependency is currently formulated in ThermalNetworkBalanceModel::stateDependencies().
+	//       It won't work to publish the dependency here, since NandradModel::initSolverMatrix() does not
+	//       yet take the m_meanTemperatureRefs into the result vector, causing an assert while building the matrix
+
+	// TODO Anne, for consistency-sake, move dependency information here and adjust NandradModel::initSolverMatrix() ???
+#if 0
+	// offset always points to y-vector memory range of the next element
+	unsigned int offset = 0;
+	// loop over all elements
+	for (unsigned int i=0; i<m_p->m_flowElements.size(); ++i) {
+		for (unsigned int j=0; j<m_p->m_flowElements[i]->nInternalStates(); ++j)
+			resultInputValueReferences.push_back(std::make_pair(m_meanTemperatureRefs[i], &m_y[offset + j]));
+		offset += m_p->m_flowElements[i]->nInternalStates();
+	}
+#endif
 }
 
 
