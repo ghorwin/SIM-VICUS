@@ -2209,6 +2209,8 @@ void NandradModel::initSolverMatrix() {
 				registeredLocalValueRefs.insert(y + k);
 			}
 			nYStates += networkModel->nPrimaryStateResults();
+
+			// TODO Anne : register other variables (MeanTemperature etc.) into resultValueRefs
 		}
 
 		// counted y-components must equal global y-vector size
@@ -2525,7 +2527,7 @@ void NandradModel::initSolverMatrix() {
 
 				// search result reference
 				std::map<const double*, unsigned int>::const_iterator resultRefIt = resultValueRefs.find(resultRef);
-				// result adress must! be given
+				// result address must! be given
 				IBK_ASSERT(resultRefIt != resultValueRefs.end());
 
 				// get local index
