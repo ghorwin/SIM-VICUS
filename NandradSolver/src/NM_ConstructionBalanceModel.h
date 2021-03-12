@@ -159,6 +159,7 @@ private:
 		InputRef_SideBRadiationFromPersonLoads,
 		InputRef_SideARadiationFromLightingLoads,
 		InputRef_SideBRadiationFromLightingLoads,
+		InputRef_ActiveLayerHeatLoads,
 		NUM_InputRef
 	};
 
@@ -205,8 +206,6 @@ private:
 	double											m_fluxDensityShortWaveRadiationB = 0;
 	/*! Number of thermal network model input refs that we have generated and that we get value refs for. */
 	unsigned int									m_thermalNetworkModelCount = 0;
-	/*! Constant reference to active layer heat load.*/
-	const double									*m_activeLayerHeatLoadRef = nullptr;
 
 	double											m_totalAdsorptionAreaA = 6666;
 	double											m_totalAdsorptionAreaB = 7777;

@@ -324,19 +324,22 @@ void ConstructionBalanceModel::setInputValueRefs(const std::vector<QuantityDescr
 {
 	FUNCID(ConstructionBalanceModel::setInputValueRefs);
 
+	// resize value references
+	m_valueRefs.resize(NUM_InputRef, nullptr);
 	// copy required values
-	m_valueRefs = resultValueRefs;
+	for(unsigned int i = 0; i < NUM_InputRef; ++i)
+		m_valueRefs[i] = resultValueRefs[i];
 
 	if(m_statesModel->m_activeLayerIndex != NANDRAD::INVALID_ID) {
 		// check network loads
 		for (unsigned int i= NUM_InputRef; i < NUM_InputRef + m_thermalNetworkModelCount; ++i) {
 			// check that only one active layer is references
-			if(m_valueRefs[i] != nullptr) {
-				if(m_activeLayerHeatLoadRef != nullptr)
+			if(resultValueRefs[i] != nullptr) {
+				if(m_valueRefs[InputRef_ActiveLayerHeatLoads] != nullptr)
 					throw IBK::Exception(IBK::FormatString("Active layer is referenced twice from a hydraulic network component "
 													   "for construction instance id=%1.").arg(m_id), FUNC_ID);
 				// copy pointer
-				m_activeLayerHeatLoadRef = m_valueRefs[i];
+				m_valueRefs[InputRef_ActiveLayerHeatLoads] = resultValueRefs[i];
 			}
 		}
 	}
@@ -390,7 +393,7 @@ void ConstructionBalanceModel::stateDependencies(std::vector<std::pair<const dou
 		}
 
 		// add active layer heat source dependencies
-		if(m_activeLayerHeatLoadRef != nullptr ) {
+		if(m_valueRefs[InputRef_ActiveLayerHeatLoads] != nullptr ) {
 
 			IBK_ASSERT(m_statesModel->m_activeLayerIndex != NANDRAD::INVALID_ID);
 			// loop through all elements of active layer
@@ -401,7 +404,7 @@ void ConstructionBalanceModel::stateDependencies(std::vector<std::pair<const dou
 				elemIdxEnd = m_statesModel->m_materialLayerElementOffset[m_statesModel->m_activeLayerIndex + 1];
 
 			for(unsigned int i = elemIdxStart; i < elemIdxEnd; ++i)
-				resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_activeLayerHeatLoadRef) );
+				resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_valueRefs[InputRef_ActiveLayerHeatLoads]) );
 		}
 	}
 	else {
@@ -440,10 +443,10 @@ int ConstructionBalanceModel::update() {
 		ydot[nElements-1] /= E[nElements-1].dx;
 
 		// add active layer heat sources
-		if(m_activeLayerHeatLoadRef != nullptr ) {
+		if(m_valueRefs[InputRef_ActiveLayerHeatLoads] != nullptr ) {
 			// store thermal load
-			m_vectorValuedResults[VVR_ThermalLoad].dataPtr()[m_statesModel->m_activeLayerIndex] =
-					*m_activeLayerHeatLoadRef;
+			double layerLoad = *m_valueRefs[InputRef_ActiveLayerHeatLoads];
+			m_vectorValuedResults[VVR_ThermalLoad].dataPtr()[m_statesModel->m_activeLayerIndex] = layerLoad;
 
 			IBK_ASSERT(m_statesModel->m_activeLayerIndex != NANDRAD::INVALID_ID);
 			// loop through all elements of active layer
@@ -451,7 +454,7 @@ int ConstructionBalanceModel::update() {
 			unsigned int elemIdxEnd = nElements;
 
 			// calculate flux density [W/m3]
-			double layerLoadDensity = *m_activeLayerHeatLoadRef/m_statesModel->m_activeLayerVolume;
+			double layerLoadDensity = layerLoad/m_statesModel->m_activeLayerVolume;
 
 			if(m_statesModel->m_activeLayerIndex < m_con->m_constructionType->m_materialLayers.size() - 1)
 				elemIdxEnd = m_statesModel->m_materialLayerElementOffset[m_statesModel->m_activeLayerIndex + 1];
