@@ -428,7 +428,27 @@ Weiterhin **muss** für ein Rohrelement der Parameter `Length` definiert werden 
 ----
 ====
 
+#### Parallele Rohrregister (Flächenheizungen/Fußbodenheizung)
 
+Durch Angabe des `IBK:IntPara` Tags mit dem Namen `NumberParallelPipes` kann man ein Rohrregister definieren und so z.B. eine Flächenheizung/Fußbodenheizung modellieren. Dabei strömt letztlich das Fluid parallel durch die angebene Anzahl gleichartiger Rohre. 
+
+[[ex_pipe_register]]
+.Definition eines Rohrregisters
+====
+[source,xml]
+----
+<HydraulicNetworkElement id="101" inletNodeId="2" outletNodeId="1" componentId="3" pipePropertiesId="1">
+	<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+	<!-- We have a pipe register here, consisting of 10 parallel pipes -->
+	<IBK:IntPara name="NumberParallelPipes">10</IBK:IntPara>
+</HydraulicNetworkElement>
+----
+====
+
+[NOTE]
+====
+Die Ausgabe Massestrom `FluidMassFlux` und Volumenstrom `FluidVolumeFlow` beziehen sich auf das gesamte Rohrbündel.
+====
 
 [[HeatExchangeType]]
 ## Definition der Wärmeaustauschmodells (HeatExchangeType)
@@ -440,6 +460,7 @@ Für thermische Netzwerken kann für jedes Strömungselement (<<HydraulicNetwork
 ====
 [source,xml]
 ----
+<!-- Heat exchange with heat loss/gain pre-defined in time series -->
 <HydraulicNetworkElement id="1" inletNodeId="1" outletNodeId="2" componentId="2" displayName="heat exchanger">
     <!-- Definition of pre-defined heat loss -->
 	<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
@@ -448,6 +469,8 @@ Für thermische Netzwerken kann für jedes Strömungselement (<<HydraulicNetwork
 		</LinearSplineParameter>
 	</HydraulicNetworkHeatExchange>
 </HydraulicNetworkElement>
+
+<!-- Pipe with heat exchange to the environment (with constant environment temperature) -->
 <HydraulicNetworkElement id="2" inletNodeId="2" outletNodeId="3" componentId="3" pipePropertiesId="1" displayName="pipe">
 	<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
     <!-- Definition of heat exchange with environment -->
@@ -463,7 +486,7 @@ Für thermische Netzwerken kann für jedes Strömungselement (<<HydraulicNetwork
 Der `HeatExchangeType` kann folgende Werte haben:
 
 
-[options="header",cols="25%,^ 50%, ^ 25%",width="100%"]
+[options="header",cols="25%,50%, ^ 25%",width="100%"]
 |====================
 |HeatExchangeType| Beschreibung| Verwendbar für Modelltyp
 | `TemperatureConstant` | Wärmeaustausch basierend auf Temperaturunterschied zwischen Medium und Umgebungstemperatur; Konstante Umgebungstemperatur ist als Parameter im `HydraulicNetworkElement` gegeben. Es muss zusätzlich der Parameter `ExternalHeatTransferCoefficient` gegeben sein. | `SimplePipe`, `DynamicPipe` 
@@ -481,6 +504,39 @@ Wenn des XML-Element `HeatExchangeType` fehlt, wird die entsprechende Komponente
 ====
 
 
+### Parameter für Wärmeaustauschdefinition
+
+Konstante Parameter (Tag: `IBK:Parameter`):
+
+[options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
+|====================
+|Name | Einheit | Beschreibung | Wertebereich | Verwendung
+| `Temperature` | K | konstante Temperatur | {nbsp}>{nbsp}-200.0{nbsp}° C | `TemperatureConstant`
+
+| `ExternalHeatTransferCoefficient` | W/m2K | Äußerer Wärmeübergangskoeffizient | {nbsp}>={nbsp}0.0{nbsp} | `TemperatureConstant`, `TemperatureSpline`, `TemperatureZone`
+| `HeatLoss` | W | konstante Wärmeabgabe | --- | `HeatLossConstant`
+|====================
+
+
+Spline-Parameter (Tag: `LinearSplineParameter`):
+
+[options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
+|====================
+|Name | Einheit | Beschreibung | Wertebereich | Verwendung
+| `Temperature` | K | Zeitreihe mit Temperaturen | --- | `TemperatureSpline`
+
+| `HeatLoss` | W | Zeitreihe mit Wärmeverlustströmen | --- | `HeatLossSpline`
+|====================
+
+
+ID-Referenzen:
+
+[options="header",cols="22%,40%,20%, ^ 18%",width="100%"]
+|====================
+|XML-Tag-Name | Beschreibung | Verweis auf Datentyp | Verwendung
+| `ZoneId` | Referenz zur Zone | `Zone` | `TemperatureZone`
+| `ConstructionInstanceId` | Referenz zu beheizter/gekühlter Konstruktion | `ConstructionInstance` | `TemperatureConstructionLayer`
+|====================
 
 
 
@@ -505,8 +561,6 @@ Die Ergebnisgrößen eines thermo-hydraulischen Netzwerkmodells werden wie folgt
 </ObjectLists>
 ----
 ====
-
-
 
 
 
@@ -571,9 +625,31 @@ Die Temperaturen am Ein- bzw. Auslass sind (wie die Drücke) an den physischen P
 - `FlowElementHeatLoss` in W - Wärmestrom abgegeben vom Strömungselement (Energie wird dem Fluid in diesem Element entzogen). Positive Werte bedeuten Abkühlen des Mediums (Wärmeverlust).
 
 
-TODO : Anne, Ausgaben für TemperatureZone und TemperatureConstructionLayer heat exchange types
+Übersicht über Element-Ausgabegrößen:
+----
+ElectricalPower                    	[W]       	Requested electrical power for current working point
+FlowElementHeatLoss                	[W]       	Heat flux from flow element into environment
+FluidMassFlux                      	[kg/s]    	Fluid mass flux through a flow element
+FluidTemperature                   	[C]       	Internal fluid temperature of network element
+FluidVelocity                      	[m/s]     	Fluid velocity
+FluidViscosity                     	[m2/s]    	Fluid dynamic viscosity
+FluidVolumeFlow                    	[m3/h]    	Fluid Volume flow
+InletNodePressure                  	[Pa]      	Fluid pressure at inlet node of a flow element
+InletNodeTemperature               	[C]       	Inlet node temperature of a flow element
+MechanicalPower                    	[W]       	Mechanical power for current working point
+Nusselt                            	[---]     	Nusselt number
+OutletNodePressure                 	[Pa]      	Fluid pressure at outlet node of a flow element
+OutletNodeTemperature              	[C]       	Outlet node temperature of a flow element
+Prandtl                            	[---]     	Prandtl number
+Reynolds                           	[---]     	Reynolds number
+ThermalTransmittance               	[W/K]     	Total thermal transmittance of fluid and pipe wall
+----
 
 
+[TIP]
+====
+Die Auswahl einzelner Elemente via ID kann über Objektlisten recht flexibel erfolgen.
+====
 
 
 #### Ausgaben des Netzwerks
@@ -602,10 +678,12 @@ Die Variablen sind vektor-wertige Größen und es muss der __Index__ des jeweils
 ====
 
 
-[TIP]
-====
-Die Auswahl einzelner Elemente via ID kann über Objektlisten recht flexibel erfolgen.
-====
+Übersicht über Netzwerk-Ausgabegrößen:
+----
+FluidMassFluxes(id,4)                     	[kg/s]    	Fluid mass flux trough all flow elements
+NetworkZoneHeatLoad(id,1)                 	[W]       	Complete Heat load to zones from all hydraulic network elements
+NetworkActiveLayerHeatLoad(id,1)          	[W]       	Heat load to the construction layers from all hydraulic network elements
+----
 
 
 ### Variablennamen in Ausgabedateien
@@ -613,7 +691,7 @@ Die Auswahl einzelner Elemente via ID kann über Objektlisten recht flexibel erf
 Variablen für Ausgaben vom Referenztyp `NetworkElement` werden in den Ausgabedateien wie folgt angegeben: `NetworkElement(id=1).FluidMassFlux` wobei hier `id=1` die ID des ausgewählten Netzwerkelements.
 
 
-
+TODO : Datei `VariableSubstitutions.txt` beschreiben.
 
 
 

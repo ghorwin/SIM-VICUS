@@ -50,7 +50,7 @@ public:
 
 	/*! Parameters for the element . */
 	enum para_t {
-		P_Temperature,						// Keyword: Temperature					[C]		'Temperature for heat exchange'
+		P_Temperature,						// Keyword: Temperature							[C]		'Temperature for heat exchange'
 		P_HeatLoss,							// Keyword: HeatLoss							[W]		'Constant heat flux out of the element (heat loss)'
 		P_ExternalHeatTransferCoefficient,	// Keyword: ExternalHeatTransferCoefficient		[W/m2K]	'External heat transfer coeffient for the outside boundary'
 		NUM_P
