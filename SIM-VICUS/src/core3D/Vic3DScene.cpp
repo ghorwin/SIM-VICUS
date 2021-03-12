@@ -1979,9 +1979,11 @@ void Vic3DScene::handleSelection(const KeyboardMouseHandler & keyboardHandler, P
 
 		// if using shift-click, we go up one level, select the parent and all its children
 		if (keyboardHandler.keyDown(Qt::Key_Shift)) {
-			obj = obj->m_parent;
-			if (obj != nullptr) // can happen for anonymous geometry
+			// check for valid parent - anonymous geometry does not have parents!
+			if (obj->m_parent != nullptr) {
+				obj = obj->m_parent;
 				uniqueID = obj->uniqueID();
+			}
 		}
 
 		// create undo-action that toggles the selection
