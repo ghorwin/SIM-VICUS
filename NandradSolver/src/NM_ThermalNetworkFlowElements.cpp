@@ -15,7 +15,7 @@ namespace NANDRAD_MODEL {
 // *** TNSimplePipeElement ***
 
 TNSimplePipeElement::TNSimplePipeElement(const NANDRAD::HydraulicNetworkElement & elem,
-							 const NANDRAD::HydraulicNetworkComponent & comp,
+							 const NANDRAD::HydraulicNetworkComponent & /*comp*/,
 							const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
 							const NANDRAD::HydraulicFluid & fluid,
 							const double &TExt)
@@ -78,7 +78,7 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 	const double externalTemperature = *m_externalTemperatureRef;
 	// calculate heat loss with given parameters
 	// Q in [W] = DeltaT * UAValueTotal
-	m_heatLoss = m_thermalTransmittance * (m_meanTemperature - externalTemperature);
+	m_heatLoss = m_thermalTransmittance * (m_meanTemperature - externalTemperature) * m_nParallelPipes;
 }
 
 
@@ -241,7 +241,7 @@ void TNDynamicPipeElement::setInflowTemperature(double Tinflow) {
 		const double externalTemperature = *m_externalTemperatureRef;
 		for(unsigned int i = 0; i < m_nVolumes; ++i) {
 			// calculate heat loss with given parameters
-			m_heatLosses[i] = m_thermalTransmittance * (m_temperatures[i] - externalTemperature);
+			m_heatLosses[i] = m_thermalTransmittance * (m_temperatures[i] - externalTemperature) * m_nParallelPipes;
 			// sum up heat losses
 			m_heatLoss += m_heatLosses[i];
 		}
