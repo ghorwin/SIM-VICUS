@@ -84,29 +84,30 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 					zoneIdx[i] = index;
 				}
 			} break;
+
 			// construction heat exchange
 			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer: {
 				// check for zone id
 				unsigned int conInstanceId = heatExchange.m_idReferences[NANDRAD::HydraulicNetworkHeatExchange::ID_ConstructionInstanceId];
 				IBK_ASSERT(conInstanceId != NANDRAD::INVALID_ID);
-				// double entry is not allowed
-				IBK_ASSERT(std::find(m_activeProperties.begin(), m_activeProperties.end(), conInstanceId)
-						   == m_activeProperties.end());
+				// double entry is not allowed - this has been checked already in HydraulicNetwork::checkParameters()
+				IBK_ASSERT(std::find(m_activeProperties.begin(), m_activeProperties.end(), conInstanceId) == m_activeProperties.end());
 
 				constructionInstanceIdx[i] = m_activeProperties.size();
 				m_activeProperties.push_back(ActiveLayerProperties(conInstanceId));
 
 			} break;
+
 			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline:
-				// store heat flux spline
-				// reserve reference vector
+				// store reference to spline
 				m_flowElementProperties[i].m_heatExchangeSplineRef = &heatExchange.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature].m_values;
 			break;
 
 			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
-				// store heat flux spline and construct data value
+				// store reference to spline
 				m_flowElementProperties[i].m_heatExchangeSplineRef = &heatExchange.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss].m_values;
 			break;
+
 			default: break;
 		}
 	}
@@ -135,10 +136,9 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 		}
 	}
 
-	// set reference sto heat fluxes
+	// set references to heat fluxes
 	for(unsigned int i = 0; i < m_statesModel->m_p->m_heatLossElements.size(); ++i) {
-		const ThermalNetworkAbstractFlowElementWithHeatLoss *heatLossElem
-				= m_statesModel->m_p->m_heatLossElements[i];
+		const ThermalNetworkAbstractFlowElementWithHeatLoss *heatLossElem = m_statesModel->m_p->m_heatLossElements[i];
 		// skip empty elements
 		if(heatLossElem == nullptr)
 			continue;
@@ -174,8 +174,6 @@ void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescript
 
 	// publish heat loss from flow element towards environment
 	QuantityDescription desc("FlowElementHeatLoss", "W", "Heat flux from flow element into environment", false);
-
-	// TODO : Anne, update descriptions below
 
 	// set a description for each flow element
 	desc.m_displayName = m_displayName;
@@ -349,9 +347,6 @@ int ThermalNetworkBalanceModel::priorityOfModelEvaluation() const {
 	return AbstractStateDependency::priorityOffsetTail+3;
 }
 
-void ThermalNetworkBalanceModel::initInputReferences(const std::vector<AbstractModel *> & /*models*/) {
-}
-
 
 void ThermalNetworkBalanceModel::inputReferences(std::vector<InputReference> & inputRefs) const {
 	// set input references to hydraulic network calculation
@@ -477,6 +472,10 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 				// dependencyies to ydot: heat exchange values (either externbal temperature or heat flux)
 				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + n], &m_statesModel->m_heatExchangeRefValues[i]) );
 
+				// TODO Anne, eigentlich könnten/müssten die rein states-Modell-spezifischen Abhängigkeiten auch
+				//            im ThermalNetworkStatesModel gemacht werden - hier ist es aber auch ok, sofern man später bei Erweiterungen
+				//            des ThermalNetworkStatesModel nicht irgendwas vergisst. Siehe auch Kommentar in ThermalNetworkStatesModel::dependencies()
+
 				// dependencies of y to result quantities: mean air temperature
 				resultInputValueReferences.push_back(std::make_pair(m_statesModel->m_meanTemperatureRefs[i],
 																	&m_statesModel->m_y[offset + n] ) );
@@ -513,6 +512,7 @@ int ThermalNetworkBalanceModel::setTime(double t) {
 	return 0;
 }
 
+
 int ThermalNetworkBalanceModel::update() {
 
 	// update zone and construction layer temperatures
@@ -526,12 +526,12 @@ int ThermalNetworkBalanceModel::update() {
 			m_statesModel->m_heatExchangeRefValues[i] = *zoneProp->m_zoneTemperatureRef;
 		}
 		else if(layerProp != nullptr) {
-		   IBK_ASSERT(layerProp->m_activeLayerTemperatureRef != nullptr);
-		   m_statesModel->m_heatExchangeRefValues[i] = *layerProp->m_activeLayerTemperatureRef;
+			IBK_ASSERT(layerProp->m_activeLayerTemperatureRef != nullptr);
+			m_statesModel->m_heatExchangeRefValues[i] = *layerProp->m_activeLayerTemperatureRef;
 		}
 	}
 
-	//update all network internal calulation quantities
+	// update all network internal calculation quantities
 	int res = m_statesModel->m_p->update();
 	if (res != 0)
 		return res;
@@ -553,8 +553,8 @@ int ThermalNetworkBalanceModel::update() {
 				zoneProp->m_zoneHeatLoad += *elemProp.m_heatLossRef;
 			}
 			else if(layerProp != nullptr) {
-			   IBK_ASSERT(layerProp->m_activeLayerTemperatureRef != nullptr);
-			   layerProp->m_activeLayerHeatLoad = *elemProp.m_heatLossRef;
+				IBK_ASSERT(layerProp->m_activeLayerTemperatureRef != nullptr);
+				layerProp->m_activeLayerHeatLoad = *elemProp.m_heatLossRef;
 			}
 		}
 	}
@@ -575,7 +575,6 @@ int ThermalNetworkBalanceModel::update() {
 
 
 int ThermalNetworkBalanceModel::ydot(double* ydot) {
-	// get inlet heat losses from all flow elements
 	// copy values to ydot
 	std::memcpy(ydot, &m_ydot[0], m_ydot.size() * sizeof (double));
 	// signal success

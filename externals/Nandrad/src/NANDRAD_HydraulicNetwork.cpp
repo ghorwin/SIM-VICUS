@@ -69,7 +69,8 @@ void HydraulicNetwork::checkParameters( const std::map<std::string, IBK::Path> &
 			if(conInstanceId != INVALID_ID) {
 				if(!conInstanceIds.empty() && conInstanceIds.find(conInstanceId) != conInstanceIds.end())
 					// error: construction is already covered by a hydraulic element
-					throw IBK::Exception(IBK::FormatString("Construction instance with id %1 is referenced twice!")
+					throw IBK::Exception(IBK::FormatString("Construction instance with id #%1 is referenced twice! There must not be two flow elements "
+														   "exchanging heat with the same construction instance.")
 										 .arg(conInstanceId), FUNC_ID);
 				// register construction instance id
 				conInstanceIds.insert(conInstanceId);
