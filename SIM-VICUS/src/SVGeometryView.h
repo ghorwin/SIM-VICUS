@@ -39,7 +39,9 @@ public:
 	void refreshSceneView();
 
 public slots:
-	/*! Connected to view-state handler. */
+	/*! Connected to view state handler - turns local coordinate system view on/off, depending on
+		visibility of the local coordinate system.
+	*/
 	void onViewStateChanged();
 
 	/*! Called when user types in numbers while placing vertexes. */
@@ -59,13 +61,9 @@ private slots:
 private:
 	void setupToolBar();
 
-	void setupDockWidget();
-
 	/*! The scene view, that shows our world and allows navigation */
 	Vic3D::SceneView			*m_sceneView								= nullptr;
 	QWidget						*m_sceneViewContainerWidget					= nullptr;
-	/*! Local Coordinate System View Widget */
-	QWidget						*m_localCoordinateSystemView				= nullptr;
 	/*! The property widget is located to the right of the view and is layouted in a splitter. */
 	SVPropertyWidget			*m_propertyWidget							= nullptr;
 	/*! Splitter that contains the scene view and the property widget. */
@@ -73,8 +71,6 @@ private:
 
 
 	QToolBar					*m_toolBar									= nullptr;
-
-	QWidget						*m_dockWidget								= nullptr;
 
 	QAction						*m_snapAction								= nullptr;
 	QAction						*m_xLockAction								= nullptr;
@@ -84,6 +80,9 @@ private:
 	QLineEdit					*m_lineEditCoordinateInput					= nullptr;
 	QAction						*m_actionCoordinateInput					= nullptr;
 
+	/*! Local Coordinate System View Widget */
+	QWidget						*m_localCoordinateSystemView				= nullptr;
+	QAction						*m_actionlocalCoordinateSystem				= nullptr;
 };
 
 #endif // SVGeometryViewH

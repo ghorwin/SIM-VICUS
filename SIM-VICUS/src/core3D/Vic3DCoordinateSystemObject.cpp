@@ -217,7 +217,6 @@ void CoordinateSystemObject::setTranslation(const QVector3D & translation) {
 	// tell the property widget for editing geometry our new position/rotation
 	SVViewStateHandler::instance().m_propEditGeometryWidget->setCoordinates(m_transform);
 	SVViewStateHandler::instance().m_localCoordinateViewWidget->setCoordinates(m_transform);
-	SVViewStateHandler::instance().m_localCoordinateViewWidget->setOrientation(localXAxis(), localYAxis(), localZAxis());
 	updateInverse();
 }
 

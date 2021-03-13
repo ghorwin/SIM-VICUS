@@ -9,7 +9,6 @@
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QToolButton>
-#include <QDockWidget>
 #include <QLine>
 
 #include <IBK_StringUtils.h>
@@ -45,8 +44,6 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	m_sceneViewContainerWidget = QWidget::createWindowContainer(m_sceneView);
 	m_sceneViewContainerWidget->setFocusPolicy(Qt::TabFocus);
 	m_sceneViewContainerWidget->setMinimumSize(QSize(640,400));
-
-	m_localCoordinateSystemView = new SVLocalCoordinateView;
 
 	// *** create toolbar and place it below the scene
 
@@ -146,7 +143,20 @@ void SVGeometryView::onViewStateChanged() {
 	m_xLockAction->setVisible(lockVisible);
 	m_yLockAction->setVisible(lockVisible);
 	m_zLockAction->setVisible(lockVisible);
+
+	// NOTE: you cannot simply hide widgets added to a toolbar. Instead, you must change visibility of
+	//       the associated actions.
+
 	m_actionCoordinateInput->setVisible(lockVisible);
+
+	if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
+		vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry)
+	{
+		m_actionlocalCoordinateSystem->setVisible(true);
+	}
+	else {
+		m_actionlocalCoordinateSystem->setVisible(false);
+	}
 }
 
 
@@ -328,19 +338,27 @@ void SVGeometryView::setupToolBar() {
 
 	m_toolBar->addSeparator();
 
+	// the line edit for entering vertex coordinates
 	m_lineEditCoordinateInput = new QLineEdit(m_toolBar);
 	m_actionCoordinateInput = m_toolBar->addWidget(m_lineEditCoordinateInput);
 	connect(m_lineEditCoordinateInput, &QLineEdit::returnPressed,
 			this, &SVGeometryView::coordinateInputFinished);
-
-	m_toolBar->addWidget(m_localCoordinateSystemView);
-
 	m_lineEditCoordinateInput->setMaximumWidth(400);
+
+	// stretcher
+	QWidget * spacerWidget = new QWidget;
+	spacerWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	m_toolBar->addWidget(spacerWidget);
+
+	// the local coordinate system info
+	m_localCoordinateSystemView = new SVLocalCoordinateView(this);
+	m_actionlocalCoordinateSystem = m_toolBar->addWidget(m_localCoordinateSystemView);
 }
 
-void SVGeometryView::setupDockWidget()
-{
-	QHBoxLayout *lay = new QHBoxLayout;
+
+/*
+void SVGeometryView::setupDockWidget() {
+ * 	QHBoxLayout *lay = new QHBoxLayout;
 	lay->setMargin(0);
 
 	QToolButton *b = new QToolButton();
@@ -362,7 +380,7 @@ void SVGeometryView::setupDockWidget()
 	lay->addWidget(m_localCoordinateSystemView);
 
 	m_dockWidget->setLayout(lay);
-
 }
+*/
 
 
