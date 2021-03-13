@@ -38,6 +38,12 @@ public:
 	*/
 	void refreshSceneView();
 
+	/*! This function is called from the main application object, when it receives one of the
+		special keys.
+		\return Returns true, if the key was accepted and handled.
+	*/
+	bool handleGlobalKeyPress(Qt::Key k);
+
 public slots:
 	/*! Connected to view state handler - turns local coordinate system view on/off, depending on
 		visibility of the local coordinate system.
@@ -84,5 +90,6 @@ private:
 	QWidget						*m_localCoordinateSystemView				= nullptr;
 	QAction						*m_actionlocalCoordinateSystem				= nullptr;
 };
+
 
 #endif // SVGeometryViewH

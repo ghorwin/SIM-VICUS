@@ -86,14 +86,11 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 
 	setLayout(hlay);
 
-
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 	m_sceneViewContainerWidget->setFocusPolicy(Qt::StrongFocus); // we want to get all keyboard/mouse events
 
 	setupToolBar();
-//	setupDockWidget();
-
 
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
 			this, &SVGeometryView::onViewStateChanged);
@@ -118,6 +115,50 @@ void SVGeometryView::focusSceneView() {
 
 void SVGeometryView::refreshSceneView() {
 	m_sceneView->renderNow();
+}
+
+
+bool SVGeometryView::handleGlobalKeyPress(Qt::Key k) {
+	switch (k) {
+		case Qt::Key_0 :
+		case Qt::Key_1 :
+		case Qt::Key_2 :
+		case Qt::Key_3 :
+		case Qt::Key_4 :
+		case Qt::Key_5 :
+		case Qt::Key_6 :
+		case Qt::Key_7 :
+		case Qt::Key_9 :
+		case Qt::Key_Comma :
+		case Qt::Key_Period :
+		case Qt::Key_Minus :
+			if (!m_actionCoordinateInput->isVisible())
+				return false;
+			onNumberKeyPressed(k);
+		break;
+
+		case Qt::Key_X :
+			if (!m_xLockAction->isVisible())
+				return false;
+			m_xLockAction->trigger();
+		break;
+
+		case Qt::Key_Y :
+			if (!m_yLockAction->isVisible())
+				return false;
+			m_yLockAction->trigger();
+		break;
+
+		case Qt::Key_Z :
+			if (!m_zLockAction->isVisible())
+				return false;
+			m_zLockAction->trigger();
+		break;
+
+		default:
+			return false; // not our key
+	}
+	return true;
 }
 
 
@@ -354,33 +395,4 @@ void SVGeometryView::setupToolBar() {
 	m_localCoordinateSystemView = new SVLocalCoordinateView(this);
 	m_actionlocalCoordinateSystem = m_toolBar->addWidget(m_localCoordinateSystemView);
 }
-
-
-/*
-void SVGeometryView::setupDockWidget() {
- * 	QHBoxLayout *lay = new QHBoxLayout;
-	lay->setMargin(0);
-
-	QToolButton *b = new QToolButton();
-	b->setText(tr("Snap"));
-	b->setCheckable(true);
-	m_snapAction = new QAction(tr("Snap"), this);
-	b->addAction(m_snapAction);
-	connect(m_snapAction, &QAction::toggled, this, &SVGeometryView::on_actionSnap_toggled);
-
-	lay->addWidget(b);
-
-	QFrame *line;
-	line = new QFrame();
-	line->setFrameShape(QFrame::HLine);
-	line->setFrameShadow(QFrame::Sunken);
-
-	lay->addWidget(line);
-
-	lay->addWidget(m_localCoordinateSystemView);
-
-	m_dockWidget->setLayout(lay);
-}
-*/
-
 
