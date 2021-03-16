@@ -15,6 +15,8 @@ namespace Vic3D {
 
 namespace VICUS {
 	class Project;
+	class Room;
+	class Surface;
 }
 
 namespace Ui {
@@ -228,10 +230,10 @@ private:
 	*/
 	QVector3D							m_translation;
 
-	std::set<const VICUS::Object*>		m_selBuild;
-	std::set<const VICUS::Object*>		m_selBuildLvls;
-	std::set<const VICUS::Object*>		m_selRooms;
-	std::set<const VICUS::Object*>		m_selSurfaces;
+//	std::set<const VICUS::Object*>		m_selBuild;
+//	std::set<const VICUS::Object*>		m_selBuildLvls;
+	std::vector<const VICUS::Room*>		m_selRooms;
+	std::vector<const VICUS::Surface*>	m_selSurfaces;
 
 
 
