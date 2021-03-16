@@ -77,6 +77,8 @@ SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTa
 		m_ui->gridLayoutMaster->addWidget(m_editWidgetContainerWidget, 0, 1);
 		m_ui->horizontalLayout->setParent(nullptr);
 		m_ui->gridLayoutMaster->addLayout(m_ui->horizontalLayout, 1, 0, 1, 2);
+		QSize ewSize = editWidget->sizeHint();
+		editWidget->setMinimumWidth(ewSize.width());
 	}
 	else {
 		m_ui->horizontalLayout->setParent(nullptr);
