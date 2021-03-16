@@ -138,7 +138,7 @@ Regelmäßige Zeitpläne werden auf Basis eines Tagesschemas definiert. Einige P
 ----
 ====
 
-Regelmäßige Zeitpläne werden innerhalb des XML-Tags `ScheduleGroup` mit einem obligatorischen XML-Attribut namens `objectList` definiert, das namentlich auf eine `ObjectList` verweist (siehe <<tab_ScheduleGroup>>): 
+Regelmäßige Zeitpläne werden innerhalb des XML-tags `ScheduleGroup` mit einem obligatorischen XML-Attribut namens `objectList` definiert, das namentlich auf eine `ObjectList` verweist (siehe <<tab_ScheduleGroup>>): 
 
 
 [[tab_ScheduleGroup]]
