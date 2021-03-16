@@ -605,10 +605,10 @@ void addSurface(const VICUS::Surface & s,
 		return;
 	// change color depending on visibility state and selection state
 	QColor col = s.m_color;
-	if (!s.m_visible)
+	// invisible objects are not drawn, and selected objects are drawn by a different object (and are hence invisible in this
+	// object as well).
+	if (!s.m_visible || s.m_selected) {
 		col.setAlphaF(0);
-	else if (s.m_selected) {
-		col = SVSettings::instance().m_themeSettings[SVSettings::instance().m_theme].m_selectedSurfaceColor;
 	}
 	// first add the plane regular
 	addPlane(s.m_geometry, col, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
@@ -623,7 +623,7 @@ void updateColors(const VICUS::Surface & s, unsigned int & currentVertexIndex, s
 	if (!s.m_geometry.isValid())
 		return;
 	// change color depending on visibility and selection state
-	// invisible objects are now drawn, and selected objects are drawn by a different object (and are hence invisible in this
+	// invisible objects are not drawn, and selected objects are drawn by a different object (and are hence invisible in this
 	// object as well).
 	QColor col = s.m_color;
 	if (!s.m_visible || s.m_selected) {
