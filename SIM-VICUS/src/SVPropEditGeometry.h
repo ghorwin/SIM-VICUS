@@ -3,8 +3,6 @@
 
 #include <QWidget>
 
-#include <QtExt_ValidatingLineEdit.h>
-
 #include <IBKMK_Vector3D.h>
 
 #include <VICUS_Surface.h>
@@ -12,15 +10,19 @@
 #include <Vic3DTransform3D.h>
 
 namespace Vic3D {
-class Transform3D;
+	class Transform3D;
 }
 
 namespace VICUS {
-class Project;
+	class Project;
 }
 
 namespace Ui {
-class SVPropEditGeometry;
+	class SVPropEditGeometry;
+}
+
+namespace QtExt {
+	class ValidatingLineEdit;
 }
 
 class QLineEdit;
@@ -30,7 +32,17 @@ class SVUndoModifySurfaceGeometry;
 class ModificationInfo;
 
 
-/*! This widget is shown when the scene is put into geometry editing mode. */
+/*! This widget is shown when the scene is put into geometry editing mode.
+
+	This widget handles quite a lot of operations, mainly
+
+	a) adding geometry,
+	b) modifying geometry,
+	c) adding existing geometry again with geometric transformations applied (copy)
+
+	Adding new geometry is done in a separate tab.
+	Modifying geometry requires a valid selection - hence, the tab is disabled when there is no selection
+*/
 class SVPropEditGeometry : public QWidget {
 	Q_OBJECT
 
@@ -58,13 +70,11 @@ public:
 	explicit SVPropEditGeometry(QWidget *parent = nullptr);
 	~SVPropEditGeometry() override;
 
-	/*! Sets the current tab index to the TabState specified
-	*/
+	/*! Sets the current tab index to the TabState specified */
 	void setCurrentTab(const TabState &state);
 
-	/*! Sets the Coordinates of the Cente
-class QtExt_ValidatingLineEdit;r Point of the local
-		Coordinate System
+	/*! Sets the Coordinates of the Center of the local Coordinate System
+		(called directly from the local coordinate system when its position changes)
 	*/
 	void setCoordinates(const Vic3D::Transform3D &t);
 
@@ -116,60 +126,48 @@ public slots:
 	/*! Connected to SVProjectHandler::modified() */
 	void onModified(int modificationType, ModificationInfo * );
 
+	/*! Connected to SVViewStateManager::viewStateChanged() and used to enable/disable
+		the edit widget when there is no selection.
+	*/
+	void onViewStateChanged();
 
 private slots:
 
-	/*! Event Filter: Needed for all scrolling specific inputs
-	*/
+	/*! Event Filter: Needed for all scrolling specific inputs */
 	bool eventFilter(QObject *target, QEvent *event) override;
 
-	/*! All push buttons specific functions */
+	// All push buttons specific functions
+
 	void on_pushButtonAddPolygon_clicked();
-
 	void on_pushButtonAddRect_clicked();
-
 	void on_pushButtonAddZoneBox_clicked();
 
-	/*! all line edit specific functions */
+	// all line edit specific functions
+
 	void on_lineEditX_editingFinished();
-
 	void on_lineEditY_editingFinished();
-
 	void on_lineEditZ_editingFinished();
 
-
 	void on_lineEditX_returnPressed();
-
 	void on_lineEditY_returnPressed();
-
 	void on_lineEditZ_returnPressed();
 
-
 	void on_lineEditX_textChanged(const QString &);
-
 	void on_lineEditY_textChanged(const QString &);
-
 	void on_lineEditZ_textChanged(const QString &);
 
 
 	void on_lineEditOrientation_returnPressed();
-
 	void on_lineEditInclination_returnPressed();
 
-
 	void on_lineEditOrientation_textChanged(const QString &);
-
 	void on_lineEditInclination_textChanged(const QString &);
 
 	void on_lineEditOrientation_editingFinished();
-
 	void on_lineEditInclination_editingFinished();
 
-
 	void on_lineEditXCopy_editingFinished();
-
 	void on_lineEditYCopy_editingFinished();
-
 	void on_lineEditZCopy_editingFinished();
 
 	/*! ComboBox Functions */
@@ -177,18 +175,14 @@ private slots:
 
 	/*! All tool button specific functions */
 	void on_toolButtonTrans_clicked();
-
 	void on_toolButtonRotate_clicked();
-
 	void on_toolButtonScale_clicked();
 
 	/*! Triggered when anything changes in one of the line edits X, Y or Z */
 	void onLineEditTextChanged(QtExt::ValidatingLineEdit * lineEdit);
 
 	void on_pushButtonCopyRooms_clicked();
-
 	void on_pushButtonCopySurfaces_clicked();
-
 	void on_pushButtonCopyBuildingLvls_clicked();
 
 private:

@@ -45,10 +45,14 @@ static double angleBetweenVectorsDeg ( const IBKMK::Vector3D &v1, const IBKMK::V
 
 class LineEditFormater : public QtExt::FormatterBase {
 public:
+	~LineEditFormater() override;
 	QString formatted(double value) override {
 		return QString("%L1").arg(value, 0, 'f', 3);
 	}
 };
+
+// dummy destructor needed to tell compiler to place virtual function table in this object file
+LineEditFormater::~LineEditFormater() {}
 
 
 // *** Widget implementation ***
@@ -63,6 +67,9 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropEditGeometry::onModified);
+
+	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
+			this, &SVPropEditGeometry::onViewStateChanged);
 
 	m_ui->lineEditX->setup(-1E5,1E5,tr("X Value"),true, true);
 	m_ui->lineEditY->setup(-1E5,1E5,tr("Y Value"),true, true);
@@ -149,6 +156,16 @@ void SVPropEditGeometry::onModified(int modificationType, ModificationInfo * ) {
 
 	default: ; // just to make compiler happy
 	}
+}
+
+
+void SVPropEditGeometry::onViewStateChanged() {
+	const SVViewState & vs = SVViewStateHandler::instance().viewState();
+	if (vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry)
+		m_ui->pageModify->setEnabled(true);
+	else
+		m_ui->pageModify->setEnabled(false);
+
 }
 
 
@@ -588,15 +605,15 @@ void SVPropEditGeometry::onWheelTurned(double offset, QtExt::ValidatingLineEdit 
 	onLineEditTextChanged(lineEdit);
 }
 
-void SVPropEditGeometry::initializeCopy()
-{
+
+void SVPropEditGeometry::initializeCopy() {
 	// initialize the translation vector
 	m_translation = QVector3D ( 0, 0, 0 );
 
 	// we set up the lineEdit fields
-	m_ui->lineEditXCopy->setValue(m_translation.x());
-	m_ui->lineEditYCopy->setValue(m_translation.y());
-	m_ui->lineEditZCopy->setValue(m_translation.z());
+	m_ui->lineEditXCopy->setValue( (double) m_translation.x());
+	m_ui->lineEditYCopy->setValue( (double) m_translation.y());
+	m_ui->lineEditZCopy->setValue( (double) m_translation.z());
 }
 
 
@@ -624,15 +641,16 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event) {
 		{	double delta = 0.1; // for copy operation
 
 			switch (m_modificationType) {
-			case MT_Translate:
-			case MT_Scale : delta = 0.01; break;
-			case MT_Rotate : delta = 1; break;
+				case SVPropEditGeometry::NUM_MT	: // just to make compiler happy
+				case MT_Translate				:
+				case MT_Scale					: delta = 0.01; break;
+				case MT_Rotate					: delta = 1; break;
 			}
 
 			QWheelEvent *wheelEvent = static_cast<QWheelEvent*>(event);
 			// offset are changed in 0.01 steps
 			double offset = (wheelEvent->delta()>0) ? delta : -delta;
-			onWheelTurned(offset, (QtExt::ValidatingLineEdit*)target); // we know that target points to a ValidatingLineEdit
+			onWheelTurned(offset, qobject_cast<QtExt::ValidatingLineEdit*>(target)); // we know that target points to a ValidatingLineEdit
 		}
 	}
 	return false;
@@ -665,9 +683,10 @@ void SVPropEditGeometry::on_lineEditY_returnPressed() {
 
 	//	double tempXValue = m_ui->lineEditX->value();
 	switch ( m_modificationType ) {
-	case MT_Translate: translate(); break;
-	case MT_Scale: scale(); break;
-	case MT_Rotate: rotate(); break;
+		case SVPropEditGeometry::NUM_MT: // just to make compiler happy
+		case MT_Translate: translate(); break;
+		case MT_Scale: scale(); break;
+		case MT_Rotate: rotate(); break;
 	}
 }
 
@@ -675,14 +694,15 @@ void SVPropEditGeometry::on_lineEditZ_returnPressed(){
 	// check if entered value is valid, if not reset it to its default
 
 	if ( !m_ui->lineEditZ->isValid() ) {
-		m_ui->lineEditZ->setValue( m_originalValues.z() );
+		m_ui->lineEditZ->setValue( (double)m_originalValues.z() );
 		return;
 	}
 
 	switch ( m_modificationType ) {
-	case MT_Translate: translate(); break;
-	case MT_Scale: scale(); break;
-	case MT_Rotate: rotate(); break;
+		case SVPropEditGeometry::NUM_MT: // just to make compiler happy
+		case MT_Translate: translate(); break;
+		case MT_Scale: scale(); break;
+		case MT_Rotate: rotate(); break;
 	}
 }
 
@@ -708,107 +728,108 @@ void SVPropEditGeometry::updateInputs() {
 	ModificationState state = m_modificationState[m_modificationType];
 
 	switch (m_modificationType) {
-	case MT_Translate : {
-		showDeg(false);
-		showRotation(false);
-		switch (state) {
-
-		case MS_Absolute:
-
-			m_ui->labelX->setText("X");
-			m_ui->labelY->setText("Y");
-			m_ui->labelZ->setText("Z");
-
-			// cache current local coordinate systems position as fall-back values
-			m_originalValues = m_localCoordinatePosition.translation();
-
-			m_ui->lineEditX->setValue(m_localCoordinatePosition.translation().x() );
-			m_ui->lineEditY->setValue(m_localCoordinatePosition.translation().y() );
-			m_ui->lineEditZ->setValue(m_localCoordinatePosition.translation().z() );
-			break;
-
-		default:
-
-			m_ui->labelX->setText("ΔX");
-			m_ui->labelY->setText("ΔY");
-			m_ui->labelZ->setText("ΔZ");
-
-			m_originalValues = QVector3D();
-
-			m_ui->lineEditX->setValue(0);
-			m_ui->lineEditY->setValue(0);
-			m_ui->lineEditZ->setValue(0);
-
-		}
-
-	} break;
-
-
-	case MT_Rotate: {
-		showDeg();
-		showRotation(false);
-
-
-		m_ui->labelX->setText("X");
-		m_ui->labelY->setText("Y");
-		m_ui->labelZ->setText("Z");
-
-		switch (state) {
-		case MS_Absolute: {
-			showRotation();
+		case MT_Translate : {
 			showDeg(false);
+			showRotation(false);
+			switch (state) {
 
-			m_ui->lineEditX->setValue(0);
-			m_ui->lineEditY->setValue(0);
-			m_ui->lineEditZ->setValue(0);
-		}
-			break;
+			case MS_Absolute:
 
-		default:
-			m_ui->lineEditX->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
-			m_ui->lineEditY->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
-			m_ui->lineEditZ->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
+				m_ui->labelX->setText("X");
+				m_ui->labelY->setText("Y");
+				m_ui->labelZ->setText("Z");
 
-		}
+				// cache current local coordinate systems position as fall-back values
+				m_originalValues = m_localCoordinatePosition.translation();
 
-	} break;
+				m_ui->lineEditX->setValue(m_localCoordinatePosition.translation().x() );
+				m_ui->lineEditY->setValue(m_localCoordinatePosition.translation().y() );
+				m_ui->lineEditZ->setValue(m_localCoordinatePosition.translation().z() );
+				break;
+
+			default:
+
+				m_ui->labelX->setText("ΔX");
+				m_ui->labelY->setText("ΔY");
+				m_ui->labelZ->setText("ΔZ");
+
+				m_originalValues = QVector3D();
+
+				m_ui->lineEditX->setValue(0);
+				m_ui->lineEditY->setValue(0);
+				m_ui->lineEditZ->setValue(0);
+
+			}
+
+		} break;
 
 
-	case MT_Scale: {
+		case MT_Rotate: {
+			showDeg();
+			showRotation(false);
 
-		showDeg(false);
-		showRotation(false);
 
-		switch (state) {
-		case MS_Absolute: {
-
-			m_ui->labelX->setText("L<sub>X</sub>");
-			m_ui->labelY->setText("W<sub>Y</sub>");
-			m_ui->labelZ->setText("H<sub>Z</sub>");
-
-			m_originalValues = QtExt::IBKVector2QVector(m_boundingBoxCenter);
-
-			m_ui->lineEditX->setValue(m_boundingBoxDimension.m_x);
-			m_ui->lineEditY->setValue(m_boundingBoxDimension.m_y);
-			m_ui->lineEditZ->setValue(m_boundingBoxDimension.m_z);
-
-			break;
-		}
-		default:
 			m_ui->labelX->setText("X");
 			m_ui->labelY->setText("Y");
 			m_ui->labelZ->setText("Z");
 
-			m_originalValues = QVector3D( 1,1,1 );
+			switch (state) {
+			case MS_Absolute: {
+				showRotation();
+				showDeg(false);
 
-			m_ui->lineEditX->setValue(m_originalValues.x() );
-			m_ui->lineEditY->setValue(m_originalValues.y() );
-			m_ui->lineEditZ->setValue(m_originalValues.z() );
+				m_ui->lineEditX->setValue(0);
+				m_ui->lineEditY->setValue(0);
+				m_ui->lineEditZ->setValue(0);
+			}
+				break;
 
-		}
-	} break;
-	}
+			default:
+				m_ui->lineEditX->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
+				m_ui->lineEditY->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
+				m_ui->lineEditZ->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
+
+			}
+
+		} break;
+
+
+		case MT_Scale: {
+
+			showDeg(false);
+			showRotation(false);
+
+			switch (state) {
+			case MS_Absolute: {
+
+				m_ui->labelX->setText("L<sub>X</sub>");
+				m_ui->labelY->setText("W<sub>Y</sub>");
+				m_ui->labelZ->setText("H<sub>Z</sub>");
+
+				m_originalValues = QtExt::IBKVector2QVector(m_boundingBoxCenter);
+
+				m_ui->lineEditX->setValue(m_boundingBoxDimension.m_x);
+				m_ui->lineEditY->setValue(m_boundingBoxDimension.m_y);
+				m_ui->lineEditZ->setValue(m_boundingBoxDimension.m_z);
+
+				break;
+			}
+			default:
+				m_ui->labelX->setText("X");
+				m_ui->labelY->setText("Y");
+				m_ui->labelZ->setText("Z");
+
+				m_originalValues = QVector3D( 1,1,1 );
+
+				m_ui->lineEditX->setValue(m_originalValues.x() );
+				m_ui->lineEditY->setValue(m_originalValues.y() );
+				m_ui->lineEditZ->setValue(m_originalValues.z() );
+
+			}
+		} break;
+	} // switch modification type
 }
+
 
 void SVPropEditGeometry::setToolButton(const SVPropEditGeometry::ModificationType & type) {
 	m_modificationType = type;
