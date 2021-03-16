@@ -1,5 +1,8 @@
 #include "SVUndoModifySurfaceGeometry.h"
 #include "SVProjectHandler.h"
+#include "SVViewStateHandler.h"
+
+#include "Vic3DWireFrameObject.h"
 
 SVUndoModifySurfaceGeometry::SVUndoModifySurfaceGeometry(const QString & label,
 														 const std::vector<VICUS::Surface> & surfaces)
@@ -19,11 +22,15 @@ void SVUndoModifySurfaceGeometry::undo() {
 
 	for (const VICUS::Surface *sOld : surfacesProject ) {
 		for ( VICUS::Surface &sNew : m_surfaces ) {
-			if ( sOld->m_id == sNew.m_id )
+			if ( sOld->uniqueID() == sNew.uniqueID() ) {
 				std::swap(const_cast<VICUS::Surface *>(sOld)->m_geometry, sNew.m_geometry);
+				break;
+			}
 		}
 	}
 
+	// reset local transformation matrix
+	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 
 	// tell project that geometry has changed
 	// NOTE: this may be slow for larger geometries...
