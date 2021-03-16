@@ -37,6 +37,15 @@ public:
 		}
 	}
 
+	/*! Creates a copy of the room object but with a new unique ID. */
+	Room clone() const{
+		Room r(*this); // create new room with same unique ID
+		Object & o = r;
+		(Object&)r = o.clone(); // assign new ID only
+		return r;
+	}
+
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of building. */
@@ -61,6 +70,7 @@ public:
 	/*! Surfaces of the room. */
 	std::vector<Surface>				m_surfaces;							// XML:E
 };
+
 
 } // namespace VICUS
 

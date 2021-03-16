@@ -18,10 +18,12 @@ namespace VICUS {
 */
 class Object {
 public:
+	/*! Standard C'tor. */
 	Object() : m_uniqueID(++LAST_ID) {}
+	/*! Default copy constructor. */
+	Object(Object const&) = default;
+	/*! D'tor. */
 	virtual ~Object();
-
-	Object	*m_parent = nullptr;
 
 	unsigned int uniqueID() const { return m_uniqueID; }
 
@@ -34,6 +36,17 @@ public:
 
 	/*! Recursively selected all unique IDs of children. */
 	void collectChildIDs(std::set<unsigned int> & nodeContainer) const;
+
+	/*! Takes an old object and returns a new object with a new unique ID, but same m_parent and m_children. */
+	Object clone() const {
+		Object o(*this);
+		o.m_uniqueID = ++LAST_ID;
+		return o;
+	}
+
+
+
+	Object	*m_parent = nullptr;
 
 	/*! Stores selected information for this surface (not serialized, for now). */
 	bool								m_selected = false;
