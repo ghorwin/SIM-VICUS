@@ -23,6 +23,7 @@ public:
 		MT_HeatExchanger,					// Keyword: HeatExchanger				'Simple heat exchanger with given heat flux'
 		MT_HeatPumpIdealCarnot,				// Keyword: HeatPumpIdealCarnot			'Heat pump with unlimited heating power and constant carnot efficiency'
 
+
 		// models below not supported yet
 
 //		MT_GasBoiler,						// xKeyword: GasBoiler					'Gas boiler'

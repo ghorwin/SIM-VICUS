@@ -13,13 +13,15 @@ bool NetworkHeatExchange::operator!=(const NetworkHeatExchange &other) const{
 		if (m_para[i] != other.m_para[i])
 			return true;
 	}
-	for (unsigned int i=0; i<NUM_IP; ++i){
-		if (m_intPara[i] != other.m_intPara[i])
+	for (unsigned int i=0; i<NUM_ID; ++i){
+		if (m_idReferences[i] != other.m_idReferences[i])
+			return true;
+	}
+	for (unsigned int i=0; i<NUM_SPL; ++i){
+		if (m_splPara[i] != other.m_splPara[i])
 			return true;
 	}
 	if (m_modelType != other.m_modelType)
-		return true;
-	if (m_heatExchangeSpline != other.m_heatExchangeSpline)
 		return true;
 
 	return false;

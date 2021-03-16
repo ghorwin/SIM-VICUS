@@ -23,38 +23,51 @@ public:
 
 	/*! Defines the type of heat exchange */
 	enum ModelType {
-		T_AmbientTemperatureConstant,		// Keyword: AmbientTemperatureConstant			'Constant ambient temperature'
-		T_AmbientTemperatureSpline,			// Keyword: AmbientTemperatureSpline			'Ambient Temperature from spline'
-		T_HeatLossConstant,					// Keyword: HeatLossConstant					'Constant heat loss'
-		T_HeatLossSpline,					// Keyword: HeatLossSpline						'Heat loss from spline'
-		HT_HeatExchangeWithZoneTemperature,	// Keyword: HeatExchangeWithZoneTemperature		'Heat exchange with zone'
-		HT_HeatExchangeWithFMUTemperature,	// Keyword: HeatExchangeWithFMUTemperature		'Heat exchange with FMU which requires temperature and provides heat flux'
-		NUM_HT
+		T_TemperatureConstant,				// Keyword: TemperatureConstant			'Constant ambient temperature'
+		T_TemperatureSpline,				// Keyword: TemperatureSpline			'Time-dependent ambient temperature from spline'
+		T_HeatLossConstant,					// Keyword: HeatLossConstant			'Constant heat loss'
+		T_HeatLossSpline,					// Keyword: HeatLossSpline				'Heat loss from spline'
+		T_HeatLossIdealHeatPump,			// Keyword: HeatLossIdealHeatPump		'Heat loss from ideal heat pump model'
+		T_TemperatureZone,					// Keyword: TemperatureZone				'Zone air temperature'
+		T_TemperatureConstructionLayer,		// Keyword: TemperatureConstructionLayer	'Active construction layer (floor heating)'
+		T_TemperatureFMUInterface,			// Keyword: TemperatureFMUInterface		'Temperature from FMU interface, provided heat flux to FMU'
+		NUM_T
 	};
 
-
-	enum Parameter{
-		P_AmbientTemperature,				// Keyword: AmbientTemperature					[C]		'Ambient temperature'
-		P_HeatLoss,							// Keyword: HeatLoss							[W]		'Heat loss'
+	/*! Parameters for the element . */
+	enum para_t {
+		P_Temperature,						// Keyword: Temperature							[C]		'Temperature for heat exchange'
+		P_HeatLoss,							// Keyword: HeatLoss							[W]		'Constant heat flux out of the element (heat loss)'
 		P_ExternalHeatTransferCoefficient,	// Keyword: ExternalHeatTransferCoefficient		[W/m2K]	'External heat transfer coeffient for the outside boundary'
 		NUM_P
 	};
 
+	enum splinePara_t {
+		SPL_Temperature,					// Keyword: Temperature							[C]		'Temperature for heat exchange'
+		SPL_HeatLoss,						// Keyword: HeatLoss							[W]		'Constant heat flux out of the element (heat loss)'
+		NUM_SPL
+	};
+
 	/*! Integer/whole number parameters. */
-	enum IntParameter {
-		IP_ZoneId,							// Keyword: ZoneId								[-]		'ID of coupled zone for thermal exchange'
-		NUM_IP
+	enum References {
+		ID_ZoneId,							// Keyword: ZoneId								[-]		'ID of coupled zone for thermal exchange'
+		ID_ConstructionInstanceId,			// Keyword: ConstructionInstanceId				[-]		'ID of coupled construction instance for thermal exchange'
+		NUM_ID
 	};
 
 
-	ModelType						m_modelType	= NUM_HT;					// XML:E
+	ModelType						m_modelType	= NUM_T;					// XML:E
 
 	IBK::Parameter					m_para[NUM_P];							// XML:E
 
 	/*! Integer parameters. */
-	IBK::IntPara					m_intPara[NUM_IP];						// XML:E
+	IDType							m_idReferences[NUM_ID];					// XML:E
 
-	NANDRAD::LinearSplineParameter	m_heatExchangeSpline;					// XML:E
+	/*! Time-series of heat flux or temperature (can be spline or tsv-file).
+		Note: the XML tag name is always the same "HeatExchangeSpline", yet the content (and physical units)
+		differ depending on selected heat exchange type.
+	*/
+	NANDRAD::LinearSplineParameter	m_splPara[NUM_SPL];						// XML:E
 
 };
 
