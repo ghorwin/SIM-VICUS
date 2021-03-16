@@ -261,8 +261,10 @@ void SVPropEditGeometry::translate() {
 		// TODO : Netzwerk zeugs
 	}
 
-	// also reset translation vector in selected geometry object
-	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.setTranslation(0,0,0);
+	// in case operation was executed without any selected objects - should be prevented
+	if (modifiedSurfaces.empty())
+		return;
+
 	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Translated geometry"), modifiedSurfaces );
 	undo->push();
 }
@@ -301,9 +303,10 @@ void SVPropEditGeometry::scale() {
 		// TODO : Netzwerk zeugs
 	}
 
-	// also reset translation vector in selected geometry object
-	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.setTranslation(0,0,0);
-	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.setScale(1,1,1);
+	// in case operation was executed without any selected objects - should be prevented
+	if (modifiedSurfaces.empty())
+		return;
+
 	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Scaled geometry"), modifiedSurfaces );
 	undo->push();
 }
@@ -344,9 +347,10 @@ void SVPropEditGeometry::rotate() {
 		// TODO : Netzwerk zeugs
 	}
 
-	// also reset translation vector in selected geometry object
-	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.setTranslation(0,0,0);
-	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.setRotation(QQuaternion());
+	// in case operation was executed without any selected objects - should be prevented
+	if (modifiedSurfaces.empty())
+		return;
+
 	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Rotated geometry"), modifiedSurfaces );
 	undo->push();
 }

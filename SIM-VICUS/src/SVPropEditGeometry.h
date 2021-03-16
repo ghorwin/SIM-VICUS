@@ -116,11 +116,6 @@ public:
 	/*! Applies current rotation (from selected geometry object) into project. */
 	void rotate();
 
-	/*! Translates the selected surfaces with the specified
-		\param copyVec - Translation Vector
-	*/
-	void copy(const QVector3D & trans, const int &count);
-
 public slots:
 
 	/*! Connected to SVProjectHandler::modified() */
