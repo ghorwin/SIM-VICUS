@@ -24,6 +24,14 @@ public:
 	*/
 	void updateColor();
 
+	/*! Creates a copy of the surface object but with a new unique ID. */
+	Surface clone() const{
+		Surface r(*this); // create new surface with same unique ID
+		Object & o = r;
+		(Object&)r = o.clone(); // assign new ID only
+		return r;
+	}
+
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
