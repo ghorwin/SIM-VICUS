@@ -865,9 +865,9 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 			// compute offset from current local coordinate system position
 			QVector3D scale;
 
-			scale.setX(targetScale.x() / ( m_boundingBoxDimension.m_x < 1E-4 ? 1.0 : m_boundingBoxDimension.m_x ) );
-			scale.setY(targetScale.y() / ( m_boundingBoxDimension.m_y < 1E-4 ? 1.0 : m_boundingBoxDimension.m_y ) );
-			scale.setZ(targetScale.z() / ( m_boundingBoxDimension.m_z < 1E-4 ? 1.0 : m_boundingBoxDimension.m_z ) );
+			scale.setX(std::abs(targetScale.x() ) < 1E-4 ? 0.0 : targetScale.x() / ( m_boundingBoxDimension.m_x < 1E-4 ? 1.0 : m_boundingBoxDimension.m_x ) );
+			scale.setY(std::abs(targetScale.y() ) < 1E-4 ? 0.0 : targetScale.y() / ( m_boundingBoxDimension.m_y < 1E-4 ? 1.0 : m_boundingBoxDimension.m_y ) );
+			scale.setZ(std::abs(targetScale.z() ) < 1E-4 ? 0.0 : targetScale.z() / ( m_boundingBoxDimension.m_z < 1E-4 ? 1.0 : m_boundingBoxDimension.m_z ) );
 			// now compose a transform object and set it in the wireframe object
 			// first we scale our selected objects
 			Vic3D::Transform3D scaling;
