@@ -1,4 +1,5 @@
 #include "SVUndoCopySurfaces.h"
+#include "SVProjectHandler.h"
 
 
 SVUndoCopySurfaces::SVUndoCopySurfaces(const QString &label, const std::vector<VICUS::Surface> &copiedSurfaces, unsigned int parentNodeID,
@@ -15,12 +16,10 @@ void SVUndoCopySurfaces::undo() {
 	// append copied surfaces
 	for (const VICUS::Surface &s : m_copiedSurfaces ) {
 		const VICUS::Room * r = dynamic_cast<const VICUS::Room *>(s.m_parent);
-		// lookup modified building level
-		Q_ASSERT(r != nullptr);
-
-		// remove last building level
-		Q_ASSERT(!r->m_surfaces.empty());
-		const_cast<VICUS::Room *>(r)->m_surfaces.pop_back();
+		if (r == nullptr)
+			theProject().m_plainGeometry.pop_back();
+		else
+			const_cast<VICUS::Room *>(r)->m_surfaces.pop_back();
 	}
 
 	// remove appended component instances (if any)
@@ -35,13 +34,11 @@ void SVUndoCopySurfaces::undo() {
 void SVUndoCopySurfaces::redo() {
 	// remove appended surfaces
 	for (const VICUS::Surface &s : m_copiedSurfaces ) {
-		const VICUS::Room * r = dynamic_cast<const VICUS::Room *>(s.m_parent);
-		// lookup modified building level
-		Q_ASSERT(r != nullptr);
-
-		// remove last building level
-		Q_ASSERT(!r->m_surfaces.empty());
-		const_cast<VICUS::Room *>(r)->m_surfaces.push_back(s);
+		const VICUS::Room *r = dynamic_cast<const VICUS::Room *>(s.m_parent);
+		if (r == nullptr)
+			theProject().m_plainGeometry.push_back(s);
+		else
+			const_cast<VICUS::Room *>(r)->m_surfaces.push_back(s);
 	}
 
 	// append component instances (if vector is empty, nothing happens here)
