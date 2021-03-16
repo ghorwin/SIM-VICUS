@@ -88,7 +88,7 @@ private slots:
 
 	void on_heatExchangeDataFile_editingFinished();
 
-	void on_comboBoxHeatExchangeType_currentIndexChanged(int index);
+	void on_comboBoxHeatExchangeType_activated(int index);
 
 private:
 	/*! This function is called whenever the current selection of edges/nodes/objects has changed.
@@ -113,7 +113,7 @@ private:
 
 	void updateNetworkProperties();
 
-	void updateHeatExchangeProperties();
+	void updateHeatExchangeWidgets(const VICUS::NetworkHeatExchange &hx);
 
 	void modifyStatus();
 
@@ -132,6 +132,8 @@ private:
 	QString largestDiameter() const;
 
 	QString smallestDiameter() const;
+
+	void modifyHeatExchangeProperties(const VICUS::NetworkHeatExchange & hx);
 
 	/*! modifies the given property of selected edge(s).
 	 * Encapsulates the process of retrieving the according edge and conducting the undo */

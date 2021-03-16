@@ -110,8 +110,8 @@ public:
 	NetworkNode									* m_node1 = nullptr;
 	NetworkNode									* m_node2 = nullptr;
 
-	unsigned int										m_nodeIdInlet = INVALID_ID;
-	unsigned int										m_nodeIdOutlet = INVALID_ID;
+	unsigned int								m_nodeIdInlet = INVALID_ID;
+	unsigned int								m_nodeIdOutlet = INVALID_ID;
 
 private:
 

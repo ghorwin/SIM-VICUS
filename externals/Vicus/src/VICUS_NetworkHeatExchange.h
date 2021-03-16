@@ -17,10 +17,6 @@ public:
 
 	VICUS_READWRITE
 
-	NetworkHeatExchange();
-
-	bool operator!=(const NetworkHeatExchange &other) const;
-
 	/*! Defines the type of heat exchange */
 	enum ModelType {
 		T_TemperatureConstant,				// Keyword: TemperatureConstant			'Constant ambient temperature'
@@ -54,6 +50,14 @@ public:
 		ID_ConstructionInstanceId,			// Keyword: ConstructionInstanceId				[-]		'ID of coupled construction instance for thermal exchange'
 		NUM_ID
 	};
+
+	NetworkHeatExchange();
+
+	NetworkHeatExchange(const ModelType &modelType):
+	m_modelType(modelType)
+	{}
+
+	bool operator!=(const NetworkHeatExchange &other) const;
 
 
 	ModelType						m_modelType	= NUM_T;					// XML:E
