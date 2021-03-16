@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<VicusProject fileVersion="0.2">
+	<ProjectInfo>
+		<Created>Do. März 11 14:05:57 2021</Created>
+		<LastEdited>Di. März 16 17:32:27 2021</LastEdited>
+	</ProjectInfo>
+	<Project>
+		<SolverParameter />
+		<SimulationParameter>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<Location>
+			<TimeZone>13</TimeZone>
+		</Location>
+		<ViewSettings>
+			<GridSpacing>10</GridSpacing>
+			<GridWidth>100</GridWidth>
+			<CameraTranslation>-5.79069 -7.50748 9.54623</CameraTranslation>
+			<RotationMatrix>
+				<Wp>0.845154</Wp>
+				<X>0.457006</X>
+				<Y>-0.130548</Y>
+				<Z>-0.244489</Z>
+			</RotationMatrix>
+			<FarDistance>10000</FarDistance>
+		</ViewSettings>
+		<Buildings>
+			<Building id="1" displayName="Building">
+				<BuildingLevels>
+					<BuildingLevel id="1" displayName="Level">
+						<Elevation>0</Elevation>
+						<Height>2.7</Height>
+						<Rooms>
+							<Room id="12" displayName="New zone">
+								<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+								<Surfaces>
+									<Surface id="13" displayName="Floor">
+										<PlaneGeometry type="Rectangle">2 0 0, 2.38419e-07 0 0, 1.19209e-07 5 0, 2 5 0</PlaneGeometry>
+									</Surface>
+									<Surface id="14" displayName="Ceiling">
+										<PlaneGeometry type="Rectangle">2 5 3, 1.19209e-07 5 3, -1.19209e-07 0 3, 2 0 3</PlaneGeometry>
+									</Surface>
+									<Surface id="15" displayName="Wall 1">
+										<PlaneGeometry type="Rectangle">2.38419e-07 0 0, 2 0 0, 2 0 3, -1.19209e-07 0 3</PlaneGeometry>
+									</Surface>
+									<Surface id="16" displayName="Wall 2">
+										<PlaneGeometry type="Rectangle">1.19209e-07 5 0, 2.38419e-07 0 0, -1.19209e-07 0 3, 1.19209e-07 5 3</PlaneGeometry>
+									</Surface>
+									<Surface id="17" displayName="Wall 3">
+										<PlaneGeometry type="Rectangle">2 5 0, 1.19209e-07 5 0, 1.19209e-07 5 3, 2 5 3</PlaneGeometry>
+									</Surface>
+									<Surface id="18" displayName="Wall 4">
+										<PlaneGeometry type="Rectangle">2 0 0, 2 5 0, 2 5 3, 2 0 3</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+						</Rooms>
+					</BuildingLevel>
+				</BuildingLevels>
+			</Building>
+		</Buildings>
+		<ComponentInstances>
+			<ComponentInstance id="2" componentID="50001" sideASurfaceID="13" />
+			<ComponentInstance id="3" componentID="50001" sideASurfaceID="14" />
+			<ComponentInstance id="4" componentID="50001" sideASurfaceID="15" />
+			<ComponentInstance id="5" componentID="50001" sideASurfaceID="16" />
+			<ComponentInstance id="6" componentID="50001" sideASurfaceID="17" />
+			<ComponentInstance id="7" componentID="50001" sideASurfaceID="18" />
+		</ComponentInstances>
+	</Project>
+</VicusProject>
