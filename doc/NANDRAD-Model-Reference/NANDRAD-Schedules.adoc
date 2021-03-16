@@ -51,7 +51,7 @@ Außerdem können Zeitplandaten auf zwei verschiedene Arten behandelt werden, al
 ----
 ====
 
-Innerhalb des Objekts `Schedules` können auch die folgenden XML-Tags angegeben werden 
+Innerhalb des Objekts `Schedules` können auch die folgenden XML-tags angegeben werden 
 
 * `FirstDayOfYear` 
 * `Holidays`
@@ -62,7 +62,7 @@ Innerhalb des Objekts `Schedules` können auch die folgenden XML-Tags angegeben 
 .mögliche Definitionen von XML-tags
 [options="header", cols="15%, 55%, 20%, 10%", width="100%"]
 |====================
-| XML-Tags | Beschreibung| Format |Verwendung
+| XML-tags | Beschreibung| Format |Verwendung
 | `FirstDayOfYear` 
 a| Der Tagestyp des 1. Januar (Offset des Wochentages des Startjahres.  
 
