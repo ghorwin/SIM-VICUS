@@ -45,8 +45,10 @@ void OpenGLWindow::renderNow() {
 		return;
 
 	// initialize on first call
-	if (m_context == nullptr)
+	if (m_context == nullptr) {
 		initOpenGL();
+		resizeGL(width(), height());
+	}
 
 	m_context->makeCurrent(this);
 
