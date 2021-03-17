@@ -70,37 +70,10 @@ bool SVNetworkImportDialog::edit() {
 		m_network.m_id = VICUS::Project::uniqueId(p.m_geometricNetworks);
 		m_network.m_name = uniqueName(m_ui->lineEditNetworkName->text().toStdString());
 
-
-		// TODO Hauke: remove this later
-
-		// fluids
-		VICUS::NetworkFluid fluid;
-		fluid.defaultFluidWater(0);
-
-		// write database
-		SVSettings &settings = SVSettings::instance();
-		unsigned int newFluidID = settings.m_db.m_fluids.add(fluid, fluid.m_id); // Mind: if ID already exists in DB, we generate a new one
-		// set network fluid id
-		m_network.m_fluidID = newFluidID;
-
-		// read database, add pipes to user database
-		for (auto it = settings.m_db.m_pipes.begin(); it != settings.m_db.m_pipes.end(); ++it) {
-			// TODO Hauke
-//			m_network.m_networkPipeDB.push_back(it->second);
-		}
-
-
-		settings.m_db.writeDatabases();
-
-		// TODO Hauke: rmeove this later
-//		m_network.assignSourceNode(IBKMK::Vector3D(481691, 5577509.9, 0));
-
 		m_network.updateExtends();
 
 		SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("Added network"), m_network);
 		undo->push(); // modifies project and updates views
-
-
 
 	}
 	else{

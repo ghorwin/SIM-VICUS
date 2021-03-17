@@ -232,13 +232,6 @@ public:
 	/*! Vector with plain (dumb) geometry. */
 	std::vector<Surface>								m_plainGeometry;			// XML:E
 
-
-	// *** Database elements used in the project (normally stored in built-in and user databases)
-	//     These database elements need to be merged with program databased when project is read.
-
-	/*! Database of fluids */
-	std::vector<NetworkFluid>							m_networkFluids;			// XML:E
-
 	/*! Path placeholder mappings used to substitute placeholders for database and user databases.
 		These placeholders are read from the path placeholders section of the project file and hold
 		a full directory path for a given placeholder name. You can compose a placeholder yourself:

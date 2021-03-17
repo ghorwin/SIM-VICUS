@@ -466,8 +466,19 @@ FUNCID(Network::sizePipeDimensions);
 
 	// check parameters
 	for (unsigned int n = 0; n < NUM_P; ++n){
-		if (m_para[n].empty())
-			throw IBK::Exception(IBK::FormatString("'%1' not set").arg(VICUS::KeywordList::Keyword("Network::para_t", n)), FUNC_ID);
+		try {
+			m_para[VICUS::Network::P_MaxPressureLoss].checkedValue("MaxPressureLoss", "Pa/m", "Pa/m",
+																   std::numeric_limits<double>::lowest(), true,
+																   std::numeric_limits<double>::max(), true, nullptr);
+			m_para[VICUS::Network::P_TemperatureSetpoint].checkedValue("TemperatureSetpoint", "C", "C",
+																   std::numeric_limits<double>::lowest(), true,
+																   std::numeric_limits<double>::max(), true, nullptr);
+			m_para[VICUS::Network::P_TemperatureDifference].checkedValue("TemperatureDifference", "K", "K",
+																   std::numeric_limits<double>::lowest(), true,
+																   std::numeric_limits<double>::max(), true, nullptr);
+		} catch (IBK::Exception &ex) {
+			throw IBK::Exception(ex, "Error in sizing pipes algorithm!", FUNC_ID);
+		}
 	}
 
 	// check for source

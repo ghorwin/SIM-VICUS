@@ -88,18 +88,6 @@ void Project::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
-			else if (cName == "NetworkFluids") {
-				const TiXmlElement * c2 = c->FirstChildElement();
-				while (c2) {
-					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "NetworkFluid")
-						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					NetworkFluid obj;
-					obj.readXML(c2);
-					m_networkFluids.push_back(obj);
-					c2 = c2->NextSiblingElement();
-				}
-			}
 			else if (cName == "SolverParameter")
 				m_solverParameter.readXML(c);
 			else if (cName == "SimulationParameter")
@@ -181,18 +169,6 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 
 		for (std::vector<Surface>::const_iterator it = m_plainGeometry.begin();
 			it != m_plainGeometry.end(); ++it)
-		{
-			it->writeXML(child);
-		}
-	}
-
-
-	if (!m_networkFluids.empty()) {
-		TiXmlElement * child = new TiXmlElement("NetworkFluids");
-		e->LinkEndChild(child);
-
-		for (std::vector<NetworkFluid>::const_iterator it = m_networkFluids.begin();
-			it != m_networkFluids.end(); ++it)
 		{
 			it->writeXML(child);
 		}

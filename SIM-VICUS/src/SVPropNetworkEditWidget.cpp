@@ -89,11 +89,13 @@ void SVPropNetworkEditWidget::selectionChanged() {
 
 	// cast objects to nodes, edges and network
 	for (const VICUS::Object* o : objs) {
+		// if an entire network is selected directly: cast it and dont cast any nodes / edges
 		const VICUS::Network * network = dynamic_cast<const VICUS::Network*>(o);
 		if (network != nullptr && std::find(networks.begin(), networks.end(), network) == networks.end()) {
 			networks.push_back(network);
-			continue;
+			break;
 		}
+		// in case the network is only a parent: continue casting nodes, edges
 		network = dynamic_cast<const VICUS::Network*>(o->m_parent);
 		if (network != nullptr && std::find(networks.begin(), networks.end(), network) == networks.end()) {
 			networks.push_back(network);
@@ -152,7 +154,7 @@ void SVPropNetworkEditWidget::selectionChanged() {
 		updateEdgeProperties();
 	}
 	// none selected
-	else{
+	else if (m_currentConstNetwork == nullptr){
 		m_ui->groupBoxNode->setEnabled(false);
 		m_ui->groupBoxEdge->setEnabled(false);
 		m_ui->groupBoxComponent->setEnabled(false);
@@ -270,6 +272,18 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 	m_ui->labelNetworkName->setText(QString::fromStdString(m_currentConstNetwork->m_name));
 	m_ui->labelEdgeCount->setText(QString("%1").arg(m_currentConstNetwork->m_edges.size()));
 	m_ui->labelNodeCount->setText(QString("%1").arg(m_currentConstNetwork->m_nodes.size()));
+
+	const SVDatabase & db = SVSettings::instance().m_db;
+	const VICUS::NetworkFluid * fluid = db.m_fluids[m_currentNetwork.m_fluidID];
+	if (fluid != nullptr){
+		m_ui->labelFluidName->setText(QString::fromStdString(fluid->m_displayName.string("de")));
+		m_ui->labelFluidName->setStyleSheet("QLabel {color: black}");
+	}
+	else{
+		m_ui->labelFluidName->setText("No fluid selected");
+		m_ui->labelFluidName->setStyleSheet("QLabel {color: red}");
+	}
+
 	if (m_currentConstNetwork->checkConnectedGraph()){
 		m_ui->labelNetworkConnected->setText("Network is connected");
 		m_ui->labelNetworkConnected->setStyleSheet("QLabel {color: green}");
@@ -358,6 +372,8 @@ void SVPropNetworkEditWidget::updateSizingParams() {
 
 
 void SVPropNetworkEditWidget::clearUI(){
+	m_ui->labelNetworkName->clear();
+	m_ui->labelFluidName->clear();
 	m_ui->lineEditNodeMaxHeatingDemand->clear();
 	m_ui->labelNodeId->clear();
 	m_ui->lineEditNodeX->clear();
@@ -785,14 +801,13 @@ void SVPropNetworkEditWidget::on_pushButtonSizePipeDimensions_clicked()
 	modifySizingParams();
 	if (!setNetwork())
 		return;
-	const VICUS::Project &p = project();
-	const VICUS::NetworkFluid * fluid = p.element(p.m_networkFluids, m_currentNetwork.m_fluidID);
+	const SVDatabase & db = SVSettings::instance().m_db;
+	const VICUS::NetworkFluid * fluid = db.m_fluids[m_currentNetwork.m_fluidID];
 	if (fluid == nullptr)
 		throw IBK::Exception(IBK::FormatString("Could not find fluid with id %1 in fluid database")
 							.arg(m_currentNetwork.m_fluidID), FUNC_ID);
 
 	// filter out list of available pipes
-	const SVDatabase & db = SVSettings::instance().m_db;
 	std::vector<const VICUS::NetworkPipe*> availablePipes;
 	for (unsigned int pipeID : m_currentNetwork.m_availablePipes) {
 		const VICUS::NetworkPipe * pipe = db.m_pipes[pipeID];

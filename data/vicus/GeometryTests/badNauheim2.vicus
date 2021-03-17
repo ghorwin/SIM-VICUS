@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Do Dez 10 12:42:13 2020</Created>
-		<LastEdited>Mi Mrz 17 19:00:55 2021</LastEdited>
+		<LastEdited>Mi Mrz 17 19:46:23 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -6038,16 +6038,5 @@
 				<ScaleEdges>30</ScaleEdges>
 			</Network>
 		</GeometricNetworks>
-		<NetworkFluids>
-			<NetworkFluid id="0" displayName="Water">
-				<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
-				<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
-				<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
-				<LinearSplineParameter name="KinematicViscosity" interpolationMethod="linear">
-					<X unit="C">0 10 20 30 40 50 60 70 80 90 </X>
-					<Y unit="m2/s">1.793e-06 1.307e-06 1.004e-06 8.01e-07 6.58e-07 5.54e-07 4.75e-07 4.13e-07 3.65e-07 3.26e-07 </Y>
-				</LinearSplineParameter>
-			</NetworkFluid>
-		</NetworkFluids>
 	</Project>
 </VicusProject>
