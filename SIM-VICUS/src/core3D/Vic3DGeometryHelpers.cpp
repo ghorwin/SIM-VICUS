@@ -379,7 +379,8 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 		double x = nx*radius;
 
 		for (unsigned int j=0; j<nSeg2; ++j, ++currentVertexIndex) {
-			double angle = -2*PI_CONST*j/nSeg2 - PI_CONST/nSeg2*(i % 2);
+			double angle = (double)(j + (i % 2))/nSeg2;
+			angle *= 2*PI_CONST;
 			double ny = std::cos(angle);
 			double y = ny*flat_radius;
 			double nz = std::sin(angle);
@@ -449,6 +450,15 @@ void addSphere(const IBKMK::Vector3D & p, double radius,
 	unsigned int nSeg = SPHERE_SEGMENTS; // number of segments to split 180° into
 	unsigned int nSeg2 = nSeg*2; // number of segments to split 360° into
 
+#if 0
+	// unfolded sphere mesh has nSeg*nSeg2 squares
+	vertexBufferData.resize(vertexBufferData.size() + nSeg*nSeg2 + 1);
+	// two triangles per square + 1 stop bit
+	indexBufferData.resize(indexBufferData.size() + nSeg*nSeg2*2);
+
+
+
+#else
 	vertexBufferData.resize(vertexBufferData.size() + (nSeg-1)*nSeg2 + 2);
 	// (nSeg-2)*nSeg2*3*2 element indexes for the triangles in the middle rings, and 2*nSeg2*3 for the top and bottom ring
 	indexBufferData.resize(indexBufferData.size() + (nSeg-2)*nSeg2*3*2 + 2*nSeg2*3);
@@ -467,7 +477,8 @@ void addSphere(const IBKMK::Vector3D & p, double radius,
 		double x = nx*radius;
 
 		for (unsigned int j=0; j<nSeg2; ++j, ++currentVertexIndex) {
-			double angle = -2*PI_CONST/nSeg2*j - PI_CONST/nSeg2*(i % 2);
+			double angle = (double)(j + 0.5*i)/nSeg2;
+			angle *= 2*PI_CONST;
 			double ny = std::cos(angle);
 			double y = ny*flat_radius;
 			double nz = std::sin(angle);
@@ -513,6 +524,7 @@ void addSphere(const IBKMK::Vector3D & p, double radius,
 		indexBufferData[currentElementIndex+1] = vertexStart + topCircleVertexStart + i;
 		indexBufferData[currentElementIndex+2] = vertexStart + topCircleVertexStart + (i+1) % nSeg2;
 	}
+#endif
 }
 
 

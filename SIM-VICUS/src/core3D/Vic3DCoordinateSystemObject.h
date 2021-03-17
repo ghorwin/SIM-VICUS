@@ -33,18 +33,39 @@ class ShaderProgram;
 /*! Draws the local coordinate system with adjustable ball/icosaeder coordinate system indicator.
 	The coordinate system object is composed of several objects, and only some of them are shown
 	together.
-
-	Regular coordinate system object:
-	- one big sphere in the middle          indexBufferObject 0
-	- one opaque cylinder per axis          indexBufferObject 1-3
-	- one small sphere at each axis end     indexBufferObject 4-6
-
-	Coordinate system while "positioning coordinate system":
-	- colored lines for each coordinate system axis meeting in the center (to allow very precise snapping)
-	- semi-transparent sphere in the middle indexBufferObject 7
 */
 class CoordinateSystemObject {
 public:
+
+	/*! These enumeration values define which transformation mode is active and how the local coordinate system
+		shall be painted.
+		Note, some of the transform modes are additive, hence we use a bit mask.
+
+		If all rotation modes are active, this means "passive rotation mode, no rotation axis selected yet".
+		Otherwise only one rotation axis can be active and only the orbit for this rotation is shown.
+	*/
+	enum GeometryTransformMode {
+		/*! No transform mode, just a regular coordinate system. */
+		TM_None									= 0x00,
+		/*! Rotation around X-axis. */
+		TM_RotateX								= 0x01,
+		/*! Rotation around Y-axis. */
+		TM_RotateY								= 0x02,
+		/*! Rotation around Z-axis. */
+		TM_RotateZ								= 0x04,
+		/*! Scale along X-axis. */
+		TM_ScaleX								= 0x10,
+		/*! Scale along Y-axis. */
+		TM_ScaleY								= 0x20,
+		/*! Scale along Z-axis. */
+		TM_ScaleZ								= 0x40,
+		/*! Translation mode (there is no axis-specific handling for translation, since translation locks are
+			set separetely)
+		*/
+		TM_Translate							= 0x100,
+	};
+
+
 
 	CoordinateSystemObject();
 
@@ -81,6 +102,11 @@ public:
 	QVector3D localYAxis() const { return m_transform.rotation().rotatedVector(QVector3D(0,1,0)); }
 	/*! Returns the local Z-coordinate axis. */
 	QVector3D localZAxis() const { return m_transform.rotation().rotatedVector(QVector3D(0,0,1)); }
+
+	/*! A bitmask that indicates the current transform modes for the coordinate system and ultimately
+		defines how the local coordinate system shall be drawn. See renderOpaque() for a description of the rules.
+	*/
+	int m_geometryTransformMode = 0;
 
 private:
 	/*! Updates the inverse matrix. */
@@ -119,11 +145,16 @@ private:
 	/*! Index buffer on CPU memory. */
 	std::vector<GLuint>			m_indexBufferData;
 
+	std::vector<unsigned int>   m_objectStartIndexes;
+
 	/*! Index of vertexes for axis lines. For each axis line we have two indexes, so
 		the x-axis is drawn with vertexes starting at m_axisLinesVertexIndex, the y-axis starting at
 		m_axisLinesVertexIndex+2 etc.
+
+		Axis lines are shown when axis-lock is enabled, and when translate/scale operations are in progress
+		for a given axis.
 	*/
-	unsigned int				m_axisLinesVertexIndex;
+	std::vector<GLint>			m_axisLinesVertexIndex;
 };
 
 } // namespace Vic3D
