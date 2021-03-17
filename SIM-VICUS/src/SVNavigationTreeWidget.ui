@@ -66,28 +66,16 @@
     </widget>
    </item>
   </layout>
-  <action name="actionAdd">
-   <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
-   </property>
-   <property name="text">
-    <string>Add...</string>
-   </property>
-   <property name="toolTip">
-    <string>Add something?</string>
-   </property>
-  </action>
   <action name="actionRemoveSelected">
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
      <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
    </property>
    <property name="text">
-    <string>Remove</string>
+    <string>Remove (Del)</string>
    </property>
    <property name="toolTip">
-    <string>Removed selected objects</string>
+    <string>Removed selected objects (Del)</string>
    </property>
    <property name="shortcut">
     <string>Del</string>
@@ -102,7 +90,7 @@
     <string>Show selected objects</string>
    </property>
    <property name="toolTip">
-    <string>Makes all selected objects visible</string>
+    <string>Makes all selected objects visible (F6)</string>
    </property>
    <property name="shortcut">
     <string>F6</string>
@@ -117,7 +105,7 @@
     <string>Hides selected objects</string>
    </property>
    <property name="toolTip">
-    <string>Hides all selected objects</string>
+    <string>Hides all selected objects (F7)</string>
    </property>
    <property name="shortcut">
     <string>F7</string>
@@ -132,7 +120,7 @@
     <string>Select all</string>
    </property>
    <property name="toolTip">
-    <string>Selects all selectable objects</string>
+    <string>Selects all selectable objects (Ctrl + A)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+A</string>
@@ -143,7 +131,7 @@
     <string>Deselect all</string>
    </property>
    <property name="toolTip">
-    <string>Deselects all objects</string>
+    <string>Deselects all objects (Esc)</string>
    </property>
    <property name="shortcut">
     <string>Esc</string>
@@ -158,7 +146,7 @@
     <string>Smart select</string>
    </property>
    <property name="toolTip">
-    <string>Select objects based on properties</string>
+    <string>Select objects based on properties (Ctrl + .)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+.</string>
