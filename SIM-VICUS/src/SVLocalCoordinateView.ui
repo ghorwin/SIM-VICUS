@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>548</width>
-    <height>43</height>
+    <height>49</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -39,6 +39,9 @@
       </size>
      </property>
      <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
       <bool>true</bool>
      </property>
     </widget>

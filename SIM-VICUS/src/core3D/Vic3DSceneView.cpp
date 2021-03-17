@@ -153,6 +153,28 @@ void SceneView::setNormalVectorsVisible(bool visible) {
 }
 
 
+void SceneView::toggleAlignCoordinateSystem() {
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	if (vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem)
+		m_mainScene.leaveCoordinateSystemAdjustmentMode(true); // pass true to signal "abort"
+	else {
+		// TODO : check if we can go into "align coordinate system" mode, and if yes, toggle it
+		m_mainScene.enterCoordinateSystemAdjustmentMode();
+	}
+}
+
+
+void SceneView::toggleTranslateCoordinateSystem() {
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	if (vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem)
+		m_mainScene.leaveCoordinateSystemTranslationMode(true); // pass true to signal "abort"
+	else {
+		// TODO : check if we can go into "move coordinate system" mode, and if yes, toggle it
+		m_mainScene.enterCoordinateSystemTranslationMode();
+	}
+}
+
+
 void SceneView::onModified(int modificationType, ModificationInfo * data) {
 	// relay change notification to scene objects
 	m_mainScene.onModified(modificationType, data);
@@ -426,29 +448,13 @@ void SceneView::keyReleaseEvent(QKeyEvent *event) {
 		} break;
 
 
-		// *** F4 - toggle "align coordinate system" mode ****
-		case Qt::Key_F4 : {
-			SVViewState vs = SVViewStateHandler::instance().viewState();
-			if (vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem)
-				m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
-			else
-				m_mainScene.enterCoordinateSystemAdjustmentMode();
-		} break;
-
-
-		// *** F5 - toggle "move local coordinate system" mode ****
-		case Qt::Key_F5 : {
-			SVViewState vs = SVViewStateHandler::instance().viewState();
-			if (vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem)
-				m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
-			else
-				m_mainScene.enterCoordinateSystemAdjustmentMode();
-		} break;
-
 		// *** Delete selected geometry ***
+		// this shortcut is not a global shortcut and requires the scene to be in focus (as it is the case,
+		// when the user had just selected objects)
 		case Qt::Key_Delete : {
 			m_mainScene.deleteSelected();
 		} break;
+
 
 		// *** Selected all selectable objects (i.e. objects shown in the scene) ***
 		case Qt::Key_A : {

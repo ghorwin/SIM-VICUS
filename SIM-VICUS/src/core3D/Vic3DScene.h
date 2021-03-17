@@ -94,8 +94,13 @@ public:
 
 	/*! Toggles "align coordinate system" mode on. */
 	void enterCoordinateSystemAdjustmentMode();
-	/*! Leaves the coordinate system alignment/positioning mode and returns to previous mode. */
+	/*! Leaves the coordinate system alignment mode and returns to previous mode. */
 	void leaveCoordinateSystemAdjustmentMode(bool abort);
+
+	/*! Toggles "translate coordinate system" mode on. */
+	void enterCoordinateSystemTranslationMode();
+	/*! Leaves the coordinate system positioning mode and returns to previous mode. */
+	void leaveCoordinateSystemTranslationMode(bool abort);
 
 	bool m_smallCoordinateSystemObjectVisible = true;
 	/*! If true, the surface normals (lines) are shown for each visible surface. */

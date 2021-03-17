@@ -174,13 +174,14 @@ bool SVGeometryView::handleGlobalKeyPress(Qt::Key k) {
 			// all view modes that require snapping
 		} break;
 
-		// ** align coordinate system mode **
+		// *** F4 - toggle "align coordinate system" mode ****
 		case Qt::Key_F4 :
-			SVViewStateHandler::instance().toggleAlignCoordinateSystem();
+			m_sceneView->toggleAlignCoordinateSystem();
 		break;
 
-		// ** translate coordinate system mode **
+		// *** F5 - toggle "move local coordinate system" mode ****
 		case Qt::Key_F5 :
+			m_sceneView->toggleTranslateCoordinateSystem();
 		break;
 
 		default:

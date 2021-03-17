@@ -1,7 +1,10 @@
 #include "SVLocalCoordinateView.h"
-#include "SVViewStateHandler.h"
-
 #include "ui_SVLocalCoordinateView.h"
+
+#include <QDebug>
+
+#include "SVViewStateHandler.h"
+#include "SVGeometryView.h"
 
 SVLocalCoordinateView::SVLocalCoordinateView(QWidget *parent) :
 	QWidget(parent),
@@ -31,11 +34,11 @@ void SVLocalCoordinateView::setCoordinates(const Vic3D::Transform3D &t) {
 
 
 void SVLocalCoordinateView::setAlignCoordinateSystemButtonChecked(bool checked) {
-	m_ui->actionAlignCoordinateSystem->setChecked(checked);
+	m_ui->toolButtonAlignCoordinateSystem->setChecked(checked);
 }
 
 
 void SVLocalCoordinateView::on_toolButtonAlignCoordinateSystem_clicked() {
-	// toggle coordinate system mode
-	SVViewStateHandler::instance().toggleAlignCoordinateSystem();
+	SVGeometryView * geoView = SVViewStateHandler::instance().m_geometryView;
+	geoView->handleGlobalKeyPress(Qt::Key_F4);
 }

@@ -36,6 +36,11 @@ public:
 	*/
 	void setNormalVectorsVisible(bool visible);
 
+	/*! Called when the global hot key has been pressed, simply relays the call to the main scene. */
+	void toggleAlignCoordinateSystem();
+	/*! Called when the global hot key has been pressed, simply relays the call to the main scene.. */
+	void toggleTranslateCoordinateSystem();
+
 public slots:
 
 	/*! Connected to SVProjectHandler::modified() */
