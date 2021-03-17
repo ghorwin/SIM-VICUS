@@ -379,7 +379,7 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 		double x = nx*radius;
 
 		for (unsigned int j=0; j<nSeg2; ++j, ++currentVertexIndex) {
-			double angle = (double)(j + (i % 2))/nSeg2;
+			double angle = -(double)(j + (i % 2))/nSeg2;
 			angle *= 2*PI_CONST;
 			double ny = std::cos(angle);
 			double y = ny*flat_radius;
@@ -452,9 +452,67 @@ void addSphere(const IBKMK::Vector3D & p, double radius,
 
 #if 0
 	// unfolded sphere mesh has nSeg*nSeg2 squares
-	vertexBufferData.resize(vertexBufferData.size() + nSeg*nSeg2 + 1);
+	vertexBufferData.resize(vertexBufferData.size() + (nSeg+1)*nSeg2);
 	// two triangles per square + 1 stop bit
-	indexBufferData.resize(indexBufferData.size() + nSeg*nSeg2*2);
+	indexBufferData.resize(indexBufferData.size() + nSeg*nSeg2*2*3 + nSeg*3); // Mind: add 3 indexes for each degenerated triangle per ring
+
+	unsigned int vertexStart = currentVertexIndex;
+
+	// now generate the vertexes (nSeg vertexes per circle)
+	for (unsigned int i=0; i<=nSeg; ++i) {
+		double beta = PI_CONST*i/nSeg;
+		double flat_radius = std::sin(beta)*radius;
+		double nx = std::cos(beta);
+		double x = nx*radius;
+
+		for (unsigned int j=0; j<nSeg2; ++j, ++currentVertexIndex) {
+			// Mind the negative sign, since we look at the mesh from the positve x-axis towards the negative axis
+			// and want the mesh to loop clock-wise around x-axis from this view point
+			double angle = -(double)(j + 0.5*i)/nSeg2;
+			angle *= 2*PI_CONST;
+			double ny = std::cos(angle);
+			double y = ny*flat_radius;
+			double nz = std::sin(angle);
+			double z = nz*flat_radius;
+
+			vertexBufferData[currentVertexIndex].m_coords = QVector3D(x, y, z) + trans;
+		}
+	}
+
+	// indexes are genererated row-by-row
+	// The unrolled grid looks like this, with the first vertex colum repeated to show the wrap-around
+	// 8   9  10  11   8
+	// 4   5   6   7   4
+	// 0   1   2   3   0
+	//
+	// The triangles in the bottom-most row are then: (0 4 1) (4 1 5) (1 5 2) ... (3 7 0) (7 0 4)   ... (4 4 8 degenerated)
+	// and in the next row                            (4 8 5) (8 5 9)
+	//
+	// or in general for the first row                (j j + nSeg j+1)  (j + nSeg  j+1  j + nSeg + 1)  for j = 0...<nSeg2 and using modulo of nSeg2 on index calculation
+	// for all rows the term i*nSeg2 is added to each index
+	for (unsigned int i=0; i<nSeg; ++i) {
+		unsigned int topCircleVertexStart = (i+1)*nSeg2;  // i = 0 -> 4
+		unsigned int bottomCircleVertexStart = i*nSeg2;   // i = 0 -> 0
+
+		// we add always 2 triangles
+		for (unsigned int j=0; j<nSeg2; ++j, currentElementIndex += 6) {
+			// add 0 4 1
+			indexBufferData[currentElementIndex  ] = vertexStart + bottomCircleVertexStart + j;
+			indexBufferData[currentElementIndex+1] = vertexStart + topCircleVertexStart + j;
+			indexBufferData[currentElementIndex+2] = vertexStart + bottomCircleVertexStart + (j+1) % nSeg2;
+			// add 4 1 5
+			indexBufferData[currentElementIndex+3] = vertexStart + topCircleVertexStart + j;
+			indexBufferData[currentElementIndex+4] = vertexStart + bottomCircleVertexStart + (j+1) % nSeg2;
+			indexBufferData[currentElementIndex+5] = vertexStart + topCircleVertexStart + (j+1) % nSeg2;
+		}
+
+		// add degenerate triangle - 4 4 8
+		indexBufferData[currentElementIndex  ] = vertexStart + topCircleVertexStart;
+		indexBufferData[currentElementIndex+1] = vertexStart + topCircleVertexStart;
+		indexBufferData[currentElementIndex+2] = vertexStart + topCircleVertexStart + nSeg2;
+
+		currentElementIndex += 3;
+	}
 
 
 
@@ -477,7 +535,7 @@ void addSphere(const IBKMK::Vector3D & p, double radius,
 		double x = nx*radius;
 
 		for (unsigned int j=0; j<nSeg2; ++j, ++currentVertexIndex) {
-			double angle = (double)(j + 0.5*i)/nSeg2;
+			double angle = -(double)(j + 0.5*i)/nSeg2;
 			angle *= 2*PI_CONST;
 			double ny = std::cos(angle);
 			double y = ny*flat_radius;
