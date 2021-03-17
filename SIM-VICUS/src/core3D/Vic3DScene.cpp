@@ -682,45 +682,47 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 				const VICUS::Object * obj = project().objectById(uniqueID);
 				// should be a surface
 				const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(obj);
-				Q_ASSERT(s != nullptr);
-				// now get normal vector
-				IBKMK::Vector3D n = s->m_geometry.normal();
-				// get also local X and Y vectors
-				IBKMK::Vector3D localX = s->m_geometry.localX();
-				IBKMK::Vector3D localY = s->m_geometry.localY();
-				// compose rotation angle from global to local system via the following math:
-				// we have local system axes x,y,z and global axes g1, g2, g3
-				// and the rotation matrix R should do:
-				//  R(g1) = x,  R(g2) = y, R(g3) = z
-				//
-				// now, if we describe a body axis like:
-				//  x = B11.g1 + B21.g2 + B31.g3
-				//  y = B11.g1 + B21.g2 + B31.g3
-				//  z = B11.g1 + B21.g2 + B31.g3
-				//
-				// or in matrix writing
-				//  R[1,0,0] = [B11, B21, B31]
-				//
-				// each of the columns of the rotation matrix is the normalized local coordinate axis
-				//
-				// now build the rotation matrix
-	//			QMatrix3x3 R;
-	//			float * r = R.data();
-	//			*(QVector3D*)r = QtExt::IBKVector2QVector(localX.normalized());
-	//			r+=3;
-	//			*(QVector3D*)r = QtExt::IBKVector2QVector(localY.normalized());
-	//			r+=3;
-	//			*(QVector3D*)r = QtExt::IBKVector2QVector(n.normalized());
-	//			qDebug() << R;
-	//			QQuaternion q = QQuaternion::fromRotationMatrix(R);
-	//			qDebug() << q;
+				// but maybe a nullptr, if we hit a sphere/cylinder from a network object
+				if (s != nullptr) {
+					// now get normal vector
+					IBKMK::Vector3D n = s->m_geometry.normal();
+					// get also local X and Y vectors
+					IBKMK::Vector3D localX = s->m_geometry.localX();
+					IBKMK::Vector3D localY = s->m_geometry.localY();
+					// compose rotation angle from global to local system via the following math:
+					// we have local system axes x,y,z and global axes g1, g2, g3
+					// and the rotation matrix R should do:
+					//  R(g1) = x,  R(g2) = y, R(g3) = z
+					//
+					// now, if we describe a body axis like:
+					//  x = B11.g1 + B21.g2 + B31.g3
+					//  y = B11.g1 + B21.g2 + B31.g3
+					//  z = B11.g1 + B21.g2 + B31.g3
+					//
+					// or in matrix writing
+					//  R[1,0,0] = [B11, B21, B31]
+					//
+					// each of the columns of the rotation matrix is the normalized local coordinate axis
+					//
+					// now build the rotation matrix
+		//			QMatrix3x3 R;
+		//			float * r = R.data();
+		//			*(QVector3D*)r = QtExt::IBKVector2QVector(localX.normalized());
+		//			r+=3;
+		//			*(QVector3D*)r = QtExt::IBKVector2QVector(localY.normalized());
+		//			r+=3;
+		//			*(QVector3D*)r = QtExt::IBKVector2QVector(n.normalized());
+		//			qDebug() << R;
+		//			QQuaternion q = QQuaternion::fromRotationMatrix(R);
+		//			qDebug() << q;
 
-				// or use the ready-made Qt function (which surprisingly gives the same result :-)
-				QQuaternion q2 = QQuaternion::fromAxes(QtExt::IBKVector2QVector(localX.normalized()),
-													   QtExt::IBKVector2QVector(localY.normalized()),
-													   QtExt::IBKVector2QVector(n.normalized()));
-	//			qDebug() << q2;
-				m_coordinateSystemObject.setRotation(q2);
+					// or use the ready-made Qt function (which surprisingly gives the same result :-)
+					QQuaternion q2 = QQuaternion::fromAxes(QtExt::IBKVector2QVector(localX.normalized()),
+														   QtExt::IBKVector2QVector(localY.normalized()),
+														   QtExt::IBKVector2QVector(n.normalized()));
+		//			qDebug() << q2;
+					m_coordinateSystemObject.setRotation(q2);
+				}
 			}
 			else {
 				// restore to global orientation
@@ -1449,6 +1451,17 @@ void Vic3DScene::hideSelected() {
 }
 
 
+void Vic3DScene::enterCoordinateSystemAdjustmentMode() {
+	// store current transformation of local coordinate system object
+	m_oldCoordinateSystemTransform = m_coordinateSystemObject.transform();
+	// turn on AlignLocalCoordinateSystem mode
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_sceneOperationMode = SVViewState::OM_AlignLocalCoordinateSystem;
+	SVViewStateHandler::instance().setViewState(vs);
+	qDebug() << "Entering 'Align coordinate system' mode";
+}
+
+
 void Vic3DScene::leaveCoordinateSystemAdjustmentMode(bool abort) {
 	// restore original local coordinate system
 	if (abort) {
@@ -1466,15 +1479,15 @@ void Vic3DScene::leaveCoordinateSystemAdjustmentMode(bool abort) {
 }
 
 
-void Vic3DScene::enterCoordinateSystemAdjustmentMode() {
-	// store current transformation of local coordinate system object
-	m_oldCoordinateSystemTransform = m_coordinateSystemObject.transform();
-	// turn on AlignLocalCoordinateSystem mode
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_sceneOperationMode = SVViewState::OM_AlignLocalCoordinateSystem;
-	SVViewStateHandler::instance().setViewState(vs);
-	qDebug() << "Entering 'Align coordinate system' mode";
+void Vic3DScene::enterCoordinateSystemTranslationMode() {
+	// TODO Stephan
 }
+
+
+void Vic3DScene::leaveCoordinateSystemTranslationMode(bool abort) {
+	// TODO Stephan
+}
+
 
 
 void Vic3DScene::pick(PickObject & pickObject) {
