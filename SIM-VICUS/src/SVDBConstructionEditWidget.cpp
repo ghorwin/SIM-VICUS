@@ -497,6 +497,8 @@ void SVDBConstructionEditWidget::showMaterialSelectionDialog(int index) {
 	SVDatabaseEditDialog * matSelect = SVMainWindow::instance().dbMaterialEditDialog();
 	// ask to select a material
 	unsigned int matId = matSelect->select(m_current->m_materialLayers[(unsigned int)index].m_matId);
+	if (matId == VICUS::INVALID_ID)
+		return; // dialog was canceled, no change here
 	if (matId != m_current->m_materialLayers[(unsigned int)index].m_matId) {
 		m_current->m_materialLayers[(unsigned int)index].m_matId = matId;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
