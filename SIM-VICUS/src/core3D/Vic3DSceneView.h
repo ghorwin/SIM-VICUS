@@ -65,12 +65,6 @@ public slots:
 	/*! Connected to SVViewStateHandler::refreshColors(). */
 	void onColorRefreshNeeded();
 
-signals:
-	/*! Emitted when numbers where typed.
-		Only during "PlaceVertex" scene operation mode.
-	*/
-	void numberKeyPressed(Qt::Key k);
-
 protected:
 	void initializeGL() override;
 	void resizeGL(int width, int height) override;

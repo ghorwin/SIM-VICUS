@@ -42,6 +42,9 @@ public:
 		It is the central handling function for all scene-related/view-state related global shortcuts
 		and dispatches them to either the scene, or the line edit (for number input) or the view state
 		manager.
+
+		\note This function is not called, when the focus is currently on a line edit or any other widget
+			  that legitimately accepts all character inputs.
 		\return Returns true, if the key was accepted and handled.
 	*/
 	bool handleGlobalKeyPress(Qt::Key k);

@@ -362,19 +362,6 @@ void SceneView::paintGL() {
 
 void SceneView::keyPressEvent(QKeyEvent *event) {
 	m_keyboardMouseHandler.keyPressEvent(event);
-	// in place vertex mode, filter out number keys - we do this right at the moment that
-	// the key is pressed, since afterwards we switch focus to the coordinate line edit
-	// which handles repeating keys
-	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex) {
-		Qt::Key k = static_cast<Qt::Key>(event->key());
-		if ((k >= Qt::Key_0 && k <= Qt::Key_9) ||
-			k == Qt::Key_Comma || k == Qt::Key_Period ||
-			k == Qt::Key_Space || k == Qt::Key_Return || k == Qt::Key_Enter ||
-			k == Qt::Key_Backspace || k == Qt::Key_Minus )
-		{
-			emit numberKeyPressed(k);
-		}
-	}
 	checkInput();
 }
 

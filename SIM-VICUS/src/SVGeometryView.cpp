@@ -95,9 +95,6 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
 			this, &SVGeometryView::onViewStateChanged);
 
-	connect(m_sceneView, &Vic3D::SceneView::numberKeyPressed,
-			this, &SVGeometryView::onNumberKeyPressed);
-
 	SVViewStateHandler::instance().m_geometryView = this;
 	onViewStateChanged();
 }
@@ -132,6 +129,12 @@ bool SVGeometryView::handleGlobalKeyPress(Qt::Key k) {
 		case Qt::Key_Comma :
 		case Qt::Key_Period :
 		case Qt::Key_Minus :
+		case Qt::Key_Backspace :
+		case Qt::Key_Enter :
+		case Qt::Key_Return :
+		case Qt::Key_Space :
+			// when we are in an operation, where our coordinate input widget is visible, then we pass on
+			// all the keys to this widget
 			if (!m_actionCoordinateInput->isVisible())
 				return false;
 			onNumberKeyPressed(k);
@@ -215,7 +218,8 @@ void SVGeometryView::onViewStateChanged() {
 	m_actionCoordinateInput->setVisible(lockVisible);
 
 	if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
-		vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry)
+		vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry ||
+		vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem)
 	{
 		m_actionlocalCoordinateSystem->setVisible(true);
 		m_localCoordinateSystemView->setAlignCoordinateSystemButtonChecked(vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem);
