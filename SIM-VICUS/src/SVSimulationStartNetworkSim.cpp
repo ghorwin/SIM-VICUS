@@ -338,19 +338,9 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 			elem.m_displayName = node.m_displayName;
 		}
 
-
-
 		// transform heatExchange properties
-		elem.m_heatExchange = NANDRAD::HydraulicNetworkHeatExchange();
-		elem.m_heatExchange.m_modelType = (NANDRAD::HydraulicNetworkHeatExchange::ModelType) node.m_heatExchange.m_modelType;
-		// TODO : Hauke
-#if 0
-		elem.m_heatExchange.m_heatExchangeSpline = node.m_heatExchange.m_heatExchangeSpline;
-		for (unsigned int i=0; i<NANDRAD::HydraulicNetworkHeatExchange::NUM_P; ++i)
-			elem.m_heatExchange.m_para[i]  = node.m_heatExchange.m_para[i];
-		for (unsigned int i=0; i<NANDRAD::HydraulicNetworkHeatExchange::NUM_IP; ++i)
-			elem.m_heatExchange.m_intPara[i]  = node.m_heatExchange.m_intPara[i];
-#endif
+		elem.m_heatExchange = node.m_heatExchange.toNandradHeatExchange();
+
 		nandradNetwork.m_elements.push_back(elem);
 
 		// write subnetworks
@@ -398,17 +388,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 													edge->m_pipeId,
 													edge->length());
 		inletPipe.m_displayName = edge->m_displayName;
-
-		inletPipe.m_heatExchange = NANDRAD::HydraulicNetworkHeatExchange();
-		inletPipe.m_heatExchange.m_modelType = (NANDRAD::HydraulicNetworkHeatExchange::ModelType) edge->m_heatExchange.m_modelType;
-// TODO Hauke
-#if 0
-		inletPipe.m_heatExchange.m_heatExchangeSpline = edge->m_heatExchange.m_heatExchangeSpline;
-		for (unsigned int i=0; i<NANDRAD::HydraulicNetworkHeatExchange::NUM_P; ++i)
-			inletPipe.m_heatExchange.m_para[i]  = edge->m_heatExchange.m_para[i];
-		for (unsigned int i=0; i<NANDRAD::HydraulicNetworkHeatExchange::NUM_IP; ++i)
-			inletPipe.m_heatExchange.m_intPara[i]  = edge->m_heatExchange.m_intPara[i];
-#endif
+		inletPipe.m_heatExchange = edge->m_heatExchange.toNandradHeatExchange();
 		nandradNetwork.m_elements.push_back(inletPipe);
 
 		// add outlet pipe element
@@ -419,17 +399,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 													edge->m_pipeId,
 													edge->length());
 		outletPipe.m_displayName = edge->m_displayName;
-
-		outletPipe.m_heatExchange = NANDRAD::HydraulicNetworkHeatExchange();
-		outletPipe.m_heatExchange.m_modelType = (NANDRAD::HydraulicNetworkHeatExchange::ModelType) edge->m_heatExchange.m_modelType;
-// TODO Hauke
-#if 0
-		outletPipe.m_heatExchange.m_heatExchangeSpline = edge->m_heatExchange.m_heatExchangeSpline;
-		for (unsigned int i=0; i<NANDRAD::HydraulicNetworkHeatExchange::NUM_P; ++i)
-			outletPipe.m_heatExchange.m_para[i]  = edge->m_heatExchange.m_para[i];
-		for (unsigned int i=0; i<NANDRAD::HydraulicNetworkHeatExchange::NUM_IP; ++i)
-			outletPipe.m_heatExchange.m_intPara[i]  = edge->m_heatExchange.m_intPara[i];
-#endif
+		outletPipe.m_heatExchange = edge->m_heatExchange.toNandradHeatExchange();
 		nandradNetwork.m_elements.push_back(outletPipe);
 
 	}

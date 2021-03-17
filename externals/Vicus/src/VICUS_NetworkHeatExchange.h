@@ -8,6 +8,7 @@
 #include "VICUS_Constants.h"
 
 #include "NANDRAD_LinearSplineParameter.h"
+#include "NANDRAD_HydraulicNetworkHeatExchange.h"
 
 namespace VICUS {
 
@@ -51,14 +52,18 @@ public:
 		NUM_ID
 	};
 
-	NetworkHeatExchange();
+	NetworkHeatExchange(){
+		for (unsigned int & i : m_idReferences) i = INVALID_ID;
+	}
 
 	NetworkHeatExchange(const ModelType &modelType):
-	m_modelType(modelType)
-	{}
+	m_modelType(modelType){
+		for (unsigned int & i : m_idReferences) i = INVALID_ID;
+	}
+
+	NANDRAD::HydraulicNetworkHeatExchange toNandradHeatExchange() const;
 
 	bool operator!=(const NetworkHeatExchange &other) const;
-
 
 	ModelType						m_modelType	= NUM_T;					// XML:E
 

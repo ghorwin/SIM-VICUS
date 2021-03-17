@@ -168,17 +168,17 @@ void Network::updateVisualizationRadius(const VICUS::Database<VICUS::NetworkPipe
 void Network::setDefaultColors() const
 {
 	for (const NetworkEdge & edge: m_edges)
-		edge.m_color = Qt::lightGray;
+		edge.m_color = QColor(93,138,168); // light blue
 	for (const NetworkNode & node: m_nodes) {
 		switch (node.m_type) {
 			case VICUS::NetworkNode::NT_Source:
-				node.m_color = Qt::darkGray;
+				node.m_color = QColor(176,191,26); // green
 			break;
 			case VICUS::NetworkNode::NT_Building:
-				node.m_color = Qt::darkGray;
+				node.m_color = QColor(255,126,0); // orange
 			break;
 			case VICUS::NetworkNode::NT_Mixer:
-				node.m_color = Qt::lightGray;
+				node.m_color = QColor(255,191,0);
 			break;
 			default:;
 		}

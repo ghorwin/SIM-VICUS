@@ -2,9 +2,18 @@
 
 namespace VICUS {
 
-NetworkHeatExchange::NetworkHeatExchange()
-{
+NANDRAD::HydraulicNetworkHeatExchange NetworkHeatExchange::toNandradHeatExchange() const{
 
+	NANDRAD::HydraulicNetworkHeatExchange hx;
+	hx.m_modelType = (NANDRAD::HydraulicNetworkHeatExchange::ModelType) m_modelType;
+	for (unsigned int i=0; i<NANDRAD::HydraulicNetworkHeatExchange::NUM_P; ++i)
+		hx.m_para[i]  = m_para[i];
+	for (unsigned int i=0; i<NANDRAD::HydraulicNetworkHeatExchange::NUM_SPL; ++i)
+		hx.m_splPara[i] = m_splPara[i];
+	for (unsigned int i=0; i<NANDRAD::HydraulicNetworkHeatExchange::NUM_ID; ++i)
+		hx.m_idReferences[i]  = m_idReferences[i];
+
+	return hx;
 }
 
 bool NetworkHeatExchange::operator!=(const NetworkHeatExchange &other) const{
