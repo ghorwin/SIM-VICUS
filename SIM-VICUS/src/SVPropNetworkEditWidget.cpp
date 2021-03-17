@@ -27,6 +27,12 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
+	// dont show them yet
+	m_ui->pushButtonSimplify->setVisible(false);
+	m_ui->pushButtonReduceRedundantNodes->setVisible(false);
+
+
+
 	showNetworkProperties();
 	setAllHeatExchangeWidgetsVisible(false);
 

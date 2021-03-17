@@ -20,12 +20,12 @@ SVDBPipeEditWidget::SVDBPipeEditWidget(QWidget *parent) :
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Pipe"));
 
-	m_ui->lineEditWallLambda->setup(0, 1000, tr("Thermal conductivity"), false, true);
-	m_ui->lineEditOuterDiameter->setup(0, 1, tr("Outer diameter"), true, true);
-	m_ui->lineEditWallRoughness->setup(0, 20, tr("Roughness"), true, true);
-	m_ui->lineEditWallThickness->setup(0, 10000, tr("Wall thickness"), true, true);
-	m_ui->lineEditInsulationLambda->setup(0, 1000, tr("Thermal conductivity of the insulation material"), true, true);
-	m_ui->lineEditInsulationThickness->setup(0, 1000, tr("Insulation thickness"), true, true);
+	m_ui->lineEditWallLambda->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Thermal conductivity"), false, true);
+	m_ui->lineEditOuterDiameter->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Outer diameter"), true, true);
+	m_ui->lineEditWallRoughness->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Roughness"), true, true);
+	m_ui->lineEditWallThickness->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Wall thickness"), true, true);
+	m_ui->lineEditInsulationLambda->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Thermal conductivity of the insulation material"), true, true);
+	m_ui->lineEditInsulationThickness->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Insulation thickness"), true, true);
 }
 
 

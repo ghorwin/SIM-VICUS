@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>591</width>
-    <height>305</height>
+    <height>562</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -103,6 +103,7 @@
    <class>QtExt::LanguageStringEditWidget1</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_LanguageStringEditWidget1.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QtExt::ValidatingLineEdit</class>
