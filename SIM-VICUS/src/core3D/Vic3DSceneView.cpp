@@ -445,39 +445,6 @@ void SceneView::keyReleaseEvent(QKeyEvent *event) {
 				m_mainScene.enterCoordinateSystemAdjustmentMode();
 		} break;
 
-
-			// *** X,Y,Z locks - only in "place vertex" mode and transform modes ***
-		case Qt::Key_X :
-		case Qt::Key_Y :
-		case Qt::Key_Z :
-		{
-			SVViewState vs = SVViewStateHandler::instance().viewState();
-			if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex) {
-				if (k == Qt::Key_X) {
-					if (vs.m_locks != SVViewState::L_LocalX)
-						vs.m_locks = SVViewState::L_LocalX;
-					else
-						vs.m_locks = SVViewState::NUM_L;
-				}
-				else if (k == Qt::Key_Y) {
-					if (vs.m_locks != SVViewState::L_LocalY)
-						vs.m_locks = SVViewState::L_LocalY;
-					else
-						vs.m_locks = SVViewState::NUM_L;
-				}
-				else if (k == Qt::Key_Z) {
-					if (vs.m_locks != SVViewState::L_LocalZ)
-						vs.m_locks = SVViewState::L_LocalZ;
-					else
-						vs.m_locks = SVViewState::NUM_L;
-				}
-			}
-			SVViewStateHandler::instance().setViewState(vs);
-			// Nothing further to be done - the coordinate system position is adjusted below for
-			// all view modes that require snapping
-
-		} break;
-
 		// *** Delete selected geometry ***
 		case Qt::Key_Delete : {
 			m_mainScene.deleteSelected();

@@ -176,6 +176,7 @@ bool SVGeometryView::handleGlobalKeyPress(Qt::Key k) {
 
 		// ** align coordinate system mode **
 		case Qt::Key_F4 :
+			SVViewStateHandler::instance().toggleAlignCoordinateSystem();
 		break;
 
 		// ** translate coordinate system mode **
@@ -371,7 +372,7 @@ void SVGeometryView::on_actionZLock_toggled(bool on) {
 	// switch toggle view state
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	if (on)
-		vs.m_locks = SVViewState::L_LocalY;
+		vs.m_locks = SVViewState::L_LocalZ;
 	else
 		vs.m_locks = SVViewState::NUM_L;
 
@@ -399,12 +400,12 @@ void SVGeometryView::setupToolBar() {
 	m_yLockAction = new QAction(tr("Y"), this);
 	m_yLockAction->setCheckable(true);
 	m_toolBar->addAction(m_yLockAction);
-	connect(m_yLockAction, &QAction::toggled, this, &SVGeometryView::on_actionXLock_toggled);
+	connect(m_yLockAction, &QAction::toggled, this, &SVGeometryView::on_actionYLock_toggled);
 
 	m_zLockAction = new QAction(tr("Z"), this);
 	m_zLockAction->setCheckable(true);
 	m_toolBar->addAction(m_zLockAction);
-	connect(m_zLockAction, &QAction::toggled, this, &SVGeometryView::on_actionXLock_toggled);
+	connect(m_zLockAction, &QAction::toggled, this, &SVGeometryView::on_actionZLock_toggled);
 
 	m_toolBar->addSeparator();
 
