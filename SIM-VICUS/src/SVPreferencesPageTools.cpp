@@ -156,6 +156,16 @@ void SVPreferencesPageTools::on_pushButtonAutoDetectPP2_clicked() {
 }
 
 
+void SVPreferencesPageTools::on_filepathTextEditor_editingFinished() {
+	SVSettings & s = SVSettings::instance();
+	s.m_textEditorExecutable = m_ui->filepathTextEditor->filename();
+}
+
+
+void SVPreferencesPageTools::on_filepathTextEditor_returnPressed() {
+	on_filepathTextEditor_editingFinished();
+}
+
 
 // TODO : Stephan, store file paths for other tools and implement auto-detect functions
 //        similar to the PostProc code

@@ -26,6 +26,9 @@ private slots:
 
 	void on_pushButtonAutoDetectPP2_clicked();
 
+	void on_filepathTextEditor_editingFinished();
+	void on_filepathTextEditor_returnPressed();
+
 private:
 	Ui::SVPreferencesPageTools *m_ui;
 };
