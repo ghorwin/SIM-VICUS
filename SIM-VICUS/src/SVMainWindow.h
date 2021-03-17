@@ -114,6 +114,8 @@ public:
 	SVDatabaseEditDialog *dbInternalLoadsLightsEditDialog();
 	/*! Returns the zone template edit dialog. */
 	SVDBZoneTemplateEditDialog * dbZoneTemplateEditDialog();
+	/*! Returns the pipe edit dialog. */
+	SVDatabaseEditDialog *dbFluidEditDialog();
 
 
 public slots:
@@ -236,6 +238,9 @@ private slots:
 
 
 	void on_actionDBInternalLoadsLights_triggered();
+
+
+	void on_actionDBFluids_triggered();
 
 private:
 	/*! Sets up all dock widgets with definition lists. */
@@ -374,6 +379,7 @@ private:
 	SVDatabaseEditDialog				*m_dbComponentEditDialog						= nullptr;
 	SVDatabaseEditDialog				*m_dbBoundaryConditionEditDialog				= nullptr;
 	SVDatabaseEditDialog				*m_dbPipeEditDialog								= nullptr;
+	SVDatabaseEditDialog				*m_dbFluidEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbNetworkComponentEditDialog					= nullptr;
 	SVDatabaseEditDialog				*m_dbScheduleEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbInternalLoadsPersonEditDialog				= nullptr;

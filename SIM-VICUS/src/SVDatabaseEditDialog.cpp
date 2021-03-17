@@ -35,6 +35,8 @@
 #include "SVDBNetworkComponentEditWidget.h"
 #include "SVDBPipeTableModel.h"
 #include "SVDBPipeEditWidget.h"
+#include "SVDBNetworkFluidTableModel.h"
+#include "SVDBNetworkFluidEditWidget.h"
 #include "SVViewStateHandler.h"
 #include "SVGeometryView.h"
 
@@ -374,6 +376,17 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createPipeEditDialog(QWidget * pare
 		new SVDBPipeTableModel(parent, SVSettings::instance().m_db),
 		new SVDBPipeEditWidget(parent),
 		tr("Network Pipes Database"), QString(), true
+	);
+	dlg->resize(1400,800);
+	return dlg;
+}
+
+SVDatabaseEditDialog *SVDatabaseEditDialog::createFluidEditDialog(QWidget *parent)
+{
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBNetworkFluidTableModel(parent, SVSettings::instance().m_db),
+		new SVDBNetworkFluidEditWidget(parent),
+		tr("Network Fluids Database"), QString(), true
 	);
 	dlg->resize(1400,800);
 	return dlg;

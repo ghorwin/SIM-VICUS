@@ -8,6 +8,8 @@
 #include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
 
+#include <QColor>
+
 namespace VICUS{
 
 class NetworkFluid: public AbstractDBElement {
@@ -36,7 +38,11 @@ public:
 	/*! Unique id number. */
 	unsigned int						m_id = INVALID_ID;				// XML:A:required
 	/*! Display name of fluid. */
-	std::string							m_displayName;					// XML:A
+	IBK::MultiLanguageString			m_displayName;					// XML:A
+
+	/*! False color. */
+	QColor								m_color;						// XML:A
+
 	/*! List of parameters. */
 	IBK::Parameter						m_para[NUM_P];					// XML:E
 

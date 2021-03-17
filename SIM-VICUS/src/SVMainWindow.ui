@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -131,6 +131,7 @@
     <addaction name="separator"/>
     <addaction name="actionDBNetworkPipes"/>
     <addaction name="actionDBHydraulicComponents"/>
+    <addaction name="actionDBFluids"/>
    </widget>
    <widget class="QMenu" name="menuSimulation">
     <property name="title">
@@ -562,6 +563,11 @@
    </property>
    <property name="toolTip">
     <string>Internal loads: Lights</string>
+   </property>
+  </action>
+  <action name="actionDBFluids">
+   <property name="text">
+    <string>Fluids...</string>
    </property>
   </action>
  </widget>

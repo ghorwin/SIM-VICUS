@@ -232,6 +232,13 @@ SVDatabaseEditDialog *SVMainWindow::dbNetworkComponentEditDialog() {
 	return m_dbNetworkComponentEditDialog;
 }
 
+SVDatabaseEditDialog *SVMainWindow::dbFluidEditDialog()
+{
+	if (m_dbFluidEditDialog == nullptr)
+		m_dbFluidEditDialog  = SVDatabaseEditDialog::createFluidEditDialog(this);
+	return m_dbFluidEditDialog;
+}
+
 SVDatabaseEditDialog *SVMainWindow::dbScheduleEditDialog() {
 	if (m_dbScheduleEditDialog == nullptr)
 		m_dbScheduleEditDialog = SVDatabaseEditDialog::createScheduleEditDialog(this);
@@ -261,6 +268,7 @@ SVDBZoneTemplateEditDialog * SVMainWindow::dbZoneTemplateEditDialog() {
 		m_dbZoneTemplateEditDialog = new SVDBZoneTemplateEditDialog(this);
 	return m_dbZoneTemplateEditDialog;
 }
+
 
 
 // *** public slots ***
@@ -322,6 +330,11 @@ void SVMainWindow::on_actionDBNetworkPipes_triggered() {
 	dbPipeEditDialog()->edit();
 }
 
+
+void SVMainWindow::on_actionDBFluids_triggered()
+{
+	dbFluidEditDialog()->edit();
+}
 
 void SVMainWindow::on_actionDBHydraulicComponents_triggered() {
 	dbNetworkComponentEditDialog()->edit();
@@ -1618,5 +1631,4 @@ void SVMainWindow::on_actionViewShowSurfaceNormals_toggled(bool visible) {
 	// set corresponding flag in View
 	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->setNormalVectorsVisible(visible);
 }
-
 

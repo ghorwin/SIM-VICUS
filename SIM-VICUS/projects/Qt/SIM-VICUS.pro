@@ -80,6 +80,8 @@ SOURCES += \
 				../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
 				../../src/SVDBInternalLoadsElectricEquipmentEditWidget.cpp \
 				../../src/SVDBInternalLoadsLightsEditWidget.cpp \
+				../../src/SVDBNetworkFluidEditWidget.cpp \
+				../../src/SVDBNetworkFluidTableModel.cpp \
 				../../src/actions/SVUndoAddBuilding.cpp \
 				../../src/actions/SVUndoAddBuildingLevel.cpp \
 				../../src/actions/SVUndoAddNetwork.cpp \
@@ -203,6 +205,8 @@ SOURCES += \
 HEADERS  += \
 				../../src/SVDBInternalLoadsElectricEquipmentEditWidget.h \
 				../../src/SVDBInternalLoadsLightsEditWidget.h \
+				../../src/SVDBNetworkFluidEditWidget.h \
+				../../src/SVDBNetworkFluidTableModel.h \
 				../../src/actions/SVUndoAddBuilding.h \
 				../../src/actions/SVUndoAddBuildingLevel.h \
 				../../src/actions/SVUndoAddNetwork.h \
@@ -329,6 +333,7 @@ FORMS    += \
 				../../src/SVAboutDialog.ui \
 				../../src/SVDBInternalLoadsElectricEquipmentEditWidget.ui \
 				../../src/SVDBInternalLoadsLightsEditWidget.ui \
+				../../src/SVDBNetworkFluidEditWidget.ui \
 				../../src/SVDatabaseEditDialog.ui \
 				../../src/SVDBBoundaryConditionEditWidget.ui \
 				../../src/SVDBComponentEditWidget.ui \
