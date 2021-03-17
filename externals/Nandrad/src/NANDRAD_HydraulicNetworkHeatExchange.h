@@ -74,7 +74,7 @@ public:
 	};
 
 	/*! Model/type of heat exchange. */
-	ModelType						m_modelType = NUM_T;									// XML:A:required
+	ModelType						m_modelType = NUM_T;									// XML:A
 
 	/*! Integer parameters. */
 	IDType							m_idReferences[NUM_ID];									// XML:E
