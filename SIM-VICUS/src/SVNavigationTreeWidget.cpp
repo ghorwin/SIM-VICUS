@@ -40,9 +40,18 @@ SVNavigationTreeWidget::~SVNavigationTreeWidget() {
 }
 
 
+void SVNavigationTreeWidget::setFlags(unsigned int uniqueID, bool visible, bool selected) {
+	std::map<unsigned int, QTreeWidgetItem*>::iterator treeIt = m_treeItemMap.find(uniqueID);
+	if (treeIt == m_treeItemMap.end()) {
+		qDebug() << "Error, expected node with ID " << uniqueID << " in tree (tree corruption?)";
+		return;
+	}
+	treeIt->second->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, visible);
+	treeIt->second->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, selected);
+}
+
 
 void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo * data) {
-
 	// filter out all modification types that we handle
 	SVProjectHandler::ModificationTypes mod = (SVProjectHandler::ModificationTypes)modificationType;
 	switch (mod) {
@@ -57,13 +66,57 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 			// we only change data properties of existing nodes and emit itemChanged() signals, so
 			// that the view updates its content
 
+			qDebug() << "Start processing NodeStateModified";
+
 			// first decode the modification info object
 			const SVUndoTreeNodeState::ModifiedNodes * info = dynamic_cast<SVUndoTreeNodeState::ModifiedNodes *>(data);
 			Q_ASSERT(info != nullptr);
 
+			std::set<unsigned int> modifiedIDs(info->m_nodeIDs.begin(), info->m_nodeIDs.end());
+
+#if 1
+			// process all objects in project and skip all, whose ID is not in our list
+			for (const VICUS::Building & b : project().m_buildings) {
+				if (modifiedIDs.find(b.uniqueID()) != modifiedIDs.end())
+					setFlags(b.uniqueID(), b.m_visible, b.m_selected);
+				for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+					if (modifiedIDs.find(bl.uniqueID()) != modifiedIDs.end())
+						setFlags(bl.uniqueID(), bl.m_visible, bl.m_selected);
+					for (const VICUS::Room & r : bl.m_rooms) {
+						if (modifiedIDs.find(r.uniqueID()) != modifiedIDs.end())
+							setFlags(r.uniqueID(), r.m_visible, r.m_selected);
+						for (const VICUS::Surface & s : r.m_surfaces) {
+							if (modifiedIDs.find(s.uniqueID()) != modifiedIDs.end())
+								setFlags(s.uniqueID(), s.m_visible, s.m_selected);
+						}
+					}
+				}
+			}
+
+			for (const VICUS::Surface & s : project().m_plainGeometry) {
+				if (modifiedIDs.find(s.uniqueID()) != modifiedIDs.end())
+					setFlags(s.uniqueID(), s.m_visible, s.m_selected);
+			}
+
+			for (const VICUS::Network & net : project().m_geometricNetworks) {
+				if (modifiedIDs.find(net.uniqueID()) != modifiedIDs.end())
+					setFlags(net.uniqueID(), net.m_visible, net.m_selected);
+				for (const VICUS::NetworkNode & n : net.m_nodes) {
+					if (modifiedIDs.find(n.uniqueID()) != modifiedIDs.end())
+						setFlags(n.uniqueID(), n.m_visible, n.m_selected);
+				}
+				for (const VICUS::NetworkEdge & e : net.m_edges) {
+					if (modifiedIDs.find(e.uniqueID()) != modifiedIDs.end())
+						setFlags(e.uniqueID(), e.m_visible, e.m_selected);
+				}
+			}
+#else
+			// old, slow variant because of objectById()
+
 			// process all modified nodes
 			for (unsigned int id : info->m_nodeIDs) {
-				Q_ASSERT(m_treeItemMap.find(id) != m_treeItemMap.end());
+				std::map<unsigned int, QTreeWidgetItem*>::iterator treeIt = m_treeItemMap.find(id);
+				Q_ASSERT(treeIt != m_treeItemMap.end());
 				// find the object in question
 				const VICUS::Object * obj = project().objectById(id);
 				bool visible = true;
@@ -89,10 +142,12 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 					visible = e->m_visible;
 				if ((no = dynamic_cast<const VICUS::NetworkNode*>(obj)) != nullptr)
 					visible = no->m_visible;
-				m_treeItemMap[id]->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, visible);
-				m_treeItemMap[id]->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, selected);
+				treeIt->second->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, visible);
+				treeIt->second->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, selected);
 			}
+#endif
 			m_ui->treeWidget->update();
+			qDebug() << "End processing NodeStateModified";
 			return; // nothing else to do here
 		}
 
@@ -204,7 +259,6 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		surface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, s.m_visible);
 		surface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, s.m_selected);
 	}
-
 
 	m_ui->treeWidget->expandAll();
 }

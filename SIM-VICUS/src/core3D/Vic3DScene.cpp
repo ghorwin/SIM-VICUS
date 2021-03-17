@@ -154,58 +154,10 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			const SVUndoTreeNodeState::ModifiedNodes * info = dynamic_cast<SVUndoTreeNodeState::ModifiedNodes *>(data);
 			Q_ASSERT(info != nullptr);
 
-			// process all _modified_ objects (the other remain unchanged
-			for (unsigned int id : info->m_nodeIDs) {
-				// find the object in question
-				const VICUS::Object * obj = project().objectById(id);
-
-				// is this ID a surface?
-				const VICUS::Surface * s = dynamic_cast<const VICUS::Surface*>(obj);
-				if (s != nullptr) {
-
-					// get vertex start address of selected node
-					Q_ASSERT(m_opaqueGeometryObject.m_vertexStartMap.find(id) != m_opaqueGeometryObject.m_vertexStartMap.end());
-					unsigned int vertexStart = m_opaqueGeometryObject.m_vertexStartMap[id];
-					smallestVertexIndexOpaqueGeometry = std::min(smallestVertexIndexOpaqueGeometry, vertexStart);
-					// now update the color buffer for this surface
-					// color will be fully transparent if surface is either invisible or selected
-					updateColors(*s, vertexStart, m_opaqueGeometryObject.m_colorBufferData);
-					// Mind: vertexStart has been moved to next object buffer start
-					largestVertexIndexOpaqueGeometry = std::max(largestVertexIndexOpaqueGeometry, vertexStart);
-					updateOpaqueGeometryNeeded = true;
-				}
-
-				// is it a NetworkNode or NetworkEdge?
-				const VICUS::NetworkEdge * edge = dynamic_cast<const VICUS::NetworkEdge*>(obj);
-				const VICUS::NetworkNode * node= dynamic_cast<const VICUS::NetworkNode*>(obj);
-				if (edge != nullptr || node != nullptr) {
-					// get vertex start address of selected node/edge
-					Q_ASSERT(m_networkGeometryObject.m_vertexStartMap.find(id) != m_networkGeometryObject.m_vertexStartMap.end());
-					unsigned int vertexStart = m_networkGeometryObject.m_vertexStartMap[id];
-					smallestVertexIndexNetworks = std::min(smallestVertexIndexNetworks, vertexStart);
-					// now update the color buffer for this object depending on type
-					if (edge != nullptr) {
-						/// TODO : switch color based on current property mode
-						QColor col = edge->m_color;
-						// color will be fully transparent if surface is either invisible or selected
-						if (!edge->m_visible || edge->m_selected)
-							col.setAlpha(0);
-						updateCylinderColors(col, vertexStart, m_networkGeometryObject.m_colorBufferData);
-					}
-					else {
-						/// TODO : switch color based on current property mode
-						QColor col = node->m_color;
-						// color will be fully transparent if surface is either invisible or selected
-						if (!node->m_visible || node->m_selected)
-							col.setAlpha(0);
-						updateSphereColors(col, vertexStart, m_networkGeometryObject.m_colorBufferData);
-					}
-					largestVertexIndexNetworks = std::max(largestVertexIndexNetworks, vertexStart);
-					updateNetworkGeometryNeeded = true;
-				}
-			}
+//			qDebug() << "Updating color buffer and transferring data to GPU";
 
 			// finally, transfer only the modified portion of the color buffer to GPU memory
+			refreshColors();
 			if (updateOpaqueGeometryNeeded)
 				m_opaqueGeometryObject.updateColorBuffer(smallestVertexIndexOpaqueGeometry, largestVertexIndexOpaqueGeometry-smallestVertexIndexOpaqueGeometry);
 			if (updateNetworkGeometryNeeded)
@@ -976,18 +928,18 @@ void Vic3DScene::refreshColors() {
 
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
 	recolorObjects(vs.m_objectColorMode, vs.m_colorModePropertyID);
-	if (vs.m_objectColorMode > SVViewState::OCM_None && vs.m_objectColorMode < SVViewState::OCM_Network) {
+//	if (vs.m_objectColorMode > SVViewState::OCM_None && vs.m_objectColorMode < SVViewState::OCM_Network) {
 		qDebug() << "Updating surface coloring of buildings";
 		// TODO : Andreas, Performance update, only update and transfer color buffer
 		generateBuildingGeometry();
 		m_opaqueGeometryObject.updateColorBuffer();
-	}
-	else if (vs.m_objectColorMode >= SVViewState::OCM_Network) {
+//	}
+//	else if (vs.m_objectColorMode >= SVViewState::OCM_Network) {
 		qDebug() << "Updating surface coloring of networks";
 		// TODO : Andreas, Performance update, only update and transfer color buffer
 		generateNetworkGeometry();
 		m_networkGeometryObject.updateBuffers();
-	}
+//	}
 }
 
 
