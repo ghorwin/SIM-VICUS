@@ -439,23 +439,6 @@ void SceneView::keyReleaseEvent(QKeyEvent *event) {
 		} break;
 
 
-		// *** F3 - toggle "snap mode" mode ****
-		case Qt::Key_F3 : {
-			SVViewState vs = SVViewStateHandler::instance().viewState();
-			if (vs.m_snapEnabled) {
-				vs.m_snapEnabled = false;
-				qDebug() << "Snap turned off";
-			}
-			else {
-				vs.m_snapEnabled = true;
-				qDebug() << "Snap turned on";
-			}
-			SVViewStateHandler::instance().setViewState(vs);
-			// Nothing further to be done - the coordinate system position is adjusted below for
-			// all view modes that require snapping
-		} break;
-
-
 		// *** F4 - toggle "align coordinate system" mode ****
 		case Qt::Key_F4 : {
 			SVViewState vs = SVViewStateHandler::instance().viewState();
@@ -464,7 +447,9 @@ void SceneView::keyReleaseEvent(QKeyEvent *event) {
 			else
 				m_mainScene.enterCoordinateSystemAdjustmentMode();
 		} break;
-		// *** F - toggle "align coordinate system" mode ****
+
+
+		// *** F5 - toggle "move local coordinate system" mode ****
 		case Qt::Key_F5 : {
 			SVViewState vs = SVViewStateHandler::instance().viewState();
 			if (vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem)

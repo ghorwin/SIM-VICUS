@@ -38,3 +38,9 @@ void SVViewStateHandler::restoreLastViewState() {
 void SVViewStateHandler::refreshColors() {
 	emit colorRefreshNeeded();
 }
+
+
+void SVViewStateHandler::toggleAlignCoordinateSystem() {
+	// check if we can go into or out of "align coordinate system" mode, and if yes, toggle it
+
+}

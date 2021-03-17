@@ -38,8 +38,10 @@ public:
 	*/
 	void refreshSceneView();
 
-	/*! This function is called from the main application object, when it receives one of the
-		special keys.
+	/*! This function is called from the main application object, when it receives a keypress event.
+		It is the central handling function for all scene-related/view-state related global shortcuts
+		and dispatches them to either the scene, or the line edit (for number input) or the view state
+		manager.
 		\return Returns true, if the key was accepted and handled.
 	*/
 	bool handleGlobalKeyPress(Qt::Key k);
@@ -87,7 +89,7 @@ private:
 	QAction						*m_actionCoordinateInput					= nullptr;
 
 	/*! Local Coordinate System View Widget */
-	QWidget						*m_localCoordinateSystemView				= nullptr;
+	SVLocalCoordinateView		*m_localCoordinateSystemView				= nullptr;
 	QAction						*m_actionlocalCoordinateSystem				= nullptr;
 };
 

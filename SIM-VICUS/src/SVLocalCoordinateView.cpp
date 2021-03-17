@@ -29,3 +29,13 @@ void SVLocalCoordinateView::setCoordinates(const Vic3D::Transform3D &t) {
 	m_ui->lineEditZValue->setText( QString("%L1").arg( (double)t.translation().z(), 0, 'f', 3 ) );
 }
 
+
+void SVLocalCoordinateView::setAlignCoordinateSystemButtonChecked(bool checked) {
+	m_ui->actionAlignCoordinateSystem->setChecked(checked);
+}
+
+
+void SVLocalCoordinateView::on_toolButtonAlignCoordinateSystem_clicked() {
+	// toggle coordinate system mode
+	SVViewStateHandler::instance().toggleAlignCoordinateSystem();
+}

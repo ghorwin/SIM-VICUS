@@ -49,6 +49,12 @@ public:
 	*/
 	void refreshColors();
 
+	// *** state change request functions ***
+
+	void toggleAlignCoordinateSystem();
+
+
+
 	/*! Pointer to geometry view object - so that we can give focus to the scene view when we start a drawing operation. */
 	SVGeometryView						*m_geometryView		= nullptr;
 
