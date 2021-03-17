@@ -270,6 +270,13 @@ void Project::readXML(const IBK::Path & filename) {
 
 		// update internal pointer-based links
 		updatePointers();
+
+		// set default colors for network objects
+		for (const VICUS::Network & net : m_geometricNetworks) {
+			// updateColor is a const-function, this is possible since
+			// the m_color property of edges and nodes is mutable
+			net.setDefaultColors();
+		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Error reading project '%1'.").arg(filename), FUNC_ID);
