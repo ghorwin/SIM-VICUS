@@ -55,6 +55,7 @@ CCM.depends = IBK TiCPP
 DataIO.depends = IBK
 IBKMK.depends = IBK
 TiCPP.depends = IBK
+QtExt.depends = IBK IBKMK
 GenericBuildings.depends = IBK IBKMK TiCPP
 IntegratorFramework.depends = IBK IBKMK sundials SuiteSparse
 sundials.depends = SuiteSparse
