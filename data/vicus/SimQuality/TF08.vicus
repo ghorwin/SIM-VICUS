@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Do. März 11 14:05:57 2021</Created>
-		<LastEdited>Di. März 16 17:32:27 2021</LastEdited>
+		<LastEdited>Mi. März 17 16:18:38 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -17,12 +17,12 @@
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<CameraTranslation>-5.79069 -7.50748 9.54623</CameraTranslation>
+			<CameraTranslation>-4.69841 -7.46521 10.808</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.845154</Wp>
-				<X>0.457006</X>
-				<Y>-0.130548</Y>
-				<Z>-0.244489</Z>
+				<Wp>0.869763</Wp>
+				<X>0.4262</X>
+				<Y>-0.11083</Y>
+				<Z>-0.222566</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 		</ViewSettings>
@@ -63,12 +63,12 @@
 			</Building>
 		</Buildings>
 		<ComponentInstances>
-			<ComponentInstance id="2" componentID="50001" sideASurfaceID="13" />
-			<ComponentInstance id="3" componentID="50001" sideASurfaceID="14" />
-			<ComponentInstance id="4" componentID="50001" sideASurfaceID="15" />
-			<ComponentInstance id="5" componentID="50001" sideASurfaceID="16" />
-			<ComponentInstance id="6" componentID="50001" sideASurfaceID="17" />
-			<ComponentInstance id="7" componentID="50001" sideASurfaceID="18" />
+			<ComponentInstance id="2" componentID="1008" sideASurfaceID="13" />
+			<ComponentInstance id="3" componentID="1008" sideASurfaceID="14" />
+			<ComponentInstance id="4" componentID="1008" sideASurfaceID="15" />
+			<ComponentInstance id="5" componentID="1008" sideASurfaceID="16" />
+			<ComponentInstance id="6" componentID="1008" sideASurfaceID="17" />
+			<ComponentInstance id="7" componentID="1008" sideASurfaceID="18" />
 		</ComponentInstances>
 	</Project>
 </VicusProject>
