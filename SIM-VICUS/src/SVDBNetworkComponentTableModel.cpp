@@ -156,6 +156,7 @@ void SVDBNetworkComponentTableModel::deleteItem(const QModelIndex & index) {
 void SVDBNetworkComponentTableModel::setColumnResizeModes(QTableView * tableView) {
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBNetworkComponentTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBNetworkComponentTableModel::ColColor, QHeaderView::Fixed);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBNetworkComponentTableModel::ColName, QHeaderView::Stretch);
 }
 
 
