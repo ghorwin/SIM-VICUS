@@ -352,34 +352,32 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 			   std::vector<ColorRGBA> & colorBufferData,
 			   std::vector<GLuint> & indexBufferData)
 {
+	// THIS IS FOR DRAWING TRIANGLE STRIPS
 
 	QVector3D trans = QtExt::IBKVector2QVector(p);
 
 	unsigned int nSeg = SPHERE_SEGMENTS; // number of segments to split 180° into
 	unsigned int nSeg2 = SPHERE_SEGMENTS*2; // number of segments to split 360° into
 
-	vertexBufferData.resize(vertexBufferData.size() + (nSeg-1)*nSeg2 + 2);
-	colorBufferData.resize(colorBufferData.size() + (nSeg-1)*nSeg2 + 2);
-	// (nSeg+1)*2 + 1 element indexes ((nSeg+1)*2 for the triangle strip, 1 primitive restart index)
-	indexBufferData.resize(indexBufferData.size() + nSeg2*2 + 2 + 1 /* stop index */  +  (nSeg-2)*(nSeg2*2 + 2 + 1 /* stop index */ )  + nSeg2*2 + 1 + 1 /* stop index */ );
+	// unfolded sphere mesh has nSeg*nSeg2 squares, and nSeg+1 rings
+	vertexBufferData.resize(vertexBufferData.size() + (nSeg+1)*nSeg2);
+	colorBufferData.resize(colorBufferData.size() + (nSeg+1)*nSeg2);
+	// nSeg triangle strips
+	indexBufferData.resize(indexBufferData.size() + nSeg*(2*(nSeg2+1) + 1)); // Mind: add 2 indexes for each degenerated triangle per ring
 
 	unsigned int vertexStart = currentVertexIndex;
 
-	// the vertex 0 is (1, 0, 0)*radius
-	vertexBufferData[currentVertexIndex].m_coords = QVector3D(radius, 0.0, 0.0) + trans;
-	vertexBufferData[currentVertexIndex].m_normal = QVector3D(1, 0.0, 0.0);
-	colorBufferData[currentVertexIndex] = c;
-	++currentVertexIndex;
-
-	// now generate the vertexes
-	for (unsigned int i=1; i<nSeg; ++i) {
+	// now generate the vertexes (nSeg vertexes per circle)
+	for (unsigned int i=0; i<=nSeg; ++i) {
 		double beta = PI_CONST*i/nSeg;
 		double flat_radius = std::sin(beta)*radius;
 		double nx = std::cos(beta);
 		double x = nx*radius;
 
 		for (unsigned int j=0; j<nSeg2; ++j, ++currentVertexIndex) {
-			double angle = -(double)(j + (i % 2))/nSeg2;
+			// Mind the negative sign, since we look at the mesh from the positve x-axis towards the negative axis
+			// and want the mesh to loop clock-wise around x-axis from this view point
+			double angle = (double)(j + 0.5*i)/nSeg2;
 			angle *= 2*PI_CONST;
 			double ny = std::cos(angle);
 			double y = ny*flat_radius;
@@ -387,56 +385,36 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 			double z = nz*flat_radius;
 
 			vertexBufferData[currentVertexIndex].m_coords = QVector3D(x, y, z) + trans;
-			vertexBufferData[currentVertexIndex].m_normal = QVector3D(nx, ny, nz);
+			vertexBufferData[currentVertexIndex].m_normal = QVector3D(x, y, z).normalized();
 			colorBufferData[currentVertexIndex] = c;
 		}
 	}
 
-	// now add last vertex
-	// the vertex 1 + nSeg*nSeg2 is (-1, 0, 0)*radius
-	vertexBufferData[currentVertexIndex].m_coords = QVector3D(-radius, 0.0, 0.0) + trans;
-	vertexBufferData[currentVertexIndex].m_normal = QVector3D(-1, 0.0, 0.0);
-	colorBufferData[currentVertexIndex] = c;
-	++currentVertexIndex;
+	// indexes are genererated row-by-row
+	// The unrolled grid looks like this, with the first vertex colum repeated to show the wrap-around
+	// 8   9  10  11   8
+	// 4   5   6   7   4
+	// 0   1   2   3   0
+	//
+	// The triangles in the bottom-most row are then: (0 4 1) (4 1 5) (1 5 2) ... (3 7 0) (7 0 4)   ... (4 4 8 degenerated)
+	// and in the next row                            (4 8 5) (8 5 9)
+	//
+	// The strip in the first row is 0 4 1 5 2 6 3 7 0 4  followed by 4 8   = 2*nSeg2 + 2
 
+	for (unsigned int i=0; i<nSeg; ++i) {
+		unsigned int topCircleVertexStart = (i+1)*nSeg2;  // i = 0 -> 4
+		unsigned int bottomCircleVertexStart = i*nSeg2;   // i = 0 -> 0
 
-	// first circle
-	unsigned int lastVertex = vertexStart+1; // start with first vertex in for circle
-	for (unsigned int i=0; i<nSeg2*2; ++i, ++currentElementIndex) {
-		if (i % 2 == 0)
-			indexBufferData[currentElementIndex] = lastVertex++;
-		else {
-			indexBufferData[currentElementIndex] = vertexStart;
+		// we add always 2 triangles
+		for (unsigned int j=0; j<=nSeg2; ++j, currentElementIndex += 2) {
+			// add 0 4 ... 0 4
+			indexBufferData[currentElementIndex  ] = vertexStart + bottomCircleVertexStart + (j % nSeg2);
+			indexBufferData[currentElementIndex+1] = vertexStart + topCircleVertexStart + (j % nSeg2);
 		}
-	}
-	indexBufferData[currentElementIndex++] = vertexStart+1; // finish circle with first vertex
-	indexBufferData[currentElementIndex++] = STRIP_STOP_INDEX; // set stop index
 
-	// middle circles
-	for (unsigned int j=1; j<nSeg-1; ++j) {
-		vertexStart = lastVertex;
-		for (unsigned int i=0; i<nSeg2; ++i, currentElementIndex += 2, ++lastVertex) {
-			indexBufferData[currentElementIndex  ] = lastVertex;
-			indexBufferData[currentElementIndex+1] = lastVertex - nSeg2;
-		}
-		indexBufferData[currentElementIndex++] = vertexStart;
-		indexBufferData[currentElementIndex++] = vertexStart - nSeg2;
-
+		// add stop index
 		indexBufferData[currentElementIndex++] = STRIP_STOP_INDEX; // set stop index
 	}
-
-	vertexStart = lastVertex;
-	for (unsigned int i=0; i<nSeg2*2; ++i, ++currentElementIndex) {
-		if (i % 2 == 0)
-			indexBufferData[currentElementIndex] = currentVertexIndex-1;
-		else {
-			indexBufferData[currentElementIndex] = lastVertex++ - nSeg2;
-		}
-	}
-	indexBufferData[currentElementIndex++] = currentVertexIndex-1;
-	indexBufferData[currentElementIndex++] = vertexStart - nSeg2;
-	indexBufferData[currentElementIndex++] = STRIP_STOP_INDEX; // set stop index
-
 }
 
 
@@ -445,16 +423,17 @@ void addSphere(const IBKMK::Vector3D & p, double radius,
 			   std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData)
 {
 
+	// THIS IS FOR THE WIREFRAME OBJECT - Draw Triangles mode!
+
 	QVector3D trans = QtExt::IBKVector2QVector(p);
 
 	unsigned int nSeg = SPHERE_SEGMENTS; // number of segments to split 180° into
 	unsigned int nSeg2 = nSeg*2; // number of segments to split 360° into
 
-#if 0
-	// unfolded sphere mesh has nSeg*nSeg2 squares
+	// unfolded sphere mesh has nSeg*nSeg2 squares, and nSeg+1 rings
 	vertexBufferData.resize(vertexBufferData.size() + (nSeg+1)*nSeg2);
-	// two triangles per square + 1 stop bit
-	indexBufferData.resize(indexBufferData.size() + nSeg*nSeg2*2*3 + nSeg*3); // Mind: add 3 indexes for each degenerated triangle per ring
+	// two triangles per square, nSeg2 squares per row, nSeg rows
+	indexBufferData.resize(indexBufferData.size() + nSeg*nSeg2*2*3); // Mind: we draw in "draw triangles" mode in wirefram
 
 	unsigned int vertexStart = currentVertexIndex;
 
@@ -485,11 +464,7 @@ void addSphere(const IBKMK::Vector3D & p, double radius,
 	// 4   5   6   7   4
 	// 0   1   2   3   0
 	//
-	// The triangles in the bottom-most row are then: (0 4 1) (4 1 5) (1 5 2) ... (3 7 0) (7 0 4)   ... (4 4 8 degenerated)
-	// and in the next row                            (4 8 5) (8 5 9)
-	//
-	// or in general for the first row                (j j + nSeg j+1)  (j + nSeg  j+1  j + nSeg + 1)  for j = 0...<nSeg2 and using modulo of nSeg2 on index calculation
-	// for all rows the term i*nSeg2 is added to each index
+	// The triangles in the bottom-most row are then: (0 4 1) (1 4 5) (1 5 2) ... (3 7 0) (0 7 4)
 	for (unsigned int i=0; i<nSeg; ++i) {
 		unsigned int topCircleVertexStart = (i+1)*nSeg2;  // i = 0 -> 4
 		unsigned int bottomCircleVertexStart = i*nSeg2;   // i = 0 -> 0
@@ -500,89 +475,12 @@ void addSphere(const IBKMK::Vector3D & p, double radius,
 			indexBufferData[currentElementIndex  ] = vertexStart + bottomCircleVertexStart + j;
 			indexBufferData[currentElementIndex+1] = vertexStart + topCircleVertexStart + j;
 			indexBufferData[currentElementIndex+2] = vertexStart + bottomCircleVertexStart + (j+1) % nSeg2;
-			// add 4 1 5
-			indexBufferData[currentElementIndex+3] = vertexStart + topCircleVertexStart + j;
+			// add 1 4 5
 			indexBufferData[currentElementIndex+4] = vertexStart + bottomCircleVertexStart + (j+1) % nSeg2;
+			indexBufferData[currentElementIndex+3] = vertexStart + topCircleVertexStart + j;
 			indexBufferData[currentElementIndex+5] = vertexStart + topCircleVertexStart + (j+1) % nSeg2;
 		}
-
-		// add degenerate triangle - 4 4 8
-		indexBufferData[currentElementIndex  ] = vertexStart + topCircleVertexStart;
-		indexBufferData[currentElementIndex+1] = vertexStart + topCircleVertexStart;
-		indexBufferData[currentElementIndex+2] = vertexStart + topCircleVertexStart + nSeg2;
-
-		currentElementIndex += 3;
 	}
-
-
-
-#else
-	vertexBufferData.resize(vertexBufferData.size() + (nSeg-1)*nSeg2 + 2);
-	// (nSeg-2)*nSeg2*3*2 element indexes for the triangles in the middle rings, and 2*nSeg2*3 for the top and bottom ring
-	indexBufferData.resize(indexBufferData.size() + (nSeg-2)*nSeg2*3*2 + 2*nSeg2*3);
-
-	unsigned int vertexStart = currentVertexIndex;
-
-	// the vertex 0 is (1, 0, 0)*radius
-	vertexBufferData[currentVertexIndex].m_coords = QVector3D(radius, 0.0, 0.0) + trans;
-	++currentVertexIndex;
-
-	// now generate the vertexes
-	for (unsigned int i=1; i<nSeg; ++i) {
-		double beta = PI_CONST*i/nSeg;
-		double flat_radius = std::sin(beta)*radius;
-		double nx = std::cos(beta);
-		double x = nx*radius;
-
-		for (unsigned int j=0; j<nSeg2; ++j, ++currentVertexIndex) {
-			double angle = -(double)(j + 0.5*i)/nSeg2;
-			angle *= 2*PI_CONST;
-			double ny = std::cos(angle);
-			double y = ny*flat_radius;
-			double nz = std::sin(angle);
-			double z = nz*flat_radius;
-
-			vertexBufferData[currentVertexIndex].m_coords = QVector3D(x, y, z) + trans;
-		}
-	}
-
-	// now add last vertex
-	// the vertex 1 + nSeg*nSeg2 is (-1, 0, 0)*radius
-	vertexBufferData[currentVertexIndex].m_coords = QVector3D(-radius, 0.0, 0.0) + trans;
-	++currentVertexIndex;
-
-	// first circle - triangles are: 0, 1, 2,   0, 2, 3,    0, 3, 4, --- 0, nSeg-2, nSeg-1
-	for (unsigned int i=0; i<nSeg2; ++i, currentElementIndex += 3) {
-		indexBufferData[currentElementIndex    ] = vertexStart;
-		indexBufferData[currentElementIndex + 1] = vertexStart + 1 + i;
-		indexBufferData[currentElementIndex + 2] = vertexStart + 1 + (i + 1) % nSeg2;
-	}
-
-	// middle circles - triangles are created between circles of vertexes
-	for (unsigned int j=1; j<nSeg-1; ++j) {
-		unsigned int topCircleVertexStart = (j-1)*nSeg2 + 1;
-		unsigned int bottomCircleVertexStart = j*nSeg2 + 1;
-
-		// we add always 2 triangles
-		for (unsigned int i=0; i<nSeg2; ++i, currentElementIndex += 6) {
-			indexBufferData[currentElementIndex  ] = vertexStart + topCircleVertexStart + i;
-			indexBufferData[currentElementIndex+1] = vertexStart + bottomCircleVertexStart + i;
-			indexBufferData[currentElementIndex+2] = vertexStart + bottomCircleVertexStart + (i+1) % nSeg2;
-			indexBufferData[currentElementIndex+3] = vertexStart + topCircleVertexStart + i;
-			indexBufferData[currentElementIndex+4] = vertexStart + bottomCircleVertexStart + (i+1) % nSeg2;
-			indexBufferData[currentElementIndex+5] = vertexStart + topCircleVertexStart + (i+1) % nSeg2;
-		}
-	}
-
-	// last circle - triangles are: 0, 1, 2,   0, 2, 3,    0, 3, 4, --- 0, nSeg-2, nSeg-1
-	unsigned int topCircleVertexStart = (nSeg-2)*nSeg2 + 1;
-	unsigned int lastVertex = vertexStart + (nSeg-1)*nSeg2 + 1;
-	for (unsigned int i=0; i<nSeg2; ++i, currentElementIndex +=3) {
-		indexBufferData[currentElementIndex  ] = lastVertex;
-		indexBufferData[currentElementIndex+1] = vertexStart + topCircleVertexStart + i;
-		indexBufferData[currentElementIndex+2] = vertexStart + topCircleVertexStart + (i+1) % nSeg2;
-	}
-#endif
 }
 
 
