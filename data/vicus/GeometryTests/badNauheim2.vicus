@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Do Dez 10 12:42:13 2020</Created>
-		<LastEdited>Mi Mrz 17 09:39:09 2021</LastEdited>
+		<LastEdited>Mi Mrz 17 11:36:21 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -17,12 +17,12 @@
 		<ViewSettings>
 			<GridSpacing>100</GridSpacing>
 			<GridWidth>1000</GridWidth>
-			<CameraTranslation>-337.383 -639.73 453.563</CameraTranslation>
+			<CameraTranslation>-289.765 -661.923 473.08</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.83756</Wp>
-				<X>0.448741</X>
-				<Y>-0.147145</Y>
-				<Z>-0.274644</Z>
+				<Wp>0.854667</Wp>
+				<X>0.443607</X>
+				<Y>-0.124229</Y>
+				<Z>-0.239332</Z>
 			</RotationMatrix>
 			<FarDistance>2500</FarDistance>
 		</ViewSettings>
@@ -31,438 +31,351 @@
 				<Nodes>
 					<NetworkNode id="0" type="Source" maxHeatingDemand="0" componentId="10020002">
 						<Position>271.954 -400.129 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="1" type="Mixer" maxHeatingDemand="0">
 						<Position>276.769 -442.26 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="2" type="Mixer" maxHeatingDemand="0">
 						<Position>-6.10698 -432.63 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="3" type="Mixer" maxHeatingDemand="0">
 						<Position>-26.7774 -67.4527 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="4" type="Mixer" maxHeatingDemand="0">
 						<Position>-27.7741 -49.8449 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="5" type="Mixer" maxHeatingDemand="0">
 						<Position>-64.3066 -49.6107 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="6" type="Mixer" maxHeatingDemand="0">
 						<Position>-74.7194 -49.544 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="7" type="Mixer" maxHeatingDemand="0">
 						<Position>-78.0584 15.182 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="8" type="Mixer" maxHeatingDemand="0">
 						<Position>-78.6315 26.2908 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="9" type="Mixer" maxHeatingDemand="0">
 						<Position>-66.4975 26.7166 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="10" type="Mixer" maxHeatingDemand="0">
 						<Position>-61.4784 26.8927 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="11" type="Mixer" maxHeatingDemand="0">
 						<Position>-55.4598 32.0085 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="12" type="Mixer" maxHeatingDemand="0">
 						<Position>-47.6355 32.0085 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="13" type="Mixer" maxHeatingDemand="0">
 						<Position>-218.496 -51.1634 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="14" type="Mixer" maxHeatingDemand="0">
 						<Position>-215.555 -51.0486 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="15" type="Mixer" maxHeatingDemand="0">
 						<Position>-216.157 -36.0021 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="16" type="Mixer" maxHeatingDemand="0">
 						<Position>-75.6752 -31.0163 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="17" type="Mixer" maxHeatingDemand="0">
 						<Position>-72.011 -30.8862 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="18" type="Mixer" maxHeatingDemand="0">
 						<Position>-231.804 -21.6536 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="19" type="Mixer" maxHeatingDemand="0">
 						<Position>-216.759 -21.8583 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="20" type="Mixer" maxHeatingDemand="0">
 						<Position>-229.579 7.44913 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="21" type="Mixer" maxHeatingDemand="0">
 						<Position>-217.361 7.93397 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="22" type="Mixer" maxHeatingDemand="0">
 						<Position>-219.167 24.1843 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="23" type="Mixer" maxHeatingDemand="0">
 						<Position>-91.3386 29.9202 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="24" type="Mixer" maxHeatingDemand="0">
 						<Position>-78.3306 30.5038 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="25" type="Mixer" maxHeatingDemand="0">
 						<Position>15.074 -46.6386 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="26" type="Mixer" maxHeatingDemand="0">
 						<Position>16.4629 -46.5347 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="27" type="Mixer" maxHeatingDemand="0">
 						<Position>136.428 36.6867 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="28" type="Mixer" maxHeatingDemand="0">
 						<Position>149.174 37.1243 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="29" type="Mixer" maxHeatingDemand="0">
 						<Position>144.611 65.0985 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="30" type="Mixer" maxHeatingDemand="0">
 						<Position>142.252 79.5557 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="31" type="Mixer" maxHeatingDemand="0">
 						<Position>136.088 -22.871 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="32" type="Mixer" maxHeatingDemand="0">
 						<Position>156.396 -22.1592 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="33" type="Mixer" maxHeatingDemand="0">
 						<Position>168.276 -116.065 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="34" type="Mixer" maxHeatingDemand="0">
 						<Position>169.035 -122.069 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="35" type="Mixer" maxHeatingDemand="0">
 						<Position>153.989 -122.67 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="36" type="Mixer" maxHeatingDemand="0">
 						<Position>197.206 -134.537 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="37" type="Mixer" maxHeatingDemand="0">
 						<Position>223.805 -134.106 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="38" type="Mixer" maxHeatingDemand="0">
 						<Position>-45.1883 385.782 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="39" type="Mixer" maxHeatingDemand="0">
 						<Position>-47.0337 431.947 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="40" type="Mixer" maxHeatingDemand="0">
 						<Position>-2.90326 390.376 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="41" type="Mixer" maxHeatingDemand="0">
 						<Position>5.10273 391.246 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="42" type="Mixer" maxHeatingDemand="0">
 						<Position>6.30645 379.961 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="43" type="Mixer" maxHeatingDemand="0">
 						<Position>37.3798 383.859 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="44" type="Mixer" maxHeatingDemand="0">
 						<Position>48.2864 385.227 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="45" type="Mixer" maxHeatingDemand="0">
 						<Position>-13.5995 365.247 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="46" type="Mixer" maxHeatingDemand="0">
 						<Position>-14.7588 377.854 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="47" type="Mixer" maxHeatingDemand="0">
 						<Position>-16.9227 185.675 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="48" type="Mixer" maxHeatingDemand="0">
 						<Position>9.91763 188.568 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="49" type="Mixer" maxHeatingDemand="0">
 						<Position>11.5632 172.606 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="50" type="Mixer" maxHeatingDemand="0">
 						<Position>12.927 159.378 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="51" type="Mixer" maxHeatingDemand="0">
 						<Position>-0.614975 157.271 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="52" type="Mixer" maxHeatingDemand="0">
 						<Position>0.795358 146.224 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="53" type="Mixer" maxHeatingDemand="0">
 						<Position>1.19062 143.128 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="54" type="Mixer" maxHeatingDemand="0">
 						<Position>79.256 168.312 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="55" type="Mixer" maxHeatingDemand="0">
 						<Position>86.6552 169.309 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="56" type="Mixer" maxHeatingDemand="0">
 						<Position>83.5223 198.201 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="57" type="Mixer" maxHeatingDemand="0">
 						<Position>81.2384 219.263 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="58" type="Mixer" maxHeatingDemand="0">
 						<Position>95.8914 221.217 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="59" type="Mixer" maxHeatingDemand="0">
 						<Position>121.864 224.68 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="60" type="Mixer" maxHeatingDemand="0">
 						<Position>1.08723 251.831 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="61" type="Mixer" maxHeatingDemand="0">
 						<Position>13.8297 253.269 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="62" type="Mixer" maxHeatingDemand="0">
 						<Position>15.3344 240.93 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="63" type="Mixer" maxHeatingDemand="0">
 						<Position>66.5844 248.883 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="64" type="Mixer" maxHeatingDemand="0">
 						<Position>85.1505 251.764 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="65" type="Mixer" maxHeatingDemand="0">
 						<Position>-22.994 324.129 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="66" type="Mixer" maxHeatingDemand="0">
 						<Position>2.69527 326.094 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="67" type="Mixer" maxHeatingDemand="0">
 						<Position>6.30645 297.806 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="68" type="Mixer" maxHeatingDemand="0">
 						<Position>63.2815 307.068 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="69" type="Mixer" maxHeatingDemand="0">
 						<Position>67.3956 307.737 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="70" type="Mixer" maxHeatingDemand="0">
 						<Position>-194.673 -35.2396 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="71" type="Mixer" maxHeatingDemand="0">
 						<Position>15.5101 -27.0975 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="72" type="Mixer" maxHeatingDemand="0">
 						<Position>12.5918 32.4348 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="73" type="Mixer" maxHeatingDemand="0">
 						<Position>8.93961 32.3094 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="74" type="Mixer" maxHeatingDemand="0">
 						<Position>10.4443 -27.275 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="75" type="Mixer" maxHeatingDemand="0">
 						<Position>13.2398 19.2175 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="76" type="Mixer" maxHeatingDemand="0">
 						<Position>154.458 -135.229 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="77" type="Mixer" maxHeatingDemand="0">
 						<Position>149.475 -135.31 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="78" type="Mixer" maxHeatingDemand="0">
 						<Position>-28.5967 -29.2669 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="79" type="Mixer" maxHeatingDemand="0">
 						<Position>12.9697 380.797 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="80" type="Mixer" maxHeatingDemand="0">
 						<Position>38.2052 379.359 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="81" type="Mixer" maxHeatingDemand="0">
 						<Position>-42.6636 322.625 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="82" type="Mixer" maxHeatingDemand="0">
 						<Position>-38.5773 220.406 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="83" type="Mixer" maxHeatingDemand="0">
 						<Position>-37.102 183.5 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="84" type="Mixer" maxHeatingDemand="0">
 						<Position>-41.0056 281.151 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="85" type="Mixer" maxHeatingDemand="0">
 						<Position>-39.6498 247.235 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="86" type="Mixer" maxHeatingDemand="0">
 						<Position>-276.597 -53.4307 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="87" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-275.682 -76.8687 0</Position>
@@ -473,13 +386,11 @@
 					</NetworkNode>
 					<NetworkNode id="88" type="Mixer" maxHeatingDemand="0">
 						<Position>-264.694 -52.9662 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="89" type="Mixer" maxHeatingDemand="0">
 						<Position>-257.998 -52.7049 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="90" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-257.325 -69.9473 0</Position>
@@ -490,8 +401,7 @@
 					</NetworkNode>
 					<NetworkNode id="91" type="Mixer" maxHeatingDemand="0">
 						<Position>-237.195 -51.8931 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="92" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-236.561 -68.1417 0</Position>
@@ -502,8 +412,7 @@
 					</NetworkNode>
 					<NetworkNode id="93" type="Mixer" maxHeatingDemand="0">
 						<Position>-230.463 -51.6304 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="94" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-217.903 -66.3361 0</Position>
@@ -521,13 +430,11 @@
 					</NetworkNode>
 					<NetworkNode id="96" type="Mixer" maxHeatingDemand="0">
 						<Position>-168.772 -34.3203 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="97" type="Mixer" maxHeatingDemand="0">
 						<Position>-191.715 -35.1346 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="98" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-191.121 -51.8914 0</Position>
@@ -538,13 +445,11 @@
 					</NetworkNode>
 					<NetworkNode id="99" type="Mixer" maxHeatingDemand="0">
 						<Position>-155.204 -33.8388 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="100" type="Mixer" maxHeatingDemand="0">
 						<Position>-161.445 -34.0603 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="101" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-160.726 -54.2988 0</Position>
@@ -569,8 +474,7 @@
 					</NetworkNode>
 					<NetworkNode id="104" type="Mixer" maxHeatingDemand="0">
 						<Position>-145.919 -33.5093 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="105" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-153.805 -73.2575 0</Position>
@@ -581,13 +485,11 @@
 					</NetworkNode>
 					<NetworkNode id="106" type="Mixer" maxHeatingDemand="0">
 						<Position>-129.03 -32.9098 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="107" type="Mixer" maxHeatingDemand="0">
 						<Position>-132.051 -33.0171 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="108" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-130.633 -72.9566 0</Position>
@@ -598,8 +500,7 @@
 					</NetworkNode>
 					<NetworkNode id="109" type="Mixer" maxHeatingDemand="0">
 						<Position>-120.684 -32.6136 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="110" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-128.527 -47.0764 0</Position>
@@ -610,8 +511,7 @@
 					</NetworkNode>
 					<NetworkNode id="111" type="Mixer" maxHeatingDemand="0">
 						<Position>-97.74 -31.7994 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="112" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-97.2298 -46.1737 0</Position>
@@ -636,13 +536,11 @@
 					</NetworkNode>
 					<NetworkNode id="115" type="Mixer" maxHeatingDemand="0">
 						<Position>-208.845 24.6474 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="116" type="Mixer" maxHeatingDemand="0">
 						<Position>-202.525 24.931 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="117" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-201.954 12.2071 0</Position>
@@ -653,13 +551,11 @@
 					</NetworkNode>
 					<NetworkNode id="118" type="Mixer" maxHeatingDemand="0">
 						<Position>-191.319 25.4339 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="119" type="Mixer" maxHeatingDemand="0">
 						<Position>-185.94 25.6752 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="120" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-185.403 13.7117 0</Position>
@@ -670,13 +566,11 @@
 					</NetworkNode>
 					<NetworkNode id="121" type="Mixer" maxHeatingDemand="0">
 						<Position>-174.944 26.1686 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="122" type="Mixer" maxHeatingDemand="0">
 						<Position>-169.722 26.4029 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="123" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-169.152 13.7117 0</Position>
@@ -687,13 +581,11 @@
 					</NetworkNode>
 					<NetworkNode id="124" type="Mixer" maxHeatingDemand="0">
 						<Position>-157.976 26.93 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="125" type="Mixer" maxHeatingDemand="0">
 						<Position>-152.509 27.1753 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="126" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-151.999 15.8183 0</Position>
@@ -704,13 +596,11 @@
 					</NetworkNode>
 					<NetworkNode id="127" type="Mixer" maxHeatingDemand="0">
 						<Position>-140.619 27.7088 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="128" type="Mixer" maxHeatingDemand="0">
 						<Position>-135.39 27.9435 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="129" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-134.846 15.8183 0</Position>
@@ -721,13 +611,11 @@
 					</NetworkNode>
 					<NetworkNode id="130" type="Mixer" maxHeatingDemand="0">
 						<Position>-124.449 28.4344 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="131" type="Mixer" maxHeatingDemand="0">
 						<Position>-117.917 28.7275 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="132" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-117.392 17.022 0</Position>
@@ -780,8 +668,7 @@
 					</NetworkNode>
 					<NetworkNode id="139" type="Mixer" maxHeatingDemand="0">
 						<Position>-107.877 29.1781 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="140" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-108.364 40.0433 0</Position>
@@ -792,8 +679,7 @@
 					</NetworkNode>
 					<NetworkNode id="141" type="Mixer" maxHeatingDemand="0">
 						<Position>-91.9392 29.8932 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="142" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-91.8131 40.4947 0</Position>
@@ -811,13 +697,11 @@
 					</NetworkNode>
 					<NetworkNode id="144" type="Mixer" maxHeatingDemand="0">
 						<Position>-76.9551 -6.20485 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="145" type="Mixer" maxHeatingDemand="0">
 						<Position>-77.3886 2.19827 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="146" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-90.4589 1.52402 0</Position>
@@ -828,8 +712,7 @@
 					</NetworkNode>
 					<NetworkNode id="147" type="Mixer" maxHeatingDemand="0">
 						<Position>-76.355 -17.838 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="148" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-88.9542 -18.4879 0</Position>
@@ -868,8 +751,7 @@
 					</NetworkNode>
 					<NetworkNode id="153" type="Mixer" maxHeatingDemand="0">
 						<Position>-30.3766 15.26 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="154" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-46.5228 14.6145 0</Position>
@@ -880,8 +762,7 @@
 					</NetworkNode>
 					<NetworkNode id="155" type="Mixer" maxHeatingDemand="0">
 						<Position>-29.361 -10.1462 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="156" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-46.0714 -10.8142 0</Position>
@@ -927,8 +808,7 @@
 					</NetworkNode>
 					<NetworkNode id="162" type="Mixer" maxHeatingDemand="0">
 						<Position>-4.47437 -48.1014 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="163" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-3.18868 -65.2828 0</Position>
@@ -939,8 +819,7 @@
 					</NetworkNode>
 					<NetworkNode id="164" type="Mixer" maxHeatingDemand="0">
 						<Position>6.7303 -47.263 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="165" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>16.2214 -61.9726 0</Position>
@@ -958,13 +837,11 @@
 					</NetworkNode>
 					<NetworkNode id="167" type="Mixer" maxHeatingDemand="0">
 						<Position>36.7018 -26.3547 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="168" type="Mixer" maxHeatingDemand="0">
 						<Position>45.0816 -26.0609 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="169" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>45.7127 -44.0671 0</Position>
@@ -975,13 +852,11 @@
 					</NetworkNode>
 					<NetworkNode id="170" type="Mixer" maxHeatingDemand="0">
 						<Position>61.6748 -25.4793 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="171" type="Mixer" maxHeatingDemand="0">
 						<Position>75.9735 -24.9781 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="172" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>76.5582 -41.6597 0</Position>
@@ -1006,13 +881,11 @@
 					</NetworkNode>
 					<NetworkNode id="175" type="Mixer" maxHeatingDemand="0">
 						<Position>80.8993 -24.8055 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="176" type="Mixer" maxHeatingDemand="0">
 						<Position>85.9596 -24.6281 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="177" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>85.5862 -13.974 0</Position>
@@ -1030,8 +903,7 @@
 					</NetworkNode>
 					<NetworkNode id="179" type="Mixer" maxHeatingDemand="0">
 						<Position>104.557 -23.9763 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="180" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>105.899 -62.2735 0</Position>
@@ -1042,8 +914,7 @@
 					</NetworkNode>
 					<NetworkNode id="181" type="Mixer" maxHeatingDemand="0">
 						<Position>106.467 -23.9093 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="182" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>106.952 -37.7476 0</Position>
@@ -1054,8 +925,7 @@
 					</NetworkNode>
 					<NetworkNode id="183" type="Mixer" maxHeatingDemand="0">
 						<Position>111.486 -23.7334 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="184" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>111.165 -14.5758 0</Position>
@@ -1066,8 +936,7 @@
 					</NetworkNode>
 					<NetworkNode id="185" type="Mixer" maxHeatingDemand="0">
 						<Position>135.901 -22.8776 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="186" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>135.691 -11.5665 0</Position>
@@ -1085,8 +954,7 @@
 					</NetworkNode>
 					<NetworkNode id="188" type="Mixer" maxHeatingDemand="0">
 						<Position>135.348 36.6496 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="189" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>137.346 9.9501 0</Position>
@@ -1097,13 +965,11 @@
 					</NetworkNode>
 					<NetworkNode id="190" type="Mixer" maxHeatingDemand="0">
 						<Position>159.232 -44.5749 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="191" type="Mixer" maxHeatingDemand="0">
 						<Position>161.049 -58.9414 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="192" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>140.657 -61.5212 0</Position>
@@ -1114,13 +980,11 @@
 					</NetworkNode>
 					<NetworkNode id="193" type="Mixer" maxHeatingDemand="0">
 						<Position>162.125 -67.4467 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="194" type="Mixer" maxHeatingDemand="0">
 						<Position>165.232 -92.006 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="195" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>142.161 -94.9246 0</Position>
@@ -1145,8 +1009,7 @@
 					</NetworkNode>
 					<NetworkNode id="198" type="Mixer" maxHeatingDemand="0">
 						<Position>155.186 -154.696 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="199" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>140.055 -155.261 0</Position>
@@ -1157,8 +1020,7 @@
 					</NetworkNode>
 					<NetworkNode id="200" type="Mixer" maxHeatingDemand="0">
 						<Position>132.767 36.561 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="201" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>135.691 26.6518 0</Position>
@@ -1169,13 +1031,11 @@
 					</NetworkNode>
 					<NetworkNode id="202" type="Mixer" maxHeatingDemand="0">
 						<Position>110.14 35.7841 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="203" type="Mixer" maxHeatingDemand="0">
 						<Position>113.292 35.8924 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="204" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>113.723 23.3416 0</Position>
@@ -1186,13 +1046,11 @@
 					</NetworkNode>
 					<NetworkNode id="205" type="Mixer" maxHeatingDemand="0">
 						<Position>90.1321 35.0972 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="206" type="Mixer" maxHeatingDemand="0">
 						<Position>94.9262 35.2618 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="207" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>95.3664 22.4388 0</Position>
@@ -1203,13 +1061,11 @@
 					</NetworkNode>
 					<NetworkNode id="208" type="Mixer" maxHeatingDemand="0">
 						<Position>68.9149 34.3687 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="209" type="Mixer" maxHeatingDemand="0">
 						<Position>79.3168 34.7258 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="210" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>79.718 23.0406 0</Position>
@@ -1220,13 +1076,11 @@
 					</NetworkNode>
 					<NetworkNode id="211" type="Mixer" maxHeatingDemand="0">
 						<Position>45.9508 33.5802 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="212" type="Mixer" maxHeatingDemand="0">
 						<Position>60.868 34.0924 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="213" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>61.3612 19.7304 0</Position>
@@ -1237,8 +1091,7 @@
 					</NetworkNode>
 					<NetworkNode id="214" type="Mixer" maxHeatingDemand="0">
 						<Position>45.169 33.5534 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="215" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>46.465 18.6019 0</Position>
@@ -1249,8 +1102,7 @@
 					</NetworkNode>
 					<NetworkNode id="216" type="Mixer" maxHeatingDemand="0">
 						<Position>28.8382 32.9926 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="217" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>29.2367 21.3855 0</Position>
@@ -1261,8 +1113,7 @@
 					</NetworkNode>
 					<NetworkNode id="218" type="Mixer" maxHeatingDemand="0">
 						<Position>11.9382 45.7693 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="219" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>24.0456 46.3628 0</Position>
@@ -1280,13 +1131,11 @@
 					</NetworkNode>
 					<NetworkNode id="221" type="Mixer" maxHeatingDemand="0">
 						<Position>10.8322 68.3313 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="222" type="Mixer" maxHeatingDemand="0">
 						<Position>10.6356 72.3416 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="223" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>23.9704 72.9953 0</Position>
@@ -1297,8 +1146,7 @@
 					</NetworkNode>
 					<NetworkNode id="224" type="Mixer" maxHeatingDemand="0">
 						<Position>10.5463 74.1635 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="225" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>45.0356 75.8541 0</Position>
@@ -1309,8 +1157,7 @@
 					</NetworkNode>
 					<NetworkNode id="226" type="Mixer" maxHeatingDemand="0">
 						<Position>66.2155 34.276 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="227" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>64.7466 77.0579 0</Position>
@@ -1328,8 +1175,7 @@
 					</NetworkNode>
 					<NetworkNode id="229" type="Mixer" maxHeatingDemand="0">
 						<Position>88.0532 35.0258 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="230" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>87.6174 47.717 0</Position>
@@ -1403,8 +1249,7 @@
 					</NetworkNode>
 					<NetworkNode id="240" type="Mixer" maxHeatingDemand="0">
 						<Position>27.3944 161.327 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="241" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>28.9358 149.883 0</Position>
@@ -1415,13 +1260,11 @@
 					</NetworkNode>
 					<NetworkNode id="242" type="Mixer" maxHeatingDemand="0">
 						<Position>42.2459 163.327 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="243" type="Mixer" maxHeatingDemand="0">
 						<Position>45.663 163.787 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="244" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>47.2926 151.689 0</Position>
@@ -1432,13 +1275,11 @@
 					</NetworkNode>
 					<NetworkNode id="245" type="Mixer" maxHeatingDemand="0">
 						<Position>57.8146 165.424 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="246" type="Mixer" maxHeatingDemand="0">
 						<Position>61.9224 165.977 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="247" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>63.5429 153.946 0</Position>
@@ -1449,8 +1290,7 @@
 					</NetworkNode>
 					<NetworkNode id="248" type="Mixer" maxHeatingDemand="0">
 						<Position>74.1704 167.627 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="249" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>80.8465 156.504 0</Position>
@@ -1489,8 +1329,7 @@
 					</NetworkNode>
 					<NetworkNode id="254" type="Mixer" maxHeatingDemand="0">
 						<Position>-21.2203 249.314 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="255" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-22.0721 256.865 0</Position>
@@ -1501,8 +1340,7 @@
 					</NetworkNode>
 					<NetworkNode id="256" type="Mixer" maxHeatingDemand="0">
 						<Position>-20.7395 249.368 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="257" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-19.5142 238.508 0</Position>
@@ -1534,8 +1372,7 @@
 					</NetworkNode>
 					<NetworkNode id="261" type="Mixer" maxHeatingDemand="0">
 						<Position>18.6403 241.443 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="262" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>20.6602 228.426 0</Position>
@@ -1546,13 +1383,11 @@
 					</NetworkNode>
 					<NetworkNode id="263" type="Mixer" maxHeatingDemand="0">
 						<Position>30.4528 243.276 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="264" type="Mixer" maxHeatingDemand="0">
 						<Position>33.5839 243.762 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="265" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>35.7067 230.082 0</Position>
@@ -1563,13 +1398,11 @@
 					</NetworkNode>
 					<NetworkNode id="266" type="Mixer" maxHeatingDemand="0">
 						<Position>47.8612 245.978 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="267" type="Mixer" maxHeatingDemand="0">
 						<Position>48.3932 246.06 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="268" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>50.4524 232.79 0</Position>
@@ -1601,13 +1434,11 @@
 					</NetworkNode>
 					<NetworkNode id="272" type="Mixer" maxHeatingDemand="0">
 						<Position>83.9648 260.938 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="273" type="Mixer" maxHeatingDemand="0">
 						<Position>83.679 263.149 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="274" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>73.4737 261.83 0</Position>
@@ -1618,13 +1449,11 @@
 					</NetworkNode>
 					<NetworkNode id="275" type="Mixer" maxHeatingDemand="0">
 						<Position>82.7874 270.047 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="276" type="Mixer" maxHeatingDemand="0">
 						<Position>81.4903 280.083 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="277" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>71.8185 278.833 0</Position>
@@ -1635,8 +1464,7 @@
 					</NetworkNode>
 					<NetworkNode id="278" type="Mixer" maxHeatingDemand="0">
 						<Position>54.7019 305.674 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="279" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>65.499 293.428 0</Position>
@@ -1647,13 +1475,11 @@
 					</NetworkNode>
 					<NetworkNode id="280" type="Mixer" maxHeatingDemand="0">
 						<Position>39.6651 303.229 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="281" type="Mixer" maxHeatingDemand="0">
 						<Position>40.9757 303.442 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="282" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>42.6282 293.277 0</Position>
@@ -1664,13 +1490,11 @@
 					</NetworkNode>
 					<NetworkNode id="283" type="Mixer" maxHeatingDemand="0">
 						<Position>21.2053 300.228 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="284" type="Mixer" maxHeatingDemand="0">
 						<Position>23.3955 300.584 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="285" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>25.0237 290.569 0</Position>
@@ -1681,8 +1505,7 @@
 					</NetworkNode>
 					<NetworkNode id="286" type="Mixer" maxHeatingDemand="0">
 						<Position>6.91295 297.905 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="287" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>8.47242 288.312 0</Position>
@@ -1693,8 +1516,7 @@
 					</NetworkNode>
 					<NetworkNode id="288" type="Mixer" maxHeatingDemand="0">
 						<Position>-41.6914 298.307 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="289" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-16.204 282.143 0</Position>
@@ -1754,8 +1576,7 @@
 					</NetworkNode>
 					<NetworkNode id="297" type="Mixer" maxHeatingDemand="0">
 						<Position>24.5715 382.252 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="298" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>14.1901 371.068 0</Position>
@@ -1766,8 +1587,7 @@
 					</NetworkNode>
 					<NetworkNode id="299" type="Mixer" maxHeatingDemand="0">
 						<Position>-13.555 364.764 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="300" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-2.66205 366.253 0</Position>
@@ -1785,8 +1605,7 @@
 					</NetworkNode>
 					<NetworkNode id="302" type="Mixer" maxHeatingDemand="0">
 						<Position>-28.7487 387.568 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="303" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-27.7898 378.742 0</Position>
@@ -1797,8 +1616,7 @@
 					</NetworkNode>
 					<NetworkNode id="304" type="Mixer" maxHeatingDemand="0">
 						<Position>-25.2066 387.953 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="305" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-26.1347 396.497 0</Position>
@@ -1816,8 +1634,7 @@
 					</NetworkNode>
 					<NetworkNode id="307" type="Mixer" maxHeatingDemand="0">
 						<Position>-28.8419 434.326 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="308" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-27.3384 422.828 0</Position>
@@ -1828,13 +1645,11 @@
 					</NetworkNode>
 					<NetworkNode id="309" type="Mixer" maxHeatingDemand="0">
 						<Position>-26.97 434.57 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="310" type="Mixer" maxHeatingDemand="0">
 						<Position>-8.272 437.016 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="311" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>-6.57416 424.032 0</Position>
@@ -1845,13 +1660,11 @@
 					</NetworkNode>
 					<NetworkNode id="312" type="Mixer" maxHeatingDemand="0">
 						<Position>2.16204 438.38 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="313" type="Mixer" maxHeatingDemand="0">
 						<Position>11.9122 439.655 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="314" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>13.7387 425.687 0</Position>
@@ -1862,13 +1675,11 @@
 					</NetworkNode>
 					<NetworkNode id="315" type="Mixer" maxHeatingDemand="0">
 						<Position>33.8982 402.839 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="316" type="Mixer" maxHeatingDemand="0">
 						<Position>32.2078 412.055 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="317" type="Building" maxHeatingDemand="4800" componentId="10020004">
 						<Position>16.2966 409.136 0</Position>
@@ -1907,8 +1718,7 @@
 					</NetworkNode>
 					<NetworkNode id="322" type="Mixer" maxHeatingDemand="0">
 						<Position>14.5811 -8.14582 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="323" type="Building" maxHeatingDemand="3600" componentId="10020004">
 						<Position>4.65435 -8.63243 0</Position>
@@ -1919,8 +1729,7 @@
 					</NetworkNode>
 					<NetworkNode id="324" type="Mixer" maxHeatingDemand="0">
 						<Position>13.7868 8.05817 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="325" type="Building" maxHeatingDemand="3600" componentId="10020004">
 						<Position>4.80482 7.61788 0</Position>
@@ -1945,8 +1754,7 @@
 					</NetworkNode>
 					<NetworkNode id="328" type="Mixer" maxHeatingDemand="0">
 						<Position>11.8505 47.5579 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="329" type="Building" maxHeatingDemand="3600" componentId="10020004">
 						<Position>4.35342 47.1904 0</Position>
@@ -1957,8 +1765,7 @@
 					</NetworkNode>
 					<NetworkNode id="330" type="Mixer" maxHeatingDemand="0">
 						<Position>11.3098 58.5892 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="331" type="Building" maxHeatingDemand="3600" componentId="10020004">
 						<Position>2.84876 58.1744 0</Position>
@@ -2004,8 +1811,7 @@
 					</NetworkNode>
 					<NetworkNode id="337" type="Mixer" maxHeatingDemand="0">
 						<Position>80.305 289.253 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="338" type="Building" maxHeatingDemand="3600" componentId="10020004">
 						<Position>96.8899 291.396 0</Position>
@@ -2016,13 +1822,11 @@
 					</NetworkNode>
 					<NetworkNode id="339" type="Mixer" maxHeatingDemand="0">
 						<Position>32.0286 413.031 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="340" type="Mixer" maxHeatingDemand="0">
 						<Position>30.2663 422.639 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="341" type="Building" maxHeatingDemand="3600" componentId="10020004">
 						<Position>47.4995 425.8 0</Position>
@@ -2054,13 +1858,11 @@
 					</NetworkNode>
 					<NetworkNode id="345" type="Mixer" maxHeatingDemand="0">
 						<Position>102.824 170.75 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="346" type="Mixer" maxHeatingDemand="0">
 						<Position>106.929 171.116 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="347" type="Building" maxHeatingDemand="21600" componentId="10020004">
 						<Position>108.984 148.078 0</Position>
@@ -2071,13 +1873,11 @@
 					</NetworkNode>
 					<NetworkNode id="348" type="Mixer" maxHeatingDemand="0">
 						<Position>130.488 173.217 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="349" type="Mixer" maxHeatingDemand="0">
 						<Position>133.85 173.517 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="350" type="Building" maxHeatingDemand="21600" componentId="10020004">
 						<Position>135.917 150.335 0</Position>
@@ -2130,8 +1930,7 @@
 					</NetworkNode>
 					<NetworkNode id="357" type="Mixer" maxHeatingDemand="0">
 						<Position>65.459 325.489 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="358" type="Building" maxHeatingDemand="21600" componentId="10020004">
 						<Position>81.8997 327.283 0</Position>
@@ -2142,8 +1941,7 @@
 					</NetworkNode>
 					<NetworkNode id="359" type="Mixer" maxHeatingDemand="0">
 						<Position>62.9792 348.221 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="360" type="Building" maxHeatingDemand="21600" componentId="10020004">
 						<Position>80.696 350.153 0</Position>
@@ -2154,8 +1952,7 @@
 					</NetworkNode>
 					<NetworkNode id="361" type="Mixer" maxHeatingDemand="0">
 						<Position>60.1989 373.707 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="362" type="Building" maxHeatingDemand="21600" componentId="10020004">
 						<Position>77.3858 375.582 0</Position>
@@ -2166,8 +1963,7 @@
 					</NetworkNode>
 					<NetworkNode id="363" type="Mixer" maxHeatingDemand="0">
 						<Position>31.1143 442.166 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="364" type="Building" maxHeatingDemand="21600" componentId="10020004">
 						<Position>29.6881 453.072 0</Position>
@@ -2206,8 +2002,7 @@
 					</NetworkNode>
 					<NetworkNode id="369" type="Mixer" maxHeatingDemand="0">
 						<Position>-260.996 -21.2564 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="370" type="Building" maxHeatingDemand="6000" componentId="10020004">
 						<Position>-262.234 -12.9959 0</Position>
@@ -2225,8 +2020,7 @@
 					</NetworkNode>
 					<NetworkNode id="372" type="Mixer" maxHeatingDemand="0">
 						<Position>-255.015 6.43974 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="373" type="Building" maxHeatingDemand="6000" componentId="10020004">
 						<Position>-255.313 13.9374 0</Position>
@@ -2237,8 +2031,7 @@
 					</NetworkNode>
 					<NetworkNode id="374" type="Mixer" maxHeatingDemand="0">
 						<Position>-252.878 6.52458 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="375" type="Building" maxHeatingDemand="6000" componentId="10020004">
 						<Position>-229.884 15.1412 0</Position>
@@ -2277,8 +2070,7 @@
 					</NetworkNode>
 					<NetworkNode id="380" type="Mixer" maxHeatingDemand="0">
 						<Position>165.301 -92.5516 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="381" type="Building" maxHeatingDemand="28800" componentId="10020004">
 						<Position>184.01 -90.1849 0</Position>
@@ -2310,8 +2102,7 @@
 					</NetworkNode>
 					<NetworkNode id="385" type="Mixer" maxHeatingDemand="0">
 						<Position>170.408 -134.971 0</Position>
-						<NetworkHeatExchange>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 					</NetworkNode>
 					<NetworkNode id="386" type="Building" maxHeatingDemand="28800" componentId="10020004">
 						<Position>170.618 -147.964 0</Position>
@@ -2349,6 +2140,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>42.4047</Length>
 					</NetworkEdge>
@@ -2358,6 +2150,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>283.04</Length>
 					</NetworkEdge>
@@ -2367,6 +2160,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>17.636</Length>
 					</NetworkEdge>
@@ -2376,6 +2170,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.413</Length>
 					</NetworkEdge>
@@ -2385,6 +2180,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.1236</Length>
 					</NetworkEdge>
@@ -2394,6 +2190,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>5.02216</Length>
 					</NetworkEdge>
@@ -2403,6 +2200,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>7.8991</Length>
 					</NetworkEdge>
@@ -2412,6 +2210,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>7.82422</Length>
 					</NetworkEdge>
@@ -2421,6 +2220,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>2.94235</Length>
 					</NetworkEdge>
@@ -2430,6 +2230,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>15.0586</Length>
 					</NetworkEdge>
@@ -2439,6 +2240,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>3.66649</Length>
 					</NetworkEdge>
@@ -2448,6 +2250,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>15.0458</Length>
 					</NetworkEdge>
@@ -2457,6 +2260,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>14.1566</Length>
 					</NetworkEdge>
@@ -2466,6 +2270,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.2276</Length>
 					</NetworkEdge>
@@ -2475,6 +2280,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>16.3503</Length>
 					</NetworkEdge>
@@ -2484,6 +2290,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>13.0211</Length>
 					</NetworkEdge>
@@ -2493,6 +2300,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>4.22378</Length>
 					</NetworkEdge>
@@ -2502,6 +2310,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>1.39281</Length>
 					</NetworkEdge>
@@ -2511,6 +2320,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.7529</Length>
 					</NetworkEdge>
@@ -2520,6 +2330,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>14.6483</Length>
 					</NetworkEdge>
@@ -2529,6 +2340,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>20.3211</Length>
 					</NetworkEdge>
@@ -2538,6 +2350,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>6.0514</Length>
 					</NetworkEdge>
@@ -2547,6 +2360,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>15.0586</Length>
 					</NetworkEdge>
@@ -2556,6 +2370,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>26.6027</Length>
 					</NetworkEdge>
@@ -2565,6 +2380,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>46.2012</Length>
 					</NetworkEdge>
@@ -2574,6 +2390,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>8.05309</Length>
 					</NetworkEdge>
@@ -2583,6 +2400,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.349</Length>
 					</NetworkEdge>
@@ -2592,6 +2410,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.9921</Length>
 					</NetworkEdge>
@@ -2601,6 +2420,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.66</Length>
 					</NetworkEdge>
@@ -2610,6 +2430,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>21.1703</Length>
 					</NetworkEdge>
@@ -2619,6 +2440,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>26.9958</Length>
 					</NetworkEdge>
@@ -2628,6 +2450,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>13.2981</Length>
 					</NetworkEdge>
@@ -2637,6 +2460,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>13.7048</Length>
 					</NetworkEdge>
@@ -2646,6 +2470,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>3.12131</Length>
 					</NetworkEdge>
@@ -2655,6 +2480,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>7.46602</Length>
 					</NetworkEdge>
@@ -2664,6 +2490,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>21.1856</Length>
 					</NetworkEdge>
@@ -2673,6 +2500,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>26.2027</Length>
 					</NetworkEdge>
@@ -2682,6 +2510,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.8234</Length>
 					</NetworkEdge>
@@ -2691,6 +2520,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.4296</Length>
 					</NetworkEdge>
@@ -2700,6 +2530,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>18.7883</Length>
 					</NetworkEdge>
@@ -2709,6 +2540,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>25.7643</Length>
 					</NetworkEdge>
@@ -2718,6 +2550,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>28.5171</Length>
 					</NetworkEdge>
@@ -2727,6 +2560,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>4.16806</Length>
 					</NetworkEdge>
@@ -2736,6 +2570,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>18.5524</Length>
 					</NetworkEdge>
@@ -2745,6 +2580,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>21.4977</Length>
 					</NetworkEdge>
@@ -2754,6 +2590,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>19.4605</Length>
 					</NetworkEdge>
@@ -2763,6 +2600,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>3.65439</Length>
 					</NetworkEdge>
@@ -2772,6 +2610,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>5.06894</Length>
 					</NetworkEdge>
@@ -2781,6 +2620,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>13.2332</Length>
 					</NetworkEdge>
@@ -2790,6 +2630,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.5672</Length>
 					</NetworkEdge>
@@ -2799,6 +2640,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>4.9841</Length>
 					</NetworkEdge>
@@ -2808,6 +2650,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>20.5945</Length>
 					</NetworkEdge>
@@ -2817,6 +2660,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>6.71547</Length>
 					</NetworkEdge>
@@ -2826,6 +2670,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>4.57503</Length>
 					</NetworkEdge>
@@ -2835,6 +2680,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>63.2074</Length>
 					</NetworkEdge>
@@ -2844,6 +2690,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>36.9354</Length>
 					</NetworkEdge>
@@ -2853,6 +2700,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>33.9435</Length>
 					</NetworkEdge>
@@ -2862,6 +2710,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>23.4558</Length>
 					</NetworkEdge>
@@ -2871,6 +2720,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>6.70063</Length>
 					</NetworkEdge>
@@ -2880,6 +2730,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>17.2554</Length>
 					</NetworkEdge>
@@ -2889,6 +2740,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>20.8189</Length>
 					</NetworkEdge>
@@ -2898,6 +2750,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>16.2609</Length>
 					</NetworkEdge>
@@ -2907,6 +2760,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.9769</Length>
 					</NetworkEdge>
@@ -2916,6 +2770,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>15.1842</Length>
 					</NetworkEdge>
@@ -2925,6 +2780,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>31.0811</Length>
 					</NetworkEdge>
@@ -2934,6 +2790,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>22.9575</Length>
 					</NetworkEdge>
@@ -2943,6 +2800,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>16.7673</Length>
 					</NetworkEdge>
@@ -2952,6 +2810,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>6.24464</Length>
 					</NetworkEdge>
@@ -2961,6 +2820,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>20.2513</Length>
 					</NetworkEdge>
@@ -2970,6 +2830,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>2.95971</Length>
 					</NetworkEdge>
@@ -2979,6 +2840,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.1375</Length>
 					</NetworkEdge>
@@ -2988,6 +2850,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>7.33209</Length>
 					</NetworkEdge>
@@ -2997,6 +2860,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.7233</Length>
 					</NetworkEdge>
@@ -3006,6 +2870,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>9.29036</Length>
 					</NetworkEdge>
@@ -3015,6 +2880,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>39.4435</Length>
 					</NetworkEdge>
@@ -3024,6 +2890,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>3.02312</Length>
 					</NetworkEdge>
@@ -3033,6 +2900,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>39.9647</Length>
 					</NetworkEdge>
@@ -3042,6 +2910,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>8.35109</Length>
 					</NetworkEdge>
@@ -3051,6 +2920,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>14.1755</Length>
 					</NetworkEdge>
@@ -3060,6 +2930,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>22.0787</Length>
 					</NetworkEdge>
@@ -3069,6 +2940,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>14.3834</Length>
 					</NetworkEdge>
@@ -3078,6 +2950,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>22.9581</Length>
 					</NetworkEdge>
@@ -3087,6 +2960,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>9.01553</Length>
 					</NetworkEdge>
@@ -3096,6 +2970,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>13.8775</Length>
 					</NetworkEdge>
@@ -3105,6 +2980,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.2129</Length>
 					</NetworkEdge>
@@ -3114,6 +2990,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>6.3267</Length>
 					</NetworkEdge>
@@ -3123,6 +3000,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.7367</Length>
 					</NetworkEdge>
@@ -3132,6 +3010,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>5.38435</Length>
 					</NetworkEdge>
@@ -3141,6 +3020,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.9755</Length>
 					</NetworkEdge>
@@ -3150,6 +3030,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>5.22729</Length>
 					</NetworkEdge>
@@ -3159,6 +3040,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.704</Length>
 					</NetworkEdge>
@@ -3168,6 +3050,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>5.47203</Length>
 					</NetworkEdge>
@@ -3177,6 +3060,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.3685</Length>
 					</NetworkEdge>
@@ -3186,6 +3070,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>5.23403</Length>
 					</NetworkEdge>
@@ -3195,6 +3080,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.1374</Length>
 					</NetworkEdge>
@@ -3204,6 +3090,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>6.53772</Length>
 					</NetworkEdge>
@@ -3213,6 +3100,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.7173</Length>
 					</NetworkEdge>
@@ -3222,6 +3110,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.3316</Length>
 					</NetworkEdge>
@@ -3231,6 +3120,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.7422</Length>
 					</NetworkEdge>
@@ -3240,6 +3130,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.2177</Length>
 					</NetworkEdge>
@@ -3249,6 +3140,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.3648</Length>
 					</NetworkEdge>
@@ -3258,6 +3150,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.0067</Length>
 					</NetworkEdge>
@@ -3267,6 +3160,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.78</Length>
 					</NetworkEdge>
@@ -3276,6 +3170,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.7583</Length>
 					</NetworkEdge>
@@ -3285,6 +3180,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.0178</Length>
 					</NetworkEdge>
@@ -3294,6 +3190,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.9018</Length>
 					</NetworkEdge>
@@ -3303,6 +3200,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.1962</Length>
 					</NetworkEdge>
@@ -3312,6 +3210,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.9527</Length>
 					</NetworkEdge>
@@ -3321,6 +3220,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.4156</Length>
 					</NetworkEdge>
@@ -3330,6 +3230,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.0508</Length>
 					</NetworkEdge>
@@ -3339,6 +3240,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.8761</Length>
 					</NetworkEdge>
@@ -3348,6 +3250,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>0.601258</Length>
 					</NetworkEdge>
@@ -3357,6 +3260,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.5852</Length>
 					</NetworkEdge>
@@ -3366,6 +3270,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>15.9536</Length>
 					</NetworkEdge>
@@ -3375,6 +3280,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.8842</Length>
 					</NetworkEdge>
@@ -3384,6 +3290,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>8.4143</Length>
 					</NetworkEdge>
@@ -3393,6 +3300,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>13.0876</Length>
 					</NetworkEdge>
@@ -3402,6 +3310,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>13.1958</Length>
 					</NetworkEdge>
@@ -3411,6 +3320,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.6159</Length>
 					</NetworkEdge>
@@ -3420,6 +3330,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.6486</Length>
 					</NetworkEdge>
@@ -3429,6 +3340,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>9.83154</Length>
 					</NetworkEdge>
@@ -3438,6 +3350,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>13.001</Length>
 					</NetworkEdge>
@@ -3447,6 +3360,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>9.42964</Length>
 					</NetworkEdge>
@@ -3456,6 +3370,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.1415</Length>
 					</NetworkEdge>
@@ -3465,6 +3380,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>13.9371</Length>
 					</NetworkEdge>
@@ -3474,6 +3390,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>9.991</Length>
 					</NetworkEdge>
@@ -3483,6 +3400,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>168.375</Length>
 					</NetworkEdge>
@@ -3492,6 +3410,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>16.1591</Length>
 					</NetworkEdge>
@@ -3501,6 +3420,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>25.4265</Length>
 					</NetworkEdge>
@@ -3510,6 +3430,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>16.7238</Length>
 					</NetworkEdge>
@@ -3519,6 +3440,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>19.136</Length>
 					</NetworkEdge>
@@ -3528,6 +3450,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>16.4346</Length>
 					</NetworkEdge>
@@ -3537,6 +3460,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>6.86774</Length>
 					</NetworkEdge>
@@ -3546,6 +3470,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>31.6278</Length>
 					</NetworkEdge>
@@ -3555,6 +3480,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>36.5333</Length>
 					</NetworkEdge>
@@ -3564,6 +3490,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>18.9827</Length>
 					</NetworkEdge>
@@ -3573,6 +3500,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>365.762</Length>
 					</NetworkEdge>
@@ -3582,6 +3510,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>17.5165</Length>
 					</NetworkEdge>
@@ -3591,6 +3520,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>23.3648</Length>
 					</NetworkEdge>
@@ -3600,6 +3530,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>17.2295</Length>
 					</NetworkEdge>
@@ -3609,6 +3540,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>8.367</Length>
 					</NetworkEdge>
@@ -3618,6 +3550,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>15.3768</Length>
 					</NetworkEdge>
@@ -3627,6 +3560,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>34.4896</Length>
 					</NetworkEdge>
@@ -3636,6 +3570,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>8.38495</Length>
 					</NetworkEdge>
@@ -3645,6 +3580,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>18.0172</Length>
 					</NetworkEdge>
@@ -3654,6 +3590,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>14.3075</Length>
 					</NetworkEdge>
@@ -3663,6 +3600,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>16.6918</Length>
 					</NetworkEdge>
@@ -3672,6 +3610,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>21.2047</Length>
 					</NetworkEdge>
@@ -3681,6 +3620,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>9.07603</Length>
 					</NetworkEdge>
@@ -3690,6 +3630,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>16.6034</Length>
 					</NetworkEdge>
@@ -3699,6 +3640,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>8.95294</Length>
 					</NetworkEdge>
@@ -3708,6 +3650,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>5.0634</Length>
 					</NetworkEdge>
@@ -3717,6 +3660,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.6607</Length>
 					</NetworkEdge>
@@ -3726,6 +3670,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>4.92884</Length>
 					</NetworkEdge>
@@ -3735,6 +3680,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>39.2977</Length>
 					</NetworkEdge>
@@ -3744,6 +3690,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>18.6085</Length>
 					</NetworkEdge>
@@ -3753,6 +3700,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>38.3208</Length>
 					</NetworkEdge>
@@ -3762,6 +3710,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>1.91176</Length>
 					</NetworkEdge>
@@ -3771,6 +3720,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>13.8468</Length>
 					</NetworkEdge>
@@ -3780,6 +3730,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>5.02216</Length>
 					</NetworkEdge>
@@ -3789,6 +3740,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>9.16315</Length>
 					</NetworkEdge>
@@ -3798,6 +3750,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>0.186339</Length>
 					</NetworkEdge>
@@ -3807,6 +3760,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.3115</Length>
 					</NetworkEdge>
@@ -3816,6 +3770,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>24.43</Length>
 					</NetworkEdge>
@@ -3825,6 +3780,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>15.4814</Length>
 					</NetworkEdge>
@@ -3834,6 +3790,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>1.08104</Length>
 					</NetworkEdge>
@@ -3843,6 +3800,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>26.7524</Length>
 					</NetworkEdge>
@@ -3852,6 +3810,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>14.481</Length>
 					</NetworkEdge>
@@ -3861,6 +3820,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>20.5552</Length>
 					</NetworkEdge>
@@ -3870,6 +3830,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>24.755</Length>
 					</NetworkEdge>
@@ -3879,6 +3840,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>23.2547</Length>
 					</NetworkEdge>
@@ -3888,6 +3850,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>19.1416</Length>
 					</NetworkEdge>
@@ -3897,6 +3860,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>8.7067</Length>
 					</NetworkEdge>
@@ -3906,6 +3870,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>19.4805</Length>
 					</NetworkEdge>
@@ -3915,6 +3880,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>15.1417</Length>
 					</NetworkEdge>
@@ -3924,6 +3890,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>2.58255</Length>
 					</NetworkEdge>
@@ -3933,6 +3900,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.0037</Length>
 					</NetworkEdge>
@@ -3942,6 +3910,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>3.15373</Length>
 					</NetworkEdge>
@@ -3951,6 +3920,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.5582</Length>
 					</NetworkEdge>
@@ -3960,6 +3930,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>4.7969</Length>
 					</NetworkEdge>
@@ -3969,6 +3940,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.8306</Length>
 					</NetworkEdge>
@@ -3978,6 +3950,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.408</Length>
 					</NetworkEdge>
@@ -3987,6 +3960,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.6921</Length>
 					</NetworkEdge>
@@ -3996,6 +3970,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>14.9261</Length>
 					</NetworkEdge>
@@ -4005,6 +3980,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>14.3705</Length>
 					</NetworkEdge>
@@ -4014,6 +3990,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>0.78222</Length>
 					</NetworkEdge>
@@ -4023,6 +4000,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>14.9871</Length>
 					</NetworkEdge>
@@ -4032,6 +4010,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>16.2559</Length>
 					</NetworkEdge>
@@ -4041,6 +4020,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.614</Length>
 					</NetworkEdge>
@@ -4050,6 +4030,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>13.3505</Length>
 					</NetworkEdge>
@@ -4059,6 +4040,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.122</Length>
 					</NetworkEdge>
@@ -4068,6 +4050,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>16.3405</Length>
 					</NetworkEdge>
@@ -4077,6 +4060,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>14.8495</Length>
 					</NetworkEdge>
@@ -4086,6 +4070,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>4.01516</Length>
 					</NetworkEdge>
@@ -4095,6 +4080,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>13.3508</Length>
 					</NetworkEdge>
@@ -4104,6 +4090,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>1.82405</Length>
 					</NetworkEdge>
@@ -4113,6 +4100,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>34.5307</Length>
 					</NetworkEdge>
@@ -4122,6 +4110,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>5.35065</Length>
 					</NetworkEdge>
@@ -4131,6 +4120,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>42.8071</Length>
 					</NetworkEdge>
@@ -4140,6 +4130,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>2.70098</Length>
 					</NetworkEdge>
@@ -4149,6 +4140,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.8507</Length>
 					</NetworkEdge>
@@ -4158,6 +4150,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>8.74156</Length>
 					</NetworkEdge>
@@ -4167,6 +4160,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.6987</Length>
 					</NetworkEdge>
@@ -4176,6 +4170,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>2.08011</Length>
 					</NetworkEdge>
@@ -4185,6 +4180,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>42.5876</Length>
 					</NetworkEdge>
@@ -4194,6 +4190,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>35.6997</Length>
 					</NetworkEdge>
@@ -4203,6 +4200,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>15.2233</Length>
 					</NetworkEdge>
@@ -4212,6 +4210,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.7894</Length>
 					</NetworkEdge>
@@ -4221,6 +4220,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>19.4861</Length>
 					</NetworkEdge>
@@ -4230,6 +4230,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>9.05482</Length>
 					</NetworkEdge>
@@ -4239,6 +4240,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.2887</Length>
 					</NetworkEdge>
@@ -4248,6 +4250,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>20.2962</Length>
 					</NetworkEdge>
@@ -4257,6 +4260,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>9.51517</Length>
 					</NetworkEdge>
@@ -4266,6 +4270,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>13.5043</Length>
 					</NetworkEdge>
@@ -4275,6 +4280,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.2715</Length>
 					</NetworkEdge>
@@ -4284,6 +4290,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.1373</Length>
 					</NetworkEdge>
@@ -4293,6 +4300,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.0765</Length>
 					</NetworkEdge>
@@ -4302,6 +4310,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>14.5981</Length>
 					</NetworkEdge>
@@ -4311,6 +4320,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.5465</Length>
 					</NetworkEdge>
@@ -4320,6 +4330,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>3.448</Length>
 					</NetworkEdge>
@@ -4329,6 +4340,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.2075</Length>
 					</NetworkEdge>
@@ -4338,6 +4350,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>4.14491</Length>
 					</NetworkEdge>
@@ -4347,6 +4360,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.14</Length>
 					</NetworkEdge>
@@ -4356,6 +4370,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>5.13153</Length>
 					</NetworkEdge>
@@ -4365,6 +4380,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.9148</Length>
 					</NetworkEdge>
@@ -4374,6 +4390,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.3586</Length>
 					</NetworkEdge>
@@ -4383,6 +4400,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>9.72823</Length>
 					</NetworkEdge>
@@ -4392,6 +4410,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.2613</Length>
 					</NetworkEdge>
@@ -4401,6 +4420,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.192</Length>
 					</NetworkEdge>
@@ -4410,6 +4430,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>14.9856</Length>
 					</NetworkEdge>
@@ -4419,6 +4440,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.7897</Length>
 					</NetworkEdge>
@@ -4428,6 +4450,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>16.0469</Length>
 					</NetworkEdge>
@@ -4437,6 +4460,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.7166</Length>
 					</NetworkEdge>
@@ -4446,6 +4470,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>18.5464</Length>
 					</NetworkEdge>
@@ -4455,6 +4480,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>7.59829</Length>
 					</NetworkEdge>
@@ -4464,6 +4490,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>0.483823</Length>
 					</NetworkEdge>
@@ -4473,6 +4500,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.9296</Length>
 					</NetworkEdge>
@@ -4482,6 +4510,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>26.8503</Length>
 					</NetworkEdge>
@@ -4491,6 +4520,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>23.7465</Length>
 					</NetworkEdge>
@@ -4500,6 +4530,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>21.9652</Length>
 					</NetworkEdge>
@@ -4509,6 +4540,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>7.94256</Length>
 					</NetworkEdge>
@@ -4518,6 +4550,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>17.0397</Length>
 					</NetworkEdge>
@@ -4527,6 +4560,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>3.34546</Length>
 					</NetworkEdge>
@@ -4536,6 +4570,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>13.1726</Length>
 					</NetworkEdge>
@@ -4545,6 +4580,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>3.16856</Length>
 					</NetworkEdge>
@@ -4554,6 +4590,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>13.8442</Length>
 					</NetworkEdge>
@@ -4563,6 +4600,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>0.538347</Length>
 					</NetworkEdge>
@@ -4572,6 +4610,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>13.4289</Length>
 					</NetworkEdge>
@@ -4581,6 +4620,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>18.4089</Length>
 					</NetworkEdge>
@@ -4590,6 +4630,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.5652</Length>
 					</NetworkEdge>
@@ -4599,6 +4640,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>14.4482</Length>
 					</NetworkEdge>
@@ -4608,6 +4650,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.5399</Length>
 					</NetworkEdge>
@@ -4617,6 +4660,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.9539</Length>
 					</NetworkEdge>
@@ -4626,6 +4670,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.8373</Length>
 					</NetworkEdge>
@@ -4635,6 +4680,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>2.22961</Length>
 					</NetworkEdge>
@@ -4644,6 +4690,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.2902</Length>
 					</NetworkEdge>
@@ -4653,6 +4700,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.1192</Length>
 					</NetworkEdge>
@@ -4662,6 +4710,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>9.75222</Length>
 					</NetworkEdge>
@@ -4671,6 +4720,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>8.69223</Length>
 					</NetworkEdge>
@@ -4680,6 +4730,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>13.8197</Length>
 					</NetworkEdge>
@@ -4689,6 +4740,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>1.32787</Length>
 					</NetworkEdge>
@@ -4698,6 +4750,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.2985</Length>
 					</NetworkEdge>
@@ -4707,6 +4760,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>2.21896</Length>
 					</NetworkEdge>
@@ -4716,6 +4770,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.147</Length>
 					</NetworkEdge>
@@ -4725,6 +4780,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>0.614459</Length>
 					</NetworkEdge>
@@ -4734,6 +4790,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>9.71902</Length>
 					</NetworkEdge>
@@ -4743,6 +4800,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>17.1694</Length>
 					</NetworkEdge>
@@ -4752,6 +4810,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>24.8215</Length>
 					</NetworkEdge>
@@ -4761,6 +4820,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>24.3378</Length>
 					</NetworkEdge>
@@ -4770,6 +4830,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>20.9902</Length>
 					</NetworkEdge>
@@ -4779,6 +4840,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>19.7269</Length>
 					</NetworkEdge>
@@ -4788,6 +4850,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.1174</Length>
 					</NetworkEdge>
@@ -4797,6 +4860,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>14.48</Length>
 					</NetworkEdge>
@@ -4806,6 +4870,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.775</Length>
 					</NetworkEdge>
@@ -4815,6 +4880,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>16.4831</Length>
 					</NetworkEdge>
@@ -4824,6 +4890,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.4787</Length>
 					</NetworkEdge>
@@ -4833,6 +4900,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>13.9064</Length>
 					</NetworkEdge>
@@ -4842,6 +4910,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>13.3559</Length>
 					</NetworkEdge>
@@ -4851,6 +4920,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>8.8127</Length>
 					</NetworkEdge>
@@ -4860,6 +4930,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>8.69327</Length>
 					</NetworkEdge>
@@ -4869,6 +4940,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.6927</Length>
 					</NetworkEdge>
@@ -4878,6 +4950,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>9.80478</Length>
 					</NetworkEdge>
@@ -4887,6 +4960,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>0.4858</Length>
 					</NetworkEdge>
@@ -4896,6 +4970,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.9836</Length>
 					</NetworkEdge>
@@ -4905,6 +4980,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.1342</Length>
 					</NetworkEdge>
@@ -4914,6 +4990,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>16.5363</Length>
 					</NetworkEdge>
@@ -4923,6 +5000,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>8.8783</Length>
 					</NetworkEdge>
@@ -4932,6 +5010,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>3.56297</Length>
 					</NetworkEdge>
@@ -4941,6 +5020,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>8.59407</Length>
 					</NetworkEdge>
@@ -4950,6 +5030,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>22.4345</Length>
 					</NetworkEdge>
@@ -4959,6 +5040,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>7.51905</Length>
 					</NetworkEdge>
@@ -4968,6 +5050,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>18.3466</Length>
 					</NetworkEdge>
@@ -4977,6 +5060,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.5951</Length>
 					</NetworkEdge>
@@ -4986,6 +5070,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>18.8572</Length>
 					</NetworkEdge>
@@ -4995,6 +5080,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>13.094</Length>
 					</NetworkEdge>
@@ -5004,6 +5090,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>9.83314</Length>
 					</NetworkEdge>
@@ -5013,6 +5100,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>14.0867</Length>
 					</NetworkEdge>
@@ -5022,6 +5110,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>9.36921</Length>
 					</NetworkEdge>
@@ -5031,6 +5120,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>16.1766</Length>
 					</NetworkEdge>
@@ -5040,6 +5130,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.9087</Length>
 					</NetworkEdge>
@@ -5049,6 +5140,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.0818</Length>
 					</NetworkEdge>
@@ -5058,6 +5150,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.236</Length>
 					</NetworkEdge>
@@ -5067,6 +5160,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>7.65591</Length>
 					</NetworkEdge>
@@ -5076,6 +5170,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>4.99187</Length>
 					</NetworkEdge>
@@ -5085,6 +5180,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.2111</Length>
 					</NetworkEdge>
@@ -5094,6 +5190,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>18.9744</Length>
 					</NetworkEdge>
@@ -5103,6 +5200,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>9.93866</Length>
 					</NetworkEdge>
@@ -5112,6 +5210,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>16.2235</Length>
 					</NetworkEdge>
@@ -5121,6 +5220,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>8.99275</Length>
 					</NetworkEdge>
@@ -5130,6 +5230,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.1727</Length>
 					</NetworkEdge>
@@ -5139,6 +5240,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>9.49959</Length>
 					</NetworkEdge>
@@ -5148,6 +5250,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>6.26709</Length>
 					</NetworkEdge>
@@ -5157,6 +5260,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>1.79072</Length>
 					</NetworkEdge>
@@ -5166,6 +5270,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>7.5061</Length>
 					</NetworkEdge>
@@ -5175,6 +5280,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.0445</Length>
 					</NetworkEdge>
@@ -5184,6 +5290,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>8.47117</Length>
 					</NetworkEdge>
@@ -5193,6 +5300,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>9.75382</Length>
 					</NetworkEdge>
@@ -5202,6 +5310,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>7.69175</Length>
 					</NetworkEdge>
@@ -5211,6 +5320,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>13.7114</Length>
 					</NetworkEdge>
@@ -5220,6 +5330,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>9.25021</Length>
 					</NetworkEdge>
@@ -5229,6 +5340,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>15.7635</Length>
 					</NetworkEdge>
@@ -5238,6 +5350,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>6.95531</Length>
 					</NetworkEdge>
@@ -5247,6 +5360,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>15.1301</Length>
 					</NetworkEdge>
@@ -5256,6 +5370,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>16.5909</Length>
 					</NetworkEdge>
@@ -5265,6 +5380,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>9.24646</Length>
 					</NetworkEdge>
@@ -5274,6 +5390,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>16.7228</Length>
 					</NetworkEdge>
@@ -5283,6 +5400,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>9.76777</Length>
 					</NetworkEdge>
@@ -5292,6 +5410,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>17.5208</Length>
 					</NetworkEdge>
@@ -5301,6 +5420,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>0.993175</Length>
 					</NetworkEdge>
@@ -5310,6 +5430,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>15.729</Length>
 					</NetworkEdge>
@@ -5319,6 +5440,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>19.297</Length>
 					</NetworkEdge>
@@ -5328,6 +5450,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>15.511</Length>
 					</NetworkEdge>
@@ -5337,6 +5460,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.817</Length>
 					</NetworkEdge>
@@ -5346,6 +5470,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>4.12193</Length>
 					</NetworkEdge>
@@ -5355,6 +5480,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>23.1301</Length>
 					</NetworkEdge>
@@ -5364,6 +5490,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>3.37544</Length>
 					</NetworkEdge>
@@ -5373,6 +5500,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>23.2743</Length>
 					</NetworkEdge>
@@ -5382,6 +5510,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>23.652</Length>
 					</NetworkEdge>
@@ -5391,6 +5520,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>6.63505</Length>
 					</NetworkEdge>
@@ -5400,6 +5530,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>16.2325</Length>
 					</NetworkEdge>
@@ -5409,6 +5540,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>5.18407</Length>
 					</NetworkEdge>
@@ -5418,6 +5550,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>29.0619</Length>
 					</NetworkEdge>
@@ -5427,6 +5560,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>20.7674</Length>
 					</NetworkEdge>
@@ -5436,6 +5570,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>22.9757</Length>
 					</NetworkEdge>
@@ -5445,6 +5580,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>7.82788</Length>
 					</NetworkEdge>
@@ -5454,6 +5590,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>14.7826</Length>
 					</NetworkEdge>
@@ -5463,6 +5600,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>6.81795</Length>
 					</NetworkEdge>
@@ -5472,6 +5610,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>17.8572</Length>
 					</NetworkEdge>
@@ -5481,6 +5620,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>16.5383</Length>
 					</NetworkEdge>
@@ -5490,6 +5630,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>22.8665</Length>
 					</NetworkEdge>
@@ -5499,6 +5640,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>17.8219</Length>
 					</NetworkEdge>
@@ -5508,6 +5650,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>25.6377</Length>
 					</NetworkEdge>
@@ -5517,6 +5660,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>17.2889</Length>
 					</NetworkEdge>
@@ -5526,6 +5670,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>19.3656</Length>
 					</NetworkEdge>
@@ -5535,6 +5680,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.9988</Length>
 					</NetworkEdge>
@@ -5544,6 +5690,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>10.5229</Length>
 					</NetworkEdge>
@@ -5553,6 +5700,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>29.0813</Length>
 					</NetworkEdge>
@@ -5562,6 +5710,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>1.8879</Length>
 					</NetworkEdge>
@@ -5571,6 +5720,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>8.64381</Length>
 					</NetworkEdge>
@@ -5580,6 +5730,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.9121</Length>
 					</NetworkEdge>
@@ -5589,6 +5740,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>14.1009</Length>
 					</NetworkEdge>
@@ -5598,6 +5750,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>6.73712</Length>
 					</NetworkEdge>
@@ -5607,6 +5760,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.1617</Length>
 					</NetworkEdge>
@@ -5616,6 +5770,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>8.35277</Length>
 					</NetworkEdge>
@@ -5625,6 +5780,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>29.1952</Length>
 					</NetworkEdge>
@@ -5634,6 +5790,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>8.35749</Length>
 					</NetworkEdge>
@@ -5643,6 +5800,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>7.5036</Length>
 					</NetworkEdge>
@@ -5652,6 +5810,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>23.317</Length>
 					</NetworkEdge>
@@ -5661,6 +5820,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>7.6981</Length>
 					</NetworkEdge>
@@ -5670,6 +5830,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>2.13947</Length>
 					</NetworkEdge>
@@ -5679,6 +5840,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>31.0604</Length>
 					</NetworkEdge>
@@ -5688,6 +5850,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>18.6331</Length>
 					</NetworkEdge>
@@ -5697,6 +5860,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>22.5943</Length>
 					</NetworkEdge>
@@ -5706,6 +5870,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>16.6337</Length>
 					</NetworkEdge>
@@ -5715,6 +5880,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>8.57315</Length>
 					</NetworkEdge>
@@ -5724,6 +5890,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>20.2388</Length>
 					</NetworkEdge>
@@ -5733,6 +5900,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>0.550006</Length>
 					</NetworkEdge>
@@ -5742,6 +5910,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>18.8575</Length>
 					</NetworkEdge>
@@ -5751,6 +5920,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>25.6751</Length>
 					</NetworkEdge>
@@ -5760,6 +5930,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>15.3122</Length>
 					</NetworkEdge>
@@ -5769,6 +5940,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>28.3439</Length>
 					</NetworkEdge>
@@ -5778,6 +5950,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>14.0025</Length>
 					</NetworkEdge>
@@ -5787,6 +5960,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>15.9517</Length>
 					</NetworkEdge>
@@ -5796,6 +5970,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.995</Length>
 					</NetworkEdge>
@@ -5805,6 +5980,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>26.8013</Length>
 					</NetworkEdge>
@@ -5814,6 +5990,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>12.0746</Length>
 					</NetworkEdge>
@@ -5823,6 +6000,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>11.1622</Length>
 					</NetworkEdge>
@@ -5832,6 +6010,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>23.7007</Length>
 					</NetworkEdge>
@@ -5841,6 +6020,7 @@
 						<NetworkHeatExchange>
 							<ModelType>TemperatureConstant</ModelType>
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>17.9826</Length>
 					</NetworkEdge>

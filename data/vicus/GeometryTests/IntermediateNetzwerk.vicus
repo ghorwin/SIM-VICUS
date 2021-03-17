@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Do Dez 10 12:42:13 2020</Created>
-		<LastEdited>Do Mrz 4 11:13:06 2021</LastEdited>
+		<LastEdited>Mi Mrz 17 11:06:22 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -17,12 +17,12 @@
 		<ViewSettings>
 			<GridSpacing>100</GridSpacing>
 			<GridWidth>500</GridWidth>
-			<CameraTranslation>-103.2 -210.957 260.324</CameraTranslation>
+			<CameraTranslation>-97.377 -220.731 260.653</CameraTranslation>
 			<RotationMatrix>
-				<Wp>-0.786834</Wp>
-				<X>-0.459164</X>
-				<Y>0.20777</Y>
-				<Z>0.356129</Z>
+				<Wp>-0.79295</Wp>
+				<X>-0.462712</X>
+				<Y>0.199745</Y>
+				<Z>0.342294</Z>
 			</RotationMatrix>
 			<FarDistance>1700</FarDistance>
 		</ViewSettings>
@@ -37,9 +37,6 @@
 						<Position>200 -70 0</Position>
 						<NetworkHeatExchange>
 							<ModelType>HeatLossSpline</ModelType>
-							<LinearSplineParameter name="HeatExchangeSpline" interpolationMethod="linear">
-								<TSVFile>C:/Daten/git/SIMVICUS/data/tests/NetworkStaticFlow/0_climate/HeatFlux.csv</TSVFile>
-							</LinearSplineParameter>
 						</NetworkHeatExchange>
 					</NetworkNode>
 					<NetworkNode id="2" type="Building" maxHeatingDemand="10000" componentId="100004" displayName="EFH1">
@@ -76,58 +73,64 @@
 				<Edges>
 					<NetworkEdge supply="1" displayName="leitung1" nodeId1="0" nodeId2="3">
 						<PipeId>9</PipeId>
-						<ComponentId>100001</ComponentId>
+						<ComponentId>10020001</ComponentId>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="AmbientTemperature" unit="C">10</IBK:Parameter>
+							<ModelType>TemperatureConstant</ModelType>
+							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>40</Length>
 					</NetworkEdge>
 					<NetworkEdge supply="1" displayName="leitung2" nodeId1="3" nodeId2="1">
 						<PipeId>5</PipeId>
-						<ComponentId>100001</ComponentId>
+						<ComponentId>10020001</ComponentId>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="AmbientTemperature" unit="C">10</IBK:Parameter>
+							<ModelType>TemperatureConstant</ModelType>
+							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>40</Length>
 					</NetworkEdge>
 					<NetworkEdge supply="1" displayName="leitung3" nodeId1="3" nodeId2="2">
 						<PipeId>5</PipeId>
-						<ComponentId>100001</ComponentId>
+						<ComponentId>10020001</ComponentId>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="AmbientTemperature" unit="C">10</IBK:Parameter>
+							<ModelType>TemperatureConstant</ModelType>
+							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>40</Length>
 					</NetworkEdge>
 					<NetworkEdge supply="1" displayName="leitung3" nodeId1="3" nodeId2="4">
 						<PipeId>5</PipeId>
-						<ComponentId>100001</ComponentId>
+						<ComponentId>10020001</ComponentId>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="AmbientTemperature" unit="C">10</IBK:Parameter>
+							<ModelType>TemperatureConstant</ModelType>
+							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>40</Length>
 					</NetworkEdge>
 					<NetworkEdge supply="1" displayName="leitung3" nodeId1="3" nodeId2="5">
 						<PipeId>5</PipeId>
-						<ComponentId>100001</ComponentId>
+						<ComponentId>10020001</ComponentId>
 						<NetworkHeatExchange>
-							<IBK:Parameter name="AmbientTemperature" unit="C">10</IBK:Parameter>
+							<ModelType>TemperatureConstant</ModelType>
+							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 						</NetworkHeatExchange>
 						<Length>40</Length>
 					</NetworkEdge>
 					<NetworkEdge supply="1" displayName="leitung3" nodeId1="5" nodeId2="6">
 						<PipeId>2</PipeId>
 						<ComponentId>100001</ComponentId>
-						<NetworkHeatExchange>
-							<IBK:Parameter name="AmbientTemperature" unit="C">10</IBK:Parameter>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 						<Length>40</Length>
 					</NetworkEdge>
 					<NetworkEdge supply="1" displayName="leitung3" nodeId1="5" nodeId2="7">
 						<PipeId>2</PipeId>
 						<ComponentId>100001</ComponentId>
-						<NetworkHeatExchange>
-							<IBK:Parameter name="AmbientTemperature" unit="C">10</IBK:Parameter>
-						</NetworkHeatExchange>
+						<NetworkHeatExchange />
 						<Length>40</Length>
 					</NetworkEdge>
 				</Edges>

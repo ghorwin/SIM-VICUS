@@ -90,6 +90,8 @@ private slots:
 
 	void on_comboBoxHeatExchangeType_activated(int index);
 
+	void on_lineEditHXTransferCoefficient_editingFinished();
+
 private:
 	/*! This function is called whenever the current selection of edges/nodes/objects has changed.
 		This can be due to user interaction with the scene, or because objects were added/deleted or
@@ -113,7 +115,7 @@ private:
 
 	void updateNetworkProperties();
 
-	void updateHeatExchangeWidgets(const VICUS::NetworkHeatExchange &hx);
+	void updateHeatExchangeWidgets();
 
 	void modifyStatus();
 
@@ -133,7 +135,7 @@ private:
 
 	QString smallestDiameter() const;
 
-	void modifyHeatExchangeProperties(const VICUS::NetworkHeatExchange & hx);
+	void modifyHeatExchangeProperties();
 
 	/*! modifies the given property of selected edge(s).
 	 * Encapsulates the process of retrieving the according edge and conducting the undo */

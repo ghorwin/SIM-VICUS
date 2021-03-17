@@ -483,34 +483,34 @@
       <item row="1" column="1">
        <widget class="QtExt::ValidatingLineEdit" name="lineEditHeatFlux"/>
       </item>
-      <item row="3" column="0">
+      <item row="4" column="0">
        <widget class="QLabel" name="labelDataFile">
         <property name="text">
          <string>Data file</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="4" column="1">
        <widget class="QtExt::BrowseFilenameWidget" name="widgetBrowseFileNameTSVFile" native="true"/>
       </item>
-      <item row="4" column="0">
+      <item row="5" column="0">
        <widget class="QLabel" name="labelFMUFile">
         <property name="text">
          <string>FMU file</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
+      <item row="5" column="1">
        <widget class="QtExt::BrowseFilenameWidget" name="widgetBrowseFileNameFMU" native="true"/>
       </item>
-      <item row="5" column="0">
+      <item row="6" column="0">
        <widget class="QLabel" name="labelZoneId">
         <property name="text">
          <string>Zone Id</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
+      <item row="6" column="1">
        <widget class="QComboBox" name="comboBoxZoneId"/>
       </item>
       <item row="2" column="0">
@@ -525,6 +525,16 @@
       </item>
       <item row="0" column="0" colspan="2">
        <widget class="QComboBox" name="comboBoxHeatExchangeType"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="labelHXTransferCoefficient">
+        <property name="text">
+         <string>External heat transfer coefficient [W/m²K]</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditHXTransferCoefficient"/>
       </item>
      </layout>
     </widget>
