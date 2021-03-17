@@ -20,4 +20,17 @@ void NetworkFluid::defaultFluidWater(unsigned int id){
 
 }
 
+bool NetworkFluid::isValid() const
+{
+	if (! (m_para[P_Density].value > 0 && m_para[P_Conductivity].value > 0 && m_para[P_HeatCapacity].value > 0))
+		return false;
+//	try {
+//		m_kinematicViscosity.checkAndInitialize("KinematicViscosity", IBK::Unit("C"), IBK::Unit("m2/s"), IBK::Unit("m2/s"),
+//												std::numeric_limits<double>::lowest(), true,
+//												std::numeric_limits<double>::max(), true, nullptr);
+//	} catch (IBK::Exception &ex) {
+//		return false;
+//	}
+}
+
 } // namespace VICUS

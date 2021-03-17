@@ -30,6 +30,8 @@ public:
 
 	void defaultFluidWater(unsigned int id);
 
+	bool isValid() const;
+
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 

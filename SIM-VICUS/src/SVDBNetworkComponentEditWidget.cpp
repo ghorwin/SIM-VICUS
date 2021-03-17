@@ -165,7 +165,8 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	bool isEditable = !comp->m_builtIn;
 	m_ui->lineEditName->setReadOnly(!isEditable);
 	m_ui->pushButtonComponentColor->setReadOnly(!isEditable);
-	m_ui->comboBoxComponentType->setEnabled(isEditable);
+	m_ui->comboBoxComponentType->setEnabled(!isEditable);
+	m_ui->tableWidgetParameters->setEnabled(!isEditable);
 
 }
 

@@ -18,6 +18,7 @@
 #include "SVDialogSelectNetworkPipes.h"
 #include "SVMainWindow.h"
 #include "SVDatabaseEditDialog.h"
+#include "SVDBNetworkFluidEditWidget.h"
 
 
 SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
@@ -998,4 +999,21 @@ void SVPropNetworkEditWidget::modifyNodeProperty(TNodeProp property, const Tval 
 	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
 	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
 	undo->push(); // modifies project and updates views
+}
+
+
+void SVPropNetworkEditWidget::on_pushButtonSelectFluid_clicked()
+{
+	unsigned int currentId  = m_currentConstNetwork->m_fluidID;
+	SVDatabaseEditDialog *dialog = SVMainWindow::instance().dbFluidEditDialog();
+	unsigned int newId = dialog->select(currentId);
+	if (newId > 0){
+		if (!setNetwork())
+			return;
+		m_currentNetwork.m_fluidID = newId;
+		m_currentNetwork.updateNodeEdgeConnectionPointers();
+		unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
+		SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
+		undo->push(); // modifies project and updates views
+	}
 }

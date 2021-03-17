@@ -87,178 +87,174 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <widget class="QGroupBox" name="groupBoxEditNetwork">
-       <property name="title">
-        <string>Edit Network</string>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QPushButton" name="pushButtonGenerateIntersections">
+    <widget class="QGroupBox" name="groupBoxEditNetwork">
+     <property name="title">
+      <string>Edit Network</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QPushButton" name="pushButtonGenerateIntersections">
+        <property name="text">
+         <string>generate intersections</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonConnectBuildings">
+        <property name="text">
+         <string>connect buildings</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonReduceDeadEnds">
+        <property name="text">
+         <string>reduce dead ends</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonReduceRedundantNodes">
+        <property name="text">
+         <string>reduce redundant nodes</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonSimplify">
+        <property name="text">
+         <string>simplify</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonSelectPipes">
+        <property name="text">
+         <string>select pipes...</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonSelectFluid">
+        <property name="text">
+         <string>select fluid...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBoxSizePipes">
+     <property name="title">
+      <string>Size pipe dimensions</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <layout class="QFormLayout" name="formLayout_2">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_8">
           <property name="text">
-           <string>generate intersections</string>
+           <string>Maximum pressure [Pa/m]</string>
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonConnectBuildings">
-          <property name="text">
-           <string>connect buildings</string>
+        <item row="0" column="1">
+         <widget class="QDoubleSpinBox" name="doubleSpinBoxMaximumPressureLoss">
+          <property name="decimals">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <double>100000000.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>10.000000000000000</double>
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonReduceDeadEnds">
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_4">
           <property name="text">
-           <string>reduce dead ends</string>
+           <string>Temperature setpoint [C]</string>
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonReduceRedundantNodes">
-          <property name="text">
-           <string>reduce redundant nodes</string>
+        <item row="1" column="1">
+         <widget class="QDoubleSpinBox" name="doubleSpinBoxTemperatureSetpoint">
+          <property name="decimals">
+           <number>1</number>
+          </property>
+          <property name="minimum">
+           <double>-100.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>100.000000000000000</double>
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonSimplify">
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_5">
           <property name="text">
-           <string>simplify</string>
+           <string>Temperature difference [K]</string>
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonSelectPipes">
-          <property name="text">
-           <string>select pipes...</string>
+        <item row="2" column="1">
+         <widget class="QDoubleSpinBox" name="doubleSpinBoxTemperatureDifference">
+          <property name="decimals">
+           <number>1</number>
           </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonSelectPipes_2">
-          <property name="text">
-           <string>select fluid...</string>
+          <property name="minimum">
+           <double>0.000000000000000</double>
           </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item>
-      <widget class="QGroupBox" name="groupBoxSizePipes">
-       <property name="title">
-        <string>Size pipe dimensions</string>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <layout class="QFormLayout" name="formLayout_2">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_8">
-            <property name="text">
-             <string>Maximum pressure [Pa/m]</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QDoubleSpinBox" name="doubleSpinBoxMaximumPressureLoss">
-            <property name="decimals">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <double>100000000.000000000000000</double>
-            </property>
-            <property name="singleStep">
-             <double>10.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Temperature setpoint [C]</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="doubleSpinBoxTemperatureSetpoint">
-            <property name="decimals">
-             <number>1</number>
-            </property>
-            <property name="minimum">
-             <double>-100.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>100.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Temperature difference [K]</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="doubleSpinBoxTemperatureDifference">
-            <property name="decimals">
-             <number>1</number>
-            </property>
-            <property name="minimum">
-             <double>0.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>100.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QFormLayout" name="formLayout_3">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_10">
-            <property name="text">
-             <string>Smallest pipe diameter</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="labelSmallestDiameter">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_9">
-            <property name="text">
-             <string>Largest pipe diameter</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLabel" name="labelLargestDiameter">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonSizePipeDimensions">
-          <property name="text">
-           <string>size pipes</string>
+          <property name="maximum">
+           <double>100.000000000000000</double>
           </property>
          </widget>
         </item>
        </layout>
-      </widget>
-     </item>
-    </layout>
+      </item>
+      <item>
+       <layout class="QFormLayout" name="formLayout_3">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_10">
+          <property name="text">
+           <string>Smallest pipe diameter</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="labelSmallestDiameter">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>Largest pipe diameter</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLabel" name="labelLargestDiameter">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonSizePipeDimensions">
+        <property name="text">
+         <string>size pipes</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
     <widget class="QGroupBox" name="groupBoxVisualisation">

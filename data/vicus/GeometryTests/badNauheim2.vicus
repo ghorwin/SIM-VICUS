@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Do Dez 10 12:42:13 2020</Created>
-		<LastEdited>Mi Mrz 17 11:36:21 2021</LastEdited>
+		<LastEdited>Mi Mrz 17 19:00:55 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -27,7 +27,7 @@
 			<FarDistance>2500</FarDistance>
 		</ViewSettings>
 		<GeometricNetworks>
-			<Network id="0" fluidID="0" name="Bad Nauheim">
+			<Network id="0" fluidID="10010001" name="Bad Nauheim">
 				<Nodes>
 					<NetworkNode id="0" type="Source" maxHeatingDemand="0" componentId="10020002">
 						<Position>271.954 -400.129 0</Position>

@@ -92,6 +92,8 @@ private slots:
 
 	void on_lineEditHXTransferCoefficient_editingFinished();
 
+	void on_pushButtonSelectFluid_clicked();
+
 private:
 	/*! This function is called whenever the current selection of edges/nodes/objects has changed.
 		This can be due to user interaction with the scene, or because objects were added/deleted or
