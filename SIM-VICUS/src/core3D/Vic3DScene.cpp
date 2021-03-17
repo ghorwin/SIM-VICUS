@@ -545,9 +545,15 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 			pick(pickObject);
 
 		// move forward along camera's forward vector
+#ifdef Q_OS_MAC
+		if (wheelDelta > 2)
+			wheelDelta = 2;
+		if (wheelDelta < -2)
+			wheelDelta = -2;
+#endif
 		double transSpeed = 5.;
 		if (keyboardHandler.keyDown(Qt::Key_Shift))
-			transSpeed = 0.5;
+			transSpeed *= 0.1;
 		if (!pickObject.m_candidates.empty()) {
 			// 2% of translation distance from camera to selected object
 			IBKMK::Vector3D moveDist = 0.05*pickObject.m_candidates.front().m_depth*pickObject.m_lineOfSightDirection;
