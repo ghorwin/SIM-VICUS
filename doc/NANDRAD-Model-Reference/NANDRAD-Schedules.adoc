@@ -146,7 +146,7 @@ Regelmäßige Zeitpläne werden innerhalb des XML-tags `ScheduleGroup` mit einem
 [options="header",cols="15%,65%,^ 10%,^ 10%",width="100%"]
 |====================
 |Name|Beschreibung| Format |Verwendung
-| `objectList` | Verweise auf eine Objektliste mit dem angegebenen Namen | string | _required_
+| `objectList` | Verweise auf eine Objektliste mit dem angegebenen Namen | string | _erforderlich_
 |====================
 
 <<ex_ScheduleGroup>> zeigt eine solche Definition und <<ex_ScheduleGroup_refObjList>> die entsprechende Objektliste.

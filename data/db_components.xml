@@ -42,4 +42,10 @@
 		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 		<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
 	</Component>
+	<Component id="1008" displayName="DE: [SimQuality] Komponente für TF08 |EN: [SimQuality] component for TF08" color="#ac66ff">
+		<Type>OutsideWall</Type>
+		<IdConstruction>1005</IdConstruction>
+		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
+	</Component>
 </Components>
