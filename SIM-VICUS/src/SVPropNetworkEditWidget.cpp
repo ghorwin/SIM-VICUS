@@ -127,6 +127,7 @@ void SVPropNetworkEditWidget::selectionChanged() {
 		m_ui->groupBoxProperties->setEnabled(true);
 		m_ui->groupBoxEditNetwork->setEnabled(true);
 		m_ui->groupBoxVisualisation->setEnabled(true);
+		m_ui->groupBoxSizePipes->setEnabled(true);
 		updateNetworkProperties();
 		updateSizingParams();
 	}
@@ -814,6 +815,13 @@ void SVPropNetworkEditWidget::on_pushButtonGenerateIntersections_clicked()
 		return;
 	m_currentNetwork.updateNodeEdgeConnectionPointers();
 	m_currentNetwork.generateIntersections();
+
+	// set all selected
+	for (VICUS::NetworkNode &node: m_currentNetwork.m_nodes)
+		node.m_selected = true;
+	for (VICUS::NetworkEdge &edge: m_currentNetwork.m_edges)
+		edge.m_selected = true;
+
 	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
 	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
 	undo->push(); // modifies project and updates views
@@ -826,6 +834,13 @@ void SVPropNetworkEditWidget::on_pushButtonConnectBuildings_clicked()
 		return;
 	m_currentNetwork.updateNodeEdgeConnectionPointers();
 	m_currentNetwork.connectBuildings(false);
+
+	// set all selected
+	for (VICUS::NetworkNode &node: m_currentNetwork.m_nodes)
+		node.m_selected = true;
+	for (VICUS::NetworkEdge &edge: m_currentNetwork.m_edges)
+		edge.m_selected = true;
+
 	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
 	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
 	undo->push(); // modifies project and updates views
@@ -839,6 +854,13 @@ void SVPropNetworkEditWidget::on_pushButtonReduceDeadEnds_clicked()
 	VICUS::Network newNetwork = m_currentNetwork.copyWithBaseParameters(); // makes a copy without edges, nodes
 	m_currentNetwork.updateNodeEdgeConnectionPointers();
 	m_currentNetwork.cleanDeadEnds(newNetwork);
+
+	// set all selected
+	for (VICUS::NetworkNode &node: m_currentNetwork.m_nodes)
+		node.m_selected = true;
+	for (VICUS::NetworkEdge &edge: m_currentNetwork.m_edges)
+		edge.m_selected = true;
+
 	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
 	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, newNetwork);
 	undo->push(); // modifies project and updates views
@@ -865,6 +887,12 @@ void SVPropNetworkEditWidget::on_pushButtonReduceRedundantNodes_clicked()
 	const VICUS::Project & p = project();
 	newNetwork.m_id = p.uniqueId(p.m_geometricNetworks);
 	newNetwork.updateNodeEdgeConnectionPointers();
+
+	// set all selected
+	for (VICUS::NetworkNode &node: newNetwork.m_nodes)
+		node.m_selected = true;
+	for (VICUS::NetworkEdge &edge: newNetwork.m_edges)
+		edge.m_selected = true;
 
 	SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("modified network"), newNetwork);
 	undo->push(); // modifies project and updates views

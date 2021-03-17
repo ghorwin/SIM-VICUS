@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>616</width>
-    <height>1060</height>
+    <height>1088</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -455,7 +455,7 @@
        <widget class="QPushButton" name="pushButtonEditComponents">
         <property name="maximumSize">
          <size>
-          <width>16777215</width>
+          <width>100</width>
           <height>16777215</height>
          </size>
         </property>

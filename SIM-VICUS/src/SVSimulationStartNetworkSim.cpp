@@ -338,6 +338,12 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 			elem.m_displayName = node.m_displayName;
 		}
 
+		// small hack to get component name in display name
+		const VICUS::NetworkComponent *comp = db.m_networkComponents[elem.m_componentId];
+		Q_ASSERT(comp!=nullptr);
+		elem.m_displayName = IBK::FormatString("%1_%2 %3").arg(comp->m_displayName.string()).arg(elem.m_id).arg(elem.m_displayName).str();
+
+
 		// transform heatExchange properties
 		elem.m_heatExchange = node.m_heatExchange.toNandradHeatExchange();
 
@@ -368,6 +374,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 
 		// check if the component has a model type which corresponds to a pipe
 		const VICUS::NetworkComponent *comp = db.m_networkComponents[edge->m_componentId];
+		Q_ASSERT(comp!=nullptr);
 		if ( ! (comp->m_modelType == VICUS::NetworkComponent ::MT_SimplePipe ||
 				comp->m_modelType == VICUS::NetworkComponent ::MT_DynamicPipe) )
 			throw IBK::Exception(IBK::FormatString("Component of edge %1->%2 does not represent a pipe")
@@ -389,6 +396,11 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 													edge->length());
 		inletPipe.m_displayName = edge->m_displayName;
 		inletPipe.m_heatExchange = edge->m_heatExchange.toNandradHeatExchange();
+
+		// small hack to get component name in display name
+		inletPipe.m_displayName = IBK::FormatString("%1_%2 %3").arg(comp->m_displayName.string())
+									.arg(inletPipe.m_id).arg(inletPipe.m_displayName).str();
+
 		nandradNetwork.m_elements.push_back(inletPipe);
 
 		// add outlet pipe element
@@ -400,6 +412,11 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 													edge->length());
 		outletPipe.m_displayName = edge->m_displayName;
 		outletPipe.m_heatExchange = edge->m_heatExchange.toNandradHeatExchange();
+
+		// small hack to get component name in display name
+		outletPipe.m_displayName = IBK::FormatString("%1_%2 %3").arg(comp->m_displayName.string())
+									.arg(outletPipe.m_id).arg(outletPipe.m_displayName).str();
+
 		nandradNetwork.m_elements.push_back(outletPipe);
 
 	}
