@@ -52,7 +52,7 @@ void updateColors(const VICUS::PlaneGeometry & g, const QColor & c,
 void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const QColor & c, double radius,
 				 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 				 std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
-				 std::vector<GLuint> & indexBufferData);
+				 std::vector<GLuint> & indexBufferData, bool closed = false);
 
 /*! Same as addCylinder, but only adds coordinates (no normals, no color buffer).
 	Also, the index buffer contains indexes to be drawn with GL_TRIANGLES, whereas the other addCylinder function

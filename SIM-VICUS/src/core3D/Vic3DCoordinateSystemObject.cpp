@@ -217,30 +217,33 @@ void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 #endif
 
+	// rotation indicators
+
 	m_objectStartIndexes[ELEMENT_ROTATION_INDICATOR_INDEX_X] = currentElementIndex;
-	addSphere(IBKMK::Vector3D(2,0,0), QColor(Qt::red), 0.3*sizeFactor, currentVertexIndex, currentElementIndex,
+	addSphere(IBKMK::Vector3D(2,0,0), QColor(Qt::red), 0.15*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 
 	m_objectStartIndexes[ELEMENT_ROTATION_INDICATOR_INDEX_Y] = currentElementIndex;
-	addSphere(IBKMK::Vector3D(0,2,0), QColor(0,196,0), 0.3*sizeFactor, currentVertexIndex, currentElementIndex,
+	addSphere(IBKMK::Vector3D(0,2,0), QColor(0,196,0), 0.15*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 
 	m_objectStartIndexes[ELEMENT_ROTATION_INDICATOR_INDEX_Z] = currentElementIndex;
-	addSphere(IBKMK::Vector3D(0,0,2), QColor(32,32,255), 0.3*sizeFactor, currentVertexIndex, currentElementIndex,
+	addSphere(IBKMK::Vector3D(0,0,2), QColor(32,32,255), 0.15*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+
+	// scale indicators
 
 	m_objectStartIndexes[ELEMENT_SCALE_INDICATOR_INDEX_X] = currentElementIndex;
-	m_objectStartIndexes[ELEMENT_SCALE_INDICATOR_INDEX_Y] = currentElementIndex;
-	m_objectStartIndexes[ELEMENT_SCALE_INDICATOR_INDEX_Z] = currentElementIndex;
+	addCylinder(IBKMK::Vector3D(2,0,0), IBKMK::Vector3D(2.3,0,0), QColor(Qt::red), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData, true);
 
-#if 0
-	addCylinder(IBKMK::Vector3D(2,0,0), QColor(Qt::red), 0.3*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-	addCylinder(IBKMK::Vector3D(0,2,0), QColor(0,196,0), 0.3*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-	addCylinder(IBKMK::Vector3D(0,0,2), QColor(32,32,255), 0.3*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-#endif
+	m_objectStartIndexes[ELEMENT_SCALE_INDICATOR_INDEX_Y] = currentElementIndex;
+	addCylinder(IBKMK::Vector3D(0,2,0), IBKMK::Vector3D(0,2.3,0), QColor(0,196,0), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData, true);
+
+	m_objectStartIndexes[ELEMENT_SCALE_INDICATOR_INDEX_Z] = currentElementIndex;
+	addCylinder(IBKMK::Vector3D(0,0,2), IBKMK::Vector3D(0,0,2.3), QColor(32,32,255), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData, true);
 
 	// the last index is just needed to know until which element index we need to draw
 	m_objectStartIndexes[ELEMENT_OPAQUE_END_INDEX] = currentElementIndex;
@@ -367,13 +370,23 @@ void CoordinateSystemObject::renderOpaque() {
 	switch (m_geometryTransformMode) {
 		case TM_None :			DRAW_ELEMENT(ELEMENT_AXES_SPHERE_INDEX); break;
 
-		case TM_RotateX :		DRAW_ELEMENT(ELEMENT_ROTATION_INDICATOR_INDEX_X); break;
-		case TM_RotateY :		DRAW_ELEMENT(ELEMENT_ROTATION_INDICATOR_INDEX_Y); break;
-		case TM_RotateZ :		DRAW_ELEMENT(ELEMENT_ROTATION_INDICATOR_INDEX_Z); break;
+		case TM_RotateX		:		DRAW_ELEMENT(ELEMENT_ROTATION_INDICATOR_INDEX_X); break;
+		case TM_RotateY		:		DRAW_ELEMENT(ELEMENT_ROTATION_INDICATOR_INDEX_Y); break;
+		case TM_RotateZ		:		DRAW_ELEMENT(ELEMENT_ROTATION_INDICATOR_INDEX_Z); break;
+		case TM_RotateMask	:
+			DRAW_ELEMENT(ELEMENT_ROTATION_INDICATOR_INDEX_X);
+			DRAW_ELEMENT(ELEMENT_ROTATION_INDICATOR_INDEX_Y);
+			DRAW_ELEMENT(ELEMENT_ROTATION_INDICATOR_INDEX_Z);
+		break;
 
 		case TM_ScaleX :		DRAW_ELEMENT(ELEMENT_SCALE_INDICATOR_INDEX_X); break;
 		case TM_ScaleY :		DRAW_ELEMENT(ELEMENT_SCALE_INDICATOR_INDEX_Y); break;
 		case TM_ScaleZ :		DRAW_ELEMENT(ELEMENT_SCALE_INDICATOR_INDEX_Z); break;
+		case TM_ScaleMask :
+			DRAW_ELEMENT(ELEMENT_SCALE_INDICATOR_INDEX_X);
+			DRAW_ELEMENT(ELEMENT_SCALE_INDICATOR_INDEX_Y);
+			DRAW_ELEMENT(ELEMENT_SCALE_INDICATOR_INDEX_Z);
+		break;
 
 		case TM_Translate :
 			DRAW_ELEMENT(ELEMENT_CENTER_SPHERE_TRANSLATION_INDEX);

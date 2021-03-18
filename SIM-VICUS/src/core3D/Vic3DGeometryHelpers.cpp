@@ -220,7 +220,7 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const Q
 				 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 				 std::vector<Vertex> & vertexBufferData,
 				 std::vector<ColorRGBA> & colorBufferData,
-				 std::vector<GLuint> & indexBufferData)
+				 std::vector<GLuint> & indexBufferData, bool closed)
 {
 	// we generate vertices for a cylinder starting at 0,0,0 and extending to 1,0,0 (x-axis is the rotation axis)
 
@@ -276,6 +276,78 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const Q
 	indexBufferData[currentElementIndex++] = vertexIndexStart;
 	indexBufferData[currentElementIndex++] = vertexIndexStart+1;
 	indexBufferData[currentElementIndex++] = STRIP_STOP_INDEX; // set stop index
+
+	// if a closed cylinder is expected, add the front and back facing plates
+	if (closed) {
+		// we need 2*nSeg more vertexes + 2 for the centers, because the normal vectors point in different direction
+		vertexBufferData.resize(vertexBufferData.size() + 2*nSeg + 2);
+		colorBufferData.resize(colorBufferData.size() + 2*nSeg + 2);
+		vertexIndexStart = currentVertexIndex;
+
+		// front facing plate
+		vertexBufferData[currentVertexIndex].m_coords = rot.rotatedVector(QVector3D(0, 0, 0)) + trans;
+		vertexBufferData[currentVertexIndex].m_normal = rot.rotatedVector(QVector3D(-1, 0, 0)) + trans;
+		colorBufferData[currentVertexIndex] = c;
+
+		++currentVertexIndex;
+		for (unsigned int i=0; i<nSeg; ++i, ++currentVertexIndex) {
+			double angle = -2*PI_CONST*i/nSeg;
+			double ny = std::cos(angle);
+			double y = ny*radius;
+			double nz = std::sin(angle);
+			double z = nz*radius;
+			vertexBufferData[currentVertexIndex].m_coords = rot.rotatedVector(QVector3D(0, y, z)) + trans;
+			vertexBufferData[currentVertexIndex].m_normal = rot.rotatedVector(QVector3D(-1, 0, 0)) + trans;
+			colorBufferData[currentVertexIndex] = c;
+		}
+
+		// rear facing plate
+		vertexBufferData[currentVertexIndex].m_coords = rot.rotatedVector(QVector3D(L, 0, 0)) + trans;
+		vertexBufferData[currentVertexIndex].m_normal = rot.rotatedVector(QVector3D(1, 0, 0)) + trans;
+		colorBufferData[currentVertexIndex] = c;
+
+		++currentVertexIndex;
+		for (unsigned int i=0; i<nSeg; ++i, ++currentVertexIndex) {
+			double angle = 2*PI_CONST*i/nSeg; // mind different rotation direction than for front-facing plate
+			double ny = std::cos(angle);
+			double y = ny*radius;
+			double nz = std::sin(angle);
+			double z = nz*radius;
+			vertexBufferData[currentVertexIndex].m_coords = rot.rotatedVector(QVector3D(L, y, z)) + trans;
+			vertexBufferData[currentVertexIndex].m_normal = rot.rotatedVector(QVector3D(1, 0, 0)) + trans;
+			colorBufferData[currentVertexIndex] = c;
+		}
+
+		// also more indexes, since we render with triangle strips, and we have nSeg Vertexes, that makes
+		// 2*(nSeg+1) indexes plus one stop index and that 2 times for either side of the cylinder
+		indexBufferData.resize(indexBufferData.size() + 2*(3*nSeg + 2));
+
+		// generate the sequence 0 1 2   0 2 3   0 3 4   0 4 1    0 stop
+		for (unsigned int i=0; i<nSeg; ++i, currentElementIndex +=3) {
+
+			indexBufferData[currentElementIndex  ] = vertexIndexStart; // 0
+			indexBufferData[currentElementIndex+1] = vertexIndexStart + 1 + i; // 1
+			indexBufferData[currentElementIndex+2] = vertexIndexStart + 1 + (1 + i) % nSeg; // 2
+		}
+
+		indexBufferData[currentElementIndex++] = vertexIndexStart; // 0
+		indexBufferData[currentElementIndex++] = STRIP_STOP_INDEX; // stop index
+
+		vertexIndexStart += nSeg + 1;
+		// generate the sequence 0 1 2   0 2 3   0 3 4   0 4 1    0 stop
+		for (unsigned int i=0; i<nSeg; ++i, currentElementIndex +=3) {
+
+			indexBufferData[currentElementIndex  ] = vertexIndexStart; // 0
+			indexBufferData[currentElementIndex+1] = vertexIndexStart + 1 + i; // 1
+			indexBufferData[currentElementIndex+2] = vertexIndexStart + 1 + (1 + i) % nSeg; // 2
+		}
+
+		indexBufferData[currentElementIndex++] = vertexIndexStart; // 0
+		indexBufferData[currentElementIndex++] = STRIP_STOP_INDEX; // stop index
+
+
+	}
+
 }
 
 

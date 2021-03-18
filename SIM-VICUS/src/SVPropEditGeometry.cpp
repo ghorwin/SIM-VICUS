@@ -479,9 +479,17 @@ void SVPropEditGeometry::updateCoordinateSystemLook() {
 			break;
 
 			case SVPropEditGeometry::MT_Rotate:
+				if (SVViewStateHandler::instance().m_coordinateSystemObject->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_RotateMask) {
+					SVViewStateHandler::instance().m_coordinateSystemObject->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateMask;
+					SVViewStateHandler::instance().m_geometryView->refreshSceneView();
+				}
 			break;
 
 			case SVPropEditGeometry::MT_Scale:
+				if (SVViewStateHandler::instance().m_coordinateSystemObject->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_ScaleMask) {
+					SVViewStateHandler::instance().m_coordinateSystemObject->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_ScaleMask;
+					SVViewStateHandler::instance().m_geometryView->refreshSceneView();
+				}
 			break;
 		}
 	}
