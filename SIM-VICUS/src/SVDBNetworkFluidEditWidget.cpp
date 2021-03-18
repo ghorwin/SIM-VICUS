@@ -20,19 +20,22 @@ SVDBNetworkFluidEditWidget::SVDBNetworkFluidEditWidget(QWidget *parent) :
 	m_ui(new Ui::SVDBNetworkFluidEditWidget)
 {
 	m_ui->setupUi(this);
+	m_ui->verticalLayout->setMargin(0);
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(),THIRD_LANGUAGE, true);
-	m_ui->lineEditName->setDialog3Caption(tr("Component identification name"));
+	m_ui->lineEditName->setDialog3Caption(tr("Fluid identification name"));
 
 	// table widget
 	m_ui->tableWidgetViscosity->setColumnCount(2);
 	m_ui->tableWidgetViscosity->verticalHeader()->setVisible(false);
 	m_ui->tableWidgetViscosity->setHorizontalHeaderItem(0, new QTableWidgetItem("Temperature [C]"));
 	m_ui->tableWidgetViscosity->setHorizontalHeaderItem(1, new QTableWidgetItem("Kinematic Viscosity [m/s²]"));
+
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetViscosity);
+
 	m_ui->tableWidgetViscosity->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
 	m_ui->tableWidgetViscosity->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 
-	SVStyle::formatDatabaseTableView(m_ui->tableWidgetViscosity);
 	m_ui->tableWidgetViscosity->setSortingEnabled(false);
 }
 
