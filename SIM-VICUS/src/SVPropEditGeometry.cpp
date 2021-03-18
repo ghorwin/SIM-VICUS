@@ -62,6 +62,9 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui(new Ui::SVPropEditGeometry)
 {
 	m_ui->setupUi(this);
+	m_ui->verticalLayoutMaster->setMargin(0);
+	m_ui->verticalLayoutPage1->setMargin(0);
+	m_ui->verticalLayoutPage2->setMargin(0);
 
 	SVViewStateHandler::instance().m_propEditGeometryWidget = this;
 
@@ -115,8 +118,19 @@ SVPropEditGeometry::~SVPropEditGeometry() {
 }
 
 
-void SVPropEditGeometry::setCurrentTab(const SVPropEditGeometry::TabState & state) {
-	m_ui->toolBoxGeometry->setCurrentIndex(state);
+void SVPropEditGeometry::setCurrentPage(const SVPropEditGeometry::Operation & op) {
+	switch (op) {
+		case O_AddGeometry :
+			m_ui->pushButtonAdd->setChecked(true);
+			m_ui->pushButtonEdit->setChecked(false);
+			m_ui->stackedWidget->setCurrentIndex(0);
+		break;
+		case O_EditGeometry :
+			m_ui->pushButtonEdit->setChecked(true);
+			m_ui->pushButtonAdd->setChecked(false);
+			m_ui->stackedWidget->setCurrentIndex(1);
+		break;
+	}
 }
 
 
@@ -138,7 +152,7 @@ void SVPropEditGeometry::setRotation(const IBKMK::Vector3D &normal) {
 	// positive y Richtung = Norden = Orientation 0°
 	// positive x Richtung = Osten = Orientation 90°
 
-	double orientation = std::atan2(normal.m_x, ( normal.m_y == 0 ? 1E-8 : normal.m_y ) ) /IBK::DEG2RAD ;
+	double orientation = std::atan2(normal.m_x, ( normal.m_y == 0. ? 1E-8 : normal.m_y ) ) /IBK::DEG2RAD ;
 	m_ui->lineEditOrientation->setText( QString("%L1").arg(orientation < 0 ? ( orientation + 360 ) : orientation, 0, 'f', 3 ) );
 }
 
@@ -161,11 +175,13 @@ void SVPropEditGeometry::onModified(int modificationType, ModificationInfo * ) {
 
 void SVPropEditGeometry::onViewStateChanged() {
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
-	if (vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry)
-		m_ui->pageModify->setEnabled(true);
-	else
-		m_ui->pageModify->setEnabled(false);
-
+	if (vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry) {
+		m_ui->pushButtonEdit->setEnabled(true);
+	}
+	else {
+		setCurrentPage(O_AddGeometry);
+		m_ui->pushButtonEdit->setEnabled(false);
+	}
 }
 
 
@@ -432,12 +448,12 @@ void SVPropEditGeometry::onWheelTurned(double offset, QtExt::ValidatingLineEdit 
 
 void SVPropEditGeometry::initializeCopy() {
 	// initialize the translation vector
-	m_translation = QVector3D ( 0, 0, 0 );
+	m_translation = IBKMK::Vector3D( 0, 0, 0 );
 
 	// we set up the lineEdit fields
-	m_ui->lineEditXCopy->setValue( (double) m_translation.x());
-	m_ui->lineEditYCopy->setValue( (double) m_translation.y());
-	m_ui->lineEditZCopy->setValue( (double) m_translation.z());
+	m_ui->lineEditXCopy->setValue( m_translation.m_x);
+	m_ui->lineEditYCopy->setValue( m_translation.m_y);
+	m_ui->lineEditZCopy->setValue( m_translation.m_z);
 }
 
 
@@ -465,7 +481,6 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event) {
 		{	double delta = 0.1; // for copy operation
 
 			switch (m_modificationType) {
-				case SVPropEditGeometry::NUM_MT	: // just to make compiler happy
 				case MT_Translate				:
 				case MT_Scale					: delta = 0.01; break;
 				case MT_Rotate					: delta = 1; break;
@@ -485,15 +500,15 @@ void SVPropEditGeometry::on_lineEditX_returnPressed() {
 	// check if entered value is valid, if not reset it to its default
 
 	if ( !m_ui->lineEditX->isValid() ) {
-		m_ui->lineEditX->setValue( m_originalValues.x() );
+		m_ui->lineEditX->setValue( m_originalValues.m_x);
 		return;
 	}
 
 	//	double tempXValue = m_ui->lineEditX->value();
 	switch ( m_modificationType ) {
-	case MT_Translate: translate(); break;
-	case MT_Scale: scale(); break;
-	case MT_Rotate: rotate(); break;
+		case MT_Translate: translate(); break;
+		case MT_Scale: scale(); break;
+		case MT_Rotate: rotate(); break;
 	}
 }
 
@@ -501,13 +516,12 @@ void SVPropEditGeometry::on_lineEditY_returnPressed() {
 	// check if entered value is valid, if not reset it to its default
 
 	if ( !m_ui->lineEditY->isValid() ) {
-		m_ui->lineEditY->setValue( m_originalValues.y() );
+		m_ui->lineEditY->setValue( m_originalValues.m_y );
 		return;
 	}
 
 	//	double tempXValue = m_ui->lineEditX->value();
 	switch ( m_modificationType ) {
-		case SVPropEditGeometry::NUM_MT: // just to make compiler happy
 		case MT_Translate: translate(); break;
 		case MT_Scale: scale(); break;
 		case MT_Rotate: rotate(); break;
@@ -518,12 +532,11 @@ void SVPropEditGeometry::on_lineEditZ_returnPressed(){
 	// check if entered value is valid, if not reset it to its default
 
 	if ( !m_ui->lineEditZ->isValid() ) {
-		m_ui->lineEditZ->setValue( (double)m_originalValues.z() );
+		m_ui->lineEditZ->setValue( m_originalValues.m_z );
 		return;
 	}
 
 	switch ( m_modificationType ) {
-		case SVPropEditGeometry::NUM_MT: // just to make compiler happy
 		case MT_Translate: translate(); break;
 		case MT_Scale: scale(); break;
 		case MT_Rotate: rotate(); break;
@@ -555,35 +568,34 @@ void SVPropEditGeometry::updateInputs() {
 		case MT_Translate : {
 			showDeg(false);
 			showRotation(false);
+
 			switch (state) {
+				case MS_Absolute: {
 
-			case MS_Absolute:
+					m_ui->labelX->setText("X");
+					m_ui->labelY->setText("Y");
+					m_ui->labelZ->setText("Z");
 
-				m_ui->labelX->setText("X");
-				m_ui->labelY->setText("Y");
-				m_ui->labelZ->setText("Z");
+					// cache current local coordinate systems position as fall-back values
+					m_originalValues = QtExt::QVector2IBKVector(m_localCoordinatePosition.translation());
 
-				// cache current local coordinate systems position as fall-back values
-				m_originalValues = m_localCoordinatePosition.translation();
+					IBKMK::Vector3D trans(QtExt::QVector2IBKVector(m_localCoordinatePosition.translation()));
+					m_ui->lineEditX->setValue(trans.m_x);
+					m_ui->lineEditY->setValue(trans.m_y);
+					m_ui->lineEditZ->setValue(trans.m_z);
+				} break;
 
-				m_ui->lineEditX->setValue(m_localCoordinatePosition.translation().x() );
-				m_ui->lineEditY->setValue(m_localCoordinatePosition.translation().y() );
-				m_ui->lineEditZ->setValue(m_localCoordinatePosition.translation().z() );
-				break;
+				default:
+					m_ui->labelX->setText("ΔX");
+					m_ui->labelY->setText("ΔY");
+					m_ui->labelZ->setText("ΔZ");
 
-			default:
+					m_originalValues = IBKMK::Vector3D();
 
-				m_ui->labelX->setText("ΔX");
-				m_ui->labelY->setText("ΔY");
-				m_ui->labelZ->setText("ΔZ");
-
-				m_originalValues = QVector3D();
-
-				m_ui->lineEditX->setValue(0);
-				m_ui->lineEditY->setValue(0);
-				m_ui->lineEditZ->setValue(0);
-
-			}
+					m_ui->lineEditX->setValue(0);
+					m_ui->lineEditY->setValue(0);
+					m_ui->lineEditZ->setValue(0);
+			} // switch
 
 		} break;
 
@@ -598,21 +610,20 @@ void SVPropEditGeometry::updateInputs() {
 			m_ui->labelZ->setText("Z");
 
 			switch (state) {
-			case MS_Absolute: {
-				showRotation();
-				showDeg(false);
+				case MS_Absolute: {
+					showRotation();
+					showDeg(false);
 
-				m_ui->lineEditX->setValue(0);
-				m_ui->lineEditY->setValue(0);
-				m_ui->lineEditZ->setValue(0);
-			}
-				break;
+					m_ui->lineEditX->setValue(0);
+					m_ui->lineEditY->setValue(0);
+					m_ui->lineEditZ->setValue(0);
+				}
+					break;
 
-			default:
-				m_ui->lineEditX->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
-				m_ui->lineEditY->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
-				m_ui->lineEditZ->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
-
+				default:
+					m_ui->lineEditX->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
+					m_ui->lineEditY->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
+					m_ui->lineEditZ->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
 			}
 
 		} break;
@@ -624,31 +635,30 @@ void SVPropEditGeometry::updateInputs() {
 			showRotation(false);
 
 			switch (state) {
-			case MS_Absolute: {
+				case MS_Absolute: {
 
-				m_ui->labelX->setText("L<sub>X</sub>");
-				m_ui->labelY->setText("W<sub>Y</sub>");
-				m_ui->labelZ->setText("H<sub>Z</sub>");
+					m_ui->labelX->setText("L<sub>X</sub>");
+					m_ui->labelY->setText("W<sub>Y</sub>");
+					m_ui->labelZ->setText("H<sub>Z</sub>");
 
-				m_originalValues = QtExt::IBKVector2QVector(m_boundingBoxCenter);
+					m_originalValues = m_boundingBoxCenter;
 
-				m_ui->lineEditX->setValue(m_boundingBoxDimension.m_x);
-				m_ui->lineEditY->setValue(m_boundingBoxDimension.m_y);
-				m_ui->lineEditZ->setValue(m_boundingBoxDimension.m_z);
+					m_ui->lineEditX->setValue(m_boundingBoxDimension.m_x);
+					m_ui->lineEditY->setValue(m_boundingBoxDimension.m_y);
+					m_ui->lineEditZ->setValue(m_boundingBoxDimension.m_z);
 
-				break;
-			}
-			default:
-				m_ui->labelX->setText("X");
-				m_ui->labelY->setText("Y");
-				m_ui->labelZ->setText("Z");
+					break;
+				}
+				default:
+					m_ui->labelX->setText("X");
+					m_ui->labelY->setText("Y");
+					m_ui->labelZ->setText("Z");
 
-				m_originalValues = QVector3D( 1,1,1 );
+					m_originalValues = IBKMK::Vector3D( 1,1,1 );
 
-				m_ui->lineEditX->setValue(m_originalValues.x() );
-				m_ui->lineEditY->setValue(m_originalValues.y() );
-				m_ui->lineEditZ->setValue(m_originalValues.z() );
-
+					m_ui->lineEditX->setValue(m_originalValues.m_x );
+					m_ui->lineEditY->setValue(m_originalValues.m_y );
+					m_ui->lineEditZ->setValue(m_originalValues.m_z );
 			}
 		} break;
 	} // switch modification type
@@ -663,40 +673,33 @@ void SVPropEditGeometry::setToolButton(const SVPropEditGeometry::ModificationTyp
 	m_ui->toolButtonScale->setChecked(false);
 
 	switch (type) {
-	case MT_Translate:
-		m_ui->toolButtonTrans->setChecked(true);
-		break;
-	case MT_Rotate:
-		m_ui->toolButtonRotate->setChecked(true);
-		break;
-	case MT_Scale:
-		m_ui->toolButtonScale->setChecked(true);
-		break;
-	case NUM_MT:; // just to make compiler happy
+		case MT_Translate:		m_ui->toolButtonTrans->setChecked(true);			break;
+		case MT_Rotate:			m_ui->toolButtonRotate->setChecked(true);			break;
+		case MT_Scale:			m_ui->toolButtonScale->setChecked(true);			break;
 	}
 }
+
 
 void SVPropEditGeometry::setComboBox(const ModificationType & type, const ModificationState & state) {
 	m_ui->comboBox->blockSignals(true);
 	m_ui->comboBox->clear();
 
 	switch (type) {
-	case MT_Translate:
-		m_ui->comboBox->addItem( tr("move to position:") );
-		m_ui->comboBox->addItem( tr("move relative using global coordinate system:") );
-		m_ui->comboBox->addItem( tr("move relative using local coordinate system:") );
-		break;
-	case MT_Rotate:
-		m_ui->comboBox->addItem( tr("rotate absolute:") );
-		m_ui->comboBox->addItem( tr("rotate relative using global coordinate system:") );
-		m_ui->comboBox->addItem( tr("rotate relative using local coordinate system:") );
-		break;
-	case MT_Scale:
-		m_ui->comboBox->addItem( tr("resize surfaces:") );
-		m_ui->comboBox->addItem( tr("scale relative to global coordinate system:") );
-		m_ui->comboBox->addItem( tr("scale relative to local coordinate system:") );
-		break;
-	case NUM_MT: ;// avoid compiler warning
+		case MT_Translate:
+			m_ui->comboBox->addItem( tr("Move to world coordinates") );
+			m_ui->comboBox->addItem( tr("Relative translation using global coordinate system") );
+			m_ui->comboBox->addItem( tr("Relative translation using local coordinate system") );
+			break;
+		case MT_Rotate:
+			m_ui->comboBox->addItem( tr("Align surface to angles") );
+			m_ui->comboBox->addItem( tr("Relative rotation using global coordinate system") );
+			m_ui->comboBox->addItem( tr("Relative rotation using local coordinate system") );
+			break;
+		case MT_Scale:
+			m_ui->comboBox->addItem( tr("Resize surfaces") );
+			m_ui->comboBox->addItem( tr("Relative scaling using global coordinate system") );
+			m_ui->comboBox->addItem( tr("Relative scaling using local coordinate system") );
+			break;
 	}
 
 	m_ui->comboBox->setCurrentIndex((int)state);
@@ -705,8 +708,8 @@ void SVPropEditGeometry::setComboBox(const ModificationType & type, const Modifi
 	on_comboBox_activated((int)state);
 }
 
-void SVPropEditGeometry::showDeg(const bool & show)
-{
+
+void SVPropEditGeometry::showDeg(const bool & show) {
 	if ( show ) {
 		m_ui->labelXDeg->show();
 		m_ui->labelYDeg->show();
@@ -719,8 +722,8 @@ void SVPropEditGeometry::showDeg(const bool & show)
 	}
 }
 
-void SVPropEditGeometry::showRotation(const bool & abs)
-{
+
+void SVPropEditGeometry::showRotation(const bool & abs) {
 	// we show all that is necessary for absolute Rotation Mode
 	if ( abs ) {
 		m_ui->widgetXYZ->hide();
@@ -732,13 +735,16 @@ void SVPropEditGeometry::showRotation(const bool & abs)
 	}
 }
 
+
 void SVPropEditGeometry::on_toolButtonTrans_clicked() {
 	setState(MT_Translate, m_modificationState[MT_Translate]);
 }
 
+
 void SVPropEditGeometry::on_toolButtonRotate_clicked() {
 	setState(MT_Rotate, m_modificationState[MT_Rotate]);
 }
+
 
 void SVPropEditGeometry::on_toolButtonScale_clicked() {
 	setState(MT_Scale, m_modificationState[MT_Rotate]);
@@ -747,50 +753,56 @@ void SVPropEditGeometry::on_toolButtonScale_clicked() {
 
 void SVPropEditGeometry::on_lineEditOrientation_returnPressed() {
 	if ( !m_ui->lineEditOrientation->isValid() ) {
-		m_ui->lineEditOrientation->setValue( m_originalValues.x() );
+		m_ui->lineEditOrientation->setValue( m_originalValues.m_x );
 		return;
 	}
 
 	rotate();
 }
+
 
 void SVPropEditGeometry::on_lineEditInclination_returnPressed() {
 
 	if ( !m_ui->lineEditInclination->isValid() ) {
-		m_ui->lineEditInclination->setValue( m_originalValues.x() );
+		m_ui->lineEditInclination->setValue( m_originalValues.m_y );
 		return;
 	}
 
 	rotate();
 }
+
 
 void SVPropEditGeometry::on_lineEditOrientation_editingFinished() {
 	on_lineEditOrientation_returnPressed();
 }
 
+
 void SVPropEditGeometry::on_lineEditInclination_editingFinished() {
 	on_lineEditInclination_returnPressed();
 }
 
+
 void SVPropEditGeometry::on_lineEditXCopy_editingFinished() {
 	if ( m_ui->lineEditXCopy->isValid() )
-		m_translation.setX( m_ui->lineEditXCopy->value() );
+		m_translation.m_x = m_ui->lineEditXCopy->value();
 
-	m_ui->lineEditXCopy->setValue(m_translation.x() );
+	m_ui->lineEditXCopy->setValue(m_translation.m_x );
 }
+
 
 void SVPropEditGeometry::on_lineEditYCopy_editingFinished() {
 	if ( m_ui->lineEditYCopy->isValid() )
-		m_translation.setY( m_ui->lineEditYCopy->value() );
+		m_translation.m_y = m_ui->lineEditYCopy->value();
 
-	m_ui->lineEditYCopy->setValue(m_translation.y() );
+	m_ui->lineEditYCopy->setValue(m_translation.m_y );
 }
+
 
 void SVPropEditGeometry::on_lineEditZCopy_editingFinished() {
 	if ( m_ui->lineEditZCopy->isValid() )
-		m_translation.setZ( m_ui->lineEditZCopy->value() );
+		m_translation.m_z = m_ui->lineEditZCopy->value();
 
-	m_ui->lineEditZCopy->setValue(m_translation.z() );
+	m_ui->lineEditZCopy->setValue(m_translation.m_z );
 }
 
 
@@ -805,228 +817,238 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 
 	// compose all transformation values
 	switch (type) {
-	case MT_Translate: {
 
-		// compose translation vector depending on translation mode
-		switch (state) {
-		// Move local coordinate system to given global coordinates.
-		case MS_Absolute : {
-			// for this operation, we need all three coordinates
-			QVector3D targetPos((float)m_ui->lineEditX->value(), (float)m_ui->lineEditY->value(), (float)m_ui->lineEditZ->value());
-			// compute offset from current local coordinate system position
-			QVector3D translation = targetPos - m_localCoordinatePosition.translation();
-			// now compose a transform object and set it in the wireframe object
-			Vic3D::Transform3D trans;
-			trans.setTranslation(translation);
-			SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = trans;
-			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
-			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+		// Translation operation
+		case MT_Translate: {
+
+			// compose translation vector depending on translation mode
+			switch (state) {
+				case MS_Absolute : {
+					// for this operation, we need all three coordinates
+					QVector3D targetPos((float)m_ui->lineEditX->value(), (float)m_ui->lineEditY->value(), (float)m_ui->lineEditZ->value());
+					// compute offset from current local coordinate system position
+					QVector3D translation = targetPos - m_localCoordinatePosition.translation();
+					// now compose a transform object and set it in the wireframe object
+					Vic3D::Transform3D trans;
+					trans.setTranslation(translation);
+					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = trans;
+					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
+					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+				} break;
+
+					// inputs are global coordinate offsets
+				case MS_Relative : {
+					// for this operation, we need all three coordinates
+					QVector3D translation((float)m_ui->lineEditX->value(), (float)m_ui->lineEditY->value(), (float)m_ui->lineEditZ->value());
+					// now compose a transform object and set it in the wireframe object
+					Vic3D::Transform3D trans;
+					trans.setTranslation(translation);
+					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = trans;
+					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
+					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+				} break;
+
+					// inputs are local coordinate offsets
+				case MS_Local : {
+					// for this operation, we need all three coordinates
+					const QVector3D LocalX(1.0f, 0.0f, 0.0f);
+					const QVector3D LocalY(0.0f, 1.0f, 0.0f);
+					const QVector3D LocalZ(0.0f, 0.0f, 1.0f);
+					const QQuaternion& rot = m_localCoordinatePosition.rotation();
+					QVector3D localX = rot.rotatedVector(LocalX);
+					QVector3D localY = rot.rotatedVector(LocalY);
+					QVector3D localZ = rot.rotatedVector(LocalZ);
+					QVector3D translation = localX*(float)m_ui->lineEditX->value()
+											+ localY*(float)m_ui->lineEditY->value()
+											+ localZ*(float)m_ui->lineEditZ->value();
+					// now compose a transform object and set it in the wireframe object
+					Vic3D::Transform3D trans;
+					trans.setTranslation(translation);
+					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = trans;
+					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
+					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+				} break;
+			}
 		} break;
 
-			// inputs are global coordinate offsets
-		case MS_Relative : {
-			// for this operation, we need all three coordinates
-			QVector3D translation((float)m_ui->lineEditX->value(), (float)m_ui->lineEditY->value(), (float)m_ui->lineEditZ->value());
-			// now compose a transform object and set it in the wireframe object
-			Vic3D::Transform3D trans;
-			trans.setTranslation(translation);
-			SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = trans;
-			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
-			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+		// Scale operation
+		case MT_Scale: {
+			switch (state) {
+				case MS_Absolute: {
+					// for this operation, we need at first the dimensions of the bounding box from
+					IBKMK::Vector3D targetScale(m_ui->lineEditX->value(), m_ui->lineEditY->value(), m_ui->lineEditZ->value());
+					// compute offset from current local coordinate system position
+					IBKMK::Vector3D scale;
+
+					scale.m_x = std::fabs(targetScale.m_x ) < 1E-4 ? 0.0 : targetScale.m_x / ( m_boundingBoxDimension.m_x < 1E-4 ? 1.0 : m_boundingBoxDimension.m_x );
+					scale.m_y = std::fabs(targetScale.m_y ) < 1E-4 ? 0.0 : targetScale.m_y / ( m_boundingBoxDimension.m_y < 1E-4 ? 1.0 : m_boundingBoxDimension.m_y );
+					scale.m_z = std::fabs(targetScale.m_z ) < 1E-4 ? 0.0 : targetScale.m_z / ( m_boundingBoxDimension.m_z < 1E-4 ? 1.0 : m_boundingBoxDimension.m_z );
+					// now compose a transform object and set it in the wireframe object
+					// first we scale our selected objects
+					Vic3D::Transform3D scaling;
+					scaling.setScale( QtExt::IBKVector2QVector(scale) );
+
+					// and the we also hav to guarantee that the center point of the bounding box stays at the same position
+					// this can be achieved since the center points are also just scaled by the specified scaling factors
+					// so we know how big the absolute translation has to be
+					IBKMK::Vector3D trans;
+					trans.m_x = m_boundingBoxDimension.m_x < 1E-4 ? 0.0 : m_boundingBoxCenter.m_x * ( 1 - scale.m_x );
+					trans.m_y =m_boundingBoxDimension.m_y < 1E-4 ? 0.0 : m_boundingBoxCenter.m_y * ( 1 - scale.m_y );
+					trans.m_z = m_boundingBoxDimension.m_z < 1E-4 ? 0.0 : m_boundingBoxCenter.m_z * ( 1 - scale.m_z );
+					scaling.setTranslation( QtExt::IBKVector2QVector(trans) );
+
+					// we give our transformation to the wire frame object
+					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = scaling;
+					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow(); // needed right now since two surfaces are shown
+					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+				} break;
+
+				case MS_Local: {
+					// for this operation, we get directly the surface scaling factors from the line edits
+					// so it is basically like the absolute scaling, but we do not have to calculate the scaling factors
+					// compute offset from current local coordinate system position
+					const QVector3D xAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localXAxis();
+					const QVector3D yAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localYAxis();
+					const QVector3D zAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis();
+
+					IBKMK::Vector3D scale(	m_ui->lineEditX->value()*double( xAxis.x()+yAxis.x()+zAxis.x() ),
+											m_ui->lineEditY->value()*double( xAxis.y()+yAxis.y()+zAxis.y() ),
+											m_ui->lineEditZ->value()*double( xAxis.z()+yAxis.z()+zAxis.z() ));
+
+					Vic3D::Transform3D scaling;
+					scaling.setScale( QtExt::IBKVector2QVector(scale) );
+
+					// and the we also hav to guarantee that the center point of the bounding box stays at the same position
+					// this can be achieved since the center points are also just scaled by the specified scaling factors
+					// so we know how big the absolute translation has to be
+					IBKMK::Vector3D trans;
+					trans.m_x = m_boundingBoxDimension.m_x < 1E-4 ? 0.0 : m_boundingBoxCenter.m_x * ( 1 - scale.m_x );
+					trans.m_y = m_boundingBoxDimension.m_y < 1E-4 ? 0.0 : m_boundingBoxCenter.m_y * ( 1 - scale.m_y );
+					trans.m_z = m_boundingBoxDimension.m_z < 1E-4 ? 0.0 : m_boundingBoxCenter.m_z * ( 1 - scale.m_z );
+					scaling.setTranslation( QtExt::IBKVector2QVector(trans) );
+
+					// we give our transformation to the wire frame object
+					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = scaling;
+					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
+					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+				} break;
+
+				case MS_Relative: {
+					// for this operation, we get directly the surface scaling factors from the line edits
+					// so it is basically like the absolute scaling, but we do not have to calculate the scaling factors
+					IBKMK::Vector3D  scale(m_ui->lineEditX->value(), m_ui->lineEditY->value(), m_ui->lineEditZ->value());
+					// compute offset from current local coordinate system position
+					Vic3D::Transform3D scaling;
+					scaling.setScale( QtExt::IBKVector2QVector(scale) );
+
+					// and the we also hav to guarantee that the center point of the bounding box stays at the same position
+					// this can be achieved since the center points are also just scaled by the specified scaling factors
+					// so we know how big the absolute translation has to be
+					IBKMK::Vector3D trans;
+					trans.m_x = m_boundingBoxDimension.m_x < 1E-4 ? 0.0 : m_boundingBoxCenter.m_x * ( 1 - scale.m_x );
+					trans.m_y = m_boundingBoxDimension.m_y < 1E-4 ? 0.0 : m_boundingBoxCenter.m_y * ( 1 - scale.m_y );
+					trans.m_z = m_boundingBoxDimension.m_z < 1E-4 ? 0.0 : m_boundingBoxCenter.m_z * ( 1 - scale.m_z );
+					scaling.setTranslation( QtExt::IBKVector2QVector(trans) );
+
+					// we give our transformation to the wire frame object
+					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = scaling;
+					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
+					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+				} break;
+			}
 		} break;
 
-			// inputs are local coordinate offsets
-		case MS_Local : {
-			// for this operation, we need all three coordinates
-			const QVector3D LocalX(1.0f, 0.0f, 0.0f);
-			const QVector3D LocalY(0.0f, 1.0f, 0.0f);
-			const QVector3D LocalZ(0.0f, 0.0f, 1.0f);
-			const QQuaternion& rot = m_localCoordinatePosition.rotation();
-			QVector3D localX = rot.rotatedVector(LocalX);
-			QVector3D localY = rot.rotatedVector(LocalY);
-			QVector3D localZ = rot.rotatedVector(LocalZ);
-			QVector3D translation = localX*m_ui->lineEditX->value()
-					+ localY*m_ui->lineEditY->value()
-					+ localZ*m_ui->lineEditZ->value();
-			// now compose a transform object and set it in the wireframe object
-			Vic3D::Transform3D trans;
-			trans.setTranslation(translation);
-			SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = trans;
-			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
-			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+		// Rotation operations
+		case MT_Rotate: {
+			switch (state) {
+
+				case MS_Absolute: {
+					// get the rotation angles
+					double oriRad = m_ui->lineEditOrientation->value() * IBK::DEG2RAD;
+					double incliRad = m_ui->lineEditInclination->value() * IBK::DEG2RAD;
+
+					IBKMK::Vector3D newNormal(	std::sin( oriRad ) * std::sin( incliRad ),
+												std::cos( oriRad ) * std::sin( incliRad ),
+												std::cos( incliRad ) );
+
+					// we only want to rotate if the normal vectors are not the same
+					if ( checkVectors<4>( m_normal, newNormal ) )
+						return; // do nothing
+
+					// we find the rotation axis by taking the cross product of the normal vector and the normal vector we want to
+					// rotate to
+					IBKMK::Vector3D rotationAxis ( m_normal.crossProduct(newNormal) );
+
+					Vic3D::Transform3D rota;
+					// we now also have to find the angle between both normals
+					rota.rotate((float)angleBetweenVectorsDeg(m_normal, newNormal), QtExt::IBKVector2QVector(rotationAxis) );
+
+					// we take the QQuarternion to rotate
+					QQuaternion centerRota = rota.rotation();
+					QVector3D newCenter = centerRota.rotatedVector(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+
+					// we also have to find the center point after rotation and translate our center back to its origin
+					rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) - newCenter );
+
+					// we give our tranfsformation to the wire frame object
+					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
+					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
+					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+				} break;
+
+				case MS_Local: {
+					// now compose a transform object and set it in the wireframe object
+					const QVector3D xAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localXAxis();
+					const QVector3D yAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localYAxis();
+					const QVector3D zAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis();
+
+					Vic3D::Transform3D rota;
+					if ( lineEdit == m_ui->lineEditX )
+						rota.setRotation((float)m_ui->lineEditX->value(), xAxis);
+					else if ( lineEdit == m_ui->lineEditY )
+						rota.setRotation((float)m_ui->lineEditY->value(), yAxis);
+					else if ( lineEdit == m_ui->lineEditZ )
+						rota.setRotation((float)m_ui->lineEditZ->value(), zAxis);
+
+					// and the we also hav to guarantee that the center point of the bounding box stays at the same position
+					// this can be achieved since the center points are also just rotated by the specified rotation
+					// so we know how big the absolute translation has to be
+					QQuaternion centerRota = rota.rotation();
+					QVector3D newCenter = centerRota.rotatedVector(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+
+					rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) - newCenter );
+
+					// we give our tranfsformation to the wire frame object
+					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
+					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
+					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+				} break;
+
+				case MS_Relative: {
+					// now compose a transform object and set it in the wireframe object
+					Vic3D::Transform3D rota;
+					if ( lineEdit == m_ui->lineEditX )
+						rota.setRotation((float)m_ui->lineEditX->value(), 1, 0, 0);
+					else if ( lineEdit == m_ui->lineEditY )
+						rota.setRotation((float)m_ui->lineEditY->value(), 0, 1, 0);
+					else if ( lineEdit == m_ui->lineEditZ )
+						rota.setRotation((float)m_ui->lineEditZ->value(), 0, 0, 1);
+
+					// and the we also hav to guarantee that the center point of the bounding box stays at the same position
+					// this can be achieved since the center points are also just rotated by the specified rotation
+					// so we know how big the absolute translation has to be
+					QQuaternion centerRota = rota.rotation();
+					QVector3D newCenter = centerRota.rotatedVector(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+
+					// we also have to find the center point after rotation and translate our center back to its origin
+					rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) - newCenter );
+
+					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
+					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
+					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+				} break;
+			}
 		} break;
-		}
-	} break;
-	case MT_Scale: {
-		switch (state) {
-		case MS_Absolute: {
-			// for this operation, we need at first the dimensions of the bounding box from
-			QVector3D targetScale((float)m_ui->lineEditX->value(), (float)m_ui->lineEditY->value(), (float)m_ui->lineEditZ->value());
-			// compute offset from current local coordinate system position
-			QVector3D scale;
-
-			scale.setX(std::abs(targetScale.x() ) < 1E-4 ? 0.0 : targetScale.x() / ( m_boundingBoxDimension.m_x < 1E-4 ? 1.0 : m_boundingBoxDimension.m_x ) );
-			scale.setY(std::abs(targetScale.y() ) < 1E-4 ? 0.0 : targetScale.y() / ( m_boundingBoxDimension.m_y < 1E-4 ? 1.0 : m_boundingBoxDimension.m_y ) );
-			scale.setZ(std::abs(targetScale.z() ) < 1E-4 ? 0.0 : targetScale.z() / ( m_boundingBoxDimension.m_z < 1E-4 ? 1.0 : m_boundingBoxDimension.m_z ) );
-			// now compose a transform object and set it in the wireframe object
-			// first we scale our selected objects
-			Vic3D::Transform3D scaling;
-			scaling.setScale(scale);
-
-			// and the we also hav to guarantee that the center point of the bounding box stays at the same position
-			// this can be achieved since the center points are also just scaled by the specified scaling factors
-			// so we know how big the absolute translation has to be
-			QVector3D trans;
-			trans.setX( m_boundingBoxDimension.m_x < 1E-4 ? 0.0 : m_boundingBoxCenter.m_x * ( 1 - scale.x() ) );
-			trans.setY( m_boundingBoxDimension.m_y < 1E-4 ? 0.0 : m_boundingBoxCenter.m_y * ( 1 - scale.y() ) );
-			trans.setZ( m_boundingBoxDimension.m_z < 1E-4 ? 0.0 : m_boundingBoxCenter.m_z * ( 1 - scale.z() ) );
-			scaling.setTranslation(trans);
-
-			// we give our transformation to the wire frame object
-			SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = scaling;
-			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow(); // needed right now since two surfaces are shown
-			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
-		} break;
-		case MS_Local: {
-			// for this operation, we get directly the surface scaling factors from the line edits
-			// so it is basically like the absolute scaling, but we do not have to calculate the scaling factors
-			// compute offset from current local coordinate system position
-			const QVector3D xAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localXAxis();
-			const QVector3D yAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localYAxis();
-			const QVector3D zAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis();
-
-			QVector3D scale((float)m_ui->lineEditX->value()*( xAxis.x()+yAxis.x()+zAxis.x() ),
-							(float)m_ui->lineEditY->value()*( xAxis.y()+yAxis.y()+zAxis.y() ),
-							(float)m_ui->lineEditZ->value()*( xAxis.z()+yAxis.z()+zAxis.z() ));
-
-			Vic3D::Transform3D scaling;
-			scaling.setScale(scale);
-
-			// and the we also hav to guarantee that the center point of the bounding box stays at the same position
-			// this can be achieved since the center points are also just scaled by the specified scaling factors
-			// so we know how big the absolute translation has to be
-			QVector3D trans;
-			trans.setX( m_boundingBoxDimension.m_x < 1E-4 ? 0.0 : m_boundingBoxCenter.m_x * ( 1 - scale.x() ) );
-			trans.setY( m_boundingBoxDimension.m_y < 1E-4 ? 0.0 : m_boundingBoxCenter.m_y * ( 1 - scale.y() ) );
-			trans.setZ( m_boundingBoxDimension.m_z < 1E-4 ? 0.0 : m_boundingBoxCenter.m_z * ( 1 - scale.z() ) );
-
-			// we give our transformation to the wire frame object
-			scaling.setTranslation(trans);
-			SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = scaling;
-			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
-			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
-		} break;
-		case MS_Relative: {
-			// for this operation, we get directly the surface scaling factors from the line edits
-			// so it is basically like the absolute scaling, but we do not have to calculate the scaling factors
-			QVector3D scale((float)m_ui->lineEditX->value(), (float)m_ui->lineEditY->value(), (float)m_ui->lineEditZ->value());
-			// compute offset from current local coordinate system position
-			Vic3D::Transform3D scaling;
-			scaling.setScale(scale);
-
-			// and the we also hav to guarantee that the center point of the bounding box stays at the same position
-			// this can be achieved since the center points are also just scaled by the specified scaling factors
-			// so we know how big the absolute translation has to be
-			QVector3D trans;
-			trans.setX( m_boundingBoxDimension.m_x < 1E-4 ? 0.0 : m_boundingBoxCenter.m_x * ( 1 - scale.x() ) );
-			trans.setY( m_boundingBoxDimension.m_y < 1E-4 ? 0.0 : m_boundingBoxCenter.m_y * ( 1 - scale.y() ) );
-			trans.setZ( m_boundingBoxDimension.m_z < 1E-4 ? 0.0 : m_boundingBoxCenter.m_z * ( 1 - scale.z() ) );
-
-			// we give our transformation to the wire frame object
-			scaling.setTranslation(trans);
-			SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = scaling;
-			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
-			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
-		} break;
-		}
-	} break;
-	case MT_Rotate: {
-		switch (state) {
-		case MS_Absolute: {
-
-			double oriRad = m_ui->lineEditOrientation->value() * IBK::DEG2RAD;
-			double incliRad = m_ui->lineEditInclination->value() * IBK::DEG2RAD;
-
-			QVector3D newNormal (std::sin( oriRad ) * std::sin( incliRad ),
-								 std::cos( oriRad ) * std::sin( incliRad ),
-								 std::cos( incliRad ) );
-
-			// we only want to rotate if the normal vectors are not the same
-			if ( checkVectors<4>( m_normal, QtExt::QVector2IBKVector(newNormal) ) )
-				return; // do nothing
-
-			// we find the rotation axis by taking the cross product of the normal vector and the normal vector we want to
-			// rotate to
-			QVector3D rotationAxis ( QtExt::IBKVector2QVector(m_normal.crossProduct(QtExt::QVector2IBKVector(newNormal) ) ) ) ;
-
-			Vic3D::Transform3D rota;
-			// we now also have to find the angle between both normals
-			rota.rotate( angleBetweenVectorsDeg( m_normal, QtExt::QVector2IBKVector(newNormal) ), rotationAxis );
-
-			// we take the QQuarternion to rotate
-			QQuaternion centerRota = rota.rotation();
-			QVector3D newCenter = centerRota.rotatedVector(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
-
-			// we also have to find the center point after rotation and translate our center back to its origin
-			rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) - newCenter );
-
-			// we give our tranfsformation to the wire frame object
-			SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
-			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
-			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
-		} break;
-		case MS_Local: {
-			// now compose a transform object and set it in the wireframe object
-			const QVector3D xAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localXAxis();
-			const QVector3D yAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localYAxis();
-			const QVector3D zAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis();
-
-			Vic3D::Transform3D rota;
-			if ( lineEdit == m_ui->lineEditX )
-				rota.setRotation((float)m_ui->lineEditX->value(), xAxis);
-			else if ( lineEdit == m_ui->lineEditY )
-				rota.setRotation((float)m_ui->lineEditY->value(), yAxis);
-			else if ( lineEdit == m_ui->lineEditZ )
-				rota.setRotation((float)m_ui->lineEditZ->value(), zAxis);
-
-			// and the we also hav to guarantee that the center point of the bounding box stays at the same position
-			// this can be achieved since the center points are also just rotated by the specified rotation
-			// so we know how big the absolute translation has to be
-			QQuaternion centerRota = rota.rotation();
-			QVector3D newCenter = centerRota.rotatedVector(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
-
-			rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) - newCenter );
-
-			// we give our tranfsformation to the wire frame object
-			SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
-			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
-			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
-		} break;
-		case MS_Relative: {
-			// now compose a transform object and set it in the wireframe object
-			Vic3D::Transform3D rota;
-			if ( lineEdit == m_ui->lineEditX )
-				rota.setRotation((float)m_ui->lineEditX->value(), 1, 0, 0);
-			else if ( lineEdit == m_ui->lineEditY )
-				rota.setRotation((float)m_ui->lineEditY->value(), 0, 1, 0);
-			else if ( lineEdit == m_ui->lineEditZ )
-				rota.setRotation((float)m_ui->lineEditZ->value(), 0, 0, 1);
-
-			// and the we also hav to guarantee that the center point of the bounding box stays at the same position
-			// this can be achieved since the center points are also just rotated by the specified rotation
-			// so we know how big the absolute translation has to be
-			QQuaternion centerRota = rota.rotation();
-			QVector3D newCenter = centerRota.rotatedVector(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
-
-			// we also have to find the center point after rotation and translate our center back to its origin
-			rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) - newCenter );
-
-			SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
-			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
-			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
-		} break;
-		}
-	} break;
 	}
 }
 
@@ -1131,7 +1153,7 @@ void SVPropEditGeometry::on_pushButtonCopyRooms_clicked() {
 
 				std::vector<IBKMK::Vector3D> vertexes = newSurf.m_geometry.vertexes();
 				for ( IBKMK::Vector3D &v : vertexes ) {
-					v += QtExt::QVector2IBKVector(m_translation);
+					v += m_translation;
 				}
 				newSurf.m_geometry.setVertexes(vertexes);
 				newSurf.m_parent = &newRoom;
@@ -1205,7 +1227,7 @@ void SVPropEditGeometry::on_pushButtonCopySurfaces_clicked() {
 
 		std::vector<IBKMK::Vector3D> vertexes = newSurf.m_geometry.vertexes();
 		for ( IBKMK::Vector3D &v : vertexes ) {
-			v += QtExt::QVector2IBKVector(m_translation);
+			v += m_translation;
 		}
 		newSurf.m_geometry.setVertexes(vertexes);
 
@@ -1219,4 +1241,13 @@ void SVPropEditGeometry::on_pushButtonCopySurfaces_clicked() {
 void SVPropEditGeometry::on_pushButtonCopyBuildingLvls_clicked()
 {
 
+}
+
+
+void SVPropEditGeometry::on_pushButtonAdd_clicked() {
+	setCurrentPage(O_AddGeometry);
+}
+
+void SVPropEditGeometry::on_pushButtonEdit_clicked() {
+	setCurrentPage(O_AddGeometry);
 }

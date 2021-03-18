@@ -49,31 +49,28 @@ class SVPropEditGeometry : public QWidget {
 	Q_OBJECT
 
 public:
-	enum TabState {
-		TS_AddGeometry,
-		TS_EditGeometry,
-		NUM_TS
+	enum Operation {
+		O_AddGeometry,
+		O_EditGeometry
 	};
 
 	enum ModificationType {
 		MT_Translate,
 		MT_Rotate,
-		MT_Scale,
-		NUM_MT
+		MT_Scale
 	};
 
 	enum ModificationState {
 		MS_Absolute,
 		MS_Relative,
-		MS_Local,
-		NUM_MS
+		MS_Local
 	};
 
 	explicit SVPropEditGeometry(QWidget *parent = nullptr);
 	~SVPropEditGeometry() override;
 
 	/*! Sets the current tab index to the TabState specified */
-	void setCurrentTab(const TabState &state);
+	void setCurrentPage(const Operation & op);
 
 	/*! Sets the Coordinates of the Center of the local Coordinate System
 		(called directly from the local coordinate system when its position changes)
@@ -182,6 +179,10 @@ private slots:
 	void on_pushButtonCopySurfaces_clicked();
 	void on_pushButtonCopyBuildingLvls_clicked();
 
+	void on_pushButtonAdd_clicked();
+
+	void on_pushButtonEdit_clicked();
+
 private:
 	/*! Updates the property widget regarding to all geometry data.
 		This function is called whenever the selection has changed, and when surface geometry (of selected surfaces)
@@ -207,7 +208,7 @@ private:
 		The value is updated when user changes the combo-box, and when operation is changed,
 		the value is used to update the combo box's current index.
 	*/
-	ModificationState					m_modificationState[NUM_MT];
+	ModificationState					m_modificationState[MS_Local+1];
 
 	/*! Contains position and rotation of local coordinate system object. */
 	Vic3D::Transform3D					m_localCoordinatePosition;
@@ -224,17 +225,15 @@ private:
 	/*! Cached initial values to be used when user had entered invalid values.
 		These values depend on current modification type and state.
 	*/
-	QVector3D							m_originalValues;
+	IBKMK::Vector3D						m_originalValues;
 
-	/*! Cached Translation vector for copy operations
-	*/
-	QVector3D							m_translation;
+	/*! Cached Translation vector for copy operations */
+	IBKMK::Vector3D						m_translation;
 
 //	std::set<const VICUS::Object*>		m_selBuild;
 //	std::set<const VICUS::Object*>		m_selBuildLvls;
 	std::vector<const VICUS::Room*>		m_selRooms;
 	std::vector<const VICUS::Surface*>	m_selSurfaces;
-
 
 
 	/*! Pointer to UI */

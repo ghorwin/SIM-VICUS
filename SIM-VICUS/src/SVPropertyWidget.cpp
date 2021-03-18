@@ -75,9 +75,9 @@ void SVPropertyWidget::onViewStateChanged() {
 
 			// Note: we do not use the slot for SVViewState::PM_AddGeometry; instead we just show a different tab
 			if (m == SVViewState::PM_EditGeometry)
-				qobject_cast<SVPropEditGeometry *>(m_propWidgets[M_Geometry])->setCurrentTab(SVPropEditGeometry::TS_EditGeometry);
+				qobject_cast<SVPropEditGeometry *>(m_propWidgets[M_Geometry])->setCurrentPage(SVPropEditGeometry::O_EditGeometry);
 			else
-				qobject_cast<SVPropEditGeometry *>(m_propWidgets[M_Geometry])->setCurrentTab(SVPropEditGeometry::TS_AddGeometry);
+				qobject_cast<SVPropEditGeometry *>(m_propWidgets[M_Geometry])->setCurrentPage(SVPropEditGeometry::O_AddGeometry);
 		} break;
 
 		case SVViewState::PM_VertexList:
