@@ -51,10 +51,12 @@ private slots:
 	void on_lineEditName_editingFinished();
 	void on_pushButtonColor_colorChanged();
 
-	void on_toolButtonSelectSubComponent_clicked();
+	void on_toolButtonSelectSubComponent_clicked();;
 
 
 	void on_pushButtonAddPersonLoad_clicked();
+	void on_pushButtonAddElectricLoad_clicked();
+
 
 private:
 	Ui::SVDBZoneTemplateEditWidget *m_ui;

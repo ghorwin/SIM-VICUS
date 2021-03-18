@@ -55,6 +55,9 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, int subT
 	m_ui->pushButtonAddPersonLoad->setEnabled(false);
 	m_ui->pushButtonAddPersonLoad->setChecked(false);
 
+	m_ui->pushButtonAddElectricLoad->setEnabled(false);
+	m_ui->pushButtonAddElectricLoad->setChecked(false);
+
 	if (!isEnabled) {
 		// clear input controls
 		m_ui->lineEditName->setString(IBK::MultiLanguageString());
@@ -85,10 +88,15 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, int subT
 	// re-enable add buttons only when not yet set
 	if (item->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson] == VICUS::INVALID_ID)
 		m_ui->pushButtonAddPersonLoad->setEnabled(true);
-	else
-	{
+	else {
 		m_ui->pushButtonAddPersonLoad->setEnabled(false);
 		m_ui->pushButtonAddPersonLoad->setChecked(true);
+	}
+	if (item->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadEquipment] == VICUS::INVALID_ID)
+		m_ui->pushButtonAddElectricLoad->setEnabled(true);
+	else {
+		m_ui->pushButtonAddElectricLoad->setEnabled(false);
+		m_ui->pushButtonAddElectricLoad->setChecked(true);
 	}
 
 	// now the sub-template stuff
@@ -113,7 +121,17 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, int subT
 				m_ui->lineEditSubComponent->setText( QtExt::MultiLangString2QString(iload->m_displayName) );
 			}
 		} break;
-		case VICUS::ZoneTemplate::ST_IntLoadEquipment:
+		case VICUS::ZoneTemplate::ST_IntLoadEquipment:{
+			m_ui->labelSubTemplate->setText(tr("Internal Loads - Equipment loads:"));
+			// lookup corresponding dataset entry in database
+			const VICUS::InternalLoad * iload = m_db->m_internalLoads[(unsigned int)subTemplateId];
+			if (iload == nullptr) {
+				m_ui->lineEditSubComponent->setText(tr("<select>"));
+			}
+			else {
+				m_ui->lineEditSubComponent->setText( QtExt::MultiLangString2QString(iload->m_displayName) );
+			}
+		} break;
 		break;
 		case VICUS::ZoneTemplate::ST_IntLoadLighting:
 		break;
@@ -153,7 +171,15 @@ void SVDBZoneTemplateEditWidget::on_pushButtonColor_colorChanged() {
 
 
 void SVDBZoneTemplateEditWidget::on_toolButtonSelectSubComponent_clicked() {
-	unsigned int id = SVMainWindow::instance().dbInternalLoadsPersonEditDialog()->select(m_current->m_idReferences[m_currentSubTemplateType]);
+	unsigned int id = VICUS::INVALID_ID;
+	switch (m_currentSubTemplateType) {
+		case VICUS::ZoneTemplate::ST_IntLoadPerson:
+			id = SVMainWindow::instance().dbInternalLoadsPersonEditDialog()->select(m_current->m_idReferences[m_currentSubTemplateType]);
+		break;
+		case VICUS::ZoneTemplate::ST_IntLoadEquipment:
+			id = SVMainWindow::instance().dbInternalLoadsElectricEquipmentEditDialog()->select(m_current->m_idReferences[m_currentSubTemplateType]);
+		break;
+	}
 	if (id != VICUS::INVALID_ID) {
 		// modify existing
 		m_current->m_idReferences[m_currentSubTemplateType] = id;
@@ -193,3 +219,23 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddPersonLoad_clicked() {
 }
 
 
+void SVDBZoneTemplateEditWidget::on_pushButtonAddElectricLoad_clicked() {
+	Q_ASSERT(m_current != nullptr);
+
+	// open the Internal Loads DB dialog and let user select one
+	unsigned int id = SVMainWindow::instance().dbInternalLoadsElectricEquipmentEditDialog()->select(VICUS::INVALID_ID);
+	if (id == VICUS::INVALID_ID) return;
+	if (m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadEquipment] != id) {
+		if (m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadEquipment] == VICUS::INVALID_ID) {
+			// add new child
+			m_dbModel->addChildItem( m_dbModel->indexById(m_current->m_id), VICUS::ZoneTemplate::ST_IntLoadEquipment, id);
+			emit selectSubTemplate(m_current->m_id, (int)VICUS::ZoneTemplate::ST_IntLoadEquipment);
+		}
+		else {
+			// modify existing
+			m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadEquipment] = id;
+			m_db->m_zoneTemplates.m_modified = true;
+			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		}
+	}
+}
