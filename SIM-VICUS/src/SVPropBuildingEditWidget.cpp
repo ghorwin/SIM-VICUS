@@ -173,25 +173,39 @@ void SVPropBuildingEditWidget::on_pushButtonExchangeComponents_clicked() {
 
 void SVPropBuildingEditWidget::on_pushButtonSelectObjectsWithComponent_clicked() {
 	const VICUS::Component * comp = currentlySelectedComponent();
-	Q_ASSERT(comp != nullptr); // if nullptr, the button should be disabled!
+	Q_ASSERT(m_componentSurfacesMap.find(comp) != m_componentSurfacesMap.end());
 	// compose set of objects to be selected
 	std::set<unsigned int> objs;
 	for (auto s : m_componentSurfacesMap[comp])
 		objs.insert(s->uniqueID());
 
-	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Select objects with component '%1'")
-		.arg(QtExt::MultiLangString2QString(comp->m_displayName)), SVUndoTreeNodeState::SelectedState,
-														 objs, true);
+	QString undoText;
+	if (comp != nullptr)
+		undoText = tr("Select objects with component '%1'").arg(QtExt::MultiLangString2QString(comp->m_displayName));
+	else
+		undoText = tr("Select objects with invalid component.");
+
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(undoText, SVUndoTreeNodeState::SelectedState, objs, true);
 	undo->push();
 }
 
 
 void SVPropBuildingEditWidget::on_tableWidgetComponents_itemSelectionChanged() {
-	// enable/disable buttons based on selection changed signal
+	// check if the table is empty or there is no currently selected row
+	int r = m_ui->tableWidgetComponents->currentRow();
+	if (r == -1 || m_componentSurfacesMap.empty()) {
+		m_ui->pushButtonEditComponents->setEnabled(false);
+		m_ui->pushButtonExchangeComponents->setEnabled(false);
+		m_ui->pushButtonSelectObjectsWithComponent->setEnabled(false);
+		return;
+	}
+	// enable/disable buttons that require valid components
 	bool enabled = (currentlySelectedComponent() != nullptr);
 	m_ui->pushButtonEditComponents->setEnabled(enabled);
 	m_ui->pushButtonExchangeComponents->setEnabled(enabled);
-	m_ui->pushButtonSelectObjectsWithComponent->setEnabled(enabled);
+
+	// the select buttons are always active, even if no component is assigned, yet
+	m_ui->pushButtonSelectObjectsWithComponent->setEnabled(true);
 }
 
 
