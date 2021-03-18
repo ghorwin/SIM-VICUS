@@ -64,6 +64,7 @@
         <file>gfx/actions/icon-resize-resize-alt.svg</file>
         <file>gfx/icons/16x16/interpolationMode_constant_bright_16.png</file>
         <file>gfx/icons/16x16/interpolationMode_linear_bright_16.png</file>
-        <file>gfx/actions/24x24/align-coordinate-system.png</file>
+        <file>gfx/actions/24x24/moveCoordinateSystem.png</file>
+        <file>gfx/actions/24x24/alignCoordinateSystem.png</file>
     </qresource>
 </RCC>

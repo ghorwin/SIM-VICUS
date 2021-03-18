@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>548</width>
+    <width>580</width>
     <height>49</height>
    </rect>
   </property>
@@ -30,7 +30,7 @@
      </property>
      <property name="icon">
       <iconset resource="../resources/SIM-VICUS.qrc">
-       <normaloff>:/gfx/actions/24x24/align-coordinate-system.png</normaloff>:/gfx/actions/24x24/align-coordinate-system.png</iconset>
+       <normaloff>:/gfx/actions/24x24/alignCoordinateSystem.png</normaloff>:/gfx/actions/24x24/alignCoordinateSystem.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -53,7 +53,7 @@
      </property>
      <property name="icon">
       <iconset resource="../resources/SIM-VICUS.qrc">
-       <normaloff>:/gfx/actions/24x24/align-coordinate-system.png</normaloff>:/gfx/actions/24x24/align-coordinate-system.png</iconset>
+       <normaloff>:/gfx/actions/24x24/moveCoordinateSystem.png</normaloff>:/gfx/actions/24x24/moveCoordinateSystem.png</iconset>
      </property>
      <property name="iconSize">
       <size>
