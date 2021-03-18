@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -92,6 +92,7 @@
      <string>&amp;View</string>
     </property>
     <addaction name="separator"/>
+    <addaction name="actionResetView"/>
     <addaction name="actionViewShowSurfaceNormals"/>
     <addaction name="separator"/>
    </widget>
@@ -568,6 +569,14 @@
   <action name="actionDBFluids">
    <property name="text">
     <string>Fluids...</string>
+   </property>
+  </action>
+  <action name="actionResetView">
+   <property name="text">
+    <string>Reset view</string>
+   </property>
+   <property name="toolTip">
+    <string>Resets view to be pointing north, close to site center.</string>
    </property>
   </action>
  </widget>

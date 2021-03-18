@@ -242,6 +242,8 @@ private slots:
 
 	void on_actionDBFluids_triggered();
 
+	void on_actionResetView_triggered();
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();

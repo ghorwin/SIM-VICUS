@@ -41,6 +41,9 @@ public:
 	/*! Called when the global hot key has been pressed, simply relays the call to the main scene.. */
 	void toggleTranslateCoordinateSystem();
 
+	/*! Resets the camera position to be looking nicely onto the scene. */
+	void resetCamera();
+
 public slots:
 
 	/*! Connected to SVProjectHandler::modified() */

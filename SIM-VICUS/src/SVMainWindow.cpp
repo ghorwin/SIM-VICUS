@@ -1632,3 +1632,8 @@ void SVMainWindow::on_actionViewShowSurfaceNormals_toggled(bool visible) {
 	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->setNormalVectorsVisible(visible);
 }
 
+
+void SVMainWindow::on_actionResetView_triggered() {
+	// set scene view to recenter its camera
+	SVViewStateHandler::instance().m_geometryView->resetCamera();
+}

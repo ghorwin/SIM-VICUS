@@ -38,6 +38,9 @@ public:
 	*/
 	void refreshSceneView();
 
+	/*! Resets the camera position to be looking nicely onto the scene. */
+	void resetCamera();
+
 	/*! This function is called from the main application object, when it receives a keypress event.
 		It is the central handling function for all scene-related/view-state related global shortcuts
 		and dispatches them to either the scene, or the line edit (for number input) or the view state

@@ -5,6 +5,8 @@
 #include <QDateTime>
 #include <QOpenGLFramebufferObject>
 
+#include <VICUS_ViewSettings.h>
+
 #include "SVDebugApplication.h"
 
 #include "Vic3DPickObject.h"
@@ -172,6 +174,15 @@ void SceneView::toggleTranslateCoordinateSystem() {
 		// TODO : check if we can go into "move coordinate system" mode, and if yes, toggle it
 		m_mainScene.enterCoordinateSystemTranslationMode();
 	}
+}
+
+
+void SceneView::resetCamera() {
+	// reset camera positino
+	SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0, -100, 60);
+	SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromAxisAndAngle(QVector3D(1.0f,0.f, 0.f), 60);
+	// trick scene into updating
+	onModified(SVProjectHandler::AllModified, nullptr);
 }
 
 

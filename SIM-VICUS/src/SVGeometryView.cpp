@@ -114,6 +114,10 @@ void SVGeometryView::refreshSceneView() {
 	m_sceneView->renderNow();
 }
 
+void SVGeometryView::resetCamera() {
+	m_sceneView->resetCamera();
+}
+
 
 bool SVGeometryView::handleGlobalKeyPress(Qt::Key k) {
 	switch (k) {
