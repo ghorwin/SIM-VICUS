@@ -582,10 +582,10 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 	QVector3D oldPos = m_coordinateSystemObject.translation();
 	// if in "place vertex" mode, perform picking operation and snap coordinate system to grid
-	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex) {
-		// First we need to define what objects/surfaces we check for a picking operation,
-		// snapping is done later.
-
+	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
+		SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem)
+	{
+		// follow line of sign and determine possible objects to hit
 		if (!pickObject.m_pickPerformed)
 			pick(pickObject);
 
@@ -597,15 +597,17 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 		// update the movable coordinate system's location in the new polygon object
 		QVector3D newPoint = m_coordinateSystemObject.translation();
-		m_newGeometryObject.updateLocalCoordinateSystemPosition(newPoint);
+		if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex)
+			m_newGeometryObject.updateLocalCoordinateSystemPosition(newPoint);
 	}
 
 	// if in "align coordinate system mode" perform picking operation and update local coordinate system orientation
 	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem) {
-
+		// follow line of sign and determine possible objects to hit
 		if (!pickObject.m_pickPerformed)
 			pick(pickObject);
 		needRepaint = true;
+
 
 		// get nearest match; look for an object
 		IBKMK::Vector3D nearestPoint;
@@ -1935,11 +1937,10 @@ void Vic3DScene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandl
 			qDebug() << "Leaving 'Align coordinate system' mode";
 			return;
 		}
+
 		// *** move coordinate system ***
 		case SVViewState::OM_MoveLocalCoordinateSystem : {
-			// finish moving coordinate system and keep selected rotation in coordinate system
-			// but restore origin of local coordinate system object
-//			m_coordinateSystemObject.setTranslation(m_oldCoordinateSystemTransform.translation());
+			// finish moving coordinate system and current local coordinate system location
 			// switch back to previous view state
 			SVViewStateHandler::instance().restoreLastViewState();
 			qDebug() << "Leaving 'Move coordinate system' mode";
