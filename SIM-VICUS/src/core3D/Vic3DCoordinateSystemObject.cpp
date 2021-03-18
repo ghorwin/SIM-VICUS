@@ -29,7 +29,7 @@ enum ElementIndexes {
 	ELEMENT_CENTER_SPHERE_INDEX,
 	ELEMENT_AXES_CYLINDER_INDEX,
 	ELEMENT_AXES_SPHERE_INDEX,
-	ELEMENT_CENTER_SPHERE_TRANSPARENT_INDEX,
+	ELEMENT_CENTER_SPHERE_TRANSLATION_INDEX,
 	ELEMENT_TRANSLATION_INDICATOR_INDEX,
 	ELEMENT_ROTATION_INDICATOR_INDEX_X,
 	ELEMENT_ROTATION_INDICATOR_INDEX_Y,
@@ -148,7 +148,7 @@ void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 	// 2 - x axis sphere (opaque) (for regular coordinate system)
 	//   - y axis sphere (opaque) (for regular coordinate system)
 	//   - z axis sphere (opaque) (for regular coordinate system)
-	// 3 - center sphere. transparent (for translating)
+	// 3 - center sphere. large (for translating)
 	// 4 - translation x axis cube (opaque)
 	// 5 - translation y axis cube (opaque)
 	// 6 - translation z axis cube (opaque)
@@ -175,6 +175,8 @@ void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 
 	// add regular coordinate system
 
+	// TODO : Styling - coordinate system colors should by style-dependent
+
 	m_objectStartIndexes[ELEMENT_CENTER_SPHERE_INDEX] = currentElementIndex;
 
 	addSphere(IBKMK::Vector3D(0,0,0), QColor("burlywood"), 0.2*sizeFactor, currentVertexIndex, currentElementIndex,
@@ -198,11 +200,10 @@ void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 	addSphere(IBKMK::Vector3D(0,0,2), QColor(255, 245, 152), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 
-	m_objectStartIndexes[ELEMENT_CENTER_SPHERE_TRANSPARENT_INDEX] = currentElementIndex;
+	m_objectStartIndexes[ELEMENT_CENTER_SPHERE_TRANSLATION_INDEX] = currentElementIndex;
 
-	QColor centerTransparentColor("burlywood");
-	centerTransparentColor.setAlphaF(0.25);
-	addSphere(IBKMK::Vector3D(0,0,0), centerTransparentColor, 0.2*sizeFactor, currentVertexIndex, currentElementIndex,
+	QColor centerTransparentColor("gold");
+	addSphere(IBKMK::Vector3D(0,0,0), centerTransparentColor, 0.4*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 
 	m_objectStartIndexes[ELEMENT_TRANSLATION_INDICATOR_INDEX] = currentElementIndex;
@@ -356,11 +357,11 @@ void CoordinateSystemObject::renderOpaque() {
 	//	glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr /* (GLvoid*)(0) */);
 
 	// draw opaque center sphere for all but translation mode
-	if ((m_geometryTransformMode & TM_Translate) == 0) {
+	if ((m_geometryTransformMode & TM_Translate) == 0)
 		DRAW_ELEMENT(ELEMENT_CENTER_SPHERE_INDEX);
-		DRAW_ELEMENT(ELEMENT_AXES_CYLINDER_INDEX);
-	}
+
 	// axis cylinders are always drawn
+	DRAW_ELEMENT(ELEMENT_AXES_CYLINDER_INDEX);
 
 	// we have different options to render
 	switch (m_geometryTransformMode) {
@@ -374,7 +375,10 @@ void CoordinateSystemObject::renderOpaque() {
 		case TM_ScaleY :		DRAW_ELEMENT(ELEMENT_SCALE_INDICATOR_INDEX_Y); break;
 		case TM_ScaleZ :		DRAW_ELEMENT(ELEMENT_SCALE_INDICATOR_INDEX_Z); break;
 
-		case TM_Translate :		DRAW_ELEMENT(ELEMENT_TRANSLATION_INDICATOR_INDEX); break;
+		case TM_Translate :
+			DRAW_ELEMENT(ELEMENT_CENTER_SPHERE_TRANSLATION_INDEX);
+			DRAW_ELEMENT(ELEMENT_AXES_SPHERE_INDEX);
+		break;
 	}
 
 

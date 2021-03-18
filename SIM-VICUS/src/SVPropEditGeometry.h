@@ -199,6 +199,9 @@ private:
 	/*! Initilizes the Copy Group Box */
 	void initializeCopy();
 
+	/*! Depending on the selected operation, we change the look of the local coordinate system object. */
+	void updateCoordinateSystemLook();
+
 	/*! Identifies which transformation operation is currently selected and is updated,
 		whenever an operation button is toggled.
 	*/

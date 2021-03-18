@@ -182,6 +182,8 @@ void SVPropEditGeometry::onViewStateChanged() {
 		setCurrentPage(O_AddGeometry);
 		m_ui->pushButtonEdit->setEnabled(false);
 	}
+
+	updateCoordinateSystemLook();
 }
 
 
@@ -457,6 +459,35 @@ void SVPropEditGeometry::initializeCopy() {
 }
 
 
+void SVPropEditGeometry::updateCoordinateSystemLook() {
+	// adjust appearance of local coordinate system
+	if (m_ui->stackedWidget->currentIndex() == 0) {
+		// put local coordinate system back into "plain" mode
+		if (SVViewStateHandler::instance().m_coordinateSystemObject->m_geometryTransformMode != 0) {
+			SVViewStateHandler::instance().m_coordinateSystemObject->m_geometryTransformMode = 0;
+			SVViewStateHandler::instance().m_geometryView->refreshSceneView();
+		}
+	}
+	else {
+		// put local coordinate system back into correct transform mode
+		switch (m_modificationType) {
+			case SVPropEditGeometry::MT_Translate:
+				if (SVViewStateHandler::instance().m_coordinateSystemObject->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_Translate) {
+					SVViewStateHandler::instance().m_coordinateSystemObject->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_Translate;
+					SVViewStateHandler::instance().m_geometryView->refreshSceneView();
+				}
+			break;
+
+			case SVPropEditGeometry::MT_Rotate:
+			break;
+
+			case SVPropEditGeometry::MT_Scale:
+			break;
+		}
+	}
+}
+
+
 void SVPropEditGeometry::on_comboBox_activated(int newIndex) {
 	// set new state
 	m_modificationState[m_modificationType] = (ModificationState)newIndex;
@@ -557,6 +588,7 @@ void SVPropEditGeometry::setState(const SVPropEditGeometry::ModificationType & t
 	m_modificationState[type] = state;
 
 	updateInputs();
+	updateCoordinateSystemLook();
 }
 
 
@@ -1246,8 +1278,11 @@ void SVPropEditGeometry::on_pushButtonCopyBuildingLvls_clicked()
 
 void SVPropEditGeometry::on_pushButtonAdd_clicked() {
 	setCurrentPage(O_AddGeometry);
+	updateCoordinateSystemLook();
 }
 
+
 void SVPropEditGeometry::on_pushButtonEdit_clicked() {
-	setCurrentPage(O_AddGeometry);
+	setCurrentPage(O_EditGeometry);
+	updateCoordinateSystemLook();
 }
