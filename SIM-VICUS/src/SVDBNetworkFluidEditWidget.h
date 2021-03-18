@@ -1,10 +1,10 @@
-#ifndef SVDBNETWORKFLUIDEDITWIDGET_H
-#define SVDBNETWORKFLUIDEDITWIDGET_H
+#ifndef SVDBNetworkFluidEditWidgetH
+#define SVDBNetworkFluidEditWidgetH
 
 #include "SVAbstractDatabaseEditWidget.h"
 
 namespace Ui {
-class SVDBNetworkFluidEditWidget;
+	class SVDBNetworkFluidEditWidget;
 }
 
 namespace VICUS {
@@ -14,13 +14,11 @@ namespace VICUS {
 class SVDBNetworkFluidTableModel;
 class SVDatabase;
 
-
+/*! Edit widget for fluids */
 class SVDBNetworkFluidEditWidget :  public SVAbstractDatabaseEditWidget {
-
 	Q_OBJECT
 
 public:
-
 	explicit SVDBNetworkFluidEditWidget(QWidget *parent = nullptr);
 	~SVDBNetworkFluidEditWidget() override;
 
@@ -47,12 +45,12 @@ private:
 	/*! Pointer to the database model, to modify items when data has changed in the widget. */
 	SVDBNetworkFluidTableModel			*m_dbModel;
 
-	/*! Pointer to currently edited component.
+	/*! Pointer to currently edited item.
 		The pointer is updated whenever updateInput() is called.
-		A nullptr pointer means that there is no component to edit.
+		A nullptr pointer means that there is no item to edit.
 	*/
 	VICUS::NetworkFluid					*m_currentFluid;
 };
 
 
-#endif // SVDBNETWORKFLUIDEDITWIDGET_H
+#endif // SVDBNetworkFluidEditWidgetH

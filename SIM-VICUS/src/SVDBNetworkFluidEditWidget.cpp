@@ -49,7 +49,6 @@ void SVDBNetworkFluidEditWidget::setup(SVDatabase * db, SVAbstractDatabaseTableM
 
 
 void SVDBNetworkFluidEditWidget::updateInput(int id) {
-	FUNCID(SVDBNetworkComponentEditWidget::updateInput);
 
 	m_currentFluid = nullptr; // disable edit triggers
 

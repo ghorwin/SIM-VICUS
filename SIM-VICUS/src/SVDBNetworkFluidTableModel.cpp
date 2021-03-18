@@ -114,7 +114,7 @@ void SVDBNetworkFluidTableModel::resetModel() {
 
 QModelIndex SVDBNetworkFluidTableModel::addNewItem() {
 	VICUS::NetworkFluid f;
-	f.m_displayName.setEncodedString("en:<new component type>");
+	f.m_displayName.setEncodedString("en:<new fluid>");
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_fluids.add( f );
 	endInsertRows();
@@ -144,7 +144,7 @@ void SVDBNetworkFluidTableModel::deleteItem(const QModelIndex & index) {
 		return;
 	unsigned int id = data(index, Role_Id).toUInt();
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	m_db->m_networkComponents.remove(id);
+	m_db->m_fluids.remove(id);
 	endRemoveRows();
 }
 
