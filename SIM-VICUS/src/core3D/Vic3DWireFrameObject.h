@@ -76,31 +76,23 @@ public:
 	*/
 	std::set<const VICUS::Object*>		m_selectedObjects;
 
-	ShaderProgram				*m_shaderProgram = nullptr;
-
-	/*! If true, this object expects index buffer to hold indexes suitable for drawing GL_TRIANGLE_STRIP (including
-		primitive restart indexes) and uses this to draw the objects.
-		If false, index buffer is expected to hold indexes of triangles that are drawn with GL_TRIANGLES (no primitive
-		restart index). For 2 triangles (i.e. one rectangle) this means: 4 indexes + 1 = 5 for GL_TRIANGLE_STRIP and
-		2*3 = 6 for GL_TRIANGLES.
-	*/
-	bool						m_drawTriangleStrips = true;
+	ShaderProgram						*m_shaderProgram = nullptr;
 
 	/*! Vertex buffer in CPU memory, holds data of all vertices (coords and normals). */
-	std::vector<VertexC>		m_vertexBufferData;
+	std::vector<VertexC>				m_vertexBufferData;
 	/*! Index buffer on CPU memory. */
-	std::vector<GLuint>		m_indexBufferData;
+	std::vector<GLuint>					m_indexBufferData;
 
 	/*! Maps unique surface/node ID to vertex start index in m_vertexBufferData. */
 	std::map<unsigned int, unsigned int>	m_vertexStartMap;
 
 	/*! VertexArrayObject, references the vertex, color and index buffers. */
-	QOpenGLVertexArrayObject	m_vao;
+	QOpenGLVertexArrayObject			m_vao;
 
 	/*! Handle for vertex buffer on GPU memory. */
-	QOpenGLBuffer				m_vertexBufferObject;
+	QOpenGLBuffer						m_vertexBufferObject;
 	/*! Handle for index buffer on GPU memory */
-	QOpenGLBuffer				m_indexBufferObject;
+	QOpenGLBuffer						m_indexBufferObject;
 };
 
 } // namespace Vic3D

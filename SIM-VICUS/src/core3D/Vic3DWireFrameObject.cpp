@@ -90,6 +90,9 @@ void WireFrameObject::updateBuffers() {
 
 	updateSelectedObjectsFromProject(m_selectedObjects);
 
+	if (m_selectedObjects.empty())
+		return; // nothing to render
+
 	// clear out existing cache
 
 	m_vertexBufferData.clear();
@@ -98,9 +101,6 @@ void WireFrameObject::updateBuffers() {
 
 	m_vertexBufferData.reserve(100000);
 	m_indexBufferData.reserve(100000);
-
-	// we want to draw triangles
-	m_drawTriangleStrips = false;
 
 	unsigned int currentVertexIndex = 0;
 	unsigned int currentElementIndex = 0;
@@ -167,10 +167,7 @@ void WireFrameObject::render() {
 	// select wire frame drawing
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	// now draw the geometry
-	if (m_drawTriangleStrips)
-		glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr);
-	else
-		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr);
+	glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr);
 	// switch back to fill mode
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	// turn off line offset mode
@@ -179,10 +176,7 @@ void WireFrameObject::render() {
 	// set selected plane color (QColor is passed as vec4, so no conversion is needed, here).
 	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], selColor);
 	// now draw the geometry
-	if (m_drawTriangleStrips)
-		glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr);
-	else
-		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr);
+	glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr);
 
 	m_vao.release();
 }
