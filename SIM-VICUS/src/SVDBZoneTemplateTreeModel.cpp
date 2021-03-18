@@ -116,7 +116,21 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 					else return iload->m_color;
 				}
 			} break;
-			case VICUS::ZoneTemplate::ST_IntLoadEquipment:
+			case VICUS::ZoneTemplate::ST_IntLoadEquipment:   {
+				// lookup item in question
+				const VICUS::InternalLoad * iload = m_db->m_internalLoads[zt.m_idReferences[subType]];
+				// Mind: il might be a nullptr, if index wasn't given
+				if (role == Qt::DisplayRole && index.column() == ColName) {
+					if (iload == nullptr)
+						return tr("<invalid ID reference>");
+					else
+						return QtExt::MultiLangString2QString(iload->m_displayName);
+				}
+				else if (role == Qt::BackgroundRole && index.column() == ColColor) {
+					if (iload == nullptr) return QVariant();
+					else return iload->m_color;
+				}
+			} break;
 			case VICUS::ZoneTemplate::ST_IntLoadLighting:
 			case VICUS::ZoneTemplate::ST_IntLoadOther:
 			case VICUS::ZoneTemplate::ST_ControlThermostat:
