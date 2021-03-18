@@ -25,6 +25,9 @@
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
     <widget class="QToolButton" name="toolButtonAlignCoordinateSystem">
+     <property name="toolTip">
+      <string>Toggles mode for aligning local coordinate system to surface orientation (F4)</string>
+     </property>
      <property name="text">
       <string>...</string>
      </property>
@@ -48,6 +51,9 @@
    </item>
    <item>
     <widget class="QToolButton" name="toolButtonMoveCoordinateSystem">
+     <property name="toolTip">
+      <string>Toggles mode for moving local coordinate system (F5)</string>
+     </property>
      <property name="text">
       <string>...</string>
      </property>
@@ -139,7 +145,7 @@
   <customwidget>
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
-   <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <header>QtExt_ValidatingLineEdit.h</header>
   </customwidget>
  </customwidgets>
  <resources>
