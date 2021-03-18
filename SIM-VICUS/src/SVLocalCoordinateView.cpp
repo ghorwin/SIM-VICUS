@@ -38,7 +38,17 @@ void SVLocalCoordinateView::setAlignCoordinateSystemButtonChecked(bool checked) 
 }
 
 
+void SVLocalCoordinateView::setMoveCoordinateSystemButtonChecked(bool checked) {
+	m_ui->toolButtonMoveCoordinateSystem->setChecked(checked);
+}
+
+
 void SVLocalCoordinateView::on_toolButtonAlignCoordinateSystem_clicked() {
 	SVGeometryView * geoView = SVViewStateHandler::instance().m_geometryView;
 	geoView->handleGlobalKeyPress(Qt::Key_F4);
+}
+
+void SVLocalCoordinateView::on_toolButtonMoveCoordinateSystem_clicked() {
+	SVGeometryView * geoView = SVViewStateHandler::instance().m_geometryView;
+	geoView->handleGlobalKeyPress(Qt::Key_F5);
 }

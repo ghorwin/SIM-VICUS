@@ -225,10 +225,12 @@ void SVGeometryView::onViewStateChanged() {
 
 	if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
 		vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry ||
-		vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem)
+		vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
+			vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem)
 	{
 		m_actionlocalCoordinateSystem->setVisible(true);
 		m_localCoordinateSystemView->setAlignCoordinateSystemButtonChecked(vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem);
+		m_localCoordinateSystemView->setMoveCoordinateSystemButtonChecked(vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem);
 	}
 	else {
 		m_actionlocalCoordinateSystem->setVisible(false);

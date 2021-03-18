@@ -1441,12 +1441,30 @@ void Vic3DScene::leaveCoordinateSystemAdjustmentMode(bool abort) {
 
 
 void Vic3DScene::enterCoordinateSystemTranslationMode() {
-	// TODO Stephan
+	// store current transformation of local coordinate system object
+	m_oldCoordinateSystemTransform = m_coordinateSystemObject.transform();
+	// turn on AlignLocalCoordinateSystem mode
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_sceneOperationMode = SVViewState::OM_MoveLocalCoordinateSystem;
+	SVViewStateHandler::instance().setViewState(vs);
+	qDebug() << "Entering 'Translate coordinate system' mode";
 }
 
 
 void Vic3DScene::leaveCoordinateSystemTranslationMode(bool abort) {
-	// TODO Stephan
+	// restore original local coordinate system
+	if (abort) {
+		m_coordinateSystemObject.setTransform(m_oldCoordinateSystemTransform);
+		qDebug() << "Aborting 'Translate coordinate system' mode (no change)";
+	}
+	else {
+		// finish aligning coordinate system and keep selected rotation in coordinate system
+		// but restore origin of local coordinate system object
+		m_coordinateSystemObject.setTranslation(m_oldCoordinateSystemTransform.translation());
+		qDebug() << "Leaving 'Translate coordinate system' mode";
+	}
+	// switch back to previous view state
+	SVViewStateHandler::instance().restoreLastViewState();
 }
 
 

@@ -21,9 +21,12 @@ public:
 
 	/*! Called from GeometryView when view state changes. */
 	void setAlignCoordinateSystemButtonChecked(bool checked);
+	/*! Called from GeometryView when view state changes. */
+	void setMoveCoordinateSystemButtonChecked(bool checked);
 
 private slots:
 	void on_toolButtonAlignCoordinateSystem_clicked();
+	void on_toolButtonMoveCoordinateSystem_clicked();
 
 private:
 	Ui::SVLocalCoordinateView *m_ui;
