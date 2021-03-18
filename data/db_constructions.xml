@@ -44,7 +44,7 @@
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="1005" displayName="DE: [SimQuality] TF08 |EN: &lt;new construction type&gt;" color="#66ffcc">
+	<Construction id="1005" displayName="DE: [SimQuality] TF08 |EN: [SimQuality] TF08 " color="#66ffcc">
 		<UsageType>OutsideWall</UsageType>
 		<InsulationKind>OutsideInsulation</InsulationKind>
 		<MaterialKind>NaturalStoneMasonry</MaterialKind>
@@ -57,6 +57,17 @@
 			</MaterialLayer>
 			<MaterialLayer matId="10001">
 				<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
+			</MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="1006" displayName="DE: [SimQuality] TF05 |EN: [SimQuality] TF05 ">
+		<UsageType>OutsideWall</UsageType>
+		<MaterialLayers>
+			<MaterialLayer matId="10004">
+				<IBK:Parameter name="Thickness" unit="m">0.3</IBK:Parameter>
+			</MaterialLayer>
+			<MaterialLayer matId="10000">
+				<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>

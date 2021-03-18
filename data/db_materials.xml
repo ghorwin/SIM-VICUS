@@ -41,4 +41,13 @@
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
 	</Material>
+	<Material id="10004" displayName="de:[SimQuality] Dämmung2 |en:[SimQuality] Insulation2" color="#f3dba0">
+		<Notes>en:Insulation to be used in SimQuality test cases (TF05).|de:Dämmstoff zur Verwendung in SimQuality (TF05).</Notes>
+		<Manufacturer>generic</Manufacturer>
+		<DataSource>SimQuality</DataSource>
+		<Category>Insulations</Category>
+		<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
+		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+		<IBK:Parameter name="Conductivity" unit="W/mK">0.02</IBK:Parameter>
+	</Material>
 </Materials>
