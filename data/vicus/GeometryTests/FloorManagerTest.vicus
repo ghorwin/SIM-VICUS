@@ -1,0 +1,979 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<VicusProject fileVersion="0.2">
+	<ProjectInfo>
+		<Created>Do Dez 10 12:42:13 2020</Created>
+		<LastEdited>Do. März 18 11:28:24 2021</LastEdited>
+	</ProjectInfo>
+	<Project>
+		<SolverParameter />
+		<SimulationParameter>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<Location>
+			<TimeZone>13</TimeZone>
+		</Location>
+		<ViewSettings>
+			<GridSpacing>100</GridSpacing>
+			<GridWidth>1000</GridWidth>
+			<CameraTranslation>-55.2126 170.642 28.9148</CameraTranslation>
+			<RotationMatrix>
+				<Wp>0.490848</Wp>
+				<X>0.285334</X>
+				<Y>-0.413632</Y>
+				<Z>-0.711684</Z>
+			</RotationMatrix>
+			<FarDistance>2500</FarDistance>
+		</ViewSettings>
+		<Buildings>
+			<Building id="1" displayName="Import_IDF_Building">
+				<BuildingLevels>
+					<BuildingLevel id="1" displayName="Floor0">
+						<Elevation>0</Elevation>
+						<Height>2.7</Height>
+						<Rooms>
+							<Room id="790" displayName="WE701_Zimmer">
+								<IBK:Parameter name="Area" unit="m2">27.46</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">76.89</IBK:Parameter>
+								<Surfaces>
+									<Surface id="791" displayName="WE701_Wall_1326">
+										<PlaneGeometry type="Rectangle">-7.64564 169.39 1.35803e-08, -7.64564 169.39 2.79999, -7.05712 164.897 2.79999, -7.05712 164.897 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="792" displayName="WE701_Wall_1325">
+										<PlaneGeometry type="Rectangle">-13.6546 168.602 1.35803e-08, -13.6546 168.602 2.79999, -7.64564 169.39 2.79999, -7.64564 169.39 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="793" displayName="WE701_Wall_1324">
+										<PlaneGeometry type="Rectangle">-13.0661 164.11 1.35803e-08, -13.0661 164.11 2.79999, -13.6546 168.602 2.79999, -13.6546 168.602 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="794" displayName="WE701_Wall_1323">
+										<PlaneGeometry type="Rectangle">-7.05712 164.897 1.35803e-08, -7.05712 164.897 2.79999, -13.0661 164.11 2.79999, -13.0661 164.11 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="795" displayName="WE701_GroundFloor_291">
+										<PlaneGeometry type="Rectangle">-7.05712 164.897 1.35803e-08, -13.0661 164.11 1.35803e-08, -13.6546 168.602 1.35803e-08, -7.64564 169.39 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="796" displayName="WE701_Roof_269">
+										<PlaneGeometry type="Rectangle">-7.64564 169.39 2.79999, -13.6546 168.602 2.79999, -13.0661 164.11 2.79999, -7.05712 164.897 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="797" displayName="WE701_Zimmer2">
+								<IBK:Parameter name="Area" unit="m2">21.82</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">61.09</IBK:Parameter>
+								<Surfaces>
+									<Surface id="798" displayName="WE701_Wall_1322">
+										<PlaneGeometry type="Rectangle">-7.65864 169.489 2.79999, -7.65864 169.489 1.35803e-08, -8.12623 173.058 1.35803e-08, -8.12623 173.058 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="799" displayName="WE701_Wall_1321">
+										<PlaneGeometry type="Rectangle">-14.1352 172.271 1.35803e-08, -14.1352 172.271 2.79999, -8.12623 173.058 2.79999, -8.12623 173.058 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="800" displayName="WE701_Wall_1320">
+										<PlaneGeometry type="Rectangle">-13.9793 171.081 1.35803e-08, -13.9793 171.081 2.79999, -14.1352 172.271 2.79999, -14.1352 172.271 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="801" displayName="WE701_Wall_1319">
+										<PlaneGeometry type="Rectangle">-13.9663 170.982 1.35803e-08, -13.9663 170.982 2.79999, -13.9793 171.081 2.79999, -13.9793 171.081 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="802" displayName="WE701_Wall_1318">
+										<PlaneGeometry type="Rectangle">-13.6676 168.702 1.35803e-08, -13.6676 168.702 2.79999, -13.9663 170.982 2.79999, -13.9663 170.982 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="803" displayName="WE701_Wall_1317">
+										<PlaneGeometry type="Rectangle">-7.65864 169.489 1.35803e-08, -7.65864 169.489 2.79999, -13.6676 168.702 2.79999, -13.6676 168.702 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="804" displayName="WE701_GroundFloor_290">
+										<PlaneGeometry type="Rectangle">-7.65864 169.489 1.35803e-08, -13.6676 168.702 1.35803e-08, -14.1352 172.271 1.35803e-08, -8.12623 173.058 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="805" displayName="WE701_Roof_268">
+										<PlaneGeometry type="Rectangle">-13.6676 168.702 2.79999, -7.65864 169.489 2.79999, -8.12623 173.058 2.79999, -14.1352 172.271 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="806" displayName="WE701_Wohnen">
+								<IBK:Parameter name="Area" unit="m2">32.43</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">90.82</IBK:Parameter>
+								<Surfaces>
+									<Surface id="807" displayName="WE701_Wall_1316">
+										<PlaneGeometry type="Rectangle">-8.13922 173.157 2.79999, -8.13922 173.157 1.35803e-08, -8.69971 177.436 1.35803e-08, -8.69971 177.436 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="808" displayName="WE701_Wall_1315">
+										<PlaneGeometry type="Rectangle">-16.1524 176.46 1.35803e-08, -16.1524 176.46 2.79999, -8.69971 177.436 2.79999, -8.69971 177.436 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="809" displayName="WE701_Wall_1314">
+										<PlaneGeometry type="Rectangle">-16.1524 176.46 2.79999, -16.1524 176.46 1.35803e-08, -15.5919 172.181 1.35803e-08, -15.5919 172.181 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="810" displayName="WE701_Wall_1313">
+										<PlaneGeometry type="Rectangle">-15.5919 172.181 2.79999, -15.5919 172.181 1.35803e-08, -14.2592 172.356 1.35803e-08, -14.2592 172.356 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="811" displayName="WE701_Wall_1312">
+										<PlaneGeometry type="Rectangle">-14.2592 172.356 2.79999, -14.2592 172.356 1.35803e-08, -14.1482 172.37 1.35803e-08, -14.1482 172.37 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="812" displayName="WE701_Wall_1311">
+										<PlaneGeometry type="Rectangle">-8.13922 173.157 1.35803e-08, -8.13922 173.157 2.79999, -14.1482 172.37 2.79999, -14.1482 172.37 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="813" displayName="WE701_GroundFloor_289">
+										<PlaneGeometry type="Rectangle">-8.13922 173.157 1.35803e-08, -15.5919 172.181 1.35803e-08, -16.1524 176.46 1.35803e-08, -8.69971 177.436 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="814" displayName="WE701_Roof_267">
+										<PlaneGeometry type="Rectangle">-8.69971 177.436 2.79999, -16.1524 176.46 2.79999, -15.5919 172.181 2.79999, -8.13922 173.157 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="815" displayName="WE701_Flur">
+								<IBK:Parameter name="Area" unit="m2">14.31</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">40.08</IBK:Parameter>
+								<Surfaces>
+									<Surface id="816" displayName="WE701_Wall_1310">
+										<PlaneGeometry type="Rectangle">-13.7657 168.588 1.35803e-08, -13.7657 168.588 2.79999, -13.1772 164.095 2.79999, -13.1772 164.095 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="817" displayName="WE701_Wall_1309">
+										<PlaneGeometry type="Rectangle">-13.7787 168.687 1.35803e-08, -13.7787 168.687 2.79999, -13.7657 168.588 2.79999, -13.7657 168.588 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="818" displayName="WE701_Wall_1308">
+										<PlaneGeometry type="Rectangle">-14.0774 170.968 1.35803e-08, -14.0774 170.968 2.79999, -13.7787 168.687 2.79999, -13.7787 168.687 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="819" displayName="WE701_Wall_1307">
+										<PlaneGeometry type="Rectangle">-14.0904 171.067 1.35803e-08, -14.0904 171.067 2.79999, -14.0774 170.968 2.79999, -14.0774 170.968 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="820" displayName="WE701_Wall_1306">
+										<PlaneGeometry type="Rectangle">-14.2463 172.257 1.35803e-08, -14.2463 172.257 2.79999, -14.0904 171.067 2.79999, -14.0904 171.067 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="821" displayName="WE701_Wall_1305">
+										<PlaneGeometry type="Rectangle">-14.2463 172.257 2.79999, -14.2463 172.257 1.35803e-08, -15.5789 172.082 1.35803e-08, -15.5789 172.082 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="822" displayName="WE701_Wall_1304">
+										<PlaneGeometry type="Rectangle">-15.5789 172.082 2.79999, -15.5789 172.082 1.35803e-08, -15.6899 172.067 1.35803e-08, -15.6899 172.067 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="823" displayName="WE701_Wall_1303">
+										<PlaneGeometry type="Rectangle">-18.2652 171.73 1.35803e-08, -18.2652 171.73 2.79999, -15.6899 172.067 2.79999, -15.6899 172.067 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="824" displayName="WE701_Wall_1302">
+										<PlaneGeometry type="Rectangle">-18.1093 170.54 1.35803e-08, -18.1093 170.54 2.79999, -18.2652 171.73 2.79999, -18.2652 171.73 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="825" displayName="WE701_Wall_1301">
+										<PlaneGeometry type="Rectangle">-15.5341 170.878 1.35803e-08, -15.5341 170.878 2.79999, -18.1093 170.54 2.79999, -18.1093 170.54 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="826" displayName="WE701_Wall_1300">
+										<PlaneGeometry type="Rectangle">-15.5341 170.878 2.79999, -15.5341 170.878 1.35803e-08, -15.423 170.892 1.35803e-08, -15.423 170.892 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="827" displayName="WE701_Wall_1299">
+										<PlaneGeometry type="Rectangle">-15.41 170.793 1.35803e-08, -15.41 170.793 2.79999, -15.423 170.892 2.79999, -15.423 170.892 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="828" displayName="WE701_Wall_1298">
+										<PlaneGeometry type="Rectangle">-15.1113 168.512 1.35803e-08, -15.1113 168.512 2.79999, -15.41 170.793 2.79999, -15.41 170.793 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="829" displayName="WE701_Wall_1297">
+										<PlaneGeometry type="Rectangle">-15.0983 168.413 1.35803e-08, -15.0983 168.413 2.79999, -15.1113 168.512 2.79999, -15.1113 168.512 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="830" displayName="WE701_Wall_1296">
+										<PlaneGeometry type="Rectangle">-14.5098 163.921 1.35803e-08, -14.5098 163.921 2.79999, -15.0983 168.413 2.79999, -15.0983 168.413 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="831" displayName="WE701_Wall_1295">
+										<PlaneGeometry type="Rectangle">-14.5098 163.921 2.79999, -14.5098 163.921 1.35803e-08, -13.1772 164.095 1.35803e-08, -13.1772 164.095 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="832" displayName="WE701_GroundFloor_288">
+										<PlaneGeometry type="Polygon">-13.1772 164.095 1.35803e-08, -14.5098 163.921 1.35803e-08, -15.423 170.892 1.35803e-08, -18.1093 170.54 1.35803e-08, -18.2652 171.73 1.35803e-08, -14.2463 172.257 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="833" displayName="WE701_Roof_266">
+										<PlaneGeometry type="Polygon">-14.5098 163.921 2.79999, -13.1772 164.095 2.79999, -14.2463 172.257 2.79999, -18.2652 171.73 2.79999, -18.1093 170.54 2.79999, -15.423 170.892 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="834" displayName="WE701_Kueche">
+								<IBK:Parameter name="Area" unit="m2">22.43</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">62.79</IBK:Parameter>
+								<Surfaces>
+									<Surface id="835" displayName="WE701_Wall_1294">
+										<PlaneGeometry type="Rectangle">-15.2093 168.399 1.35803e-08, -15.2093 168.399 2.79999, -14.6208 163.906 2.79999, -14.6208 163.906 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="836" displayName="WE701_Wall_1293">
+										<PlaneGeometry type="Rectangle">-17.7846 168.061 1.35803e-08, -17.7846 168.061 2.79999, -15.2093 168.399 2.79999, -15.2093 168.399 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="837" displayName="WE701_Wall_1292">
+										<PlaneGeometry type="Rectangle">-17.7846 168.061 2.79999, -17.7846 168.061 1.35803e-08, -17.8957 168.047 1.35803e-08, -17.8957 168.047 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="838" displayName="WE701_Wall_1291">
+										<PlaneGeometry type="Rectangle">-20.1167 167.756 1.35803e-08, -20.1167 167.756 2.79999, -17.8957 168.047 2.79999, -17.8957 168.047 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="839" displayName="WE701_Wall_1290">
+										<PlaneGeometry type="Rectangle">-19.5282 163.263 1.35803e-08, -19.5282 163.263 2.79999, -20.1167 167.756 2.79999, -20.1167 167.756 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="840" displayName="WE701_Wall_1289">
+										<PlaneGeometry type="Rectangle">-14.6208 163.906 1.35803e-08, -14.6208 163.906 2.79999, -19.5282 163.263 2.79999, -19.5282 163.263 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="841" displayName="WE701_GroundFloor_287">
+										<PlaneGeometry type="Rectangle">-14.6208 163.906 1.35803e-08, -19.5282 163.263 1.35803e-08, -20.1167 167.756 1.35803e-08, -15.2093 168.399 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="842" displayName="WE701_Roof_265">
+										<PlaneGeometry type="Rectangle">-15.2093 168.399 2.79999, -20.1167 167.756 2.79999, -19.5282 163.263 2.79999, -14.6208 163.906 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="843" displayName="WE701_Bad">
+								<IBK:Parameter name="Area" unit="m2">11.38</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">31.87</IBK:Parameter>
+								<Surfaces>
+									<Surface id="844" displayName="WE701_Wall_1288">
+										<PlaneGeometry type="Rectangle">-15.5211 170.778 1.35803e-08, -15.5211 170.778 2.79999, -15.2223 168.498 2.79999, -15.2223 168.498 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="845" displayName="WE701_Wall_1287">
+										<PlaneGeometry type="Rectangle">-18.0963 170.441 1.35803e-08, -18.0963 170.441 2.79999, -15.5211 170.778 2.79999, -15.5211 170.778 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="846" displayName="WE701_Wall_1286">
+										<PlaneGeometry type="Rectangle">-18.0963 170.441 2.79999, -18.0963 170.441 1.35803e-08, -18.2074 170.427 1.35803e-08, -18.2074 170.427 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="847" displayName="WE701_Wall_1285">
+										<PlaneGeometry type="Rectangle">-20.4284 170.136 1.35803e-08, -20.4284 170.136 2.79999, -18.2074 170.427 2.79999, -18.2074 170.427 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="848" displayName="WE701_Wall_1284">
+										<PlaneGeometry type="Rectangle">-20.1297 167.855 1.35803e-08, -20.1297 167.855 2.79999, -20.4284 170.136 2.79999, -20.4284 170.136 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="849" displayName="WE701_Wall_1283">
+										<PlaneGeometry type="Rectangle">-17.9087 168.146 1.35803e-08, -17.9087 168.146 2.79999, -20.1297 167.855 2.79999, -20.1297 167.855 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="850" displayName="WE701_Wall_1282">
+										<PlaneGeometry type="Rectangle">-17.9087 168.146 2.79999, -17.9087 168.146 1.35803e-08, -17.7976 168.161 1.35803e-08, -17.7976 168.161 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="851" displayName="WE701_Wall_1281">
+										<PlaneGeometry type="Rectangle">-15.2223 168.498 1.35803e-08, -15.2223 168.498 2.79999, -17.7976 168.161 2.79999, -17.7976 168.161 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="852" displayName="WE701_GroundFloor_286">
+										<PlaneGeometry type="Rectangle">-15.2223 168.498 1.35803e-08, -20.1297 167.855 1.35803e-08, -20.4284 170.136 1.35803e-08, -15.5211 170.778 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="853" displayName="WE701_Roof_264">
+										<PlaneGeometry type="Rectangle">-15.5211 170.778 2.79999, -20.4284 170.136 2.79999, -20.1297 167.855 2.79999, -15.2223 168.498 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="854" displayName="WE701_WC">
+								<IBK:Parameter name="Area" unit="m2">2.69</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">7.53</IBK:Parameter>
+								<Surfaces>
+									<Surface id="855" displayName="WE701_Wall_1280">
+										<PlaneGeometry type="Rectangle">-18.2204 170.526 2.79999, -18.2204 170.526 1.35803e-08, -18.3763 171.716 1.35803e-08, -18.3763 171.716 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="856" displayName="WE701_Wall_1279">
+										<PlaneGeometry type="Rectangle">-20.5973 171.425 1.35803e-08, -20.5973 171.425 2.79999, -18.3763 171.716 2.79999, -18.3763 171.716 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="857" displayName="WE701_Wall_1278">
+										<PlaneGeometry type="Rectangle">-20.5973 171.425 2.79999, -20.5973 171.425 1.35803e-08, -20.4414 170.235 1.35803e-08, -20.4414 170.235 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="858" displayName="WE701_Wall_1277">
+										<PlaneGeometry type="Rectangle">-18.2204 170.526 1.35803e-08, -18.2204 170.526 2.79999, -20.4414 170.235 2.79999, -20.4414 170.235 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="859" displayName="WE701_GroundFloor_285">
+										<PlaneGeometry type="Rectangle">-20.5973 171.425 1.35803e-08, -18.3763 171.716 1.35803e-08, -18.2204 170.526 1.35803e-08, -20.4414 170.235 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="860" displayName="WE701_Roof_263">
+										<PlaneGeometry type="Rectangle">-20.4414 170.235 2.79999, -18.2204 170.526 2.79999, -18.3763 171.716 2.79999, -20.5973 171.425 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="861" displayName="WE701_Schlafen">
+								<IBK:Parameter name="Area" unit="m2">21.36</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">59.8</IBK:Parameter>
+								<Surfaces>
+									<Surface id="862" displayName="WE701_Wall_1276">
+										<PlaneGeometry type="Rectangle">-15.7029 172.167 2.79999, -15.7029 172.167 1.35803e-08, -16.2634 176.445 1.35803e-08, -16.2634 176.445 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="863" displayName="WE701_Wall_1275">
+										<PlaneGeometry type="Rectangle">-21.1708 175.802 1.35803e-08, -21.1708 175.802 2.79999, -16.2634 176.445 2.79999, -16.2634 176.445 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="864" displayName="WE701_Wall_1274">
+										<PlaneGeometry type="Rectangle">-21.1708 175.802 2.79999, -21.1708 175.802 1.35803e-08, -20.6103 171.524 1.35803e-08, -20.6103 171.524 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="865" displayName="WE701_Wall_1273">
+										<PlaneGeometry type="Rectangle">-18.3892 171.815 1.35803e-08, -18.3892 171.815 2.79999, -20.6103 171.524 2.79999, -20.6103 171.524 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="866" displayName="WE701_Wall_1272">
+										<PlaneGeometry type="Rectangle">-18.3892 171.815 2.79999, -18.3892 171.815 1.35803e-08, -18.2782 171.829 1.35803e-08, -18.2782 171.829 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="867" displayName="WE701_Wall_1271">
+										<PlaneGeometry type="Rectangle">-15.7029 172.167 1.35803e-08, -15.7029 172.167 2.79999, -18.2782 171.829 2.79999, -18.2782 171.829 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="868" displayName="WE701_GroundFloor_284">
+										<PlaneGeometry type="Rectangle">-21.1708 175.802 1.35803e-08, -16.2634 176.445 1.35803e-08, -15.7029 172.167 1.35803e-08, -20.6103 171.524 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="869" displayName="WE701_Roof_262">
+										<PlaneGeometry type="Rectangle">-20.6103 171.524 2.79999, -15.7029 172.167 2.79999, -16.2634 176.445 2.79999, -21.1708 175.802 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="870" displayName="Dach_129">
+								<IBK:Parameter name="Area" unit="m2">159.06</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">142.82</IBK:Parameter>
+								<Surfaces>
+									<Surface id="871" displayName="WE701_Roof_3">
+										<PlaneGeometry type="Triangle">-19.5282 163.263 2.99999, -18.0801 169.83 5.04369, -21.1708 175.802 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="872" displayName="WE701_Roof_2">
+										<PlaneGeometry type="Triangle">-8.69971 177.436 2.99999, -10.1478 170.869 5.04369, -7.05712 164.897 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="873" displayName="WE701_GroundFloor_8">
+										<PlaneGeometry type="Polygon">-13.0661 164.11 2.99999, -13.1772 164.095 2.99999, -14.2463 172.257 2.99999, -18.2652 171.73 2.99999, -18.1093 170.54 2.99999, -15.423 170.892 2.99999, -14.5098 163.921 2.99999, -14.6208 163.906 2.99999, -15.2093 168.399 2.99999, -20.1167 167.756 2.99999, -20.1297 167.855 2.99999, -15.2223 168.498 2.99999, -15.5211 170.778 2.99999, -20.4284 170.136 2.99999, -20.4414 170.235 2.99999, -18.2204 170.526 2.99999, -18.3763 171.716 2.99999, -20.5973 171.425 2.99999, -20.6103 171.524 2.99999, -15.7029 172.167 2.99999, -16.2634 176.445 2.99999, -16.1524 176.46 2.99999, -15.5919 172.181 2.99999, -8.13922 173.157 2.99999, -8.12623 173.058 2.99999, -14.1352 172.271 2.99999, -13.6676 168.702 2.99999, -7.65864 169.489 2.99999, -7.64564 169.39 2.99999, -13.6546 168.602 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="874" displayName="WE701_GroundFloor_7">
+										<PlaneGeometry type="Rectangle">-13.6546 168.602 2.99999, -7.64564 169.39 2.99999, -7.05712 164.897 2.99999, -13.0661 164.11 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="875" displayName="WE701_GroundFloor_3">
+										<PlaneGeometry type="Rectangle">-14.6208 163.906 2.99999, -19.5282 163.263 2.99999, -20.1167 167.756 2.99999, -15.2093 168.399 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="876" displayName="WE701_GroundFloor_6">
+										<PlaneGeometry type="Rectangle">-14.1352 172.271 2.99999, -8.12623 173.058 2.99999, -7.65864 169.489 2.99999, -13.6676 168.702 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="877" displayName="WE701_GroundFloor_5">
+										<PlaneGeometry type="Rectangle">-8.13922 173.157 2.99999, -15.5919 172.181 2.99999, -16.1524 176.46 2.99999, -8.69971 177.436 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="878" displayName="WE701_GroundFloor_4">
+										<PlaneGeometry type="Rectangle">-15.2223 168.498 2.99999, -20.1297 167.855 2.99999, -20.4284 170.136 2.99999, -15.5211 170.778 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="879" displayName="WE701_GroundFloor_2">
+										<PlaneGeometry type="Polygon">-13.1772 164.095 2.99999, -14.5098 163.921 2.99999, -15.423 170.892 2.99999, -18.1093 170.54 2.99999, -18.2652 171.73 2.99999, -14.2463 172.257 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="880" displayName="WE701_GroundFloor_1">
+										<PlaneGeometry type="Rectangle">-18.2204 170.526 2.99999, -20.4414 170.235 2.99999, -20.5973 171.425 2.99999, -18.3763 171.716 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="881" displayName="WE701_GroundFloor">
+										<PlaneGeometry type="Rectangle">-21.1708 175.802 2.99999, -16.2634 176.445 2.99999, -15.7029 172.167 2.99999, -20.6103 171.524 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="882" displayName="WE701_Roof_1">
+										<PlaneGeometry type="Polygon">-19.5282 163.263 2.99999, -7.05712 164.897 2.99999, -10.1478 170.869 5.04369, -18.0801 169.83 5.04369</PlaneGeometry>
+									</Surface>
+									<Surface id="883" displayName="WE701_Roof">
+										<PlaneGeometry type="Polygon">-8.69971 177.436 2.99999, -21.1708 175.802 2.99999, -18.0801 169.83 5.04369, -10.1478 170.869 5.04369</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="884" displayName="WE702_Zimmer">
+								<IBK:Parameter name="Area" unit="m2">27.46</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">76.89</IBK:Parameter>
+								<Surfaces>
+									<Surface id="885" displayName="WE702_Wall">
+										<PlaneGeometry type="Rectangle">-3.42887 136.876 1.35803e-08, -3.42887 136.876 2.79999, -2.84035 132.384 2.79999, -2.84035 132.384 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="886" displayName="WE702_Wall_1">
+										<PlaneGeometry type="Rectangle">-9.43783 136.089 1.35803e-08, -9.43783 136.089 2.79999, -3.42887 136.876 2.79999, -3.42887 136.876 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="887" displayName="WE702_Wall_3">
+										<PlaneGeometry type="Rectangle">-8.84932 131.597 1.35803e-08, -8.84932 131.597 2.79999, -9.43783 136.089 2.79999, -9.43783 136.089 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="888" displayName="WE702_Wall_2">
+										<PlaneGeometry type="Rectangle">-2.84035 132.384 1.35803e-08, -2.84035 132.384 2.79999, -8.84932 131.597 2.79999, -8.84932 131.597 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="889" displayName="WE702_GroundFloor">
+										<PlaneGeometry type="Rectangle">-2.84035 132.384 1.35803e-08, -8.84932 131.597 1.35803e-08, -9.43783 136.089 1.35803e-08, -3.42887 136.876 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="890" displayName="WE702_Roof">
+										<PlaneGeometry type="Rectangle">-3.42887 136.876 2.79999, -9.43783 136.089 2.79999, -8.84932 131.597 2.79999, -2.84035 132.384 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="891" displayName="WE702_Zimmer2">
+								<IBK:Parameter name="Area" unit="m2">21.82</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">61.09</IBK:Parameter>
+								<Surfaces>
+									<Surface id="892" displayName="WE702_Wall_4">
+										<PlaneGeometry type="Rectangle">-3.44186 136.976 2.79999, -3.44186 136.976 1.35803e-08, -3.90945 140.545 1.35803e-08, -3.90945 140.545 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="893" displayName="WE702_Wall_5">
+										<PlaneGeometry type="Rectangle">-9.91842 139.758 1.35803e-08, -9.91842 139.758 2.79999, -3.90945 140.545 2.79999, -3.90945 140.545 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="894" displayName="WE702_Wall_425">
+										<PlaneGeometry type="Rectangle">-9.76255 138.568 1.35803e-08, -9.76255 138.568 2.79999, -9.91842 139.758 2.79999, -9.91842 139.758 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="895" displayName="WE702_Wall_426">
+										<PlaneGeometry type="Rectangle">-9.74956 138.469 1.35803e-08, -9.74956 138.469 2.79999, -9.76255 138.568 2.79999, -9.76255 138.568 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="896" displayName="WE702_Wall_431">
+										<PlaneGeometry type="Rectangle">-9.45082 136.188 1.35803e-08, -9.45082 136.188 2.79999, -9.74956 138.469 2.79999, -9.74956 138.469 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="897" displayName="WE702_Wall_432">
+										<PlaneGeometry type="Rectangle">-3.44186 136.976 1.35803e-08, -3.44186 136.976 2.79999, -9.45082 136.188 2.79999, -9.45082 136.188 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="898" displayName="WE702_GroundFloor_1">
+										<PlaneGeometry type="Rectangle">-3.44186 136.976 1.35803e-08, -9.45082 136.188 1.35803e-08, -9.91842 139.758 1.35803e-08, -3.90945 140.545 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="899" displayName="WE702_Roof_1">
+										<PlaneGeometry type="Rectangle">-9.45082 136.188 2.79999, -3.44186 136.976 2.79999, -3.90945 140.545 2.79999, -9.91842 139.758 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="900" displayName="WE702_Wohnen">
+								<IBK:Parameter name="Area" unit="m2">32.43</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">90.82</IBK:Parameter>
+								<Surfaces>
+									<Surface id="901" displayName="WE702_Wall_434">
+										<PlaneGeometry type="Rectangle">-3.92244 140.644 2.79999, -3.92244 140.644 1.35803e-08, -4.48293 144.923 1.35803e-08, -4.48293 144.923 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="902" displayName="WE702_Wall_435">
+										<PlaneGeometry type="Rectangle">-11.9356 143.947 1.35803e-08, -11.9356 143.947 2.79999, -4.48293 144.923 2.79999, -4.48293 144.923 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="903" displayName="WE702_Wall_436">
+										<PlaneGeometry type="Rectangle">-11.9356 143.947 2.79999, -11.9356 143.947 1.35803e-08, -11.3751 139.668 1.35803e-08, -11.3751 139.668 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="904" displayName="WE702_Wall_437">
+										<PlaneGeometry type="Rectangle">-11.3751 139.668 2.79999, -11.3751 139.668 1.35803e-08, -10.0425 139.843 1.35803e-08, -10.0425 139.843 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="905" displayName="WE702_Wall_438">
+										<PlaneGeometry type="Rectangle">-10.0425 139.843 2.79999, -10.0425 139.843 1.35803e-08, -9.93141 139.857 1.35803e-08, -9.93141 139.857 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="906" displayName="WE702_Wall_439">
+										<PlaneGeometry type="Rectangle">-3.92244 140.644 1.35803e-08, -3.92244 140.644 2.79999, -9.93141 139.857 2.79999, -9.93141 139.857 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="907" displayName="WE702_GroundFloor_2">
+										<PlaneGeometry type="Rectangle">-3.92244 140.644 1.35803e-08, -11.3751 139.668 1.35803e-08, -11.9356 143.947 1.35803e-08, -4.48293 144.923 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="908" displayName="WE702_Roof_2">
+										<PlaneGeometry type="Rectangle">-4.48293 144.923 2.79999, -11.9356 143.947 2.79999, -11.3751 139.668 2.79999, -3.92244 140.644 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="909" displayName="WE702_Flur">
+								<IBK:Parameter name="Area" unit="m2">14.31</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">40.08</IBK:Parameter>
+								<Surfaces>
+									<Surface id="910" displayName="WE702_Wall_440">
+										<PlaneGeometry type="Rectangle">-9.5489 136.075 1.35803e-08, -9.5489 136.075 2.79999, -8.96038 131.582 2.79999, -8.96038 131.582 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="911" displayName="WE702_Wall_441">
+										<PlaneGeometry type="Rectangle">-9.56189 136.174 1.35803e-08, -9.56189 136.174 2.79999, -9.5489 136.075 2.79999, -9.5489 136.075 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="912" displayName="WE702_Wall_442">
+										<PlaneGeometry type="Rectangle">-9.86062 138.454 1.35803e-08, -9.86062 138.454 2.79999, -9.56189 136.174 2.79999, -9.56189 136.174 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="913" displayName="WE702_Wall_443">
+										<PlaneGeometry type="Rectangle">-9.87361 138.554 1.35803e-08, -9.87361 138.554 2.79999, -9.86062 138.454 2.79999, -9.86062 138.454 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="914" displayName="WE702_Wall_444">
+										<PlaneGeometry type="Rectangle">-10.0295 139.743 1.35803e-08, -10.0295 139.743 2.79999, -9.87361 138.554 2.79999, -9.87361 138.554 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="915" displayName="WE702_Wall_445">
+										<PlaneGeometry type="Rectangle">-10.0295 139.743 2.79999, -10.0295 139.743 1.35803e-08, -11.3621 139.569 1.35803e-08, -11.3621 139.569 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="916" displayName="WE702_Wall_446">
+										<PlaneGeometry type="Rectangle">-11.3621 139.569 2.79999, -11.3621 139.569 1.35803e-08, -11.4732 139.554 1.35803e-08, -11.4732 139.554 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="917" displayName="WE702_Wall_447">
+										<PlaneGeometry type="Rectangle">-14.0484 139.217 1.35803e-08, -14.0484 139.217 2.79999, -11.4732 139.554 2.79999, -11.4732 139.554 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="918" displayName="WE702_Wall_448">
+										<PlaneGeometry type="Rectangle">-13.8926 138.027 1.35803e-08, -13.8926 138.027 2.79999, -14.0484 139.217 2.79999, -14.0484 139.217 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="919" displayName="WE702_Wall_449">
+										<PlaneGeometry type="Rectangle">-11.3173 138.364 1.35803e-08, -11.3173 138.364 2.79999, -13.8926 138.027 2.79999, -13.8926 138.027 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="920" displayName="WE702_Wall_450">
+										<PlaneGeometry type="Rectangle">-11.3173 138.364 2.79999, -11.3173 138.364 1.35803e-08, -11.2062 138.379 1.35803e-08, -11.2062 138.379 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="921" displayName="WE702_Wall_451">
+										<PlaneGeometry type="Rectangle">-11.1932 138.28 1.35803e-08, -11.1932 138.28 2.79999, -11.2062 138.379 2.79999, -11.2062 138.379 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="922" displayName="WE702_Wall_452">
+										<PlaneGeometry type="Rectangle">-10.8945 135.999 1.35803e-08, -10.8945 135.999 2.79999, -11.1932 138.28 2.79999, -11.1932 138.28 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="923" displayName="WE702_Wall_453">
+										<PlaneGeometry type="Rectangle">-10.8815 135.9 1.35803e-08, -10.8815 135.9 2.79999, -10.8945 135.999 2.79999, -10.8945 135.999 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="924" displayName="WE702_Wall_454">
+										<PlaneGeometry type="Rectangle">-10.293 131.407 1.35803e-08, -10.293 131.407 2.79999, -10.8815 135.9 2.79999, -10.8815 135.9 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="925" displayName="WE702_Wall_455">
+										<PlaneGeometry type="Rectangle">-10.293 131.407 2.79999, -10.293 131.407 1.35803e-08, -8.96038 131.582 1.35803e-08, -8.96038 131.582 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="926" displayName="WE702_GroundFloor_3">
+										<PlaneGeometry type="Polygon">-8.96038 131.582 1.35803e-08, -10.293 131.407 1.35803e-08, -11.2062 138.379 1.35803e-08, -13.8926 138.027 1.35803e-08, -14.0484 139.217 1.35803e-08, -10.0295 139.743 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="927" displayName="WE702_Roof_3">
+										<PlaneGeometry type="Polygon">-8.96038 131.582 2.79999, -10.0295 139.743 2.79999, -14.0484 139.217 2.79999, -13.8926 138.027 2.79999, -11.2062 138.379 2.79999, -10.293 131.407 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="928" displayName="WE702_Kueche">
+								<IBK:Parameter name="Area" unit="m2">22.43</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">62.79</IBK:Parameter>
+								<Surfaces>
+									<Surface id="929" displayName="WE702_Wall_456">
+										<PlaneGeometry type="Rectangle">-10.9926 135.886 1.35803e-08, -10.9926 135.886 2.79999, -10.4041 131.393 2.79999, -10.4041 131.393 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="930" displayName="WE702_Wall_457">
+										<PlaneGeometry type="Rectangle">-13.5678 135.548 1.35803e-08, -13.5678 135.548 2.79999, -10.9926 135.886 2.79999, -10.9926 135.886 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="931" displayName="WE702_Wall_458">
+										<PlaneGeometry type="Rectangle">-13.5678 135.548 2.79999, -13.5678 135.548 1.35803e-08, -13.6789 135.534 1.35803e-08, -13.6789 135.534 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="932" displayName="WE702_Wall_459">
+										<PlaneGeometry type="Rectangle">-15.8999 135.243 1.35803e-08, -15.8999 135.243 2.79999, -13.6789 135.534 2.79999, -13.6789 135.534 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="933" displayName="WE702_Wall_460">
+										<PlaneGeometry type="Rectangle">-15.3114 130.75 1.35803e-08, -15.3114 130.75 2.79999, -15.8999 135.243 2.79999, -15.8999 135.243 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="934" displayName="WE702_Wall_461">
+										<PlaneGeometry type="Rectangle">-10.4041 131.393 1.35803e-08, -10.4041 131.393 2.79999, -15.3114 130.75 2.79999, -15.3114 130.75 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="935" displayName="WE702_GroundFloor_4">
+										<PlaneGeometry type="Rectangle">-10.4041 131.393 1.35803e-08, -15.3114 130.75 1.35803e-08, -15.8999 135.243 1.35803e-08, -10.9926 135.886 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="936" displayName="WE702_Roof_4">
+										<PlaneGeometry type="Rectangle">-10.9926 135.886 2.79999, -15.8999 135.243 2.79999, -15.3114 130.75 2.79999, -10.4041 131.393 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="937" displayName="WE702_Bad">
+								<IBK:Parameter name="Area" unit="m2">11.38</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">31.87</IBK:Parameter>
+								<Surfaces>
+									<Surface id="938" displayName="WE702_Wall_462">
+										<PlaneGeometry type="Rectangle">-11.3043 138.265 1.35803e-08, -11.3043 138.265 2.79999, -11.0056 135.985 2.79999, -11.0056 135.985 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="939" displayName="WE702_Wall_463">
+										<PlaneGeometry type="Rectangle">-13.8796 137.928 1.35803e-08, -13.8796 137.928 2.79999, -11.3043 138.265 2.79999, -11.3043 138.265 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="940" displayName="WE702_Wall_464">
+										<PlaneGeometry type="Rectangle">-13.8796 137.928 2.79999, -13.8796 137.928 1.35803e-08, -13.9906 137.913 1.35803e-08, -13.9906 137.913 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="941" displayName="WE702_Wall_465">
+										<PlaneGeometry type="Rectangle">-16.2117 137.622 1.35803e-08, -16.2117 137.622 2.79999, -13.9906 137.913 2.79999, -13.9906 137.913 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="942" displayName="WE702_Wall_466">
+										<PlaneGeometry type="Rectangle">-15.9129 135.342 1.35803e-08, -15.9129 135.342 2.79999, -16.2117 137.622 2.79999, -16.2117 137.622 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="943" displayName="WE702_Wall_467">
+										<PlaneGeometry type="Rectangle">-13.6919 135.633 1.35803e-08, -13.6919 135.633 2.79999, -15.9129 135.342 2.79999, -15.9129 135.342 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="944" displayName="WE702_Wall_468">
+										<PlaneGeometry type="Rectangle">-13.6919 135.633 2.79999, -13.6919 135.633 1.35803e-08, -13.5808 135.647 1.35803e-08, -13.5808 135.647 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="945" displayName="WE702_Wall_469">
+										<PlaneGeometry type="Rectangle">-11.0056 135.985 1.35803e-08, -11.0056 135.985 2.79999, -13.5808 135.647 2.79999, -13.5808 135.647 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="946" displayName="WE702_GroundFloor_5">
+										<PlaneGeometry type="Rectangle">-11.0056 135.985 1.35803e-08, -15.9129 135.342 1.35803e-08, -16.2117 137.622 1.35803e-08, -11.3043 138.265 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="947" displayName="WE702_Roof_5">
+										<PlaneGeometry type="Rectangle">-11.3043 138.265 2.79999, -16.2117 137.622 2.79999, -15.9129 135.342 2.79999, -11.0056 135.985 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="948" displayName="WE702_WC">
+								<IBK:Parameter name="Area" unit="m2">2.69</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">7.53</IBK:Parameter>
+								<Surfaces>
+									<Surface id="949" displayName="WE702_Wall_470">
+										<PlaneGeometry type="Rectangle">-14.0036 138.012 2.79999, -14.0036 138.012 1.35803e-08, -14.1595 139.202 1.35803e-08, -14.1595 139.202 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="950" displayName="WE702_Wall_471">
+										<PlaneGeometry type="Rectangle">-16.3805 138.911 1.35803e-08, -16.3805 138.911 2.79999, -14.1595 139.202 2.79999, -14.1595 139.202 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="951" displayName="WE702_Wall_472">
+										<PlaneGeometry type="Rectangle">-16.3805 138.911 2.79999, -16.3805 138.911 1.35803e-08, -16.2247 137.722 1.35803e-08, -16.2247 137.722 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="952" displayName="WE702_Wall_473">
+										<PlaneGeometry type="Rectangle">-14.0036 138.012 1.35803e-08, -14.0036 138.012 2.79999, -16.2247 137.722 2.79999, -16.2247 137.722 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="953" displayName="WE702_GroundFloor_6">
+										<PlaneGeometry type="Rectangle">-16.3805 138.911 1.35803e-08, -14.1595 139.202 1.35803e-08, -14.0036 138.012 1.35803e-08, -16.2247 137.722 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="954" displayName="WE702_Roof_6">
+										<PlaneGeometry type="Rectangle">-14.0036 138.012 2.79999, -14.1595 139.202 2.79999, -16.3805 138.911 2.79999, -16.2247 137.722 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="955" displayName="WE702_Schlafen">
+								<IBK:Parameter name="Area" unit="m2">21.36</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">59.8</IBK:Parameter>
+								<Surfaces>
+									<Surface id="956" displayName="WE702_Wall_474">
+										<PlaneGeometry type="Rectangle">-11.4862 139.653 2.79999, -11.4862 139.653 1.35803e-08, -12.0466 143.932 1.35803e-08, -12.0466 143.932 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="957" displayName="WE702_Wall_475">
+										<PlaneGeometry type="Rectangle">-16.954 143.289 1.35803e-08, -16.954 143.289 2.79999, -12.0466 143.932 2.79999, -12.0466 143.932 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="958" displayName="WE702_Wall_476">
+										<PlaneGeometry type="Rectangle">-16.954 143.289 2.79999, -16.954 143.289 1.35803e-08, -16.3935 139.011 1.35803e-08, -16.3935 139.011 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="959" displayName="WE702_Wall_477">
+										<PlaneGeometry type="Rectangle">-14.1725 139.301 1.35803e-08, -14.1725 139.301 2.79999, -16.3935 139.011 2.79999, -16.3935 139.011 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="960" displayName="WE702_Wall_478">
+										<PlaneGeometry type="Rectangle">-14.1725 139.301 2.79999, -14.1725 139.301 1.35803e-08, -14.0614 139.316 1.35803e-08, -14.0614 139.316 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="961" displayName="WE702_Wall_479">
+										<PlaneGeometry type="Rectangle">-11.4862 139.653 1.35803e-08, -11.4862 139.653 2.79999, -14.0614 139.316 2.79999, -14.0614 139.316 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="962" displayName="WE702_GroundFloor_7">
+										<PlaneGeometry type="Rectangle">-16.954 143.289 1.35803e-08, -12.0466 143.932 1.35803e-08, -11.4862 139.653 1.35803e-08, -16.3935 139.011 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="963" displayName="WE702_Roof_7">
+										<PlaneGeometry type="Rectangle">-16.3935 139.011 2.79999, -11.4862 139.653 2.79999, -12.0466 143.932 2.79999, -16.954 143.289 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="964" displayName="Dach_130">
+								<IBK:Parameter name="Area" unit="m2">159.06</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">142.82</IBK:Parameter>
+								<Surfaces>
+									<Surface id="965" displayName="WE702_Roof_9">
+										<PlaneGeometry type="Triangle">-15.3114 130.75 2.99999, -13.8633 137.317 5.04369, -16.954 143.289 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="966" displayName="WE702_Roof_8">
+										<PlaneGeometry type="Triangle">-4.48293 144.923 2.99999, -5.93105 138.356 5.04369, -2.84035 132.384 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="967" displayName="WE702_GroundFloor_8">
+										<PlaneGeometry type="Polygon">-8.84932 131.597 2.99999, -8.96038 131.582 2.99999, -10.0295 139.743 2.99999, -14.0484 139.217 2.99999, -13.8926 138.027 2.99999, -11.2062 138.379 2.99999, -10.293 131.407 2.99999, -10.4041 131.393 2.99999, -10.9926 135.886 2.99999, -15.8999 135.243 2.99999, -15.9129 135.342 2.99999, -11.0056 135.985 2.99999, -11.3043 138.265 2.99999, -16.2117 137.622 2.99999, -16.2247 137.722 2.99999, -14.0036 138.012 2.99999, -14.1595 139.202 2.99999, -16.3805 138.911 2.99999, -16.3935 139.011 2.99999, -11.4862 139.653 2.99999, -12.0466 143.932 2.99999, -11.9356 143.947 2.99999, -11.3751 139.668 2.99999, -3.92244 140.644 2.99999, -3.90945 140.545 2.99999, -9.91842 139.758 2.99999, -9.45082 136.188 2.99999, -3.44186 136.976 2.99999, -3.42887 136.876 2.99999, -9.43783 136.089 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="968" displayName="WE702_GroundFloor_9">
+										<PlaneGeometry type="Rectangle">-9.43783 136.089 2.99999, -3.42887 136.876 2.99999, -2.84035 132.384 2.99999, -8.84932 131.597 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="969" displayName="WE702_GroundFloor_10">
+										<PlaneGeometry type="Rectangle">-10.4041 131.393 2.99999, -15.3114 130.75 2.99999, -15.8999 135.243 2.99999, -10.9926 135.886 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="970" displayName="WE702_GroundFloor_11">
+										<PlaneGeometry type="Rectangle">-9.91842 139.758 2.99999, -3.90945 140.545 2.99999, -3.44186 136.976 2.99999, -9.45082 136.188 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="971" displayName="WE702_GroundFloor_12">
+										<PlaneGeometry type="Rectangle">-3.92244 140.644 2.99999, -11.3751 139.668 2.99999, -11.9356 143.947 2.99999, -4.48293 144.923 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="972" displayName="WE702_GroundFloor_13">
+										<PlaneGeometry type="Rectangle">-11.0056 135.985 2.99999, -15.9129 135.342 2.99999, -16.2117 137.622 2.99999, -11.3043 138.265 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="973" displayName="WE702_GroundFloor_14">
+										<PlaneGeometry type="Polygon">-8.96038 131.582 2.99999, -10.293 131.407 2.99999, -11.2062 138.379 2.99999, -13.8926 138.027 2.99999, -14.0484 139.217 2.99999, -10.0295 139.743 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="974" displayName="WE702_GroundFloor_15">
+										<PlaneGeometry type="Rectangle">-14.0036 138.012 2.99999, -16.2247 137.722 2.99999, -16.3805 138.911 2.99999, -14.1595 139.202 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="975" displayName="WE702_GroundFloor_16">
+										<PlaneGeometry type="Rectangle">-12.0466 143.932 2.99999, -11.4862 139.653 2.99999, -16.3935 139.011 2.99999, -16.954 143.289 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="976" displayName="WE702_Roof_23">
+										<PlaneGeometry type="Polygon">-15.3114 130.75 2.99999, -2.84035 132.384 2.99999, -5.93105 138.356 5.04369, -13.8633 137.317 5.04369</PlaneGeometry>
+									</Surface>
+									<Surface id="977" displayName="WE702_Roof_10">
+										<PlaneGeometry type="Polygon">-4.48293 144.923 2.99999, -16.954 143.289 2.99999, -13.8633 137.317 5.04369, -5.93105 138.356 5.04369</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="978" displayName="WE703_Zimmer">
+								<IBK:Parameter name="Area" unit="m2">27.46</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">76.89</IBK:Parameter>
+								<Surfaces>
+									<Surface id="979" displayName="WE703_Wall_479">
+										<PlaneGeometry type="Rectangle">-5.33573 151.538 1.35803e-08, -5.33573 151.538 2.79999, -4.74721 147.046 2.79999, -4.74721 147.046 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="980" displayName="WE703_Wall_478">
+										<PlaneGeometry type="Rectangle">-11.3447 150.751 1.35803e-08, -11.3447 150.751 2.79999, -5.33573 151.538 2.79999, -5.33573 151.538 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="981" displayName="WE703_Wall_477">
+										<PlaneGeometry type="Rectangle">-10.7562 146.259 1.35803e-08, -10.7562 146.259 2.79999, -11.3447 150.751 2.79999, -11.3447 150.751 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="982" displayName="WE703_Wall_476">
+										<PlaneGeometry type="Rectangle">-4.74721 147.046 1.35803e-08, -4.74721 147.046 2.79999, -10.7562 146.259 2.79999, -10.7562 146.259 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="983" displayName="WE703_GroundFloor_16">
+										<PlaneGeometry type="Rectangle">-4.74721 147.046 1.35803e-08, -10.7562 146.259 1.35803e-08, -11.3447 150.751 1.35803e-08, -5.33573 151.538 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="984" displayName="WE703_Roof_10">
+										<PlaneGeometry type="Rectangle">-5.33573 151.538 2.79999, -11.3447 150.751 2.79999, -10.7562 146.259 2.79999, -4.74721 147.046 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="985" displayName="WE703_Zimmer2">
+								<IBK:Parameter name="Area" unit="m2">21.82</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">61.09</IBK:Parameter>
+								<Surfaces>
+									<Surface id="986" displayName="WE703_Wall_475">
+										<PlaneGeometry type="Rectangle">-5.34872 151.637 2.79999, -5.34872 151.637 1.35803e-08, -5.81631 155.207 1.35803e-08, -5.81631 155.207 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="987" displayName="WE703_Wall_474">
+										<PlaneGeometry type="Rectangle">-11.8253 154.42 1.35803e-08, -11.8253 154.42 2.79999, -5.81631 155.207 2.79999, -5.81631 155.207 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="988" displayName="WE703_Wall_473">
+										<PlaneGeometry type="Rectangle">-11.6694 153.23 1.35803e-08, -11.6694 153.23 2.79999, -11.8253 154.42 2.79999, -11.8253 154.42 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="989" displayName="WE703_Wall_472">
+										<PlaneGeometry type="Rectangle">-11.6564 153.131 1.35803e-08, -11.6564 153.131 2.79999, -11.6694 153.23 2.79999, -11.6694 153.23 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="990" displayName="WE703_Wall_471">
+										<PlaneGeometry type="Rectangle">-11.3577 150.85 1.35803e-08, -11.3577 150.85 2.79999, -11.6564 153.131 2.79999, -11.6564 153.131 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="991" displayName="WE703_Wall_470">
+										<PlaneGeometry type="Rectangle">-5.34872 151.637 1.35803e-08, -5.34872 151.637 2.79999, -11.3577 150.85 2.79999, -11.3577 150.85 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="992" displayName="WE703_GroundFloor_15">
+										<PlaneGeometry type="Rectangle">-5.34872 151.637 1.35803e-08, -11.3577 150.85 1.35803e-08, -11.8253 154.42 1.35803e-08, -5.81631 155.207 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="993" displayName="WE703_Roof_23">
+										<PlaneGeometry type="Rectangle">-11.3577 150.85 2.79999, -5.34872 151.637 2.79999, -5.81631 155.207 2.79999, -11.8253 154.42 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="994" displayName="WE703_Wohnen">
+								<IBK:Parameter name="Area" unit="m2">32.43</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">90.82</IBK:Parameter>
+								<Surfaces>
+									<Surface id="995" displayName="WE703_Wall_469">
+										<PlaneGeometry type="Rectangle">-5.8293 155.306 2.79999, -5.8293 155.306 1.35803e-08, -6.38979 159.585 1.35803e-08, -6.38979 159.585 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="996" displayName="WE703_Wall_468">
+										<PlaneGeometry type="Rectangle">-13.8424 158.609 1.35803e-08, -13.8424 158.609 2.79999, -6.38979 159.585 2.79999, -6.38979 159.585 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="997" displayName="WE703_Wall_467">
+										<PlaneGeometry type="Rectangle">-13.8424 158.609 2.79999, -13.8424 158.609 1.35803e-08, -13.2819 154.33 1.35803e-08, -13.2819 154.33 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="998" displayName="WE703_Wall_466">
+										<PlaneGeometry type="Rectangle">-13.2819 154.33 2.79999, -13.2819 154.33 1.35803e-08, -11.9493 154.504 1.35803e-08, -11.9493 154.504 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="999" displayName="WE703_Wall_465">
+										<PlaneGeometry type="Rectangle">-11.9493 154.504 2.79999, -11.9493 154.504 1.35803e-08, -11.8383 154.519 1.35803e-08, -11.8383 154.519 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="1000" displayName="WE703_Wall_464">
+										<PlaneGeometry type="Rectangle">-5.8293 155.306 1.35803e-08, -5.8293 155.306 2.79999, -11.8383 154.519 2.79999, -11.8383 154.519 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1001" displayName="WE703_GroundFloor_14">
+										<PlaneGeometry type="Rectangle">-5.8293 155.306 1.35803e-08, -13.2819 154.33 1.35803e-08, -13.8424 158.609 1.35803e-08, -6.38979 159.585 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1002" displayName="WE703_Roof_8">
+										<PlaneGeometry type="Rectangle">-6.38979 159.585 2.79999, -13.8424 158.609 2.79999, -13.2819 154.33 2.79999, -5.8293 155.306 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="1003" displayName="WE703_Flur">
+								<IBK:Parameter name="Area" unit="m2">14.31</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">40.08</IBK:Parameter>
+								<Surfaces>
+									<Surface id="1004" displayName="WE703_Wall_463">
+										<PlaneGeometry type="Rectangle">-11.4558 150.737 1.35803e-08, -11.4558 150.737 2.79999, -10.8672 146.244 2.79999, -10.8672 146.244 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1005" displayName="WE703_Wall_462">
+										<PlaneGeometry type="Rectangle">-11.4688 150.836 1.35803e-08, -11.4688 150.836 2.79999, -11.4558 150.737 2.79999, -11.4558 150.737 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1006" displayName="WE703_Wall_461">
+										<PlaneGeometry type="Rectangle">-11.7675 153.116 1.35803e-08, -11.7675 153.116 2.79999, -11.4688 150.836 2.79999, -11.4688 150.836 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1007" displayName="WE703_Wall_460">
+										<PlaneGeometry type="Rectangle">-11.7805 153.215 1.35803e-08, -11.7805 153.215 2.79999, -11.7675 153.116 2.79999, -11.7675 153.116 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1008" displayName="WE703_Wall_459">
+										<PlaneGeometry type="Rectangle">-11.9363 154.405 1.35803e-08, -11.9363 154.405 2.79999, -11.7805 153.215 2.79999, -11.7805 153.215 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1009" displayName="WE703_Wall_458">
+										<PlaneGeometry type="Rectangle">-11.9363 154.405 2.79999, -11.9363 154.405 1.35803e-08, -13.269 154.231 1.35803e-08, -13.269 154.231 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="1010" displayName="WE703_Wall_457">
+										<PlaneGeometry type="Rectangle">-13.269 154.231 2.79999, -13.269 154.231 1.35803e-08, -13.38 154.216 1.35803e-08, -13.38 154.216 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="1011" displayName="WE703_Wall_456">
+										<PlaneGeometry type="Rectangle">-15.9553 153.879 1.35803e-08, -15.9553 153.879 2.79999, -13.38 154.216 2.79999, -13.38 154.216 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1012" displayName="WE703_Wall_455">
+										<PlaneGeometry type="Rectangle">-15.7994 152.689 1.35803e-08, -15.7994 152.689 2.79999, -15.9553 153.879 2.79999, -15.9553 153.879 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1013" displayName="WE703_Wall_454">
+										<PlaneGeometry type="Rectangle">-13.2242 153.026 1.35803e-08, -13.2242 153.026 2.79999, -15.7994 152.689 2.79999, -15.7994 152.689 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1014" displayName="WE703_Wall_453">
+										<PlaneGeometry type="Rectangle">-13.2242 153.026 2.79999, -13.2242 153.026 1.35803e-08, -13.1131 153.041 1.35803e-08, -13.1131 153.041 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="1015" displayName="WE703_Wall_452">
+										<PlaneGeometry type="Rectangle">-13.1001 152.942 1.35803e-08, -13.1001 152.942 2.79999, -13.1131 153.041 2.79999, -13.1131 153.041 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1016" displayName="WE703_Wall_451">
+										<PlaneGeometry type="Rectangle">-12.8014 150.661 1.35803e-08, -12.8014 150.661 2.79999, -13.1001 152.942 2.79999, -13.1001 152.942 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1017" displayName="WE703_Wall_450">
+										<PlaneGeometry type="Rectangle">-12.7884 150.562 1.35803e-08, -12.7884 150.562 2.79999, -12.8014 150.661 2.79999, -12.8014 150.661 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1018" displayName="WE703_Wall_449">
+										<PlaneGeometry type="Rectangle">-12.1999 146.069 1.35803e-08, -12.1999 146.069 2.79999, -12.7884 150.562 2.79999, -12.7884 150.562 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1019" displayName="WE703_Wall_448">
+										<PlaneGeometry type="Rectangle">-12.1999 146.069 2.79999, -12.1999 146.069 1.35803e-08, -10.8672 146.244 1.35803e-08, -10.8672 146.244 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="1020" displayName="WE703_GroundFloor_13">
+										<PlaneGeometry type="Polygon">-10.8672 146.244 1.35803e-08, -12.1999 146.069 1.35803e-08, -13.1131 153.041 1.35803e-08, -15.7994 152.689 1.35803e-08, -15.9553 153.879 1.35803e-08, -11.9363 154.405 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1021" displayName="WE703_Roof_9">
+										<PlaneGeometry type="Polygon">-12.1999 146.069 2.79999, -10.8672 146.244 2.79999, -11.9363 154.405 2.79999, -15.9553 153.879 2.79999, -15.7994 152.689 2.79999, -13.1131 153.041 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="1022" displayName="WE703_Kueche">
+								<IBK:Parameter name="Area" unit="m2">22.43</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">62.79</IBK:Parameter>
+								<Surfaces>
+									<Surface id="1023" displayName="WE703_Wall_447">
+										<PlaneGeometry type="Rectangle">-12.8994 150.548 1.35803e-08, -12.8994 150.548 2.79999, -12.3109 146.055 2.79999, -12.3109 146.055 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1024" displayName="WE703_Wall_446">
+										<PlaneGeometry type="Rectangle">-15.4747 150.21 1.35803e-08, -15.4747 150.21 2.79999, -12.8994 150.548 2.79999, -12.8994 150.548 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1025" displayName="WE703_Wall_445">
+										<PlaneGeometry type="Rectangle">-15.4747 150.21 2.79999, -15.4747 150.21 1.35803e-08, -15.5858 150.196 1.35803e-08, -15.5858 150.196 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="1026" displayName="WE703_Wall_444">
+										<PlaneGeometry type="Rectangle">-17.8068 149.905 1.35803e-08, -17.8068 149.905 2.79999, -15.5858 150.196 2.79999, -15.5858 150.196 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1027" displayName="WE703_Wall_443">
+										<PlaneGeometry type="Rectangle">-17.2183 145.412 1.35803e-08, -17.2183 145.412 2.79999, -17.8068 149.905 2.79999, -17.8068 149.905 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1028" displayName="WE703_Wall_442">
+										<PlaneGeometry type="Rectangle">-12.3109 146.055 1.35803e-08, -12.3109 146.055 2.79999, -17.2183 145.412 2.79999, -17.2183 145.412 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1029" displayName="WE703_GroundFloor_12">
+										<PlaneGeometry type="Rectangle">-12.3109 146.055 1.35803e-08, -17.2183 145.412 1.35803e-08, -17.8068 149.905 1.35803e-08, -12.8994 150.548 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1030" displayName="WE703_Roof_7">
+										<PlaneGeometry type="Rectangle">-12.8994 150.548 2.79999, -17.8068 149.905 2.79999, -17.2183 145.412 2.79999, -12.3109 146.055 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="1031" displayName="WE703_Bad">
+								<IBK:Parameter name="Area" unit="m2">11.38</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">31.87</IBK:Parameter>
+								<Surfaces>
+									<Surface id="1032" displayName="WE703_Wall_441">
+										<PlaneGeometry type="Rectangle">-13.2112 152.927 1.35803e-08, -13.2112 152.927 2.79999, -12.9124 150.647 2.79999, -12.9124 150.647 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1033" displayName="WE703_Wall_440">
+										<PlaneGeometry type="Rectangle">-15.7864 152.59 1.35803e-08, -15.7864 152.59 2.79999, -13.2112 152.927 2.79999, -13.2112 152.927 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1034" displayName="WE703_Wall_439">
+										<PlaneGeometry type="Rectangle">-15.7864 152.59 2.79999, -15.7864 152.59 1.35803e-08, -15.8975 152.575 1.35803e-08, -15.8975 152.575 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="1035" displayName="WE703_Wall_438">
+										<PlaneGeometry type="Rectangle">-18.1185 152.284 1.35803e-08, -18.1185 152.284 2.79999, -15.8975 152.575 2.79999, -15.8975 152.575 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1036" displayName="WE703_Wall_437">
+										<PlaneGeometry type="Rectangle">-17.8198 150.004 1.35803e-08, -17.8198 150.004 2.79999, -18.1185 152.284 2.79999, -18.1185 152.284 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1037" displayName="WE703_Wall_436">
+										<PlaneGeometry type="Rectangle">-15.5988 150.295 1.35803e-08, -15.5988 150.295 2.79999, -17.8198 150.004 2.79999, -17.8198 150.004 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1038" displayName="WE703_Wall_435">
+										<PlaneGeometry type="Rectangle">-15.5988 150.295 2.79999, -15.5988 150.295 1.35803e-08, -15.4877 150.309 1.35803e-08, -15.4877 150.309 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="1039" displayName="WE703_Wall_434">
+										<PlaneGeometry type="Rectangle">-12.9124 150.647 1.35803e-08, -12.9124 150.647 2.79999, -15.4877 150.309 2.79999, -15.4877 150.309 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1040" displayName="WE703_GroundFloor_11">
+										<PlaneGeometry type="Rectangle">-12.9124 150.647 1.35803e-08, -17.8198 150.004 1.35803e-08, -18.1185 152.284 1.35803e-08, -13.2112 152.927 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1041" displayName="WE703_Roof_6">
+										<PlaneGeometry type="Rectangle">-13.2112 152.927 2.79999, -18.1185 152.284 2.79999, -17.8198 150.004 2.79999, -12.9124 150.647 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="1042" displayName="WE703_WC">
+								<IBK:Parameter name="Area" unit="m2">2.69</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">7.53</IBK:Parameter>
+								<Surfaces>
+									<Surface id="1043" displayName="WE703_Wall_432">
+										<PlaneGeometry type="Rectangle">-15.9105 152.674 2.79999, -15.9105 152.674 1.35803e-08, -16.0664 153.864 1.35803e-08, -16.0664 153.864 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="1044" displayName="WE703_Wall_431">
+										<PlaneGeometry type="Rectangle">-18.2874 153.573 1.35803e-08, -18.2874 153.573 2.79999, -16.0664 153.864 2.79999, -16.0664 153.864 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1045" displayName="WE703_Wall_426">
+										<PlaneGeometry type="Rectangle">-18.2874 153.573 2.79999, -18.2874 153.573 1.35803e-08, -18.1315 152.383 1.35803e-08, -18.1315 152.383 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="1046" displayName="WE703_Wall_425">
+										<PlaneGeometry type="Rectangle">-15.9105 152.674 1.35803e-08, -15.9105 152.674 2.79999, -18.1315 152.383 2.79999, -18.1315 152.383 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1047" displayName="WE703_GroundFloor_10">
+										<PlaneGeometry type="Rectangle">-18.2874 153.573 1.35803e-08, -16.0664 153.864 1.35803e-08, -15.9105 152.674 1.35803e-08, -18.1315 152.383 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1048" displayName="WE703_Roof_5">
+										<PlaneGeometry type="Rectangle">-18.1315 152.383 2.79999, -15.9105 152.674 2.79999, -16.0664 153.864 2.79999, -18.2874 153.573 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="1049" displayName="WE703_Schlafen">
+								<IBK:Parameter name="Area" unit="m2">21.36</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">59.8</IBK:Parameter>
+								<Surfaces>
+									<Surface id="1050" displayName="WE703_Wall_5">
+										<PlaneGeometry type="Rectangle">-13.393 154.315 2.79999, -13.393 154.315 1.35803e-08, -13.9535 158.594 1.35803e-08, -13.9535 158.594 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="1051" displayName="WE703_Wall_4">
+										<PlaneGeometry type="Rectangle">-18.8608 157.951 1.35803e-08, -18.8608 157.951 2.79999, -13.9535 158.594 2.79999, -13.9535 158.594 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1052" displayName="WE703_Wall_2">
+										<PlaneGeometry type="Rectangle">-18.8608 157.951 2.79999, -18.8608 157.951 1.35803e-08, -18.3004 153.672 1.35803e-08, -18.3004 153.672 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="1053" displayName="WE703_Wall_3">
+										<PlaneGeometry type="Rectangle">-16.0793 153.963 1.35803e-08, -16.0793 153.963 2.79999, -18.3004 153.672 2.79999, -18.3004 153.672 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1054" displayName="WE703_Wall_1">
+										<PlaneGeometry type="Rectangle">-16.0793 153.963 2.79999, -16.0793 153.963 1.35803e-08, -15.9683 153.978 1.35803e-08, -15.9683 153.978 2.79999</PlaneGeometry>
+									</Surface>
+									<Surface id="1055" displayName="WE703_Wall">
+										<PlaneGeometry type="Rectangle">-13.393 154.315 1.35803e-08, -13.393 154.315 2.79999, -15.9683 153.978 2.79999, -15.9683 153.978 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1056" displayName="WE703_GroundFloor_9">
+										<PlaneGeometry type="Rectangle">-18.8608 157.951 1.35803e-08, -13.9535 158.594 1.35803e-08, -13.393 154.315 1.35803e-08, -18.3004 153.672 1.35803e-08</PlaneGeometry>
+									</Surface>
+									<Surface id="1057" displayName="WE703_Roof_4">
+										<PlaneGeometry type="Rectangle">-18.3004 153.672 2.79999, -13.393 154.315 2.79999, -13.9535 158.594 2.79999, -18.8608 157.951 2.79999</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="1058" displayName="Dach_12">
+								<IBK:Parameter name="Area" unit="m2">159.06</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">142.82</IBK:Parameter>
+								<Surfaces>
+									<Surface id="1059" displayName="WE703_Roof_3">
+										<PlaneGeometry type="Triangle">-17.2183 145.412 2.99999, -15.7702 151.979 5.04369, -18.8608 157.951 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="1060" displayName="WE703_Roof_2">
+										<PlaneGeometry type="Triangle">-6.38979 159.585 2.99999, -7.83791 153.018 5.04369, -4.74721 147.046 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="1061" displayName="WE703_GroundFloor_8">
+										<PlaneGeometry type="Polygon">-10.7562 146.259 2.99999, -10.8672 146.244 2.99999, -11.9363 154.405 2.99999, -15.9553 153.879 2.99999, -15.7994 152.689 2.99999, -13.1131 153.041 2.99999, -12.1999 146.069 2.99999, -12.3109 146.055 2.99999, -12.8994 150.548 2.99999, -17.8068 149.905 2.99999, -17.8198 150.004 2.99999, -12.9124 150.647 2.99999, -13.2112 152.927 2.99999, -18.1185 152.284 2.99999, -18.1315 152.383 2.99999, -15.9105 152.674 2.99999, -16.0664 153.864 2.99999, -18.2874 153.573 2.99999, -18.3004 153.672 2.99999, -13.393 154.315 2.99999, -13.9535 158.594 2.99999, -13.8424 158.609 2.99999, -13.2819 154.33 2.99999, -5.8293 155.306 2.99999, -5.81631 155.207 2.99999, -11.8253 154.42 2.99999, -11.3577 150.85 2.99999, -5.34872 151.637 2.99999, -5.33573 151.538 2.99999, -11.3447 150.751 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="1062" displayName="WE703_GroundFloor_7">
+										<PlaneGeometry type="Rectangle">-11.3447 150.751 2.99999, -5.33573 151.538 2.99999, -4.74721 147.046 2.99999, -10.7562 146.259 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="1063" displayName="WE703_GroundFloor_6">
+										<PlaneGeometry type="Rectangle">-12.3109 146.055 2.99999, -17.2183 145.412 2.99999, -17.8068 149.905 2.99999, -12.8994 150.548 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="1064" displayName="WE703_GroundFloor_5">
+										<PlaneGeometry type="Rectangle">-11.8253 154.42 2.99999, -5.81631 155.207 2.99999, -5.34872 151.637 2.99999, -11.3577 150.85 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="1065" displayName="WE703_GroundFloor_4">
+										<PlaneGeometry type="Rectangle">-6.38979 159.585 2.99999, -5.8293 155.306 2.99999, -13.2819 154.33 2.99999, -13.8424 158.609 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="1066" displayName="WE703_GroundFloor_3">
+										<PlaneGeometry type="Rectangle">-12.9124 150.647 2.99999, -17.8198 150.004 2.99999, -18.1185 152.284 2.99999, -13.2112 152.927 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="1067" displayName="WE703_GroundFloor_2">
+										<PlaneGeometry type="Polygon">-10.8672 146.244 2.99999, -12.1999 146.069 2.99999, -13.1131 153.041 2.99999, -15.7994 152.689 2.99999, -15.9553 153.879 2.99999, -11.9363 154.405 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="1068" displayName="WE703_GroundFloor_1">
+										<PlaneGeometry type="Rectangle">-15.9105 152.674 2.99999, -18.1315 152.383 2.99999, -18.2874 153.573 2.99999, -16.0664 153.864 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="1069" displayName="WE703_GroundFloor">
+										<PlaneGeometry type="Rectangle">-18.8608 157.951 2.99999, -13.9535 158.594 2.99999, -13.393 154.315 2.99999, -18.3004 153.672 2.99999</PlaneGeometry>
+									</Surface>
+									<Surface id="1070" displayName="WE703_Roof_1">
+										<PlaneGeometry type="Polygon">-17.2183 145.412 2.99999, -4.74721 147.046 2.99999, -7.83791 153.018 5.04369, -15.7702 151.979 5.04369</PlaneGeometry>
+									</Surface>
+									<Surface id="1071" displayName="WE703_Roof">
+										<PlaneGeometry type="Polygon">-6.38979 159.585 2.99999, -18.8608 157.951 2.99999, -15.7702 151.979 5.04369, -7.83791 153.018 5.04369</PlaneGeometry>
+									</Surface>
+									<Surface id="292" displayName="New surface">
+										<PlaneGeometry type="Polygon">-17.2183 145.412 2.99999, -4.74721 147.046 2.99999, -7.83791 153.018 5.04369, -15.7702 151.979 5.04378</PlaneGeometry>
+									</Surface>
+									<Surface id="293" displayName="New surface">
+										<PlaneGeometry type="Polygon">-6.38979 159.585 2.99999, -18.8608 157.951 2.99999, -15.7702 151.979 5.04369, -7.83791 153.018 5.04378</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+						</Rooms>
+					</BuildingLevel>
+				</BuildingLevels>
+			</Building>
+		</Buildings>
+		<ComponentInstances>
+			<ComponentInstance id="1" componentID="1001" sideBSurfaceID="292" />
+			<ComponentInstance id="2" componentID="1001" sideBSurfaceID="293" />
+		</ComponentInstances>
+	</Project>
+</VicusProject>
