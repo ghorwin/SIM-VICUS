@@ -66,7 +66,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 			// we only change data properties of existing nodes and emit itemChanged() signals, so
 			// that the view updates its content
 
-			qDebug() << "Start processing NodeStateModified";
+//			qDebug() << "Start processing NodeStateModified";
 
 			// first decode the modification info object
 			const SVUndoTreeNodeState::ModifiedNodes * info = dynamic_cast<SVUndoTreeNodeState::ModifiedNodes *>(data);
@@ -147,7 +147,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 			}
 #endif
 			m_ui->treeWidget->update();
-			qDebug() << "End processing NodeStateModified";
+//			qDebug() << "End processing NodeStateModified";
 			return; // nothing else to do here
 		}
 
