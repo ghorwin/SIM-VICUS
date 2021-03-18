@@ -154,8 +154,6 @@ void Vic3DScene::onModified(int modificationType, ModificationInfo * data) {
 			const SVUndoTreeNodeState::ModifiedNodes * info = dynamic_cast<SVUndoTreeNodeState::ModifiedNodes *>(data);
 			Q_ASSERT(info != nullptr);
 
-//			qDebug() << "Updating color buffer and transferring data to GPU";
-
 			// finally, transfer only the modified portion of the color buffer to GPU memory
 			refreshColors();
 			if (updateOpaqueGeometryNeeded)
@@ -950,6 +948,8 @@ void Vic3DScene::refreshColors() {
 
 
 void Vic3DScene::generateBuildingGeometry() {
+	QElapsedTimer t;
+	t.start();
 	// get VICUS project data
 	const VICUS::Project & p = project();
 
@@ -1015,6 +1015,8 @@ void Vic3DScene::generateBuildingGeometry() {
 				   m_opaqueGeometryObject.m_indexBufferData);
 	}
 
+	if (t.elapsed() > 20)
+		qDebug() << t.elapsed() << "ms for building generation";
 }
 
 
@@ -1083,7 +1085,8 @@ void Vic3DScene::generateNetworkGeometry() {
 		}
 	}
 
-	qDebug() << t.elapsed() << "ms for network generation";
+	if (t.elapsed() > 20)
+		qDebug() << t.elapsed() << "ms for network generation";
 }
 
 
