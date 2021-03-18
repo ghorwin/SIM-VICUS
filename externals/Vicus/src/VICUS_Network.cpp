@@ -19,7 +19,7 @@
 #include "VICUS_NetworkPipe.h"
 #include "VICUS_Project.h"
 
-
+#define PI				3.141592653589793238
 
 namespace VICUS {
 
@@ -532,6 +532,9 @@ FUNCID(Network::sizePipeDimensions);
 			largestPipe = pipe;
 	}
 
+	double rho = fluid->m_para[NetworkFluid::P_Density].value;
+	double kinvis = fluid->m_kinematicViscosity.m_values.value(m_para[P_TemperatureSetpoint].get_value("C"));
+	double cp = fluid->m_para[NetworkFluid::P_HeatCapacity].value;
 
 	// for each edge: find the smallest pipe from DB that has a pressure loss below deltapMax
 	double deltaPMax = m_para[P_MaxPressureLoss].get_value("Pa/m");
@@ -539,10 +542,14 @@ FUNCID(Network::sizePipeDimensions);
 		const NetworkPipe * currentPipe = nullptr; // here we store the candidate for the pipe to use
 
 		for (const NetworkPipe * pipe : availablePipes){
-			double massFlow = e.m_maxHeatingDemand / (m_para[P_TemperatureDifference].get_value("K")
-													  * fluid->m_para[NetworkFluid::P_HeatCapacity].get_value("J/kgK"));
+			double massFlow = e.m_maxHeatingDemand / (m_para[P_TemperatureDifference].get_value("K") * cp);
+			double di = pipe->diameterInside() / 1000;
+			double area = PI/4 * di * di;
+			double vel = massFlow / (rho * area);
+			double re = ReynoldsNumber(vel, kinvis, di);
 			//  pressure loss per length (Pa/m)
-			double dp = pressureLossColebrook(1.0, massFlow, fluid, *pipe, m_para[P_TemperatureSetpoint].get_value("C"));
+			double zeta = 1.0 / di * FrictionFactorSwamee(re, di, pipe->m_roughness);
+			double dp = zeta * rho/2 * vel * vel;
 			// select smallest possible pipe
 			if (dp < deltaPMax){
 				// if still unset, use this pipe
@@ -624,26 +631,6 @@ void Network::updateExtends() {
 	m_extends.set(minX, minY, maxX, maxY);
 }
 
-
-// TODO Hauke: this will be moved to NANDRAD Solver later (with a different interface)
-double Network::pressureLossColebrook(const double &length, const double &massFlow, const NetworkFluid *fluid,
-										const NetworkPipe &pipe, const double &temperature){
-
-	double velocity = massFlow / (fluid->m_para[NetworkFluid::P_Density].value * pipe.diameterInside()/1000
-			* pipe.diameterInside()/1000  * 3.14159 / 4);
-	double Re = velocity * pipe.diameterInside()/1000 / fluid->m_kinematicViscosity.m_values.value(temperature);
-	double lambda = 0.05;
-	double lambda_new = lambda;
-	for (unsigned n=0; n<100; ++n){
-		lambda_new = std::pow(-2 * std::log10(2.51 / (Re * std::sqrt(lambda)) + pipe.m_roughness/1000 /
-											  (3.71 * pipe.diameterInside()/1000 )), -2);
-		if (abs(lambda_new - lambda) / lambda < 1e-3)
-			break;
-		lambda = lambda_new;
-	}
-	return lambda_new * length / (pipe.diameterInside()/1000)  * fluid->m_para[NetworkFluid::P_Density].value
-			/ 2 * velocity * velocity;
-}
 
 IBKMK::Vector3D Network::origin() const
 {
@@ -731,5 +718,34 @@ void Network::writeBuildingsCSV(const IBK::Path &file) const {
 }
 
 
+
+// *** copy from NM_Physics ***
+
+double Network::ReynoldsNumber(const double &v, const double &kinVis, const double &d)
+{
+	return  v * d / kinVis;
+}
+
+/*! Reynolds number where flow switches from laminar to transition state. */
+#define RE_LAMINAR		1700
+
+/*! Reynolds number where flow switches from transition state to turbulent */
+#define RE_TURBULENT	4000
+
+double Network::FrictionFactorSwamee(const double &reynolds, const double &diameter, const double &roughness){
+	if (reynolds < RE_LAMINAR)
+		return 64/reynolds;
+	else if (reynolds < RE_TURBULENT){
+		double fLam = 64/RE_LAMINAR; // f(RE_LAMINAR)
+		double fTurb = std::log10((roughness / diameter) / 3.7 + 5.74 / std::pow(RE_TURBULENT, 0.9) );
+		fTurb = 0.25/(fTurb*fTurb); // f(RE_TURBULENT)
+		// now interpolate linearly between fLam and fTurb
+		return fLam + (reynolds - RE_LAMINAR) * (fTurb - fLam) / (RE_TURBULENT - RE_LAMINAR);
+	}
+	else{
+		double f = std::log10( (roughness / diameter) / 3.7 + 5.74 / std::pow(reynolds, 0.9) ) ;
+		return	0.25 / (f*f);
+	}
+}
 
 } // namespace VICUS

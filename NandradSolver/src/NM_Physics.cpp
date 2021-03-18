@@ -65,9 +65,9 @@ double PrandtlNumber(const double &kinVis, const double &cp, const double &lambd
 	return kinVis * cp * rho / lambda;
 }
 
-double ReynoldsNumber(const double &v, const double &kinVis, const double &l)
+double ReynoldsNumber(const double &v, const double &kinVis, const double &d)
 {
-	return  v * l / kinVis;
+	return  v * d / kinVis;
 }
 
 

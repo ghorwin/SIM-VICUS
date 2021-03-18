@@ -137,14 +137,6 @@ public:
 	/*! Recomputes the min/max coordinates of the network and updates m_extends. */
 	void updateExtends();
 
-	/*! pressure loss of a rough pipe according to colebrook equation, calcualtion is iterative
-	 \param length in [m]
-	 \param massFlow in [kg/s]
-	 \param temperature in [C]
-	 */
-	static double pressureLossColebrook(const double &length, const double &massFlow, const NetworkFluid *fluid,
-										const NetworkPipe &pipe, const double &temperature);
-
 	IBKMK::Vector3D origin() const;
 
 	/*! set m_origin and normalize all position to this origin */
@@ -177,7 +169,7 @@ public:
 	unsigned int					m_id = INVALID_ID;							// XML:A:required
 
 	/*! fluid id */
-	unsigned int					m_fluidID = INVALID_ID;						// XML:A:required
+	unsigned int					m_fluidID = INVALID_ID;						// XML:A
 
 	/*! network name */
 	std::string						m_name;										// XML:A
@@ -240,6 +232,18 @@ private:
 	/*! addNode using Node constructor */
 	unsigned addNode(const NetworkNode & node, const bool considerCoordinates=true);
 
+	/*! Calculates Reynolds number of a moving fluid.
+	\param v mean fluid flow velocity
+	\param kinVis fluid kinematic viscosity
+	\param l characteristic length
+	THIS IS A COPY FROM NM_PHYSICS
+	*/
+	static double ReynoldsNumber(const double &v, const double &kinVis, const double &l);
+
+	/*! friction factor according to swamee-jain euqation (approximation of colebrook-white)
+	THIS IS A COPY FROM NM_PHYSICS
+	*/
+	static double FrictionFactorSwamee(const double &reynolds, const double &diameter, const double &roughness);
 };
 
 } // namespace VICUS

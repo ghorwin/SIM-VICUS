@@ -184,25 +184,21 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	objList.m_filterID = ids;
 	objList.m_name = "the objects";
 
-	NANDRAD::OutputDefinition def;
-	def.m_quantity = "FluidMassFlux";
-	NANDRAD::OutputDefinition def2;
-	def2.m_quantity = "InletNodePressure";
-	NANDRAD::OutputDefinition def3;
-	def3.m_quantity = "InletNodeTemperature";
-
 	NANDRAD::Outputs outputs;
 	outputs.m_timeUnit = IBK::Unit("h");
-	outputs.m_definitions.push_back(def);
-	outputs.m_definitions.push_back(def2);
-	outputs.m_definitions.push_back(def3);
-	for (auto &def: outputs.m_definitions){
+	std::vector<std::string> quantities = {"FluidMassFlux", "InletNodePressure", "OutletNodePressure",
+										   "OutletNodeTemperature"};
+
+	for (std::string &q: quantities){
+		NANDRAD::OutputDefinition def;
+		def.m_quantity = q;
 		def.m_timeType = NANDRAD::OutputDefinition::OTT_NONE;
 		def.m_gridName = grid.m_name;
 		def.m_objectListName = objList.m_name;
+
+		outputs.m_definitions.push_back(def);
 	}
 	outputs.m_grids.push_back(grid);
-
 	p.m_outputs = outputs;
 	p.m_objectLists.push_back(objList);
 
@@ -341,7 +337,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		// small hack to get component name in display name
 		const VICUS::NetworkComponent *comp = db.m_networkComponents[elem.m_componentId];
 		Q_ASSERT(comp!=nullptr);
-		elem.m_displayName = IBK::FormatString("%1_%2 %3").arg(comp->m_displayName.string()).arg(elem.m_id).arg(elem.m_displayName).str();
+		elem.m_displayName = IBK::FormatString("%1_%2_%3").arg(comp->m_displayName.string()).arg(elem.m_id).arg(elem.m_displayName).str();
 
 
 		// transform heatExchange properties
@@ -398,7 +394,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		inletPipe.m_heatExchange = edge->m_heatExchange.toNandradHeatExchange();
 
 		// small hack to get component name in display name
-		inletPipe.m_displayName = IBK::FormatString("%1_%2 %3").arg(comp->m_displayName.string())
+		inletPipe.m_displayName = IBK::FormatString("%1_%2_%3").arg(comp->m_displayName.string())
 									.arg(inletPipe.m_id).arg(inletPipe.m_displayName).str();
 
 		nandradNetwork.m_elements.push_back(inletPipe);
@@ -414,7 +410,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		outletPipe.m_heatExchange = edge->m_heatExchange.toNandradHeatExchange();
 
 		// small hack to get component name in display name
-		outletPipe.m_displayName = IBK::FormatString("%1_%2 %3").arg(comp->m_displayName.string())
+		outletPipe.m_displayName = IBK::FormatString("%1_%2_%3").arg(comp->m_displayName.string())
 									.arg(outletPipe.m_id).arg(outletPipe.m_displayName).str();
 
 		nandradNetwork.m_elements.push_back(outletPipe);
