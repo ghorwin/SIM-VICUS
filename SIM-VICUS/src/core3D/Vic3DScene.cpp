@@ -1658,8 +1658,8 @@ void Vic3DScene::pick(PickObject & pickObject) {
 			if (linePointDist < no.m_visualizationRadius) {
 				PickObject::PickResult r;
 				r.m_snapPointType = PickObject::RT_Object;
-				r.m_depth = dist;
-				r.m_pickPoint = closestPoint;
+				r.m_depth = dist; // the depth to the point on the line-of-sight that is closest to the sphere's center point
+				r.m_pickPoint = closestPoint; // this
 				r.m_uniqueObjectID = no.uniqueID();
 				pickObject.m_candidates.push_back(r);
 			}

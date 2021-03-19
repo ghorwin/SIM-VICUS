@@ -101,12 +101,40 @@ double lineToPointDistance(const IBKMK::Vector3D & a, const IBKMK::Vector3D & d,
 
 	// scalar product (projection of v on d) gives scale factor
 	lineFactor = v.scalarProduct(d);
+	double directionVectorProjection = d.scalarProduct(d); // magnitude squared
+
+	lineFactor /= directionVectorProjection; // normalize line factor
 
 	// compute "lotpunkt"
 	p2 = a + lineFactor * d;
 
 	// return distance between lotpunkt and target point
 	return (p2-p).magnitude();
+}
+
+
+bool lineShereIntersection(const Vector3D & a, const Vector3D & d, const Vector3D & p, double r,
+						   double & lineFactor, Vector3D & lotpoint)
+{
+	// compute lotpoint and distance between line and sphere center
+	double lineFactorToLotPoint;
+	double distanceLineToSphereCenter = lineToPointDistance(a, d, p, lineFactorToLotPoint, lotpoint);
+
+	// pass by?
+	if (distanceLineToSphereCenter > r)
+		return false;
+
+	// solve for intersection with radius
+	// extreme cases:
+	//   r = b  -> x = 0, intersection with sphere = lotpoint
+	//   b = 0  -> x = r, line passes through center of sphere, our sphere intersection point is distance
+	//                    'r' closer to the point a
+	double x = std::sqrt(r*r - distanceLineToSphereCenter*distanceLineToSphereCenter);
+	// and normalize to get distance as fraction of direction vector (line factor)
+	x /= d.magnitude();
+	// subtract distance to get lineFactor to intersection point with sphere
+	lineFactor = lineFactorToLotPoint-x;
+	return true;
 }
 
 

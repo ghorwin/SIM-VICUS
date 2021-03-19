@@ -70,6 +70,13 @@ double lineToLineDistance(const IBKMK::Vector3D & a1, const IBKMK::Vector3D & d1
 						  const IBKMK::Vector3D & a2, const IBKMK::Vector3D & d2,
 						  double & l1, IBKMK::Vector3D & p1, double & l2);
 
+/*! Calculates intersection with a sphere, given by center point 'p' and radius 'r'.
+	Returns true if line intersects sphere. Returns 'lineFactor' from point 'a' to sphere intersection point.
+	Also returns lotpoint (closest point on line to sphere center).
+*/
+bool lineShereIntersection(const IBKMK::Vector3D & a, const IBKMK::Vector3D & d, const IBKMK::Vector3D & p, double r,
+						   double & lineFactor, IBKMK::Vector3D & lotpoint);
+
 /*! This function computes the projection of a point p in a plane (given by offset 'a' and 'normal' vector).
 	Returns projected point coordinates.
 */

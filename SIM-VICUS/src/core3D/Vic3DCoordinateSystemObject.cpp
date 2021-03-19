@@ -55,6 +55,8 @@ enum VertexIndexes {
 
 const unsigned int N_ORBIT_LINE_SEGMENTS = 32;
 
+const double TRANSLATION_CENTER_SPHERE_FACTOR = 0.4;
+
 CoordinateSystemObject::CoordinateSystemObject() {
 	// make us known to the world
 	SVViewStateHandler::instance().m_coordinateSystemObject = this;
@@ -206,7 +208,7 @@ void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 	m_objectStartIndexes[ELEMENT_CENTER_SPHERE_TRANSLATION_INDEX] = currentElementIndex;
 
 	QColor centerTransparentColor("gold");
-	addSphere(IBKMK::Vector3D(0,0,0), centerTransparentColor, 0.4*sizeFactor, currentVertexIndex, currentElementIndex,
+	addSphere(IBKMK::Vector3D(0,0,0), centerTransparentColor, TRANSLATION_CENTER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 
 	m_objectStartIndexes[ELEMENT_TRANSLATION_INDICATOR_INDEX] = currentElementIndex;
@@ -452,17 +454,21 @@ void CoordinateSystemObject::setTransform(const Transform3D & transform) {
 bool CoordinateSystemObject::pick(const IBKMK::Vector3D & nearPoint, const IBKMK::Vector3D & direction,
 								  PickObject::PickResult & r) const
 {
-	double dist;
+	double lineFactor;
 	IBKMK::Vector3D closestPoint;
+	IBKMK::Vector3D lotPoint;
 	switch (m_geometryTransformMode) {
 		case Vic3D::CoordinateSystemObject::TM_Translate : {
-			double linePointDist = IBKMK::lineToPointDistance(nearPoint, direction, QtExt::QVector2IBKVector(translation()),
-															  dist, closestPoint);
+			bool hit = IBKMK::lineShereIntersection(nearPoint, direction,  // line of sight
+													QtExt::QVector2IBKVector(translation()), TRANSLATION_CENTER_SPHERE_FACTOR, // sphere
+													lineFactor, // lineFactor (lineFactor*d = distance to intersection point with sphere)
+													lotPoint // closest point on line-of-sight to sphere center
+													);
 			// check distance against radius of sphere
-			if (linePointDist < 0.3) {
+			if (hit) {
 				r.m_snapPointType = PickObject::RT_CoordinateSystemCenter;
-				r.m_depth = dist;
-				r.m_pickPoint = closestPoint;
+				r.m_depth = lineFactor;
+				r.m_pickPoint = nearPoint + lineFactor*direction;
 				r.m_uniqueObjectID = 0; // not needed, since type is already expressive enough
 				return true;
 			}
