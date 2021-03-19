@@ -29,11 +29,31 @@ QString BoundaryCondition::htmlDescription() const {
 		QString heatCondInfo;
 		switch (m_heatConduction.m_modelType) {
 			case NANDRAD::InterfaceHeatConduction::MT_Constant:
-				heatCondInfo = tr("Constant, alpha = %1 W/m2K").arg(m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].get_value("W/m2K"));
+				heatCondInfo = tr("Constant, heat transfer coefficient = %1 W/m2K").arg(m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].get_value("W/m2K"));
 			break;
 			case NANDRAD::InterfaceHeatConduction::NUM_MT: break;
 		}
-		html += tr("<li>Heat conduction: %1</li>").arg(heatCondInfo);
+		html += tr("<li><i>Heat conduction</i><br>%1</li>").arg(heatCondInfo);
+	}
+	if (m_solarAbsorption.m_modelType != NANDRAD::InterfaceSolarAbsorption::NUM_MT) {
+		QString info;
+		switch (m_solarAbsorption.m_modelType) {
+			case NANDRAD::InterfaceSolarAbsorption::NUM_MT: break;
+			case NANDRAD::InterfaceSolarAbsorption::MT_Constant:
+				info = tr("Constant, adsorption coeff. = %1").arg(m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].value);
+			break;
+		}
+		html += tr("<li><i>Solar adsorption</i><br>%1</li>").arg(info);
+	}
+	if (m_longWaveEmission.m_modelType != NANDRAD::InterfaceLongWaveEmission::NUM_MT) {
+		QString info;
+		switch (m_longWaveEmission.m_modelType) {
+			case NANDRAD::InterfaceLongWaveEmission::NUM_MT: break;
+			case NANDRAD::InterfaceLongWaveEmission::MT_Constant:
+				info = tr("Constant, emissivity = %1").arg(m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value);
+			break;
+		}
+		html += tr("<li><i>Long wave radiation exchange</i><br>%1</li>").arg(info);
 	}
 
 	html += "</body></html>";
