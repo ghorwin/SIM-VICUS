@@ -55,7 +55,12 @@ enum VertexIndexes {
 
 const unsigned int N_ORBIT_LINE_SEGMENTS = 32;
 
-const double TRANSLATION_CENTER_SPHERE_FACTOR = 0.4;
+// The length of the axis
+const double AXIS_LENGTH = 2;
+// Size of the center sphere in translation mode
+const double TRANSLATION_CENTER_SPHERE_FACTOR = 0.3;
+// Size of the rotation axis marker spheres in rotation mode
+const double ROTATION_MARKER_SPHERE_FACTOR = 0.15;
 
 CoordinateSystemObject::CoordinateSystemObject() {
 	// make us known to the world
@@ -184,25 +189,25 @@ void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 
 	m_objectStartIndexes[ELEMENT_CENTER_SPHERE_INDEX] = currentElementIndex;
 
-	addSphere(IBKMK::Vector3D(0,0,0), QColor("burlywood"), 0.2*sizeFactor, currentVertexIndex, currentElementIndex,
+	addSphere(IBKMK::Vector3D(0,0,0), QColor("burlywood"), 0.15*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 
 	m_objectStartIndexes[ELEMENT_AXES_CYLINDER_INDEX] = currentElementIndex;
 
-	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(2,0,0), QColor(Qt::red), 0.02*sizeFactor, currentVertexIndex, currentElementIndex,
+	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(AXIS_LENGTH,0,0), QColor(Qt::red), 0.02*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,2,0), QColor(0,196,0), 0.02*sizeFactor, currentVertexIndex, currentElementIndex,
+	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,AXIS_LENGTH,0), QColor(0,196,0), 0.02*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,0,2), QColor(32,32,255), 0.02*sizeFactor, currentVertexIndex, currentElementIndex,
+	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,0,AXIS_LENGTH), QColor(32,32,255), 0.02*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 
 	m_objectStartIndexes[ELEMENT_AXES_SPHERE_INDEX] = currentElementIndex;
 
-	addSphere(IBKMK::Vector3D(2,0,0), QColor(255, 245, 152), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
+	addSphere(IBKMK::Vector3D(AXIS_LENGTH,0,0), QColor(255, 245, 152), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-	addSphere(IBKMK::Vector3D(0,2,0), QColor(255, 245, 152), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
+	addSphere(IBKMK::Vector3D(0,AXIS_LENGTH,0), QColor(255, 245, 152), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-	addSphere(IBKMK::Vector3D(0,0,2), QColor(255, 245, 152), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
+	addSphere(IBKMK::Vector3D(0,0,AXIS_LENGTH), QColor(255, 245, 152), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 
 	m_objectStartIndexes[ELEMENT_CENTER_SPHERE_TRANSLATION_INDEX] = currentElementIndex;
@@ -225,29 +230,29 @@ void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 	// rotation indicators
 
 	m_objectStartIndexes[ELEMENT_ROTATION_INDICATOR_INDEX_X] = currentElementIndex;
-	addSphere(IBKMK::Vector3D(2,0,0), QColor(Qt::red), 0.15*sizeFactor, currentVertexIndex, currentElementIndex,
+	addSphere(IBKMK::Vector3D(AXIS_LENGTH,0,0), QColor(Qt::red), ROTATION_MARKER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 
 	m_objectStartIndexes[ELEMENT_ROTATION_INDICATOR_INDEX_Y] = currentElementIndex;
-	addSphere(IBKMK::Vector3D(0,2,0), QColor(0,196,0), 0.15*sizeFactor, currentVertexIndex, currentElementIndex,
+	addSphere(IBKMK::Vector3D(0,AXIS_LENGTH,0), QColor(0,196,0), ROTATION_MARKER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 
 	m_objectStartIndexes[ELEMENT_ROTATION_INDICATOR_INDEX_Z] = currentElementIndex;
-	addSphere(IBKMK::Vector3D(0,0,2), QColor(32,32,255), 0.15*sizeFactor, currentVertexIndex, currentElementIndex,
+	addSphere(IBKMK::Vector3D(0,0,AXIS_LENGTH), QColor(32,32,255), ROTATION_MARKER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 
 	// scale indicators
 
 	m_objectStartIndexes[ELEMENT_SCALE_INDICATOR_INDEX_X] = currentElementIndex;
-	addCylinder(IBKMK::Vector3D(2,0,0), IBKMK::Vector3D(2.3,0,0), QColor(Qt::red), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
+	addCylinder(IBKMK::Vector3D(AXIS_LENGTH,0,0), IBKMK::Vector3D(AXIS_LENGTH + 0.3,0,0), QColor(Qt::red), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData, true);
 
 	m_objectStartIndexes[ELEMENT_SCALE_INDICATOR_INDEX_Y] = currentElementIndex;
-	addCylinder(IBKMK::Vector3D(0,2,0), IBKMK::Vector3D(0,2.3,0), QColor(0,196,0), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
+	addCylinder(IBKMK::Vector3D(0,AXIS_LENGTH,0), IBKMK::Vector3D(0,AXIS_LENGTH + 0.3,0), QColor(0,196,0), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData, true);
 
 	m_objectStartIndexes[ELEMENT_SCALE_INDICATOR_INDEX_Z] = currentElementIndex;
-	addCylinder(IBKMK::Vector3D(0,0,2), IBKMK::Vector3D(0,0,2.3), QColor(32,32,255), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
+	addCylinder(IBKMK::Vector3D(0,0,AXIS_LENGTH), IBKMK::Vector3D(0,0,AXIS_LENGTH + 0.3), QColor(32,32,255), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData, true);
 
 	// the last index is just needed to know until which element index we need to draw
@@ -473,6 +478,56 @@ bool CoordinateSystemObject::pick(const IBKMK::Vector3D & nearPoint, const IBKMK
 				return true;
 			}
 		} break;
+
+		case Vic3D::CoordinateSystemObject::TM_RotateMask : {
+			// x-axis
+			IBKMK::Vector3D sphereCenter = QtExt::QVector2IBKVector(translation()) + IBKMK::Vector3D(AXIS_LENGTH, 0, 0);
+			bool hit = IBKMK::lineShereIntersection(nearPoint, direction,  // line of sight
+													sphereCenter, ROTATION_MARKER_SPHERE_FACTOR, // sphere
+													lineFactor, // lineFactor (lineFactor*d = distance to intersection point with sphere)
+													lotPoint // closest point on line-of-sight to sphere center
+													);
+			// check distance against radius of sphere
+			if (hit) {
+				r.m_snapPointType = PickObject::RT_AxisEndMarker;
+				r.m_depth = lineFactor;
+				r.m_pickPoint = nearPoint + lineFactor*direction;
+				r.m_uniqueObjectID = 0; // indicates x axis
+				return true;
+			}
+			// y-axis
+			sphereCenter = QtExt::QVector2IBKVector(translation()) + IBKMK::Vector3D(0, AXIS_LENGTH, 0);
+			hit = IBKMK::lineShereIntersection(nearPoint, direction,  // line of sight
+													sphereCenter, ROTATION_MARKER_SPHERE_FACTOR, // sphere
+													lineFactor, // lineFactor (lineFactor*d = distance to intersection point with sphere)
+													lotPoint // closest point on line-of-sight to sphere center
+													);
+			// check distance against radius of sphere
+			if (hit) {
+				r.m_snapPointType = PickObject::RT_AxisEndMarker;
+				r.m_depth = lineFactor;
+				r.m_pickPoint = nearPoint + lineFactor*direction;
+				r.m_uniqueObjectID = 1; // indicates y axis
+				return true;
+			}
+			// z-axis
+			sphereCenter = QtExt::QVector2IBKVector(translation()) + IBKMK::Vector3D(0, 0, AXIS_LENGTH);
+			hit = IBKMK::lineShereIntersection(nearPoint, direction,  // line of sight
+													sphereCenter, ROTATION_MARKER_SPHERE_FACTOR, // sphere
+													lineFactor, // lineFactor (lineFactor*d = distance to intersection point with sphere)
+													lotPoint // closest point on line-of-sight to sphere center
+													);
+			// check distance against radius of sphere
+			if (hit) {
+				r.m_snapPointType = PickObject::RT_AxisEndMarker;
+				r.m_depth = lineFactor;
+				r.m_pickPoint = nearPoint + lineFactor*direction;
+				r.m_uniqueObjectID = 2; // indicates z axis
+				return true;
+			}
+		} break;
+
+		default : return false; // in all other modes we have nothing to pick
 	}
 	return false;
 }

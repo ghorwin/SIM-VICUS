@@ -446,6 +446,9 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 			// ** left mouse button held and mouse dragged **
 			if (mouseDelta != QPoint(0,0)) {
+				// record the distance that the mouse was moved
+				m_mouseMoveDistance += mouse_dx*mouse_dx + mouse_dy*mouse_dy;
+
 				switch (m_navigationMode) {
 					case Vic3D::Vic3DScene::NM_Panning:
 					case Vic3D::Vic3DScene::NM_FirstPerson:
@@ -507,8 +510,6 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 						QVector3D newCamPos = m_orbitControllerOrigin + lineOfSight;
 						//					qDebug() << "Moving camera from " << m_camera.translation() << "to" << newCamPos;
 
-						// record the distance that the mouse was moved
-						m_mouseMoveDistance += mouse_dx*mouse_dx + mouse_dy*mouse_dy;
 						// move camera
 						m_camera.setTranslation(newCamPos);
 
