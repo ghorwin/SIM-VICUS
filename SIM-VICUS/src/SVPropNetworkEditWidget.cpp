@@ -512,7 +512,8 @@ void SVPropNetworkEditWidget::modifyHeatExchangeProperties()
 
 	// set data file
 	IBK::Path tsvFile(m_ui->widgetBrowseFileNameTSVFile->filename().toStdString());
-	if (tsvFile.isValid() && modelType == VICUS::NetworkHeatExchange::T_HeatLossSpline)
+	if (tsvFile.isValid() && (modelType == VICUS::NetworkHeatExchange::T_HeatLossSpline
+							  || modelType == VICUS::NetworkHeatExchange::T_HeatLossSplineCondenser))
 		hx.m_splPara[VICUS::NetworkHeatExchange::SPL_HeatLoss] = NANDRAD::LinearSplineParameter("HeatLoss",
 																 NANDRAD::LinearSplineParameter::I_LINEAR,
 																 IBK::Path(m_ui->widgetBrowseFileNameTSVFile->filename().toStdString()));

@@ -41,7 +41,7 @@ public:
 
 	enum splinePara_t {
 		SPL_Temperature,					// Keyword: Temperature							[C]		'Temperature for heat exchange'
-		SPL_HeatLoss,						// Keyword: HeatLoss							[W]		'Constant heat flux out of the element (heat loss)'
+		SPL_HeatLoss,						// Keyword: HeatLoss							[W]		'Heat flux out of the element (heat loss)'
 		NUM_SPL
 	};
 
