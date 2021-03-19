@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Do Dez 10 12:42:13 2020</Created>
-		<LastEdited>Do. März 18 11:28:24 2021</LastEdited>
+		<LastEdited>Do. März 18 11:31:48 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -17,17 +17,17 @@
 		<ViewSettings>
 			<GridSpacing>100</GridSpacing>
 			<GridWidth>1000</GridWidth>
-			<CameraTranslation>-55.2126 170.642 28.9148</CameraTranslation>
+			<CameraTranslation>-58.9576 173.619 26.7098</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.490848</Wp>
-				<X>0.285334</X>
-				<Y>-0.413632</Y>
-				<Z>-0.711684</Z>
+				<Wp>0.465808</Wp>
+				<X>0.325211</X>
+				<Y>-0.470769</Y>
+				<Z>-0.674957</Z>
 			</RotationMatrix>
 			<FarDistance>2500</FarDistance>
 		</ViewSettings>
 		<Buildings>
-			<Building id="1" displayName="Import_IDF_Building">
+			<Building id="1" displayName="Haus 1">
 				<BuildingLevels>
 					<BuildingLevel id="1" displayName="Floor0">
 						<Elevation>0</Elevation>
@@ -967,6 +967,34 @@
 								</Surfaces>
 							</Room>
 						</Rooms>
+					</BuildingLevel>
+					<BuildingLevel id="2" displayName="Dach">
+						<Elevation>0</Elevation>
+						<Height>2.7</Height>
+					</BuildingLevel>
+				</BuildingLevels>
+			</Building>
+			<Building id="2" displayName="Haus 2">
+				<BuildingLevels>
+					<BuildingLevel id="1" displayName="Erdgeschoss">
+						<Elevation>0</Elevation>
+						<Height>2.7</Height>
+					</BuildingLevel>
+					<BuildingLevel id="2" displayName="Dach">
+						<Elevation>0</Elevation>
+						<Height>2.7</Height>
+					</BuildingLevel>
+				</BuildingLevels>
+			</Building>
+			<Building id="3" displayName="Haus 3">
+				<BuildingLevels>
+					<BuildingLevel id="1" displayName="Erdgeschoss">
+						<Elevation>0</Elevation>
+						<Height>2.7</Height>
+					</BuildingLevel>
+					<BuildingLevel id="2" displayName="Dach">
+						<Elevation>0</Elevation>
+						<Height>2.7</Height>
 					</BuildingLevel>
 				</BuildingLevels>
 			</Building>
