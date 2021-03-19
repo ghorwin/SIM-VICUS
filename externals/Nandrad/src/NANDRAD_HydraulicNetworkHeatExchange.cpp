@@ -94,7 +94,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 				// TODO : Andreas
 				throw IBK::Exception(IBK::FormatString("Heat exchange type 'TemperatureFMUInterface' is not supported, yet!"), FUNC_ID);
 
-			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossIdealHeatPump:
+			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
 				// TODO : Hauke
 				throw IBK::Exception(IBK::FormatString("Heat exchange type 'HeatLossIdealHeatPump' is not supported, yet!"), FUNC_ID);
 
@@ -134,6 +134,7 @@ std::vector<unsigned int> NANDRAD::HydraulicNetworkHeatExchange::availableHeatEx
 		case HydraulicNetworkComponent::MT_DynamicPipe:
 			return {T_TemperatureConstant, T_TemperatureSpline, T_HeatLossConstant, T_HeatLossSpline, T_TemperatureZone, T_TemperatureConstructionLayer};
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:
+			return {T_HeatLossSplineCondenser};
 		case HydraulicNetworkComponent::MT_HeatExchanger:
 			return {T_HeatLossConstant, T_HeatLossSpline};
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:

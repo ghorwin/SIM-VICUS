@@ -41,7 +41,7 @@ public:
 		T_TemperatureSpline,				// Keyword: TemperatureSpline			'Difference to time-dependent temperature from spline'
 		T_HeatLossConstant,					// Keyword: HeatLossConstant			'Constant heat loss'
 		T_HeatLossSpline,					// Keyword: HeatLossSpline				'Heat loss from spline'
-		T_HeatLossIdealHeatPump,			// Keyword: HeatLossIdealHeatPump		'Heat loss from ideal heat pump model'
+		T_HeatLossSplineCondenser,			// Keyword: HeatLossSplineCondenser		'Heat loss of condenser in heat pump model'
 		T_TemperatureZone,					// Keyword: TemperatureZone				'Difference to zone air temperature'
 		T_TemperatureConstructionLayer,		// Keyword: TemperatureConstructionLayer	'Difference to active construction layer (floor heating)'
 		T_TemperatureFMUInterface,			// Keyword: TemperatureFMUInterface		'Difference to temperature from FMU interface, provided heat flux to FMU'

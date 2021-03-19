@@ -52,7 +52,7 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::ModelType::T_TemperatureSpline == (int)VICUS::NetworkHeatExchange::ModelType::T_TemperatureSpline);
 	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::ModelType::T_HeatLossConstant == (int)VICUS::NetworkHeatExchange::ModelType::T_HeatLossConstant);
 	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::ModelType::T_HeatLossSpline == (int)VICUS::NetworkHeatExchange::ModelType::T_HeatLossSpline);
-	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::ModelType::T_HeatLossIdealHeatPump == (int)VICUS::NetworkHeatExchange::ModelType::T_HeatLossIdealHeatPump);
+	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::ModelType::T_HeatLossSplineCondenser == (int)VICUS::NetworkHeatExchange::ModelType::T_HeatLossSplineCondenser);
 	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::ModelType::T_TemperatureZone == (int)VICUS::NetworkHeatExchange::ModelType::T_TemperatureZone);
 	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::ModelType::T_TemperatureConstructionLayer == (int)VICUS::NetworkHeatExchange::ModelType::T_TemperatureConstructionLayer);
 	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::ModelType::T_TemperatureFMUInterface == (int)VICUS::NetworkHeatExchange::ModelType::T_TemperatureFMUInterface);
@@ -335,12 +335,17 @@ void SVPropNetworkEditWidget::updateHeatExchangeWidgets()
 			m_ui->lineEditHXTransferCoefficient->setVisible(true);
 			break;
 		}
-		case VICUS::NetworkHeatExchange::T_TemperatureSpline:
-		case VICUS::NetworkHeatExchange::T_HeatLossSpline:{
+		case VICUS::NetworkHeatExchange::T_TemperatureSpline:{
 			m_ui->labelDataFile->setVisible(true);
 			m_ui->widgetBrowseFileNameTSVFile->setVisible(true);
 			m_ui->labelHXTransferCoefficient->setVisible(true);
 			m_ui->lineEditHXTransferCoefficient->setVisible(true);
+			break;
+		}
+		case VICUS::NetworkHeatExchange::T_HeatLossSplineCondenser:
+		case VICUS::NetworkHeatExchange::T_HeatLossSpline:{
+			m_ui->labelDataFile->setVisible(true);
+			m_ui->widgetBrowseFileNameTSVFile->setVisible(true);
 			break;
 		}
 		default:;

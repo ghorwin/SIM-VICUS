@@ -262,7 +262,7 @@ namespace VICUS {
 				case 1 : return "TemperatureSpline";
 				case 2 : return "HeatLossConstant";
 				case 3 : return "HeatLossSpline";
-				case 4 : return "HeatLossIdealHeatPump";
+				case 4 : return "HeatLossSplineCondenser";
 				case 5 : return "TemperatureZone";
 				case 6 : return "TemperatureConstructionLayer";
 				case 7 : return "TemperatureFMUInterface";
@@ -570,7 +570,7 @@ namespace VICUS {
 				case 1 : return "TemperatureSpline";
 				case 2 : return "HeatLossConstant";
 				case 3 : return "HeatLossSpline";
-				case 4 : return "HeatLossIdealHeatPump";
+				case 4 : return "HeatLossSplineCondenser";
 				case 5 : return "TemperatureZone";
 				case 6 : return "TemperatureConstructionLayer";
 				case 7 : return "TemperatureFMUInterface";
@@ -879,7 +879,7 @@ namespace VICUS {
 				case 1 : return "Time-dependent ambient temperature from spline";
 				case 2 : return "Constant heat loss";
 				case 3 : return "Heat loss from spline";
-				case 4 : return "Heat loss from ideal heat pump model";
+				case 4 : return "Heat loss of condenser in heat pump model";
 				case 5 : return "Zone air temperature";
 				case 6 : return "Active construction layer (floor heating)";
 				case 7 : return "Temperature from FMU interface, provided heat flux to FMU";

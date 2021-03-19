@@ -31,7 +31,10 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 	// block signals to avoid getting "changed" calls
 	m_ui->comboBoxComponentType->blockSignals(true);
 	for (int i=0; i<VICUS::NetworkComponent::NUM_MT; ++i)
-		m_ui->comboBoxComponentType->addItem(VICUS::KeywordListQt::Description("NetworkComponent::ModelType", i), i);
+		m_ui->comboBoxComponentType->addItem(QString("%1 (%2)")
+											 .arg(VICUS::KeywordListQt::Keyword("NetworkComponent::ModelType", i))
+											 .arg(VICUS::KeywordListQt::Description("NetworkComponent::ModelType", i)),
+											 i);
 	m_ui->comboBoxComponentType->blockSignals(false);
 
 	// no headers

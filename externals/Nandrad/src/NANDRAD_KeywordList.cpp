@@ -201,7 +201,7 @@ namespace NANDRAD {
 				case 1 : return "TemperatureSpline";
 				case 2 : return "HeatLossConstant";
 				case 3 : return "HeatLossSpline";
-				case 4 : return "HeatLossIdealHeatPump";
+				case 4 : return "HeatLossSplineCondenser";
 				case 5 : return "TemperatureZone";
 				case 6 : return "TemperatureConstructionLayer";
 				case 7 : return "TemperatureFMUInterface";
@@ -699,7 +699,7 @@ namespace NANDRAD {
 				case 1 : return "TemperatureSpline";
 				case 2 : return "HeatLossConstant";
 				case 3 : return "HeatLossSpline";
-				case 4 : return "HeatLossIdealHeatPump";
+				case 4 : return "HeatLossSplineCondenser";
 				case 5 : return "TemperatureZone";
 				case 6 : return "TemperatureConstructionLayer";
 				case 7 : return "TemperatureFMUInterface";
@@ -1198,7 +1198,7 @@ namespace NANDRAD {
 				case 1 : return "Difference to time-dependent temperature from spline";
 				case 2 : return "Constant heat loss";
 				case 3 : return "Heat loss from spline";
-				case 4 : return "Heat loss from ideal heat pump model";
+				case 4 : return "Heat loss of condenser in heat pump model";
 				case 5 : return "Difference to zone air temperature";
 				case 6 : return "Difference to active construction layer (floor heating)";
 				case 7 : return "Difference to temperature from FMU interface, provided heat flux to FMU";

@@ -129,7 +129,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Time-dependent ambient temperature from spline");
 	tr("Constant heat loss");
 	tr("Heat loss from spline");
-	tr("Heat loss from ideal heat pump model");
+	tr("Heat loss of condenser in heat pump model");
 	tr("Zone air temperature");
 	tr("Active construction layer (floor heating)");
 	tr("Temperature from FMU interface, provided heat flux to FMU");
