@@ -641,6 +641,7 @@ Nusselt                            	[---]     	Nusselt number
 OutletNodePressure                 	[Pa]      	Fluid pressure at outlet node of a flow element
 OutletNodeTemperature              	[C]       	Outlet node temperature of a flow element
 Prandtl                            	[---]     	Prandtl number
+PressureDifference                 	[Pa]      	Difference between pressures at outlet and inlet nodes
 Reynolds                           	[---]     	Reynolds number
 ThermalTransmittance               	[W/K]     	Total thermal transmittance of fluid and pipe wall
 ----
