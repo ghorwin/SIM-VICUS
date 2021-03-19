@@ -96,16 +96,17 @@ bool planeCoordinates(const IBKMK::Vector3D & offset, const IBKMK::Vector3D & a,
 double lineToPointDistance(const IBKMK::Vector3D & a, const IBKMK::Vector3D & d, const IBKMK::Vector3D & p,
 												   double & lineFactor, IBKMK::Vector3D & p2)
 {
-		/// source: http://geomalgorithms.com/a02-_lines.html
-		IBKMK::Vector3D v = ( p - a ); // from point to line p1
+	// vector from starting point of line to target point
+	IBKMK::Vector3D v = p - a;
 
-		double c1 = v.scalarProduct(d);
-		double c2 = d.scalarProduct(d);
+	// scalar product (projection of v on d) gives scale factor
+	lineFactor = v.scalarProduct(d);
 
-		lineFactor = c1 / c2;
+	// compute "lotpunkt"
+	p2 = a + lineFactor * d;
 
-		p2 = a + lineFactor * d;
-		return (p2-p).magnitude();
+	// return distance between lotpunkt and target point
+	return (p2-p).magnitude();
 }
 
 
