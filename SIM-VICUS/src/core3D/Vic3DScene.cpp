@@ -555,6 +555,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		}
 		if (m_navigationMode == NM_InteractiveTranslation) {
 			qDebug() << "Leaving interactive translation mode";
+			SVViewStateHandler::instance().m_propEditGeometryWidget->translate();
 			needRepaint = true;
 		}
 		// clear orbit controller flag
