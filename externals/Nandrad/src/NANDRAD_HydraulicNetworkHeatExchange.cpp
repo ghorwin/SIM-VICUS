@@ -54,6 +54,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 																	   true, nullptr);
 			} break;
 
+			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
 			case T_HeatLossSpline: {
 				// replace place holders
 				m_splPara[SPL_HeatLoss].m_tsvFile = m_splPara[SPL_HeatLoss].m_tsvFile.withReplacedPlaceholders(placeholders);
@@ -93,10 +94,6 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 			case T_TemperatureFMUInterface:
 				// TODO : Andreas
 				throw IBK::Exception(IBK::FormatString("Heat exchange type 'TemperatureFMUInterface' is not supported, yet!"), FUNC_ID);
-
-			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
-				// TODO : Hauke
-				throw IBK::Exception(IBK::FormatString("Heat exchange type 'HeatLossIdealHeatPump' is not supported, yet!"), FUNC_ID);
 
 			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer: {
 				// check for construction instance id

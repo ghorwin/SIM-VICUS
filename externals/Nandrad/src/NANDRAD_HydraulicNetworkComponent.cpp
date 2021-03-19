@@ -107,11 +107,13 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 			break;
 		}
 		// value must be >0 and <1
+		case P_CarnotEfficiency:
 		case P_PumpEfficiency: {
 			para.checkedValue(name, unit, unit, 0, false, 1.0, true, nullptr);
 			break;
 		}
 		// value can be negative
+		case P_CondenserMeanTemperature:
 		case P_PressureHead: {
 			para.checkedValue(name, unit, unit, std::numeric_limits<double>::lowest(), true,
 							  std::numeric_limits<double>::max(), true, nullptr);

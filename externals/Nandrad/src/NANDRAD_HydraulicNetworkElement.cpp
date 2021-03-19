@@ -79,6 +79,16 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 			throw IBK::Exception("Invalid network component model type!", FUNC_ID);
 	}
 
+	// check if given heat exchange type is supported for this component
+	if (m_heatExchange.m_modelType != HydraulicNetworkHeatExchange::NUM_T){
+
+		std::vector<unsigned int> hxTypes = HydraulicNetworkHeatExchange::availableHeatExchangeTypes(m_component->m_modelType);
+		if (std::find(hxTypes.begin(), hxTypes.end(), m_heatExchange.m_modelType) == hxTypes.end())
+			throw IBK::Exception(IBK::FormatString("Invalid type of heat exchange '%1' for component '%2'!")
+								 .arg(KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", m_heatExchange.m_modelType))
+								 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_component->m_modelType)), FUNC_ID);
+	}
+
 	// finally check for valid heat exchange parameters
 	m_heatExchange.checkParameters(placeholders, zones, conInstances);
 }

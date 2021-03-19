@@ -154,10 +154,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						break;
 
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
-							throw IBK::Exception(IBK::FormatString("Flow element model %1 does not support HeatExchangeType %2.")
-										.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::ModelType", e.m_component->m_modelType))
-										.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", e.m_heatExchange.m_modelType)),
-										FUNC_ID);
+							break;
 
 					} // switch heat exchange type
 
@@ -179,7 +176,6 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						} break;
 
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant :
-						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser :
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline :
 							throw IBK::Exception(IBK::FormatString("Heat exchange model %1 cannot be used with DynamicPipe components.")
 								.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", e.m_heatExchange.m_modelType)), FUNC_ID);
@@ -200,6 +196,9 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureFMUInterface :
 							// TODO : Andreas, Milestone FMU-Networks
 						break;
+
+						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser :
+							break;
 
 					} // switch heat exchange type
 
@@ -247,10 +246,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureZone:
 						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer:
 						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureFMUInterface:
-							throw IBK::Exception(IBK::FormatString("Flow element model %1 does currently not support HeatExchangeType %2.")
-										.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::ModelType", e.m_component->m_modelType))
-										.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", e.m_heatExchange.m_modelType)),
-										FUNC_ID);
+							break;
 					} // switch heat exchange type
 
 				} break; // NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger
@@ -259,7 +255,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot :
 				{
 					switch (e.m_heatExchange.m_modelType) {
-						case NANDRAD::HydraulicNetworkHeatExchange::NUM_T : {
+						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser : {
 							// create general model with given heat flux
 							TNHeatPumpIdealCarnot * element = new TNHeatPumpIdealCarnot(m_network->m_fluid,
 									*e.m_component, heatExchangeValue);
@@ -268,12 +264,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 							m_p->m_heatLossElements.push_back(element); // copy of pointer
 						} break;
 
-
 						default:
-							throw IBK::Exception(IBK::FormatString("Flow element model %1 does currently not support HeatExchangeType %2.")
-										.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::ModelType", e.m_component->m_modelType))
-										.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", e.m_heatExchange.m_modelType)),
-										FUNC_ID);
+							break;
 					} // switch heat exchange type
 
 				} break; // NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot
@@ -281,6 +273,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				case NANDRAD::HydraulicNetworkComponent::NUM_MT:
 				break; // just to make compiler happy
 			}
+
 
 			// retrieve component
 			// and decide which heat exchange is chosen
@@ -301,6 +294,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline:
 				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
 				case NANDRAD::HydraulicNetworkHeatExchange::NUM_T:
 					// No thermal exchange, nothing to initialize
 				break;
