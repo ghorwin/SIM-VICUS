@@ -178,6 +178,21 @@
 					<ObjectListName>Pipes</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>InletNodePressure</Quantity>
+					<ObjectListName>All flow elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>OutletNodePressure</Quantity>
+					<ObjectListName>All flow elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>PressureDifference</Quantity>
+					<ObjectListName>All flow elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
 			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">

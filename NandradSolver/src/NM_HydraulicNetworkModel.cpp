@@ -47,12 +47,15 @@ public:
 	Network												m_network;
 	/*! Mass fluxes through all elements*/
 	std::vector<double>									m_fluidMassFluxes;
-	/*! Container with temperatures for inlet node of each flow element.
+	/*! Container with pressures for inlet node of each flow element.
 	*/
 	std::vector<double>									m_inletNodePressures;
-	/*! Container with temperatures for each node.
+	/*! Container with pressures for each node of each flow element.
 	*/
 	std::vector<double>									m_outletNodePressures;
+	/*! Container with pressure differences for each flow element.
+	*/
+	std::vector<double>									m_pressureDifferences;
 
 private:
 
@@ -289,6 +292,17 @@ void HydraulicNetworkModel::resultDescriptions(std::vector<QuantityDescription> 
 		desc.m_displayName = m_elementDisplayNames[i];
 		resDesc.push_back(desc);
 	}
+
+	// pressure difference between inlet and outlet is a vector result
+	desc = QuantityDescription("PressureDifference", "Pa", "Fluid pressure difference over a flow element", false);
+	// Important: change reftype to MRT_NETWORKELEMENT, because it otherwise defaults to the reftype of this object.
+	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	// loop through all flow elements
+	for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
+		desc.m_id = m_elementIds[i];
+		desc.m_displayName = m_elementDisplayNames[i];
+		resDesc.push_back(desc);
+	}
 }
 
 
@@ -301,6 +315,8 @@ void HydraulicNetworkModel::resultValueRefs(std::vector<const double *> & res) c
 		res.push_back(&m_p->m_inletNodePressures[i]);
 	for(unsigned int i = 0; i < m_p->m_outletNodePressures.size(); ++i)
 		res.push_back(&m_p->m_outletNodePressures[i]);
+	for(unsigned int i = 0; i < m_p->m_outletNodePressures.size(); ++i)
+		res.push_back(&m_p->m_pressureDifferences[i]);
 }
 
 
@@ -344,6 +360,8 @@ const double * HydraulicNetworkModel::resultValueRef(const InputReference & quan
 		return &m_p->m_inletNodePressures[pos];
 	else if (quantityName == std::string("OutletNodePressure"))
 		return &m_p->m_outletNodePressures[pos];
+	else if (quantityName == std::string("PressureDifference"))
+		return &m_p->m_pressureDifferences[pos];
 
 	// unknown quantity name
 	return nullptr;
@@ -620,6 +638,7 @@ void HydraulicNetworkModelImpl::setup() {
 	m_inletNodePressures.resize(m_elementCount);
 	m_outletNodePressures.resize(m_elementCount);
 	m_nodalPressures.resize(m_nodeCount);
+	m_pressureDifferences.resize(m_elementCount);
 
 	// create jacobian
 	jacobianInit();
@@ -760,8 +779,11 @@ int HydraulicNetworkModelImpl::solve() {
 	// update nodal values
 	for(unsigned int i = 0; i < m_network.m_elements.size(); ++i) {
 		const Element &e = m_network.m_elements[i];
-		m_inletNodePressures[i] = m_nodalPressures[e.m_nodeIndexInlet];
-		m_outletNodePressures[i] = m_nodalPressures[e.m_nodeIndexOutlet];
+		double inletNodePressure = m_nodalPressures[e.m_nodeIndexInlet];
+		double outletNodePressure = m_nodalPressures[e.m_nodeIndexOutlet];
+		m_inletNodePressures[i] = inletNodePressure;
+		m_outletNodePressures[i] = outletNodePressure;
+		m_pressureDifferences[i] = inletNodePressure - outletNodePressure;
 	}
 
 
