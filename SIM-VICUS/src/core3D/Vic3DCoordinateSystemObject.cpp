@@ -462,7 +462,7 @@ bool CoordinateSystemObject::pick(const IBKMK::Vector3D & nearPoint, const IBKMK
 			if (linePointDist < 0.3) {
 				r.m_snapPointType = PickObject::RT_CoordinateSystemCenter;
 				r.m_depth = dist;
-				r.m_pickPoint = QtExt::QVector2IBKVector(translation());
+				r.m_pickPoint = closestPoint;
 				r.m_uniqueObjectID = 0; // not needed, since type is already expressive enough
 				return true;
 			}

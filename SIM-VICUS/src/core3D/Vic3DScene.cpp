@@ -421,10 +421,10 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 				// did we hit the local coordinate system?
 				if (pickObject.m_candidates.front().m_snapPointType == PickObject::RT_CoordinateSystemCenter) {
-					qDebug() << "Entering interactive translate mode";
 					m_navigationMode = NM_InteractiveTranslation;
 					// Store origin of translation
 					m_translateOrigin = m_coordinateSystemObject.translation();
+					qDebug() << "Entering interactive translation mode";
 				}
 				else {
 					// for orbit-controller, we  take the closest point of either
@@ -447,6 +447,11 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 			// ** left mouse button held and mouse dragged **
 			if (mouseDelta != QPoint(0,0)) {
 				switch (m_navigationMode) {
+					case Vic3D::Vic3DScene::NM_Panning:
+					case Vic3D::Vic3DScene::NM_FirstPerson:
+					case Vic3D::Vic3DScene::NUM_NM:
+					break; // for these modes, do nothing (can happen for multi-mouse-button-press and dragging)
+
 					case NM_OrbitController : {
 						// vector from pick point (center of orbit) to camera position
 						QVector3D lineOfSight = m_camera.translation() - m_orbitControllerOrigin;
@@ -475,7 +480,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 						m_camera.rotate(MOUSE_ROTATION_SPEED * mouse_dx, GlobalUpwardsVector);
 						m_camera.rotate(MOUSE_ROTATION_SPEED * mouse_dy * mouseInversionFactor, LocalRight);
 
-		#if 1
+#if 1
 						// fix "roll" error due to rounding
 						// only do this when we are not viewing the scene from vertically from above/below
 						float cosViewAngle = QVector3D::dotProduct(m_camera.forward(), GlobalUpwardsVector);
@@ -494,10 +499,10 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 								float cosBeta2 = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
 								if (std::fabs(std::fabs(cosBeta2) - 1) > 1e-5f)
 									m_camera.rotate(-2*beta, m_camera.forward());
-		//						cosBeta2 = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
+								//						cosBeta2 = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
 							}
 						}
-		#endif
+#endif
 						// get new camera location
 						QVector3D newCamPos = m_orbitControllerOrigin + lineOfSight;
 						//					qDebug() << "Moving camera from " << m_camera.translation() << "to" << newCamPos;
@@ -513,10 +518,20 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 					case NM_InteractiveTranslation: {
 						// pick a point and snap to some point in the scene
+						if (!pickObject.m_pickPerformed)
+							pick(pickObject);
 
+						// now we handle the snapping rules and also the locking
+						snapLocalCoordinateSystem(pickObject);
+
+				//		qDebug() << localMousePos << QtExt::IBKVector2QVector(o.m_pickPoint) << m_coordinateSystemObject.translation();
+
+						// update the movable coordinate system's location in the new polygon object
+						QVector3D newPoint = m_coordinateSystemObject.translation();
 						// vector offset from starting point to current location
-
-
+						QVector3D translationVector = newPoint - m_translateOrigin;
+						// now set this in the wireframe object as translation
+						m_selectedGeometryObject.m_transform.setTranslation(translationVector);
 					} break;// interactive translation active
 				} // switch
 			} // mouse dragged
@@ -536,6 +551,10 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		}
 		if (m_navigationMode == NM_OrbitController) {
 			qDebug() << "Leaving orbit controller mode";
+			needRepaint = true;
+		}
+		if (m_navigationMode == NM_InteractiveTranslation) {
+			qDebug() << "Leaving interactive translation mode";
 			needRepaint = true;
 		}
 		// clear orbit controller flag
