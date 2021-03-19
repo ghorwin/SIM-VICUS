@@ -106,15 +106,189 @@ Hintergrund/Grundlagen
 \end_layout
 
 \begin_layout Subsection
+Schnittpunktberechnungen/Abstandsberechnungen
+\end_layout
+
+\begin_layout Standard
+Die Gerade wird durch einen Punkt 
+\begin_inset Formula $\boldsymbol{a}$
+\end_inset
+
+ und Richtungsvektor 
+\series bold
+
+\begin_inset Formula $\boldsymbol{d}$
+\end_inset
+
+
+\series default
+ definiert:
+\series bold
+
+\begin_inset Formula 
+\begin{equation}
+\boldsymbol{x}=\boldsymbol{a}+t\boldsymbol{d}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
 Schnittpunkt mit einer Ebene
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Subsubsection
 Lotpunkt eines Punktes auf einer Linie
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Standard
+Gesucht ist der kürzeste Abstand zwischen einem Punkt 
+\begin_inset Formula $\boldsymbol{p}$
+\end_inset
+
+ und der Geraden.
+\end_layout
+
+\begin_layout Enumerate
+Berechnung des Verbindungsvektors: 
+\begin_inset Formula $\boldsymbol{v}=\boldsymbol{p}-\boldsymbol{a}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Projektion des Vektors auf Geradenvektor liefert den Abstand vom Geradenursprung
+: 
+\begin_inset Formula $t=\boldsymbol{v}\cdot\boldsymbol{d}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Lotpunkt: 
+\begin_inset Formula $\boldsymbol{L}=t\boldsymbol{d}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Abstand Punkt/Linie: 
+\begin_inset Formula $b=\boldsymbol{L}-\boldsymbol{p}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
 Dichtester Punkt zwischen zwei Linien
+\end_layout
+
+\begin_layout Subsubsection
+Schnittpunkt zwischen Linie und Kugel
+\end_layout
+
+\begin_layout Enumerate
+Lotpunkt 
+\series bold
+
+\begin_inset Formula $\boldsymbol{L}$
+\end_inset
+
+
+\series default
+ des Kugelmittelpunkts auf der Linie und Abstand 
+\begin_inset Formula $b$
+\end_inset
+
+ zum Kugelmittelpunkt 
+\series bold
+
+\begin_inset Formula $\boldsymbol{p}$
+\end_inset
+
+
+\series default
+ berechnen, 
+\begin_inset Formula $t$
+\end_inset
+
+ ist dann Abstand von 
+\begin_inset Formula $\boldsymbol{a}$
+\end_inset
+
+ zu 
+\series bold
+
+\begin_inset Formula $\boldsymbol{L}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+wenn 
+\begin_inset Formula $b>r$
+\end_inset
+
+ (Kugelradius) geht die Linie an der Kugel vorbei
+\end_layout
+
+\begin_layout Enumerate
+2D Koordinatensystem wird definiert, mit Ursprung in 
+\begin_inset Formula $\boldsymbol{L}$
+\end_inset
+
+, und Achsen 
+\begin_inset Formula $\boldsymbol{d}$
+\end_inset
+
+ und 
+\begin_inset Formula $\boldsymbol{v}=\boldsymbol{L}-\boldsymbol{a}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Kreisgleichung: 
+\begin_inset Formula $r^{2}=x^{2}+\left(y-b\right)^{2}$
+\end_inset
+
+, Geradengleichung: 
+\begin_inset Formula $y=0$
+\end_inset
+
+ (Koordinatenachse 
+\begin_inset Formula $\boldsymbol{x}=\boldsymbol{d}$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Enumerate
+gelöst:
+\begin_inset Formula 
+\begin{align}
+r^{2} & =x^{2}+b^{2}\nonumber \\
+x & =\sqrt{r^{2}-b^{2}}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+dichtester Punkt aus Sicht der Geradenlinie: 
+\begin_inset Formula $\boldsymbol{C}=\boldsymbol{a}+\left(t-x\right)\boldsymbol{d}$
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
