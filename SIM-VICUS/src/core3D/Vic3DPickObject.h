@@ -31,7 +31,10 @@ struct PickObject {
 		/*! The global XY plane or any other artifical plane.
 			The index of the plane in the list of planes is stored in m_uniqueObjectID.
 		*/
-		RT_GridPlane
+		RT_GridPlane,
+
+		/*! Center of the local coordinate system when in "translate" mode */
+		RT_CoordinateSystemCenter
 	};
 
 	/*! Stores information about a particular snap point candidate. */

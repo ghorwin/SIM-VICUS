@@ -23,8 +23,13 @@ QT_END_NAMESPACE
 
 #include "Vic3DTransform3D.h"
 #include "Vic3DVertex.h"
+#include "Vic3DPickObject.h"
 
 class SVPropEditGeometry;
+
+namespace IBKMK {
+	class Vector3D;
+}
 
 namespace Vic3D {
 
@@ -104,6 +109,12 @@ public:
 	QVector3D localYAxis() const { return m_transform.rotation().rotatedVector(QVector3D(0,1,0)); }
 	/*! Returns the local Z-coordinate axis. */
 	QVector3D localZAxis() const { return m_transform.rotation().rotatedVector(QVector3D(0,0,1)); }
+
+	/*! If coordinate system is showing any interaction objects (in translation, rotation, scale mode), it
+		tests if the view ray cast through 'nearPoint' and along 'direction' hits any of these points, and if yes
+		returns true and a fully populated pick result object 'r'.
+	*/
+	bool pick(const IBKMK::Vector3D & nearPoint, const IBKMK::Vector3D & direction, PickObject::PickResult & r) const;
 
 	/*! A bitmask that indicates the current transform modes for the coordinate system and ultimately
 		defines how the local coordinate system shall be drawn. See renderOpaque() for a description of the rules.

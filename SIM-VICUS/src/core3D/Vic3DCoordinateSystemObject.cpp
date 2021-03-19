@@ -13,10 +13,13 @@ License    : BSD License,
 
 #include <QOpenGLShaderProgram>
 
+#include <QtExt_Conversions.h>
+
+#include <IBKMK_3DCalculations.h>
+
 #include "Vic3DShaderProgram.h"
 #include "Vic3DVertex.h"
 #include "Vic3DGeometryHelpers.h"
-#include <QtExt_Conversions.h>
 
 #include "SVViewStateHandler.h"
 #include "SVPropEditGeometry.h"
@@ -443,6 +446,29 @@ void CoordinateSystemObject::setRotation(const QQuaternion & rotMatrix) {
 void CoordinateSystemObject::setTransform(const Transform3D & transform) {
 	m_transform = transform;
 	updateInverse();
+}
+
+
+bool CoordinateSystemObject::pick(const IBKMK::Vector3D & nearPoint, const IBKMK::Vector3D & direction,
+								  PickObject::PickResult & r) const
+{
+	double dist;
+	IBKMK::Vector3D closestPoint;
+	switch (m_geometryTransformMode) {
+		case Vic3D::CoordinateSystemObject::TM_Translate : {
+			double linePointDist = IBKMK::lineToPointDistance(nearPoint, direction, QtExt::QVector2IBKVector(translation()),
+															  dist, closestPoint);
+			// check distance against radius of sphere
+			if (linePointDist < 0.3) {
+				r.m_snapPointType = PickObject::RT_CoordinateSystemCenter;
+				r.m_depth = dist;
+				r.m_pickPoint = QtExt::QVector2IBKVector(translation());
+				r.m_uniqueObjectID = 0; // not needed, since type is already expressive enough
+				return true;
+			}
+		} break;
+	}
+	return false;
 }
 
 

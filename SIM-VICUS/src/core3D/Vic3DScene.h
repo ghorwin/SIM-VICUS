@@ -223,6 +223,7 @@ private:
 		NM_OrbitController,
 		NM_Panning,
 		NM_FirstPerson,
+		NM_InteractiveTranslation,
 		NUM_NM
 	};
 
@@ -237,6 +238,10 @@ private:
 	float					m_mouseMoveDistance = 0.f;
 	/*! Holds the origin of the orbit controller coordinates. */
 	QVector3D				m_orbitControllerOrigin;
+
+	// *** Interactive translation stuff **
+
+	QVector3D				m_translateOrigin;
 
 	// other members
 

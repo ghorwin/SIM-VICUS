@@ -399,7 +399,8 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 	if (keyboardHandler.buttonDown(Qt::LeftButton)) {
 		// only do orbit controller mode, if not in any other mode
 		if (m_navigationMode == NUM_NM) {
-			// we enter orbital controller mode
+
+			// we may enter orbital controller mode, or start a transform operation
 
 			// configure the pick object and pick a point on the XY plane/or any visible surface
 			if (!pickObject.m_pickPerformed)
@@ -417,85 +418,108 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 					nearestPoint.m_y = std::max(nearestPoint.m_y, m_gridObject.m_minGrid);
 				}
 
-				// for orbit-controller, we  take the closest point of either
-				m_orbitControllerOrigin = QtExt::IBKVector2QVector(nearestPoint);
-				m_orbitControllerObject.m_transform.setTranslation(m_orbitControllerOrigin);
 
-				// Rotation matrix around origin point
-				m_mouseMoveDistance = 0;
+				// did we hit the local coordinate system?
+				if (pickObject.m_candidates.front().m_snapPointType == PickObject::RT_CoordinateSystemCenter) {
+					qDebug() << "Entering interactive translate mode";
+					m_navigationMode = NM_InteractiveTranslation;
+					// Store origin of translation
+					m_translateOrigin = m_coordinateSystemObject.translation();
+				}
+				else {
+					// for orbit-controller, we  take the closest point of either
+					m_orbitControllerOrigin = QtExt::IBKVector2QVector(nearestPoint);
+					m_orbitControllerObject.m_transform.setTranslation(m_orbitControllerOrigin);
 
-				needRepaint = true;
+					// Rotation matrix around origin point
+					m_mouseMoveDistance = 0;
 
-				// Note: Orbit controller mode is enabled, once a little bit of movement took place
-				m_navigationMode = NM_OrbitController;
-				qDebug() << "Entering orbit controller mode, rotation around" << m_orbitControllerOrigin;
+					needRepaint = true;
+
+					// Note: Orbit controller mode is enabled, once a little bit of movement took place
+					m_navigationMode = NM_OrbitController;
+					qDebug() << "Entering orbit controller mode, rotation around" << m_orbitControllerOrigin;
+				}
 			}
 		}
 		else {
 
-			if ((mouseDelta != QPoint(0,0)) && (m_navigationMode == NM_OrbitController)) {
-				// vector from pick point (center of orbit) to camera position
-				QVector3D lineOfSight = m_camera.translation() - m_orbitControllerOrigin;
+			// ** left mouse button held and mouse dragged **
+			if (mouseDelta != QPoint(0,0)) {
+				switch (m_navigationMode) {
+					case NM_OrbitController : {
+						// vector from pick point (center of orbit) to camera position
+						QVector3D lineOfSight = m_camera.translation() - m_orbitControllerOrigin;
 
-				// create a transformation object
-				Transform3D orbitTrans;
+						// create a transformation object
+						Transform3D orbitTrans;
 
-				// mouse x translation = rotation around rotation axis
+						// mouse x translation = rotation around rotation axis
 
-				const QVector3D GlobalUpwardsVector(0.0f, 0.0f, 1.0f);
-				// set rotation around z axis for x-mouse-delta
-				orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouse_dx, GlobalUpwardsVector);
+						const QVector3D GlobalUpwardsVector(0.0f, 0.0f, 1.0f);
+						// set rotation around z axis for x-mouse-delta
+						orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouse_dx, GlobalUpwardsVector);
 
 
-				// mouse y translation = rotation around "right" axis
-				int mouseInversionFactor = SVSettings::instance().m_invertYMouseAxis ? -1 : 1;
+						// mouse y translation = rotation around "right" axis
+						int mouseInversionFactor = SVSettings::instance().m_invertYMouseAxis ? -1 : 1;
 
-				QVector3D LocalRight = m_camera.right().normalized();
-				// set rotation around "right" axis for y-mouse-delta
-				orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouse_dy * mouseInversionFactor, LocalRight);
+						QVector3D LocalRight = m_camera.right().normalized();
+						// set rotation around "right" axis for y-mouse-delta
+						orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouse_dy * mouseInversionFactor, LocalRight);
 
-				// rotate vector to camera
-				lineOfSight = orbitTrans.toMatrix() * lineOfSight;
+						// rotate vector to camera
+						lineOfSight = orbitTrans.toMatrix() * lineOfSight;
 
-				// rotate the camera around the same angles
-				m_camera.rotate(MOUSE_ROTATION_SPEED * mouse_dx, GlobalUpwardsVector);
-				m_camera.rotate(MOUSE_ROTATION_SPEED * mouse_dy * mouseInversionFactor, LocalRight);
+						// rotate the camera around the same angles
+						m_camera.rotate(MOUSE_ROTATION_SPEED * mouse_dx, GlobalUpwardsVector);
+						m_camera.rotate(MOUSE_ROTATION_SPEED * mouse_dy * mouseInversionFactor, LocalRight);
 
-#if 1
-				// fix "roll" error due to rounding
-				// only do this when we are not viewing the scene from vertically from above/below
-				float cosViewAngle = QVector3D::dotProduct(m_camera.forward(), GlobalUpwardsVector);
-				if (std::fabs(cosViewAngle) < 0.6f) {
-					// up and forward vectors should be always in a vertical plane
-					// forward and z-axis form a vertical plane with normal
-					QVector3D verticalPlaneNormal = QVector3D::crossProduct(m_camera.forward(), GlobalUpwardsVector);
-					verticalPlaneNormal.normalize();
+		#if 1
+						// fix "roll" error due to rounding
+						// only do this when we are not viewing the scene from vertically from above/below
+						float cosViewAngle = QVector3D::dotProduct(m_camera.forward(), GlobalUpwardsVector);
+						if (std::fabs(cosViewAngle) < 0.6f) {
+							// up and forward vectors should be always in a vertical plane
+							// forward and z-axis form a vertical plane with normal
+							QVector3D verticalPlaneNormal = QVector3D::crossProduct(m_camera.forward(), GlobalUpwardsVector);
+							verticalPlaneNormal.normalize();
 
-					// the camera right angle should always match this normal vector
-					float cosBeta = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
-					if (cosBeta > -1 && cosBeta < 1) {
-						float beta = std::acos(cosBeta)/3.14159265f*180;
-						// which direction to rotate?
-						m_camera.rotate(beta, m_camera.forward());
-						float cosBeta2 = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
-						if (std::fabs(std::fabs(cosBeta2) - 1) > 1e-5f)
-							m_camera.rotate(-2*beta, m_camera.forward());
-//						cosBeta2 = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
-					}
-				}
-#endif
-				// get new camera location
-				QVector3D newCamPos = m_orbitControllerOrigin + lineOfSight;
-				//					qDebug() << "Moving camera from " << m_camera.translation() << "to" << newCamPos;
+							// the camera right angle should always match this normal vector
+							float cosBeta = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
+							if (cosBeta > -1 && cosBeta < 1) {
+								float beta = std::acos(cosBeta)/3.14159265f*180;
+								// which direction to rotate?
+								m_camera.rotate(beta, m_camera.forward());
+								float cosBeta2 = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
+								if (std::fabs(std::fabs(cosBeta2) - 1) > 1e-5f)
+									m_camera.rotate(-2*beta, m_camera.forward());
+		//						cosBeta2 = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
+							}
+						}
+		#endif
+						// get new camera location
+						QVector3D newCamPos = m_orbitControllerOrigin + lineOfSight;
+						//					qDebug() << "Moving camera from " << m_camera.translation() << "to" << newCamPos;
 
-				// record the distance that the mouse was moved
-				m_mouseMoveDistance += mouse_dx*mouse_dx + mouse_dy*mouse_dy;
-				// move camera
-				m_camera.setTranslation(newCamPos);
+						// record the distance that the mouse was moved
+						m_mouseMoveDistance += mouse_dx*mouse_dx + mouse_dy*mouse_dy;
+						// move camera
+						m_camera.setTranslation(newCamPos);
 
-				// cursor wrap adjustment
-				adjustCurserDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
-			} // orbit controller active
+						// cursor wrap adjustment
+						adjustCurserDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
+					} break; // orbit controller active
+
+					case NM_InteractiveTranslation: {
+						// pick a point and snap to some point in the scene
+
+						// vector offset from starting point to current location
+
+
+					} break;// interactive translation active
+				} // switch
+			} // mouse dragged
 		}
 
 	} // left button down
@@ -1527,7 +1551,9 @@ void Vic3DScene::pick(PickObject & pickObject) {
 	pickTimer.start();
 #endif
 
-	// get intersection with global xy plane
+
+	// *** intersection with global xy plane ***
+
 	IBKMK::Vector3D intersectionPoint;
 	double t;
 	// process all grid planes - being transparent, these are picked from both sides
@@ -1546,7 +1572,9 @@ void Vic3DScene::pick(PickObject & pickObject) {
 	// now process all surfaces and update p to hold the closest hit
 	const VICUS::Project & prj = project();
 
-	// first try surfaces in buildings
+
+	// *** surfaces of buildings ***
+
 	for (const VICUS::Building & b : prj.m_buildings) {
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			for (const VICUS::Room & r : bl.m_rooms) {
@@ -1570,7 +1598,10 @@ void Vic3DScene::pick(PickObject & pickObject) {
 			}
 		}
 	}
-	// now try plain geometry
+
+
+	// *** now try plain geometry ***
+
 	for (const VICUS::Surface & s : prj.m_plainGeometry) {
 		// skip invisible or inactive surfaces
 		if (!s.m_visible)
@@ -1588,7 +1619,9 @@ void Vic3DScene::pick(PickObject & pickObject) {
 		}
 	}
 
-	// process all networks
+
+	// *** process all networks ***
+
 	for (const VICUS::Network & n : prj.m_geometricNetworks) {
 
 		// process all nodes
@@ -1638,6 +1671,18 @@ void Vic3DScene::pick(PickObject & pickObject) {
 			}
 		}
 	}
+
+	// *** local coordinate system pick points ***
+
+	// only do this when not panning/orbiting/first-person-viewing etc.
+	if (m_navigationMode == NUM_NM) {
+
+		PickObject::PickResult r;
+		if (m_coordinateSystemObject.pick(nearPoint, direction, r))
+			pickObject.m_candidates.push_back(r);
+
+	}
+
 
 	// finally sort the pick candidates based on depth value
 	std::sort(pickObject.m_candidates.begin(), pickObject.m_candidates.end());
