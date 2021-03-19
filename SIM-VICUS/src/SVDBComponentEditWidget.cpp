@@ -5,6 +5,7 @@
 #include <VICUS_KeywordListQt.h>
 
 #include <QtExt_LanguageHandler.h>
+#include <QtExt_Conversions.h>
 
 #include "SVSettings.h"
 #include "SVDBComponentTableModel.h"
@@ -17,7 +18,7 @@ SVDBComponentEditWidget::SVDBComponentEditWidget(QWidget *parent) :
 	m_ui(new Ui::SVDBComponentEditWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->gridLayoutMaster->setMargin(4);
+	m_ui->masterLayout->setMargin(4);
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Component identification name"));
@@ -108,27 +109,37 @@ void SVDBComponentEditWidget::updateInput(int id) {
 
 	const VICUS::BoundaryCondition *bcA = m_db->m_boundaryConditions[comp->m_idSideABoundaryCondition];
 	if (bcA != nullptr){
-		m_ui->lineEditBoundaryConditionSideAName->setText(QString::fromStdString(bcA->m_displayName.string(QtExt::LanguageHandler::langId().toStdString(), std::string("en"))));
-		// TODO : generate HTML description text with info about boundary condition
+		m_ui->lineEditBoundaryConditionSideAName->setText(QtExt::MultiLangString2QString(bcA->m_displayName));
+		m_ui->textBrowserBCSideA->setHtml(bcA->htmlDescription());
+
 		if(bcA->m_heatConduction.m_modelType == NANDRAD::InterfaceHeatConduction::MT_Constant){
 			double hc = bcA->m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
 			surfaceResistanceSideA = hc > 0 ? 1/hc : 0;
 		}
 	}
+	else {
+		m_ui->lineEditBoundaryConditionSideAName->clear();
+		m_ui->textBrowserBCSideA->clear();
+	}
 
 	const VICUS::BoundaryCondition *bcB = m_db->m_boundaryConditions[comp->m_idSideBBoundaryCondition];
 	if (bcB != nullptr){
-		m_ui->lineEditBoundaryConditionSideBName->setText(QString::fromStdString(bcB->m_displayName.string(QtExt::LanguageHandler::langId().toStdString(), std::string("en"))));
-		// TODO : generate HTML description text with info about boundary condition
+		m_ui->lineEditBoundaryConditionSideBName->setText(QtExt::MultiLangString2QString(bcB->m_displayName));
+		m_ui->textBrowserBCSideB->setHtml(bcB->htmlDescription());
+
 		if(bcB->m_heatConduction.m_modelType == NANDRAD::InterfaceHeatConduction::MT_Constant){
 			double hc = bcB->m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
 			surfaceResistanceSideB = hc > 0 ? 1/hc : 0;
 		}
 	}
+	else {
+		m_ui->lineEditBoundaryConditionSideBName->clear();
+		m_ui->textBrowserBCSideB->clear();
+	}
 
 	const VICUS::Construction *con = m_db->m_constructions[comp->m_idConstruction];
 	if (con != nullptr) {
-		m_ui->lineEditConstructionName->setText(QString::fromStdString(con->m_displayName.string(QtExt::LanguageHandler::langId().toStdString(), "en")));
+		m_ui->lineEditConstructionName->setText(QtExt::MultiLangString2QString(con->m_displayName));
 		double UValue;
 		/* Take for uvalue calculation the surface resistance from the side A and B if this exist.
 			If all resistance are zero -> take standard resistance of 0.17+0.04 = 0.21

@@ -1,16 +1,14 @@
 #ifndef VICUS_BoundaryConditionH
 #define VICUS_BoundaryConditionH
 
-#include "VICUS_CodeGenMacros.h"
-#include "VICUS_Constants.h"
-
 #include <QString>
+#include <QColor>
+#include <QCoreApplication>
+
 #include <vector>
 
 #include <IBK_Parameter.h>
 #include <IBK_MultiLanguageString.h>
-
-#include "VICUS_AbstractDBElement.h"
 
 #include <NANDRAD_InterfaceHeatConduction.h>
 #include <NANDRAD_InterfaceLongWaveEmission.h>
@@ -18,12 +16,16 @@
 #include <NANDRAD_InterfaceVaporDiffusion.h>
 #include <NANDRAD_InterfaceAirFlow.h>
 
-#include <QColor>
+#include "VICUS_CodeGenMacros.h"
+#include "VICUS_Constants.h"
+#include "VICUS_AbstractDBElement.h"
+
 
 namespace VICUS {
 
 /*! This is a template for boundary conditions, to be referenced by components. */
 class BoundaryCondition : public AbstractDBElement {
+	Q_DECLARE_TR_FUNCTIONS(BoundaryCondition)
 public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -35,6 +37,8 @@ public:
 	/*! Checks if all parameters are valid. */
 	bool isValid() const;
 
+	/*! Generates a short html-description of the defined parameters. */
+	QString htmlDescription() const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
