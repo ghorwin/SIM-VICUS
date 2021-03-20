@@ -419,12 +419,39 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 				}
 
 
-				// did we hit the local coordinate system?
+				// *** enter translation mode? ***
 				if (pickObject.m_candidates.front().m_snapPointType == PickObject::RT_CoordinateSystemCenter) {
 					m_navigationMode = NM_InteractiveTranslation;
 					// Store origin of translation
 					m_translateOrigin = m_coordinateSystemObject.translation();
 					qDebug() << "Entering interactive translation mode";
+				}
+
+				// *** enter rotation or scale mode? ***
+				else if (pickObject.m_candidates.front().m_snapPointType == PickObject::RT_AxisEndMarker) {
+					// which mode is the coordinate system in?
+					if (m_coordinateSystemObject.m_geometryTransformMode == Vic3D::CoordinateSystemObject::TM_RotateMask) {
+						m_navigationMode = NM_InteractiveRotation;
+						// which axis?
+						switch (pickObject.m_candidates.front().m_uniqueObjectID) {
+							case 0 :
+								m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateX;
+								m_rotationRefVector = m_coordinateSystemObject.localYAxis();
+							break;
+
+							case 1 :
+								m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateY;
+								m_rotationRefVector = m_coordinateSystemObject.localZAxis();
+							break;
+
+							case 2 :
+								m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateZ;
+								m_rotationRefVector = m_coordinateSystemObject.localXAxis();
+							break;
+						}
+
+						qDebug() << "Entering interactive rotation mode";
+					}
 				}
 				else {
 					// for orbit-controller, we  take the closest point of either

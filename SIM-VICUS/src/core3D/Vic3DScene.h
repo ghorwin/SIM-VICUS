@@ -224,6 +224,7 @@ private:
 		NM_Panning,
 		NM_FirstPerson,
 		NM_InteractiveTranslation,
+		NM_InteractiveRotation, // this is set for any axis rotation - which rotation is rotated about is set in the local coordinate system TM_xx bit
 		NUM_NM
 	};
 
@@ -239,9 +240,11 @@ private:
 	/*! Holds the origin of the orbit controller coordinates. */
 	QVector3D				m_orbitControllerOrigin;
 
-	// *** Interactive translation stuff **
+	// *** Interactive translation/rotation/scale stuff **
 
 	QVector3D				m_translateOrigin;
+	/*! Reference vector (right angle to rotation axis). */
+	QVector3D				m_rotationRefVector;
 
 	// other members
 
