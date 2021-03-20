@@ -32,7 +32,7 @@ public:
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
 		quantities.push_back(QuantityDescription("FluidVelocity","m/s","Fluid velocity", false));
-		quantities.push_back(QuantityDescription("FluidVolumeFlow","m3/h","Fluid Volume flow", false));
+		quantities.push_back(QuantityDescription("FluidVolumeFlow","m3/h","Fluid volume flow", false));
 		quantities.push_back(QuantityDescription("FluidViscosity","m2/s","Fluid dynamic viscosity", false));
 		quantities.push_back(QuantityDescription("Reynolds","---","Reynolds number", false));
 		quantities.push_back(QuantityDescription("Prandtl","---","Prandtl number", false));
@@ -178,7 +178,7 @@ public:
 
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
-		quantities.push_back(QuantityDescription("FluidVolumeFlow","m3/h","Fluid Volume flow", false));
+		quantities.push_back(QuantityDescription("FluidVolumeFlow","m3/h","Fluid volume flow", false));
 		quantities.push_back(QuantityDescription("FluidVelocity","m/s","Fluid velocity", false));
 
 		// check heat transfer type
@@ -325,7 +325,7 @@ public:
 
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
-		quantities.push_back(QuantityDescription("FluidVolumeFlow","m3/h","Fluid Volume flow", false));
+		quantities.push_back(QuantityDescription("FluidVolumeFlow","m3/h","Fluid volume flow", false));
 		quantities.push_back(QuantityDescription("FluidVelocity","m/s","Fluid velocity", false));
 	}
 
