@@ -304,13 +304,6 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 					.arg(quantityString)
 					.arg(quantitySuffix).str();
 
-		// if displayname is given, store variable - displayname mapping
-		if (!displayName.empty())
-			m_variableMapping[variableName] = IBK::FormatString("%1.%2%3")
-					.arg(displayName)
-					.arg(quantityString)
-					.arg(quantitySuffix).str();
-
 		// append unit to variable name and add to header
 		std::string header = variableName + " [" + u.name() + "]";
 		headerLabels.push_back(header);

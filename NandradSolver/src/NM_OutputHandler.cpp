@@ -112,8 +112,6 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 	// cache parameters needed to create output files
 	m_restart = restart; // store restart info flag
 	m_outputPath = &outputPath;
-	m_mappingFilePath = (outputPath / "../var/VariableSubstitutions.txt");
-	m_mappingFilePath.removeRelativeParts();
 	m_binaryFiles = prj.m_outputs.m_binaryFormat.isEnabled();
 	m_timeUnit = prj.m_outputs.m_timeUnit;
 	if (m_timeUnit.base_id() != IBK_UNIT_ID_SECONDS) {
@@ -424,18 +422,6 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 
 }
 
-void OutputHandler::writeMappingFile() const {
-	// create the mapping file
-	std::unique_ptr<std::ofstream> vapMapStream( IBK::create_ofstream(m_mappingFilePath) );
-	// now write a line with variable mappings for each of the variables in question
-
-	// the maps OutputFile::m_variableMapping have been populated already
-	for (OutputFile * of : m_outputFiles) {
-		for (auto m : of->m_variableMapping)
-			*vapMapStream << m.first << '\t' << m.second << '\n';
-	}
-}
-
 
 void OutputHandler::writeOutputs(double t_out, double t_secondsOfYear) {
 	FUNCID(OutputHandler::writeOutputs);
@@ -470,9 +456,6 @@ void OutputHandler::writeOutputs(double t_out, double t_secondsOfYear) {
 
 		// now create timer (becomes owned by us)
 		m_outputTimer = new IBK::StopWatch; // timer starts automatically
-
-		// *** write result variable mapping file ***
-		writeMappingFile();
 	}
 
 	// convert to output time unit
