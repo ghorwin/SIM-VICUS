@@ -273,8 +273,6 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 	for (unsigned int i=0; i<m_valueRefs.size(); ++i) {
 		if (m_valueRefs[i] == nullptr) continue; // skip unavailable vars
 
-		const std::string & displayName = m_quantityDescs[i].m_displayName;
-
 		const NANDRAD::OutputDefinition & od = m_outputDefinitions[ m_outputDefMap[i] ];
 
 		// quantity suffix depends on time type
