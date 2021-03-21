@@ -261,7 +261,7 @@ private:
 		mdoel grouping and fills m_orderedTimeStateDependentSubModels, m_orderedStateDependentSubModels vectors
 		with sorted parallel object groups.*/
 	void initModelGraph();
-	/*! Creates a list of all available output quantities.*/
+	/*! Creates a list of all available output quantities. Also writes the variable-display name mapping table. */
 	void initOutputReferenceList();
 	/*! Initialises all outputs.
 		\param restart If true, output files are re-opened for writing (and are expected to exist).
@@ -511,6 +511,9 @@ private:
 
 	/*! The central managing object for outputs. */
 	OutputHandler											*m_outputHandler = nullptr;
+
+	/*! Stores variable mapping of created object reference names (key) versus display names (values). */
+	std::map<std::string, std::string>						m_variableMapping;
 
 	// *** STATISTICS ***
 

@@ -1879,83 +1879,97 @@ void NandradModel::initModelGraph() {
 void NandradModel::initOutputReferenceList() {
 	FUNCID(NandradModel::initOutputReferenceList);
 	IBK::IBK_Message( IBK::FormatString("Initializing Output Quantity List\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-	IBK_MSG_INDENT;
+	{
+		IBK_MSG_INDENT;
 
-	// generate and dump calculation results of all models
-	std::map<std::string, QuantityDescription> refDescs;
-	for (unsigned int i=0; i<m_modelContainer.size(); ++i) {
-		AbstractModel * currentModel = m_modelContainer[i];
-		NANDRAD::ModelInputReference::referenceType_t refType = currentModel->referenceType();
-		// skip models that do not generate outputs
-		if (refType == NANDRAD::ModelInputReference::NUM_MRT)
-			continue;
-		std::vector<QuantityDescription> varDescs;
-		currentModel->resultDescriptions(varDescs);
-		try {
-			std::string refTypeName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", refType);
-			for (unsigned int j=0; j<varDescs.size(); ++j) {
-				std::stringstream description;
-				if (varDescs[j].m_size == 0)
-					continue;
-				// if different reference type is given, use this reference type instead
-				if (varDescs[j].m_referenceType != NANDRAD::ModelInputReference::NUM_MRT)
-					description << NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", varDescs[j].m_referenceType)
-								<< "." << varDescs[j].m_name;
-				else
-					description << refTypeName << "." << varDescs[j].m_name;
-				if (!varDescs[j].m_indexKeys.empty()) {
-					description << "(";
-					if (varDescs[j].m_indexKeyType == VectorValuedQuantityIndex::IK_Index)
-						description << "index,";
+		// generate and dump calculation results of all models
+		std::map<std::string, QuantityDescription> refDescs;
+		for (unsigned int i=0; i<m_modelContainer.size(); ++i) {
+			AbstractModel * currentModel = m_modelContainer[i];
+			NANDRAD::ModelInputReference::referenceType_t refType = currentModel->referenceType();
+			// skip models that do not generate outputs
+			if (refType == NANDRAD::ModelInputReference::NUM_MRT)
+				continue;
+			std::vector<QuantityDescription> varDescs;
+			currentModel->resultDescriptions(varDescs);
+			try {
+				std::string refTypeName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", refType);
+				for (unsigned int j=0; j<varDescs.size(); ++j) {
+					std::stringstream description;
+					if (varDescs[j].m_size == 0)
+						continue;
+					// if different reference type is given, use this reference type instead
+					if (varDescs[j].m_referenceType != NANDRAD::ModelInputReference::NUM_MRT)
+						description << NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", varDescs[j].m_referenceType)
+									<< "." << varDescs[j].m_name;
 					else
-						description << "id,";
-					description << varDescs[j].m_size << ")";
-				}
-				refDescs[description.str()] = varDescs[j];
+						description << refTypeName << "." << varDescs[j].m_name;
+					if (!varDescs[j].m_indexKeys.empty()) {
+						description << "(";
+						if (varDescs[j].m_indexKeyType == VectorValuedQuantityIndex::IK_Index)
+							description << "index,";
+						else
+							description << "id,";
+						description << varDescs[j].m_size << ")";
+					}
+					refDescs[description.str()] = varDescs[j];
 
-				// for schedules add reduced definition
-				if (refType == NANDRAD::ModelInputReference::MRT_SCHEDULE) {
-					std::string reducedName = varDescs[j].m_name;
-					std::string::size_type pos = reducedName.rfind(':');
-					IBK_ASSERT(pos != std::string::npos);
-					reducedName = reducedName.substr(pos + 1);
-					// create a reduced description
-					std::stringstream reducedDescription;
-					reducedDescription << refTypeName << "." << reducedName;
-					// create a new quantity description
-					QuantityDescription reducedDesc = varDescs[j];
-					reducedDesc.m_name = reducedName;
-					// store
-					refDescs[reducedDescription.str()] = reducedDesc;
+					// for schedules add reduced definition
+					if (refType == NANDRAD::ModelInputReference::MRT_SCHEDULE) {
+						std::string reducedName = varDescs[j].m_name;
+						std::string::size_type pos = reducedName.rfind(':');
+						IBK_ASSERT(pos != std::string::npos);
+						reducedName = reducedName.substr(pos + 1);
+						// create a reduced description
+						std::stringstream reducedDescription;
+						reducedDescription << refTypeName << "." << reducedName;
+						// create a new quantity description
+						QuantityDescription reducedDesc = varDescs[j];
+						reducedDesc.m_name = reducedName;
+						// store
+						refDescs[reducedDescription.str()] = reducedDesc;
+					}
 				}
 			}
+			catch (IBK::Exception & ex) {
+				IBK::IBK_Message(ex.what(), IBK::MSG_ERROR, FUNC_ID);
+			}
 		}
-		catch (IBK::Exception & ex) {
-			IBK::IBK_Message(ex.what(), IBK::MSG_ERROR, FUNC_ID);
+
+		/// \todo append scheduled quantities
+
+
+		// dump output reference list to file
+		std::shared_ptr<std::ofstream> outputList(
+			IBK::create_ofstream(m_dirs.m_varDir / "output_reference_list.txt")
+		);
+
+		for (std::map<std::string, QuantityDescription>::const_iterator it = refDescs.begin();
+			it != refDescs.end(); ++it)
+		{
+			std::stringstream strm;
+			strm << std::setw(50) << std::left << it->first << '\t'
+				 << std::setw(10) << std::left << ("[" + it->second.m_unit + "]") << '\t'
+				 << it->second.m_description << std::endl;
+			IBK::IBK_Message( IBK::FormatString("%1").arg(strm.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+
+			(*outputList) << strm.rdbuf();
 		}
+		outputList->flush();
+		outputList->close();
 	}
 
-	/// \todo append scheduled quantities
 
+	IBK::IBK_Message( IBK::FormatString("Writing Variable - Displayname Mapping Table\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK_MSG_INDENT;
+	IBK::Path m_mappingFilePath = (m_dirs.m_varDir / "VariableSubstitutions.tsv");
+	m_mappingFilePath.removeRelativeParts();
 
-	// dump output reference list to file
-	std::shared_ptr<std::ofstream> outputList(
-		IBK::create_ofstream(m_dirs.m_varDir / "output_reference_list.txt")
-	);
-
-	for (std::map<std::string, QuantityDescription>::const_iterator it = refDescs.begin();
-		it != refDescs.end(); ++it)
-	{
-		std::stringstream strm;
-		strm << std::setw(50) << std::left << it->first << '\t'
-			 << std::setw(10) << std::left << ("[" + it->second.m_unit + "]") << '\t'
-			 << it->second.m_description << std::endl;
-		IBK::IBK_Message( IBK::FormatString("%1").arg(strm.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-
-		(*outputList) << strm.rdbuf();
-	}
-	outputList->flush();
-	outputList->close();
+	// create the mapping file
+	std::unique_ptr<std::ofstream> vapMapStream( IBK::create_ofstream(m_mappingFilePath) );
+	// now write a line with variable mappings for each of the variables in question
+	for (auto m : m_variableMapping)
+		*vapMapStream << m.first << '\t' << m.second << '\n';
 }
 
 
