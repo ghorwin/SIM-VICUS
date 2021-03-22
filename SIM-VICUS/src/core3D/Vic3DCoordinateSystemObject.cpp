@@ -229,17 +229,39 @@ void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 
 	// rotation indicators
 
+	// x-axis: draw 4 green bullets in yz plane
+
 	m_objectStartIndexes[ELEMENT_ROTATION_INDICATOR_INDEX_X] = currentElementIndex;
-	addSphere(IBKMK::Vector3D(AXIS_LENGTH,0,0), QColor(Qt::red), ROTATION_MARKER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
+	// x-axis sphere is for rotation around y
+	addSphere(IBKMK::Vector3D(AXIS_LENGTH,0,0), QColor(Qt::green), ROTATION_MARKER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+//	for (int i=0; i<8; ++i) {
+//		QVector3D pos(0,AXIS_LENGTH,0);
+//		QQuaternion rot = QQuaternion::fromAxisAndAngle(QVector3D(1,0,0), 22.5 + i*45);
+//		pos = rot.rotatedVector(pos);
+//		addSphere(QtExt::QVector2IBKVector(pos), QColor(Qt::red), ROTATION_MARKER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
+//				  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+//	}
 
 	m_objectStartIndexes[ELEMENT_ROTATION_INDICATOR_INDEX_Y] = currentElementIndex;
-	addSphere(IBKMK::Vector3D(0,AXIS_LENGTH,0), QColor(0,196,0), ROTATION_MARKER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
+	// y-axis sphere is for rotation around z
+	addSphere(IBKMK::Vector3D(0, AXIS_LENGTH,0), QColor(32,32,255), ROTATION_MARKER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+//	for (int i=0; i<8; ++i) {
+//		QVector3D pos(AXIS_LENGTH,0,0);
+//		QQuaternion rot = QQuaternion::fromAxisAndAngle(QVector3D(0,1,0), 22.5 + i*45);
+//		pos = rot.rotatedVector(pos);
+//	}
 
 	m_objectStartIndexes[ELEMENT_ROTATION_INDICATOR_INDEX_Z] = currentElementIndex;
-	addSphere(IBKMK::Vector3D(0,0,AXIS_LENGTH), QColor(32,32,255), ROTATION_MARKER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
+	// z-axis sphere is for rotation around x
+	addSphere(IBKMK::Vector3D(0,0,AXIS_LENGTH), QColor(Qt::red), ROTATION_MARKER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+//	for (int i=0; i<8; ++i) {
+//		QVector3D pos(AXIS_LENGTH,0,0);
+//		QQuaternion rot = QQuaternion::fromAxisAndAngle(QVector3D(0,0,1), 22.5 + i*45);
+//		pos = rot.rotatedVector(pos);
+//	}
 
 	// scale indicators
 
@@ -284,8 +306,8 @@ void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 		double angle = 2*PI_CONST*((i+1) % N_ORBIT_LINE_SEGMENTS)/N_ORBIT_LINE_SEGMENTS;
 		double z = std::sin(angle)*RADIUS;
 		double y = std::cos(angle)*RADIUS;
-		m_vertexBufferData.push_back( Vertex(QVector3D(0,float(y),float(z)), QVector3D(0,0,0)) );
-		m_colorBufferData.push_back(ColorRGBA(QColor(Qt::white)));
+		m_vertexBufferData.push_back( Vertex(QVector3D(0,float(y),float(z)), QVector3D(0,float(y),float(z)) ) );
+		m_colorBufferData.push_back(ColorRGBA(QColor(Qt::red)));
 	}
 
 	m_axisLinesVertexIndex[VERTEX_ORBIT_Y_LINE_START] = m_vertexBufferData.size();
@@ -295,8 +317,8 @@ void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 		double angle = 2*PI_CONST*((i+1) % N_ORBIT_LINE_SEGMENTS)/N_ORBIT_LINE_SEGMENTS;
 		double x = std::sin(angle)*RADIUS;
 		double z = std::cos(angle)*RADIUS;
-		m_vertexBufferData.push_back( Vertex(QVector3D(float(x),0,float(z)), QVector3D(0,0,0)) );
-		m_colorBufferData.push_back(ColorRGBA(QColor(Qt::white)));
+		m_vertexBufferData.push_back( Vertex(QVector3D(float(x),0,float(z)), QVector3D(float(x),0,float(z))) );
+		m_colorBufferData.push_back(ColorRGBA(QColor(Qt::green)));
 	}
 
 	m_axisLinesVertexIndex[VERTEX_ORBIT_Z_LINE_START] = m_vertexBufferData.size();
@@ -306,8 +328,8 @@ void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 		double angle = 2*PI_CONST*((i+1) % N_ORBIT_LINE_SEGMENTS)/N_ORBIT_LINE_SEGMENTS;
 		double x = std::sin(angle)*RADIUS;
 		double y = std::cos(angle)*RADIUS;
-		m_vertexBufferData.push_back( Vertex(QVector3D(float(x),float(y),0), QVector3D(0,0,0)) );
-		m_colorBufferData.push_back(ColorRGBA(QColor(Qt::white)));
+		m_vertexBufferData.push_back( Vertex(QVector3D(float(x),float(y),0), QVector3D(float(x),float(y),0)) );
+		m_colorBufferData.push_back(ColorRGBA(QColor(Qt::blue)));
 	}
 
 

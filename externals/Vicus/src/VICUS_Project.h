@@ -134,12 +134,12 @@ public:
 	*/
 	bool selectedRooms(std::vector<const Room*> & rooms) const;
 
+	// *** STATIC FUNCTIONS ***
+
 	/*! This function computes the bounding box of all selected surfaces and the center point.
 		\returns Returns the dimensions of the bounding box and its center point in argument 'center'.
 	*/
 	static IBKMK::Vector3D boundingBox(std::vector<const Surface*> &surfaces, IBKMK::Vector3D &center);
-
-	// *** FUNCTIONS ***
 
 	/*! Function to find an element by ID. */
 	template <typename T>
