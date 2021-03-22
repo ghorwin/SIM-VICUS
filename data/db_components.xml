@@ -48,4 +48,22 @@
 		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 		<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 	</Component>
+	<Component id="1009" displayName="DE: [SimQuality] Komponente für TF12.1 |EN: &lt;new component type&gt;" color="#5aff82">
+		<Type>OutsideWall</Type>
+		<IdConstruction>1007</IdConstruction>
+		<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1010" displayName="DE: [SimQuality] Komponente für TF12.2 |EN: [SimQuality] component for TF12.2" color="#5a6eff">
+		<Type>InsideWall</Type>
+		<IdConstruction>1008</IdConstruction>
+		<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1011" displayName="DE: [SimQuality] Komponente für TF12.3 |EN: [SimQuality] component for TF12.3" color="#ff5aaa">
+		<Type>Ceiling</Type>
+		<IdConstruction>1009</IdConstruction>
+		<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
+	</Component>
 </Components>

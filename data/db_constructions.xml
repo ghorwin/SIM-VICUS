@@ -44,7 +44,7 @@
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="1005" displayName="DE: [SimQuality] TF08 |EN: [SimQuality] TF08 " color="#66ffcc">
+	<Construction id="1005" displayName="DE: [SimQuality] TF08 |EN: [SimQuality] TF08 ">
 		<UsageType>OutsideWall</UsageType>
 		<InsulationKind>OutsideInsulation</InsulationKind>
 		<MaterialKind>NaturalStoneMasonry</MaterialKind>
@@ -68,6 +68,60 @@
 			</MaterialLayer>
 			<MaterialLayer matId="10000">
 				<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+			</MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="1007" displayName="DE: [SimQuality] TF12 Konstruktionstyp 1 (Fassadenelement) |EN: [SimQuality] TF12 Construction 1 (Facade element)">
+		<UsageType>OutsideWall</UsageType>
+		<MaterialLayers>
+			<MaterialLayer matId="10005">
+				<IBK:Parameter name="Thickness" unit="m">0.004</IBK:Parameter>
+			</MaterialLayer>
+			<MaterialLayer matId="10011">
+				<IBK:Parameter name="Thickness" unit="m">0.14</IBK:Parameter>
+			</MaterialLayer>
+			<MaterialLayer matId="10006">
+				<IBK:Parameter name="Thickness" unit="m">0.013</IBK:Parameter>
+			</MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="1008" displayName="DE: [SimQuality] TF12 Konstruktionstyp 2 (Innenwand Gipskarton) |EN: [SimQuality] TF12 Construction 2 (Interior wall plasterboard)">
+		<UsageType>InsideWall</UsageType>
+		<MaterialLayers>
+			<MaterialLayer matId="10007">
+				<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
+			</MaterialLayer>
+			<MaterialLayer matId="10006">
+				<IBK:Parameter name="Thickness" unit="m">0.013</IBK:Parameter>
+			</MaterialLayer>
+			<MaterialLayer matId="10008">
+				<IBK:Parameter name="Thickness" unit="m">0.155</IBK:Parameter>
+			</MaterialLayer>
+			<MaterialLayer matId="10006">
+				<IBK:Parameter name="Thickness" unit="m">0.013</IBK:Parameter>
+			</MaterialLayer>
+			<MaterialLayer matId="10007">
+				<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
+			</MaterialLayer>
+		</MaterialLayers>
+	</Construction>
+	<Construction id="1009" displayName="DE: [SimQuality] TF12 Konstruktionstyp 3 (Deckenkonstuktion) |EN: [SimQuality] TF12 Construction 3 (CeilingConstruction)">
+		<UsageType>Ceiling</UsageType>
+		<MaterialLayers>
+			<MaterialLayer matId="10007">
+				<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
+			</MaterialLayer>
+			<MaterialLayer matId="10009">
+				<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+			</MaterialLayer>
+			<MaterialLayer matId="10013">
+				<IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter>
+			</MaterialLayer>
+			<MaterialLayer matId="10010">
+				<IBK:Parameter name="Thickness" unit="m">0.06</IBK:Parameter>
+			</MaterialLayer>
+			<MaterialLayer matId="10012">
+				<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
