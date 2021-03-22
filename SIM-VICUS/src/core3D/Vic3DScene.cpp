@@ -435,17 +435,17 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 						// which axis?
 						switch (pickObject.m_candidates.front().m_uniqueObjectID) {
 							case 0 :
-								m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateX;
+								m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateY;
 								m_rotationRefVector = m_coordinateSystemObject.localYAxis();
 							break;
 
 							case 1 :
-								m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateY;
+								m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateZ;
 								m_rotationRefVector = m_coordinateSystemObject.localZAxis();
 							break;
 
 							case 2 :
-								m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateZ;
+								m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateX;
 								m_rotationRefVector = m_coordinateSystemObject.localXAxis();
 							break;
 						}

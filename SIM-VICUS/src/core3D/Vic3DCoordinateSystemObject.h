@@ -121,6 +121,11 @@ public:
 	*/
 	int m_geometryTransformMode = 0;
 
+	/*! Rotation angle, set externally when coordinate system is switched into TM_Rotate* mode.
+		The corresponding rotation sphere is then drawn with this angle from the starting position.
+	*/
+	double m_rotationAngle = 0;
+
 private:
 	/*! Updates the inverse matrix. */
 	void updateInverse();
