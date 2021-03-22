@@ -895,7 +895,7 @@ namespace VICUS {
 			case 19 :
 			switch (t) {
 				case 0 : return "Temperature for heat exchange";
-				case 1 : return "Constant heat flux out of the element (heat loss)";
+				case 1 : return "Heat flux out of the element (heat loss)";
 			} break;
 			// NetworkHeatExchange::References
 			case 20 :

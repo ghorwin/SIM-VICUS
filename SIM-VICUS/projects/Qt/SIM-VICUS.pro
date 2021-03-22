@@ -170,7 +170,6 @@ SOURCES += \
 				../../src/SVPreferencesPageTools.cpp \
 				../../src/SVProjectHandler.cpp \
 				../../src/SVPropBuildingEditWidget.cpp \
-				../../src/SVPropEditCopyDialog.cpp \
 				../../src/SVPropEditGeometry.cpp \
 				../../src/SVPropertyWidget.cpp \
 				../../src/SVPropFloorManagerItemDelegate.cpp \
@@ -297,7 +296,6 @@ HEADERS  += \
 				../../src/SVPreferencesPageTools.h \
 				../../src/SVProjectHandler.h \
 				../../src/SVPropBuildingEditWidget.h \
-				../../src/SVPropEditCopyDialog.h \
 				../../src/SVPropEditGeometry.h \
 				../../src/SVPropertyWidget.h \
 				../../src/SVPropFloorManagerItemDelegate.h \
@@ -361,7 +359,6 @@ FORMS    += \
 				../../src/SVPreferencesPageStyle.ui \
 				../../src/SVPreferencesPageTools.ui \
 				../../src/SVPropBuildingEditWidget.ui \
-				../../src/SVPropEditCopyDialog.ui \
 				../../src/SVPropEditGeometry.ui \
 				../../src/SVPropFloorManagerWidget.ui \
 				../../src/SVPropModeSelectionWidget.ui \

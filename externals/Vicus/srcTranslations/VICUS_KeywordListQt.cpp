@@ -137,7 +137,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Constant heat flux out of the element (heat loss)");
 	tr("External heat transfer coeffient for the outside boundary");
 	tr("Temperature for heat exchange");
-	tr("Constant heat flux out of the element (heat loss)");
+	tr("Heat flux out of the element (heat loss)");
 	tr("ID of coupled zone for thermal exchange");
 	tr("ID of coupled construction instance for thermal exchange");
 	tr("Building");

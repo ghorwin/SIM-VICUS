@@ -115,6 +115,12 @@ public:
 	/*! Applies current rotation (from selected geometry object) into project. */
 	void rotate();
 
+	/*! Pops up a question dialog and asks user to choose one of two opertions or cancel.
+		Function returns 1 for button1, 2 for button 2 and -1 if dialog was canceled.
+	*/
+	static int requestCopyOperation(QWidget * parent, const QString & title, const QString & text,
+									const QString & button1, const QString & button2);
+
 public slots:
 
 	/*! Connected to SVProjectHandler::modified() */
