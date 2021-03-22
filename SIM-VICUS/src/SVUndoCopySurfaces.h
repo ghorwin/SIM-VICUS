@@ -18,6 +18,7 @@ public:
 		\param compInstance If not nullptr, the component instance is being added to the project. No ownership transfer!
 	*/
 	SVUndoCopySurfaces(const QString & label, const std::vector<VICUS::Surface> & copiedSurfaces,
+					   const std::set<unsigned int> & deselectedSurfaceUniqueIDs,
 						unsigned int parentNodeID = 0,
 						const std::vector<VICUS::ComponentInstance> * compInstances = nullptr);
 
@@ -28,6 +29,8 @@ private:
 
 	/*! Cache for copied surface. */
 	std::vector<VICUS::Surface>				m_copiedSurfaces;
+	/*! UniqueIDs of original surfaces that need to be deselected. */
+	std::set<unsigned int>					m_deselectedSurfaceUniqueIDs;
 	/*! Parent room (if any) that this surface belongs to. */
 	unsigned int							m_parentNodeID = 0;
 	/*! Optionally copied component instances. */

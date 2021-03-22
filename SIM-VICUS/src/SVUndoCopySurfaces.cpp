@@ -2,9 +2,12 @@
 #include "SVProjectHandler.h"
 
 
-SVUndoCopySurfaces::SVUndoCopySurfaces(const QString &label, const std::vector<VICUS::Surface> &copiedSurfaces, unsigned int parentNodeID,
+SVUndoCopySurfaces::SVUndoCopySurfaces(const QString &label, const std::vector<VICUS::Surface> &copiedSurfaces,
+									   const std::set<unsigned int> & deselectedSurfaceUniqueIDs,
+									   unsigned int parentNodeID,
 									   const std::vector<VICUS::ComponentInstance> * compInstances) :
 	m_copiedSurfaces(copiedSurfaces),
+	m_deselectedSurfaceUniqueIDs(deselectedSurfaceUniqueIDs),
 	m_parentNodeID(parentNodeID)
 {
 	setText( label );
@@ -22,13 +25,21 @@ void SVUndoCopySurfaces::undo() {
 			const_cast<VICUS::Room *>(r)->m_surfaces.pop_back();
 	}
 
+	// re-select surfaces that were previously selected
+	for (VICUS::Building & b : theProject().m_buildings)
+		for (VICUS::BuildingLevel & bl : b.m_buildingLevels)
+			for (VICUS::Room & r : bl.m_rooms)
+				for (VICUS::Surface & s : r.m_surfaces)
+					if (m_deselectedSurfaceUniqueIDs.find(s.uniqueID()) != m_deselectedSurfaceUniqueIDs.end())
+						s.m_selected = true;
+
 	// remove appended component instances (if any)
 //	Q_ASSERT(theProject().m_componentInstances.size() >= m_componentInstances.size());
 //	theProject().m_componentInstances.resize(theProject().m_componentInstances.size() - m_componentInstances.size());
 
 	// tell project that the geometry has changed (i.e. rebuild navigation tree and scene)
 	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);
-	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingTopologyChanged);
+//	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingTopologyChanged);
 }
 
 void SVUndoCopySurfaces::redo() {
@@ -41,11 +52,20 @@ void SVUndoCopySurfaces::redo() {
 			const_cast<VICUS::Room *>(r)->m_surfaces.push_back(s);
 	}
 
+	// deselect surfaces that were previously selected
+	for (VICUS::Building & b : theProject().m_buildings)
+		for (VICUS::BuildingLevel & bl : b.m_buildingLevels)
+			for (VICUS::Room & r : bl.m_rooms)
+				for (VICUS::Surface & s : r.m_surfaces)
+					if (m_deselectedSurfaceUniqueIDs.find(s.uniqueID()) != m_deselectedSurfaceUniqueIDs.end())
+						s.m_selected = false;
+
+
 	// append component instances (if vector is empty, nothing happens here)
 //	theProject().m_componentInstances.insert(theProject().m_componentInstances.end(), m_componentInstances.begin(), m_componentInstances.end());
 	theProject().updatePointers();
 
 	// tell project that the building geometry has changed
 	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);
-	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingTopologyChanged);
+//	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingTopologyChanged);
 }
