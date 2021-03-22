@@ -79,21 +79,25 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 	QProgressDialog dlg(tr("Importing IDF project"), tr("Abort"), 0, prj.m_zones.size(), this);
 	dlg.setWindowModality(Qt::WindowModal);
+	dlg.setValue(0);
+	qApp->processEvents();
 
 	QElapsedTimer progressTimer;
 	progressTimer.start();
 
 	// import all zones
 	unsigned int count = 0;
-	for (const EP::Zone & z : prj.m_zones) {
+	// TODO : Andreas, add OpenMP parallelization just to show off :-)
+	for (int i=0; i<prj.m_zones.size(); ++i) {
+		const EP::Zone & z = prj.m_zones[i];
 		++count;
-		if (progressTimer.elapsed() > 1000) {
+		if (progressTimer.elapsed() > 100) {
 			dlg.setValue(count);
 			if (dlg.wasCanceled())
 				throw IBK::Exception("Import canceled.", FUNC_ID);
-//			qApp->processEvents();
 			progressTimer.start();
 		}
+
 		VICUS::Room r;
 		r.m_id = r.uniqueID();
 		r.m_displayName = QString::fromStdString(z.m_name);
@@ -136,7 +140,6 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 			surf.m_displayName = QString::fromStdString(bsd.m_name);
 			surf.m_geometry = VICUS::PlaneGeometry(VICUS::PlaneGeometry::T_Polygon);
 			surf.m_geometry.setVertexes(bsd.m_polyline);
-			surf.m_geometry.computeGeometry();
 
 			surf.updateColor();
 			bl.m_rooms[idx].m_surfaces.push_back(surf);
