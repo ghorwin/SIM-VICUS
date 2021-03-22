@@ -2,6 +2,8 @@
 #include "ui_SVImportIDFDialog.h"
 
 #include <QMessageBox>
+#include <QProgressDialog>
+#include <QElapsedTimer>
 
 #include "SVProjectHandler.h"
 
@@ -75,8 +77,23 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 	unsigned int transferedBSDCounter = 0;
 
+	QProgressDialog dlg(tr("Importing IDF project"), tr("Abort"), 0, prj.m_zones.size(), this);
+	dlg.setWindowModality(Qt::WindowModal);
+
+	QElapsedTimer progressTimer;
+	progressTimer.start();
+
 	// import all zones
+	unsigned int count = 0;
 	for (const EP::Zone & z : prj.m_zones) {
+		++count;
+		if (progressTimer.elapsed() > 1000) {
+			dlg.setValue(count);
+			if (dlg.wasCanceled())
+				throw IBK::Exception("Import canceled.", FUNC_ID);
+//			qApp->processEvents();
+			progressTimer.start();
+		}
 		VICUS::Room r;
 		r.m_id = r.uniqueID();
 		r.m_displayName = QString::fromStdString(z.m_name);
@@ -130,6 +147,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		//add constructions, materials
 		//add internal loads ...
 	}
+	dlg.setValue(count);
 
 	if(transferedBSDCounter != prj.m_bsd.size())
 	{
