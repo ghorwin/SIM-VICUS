@@ -151,6 +151,16 @@ public:
 			return &(*it);
 	}
 
+	/*! Checks if an object with m_id matching the searched id exists in the vector. */
+	template <typename T>
+	static bool contains(const std::vector<T> & vec, unsigned int id) {
+		for (auto & t : vec)
+			if (t->m_id == id)
+				return true;
+		return false;
+	}
+
+
 	/*! Function to find an element by ID (const-version). */
 	template <typename T>
 	static const T * element(const std::vector<T>& vec, unsigned int id) {

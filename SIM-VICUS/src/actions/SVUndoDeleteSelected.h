@@ -16,7 +16,8 @@
 class SVUndoDeleteSelected : public SVUndoCommandBase {
 	Q_DECLARE_TR_FUNCTIONS(SVUndoDeleteSelected)
 public:
-	SVUndoDeleteSelected(const QString & label, const std::vector<unsigned int> & selectedIDs);
+	SVUndoDeleteSelected(const QString & label, const std::vector<unsigned int> & selectedIDs,
+						 const std::vector<VICUS::ComponentInstance> & componentIDs);
 
 	virtual void undo();
 	virtual void redo();
@@ -42,6 +43,9 @@ private:
 	std::vector<RemovedSurfaceInfo>						m_roomGeometry;
 	/*! Vector with planar anonymous geometry. */
 	std::vector<RemovedSurfaceInfo>						m_plainGeometry;
+
+	/*! Stores vector of component instances. */
+	std::vector<VICUS::ComponentInstance>				m_compInstances;
 };
 
 

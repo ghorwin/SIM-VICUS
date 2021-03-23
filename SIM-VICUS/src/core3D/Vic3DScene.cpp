@@ -1475,15 +1475,37 @@ void Vic3DScene::deselectAll() {
 void Vic3DScene::deleteSelected() {
 	// process all project geometry and keep (in a copy) only those that need to be removed
 	std::vector<unsigned int> selectedObjectIDs;
-	for (const VICUS::Object * obj : m_selectedGeometryObject.m_selectedObjects)
+	// generate vector of surfaces
+	std::vector<const VICUS::Surface *> selectedSurfaces;
+	for (const VICUS::Object * obj : m_selectedGeometryObject.m_selectedObjects) {
 		selectedObjectIDs.push_back(obj->uniqueID());
+		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(obj);
+		if (s != nullptr)
+			selectedSurfaces.push_back(s);
+	}
 
 	if (selectedObjectIDs.empty())
 		return;
 
+
+	// also collect component instances that can be safely deleted, i.e. keep only those that reference at least one surface
+	// that is not selected
+	std::vector<VICUS::ComponentInstance> selectedComponentInstances;
+	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+		// side a is either not a surface, or not a selected surface
+		bool sideAUnused = (ci.m_sideASurfaceID == VICUS::INVALID_ID || !VICUS::Project::contains(selectedSurfaces, ci.m_sideASurfaceID));
+		// side b is either not a surface, or not a selected surface
+		bool sideBUnused = (ci.m_sideBSurfaceID == VICUS::INVALID_ID || !VICUS::Project::contains(selectedSurfaces, ci.m_sideBSurfaceID));
+
+		// if both do not reference selected surfaces, we keep it
+		if (sideAUnused && sideBUnused)
+			selectedComponentInstances.push_back(ci);
+	}
+
+
 	// clear selected objects (since they are now removed)
 	SVUndoDeleteSelected * undo = new SVUndoDeleteSelected(tr("Removing selected geometry"),
-														   selectedObjectIDs);
+														   selectedObjectIDs, selectedComponentInstances);
 	// clear selection
 	undo->push();
 }

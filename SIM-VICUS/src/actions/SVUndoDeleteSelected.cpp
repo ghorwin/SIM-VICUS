@@ -3,11 +3,14 @@
 
 #include "SVViewStateHandler.h"
 
-SVUndoDeleteSelected::SVUndoDeleteSelected(const QString & label, const std::vector<unsigned int> & selectedIDs) :
-	m_selectedIDs(selectedIDs)
+SVUndoDeleteSelected::SVUndoDeleteSelected(const QString & label, const std::vector<unsigned int> & selectedIDs,
+										   const std::vector<VICUS::ComponentInstance> & componentIDs) :
+	m_selectedIDs(selectedIDs),
+	m_compInstances(componentIDs)
 {
 	setText( label );
 }
+
 
 class hasUniqueID {
 public:
@@ -46,6 +49,8 @@ void SVUndoDeleteSelected::undo() {
 		const RemovedSurfaceInfo & rsi = *rit;
 		theProject().m_plainGeometry.insert(theProject().m_plainGeometry.begin()+rsi.m_insertIdx, rsi.m_surface);
 	}
+
+	theProject().m_componentInstances.swap(m_compInstances);
 
 	// rebuild pointer hierarchy
 	theProject().updatePointers();
@@ -105,6 +110,8 @@ void SVUndoDeleteSelected::redo() {
 
 		// TODO : search through nodes/edges
 	}
+
+	theProject().m_componentInstances.swap(m_compInstances);
 
 	// rebuild pointer hierarchy
 	theProject().updatePointers();

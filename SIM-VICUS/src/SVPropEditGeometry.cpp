@@ -43,14 +43,6 @@ static double angleBetweenVectorsDeg ( const IBKMK::Vector3D &v1, const IBKMK::V
 	return std::acos( v1.scalarProduct(v2) / sqrt(v1.magnitude() * v2.magnitude() ) ) / IBK::DEG2RAD;
 }
 
-template <typename T>
-bool contains(const std::vector<T> & vec, unsigned int id) {
-	for (auto & t : vec)
-		if (t->m_id == id)
-			return true;
-	return false;
-}
-
 
 class LineEditFormater : public QtExt::FormatterBase {
 public:
@@ -1336,9 +1328,9 @@ void SVPropEditGeometry::on_pushButtonCopySurfaces_clicked() {
 	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
 		// we create a copy of the component instance
 		bool leftSideUsed =
-				(ci.m_sideASurfaceID != VICUS::INVALID_ID && contains(m_selSurfaces, ci.m_sideASurfaceID));
+				(ci.m_sideASurfaceID != VICUS::INVALID_ID && VICUS::Project::contains(m_selSurfaces, ci.m_sideASurfaceID));
 		bool rightSideUsed =
-				(ci.m_sideBSurfaceID != VICUS::INVALID_ID && contains(m_selSurfaces, ci.m_sideBSurfaceID));
+				(ci.m_sideBSurfaceID != VICUS::INVALID_ID && VICUS::Project::contains(m_selSurfaces, ci.m_sideBSurfaceID));
 
 		// skip unrelated component instances
 		if (!leftSideUsed && !rightSideUsed)
