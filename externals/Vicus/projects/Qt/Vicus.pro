@@ -45,6 +45,7 @@ HEADERS += \
 	../../src/VICUS_Database.h \
 	../../src/VICUS_EPDCategroySet.h \
 	../../src/VICUS_EPDDataset.h \
+	../../src/VICUS_Infiltration.h \
 	../../src/VICUS_InternalLoad.h \
 	../../src/VICUS_KeywordList.h \
 	../../src/VICUS_Material.h \
@@ -67,12 +68,16 @@ HEADERS += \
 	../../src/VICUS_ScheduleInterval.h \
 	../../src/VICUS_Surface.h \
 	../../src/VICUS_SurfaceProperties.h \
+	../../src/VICUS_VentilationNatural.h \
 	../../src/VICUS_ViewSettings.h \
 	../../src/VICUS_Window.h \
 	../../src/VICUS_WindowDivider.h \
 	../../src/VICUS_WindowFrame.h \
 	../../src/VICUS_WindowGlazingLayer.h \
 	../../src/VICUS_WindowGlazingSystem.h \
+	../../src/VICUS_ZoneControlNaturalVentilation.h \
+	../../src/VICUS_ZoneControlShading.h \
+	../../src/VICUS_ZoneControlThermostat.h \
 	../../src/VICUS_ZoneTemplate.h
 
 SOURCES += \
@@ -84,6 +89,7 @@ SOURCES += \
 	../../src/VICUS_DailyCycle.cpp \
 	../../src/VICUS_EPDCategroySet.cpp \
 	../../src/VICUS_EPDDataset.cpp \
+	../../src/VICUS_Infiltration.cpp \
 	../../src/VICUS_InternalLoad.cpp \
 	../../src/VICUS_KeywordList.cpp \
 	../../src/VICUS_Material.cpp \
@@ -102,6 +108,10 @@ SOURCES += \
 	../../src/VICUS_Schedule.cpp \
 	../../src/VICUS_ScheduleInterval.cpp \
 	../../src/VICUS_Surface.cpp \
+	../../src/VICUS_VentilationNatural.cpp \
+	../../src/VICUS_ZoneControlNaturalVentilation.cpp \
+	../../src/VICUS_ZoneControlShading.cpp \
+	../../src/VICUS_ZoneControlThermostat.cpp \
 	../../src/VICUS_ZoneTemplate.cpp \
 	../../src/ncg/ncg_VICUS_BoundaryCondition.cpp \
 	../../src/ncg/ncg_VICUS_Building.cpp \
