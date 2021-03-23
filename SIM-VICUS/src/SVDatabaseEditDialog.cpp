@@ -76,6 +76,11 @@ SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTa
 	m_proxyModel = new QSortFilterProxyModel(this);
 	m_proxyModel->setSourceModel(dynamic_cast<QAbstractTableModel*>(m_dbModel));
 	m_ui->tableView->setModel(m_proxyModel);
+	QString newTitle = title;
+	if(newTitle.contains(" Database"))
+		newTitle = newTitle.mid(0, newTitle.length()-9);
+
+	m_ui->groupBoxTableView->setTitle(newTitle);
 
 	// create groupbox and adjust layout for edit widget
 	if (!editWidgetTitle.isEmpty()) {
@@ -315,7 +320,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createComponentEditDialog(QWidget *
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
 		new SVDBComponentTableModel(parent, SVSettings::instance().m_db),
 		new SVDBComponentEditWidget(parent),
-		tr("Component Database"), QString(), true
+		tr("Component Database"), tr("Component properties"), true
 	);
 	dlg->resize(1400,800);
 	return dlg;
@@ -326,7 +331,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createBoundaryConditionsEditDialog(
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
 		new SVDBBoundaryConditionTableModel(parent, SVSettings::instance().m_db),
 		new SVDBBoundaryConditionEditWidget(parent),
-		tr("Boundary Condition Database"), QString(), true
+		tr("Boundary Condition Database"), tr("Boundary condition properties"), true
 	);
 	dlg->resize(1400,800);
 	return dlg;
@@ -337,7 +342,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createScheduleEditDialog(QWidget * 
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
 		new SVDBScheduleTableModel(parent, SVSettings::instance().m_db),
 		new SVDBScheduleEditWidget(parent),
-		tr("Schedule Database"), QString(), true
+		tr("Schedule Database"), tr("Schedule properties"), true
 	);
 	dlg->resize(1400,800);
 	return dlg;
@@ -351,19 +356,19 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createInternalLoadsEditDialog(QWidg
 			dlg = new SVDatabaseEditDialog(parent,
 				new SVDBInternalLoadsTableModel(parent, SVSettings::instance().m_db, category),
 				new SVDBInternalLoadsPersonEditWidget(parent),
-				tr("Person Loads Database"), tr("Person Load Properties"), true);
+				tr("Person Loads Database"), tr("Person Load properties"), true);
 			break;
 		case VICUS::InternalLoad::IC_ElectricEquiment : {
 			dlg = new SVDatabaseEditDialog(parent,
 				new SVDBInternalLoadsTableModel(parent, SVSettings::instance().m_db, category),
 				new SVDBInternalLoadsElectricEquipmentEditWidget(parent),
-				tr("Electric Equipment Loads Database"), tr("Electric Equipment Load Properties"), true);
+				tr("Electric Equipment Loads Database"), tr("Electric Equipment Load properties"), true);
 			break;
 		case VICUS::InternalLoad::IC_Lighting :
 			dlg = new SVDatabaseEditDialog(parent,
 				new SVDBInternalLoadsTableModel(parent, SVSettings::instance().m_db, category),
 				new SVDBInternalLoadsLightsEditWidget(parent),
-				tr("Lights Loads Database"), tr("Lights Load Properties"), true);
+				tr("Lights Loads Database"), tr("Lights Load properties"), true);
 
 			} break;
 		default:
@@ -377,7 +382,7 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createZoneControlThermostatEditDialo
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
 		new SVDBZoneControlThermostatTableModel(parent, SVSettings::instance().m_db),
 		new SVDBZoneControlThermostatEditWidget(parent),
-		tr("Zone Control Thermostat"), QString(), true
+		tr("Zone Control Thermostat Database"), tr("Zone Control Thermostat properties"), true
 	);
 	dlg->resize(1400,800);
 	return dlg;
@@ -387,7 +392,7 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createZoneControlVentilationNaturalE
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
 		new SVDBZoneControlVentilationNaturalTableModel(parent, SVSettings::instance().m_db),
 		new SVDBZoneControlVentilationNaturalEditWidget(parent),
-		tr("Zone Control Natural Ventilation"), QString(), true
+		tr("Zone Control Natural Ventilation Database"), tr("Zone Control Natural Ventilation properties"), true
 		);
 	dlg->resize(1400,800);
 	return dlg;
@@ -397,7 +402,7 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createZoneControlShadingEditDialog(Q
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
 		new SVDBZoneControlShadingTableModel(parent, SVSettings::instance().m_db),
 		new SVDBZoneControlShadingEditWidget(parent),
-		tr("Zone Control Shading"), QString(), true
+		tr("Zone Control Shading Database"), tr("Zone Control Shading properties"), true
 		);
 	dlg->resize(1400,800);
 	return dlg;
@@ -407,7 +412,7 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createVentilationNaturalEditDialog(Q
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
 		new SVDBVentilationNaturalTableModel(parent, SVSettings::instance().m_db),
 		new SVDBVentilationNaturalEditWidget(parent),
-		tr("Natural Ventilation"), QString(), true
+		tr("Natural Ventilation Database"), tr("Natural Ventilation properties"), true
 		);
 	dlg->resize(1400,800);
 	return dlg;
@@ -417,7 +422,7 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createInfiltrationEditDialog(QWidget
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
 		new SVDBInfiltrationTableModel(parent, SVSettings::instance().m_db),
 		new SVDBInfiltrationEditWidget(parent),
-		tr("Infiltration"), QString(), true
+		tr("Infiltration Database"), tr("Infiltration properties"), true
 		);
 	dlg->resize(1400,800);
 	return dlg;
@@ -428,7 +433,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createNetworkComponentEditDialog(QW
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
 		new SVDBNetworkComponentTableModel(parent, SVSettings::instance().m_db),
 		new SVDBNetworkComponentEditWidget(parent),
-		tr("Network Component Database"), QString(), true
+		tr("Network Component Database"), QString(), true ///TODO Hauke muss hier der QString() auch ersetzt werden?
 	);
 	dlg->resize(1400,800);
 	return dlg;
@@ -439,7 +444,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createPipeEditDialog(QWidget * pare
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
 		new SVDBPipeTableModel(parent, SVSettings::instance().m_db),
 		new SVDBPipeEditWidget(parent),
-		tr("Network Pipes Database"), QString(), true
+		tr("Network Pipes Database"), QString(), true///TODO Hauke muss hier der QString() auch ersetzt werden?
 	);
 	dlg->resize(1400,800);
 	return dlg;
@@ -450,7 +455,7 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createFluidEditDialog(QWidget *paren
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
 		new SVDBNetworkFluidTableModel(parent, SVSettings::instance().m_db),
 		new SVDBNetworkFluidEditWidget(parent),
-		tr("Network Fluids Database"), QString(), true
+		tr("Network Fluids Database"), QString(), true///TODO Hauke muss hier der QString() auch ersetzt werden?
 	);
 	dlg->resize(1400,800);
 	return dlg;
