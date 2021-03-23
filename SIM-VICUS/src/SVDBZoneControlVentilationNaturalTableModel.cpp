@@ -118,19 +118,23 @@ void SVDBZoneControlVentilationNaturalTableModel::resetModel() {
 
 
 QModelIndex SVDBZoneControlVentilationNaturalTableModel::addNewItem() {
-	VICUS::ZoneControlNaturalVentilation ctrl;
-	ctrl.m_displayName.setEncodedString("en:<new zone control VentilationNatural model>");
+	VICUS::ZoneControlNaturalVentilation venti;
+	venti.m_displayName.setEncodedString("en:<new zone control VentilationNatural model>");
 
 	// set default parameters
 
-	ctrl.m_ctrlVal = VICUS::ZoneControlVentilationNatural::CV_AirTemperature;
-	VICUS::KeywordList::setParameter(ctrl.m_para, "ZoneControlVentilationNatural::para_t", VICUS::ZoneControlVentilationNatural::P_ToleranceHeating, 0.0);
-	VICUS::KeywordList::setParameter(ctrl.m_para, "ZoneControlVentilationNatural::para_t", VICUS::ZoneControlVentilationNatural::P_ToleranceCooling, 0.0);
 
-	ctrl.m_color = SVStyle::randomColor();
+	VICUS::KeywordList::setParameter(venti.m_para, "ZoneControlNaturalVentilation::para_t", VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMax, 60.0);
+	VICUS::KeywordList::setParameter(venti.m_para, "ZoneControlNaturalVentilation::para_t", VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMin, 20.0);
+	VICUS::KeywordList::setParameter(venti.m_para, "ZoneControlNaturalVentilation::para_t", VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMax, 60.0);
+	VICUS::KeywordList::setParameter(venti.m_para, "ZoneControlNaturalVentilation::para_t", VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMin, 0.0);
+	VICUS::KeywordList::setParameter(venti.m_para, "ZoneControlNaturalVentilation::para_t", VICUS::ZoneControlNaturalVentilation::ST_TemperatureDifference, 2.0);
+	VICUS::KeywordList::setParameter(venti.m_para, "ZoneControlNaturalVentilation::para_t", VICUS::ZoneControlNaturalVentilation::ST_TemperatureDifference, 2.0);
+
+	venti.m_color = SVStyle::randomColor();
 
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
-	unsigned int id = m_db->m_zoneControlVentilationNatural.add( ctrl );
+	unsigned int id = m_db->m_zoneControlVentilationNatural.add( venti );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;
