@@ -38,12 +38,6 @@ private slots:
 	void on_lineEditTemperatureDifference_editingFinished();
 	void on_lineEditWindSpeedMax_editingFinished();
 
-
-
-	void on_lineEditToleranceCooling_editingFinished();
-	void on_toolButtonSelectHeatingSchedule_clicked();
-	void on_toolButtonSelectCoolingSchedule_clicked();
-
 private:
 
 	/*! Set up the modified variable of the model to true. */
@@ -57,7 +51,7 @@ private:
 	/*! Pointer to the database model, to modify items when data has changed in the widget. */
 	SVDBZoneControlVentilationNaturalTableModel			*m_dbModel;
 
-	/*! Pointer to currently edited zone control VentilationNatural model.
+	/*! Pointer to currently edited zone control natural ventilation model.
 		The pointer is updated whenever updateInput() is called.
 		A nullptr pointer means that there is no model to edit.
 	*/
