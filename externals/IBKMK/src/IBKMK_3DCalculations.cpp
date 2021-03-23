@@ -50,7 +50,7 @@ namespace IBKMK {
 static bool solve(double a, double b, double c,  double d,  double e,  double f, double & x, double & y) {
 	double det = a*d - b*c;
 	// Prevent division by very small numbers
-	if (std::fabs(det) < 1e-7)
+	if (std::fabs(det) < 1e-6)
 		return false;
 
 	x = (e*d - c*f)/det;
@@ -87,8 +87,20 @@ bool planeCoordinates(const IBKMK::Vector3D & offset, const IBKMK::Vector3D & a,
 	// check that the point was indeed in the plane
 	IBKMK::Vector3D v2 = offset + x*a + y*b;
 	v2 -= v;
-	if (v2.magnitude() > 1e-4)
+	if (v2.magnitude() > 1e-4) {
+//		// try a fix by correcting the vector to be in the place
+
+//		IBKMK::Vector3D norma = a.crossProduct(b);
+//		norma.normalize();
+
+//		// project vector on v - should result in a 0 vector, if in plane
+//		IBKMK::Vector3D projectedOnNormal = v.scalarProduct(norma)*norma;
+
+//		// correct vector by subtracting projecting
+//		IBKMK::Vector3D vdash = v - projectedOnNormal;
+
 		return false;
+	}
 	return true;
 }
 
