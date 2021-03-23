@@ -60,6 +60,10 @@ public:
 	/*! Schedule ID. */
 	unsigned int					m_scheduleId[NUM_ST];					// XML:E
 
+	/// TODO Dirk Das ist nur vorläufig bis die Zeitpläne funktionieren.
+	/*! List of parameters. */
+	IBK::Parameter					m_para[NUM_ST];							// XML:E
+
 };
 
 }
