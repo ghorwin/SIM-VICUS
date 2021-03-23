@@ -432,8 +432,8 @@ namespace VICUS {
 			// ZoneControlThermostat::para_t
 			case 41 :
 			switch (t) {
-				case 0 : return "DeadBandHeating";
-				case 1 : return "DeadBandCooling";
+				case 0 : return "ToleranceHeating";
+				case 1 : return "ToleranceCooling";
 			} break;
 			// ZoneControlThermostat::ControlValue
 			case 42 :
@@ -796,8 +796,8 @@ namespace VICUS {
 			// ZoneControlThermostat::para_t
 			case 41 :
 			switch (t) {
-				case 0 : return "DeadBandHeating";
-				case 1 : return "DeadBandCooling";
+				case 0 : return "ToleranceHeating";
+				case 1 : return "ToleranceCooling";
 			} break;
 			// ZoneControlThermostat::ControlValue
 			case 42 :
@@ -1161,8 +1161,8 @@ namespace VICUS {
 			// ZoneControlThermostat::para_t
 			case 41 :
 			switch (t) {
-				case 0 : return "Thermostat dead band heating mode.";
-				case 1 : return "Thermostat dead band cooling mode.";
+				case 0 : return "Thermostat tolerance heating mode.";
+				case 1 : return "Thermostat tolerance cooling mode.";
 			} break;
 			// ZoneControlThermostat::ControlValue
 			case 42 :
