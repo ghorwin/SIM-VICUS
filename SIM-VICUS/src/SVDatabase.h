@@ -103,25 +103,25 @@ public:
 	/*! Map of all database schedules */
 	VICUS::Database<VICUS::Schedule>					m_schedules;
 
-	/*! Internal loads. */
+	/*! Map of all database Internal loads. */
 	VICUS::Database<VICUS::InternalLoad>				m_internalLoads;
 
-	/*! Zone Control Thermostats. */
+	/*! Map of all database Zone Control Thermostats. */
 	VICUS::Database<VICUS::ZoneControlThermostat>		m_zoneControlThermostat;
 
-	/*! Zone Control Thermostats. */
+	/*! Map of all database Zone Control Thermostats. */
 	VICUS::Database<VICUS::ZoneControlShading>			m_zoneControlShading;
 
-	/*! Zone Control Natural Ventilation. */
+	/*! Map of all database Zone Control Natural Ventilation. */
 	VICUS::Database<VICUS::ZoneControlNaturalVentilation>	m_zoneControlVentilationNatural;
 
-	/*! Natural Ventilation. */
+	/*! Map of all database Natural Ventilation. */
 	VICUS::Database<VICUS::VentilationNatural>			m_ventilationNatural;
 
-	/*! Infiltration. */
+	/*! Map of all database Infiltration. */
 	VICUS::Database<VICUS::Infiltration>				m_infiltration;
 
-	/*! Zone templates. */
+	/*! Map of all database Zone templates. */
 	VICUS::Database<VICUS::ZoneTemplate>				m_zoneTemplates;
 
 private:
