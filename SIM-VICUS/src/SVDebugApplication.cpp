@@ -20,16 +20,16 @@ bool SVDebugApplication::notify( QObject *recv, QEvent *e ) {
 		if (e->type() == QEvent::KeyPress) {
 			QWidget * w = focusWidget();
 			if (qobject_cast<QLineEdit*>(w) == nullptr) {
-				qDebug () << "GlobalKeypressEvent - handled";
+//				qDebug () << "GlobalKeypressEvent - handled";
 				if (SVViewStateHandler::instance().m_geometryView != nullptr) {
 					QKeyEvent * ke = dynamic_cast<QKeyEvent *>(e);
 					if (SVViewStateHandler::instance().m_geometryView->handleGlobalKeyPress((Qt::Key)ke->key()))
 						return true;
 				}
 			}
-			else {
-				qDebug () << "GlobalKeypressEvent - ignored";
-			}
+//			else {
+//				qDebug () << "GlobalKeypressEvent - ignored";
+//			}
 		}
 		return QApplication::notify( recv, e );
 	}
