@@ -44,16 +44,16 @@ private:
 	Ui::SVDBInfiltrationEditWidget				*m_ui;
 
 	/*! Cached pointer to database object. */
-	SVDatabase											*m_db;
+	SVDatabase									*m_db;
 
 	/*! Pointer to the database model, to modify items when data has changed in the widget. */
 	SVDBInfiltrationTableModel					*m_dbModel;
 
-	/*! Pointer to currently edited zone control thermostat model.
+	/*! Pointer to currently edited zone control infiltration model.
 		The pointer is updated whenever updateInput() is called.
 		A nullptr pointer means that there is no model to edit.
 	*/
-	VICUS::Infiltration						*m_current;
+	VICUS::Infiltration							*m_current;
 };
 
 #endif // SVDBZoneControlThermostatEditWidgetH

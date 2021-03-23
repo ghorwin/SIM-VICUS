@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="gridLayoutMaster">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -66,19 +66,12 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditToleranceHeating">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditHorizontal">
         <property name="maximumSize">
          <size>
           <width>100</width>
           <height>16777215</height>
          </size>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2" colspan="2">
-       <widget class="QLabel" name="labelHorizontalUnit">
-        <property name="text">
-         <string>W/m2</string>
         </property>
        </widget>
       </item>
@@ -90,7 +83,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditToleranceHeating_2">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditNorth">
         <property name="maximumSize">
          <size>
           <width>100</width>
@@ -114,7 +107,7 @@
        </widget>
       </item>
       <item row="2" column="1" colspan="2">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditToleranceHeating_3">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditEast">
         <property name="maximumSize">
          <size>
           <width>100</width>
@@ -138,7 +131,7 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditToleranceHeating_4">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditSouth">
         <property name="maximumSize">
          <size>
           <width>100</width>
@@ -162,7 +155,7 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditToleranceHeating_5">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditWest">
         <property name="maximumSize">
          <size>
           <width>100</width>
@@ -186,7 +179,7 @@
        </widget>
       </item>
       <item row="5" column="1" colspan="2">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditToleranceHeating_6">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditDeadBand">
         <property name="maximumSize">
          <size>
           <width>100</width>
@@ -197,6 +190,13 @@
       </item>
       <item row="5" column="3">
        <widget class="QLabel" name="labelDeadBandUnit">
+        <property name="text">
+         <string>W/m2</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLabel" name="labelHorizontalUnit">
         <property name="text">
          <string>W/m2</string>
         </property>

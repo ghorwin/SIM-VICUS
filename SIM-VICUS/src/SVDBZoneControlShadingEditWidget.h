@@ -1,25 +1,25 @@
-#ifndef SVDBZoneControlThermostatEditWidgetH
-#define SVDBZoneControlThermostatEditWidgetH
+#ifndef SVDBZoneControlShadingEditWidgetH
+#define SVDBZoneControlShadingEditWidgetH
 
 #include "SVAbstractDatabaseEditWidget.h"
 
 namespace Ui {
-	class SVDBZoneControlThermostatEditWidget;
+	class SVDBZoneControlShadingEditWidget;
 }
 
 namespace VICUS {
-	class ZoneControlThermostat;
+	class ZoneControlShading;
 }
 
-class SVDBZoneControlThermostatTableModel;
+class SVDBZoneControlShadingTableModel;
 class SVDatabase;
 
-class SVDBZoneControlThermostatEditWidget : public SVAbstractDatabaseEditWidget {
+class SVDBZoneControlShadingEditWidget : public SVAbstractDatabaseEditWidget {
 	Q_OBJECT
 
 public:
-	explicit SVDBZoneControlThermostatEditWidget(QWidget *parent = nullptr);
-	~SVDBZoneControlThermostatEditWidget() override;
+	explicit SVDBZoneControlShadingEditWidget(QWidget *parent = nullptr);
+	~SVDBZoneControlShadingEditWidget() override;
 
 	/*! Needs to be called once, before the widget is being used. */
 	void setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) override;
@@ -29,32 +29,34 @@ public:
 
 private slots:
 	void on_lineEditName_editingFinished();
-	void on_comboBoxControlValue_currentIndexChanged(int index);
+	void on_comboBoxMethod_currentIndexChanged(int index);
 	void on_pushButtonColor_colorChanged();
 
-	void on_lineEditToleranceHeating_editingFinished();
-	void on_lineEditToleranceCooling_editingFinished();
-	void on_toolButtonSelectHeatingSchedule_clicked();
-	void on_toolButtonSelectCoolingSchedule_clicked();
+	void on_lineEditNorth_editingFinished();
+	void on_lineEditEast_editingFinished();
+	void on_lineEditWest_editingFinished();
+	void on_lineEditSouth_editingFinished();
+	void on_lineEditHorizontal_editingFinished();
+	void on_lineEditDeadBand_editingFinished();
 
 private:
 
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
 
-	Ui::SVDBZoneControlThermostatEditWidget				*m_ui;
+	Ui::SVDBZoneControlShadingEditWidget				*m_ui;
 
 	/*! Cached pointer to database object. */
 	SVDatabase											*m_db;
 
 	/*! Pointer to the database model, to modify items when data has changed in the widget. */
-	SVDBZoneControlThermostatTableModel					*m_dbModel;
+	SVDBZoneControlShadingTableModel					*m_dbModel;
 
-	/*! Pointer to currently edited zone control thermostat model.
+	/*! Pointer to currently edited zone control Shading model.
 		The pointer is updated whenever updateInput() is called.
 		A nullptr pointer means that there is no model to edit.
 	*/
-	VICUS::ZoneControlThermostat						*m_current;
+	VICUS::ZoneControlShading						*m_current;
 };
 
-#endif // SVDBZoneControlThermostatEditWidgetH
+#endif // SVDBZoneControlShadingEditWidgetH
