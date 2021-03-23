@@ -190,6 +190,8 @@ void SVPropEditGeometry::onViewStateChanged() {
 	else {
 		setCurrentPage(O_AddGeometry);
 		m_ui->pushButtonEdit->setEnabled(false);
+		// clear current selection transformation matrix
+		SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 	}
 
 	updateCoordinateSystemLook();
