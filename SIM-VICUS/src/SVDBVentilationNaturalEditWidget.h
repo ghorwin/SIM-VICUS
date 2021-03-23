@@ -29,7 +29,6 @@ public:
 
 private slots:
 	void on_lineEditName_editingFinished();
-	void on_comboBoxControlValue_currentIndexChanged(int index);
 	void on_pushButtonColor_colorChanged();
 
 	void on_lineEditAirChangeRate_editingFinished();

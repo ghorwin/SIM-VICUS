@@ -31,9 +31,10 @@ private slots:
 	void on_lineEditName_editingFinished();
 	void on_comboBoxControlValue_currentIndexChanged(int index);
 	void on_pushButtonColor_colorChanged();
-	void on_lineEditInfiltrationScheduleName_editingFinished();
+
 	void on_lineEditShieldCoefficient_editingFinished();
 	void on_lineEditAirChangeRate_editingFinished();
+
 	void on_toolButtonSelectInfiltrationSchedule_clicked();
 
 private:
