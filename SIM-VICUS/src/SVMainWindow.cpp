@@ -788,7 +788,11 @@ void SVMainWindow::on_actionFileExport_triggered() {
 							this,
 							tr("Specify SIM-VICUS project package"),
 							fnameSuggestion,
-							tr("SIM-VICUS project packages (*.vicpac);;All files (*.*)"));
+							tr("SIM-VICUS project packages (*.vicpac);;All files (*.*)"), nullptr
+			#ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
+							,QFileDialog::DontUseNativeDialog
+			#endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
+				);
 
 	if (filename.isEmpty())
 		return;
@@ -925,8 +929,10 @@ void SVMainWindow::on_actionViewExternalPostProcessing_triggered() {
 			else {
 				sessionFile = QFileDialog::getOpenFileName(nullptr, tr("Postproc session files"),
 															QFileInfo(m_projectHandler.projectFile()).absolutePath(),
-															QString("*.p2"), nullptr,
-														   QFileDialog::DontUseNativeDialog);
+															QString("*.p2"), nullptr
+#ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
+															,QFileDialog::DontUseNativeDialog);
+#endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
 			}
 		}
 
@@ -1200,7 +1206,11 @@ void SVMainWindow::onOpenExampleByFilename(const QString & filename) {
 	QDir srcDir = finfo.absoluteDir();
 	QSettings settings( SVSettings::instance().m_organization, SVSettings::instance().m_appName );
 	QString lastExampleTargetDir = settings.value("LastExampleSaveDirectory", QDir::homePath()).toString();
-	QString targetDir = QFileDialog::getExistingDirectory(this, tr("Select directory to copy example project into"), lastExampleTargetDir);
+	QString targetDir = QFileDialog::getExistingDirectory(this, tr("Select directory to copy example project into"), lastExampleTargetDir
+#ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
+							,QFileDialog::DontUseNativeDialog
+#endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
+							);
 	if (targetDir.isEmpty())
 		return;
 	settings.setValue("LastExampleSaveDirectory", targetDir);
@@ -1524,7 +1534,11 @@ bool SVMainWindow::processProjectPackage(QString & filename, bool renameProjectF
 					this,
 					tr("Specify SIM-VICUS project"),
 					recentPath,
-					tr("SIM-VICUS project files (%1);;All files (*.*)").arg(SVSettings::instance().m_projectFileSuffix));
+					tr("SIM-VICUS project files (%1);;All files (*.*)").arg(SVSettings::instance().m_projectFileSuffix), nullptr
+#ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
+						,QFileDialog::DontUseNativeDialog
+#endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
+						);
 			if (targetFilePath.isEmpty())
 				return false;
 			if (!targetFilePath.endsWith(SVSettings::instance().m_projectFileSuffix))
@@ -1536,6 +1550,9 @@ bool SVMainWindow::processProjectPackage(QString & filename, bool renameProjectF
 								this,
 								tr("Select target directory to extract project package into"),
 								recentPath
+#ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
+								,QFileDialog::DontUseNativeDialog
+#endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
 							);
 			if (targetDir.isEmpty())
 				return false;

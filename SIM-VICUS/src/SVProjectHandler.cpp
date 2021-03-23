@@ -19,6 +19,7 @@
 #include <IBK_assert.h>
 
 #include <QtExt_Directories.h>
+#include <QtExt_configuration.h>
 
 #include <VICUS_Project.h>
 
@@ -254,7 +255,11 @@ SVProjectHandler::SaveResult SVProjectHandler::saveWithNewFilename(QWidget * par
 			parent,
 			tr("Specify SIM-VICUS project file"),
 			currentPath,
-			tr("SIM-VICUS project files (*%1);;All files (*.*)").arg(SVSettings::instance().m_projectFileSuffix)
+			tr("SIM-VICUS project files (*%1);;All files (*.*)").arg(SVSettings::instance().m_projectFileSuffix),
+			nullptr
+#ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
+			,QFileDialog::DontUseNativeDialog
+#endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
 		);
 
 
