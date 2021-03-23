@@ -4,16 +4,14 @@
 
 SVUndoCopySurfaces::SVUndoCopySurfaces(const QString &label, const std::vector<VICUS::Surface> &copiedSurfaces,
 									   const std::set<unsigned int> & deselectedSurfaceUniqueIDs,
-									   unsigned int parentNodeID,
-									   const std::vector<VICUS::ComponentInstance> * compInstances) :
+									   const std::vector<VICUS::ComponentInstance> & newCompInstances) :
 	m_copiedSurfaces(copiedSurfaces),
 	m_deselectedSurfaceUniqueIDs(deselectedSurfaceUniqueIDs),
-	m_parentNodeID(parentNodeID)
+	m_newComponentInstances(newCompInstances)
 {
 	setText( label );
-//	if (!compInstances->empty())
-//		m_componentInstances = *compInstances;
 }
+
 
 void SVUndoCopySurfaces::undo() {
 	// append copied surfaces
@@ -34,13 +32,13 @@ void SVUndoCopySurfaces::undo() {
 						s.m_selected = true;
 
 	// remove appended component instances (if any)
-//	Q_ASSERT(theProject().m_componentInstances.size() >= m_componentInstances.size());
-//	theProject().m_componentInstances.resize(theProject().m_componentInstances.size() - m_componentInstances.size());
+	Q_ASSERT(theProject().m_componentInstances.size() >= m_newComponentInstances.size());
+	theProject().m_componentInstances.resize(theProject().m_componentInstances.size() - m_newComponentInstances.size());
 
 	// tell project that the geometry has changed (i.e. rebuild navigation tree and scene)
 	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);
-//	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingTopologyChanged);
 }
+
 
 void SVUndoCopySurfaces::redo() {
 	// remove appended surfaces
@@ -62,10 +60,10 @@ void SVUndoCopySurfaces::redo() {
 
 
 	// append component instances (if vector is empty, nothing happens here)
-//	theProject().m_componentInstances.insert(theProject().m_componentInstances.end(), m_componentInstances.begin(), m_componentInstances.end());
+	theProject().m_componentInstances.insert(theProject().m_componentInstances.end(),
+										 m_newComponentInstances.begin(), m_newComponentInstances.end());
 	theProject().updatePointers();
 
 	// tell project that the building geometry has changed
 	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);
-//	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingTopologyChanged);
 }

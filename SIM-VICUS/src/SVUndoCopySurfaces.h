@@ -19,8 +19,7 @@ public:
 	*/
 	SVUndoCopySurfaces(const QString & label, const std::vector<VICUS::Surface> & copiedSurfaces,
 					   const std::set<unsigned int> & deselectedSurfaceUniqueIDs,
-						unsigned int parentNodeID = 0,
-						const std::vector<VICUS::ComponentInstance> * compInstances = nullptr);
+					   const std::vector<VICUS::ComponentInstance> & compInstances);
 
 	virtual void undo();
 	virtual void redo();
@@ -31,10 +30,8 @@ private:
 	std::vector<VICUS::Surface>				m_copiedSurfaces;
 	/*! UniqueIDs of original surfaces that need to be deselected. */
 	std::set<unsigned int>					m_deselectedSurfaceUniqueIDs;
-	/*! Parent room (if any) that this surface belongs to. */
-	unsigned int							m_parentNodeID = 0;
 	/*! Optionally copied component instances. */
-	std::vector<VICUS::ComponentInstance>	m_componentInstances;
+	std::vector<VICUS::ComponentInstance>	m_newComponentInstances;
 };
 
 

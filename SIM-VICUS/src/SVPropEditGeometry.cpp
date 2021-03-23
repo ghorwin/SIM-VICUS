@@ -43,6 +43,14 @@ static double angleBetweenVectorsDeg ( const IBKMK::Vector3D &v1, const IBKMK::V
 	return std::acos( v1.scalarProduct(v2) / sqrt(v1.magnitude() * v2.magnitude() ) ) / IBK::DEG2RAD;
 }
 
+template <typename T>
+bool contains(const std::vector<T> & vec, unsigned int id) {
+	for (auto & t : vec)
+		if (t->m_id == id)
+			return true;
+	return false;
+}
+
 
 class LineEditFormater : public QtExt::FormatterBase {
 public:
@@ -1311,58 +1319,42 @@ void SVPropEditGeometry::on_pushButtonCopySurfaces_clicked() {
 
 		newSurfaces.push_back(newSurf);
 
+		// remember old vs. new surface ID map
 		oldNewIDMap[s->m_id] = newSurf.m_id;
 	}
 
-#if 0
-	// and for the component instances
+	// new component instances to be created
 	std::vector<VICUS::ComponentInstance> newComponentInstances;
-	std::set<unsigned int> insideWallSurfaceIDs;
 
-	// now check if there is a componentInstance that references this surface
+	std::vector<unsigned int> compInstanceIDs;
+	for (const VICUS::ComponentInstance & ci : project().m_componentInstances)
+		compInstanceIDs.push_back(ci.m_id);
+
+	// process all existing component instances
 	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
 		// we create a copy of the component instance
-		VICUS::ComponentInstance newCi;
-		if (ci.m_sideASurfaceID == s->m_id) {
-			// case 1: other side is not used
-			if (ci.m_sideBSurfaceID == VICUS::INVALID_ID) {
-				newCi.m_sideASurfaceID = newSurf.m_id;
-				newCi.m_componentID = ci.m_componentID;
-				newComponentInstances.push_back(newCi);
-				insideWallSurfaceIDs.insert(ci.m_sideASurfaceID);
-			}
-			else {
-				// case 2: other side is connected to a surface also in the selected list, i.e. an internal wall is being copied
-				std::vector<const VICUS::Surface *>::const_iterator it = std::find(selectedSurfaces.begin(), selectedSurfaces.end(), ci.m_sideBSurfaceID);
-				if (it != selectedSurfaces.end()) {
-					// check if this surface ID combination was already processed
-					if (insideWallSurfaceIDs.find(ci.m_sideASurfaceID) == insideWallSurfaceIDs.end()) {
-						insideWallSurfaceIDs.insert(ci.m_sideASurfaceID);
-						insideWallSurfaceIDs.insert(ci.m_sideBSurfaceID);
-						newCi.m_sideASurfaceID = newSurf.m_id;
-						newCi.m_sideASurfaceID = newSurf.m_id;
-						newCi.m_componentID = ci.m_componentID;
-						newComponentInstances.push_back(newCi);
-					}
-				}
-			}
-		}
-		else if (ci.m_sideBSurfaceID == s->m_id) {
-			// case 1: other side is not used
-			if (ci.m_sideASurfaceID == VICUS::INVALID_ID) {
-				copy = true;
-				insideWallSurfaceIDs.insert(ci.m_sideBSurfaceID == s->m_id);
-			}
-		}
+		bool leftSideUsed =
+				(ci.m_sideASurfaceID != VICUS::INVALID_ID && contains(m_selSurfaces, ci.m_sideASurfaceID));
+		bool rightSideUsed =
+				(ci.m_sideBSurfaceID != VICUS::INVALID_ID && contains(m_selSurfaces, ci.m_sideBSurfaceID));
 
-		if (!copy)
+		// skip unrelated component instances
+		if (!leftSideUsed && !rightSideUsed)
 			continue;
-		newCi.m_sideASurfaceID
 
+		// create copy of CI
+		VICUS::ComponentInstance newCi;
+		newCi.m_id = VICUS::Project::uniqueId(compInstanceIDs);
+		compInstanceIDs.push_back(newCi.m_id);
+		newCi.m_componentID = ci.m_componentID;
+		if (leftSideUsed)
+			newCi.m_sideASurfaceID = oldNewIDMap[ci.m_sideASurfaceID];
+		if (rightSideUsed)
+			newCi.m_sideBSurfaceID = oldNewIDMap[ci.m_sideBSurfaceID];
+		newComponentInstances.push_back(newCi);
 	}
-#endif
 
-	SVUndoCopySurfaces *undo = new SVUndoCopySurfaces("Copied Surfaces.", newSurfaces, deselectedSurfaces);
+	SVUndoCopySurfaces *undo = new SVUndoCopySurfaces("Copied Surfaces.", newSurfaces, deselectedSurfaces, newComponentInstances);
 	undo->push();
 }
 
