@@ -55,10 +55,11 @@ void SVDBInfiltrationEditWidget::setup(SVDatabase * db, SVAbstractDatabaseTableM
 void SVDBInfiltrationEditWidget::updateInput(int id) {
 	m_current = nullptr; // disable edit triggers
 
+	m_ui->labelDisplayName->setText(tr("Name:"));
 	m_ui->labelCategory_2->setText(tr("Method:"));
 	m_ui->labelAirChangeRate->setText(tr("Air Change Rate:"));
 	m_ui->labelShieldCoefficient->setText(tr("Shield Coefficient:"));
-
+	m_ui->labelScheduleInfiltration->setText(tr("Schedule Name:"));
 
 	if (id == -1) {
 		// clear input controls
@@ -100,8 +101,6 @@ void SVDBInfiltrationEditWidget::updateInput(int id) {
 	m_ui->pushButtonColor->setReadOnly(isbuiltIn);
 	m_ui->comboBoxMethod->setEnabled(!isbuiltIn);
 	m_ui->lineEditInfiltrationScheduleName->setEnabled(!isbuiltIn);
-
-
 	m_ui->lineEditAirChangeRate->setEnabled(!isbuiltIn);
 	m_ui->lineEditShieldCoefficient->setEnabled(!isbuiltIn);
 }
@@ -165,6 +164,7 @@ void SVDBInfiltrationEditWidget::on_lineEditAirChangeRate_editingFinished() {
 		}
 	}
 }
+
 
 void SVDBInfiltrationEditWidget::modelModify() {
 	m_db->m_infiltration.m_modified = true;
