@@ -20,10 +20,10 @@ public:
 
 	/*! Basic parameters. */
 	enum para_t {
-		/*! Dead band heating. */
-		P_DeadBandHeating,				// Keyword: DeadBandHeating			[K]			'Thermostat dead band heating mode.'
-		/*! Dead band cooling. */
-		P_DeadBandCooling,				// Keyword: DeadBandCooling			[K]			'Thermostat dead band cooling mode.'
+		/*! Tolerance heating. */
+		P_ToleranceHeating,				// Keyword: ToleranceHeating			[K]			'Thermostat tolerance heating mode.'
+		/*! Tolerance cooling. */
+		P_ToleranceCooling,				// Keyword: ToleranceCooling			[K]			'Thermostat tolerance cooling mode.'
 
 		NUM_P
 	};

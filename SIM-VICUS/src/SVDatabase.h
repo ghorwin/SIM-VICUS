@@ -16,6 +16,7 @@
 #include <VICUS_EPDDataset.h>
 #include <VICUS_Schedule.h>
 #include <VICUS_InternalLoad.h>
+#include <VICUS_ZoneControlThermostat.h>
 #include <VICUS_ZoneTemplate.h>
 
 #include <VICUS_Database.h>
@@ -42,6 +43,7 @@ public:
 		DT_Schedules,
 		DT_InternalLoads,
 		DT_ZoneTemplates,
+		DT_ZoneControlThermostat,
 		NUM_DT // used for "all"
 	};
 
@@ -95,6 +97,9 @@ public:
 
 	/*! Internal loads. */
 	VICUS::Database<VICUS::InternalLoad>				m_internalLoads;
+
+	/*! Zone templates. */
+	VICUS::Database<VICUS::ZoneControlThermostat>		m_zoneControlThermostat;
 
 	/*! Zone templates. */
 	VICUS::Database<VICUS::ZoneTemplate>				m_zoneTemplates;

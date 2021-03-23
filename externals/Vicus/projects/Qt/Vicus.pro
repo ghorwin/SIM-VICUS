@@ -121,6 +121,7 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_Construction.cpp \
 	../../src/ncg/ncg_VICUS_DailyCycle.cpp \
 	../../src/ncg/ncg_VICUS_EPDDataset.cpp \
+	../../src/ncg/ncg_VICUS_Infiltration.cpp \
 	../../src/ncg/ncg_VICUS_InternalLoad.cpp \
 	../../src/ncg/ncg_VICUS_Material.cpp \
 	../../src/ncg/ncg_VICUS_MaterialLayer.cpp \
@@ -139,10 +140,14 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_ScheduleInterval.cpp \
 	../../src/ncg/ncg_VICUS_Surface.cpp \
 	../../src/ncg/ncg_VICUS_SurfaceProperties.cpp \
+	../../src/ncg/ncg_VICUS_VentilationNatural.cpp \
 	../../src/ncg/ncg_VICUS_ViewSettings.cpp \
 	../../src/ncg/ncg_VICUS_Window.cpp \
 	../../src/ncg/ncg_VICUS_WindowDivider.cpp \
 	../../src/ncg/ncg_VICUS_WindowFrame.cpp \
 	../../src/ncg/ncg_VICUS_WindowGlazingLayer.cpp \
 	../../src/ncg/ncg_VICUS_WindowGlazingSystem.cpp \
+	../../src/ncg/ncg_VICUS_ZoneControlNaturalVentilation.cpp \
+	../../src/ncg/ncg_VICUS_ZoneControlShading.cpp \
+	../../src/ncg/ncg_VICUS_ZoneControlThermostat.cpp \
 	../../src/ncg/ncg_VICUS_ZoneTemplate.cpp
