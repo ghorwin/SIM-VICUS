@@ -82,6 +82,8 @@ SOURCES += \
 				../../src/SVDBInternalLoadsLightsEditWidget.cpp \
 				../../src/SVDBNetworkFluidEditWidget.cpp \
 				../../src/SVDBNetworkFluidTableModel.cpp \
+				../../src/SVDBZoneControlThermostatEditWidget.cpp \
+				../../src/SVDBZoneControlThermostatTableModel.cpp \
 				../../src/actions/SVUndoAddBuilding.cpp \
 				../../src/actions/SVUndoAddBuildingLevel.cpp \
 				../../src/actions/SVUndoAddNetwork.cpp \
@@ -206,6 +208,8 @@ HEADERS  += \
 				../../src/SVDBInternalLoadsLightsEditWidget.h \
 				../../src/SVDBNetworkFluidEditWidget.h \
 				../../src/SVDBNetworkFluidTableModel.h \
+				../../src/SVDBZoneControlThermostatEditWidget.h \
+				../../src/SVDBZoneControlThermostatTableModel.h \
 				../../src/actions/SVUndoAddBuilding.h \
 				../../src/actions/SVUndoAddBuildingLevel.h \
 				../../src/actions/SVUndoAddNetwork.h \
@@ -332,6 +336,7 @@ FORMS    += \
 				../../src/SVDBInternalLoadsElectricEquipmentEditWidget.ui \
 				../../src/SVDBInternalLoadsLightsEditWidget.ui \
 				../../src/SVDBNetworkFluidEditWidget.ui \
+				../../src/SVDBZoneControlThermostatEditWidget.ui \
 				../../src/SVDatabaseEditDialog.ui \
 				../../src/SVDBBoundaryConditionEditWidget.ui \
 				../../src/SVDBComponentEditWidget.ui \
