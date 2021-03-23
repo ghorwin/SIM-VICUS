@@ -1,14 +1,14 @@
-#ifndef SVDBZoneControlThermostatTableModelH
-#define SVDBZoneControlThermostatTableModelH
+#ifndef SVDBVentilationNaturalTableModelH
+#define SVDBVentilationNaturalTableModelH
 
 #include "SVAbstractDatabaseEditWidget.h"
 
 #include "SVDatabase.h"
 
-#include <VICUS_ZoneControlThermostat.h>
+#include <VICUS_VentilationNatural.h>
 
-/*! Model for accessing the zone control Thermostat in database. */
-class SVDBZoneControlThermostatTableModel : public SVAbstractDatabaseTableModel {
+/*! Model for accessing the natural ventilation in database. */
+class SVDBVentilationNaturalTableModel : public SVAbstractDatabaseTableModel {
 public:
 
 	/*! Columns shown in the table view. */
@@ -24,7 +24,7 @@ public:
 	/*! Constructor, requires a read/write pointer to the central database object.
 		\note Pointer to database must be valid throughout the lifetime of the Model!
 	*/
-	SVDBZoneControlThermostatTableModel(QObject * parent, SVDatabase & db);
+	SVDBVentilationNaturalTableModel(QObject * parent, SVDatabase & db);
 
 	// ** QAbstractItemModel interface **
 
@@ -36,7 +36,7 @@ public:
 	// ** SVAbstractDatabaseTableModel interface **
 
 	int columnIndexId() const override { return ColId; }
-	SVDatabase::DatabaseTypes databaseType() const override { return SVDatabase::DT_ZoneControlThermostat; }
+	SVDatabase::DatabaseTypes databaseType() const override { return SVDatabase::DT_VentilationNatural; }
 	virtual void resetModel() override;
 	QModelIndex addNewItem() override;
 	QModelIndex copyItem(const QModelIndex & index) override;
@@ -56,4 +56,4 @@ private:
 	SVDatabase		* m_db;
 };
 
-#endif // SVDBZoneControlThermostatTableModelH
+#endif // SVDBVentilationNaturalTableModelH

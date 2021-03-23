@@ -1,4 +1,4 @@
-#include "SVDBZoneControlThermostatTableModel.h"
+#include "SVDBVentilationNaturalTableModel.h"
 
 #include <QTableView>
 #include <QHeaderView>
@@ -10,7 +10,7 @@
 #include "SVConstants.h"
 #include "SVStyle.h"
 
-SVDBZoneControlThermostatTableModel::SVDBZoneControlThermostatTableModel(QObject * parent, SVDatabase & db) :
+SVDBVentilationNaturalTableModel::SVDBVentilationNaturalTableModel(QObject * parent, SVDatabase & db) :
 	SVAbstractDatabaseTableModel(parent),
 	m_db(&db)
 {
@@ -18,23 +18,23 @@ SVDBZoneControlThermostatTableModel::SVDBZoneControlThermostatTableModel(QObject
 }
 
 
-int SVDBZoneControlThermostatTableModel::rowCount ( const QModelIndex & ) const {
-	return (int)m_db->m_zoneControlThermostat.size();
+int SVDBVentilationNaturalTableModel::rowCount ( const QModelIndex & ) const {
+	return (int)m_db->m_ventilationNatural.size();
 }
 
 
-QVariant SVDBZoneControlThermostatTableModel::data ( const QModelIndex & index, int role) const {
+QVariant SVDBVentilationNaturalTableModel::data ( const QModelIndex & index, int role) const {
 	if (!index.isValid())
 		return QVariant();
 
 	// readability improvement
-	const VICUS::Database<VICUS::ZoneControlThermostat> & ctrl = m_db->m_zoneControlThermostat;
+	const VICUS::Database<VICUS::VentilationNatural> & venti = m_db->m_ventilationNatural;
 
 	int row = index.row();
-	if (row >= (int)ctrl.size())
+	if (row >= (int)venti.size())
 		return QVariant();
 
-	std::map<unsigned int, VICUS::ZoneControlThermostat>::const_iterator it = ctrl.begin();
+	std::map<unsigned int, VICUS::VentilationNatural>::const_iterator it = venti.begin();
 	std::advance(it, row);
 
 	switch (role) {
@@ -88,7 +88,7 @@ QVariant SVDBZoneControlThermostatTableModel::data ( const QModelIndex & index, 
 }
 
 
-QVariant SVDBZoneControlThermostatTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
+QVariant SVDBVentilationNaturalTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
 	if (orientation == Qt::Vertical)
 		return QVariant();
 	switch (role) {
@@ -112,67 +112,66 @@ QVariant SVDBZoneControlThermostatTableModel::headerData(int section, Qt::Orient
 }
 
 
-void SVDBZoneControlThermostatTableModel::resetModel() {
+void SVDBVentilationNaturalTableModel::resetModel() {
 	beginResetModel();
 	endResetModel();
 }
 
 
-QModelIndex SVDBZoneControlThermostatTableModel::addNewItem() {
-	VICUS::ZoneControlThermostat ctrl;
-	ctrl.m_displayName.setEncodedString("en:<new zone control thermostat model>");
+QModelIndex SVDBVentilationNaturalTableModel::addNewItem() {
+	VICUS::VentilationNatural venti;
+	venti.m_displayName.setEncodedString("en:<new zone control thermostat model>");
 
 	// set default parameters
 
-	ctrl.m_ctrlVal = VICUS::ZoneControlThermostat::CV_AirTemperature;
-	VICUS::KeywordList::setParameter(ctrl.m_para, "ZoneControlThermostat::para_t", VICUS::ZoneControlThermostat::P_ToleranceHeating, 0.0);
-	VICUS::KeywordList::setParameter(ctrl.m_para, "ZoneControlThermostat::para_t", VICUS::ZoneControlThermostat::P_ToleranceCooling, 0.0);
+	VICUS::KeywordList::setParameter(venti.m_para, "VentilationNatural::para_t", VICUS::VentilationNatural::P_AirChangeRate, 0.5);
 
-	ctrl.m_color = SVStyle::randomColor();
+
+	venti.m_color = SVStyle::randomColor();
 
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
-	unsigned int id = m_db->m_zoneControlThermostat.add( ctrl );
+	unsigned int id = m_db->m_ventilationNatural.add( venti );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;
 }
 
 
-QModelIndex SVDBZoneControlThermostatTableModel::copyItem(const QModelIndex & existingItemIndex) {
+QModelIndex SVDBVentilationNaturalTableModel::copyItem(const QModelIndex & existingItemIndex) {
 	// lookup existing item
-	const VICUS::Database<VICUS::ZoneControlThermostat> & db = m_db->m_zoneControlThermostat;
+	const VICUS::Database<VICUS::VentilationNatural> & db = m_db->m_ventilationNatural;
 	Q_ASSERT(existingItemIndex.isValid() && existingItemIndex.row() < (int)db.size());
-	std::map<unsigned int, VICUS::ZoneControlThermostat>::const_iterator it = db.begin();
+	std::map<unsigned int, VICUS::VentilationNatural>::const_iterator it = db.begin();
 	std::advance(it, existingItemIndex.row());
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	// create new item and insert into DB
-	VICUS::ZoneControlThermostat newItem(it->second);
+	VICUS::VentilationNatural newItem(it->second);
 	newItem.m_color = SVStyle::randomColor();
-	unsigned int id = m_db->m_zoneControlThermostat.add( newItem );
+	unsigned int id = m_db->m_ventilationNatural.add( newItem );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;
 }
 
 
-void SVDBZoneControlThermostatTableModel::deleteItem(const QModelIndex & index) {
+void SVDBVentilationNaturalTableModel::deleteItem(const QModelIndex & index) {
 	if (!index.isValid())
 		return;
 	unsigned int id = data(index, Role_Id).toUInt();
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	m_db->m_zoneControlThermostat.remove(id);
+	m_db->m_ventilationNatural.remove(id);
 	endRemoveRows();
 }
 
 
-void SVDBZoneControlThermostatTableModel::setColumnResizeModes(QTableView * tableView) {
-	tableView->horizontalHeader()->setSectionResizeMode(SVDBZoneControlThermostatTableModel::ColId, QHeaderView::Fixed);
-	tableView->horizontalHeader()->setSectionResizeMode(SVDBZoneControlThermostatTableModel::ColCheck, QHeaderView::Fixed);
-	tableView->horizontalHeader()->setSectionResizeMode(SVDBZoneControlThermostatTableModel::ColName, QHeaderView::Stretch);
+void SVDBVentilationNaturalTableModel::setColumnResizeModes(QTableView * tableView) {
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBVentilationNaturalTableModel::ColId, QHeaderView::Fixed);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBVentilationNaturalTableModel::ColCheck, QHeaderView::Fixed);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBVentilationNaturalTableModel::ColName, QHeaderView::Stretch);
 }
 
 
-void SVDBZoneControlThermostatTableModel::setItemModified(unsigned int id) {
+void SVDBVentilationNaturalTableModel::setItemModified(unsigned int id) {
 	QModelIndex idx = indexById(id);
 	QModelIndex left = index(idx.row(), 0);
 	QModelIndex right = index(idx.row(), NumColumns-1);
@@ -180,7 +179,7 @@ void SVDBZoneControlThermostatTableModel::setItemModified(unsigned int id) {
 }
 
 
-QModelIndex SVDBZoneControlThermostatTableModel::indexById(unsigned int id) const {
+QModelIndex SVDBVentilationNaturalTableModel::indexById(unsigned int id) const {
 	for (int i=0; i<rowCount(); ++i) {
 		QModelIndex idx = index(i, 0);
 		if (data(idx, Role_Id).toUInt() == id)

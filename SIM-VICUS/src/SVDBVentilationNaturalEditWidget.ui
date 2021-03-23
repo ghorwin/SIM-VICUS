@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SVDBZoneControlThermostatEditWidget</class>
- <widget class="QWidget" name="SVDBZoneControlThermostatEditWidget">
+ <class>SVDBVentilationNaturalEditWidget</class>
+ <widget class="QWidget" name="SVDBVentilationNaturalEditWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
+  <layout class="QGridLayout" name="gridLayoutMaster">
    <item row="5" column="0">
     <spacer name="verticalSpacer">
      <property name="orientation">
@@ -71,7 +71,7 @@
    <item row="3" column="0" colspan="3">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Mode Parameter</string>
+      <string>Model Parameter</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="1" column="2">

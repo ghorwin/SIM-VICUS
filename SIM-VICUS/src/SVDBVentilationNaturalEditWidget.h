@@ -1,25 +1,25 @@
-#ifndef SVDBZoneControlThermostatEditWidgetH
-#define SVDBZoneControlThermostatEditWidgetH
+#ifndef SVDBVentilationNaturalEditWidgetH
+#define SVDBVentilationNaturalEditWidgetH
 
 #include "SVAbstractDatabaseEditWidget.h"
 
 namespace Ui {
-	class SVDBZoneControlThermostatEditWidget;
+	class SVDBVentilationNaturalEditWidget;
 }
 
 namespace VICUS {
-	class ZoneControlThermostat;
+	class VentilationNatural;
 }
 
-class SVDBZoneControlThermostatTableModel;
+class SVDBVentilationNaturalTableModel;
 class SVDatabase;
 
-class SVDBZoneControlThermostatEditWidget : public SVAbstractDatabaseEditWidget {
+class SVDBVentilationNaturalEditWidget : public SVAbstractDatabaseEditWidget {
 	Q_OBJECT
 
 public:
-	explicit SVDBZoneControlThermostatEditWidget(QWidget *parent = nullptr);
-	~SVDBZoneControlThermostatEditWidget() override;
+	explicit SVDBVentilationNaturalEditWidget(QWidget *parent = nullptr);
+	~SVDBVentilationNaturalEditWidget() override;
 
 	/*! Needs to be called once, before the widget is being used. */
 	void setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) override;
@@ -32,29 +32,28 @@ private slots:
 	void on_comboBoxControlValue_currentIndexChanged(int index);
 	void on_pushButtonColor_colorChanged();
 
-	void on_lineEditToleranceHeating_editingFinished();
-	void on_lineEditToleranceCooling_editingFinished();
-	void on_toolButtonSelectHeatingSchedule_clicked();
-	void on_toolButtonSelectCoolingSchedule_clicked();
+	void on_lineEditAirChangeRate_editingFinished();
+	void on_toolButtonSelectSchedule_clicked();
+
 
 private:
 
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
 
-	Ui::SVDBZoneControlThermostatEditWidget				*m_ui;
+	Ui::SVDBVentilationNaturalEditWidget				*m_ui;
 
 	/*! Cached pointer to database object. */
 	SVDatabase											*m_db;
 
 	/*! Pointer to the database model, to modify items when data has changed in the widget. */
-	SVDBZoneControlThermostatTableModel					*m_dbModel;
+	SVDBVentilationNaturalTableModel					*m_dbModel;
 
-	/*! Pointer to currently edited zone control thermostat model.
+	/*! Pointer to currently edited natural ventilation model.
 		The pointer is updated whenever updateInput() is called.
 		A nullptr pointer means that there is no model to edit.
 	*/
-	VICUS::ZoneControlThermostat						*m_current;
+	VICUS::VentilationNatural						*m_current;
 };
 
-#endif // SVDBZoneControlThermostatEditWidgetH
+#endif // SVDBVentilationNaturalEditWidgetH
