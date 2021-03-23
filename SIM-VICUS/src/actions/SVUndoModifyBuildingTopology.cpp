@@ -12,7 +12,7 @@ void SVUndoModifyBuildingTopology::undo() {
 	// exchange building meta data
 	std::swap( theProject().m_buildings, m_buildings);
 	theProject().updatePointers();
-	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingTopologyChanged);
+	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);
 }
 
 
