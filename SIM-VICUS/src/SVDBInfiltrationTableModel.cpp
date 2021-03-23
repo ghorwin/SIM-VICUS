@@ -19,7 +19,7 @@ SVDBInfiltrationTableModel::SVDBInfiltrationTableModel(QObject * parent, SVDatab
 
 
 int SVDBInfiltrationTableModel::rowCount ( const QModelIndex & ) const {
-	return (int)m_db->m_Infiltration.size();
+	return (int)m_db->m_infiltration.size();
 }
 
 
@@ -28,7 +28,7 @@ QVariant SVDBInfiltrationTableModel::data ( const QModelIndex & index, int role)
 		return QVariant();
 
 	// readability improvement
-	const VICUS::Database<VICUS::Infiltration> & ctrl = m_db->m_Infiltration;
+	const VICUS::Database<VICUS::Infiltration> & ctrl = m_db->m_infiltration;
 
 	int row = index.row();
 	if (row >= (int)ctrl.size())
@@ -119,19 +119,19 @@ void SVDBInfiltrationTableModel::resetModel() {
 
 
 QModelIndex SVDBInfiltrationTableModel::addNewItem() {
-	VICUS::Infiltration ctrl;
-	ctrl.m_displayName.setEncodedString("en:<new zone control thermostat model>");
+	VICUS::Infiltration inf;
+	inf.m_displayName.setEncodedString("en:<new zone control infiltration model>");
 
 	// set default parameters
 
-	ctrl.m_ctrlVal = VICUS::Infiltration::CV_AirTemperature;
-	VICUS::KeywordList::setParameter(ctrl.m_para, "Infiltration::para_t", VICUS::Infiltration::P_ToleranceHeating, 0.0);
-	VICUS::KeywordList::setParameter(ctrl.m_para, "Infiltration::para_t", VICUS::Infiltration::P_ToleranceCooling, 0.0);
+	inf.m_airChangeType = VICUS::Infiltration::AC_normal;
+	VICUS::KeywordList::setParameter(inf.m_para, "Infiltration::para_t", VICUS::Infiltration::P_AirChangeRate, 0.5);
+	VICUS::KeywordList::setParameter(inf.m_para, "Infiltration::para_t", VICUS::Infiltration::P_ShieldingCoefficient, 0.07);
 
-	ctrl.m_color = SVStyle::randomColor();
+	inf.m_color = SVStyle::randomColor();
 
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
-	unsigned int id = m_db->m_Infiltration.add( ctrl );
+	unsigned int id = m_db->m_infiltration.add( inf );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;
@@ -140,7 +140,7 @@ QModelIndex SVDBInfiltrationTableModel::addNewItem() {
 
 QModelIndex SVDBInfiltrationTableModel::copyItem(const QModelIndex & existingItemIndex) {
 	// lookup existing item
-	const VICUS::Database<VICUS::Infiltration> & db = m_db->m_Infiltration;
+	const VICUS::Database<VICUS::Infiltration> & db = m_db->m_infiltration;
 	Q_ASSERT(existingItemIndex.isValid() && existingItemIndex.row() < (int)db.size());
 	std::map<unsigned int, VICUS::Infiltration>::const_iterator it = db.begin();
 	std::advance(it, existingItemIndex.row());
@@ -148,7 +148,7 @@ QModelIndex SVDBInfiltrationTableModel::copyItem(const QModelIndex & existingIte
 	// create new item and insert into DB
 	VICUS::Infiltration newItem(it->second);
 	newItem.m_color = SVStyle::randomColor();
-	unsigned int id = m_db->m_Infiltration.add( newItem );
+	unsigned int id = m_db->m_infiltration.add( newItem );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;
@@ -160,7 +160,7 @@ void SVDBInfiltrationTableModel::deleteItem(const QModelIndex & index) {
 		return;
 	unsigned int id = data(index, Role_Id).toUInt();
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	m_db->m_Infiltration.remove(id);
+	m_db->m_infiltration.remove(id);
 	endRemoveRows();
 }
 

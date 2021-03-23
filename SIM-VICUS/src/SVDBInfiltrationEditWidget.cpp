@@ -70,7 +70,7 @@ void SVDBInfiltrationEditWidget::updateInput(int id) {
 		return;
 	}
 
-	m_current = const_cast<VICUS::Infiltration *>(m_db->m_Infiltration[(unsigned int) id ]);
+	m_current = const_cast<VICUS::Infiltration *>(m_db->m_infiltration[(unsigned int) id ]);
 
 	// we must have a valid internal load model pointer
 	Q_ASSERT(m_current != nullptr);
@@ -167,7 +167,7 @@ void SVDBInfiltrationEditWidget::on_lineEditAirChangeRate_editingFinished() {
 }
 
 void SVDBInfiltrationEditWidget::modelModify() {
-	m_db->m_Infiltration.m_modified = true;
+	m_db->m_infiltration.m_modified = true;
 }
 
 void SVDBInfiltrationEditWidget::on_pushButtonColor_colorChanged() {

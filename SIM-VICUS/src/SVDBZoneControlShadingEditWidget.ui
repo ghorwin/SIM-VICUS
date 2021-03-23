@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SVDBZoneControlThermostatEditWidget</class>
- <widget class="QWidget" name="SVDBZoneControlThermostatEditWidget">
+ <class>SVDBZoneControlShadingEditWidget</class>
+ <widget class="QWidget" name="SVDBZoneControlShadingEditWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -41,7 +41,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QLabel" name="labelCategory_2">
+      <widget class="QLabel" name="labelMethod">
        <property name="text">
         <string>Method:</string>
        </property>
@@ -59,7 +59,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
-       <widget class="QLabel" name="labelToleranceHeating">
+       <widget class="QLabel" name="labelHorizontal">
         <property name="text">
          <string>Horizontal:</string>
         </property>
@@ -76,14 +76,14 @@
        </widget>
       </item>
       <item row="0" column="2" colspan="2">
-       <widget class="QLabel" name="labelConvectiveFactorUnit">
+       <widget class="QLabel" name="labelHorizontalUnit">
         <property name="text">
          <string>W/m2</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="labelToleranceHeating_2">
+       <widget class="QLabel" name="labelNorth">
         <property name="text">
          <string>North:</string>
         </property>
@@ -100,14 +100,14 @@
        </widget>
       </item>
       <item row="1" column="3">
-       <widget class="QLabel" name="labelConvectiveFactorUnit_3">
+       <widget class="QLabel" name="labelNorthUnit">
         <property name="text">
          <string>W/m2</string>
         </property>
        </widget>
       </item>
       <item row="2" column="0">
-       <widget class="QLabel" name="labelToleranceHeating_3">
+       <widget class="QLabel" name="labelEast">
         <property name="text">
          <string>East:</string>
         </property>
@@ -124,14 +124,14 @@
        </widget>
       </item>
       <item row="2" column="3">
-       <widget class="QLabel" name="labelConvectiveFactorUnit_4">
+       <widget class="QLabel" name="labelEastUnit">
         <property name="text">
          <string>W/m2</string>
         </property>
        </widget>
       </item>
       <item row="3" column="0">
-       <widget class="QLabel" name="labelToleranceHeating_4">
+       <widget class="QLabel" name="labelSouth">
         <property name="text">
          <string>South:</string>
         </property>
@@ -148,14 +148,14 @@
        </widget>
       </item>
       <item row="3" column="3">
-       <widget class="QLabel" name="labelConvectiveFactorUnit_5">
+       <widget class="QLabel" name="labelSouthUnit">
         <property name="text">
          <string>W/m2</string>
         </property>
        </widget>
       </item>
       <item row="4" column="0">
-       <widget class="QLabel" name="labelToleranceHeating_5">
+       <widget class="QLabel" name="labelWest">
         <property name="text">
          <string>West:</string>
         </property>
@@ -172,14 +172,14 @@
        </widget>
       </item>
       <item row="4" column="3">
-       <widget class="QLabel" name="labelConvectiveFactorUnit_6">
+       <widget class="QLabel" name="labelWestUnit">
         <property name="text">
          <string>W/m2</string>
         </property>
        </widget>
       </item>
       <item row="5" column="0">
-       <widget class="QLabel" name="labelToleranceHeating_6">
+       <widget class="QLabel" name="labelDeadBand">
         <property name="text">
          <string>Dead Band:</string>
         </property>
@@ -196,7 +196,7 @@
        </widget>
       </item>
       <item row="5" column="3">
-       <widget class="QLabel" name="labelConvectiveFactorUnit_7">
+       <widget class="QLabel" name="labelDeadBandUnit">
         <property name="text">
          <string>W/m2</string>
         </property>
