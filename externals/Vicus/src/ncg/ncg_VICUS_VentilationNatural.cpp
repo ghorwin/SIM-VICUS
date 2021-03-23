@@ -66,7 +66,7 @@ void VentilationNatural::readXML(const TiXmlElement * element) {
 			else if (cName == "DataSource")
 				m_dataSource.setEncodedString(c->GetText());
 			else if (cName == "ManagementScheduleId")
-				m_managementScheduleId = NANDRAD::readPODElement<unsigned int>(c, cName);
+				m_scheduleId = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
@@ -108,8 +108,8 @@ TiXmlElement * VentilationNatural::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.encodedString());
 	if (!m_dataSource.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.encodedString());
-	if (m_managementScheduleId != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "ManagementScheduleId", nullptr, std::string(), IBK::val2string<unsigned int>(m_managementScheduleId));
+	if (m_scheduleId != VICUS::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "ManagementScheduleId", nullptr, std::string(), IBK::val2string<unsigned int>(m_scheduleId));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {
