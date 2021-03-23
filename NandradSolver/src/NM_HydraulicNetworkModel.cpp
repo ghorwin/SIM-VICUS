@@ -373,7 +373,7 @@ void HydraulicNetworkModel::variableReferenceSubstitutionMap(std::map<std::strin
 	if (!m_displayName.empty())
 		varSubstMap[ IBK::FormatString("Network(id=%1)").arg(m_id).str() ] = m_displayName;
 
-	for (unsigned int i = 0; i<m_elementIds[i]; ++i) {
+	for (unsigned int i = 0; i<m_elementIds.size(); ++i) {
 		if (m_elementDisplayNames[i].empty()) continue;
 		varSubstMap[ IBK::FormatString("NetworkElement(id=%1)").arg(m_elementIds[i]).str() ] = m_elementDisplayNames[i];
 	}
