@@ -18,7 +18,7 @@ SVDBZoneControlVentilationNaturalTableModel::SVDBZoneControlVentilationNaturalTa
 }
 
 int SVDBZoneControlVentilationNaturalTableModel::rowCount ( const QModelIndex & ) const {
-	return (int)m_db->m_zoneControlNaturalVentilation.size();
+	return (int)m_db->m_zoneControlVentilationNatural.size();
 }
 
 
@@ -27,7 +27,7 @@ QVariant SVDBZoneControlVentilationNaturalTableModel::data ( const QModelIndex &
 		return QVariant();
 
 	// readability improvement
-	const VICUS::Database<VICUS::ZoneControlNaturalVentilation> & ctrl = m_db->m_zoneControlNaturalVentilation;
+	const VICUS::Database<VICUS::ZoneControlNaturalVentilation> & ctrl = m_db->m_zoneControlVentilationNatural;
 
 	int row = index.row();
 	if (row >= (int)ctrl.size())
@@ -130,7 +130,7 @@ QModelIndex SVDBZoneControlVentilationNaturalTableModel::addNewItem() {
 	ctrl.m_color = SVStyle::randomColor();
 
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
-	unsigned int id = m_db->m_zoneControlNaturalVentilation.add( ctrl );
+	unsigned int id = m_db->m_zoneControlVentilationNatural.add( ctrl );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;
@@ -139,7 +139,7 @@ QModelIndex SVDBZoneControlVentilationNaturalTableModel::addNewItem() {
 
 QModelIndex SVDBZoneControlVentilationNaturalTableModel::copyItem(const QModelIndex & existingItemIndex) {
 	// lookup existing item
-	const VICUS::Database<VICUS::ZoneControlNaturalVentilation> & db = m_db->m_zoneControlNaturalVentilation;
+	const VICUS::Database<VICUS::ZoneControlNaturalVentilation> & db = m_db->m_zoneControlVentilationNatural;
 	Q_ASSERT(existingItemIndex.isValid() && existingItemIndex.row() < (int)db.size());
 	std::map<unsigned int, VICUS::ZoneControlNaturalVentilation>::const_iterator it = db.begin();
 	std::advance(it, existingItemIndex.row());
@@ -147,7 +147,7 @@ QModelIndex SVDBZoneControlVentilationNaturalTableModel::copyItem(const QModelIn
 	// create new item and insert into DB
 	VICUS::ZoneControlNaturalVentilation newItem(it->second);
 	newItem.m_color = SVStyle::randomColor();
-	unsigned int id = m_db->m_zoneControlNaturalVentilation.add( newItem );
+	unsigned int id = m_db->m_zoneControlVentilationNatural.add( newItem );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;
@@ -159,7 +159,7 @@ void SVDBZoneControlVentilationNaturalTableModel::deleteItem(const QModelIndex &
 		return;
 	unsigned int id = data(index, Role_Id).toUInt();
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	m_db->m_zoneControlNaturalVentilation.remove(id);
+	m_db->m_zoneControlVentilationNatural.remove(id);
 	endRemoveRows();
 }
 

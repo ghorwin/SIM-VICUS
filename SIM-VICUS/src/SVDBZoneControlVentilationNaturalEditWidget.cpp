@@ -1,5 +1,5 @@
-#include "SVDBZoneControlThermostatEditWidget.h"
-#include "ui_SVDBZoneControlThermostatEditWidget.h"
+#include "SVDBZoneControlVentilationNaturalEditWidget.h"
+#include "ui_SVDBZoneControlVentilationNaturalEditWidget.h"
 
 #include <VICUS_KeywordListQt.h>
 #include <VICUS_Schedule.h>
@@ -7,14 +7,14 @@
 #include <QtExt_Conversions.h>
 #include <QtExt_LanguageHandler.h>
 
-#include "SVDBZoneControlThermostatTableModel.h"
+#include "SVDBZoneControlVentilationNaturalTableModel.h"
 #include "SVMainWindow.h"
 #include "SVConstants.h"
 #include "SVDatabaseEditDialog.h"
 
-SVDBZoneControlThermostatEditWidget::SVDBZoneControlThermostatEditWidget(QWidget *parent) :
+SVDBZoneControlEditWidget::SVDBZoneControlVentilationNaturalEditWidget(QWidget *parent) :
 	SVAbstractDatabaseEditWidget(parent),
-	m_ui(new Ui::SVDBZoneControlThermostatEditWidget)
+	m_ui(new Ui::SVDBZoneControlVentilationNaturalEditWidget)
 {
 	m_ui->setupUi(this);
 	m_ui->gridLayoutMaster->setMargin(4);
@@ -23,36 +23,36 @@ SVDBZoneControlThermostatEditWidget::SVDBZoneControlThermostatEditWidget(QWidget
 
 	m_ui->comboBoxMethod->blockSignals(true);
 
-	for (unsigned int i=0; i<VICUS::ZoneControlThermostat::NUM_CV; ++i) {
+	for (unsigned int i=0; i<VICUS::ZoneControlVentilationNatural::NUM_CV; ++i) {
 		m_ui->comboBoxMethod->addItem(QString("%1 [%2]")
-			.arg(VICUS::KeywordListQt::Description("ZoneControlThermostat::ControlValue", (int)i))
-			.arg(VICUS::KeywordListQt::Keyword("ZoneControlThermostat::ControlValue", (int)i)), i);
+			.arg(VICUS::KeywordListQt::Description("ZoneControlVentilationNatural::ControlValue", (int)i))
+			.arg(VICUS::KeywordListQt::Keyword("ZoneControlVentilationNatural::ControlValue", (int)i)), i);
 	}
 	m_ui->comboBoxMethod->blockSignals(false);
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
-	m_ui->lineEditName->setDialog3Caption(tr("Zone control thermostat model name"));
+	m_ui->lineEditName->setDialog3Caption(tr("Zone control VentilationNatural model name"));
 
-	m_ui->lineEditToleranceHeating->setup(0, 50, tr("Thermostat tolerance for heating mode."), true, true);
-	m_ui->lineEditToleranceCooling->setup(0, 50, tr("Thermostat tolerance for cooling mode."), true, true);
+	m_ui->lineEditToleranceHeating->setup(0, 50, tr("VentilationNatural tolerance for heating mode."), true, true);
+	m_ui->lineEditToleranceCooling->setup(0, 50, tr("VentilationNatural tolerance for cooling mode."), true, true);
 
 	// initial state is "nothing selected"
 	updateInput(-1);
 }
 
 
-SVDBZoneControlThermostatEditWidget::~SVDBZoneControlThermostatEditWidget() {
+SVDBZoneControlVentilationNaturalEditWidget::~SVDBZoneControlVentilationNaturalEditWidget() {
 	delete m_ui;
 }
 
 
-void SVDBZoneControlThermostatEditWidget::setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) {
+void SVDBZoneControlVentilationNaturalEditWidget::setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) {
 	m_db = db;
-	m_dbModel = dynamic_cast<SVDBZoneControlThermostatTableModel*>(dbModel);
+	m_dbModel = dynamic_cast<SVDBZoneControlVentilationNaturalTableModel*>(dbModel);
 }
 
 
-void SVDBZoneControlThermostatEditWidget::updateInput(int id) {
+void SVDBZoneControlVentilationNaturalEditWidget::updateInput(int id) {
 	m_current = nullptr; // disable edit triggers
 
 	m_ui->labelCategory_2->setText(tr("Control Type:"));
@@ -71,7 +71,7 @@ void SVDBZoneControlThermostatEditWidget::updateInput(int id) {
 		return;
 	}
 
-	m_current = const_cast<VICUS::ZoneControlThermostat *>(m_db->m_zoneControlThermostat[(unsigned int) id ]);
+	m_current = const_cast<VICUS::ZoneControlVentilationNatural *>(m_db->m_zoneControlVentilationNatural[(unsigned int) id ]);
 
 	// we must have a valid internal load model pointer
 	Q_ASSERT(m_current != nullptr);
@@ -85,8 +85,8 @@ void SVDBZoneControlThermostatEditWidget::updateInput(int id) {
 	m_ui->comboBoxMethod->setCurrentIndex(m_current->m_ctrlVal);
 	m_ui->comboBoxMethod->blockSignals(false);
 
-	m_ui->lineEditToleranceHeating->setValue(m_current->m_para[VICUS::ZoneControlThermostat::P_ToleranceHeating].value);
-	m_ui->lineEditToleranceCooling->setValue(m_current->m_para[VICUS::ZoneControlThermostat::P_ToleranceCooling].value);
+	m_ui->lineEditToleranceHeating->setValue(m_current->m_para[VICUS::ZoneControlVentilationNatural::P_ToleranceHeating].value);
+	m_ui->lineEditToleranceCooling->setValue(m_current->m_para[VICUS::ZoneControlVentilationNatural::P_ToleranceCooling].value);
 
 	VICUS::Schedule * sched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_heatingSetpointScheduleId]);
 	if (sched != nullptr)
@@ -113,7 +113,7 @@ void SVDBZoneControlThermostatEditWidget::updateInput(int id) {
 }
 
 
-void SVDBZoneControlThermostatEditWidget::on_lineEditName_editingFinished() {
+void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditName_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {  // currentdisplayname is multilanguage string
 		m_current->m_displayName = m_ui->lineEditName->string();
@@ -123,12 +123,12 @@ void SVDBZoneControlThermostatEditWidget::on_lineEditName_editingFinished() {
 }
 
 
-void SVDBZoneControlThermostatEditWidget::on_comboBoxControlValue_currentIndexChanged(int index) {
+void SVDBZoneControlVentilationNaturalEditWidget::on_comboBoxControlValue_currentIndexChanged(int index) {
 	Q_ASSERT(m_current != nullptr);
 
-	for(int i=0; i<VICUS::ZoneControlThermostat::ControlValue::NUM_CV; ++i){
+	for(int i=0; i<VICUS::ZoneControlVentilationNatural::ControlValue::NUM_CV; ++i){
 		if(index == i){
-			m_current->m_ctrlVal = static_cast<VICUS::ZoneControlThermostat::ControlValue>(i);
+			m_current->m_ctrlVal = static_cast<VICUS::ZoneControlVentilationNatural::ControlValue>(i);
 			modelModify();
 			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 
@@ -137,17 +137,17 @@ void SVDBZoneControlThermostatEditWidget::on_comboBoxControlValue_currentIndexCh
 }
 
 
-void SVDBZoneControlThermostatEditWidget::on_lineEditToleranceHeating_editingFinished() {
+void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditToleranceHeating_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 
 	if(m_ui->lineEditToleranceHeating->isValid()){
 		double val = m_ui->lineEditToleranceHeating->value();
 
-		VICUS::ZoneControlThermostat::para_t paraName;
+		VICUS::ZoneControlVentilationNatural::para_t paraName;
 		if (m_current->m_para[paraName].empty() ||
 			val != m_current->m_para[paraName].value)
 		{
-			VICUS::KeywordList::setParameter(m_current->m_para, "ZoneControlThermostat::para_t", paraName, val);
+			VICUS::KeywordList::setParameter(m_current->m_para, "ZoneControlVentilationNatural::para_t", paraName, val);
 			modelModify();
 			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
@@ -155,28 +155,28 @@ void SVDBZoneControlThermostatEditWidget::on_lineEditToleranceHeating_editingFin
 
 }
 
-void SVDBZoneControlThermostatEditWidget::on_lineEditToleranceCooling_editingFinished() {
+void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditToleranceCooling_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 
 	if(m_ui->lineEditToleranceCooling->isValid()){
 		double val = m_ui->lineEditToleranceCooling->value();
 
-		VICUS::ZoneControlThermostat::para_t paraName;
+		VICUS::ZoneControlVentilationNatural::para_t paraName;
 		if (m_current->m_para[paraName].empty() ||
 				val != m_current->m_para[paraName].value)
 		{
-			VICUS::KeywordList::setParameter(m_current->m_para, "ZoneControlThermostat::para_t", paraName, val);
+			VICUS::KeywordList::setParameter(m_current->m_para, "ZoneControlVentilationNatural::para_t", paraName, val);
 			modelModify();
 			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
 }
 
-void SVDBZoneControlThermostatEditWidget::modelModify() {
-	m_db->m_zoneControlThermostat.m_modified = true;
+void SVDBZoneControlVentilationNaturalEditWidget::modelModify() {
+	m_db->m_zoneControlVentilationNatural.m_modified = true;
 }
 
-void SVDBZoneControlThermostatEditWidget::on_pushButtonColor_colorChanged() {
+void SVDBZoneControlVentilationNaturalEditWidget::on_pushButtonColor_colorChanged() {
 	if (m_current->m_color != m_ui->pushButtonColor->color()) {
 		m_current->m_color = m_ui->pushButtonColor->color();
 		modelModify();
@@ -184,7 +184,7 @@ void SVDBZoneControlThermostatEditWidget::on_pushButtonColor_colorChanged() {
 	}
 }
 
-void SVDBZoneControlThermostatEditWidget::on_toolButtonSelectHeatingSchedule_clicked() {
+void SVDBZoneControlVentilationNaturalEditWidget::on_toolButtonSelectHeatingSchedule_clicked() {
 	// open schedule edit dialog in selection mode
 	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_heatingSetpointScheduleId);
 	if (m_current->m_heatingSetpointScheduleId != newId) {
@@ -194,7 +194,7 @@ void SVDBZoneControlThermostatEditWidget::on_toolButtonSelectHeatingSchedule_cli
 	updateInput((int)m_current->m_id);
 }
 
-void SVDBZoneControlThermostatEditWidget::on_toolButtonSelectCoolingSchedule_clicked() {
+void SVDBZoneControlVentilationNaturalEditWidget::on_toolButtonSelectCoolingSchedule_clicked() {
 	// open schedule edit dialog in selection mode
 	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_coolingSetpointScheduleId);
 	if (m_current->m_coolingSetpointScheduleId != newId) {
