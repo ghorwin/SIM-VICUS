@@ -263,6 +263,36 @@ SVDatabaseEditDialog * SVMainWindow::dbInternalLoadsLightsEditDialog() {
 	return m_dbInternalLoadsLightsEditDialog;
 }
 
+SVDatabaseEditDialog * SVMainWindow::dbZoneControlThermostatEditDialog() {
+	if (m_dbZoneControlThermostatEditDialog == nullptr)
+		m_dbZoneControlThermostatEditDialog = SVDatabaseEditDialog::createZoneControlThermostatEditDialog(this);
+	return m_dbZoneControlThermostatEditDialog;
+}
+
+SVDatabaseEditDialog * SVMainWindow::dbZoneControlVentilationNaturalEditDialog() {
+	if (m_dbZoneControlVentilationNaturalEditDialog == nullptr)
+		m_dbZoneControlVentilationNaturalEditDialog = SVDatabaseEditDialog::createZoneControlVentilationNaturalEditDialog(this);
+	return m_dbZoneControlVentilationNaturalEditDialog;
+}
+
+SVDatabaseEditDialog * SVMainWindow::dbZoneControlShadingEditDialog() {
+	if (m_dbZoneControlShadingEditDialog == nullptr)
+		m_dbZoneControlShadingEditDialog = SVDatabaseEditDialog::createZoneControlShadingEditDialog(this);
+	return m_dbZoneControlShadingEditDialog;
+}
+
+SVDatabaseEditDialog * SVMainWindow::dbVentilationNaturalEditDialog() {
+	if (m_dbVentilationNaturalEditDialog == nullptr)
+		m_dbVentilationNaturalEditDialog = SVDatabaseEditDialog::createVentilationNaturalEditDialog(this);
+	return m_dbVentilationNaturalEditDialog;
+}
+
+SVDatabaseEditDialog * SVMainWindow::dbInfiltrationEditDialog() {
+	if (m_dbInfiltrationEditDialog == nullptr)
+		m_dbInfiltrationEditDialog = SVDatabaseEditDialog::createInfiltrationEditDialog(this);
+	return m_dbInfiltrationEditDialog;
+}
+
 SVDBZoneTemplateEditDialog * SVMainWindow::dbZoneTemplateEditDialog() {
 	if (m_dbZoneTemplateEditDialog == nullptr)
 		m_dbZoneTemplateEditDialog = new SVDBZoneTemplateEditDialog(this);
@@ -320,6 +350,25 @@ void SVMainWindow::on_actionDBInternalLoadsLights_triggered() {
 	dbInternalLoadsLightsEditDialog()->edit();
 }
 
+void SVMainWindow::on_actionDBZoneControlThermostat_triggered() {
+	dbZoneControlThermostatEditDialog()->edit();
+}
+
+void SVMainWindow::on_actionDBZoneControlVentilationNatural_triggered() {
+	dbZoneControlVentilationNaturalEditDialog()->edit();
+}
+
+void SVMainWindow::on_actionDBZoneControlShading_triggered() {
+	dbZoneControlShadingEditDialog()->edit();
+}
+
+void SVMainWindow::on_actionDBVentilationNatural_triggered() {
+	dbVentilationNaturalEditDialog()->edit();
+}
+
+void SVMainWindow::on_actionDBInfiltration_triggered() {
+	dbInfiltrationEditDialog()->edit();
+}
 
 void SVMainWindow::on_actionDBZoneTemplates_triggered() {
 	dbZoneTemplateEditDialog()->edit();

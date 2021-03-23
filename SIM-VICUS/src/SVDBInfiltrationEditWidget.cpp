@@ -17,7 +17,7 @@ SVDBInfiltrationEditWidget::SVDBInfiltrationEditWidget(QWidget *parent) :
 	m_ui(new Ui::SVDBInfiltrationEditWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->gridLayoutMaster->setMargin(4); //Dirk?
+	m_ui->gridLayoutMaster->setMargin(4);
 
 	// *** populate combo boxes ***
 
@@ -25,8 +25,8 @@ SVDBInfiltrationEditWidget::SVDBInfiltrationEditWidget(QWidget *parent) :
 
 	for (unsigned int i=0; i<VICUS::Infiltration::NUM_AC; ++i) {
 		m_ui->comboBoxMethod->addItem(QString("%1 [%2]")
-			.arg(VICUS::KeywordListQt::Description("Infiltration::ControlValue", (int)i))
-			.arg(VICUS::KeywordListQt::Keyword("Infiltration::ControlValue", (int)i)), i);
+			.arg(VICUS::KeywordListQt::Description("Infiltration::AirChangeType", (int)i))
+			.arg(VICUS::KeywordListQt::Keyword("Infiltration::AirChangeType", (int)i)), i);
 	}
 	m_ui->comboBoxMethod->blockSignals(false);
 
@@ -85,7 +85,8 @@ void SVDBInfiltrationEditWidget::updateInput(int id) {
 	m_ui->comboBoxMethod->setCurrentIndex(m_current->m_airChangeType);
 	m_ui->comboBoxMethod->blockSignals(false);
 
-	m_ui->lineEditAirChangeRate->setValue(m_current->m_para[VICUS::Infiltration::P_AirChangeRate].value);
+	double unitConversion = 3600; ///TODO Dirk->Andreas wie macht man das richtig?
+	m_ui->lineEditAirChangeRate->setValue(m_current->m_para[VICUS::Infiltration::P_AirChangeRate].value * unitConversion);
 	m_ui->lineEditShieldCoefficient->setValue(m_current->m_para[VICUS::Infiltration::P_ShieldingCoefficient].value);
 
 	VICUS::Schedule * sched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_managementScheduleId]);
@@ -136,7 +137,7 @@ void SVDBInfiltrationEditWidget::on_lineEditShieldCoefficient_editingFinished() 
 	if(m_ui->lineEditShieldCoefficient->isValid()){
 		double val = m_ui->lineEditShieldCoefficient->value();
 
-		VICUS::Infiltration::para_t paraName;
+		VICUS::Infiltration::para_t paraName = VICUS::Infiltration::P_ShieldingCoefficient;
 		if (m_current->m_para[paraName].empty() ||
 			val != m_current->m_para[paraName].value)
 		{
@@ -154,7 +155,7 @@ void SVDBInfiltrationEditWidget::on_lineEditAirChangeRate_editingFinished() {
 	if(m_ui->lineEditAirChangeRate->isValid()){
 		double val = m_ui->lineEditAirChangeRate->value();
 
-		VICUS::Infiltration::para_t paraName;
+		VICUS::Infiltration::para_t paraName= VICUS::Infiltration::P_AirChangeRate;
 		if (m_current->m_para[paraName].empty() ||
 				val != m_current->m_para[paraName].value)
 		{

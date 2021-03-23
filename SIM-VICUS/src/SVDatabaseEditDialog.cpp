@@ -31,6 +31,18 @@
 #include "SVDBInternalLoadsPersonEditWidget.h"
 #include "SVDBInternalLoadsElectricEquipmentEditWidget.h"
 #include "SVDBInternalLoadsLightsEditWidget.h"
+
+#include "SVDBZoneControlThermostatEditWidget.h"
+#include "SVDBZoneControlThermostatTableModel.h"
+#include "SVDBZoneControlShadingEditWidget.h"
+#include "SVDBZoneControlShadingTableModel.h"
+#include "SVDBZoneControlVentilationNaturalEditWidget.h"
+#include "SVDBZoneControlVentilationNaturalTableModel.h"
+#include "SVDBInfiltrationEditWidget.h"
+#include "SVDBInfiltrationTableModel.h"
+#include "SVDBVentilationNaturalEditWidget.h"
+#include "SVDBVentilationNaturalTableModel.h"
+
 #include "SVDBNetworkComponentTableModel.h"
 #include "SVDBNetworkComponentEditWidget.h"
 #include "SVDBPipeTableModel.h"
@@ -357,6 +369,56 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createInternalLoadsEditDialog(QWidg
 		default:
 			Q_ASSERT(false);
 	}
+	dlg->resize(1400,800);
+	return dlg;
+}
+
+SVDatabaseEditDialog *SVDatabaseEditDialog::createZoneControlThermostatEditDialog(QWidget *parent){
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBZoneControlThermostatTableModel(parent, SVSettings::instance().m_db),
+		new SVDBZoneControlThermostatEditWidget(parent),
+		tr("Zone Control Thermostat"), QString(), true
+	);
+	dlg->resize(1400,800);
+	return dlg;
+}
+
+SVDatabaseEditDialog *SVDatabaseEditDialog::createZoneControlVentilationNaturalEditDialog(QWidget *parent){
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBZoneControlVentilationNaturalTableModel(parent, SVSettings::instance().m_db),
+		new SVDBZoneControlVentilationNaturalEditWidget(parent),
+		tr("Zone Control Natural Ventilation"), QString(), true
+		);
+	dlg->resize(1400,800);
+	return dlg;
+}
+
+SVDatabaseEditDialog *SVDatabaseEditDialog::createZoneControlShadingEditDialog(QWidget *parent){
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBZoneControlShadingTableModel(parent, SVSettings::instance().m_db),
+		new SVDBZoneControlShadingEditWidget(parent),
+		tr("Zone Control Shading"), QString(), true
+		);
+	dlg->resize(1400,800);
+	return dlg;
+}
+
+SVDatabaseEditDialog *SVDatabaseEditDialog::createVentilationNaturalEditDialog(QWidget *parent){
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBVentilationNaturalTableModel(parent, SVSettings::instance().m_db),
+		new SVDBVentilationNaturalEditWidget(parent),
+		tr("Natural Ventilation"), QString(), true
+		);
+	dlg->resize(1400,800);
+	return dlg;
+}
+
+SVDatabaseEditDialog *SVDatabaseEditDialog::createInfiltrationEditDialog(QWidget *parent){
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBInfiltrationTableModel(parent, SVSettings::instance().m_db),
+		new SVDBInfiltrationEditWidget(parent),
+		tr("Infiltration"), QString(), true
+		);
 	dlg->resize(1400,800);
 	return dlg;
 }

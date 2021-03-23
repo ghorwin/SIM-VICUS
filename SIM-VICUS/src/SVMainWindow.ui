@@ -121,6 +121,21 @@
      <addaction name="actionDBInternalLoadsElectricEquipment"/>
      <addaction name="actionDBInternalLoadsLights"/>
     </widget>
+    <widget class="QMenu" name="menuVentilation_Infiltration">
+     <property name="title">
+      <string>Ventilation/Infiltration</string>
+     </property>
+     <addaction name="actionDBInfiltration"/>
+     <addaction name="actionDBVentilationNatural"/>
+    </widget>
+    <widget class="QMenu" name="menuZone_Control">
+     <property name="title">
+      <string>Zone Control</string>
+     </property>
+     <addaction name="actionDBZoneControlThermostat"/>
+     <addaction name="actionDBZoneControlShading"/>
+     <addaction name="actionDBZoneControlVentilationNatural"/>
+    </widget>
     <addaction name="actionDBMaterials"/>
     <addaction name="actionDBConstructions"/>
     <addaction name="actionDBComponents"/>
@@ -128,6 +143,8 @@
     <addaction name="actionDBBoundaryConditions"/>
     <addaction name="actionDBSchedules"/>
     <addaction name="menuInternal_Loads"/>
+    <addaction name="menuVentilation_Infiltration"/>
+    <addaction name="menuZone_Control"/>
     <addaction name="actionDBZoneTemplates"/>
     <addaction name="separator"/>
     <addaction name="actionDBNetworkPipes"/>
@@ -577,6 +594,31 @@
    </property>
    <property name="toolTip">
     <string>Resets view to be pointing north, close to site center.</string>
+   </property>
+  </action>
+  <action name="actionDBInfiltration">
+   <property name="text">
+    <string>Infiltration</string>
+   </property>
+  </action>
+  <action name="actionDBVentilationNatural">
+   <property name="text">
+    <string>Natural ventilation</string>
+   </property>
+  </action>
+  <action name="actionDBZoneControlThermostat">
+   <property name="text">
+    <string>Thermostat</string>
+   </property>
+  </action>
+  <action name="actionDBZoneControlShading">
+   <property name="text">
+    <string>Shading</string>
+   </property>
+  </action>
+  <action name="actionDBZoneControlVentilationNatural">
+   <property name="text">
+    <string>Natural ventilation</string>
    </property>
   </action>
  </widget>

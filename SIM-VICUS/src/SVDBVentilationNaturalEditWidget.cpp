@@ -62,7 +62,9 @@ void SVDBVentilationNaturalEditWidget::updateInput(int id) {
 	m_ui->lineEditName->setString(m_current->m_displayName);
 	m_ui->pushButtonColor->setColor(m_current->m_color);
 
-	m_ui->lineEditAirChangeRate->setValue(m_current->m_para[VICUS::VentilationNatural::P_AirChangeRate].value);
+	double unitConversion = 3600;
+
+	m_ui->lineEditAirChangeRate->setValue(m_current->m_para[VICUS::VentilationNatural::P_AirChangeRate].value*unitConversion);
 
 	VICUS::Schedule * sched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_scheduleId]);
 	if (sched != nullptr)
@@ -94,13 +96,12 @@ void SVDBVentilationNaturalEditWidget::on_lineEditAirChangeRate_editingFinished(
 
 	//change this only:
 	auto *lineEdit = m_ui->lineEditAirChangeRate;
-	typedef VICUS::VentilationNatural::para_t Type;
+	VICUS::VentilationNatural::para_t paraName = VICUS::VentilationNatural::P_AirChangeRate;
 	std::string keywordList = "VentilationNatural::para_t";
 
 	if(lineEdit->isValid()){
 		double val = lineEdit->value();
 
-		Type paraName;
 		if (m_current->m_para[paraName].empty() ||
 			val != m_current->m_para[paraName].value)
 		{

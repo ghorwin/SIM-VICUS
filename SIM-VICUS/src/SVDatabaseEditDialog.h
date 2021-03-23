@@ -78,6 +78,11 @@ private:
 	static SVDatabaseEditDialog * createBoundaryConditionsEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createScheduleEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createInternalLoadsEditDialog(QWidget * parent, VICUS::InternalLoad::Category category);
+	static SVDatabaseEditDialog * createZoneControlThermostatEditDialog(QWidget * parent);
+	static SVDatabaseEditDialog * createZoneControlVentilationNaturalEditDialog(QWidget * parent);
+	static SVDatabaseEditDialog * createZoneControlShadingEditDialog(QWidget * parent);
+	static SVDatabaseEditDialog * createInfiltrationEditDialog(QWidget * parent);
+	static SVDatabaseEditDialog * createVentilationNaturalEditDialog(QWidget * parent);
 
 	static SVDatabaseEditDialog * createNetworkComponentEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createPipeEditDialog(QWidget * parent);

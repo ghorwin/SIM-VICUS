@@ -143,7 +143,7 @@ void SVDBZoneControlThermostatEditWidget::on_lineEditToleranceHeating_editingFin
 	if(m_ui->lineEditToleranceHeating->isValid()){
 		double val = m_ui->lineEditToleranceHeating->value();
 
-		VICUS::ZoneControlThermostat::para_t paraName;
+		VICUS::ZoneControlThermostat::para_t paraName= VICUS::ZoneControlThermostat::P_ToleranceHeating;
 		if (m_current->m_para[paraName].empty() ||
 			val != m_current->m_para[paraName].value)
 		{
@@ -161,7 +161,7 @@ void SVDBZoneControlThermostatEditWidget::on_lineEditToleranceCooling_editingFin
 	if(m_ui->lineEditToleranceCooling->isValid()){
 		double val = m_ui->lineEditToleranceCooling->value();
 
-		VICUS::ZoneControlThermostat::para_t paraName;
+		VICUS::ZoneControlThermostat::para_t paraName = VICUS::ZoneControlThermostat::P_ToleranceCooling;
 		if (m_current->m_para[paraName].empty() ||
 				val != m_current->m_para[paraName].value)
 		{

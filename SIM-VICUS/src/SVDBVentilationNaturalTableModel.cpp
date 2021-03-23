@@ -125,8 +125,6 @@ QModelIndex SVDBVentilationNaturalTableModel::addNewItem() {
 	// set default parameters
 
 	VICUS::KeywordList::setParameter(venti.m_para, "VentilationNatural::para_t", VICUS::VentilationNatural::P_AirChangeRate, 0.5);
-
-
 	venti.m_color = SVStyle::randomColor();
 
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());

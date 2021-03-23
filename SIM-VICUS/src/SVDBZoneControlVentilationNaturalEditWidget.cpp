@@ -118,13 +118,12 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirOutsi
 
 	//change this only:
 	auto *lineEdit = m_ui->lineEditTemperatureAirOutsideMaximum;
-	typedef VICUS::ZoneControlNaturalVentilation::ScheduleType Type;
+	VICUS::ZoneControlNaturalVentilation::ScheduleType paraName = VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMax;
 	std::string keywordList = "ZoneControlNaturalVentilation::ScheduleType";
 
 	if(lineEdit->isValid()){
 		double val = lineEdit->value();
 
-		Type paraName;
 		if (m_current->m_para[paraName].empty() ||
 			val != m_current->m_para[paraName].value)
 		{
@@ -140,13 +139,12 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirOutsi
 
 	//change this only:
 	auto *lineEdit = m_ui->lineEditTemperatureAirOutsideMinimum;
-	typedef VICUS::ZoneControlNaturalVentilation::ScheduleType Type;
+	VICUS::ZoneControlNaturalVentilation::ScheduleType paraName = VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMin;
 	std::string keywordList = "ZoneControlNaturalVentilation::ScheduleType";
 
 	if(lineEdit->isValid()){
 		double val = lineEdit->value();
 
-		Type paraName;
 		if (m_current->m_para[paraName].empty() ||
 				val != m_current->m_para[paraName].value)
 		{
@@ -162,13 +160,12 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirRoomM
 
 	//change this only:
 	auto *lineEdit = m_ui->lineEditTemperatureAirRoomMaximum;
-	typedef VICUS::ZoneControlNaturalVentilation::ScheduleType Type;
+	VICUS::ZoneControlNaturalVentilation::ScheduleType paraName = VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMax;
 	std::string keywordList = "ZoneControlNaturalVentilation::ScheduleType";
 
 	if(lineEdit->isValid()){
 		double val = lineEdit->value();
 
-		Type paraName;
 		if (m_current->m_para[paraName].empty() ||
 				val != m_current->m_para[paraName].value)
 		{
@@ -184,13 +181,12 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirRoomM
 
 	//change this only:
 	auto *lineEdit = m_ui->lineEditTemperatureAirRoomMaximum;
-	typedef VICUS::ZoneControlNaturalVentilation::ScheduleType Type;
+	VICUS::ZoneControlNaturalVentilation::ScheduleType paraName = VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMin;
 	std::string keywordList = "ZoneControlNaturalVentilation::ScheduleType";
 
 	if(lineEdit->isValid()){
 		double val = lineEdit->value();
 
-		Type paraName;
 		if (m_current->m_para[paraName].empty() ||
 				val != m_current->m_para[paraName].value)
 		{
@@ -206,13 +202,12 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureDifferen
 
 	//change this only:
 	auto *lineEdit = m_ui->lineEditTemperatureDifference;
-	typedef VICUS::ZoneControlNaturalVentilation::ScheduleType Type;
+	VICUS::ZoneControlNaturalVentilation::ScheduleType paraName = VICUS::ZoneControlNaturalVentilation::ST_TemperatureDifference;
 	std::string keywordList = "ZoneControlNaturalVentilation::ScheduleType";
 
 	if(lineEdit->isValid()){
 		double val = lineEdit->value();
 
-		Type paraName;
 		if (m_current->m_para[paraName].empty() ||
 				val != m_current->m_para[paraName].value)
 		{
@@ -228,13 +223,12 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditWindSpeedMax_editin
 
 	//change this only:
 	auto *lineEdit = m_ui->lineEditWindSpeedMax;
-	typedef VICUS::ZoneControlNaturalVentilation::ScheduleType Type;
+	VICUS::ZoneControlNaturalVentilation::ScheduleType paraName = VICUS::ZoneControlNaturalVentilation::ST_WindSpeedMax;
 	std::string keywordList = "ZoneControlNaturalVentilation::ScheduleType";
 
 	if(lineEdit->isValid()){
 		double val = lineEdit->value();
 
-		Type paraName;
 		if (m_current->m_para[paraName].empty() ||
 				val != m_current->m_para[paraName].value)
 		{

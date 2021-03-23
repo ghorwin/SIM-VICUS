@@ -41,10 +41,10 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID of Intenal Load. */
+	/*! Unique ID. */
 	unsigned int					m_id = INVALID_ID;						// XML:A:required
 
-	/*! Display name of Intenal Load. */
+	/*! Display name. */
 	IBK::MultiLanguageString		m_displayName;							// XML:A
 
 	/*! False color. */

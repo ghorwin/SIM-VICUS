@@ -23,15 +23,15 @@ public:
 		/*! Air change rate. */
 		P_AirChangeRate,				// Keyword: AirChangeRate			[1/h]		'Air change rate.'
 		/*! Shielding coefficient. */
-		P_ShieldingCoefficient,			// Keyword: ShiedlindCoefficient	[1/h]		'Shielding coefficient for n50 value.'
+		P_ShieldingCoefficient,			// Keyword: ShiedlindCoefficient	[-]			'Shielding coefficient for n50 value.'
 
 		NUM_P
 	};
 
 	/*! Air Change Type.*/
 	enum AirChangeType {
-		AC_normal,				// Keyword: normal							[-]		'normal'
-		AC_n50,					// Keyword: n50								[-]		'n50'
+		AC_normal,				// Keyword: normal							[1/h]		'normal'
+		AC_n50,					// Keyword: n50								[1/h]		'n50'
 		NUM_AC
 	};
 
@@ -47,10 +47,10 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID of Intenal Load. */
+	/*! Unique ID of infiltration. */
 	unsigned int					m_id = INVALID_ID;						// XML:A:required
 
-	/*! Display name of Intenal Load. */
+	/*! Display name of infiltration. */
 	IBK::MultiLanguageString		m_displayName;							// XML:A
 
 	/*! False color. */

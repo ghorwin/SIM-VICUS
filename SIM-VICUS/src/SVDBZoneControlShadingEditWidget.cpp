@@ -25,8 +25,8 @@ SVDBZoneControlShadingEditWidget::SVDBZoneControlShadingEditWidget(QWidget *pare
 
 	for (unsigned int i=0; i<VICUS::ZoneControlShading::NUM_C; ++i) {
 		m_ui->comboBoxMethod->addItem(QString("%1 [%2]")
-			.arg(VICUS::KeywordListQt::Description("ZoneControlShading::ControlValue", (int)i))
-			.arg(VICUS::KeywordListQt::Keyword("ZoneControlShading::ControlValue", (int)i)), i);
+			.arg(VICUS::KeywordListQt::Description("ZoneControlShading::Category", (int)i))
+			.arg(VICUS::KeywordListQt::Keyword("ZoneControlShading::Category", (int)i)), i);
 	}
 	m_ui->comboBoxMethod->blockSignals(false);
 
@@ -147,13 +147,12 @@ void SVDBZoneControlShadingEditWidget::on_lineEditNorth_editingFinished() {
 
 	//change this only:
 	auto *lineEdit = m_ui->lineEditNorth;
-	typedef VICUS::ZoneControlShading::para_t Type;
+	VICUS::ZoneControlShading::para_t paraName = VICUS::ZoneControlShading::P_GlobalNorth;
 	std::string keywordList = "ZoneControlShading::para_t";
 
 	if(lineEdit->isValid()){
 		double val = lineEdit->value();
 
-		Type paraName;
 		if (m_current->m_para[paraName].empty() ||
 			val != m_current->m_para[paraName].value)
 		{
@@ -169,13 +168,12 @@ void SVDBZoneControlShadingEditWidget::on_lineEditSouth_editingFinished() {
 
 	//change this only:
 	auto *lineEdit = m_ui->lineEditSouth;
-	typedef VICUS::ZoneControlShading::para_t Type;
+	VICUS::ZoneControlShading::para_t paraName = VICUS::ZoneControlShading::P_GlobalSouth;
 	std::string keywordList = "ZoneControlShading::para_t";
 
 	if(lineEdit->isValid()){
 		double val = lineEdit->value();
 
-		Type paraName;
 		if (m_current->m_para[paraName].empty() ||
 			val != m_current->m_para[paraName].value)
 		{
@@ -190,13 +188,11 @@ void SVDBZoneControlShadingEditWidget::on_lineEditWest_editingFinished() {
 
 	//change this only:
 	auto *lineEdit = m_ui->lineEditWest;
-	typedef VICUS::ZoneControlShading::para_t Type;
+	VICUS::ZoneControlShading::para_t paraName = VICUS::ZoneControlShading::P_GlobalWest;
 	std::string keywordList = "ZoneControlShading::para_t";
 
 	if(lineEdit->isValid()){
 		double val = lineEdit->value();
-
-		Type paraName;
 		if (m_current->m_para[paraName].empty() ||
 			val != m_current->m_para[paraName].value)
 		{
@@ -212,13 +208,12 @@ void SVDBZoneControlShadingEditWidget::on_lineEditEast_editingFinished() {
 
 	//change this only:
 	auto *lineEdit = m_ui->lineEditEast;
-	typedef VICUS::ZoneControlShading::para_t Type;
+	VICUS::ZoneControlShading::para_t paraName = VICUS::ZoneControlShading::P_GlobalEast;
 	std::string keywordList = "ZoneControlShading::para_t";
 
 	if(lineEdit->isValid()){
 		double val = lineEdit->value();
 
-		Type paraName;
 		if (m_current->m_para[paraName].empty() ||
 			val != m_current->m_para[paraName].value)
 		{
@@ -234,13 +229,12 @@ void SVDBZoneControlShadingEditWidget::on_lineEditHorizontal_editingFinished() {
 
 	//change this only:
 	auto *lineEdit = m_ui->lineEditHorizontal;
-	typedef VICUS::ZoneControlShading::para_t Type;
+	VICUS::ZoneControlShading::para_t paraName = VICUS::ZoneControlShading::P_GlobalHorizontal;
 	std::string keywordList = "ZoneControlShading::para_t";
 
 	if(lineEdit->isValid()){
 		double val = lineEdit->value();
 
-		Type paraName;
 		if (m_current->m_para[paraName].empty() ||
 			val != m_current->m_para[paraName].value)
 		{
@@ -256,13 +250,12 @@ void SVDBZoneControlShadingEditWidget::on_lineEditDeadBand_editingFinished() {
 
 	//change this only:
 	auto *lineEdit = m_ui->lineEditDeadBand;
-	typedef VICUS::ZoneControlShading::para_t Type;
+	VICUS::ZoneControlShading::para_t paraName = VICUS::ZoneControlShading::P_DeadBand;
 	std::string keywordList = "ZoneControlShading::para_t";
 
 	if(lineEdit->isValid()){
 		double val = lineEdit->value();
 
-		Type paraName;
 		if (m_current->m_para[paraName].empty() ||
 			val != m_current->m_para[paraName].value)
 		{

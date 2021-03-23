@@ -56,10 +56,10 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID of zone control shading. */
+	/*! Unique ID. */
 	unsigned int					m_id = INVALID_ID;						// XML:A:required
 
-	/*! Display name of zone control shading. */
+	/*! Display name. */
 	IBK::MultiLanguageString		m_displayName;							// XML:A
 
 	/*! False color. */
