@@ -1492,13 +1492,17 @@ void Vic3DScene::deleteSelected() {
 	// that is not selected
 	std::vector<VICUS::ComponentInstance> selectedComponentInstances;
 	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
-		// side a is either not a surface, or not a selected surface
-		bool sideAUnused = (ci.m_sideASurfaceID == VICUS::INVALID_ID || !VICUS::Project::contains(selectedSurfaces, ci.m_sideASurfaceID));
-		// side b is either not a surface, or not a selected surface
-		bool sideBUnused = (ci.m_sideBSurfaceID == VICUS::INVALID_ID || !VICUS::Project::contains(selectedSurfaces, ci.m_sideBSurfaceID));
+		VICUS::ComponentInstance modCi(ci);
 
-		// if both do not reference selected surfaces, we keep it
-		if (sideAUnused && sideBUnused)
+		// if side A references a selected surfaces, clear the ID
+		if (ci.m_sideASurfaceID != VICUS::INVALID_ID && VICUS::Project::contains(selectedSurfaces, ci.m_sideASurfaceID))
+			modCi.m_sideASurfaceID = VICUS::INVALID_ID;
+		// same for side B
+		if (ci.m_sideBSurfaceID != VICUS::INVALID_ID && VICUS::Project::contains(selectedSurfaces, ci.m_sideBSurfaceID))
+			modCi.m_sideBSurfaceID = VICUS::INVALID_ID;
+
+		// only keep component instance around if at least one side-ID is valid
+		if (modCi.m_sideASurfaceID != VICUS::INVALID_ID || modCi.m_sideBSurfaceID != VICUS::INVALID_ID)
 			selectedComponentInstances.push_back(ci);
 	}
 
