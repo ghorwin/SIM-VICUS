@@ -75,13 +75,40 @@ void SVDBZoneControlVentilationNaturalEditWidget::updateInput(int id) {
 
 	m_ui->lineEditName->setString(m_current->m_displayName);
 	m_ui->pushButtonColor->setColor(m_current->m_color);
+	try {
+		m_ui->lineEditTemperatureAirOutsideMaximum->setValue(m_current->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMax].get_value("C"));
+	}  catch (IBK::Exception &ex) {
+		m_ui->lineEditTemperatureAirOutsideMaximum->setValue(0);
+	}
+	try {
+		m_ui->lineEditTemperatureAirOutsideMinimum->setValue(m_current->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMin].get_value("C"));
+	}  catch (IBK::Exception &ex) {
+		m_ui->lineEditTemperatureAirOutsideMinimum->setValue(0);
+	}
+	try {
+		m_ui->lineEditTemperatureAirRoomMaximum->setValue(m_current->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMax].get_value("C"));
 
-	m_ui->lineEditTemperatureAirOutsideMaximum->setValue(m_current->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMax].value);
-	m_ui->lineEditTemperatureAirOutsideMinimum->setValue(m_current->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMin].value);
-	m_ui->lineEditTemperatureAirRoomMaximum->setValue(m_current->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMax].value);
-	m_ui->lineEditTemperatureAirRoomMinimum->setValue(m_current->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMin].value);
-	m_ui->lineEditTemperatureDifference->setValue(m_current->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureDifference].value);
-	m_ui->lineEditWindSpeedMax->setValue(m_current->m_para[VICUS::ZoneControlNaturalVentilation::ST_WindSpeedMax].value);
+	}  catch (IBK::Exception &ex) {
+		m_ui->lineEditTemperatureAirRoomMaximum->setValue(0);
+	}
+	try {
+		m_ui->lineEditTemperatureAirRoomMinimum->setValue(m_current->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMin].get_value("C"));
+
+	}  catch (IBK::Exception &ex) {
+		m_ui->lineEditTemperatureAirRoomMinimum->setValue(0);
+	}
+	try {
+		m_ui->lineEditTemperatureDifference->setValue(m_current->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureDifference].get_value("K"));
+
+	}  catch (IBK::Exception &ex) {
+		m_ui->lineEditTemperatureDifference->setValue(0);
+	}
+	try {
+		m_ui->lineEditWindSpeedMax->setValue(m_current->m_para[VICUS::ZoneControlNaturalVentilation::ST_WindSpeedMax].get_value("m/s"));
+
+	}  catch (IBK::Exception &ex) {
+		m_ui->lineEditWindSpeedMax->setValue(0);
+	}
 
 //	VICUS::Schedule * sched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_heatingSetpointScheduleId]);
 //	if (sched != nullptr)
