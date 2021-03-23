@@ -62,9 +62,11 @@ void SVDBVentilationNaturalEditWidget::updateInput(int id) {
 	m_ui->lineEditName->setString(m_current->m_displayName);
 	m_ui->pushButtonColor->setColor(m_current->m_color);
 
-	double unitConversion = 3600;
-
-	m_ui->lineEditAirChangeRate->setValue(m_current->m_para[VICUS::VentilationNatural::P_AirChangeRate].value*unitConversion);
+	try {
+		m_ui->lineEditAirChangeRate->setValue(m_current->m_para[VICUS::VentilationNatural::P_AirChangeRate].get_value(IBK::Unit("1/h")));
+	}  catch (IBK::Exception &ex) {
+		m_ui->lineEditAirChangeRate->setValue(0);
+	}
 
 	VICUS::Schedule * sched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_scheduleId]);
 	if (sched != nullptr)
