@@ -33,8 +33,8 @@ SVDBInfiltrationEditWidget::SVDBInfiltrationEditWidget(QWidget *parent) :
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Infiltration Model Name"));
 
-	m_ui->lineEditAirChangeRate->setup(0, 100, tr("Houly Air Change Rate of entire Zone Air Volume."), true, true);
-	m_ui->lineEditShieldCoefficient->setup(0, 1, tr("Shield Coefficient DIN EN 13789."), true, true); //Vorinit auf 0.07?
+	m_ui->lineEditAirChangeRate->setup(0, 100, tr("Houly air change rate of entire zone air volume."), true, true);
+	m_ui->lineEditShieldCoefficient->setup(0, 1, tr("Shield coefficient DIN EN 13789."), true, true); //Vorinit auf 0.07?
 
 	// initial state is "nothing selected"
 	updateInput(-1);
@@ -85,8 +85,12 @@ void SVDBInfiltrationEditWidget::updateInput(int id) {
 	m_ui->comboBoxMethod->setCurrentIndex(m_current->m_airChangeType);
 	m_ui->comboBoxMethod->blockSignals(false);
 
-	double unitConversion = 3600; ///TODO Dirk->Andreas wie macht man das richtig?
-	m_ui->lineEditAirChangeRate->setValue(m_current->m_para[VICUS::Infiltration::P_AirChangeRate].value * unitConversion);
+	try {
+		m_ui->lineEditAirChangeRate->setValue(m_current->m_para[VICUS::Infiltration::P_AirChangeRate].get_value(IBK::Unit("C")));
+	}  catch (IBK::Exception &ex) {
+		//set up a new value
+		m_ui->lineEditAirChangeRate->setValue(0);
+	}
 	m_ui->lineEditShieldCoefficient->setValue(m_current->m_para[VICUS::Infiltration::P_ShieldingCoefficient].value);
 
 	VICUS::Schedule * sched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_managementScheduleId]);
