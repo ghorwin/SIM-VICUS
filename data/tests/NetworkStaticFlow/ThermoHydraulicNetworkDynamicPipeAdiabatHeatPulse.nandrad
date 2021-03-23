@@ -62,7 +62,6 @@
 						<IBK:Parameter name="PipeMaxDiscretizationWidth" unit="m">1</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="3" modelType="HeatExchanger">
-						<HeatExchangeType>HeatFluxDataFile</HeatExchangeType>
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PressureLossCoefficient" unit="-">0.001</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>

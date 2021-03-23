@@ -69,7 +69,6 @@
 						<IBK:Parameter name="Volume" unit="m3">0.1</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="3" displayName="Heat exchanger without heat exchange" modelType="HeatExchanger">
-						<HeatExchangeType>HeatFluxConstant</HeatExchangeType>
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PressureLossCoefficient" unit="-">0.01</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.4</IBK:Parameter>
