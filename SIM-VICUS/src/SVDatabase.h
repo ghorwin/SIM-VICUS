@@ -17,6 +17,7 @@
 #include <VICUS_Schedule.h>
 #include <VICUS_InternalLoad.h>
 #include <VICUS_ZoneControlThermostat.h>
+#include <VICUS_ZoneControlNaturalVentilation.h>
 #include <VICUS_ZoneTemplate.h>
 
 #include <VICUS_Database.h>
@@ -44,6 +45,8 @@ public:
 		DT_InternalLoads,
 		DT_ZoneTemplates,
 		DT_ZoneControlThermostat,
+		DT_ZoneControlNaturalVentilation,
+
 		NUM_DT // used for "all"
 	};
 
@@ -98,8 +101,11 @@ public:
 	/*! Internal loads. */
 	VICUS::Database<VICUS::InternalLoad>				m_internalLoads;
 
-	/*! Zone templates. */
+	/*! Thermostats. */
 	VICUS::Database<VICUS::ZoneControlThermostat>		m_zoneControlThermostat;
+
+	/*! Natural ventilation. */
+	VICUS::Database<VICUS::ZoneControlNaturalVentilation>		m_zoneControlNaturalVentilation;
 
 	/*! Zone templates. */
 	VICUS::Database<VICUS::ZoneTemplate>				m_zoneTemplates;

@@ -78,12 +78,20 @@ PRE_TARGETDEPS += \
 SOURCES += \
 				../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
 				../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
+				../../src/SVDBInfiltrationEditWidget.cpp \
+				../../src/SVDBInfiltrationTableModel.cpp \
 				../../src/SVDBInternalLoadsElectricEquipmentEditWidget.cpp \
 				../../src/SVDBInternalLoadsLightsEditWidget.cpp \
 				../../src/SVDBNetworkFluidEditWidget.cpp \
 				../../src/SVDBNetworkFluidTableModel.cpp \
+				../../src/SVDBVentilationNaturalEditWidget.cpp \
+				../../src/SVDBVentilationNaturalTableModel.cpp \
+				../../src/SVDBZoneControlShadingEditWidget.cpp \
+				../../src/SVDBZoneControlShadingTableModel.cpp \
 				../../src/SVDBZoneControlThermostatEditWidget.cpp \
 				../../src/SVDBZoneControlThermostatTableModel.cpp \
+				../../src/SVDBZoneControlVentilationNaturalEditWidget.cpp \
+				../../src/SVDBZoneControlVentilationNaturalTableModel.cpp \
 				../../src/actions/SVUndoAddBuilding.cpp \
 				../../src/actions/SVUndoAddBuildingLevel.cpp \
 				../../src/actions/SVUndoAddNetwork.cpp \
@@ -204,12 +212,20 @@ SOURCES += \
 				../../src/SVWelcomeScreen.cpp
 
 HEADERS  += \
+				../../src/SVDBInfiltrationEditWidget.h \
+				../../src/SVDBInfiltrationTableModel.h \
 				../../src/SVDBInternalLoadsElectricEquipmentEditWidget.h \
 				../../src/SVDBInternalLoadsLightsEditWidget.h \
 				../../src/SVDBNetworkFluidEditWidget.h \
 				../../src/SVDBNetworkFluidTableModel.h \
+				../../src/SVDBVentilationNaturalEditWidget.h \
+				../../src/SVDBVentilationNaturalTableModel.h \
+				../../src/SVDBZoneControlShadingEditWidget.h \
+				../../src/SVDBZoneControlShadingTableModel.h \
 				../../src/SVDBZoneControlThermostatEditWidget.h \
 				../../src/SVDBZoneControlThermostatTableModel.h \
+				../../src/SVDBZoneControlVentilationNaturalEditWidget.h \
+				../../src/SVDBZoneControlVentilationNaturalTableModel.h \
 				../../src/actions/SVUndoAddBuilding.h \
 				../../src/actions/SVUndoAddBuildingLevel.h \
 				../../src/actions/SVUndoAddNetwork.h \
@@ -333,10 +349,14 @@ HEADERS  += \
 
 FORMS    += \
 				../../src/SVAboutDialog.ui \
+				../../src/SVDBInfiltrationEditWidget.ui \
 				../../src/SVDBInternalLoadsElectricEquipmentEditWidget.ui \
 				../../src/SVDBInternalLoadsLightsEditWidget.ui \
 				../../src/SVDBNetworkFluidEditWidget.ui \
+				../../src/SVDBVentilationNaturalEditWidget.ui \
+				../../src/SVDBZoneControlShadingEditWidget.ui \
 				../../src/SVDBZoneControlThermostatEditWidget.ui \
+				../../src/SVDBZoneControlVentilationNaturalEditWidget.ui \
 				../../src/SVDatabaseEditDialog.ui \
 				../../src/SVDBBoundaryConditionEditWidget.ui \
 				../../src/SVDBComponentEditWidget.ui \
