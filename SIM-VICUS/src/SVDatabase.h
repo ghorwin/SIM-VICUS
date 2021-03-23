@@ -17,7 +17,10 @@
 #include <VICUS_Schedule.h>
 #include <VICUS_InternalLoad.h>
 #include <VICUS_ZoneControlThermostat.h>
+#include <VICUS_ZoneControlShading.h>
 #include <VICUS_ZoneControlNaturalVentilation.h>
+#include <VICUS_Infiltration.h>
+#include <VICUS_VentilationNatural.h>
 #include <VICUS_ZoneTemplate.h>
 
 #include <VICUS_Database.h>
@@ -46,7 +49,9 @@ public:
 		DT_ZoneTemplates,
 		DT_ZoneControlThermostat,
 		DT_ZoneControlNaturalVentilation,
-
+		DT_ZoneControlShading,
+		DT_Infiltration,
+		DT_VentilationNatural,
 		NUM_DT // used for "all"
 	};
 
@@ -101,11 +106,20 @@ public:
 	/*! Internal loads. */
 	VICUS::Database<VICUS::InternalLoad>				m_internalLoads;
 
-	/*! Thermostats. */
+	/*! Zone Control Thermostats. */
 	VICUS::Database<VICUS::ZoneControlThermostat>		m_zoneControlThermostat;
 
-	/*! Natural ventilation. */
-	VICUS::Database<VICUS::ZoneControlNaturalVentilation>		m_zoneControlNaturalVentilation;
+	/*! Zone Control Thermostats. */
+	VICUS::Database<VICUS::ZoneControlShading>			m_zoneControlShading;
+
+	/*! Zone Control Natural Ventilation. */
+	VICUS::Database<VICUS::ZoneControlNaturalVentilation>	m_zoneControlVentilationNatural;
+
+	/*! Natural Ventilation. */
+	VICUS::Database<VICUS::VentilationNatural>			m_ventilationNatural;
+
+	/*! Infiltration. */
+	VICUS::Database<VICUS::Infiltration>				m_infiltration;
 
 	/*! Zone templates. */
 	VICUS::Database<VICUS::ZoneTemplate>				m_zoneTemplates;

@@ -23,7 +23,10 @@ SVDatabase::SVDatabase() :
 	m_schedules(6*USER_ID_SPACE_START),
 	m_internalLoads(7*USER_ID_SPACE_START),
 	m_zoneControlThermostat(11*USER_ID_SPACE_START),
-	m_zoneControlNaturalVentilation(12*USER_ID_SPACE_START),
+	m_zoneControlVentilationNatural(12*USER_ID_SPACE_START),
+	m_zoneControlShading(13*USER_ID_SPACE_START),
+	m_infiltration(14*USER_ID_SPACE_START),
+	m_ventilationNatural(15*USER_ID_SPACE_START),
 	m_zoneTemplates(8*USER_ID_SPACE_START)
 {
 }
@@ -47,7 +50,10 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_schedules.readXML(				dbDir / "db_schedules.xml", "Schedules", "Schedule", true);
 		m_internalLoads.readXML(			dbDir / "db_internalLoads.xml", "InternalLoads", "InternalLoad", true);
 		m_zoneControlThermostat.readXML(	dbDir / "db_zoneControlThermostat.xml", "ZoneControlThermostats", "ZoneControlThermostat", true);
-		m_zoneControlNaturalVentilation.readXML(	dbDir / "db_zoneControlNaturalVentilation.xml", "ZoneControlNaturalVentilations", "ZoneControlNaturalVentilation", true);
+		m_zoneControlVentilationNatural.readXML(	dbDir / "db_zoneControlVentilationNatural.xml", "ZoneControlVentilationNaturals", "ZoneControlVentilationNatural", true);
+		m_zoneControlShading.readXML(		dbDir / "db_zoneControlShading.xml", "ZoneControlShadings", "ZoneControlShading", true);
+		m_infiltration.readXML(				dbDir / "db_infiltration.xml", "Infiltrations", "Infiltration", true);
+		m_ventilationNatural.readXML(				dbDir / "db_ventilationNatural.xml", "VentilationNaturals", "VentilationNatural", true);
 		m_zoneTemplates.readXML(			dbDir / "db_zoneTemplates.xml", "ZoneTemplates", "ZoneTemplate", true);
 
 	//	readXML(dbDir / "db_epdElements.xml", "EPDDatasets", "EPDDataset", m_dbEPDElements, true);
@@ -82,7 +88,13 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 	if (t == NUM_DT || t == DT_ZoneControlThermostat)
 		m_zoneControlThermostat.readXML(	userDbDir / "db_zoneControlThermostat.xml", "ZoneControlThermostats", "ZoneControlThermostat", false);
 	if (t == NUM_DT || t == DT_ZoneControlNaturalVentilation)
-		m_zoneControlNaturalVentilation.readXML(	userDbDir / "db_zoneControlNaturalVentilation.xml", "ZoneControlNaturalVentilations", "ZoneControlNaturalVentilation", false);
+		m_zoneControlVentilationNatural.readXML(	userDbDir / "db_zoneControlVentilationNatural.xml", "ZoneControlVentilationNaturals", "ZoneControlVentilationNatural", false);
+	if (t == NUM_DT || t == DT_ZoneControlShading)
+		m_zoneControlShading.readXML(	userDbDir / "db_zoneControlShading.xml", "ZoneControlShadings", "ZoneControlShading", false);
+	if (t == NUM_DT || t == DT_Infiltration)
+		m_infiltration.readXML(	userDbDir / "db_infiltration.xml", "Infiltrations", "Infiltration", false);
+	if (t == NUM_DT || t == DT_VentilationNatural)
+		m_ventilationNatural.readXML(	userDbDir / "db_ventilationNatural.xml", "VentilationNaturals", "VentilationNatural", false);
 	if (t == NUM_DT || t == DT_ZoneTemplates)
 		m_zoneTemplates.readXML(	userDbDir / "db_zoneTemplates.xml", "ZoneTemplates", "ZoneTemplate", false);
 
@@ -106,7 +118,10 @@ void SVDatabase::writeDatabases() const {
 	m_schedules.writeXML(			userDbDir / "db_schedules.xml", "Schedules");
 	m_internalLoads.writeXML(		userDbDir / "db_internalLoads.xml", "InternalLoads");
 	m_zoneControlThermostat.writeXML(userDbDir / "db_zoneControlThermostat.xml", "ZoneControlThermostats");
-	m_zoneControlNaturalVentilation.writeXML(userDbDir / "db_zoneControlNaturalVentilation.xml", "ZoneControlNaturalVentilations");
+	m_zoneControlVentilationNatural.writeXML(userDbDir / "db_zoneControlVentilationNatural.xml", "ZoneControlVentilationNaturals");
+	m_zoneControlShading.writeXML(	userDbDir / "db_zoneControlShading.xml", "ZoneControlShadings");
+	m_infiltration.writeXML(		userDbDir / "db_infiltration.xml", "Infiltrations");
+	m_ventilationNatural.writeXML(	userDbDir / "db_ventilationNatural.xml", "VentilationNaturals");
 	m_zoneTemplates.writeXML(		userDbDir / "db_zoneTemplates.xml", "ZoneTemplates");
 
 //	writeXMLDB(userDbDir / "db_epdElements.xml", "EPDDatasets", m_dbEPDElements);
