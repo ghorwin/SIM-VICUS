@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SVDBZoneControlThermostatEditWidget</class>
+ <widget class="QWidget" name="SVDBZoneControlThermostatEditWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>712</width>
+    <height>857</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="labelDisplayName">
+       <property name="text">
+        <string>Name:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
+     </item>
+     <item>
+      <widget class="QtExt::ColorButton" name="pushButtonColor">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="labelCategory_2">
+       <property name="text">
+        <string>Method:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBoxMethod"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Global Sensor Parameters</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="labelToleranceHeating">
+        <property name="text">
+         <string>Horizontal:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditToleranceHeating">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" colspan="2">
+       <widget class="QLabel" name="labelConvectiveFactorUnit">
+        <property name="text">
+         <string>W/m2</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelToleranceHeating_2">
+        <property name="text">
+         <string>North:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditToleranceHeating_2">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QLabel" name="labelConvectiveFactorUnit_3">
+        <property name="text">
+         <string>W/m2</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelToleranceHeating_3">
+        <property name="text">
+         <string>East:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditToleranceHeating_3">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QLabel" name="labelConvectiveFactorUnit_4">
+        <property name="text">
+         <string>W/m2</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="labelToleranceHeating_4">
+        <property name="text">
+         <string>South:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditToleranceHeating_4">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3">
+       <widget class="QLabel" name="labelConvectiveFactorUnit_5">
+        <property name="text">
+         <string>W/m2</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="labelToleranceHeating_5">
+        <property name="text">
+         <string>West:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditToleranceHeating_5">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="3">
+       <widget class="QLabel" name="labelConvectiveFactorUnit_6">
+        <property name="text">
+         <string>W/m2</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="labelToleranceHeating_6">
+        <property name="text">
+         <string>Dead Band:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1" colspan="2">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditToleranceHeating_6">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="3">
+       <widget class="QLabel" name="labelConvectiveFactorUnit_7">
+        <property name="text">
+         <string>W/m2</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QtExt::ValidatingLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_ValidatingLineEdit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::ColorButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">QtExt_ColorButton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::LanguageStringEditWidget1</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_LanguageStringEditWidget1.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
