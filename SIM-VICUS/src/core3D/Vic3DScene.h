@@ -243,8 +243,11 @@ private:
 	// *** Interactive translation/rotation/scale stuff **
 
 	QVector3D				m_translateOrigin;
-	/*! Reference vector (right angle to rotation axis). */
-	QVector3D				m_rotationRefVector;
+
+	/*! Reference vector (coordinate system will be rotated around this vector). */
+	QVector3D				m_rotationVector;
+	/*! Reference vector: m_rotationAxisVector x m_rotationVector give third local vector of local coordinate system. */
+	QVector3D				m_rotationAxisVector;
 
 	// other members
 
