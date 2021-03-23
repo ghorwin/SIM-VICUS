@@ -70,6 +70,7 @@ HEADERS += \
 	../../src/QtExt_ValidatingInputBase.h \
 	../../src/QtExt_ValidatingLineEdit.h \
 	../../src/QtExt_ValueInputComboBox.h \
+	../../src/QtExt_configuration.h \
 	../../src/QtExt_varianthelper.h
 
 SOURCES += \

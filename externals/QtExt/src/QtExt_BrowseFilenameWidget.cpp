@@ -87,20 +87,32 @@ void BrowseFilenameWidget::onToolBtnClicked() {
 		if (m_fileMustExist) {
 			fn = QFileDialog::getOpenFileName(nullptr, tr("Select filename"), filename(), m_filter, nullptr
 #ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
-											  ,QFileDialog::DontUseNativeDialog
+					,QFileDialog::DontUseNativeDialog
 #endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
-											  );
+					);
 		}
 		else {
-			fn = QFileDialog::getSaveFileName(this, tr("Select filename"), filename(), m_filter);
+			fn = QFileDialog::getSaveFileName(this, tr("Select filename"), filename(), m_filter, nullptr
+#ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
+					,QFileDialog::DontUseNativeDialog
+#endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
+					);
 		}
 	}
 	else {
 		if (m_fileMustExist) {
-			fn = QFileDialog::getExistingDirectory(this, tr("Select filename"), filename());
+			fn = QFileDialog::getExistingDirectory(this, tr("Select filename"), filename()
+#ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
+					,QFileDialog::DontUseNativeDialog
+#endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
+					);
 		}
 		else {
-			fn = QFileDialog::getSaveFileName(this, tr("Select directory"), filename(), m_filter);
+			fn = QFileDialog::getSaveFileName(this, tr("Select directory"), filename(), m_filter, nullptr
+#ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
+					,QFileDialog::DontUseNativeDialog
+#endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
+					);
 		}
 	}
 	blockSignals(false);
