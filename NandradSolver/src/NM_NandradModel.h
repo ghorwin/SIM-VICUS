@@ -512,9 +512,6 @@ private:
 	/*! The central managing object for outputs. */
 	OutputHandler											*m_outputHandler = nullptr;
 
-	/*! Stores variable mapping of created object reference names (key) versus display names (values). */
-	std::map<std::string, std::string>						m_variableMapping;
-
 	// *** STATISTICS ***
 
 	/*! Log file containing realtime, simtime, and gliding average. */

@@ -1878,6 +1878,10 @@ void NandradModel::initModelGraph() {
 
 void NandradModel::initOutputReferenceList() {
 	FUNCID(NandradModel::initOutputReferenceList);
+
+	// storage member to collect variable reference substitution map - ref-prefix vs displayname, if given
+	std::map<std::string, std::string> varSubstMap;
+
 	IBK::IBK_Message( IBK::FormatString("Initializing Output Quantity List\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	{
 		IBK_MSG_INDENT;
@@ -1886,6 +1890,8 @@ void NandradModel::initOutputReferenceList() {
 		std::map<std::string, QuantityDescription> refDescs;
 		for (unsigned int i=0; i<m_modelContainer.size(); ++i) {
 			AbstractModel * currentModel = m_modelContainer[i];
+			currentModel->variableReferenceSubstitutionMap(varSubstMap); // for most model instances, this does nothing
+
 			NANDRAD::ModelInputReference::referenceType_t refType = currentModel->referenceType();
 			// skip models that do not generate outputs
 			if (refType == NANDRAD::ModelInputReference::NUM_MRT)
@@ -1962,13 +1968,13 @@ void NandradModel::initOutputReferenceList() {
 
 	IBK::IBK_Message( IBK::FormatString("Writing Variable - Displayname Mapping Table\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK_MSG_INDENT;
-	IBK::Path m_mappingFilePath = (m_dirs.m_varDir / "VariableSubstitutions.tsv");
+	IBK::Path m_mappingFilePath = (m_dirs.m_varDir / "VariableSubstitutions.txt");
 	m_mappingFilePath.removeRelativeParts();
 
 	// create the mapping file
 	std::unique_ptr<std::ofstream> vapMapStream( IBK::create_ofstream(m_mappingFilePath) );
 	// now write a line with variable mappings for each of the variables in question
-	for (auto m : m_variableMapping)
+	for (auto m : varSubstMap)
 		*vapMapStream << m.first << '\t' << m.second << '\n';
 }
 
