@@ -246,7 +246,7 @@ private:
 
 	/*! Reference vector (coordinate system will be rotated around this vector). */
 	IBKMK::Vector3D			m_rotationAxis;
-	double					m_initialRotationAngle;
+	QQuaternion				m_originalRotation;
 	/*! Reference vector (local X of rotation system). "z-axis" is always rotation axis */
 	IBKMK::Vector3D			m_rotationVectorX;
 	IBKMK::Vector3D			m_rotationVectorY;

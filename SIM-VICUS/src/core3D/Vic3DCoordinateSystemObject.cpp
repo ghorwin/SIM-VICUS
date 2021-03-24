@@ -232,8 +232,8 @@ void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 	// x-axis: draw 4 green bullets in yz plane
 
 	m_objectStartIndexes[ELEMENT_ROTATION_INDICATOR_INDEX_X] = currentElementIndex;
-	// x-axis sphere is for rotation around y
-	addSphere(IBKMK::Vector3D(AXIS_LENGTH,0,0), QColor(Qt::green), ROTATION_MARKER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
+	// x-axis sphere is for rotation around z
+	addSphere(IBKMK::Vector3D(AXIS_LENGTH,0,0), QColor(32,32,255), ROTATION_MARKER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 //	for (int i=0; i<8; ++i) {
 //		QVector3D pos(0,AXIS_LENGTH,0);
@@ -244,8 +244,8 @@ void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 //	}
 
 	m_objectStartIndexes[ELEMENT_ROTATION_INDICATOR_INDEX_Y] = currentElementIndex;
-	// y-axis sphere is for rotation around z
-	addSphere(IBKMK::Vector3D(0, AXIS_LENGTH,0), QColor(32,32,255), ROTATION_MARKER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
+	// y-axis sphere is for rotation around x
+	addSphere(IBKMK::Vector3D(0, AXIS_LENGTH,0), QColor(Qt::red), ROTATION_MARKER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 //	for (int i=0; i<8; ++i) {
 //		QVector3D pos(AXIS_LENGTH,0,0);
@@ -254,8 +254,8 @@ void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 //	}
 
 	m_objectStartIndexes[ELEMENT_ROTATION_INDICATOR_INDEX_Z] = currentElementIndex;
-	// z-axis sphere is for rotation around x
-	addSphere(IBKMK::Vector3D(0,0,AXIS_LENGTH), QColor(Qt::red), ROTATION_MARKER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
+	// z-axis sphere is for rotation around y
+	addSphere(IBKMK::Vector3D(0,0,AXIS_LENGTH), QColor(Qt::green), ROTATION_MARKER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 //	for (int i=0; i<8; ++i) {
 //		QVector3D pos(AXIS_LENGTH,0,0);
@@ -517,7 +517,7 @@ bool CoordinateSystemObject::pick(const IBKMK::Vector3D & nearPoint, const IBKMK
 				r.m_snapPointType = PickObject::RT_AxisEndMarker;
 				r.m_depth = lineFactor;
 				r.m_pickPoint = nearPoint + lineFactor*direction;
-				r.m_uniqueObjectID = 0; // indicates x axis
+				r.m_uniqueObjectID = 0; // indicates x axis, i.e. rotation around z
 				return true;
 			}
 			// y-axis

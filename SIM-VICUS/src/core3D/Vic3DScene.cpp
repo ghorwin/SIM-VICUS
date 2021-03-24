@@ -435,27 +435,30 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 						// which axis?
 						switch (pickObject.m_candidates.front().m_uniqueObjectID) {
 							case 0 :
-								m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateY;
-								m_rotationAxis = QtExt::QVector2IBKVector( m_coordinateSystemObject.localYAxis() );
-								m_rotationVectorX = QtExt::QVector2IBKVector( m_coordinateSystemObject.localZAxis() );
-								m_rotationVectorY = QtExt::QVector2IBKVector( m_coordinateSystemObject.localXAxis() );
-							break;
-
-							case 1 :
+								// rotate around z
 								m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateZ;
 								m_rotationAxis = QtExt::QVector2IBKVector( m_coordinateSystemObject.localZAxis() );
 								m_rotationVectorX = QtExt::QVector2IBKVector( m_coordinateSystemObject.localXAxis() );
 								m_rotationVectorY = QtExt::QVector2IBKVector( m_coordinateSystemObject.localYAxis() );
 							break;
 
-							case 2 :
+							case 1 :
 								m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateX;
 								m_rotationAxis = QtExt::QVector2IBKVector( m_coordinateSystemObject.localXAxis() );
 								m_rotationVectorX = QtExt::QVector2IBKVector( m_coordinateSystemObject.localYAxis() );
 								m_rotationVectorY = QtExt::QVector2IBKVector( m_coordinateSystemObject.localZAxis() );
 							break;
+
+							case 2 :
+								m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateY;
+								m_rotationAxis = QtExt::QVector2IBKVector( m_coordinateSystemObject.localYAxis() );
+								m_rotationVectorX = QtExt::QVector2IBKVector( m_coordinateSystemObject.localZAxis() );
+								m_rotationVectorY = QtExt::QVector2IBKVector( m_coordinateSystemObject.localXAxis() );
+							break;
 						}
 
+						// store original translation matrix
+						m_originalRotation = m_coordinateSystemObject.transform().rotation();
 						qDebug() << "Entering interactive rotation mode";
 					}
 				}
@@ -593,25 +596,24 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 						double rotAngle = 0;
 						if (cosBeta == 1.0)
 							rotAngle = 0;
+						else if (cosBeta == -1.0)
+							rotAngle = 180;
 						else
 							rotAngle = std::acos(cosBeta)*180/3.141569;
+						// adjustment for quadrant 3 and 4
 						if (sinGamma < 0)
 							rotAngle = 360-rotAngle;
-
-						// subtract 90, because our snap point is on the y-axis
-						rotAngle -= 90;
 
 						// the rotation angle
 						qDebug() << QtExt::IBKVector2String(newPoint) << QtExt::IBKVector2String(projectedVector) << cosBeta << sinGamma << rotAngle;
 
-						QQuaternion q = QQuaternion::fromAxisAndAngle( QtExt::IBKVector2QVector(m_rotationAxis), rotAngle + m_initialRotationAngle);
-						QQuaternion qOriginal = QQuaternion::fromAxes( QtExt::IBKVector2QVector(m_rotationVectorX), QtExt::IBKVector2QVector(m_rotationVectorY), QtExt::IBKVector2QVector(m_rotationAxis));
+						QQuaternion q = QQuaternion::fromAxisAndAngle( QtExt::IBKVector2QVector(m_rotationAxis), rotAngle);
 
-						m_coordinateSystemObject.setRotation(q*qOriginal);
-
+						q = q*m_originalRotation;
+						m_coordinateSystemObject.setRotation(q*m_originalRotation);
 
 						// now set this in the wireframe object as translation
-//						m_selectedGeometryObject.m_transform.setTranslation(translationVector);
+						m_selectedGeometryObject.m_transform.setRotation(q);
 					} break;// interactive translation active
 				} // switch
 			} // mouse dragged
@@ -640,7 +642,7 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 		}
 		if (m_navigationMode == NM_InteractiveRotation) {
 			qDebug() << "Leaving interactive rotation mode";
-//			SVViewStateHandler::instance().m_propEditGeometryWidget->translate();
+			SVViewStateHandler::instance().m_propEditGeometryWidget->rotate();
 			needRepaint = true;
 		}
 		// clear orbit controller flag
