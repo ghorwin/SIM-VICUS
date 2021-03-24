@@ -485,6 +485,8 @@ void SVPropEditGeometry::initializeCopy() {
 
 
 void SVPropEditGeometry::updateCoordinateSystemLook() {
+	if (SVViewStateHandler::instance().m_geometryView == nullptr)
+		return; // do nothing while initializing
 	// adjust appearance of local coordinate system
 	if (m_ui->stackedWidget->currentIndex() == 0) {
 		// put local coordinate system back into "plain" mode

@@ -285,6 +285,9 @@ void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p)
 		break;
 		case NGM_ZoneExtrusion : {
 			Q_ASSERT(m_planeGeometry.isValid());
+			// we need to distinguish between interactive and fixed mode
+			if (!m_interactiveZoneExtrusionMode)
+				return; // do nothing
 			// compute the projection of the current coordinate systems position on the plane
 			IBKMK::Vector3D p2(QtExt::QVector2IBKVector(p));
 			IBKMK::Vector3D projected;
@@ -314,6 +317,16 @@ void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p)
 	m_localCoordinateSystemPosition = newPoint;
 
 	// update buffer (but only that portion that depends on the local coordinate system's location)
+	updateBuffers(true);
+}
+
+
+void NewGeometryObject::setZoneHeight(double height) {
+	Q_ASSERT(m_newGeometryMode == NGM_ZoneExtrusion);
+	m_zoneHeight = height;
+	IBKMK::Vector3D a = planeGeometry().vertexes()[0];
+	IBKMK::Vector3D offset = height*planeGeometry().normal();
+	m_localCoordinateSystemPosition = QtExt::IBKVector2QVector(a+offset);
 	updateBuffers(true);
 }
 

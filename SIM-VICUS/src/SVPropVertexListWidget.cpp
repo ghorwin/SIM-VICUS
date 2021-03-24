@@ -36,6 +36,10 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 	sp_retain.setRetainSizeWhenHidden(true);
 	m_ui->groupBoxPolygonVertexes->setSizePolicy(sp_retain);
 
+	m_ui->lineEditZoneHeight->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(),
+									tr("Zone height in [m]."),true, true);
+
+
 	SVViewStateHandler::instance().m_propVertexListWidget = this;
 
 	connect(m_ui->toolButtonEditComponents1, &QToolButton::clicked,
@@ -176,7 +180,7 @@ void SVPropVertexListWidget::updateBuildingLevelsComboBox() {
 	m_ui->comboBoxBuildingLevel->blockSignals(false);
 
 	// also update the zones combo box
-	updateZoneComboBox();
+	on_comboBoxBuildingLevel_currentIndexChanged(m_ui->comboBoxBuildingLevel->currentIndex());
 }
 
 
@@ -729,6 +733,13 @@ void SVPropVertexListWidget::on_comboBoxBuilding_currentIndexChanged(int /*index
 
 void SVPropVertexListWidget::on_comboBoxBuildingLevel_currentIndexChanged(int /*index*/) {
 	updateZoneComboBox();
+	unsigned int buildingLevelUniqueID = m_ui->comboBoxBuildingLevel->currentData().toUInt();
+	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(project().objectById(buildingLevelUniqueID));
+	// also transfer nominal height into zone-height line edit
+	if (bl != nullptr) {
+		m_ui->lineEditZoneHeight->setValue(bl->m_height);
+		on_lineEditZoneHeight_editingFinishedSuccessfully();
+	}
 }
 
 
@@ -755,26 +766,21 @@ void SVPropVertexListWidget::on_pushButtonFloorDone_clicked() {
 	// now also enable the z snap operation
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_locks = SVViewState::L_LocalZ; // local Z axis is locked
-	// take xy plane out of snap option mask
-	vs.m_snapEnabled = false;
 	SVViewStateHandler::instance().setViewState(vs);
+	// now also transfer the zone height to the zone object
+	if (m_ui->lineEditZoneHeight->isValid())
+		on_lineEditZoneHeight_editingFinishedSuccessfully();
 }
 
 
-void SVPropVertexListWidget::on_lineEditZoneHeight_editingFinished() {
+void SVPropVertexListWidget::on_lineEditZoneHeight_editingFinishedSuccessfully() {
 	// read entered line height and if valid move local coordinate system to new height
-	double val;
-	bool ok;
-	val = QLocale().toDouble(m_ui->lineEditZoneHeight->text(), &ok);
-	if (ok) {
-		Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
-		if (po->newGeometryMode() == Vic3D::NewGeometryObject::NGM_ZoneExtrusion) {
-			IBKMK::Vector3D a = po->planeGeometry().vertexes()[0];
-			IBKMK::Vector3D offset = val*po->planeGeometry().normal();
-			IBKMK::Vector3D newLocalCoordinateSystemPos = a+offset;
-			po->updateLocalCoordinateSystemPosition(QtExt::IBKVector2QVector(newLocalCoordinateSystemPos));
-			// we need to trigger a redraw here
-			SVViewStateHandler::instance().m_geometryView->refreshSceneView();
-		}
+	double val = m_ui->lineEditZoneHeight->value();
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+	if (po->newGeometryMode() == Vic3D::NewGeometryObject::NGM_ZoneExtrusion) {
+		po->setZoneHeight(val);
+		// we need to trigger a redraw here
+		SVViewStateHandler::instance().m_geometryView->refreshSceneView();
 	}
 }
+

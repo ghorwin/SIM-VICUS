@@ -76,6 +76,7 @@ public:
 			To create the polygon, it must be valid (not winding).
 		*/
 		NGM_Polygon,
+		/*! Mode when drawing the zone floor polygon. */
 		NGM_ZoneFloor,
 		NGM_ZoneExtrusion,
 		NUM_NGM
@@ -173,6 +174,10 @@ public:
 	*/
 	void updateLocalCoordinateSystemPosition(const QVector3D & p);
 
+	/*! Sets the extrusion height in [m].
+		Must only be called in NGM_ZoneExtrusion mode.
+	*/
+	void setZoneHeight(double height);
 
 
 	/*! Renders opaque parts of geometry. */
@@ -218,6 +223,7 @@ private:
 
 	/*! Height of the zone when constructing a zone through extrusion. */
 	double							m_zoneHeight;
+	bool							m_interactiveZoneExtrusionMode = false;
 
 	/*! Vertex buffer in CPU memory, holds data of all vertices (coords).
 		The last vertex is always the vertex of the current movable coordinate system's location.

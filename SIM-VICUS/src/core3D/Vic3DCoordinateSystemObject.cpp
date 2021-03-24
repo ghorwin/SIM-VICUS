@@ -402,9 +402,12 @@ void CoordinateSystemObject::renderOpaque() {
 	switch (m_geometryTransformMode) {
 		case TM_None :			DRAW_ELEMENT(ELEMENT_AXES_SPHERE_INDEX); break;
 
-		case TM_RotateX		:		DRAW_ELEMENT(ELEMENT_ROTATION_INDICATOR_INDEX_X); break;
-		case TM_RotateY		:		DRAW_ELEMENT(ELEMENT_ROTATION_INDICATOR_INDEX_Y); break;
-		case TM_RotateZ		:		DRAW_ELEMENT(ELEMENT_ROTATION_INDICATOR_INDEX_Z); break;
+		case TM_RotateX		:
+		case TM_RotateY		:
+		case TM_RotateZ		:
+			DRAW_ELEMENT(ELEMENT_AXES_SPHERE_INDEX);
+			break;
+
 		case TM_RotateMask	:
 			DRAW_ELEMENT(ELEMENT_ROTATION_INDICATOR_INDEX_X);
 			DRAW_ELEMENT(ELEMENT_ROTATION_INDICATOR_INDEX_Y);
@@ -503,7 +506,7 @@ bool CoordinateSystemObject::pick(const IBKMK::Vector3D & nearPoint, const IBKMK
 
 		case Vic3D::CoordinateSystemObject::TM_RotateMask : {
 			// x-axis
-			IBKMK::Vector3D sphereCenter = QtExt::QVector2IBKVector(translation()) + IBKMK::Vector3D(AXIS_LENGTH, 0, 0);
+			IBKMK::Vector3D sphereCenter = QtExt::QVector2IBKVector( m_transform.toMatrix() * QVector3D(AXIS_LENGTH, 0, 0) );
 			bool hit = IBKMK::lineShereIntersection(nearPoint, direction,  // line of sight
 													sphereCenter, ROTATION_MARKER_SPHERE_FACTOR, // sphere
 													lineFactor, // lineFactor (lineFactor*d = distance to intersection point with sphere)
@@ -518,7 +521,7 @@ bool CoordinateSystemObject::pick(const IBKMK::Vector3D & nearPoint, const IBKMK
 				return true;
 			}
 			// y-axis
-			sphereCenter = QtExt::QVector2IBKVector(translation()) + IBKMK::Vector3D(0, AXIS_LENGTH, 0);
+			sphereCenter = QtExt::QVector2IBKVector( m_transform.toMatrix() * QVector3D(0, AXIS_LENGTH, 0) );
 			hit = IBKMK::lineShereIntersection(nearPoint, direction,  // line of sight
 													sphereCenter, ROTATION_MARKER_SPHERE_FACTOR, // sphere
 													lineFactor, // lineFactor (lineFactor*d = distance to intersection point with sphere)
@@ -533,7 +536,7 @@ bool CoordinateSystemObject::pick(const IBKMK::Vector3D & nearPoint, const IBKMK
 				return true;
 			}
 			// z-axis
-			sphereCenter = QtExt::QVector2IBKVector(translation()) + IBKMK::Vector3D(0, 0, AXIS_LENGTH);
+			sphereCenter = QtExt::QVector2IBKVector( m_transform.toMatrix() * QVector3D(0, 0, AXIS_LENGTH) );
 			hit = IBKMK::lineShereIntersection(nearPoint, direction,  // line of sight
 													sphereCenter, ROTATION_MARKER_SPHERE_FACTOR, // sphere
 													lineFactor, // lineFactor (lineFactor*d = distance to intersection point with sphere)

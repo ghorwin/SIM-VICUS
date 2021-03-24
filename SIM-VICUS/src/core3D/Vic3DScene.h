@@ -245,9 +245,11 @@ private:
 	QVector3D				m_translateOrigin;
 
 	/*! Reference vector (coordinate system will be rotated around this vector). */
-	QVector3D				m_rotationVector;
-	/*! Reference vector: m_rotationAxisVector x m_rotationVector give third local vector of local coordinate system. */
-	QVector3D				m_rotationAxisVector;
+	IBKMK::Vector3D			m_rotationAxis;
+	double					m_initialRotationAngle;
+	/*! Reference vector (local X of rotation system). "z-axis" is always rotation axis */
+	IBKMK::Vector3D			m_rotationVectorX;
+	IBKMK::Vector3D			m_rotationVectorY;
 
 	// other members
 

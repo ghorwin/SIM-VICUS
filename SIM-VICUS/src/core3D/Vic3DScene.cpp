@@ -436,20 +436,23 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 						switch (pickObject.m_candidates.front().m_uniqueObjectID) {
 							case 0 :
 								m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateY;
-								m_rotationVector = m_coordinateSystemObject.localYAxis();
-								m_rotationAxisVector = m_coordinateSystemObject.localZAxis();
+								m_rotationAxis = QtExt::QVector2IBKVector( m_coordinateSystemObject.localYAxis() );
+								m_rotationVectorX = QtExt::QVector2IBKVector( m_coordinateSystemObject.localZAxis() );
+								m_rotationVectorY = QtExt::QVector2IBKVector( m_coordinateSystemObject.localXAxis() );
 							break;
 
 							case 1 :
 								m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateZ;
-								m_rotationVector = m_coordinateSystemObject.localZAxis();
-								m_rotationAxisVector = m_coordinateSystemObject.localXAxis();
+								m_rotationAxis = QtExt::QVector2IBKVector( m_coordinateSystemObject.localZAxis() );
+								m_rotationVectorX = QtExt::QVector2IBKVector( m_coordinateSystemObject.localXAxis() );
+								m_rotationVectorY = QtExt::QVector2IBKVector( m_coordinateSystemObject.localYAxis() );
 							break;
 
 							case 2 :
 								m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateX;
-								m_rotationVector = m_coordinateSystemObject.localXAxis();
-								m_rotationAxisVector = m_coordinateSystemObject.localYAxis();
+								m_rotationAxis = QtExt::QVector2IBKVector( m_coordinateSystemObject.localXAxis() );
+								m_rotationVectorX = QtExt::QVector2IBKVector( m_coordinateSystemObject.localYAxis() );
+								m_rotationVectorY = QtExt::QVector2IBKVector( m_coordinateSystemObject.localZAxis() );
 							break;
 						}
 
@@ -571,27 +574,40 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 							pick(pickObject);
 
 						// store current's coordinate system position
-						QVector3D coordinateSystemLocation = m_coordinateSystemObject.translation();
+						IBKMK::Vector3D coordinateSystemLocation = QtExt::QVector2IBKVector( m_coordinateSystemObject.translation() );
 						// snap it to the new location
 						snapLocalCoordinateSystem(pickObject);
 						// get point that the mouse snapped to
-						QVector3D newPoint = m_coordinateSystemObject.translation();
+						IBKMK::Vector3D newPoint = QtExt::QVector2IBKVector( m_coordinateSystemObject.translation() );
 						// and restore coordinate systems location
-						m_coordinateSystemObject.setTranslation(coordinateSystemLocation);
+						m_coordinateSystemObject.setTranslation(QtExt::IBKVector2QVector( coordinateSystemLocation) );
 
-						QVector3D pointedToVector = newPoint - coordinateSystemLocation;
+						IBKMK::Vector3D projectedVector;
+						IBKMK::pointProjectedOnPlane(coordinateSystemLocation, m_rotationAxis, newPoint, projectedVector);
 
-//						// now compute the projection onto the rotation plane
-//						QVector3D projX = QVector3D::dotProduct(pointedToVector, m_rotationAxisVectorX)*m_rotationAxisVectorX;
-//						QVector3D projY = QVector3D::dotProduct(pointedToVector, m_rotationAxisVectorY)*m_rotationAxisVectorY;
-//						QVector3D rotVector = projX + projY;
+						projectedVector.normalize();
+						// now compute rotation angle to rotation x vector
+						double cosBeta = m_rotationVectorX.scalarProduct(projectedVector);
+						double sinGamma = m_rotationVectorY.scalarProduct(projectedVector);
 
-//						// determine rotation angle
-//						float cosRotation = QVector3D::dotProduct(projX, m_rotationRefVector);
-//						float rotAngle = std::acos(cosRotation)*180/3.14157;
+						double rotAngle = 0;
+						if (cosBeta == 1.0)
+							rotAngle = 0;
+						else
+							rotAngle = std::acos(cosBeta)*180/3.141569;
+						if (sinGamma < 0)
+							rotAngle = 360-rotAngle;
 
-//						QQuaternion q = QQuaternion::fromAxisAndAngle(m_rotationRefVector, rotAngle);
-//						m_coordinateSystemObject.setRotation(q);
+						// subtract 90, because our snap point is on the y-axis
+						rotAngle -= 90;
+
+						// the rotation angle
+						qDebug() << QtExt::IBKVector2String(newPoint) << QtExt::IBKVector2String(projectedVector) << cosBeta << sinGamma << rotAngle;
+
+						QQuaternion q = QQuaternion::fromAxisAndAngle( QtExt::IBKVector2QVector(m_rotationAxis), rotAngle + m_initialRotationAngle);
+						QQuaternion qOriginal = QQuaternion::fromAxes( QtExt::IBKVector2QVector(m_rotationVectorX), QtExt::IBKVector2QVector(m_rotationVectorY), QtExt::IBKVector2QVector(m_rotationAxis));
+
+						m_coordinateSystemObject.setRotation(q*qOriginal);
 
 
 						// now set this in the wireframe object as translation
