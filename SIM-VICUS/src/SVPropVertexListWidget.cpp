@@ -752,7 +752,6 @@ void SVPropVertexListWidget::on_pushButtonFloorDone_clicked() {
 	m_ui->groupBoxPolygonVertexes->setEnabled(false);
 
 	// we now must align the local coordinate system to the newly created plane
-	// also, we must fix the snap to the local z-coordinate
 
 	IBKMK::Vector3D x = po->planeGeometry().localX();
 	IBKMK::Vector3D y = po->planeGeometry().localY();

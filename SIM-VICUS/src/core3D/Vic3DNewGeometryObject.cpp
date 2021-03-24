@@ -286,20 +286,26 @@ void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p)
 		case NGM_ZoneExtrusion : {
 			Q_ASSERT(m_planeGeometry.isValid());
 			// we need to distinguish between interactive and fixed mode
-			if (!m_interactiveZoneExtrusionMode)
-				return; // do nothing
-			// compute the projection of the current coordinate systems position on the plane
-			IBKMK::Vector3D p2(QtExt::QVector2IBKVector(p));
-			IBKMK::Vector3D projected;
-			IBKMK::pointProjectedOnPlane(m_planeGeometry.vertexes()[0], m_planeGeometry.normal(), p2, projected);
-			newPoint = QtExt::IBKVector2QVector(projected);
-			// now get the offset vector
-			QVector3D verticalOffset = p-newPoint; // Note: this vector should be collinear to the plane's normal
-			// and add it to the first vertex of the polygon
-			newPoint = verticalOffset + QtExt::IBKVector2QVector(m_planeGeometry.vertexes()[0]);
-			// also store the absolute height
-			m_zoneHeight = (double)verticalOffset.length();
-			SVViewStateHandler::instance().m_propVertexListWidget->setExtrusionDistance(m_zoneHeight);
+			if (!m_interactiveZoneExtrusionMode) {
+				IBKMK::Vector3D a = planeGeometry().vertexes()[0];
+				IBKMK::Vector3D offset = m_zoneHeight*planeGeometry().normal();
+				newPoint = QtExt::IBKVector2QVector(a+offset);
+			}
+			else {
+
+				// compute the projection of the current coordinate systems position on the plane
+				IBKMK::Vector3D p2(QtExt::QVector2IBKVector(p));
+				IBKMK::Vector3D projected;
+				IBKMK::pointProjectedOnPlane(m_planeGeometry.vertexes()[0], m_planeGeometry.normal(), p2, projected);
+				newPoint = QtExt::IBKVector2QVector(projected);
+				// now get the offset vector
+				QVector3D verticalOffset = p-newPoint; // Note: this vector should be collinear to the plane's normal
+				// and add it to the first vertex of the polygon
+				newPoint = verticalOffset + QtExt::IBKVector2QVector(m_planeGeometry.vertexes()[0]);
+				// also store the absolute height
+				m_zoneHeight = (double)verticalOffset.length();
+				SVViewStateHandler::instance().m_propVertexListWidget->setExtrusionDistance(m_zoneHeight);
+			}
 		}
 		break;
 
@@ -324,10 +330,7 @@ void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p)
 void NewGeometryObject::setZoneHeight(double height) {
 	Q_ASSERT(m_newGeometryMode == NGM_ZoneExtrusion);
 	m_zoneHeight = height;
-	IBKMK::Vector3D a = planeGeometry().vertexes()[0];
-	IBKMK::Vector3D offset = height*planeGeometry().normal();
-	m_localCoordinateSystemPosition = QtExt::IBKVector2QVector(a+offset);
-	updateBuffers(true);
+	updateLocalCoordinateSystemPosition(QVector3D(0,0,0)); // point coordinates are irrelevant
 }
 
 
