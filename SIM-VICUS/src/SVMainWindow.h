@@ -112,6 +112,8 @@ public:
 	SVDatabaseEditDialog *dbInternalLoadsElectricEquipmentEditDialog();
 	/*! Returns the internal loads person edit dialog. */
 	SVDatabaseEditDialog *dbInternalLoadsLightsEditDialog();
+	/*! Returns the internal loads other edit dialog. */
+	SVDatabaseEditDialog *dbInternalLoadsOtherEditDialog();
 	/*! Returns the internal zone control thermostat edit dialog. */
 	SVDatabaseEditDialog *dbZoneControlThermostatEditDialog();
 	/*! Returns the internal zone control natural ventilation edit dialog. */
@@ -138,6 +140,7 @@ public slots:
 	void on_actionDBInternalLoadsPerson_triggered();
 	void on_actionDBInternalLoadsElectricEquipment_triggered();
 	void on_actionDBInternalLoadsLights_triggered();
+	void on_actionDBInternalLoadsOther_triggered();
 
 	void on_actionDBZoneControlThermostat_triggered();
 	void on_actionDBZoneControlVentilationNatural_triggered();
@@ -400,6 +403,7 @@ private:
 	SVDatabaseEditDialog				*m_dbInternalLoadsPersonEditDialog				= nullptr;
 	SVDatabaseEditDialog				*m_dbInternalLoadsElectricEquipmentEditDialog	= nullptr;
 	SVDatabaseEditDialog				*m_dbInternalLoadsLightsEditDialog				= nullptr;
+	SVDatabaseEditDialog				*m_dbInternalLoadsOtherEditDialog				= nullptr;
 	SVDatabaseEditDialog				*m_dbZoneControlThermostatEditDialog			= nullptr;
 	SVDatabaseEditDialog				*m_dbZoneControlVentilationNaturalEditDialog	= nullptr;
 	SVDatabaseEditDialog				*m_dbZoneControlShadingEditDialog				= nullptr;

@@ -23,10 +23,10 @@ SVDatabase::SVDatabase() :
 	m_schedules(6*USER_ID_SPACE_START),
 	m_internalLoads(7*USER_ID_SPACE_START),
 	m_zoneControlThermostat(11*USER_ID_SPACE_START),
-	m_zoneControlVentilationNatural(12*USER_ID_SPACE_START),
 	m_zoneControlShading(13*USER_ID_SPACE_START),
-	m_infiltration(14*USER_ID_SPACE_START),
+	m_zoneControlVentilationNatural(12*USER_ID_SPACE_START),
 	m_ventilationNatural(15*USER_ID_SPACE_START),
+	m_infiltration(14*USER_ID_SPACE_START),
 	m_zoneTemplates(8*USER_ID_SPACE_START)
 {
 }

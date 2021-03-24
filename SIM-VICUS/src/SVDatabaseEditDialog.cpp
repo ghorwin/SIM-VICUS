@@ -31,6 +31,7 @@
 #include "SVDBInternalLoadsPersonEditWidget.h"
 #include "SVDBInternalLoadsElectricEquipmentEditWidget.h"
 #include "SVDBInternalLoadsLightsEditWidget.h"
+#include "SVDBInternalLoadsOtherEditWidget.h"
 
 #include "SVDBZoneControlThermostatEditWidget.h"
 #include "SVDBZoneControlThermostatTableModel.h"
@@ -356,21 +357,26 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createInternalLoadsEditDialog(QWidg
 			dlg = new SVDatabaseEditDialog(parent,
 				new SVDBInternalLoadsTableModel(parent, SVSettings::instance().m_db, category),
 				new SVDBInternalLoadsPersonEditWidget(parent),
-				tr("Person Loads Database"), tr("Person Load properties"), true);
+				tr("Person Loads Database"), tr("Person load properties"), true);
 			break;
-		case VICUS::InternalLoad::IC_ElectricEquiment : {
+		case VICUS::InternalLoad::IC_ElectricEquiment :
 			dlg = new SVDatabaseEditDialog(parent,
 				new SVDBInternalLoadsTableModel(parent, SVSettings::instance().m_db, category),
 				new SVDBInternalLoadsElectricEquipmentEditWidget(parent),
-				tr("Electric Equipment Loads Database"), tr("Electric Equipment Load properties"), true);
+				tr("Electric Equipment Loads Database"), tr("Electric equipment load properties"), true);
 			break;
 		case VICUS::InternalLoad::IC_Lighting :
 			dlg = new SVDatabaseEditDialog(parent,
 				new SVDBInternalLoadsTableModel(parent, SVSettings::instance().m_db, category),
 				new SVDBInternalLoadsLightsEditWidget(parent),
-				tr("Lights Loads Database"), tr("Lights Load properties"), true);
-
-			} break;
+				tr("Lights Loads Database"), tr("Lights load properties"), true);
+			 break;
+		case VICUS::InternalLoad::IC_Other :
+			dlg = new SVDatabaseEditDialog(parent,
+				new SVDBInternalLoadsTableModel(parent, SVSettings::instance().m_db, category),
+				new SVDBInternalLoadsOtherEditWidget(parent),
+				tr("Other Loads Database"), tr("Other load properties"), true);
+			break;
 		default:
 			Q_ASSERT(false);
 	}
@@ -382,7 +388,7 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createZoneControlThermostatEditDialo
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
 		new SVDBZoneControlThermostatTableModel(parent, SVSettings::instance().m_db),
 		new SVDBZoneControlThermostatEditWidget(parent),
-		tr("Zone Control Thermostat Database"), tr("Zone Control Thermostat properties"), true
+		tr("Zone Control Thermostat Database"), tr("Zone control thermostat properties"), true
 	);
 	dlg->resize(1400,800);
 	return dlg;

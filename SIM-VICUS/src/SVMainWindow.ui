@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -120,6 +120,7 @@
      <addaction name="actionDBInternalLoadsPerson"/>
      <addaction name="actionDBInternalLoadsElectricEquipment"/>
      <addaction name="actionDBInternalLoadsLights"/>
+     <addaction name="actionDBInternalLoadsOther"/>
     </widget>
     <widget class="QMenu" name="menuVentilation_Infiltration">
      <property name="title">
@@ -598,27 +599,32 @@
   </action>
   <action name="actionDBInfiltration">
    <property name="text">
-    <string>Infiltration</string>
+    <string>Infiltration...</string>
    </property>
   </action>
   <action name="actionDBVentilationNatural">
    <property name="text">
-    <string>Natural ventilation</string>
+    <string>Natural ventilation...</string>
    </property>
   </action>
   <action name="actionDBZoneControlThermostat">
    <property name="text">
-    <string>Thermostat</string>
+    <string>Thermostat...</string>
    </property>
   </action>
   <action name="actionDBZoneControlShading">
    <property name="text">
-    <string>Shading</string>
+    <string>Shading...</string>
    </property>
   </action>
   <action name="actionDBZoneControlVentilationNatural">
    <property name="text">
-    <string>Natural ventilation</string>
+    <string>Natural ventilation...</string>
+   </property>
+  </action>
+  <action name="actionDBInternalLoadsOther">
+   <property name="text">
+    <string>Other...</string>
    </property>
   </action>
  </widget>

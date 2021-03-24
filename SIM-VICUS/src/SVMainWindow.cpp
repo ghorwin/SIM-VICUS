@@ -263,6 +263,12 @@ SVDatabaseEditDialog * SVMainWindow::dbInternalLoadsLightsEditDialog() {
 	return m_dbInternalLoadsLightsEditDialog;
 }
 
+SVDatabaseEditDialog * SVMainWindow::dbInternalLoadsOtherEditDialog() {
+	if (m_dbInternalLoadsOtherEditDialog == nullptr)
+		m_dbInternalLoadsOtherEditDialog = SVDatabaseEditDialog::createInternalLoadsEditDialog(this, VICUS::InternalLoad::IC_Other);
+	return m_dbInternalLoadsOtherEditDialog;
+}
+
 SVDatabaseEditDialog * SVMainWindow::dbZoneControlThermostatEditDialog() {
 	if (m_dbZoneControlThermostatEditDialog == nullptr)
 		m_dbZoneControlThermostatEditDialog = SVDatabaseEditDialog::createZoneControlThermostatEditDialog(this);
@@ -348,6 +354,10 @@ void SVMainWindow::on_actionDBInternalLoadsElectricEquipment_triggered() {
 
 void SVMainWindow::on_actionDBInternalLoadsLights_triggered() {
 	dbInternalLoadsLightsEditDialog()->edit();
+}
+
+void SVMainWindow::on_actionDBInternalLoadsOther_triggered() {
+	dbInternalLoadsOtherEditDialog()->edit();
 }
 
 void SVMainWindow::on_actionDBZoneControlThermostat_triggered() {

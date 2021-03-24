@@ -82,6 +82,7 @@ SOURCES += \
 				../../src/SVDBInfiltrationTableModel.cpp \
 				../../src/SVDBInternalLoadsElectricEquipmentEditWidget.cpp \
 				../../src/SVDBInternalLoadsLightsEditWidget.cpp \
+				../../src/SVDBInternalLoadsOtherEditWidget.cpp \
 				../../src/SVDBNetworkFluidEditWidget.cpp \
 				../../src/SVDBNetworkFluidTableModel.cpp \
 				../../src/SVDBVentilationNaturalEditWidget.cpp \
@@ -216,6 +217,7 @@ HEADERS  += \
 				../../src/SVDBInfiltrationTableModel.h \
 				../../src/SVDBInternalLoadsElectricEquipmentEditWidget.h \
 				../../src/SVDBInternalLoadsLightsEditWidget.h \
+				../../src/SVDBInternalLoadsOtherEditWidget.h \
 				../../src/SVDBNetworkFluidEditWidget.h \
 				../../src/SVDBNetworkFluidTableModel.h \
 				../../src/SVDBVentilationNaturalEditWidget.h \
@@ -352,6 +354,7 @@ FORMS    += \
 				../../src/SVDBInfiltrationEditWidget.ui \
 				../../src/SVDBInternalLoadsElectricEquipmentEditWidget.ui \
 				../../src/SVDBInternalLoadsLightsEditWidget.ui \
+				../../src/SVDBInternalLoadsOtherEditWidget.ui \
 				../../src/SVDBNetworkFluidEditWidget.ui \
 				../../src/SVDBVentilationNaturalEditWidget.ui \
 				../../src/SVDBZoneControlShadingEditWidget.ui \
