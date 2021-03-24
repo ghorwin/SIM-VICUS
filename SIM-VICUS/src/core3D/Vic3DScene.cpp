@@ -594,9 +594,9 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 						double sinGamma = m_rotationVectorY.scalarProduct(projectedVector);
 
 						double rotAngle = 0;
-						if (cosBeta == 1.0)
+						if (cosBeta > 1.0)
 							rotAngle = 0;
-						else if (cosBeta == -1.0)
+						else if (cosBeta < -1.0)
 							rotAngle = 180;
 						else
 							rotAngle = std::acos(cosBeta)*180/3.141569;
@@ -609,8 +609,8 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 
 						QQuaternion q = QQuaternion::fromAxisAndAngle( QtExt::IBKVector2QVector(m_rotationAxis), rotAngle);
 
-						q = q*m_originalRotation;
-						m_coordinateSystemObject.setRotation(q*m_originalRotation);
+						q = m_originalRotation*q;
+						m_coordinateSystemObject.setRotation(q);
 
 						// now set this in the wireframe object as translation
 						m_selectedGeometryObject.m_transform.setRotation(q);
