@@ -102,6 +102,12 @@ void NewGeometryObject::switchTo(NewGeometryObject::NewGeometryMode m) {
 }
 
 
+void NewGeometryObject::flipGeometry() {
+	m_planeGeometry.flip();
+	updateBuffers(false);
+}
+
+
 void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
 	// check that not the same points are added twice
 	if (!m_vertexList.empty() && p==m_vertexList.back()) {

@@ -468,13 +468,11 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 			double dotProduct = offset.scalarProduct(floor.normal());
 			if (dotProduct > 0) {
 				// same direction, we need to reverse floor polygon
-				qDebug() << "Upside\n" << dotProduct;
 				floor.flip();
 			}
 			else {
 				// opposite direction, we need to reverse the ceiling polygon
 				ceiling.flip();
-				qDebug() << "Inverted\n" << dotProduct;
 			}
 
 			std::vector<VICUS::ComponentInstance> componentInstances;
@@ -756,6 +754,21 @@ void SVPropVertexListWidget::on_pushButtonFloorDone_clicked() {
 	IBKMK::Vector3D x = po->planeGeometry().localX();
 	IBKMK::Vector3D y = po->planeGeometry().localY();
 	IBKMK::Vector3D z = po->planeGeometry().normal();
+
+	// special handling - normal vector of a horizontal plane should always point upwards
+
+	double proj = z.scalarProduct(IBKMK::Vector3D(0,0,1));
+	if (std::fabs(proj) > 0.999999) {
+		if (proj < 0) {
+			// invert floor polygon and set inverted polygon in polygon object
+			qDebug() << "Zone with horizontal floor drawn, but upside-down normal. Flipping surface.";
+			po->flipGeometry();
+			x = po->planeGeometry().localX();
+			y = po->planeGeometry().localY();
+			z = po->planeGeometry().normal();
+		}
+	}
+
 
 	QQuaternion q2 = QQuaternion::fromAxes(QtExt::IBKVector2QVector(x.normalized()),
 										   QtExt::IBKVector2QVector(y.normalized()),

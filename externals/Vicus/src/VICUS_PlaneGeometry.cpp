@@ -172,6 +172,7 @@ void PlaneGeometry::computeGeometry() {
 
 
 void PlaneGeometry::flip() {
+//	std::vector<IBKMK::Vector3D> invertedVertexes(m_vertexes.rbegin(), m_vertexes.rend());
 	std::vector<IBKMK::Vector3D> inverseVertexes;
 	for (std::vector<IBKMK::Vector3D>::const_reverse_iterator rit = m_vertexes.rbegin();
 		 rit != m_vertexes.rend(); ++rit)
