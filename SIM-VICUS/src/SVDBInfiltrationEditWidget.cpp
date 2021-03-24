@@ -86,7 +86,7 @@ void SVDBInfiltrationEditWidget::updateInput(int id) {
 	m_ui->comboBoxMethod->blockSignals(false);
 
 	try {
-		m_ui->lineEditAirChangeRate->setValue(m_current->m_para[VICUS::Infiltration::P_AirChangeRate].get_value(IBK::Unit("C")));
+		m_ui->lineEditAirChangeRate->setValue(m_current->m_para[VICUS::Infiltration::P_AirChangeRate].get_value(IBK::Unit("1/h")));
 	}  catch (IBK::Exception &ex) {
 		//set up a new value
 		m_ui->lineEditAirChangeRate->setValue(0);
