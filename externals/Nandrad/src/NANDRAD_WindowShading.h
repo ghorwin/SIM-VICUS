@@ -29,6 +29,7 @@
 
 #include "NANDRAD_CodeGenMacros.h"
 #include "NANDRAD_Constants.h"
+#include "NANDRAD_LinearSplineParameter.h"
 
 namespace NANDRAD {
 
@@ -40,13 +41,15 @@ public:
 
 		/*! Model types supported by the window model. */
 	enum modelType_t {
-		MT_Standard,					// Keyword: Standard						'Standard reduction factor.'
+		MT_Standard,					// Keyword: Standard						'Constant reduction factor.'
+		MT_Precomputed,					// Keyword: Precomputed						'Precomputed reduction factor.'
+		MT_Controlled,					// Keyword: Controlled						'Reduction factor is computed based on control model'
 		NUM_MT
 	};
 
 	/*! Model parameters. */
 	enum para_t {
-		P_ReductionFactor,				// Keyword: ReductionFactor		[W/m2K]		'Reduction factor (remaining percentage of solar gains if shading is closed).'
+		P_ReductionFactor,				// Keyword: ReductionFactor			[W/m2K]		'Reduction factor (remaining percentage of solar gains if shading is closed).'
 		NUM_P
 	};
 
@@ -61,43 +64,18 @@ public:
 
 	/*! Model type (NUM_MT disables model). */
 	modelType_t							m_modelType = NUM_MT;					// XML:A:required
-	/*! Control model used for shading. */
+	/*! Control model used for shading, for model type 'Controlled'. */
 	unsigned int						m_controlModelID = INVALID_ID;			// XML:E
 	/*! List of constant parameters.*/
 	IBK::Parameter						m_para[NUM_P];							// XML:E
 
+	/*! Precomputed shading factor as time series.
+		Interpretation and definition is done exactly like climatic data. Cyclic spline data must not exceed one year.
+		Start time shift is applied when evaluating value for given simulation time.
+	*/
+	LinearSplineParameter				m_shadingFactor;						// XML:E
 
 }; // WindowShading
-
-
-inline bool WindowShading::operator!=(const WindowShading & other) const {
-	if (m_controlModelID != other.m_controlModelID) return true;
-	if (m_modelType != other.m_modelType) return true;
-	for (unsigned int i=0; i<NUM_P; ++i)
-		if (m_para[i] != other.m_para[i]) return true;
-	return false;
-}
-
-
-inline void WindowShading::checkParameters() {
-	FUNCID(WindowShading::checkParameters);
-
-
-	if (m_modelType == NUM_MT)
-		return;
-
-	switch (m_modelType) {
-		case NUM_MT :
-			return; // only check if enabled
-
-		case MT_Standard :
-			if (m_controlModelID == INVALID_ID)
-				throw IBK::Exception("Shading model requires reference to shading control model (tag 'ControlModelID')", FUNC_ID);
-			m_para[P_ReductionFactor].checkedValue("ReductionFactor", "%", "%", 0, true, 1, true,
-								"Reduction factor be between 0 and 1.");
-	}
-
-}
 
 
 } // namespace NANDRAD

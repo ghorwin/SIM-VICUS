@@ -232,7 +232,9 @@ KeywordListQt::KeywordListQt() {
 	tr("Detailed window model with layers.");
 	tr("Thermal transmittance");
 	tr("Short wave transmittance at outside directed surface.");
-	tr("Standard reduction factor.");
+	tr("Constant reduction factor.");
+	tr("Precomputed reduction factor.");
+	tr("Reduction factor is computed based on control model");
 	tr("Reduction factor (remaining percentage of solar gains if shading is closed).");
 	tr("Zone with constant/predefined temperatures. (schedule)");
 	tr("Zone described by a temperature node in space.");

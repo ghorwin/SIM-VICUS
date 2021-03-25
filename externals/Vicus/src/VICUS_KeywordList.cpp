@@ -1252,13 +1252,13 @@ namespace VICUS {
 			case 5 :
 			switch (t) {
 				case 0 : return "1/h";
-				case 1 : return "1/h";
+				case 1 : return "-";
 			} break;
 			// Infiltration::AirChangeType
 			case 6 :
 			switch (t) {
-				case 0 : return "-";
-				case 1 : return "-";
+				case 0 : return "1/h";
+				case 1 : return "1/h";
 			} break;
 			// InternalLoad::para_t
 			case 7 :

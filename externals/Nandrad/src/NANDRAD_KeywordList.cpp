@@ -586,6 +586,8 @@ namespace NANDRAD {
 			case 64 :
 			switch (t) {
 				case 0 : return "Standard";
+				case 1 : return "Precomputed";
+				case 2 : return "Controlled";
 			} break;
 			// WindowShading::para_t
 			case 65 :
@@ -1084,6 +1086,8 @@ namespace NANDRAD {
 			case 64 :
 			switch (t) {
 				case 0 : return "Standard";
+				case 1 : return "Precomputed";
+				case 2 : return "Controlled";
 			} break;
 			// WindowShading::para_t
 			case 65 :
@@ -1582,7 +1586,9 @@ namespace NANDRAD {
 			// WindowShading::modelType_t
 			case 64 :
 			switch (t) {
-				case 0 : return "Standard reduction factor.";
+				case 0 : return "Constant reduction factor.";
+				case 1 : return "Precomputed reduction factor.";
+				case 2 : return "Reduction factor is computed based on control model";
 			} break;
 			// WindowShading::para_t
 			case 65 :
@@ -2081,6 +2087,8 @@ namespace NANDRAD {
 			case 64 :
 			switch (t) {
 				case 0 : return "";
+				case 1 : return "";
+				case 2 : return "";
 			} break;
 			// WindowShading::para_t
 			case 65 :
@@ -2579,6 +2587,8 @@ namespace NANDRAD {
 			case 64 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
 			} break;
 			// WindowShading::para_t
 			case 65 :
@@ -3077,6 +3087,8 @@ namespace NANDRAD {
 			case 64 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// WindowShading::para_t
 			case 65 :
@@ -3237,7 +3249,7 @@ namespace NANDRAD {
 			// WindowGlazingSystem::splinePara_t
 			case 63 : return 1;
 			// WindowShading::modelType_t
-			case 64 : return 1;
+			case 64 : return 3;
 			// WindowShading::para_t
 			case 65 : return 1;
 			// Zone::type_t
@@ -3381,7 +3393,7 @@ namespace NANDRAD {
 			// WindowGlazingSystem::splinePara_t
 			case 63 : return 0;
 			// WindowShading::modelType_t
-			case 64 : return 0;
+			case 64 : return 2;
 			// WindowShading::para_t
 			case 65 : return 0;
 			// Zone::type_t
