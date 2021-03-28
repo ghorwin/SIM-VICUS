@@ -1,0 +1,194 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format pdf2
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.5cm
+\topmargin 2.5cm
+\rightmargin 2.5cm
+\bottommargin 4cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+UserComfortVentilationModel
+\end_layout
+
+\begin_layout Standard
+Given an threshold temperature 
+\begin_inset Formula $T_{thre}$
+\end_inset
+
+ with a comfort ventilation rate 
+\begin_inset Formula $n_{vent}$
+\end_inset
+
+ due to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:comfortVentilationRate"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+n_{vent}=\begin{cases}
+n_{base} & T_{zone}<T_{thre}\\
+n_{base}+\Delta n & T_{zone}>T_{thre}
+\end{cases}\label{eq:comfortVentilationRate}
+\end{equation}
+
+\end_inset
+
+we define a linear interpolation due to
+\begin_inset Formula 
+\begin{equation}
+n_{vent}=\begin{cases}
+n_{base} & n_{setpoint}<n_{base}\\
+n_{setpoint} & n_{base}\leq n_{setpoint}\leq n_{base}+\Delta n\\
+n_{base}+\Delta n & n_{setpoint}>n_{base}+\Delta n
+\end{cases}\label{eq:comfortVentilationRateSetpoint}
+\end{equation}
+
+\end_inset
+
+with a ventilation rate 
+\begin_inset Formula $n_{setpoint}$
+\end_inset
+
+ fulfilling the condition 
+\begin_inset Formula $T_{zone}=T_{thre}$
+\end_inset
+
+.
+ For estimation of this state we assume a given ventilation heat flux 
+\begin_inset Formula $\dot{Q}_{vent}$
+\end_inset
+
+ due to the balance
+\begin_inset Formula 
+\begin{equation}
+\dot{Q}_{vent}=n_{curr}V_{zone}\rho_{air}\left(T_{zone}-T_{ambient}\right)\label{eq:currentVentilationRate}
+\end{equation}
+
+\end_inset
+
+with 
+\begin_inset Formula $n_{curr}$
+\end_inset
+
+ denoting current ventilation rate.
+ Assuming this heat flux to be constant at current iteration we correct
+ ventilation rate, so that threshold zone air tempertaure is reached:
+\begin_inset Formula 
+\begin{equation}
+\dot{Q}_{vent}=n_{setpoint}V_{zone}\rho_{air}\left(T_{zone}-T_{ambient}\right)=n_{setpoint}V_{zone}\rho_{air}\left(T_{thre}-T_{ambient}\right).\label{eq:setpointVentilationRate}
+\end{equation}
+
+\end_inset
+
+With this assumptions, we estimate ventilation rate 
+\begin_inset Formula $n_{setpoint}$
+\end_inset
+
+ according to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:controlVentilationRate"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\begin_inset Formula 
+\begin{equation}
+n_{setpoint}=n_{curr}\frac{T_{zone}-T_{ambient}}{T_{thre}-T_{ambient}}\label{eq:controlVentilationRate}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
