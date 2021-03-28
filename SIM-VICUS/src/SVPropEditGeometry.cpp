@@ -1355,8 +1355,7 @@ void SVPropEditGeometry::on_pushButtonCopySurfaces_clicked() {
 }
 
 
-void SVPropEditGeometry::on_pushButtonCopyBuildingLvls_clicked()
-{
+void SVPropEditGeometry::on_pushButtonCopyBuildingLvls_clicked() {
 
 }
 
@@ -1370,4 +1369,10 @@ void SVPropEditGeometry::on_pushButtonAdd_clicked() {
 void SVPropEditGeometry::on_pushButtonEdit_clicked() {
 	setCurrentPage(O_EditGeometry);
 	updateCoordinateSystemLook();
+}
+
+
+void SVPropEditGeometry::on_pushButtonThreePointRotation_clicked() {
+	// when clicked, we set the scene into three-point-rotation mode
+
 }

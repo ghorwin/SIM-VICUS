@@ -71,6 +71,10 @@ public:
 			Typically, when this operation is complete, the view state switches back to the previous view state.
 		*/
 		OM_MoveLocalCoordinateSystem,
+		/*! In this mode, the user can place three points after another (by snapping the local coordinate system
+			to the points). When the third point was placed, all selected objects are rotated accordingly.
+		*/
+		OM_ThreePointRotation,
 		/*! The scene is in passive mode - user can navigate and click on object to change selection. */
 		NUM_OM
 	};

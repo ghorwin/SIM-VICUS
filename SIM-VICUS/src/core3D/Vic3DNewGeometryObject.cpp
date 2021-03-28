@@ -306,6 +306,8 @@ void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p)
 				newPoint = QtExt::IBKVector2QVector(projected);
 				// now get the offset vector
 				QVector3D verticalOffset = p-newPoint; // Note: this vector should be collinear to the plane's normal
+				if (verticalOffset.length() < 0.001f)
+					verticalOffset = QtExt::IBKVector2QVector( planeGeometry().vertexes()[0] + 1*planeGeometry().normal() );
 				// and add it to the first vertex of the polygon
 				newPoint = verticalOffset + QtExt::IBKVector2QVector(m_planeGeometry.vertexes()[0]);
 				// also store the absolute height

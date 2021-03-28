@@ -213,6 +213,10 @@ private:
 	/*! The surface normals (lines) shown for visible surfaces when enabled. */
 	SurfaceNormalsObject	m_surfaceNormalsObject;
 
+	/*! Object that shows snap-locations when doing rotation operations. */
+
+	/// TODO Andreas, add vector of snap marker objects, stripped down coordinate system objects with just a single sphere.
+	OpaqueGeometryObject	m_rotationMarkerObject;
 
 	// *** Navigation stuff ***
 
@@ -250,6 +254,12 @@ private:
 	/*! Reference vector (local X of rotation system). "z-axis" is always rotation axis */
 	IBKMK::Vector3D			m_rotationVectorX;
 	IBKMK::Vector3D			m_rotationVectorY;
+
+	/*! Holds coordinates of the snap marker, for interactive three-point-rotation it holds the two points
+		already defined for rotation.
+		Function updateSnapMarker() updates the transformation matrixes in the snap marker objects.
+	*/
+	std::vector<IBKMK::Vector3D> m_snapMarkerPoints;
 
 	// other members
 

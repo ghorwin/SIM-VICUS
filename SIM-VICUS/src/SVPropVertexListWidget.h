@@ -98,6 +98,8 @@ private slots:
 
 	void on_lineEditZoneHeight_editingFinishedSuccessfully();
 
+	void on_pushButtonPickZoneHeight_clicked();
+
 private:
 	/*! Returns true, if annonymous geometry is being created (i.e. checkbox is visible and checked). */
 	bool createAnnonymousGeometry() const;

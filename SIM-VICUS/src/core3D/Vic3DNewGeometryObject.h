@@ -190,6 +190,7 @@ public:
 	/*! Renders transparent parts of geometry. */
 	void renderTransparent();
 
+	bool							m_interactiveZoneExtrusionMode = false;
 
 private:
 	/*! Populates the color and vertex buffer with data for the "last segment" line and the polygon.
@@ -228,7 +229,6 @@ private:
 
 	/*! Height of the zone when constructing a zone through extrusion. */
 	double							m_zoneHeight;
-	bool							m_interactiveZoneExtrusionMode = false;
 
 	/*! Vertex buffer in CPU memory, holds data of all vertices (coords).
 		The last vertex is always the vertex of the current movable coordinate system's location.
