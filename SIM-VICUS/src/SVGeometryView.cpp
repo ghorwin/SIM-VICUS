@@ -111,7 +111,7 @@ void SVGeometryView::focusSceneView() {
 
 
 void SVGeometryView::refreshSceneView() {
-	m_sceneView->renderNow();
+	m_sceneView->renderLater();
 }
 
 void SVGeometryView::resetCamera() {
