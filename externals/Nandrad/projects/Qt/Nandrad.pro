@@ -35,6 +35,8 @@ HEADERS += \
 	../../src/NANDRAD_DataTable.h \
 	../../src/NANDRAD_EmbeddedObject.h \
 	../../src/NANDRAD_EmbeddedObjectWindow.h \
+	../../src/NANDRAD_FMIDescription.h \
+	../../src/NANDRAD_FMIVariableDefinition.h \
 	../../src/NANDRAD_HydraulicFluid.h \
 	../../src/NANDRAD_HydraulicNetworkComponent.h \
 	../../src/NANDRAD_HydraulicNetworkElement.h \
@@ -89,6 +91,7 @@ SOURCES += \
 	../../src/NANDRAD_DataTable.cpp \
 	../../src/NANDRAD_EmbeddedObject.cpp \
 	../../src/NANDRAD_EmbeddedObjectWindow.cpp \
+	../../src/NANDRAD_FMIDescription.cpp \
 	../../src/NANDRAD_HydraulicFluid.cpp \
 	../../src/NANDRAD_HydraulicNetworkComponent.cpp \
 	../../src/NANDRAD_HydraulicNetwork.cpp \
