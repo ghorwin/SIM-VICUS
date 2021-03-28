@@ -189,6 +189,8 @@ private slots:
 
 	void on_pushButtonEdit_clicked();
 
+	void on_pushButtonThreePointRotation_clicked();
+
 private:
 	/*! Updates the property widget regarding to all geometry data.
 		This function is called whenever the selection has changed, and when surface geometry (of selected surfaces)

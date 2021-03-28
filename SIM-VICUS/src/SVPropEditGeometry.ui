@@ -453,6 +453,13 @@
             </layout>
            </widget>
           </item>
+          <item>
+           <widget class="QPushButton" name="pushButtonThreePointRotation">
+            <property name="text">
+             <string>Three-Point-Rotation</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>

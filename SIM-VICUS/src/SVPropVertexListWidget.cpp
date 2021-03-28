@@ -796,3 +796,10 @@ void SVPropVertexListWidget::on_lineEditZoneHeight_editingFinishedSuccessfully()
 	}
 }
 
+
+void SVPropVertexListWidget::on_pushButtonPickZoneHeight_clicked() {
+	// enable interactive zone extrusion mode
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+	// check if interactive mode is already enabled
+	po->m_interactiveZoneExtrusionMode = !po->m_interactiveZoneExtrusionMode;
+}
