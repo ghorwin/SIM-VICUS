@@ -55,6 +55,17 @@ public:
 		return !operator==(other);
 	}
 
+	/*! Less operator, needed to place InputReferences in a set. */
+	bool operator<(const InputReference & other) const {
+		if (m_referenceType < other.m_referenceType) return true;
+		if (m_referenceType > other.m_referenceType) return false;
+		if (m_id < other.m_id) return true;
+		if (m_id > other.m_id) return false;
+		if (m_name.m_index < other.m_name.m_index) return true;
+		if (m_name.m_index > other.m_name.m_index) return false;
+		// Note: most expansive comparison-operator last
+		return m_name.m_name < other.m_name.m_name;
+	}
 
 	/*! ReferenceType: zone, construction instance, interface, etc. */
 	NANDRAD::ModelInputReference::referenceType_t	m_referenceType = NANDRAD::ModelInputReference::NUM_MRT;

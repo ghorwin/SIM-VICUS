@@ -1595,6 +1595,9 @@ void NandradModel::initModelDependencies() {
 	IBK::IBK_Message(IBK::FormatString("Initializing all model input references\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	indent.reset(new IBK::MessageIndentor);
 
+	// This set stores all inputs requested by all model objects - this can be a large list
+	std::set<InputReference> globalInputRefList;
+
 #if defined(_OPENMP)
 #pragma omp parallel for schedule(static,200)
 #endif
@@ -1623,6 +1626,17 @@ void NandradModel::initModelDependencies() {
 			// request published input variables from model instance
 			std::vector<InputReference> inputRefs;
 			currentStateDependency->inputReferences(inputRefs);
+#if defined(_OPENMP)
+#pragma omp single
+#endif
+{
+			/// TODO : Andreas, openMP upgrade, use thread specific globalInputRefLists and merge at end
+			for (const InputReference & iref : inputRefs) {
+				// ignore invalid/unused input references
+				if (iref.m_referenceType != NANDRAD::ModelInputReference::NUM_MRT)
+					globalInputRefList.insert(iref);
+			}
+}
 
 			std::vector<const double*> resultValueRefs;
 			std::vector<QuantityDescription> resultQuantityDescs;
@@ -1804,6 +1818,31 @@ void NandradModel::initModelDependencies() {
 		statesModel->setODEStatesInputValueRef(y);
 	}
 #endif
+
+
+
+	// dump input reference list to file
+	std::shared_ptr<std::ofstream> inputRefList(
+		IBK::create_ofstream(m_dirs.m_varDir / "input_reference_list.txt")
+	);
+
+	(*inputRefList) << "Reference type\tSource object id\tVariable name\t Vector index/id (if not -1)\n";
+
+	/// \todo Andreas, OpenMP upgrade, do this for each thead and generate a string for each thread, afterwards dump
+	/// it to file in a master block
+	for (const InputReference & iref : globalInputRefList) {
+		std::stringstream strm;
+		strm << std::setw(22) << std::left << NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", iref.m_referenceType) << '\t'
+			 << std::setw(10) << std::left << iref.m_id << '\t'
+			 << std::setw(40) << std::left << iref.m_name.m_name << '\t'
+			 << std::setw(10) << std::left << iref.m_name.m_index << '\n';
+		IBK::IBK_Message( IBK::FormatString("%1").arg(strm.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+
+		(*inputRefList) << strm.rdbuf();
+	}
+	inputRefList->flush();
+	inputRefList->close();
+
 }
 
 
