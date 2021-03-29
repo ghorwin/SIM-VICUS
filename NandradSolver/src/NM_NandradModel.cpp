@@ -1993,8 +1993,16 @@ void NandradModel::initOutputReferenceList() {
 			it != refDescs.end(); ++it)
 		{
 			std::stringstream strm;
-			strm << std::setw(50) << std::left << it->first << '\t'
-				 << std::setw(10) << std::left << ("[" + it->second.m_unit + "]") << '\t'
+			strm << std::setw(50) << std::left << it->first << '\t';
+			if (it->second.m_indexKeys.size() > 1) {
+				for (unsigned int i=0; i<it->second.m_indexKeys.size(); ++i) {
+					if (i != 0)		strm << ",";
+					strm << it->second.m_indexKeys[i];
+				}
+			}
+			strm << '\t';
+
+			strm << std::setw(10) << std::left << ("[" + it->second.m_unit + "]") << '\t'
 				 << it->second.m_description << std::endl;
 			IBK::IBK_Message( IBK::FormatString("%1").arg(strm.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 
