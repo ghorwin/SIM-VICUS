@@ -1,0 +1,27 @@
+# Exportprozedere
+
+- NANDRAD Simulation-Initialisieren 
+  -> Liste der erfragten InputReferenzen erstellen (optional/verpflichtend)
+  -> Liste aller Ergebnisgrößen erstellen
+  
+- Oberfläche zeigt Liste aller InputReferenzen (die zu überschreiben wären)
+- Oberfläche zeigt Liste aller Ergebnisgrößen
+
+- Anwender legt Meta-Daten fest
+- Anwender wählt InputReferenzen fest -> und zugehörige FMI-Name (auto-generiert aus Variablennamen und Referenztyp)
+
+  Beispiel:  NetworkElement(id=1).FluidTemperature -> "NetworkElement.1.FluidTemperature"
+ 
+  Optional:  ersetze generische Bezeichnung "NetworkElement.1" mit DisplayName (whitespaces ersetzt) -> sollte individuell oder
+             für einen Bereich von ausgewählten Größen austauschbar sein
+  
+  Optional:  definiere FMI-Variablennamen nach FMI-Kopplungsschema  X
+  
+
+- NANDRAD Datenmodell wird angereichert mit Eingaben- und Ausgabedefinitionen
+
+- NANDRAD Simulation wird neu initialisiert, dabei werden Abhängigkeitsinformationen zwischen FMI Eingangs- und Ausgangsvariablen erstellt
+
+   -> Variablen-Struktur erstellt
+   
+
