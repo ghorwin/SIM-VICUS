@@ -21,8 +21,22 @@
 
 #include "NANDRAD_FMIDescription.h"
 
-
 namespace NANDRAD {
+
+
+void FMIDescription::writeModelDescription(const IBK::Path & modelDesc, const std::string & modelDescTemplate) const {
+	// use template with placeholders
+
+	// placeholders to substitute:
+	// ${MODELNAME} - Projekt file base name with replaced whitespaces
+	// ${NANDRAD_VERSION}
+	// ${DATETIME}
+	// ${SIMDURATION}
+	// ${MODELVARIABLES}
+	// ${MODEL_STRUCTURE_OUTPUTS}
+
+}
+
 
 } // namespace NANDRAD
 

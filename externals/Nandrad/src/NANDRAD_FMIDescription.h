@@ -23,6 +23,9 @@
 #define NANDRAD_FMIDescriptionH
 
 #include <vector>
+
+#include <IBK_Path.h>
+
 #include "NANDRAD_FMIVariableDefinition.h"
 
 namespace NANDRAD {
@@ -37,6 +40,9 @@ public:
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE
+
+	/*! Generates a modelDescription.xml file. */
+	void writeModelDescription(const IBK::Path & modelDesc, const std::string & modelDescTemplate) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
