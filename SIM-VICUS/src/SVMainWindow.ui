@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -158,6 +158,8 @@
     </property>
     <addaction name="actionSimulationNANDRAD"/>
     <addaction name="actionSimulationHydraulicNetwork"/>
+    <addaction name="separator"/>
+    <addaction name="actionSimulationExportFMI"/>
    </widget>
    <widget class="QMenu" name="menu_Buildings">
     <property name="title">
@@ -625,6 +627,14 @@
   <action name="actionDBInternalLoadsOther">
    <property name="text">
     <string>Other...</string>
+   </property>
+  </action>
+  <action name="actionSimulationExportFMI">
+   <property name="text">
+    <string>Export Functional Mock-Up Unit (NANDRAD FMU)...</string>
+   </property>
+   <property name="toolTip">
+    <string>Opens the FMU export dialog.</string>
    </property>
   </action>
  </widget>

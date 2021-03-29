@@ -30,6 +30,7 @@ class SVNetworkEditDialog;
 class SVViewStateHandler;
 class SVSimulationStartNandrad;
 class SVSimulationStartNetworkSim;
+class SVSimulationExportFMIDialog;
 
 class SVDatabaseEditDialog;
 class SVDBZoneTemplateEditDialog;
@@ -260,6 +261,8 @@ private slots:
 
 	void on_actionResetView_triggered();
 
+	void on_actionSimulationExportFMI_triggered();
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();
@@ -372,7 +375,7 @@ private:
 	SVNetworkEditDialog			*m_networkEditDialog									= nullptr;
 
 	/*! FMI Export dialog. */
-//	SVFMIExportDialog			*m_fmiExportDialog										= nullptr;
+	SVSimulationExportFMIDialog	*m_simulationExportFMIDialog							= nullptr;
 
 	/*! Simulation start dialog. */
 	SVSimulationStartNandrad	*m_simulationStartNandrad								= nullptr;

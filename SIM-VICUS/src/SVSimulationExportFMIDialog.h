@@ -1,5 +1,5 @@
-#ifndef SVSimulationExportFMIH
-#define SVSimulationExportFMIH
+#ifndef SVSimulationExportFMIDialogH
+#define SVSimulationExportFMIDialogH
 
 #include <QDialog>
 
@@ -34,4 +34,4 @@ private:
 
 };
 
-#endif // SVSimulationExportFMIH
+#endif // SVSimulationExportFMIDialogH

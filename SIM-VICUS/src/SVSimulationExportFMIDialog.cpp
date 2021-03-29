@@ -1,5 +1,5 @@
-#include "SVSimulationExportFMI.h"
-#include "ui_SVSimulationExportFMI.h"
+#include "SVSimulationExportFMIDialog.h"
+#include "ui_SVSimulationExportFMIDialog.h"
 
 #include <QHBoxLayout>
 #include <QMessageBox>

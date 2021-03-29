@@ -47,7 +47,6 @@
 #include "SVAboutDialog.h"
 #include "SVPostProcHandler.h"
 #include "SVNavigationTreeWidget.h"
-//#include "SVFMIExportDialog.h"
 #include "SVNetworkImportDialog.h"
 #include "SVPreferencesPageStyle.h"
 #include "SVViewStateHandler.h"
@@ -62,6 +61,7 @@
 #include "SVDBZoneTemplateEditDialog.h"
 
 #include "SVSimulationStartNandrad.h"
+#include "SVSimulationExportFMIDialog.h"
 #include "SVSimulationStartNetworkSim.h"
 #include "SVDBInternalLoadsTableModel.h"
 
@@ -1122,6 +1122,7 @@ void SVMainWindow::onUpdateActions() {
 
 	m_ui->actionSimulationNANDRAD->setEnabled(have_project);
 	m_ui->actionSimulationHydraulicNetwork->setEnabled(have_project);
+	m_ui->actionSimulationExportFMI->setEnabled(have_project);
 
 	// also disable menues that are not possible without project
 	m_ui->menuExport->setEnabled(have_project);
@@ -1411,6 +1412,17 @@ void SVMainWindow::on_actionSimulationHydraulicNetwork_triggered() {
 	}
 
 	m_simulationStartNetworkSim->edit();
+}
+
+
+void SVMainWindow::on_actionSimulationExportFMI_triggered() {
+	if (m_simulationExportFMIDialog == nullptr)
+		m_simulationExportFMIDialog = new SVSimulationExportFMIDialog;
+	int res = m_simulationExportFMIDialog->edit();
+	if (res == QDialog::Accepted) {
+		// transfer data to VICUS project
+		// TODO : Andreas
+	}
 }
 
 
@@ -1713,3 +1725,4 @@ void SVMainWindow::on_actionResetView_triggered() {
 	// set scene view to recenter its camera
 	SVViewStateHandler::instance().m_geometryView->resetCamera();
 }
+
