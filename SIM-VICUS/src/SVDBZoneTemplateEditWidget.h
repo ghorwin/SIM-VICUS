@@ -56,6 +56,8 @@ private slots:
 
 	void on_pushButtonAddPersonLoad_clicked();
 	void on_pushButtonAddElectricLoad_clicked();
+	void on_pushButtonAddLightLoad_clicked();
+
 
 
 private:
