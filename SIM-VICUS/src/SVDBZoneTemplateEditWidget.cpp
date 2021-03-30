@@ -239,3 +239,24 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddElectricLoad_clicked() {
 		}
 	}
 }
+
+void SVDBZoneTemplateEditWidget::on_pushButtonAddLightLoad_clicked() {
+	Q_ASSERT(m_current != nullptr);
+
+	// open the Internal Loads DB dialog and let user select one
+	unsigned int id = SVMainWindow::instance().dbInternalLoadsLightsEditDialog()->select(VICUS::INVALID_ID);
+	if (id == VICUS::INVALID_ID) return;
+	if (m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadLighting] != id) {
+		if (m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadLighting] == VICUS::INVALID_ID) {
+			// add new child
+			m_dbModel->addChildItem( m_dbModel->indexById(m_current->m_id), VICUS::ZoneTemplate::ST_IntLoadLighting, id);
+			emit selectSubTemplate(m_current->m_id, (int)VICUS::ZoneTemplate::ST_IntLoadLighting);
+		}
+		else {
+			// modify existing
+			m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadLighting] = id;
+			m_db->m_zoneTemplates.m_modified = true;
+			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		}
+	}
+}
