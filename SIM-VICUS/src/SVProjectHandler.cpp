@@ -57,6 +57,12 @@ SVProjectHandler::~SVProjectHandler( ){
 }
 
 
+QString SVProjectHandler::nandradProjectFilePath() const {
+	QString nandradProjectFilePath = QFileInfo(SVProjectHandler::instance().projectFile()).completeBaseName() + ".nandrad";
+	return QFileInfo(SVProjectHandler::instance().projectFile()).dir().filePath(nandradProjectFilePath);
+}
+
+
 bool SVProjectHandler::newProject(VICUS::Project * project) {
 	createProject();
 	if (project != nullptr) {

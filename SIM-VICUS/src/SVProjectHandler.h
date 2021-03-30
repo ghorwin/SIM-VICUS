@@ -101,6 +101,9 @@ public:
 	*/
 	QString projectFile() const { return m_projectFile; }
 
+	/*! Generates the matching NANDRAD project file path for the current VICUS project. */
+	QString nandradProjectFilePath() const;
+
 	/*! Creates a new project instance (must not have one already) and resets project file name.
 		Emits updateActions() to signal that view state has changed.
 		\return Returns false if New Project Wizard was aborted by user.

@@ -22,11 +22,14 @@
 #ifndef VICUS_ProjectH
 #define VICUS_ProjectH
 
+#include <QCoreApplication> // for tr functions
+
 #include <vector>
 
 #include <IBK_Path.h>
 
 #include <NANDRAD_Project.h>
+#include <NANDRAD_SolverParameter.h>
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Network.h"
@@ -38,11 +41,11 @@
 #include "VICUS_ComponentInstance.h"
 
 
-#include <NANDRAD_SolverParameter.h>
-
 namespace VICUS {
 
 class Project {
+	Q_DECLARE_TR_FUNCTIONS(Project)
+
 	VICUS_READWRITE
 public:
 
@@ -133,6 +136,36 @@ public:
 		\returns Returns true if any room is selected (same as rooms.size() > 0).
 	*/
 	bool selectedRooms(std::vector<const Room*> & rooms) const;
+
+
+
+	// *** PROJECT CONVERSION RELATED FUNCTIONS ***
+
+	/*! This exception class extends IBK::Exception by additional members
+		needed to adjust the start-simulation-dialog, for example, to focus problematic inputs.
+	*/
+	class ConversionError : public IBK::Exception {
+	public:
+		enum Errortypes {
+			ET_MissingClimate
+		};
+
+		ConversionError(Errortypes errorType, const std::string & errmsg) :
+			IBK::Exception(errmsg, "ConversionError"), m_errorType(errorType) {}
+		ConversionError(Errortypes errorType, const IBK::FormatString & errmsg) :
+			IBK::Exception(errmsg, "ConversionError"), m_errorType(errorType) {}
+		ConversionError(Errortypes errorType, const QString & errmsg) :
+			IBK::Exception(errmsg.toStdString(), "ConversionError"), m_errorType(errorType) {}
+		virtual ~ConversionError() override;
+
+		Errortypes m_errorType;
+	};
+
+	/*! Converts VICUS data structure into NANDRAD project file.
+		This function throws an error message in case the conversion failed.
+	*/
+	void generateNandradProject(NANDRAD::Project & p) const;
+
 
 	// *** STATIC FUNCTIONS ***
 

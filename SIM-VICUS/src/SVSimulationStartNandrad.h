@@ -3,8 +3,7 @@
 
 #include <QDialog>
 
-#include <NANDRAD_Project.h>
-#include <VICUS_Outputs.h>
+#include <VICUS_Project.h>
 
 namespace Ui {
 	class SVSimulationStartNandrad;
@@ -18,6 +17,16 @@ class SVSimulationRunRequestDialog;
 
 /*! The start dialog for a NANDRAD simulation.
 	Contains pages for all global simulation properties.
+
+	The dialog holds a private copy of the global project. All changes in the dialog are made exclusively in
+	this project. Only when the dialog is closes with the "save and store data" button, the calling function in
+	SVMainWindow will create the respective undo-action.
+
+	Compared to a view-style implementation of the edit controls in the main windows, we do not have to implement
+	undo-actions for each individual property change in these settings.
+
+	WARNING: within the entire dialog, do not access the global project() but always take the locally stored copy for
+	direct read/write access to project data.
 */
 class SVSimulationStartNandrad : public QDialog {
 	Q_OBJECT
@@ -27,6 +36,9 @@ public:
 	~SVSimulationStartNandrad();
 
 	int edit();
+
+	/*! Returns a copy of the locally modified version of the project. */
+	const VICUS::Project & project() const { return m_localProject; }
 
 private slots:
 	void on_pushButtonClose_clicked();
@@ -50,13 +62,6 @@ private slots:
 private:
 	/*! Composes correct command line (stored in m_cmdArgs). */
 	void updateCmdLine();
-	/*! Generates a NANDRAD project from the currently given VICUS project data. */
-	bool generateNandradProject(NANDRAD::Project & p);
-
-	bool generateBuildingProjectData(NANDRAD::Project & p);
-	bool generateNetworkProjectData(NANDRAD::Project & p);
-	/*! Stores current input into project data structure. */
-	void storeInput();
 	void updateTimeFrameEdits();
 
 	/*! Starts the simulation, either in test-init mode or regular mode.
@@ -65,6 +70,12 @@ private:
 	bool startSimulation(bool testInit);
 
 	Ui::SVSimulationStartNandrad	*m_ui;
+
+	/*! Local copy of our project data, modified in dialog and synced with global
+		project when dialog is confirmed.
+		This is also the cache for data edited in this dialog in the various edit pages.
+	*/
+	VICUS::Project					m_localProject;
 
 	QString							m_solverExecutable;
 	QString							m_nandradProjectFilePath;
@@ -78,15 +89,6 @@ private:
 	SVSimulationOutputOptions		*m_simulationOutputOptions = nullptr;
 	/*! Page with all other model options. */
 	SVSimulationModelOptions		*m_simulationModelOptions = nullptr;
-
-	/*  Cache for data edited in this dialog.
-		Transferred to project, when simulation is started or dialog
-		is closed with "close".
-	*/
-	NANDRAD::SolverParameter		m_solverParams;
-	NANDRAD::SimulationParameter	m_simParams;
-	NANDRAD::Location				m_location;
-	VICUS::Outputs					m_outputs;
 
 	SVSimulationRunRequestDialog	*m_simulationRunRequestDialog = nullptr;
 };

@@ -661,4 +661,407 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces, IBKM
 	return IBKMK::Vector3D ( dX, dY, dZ );
 }
 
+
+
+Project::ConversionError::~ConversionError() {
+}
+
+
+void Project::generateNandradProject(NANDRAD::Project & p) const {
+
+	// TODO : Andreas, in time this will be a rather lengthy function, maybe we should move this to a separate class with
+	//        different member functions
+
+	// simulation settings
+	p.m_simulationParameter = m_simulationParameter;
+
+	// solver parameters
+	p.m_solverParameter = m_solverParameter;
+
+	// location settings
+	p.m_location = m_location;
+	// do we have a climate path?
+	if (!m_location.m_climateFilePath.isValid())
+		throw ConversionError(ConversionError::ET_MissingClimate, tr("A climate data file is needed. Please select a climate data file!"));
+}
+
+#if 0
+
+	// *** building geometry data and databases ***
+
+	if (!generateBuildingProjectData(p))
+		return false;
+
+
+	// *** generate network data ***
+
+	if (!generateNetworkProjectData(p))
+		return false;
+
+
+	// outputs
+
+	// transfer output grids
+	p.m_outputs.m_grids = m_outputs.m_grids;
+
+	// transfer options
+	p.m_outputs.m_binaryFormat = m_outputs.m_flags[VICUS::Outputs::F_BinaryOutputs];
+	p.m_outputs.m_timeUnit = m_outputs.m_timeUnit;
+
+	// transfer pre-defined output definitions
+	p.m_outputs.m_definitions = m_outputs.m_definitions;
+
+	// generate default output definitions, if requested
+	if (m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].isEnabled()) {
+
+		// we need an hourly output grid, look if we have already one defined (should be!)
+		int ogInd = -1;
+		for (unsigned int i=0; i<p.m_outputs.m_grids.size(); ++i) {
+			NANDRAD::OutputGrid & og = p.m_outputs.m_grids[i];
+			if (og.m_intervals.size() == 1 &&
+				og.m_intervals.back().m_para[NANDRAD::Interval::P_Start].value == 0.0 &&
+				og.m_intervals.back().m_para[NANDRAD::Interval::P_End].name.empty() &&
+				og.m_intervals.back().m_para[NANDRAD::Interval::P_StepSize].value == 3600.0)
+			{
+				ogInd = (int)i;
+				break;
+			}
+		}
+		// create one, if not yet existing
+		std::string refName;
+		if (ogInd == -1) {
+			NANDRAD::OutputGrid og;
+			og.m_name = refName = tr("Hourly values").toStdString();
+			NANDRAD::Interval iv;
+			NANDRAD::KeywordList::setParameter(iv.m_para, "Interval::para_t", NANDRAD::Interval::P_Start, 0);
+			NANDRAD::KeywordList::setParameter(iv.m_para, "Interval::para_t", NANDRAD::Interval::P_StepSize, 1);
+			og.m_intervals.push_back(iv);
+			p.m_outputs.m_grids.push_back(og);
+		}
+		else {
+			refName = p.m_outputs.m_grids[(unsigned int)ogInd].m_name;
+		}
+
+
+		// now we have a name for the output grid, start generating default outputs
+		std::string objectListAllZones = tr("All zones").toStdString();
+		{
+			NANDRAD::OutputDefinition od;
+			od.m_gridName = refName;
+			od.m_quantity = "AirTemperature";
+			od.m_objectListName = objectListAllZones;
+			p.m_outputs.m_definitions.push_back(od);
+		}
+
+		// and also generate the needed object lists
+
+		{
+			NANDRAD::ObjectList ol;
+			ol.m_name = objectListAllZones;
+			ol.m_filterID.setEncodedString("*");
+			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+			p.m_objectLists.push_back(ol);
+		}
+
+
+	}
+
+
+
+
+	return true;
+}
+
+
+bool Project::generateBuildingProjectData(NANDRAD::Project & p) {
+
+	// used to generate unique interface IDs
+	unsigned int interfaceID = 1;
+	// TODO : Andreas, for now, we generate interface IDs on the fly, which means they might be different when NANDRAD
+	//        file is generated with small changes in the project. This will make it difficult to assign specific
+	//        id associations with interfaces (once needed, maybe in FMUs?), so we may need to add interface IDs to
+	//        the VICUS::ComponentInstance data structure.
+
+	// we process all zones and buildings and create NANDRAD project data
+	// we also check that all referenced database properties are available and transfer them accordingly
+
+	// this set collects all component instances that are actually used/referenced by zone surfaces
+	// for now, unassociated components are ignored
+	std::set<const VICUS::ComponentInstance*> usedComponentInstances;
+	//key -> surface id
+	//value ->
+	std::map<unsigned int, VICUS::Surface>	mapIdToSurface;
+
+	for (const VICUS::Building & b : project().m_buildings) {
+		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+			for (const VICUS::Room & r : bl.m_rooms) {
+				// first create a NANDRAD zone for the room
+				NANDRAD::Zone z;
+				z.m_id = r.m_id;
+				z.m_displayName = r.m_displayName.toStdString();
+				// Note: in the code below we expect the parameter's base units to be the same as the default unit for the
+				//       populated parameters
+
+				// TODO : what if we do not have an area or a zone volume, yet?
+				NANDRAD::KeywordList::setParameter(z.m_para, "Zone::para_t", NANDRAD::Zone::P_Area, r.m_para[VICUS::Room::P_Area].value);
+				NANDRAD::KeywordList::setParameter(z.m_para, "Zone::para_t", NANDRAD::Zone::P_Volume, r.m_para[VICUS::Room::P_Volume].value);
+
+				// for now, zones are always active
+				z.m_type = NANDRAD::Zone::ZT_Active;
+				// finally append zone
+				p.m_zones.push_back(z);
+
+				// now process all surfaces
+				for (const VICUS::Surface & s : r.m_surfaces) {
+					// each surface can be either a construction to the outside, to a fixed zone or to a different zone
+					// the latter is only recognized, if we search through all zones and check their association with a surface.
+
+					// if we have a component associated, remember its ID
+					usedComponentInstances.insert(s.m_componentInstance);
+					mapIdToSurface[s.m_id] = s;
+
+				}
+			}
+		}
+	}
+
+	// this set collects all construction type IDs, which will be used to create constructionInstances
+	std::set<unsigned int> usedConstructionTypes;
+
+	const SVDatabase & db = SVSettings::instance().m_db;
+
+	// now process all components and generate construction instances
+	for (const VICUS::ComponentInstance * ci : usedComponentInstances) {
+		if (ci == nullptr)
+			continue; // skip invalid
+		// lookup component that's referenced by componentInstance
+		Q_ASSERT(ci->m_componentID != VICUS::INVALID_ID);
+		// Note: component ID may be invalid or component may have been deleted from DB already
+		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci->m_componentID];
+		if (comp == nullptr) {
+			QMessageBox::critical(this, tr("Starting NANDRAD simulation"),
+				tr("Component ID %1 referenced from component instance %2, but there is no such component.")
+								  .arg(ci->m_componentID).arg(ci->m_id));
+			return false;
+		}
+		if (!comp->isValid(db.m_materials, db.m_constructions, db.m_boundaryConditions)) {
+			QMessageBox::critical(this, tr("Starting NANDRAD simulation"),
+				tr("Component '%1' (id=%2), referenced from component instance (id=%3) has invalid/incomplete parametrization.")
+					.arg(QString::fromStdString(comp->m_displayName.string(IBK::MultiLanguageString::m_language, "en")))
+					.arg(ci->m_componentID).arg(ci->m_id));
+			return false;
+		}
+
+		// now generate a construction instance
+		NANDRAD::ConstructionInstance cinst;
+		cinst.m_id = ci->m_id;
+
+		// store reference to construction type (i.e. to be generated from component)
+		cinst.m_constructionTypeId = comp->m_idConstruction;
+		usedConstructionTypes.insert(comp->m_idConstruction);
+
+		// set construction instance parameters
+		// we have eitherone or two surfaces associated
+		if (ci->m_sideASurface != nullptr) {
+			// compute area
+			double area = ci->m_sideASurface->m_geometry.area();
+			if (ci->m_sideBSurface != nullptr) {
+				// have both
+				double areaB = ci->m_sideBSurface->m_geometry.area();
+				// check if both areas are approximately the same
+				if (std::fabs(area - areaB) > SAME_DISTANCE_PARAMETER_ABSTOL) {
+					QMessageBox::critical(this, tr("Starting NANDRAD simulation"),
+						tr("Component/construction %1 references surfaces %2 and %3, with mismatching areas %3 and %4 m2.")
+										  .arg(ci->m_id).arg(ci->m_sideASurfaceID).arg(ci->m_sideBSurfaceID)
+										  .arg(area).arg(areaB));
+					return false;
+				}
+				/// TODO : Dirk, we have orientation of side A and B... which one do we use?
+				/// for internal and adiabatic walls/floors/ceilings orientation and inclination is not important
+				/// so delete these parameters
+				double orientation = 0;
+				double inclination = 0;
+
+				// set parameters
+//				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+//												   NANDRAD::ConstructionInstance::P_Inclination, inclination);
+//				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+//												   NANDRAD::ConstructionInstance::P_Orientation, orientation);
+
+				cinst.m_displayName = tr("Internal wall between surfaces '%1' and '%2'")
+						.arg(ci->m_sideASurface->m_displayName).arg(ci->m_sideBSurface->m_displayName).toStdString();
+			}
+			else {
+
+				// we only have side A, take orientation and inclination from side A
+				const VICUS::Surface &s = mapIdToSurface[ci->m_sideASurfaceID];
+
+				// set parameters
+				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+												   NANDRAD::ConstructionInstance::P_Inclination, s.m_geometry.inclination());
+				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+												   NANDRAD::ConstructionInstance::P_Orientation, s.m_geometry.orientation());
+
+				cinst.m_displayName = ci->m_sideASurface->m_displayName.toStdString();
+			}
+			// set area parameter (computed from side A, but if side B is given as well, the area is the same
+			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+											   NANDRAD::ConstructionInstance::P_Area, area);
+		}
+		else {
+			Q_ASSERT(ci->m_sideBSurface != nullptr);
+
+			// we only have side B, take orientation and inclination from side B
+			const VICUS::Surface &s = mapIdToSurface[ci->m_sideBSurfaceID];
+
+			// set parameters
+			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+											   NANDRAD::ConstructionInstance::P_Inclination, s.m_geometry.inclination());
+			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+											   NANDRAD::ConstructionInstance::P_Orientation, s.m_geometry.orientation());
+
+			// set area parameter
+			double area = ci->m_sideBSurface->m_geometry.area();
+			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+											   NANDRAD::ConstructionInstance::P_Area, area);
+
+			cinst.m_displayName = ci->m_sideBSurface->m_displayName.toStdString();
+		}
+
+
+
+		// add boundary conditions, side A
+		if (ci->m_sideASurface != nullptr) {
+			// get the zone that this interface is connected to
+			const VICUS::Object * obj = ci->m_sideASurface->m_parent;
+			const VICUS::Room * room = dynamic_cast<const VICUS::Room *>(obj);
+			if (room == nullptr) {
+				QMessageBox::critical(this, tr("Starting NANDRAD simulation"),
+					tr("Component/construction %1 references surface %2, which is not associated to a zone.")
+									  .arg(ci->m_id).arg(ci->m_sideASurfaceID));
+				return false;
+			}
+
+			// lookup boundary condition definitino
+			const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
+
+			cinst.m_interfaceA.m_id = ++interfaceID;
+			cinst.m_interfaceA.m_zoneId = room->m_id;
+			cinst.m_interfaceA.m_heatConduction = bc->m_heatConduction;
+			cinst.m_interfaceA.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::NUM_MT; // no solar radiation on inside surfaces
+			cinst.m_interfaceA.m_longWaveEmission = bc->m_longWaveEmission;
+		}
+		else {
+			// no surface? must be an interface to the outside
+
+			// lookup boundary condition definitino
+			const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
+
+			cinst.m_interfaceA.m_id = ++interfaceID;
+			cinst.m_interfaceA.m_zoneId = 0; // outside zone
+			cinst.m_interfaceA.m_heatConduction = bc->m_heatConduction;
+			cinst.m_interfaceA.m_solarAbsorption = bc->m_solarAbsorption;
+			cinst.m_interfaceA.m_longWaveEmission = bc->m_longWaveEmission;
+		}
+
+
+		// add boundary conditions, side B
+		if (ci->m_sideBSurface != nullptr) {
+			// get the zone that this interface is connected to
+			const VICUS::Object * obj = ci->m_sideBSurface->m_parent;
+			const VICUS::Room * room = dynamic_cast<const VICUS::Room *>(obj);
+			if (room == nullptr) {
+				QMessageBox::critical(this, tr("Starting NANDRAD simulation"),
+					tr("Component/construction %1 references surface %2, which is not associated to a zone.")
+									  .arg(ci->m_id).arg(ci->m_sideASurfaceID));
+				return false;
+			}
+
+			// lookup boundary condition definitino
+			const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
+
+			cinst.m_interfaceB.m_id = ++interfaceID;
+			cinst.m_interfaceB.m_zoneId = room->m_id;
+			cinst.m_interfaceB.m_heatConduction = bc->m_heatConduction;
+			cinst.m_interfaceB.m_solarAbsorption.m_modelType = NANDRAD::InterfaceSolarAbsorption::NUM_MT; // no solar radiation on inside surfaces
+			cinst.m_interfaceB.m_longWaveEmission = bc->m_longWaveEmission;
+		}
+		else {
+			// no surface? must be an interface to the outside
+
+			// lookup boundary condition definitino
+			const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
+
+			cinst.m_interfaceB.m_id = ++interfaceID;
+			cinst.m_interfaceB.m_zoneId = 0; // outside zone
+			cinst.m_interfaceB.m_heatConduction = bc->m_heatConduction;
+			cinst.m_interfaceB.m_solarAbsorption = bc->m_solarAbsorption;
+			cinst.m_interfaceB.m_longWaveEmission = bc->m_longWaveEmission;
+		}
+
+		// add to list of construction instances
+		p.m_constructionInstances.push_back(cinst);
+	}
+
+	// database elements
+
+	std::set<unsigned int> usedMaterials;
+
+	for (unsigned int conTypeID : usedConstructionTypes) {
+		// lookup construction type in DB - since we checked component definitions with isValid() already above,
+		// we can be sure that the construction instances exist and have valid parameters
+		const VICUS::Construction * con = db.m_constructions[conTypeID];
+		Q_ASSERT(con != nullptr);
+
+		// now create a construction type
+		NANDRAD::ConstructionType conType;
+		conType.m_id = conTypeID;
+		conType.m_displayName = con->m_displayName.string(IBK::MultiLanguageString::m_language, "en");
+
+		for (const VICUS::MaterialLayer & ml : con->m_materialLayers) {
+			NANDRAD::MaterialLayer mlayer;
+			mlayer.m_matId = ml.m_matId;
+			usedMaterials.insert(ml.m_matId);
+			mlayer.m_thickness = ml.m_thickness.value;
+			conType.m_materialLayers.push_back(mlayer);
+		}
+
+		// add to construction type list
+		p.m_constructionTypes.push_back(conType);
+	}
+
+	for (unsigned int matID : usedMaterials) {
+		// lookup in DB - since we checked component definitions with isValid() already above,
+		// we can be sure that the material exist and have valid parameters
+		const VICUS::Material * mat = db.m_materials[matID];
+		Q_ASSERT(mat != nullptr);
+
+		// now create a construction type
+		NANDRAD::Material matdata;
+		matdata.m_id = matID;
+		matdata.m_displayName = mat->m_displayName.string(IBK::MultiLanguageString::m_language, "en");
+
+		// now transfer parameters - fortunately, they have the same keywords, what a coincidence :-)
+		matdata.m_para[NANDRAD::Material::P_Density] = mat->m_para[VICUS::Material::P_Density];
+		matdata.m_para[NANDRAD::Material::P_HeatCapacity] = mat->m_para[VICUS::Material::P_HeatCapacity];
+		matdata.m_para[NANDRAD::Material::P_Conductivity] = mat->m_para[VICUS::Material::P_Conductivity];
+
+		// add to material list
+		p.m_materials.push_back(matdata);
+	}
+
+	return true;
+}
+
+
+bool Project::generateNetworkProjectData(NANDRAD::Project & p) const {
+	// TODO : Hauke
+
+	return true;
+}
+
+#endif
+
+
+
 } // namespace VICUS
