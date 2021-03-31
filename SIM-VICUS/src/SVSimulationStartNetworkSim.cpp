@@ -186,8 +186,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 
 	NANDRAD::Outputs outputs;
 	outputs.m_timeUnit = IBK::Unit("h");
-	std::vector<std::string> quantities = {"FluidMassFlux", "InletNodePressure", "OutletNodePressure",
-										   "OutletNodeTemperature"};
+	std::vector<std::string> quantities = {"FluidMassFlux", "OutletNodeTemperature", "PressureDifference", "Reynolds"};
 
 	for (std::string &q: quantities){
 		NANDRAD::OutputDefinition def;
