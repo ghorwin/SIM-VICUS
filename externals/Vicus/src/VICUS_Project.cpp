@@ -683,20 +683,15 @@ void Project::generateNandradProject(NANDRAD::Project & p) const {
 	// do we have a climate path?
 	if (!m_location.m_climateFilePath.isValid())
 		throw ConversionError(ConversionError::ET_MissingClimate, tr("A climate data file is needed. Please select a climate data file!"));
-}
-
-#if 0
 
 	// *** building geometry data and databases ***
 
-	if (!generateBuildingProjectData(p))
-		return false;
+	generateBuildingProjectData(p);
 
 
 	// *** generate network data ***
 
-	if (!generateNetworkProjectData(p))
-		return false;
+	generateNetworkProjectData(p);
 
 
 	// outputs
@@ -767,13 +762,10 @@ void Project::generateNandradProject(NANDRAD::Project & p) const {
 	}
 
 
-
-
-	return true;
 }
 
 
-bool Project::generateBuildingProjectData(NANDRAD::Project & p) {
+void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 	// used to generate unique interface IDs
 	unsigned int interfaceID = 1;
@@ -792,7 +784,7 @@ bool Project::generateBuildingProjectData(NANDRAD::Project & p) {
 	//value ->
 	std::map<unsigned int, VICUS::Surface>	mapIdToSurface;
 
-	for (const VICUS::Building & b : project().m_buildings) {
+	for (const VICUS::Building & b : m_buildings) {
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			for (const VICUS::Room & r : bl.m_rooms) {
 				// first create a NANDRAD zone for the room
@@ -1050,17 +1042,8 @@ bool Project::generateBuildingProjectData(NANDRAD::Project & p) {
 		p.m_materials.push_back(matdata);
 	}
 
-	return true;
 }
 
-
-bool Project::generateNetworkProjectData(NANDRAD::Project & p) const {
-	// TODO : Hauke
-
-	return true;
-}
-
-#endif
 
 
 

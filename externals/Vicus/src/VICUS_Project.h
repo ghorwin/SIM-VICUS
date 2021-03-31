@@ -165,7 +165,8 @@ public:
 		This function throws an error message in case the conversion failed.
 	*/
 	void generateNandradProject(NANDRAD::Project & p) const;
-
+	void generateBuildingProjectData(NANDRAD::Project & p) const;
+	void generateNetworkProjectData(NANDRAD::Project & p) const;
 
 	// *** STATIC FUNCTIONS ***
 
