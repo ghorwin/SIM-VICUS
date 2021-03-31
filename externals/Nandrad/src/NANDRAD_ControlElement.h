@@ -9,9 +9,11 @@ namespace NANDRAD {
 
 class ControlElement
 {
-	NANDRAD_READWRITE
 
 public:
+
+	NANDRAD_READWRITE
+
 	ControlElement();
 
 	enum ControlType{

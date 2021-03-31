@@ -10,9 +10,10 @@ namespace NANDRAD {
 
 class Controller
 {
+public:
+
 	NANDRAD_READWRITE
 
-public:
 	Controller();
 
 	enum Type {
