@@ -96,7 +96,8 @@ public:
 	/*! Optional definition of heat exchange calculation model (if missing, flow element is adiabat). */
 	HydraulicNetworkHeatExchange	m_heatExchange;											// XML:E
 
-
+	/*! Optional control element/valve forcing an additional pressure loss
+		(controlType = NUM_CT if control is missing). */
 	NANDRAD::ControlElement			m_controlElement;										// XML:E
 
 	// *** Variables used only during simulation ***
