@@ -26,6 +26,7 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
+#include <NANDRAD_KeywordList.h>
 #include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
@@ -72,6 +73,15 @@ void Controller::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
+			else if (cName == "Type") {
+				try {
+					m_type = (Type)KeywordList::Enumeration("Controller::Type", c->GetText());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
+				}
+			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -92,6 +102,9 @@ TiXmlElement * Controller::writeXML(TiXmlElement * parent) const {
 
 	e->SetAttribute("id", IBK::val2string<IDType>(m_id));
 	e->SetAttribute("tolerance", IBK::val2string<double>(m_tolerance));
+
+	if (m_type != NUM_T)
+		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("Controller::Type",  m_type));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_par[i].name.empty()) {

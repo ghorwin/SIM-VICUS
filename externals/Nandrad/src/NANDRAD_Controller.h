@@ -13,6 +13,8 @@ class Controller
 public:
 
 	NANDRAD_READWRITE
+	NANDRAD_COMPARE_WITH_ID
+	NANDRAD_COMP(Controller)
 
 	Controller();
 
@@ -32,6 +34,8 @@ public:
 	};
 
 	IDType				m_id = INVALID_ID;							// XML:A:required
+
+	Type				m_type = NUM_T;								// XML:E
 
 	/*! if the controller error is below the tolerance,
 	 * the result is interpreted as "accurate enough" and the controller output will not be changed */
