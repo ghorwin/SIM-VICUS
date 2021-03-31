@@ -2,6 +2,7 @@
 #define CONTROLELEMENT_H
 
 #include "NANDRAD_LinearSplineParameter.h"
+#include "NANDRAD_Constants.h"
 
 #include <IBK_Parameter.h>
 
@@ -26,7 +27,7 @@ public:
 	ControlType						m_controlType = NUM_CT;								// XML:A:required
 
 	/*! reference to a controller (P, PI, ..) */
-	unsigned int					m_controllerId;										// XML:A:required
+	IDType							m_controllerId = INVALID_ID;						// XML:A
 
 	/*! the set point as fixed scalar value */
 	IBK::Parameter					m_setPoint;											// XML:E

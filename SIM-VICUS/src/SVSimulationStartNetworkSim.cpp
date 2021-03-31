@@ -119,7 +119,6 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	FUNCID(SVSimulationStartNetworkSim::generateNandradProject);
 
 
-
 	// get selected Vicus Network
 	VICUS::Project proj = project();
 	unsigned int networkId = m_networksMap.value(m_ui->comboBoxNetwork->currentText());
@@ -339,6 +338,25 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		elem.m_displayName = IBK::FormatString("%1_%2_%3").arg(comp->m_displayName.string()).arg(elem.m_id).arg(elem.m_displayName).str();
 
 
+
+
+
+		// add control element as example
+		if (comp->m_modelType == VICUS::NetworkComponent::MT_HeatExchanger){
+			NANDRAD::ControlElement controlE;
+			controlE.m_controlType = NANDRAD::ControlElement::CT_ControlTemperatureDifference;
+			controlE.m_setPoint = IBK::Parameter("SetPoint", 3.0, IBK::Unit("K"));
+			controlE.m_maximumControllerError = IBK::Parameter("MaximumControllerError", 10.0, IBK::Unit("K"));
+			controlE.m_maximumSystemInput = IBK::Parameter("MaximumSystemInput", 5.0, IBK::Unit("-"));
+			controlE.m_controllerId = 1;
+			elem.m_controlElement = controlE;
+		}
+
+
+
+
+
+
 		// transform heatExchange properties
 		elem.m_heatExchange = node.m_heatExchange.toNandradHeatExchange();
 
@@ -350,6 +368,21 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 			// TODO Hauke: continue algorithm for subnetworks
 		}
 	}
+
+
+
+
+	// add controller as example
+	NANDRAD::Controller contr;
+	contr.m_id = 1;
+	contr.m_par[NANDRAD::Controller::P_Kp] = IBK::Parameter("Kp", 10, IBK::Unit("-"));
+	contr.m_type = NANDRAD::Controller::T_PController;
+	p.m_controllers.push_back(contr);
+
+
+
+
+
 
 
 	// find source node and create set of edges, which are ordered according to their distance to the source node
@@ -421,6 +454,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	p.m_hydraulicNetworks.push_back(nandradNetwork);
 
 	return true;
+
 }
 
 
@@ -478,6 +512,32 @@ void SVSimulationStartNetworkSim::on_lineEditDefaultFluidTemperature_editingFini
 }
 
 #if 0
+
+
+	// create dummy zone
+	NANDRAD::Zone z;
+	z.m_id = 1;
+	z.m_displayName = "dummy";
+	z.m_type = NANDRAD::Zone::ZT_Active;
+	NANDRAD::KeywordList::setParameter(z.m_para, "Zone::para_t", NANDRAD::Zone::P_Volume, 100);
+	NANDRAD::KeywordList::setParameter(z.m_para, "Zone::para_t", NANDRAD::Zone::P_Area, 10);
+	p.m_zones.push_back(z);
+
+	// create dummy location/climate data
+	p.m_location.m_climateFilePath = (QtExt::Directories::databasesDir() + "/DB_climate/Konstantopol_20C.c6b").toStdString();
+	NANDRAD::KeywordList::setParameter(p.m_location.m_para, "Location::para_t", NANDRAD::Location::P_Albedo, 20); // %
+	NANDRAD::KeywordList::setParameter(p.m_location.m_para, "Location::para_t", NANDRAD::Location::P_Latitude, 53); // Deg
+	NANDRAD::KeywordList::setParameter(p.m_location.m_para, "Location::para_t", NANDRAD::Location::P_Longitude, 13); // Deg
+
+	if(!m_ui->lineEditEndTime->isValid())
+		return false;
+	double endTime = m_ui->lineEditEndTime->value();
+
+	// set simulation duration and solver parameters
+	NANDRAD::KeywordList::setParameter(p.m_simulationParameter.m_para, "SimulationParameter::para_t", NANDRAD::SimulationParameter::P_InitialTemperature, 20); // C
+	NANDRAD::KeywordList::setParameter(p.m_simulationParameter.m_interval.m_para,
+									   "Interval::para_t", NANDRAD::Interval::P_End, endTime); // d
+
 
 	// *** test example 1: very simple, one pump, one pipe, one HX ***
 

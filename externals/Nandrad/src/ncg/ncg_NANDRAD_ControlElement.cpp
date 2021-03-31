@@ -42,10 +42,6 @@ void ControlElement::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'controlType' attribute.") ), FUNC_ID);
 
-		if (!TiXmlAttribute::attributeByName(element, "controllerId"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'controllerId' attribute.") ), FUNC_ID);
-
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
@@ -59,7 +55,7 @@ void ControlElement::readXML(const TiXmlElement * element) {
 					IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
 			}
 			if (attribName == "controllerId")
-				m_controllerId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+				m_controllerId = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -120,8 +116,7 @@ TiXmlElement * ControlElement::writeXML(TiXmlElement * parent) const {
 
 	if (m_controlType != NUM_CT)
 		e->SetAttribute("controlType", KeywordList::Keyword("ControlElement::ControlType",  m_controlType));
-	if (m_controllerId != NANDRAD::INVALID_ID)
-		e->SetAttribute("controllerId", IBK::val2string<unsigned int>(m_controllerId));
+	e->SetAttribute("controllerId", IBK::val2string<IDType>(m_controllerId));
 	if (!m_setPoint.name.empty()) {
 		IBK_ASSERT("SetPoint" == m_setPoint.name);
 		TiXmlElement::appendIBKParameterElement(e, "SetPoint", m_setPoint.IO_unit.name(), m_setPoint.get_value());
