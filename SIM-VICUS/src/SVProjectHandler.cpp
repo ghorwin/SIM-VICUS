@@ -301,6 +301,9 @@ SVProjectHandler::SaveResult SVProjectHandler::saveProject(QWidget * parent, con
 	m_project->m_placeholders[VICUS::DATABASE_PLACEHOLDER_NAME]			= QtExt::Directories::databasesDir().toStdString();
 	m_project->m_placeholders[VICUS::USER_DATABASE_PLACEHOLDER_NAME]	= QtExt::Directories::userDataDir().toStdString();
 
+	// update embedded database
+	SVSettings::instance().m_db.updateEmbeddedDatabase(*m_project);
+
 	// save project file
 	if (!write(fname)) {
 

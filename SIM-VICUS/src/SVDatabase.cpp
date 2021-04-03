@@ -134,8 +134,9 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 		referencedComponents.insert(m_components[ci.m_componentID]); // bad/missing IDs yield a nullptr
 	referencedComponents.erase(nullptr);
 
-	p.m_e
-	for (const VICUS::Component * c)
+	p.m_embeddedDB.m_components.clear();
+	for (const VICUS::Component * c : referencedComponents)
+		p.m_embeddedDB.m_components.push_back(*c);
 
 }
 
