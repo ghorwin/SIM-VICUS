@@ -324,6 +324,7 @@ bool SVSimulationStartNandrad::startSimulation(bool testInit) {
 	// generate NANDRAD project
 	NANDRAD::Project p;
 
+	SVSettings::instance().m_db.updateEmbeddedDatabase(m_localProject);
 	try {
 		m_localProject.generateNandradProject(p);
 	}

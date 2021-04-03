@@ -775,15 +775,11 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 	//        the VICUS::ComponentInstance data structure.
 
 	// we process all zones and buildings and create NANDRAD project data
-	// we also check that all referenced database properties are available and transfer them accordingly
-
-	// this set collects all component instances that are actually used/referenced by zone surfaces
-	// for now, unassociated components are ignored
-	std::set<const VICUS::ComponentInstance*> usedComponentInstances;
-	//key -> surface id
-	//value ->
+	// we also transfer all database components
+#if 0
 	std::map<unsigned int, VICUS::Surface>	mapIdToSurface;
 
+	// we first create all zones
 	for (const VICUS::Building & b : m_buildings) {
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			for (const VICUS::Room & r : bl.m_rooms) {
@@ -817,10 +813,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 		}
 	}
 
-	// this set collects all construction type IDs, which will be used to create constructionInstances
-	std::set<unsigned int> usedConstructionTypes;
-#if 0
-	const SVDatabase & db = SVSettings::instance().m_db;
+	// now transfer embedded database elements
 
 	// now process all components and generate construction instances
 	for (const VICUS::ComponentInstance * ci : usedComponentInstances) {
