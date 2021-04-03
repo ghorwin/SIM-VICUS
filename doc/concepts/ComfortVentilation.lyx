@@ -124,20 +124,171 @@ Erreicht werden soll dies durch ein entsprechendes Anpassen der Lüftungsrate.
 
 \begin_layout Standard
 Im konvergierten Zustand soll gelten: 
-\begin_inset Formula $T_{R}=\max\left(T_{Grenz},T_{e}\right)$
+\begin_inset Formula $T_{R,soll}=\max\left(T_{Grenz},T_{e}\right)$
 \end_inset
 
- und damit 
+ und sobald erreicht, 
 \begin_inset Formula $\sum\dot{Q}=0$
 \end_inset
 
 .
- Diese Bedingung soll iterativ erreicht werden, wobei folgende Gauss-Iterationss
-chema gelten soll:
+ Diese Bedingung kann nicht erzwungen werden, da sonst eine algebraische
+ Gleichung zu lösen wäre.
+ 
 \end_layout
 
 \begin_layout Standard
+Diese Bedingung soll iterativ erreicht werden, wobei folgende Gauss-Iterationssc
+hema gelten soll:
+\end_layout
 
+\begin_layout Standard
+\begin_inset Formula $n_{L,i}$
+\end_inset
+
+ sei der aktuelle Schätzwert der Lüftungsrate.
+ Ebenso sei 
+\begin_inset Formula $T_{R}$
+\end_inset
+
+ eine Temperatur > 
+\begin_inset Formula $T_{R,soll}$
+\end_inset
+
+ und es ergibt sich ein Lüftungswärmestrom:
+\begin_inset Formula 
+\[
+\dot{Q}_{L,i}=n_{L,i}V_{Z}\rho_{air}\left(T_{e}-T_{R,i}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Wäre im nächsten Iterationsschritt (
+\begin_inset Formula $i$
+\end_inset
+
++1) die Solltemperatur der Luft erreicht wäre der Lüftungswärmestrom: 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\dot{Q}_{L,i+1}=n_{L,i+1}V_{Z}\rho_{air}\left(T_{e}-T_{R,soll}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Nehmen wir diesen Lüftungswärmestrom als korrekt an, so können wir diesen
+ bereits nutzen, um unsere Lüftungsrate des nächsten Iterationsschritts
+ zu bestimmen.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+n_{L,i}V_{Z}\rho_{air}\left(T_{e}-T_{R,i}\right) & =n_{L,i+1}V_{Z}\rho_{air}\left(T_{e}-T_{R,soll}\right)\\
+n_{L,i}\left(T_{e}-T_{R,i}\right) & =n_{L,i+1}\left(T_{e}-T_{R,soll}\right)\\
+n_{L,i+1} & =n_{L,i}\frac{T_{e}-T_{R,i}}{T_{e}-T_{R,soll}}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Ein Problem ergibt sich, wenn der Quotient = 0 wird, im Fall, dass Außenlufttemp
+eratur > 
+\begin_inset Formula $T_{R,Grenz}$
+\end_inset
+
+ ist.
+ Daher gilt diese Iterationsvorschrift nur für den Fall, 
+\begin_inset Formula $T_{e}<T_{R,Grenz}.$
+\end_inset
+
+ Für den Fall 
+\begin_inset Formula $T_{e}\ge T_{R,Grenz}$
+\end_inset
+
+ gilt immer 
+\begin_inset Formula $n_{L}=n_{L,max}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Stetigkeitsanalyse
+\end_layout
+
+\begin_layout Subsubsection
+Fall 1
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $T_{R}$
+\end_inset
+
+ überschreitet 
+\begin_inset Formula $T_{R,Grenz}$
+\end_inset
+
+ und 
+\begin_inset Formula $T_{e}<T_{R,Grenz}$
+\end_inset
+
+.
+ 
+\begin_inset Formula $T_{R,soll}=T_{R,Grenz}$
+\end_inset
+
+ und das Iterationsschema lautet:
+\begin_inset Formula 
+\[
+n_{L,i+1}=n_{L,i}\frac{T_{e}-T_{R,i}}{T_{e}-T_{R,Grenz}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Bei steigender Lufttemperatur wird die Lüftungsrate stetig erhöht, bis ein
+ Maximalwert erreicht wird.
+ Dieser Prozess ist stetig.
+ Sinkt die Raumlufttemperatur wieder, so wird auch die Lüftungsrate reduziert,
+ bis auf den Minimalwert.
+\end_layout
+
+\begin_layout Subsubsection
+Fall 2
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $T_{R}>T_{R,Grenz}$
+\end_inset
+
+ und 
+\begin_inset Formula $T_{e}\ge T_{R,Grenz}$
+\end_inset
+
+ und damit 
+\begin_inset Formula $T_{R,soll}=T_{e}$
+\end_inset
+
+.
+ 
 \end_layout
 
 \begin_layout Section
