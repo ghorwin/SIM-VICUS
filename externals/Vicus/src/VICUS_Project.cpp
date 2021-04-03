@@ -819,7 +819,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 	// this set collects all construction type IDs, which will be used to create constructionInstances
 	std::set<unsigned int> usedConstructionTypes;
-
+#if 0
 	const SVDatabase & db = SVSettings::instance().m_db;
 
 	// now process all components and generate construction instances
@@ -1041,6 +1041,11 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 		// add to material list
 		p.m_materials.push_back(matdata);
 	}
+#endif
+}
+
+void Project::generateNetworkProjectData(NANDRAD::Project & p) const
+{
 
 }
 

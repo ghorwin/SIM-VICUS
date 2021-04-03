@@ -43,9 +43,12 @@
 
 namespace VICUS {
 
+/*! The project data structure for the SIM-VICUS user interface.
+*/
 class Project {
 	Q_DECLARE_TR_FUNCTIONS(Project)
 
+	/*! Private read-write functions. */
 	VICUS_READWRITE
 public:
 
