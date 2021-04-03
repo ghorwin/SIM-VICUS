@@ -56,7 +56,6 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_ventilationNatural.readXML(				dbDir / "db_ventilationNatural.xml", "VentilationNaturals", "VentilationNatural", true);
 		m_zoneTemplates.readXML(			dbDir / "db_zoneTemplates.xml", "ZoneTemplates", "ZoneTemplate", true);
 
-	//	readXML(dbDir / "db_epdElements.xml", "EPDDatasets", "EPDDataset", m_dbEPDElements, true);
 	}
 
 	// user databases
@@ -97,8 +96,6 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_ventilationNatural.readXML(	userDbDir / "db_ventilationNatural.xml", "VentilationNaturals", "VentilationNatural", false);
 	if (t == NUM_DT || t == DT_ZoneTemplates)
 		m_zoneTemplates.readXML(	userDbDir / "db_zoneTemplates.xml", "ZoneTemplates", "ZoneTemplate", false);
-
-//	readXMLDB(userDbDir / "db_epdElements.xml", "EPDDatasets", "EPDDataset", m_dbEPDElements);
 }
 
 
@@ -124,7 +121,22 @@ void SVDatabase::writeDatabases() const {
 	m_ventilationNatural.writeXML(	userDbDir / "db_ventilationNatural.xml", "VentilationNaturals");
 	m_zoneTemplates.writeXML(		userDbDir / "db_zoneTemplates.xml", "ZoneTemplates");
 
-//	writeXMLDB(userDbDir / "db_epdElements.xml", "EPDDatasets", m_dbEPDElements);
+}
+
+
+void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
+
+
+	// components
+
+	std::set<const VICUS::Component *> referencedComponents;
+	for (VICUS::ComponentInstance & ci : p.m_componentInstances)
+		referencedComponents.insert(m_components[ci.m_componentID]); // bad/missing IDs yield a nullptr
+	referencedComponents.erase(nullptr);
+
+	p.m_e
+	for (const VICUS::Component * c)
+
 }
 
 

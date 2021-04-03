@@ -39,6 +39,7 @@
 #include "VICUS_NetworkPipe.h"
 #include "VICUS_Outputs.h"
 #include "VICUS_ComponentInstance.h"
+#include "VICUS_EmbeddedDatabase.h"
 
 
 namespace VICUS {
@@ -147,7 +148,8 @@ public:
 	/*! This exception class extends IBK::Exception by additional members
 		needed to adjust the start-simulation-dialog, for example, to focus problematic inputs.
 	*/
-	class ConversionError : public IBK::Exception {
+	class ConversionError : public IBK::Exception { // NO KEYWORDS
+
 	public:
 		enum Errortypes {
 			ET_MissingClimate
@@ -290,6 +292,11 @@ public:
 	*/
 	std::map< std::string, IBK::Path >	m_placeholders;
 
+
+	/*! Holds the database elements referenced in the project. These are a copy of db elements
+		in the built-in and user-database and stored for project exchange between computers.
+	*/
+	EmbeddedDatabase									m_embeddedDB;				// XML:E
 };
 
 

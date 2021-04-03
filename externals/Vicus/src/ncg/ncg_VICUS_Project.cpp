@@ -98,6 +98,8 @@ void Project::readXML(const TiXmlElement * element) {
 				m_outputs.readXML(c);
 			else if (cName == "ViewSettings")
 				m_viewSettings.readXML(c);
+			else if (cName == "EmbeddedDatabase")
+				m_embeddedDB.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -174,6 +176,8 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 		}
 	}
 
+
+	m_embeddedDB.writeXML(e);
 	return e;
 }
 
