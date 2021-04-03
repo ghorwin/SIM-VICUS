@@ -85,16 +85,75 @@
 UserComfortVentilationModel
 \end_layout
 
+\begin_layout Section
+Grundgedanke
+\end_layout
+
+\begin_layout Standard
+Wenn zu irgendeinem Zeitpunkt die Raumlufttemperatur 
+\begin_inset Formula $T_{R}$
+\end_inset
+
+ über der gewünschten Grenztemperatur 
+\begin_inset Formula $T_{Grenz}$
+\end_inset
+
+ liegt, und die Bedingungen für einen erhöhten Luftwechsel gegeben sind
+ (Außenlufttemperatur 
+\begin_inset Formula $T_{e}$
+\end_inset
+
+ kleiner Raumlufttemperatur), dann kann man folgendes festlegen:
+\end_layout
+
+\begin_layout Enumerate
+Wenn Außenlufttemperatur <= Grenztemperatur: Raum soll exakt auf Grenztemperatur
+ gebracht werden
+\end_layout
+
+\begin_layout Enumerate
+Wenn Außenlufttemperatur > Grenztemperatur: Raum soll exakt auf Außenlufttempera
+tur gebracht werden
+\end_layout
+
+\begin_layout Standard
+Erreicht werden soll dies durch ein entsprechendes Anpassen der Lüftungsrate.
+ Diese wird solange angepasst, bis sich die geforderte Raumlufttemperatur
+ einstellt.
+\end_layout
+
+\begin_layout Standard
+Im konvergierten Zustand soll gelten: 
+\begin_inset Formula $T_{R}=\max\left(T_{Grenz},T_{e}\right)$
+\end_inset
+
+ und damit 
+\begin_inset Formula $\sum\dot{Q}=0$
+\end_inset
+
+.
+ Diese Bedingung soll iterativ erreicht werden, wobei folgende Gauss-Iterationss
+chema gelten soll:
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Section
+Ableitung
+\end_layout
+
 \begin_layout Standard
 Given an threshold temperature 
 \begin_inset Formula $T_{thre}$
 \end_inset
 
- with a comfort ventilation rate 
+ we define a desired comfort ventilation rate 
 \begin_inset Formula $n_{vent}$
 \end_inset
 
- due to 
+ according to 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "eq:comfortVentilationRate"
