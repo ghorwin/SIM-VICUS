@@ -127,8 +127,7 @@ void SVDatabase::writeDatabases() const {
 void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 
 
-	// components
-
+	// *** components ***
 	std::set<const VICUS::Component *> referencedComponents;
 	for (VICUS::ComponentInstance & ci : p.m_componentInstances)
 		referencedComponents.insert(m_components[ci.m_componentID]); // bad/missing IDs yield a nullptr
@@ -137,6 +136,39 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	p.m_embeddedDB.m_components.clear();
 	for (const VICUS::Component * c : referencedComponents)
 		p.m_embeddedDB.m_components.push_back(*c);
+
+
+	// *** everything referenced from components: constructions, bc, ... ***
+
+	std::set<const VICUS::Construction *> referencedConstructions;
+	std::set<const VICUS::BoundaryCondition *> referencedBC;
+	for (const VICUS::Component * c : referencedComponents) {
+		referencedConstructions.insert(m_constructions[c->m_idConstruction]); // bad/missing IDs yield a nullptr
+		referencedBC.insert(m_boundaryConditions[c->m_idSideABoundaryCondition]); // bad/missing IDs yield a nullptr
+		referencedBC.insert(m_boundaryConditions[c->m_idSideBBoundaryCondition]); // bad/missing IDs yield a nullptr
+	}
+	referencedConstructions.erase(nullptr);
+	referencedBC.erase(nullptr);
+
+	p.m_embeddedDB.m_constructions.clear();
+	for (const VICUS::Construction * c : referencedConstructions)
+		p.m_embeddedDB.m_constructions.push_back(*c);
+	p.m_embeddedDB.m_boundaryConditions.clear();
+	for (const VICUS::BoundaryCondition * c : referencedBC)
+		p.m_embeddedDB.m_boundaryConditions.push_back(*c);
+
+
+	// *** materials ***
+	std::set<const VICUS::Material *> referencedMaterials;
+	for (const VICUS::Construction * c : referencedConstructions) {
+		for (const VICUS::MaterialLayer & ml : c->m_materialLayers)
+			referencedMaterials.insert(m_materials[ml.m_matId]); // bad/missing IDs yield a nullptr
+	}
+	referencedMaterials.erase(nullptr);
+
+	p.m_embeddedDB.m_materials.clear();
+	for (const VICUS::Material * c : referencedMaterials)
+		p.m_embeddedDB.m_materials.push_back(*c);
 
 }
 
