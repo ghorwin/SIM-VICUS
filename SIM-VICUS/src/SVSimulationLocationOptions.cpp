@@ -170,10 +170,11 @@ void SVSimulationLocationOptions::updateLocationInfo(const SVClimateFileInfo * c
 	else {
 		// store file with placeholder, if it is from database or user database
 		if (databaseFile) {
-			if (climateInfoPtr->m_builtIn)
-				m_location->m_climateFilePath = QString("${%1}/%2").arg(VICUS::DATABASE_PLACEHOLDER_NAME, climateInfoPtr->m_filename).toStdString();
+			if (climateInfoPtr->m_builtIn) {
+				m_location->m_climateFilePath = QString("${%1}/%2").arg(VICUS::DATABASE_PLACEHOLDER_NAME, climateInfoPtr->relPathToPlaceholder(true) ).toStdString();
+			}
 			else
-				m_location->m_climateFilePath = QString("${%1}/%2").arg(VICUS::USER_DATABASE_PLACEHOLDER_NAME, climateInfoPtr->m_filename).toStdString();
+				m_location->m_climateFilePath = QString("${%1}/%2").arg(VICUS::USER_DATABASE_PLACEHOLDER_NAME, climateInfoPtr->relPathToPlaceholder(false) ).toStdString();
 		}
 		else
 			m_location->m_climateFilePath = climateInfoPtr->m_file.absoluteFilePath().toStdString();

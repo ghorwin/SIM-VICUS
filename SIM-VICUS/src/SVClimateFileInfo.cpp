@@ -1,6 +1,7 @@
 #include "SVClimateFileInfo.h"
 
 #include <QtExt_LanguageHandler.h>
+#include <QtExt_Directories.h>
 
 #include "SVSettings.h"
 
@@ -38,7 +39,7 @@ void SVClimateFileInfo::readInfo(const QFileInfo& file, bool withData, bool clea
 		m_name.clear();
 
 	// read data
-	IBK::Path cliPath(file.absoluteFilePath().toUtf8().data());
+	IBK::Path cliPath(file.absoluteFilePath().toStdString());
 	// read only in case of Only header, new file or not already read
 	if(!withData || !sameFile || m_loader.m_data[0].empty()) {
 		try {
@@ -111,5 +112,18 @@ bool SVClimateFileInfo::hasRelHum() const {
 
 void SVClimateFileInfo::clear() {
 	*this = SVClimateFileInfo();
+}
+
+
+QString SVClimateFileInfo::relPathToPlaceholder(bool builtIn) const {
+	// compose relative path to built-in/user databases
+	QString baseDir;
+	if (builtIn)
+		baseDir = QtExt::Directories::databasesDir() + "/DB_climate";
+	else
+		baseDir = QtExt::Directories::userDataDir() + "/DB_climate";
+
+	QString relPath = QDir(baseDir).relativeFilePath(m_file.absoluteFilePath());
+	return relPath;
 }
 

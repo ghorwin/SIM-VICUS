@@ -681,6 +681,11 @@ void Project::generateNandradProject(NANDRAD::Project & p) const {
 	if (!m_location.m_climateFilePath.isValid())
 		throw ConversionError(ConversionError::ET_MissingClimate, tr("A climate data file is needed. Please select a climate data file!"));
 
+
+	// directory placeholders
+	for (const auto & placeholder : m_placeholders)
+		p.m_placeholders[placeholder.first] = placeholder.second;
+
 	// *** building geometry data and databases ***
 
 	generateBuildingProjectData(p);

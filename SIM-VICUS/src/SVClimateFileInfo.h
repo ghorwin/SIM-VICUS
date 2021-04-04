@@ -48,6 +48,8 @@ public:
 	/*! Return true if the class instance is not empty. It doesn't check if the given climate file is valid*/
 	bool isEmpty() const { return m_filename.isEmpty(); }
 
+	/*! Relative filepath to database base directory. Only defined for files that are not absolute paths. */
+	QString		relPathToPlaceholder(bool builtIn) const;
 
 
 	/*! Filename of the c6b file without path and extension.*/

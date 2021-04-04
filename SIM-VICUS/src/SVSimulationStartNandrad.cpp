@@ -336,9 +336,10 @@ bool SVSimulationStartNandrad::startSimulation(bool testInit) {
 				m_ui->tabWidget->setCurrentWidget(m_ui->tabClimate);
 			break;
 		}
+		return false;
 	}
 	catch (IBK::Exception & ex) {
-		// just show a generatic error message
+		// just show a generic error message
 		ex.writeMsgStackToError();
 		QMessageBox::critical(this, tr("NANDRAD Project Generation Error"),
 							  tr("An error occurred during NANDRAD project generation. See log for details."));
