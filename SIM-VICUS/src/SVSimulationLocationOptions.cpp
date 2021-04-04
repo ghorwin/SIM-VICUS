@@ -168,16 +168,11 @@ void SVSimulationLocationOptions::updateLocationInfo(const SVClimateFileInfo * c
 	if (climateInfoPtr == nullptr)
 		m_location->m_climateFilePath.clear();
 	else {
-		// store file with placeholder, if it is from database or user database
-		if (databaseFile) {
-			if (climateInfoPtr->m_builtIn) {
-				m_location->m_climateFilePath = QString("${%1}/%2").arg(VICUS::DATABASE_PLACEHOLDER_NAME, climateInfoPtr->relPathToPlaceholder(true) ).toStdString();
-			}
-			else
-				m_location->m_climateFilePath = QString("${%1}/%2").arg(VICUS::USER_DATABASE_PLACEHOLDER_NAME, climateInfoPtr->relPathToPlaceholder(false) ).toStdString();
-		}
+		// store file with placeholder
+		if (databaseFile)
+			m_location->m_climateFilePath = climateInfoPtr->m_filename.toStdString();
 		else
-			m_location->m_climateFilePath = climateInfoPtr->m_file.absoluteFilePath().toStdString();
+			m_location->m_climateFilePath = climateInfoPtr->m_absoluteFilePath.toStdString();
 	}
 
 	// update info text on climate location
@@ -192,7 +187,7 @@ void SVSimulationLocationOptions::updateLocationInfo(const SVClimateFileInfo * c
 	}
 	QString infoText;
 	infoText = "<html><body>";
-	if (!climateInfoPtr->m_file.isFile()) {
+	if (climateInfoPtr->m_name.isEmpty()) {
 		infoText += "<p>" + tr("Invalid climate data file path.") + "</p>";
 	}
 	else {
@@ -239,8 +234,9 @@ void SVSimulationLocationOptions::updateUserClimateFileInfo() {
 	}
 
 	try {
-		m_userClimateFile.readInfo(QFileInfo(climateFile), false, true);
-	} catch (...) {
+		m_userClimateFile.readInfo(QString(), climateFile, false, true);
+	}
+	catch (...) {
 		m_userClimateFile = SVClimateFileInfo();
 	}
 }

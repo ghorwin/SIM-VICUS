@@ -16,47 +16,36 @@ SVClimateFileInfo::SVClimateFileInfo() :
 }
 
 
-SVClimateFileInfo::SVClimateFileInfo(const QString& name, const QString& file, bool builtIn) :
-	m_name(name),
-	m_filename(file),
-	m_builtIn(builtIn),
-	m_longitudeInDegree(13.737),
-	m_latitudeInDegree(51.05),
-	m_elevation(0),
-	m_timeZone(1)
-{
-	m_checkBits.fill(CCM::ClimateDataLoader::ALL_DATA_MISSING);
-}
-
-
-void SVClimateFileInfo::readInfo(const QFileInfo& file, bool withData, bool clearName) {
-	bool sameFile = m_file == file;
-	if(!sameFile) {
-		m_file = file;
-		m_filename = file.fileName();
+void SVClimateFileInfo::readInfo(const QString& databaseDir, const QString & absoluteFilePath, bool withData, bool builtIn) {
+	FUNCID(SVClimateFileInfo::readInfo);
+	QFileInfo finfo(absoluteFilePath);
+	m_absoluteFilePath = absoluteFilePath;
+	// store relative path to database dir
+	if (!databaseDir.isEmpty()) {
+		QDir dbDir(databaseDir);
+		m_filename = dbDir.relativeFilePath(absoluteFilePath); // does not have placeholders, yet
+		if (builtIn)
+			m_filename = QString("${%1}/DB_climate/%2").arg(VICUS::DATABASE_PLACEHOLDER_NAME, m_filename );
+		else
+			m_filename = QString("${%1}/DB_climate/%2").arg(VICUS::USER_DATABASE_PLACEHOLDER_NAME, m_filename );
 	}
-	if(clearName)
-		m_name.clear();
+	m_name = finfo.baseName();
 
 	// read data
-	IBK::Path cliPath(file.absoluteFilePath().toStdString());
-	// read only in case of Only header, new file or not already read
-	if(!withData || !sameFile || m_loader.m_data[0].empty()) {
-		try {
-			m_loader.readClimateData(cliPath, !withData);
-		}
-		catch (IBK::Exception& ex) {
-			m_file = QFileInfo();
-			m_filename.clear();
-			m_name.clear();
-			throw IBK::Exception(ex, "Could not read climate file", "[SVClimateFileInfo::readInfo]");
-		}
+	IBK::Path cliPath(m_absoluteFilePath.toStdString());
+	try {
+		m_loader.readClimateData(cliPath, !withData); // function expects "header only" flag, which is "!withData"
 	}
-	if(withData)
+	catch (IBK::Exception& ex) {
+		m_absoluteFilePath.clear();
+		m_filename.clear();
+		m_name.clear();
+		throw IBK::Exception(ex, "Could not read climate file", FUNC_ID);
+	}
+	if (withData)
 		m_checkBits = m_loader.m_checkBits;
-	else {
+	else
 		m_checkBits.fill(CCM::ClimateDataLoader::ALL_DATA_MISSING);
-	}
 
 	QString langID = QtExt::LanguageHandler::instance().langId();
 
@@ -79,6 +68,7 @@ void SVClimateFileInfo::readInfo(const QFileInfo& file, bool withData, bool clea
 	else
 		m_timeBehaviour = tr("%1 years, non-cyclic use.").
 						  arg(int((m_loader.m_dataTimePoints.back() - m_loader.m_dataTimePoints.front()) / 3600.0 / 8760.0));
+	m_builtIn = builtIn;
 }
 
 
@@ -114,16 +104,4 @@ void SVClimateFileInfo::clear() {
 	*this = SVClimateFileInfo();
 }
 
-
-QString SVClimateFileInfo::relPathToPlaceholder(bool builtIn) const {
-	// compose relative path to built-in/user databases
-	QString baseDir;
-	if (builtIn)
-		baseDir = QtExt::Directories::databasesDir() + "/DB_climate";
-	else
-		baseDir = QtExt::Directories::userDataDir() + "/DB_climate";
-
-	QString relPath = QDir(baseDir).relativeFilePath(m_file.absoluteFilePath());
-	return relPath;
-}
 

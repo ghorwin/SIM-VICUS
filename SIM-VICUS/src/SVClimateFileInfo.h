@@ -15,17 +15,10 @@ public:
 	/*! Standard constructor.*/
 	SVClimateFileInfo();
 
-	/*! Constructor for basic initialisiation.*/
-	SVClimateFileInfo(const QString& name, const QString& file, bool builtIn);
-
 	/*! Read all the information from c6b file.
-		Set m_file and m_filename but not m_name.
-		\param file Complete file path without placeholder
-		\param clearName If true m_name will be cleared.
-		\param withData If true also the data set willbe read with update of checkBits.
 		\note This function will throw an exception in case of error while reading given file.
 	*/
-	void readInfo(const QFileInfo& file, bool withData, bool clearName);
+	void readInfo(const QString& databaseDir, const QString & absoluteFilePath, bool withData, bool builtIn);
 
 	/*! Return true if all climate components for shortwave solar radiation are valid.*/
 	bool hasShortwave() const;
@@ -48,20 +41,16 @@ public:
 	/*! Return true if the class instance is not empty. It doesn't check if the given climate file is valid*/
 	bool isEmpty() const { return m_filename.isEmpty(); }
 
-	/*! Relative filepath to database base directory. Only defined for files that are not absolute paths. */
-	QString		relPathToPlaceholder(bool builtIn) const;
-
-
-	/*! Filename of the c6b file without path and extension.*/
+	/*! Basename of the c6b file without path and extension.*/
 	QString		m_name;
-	/*! Filename of the c6b file without path.*/
+	/*! Relative filename of the c6b file to database directory (or absolute if not a database file).*/
 	QString		m_filename;
-	/*! Defines where the file is located. */
+	/*! Absolute file path of the c6b file.*/
+	QString		m_absoluteFilePath;
+	/*! True if file is in built-in database. */
 	bool		m_builtIn;
 	/*! List of category strings which will be created from directory structure.*/
 	QStringList	m_categories;
-	/*! Complete description of c6b file.*/
-	QFileInfo	m_file;
 	/*! City. */
 	QString		m_city;
 	/*! Country. */
