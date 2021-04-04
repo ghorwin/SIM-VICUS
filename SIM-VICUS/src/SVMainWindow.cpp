@@ -1394,7 +1394,7 @@ void SVMainWindow::on_actionSimulationNANDRAD_triggered() {
 	if (res == QDialog::Accepted) {
 		// transfer data to VICUS project
 		// create an undo action for modification of the (entire) project
-		SVUndoModifyProject * undo = new SVUndoModifyProject(tr("Updated simulation parameters"), m_simulationStartNandrad->project());
+		SVUndoModifyProject * undo = new SVUndoModifyProject(tr("Updated simulation parameters"), m_simulationStartNandrad->localProject());
 		undo->push();
 	}
 }

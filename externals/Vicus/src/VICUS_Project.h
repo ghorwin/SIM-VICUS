@@ -66,6 +66,9 @@ public:
 	/*! Constructor, creates dummy data. */
 	Project();
 
+	/*! Generate default copy constructor. */
+	Project(const Project &) = default;
+
 	/*! Parses only the header of the XML file.
 		This function is supposed to be fast, yet not a complete XML parser.
 		\param filename  The full path to the project file.
@@ -152,7 +155,11 @@ public:
 
 	public:
 		enum Errortypes {
-			ET_MissingClimate
+			ET_MissingClimate,
+			ET_InvalidID,
+			ET_MismatchingSurfaceArea,
+			ET_MissingParentZone,
+			ET_NotValid
 		};
 
 		ConversionError(Errortypes errorType, const std::string & errmsg) :
@@ -172,6 +179,8 @@ public:
 	void generateNandradProject(NANDRAD::Project & p) const;
 	void generateBuildingProjectData(NANDRAD::Project & p) const;
 	void generateNetworkProjectData(NANDRAD::Project & p) const;
+	NANDRAD::Interface generateInterface(const VICUS::ComponentInstance & ci,
+										 const VICUS::Surface * s, unsigned int bcID, unsigned int & interfaceID) const;
 
 	// *** STATIC FUNCTIONS ***
 

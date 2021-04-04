@@ -38,7 +38,7 @@ public:
 	int edit();
 
 	/*! Returns a copy of the locally modified version of the project. */
-	const VICUS::Project & project() const { return m_localProject; }
+	const VICUS::Project & localProject() const { return m_localProject; }
 
 private slots:
 	void on_pushButtonClose_clicked();

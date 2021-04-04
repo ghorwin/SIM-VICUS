@@ -2,8 +2,12 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>So. Jan. 24 20:48:25 2021</Created>
-		<LastEdited>Sa. Apr. 3 16:20:05 2021</LastEdited>
+		<LastEdited>So. Apr. 4 18:31:34 2021</LastEdited>
 	</ProjectInfo>
+	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
+	<DirectoryPlaceholders>
+		<Placeholder name="Database">/home/ghorwin/git/SIM-VICUS/data</Placeholder>
+	</DirectoryPlaceholders>
 	<Project>
 		<SolverParameter>
 			<Integrator>CVODE</Integrator>
@@ -25,7 +29,21 @@
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<TimeZone>13</TimeZone>
+			<ClimateFilePath>${Database}/DE-04-TRY-2010__Potsdam__Jahr_00000K0_00081m.c6b</ClimateFilePath>
 		</Location>
+		<Outputs>
+			<Grids>
+				<OutputGrid name="Hourly values">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+			<IBK:Flag name="CreateDefaultZoneOutputs">true</IBK:Flag>
+		</Outputs>
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>

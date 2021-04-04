@@ -108,6 +108,7 @@ int SVSimulationStartNandrad::edit() {
 
 	// create a copy of the current project
 	m_localProject = project(); // Mind: addresses to member variables m_solverParameters, m_location etc. do not change here!
+	m_localProject.updatePointers();
 
 	// initialize defaults
 	NANDRAD::SimulationParameter & simParas = m_localProject.m_simulationParameter; // readability improvement
@@ -341,6 +342,7 @@ bool SVSimulationStartNandrad::startSimulation(bool testInit) {
 		ex.writeMsgStackToError();
 		QMessageBox::critical(this, tr("NANDRAD Project Generation Error"),
 							  tr("An error occurred during NANDRAD project generation. See log for details."));
+		return false;
 	}
 
 	// save project
