@@ -30,6 +30,7 @@
 
 #include <NANDRAD_Project.h>
 #include <NANDRAD_SolverParameter.h>
+#include <NANDRAD_FMIDescription.h>
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Network.h"
@@ -306,6 +307,10 @@ public:
 		in the built-in and user-database and stored for project exchange between computers.
 	*/
 	EmbeddedDatabase									m_embeddedDB;				// XML:E
+
+
+	/*! Definitions for exporting an FMU from the model. */
+	NANDRAD::FMIDescription								m_fmiDescription;			// XML:E
 };
 
 
