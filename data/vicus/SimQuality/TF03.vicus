@@ -2,11 +2,11 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>So. Jan. 24 20:48:25 2021</Created>
-		<LastEdited>So. Apr. 4 18:56:56 2021</LastEdited>
+		<LastEdited>Mo. Apr. 5 08:14:54 2021</LastEdited>
 	</ProjectInfo>
 	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
 	<DirectoryPlaceholders>
-		<Placeholder name="Database">/home/ghorwin/git/SIM-VICUS/data/DB_climate</Placeholder>
+		<Placeholder name="Database">/home/ghorwin/git/SIM-VICUS/data</Placeholder>
 	</DirectoryPlaceholders>
 	<Project>
 		<SolverParameter>
@@ -29,7 +29,7 @@
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<TimeZone>13</TimeZone>
-			<ClimateFilePath>${Database}/Europe/Germany/TRY2011/DE-04-TRY-2010__Potsdam__Jahr_00000K0_00081m.c6b</ClimateFilePath>
+			<ClimateFilePath>${Database}/DB_climate/Europe/Germany/TRY2011/DE-04-TRY-2010__Potsdam__Jahr_00000K0_00081m.c6b</ClimateFilePath>
 		</Location>
 		<Outputs>
 			<Grids>

@@ -298,8 +298,8 @@ SVProjectHandler::SaveResult SVProjectHandler::saveProject(QWidget * parent, con
 	m_project->m_projectInfo.m_lastEdited = QDateTime::currentDateTime().toString(Qt::TextDate).toUtf8().data();
 
 	// update standard placeholders in project file
-	m_project->m_placeholders[VICUS::DATABASE_PLACEHOLDER_NAME]			= QtExt::Directories::databasesDir().toStdString() + "/DB_climate";
-	m_project->m_placeholders[VICUS::USER_DATABASE_PLACEHOLDER_NAME]	= QtExt::Directories::userDataDir().toStdString() + "/DB_climate";
+	m_project->m_placeholders[VICUS::DATABASE_PLACEHOLDER_NAME]			= QtExt::Directories::databasesDir().toStdString();
+	m_project->m_placeholders[VICUS::USER_DATABASE_PLACEHOLDER_NAME]	= QtExt::Directories::userDataDir().toStdString();
 
 	// update embedded database
 	SVSettings::instance().m_db.updateEmbeddedDatabase(*m_project);
