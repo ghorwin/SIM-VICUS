@@ -98,10 +98,7 @@ SVSimulationStartNandrad::~SVSimulationStartNandrad() {
 
 int SVSimulationStartNandrad::edit() {
 
-	m_solverExecutable = QFileInfo(SVSettings::instance().m_installDir + "/NandradSolver").filePath();
-#ifdef WIN32
-	m_solverExecutable += ".exe";
-#endif // WIN32
+	m_solverExecutable = SVSettings::nandradSolverExecutable();
 
 	// cache NANDRAD project file path
 	m_nandradProjectFilePath = SVProjectHandler::instance().nandradProjectFilePath();

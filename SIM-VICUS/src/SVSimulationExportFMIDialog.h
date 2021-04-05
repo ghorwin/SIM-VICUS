@@ -26,6 +26,8 @@ public:
 private slots:
 	void on_pushButtonClose_clicked();
 
+	void on_pushButtonUpdateVariableList_clicked();
+
 private:
 	/*! Stores current input into project data structure. */
 	void storeInput();
