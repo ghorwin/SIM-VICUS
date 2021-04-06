@@ -1827,7 +1827,9 @@ void NandradModel::initModelDependencies() {
 		IBK::create_ofstream(m_dirs.m_varDir / "input_reference_list.txt")
 	);
 
-	(*inputRefList) << "Variable name\tSource object id(s)\tVector indexes/ids\n";
+	(*inputRefList) << std::setw(50) << std::left << "Variable name" << '\t'
+					<< std::setw(20) << std::left << "Source object id(s)" << '\t'
+					<< std::setw(20) << std::left << "Vector indexes/ids" << '\n';
 
 	// we need to generate the following information for users:
 	// for scalar variables
@@ -1873,8 +1875,8 @@ void NandradModel::initModelDependencies() {
 		if (!objectIDs.empty()) {
 			std::string objectIDstr = IBK::join_numbers(objectIDs, ',');
 			std::stringstream strm;
-			strm << std::setw(22) << std::left << varNameData.first << '\t'
-				 << std::setw(10) << std::left << objectIDstr << "\t\n";
+			strm << std::setw(50) << std::left << varNameData.first << '\t'
+				 << std::setw(20) << std::left << objectIDstr << "\t\n";
 			IBK::IBK_Message( IBK::FormatString("%1").arg(strm.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 			(*inputRefList) << strm.rdbuf();
 		}
@@ -1882,9 +1884,9 @@ void NandradModel::initModelDependencies() {
 			for (const auto & vectorVar : vectorIndexes) {
 				std::string vectorIDstr = IBK::join_numbers(vectorVar.second, ',');
 				std::stringstream strm;
-				strm << std::setw(22) << std::left << varNameData.first << '\t'
-					 << std::setw(10) << std::left << vectorVar.first << '\t'
-					 << std::setw(10) << std::left << vectorIDstr << '\n';
+				strm << std::setw(50) << std::left << varNameData.first << '\t'
+					 << std::setw(20) << std::left << vectorVar.first << '\t'
+					 << std::setw(20) << std::left << vectorIDstr << '\n';
 				IBK::IBK_Message( IBK::FormatString("%1").arg(strm.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 				(*inputRefList) << strm.rdbuf();
 			}
