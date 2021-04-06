@@ -617,6 +617,21 @@ std::string join(T c, char sepChar = ' ') {
 	return str;
 }
 
+/*! Joins a list of numbers (converting these into strings). */
+template <typename T>
+std::string join_numbers(const T & c, char sepChar = ' ') {
+	std::string str;
+	for (auto & t : c) {
+		str += IBK::val2string(t);
+		str += sepChar;
+	}
+	// remove trailing char
+	if (!str.empty())
+		str.erase(str.end()-1);
+	return str;
+}
+
+
 /*! Returns a string with the formatted double number.
 	Pass either ios_base::scientific or ios_base::fixed as optional third argument
 	to specify fixed or exponential format.

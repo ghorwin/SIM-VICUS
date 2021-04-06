@@ -38,6 +38,7 @@
 #include <NANDRAD_Constants.h>
 #include <NANDRAD_Project.h>
 #include <NANDRAD_KeywordList.h>
+#include <NANDRAD_FMIVariableDefinition.h>
 
 #include <SOLFRA_IntegratorSundialsCVODE.h>
 #include <SOLFRA_IntegratorExplicitEuler.h>
@@ -1460,7 +1461,7 @@ void NandradModel::initModelDependencies() {
 	IBK::IBK_Message(IBK::FormatString("Initializing all model results\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	std::unique_ptr<IBK::MessageIndentor> indent(new IBK::MessageIndentor);
 
-	// The key is of type QuantityDescription, a simply class that identifies a variable based on reference type and id
+	// The key is of type QuantityDescription, a simple class that identifies a variable based on reference type and id
 	// (both addressing an object) and variable name (identifying the variable of the object).
 	// The map can be used to quickly find the object the holds a required result variable.
 	// It maps QuantityDescription (i.e. global identification of a result variable) to the object that provides this variable.
@@ -1826,19 +1827,68 @@ void NandradModel::initModelDependencies() {
 		IBK::create_ofstream(m_dirs.m_varDir / "input_reference_list.txt")
 	);
 
-	(*inputRefList) << "Reference type\tSource object id\tVariable name\t Vector index/id (if not -1)\n";
+	(*inputRefList) << "Variable name\tSource object id(s)\tVector indexes/ids\n";
 
-	/// \todo Andreas, OpenMP upgrade, do this for each thead and generate a string for each thread, afterwards dump
-	/// it to file in a master block
+	// we need to generate the following information for users:
+	// for scalar variables
+	// - full variable name: <reftype>.<varname>
+	// - list of objects (IDs) that provide the variable
+	//
+	// for vector-valued variables
+	// - full variable base name: <reftype>.<vector-varname>
+	// - object id that provides this variable
+	// - possible ids/indexes to request a value
+
+	// We dump this out in a table:
+	//   fullvarName     objectIDs     possible IDs/Indexes
+	//
+	// first, we create a sorted container that collects input references by variable name, then we process all of these
+	// variable names, and handle scalar/vector valued quantities separately
+	std::map<std::string, std::vector<InputReference> > sortedList;
 	for (const InputReference & iref : globalInputRefList) {
-		std::stringstream strm;
-		strm << std::setw(22) << std::left << NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", iref.m_referenceType) << '\t'
-			 << std::setw(10) << std::left << iref.m_id << '\t'
-			 << std::setw(40) << std::left << iref.m_name.m_name << '\t'
-			 << std::setw(10) << std::left << iref.m_name.m_index << '\n';
-		IBK::IBK_Message( IBK::FormatString("%1").arg(strm.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+		std::string fullVarName = IBK::FormatString("%1.%2")
+			.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", iref.m_referenceType))
+			.arg(iref.m_name.m_name).str();
+		sortedList[fullVarName].push_back(iref);
+	}
 
-		(*inputRefList) << strm.rdbuf();
+	// now process all variable names and collect info for scalar/vector-valued input refs
+	for (const auto & varNameData : sortedList) {
+		// here we store the object IDs of scalar variables
+		std::set<unsigned int> objectIDs;
+		// here we store the vector indexes/IDs for vector-valued variables,
+		// key = objectId, value = vector-value-IDs/indexes
+		std::map<unsigned int, std::vector<unsigned int> > vectorIndexes;
+		for (const InputReference & iref : varNameData.second) {
+			// if vector-valued, write directly
+			if (iref.m_name.m_index != -1) {
+				vectorIndexes[iref.m_id].push_back((unsigned int)iref.m_name.m_index);
+			}
+			else {
+				// first only collect object IDs
+				objectIDs.insert(iref.m_id);
+			}
+		}
+		// if we have at least one object ID, write line for scalar variables
+		if (!objectIDs.empty()) {
+			std::string objectIDstr = IBK::join_numbers(objectIDs, ',');
+			std::stringstream strm;
+			strm << std::setw(22) << std::left << varNameData.first << '\t'
+				 << std::setw(10) << std::left << objectIDstr << "\t\n";
+			IBK::IBK_Message( IBK::FormatString("%1").arg(strm.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+			(*inputRefList) << strm.rdbuf();
+		}
+		if (!vectorIndexes.empty()) {
+			for (const auto & vectorVar : vectorIndexes) {
+				std::string vectorIDstr = IBK::join_numbers(vectorVar.second, ',');
+				std::stringstream strm;
+				strm << std::setw(22) << std::left << varNameData.first << '\t'
+					 << std::setw(10) << std::left << vectorVar.first << '\t'
+					 << std::setw(10) << std::left << vectorIDstr << '\n';
+				IBK::IBK_Message( IBK::FormatString("%1").arg(strm.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+				(*inputRefList) << strm.rdbuf();
+			}
+		}
 	}
 	inputRefList->flush();
 	inputRefList->close();

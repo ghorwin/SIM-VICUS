@@ -64,7 +64,7 @@ Zone(1).AirTemperature
 Zone(2).AirTemperature
 
 // generiert laut output_reference_list.txt
-Zone.AirTemperature 
+Zone.AirTemperature
 
 --> beide Ergebnisgrößen werden als Ausgabe angeboten
 ----
@@ -89,3 +89,9 @@ Für die FMU Konfiguration wird eine eigenen Variablenlisten-Datei geschrieben, 
 - Variablen-Index (falls vektorwertig)
 
 Bei vektorwertigen Variablen werden alle variablen individuell aufgeführt.
+
+
+### Option c)
+
+Mit Hinblick auf große Modelle verzichten wir auf das Generieren langer Variablenlisten und erlauben den Anwender, Eingangs- und Ausgangsvariablen zu definieren. Bei der Initialisierung prüfen wir dann, ob diese verwendet werden... erfordert aber viel Anwenderunterstützung, da man bei komplexen Modellen selten weiß, welche Variablen tatsächlich verwendet werden können.
+

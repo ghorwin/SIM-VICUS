@@ -41,6 +41,33 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
+	bool operator<(const FMIVariableDefinition & other) const {
+		// Note: compare properties starting with fast comparisons (integers) before strings.
+		if (m_inputVariable < other.m_inputVariable) return true;
+		if (m_inputVariable > other.m_inputVariable) return false;
+
+		if (m_objectID < other.m_objectID) return true;
+		if (m_objectID > other.m_objectID) return false;
+
+		if (m_varID < other.m_varID) return true;
+		if (m_varID > other.m_varID) return false;
+
+		if (m_fmiValueRef < other.m_fmiValueRef) return true;
+		if (m_fmiValueRef > other.m_fmiValueRef) return false;
+
+		if (m_varName < other.m_varName) return true;
+		if (m_varName > other.m_varName) return false;
+
+		if (m_fmiVarName < other.m_fmiVarName) return true;
+		if (m_fmiVarName > other.m_fmiVarName) return false;
+
+		if (m_objectType < other.m_objectType) return true;
+		if (m_objectType > other.m_objectType) return false;
+
+		return m_fmiTypeName < other.m_fmiTypeName;
+	}
+
+
 	/*! Compares NANDRAD model variable definitions (not FMI variables). */
 	bool sameModelVarAs(const FMIVariableDefinition & other) const {
 		return m_objectID == other.m_objectID &&
@@ -49,20 +76,25 @@ public:
 				m_varName == other.m_varName;
 	}
 
+	/*! If true, than this is an input variable. */
+	bool		m_inputVariable;
+	/*! Unit of the variable. */
+	std::string	m_unit;
+
 	/*! The variable name as it appears in the FMI model description. */
 	std::string m_fmiVarName;																// XML:A:required
 	/*! The variable variable type as it appears in the FMI model description. */
 	std::string m_fmiTypeName;																// XML:E
 	/*! The unqiue variable reference number for the FMI model description. */
-	unsigned int m_fmiValueRef;																// XML:A:required
+	IDType m_fmiValueRef = NANDRAD::INVALID_ID;												// XML:A:required
 
 	/*! The reference type of the object providing/requesting variable (see ModelInputReference::referenceType_t). */
 	std::string m_objectType;																// XML:E:required
 	/*! The ID of the referenced object. */
-	unsigned int m_objectID = NANDRAD::INVALID_ID;											// XML:E:required
+	IDType m_objectID = NANDRAD::INVALID_ID;												// XML:E:required
 	/*! The variable name for the variable reference in NANDRAD. */
 	std::string m_varName;																	// XML:E:required
-	unsigned int m_varID = NANDRAD::INVALID_ID;												// XML:E
+	IDType m_varID = NANDRAD::INVALID_ID;													// XML:E
 };
 
 
