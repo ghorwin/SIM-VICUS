@@ -607,13 +607,51 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 						// the rotation angle
 						qDebug() << QtExt::IBKVector2String(newPoint) << QtExt::IBKVector2String(projectedVector) << cosBeta << sinGamma << rotAngle;
 
+						std::vector<const VICUS::Surface*> selSurfaces;
+
+						project().selectedSurfaces(selSurfaces, VICUS::Project::SG_All);
+
+						IBKMK::Vector3D center, newCenter;
+						IBKMK::Vector3D boundingBoxDimensions = project().boundingBox(selSurfaces, center);
+
 						QQuaternion q = QQuaternion::fromAxisAndAngle( QtExt::IBKVector2QVector(m_rotationAxis), rotAngle);
 
+						Vic3D::Transform3D trans3D;
+						trans3D.setTranslation( QtExt::IBKVector2QVector(center) );
+
 						q = m_originalRotation*q;
+
+						newCenter = QtExt::QVector2IBKVector( q.rotatedVector( QtExt::IBKVector2QVector(center) ) );
+
 						m_coordinateSystemObject.setRotation(q);
+//						m_coordinateSystemObject.setTranslation(QtExt::IBKVector2QVector(center-newCenter) );
 
 						// now set this in the wireframe object as translation
 						m_selectedGeometryObject.m_transform.setRotation(q);
+						m_selectedGeometryObject.m_transform.setTranslation(QtExt::IBKVector2QVector(center-newCenter) );
+
+#if 0
+						// we find the rotation axis by taking the cross product of the normal vector and the normal vector we want to
+						// rotate to
+						IBKMK::Vector3D rotationAxis ( m_normal.crossProduct(newNormal) );
+
+						Vic3D::Transform3D rota;
+						// we now also have to find the angle between both normals
+						rota.rotate((float)angleBetweenVectorsDeg(m_normal, newNormal), QtExt::IBKVector2QVector(rotationAxis) );
+
+						// we take the QQuarternion to rotate
+						QQuaternion centerRota = rota.rotation();
+						QVector3D newCenter = centerRota.rotatedVector(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+
+						// we also have to find the center point after rotation and translate our center back to its origin
+						rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) - newCenter );
+
+						// we give our tranfsformation to the wire frame object
+						SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
+						const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
+						const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+#endif
+
 					} break;// interactive translation active
 				} // switch
 			} // mouse dragged

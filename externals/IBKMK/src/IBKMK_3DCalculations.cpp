@@ -105,11 +105,11 @@ bool planeCoordinates(const IBKMK::Vector3D & offset, const IBKMK::Vector3D & a,
 }
 
 
-double lineToPointDistance(const IBKMK::Vector3D & a, const IBKMK::Vector3D & d, const IBKMK::Vector3D & p,
-												   double & lineFactor, IBKMK::Vector3D & p2)
+double lineToPointDistance(const Vector3D & a, const Vector3D & d, const Vector3D & p,
+												   double & lineFactor, Vector3D & p2)
 {
 	// vector from starting point of line to target point
-	IBKMK::Vector3D v = p - a;
+	Vector3D v = p - a;
 
 	// scalar product (projection of v on d) gives scale factor
 	lineFactor = v.scalarProduct(d);
@@ -150,12 +150,12 @@ bool lineShereIntersection(const Vector3D & a, const Vector3D & d, const Vector3
 }
 
 
-double lineToLineDistance(const IBKMK::Vector3D & a1, const IBKMK::Vector3D & d1,
-												  const IBKMK::Vector3D & a2, const IBKMK::Vector3D & d2,
-												  double & l1, IBKMK::Vector3D & p1, double & l2)
+double lineToLineDistance(const Vector3D & a1, const Vector3D & d1,
+												  const Vector3D & a2, const Vector3D & d2,
+												  double & l1, Vector3D & p1, double & l2)
 {
 	/// source: http://geomalgorithms.com/a02-_lines.html
-	IBKMK::Vector3D v = a1 - a2;
+	Vector3D v = a1 - a2;
 
 	double d1Scalar = d1.scalarProduct(d1);// always >= 0
 	double d1d2Scalar = d1.scalarProduct(d2);
@@ -177,7 +177,7 @@ double lineToLineDistance(const IBKMK::Vector3D & a1, const IBKMK::Vector3D & d1
 	}
 
 	p1 = a1 + ( l1 * d1 );					// point 1
-	IBKMK::Vector3D p2 = a2 + (l2 * d2 );	// point 2
+	Vector3D p2 = a2 + (l2 * d2 );	// point 2
 
 	// get the difference of the two closest points
 	return ( p1 - p2 ).magnitude();   // return the closest distance
