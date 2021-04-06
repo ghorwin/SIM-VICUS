@@ -41,6 +41,14 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
+	/*! Compares NANDRAD model variable definitions (not FMI variables). */
+	bool sameModelVarAs(const FMIVariableDefinition & other) const {
+		return m_objectID == other.m_objectID &&
+				m_varID == other.m_varID &&
+				m_objectType == other.m_objectType &&
+				m_varName == other.m_varName;
+	}
+
 	/*! The variable name as it appears in the FMI model description. */
 	std::string m_fmiVarName;																// XML:A:required
 	/*! The variable variable type as it appears in the FMI model description. */
@@ -56,6 +64,7 @@ public:
 	std::string m_varName;																	// XML:E:required
 	unsigned int m_varID = NANDRAD::INVALID_ID;												// XML:E
 };
+
 
 } // namespace NANDRAD
 

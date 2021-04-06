@@ -25,3 +25,67 @@
    -> Variablen-Struktur erstellt
    
 
+
+
+## Informationen für die Definition von Ausgaben
+
+- Objektreferenztyp ("Zone", "Location" etc.) 
+- Objekt-ID
+- Variablenname
+- falls vektorwertig, Index oder ID
+
+Zusatzinfos für Anwender:
+- Einheit -> und ggfs. noch physikalische Größe (bspw. `Temperature`), wird benötigt für die Generierung eines Variablentyps
+- Einheit alleine mag vielleicht nicht ausreichen, wenn z.B. zwischen [W] thermischer und [W] elektrischer Leistung unterschieden werden soll.
+
+[source,xml]
+----
+<SimpleType name="Temperature">
+	<Real quantity="Temperature" unit="K" min="0" max="373.15" nominal="293.15" />
+</SimpleType>
+----
+
+- Beschreibungstext (in der Ausgabe wäre das nur in englisch, wie bekommt man die Internationalisierung hin?)
+
+
+
+
+## Wie bietet man dem Anwender die möglichen Eingangs- und Ausgangsvariablen an?
+
+### Option a)
+
+Aus Kenntnis des Projekts eine Liste von Eingangs-/Ausgangsvariablen generieren (kann groß sein) und prüfen, ob diese vom Modell verwendet werden. 
+
+Beispiel - Ausgaben:
+
+----
+// verfügbar laut Projekt
+Zone(1).AirTemperature
+Zone(2).AirTemperature
+
+// generiert laut output_reference_list.txt
+Zone.AirTemperature 
+
+--> beide Ergebnisgrößen werden als Ausgabe angeboten
+----
+
+
+Nachteil:
+
+- SIM-VICUS muss alle Modellergebnisgrößen/Eingangsgrößen kennen
+
+
+
+### Option b)
+
+NANDRAD Solver generiert vollständige Variablenlisten. Ausgaben einmal wie bisher für NANDRAD-Standalone-Anwender, d.h. Menschenlesbar, und nur als Zusammenfassung grundsätzlich generierter Ergebnisse.
+
+Für die FMU Konfiguration wird eine eigenen Variablenlisten-Datei geschrieben, diese enthält:
+
+- input/output Kennzeichnun
+- Object-Referenztyp (als Zahl kodiert)
+- Object-ID
+- Variablen-Namen (Diktionary-Type, d.h. Index auf Namen in vorangestellter Variablenliste)
+- Variablen-Index (falls vektorwertig)
+
+Bei vektorwertigen Variablen werden alle variablen individuell aufgeführt.

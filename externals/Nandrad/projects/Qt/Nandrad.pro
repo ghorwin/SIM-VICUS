@@ -130,6 +130,8 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_DailyCycle.cpp \
 	../../src/ncg/ncg_NANDRAD_EmbeddedObject.cpp \
 	../../src/ncg/ncg_NANDRAD_EmbeddedObjectWindow.cpp \
+	../../src/ncg/ncg_NANDRAD_FMIDescription.cpp \
+	../../src/ncg/ncg_NANDRAD_FMIVariableDefinition.cpp \
 	../../src/ncg/ncg_NANDRAD_HydraulicFluid.cpp \
 	../../src/ncg/ncg_NANDRAD_HydraulicNetworkComponent.cpp \
 	../../src/ncg/ncg_NANDRAD_HydraulicNetwork.cpp \

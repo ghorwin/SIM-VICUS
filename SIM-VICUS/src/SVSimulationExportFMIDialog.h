@@ -3,13 +3,13 @@
 
 #include <QDialog>
 
-#include <NANDRAD_Project.h>
-#include <VICUS_Outputs.h>
+#include <VICUS_Project.h>
 
 namespace Ui {
 	class SVSimulationExportFMIDialog;
 }
 
+class QTableWidgetItem;
 
 /*! The start dialog for a NANDRAD simulation.
 	Contains pages for all global simulation properties.
@@ -23,16 +23,23 @@ public:
 
 	int edit();
 
+	/*! Returns a copy of the locally modified version of the project. */
+	const VICUS::Project & localProject() const { return m_localProject; }
+
 private slots:
 	void on_pushButtonClose_clicked();
-
 	void on_pushButtonUpdateVariableList_clicked();
 
+	void on_tableWidgetInputVars_itemChanged(QTableWidgetItem *item);
+
 private:
-	/*! Stores current input into project data structure. */
-	void storeInput();
+
+	void updateInputVariableLists(bool silent);
+	void updateOutputVariableLists(bool silent);
 
 	Ui::SVSimulationExportFMIDialog	*m_ui;
+
+	VICUS::Project					m_localProject;
 
 };
 
