@@ -33,14 +33,21 @@ private slots:
 	void on_tableWidgetInputVars_itemChanged(QTableWidgetItem *item);
 
 private:
+	struct IDInfo {
+		std::vector<unsigned int>	m_objectIDs;
+		std::vector<unsigned int>	m_vectorIndexes;
+	};
 
-	void updateInputVariableLists(bool silent);
-	void updateOutputVariableLists(bool silent);
+	void updateVariableLists(bool silent);
 
-	Ui::SVSimulationExportFMIDialog	*m_ui;
+	bool parseVariableList(const QString & varsFile, std::map<QString, IDInfo> & modelVariables, bool silent);
 
-	VICUS::Project					m_localProject;
+	Ui::SVSimulationExportFMIDialog		*m_ui;
 
+	VICUS::Project						m_localProject;
+
+	std::map<QString, IDInfo>			m_modelInputVariables;
+	std::map<QString, IDInfo>			m_modelOutputVariables;
 };
 
 #endif // SVSimulationExportFMIDialogH
