@@ -17,9 +17,6 @@ SVSimulationExportFMIDialog::SVSimulationExportFMIDialog(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
-	m_ui->tableWidgetInputVars->horizontalHeader()->setStretchLastSection(true);
-	SVStyle::formatDatabaseTableView(m_ui->tableWidgetInputVars);
-
 	m_ui->lineEditFilePath->setup("", true, false, tr("FMU files (*.fmu);;All files (*.*)"));
 
 	m_ui->tableWidgetInputVars->setColumnCount(7);
@@ -31,6 +28,20 @@ SVSimulationExportFMIDialog::SVSimulationExportFMIDialog(QWidget *parent) :
 			  << tr("FMI variable name")
 			  << tr("FMI Type")
 			  << tr("FMI value reference"));
+	m_ui->tableWidgetInputVars->horizontalHeader()->setStretchLastSection(true);
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetInputVars);
+
+	m_ui->tableWidgetOutputVars->setColumnCount(7);
+	m_ui->tableWidgetOutputVars->setHorizontalHeaderLabels(QStringList()
+			  << tr("Model variable")
+			  << tr("Object ID")
+			  << tr("Vector value index/ID")
+			  << tr("Unit")
+			  << tr("FMI variable name")
+			  << tr("FMI Type")
+			  << tr("FMI value reference"));
+	m_ui->tableWidgetOutputVars->horizontalHeader()->setStretchLastSection(true);
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetOutputVars);
 }
 
 
@@ -140,7 +151,22 @@ void SVSimulationExportFMIDialog::updateVariableLists(bool silent) {
 
 
 void SVSimulationExportFMIDialog::updateFMUVariableTables() {
-	//
+
+	m_ui->tableWidgetInputVars->setRowCount(0);
+	m_ui->tableWidgetOutputVars->setRowCount(0);
+	for (const NANDRAD::FMIVariableDefinition & var : m_localProject.m_fmiDescription.m_variables) {
+		if (var.m_inputVariable) {
+			// check if variable exists
+			bool exists = (m_modelInputVariables.find(QString::fromStdString(var.m_varName)) != m_modelInputVariables.end());
+			appendVariableEntry(var, m_ui->tableWidgetInputVars, exists);
+		}
+		else {
+			// check if variable exists
+			bool exists = (m_modelOutputVariables.find(QString::fromStdString(var.m_varName)) != m_modelOutputVariables.end());
+			appendVariableEntry(var, m_ui->tableWidgetOutputVars, exists);
+		}
+	}
+
 	m_ui->tableWidgetInputVars->resizeColumnsToContents();
 	m_ui->tableWidgetOutputVars->resizeColumnsToContents();
 }
