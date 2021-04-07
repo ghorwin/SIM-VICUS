@@ -10,6 +10,7 @@ namespace Ui {
 }
 
 class QTableWidgetItem;
+class QTableWidget;
 
 /*! The start dialog for a NANDRAD simulation.
 	Contains pages for all global simulation properties.
@@ -32,6 +33,9 @@ private slots:
 
 	void on_tableWidgetInputVars_itemChanged(QTableWidgetItem *item);
 
+
+	void on_toolButtonAddInputVariable_clicked();
+
 private:
 	struct IDInfo {
 		std::vector<unsigned int>	m_objectIDs;
@@ -40,7 +44,22 @@ private:
 
 	void updateVariableLists(bool silent);
 
+	/*! Fills in the FMU data tables with already configured FMU variables.
+		All FMI variables stored in m_localProject.m_fmiDescription are shown in the table,
+		however, those without matching model variables (in m_modelInputVariables and m_modelOutputVariables)
+		are shown in gray and italic (as invalid!).
+	*/
+	void updateFMUVariableTables();
+
+	/*! Reads a variable definition file and generates a map with model variables versus object/vector IDs. */
 	bool parseVariableList(const QString & varsFile, std::map<QString, IDInfo> & modelVariables, bool silent);
+
+	/*! Adds a new row to a table widget.
+		\param var The variable to add.
+		\param tableWidget The target table widget.
+		\param exists True, if such a model variable exists in the current model.
+	*/
+	void appendVariableEntry(const NANDRAD::FMIVariableDefinition & var, QTableWidget * tableWidget, bool exists);
 
 	Ui::SVSimulationExportFMIDialog		*m_ui;
 

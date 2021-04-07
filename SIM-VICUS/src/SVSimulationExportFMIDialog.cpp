@@ -17,15 +17,10 @@ SVSimulationExportFMIDialog::SVSimulationExportFMIDialog(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
-	m_ui->tableWidgetInputVars->setColumnCount(7);
-	m_ui->tableWidgetInputVars->setHorizontalHeaderLabels( QStringList()
-				<< tr("Used") << tr("Object") << tr("Variable") << tr("Index/ID")
-				<< tr("FMIVarName") << tr("FMI Type") << tr("FMI Value Reference"));
 	m_ui->tableWidgetInputVars->horizontalHeader()->setStretchLastSection(true);
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetInputVars);
 
 	m_ui->lineEditFilePath->setup("", true, false, tr("FMU files (*.fmu);;All files (*.*)"));
-
-	SVStyle::formatDatabaseTableView(m_ui->tableWidgetInputVars);
 }
 
 
@@ -113,6 +108,7 @@ void SVSimulationExportFMIDialog::on_pushButtonUpdateVariableList_clicked() {
 	}
 
 	updateVariableLists(false);
+	updateFMUVariableTables();
 }
 
 
@@ -129,6 +125,14 @@ void SVSimulationExportFMIDialog::updateVariableLists(bool silent) {
 	QString outputVarsFile = QString::fromStdString( (varDir / "output_reference_list.txt").str() );
 	if (!parseVariableList(outputVarsFile, m_modelOutputVariables, silent))
 		return;
+	updateFMUVariableTables();
+}
+
+
+void SVSimulationExportFMIDialog::updateFMUVariableTables() {
+	//
+	m_ui->tableWidgetInputVars->resizeColumnsToContents();
+	m_ui->tableWidgetOutputVars->resizeColumnsToContents();
 }
 
 
@@ -178,47 +182,41 @@ bool SVSimulationExportFMIDialog::parseVariableList(const QString & varsFile,
 }
 
 
+void SVSimulationExportFMIDialog::appendVariableEntry(const NANDRAD::FMIVariableDefinition & var, QTableWidget * tableWidget, bool exists) {
+	tableWidget->blockSignals(true);
+	int row = tableWidget->rowCount();
+	tableWidget->setRowCount(row+1);
 
+	QFont disabledFont(tableWidget->font());
+	disabledFont.setItalic(true);
+	QColor disabledColor(Qt::gray);
+
+	QTableWidgetItem * item = new QTableWidgetItem(QString::fromStdString(var.m_varName));
+	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	if (!exists) {
+		item->setFont(disabledFont);
+		item->setTextColor(disabledColor);
+	}
+	tableWidget->setItem(row, 0, item);
+
+	item = new QTableWidgetItem(QString("%1").arg(var.m_objectID));
+	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	if (!exists) {
+		item->setFont(disabledFont);
+		item->setTextColor(disabledColor);
+	}
+	tableWidget->setItem(row, 1, item);
+
+	item = new QTableWidgetItem(QString("%1").arg(var.m_objectID));
+	if (var.m_varID == NANDRAD::INVALID_ID)
+		item->setText(""); // no -1 display
+	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	if (!exists) {
+		item->setFont(disabledFont);
+		item->setTextColor(disabledColor);
+	}
+	tableWidget->setItem(row, 2, item);
 #if 0
-	// now populate the table widget
-	m_ui->tableWidgetInputVars->setRowCount(inputVarDefs.size());
-
-	for (unsigned int i=0; i<inputVarDefs.size(); ++i) {
-		const NANDRAD::FMIVariableDefinition & ivar = inputVarDefs[i];
-		// check if we have this variable configured already?
-		const NANDRAD::FMIVariableDefinition * existingDef = nullptr;
-		for (const NANDRAD::FMIVariableDefinition & varDef : m_localProject.m_fmiDescription.m_inputVariableDefs) {
-			if (varDef.sameModelVarAs(ivar)) {
-				existingDef = &varDef;
-				break;
-			}
-		}
-
-		// BUG: wenn man das TableWidet item in der Spalte 0 als erstes Einfügt, bleiben die restlichen Spalten leer.
-		//      das scheint ein seltsamer Bug in QTableWidget zu sein... müsste man mal debuggen.
-		QTableWidgetItem * item1 = new QTableWidgetItem;
-		item1->setFlags(Qt::ItemIsEnabled | Qt::ItemIsUserCheckable);
-		if (existingDef != nullptr)
-			item1->setCheckState(Qt::Checked);
-		else
-			item1->setCheckState(Qt::Unchecked);
-		m_ui->tableWidgetInputVars->setItem(i, 0, item1);
-
-		QTableWidgetItem * item = new QTableWidgetItem;
-		item->setText( QString("%1.%2").arg(QString::fromStdString(ivar.m_objectType)).arg(ivar.m_objectID));
-		item->setFlags(Qt::ItemIsEnabled);
-		m_ui->tableWidgetInputVars->setItem(i, 1, item);
-
-		item = new QTableWidgetItem(QString::fromStdString(ivar.m_varName));
-		item->setFlags(Qt::ItemIsEnabled);
-		m_ui->tableWidgetInputVars->setItem(i, 2, item);
-
-		if (ivar.m_varID != NANDRAD::INVALID_ID) {
-			item = new QTableWidgetItem(ivar.m_varID);
-			item->setFlags(Qt::ItemIsEnabled);
-			m_ui->tableWidgetInputVars->setItem(i, 3, item);
-		}
-
 		if (existingDef != nullptr) {
 			item = new QTableWidgetItem(QString::fromStdString(existingDef->m_fmiVarName));
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
@@ -248,12 +246,41 @@ bool SVSimulationExportFMIDialog::parseVariableList(const QString & varsFile,
 
 
 	}
-}
 #endif
+
+	tableWidget->resizeColumnsToContents();
+	tableWidget->blockSignals(false);
+	tableWidget->selectRow(row);
+}
 
 
 
 void SVSimulationExportFMIDialog::on_tableWidgetInputVars_itemChanged(QTableWidgetItem *item) {
 	qDebug() << item->row() << item->column();
+
+	m_ui->toolButtonCopyInputVariable->setEnabled(m_ui->tableWidgetInputVars->currentRow() != -1);
+	m_ui->toolButtonRemoveInputVariable->setEnabled(m_ui->tableWidgetInputVars->currentRow() != -1);
 }
+
+
+void SVSimulationExportFMIDialog::on_toolButtonAddInputVariable_clicked() {
+	// add FMU variable to input vars
+
+	NANDRAD::FMIVariableDefinition var;
+	var.m_varName = "Zone.AirTemperature";
+	var.m_objectID = 1;
+	var.m_objectType = "Zone";
+	var.m_unit = "K";
+	var.m_varID = NANDRAD::INVALID_ID; // scalar variable
+
+	var.m_fmiVarName = "Zone(1).AirTemperature";
+	var.m_fmiTypeName = "Temperature";
+	var.m_fmiValueRef = 160;
+
+	m_localProject.m_fmiDescription.m_variables.push_back(var);
+
+	// now also add an entry into the table
+	appendVariableEntry(var, m_ui->tableWidgetInputVars, true);
+}
+
 

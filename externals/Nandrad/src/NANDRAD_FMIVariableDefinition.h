@@ -94,6 +94,7 @@ public:
 	IDType m_objectID = NANDRAD::INVALID_ID;												// XML:E:required
 	/*! The variable name for the variable reference in NANDRAD. */
 	std::string m_varName;																	// XML:E:required
+	/*! Vector ID/Index for vector valued quantities. */
 	IDType m_varID = NANDRAD::INVALID_ID;													// XML:E
 };
 
