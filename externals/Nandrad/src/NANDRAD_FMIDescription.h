@@ -46,8 +46,17 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Holds all input variable definitions. */
-	std::vector<FMIVariableDefinition>	m_inputVariableDefs;					// XML:E
+	/*! The FMI model name. */
+	std::string							m_modelName;							// XML:E
+
+	/*! Path to FMU file to export.
+		This is stored so that it is not necessary to specify the FMU path again and again when
+		exporting new project variants.
+	*/
+	IBK::Path							m_FMUPath;								// XML:E
+
+	/*! Holds all variable definitions. */
+	std::vector<FMIVariableDefinition>	m_variables;							// XML:E
 };
 
 } // namespace NANDRAD

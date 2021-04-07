@@ -40,7 +40,11 @@ void FMIDescription::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "InputVariableDefs") {
+			if (cName == "ModelName")
+				m_modelName = c->GetText();
+			else if (cName == "FMUPath")
+				m_FMUPath = IBK::Path(c->GetText());
+			else if (cName == "Variables") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
@@ -48,7 +52,7 @@ void FMIDescription::readXML(const TiXmlElement * element) {
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					FMIVariableDefinition obj;
 					obj.readXML(c2);
-					m_inputVariableDefs.push_back(obj);
+					m_variables.push_back(obj);
 					c2 = c2->NextSiblingElement();
 				}
 			}
@@ -70,13 +74,17 @@ TiXmlElement * FMIDescription::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("FMIDescription");
 	parent->LinkEndChild(e);
 
+	if (!m_modelName.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "ModelName", nullptr, std::string(), m_modelName);
+	if (m_FMUPath.isValid())
+		TiXmlElement::appendSingleAttributeElement(e, "FMUPath", nullptr, std::string(), m_FMUPath.str());
 
-	if (!m_inputVariableDefs.empty()) {
-		TiXmlElement * child = new TiXmlElement("InputVariableDefs");
+	if (!m_variables.empty()) {
+		TiXmlElement * child = new TiXmlElement("Variables");
 		e->LinkEndChild(child);
 
-		for (std::vector<FMIVariableDefinition>::const_iterator it = m_inputVariableDefs.begin();
-			it != m_inputVariableDefs.end(); ++it)
+		for (std::vector<FMIVariableDefinition>::const_iterator it = m_variables.begin();
+			it != m_variables.end(); ++it)
 		{
 			it->writeXML(child);
 		}

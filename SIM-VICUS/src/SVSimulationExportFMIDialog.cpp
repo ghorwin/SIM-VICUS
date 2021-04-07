@@ -23,6 +23,8 @@ SVSimulationExportFMIDialog::SVSimulationExportFMIDialog(QWidget *parent) :
 				<< tr("FMIVarName") << tr("FMI Type") << tr("FMI Value Reference"));
 	m_ui->tableWidgetInputVars->horizontalHeader()->setStretchLastSection(true);
 
+	m_ui->lineEditFilePath->setup("", true, false, tr("FMU files (*.fmu);;All files (*.*)"));
+
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetInputVars);
 }
 
@@ -37,6 +39,17 @@ int SVSimulationExportFMIDialog::edit() {
 	// create a copy of the current project
 	m_localProject = project();
 	m_localProject.updatePointers();
+
+	if (m_localProject.m_fmiDescription.m_modelName.empty())
+		m_localProject.m_fmiDescription.m_modelName = QFileInfo(SVProjectHandler::instance().projectFile()).baseName().toStdString();
+
+	if (!m_localProject.m_fmiDescription.m_FMUPath.isValid())
+		m_localProject.m_fmiDescription.m_FMUPath = IBK::Path(SVProjectHandler::instance().projectFile().toStdString()).withoutExtension() + ".fmu";
+
+	// *** transfer general parameters
+
+	m_ui->lineEditModelName->setText( QString::fromStdString(m_localProject.m_fmiDescription.m_modelName) );
+	m_ui->lineEditFilePath->setFilename( QString::fromStdString(m_localProject.m_fmiDescription.m_FMUPath.str()) );
 
 	updateVariableLists(true);
 
