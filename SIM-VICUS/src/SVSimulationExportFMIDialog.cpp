@@ -21,6 +21,16 @@ SVSimulationExportFMIDialog::SVSimulationExportFMIDialog(QWidget *parent) :
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetInputVars);
 
 	m_ui->lineEditFilePath->setup("", true, false, tr("FMU files (*.fmu);;All files (*.*)"));
+
+	m_ui->tableWidgetInputVars->setColumnCount(7);
+	m_ui->tableWidgetInputVars->setHorizontalHeaderLabels(QStringList()
+			  << tr("Model variable")
+			  << tr("Object ID")
+			  << tr("Vector value index/ID")
+			  << tr("Unit")
+			  << tr("FMI variable name")
+			  << tr("FMI Type")
+			  << tr("FMI value reference"));
 }
 
 
@@ -207,7 +217,7 @@ void SVSimulationExportFMIDialog::appendVariableEntry(const NANDRAD::FMIVariable
 	}
 	tableWidget->setItem(row, 1, item);
 
-	item = new QTableWidgetItem(QString("%1").arg(var.m_objectID));
+	item = new QTableWidgetItem(QString("%1").arg(var.m_varID));
 	if (var.m_varID == NANDRAD::INVALID_ID)
 		item->setText(""); // no -1 display
 	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
@@ -216,37 +226,38 @@ void SVSimulationExportFMIDialog::appendVariableEntry(const NANDRAD::FMIVariable
 		item->setTextColor(disabledColor);
 	}
 	tableWidget->setItem(row, 2, item);
-#if 0
-		if (existingDef != nullptr) {
-			item = new QTableWidgetItem(QString::fromStdString(existingDef->m_fmiVarName));
-			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
-			m_ui->tableWidgetInputVars->setItem(i, 4, item);
 
-			item = new QTableWidgetItem(QString::fromStdString(existingDef->m_fmiTypeName));
-			item->setFlags(Qt::ItemIsEnabled);
-			m_ui->tableWidgetInputVars->setItem(i, 5, item);
-
-			item = new QTableWidgetItem(QString("%1").arg(existingDef->m_fmiValueRef));
-			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
-			m_ui->tableWidgetInputVars->setItem(i, 6, item);
-		}
-		else {
-			item = new QTableWidgetItem;
-			item->setFlags(Qt::ItemIsEnabled);
-			m_ui->tableWidgetInputVars->setItem(i, 4, item);
-
-			item = new QTableWidgetItem;
-			item->setFlags(Qt::ItemIsEnabled);
-			m_ui->tableWidgetInputVars->setItem(i, 5, item);
-
-			item = new QTableWidgetItem;
-			item->setFlags(Qt::ItemIsEnabled);
-			m_ui->tableWidgetInputVars->setItem(i, 6, item);
-		}
-
-
+	item = new QTableWidgetItem(QString::fromStdString(var.m_unit));
+	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	if (!exists) {
+		item->setFont(disabledFont);
+		item->setTextColor(disabledColor);
 	}
-#endif
+	tableWidget->setItem(row, 3, item);
+
+	item = new QTableWidgetItem(QString::fromStdString(var.m_fmiVarName));
+	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	if (!exists) {
+		item->setFont(disabledFont);
+		item->setTextColor(disabledColor);
+	}
+	tableWidget->setItem(row, 4, item);
+
+	item = new QTableWidgetItem(QString::fromStdString(var.m_fmiTypeName));
+	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	if (!exists) {
+		item->setFont(disabledFont);
+		item->setTextColor(disabledColor);
+	}
+	tableWidget->setItem(row, 5, item);
+
+	item = new QTableWidgetItem(QString("%1").arg(var.m_fmiValueRef));
+	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	if (!exists) {
+		item->setFont(disabledFont);
+		item->setTextColor(disabledColor);
+	}
+	tableWidget->setItem(row, 6, item);
 
 	tableWidget->resizeColumnsToContents();
 	tableWidget->blockSignals(false);
