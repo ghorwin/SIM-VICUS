@@ -22,7 +22,7 @@ bool Infiltration::isValid() const
 		/// ob dieser Schedule valide ist?
 	}
 	try {
-		m_para->checkedValue(VICUS::KeywordList::Keyword("Infiltration::para_t", P_AirChangeRate),
+		m_para[P_AirChangeRate].checkedValue(VICUS::KeywordList::Keyword("Infiltration::para_t", P_AirChangeRate),
 							 "1/h", "1/h", 0, true, 100, true, nullptr);
 
 	}  catch (...) {
