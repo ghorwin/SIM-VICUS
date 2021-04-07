@@ -1,4 +1,4 @@
-#include "SVDatabaseEditDialog.h"
+﻿#include "SVDatabaseEditDialog.h"
 #include "ui_SVDatabaseEditDialog.h"
 
 #include <QItemSelectionModel>
@@ -456,8 +456,8 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createPipeEditDialog(QWidget * pare
 	return dlg;
 }
 
-SVDatabaseEditDialog *SVDatabaseEditDialog::createFluidEditDialog(QWidget *parent)
-{
+
+SVDatabaseEditDialog *SVDatabaseEditDialog::createFluidEditDialog(QWidget *parent) {
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
 		new SVDBNetworkFluidTableModel(parent, SVSettings::instance().m_db),
 		new SVDBNetworkFluidEditWidget(parent),

@@ -154,16 +154,17 @@ void SVSimulationExportFMIDialog::updateFMUVariableTables() {
 
 	m_ui->tableWidgetInputVars->setRowCount(0);
 	m_ui->tableWidgetOutputVars->setRowCount(0);
-	for (const NANDRAD::FMIVariableDefinition & var : m_localProject.m_fmiDescription.m_variables) {
+	for (unsigned int i = 0; i<m_localProject.m_fmiDescription.m_variables.size(); ++i) {
+		const NANDRAD::FMIVariableDefinition & var = m_localProject.m_fmiDescription.m_variables[i];
 		if (var.m_inputVariable) {
 			// check if variable exists
 			bool exists = (m_modelInputVariables.find(QString::fromStdString(var.m_varName)) != m_modelInputVariables.end());
-			appendVariableEntry(var, m_ui->tableWidgetInputVars, exists);
+			appendVariableEntry(i, m_ui->tableWidgetInputVars, exists);
 		}
 		else {
 			// check if variable exists
 			bool exists = (m_modelOutputVariables.find(QString::fromStdString(var.m_varName)) != m_modelOutputVariables.end());
-			appendVariableEntry(var, m_ui->tableWidgetOutputVars, exists);
+			appendVariableEntry(i, m_ui->tableWidgetOutputVars, exists);
 		}
 	}
 
@@ -218,7 +219,8 @@ bool SVSimulationExportFMIDialog::parseVariableList(const QString & varsFile,
 }
 
 
-void SVSimulationExportFMIDialog::appendVariableEntry(const NANDRAD::FMIVariableDefinition & var, QTableWidget * tableWidget, bool exists) {
+void SVSimulationExportFMIDialog::appendVariableEntry(unsigned int index, QTableWidget * tableWidget, bool exists) {
+	const NANDRAD::FMIVariableDefinition & var = m_localProject.m_fmiDescription.m_variables[index];
 	tableWidget->blockSignals(true);
 	int row = tableWidget->rowCount();
 	tableWidget->setRowCount(row+1);
@@ -233,6 +235,7 @@ void SVSimulationExportFMIDialog::appendVariableEntry(const NANDRAD::FMIVariable
 		item->setFont(disabledFont);
 		item->setTextColor(disabledColor);
 	}
+	item->setData(Qt::UserRole, index);
 	tableWidget->setItem(row, 0, item);
 
 	item = new QTableWidgetItem(QString("%1").arg(var.m_objectID));
@@ -291,12 +294,15 @@ void SVSimulationExportFMIDialog::appendVariableEntry(const NANDRAD::FMIVariable
 }
 
 
-
-void SVSimulationExportFMIDialog::on_tableWidgetInputVars_itemChanged(QTableWidgetItem *item) {
-	qDebug() << item->row() << item->column();
-
+void SVSimulationExportFMIDialog::on_tableWidgetInputVars_currentCellChanged(int , int , int , int ) {
 	m_ui->toolButtonCopyInputVariable->setEnabled(m_ui->tableWidgetInputVars->currentRow() != -1);
 	m_ui->toolButtonRemoveInputVariable->setEnabled(m_ui->tableWidgetInputVars->currentRow() != -1);
+}
+
+
+void SVSimulationExportFMIDialog::on_tableWidgetOutputVars_currentCellChanged(int , int , int , int ) {
+	m_ui->toolButtonCopyOutputVariable->setEnabled(m_ui->tableWidgetOutputVars->currentRow() != -1);
+	m_ui->toolButtonRemoveOutputVariable->setEnabled(m_ui->tableWidgetOutputVars->currentRow() != -1);
 }
 
 
@@ -317,7 +323,34 @@ void SVSimulationExportFMIDialog::on_toolButtonAddInputVariable_clicked() {
 	m_localProject.m_fmiDescription.m_variables.push_back(var);
 
 	// now also add an entry into the table
-	appendVariableEntry(var, m_ui->tableWidgetInputVars, true);
+	appendVariableEntry(m_localProject.m_fmiDescription.m_variables.size()-1, m_ui->tableWidgetInputVars, true);
 }
 
+
+void SVSimulationExportFMIDialog::on_toolButtonRemoveInputVariable_clicked() {
+	int row = m_ui->tableWidgetInputVars->currentRow();
+	Q_ASSERT(row != -1);
+	QTableWidgetItem * item = m_ui->tableWidgetInputVars->item(row, 0);
+	unsigned int varIndex = item->data(Qt::UserRole).toUInt();
+	Q_ASSERT(varIndex < m_localProject.m_fmiDescription.m_variables.size());
+
+	m_localProject.m_fmiDescription.m_variables.erase(m_localProject.m_fmiDescription.m_variables.begin()+varIndex);
+	updateFMUVariableTables();
+	row = qMin(row, m_ui->tableWidgetInputVars->rowCount()-1);
+	m_ui->tableWidgetInputVars->selectRow(row);
+}
+
+
+void SVSimulationExportFMIDialog::on_toolButtonRemoveOutputVariable_clicked() {
+	int row = m_ui->tableWidgetOutputVars->currentRow();
+	Q_ASSERT(row != -1);
+	QTableWidgetItem * item = m_ui->tableWidgetOutputVars->item(row, 0);
+	unsigned int varIndex = item->data(Qt::UserRole).toUInt();
+	Q_ASSERT(varIndex < m_localProject.m_fmiDescription.m_variables.size());
+
+	m_localProject.m_fmiDescription.m_variables.erase(m_localProject.m_fmiDescription.m_variables.begin()+varIndex);
+	updateFMUVariableTables();
+	row = qMin(row, m_ui->tableWidgetOutputVars->rowCount()-1);
+	m_ui->tableWidgetOutputVars->selectRow(row);
+}
 

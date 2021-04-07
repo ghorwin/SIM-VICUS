@@ -31,10 +31,15 @@ private slots:
 	void on_pushButtonClose_clicked();
 	void on_pushButtonUpdateVariableList_clicked();
 
-	void on_tableWidgetInputVars_itemChanged(QTableWidgetItem *item);
+
+	void on_tableWidgetInputVars_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
+	void on_tableWidgetOutputVars_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
 
 
 	void on_toolButtonAddInputVariable_clicked();
+	void on_toolButtonRemoveOutputVariable_clicked();
+
+	void on_toolButtonRemoveInputVariable_clicked();
 
 private:
 	struct IDInfo {
@@ -59,7 +64,7 @@ private:
 		\param tableWidget The target table widget.
 		\param exists True, if such a model variable exists in the current model.
 	*/
-	void appendVariableEntry(const NANDRAD::FMIVariableDefinition & var, QTableWidget * tableWidget, bool exists);
+	void appendVariableEntry(unsigned int index, QTableWidget * tableWidget, bool exists);
 
 	Ui::SVSimulationExportFMIDialog		*m_ui;
 
