@@ -124,5 +124,7 @@ HEADERS += \
 	../../src/NM_InternalLoadsModel.h \
 	../../src/NM_ThermalNetworkPrivate.h \
 	../../src/NM_ThermalNetworkAbstractFlowElement.h \
-	../../src/NM_ThermalNetworkFlowElements.h
+	../../src/NM_ThermalNetworkFlowElements.h \
+    ../../src/NM_AbstractController.h \
+    ../../src/NM_AbstractTransientController.h
 
