@@ -347,28 +347,28 @@ namespace NANDRAD_MODEL {
 			// ConstructionBalanceModel::Results
 			case 0 :
 			switch (t) {
-				case 0 : return "Heat conduction flux across interface A (into construction).";
-				case 1 : return "Heat conduction flux across interface B (into construction).";
-				case 2 : return "Short wave radiation flux across interface A (into construction).";
-				case 3 : return "Short wave radiation flux across interface B (into construction).";
+				case 0 : return "Heat conduction flux across interface A (into construction)";
+				case 1 : return "Heat conduction flux across interface B (into construction)";
+				case 2 : return "Short wave radiation flux across interface A (into construction)";
+				case 3 : return "Short wave radiation flux across interface B (into construction)";
 			} break;
 			// ConstructionBalanceModel::VectorValuedResults
 			case 1 :
 			switch (t) {
-				case 0 : return "Optional field fluxes for all material layers with given layer index.";
+				case 0 : return "Optional field fluxes for all material layers with given layer index";
 			} break;
 			// ConstructionStatesModel::VectorValuedResults
 			case 2 :
 			switch (t) {
-				case 0 : return "Finite-volume/element temperature.";
+				case 0 : return "Finite-volume mean element temperature";
 			} break;
 			// ConstructionStatesModel::Results
 			case 3 :
 			switch (t) {
-				case 0 : return "Surface temperature at interface A.";
-				case 1 : return "Surface temperature at interface B.";
-				case 2 : return "Solar radiation flux density into surface A.";
-				case 3 : return "Solar radiation flux density into surface B.";
+				case 0 : return "Surface temperature at interface A";
+				case 1 : return "Surface temperature at interface B";
+				case 2 : return "Solar radiation flux density into surface A";
+				case 3 : return "Solar radiation flux density into surface B";
 			} break;
 			// InternalLoadsModel::VectorValuedResults
 			case 4 :

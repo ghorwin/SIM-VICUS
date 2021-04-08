@@ -38,5 +38,12 @@ void FMIDescription::writeModelDescription(const IBK::Path & modelDesc, const st
 }
 
 
+bool FMIDescription::hasVariable(const FMIVariableDefinition & var) const {
+	for (const FMIVariableDefinition & v : m_variables)
+		if (v.sameModelVarAs(var)) return true;
+	return false;
+}
+
+
 } // namespace NANDRAD
 

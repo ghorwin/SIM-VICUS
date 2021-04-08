@@ -47,16 +47,16 @@ class ConstructionStatesModel : public AbstractModel {
 public:
 
 	enum VectorValuedResults {
-		VVR_ElementTemperature,			// Keyword: ElementTemperature		[C]		'Finite-volume/element temperature.'
+		VVR_ElementTemperature,			// Keyword: ElementTemperature		[C]		'Finite-volume mean element temperature'
 		NUM_VVR
 	};
 
 	/// \todo maybe add integral quantities like total moisture mass stored in construction or total energy stored in construction
 	enum Results {
-		R_SurfaceTemperatureA,			// Keyword: SurfaceTemperatureA		[C]		'Surface temperature at interface A.'
-		R_SurfaceTemperatureB,			// Keyword: SurfaceTemperatureB		[C]		'Surface temperature at interface B.'
-		R_SolarRadiationFluxA,			// Keyword: SolarRadiationFluxA		[W/m2]	'Solar radiation flux density into surface A.'
-		R_SolarRadiationFluxB,			// Keyword: SolarRadiationFluxB		[W/m2]	'Solar radiation flux density into surface B.'
+		R_SurfaceTemperatureA,			// Keyword: SurfaceTemperatureA		[C]		'Surface temperature at interface A'
+		R_SurfaceTemperatureB,			// Keyword: SurfaceTemperatureB		[C]		'Surface temperature at interface B'
+		R_SolarRadiationFluxA,			// Keyword: SolarRadiationFluxA		[W/m2]	'Solar radiation flux density into surface A'
+		R_SolarRadiationFluxB,			// Keyword: SolarRadiationFluxB		[W/m2]	'Solar radiation flux density into surface B'
 		NUM_R
 	};
 

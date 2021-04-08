@@ -351,7 +351,8 @@ void SVSimulationExportFMIDialog::on_toolButtonRemoveInputVariable_clicked() {
 	Q_ASSERT(varIndex < m_localProject.m_fmiDescription.m_variables.size());
 
 	m_localProject.m_fmiDescription.m_variables.erase(m_localProject.m_fmiDescription.m_variables.begin()+varIndex);
-	updateFMUVariableTables();
+	m_ui->tableWidgetInputVars->removeRow(row);
+//	updateFMUVariableTables();
 	row = qMin(row, m_ui->tableWidgetInputVars->rowCount()-1);
 	m_ui->tableWidgetInputVars->selectRow(row);
 }
@@ -365,7 +366,8 @@ void SVSimulationExportFMIDialog::on_toolButtonRemoveOutputVariable_clicked() {
 	Q_ASSERT(varIndex < m_localProject.m_fmiDescription.m_variables.size());
 
 	m_localProject.m_fmiDescription.m_variables.erase(m_localProject.m_fmiDescription.m_variables.begin()+varIndex);
-	updateFMUVariableTables();
+	m_ui->tableWidgetOutputVars->removeRow(row);
+//	updateFMUVariableTables();
 	row = qMin(row, m_ui->tableWidgetOutputVars->rowCount()-1);
 	m_ui->tableWidgetOutputVars->selectRow(row);
 }
@@ -391,6 +393,7 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerateAllVariables_clicked() {
 
 		for (const unsigned int & id : var.second.m_objectIDs) {
 			NANDRAD::FMIVariableDefinition fmiVar;
+			fmiVar.m_inputVariable = true;
 			fmiVar.m_varName = var.first.toStdString();
 			fmiVar.m_objectID = id;
 			fmiVar.m_fmiValueRef = ++valRef;
@@ -401,7 +404,8 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerateAllVariables_clicked() {
 				fmiVar.m_vectorIndex = NANDRAD::INVALID_ID;
 				fmiVar.m_fmiVarName = IBK::FormatString("%1(%2).%3")
 						.arg(varParts[0]).arg(id).arg(varParts[1]).str();
-				newVars.push_back(fmiVar);
+				if (!m_localProject.m_fmiDescription.hasVariable(fmiVar))
+					newVars.push_back(fmiVar);
 			}
 			else {
 				for (const unsigned int & vectorID : var.second.m_vectorIndexes) {
@@ -409,13 +413,53 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerateAllVariables_clicked() {
 					fmiVar.m_fmiVarName = IBK::FormatString("%1(%2).%3(%4)")
 							.arg(varParts[0]).arg(fmiVar.m_objectID)
 							.arg(varParts[1]).arg(vectorID).str();
-					newVars.push_back(fmiVar);
+					if (!m_localProject.m_fmiDescription.hasVariable(fmiVar))
+						newVars.push_back(fmiVar);
 				}
 			}
 		}
 
 	}
-	m_localProject.m_fmiDescription.m_variables = newVars;
+
+	// now output variables
+	for (const auto & var : m_modelOutputVariables) {
+		std::vector<std::string> varParts = IBK::explode(var.first.toStdString(), '.');
+
+		Q_ASSERT(varParts.size() == 2);
+
+		for (const unsigned int & id : var.second.m_objectIDs) {
+			NANDRAD::FMIVariableDefinition fmiVar;
+			fmiVar.m_inputVariable = false;
+			fmiVar.m_varName = var.first.toStdString();
+			fmiVar.m_objectID = id;
+			QString desc;
+			variableInfo(fmiVar.m_varName, desc, fmiVar.m_unit, fmiVar.m_fmiTypeName);
+			if (var.second.m_vectorIndexes.empty()) {
+				// scalar variable
+				fmiVar.m_fmiValueRef = ++valRef;
+				fmiVar.m_vectorIndex = NANDRAD::INVALID_ID;
+				fmiVar.m_fmiVarName = IBK::FormatString("%1(%2).%3")
+						.arg(varParts[0]).arg(id).arg(varParts[1]).str();
+				if (!m_localProject.m_fmiDescription.hasVariable(fmiVar))
+					newVars.push_back(fmiVar);
+			}
+			else {
+				for (const unsigned int & vectorID : var.second.m_vectorIndexes) {
+					fmiVar.m_vectorIndex = vectorID;
+					fmiVar.m_fmiValueRef = ++valRef;
+					fmiVar.m_fmiVarName = IBK::FormatString("%1(%2).%3(%4)")
+							.arg(varParts[0]).arg(fmiVar.m_objectID)
+							.arg(varParts[1]).arg(vectorID).str();
+					// add only those new variables to project that do not exist already in variable list
+					if (!m_localProject.m_fmiDescription.hasVariable(fmiVar))
+						newVars.push_back(fmiVar);
+				}
+			}
+		}
+	}
+
+	m_localProject.m_fmiDescription.m_variables.insert(m_localProject.m_fmiDescription.m_variables.end(),
+													   newVars.begin(), newVars.end());
 	updateFMUVariableTables();
 }
 
@@ -441,6 +485,12 @@ void SVSimulationExportFMIDialog::variableInfo(const std::string & fullVarName, 
 	// populate map on first call
 	if (varInfo.empty()) {
 		varInfo["Zone.AirTemperature"] = VarInfo(tr("Zone well-mixed air temperature"), "K", "Temperature");
+		varInfo["Zone.WindowSolarRadiationFluxSum"] = VarInfo(tr("Sum of all short wave radiation fluxes across all windows of a zone (positive into zone)"), "W", "HeatFlux");
+		varInfo["ConstructionInstance.FluxHeatConductionA"] = VarInfo(tr("Heat conduction flux across interface A (into construction)"), "W", "HeatFlux");
+		varInfo["ConstructionInstance.FluxHeatConductionB"] = VarInfo(tr("Heat conduction flux across interface B (into construction)"), "W", "HeatFlux");
+		varInfo["ConstructionInstance.FluxShortWaveRadiationA"] = VarInfo(tr("Short wave radiation flux across interface A (into construction)"), "W", "HeatFlux");
+		varInfo["ConstructionInstance.FluxShortWaveRadiationB"] = VarInfo(tr("Short wave radiation flux across interface B (into construction)"), "W", "HeatFlux");
+		varInfo["Location.Temperature"] = VarInfo(tr("Outside temperature"), "K", "Temperature");
 	}
 
 	const auto & it = varInfo.find(fullVarName);

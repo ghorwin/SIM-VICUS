@@ -48,15 +48,15 @@ class ConstructionBalanceModel : public AbstractModel, public AbstractStateDepen
 public:
 
 	enum Results {
-		R_FluxHeatConductionA,				// Keyword: FluxHeatConductionA			[W]			'Heat conduction flux across interface A (into construction).'
-		R_FluxHeatConductionB,				// Keyword: FluxHeatConductionB			[W]			'Heat conduction flux across interface B (into construction).'
-		R_FluxShortWaveRadiationA,			// Keyword: FluxShortWaveRadiationA		[W]			'Short wave radiation flux across interface A (into construction).'
-		R_FluxShortWaveRadiationB,			// Keyword: FluxShortWaveRadiationB		[W]			'Short wave radiation flux across interface B (into construction).'
+		R_FluxHeatConductionA,				// Keyword: FluxHeatConductionA			[W]			'Heat conduction flux across interface A (into construction)'
+		R_FluxHeatConductionB,				// Keyword: FluxHeatConductionB			[W]			'Heat conduction flux across interface B (into construction)'
+		R_FluxShortWaveRadiationA,			// Keyword: FluxShortWaveRadiationA		[W]			'Short wave radiation flux across interface A (into construction)'
+		R_FluxShortWaveRadiationB,			// Keyword: FluxShortWaveRadiationB		[W]			'Short wave radiation flux across interface B (into construction)'
 		NUM_R
 	};
 
 	enum VectorValuedResults {
-		VVR_ThermalLoad,					// Keyword: ThermalLoad				[W]			'Optional field fluxes for all material layers with given layer index.'
+		VVR_ThermalLoad,					// Keyword: ThermalLoad					[W]			'Optional field fluxes for all material layers with given layer index'
 		NUM_VVR
 	};
 
