@@ -82,7 +82,8 @@ SOURCES += \
 	../../src/NM_ThermalNetworkPrivate.cpp \
 	../../src/NM_ThermalNetworkStatesModel.cpp \
 	../../src/NM_ThermalNetworkBalanceModel.cpp \
-	../../src/NM_ThermalNetworkFlowElements.cpp
+	../../src/NM_ThermalNetworkFlowElements.cpp \
+    ../../src/NM_Controller.cpp
 
 HEADERS += \
 	../../doc/NandradSolverMainPage.h \
@@ -126,5 +127,6 @@ HEADERS += \
 	../../src/NM_ThermalNetworkAbstractFlowElement.h \
 	../../src/NM_ThermalNetworkFlowElements.h \
     ../../src/NM_AbstractController.h \
-    ../../src/NM_AbstractTransientController.h
+    ../../src/NM_AbstractTransientController.h \
+    ../../src/NM_Controller.h
 

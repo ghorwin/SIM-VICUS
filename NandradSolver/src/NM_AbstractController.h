@@ -1,14 +1,13 @@
 #ifndef AbstractControllerH
 #define AbstractControllerH
 
-#include <vector>
 
 namespace NANDRAD_MODEL {
 
 /*! Defines the interface for an abstract controller.
 	Given a setpoint and a process variable, the controller instance
-	calculates controller error and controler output. This interface can be called
-	from any model that provides abstract quantities.
+	calculates controller error and controler output, normalized to [0,...,1].
+	This interface can be called from any model that provides abstract quantities.
 	\code
 	//derived class from AbstractController
 	PController controller;
