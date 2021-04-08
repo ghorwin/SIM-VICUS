@@ -67,7 +67,8 @@ public:
 
 	/*! Compares NANDRAD model variable definitions (not FMI variables). */
 	bool sameModelVarAs(const FMIVariableDefinition & other) const {
-		return m_objectID == other.m_objectID &&
+		return m_inputVariable == other.m_inputVariable &&
+				m_objectID == other.m_objectID &&
 				m_vectorIndex == other.m_vectorIndex &&
 				m_varName == other.m_varName;
 	}

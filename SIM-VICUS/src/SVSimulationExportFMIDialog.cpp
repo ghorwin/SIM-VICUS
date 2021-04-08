@@ -381,7 +381,10 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerateAllVariables_clicked() {
 	// Zone(5).AirTemperature
 	// Network(1).MassFlux(10)  - no distinguishing between ID and index
 
-	unsigned int valRef = 150;
+	unsigned int valRef = 100;
+	// get lowest possible unique value ref
+	for (const NANDRAD::FMIVariableDefinition & var : m_localProject.m_fmiDescription.m_variables)
+		valRef = std::max(valRef, var.m_fmiValueRef+1);
 
 	std::vector<NANDRAD::FMIVariableDefinition> newVars;
 
