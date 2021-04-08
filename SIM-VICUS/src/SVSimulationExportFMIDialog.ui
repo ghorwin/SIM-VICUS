@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabGeneral">
       <attribute name="title">
@@ -243,6 +243,23 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="pushButtonGenerate">
+       <property name="text">
+        <string>Generate FMU</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources/SIM-VICUS.qrc">
+         <normaloff>:/gfx/actions/32x32/FMU_32x32.png</normaloff>:/gfx/actions/32x32/FMU_32x32.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+      </widget>
+     </item>
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">

@@ -43,6 +43,8 @@ private slots:
 
 	void on_pushButtonGenerateAllVariables_clicked();
 
+	void on_pushButtonGenerate_clicked();
+
 private:
 	struct IDInfo {
 		std::vector<unsigned int>	m_objectIDs;

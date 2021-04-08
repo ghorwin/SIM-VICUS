@@ -679,12 +679,13 @@ void Project::generateNandradProject(NANDRAD::Project & p) const {
 	p.m_location = m_location;
 	// do we have a climate path?
 	if (!m_location.m_climateFilePath.isValid())
-		throw ConversionError(ConversionError::ET_MissingClimate, tr("A climate data file is needed. Please select a climate data file!"));
-
+		throw ConversionError(ConversionError::ET_MissingClimate,
+							  tr("A climate data file is needed. Please select a climate data file!"));
 
 	// directory placeholders
 	for (const auto & placeholder : m_placeholders)
 		p.m_placeholders[placeholder.first] = placeholder.second;
+
 
 	// *** building geometry data and databases ***
 
@@ -947,6 +948,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 
 void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
+	// TODO : Hauke
 
 }
 

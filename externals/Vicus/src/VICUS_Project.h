@@ -153,7 +153,6 @@ public:
 		needed to adjust the start-simulation-dialog, for example, to focus problematic inputs.
 	*/
 	class ConversionError : public IBK::Exception { // NO KEYWORDS
-
 	public:
 		enum Errortypes {
 			ET_MissingClimate,
@@ -169,6 +168,7 @@ public:
 			IBK::Exception(errmsg, "ConversionError"), m_errorType(errorType) {}
 		ConversionError(Errortypes errorType, const QString & errmsg) :
 			IBK::Exception(errmsg.toStdString(), "ConversionError"), m_errorType(errorType) {}
+		ConversionError(const ConversionError&) = default;
 		virtual ~ConversionError() override;
 
 		Errortypes m_errorType;
@@ -176,6 +176,7 @@ public:
 
 	/*! Converts VICUS data structure into NANDRAD project file.
 		This function throws an error message in case the conversion failed.
+		\param p The NANDRAD project to be populated.
 	*/
 	void generateNandradProject(NANDRAD::Project & p) const;
 	void generateBuildingProjectData(NANDRAD::Project & p) const;

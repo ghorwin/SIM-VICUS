@@ -5,6 +5,9 @@
 #include <QMessageBox>
 #include <QProcess>
 
+#include <QtExt_Directories.h>
+#include <quazip.h>
+
 #include <VICUS_Project.h>
 
 #include "SVProjectHandler.h"
@@ -502,4 +505,304 @@ void SVSimulationExportFMIDialog::variableInfo(const std::string & fullVarName, 
 		unit = it->second.m_unit;
 		fmuType = it->second.m_fmuVarType;
 	}
+}
+
+
+void SVSimulationExportFMIDialog::on_pushButtonGenerate_clicked() {
+	// input data check
+	// need variables
+	// need meta data
+
+
+	// generation process:
+	// 1. create directory structure
+	// 2. write modelDescription.xml
+	// 3. copy dll/shared library files
+	// 4. copy resources:
+	//    - referenced climate data files/tsv-files (adjust file path to be local)
+	//    - write project file
+	//    - NANDRAD FMI logo image
+
+	// zip directory structure
+
+
+	// get target directory
+	QString targetPath = m_ui->lineEditFilePath->filename();
+	QDir baseDir = QtExt::Directories::tmpDir() + "/" + QFileInfo(targetPath).baseName();
+
+	qDebug() << "Generating FMU in directory:" << baseDir;
+	// we create the following directory structure:
+	// targetPath = /home/ghorwin/fmuexport/TestModel1.fmu
+	// modelName = TestModel1
+	//
+	// zip-dir      = /<tmppath>/TestModel1
+	//                /<tmppath>/TestModel1/modelDescription.xml
+	//                /<tmppath>/TestModel1/Model.png
+	//                /<tmppath>/TestModel1/binaries/...
+	//                /<tmppath>/TestModel1/binaries/win64/TestModel1.dll
+	//                /<tmppath>/TestModel1/binaries/win64/*.dll
+	//                /<tmppath>/TestModel1/binaries/linux64/TestModel1.so
+	//                /<tmppath>/TestModel1/binaries/darwin64/TestModel1.dylib
+	//                /<tmppath>/TestModel1/resources/TestModel1.d6p
+	//                /<tmppath>/TestModel1/resources/*
+	// and we zip the directory such that /modelDescription.xml is in the root of the zip archive
+
+	// remove generation directory if existing
+	if (baseDir.exists()) {
+		qDebug() << "Removing existing directory.";
+		QtExt::Directories::removeDirRecursively(baseDir.absolutePath());
+	}
+	// first create base directory
+	baseDir.mkdir(baseDir.path());
+
+	// now create subdirectories
+	baseDir.mkdir("resources");
+
+	NANDRAD::Project p;
+	QString copyPath = baseDir.absoluteFilePath("resources");
+	try {
+		SVSettings::instance().m_db.updateEmbeddedDatabase(m_localProject);
+		m_localProject.generateNandradProject(p);
+	}
+	catch (VICUS::Project::ConversionError & ex) {
+		QMessageBox::critical(this, tr("FMU Export Error"),
+							  tr("%1\nBefore exporting an FMU, please make sure that the simulation runs correctly!").arg(ex.what()) );
+		return;
+	}
+	catch (IBK::Exception & ex) {
+		// just show a generic error message
+		ex.writeMsgStackToError();
+		QMessageBox::critical(this, tr("FMU Export Error"),
+							  tr("An error occurred during NANDRAD project generation.\n"
+								 "Before exporting an FMU, please make sure that the simulation runs correctly!"));
+		return;
+	}
+
+	// if we have a target path, copy the referenced climate data file to the new location and modify the path
+	IBK::Path resourcePath(copyPath.toStdString());
+	IBK::Path fullClimatePath = p.m_location.m_climateFilePath.withReplacedPlaceholders(p.m_placeholders);
+	if (!fullClimatePath.isFile()) {
+		throw ConversionError(ConversionError::ET_MissingClimate,
+			tr("The referenced climate data file '%1' does not exist. Please select a climate data file!")
+				.arg(QString::fromStdString(fullClimatePath.str())) );
+	}
+	// target file path
+	IBK::Path targetClimatePath = *targetPath / fullClimatePath.filename();
+	if (!IBK::Path::copy(fullClimatePath, targetClimatePath))
+		throw ConversionError(ConversionError::ET_MissingClimate,
+			tr("Cannot copy the referenced climate data file '%1' to target directory '%2'.")
+				.arg(QString::fromStdString(fullClimatePath.str()))
+				.arg(QString::fromStdString(targetPath->str())) );
+	// modify reference in project file
+	p.m_location.m_climateFilePath = "${Project Directory}/" + fullClimatePath.filename().str();
+	}
+
+	bool res = m_localProject.exportProjectTo(copyPath);
+	if (!res) {
+		QMessageBox::critical(this, tr("FMU Export Error"), tr("Error while exporting project to FMU directory."));
+		QtExt::Directories::removeDirRecursively(baseDir.absolutePath());
+		return;
+	}
+
+	// now we have the project file copied, rename it to match the fmu model name
+	QString fmuModelName = m_fmiExportDialog->m_modelName;
+	QString exportedProjectFilePath = QFileInfo(DelProjectHandler::instance().projectFile()).fileName();
+	QString resDir = baseDir.absoluteFilePath("resources");
+	// the project file is always named "Project.d6p" within the FMU's resource directory
+	QFile::rename(QDir(resDir).absoluteFilePath(exportedProjectFilePath), QDir(resDir).absoluteFilePath("Project.d6p" ));
+
+	// generate the ModelDescription file
+
+	// load template and replace variables
+	QFile f(":/fmu/modelDescription.xml.template");
+	f.open(QFile::ReadOnly);
+	QTextStream strm(&f);
+
+	QString modelDesc = strm.readAll();
+
+	// ${MODELNAME}
+	modelDesc.replace("${MODELNAME}", fmuModelName);
+
+	// ${DELPHIN_VERSION}
+	modelDesc.replace("${DELPHIN_VERSION}", DELPHIN::LONG_VERSION);
+
+	// ${DATETIME} - 2018-08-01T12:49:19Z
+	QDateTime t=QDateTime::currentDateTime();
+	QString dt = t.toString(Qt::ISODate);
+	modelDesc.replace("${DATETIME}", dt);
+
+	// ${SIMDURATION} in seconds
+	modelDesc.replace("${SIMDURATION}", QString("%1").arg(DelProjectHandler::instance().project().m_init.m_interval.endTime()));
+
+	// generate variable and modelStructure section
+
+	QString modelVariables;
+	QString modelStructure;
+
+	const char * const INPUT_VAR_TEMPLATE =
+			"		<!-- Index of variable = \"${INDEX}\" -->\n"
+			"		<ScalarVariable\n"
+			"			name=\"${NAME}\"\n"
+			"			valueReference=\"${VALUEREF}\"\n"
+			"			variability=\"continuous\"\n"
+			"			causality=\"input\">\n"
+			"			<Real start=\"${STARTVALUE}\" unit=\"${REALVARUNIT}\"/>\n"
+			"		</ScalarVariable>\n"
+			"\n";
+
+	const char * const OUTPUT_VAR_TEMPLATE =
+			"		<!-- Index of variable = \"${INDEX}\" -->\n"
+			"		<ScalarVariable\n"
+			"			name=\"${NAME}\"\n"
+			"			valueReference=\"${VALUEREF}\"\n"
+			"			variability=\"continuous\"\n"
+			"			causality=\"output\"\n"
+			"			initial=\"calculated\">\n"
+			"			<Real unit=\"${REALVARUNIT}\"/>\n"
+			"		</ScalarVariable>\n"
+			"\n";
+
+	// process all variables
+
+	QSet<QString> units;
+
+	int i=1;
+	for (std::vector<DelFMIExportDialog::FMIVariable>::const_iterator it = m_fmiExportDialog->m_fmiVariables.begin();
+		 it != m_fmiExportDialog->m_fmiVariables.end(); ++it, ++i)
+	{
+		const DelFMIExportDialog::FMIVariable & var = *it;
+		QString varDesc;
+		if (var.input)
+			varDesc = INPUT_VAR_TEMPLATE;
+		else
+			varDesc = OUTPUT_VAR_TEMPLATE;
+		varDesc.replace("${INDEX}", QString("%1").arg(i));
+		varDesc.replace("${NAME}", var.name);
+		varDesc.replace("${VALUEREF}", QString("%1").arg(100+i));
+		// special handling for differen variable types
+		double startValue = 0;
+		if (var.unit == "K")		startValue = 293.15;
+		if (var.unit == "C")		startValue = 23;
+		else if (var.unit == "%")	startValue = 50;
+		else if (var.unit == "Pa")	startValue = 2000;
+		varDesc.replace("${STARTVALUE}", QString::number(startValue));
+		varDesc.replace("${REALVARUNIT}", var.unit);
+		units.insert(var.unit);
+		modelVariables += varDesc;
+		if (!var.input) {
+			modelStructure += QString(" 			<Unknown index=\"%1\"/>\n").arg(i);
+		}
+	}
+
+	// ${MODELVARIABLES}
+	modelDesc.replace("${MODELVARIABLES}", modelVariables);
+
+	// compose unit definitions section
+//		<UnitDefinitions>
+//			<Unit name="C"/>
+//			<Unit name="W/m2"/>
+//		</UnitDefinitions>
+
+	QString unitDefs;
+	if (!units.isEmpty()) {
+		unitDefs += "	<UnitDefinitions>\n";
+		for (QString u : units) {
+			unitDefs += "		<Unit name=\"" + u + "\"/>\n";
+		}
+		unitDefs += "	</UnitDefinitions>\n";
+	}
+
+	modelDesc.replace("${UNIT_DEFINITIONS}", unitDefs);
+
+	// ${MODEL_STRUCTURE_OUTPUTS} -
+	// 			<Unknown index="1"/>
+	//			<Unknown index="2"/>
+	modelDesc.replace("${MODEL_STRUCTURE_OUTPUTS}", modelStructure);
+
+	// finally write the file
+	QFile of(baseDir.absoluteFilePath("modelDescription.xml"));
+	of.open(QFile::WriteOnly);
+	of.write(modelDesc.toUtf8());
+	of.close();
+
+	// create thumbnail image and copy into FMU
+	QString thumbPath = saveThumbNail();
+	QFile::copy(thumbPath, baseDir.absoluteFilePath("model.png"));
+
+
+	bool success = true;
+
+	// copy the binaries
+#ifdef Q_OS_UNIX
+
+#ifdef Q_OS_LINUX
+
+	baseDir.mkdir("binaries");
+	baseDir.mkdir("binaries/linux64");
+
+	QFile::copy(DelSettings::instance().m_installDir + "/libDelphinSolverFMI.so",
+				baseDir.absoluteFilePath("binaries/linux64/" + fmuModelName + ".so"));
+#else
+	// macos
+	baseDir.mkdir("binaries");
+	baseDir.mkdir("binaries/darwin64");
+
+	QFile::copy(DelSettings::instance().m_installDir + "/libDelphinSolverFMI.dylib",
+				baseDir.absoluteFilePath("binaries/darwin64/" + fmuModelName + ".dylib"));
+#endif
+
+#elif defined(Q_OS_WIN)
+
+	baseDir.mkdir("binaries");
+
+#if defined(_WIN64)
+	baseDir.mkdir("binaries/win64");
+	QString binTargetPath = baseDir.absoluteFilePath("binaries/win64/");
+#else
+	baseDir.mkdir("binaries/win32");
+	QString binTargetPath = baseDir.absoluteFilePath("binaries/win32/");
+#endif
+	QFile::copy(DelSettings::instance().m_installDir + "/DelphinSolverFMI.dll",
+				binTargetPath + "/" + fmuModelName + ".dll");
+	if (!QFile::exists(binTargetPath + "/" + fmuModelName + ".dll")) {
+		QMessageBox::critical(this, tr("FMU Export Error"), tr("Error copying DELPHIN fmi dll '%1' into FMU directory structure.")
+							  .arg(DelSettings::instance().m_installDir + "/DelphinSolverFMI.dll"));
+		success = false;
+	}
+
+	if (success) {
+		QStringList copyFiles;
+		copyFiles << DelSettings::instance().m_installDir + "/msvcp140.dll"
+				  << DelSettings::instance().m_installDir + "/vcomp140.dll"
+				  << DelSettings::instance().m_installDir + "/vcruntime140.dll";
+		for (int i=0; i<copyFiles.count(); ++i) {
+			if (!QFile::exists(copyFiles[i])) {
+				QMessageBox::critical(this, tr("FMU Export Error"), tr("Missing file '%1' to copy into FMU archive.").arg(copyFiles[i]));
+				success = false;
+				break;
+			}
+			QFile::copy(copyFiles[i], binTargetPath + "/" + QFileInfo(copyFiles[i]).fileName());
+		}
+	}
+
+#else
+#error Unsupported platform
+
+#endif
+
+	if (success) {
+
+		// zip up the archive
+		success = JlCompress::compressDir(targetPath, baseDir.absolutePath());
+		if (!success) {
+			QMessageBox::critical(this, tr("FMU Export Error"), tr("Error compressing the FMU archive (maybe invalid target path or invalid characters used?)."));
+		}
+	}
+
+	// remove temporary directory structure
+	QtExt::Directories::removeDirRecursively(baseDir.absolutePath());
+
+	if (success)
+		QMessageBox::information(this, tr("FMU Export complete"), tr("FMU '%1' created.").arg(targetPath));
+
 }
