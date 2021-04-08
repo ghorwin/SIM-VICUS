@@ -49,8 +49,8 @@ public:
 		if (m_objectID < other.m_objectID) return true;
 		if (m_objectID > other.m_objectID) return false;
 
-		if (m_varID < other.m_varID) return true;
-		if (m_varID > other.m_varID) return false;
+		if (m_vectorIndex < other.m_vectorIndex) return true;
+		if (m_vectorIndex > other.m_vectorIndex) return false;
 
 		if (m_fmiValueRef < other.m_fmiValueRef) return true;
 		if (m_fmiValueRef > other.m_fmiValueRef) return false;
@@ -71,7 +71,7 @@ public:
 	/*! Compares NANDRAD model variable definitions (not FMI variables). */
 	bool sameModelVarAs(const FMIVariableDefinition & other) const {
 		return m_objectID == other.m_objectID &&
-				m_varID == other.m_varID &&
+				m_vectorIndex == other.m_vectorIndex &&
 				m_objectType == other.m_objectType &&
 				m_varName == other.m_varName;
 	}
@@ -95,7 +95,7 @@ public:
 	/*! The variable name for the variable reference in NANDRAD. */
 	std::string m_varName;																	// XML:E:required
 	/*! Vector ID/Index for vector valued quantities. */
-	IDType m_varID = NANDRAD::INVALID_ID;													// XML:E
+	IDType m_vectorIndex = NANDRAD::INVALID_ID;												// XML:E
 };
 
 

@@ -41,6 +41,8 @@ private slots:
 
 	void on_toolButtonRemoveInputVariable_clicked();
 
+	void on_pushButtonGenerateAllVariables_clicked();
+
 private:
 	struct IDInfo {
 		std::vector<unsigned int>	m_objectIDs;

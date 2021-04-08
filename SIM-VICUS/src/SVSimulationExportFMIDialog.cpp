@@ -246,8 +246,8 @@ void SVSimulationExportFMIDialog::appendVariableEntry(unsigned int index, QTable
 	}
 	tableWidget->setItem(row, 1, item);
 
-	item = new QTableWidgetItem(QString("%1").arg(var.m_varID));
-	if (var.m_varID == NANDRAD::INVALID_ID)
+	item = new QTableWidgetItem(QString("%1").arg(var.m_vectorIndex));
+	if (var.m_vectorIndex == NANDRAD::INVALID_ID)
 		item->setText(""); // no -1 display
 	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	if (!exists) {
@@ -314,7 +314,7 @@ void SVSimulationExportFMIDialog::on_toolButtonAddInputVariable_clicked() {
 	var.m_objectID = 1;
 	var.m_objectType = "Zone";
 	var.m_unit = "K";
-	var.m_varID = NANDRAD::INVALID_ID; // scalar variable
+	var.m_vectorIndex = NANDRAD::INVALID_ID; // scalar variable
 
 	var.m_fmiVarName = "Zone(1).AirTemperature";
 	var.m_fmiTypeName = "Temperature";
@@ -354,3 +354,50 @@ void SVSimulationExportFMIDialog::on_toolButtonRemoveOutputVariable_clicked() {
 	m_ui->tableWidgetOutputVars->selectRow(row);
 }
 
+
+void SVSimulationExportFMIDialog::on_pushButtonGenerateAllVariables_clicked() {
+	// process all input and output variables and generate new variables
+
+	// naming scheme for FMI variables:
+
+	// Zone(5).AirTemperature
+	// Network(1).MassFlux(10)  - no distinguishing between ID and index
+
+	unsigned int valRef = 150;
+
+	std::vector<NANDRAD::FMIVariableDefinition> newVars;
+
+	// first input variables
+	for (const auto & var : m_modelInputVariables) {
+		std::vector<std::string> varParts = IBK::explode(var.first.toStdString(), '.');
+
+		Q_ASSERT(varParts.size() == 2);
+
+		for (const unsigned int & id : var.second.m_objectIDs) {
+			NANDRAD::FMIVariableDefinition fmiVar;
+			fmiVar.m_varName = varParts[0];
+			fmiVar.m_objectID = id;
+			fmiVar.m_objectType = varParts[1];
+			fmiVar.m_fmiValueRef = ++valRef;
+			if (var.second.m_vectorIndexes.empty()) {
+				// scalar variable
+				fmiVar.m_vectorIndex = NANDRAD::INVALID_ID;
+				fmiVar.m_fmiVarName = IBK::FormatString("%1(%2).%3")
+						.arg(fmiVar.m_objectType).arg(id).arg(fmiVar.m_varName).str();
+				newVars.push_back(fmiVar);
+			}
+			else {
+				for (const unsigned int & vectorID : var.second.m_vectorIndexes) {
+					fmiVar.m_vectorIndex = vectorID;
+					fmiVar.m_fmiVarName = IBK::FormatString("%1(%2).%3(%4)")
+							.arg(fmiVar.m_objectType).arg(fmiVar.m_objectID)
+							.arg(fmiVar.m_varName).arg(vectorID).str();
+					newVars.push_back(fmiVar);
+				}
+			}
+		}
+
+	}
+	m_localProject.m_fmiDescription.m_variables = newVars;
+	updateFMUVariableTables();
+}

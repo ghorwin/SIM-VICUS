@@ -83,8 +83,8 @@ void FMIVariableDefinition::readXML(const TiXmlElement * element) {
 				m_objectID = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "VarName")
 				m_varName = c->GetText();
-			else if (cName == "VarID")
-				m_varID = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "VectorIndex")
+				m_vectorIndex = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -114,8 +114,8 @@ TiXmlElement * FMIVariableDefinition::writeXML(TiXmlElement * parent) const {
 			TiXmlElement::appendSingleAttributeElement(e, "ObjectID", nullptr, std::string(), IBK::val2string<unsigned int>(m_objectID));
 	if (!m_varName.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "VarName", nullptr, std::string(), m_varName);
-	if (m_varID != NANDRAD::INVALID_ID)
-			TiXmlElement::appendSingleAttributeElement(e, "VarID", nullptr, std::string(), IBK::val2string<unsigned int>(m_varID));
+	if (m_vectorIndex != NANDRAD::INVALID_ID)
+			TiXmlElement::appendSingleAttributeElement(e, "VectorIndex", nullptr, std::string(), IBK::val2string<unsigned int>(m_vectorIndex));
 	return e;
 }
 
