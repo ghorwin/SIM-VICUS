@@ -68,6 +68,19 @@ private:
 	*/
 	void appendVariableEntry(unsigned int index, QTableWidget * tableWidget, bool exists);
 
+	/*! This function returns detailed variable information to be used when generating FMU variables.
+		This might be better placed somewhere in the VICUS library?
+		The variables are defined in the NandradSolver sources, some with keyword list support, some without.
+		So we generally have no translated complete list of variables and associated object reference types anywhere
+		and need to duplicate that information somewhere within a Qt-based library.
+		This also means that when new variables are added in the NANDRAD solver, we need to add these
+		variables also here in the Qt library.
+
+		For now, we only need these variables in the FMU interface (maybe also for outputs?), so let's just implement this
+		function here. We can move this static function elsewhere, later.
+	*/
+	static void variableInfo(const std::string & fullVarName, QString & description, std::string & unit, std::string & fmuType);
+
 	Ui::SVSimulationExportFMIDialog		*m_ui;
 
 	VICUS::Project						m_localProject;

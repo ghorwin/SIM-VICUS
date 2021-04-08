@@ -20,6 +20,17 @@ SVSimulationExportFMIDialog::SVSimulationExportFMIDialog(QWidget *parent) :
 	m_ui->lineEditFilePath->setup("", true, false, tr("FMU files (*.fmu);;All files (*.*)"));
 
 	m_ui->tableWidgetInputVars->setColumnCount(7);
+	m_ui->tableWidgetInputVars->setRowCount(3);
+
+	QTableWidgetItem * item = new QTableWidgetItem("1");
+	m_ui->tableWidgetInputVars->setItem(0,0,item);
+
+	item = new QTableWidgetItem("2");
+	m_ui->tableWidgetInputVars->setItem(0,1,item);
+	item = new QTableWidgetItem("3");
+	m_ui->tableWidgetInputVars->setItem(1,0,item);
+	item = new QTableWidgetItem("4");
+	m_ui->tableWidgetInputVars->setItem(1,1,item);
 	m_ui->tableWidgetInputVars->setHorizontalHeaderLabels(QStringList()
 			  << tr("Model variable")
 			  << tr("Object ID")
@@ -221,7 +232,10 @@ bool SVSimulationExportFMIDialog::parseVariableList(const QString & varsFile,
 
 void SVSimulationExportFMIDialog::appendVariableEntry(unsigned int index, QTableWidget * tableWidget, bool exists) {
 	const NANDRAD::FMIVariableDefinition & var = m_localProject.m_fmiDescription.m_variables[index];
+
 	tableWidget->blockSignals(true);
+	// Important: disable sorting of table, otherwise index access might be complicated
+	tableWidget->setSortingEnabled(false);
 	int row = tableWidget->rowCount();
 	tableWidget->setRowCount(row+1);
 
@@ -290,8 +304,11 @@ void SVSimulationExportFMIDialog::appendVariableEntry(unsigned int index, QTable
 
 	tableWidget->resizeColumnsToContents();
 	tableWidget->blockSignals(false);
+	tableWidget->setSortingEnabled(true);
 	tableWidget->selectRow(row);
 }
+
+
 
 
 void SVSimulationExportFMIDialog::on_tableWidgetInputVars_currentCellChanged(int , int , int , int ) {
@@ -312,7 +329,6 @@ void SVSimulationExportFMIDialog::on_toolButtonAddInputVariable_clicked() {
 	NANDRAD::FMIVariableDefinition var;
 	var.m_varName = "Zone.AirTemperature";
 	var.m_objectID = 1;
-	var.m_objectType = "Zone";
 	var.m_unit = "K";
 	var.m_vectorIndex = NANDRAD::INVALID_ID; // scalar variable
 
@@ -375,23 +391,24 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerateAllVariables_clicked() {
 
 		for (const unsigned int & id : var.second.m_objectIDs) {
 			NANDRAD::FMIVariableDefinition fmiVar;
-			fmiVar.m_varName = varParts[0];
+			fmiVar.m_varName = var.first.toStdString();
 			fmiVar.m_objectID = id;
-			fmiVar.m_objectType = varParts[1];
 			fmiVar.m_fmiValueRef = ++valRef;
+			QString desc;
+			variableInfo(fmiVar.m_varName, desc, fmiVar.m_unit, fmiVar.m_fmiTypeName);
 			if (var.second.m_vectorIndexes.empty()) {
 				// scalar variable
 				fmiVar.m_vectorIndex = NANDRAD::INVALID_ID;
 				fmiVar.m_fmiVarName = IBK::FormatString("%1(%2).%3")
-						.arg(fmiVar.m_objectType).arg(id).arg(fmiVar.m_varName).str();
+						.arg(varParts[0]).arg(id).arg(varParts[1]).str();
 				newVars.push_back(fmiVar);
 			}
 			else {
 				for (const unsigned int & vectorID : var.second.m_vectorIndexes) {
 					fmiVar.m_vectorIndex = vectorID;
 					fmiVar.m_fmiVarName = IBK::FormatString("%1(%2).%3(%4)")
-							.arg(fmiVar.m_objectType).arg(fmiVar.m_objectID)
-							.arg(fmiVar.m_varName).arg(vectorID).str();
+							.arg(varParts[0]).arg(fmiVar.m_objectID)
+							.arg(varParts[1]).arg(vectorID).str();
 					newVars.push_back(fmiVar);
 				}
 			}
@@ -400,4 +417,36 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerateAllVariables_clicked() {
 	}
 	m_localProject.m_fmiDescription.m_variables = newVars;
 	updateFMUVariableTables();
+}
+
+
+
+// **** static functions ****
+
+struct VarInfo {
+	VarInfo() = default;
+	VarInfo(QString description, std::string unit, std::string fmuVarType) :
+		m_description(description), m_unit(unit), m_fmuVarType(fmuVarType)
+	{
+	}
+
+	QString			m_description;
+	std::string		m_unit;
+	std::string		m_fmuVarType;
+};
+
+static std::map<std::string, VarInfo> varInfo;
+
+void SVSimulationExportFMIDialog::variableInfo(const std::string & fullVarName, QString & description, std::string & unit, std::string & fmuType) {
+	// populate map on first call
+	if (varInfo.empty()) {
+		varInfo["Zone.AirTemperature"] = VarInfo(tr("Zone well-mixed air temperature"), "K", "Temperature");
+	}
+
+	const auto & it = varInfo.find(fullVarName);
+	if (it != varInfo.end()) {
+		description = it->second.m_description;
+		unit = it->second.m_unit;
+		fmuType = it->second.m_fmuVarType;
+	}
 }

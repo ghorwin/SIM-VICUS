@@ -59,17 +59,13 @@ void FMIVariableDefinition::readXML(const TiXmlElement * element) {
 			attrib = attrib->Next();
 		}
 		// search for mandatory elements
-		if (!element->FirstChildElement("ObjectType"))
+		if (!element->FirstChildElement("VarName"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'ObjectType' element.") ), FUNC_ID);
+				IBK::FormatString("Missing required 'VarName' element.") ), FUNC_ID);
 
 		if (!element->FirstChildElement("ObjectID"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'ObjectID' element.") ), FUNC_ID);
-
-		if (!element->FirstChildElement("VarName"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'VarName' element.") ), FUNC_ID);
 
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
@@ -77,12 +73,10 @@ void FMIVariableDefinition::readXML(const TiXmlElement * element) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "FmiTypeName")
 				m_fmiTypeName = c->GetText();
-			else if (cName == "ObjectType")
-				m_objectType = c->GetText();
-			else if (cName == "ObjectID")
-				m_objectID = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "VarName")
 				m_varName = c->GetText();
+			else if (cName == "ObjectID")
+				m_objectID = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "VectorIndex")
 				m_vectorIndex = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
 			else {
@@ -108,12 +102,10 @@ TiXmlElement * FMIVariableDefinition::writeXML(TiXmlElement * parent) const {
 	e->SetAttribute("fmiValueRef", IBK::val2string<IDType>(m_fmiValueRef));
 	if (!m_fmiTypeName.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "FmiTypeName", nullptr, std::string(), m_fmiTypeName);
-	if (!m_objectType.empty())
-		TiXmlElement::appendSingleAttributeElement(e, "ObjectType", nullptr, std::string(), m_objectType);
-	if (m_objectID != NANDRAD::INVALID_ID)
-			TiXmlElement::appendSingleAttributeElement(e, "ObjectID", nullptr, std::string(), IBK::val2string<unsigned int>(m_objectID));
 	if (!m_varName.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "VarName", nullptr, std::string(), m_varName);
+	if (m_objectID != NANDRAD::INVALID_ID)
+			TiXmlElement::appendSingleAttributeElement(e, "ObjectID", nullptr, std::string(), IBK::val2string<unsigned int>(m_objectID));
 	if (m_vectorIndex != NANDRAD::INVALID_ID)
 			TiXmlElement::appendSingleAttributeElement(e, "VectorIndex", nullptr, std::string(), IBK::val2string<unsigned int>(m_vectorIndex));
 	return e;

@@ -61,9 +61,6 @@ public:
 		if (m_fmiVarName < other.m_fmiVarName) return true;
 		if (m_fmiVarName > other.m_fmiVarName) return false;
 
-		if (m_objectType < other.m_objectType) return true;
-		if (m_objectType > other.m_objectType) return false;
-
 		return m_fmiTypeName < other.m_fmiTypeName;
 	}
 
@@ -72,7 +69,6 @@ public:
 	bool sameModelVarAs(const FMIVariableDefinition & other) const {
 		return m_objectID == other.m_objectID &&
 				m_vectorIndex == other.m_vectorIndex &&
-				m_objectType == other.m_objectType &&
 				m_varName == other.m_varName;
 	}
 
@@ -88,12 +84,13 @@ public:
 	/*! The unqiue variable reference number for the FMI model description. */
 	IDType m_fmiValueRef = NANDRAD::INVALID_ID;												// XML:A:required
 
-	/*! The reference type of the object providing/requesting variable (see ModelInputReference::referenceType_t). */
-	std::string m_objectType;																// XML:E:required
+	/*! The variable name for the variable reference in NANDRAD.
+		This is an encoded name in format <objectRefType>.<variableName>, for example
+		'Zone.AirTemperature'.
+	*/
+	std::string m_varName;																	// XML:E:required
 	/*! The ID of the referenced object. */
 	IDType m_objectID = NANDRAD::INVALID_ID;												// XML:E:required
-	/*! The variable name for the variable reference in NANDRAD. */
-	std::string m_varName;																	// XML:E:required
 	/*! Vector ID/Index for vector valued quantities. */
 	IDType m_vectorIndex = NANDRAD::INVALID_ID;												// XML:E
 };
