@@ -93,6 +93,7 @@ SOURCES += \
 				../../src/SVDBZoneControlThermostatTableModel.cpp \
 				../../src/SVDBZoneControlVentilationNaturalEditWidget.cpp \
 				../../src/SVDBZoneControlVentilationNaturalTableModel.cpp \
+				../../src/SVView3D.cpp \
 				../../src/actions/SVUndoAddBuilding.cpp \
 				../../src/actions/SVUndoAddBuildingLevel.cpp \
 				../../src/actions/SVUndoAddNetwork.cpp \
@@ -228,6 +229,7 @@ HEADERS  += \
 				../../src/SVDBZoneControlThermostatTableModel.h \
 				../../src/SVDBZoneControlVentilationNaturalEditWidget.h \
 				../../src/SVDBZoneControlVentilationNaturalTableModel.h \
+				../../src/SVView3D.h \
 				../../src/actions/SVUndoAddBuilding.h \
 				../../src/actions/SVUndoAddBuildingLevel.h \
 				../../src/actions/SVUndoAddNetwork.h \

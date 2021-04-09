@@ -57,6 +57,7 @@
 #include "SVPropEditGeometry.h"
 #include "SVStyle.h"
 #include "SVPropFloorManagerWidget.h"
+#include "SVView3D.h"
 
 #include "SVDatabaseEditDialog.h"
 #include "SVDBZoneTemplateEditDialog.h"
@@ -1712,4 +1713,10 @@ void SVMainWindow::on_actionViewShowSurfaceNormals_toggled(bool visible) {
 void SVMainWindow::on_actionResetView_triggered() {
 	// set scene view to recenter its camera
 	SVViewStateHandler::instance().m_geometryView->resetCamera();
+}
+
+void SVMainWindow::on_actionExport_View3D_triggered()
+{
+	SVView3D v3d;
+	v3d.exportView3d();
 }

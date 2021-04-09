@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>21</height>
+     <height>17</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -158,6 +158,7 @@
     </property>
     <addaction name="actionSimulationNANDRAD"/>
     <addaction name="actionSimulationHydraulicNetwork"/>
+    <addaction name="actionExport_View3D"/>
    </widget>
    <widget class="QMenu" name="menu_Buildings">
     <property name="title">
@@ -625,6 +626,11 @@
   <action name="actionDBInternalLoadsOther">
    <property name="text">
     <string>Other...</string>
+   </property>
+  </action>
+  <action name="actionExport_View3D">
+   <property name="text">
+    <string>Export View3D</string>
    </property>
   </action>
  </widget>

@@ -260,6 +260,8 @@ private slots:
 
 	void on_actionResetView_triggered();
 
+	void on_actionExport_View3D_triggered();
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();

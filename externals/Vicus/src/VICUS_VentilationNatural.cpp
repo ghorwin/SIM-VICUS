@@ -4,8 +4,7 @@
 namespace VICUS {
 
 
-bool VentilationNatural::isValid() const
-{
+bool VentilationNatural::isValid() const {
 	///TODO DIRK/KATJA
 
 	// is id valid?
