@@ -397,39 +397,6 @@ bool SVSimulationStartNandrad::generateNandradProject(NANDRAD::Project & p) {
 	return true;
 }
 
-bool SVSimulationStartNandrad::existIdInObjList(NANDRAD::Project & p, unsigned int id, const std::string &objListName){
-	for(unsigned int i=0; i<p.m_objectLists.size(); ++i){
-		if(p.m_objectLists[i].m_name == objListName){
-			if(p.m_objectLists[i].m_filterID.contains(id))
-				return true;
-			else
-				break;
-		}
-	}
-	return false;
-}
-
-template<class T>
-void SVSimulationStartNandrad::getNandradModel(NANDRAD::Project & p, unsigned int roomId, const T * model){
-
-	if ( dynamic_cast<const NANDRAD::InternalLoadsModel*>(model) != nullptr ) {
-		for (const auto &m : p.m_models.m_internalLoadsModels) {
-			const std::string &objListName = m.m_zoneObjectList;
-			if(existIdInObjList(p, roomId, objListName)){
-				model = dynamic_cast<const T*>(&m);
-				return;
-			}
-
-		}
-	}
-	else if ( dynamic_cast<const NANDRAD::ShadingControlModel*>(model) != nullptr ) {
-
-	}
-
-
-	model=nullptr;
-}
-
 
 bool SVSimulationStartNandrad::generateBuildingProjectData(NANDRAD::Project & p) {
 	FUNCID(SVSimulationStartNandrad::generateBuildingProjectData);
@@ -490,33 +457,6 @@ bool SVSimulationStartNandrad::generateBuildingProjectData(NANDRAD::Project & p)
 	const SVDatabase & db = SVSettings::instance().m_db;
 
 	// ############################## Zone Templates
-
-	for (const std::pair<unsigned int, std::vector<unsigned int>> &ob : mapZoneIdToRoomID) {
-		const VICUS::ZoneTemplate *zt = dynamic_cast<const VICUS::ZoneTemplate *>(db.m_zoneTemplates[(unsigned int) ob.first ]);
-
-		if ( zt == nullptr )
-			throw IBK::Exception(IBK::FormatString("Zone Template with ID %1 does not exist in database.").arg(ob.first), FUNC_ID);
-
-		for ( unsigned int i=0; i<VICUS::ZoneTemplate::NUM_ST; ++i) {
-			switch (zt->usedReference(i)) {
-			case VICUS::ZoneTemplate::ST_IntLoadPerson: {
-				p.m_models;
-				getNandradModel<NANDRAD::InternalLoadsModel>(p, );
-
-			} break;
-			case VICUS::ZoneTemplate::ST_IntLoadEquipment:
-			break;
-			case VICUS::ZoneTemplate::ST_IntLoadLighting:
-			break;
-			case VICUS::ZoneTemplate::ST_IntLoadOther:
-			break;
-			case VICUS::ZoneTemplate::ST_ControlThermostat:
-			break;
-			case VICUS::ZoneTemplate::NUM_ST:
-			break;
-			}
-		}
-	}
 
 
 	// ############################## Zone Templates

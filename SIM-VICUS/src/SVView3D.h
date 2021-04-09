@@ -42,27 +42,34 @@ public:
 
 		view3dSurface() {}
 
-		view3dSurface(unsigned int id, unsigned int v1, unsigned int v2, unsigned int v3, unsigned int v4,
-					  double emittance, const std::string &name) :
+		view3dSurface(unsigned int id, unsigned int vicusId, unsigned int v1, unsigned int v2, unsigned int v3, unsigned int v4,
+					  unsigned int combId, double emittance, const std::string &name) :
 			m_id(id),
+			m_vicusId(vicusId),
 			m_v1(v1),
 			m_v2(v2),
 			m_v3(v3),
 			m_v4(v4),
+			m_combId(combId),
 			m_emittance(emittance),
 			m_name(name)
 		{}
 
 		unsigned int					m_id;
 
+		unsigned int					m_vicusId;
+
 		unsigned int					m_v1;
 		unsigned int					m_v2;
 		unsigned int					m_v3;
 		unsigned int					m_v4;
 
+		unsigned int					m_combId;
+
 		double							m_emittance;
 
 		std::string						m_name;
+
 
 	};
 

@@ -17,7 +17,7 @@ void PController::updateControllerOutput()
 	// calculate controller output
 	m_controllerOutput = m_kP * (m_targetValue - m_currentState);
 	// normalize
-	m_controllerOutput = std::min(std::max(m_controllerOutput, 0.0), 1.0);
+	m_controllerOutput = std::fmin(std::fmax(m_controllerOutput, 0.0), 1.0);
 }
 
 
@@ -36,7 +36,7 @@ void PIController::updateControllerOutput()
 	// calculate controller output
 	m_controllerOutput = m_kP * (m_targetValue - m_currentState) + m_kI * m_controllerErrorIntegral;
 	// normalize
-	m_controllerOutput = std::min(std::max(m_controllerOutput, 0.0), 1.0);
+	m_controllerOutput = std::fmin(std::fmax(m_controllerOutput, 0.0), 1.0);
 }
 
 

@@ -1718,5 +1718,5 @@ void SVMainWindow::on_actionResetView_triggered() {
 void SVMainWindow::on_actionExport_View3D_triggered()
 {
 	SVView3D v3d;
-	v3d.exportView3d();
+	v3d.exportView3d(IBK::Path() );
 }

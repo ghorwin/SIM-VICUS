@@ -1,9 +1,13 @@
 #include "SVView3D.h"
 
 #include "SVProjectHandler.h"
+#include "SVSettings.h"
+#include "SVDatabase.h"
 
 #include "VICUS_Project.h"
 #include "VICUS_Surface.h"
+#include "VICUS_ComponentInstance.h"
+#include "VICUS_BoundaryCondition.h"
 
 #include "IBK_FileUtils.h"
 
@@ -11,7 +15,8 @@
 
 #include <fstream>
 
-SVView3D::SVView3D() {
+SVView3D::SVView3D()
+{
 
 }
 
@@ -21,6 +26,8 @@ void SVView3D::exportView3d(IBK::Path fname) {
 
 	// We take all our selected surfaces
 	project().selectedSurfaces(selSurfaces,VICUS::Project::SG_All);
+
+	SVDatabase &db = SVSettings::instance().m_db;
 
 	// We iterate through all selected surfaces
 	// then we triangulate them and compose our View3D Objects
@@ -42,10 +49,34 @@ void SVView3D::exportView3d(IBK::Path fname) {
 		}
 
 		unsigned int surfId = 0;
+		unsigned int counter = 0;
 		for ( const VICUS::PlaneGeometry::triangle_t &triangle : triangles) { // mind that our surfaces have to point inwards
-			view3dSurface sView3d (++surfaceId, offset + triangle.c, offset + triangle.b, offset + triangle.a, 0, 0.9,
-								   s.m_displayName.toStdString() + "["  + std::to_string(++surfId) + "]" );
+			view3dSurface sView3d (++surfaceId, s.m_id, offset + triangle.c, offset + triangle.b, offset + triangle.a, 0, counter, 0.9,
+								   "[" + std::to_string(s.m_id) + "] " + s.m_displayName.toStdString() + "["  + std::to_string(++surfId) + "]" );
 			m_surfaces.push_back(sView3d);
+			counter == 0 ? counter = surfaceId : 0; // we combine all triangles
+		}
+
+		// now we are also looking for component instances
+		if ( s.m_componentInstance != nullptr ){
+			const VICUS::ComponentInstance &compInst = *s.m_componentInstance;
+			const VICUS::Component *comp = db.m_components[compInst.m_componentID];
+			if ( compInst.m_sideASurfaceID == s.m_id ){
+				if ( comp != nullptr ) {
+					const VICUS::BoundaryCondition *boundCond = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
+					if ( boundCond != nullptr ) {
+						m_surfaces.back().m_emittance = boundCond->m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value;
+					}
+				}
+			}
+			else if ( compInst.m_sideBSurfaceID == s.m_id ){
+				if ( comp != nullptr ) {
+					const VICUS::BoundaryCondition *boundCond = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
+					if ( boundCond != nullptr ) {
+						m_surfaces.back().m_emittance = boundCond->m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value;
+					}
+				}
+			}
 		}
 
 		offset = vertexId + 1;
@@ -93,6 +124,7 @@ void SVView3D::exportView3d(IBK::Path fname) {
 	}
 	out << "!--------------------------------------\n";
 	// all surfaces
+
 	out << "!\t#\tv1\tv2\tv3\tv4\tbase\tcmb\temit\tname\tsurface data\n";
 	for (const view3dSurface &s : m_surfaces) {
 		out << "S\t" << IBK::FormatString("%1\t%2\t%3\t%4\t%5\t%6\t%7\t%8\t").arg(s.m_id)
@@ -101,7 +133,7 @@ void SVView3D::exportView3d(IBK::Path fname) {
 																		.arg(s.m_v3)
 																		.arg(s.m_v4)
 																		.arg(0)
-																		.arg(0)
+																		.arg(s.m_combId)
 																		.arg(s.m_emittance) << s.m_name << "\n";
 	}
 	out << "!--------------------------------------\n";
