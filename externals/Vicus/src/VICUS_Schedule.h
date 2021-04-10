@@ -28,7 +28,9 @@ public:
 	bool isValid() const;
 
 	/*! Multiply a schedule with another schedule. */
-	Schedule multiply(const Schedule &other);
+	Schedule multiply(const Schedule &other) const;
+
+	Schedule multiply(double val) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

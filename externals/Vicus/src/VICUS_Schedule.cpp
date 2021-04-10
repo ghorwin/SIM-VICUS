@@ -45,9 +45,10 @@ bool Schedule::isValid() const {
 	return true;
 }
 
-Schedule Schedule::multiply(const Schedule &other) {
-	Schedule sched;
+Schedule Schedule::multiply(const Schedule &other) const {
+	FUNCID("Schedule::multiply");
 
+	Schedule sched;
 
 	if(!isValid()){
 		//Schedule '%1' with (id=%2) is not valid.
@@ -58,6 +59,9 @@ Schedule Schedule::multiply(const Schedule &other) {
 		//Schedule '%1' with (id=%2) is not valid.
 		return sched;
 	}
+	if(m_useLinearInterpolation != other.m_useLinearInterpolation)
+		throw IBK::Exception(IBK::FormatString("Schedule with id %1 and %2 have different interpolation method."
+												" Multiply is not possible").arg(m_id).arg(other.m_id), FUNC_ID);
 	//make a copy of the other schedule to the new schedule
 	sched = other;
 	//compare periods
@@ -84,8 +88,6 @@ Schedule Schedule::multiply(const Schedule &other) {
 			++i;
 		}
 	}
-
-
 	//multi
 	i=0;
 	j=0;
@@ -102,7 +104,7 @@ Schedule Schedule::multiply(const Schedule &other) {
 				 j+1<m_periods.size() &&
 				 period2.m_intervalStartDay < m_periods[j+1].m_intervalStartDay) ||
 				j+1 >= m_periods.size()){
-			sched.m_periods[i].multiply(m_periods[j], sched.m_periods[i].m_intervalStartDay);
+			sched.m_periods[i] = sched.m_periods[i].multiply(m_periods[j], sched.m_periods[i].m_intervalStartDay);
 			++i;
 		}
 		else if(j+1<m_periods.size() &&
@@ -110,8 +112,41 @@ Schedule Schedule::multiply(const Schedule &other) {
 			++j;
 		}
 	}
+	///TODO Dirk->Andreas der neu erstellte Zeitplan hat jetzt die gleiche ID wie der OTHER
+	/// damit kracht es jetzt
+	/// Wie unterbinde ich das?
+	/// Wie finde ich eine Unique Id?
+	return sched;
+}
 
+Schedule Schedule::multiply(double val) const {
+	FUNCID("Schedule::multiply");
 
+	Schedule sched;
+
+	if(!isValid()){
+		//Schedule '%1' with (id=%2) is not valid.
+		return sched;
+	}
+
+	if(val < 0)
+		IBK::Exception(IBK::FormatString("Multiply negative values to a schedule is not allowed."), FUNC_ID);
+
+	//make a copy of the other schedule to the new schedule
+	sched = *this;
+	//multi
+	//now sched holds all start days
+	//iterate sched periods and check for same or lower startdays in m_periods
+	//if true multiply
+	//otherwise increment
+
+	for(unsigned int i=0; i<sched.m_periods.size(); ++i)
+		sched.m_periods[i] = sched.m_periods[i].multiply(val);
+
+	///TODO Dirk->Andreas der neu erstellte Zeitplan hat jetzt die gleiche ID wie der OTHER
+	/// damit kracht es jetzt
+	/// Wie unterbinde ich das?
+	/// Wie finde ich eine Unique Id?
 	return sched;
 }
 
