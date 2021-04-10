@@ -81,15 +81,23 @@ void SVDBInternalLoadsPersonEditWidget::updateInput(int id) {
 	m_ui->comboBoxPersonMethod->setCurrentIndex(m_current->m_personCountMethod);
 	m_ui->comboBoxPersonMethod->blockSignals(false);
 
-	m_ui->lineEditPersonCount->setValue(m_current->m_para[VICUS::InternalLoad::P_PersonCount].value);
 	m_ui->lineEditConvectiveFactor->setValue(m_current->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].value);
 
 	switch (m_current->m_personCountMethod) {
-		case VICUS::InternalLoad::PCM_AreaPerPerson:	m_ui->labelPersonCountUnit->setText(tr("m2 per Person"));				break;
-		case VICUS::InternalLoad::PCM_PersonPerArea:	m_ui->labelPersonCountUnit->setText(tr("Person per m2"));				break;
+		case VICUS::InternalLoad::PCM_AreaPerPerson:{
+			m_ui->labelPersonCountUnit->setText(tr("m2 per Person"));
+			m_ui->lineEditPersonCount->setValue(m_current->m_para[VICUS::InternalLoad::P_AreaPerPerson].value);
+
+		}break;
+		case VICUS::InternalLoad::PCM_PersonPerArea: {
+			m_ui->labelPersonCountUnit->setText(tr("Person per m2"));
+			m_ui->lineEditPersonCount->setValue(m_current->m_para[VICUS::InternalLoad::P_PersonPerArea].value);
+		}break;
 		case VICUS::InternalLoad::PCM_PersonCount:
-		case VICUS::InternalLoad::NUM_PCM:
-			m_ui->labelPersonCountUnit->setText(tr("Person"));						break;
+		case VICUS::InternalLoad::NUM_PCM:{
+			m_ui->labelPersonCountUnit->setText(tr("Person"));
+			m_ui->lineEditPersonCount->setValue(m_current->m_para[VICUS::InternalLoad::P_PersonCount].value);
+		}break;
 	}
 
 	VICUS::Schedule * occSched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_occupancyScheduleId ]);
@@ -113,6 +121,8 @@ void SVDBInternalLoadsPersonEditWidget::updateInput(int id) {
 	m_ui->lineEditConvectiveFactor->setEnabled(!isbuiltIn);
 	m_ui->lineEditActivityScheduleName->setEnabled(!isbuiltIn);
 	m_ui->lineEditOccupancyScheduleName->setEnabled(!isbuiltIn);
+	//m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+
 }
 
 
@@ -134,7 +144,20 @@ void SVDBInternalLoadsPersonEditWidget::on_comboBoxPersonMethod_currentIndexChan
 			m_current->m_personCountMethod = static_cast<VICUS::InternalLoad::PersonCountMethod>(i);
 			m_db->m_internalLoads.m_modified = true;
 			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+			switch (m_current->m_personCountMethod) {
+				case VICUS::InternalLoad::PCM_PersonPerArea:
+					m_ui->lineEditPersonCount->setValue(m_current->m_para[VICUS::InternalLoad::P_PersonPerArea].value);
+				break;
+				case VICUS::InternalLoad::PCM_AreaPerPerson:
+					m_ui->lineEditPersonCount->setValue(m_current->m_para[VICUS::InternalLoad::P_AreaPerPerson].value);
+				break;
+				case VICUS::InternalLoad::PCM_PersonCount:
+				case VICUS::InternalLoad::NUM_PCM:
+					m_ui->lineEditPersonCount->setValue(m_current->m_para[VICUS::InternalLoad::P_PersonCount].value);
+				break;
 
+			}
+			break;
 		}
 	}
 
@@ -148,7 +171,13 @@ void SVDBInternalLoadsPersonEditWidget::on_lineEditPersonCount_editingFinished()
 	if ( m_ui->lineEditPersonCount->isValid() ) {
 		double val = m_ui->lineEditPersonCount->value();
 		// update database but only if different from original
-		VICUS::InternalLoad::para_t paraName = VICUS::InternalLoad::P_PersonCount;
+		VICUS::InternalLoad::para_t paraName;
+		switch (m_current->m_personCountMethod) {
+			case VICUS::InternalLoad::PCM_PersonPerArea:				paraName = VICUS::InternalLoad::P_PersonPerArea;	break;
+			case VICUS::InternalLoad::PCM_AreaPerPerson:				paraName = VICUS::InternalLoad::P_AreaPerPerson;	break;
+			case VICUS::InternalLoad::PCM_PersonCount:					paraName = VICUS::InternalLoad::P_PersonCount;		break;
+			case VICUS::InternalLoad::NUM_PCM:							paraName = VICUS::InternalLoad::NUM_P;				break;
+		}
 		if (m_current->m_para[paraName].empty() ||
 			val != m_current->m_para[paraName].value)
 		{
@@ -195,6 +224,8 @@ void SVDBInternalLoadsPersonEditWidget::on_toolButtonSelectOccupancy_clicked() {
 		m_db->m_internalLoads.m_modified = true;
 	}
 	updateInput((int)m_current->m_id);
+	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+
 }
 
 void SVDBInternalLoadsPersonEditWidget::on_toolButtonSelectActivity_clicked() {
@@ -205,4 +236,6 @@ void SVDBInternalLoadsPersonEditWidget::on_toolButtonSelectActivity_clicked() {
 		m_db->m_internalLoads.m_modified = true;
 	}
 	updateInput((int)m_current->m_id);
+	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+
 }
