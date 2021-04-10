@@ -80,7 +80,8 @@ TiXmlElement * Models::writeXML(TiXmlElement * parent) const {
 
 	// write nothing if all containers are empty
 	if (m_naturalVentilationModels.empty() &&
-		m_shadingControlModels.empty())
+		m_shadingControlModels.empty() &&
+		m_internalLoadsModels.empty())
 		return nullptr;
 
 	TiXmlComment::addComment(parent, "Model parameterization blocks");
