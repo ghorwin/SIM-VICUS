@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<VicusProject fileVersion="0.2">
+	<ProjectInfo>
+		<Created>Fr. Apr. 9 15:45:17 2021</Created>
+		<LastEdited>Sa. Apr. 10 07:37:33 2021</LastEdited>
+	</ProjectInfo>
+	<Project>
+		<SolverParameter />
+		<SimulationParameter>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<Location>
+			<TimeZone>13</TimeZone>
+		</Location>
+		<ViewSettings>
+			<GridSpacing>10</GridSpacing>
+			<GridWidth>100</GridWidth>
+			<CameraTranslation>19.2571 -76.6767 72.511</CameraTranslation>
+			<RotationMatrix>
+				<Wp>0.915952</Wp>
+				<X>0.394028</X>
+				<Y>0.0300295</Y>
+				<Z>0.0697981</Z>
+			</RotationMatrix>
+			<FarDistance>10000</FarDistance>
+		</ViewSettings>
+		<Buildings>
+			<Building id="1" displayName="Building">
+				<BuildingLevels>
+					<BuildingLevel id="1" displayName="Level">
+						<Elevation>0</Elevation>
+						<Height>2.7</Height>
+						<Rooms>
+							<Room id="10" displayName="Test">
+								<IdZoneTemplate>80003</IdZoneTemplate>
+								<IBK:Parameter name="Area" unit="m2">12.5</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">33.7500006</IBK:Parameter>
+								<Surfaces>
+									<Surface id="11" displayName="Floor">
+										<PlaneGeometry type="Triangle">6 -11 0, 6 -16 0, 1 -16 0</PlaneGeometry>
+									</Surface>
+									<Surface id="12" displayName="Ceiling">
+										<PlaneGeometry type="Triangle">1 -16 2.7, 6 -16 2.7, 6 -11 2.7</PlaneGeometry>
+									</Surface>
+									<Surface id="13" displayName="Wall 1">
+										<PlaneGeometry type="Rectangle">6 -16 0, 6 -11 0, 6 -11 2.7, 6 -16 2.7</PlaneGeometry>
+									</Surface>
+									<Surface id="14" displayName="Wall 2">
+										<PlaneGeometry type="Rectangle">1 -16 0, 6 -16 0, 6 -16 2.7, 1 -16 2.7</PlaneGeometry>
+									</Surface>
+									<Surface id="15" displayName="Wall 3">
+										<PlaneGeometry type="Rectangle">6 -11 0, 1 -16 0, 1 -16 2.7, 6 -11 2.7</PlaneGeometry>
+									</Surface>
+								</Surfaces>
+							</Room>
+						</Rooms>
+					</BuildingLevel>
+				</BuildingLevels>
+			</Building>
+		</Buildings>
+		<ComponentInstances>
+			<ComponentInstance id="2" componentID="1012" sideASurfaceID="11" />
+			<ComponentInstance id="3" componentID="1012" sideASurfaceID="12" />
+			<ComponentInstance id="4" componentID="1012" sideASurfaceID="13" />
+			<ComponentInstance id="5" componentID="1012" sideASurfaceID="14" />
+			<ComponentInstance id="6" componentID="1012" sideASurfaceID="15" />
+		</ComponentInstances>
+	</Project>
+</VicusProject>
