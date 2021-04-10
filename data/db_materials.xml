@@ -33,7 +33,8 @@
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">868</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">0.87</IBK:Parameter>
 	</Material>
-	<Material id="10003" displayName="DE: [SimQuality] Stein |EN: [SimQuality] Stone" color="#8f5902">
+	<Material id="10003" displayName="de: [SimQuality] Stein |en: [SimQuality] Stone" color="#8f5902">
+		<Notes>en:Used in SimQuality test cases (TF8).|de:Verwendung in SimQuality (TF8).</Notes>
 		<Manufacturer>generic</Manufacturer>
 		<DataSource>SimQuality</DataSource>
 		<Category>NaturalStones</Category>

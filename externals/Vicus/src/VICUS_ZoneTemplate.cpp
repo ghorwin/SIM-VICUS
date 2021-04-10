@@ -13,6 +13,10 @@ ZoneTemplate::ZoneTemplate() {
 bool ZoneTemplate::isValid() const {
 
 	// TODO : Implement
+	if(m_id ==  INVALID_ID)
+		return false;
+
+	///TODO check the sub templates in SV-project with isValid()
 
 	return true;
 }

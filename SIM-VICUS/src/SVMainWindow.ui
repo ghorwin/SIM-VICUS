@@ -160,6 +160,7 @@
     <addaction name="actionSimulationHydraulicNetwork"/>
     <addaction name="separator"/>
     <addaction name="actionSimulationExportFMI"/>
+    <addaction name="actionExport_View3D"/>
    </widget>
    <widget class="QMenu" name="menu_Buildings">
     <property name="title">
@@ -635,6 +636,11 @@
    </property>
    <property name="toolTip">
     <string>Opens the FMU export dialog.</string>
+   </property>
+  </action>
+  <action name="actionExport_View3D">
+   <property name="text">
+    <string>Export View3D</string>
    </property>
   </action>
  </widget>

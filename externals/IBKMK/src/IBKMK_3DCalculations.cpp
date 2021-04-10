@@ -66,13 +66,13 @@ static bool solve(double a, double b, double c,  double d,  double e,  double f,
 
 	Note: when the point p is not in the plane, this function will still get a valid result.
 */
-bool planeCoordinates(const IBKMK::Vector3D & offset, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b,
-							 const IBKMK::Vector3D & v, double & x, double & y)
+bool planeCoordinates(const Vector3D & offset, const Vector3D & a, const Vector3D & b,
+							 const Vector3D & v, double & x, double & y)
 {
 	// We have 3 equations, but only two unknowns - so we have 3 different options to compute them.
 	// Some of them may fail, so we try them all.
 
-	const IBKMK::Vector3D & rhs = v-offset;
+	const Vector3D & rhs = v-offset;
 	// rows 1 and 2
 	bool success = solve(a.m_x, a.m_y, b.m_x, b.m_y, rhs.m_x, rhs.m_y, x, y);
 	if (!success)
@@ -85,7 +85,7 @@ bool planeCoordinates(const IBKMK::Vector3D & offset, const IBKMK::Vector3D & a,
 		return false;
 
 	// check that the point was indeed in the plane
-	IBKMK::Vector3D v2 = offset + x*a + y*b;
+	Vector3D v2 = offset + x*a + y*b;
 	v2 -= v;
 	if (v2.magnitude() > 1e-4) {
 //		// try a fix by correcting the vector to be in the place
@@ -94,10 +94,10 @@ bool planeCoordinates(const IBKMK::Vector3D & offset, const IBKMK::Vector3D & a,
 //		norma.normalize();
 
 //		// project vector on v - should result in a 0 vector, if in plane
-//		IBKMK::Vector3D projectedOnNormal = v.scalarProduct(norma)*norma;
+//		Vector3D projectedOnNormal = v.scalarProduct(norma)*norma;
 
 //		// correct vector by subtracting projecting
-//		IBKMK::Vector3D vdash = v - projectedOnNormal;
+//		Vector3D vdash = v - projectedOnNormal;
 
 		return false;
 	}
@@ -105,11 +105,11 @@ bool planeCoordinates(const IBKMK::Vector3D & offset, const IBKMK::Vector3D & a,
 }
 
 
-double lineToPointDistance(const IBKMK::Vector3D & a, const IBKMK::Vector3D & d, const IBKMK::Vector3D & p,
-												   double & lineFactor, IBKMK::Vector3D & p2)
+double lineToPointDistance(const Vector3D & a, const Vector3D & d, const Vector3D & p,
+												   double & lineFactor, Vector3D & p2)
 {
 	// vector from starting point of line to target point
-	IBKMK::Vector3D v = p - a;
+	Vector3D v = p - a;
 
 	// scalar product (projection of v on d) gives scale factor
 	lineFactor = v.scalarProduct(d);
@@ -150,12 +150,12 @@ bool lineShereIntersection(const Vector3D & a, const Vector3D & d, const Vector3
 }
 
 
-double lineToLineDistance(const IBKMK::Vector3D & a1, const IBKMK::Vector3D & d1,
-												  const IBKMK::Vector3D & a2, const IBKMK::Vector3D & d2,
-												  double & l1, IBKMK::Vector3D & p1, double & l2)
+double lineToLineDistance(const Vector3D & a1, const Vector3D & d1,
+												  const Vector3D & a2, const Vector3D & d2,
+												  double & l1, Vector3D & p1, double & l2)
 {
 	/// source: http://geomalgorithms.com/a02-_lines.html
-	IBKMK::Vector3D v = a1 - a2;
+	Vector3D v = a1 - a2;
 
 	double d1Scalar = d1.scalarProduct(d1);// always >= 0
 	double d1d2Scalar = d1.scalarProduct(d2);
@@ -177,7 +177,7 @@ double lineToLineDistance(const IBKMK::Vector3D & a1, const IBKMK::Vector3D & d1
 	}
 
 	p1 = a1 + ( l1 * d1 );					// point 1
-	IBKMK::Vector3D p2 = a2 + (l2 * d2 );	// point 2
+	Vector3D p2 = a2 + (l2 * d2 );	// point 2
 
 	// get the difference of the two closest points
 	return ( p1 - p2 ).magnitude();   // return the closest distance

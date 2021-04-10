@@ -6,7 +6,7 @@
 #include "NANDRAD_CodeGenMacros.h"
 #include "NANDRAD_Constants.h"
 #include "NANDRAD_HydraulicNetworkHeatExchange.h"
-
+#include "NANDRAD_ControlElement.h"
 
 namespace NANDRAD {
 
@@ -53,6 +53,7 @@ public:
 		NUM_IP
 	};
 
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE
@@ -95,6 +96,9 @@ public:
 	/*! Optional definition of heat exchange calculation model (if missing, flow element is adiabat). */
 	HydraulicNetworkHeatExchange	m_heatExchange;											// XML:E
 
+	/*! Optional control element/valve forcing an additional pressure loss
+		(controlType = NUM_CT if control is missing). */
+	NANDRAD::ControlElement			m_controlElement;										// XML:E
 
 	// *** Variables used only during simulation ***
 

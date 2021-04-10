@@ -155,7 +155,7 @@ private:
 	void update3DPolygon();
 
 	/*! This function triangulates the geometry and populate the m_triangles vector.
-		This function is called from updateGeometry().
+		This function is called from computeGeometry().
 	*/
 	void triangulate();
 

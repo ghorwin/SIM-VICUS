@@ -94,6 +94,7 @@ SOURCES += \
 				../../src/SVDBZoneControlVentilationNaturalEditWidget.cpp \
 				../../src/SVDBZoneControlVentilationNaturalTableModel.cpp \
 				../../src/SVSimulationExportFMIDialog.cpp \
+				../../src/SVView3D.cpp \
 				../../src/actions/SVUndoAddBuilding.cpp \
 				../../src/actions/SVUndoAddBuildingLevel.cpp \
 				../../src/actions/SVUndoAddNetwork.cpp \
@@ -230,6 +231,7 @@ HEADERS  += \
 				../../src/SVDBZoneControlVentilationNaturalEditWidget.h \
 				../../src/SVDBZoneControlVentilationNaturalTableModel.h \
 				../../src/SVSimulationExportFMIDialog.h \
+				../../src/SVView3D.h \
 				../../src/actions/SVUndoAddBuilding.h \
 				../../src/actions/SVUndoAddBuildingLevel.h \
 				../../src/actions/SVUndoAddNetwork.h \

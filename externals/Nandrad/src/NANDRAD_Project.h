@@ -42,6 +42,7 @@
 #include "NANDRAD_HydraulicNetwork.h"
 #include "NANDRAD_HydraulicNetworkComponent.h"
 #include "NANDRAD_KeywordList.h"
+#include "NANDRAD_Controller.h"
 
 /*! The namespace NANDRAD contains the data model classes that make up
 	the NANDRAD solver input data. The main class is NANDRAD::Project.
@@ -143,6 +144,8 @@ public:
 	/*! References to object lists.*/
 	std::vector<ObjectList>							m_objectLists;						// XML:E
 
+	/*! References to controllers */
+	std::vector<Controller>							m_controllers;						// XML:E
 
 private:
 

@@ -31,6 +31,8 @@ HEADERS += \
 	../../src/NANDRAD_Constants.h \
 	../../src/NANDRAD_ConstructionInstance.h \
 	../../src/NANDRAD_ConstructionType.h \
+	../../src/NANDRAD_ControlElement.h \
+	../../src/NANDRAD_Controller.h \
 	../../src/NANDRAD_DailyCycle.h \
 	../../src/NANDRAD_DataTable.h \
 	../../src/NANDRAD_EmbeddedObject.h \
@@ -87,6 +89,8 @@ SOURCES += \
 	../../src/NANDRAD_Constants.cpp \
 	../../src/NANDRAD_ConstructionInstance.cpp \
 	../../src/NANDRAD_ConstructionType.cpp \
+	../../src/NANDRAD_ControlElement.cpp \
+	../../src/NANDRAD_Controller.cpp \
 	../../src/NANDRAD_DailyCycle.cpp \
 	../../src/NANDRAD_DataTable.cpp \
 	../../src/NANDRAD_EmbeddedObject.cpp \
@@ -127,6 +131,8 @@ SOURCES += \
 	../../src/NANDRAD_WindowShading.cpp \
 	../../src/ncg/ncg_NANDRAD_ConstructionInstance.cpp \
 	../../src/ncg/ncg_NANDRAD_ConstructionType.cpp \
+	../../src/ncg/ncg_NANDRAD_ControlElement.cpp \
+	../../src/ncg/ncg_NANDRAD_Controller.cpp \
 	../../src/ncg/ncg_NANDRAD_DailyCycle.cpp \
 	../../src/ncg/ncg_NANDRAD_EmbeddedObject.cpp \
 	../../src/ncg/ncg_NANDRAD_EmbeddedObjectWindow.cpp \
