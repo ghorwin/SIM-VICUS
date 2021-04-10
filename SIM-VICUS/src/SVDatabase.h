@@ -22,6 +22,7 @@
 #include <VICUS_Infiltration.h>
 #include <VICUS_VentilationNatural.h>
 #include <VICUS_ZoneTemplate.h>
+#include <VICUS_Project.h>
 
 #include <VICUS_Database.h>
 
@@ -67,6 +68,13 @@ public:
 	/*! Writes user-defined database. */
 	void writeDatabases() const;
 
+
+	/*! Searches through project and all copies all references database elements into
+		the embedded project database.
+		\warning This replaces any previously stored embedded database elements in the project and only
+			uses those stored in this SVDatabase object!
+	*/
+	void updateEmbeddedDatabase(VICUS::Project & p);
 
 	// Databases
 

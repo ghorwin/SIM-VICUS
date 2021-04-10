@@ -73,16 +73,13 @@ QVariant SVClimateDataTableModel::data(const QModelIndex & index, int role) cons
 			return f.m_builtIn;
 
 		case Role_FileName :
-			return f.m_filename; // just the filename
+			return f.m_name; // just the basename
 
 		case Role_FilePath :
-			if (f.m_builtIn)
-				return QString("${%1}/%2").arg(VICUS::DATABASE_PLACEHOLDER_NAME, f.m_filename);
-			else
-				return QString("${%1}/%2").arg(VICUS::USER_DATABASE_PLACEHOLDER_NAME, f.m_filename);
+			return f.m_filename; // relative path to DB including path placeholders
 
 		case Role_AbsoluteFilePath :
-			return f.m_file.absoluteFilePath();
+			return f.m_absoluteFilePath;
 
 		case Role_Value : {
 			switch ((Columns)index.column()) {
@@ -169,12 +166,10 @@ void SVClimateDataTableModel::updateClimateFileList() {
 
 	IBK::Path ccPath(ccDir.toStdString());
 	for (const QString& file : defaultFiles) {
-		QFileInfo fileInfo(file);
-		SVClimateFileInfo item(fileInfo.baseName(),
-							   fileInfo.fileName(),
-							   true);
+		// file is now the full file path to built-in database files
 		try {
-			item.readInfo(fileInfo,true,false);
+			SVClimateFileInfo item;
+			item.readInfo(ccDir, file, false, true);
 			IBK::Path itemPath(file.toStdString());
 			itemPath = itemPath.relativePath(ccPath);
 			QStringList categories = QString::fromStdString(itemPath.str()).split('/');
@@ -191,12 +186,10 @@ void SVClimateDataTableModel::updateClimateFileList() {
 
 	IBK::Path uccPath(uccDir.toStdString());
 	for (const QString& file : userFiles) {
-		QFileInfo fileInfo(file);
-		SVClimateFileInfo item(fileInfo.baseName(),
-							   fileInfo.fileName(),
-							   false); // user file
+		// file is now the full file path to user database files
 		try {
-			item.readInfo(fileInfo,true,false);
+			SVClimateFileInfo item;
+			item.readInfo(ccDir, file, false, false);
 			IBK::Path itemPath(file.toStdString());
 			itemPath = itemPath.relativePath(uccPath);
 			QStringList categories = QString::fromStdString(itemPath.str()).split('/');

@@ -57,6 +57,12 @@ SVProjectHandler::~SVProjectHandler( ){
 }
 
 
+QString SVProjectHandler::nandradProjectFilePath() const {
+	QString nandradProjectFilePath = QFileInfo(SVProjectHandler::instance().projectFile()).completeBaseName() + ".nandrad";
+	return QFileInfo(SVProjectHandler::instance().projectFile()).dir().filePath(nandradProjectFilePath);
+}
+
+
 bool SVProjectHandler::newProject(VICUS::Project * project) {
 	createProject();
 	if (project != nullptr) {
@@ -294,6 +300,9 @@ SVProjectHandler::SaveResult SVProjectHandler::saveProject(QWidget * parent, con
 	// update standard placeholders in project file
 	m_project->m_placeholders[VICUS::DATABASE_PLACEHOLDER_NAME]			= QtExt::Directories::databasesDir().toStdString();
 	m_project->m_placeholders[VICUS::USER_DATABASE_PLACEHOLDER_NAME]	= QtExt::Directories::userDataDir().toStdString();
+
+	// update embedded database
+	SVSettings::instance().m_db.updateEmbeddedDatabase(*m_project);
 
 	// save project file
 	if (!write(fname)) {

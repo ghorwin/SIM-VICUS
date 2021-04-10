@@ -48,9 +48,6 @@ enum DataRoles {
 	Role_Color
 };
 
-/*! Threshold to accept distance/area/volume parameters as equal */
-extern const double SAME_DISTANCE_PARAMETER_ABSTOL;
-
 /*! Different edit/coloring modes. */
 enum BuildingPropertyTypes {
 	/*! Assigned component. */

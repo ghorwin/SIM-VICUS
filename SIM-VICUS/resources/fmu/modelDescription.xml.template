@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fmiModelDescription
+	fmiVersion="2.0"
+	modelName="${MODELNAME}"
+	guid="{471a3b52-4923-44d8-ab4b-fcdb813c1244}"
+	description="NANDRAD Simulation Model"
+	version="${NANDRAD_VERSION}"
+	author="Andreas Nicolai@IBK"
+	copyright="SIM-VICUS Developers, see SIM-VICUS/NANDRAD License"
+	license="LGPL-3"
+	generationTool="SIM-VICUS, using FMI support functions from IBK@TU Dresden"
+	generationDateAndTime="${DATETIME}"
+	variableNamingConvention="flat"
+	numberOfEventIndicators="0">
+
+	<!-- The following properties are the defaults and can be omitted
+		needsExecutionTool="false"
+		canBeInstantiatedOnlyOncePerProcess="false"
+		providesDirectionalDerivative="false"
+
+		CoSim only:
+		canRunAsynchronuously = "false"
+
+	-->
+
+	<CoSimulation
+		modelIdentifier="${MODELNAME}"
+		canHandleVariableCommunicationStepSize="true"
+		canInterpolateInputs="false"
+		maxOutputDerivativeOrder="0"
+		canNotUseMemoryManagementFunctions="true"
+		canGetAndSetFMUstate="false"
+		canSerializeFMUstate="false"
+	/>
+
+${UNIT_DEFINITIONS}
+
+	<LogCategories>
+		<Category name="logStatusWarning" />
+		<Category name="logStatusError" />
+		<Category name="logAll" />
+		<Category name="logFmi2Call" />
+	</LogCategories>
+
+	<DefaultExperiment startTime="0.0" stopTime="${SIMDURATION}" tolerance="1e-06"/>
+
+	<ModelVariables>
+${MODELVARIABLES}
+		<ScalarVariable name="ResultsRootDir" valueReference="42" description="Root path for simulation results and log files." variability="fixed" causality="parameter">
+			<String start="" />
+		</ScalarVariable>
+	</ModelVariables>
+
+	<ModelStructure>
+		<Outputs>
+${MODEL_STRUCTURE_OUTPUTS}
+		</Outputs>
+	</ModelStructure>
+
+</fmiModelDescription>
+

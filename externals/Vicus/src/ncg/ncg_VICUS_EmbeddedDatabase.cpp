@@ -1,0 +1,472 @@
+/*	The NANDRAD data model library.
+
+	Copyright (c) 2012-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Anne Paepcke     <anne.paepcke -[at]- tu-dresden.de>
+
+	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Lesser General Public
+	License as published by the Free Software Foundation; either
+	version 3 of the License, or (at your option) any later version.
+
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	Lesser General Public License for more details.
+*/
+
+#include <VICUS_EmbeddedDatabase.h>
+#include <VICUS_KeywordList.h>
+
+#include <IBK_messages.h>
+#include <IBK_Exception.h>
+#include <IBK_StringUtils.h>
+#include <VICUS_Constants.h>
+
+#include <tinyxml.h>
+
+namespace VICUS {
+
+void EmbeddedDatabase::readXML(const TiXmlElement * element) {
+	FUNCID(EmbeddedDatabase::readXML);
+
+	try {
+		// search for mandatory elements
+		// reading elements
+		const TiXmlElement * c = element->FirstChildElement();
+		while (c) {
+			const std::string & cName = c->ValueStr();
+			if (cName == "Materials") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "VICUS::Material")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::Material obj;
+					obj.readXML(c2);
+					m_materials.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "Constructions") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "VICUS::Construction")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::Construction obj;
+					obj.readXML(c2);
+					m_constructions.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "Windows") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "VICUS::Window")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::Window obj;
+					obj.readXML(c2);
+					m_windows.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "BoundaryConditions") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "VICUS::BoundaryCondition")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::BoundaryCondition obj;
+					obj.readXML(c2);
+					m_boundaryConditions.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "Components") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "VICUS::Component")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::Component obj;
+					obj.readXML(c2);
+					m_components.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "Pipes") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "VICUS::NetworkPipe")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::NetworkPipe obj;
+					obj.readXML(c2);
+					m_pipes.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "Fluids") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "VICUS::NetworkFluid")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::NetworkFluid obj;
+					obj.readXML(c2);
+					m_fluids.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "NetworkComponents") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "VICUS::NetworkComponent")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::NetworkComponent obj;
+					obj.readXML(c2);
+					m_networkComponents.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "EPDElements") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "VICUS::EPDDataset")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::EPDDataset obj;
+					obj.readXML(c2);
+					m_EPDElements.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "Schedules") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "VICUS::Schedule")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::Schedule obj;
+					obj.readXML(c2);
+					m_schedules.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "InternalLoads") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "VICUS::InternalLoad")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::InternalLoad obj;
+					obj.readXML(c2);
+					m_internalLoads.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "ZoneControlThermostat") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "VICUS::ZoneControlThermostat")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::ZoneControlThermostat obj;
+					obj.readXML(c2);
+					m_zoneControlThermostat.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "ZoneControlShading") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "VICUS::ZoneControlShading")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::ZoneControlShading obj;
+					obj.readXML(c2);
+					m_zoneControlShading.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "ZoneControlVentilationNatural") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "VICUS::ZoneControlNaturalVentilation")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::ZoneControlNaturalVentilation obj;
+					obj.readXML(c2);
+					m_zoneControlVentilationNatural.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "VentilationNatural") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "VICUS::VentilationNatural")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::VentilationNatural obj;
+					obj.readXML(c2);
+					m_ventilationNatural.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "Infiltration") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "VICUS::Infiltration")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::Infiltration obj;
+					obj.readXML(c2);
+					m_infiltration.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "ZoneTemplates") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "VICUS::ZoneTemplate")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::ZoneTemplate obj;
+					obj.readXML(c2);
+					m_zoneTemplates.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			c = c->NextSiblingElement();
+		}
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'EmbeddedDatabase' element."), FUNC_ID);
+	}
+	catch (std::exception & ex2) {
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'EmbeddedDatabase' element.").arg(ex2.what()), FUNC_ID);
+	}
+}
+
+TiXmlElement * EmbeddedDatabase::writeXML(TiXmlElement * parent) const {
+	TiXmlElement * e = new TiXmlElement("EmbeddedDatabase");
+	parent->LinkEndChild(e);
+
+
+	if (!m_materials.empty()) {
+		TiXmlElement * child = new TiXmlElement("Materials");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::Material>::const_iterator it = m_materials.begin();
+			it != m_materials.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_constructions.empty()) {
+		TiXmlElement * child = new TiXmlElement("Constructions");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::Construction>::const_iterator it = m_constructions.begin();
+			it != m_constructions.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_windows.empty()) {
+		TiXmlElement * child = new TiXmlElement("Windows");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::Window>::const_iterator it = m_windows.begin();
+			it != m_windows.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_boundaryConditions.empty()) {
+		TiXmlElement * child = new TiXmlElement("BoundaryConditions");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::BoundaryCondition>::const_iterator it = m_boundaryConditions.begin();
+			it != m_boundaryConditions.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_components.empty()) {
+		TiXmlElement * child = new TiXmlElement("Components");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::Component>::const_iterator it = m_components.begin();
+			it != m_components.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_pipes.empty()) {
+		TiXmlElement * child = new TiXmlElement("Pipes");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::NetworkPipe>::const_iterator it = m_pipes.begin();
+			it != m_pipes.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_fluids.empty()) {
+		TiXmlElement * child = new TiXmlElement("Fluids");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::NetworkFluid>::const_iterator it = m_fluids.begin();
+			it != m_fluids.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_networkComponents.empty()) {
+		TiXmlElement * child = new TiXmlElement("NetworkComponents");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::NetworkComponent>::const_iterator it = m_networkComponents.begin();
+			it != m_networkComponents.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_EPDElements.empty()) {
+		TiXmlElement * child = new TiXmlElement("EPDElements");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::EPDDataset>::const_iterator it = m_EPDElements.begin();
+			it != m_EPDElements.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_schedules.empty()) {
+		TiXmlElement * child = new TiXmlElement("Schedules");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::Schedule>::const_iterator it = m_schedules.begin();
+			it != m_schedules.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_internalLoads.empty()) {
+		TiXmlElement * child = new TiXmlElement("InternalLoads");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::InternalLoad>::const_iterator it = m_internalLoads.begin();
+			it != m_internalLoads.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_zoneControlThermostat.empty()) {
+		TiXmlElement * child = new TiXmlElement("ZoneControlThermostat");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::ZoneControlThermostat>::const_iterator it = m_zoneControlThermostat.begin();
+			it != m_zoneControlThermostat.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_zoneControlShading.empty()) {
+		TiXmlElement * child = new TiXmlElement("ZoneControlShading");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::ZoneControlShading>::const_iterator it = m_zoneControlShading.begin();
+			it != m_zoneControlShading.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_zoneControlVentilationNatural.empty()) {
+		TiXmlElement * child = new TiXmlElement("ZoneControlVentilationNatural");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::ZoneControlNaturalVentilation>::const_iterator it = m_zoneControlVentilationNatural.begin();
+			it != m_zoneControlVentilationNatural.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_ventilationNatural.empty()) {
+		TiXmlElement * child = new TiXmlElement("VentilationNatural");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::VentilationNatural>::const_iterator it = m_ventilationNatural.begin();
+			it != m_ventilationNatural.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_infiltration.empty()) {
+		TiXmlElement * child = new TiXmlElement("Infiltration");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::Infiltration>::const_iterator it = m_infiltration.begin();
+			it != m_infiltration.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_zoneTemplates.empty()) {
+		TiXmlElement * child = new TiXmlElement("ZoneTemplates");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::ZoneTemplate>::const_iterator it = m_zoneTemplates.begin();
+			it != m_zoneTemplates.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+	return e;
+}
+
+} // namespace VICUS

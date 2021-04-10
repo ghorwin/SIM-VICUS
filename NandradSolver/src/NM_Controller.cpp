@@ -4,6 +4,11 @@
 
 namespace NANDRAD_MODEL {
 
+
+AbstractController::~AbstractController() {
+}
+
+
 // *** P-Controller ***
 
 PController::PController(const NANDRAD::Controller &controller) {

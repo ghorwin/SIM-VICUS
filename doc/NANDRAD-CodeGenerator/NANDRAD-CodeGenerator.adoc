@@ -1,7 +1,7 @@
 The NANDRAD CodeGenerator
 =========================
 Andreas Nicolai <andreas.nicolai@tu-dresden.de>
-v1.1 (08.03.2021)
+v1.1 (03.04.2021)
 // v1.1 date_on_line_above
 :Author Initials: AN
 :toc: left
@@ -1111,3 +1111,22 @@ class Child : public Parent {
 
 Basically, the code generator looks for the token `//:inherited`, removes it from the line and then handles the line just as a regular variable declaration with serialization tag.
 
+### Ignoring additional class declarations in same header file
+
+Use a code comment `NO KEYWORDS` behind the class to ignore during keyword/serialization parsing to prevent the code generator from analysing this data structure.
+
+.Ignoring embedded class declaration
+[source,c++]
+----
+class Bla {
+public: 
+
+    ....
+
+    // ignore embedded class declaration when 
+    // generating keyword list/serialization code
+    class Blubb { // NO KEYWORDS
+    };
+
+}
+----

@@ -141,6 +141,9 @@ public:
 	static bool startProcess(const QString & executable, QStringList commandLineArgs,
 							 const QString & projectFile, TerminalEmulators terminalEmulator = TE_None);
 
+	/*! Returns path to NANDRAD solver executable. */
+	static QString nandradSolverExecutable();
+
 	// ****** member variables ************
 
 

@@ -1,0 +1,97 @@
+# Exportprozedere
+
+- NANDRAD Simulation-Initialisieren 
+  -> Liste der erfragten InputReferenzen erstellen (optional/verpflichtend)
+  -> Liste aller Ergebnisgrößen erstellen
+  
+- Oberfläche zeigt Liste aller InputReferenzen (die zu überschreiben wären)
+- Oberfläche zeigt Liste aller Ergebnisgrößen
+
+- Anwender legt Meta-Daten fest
+- Anwender wählt InputReferenzen fest -> und zugehörige FMI-Name (auto-generiert aus Variablennamen und Referenztyp)
+
+  Beispiel:  NetworkElement(id=1).FluidTemperature -> "NetworkElement.1.FluidTemperature"
+ 
+  Optional:  ersetze generische Bezeichnung "NetworkElement.1" mit DisplayName (whitespaces ersetzt) -> sollte individuell oder
+             für einen Bereich von ausgewählten Größen austauschbar sein
+  
+  Optional:  definiere FMI-Variablennamen nach FMI-Kopplungsschema  X
+  
+
+- NANDRAD Datenmodell wird angereichert mit Eingaben- und Ausgabedefinitionen
+
+- NANDRAD Simulation wird neu initialisiert, dabei werden Abhängigkeitsinformationen zwischen FMI Eingangs- und Ausgangsvariablen erstellt
+
+   -> Variablen-Struktur erstellt
+   
+
+
+
+## Informationen für die Definition von Ausgaben
+
+- Objektreferenztyp ("Zone", "Location" etc.) 
+- Objekt-ID
+- Variablenname
+- falls vektorwertig, Index oder ID
+
+Zusatzinfos für Anwender:
+- Einheit -> und ggfs. noch physikalische Größe (bspw. `Temperature`), wird benötigt für die Generierung eines Variablentyps
+- Einheit alleine mag vielleicht nicht ausreichen, wenn z.B. zwischen [W] thermischer und [W] elektrischer Leistung unterschieden werden soll.
+
+[source,xml]
+----
+<SimpleType name="Temperature">
+	<Real quantity="Temperature" unit="K" min="0" max="373.15" nominal="293.15" />
+</SimpleType>
+----
+
+- Beschreibungstext (in der Ausgabe wäre das nur in englisch, wie bekommt man die Internationalisierung hin?)
+
+
+
+
+## Wie bietet man dem Anwender die möglichen Eingangs- und Ausgangsvariablen an?
+
+### Option a)
+
+Aus Kenntnis des Projekts eine Liste von Eingangs-/Ausgangsvariablen generieren (kann groß sein) und prüfen, ob diese vom Modell verwendet werden. 
+
+Beispiel - Ausgaben:
+
+----
+// verfügbar laut Projekt
+Zone(1).AirTemperature
+Zone(2).AirTemperature
+
+// generiert laut output_reference_list.txt
+Zone.AirTemperature
+
+--> beide Ergebnisgrößen werden als Ausgabe angeboten
+----
+
+
+Nachteil:
+
+- SIM-VICUS muss alle Modellergebnisgrößen/Eingangsgrößen kennen
+
+
+
+### Option b)
+
+NANDRAD Solver generiert vollständige Variablenlisten. Ausgaben einmal wie bisher für NANDRAD-Standalone-Anwender, d.h. Menschenlesbar, und nur als Zusammenfassung grundsätzlich generierter Ergebnisse.
+
+Für die FMU Konfiguration wird eine eigenen Variablenlisten-Datei geschrieben, diese enthält:
+
+- input/output Kennzeichnun
+- Object-Referenztyp (als Zahl kodiert)
+- Object-ID
+- Variablen-Namen (Diktionary-Type, d.h. Index auf Namen in vorangestellter Variablenliste)
+- Variablen-Index (falls vektorwertig)
+
+Bei vektorwertigen Variablen werden alle variablen individuell aufgeführt.
+
+
+### Option c)
+
+Mit Hinblick auf große Modelle verzichten wir auf das Generieren langer Variablenlisten und erlauben den Anwender, Eingangs- und Ausgangsvariablen zu definieren. Bei der Initialisierung prüfen wir dann, ob diese verwendet werden... erfordert aber viel Anwenderunterstützung, da man bei komplexen Modellen selten weiß, welche Variablen tatsächlich verwendet werden können.
+

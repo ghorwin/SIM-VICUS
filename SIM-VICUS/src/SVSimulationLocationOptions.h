@@ -32,15 +32,10 @@ public:
 
 private slots:
 	void on_radioButtonFromDB_toggled(bool checked);
-
 	void on_lineEditTextFilter_editingFinished();
-
 	void on_lineEditTextFilter_textChanged(const QString &arg1);
-
 	void onCurrentIndexChanged(const QModelIndex &current, const QModelIndex & /*previous*/);
-
 	void on_checkBoxCustomLocation_toggled(bool checked);
-
 	void on_filepathClimateDataFile_editingFinished();
 
 private:

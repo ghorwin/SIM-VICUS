@@ -317,6 +317,15 @@ bool SVSettings::startProcess(const QString & executable,
 }
 
 
+QString SVSettings::nandradSolverExecutable() {
+	QString solverExecutable = QFileInfo(SVSettings::instance().m_installDir + "/NandradSolver").filePath();
+#ifdef WIN32
+	solverExecutable += ".exe";
+#endif // WIN32
+	return solverExecutable;
+}
+
+
 SVClimateDataTableModel * SVSettings::climateDataTableModel() {
 	if (m_climateDataTableModel == nullptr) {
 		m_climateDataTableModel = new SVClimateDataTableModel(nullptr); // we delete the object in the destructor

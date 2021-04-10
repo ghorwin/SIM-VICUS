@@ -93,6 +93,7 @@ SOURCES += \
 				../../src/SVDBZoneControlThermostatTableModel.cpp \
 				../../src/SVDBZoneControlVentilationNaturalEditWidget.cpp \
 				../../src/SVDBZoneControlVentilationNaturalTableModel.cpp \
+				../../src/SVSimulationExportFMIDialog.cpp \
 				../../src/SVView3D.cpp \
 				../../src/actions/SVUndoAddBuilding.cpp \
 				../../src/actions/SVUndoAddBuildingLevel.cpp \
@@ -229,6 +230,7 @@ HEADERS  += \
 				../../src/SVDBZoneControlThermostatTableModel.h \
 				../../src/SVDBZoneControlVentilationNaturalEditWidget.h \
 				../../src/SVDBZoneControlVentilationNaturalTableModel.h \
+				../../src/SVSimulationExportFMIDialog.h \
 				../../src/SVView3D.h \
 				../../src/actions/SVUndoAddBuilding.h \
 				../../src/actions/SVUndoAddBuildingLevel.h \
@@ -396,6 +398,7 @@ FORMS    += \
 				../../src/SVPropSiteWidget.ui \
 				../../src/SVPropVertexListWidget.ui \
 				../../src/SVScheduleHolidayWidget.ui \
+				../../src/SVSimulationExportFMIDialog.ui \
 				../../src/SVSimulationLocationOptions.ui \
 				../../src/SVSimulationModelOptions.ui \
 				../../src/SVSimulationOutputOptions.ui \

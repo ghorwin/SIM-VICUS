@@ -47,7 +47,6 @@
 #include "SVAboutDialog.h"
 #include "SVPostProcHandler.h"
 #include "SVNavigationTreeWidget.h"
-//#include "SVFMIExportDialog.h"
 #include "SVNetworkImportDialog.h"
 #include "SVPreferencesPageStyle.h"
 #include "SVViewStateHandler.h"
@@ -63,6 +62,7 @@
 #include "SVDBZoneTemplateEditDialog.h"
 
 #include "SVSimulationStartNandrad.h"
+#include "SVSimulationExportFMIDialog.h"
 #include "SVSimulationStartNetworkSim.h"
 #include "SVDBInternalLoadsTableModel.h"
 
@@ -1123,6 +1123,7 @@ void SVMainWindow::onUpdateActions() {
 
 	m_ui->actionSimulationNANDRAD->setEnabled(have_project);
 	m_ui->actionSimulationHydraulicNetwork->setEnabled(have_project);
+	m_ui->actionSimulationExportFMI->setEnabled(have_project);
 
 	// also disable menues that are not possible without project
 	m_ui->menuExport->setEnabled(have_project);
@@ -1393,7 +1394,9 @@ void SVMainWindow::on_actionSimulationNANDRAD_triggered() {
 	int res = m_simulationStartNandrad->edit();
 	if (res == QDialog::Accepted) {
 		// transfer data to VICUS project
-		// TODO : Andreas
+		// create an undo action for modification of the (entire) project
+		SVUndoModifyProject * undo = new SVUndoModifyProject(tr("Updated simulation parameters"), m_simulationStartNandrad->localProject());
+		undo->push();
 	}
 }
 
@@ -1412,6 +1415,28 @@ void SVMainWindow::on_actionSimulationHydraulicNetwork_triggered() {
 	}
 
 	m_simulationStartNetworkSim->edit();
+}
+
+
+void SVMainWindow::on_actionSimulationExportFMI_triggered() {
+	if (SVProjectHandler::instance().projectFile().isEmpty()) {
+		SVSettings::instance().showDoNotShowAgainMessage(this, "SaveBeforeExport", tr("Save project"),
+			tr("You need to save the project first, before exporting it as Functional Mock-Up Unit."));
+		SVProjectHandler::instance().saveWithNewFilename(this);
+	}
+	if (SVProjectHandler::instance().projectFile().isEmpty())
+		return; // still no file path? User must have aborted the save as dialog.
+	if (m_simulationExportFMIDialog == nullptr)
+		m_simulationExportFMIDialog = new SVSimulationExportFMIDialog;
+	int res = m_simulationExportFMIDialog->edit();
+	if (res == QDialog::Accepted) {
+		// transfer data to VICUS project
+		// create an undo action for modification of the (entire) project
+		// TODO : rather create an UNDO action that only modifies the FMU export info and does not require an
+		//        complete UI update.
+		SVUndoModifyProject * undo = new SVUndoModifyProject(tr("Updated simulation parameters"), m_simulationExportFMIDialog->localProject());
+		undo->push();
+	}
 }
 
 

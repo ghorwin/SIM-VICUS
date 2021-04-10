@@ -66,5 +66,6 @@
         <file>gfx/icons/16x16/interpolationMode_linear_bright_16.png</file>
         <file>gfx/actions/24x24/moveCoordinateSystem.png</file>
         <file>gfx/actions/24x24/alignCoordinateSystem.png</file>
+        <file>fmu/modelDescription.xml.template</file>
     </qresource>
 </RCC>

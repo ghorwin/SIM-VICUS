@@ -38,6 +38,7 @@
 #include <NANDRAD_Constants.h>
 #include <NANDRAD_Project.h>
 #include <NANDRAD_KeywordList.h>
+#include <NANDRAD_FMIVariableDefinition.h>
 
 #include <SOLFRA_IntegratorSundialsCVODE.h>
 #include <SOLFRA_IntegratorExplicitEuler.h>
@@ -1460,7 +1461,7 @@ void NandradModel::initModelDependencies() {
 	IBK::IBK_Message(IBK::FormatString("Initializing all model results\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	std::unique_ptr<IBK::MessageIndentor> indent(new IBK::MessageIndentor);
 
-	// The key is of type QuantityDescription, a simply class that identifies a variable based on reference type and id
+	// The key is of type QuantityDescription, a simple class that identifies a variable based on reference type and id
 	// (both addressing an object) and variable name (identifying the variable of the object).
 	// The map can be used to quickly find the object the holds a required result variable.
 	// It maps QuantityDescription (i.e. global identification of a result variable) to the object that provides this variable.
@@ -1595,6 +1596,9 @@ void NandradModel::initModelDependencies() {
 	IBK::IBK_Message(IBK::FormatString("Initializing all model input references\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	indent.reset(new IBK::MessageIndentor);
 
+	// This set stores all inputs requested by all model objects - this can be a large list
+	std::set<InputReference> globalInputRefList;
+
 #if defined(_OPENMP)
 #pragma omp parallel for schedule(static,200)
 #endif
@@ -1623,6 +1627,17 @@ void NandradModel::initModelDependencies() {
 			// request published input variables from model instance
 			std::vector<InputReference> inputRefs;
 			currentStateDependency->inputReferences(inputRefs);
+#if defined(_OPENMP)
+#pragma omp single
+#endif
+{
+			/// TODO : Andreas, openMP upgrade, use thread specific globalInputRefLists and merge at end
+			for (const InputReference & iref : inputRefs) {
+				// ignore invalid/unused input references
+				if (iref.m_referenceType != NANDRAD::ModelInputReference::NUM_MRT)
+					globalInputRefList.insert(iref);
+			}
+}
 
 			std::vector<const double*> resultValueRefs;
 			std::vector<QuantityDescription> resultQuantityDescs;
@@ -1804,6 +1819,82 @@ void NandradModel::initModelDependencies() {
 		statesModel->setODEStatesInputValueRef(y);
 	}
 #endif
+
+
+
+	// dump input reference list to file
+	std::shared_ptr<std::ofstream> inputRefList(
+		IBK::create_ofstream(m_dirs.m_varDir / "input_reference_list.txt")
+	);
+
+	(*inputRefList) << std::setw(50) << std::left << "Variable name" << '\t'
+					<< std::setw(20) << std::left << "Source object id(s)" << '\t'
+					<< std::setw(20) << std::left << "Vector indexes/ids" << '\n';
+
+	// we need to generate the following information for users:
+	// for scalar variables
+	// - full variable name: <reftype>.<varname>
+	// - list of objects (IDs) that provide the variable
+	//
+	// for vector-valued variables
+	// - full variable base name: <reftype>.<vector-varname>
+	// - object id that provides this variable
+	// - possible ids/indexes to request a value
+
+	// We dump this out in a table:
+	//   fullvarName     objectIDs     possible IDs/Indexes
+	//
+	// first, we create a sorted container that collects input references by variable name, then we process all of these
+	// variable names, and handle scalar/vector valued quantities separately
+	std::map<std::string, std::vector<InputReference> > sortedList;
+	for (const InputReference & iref : globalInputRefList) {
+		std::string fullVarName = IBK::FormatString("%1.%2")
+			.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", iref.m_referenceType))
+			.arg(iref.m_name.m_name).str();
+		sortedList[fullVarName].push_back(iref);
+	}
+
+	// now process all variable names and collect info for scalar/vector-valued input refs
+	for (const auto & varNameData : sortedList) {
+		// here we store the object IDs of scalar variables
+		std::set<unsigned int> objectIDs;
+		// here we store the vector indexes/IDs for vector-valued variables,
+		// key = objectId, value = vector-value-IDs/indexes
+		std::map<unsigned int, std::vector<unsigned int> > vectorIndexes;
+		for (const InputReference & iref : varNameData.second) {
+			// if vector-valued, write directly
+			if (iref.m_name.m_index != -1) {
+				vectorIndexes[iref.m_id].push_back((unsigned int)iref.m_name.m_index);
+			}
+			else {
+				// first only collect object IDs
+				objectIDs.insert(iref.m_id);
+			}
+		}
+		// if we have at least one object ID, write line for scalar variables
+		if (!objectIDs.empty()) {
+			std::string objectIDstr = IBK::join_numbers(objectIDs, ',');
+			std::stringstream strm;
+			strm << std::setw(50) << std::left << varNameData.first << '\t'
+				 << std::setw(20) << std::left << objectIDstr << "\t\n";
+			IBK::IBK_Message( IBK::FormatString("%1").arg(strm.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+			(*inputRefList) << strm.rdbuf();
+		}
+		if (!vectorIndexes.empty()) {
+			for (const auto & vectorVar : vectorIndexes) {
+				std::string vectorIDstr = IBK::join_numbers(vectorVar.second, ',');
+				std::stringstream strm;
+				strm << std::setw(50) << std::left << varNameData.first << '\t'
+					 << std::setw(20) << std::left << vectorVar.first << '\t'
+					 << std::setw(20) << std::left << vectorIDstr << '\n';
+				IBK::IBK_Message( IBK::FormatString("%1").arg(strm.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+				(*inputRefList) << strm.rdbuf();
+			}
+		}
+	}
+	inputRefList->flush();
+	inputRefList->close();
+
 }
 
 
@@ -1879,6 +1970,23 @@ void NandradModel::initModelGraph() {
 void NandradModel::initOutputReferenceList() {
 	FUNCID(NandradModel::initOutputReferenceList);
 
+	// we need to generate the following information for users:
+	// for scalar variables
+	// - full variable name: <reftype>.<varname>
+	// - list of objects (IDs) that provide the variable
+	//
+	// for vector-valued variables
+	// - full variable base name: <reftype>.<vector-varname>
+	// - object id that provides this variable
+	// - possible ids/indexes to request a value
+
+	// We dump this out in a table:
+	//   fullvarName     objectIDs     possible IDs/Indexes
+	//
+	// Also, we create a variable substitution map, that maps the prefix of an output's variable
+	// name as it appears in the output file to the dispay name of the object that this variable
+	// originates from.
+
 	// storage member to collect variable reference substitution map - ref-prefix vs displayname, if given
 	std::map<std::string, std::string> varSubstMap;
 
@@ -1887,7 +1995,7 @@ void NandradModel::initOutputReferenceList() {
 		IBK_MSG_INDENT;
 
 		// generate and dump calculation results of all models
-		std::map<std::string, QuantityDescription> refDescs;
+		std::map<std::string, std::vector<QuantityDescription> > refDescs;
 		for (unsigned int i=0; i<m_modelContainer.size(); ++i) {
 			AbstractModel * currentModel = m_modelContainer[i];
 			currentModel->variableReferenceSubstitutionMap(varSubstMap); // for most model instances, this does nothing
@@ -1901,24 +2009,19 @@ void NandradModel::initOutputReferenceList() {
 			try {
 				std::string refTypeName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", refType);
 				for (unsigned int j=0; j<varDescs.size(); ++j) {
-					std::stringstream description;
+					std::stringstream fullVariableName; // refobject type + variable name
 					if (varDescs[j].m_size == 0)
 						continue;
 					// if different reference type is given, use this reference type instead
 					if (varDescs[j].m_referenceType != NANDRAD::ModelInputReference::NUM_MRT)
-						description << NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", varDescs[j].m_referenceType)
+						fullVariableName << NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", varDescs[j].m_referenceType)
 									<< "." << varDescs[j].m_name;
-					else
-						description << refTypeName << "." << varDescs[j].m_name;
-					if (!varDescs[j].m_indexKeys.empty()) {
-						description << "(";
-						if (varDescs[j].m_indexKeyType == VectorValuedQuantityIndex::IK_Index)
-							description << "index,";
-						else
-							description << "id,";
-						description << varDescs[j].m_size << ")";
+					else {
+						// update object id in quantity description
+						varDescs[j].m_id = currentModel->id();
+						fullVariableName << refTypeName << "." << varDescs[j].m_name;
 					}
-					refDescs[description.str()] = varDescs[j];
+					refDescs[fullVariableName.str()].push_back( varDescs[j] );
 
 					// for schedules add reduced definition
 					if (refType == NANDRAD::ModelInputReference::MRT_SCHEDULE) {
@@ -1933,7 +2036,7 @@ void NandradModel::initOutputReferenceList() {
 						QuantityDescription reducedDesc = varDescs[j];
 						reducedDesc.m_name = reducedName;
 						// store
-						refDescs[reducedDescription.str()] = reducedDesc;
+						refDescs[fullVariableName.str()].push_back( reducedDesc );
 					}
 				}
 			}
@@ -1950,16 +2053,55 @@ void NandradModel::initOutputReferenceList() {
 			IBK::create_ofstream(m_dirs.m_varDir / "output_reference_list.txt")
 		);
 
-		for (std::map<std::string, QuantityDescription>::const_iterator it = refDescs.begin();
-			it != refDescs.end(); ++it)
-		{
-			std::stringstream strm;
-			strm << std::setw(50) << std::left << it->first << '\t'
-				 << std::setw(10) << std::left << ("[" + it->second.m_unit + "]") << '\t'
-				 << it->second.m_description << std::endl;
-			IBK::IBK_Message( IBK::FormatString("%1").arg(strm.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+		(*outputList)   << std::setw(50) << std::left << "Variable name" << '\t'
+						<< std::setw(20) << std::left << "Source object id(s)" << '\t'
+						<< std::setw(20) << std::left << "Vector indexes/ids" << '\t'
+						<< std::setw(10) << std::left << "Unit" << '\t'
+						<< "Description" << '\n';
 
-			(*outputList) << strm.rdbuf();
+		for (const auto & varNameData : refDescs) {
+			// here we store the object IDs of scalar variables
+			std::set<unsigned int> objectIDs;
+			// here we store the vector indexes/IDs for vector-valued variables,
+			// key = objectId, value = vector-value-IDs/indexes
+			std::map<unsigned int, std::vector<unsigned int> > vectorIndexes;
+			for (const QuantityDescription & ref : varNameData.second) {
+				// if vector-valued, write directly
+				if (ref.m_indexKeyType != VectorValuedQuantityIndex::NUM_IndexKeyType) {
+					vectorIndexes[ref.m_id] = ref.m_indexKeys;
+				}
+				else {
+					// for scalar variables, only collect object IDs
+					objectIDs.insert(ref.m_id);
+				}
+			}
+			// if we have at least one object ID, write line for scalar variables
+			if (!objectIDs.empty()) {
+				std::string objectIDstr = IBK::join_numbers(objectIDs, ',');
+				std::stringstream strm;
+				strm << std::setw(50) << std::left << varNameData.first << '\t'
+					 << std::setw(20) << std::left << objectIDstr << '\t'
+					 << std::setw(20) << std::left << " " << '\t'
+					 << std::setw(10) << varNameData.second[0].m_unit << '\t'
+					 << varNameData.second[0].m_description
+					 << '\n';
+				IBK::IBK_Message( IBK::FormatString("%1").arg(strm.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+				(*outputList) << strm.rdbuf();
+			}
+			if (!vectorIndexes.empty()) {
+				for (const auto & vectorVar : vectorIndexes) {
+					std::string vectorIDstr = IBK::join_numbers(vectorVar.second, ',');
+					std::stringstream strm;
+					strm << std::setw(50) << std::left << varNameData.first << '\t'
+						 << std::setw(20) << std::left << vectorVar.first << '\t'
+						 << std::setw(20) << std::left << vectorIDstr << '\t'
+						 << std::setw(10) << varNameData.second[0].m_unit << '\t'
+						 << varNameData.second[0].m_description
+						 << '\n';
+					IBK::IBK_Message( IBK::FormatString("%1").arg(strm.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+					(*outputList) << strm.rdbuf();
+				}
+			}
 		}
 		outputList->flush();
 		outputList->close();
@@ -1968,7 +2110,7 @@ void NandradModel::initOutputReferenceList() {
 
 	IBK::IBK_Message( IBK::FormatString("Writing Variable - Displayname Mapping Table\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK_MSG_INDENT;
-	IBK::Path m_mappingFilePath = (m_dirs.m_varDir / "VariableSubstitutions.txt");
+	IBK::Path m_mappingFilePath = (m_dirs.m_varDir / "objectref_substitutions.txt");
 	m_mappingFilePath.removeRelativeParts();
 
 	// create the mapping file

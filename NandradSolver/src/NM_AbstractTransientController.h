@@ -32,9 +32,6 @@ class AbstractTransientController: public AbstractController {
 public:
 	AbstractTransientController() {}
 
-	/*! D'tor, definition is in NM_Controller.cpp. */
-	virtual ~AbstractTransientController();
-
 	/*! Calculates controller output and controller error.*/
 	virtual void setY(const double *y) { m_controllerErrorIntegral = y[0]; }
 

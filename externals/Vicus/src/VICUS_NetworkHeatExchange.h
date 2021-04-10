@@ -12,8 +12,9 @@
 
 namespace VICUS {
 
-class NetworkHeatExchange
-{
+/*! Contains all parameters that describe heat exchange between hydraulic network components and anything else.
+*/
+class NetworkHeatExchange {
 public:
 
 	VICUS_READWRITE

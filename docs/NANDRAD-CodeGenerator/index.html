@@ -73,7 +73,7 @@ table {
 <div class="details">
 <span id="author" class="author">Andreas Nicolai</span><br>
 <span id="email" class="email"><a href="mailto:andreas.nicolai@tu-dresden.de">andreas.nicolai@tu-dresden.de</a></span><br>
-<span id="revnumber">version 1.1 (08.03.2021)</span>
+<span id="revnumber">version 1.1 (03.04.2021)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -124,6 +124,7 @@ table {
 <li><a href="#_serialization_of_inherited_data_members">4.4.7. Serialization of inherited data members</a></li>
 </ul>
 </li>
+<li><a href="#_ignoring_additional_class_declarations_in_same_header_file">4.5. Ignoring additional class declarations in same header file</a></li>
 </ul>
 </li>
 </ul>
@@ -1530,13 +1531,35 @@ Also, the corresponding enumeration <strong>must</strong> have keywords for the 
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_ignoring_additional_class_declarations_in_same_header_file">4.5. Ignoring additional class declarations in same header file</h3>
+<div class="paragraph">
+<p>Use a code comment <code>NO KEYWORDS</code> behind the class to ignore during keyword/serialization parsing to prevent the code generator from analysing this data structure.</p>
+</div>
+<div class="listingblock">
+<div class="title">Ignoring embedded class declaration</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c++"><span class="k">class</span> <span class="nc">Bla</span> <span class="p">{</span>
+<span class="nl">public:</span>
+
+    <span class="p">....</span>
+
+    <span class="c1">// ignore embedded class declaration when</span>
+    <span class="c1">// generating keyword list/serialization code</span>
+    <span class="k">class</span> <span class="nc">Blubb</span> <span class="p">{</span> <span class="c1">// NO KEYWORDS</span>
+    <span class="p">};</span>
+
+<span class="p">}</span></code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.1 (08.03.2021)<br>
-Last updated 2021-03-08 14:54:15 +0100
+Version 1.1 (03.04.2021)<br>
+Last updated 2021-04-03 15:45:54 +0200
 </div>
 </div>
 <style>

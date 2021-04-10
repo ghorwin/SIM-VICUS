@@ -82,6 +82,8 @@ inline void WindowDivider::checkParameters(const std::vector<Material> & materia
 
 	m_area.checkedValue("Area", "m2", "m2", 0, true, std::numeric_limits<double>::max(), true,
 						"Cross section area of dividers must be >= 0 m2.");
+	m_thickness.checkedValue("Thickness", "m", "m", 0, false, std::numeric_limits<double>::max(), true,
+						"Thickness of dividers must be > 0 m.");
 }
 
 } // namespace NANDRAD

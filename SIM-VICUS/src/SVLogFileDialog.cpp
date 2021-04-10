@@ -9,7 +9,7 @@
 #include "SVProjectHandler.h"
 
 SVLogFileDialog::SVLogFileDialog(QWidget *parent) :
-	QDialog(parent, Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint),
+	QDialog(parent, Qt::Dialog | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint),
 	m_ui(new Ui::SVLogFileDialog),
 	m_pushButtonOpenFileInTextEditor(nullptr),
 	m_pushButtonReloadProject(nullptr)

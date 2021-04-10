@@ -29,6 +29,7 @@
 
 #include <NANDRAD_CodeGenMacros.h>
 #include <NANDRAD_ModelInputReference.h>
+#include <NANDRAD_Constants.h>
 
 #include "NM_VectorValuedQuantityIndex.h"
 
@@ -150,10 +151,8 @@ public:
 			  reference type and ID are set by the framework based on the exporting model object.
 	*/
 	NANDRAD::ModelInputReference::referenceType_t	m_referenceType = NANDRAD::ModelInputReference::NUM_MRT;
-	/*! ID of the referenced source model/parametrization entity.
-		Note: ID is initialized with 0, which is an invalid object ID in NANDRAD.
-	*/
-	unsigned int							m_id = 0;
+	/*! ID of the referenced source model/parametrization entity. */
+	unsigned int							m_id = NANDRAD::INVALID_ID;
 
 	/*! Quantity/variable name.
 		This is used together with the reference type name and object id to form the output variable name. This

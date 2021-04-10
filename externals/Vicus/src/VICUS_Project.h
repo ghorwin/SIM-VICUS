@@ -22,11 +22,15 @@
 #ifndef VICUS_ProjectH
 #define VICUS_ProjectH
 
+#include <QCoreApplication> // for tr functions
+
 #include <vector>
 
 #include <IBK_Path.h>
 
 #include <NANDRAD_Project.h>
+#include <NANDRAD_SolverParameter.h>
+#include <NANDRAD_FMIDescription.h>
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Network.h"
@@ -36,13 +40,17 @@
 #include "VICUS_NetworkPipe.h"
 #include "VICUS_Outputs.h"
 #include "VICUS_ComponentInstance.h"
+#include "VICUS_EmbeddedDatabase.h"
 
-
-#include <NANDRAD_SolverParameter.h>
 
 namespace VICUS {
 
+/*! The project data structure for the SIM-VICUS user interface.
+*/
 class Project {
+	Q_DECLARE_TR_FUNCTIONS(Project)
+
+	/*! Private read-write functions. */
 	VICUS_READWRITE
 public:
 
@@ -58,6 +66,9 @@ public:
 
 	/*! Constructor, creates dummy data. */
 	Project();
+
+	/*! Generate default copy constructor. */
+	Project(const Project &) = default;
 
 	/*! Parses only the header of the XML file.
 		This function is supposed to be fast, yet not a complete XML parser.
@@ -133,6 +144,45 @@ public:
 		\returns Returns true if any room is selected (same as rooms.size() > 0).
 	*/
 	bool selectedRooms(std::vector<const Room*> & rooms) const;
+
+
+
+	// *** PROJECT CONVERSION RELATED FUNCTIONS ***
+
+	/*! This exception class extends IBK::Exception by additional members
+		needed to adjust the start-simulation-dialog, for example, to focus problematic inputs.
+	*/
+	class ConversionError : public IBK::Exception { // NO KEYWORDS
+	public:
+		enum Errortypes {
+			ET_MissingClimate,
+			ET_InvalidID,
+			ET_MismatchingSurfaceArea,
+			ET_MissingParentZone,
+			ET_NotValid
+		};
+
+		ConversionError(Errortypes errorType, const std::string & errmsg) :
+			IBK::Exception(errmsg, "ConversionError"), m_errorType(errorType) {}
+		ConversionError(Errortypes errorType, const IBK::FormatString & errmsg) :
+			IBK::Exception(errmsg, "ConversionError"), m_errorType(errorType) {}
+		ConversionError(Errortypes errorType, const QString & errmsg) :
+			IBK::Exception(errmsg.toStdString(), "ConversionError"), m_errorType(errorType) {}
+		ConversionError(const ConversionError&) = default;
+		virtual ~ConversionError() override;
+
+		Errortypes m_errorType;
+	};
+
+	/*! Converts VICUS data structure into NANDRAD project file.
+		This function throws an error message in case the conversion failed.
+		\param p The NANDRAD project to be populated.
+	*/
+	void generateNandradProject(NANDRAD::Project & p) const;
+	void generateBuildingProjectData(NANDRAD::Project & p) const;
+	void generateNetworkProjectData(NANDRAD::Project & p) const;
+	NANDRAD::Interface generateInterface(const VICUS::ComponentInstance & ci,
+										 const VICUS::Surface * s, unsigned int bcID, unsigned int & interfaceID) const;
 
 	// *** STATIC FUNCTIONS ***
 
@@ -253,6 +303,15 @@ public:
 	*/
 	std::map< std::string, IBK::Path >	m_placeholders;
 
+
+	/*! Holds the database elements referenced in the project. These are a copy of db elements
+		in the built-in and user-database and stored for project exchange between computers.
+	*/
+	EmbeddedDatabase									m_embeddedDB;				// XML:E
+
+
+	/*! Definitions for exporting an FMU from the model. */
+	NANDRAD::FMIDescription								m_fmiDescription;			// XML:E
 };
 
 

@@ -10,8 +10,9 @@
 
 #include <QColor>
 
-namespace VICUS{
+namespace VICUS {
 
+/*! Contains model parameters for fluid model. */
 class NetworkFluid: public AbstractDBElement {
 public:
 	/*! Basic parameters. */
