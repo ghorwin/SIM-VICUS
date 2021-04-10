@@ -22,6 +22,10 @@ bool InternalLoad::isValid() const
 			try {
 				m_para[P_PersonCount].checkedValue(KeywordList::Keyword("InternalLoad::para_t", P_PersonCount),
 												   "-", "-", 0, true, 100000, true, nullptr);
+				m_para[P_PersonPerArea].checkedValue(KeywordList::Keyword("InternalLoad::para_t", P_PersonPerArea),
+												   "-", "-", 0, true, 100000, true, nullptr);
+				m_para[P_AreaPerPerson].checkedValue(KeywordList::Keyword("InternalLoad::para_t", P_AreaPerPerson),
+												   "-", "-", 0, true, 100000, true, nullptr);
 
 			}  catch (...) {
 				return false;
