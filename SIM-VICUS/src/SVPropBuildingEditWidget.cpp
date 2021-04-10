@@ -685,7 +685,7 @@ void SVPropBuildingEditWidget::zoneTemplateSelectionChanged() {
 void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
 	// ask user to select a new component
 	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignComponent",
-		tr("Assign component"), tr("You may now select a component from the component database, which will then be"
+		tr("Assign component"), tr("You may now select a component from the component database, which will then be "
 								   "assigned to the selected surfaces."));
 	unsigned int selectedComponentId = SVMainWindow::instance().dbComponentEditDialog()->select(0);
 	if (selectedComponentId == VICUS::INVALID_ID)
@@ -802,7 +802,7 @@ void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
 void SVPropBuildingEditWidget::on_pushButtonAssignZoneTemplate_clicked() {
 	// ask user to select a the zone template to assign
 	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignZoneTemplate",
-		tr("Assign zone template"), tr("You may now select a zone template from the database, which will then be"
+		tr("Assign zone template"), tr("You may now select a zone template from the database, which will then be "
 								   "assigned to the selected rooms."));
 	unsigned int selectedId = SVMainWindow::instance().dbZoneTemplateEditDialog()->select(0);
 	if (selectedId == VICUS::INVALID_ID)
