@@ -77,11 +77,13 @@ bool InternalLoad::isValid() const
 	try {
 
 		m_para[P_ConvectiveHeatFactor].checkedValue(KeywordList::Keyword("InternalLoad::para_t", P_ConvectiveHeatFactor),
-											   "-", "-", 0, true, 1, true, nullptr);
-		m_para[P_LossHeatFactor].checkedValue(KeywordList::Keyword("InternalLoad::para_t", P_LossHeatFactor),
-											   "-", "-", 0, true, 1, true, nullptr);
-		m_para[P_LatentHeatFactor].checkedValue(KeywordList::Keyword("InternalLoad::para_t", P_LatentHeatFactor),
-											   "-", "-", 0, true, 1, true, nullptr);
+											   "---", "---", 0, true, 1, true, nullptr);
+		if(m_category != IC_Person){
+			m_para[P_LossHeatFactor].checkedValue(KeywordList::Keyword("InternalLoad::para_t", P_LossHeatFactor),
+												   "---", "---", 0, true, 1, true, nullptr);
+			m_para[P_LatentHeatFactor].checkedValue(KeywordList::Keyword("InternalLoad::para_t", P_LatentHeatFactor),
+												   "---", "---", 0, true, 1, true, nullptr);
+		}
 	}  catch (...) {
 		return false;
 	}
