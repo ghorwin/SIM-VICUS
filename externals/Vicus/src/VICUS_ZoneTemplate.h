@@ -19,6 +19,9 @@ public:
 
 	/*! Types used to identify individual sub-templates. */
 	enum SubTemplateType {
+		//dont change the order
+		//first have a look to
+		//SVSimulationStartNandrad::generateBuildingProjectData
 		ST_IntLoadPerson,			// Keyword: IntLoadPerson
 		ST_IntLoadEquipment,		// Keyword: IntLoadEquipment
 		ST_IntLoadLighting,			// Keyword: IntLoadLighting
