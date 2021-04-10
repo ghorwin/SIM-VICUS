@@ -21,9 +21,15 @@ public:
 	/*! Checks if all referenced materials exist and if their parameters are valid. */
 	bool isValid() const;
 
+	/*! Multiply to daily cycles. */
 	DailyCycle multiply(const DailyCycle &other) const;
 
+	/*! Multiply a value to the daily cycle. */
+	DailyCycle multiply(double val) const;
+
 	DailyCycle operator *(const DailyCycle &other) const {return multiply(other);}
+
+	DailyCycle operator *(double val) const {return multiply(val);}
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

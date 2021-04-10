@@ -115,6 +115,25 @@ DailyCycle DailyCycle::multiply(const DailyCycle &other) const {
 	return dc;
 }
 
+DailyCycle DailyCycle::multiply(double val) const {
+	FUNCID("DailyCycle::multiply");
+	DailyCycle dc;
+	if(!isValid()){
+		//Schedule interval '%1' with (id=%2) is not valid.
+		return dc;
+	}
+
+	if(val<0)
+		IBK::Exception(IBK::FormatString("Multiply negative values to a daily cylce is not allowed."), FUNC_ID);
+
+	dc = *this;
+
+	for(unsigned int i=0; i<dc.m_values.size(); ++i)
+		dc.m_values[i] *= val;
+
+	return dc;
+}
+
 
 bool DailyCycle::operator!=(const DailyCycle & other) const {
 	if (m_values != other.m_values)  return true;
