@@ -171,11 +171,13 @@ namespace VICUS {
 			case 7 :
 			switch (t) {
 				case 0 : return "PersonCount";
-				case 1 : return "Power";
-				case 2 : return "PowerPerArea";
-				case 3 : return "ConvectiveHeatFactor";
-				case 4 : return "LatentHeatFactor";
-				case 5 : return "LossHeatFactor";
+				case 1 : return "PersonPerArea";
+				case 2 : return "AreaPerPerson";
+				case 3 : return "Power";
+				case 4 : return "PowerPerArea";
+				case 5 : return "ConvectiveHeatFactor";
+				case 6 : return "LatentHeatFactor";
+				case 7 : return "LossHeatFactor";
 			} break;
 			// InternalLoad::Category
 			case 8 :
@@ -535,11 +537,13 @@ namespace VICUS {
 			case 7 :
 			switch (t) {
 				case 0 : return "PersonCount";
-				case 1 : return "Power";
-				case 2 : return "PowerPerArea";
-				case 3 : return "ConvectiveHeatFactor";
-				case 4 : return "LatentHeatFactor";
-				case 5 : return "LossHeatFactor";
+				case 1 : return "PersonPerArea";
+				case 2 : return "AreaPerPerson";
+				case 3 : return "Power";
+				case 4 : return "PowerPerArea";
+				case 5 : return "ConvectiveHeatFactor";
+				case 6 : return "LatentHeatFactor";
+				case 7 : return "LossHeatFactor";
 			} break;
 			// InternalLoad::Category
 			case 8 :
@@ -900,11 +904,13 @@ namespace VICUS {
 			case 7 :
 			switch (t) {
 				case 0 : return "Person Count.";
-				case 1 : return "Power.";
-				case 2 : return "Power per area.";
-				case 3 : return "Convective Heat Factor.";
-				case 4 : return "Latent Heat Factor.";
-				case 5 : return "Loss Heat Factor.";
+				case 1 : return "Person per area.";
+				case 2 : return "Area per person.";
+				case 3 : return "Power.";
+				case 4 : return "Power per area.";
+				case 5 : return "Convective Heat Factor.";
+				case 6 : return "Latent Heat Factor.";
+				case 7 : return "Loss Heat Factor.";
 			} break;
 			// InternalLoad::Category
 			case 8 :
@@ -1264,11 +1270,13 @@ namespace VICUS {
 			case 7 :
 			switch (t) {
 				case 0 : return "-";
-				case 1 : return "W";
-				case 2 : return "W/m2";
-				case 3 : return "---";
-				case 4 : return "---";
+				case 1 : return "m2";
+				case 2 : return "m2";
+				case 3 : return "W";
+				case 4 : return "W/m2";
 				case 5 : return "---";
+				case 6 : return "---";
+				case 7 : return "---";
 			} break;
 			// InternalLoad::Category
 			case 8 :
@@ -1633,6 +1641,8 @@ namespace VICUS {
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
 				case 5 : return "#FFFFFF";
+				case 6 : return "#FFFFFF";
+				case 7 : return "#FFFFFF";
 			} break;
 			// InternalLoad::Category
 			case 8 :
@@ -1997,6 +2007,8 @@ namespace VICUS {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
+				case 6 : return std::numeric_limits<double>::quiet_NaN();
+				case 7 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// InternalLoad::Category
 			case 8 :
@@ -2295,7 +2307,7 @@ namespace VICUS {
 			// Infiltration::AirChangeType
 			case 6 : return 2;
 			// InternalLoad::para_t
-			case 7 : return 6;
+			case 7 : return 8;
 			// InternalLoad::Category
 			case 8 : return 4;
 			// InternalLoad::PersonCountMethod
@@ -2391,7 +2403,7 @@ namespace VICUS {
 			// Infiltration::AirChangeType
 			case 6 : return 1;
 			// InternalLoad::para_t
-			case 7 : return 5;
+			case 7 : return 7;
 			// InternalLoad::Category
 			case 8 : return 3;
 			// InternalLoad::PersonCountMethod

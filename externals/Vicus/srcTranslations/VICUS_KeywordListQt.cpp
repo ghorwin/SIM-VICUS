@@ -70,6 +70,8 @@ KeywordListQt::KeywordListQt() {
 	tr("normal");
 	tr("n50");
 	tr("Person Count.");
+	tr("Person per area.");
+	tr("Area per person.");
 	tr("Power.");
 	tr("Power per area.");
 	tr("Convective Heat Factor.");
