@@ -260,6 +260,7 @@ void SVDBInternalLoadsElectricEquipmentEditWidget::on_toolButtonSelectSchedule_c
 	if (m_current->m_powerManagementScheduleId != newId) {
 		m_current->m_powerManagementScheduleId = newId;
 		m_db->m_internalLoads.m_modified = true;
+		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 	updateInput((int)m_current->m_id);
 }
