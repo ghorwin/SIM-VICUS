@@ -30,17 +30,6 @@ void InternalLoadsModel::checkParameters() const {
 	// Required attribute
 	IBK_ASSERT(m_modelType != NUM_MT);
 
-	// check parameter existence
-	if(m_para[P_EquipmentRadiationFraction].name.empty()) {
-		throw IBK::Exception("Missing parameter 'EquipmentRadiationFraction'", FUNC_ID);
-	}
-	if(m_para[P_PersonRadiationFraction].name.empty()) {
-		throw IBK::Exception("Missing parameter 'PersonRadiationFraction'", FUNC_ID);
-	}
-	if(m_para[P_LightingRadiationFraction].name.empty()) {
-		throw IBK::Exception("Missing parameter 'LightingFraction'", FUNC_ID);
-	}
-
 	// check fixed parameters
 	m_para[P_EquipmentRadiationFraction].checkedValue("EquipmentRadiationFraction", "---", "---",
 												   0, true,
@@ -74,8 +63,6 @@ void InternalLoadsModel::checkParameters() const {
 													   0, true,
 													   std::numeric_limits<double>::max(), true,
 								   "Lighting heat load per area must be >= 0 W/m2.");
-
-
 	}
 	else { // modelType == MT_Scheduled
 		// invalid constant definitions
