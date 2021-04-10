@@ -40,7 +40,7 @@ namespace NANDRAD {
 class Schedules {
 public:
 
-	/*! Day ids, also used to define "a weekend". */
+	/*! Day ids, also used to define "a weekend definition". */
 	enum day_t {
 		SD_MONDAY,		// Keyword: Mon		'Monday.'
 		SD_TUESDAY,		// Keyword: Tue		'Tuesday.'
