@@ -135,7 +135,7 @@ ScheduleInterval ScheduleInterval::multiply(const ScheduleInterval &other, unsig
 				schedInt.m_dailyCycles.push_back(dc);
 		}
 	}
-	if(!schedInt.m_dailyCycles.empty()){
+	if(schedInt.m_dailyCycles.empty()){
 		return ScheduleInterval();
 	}
 
@@ -143,6 +143,26 @@ ScheduleInterval ScheduleInterval::multiply(const ScheduleInterval &other, unsig
 	schedInt.m_intervalStartDay = startDay;
 
 	return schedInt;
+}
+
+ScheduleInterval ScheduleInterval::multiply(double val) const{
+	FUNCID("ScheduleInterval::multiply");
+	ScheduleInterval schedInt;
+	if(!isValid()){
+		//Schedule interval '%1' with (id=%2) is not valid.
+		return schedInt;
+	}
+
+	if(val<0)
+		IBK::Exception(IBK::FormatString("Multiply negative values to a schedule interval is not allowed."), FUNC_ID);
+
+	schedInt = *this;
+
+	for(unsigned int i=0; i<schedInt.m_dailyCycles.size(); ++i)
+		schedInt.m_dailyCycles[i] = schedInt.m_dailyCycles[i] * val;
+
+	return schedInt;
+
 }
 
 

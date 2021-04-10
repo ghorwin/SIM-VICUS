@@ -33,6 +33,8 @@ public:
 	/*! Multiply to schedule intervals and create a new one. */
 	ScheduleInterval multiply(const ScheduleInterval &other, unsigned int startDay) const;
 
+	/*! Multiply a value to schedule intervals and create a new one. */
+	ScheduleInterval multiply(double val)const;
 
 
 	// *** PUBLIC MEMBER VARIABLES ***
