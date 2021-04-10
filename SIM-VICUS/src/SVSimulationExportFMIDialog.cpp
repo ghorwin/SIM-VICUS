@@ -6,7 +6,8 @@
 #include <QProcess>
 
 #include <QtExt_Directories.h>
-#include <quazip.h>
+
+#include <JlCompress.h>
 
 #include <VICUS_Project.h>
 
@@ -509,10 +510,12 @@ void SVSimulationExportFMIDialog::variableInfo(const std::string & fullVarName, 
 
 
 void SVSimulationExportFMIDialog::on_pushButtonGenerate_clicked() {
+	FUNCID(SVSimulationExportFMIDialog::on_pushButtonGenerate_clicked);
 	// input data check
 	// need variables
 	// need meta data
 
+	QString fmuModelName = m_ui->lineEditModelName->text().trimmed();
 
 	// generation process:
 	// 1. create directory structure
@@ -530,7 +533,8 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerate_clicked() {
 	QString targetPath = m_ui->lineEditFilePath->filename();
 	QDir baseDir = QtExt::Directories::tmpDir() + "/" + QFileInfo(targetPath).baseName();
 
-	qDebug() << "Generating FMU in directory:" << baseDir;
+	IBK::IBK_Message( IBK::FormatString("Generating FMU in directory '%1'\n").arg(baseDir.absolutePath().toStdString()),
+					  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 	// we create the following directory structure:
 	// targetPath = /home/ghorwin/fmuexport/TestModel1.fmu
 	// modelName = TestModel1
@@ -549,7 +553,7 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerate_clicked() {
 
 	// remove generation directory if existing
 	if (baseDir.exists()) {
-		qDebug() << "Removing existing directory.";
+		IBK::IBK_Message("Removing existing FMU export directory.", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 		QtExt::Directories::removeDirRecursively(baseDir.absolutePath());
 	}
 	// first create base directory
@@ -565,14 +569,14 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerate_clicked() {
 		m_localProject.generateNandradProject(p);
 	}
 	catch (VICUS::Project::ConversionError & ex) {
-		QMessageBox::critical(this, tr("FMU Export Error"),
+		QMessageBox::critical(this, tr("NANDRAD Project Generation Error"),
 							  tr("%1\nBefore exporting an FMU, please make sure that the simulation runs correctly!").arg(ex.what()) );
 		return;
 	}
 	catch (IBK::Exception & ex) {
 		// just show a generic error message
 		ex.writeMsgStackToError();
-		QMessageBox::critical(this, tr("FMU Export Error"),
+		QMessageBox::critical(this, tr("NANDRAD Project Generation Error"),
 							  tr("An error occurred during NANDRAD project generation.\n"
 								 "Before exporting an FMU, please make sure that the simulation runs correctly!"));
 		return;
@@ -582,36 +586,29 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerate_clicked() {
 	IBK::Path resourcePath(copyPath.toStdString());
 	IBK::Path fullClimatePath = p.m_location.m_climateFilePath.withReplacedPlaceholders(p.m_placeholders);
 	if (!fullClimatePath.isFile()) {
-		throw ConversionError(ConversionError::ET_MissingClimate,
+		QMessageBox::critical(this, tr("FMU Export Error"),
 			tr("The referenced climate data file '%1' does not exist. Please select a climate data file!")
 				.arg(QString::fromStdString(fullClimatePath.str())) );
-	}
-	// target file path
-	IBK::Path targetClimatePath = *targetPath / fullClimatePath.filename();
-	if (!IBK::Path::copy(fullClimatePath, targetClimatePath))
-		throw ConversionError(ConversionError::ET_MissingClimate,
-			tr("Cannot copy the referenced climate data file '%1' to target directory '%2'.")
-				.arg(QString::fromStdString(fullClimatePath.str()))
-				.arg(QString::fromStdString(targetPath->str())) );
-	// modify reference in project file
-	p.m_location.m_climateFilePath = "${Project Directory}/" + fullClimatePath.filename().str();
-	}
-
-	bool res = m_localProject.exportProjectTo(copyPath);
-	if (!res) {
-		QMessageBox::critical(this, tr("FMU Export Error"), tr("Error while exporting project to FMU directory."));
-		QtExt::Directories::removeDirRecursively(baseDir.absolutePath());
 		return;
 	}
+	// target file path
+	std::string targetFName = fullClimatePath.filename().str();
+	targetFName = IBK::replace_string(targetFName, " ", "_");
+	IBK::Path targetClimatePath = resourcePath / targetFName;
+	IBK::IBK_Message( IBK::FormatString("Copying climate data file '%1'\n").arg(fullClimatePath.filename()),
+					  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+	if (!IBK::Path::copy(fullClimatePath, targetClimatePath))
+		QMessageBox::critical(this, tr("FMU Export Error"),
+			tr("Cannot copy the referenced climate data file '%1' to target directory '%2'.")
+				.arg(QString::fromStdString(fullClimatePath.str()))
+				.arg(QString::fromStdString(resourcePath.str())) );
+	// modify reference in project file
+	p.m_location.m_climateFilePath = "${Project Directory}/" + targetFName;
 
-	// now we have the project file copied, rename it to match the fmu model name
-	QString fmuModelName = m_fmiExportDialog->m_modelName;
-	QString exportedProjectFilePath = QFileInfo(DelProjectHandler::instance().projectFile()).fileName();
-	QString resDir = baseDir.absoluteFilePath("resources");
-	// the project file is always named "Project.d6p" within the FMU's resource directory
-	QFile::rename(QDir(resDir).absoluteFilePath(exportedProjectFilePath), QDir(resDir).absoluteFilePath("Project.d6p" ));
+	// now write the project into the export directory, it will always be called "project.nandrad"
+	p.writeXML(resourcePath / "project.nandrad");
 
-	// generate the ModelDescription file
+	// generate the modelDescription.xml file
 
 	// load template and replace variables
 	QFile f(":/fmu/modelDescription.xml.template");
@@ -623,8 +620,8 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerate_clicked() {
 	// ${MODELNAME}
 	modelDesc.replace("${MODELNAME}", fmuModelName);
 
-	// ${DELPHIN_VERSION}
-	modelDesc.replace("${DELPHIN_VERSION}", DELPHIN::LONG_VERSION);
+	// ${NANDRAD_VERSION}
+	modelDesc.replace("${NANDRAD_VERSION}", NANDRAD::LONG_VERSION);
 
 	// ${DATETIME} - 2018-08-01T12:49:19Z
 	QDateTime t=QDateTime::currentDateTime();
@@ -632,7 +629,7 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerate_clicked() {
 	modelDesc.replace("${DATETIME}", dt);
 
 	// ${SIMDURATION} in seconds
-	modelDesc.replace("${SIMDURATION}", QString("%1").arg(DelProjectHandler::instance().project().m_init.m_interval.endTime()));
+	modelDesc.replace("${SIMDURATION}", QString("%1").arg(m_localProject.m_simulationParameter.m_interval.endTime()));
 
 	// generate variable and modelStructure section
 
@@ -663,9 +660,9 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerate_clicked() {
 			"\n";
 
 	// process all variables
-
 	QSet<QString> units;
 
+#if 0
 	int i=1;
 	for (std::vector<DelFMIExportDialog::FMIVariable>::const_iterator it = m_fmiExportDialog->m_fmiVariables.begin();
 		 it != m_fmiExportDialog->m_fmiVariables.end(); ++it, ++i)
@@ -693,7 +690,7 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerate_clicked() {
 			modelStructure += QString(" 			<Unknown index=\"%1\"/>\n").arg(i);
 		}
 	}
-
+#endif
 	// ${MODELVARIABLES}
 	modelDesc.replace("${MODELVARIABLES}", modelVariables);
 
@@ -725,70 +722,72 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerate_clicked() {
 	of.write(modelDesc.toUtf8());
 	of.close();
 
-	// create thumbnail image and copy into FMU
-	QString thumbPath = saveThumbNail();
-	QFile::copy(thumbPath, baseDir.absoluteFilePath("model.png"));
+//	// create thumbnail image and copy into FMU
+//	QString thumbPath = saveThumbNail();
+//	QFile::copy(thumbPath, baseDir.absoluteFilePath("model.png"));
 
 
 	bool success = true;
 
-	// copy the binaries
-#ifdef Q_OS_UNIX
-
-#ifdef Q_OS_LINUX
-
 	baseDir.mkdir("binaries");
 	baseDir.mkdir("binaries/linux64");
-
-	QFile::copy(DelSettings::instance().m_installDir + "/libDelphinSolverFMI.so",
-				baseDir.absoluteFilePath("binaries/linux64/" + fmuModelName + ".so"));
-#else
-	// macos
-	baseDir.mkdir("binaries");
+	baseDir.mkdir("binaries/win64");
 	baseDir.mkdir("binaries/darwin64");
 
-	QFile::copy(DelSettings::instance().m_installDir + "/libDelphinSolverFMI.dylib",
-				baseDir.absoluteFilePath("binaries/darwin64/" + fmuModelName + ".dylib"));
-#endif
+	// copy the binaries
 
-#elif defined(Q_OS_WIN)
-
-	baseDir.mkdir("binaries");
-
-#if defined(_WIN64)
-	baseDir.mkdir("binaries/win64");
-	QString binTargetPath = baseDir.absoluteFilePath("binaries/win64/");
-#else
-	baseDir.mkdir("binaries/win32");
-	QString binTargetPath = baseDir.absoluteFilePath("binaries/win32/");
-#endif
-	QFile::copy(DelSettings::instance().m_installDir + "/DelphinSolverFMI.dll",
-				binTargetPath + "/" + fmuModelName + ".dll");
-	if (!QFile::exists(binTargetPath + "/" + fmuModelName + ".dll")) {
-		QMessageBox::critical(this, tr("FMU Export Error"), tr("Error copying DELPHIN fmi dll '%1' into FMU directory structure.")
-							  .arg(DelSettings::instance().m_installDir + "/DelphinSolverFMI.dll"));
-		success = false;
+	// linux
+	QString fmuLibFile = SVSettings::instance().m_installDir + "/fmu/libNandradSolverFMI.so";
+	if (QFile(fmuLibFile).exists()) {
+		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
+						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+		QFile::copy(fmuLibFile,
+					baseDir.absoluteFilePath("binaries/linux64/" + fmuModelName + ".so"));
+	}
+	else {
+		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
+						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 	}
 
-	if (success) {
+	// macos
+	fmuLibFile = SVSettings::instance().m_installDir + "/fmu/libNandradSolverFMI.dylib";
+	if (QFile(fmuLibFile).exists()) {
+		IBK::IBK_Message( IBK::FormatString("Copying MacOS FMU lib '%1'").arg(fmuLibFile.toStdString()),
+						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+		QFile::copy(fmuLibFile,
+					baseDir.absoluteFilePath("binaries/darwin64/" + fmuModelName + ".dylib"));
+	}
+	else {
+		IBK::IBK_Message( IBK::FormatString("FMU lib file (darwin64) '%1' not installed").arg(fmuLibFile.toStdString()),
+						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+	}
+
+	// win64
+	fmuLibFile = SVSettings::instance().m_installDir + "/fmu/NandradSolverFMI.dll";
+	if (QFile(fmuLibFile).exists()) {
+		IBK::IBK_Message( IBK::FormatString("Copying Win64 FMU lib '%1'").arg(fmuLibFile.toStdString()),
+						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+		QString binTargetPath = baseDir.absoluteFilePath("binaries/win64/");
+		QFile::copy(fmuLibFile, binTargetPath + "/" + fmuModelName + ".dll");
+
 		QStringList copyFiles;
-		copyFiles << DelSettings::instance().m_installDir + "/msvcp140.dll"
-				  << DelSettings::instance().m_installDir + "/vcomp140.dll"
-				  << DelSettings::instance().m_installDir + "/vcruntime140.dll";
+		copyFiles << SVSettings::instance().m_installDir + "/msvcp140.dll"
+				  << SVSettings::instance().m_installDir + "/vcomp140.dll"
+				  << SVSettings::instance().m_installDir + "/vcruntime140.dll";
 		for (int i=0; i<copyFiles.count(); ++i) {
 			if (!QFile::exists(copyFiles[i])) {
-				QMessageBox::critical(this, tr("FMU Export Error"), tr("Missing file '%1' to copy into FMU archive.").arg(copyFiles[i]));
-				success = false;
-				break;
+				IBK::IBK_Message( IBK::FormatString("Missing file '%1' to copy into FMU archive.").arg(copyFiles[i].toStdString()),
+								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 			}
-			QFile::copy(copyFiles[i], binTargetPath + "/" + QFileInfo(copyFiles[i]).fileName());
+			else {
+				QFile::copy(copyFiles[i], binTargetPath + "/" + QFileInfo(copyFiles[i]).fileName());
+			}
 		}
 	}
-
-#else
-#error Unsupported platform
-
-#endif
+	else {
+		IBK::IBK_Message( IBK::FormatString("FMU lib file (Win64) '%1' not installed").arg(fmuLibFile.toStdString()),
+						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+	}
 
 	if (success) {
 
@@ -804,5 +803,4 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerate_clicked() {
 
 	if (success)
 		QMessageBox::information(this, tr("FMU Export complete"), tr("FMU '%1' created.").arg(targetPath));
-
 }
