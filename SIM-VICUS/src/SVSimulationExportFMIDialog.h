@@ -45,7 +45,21 @@ private slots:
 
 	void on_pushButtonGenerate_clicked();
 
+	void on_lineEditModelName_editingFinished();
+	void on_lineEditTargetPath_editingFinished();
+	void on_lineEditTargetPath_returnPressed();
+
 private:
+	/*! Checks if the model name and/or the path is conforming to the requirements.
+		- no umlaute/special characters in model name
+		- no spaces
+		- no leading numbers
+		- target path must exist
+
+		Shows a critical message box if any error occurred.
+	*/
+	bool checkModelName();
+
 	struct IDInfo {
 		std::vector<unsigned int>	m_objectIDs;
 		std::vector<unsigned int>	m_vectorIndexes;

@@ -21,7 +21,7 @@ SVSimulationExportFMIDialog::SVSimulationExportFMIDialog(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
-	m_ui->lineEditFilePath->setup("", true, false, tr("FMU files (*.fmu);;All files (*.*)"));
+	m_ui->lineEditTargetPath->setup("", false, true, QString());
 
 	m_ui->tableWidgetInputVars->setColumnCount(7);
 	m_ui->tableWidgetInputVars->setRowCount(3);
@@ -80,8 +80,8 @@ int SVSimulationExportFMIDialog::edit() {
 	// *** transfer general parameters
 
 	m_ui->lineEditModelName->setText( QString::fromStdString(m_localProject.m_fmiDescription.m_modelName) );
-	m_ui->lineEditFilePath->setFilename( QString::fromStdString(m_localProject.m_fmiDescription.m_FMUPath.str()) );
-
+	m_ui->lineEditTargetPath->setFilename( QString::fromStdString(m_localProject.m_fmiDescription.m_FMUPath.str()) );
+	on_lineEditModelName_editingFinished();
 	updateVariableLists(true);
 
 	return exec();
@@ -511,7 +511,11 @@ void SVSimulationExportFMIDialog::variableInfo(const std::string & fullVarName, 
 
 void SVSimulationExportFMIDialog::on_pushButtonGenerate_clicked() {
 	FUNCID(SVSimulationExportFMIDialog::on_pushButtonGenerate_clicked);
+
 	// input data check
+	if (!checkModelName())
+		return;
+
 	// need variables
 	// need meta data
 
@@ -530,7 +534,7 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerate_clicked() {
 
 
 	// get target directory
-	QString targetPath = m_ui->lineEditFilePath->filename();
+	QString targetPath = m_ui->lineEditFMUPath->text();
 	QDir baseDir = QtExt::Directories::tmpDir() + "/" + QFileInfo(targetPath).baseName();
 
 	IBK::IBK_Message( IBK::FormatString("Generating FMU in directory '%1'\n").arg(baseDir.absolutePath().toStdString()),
@@ -743,7 +747,7 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerate_clicked() {
 	// copy the binaries
 
 	// linux
-	QString fmuLibFile = SVSettings::instance().m_installDir + "/fmu/libNandradSolverFMI.so";
+	QString fmuLibFile = SVSettings::instance().m_installDir + "/libNandradSolverFMI.so";
 	if (QFile(fmuLibFile).exists()) {
 		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
@@ -756,7 +760,7 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerate_clicked() {
 	}
 
 	// macos
-	fmuLibFile = SVSettings::instance().m_installDir + "/fmu/libNandradSolverFMI.dylib";
+	fmuLibFile = SVSettings::instance().m_installDir + "/libNandradSolverFMI.dylib";
 	if (QFile(fmuLibFile).exists()) {
 		IBK::IBK_Message( IBK::FormatString("Copying MacOS FMU lib '%1'").arg(fmuLibFile.toStdString()),
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
@@ -769,7 +773,7 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerate_clicked() {
 	}
 
 	// win64
-	fmuLibFile = SVSettings::instance().m_installDir + "/fmu/NandradSolverFMI.dll";
+	fmuLibFile = SVSettings::instance().m_installDir + "/NandradSolverFMI.dll";
 	if (QFile(fmuLibFile).exists()) {
 		IBK::IBK_Message( IBK::FormatString("Copying Win64 FMU lib '%1'").arg(fmuLibFile.toStdString()),
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
@@ -809,4 +813,63 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerate_clicked() {
 
 	if (success)
 		QMessageBox::information(this, tr("FMU Export complete"), tr("FMU '%1' created.").arg(targetPath));
+}
+
+
+void SVSimulationExportFMIDialog::on_lineEditModelName_editingFinished() {
+	m_ui->lineEditFMUPath->setText("---");
+	if (!checkModelName())
+		return;
+	QString modelName = m_ui->lineEditModelName->text();
+	// update FMU path
+	QDir targetDir(m_ui->lineEditTargetPath->filename());
+	m_ui->lineEditFMUPath->setText( targetDir.absoluteFilePath(modelName + ".fmu"));
+	m_localProject.m_fmiDescription.m_FMUPath = targetDir.absolutePath().toStdString();
+	m_localProject.m_fmiDescription.m_modelName = modelName.toStdString();
+}
+
+
+void SVSimulationExportFMIDialog::on_lineEditTargetPath_editingFinished() {
+	on_lineEditModelName_editingFinished();
+}
+
+
+void SVSimulationExportFMIDialog::on_lineEditTargetPath_returnPressed() {
+	on_lineEditModelName_editingFinished();
+}
+
+
+bool SVSimulationExportFMIDialog::checkModelName() {
+	QString modelName = m_ui->lineEditModelName->text().trimmed();
+	if (modelName.isEmpty()) {
+		QMessageBox::critical(this, QString(), tr("Missing model name."));
+		return false;
+	}
+
+	// check model name for allowed characters
+	const std::string allowedChars = "-.,";
+	for (unsigned int i=0; i<modelName.size(); ++i) {
+		// check if character is an accepted char
+		QChar ch = modelName[i];
+		if (ch >= 'A' && ch <= 'Z') continue;
+		if (ch >= 'a' && ch <= 'z') continue;
+		if (ch >= '0' && ch <= '9') continue;
+		// check any other acceptable chars
+		if (allowedChars.find(ch.toLatin1()) != std::string::npos) continue;
+		QMessageBox::critical(this, QString(), tr("Model name contains invalid characters."));
+		return false;
+	}
+
+	// check leading 0
+	if (modelName[0] >= '0' && modelName[0] <= '9') {
+		QMessageBox::critical(this, QString(), tr("Model name must not start with a number character."));
+		return false;
+	}
+
+	if (m_ui->lineEditTargetPath->filename().trimmed().isEmpty()) {
+		QMessageBox::critical(this, QString(), tr("Missing target path name."));
+		return false;
+	}
+
+	return true;
 }
