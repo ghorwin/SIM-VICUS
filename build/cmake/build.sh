@@ -153,11 +153,14 @@ mkdir -p ../../bin/release &&
 echo "*** Copying NandradSolver and SIM-VICUS to bin/release ***" &&
 if [ -d $BUILDDIR/SIM-VICUS/SIM-VICUS.app ]
 then
-    rm -rf ../../bin/release/SIM-VICUS.app
-    cp -r $BUILDDIR/SIM-VICUS/SIM-VICUS.app ../../bin/release/SIM-VICUS.app &&
-    cp $BUILDDIR/NandradSolver/NandradSolver ../../bin/release/NandradSolver
+	# MacOS
+	rm -rf ../../bin/release/SIM-VICUS.app
+	cp -r $BUILDDIR/SIM-VICUS/SIM-VICUS.app ../../bin/release/SIM-VICUS.app &&
+	cp $BUILDDIR/NandradSolver/NandradSolver ../../bin/release/NandradSolver &&
+	cp $BUILDDIR/NandradSolverFMI/libNandradSolverFMI.dylib ../../bin/release/libNandradSolverFMI.dylib
 else
-    cp $BUILDDIR/NandradSolver/NandradSolver ../../bin/release/NandradSolver &&
+	cp $BUILDDIR/NandradSolver/NandradSolver ../../bin/release/NandradSolver &&
+	cp $BUILDDIR/NandradSolverFMI/libNandradSolverFMI.so ../../bin/release/libNandradSolverFMI.so &&
 	if [ -e $BUILDDIR/SIM-VICUS/SIM-VICUS ]
 	then
 		cp $BUILDDIR/SIM-VICUS/SIM-VICUS ../../bin/release/SIM-VICUS
