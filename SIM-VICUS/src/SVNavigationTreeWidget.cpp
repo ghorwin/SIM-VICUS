@@ -74,7 +74,6 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 
 			std::set<unsigned int> modifiedIDs(info->m_nodeIDs.begin(), info->m_nodeIDs.end());
 
-#if 1
 			// process all objects in project and skip all, whose ID is not in our list
 			for (const VICUS::Building & b : project().m_buildings) {
 				if (modifiedIDs.find(b.uniqueID()) != modifiedIDs.end())
@@ -110,42 +109,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 						setFlags(e.uniqueID(), e.m_visible, e.m_selected);
 				}
 			}
-#else
-			// old, slow variant because of objectById()
 
-			// process all modified nodes
-			for (unsigned int id : info->m_nodeIDs) {
-				std::map<unsigned int, QTreeWidgetItem*>::iterator treeIt = m_treeItemMap.find(id);
-				Q_ASSERT(treeIt != m_treeItemMap.end());
-				// find the object in question
-				const VICUS::Object * obj = project().objectById(id);
-				bool visible = true;
-				bool selected = obj->m_selected;
-				const VICUS::Building* b;
-				const VICUS::BuildingLevel* bl;
-				const VICUS::Room * r;
-				const VICUS::Surface * s;
-				const VICUS::Network * n;
-				const VICUS::NetworkEdge * e;
-				const VICUS::NetworkNode * no;
-				if ((b = dynamic_cast<const VICUS::Building*>(obj)) != nullptr)
-					visible = b->m_visible;
-				if ((bl = dynamic_cast<const VICUS::BuildingLevel*>(obj)) != nullptr)
-					visible = bl->m_visible;
-				if ((r = dynamic_cast<const VICUS::Room*>(obj)) != nullptr)
-					visible = r->m_visible;
-				if ((s = dynamic_cast<const VICUS::Surface*>(obj)) != nullptr)
-					visible = s->m_visible;
-				if ((n = dynamic_cast<const VICUS::Network*>(obj)) != nullptr)
-					visible = n->m_visible;
-				if ((e = dynamic_cast<const VICUS::NetworkEdge*>(obj)) != nullptr)
-					visible = e->m_visible;
-				if ((no = dynamic_cast<const VICUS::NetworkNode*>(obj)) != nullptr)
-					visible = no->m_visible;
-				treeIt->second->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, visible);
-				treeIt->second->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, selected);
-			}
-#endif
 			m_ui->treeWidget->update();
 //			qDebug() << "End processing NodeStateModified";
 			return; // nothing else to do here
