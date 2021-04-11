@@ -54,7 +54,8 @@ public:
 	/*! The FMI model name. */
 	std::string							m_modelName;							// XML:E
 
-	/*! Path to FMU file to export.
+	/*! Path to target directory, where FMU file shall be exported to.
+		FMU file path will be automatically generated from model name and FMU path.
 		This is stored so that it is not necessary to specify the FMU path again and again when
 		exporting new project variants.
 	*/
