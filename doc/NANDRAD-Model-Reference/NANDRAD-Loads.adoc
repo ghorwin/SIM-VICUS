@@ -145,6 +145,7 @@ Um das gleiche Ergebnis wie bei jährlichen Stundendaten zu erzielen, müssen Kl
 ====
 
 
+[[location_sensors]]
 ### Zusätzliche Strahlungssensoren
 
 Es ist möglich zusätzliche Ebenen (Sensoren) zu spezifizieren, um Lastausgänge für die Sonneneinstrahlung zu erzeugen. Dies geschieht durch die Angabe einer `Sensor`-Definition.

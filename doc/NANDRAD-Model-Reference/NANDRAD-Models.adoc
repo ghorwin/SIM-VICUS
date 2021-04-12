@@ -110,18 +110,23 @@ Ein Verschattungregelungsmodell ist eine spezielle Art von Regelungsmodell, das 
 		0 = keine Reduktion (Verschattung offen)
 		1 = volle Reduktion (Verschattung geschlossen)
 	-->
-	<ShadingControlModel id="555" displayName="Roof sensor" modelType="SingleIntensityControlled">
-		<!-- Ruft die Globalstrahlung am gegebenen Sensor ab. -->
-		<SensorID>21</SensorID>
-		<IBK:Parameter name="MaxIntensity" unit="W/m2">200</IBK:Parameter>
-		<IBK:Parameter name="MinIntensity" unit="W/m2">100</IBK:Parameter>
-		<!-- Das Verschattungssteuerungsmodell liefert 1 für Werte unter Min und 0 für Werte über Max.
-			Eine Umschaltung ist nur erlaubt, wenn Max/Min überschritten wurde (hysteretische Steuerung).
-		-->
-	</ShadingControlModel>
+	<ShadingControlModel id="2000" displayName="Global horizontal sensor controller" sensorID="50000">
+		<IBK:Parameter name="MaxIntensity" unit="W/m2">300</IBK:Parameter>
+		<IBK:Parameter name="MinIntensity" unit="W/m2">150</IBK:Parameter>
+	</ShadingControlModel> 
 </Models>
 ----
 ====
+
+Das Verschattungskontrollmodell verlangt 2 Parameter `MaxIntensity` und `MinIntensity` und implementiert eine digitale Regelung mit Hysterese. Zunächst muss die Globalstrahlungsintensität auf den Sensor den oberen Grenzwert überschreiten `MaxIntensity`, wonach die Verschattung geschlossen wird (Kontrollmodell liefert 1). Danach muss die Strahlungsintensität zunächst unter die untere Grenze sinken (`MinIntensity`), bevor die Verschattung wieder geöffnet wird (Kontrollmodell liefert 0).
+
+Für die Auswertung wird eine Horizontalstrahlung benötigt. Dafür muss eine Oberfläche ausgewählt werden und als `sensorID` angegeben werden. Möglich sind hier 3 Optionen:
+
+- allgemeiner Sensor auf einer Fläche, siehe <<location_sensors>>
+- ID eines Fensters (eigentlich ID des _embedded object_, welches das Fenster enthält); hier wird die Globalstrahlung durch das Fenster als Eingangsgröße verwendet, einschließlich eventueller externer Verschattung bzw. Eigenverschattung 
+- ID einer opaquen Fläche; hier wird die Globalstrahlung auf eine opaque Fläche als Eingangsgröße verwendet, einschließlich eventueller externer Verschattung bzw. Eigenverschattung 
+
+Damit diese IDs eindeutig auflösbar sind, müssen Sensoren, Fenster und Konstruktionen global eindeutige IDs tragen.
 
 
 ## Internal Loads Model
