@@ -13,7 +13,7 @@ namespace NANDRAD_MODEL {
 
 /*! Defines a digital direct controller instance.
 */
-class DigitalDirectController: public AbstractController {
+class DigitalDirectController: public AbstractController { // NO KEYWORDS
 public:
 	DigitalDirectController();
 
@@ -27,7 +27,7 @@ public:
 
 /*! Defines a digital controller instance with hystersis.
 */
-class DigitalHysteresisController: public AbstractController, public AbstractTimeDependency {
+class DigitalHysteresisController: public AbstractController, public AbstractTimeDependency { // NO KEYWORDS
 public:
 	DigitalHysteresisController(const NANDRAD::Controller &controlle);
 
@@ -53,7 +53,7 @@ public:
 
 /*! Defines a P controller instance.
 */
-class PController: public AbstractController {
+class PController: public AbstractController { // NO KEYWORDS
 public:
 	PController(const NANDRAD::Controller &controller);
 
@@ -70,7 +70,7 @@ public:
 
 /*! Defines a PI controller instance.
 */
-class PIController: public AbstractTransientController {
+class PIController: public AbstractTransientController { // NO KEYWORDS
 public:
 	PIController(const NANDRAD::Controller &controller);
 
