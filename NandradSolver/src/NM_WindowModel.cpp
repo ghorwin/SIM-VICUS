@@ -32,6 +32,14 @@ void WindowModel::setup(const NANDRAD::EmbeddedObjectWindow & windowModelPara,
 
 	// TODO : warn if solar loads on either side --> should be signaled already on construction level
 
+	// overwrite constant shadig factor
+	if(m_windowModel->m_shading.m_modelType == NANDRAD::WindowShading::MT_Standard) {
+		// parameters were checked already
+		IBK_ASSERT(! m_windowModel->m_shading.m_para[NANDRAD::WindowShading::P_ReductionFactor].name.empty());
+		m_shadingFactor = m_windowModel->m_shading.m_para[NANDRAD::WindowShading::P_ReductionFactor].value;
+	}
+
+
 	m_results.resize(NUM_R);
 	m_results[R_FluxHeatConductionA] = 110001;
 	m_results[R_FluxHeatConductionB] = 110002;
@@ -163,6 +171,16 @@ void WindowModel::stateDependencies(std::vector<std::pair<const double *, const 
 }
 
 
+int WindowModel::setTime(double t) {
+	// update linear spline defined shading factor
+	if(m_windowModel->m_shading.m_modelType == NANDRAD::WindowShading::MT_Precomputed) {
+		// parameters were checked already
+		IBK_ASSERT(! m_windowModel->m_shading.m_shadingFactor.m_name.empty());
+		m_shadingFactor = m_windowModel->m_shading.m_shadingFactor.m_values.value(t);
+	}
+}
+
+
 int WindowModel::update() {
 
 	// *** heat conduction flux ***
@@ -251,14 +269,16 @@ int WindowModel::update() {
 		// get nominal radiation fluxes across surface of this construction
 		qRadGlobal = m_loads->qSWRad(m_con->m_id, qRadDir, qRadDiff, incidenceAngle);
 
+		// update controlled shading factor
+//		if(m_windowModel->m_shading.m_modelType == NANDRAD::WindowShading::MT_Controlled) {
+//			// TODO: retrieve shading factor from input references
+//		}
+
 		// reduce by shading factor
-		if(m_windowModel->m_shading.m_modelType != NANDRAD::WindowShading::NUM_MT) {
-			// parameters were checked already
-			IBK_ASSERT(! m_windowModel->m_shading.m_para[NANDRAD::WindowShading::P_ReductionFactor].name.empty());
-			double shadingFac = m_windowModel->m_shading.m_para[NANDRAD::WindowShading::P_ReductionFactor].value;
-			qRadGlobal *= shadingFac;
-			qRadDir *= shadingFac;
-			qRadDiff *= shadingFac;
+		if(m_shadingFactor != 1.0) {
+			qRadGlobal *= m_shadingFactor;
+			qRadDir *= m_shadingFactor;
+			qRadDiff *= m_shadingFactor;
 		}
 
 		// compute solar flux density [W/m2] through the glazing system

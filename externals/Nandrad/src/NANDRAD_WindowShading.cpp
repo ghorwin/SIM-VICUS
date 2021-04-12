@@ -21,18 +21,18 @@ void WindowShading::checkParameters() {
 			return; // only check if enabled
 
 		case MT_Standard :
-			if (m_controlModelID == INVALID_ID)
-				throw IBK::Exception("Shading model requires reference to shading control model (tag 'ControlModelID')", FUNC_ID);
 			m_para[P_ReductionFactor].checkedValue("ReductionFactor", "%", "%", 0, true, 1, true,
 								"Reduction factor be between 0 and 1.");
 		break;
 
 		case MT_Precomputed :
-			/// TODO
+			m_shadingFactor.checkAndInitialize("ShadingFactor", IBK::Unit("s"), IBK::Unit("---"), IBK::Unit("---"), 0, true, 1, true,
+								"Shading factor be between 0 and 1.");
 		break;
 
 		case MT_Controlled :
-			/// TODO
+			if (m_controlModelID == INVALID_ID)
+				throw IBK::Exception("Shading model requires reference to shading control model (tag 'ControlModelID')", FUNC_ID);
 		break;
 	}
 }

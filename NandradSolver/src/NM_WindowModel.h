@@ -3,6 +3,7 @@
 
 #include "NM_AbstractModel.h"
 #include "NM_AbstractStateDependency.h"
+#include "NM_AbstractTimeDependency.h"
 
 namespace NANDRAD {
 	class SimulationParameter;
@@ -17,7 +18,7 @@ namespace NANDRAD_MODEL {
 class Loads;
 
 /*! A model for heat transfer (convective and radiation) through windows. */
-class WindowModel : public AbstractModel, public AbstractStateDependency {
+class WindowModel : public AbstractModel, public AbstractTimeDependency, public AbstractStateDependency {
 public:
 	/*! Computed results, provided with access via construction instance ID. */
 	enum Results {
@@ -66,6 +67,16 @@ public:
 	/*! Retrieves reference pointer to a value with given input reference name. */
 	virtual const double * resultValueRef(const InputReference & quantity) const override;
 
+
+	// *** Re-implemented from AbstractTimeDependency
+
+	/*! Main state-changing function.
+		This function sets the new time point state. Must be implemented in derived models.
+		\param t Simulation time in [s] (solver time).
+		\return Returns 0 when calculation was successful, 1 when a recoverable error has been detected,
+			2 when something is badly wrong
+	*/
+	virtual int setTime(double t);
 
 	// *** Re-implemented from AbstractStateDependency
 
@@ -117,6 +128,9 @@ private:
 	bool											m_haveSolarLoadsOnA;
 	/*! Flag is set true, right side (B) has a parametrized Interface and connection to zone=0 (ambient). */
 	bool											m_haveSolarLoadsOnB;
+
+	/*! Shading factor: either constant, linear spline value or controlled. */
+	double											m_shadingFactor = 1.0;
 
 	/*! Model instance ID (unused since results are provided for zones). */
 	unsigned int									m_id;
