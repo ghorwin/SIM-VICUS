@@ -11,13 +11,6 @@ namespace NANDRAD {
 class Controller
 {
 public:
-
-	NANDRAD_READWRITE
-	NANDRAD_COMPARE_WITH_ID
-	NANDRAD_COMP(Controller)
-
-	Controller();
-
 	enum Type {
 		T_DigitalDirect,		// Keyword: DigitalDirect			'DigitalDirect'
 		T_DigitalHysteresis,	// Keyword: DigitalHysteresis		'DigitalHysteresis'
@@ -33,6 +26,17 @@ public:
 		P_HysteresisBand,
 		NUM_P
 	};
+
+
+	Controller();
+
+	NANDRAD_READWRITE
+	NANDRAD_COMPARE_WITH_ID
+	NANDRAD_COMP(Controller)
+
+	/*! Checks for valid and required parameters (value ranges).
+	*/
+	void checkParameters();
 
 	IDType				m_id = INVALID_ID;							// XML:A:required
 
