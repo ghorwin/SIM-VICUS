@@ -49,7 +49,7 @@ public:
 
 	/*! Model parameters. */
 	enum para_t {
-		P_ReductionFactor,				// Keyword: ReductionFactor			[W/m2K]		'Reduction factor (remaining percentage of solar gains if shading is closed).'
+		P_ReductionFactor,				// Keyword: ReductionFactor			[---]	'Reduction factor (remaining percentage of solar gains if shading is closed).'
 		NUM_P
 	};
 

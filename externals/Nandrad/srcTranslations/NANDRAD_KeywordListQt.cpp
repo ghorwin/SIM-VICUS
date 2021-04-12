@@ -165,7 +165,6 @@ KeywordListQt::KeywordListQt() {
 	tr("SomeOven");
 	tr("SomeHeater");
 	tr("SomeFurnace");
-	tr("Simple hysteretic shading control based on global radiation sensor");
 	tr("Maximum intensity allowed before shading is closed.");
 	tr("Intensity level below which shading is opened.");
 	tr("Global initial temperature [C].");

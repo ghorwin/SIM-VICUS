@@ -29,17 +29,10 @@
 
 namespace NANDRAD {
 
-/*! Contains all data for natural ventilation models. */
+/*! Parameters for a intensity controlled shading model with hysteresis. */
 class ShadingControlModel {
 	NANDRAD_READWRITE_PRIVATE
 public:
-	/*! Different model variants. */
-	enum modelType_t {
-		/*! Ventilation rate is given as constant parameter. */
-		MT_SingleIntensityControlled,				// Keyword: SingleIntensityControlled	'Simple hysteretic shading control based on global radiation sensor'
-		NUM_MT
-	};
-
 	/*! Model parameters. */
 	enum para_t {
 		P_MaxIntensity,				// Keyword: MaxIntensity		[W/m2]		'Maximum intensity allowed before shading is closed.'
@@ -50,16 +43,15 @@ public:
 	NANDRAD_READWRITE_IFNOT_INVALID_ID
 	NANDRAD_COMPARE_WITH_ID
 
-	/*! Unique ID-number for this ventilation rate model. */
+	/*! Unique ID-number for this shading controller model. */
 	unsigned int						m_id = NANDRAD::INVALID_ID;			// XML:A:required
 	/*! Some display/comment name for this model (optional). */
 	std::string							m_displayName;						// XML:A
 
-	/*! Model type. */
-	modelType_t							m_modelType = NUM_MT;				// XML:A:required
-
-	/*! Sensor ID of global radiation sensor, needed for SingleIntensityControlled model. */
-	unsigned int						m_sensorID = NANDRAD::INVALID_ID;	// XML:E
+	/*! Sensor ID of global radiation sensor, or window/construction surface.
+		This sensor corresponds to any surface in the model.
+	*/
+	unsigned int						m_sensorID = NANDRAD::INVALID_ID;	// XML:A:required
 
 	/*! Model parameters. */
 	IBK::Parameter						m_para[NUM_P];						// XML:E

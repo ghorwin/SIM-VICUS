@@ -26,7 +26,6 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
-#include <NANDRAD_KeywordList.h>
 #include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
@@ -42,9 +41,9 @@ void ShadingControlModel::readXMLPrivate(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
 
-		if (!TiXmlAttribute::attributeByName(element, "modelType"))
+		if (!TiXmlAttribute::attributeByName(element, "sensorID"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'modelType' attribute.") ), FUNC_ID);
+				IBK::FormatString("Missing required 'sensorID' attribute.") ), FUNC_ID);
 
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
@@ -54,14 +53,8 @@ void ShadingControlModel::readXMLPrivate(const TiXmlElement * element) {
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName = attrib->ValueStr();
-			else if (attribName == "modelType")
-			try {
-				m_modelType = (modelType_t)KeywordList::Enumeration("ShadingControlModel::modelType_t", attrib->ValueStr());
-			}
-			catch (IBK::Exception & ex) {
-				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-					IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
-			}
+			else if (attribName == "sensorID")
+				m_sensorID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -72,9 +65,7 @@ void ShadingControlModel::readXMLPrivate(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "SensorID")
-				m_sensorID = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "IBK:Parameter") {
+			if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
 				bool success = false;
@@ -109,10 +100,8 @@ TiXmlElement * ShadingControlModel::writeXMLPrivate(TiXmlElement * parent) const
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
-	if (m_modelType != NUM_MT)
-		e->SetAttribute("modelType", KeywordList::Keyword("ShadingControlModel::modelType_t",  m_modelType));
 	if (m_sensorID != NANDRAD::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "SensorID", nullptr, std::string(), IBK::val2string<unsigned int>(m_sensorID));
+		e->SetAttribute("sensorID", IBK::val2string<unsigned int>(m_sensorID));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {
