@@ -170,6 +170,78 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	for (const VICUS::Material * c : referencedMaterials)
 		p.m_embeddedDB.m_materials.push_back(*c);
 
+	// *** zone templates ***
+	std::set<const VICUS::ZoneTemplate *> referencedZoneTemplates;
+
+	for(const VICUS::Building & b : p.m_buildings){
+		for(const VICUS::BuildingLevel & bl : b.m_buildingLevels){
+			for(const VICUS::Room &  r : bl.m_rooms){
+				referencedZoneTemplates.insert(m_zoneTemplates[r.m_idZoneTemplate]);	// bad/missing IDs yield a nullptr
+			}
+		}
+	}
+
+	referencedZoneTemplates.erase(nullptr);
+
+	p.m_embeddedDB.m_zoneTemplates.clear();
+	for (const VICUS::ZoneTemplate * zt : referencedZoneTemplates)
+		p.m_embeddedDB.m_zoneTemplates.push_back(*zt);
+
+	// *** schedules ***
+	std::set<const VICUS::Schedule *> referencedSchedule;
+
+	// *** internal loads ***
+	std::set<const VICUS::InternalLoad *> referencedInternalLoads;
+	//also add all schedules
+	for (const VICUS::ZoneTemplate * zt : referencedZoneTemplates) {
+		for (unsigned int i=0; i<VICUS::ZoneTemplate::NUM_ST; ++i){
+			const VICUS::InternalLoad *intLoad = m_internalLoads[zt->m_idReferences[i]];
+			if(intLoad	!= nullptr){
+				referencedInternalLoads.insert(intLoad); // bad/missing IDs yield a nullptr
+				VICUS::ZoneTemplate::SubTemplateType tempType = (VICUS::ZoneTemplate::SubTemplateType)i;
+				switch (tempType){
+					case VICUS::ZoneTemplate::ST_IntLoadPerson:{
+						const VICUS::Schedule *sched = m_schedules[intLoad->m_activityScheduleId];
+						if(sched != nullptr)
+							referencedSchedule.insert(sched);
+						const VICUS::Schedule * sched2 = m_schedules[intLoad->m_occupancyScheduleId];
+						if(sched2 != nullptr)
+							referencedSchedule.insert(sched2);
+					}break;
+					case VICUS::ZoneTemplate::ST_IntLoadEquipment:
+					break;
+					case VICUS::ZoneTemplate::ST_IntLoadLighting:
+					break;
+					case VICUS::ZoneTemplate::ST_IntLoadOther:
+					break;
+					case VICUS::ZoneTemplate::ST_ControlThermostat:
+					break;
+					case VICUS::ZoneTemplate::NUM_ST:
+					break;
+
+				}
+			}
+		}
+	}
+	referencedInternalLoads.erase(nullptr);
+
+
+	p.m_embeddedDB.m_internalLoads.clear();
+	for (const VICUS::InternalLoad * il : referencedInternalLoads)
+		p.m_embeddedDB.m_internalLoads.push_back(*il);
+	referencedInternalLoads.erase(nullptr);
+
+
+	for (const VICUS::Schedule * sched : referencedSchedule)
+			referencedSchedule.insert(sched); // bad/missing IDs yield a nullptr
+
+	p.m_embeddedDB.m_schedules.clear();
+	for (const VICUS::Schedule * sched : referencedSchedule)
+		p.m_embeddedDB.m_schedules.push_back(*sched);
+
+
+
+
 }
 
 
