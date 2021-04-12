@@ -178,6 +178,7 @@ int WindowModel::setTime(double t) {
 		IBK_ASSERT(! m_windowModel->m_shading.m_shadingFactor.m_name.empty());
 		m_shadingFactor = m_windowModel->m_shading.m_shadingFactor.m_values.value(t);
 	}
+	return 0;
 }
 
 
