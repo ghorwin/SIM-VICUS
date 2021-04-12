@@ -2,18 +2,48 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Fr. Apr. 9 15:45:17 2021</Created>
-		<LastEdited>Sa. Apr. 10 07:37:33 2021</LastEdited>
+		<LastEdited>Mo. Apr. 12 13:18:35 2021</LastEdited>
 	</ProjectInfo>
+	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
+	<DirectoryPlaceholders>
+		<Placeholder name="Database">/home/dirk/git/SIM-VICUS/data</Placeholder>
+	</DirectoryPlaceholders>
 	<Project>
-		<SolverParameter />
+		<SolverParameter>
+			<Integrator>CVODE</Integrator>
+			<LesSolver>KLU</LesSolver>
+			<Preconditioner>ILU</Preconditioner>
+		</SolverParameter>
 		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<IBK:IntPara name="StartYear">2019</IBK:IntPara>
+			<Interval>
+				<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+				<IBK:Parameter name="End" unit="a">1</IBK:Parameter>
+			</Interval>
 			<SolarLoadsDistributionModel>
 				<DistributionType>AreaWeighted</DistributionType>
+				<IBK:Parameter name="RadiationLoadFractionZone" unit="%">50</IBK:Parameter>
 			</SolarLoadsDistributionModel>
 		</SimulationParameter>
 		<Location>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<TimeZone>13</TimeZone>
+			<ClimateFilePath>${Database}/DB_climate/Europe/Germany/TRY2011/DE-04-TRY-2010__Potsdam__Jahr_00000K0_00081m.c6b</ClimateFilePath>
 		</Location>
+		<Outputs>
+			<Grids>
+				<OutputGrid name="Hourly values">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+			<IBK:Flag name="CreateDefaultZoneOutputs">true</IBK:Flag>
+		</Outputs>
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
@@ -67,5 +97,118 @@
 			<ComponentInstance id="5" componentID="1012" sideASurfaceID="14" />
 			<ComponentInstance id="6" componentID="1012" sideASurfaceID="15" />
 		</ComponentInstances>
+		<EmbeddedDatabase>
+			<Materials>
+				<Material id="10004" displayName="de:[SimQuality] Dämmung2 |en:[SimQuality] Insulation2" color="#f3dba0">
+					<Notes>en:Insulation to be used in SimQuality test cases (TF05).|de:Dämmstoff zur Verwendung in SimQuality (TF05).</Notes>
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>SimQuality</DataSource>
+					<Category>Insulations</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.02</IBK:Parameter>
+				</Material>
+				<Material id="10000" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete" color="#a29f2f">
+					<Notes>en:Contrete to be used in SimQuality test cases.|de:Beton zur Verwendung in SimQuality.</Notes>
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>SimQuality</DataSource>
+					<Category>Cementitious</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+				</Material>
+			</Materials>
+			<Constructions>
+				<Construction id="1006" displayName="DE: [SimQuality] TF05 |EN: [SimQuality] TF05 ">
+					<UsageType>OutsideWall</UsageType>
+					<MaterialLayers>
+						<MaterialLayer matId="10004">
+							<IBK:Parameter name="Thickness" unit="m">0.3</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer matId="10000">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+			</Constructions>
+			<BoundaryConditions>
+				<BoundaryCondition id="1002" displayName="DE: [SimQuality] TF03 Inside conditions (only heat conduction) |EN: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
+					<Color>#cc0000</Color>
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+				<BoundaryCondition id="1001" displayName="DE: [SimQuality] TF03 Outside conditions (only heat conduction) |EN: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
+					<Color>#204a87</Color>
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+			</BoundaryConditions>
+			<Components>
+				<Component id="1012" displayName="DE: [SimQuality] Komponente für TF05 |EN: [SimQuality] component for TF05" color="#827e7e">
+					<Type>OutsideWall</Type>
+					<IdConstruction>1006</IdConstruction>
+					<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
+				</Component>
+			</Components>
+			<Schedules>
+				<Schedule id="60004" displayName="DE: Test Zeitplan Acc |EN: &lt;new schedule&gt;">
+					<UseLinearInterpolation>1</UseLinearInterpolation>
+					<Periods>
+						<ScheduleInterval displayName="DE: P1" intervalStartDay="0">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>3,4,5,6,7,8,9,10</DayTypes>
+									<TimePoints>0</TimePoints>
+									<Values>100</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+					</Periods>
+				</Schedule>
+				<Schedule id="60003" displayName="DE: Test Zeitplan Occ |EN: &lt;new schedule&gt;">
+					<UseLinearInterpolation>1</UseLinearInterpolation>
+					<Periods>
+						<ScheduleInterval displayName="DE: P1" intervalStartDay="0">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>3,4,5,6,7</DayTypes>
+									<TimePoints>0,1,6,18</TimePoints>
+									<Values>100,0,1,0</Values>
+								</DailyCycle>
+								<DailyCycle>
+									<DayTypes>8,9,10</DayTypes>
+									<TimePoints>0</TimePoints>
+									<Values>0</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+					</Periods>
+				</Schedule>
+			</Schedules>
+			<InternalLoads>
+				<InternalLoad id="70006" displayName="DE: pers. model |EN: &lt;new internal load model&gt;" color="#5aff82">
+					<Category>Person</Category>
+					<PersonCountMethod>PersonPerArea</PersonCountMethod>
+					<OccupancyScheduleId>60003</OccupancyScheduleId>
+					<ActivityScheduleId>60004</ActivityScheduleId>
+					<IBK:Parameter name="PersonCount" unit="-">11</IBK:Parameter>
+					<IBK:Parameter name="PersonPerArea" unit="m2">0.1</IBK:Parameter>
+					<IBK:Parameter name="AreaPerPerson" unit="m2">10</IBK:Parameter>
+					<IBK:Parameter name="Power" unit="W">0.1</IBK:Parameter>
+					<IBK:Parameter name="PowerPerArea" unit="W/m2">0.1</IBK:Parameter>
+					<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0.8</IBK:Parameter>
+					<IBK:Parameter name="LossHeatFactor" unit="---">0</IBK:Parameter>
+				</InternalLoad>
+			</InternalLoads>
+			<ZoneTemplates>
+				<ZoneTemplate id="80003" displayName="DE: Test Zone Template |EN: &lt;new zone template&gt;" color="#5aff82">
+					<IntLoadPerson>70006</IntLoadPerson>
+				</ZoneTemplate>
+			</ZoneTemplates>
+		</EmbeddedDatabase>
+		<FMIDescription />
 	</Project>
 </VicusProject>
