@@ -59,11 +59,6 @@ private slots:
 
 	void on_pushButtonTestInit_clicked();
 
-	//bool existIdInObjList(NANDRAD::Project & p, unsigned int id, const std::string &objListName);
-
-	//template<class T>
-	//void getNandradModel(NANDRAD::Project & p, unsigned int roomId, const T * model);
-
 private:
 	/*! Composes correct command line (stored in m_cmdArgs). */
 	void updateCmdLine();
