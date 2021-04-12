@@ -33,7 +33,7 @@ void WindowModel::setup(const NANDRAD::EmbeddedObjectWindow & windowModelPara,
 	// TODO : warn if solar loads on either side --> should be signaled already on construction level
 
 	// overwrite constant shadig factor
-	if(m_windowModel->m_shading.m_modelType == NANDRAD::WindowShading::MT_Standard) {
+	if(m_windowModel->m_shading.m_modelType == NANDRAD::WindowShading::MT_Constant) {
 		// parameters were checked already
 		IBK_ASSERT(! m_windowModel->m_shading.m_para[NANDRAD::WindowShading::P_ReductionFactor].name.empty());
 		m_shadingFactor = m_windowModel->m_shading.m_para[NANDRAD::WindowShading::P_ReductionFactor].value;
