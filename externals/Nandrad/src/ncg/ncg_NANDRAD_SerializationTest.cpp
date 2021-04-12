@@ -55,13 +55,13 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 			else if (attribName == "val1")
 				m_val1 = NANDRAD::readPODAttributeValue<double>(element, attrib);
 			else if (attribName == "testBla")
-			try {
-				m_testBla = (test_t)KeywordList::Enumeration("SerializationTest::test_t", attrib->ValueStr());
-			}
-			catch (IBK::Exception & ex) {
-				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-					IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
-			}
+				try {
+					m_testBla = (test_t)KeywordList::Enumeration("SerializationTest::test_t", attrib->ValueStr());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
+				}
 			else if (attribName == "str1")
 				m_str1 = attrib->ValueStr();
 			else if (attribName == "path1")

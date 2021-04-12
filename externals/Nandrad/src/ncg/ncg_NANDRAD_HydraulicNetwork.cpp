@@ -59,13 +59,13 @@ void HydraulicNetwork::readXMLPrivate(const TiXmlElement * element) {
 			else if (attribName == "displayName")
 				m_displayName = attrib->ValueStr();
 			else if (attribName == "modelType")
-			try {
-				m_modelType = (ModelType)KeywordList::Enumeration("HydraulicNetwork::ModelType", attrib->ValueStr());
-			}
-			catch (IBK::Exception & ex) {
-				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-					IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
-			}
+				try {
+					m_modelType = (ModelType)KeywordList::Enumeration("HydraulicNetwork::ModelType", attrib->ValueStr());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
+				}
 			else if (attribName == "referenceElementId")
 				m_referenceElementId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {

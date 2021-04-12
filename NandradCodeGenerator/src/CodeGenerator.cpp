@@ -743,17 +743,17 @@ void CodeGenerator::generateReadWriteCode() {
 						attribs +=
 							"				m_"+attribName+" = NANDRAD::readPODAttributeValue<"+xmlInfo.typeStr+">(element, attrib);\n";
 						includes.insert("NANDRAD_Utilities.h");
-						elseStr += "else ";
+						elseStr = "else ";
 					}
 					else if (xmlInfo.typeStr == "IDType") {
 						attribs +=
 							"				m_"+attribName+" = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);\n";
-						elseStr += "else ";
+						elseStr = "else ";
 					}
 					else if (xmlInfo.typeStr == "IBK::Path") {
 						attribs +=
 							"				m_"+attribName+" = IBK::Path(attrib->ValueStr());\n";
-						elseStr += "else ";
+						elseStr = "else ";
 					}
 					else if (xmlInfo.typeStr == "IBK::Unit") {
 						attribs +=
@@ -764,27 +764,27 @@ void CodeGenerator::generateReadWriteCode() {
 							"					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
 							"						IBK::FormatString(\"Error converting '\"+attrib->ValueStr()+\"' attribute (unknown unit).\") ), FUNC_ID);\n"
 							"				}\n";
-						elseStr += "else ";
+						elseStr = "else ";
 					}
 					else if (xmlInfo.typeStr == "std::string") {
 						attribs +=
 							"				m_"+attribName+" = attrib->ValueStr();\n";
-						elseStr += "else ";
+						elseStr = "else ";
 					}
 					else if (xmlInfo.typeStr == "IBK::MultiLanguageString") {
 						attribs +=
 							"				m_"+attribName+".setEncodedString(attrib->ValueStr());\n";
-						elseStr += "else ";
+						elseStr = "else ";
 					}
 					else if (xmlInfo.typeStr == "QString") {
 						attribs +=
 							"				m_"+attribName+" = QString::fromStdString(attrib->ValueStr());\n";
-						elseStr += "else ";
+						elseStr = "else ";
 					}
 					else if (xmlInfo.typeStr == "QColor") {
 						attribs +=
 							"				m_"+attribName+".setNamedColor(QString::fromStdString(attrib->ValueStr()));\n";
-						elseStr += "else ";
+						elseStr = "else ";
 					}
 					else {
 						// check for enum types
@@ -794,15 +794,15 @@ void CodeGenerator::generateReadWriteCode() {
 								hadEnumType = true;
 								// generate write code for enum type
 								attribs +=
-									"			try {\n"
-									"				m_"+attribName+" = ("+einfo.enumType()+")KeywordList::Enumeration(\""+einfo.categoryName+"\", attrib->ValueStr());\n"
-									"			}\n"
-									"			catch (IBK::Exception & ex) {\n"
-									"				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
-									"					IBK::FormatString(\"Invalid or unknown keyword '\"+attrib->ValueStr()+\"'.\") ), FUNC_ID);\n"
-									"			}\n";
+									"				try {\n"
+									"					m_"+attribName+" = ("+einfo.enumType()+")KeywordList::Enumeration(\""+einfo.categoryName+"\", attrib->ValueStr());\n"
+									"				}\n"
+									"				catch (IBK::Exception & ex) {\n"
+									"					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"
+									"						IBK::FormatString(\"Invalid or unknown keyword '\"+attrib->ValueStr()+\"'.\") ), FUNC_ID);\n"
+									"				}\n";
 								includes.insert(m_prefix+"_KeywordList.h");
-								elseStr += "else ";
+								elseStr = "else ";
 							}
 						}
 						if (hadEnumType) continue;
