@@ -5,7 +5,42 @@
 namespace NANDRAD_MODEL {
 
 
-AbstractController::~AbstractController() {
+// *** Digital direct Controller ***
+
+DigitalDirectController::DigitalDirectController() {
+}
+
+
+void DigitalDirectController::updateControllerOutput()
+{
+	// calculate controller output
+	if(m_currentState < m_targetValue )
+		m_controllerOutput = 1.0;
+	else
+		m_controllerOutput = 0.0;
+}
+
+
+// *** Digital hysteresis Controller ***
+
+DigitalHysteresisController::DigitalHysteresisController(const NANDRAD::Controller &controller) {
+	m_hysteresisBand = controller.m_par[NANDRAD::Controller::P_HysteresisBand].value;
+}
+
+
+void DigitalHysteresisController::updateControllerOutput()
+{
+	m_controllerOutput = m_previousControllerOutput;
+
+	// change controller output only if we are outside tolerance band
+	if(m_previousControllerOutput == 1.0 && m_currentState > m_targetValue + m_hysteresisBand )
+		m_controllerOutput = 0.0;
+	else if(m_previousControllerOutput == 0.0 && m_currentState < m_targetValue - m_hysteresisBand )
+		m_controllerOutput = 1.0;
+}
+
+void DigitalHysteresisController::stepCompleted(double /*t*/) {
+	m_previousControllerOutput = m_controllerOutput;
 }
 
 

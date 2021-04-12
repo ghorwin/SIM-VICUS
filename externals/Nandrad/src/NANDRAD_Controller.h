@@ -30,6 +30,7 @@ public:
 		P_Kp,
 		P_Ki,
 		P_Kd,
+		P_HysteresisBand,
 		NUM_P
 	};
 

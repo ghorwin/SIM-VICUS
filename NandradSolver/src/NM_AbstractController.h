@@ -28,7 +28,7 @@ public:
 	AbstractController() {}
 
 	/*! D'tor, definition is in NM_Controller.cpp. */
-	virtual ~AbstractController();
+	virtual ~AbstractController() { }
 
 	/*! Calculates controller output and controller error.*/
 	virtual void updateControllerOutput() = 0;
