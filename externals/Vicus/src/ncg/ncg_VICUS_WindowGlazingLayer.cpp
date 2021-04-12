@@ -51,14 +51,14 @@ void WindowGlazingLayer::readXML(const TiXmlElement * element) {
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "type")
-			try {
-				m_type = (type_t)KeywordList::Enumeration("WindowGlazingLayer::type_t", attrib->ValueStr());
-			}
-			catch (IBK::Exception & ex) {
-				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-					IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
-			}
-			if (attribName == "id")
+				try {
+					m_type = (type_t)KeywordList::Enumeration("WindowGlazingLayer::type_t", attrib->ValueStr());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
+				}
+			else if (attribName == "id")
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName = QString::fromStdString(attrib->ValueStr());

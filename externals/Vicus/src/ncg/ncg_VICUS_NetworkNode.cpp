@@ -56,13 +56,13 @@ void NetworkNode::readXML(const TiXmlElement * element) {
 			if (attribName == "id")
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "type")
-			try {
-				m_type = (NodeType)KeywordList::Enumeration("NetworkNode::NodeType", attrib->ValueStr());
-			}
-			catch (IBK::Exception & ex) {
-				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-					IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
-			}
+				try {
+					m_type = (NodeType)KeywordList::Enumeration("NetworkNode::NodeType", attrib->ValueStr());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
+				}
 			else if (attribName == "maxHeatingDemand")
 				m_maxHeatingDemand = NANDRAD::readPODAttributeValue<double>(element, attrib);
 			else if (attribName == "componentId")
