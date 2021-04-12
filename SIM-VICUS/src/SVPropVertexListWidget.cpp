@@ -53,6 +53,9 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropVertexListWidget::onModified);
+
+	m_ui->pushButtonFloorDone->setEnabled(false);
+	m_ui->pushButtonFinish->setEnabled(false);
 }
 
 
@@ -295,6 +298,9 @@ void SVPropVertexListWidget::addVertex(const IBKMK::Vector3D & p) {
 		if (SVViewStateHandler::instance().m_newGeometryObject->newGeometryMode() == Vic3D::NewGeometryObject::NGM_ZoneFloor)
 			m_ui->pushButtonFloorDone->setEnabled(true);
 	}
+
+	m_ui->pushButtonFloorDone->setEnabled(m_ui->tableWidgetVertexes->rowCount() > 2);
+	m_ui->pushButtonFinish->setEnabled(m_ui->tableWidgetVertexes->rowCount() > 2);
 }
 
 
@@ -320,6 +326,9 @@ void SVPropVertexListWidget::removeVertex(unsigned int idx) {
 	vs.m_propertyWidgetMode = SVViewState::PM_VertexList;
 	SVViewStateHandler::instance().setViewState(vs);
 	SVViewStateHandler::instance().m_geometryView->focusSceneView();
+
+	m_ui->pushButtonFloorDone->setEnabled(m_ui->tableWidgetVertexes->rowCount() > 2);
+	m_ui->pushButtonFinish->setEnabled(m_ui->tableWidgetVertexes->rowCount() > 2);
 }
 
 

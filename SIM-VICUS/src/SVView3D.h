@@ -6,6 +6,8 @@
 #include <IBKMK_Vector3D.h>
 #include <IBK_Path.h>
 
+class QString;
+
 class SVView3D
 {
 public:
@@ -13,6 +15,9 @@ public:
 
 	/*! Exports a View3D File */
 	void exportView3d(IBK::Path fname = IBK::Path("C:\test.v3s") );
+
+	/*! Reads an View3D Log file with results */
+	void readView3dResults(IBK::Path fname);
 
 
 	struct view3dVertex
@@ -74,8 +79,9 @@ public:
 	};
 
 
-	std::vector<view3dVertex>		m_vertexes; ///> Vector with View3D Surfaces
-	std::vector<view3dSurface>		m_surfaces; ///> Vector with View3D Surfaces
+	std::map<unsigned int, std::vector<view3dVertex>>		m_vertexes;		///> Map with View3D Vertexes
+	std::map<unsigned int, std::vector<view3dSurface>>		m_surfaces;		///> Map with View3D Surfaces
+	std::map<unsigned int, QString>							m_roomNames;	///> Map with Room Names
 
 };
 

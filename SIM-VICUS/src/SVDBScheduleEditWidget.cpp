@@ -102,6 +102,7 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 
 	m_ui->lineEditName->setString(m_current->m_displayName);
 	m_ui->radioButtonLinear->setChecked(m_current->m_useLinearInterpolation);
+	m_ui->radioButtonLinear->toggled(m_current->m_useLinearInterpolation);
 	///TODO Annual Schedule ...
 
 	//period schedule
