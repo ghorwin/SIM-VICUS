@@ -39,9 +39,9 @@ class WindowShading  {
 	NANDRAD_READWRITE_PRIVATE
 public:
 
-		/*! Model types supported by the window model. */
+	/*! Model types supported by the shading model. */
 	enum modelType_t {
-		MT_Standard,					// Keyword: Standard						'Constant reduction factor.'
+		MT_Constant,					// Keyword: Constant						'Constant reduction factor.'
 		MT_Precomputed,					// Keyword: Precomputed						'Precomputed reduction factor.'
 		MT_Controlled,					// Keyword: Controlled						'Reduction factor is computed based on control model'
 		NUM_MT
@@ -65,7 +65,7 @@ public:
 	/*! Model type (NUM_MT disables model). */
 	modelType_t							m_modelType = NUM_MT;					// XML:A:required
 	/*! Control model used for shading, for model type 'Controlled'. */
-	unsigned int						m_controlModelID = INVALID_ID;			// XML:E
+	unsigned int						m_controlModelID = INVALID_ID;			// XML:A
 	/*! List of constant parameters.*/
 	IBK::Parameter						m_para[NUM_P];							// XML:E
 

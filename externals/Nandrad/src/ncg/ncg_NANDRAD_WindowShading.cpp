@@ -54,6 +54,11 @@ void WindowShading::readXMLPrivate(const TiXmlElement * element) {
 				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 					IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
 			}
+			else if (attribName == "controlModelID")
+				m_controlModelID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
 			attrib = attrib->Next();
 		}
 		// search for mandatory elements
@@ -61,9 +66,7 @@ void WindowShading::readXMLPrivate(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "ControlModelID")
-				m_controlModelID = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "IBK:Parameter") {
+			if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
 				bool success = false;
@@ -107,7 +110,7 @@ TiXmlElement * WindowShading::writeXMLPrivate(TiXmlElement * parent) const {
 	if (m_modelType != NUM_MT)
 		e->SetAttribute("modelType", KeywordList::Keyword("WindowShading::modelType_t",  m_modelType));
 	if (m_controlModelID != NANDRAD::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "ControlModelID", nullptr, std::string(), IBK::val2string<unsigned int>(m_controlModelID));
+		e->SetAttribute("controlModelID", IBK::val2string<unsigned int>(m_controlModelID));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {

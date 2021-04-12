@@ -596,7 +596,7 @@ namespace NANDRAD {
 			// WindowShading::modelType_t
 			case 65 :
 			switch (t) {
-				case 0 : return "Standard";
+				case 0 : return "Constant";
 				case 1 : return "Precomputed";
 				case 2 : return "Controlled";
 			} break;
@@ -1106,7 +1106,7 @@ namespace NANDRAD {
 			// WindowShading::modelType_t
 			case 65 :
 			switch (t) {
-				case 0 : return "Standard";
+				case 0 : return "Constant";
 				case 1 : return "Precomputed";
 				case 2 : return "Controlled";
 			} break;

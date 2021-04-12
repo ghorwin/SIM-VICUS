@@ -10,6 +10,7 @@ bool WindowShading::operator!=(const WindowShading & other) const {
 	return false;
 }
 
+
 void WindowShading::checkParameters() {
 	FUNCID(WindowShading::checkParameters);
 
@@ -20,7 +21,7 @@ void WindowShading::checkParameters() {
 		case NUM_MT :
 			return; // no check necessary
 
-		case MT_Standard :
+		case MT_Constant :
 			m_para[P_ReductionFactor].checkedValue("ReductionFactor", "---", "---", 0, true, 1, true,
 								"Reduction factor must be between 0 and 1.");
 		break;
@@ -33,7 +34,8 @@ void WindowShading::checkParameters() {
 		case MT_Controlled :
 			if (m_controlModelID == INVALID_ID)
 				throw IBK::Exception("Shading model requires reference to shading control model (tag 'ControlModelID')", FUNC_ID);
-			/// TODO
+			/// TODO Anne: check for existence of shading model parameter block, also call checkParameters() in
+			/// shading control model block
 		break;
 	}
 }
