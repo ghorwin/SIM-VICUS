@@ -29,7 +29,7 @@ public:
 */
 class DigitalHysteresisController: public AbstractController, public AbstractTimeDependency { // NO KEYWORDS
 public:
-	DigitalHysteresisController(const NANDRAD::Controller &controlle);
+	DigitalHysteresisController();
 
 	/*! D'tor, definition is in NM_Controller.cpp. */
 	virtual ~DigitalHysteresisController() { }
@@ -44,7 +44,7 @@ public:
 	*/
 	virtual void stepCompleted(double t);
 
-	/*! P-controller, slope.*/
+	/*! Tolerance band: must be set from outside.*/
 	double			m_hysteresisBand;
 	/*! Controller signal of the previos time step.*/
 	double			m_previousControllerOutput = 0.0;

@@ -29,6 +29,8 @@
 
 namespace NANDRAD {
 
+class Sensor;
+
 /*! Parameters for a intensity controlled shading model with hysteresis. */
 class ShadingControlModel {
 	NANDRAD_READWRITE_PRIVATE
@@ -43,6 +45,12 @@ public:
 	NANDRAD_READWRITE_IFNOT_INVALID_ID
 	NANDRAD_COMPARE_WITH_ID
 
+	/*! Checks for valid and required parameters (value ranges).
+		If referenced TSV file is given, this is read and checked and data is transferred into
+		variable m_tsvFileContent.
+	*/
+	void checkParameters(const std::vector<Sensor> &sensors);
+
 	/*! Unique ID-number for this shading controller model. */
 	unsigned int						m_id = NANDRAD::INVALID_ID;			// XML:A:required
 	/*! Some display/comment name for this model (optional). */
@@ -55,6 +63,9 @@ public:
 
 	/*! Model parameters. */
 	IBK::Parameter						m_para[NUM_P];						// XML:E
+
+	/*! Quick-access pointer to the requested sensor. */
+	const NANDRAD::Sensor				*m_sensor = nullptr;
 };
 
 } // namespace NANDRAD

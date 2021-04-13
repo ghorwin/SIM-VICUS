@@ -43,6 +43,7 @@ public:
 
 	NANDRAD_READWRITE_IFNOTEMPTY(Sensor)
 	NANDRAD_COMP(Sensor)
+	NANDRAD_COMPARE_WITH_ID
 
 	/*! Checks for valid parameters (value ranges). */
 	void checkParameters() const;

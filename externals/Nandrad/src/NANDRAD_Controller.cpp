@@ -18,10 +18,9 @@ void Controller::checkParameters()
 	try {
 		// decide which parameters are needed
 		switch (m_type) {
-			case T_DigitalDirect: break;
-			case T_DigitalHysteresis: {
-				m_par[P_HysteresisBand].checkedValue("HysteresisBand", "---", "---", 0, false, std::numeric_limits<double>::max(), true, nullptr);
-			} break;
+			case T_DigitalDirect:
+			case T_DigitalHysteresis:
+				break;
 			case T_PController: {
 				m_par[P_Kp].checkedValue("Kp", "---", "---", 0, false, std::numeric_limits<double>::max(), true, nullptr);
 			} break;

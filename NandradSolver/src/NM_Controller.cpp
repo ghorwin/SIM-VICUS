@@ -23,8 +23,7 @@ void DigitalDirectController::updateControllerOutput()
 
 // *** Digital hysteresis Controller ***
 
-DigitalHysteresisController::DigitalHysteresisController(const NANDRAD::Controller &controller) {
-	m_hysteresisBand = controller.m_par[NANDRAD::Controller::P_HysteresisBand].value;
+DigitalHysteresisController::DigitalHysteresisController() {
 }
 
 

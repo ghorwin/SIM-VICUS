@@ -174,7 +174,8 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_WindowGlazingLayer.cpp \
 	../../src/ncg/ncg_NANDRAD_WindowGlazingSystem.cpp \
 	../../src/ncg/ncg_NANDRAD_WindowShading.cpp \
-	../../src/ncg/ncg_NANDRAD_Zone.cpp
+	../../src/ncg/ncg_NANDRAD_Zone.cpp \
+    ../../src/NANDRAD_ShadingControlModel.cpp
 
 
 
