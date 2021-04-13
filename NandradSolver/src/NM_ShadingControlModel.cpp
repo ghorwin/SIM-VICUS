@@ -53,9 +53,10 @@ void ShadingControlModel::inputReferences(std::vector<InputReference> & inputRef
 	// a sensor is referenced
 	if(m_controller->m_sensor != nullptr) {
 		InputReference ref;
-		ref.m_id = m_controller->m_sensorID;
+		ref.m_id = 0;
 		ref.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
-		ref.m_name.m_name = m_controller->m_sensor->m_quantity;
+		ref.m_name.m_name = "GlobalSWRadOnPlane";
+		ref.m_name.m_index = (int) m_controller->m_sensorID;
 		inputRefs.push_back(ref);
 	}
 	// a construction/embedded object is referenced
