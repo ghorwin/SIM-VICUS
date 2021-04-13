@@ -43,11 +43,16 @@ public:
 
 	/*! Model parameters. */
 	enum para_t {
-		P_VentilationRate,	// Keyword: VentilationRate		[1/h]		'Ventilation rate'
+		P_VentilationRate,			// Keyword: VentilationRate				[1/h]		'Ventilation rate'
+		P_IncreasedVentilationRate,	// Keyword: IncreasedVentilationRate	[1/h]		'Increased ventilation rate when conditions apply'
+		P_ThresholdTemperature,		// Keyword: ThresholdTemperature		[C]			'Temperature limit above which the increased ventilation rate shall be used'
 		NUM_P
 	};
 
 	NANDRAD_READWRITE
+
+	/*! Checks parameters for valid values. */
+	void checkParameters() const;
 
 	/*! Unique ID-number for this ventilation rate model. */
 	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required

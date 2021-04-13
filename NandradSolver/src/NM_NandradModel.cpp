@@ -1227,6 +1227,7 @@ void NandradModel::initModels() {
 			m_modelContainer.push_back(mod); // transfer ownership
 
 			try {
+				m.checkParameters();
 				mod->setup(m, m_project->m_simulationParameter, m_project->m_objectLists, m_project->m_zones);
 			}
 			catch (IBK::Exception & ex) {
@@ -1236,19 +1237,9 @@ void NandradModel::initModels() {
 			registerStateDependendModel(mod);
 		}
 	}
+
 	// internal loads
 	if (!m_project->m_models.m_internalLoadsModels.empty()) {
-		// parameter checks
-		for (const NANDRAD::InternalLoadsModel & m : m_project->m_models.m_internalLoadsModels) {
-			try {
-				m.checkParameters();
-			}
-			catch (IBK::Exception & ex) {
-				throw IBK::Exception(ex, IBK::FormatString("Error initializing internal loads model "
-														   "(id=%1).").arg(m.m_id), FUNC_ID);
-			}
-		}
-
 		IBK::IBK_Message(IBK::FormatString("Initializing internal loads models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		IBK_MSG_INDENT;
 
@@ -1257,6 +1248,7 @@ void NandradModel::initModels() {
 			m_modelContainer.push_back(mod); // transfer ownership
 
 			try {
+				m.checkParameters();
 				mod->setup(m, m_project->m_objectLists, m_project->m_zones);
 			}
 			catch (IBK::Exception & ex) {
@@ -1270,17 +1262,6 @@ void NandradModel::initModels() {
 
 	// shading control model
 	if (!m_project->m_models.m_shadingControlModels.empty()) {
-		// parameter checks
-		for (NANDRAD::ShadingControlModel & s: m_project->m_models.m_shadingControlModels) {
-			try {
-				s.checkParameters(m_project->m_location.m_sensors, m_project->m_constructionInstances);
-			}
-			catch (IBK::Exception & ex) {
-				throw IBK::Exception(ex, IBK::FormatString("Error initializing shading control model "
-														   "(id=%1).").arg(s.m_id), FUNC_ID);
-			}
-		}
-
 		IBK::IBK_Message(IBK::FormatString("Initializing shading control models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		IBK_MSG_INDENT;
 
@@ -1289,6 +1270,7 @@ void NandradModel::initModels() {
 			m_modelContainer.push_back(mod); // transfer ownership
 
 			try {
+				s.checkParameters(m_project->m_location.m_sensors, m_project->m_constructionInstances);
 				mod->setup(s);
 			}
 			catch (IBK::Exception & ex) {

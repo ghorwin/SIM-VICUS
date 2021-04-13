@@ -115,6 +115,7 @@ SOURCES += \
 	../../src/NANDRAD_LinearSplineParameter.cpp \
 	../../src/NANDRAD_Material.cpp \
 	../../src/NANDRAD_Models.cpp \
+	../../src/NANDRAD_NaturalVentilationModel.cpp \
 	../../src/NANDRAD_ObjectList.cpp \
 	../../src/NANDRAD_OutputDefinition.cpp \
 	../../src/NANDRAD_OutputGrid.cpp \
