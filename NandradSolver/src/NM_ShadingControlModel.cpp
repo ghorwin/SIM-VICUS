@@ -1,6 +1,7 @@
 #include "NM_ShadingControlModel.h"
 
 
+#include <NANDRAD_ConstructionInstance.h>
 #include <NANDRAD_ShadingControlModel.h>
 #include <NANDRAD_Sensor.h>
 
@@ -49,11 +50,28 @@ const double *ShadingControlModel::resultValueRef(const InputReference & quantit
 
 void ShadingControlModel::inputReferences(std::vector<InputReference> & inputRefs) const
 {
-	InputReference ref;
-	ref.m_id = m_controller->m_sensorID;
-	ref.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
-	ref.m_name.m_name = m_controller->m_sensor->m_quantity;
-	inputRefs.push_back(ref);
+	// a sensor is referenced
+	if(m_controller->m_sensor != nullptr) {
+		InputReference ref;
+		ref.m_id = m_controller->m_sensorID;
+		ref.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
+		ref.m_name.m_name = m_controller->m_sensor->m_quantity;
+		inputRefs.push_back(ref);
+	}
+	// a construction/embedded object is referenced
+	else { //(m_controller->m_constructionInstance != nullptr)
+		InputReference ref;
+		ref.m_id = m_controller->m_constructionInstance->m_id;
+		ref.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
+		// link to correct side of construction
+		if(m_controller->m_constructionInstance->interfaceAZoneID() == 0) {
+			ref.m_name.m_name = "FluxShortWaveRadiationA";
+		}
+		else {
+			ref.m_name.m_name = "FluxShortWaveRadiationB";
+		}
+		inputRefs.push_back(ref);
+	}
 }
 
 void ShadingControlModel::setInputValueRefs(const std::vector<QuantityDescription> &, const std::vector<const double *> & resultValueRefs)

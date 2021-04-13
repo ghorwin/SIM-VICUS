@@ -38,7 +38,7 @@ public:
 	virtual void updateControllerOutput();
 
 	/*! Does nothing.*/
-	virtual int setTime(double t) { return 0;}
+	virtual int setTime(double /*t*/) { return 0;}
 
 	/*! Stores state after a successful iteration step.
 	*/

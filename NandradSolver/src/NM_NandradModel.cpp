@@ -84,6 +84,7 @@
 #include "NM_WindowModel.h"
 #include "NM_RoomRadiationLoadsModel.h"
 #include "NM_HydraulicNetworkModel.h"
+#include "NM_ShadingControlModel.h"
 #include "NM_ThermalNetworkStatesModel.h"
 #include "NM_ThermalNetworkBalanceModel.h"
 
@@ -1267,6 +1268,37 @@ void NandradModel::initModels() {
 		}
 	}
 
+	// shading control model
+	if (!m_project->m_models.m_shadingControlModels.empty()) {
+		// parameter checks
+		for (NANDRAD::ShadingControlModel & s: m_project->m_models.m_shadingControlModels) {
+			try {
+				s.checkParameters(m_project->m_location.m_sensors, m_project->m_constructionInstances);
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString("Error initializing shading control model "
+														   "(id=%1).").arg(s.m_id), FUNC_ID);
+			}
+		}
+
+		IBK::IBK_Message(IBK::FormatString("Initializing shading control models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		IBK_MSG_INDENT;
+
+		for (NANDRAD::ShadingControlModel & s: m_project->m_models.m_shadingControlModels) {
+			NANDRAD_MODEL::ShadingControlModel * mod = new NANDRAD_MODEL::ShadingControlModel(s.m_id, s.m_displayName);
+			m_modelContainer.push_back(mod); // transfer ownership
+
+			try {
+				mod->setup(s);
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString("Error initializing internal loads model "
+														   "(id=%1).").arg(s.m_id), FUNC_ID);
+			}
+
+			registerStateDependendModel(mod);
+		}
+	}
 
 }
 
