@@ -106,6 +106,10 @@ private:
 
 	/*! Constant ventilation rate in 1/s (only for constant model). */
 	double											m_ventilationRate = 999;
+	/*! Constant increased ventilation rate in 1/s (only for increased day ventilation model). */
+	double											m_increasedVentilationRate = 999;
+	/*! Threshold temperature in K (only for increased day ventilation model). */
+	double											m_thresholdTemperature = 999;
 
 	/*! Quick access pointer to object list (for scheduled model). */
 	const NANDRAD::ObjectList						*m_objectList = nullptr;

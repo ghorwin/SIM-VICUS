@@ -39,7 +39,12 @@ void NaturalVentilationModel::setup(const NANDRAD::NaturalVentilationModel & ven
 		} break;
 
 		case NANDRAD::NaturalVentilationModel::MT_IncreasedDayVentilation : {
-
+			m_increasedVentilationRate = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_IncreasedVentilationRate].checkedValue(
+						"IncreasedVentilationRate", "1/s",
+						"1/h", 0, false, std::numeric_limits<double>::max(), false, "Invalid parameter.");
+			m_thresholdTemperature = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_ThresholdTemperature].checkedValue(
+						"ThresholdTemperature", "C",
+						"C", -20, false, std::numeric_limits<double>::max(), false, "Invalid parameter.");
 		} break;
 
 		default:
@@ -238,10 +243,16 @@ int NaturalVentilationModel::update() {
 		// get ventilation rate in [1/s]
 		double rate = m_ventilationRate;
 		switch (m_ventilationModel->m_modelType) {
+
 			case NANDRAD::NaturalVentilationModel::MT_Scheduled : {
 				// retrieve scheduled ventilation rate from schedules
 				rate = *m_valueRefs[1+zoneCount+i];
 			} break;
+
+			case NANDRAD::NaturalVentilationModel::MT_IncreasedDayVentilation : {
+				// TODO Andreas, implement
+			} break;
+
 			default: ;
 		}
 		// store ventilation rate result
