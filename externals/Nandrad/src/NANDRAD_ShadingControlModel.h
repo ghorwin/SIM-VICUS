@@ -29,6 +29,8 @@
 
 namespace NANDRAD {
 
+class ConstructionInstance;
+class EmbeddedObject;
 class Sensor;
 
 /*! Parameters for a intensity controlled shading model with hysteresis. */
@@ -49,7 +51,8 @@ public:
 		If referenced TSV file is given, this is read and checked and data is transferred into
 		variable m_tsvFileContent.
 	*/
-	void checkParameters(const std::vector<Sensor> &sensors);
+	void checkParameters(const std::vector<Sensor> &sensors,
+						 const std::vector<ConstructionInstance> &conInstances);
 
 	/*! Unique ID-number for this shading controller model. */
 	unsigned int						m_id = NANDRAD::INVALID_ID;			// XML:A:required
@@ -66,6 +69,8 @@ public:
 
 	/*! Quick-access pointer to the requested sensor. */
 	const NANDRAD::Sensor				*m_sensor = nullptr;
+	/*! Constant pointer to the referenced parameter block. */
+	const NANDRAD::ConstructionInstance	*m_constructionInstance = nullptr;
 };
 
 } // namespace NANDRAD

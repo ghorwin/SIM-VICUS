@@ -60,6 +60,7 @@ public:
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE
+	NANDRAD_COMPARE_WITH_ID
 
 	/*! returns an object type if a model for an object was defined. */
 	objectType_t objectType() const;
