@@ -46,7 +46,7 @@ void ShadingControlModel::checkParameters(const std::vector<Sensor> &sensors,
 							  conInstance.m_embeddedObjects.end(),
 							  m_sensorID);
 
-			// store constructiojn instance (contains orientation and inclination)
+			// store construction instance (contains orientation and inclination)
 			if(embit != conInstance.m_embeddedObjects.end()) {
 
 				// only an outside construction is accepted
@@ -56,8 +56,13 @@ void ShadingControlModel::checkParameters(const std::vector<Sensor> &sensors,
 										 .arg(m_sensorID), FUNC_ID);
 				}
 
+				// TODO : store pointer to embedded object?
 				m_constructionInstance = &conInstance;
 				break;
+			}
+			else {
+				// TODO : check if id matches id of construction instance and then check interfaces and
+				//        then store pointer to construction instance
 			}
 		}
 	}

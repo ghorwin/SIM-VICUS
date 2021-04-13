@@ -30,7 +30,6 @@
 namespace NANDRAD {
 
 class ConstructionInstance;
-class EmbeddedObject;
 class Sensor;
 
 /*! Parameters for a intensity controlled shading model with hysteresis. */
@@ -48,8 +47,7 @@ public:
 	NANDRAD_COMPARE_WITH_ID
 
 	/*! Checks for valid and required parameters (value ranges).
-		If referenced TSV file is given, this is read and checked and data is transferred into
-		variable m_tsvFileContent.
+		Also check if referenced sensors/constructions/embedded objects exists.
 	*/
 	void checkParameters(const std::vector<Sensor> &sensors,
 						 const std::vector<ConstructionInstance> &conInstances);
@@ -60,7 +58,7 @@ public:
 	std::string							m_displayName;						// XML:A
 
 	/*! Sensor ID of global radiation sensor, or window/construction surface.
-		This sensor corresponds to any surface in the model.
+		This sensor corresponds to any surface in the model (sensor, embedded object, construction).
 	*/
 	unsigned int						m_sensorID = NANDRAD::INVALID_ID;	// XML:A:required
 
@@ -69,7 +67,7 @@ public:
 
 	/*! Quick-access pointer to the requested sensor. */
 	const NANDRAD::Sensor				*m_sensor = nullptr;
-	/*! Constant pointer to the referenced parameter block. */
+	/*! Quick-access pointer to the referenced construction. */
 	const NANDRAD::ConstructionInstance	*m_constructionInstance = nullptr;
 };
 

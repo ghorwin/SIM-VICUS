@@ -72,6 +72,13 @@ void ShadingControlModel::inputReferences(std::vector<InputReference> & inputRef
 			ref.m_name.m_name = "FluxShortWaveRadiationB";
 		}
 		inputRefs.push_back(ref);
+
+		// TODO Anne : wenn wir für embeddedObject (Window) und Konstruktionen jeweils den Globalstrahlungsstrom abfragen,
+		//        wird dieser jeweils mit Verschattungsanteil geliefert - damit können wir aber nicht mehr unterscheiden
+		//        zwischen Verschattung der Konstruktion und Verschattung des Fensters alleine.
+		//        Alternative: statt über InputRefs zu gehen könnte man auch wie im ConstructionBalanceModel und WindowModel
+		//        direct beim load-Modell anfragen. Dann kann man direkt SensorID, ConstructionID, EmbeddedObjectID
+		//        anfragen und bekommt die jeweils verschatteten Werte.
 	}
 }
 
