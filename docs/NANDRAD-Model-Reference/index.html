@@ -72,7 +72,7 @@ table {
 <h1>NANDRAD Modell-Referenz</h1>
 <div class="details">
 <span id="author" class="author">Andreas Nicolai &lt;andreas.nicolai@tu-dresden.de&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke</span><br>
-<span id="revnumber">version 0.2 (12.04.2021)</span>
+<span id="revnumber">version 0.2 (13.04.2021)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Inhaltsverzeichnis</div>
@@ -160,9 +160,9 @@ table {
 </li>
 <li><a href="#models">2.16. Modellparametrisierung</a>
 <ul class="sectlevel3">
-<li><a href="#_natürliches_lüftungsmodell_infiltration">2.16.1. Natürliches Lüftungsmodell (Infiltration)</a></li>
+<li><a href="#_natürliches_lüftungsmodell">2.16.1. Natürliches Lüftungsmodell</a></li>
 <li><a href="#_steuerungsmodell_für_verschattung">2.16.2. Steuerungsmodell für Verschattung</a></li>
-<li><a href="#_internal_loads_model">2.16.3. Internal Loads Model</a></li>
+<li><a href="#_modell_für_interne_lasten">2.16.3. Modell für interne Lasten</a></li>
 </ul>
 </li>
 <li><a href="#networks">2.17. HydraulicNetworks</a>
@@ -2006,12 +2006,12 @@ Im Folgenden wird dies im Detail beschrieben.</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_fensterschattierung">Fensterschattierung</h5>
+<h5 id="window_shading">Fensterverschattung</h5>
 <div class="paragraph">
-<p>Es ist möglich, vorberechnete Schattierungen sowohl auf opake als auch auf transluzente Fassadenelemente anzuwenden. Die vorberechnete Schattierung wird im Allgemeinen als globale Eigenschaft im <code>Location</code>-tag definiert (siehe <a href="#precomputed_shading">Section 2.11.4</a>).</p>
+<p>Es ist möglich, vorberechnete Verschattung bzw. Verschattungseinrichtungen sowohl auf opake als auch auf transluzente Fassadenelemente anzuwenden. Der vorberechnete Umgebungsverschattung bzw. Eigenverschattung wird im Allgemeinen als globale Eigenschaft im <code>Location</code>-tag definiert (siehe <a href="#precomputed_shading">Section 2.11.4</a>).</p>
 </div>
 <div class="paragraph">
-<p>Wenn eine vorberechnete Schattierung definiert ist, wird für <strong>jede</strong> opake und transluzente Fläche ein Faktor angegeben.</p>
+<p>Wenn eine vorberechnete Umgebungsverschattung definiert ist, wird für <strong>jede</strong> opake und transluzente Fläche ein Verschattungsgrad (Abminderungsfaktor) angegeben.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2028,7 +2028,7 @@ Im Folgenden wird dies im Detail beschrieben.</p>
 </table>
 </div>
 <div class="paragraph">
-<p>Alternativ oder zusätzlich zur vorberechneten Schattierung ist es möglich, eine geregelte Verschattung für das Fenster zu definieren.</p>
+<p>Alternativ oder zusätzlich zur vorberechneten Umgebungsverschattung ist es möglich, eine geregelte Verschattung für das Fenster zu definieren.</p>
 </div>
 <div class="exampleblock">
 <div class="title">Beispiel 24. Parameterdefinition für konstante Verschattung</div>
@@ -3680,7 +3680,7 @@ die geplanten Werte)</p>
 <div class="sect2">
 <h3 id="outputs">2.14. Outputs/Ergebnisse</h3>
 <div class="paragraph">
-<p>In NANDRAD ist es möglich, Ausgabedaten für jede berechnete und veröffentlichte Größe abzurufen (siehe <a href="#quantities">Mengenreferenzen</a> für eine vollständige Liste). Natürlich sind nicht alle Größen in allen Projekten verfügbar - vieles hängt davon ab, welche Art von Modellen und Geometrien definiert wurde.</p>
+<p>In NANDRAD ist es möglich, Ausgabedaten für jede berechnete und veröffentlichte Größe abzurufen (siehe <a href="#quantities">Mengenreferenzen</a> für eine vollständige Liste). Natürlich sind nicht alle Größen in allen Projekten verfügbar - vieles hängt davon ab, welche Art von Modellen und Geometrien definiert werden.</p>
 </div>
 <div class="paragraph">
 <p>Um eine Ausgabe zu definieren, werden die folgenden Informationen benötigt:</p>
@@ -3688,10 +3688,10 @@ die geplanten Werte)</p>
 <div class="ulist">
 <ul>
 <li>
-<p>ein Ausgaberaster, das definiert <em>wann</em> Ausgaben geschrieben werden sollen</p>
+<p>ein Ausgaberaster, definiert <em>wann</em> Ausgaben geschrieben werden sollen</p>
 </li>
 <li>
-<p>den Variablen-/Massennamen</p>
+<p>den Variablennamen (Bezeichner für die physikalische Größe)</p>
 </li>
 <li>
 <p>eine Objektliste, die das Objekt oder die Objekte auswählt, von denen Daten abgerufen werden sollen</p>
@@ -3705,13 +3705,13 @@ die geplanten Werte)</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>Zusätzlich zu den manuell definierten Ausgaben erzeugt NANDRAD auch eine Reihe von Log- und Datendateien, und zwar automatisch (siehe Abschnitt <a href="#solver_log_files">Solver-Logdateien</a>).</p>
+<p>Zusätzlich zu den manuell definierten Ausgaben erzeugt NANDRAD auch automatisch eine Reihe von Log- und Datendateien (siehe Abschnitt <a href="#solver_log_files">Solver-Logdateien</a>).</p>
 </div>
 <div class="paragraph">
-<p>Die Ausgaben werden im XML-tag <code>Outputs</code> gespeichert, mit der folgenden allgemeinen Struktur:</p>
+<p>Die Ausgaben werden im XML-tag <code>Outputs</code> definiert, mit der folgenden allgemeinen Struktur:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 35. Parameter-Definition für Outputs</div>
+<div class="title">Beispiel 35. Parameter-Definition für Ausgaben</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3738,7 +3738,7 @@ die geplanten Werte)</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code>TimeUnit</code> - der Wert dieses XML-tags enthält die Zeiteinheit, die in den Ausgabedateien verwendet werden soll</p>
+<p><code>TimeUnit</code> - der Wert dieses XML-tags enthält die Zeiteinheit, die in den Ausgabedateien verwendet werden soll (nur bei Dateien im ASCII-Format)</p>
 </li>
 <li>
 <p><code>IBK:Flag</code> - namens <code>BinaryFormat</code>: falls wahr, werden die Dateien im Binärformat geschrieben (siehe <a href="#binary_outputs">Binäres Format</a>).</p>
@@ -3763,7 +3763,7 @@ die geplanten Werte)</p>
 <div class="sect3">
 <h4 id="output_grids">2.14.2. Ausgaberaster</h4>
 <div class="paragraph">
-<p>Ausgaberaster werden definiert, <em>wenn</em> Ausgaben geschrieben werden. Ein Ausgaberaster enthält eine Liste von Intervallen, wobei für jedes Intervall eine Ausgabenschrittgröße definiert ist. Wenn Sie z. B. stündliche Ausgabeschritte von Anfang bis Ende haben möchten, müssen Sie ein Raster mit einem Intervall und einem Schrittgrößenparameter von einer Stunde definieren:</p>
+<p>Ausgaberaster legen fest, <em>wann</em> Ausgaben geschrieben werden. Ein Ausgaberaster enthält eine Liste von Intervallen, wobei für jedes Intervall eine Ausgabenschrittgröße definiert ist. Wenn Sie z. B. stündliche Ausgabeschritte von Anfang bis Ende haben möchten, müssen Sie ein Raster mit einem Intervall und einem Schrittgrößenparameter von einer Stunde definieren:</p>
 </div>
 <div class="exampleblock">
 <div class="title">Beispiel 37. Ausgaberaster für die gesamte Simulation mit stündlichen Schritten</div>
@@ -3784,15 +3784,15 @@ die geplanten Werte)</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Ein Ausgaberaster wird durch seinen Namen (obligatorisches XML-Attribut <code>name</code>) eindeutig identifiziert. Es enthält ein einzelnes untergeordnetes tag <code>Intervals</code>, das ein oder mehrere Intervalle enthält. Es wird erwartet, dass die Intervalle (XML-tag <code>Interval</code>) zeitlich aufeinander folgen. Es sind Lücken dazwischen möglich.</p>
+<p>Ein Ausgaberaster wird durch seinen Namen (obligatorisches XML-Attribut <code>name</code>) eindeutig identifiziert. Es enthält ein einzelnes untergeordnetes XML-tag <code>Intervals</code>, das ein oder mehrere Intervalle enthält. Es wird erwartet, dass die Intervalle (XML-tag <code>Interval</code>) zeitlich aufeinander folgen. Es sind Lücken dazwischen möglich.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 15%;">
 <col style="width: 10%;">
 <col style="width: 45%;">
-<col style="width: 20%;">
 <col style="width: 10%;">
+<col style="width: 20%;">
 </colgroup>
 <thead>
 <tr>
@@ -3809,14 +3809,14 @@ die geplanten Werte)</p>
 <td class="tableblock halign-center valign-top"><p class="tableblock">h</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">die Startzeit des Intervalls (siehe Erklärung unten) der Wand</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">&gt;=0.0</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional/erforderlich</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>End</code></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">h</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">die Endzeit des Intervalls (siehe Erläuterung unten)</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">&gt;=0.0</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional/erforderlich</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>StepSize</code></p></td>
@@ -3885,22 +3885,18 @@ die geplanten Werte)</p>
 </ul>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 38. output Rasterauswertung</div>
+<div class="title">Beispiel 38. Ausgaberasterauswertung</div>
 <div class="content">
 <div class="paragraph">
-<p>Angenommen, ein Ausgabeintervall ist so definiert, dass es bei 12,5 h beginnt, mit einer Schrittweite von 2 h. Die Simulationszeit soll t=16,5 h betragen.
-Dann ist 16,5 - 12,5 = 4 h, also ein exaktes Vielfaches von 2 h. Das Ausgaberaster ist also zu diesem Simulationszeitpunkt "aktiv" und alle
-Ausgänge, die mit diesem Ausgangsgitter verbunden sind, werden geschrieben.</p>
+<p>Angenommen, ein Ausgabeintervall ist so definiert, dass es bei 12,5 h beginnt, mit einer Schrittweite von 2 h. Die Simulationszeit soll t=16,5 h betragen. Dann wäre 16,5 - 12,5 = 4 h. 4h ist ein exaktes Vielfaches von 2 h. Das Ausgaberaster wäre also zu diesem Simulationszeitpunkt "aktiv" und alle Ausgaben, die mit diesem Ausgangsgitter verbunden sind, werden geschrieben.</p>
 </div>
 </div>
 </div>
 <div class="paragraph">
 <p>Zwischen den Intervallen kann es Lücken geben, in denen keine Ausgaben geschrieben werden:</p>
 </div>
-<div class="paragraph">
-<p>Ausgaberaster für Tageswerte im ersten Jahr und Stundenwerte im dritten Jahr (beginnend zum Zeitpunkt "2 a")</p>
-</div>
 <div class="exampleblock">
+<div class="title">Beispiel 39. Ausgaberaster für Tageswerte im ersten Jahr und Stundenwerte im dritten Jahr (beginnend zum Zeitpunkt "2 a")</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3930,7 +3926,7 @@ Ausgänge, die mit diesem Ausgangsgitter verbunden sind, werden geschrieben.</p>
 <p>Nachfolgend finden Sie ein Beispiel für eine Ausgabedefinition:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 39. Ausgabe der Lufttemperatur von allen Zonen in der Objektliste <em>All zones</em> und unter Verwendung des Ausgaberasters <em>hourly</em></div>
+<div class="title">Beispiel 40. Ausgabe der Lufttemperatur von allen Zonen in der Objektliste <em>All zones</em> und unter Verwendung des Ausgaberasters <em>hourly</em></div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3947,7 +3943,7 @@ Ausgänge, die mit diesem Ausgangsgitter verbunden sind, werden geschrieben.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Das Beispiel zeigt die obligatorischen Child-tags des XML-tags <code>OutputDefinition</code>. Im Folgenden finden Sie eine Liste aller unterstützten Child-tags:</p>
+<p>Das Beispiel zeigt die obligatorischen Elemente des XML-tags <code>OutputDefinition</code>. Im Folgenden finden Sie eine Liste aller unterstützten Elemente:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -3965,18 +3961,18 @@ Ausgänge, die mit diesem Ausgangsgitter verbunden sind, werden geschrieben.</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Quantity</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Eindeutiger ID-Name der Ergebnismenge, siehe auch <a href="#quantities">Mengenreferenzen</a></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Eindeutiger ID-Name der physikalischen Größe, siehe auch <a href="#quantities">Mengenreferenzen</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ObjectListName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Referenz auf eine Objektliste, die die Objekte identifiziert von denen Ergebnisse genommen werden sollen</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>GridName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Referenz auf ein Ausgaberaster (Ausgabezeitdefinitionen)</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>FileName</code></p></td>
@@ -3991,18 +3987,18 @@ Ausgänge, die mit diesem Ausgangsgitter verbunden sind, werden geschrieben.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Der ID-Name der Menge ist der Name des Ergebnisses eines Modellobjekts, eines Zeitplans oder eines anderen vom Solver erzeugten Objekts. Das entsprechende Objekt oder die entsprechenden Objekte werden durch eine <a href="#object_lists">object list</a> ausgewählt. Der Gittername ist der ID-Name eines <a href="#output_grids">output grid</a>.</p>
+<p>Der ID-Name der Ergebnisgröße ist der Name des Ergebnisses eines Modellobjekts, eines Zeitplans oder eines anderen vom Solver erzeugten Objekts. Das entsprechende Objekt oder die entsprechenden Objekte werden durch eine <a href="#object_lists">Objektliste</a> ausgewählt. Der Gittername ist der ID-Name eines <a href="#output_grids">Ausgaberasters</a>.</p>
 </div>
 <div class="paragraph">
-<p>Das tag <code>FileName</code> ist optional. Er kann verwendet werden, um gezielt den Namen einer Ausgabedatei auszuwählen. Normalerweise werden die Namen der Ausgabedateien automatisch generiert, abhängig von der Art der angeforderten Ausgabe.</p>
+<p>Das Element <code>FileName</code> ist optional. Er kann verwendet werden, um gezielt den Namen einer Ausgabedatei auszuwählen. Normalerweise werden die Namen der Ausgabedateien automatisch generiert, abhängig von der Art der angeforderten Ausgabe.</p>
 </div>
 <div class="paragraph">
-<p>Schließlich kann das tag <code>TimeType</code> verwendet werden, um die zeitliche Mittelung oder die zeitliche Integration von Variablen festzulegen, siehe Abschnitt <a href="#output_time_type">Zeittypen</a>.</p>
+<p>Schließlich kann das Element <code>TimeType</code> verwendet werden, um die zeitliche Mittelung oder die zeitliche Integration von Variablen festzulegen, siehe Abschnitt <a href="#output_time_type">Zeittypen</a>.</p>
 </div>
 <div class="sect4">
 <h5 id="_variablennamen_und_variablennachschlagregeln">Variablennamen und Variablennachschlagregeln</h5>
 <div class="paragraph">
-<p>Mengen in Ausgabedefinitionen definieren die ID-Namen der Ausgabegrößen. Wenn ein einzelnes Element einer vektoriellen Größe angefordert wird,können diese optional einschließlich einer Index-Notation definiert werden . Dabei sind die folgenden Notationen erlaubt:</p>
+<p>Mengen in Ausgabedefinitionen definieren die ID-Namen der Ausgabegrößen. Wenn ein Element einer vektoriellen Größe angefordert wird, muss das betreffende Element über eine Index-Notation definiert werden. Dabei sind die folgenden Notationen erlaubt:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -4029,21 +4025,21 @@ Ausgänge, die mit diesem Ausgangsgitter verbunden sind, werden geschrieben.</p>
 <p>Zieldateiname(n) werden automatisch festgelegt.</p>
 </div>
 <div class="paragraph">
-<p>Alle Ausgaben werden abhängig von der Menge gruppiert in:</p>
+<p>Alle Ausgaben werden abhängig von der physikalischen Größe gruppiert in:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Zustände</p>
+<p>Zustände : <em>states</em></p>
 </li>
 <li>
-<p>Ströme</p>
+<p>Ströme : <em>fluxes</em></p>
 </li>
 <li>
-<p>Lasten</p>
+<p>Lasten : <em>load</em></p>
 </li>
 <li>
-<p>Sonstiges</p>
+<p>Sonstiges : <em>misc</em></p>
 </li>
 </ul>
 </div>
@@ -4053,10 +4049,10 @@ Ausgänge, die mit diesem Ausgangsgitter verbunden sind, werden geschrieben.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>wird für Mengen vom Typ <em>fluxes</em> stattdessen die Gruppe <em>flux_integrals</em> verwendet,</p>
+<p>für Ausgaben vom Typ <em>fluxes</em> wird stattdessen die Gruppe <em>flux_integrals</em> verwendet,</p>
 </li>
 <li>
-<p>für Menge vom Typ <em>loads</em> wird stattdessen die Gruppe <em>load_integrals</em> verwendet</p>
+<p>für Ausgaben vom Typ <em>loads</em> wird stattdessen die Gruppe <em>load_integrals</em> verwendet</p>
 </li>
 </ul>
 </div>
@@ -4066,19 +4062,19 @@ Ausgänge, die mit diesem Ausgangsgitter verbunden sind, werden geschrieben.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>states &#8594; <code>states_&lt;gridname&gt;.tsv</code></p>
+<p><em>states</em> &#8594; <code>states_&lt;gridname&gt;.tsv</code></p>
 </li>
 <li>
-<p>loads &#8594; <code>loads_&lt;gridname&gt;.tsv</code></p>
+<p><em>loads</em> &#8594; <code>loads_&lt;gridname&gt;.tsv</code></p>
 </li>
 <li>
-<p>loads (integrated) &#8594; <code>load_integrals_&lt;gridname&gt;.tsv</code></p>
+<p><em>loads (integriert)</em> &#8594; <code>load_integrals_&lt;gridname&gt;.tsv</code></p>
 </li>
 <li>
-<p>fluxes &#8594; <code>fluxes_&lt;gridname&gt;.tsv</code></p>
+<p><em>fluxes</em> &#8594; <code>fluxes_&lt;gridname&gt;.tsv</code></p>
 </li>
 <li>
-<p>fluxes (integrated) &#8594; <code>flux_integrals_&lt;gridname&gt;.tsv</code></p>
+<p><em>fluxes (integriert)</em> &#8594; <code>flux_integrals_&lt;gridname&gt;.tsv</code></p>
 </li>
 </ul>
 </div>
@@ -4132,12 +4128,12 @@ Ausgänge, die mit diesem Ausgangsgitter verbunden sind, werden geschrieben.</p>
 <p><code>Mean</code>- schreibt den über das letzte Ausgabeintervall gemittelten Wert</p>
 </li>
 <li>
-<p><code>Integral</code> - schreibt den ganzzahligen Wert</p>
+<p><code>Integral</code> - schreibt das Zeitintegral der Ergebnisgröße (Integration beginnt zu Simulationsbeginn stets bei 0)</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Standardmäßig (wenn der tag <code>TimeType</code> nicht explizit angegeben ist) werden die Werte so geschrieben, wie sie zum Ausgabezeitpunkt berechnet werden (entspricht <code>None</code>). Abbildung <a href="#fig_timetype">Illustration der verschiedenen <code>TimeType</code>-Optionen</a> veranschaulicht die verschiedenen Optionen.</p>
+<p>Standardmäßig (wenn das Element <code>TimeType</code> nicht explizit angegeben ist) werden die Werte so geschrieben, wie sie zum Ausgabezeitpunkt berechnet werden (entspricht <code>None</code>). Abbildung <a href="#fig_timetype">Illustration der verschiedenen <code>TimeType</code>-Optionen</a> veranschaulicht die verschiedenen Optionen.</p>
 </div>
 <div id="fig_timetype" class="imageblock">
 <div class="content">
@@ -4153,7 +4149,7 @@ Ausgänge, die mit diesem Ausgangsgitter verbunden sind, werden geschrieben.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Es ist wichtig zu beachten, dass Durchschnittswerte immer Mittelwerte der Werte im <em>letzten Ausgabeintervall</em> sind. Wenn Sie also stündliche Ausgänge definiert haben, aber die Einheit <code>kW/d</code> ist, erhalten Sie keine Durchschnittswerte über einen Tag, sondern über die letzte Stunde. Die Einheit wird nur zur Umrechnung des Endwertes benötigt hat aber keinen Einfluss auf die Art der Berechnung.</p>
+<p>Es ist wichtig zu beachten, dass Durchschnittswerte immer Mittelwerte der Werte im <em>letzten Ausgabeintervall</em> sind. Wenn Sie also stündliche Ausgänge definiert haben, aber die Einheit <code>kW/d</code> ist, erhalten Sie keine Durchschnittswerte über einen Tag, sondern über die letzte Stunde. Die Einheit wird nur zur Umrechnung des Endwertes benötigt, hat aber keinen Einfluss auf die Art der Berechnung.</p>
 </div>
 </td>
 </tr>
@@ -4163,7 +4159,7 @@ Ausgänge, die mit diesem Ausgangsgitter verbunden sind, werden geschrieben.</p>
 <div class="sect4">
 <h5 id="_beispiele">Beispiele</h5>
 <div class="exampleblock">
-<div class="title">Beispiel 40. Abfrage von Oberflächentemperaturen der Konstruktionen</div>
+<div class="title">Beispiel 41. Abfrage von Oberflächentemperaturen der Konstruktionen</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -4196,7 +4192,7 @@ Ausgänge, die mit diesem Ausgangsgitter verbunden sind, werden geschrieben.</p>
 </div>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 41. Anforderung von Energie, die der Schicht in einer Konstruktion zugeführt wird (Fußbodenheizung)</div>
+<div class="title">Beispiel 42. Anforderung von Energie, die der Schicht in einer Konstruktion zugeführt wird (Fußbodenheizung)</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -4247,6 +4243,9 @@ Nächste n Datensätze: Binärstrings, führende Größe (unsigned int) und Absc
 Als Nächstes ?? Datensätze: unsigned int - n (zur Überprüfung) und danach n Doubles</pre>
 </div>
 </div>
+<div class="paragraph">
+<p>TODO Andreas? Wenn das erste Mal Ausgabendateien &gt; 100 Mb als ASCII-Dateien geschrieben werden, sollten wir das binäre Format einführen.</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="solver_log_files">2.14.5. Solver-Logdateien</h4>
@@ -4264,6 +4263,8 @@ Als Nächstes ?? Datensätze: unsigned int - n (zur Überprüfung) und danach n 
 ├── results
 │   └── ... (output files)
 └── var
+    ├── input_reference_list.txt
+    ├── objectref_substitutions.txt
     ├── output_reference_list.txt
     └── restart.bin</pre>
 </div>
@@ -4301,12 +4302,20 @@ Als Nächstes ?? Datensätze: unsigned int - n (zur Überprüfung) und danach n 
 <td class="tableblock halign-left valign-top"><p class="tableblock">Statistiken und Zeitangaben des Simulationslaufs, wird am Ende der Simulation geschrieben</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>input_reference_list.txt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Liste der von Modellen verwendete Eingangsgrößen (Ergebnisgrößen anderer Modelle) (siehe <a href="#quantities">Mengenreferenzen</a>)</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>output_reference_list.txt</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Liste der in diesem Projekt erzeugten Größen (siehe <a href="#quantities">Mengenreferenzen</a>)</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>objectref_substitutions.txt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Liste von Objektreferenzen (einschließlich IDs), wie sie in Ausgabedateien erscheinen und deren <em>Displayname</em> Attributen (wenn vergeben). Kann benutzt werden, um die generischen Bezeichner in lesbare Begriffe zu übersetzen.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>restart.bin</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Binäre Neustartdaten (zur Fortsetzung der Integration)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Binäre Neustartdaten (zur Fortsetzung der Integration/des Solvers)</p></td>
 </tr>
 </tbody>
 </table>
@@ -4318,7 +4327,7 @@ Als Nächstes ?? Datensätze: unsigned int - n (zur Überprüfung) und danach n 
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Wenn Sie einen anderen Integrator oder Solver für lineare Gleichungssysteme gewählt haben (siehe Abschnitt <a href="#solver_parameters">Solver-Parameter</a>), werden die Dateien <code>integrator_cvode_stats.tsv</code> und <code>LES_direct_stats.tsv</code> entsprechend benannt.</p>
+<p>Wenn Sie einen anderen Integrator oder Solver für lineare Gleichungssysteme gewählt haben (siehe Abschnitt <a href="#solver_parameters">Solver-Parameter</a>), werden die Dateien <code>integrator_cvode_stats.tsv</code> und <code>LES_direct_stats.tsv</code> entsprechend anders benannt.</p>
 </div>
 </td>
 </tr>
@@ -4350,10 +4359,10 @@ Als Nächstes ?? Datensätze: unsigned int - n (zur Überprüfung) und danach n 
 <div class="sect3">
 <h4 id="simulation_parameters">2.15.1. Simulationsparameter</h4>
 <div class="paragraph">
-<p>Im Folgenden werden alle Simulationsparameter beschrieben, siehe <a href="#ex_simpara">Beispiel 42</a>. Alle Parameter werden als <code>IBK:Parameter</code>, <code>IBK:Flags</code> oder <code>IBK:IntPara</code> gesetzt.</p>
+<p>Im Folgenden werden alle Simulationsparameter beschrieben, siehe <a href="#ex_simpara">Beispiel 43</a>. Alle Parameter werden als <code>IBK:Parameter</code>, <code>IBK:Flags</code> oder <code>IBK:IntPara</code> gesetzt.</p>
 </div>
 <div id="ex_simpara" class="exampleblock">
-<div class="title">Beispiel 42. Simulationsparameter</div>
+<div class="title">Beispiel 43. Simulationsparameter</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -5235,9 +5244,9 @@ Start = 14*24 + 6 = 342 h</pre>
 <p>In diesem Abschnitt werden die verschiedenen Modellparametrisierungsblöcke beschrieben.</p>
 </div>
 <div class="sect3">
-<h4 id="_natürliches_lüftungsmodell_infiltration">2.16.1. Natürliches Lüftungsmodell (Infiltration)</h4>
+<h4 id="_natürliches_lüftungsmodell">2.16.1. Natürliches Lüftungsmodell</h4>
 <div class="paragraph">
-<p>Ein Modell für natürliche Lüftung/Infiltration definiert den Luftaustausch mit der Außenluft. Die natürliche Lüftung kann für bestimmte Zonen aktiviert werden, indem ein Modellparametersatz <code>NaturalVentilationModel</code> definiert wird. Über die Objektliste werden die Zonen mit natürlicher Lüftung ausgewählt.</p>
+<p>Das Modell für natürliche Lüftung definiert den Luftaustausch mit der Außenluft und beiinhaltet Nutzerlüftung wie ungewollte Lüftung durch Leckagen. Die natürliche Lüftung wird für bestimmte Zonen aktiviert, indem ein Modellparametersatz <code>NaturalVentilationModel</code> definiert wird. Über die Objektliste werden die Zonen ausgewählt.</p>
 </div>
 <div class="exampleblock">
 <div class="content">
@@ -5307,6 +5316,9 @@ Start = 14*24 + 6 = 342 h</pre>
 <li>
 <p><code>Scheduled</code> - Luftwechselrate ändert sich nach einem definierten Zeitplan</p>
 </li>
+<li>
+<p><code>IncreasedDayVentilation</code> - Tagsüber kann die Lüftungsrate erhöht werden, wenn die Außenluft kleiner als die Raumluft ist und die Raumlufttemperatur einen Grenzwert übersteigt.</p>
+</li>
 </ul>
 </div></div></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">key</p></td>
@@ -5315,7 +5327,7 @@ Start = 14*24 + 6 = 342 h</pre>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Fließkommaparameter (siehe Abschnitt <a href="#IBK_Parameter">IBK:Parameter</a> für eine Beschreibung des Tags <code>IBK:Parameter</code>):</p>
+<p>Gleitkommazahlen-Parameter (siehe Abschnitt <a href="#IBK_Parameter">IBK:Parameter</a> für eine Beschreibung des Tags <code>IBK:Parameter</code>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -5340,7 +5352,7 @@ Start = 14*24 + 6 = 342 h</pre>
 <td class="tableblock halign-center valign-top"><p class="tableblock">1/h</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Konstante Luftwechselrate</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;=&#160;0.0&#160;</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich für constant-Modell</em></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich für Modelltyp</em> <code>Constant</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -5348,13 +5360,13 @@ Start = 14*24 + 6 = 342 h</pre>
 <p>Wenn der Modelltyp <code>Scheduled</code> verwendet wird, sind keine weiteren Parameter erforderlich, da die Luftwechselrate aus einem geplanten Parameter übernommen wird.</p>
 </div>
 <div class="paragraph">
-<p>Damit das Modell funktioniert, muss der Parameter <code>InfiltrationRateSchedule</code> in einem Zeitplan definiert sein (siehe <a href="#schedules">Zeitpläne</a>).</p>
+<p>Damit das Modell funktioniert, muss der Parameter <code>VentilationRateSchedule</code> in einem Zeitplan definiert sein (siehe <a href="#schedules">Zeitpläne</a>).</p>
 </div>
 <div class="paragraph">
-<p>Nachfolgend finden Sie ein Beispiel für einen Zeitplan, der den Parameter <code>InfiltrationRateSchedule</code> für ein solches Modell der geplanten natürlichen Lüftung bereitstellt:</p>
+<p>Nachfolgend finden Sie ein Beispiel für einen Zeitplan, der den Parameter <code>VentilationRateSchedule</code> für ein solches Modell der geplanten natürlichen Lüftung bereitstellt:</p>
 </div>
 <div class="paragraph">
-<p>Beispiel für einen Zeitplan, der den Parameter <em>InfiltrationRateSchedule</em> bereitstellt</p>
+<p>Beispiel für einen Zeitplan, der den Parameter <em>VentilationRateSchedule</em> bereitstellt</p>
 </div>
 <div class="exampleblock">
 <div class="content">
@@ -5366,7 +5378,7 @@ Start = 14*24 + 6 = 342 h</pre>
     <span class="nt">&lt;DailyCycles&gt;</span>
       <span class="nt">&lt;DailyCycle</span> <span class="na">interpolation=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
         <span class="nt">&lt;TimePoints&gt;</span>0 6 10<span class="nt">&lt;/TimePoints&gt;</span>
-        <span class="nt">&lt;Values&gt;</span>InfiltrationRateSchedule [1/h]:0 0.4 0<span class="nt">&lt;/Values&gt;</span>
+        <span class="nt">&lt;Values&gt;</span>VentilationRateSchedule [1/h]:0 0.4 0<span class="nt">&lt;/Values&gt;</span>
       <span class="nt">&lt;/DailyCycle&gt;</span>
     <span class="nt">&lt;/DailyCycles&gt;</span>
   <span class="nt">&lt;/Schedule&gt;</span>
@@ -5375,7 +5387,7 @@ Start = 14*24 + 6 = 342 h</pre>
     <span class="nt">&lt;DailyCycles&gt;</span>
       <span class="nt">&lt;DailyCycle</span> <span class="na">interpolation=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
         <span class="nt">&lt;TimePoints&gt;</span>0<span class="nt">&lt;/TimePoints&gt;</span>
-        <span class="nt">&lt;Values&gt;</span>InfiltrationRateSchedule [1/h]:0<span class="nt">&lt;/Values&gt;</span>
+        <span class="nt">&lt;Values&gt;</span>VentilationRateSchedule [1/h]:0<span class="nt">&lt;/Values&gt;</span>
       <span class="nt">&lt;/DailyCycle&gt;</span>
     <span class="nt">&lt;/DailyCycles&gt;</span>
   <span class="nt">&lt;/Schedule&gt;</span>
@@ -5384,7 +5396,7 @@ Start = 14*24 + 6 = 342 h</pre>
     <span class="nt">&lt;DailyCycles&gt;</span>
       <span class="nt">&lt;DailyCycle</span> <span class="na">interpolation=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
         <span class="nt">&lt;TimePoints&gt;</span>0 14 16<span class="nt">&lt;/TimePoints&gt;</span>
-        <span class="nt">&lt;Values&gt;</span>InfiltrationRateSchedule [1/h]:0 0.1 0<span class="nt">&lt;/Values&gt;</span>
+        <span class="nt">&lt;Values&gt;</span>VentilationRateSchedule [1/h]:0 0.1 0<span class="nt">&lt;/Values&gt;</span>
       <span class="nt">&lt;/DailyCycle&gt;</span>
     <span class="nt">&lt;/DailyCycles&gt;</span>
   <span class="nt">&lt;/Schedule&gt;</span>
@@ -5397,10 +5409,10 @@ Start = 14*24 + 6 = 342 h</pre>
 <div class="sect3">
 <h4 id="_steuerungsmodell_für_verschattung">2.16.2. Steuerungsmodell für Verschattung</h4>
 <div class="paragraph">
-<p>Ein Verschattungregelungsmodell ist eine spezielle Art von Regelungsmodell, das einen Signalwert zwischen 0 (keine Verschattung) und 1 (volle Verschattung) zurückgibt. Das tatsächliche Ausmaß der Verschattung bzw. die Reduzierung der solaren Gewinne wird durch den Verschattungs-Parameterblock bestimmt. Somit kann das gleiche Regelmodell für verschiedene Verschattungsarten verwendet werden.</p>
+<p>Ein Verschattungregelungsmodell ist eine spezielle Art von Regelungsmodell, das einen Signalwert zwischen 0 (keine Verschattung) und 1 (volle Verschattung) zurückgibt. Das tatsächliche Ausmaß der Verschattung bzw. die Reduzierung der solaren Gewinne wird durch den Verschattungs-Parameterblock (<code>Shading</code>, siehe <a href="#window_shading">Fensterverschattung</a>) bestimmt. Somit kann das gleiche Regelmodell für verschiedene Verschattungseinrichtungen verwendet werden.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 43. Parameterdefinition für Verschattungsregelungsmodell</div>
+<div class="title">Beispiel 44. Parameterdefinition für Verschattungsregelungsmodell</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -5427,7 +5439,7 @@ Start = 14*24 + 6 = 342 h</pre>
 <div class="ulist">
 <ul>
 <li>
-<p>allgemeiner Sensor auf einer Fläche, siehe <a href="#location_sensors">Zusätzliche Strahlungssensoren</a></p>
+<p>allgemeiner Sensor auf einer Fläche (siehe <a href="#location_sensors">Zusätzliche Strahlungssensoren</a>)</p>
 </li>
 <li>
 <p>ID eines Fensters (eigentlich ID des <em>embedded object</em>, welches das Fenster enthält); hier wird die Globalstrahlung durch das Fenster als Eingangsgröße verwendet, einschließlich eventueller externer Verschattung bzw. Eigenverschattung</p>
@@ -5442,13 +5454,13 @@ Start = 14*24 + 6 = 342 h</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_internal_loads_model">2.16.3. Internal Loads Model</h4>
+<h4 id="_modell_für_interne_lasten">2.16.3. Modell für interne Lasten</h4>
 <div class="paragraph">
 <p>Das interne Lastenmodell wird verwendet, um die Wärmelasten von Geräten, Personen und Beleuchtung für Zonen zu definieren. Interne Lasten werden genauso definiert wie natürliche Lüftungsmodelle. Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in denen interne Lasten berücksichtigt werden sollen.
 Es dürfen nicht zwei interne Lastmodelle existieren, die sich auf dieselben Zonen beziehen (nur eine interne Last pro Zone).</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 44. Definitionsblock für interne Lasten</div>
+<div class="title">Beispiel 45. Definitionsblock für interne Lasten</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -5647,7 +5659,7 @@ Wenn der Modelltyp <code>Scheduled</code> verwendet wird, werden die tatsächlic
 <p>In einer Projektdatei kann es mehrere Netzwerke geben. Diese sind im XML tag <code>HydraulicNetworks</code> abgelegt.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 45. Hydraulische Netzwerke</div>
+<div class="title">Beispiel 46. Hydraulische Netzwerke</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -5687,7 +5699,7 @@ Wenn der Modelltyp <code>Scheduled</code> verwendet wird, werden die tatsächlic
 <p>Ein einzelnes Netzwerk wird im XML-tag <code>HydraulicNetwork</code> definiert, wie im folgenden Beispiel:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 46. Typische Definition eines einzelnen Netzwerks</div>
+<div class="title">Beispiel 47. Typische Definition eines einzelnen Netzwerks</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -5877,7 +5889,7 @@ Wenn der Modelltyp <code>Scheduled</code> verwendet wird, werden die tatsächlic
 </table>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 47. Definition eines Netzwerkfluids</div>
+<div class="title">Beispiel 48. Definition eines Netzwerkfluids</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6037,7 +6049,7 @@ Wenn der Modelltyp <code>Scheduled</code> verwendet wird, werden die tatsächlic
 <p>Die Rohreigenschaften legen die physikalische/geometrischen Eigenschaften eines Rohrtyps fest. Diese werden in XML-tags we <code>HydraulicNetworkPipeProperties</code> im Katalog <code>PipeProperties</code> mit eindeutigen IDs aufgelistet.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 48. Definition von Rohreigenschaften</div>
+<div class="title">Beispiel 49. Definition von Rohreigenschaften</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6147,7 +6159,7 @@ Wenn der Modelltyp <code>Scheduled</code> verwendet wird, werden die tatsächlic
 <p>Eine <code>HydraulicNetworkComponent</code> definiert die Basiseigenschaften eines Strömungselements. Diese werden in dem Katalog <code>Components</code> mit eindeutigen IDs aufgelistet.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 49. Definition einer Komponente</div>
+<div class="title">Beispiel 50. Definition einer Komponente</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6352,7 +6364,7 @@ Wenn der Modelltyp <code>Scheduled</code> verwendet wird, werden die tatsächlic
 <p>Die tatsächlichen Strömungselemente des Netzwerks werden innerhalb des XML-tags <code>Elements</code> mit dem XML-tag <code>HydraulicNetworkElement</code> definiert.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 50. Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)</div>
+<div class="title">Beispiel 51. Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)</div>
 <div class="content">
 <div id="xml_example_flow_element" class="listingblock">
 <div class="content">
@@ -6450,10 +6462,10 @@ Wenn der Modelltyp <code>Scheduled</code> verwendet wird, werden die tatsächlic
 <p>Die Strömungselemente sind miteinander durch Knoten verknüpft. In jedem Strömungselement fließt das Fluid (geplant) von dem Knoten mit der <code>inletNodeId</code> zu dem Knoten mit der <code>outletNodeId</code>. Während der Berechnung ist es jedoch möglich, dass sich der Massestrom umkehrt. Dies ändert aber nichts an der Topologiedefinition des Netzwerkes. Man könnte <code>inletNodeId</code> auch mit "Knoten 1 des Elements" und <code>outletNodeId</code> mit "Knoten 2 des Elements" bezeichnen.</p>
 </div>
 <div class="paragraph">
-<p><a href="#fig_network_example1">Abbildung 12</a> zeigt ein einfaches Netzwerk bestehend aus 3 Elementen.  Ein solches Netzwerk würde wie folgt definiert werden (<a href="#ex_network_example1">Beispiel 51</a>).</p>
+<p><a href="#fig_network_example1">Abbildung 12</a> zeigt ein einfaches Netzwerk bestehend aus 3 Elementen.  Ein solches Netzwerk würde wie folgt definiert werden (<a href="#ex_network_example1">Beispiel 52</a>).</p>
 </div>
 <div id="ex_network_example1" class="exampleblock">
-<div class="title">Beispiel 51. XML-Definition eines einfachen Strömungsnetzwerks mit 3 Knoten und 3 Elementen</div>
+<div class="title">Beispiel 52. XML-Definition eines einfachen Strömungsnetzwerks mit 3 Knoten und 3 Elementen</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6496,7 +6508,7 @@ Wenn der Modelltyp <code>Scheduled</code> verwendet wird, werden die tatsächlic
 <p>Ist eine Komponente ein Rohr (z.B. <code>DynamicPipe</code>), <strong>müssen</strong> entsprechende Rohrparameter mit der <code>pipePropertiesId</code> referenziert werden.</p>
 </div>
 <div class="paragraph">
-<p>Weiterhin <strong>muss</strong> für ein Rohrelement der Parameter <code>Length</code> definiert werden (siehe auch <a href="#ex_pipe_element">Beispiel 52</a>):</p>
+<p>Weiterhin <strong>muss</strong> für ein Rohrelement der Parameter <code>Length</code> definiert werden (siehe auch <a href="#ex_pipe_element">Beispiel 53</a>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -6526,7 +6538,7 @@ Wenn der Modelltyp <code>Scheduled</code> verwendet wird, werden die tatsächlic
 </tbody>
 </table>
 <div id="ex_pipe_element" class="exampleblock">
-<div class="title">Beispiel 52. Definition eines Rohrelements</div>
+<div class="title">Beispiel 53. Definition eines Rohrelements</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6543,7 +6555,7 @@ Wenn der Modelltyp <code>Scheduled</code> verwendet wird, werden die tatsächlic
 <p>Durch Angabe des <code>IBK:IntPara</code> Tags mit dem Namen <code>NumberParallelPipes</code> kann man ein Rohrregister definieren und so z.B. eine Flächenheizung/Fußbodenheizung modellieren. Dabei strömt letztlich das Fluid parallel durch die angebene Anzahl gleichartiger Rohre.</p>
 </div>
 <div id="ex_pipe_register" class="exampleblock">
-<div class="title">Beispiel 53. Definition eines Rohrregisters</div>
+<div class="title">Beispiel 54. Definition eines Rohrregisters</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6579,7 +6591,7 @@ Wenn der Modelltyp <code>Scheduled</code> verwendet wird, werden die tatsächlic
 <p>Für thermische Netzwerken kann für jedes Strömungselement (<a href="#HydraulicNetworkElements">Section 2.17.5</a>) ein Wärmeaustausch definiert werden. Dafür muss innerhalb der Definition des Strömungselements ein XML-Element <code>HeatExchangeType</code> definiert werden.</p>
 </div>
 <div id="ex_heat_exchange_type" class="exampleblock">
-<div class="title">Beispiel 54. Definition von Strömungselementen mit <code>HeatExchangeType</code></div>
+<div class="title">Beispiel 55. Definition von Strömungselementen mit <code>HeatExchangeType</code></div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6795,10 +6807,10 @@ Wenn der Modelltyp <code>Scheduled</code> verwendet wird, werden die tatsächlic
 <div class="sect3">
 <h4 id="_ausgaben">2.17.7. Ausgaben</h4>
 <div class="paragraph">
-<p>Die Ergebnisgrößen eines thermo-hydraulischen Netzwerkmodells werden wie folgt definiert. Als Referenzierungstyp dient entweder <code>Network</code> für Ausgaben des Netzwerks insgesamt, oder <code>NetworkElement</code> für die Adressierung individueller Strömungselemente (siehe <a href="#ex_objectList_networks">Beispiel 55</a>).</p>
+<p>Die Ergebnisgrößen eines thermo-hydraulischen Netzwerkmodells werden wie folgt definiert. Als Referenzierungstyp dient entweder <code>Network</code> für Ausgaben des Netzwerks insgesamt, oder <code>NetworkElement</code> für die Adressierung individueller Strömungselemente (siehe <a href="#ex_objectList_networks">Beispiel 56</a>).</p>
 </div>
 <div id="ex_objectList_networks" class="exampleblock">
-<div class="title">Beispiel 55. Objektlist für die Referenzierung eines Netzwerks mit der ID 1 und ausgewählter Elemente des Netzwerks</div>
+<div class="title">Beispiel 56. Objektlist für die Referenzierung eines Netzwerks mit der ID 1 und ausgewählter Elemente des Netzwerks</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7000,10 +7012,10 @@ ThermalTransmittance                [W/K]       Total thermal transmittance of f
 </ul>
 </div>
 <div class="paragraph">
-<p>Die Variablen sind vektor-wertige Größen und es muss der <em>Index</em> des jeweils angeforderten Vektorelements verwendet werden. Die Indizierung entspricht der Reihenfolge der  <code>HydraulicNetworkElement</code> Tags. <a href="#ex_network_outputs">Beispiel 56</a> zeigt die Definition einer indexbasierten Ausgabe für Masseströme des Netzwerks.</p>
+<p>Die Variablen sind vektor-wertige Größen und es muss der <em>Index</em> des jeweils angeforderten Vektorelements verwendet werden. Die Indizierung entspricht der Reihenfolge der  <code>HydraulicNetworkElement</code> Tags. <a href="#ex_network_outputs">Beispiel 57</a> zeigt die Definition einer indexbasierten Ausgabe für Masseströme des Netzwerks.</p>
 </div>
 <div id="ex_network_outputs" class="exampleblock">
-<div class="title">Beispiel 56. Beispiel für Ausgabedefinitionen mit Network als Referenztyp</div>
+<div class="title">Beispiel 57. Beispiel für Ausgabedefinitionen mit Network als Referenztyp</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7417,7 +7429,7 @@ NetworkActiveLayerHeatLoad(id,1)            [W]         Heat load to the constru
 <p>Die folgende Liste von Größen ist eine Übersicht über alle verfügbaren Ergebnisse, die als Ausgaben angefordert werden können. Welche Ausgaben tatsächlich verfügbar sind, hängt vom Projekt ab und wird in der Datei <code>var/output_reference_list.txt</code> ausgegeben (siehe Diskussion im Abschnitt <a href="#outputs">Outputs/Ergebnisse</a>).</p>
 </div>
 <div class="paragraph">
-<p>Einige der Größen sind vektorwertige Größen, gekennzeichnet mit einem Suffix <code>(id,xxx)</code> oder <code>(index,xxx)</code>. Um auf diese Werte zuzugreifen, muss die id/der Index in der Ausgabedefinition angeben werden(siehe Erklärung und Beispiele im Abschnitt <a href="#outputs">Outputs/Ergebnisse</a>).</p>
+<p>Einige der Größen sind vektorwertige Größen, gekennzeichnet mit einem Suffix <code>(id,xxx)</code> oder <code>(index,xxx)</code>. Um auf diese Werte zuzugreifen, muss die id/der Index in der Ausgabedefinition angeben werden (siehe Erklärung und Beispiele im Abschnitt <a href="#outputs">Outputs/Ergebnisse</a>).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -7575,15 +7587,15 @@ NetworkActiveLayerHeatLoad(id,1)            [W]         Heat load to the constru
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Model</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">InfiltrationHeatFlux(id,xxx)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VentilationHeatFlux(id,xxx)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">W</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Infiltrations-/Naturlüftungswärmestrom</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmestrom durch natürliche Lüftung</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Model</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">InfiltrationRate(id,xxx)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VentilationRate(id,xxx)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1/h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Natürliche Lüftung/Infiltration Luftwechselrate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Luftwechselrate (natürliche Lüftung)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Zone</p></td>
@@ -7605,9 +7617,9 @@ NetworkActiveLayerHeatLoad(id,1)            [W]         Heat load to the constru
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Zone</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">InfiltrationHeatLoad</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VentilationHeatLoad</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">W</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Infiltration/natürliche Lüftungswärmeströme in den Raum.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmelast in den Raum durch natürliche Lüftung.</p></td>
 </tr>
 </tbody>
 </table>
@@ -7617,8 +7629,8 @@ NetworkActiveLayerHeatLoad(id,1)            [W]         Heat load to the constru
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.2 (12.04.2021)<br>
-Last updated 2021-04-12 21:05:46 +0200
+Version 0.2 (13.04.2021)<br>
+Last updated 2021-04-13 21:13:44 +0200
 </div>
 </div>
 <style>

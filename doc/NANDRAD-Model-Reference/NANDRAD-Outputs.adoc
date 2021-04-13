@@ -3,21 +3,21 @@
 [[outputs]]
 # Outputs/Ergebnisse
 
-In NANDRAD ist es möglich, Ausgabedaten für jede berechnete und veröffentlichte Größe abzurufen (siehe <<quantities>> für eine vollständige Liste). Natürlich sind nicht alle Größen in allen Projekten verfügbar - vieles hängt davon ab, welche Art von Modellen und Geometrien definiert wurde.
+In NANDRAD ist es möglich, Ausgabedaten für jede berechnete und veröffentlichte Größe abzurufen (siehe <<quantities>> für eine vollständige Liste). Natürlich sind nicht alle Größen in allen Projekten verfügbar - vieles hängt davon ab, welche Art von Modellen und Geometrien definiert werden.
 
 Um eine Ausgabe zu definieren, werden die folgenden Informationen benötigt:
 
-- ein Ausgaberaster, das definiert _wann_ Ausgaben geschrieben werden sollen
-- den Variablen-/Massennamen
+- ein Ausgaberaster, definiert _wann_ Ausgaben geschrieben werden sollen
+- den Variablennamen (Bezeichner für die physikalische Größe)
 - eine Objektliste, die das Objekt oder die Objekte auswählt, von denen Daten abgerufen werden sollen
 - (optional) Informationen zur Zeitbehandlung, d. h. ob ein zeitlicher Mittelwert gebildet oder eine Zeitintegration durchgeführt werden soll
 - (optional) Zieldateiname
 
-Zusätzlich zu den manuell definierten Ausgaben erzeugt NANDRAD auch eine Reihe von Log- und Datendateien, und zwar automatisch (siehe Abschnitt <<solver_log_files>>).
+Zusätzlich zu den manuell definierten Ausgaben erzeugt NANDRAD auch automatisch eine Reihe von Log- und Datendateien (siehe Abschnitt <<solver_log_files>>).
 
-Die Ausgaben werden im XML-tag `Outputs` gespeichert, mit der folgenden allgemeinen Struktur:
+Die Ausgaben werden im XML-tag `Outputs` definiert, mit der folgenden allgemeinen Struktur:
 
-.Parameter-Definition für Outputs
+.Parameter-Definition für Ausgaben
 ====
 [source,xml]
 ----
@@ -39,7 +39,7 @@ Die Ausgaben werden im XML-tag `Outputs` gespeichert, mit der folgenden allgemei
 
 Die folgenden Parameter beeinflussen die Erzeugung der Ausgabedateien:
 
-* `TimeUnit` - der Wert dieses XML-tags enthält die Zeiteinheit, die in den Ausgabedateien verwendet werden soll
+* `TimeUnit` - der Wert dieses XML-tags enthält die Zeiteinheit, die in den Ausgabedateien verwendet werden soll (nur bei Dateien im ASCII-Format)
 * `IBK:Flag` - namens `BinaryFormat`: falls wahr, werden die Dateien im Binärformat geschrieben (siehe <<binary_outputs>>).
 
 .Globale Ausgabeparameter
@@ -57,7 +57,7 @@ Die folgenden Parameter beeinflussen die Erzeugung der Ausgabedateien:
 [[output_grids]]
 ## Ausgaberaster
 
-Ausgaberaster werden definiert, _wenn_ Ausgaben geschrieben werden. Ein Ausgaberaster enthält eine Liste von Intervallen, wobei für jedes Intervall eine Ausgabenschrittgröße definiert ist. Wenn Sie z. B. stündliche Ausgabeschritte von Anfang bis Ende haben möchten, müssen Sie ein Raster mit einem Intervall und einem Schrittgrößenparameter von einer Stunde definieren:
+Ausgaberaster legen fest, _wann_ Ausgaben geschrieben werden. Ein Ausgaberaster enthält eine Liste von Intervallen, wobei für jedes Intervall eine Ausgabenschrittgröße definiert ist. Wenn Sie z. B. stündliche Ausgabeschritte von Anfang bis Ende haben möchten, müssen Sie ein Raster mit einem Intervall und einem Schrittgrößenparameter von einer Stunde definieren:
 
 .Ausgaberaster für die gesamte Simulation mit stündlichen Schritten
 ====
@@ -75,13 +75,13 @@ Ausgaberaster werden definiert, _wenn_ Ausgaben geschrieben werden. Ein Ausgaber
 ----
 ====
 
-Ein Ausgaberaster wird durch seinen Namen (obligatorisches XML-Attribut `name`) eindeutig identifiziert. Es enthält ein einzelnes untergeordnetes tag `Intervals`, das ein oder mehrere Intervalle enthält. Es wird erwartet, dass die Intervalle (XML-tag `Interval`) zeitlich aufeinander folgen. Es sind Lücken dazwischen möglich.
+Ein Ausgaberaster wird durch seinen Namen (obligatorisches XML-Attribut `name`) eindeutig identifiziert. Es enthält ein einzelnes untergeordnetes XML-tag `Intervals`, das ein oder mehrere Intervalle enthält. Es wird erwartet, dass die Intervalle (XML-tag `Interval`) zeitlich aufeinander folgen. Es sind Lücken dazwischen möglich.
 
-[options="header",cols="15%,^ 10%,45%,^ 20%,^ 10%",width="100%"]
+[options="header",cols="15%,^ 10%,45%,^ 10%,^ 20%",width="100%"]
 |====================
 | Name | Einheit | Beschreibung | Wertebereich | Verwendung 
-| `Start` | h | die Startzeit des Intervalls (siehe Erklärung unten) der Wand | >=0.0 | _optional_
-| `End` | h | die Endzeit des Intervalls (siehe Erläuterung unten) | >=0.0 | _optional_
+| `Start` | h | die Startzeit des Intervalls (siehe Erklärung unten) der Wand | >=0.0 | _optional/erforderlich_
+| `End` | h | die Endzeit des Intervalls (siehe Erläuterung unten) | >=0.0 | _optional/erforderlich_
 | `StepSize` | h | der Abstand zwischen den Ausgängen innerhalb des Intervalls | >0.0 | _erforderlich_
 |====================
 
@@ -106,16 +106,14 @@ Während der Simulation wird eine Ausgabe genau unter der folgenden Bedingung ge
 - t muss innerhalb eines durch das Gitter definierten Intervalls liegen
 - der Offset t vom Beginn des Intervalls muss ein exaktes Vielfaches der Schrittweite sein
 
-.output Rasterauswertung
+.Ausgaberasterauswertung
 ====
-Angenommen, ein Ausgabeintervall ist so definiert, dass es bei 12,5 h beginnt, mit einer Schrittweite von 2 h. Die Simulationszeit soll t=16,5 h betragen. 
-Dann ist 16,5 - 12,5 = 4 h, also ein exaktes Vielfaches von 2 h. Das Ausgaberaster ist also zu diesem Simulationszeitpunkt "aktiv" und alle
-Ausgänge, die mit diesem Ausgangsgitter verbunden sind, werden geschrieben.
+Angenommen, ein Ausgabeintervall ist so definiert, dass es bei 12,5 h beginnt, mit einer Schrittweite von 2 h. Die Simulationszeit soll t=16,5 h betragen. Dann wäre 16,5 - 12,5 = 4 h. 4h ist ein exaktes Vielfaches von 2 h. Das Ausgaberaster wäre also zu diesem Simulationszeitpunkt "aktiv" und alle Ausgaben, die mit diesem Ausgangsgitter verbunden sind, werden geschrieben.
 ====
 
 Zwischen den Intervallen kann es Lücken geben, in denen keine Ausgaben geschrieben werden:
 
-Ausgaberaster für Tageswerte im ersten Jahr und Stundenwerte im dritten Jahr (beginnend zum Zeitpunkt "2 a")
+.Ausgaberaster für Tageswerte im ersten Jahr und Stundenwerte im dritten Jahr (beginnend zum Zeitpunkt "2 a")
 ====
 [source,xml]
 ----
@@ -155,28 +153,28 @@ Nachfolgend finden Sie ein Beispiel für eine Ausgabedefinition:
 ----
 ====
 
-Das Beispiel zeigt die obligatorischen Child-tags des XML-tags `OutputDefinition`. Im Folgenden finden Sie eine Liste aller unterstützten Child-tags:
+Das Beispiel zeigt die obligatorischen Elemente des XML-tags `OutputDefinition`. Im Folgenden finden Sie eine Liste aller unterstützten Elemente:
 
 [options="header",cols="15%, 70%,^ 15%",width="100%"]
 |====================
 | XML-tag | Beschreibung | Verwendung
-| `Quantity` | Eindeutiger ID-Name der Ergebnismenge, siehe auch <<quantities>> | _required_
-| `ObjectListName` | Referenz auf eine Objektliste, die die Objekte identifiziert von denen Ergebnisse genommen werden sollen | _required_
-| `GridName` | Referenz auf ein Ausgaberaster (Ausgabezeitdefinitionen) | _required_
+| `Quantity` | Eindeutiger ID-Name der physikalischen Größe, siehe auch <<quantities>> | _erforderlich_
+| `ObjectListName` | Referenz auf eine Objektliste, die die Objekte identifiziert von denen Ergebnisse genommen werden sollen | _erforderlich_
+| `GridName` | Referenz auf ein Ausgaberaster (Ausgabezeitdefinitionen) | _erforderlich_
 | `FileName` | Zieldateiname | _optional_
 | `TimeType` | Methode der Zeitmittelung/Integration | _optional_
 |====================
 
-Der ID-Name der Menge ist der Name des Ergebnisses eines Modellobjekts, eines Zeitplans oder eines anderen vom Solver erzeugten Objekts. Das entsprechende Objekt oder die entsprechenden Objekte werden durch eine <<object_lists,object list>> ausgewählt. Der Gittername ist der ID-Name eines <<output_grids, output grid>>.
+Der ID-Name der Ergebnisgröße ist der Name des Ergebnisses eines Modellobjekts, eines Zeitplans oder eines anderen vom Solver erzeugten Objekts. Das entsprechende Objekt oder die entsprechenden Objekte werden durch eine <<object_lists,Objektliste>> ausgewählt. Der Gittername ist der ID-Name eines <<output_grids, Ausgaberasters>>.
 
-Das tag `FileName` ist optional. Er kann verwendet werden, um gezielt den Namen einer Ausgabedatei auszuwählen. Normalerweise werden die Namen der Ausgabedateien automatisch generiert, abhängig von der Art der angeforderten Ausgabe.
+Das Element `FileName` ist optional. Er kann verwendet werden, um gezielt den Namen einer Ausgabedatei auszuwählen. Normalerweise werden die Namen der Ausgabedateien automatisch generiert, abhängig von der Art der angeforderten Ausgabe.
 
-Schließlich kann das tag `TimeType` verwendet werden, um die zeitliche Mittelung oder die zeitliche Integration von Variablen festzulegen, siehe Abschnitt <<output_time_type>>.
+Schließlich kann das Element `TimeType` verwendet werden, um die zeitliche Mittelung oder die zeitliche Integration von Variablen festzulegen, siehe Abschnitt <<output_time_type>>.
 
 
 ### Variablennamen und Variablennachschlagregeln
 
-Mengen in Ausgabedefinitionen definieren die ID-Namen der Ausgabegrößen. Wenn ein einzelnes Element einer vektoriellen Größe angefordert wird,können diese optional einschließlich einer Index-Notation definiert werden . Dabei sind die folgenden Notationen erlaubt:
+Mengen in Ausgabedefinitionen definieren die ID-Namen der Ausgabegrößen. Wenn ein Element einer vektoriellen Größe angefordert wird, muss das betreffende Element über eine Index-Notation definiert werden. Dabei sind die folgenden Notationen erlaubt:
 
 - `HeatSource[1]` - das Index-Argument wird so interpretiert, wie es von den bereitstellenden Modellen definiert wird, wenn also das Modell eine vektorwertige Größe mit Modell-ID-Indizierung bereitstellt, wird das Argument als Objekt-ID interpretiert (ansonsten als Positionsindex)
 - `HeatSource[index=1]` - das Argument index wird explizit als Positionsindex interpretiert (führt zu einem Fehler, wenn das Modell eine Größe mit Modell-ID-Indizierung bereitstellt)
@@ -192,26 +190,26 @@ Die folgenden Abschnitte beschreiben die Regeln, die die Ausgabedateinamen besti
 
 Zieldateiname(n) werden automatisch festgelegt.
 
-Alle Ausgaben werden abhängig von der Menge gruppiert in:
+Alle Ausgaben werden abhängig von der physikalischen Größe gruppiert in:
 
-- Zustände
-- Ströme
-- Lasten
-- Sonstiges
+- Zustände : __states__
+- Ströme : __fluxes__
+- Lasten : __load__
+- Sonstiges : __misc__
 
 Wenn `Integral` als `TimeType` gewählt wird:
 
-- wird für Mengen vom Typ __fluxes__ stattdessen die Gruppe _flux_integrals_ verwendet,
-- für Menge vom Typ __loads__ wird stattdessen die Gruppe _load_integrals_ verwendet
+- für Ausgaben vom Typ __fluxes__ wird stattdessen die Gruppe _flux_integrals_ verwendet,
+- für Ausgaben vom Typ __loads__ wird stattdessen die Gruppe _load_integrals_ verwendet
 
 
 Die Ausgaben werden weiter nach dem Namen des Ausgaberasters gruppiert. Der endgültige Ausgabedateiname wird für jeden Gitter- und Gruppennamen ermittelt:
 
-  - states -> `states_<gridname>.tsv`
-  - loads -> `loads_<gridname>.tsv`
-  - loads (integrated) -> `load_integrals_<gridname>.tsv`
-  - fluxes -> `fluxes_<gridname>.tsv`
-  - fluxes (integrated) -> `flux_integrals_<gridname>.tsv`
+  - __states__ -> `states_<gridname>.tsv`
+  - __loads__ -> `loads_<gridname>.tsv`
+  - __loads (integriert)__ -> `load_integrals_<gridname>.tsv`
+  - __fluxes__ -> `fluxes_<gridname>.tsv`
+  - __fluxes (integriert)__ -> `flux_integrals_<gridname>.tsv`
 
 [NOTE]
 ====
@@ -235,9 +233,9 @@ Das tag `TimeType` nimmt die folgenden Werte an:
 
 - `None` - schreibt die Ausgaben wie zum Ausgabezeitpunkt errechnet
 - `Mean`- schreibt den über das letzte Ausgabeintervall gemittelten Wert
-- `Integral` - schreibt den ganzzahligen Wert
+- `Integral` - schreibt das Zeitintegral der Ergebnisgröße (Integration beginnt zu Simulationsbeginn stets bei 0)
 
-Standardmäßig (wenn der tag `TimeType` nicht explizit angegeben ist) werden die Werte so geschrieben, wie sie zum Ausgabezeitpunkt berechnet werden (entspricht `None`). Abbildung <<fig_timetype>> veranschaulicht die verschiedenen Optionen.
+Standardmäßig (wenn das Element `TimeType` nicht explizit angegeben ist) werden die Werte so geschrieben, wie sie zum Ausgabezeitpunkt berechnet werden (entspricht `None`). Abbildung <<fig_timetype>> veranschaulicht die verschiedenen Optionen.
 
 [[fig_timetype]]
 .Illustration der verschiedenen `TimeType`-Optionen
@@ -245,7 +243,7 @@ image::TimeType_illustration.png[]
 
 [IMPORTANT]
 ====
-Es ist wichtig zu beachten, dass Durchschnittswerte immer Mittelwerte der Werte im __letzten Ausgabeintervall__ sind. Wenn Sie also stündliche Ausgänge definiert haben, aber die Einheit `kW/d` ist, erhalten Sie keine Durchschnittswerte über einen Tag, sondern über die letzte Stunde. Die Einheit wird nur zur Umrechnung des Endwertes benötigt hat aber keinen Einfluss auf die Art der Berechnung.
+Es ist wichtig zu beachten, dass Durchschnittswerte immer Mittelwerte der Werte im __letzten Ausgabeintervall__ sind. Wenn Sie also stündliche Ausgänge definiert haben, aber die Einheit `kW/d` ist, erhalten Sie keine Durchschnittswerte über einen Tag, sondern über die letzte Stunde. Die Einheit wird nur zur Umrechnung des Endwertes benötigt, hat aber keinen Einfluss auf die Art der Berechnung.
 ====
 
 ### Beispiele
@@ -329,6 +327,9 @@ Nächste n Datensätze: Binärstrings, führende Größe (unsigned int) und Absc
 Als Nächstes ?? Datensätze: unsigned int - n (zur Überprüfung) und danach n Doubles
 ----
 
+
+TODO Andreas? Wenn das erste Mal Ausgabendateien > 100 Mb als ASCII-Dateien geschrieben werden, sollten wir das binäre Format einführen.
+
 [[solver_log_files]]
 ## Solver-Logdateien
 
@@ -344,6 +345,8 @@ Innerhalb des Ergebnisverzeichnisses des Projekts werden automatisch die folgend
 ├── results
 │   └── ... (output files)
 └── var
+    ├── input_reference_list.txt
+    ├── objectref_substitutions.txt
     ├── output_reference_list.txt
     └── restart.bin
 ----
@@ -357,11 +360,13 @@ Innerhalb des Ergebnisverzeichnisses des Projekts werden automatisch die folgend
 | `progress.tsv` | Minimalistische Laufzeit-Fortschrittsdaten, kontinuierlich geschrieben, kann zum Verfolgen des Simulationsfortschritts vom GUI-Tool verwendet werden
 | `screenlog.txt` | Log-Datei für Solver-Ausgabemeldungen (wie Konsolenfensterausgaben), wird kontinuierlich geschrieben
 | `summary.txt` | Statistiken und Zeitangaben des Simulationslaufs, wird am Ende der Simulation geschrieben
+| `input_reference_list.txt` | Liste der von Modellen verwendete Eingangsgrößen (Ergebnisgrößen anderer Modelle) (siehe <<quantities>>)
 | `output_reference_list.txt` | Liste der in diesem Projekt erzeugten Größen (siehe <<quantities>>)
-| `restart.bin` | Binäre Neustartdaten (zur Fortsetzung der Integration) 
+| `objectref_substitutions.txt` | Liste von Objektreferenzen (einschließlich IDs), wie sie in Ausgabedateien erscheinen und deren _Displayname_ Attributen (wenn vergeben). Kann benutzt werden, um die generischen Bezeichner in lesbare Begriffe zu übersetzen.
+| `restart.bin` | Binäre Neustartdaten (zur Fortsetzung der Integration/des Solvers)
 |====================
 
 [NOTE]
 ====
-Wenn Sie einen anderen Integrator oder Solver für lineare Gleichungssysteme gewählt haben (siehe Abschnitt <<solver_parameters>>), werden die Dateien `integrator_cvode_stats.tsv` und `LES_direct_stats.tsv` entsprechend benannt.
+Wenn Sie einen anderen Integrator oder Solver für lineare Gleichungssysteme gewählt haben (siehe Abschnitt <<solver_parameters>>), werden die Dateien `integrator_cvode_stats.tsv` und `LES_direct_stats.tsv` entsprechend anders benannt.
 ====

@@ -519,19 +519,19 @@ Der von Rahmen und Trennwand belegte Querschnitt darf die Bruttofläche des eing
 Wenn die Größe des Fensters (oder des eingebetteten Objekts) geändert wird, müssen die Größen von Rahmen und Trennwand entsprechend angepasst werden. Es wäre zwar möglich gewesen, Rahmen- und Trennwandquerschnitte auch als relativen Prozentsatz zu definieren, dennoch muss dieser Prozentsatz bei einer Größenänderung des Fensters aktualisiert werden.
 ====
 
+[[window_shading]]
+### Fensterverschattung
 
-### Fensterschattierung
+Es ist möglich, vorberechnete Verschattung bzw. Verschattungseinrichtungen sowohl auf opake als auch auf transluzente Fassadenelemente anzuwenden. Der vorberechnete Umgebungsverschattung bzw. Eigenverschattung wird im Allgemeinen als globale Eigenschaft im `Location`-tag definiert (siehe <<precomputed_shading>>).
 
-Es ist möglich, vorberechnete Schattierungen sowohl auf opake als auch auf transluzente Fassadenelemente anzuwenden. Die vorberechnete Schattierung wird im Allgemeinen als globale Eigenschaft im `Location`-tag definiert (siehe <<precomputed_shading>>).
-
-Wenn eine vorberechnete Schattierung definiert ist, wird für *jede* opake und transluzente Fläche ein Faktor angegeben.
+Wenn eine vorberechnete Umgebungsverschattung definiert ist, wird für *jede* opake und transluzente Fläche ein Verschattungsgrad (Abminderungsfaktor) angegeben.
 
 [NOTE]
 ====
 Wie im Abschnitt <<precomputed_shading>> beschrieben, erfolgt die Zuordnung zwischen bereitgestellten Datenspalten und Objekt-ID über einen Identifikationsstring, der sich aus Objekttyp und ID-Nummer zusammensetzt. Zum Beispiel würde ein eingebettetes Objekt mit der ID 14 die Spaltenüberschrift/Bezeichnung _embObj.14_ erhalten und eine Konstruktionsinstanz (opake Oberfläche) mit der ID 29 die Bezeichnung _conInst.29_.
 ====
 
-Alternativ oder zusätzlich zur vorberechneten Schattierung ist es möglich, eine geregelte Verschattung für das Fenster zu definieren.
+Alternativ oder zusätzlich zur vorberechneten Umgebungsverschattung ist es möglich, eine geregelte Verschattung für das Fenster zu definieren.
 
 .Parameterdefinition für konstante Verschattung
 ====

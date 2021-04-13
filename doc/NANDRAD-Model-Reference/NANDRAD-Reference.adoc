@@ -107,7 +107,7 @@ Die Einheit `undefined` bedeutet _nicht initialisiert_ (intern) und darf in Eing
 
 Die folgende Liste von Größen ist eine Übersicht über alle verfügbaren Ergebnisse, die als Ausgaben angefordert werden können. Welche Ausgaben tatsächlich verfügbar sind, hängt vom Projekt ab und wird in der Datei `var/output_reference_list.txt` ausgegeben (siehe Diskussion im Abschnitt <<outputs>>).
 
-Einige der Größen sind vektorwertige Größen, gekennzeichnet mit einem Suffix `(id,xxx)` oder `(index,xxx)`. Um auf diese Werte zuzugreifen, muss die id/der Index in der Ausgabedefinition angeben werden(siehe Erklärung und Beispiele im Abschnitt <<outputs>>).
+Einige der Größen sind vektorwertige Größen, gekennzeichnet mit einem Suffix `(id,xxx)` oder `(index,xxx)`. Um auf diese Werte zuzugreifen, muss die id/der Index in der Ausgabedefinition angeben werden (siehe Erklärung und Beispiele im Abschnitt <<outputs>>).
 
 [width="100%",options="header", cols="15%,15%,5%,55%"]
 |====================
@@ -135,11 +135,11 @@ Einige der Größen sind vektorwertige Größen, gekennzeichnet mit einem Suffix
 |Location|VaporPressure |Pa|Umgebungs-Dampfdruck.
 |Location|WindDirection |Deg|Windrichtung (0 - Nord).
 |Location|WindVelocity |m/s|Windgeschwindigkeit.
-|Model|InfiltrationHeatFlux(id,xxx)|W|Infiltrations-/Naturlüftungswärmestrom
-|Model|InfiltrationRate(id,xxx) |1/h|Natürliche Lüftung/Infiltration Luftwechselrate
+|Model|VentilationHeatFlux(id,xxx)|W|Wärmestrom durch natürliche Lüftung
+|Model|VentilationRate(id,xxx) |1/h|Luftwechselrate (natürliche Lüftung)
 |Zone|LuftTemperatur |C|Raumlufttemperatur.
 |Zone|CompleteThermalLoad |W|Summe aller Wärmeströme in den Raum und Energiequellen.
 |Zone|ConstructionHeatConductionLoad|W|Summe der Wärmeleitungsflüsse von Konstruktionsoberflächen in den Raum.
-|Zone|InfiltrationHeatLoad |W|Infiltration/natürliche Lüftungswärmeströme in den Raum.
+|Zone|VentilationHeatLoad |W|Wärmelast in den Raum durch natürliche Lüftung.
 |====================
  
