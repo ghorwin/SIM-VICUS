@@ -120,7 +120,7 @@
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>InfiltrationHeatLoad</Quantity>
+					<Quantity>VentilationHeatLoad</Quantity>
 					<ObjectListName>Zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>

@@ -35,9 +35,11 @@ public:
 	/*! Different model variants. */
 	enum modelType_t {
 		/*! Ventilation rate is given as constant parameter. */
-		MT_Constant,			// Keyword: Constant	'Constant ventilation rate'
-		/*! Ventilation rate is provided as 'NaturalVentilationRate' schedule parameter. */
-		MT_Scheduled,			// Keyword: Scheduled	'Scheduled ventilation rate'
+		MT_Constant,					// Keyword: Constant				'Constant infiltration rate'
+		/*! Ventilation rate is provided as 'InfiltrationRateSchedule' schedule parameter. */
+		MT_Scheduled,					// Keyword: Scheduled				'Scheduled ventilation rate'
+		/*! Increased day time ventilation. */
+		MT_IncreasedDayVentilation,		// Keyword: IncreasedDayVentilation	'Increased ventilation during daytime when conditions apply'
 		NUM_MT
 	};
 

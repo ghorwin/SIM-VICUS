@@ -40,16 +40,16 @@
 
 const char * const STATE_QUANTITIES[] = {
 	"AirTemperature",
-	"InfiltrationRate",
+	"VentilationRate",
 	"SurfaceTemperatureA",
 	"SurfaceTemperatureB"
 };
 
 const char * const FLUX_QUANTITIES[] = {
 	"ConvectiveHeatFluxDensity",
-	"InfiltrationHeatLoad",
+	"VentilationHeatLoad",
+	"VentilationHeatFlux",
 	"CompleteThermalLoad",
-	"InfiltrationHeatFlux",
 	"ConvectiveEquipmentHeatLoad",
 	"ConvectivePersonHeatLoad",
 	"ConvectiveLightingHeatLoad",

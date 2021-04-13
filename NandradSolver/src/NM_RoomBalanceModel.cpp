@@ -222,7 +222,7 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 				InputReference r;
 				r.m_id = model->id();
 				r.m_referenceType = NANDRAD::ModelInputReference::MRT_MODEL;
-				r.m_name.m_name = "InfiltrationHeatFlux";
+				r.m_name.m_name = "VentilationHeatFlux";
 				r.m_name.m_index = (int)m_id; // select result for us (our zone id)
 				// this reference is only provided if the corresponding object list
 				// contains current zone
@@ -392,7 +392,7 @@ void RoomBalanceModel::stateDependencies(std::vector<std::pair<const double *, c
 		resultInputValueReferences.push_back(std::make_pair(&m_results[R_CompleteThermalLoad], &m_results[R_WindowSolarRadiationLoad]));
 		if (m_infiltrationValueRef != nullptr) {
 			resultInputValueReferences.push_back(std::make_pair(&m_results[R_CompleteThermalLoad], m_infiltrationValueRef));
-			resultInputValueReferences.push_back(std::make_pair(&m_results[R_InfiltrationHeatLoad], m_infiltrationValueRef));
+			resultInputValueReferences.push_back(std::make_pair(&m_results[R_VentilationHeatLoad], m_infiltrationValueRef));
 		}
 		if (m_equipmentLoadValueRef != nullptr) {
 			resultInputValueReferences.push_back(std::make_pair(&m_results[R_CompleteThermalLoad], m_equipmentLoadValueRef));
@@ -453,7 +453,7 @@ int RoomBalanceModel::update() {
 	// add ventilation rate flux
 	if (m_infiltrationValueRef != nullptr) {
 		SumQdot += *m_infiltrationValueRef;
-		m_results[R_InfiltrationHeatLoad] = *m_infiltrationValueRef;
+		m_results[R_VentilationHeatLoad] = *m_infiltrationValueRef;
 	}
 
 	// add equipment loads

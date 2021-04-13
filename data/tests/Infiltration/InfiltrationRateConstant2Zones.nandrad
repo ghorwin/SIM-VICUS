@@ -56,7 +56,7 @@
 				</OutputDefinition>
 
 				<OutputDefinition>
-					<Quantity>InfiltrationHeatLoad</Quantity>
+					<Quantity>VentilationHeatLoad</Quantity>
 					<ObjectListName>All zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>

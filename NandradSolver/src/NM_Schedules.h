@@ -65,7 +65,7 @@ public:
 		This way, we also ensure that scheduled quantity names are unique across all models.
 	*/
 	enum KnownQuantities {
-		SQ_InfiltrationRateSchedule,			// Keyword: InfiltrationRateSchedule [1/h]
+		SQ_VentilationRateSchedule,				// Keyword: VentilationRateSchedule [1/h]
 		SQ_EquipmentHeatLoadPerAreaSchedule,	// Keyword: EquipmentHeatLoadPerAreaSchedule [W/m2]
 		SQ_PersonHeatLoadPerAreaSchedule,		// Keyword: PersonHeatLoadPerAreaSchedule [W/m2]
 		SQ_LightingHeatLoadPerAreaSchedule,		// Keyword: LightingHeatLoadPerAreaSchedule [W/m2]

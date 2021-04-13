@@ -35,6 +35,11 @@ void NaturalVentilationModel::setup(const NANDRAD::NaturalVentilationModel & ven
 		break;
 
 		case NANDRAD::NaturalVentilationModel::MT_Scheduled : {
+			// nothing to check, we request VentilationRateSchedule via mandatory InputReference
+		} break;
+
+		case NANDRAD::NaturalVentilationModel::MT_IncreasedDayVentilation : {
+
 		} break;
 
 		default:
@@ -175,7 +180,7 @@ void NaturalVentilationModel::inputReferences(std::vector<InputReference> & inpu
 			InputReference ref;
 			ref.m_id = id;
 			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
-			ref.m_name.m_name = "InfiltrationRateSchedule"; // to avoid re-using the variable 'InfiltrationRate' that might be published by a zone model
+			ref.m_name.m_name = "VentilationRateSchedule"; // to avoid re-using the variable 'VentilationRate' that might be published by a zone model
 			ref.m_required = true;
 			inputRefs.push_back(ref);
 		}
@@ -209,7 +214,7 @@ void NaturalVentilationModel::stateDependencies(std::vector<std::pair<const doub
 //					std::make_pair(m_vectorValuedResults[VVR_InfiltrationHeatFlux].dataPtr() + i, m_valueRefs[0]) );
 		// dependency on room air temperature of corresponding zone
 		resultInputValueReferences.push_back(
-					std::make_pair(m_vectorValuedResults[VVR_InfiltrationHeatFlux].dataPtr() + i, m_valueRefs[1+i]) );
+					std::make_pair(m_vectorValuedResults[VVR_VentilationHeatFlux].dataPtr() + i, m_valueRefs[1+i]) );
 	}
 }
 
@@ -225,8 +230,8 @@ int NaturalVentilationModel::update() {
 	// get ambient temperature in  [K]
 	double Tambient = *m_valueRefs[0];
 	// loop over all zones
-	double * resultVentRate = m_vectorValuedResults[VVR_InfiltrationRate].dataPtr();
-	double * resultVentHeatFlux = m_vectorValuedResults[VVR_InfiltrationHeatFlux].dataPtr();
+	double * resultVentRate = m_vectorValuedResults[VVR_VentilationRate].dataPtr();
+	double * resultVentHeatFlux = m_vectorValuedResults[VVR_VentilationHeatFlux].dataPtr();
 	for (unsigned int i=0; i<zoneCount; ++i) {
 		// get room air temperature in [K]
 		double Tzone = *m_valueRefs[i+1];

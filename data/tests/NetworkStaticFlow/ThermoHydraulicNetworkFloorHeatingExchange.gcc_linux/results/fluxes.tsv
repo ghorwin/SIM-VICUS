@@ -1,4 +1,4 @@
-Time [h]	Zone(id=1).InfiltrationHeatLoad [W]	Zone(id=1).ConstructionHeatConductionLoad [W]	ConstructionInstance(id=3001).ThermalLoad(id=1) [W]
+Time [h]	Zone(id=1).VentilationHeatLoad [W]	Zone(id=1).ConstructionHeatConductionLoad [W]	ConstructionInstance(id=3001).ThermalLoad(id=1) [W]
 0	-505.096	0	0
 1	-382.058	286.629	724.808
 2	-360.231	346.52	675.748

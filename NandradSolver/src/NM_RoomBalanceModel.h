@@ -51,16 +51,16 @@ public:
 
 	/*! Results computed by the model. */
 	enum Results {
-		R_CompleteThermalLoad,								// Keyword: CompleteThermalLoad							[W]		'Sum of all thermal fluxes into the room and energy sources.'
-		R_InfiltrationHeatLoad,								// Keyword: InfiltrationHeatLoad						[W]		'Infiltration/natural ventilation heat flux into the room.'
-		R_ConvectiveEquipmentHeatLoad,						// Keyword: ConvectiveEquipmentHeatLoad					[W]		'Equipment heat load inside the room.'
-		R_ConvectivePersonHeatLoad,							// Keyword: ConvectivePersonHeatLoad					[W]		'Person heat load inside the room.'
-		R_ConvectiveLightingHeatLoad,						// Keyword: ConvectiveLightingHeatLoad					[W]		'Lighting heat load inside the room.'
-		R_ConstructionHeatConductionLoad,					// Keyword: ConstructionHeatConductionLoad				[W]		'Sum of heat conduction fluxes from construction surfaces into the room.'
-		R_WindowHeatConductionLoad,							// Keyword: WindowHeatConductionLoad					[W]		'Sum of heat conduction fluxes through windows into the room.'
-		R_WindowSolarRadiationLoad,							// Keyword: WindowSolarRadiationLoad					[W]		'Sum of solar radiation fluxes through windows into the room (only the fraction applied to room volume).'
-		R_NetworkHeatLoad,									// Keyword: NetworkHeatLoad								[W]		'Sum of heat load from components of a hydraulic network into the room (only the fraction applied to room volume).'
-		R_CompleteMoistureLoad,								// Keyword: CompleteMoistureLoad						[kg/s]	'Sum of all moisture fluxes into the room and moisture sources.'
+		R_CompleteThermalLoad,								// Keyword: CompleteThermalLoad							[W]		'Sum of all thermal fluxes into the room and energy sources'
+		R_VentilationHeatLoad,								// Keyword: VentilationHeatLoad							[W]		'Natural ventilation/infiltration heat flux into the room'
+		R_ConvectiveEquipmentHeatLoad,						// Keyword: ConvectiveEquipmentHeatLoad					[W]		'Equipment heat load inside the room'
+		R_ConvectivePersonHeatLoad,							// Keyword: ConvectivePersonHeatLoad					[W]		'Person heat load inside the room'
+		R_ConvectiveLightingHeatLoad,						// Keyword: ConvectiveLightingHeatLoad					[W]		'Lighting heat load inside the room'
+		R_ConstructionHeatConductionLoad,					// Keyword: ConstructionHeatConductionLoad				[W]		'Sum of heat conduction fluxes from construction surfaces into the room'
+		R_WindowHeatConductionLoad,							// Keyword: WindowHeatConductionLoad					[W]		'Sum of heat conduction fluxes through windows into the room'
+		R_WindowSolarRadiationLoad,							// Keyword: WindowSolarRadiationLoad					[W]		'Sum of solar radiation fluxes through windows into the room (only the fraction applied to room volume)'
+		R_NetworkHeatLoad,									// Keyword: NetworkHeatLoad								[W]		'Sum of heat load from components of a hydraulic network into the room (only the fraction applied to room volume)'
+		R_CompleteMoistureLoad,								// Keyword: CompleteMoistureLoad						[kg/s]	'Sum of all moisture fluxes into the room and moisture sources'
 		NUM_R
 	};
 

@@ -140,8 +140,8 @@ namespace NANDRAD_MODEL {
 			// NaturalVentilationModel::VectorValuedResults
 			case 8 :
 			switch (t) {
-				case 0 : return "InfiltrationRate";
-				case 1 : return "InfiltrationHeatFlux";
+				case 0 : return "VentilationRate";
+				case 1 : return "VentilationHeatFlux";
 			} break;
 			// OutputHandler::OutputFileNames
 			case 9 :
@@ -159,7 +159,7 @@ namespace NANDRAD_MODEL {
 			case 10 :
 			switch (t) {
 				case 0 : return "CompleteThermalLoad";
-				case 1 : return "InfiltrationHeatLoad";
+				case 1 : return "VentilationHeatLoad";
 				case 2 : return "ConvectiveEquipmentHeatLoad";
 				case 3 : return "ConvectivePersonHeatLoad";
 				case 4 : return "ConvectiveLightingHeatLoad";
@@ -184,7 +184,7 @@ namespace NANDRAD_MODEL {
 			// Schedules::KnownQuantities
 			case 13 :
 			switch (t) {
-				case 0 : return "InfiltrationRateSchedule";
+				case 0 : return "VentilationRateSchedule";
 				case 1 : return "EquipmentHeatLoadPerAreaSchedule";
 				case 2 : return "PersonHeatLoadPerAreaSchedule";
 				case 3 : return "LightingHeatLoadPerAreaSchedule";
@@ -279,8 +279,8 @@ namespace NANDRAD_MODEL {
 			// NaturalVentilationModel::VectorValuedResults
 			case 8 :
 			switch (t) {
-				case 0 : return "InfiltrationRate";
-				case 1 : return "InfiltrationHeatFlux";
+				case 0 : return "VentilationRate";
+				case 1 : return "VentilationHeatFlux";
 			} break;
 			// OutputHandler::OutputFileNames
 			case 9 :
@@ -298,7 +298,7 @@ namespace NANDRAD_MODEL {
 			case 10 :
 			switch (t) {
 				case 0 : return "CompleteThermalLoad";
-				case 1 : return "InfiltrationHeatLoad";
+				case 1 : return "VentilationHeatLoad";
 				case 2 : return "ConvectiveEquipmentHeatLoad";
 				case 3 : return "ConvectivePersonHeatLoad";
 				case 4 : return "ConvectiveLightingHeatLoad";
@@ -323,7 +323,7 @@ namespace NANDRAD_MODEL {
 			// Schedules::KnownQuantities
 			case 13 :
 			switch (t) {
-				case 0 : return "InfiltrationRateSchedule";
+				case 0 : return "VentilationRateSchedule";
 				case 1 : return "EquipmentHeatLoadPerAreaSchedule";
 				case 2 : return "PersonHeatLoadPerAreaSchedule";
 				case 3 : return "LightingHeatLoadPerAreaSchedule";
@@ -420,7 +420,7 @@ namespace NANDRAD_MODEL {
 			case 8 :
 			switch (t) {
 				case 0 : return "Natural ventilation/infiltration air change rate";
-				case 1 : return "Infiltration/natural ventilation heat flux";
+				case 1 : return "Natural ventilation/infiltration heat flux";
 			} break;
 			// OutputHandler::OutputFileNames
 			case 9 :
@@ -437,16 +437,16 @@ namespace NANDRAD_MODEL {
 			// RoomBalanceModel::Results
 			case 10 :
 			switch (t) {
-				case 0 : return "Sum of all thermal fluxes into the room and energy sources.";
-				case 1 : return "Infiltration/natural ventilation heat flux into the room.";
-				case 2 : return "Equipment heat load inside the room.";
-				case 3 : return "Person heat load inside the room.";
-				case 4 : return "Lighting heat load inside the room.";
-				case 5 : return "Sum of heat conduction fluxes from construction surfaces into the room.";
-				case 6 : return "Sum of heat conduction fluxes through windows into the room.";
-				case 7 : return "Sum of solar radiation fluxes through windows into the room (only the fraction applied to room volume).";
-				case 8 : return "Sum of heat load from components of a hydraulic network into the room (only the fraction applied to room volume).";
-				case 9 : return "Sum of all moisture fluxes into the room and moisture sources.";
+				case 0 : return "Sum of all thermal fluxes into the room and energy sources";
+				case 1 : return "Natural ventilation/infiltration heat flux into the room";
+				case 2 : return "Equipment heat load inside the room";
+				case 3 : return "Person heat load inside the room";
+				case 4 : return "Lighting heat load inside the room";
+				case 5 : return "Sum of heat conduction fluxes from construction surfaces into the room";
+				case 6 : return "Sum of heat conduction fluxes through windows into the room";
+				case 7 : return "Sum of solar radiation fluxes through windows into the room (only the fraction applied to room volume)";
+				case 8 : return "Sum of heat load from components of a hydraulic network into the room (only the fraction applied to room volume)";
+				case 9 : return "Sum of all moisture fluxes into the room and moisture sources";
 			} break;
 			// RoomRadiationLoadsModel::Results
 			case 11 :
@@ -463,7 +463,7 @@ namespace NANDRAD_MODEL {
 			// Schedules::KnownQuantities
 			case 13 :
 			switch (t) {
-				case 0 : if (no_description != nullptr) *no_description = true; return "InfiltrationRateSchedule";
+				case 0 : if (no_description != nullptr) *no_description = true; return "VentilationRateSchedule";
 				case 1 : if (no_description != nullptr) *no_description = true; return "EquipmentHeatLoadPerAreaSchedule";
 				case 2 : if (no_description != nullptr) *no_description = true; return "PersonHeatLoadPerAreaSchedule";
 				case 3 : if (no_description != nullptr) *no_description = true; return "LightingHeatLoadPerAreaSchedule";

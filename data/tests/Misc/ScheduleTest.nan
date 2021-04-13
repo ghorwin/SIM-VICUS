@@ -35,7 +35,7 @@
 			<Definitions>
 				<!-- hourly values - None -->
 				<OutputDefinition>
-					<Quantity>InfiltrationRate[1]</Quantity>
+					<Quantity>VentilationRate[1]</Quantity>
 					<ObjectListName>Ventilation models</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
@@ -47,7 +47,7 @@
 				</OutputDefinition>
 
 				<OutputDefinition>
-					<Quantity>InfiltrationHeatLoad</Quantity>
+					<Quantity>VentilationHeatLoad</Quantity>
 					<ObjectListName>All zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
@@ -70,7 +70,7 @@
 						<DailyCycles>
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0</TimePoints>
-								<Values>InfiltrationRateSchedule [1/h]:0.5</Values>
+								<Values>VentilationRateSchedule [1/h]:0.5</Values>
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>
@@ -80,7 +80,7 @@
 						<DailyCycles>
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0 </TimePoints>
-								<Values>InfiltrationRateSchedule [1/h]:2</Values>
+								<Values>VentilationRateSchedule [1/h]:2</Values>
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>

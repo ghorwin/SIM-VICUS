@@ -130,9 +130,12 @@ KeywordListQt::KeywordListQt() {
 	tr("Model references to global physical quantities.");
 	tr("Model references of a hydraulic network.");
 	tr("Model references of flow elements of a hydraulic network.");
-	tr("Constant ventilation rate");
+	tr("Constant infiltration rate");
 	tr("Scheduled ventilation rate");
+	tr("Increased ventilation during daytime when conditions apply");
 	tr("Ventilation rate");
+	tr("Increased ventilation rate when conditions apply");
+	tr("Temperature limit above which the increased ventilation rate shall be used");
 	tr("Write values as calculated at output times.");
 	tr("Average values in time (mean value in output step).");
 	tr("Integrate values in time.");

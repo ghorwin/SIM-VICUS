@@ -35,7 +35,7 @@
 			<Definitions>
 				<!-- hourly values - None -->
 				<OutputDefinition>
-					<Quantity>InfiltrationRate[1]</Quantity>
+					<Quantity>VentilationRate[1]</Quantity>
 					<ObjectListName>Ventilation models</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
@@ -47,7 +47,7 @@
 				</OutputDefinition>
 
 				<OutputDefinition>
-					<Quantity>InfiltrationHeatLoad</Quantity>
+					<Quantity>VentilationHeatLoad</Quantity>
 					<ObjectListName>All zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>

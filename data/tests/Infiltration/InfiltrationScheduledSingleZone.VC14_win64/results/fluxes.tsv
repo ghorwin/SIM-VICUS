@@ -1,4 +1,4 @@
-Time [h]	Zone(id=1).InfiltrationHeatLoad [W]
+Time [h]	Zone(id=1).VentilationHeatLoad [W]
 0	0
 0.166667	0
 0.333333	0

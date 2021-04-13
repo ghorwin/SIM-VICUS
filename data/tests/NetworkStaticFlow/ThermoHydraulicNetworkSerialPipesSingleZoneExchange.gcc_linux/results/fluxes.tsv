@@ -1,4 +1,4 @@
-Time [h]	Zone(id=1).InfiltrationHeatLoad [W]	Zone(id=1).NetworkHeatLoad [W]
+Time [h]	Zone(id=1).VentilationHeatLoad [W]	Zone(id=1).NetworkHeatLoad [W]
 0	-505.096	1.82011e+06
 1	-822.34	810.976
 2	-816.708	805.544

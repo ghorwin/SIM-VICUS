@@ -24,8 +24,8 @@ class NaturalVentilationModel : public AbstractModel, public AbstractStateDepend
 public:
 	/*! Computed results, provided with access via zone ID. */
 	enum VectorValuedResults {
-		VVR_InfiltrationRate,				// Keyword: InfiltrationRate					[1/h]	'Natural ventilation/infiltration air change rate'
-		VVR_InfiltrationHeatFlux,			// Keyword: InfiltrationHeatFlux				[W]		'Infiltration/natural ventilation heat flux'
+		VVR_VentilationRate,				// Keyword: VentilationRate					[1/h]	'Natural ventilation/infiltration air change rate'
+		VVR_VentilationHeatFlux,			// Keyword: VentilationHeatFlux				[W]		'Natural ventilation/infiltration heat flux'
 		NUM_VVR
 	};
 
