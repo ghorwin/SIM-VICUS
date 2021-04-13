@@ -145,10 +145,23 @@ void WindowModel::inputReferences(std::vector<InputReference> & inputRefs) const
 		}
 	}
 
+	// set shading factor as optional
+	inputRefs[InputRef_ShadingFactor].m_required = false;
+
+	// shading control model: create reference to shading factor
+	if(m_windowModel->m_shading.m_modelType == NANDRAD::WindowShading::MT_Controlled) {
+		InputReference ref;
+		ref.m_id = m_windowModel->m_shading.m_controlModelID;
+		ref.m_referenceType = NANDRAD::ModelInputReference::MRT_MODEL;
+		ref.m_name.m_name = "ShadingFactor";
+		ref.m_required = true;
+		inputRefs[InputRef_ShadingFactor] = ref;
+	}
 }
 
 
 void WindowModel::setInputValueRefs(const std::vector<QuantityDescription> &, const std::vector<const double *> & resultValueRefs) {
+	// surface temperature and optional sahding factor
 	m_valueRefs = resultValueRefs;
 }
 
@@ -271,9 +284,11 @@ int WindowModel::update() {
 		qRadGlobal = m_loads->qSWRad(m_con->m_id, qRadDir, qRadDiff, incidenceAngle);
 
 		// update controlled shading factor
-//		if(m_windowModel->m_shading.m_modelType == NANDRAD::WindowShading::MT_Controlled) {
-//			// TODO: retrieve shading factor from input references
-//		}
+		if(m_windowModel->m_shading.m_modelType == NANDRAD::WindowShading::MT_Controlled) {
+			// retrieve shading factor from input references
+			IBK_ASSERT(m_valueRefs[InputRef_ShadingFactor] != nullptr);
+			m_shadingFactor = *m_valueRefs[InputRef_ShadingFactor];
+		}
 
 		// reduce by shading factor
 		if(m_shadingFactor != 1.0) {

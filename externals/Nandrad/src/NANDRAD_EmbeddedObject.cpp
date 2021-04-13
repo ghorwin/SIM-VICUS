@@ -50,7 +50,7 @@ void EmbeddedObject::checkParameters(const Project & prj) {
 		throw IBK::Exception("Embedded object misses specific parametrization.", FUNC_ID);
 
 	// check all parameters - if empty/undefined data, check does nothing
-	m_window.checkParameters(area, prj.m_materials, prj.m_windowGlazingSystems);
+	m_window.checkParameters(area, prj.m_materials, prj.m_windowGlazingSystems, prj.m_models.m_shadingControlModels);
 }
 
 

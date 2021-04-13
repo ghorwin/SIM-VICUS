@@ -68,7 +68,7 @@ void ShadingControlModel::checkParameters(const std::vector<Sensor> &sensors,
 	}
 
 	if(m_sensor == nullptr && m_constructionInstance == nullptr)
-		throw IBK::Exception(IBK::FormatString("Neither sensor nor embedded object with id #%1 does not exist.")
+		throw IBK::Exception(IBK::FormatString("Neither sensor nor embedded object with id #%1 does exist.")
 							 .arg(m_sensorID), FUNC_ID);
 }
 

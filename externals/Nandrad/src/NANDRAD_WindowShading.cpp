@@ -1,5 +1,7 @@
 #include "NANDRAD_WindowShading.h"
 
+#include "NANDRAD_ShadingControlModel.h"
+
 namespace NANDRAD {
 
 bool WindowShading::operator!=(const WindowShading & other) const {
@@ -11,7 +13,7 @@ bool WindowShading::operator!=(const WindowShading & other) const {
 }
 
 
-void WindowShading::checkParameters() {
+void WindowShading::checkParameters(const std::vector<ShadingControlModel> &controlModels) {
 	FUNCID(WindowShading::checkParameters);
 
 	if (m_modelType == NUM_MT)
@@ -34,8 +36,14 @@ void WindowShading::checkParameters() {
 		case MT_Controlled :
 			if (m_controlModelID == INVALID_ID)
 				throw IBK::Exception("Shading model requires reference to shading control model (tag 'ControlModelID')", FUNC_ID);
-			/// TODO Anne: check for existence of shading model parameter block, also call checkParameters() in
-			/// shading control model block
+			// check for existence of shading model parameter block
+			std::vector<ShadingControlModel>::const_iterator sit =
+					std::find(controlModels.begin(), controlModels.end(), m_controlModelID);
+
+			if(sit == controlModels.end()) {
+				throw IBK::Exception(IBK::FormatString("ShadingControlModel with id #%1 does not exist.")
+									 .arg(m_controlModelID), FUNC_ID);
+			}
 		break;
 	}
 }

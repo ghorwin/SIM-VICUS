@@ -112,6 +112,7 @@ private:
 	enum InputReferences {
 		InputRef_SideATemperature,
 		InputRef_SideBTemperature,
+		InputRef_ShadingFactor,
 		NUM_InputRef
 	};
 

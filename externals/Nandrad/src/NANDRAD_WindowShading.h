@@ -33,6 +33,8 @@
 
 namespace NANDRAD {
 
+class ShadingControlModel;
+
 
 /*!	WindowShading defines a dynamically adjustable shading. */
 class WindowShading  {
@@ -58,7 +60,7 @@ public:
 	NANDRAD_READWRITE_IFNOTEMPTY(WindowShading)
 	NANDRAD_COMP(WindowShading)
 
-	void checkParameters();
+	void checkParameters(const std::vector<ShadingControlModel> &controlModels);
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

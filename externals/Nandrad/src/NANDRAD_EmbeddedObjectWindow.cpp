@@ -43,7 +43,8 @@ bool EmbeddedObjectWindow::operator!=(const EmbeddedObjectWindow & other) const 
 
 void EmbeddedObjectWindow::checkParameters(double grossArea,
 										   const std::vector<Material> & materials,
-										   const std::vector<WindowGlazingSystem> & glazingSystems)
+										   const std::vector<WindowGlazingSystem> & glazingSystems,
+										   const std::vector<ShadingControlModel> & controlModels)
 {
 	FUNCID(EmbeddedObjectWindow::checkParameters);
 
@@ -62,7 +63,7 @@ void EmbeddedObjectWindow::checkParameters(double grossArea,
 		throw IBK::Exception(ex, "Error in window dividers parameters.", FUNC_ID);
 	}
 	try {
-		m_shading.checkParameters();
+		m_shading.checkParameters(controlModels);
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, "Error in window shading parameters.", FUNC_ID);
 	}

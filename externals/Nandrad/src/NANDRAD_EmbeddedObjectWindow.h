@@ -57,7 +57,8 @@ public:
 					not exceed this cross section.
 	*/
 	void checkParameters(double grossArea, const std::vector<Material> & materials,
-						 const std::vector<WindowGlazingSystem> & glazingSystems);
+						 const std::vector<WindowGlazingSystem> & glazingSystems,
+						 const std::vector<ShadingControlModel> & controlModels);
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
