@@ -209,13 +209,10 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 							referencedSchedule.insert(sched2);
 					}break;
 					case VICUS::ZoneTemplate::ST_IntLoadEquipment:
-					break;
 					case VICUS::ZoneTemplate::ST_IntLoadLighting:
-					break;
-					case VICUS::ZoneTemplate::ST_IntLoadOther:
-					break;
-					case VICUS::ZoneTemplate::ST_ControlThermostat:
-					break;
+					case VICUS::ZoneTemplate::ST_IntLoadOther:{
+						///TODO Katja
+					}	break;
 					case VICUS::ZoneTemplate::NUM_ST:
 					break;
 
@@ -223,24 +220,14 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 			}
 		}
 	}
-	referencedInternalLoads.erase(nullptr);
-
 
 	p.m_embeddedDB.m_internalLoads.clear();
 	for (const VICUS::InternalLoad * il : referencedInternalLoads)
 		p.m_embeddedDB.m_internalLoads.push_back(*il);
-	referencedInternalLoads.erase(nullptr);
-
-
-	for (const VICUS::Schedule * sched : referencedSchedule)
-			referencedSchedule.insert(sched); // bad/missing IDs yield a nullptr
 
 	p.m_embeddedDB.m_schedules.clear();
 	for (const VICUS::Schedule * sched : referencedSchedule)
 		p.m_embeddedDB.m_schedules.push_back(*sched);
-
-
-
 
 }
 

@@ -1093,7 +1093,6 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 							}
 						}
 						break;
-
 					}
 				}
 
