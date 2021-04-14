@@ -30,6 +30,7 @@
 namespace NANDRAD {
 
 class ConstructionInstance;
+class EmbeddedObject;
 class Sensor;
 
 /*! Parameters for a intensity controlled shading model with hysteresis. */
@@ -69,6 +70,8 @@ public:
 	const NANDRAD::Sensor				*m_sensor = nullptr;
 	/*! Quick-access pointer to the referenced construction. */
 	const NANDRAD::ConstructionInstance	*m_constructionInstance = nullptr;
+	/*! Quick-access pointer to the referenced embedded object. */
+	const NANDRAD::EmbeddedObject		*m_embeddedObject = nullptr;
 };
 
 } // namespace NANDRAD

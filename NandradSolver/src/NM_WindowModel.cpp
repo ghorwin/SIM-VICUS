@@ -26,7 +26,7 @@ void WindowModel::setup(const NANDRAD::EmbeddedObjectWindow & windowModelPara,
 	m_haveSolarLoadsOnA = (m_con->m_interfaceA.m_id != NANDRAD::INVALID_ID && m_con->m_interfaceA.m_zoneId == 0);
 	m_haveSolarLoadsOnB = (m_con->m_interfaceB.m_id != NANDRAD::INVALID_ID && m_con->m_interfaceB.m_zoneId == 0);
 	if (m_haveSolarLoadsOnA || m_haveSolarLoadsOnB)
-		loads.addSurface(m_con->m_id,
+		loads.addSurface(m_id,
 				m_con->m_para[NANDRAD::ConstructionInstance::P_Orientation].value/DEG2RAD,
 				m_con->m_para[NANDRAD::ConstructionInstance::P_Inclination].value/DEG2RAD);
 

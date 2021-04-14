@@ -1,6 +1,7 @@
 #include "NANDRAD_ShadingControlModel.h"
 
 #include "NANDRAD_ConstructionInstance.h"
+#include "NANDRAD_EmbeddedObject.h"
 #include "NANDRAD_Sensor.h"
 
 #include <NANDRAD_KeywordList.h>
@@ -38,37 +39,45 @@ void ShadingControlModel::checkParameters(const std::vector<Sensor> &sensors,
 	}
 	// search for construction instance
 	else {
+		// find construction instance id
+		std::vector<NANDRAD::ConstructionInstance>::const_iterator conit =
+				std::find(conInstances.begin(),
+						  conInstances.end(),
+						  m_sensorID);
 
-		for(const NANDRAD::ConstructionInstance &conInstance : conInstances) {
-			// find embedded object id
-			std::vector<NANDRAD::EmbeddedObject>::const_iterator embit =
-					std::find(conInstance.m_embeddedObjects.begin(),
-							  conInstance.m_embeddedObjects.end(),
-							  m_sensorID);
+		// store construction instance (contains orientation and inclination)
+		if(conit != conInstances.end()) {
 
-			// store construction instance (contains orientation and inclination)
-			if(embit != conInstance.m_embeddedObjects.end()) {
-
-				// only an outside construction is accepted
-				if(conInstance.interfaceAZoneID() != 0 && conInstance.interfaceBZoneID() != 0) {
-					throw IBK::Exception(IBK::FormatString("Embedded object with id #%1 is part of an inside construction "
-														   "and may therefore not be referenced.")
-										 .arg(m_sensorID), FUNC_ID);
-				}
-
-				// TODO : store pointer to embedded object?
-				m_constructionInstance = &conInstance;
-				break;
+			// only an outside construction is accepted
+			if(conit->interfaceAZoneID() != 0 && conit->interfaceBZoneID() != 0) {
+				throw IBK::Exception(IBK::FormatString("Embedded object with id #%1 is part of an inside construction "
+													   "and may therefore not be referenced.")
+									 .arg(m_sensorID), FUNC_ID);
 			}
-			else {
-				// TODO : check if id matches id of construction instance and then check interfaces and
-				//        then store pointer to construction instance
+
+			m_constructionInstance = &(*conit);
+		}
+		else {
+			// search for embedded object
+			for(const NANDRAD::ConstructionInstance &conInstance : conInstances) {
+				// find embedded object id
+				std::vector<NANDRAD::EmbeddedObject>::const_iterator embit =
+						std::find(conInstance.m_embeddedObjects.begin(),
+								  conInstance.m_embeddedObjects.end(),
+								  m_sensorID);
+
+				// store construction instance (contains orientation and inclination)
+				if(embit != conInstance.m_embeddedObjects.end()) {
+					// store pointer to embedded object?
+					m_embeddedObject = &(*embit);
+					break;
+				}
 			}
 		}
 	}
 
-	if(m_sensor == nullptr && m_constructionInstance == nullptr)
-		throw IBK::Exception(IBK::FormatString("Neither sensor nor embedded object with id #%1 does exist.")
+	if(m_sensor == nullptr && m_constructionInstance == nullptr && m_embeddedObject == nullptr)
+		throw IBK::Exception(IBK::FormatString("Neither sensor nor construction instance nor embedded object with id #%1 does exist.")
 							 .arg(m_sensorID), FUNC_ID);
 }
 
