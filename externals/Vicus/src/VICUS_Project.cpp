@@ -1127,7 +1127,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 							//enum1 musst du das "e" abfragen
 							posIntLoad enum1;
-							intLoadScheds[enum1] = schedMan;
+							intLoadScheds[enum1] = *schedMan;
 							///TODO Dirk->Andreas ist das richtig? welche Id-spaces brauchen die Schedules?
 							intLoadScheds[enum1].m_id = VICUS::Project::uniqueId<unsigned int>(allModelIds);
 
@@ -1156,7 +1156,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 							//multiply sched*val
 							//multiply sched and constant val
 
-							switch(intLoadMod->m_PowerMethod){
+							switch(intLoadMod->m_powerMethod){
 								case VICUS::InternalLoad::PM_PowerPerArea:
 									intLoadScheds[enum1] = intLoadScheds[enum1].multiply(intLoadMod->m_para[VICUS::InternalLoad::P_PowerPerArea].get_value("W/m2"));
 								break;
