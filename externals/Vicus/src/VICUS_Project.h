@@ -312,6 +312,11 @@ public:
 
 	/*! Definitions for exporting an FMU from the model. */
 	NANDRAD::FMIDescription								m_fmiDescription;			// XML:E
+
+private:
+	/*! Return room name by id. */
+	std::string getRoomNameById(unsigned int id) const;
+
 };
 
 
