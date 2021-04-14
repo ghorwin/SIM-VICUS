@@ -475,29 +475,45 @@ void Loads::addSurface(unsigned int objectID, double orientationInDeg, double in
 double Loads::qSWRad(unsigned int objectID, double & qRadDir, double & qRadDiff, double & incidenceAngle) const {
 	FUNCID(Loads::qSWRad);
 	try {
-		// find unique surface id
+
 		std::map<unsigned int, unsigned int>::const_iterator it =
 			m_objectID2surfaceID.find(objectID);
 		// a real surface
-		IBK_ASSERT(it != m_objectID2surfaceID.end());
-		unsigned int surfaceId = it->second;
-		// we only need surface id for rdaiant loads calculation
-		// (surface is equal for all surface with same incidenceAngle)
-		m_solarRadiationModel.radiationLoad(surfaceId, qRadDir, qRadDiff, incidenceAngle);
+		if (it != m_objectID2surfaceID.end()) {
+			// find unique surface id
+			unsigned int surfaceId = it->second;
+			// we only need surface id for rdaiant loads calculation
+			// (surface is equal for all surface with same incidenceAngle)
+			m_solarRadiationModel.radiationLoad(surfaceId, qRadDir, qRadDiff, incidenceAngle);
 
-		if (m_shadingFactors.empty()) {
+			if (m_shadingFactors.empty()) {
+				return qRadDir + qRadDiff;
+			}
+			// reduce radiation by external shading
+			std::map<unsigned int, const double*>::const_iterator valueIt
+				= m_shadingFactorsForObjectID.find(objectID);
+			// we alread checked validity
+			IBK_ASSERT(valueIt != m_shadingFactorsForObjectID.end());
+			IBK_ASSERT(valueIt->second != nullptr);
+			const double shadingFactor = *valueIt->second;
+			// reduce radiation
+			return shadingFactor * qRadDir + qRadDiff;
+		}
+		// a sensor id
+		else {
+			// find unique sensor id
+			std::map<unsigned int, unsigned int>::const_iterator it =
+				m_sensorID2surfaceID.find(objectID);
+
+			IBK_ASSERT(it != m_sensorID2surfaceID.end());
+			// find unique surface id
+			unsigned int surfaceId = it->second;
+			// we only need surface id for rdaiant loads calculation
+			// (surface is equal for all surface with same incidenceAngle)
+			m_solarRadiationModel.radiationLoad(surfaceId, qRadDir, qRadDiff, incidenceAngle);
+			// sensors are not shaded
 			return qRadDir + qRadDiff;
 		}
-		// reduce radiation by external shading
-		std::map<unsigned int, const double*>::const_iterator valueIt
-			= m_shadingFactorsForObjectID.find(objectID);
-		// we alread checked validity
-		IBK_ASSERT(valueIt != m_shadingFactorsForObjectID.end());
-		IBK_ASSERT(valueIt->second != nullptr);
-		const double shadingFactor = *valueIt->second;
-		// reduce radiation
-
-		return shadingFactor * qRadDir + qRadDiff;
 	}
 	catch(IBK::Exception &ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Error calulation solar radiation on object with id %1 at time %2!")

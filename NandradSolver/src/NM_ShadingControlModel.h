@@ -14,6 +14,8 @@ namespace NANDRAD {
 
 namespace NANDRAD_MODEL {
 
+class Loads;
+
 /*! A model for sensor based shading control.
 	It can be used as controller instance for different windows and implements a digital hysteresis
 	control.
@@ -30,7 +32,8 @@ public:
 	/*! Initializes object.
 		\param controller Model data.
 	*/
-	void setup(const NANDRAD::ShadingControlModel &controller);
+	void setup(const NANDRAD::ShadingControlModel &controller,
+			   const Loads &loads);
 
 	/*! D'tor, definition is in NM_ShadingControlModel.cpp. */
 	virtual ~ShadingControlModel() override { }
@@ -59,20 +62,13 @@ public:
 
 	// *** Re-implemented from AbstractStateDependency
 
-	/*! Returns vector with model input references.
-		Implicit models must generate their own model input references and populate the
-		vector argument.
-		\note This function is not the fastest, so never call this function from within the solver
-		(except maybe for output writing).
+	/*! Returns empty vector with model input references.
 	*/
-	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override;
+	virtual void inputReferences(std::vector<InputReference>  & /*inputRefs*/) const override { }
 
 	/*! Provides the object with references to requested input variables (persistent memory location). */
 	virtual void setInputValueRefs(const std::vector<QuantityDescription> &,
-								   const std::vector<const double *> & resultValueRefs) override;
-
-	/*! Returns dependencies between result variables and input variables. */
-	virtual void stateDependencies(std::vector< std::pair<const double *, const double *> > & resultInputValueReferences) const override;
+								   const std::vector<const double *> & /*resultValueRefs*/) override { }
 
 	/*! Sums up all provided input quantities and computes divergence of balance equations. */
 	int update() override;
@@ -84,8 +80,8 @@ private:
 	std::string										m_displayName;
 	/*! Base model definition. */
 	const NANDRAD::ShadingControlModel				*m_controller = nullptr;
-	/*! Constant pointer to solar radiation pointer. */
-	const double									*m_SWRadiationRef = nullptr;
+	/*! Cached pointer to climate loads model, to retrieve climatic loads. */
+	const Loads 									*m_loads = nullptr;
 };
 
 

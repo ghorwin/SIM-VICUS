@@ -1271,10 +1271,10 @@ void NandradModel::initModels() {
 
 			try {
 				s.checkParameters(m_project->m_location.m_sensors, m_project->m_constructionInstances);
-				mod->setup(s);
+				mod->setup(s, *m_loads);
 			}
 			catch (IBK::Exception & ex) {
-				throw IBK::Exception(ex, IBK::FormatString("Error initializing internal loads model "
+				throw IBK::Exception(ex, IBK::FormatString("Error initializing ahsding control model "
 														   "(id=%1).").arg(s.m_id), FUNC_ID);
 			}
 

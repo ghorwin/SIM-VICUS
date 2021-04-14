@@ -1,5 +1,7 @@
 #include "NM_ShadingControlModel.h"
 
+#include "NM_Loads.h"
+
 
 #include <NANDRAD_ConstructionInstance.h>
 #include <NANDRAD_ShadingControlModel.h>
@@ -9,7 +11,8 @@
 namespace NANDRAD_MODEL {
 
 
-void ShadingControlModel::setup(const NANDRAD::ShadingControlModel & controller)
+void ShadingControlModel::setup(const NANDRAD::ShadingControlModel & controller,
+								const Loads &loads)
 {
 	// overwrite tolerance band
 	double minValue = controller.m_para[NANDRAD::ShadingControlModel::P_MaxIntensity].value;
@@ -20,6 +23,8 @@ void ShadingControlModel::setup(const NANDRAD::ShadingControlModel & controller)
 	m_hysteresisBand = 0.5 * (maxValue - minValue);
 	// copy controller
 	m_controller = &controller;
+	// store loads
+	m_loads = &loads;
 }
 
 void ShadingControlModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const
@@ -48,55 +53,12 @@ const double *ShadingControlModel::resultValueRef(const InputReference & quantit
 	return nullptr;
 }
 
-void ShadingControlModel::inputReferences(std::vector<InputReference> & inputRefs) const
-{
-	// a sensor is referenced
-	if(m_controller->m_sensor != nullptr) {
-		InputReference ref;
-		ref.m_id = 0;
-		ref.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
-		ref.m_name.m_name = "GlobalSWRadOnPlane";
-		ref.m_name.m_index = (int) m_controller->m_sensorID;
-		inputRefs.push_back(ref);
-	}
-	// a construction/embedded object is referenced
-	else { //(m_controller->m_constructionInstance != nullptr)
-		InputReference ref;
-		ref.m_id = m_controller->m_constructionInstance->m_id;
-		ref.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
-		// link to correct side of construction
-		if(m_controller->m_constructionInstance->interfaceAZoneID() == 0) {
-			ref.m_name.m_name = "FluxShortWaveRadiationA";
-		}
-		else {
-			ref.m_name.m_name = "FluxShortWaveRadiationB";
-		}
-		inputRefs.push_back(ref);
-
-		// TODO Anne : wenn wir für embeddedObject (Window) und Konstruktionen jeweils den Globalstrahlungsstrom abfragen,
-		//        wird dieser jeweils mit Verschattungsanteil geliefert - damit können wir aber nicht mehr unterscheiden
-		//        zwischen Verschattung der Konstruktion und Verschattung des Fensters alleine.
-		//        Alternative: statt über InputRefs zu gehen könnte man auch wie im ConstructionBalanceModel und WindowModel
-		//        direct beim load-Modell anfragen. Dann kann man direkt SensorID, ConstructionID, EmbeddedObjectID
-		//        anfragen und bekommt die jeweils verschatteten Werte.
-	}
-}
-
-void ShadingControlModel::setInputValueRefs(const std::vector<QuantityDescription> &, const std::vector<const double *> & resultValueRefs)
-{
-	if(resultValueRefs.size() == 1)
-		m_SWRadiationRef = resultValueRefs[0];
-}
-
-void ShadingControlModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const
-{
-	resultInputValueReferences.push_back(std::make_pair(&m_controllerOutput, m_SWRadiationRef));
-}
-
 int ShadingControlModel::update()
 {
 	// set current state value from sensor
-	m_currentState = *m_SWRadiationRef;
+	double qSWRadDir, qSWRadDiff, incidenceAngle;
+
+	m_currentState = m_loads->qSWRad(m_controller->m_sensorID, qSWRadDir, qSWRadDiff, incidenceAngle);
 	// calculate controller output
 	updateControllerOutput();
 	// signal success
