@@ -910,7 +910,9 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 		//check all internal loads for area depending
 		for(auto e : intLoadEnums){
 			if(e == VICUS::ZoneTemplate::ST_IntLoadPerson){
+				//get id of person load template
 				unsigned int idSubTemp = zt->m_idReferences[e];
+				//save in ztBools
 				ztBools[counter].m_subTemplateId[e] = idSubTemp;
 				const VICUS::InternalLoad *intLoadModel = element(m_embeddedDB.m_internalLoads, idSubTemp);
 				if(intLoadModel != nullptr && intLoadModel->m_personCountMethod ==  VICUS::InternalLoad::PCM_PersonCount){
@@ -953,6 +955,8 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 					objList.m_filterID.m_ids.insert(rId);
 				objList.m_name = uniqueName;
 				objList.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+				//look if obj list already exists -> take this
+				bool objListExist=false;
 				for(NANDRAD::ObjectList &objListNAN : p.m_objectLists){
 					if(objList.m_filterID == objListNAN.m_filterID &&
 							objList.m_referenceType == objListNAN.m_referenceType){
@@ -960,10 +964,13 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 						uniqueName = objListNAN.m_name;
 						objList.m_name = uniqueName;
 						mapObjListNameToRoomIds[uniqueName]=roomIds;
-
+						objListExist = true;
+						break;
 					}
 				}
-				p.m_objectLists.push_back(objList);
+				//only add new obj lists
+				if(!objListExist)
+					p.m_objectLists.push_back(objList);
 
 				//now create NANDRAD models
 				NANDRAD::InternalLoadsModel intLoad;
@@ -1068,10 +1075,23 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 						}
 						break;
 						case VICUS::ZoneTemplate::ST_IntLoadEquipment:
-						break;
 						case VICUS::ZoneTemplate::ST_IntLoadLighting:
-						break;
-						case VICUS::ZoneTemplate::ST_IntLoadOther:
+						case VICUS::ZoneTemplate::ST_IntLoadOther:{
+							//get internal load model
+							//get schedule
+							//get val
+							//multiply sched*val
+							//set parameters for internal load model (NANDRAD)
+							//improve allPeriodsSchedule (multiply)
+
+							//enum1 musst du das "e" abfragen
+							posIntLoad enum1;
+							switch(e){
+								case VICUS::ZoneTemplate::ST_IntLoadEquipment:	enum1 = P_Electric;			break;
+								case VICUS::ZoneTemplate::ST_IntLoadLighting:	enum1 = P_Lighting;			break;
+								case VICUS::ZoneTemplate::ST_IntLoadOther:		enum1 = P_Other;			break;
+							}
+						}
 						break;
 
 					}
