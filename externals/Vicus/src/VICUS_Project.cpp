@@ -214,7 +214,7 @@ void Project::parseHeader(const IBK::Path & filename) {
 	inputStream.open(filename.c_str(), std::ios_base::binary);
 #endif
 	if (!inputStream.is_open()) {
-		throw IBK::Exception( IBK::FormatString("Cannot open input file '%1' for reading").arg(filename), FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("Cannot open input file '%1' for reading").arg(filename.c_str()), FUNC_ID);
 	}
 	std::string line;
 	unsigned int i=12;
@@ -963,6 +963,12 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 			//create all obj list with room ids
 			for(std::pair<double, std::vector<unsigned int>> areaToRoomIdsObj : mapAreaToRoomIds){
+
+				//only accept models with floor area > 0 m2
+				if(areaToRoomIdsObj.first<=0)
+					throw IBK::Exception(IBK::FormatString("The ground floor area of room with id %1 and name '%1'"
+															" is <=0 m2 ").arg(areaToRoomIdsObj.second.front()).arg(getRoomNameById(areaToRoomIdsObj.second.front())), FUNC_ID);
+
 				//create an obj list
 				std::string uniqueName = createUniqueNandradObjListName(mapObjListNameToRoomIds, zt->m_displayName.string());
 				mapObjListNameToRoomIds[uniqueName] = areaToRoomIdsObj.second;
@@ -1083,12 +1089,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 										intLoadScheds[enum1] = intLoadScheds[enum1].multiply(1/val);
 								} break;
 								case VICUS::InternalLoad::PCM_PersonCount:{
-									if(areaToRoomIdsObj.first>0){
-										intLoadScheds[enum1] = intLoadScheds[enum1].multiply(pers->m_para[VICUS::InternalLoad::P_PersonCount].get_value()/areaToRoomIdsObj.first);
-									}
-									else
-										throw IBK::Exception(IBK::FormatString("The ground floor area of room with id %1 and name '%1'"
-																				" is <=0 m2 ").arg(areaToRoomIdsObj.second.front()).arg(getRoomNameById(areaToRoomIdsObj.second.front())), FUNC_ID);
+									intLoadScheds[enum1] = intLoadScheds[enum1].multiply(pers->m_para[VICUS::InternalLoad::P_PersonCount].get_value()/areaToRoomIdsObj.first);
 								} break;
 								case VICUS::InternalLoad::NUM_PCM:
 								break;
@@ -1109,21 +1110,72 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 						case VICUS::ZoneTemplate::ST_IntLoadEquipment:
 						case VICUS::ZoneTemplate::ST_IntLoadLighting:
 						case VICUS::ZoneTemplate::ST_IntLoadOther:{
-							///TODO Katja
 							//get internal load model
-							//get schedule
-							//get val
-							//multiply sched*val
-							//set parameters for internal load model (NANDRAD)
-							//improve allPeriodsSchedule (multiply)
+							//get schedule ids
+							//check valid status
+							const VICUS::InternalLoad *intLoadMod = element(m_embeddedDB.m_internalLoads, ztBools[counter].m_subTemplateId[e]);
+							if(intLoadMod == nullptr)
+								break;
+							unsigned int schedId = intLoadMod->m_powerManagementScheduleId;
+							const VICUS::Schedule *schedMan = element(m_embeddedDB.m_schedules, schedId);
+							if(schedMan == nullptr)
+								IBK::Exception(IBK::FormatString("Power management schedule with id %1 is not in database.")
+											   .arg(schedId), FUNC_ID);
+							if(!schedMan->isValid())
+								IBK::Exception(IBK::FormatString("Power management schedule with id %1 and name '%2' is not in valid.")
+											   .arg(schedId).arg(schedMan->m_displayName.string()), FUNC_ID);
 
 							//enum1 musst du das "e" abfragen
 							posIntLoad enum1;
+							intLoadScheds[enum1] = schedMan;
+							///TODO Dirk->Andreas ist das richtig? welche Id-spaces brauchen die Schedules?
+							intLoadScheds[enum1].m_id = VICUS::Project::uniqueId<unsigned int>(allModelIds);
+
 							switch(e){
-								case VICUS::ZoneTemplate::ST_IntLoadEquipment:	enum1 = P_Electric;			break;
-								case VICUS::ZoneTemplate::ST_IntLoadLighting:	enum1 = P_Lighting;			break;
-								case VICUS::ZoneTemplate::ST_IntLoadOther:		enum1 = P_Other;			break;
+								case VICUS::ZoneTemplate::ST_IntLoadEquipment:{
+									enum1 = P_Electric;
+									NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t",
+																	   NANDRAD::InternalLoadsModel::P_EquipmentRadiationFraction,
+																	   1 - intLoadMod->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].get_value("---"));
+								}break;
+								case VICUS::ZoneTemplate::ST_IntLoadLighting:{
+									enum1 = P_Lighting;
+									NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t",
+																	   NANDRAD::InternalLoadsModel::P_LightingRadiationFraction,
+																	   1 - intLoadMod->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].get_value("---"));
+								}break;
+								case VICUS::ZoneTemplate::ST_IntLoadOther:{
+									enum1 = P_Other;
+									//TODO Implement Model in NANDRAD
+									/*NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t",
+																	   NANDRAD::InternalLoadsModel::P_EquipmentRadiationFraction,
+																	   1 - intLoadMod->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].get_value("---")); */
+								}break;
 							}
+							//get val
+							//multiply sched*val
+							//multiply sched and constant val
+
+							switch(intLoadMod->m_PowerMethod){
+								case VICUS::InternalLoad::PM_PowerPerArea:
+									intLoadScheds[enum1] = intLoadScheds[enum1].multiply(intLoadMod->m_para[VICUS::InternalLoad::P_PowerPerArea].get_value("W/m2"));
+								break;
+								case VICUS::InternalLoad::PM_Power: {
+									double val = intLoadMod->m_para[VICUS::InternalLoad::P_Power].get_value("W");
+									intLoadScheds[enum1] = intLoadScheds[enum1].multiply(val/areaToRoomIdsObj.first);
+								} break;
+								case VICUS::InternalLoad::NUM_PM:
+								break;
+
+							}
+							allModelIds.push_back(intLoadScheds[enum1].m_id);
+							//set parameters for internal load model (NANDRAD)
+							//build the schedule with all periods
+							//make equal interpolation method
+							allPeriodsSchedule.m_useLinearInterpolation = intLoadScheds[enum1].m_useLinearInterpolation;
+							//improve allPeriodsSchedule (multiply)
+							//override zero values in NANDRAD model
+							allPeriodsSchedule = intLoadScheds[enum1].multiply(allPeriodsSchedule);
 						}
 						break;
 					}

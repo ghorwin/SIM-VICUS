@@ -212,6 +212,9 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 					case VICUS::ZoneTemplate::ST_IntLoadLighting:
 					case VICUS::ZoneTemplate::ST_IntLoadOther:{
 						///TODO Katja
+						const VICUS::Schedule *sched = m_schedules[intLoad->m_powerManagementScheduleId];
+						if(sched != nullptr)
+							referencedSchedule.insert(sched);
 					}	break;
 					case VICUS::ZoneTemplate::NUM_ST:
 					break;
