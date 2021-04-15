@@ -788,6 +788,9 @@ std::string createUniqueNandradObjListName(const std::map<std::string, std::vect
 					}
 					newName = createUniqueNandradObjListName(objListNames, newName);
 				}
+				else
+					newName = createUniqueNandradObjListName(objListNames, name + "_1");
+
 			}
 		}
 	}
@@ -921,26 +924,20 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 		//check all internal loads for area depending
 		for(auto e : intLoadEnums){
+			//get id of int load template
+			unsigned int idSubTemp = zt->m_idReferences[e];
+			//save in ztBools
+			ztBools[counter].m_subTemplateId[e] = idSubTemp;
 			if(e == VICUS::ZoneTemplate::ST_IntLoadPerson){
-				//get id of person load template
-				unsigned int idSubTemp = zt->m_idReferences[e];
-				//save in ztBools
-				ztBools[counter].m_subTemplateId[e] = idSubTemp;
 				const VICUS::InternalLoad *intLoadModel = element(m_embeddedDB.m_internalLoads, idSubTemp);
 				if(intLoadModel != nullptr && intLoadModel->m_personCountMethod ==  VICUS::InternalLoad::PCM_PersonCount){
-					isAreaIndepent=true;
-					break;
-
+					isAreaIndepent = true;
 				}
 			}
 			else{
-				unsigned int idSubTemp = zt->m_idReferences[e];
-				ztBools[counter].m_subTemplateId[e] = idSubTemp;
 				const VICUS::InternalLoad *intLoadModel = element(m_embeddedDB.m_internalLoads, idSubTemp);
 				if(intLoadModel != nullptr && intLoadModel->m_powerMethod == VICUS::InternalLoad::PM_Power){
 					isAreaIndepent=true;
-					break;
-
 				}
 			}
 		}
@@ -1125,12 +1122,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 								IBK::Exception(IBK::FormatString("Power management schedule with id %1 and name '%2' is not in valid.")
 											   .arg(schedId).arg(schedMan->m_displayName.string()), FUNC_ID);
 
-							//enum1 musst du das "e" abfragen
 							posIntLoad enum1;
-							intLoadScheds[enum1] = *schedMan;
-							///TODO Dirk->Andreas ist das richtig? welche Id-spaces brauchen die Schedules?
-							intLoadScheds[enum1].m_id = VICUS::Project::uniqueId<unsigned int>(allModelIds);
-
 							switch(e){
 								case VICUS::ZoneTemplate::ST_IntLoadEquipment:{
 									enum1 = P_Electric;
@@ -1152,6 +1144,9 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 																	   1 - intLoadMod->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].get_value("---")); */
 								}break;
 							}
+							intLoadScheds[enum1] = *schedMan;
+							///TODO Dirk->Andreas ist das richtig? welche Id-spaces brauchen die Schedules?
+							intLoadScheds[enum1].m_id = VICUS::Project::uniqueId<unsigned int>(allModelIds);
 							//get val
 							//multiply sched*val
 							//multiply sched and constant val
@@ -1391,6 +1386,15 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 				p.m_models.m_internalLoadsModels.push_back(intLoad);
 			}
 		}
+
+		//check for thermostat in zone template
+
+		VICUS::ZoneTemplate::SubTemplateType type = VICUS::ZoneTemplate::ST_ControlThermostat;
+		if(zt->usedReference(type) != VICUS::ZoneTemplate::NUM_ST){
+			ztBools[counter].m_subTemplateId[type] = zt->m_idReferences[type];
+
+		}
+
 		++counter;
 	}
 	// ############################## Zone Templates

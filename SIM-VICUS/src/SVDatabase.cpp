@@ -192,10 +192,12 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 
 	// *** internal loads ***
 	std::set<const VICUS::InternalLoad *> referencedInternalLoads;
+	std::set<const VICUS::ZoneControlThermostat *> referencedThermostats;
 	//also add all schedules
 	for (const VICUS::ZoneTemplate * zt : referencedZoneTemplates) {
 		for (unsigned int i=0; i<VICUS::ZoneTemplate::NUM_ST; ++i){
 			const VICUS::InternalLoad *intLoad = m_internalLoads[zt->m_idReferences[i]];
+			const VICUS::ZoneControlThermostat * thermo = m_zoneControlThermostat[zt->m_idReferences[i]];
 			if(intLoad	!= nullptr){
 				referencedInternalLoads.insert(intLoad); // bad/missing IDs yield a nullptr
 				VICUS::ZoneTemplate::SubTemplateType tempType = (VICUS::ZoneTemplate::SubTemplateType)i;
@@ -221,12 +223,26 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 
 				}
 			}
+			else if(thermo != nullptr){
+				referencedThermostats.insert(thermo);
+
+				const VICUS::Schedule *sched = m_schedules[thermo->m_heatingSetpointScheduleId];
+				if(sched != nullptr)
+					referencedSchedule.insert(sched);
+				const VICUS::Schedule * sched2 = m_schedules[thermo->m_coolingSetpointScheduleId];
+				if(sched2 != nullptr)
+					referencedSchedule.insert(sched2);
+			}
 		}
 	}
 
 	p.m_embeddedDB.m_internalLoads.clear();
 	for (const VICUS::InternalLoad * il : referencedInternalLoads)
 		p.m_embeddedDB.m_internalLoads.push_back(*il);
+
+	p.m_embeddedDB.m_zoneControlThermostat.clear();
+	for (const VICUS::ZoneControlThermostat * thermo : referencedThermostats)
+		p.m_embeddedDB.m_zoneControlThermostat.push_back(*thermo);
 
 	p.m_embeddedDB.m_schedules.clear();
 	for (const VICUS::Schedule * sched : referencedSchedule)
