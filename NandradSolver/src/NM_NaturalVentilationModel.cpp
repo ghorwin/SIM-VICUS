@@ -251,6 +251,18 @@ int NaturalVentilationModel::update() {
 
 			case NANDRAD::NaturalVentilationModel::MT_IncreasedDayVentilation : {
 				// TODO Andreas, implement
+
+				// daytime?
+
+				// for now, we use the P-controller-variant
+				if (Tzone > m_thresholdTemperature) {
+
+					const double DELTA_T = 0.2; // if exceeding threshold temperature by this offset, maximum ventilation is enabled
+					double P_control = Tzone - m_thresholdTemperature;
+					double rateIncrease = m_increasedVentilationRate - m_ventilationRate;
+
+				}
+
 			} break;
 
 			default: ;

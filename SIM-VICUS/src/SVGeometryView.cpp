@@ -307,12 +307,31 @@ void SVGeometryView::coordinateInputFinished() {
 		return;
 	}
 
+	// if we have a locked axis, the number entered will be taken for the axis.
 	IBKMK::Vector3D offset;
-	offset.m_x = vec[0];
-	if (vec.size() > 1)
-		offset.m_y = vec[1];
-	if (vec.size() > 2)
-		offset.m_z = vec[2];
+	const SVViewState & vs = SVViewStateHandler::instance().viewState();
+	if (vs.m_locks != SVViewState::NUM_L) {
+		if (vec.size() != 1) {
+			QMessageBox::critical(this, QString(), tr("Invalid coordinate input, expected only one coordinate for the locked axis."));
+			m_lineEditCoordinateInput->setFocus();
+			m_lineEditCoordinateInput->selectAll();
+			return;
+		}
+		switch (vs.m_locks) {
+			case SVViewState::L_LocalX:				offset.m_x = vec[0]; break;
+			case SVViewState::L_LocalY:				offset.m_y = vec[0]; break;
+			case SVViewState::L_LocalZ:				offset.m_z = vec[0]; break;
+			case SVViewState::NUM_L :; // already checked and handled
+		}
+	}
+	else {
+		// without locks, we use the "x y z" coordinate format
+		offset.m_x = vec[0];
+		if (vec.size() > 1)
+			offset.m_y = vec[1];
+		if (vec.size() > 2)
+			offset.m_z = vec[2];
+	}
 
 	// add last vertex, if existing
 	if (po->planeGeometry().vertexes().size() > 0) {
@@ -418,6 +437,7 @@ void SVGeometryView::setupToolBar() {
 
 	// the line edit for entering vertex coordinates
 	m_lineEditCoordinateInput = new QLineEdit(m_toolBar);
+	m_lineEditCoordinateInput->setToolTip(tr("Without axis lock, enter coordinates in format <x> <y> <z>. With axis lock enter only the offset in the respective axis direction."));
 	m_actionCoordinateInput = m_toolBar->addWidget(m_lineEditCoordinateInput);
 	connect(m_lineEditCoordinateInput, &QLineEdit::returnPressed,
 			this, &SVGeometryView::coordinateInputFinished);
