@@ -146,6 +146,7 @@ public:
 
 		This function is usually called when a construction with outside surface is instantiated.
 
+		\param objectID Either constructionInstance or emebeddedObject id
 		\param orientation	Orientation of the surface in [deg] (0 - north, 90 - east, ...).
 		\param inclination	Inclination of the surface in [deg] in range [0..180] (0 - roof, 90 - wall, 180 - facing downwards).
 
@@ -158,20 +159,23 @@ public:
 	*/
 	void addSurface(unsigned int objectID, double orientationInDeg, double inclinationInDeg);
 
-	/*! Returns the direct and diffuse radiation on a given surface.
-		This function works essentially as the function above, but identifies the surface via a surfaceId.
-		\param objectID		Model object id
-		\param qRadDir		Here the direct radiation component is stored in [W/m2].
+	/*! Returns the direct and diffuse radiation on a given surface. For sensors, always unshaded
+		radiation loads are returned. For all other surfaces (opaque surface of a construction instance,
+		an embedded object) the direct radiation includes shading from external objects.
+		\param objectID		Sensor id, construction instance id or emebdded obejct id
+		\param qRadDir		Here the direct radiation component is stored in [W/m2] (mean direct radiation including
+							shading at windows, sensors or opaque surface).
 		\param qRadDiff		Here the diffuse radiation component is stored in [W/m2].
 		\param incidenceAngle Incidence angle onto surface in [rad].
-		\return				The function returns the total (global) solar radiation on the surface in [W/m2].
+		\return				The function returns the total (global) solar radiation on the surface in [W/m2] including
+							external shading.
 	*/
 	double qSWRad(unsigned int objectID, double & qRadDir, double & qRadDiff, double & incidenceAngle) const;
 
 	/*! Returns sky visibility of a given surface.
-	This function works essentially as the function above, but identifies the surface via a surfaceId.
-	\param objectID		Model object id
-	\return				The function returns the total long wave radiation on the surface in [W/m2].
+		This function works essentially as the function above, but identifies the surface via a surfaceId.
+		\param objectID		Model object id
+		\return				The function returns the total long wave radiation on the surface in [W/m2].
 	*/
 	double skyVisibility(unsigned int objectID) const;
 
@@ -200,7 +204,9 @@ private:
 
 	/*! Vector containing shading factors for current time point. */
 	std::vector<double>						m_shadingFactors;
-	/*! References to shading factors for each outside surface and embedded object id. */
+	/*! References to shading factors for each outside surface and embedded object id.
+
+	*/
 	std::map<unsigned int, const double*>	m_shadingFactorsForObjectID;
 };
 

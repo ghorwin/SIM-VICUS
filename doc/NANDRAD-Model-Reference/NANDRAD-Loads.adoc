@@ -245,26 +245,32 @@ image::SolarShading.png[pdfwidth=12cm]
 
 Die Software kann nun den Prozentsatz der verschatteten Fläche sowohl für das opake Fassadenelement als auch für das eingebettete Fensterobjekt separat berechnen. Das Fenster ist zu ca. 80 % verschattet, und ca. 20 % der Fläche sind noch der Sonne ausgesetzt. Der Faktor, der für diese Zeit und die Fensterfläche gespeichert wird beträgt 0,2.
 
-Der für eine Konstruktion gespeicherte Faktor beinhaltet immer auch eventuell eingebettete Objekte.  <<fig_shading_factor_example>> zeigt ein ähnliches Bild, jedoch einfacher zu berechnen.
+Der für eine Konstruktion gespeicherte Faktor ist immer exklusive aller eingebettete Objekte zu verstehen.  <<fig_shading_factor_example>> zeigt ein ähnliches Bild, jedoch einfacher zu berechnen.
 
 [[fig_shading_factor_example]]
 .Berechnungsbeispiel für eine teilverschattete Fassade mit einem Fenster
 image::SolarShading_example.png[pdfwidth=12cm]
 
-Die Konstruktion hat eine Fläche von 18x8 = 144 m2. Das Fenster hat eine Fläche von 10x4 = 40 m2.
-Der Schatten auf der Konstruktion nimmt 13x8 = 104 m2 ein, daher ist der Schattenanteil (Faktor) für die Konstruktion: 104/144 = 72,2 %.
+Die Konstruktion hat eine Fläche von 18x8 = 144 m2. Das Fenster hat eine Fläche von 10x4 = 40 m2. Damit verbleibt für die Konstruktion eine
+opaque Fläche von 144 - 40 = 104 m2. Der Schatten auf dem Fenster allein nimmt (13-(18-10)/2)x4 = 9x4 = 36 m2 ein. 
+Der Verschattungsflächenfaktor für das Fenster allein beträgt also 90%. Die schattierte Fläche auf der opaken Fläche beträgt 104 - 36 = 68 m2.
+er Abminderungsfaktor, der in der Gleichung für die Belastung durch die Sonneneinstrahlung verwendet werden muss beträgt also 68/104 = 65,4 %.
 
-Der Schatten auf dem Fenster allein nimmt (13-(18-10)/2)x4 = 9x4 = 36 m2 ein. Der Verschattungsflächenfaktor für das Fenster allein beträgt also 90%.
+Die Werte *100% - 65,4% = 0.278* und *100% - 90% = 0.346* werden in der Datei für die schattierten Flächenanteile gespeichert.
 
-Die Werte *72,2%* und *90%* werden in der Datei für die schattierten Flächenanteile gespeichert.
-
-
-Die schattierte Fläche auf der opaken Fläche beträgt 104 - 36 = 68 m2.  Die opake Konstruktion an sich hat eine Fläche von 144 - 40 = 104 m2. Der Abminderungsfaktor, der in der Gleichung für die Belastung durch die Sonneneinstrahlung verwendet werden muss beträgt also 68/104 = 65,4 %. Diese Berechnung wird intern durch das Solarstrahlungsmodell durchgeführt.
+Beachte: Die Gesamtkonstruktion (opque und nicht opaque) ist größer als die tatsächlich opaque Flächhe, und zwar 144 - 40 = 104 m2. Der Schatten auf der Gesamtkonstruktion nimmt 13x8 = 104 m2 ein, daher wäre der Schattenanteil (Faktor) für die Konstruktion: 104/144 = 72,2 %, also der flächengewichtete Faktor 40/144 * 90% + 104/144 * 65.4%.
 
 [IMPORTANT]
 ====
 Denken Sie daran, den prozentualen Anteil der verschatteten Fläche für Konstruktionen *immer einschließlich aller eingebetteten Objekte* zu berechnen.
 ====
+
+Die mittlere Strahlungsintensität auf eine opaque Fläche ergibt sich dann aus:
+
+```
+Mittlere direkte Strahlungslast in [W/m2] = Verschattungsfaktor (aus Datei) * direkte Strahlungslast
+```
+
 
 :xrefstyle: basic
 

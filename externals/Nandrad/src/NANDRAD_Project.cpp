@@ -133,6 +133,9 @@ void Project::readXML(const IBK::Path & filename) {
 	checkForUniqueNames(m_outputs.m_grids, "OutputGrid");
 	checkForUniqueNames(m_objectLists, "ObjectList");
 
+	// TODO: Anne check unqiness of construction instance, sensors and embedded objects and zones
+	// add unqiqueness requirements in adoc file
+
 	// Note:
 	// - the check for duplicate output definitions is done during output initialization
 

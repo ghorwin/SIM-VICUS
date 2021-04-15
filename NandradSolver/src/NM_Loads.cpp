@@ -492,6 +492,7 @@ double Loads::qSWRad(unsigned int objectID, double & qRadDir, double & qRadDiff,
 			// reduce radiation by external shading
 			std::map<unsigned int, const double*>::const_iterator valueIt
 				= m_shadingFactorsForObjectID.find(objectID);
+			// TODO Anne: exception in case of missing column -> addSurface may be a good place
 			// we alread checked validity
 			IBK_ASSERT(valueIt != m_shadingFactorsForObjectID.end());
 			IBK_ASSERT(valueIt->second != nullptr);
