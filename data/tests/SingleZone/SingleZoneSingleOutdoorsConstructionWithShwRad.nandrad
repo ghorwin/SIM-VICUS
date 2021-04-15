@@ -29,7 +29,7 @@
 			</Zone>
 		</Zones>
 		<ConstructionInstances>
-			<ConstructionInstance id="1" displayName="South">
+			<ConstructionInstance id="101" displayName="South">
 				<ConstructionTypeId>10003</ConstructionTypeId>
 				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>

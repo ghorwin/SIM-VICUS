@@ -40,7 +40,7 @@
 		</Zones>
 
 		<ConstructionInstances>
-			<ConstructionInstance id="1" displayName="South">
+			<ConstructionInstance id="101" displayName="South">
 				<ConstructionTypeId>10001</ConstructionTypeId>
 				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
@@ -52,7 +52,7 @@
 						</InterfaceHeatConduction>
 				</InterfaceA>
 			</ConstructionInstance>
-			<ConstructionInstance id="2" displayName="South">
+			<ConstructionInstance id="102" displayName="South">
 				<ConstructionTypeId>10001</ConstructionTypeId>
 				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>

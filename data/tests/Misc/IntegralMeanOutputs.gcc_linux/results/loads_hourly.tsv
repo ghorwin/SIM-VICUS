@@ -1,4 +1,4 @@
-Time [h]	Location.DirectSWRadOnPlane(id=1) [W/m2]	Location.DiffuseSWRadOnPlane(id=1) [W/m2]	Location.DirectSWRadOnPlane(id=1)-average [W/m2]	Location.DiffuseSWRadOnPlane(id=1)-average [W/m2]
+Time [h]	Location.DirectSWRadOnPlane(id=301) [W/m2]	Location.DiffuseSWRadOnPlane(id=301) [W/m2]	Location.DirectSWRadOnPlane(id=301)-average [W/m2]	Location.DiffuseSWRadOnPlane(id=301)-average [W/m2]
 0	0	0	0	0
 1	0	0	0	0
 2	0	0	0	0

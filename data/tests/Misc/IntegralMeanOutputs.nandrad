@@ -30,7 +30,7 @@
 					can be queried as vector-valued results of the LOCATION object using the sensor ID as modelID-index. -->
 
 				<!-- Flat roof -->
-				<Sensor id="1">
+				<Sensor id="301">
 					<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
 					<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
 				</Sensor>
@@ -43,37 +43,37 @@
 			<Definitions>
 				<!-- minutely values - None -->
 				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[1]</Quantity>
+					<Quantity>DirectSWRadOnPlane[301]</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>minutes</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[1]</Quantity>
+					<Quantity>DiffuseSWRadOnPlane[301]</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>minutes</GridName>
 				</OutputDefinition>
 
 				<!-- hourly values - None -->
 				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[1]</Quantity>
+					<Quantity>DirectSWRadOnPlane[301]</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[1]</Quantity>
+					<Quantity>DiffuseSWRadOnPlane[301]</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 
 				<!-- hourly values - Mean -->
 				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[1]</Quantity>
+					<Quantity>DirectSWRadOnPlane[301]</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>hourly</GridName>
 					<TimeType>Mean</TimeType>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[1]</Quantity>
+					<Quantity>DiffuseSWRadOnPlane[301]</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>hourly</GridName>
 					<TimeType>Mean</TimeType>
@@ -81,13 +81,13 @@
 				
 				<!-- hourly values - Integral -->
 				<OutputDefinition>
-					<Quantity>DirectSWRadOnPlane[1]</Quantity>
+					<Quantity>DirectSWRadOnPlane[301]</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>hourly</GridName>
 					<TimeType>Integral</TimeType>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>DiffuseSWRadOnPlane[1]</Quantity>
+					<Quantity>DiffuseSWRadOnPlane[301]</Quantity>
 					<ObjectListName>Location</ObjectListName>
 					<GridName>hourly</GridName>
 					<TimeType>Integral</TimeType>

@@ -1,4 +1,4 @@
-Time [h]	Zone(id=1).ConstructionHeatConductionLoad [W]	Zone(id=1).WindowHeatConductionLoad [W]	Zone(id=1).WindowSolarRadiationLoad [W]	EmbeddedObject(id=1).FluxHeatConductionA [W]	EmbeddedObject(id=1).FluxShortWaveRadiationA [W]
+Time [h]	Zone(id=1).ConstructionHeatConductionLoad [W]	Zone(id=1).WindowHeatConductionLoad [W]	Zone(id=1).WindowSolarRadiationLoad [W]	EmbeddedObject(id=201).FluxHeatConductionA [W]	EmbeddedObject(id=201).FluxShortWaveRadiationA [W]
 4080	0	-25.0435	0	25.0435	-0
 4081	23.4787	-23.4784	0	23.4784	-0
 4082	25.1907	-25.1904	0	25.1904	-0

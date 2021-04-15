@@ -1,4 +1,4 @@
-Time [h]	Location.DirectSWRadOnPlane(id=1)-integral [kWh/m2]	Location.DiffuseSWRadOnPlane(id=1)-integral [kWh/m2]
+Time [h]	Location.DirectSWRadOnPlane(id=301)-integral [kWh/m2]	Location.DiffuseSWRadOnPlane(id=301)-integral [kWh/m2]
 0	0	0
 1	0	0
 2	0	0

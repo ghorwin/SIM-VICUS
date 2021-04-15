@@ -7,7 +7,7 @@
 			<LastEdited>2020-08-14</LastEdited>
 		</ProjectInfo>
 		<Zones>
-			<Zone id="1" displayName="Room" type="Active">
+			<Zone id="101" displayName="Room" type="Active">
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 			</Zone>

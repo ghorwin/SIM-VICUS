@@ -50,6 +50,20 @@ void checkForUniqueIDs(const std::vector<T> & vec, const char * const typeIDStri
 	}
 }
 
+/*! Test function that checks that all objects in the given vector have different m_id parameters.
+	This function accepts comparison between other geometric objects and fills id space in usedIDs
+	container*/
+template <typename T>
+void checkForUniqueGeometryIDs(const std::vector<T> & vec, std::set<unsigned int> & usedIDs) {
+	FUNCID(NANDRAD::checkForUniqueIDs);
+
+	for (const T & t : vec) {
+		if (usedIDs.find(t.m_id) != usedIDs.end())
+			throw IBK::Exception(IBK::FormatString("Duplicate model ID #%1.")
+								 .arg(t.m_id), FUNC_ID);
+		usedIDs.insert(t.m_id);
+	}
+}
 
 /*! Test function that checks that all objects in the given vector have different m_id parameters. */
 template <typename T>
@@ -133,8 +147,37 @@ void Project::readXML(const IBK::Path & filename) {
 	checkForUniqueNames(m_outputs.m_grids, "OutputGrid");
 	checkForUniqueNames(m_objectLists, "ObjectList");
 
-	// TODO: Anne check unqiness of construction instance, sensors and embedded objects and zones
-	// add unqiqueness requirements in adoc file
+	std::set<unsigned int> usedIDs;
+	// TODO: Anne add unqiqueness requirements in adoc file
+	try {
+		// check all zone ids against each other and against
+		// all entries in usedIDs container
+		checkForUniqueGeometryIDs(m_zones, usedIDs);
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, "Duplicate ID found in zone parameter blocks.", FUNC_ID);
+	}
+	try {
+		// check all constructionInstances for unique ids and store
+		// it in usedIDs container
+		checkForUniqueGeometryIDs(m_constructionInstances, usedIDs);
+		// loop through all constructions and check for unique ids of
+		// embedded objects
+		for(const ConstructionInstance &conInstance : m_constructionInstances) {
+			checkForUniqueGeometryIDs(conInstance.m_embeddedObjects, usedIDs);
+		}
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, "Duplicate ID found in construction instance parameter blocks.", FUNC_ID);
+	}
+	try {
+		// check all sensor ids against each other and against
+		// all entries in usedIDs container
+		checkForUniqueGeometryIDs(m_location.m_sensors, usedIDs);
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, "Duplicate ID found in location parameter blocks.", FUNC_ID);
+	}
 
 	// Note:
 	// - the check for duplicate output definitions is done during output initialization
