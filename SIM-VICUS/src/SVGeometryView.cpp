@@ -141,6 +141,11 @@ bool SVGeometryView::handleGlobalKeyPress(Qt::Key k) {
 			// all the keys to this widget
 			if (!m_actionCoordinateInput->isVisible())
 				return false;
+			// for enter and return, the line edit must have focus
+			if (k == Qt::Key_Enter || k == Qt::Key_Return) {
+				if (!m_lineEditCoordinateInput->hasFocus())
+					return false;
+			}
 			onNumberKeyPressed(k);
 		break;
 
