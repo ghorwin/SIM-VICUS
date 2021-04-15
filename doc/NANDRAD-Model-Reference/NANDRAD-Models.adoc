@@ -154,7 +154,7 @@ Das `InternalLoadsModel` muss mit den folgenden XML-Attributen definiert werden:
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribut | Beschreibung | Format | Verwendung 
-| `id` | Kennung des natürlichen Lüftungsmodells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+| `id` | Kennung des Modells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
 
 | `modelType` 
 a| Gibt an, wie die internen Lasten angesetzt werden sollen
@@ -174,9 +174,9 @@ Fließkommaparameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung d
 | `EquipmentHeatLoadPerArea` | W/m2 | Komplette Gerätebelastung pro Zonennutzfläche | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich für Konstantes Modell_
 | `PersonHeatLoadPerArea` | W/m2 | Komplette Personenwärmelast pro Zonennutzfläche | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich für Konstantes Modell_
 | `LightingHeatLoadPerArea` | W/m2 | Komplette Wärmelast aus Beleuchtung pro Zonennutzfläche | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich für Konstantes Modell_
-| `EquipmentRadiationFraction` | --- | Prozentualer Anteil der Gerätelast, der durch Strahlung emittiert wird | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_
-| `PersonRadiationFraction` | --- | Prozentsatz der Gerätelast, der durch Strahlung emittiert wird | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_
-| `LightingRadiationFraction` | --- | Prozentsatz der Gerätelast, der durch Strahlung emittiert wird | {nbsp}>={nbsp}0,0{nbsp} | _erforderlich_
+| `EquipmentRadiationFraction` | --- | Prozentualer Anteil der Wärme der Geräte, der durch Strahlung emittiert wird | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_
+| `PersonRadiationFraction` | --- | Prozentualer Anteil der Wärme der Personen, der durch Strahlung emittiert wird | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_
+| `LightingRadiationFraction` | --- | Prozentualer Anteil der Wärme der Beleuchtung, der durch Strahlung emittiert wird | {nbsp}>={nbsp}0,0{nbsp} | _erforderlich_
 |====================
 
 [NOTE]
@@ -191,7 +191,7 @@ Die folgenden Zeitplanparameter sind erforderlich:
 
 - `EquipmentHeatLoadPerAreaSchedule [W/m2]`
 - `PersonHeatLoadPerAreaSchedule [W/m2]`
-- `BeleuchtungWärmelastProFlächeRegel [W/m2]`
+- `LightingHeatLoadPerAreaSchedule [W/m2]`
 
 Die zonenspezifischen Ausgangsgrößen heißen: 
 
@@ -207,3 +207,133 @@ Dies sind vektoriell dargestellte Größen, die in Ausgangsdefinitionen referenz
 
 Die Parameter `xxxRadiationFraction` geben an, welcher Prozentsatz der berechneten internen Lasten als Strahlungsfluss flächengewichtet auf opake Oberflächen, die die Zone umschließen, aufgebracht werden soll. 
 
+
+[[ZoneControlThermostat]]
+## Modell für Thermostate
+
+Das Thermostatmodell beschreibt, auf welche Raumsollwerte konditioniert werden soll. Angegeben werden können Heiz- und/oder Kühlsolltemperaturen für die Raumluft oder operative Raumluft.
+Der Objektlisten-tag `ZoneObjectList` identifiziert die Zonen, in denen Thermostate berücksichtigt werden sollen. Es darf nur ein Modell pro Zone existieren.
+
+.Definitionsblock für Thermostate
+====
+[source,xml]
+----
+<ZoneControlThermostat id="200" modelType="Scheduled">
+	<ZoneObjectList>Office zones</ZoneObjectList>
+	<IBK:Parameter name="HeatingSetpoint" unit="C">20</IBK:Parameter>
+	<IBK:Parameter name="CoolingSetpoint" unit="C">21</IBK:Parameter>
+	<TemperatureType>AirTemperature</TemperatureType>
+</ZoneControlThermostat>
+----
+====
+
+
+Das `ZoneControlThermostat` muss mit den folgenden XML-Attributen definiert werden:
+
+.Attribute
+[.indent-me]
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribut | Beschreibung | Format | Verwendung 
+| `id` | Kennung des Modells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+
+| `modelType` 
+a| Gibt an, wie die Thermostat-Parameter angesetzt werden sollen
+
+* `Constant` - Konstante Sollwerte
+* `Scheduled` - Sollwerte werden über Zeitplanparameter bereitgestellt.
+
+| key | _erforderlich_
+|====================
+
+
+Fließkommaparameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des Tags `IBK:Parameter`):
+
+[options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
+|====================
+|Name|Vorgabeeinheit|Beschreibung|Wertebereich |Verwendung
+| `HeatingSetpoint` | C | konstanter Heizsollwert | {nbsp}<`CoolingSetpoint` | _erforderlich für Konstantes Modell_
+| `CoolingSetpoint` | C | konstanter Kühlsollwert | {nbsp}>`HeatingSetpoint` | _erforderlich für Konstantes Modell_
+|====================
+
+### TemperatureType
+
+Der XML-tag `TemperatureType` enthält eine Zeichenkette zur Auswahl eines bestimmten Typs (`AirTemperature` wird standardmäßig verwendet, wenn das tag fehlt).
+
+.verfügbare TemperatureTypes
+[options="header", cols="20%, 80%", width="100%"]
+|====================
+|Name|Beschreibung
+|`AirTemperautre`| Als Referenztemperatur wird die Raumlufttempatur verwendet.
+|`OperativeTemperature`| Als Referenztemperatur wird die operative Raumlufttempatur verwendet. Diese setzt sich aus der mittleren Oberflächentemperatur aller Innenoberflächen und aus der Raumlufttemperatur zusammen. Die Anteile betragen jeweils 50%.
+|====================
+
+[NOTE]
+====
+Ein Thermostat hält nur die Sollwerte für die Zone. Eine Konditionierung der Zone erfolgt erst wenn zusätzlich eine Heizungs- und/oder Kühlmodell für die Zone integriert ist. Auch bei den Zeitplänen ist immer darauf zu achten, dass der Heizsollwert < Kühlsollwert ist.
+====
+
+Der Modelltyp `Constant` übernimmt die Sollwerte aus den Parametern (siehe oben).
+Wenn der Modelltyp `Scheduled` verwendet wird, werden die tatsächlichen Sollwerte aus dem Zeitplan entnommen.
+
+Die folgenden Zeitplanparameter sind erforderlich:
+
+- `HeatingSetpointSchedule [C]`
+- `CoolingSetpointSchedule [C]`
+
+Die zonenspezifischen Ausgangsgrößen heißen: 
+
+- `HeatingSetpoint [C]`
+- `CoolingSetpoint [C]`
+
+Dies sind vektoriell dargestellte Größen, die in Ausgangsdefinitionen referenziert werden müssen, z. B. mit: `HeatingSetpoint[id=3]` für den Heizsollwert in Zone #3.
+
+## Modell für Ideale thermische Konditionierung
+
+Das Modell beschreibt ein ideles thermisches Konditionierungsmodell für eine ideale Raumluftkonditionierung.
+Der Objektlisten-tag `ZoneObjectList` identifiziert die Zonen, in denen das Modell berücksichtigt werden sollen. Es darf nur ein Modell pro Zone existieren.
+
+.Definitionsblock für Ideale thermische Konditionierung
+====
+[source,xml]
+----
+<ZoneIdealHeatingCooling id="200">
+	<ZoneObjectList>Office zones</ZoneObjectList>
+	<IBK:Parameter name="HeatingPowerPerArea" unit="W/m2">50</IBK:Parameter>
+	<IBK:Parameter name="CoolingPowerPerArea" unit="W/m2">20</IBK:Parameter>
+</ZoneIdealHeatingCooling>
+----
+====
+
+
+Das `ZoneIdealHeatingCooling` muss mit den folgenden XML-Attributen definiert werden:
+
+.Attribute
+[.indent-me]
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribut | Beschreibung | Format | Verwendung 
+| `id` | Kennung des Modells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+|====================
+
+
+Fließkommaparameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des Tags `IBK:Parameter`):
+
+[options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
+|====================
+|Name|Vorgabeeinheit|Beschreibung|Wertebereich |Verwendung
+| `HeatingPowerPerArea` | W/m2 | konstante max. Flächenheizlast | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich für Konstantes Modell_
+| `CoolingPowerPerArea` | W/m2 | konstante max. Flächenheizlast | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich für Konstantes Modell_
+|====================
+
+[NOTE]
+====
+Damit das Modell auf die jeweilige Zone angewendet wird, ist zwingend das <<ZoneControlThermostat>> nötig.
+====
+
+Die zonenspezifischen Ausgangsgrößen heißen: 
+
+- `IdealHeatingLoad [W]`
+- `IdealCoolingLoad [W]`
+
+Dies sind vektoriell dargestellte Größen, die in Ausgangsdefinitionen referenziert werden müssen, z. B. mit: `IdealHeatingLoad[id=3]` für die Heizlast in Zone #3.
