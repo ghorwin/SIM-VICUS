@@ -2,7 +2,7 @@
 <NandradProject fileVersion="1.99">
 	<Project>
 		<ProjectInfo>
-			<Comment>Scheduled ventilation rate model test for single zone, no constructions, additional heat capacity in zone</Comment>
+			<Comment>Constant air exchange and additional scheduled ventilation rate model test for single zone, no constructions, additional heat capacity in zone</Comment>
 			<Created>2021-04-16</Created>
 			<LastEdited>2021-04-16</LastEdited>
 		</ProjectInfo>
@@ -25,8 +25,18 @@
 			<ClimateFilePath>${Project Directory}/../climate/Konstantopol_20C.c6b</ClimateFilePath>
 		</Location>
 		<Models>
-			<NaturalVentilationModel id="501" displayName="Zone vent" modelType="Scheduled">
+			<NaturalVentilationModel id="501" displayName="Zone vent" modelType="ScheduledWithBaseACR">
 				<ZoneObjectList>All zones</ZoneObjectList>
+				<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
+				<!-- Erhöhte Lüftungsrate verwenden, wenn Raumtemperature 23°C überschreitet -->
+				<IBK:Parameter name="MinimumRoomAirTemperatureACRLimit" unit="C">23</IBK:Parameter>
+				<!-- Keine Begrenzung der erhöhten Lüftung bei hohen Raumtemperaturen  -->
+				<IBK:Parameter name="MaximumRoomAirTemperatureACRLimit" unit="C">100</IBK:Parameter>
+				<!-- Parameter muss gegeben sein, um Regelung auszuschalten, sehr hohe Grenzwerte verwenden -->
+				<IBK:Parameter name="MaximumEnviromentAirTemperatureACRLimit" unit="C">100</IBK:Parameter>
+				<IBK:Parameter name="MinimumEnviromentAirTemperatureACRLimit" unit="C">-100</IBK:Parameter>
+				<IBK:Parameter name="DeltaTemperatureACRLimit" unit="K">-2</IBK:Parameter>
+				<IBK:Parameter name="WindSpeedACRLimit" unit="m/s">10</IBK:Parameter>
 			</NaturalVentilationModel>
 		</Models>
 		<Schedules>
