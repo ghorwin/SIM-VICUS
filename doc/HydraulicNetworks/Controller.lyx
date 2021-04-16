@@ -1,0 +1,519 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\usepackage{parskip}
+
+\usepackage[hang,scriptsize]{subfigure}
+\usepackage[format=hang,
+font={footnotesize},
+labelfont={bf},
+margin=1cm,
+aboveskip=5pt,
+position=bottom]{caption}
+
+\usepackage{float}
+\usepackage{color}
+\usepackage{calc}
+
+\definecolor{linkblue}{rgb}{0,0,0.4}
+\definecolor{navy}{rgb}{0,0,0.3}
+\definecolor{light-gray}{gray}{0.98}
+\definecolor{dark-gray}{gray}{0.45}
+
+% for PDA/A complience, insert fonts correctly
+\usepackage[T1]{fontenc}
+
+\usepackage[utf8]{inputenc}
+
+\newcommand{\wframe}[1]{\frame{#1}}
+
+\usepackage[ruled,vlined]{algorithm2e}
+
+\usepackage{lastpage}
+\end_preamble
+\options fleqn
+\use_default_options false
+\begin_modules
+customHeadersFooters
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding utf8
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize 10
+\spacing single
+\use_hyperref true
+\pdf_title "Co-Simulations-Masteralgorithmen - Analyse und Details der Implementierung am Beispiel des Masterprogramms MASTERSIM"
+\pdf_author "Andreas Nicolai"
+\pdf_keywords "Co-Simulation, FMI, MASTERSIM, Masteralgorithmus, Gauss-Seidel, Richardson"
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks true
+\pdf_backref false
+\pdf_pdfusetitle true
+\pdf_quoted_options "linkcolor=linkblue, citecolor=linkblue, urlcolor=linkblue, bookmarksnumbered=true"
+\papersize a4paper
+\use_geometry true
+\use_package amsmath 2
+\use_package amssymb 2
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine biblatex-natbib
+\cite_engine_type authoryear
+\biblio_style plain
+\biblatex_bibstyle authoryear
+\biblatex_citestyle authoryear
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\use_minted 0
+\index Stichwortverzeichnis
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.5cm
+\topmargin 2.5cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip smallskip
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\listings_params "basicstyle={\scriptsize\ttfamily\color{black}},commentstyle={\ttfamily\itshape\color{dark-gray}},numberstyle={{\tiny}},stepnumber=1,showspaces=false,showstringspaces=false,showtabs=false,frame=single,tabsize=4,captionpos=b,breaklines=true,breakatwhitespace=false,texcl=true"
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+thispagestyle{fancy}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+fancyhf{} %alle Kopf- und Fußzeilenfelder bereinigen
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+fancyhead[L]{
+\backslash
+includegraphics[width=3cm]{logolinks}} %Kopfzeile links
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+fancyhead[C]{
+\backslash
+includegraphics[width=9.4cm]{logomitte}} %zentrierte Kopfzeile
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+fancyhead[R]{
+\backslash
+includegraphics[width=2.5cm]{logorechts}} %Kopfzeile rechts
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+renewcommand{
+\backslash
+headrulewidth}{0pt} %obere Trennlinie
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+fancyfoot[C]{
+\backslash
+small Seite 
+\backslash
+thepage
+\backslash
+ von
+\backslash
+ 
+\backslash
+pageref{LastPage} } %Seitennummer
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+renewcommand{
+\backslash
+footrulewidth}{0.4pt} %untere Trennlinie
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Part*
+Implementierung Regelkomponente + abstrakter Regler
+\end_layout
+
+\begin_layout Standard
+Die Idee: Es gibt ein Element (HydraulicFlowElement), an welchem z.B.
+ die Temperaturdifferenz geregelt werden soll.
+ Das Element beinhaltet auch das Stellglied, also das Ventil z.B.
+ mit dem die Regelgröße beeinflusst werden kann.
+ Das Element führt notwendige Vorberechnungen durch und gibt dann den Istwert
+ an den Regler weiter.
+ Der Regler ist parametrisiert mit Sollwert und Reglerparametern und berechnet
+ daraus eine abstrakte Stellgröße.
+ Diese wird vom Element interpretiert und entsprechend umgesetzt.
+\end_layout
+
+\begin_layout Section
+Regelung einer vorgegebenen Temperaturdifferenz 
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /tmp/mozilla_ischta0/Struktur.png
+	lyxscale 50
+	scale 30
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Der Wärmeübertrager wird im hydraulischen Netzwerk als 
+\series bold
+FixedPressureLossCoefficientElement
+\series default
+ interpretiert.
+ Diesem sind bekannt 
+\end_layout
+
+\begin_layout Itemize
+der Massenstrom 
+\begin_inset Formula $\dot{m}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+die Fluidkapazität 
+\begin_inset Formula $c_{p}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+der Wärmeverlust 
+\begin_inset Formula $\dot{Q}_{loss}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+der Druckverlustkoeffizient 
+\begin_inset Formula $\zeta_{fix}$
+\end_inset
+
+ bei offenem Regelventil
+\end_layout
+
+\begin_layout Standard
+Das Regelelement (Controlelement):
+\end_layout
+
+\begin_layout Itemize
+Sollwert 
+\begin_inset Formula $\Delta T_{soll}$
+\end_inset
+
+kann ein Skalar oder eine Spline oder Schedule sein
+\end_layout
+
+\begin_layout Itemize
+nominale Temperaturdifferenz 
+\begin_inset Formula $\Delta T_{max}=5$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+nominaler Zeta-Wert 
+\begin_inset Formula $\zeta_{max}$
+\end_inset
+
+=1
+\end_layout
+
+\begin_layout Standard
+Die Berechnung der Stellgröße übernimmt ein externes Element, der 
+\series bold
+Regler
+\series default
+.
+ Diesem sind bekannt
+\end_layout
+
+\begin_layout Itemize
+Reglerparameter 
+\begin_inset Formula $k_{p}$
+\end_inset
+
+=1
+\end_layout
+
+\begin_layout Itemize
+der Reglertyp (P, PI, ...)
+\end_layout
+
+\begin_layout Itemize
+Toleranzabweichung 
+\begin_inset Formula $e_{min}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Damit kann die Temperaturdifferenz im 
+\series bold
+FixedPressureLossCoefficientElement
+\series default
+ berechnet werden
+\begin_inset Formula 
+\[
+\Delta T=\frac{\dot{Q}_{loss}}{\dot{m}c_{p}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+e=\begin{cases}
+0 & \Delta T_{soll}-\Delta T-e_{min}<0\\
+\Delta T_{soll}-\Delta T-e_{min} & \Delta T_{soll}-\Delta T-e_{min}\geq0
+\end{cases}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Dies ist die Istgröße 
+\begin_inset Formula $x=e$
+\end_inset
+
+.
+ Diese kann nun an den 
+\series bold
+Regler
+\series default
+ übergeben werden, welcher daraus die Stellgröße 
+\begin_inset Formula $y$
+\end_inset
+
+ berechnet
+\begin_inset Formula 
+\[
+y=f_{Regler}(e)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Zur Auswertung von 
+\begin_inset Formula $f_{Regler}$
+\end_inset
+
+wird der Sollwert 
+\begin_inset Formula $x_{target}$
+\end_inset
+
+und der Reglerparameter 
+\begin_inset Formula $k_{p}$
+\end_inset
+
+ und ggf.
+ 
+\begin_inset Formula $k_{i}$
+\end_inset
+
+ benötigt
+\begin_inset Formula 
+\[
+y=k_{p}e+k_{i}\int edt
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Der Wärmeübertrager (das 
+\series bold
+FixedPressureLossCoefficientElement)
+\series default
+ interpretiert diesen Wert als 
+\begin_inset Formula $\zeta$
+\end_inset
+
+-Wert
+\begin_inset Formula 
+\[
+\zeta_{control}=\begin{cases}
+0 & y<0\\
+y & y\leq\zeta_{max}\\
+\zeta_{max} & y>\zeta_{max}
+\end{cases}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Der Druckverlust im 
+\series bold
+FixedPressureLossCoefficientElement
+\series default
+ ist dann
+\begin_inset Formula 
+\[
+\Delta p=(\zeta_{fix}+\zeta_{control})\frac{\rho}{2}v^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Die Systemfunktion des 
+\series bold
+FixedPressureLossCoefficientElement
+\series default
+ ist
+\begin_inset Formula 
+\[
+0=p_{inlet}-p_{outlet}-\Delta p
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
