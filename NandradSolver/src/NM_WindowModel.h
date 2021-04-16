@@ -26,6 +26,8 @@ public:
 		R_FluxHeatConductionB,				// Keyword: FluxHeatConductionB			[W]			'Heat conduction flux across interface B (into window).'
 		R_FluxShortWaveRadiationA,			// Keyword: FluxShortWaveRadiationA		[W]			'Short wave radiation flux across interface A (into window).'
 		R_FluxShortWaveRadiationB,			// Keyword: FluxShortWaveRadiationB		[W]			'Short wave radiation flux across interface B (into window).'
+		R_SurfaceTemperatureA,				// Keyword: SurfaceTemperatureA			[C]			'Surface temperature at interface A'
+		R_SurfaceTemperatureB,				// Keyword: SurfaceTemperatureB			[C]			'Surface temperature at interface B'
 		NUM_R
 	};
 
@@ -76,7 +78,7 @@ public:
 		\return Returns 0 when calculation was successful, 1 when a recoverable error has been detected,
 			2 when something is badly wrong
 	*/
-	virtual int setTime(double t);
+	virtual int setTime(double t) override;
 
 	// *** Re-implemented from AbstractStateDependency
 
@@ -105,6 +107,9 @@ public:
 	unsigned int interfaceAZoneID() const;
 	/*! Returns ID of associated zone at interface B (> 0 if a room zone is connected). */
 	unsigned int interfaceBZoneID() const;
+
+	/*! Access to underlying data structure. */
+	const NANDRAD::EmbeddedObjectWindow *windowModel() const { return m_windowModel; }
 
 private:
 

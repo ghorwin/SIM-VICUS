@@ -52,6 +52,7 @@ void EmbeddedObjectWindow::checkParameters(double grossArea,
 	if (!hasParameters())
 		return;
 
+	m_area = grossArea;
 	try {
 		m_frame.checkParameters(materials);
 	} catch (IBK::Exception & ex) {

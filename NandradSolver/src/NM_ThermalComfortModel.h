@@ -8,8 +8,6 @@
 #include <NANDRAD_ObjectList.h>
 
 namespace NANDRAD {
-	class SimulationParameter;
-	class ThermalComfortModel;
 	class Zone;
 }
 
@@ -88,18 +86,19 @@ private:
 	/*! Display name (for error messages). */
 	std::string										m_displayName;
 
-	struct ConstructionInputData {
-		unsigned int	m_conID;
-		double			m_netArea;
-		std::string		m_refName;
-		const double *	m_valueRef = nullptr;
+	struct SurfaceInputData {
+		NANDRAD::ModelInputReference::referenceType_t	m_referenceType;
+		unsigned int									m_id;
+		double											m_netArea;
+		std::string										m_name;
+		const double *									m_valueRef = nullptr;
 	};
 
-	/*! Input references from constructions to this object. */
-	std::vector<ConstructionInputData>				m_inputRefs;
+	/*! Data for generating input references from constructions/windows to this object. */
+	std::vector<SurfaceInputData>					m_surfaceRefData;
 
-	/*! Vector with input references. */
-	std::vector<const double*>						m_valueRefs;
+	/*! Pointer to zone's air temperature. */
+	const double*									m_zoneAirTemp = nullptr;
 
 	/*! Computed operative temperature in [K] */
 	double											m_operativeTemperature = -999;

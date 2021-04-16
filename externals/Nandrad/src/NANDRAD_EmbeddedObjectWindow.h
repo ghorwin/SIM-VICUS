@@ -76,6 +76,8 @@ public:
 
 	// *** Variables used only during simulation ***
 
+	/*! Cached gross cross-section area of surface in [m2] (embedded object gross area). */
+	double									m_area = 999;
 	/*! Cached cross-section area of glas surface in [m2] (embedded object gross area minus frame and divider cross section areas). */
 	double									m_glasArea = 999;
 

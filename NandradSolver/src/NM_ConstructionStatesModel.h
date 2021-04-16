@@ -132,6 +132,9 @@ public:
 	*/
 	int update(const double * y);
 
+	/*! Access to underlaying data model - provided for convenience. */
+	const NANDRAD::ConstructionInstance * construction() const { return m_con; }
+
 private:
 	/*! Generates computational grid and all associated data structures. */
 	void generateGrid();

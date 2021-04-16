@@ -5,6 +5,8 @@
 
 #include <NANDRAD_ObjectList.h>
 #include <NANDRAD_Zone.h>
+#include <NANDRAD_ConstructionInstance.h>
+
 #include "NM_ConstructionStatesModel.h"
 #include "NM_RoomStatesModel.h"
 #include "NM_WindowModel.h"
@@ -42,11 +44,8 @@ const double * ThermalComfortModel::resultValueRef(const InputReference & quanti
 
 
 void ThermalComfortModel::initInputReferences(const std::vector<AbstractModel *> & models) {
-#if 0
-	std::vector<InputReference> heatCondIR;
-	std::vector<InputReference> windowHeatCondIR;
-
 	// search all models for construction models that have an interface to this zone
+	// and collect data to create input references
 	for (AbstractModel * model : models) {
 
 		// *** surface temperature from walls ***
@@ -59,26 +58,26 @@ void ThermalComfortModel::initInputReferences(const std::vector<AbstractModel *>
 
 			// side A
 			if (conMod->interfaceAZoneID() == m_id) {
-				// create input reference for surface temperature
-				InputReference r;
+				SurfaceInputData r;
 				r.m_id = conMod->id();
 				r.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
-				r.m_name.m_name = "SurfaceTemperatureA";
-				heatCondIR.push_back(r);
+				r.m_name = "SurfaceTemperatureA";
+				r.m_netArea = conMod->construction()->m_netHeatTransferArea;
+				m_surfaceRefData.push_back(r);
 			}
 
 			// check if either interface references us
 			if (conMod->interfaceBZoneID() == m_id) {
-				// create input reference for heat conduction fluxes into this zone
-				InputReference r;
+				SurfaceInputData r;
 				r.m_id = conMod->id();
 				r.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
-				r.m_name.m_name = "SurfaceTemperatureB";
-				heatCondIR.push_back(r);
+				r.m_name = "SurfaceTemperatureB";
+				r.m_netArea = conMod->construction()->m_netHeatTransferArea;
+				m_surfaceRefData.push_back(r);
 			}
 		}
 
-		// *** heat conduction and solar radiation loads through windows ***
+		// *** surface temperatures from windows ***
 		if (model->referenceType() == NANDRAD::ModelInputReference::MRT_EMBEDDED_OBJECT) {
 			// we need a window model here
 			WindowModel* mod = dynamic_cast<WindowModel*>(model);
@@ -88,47 +87,38 @@ void ThermalComfortModel::initInputReferences(const std::vector<AbstractModel *>
 
 			// side A
 			if (mod->interfaceAZoneID() == m_id) {
-				// create input reference for heat conduction fluxes into this zone
-				InputReference r;
+				SurfaceInputData r;
 				r.m_id = mod->id();
 				r.m_referenceType = NANDRAD::ModelInputReference::MRT_EMBEDDED_OBJECT;
-				r.m_name.m_name = "FluxHeatConductionA";
-				m_windowHeatCondValueRefs.push_back(nullptr);
-				windowHeatCondIR.push_back(r);
+				r.m_name = "SurfaceTemperatureA";
+				r.m_netArea = mod->windowModel()->m_area;
+				m_surfaceRefData.push_back(r);
 			}
 
 			// check if either interface references us
 			if (mod->interfaceBZoneID() == m_id) {
-				// create input reference for heat conduction fluxes into this zone
-				InputReference r;
+				SurfaceInputData r;
 				r.m_id = mod->id();
 				r.m_referenceType = NANDRAD::ModelInputReference::MRT_EMBEDDED_OBJECT;
-				r.m_name.m_name = "FluxHeatConductionB";
-				m_windowHeatCondValueRefs.push_back(nullptr);
-				windowHeatCondIR.push_back(r);
+				r.m_name = "SurfaceTemperatureB";
+				r.m_netArea = mod->windowModel()->m_area;
+				m_surfaceRefData.push_back(r);
 			}
 		}
 
-		}
 	} // model object loop
-
-
-	// now combine the input references into the global vector
-	m_inputRefs = heatCondIR;
-	m_inputRefs.insert(m_inputRefs.end(), windowHeatCondIR.begin(), windowHeatCondIR.end());
-	if (m_haveSolarRadiationModel)
-		m_inputRefs.push_back(windowSolarRadIR);
-	m_inputRefs.insert(m_inputRefs.end(), ventilationRH.begin(), ventilationRH.end());
-	m_inputRefs.insert(m_inputRefs.end(), internalLoadsRH.begin(), internalLoadsRH.end());
-	m_inputRefs.insert(m_inputRefs.end(), networkLoadsRH.begin(), networkLoadsRH.end());
-#endif
 }
 
 
 void ThermalComfortModel::inputReferences(std::vector<InputReference> & inputRefs) const {
+	// compose input references for collected surfaces
 
-
-
+	// last input ref is the zone's air temperature
+	InputReference r;
+	r.m_id = m_id; // our ID is also the zone ID
+	r.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+	r.m_name.m_name = "AirTemperature";
+	inputRefs.push_back(r);
 }
 
 
@@ -136,16 +126,21 @@ void ThermalComfortModel::setInputValueRefs(const std::vector<QuantityDescriptio
 												const std::vector<const double *> & resultValueRefs)
 {
 	// simply store and check value references
-	m_valueRefs = resultValueRefs;
+	IBK_ASSERT(resultValueRefs.size() == m_surfaceRefData.size() + 1);
+	for (unsigned int i=0; i<m_surfaceRefData.size(); ++i)
+		m_surfaceRefData[i].m_valueRef = resultValueRefs[i];
+	m_zoneAirTemp = resultValueRefs[resultValueRefs.size()-1];
 }
 
 
 void ThermalComfortModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
 	// operative temperature depends on all input variables
-	for (const double * valRef : m_valueRefs) {
+	for (unsigned int i=0; i<m_surfaceRefData.size(); ++i) {
 		// dependency on room air temperature of corresponding zone
-		resultInputValueReferences.push_back(std::make_pair(&m_operativeTemperature, valRef) );
+		resultInputValueReferences.push_back(std::make_pair(&m_operativeTemperature, m_surfaceRefData[i].m_valueRef) );
 	}
+	// also add dependency on zone air temperature
+	resultInputValueReferences.push_back(std::make_pair(&m_operativeTemperature, m_zoneAirTemp) );
 }
 
 

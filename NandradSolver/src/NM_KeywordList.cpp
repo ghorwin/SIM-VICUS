@@ -202,6 +202,8 @@ namespace NANDRAD_MODEL {
 				case 1 : return "FluxHeatConductionB";
 				case 2 : return "FluxShortWaveRadiationA";
 				case 3 : return "FluxShortWaveRadiationB";
+				case 4 : return "SurfaceTemperatureA";
+				case 5 : return "SurfaceTemperatureB";
 			} break;
 		} // switch
 		return INVALID_KEYWORD_INDEX_STRING;
@@ -346,6 +348,8 @@ namespace NANDRAD_MODEL {
 				case 1 : return "FluxHeatConductionB";
 				case 2 : return "FluxShortWaveRadiationA";
 				case 3 : return "FluxShortWaveRadiationB";
+				case 4 : return "SurfaceTemperatureA";
+				case 5 : return "SurfaceTemperatureB";
 			} break;
 		} // switch
 		return INVALID_KEYWORD_INDEX_STRING;
@@ -491,6 +495,8 @@ namespace NANDRAD_MODEL {
 				case 1 : return "Heat conduction flux across interface B (into window).";
 				case 2 : return "Short wave radiation flux across interface A (into window).";
 				case 3 : return "Short wave radiation flux across interface B (into window).";
+				case 4 : return "Surface temperature at interface A";
+				case 5 : return "Surface temperature at interface B";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine description for enumeration type '%1' and index '%2'.")
@@ -635,6 +641,8 @@ namespace NANDRAD_MODEL {
 				case 1 : return "W";
 				case 2 : return "W";
 				case 3 : return "W";
+				case 4 : return "C";
+				case 5 : return "C";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine default unit for enumeration type '%1' and index '%2'.")
@@ -779,6 +787,8 @@ namespace NANDRAD_MODEL {
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
+				case 4 : return "#FFFFFF";
+				case 5 : return "#FFFFFF";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine color for enumeration type '%1' and index '%2'.")
@@ -923,6 +933,8 @@ namespace NANDRAD_MODEL {
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
+				case 4 : return std::numeric_limits<double>::quiet_NaN();
+				case 5 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine default value for enumeration type '%1' and index '%2'.")
@@ -963,7 +975,7 @@ namespace NANDRAD_MODEL {
 			// ThermalComfortModel::Results
 			case 14 : return 1;
 			// WindowModel::Results
-			case 15 : return 4;
+			case 15 : return 6;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::Count]");
@@ -1003,7 +1015,7 @@ namespace NANDRAD_MODEL {
 			// ThermalComfortModel::Results
 			case 14 : return 0;
 			// WindowModel::Results
-			case 15 : return 4;
+			case 15 : return 6;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::MaxIndex]");
