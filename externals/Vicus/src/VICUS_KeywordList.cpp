@@ -452,6 +452,8 @@ namespace VICUS {
 				case 2 : return "IntLoadLighting";
 				case 3 : return "IntLoadOther";
 				case 4 : return "ControlThermostat";
+				case 5 : return "Infiltration";
+				case 6 : return "NaturalVentilation";
 			} break;
 		} // switch
 		return INVALID_KEYWORD_INDEX_STRING;
@@ -818,6 +820,8 @@ namespace VICUS {
 				case 2 : return "IntLoadLighting";
 				case 3 : return "IntLoadOther";
 				case 4 : return "ControlThermostat";
+				case 5 : return "Infiltration";
+				case 6 : return "NaturalVentilation";
 			} break;
 		} // switch
 		return INVALID_KEYWORD_INDEX_STRING;
@@ -1185,6 +1189,8 @@ namespace VICUS {
 				case 2 : if (no_description != nullptr) *no_description = true; return "IntLoadLighting";
 				case 3 : if (no_description != nullptr) *no_description = true; return "IntLoadOther";
 				case 4 : if (no_description != nullptr) *no_description = true; return "ControlThermostat";
+				case 5 : if (no_description != nullptr) *no_description = true; return "Infiltration";
+				case 6 : if (no_description != nullptr) *no_description = true; return "NaturalVentilation";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine description for enumeration type '%1' and index '%2'.")
@@ -1551,6 +1557,8 @@ namespace VICUS {
 				case 2 : return "";
 				case 3 : return "";
 				case 4 : return "";
+				case 5 : return "";
+				case 6 : return "";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine default unit for enumeration type '%1' and index '%2'.")
@@ -1917,6 +1925,8 @@ namespace VICUS {
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
+				case 5 : return "#FFFFFF";
+				case 6 : return "#FFFFFF";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine color for enumeration type '%1' and index '%2'.")
@@ -2283,6 +2293,8 @@ namespace VICUS {
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
+				case 5 : return std::numeric_limits<double>::quiet_NaN();
+				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine default value for enumeration type '%1' and index '%2'.")
@@ -2379,7 +2391,7 @@ namespace VICUS {
 			// ZoneControlThermostat::ControlValue
 			case 42 : return 3;
 			// ZoneTemplate::SubTemplateType
-			case 43 : return 5;
+			case 43 : return 7;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::Count]");
@@ -2475,7 +2487,7 @@ namespace VICUS {
 			// ZoneControlThermostat::ControlValue
 			case 42 : return 2;
 			// ZoneTemplate::SubTemplateType
-			case 43 : return 5;
+			case 43 : return 7;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::MaxIndex]");

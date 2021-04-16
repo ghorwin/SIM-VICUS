@@ -207,6 +207,8 @@ KeywordListQt::KeywordListQt() {
 	tr("IntLoadLighting");
 	tr("IntLoadOther");
 	tr("ControlThermostat");
+	tr("Infiltration");
+	tr("NaturalVentilation");
 }
 
 
