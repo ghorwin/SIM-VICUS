@@ -352,8 +352,8 @@ Fließkommaparameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung d
 [options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
 |====================
 |Name|Vorgabeeinheit|Beschreibung|Wertebereich |Verwendung
-| `HeatingSetpoint` | C | konstanter Heizsollwert | {nbsp}<`CoolingSetpoint` | _erforderlich für Konstantes Modell_
-| `CoolingSetpoint` | C | konstanter Kühlsollwert | {nbsp}>`HeatingSetpoint` | _erforderlich für Konstantes Modell_
+| `HeatingSetpoint` | C | konstanter Heizsollwert | < `CoolingSetpoint` | _erforderlich für Modelltyp_ `Constant`
+| `CoolingSetpoint` | C | konstanter Kühlsollwert | > `HeatingSetpoint` | _erforderlich für Modelltyp_ `Constant`
 |====================
 
 ### TemperatureType
@@ -388,7 +388,8 @@ Die zonenspezifischen Ausgangsgrößen heißen:
 
 Dies sind vektoriell dargestellte Größen, die in Ausgangsdefinitionen referenziert werden müssen, z. B. mit: `HeatingSetpoint[id=3]` für den Heizsollwert in Zone #3.
 
-## Modell für Ideale thermische Konditionierung
+
+## Modell für ideale thermische Konditionierung
 
 Das Modell beschreibt ein ideles thermisches Konditionierungsmodell für eine ideale Raumluftkonditionierung.
 Der Objektlisten-tag `ZoneObjectList` identifiziert die Zonen, in denen das Modell berücksichtigt werden sollen. Es darf nur ein Modell pro Zone existieren.
@@ -399,8 +400,8 @@ Der Objektlisten-tag `ZoneObjectList` identifiziert die Zonen, in denen das Mode
 ----
 <ZoneIdealHeatingCooling id="200">
 	<ZoneObjectList>Office zones</ZoneObjectList>
-	<IBK:Parameter name="HeatingPowerPerArea" unit="W/m2">50</IBK:Parameter>
-	<IBK:Parameter name="CoolingPowerPerArea" unit="W/m2">20</IBK:Parameter>
+	<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">50</IBK:Parameter>
+	<IBK:Parameter name="MaxCoolingPowerPerArea" unit="W/m2">20</IBK:Parameter>
 </ZoneIdealHeatingCooling>
 ----
 ====
@@ -422,13 +423,13 @@ Fließkommaparameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung d
 [options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
 |====================
 |Name|Vorgabeeinheit|Beschreibung|Wertebereich |Verwendung
-| `HeatingPowerPerArea` | W/m2 | konstante max. Flächenheizlast | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich für Konstantes Modell_
-| `CoolingPowerPerArea` | W/m2 | konstante max. Flächenheizlast | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich für Konstantes Modell_
+| `MaxHeatingPowerPerArea` | W/m2 | maximale flächenbezogene Heizleistung | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_ 
+| `MaxCoolingPowerPerArea` | W/m2 | maximale flächenbezogene Kühlleistung | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_ 
 |====================
 
 [NOTE]
 ====
-Damit das Modell auf die jeweilige Zone angewendet wird, ist zwingend das <<ZoneControlThermostat>> nötig.
+Damit das Modell auf die jeweilige Zone angewendet wird, ist zwingend das <<ZoneControlThermostat>> nötig, welches für die gleichen Zone parametriert sein muss.
 ====
 
 Die zonenspezifischen Ausgangsgrößen heißen: 
