@@ -11,13 +11,16 @@ void NaturalVentilationModel::checkParameters() const {
 
 	int enumVar = P_VentilationRate;
 	switch (m_modelType) {
-		case NANDRAD::NaturalVentilationModel::MT_Constant:{
+		case NANDRAD::NaturalVentilationModel::MT_Constant: {
 			m_para[enumVar].checkedValue(NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t", enumVar),
 										 "1/h", "1/h", 0.0, true, 100, true,
 										   " 0 1/h <= Ventilation rate <= 100 1/h.");
-		}break;
+		} break;
+
 		case NANDRAD::NaturalVentilationModel::MT_Scheduled:
+			// nothing to check
 		break;
+
 		case NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR:{
 			m_para[enumVar].checkedValue(NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t", enumVar),
 										 "1/h", "1/h", 0.0, true, 100, true,
@@ -46,12 +49,9 @@ void NaturalVentilationModel::checkParameters() const {
 			m_para[enumVar].checkedValue(NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t", enumVar),
 										 "m/s", "m/s", 0, true, 40, true,
 										 " 0 m/s <= Maximum wind speed <= 40 m/s.");
-		}break;
-		case NANDRAD::NaturalVentilationModel::NUM_MT:
-		break;
-
+		} break;
+		case NANDRAD::NaturalVentilationModel::NUM_MT: break;
 	}
-
 
 }
 
