@@ -15,8 +15,8 @@ void ShadingControlModel::setup(const NANDRAD::ShadingControlModel & controller,
 								const Loads &loads)
 {
 	// overwrite tolerance band
-	double minValue = controller.m_para[NANDRAD::ShadingControlModel::P_MaxIntensity].value;
-	double maxValue = controller.m_para[NANDRAD::ShadingControlModel::P_MinIntensity].value;
+	double maxValue = controller.m_para[NANDRAD::ShadingControlModel::P_MaxIntensity].value;
+	double minValue = controller.m_para[NANDRAD::ShadingControlModel::P_MinIntensity].value;
 	// target value is average
 	m_targetValue = 0.5 * (minValue + maxValue);
 	// tolerance band is mean diffence to target

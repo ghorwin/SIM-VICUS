@@ -1277,7 +1277,9 @@ void NandradModel::initModels() {
 				throw IBK::Exception(ex, IBK::FormatString("Error initializing shading control model "
 														   "(id=%1).").arg(s.m_id), FUNC_ID);
 			}
-
+			// insert into time model container
+			m_timeModelContainer.push_back(mod);
+			// register state dependent model
 			registerStateDependendModel(mod);
 		}
 	}
