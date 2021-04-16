@@ -101,7 +101,6 @@ public:
 	*/
 	virtual const double * resultValueRef(const InputReference & quantity) const override;
 
-
 	// *** Other public member functions
 
 	/*! Returns number of conserved variables (i.e. length of y vector passed to yInitial() and update() ). */
@@ -109,6 +108,12 @@ public:
 
 	/*! Returns a vector of dependencies of all result quantities (including ydots) from input variables). */
 	void stateDependencies(std::vector< std::pair<const double *, const double *> > & resultInputValueReferences) const;
+
+
+	/*! Returns ID of associated zone at interface A (> 0 if a room zone is connected). */
+	unsigned int interfaceAZoneID() const;
+	/*! Returns ID of associated zone at interface B (> 0 if a room zone is connected). */
+	unsigned int interfaceBZoneID() const;
 
 	/*! Sets initial states in y vector.
 		This function is called after setup(), so that parameters needed for

@@ -60,6 +60,9 @@ public:
 
 	// *** Re-implemented from AbstractStateDependency
 
+	/*! Composes all input references. */
+	virtual void initInputReferences(const std::vector<AbstractModel*> & models) override;
+
 	/*! Returns vector with model input references.
 		Implicit models must generate their own model input references and populate the
 		vector argument.
@@ -84,6 +87,16 @@ private:
 	unsigned int									m_id;
 	/*! Display name (for error messages). */
 	std::string										m_displayName;
+
+	struct ConstructionInputData {
+		unsigned int	m_conID;
+		double			m_netArea;
+		std::string		m_refName;
+		const double *	m_valueRef = nullptr;
+	};
+
+	/*! Input references from constructions to this object. */
+	std::vector<ConstructionInputData>				m_inputRefs;
 
 	/*! Vector with input references. */
 	std::vector<const double*>						m_valueRefs;

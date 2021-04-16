@@ -310,6 +310,16 @@ void ConstructionStatesModel::stateDependencies(std::vector<std::pair<const doub
 }
 
 
+unsigned int ConstructionStatesModel::interfaceAZoneID() const {
+	return m_con->interfaceAZoneID();
+}
+
+
+unsigned int ConstructionStatesModel::interfaceBZoneID() const {
+	return m_con->interfaceBZoneID();
+}
+
+
 void ConstructionStatesModel::yInitial(double * y) const {
 	// retrieve initial temperature, which has already been checked for valid values
 	double T_initial = m_simPara->m_para[NANDRAD::SimulationParameter::P_InitialTemperature].value;
