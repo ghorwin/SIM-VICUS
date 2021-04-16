@@ -3,119 +3,50 @@
 [[models]]
 # Modellparametrisierung
 
-In diesem Abschnitt werden die verschiedenen Modellparametrisierungsblöcke beschrieben.
+In diesem Abschnitt werden die verschiedenen Modellparametrisierungsblöcke beschrieben. Modelle werden verwendet, um gleichartige Funktionalität für mehrere Objekte (meist Zonen) zu definieren. Die in den Modellblöcken abgelegten Parameter gelten dann für alle (via Objektlisten) ausgewählten Objekte. Allerdings können objektspezifische Eigenschaften (bspw. Nutzfläche bei Zonen) in die Modell einfließen.
 
 ## Natürliches Lüftungsmodell
-
-Das Modell für natürliche Lüftung definiert den Luftaustausch mit der Außenluft und beinhaltet Nutzerlüftung wie ungewollte Lüftung durch Leckagen. Die natürliche Lüftung wird für bestimmte Zonen aktiviert, indem ein Modellparametersatz `NaturalVentilationModel` definiert wird. Über die Objektliste werden die Zonen ausgewählt.
-
-====
-[source,xml]
-----
-<NaturalVentilationModel id="501" displayName="Zone vent" modelType="Constant">
-	<ZoneObjectList>Office zones</ZoneObjectList>
-	<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
-</NaturalVentilationModel>
-<NaturalVentilationModel id="502" displayName="Zone vent" modelType="Scheduled">
-	<ZoneObjectList>Other zones</ZoneObjectList>
-</NaturalVentilationModel>
-----
-====
-
-[IMPORTANT]
-====
-Es darf nur ein Lüftungsmodellblock für eine Zone definiert werden. Es dürfen also nicht zwei Lüftungsmodellblöcke mit Objektlisten definiert werden, die beide die gleiche(n) Zone(n) enthalten.
-====
-
-Das `NaturalVentilationModel` muss mit den folgenden XML-Attributen definiert werden:
-
-.Attribute
-[.indent-me]
-[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
-|====================
-| Attribut | Beschreibung | Format | Verwendung 
-| `id` | Kennung des natürlichen Lüftungsmodells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
-
-| `modelType` 
-a| Setzt den Typ des Lüftungsmodells 
-
-* `Constant` - Konstante Luftwechselrate
-* `Scheduled` - Luftwechselrate ändert sich nach einem definierten Zeitplan
-* `IncreasedDayVentilation` - Tagsüber kann die Lüftungsrate erhöht werden, wenn die Außenluft kleiner als die Raumluft ist und die Raumlufttemperatur einen Grenzwert übersteigt.
-
-| key | _erforderlich_
-|====================
-
-
-Gleitkommazahlen-Parameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des Tags `IBK:Parameter`):
-
-[options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
-|====================
-|Name|Vorgabeeinheit|Beschreibung|Wertebereich |Verwendung
-| `VentilationRate` | 1/h | Konstante Luftwechselrate | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich für Modelltyp_ `Constant`
-|====================
-
-Wenn der Modelltyp `Scheduled` verwendet wird, sind keine weiteren Parameter erforderlich, da die Luftwechselrate aus einem geplanten Parameter übernommen wird.
-
-Damit das Modell funktioniert, muss der Parameter `VentilationRateSchedule` in einem Zeitplan definiert sein (siehe <<schedules>>).
-
-Nachfolgend finden Sie ein Beispiel für einen Zeitplan, der den Parameter `VentilationRateSchedule` für ein solches Modell der geplanten natürlichen Lüftung bereitstellt:
-
-Beispiel für einen Zeitplan, der den Parameter _VentilationRateSchedule_ bereitstellt
-====
-[source,xml]
-----
-<ScheduleGroup objectList="All zones">
-	<!-- jeden Tag zwischen 8-10 -->
-	<Schedule type="AllDays">
-		<DailyCycles>
-			<DailyCycle interpolation="Constant">
-				<TimePoints>0 6 10</TimePoints>
-				<Values>VentilationRateSchedule [1/h]:0 0.4 0</Values>
-			</DailyCycle>
-		</DailyCycles>
-	</Schedule>
-	<!-- Dienstag keine Lüftung -->
-	<Schedule type="Tuesday">
-		<DailyCycles>
-			<DailyCycle interpolation="Constant">
-				<TimePoints>0</TimePoints>
-				<Values>VentilationRateSchedule [1/h]:0</Values>
-			</DailyCycle>
-		</DailyCycles>
-	</Schedule>
-	<!-- Wochenende nur am Nachmittag -->
-	<Schedule type="WeekEnd">
-		<DailyCycles>
-			<DailyCycle interpolation="Constant">
-				<TimePoints>0 14 16</TimePoints>
-				<Values>VentilationRateSchedule [1/h]:0 0.1 0</Values>
-			</DailyCycle>
-		</DailyCycles>
-	</Schedule>
-</ScheduleGroup>
-----
-====
-
-## Natürliches Lüftungsmodell DirksVersion
 
 Das Modell für natürliche Lüftung definiert den Luftaustausch mit der Außenluft und beinhaltet Nutzerlüftung wie ungewollte Lüftung durch Leckagen (Fugenlüftung/Infiltration). Die natürliche Lüftung wird für bestimmte Zonen aktiviert, indem ein Modellparametersatz `NaturalVentilationModel` definiert wird. Über die Objektliste werden die Zonen ausgewählt.
 
 ====
 [source,xml]
 ----
+<!-- Lüftungsmodell mit durchgängig konstanter Infiltration/Grundluftwechsel -->
 <NaturalVentilationModel id="501" displayName="Zone vent" modelType="Constant">
 	<ZoneObjectList>Office zones</ZoneObjectList>
 	<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
 </NaturalVentilationModel>
+<!-- Lüftungsmodell mit zeitabhängig geregelter Luftwechselrate -->
 <NaturalVentilationModel id="502" displayName="Zone vent" modelType="Scheduled">
 	<ZoneObjectList>Other zones</ZoneObjectList>
 </NaturalVentilationModel>
+<!-- Lüftungsmodell mit zeitabhängig geregelter, erhöhter Luftwechselrate und Grundluftwechsel -->
 <NaturalVentilationModel id="503" displayName="Zone vent" modelType="ScheduledWithBaseACR">
+	<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
+	<!-- Erhöhte Lüftungsrate verwenden, wenn Raumtemperature 23°C überschreitet -->
+	<IBK:Parameter name="MinimumRoomAirTemperatureACRLimit" unit="C">23</IBK:Parameter>
+	<!-- Keine Begrenzung der erhöhten Lüftung bei hohen Raumtemperaturen  -->
+	<IBK:Parameter name="MaximumRoomAirTemperatureACRLimit" unit="C">100</IBK:Parameter>
+	<!-- Parameter muss gegeben sein, um Regelung auszuschalten, sehr hohe Grenzwerte verwenden -->
+	<IBK:Parameter name="MaximumEnviromentAirTemperatureACRLimit" unit="C">100</IBK:Parameter>
+	<IBK:Parameter name="MinimumEnviromentAirTemperatureACRLimit" unit="C">-100</IBK:Parameter>
+	<IBK:Parameter name="DeltaTemperatureACRLimit" unit="K">0</IBK:Parameter>
+	<IBK:Parameter name="WindSpeedACRLimit" unit="m/s">10</IBK:Parameter>
+	<ZoneObjectList>Special zones</ZoneObjectList>
+</NaturalVentilationModel>
+
+<!-- Lüftungsmodell mit zeitabhängig geregelter, erhöhter Luftwechselrate und Grundluftwechsel,
+     Regelparameter werden über Schedules geliefert.
+-->
+<NaturalVentilationModel id="504" displayName="Zone vent" modelType="ScheduledWithBaseACR">
 	<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
 	<ZoneObjectList>Special zones</ZoneObjectList>
 </NaturalVentilationModel>
-<NaturalVentilationModel id="504" displayName="Zone vent" modelType="ScheduledWithBaseACR">
+
+<!-- Lüftungsmodell mit realistischer Berechnung der Luftwechselrate basierend auf 
+     Windgeschwindigkeit und Temperaturgradienten -->
+<NaturalVentilationModel id="505" displayName="Zone vent" modelType="Realistic">
 	<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
 	<IBK:Parameter name="ConstantCoefficient" unit="-">0.6</IBK:Parameter>
 	<IBK:Parameter name="TemperaturCoefficient" unit="1/K">0.04</IBK:Parameter>
@@ -125,6 +56,7 @@ Das Modell für natürliche Lüftung definiert den Luftaustausch mit der Außenl
 </NaturalVentilationModel>
 ----
 ====
+
 
 [IMPORTANT]
 ====
@@ -148,6 +80,8 @@ a| Setzt den Typ des Lüftungsmodells
 
 * `ScheduledWithBaseACR` - Es wird ein konstanter Luftwechsel und ein zeitabhängiger Luftwechsel - Scheduled with base air change rate -  integriert. Dabei kann der zeitabhängige Luftwechsel zusätzlich durch Steuerungsmodelle auf null gesetzt werden.
 
+* `Realistic`- TODO 
+
 | key | _erforderlich_
 |====================
 
@@ -158,29 +92,22 @@ Gleitkommazahlen-Parameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschrei
 |====================
 |Name|Vorgabeeinheit|Beschreibung|Wertebereich |Verwendung
 | `VentilationRate` | 1/h | Konstante Luftwechselrate | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich für Modelltyp_ `Constant` oder `ScheduledWithBaseACR`
-| `ConstantCoefficient` | - | Modifikationsfaktor C1 für die Luftwechselrate (Standardwert 1) | {nbsp}>={nbsp}0.0{nbsp} | _optional_
-| `TemperatureCoefficient` | 1/K | Modifikationsfaktor C2 für die Luftwechselrate (Standardwert 0) | {nbsp}>={nbsp}0.0{nbsp} | _optional_
-| `WindCoefficient` | s/m | Modifikationsfaktor C3 für die Luftwechselrate (Standardwert 0) | {nbsp}>={nbsp}0.0{nbsp} | _optional_
-| `SquaredWindCoefficient` | s2/m2 | Modifikationsfaktor C4 für die Luftwechselrate (Standardwert 0) | {nbsp}>={nbsp}0.0{nbsp} | _optional_
+| *`ConstantCoefficient` | - | Modifikationsfaktor C1 für die Luftwechselrate (Standardwert 1) | {nbsp}>={nbsp}0.0{nbsp} | _optional_
+| *`TemperatureCoefficient` | 1/K | Modifikationsfaktor C2 für die Luftwechselrate (Standardwert 0) | {nbsp}>={nbsp}0.0{nbsp} | _optional_
+| *`WindCoefficient` | s/m | Modifikationsfaktor C3 für die Luftwechselrate (Standardwert 0) | {nbsp}>={nbsp}0.0{nbsp} | _optional_
+| *`SquaredWindCoefficient` | s2/m2 | Modifikationsfaktor C4 für die Luftwechselrate (Standardwert 0) | {nbsp}>={nbsp}0.0{nbsp} | _optional_
 |====================
 
-[NOTE]
-====
-Eine allgemeine Abhängigkeit von Wind- und/oder Temperaturpotentialen ist möglich, wenn man für einen odere mehrere Koeffizienten Abweichungen von dem/den Standardwert(en) setzt. Die allgemeine Formel zur modifizierten Luftwechselrate lautet:
+(*) noch nicht implementiert
 
-n = n * (C1 + C2 * (Tzone - Tout) + C3 * windSpeed + C4 * windSpeed²)
 
-Die Modifikation der Luftwechselrate wird immer auf beide Luftwechselraten (konstant und zeitgesteuert) angewendet.
+Beim Modelltyp `Constant` wird durchweg eine konstante Luftwechselrate (Parameter `VentilationRate`) verwendet.
 
-====
-
-Wenn der Modelltyp `Scheduled` verwendet wird, sind keine weiteren Parameter erforderlich, da die Luftwechselrate aus einem geplanten Parameter übernommen wird.
-
-Damit das Modell funktioniert, muss der Parameter `VentilationRateSchedule` in einem Zeitplan definiert sein (siehe <<schedules>>).
+Beim Modelltyp `Scheduled` wird die Luftwechselrate aus einem Zeitplan (Parameter `VentilationRateSchedule`, siehe <<schedules>>) entnommen. Weitere Parameter sind nicht notwendig.
 
 Nachfolgend finden Sie ein Beispiel für einen Zeitplan, der den Parameter `VentilationRateSchedule` für ein solches Modell der geplanten natürlichen Lüftung bereitstellt:
 
-Beispiel für einen Zeitplan, der den Parameter _VentilationRateSchedule_ bereitstellt
+.Zeitplan, der den Parameter _VentilationRateSchedule_ bereitstellt
 ====
 [source,xml]
 ----
@@ -216,25 +143,56 @@ Beispiel für einen Zeitplan, der den Parameter _VentilationRateSchedule_ bereit
 ----
 ====
 
-Damit das Modell mit der Ausprägung `ScheduledWithBaseACR` verwendbar ist, müssen beide Parameter _VentilationRate_ und _VentilationRateSchedule_ spezifiziert werden.
 
-[NOTE]
-====
-TODO Andreas wollen wir jetzt das Controller Modell unabh. von diesem gestalten oder direkt die Controller Eigenschaften hier mit integrieren?
+Beim Modelltyp `ScheduledWithBaseACR` wird ein konstanter Grundluftwechsel (Parameter `VentilationRate`) verwendet und unter bestimmten Bedingungen wird ein zusätzlicher Luftwechsel `VentilationRateSchedule` verwendet.
+
+Die Luftwechselrate wird berechnet:
+
+```
+n = n_Grundluftwechsel                          // wenn Bedingungen nicht erfüllt
+n = n_Grundluftwechsel + n_erhöhterLuftwechsel  // wenn Bedingungen erfüllt
+```
+
+#### Regelbedingungen
+
+Folgende Bedingungen müssen _alle_ erfüllt sein, damit der erhöhte Luftwechsel addiert wird.
+
+- Raumluftzustand: `MinimumRoomAirTemperatureACRLimit` < T_Raum < `MaximumRoomAirTemperatureACRLimit`
+- Außentemperatur: `MinimumEnviromentAirTemperatureACRLimit`< T_Außenluft < `MaximumEnviromentAirTemperatureACRLimit`
+- Temperaturdifferenz: T_Raum - T_Außenluft < `DeltaTemperatureACRLimit`, dabei kann `DeltaTemperatureACRLimit` auch negativ sein. Damit können auch Heizeffekte (Raum kalt, Außenluft warm) berücksichtigt werden. 
+- Windgeschwindigkeit: akt. Wingeschwindigkeit < `WindSpeedACRLimit`
+
+
+
+
+Damit das Modell mit der Ausprägung `ScheduledWithBaseACR` verwendbar ist, müssen beide Parameter _VentilationRate_ und _VentilationRateSchedule_ spezifiziert werden.
 
 Gleitkommazahlen-Parameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des Tags `IBK:Parameter`):
 
 [options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
 |====================
 |Name|Vorgabeeinheit|Beschreibung|Wertebereich |Verwendung
-| `MaximumRoomAirTemperature` | C | Maximale Raumlufttemperatur für aktive Lüftung. | -100 ... 100  | _xxx_
-| `MinimumRoomAirTemperature` | C | Minimale Raumlufttemperatur für aktive Lüftung. | -100 ... 100  | _xxx_
-| `MaximumEnviromentAirTemperature` | C | Maximale Außenlufttemperatur für aktive Lüftung. | -100 ... 100  | _xxx_
-| `MinimumEnviromentAirTemperature` | C | Minimale Außenlufttemperatur für aktive Lüftung. | -100 ... 100  | _xxx_
-| `DeltaTemperature` | K | Minimale Differenz von Raumlufttemperatur minus Außenlufttemperatur (Tzone - Tout) für aktive Lüftung. | -100 ... 100  | _xxx_
-| `WindSpeed` | m/s | Maximale Windgeschwindigkeit für aktive Lüftung. | 0 ... 40  | _xxx_
+| `MaximumRoomAirTemperatureACRLimit` | C | Maximale Raumlufttemperatur für aktive Lüftung. | -100 ... 100  | _xxx_
+| `MinimumRoomAirTemperatureACRLimit` | C | Minimale Raumlufttemperatur für aktive Lüftung. | -100 ... 100  | _xxx_
+| `MaximumEnviromentAirTemperatureACRLimit` | C | Maximale Außenlufttemperatur für aktive Lüftung. | -100 ... 100  | _xxx_
+| `MinimumEnviromentAirTemperatureACRLimit` | C | Minimale Außenlufttemperatur für aktive Lüftung. | -100 ... 100  | _xxx_
+| `DeltaTemperatureACRLimit` | K | Minimale Differenz von Raumlufttemperatur minus Außenlufttemperatur (Tzone - Tout) für aktive Lüftung. | -100 ... 100  | _xxx_
+| `WindSpeedACRLimit` | m/s | Maximale Windgeschwindigkeit für aktive Lüftung. | 0 ... 40  | _xxx_
 |====================
 
+Die dazugehörigen zeitabhängigen Schedule-Parameter sind gleichartig benannt, jedoch jeweils mit dem Suffix `Schedule`.
+
+
+
+[NOTE]
+====
+Eine allgemeine Abhängigkeit von Wind- und/oder Temperaturpotentialen ist möglich, wenn man für einen odere mehrere Koeffizienten Abweichungen von dem/den Standardwert(en) setzt. Die allgemeine Formel zur modifizierten Luftwechselrate lautet:
+
+n = n * (C1 + C2 * (Tzone - Tout) + C3 * windSpeed + C4 * windSpeed²)
+
+Die Modifikation der Luftwechselrate wird immer auf beide Luftwechselraten (konstant und zeitgesteuert) angewendet.
+
+TODO : Spezifizieren
 
 ====
 
