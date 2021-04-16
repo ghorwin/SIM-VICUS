@@ -28,6 +28,7 @@ void NaturalVentilationModel::setup(const NANDRAD::NaturalVentilationModel & ven
 
 	// no need to check for parameters here, the NaturalVentilationModel parametrization was already checked
 	// schedule parameters are requested below
+	m_ventilationRate = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_VentilationRate].value;
 
 	// all models require an object list with indication of ventilated zones
 	if (m_ventilationModel->m_zoneObjectList.empty())
