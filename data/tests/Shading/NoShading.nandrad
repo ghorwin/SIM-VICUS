@@ -25,7 +25,7 @@
 		
 		<ConstructionInstances>
 			
-			<ConstructionInstance id="1" displayName="North">
+			<ConstructionInstance id="11" displayName="North">
 				<ConstructionTypeId>10001</ConstructionTypeId>
 				<!-- North -->
 				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
@@ -57,7 +57,7 @@
 				</EmbeddedObjects>
 			</ConstructionInstance>
 
-			<ConstructionInstance id="2" displayName="East">
+			<ConstructionInstance id="12" displayName="East">
 				<ConstructionTypeId>10001</ConstructionTypeId>
 				<!-- East -->
 				<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
@@ -89,7 +89,7 @@
 				</EmbeddedObjects>
 			</ConstructionInstance>
 
-			<ConstructionInstance id="3" displayName="South">
+			<ConstructionInstance id="13" displayName="South">
 				<ConstructionTypeId>10001</ConstructionTypeId>
 				<!-- South -->
 				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
@@ -121,7 +121,7 @@
 				</EmbeddedObjects>
 			</ConstructionInstance>
 
-			<ConstructionInstance id="4" displayName="West">
+			<ConstructionInstance id="14" displayName="West">
 				<ConstructionTypeId>10001</ConstructionTypeId>
 				<!-- West -->
 				<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>

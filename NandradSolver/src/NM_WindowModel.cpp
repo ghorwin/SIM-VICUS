@@ -33,7 +33,8 @@ void WindowModel::setup(const NANDRAD::EmbeddedObjectWindow & windowModelPara,
 	// TODO : warn if solar loads on either side --> should be signaled already on construction level
 
 	// overwrite constant shadig factor
-	if(m_windowModel->m_shading.m_modelType == NANDRAD::WindowShading::MT_Constant) {
+	if(m_windowModel->m_shading.m_modelType == NANDRAD::WindowShading::MT_Constant ||
+	   m_windowModel->m_shading.m_modelType == NANDRAD::WindowShading::MT_Controlled) {
 		// parameters were checked already
 		IBK_ASSERT(! m_windowModel->m_shading.m_para[NANDRAD::WindowShading::P_ReductionFactor].name.empty());
 		m_shadingFactor = m_windowModel->m_shading.m_para[NANDRAD::WindowShading::P_ReductionFactor].value;
@@ -287,11 +288,13 @@ int WindowModel::update() {
 		if(m_windowModel->m_shading.m_modelType == NANDRAD::WindowShading::MT_Controlled) {
 			// retrieve shading factor from input references
 			IBK_ASSERT(m_valueRefs[InputRef_ShadingFactor] != nullptr);
-			m_shadingFactor = *m_valueRefs[InputRef_ShadingFactor];
+			double controlledShadingFactor = *m_valueRefs[InputRef_ShadingFactor];
+			qRadGlobal *= m_shadingFactor * controlledShadingFactor;
+			qRadDir *= m_shadingFactor * controlledShadingFactor;
+			qRadDiff *= m_shadingFactor * controlledShadingFactor;
 		}
-
 		// reduce by shading factor
-		if(m_shadingFactor != 1.0) {
+		else if(m_shadingFactor != 1.0) {
 			qRadGlobal *= m_shadingFactor;
 			qRadDir *= m_shadingFactor;
 			qRadDiff *= m_shadingFactor;

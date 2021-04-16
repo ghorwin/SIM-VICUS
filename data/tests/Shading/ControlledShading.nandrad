@@ -35,7 +35,7 @@
 		
 		<ConstructionInstances>
 			
-			<ConstructionInstance id="1" displayName="North">
+			<ConstructionInstance id="11" displayName="North">
 				<ConstructionTypeId>10001</ConstructionTypeId>
 				<!-- North -->
 				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
@@ -71,7 +71,7 @@
 				</EmbeddedObjects>
 			</ConstructionInstance>
 
-			<ConstructionInstance id="2" displayName="East">
+			<ConstructionInstance id="12" displayName="East">
 				<ConstructionTypeId>10001</ConstructionTypeId>
 				<!-- East -->
 				<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
@@ -109,7 +109,7 @@
 				</EmbeddedObjects>
 			</ConstructionInstance>
 
-			<ConstructionInstance id="3" displayName="South">
+			<ConstructionInstance id="13" displayName="South">
 				<ConstructionTypeId>10001</ConstructionTypeId>
 				<!-- South -->
 				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
@@ -147,7 +147,7 @@
 				</EmbeddedObjects>
 			</ConstructionInstance>
 
-			<ConstructionInstance id="4" displayName="West">
+			<ConstructionInstance id="14" displayName="West">
 				<ConstructionTypeId>10001</ConstructionTypeId>
 				<!-- West -->
 				<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
@@ -178,7 +178,7 @@
 							<!-- Shading is controlled by control model with ID 2001 (radiation sensor on window) -->
 							<Shading modelType="Controlled" controlModelID="2001">
 								<!-- When control model says "shading down" and returns 1, the factor 0.6 is to be applied. -->
-								<IBK:Parameter name="ReductionFactor" unit="---">0.6</IBK:Parameter>
+								<IBK:Parameter name="ReductionFactor" unit="---">1</IBK:Parameter>
 							</Shading>
 						</Window>
 					</EmbeddedObject>
@@ -259,6 +259,11 @@
 					<ObjectListName>Windows</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>ShadingFactor</Quantity>
+					<ObjectListName>Models</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
 			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
@@ -278,6 +283,10 @@
 			<ObjectList name="Windows">
 				<FilterID>*</FilterID>
 				<ReferenceType>EmbeddedObject</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Models">
+				<FilterID>*</FilterID>
+				<ReferenceType>Model</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
 	</Project>

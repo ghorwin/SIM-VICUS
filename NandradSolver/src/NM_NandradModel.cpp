@@ -1274,7 +1274,7 @@ void NandradModel::initModels() {
 				mod->setup(s, *m_loads);
 			}
 			catch (IBK::Exception & ex) {
-				throw IBK::Exception(ex, IBK::FormatString("Error initializing ahsding control model "
+				throw IBK::Exception(ex, IBK::FormatString("Error initializing shading control model "
 														   "(id=%1).").arg(s.m_id), FUNC_ID);
 			}
 

@@ -33,7 +33,7 @@ void ShadingControlModel::checkParameters(const std::vector<Sensor> &sensors,
 	// retrieve network component
 	std::vector<Sensor>::const_iterator sit =
 			std::find(sensors.begin(), sensors.end(), m_sensorID);
-	if (sit == sensors.end()) {
+	if (sit != sensors.end()) {
 		// set reference
 		m_sensor = &(*sit);
 	}
