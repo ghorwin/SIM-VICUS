@@ -73,9 +73,6 @@ void ControlElement::readXML(const TiXmlElement * element) {
 				if (p.name == "SetPoint") {
 					m_setPoint = p; success = true;
 				}
-				else if (p.name == "MaximumControllerError") {
-					m_maximumControllerError = p; success = true;
-				}
 				else if (p.name == "MaximumSystemInput") {
 					m_maximumSystemInput = p; success = true;
 				}
@@ -127,10 +124,6 @@ TiXmlElement * ControlElement::writeXML(TiXmlElement * parent) const {
 	}
 	if (!m_setPointScheduleName.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "SetPointScheduleName", nullptr, std::string(), m_setPointScheduleName);
-	if (!m_maximumControllerError.name.empty()) {
-		IBK_ASSERT("MaximumControllerError" == m_maximumControllerError.name);
-		TiXmlElement::appendIBKParameterElement(e, "MaximumControllerError", m_maximumControllerError.IO_unit.name(), m_maximumControllerError.get_value());
-	}
 	if (!m_maximumSystemInput.name.empty()) {
 		IBK_ASSERT("MaximumSystemInput" == m_maximumSystemInput.name);
 		TiXmlElement::appendIBKParameterElement(e, "MaximumSystemInput", m_maximumSystemInput.IO_unit.name(), m_maximumSystemInput.get_value());

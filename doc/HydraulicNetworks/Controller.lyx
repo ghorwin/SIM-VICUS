@@ -229,8 +229,8 @@ Die Idee: Es gibt ein Element (HydraulicFlowElement), an welchem z.B.
  mit dem die Regelgröße beeinflusst werden kann.
  Das Element führt notwendige Vorberechnungen durch und gibt dann den Istwert
  an den Regler weiter.
- Der Regler ist parametrisiert mit Sollwert und Reglerparametern und berechnet
- daraus eine abstrakte Stellgröße.
+ Der Regler ist parametrisiert mit den Reglerparametern und berechnet daraus
+ eine abstrakte Stellgröße.
  Diese wird vom Element interpretiert und entsprechend umgesetzt.
 \end_layout
 
@@ -280,7 +280,7 @@ status open
 \begin_layout Standard
 Der Wärmeübertrager wird im hydraulischen Netzwerk als 
 \series bold
-FixedPressureLossCoefficientElement
+ControlledPressureLossCoefficientElement
 \series default
  interpretiert.
  Diesem sind bekannt 
@@ -319,7 +319,11 @@ der Druckverlustkoeffizient
 \end_layout
 
 \begin_layout Standard
-Das Regelelement (Controlelement):
+Das 
+\series bold
+Regelelement
+\series default
+ (Controlelement):
 \end_layout
 
 \begin_layout Itemize
@@ -331,19 +335,11 @@ kann ein Skalar oder eine Spline oder Schedule sein
 \end_layout
 
 \begin_layout Itemize
-nominale Temperaturdifferenz 
-\begin_inset Formula $\Delta T_{max}=5$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Itemize
-nominaler Zeta-Wert 
+maximale Stellgröße 
 \begin_inset Formula $\zeta_{max}$
 \end_inset
 
-=1
+(= maximum system input)
 \end_layout
 
 \begin_layout Standard
@@ -360,25 +356,21 @@ Reglerparameter
 \begin_inset Formula $k_{p}$
 \end_inset
 
-=1
+, 
+\begin_inset Formula $k_{i}$
+\end_inset
+
+
 \end_layout
 
 \begin_layout Itemize
 der Reglertyp (P, PI, ...)
 \end_layout
 
-\begin_layout Itemize
-Toleranzabweichung 
-\begin_inset Formula $e_{min}$
-\end_inset
-
-
-\end_layout
-
 \begin_layout Standard
 Damit kann die Temperaturdifferenz im 
 \series bold
-FixedPressureLossCoefficientElement
+ControlledPressureLossCoefficientElement
 \series default
  berechnet werden
 \begin_inset Formula 
@@ -389,6 +381,14 @@ FixedPressureLossCoefficientElement
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+Die Regelabweichung 
+\begin_inset Formula $e$
+\end_inset
+
+ ist dann
 \end_layout
 
 \begin_layout Standard
@@ -403,12 +403,7 @@ e=T_{soll}-\Delta T
 \end_layout
 
 \begin_layout Standard
-Dies ist die Istgröße 
-\begin_inset Formula $x=e$
-\end_inset
-
-.
- Diese kann nun an den 
+Diese kann nun an den 
 \series bold
 Regler
 \series default
@@ -432,11 +427,7 @@ Zur Auswertung von
 \begin_inset Formula $f_{Regler}$
 \end_inset
 
-wird der Sollwert 
-\begin_inset Formula $x_{target}$
-\end_inset
-
-und der Reglerparameter 
+werden die Reglerparameter 
 \begin_inset Formula $k_{p}$
 \end_inset
 
@@ -459,13 +450,17 @@ y=k_{p}e+k_{i}\int edt
 \begin_layout Standard
 Der Wärmeübertrager (das 
 \series bold
-FixedPressureLossCoefficientElement)
+ControlledPressureLossCoefficientElement)
 \series default
  interpretiert diesen Wert als 
 \begin_inset Formula $\zeta$
 \end_inset
 
--Wert
+-Wert und klippt bei 0 und 
+\begin_inset Formula $\zeta_{max}$
+\end_inset
+
+
 \begin_inset Formula 
 \[
 \zeta_{control}=\begin{cases}
@@ -483,7 +478,7 @@ y & y\leq\zeta_{max}\\
 \begin_layout Standard
 Der Druckverlust im 
 \series bold
-FixedPressureLossCoefficientElement
+ControlledPressureLossCoefficientElement
 \series default
  ist dann
 \begin_inset Formula 
@@ -499,7 +494,7 @@ FixedPressureLossCoefficientElement
 \begin_layout Standard
 Die Systemfunktion des 
 \series bold
-FixedPressureLossCoefficientElement
+ControlledPressureLossCoefficientElement
 \series default
  ist
 \begin_inset Formula 
