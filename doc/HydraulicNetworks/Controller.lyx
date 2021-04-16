@@ -394,21 +394,7 @@ FixedPressureLossCoefficientElement
 \begin_layout Standard
 \begin_inset Formula 
 \[
-e*=T_{soll}-\Delta T
-\]
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\[
-e=\begin{cases}
-0 & e*<e_{min}\\
-e* & e*\geq e_{min}
-\end{cases}
+e=T_{soll}-\Delta T
 \]
 
 \end_inset
