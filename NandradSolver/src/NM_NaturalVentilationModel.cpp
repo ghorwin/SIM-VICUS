@@ -26,30 +26,9 @@ void NaturalVentilationModel::setup(const NANDRAD::NaturalVentilationModel & ven
 	m_zones = &zones;
 	m_simPara = &simPara;
 
-	// check for mandatory parameters
-	switch (m_ventilationModel->m_modelType) {
-		case NANDRAD::NaturalVentilationModel::MT_Constant :
-			m_ventilationRate = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_VentilationRate].checkedValue(
-				"VentilationRate", "1/s",
-				"1/h", 0, false, std::numeric_limits<double>::max(), false, "Invalid parameter.");
-		break;
-
-		case NANDRAD::NaturalVentilationModel::MT_Scheduled : {
-			// nothing to check, we request VentilationRateSchedule via mandatory InputReference
-		} break;
-
-		case NANDRAD::NaturalVentilationModel::MT_IncreasedDayVentilation : {
-			m_increasedVentilationRate = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_IncreasedVentilationRate].checkedValue(
-						"IncreasedVentilationRate", "1/s",
-						"1/h", 0, false, std::numeric_limits<double>::max(), false, "Invalid parameter.");
-			m_thresholdTemperature = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_ThresholdTemperature].checkedValue(
-						"ThresholdTemperature", "C",
-						"C", -20, false, std::numeric_limits<double>::max(), false, "Invalid parameter.");
-		} break;
-
-		default:
-			throw IBK::Exception(IBK::FormatString("Unknown/undefined model ID."), FUNC_ID);
-	}
+	// no need to check for parameters here, the NaturalVentilationModel parametrization was already checked
+	// schedule parameters are requested below
+	m_ventilationRate = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_VentilationRate].value;
 
 	// all models require an object list with indication of ventilated zones
 	if (m_ventilationModel->m_zoneObjectList.empty())
@@ -178,17 +157,52 @@ void NaturalVentilationModel::inputReferences(std::vector<InputReference> & inpu
 		inputRefs.push_back(ref);
 	}
 
-
-	// for scheduled ventilation model, also request zone-specific InfiltrationRate from schedules
-	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_Scheduled) {
+	// offset 1 + nZones
+	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_Scheduled
+		|| m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR)
+	{
 		for (unsigned int id : m_objectList->m_filterID.m_ids) {
 			InputReference ref;
 			ref.m_id = id;
 			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
-			ref.m_name.m_name = "VentilationRateSchedule"; // to avoid re-using the variable 'VentilationRate' that might be published by a zone model
+			ref.m_name.m_name = "VentilationRateSchedule";
 			ref.m_required = true;
 			inputRefs.push_back(ref);
 		}
+	}
+
+	std::vector<std::string> requiredSchedules;
+	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR) {
+		requiredSchedules.push_back("MaximumRoomAirTemperatureACRLimit");
+		requiredSchedules.push_back("MinimumRoomAirTemperatureACRLimit");
+		requiredSchedules.push_back("MaximumEnviromentAirTemperatureACRLimit");
+		requiredSchedules.push_back("MinimumEnviromentAirTemperatureACRLimit");
+		requiredSchedules.push_back("DeltaTemperatureACRLimit");
+		requiredSchedules.push_back("WindSpeedACRLimit");
+	}
+
+	// now create a zone-specific schedule request for all variables
+	// offset 1 + 2*nZones
+	for (const std::string & varName : requiredSchedules) {
+		for (unsigned int id : m_objectList->m_filterID.m_ids) {
+			InputReference ref;
+			ref.m_id = id;
+			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+			ref.m_name.m_name = varName;
+			ref.m_required = false; // these are optional
+			inputRefs.push_back(ref);
+		}
+	}
+
+	// offset 1 + 8*nZones
+	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR) {
+		// also the wind speed from location
+		InputReference ref;
+		ref.m_id = 0;
+		ref.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
+		ref.m_name.m_name = "WindVelocity";
+		ref.m_required = true;
+		inputRefs.push_back(ref);
 	}
 }
 
@@ -197,11 +211,14 @@ void NaturalVentilationModel::setInputValueRefs(const std::vector<QuantityDescri
 												const std::vector<const double *> & resultValueRefs)
 {
 	// simply store and check value references
-	unsigned int expectedSize = 1 + m_objectList->m_filterID.m_ids.size();
+	unsigned int expectedSize = 1 + m_objectList->m_filterID.m_ids.size(); // ambient temperature and all zone's temperatures
 	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_Scheduled)
-		expectedSize += m_objectList->m_filterID.m_ids.size();
+		expectedSize += m_objectList->m_filterID.m_ids.size(); // ventilation rate
+	else if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR) {
+		expectedSize += 7*m_objectList->m_filterID.m_ids.size(); // 7 zone-specific schedules
+	}
 	IBK_ASSERT(resultValueRefs.size() == expectedSize);
-	m_valueRefs = resultValueRefs; // Note: we set all our input refs as mandatory, so we can rely on getting valid pointers
+	m_valueRefs = resultValueRefs;
 }
 
 
@@ -213,11 +230,9 @@ void NaturalVentilationModel::stateDependencies(std::vector<std::pair<const doub
 	for (unsigned int i=0; i<m_objectList->m_filterID.m_ids.size(); ++i) {
 		// pair: result - input
 
-		// dependency on ambient temperature
-		/// \todo clarify, if we need to specify dependencies on purely time-dependent quantities
-//		resultInputValueReferences.push_back(
-//					std::make_pair(m_vectorValuedResults[VVR_InfiltrationHeatFlux].dataPtr() + i, m_valueRefs[0]) );
 		// dependency on room air temperature of corresponding zone
+		resultInputValueReferences.push_back(
+					std::make_pair(m_vectorValuedResults[VVR_VentilationRate].dataPtr() + i, m_valueRefs[1+i]) );
 		resultInputValueReferences.push_back(
 					std::make_pair(m_vectorValuedResults[VVR_VentilationHeatFlux].dataPtr() + i, m_valueRefs[1+i]) );
 	}
@@ -249,21 +264,82 @@ int NaturalVentilationModel::update() {
 				rate = *m_valueRefs[1+zoneCount+i];
 			} break;
 
-			case NANDRAD::NaturalVentilationModel::MT_IncreasedDayVentilation : {
-				// TODO Andreas, implement
+			case NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR : {
+				// get all variables, either from schedules or fall-back to parameters
+				const double * varPtr;
+				double varMaximumEnviromentAirTemperatureACRLimit = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_MaximumEnviromentAirTemperatureACRLimit].value;
+				if ( (varPtr=m_valueRefs[1 + zoneCount*4 + i]) != nullptr) // offset block 4
+					varMaximumEnviromentAirTemperatureACRLimit = *varPtr;
+				double varMinimumEnviromentAirTemperatureACRLimit = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_MinimumEnviromentAirTemperatureACRLimit].value;
+				if ( (varPtr=m_valueRefs[1 + zoneCount*5 + i]) != nullptr) // offset block 5
+					varMinimumEnviromentAirTemperatureACRLimit = *varPtr;
 
-				// daytime?
+				// compare temperature range
+				if (varMinimumEnviromentAirTemperatureACRLimit > Tambient) break;
+				if (varMaximumEnviromentAirTemperatureACRLimit < Tambient) break;
 
-				// for now, we use the P-controller-variant
-				if (Tzone > m_thresholdTemperature) {
+				double varWindVelocity = *m_valueRefs[1+zoneCount*8];
+				double varWindSpeedACRLimit = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_WindSpeedACRLimit].value;
+				if ( (varPtr=m_valueRefs[1 + zoneCount*7 + i]) != nullptr)
+					varWindSpeedACRLimit = *varPtr;
 
-					const double DELTA_T = 0.2; // if exceeding threshold temperature by this offset, maximum ventilation is enabled
-					double P_control = Tzone - m_thresholdTemperature;
-					double rateIncrease = m_increasedVentilationRate - m_ventilationRate;
+				if (varWindVelocity > varWindSpeedACRLimit) break;
 
+				double varMaximumRoomAirTemperatureACRLimit = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_MaximumRoomAirTemperatureACRLimit].value;
+				if ( (varPtr=m_valueRefs[1 + zoneCount*3 + i]) != nullptr)
+					varMaximumRoomAirTemperatureACRLimit = *varPtr;
+				double varMinimumRoomAirTemperatureACRLimit = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_MinimumRoomAirTemperatureACRLimit].value;
+				if ( (varPtr=m_valueRefs[1 + zoneCount*4 + i]) != nullptr)
+					varMinimumRoomAirTemperatureACRLimit = *varPtr;
+				double varDeltaTemperatureACRLimit = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_DeltaTemperatureACRLimit].value;
+				if ( (varPtr=m_valueRefs[1 + zoneCount*6 + i]) != nullptr)
+					varDeltaTemperatureACRLimit = *varPtr;
+
+				// the remaining variants are all state-related variants and need some ramping
+
+				double DELTA_T = 0.2; // the ramping range
+
+				double scaleTmax = 1;
+				double scaleTmin = 1;
+				double scaleDeltaT = 1;
+
+				if (Tzone > varMaximumRoomAirTemperatureACRLimit) {
+					if (Tzone - DELTA_T > varMaximumRoomAirTemperatureACRLimit)
+						break;
+					// ramping range
 				}
 
+				if (Tzone < varMinimumRoomAirTemperatureACRLimit) {
+					if (Tzone + DELTA_T > varMinimumRoomAirTemperatureACRLimit)
+						break;
+					// TODO : ramping range
+				}
+
+				// for Delta, we need to distinguish heating/cooling scenario
+				if (varDeltaTemperatureACRLimit < 0) {
+					// heating, ambient air is warmer than room air
+					if (Tambient + varDeltaTemperatureACRLimit < Tzone) {
+						if (Tambient + varDeltaTemperatureACRLimit < Tzone - DELTA_T)
+							break;
+						// TODO : ramping range
+					}
+				}
+				else {
+					// cooling (summer), ambient air must be cooler than room air
+					if (Tambient + varDeltaTemperatureACRLimit > Tzone) {
+						if (Tambient + varDeltaTemperatureACRLimit > Tzone + DELTA_T)
+							break;
+						// TODO : ramping range
+					}
+				}
+
+				// now implement the control logic, we evaluate the room-temperature-related criterion last
+				double varVentilationRateSchedule = *m_valueRefs[1+zoneCount+i];
+
+				rate += scaleTmax * scaleTmin * scaleDeltaT * varVentilationRateSchedule;
+
 			} break;
+
 
 			default: ;
 		}

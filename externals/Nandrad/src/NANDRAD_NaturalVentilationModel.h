@@ -39,15 +39,19 @@ public:
 		/*! Ventilation rate is provided as 'InfiltrationRateSchedule' schedule parameter. */
 		MT_Scheduled,					// Keyword: Scheduled				'Scheduled ventilation rate'
 		/*! Increased day time ventilation. */
-		MT_IncreasedDayVentilation,		// Keyword: IncreasedDayVentilation	'Increased ventilation during daytime when conditions apply'
+		MT_ScheduledWithBaseACR,		// Keyword: ScheduledWithBaseACR	'Constant basic air exchange (infiltration) with an additional increased air exchange if the control conditions are met. '
 		NUM_MT
 	};
 
 	/*! Model parameters. */
 	enum para_t {
-		P_VentilationRate,			// Keyword: VentilationRate				[1/h]		'Ventilation rate'
-		P_IncreasedVentilationRate,	// Keyword: IncreasedVentilationRate	[1/h]		'Increased ventilation rate when conditions apply'
-		P_ThresholdTemperature,		// Keyword: ThresholdTemperature		[C]			'Temperature limit above which the increased ventilation rate shall be used'
+		P_VentilationRate,							// Keyword: VentilationRate							[1/h]		'Ventilation rate'
+		P_MaximumRoomAirTemperatureACRLimit,		// Keyword: MaximumRoomAirTemperatureACRLimit		[C]			'Condition for ventilation increase'
+		P_MinimumRoomAirTemperatureACRLimit,		// Keyword: MinimumRoomAirTemperatureACRLimit		[C]			'Condition for ventilation increase'
+		P_MaximumEnviromentAirTemperatureACRLimit,	// Keyword: MaximumEnviromentAirTemperatureACRLimit	[C]			'Condition for ventilation increase'
+		P_MinimumEnviromentAirTemperatureACRLimit,	// Keyword: MinimumEnviromentAirTemperatureACRLimit	[C]			'Condition for ventilation increase'
+		P_DeltaTemperatureACRLimit,					// Keyword: DeltaTemperatureACRLimit				[K]			'Condition for ventilation increase'
+		P_WindSpeedACRLimit,						// Keyword: WindSpeedACRLimit						[m/s]		'Condition for ventilation increase'
 		NUM_P
 	};
 

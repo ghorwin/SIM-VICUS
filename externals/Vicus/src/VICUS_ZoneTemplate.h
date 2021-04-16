@@ -27,6 +27,8 @@ public:
 		ST_IntLoadLighting,			// Keyword: IntLoadLighting
 		ST_IntLoadOther,			// Keyword: IntLoadOther
 		ST_ControlThermostat,		// Keyword: ControlThermostat
+		ST_Infiltration,			// Keyword: Infiltration
+		ST_VentilationNatural,		// Keyword: NaturalVentilation
 		NUM_ST
 	};
 

@@ -34,7 +34,7 @@ namespace NANDRAD_MODEL {
 	const char * const INVALID_KEYWORD_INDEX_STRING = "KEYWORD_ERROR_STRING: Invalid type index";
 
 	/*! Holds a list of all enum types/categories. */
-	const char * const ENUM_TYPES[15] = {
+	const char * const ENUM_TYPES[16] = {
 		"ConstructionBalanceModel::Results",
 		"ConstructionBalanceModel::VectorValuedResults",
 		"ConstructionStatesModel::VectorValuedResults",
@@ -49,12 +49,13 @@ namespace NANDRAD_MODEL {
 		"RoomRadiationLoadsModel::Results",
 		"RoomStatesModel::Results",
 		"Schedules::KnownQuantities",
+		"ThermalComfortModel::Results",
 		"WindowModel::Results"
 	};
 
 	/*! Converts a category string to respective enumeration value. */
 	int enum2index(const std::string & enumtype) {
-		for (int i=0; i<15; ++i) {
+		for (int i=0; i<16; ++i) {
 			if (enumtype == ENUM_TYPES[i]) return i;
 		}
 		//std::cerr << "Unknown enumeration type '" << enumtype<< "'." << std::endl;
@@ -189,8 +190,13 @@ namespace NANDRAD_MODEL {
 				case 2 : return "PersonHeatLoadPerAreaSchedule";
 				case 3 : return "LightingHeatLoadPerAreaSchedule";
 			} break;
-			// WindowModel::Results
+			// ThermalComfortModel::Results
 			case 14 :
+			switch (t) {
+				case 0 : return "OperativeTemperature";
+			} break;
+			// WindowModel::Results
+			case 15 :
 			switch (t) {
 				case 0 : return "FluxHeatConductionA";
 				case 1 : return "FluxHeatConductionB";
@@ -328,8 +334,13 @@ namespace NANDRAD_MODEL {
 				case 2 : return "PersonHeatLoadPerAreaSchedule";
 				case 3 : return "LightingHeatLoadPerAreaSchedule";
 			} break;
-			// WindowModel::Results
+			// ThermalComfortModel::Results
 			case 14 :
+			switch (t) {
+				case 0 : return "OperativeTemperature";
+			} break;
+			// WindowModel::Results
+			case 15 :
 			switch (t) {
 				case 0 : return "FluxHeatConductionA";
 				case 1 : return "FluxHeatConductionB";
@@ -468,8 +479,13 @@ namespace NANDRAD_MODEL {
 				case 2 : if (no_description != nullptr) *no_description = true; return "PersonHeatLoadPerAreaSchedule";
 				case 3 : if (no_description != nullptr) *no_description = true; return "LightingHeatLoadPerAreaSchedule";
 			} break;
-			// WindowModel::Results
+			// ThermalComfortModel::Results
 			case 14 :
+			switch (t) {
+				case 0 : return "Operative temperature";
+			} break;
+			// WindowModel::Results
+			case 15 :
 			switch (t) {
 				case 0 : return "Heat conduction flux across interface A (into window).";
 				case 1 : return "Heat conduction flux across interface B (into window).";
@@ -607,8 +623,13 @@ namespace NANDRAD_MODEL {
 				case 2 : return "W/m2";
 				case 3 : return "W/m2";
 			} break;
-			// WindowModel::Results
+			// ThermalComfortModel::Results
 			case 14 :
+			switch (t) {
+				case 0 : return "C";
+			} break;
+			// WindowModel::Results
+			case 15 :
 			switch (t) {
 				case 0 : return "W";
 				case 1 : return "W";
@@ -746,8 +767,13 @@ namespace NANDRAD_MODEL {
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
 			} break;
-			// WindowModel::Results
+			// ThermalComfortModel::Results
 			case 14 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+			} break;
+			// WindowModel::Results
+			case 15 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -885,8 +911,13 @@ namespace NANDRAD_MODEL {
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// WindowModel::Results
+			// ThermalComfortModel::Results
 			case 14 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// WindowModel::Results
+			case 15 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -929,8 +960,10 @@ namespace NANDRAD_MODEL {
 			case 12 : return 3;
 			// Schedules::KnownQuantities
 			case 13 : return 4;
+			// ThermalComfortModel::Results
+			case 14 : return 1;
 			// WindowModel::Results
-			case 14 : return 4;
+			case 15 : return 4;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::Count]");
@@ -967,8 +1000,10 @@ namespace NANDRAD_MODEL {
 			case 12 : return 2;
 			// Schedules::KnownQuantities
 			case 13 : return 3;
+			// ThermalComfortModel::Results
+			case 14 : return 0;
 			// WindowModel::Results
-			case 14 : return 4;
+			case 15 : return 4;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::MaxIndex]");
