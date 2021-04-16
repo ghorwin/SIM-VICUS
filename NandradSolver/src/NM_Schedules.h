@@ -69,6 +69,14 @@ public:
 		SQ_EquipmentHeatLoadPerAreaSchedule,	// Keyword: EquipmentHeatLoadPerAreaSchedule [W/m2]
 		SQ_PersonHeatLoadPerAreaSchedule,		// Keyword: PersonHeatLoadPerAreaSchedule [W/m2]
 		SQ_LightingHeatLoadPerAreaSchedule,		// Keyword: LightingHeatLoadPerAreaSchedule [W/m2]
+		SQ_MaximumRoomAirTemperatureACRLimitSchedule,			//Keyword: MaximumRoomAirTemperatureACRLimitSchedule [C]
+		SQ_MinimumRoomAirTemperatureACRLimitSchedule,			//Keyword: MinimumRoomAirTemperatureACRLimitSchedule [C]
+		SQ_MaximumEnviromentAirTemperatureACRLimitSchedule,		//Keyword: MaximumEnviromentAirTemperatureACRLimitSchedule [C]
+		SQ_MinimumEnviromentAirTemperatureACRLimitSchedule,		//Keyword: MinimumEnviromentAirTemperatureACRLimitSchedule [C]
+		SQ_DeltaTemperatureACRLimitSchedule,					//Keyword: DeltaTemperatureACRLimitSchedule [K]
+		SQ_WindSpeedACRLimitSchedule,							//Keyword: WindSpeedACRLimitSchedule [m/s]
+
+
 		NUM_SQ
 	};
 
