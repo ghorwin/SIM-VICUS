@@ -38,14 +38,14 @@ void NaturalVentilationModel::setup(const NANDRAD::NaturalVentilationModel & ven
 			// nothing to check, we request VentilationRateSchedule via mandatory InputReference
 		} break;
 
-		case NANDRAD::NaturalVentilationModel::MT_IncreasedDayVentilation : {
-			m_increasedVentilationRate = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_IncreasedVentilationRate].checkedValue(
-						"IncreasedVentilationRate", "1/s",
-						"1/h", 0, false, std::numeric_limits<double>::max(), false, "Invalid parameter.");
-			m_thresholdTemperature = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_ThresholdTemperature].checkedValue(
-						"ThresholdTemperature", "C",
-						"C", -20, false, std::numeric_limits<double>::max(), false, "Invalid parameter.");
-		} break;
+//		case NANDRAD::NaturalVentilationModel::MT_IncreasedDayVentilation : {
+//			m_increasedVentilationRate = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_IncreasedVentilationRate].checkedValue(
+//						"IncreasedVentilationRate", "1/s",
+//						"1/h", 0, false, std::numeric_limits<double>::max(), false, "Invalid parameter.");
+//			m_thresholdTemperature = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_ThresholdTemperature].checkedValue(
+//						"ThresholdTemperature", "C",
+//						"C", -20, false, std::numeric_limits<double>::max(), false, "Invalid parameter.");
+//		} break;
 
 		default:
 			throw IBK::Exception(IBK::FormatString("Unknown/undefined model ID."), FUNC_ID);
@@ -249,21 +249,21 @@ int NaturalVentilationModel::update() {
 				rate = *m_valueRefs[1+zoneCount+i];
 			} break;
 
-			case NANDRAD::NaturalVentilationModel::MT_IncreasedDayVentilation : {
-				// TODO Andreas, implement
+//			case NANDRAD::NaturalVentilationModel::MT_IncreasedDayVentilation : {
+//				// TODO Andreas, implement
 
-				// daytime?
+//				// daytime?
 
-				// for now, we use the P-controller-variant
-				if (Tzone > m_thresholdTemperature) {
+//				// for now, we use the P-controller-variant
+//				if (Tzone > m_thresholdTemperature) {
 
-					const double DELTA_T = 0.2; // if exceeding threshold temperature by this offset, maximum ventilation is enabled
-					double P_control = Tzone - m_thresholdTemperature;
-					double rateIncrease = m_increasedVentilationRate - m_ventilationRate;
+//					const double DELTA_T = 0.2; // if exceeding threshold temperature by this offset, maximum ventilation is enabled
+//					double P_control = Tzone - m_thresholdTemperature;
+//					double rateIncrease = m_increasedVentilationRate - m_ventilationRate;
 
-				}
+//				}
 
-			} break;
+//			} break;
 
 			default: ;
 		}
