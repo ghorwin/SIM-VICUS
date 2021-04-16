@@ -11,9 +11,11 @@
 			<SubDir Color="#aa0000" Checked="0">InfiltrationRateConstant2Zones</SubDir>
 			<SubDir Color="#55aaff" Checked="0">InfiltrationRateConstant2Zones.VC14_win64</SubDir>
 			<SubDir Color="#005500" Checked="0">InfiltrationRateConstant2Zones.gcc_linux</SubDir>
-			<SubDir Color="#550000" Checked="1">InfiltrationScheduledSingleZone</SubDir>
+			<SubDir Color="#550000" Checked="0">InfiltrationScheduledSingleZone</SubDir>
 			<SubDir Color="#ffaaff" Checked="0">InfiltrationScheduledSingleZone.VC14_win64</SubDir>
-			<SubDir Color="#c66300" Checked="1">InfiltrationScheduledSingleZone.gcc_linux</SubDir>
+			<SubDir Color="#c66300" Checked="0">InfiltrationScheduledSingleZone.gcc_linux</SubDir>
+			<SubDir Color="#ffaaff" Checked="0">InfiltrationScheduledWithBaseACRSingleZone</SubDir>
+			<SubDir Color="#ff5500" Checked="1">InfiltrationScheduledWithBaseACRSingleZoneRealClimate</SubDir>
 			<ExpandedSubDir>.</ExpandedSubDir>
 		</Directory>
 	</Directories>
@@ -317,13 +319,98 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>InfiltrationScheduledWithBaseACRSingleZone/results/states.tsv?2</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>InfiltrationScheduledWithBaseACRSingleZone/results/states.tsv?1</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>InfiltrationScheduledWithBaseACRSingleZone/results/loads.tsv?1</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<PenColor>#ef2929</PenColor>
+						<MarkerColor>#ef2929</MarkerColor>
+					</Series>
+					<Series leftAxis="0">
+						<TitleText>$basename:$quantity</TitleText>
+						<PenColor>#73d216</PenColor>
+						<MarkerColor>#73d216</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<PenColor>#75507b</PenColor>
+						<MarkerColor>#75507b</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0">
+						<TitleText>Time [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">d</IBK:Unit>
+						<Maximum>0.13716264204545453</Maximum>
+						<Minimum>0.13361150568181818</Minimum>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>0</MinorGridVisible>
+						<TitleSpacing>30</TitleSpacing>
+					</Axis>
+					<Axis index="1" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<Maximum>45</Maximum>
+						<Minimum>-5</Minimum>
+						<MinorGridVisible>0</MinorGridVisible>
+						<TitleSpacing>30</TitleSpacing>
+					</Axis>
+					<Axis index="2" enabled="0" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">1/h</IBK:Unit>
+						<Maximum>2</Maximum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>$project: $basename</TitleText>
+					<TitleFont>Roboto Condensed,10,-1,5,75,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend>
+						<Position>Inside</Position>
+						<Alignment>1</Alignment>
+						<MaxColumns>1</MaxColumns>
+						<Font>Roboto Condensed,8,-1,5,50,0,0,0,0,0</Font>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
 	</Mappers>
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="2" size1="1" size2="1" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="3" size1="1" size2="1" orientation="2" />
 		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 
