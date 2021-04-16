@@ -1393,7 +1393,20 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 		if(zt->usedReference(type) != VICUS::ZoneTemplate::NUM_ST){
 			ztBools[counter].m_subTemplateId[type] = zt->m_idReferences[type];
 
+
 		}
+
+		//infiltration
+		type = VICUS::ZoneTemplate::ST_Infiltration;
+		if(zt->usedReference(type) != VICUS::ZoneTemplate::NUM_ST){
+			unsigned int idSubTemp = zt->m_idReferences[type];
+			ztBools[counter].m_subTemplateId[type] = idSubTemp;
+			const VICUS::Infiltration * inf = element(m_embeddedDB.m_infiltration, idSubTemp);
+			if(inf != nullptr){
+
+			}
+		}
+
 
 		++counter;
 	}

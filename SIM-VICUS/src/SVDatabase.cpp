@@ -190,14 +190,20 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	// *** schedules ***
 	std::set<const VICUS::Schedule *> referencedSchedule;
 
-	// *** internal loads ***
+	// *** internal loads, ... ***
 	std::set<const VICUS::InternalLoad *> referencedInternalLoads;
 	std::set<const VICUS::ZoneControlThermostat *> referencedThermostats;
+	std::set<const VICUS::Infiltration *> referencedInfiltration;
+	std::set<const VICUS::VentilationNatural *> referencedVentilation;
+
 	//also add all schedules
 	for (const VICUS::ZoneTemplate * zt : referencedZoneTemplates) {
 		for (unsigned int i=0; i<VICUS::ZoneTemplate::NUM_ST; ++i){
-			const VICUS::InternalLoad *intLoad = m_internalLoads[zt->m_idReferences[i]];
-			const VICUS::ZoneControlThermostat * thermo = m_zoneControlThermostat[zt->m_idReferences[i]];
+			IDType idType = zt->m_idReferences[i];
+			const VICUS::InternalLoad *intLoad = m_internalLoads[idType];
+			const VICUS::ZoneControlThermostat * thermo = m_zoneControlThermostat[idType];
+			const VICUS::Infiltration *inf = m_infiltration[idType];
+			const VICUS::VentilationNatural *ventiNat = m_ventilationNatural[idType];
 			if(intLoad	!= nullptr){
 				referencedInternalLoads.insert(intLoad); // bad/missing IDs yield a nullptr
 				VICUS::ZoneTemplate::SubTemplateType tempType = (VICUS::ZoneTemplate::SubTemplateType)i;
@@ -233,6 +239,18 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 				if(sched2 != nullptr)
 					referencedSchedule.insert(sched2);
 			}
+			else if (inf != nullptr){
+				referencedInfiltration.insert(inf);
+				const VICUS::Schedule *sched = m_schedules[inf->m_managementScheduleId];
+				if(sched != nullptr)
+					referencedSchedule.insert(sched);
+			}
+			else if (ventiNat != nullptr){
+				referencedVentilation.insert(ventiNat);
+				const VICUS::Schedule *sched = m_schedules[inf->m_managementScheduleId];
+				if(sched != nullptr)
+					referencedSchedule.insert(sched);
+			}
 		}
 	}
 
@@ -243,6 +261,14 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	p.m_embeddedDB.m_zoneControlThermostat.clear();
 	for (const VICUS::ZoneControlThermostat * thermo : referencedThermostats)
 		p.m_embeddedDB.m_zoneControlThermostat.push_back(*thermo);
+
+	p.m_embeddedDB.m_infiltration.clear();
+	for (const VICUS::Infiltration * inf : referencedInfiltration)
+		p.m_embeddedDB.m_infiltration.push_back(*inf);
+
+	p.m_embeddedDB.m_ventilationNatural.clear();
+	for (const VICUS::VentilationNatural * venti : referencedVentilation)
+		p.m_embeddedDB.m_ventilationNatural.push_back(*venti);
 
 	p.m_embeddedDB.m_schedules.clear();
 	for (const VICUS::Schedule * sched : referencedSchedule)
