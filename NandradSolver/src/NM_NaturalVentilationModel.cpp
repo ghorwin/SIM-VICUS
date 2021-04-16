@@ -173,12 +173,12 @@ void NaturalVentilationModel::inputReferences(std::vector<InputReference> & inpu
 
 	std::vector<std::string> requiredSchedules;
 	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR) {
-		requiredSchedules.push_back("MaximumRoomAirTemperatureACRLimit");
-		requiredSchedules.push_back("MinimumRoomAirTemperatureACRLimit");
-		requiredSchedules.push_back("MaximumEnviromentAirTemperatureACRLimit");
-		requiredSchedules.push_back("MinimumEnviromentAirTemperatureACRLimit");
-		requiredSchedules.push_back("DeltaTemperatureACRLimit");
-		requiredSchedules.push_back("WindSpeedACRLimit");
+		requiredSchedules.push_back("MaximumRoomAirTemperatureACRLimitSchedule");
+		requiredSchedules.push_back("MinimumRoomAirTemperatureACRLimitSchedule");
+		requiredSchedules.push_back("MaximumEnviromentAirTemperatureACRLimitSchedule");
+		requiredSchedules.push_back("MinimumEnviromentAirTemperatureACRLimitSchedule");
+		requiredSchedules.push_back("DeltaTemperatureACRLimitSchedule");
+		requiredSchedules.push_back("WindSpeedACRLimitSchedule");
 	}
 
 	// now create a zone-specific schedule request for all variables
@@ -216,6 +216,7 @@ void NaturalVentilationModel::setInputValueRefs(const std::vector<QuantityDescri
 		expectedSize += m_objectList->m_filterID.m_ids.size(); // ventilation rate
 	else if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR) {
 		expectedSize += 7*m_objectList->m_filterID.m_ids.size(); // 7 zone-specific schedules
+		++expectedSize; // for wind velocity
 	}
 	IBK_ASSERT(resultValueRefs.size() == expectedSize);
 	m_valueRefs = resultValueRefs;
@@ -297,7 +298,7 @@ int NaturalVentilationModel::update() {
 
 				// the remaining variants are all state-related variants and need some ramping
 
-				double DELTA_T = 0.2; // the ramping range
+				double DELTA_T = 0; // the ramping range
 
 				double scaleTmax = 1;
 				double scaleTmin = 1;
@@ -310,28 +311,13 @@ int NaturalVentilationModel::update() {
 				}
 
 				if (Tzone < varMinimumRoomAirTemperatureACRLimit) {
-					if (Tzone + DELTA_T > varMinimumRoomAirTemperatureACRLimit)
+					if (Tzone + DELTA_T < varMinimumRoomAirTemperatureACRLimit)
 						break;
 					// TODO : ramping range
 				}
 
-				// for Delta, we need to distinguish heating/cooling scenario
-				if (varDeltaTemperatureACRLimit < 0) {
-					// heating, ambient air is warmer than room air
-					if (Tambient + varDeltaTemperatureACRLimit < Tzone) {
-						if (Tambient + varDeltaTemperatureACRLimit < Tzone - DELTA_T)
-							break;
-						// TODO : ramping range
-					}
-				}
-				else {
-					// cooling (summer), ambient air must be cooler than room air
-					if (Tambient + varDeltaTemperatureACRLimit > Tzone) {
-						if (Tambient + varDeltaTemperatureACRLimit > Tzone + DELTA_T)
-							break;
-						// TODO : ramping range
-					}
-				}
+				if (Tzone - Tambient < varDeltaTemperatureACRLimit)
+					break; // base ventilation only
 
 				// now implement the control logic, we evaluate the room-temperature-related criterion last
 				double varVentilationRateSchedule = *m_valueRefs[1+zoneCount+i];
