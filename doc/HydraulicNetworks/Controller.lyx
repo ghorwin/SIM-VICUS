@@ -250,7 +250,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename /tmp/mozilla_ischta0/Struktur.png
+	filename C:/tmp/mozilla_ischta0/Struktur.png
 	lyxscale 50
 	scale 30
 
@@ -394,9 +394,20 @@ FixedPressureLossCoefficientElement
 \begin_layout Standard
 \begin_inset Formula 
 \[
+e*=T_{soll}-\Delta T
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
 e=\begin{cases}
-0 & \Delta T_{soll}-\Delta T-e_{min}<0\\
-\Delta T_{soll}-\Delta T-e_{min} & \Delta T_{soll}-\Delta T-e_{min}\geq0
+0 & e*<e_{min}\\
+e* & e*\geq e_{min}
 \end{cases}
 \]
 
