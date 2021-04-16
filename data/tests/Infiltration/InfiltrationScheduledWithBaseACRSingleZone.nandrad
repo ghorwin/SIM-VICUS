@@ -15,14 +15,14 @@
 			</Zone>
 		</Zones>
 		<SimulationParameter>
-			<IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">30</IBK:Parameter>
 			<Interval>
 				<IBK:Parameter name="End" unit="d">10</IBK:Parameter>
 			</Interval>
 		</SimulationParameter>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
-			<ClimateFilePath>${Project Directory}/../climate/Konstantopol_20C.c6b</ClimateFilePath>
+			<ClimateFilePath>${Project Directory}/../climate/InfiltrationTest.c6b</ClimateFilePath>
 		</Location>
 		<Models>
 			<NaturalVentilationModel id="501" displayName="Zone vent" modelType="ScheduledWithBaseACR">
@@ -43,30 +43,11 @@
 			<WeekEndDays>Sat,Sun</WeekEndDays>
 			<ScheduleGroups>
 				<ScheduleGroup objectList="All zones">
-					<!-- every day between 8-10 -->
 					<Schedule type="AllDays">
 						<DailyCycles>
 							<DailyCycle interpolation="Constant">
-								<TimePoints>0 6 10</TimePoints>
-								<Values>VentilationRateSchedule [1/h]:0 0.4 0</Values>
-							</DailyCycle>
-						</DailyCycles>
-					</Schedule>
-					<!-- Tuesday no ventilation -->
-					<Schedule type="Tuesday">
-						<DailyCycles>
-							<DailyCycle interpolation="Constant">
 								<TimePoints>0</TimePoints>
-								<Values>VentilationRateSchedule [1/h]:0</Values>
-							</DailyCycle>
-						</DailyCycles>
-					</Schedule>
-					<!-- Weekend only on afternoon -->
-					<Schedule type="WeekEnd">
-						<DailyCycles>
-							<DailyCycle interpolation="Constant">
-								<TimePoints>0 14 16</TimePoints>
-								<Values>VentilationRateSchedule [1/h]:0 0.1 0</Values>
+								<Values>VentilationRateSchedule [1/h]:1.0</Values>
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>
@@ -90,6 +71,12 @@
 				</OutputDefinition>
 
 				<OutputDefinition>
+					<Quantity>Temperature</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>10 mins</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
 					<Quantity>VentilationHeatLoad</Quantity>
 					<ObjectListName>All zones</ObjectListName>
 					<GridName>10 mins</GridName>
@@ -109,6 +96,10 @@
 			<ObjectList name="All zones">
 				<FilterID>*</FilterID>
 				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Location">
+				<FilterID>*</FilterID>
+				<ReferenceType>Location</ReferenceType>
 			</ObjectList>
 			<ObjectList name="First zone">
 				<FilterID>*</FilterID>
