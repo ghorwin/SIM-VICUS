@@ -38,10 +38,7 @@ public:
 	/*! the set point as a schedule */
 	std::string						m_setPointScheduleName;								// XML:E
 
-	/*! used to normalize the controller error */
-	IBK::Parameter					m_maximumControllerError;							// XML:E
-
-	/*! used to interpret the controller output (0...1) as a system input */
+	/*! used to cut the system input */
 	IBK::Parameter					m_maximumSystemInput;								// XML:E
 
 };

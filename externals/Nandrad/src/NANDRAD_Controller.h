@@ -41,10 +41,6 @@ public:
 
 	Type				m_type = NUM_T;								// XML:E
 
-	/*! if the controller error is below the tolerance,
-	 * the result is interpreted as "accurate enough" and the controller output will not be changed */
-	double				m_tolerance;								// XML:A
-
 	IBK::Parameter		m_par[NUM_P];								// XML:E
 
 };

@@ -48,8 +48,6 @@ void Controller::readXML(const TiXmlElement * element) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id")
 				m_id = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "tolerance")
-				m_tolerance = NANDRAD::readPODAttributeValue<double>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -101,7 +99,6 @@ TiXmlElement * Controller::writeXML(TiXmlElement * parent) const {
 	parent->LinkEndChild(e);
 
 	e->SetAttribute("id", IBK::val2string<IDType>(m_id));
-	e->SetAttribute("tolerance", IBK::val2string<double>(m_tolerance));
 
 	if (m_type != NUM_T)
 		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("Controller::Type",  m_type));

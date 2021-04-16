@@ -346,7 +346,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 			NANDRAD::ControlElement controlE;
 			controlE.m_controlType = NANDRAD::ControlElement::CT_ControlTemperatureDifference;
 			controlE.m_setPoint = IBK::Parameter("SetPoint", 3.0, IBK::Unit("K"));
-			controlE.m_maximumControllerError = IBK::Parameter("MaximumControllerError", 10.0, IBK::Unit("K"));
+//			controlE.m_maximumControllerError = IBK::Parameter("MaximumControllerError", 10.0, IBK::Unit("K"));
 			controlE.m_maximumSystemInput = IBK::Parameter("MaximumSystemInput", 5.0, IBK::Unit("-"));
 			controlE.m_controllerId = 1;
 			elem.m_controlElement = controlE;
