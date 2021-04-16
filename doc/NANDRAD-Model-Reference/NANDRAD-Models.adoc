@@ -197,6 +197,11 @@ TODO : Spezifizieren
 ====
 
 
+#### Ausgabegrößen
+
+Die berechneten Lüftungswärmeverlust/-gewinnen können als zonenspezifische Größen über die Ergebnisgröße
+`Zone.VentilationHeatLoad` in [W] abgerufen werden.
+
 
 ## Steuerungsmodell für Verschattung
 
