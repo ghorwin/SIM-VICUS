@@ -38,25 +38,15 @@ void DailyCycle::prepareCalculation() {
 	if (m_timePoints.empty())
 		throw IBK::Exception("Missing time points values in DailyCycle.", FUNC_ID);
 
-	switch (m_interpolation) {
-		case NANDRAD::DailyCycle::NUM_IT:
-		case NANDRAD::DailyCycle::IT_Linear:
-			// if interpolation mode isn't explicitly given, we default to Linear
-			m_interpolation = IT_Linear;
-			if (m_timePoints.size()<2 )
-				throw IBK::Exception("Daily Cycles with linear interpolation need at least 2 defined time points", FUNC_ID);
-		break;
-
-		case NANDRAD::DailyCycle::IT_Constant:
-			// nothing to check for constant alone
-		break;
-	}
+	// if interpolation mode isn't explicitly given, we default to Linear
+	if (m_interpolation == NANDRAD::DailyCycle::NUM_IT)
+		m_interpolation = IT_Linear;
 
 	// check if time points follow the rules
 	if (m_timePoints[0] != 0.0)
-		throw IBK::Exception("Invalid time points in DailyCycle (must start with 0).", FUNC_ID);
-	if (m_interpolation == IT_Linear && m_timePoints.back() != 24.0)
-		throw IBK::Exception("Invalid time points in DailyCycle with linear interpolation (must have at least two time points and last time point must be 24 h).", FUNC_ID);
+		throw IBK::Exception("Invalid time points in DailyCycle (first time point must be 0).", FUNC_ID);
+	if (m_timePoints.back() >= 24.0)
+		throw IBK::Exception("Invalid time points in DailyCycle (last time point must be < 24 h).", FUNC_ID);
 
 	// check for monitonically increasing time points
 	double last  = m_timePoints[0];
