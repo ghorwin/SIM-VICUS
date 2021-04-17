@@ -92,9 +92,10 @@ void WindowGlazingSystem::computeSolarFluxDensity(double qDir, double qDiff, dou
 }
 
 
-void WindowGlazingSystem::computeHeatConductionFluxDensity(double deltaT, double alphaLeft, double alphaRight,
-														   double &heatCondLeft, double &heatCondRight) const {
-
+void WindowGlazingSystem::computeHeatConductionFluxDensity(double Tleft, double Tright, double alphaLeft, double alphaRight,
+														   double &heatCondLeft, double &heatCondRight,
+														   double &surfaceTempLeft, double & surfaceTempRight) const
+{
 	heatCondLeft = 0;
 	heatCondRight = 0;
 
@@ -115,6 +116,7 @@ void WindowGlazingSystem::computeHeatConductionFluxDensity(double deltaT, double
 				if (alphaRight > 0)
 					thermalResistance += 1.0/alphaRight;
 
+				double deltaT = Tleft - Tright;
 				// heat conduction density from left to right (A to B)
 				double heatCondDensity = 1/thermalResistance * deltaT;
 
@@ -122,6 +124,16 @@ void WindowGlazingSystem::computeHeatConductionFluxDensity(double deltaT, double
 				heatCondLeft = heatCondDensity;
 				// we assume thermal equilibrium
 				heatCondRight = -heatCondLeft;
+
+				// surface temperatures
+				if (alphaLeft > 0)
+					surfaceTempLeft = Tleft - heatCondLeft/alphaLeft;
+				else
+					surfaceTempLeft = Tleft;
+				if (alphaRight > 0)
+					surfaceTempRight = Tright - heatCondRight/alphaRight;
+				else
+					surfaceTempRight = Tright;
 			}
 		} break;
 

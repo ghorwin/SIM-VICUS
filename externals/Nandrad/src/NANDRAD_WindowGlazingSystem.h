@@ -70,8 +70,8 @@ public:
 	/*! Computes flux density towards glazing system in [W/m2] for both window sides depending from model type
 		and stores in heatCondLeft and heatCondRight.
 	*/
-	void computeHeatConductionFluxDensity(double deltaT, double alphaLeft, double alphaRight, double &heatCondLeft,
-										  double &heatCondRight) const;
+	void computeHeatConductionFluxDensity(double Tleft, double Tright, double alphaLeft, double alphaRight, double &heatCondLeft,
+										  double &heatCondRight, double & surfaceTempLeft, double & surfaceTempRight) const;
 
 
 	// *** PUBLIC MEMBER VARIABLES ***
