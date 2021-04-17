@@ -5,35 +5,28 @@
 
 namespace NANDRAD {
 
-
-Controller::Controller()
-{
-
-}
-
-void Controller::checkParameters()
-{
+void Controller::checkParameters() {
 	FUNCID(Controller::checkParameters);
 
 	try {
 		// decide which parameters are needed
-		switch (m_type) {
-			case T_DigitalDirect:
-			case T_DigitalHysteresis:
+		switch (m_modelType) {
+			case MT_DigitalDirect:
+			case MT_DigitalHysteresis:
 				break;
-			case T_PController: {
-				m_par[P_Kp].checkedValue("Kp", "---", "---", 0, false, std::numeric_limits<double>::max(), true, nullptr);
+			case MT_PController: {
+				m_para[P_Kp].checkedValue("Kp", "---", "---", 0, false, std::numeric_limits<double>::max(), true, nullptr);
 			} break;
-			case T_PIController: {
-				m_par[P_Kp].checkedValue("Kp", "---", "---", 0, false, std::numeric_limits<double>::max(), true, nullptr);
-				m_par[P_Ki].checkedValue("Ki", "---", "---", 0, false, std::numeric_limits<double>::max(), true, nullptr);
+			case MT_PIController: {
+				m_para[P_Kp].checkedValue("Kp", "---", "---", 0, false, std::numeric_limits<double>::max(), true, nullptr);
+				m_para[P_Ki].checkedValue("Ki", "---", "---", 0, false, std::numeric_limits<double>::max(), true, nullptr);
 			} break;
 			default: break;
 		}
 	}
 	catch (IBK::Exception & ex) {
 			throw IBK::Exception(ex, IBK::FormatString("Missing/invalid parameters for controller %1.")
-				 .arg(KeywordList::Keyword("Controller::Type", m_type)),
+				 .arg(KeywordList::Keyword("Controller::Type", m_modelType)),
 				 FUNC_ID);
 	}
 }

@@ -52,9 +52,14 @@ public:
 		NUM_P
 	};
 
+	// *** PUBLIC MEMBER FUNCTIONS ***
+
 	NANDRAD_READWRITE
+
 	/*! Checks for valid parameters (value ranges). */
 	void checkParameters() const;
+
+	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID-number for this ventilation rate model. */
 	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required

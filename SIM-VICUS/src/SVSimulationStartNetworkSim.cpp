@@ -375,8 +375,8 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	// add controller as example
 	NANDRAD::Controller contr;
 	contr.m_id = 1;
-	contr.m_par[NANDRAD::Controller::P_Kp] = IBK::Parameter("Kp", 10, IBK::Unit("-"));
-	contr.m_type = NANDRAD::Controller::T_PController;
+	contr.m_para[NANDRAD::Controller::P_Kp] = IBK::Parameter("Kp", 10, IBK::Unit("-"));
+	contr.m_modelType = NANDRAD::Controller::MT_PController;
 	p.m_controllers.push_back(contr);
 
 

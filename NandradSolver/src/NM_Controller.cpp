@@ -51,7 +51,7 @@ void DigitalHysteresisController::stepCompleted(double /*t*/) {
 
 PController::PController(const NANDRAD::Controller &controller) {
 	// copy kP parameter
-	m_kP = controller.m_par[NANDRAD::Controller::P_Kp].value;
+	m_kP = controller.m_para[NANDRAD::Controller::P_Kp].value;
 }
 
 
@@ -66,9 +66,9 @@ void PController::updateControllerOutput()
 
 PIController::PIController(const NANDRAD::Controller &controller) {
 	// copy kP parameter
-	m_kP = controller.m_par[NANDRAD::Controller::P_Kp].value;
+	m_kP = controller.m_para[NANDRAD::Controller::P_Kp].value;
 	// copy kI parameter
-	m_kI = controller.m_par[NANDRAD::Controller::P_Ki].value;
+	m_kI = controller.m_para[NANDRAD::Controller::P_Ki].value;
 }
 
 

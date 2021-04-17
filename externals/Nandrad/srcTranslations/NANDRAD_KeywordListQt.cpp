@@ -34,6 +34,9 @@ KeywordListQt::KeywordListQt() {
 	tr("DigitalHysteresis");
 	tr("PController");
 	tr("PIController");
+	tr("Kp-parameter");
+	tr("Ki-parameter");
+	tr("Kd-parameter");
 	tr("Constant values in defined intervals.");
 	tr("Linear interpolation between values.");
 	tr("Area of the embedded object [m2].");
