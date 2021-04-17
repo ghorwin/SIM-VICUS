@@ -8,19 +8,12 @@ namespace VICUS {
 
 bool Infiltration::isValid() const
 {
-	///TODO DIRK/KATJA
 	if(m_id == INVALID_ID)
 		return false;
 
 	if(m_airChangeType == NUM_AC)
 		return false;
 
-	if(m_managementScheduleId == INVALID_ID)
-		return false;
-	else{
-		/// TODO Dirk->Andreas wie komm ich jetzt an die Schedule Datenbank und kann die vorgegebene ID prüfen
-		/// ob dieser Schedule valide ist?
-	}
 	try {
 		m_para[P_AirChangeRate].checkedValue(VICUS::KeywordList::Keyword("Infiltration::para_t", P_AirChangeRate),
 							 "1/h", "1/h", 0, true, 100, true, nullptr);
@@ -38,9 +31,7 @@ bool Infiltration::isValid() const
 			return false;
 		}
 	}
-
 	return true;
 }
-
 
 }

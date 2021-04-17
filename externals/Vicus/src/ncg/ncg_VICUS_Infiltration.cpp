@@ -66,8 +66,6 @@ void Infiltration::readXML(const TiXmlElement * element) {
 				m_notes.setEncodedString(c->GetText());
 			else if (cName == "DataSource")
 				m_dataSource.setEncodedString(c->GetText());
-			else if (cName == "ManagementScheduleId")
-				m_managementScheduleId = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
@@ -121,8 +119,6 @@ TiXmlElement * Infiltration::writeXML(TiXmlElement * parent) const {
 
 	if (m_airChangeType != NUM_AC)
 		TiXmlElement::appendSingleAttributeElement(e, "AirChangeType", nullptr, std::string(), KeywordList::Keyword("Infiltration::AirChangeType",  m_airChangeType));
-	if (m_managementScheduleId != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "ManagementScheduleId", nullptr, std::string(), IBK::val2string<unsigned int>(m_managementScheduleId));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {

@@ -65,9 +65,6 @@ public:
 	/*! Air change type. */
 	AirChangeType					m_airChangeType = NUM_AC;				// XML:E
 
-	/*! Schedule ID. */
-	unsigned int					m_managementScheduleId = INVALID_ID;	// XML:E
-
 	/*! List of parameters. */
 	IBK::Parameter					m_para[NUM_P];							// XML:E
 };
