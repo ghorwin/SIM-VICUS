@@ -1,5 +1,5 @@
-#ifndef ControllerH
-#define ControllerH
+#ifndef NM_ControllerH
+#define NM_ControllerH
 
 #include "NM_AbstractController.h"
 #include "NM_AbstractTransientController.h"
@@ -88,4 +88,4 @@ public:
 
 } // namespace NANDRAD_MODEL
 
-#endif // ControllerH
+#endif // NM_ControllerH

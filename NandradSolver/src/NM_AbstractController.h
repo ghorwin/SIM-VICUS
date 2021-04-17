@@ -1,5 +1,5 @@
-#ifndef AbstractControllerH
-#define AbstractControllerH
+#ifndef NM_AbstractControllerH
+#define NM_AbstractControllerH
 
 
 namespace NANDRAD_MODEL {
@@ -43,4 +43,4 @@ public:
 
 } // namespace NANDRAD_MODEL
 
-#endif // AbstractControllerH
+#endif // NM_AbstractControllerH
