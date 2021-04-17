@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.99">
+	<Project>
+		<ProjectInfo>
+			<Comment>Scheduled ventilation rate model test for single zone, no constructions, additional heat capacity in zone</Comment>
+			<Created>2021-04-16</Created>
+			<LastEdited>2021-04-16</LastEdited>
+		</ProjectInfo>
+		<Zones>
+			<Zone id="1" displayName="Office" type="Active">
+				<IBK:Parameter name="Area" unit="m2">30</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">90</IBK:Parameter>
+				<!-- 150 kg * 1000 J/kgK = 150 kJ/K -->
+				<IBK:Parameter name="HeatCapacity" unit="kJ/K">150</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
+		</SimulationParameter>
+		<Location>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<ClimateFilePath>${Project Directory}/../climate/Konstantopol_20C.c6b</ClimateFilePath>
+		</Location>
+		<Models>
+			<NaturalVentilationModel id="501" displayName="Zone vent" modelType="Scheduled">
+				<ZoneObjectList>All zones</ZoneObjectList>
+			</NaturalVentilationModel>
+			<InternalLoadsModel id="1" displayName="Test Zone Template" modelType="Scheduled">
+				<ZoneObjectList>All zones</ZoneObjectList>
+				<IBK:Parameter name="EquipmentRadiationFraction" unit="---">0.2</IBK:Parameter>
+				<IBK:Parameter name="PersonRadiationFraction" unit="---">0.2</IBK:Parameter>
+				<IBK:Parameter name="LightingRadiationFraction" unit="---">0</IBK:Parameter>
+				
+			</InternalLoadsModel>
+		</Models>
+		<Schedules>
+			<WeekEndDays>Sat,Sun</WeekEndDays>
+			<ScheduleGroups>
+				<ScheduleGroup objectList="All zones">
+					<!-- every day between 8-10 -->
+					<Schedule type="AllDays">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>VentilationRateSchedule [1/h]:1</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+					<!-- Tuesday no ventilation -->
+					<Schedule type="Tuesday">
+						<StartDayOfTheYear>0</StartDayOfTheYear>
+						<EndDayOfTheYear>10</EndDayOfTheYear>
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>VentilationRateSchedule [1/h]:0</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+					<Schedule type="Tuesday">
+						<StartDayOfTheYear>20</StartDayOfTheYear>
+						<EndDayOfTheYear>30</EndDayOfTheYear>
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>VentilationRateSchedule [1/h]:0</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+					<!-- Weekend only on afternoon -->
+					<Schedule type="WeekDay">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>VentilationRateSchedule [1/h]:2</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+					<Schedule type="AllDays">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>EquipmentHeatLoadPerAreaSchedule [W/m2]:10;
+										LightingHeatLoadPerAreaSchedule [W/m2]:0;
+										PersonHeatLoadPerAreaSchedule [W/m2]:20;</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+					<Schedule type="WeekDays">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>EquipmentHeatLoadPerAreaSchedule [W/m2]:10;
+										LightingHeatLoadPerAreaSchedule [W/m2]:0;
+										PersonHeatLoadPerAreaSchedule [W/m2]:20;</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+					<!--
+					<Schedule type="WeekDay">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0,1,6,18</TimePoints>
+								<Values>EquipmentHeatLoadPerArea [W/m2]:1000,0,10,0;
+										PersonHeatLoadPerArea [W/m2]:8800,0,88,0;</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+					-->
+				</ScheduleGroup>
+			</ScheduleGroups>
+		</Schedules>
+		<Outputs>
+			<TimeUnit>h</TimeUnit>
+			<Definitions>
+				<!-- hourly values - None -->
+				<OutputDefinition>
+					<Quantity>VentilationRate[1]</Quantity>
+					<ObjectListName>Ventilation models</ObjectListName>
+					<GridName>10 mins</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>10 mins</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>VentilationHeatLoad</Quantity>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>10 mins</GridName>
+				</OutputDefinition>
+			</Definitions>
+			<Grids>
+				<OutputGrid name="10 mins">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="min">10</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="All zones">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="First zone">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Ventilation models">
+				<FilterID>501</FilterID>
+				<ReferenceType>Model</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+	</Project>
+</NandradProject>
