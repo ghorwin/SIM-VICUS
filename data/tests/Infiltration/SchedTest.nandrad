@@ -97,9 +97,9 @@
 						</DailyCycles>
 					</Schedule>
 					<!--
-					<Schedule type="WeekDay">
+					<Schedule type="WeekDays>
 						<DailyCycles>
-							<DailyCycle interpolation="Constant">
+							<DailyCycle interpolation="Linear">
 								<TimePoints>0,1,6,18</TimePoints>
 								<Values>EquipmentHeatLoadPerArea [W/m2]:1000,0,10,0;
 										PersonHeatLoadPerArea [W/m2]:8800,0,88,0;</Values>
