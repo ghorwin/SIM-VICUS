@@ -874,8 +874,36 @@ std::string createUniqueNandradObjListAndName(const std::string &name,
 	*/
 }
 
+/* Returns the possible merged day type. If no merge is possible returns NUM_ST. */
+std::vector<NANDRAD::Schedule::ScheduledDayType> mergeDayType(const std::vector<int> &dts){
+	unsigned int weekDayCount=0, weekEndCount=0;
+
+	for(int v : dts){
+		if(v == NANDRAD::Schedule::ST_MONDAY ||
+				v == NANDRAD::Schedule::ST_TUESDAY ||
+				v == NANDRAD::Schedule::ST_WEDNESDAY ||
+				v == NANDRAD::Schedule::ST_THURSDAY ||
+				v == NANDRAD::Schedule::ST_FRIDAY)
+			++weekDayCount;
+		else if(v == NANDRAD::Schedule::ST_SATURDAY ||
+				v == NANDRAD::Schedule::ST_SUNDAY)
+			++weekEndCount;
+	}
+
+	if(weekDayCount + weekEndCount == 7){
+		return std::vector<NANDRAD::Schedule::ScheduledDayType> (1,NANDRAD::Schedule::ST_ALLDAYS);
+	}/*
+	else if(weekDayCount == 5)
+		return NANDRAD::Schedule::ST_WEEKDAY;
+	else if(weekEndCount == 2)
+		return NANDRAD::Schedule::ST_WEEKEND;
+	*/
+	return std::vector<NANDRAD::Schedule::ScheduledDayType> (1,NANDRAD::Schedule::NUM_ST);
+}
 
 void addScheduleToNANDRADProject(VICUS::Schedule schedVic, NANDRAD::Project &p, const std::string &objListName){
+
+	// *** predefinitions ***
 
 	//find a schedule in NANDRAD project with the objListName
 	if(p.m_schedules.m_scheduleGroups.find(objListName) != p.m_schedules.m_scheduleGroups.end()){
@@ -885,12 +913,20 @@ void addScheduleToNANDRADProject(VICUS::Schedule schedVic, NANDRAD::Project &p, 
 	//so create a new on
 	else{
 
-		std::vector<NANDRAD::Schedule> scheds;
-
+		std::map<NANDRAD::Schedule::ScheduledDayType, std::vector<NANDRAD::Schedule>> scheds;
+		//create for each period a new NANDRAD schedule
 		for(unsigned int i=0; i<schedVic.m_periods.size(); ++i){
 			NANDRAD::Schedule s;
 			const VICUS::ScheduleInterval &period = schedVic.m_periods[i];
 			s.m_startDayOfTheYear = period.m_intervalStartDay;
+			//find day types for NANDRAD schedule
+			for(unsigned int j=0; j<period.m_dailyCycles.size(); ++j){
+				const VICUS::DailyCycle &dc = period.m_dailyCycles[j];
+				unsigned int dayTypeCount = dc.m_dayTypes.size();
+//				NANDRAD::Schedule::ScheduledDayType mergeType = mergeDayType(dc.m_dayTypes);
+
+//				if(mergeType == )
+			}
 			//s.m_type
 			// schedVic.m_useLinearInterpolation
 
