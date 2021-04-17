@@ -87,6 +87,7 @@
 #include "NM_ShadingControlModel.h"
 #include "NM_ThermalNetworkStatesModel.h"
 #include "NM_ThermalNetworkBalanceModel.h"
+#include "NM_ThermalComfortModel.h"
 
 namespace NANDRAD_MODEL {
 
@@ -1020,6 +1021,11 @@ void NandradModel::initZones() {
 					registerStateDependendModel(sumModel);
 				}
 
+
+				// thermal comfort model, does not need setup
+				ThermalComfortModel * comfortModel = new ThermalComfortModel(zone.m_id, zone.m_displayName);
+				m_modelContainer.push_back(comfortModel); // transfer ownership
+				registerStateDependendModel(comfortModel); // and register model for evaluation
 
 				// remember current zone
 				activeZones.push_back(&zone);

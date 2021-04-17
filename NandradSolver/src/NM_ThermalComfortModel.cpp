@@ -16,13 +16,6 @@
 namespace NANDRAD_MODEL {
 
 
-
-void ThermalComfortModel::setup() {
-	FUNCID(ThermalComfortModel::setup);
-
-}
-
-
 void ThermalComfortModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 
 	QuantityDescription result;
@@ -37,9 +30,10 @@ void ThermalComfortModel::resultDescriptions(std::vector<QuantityDescription> & 
 
 
 const double * ThermalComfortModel::resultValueRef(const InputReference & quantity) const {
-	const QuantityName & quantityName = quantity.m_name;
-	IBK_ASSERT(quantityName.m_name == NANDRAD_MODEL::KeywordList::Description("ThermalComfortModel::Results", R_OperativeTemperature));
-	return &m_operativeTemperature;
+	if (quantity.m_name.m_name == NANDRAD_MODEL::KeywordList::Keyword("ThermalComfortModel::Results", R_OperativeTemperature))
+		return &m_operativeTemperature;
+	else
+		return nullptr;
 }
 
 
@@ -112,6 +106,13 @@ void ThermalComfortModel::initInputReferences(const std::vector<AbstractModel *>
 
 void ThermalComfortModel::inputReferences(std::vector<InputReference> & inputRefs) const {
 	// compose input references for collected surfaces
+	for (const SurfaceInputData & r : m_surfaceRefData) {
+		InputReference ref;
+		ref.m_id = r.m_id;
+		ref.m_referenceType = r.m_referenceType;
+		ref.m_name.m_name = r.m_name;
+		inputRefs.push_back(ref);
+	}
 
 	// last input ref is the zone's air temperature
 	InputReference r;
@@ -148,8 +149,22 @@ int ThermalComfortModel::update() {
 
 	// compute radiant temperature as area-weighted mean temperature
 	// add room air temperature
+	double area = 0;
+	double areaTemperatureSum = 0;
 
+	for (const SurfaceInputData & r : m_surfaceRefData) {
+		area += r.m_netArea;
+		areaTemperatureSum += *r.m_valueRef * r.m_netArea;
+	}
 
+	if (area != 0.0) {
+		double radiantTemperature = areaTemperatureSum/area;
+		m_operativeTemperature = 0.5*(radiantTemperature + *m_zoneAirTemp);
+	}
+	else {
+		// no surfaces in zone? may happen in artificial test projects
+		m_operativeTemperature = *m_zoneAirTemp;
+	}
 
 	return 0; // signal success
 }

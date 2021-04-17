@@ -40,6 +40,7 @@
 
 const char * const STATE_QUANTITIES[] = {
 	"AirTemperature",
+	"OperativeTemperature",
 	"VentilationRate",
 	"SurfaceTemperatureA",
 	"SurfaceTemperatureB"

@@ -16,6 +16,9 @@ namespace NANDRAD_MODEL {
 /*! A model to compute operative temperature in zones. This is a zone specific model.
 	Model requests surface temperatures from zone-facing constructions, and window surface temperatures from
 	all windows facing the zone.
+
+	The model is separate from the room balance model since other models may request operative temperature for control
+	purposes.
 */
 class ThermalComfortModel : public AbstractModel, public AbstractStateDependency {
 public:
@@ -32,9 +35,6 @@ public:
 		m_id(id), m_displayName(displayName)
 	{
 	}
-
-	/*! Initializes object. */
-	void setup();
 
 	// *** Re-implemented from AbstractModel
 
