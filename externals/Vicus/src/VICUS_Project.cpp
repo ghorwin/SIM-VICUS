@@ -795,7 +795,121 @@ std::string createUniqueNandradObjListName(const std::map<std::string, std::vect
 		}
 	}
 	return newName;
+
+
+
+
+
 }
+
+std::string createUniqueNandradObjListAndName(const std::string &name,
+										   const std::vector<unsigned int> &roomIds, NANDRAD::Project &p,
+										   const NANDRAD::ModelInputReference::referenceType_t &type){
+	//create an obj list
+	NANDRAD::ObjectList objList;
+	for(unsigned int id : roomIds)
+		objList.m_filterID.m_ids.insert(id);
+	objList.m_referenceType = type;
+
+	std::set<std::string> objListNames;
+
+	for(const NANDRAD::ObjectList &objL : p.m_objectLists){
+		if(objList.m_filterID == objL.m_filterID &&
+				objList.m_referenceType == objL.m_referenceType)
+			return objL.m_name; //found same objList return name only
+		objListNames.insert(objL.m_name);
+	}
+
+	//no equal object list was found
+	//create a new name for these object list
+
+	size_t sizeList = objListNames.size();
+	std::string newName = name;
+	objListNames.insert(newName);
+
+	while (sizeList == objListNames.size()) {
+		size_t pos = newName.find_last_of("_");
+		if(pos == std::string::npos)
+			newName += "_1";
+		else{
+			unsigned int val;
+			try {
+				val = IBK::string2val<unsigned int>(newName.substr(pos+1));
+				newName = newName.substr(0, pos) + IBK::val2string(++val);
+			}  catch (...) {
+				newName += "_1";
+			}
+		}
+		objListNames.insert(newName);
+	}
+
+	//add objList to NANDRAD project
+	objList.m_name = newName;
+	p.m_objectLists.push_back(objList);
+
+	return newName;
+
+	/*
+	//add all ids to obj list
+	for(unsigned int rId : areaToRoomIdsObj.second)
+		objList.m_filterID.m_ids.insert(rId);
+	objList.m_name = uniqueName;
+	objList.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+	//look if obj list already exists -> take this
+	bool objListExist=false;
+	for(NANDRAD::ObjectList &objListNAN : p.m_objectLists){
+		if(objList.m_filterID == objListNAN.m_filterID &&
+				objList.m_referenceType == objListNAN.m_referenceType){
+			mapObjListNameToRoomIds.erase(mapObjListNameToRoomIds.find(uniqueName));
+			uniqueName = objListNAN.m_name;
+			objList.m_name = uniqueName;
+			mapObjListNameToRoomIds[uniqueName]=areaToRoomIdsObj.second;
+			objListExist = true;
+			break;
+		}
+	}
+	//only add new obj lists
+	if(!objListExist)
+		p.m_objectLists.push_back(objList);
+	*/
+}
+
+
+void addScheduleToNANDRADProject(VICUS::Schedule schedVic, NANDRAD::Project &p, const std::string &objListName){
+
+	//find a schedule in NANDRAD project with the objListName
+	if(p.m_schedules.m_scheduleGroups.find(objListName) != p.m_schedules.m_scheduleGroups.end()){
+
+	}
+	//we do not find a schedule with name = objListName
+	//so create a new on
+	else{
+
+		std::vector<NANDRAD::Schedule> scheds;
+
+		for(unsigned int i=0; i<schedVic.m_periods.size(); ++i){
+			NANDRAD::Schedule s;
+			const VICUS::ScheduleInterval &period = schedVic.m_periods[i];
+			s.m_startDayOfTheYear = period.m_intervalStartDay;
+			//s.m_type
+			// schedVic.m_useLinearInterpolation
+
+		}
+		/*
+		s.M
+		schedVic.m_periods
+		s.m_
+				*/
+	}
+
+
+	//first add all periods in both schedules
+
+
+}
+
+
+
 
 std::string Project::getRoomNameById(unsigned int id) const {
 	for (const VICUS::Building & b : m_buildings) {
@@ -942,21 +1056,21 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 			}
 		}
 
+		//now we have a separate template model for each zt and AREA
+
+		std::map<double, std::vector<unsigned int>> mapAreaToRoomIds;
+		std::vector<unsigned int> allRoomIdsForThisZt;				//this is for area sub template which have no area effects like infiltration
+
+		//create one entry in the mapAreaToToomIds
+		for(std::pair<double, std::vector<unsigned int>> e : ob.second)
+			allRoomIdsForThisZt.insert(allRoomIdsForThisZt.end(), e.second.begin(), e.second.end());
+
+		if(isAreaIndepent)
+			mapAreaToRoomIds = ob.second;
+		else
+			mapAreaToRoomIds[1] = allRoomIdsForThisZt;
+
 		if(!intLoadEnums.empty()){
-			//now we have a separate template model for each zt and AREA
-
-			std::map<double , std::vector<unsigned int>> mapAreaToRoomIds;
-
-			if(isAreaIndepent){
-				mapAreaToRoomIds = ob.second;
-			}
-			else{
-				//create one entry in the mapAreaToToomIds
-				std::vector<unsigned int> roomIds;
-				for(std::pair<double, std::vector<unsigned int>> e : ob.second)
-					roomIds.insert(roomIds.end(), e.second.begin(), e.second.end());
-				mapAreaToRoomIds[1] = roomIds;
-			}
 
 			//create all obj list with room ids
 			for(std::pair<double, std::vector<unsigned int>> areaToRoomIdsObj : mapAreaToRoomIds){
@@ -965,9 +1079,10 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 				if(areaToRoomIdsObj.first<=0)
 					throw IBK::Exception(IBK::FormatString("The ground floor area of room with id %1 and name '%1'"
 															" is <=0 m2 ").arg(areaToRoomIdsObj.second.front()).arg(getRoomNameById(areaToRoomIdsObj.second.front())), FUNC_ID);
-
 				//create an obj list
-				std::string uniqueName = createUniqueNandradObjListName(mapObjListNameToRoomIds, zt->m_displayName.string());
+				//std::string uniqueName = createUniqueNandradObjListName(mapObjListNameToRoomIds, zt->m_displayName.string());
+				std::string uniqueName = createUniqueNandradObjListAndName(zt->m_displayName.string(), areaToRoomIdsObj.second, p, NANDRAD::ModelInputReference::MRT_ZONE);
+#if dasMussRaus
 				mapObjListNameToRoomIds[uniqueName] = areaToRoomIdsObj.second;
 				NANDRAD::ObjectList objList;
 				//add all ids to obj list
@@ -991,6 +1106,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 				//only add new obj lists
 				if(!objListExist)
 					p.m_objectLists.push_back(objList);
+#endif //dasMussRaus
 
 				//now create NANDRAD models
 				NANDRAD::InternalLoadsModel intLoad;
@@ -1396,16 +1512,88 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 		}
 
-		//infiltration
-		type = VICUS::ZoneTemplate::ST_Infiltration;
-		if(zt->usedReference(type) != VICUS::ZoneTemplate::NUM_ST){
-			unsigned int idSubTemp = zt->m_idReferences[type];
-			ztBools[counter].m_subTemplateId[type] = idSubTemp;
-			const VICUS::Infiltration * inf = element(m_embeddedDB.m_infiltration, idSubTemp);
-			if(inf != nullptr){
+		//infiltration and ventilation
+		{
+			enum VentiType{
+				Infiltration,
+				Ventilation,
+				InfAndVenti
+			};
+			type = VICUS::ZoneTemplate::ST_Infiltration;
+			unsigned int idSubTempInf = zt->m_idReferences[type];
+			bool isInf = zt->usedReference(type) != VICUS::ZoneTemplate::NUM_ST;
+			type = VICUS::ZoneTemplate::ST_VentilationNatural;
+			unsigned int idSubTempVent = zt->m_idReferences[type];
+			bool isVenti = zt->usedReference(type) != VICUS::ZoneTemplate::NUM_ST;
 
+			VentiType ventiType;
+			if(isInf && !isVenti)				ventiType = Infiltration;
+			else if(!isInf && isVenti)			ventiType = Ventilation;
+			else								ventiType = InfAndVenti;
+
+			//create a NANDRAD natural ventilation model
+			NANDRAD::NaturalVentilationModel natVentMod;
+			natVentMod.m_displayName = zt->m_displayName.string();
+			natVentMod.m_id = VICUS::Project::uniqueId<unsigned int>(allModelIds);
+			allModelIds.push_back(natVentMod.m_id);
+			natVentMod.m_zoneObjectList =
+					createUniqueNandradObjListAndName(zt->m_displayName.string(), allRoomIdsForThisZt, p,
+													  NANDRAD::ModelInputReference::MRT_ZONE);
+			switch (ventiType) {
+				case Infiltration:{
+					type = VICUS::ZoneTemplate::ST_Infiltration;
+					ztBools[counter].m_subTemplateId[type] = idSubTempInf;
+					const VICUS::Infiltration * inf = element(m_embeddedDB.m_infiltration, idSubTempInf);
+					if(inf != nullptr){
+						natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Constant;
+						switch(inf->m_airChangeType){
+							case VICUS::Infiltration::AC_normal:{
+								NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NANDRAD::NaturalVentilationModel::para_t",
+																   NANDRAD::NaturalVentilationModel::P_VentilationRate,
+																   inf->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h"));
+							}break;
+							case VICUS::Infiltration::AC_n50:{
+								double val = inf->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h");
+								val *= inf->m_para[VICUS::Infiltration::P_ShieldingCoefficient].get_value("-");
+								NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NANDRAD::NaturalVentilationModel::para_t",
+																   NANDRAD::NaturalVentilationModel::P_VentilationRate,
+																   val);
+							}break;
+							case VICUS::Infiltration::NUM_AC:{
+								NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NANDRAD::NaturalVentilationModel::para_t",
+																   NANDRAD::NaturalVentilationModel::P_VentilationRate,
+																   0);
+							}break;
+						}
+					}
+
+				}break;
+				case Ventilation:{
+					type = VICUS::ZoneTemplate::ST_VentilationNatural;
+					ztBools[counter].m_subTemplateId[type] = idSubTempVent;
+					const VICUS::VentilationNatural* vent = element(m_embeddedDB.m_ventilationNatural, idSubTempVent);
+					if(vent != nullptr){
+						natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Scheduled;
+						unsigned int schedId = vent->m_scheduleId;
+					}
+				}break;
+				case InfAndVenti:{
+					VICUS::ZoneTemplate::SubTemplateType type1 = VICUS::ZoneTemplate::ST_Infiltration;
+					ztBools[counter].m_subTemplateId[type1] = idSubTempInf;
+					const VICUS::Infiltration * inf = element(m_embeddedDB.m_infiltration, idSubTempInf);
+					VICUS::ZoneTemplate::SubTemplateType type2 = VICUS::ZoneTemplate::ST_VentilationNatural;
+					ztBools[counter].m_subTemplateId[type2] = idSubTempVent;
+					const VICUS::VentilationNatural* vent = element(m_embeddedDB.m_ventilationNatural, idSubTempVent);
+					if(inf == nullptr || vent == nullptr){
+						throw IBK::Exception(IBK::FormatString("Infiltration id %1 and/or ventilation id %2 model is not found.")
+											 .arg(idSubTempInf).arg(idSubTempVent), FUNC_ID);
+					}
+				}break;
 			}
+			p.m_models.m_naturalVentilationModels.push_back(natVentMod);
+
 		}
+
 
 
 		++counter;
