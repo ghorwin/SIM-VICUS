@@ -59,14 +59,12 @@ void SVDBInfiltrationEditWidget::updateInput(int id) {
 	m_ui->labelCategory_2->setText(tr("Method:"));
 	m_ui->labelAirChangeRate->setText(tr("Air Change Rate:"));
 	m_ui->labelShieldCoefficient->setText(tr("Shield Coefficient:"));
-	m_ui->labelScheduleInfiltration->setText(tr("Schedule Name:"));
 
 	if (id == -1) {
 		// clear input controls
 		m_ui->lineEditName->setString(IBK::MultiLanguageString());
 		m_ui->lineEditAirChangeRate->setText("");
 		m_ui->lineEditShieldCoefficient->setText("");
-		m_ui->lineEditInfiltrationScheduleName->setText("");
 
 		return;
 	}
@@ -93,19 +91,11 @@ void SVDBInfiltrationEditWidget::updateInput(int id) {
 	}
 	m_ui->lineEditShieldCoefficient->setValue(m_current->m_para[VICUS::Infiltration::P_ShieldingCoefficient].value);
 
-	VICUS::Schedule * sched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_managementScheduleId]);
-	if (sched != nullptr)
-		m_ui->lineEditInfiltrationScheduleName->setText(QtExt::MultiLangString2QString(sched->m_displayName));
-	else
-		m_ui->lineEditInfiltrationScheduleName->setText(tr("<select schedule>"));
-
-
 	// for built-ins, disable editing/make read-only
 	bool isbuiltIn = m_current->m_builtIn;
 	m_ui->lineEditName->setReadOnly(isbuiltIn);
 	m_ui->pushButtonColor->setReadOnly(isbuiltIn);
 	m_ui->comboBoxMethod->setEnabled(!isbuiltIn);
-	m_ui->lineEditInfiltrationScheduleName->setEnabled(!isbuiltIn);
 	m_ui->lineEditAirChangeRate->setEnabled(!isbuiltIn);
 	m_ui->lineEditShieldCoefficient->setEnabled(!isbuiltIn);
 }
@@ -182,17 +172,6 @@ void SVDBInfiltrationEditWidget::on_pushButtonColor_colorChanged() {
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 }
-
-void SVDBInfiltrationEditWidget::on_toolButtonSelectInfiltrationSchedule_clicked() {
-	// open schedule edit dialog in selection mode
-	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_managementScheduleId);
-	if (m_current->m_managementScheduleId != newId) {
-		m_current->m_managementScheduleId = newId;
-		modelModify();
-	}
-	updateInput((int)m_current->m_id);
-}
-
 
 
 

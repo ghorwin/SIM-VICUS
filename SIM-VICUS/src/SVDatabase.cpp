@@ -241,13 +241,10 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 			}
 			else if (inf != nullptr){
 				referencedInfiltration.insert(inf);
-				const VICUS::Schedule *sched = m_schedules[inf->m_managementScheduleId];
-				if(sched != nullptr)
-					referencedSchedule.insert(sched);
 			}
 			else if (ventiNat != nullptr){
 				referencedVentilation.insert(ventiNat);
-				const VICUS::Schedule *sched = m_schedules[inf->m_managementScheduleId];
+				const VICUS::Schedule *sched = m_schedules[ventiNat->m_scheduleId];
 				if(sched != nullptr)
 					referencedSchedule.insert(sched);
 			}

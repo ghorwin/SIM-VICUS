@@ -35,7 +35,6 @@ private slots:
 	void on_lineEditShieldCoefficient_editingFinished();
 	void on_lineEditAirChangeRate_editingFinished();
 
-	void on_toolButtonSelectInfiltrationSchedule_clicked();
 
 private:
 
