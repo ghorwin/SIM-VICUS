@@ -1167,6 +1167,10 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 	unsigned int counter = 0;
 	std::vector<unsigned int>							allModelIds;
 
+	///TODO Dirk->Andreas warum muss beim Internen Lastmodell immer alles angegeben werden?
+	/// Geräte, Licht, Personen
+	/// Sollte auch funktionieren wenn nur Personen eingeschrieben werden.
+
 	//loop for zone templates
 	for (const std::pair<unsigned int,std::map< double,  std::vector<unsigned int>>> &ob : zoneTemplateIdToObjListNameToRoomIds) {
 		//take zone template
@@ -1445,7 +1449,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 			}
 		}
 
-		//check for thermostat in zone template
+		// *** check for thermostat in zone template ***
 
 		VICUS::ZoneTemplate::SubTemplateType type = VICUS::ZoneTemplate::ST_ControlThermostat;
 		if(zt->usedReference(type) != VICUS::ZoneTemplate::NUM_ST){
@@ -1453,7 +1457,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 			//TODO Dirk
 		}
 
-		//infiltration and ventilation
+		// *** infiltration and ventilation ***
 		{
 			//TODO Dirk
 			enum VentiType{
