@@ -1,0 +1,207 @@
+  Program:  B:\git\SIM-VICUS\View3D\projects\Qt\debug\View3D.exe
+  Version:  4.0.0
+  Created:  Apr 16 2021 at 15:28:17
+  Compiler: Visual C++ Version 190024215
+Data file:  B:/git/SIM-VICUS/data/vicus/GeometryTests/residential_view3D/WE0.0_Living.v3s
+Output file:  B:/git/SIM-VICUS/data/vicus/GeometryTests/residential_view3D/WE0.0_Living_results.txt
+Time:  Fri Apr 16 15:28:32 2021
+
+Title: Generated View3D-file by SIM-VICUS for roomWE0.0_Living
+Control values for 3-D view factor calculations:
+     adaptive convergence: 0.0001
+  unobstructed recursions: 8 *
+max obstructed recursions: 8
+min obstructed recursions: 0
+              solving row: all
+           solving column: all
+ output control parameter: 3
+
+ total number of surfaces: 12 
+   heat transfer surfaces: 12 
+T	Generated View3D-file by SIM-VICUS for roomWE0.0_Living
+!--------------------------------------
+C eps = 0.0001 col = 0 row = 0 encl = 0 maxU = 8 maxO = 8 minO = 0 emit = 0 out = 0 list = 3
+!--------------------------------------
+!	#	x	y	z	coordinates of vertices
+V	1	6.1	3.25	2.2
+V	2	6.1	6.25	2.2
+V	3	1.95	6.25	2.2
+V	4	1.95	3.25	2.2
+V	5	1.95	3.25	0
+V	6	1.95	3.25	2.2
+V	7	1.95	6.25	2.2
+V	8	1.95	6.25	0
+V	9	1.95	6.25	0
+V	10	1.95	6.25	2.2
+V	11	6.1	6.25	2.2
+V	12	6.1	6.25	0
+V	13	6.1	6.25	0
+V	14	6.1	6.25	2.2
+V	15	6.1	3.25	2.2
+V	16	6.1	3.25	0
+V	17	6.1	3.25	0
+V	18	6.1	3.25	2.2
+V	19	1.95	3.25	2.2
+V	20	1.95	3.25	0
+V	21	1.95	3.25	0
+V	22	1.95	6.25	0
+V	23	6.1	6.25	0
+V	24	6.1	3.25	0
+!--------------------------------------
+!	#	v1	v2	v3	v4	base	cmb	emit	name	surface data
+S	1	1	3	2	0	0	0	0.001	[18] WE0.0_Roof_3[1]
+S	2	1	4	3	0	0	1	0.001	[18] WE0.0_Roof_3[2]
+S	3	5	7	6	0	0	0	0.001	[14] WE0.0_Wall_9[1]
+S	4	5	8	7	0	0	3	0.001	[14] WE0.0_Wall_9[2]
+S	5	9	11	10	0	0	0	0.001	[15] WE0.0_Wall_10[1]
+S	6	9	12	11	0	0	5	0.001	[15] WE0.0_Wall_10[2]
+S	7	13	15	14	0	0	0	0.001	[16] WE0.0_Wall_11[1]
+S	8	13	16	15	0	0	7	0.001	[16] WE0.0_Wall_11[2]
+S	9	17	19	18	0	0	0	0.001	[17] WE0.0_Wall_12[1]
+S	10	17	20	19	0	0	9	0.001	[17] WE0.0_Wall_12[2]
+S	11	21	23	22	0	0	0	0.001	[13] WE0.0_Floor_3[1]
+S	12	21	24	23	0	0	11	0.001	[13] WE0.0_Floor_3[2]
+!--------------------------------------
+End Surfaces:
+   #        name     area   emit  type bsn csn (dir cos) (centroid)
+   1         [18]  6.22e+00 0.001 rsrf   0   0 (0 0 -1 2.2) (4.71667 5.25 2.2)
+   2         [18]  6.22e+00 0.001 rsrf   0   1 (0 0 -1 2.2) (3.33333 4.25 2.2)
+   3         [14]  3.30e+00 0.001 rsrf   0   0 (1 0 0 -1.95) (1.95 4.25 1.46667)
+   4         [14]  3.30e+00 0.001 rsrf   0   3 (1 0 -0 -1.95) (1.95 5.25 0.733333)
+   5         [15]  4.57e+00 0.001 rsrf   0   0 (-0 -1 0 6.25) (3.33333 6.25 1.46667)
+   6         [15]  4.57e+00 0.001 rsrf   0   5 (0 -1 0 6.25) (4.71667 6.25 0.733333)
+   7         [16]  3.30e+00 0.001 rsrf   0   0 (-1 0 0 6.1) (6.1 5.25 1.46667)
+   8         [16]  3.30e+00 0.001 rsrf   0   7 (-1 0 0 6.1) (6.1 4.25 0.733333)
+   9         [17]  4.57e+00 0.001 rsrf   0   0 (-0 1 0 -3.25) (4.71667 3.25 1.46667)
+  10         [17]  4.57e+00 0.001 rsrf   0   9 (0 1 0 -3.25) (3.33333 3.25 0.733333)
+  11         [13]  6.22e+00 0.001 rsrf   0   0 (0 0 1 -0) (3.33333 5.25 0)
+  12         [13]  6.22e+00 0.001 rsrf   0  11 (0 -0 1 -0) (4.71667 4.25 0)
+Vertices:
+   1  (6.1 3.25 2.2) (1.95 6.25 2.2) (6.1 6.25 2.2)
+   2  (6.1 3.25 2.2) (1.95 3.25 2.2) (1.95 6.25 2.2)
+   3  (1.95 3.25 0) (1.95 6.25 2.2) (1.95 3.25 2.2)
+   4  (1.95 3.25 0) (1.95 6.25 0) (1.95 6.25 2.2)
+   5  (1.95 6.25 0) (6.1 6.25 2.2) (1.95 6.25 2.2)
+   6  (1.95 6.25 0) (6.1 6.25 0) (6.1 6.25 2.2)
+   7  (6.1 6.25 0) (6.1 3.25 2.2) (6.1 6.25 2.2)
+   8  (6.1 6.25 0) (6.1 3.25 0) (6.1 3.25 2.2)
+   9  (6.1 3.25 0) (1.95 3.25 2.2) (6.1 3.25 2.2)
+  10  (6.1 3.25 0) (1.95 3.25 0) (1.95 3.25 2.2)
+  11  (1.95 3.25 0) (6.1 6.25 0) (1.95 6.25 0)
+  12  (1.95 3.25 0) (6.1 3.25 0) (6.1 6.25 0)
+ 0.00 seconds to determine 0 possible view obstructing surfaces
+At start of View3D(): 22112 bytes allocated, 0 freed, 22112 net
+
+Surface pairs where F(i,j) must be zero:        6
+
+Surface pairs without obstructed views:        60
+   nd     2AI     1AI     2LI     1LI     ALI
+    2       0       0       0       0      48 direct
+    3       0       0       0       6
+    4       2       0       0       0
+  fix       0       0       0       4       4 fixes
+Total line integral points evaluated:        6040
+Adaptive line integral evaluations used:     5700
+
+Surface pairs with obstructed views:            0
+ 0.00 seconds to compute view factors
+At end of View3D(): 25968 bytes allocated, 3856 freed, 22112 net
+Polygon Memory Store Summary:
+	Structure size: 32
+	Structures per block: 200
+	Number of blocks: 1
+	Total number of structures allocated: 200
+	Total size of of structures allocated: 6400
+	Total number of structures returned: 0
+	Total size of structures returned: 0
+Vertex/Edge Memory Store Summary:
+	Structure size: 56
+	Structures per block: 200
+	Number of blocks: 1
+	Total number of structures allocated: 200
+	Total size of of structures allocated: 11200
+	Total number of structures returned: 0
+	Total size of structures returned: 0
+
+Initial view factors:
+ Row:       1, Name: [18], sum of view factors:  1.000000
+.000000 .000000 .022604 .046620 .162305 .102149 .145753 .059480 .075868 .047233
+.161764 .176223 
+ Row:       2, Name: [18], sum of view factors:  1.000000
+.000000 .000000 .145753 .059480 .075868 .047233 .022604 .046620 .162305 .102149
+.176223 .161764 
+ Row:       3, Name: [14], sum of view factors:  0.999928
+.042639 .274944 .000000 .000000 .085307 .043389 .047889 .049681 .059648 .196287
+.112202 .087941 
+ Row:       4, Name: [14], sum of view factors:  0.999928
+.087941 .112202 .000000 .000000 .196287 .059648 .049681 .047889 .043389 .085307
+.274944 .042639 
+ Row:       5, Name: [15], sum of view factors:  0.999948
+.221325 .103457 .061668 .141894 .000000 .000000 .043119 .031365 .090547 .102869
+.139294 .064409 
+ Row:       6, Name: [15], sum of view factors:  0.999948
+.139294 .064409 .031365 .043119 .000000 .000000 .141894 .061668 .102869 .090547
+.221325 .103457 
+ Row:       7, Name: [16], sum of view factors:  0.999928
+.274944 .042639 .047889 .049681 .059648 .196287 .000000 .000000 .085307 .043389
+.087941 .112202 
+ Row:       8, Name: [16], sum of view factors:  0.999928
+.112202 .087941 .049681 .047889 .043389 .085307 .000000 .000000 .196287 .059648
+.042639 .274944 
+ Row:       9, Name: [17], sum of view factors:  0.999948
+.103457 .221325 .043119 .031365 .090547 .102869 .061668 .141894 .000000 .000000
+.064409 .139294 
+ Row:      10, Name: [17], sum of view factors:  0.999948
+.064409 .139294 .141894 .061668 .102869 .090547 .031365 .043119 .000000 .000000
+.103457 .221325 
+ Row:      11, Name: [13], sum of view factors:  1.000000
+.161764 .176223 .059480 .145753 .102149 .162305 .046620 .022604 .047233 .075868
+.000000 .000000 
+ Row:      12, Name: [13], sum of view factors:  1.000000
+.176223 .161764 .046620 .022604 .047233 .075868 .059480 .145753 .102149 .162305
+.000000 .000000 
+ New,   Old surface numbers
+   1:   1 2
+   2:   3 4
+   3:   5 6
+   4:   7 8
+   5:   9 10
+   6:  11 12
+Number of surfaces reduced to 6.
+Surfaces:
+  n   base  cmbn   area
+  1    0     0  1.2450e+01
+  2    0     1  6.6000e+00
+  3    0     0  9.1300e+00
+  4    0     3  6.6000e+00
+  5    0     0  9.1300e+00
+  6    0     5  1.2450e+01
+
+View factors after combining surfaces:
+ Row:       1, Name: [18], sum of view factors:  1.000000
+.000000 .137229 .193778 .137229 .193778 .337987 
+ Row:       2, Name: [14], sum of view factors:  0.999928
+.258863 .000000 .192316 .097570 .192316 .258863 
+ Row:       3, Name: [15], sum of view factors:  0.999948
+.264243 .139023 .000000 .139023 .193416 .264243 
+ Row:       4, Name: [16], sum of view factors:  0.999928
+.258863 .097570 .192316 .000000 .192316 .258863 
+ Row:       5, Name: [17], sum of view factors:  0.999948
+.264243 .139023 .193416 .139023 .000000 .264243 
+ Row:       6, Name: [13], sum of view factors:  1.000000
+.337987 .137229 .193778 .137229 .193778 .000000 
+ 0.00 seconds to adjust view factors
+
+Final view factors:
+Generated View3D-file by SIM-VICUS for roomWE0.0_Living
+ Row:       1, Name: [18], sum of view factors:  1.000000
+.000000 .137229 .193778 .137229 .193778 .337987 
+ Row:       2, Name: [14], sum of view factors:  0.999928
+.258863 .000000 .192316 .097570 .192316 .258863 
+ Row:       3, Name: [15], sum of view factors:  0.999948
+.264243 .139023 .000000 .139023 .193416 .264243 
+ Row:       4, Name: [16], sum of view factors:  0.999928
+.258863 .097570 .192316 .000000 .192316 .258863 
+ Row:       5, Name: [17], sum of view factors:  0.999948
+.264243 .139023 .193416 .139023 .000000 .264243 
+ Row:       6, Nam
