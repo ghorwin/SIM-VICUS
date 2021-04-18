@@ -13,14 +13,25 @@
   <property name="windowTitle">
    <string>DelMainWindow</string>
   </property>
-  <widget class="QWidget" name="centralWidget"/>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QTextEdit" name="textEdit">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>270</y>
+      <width>104</width>
+      <height>64</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>22</height>
+     <height>17</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -161,6 +172,7 @@
     <addaction name="separator"/>
     <addaction name="actionSimulationExportFMI"/>
     <addaction name="actionExport_View3D"/>
+    <addaction name="actionCalculate_Shading_Factors"/>
    </widget>
    <widget class="QMenu" name="menu_Buildings">
     <property name="title">
@@ -641,6 +653,11 @@
   <action name="actionExport_View3D">
    <property name="text">
     <string>Export View3D</string>
+   </property>
+  </action>
+  <action name="actionCalculate_Shading_Factors">
+   <property name="text">
+    <string>Calculate Shading Factors</string>
    </property>
   </action>
  </widget>

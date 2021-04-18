@@ -325,6 +325,14 @@ QString SVSettings::nandradSolverExecutable() {
 	return solverExecutable;
 }
 
+QString SVSettings::view3dExecutable() {
+	QString solverExecutable = QFileInfo(SVSettings::instance().m_installDir + "/View3D").filePath();
+#ifdef WIN32
+	solverExecutable += ".exe";
+#endif // WIN32
+	return solverExecutable;
+}
+
 
 SVClimateDataTableModel * SVSettings::climateDataTableModel() {
 	if (m_climateDataTableModel == nullptr) {

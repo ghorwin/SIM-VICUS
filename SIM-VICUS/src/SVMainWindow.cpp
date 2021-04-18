@@ -56,7 +56,8 @@
 #include "SVPropEditGeometry.h"
 #include "SVStyle.h"
 #include "SVPropFloorManagerWidget.h"
-#include "SVView3D.h"
+#include "SVView3DDialog.h"
+#include "SVShadingCalculationDialog.h"
 
 #include "SVDatabaseEditDialog.h"
 #include "SVDBZoneTemplateEditDialog.h"
@@ -1740,8 +1741,22 @@ void SVMainWindow::on_actionResetView_triggered() {
 	SVViewStateHandler::instance().m_geometryView->resetCamera();
 }
 
-void SVMainWindow::on_actionExport_View3D_triggered()
-{
+void SVMainWindow::on_actionExport_View3D_triggered() {
 	SVView3D v3d;
-	v3d.exportView3d(IBK::Path() );
+	v3d.exportView3d();
 }
+
+void SVMainWindow::on_actionCalculate_Shading_Factors_triggered() {
+	if (m_shadingCalculationDialog == nullptr)
+		m_shadingCalculationDialog = new SVShadingCalculationDialog;
+	// open simulation start dialog, with settings for climate location, simulation and
+	// solver settings and simulation start button
+	int res = m_shadingCalculationDialog->edit();
+	if (res == QDialog::Accepted) {
+		// transfer data to VICUS project
+		// create an undo action for modification of the (entire) project
+		SVUndoModifyProject * undo = new SVUndoModifyProject(tr("Updated simulation parameters"), m_simulationStartNandrad->localProject());
+		undo->push();
+	}
+}
+

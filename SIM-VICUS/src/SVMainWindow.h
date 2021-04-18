@@ -31,6 +31,7 @@ class SVViewStateHandler;
 class SVSimulationStartNandrad;
 class SVSimulationStartNetworkSim;
 class SVSimulationExportFMIDialog;
+class SVShadingCalculationDialog;
 
 class SVDatabaseEditDialog;
 class SVDBZoneTemplateEditDialog;
@@ -264,6 +265,8 @@ private slots:
 	void on_actionSimulationExportFMI_triggered();
 	void on_actionExport_View3D_triggered();
 
+	void on_actionCalculate_Shading_Factors_triggered();
+
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();
@@ -381,6 +384,10 @@ private:
 	/*! Simulation start dialog. */
 	SVSimulationStartNandrad	*m_simulationStartNandrad								= nullptr;
 	SVSimulationStartNetworkSim	*m_simulationStartNetworkSim							= nullptr;
+
+	/*! FMI Export dialog. */
+	SVShadingCalculationDialog	*m_shadingCalculationDialog								= nullptr;
+
 
 	/*! Contains the 3D scene view (and tool buttons and stuff). */
 	SVGeometryView				*m_geometryView											= nullptr;

@@ -3,21 +3,21 @@
 
 #include <vector>
 
+#include <VICUS_Surface.h>
+
 #include <IBKMK_Vector3D.h>
+
 #include <IBK_Path.h>
 
-class QString;
+#include <QString>
+#include <QDialog>
 
-class SVView3D
+class SVView3D : public QDialog
 {
+	Q_OBJECT
+
 public:
 	SVView3D();
-
-	/*! Exports a View3D File */
-	void exportView3d(IBK::Path fname = IBK::Path("C:\test.v3s") );
-
-	/*! Reads an View3D Log file with results */
-	void readView3dResults(IBK::Path fname);
 
 
 	struct view3dVertex
@@ -78,10 +78,53 @@ public:
 
 	};
 
+	struct extendedSurfaces {
 
-	std::map<unsigned int, std::vector<view3dVertex>>		m_vertexes;		///> Map with View3D Vertexes
-	std::map<unsigned int, std::vector<view3dSurface>>		m_surfaces;		///> Map with View3D Surfaces
-	std::map<unsigned int, QString>							m_roomNames;	///> Map with Room Names
+		extendedSurfaces( ) {}
+
+		extendedSurfaces( const VICUS::Surface *vicusSurf ) :
+			m_vicusSurface(vicusSurf)
+		{}
+
+		const VICUS::Surface *					m_vicusSurface;
+
+		std::map<const VICUS::Surface*, double> m_vicSurfToViewFactor;
+
+	};
+
+	struct view3dRoom {
+
+		view3dRoom()  {}
+
+		view3dRoom(unsigned int roomId, QString displayName) :
+			m_roomId(roomId),
+			m_displayName(displayName)
+		{ }
+
+		unsigned int							m_roomId;
+
+		QString									m_displayName;
+
+		std::vector<view3dSurface>				m_surfaces;
+		std::vector<view3dVertex>				m_vertexes;
+
+		std::vector<extendedSurfaces>			m_extendedSurfaces;
+
+
+	};
+
+
+	/*! Exports a View3D File */
+	void exportView3d();
+
+	/*! Reads an View3D Log file with results */
+	void readView3dResults(IBK::Path fname, const view3dRoom &v3dRoom);
+
+	QString													m_solverExecutable;
+
+	std::vector<const VICUS::Surface*>						m_selSurfaces;
+
+	std::map<unsigned int, view3dRoom>						m_vicusRoomIdToView3dRoom;		///> Map with View3D Rooms
 
 };
 

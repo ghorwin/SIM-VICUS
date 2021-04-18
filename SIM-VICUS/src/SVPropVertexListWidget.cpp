@@ -391,6 +391,9 @@ void SVPropVertexListWidget::on_pushButtonCancel_clicked() {
 	vs.m_snapEnabled = true;
 	// now tell all UI components to toggle their view state
 	SVViewStateHandler::instance().setViewState(vs);
+
+	// we also have do clean our table
+	m_ui->tableWidgetVertexes->clearContents();
 }
 
 
