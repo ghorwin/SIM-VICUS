@@ -874,74 +874,199 @@ std::string createUniqueNandradObjListAndName(const std::string &name,
 	*/
 }
 
-/* Returns the possible merged day type. If no merge is possible returns NUM_ST. */
+/* Returns the possible merged day types. If no merge is possible returns dts. */
 std::vector<NANDRAD::Schedule::ScheduledDayType> mergeDayType(const std::vector<int> &dts){
-	unsigned int weekDayCount=0, weekEndCount=0;
-
+//	unsigned int weekDayCount=0, weekEndCount=0;
+//	bool hasHoli = false;
+	std::set<int> dtSet,weekDaySet,weekEndSet,holiSet;
 	for(int v : dts){
 		if(v == NANDRAD::Schedule::ST_MONDAY ||
 				v == NANDRAD::Schedule::ST_TUESDAY ||
 				v == NANDRAD::Schedule::ST_WEDNESDAY ||
 				v == NANDRAD::Schedule::ST_THURSDAY ||
 				v == NANDRAD::Schedule::ST_FRIDAY)
-			++weekDayCount;
+			weekDaySet.insert(v);
 		else if(v == NANDRAD::Schedule::ST_SATURDAY ||
 				v == NANDRAD::Schedule::ST_SUNDAY)
-			++weekEndCount;
+			weekEndSet.insert(v);
+		else if(v == NANDRAD::Schedule::ST_HOLIDAY)
+			holiSet.insert(v);
+		dtSet.insert(v);
 	}
 
-	if(weekDayCount + weekEndCount == 7){
-		return std::vector<NANDRAD::Schedule::ScheduledDayType> (1,NANDRAD::Schedule::ST_ALLDAYS);
-	}/*
-	else if(weekDayCount == 5)
-		return NANDRAD::Schedule::ST_WEEKDAY;
-	else if(weekEndCount == 2)
-		return NANDRAD::Schedule::ST_WEEKEND;
-	*/
-	return std::vector<NANDRAD::Schedule::ScheduledDayType> (1,NANDRAD::Schedule::NUM_ST);
+	std::vector<NANDRAD::Schedule::ScheduledDayType> schedDts;
+	if(!holiSet.empty())
+		schedDts.push_back(NANDRAD::Schedule::ST_HOLIDAY);
+
+//	std::set<int>::iterator it = holiSet.begin();
+//	int aa = *it;
+
+	//AllDays
+	if(weekDaySet.size() + weekEndSet.size() == 7)
+		return std::vector<NANDRAD::Schedule::ScheduledDayType> {NANDRAD::Schedule::ST_ALLDAYS};
+	//WeekDay
+	else if(weekDaySet.size() == 5){
+		//on pos 1 can be holiday -> swap weekday to pos 1
+		schedDts.insert(schedDts.begin(), NANDRAD::Schedule::ST_WEEKDAY);
+		switch (weekEndSet.size()) {
+			case 0:		return schedDts;
+			case 1:{
+				for(int val : weekEndSet)
+					schedDts.push_back((NANDRAD::Schedule::ScheduledDayType)val);
+				std::swap(schedDts[1], schedDts.back());
+				return schedDts;
+			}
+		}
+	}
+	//WeekEnd
+	else if(weekEndSet.size() == 2){
+		//on pos 1 can be holiday -> swap weekend to pos 1
+		schedDts.insert(schedDts.begin(), NANDRAD::Schedule::ST_WEEKEND);
+		if(weekDaySet.empty())
+			return schedDts;
+		else{
+			for (int i : weekDaySet)
+				schedDts.push_back(NANDRAD::Schedule::ScheduledDayType(i));
+			std::swap(schedDts[1], schedDts.back());
+			return schedDts;
+		}
+	}
+	//no merge possible
+	schedDts.clear();
+	for (int i : dts)
+		schedDts.push_back(NANDRAD::Schedule::ScheduledDayType(i));
+	return schedDts;
 }
 
-void addScheduleToNANDRADProject(VICUS::Schedule schedVic, NANDRAD::Project &p, const std::string &objListName){
+/* Important in the NANDRAD project the scheduleQuantity is not added. Otherwise the project is inconsistent. */
+void addVicusScheduleToNandradProject(const VICUS::Schedule &schedVic, const std::string &scheduleQuantityName,
+								 NANDRAD::Project &p, const std::string &objListName){
 
 	// *** predefinitions ***
 
 	//find a schedule in NANDRAD project with the objListName
 	if(p.m_schedules.m_scheduleGroups.find(objListName) != p.m_schedules.m_scheduleGroups.end()){
+		//get schedule vector for this object list name
+		std::vector<NANDRAD::Schedule> &scheds = p.m_schedules.m_scheduleGroups[objListName];
 
+		for(unsigned int i=0; i<schedVic.m_periods.size(); ++i){
+			const VICUS::ScheduleInterval &period = schedVic.m_periods[i];
+
+			for(unsigned int j=0; j<period.m_dailyCycles.size(); ++j){
+				const VICUS::DailyCycle &dc = period.m_dailyCycles[j];
+
+				//merge all possible day types
+				std::vector<NANDRAD::Schedule::ScheduledDayType> dts = mergeDayType(dc.m_dayTypes);
+
+				//loop over all day types of vicus schedule
+				for(NANDRAD::Schedule::ScheduledDayType dt : dts){
+
+					bool valuesAdded = false;
+					//check if a period with equal start+end date exists
+					for(NANDRAD::Schedule &schedNandrad : scheds){
+
+						//now check day types of vicus schedule with nandrad schedule
+						//for a nandrad schedule following properties must be equal
+						// * day type
+						// * start day
+						// * end day
+						// if this is all equal we can add the timepoint and values to an existing daily cycle with same interpolation method
+						// otherwise we add a new daily cycle to the daily cylce vector
+
+						if(dt == schedNandrad.m_type &&
+								schedNandrad.m_startDayOfTheYear == period.m_intervalStartDay &&
+								((i+1<schedVic.m_periods.size() && schedNandrad.m_endDayOfTheYear == schedVic.m_periods[i+1].m_intervalStartDay-1) ||
+																		schedNandrad.m_endDayOfTheYear == 364)){
+							//now check if we have daily cylces with equal properties to:
+							// * interpolation method
+							// * time points
+							for(NANDRAD::DailyCycle &dcNandrad : schedNandrad.m_dailyCycles){
+								if( ( (dcNandrad.m_interpolation == NANDRAD::DailyCycle::IT_Constant && !schedVic.m_useLinearInterpolation) ||
+										(dcNandrad.m_interpolation == NANDRAD::DailyCycle::IT_Linear && schedVic.m_useLinearInterpolation) ) &&
+										dcNandrad.m_timePoints == dc.m_timePoints){
+									// now we can add the data
+									dcNandrad.m_values.m_values[scheduleQuantityName] = dc.m_values;
+									valuesAdded = true;
+									break;
+								}
+							}
+							//nothing found to add data
+							//create a new daily cycle
+							if(!valuesAdded){
+								NANDRAD::DailyCycle newDcNandrad;
+								newDcNandrad.m_interpolation = schedVic.m_useLinearInterpolation ? NANDRAD::DailyCycle::IT_Linear : NANDRAD::DailyCycle::IT_Linear;
+								newDcNandrad.m_timePoints = dc.m_timePoints;
+								newDcNandrad.m_values.m_values[scheduleQuantityName] = dc.m_values;
+								schedNandrad.m_dailyCycles.push_back(newDcNandrad);
+								valuesAdded = true;
+							}
+						}
+						if(valuesAdded)
+							break;
+					}
+					//no schedule found
+					//so add a new one
+					if(!valuesAdded){
+						NANDRAD::Schedule newNandradSched;
+						newNandradSched.m_startDayOfTheYear = period.m_intervalStartDay;
+						if(i+1<schedVic.m_periods.size())
+							newNandradSched.m_endDayOfTheYear = schedVic.m_periods[i+1].m_intervalStartDay - 1;
+
+						//create daily cyle
+						NANDRAD::DailyCycle newDcNandrad;
+						newDcNandrad.m_interpolation = schedVic.m_useLinearInterpolation ? NANDRAD::DailyCycle::IT_Linear : NANDRAD::DailyCycle::IT_Linear;
+						newDcNandrad.m_timePoints = dc.m_timePoints;
+						newDcNandrad.m_values.m_values[scheduleQuantityName] = dc.m_values;
+						//add daily cycle to schedule
+						newNandradSched.m_dailyCycles.push_back(newDcNandrad);
+
+						for(NANDRAD::Schedule::ScheduledDayType dtNandrad : dts){
+							newNandradSched.m_type = dtNandrad;
+							//add schedule to schedule group
+							scheds.push_back(newNandradSched);
+						}
+					}
+				}
+			}
+		}
 	}
 	//we do not find a schedule with name = objListName
-	//so create a new on
+	//so create a new one
 	else{
-
-		std::map<NANDRAD::Schedule::ScheduledDayType, std::vector<NANDRAD::Schedule>> scheds;
+		std::vector<NANDRAD::Schedule> scheds;
 		//create for each period a new NANDRAD schedule
 		for(unsigned int i=0; i<schedVic.m_periods.size(); ++i){
-			NANDRAD::Schedule s;
 			const VICUS::ScheduleInterval &period = schedVic.m_periods[i];
-			s.m_startDayOfTheYear = period.m_intervalStartDay;
 			//find day types for NANDRAD schedule
 			for(unsigned int j=0; j<period.m_dailyCycles.size(); ++j){
 				const VICUS::DailyCycle &dc = period.m_dailyCycles[j];
-				unsigned int dayTypeCount = dc.m_dayTypes.size();
-//				NANDRAD::Schedule::ScheduledDayType mergeType = mergeDayType(dc.m_dayTypes);
 
-//				if(mergeType == )
+				//merge all possible day types
+				std::vector<NANDRAD::Schedule::ScheduledDayType> dts = mergeDayType(dc.m_dayTypes);
+
+				//create for each day type in merge vector a new NANDRAD schedule
+				for(NANDRAD::Schedule::ScheduledDayType dt : dts){
+					NANDRAD::Schedule s;
+					//set up start day
+					if(period.m_intervalStartDay > 0)
+						s.m_startDayOfTheYear = period.m_intervalStartDay;
+					//set up end day
+					//search in next period for a start day
+					if(i+1 < schedVic.m_periods.size())
+						s.m_endDayOfTheYear = schedVic.m_periods[i+1].m_intervalStartDay - 1;
+					s.m_type = dt;
+					NANDRAD::DailyCycle dcNANDRAD;
+					dcNANDRAD.m_interpolation = schedVic.m_useLinearInterpolation ? NANDRAD::DailyCycle::IT_Linear : NANDRAD::DailyCycle::IT_Constant;
+					dcNANDRAD.m_timePoints = dc.m_timePoints;
+					dcNANDRAD.m_values.m_values[scheduleQuantityName] = dc.m_values;
+					s.m_dailyCycles.push_back(dcNANDRAD);
+					scheds.push_back(s);
+				}
 			}
-			//s.m_type
-			// schedVic.m_useLinearInterpolation
-
 		}
-		/*
-		s.M
-		schedVic.m_periods
-		s.m_
-				*/
+		//add sched group to NANDRAD project
+		p.m_schedules.m_scheduleGroups[objListName] = scheds;
 	}
-
-
-	//first add all periods in both schedules
-
-
 }
 
 
@@ -958,7 +1083,7 @@ std::string Project::getRoomNameById(unsigned int id) const {
 	}
 	return "";
 }
-
+//#define test01
 void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 	FUNCID(Project::generateBuildingProjectData);
 	// used to generate unique interface IDs
@@ -1063,6 +1188,22 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 		std::set<unsigned int> intLoadEnums;
 
 		//fill up intLoadEnums
+
+		VICUS::ZoneTemplate::SubTemplateType testDirkEle, testDirkPers, testDirkLig, testDirkOther;
+		testDirkEle = zt->usedReference(VICUS::ZoneTemplate::ST_IntLoadEquipment);
+		testDirkPers = zt->usedReference(VICUS::ZoneTemplate::ST_IntLoadPerson);
+		testDirkLig = zt->usedReference(VICUS::ZoneTemplate::ST_IntLoadLighting);
+		testDirkOther = zt->usedReference(VICUS::ZoneTemplate::ST_IntLoadOther);
+
+		if(zt->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadEquipment] != VICUS::INVALID_ID)
+			intLoadEnums.insert(VICUS::ZoneTemplate::ST_IntLoadEquipment);
+		if(zt->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson] != VICUS::INVALID_ID)
+			intLoadEnums.insert(VICUS::ZoneTemplate::ST_IntLoadPerson);
+		if(zt->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadLighting] != VICUS::INVALID_ID)
+			intLoadEnums.insert(VICUS::ZoneTemplate::ST_IntLoadLighting);
+		if(zt->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadOther] != VICUS::INVALID_ID)
+			intLoadEnums.insert(VICUS::ZoneTemplate::ST_IntLoadOther);
+		/*
 		if(zt->usedReference(VICUS::ZoneTemplate::ST_IntLoadEquipment) != VICUS::ZoneTemplate::NUM_ST)
 			intLoadEnums.insert(VICUS::ZoneTemplate::ST_IntLoadEquipment);
 		if(zt->usedReference(VICUS::ZoneTemplate::ST_IntLoadLighting) != VICUS::ZoneTemplate::NUM_ST)
@@ -1071,7 +1212,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 			intLoadEnums.insert(VICUS::ZoneTemplate::ST_IntLoadOther);
 		if(zt->usedReference(VICUS::ZoneTemplate::ST_IntLoadPerson) != VICUS::ZoneTemplate::NUM_ST)
 			intLoadEnums.insert(VICUS::ZoneTemplate::ST_IntLoadPerson);
-
+		*/
 		//check all internal loads for area depending
 		for(auto e : intLoadEnums){
 			//get id of int load template
@@ -1092,6 +1233,8 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 			}
 		}
 
+
+
 		//now we have a separate template model for each zt and AREA
 
 		std::map<double, std::vector<unsigned int>> mapAreaToRoomIds;
@@ -1108,6 +1251,18 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 		if(!intLoadEnums.empty()){
 
+			// *** predefinitions
+			std::map<VICUS::ZoneTemplate::SubTemplateType, std::string>	subTempTypeToNameWithUnit;
+			subTempTypeToNameWithUnit[VICUS::ZoneTemplate::ST_IntLoadPerson] =
+					(std::string)NANDRAD::KeywordList::Keyword("InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_PersonHeatLoadPerArea)
+					+ "Schedule [W/m2]";
+			subTempTypeToNameWithUnit[VICUS::ZoneTemplate::ST_IntLoadEquipment] =
+					(std::string)NANDRAD::KeywordList::Keyword("InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_EquipmentHeatLoadPerArea)
+					+ "Schedule [W/m2]";
+			subTempTypeToNameWithUnit[VICUS::ZoneTemplate::ST_IntLoadLighting] =
+					(std::string)NANDRAD::KeywordList::Keyword("InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_LightingHeatLoadPerArea)
+					+ "Schedule [W/m2]";
+
 			//create all obj list with room ids
 			for(std::pair<double, std::vector<unsigned int>> areaToRoomIdsObj : mapAreaToRoomIds){
 
@@ -1118,31 +1273,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 				//create an obj list
 				//std::string uniqueName = createUniqueNandradObjListName(mapObjListNameToRoomIds, zt->m_displayName.string());
 				std::string uniqueName = createUniqueNandradObjListAndName(zt->m_displayName.string(), areaToRoomIdsObj.second, p, NANDRAD::ModelInputReference::MRT_ZONE);
-#if dasMussRaus
 				mapObjListNameToRoomIds[uniqueName] = areaToRoomIdsObj.second;
-				NANDRAD::ObjectList objList;
-				//add all ids to obj list
-				for(unsigned int rId : areaToRoomIdsObj.second)
-					objList.m_filterID.m_ids.insert(rId);
-				objList.m_name = uniqueName;
-				objList.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
-				//look if obj list already exists -> take this
-				bool objListExist=false;
-				for(NANDRAD::ObjectList &objListNAN : p.m_objectLists){
-					if(objList.m_filterID == objListNAN.m_filterID &&
-							objList.m_referenceType == objListNAN.m_referenceType){
-						mapObjListNameToRoomIds.erase(mapObjListNameToRoomIds.find(uniqueName));
-						uniqueName = objListNAN.m_name;
-						objList.m_name = uniqueName;
-						mapObjListNameToRoomIds[uniqueName]=areaToRoomIdsObj.second;
-						objListExist = true;
-						break;
-					}
-				}
-				//only add new obj lists
-				if(!objListExist)
-					p.m_objectLists.push_back(objList);
-#endif //dasMussRaus
 
 				//now create NANDRAD models
 				NANDRAD::InternalLoadsModel intLoad;
@@ -1164,23 +1295,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 					P_Other,
 					NUM_P
 				};
-
 				std::vector<VICUS::Schedule> intLoadScheds(NUM_P);
-				//create a schedule with a single period and all days for multipling
-				VICUS::Schedule allPeriodsSchedule;
-				allPeriodsSchedule.m_periods.push_back(VICUS::ScheduleInterval());
-				VICUS::DailyCycle dc;
-				//create one daily cylce with all day types and value 0 for 24 h
-				for(int i=0; i<NANDRAD::Schedule::NUM_ST; ++i){
-					if(i==NANDRAD::Schedule::ST_ALLDAYS || i==NANDRAD::Schedule::ST_WEEKDAY ||
-							i==NANDRAD::Schedule::ST_WEEKEND)
-						continue;
-					dc.m_dayTypes.push_back(i);
-				}
-				dc.m_timePoints.push_back(0);
-				dc.m_values.push_back(0);
-				allPeriodsSchedule.m_periods.front().m_dailyCycles.push_back(dc);
-				allPeriodsSchedule.m_periods.front().m_intervalStartDay =0;
 
 				for(unsigned int e : intLoadEnums){
 					// wo werden die interpolationsmethode constant oder linear gesetzt?
@@ -1218,42 +1333,42 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 								IBK::Exception(IBK::FormatString("Occupancy schedule with id %1 and name '%2' is not in valid.")
 											   .arg(schedId2).arg(schedOcc->m_displayName.string()), FUNC_ID);
 
-
-							//multiply the two schedules and add this to vector
 							posIntLoad enum1 = P_Person;
-							intLoadScheds[enum1] = schedAct->multiply(*schedOcc);
+							VICUS::Schedule &intLoadSched = intLoadScheds[enum1];
+							//multiply the two schedules and add this to vector
+							intLoadSched = schedAct->multiply(*schedOcc);
 							///TODO Dirk->Andreas ist das richtig? welche Id-spaces brauchen die Schedules?
-							intLoadScheds[enum1].m_id = VICUS::Project::uniqueId<unsigned int>(allModelIds);
+							intLoadSched.m_id = VICUS::Project::uniqueId<unsigned int>(allModelIds);
 
 							//multiply sched and constant val
 
 							switch(pers->m_personCountMethod){
 								case VICUS::InternalLoad::PCM_PersonPerArea:
-									intLoadScheds[enum1] = intLoadScheds[enum1].multiply(pers->m_para[VICUS::InternalLoad::P_PersonPerArea].get_value("m2"));
+									intLoadSched = intLoadSched.multiply(pers->m_para[VICUS::InternalLoad::P_PersonPerArea].get_value("m2"));
 								break;
 								case VICUS::InternalLoad::PCM_AreaPerPerson: {
 									double val = pers->m_para[VICUS::InternalLoad::P_AreaPerPerson].get_value("m2");
 									//if value is zero do nothing
 									if(val>0)
-										intLoadScheds[enum1] = intLoadScheds[enum1].multiply(1/val);
+										intLoadSched = intLoadSched.multiply(1/val);
 								} break;
 								case VICUS::InternalLoad::PCM_PersonCount:{
-									intLoadScheds[enum1] = intLoadScheds[enum1].multiply(pers->m_para[VICUS::InternalLoad::P_PersonCount].get_value()/areaToRoomIdsObj.first);
+									intLoadSched = intLoadSched.multiply(pers->m_para[VICUS::InternalLoad::P_PersonCount].get_value()/areaToRoomIdsObj.first);
 								} break;
 								case VICUS::InternalLoad::NUM_PCM:
 								break;
 
 							}
-							allModelIds.push_back(intLoadScheds[enum1].m_id);
+
+							addVicusScheduleToNandradProject(intLoadSched,subTempTypeToNameWithUnit[VICUS::ZoneTemplate::SubTemplateType(e)],
+									p, uniqueName);
+
+							allModelIds.push_back(intLoadSched.m_id);
 
 							//override zero values in NANDRAD model
 							NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t",
 															   NANDRAD::InternalLoadsModel::P_PersonRadiationFraction,
 															   1 - pers->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].get_value("---"));
-							//build the schedule with all periods
-							//make equal interpolation method
-							allPeriodsSchedule.m_useLinearInterpolation = intLoadScheds[enum1].m_useLinearInterpolation;
-							allPeriodsSchedule = intLoadScheds[enum1].multiply(allPeriodsSchedule);
 						}
 						break;
 						case VICUS::ZoneTemplate::ST_IntLoadEquipment:
@@ -1315,225 +1430,16 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 								break;
 
 							}
+
+							addVicusScheduleToNandradProject(intLoadScheds[enum1],subTempTypeToNameWithUnit[VICUS::ZoneTemplate::SubTemplateType(e)],
+									p, uniqueName);
+
 							allModelIds.push_back(intLoadScheds[enum1].m_id);
-							//set parameters for internal load model (NANDRAD)
-							//build the schedule with all periods
-							//make equal interpolation method
-							allPeriodsSchedule.m_useLinearInterpolation = intLoadScheds[enum1].m_useLinearInterpolation;
-							//improve allPeriodsSchedule (multiply)
-							//override zero values in NANDRAD model
-							allPeriodsSchedule = intLoadScheds[enum1].multiply(allPeriodsSchedule);
 						}
 						break;
 					}
 				}
 
-				for(VICUS::ScheduleInterval &schedInt : allPeriodsSchedule.m_periods){
-					for(VICUS::DailyCycle &dc : schedInt.m_dailyCycles)
-						for(double &val : dc.m_values)
-							val = 1;
-				}
-
-				//now multiply each schedule with all period schedule
-				//so we get all periods in all schedules
-				for(unsigned int e : intLoadEnums){
-					if(intLoadScheds[e].m_id == VICUS::INVALID_ID)
-						continue;
-					allPeriodsSchedule.m_useLinearInterpolation = intLoadScheds[e].m_useLinearInterpolation;
-					intLoadScheds[e] = allPeriodsSchedule.multiply(intLoadScheds[e]);
-				}
-
-				std::vector<NANDRAD::Schedule> nandradScheds(intLoadScheds.front().m_periods.size());
-
-				std::map<VICUS::ZoneTemplate::SubTemplateType, std::string>	subTempTypeToNameWithUnit;
-				subTempTypeToNameWithUnit[VICUS::ZoneTemplate::ST_IntLoadPerson] =
-						(std::string)NANDRAD::KeywordList::Keyword("InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_PersonHeatLoadPerArea)
-						+ " [W/m2]";
-				subTempTypeToNameWithUnit[VICUS::ZoneTemplate::ST_IntLoadEquipment] =
-						(std::string)NANDRAD::KeywordList::Keyword("InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_EquipmentHeatLoadPerArea)
-						+ " [W/m2]";
-				subTempTypeToNameWithUnit[VICUS::ZoneTemplate::ST_IntLoadLighting] =
-						(std::string)NANDRAD::KeywordList::Keyword("InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_LightingHeatLoadPerArea)
-						+ " [W/m2]";
-				//Other is not available yet
-				//TODO implement later
-				/*
-				subTempTypeToNameWithUnit[VICUS::ZoneTemplate::ST_IntLoadOther] =
-						(std::string)NANDRAD::KeywordList::Keyword("InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_)
-						+ " [W/m2]";
-				*/
-
-				//build sets of the combine day types weekend weekday alldays
-				std::set<int> dtWeekend, dtWeekday, dtAll;
-				dtWeekend.insert(NANDRAD::Schedule::ST_SATURDAY);
-				dtWeekend.insert(NANDRAD::Schedule::ST_SUNDAY);
-				dtWeekday.insert(NANDRAD::Schedule::ST_MONDAY);
-				dtWeekday.insert(NANDRAD::Schedule::ST_TUESDAY);
-				dtWeekday.insert(NANDRAD::Schedule::ST_WEDNESDAY);
-				dtWeekday.insert(NANDRAD::Schedule::ST_THURSDAY);
-				dtWeekday.insert(NANDRAD::Schedule::ST_FRIDAY);
-				//passt das so das hier wochentag und ende vereinigt wird?
-				dtAll.insert(dtWeekday.begin(),dtWeekday.end());
-				dtAll.insert(dtWeekend.begin(),dtWeekend.end());
-
-				std::map<NANDRAD::Schedule::ScheduledDayType, NANDRAD::Schedule> nandradDtToSched;
-				for(unsigned int e : intLoadEnums){
-					const VICUS::Schedule &sched = intLoadScheds[e];
-					if(sched.m_id == VICUS::INVALID_ID)
-						continue;
-
-					//check which day types are equal
-					for(const VICUS::ScheduleInterval &p : sched.m_periods){
-						std::map<unsigned int, std::vector<unsigned int> > dayTypeToOtherEqualDayTypes;
-						for(const VICUS::DailyCycle &dc : p.m_dailyCycles){
-
-							//build a check set
-							std::set<int> dtCheck;
-							for(unsigned int i=0; i< dc.m_dayTypes.size(); ++i)
-								dtCheck.insert((NANDRAD::Schedule::ScheduledDayType)dc.m_dayTypes[i]);
-
-							bool hasHoliday = false;
-							//extract holiday
-							if(dtCheck.find(NANDRAD::Schedule::ST_HOLIDAY) != dtCheck.end()){
-								hasHoliday = true;
-								dtCheck.erase(NANDRAD::Schedule::ST_HOLIDAY);
-							}
-
-							//NANDRAD::Schedule::ScheduledDayType dtNow = NANDRAD::Schedule::NUM_ST;
-							std::set<NANDRAD::Schedule::ScheduledDayType> foundDt;
-
-							if(dtAll == dtCheck)
-								foundDt.insert(NANDRAD::Schedule::ST_ALLDAYS);
-							else{
-								if(dtCheck.find(NANDRAD::Schedule::ST_SATURDAY) != dtCheck.end() &&
-										dtCheck.find(NANDRAD::Schedule::ST_SUNDAY) != dtCheck.end()){
-									foundDt.insert(NANDRAD::Schedule::ST_WEEKEND);
-								}
-								if(dtCheck.find(NANDRAD::Schedule::ST_MONDAY) != dtCheck.end() &&
-										dtCheck.find(NANDRAD::Schedule::ST_TUESDAY) != dtCheck.end() &&
-										dtCheck.find(NANDRAD::Schedule::ST_WEDNESDAY) != dtCheck.end() &&
-										dtCheck.find(NANDRAD::Schedule::ST_THURSDAY) != dtCheck.end() &&
-										dtCheck.find(NANDRAD::Schedule::ST_FRIDAY) != dtCheck.end())
-									foundDt.insert(NANDRAD::Schedule::ST_WEEKDAY);
-							}
-
-							//no combine day type was found
-							//so go through each dt and make a single daily cycle
-
-							//fill up ALLDAYS
-							if(foundDt.find(NANDRAD::Schedule::ST_ALLDAYS) != foundDt.end()){
-								NANDRAD::DailyCycle nandradDC;
-								nandradDC.m_interpolation = sched.m_useLinearInterpolation ? NANDRAD::DailyCycle::IT_Linear :
-																							 NANDRAD::DailyCycle::IT_Constant;
-								nandradDC.m_timePoints = dc.m_timePoints;
-								nandradDC.m_values.m_values[subTempTypeToNameWithUnit[VICUS::ZoneTemplate::SubTemplateType(e)]] = dc.m_values;
-								//nandradDtToSched[NANDRAD::Schedule::ST_ALLDAYS].m_dailyCycles.push_back(nandradDC);
-
-								NANDRAD::Schedule::ScheduledDayType dcType = NANDRAD::Schedule::ST_ALLDAYS;
-
-								bool isAdded = false;
-								if(nandradDtToSched.find(dcType) != nandradDtToSched.end()){
-									for(unsigned int iDC = 0; iDC<nandradDtToSched[dcType].m_dailyCycles.size(); ++iDC){
-										NANDRAD::DailyCycle &dc1 = nandradDtToSched[dcType].m_dailyCycles[iDC];
-										if(dc1.m_timePoints.size() != nandradDC.m_timePoints.size())
-											continue;
-										if(dc1.m_timePoints == nandradDC.m_timePoints){
-											dc1.m_values.m_values[subTempTypeToNameWithUnit[VICUS::ZoneTemplate::SubTemplateType(e)]] = dc.m_values;
-											isAdded = true;
-											break;
-										}
-
-									}
-								}
-								if(!isAdded)
-									nandradDtToSched[dcType].m_dailyCycles.push_back(nandradDC);
-
-								//Todo
-								if(!hasHoliday){
-
-								}
-							}
-							// fill up all other day types
-							else {
-								// wochenende
-								// wochenende +  andere tage
-								// werkwoche
-								// werkwoche +  andere tage
-								// andere tage
-								// Wenn WERKWOCHE oder WOCHENENDE vorhanden ist dann ist das jeweilige Tagestyp (WERKWOCHE oder WOCHENENDE) immer auf Pos 0 gesetzt.
-								//if weekday or weekend exists then nandradDcs[0] is ALWAYS type of weekday or weekend !!!
-								std::vector<NANDRAD::DailyCycle> nandradDcs(!foundDt.empty() ? 1:0);
-
-								for(unsigned int i=0; i<dc.m_dayTypes.size(); ++i){
-									NANDRAD::Schedule::ScheduledDayType dcType = (NANDRAD::Schedule::ScheduledDayType)dc.m_dayTypes[i];
-
-									size_t pos = SIZE_MAX;
-									if(foundDt.find(NANDRAD::Schedule::ST_WEEKEND) != foundDt.end() &&
-										(dc.m_dayTypes[i] == NANDRAD::Schedule::ST_SUNDAY ||
-										 dc.m_dayTypes[i] == NANDRAD::Schedule::ST_SATURDAY )){
-										//skip process because we set data already
-										if(!nandradDcs.front().m_timePoints.empty())
-											continue;
-										dcType = NANDRAD::Schedule::ST_WEEKEND;
-										pos = 0;
-									}
-									else if(foundDt.find(NANDRAD::Schedule::ST_WEEKDAY) != foundDt.end() &&
-										(dc.m_dayTypes[i] == NANDRAD::Schedule::ST_MONDAY ||
-										 dc.m_dayTypes[i] == NANDRAD::Schedule::ST_TUESDAY ||
-										 dc.m_dayTypes[i] == NANDRAD::Schedule::ST_WEDNESDAY ||
-										 dc.m_dayTypes[i] == NANDRAD::Schedule::ST_THURSDAY ||
-										 dc.m_dayTypes[i] == NANDRAD::Schedule::ST_FRIDAY )){
-										//skip process because we set values already
-										if(!nandradDcs.front().m_timePoints.empty())
-											continue;
-										dcType = NANDRAD::Schedule::ST_WEEKDAY;
-										pos = 0;
-									}
-									else{
-										nandradDcs.push_back(NANDRAD::DailyCycle());
-										pos = nandradDcs.size()-1;
-									}
-									NANDRAD::DailyCycle nandradDC = nandradDcs[pos];
-
-									nandradDC.m_interpolation = sched.m_useLinearInterpolation ? NANDRAD::DailyCycle::IT_Linear :
-																								 NANDRAD::DailyCycle::IT_Constant;
-									nandradDC.m_timePoints = dc.m_timePoints;
-									nandradDC.m_values.m_values[subTempTypeToNameWithUnit[VICUS::ZoneTemplate::SubTemplateType(e)]] = dc.m_values;
-
-
-									bool isAdded = false;
-									if(nandradDtToSched.find(dcType) != nandradDtToSched.end()){
-										for(unsigned int iDC = 0; iDC<nandradDtToSched[dcType].m_dailyCycles.size(); ++iDC){
-											NANDRAD::DailyCycle &dc1 = nandradDtToSched[dcType].m_dailyCycles[iDC];
-											if(dc1.m_timePoints.size() != nandradDC.m_timePoints.size())
-												continue;
-											if(dc1.m_timePoints == nandradDC.m_timePoints){
-												dc1.m_values.m_values[subTempTypeToNameWithUnit[VICUS::ZoneTemplate::SubTemplateType(e)]] = dc.m_values;
-												isAdded = true;
-												break;
-											}
-										}
-									}
-									if(!isAdded){
-										nandradDtToSched[dcType].m_dailyCycles.push_back(nandradDC);
-										nandradDtToSched[dcType].m_type = dcType;
-									}
-									if(dcType == NANDRAD::Schedule::ST_WEEKEND || dcType == NANDRAD::Schedule::ST_WEEKDAY)
-										nandradDcs[0] = nandradDC;
-								}
-							}
-						}
-					}
-				}
-				NANDRAD::Schedule nandradSched;
-				NANDRAD::Schedules &nanScheds = p.m_schedules;
-				for(std::pair<NANDRAD::Schedule::ScheduledDayType, NANDRAD::Schedule> nanSched : nandradDtToSched)
-					nanScheds.m_scheduleGroups[uniqueName].push_back(nanSched.second);
-				///TODO Dirk->Alle Frage an alle wo ist der Starttag der Simulation festgelegt?
-				nanScheds.m_firstDayOfYear = NANDRAD::Schedules::SD_MONDAY;
-				///TODO Dirk->Alle auch das sollte irgendwo in der gui stehen erbitte Hilfe
-				nanScheds.m_weekEndDays.insert(NANDRAD::Schedules::SD_SUNDAY);
-				nanScheds.m_weekEndDays.insert(NANDRAD::Schedules::SD_SATURDAY);
 				//add internal loads model to NANDRAD project
 				p.m_models.m_internalLoadsModels.push_back(intLoad);
 			}
@@ -1544,12 +1450,12 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 		VICUS::ZoneTemplate::SubTemplateType type = VICUS::ZoneTemplate::ST_ControlThermostat;
 		if(zt->usedReference(type) != VICUS::ZoneTemplate::NUM_ST){
 			ztBools[counter].m_subTemplateId[type] = zt->m_idReferences[type];
-
-
+			//TODO Dirk
 		}
 
 		//infiltration and ventilation
 		{
+			//TODO Dirk
 			enum VentiType{
 				Infiltration,
 				Ventilation,
@@ -1565,73 +1471,71 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 			VentiType ventiType;
 			if(isInf && !isVenti)				ventiType = Infiltration;
 			else if(!isInf && isVenti)			ventiType = Ventilation;
-			else								ventiType = InfAndVenti;
+			else if(isInf && isVenti)			ventiType = InfAndVenti;
 
-			//create a NANDRAD natural ventilation model
-			NANDRAD::NaturalVentilationModel natVentMod;
-			natVentMod.m_displayName = zt->m_displayName.string();
-			natVentMod.m_id = VICUS::Project::uniqueId<unsigned int>(allModelIds);
-			allModelIds.push_back(natVentMod.m_id);
-			natVentMod.m_zoneObjectList =
-					createUniqueNandradObjListAndName(zt->m_displayName.string(), allRoomIdsForThisZt, p,
-													  NANDRAD::ModelInputReference::MRT_ZONE);
-			switch (ventiType) {
-				case Infiltration:{
-					type = VICUS::ZoneTemplate::ST_Infiltration;
-					ztBools[counter].m_subTemplateId[type] = idSubTempInf;
-					const VICUS::Infiltration * inf = element(m_embeddedDB.m_infiltration, idSubTempInf);
-					if(inf != nullptr){
-						natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Constant;
-						switch(inf->m_airChangeType){
-							case VICUS::Infiltration::AC_normal:{
-								NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NANDRAD::NaturalVentilationModel::para_t",
-																   NANDRAD::NaturalVentilationModel::P_VentilationRate,
-																   inf->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h"));
-							}break;
-							case VICUS::Infiltration::AC_n50:{
-								double val = inf->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h");
-								val *= inf->m_para[VICUS::Infiltration::P_ShieldingCoefficient].get_value("-");
-								NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NANDRAD::NaturalVentilationModel::para_t",
-																   NANDRAD::NaturalVentilationModel::P_VentilationRate,
-																   val);
-							}break;
-							case VICUS::Infiltration::NUM_AC:{
-								NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NANDRAD::NaturalVentilationModel::para_t",
-																   NANDRAD::NaturalVentilationModel::P_VentilationRate,
-																   0);
-							}break;
+			if( isInf || isVenti){
+				//create a NANDRAD natural ventilation model
+				NANDRAD::NaturalVentilationModel natVentMod;
+				natVentMod.m_displayName = zt->m_displayName.string();
+				natVentMod.m_id = VICUS::Project::uniqueId<unsigned int>(allModelIds);
+				allModelIds.push_back(natVentMod.m_id);
+				natVentMod.m_zoneObjectList =
+						createUniqueNandradObjListAndName(zt->m_displayName.string(), allRoomIdsForThisZt, p,
+														  NANDRAD::ModelInputReference::MRT_ZONE);
+				switch (ventiType) {
+					case Infiltration:{
+						type = VICUS::ZoneTemplate::ST_Infiltration;
+						ztBools[counter].m_subTemplateId[type] = idSubTempInf;
+						const VICUS::Infiltration * inf = element(m_embeddedDB.m_infiltration, idSubTempInf);
+						if(inf != nullptr){
+							natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Constant;
+							switch(inf->m_airChangeType){
+								case VICUS::Infiltration::AC_normal:{
+									NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NANDRAD::NaturalVentilationModel::para_t",
+																	   NANDRAD::NaturalVentilationModel::P_VentilationRate,
+																	   inf->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h"));
+								}break;
+								case VICUS::Infiltration::AC_n50:{
+									double val = inf->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h");
+									val *= inf->m_para[VICUS::Infiltration::P_ShieldingCoefficient].get_value("-");
+									NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NANDRAD::NaturalVentilationModel::para_t",
+																	   NANDRAD::NaturalVentilationModel::P_VentilationRate,
+																	   val);
+								}break;
+								case VICUS::Infiltration::NUM_AC:{
+									NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NANDRAD::NaturalVentilationModel::para_t",
+																	   NANDRAD::NaturalVentilationModel::P_VentilationRate,
+																	   0);
+								}break;
+							}
 						}
-					}
 
-				}break;
-				case Ventilation:{
-					type = VICUS::ZoneTemplate::ST_VentilationNatural;
-					ztBools[counter].m_subTemplateId[type] = idSubTempVent;
-					const VICUS::VentilationNatural* vent = element(m_embeddedDB.m_ventilationNatural, idSubTempVent);
-					if(vent != nullptr){
-						natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Scheduled;
-						unsigned int schedId = vent->m_scheduleId;
-					}
-				}break;
-				case InfAndVenti:{
-					VICUS::ZoneTemplate::SubTemplateType type1 = VICUS::ZoneTemplate::ST_Infiltration;
-					ztBools[counter].m_subTemplateId[type1] = idSubTempInf;
-					const VICUS::Infiltration * inf = element(m_embeddedDB.m_infiltration, idSubTempInf);
-					VICUS::ZoneTemplate::SubTemplateType type2 = VICUS::ZoneTemplate::ST_VentilationNatural;
-					ztBools[counter].m_subTemplateId[type2] = idSubTempVent;
-					const VICUS::VentilationNatural* vent = element(m_embeddedDB.m_ventilationNatural, idSubTempVent);
-					if(inf == nullptr || vent == nullptr){
-						throw IBK::Exception(IBK::FormatString("Infiltration id %1 and/or ventilation id %2 model is not found.")
-											 .arg(idSubTempInf).arg(idSubTempVent), FUNC_ID);
-					}
-				}break;
+					}break;
+					case Ventilation:{
+						type = VICUS::ZoneTemplate::ST_VentilationNatural;
+						ztBools[counter].m_subTemplateId[type] = idSubTempVent;
+						const VICUS::VentilationNatural* vent = element(m_embeddedDB.m_ventilationNatural, idSubTempVent);
+						if(vent != nullptr){
+							natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Scheduled;
+							unsigned int schedId = vent->m_scheduleId;
+						}
+					}break;
+					case InfAndVenti:{
+						VICUS::ZoneTemplate::SubTemplateType type1 = VICUS::ZoneTemplate::ST_Infiltration;
+						ztBools[counter].m_subTemplateId[type1] = idSubTempInf;
+						const VICUS::Infiltration * inf = element(m_embeddedDB.m_infiltration, idSubTempInf);
+						VICUS::ZoneTemplate::SubTemplateType type2 = VICUS::ZoneTemplate::ST_VentilationNatural;
+						ztBools[counter].m_subTemplateId[type2] = idSubTempVent;
+						const VICUS::VentilationNatural* vent = element(m_embeddedDB.m_ventilationNatural, idSubTempVent);
+						if(inf == nullptr || vent == nullptr){
+							throw IBK::Exception(IBK::FormatString("Infiltration id %1 and/or ventilation id %2 model is not found.")
+												 .arg(idSubTempInf).arg(idSubTempVent), FUNC_ID);
+						}
+					}break;
+				}
+				p.m_models.m_naturalVentilationModels.push_back(natVentMod);
 			}
-			p.m_models.m_naturalVentilationModels.push_back(natVentMod);
-
 		}
-
-
-
 		++counter;
 	}
 	// ############################## Zone Templates
