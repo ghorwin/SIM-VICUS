@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Fr. Apr. 9 15:45:17 2021</Created>
-		<LastEdited>Do. Apr. 15 07:35:18 2021</LastEdited>
+		<LastEdited>So. Apr. 18 20:18:00 2021</LastEdited>
 	</ProjectInfo>
 	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
 	<DirectoryPlaceholders>
@@ -34,12 +34,12 @@
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<CameraTranslation>12.5887 -64.8673 47.5355</CameraTranslation>
+			<CameraTranslation>75.748 -36.3873 35.7847</CameraTranslation>
 			<RotationMatrix>
-				<Wp>-0.906066</Wp>
-				<X>-0.400553</X>
-				<Y>0.0101703</Y>
-				<Z>0.135979</Z>
+				<Wp>-0.740061</Wp>
+				<X>-0.409376</X>
+				<Y>-0.258282</Y>
+				<Z>-0.466909</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 		</ViewSettings>
@@ -285,16 +285,16 @@
 						<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
 					</InterfaceLongWaveEmission>
 				</BoundaryCondition>
-				<BoundaryCondition id="1002" displayName="DE: [SimQuality] TF03 Inside conditions (only heat conduction) |EN: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
-					<Color>#cc0000</Color>
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</BoundaryCondition>
 				<BoundaryCondition id="1001" displayName="DE: [SimQuality] TF03 Outside conditions (only heat conduction) |EN: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
 					<Color>#204a87</Color>
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+				<BoundaryCondition id="1002" displayName="DE: [SimQuality] TF03 Inside conditions (only heat conduction) |EN: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
+					<Color>#cc0000</Color>
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</BoundaryCondition>
 			</BoundaryConditions>
@@ -305,11 +305,11 @@
 					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="100001" displayName="DE: ffff |EN: &lt;new component type&gt;" color="#ad7fa8">
-					<Type>Miscellaneous</Type>
-					<IdConstruction>1003</IdConstruction>
-					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>100001</IdSideBBoundaryCondition>
+				<Component id="1010" displayName="DE: [SimQuality] Komponente für TF12.2 |EN: [SimQuality] component for TF12.2" color="#5a6eff">
+					<Type>InsideWall</Type>
+					<IdConstruction>1008</IdConstruction>
+					<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
 				</Component>
 				<Component id="1011" displayName="DE: [SimQuality] Komponente für TF12.3 |EN: [SimQuality] component for TF12.3" color="#ff5aaa">
 					<Type>Ceiling</Type>
@@ -317,11 +317,11 @@
 					<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="1010" displayName="DE: [SimQuality] Komponente für TF12.2 |EN: [SimQuality] component for TF12.2" color="#5a6eff">
-					<Type>InsideWall</Type>
-					<IdConstruction>1008</IdConstruction>
-					<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
+				<Component id="100001" displayName="DE: ffff |EN: &lt;new component type&gt;" color="#ad7fa8">
+					<Type>Miscellaneous</Type>
+					<IdConstruction>1003</IdConstruction>
+					<IdSideABoundaryCondition>100001</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>100001</IdSideBBoundaryCondition>
 				</Component>
 			</Components>
 			<Schedules>
@@ -346,13 +346,27 @@
 							<DailyCycles>
 								<DailyCycle>
 									<DayTypes>3,4,5,6,7</DayTypes>
-									<TimePoints>0,1,6,18</TimePoints>
-									<Values>100,0,1,0</Values>
+									<TimePoints>0,6,18</TimePoints>
+									<Values>0,1,0</Values>
 								</DailyCycle>
 								<DailyCycle>
 									<DayTypes>8,9,10</DayTypes>
+									<TimePoints>0,7,13</TimePoints>
+									<Values>0,0.5,0</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+					</Periods>
+				</Schedule>
+				<Schedule id="60005" displayName="DE: On |EN: &lt;new schedule&gt;">
+					<UseLinearInterpolation>1</UseLinearInterpolation>
+					<Periods>
+						<ScheduleInterval intervalStartDay="0">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>8,9,3,4,5,6,7,10</DayTypes>
 									<TimePoints>0</TimePoints>
-									<Values>0</Values>
+									<Values>1</Values>
 								</DailyCycle>
 							</DailyCycles>
 						</ScheduleInterval>
@@ -360,6 +374,24 @@
 				</Schedule>
 			</Schedules>
 			<InternalLoads>
+				<InternalLoad id="70005" displayName="DE: TestLightModel |EN: &lt;new internal load model&gt;" color="#5aff82">
+					<Category>Lighting</Category>
+					<PowerMethod>PowerPerArea</PowerMethod>
+					<PowerManagementScheduleId>60005</PowerManagementScheduleId>
+					<IBK:Parameter name="Power" unit="W">15</IBK:Parameter>
+					<IBK:Parameter name="PowerPerArea" unit="W/m2">7.8</IBK:Parameter>
+					<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0.2</IBK:Parameter>
+				</InternalLoad>
+				<InternalLoad id="70003" displayName="DE: Electric Equip |EN: &lt;new internal load model&gt;" color="#5a6eff">
+					<Category>ElectricEquiment</Category>
+					<PowerMethod>PowerPerArea</PowerMethod>
+					<PowerManagementScheduleId>60005</PowerManagementScheduleId>
+					<IBK:Parameter name="Power" unit="W">10</IBK:Parameter>
+					<IBK:Parameter name="PowerPerArea" unit="W/m2">10</IBK:Parameter>
+					<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0.8</IBK:Parameter>
+					<IBK:Parameter name="LatentHeatFactor" unit="---">0</IBK:Parameter>
+					<IBK:Parameter name="LossHeatFactor" unit="---">0</IBK:Parameter>
+				</InternalLoad>
 				<InternalLoad id="70006" displayName="DE: pers. model |EN: &lt;new internal load model&gt;" color="#5aff82">
 					<Category>Person</Category>
 					<PersonCountMethod>PersonPerArea</PersonCountMethod>
@@ -373,21 +405,12 @@
 					<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0.8</IBK:Parameter>
 					<IBK:Parameter name="LossHeatFactor" unit="---">0</IBK:Parameter>
 				</InternalLoad>
-				<InternalLoad id="70003" displayName="DE: Electric Equip |EN: &lt;new internal load model&gt;" color="#5a6eff">
-					<Category>ElectricEquiment</Category>
-					<PowerMethod>PowerPerArea</PowerMethod>
-					<PowerManagementScheduleId>60003</PowerManagementScheduleId>
-					<IBK:Parameter name="Power" unit="W">10</IBK:Parameter>
-					<IBK:Parameter name="PowerPerArea" unit="W/m2">10</IBK:Parameter>
-					<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0.8</IBK:Parameter>
-					<IBK:Parameter name="LatentHeatFactor" unit="---">0</IBK:Parameter>
-					<IBK:Parameter name="LossHeatFactor" unit="---">0</IBK:Parameter>
-				</InternalLoad>
 			</InternalLoads>
 			<ZoneTemplates>
 				<ZoneTemplate id="80003" displayName="DE: Test Zone Template |EN: &lt;new zone template&gt;" color="#5aff82">
 					<IntLoadPerson>70006</IntLoadPerson>
 					<IntLoadEquipment>70003</IntLoadEquipment>
+					<IntLoadLighting>70005</IntLoadLighting>
 				</ZoneTemplate>
 			</ZoneTemplates>
 		</EmbeddedDatabase>
