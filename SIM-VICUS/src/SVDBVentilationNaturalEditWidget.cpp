@@ -20,7 +20,7 @@ SVDBVentilationNaturalEditWidget::SVDBVentilationNaturalEditWidget(QWidget *pare
 	m_ui->gridLayoutMaster->setMargin(4);
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
-	m_ui->lineEditName->setDialog3Caption(tr("Zone control thermostat model name"));
+	m_ui->lineEditName->setDialog3Caption(tr("Zone natural ventilation model name"));
 
 	m_ui->lineEditAirChangeRate->setup(0, 50, tr("Air change rate."), true, true);
 
