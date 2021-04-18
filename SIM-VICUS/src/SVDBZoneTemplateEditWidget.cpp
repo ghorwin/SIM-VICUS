@@ -102,6 +102,19 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, int subT
 		m_ui->pushButtonAddLightLoad->setEnabled(false);
 		m_ui->pushButtonAddLightLoad->setChecked(true);
 	}
+	if (item->m_idReferences[VICUS::ZoneTemplate::ST_Infiltration] == VICUS::INVALID_ID)
+		m_ui->pushButtonAddInfiltration->setEnabled(true);
+	else{
+		m_ui->pushButtonAddInfiltration->setEnabled(false);
+		m_ui->pushButtonAddInfiltration->setChecked(true);
+	}
+	if (item->m_idReferences[VICUS::ZoneTemplate::ST_VentilationNatural] == VICUS::INVALID_ID)
+		m_ui->pushButtonAddVentilationNatrual->setEnabled(true);
+	else{
+		m_ui->pushButtonAddVentilationNatrual->setEnabled(false);
+		m_ui->pushButtonAddVentilationNatrual->setChecked(true);
+	}
+
 
 	// now the sub-template stuff
 	if (subTemplateId == -1) {
@@ -114,6 +127,24 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, int subT
 
 	// determine which sub-template was selected
 	switch ((VICUS::ZoneTemplate::SubTemplateType)subTemplateType) {
+		case VICUS::ZoneTemplate::ST_Infiltration: {
+			m_ui->labelSubTemplate->setText(tr("Infiltration:"));
+			// lookup corresponding dataset entry in database
+			const VICUS::Infiltration * inf = m_db->m_infiltration[(unsigned int)subTemplateId];
+			if (inf == nullptr)
+				m_ui->lineEditSubComponent->setText(tr("<select>"));
+			else
+				m_ui->lineEditSubComponent->setText( QtExt::MultiLangString2QString(inf->m_displayName) );
+		} break;
+		case VICUS::ZoneTemplate::ST_VentilationNatural: {
+			m_ui->labelSubTemplate->setText(tr("Natural Ventilation:"));
+			// lookup corresponding dataset entry in database
+			const VICUS::VentilationNatural * venti = m_db->m_ventilationNatural[(unsigned int)subTemplateId];
+			if (venti == nullptr)
+				m_ui->lineEditSubComponent->setText(tr("<select>"));
+			else
+				m_ui->lineEditSubComponent->setText( QtExt::MultiLangString2QString(venti->m_displayName) );
+		} break;
 		case VICUS::ZoneTemplate::ST_IntLoadPerson: {
 			m_ui->labelSubTemplate->setText(tr("Internal Loads - Person loads:"));
 			// lookup corresponding dataset entry in database
@@ -188,6 +219,12 @@ void SVDBZoneTemplateEditWidget::on_toolButtonSelectSubComponent_clicked() {
 	unsigned int id = VICUS::INVALID_ID;
 
 	switch (m_currentSubTemplateType) {
+		case VICUS::ZoneTemplate::ST_Infiltration:
+			id = SVMainWindow::instance().dbInfiltrationEditDialog()->select(m_current->m_idReferences[m_currentSubTemplateType]);
+		break;
+		case VICUS::ZoneTemplate::ST_VentilationNatural:
+			id = SVMainWindow::instance().dbVentilationNaturalEditDialog()->select(m_current->m_idReferences[m_currentSubTemplateType]);
+		break;
 		case VICUS::ZoneTemplate::ST_IntLoadPerson:
 			id = SVMainWindow::instance().dbInternalLoadsPersonEditDialog()->select(m_current->m_idReferences[m_currentSubTemplateType]);
 		break;
@@ -278,4 +315,47 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddLightLoad_clicked() {
 			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
+}
+
+void SVDBZoneTemplateEditWidget::on_pushButtonAddInfiltration_clicked() {
+	Q_ASSERT(m_current != nullptr);
+	VICUS::ZoneTemplate::SubTemplateType subType = VICUS::ZoneTemplate::ST_Infiltration;
+	// open the infiltration DB dialog and let user select one
+	unsigned int id = SVMainWindow::instance().dbInfiltrationEditDialog()->select(VICUS::INVALID_ID);
+	if (id == VICUS::INVALID_ID) return;
+	if (m_current->m_idReferences[subType] != id) {
+		if (m_current->m_idReferences[subType] == VICUS::INVALID_ID) {
+			// add new child
+			m_dbModel->addChildItem( m_dbModel->indexById(m_current->m_id), subType, id);
+			emit selectSubTemplate(m_current->m_id, (int)subType);
+		}
+		else {
+			// modify existing
+			m_current->m_idReferences[subType] = id;
+			m_db->m_zoneTemplates.m_modified = true;
+			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		}
+	}
+}
+
+void SVDBZoneTemplateEditWidget::on_pushButtonAddVentilationNatrual_clicked(){
+	Q_ASSERT(m_current != nullptr);
+	VICUS::ZoneTemplate::SubTemplateType subType = VICUS::ZoneTemplate::ST_VentilationNatural;
+	// open the ventilation DB dialog and let user select one
+	unsigned int id = SVMainWindow::instance().dbVentilationNaturalEditDialog()->select(VICUS::INVALID_ID);
+	if (id == VICUS::INVALID_ID) return;
+	if (m_current->m_idReferences[subType] != id) {
+		if (m_current->m_idReferences[subType] == VICUS::INVALID_ID) {
+			// add new child
+			m_dbModel->addChildItem( m_dbModel->indexById(m_current->m_id), subType, id);
+			emit selectSubTemplate(m_current->m_id, (int)subType);
+		}
+		else {
+			// modify existing
+			m_current->m_idReferences[subType] = id;
+			m_db->m_zoneTemplates.m_modified = true;
+			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		}
+	}
+
 }
