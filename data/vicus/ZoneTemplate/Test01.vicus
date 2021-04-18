@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Fr. Apr. 9 15:45:17 2021</Created>
-		<LastEdited>So. Apr. 18 20:18:00 2021</LastEdited>
+		<LastEdited>So. Apr. 18 21:40:39 2021</LastEdited>
 	</ProjectInfo>
 	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
 	<DirectoryPlaceholders>
@@ -231,26 +231,6 @@
 						</MaterialLayer>
 					</MaterialLayers>
 				</Construction>
-				<Construction id="1008" displayName="DE: [SimQuality] TF12 Konstruktionstyp 2 (Innenwand Gipskarton) |EN: [SimQuality] TF12 Construction 2 (Interior wall plasterboard)">
-					<UsageType>InsideWall</UsageType>
-					<MaterialLayers>
-						<MaterialLayer matId="10007">
-							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
-						</MaterialLayer>
-						<MaterialLayer matId="10006">
-							<IBK:Parameter name="Thickness" unit="m">0.013</IBK:Parameter>
-						</MaterialLayer>
-						<MaterialLayer matId="10008">
-							<IBK:Parameter name="Thickness" unit="m">0.155</IBK:Parameter>
-						</MaterialLayer>
-						<MaterialLayer matId="10006">
-							<IBK:Parameter name="Thickness" unit="m">0.013</IBK:Parameter>
-						</MaterialLayer>
-						<MaterialLayer matId="10007">
-							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
-						</MaterialLayer>
-					</MaterialLayers>
-				</Construction>
 				<Construction id="1009" displayName="DE: [SimQuality] TF12 Konstruktionstyp 3 (Deckenkonstuktion) |EN: [SimQuality] TF12 Construction 3 (CeilingConstruction)">
 					<UsageType>Ceiling</UsageType>
 					<MaterialLayers>
@@ -267,6 +247,26 @@
 							<IBK:Parameter name="Thickness" unit="m">0.06</IBK:Parameter>
 						</MaterialLayer>
 						<MaterialLayer matId="10012">
+							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="1008" displayName="DE: [SimQuality] TF12 Konstruktionstyp 2 (Innenwand Gipskarton) |EN: [SimQuality] TF12 Construction 2 (Interior wall plasterboard)">
+					<UsageType>InsideWall</UsageType>
+					<MaterialLayers>
+						<MaterialLayer matId="10007">
+							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer matId="10006">
+							<IBK:Parameter name="Thickness" unit="m">0.013</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer matId="10008">
+							<IBK:Parameter name="Thickness" unit="m">0.155</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer matId="10006">
+							<IBK:Parameter name="Thickness" unit="m">0.013</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer matId="10007">
 							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>
@@ -305,12 +305,6 @@
 					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="1010" displayName="DE: [SimQuality] Komponente für TF12.2 |EN: [SimQuality] component for TF12.2" color="#5a6eff">
-					<Type>InsideWall</Type>
-					<IdConstruction>1008</IdConstruction>
-					<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
-				</Component>
 				<Component id="1011" displayName="DE: [SimQuality] Komponente für TF12.3 |EN: [SimQuality] component for TF12.3" color="#ff5aaa">
 					<Type>Ceiling</Type>
 					<IdConstruction>1009</IdConstruction>
@@ -322,6 +316,12 @@
 					<IdConstruction>1003</IdConstruction>
 					<IdSideABoundaryCondition>100001</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>100001</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="1010" displayName="DE: [SimQuality] Komponente für TF12.2 |EN: [SimQuality] component for TF12.2" color="#5a6eff">
+					<Type>InsideWall</Type>
+					<IdConstruction>1008</IdConstruction>
+					<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
 				</Component>
 			</Components>
 			<Schedules>
@@ -374,6 +374,19 @@
 				</Schedule>
 			</Schedules>
 			<InternalLoads>
+				<InternalLoad id="70006" displayName="DE: pers. model |EN: &lt;new internal load model&gt;" color="#5aff82">
+					<Category>Person</Category>
+					<PersonCountMethod>PersonPerArea</PersonCountMethod>
+					<OccupancyScheduleId>60003</OccupancyScheduleId>
+					<ActivityScheduleId>60004</ActivityScheduleId>
+					<IBK:Parameter name="PersonCount" unit="-">11</IBK:Parameter>
+					<IBK:Parameter name="PersonPerArea" unit="m2">0.1</IBK:Parameter>
+					<IBK:Parameter name="AreaPerPerson" unit="m2">10</IBK:Parameter>
+					<IBK:Parameter name="Power" unit="W">0.1</IBK:Parameter>
+					<IBK:Parameter name="PowerPerArea" unit="W/m2">0.1</IBK:Parameter>
+					<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0.8</IBK:Parameter>
+					<IBK:Parameter name="LossHeatFactor" unit="---">0</IBK:Parameter>
+				</InternalLoad>
 				<InternalLoad id="70005" displayName="DE: TestLightModel |EN: &lt;new internal load model&gt;" color="#5aff82">
 					<Category>Lighting</Category>
 					<PowerMethod>PowerPerArea</PowerMethod>
@@ -392,25 +405,27 @@
 					<IBK:Parameter name="LatentHeatFactor" unit="---">0</IBK:Parameter>
 					<IBK:Parameter name="LossHeatFactor" unit="---">0</IBK:Parameter>
 				</InternalLoad>
-				<InternalLoad id="70006" displayName="DE: pers. model |EN: &lt;new internal load model&gt;" color="#5aff82">
-					<Category>Person</Category>
-					<PersonCountMethod>PersonPerArea</PersonCountMethod>
-					<OccupancyScheduleId>60003</OccupancyScheduleId>
-					<ActivityScheduleId>60004</ActivityScheduleId>
-					<IBK:Parameter name="PersonCount" unit="-">11</IBK:Parameter>
-					<IBK:Parameter name="PersonPerArea" unit="m2">0.1</IBK:Parameter>
-					<IBK:Parameter name="AreaPerPerson" unit="m2">10</IBK:Parameter>
-					<IBK:Parameter name="Power" unit="W">0.1</IBK:Parameter>
-					<IBK:Parameter name="PowerPerArea" unit="W/m2">0.1</IBK:Parameter>
-					<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0.8</IBK:Parameter>
-					<IBK:Parameter name="LossHeatFactor" unit="---">0</IBK:Parameter>
-				</InternalLoad>
 			</InternalLoads>
+			<VentilationNatural>
+				<VentilationNatural id="150001" displayName="DE: Venti Test Model |EN: &lt;new zone control thermostat model&gt;" color="#5a6eff">
+					<ScheduleId>60005</ScheduleId>
+					<IBK:Parameter name="AirChangeRate" unit="1/h">0.5</IBK:Parameter>
+				</VentilationNatural>
+			</VentilationNatural>
+			<Infiltration>
+				<Infiltration id="140001" displayName="DE: Test Inf Model |EN: &lt;new zone control infiltration model&gt;" color="#5a6eff">
+					<AirChangeType>normal</AirChangeType>
+					<IBK:Parameter name="AirChangeRate" unit="1/h">0.5</IBK:Parameter>
+					<IBK:Parameter name="ShiedlindCoefficient" unit="-">0</IBK:Parameter>
+				</Infiltration>
+			</Infiltration>
 			<ZoneTemplates>
 				<ZoneTemplate id="80003" displayName="DE: Test Zone Template |EN: &lt;new zone template&gt;" color="#5aff82">
 					<IntLoadPerson>70006</IntLoadPerson>
 					<IntLoadEquipment>70003</IntLoadEquipment>
 					<IntLoadLighting>70005</IntLoadLighting>
+					<Infiltration>140001</Infiltration>
+					<NaturalVentilation>150001</NaturalVentilation>
 				</ZoneTemplate>
 			</ZoneTemplates>
 		</EmbeddedDatabase>
