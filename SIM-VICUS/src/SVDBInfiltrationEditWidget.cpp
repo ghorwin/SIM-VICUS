@@ -98,6 +98,11 @@ void SVDBInfiltrationEditWidget::updateInput(int id) {
 	m_ui->comboBoxMethod->setEnabled(!isbuiltIn);
 	m_ui->lineEditAirChangeRate->setEnabled(!isbuiltIn);
 	m_ui->lineEditShieldCoefficient->setEnabled(!isbuiltIn);
+
+	if(m_current->m_airChangeType == VICUS::Infiltration::AC_normal){
+		m_ui->lineEditShieldCoefficient->setEnabled(false);
+		m_ui->lineEditShieldCoefficient->setText("");
+	}
 }
 
 
@@ -111,7 +116,7 @@ void SVDBInfiltrationEditWidget::on_lineEditName_editingFinished() {
 }
 
 
-void SVDBInfiltrationEditWidget::on_comboBoxControlValue_currentIndexChanged(int index) {
+void SVDBInfiltrationEditWidget::on_comboBoxMethod_currentIndexChanged(int index) {
 	Q_ASSERT(m_current != nullptr);
 
 	for(int i=0; i<VICUS::Infiltration::AirChangeType::NUM_AC; ++i){
@@ -121,6 +126,18 @@ void SVDBInfiltrationEditWidget::on_comboBoxControlValue_currentIndexChanged(int
 			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 
 		}
+	}
+
+	switch(m_current->m_airChangeType){
+		case VICUS::Infiltration::AC_normal:
+		case VICUS::Infiltration::NUM_AC:{
+			m_ui->lineEditShieldCoefficient->setEnabled(false);
+			m_ui->lineEditShieldCoefficient->setText("");
+		} break;
+		case VICUS::Infiltration::AC_n50:{
+			m_ui->lineEditShieldCoefficient->setEnabled(true);
+			m_ui->lineEditShieldCoefficient->setValue(m_current->m_para[VICUS::Infiltration::P_ShieldingCoefficient].value);
+		}break;
 	}
 }
 
