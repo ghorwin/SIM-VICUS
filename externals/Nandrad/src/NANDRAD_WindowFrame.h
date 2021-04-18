@@ -84,9 +84,9 @@ inline void WindowFrame::checkParameters(const std::vector<Material> & materials
 		throw IBK::Exception(IBK::FormatString("Material with ID %1 not defined.").arg(m_materialID), FUNC_ID);
 	m_lambda = it->m_para[Material::P_Conductivity].value;
 
-	m_area.checkedValue("Area", "m2", "m2", 0, true, std::numeric_limits<double>::max(), true,
+	m_area.checkedValue("Area", "m2", "m2", 0, true, (std::numeric_limits<double>::max)(), true,
 						"Cross section area of frame must be >= 0 m2.");
-	m_thickness.checkedValue("Thickness", "m", "m", 0, false, std::numeric_limits<double>::max(), true,
+	m_thickness.checkedValue("Thickness", "m", "m", 0, false, (std::numeric_limits<double>::max)(), true,
 						"Thickness of frame must be > 0 m.");
 }
 

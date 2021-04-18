@@ -23,6 +23,7 @@
 #define NANDRAD_WindowDividerH
 
 #include <algorithm>
+#include <numeric>
 
 #include <IBK_Parameter.h>
 #include <IBK_Exception.h>
@@ -80,9 +81,9 @@ inline void WindowDivider::checkParameters(const std::vector<Material> & materia
 		throw IBK::Exception(IBK::FormatString("Material with ID %1 not defined.").arg(m_materialID), FUNC_ID);
 	m_lambda = it->m_para[Material::P_Conductivity].value;
 
-	m_area.checkedValue("Area", "m2", "m2", 0, true, std::numeric_limits<double>::max(), true,
+	m_area.checkedValue("Area", "m2", "m2", 0, true, (std::numeric_limits<double>::max)(), true,
 						"Cross section area of dividers must be >= 0 m2.");
-	m_thickness.checkedValue("Thickness", "m", "m", 0, false, std::numeric_limits<double>::max(), true,
+	m_thickness.checkedValue("Thickness", "m", "m", 0, false, (std::numeric_limits<double>::max)(), true,
 						"Thickness of dividers must be > 0 m.");
 }
 
