@@ -45,6 +45,12 @@ public:
 	/*! Returns number of assigned sub-templates (needed by tree-model). */
 	unsigned int subTemplateCount() const;
 
+	///TODO Dirk->Andreas das funktioniert nicht wie beschrieben oder ich hab die Beschreibung nicht kapiert
+	/// wenn ich eine valide id in m_idReferences[ST_IntLoadEquipment] habe z.B. 70001
+	/// und sonst invalide ids nur
+	/// und ich den index ST_IntLoadEquipment (index wäre dann 1) abfrage
+	/// dann liefert er mir NUM_ST
+	/// das ist doch falsch oder?
 	/*! Returns the type of reference by index, counting only the used references, i.e. references not INVALID_ID.
 		For example, if m_idIntLoadPerson == INVALID_ID and m_idIntLoadElectricEquipment has a valid ID, than
 		usedReference(0) returns ST_IntLoadEquipment.
