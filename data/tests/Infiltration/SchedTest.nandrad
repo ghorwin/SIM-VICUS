@@ -86,7 +86,7 @@
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>
-					<Schedule type="WeekDays">
+					<Schedule type="WeekDay">
 						<DailyCycles>
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0</TimePoints>
@@ -97,7 +97,7 @@
 						</DailyCycles>
 					</Schedule>
 					<!--
-					<Schedule type="WeekDays>
+					<Schedule type="WeekDay>
 						<DailyCycles>
 							<DailyCycle interpolation="Linear">
 								<TimePoints>0,1,6,18</TimePoints>
