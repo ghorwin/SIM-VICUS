@@ -6,6 +6,8 @@
 #include "VICUS_PlaneGeometry.h"
 #include "VICUS_Object.h"
 
+#include "IBK_LinearSpline.h"
+
 #include <QString>
 #include <QColor>
 
@@ -44,6 +46,9 @@ public:
 
 	/*! The actual geometry. */
 	PlaneGeometry						m_geometry;					// XML:E
+
+	/*! Linear Spline that holds annual shading factors */
+	IBK::LinearSpline					m_shadingFactor;			// XML:E
 
 	/*! Stores visibility information for this surface.
 		Note: keep the next line - this will cause the code generator to create serialization code

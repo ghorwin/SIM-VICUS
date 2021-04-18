@@ -58,7 +58,8 @@ public:
 	enum SelectionGroups {
 		SG_Building			= 0x001,
 		SG_Network			= 0x002,
-		SG_All				= SG_Building | SG_Network,
+		SG_Obstacle			= 0x004,
+		SG_All				= SG_Building | SG_Network | SG_Obstacle,
 		NUM_SG
 	};
 

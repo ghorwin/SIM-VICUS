@@ -123,7 +123,7 @@ public:
 	mutable QColor					m_color;
 
 
-	double							m_distanceToStart = std::numeric_limits<double>::max();
+	double							m_distanceToStart = (std::numeric_limits<double>::max)();
 	NetworkNode *					m_predecessor = nullptr;
 	bool							m_isDeadEnd = false;
 	std::vector<NetworkEdge*>		m_edges;
