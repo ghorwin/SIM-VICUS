@@ -225,17 +225,19 @@
 		</WindowGlazingSystems>
 		
 		<Models>
-			<!-- First controller model uses a global radiation sensor -->
-			<ShadingControlModel id="2000" displayName="Global horizontal sensor controller" sensorID="50000">
-				<IBK:Parameter name="MaxIntensity" unit="W/m2">300</IBK:Parameter>
-				<IBK:Parameter name="MinIntensity" unit="W/m2">150</IBK:Parameter>
-			</ShadingControlModel> 
+			<ShadingControlModels>
+				<!-- First controller model uses a global radiation sensor -->
+				<ShadingControlModel id="2000" displayName="Global horizontal sensor controller" sensorID="50000">
+					<IBK:Parameter name="MaxIntensity" unit="W/m2">300</IBK:Parameter>
+					<IBK:Parameter name="MinIntensity" unit="W/m2">150</IBK:Parameter>
+				</ShadingControlModel> 
 
-			<!-- Second controller model uses a radiation sensor on Window 1004 -->
-			<ShadingControlModel id="2001" displayName="Global horizontal sensor controller" sensorID="1004">
-				<IBK:Parameter name="MaxIntensity" unit="W/m2">500</IBK:Parameter>
-				<IBK:Parameter name="MinIntensity" unit="W/m2">200</IBK:Parameter>
-			</ShadingControlModel>
+				<!-- Second controller model uses a radiation sensor on Window 1004 -->
+				<ShadingControlModel id="2001" displayName="Global horizontal sensor controller" sensorID="1004">
+					<IBK:Parameter name="MaxIntensity" unit="W/m2">500</IBK:Parameter>
+					<IBK:Parameter name="MinIntensity" unit="W/m2">200</IBK:Parameter>
+				</ShadingControlModel>
+			</ShadingControlModels>
 		</Models>
 		<Outputs>
 			<Definitions>
