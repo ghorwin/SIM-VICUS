@@ -76,7 +76,7 @@ enum Shaders {
 	NUM_SHADER_PROGRAMS
 };
 
-#define VIC3D_STRIP_STOP_INDEX 0xFFFF
+#define VIC3D_STRIP_STOP_INDEX 0xFFFFFFFF
 
 
 } // namespace Vic3D

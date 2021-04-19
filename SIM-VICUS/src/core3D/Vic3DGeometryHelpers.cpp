@@ -12,7 +12,7 @@ namespace Vic3D {
 
 
 #define CYLINDER_SEGMENTS 16
-#define SPHERE_SEGMENTS 4
+#define SPHERE_SEGMENTS 8
 
 // *** Primitives ***
 
@@ -221,6 +221,8 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const Q
 				 std::vector<ColorRGBA> & colorBufferData,
 				 std::vector<GLuint> & indexBufferData, bool closed)
 {
+	// THIS IS FOR DRAWING TRIANGLE STRIPS
+
 	// we generate vertices for a cylinder starting at 0,0,0 and extending to 1,0,0 (x-axis is the rotation axis)
 
 	// after each generated vertex, it is scaled, rotated into position, and translated to p1
@@ -268,13 +270,15 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const Q
 	}
 
 	// now add elements
+	// the cylinder mesh has triangles (0 1 2) (1 2 3) (2 3 4) ...
+	// so we just add all vertex indexes one-by-one
 	for (unsigned int i=0; i<nSeg*2; ++i, ++currentElementIndex)
 		indexBufferData[currentElementIndex] = i + vertexIndexStart;
 
 	// finally add first two vertices again
 	indexBufferData[currentElementIndex++] = vertexIndexStart;
 	indexBufferData[currentElementIndex++] = vertexIndexStart+1;
-	indexBufferData[currentElementIndex++] = STRIP_STOP_INDEX; // set stop index
+	indexBufferData[currentElementIndex++] = VIC3D_STRIP_STOP_INDEX; // set stop index
 
 	// if a closed cylinder is expected, add the front and back facing plates
 	if (closed) {
@@ -330,7 +334,7 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const Q
 		}
 
 		indexBufferData[currentElementIndex++] = vertexIndexStart; // 0
-		indexBufferData[currentElementIndex++] = STRIP_STOP_INDEX; // stop index
+		indexBufferData[currentElementIndex++] = VIC3D_STRIP_STOP_INDEX; // stop index
 
 		vertexIndexStart += nSeg + 1;
 		// generate the sequence 0 1 2   0 2 3   0 3 4   0 4 1    0 stop
@@ -424,81 +428,6 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 {
 	// THIS IS FOR DRAWING TRIANGLE STRIPS
 
-#if 1
-	QVector3D trans = QtExt::IBKVector2QVector(p);
-
-	// test code for primitive restart
-	vertexBufferData.resize(vertexBufferData.size() + 8);
-	colorBufferData.resize(colorBufferData.size() + 8);
-	unsigned int vertexStart = currentVertexIndex;
-
-	vertexBufferData[currentVertexIndex].m_coords = QVector3D(0, 0, 0) + trans;
-	vertexBufferData[currentVertexIndex].m_normal = QVector3D(0, 0, 1).normalized();
-	colorBufferData[currentVertexIndex++] = c;
-
-	vertexBufferData[currentVertexIndex].m_coords = QVector3D(2, 0, 0) + trans;
-	vertexBufferData[currentVertexIndex].m_normal = QVector3D(0, 0, 1).normalized();
-	colorBufferData[currentVertexIndex++] = c;
-
-	vertexBufferData[currentVertexIndex].m_coords = QVector3D(2, 2, 0) + trans;
-	vertexBufferData[currentVertexIndex].m_normal = QVector3D(0, 0, 1).normalized();
-	colorBufferData[currentVertexIndex++] = c;
-
-	vertexBufferData[currentVertexIndex].m_coords = QVector3D(0, 2, 0) + trans;
-	vertexBufferData[currentVertexIndex].m_normal = QVector3D(0, 0, 1).normalized();
-	colorBufferData[currentVertexIndex++] = c;
-
-
-	vertexBufferData[currentVertexIndex].m_coords = QVector3D(4, 0, 0) + trans;
-	vertexBufferData[currentVertexIndex].m_normal = QVector3D(0, 0, 1).normalized();
-	colorBufferData[currentVertexIndex++] = c;
-
-	vertexBufferData[currentVertexIndex].m_coords = QVector3D(6, 0, 0) + trans;
-	vertexBufferData[currentVertexIndex].m_normal = QVector3D(0, 0, 1).normalized();
-	colorBufferData[currentVertexIndex++] = c;
-
-	vertexBufferData[currentVertexIndex].m_coords = QVector3D(6, 2, 0) + trans;
-	vertexBufferData[currentVertexIndex].m_normal = QVector3D(0, 0, 1).normalized();
-	colorBufferData[currentVertexIndex++] = c;
-
-	vertexBufferData[currentVertexIndex].m_coords = QVector3D(4, 2, 0) + trans;
-	vertexBufferData[currentVertexIndex].m_normal = QVector3D(0, 0, 1).normalized();
-	colorBufferData[currentVertexIndex++] = c;
-
-#if 0
-	// if we had a previous geometry in the buffer, overwrite the last vertex with our first
-	if (indexBufferData.size() != 0)
-		indexBufferData[currentElementIndex-1] = vertexStart;
-	indexBufferData.resize(indexBufferData.size() + 1*(4 + 2)); // Mind: add 2 indexes for each degenerated triangle per ring
-
-	indexBufferData[currentElementIndex++] = vertexStart + 0;
-	indexBufferData[currentElementIndex++] = vertexStart + 3;
-	indexBufferData[currentElementIndex++] = vertexStart + 1;
-	indexBufferData[currentElementIndex++] = vertexStart + 2;
-	indexBufferData[currentElementIndex++] = vertexStart + 2;
-	indexBufferData[currentElementIndex++] = vertexStart + 2;
-
-//	indexBufferData[currentElementIndex++] = vertexStart + 4;
-//	indexBufferData[currentElementIndex++] = vertexStart + 7;
-//	indexBufferData[currentElementIndex++] = vertexStart + 5;
-//	indexBufferData[currentElementIndex++] = vertexStart + 6;
-//	indexBufferData[currentElementIndex++] = vertexStart + 6;
-
-//	indexBufferData[currentElementIndex++] = vertexStart + 6;
-
-#else
-	// with stop indexs
-	indexBufferData.resize(indexBufferData.size() + 1*(4 + 1)); // Mind: add 2 indexes for each degenerated triangle per ring
-
-	indexBufferData[currentElementIndex++] = vertexStart + 0;
-	indexBufferData[currentElementIndex++] = vertexStart + 3;
-	indexBufferData[currentElementIndex++] = vertexStart + 1;
-	indexBufferData[currentElementIndex++] = vertexStart + 2;
-	indexBufferData[currentElementIndex++] = vertexStart + VIC3D_STRIP_STOP_INDEX;
-
-#endif
-
-#else
 	QVector3D trans = QtExt::IBKVector2QVector(p);
 
 	unsigned int nSeg = SPHERE_SEGMENTS; // number of segments to split 180° into
@@ -510,14 +439,7 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 
 	unsigned int vertexStart = currentVertexIndex;
 	// nSeg triangle strips
-#ifdef Q_OS_MAC
-	// if we had a previous geometry in the buffer, overwrite the last vertex with our first
-	if (indexBufferData.size() != 0)
-		indexBufferData[currentElementIndex-1] = vertexStart;
-	indexBufferData.resize(indexBufferData.size() + nSeg*(2*(nSeg2+1) + 2)); // Mind: add 2 indexes for each degenerated triangle per ring
-#else
 	indexBufferData.resize(indexBufferData.size() + nSeg*(2*(nSeg2+1) + 1)); // Mind: add 2 indexes for each degenerated triangle per ring
-#endif
 
 	// now generate the vertexes (nSeg vertexes per circle)
 	for (unsigned int i=0; i<=nSeg; ++i) {
@@ -527,8 +449,6 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 		double x = nx*radius;
 
 		for (unsigned int j=0; j<nSeg2; ++j, ++currentVertexIndex) {
-			// Mind the negative sign, since we look at the mesh from the positve x-axis towards the negative axis
-			// and want the mesh to loop clock-wise around x-axis from this view point
 			double angle = (double)(j + 0.5*i)/nSeg2;
 			angle *= 2*PI_CONST;
 			double ny = std::cos(angle);
@@ -566,15 +486,8 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 		}
 
 		// add stop index
-#ifdef Q_OS_MAC
-		indexBufferData[currentElementIndex++] = topCircleVertexStart; // repeat last vertex once to get two degenerate triangles
-		indexBufferData[currentElementIndex++] = topCircleVertexStart; // repeat last vertex again
-#else
-		indexBufferData[currentElementIndex++] = VIC3D_STRIP_STOP_INDEX; // set stop index
-#endif
+		indexBufferData[currentElementIndex++] = VIC3D_STRIP_STOP_INDEX; // repeat last vertex once to get two degenerate triangles
 	}
-//	indexBufferData[currentElementIndex++] = indexBufferData[currentElementIndex-1]; // repeat last vertex once to get two degenerate triangles
-#endif
 }
 
 
