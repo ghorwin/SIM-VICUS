@@ -31,8 +31,9 @@
 
 #include <cmath>
 
-//#include <CCM_Defines.h>
-
+#if defined(_OPENMP)
+#include <omp.h> // needed for omp_get_num_threads()
+#endif
 
 namespace SH {
 
@@ -125,7 +126,18 @@ static int createSimilarNormals(std::map<unsigned int, IBKMK::Vector3D> & timepo
 void StructuralShading::calculateShadingFactors(Notification * notify) {
 	FUNCID(StructuralShading::calculateShadingFactors);
 
-	for (unsigned int surfCounter = 0; surfCounter < m_surfaces.size(); ++surfCounter) {
+#if defined(_OPENMP)
+#pragma omp parallel
+	{
+		if (omp_get_thread_num() == 0)
+			IBK::IBK_Message(IBK::FormatString("Num threads = %1").arg(omp_get_num_threads()));
+	}
+#endif
+
+#pragma omp parallel for
+	for (int surfCounter = 0; surfCounter < m_surfaces.size(); ++surfCounter) {
+		if (notify->m_aborted)
+			continue;
 		Polygon &surf = m_surfaces[surfCounter];
 
 		// we analyse the sun for same sun positions
@@ -179,9 +191,14 @@ void StructuralShading::calculateShadingFactors(Notification * notify) {
 			unsigned int i = itNormal->first;
 
 			if ( counter % 300 == 0 ) {
-				notify->notify(double(surfCounter*mapSize + counter) / (m_surfaces.size()*mapSize));
+
+#if defined(_OPENMP)
+				if (omp_get_thread_num() == 0)
+#endif
+					notify->notify(double(surfCounter*mapSize + counter) / (m_surfaces.size()*mapSize));
+
 				if (notify->m_aborted)
-					return;
+					continue;
 			}
 
 			if(i==std::numeric_limits<unsigned int>::max())
