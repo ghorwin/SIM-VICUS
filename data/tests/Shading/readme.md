@@ -12,4 +12,7 @@ Reference, all 4 windows and constructions are unshaded.
 
 This model has two shading control model instances.
 
+## NoShadingButWithController.nandrad
 
+This model has the same controllers as `ControlledShading.nandrad`, yet with a reduction factor of 1. This means,
+there is no reduction effect.
