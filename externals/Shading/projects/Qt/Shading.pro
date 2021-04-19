@@ -1,9 +1,9 @@
-# -----------------------
-# Project for SHADING library
-# -----------------------
+# ---------------------------
+# Project for Shading library
+# ---------------------------
 
 # first we define what we are
-TARGET = SHADING
+TARGET = Shading
 TEMPLATE = lib
 
 # this pri must be sourced from all our libraries,
@@ -14,13 +14,13 @@ include( ../../../IBK/projects/Qt/IBK.pri )
 # like version number etc., we also may reset all
 #
 unix|mac {
-		VER_MAJ = 0
+		VER_MAJ = 1
 		VER_MIN = 0
-		VER_PAT = 1
+		VER_PAT = 0
 		VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 }
 
-LIBS += -lIBK -lTiCPP -lCCM -lIBKMK
+LIBS += -lCCM -lTiCPP -lIBK -lIBKMK
 
 INCLUDEPATH +=	\
 		../../../IBK/src \
@@ -39,5 +39,3 @@ HEADERS += \
 		../../src/SH_Polygon.h \
 		../../src/SH_SunShadingAlgorithm.h
 
-
-DISTFILES += \

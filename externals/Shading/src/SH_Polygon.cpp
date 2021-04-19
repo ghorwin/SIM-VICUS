@@ -1,15 +1,12 @@
 #include "SH_Polygon.h"
 
-#include "IBK_math.h"
-
+#include <IBK_math.h>
 
 #include <fstream>
 
 namespace SH {
 
-double Polygon::calcSurfaceSize()
-{
-	FUNCID(Polygon::calcSurfaceSize);
+double Polygon::calcSurfaceSize() {
 	removePointsInLine();
 	IBKMK::Vector3D surfSize = m_polyline.back().crossProduct(m_polyline[0]);
 
@@ -19,8 +16,8 @@ double Polygon::calcSurfaceSize()
 	return surfSize.magnitude()*0.5;
 }
 
-IBKMK::Vector3D Polygon::calcNormal(bool normalize)
-{
+
+IBKMK::Vector3D Polygon::calcNormal(bool normalize) {
 	FUNCID(Polygon::calcNormal);
 
 	if(m_polyline.size()<3)
@@ -50,6 +47,7 @@ IBKMK::Vector3D Polygon::calcNormal(bool normalize)
 	return normal;
 }
 
+
 void Polygon::writeLine(const std::string &message){
 
 	std::ofstream logFile;
@@ -58,8 +56,8 @@ void Polygon::writeLine(const std::string &message){
 	logFile.close();
 }
 
-double Polygon::distancePointToPlane(const IBK::point3D<double> & p0)
-{
+
+double Polygon::distancePointToPlane(const IBK::point3D<double> & p0) {
 	const IBKMK::Vector3D n = this->calcNormal();
 	double d =(n.m_x*m_polyline[0].m_x + n.m_y*m_polyline[0].m_y +n.m_z*m_polyline[0].m_z);
 	double dist = (n.m_x* p0.m_x + n.m_y* p0.m_y + n.m_z* p0.m_z - d) / n.magnitude();

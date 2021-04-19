@@ -179,5 +179,22 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButtonChancel</sender>
+   <signal>clicked()</signal>
+   <receiver>SVShadingCalculationDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>349</x>
+     <y>417</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>367</x>
+     <y>500</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

@@ -126,5 +126,5 @@ void SunShadingAlgorithm::calcShadingOneElement(const IBKMK::Vector3D &sunNormal
 	}
 }
 
-}
+} // namespace SH
 

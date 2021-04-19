@@ -1,28 +1,28 @@
 TEMPLATE = subdirs
 
 SUBDIRS = \
-        SIM-VICUS \
-        QuaZIP \
-        qwt \
-        QtExt \
-        Vicus \
-        CCM \
-        SHADING \
-        DataIO \
-        IBK \
-        IBKMK \
-        IntegratorFramework \
-        Nandrad \
-        NandradSolver \
-        NandradModel \
-        SuiteSparse \
-        sundials \
-        TiCPP \
-        Zeppelin \
-        GenericBuildings\
-        NandradCodeGenerator \
-        View3D \
-        NandradSolverFMI
+		SIM-VICUS \
+		QuaZIP \
+		qwt \
+		QtExt \
+		Vicus \
+		CCM \
+		Shading \
+		DataIO \
+		IBK \
+		IBKMK \
+		IntegratorFramework \
+		Nandrad \
+		NandradSolver \
+		NandradModel \
+		SuiteSparse \
+		sundials \
+		TiCPP \
+		Zeppelin \
+		GenericBuildings\
+		NandradCodeGenerator \
+		View3D \
+		NandradSolverFMI
 
 # where to find the sub projects
 SIM-VICUS.file = ../../SIM-VICUS/projects/Qt/SIM-VICUS.pro
@@ -32,7 +32,7 @@ View3D.file = ../../View3D/projects/Qt/View3D.pro
 NandradCodeGenerator.file = ../../NandradCodeGenerator/projects/Qt/NandradCodeGenerator.pro
 
 CCM.file = ../../externals/CCM/projects/Qt/CCM.pro
-SHADING.file = ../../externals/SHADING/projects/Qt/SHADING.pro
+Shading.file = ../../externals/Shading/projects/Qt/Shading.pro
 DataIO.file = ../../externals/DataIO/projects/Qt/DataIO.pro
 IBK.file = ../../externals/IBK/projects/Qt/IBK.pro
 IBKMK.file = ../../externals/IBKMK/projects/Qt/IBKMK.pro
@@ -56,7 +56,7 @@ NandradCodeGenerator.depends = IBK
 SIM-VICUS.depends = QuaZIP qwt Vicus Nandrad IBK TiCPP CCM QtExt Zeppelin GenericBuildings
 
 CCM.depends = IBK TiCPP
-SHADING.depends = IBK TiCPP CCM IBKMK
+Shading.depends = IBK TiCPP CCM IBKMK
 DataIO.depends = IBK
 IBKMK.depends = IBK
 TiCPP.depends = IBK

@@ -160,7 +160,7 @@ add_subdirectory( ../../NandradCodeGenerator/projects/cmake_local NandradCodeGen
 add_subdirectory( ../../externals/sundials/src sundials)
 add_subdirectory( ../../externals/SuiteSparse/projects/cmake_local SuiteSparse )
 add_subdirectory( ../../externals/CCM/projects/cmake_local CCM )
-add_subdirectory( ../../externals/SHADING/projects/cmake_local SHADING )
+add_subdirectory( ../../externals/Shading/projects/cmake_local SHADING )
 add_subdirectory( ../../externals/IBK/projects/cmake_local IBK )
 add_subdirectory( ../../externals/IBKMK/projects/cmake_local IBKMK )
 add_subdirectory( ../../externals/Nandrad/projects/cmake_local Nandrad )
@@ -186,7 +186,7 @@ endif (NOT DISABLE_QT)
 # applications and FMI Interface
 # -------------------------------------------------------------
 
-#add_subdirectory( ../../View3D/projects/cmake_local View3D)
+add_subdirectory( ../../View3D/projects/cmake_local View3D)
 
 add_subdirectory( ../../NandradSolver/projects/cmake_local NandradSolver)
 add_subdirectory( ../../NandradSolverFMI/projects/cmake_local NandradSolverFMI)

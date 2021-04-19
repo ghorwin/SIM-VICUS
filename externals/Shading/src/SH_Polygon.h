@@ -9,10 +9,8 @@
 
 namespace SH {
 
-class Polygon{
-
+class Polygon {
 public:
-
 	Polygon(){}
 
 	Polygon(std::vector<IBKMK::Vector3D> polyline):
@@ -29,7 +27,7 @@ public:
 
 	static void writeLine(const std::string &message);
 
-	/*! calulacte the surface size of konvex and non konvex polygons*/
+	/*! calculate the surface size of konvex and non konvex polygons*/
 	double calcSurfaceSize();
 
 	/*! calcs the normal of a polygon
@@ -104,11 +102,9 @@ private:
 
 	/*! remove duplicate points in series */
 	void removeDuplicatePoints();
-
-
-	// *** PRIVATE MEMBER VARIABLES ***
-
-
 };
-}
+
+
+} // namespace SH
+
 #endif // TH_PolygonH

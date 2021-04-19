@@ -29,83 +29,88 @@
 
 namespace SH {
 
-
-	/*! Window-specific data structure to hold structural shading data,
-		both geometrical configurations of standard shapes and/or external shadings provided
-		via file name.
-	*/
-	class StructuralShading  {
-	public:
-
-		struct Location {
-
-			Location() {}
-
-			Location (int timeZone, double longitudeInDeg, double latitudeInDeg) :
-				m_timeZone(timeZone),
-				m_longitudeInDeg(longitudeInDeg),
-				m_latitudeInDeg(latitudeInDeg)
-			{}
-
-			int					m_timeZone = 99;
-			double				m_longitudeInDeg;
-			double				m_latitudeInDeg;
-		};
+class Notification : public IBK::NotificationHandler {
+public:
+	bool	m_aborted = false;
+};
 
 
-		struct SunPosition {
+/*! Window-specific data structure to hold structural shading data,
+	both geometrical configurations of standard shapes and/or external shadings provided
+	via file name.
+*/
+class StructuralShading  {
+public:
 
-			SunPosition(double azi, double alti):
-				m_azimuth(azi),
-				m_altitude(alti)
-			{}
+	struct Location {
 
-			IBKMK::Vector3D calcNormal(){
-				IBKMK::Vector3D sunNormal ( std::cos(m_altitude)*std::sin(m_azimuth),
-											std::cos(m_altitude)*std::cos(m_azimuth),
-											std::sin(m_altitude) );
-				sunNormal.normalize();
-				return sunNormal;
-			}
+		Location() {}
 
-			double				m_azimuth;							///< in rad
-			double				m_altitude;							///< in rad
-		};
-
-		StructuralShading() :
-			m_gridWidth(0.1),
-			m_sunCone(3.0)
+		Location (int timeZone, double longitudeInDeg, double latitudeInDeg) :
+			m_timeZone(timeZone),
+			m_longitudeInDeg(longitudeInDeg),
+			m_latitudeInDeg(latitudeInDeg)
 		{}
 
-		void setLocation(int timeZone, double longitudeInDeg, double latitudeInDeg);
-
-		void setShadingParameters(double gridWith, double sunCone);
-
-		void initializeShadingCalculation(const std::vector<std::vector<IBKMK::Vector3D> > &obstacles);
-
-
-		std::vector<Polygon>						m_obstacles;	///< Shading obstacles
-
-		std::vector<Polygon>						m_surfaces;		///< Shading surface
+		int					m_timeZone = 99;
+		double				m_longitudeInDeg;
+		double				m_latitudeInDeg;
+	};
 
 
-		std::vector<SunPosition> sunPositions() const;
+	struct SunPosition {
 
-		void calculateShadingFactors();
+		SunPosition(double azi, double alti):
+			m_azimuth(azi),
+			m_altitude(alti)
+		{}
 
-	private:
+		IBKMK::Vector3D calcNormal(){
+			IBKMK::Vector3D sunNormal ( std::cos(m_altitude)*std::sin(m_azimuth),
+										std::cos(m_altitude)*std::cos(m_azimuth),
+										std::sin(m_altitude) );
+			sunNormal.normalize();
+			return sunNormal;
+		}
 
-		void createSunNormals(std::vector<SunPosition>& sunPositions);
+		double				m_azimuth;							///< in rad
+		double				m_altitude;							///< in rad
+	};
 
-		Location									m_location;	///< Location
+	StructuralShading() :
+		m_gridWidth(0.1),
+		m_sunCone(3.0)
+	{}
 
-		std::vector<SunPosition>					m_sunPositions;	///< vector with all sun positions
+	void setLocation(int timeZone, double longitudeInDeg, double latitudeInDeg);
 
-		double										m_gridWidth;	///< Grid width in m used for shading calculation
+	void setShadingParameters(double gridWith, double sunCone);
 
-		double										m_sunCone;		///< minimum sun cone angle used for shading calculation in Degree
+	void initializeShadingCalculation(const std::vector<std::vector<IBKMK::Vector3D> > &obstacles);
 
-		SunShadingAlgorithm							m_shading;		///< Object for shading calculation
+
+	std::vector<Polygon>						m_obstacles;	///< Shading obstacles
+
+	std::vector<Polygon>						m_surfaces;		///< Shading surface
+
+
+	std::vector<SunPosition> sunPositions() const;
+
+	void calculateShadingFactors(Notification * notify);
+
+private:
+
+	void createSunNormals(std::vector<SunPosition>& sunPositions);
+
+	Location									m_location;	///< Location
+
+	std::vector<SunPosition>					m_sunPositions;	///< vector with all sun positions
+
+	double										m_gridWidth;	///< Grid width in m used for shading calculation
+
+	double										m_sunCone;		///< minimum sun cone angle used for shading calculation in Degree
+
+	SunShadingAlgorithm							m_shading;		///< Object for shading calculation
 
 };
 

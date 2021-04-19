@@ -122,12 +122,11 @@ static int createSimilarNormals(std::map<unsigned int, IBKMK::Vector3D> & timepo
 	return -1;
 }
 
-void StructuralShading::calculateShadingFactors() {
+void StructuralShading::calculateShadingFactors(Notification * notify) {
 	FUNCID(StructuralShading::calculateShadingFactors);
 
-	unsigned int surfCounter = 0;
-
-	for ( Polygon &surf : m_surfaces ) {
+	for (unsigned int surfCounter = 0; surfCounter < m_surfaces.size(); ++surfCounter) {
+		Polygon &surf = m_surfaces[surfCounter];
 
 		// we analyse the sun for same sun positions
 		std::map<unsigned int, std::vector<unsigned int>>	timepointToAllEqualTimepoints;
@@ -179,10 +178,10 @@ void StructuralShading::calculateShadingFactors() {
 
 			unsigned int i = itNormal->first;
 
-			double progressCount = ( (double)surfCounter + (double)( (double)counter / mapSize ) ) / (double)m_surfaces.size();
-
-			if ( (int)progressCount % 300 == 0 ) {
-//				TODO emit progress( progressCount );
+			if ( counter % 300 == 0 ) {
+				notify->notify(double(surfCounter*mapSize + counter) / (m_surfaces.size()*mapSize));
+				if (notify->m_aborted)
+					return;
 			}
 
 			if(i==std::numeric_limits<unsigned int>::max())
@@ -246,7 +245,6 @@ void StructuralShading::calculateShadingFactors() {
 		catch (IBK::Exception & ex) {
 			throw IBK::Exception(ex, IBK::FormatString("Unable to create shading vector."), FUNC_ID);
 		}
-		++surfCounter;
 	}
 }
 

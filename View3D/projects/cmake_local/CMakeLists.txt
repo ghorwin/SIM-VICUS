@@ -13,8 +13,14 @@ include_directories(
 )
 
 if(MSVC)
-  add_definitions( -D_CRT_SECURE_NO_DEPRECATE )
-endif()
+	add_definitions( -D_CRT_SECURE_NO_DEPRECATE )
+else(MSVC)
+
+	set( LINK_LIBS
+		m
+	)
+
+endif(MSVC)
 
 # collect a list of all header files of the library
 #file( GLOB APP_HDRS ${PROJECT_SOURCE_DIR}/../../src/*.h )
@@ -26,7 +32,7 @@ add_executable( ${PROJECT_NAME}
 	${APP_SRCS}
 )
 
-# link against the dependent libraries
-#target_link_libraries( ${PROJECT_NAME} 
-#)
-
+# and link it against the dependent libraries
+target_link_libraries( ${PROJECT_NAME} 
+	${LINK_LIBS}
+)

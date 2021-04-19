@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>So. Jan. 24 20:48:25 2021</Created>
-		<LastEdited>So. Apr. 11 11:28:25 2021</LastEdited>
+		<LastEdited>Mo. Apr. 19 14:59:25 2021</LastEdited>
 	</ProjectInfo>
 	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
 	<DirectoryPlaceholders>
@@ -34,12 +34,12 @@
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<CameraTranslation>10.5647 -26.3101 18.1622</CameraTranslation>
+			<CameraTranslation>-15.9839 -27.4346 17.3237</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.790101</Wp>
-				<X>0.574441</X>
-				<Y>0.126179</Y>
-				<Z>0.172639</Z>
+				<Wp>0.836109</Wp>
+				<X>0.526484</X>
+				<Y>-0.0820471</Y>
+				<Z>-0.13028</Z>
 			</RotationMatrix>
 			<FarDistance>1000</FarDistance>
 		</ViewSettings>
@@ -177,6 +177,11 @@
 			<ComponentInstance id="1023" componentID="1004" sideBSurfaceID="43" />
 			<ComponentInstance id="1024" componentID="1004" sideBSurfaceID="44" />
 		</ComponentInstances>
+		<PlainGeometry>
+			<Surface id="1" displayName="New surface">
+				<PlaneGeometry type="Rectangle">0 4.47919 2.51141, 0 0.575285 2.58341, -1.73661 0.575285 2.58341, -1.73661 4.47919 2.51141</PlaneGeometry>
+			</Surface>
+		</PlainGeometry>
 		<EmbeddedDatabase>
 			<Materials>
 				<Material id="10002" displayName="de:[SimQuality] Dämmung|en:[SimQuality] Insulation" color="#f3dba0">
@@ -274,12 +279,6 @@
 					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="1002" displayName="DE: [SimQuality] Komponente für TF03.2 |EN: [SimQuality] Component for TF03.2" color="#a40000">
-					<Type>OutsideWall</Type>
-					<IdConstruction>1002</IdConstruction>
-					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
-				</Component>
 				<Component id="1003" displayName="DE: [SimQuality] Komponente für TF03.3 |EN: [SimQuality] Component for TF03.3" color="#73d216">
 					<Type>OutsideWall</Type>
 					<IdConstruction>1003</IdConstruction>
@@ -289,6 +288,12 @@
 				<Component id="1004" displayName="DE: [SimQuality] Komponente für TF03.4 |EN: [SimQuality] Component for TF03.4" color="#1672fd">
 					<Type>OutsideWall</Type>
 					<IdConstruction>1004</IdConstruction>
+					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="1002" displayName="DE: [SimQuality] Komponente für TF03.2 |EN: [SimQuality] Component for TF03.2" color="#a40000">
+					<Type>OutsideWall</Type>
+					<IdConstruction>1002</IdConstruction>
 					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 				</Component>

@@ -3,14 +3,14 @@
 
 #include "SH_Polygon.h"
 
+#include <IBK_NotificationHandler.h>
+
 namespace SH {
 
-
-class SunShadingAlgorithm
-{
+class SunShadingAlgorithm {
 public:
 
-	struct ShadingObj{
+	struct ShadingObj {
 
 		Polygon					m_grid;						///< Grid of shading object
 		bool					m_isGridInitialized = false;///< Indicates whether grid is initialized
@@ -49,7 +49,8 @@ private:
 	void calcShadingOneElement( const IBKMK::Vector3D & sunNormal);
 
 };
-}
+
+} // namespace SH
 
 
 #endif // SH_SunShadingAlgorithmH

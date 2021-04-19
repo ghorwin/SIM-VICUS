@@ -21,6 +21,18 @@
 #include <SVSettings.h>
 #include <SVMainWindow.h>
 
+class ShadingCalculationProgress : public SH::Notification {
+public:
+	void notify() override {}
+	void notify(double percentage) override {
+		m_dlg->setValue(m_dlg->maximum() * percentage);
+		qApp->processEvents();
+		if (m_dlg->wasCanceled())
+			m_aborted = true;
+	}
+
+	QProgressDialog		*m_dlg = nullptr;
+};
 
 
 SVShadingCalculationDialog::SVShadingCalculationDialog(QWidget *parent) :
@@ -37,13 +49,13 @@ SVShadingCalculationDialog::SVShadingCalculationDialog(QWidget *parent) :
 
 	m_ui->lineEditGridSize->setText(QString::number(0.1));
 	m_ui->lineEditSunCone->setText(QString::number(3));
-
 }
 
-SVShadingCalculationDialog::~SVShadingCalculationDialog()
-{
+
+SVShadingCalculationDialog::~SVShadingCalculationDialog() {
 	delete m_ui;
 }
+
 
 int SVShadingCalculationDialog::edit() {
 
@@ -82,19 +94,8 @@ int SVShadingCalculationDialog::edit() {
 	// if dialog was confirmed, data is transfered into project
 }
 
-void SVShadingCalculationDialog::setProgressBar(double progress) {
-
-	if (m_elapsedTime->elapsed() > 100) {
-		m_progressDialog->setValue((int)(progress*100));
-		qApp->processEvents();
-	}
-}
-
 void SVShadingCalculationDialog::evaluateResults() {
 	FUNCID(SVShadingCalculationDialog::evaluateResults);
-
-	m_progressDialog->setValue(0);
-	m_progressDialog->setLabelText(tr("Load shading factors") );
 
 	unsigned int surfCounter = 0;
 
@@ -121,9 +122,9 @@ void SVShadingCalculationDialog::evaluateResults() {
 				   "\t" << s->m_shadingFactor.value(i * 3600) << "\n";
 
 			if ( i%300 == 0 ) {
-				double progress = (double)( ( (double)surfCounter + ((double)i / 8760.0) ) / (double)m_selSurfaces.size() );
-				m_progressDialog->setValue( (int)( progress*100 ) );
-				qApp->processEvents();
+//				double progress = (double)( ( (double)surfCounter + ((double)i / 8760.0) ) / (double)m_selSurfaces.size() );
+//				m_progressDialog->setValue( (int)( progress*100 ) );
+//				qApp->processEvents();
 			}
 		}
 
@@ -131,15 +132,8 @@ void SVShadingCalculationDialog::evaluateResults() {
 
 		++surfCounter;
 	}
-
-	m_progressDialog->hide();
-
 }
 
-void SVShadingCalculationDialog::stopCalculation() {
-
-	m_timer->stop();
-}
 
 void SVShadingCalculationDialog::updateTimeFrameEdits() {
 
@@ -175,6 +169,7 @@ void SVShadingCalculationDialog::updateTimeFrameEdits() {
 	m_ui->lineEditEndDate->blockSignals(false);
 	m_ui->lineEditDuration->blockSignals(false);
 }
+
 
 void SVShadingCalculationDialog::on_lineEditStartDate_editingFinished() {
 	IBK::Time startTime = IBK::Time::fromDateTimeFormat(m_ui->lineEditStartDate->text().toStdString());
@@ -233,11 +228,10 @@ void SVShadingCalculationDialog::on_lineEditDuration_editingFinishedSuccessfully
 	updateTimeFrameEdits();
 }
 
+
 void SVShadingCalculationDialog::on_pushButtonCalculate_clicked(){
 
 	// Start calculation
-
-	FUNCID(SVShadingCalculation::calculateShadingFactors);
 
 	std::vector<std::vector<IBKMK::Vector3D> > selSurf;
 	std::vector<std::vector<IBKMK::Vector3D> > selObst;
@@ -264,28 +258,6 @@ void SVShadingCalculationDialog::on_pushButtonCalculate_clicked(){
 
 	m_shading.initializeShadingCalculation(selObst);
 
-	if ( m_progressDialog == nullptr )
-		m_progressDialog = new QProgressDialog (tr("Calculate shading factors"), tr("Abort"), 0, m_selSurfaces.size(), this);
-
-	m_progressDialog->setMaximum(100);
-	m_progressDialog->setWindowModality(Qt::WindowModal);
-	m_progressDialog->setValue(0);
-	m_progressDialog->show();
-	qApp->processEvents();
-
-	QElapsedTimer progressTimer;
-	progressTimer.start();
-
-	int counter = 0;
-
-	m_timer = new QTimer;
-	m_elapsedTime = new QElapsedTimer;
-
-	connect( m_progressDialog, &QProgressDialog::canceled, this, &SVShadingCalculationDialog::stopCalculation );
-
-//	connect( &m_shading, SIGNAL(progress(double)), this, SLOT(setProgressBar(double) ) );
-//	connect( &m_shading, &SH::StructuralShading::finished, this, &SVShadingCalculationDialog::evaluateResults );
-
 	for (const VICUS::Surface *s: m_selSurfaces) {
 		VICUS::Surface *surf = const_cast<VICUS::Surface *>(s);
 		VICUS::Surface surfInverted = *s;
@@ -293,12 +265,23 @@ void SVShadingCalculationDialog::on_pushButtonCalculate_clicked(){
 		m_shading.m_surfaces.push_back( SH::Polygon(surf->m_id, surfInverted.m_geometry.vertexes() ) );
 	}
 
-//	m_timer->setSingleShot(true);
-//	connect(m_timer, &QTimer::timeout, &m_shading, &SH::StructuralShading::calculateShadingFactors);
-//	m_timer->start();
+	QProgressDialog progressDialog(tr("Calculate shading factors"), tr("Abort"), 0, 100, this);
+	progressDialog.setValue(0);
+	progressDialog.show();
 
+//	QElapsedTimer progressTimer;
+//	progressTimer.start();
+
+	ShadingCalculationProgress progressNotifyer;
+	progressNotifyer.m_dlg = &progressDialog;
+
+	m_shading.calculateShadingFactors(&progressNotifyer);
+
+	if (progressNotifyer.m_aborted)
+		return;
 
 }
+
 
 void SVShadingCalculationDialog::on_lineEditGridSize_editingFinished() {
 	if (m_ui->lineEditGridSize->isValid() )
@@ -308,14 +291,11 @@ void SVShadingCalculationDialog::on_lineEditGridSize_editingFinished() {
 	}
 }
 
+
 void SVShadingCalculationDialog::on_lineEditSunCone_editingFinished() {
 	if (m_ui->lineEditSunCone->isValid() )
 		m_sunCone = m_ui->lineEditSunCone->value();
 	else {
 		m_ui->lineEditGridSize->setValue(m_sunCone);
 	}
-}
-
-void SVShadingCalculationDialog::on_pushButtonChancel_clicked() {
-	this->reject();
 }

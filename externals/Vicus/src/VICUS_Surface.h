@@ -47,8 +47,10 @@ public:
 	/*! The actual geometry. */
 	PlaneGeometry						m_geometry;					// XML:E
 
-	/*! Linear Spline that holds annual shading factors */
-	IBK::LinearSpline					m_shadingFactor;			// XML:E
+	/*! Linear Spline that holds annual shading factors, only for visualization
+		TODO : move to different places or use for visualization
+	*/
+	IBK::LinearSpline					m_shadingFactor;
 
 	/*! Stores visibility information for this surface.
 		Note: keep the next line - this will cause the code generator to create serialization code
