@@ -6,11 +6,11 @@
 TARGET = View3D
 TEMPLATE = app
 
-QMAKE_CFLAGS += -std=c89
+QMAKE_CFLAGS += -std=c99
 
 # this pri must be sourced from all our libraries,
 # it contains all functions defined for casual libraries
-include( ../../../IBK/projects/Qt/IBK.pri )
+include( ../../../externals/IBK/projects/Qt/IBK.pri )
 
 CONFIG += console
 CONFIG -= app_bundle
