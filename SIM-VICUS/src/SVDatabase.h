@@ -131,10 +131,6 @@ public:
 
 	/*! Map of all database Zone templates. */
 	VICUS::Database<VICUS::ZoneTemplate>				m_zoneTemplates;
-
-private:
-	/*! Flag signaling whether any item in the database was modified or not. */
-	bool	m_modified;
 };
 
 
