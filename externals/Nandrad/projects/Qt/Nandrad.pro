@@ -76,6 +76,7 @@ HEADERS += \
 	../../src/NANDRAD_SimulationParameter.h \
 	../../src/NANDRAD_SolarLoadsDistributionModel.h \
 	../../src/NANDRAD_SolverParameter.h \
+	../../src/NANDRAD_Thermostat.h \
 	../../src/NANDRAD_Utilities.h \
 	../../src/NANDRAD_WindowDivider.h \
 	../../src/NANDRAD_WindowFrame.h \
@@ -127,6 +128,7 @@ SOURCES += \
 	../../src/NANDRAD_SimulationParameter.cpp \
 	../../src/NANDRAD_SolarLoadsDistributionModel.cpp \
 	../../src/NANDRAD_SolverParameter.cpp \
+	../../src/NANDRAD_Thermostat.cpp \
 	../../src/NANDRAD_Utilities.cpp \
 	../../src/NANDRAD_WindowGlazingSystem.cpp \
 	../../src/NANDRAD_WindowShading.cpp \

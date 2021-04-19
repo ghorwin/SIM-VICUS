@@ -34,7 +34,7 @@ namespace NANDRAD {
 	const char * const INVALID_KEYWORD_INDEX_STRING = "KEYWORD_ERROR_STRING: Invalid type index";
 
 	/*! Holds a list of all enum types/categories. */
-	const char * const ENUM_TYPES[70] = {
+	const char * const ENUM_TYPES[73] = {
 		"ConstructionInstance::para_t",
 		"ControlElement::ControlType",
 		"Controller::modelType_t",
@@ -95,6 +95,9 @@ namespace NANDRAD {
 		"SolverParameter::integrator_t",
 		"SolverParameter::lesSolver_t",
 		"SolverParameter::precond_t",
+		"Thermostat::modelType_t",
+		"Thermostat::TemperatureType",
+		"Thermostat::para_t",
 		"WindowGlazingLayer::type_t",
 		"WindowGlazingLayer::para_t",
 		"WindowGlazingLayer::splinePara_t",
@@ -109,7 +112,7 @@ namespace NANDRAD {
 
 	/*! Converts a category string to respective enumeration value. */
 	int enum2index(const std::string & enumtype) {
-		for (int i=0; i<70; ++i) {
+		for (int i=0; i<73; ++i) {
 			if (enumtype == ENUM_TYPES[i]) return i;
 		}
 		//std::cerr << "Unknown enumeration type '" << enumtype<< "'." << std::endl;
@@ -565,14 +568,34 @@ namespace NANDRAD {
 				case 0 : return "ILU";
 				case 1 : return "auto";
 			} break;
-			// WindowGlazingLayer::type_t
+			// Thermostat::modelType_t
 			case 60 :
+			switch (t) {
+				case 0 : return "Constant";
+				case 1 : return "Scheduled";
+			} break;
+			// Thermostat::TemperatureType
+			case 61 :
+			switch (t) {
+				case 0 : return "AirTemperature";
+				case 1 : return "OperativeTemperature";
+			} break;
+			// Thermostat::para_t
+			case 62 :
+			switch (t) {
+				case 0 : return "HeatingSetpoint";
+				case 1 : return "CoolingSetpoint";
+				case 2 : return "TemperatureTolerance";
+				case 3 : return "TemperatureBand";
+			} break;
+			// WindowGlazingLayer::type_t
+			case 63 :
 			switch (t) {
 				case 0 : return "Gas";
 				case 1 : return "Glass";
 			} break;
 			// WindowGlazingLayer::para_t
-			case 61 :
+			case 64 :
 			switch (t) {
 				case 0 : return "Thickness";
 				case 1 : return "Conductivity";
@@ -583,7 +606,7 @@ namespace NANDRAD {
 				case 6 : return "P_LongWaveEmissivityOutside";
 			} break;
 			// WindowGlazingLayer::splinePara_t
-			case 62 :
+			case 65 :
 			switch (t) {
 				case 0 : return "ShortWaveTransmittance";
 				case 1 : return "ShortWaveReflectanceOutside";
@@ -593,42 +616,42 @@ namespace NANDRAD {
 				case 5 : return "HeatCapacity";
 			} break;
 			// WindowGlazingSystem::modelType_t
-			case 63 :
+			case 66 :
 			switch (t) {
 				case 0 : return "Simple";
 				case 1 : return "Detailed";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 64 :
+			case 67 :
 			switch (t) {
 				case 0 : return "ThermalTransmittance";
 			} break;
 			// WindowGlazingSystem::splinePara_t
-			case 65 :
+			case 68 :
 			switch (t) {
 				case 0 : return "SHGC";
 			} break;
 			// WindowShading::modelType_t
-			case 66 :
+			case 69 :
 			switch (t) {
 				case 0 : return "Constant";
 				case 1 : return "Precomputed";
 				case 2 : return "Controlled";
 			} break;
 			// WindowShading::para_t
-			case 67 :
+			case 70 :
 			switch (t) {
 				case 0 : return "ReductionFactor";
 			} break;
 			// Zone::type_t
-			case 68 :
+			case 71 :
 			switch (t) {
 				case 0 : return "Constant";
 				case 1 : return "Active";
 				case 2 : return "Ground";
 			} break;
 			// Zone::para_t
-			case 69 :
+			case 72 :
 			switch (t) {
 				case 0 : return "Temperature";
 				case 1 : return "RelativeHumidity";
@@ -1089,14 +1112,34 @@ namespace NANDRAD {
 				case 0 : return "ILU";
 				case 1 : return "auto";
 			} break;
-			// WindowGlazingLayer::type_t
+			// Thermostat::modelType_t
 			case 60 :
+			switch (t) {
+				case 0 : return "Constant";
+				case 1 : return "Scheduled";
+			} break;
+			// Thermostat::TemperatureType
+			case 61 :
+			switch (t) {
+				case 0 : return "AirTemperature";
+				case 1 : return "OperativeTemperature";
+			} break;
+			// Thermostat::para_t
+			case 62 :
+			switch (t) {
+				case 0 : return "HeatingSetpoint";
+				case 1 : return "CoolingSetpoint";
+				case 2 : return "TemperatureTolerance";
+				case 3 : return "TemperatureBand";
+			} break;
+			// WindowGlazingLayer::type_t
+			case 63 :
 			switch (t) {
 				case 0 : return "Gas";
 				case 1 : return "Glass";
 			} break;
 			// WindowGlazingLayer::para_t
-			case 61 :
+			case 64 :
 			switch (t) {
 				case 0 : return "Thickness";
 				case 1 : return "Conductivity";
@@ -1107,7 +1150,7 @@ namespace NANDRAD {
 				case 6 : return "P_LongWaveEmissivityOutside";
 			} break;
 			// WindowGlazingLayer::splinePara_t
-			case 62 :
+			case 65 :
 			switch (t) {
 				case 0 : return "ShortWaveTransmittance";
 				case 1 : return "ShortWaveReflectanceOutside";
@@ -1117,42 +1160,42 @@ namespace NANDRAD {
 				case 5 : return "HeatCapacity";
 			} break;
 			// WindowGlazingSystem::modelType_t
-			case 63 :
+			case 66 :
 			switch (t) {
 				case 0 : return "Simple";
 				case 1 : return "Detailed";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 64 :
+			case 67 :
 			switch (t) {
 				case 0 : return "ThermalTransmittance";
 			} break;
 			// WindowGlazingSystem::splinePara_t
-			case 65 :
+			case 68 :
 			switch (t) {
 				case 0 : return "SHGC";
 			} break;
 			// WindowShading::modelType_t
-			case 66 :
+			case 69 :
 			switch (t) {
 				case 0 : return "Constant";
 				case 1 : return "Precomputed";
 				case 2 : return "Controlled";
 			} break;
 			// WindowShading::para_t
-			case 67 :
+			case 70 :
 			switch (t) {
 				case 0 : return "ReductionFactor";
 			} break;
 			// Zone::type_t
-			case 68 :
+			case 71 :
 			switch (t) {
 				case 0 : return "Constant";
 				case 1 : return "Active";
 				case 2 : return "Ground";
 			} break;
 			// Zone::para_t
-			case 69 :
+			case 72 :
 			switch (t) {
 				case 0 : return "Temperature";
 				case 1 : return "RelativeHumidity";
@@ -1614,14 +1657,34 @@ namespace NANDRAD {
 				case 0 : return "Incomplete LU preconditioner";
 				case 1 : return "Automatic selection of preconditioner";
 			} break;
-			// WindowGlazingLayer::type_t
+			// Thermostat::modelType_t
 			case 60 :
+			switch (t) {
+				case 0 : return "Constant set points";
+				case 1 : return "Scheduled ste points";
+			} break;
+			// Thermostat::TemperatureType
+			case 61 :
+			switch (t) {
+				case 0 : return "Air temperature";
+				case 1 : return "Operative temperature";
+			} break;
+			// Thermostat::para_t
+			case 62 :
+			switch (t) {
+				case 0 : return "Heating set point";
+				case 1 : return "Cooling set point";
+				case 2 : return "Control tolerance for temperatures";
+				case 3 : return "Difference between lower and upper hysteresis band, centered around set points";
+			} break;
+			// WindowGlazingLayer::type_t
+			case 63 :
 			switch (t) {
 				case 0 : return "Gas layer";
 				case 1 : return "Glass layer";
 			} break;
 			// WindowGlazingLayer::para_t
-			case 61 :
+			case 64 :
 			switch (t) {
 				case 0 : return "Thickness of the window layer.";
 				case 1 : return "Thermal conductivity of the window layer.";
@@ -1632,7 +1695,7 @@ namespace NANDRAD {
 				case 6 : return "Emissivity of surface facing inside.";
 			} break;
 			// WindowGlazingLayer::splinePara_t
-			case 62 :
+			case 65 :
 			switch (t) {
 				case 0 : return "Short wave transmittance at outside directed surface.";
 				case 1 : return "Short wave reflectance of surface facing outside.";
@@ -1642,42 +1705,42 @@ namespace NANDRAD {
 				case 5 : return "Specific heat capacity of the gas layer.";
 			} break;
 			// WindowGlazingSystem::modelType_t
-			case 63 :
+			case 66 :
 			switch (t) {
 				case 0 : return "Standard globbed-layers model.";
 				case 1 : return "Detailed window model with layers.";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 64 :
+			case 67 :
 			switch (t) {
 				case 0 : return "Thermal transmittance";
 			} break;
 			// WindowGlazingSystem::splinePara_t
-			case 65 :
+			case 68 :
 			switch (t) {
 				case 0 : return "Short wave transmittance at outside directed surface.";
 			} break;
 			// WindowShading::modelType_t
-			case 66 :
+			case 69 :
 			switch (t) {
 				case 0 : return "Constant reduction factor.";
 				case 1 : return "Precomputed reduction factor.";
 				case 2 : return "Reduction factor is computed based on control model";
 			} break;
 			// WindowShading::para_t
-			case 67 :
+			case 70 :
 			switch (t) {
 				case 0 : return "Reduction factor (remaining percentage of solar gains if shading is closed).";
 			} break;
 			// Zone::type_t
-			case 68 :
+			case 71 :
 			switch (t) {
 				case 0 : return "Zone with constant/predefined temperatures. (schedule)";
 				case 1 : return "Zone described by a temperature node in space.";
 				case 2 : return "Ground zone (calculates temperature based on standard).";
 			} break;
 			// Zone::para_t
-			case 69 :
+			case 72 :
 			switch (t) {
 				case 0 : return "Temperature of the zone if set constant [C].";
 				case 1 : return "Relative humidity of the zone if set constant [%].";
@@ -2138,14 +2201,34 @@ namespace NANDRAD {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
-			// WindowGlazingLayer::type_t
+			// Thermostat::modelType_t
 			case 60 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
-			// WindowGlazingLayer::para_t
+			// Thermostat::TemperatureType
 			case 61 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+			} break;
+			// Thermostat::para_t
+			case 62 :
+			switch (t) {
+				case 0 : return "C";
+				case 1 : return "C";
+				case 2 : return "K";
+				case 3 : return "K";
+			} break;
+			// WindowGlazingLayer::type_t
+			case 63 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+			} break;
+			// WindowGlazingLayer::para_t
+			case 64 :
 			switch (t) {
 				case 0 : return "m";
 				case 1 : return "W/mK";
@@ -2156,7 +2239,7 @@ namespace NANDRAD {
 				case 6 : return "---";
 			} break;
 			// WindowGlazingLayer::splinePara_t
-			case 62 :
+			case 65 :
 			switch (t) {
 				case 0 : return "---";
 				case 1 : return "---";
@@ -2166,42 +2249,42 @@ namespace NANDRAD {
 				case 5 : return "J/kgK";
 			} break;
 			// WindowGlazingSystem::modelType_t
-			case 63 :
+			case 66 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 64 :
+			case 67 :
 			switch (t) {
 				case 0 : return "W/m2K";
 			} break;
 			// WindowGlazingSystem::splinePara_t
-			case 65 :
+			case 68 :
 			switch (t) {
 				case 0 : return "---";
 			} break;
 			// WindowShading::modelType_t
-			case 66 :
+			case 69 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
 			} break;
 			// WindowShading::para_t
-			case 67 :
+			case 70 :
 			switch (t) {
 				case 0 : return "---";
 			} break;
 			// Zone::type_t
-			case 68 :
+			case 71 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
 			} break;
 			// Zone::para_t
-			case 69 :
+			case 72 :
 			switch (t) {
 				case 0 : return "C";
 				case 1 : return "%";
@@ -2662,14 +2745,34 @@ namespace NANDRAD {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
-			// WindowGlazingLayer::type_t
+			// Thermostat::modelType_t
 			case 60 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
-			// WindowGlazingLayer::para_t
+			// Thermostat::TemperatureType
 			case 61 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// Thermostat::para_t
+			case 62 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
+			} break;
+			// WindowGlazingLayer::type_t
+			case 63 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// WindowGlazingLayer::para_t
+			case 64 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2680,7 +2783,7 @@ namespace NANDRAD {
 				case 6 : return "#FFFFFF";
 			} break;
 			// WindowGlazingLayer::splinePara_t
-			case 62 :
+			case 65 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2690,42 +2793,42 @@ namespace NANDRAD {
 				case 5 : return "#FFFFFF";
 			} break;
 			// WindowGlazingSystem::modelType_t
-			case 63 :
+			case 66 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 64 :
+			case 67 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
 			// WindowGlazingSystem::splinePara_t
-			case 65 :
+			case 68 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
 			// WindowShading::modelType_t
-			case 66 :
+			case 69 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
 			// WindowShading::para_t
-			case 67 :
+			case 70 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
 			// Zone::type_t
-			case 68 :
+			case 71 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
 			// Zone::para_t
-			case 69 :
+			case 72 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -3186,14 +3289,34 @@ namespace NANDRAD {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// WindowGlazingLayer::type_t
+			// Thermostat::modelType_t
 			case 60 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// WindowGlazingLayer::para_t
+			// Thermostat::TemperatureType
 			case 61 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// Thermostat::para_t
+			case 62 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// WindowGlazingLayer::type_t
+			case 63 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// WindowGlazingLayer::para_t
+			case 64 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -3204,7 +3327,7 @@ namespace NANDRAD {
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// WindowGlazingLayer::splinePara_t
-			case 62 :
+			case 65 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -3214,42 +3337,42 @@ namespace NANDRAD {
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// WindowGlazingSystem::modelType_t
-			case 63 :
+			case 66 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// WindowGlazingSystem::para_t
-			case 64 :
+			case 67 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// WindowGlazingSystem::splinePara_t
-			case 65 :
+			case 68 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// WindowShading::modelType_t
-			case 66 :
+			case 69 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// WindowShading::para_t
-			case 67 :
+			case 70 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// Zone::type_t
-			case 68 :
+			case 71 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// Zone::para_t
-			case 69 :
+			case 72 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -3386,26 +3509,32 @@ namespace NANDRAD {
 			case 58 : return 5;
 			// SolverParameter::precond_t
 			case 59 : return 2;
-			// WindowGlazingLayer::type_t
+			// Thermostat::modelType_t
 			case 60 : return 2;
-			// WindowGlazingLayer::para_t
-			case 61 : return 7;
-			// WindowGlazingLayer::splinePara_t
-			case 62 : return 6;
-			// WindowGlazingSystem::modelType_t
+			// Thermostat::TemperatureType
+			case 61 : return 2;
+			// Thermostat::para_t
+			case 62 : return 4;
+			// WindowGlazingLayer::type_t
 			case 63 : return 2;
+			// WindowGlazingLayer::para_t
+			case 64 : return 7;
+			// WindowGlazingLayer::splinePara_t
+			case 65 : return 6;
+			// WindowGlazingSystem::modelType_t
+			case 66 : return 2;
 			// WindowGlazingSystem::para_t
-			case 64 : return 1;
-			// WindowGlazingSystem::splinePara_t
-			case 65 : return 1;
-			// WindowShading::modelType_t
-			case 66 : return 3;
-			// WindowShading::para_t
 			case 67 : return 1;
+			// WindowGlazingSystem::splinePara_t
+			case 68 : return 1;
+			// WindowShading::modelType_t
+			case 69 : return 3;
+			// WindowShading::para_t
+			case 70 : return 1;
 			// Zone::type_t
-			case 68 : return 3;
+			case 71 : return 3;
 			// Zone::para_t
-			case 69 : return 6;
+			case 72 : return 6;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::Count]");
@@ -3534,26 +3663,32 @@ namespace NANDRAD {
 			case 58 : return 4;
 			// SolverParameter::precond_t
 			case 59 : return 1;
-			// WindowGlazingLayer::type_t
+			// Thermostat::modelType_t
 			case 60 : return 1;
-			// WindowGlazingLayer::para_t
-			case 61 : return 6;
-			// WindowGlazingLayer::splinePara_t
-			case 62 : return 5;
-			// WindowGlazingSystem::modelType_t
+			// Thermostat::TemperatureType
+			case 61 : return 1;
+			// Thermostat::para_t
+			case 62 : return 3;
+			// WindowGlazingLayer::type_t
 			case 63 : return 1;
+			// WindowGlazingLayer::para_t
+			case 64 : return 6;
+			// WindowGlazingLayer::splinePara_t
+			case 65 : return 5;
+			// WindowGlazingSystem::modelType_t
+			case 66 : return 1;
 			// WindowGlazingSystem::para_t
-			case 64 : return 0;
-			// WindowGlazingSystem::splinePara_t
-			case 65 : return 0;
-			// WindowShading::modelType_t
-			case 66 : return 2;
-			// WindowShading::para_t
 			case 67 : return 0;
+			// WindowGlazingSystem::splinePara_t
+			case 68 : return 0;
+			// WindowShading::modelType_t
+			case 69 : return 2;
+			// WindowShading::para_t
+			case 70 : return 0;
 			// Zone::type_t
-			case 68 : return 2;
+			case 71 : return 2;
 			// Zone::para_t
-			case 69 : return 6;
+			case 72 : return 6;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::MaxIndex]");
