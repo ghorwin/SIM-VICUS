@@ -147,11 +147,13 @@ void StructuralShading::calculateShadingFactors(Notification * notify) {
 
 		Polygon shadingPoly (surf);
 
-		m_shading.m_obstacles = m_obstacles;
-		m_shading.m_shadingObjects.clear();
+		SunShadingAlgorithm shading = m_shading;
+
+		shading.m_obstacles = m_obstacles;
+		shading.m_shadingObjects.clear();
 		SunShadingAlgorithm::ShadingObj shadingObj;
 		shadingObj.m_polygon = surf;
-		m_shading.m_shadingObjects.push_back(shadingObj);
+		shading.m_shadingObjects.push_back(shadingObj);
 
 		// now we initialize our shading calculation object
 		try {
@@ -230,13 +232,13 @@ void StructuralShading::calculateShadingFactors(Notification * notify) {
 				IBKMK::Vector3D sunVector ( sunNormal.m_x, sunNormal.m_y, sunNormal.m_z );
 
 				// calculate shading factors
-				m_shading.calcShading(sunVector);
+				shading.calcShading(sunVector);
 
 				for (size_t j=0; j<itNormal->second.size(); ++j)
-					sunShadings[itNormal->second[j]] = m_shading.m_shadingObjects.back().m_shadingValue;
+					sunShadings[itNormal->second[j]] = shading.m_shadingObjects.back().m_shadingValue;
 
 				// give back shading factor
-				sunShadings[i] = m_shading.m_shadingObjects.back().m_shadingValue;
+				sunShadings[i] = shading.m_shadingObjects.back().m_shadingValue;
 
 
 
