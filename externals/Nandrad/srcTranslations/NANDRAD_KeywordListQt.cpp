@@ -43,6 +43,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Parametrization of a window model.");
 	tr("Parametrization of a door model.");
 	tr("Parametrization of an opening model.");
+	tr("Heating control model");
+	tr("Parallel operation");
 	tr("Dry density of the material.");
 	tr("Specific heat capacity of the material.");
 	tr("Thermal conductivity of the dry material.");
