@@ -98,13 +98,13 @@
 				<ZoneObjectList>All zones</ZoneObjectList>
 			</HVACControlModels>
 
-			<ZoneIdealHeatingCoolingModels>
-				<ZoneIdealHeatingCoolingModel id="4001">
+			<IdealHeatingCoolingModels>
+				<IdealHeatingCoolingModel id="4001">
 					<ZoneObjectList>All zones</ZoneObjectList>
 					<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">50</IBK:Parameter>
 					<IBK:Parameter name="MaxCoolingPowerPerArea" unit="W/m2">20</IBK:Parameter>
-				</ZoneIdealHeatingCoolingModel>
-			</ZoneIdealHeatingCoolingModels>
+				</IdealHeatingCoolingModel>
+			</IdealHeatingCoolingModels>
 		</Models>
 
 		<Outputs>

@@ -19,8 +19,8 @@
 	Lesser General Public License for more details.
 */
 
-#ifndef NANDRAD_HVACControlModelH
-#define NANDRAD_HVACControlModelH
+#ifndef NANDRAD_IdealHeatingCoolingModelH
+#define NANDRAD_IdealHeatingCoolingModelH
 
 #include <IBK_Parameter.h>
 
@@ -29,22 +29,16 @@
 
 namespace NANDRAD {
 
-/*! Contains data for a control model that generates control signals for different heating equipment based
-	on thermostat values.
+/*! An ideal heating and cooling model. Basically scales a heating/cooling control signal with
+	the nominal heating power per zone.
 */
-class HVACControlModel {
+class IdealHeatingCoolingModel {
 public:
-	/*! Different model variants. */
-	enum modelType_t {
-		MT_Heating,						// Keyword: Heating						'Heating control model'
-		NUM_MT
-	};
-
-	/*! Operating mode. */
-	enum OperatingMode {
-		/*! Input signal is forwarded unmodified to all heating models. */
-		OM_Parallel,					// Keyword: Parallel					'Parallel operation'
-		NUM_OM
+	/*! Model parameters. */
+	enum para_t {
+		P_MaxHeatingPowerPerArea,	// Keyword: MaxHeatingPowerPerArea		[W/m2]		'Maximum heating power per floor area'
+		P_MaxCoolingPowerPerArea,	// Keyword: MaxCoolingPowerPerArea		[W/m2]		'Maximum cooling power per floor area'
+		NUM_P
 	};
 
 	NANDRAD_READWRITE
@@ -53,18 +47,15 @@ public:
 	void checkParameters() const;
 
 	/*! Unique ID-number for this model. */
-	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required
-
-	/*! Model type. */
-	modelType_t							m_modelType = NUM_MT;			// XML:A:required
-
-	/*! Operating mode. */
-	OperatingMode						m_operatingMode = NUM_OM;		// XML:A:required
+	unsigned int		m_id = NANDRAD::INVALID_ID;					// XML:A:required
 
 	/*! Object list with zones that this model is to be apply to. */
-	std::string							m_zoneObjectList;				// XML:E:required
+	std::string			m_zoneObjectList;							// XML:E:required
+
+	/*! Parameters. */
+	IBK::Parameter		m_para[NUM_P];								// XML:E
 };
 
 } // namespace NANDRAD
 
-#endif // NANDRAD_HVACControlModelH
+#endif // NANDRAD_IdealHeatingCoolingModelH

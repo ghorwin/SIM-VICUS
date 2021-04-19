@@ -5,6 +5,7 @@
 namespace NANDRAD {
 
 void HVACControlModel::checkParameters() const {
+	// TODO Dirk
 }
 
 

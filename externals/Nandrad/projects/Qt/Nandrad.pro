@@ -47,6 +47,7 @@ HEADERS += \
 	../../src/NANDRAD_HydraulicNetworkHeatExchange.h \
 	../../src/NANDRAD_HydraulicNetworkPipeProperties.h \
 	../../src/NANDRAD_IDGroup.h \
+	../../src/NANDRAD_IdealHeatingCoolingModel.h \
 	../../src/NANDRAD_InterfaceAirFlow.h \
 	../../src/NANDRAD_Interface.h \
 	../../src/NANDRAD_InterfaceHeatConduction.h \
@@ -106,6 +107,7 @@ SOURCES += \
 	../../src/NANDRAD_HydraulicNetworkHeatExchange.cpp \
 	../../src/NANDRAD_HydraulicNetworkPipeProperties.cpp \
 	../../src/NANDRAD_IDGroup.cpp \
+	../../src/NANDRAD_IdealHeatingCoolingModel.cpp \
 	../../src/NANDRAD_InterfaceAirFlow.cpp \
 	../../src/NANDRAD_Interface.cpp \
 	../../src/NANDRAD_InterfaceHeatConduction.cpp \
