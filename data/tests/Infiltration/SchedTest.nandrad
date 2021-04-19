@@ -22,16 +22,20 @@
 			<ClimateFilePath>${Project Directory}/../climate/Konstantopol_20C.c6b</ClimateFilePath>
 		</Location>
 		<Models>
-			<NaturalVentilationModel id="501" displayName="Zone vent" modelType="Scheduled">
-				<ZoneObjectList>All zones</ZoneObjectList>
+			<NaturalVentilationModel>
+				<NaturalVentilationModel id="501" displayName="Zone vent" modelType="Scheduled">
+					<ZoneObjectList>All zones</ZoneObjectList>
+				</NaturalVentilationModel>
 			</NaturalVentilationModel>
-			<InternalLoadsModel id="1" displayName="Test Zone Template" modelType="Scheduled">
-				<ZoneObjectList>All zones</ZoneObjectList>
-				<IBK:Parameter name="EquipmentRadiationFraction" unit="---">0.2</IBK:Parameter>
-				<IBK:Parameter name="PersonRadiationFraction" unit="---">0.2</IBK:Parameter>
-				<IBK:Parameter name="LightingRadiationFraction" unit="---">0</IBK:Parameter>
-				
-			</InternalLoadsModel>
+			
+			<InternalLoadsModels>
+				<InternalLoadsModel id="1" displayName="Test Zone Template" modelType="Scheduled">
+					<ZoneObjectList>All zones</ZoneObjectList>
+					<IBK:Parameter name="EquipmentRadiationFraction" unit="---">0.2</IBK:Parameter>
+					<IBK:Parameter name="PersonRadiationFraction" unit="---">0.2</IBK:Parameter>
+					<IBK:Parameter name="LightingRadiationFraction" unit="---">0</IBK:Parameter>
+				</InternalLoadsModel>
+			</InternalLoadsModels>
 		</Models>
 		<Schedules>
 			<WeekEndDays>Sat,Sun</WeekEndDays>

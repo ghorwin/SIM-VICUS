@@ -29,10 +29,12 @@
 			</Zone>
 		</Zones>
 		<Models>
-			<NaturalVentilationModel id="501" displayName="Zone ventilation" modelType="Constant">
-				<ZoneObjectList>Zones</ZoneObjectList>
-				<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
-			</NaturalVentilationModel>
+			<NaturalVentilationModels>
+				<NaturalVentilationModel id="501" displayName="Zone ventilation" modelType="Constant">
+					<ZoneObjectList>Zones</ZoneObjectList>
+					<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
+				</NaturalVentilationModel>
+			</NaturalVentilationModels>
 		</Models>
 		<HydraulicNetworks>
 			<HydraulicNetwork id="1" modelType="ThermalHydraulicNetwork" displayName="simple test" referenceElementId="1">

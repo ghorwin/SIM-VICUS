@@ -80,15 +80,17 @@
 		</ConstructionInstances>
 		
 		<Models>
-			<InternalLoadsModel id="401" displayName="Zone loads" modelType="Constant">
-				<ZoneObjectList>Zones</ZoneObjectList>
-				<IBK:Parameter name="EquipmentRadiationFraction" unit="---">0</IBK:Parameter>
-				<IBK:Parameter name="PersonRadiationFraction" unit="---">0</IBK:Parameter>
-				<IBK:Parameter name="LightingRadiationFraction" unit="---">0</IBK:Parameter>
-				<IBK:Parameter name="EquipmentHeatLoadPerArea" unit="W/m2">2</IBK:Parameter>
-				<IBK:Parameter name="PersonHeatLoadPerArea" unit="W/m2">0</IBK:Parameter>
-				<IBK:Parameter name="LightingHeatLoadPerArea" unit="W/m2">0</IBK:Parameter>
-			</InternalLoadsModel>
+			<InternalLoadsModels>
+				<InternalLoadsModel id="401" displayName="Zone loads" modelType="Constant">
+					<ZoneObjectList>Zones</ZoneObjectList>
+					<IBK:Parameter name="EquipmentRadiationFraction" unit="---">0</IBK:Parameter>
+					<IBK:Parameter name="PersonRadiationFraction" unit="---">0</IBK:Parameter>
+					<IBK:Parameter name="LightingRadiationFraction" unit="---">0</IBK:Parameter>
+					<IBK:Parameter name="EquipmentHeatLoadPerArea" unit="W/m2">2</IBK:Parameter>
+					<IBK:Parameter name="PersonHeatLoadPerArea" unit="W/m2">0</IBK:Parameter>
+					<IBK:Parameter name="LightingHeatLoadPerArea" unit="W/m2">0</IBK:Parameter>
+				</InternalLoadsModel>
+			</InternalLoadsModels>
 		</Models>
 		
 		<ConstructionTypes>

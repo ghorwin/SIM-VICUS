@@ -25,9 +25,11 @@
 			<ClimateFilePath>${Project Directory}/../climate/Konstantopol_20C.c6b</ClimateFilePath>
 		</Location>
 		<Models>
-			<NaturalVentilationModel id="501" displayName="Zone vent" modelType="Scheduled">
-				<ZoneObjectList>All zones</ZoneObjectList>
-			</NaturalVentilationModel>
+			<NaturalVentilationModels>
+				<NaturalVentilationModel id="501" displayName="Zone vent" modelType="Scheduled">
+					<ZoneObjectList>All zones</ZoneObjectList>
+				</NaturalVentilationModel>
+			</NaturalVentilationModels>
 		</Models>
 		<Schedules>
 			<WeekEndDays>Sat,Sun</WeekEndDays>

@@ -25,10 +25,12 @@
 			<ClimateFilePath>${Project Directory}/../climate/Konstantopol_20C.c6b</ClimateFilePath>
 		</Location>
 		<Models>
-			<NaturalVentilationModel id="501" displayName="Zone vent" modelType="Constant">
-				<ZoneObjectList>All zones</ZoneObjectList>
-				<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
-			</NaturalVentilationModel>
+			<NaturalVentilationModels>
+				<NaturalVentilationModel id="501" displayName="Zone vent" modelType="Constant">
+					<ZoneObjectList>All zones</ZoneObjectList>
+					<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
+				</NaturalVentilationModel>
+			</NaturalVentilationModels>
 		</Models>
 		<Outputs>
 			<TimeUnit>h</TimeUnit>
