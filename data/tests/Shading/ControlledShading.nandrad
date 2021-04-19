@@ -262,7 +262,12 @@
 				<OutputDefinition>
 					<Quantity>ShadingFactor</Quantity>
 					<ObjectListName>Models</ObjectListName>
-					<GridName>hourly</GridName>
+					<GridName>detailed</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>SolarIntensity</Quantity>
+					<ObjectListName>Models</ObjectListName>
+					<GridName>detailed</GridName>
 				</OutputDefinition>
 			</Definitions>
 			<Grids>
@@ -270,6 +275,13 @@
 					<Intervals>
 						<Interval>
 							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+				<OutputGrid name="detailed">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="min">10</IBK:Parameter>
 						</Interval>
 					</Intervals>
 				</OutputGrid>
