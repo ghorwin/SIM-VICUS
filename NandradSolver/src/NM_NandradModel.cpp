@@ -1285,8 +1285,6 @@ void NandradModel::initModels() {
 			}
 			// insert into time model container
 			m_timeModelContainer.push_back(mod);
-			// register state dependent model
-			registerStateDependendModel(mod);
 		}
 	}
 

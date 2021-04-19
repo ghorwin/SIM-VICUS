@@ -29,16 +29,12 @@ DigitalHysteresisController::DigitalHysteresisController() {
 
 void DigitalHysteresisController::updateControllerOutput()
 {
-	m_controllerOutput = m_previousControllerOutput;
 
+	m_controllerOutput = m_previousControllerOutput;
 	// change controller output only if we are outside tolerance band
-	if(m_currentState >= m_targetValue + m_hysteresisBand)
+	if(m_currentState > m_targetValue + m_hysteresisBand)
 		m_controllerOutput = 0.0;
-	else if(m_currentState <= m_targetValue - m_hysteresisBand)
-		m_controllerOutput = 1.0;
-	else if(m_previousControllerOutput == 0.0 && m_currentState > m_targetValue - m_hysteresisBand )
-		m_controllerOutput = 0.0;
-	else //(m_previousControllerOutput == 1.0 && m_currentState < m_targetValue + m_hysteresisBand )
+	else if(m_currentState < m_targetValue - m_hysteresisBand)
 		m_controllerOutput = 1.0;
 }
 

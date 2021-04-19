@@ -43,7 +43,8 @@ const char * const STATE_QUANTITIES[] = {
 	"OperativeTemperature",
 	"VentilationRate",
 	"SurfaceTemperatureA",
-	"SurfaceTemperatureB"
+	"SurfaceTemperatureB",
+	"ShadingFactor"
 };
 
 const char * const FLUX_QUANTITIES[] = {
@@ -57,6 +58,7 @@ const char * const FLUX_QUANTITIES[] = {
 	"RadiantEquipmentHeatLoad",
 	"RadiantPersonHeatLoad",
 	"RadiantLightingHeatLoad",
+	"SolarIntensity",
 	"FluxHeatConductionA",
 	"FluxHeatConductionB",
 	"SolarRadiationFluxA",

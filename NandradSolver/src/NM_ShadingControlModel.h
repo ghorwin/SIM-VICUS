@@ -3,7 +3,7 @@
 
 #include "NM_Controller.h"
 #include "NM_AbstractModel.h"
-#include "NM_AbstractStateDependency.h"
+#include "NM_AbstractTimeDependency.h"
 
 
 namespace NANDRAD {
@@ -20,7 +20,7 @@ class Loads;
 	It can be used as controller instance for different windows and implements a digital hysteresis
 	control.
 */
-class ShadingControlModel : public DigitalHysteresisController, public AbstractModel, public AbstractStateDependency
+class ShadingControlModel : public DigitalHysteresisController, public AbstractModel
 {
 public:
 
@@ -60,18 +60,10 @@ public:
 	/*! Retrieves reference pointer to a value with given input reference name. */
 	virtual const double * resultValueRef(const InputReference & quantity) const override;
 
-	// *** Re-implemented from AbstractStateDependency
+	// *** Re-implemented from AbstractTimeDependency
 
-	/*! Returns empty vector with model input references.
-	*/
-	virtual void inputReferences(std::vector<InputReference>  & /*inputRefs*/) const override { }
-
-	/*! Provides the object with references to requested input variables (persistent memory location). */
-	virtual void setInputValueRefs(const std::vector<QuantityDescription> &,
-								   const std::vector<const double *> & /*resultValueRefs*/) override { }
-
-	/*! Sums up all provided input quantities and computes divergence of balance equations. */
-	int update() override;
+	/*! Sets a new controller state. */
+	int setTime(double t) override;
 
 private:
 	/*! Model instance ID. */

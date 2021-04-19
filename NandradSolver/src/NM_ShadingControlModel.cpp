@@ -30,11 +30,21 @@ void ShadingControlModel::setup(const NANDRAD::ShadingControlModel & controller,
 void ShadingControlModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const
 {
 	QuantityDescription result;
-	result.m_constant = true;
+
+	// shaidng factor
+	result.m_constant = false;
 	result.m_description = "Controlled shading factor [0,...,1].";
 	result.m_name = "ShadingFactor";
 	result.m_displayName = m_displayName;
 	result.m_unit = "---";
+
+	resDesc.push_back(result);
+
+	result.m_constant = false;
+	result.m_description = "Solar radiation flux intensity on surface [W/m2].";
+	result.m_name = "SolarIntensity";
+	result.m_displayName = m_displayName;
+	result.m_unit = "W/m2";
 
 	resDesc.push_back(result);
 }
@@ -49,11 +59,13 @@ const double *ShadingControlModel::resultValueRef(const InputReference & quantit
 	const QuantityName & quantityName = quantity.m_name;
 	if(quantityName.m_name == "ShadingFactor")
 		return &m_controllerOutput;
+	if(quantityName.m_name == "SolarIntensity")
+		return &m_currentState;
 
 	return nullptr;
 }
 
-int ShadingControlModel::update()
+int ShadingControlModel::setTime(double /*t*/)
 {
 	// set current state value from sensor
 	double qSWRadDir, qSWRadDiff, incidenceAngle;
@@ -64,7 +76,6 @@ int ShadingControlModel::update()
 	// signal success
 	return 0;
 }
-
 
 
 } // namespace NANDRAD_MODEL
