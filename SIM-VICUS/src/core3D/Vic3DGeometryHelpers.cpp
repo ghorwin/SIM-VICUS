@@ -6,16 +6,15 @@
 #include <QQuaternion>
 
 #include "SVSettings.h"
+#include "Vic3DConstants.h"
 
 namespace Vic3D {
 
 
 #define CYLINDER_SEGMENTS 16
-#define SPHERE_SEGMENTS 12
-#define STRIP_STOP_INDEX 0xFFFFFFFF
+#define SPHERE_SEGMENTS 4
+
 // *** Primitives ***
-
-
 
 void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
 			  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
@@ -343,11 +342,10 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const Q
 		}
 
 		indexBufferData[currentElementIndex++] = vertexIndexStart; // 0
-		indexBufferData[currentElementIndex++] = STRIP_STOP_INDEX; // stop index
+		indexBufferData[currentElementIndex++] = VIC3D_STRIP_STOP_INDEX; // stop index
 
 
-	}
-
+	} // if closed
 }
 
 
@@ -426,6 +424,81 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 {
 	// THIS IS FOR DRAWING TRIANGLE STRIPS
 
+#if 1
+	QVector3D trans = QtExt::IBKVector2QVector(p);
+
+	// test code for primitive restart
+	vertexBufferData.resize(vertexBufferData.size() + 8);
+	colorBufferData.resize(colorBufferData.size() + 8);
+	unsigned int vertexStart = currentVertexIndex;
+
+	vertexBufferData[currentVertexIndex].m_coords = QVector3D(0, 0, 0) + trans;
+	vertexBufferData[currentVertexIndex].m_normal = QVector3D(0, 0, 1).normalized();
+	colorBufferData[currentVertexIndex++] = c;
+
+	vertexBufferData[currentVertexIndex].m_coords = QVector3D(2, 0, 0) + trans;
+	vertexBufferData[currentVertexIndex].m_normal = QVector3D(0, 0, 1).normalized();
+	colorBufferData[currentVertexIndex++] = c;
+
+	vertexBufferData[currentVertexIndex].m_coords = QVector3D(2, 2, 0) + trans;
+	vertexBufferData[currentVertexIndex].m_normal = QVector3D(0, 0, 1).normalized();
+	colorBufferData[currentVertexIndex++] = c;
+
+	vertexBufferData[currentVertexIndex].m_coords = QVector3D(0, 2, 0) + trans;
+	vertexBufferData[currentVertexIndex].m_normal = QVector3D(0, 0, 1).normalized();
+	colorBufferData[currentVertexIndex++] = c;
+
+
+	vertexBufferData[currentVertexIndex].m_coords = QVector3D(4, 0, 0) + trans;
+	vertexBufferData[currentVertexIndex].m_normal = QVector3D(0, 0, 1).normalized();
+	colorBufferData[currentVertexIndex++] = c;
+
+	vertexBufferData[currentVertexIndex].m_coords = QVector3D(6, 0, 0) + trans;
+	vertexBufferData[currentVertexIndex].m_normal = QVector3D(0, 0, 1).normalized();
+	colorBufferData[currentVertexIndex++] = c;
+
+	vertexBufferData[currentVertexIndex].m_coords = QVector3D(6, 2, 0) + trans;
+	vertexBufferData[currentVertexIndex].m_normal = QVector3D(0, 0, 1).normalized();
+	colorBufferData[currentVertexIndex++] = c;
+
+	vertexBufferData[currentVertexIndex].m_coords = QVector3D(4, 2, 0) + trans;
+	vertexBufferData[currentVertexIndex].m_normal = QVector3D(0, 0, 1).normalized();
+	colorBufferData[currentVertexIndex++] = c;
+
+#if 0
+	// if we had a previous geometry in the buffer, overwrite the last vertex with our first
+	if (indexBufferData.size() != 0)
+		indexBufferData[currentElementIndex-1] = vertexStart;
+	indexBufferData.resize(indexBufferData.size() + 1*(4 + 2)); // Mind: add 2 indexes for each degenerated triangle per ring
+
+	indexBufferData[currentElementIndex++] = vertexStart + 0;
+	indexBufferData[currentElementIndex++] = vertexStart + 3;
+	indexBufferData[currentElementIndex++] = vertexStart + 1;
+	indexBufferData[currentElementIndex++] = vertexStart + 2;
+	indexBufferData[currentElementIndex++] = vertexStart + 2;
+	indexBufferData[currentElementIndex++] = vertexStart + 2;
+
+//	indexBufferData[currentElementIndex++] = vertexStart + 4;
+//	indexBufferData[currentElementIndex++] = vertexStart + 7;
+//	indexBufferData[currentElementIndex++] = vertexStart + 5;
+//	indexBufferData[currentElementIndex++] = vertexStart + 6;
+//	indexBufferData[currentElementIndex++] = vertexStart + 6;
+
+//	indexBufferData[currentElementIndex++] = vertexStart + 6;
+
+#else
+	// with stop indexs
+	indexBufferData.resize(indexBufferData.size() + 1*(4 + 1)); // Mind: add 2 indexes for each degenerated triangle per ring
+
+	indexBufferData[currentElementIndex++] = vertexStart + 0;
+	indexBufferData[currentElementIndex++] = vertexStart + 3;
+	indexBufferData[currentElementIndex++] = vertexStart + 1;
+	indexBufferData[currentElementIndex++] = vertexStart + 2;
+	indexBufferData[currentElementIndex++] = vertexStart + VIC3D_STRIP_STOP_INDEX;
+
+#endif
+
+#else
 	QVector3D trans = QtExt::IBKVector2QVector(p);
 
 	unsigned int nSeg = SPHERE_SEGMENTS; // number of segments to split 180° into
@@ -434,10 +507,17 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 	// unfolded sphere mesh has nSeg*nSeg2 squares, and nSeg+1 rings
 	vertexBufferData.resize(vertexBufferData.size() + (nSeg+1)*nSeg2);
 	colorBufferData.resize(colorBufferData.size() + (nSeg+1)*nSeg2);
-	// nSeg triangle strips
-	indexBufferData.resize(indexBufferData.size() + nSeg*(2*(nSeg2+1) + 1)); // Mind: add 2 indexes for each degenerated triangle per ring
 
 	unsigned int vertexStart = currentVertexIndex;
+	// nSeg triangle strips
+#ifdef Q_OS_MAC
+	// if we had a previous geometry in the buffer, overwrite the last vertex with our first
+	if (indexBufferData.size() != 0)
+		indexBufferData[currentElementIndex-1] = vertexStart;
+	indexBufferData.resize(indexBufferData.size() + nSeg*(2*(nSeg2+1) + 2)); // Mind: add 2 indexes for each degenerated triangle per ring
+#else
+	indexBufferData.resize(indexBufferData.size() + nSeg*(2*(nSeg2+1) + 1)); // Mind: add 2 indexes for each degenerated triangle per ring
+#endif
 
 	// now generate the vertexes (nSeg vertexes per circle)
 	for (unsigned int i=0; i<=nSeg; ++i) {
@@ -473,6 +553,7 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 	//
 	// The strip in the first row is 0 4 1 5 2 6 3 7 0 4  followed by 4 8   = 2*nSeg2 + 2
 
+
 	for (unsigned int i=0; i<nSeg; ++i) {
 		unsigned int topCircleVertexStart = (i+1)*nSeg2;  // i = 0 -> 4
 		unsigned int bottomCircleVertexStart = i*nSeg2;   // i = 0 -> 0
@@ -485,8 +566,15 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 		}
 
 		// add stop index
-		indexBufferData[currentElementIndex++] = STRIP_STOP_INDEX; // set stop index
+#ifdef Q_OS_MAC
+		indexBufferData[currentElementIndex++] = topCircleVertexStart; // repeat last vertex once to get two degenerate triangles
+		indexBufferData[currentElementIndex++] = topCircleVertexStart; // repeat last vertex again
+#else
+		indexBufferData[currentElementIndex++] = VIC3D_STRIP_STOP_INDEX; // set stop index
+#endif
 	}
+//	indexBufferData[currentElementIndex++] = indexBufferData[currentElementIndex-1]; // repeat last vertex once to get two degenerate triangles
+#endif
 }
 
 
@@ -614,17 +702,17 @@ void addIkosaeder(const IBKMK::Vector3D & p, const std::vector<QColor> & cols, d
 
 	for (unsigned int i=0; i<v0.size(); ++i)
 		indexBufferData[currentElementIndex+i] = currentVertexIndex+ v0[i];
-	indexBufferData[currentElementIndex+v0.size()] = STRIP_STOP_INDEX;
+	indexBufferData[currentElementIndex+v0.size()] = VIC3D_STRIP_STOP_INDEX;
 	currentElementIndex += v0.size() + 1;
 
 	for (unsigned int i=0; i<v1.size(); ++i)
 		indexBufferData[currentElementIndex+i] = currentVertexIndex + v1[i];
-	indexBufferData[currentElementIndex+v1.size()] = STRIP_STOP_INDEX;
+	indexBufferData[currentElementIndex+v1.size()] = VIC3D_STRIP_STOP_INDEX;
 	currentElementIndex += v1.size() + 1;
 
 	for (unsigned int i=0; i<v2.size(); ++i)
 		indexBufferData[currentElementIndex+i] = currentVertexIndex + v2[i];
-	indexBufferData[currentElementIndex+v2.size()] = STRIP_STOP_INDEX;
+	indexBufferData[currentElementIndex+v2.size()] = VIC3D_STRIP_STOP_INDEX;
 	currentElementIndex += v2.size() + 1;
 
 	currentVertexIndex += nVertices;
@@ -705,7 +793,7 @@ void addPlaneAsStrip(const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const
 	indexBufferData[currentElementIndex + 1] = currentVertexIndex + 1;
 	indexBufferData[currentElementIndex + 2] = currentVertexIndex + 3;
 	indexBufferData[currentElementIndex + 3] = currentVertexIndex + 2;
-	indexBufferData[currentElementIndex + 4] = STRIP_STOP_INDEX;
+	indexBufferData[currentElementIndex + 4] = VIC3D_STRIP_STOP_INDEX;
 
 	// advance index in element/index buffer
 	currentElementIndex += 5;

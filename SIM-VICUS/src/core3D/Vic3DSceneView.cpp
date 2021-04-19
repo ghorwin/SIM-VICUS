@@ -318,7 +318,7 @@ void SceneView::initializeGL() {
 
 #ifdef Q_OS_MAC
 		glEnable(GL_PRIMITIVE_RESTART);
-		glPrimitiveRestartIndex(0xFFFF);
+		glPrimitiveRestartIndex(VIC3D_STRIP_STOP_INDEX);
 #else
 		glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
 #endif // Q_OS_MAC

@@ -76,6 +76,9 @@ enum Shaders {
 	NUM_SHADER_PROGRAMS
 };
 
+#define VIC3D_STRIP_STOP_INDEX 0xFFFF
+
+
 } // namespace Vic3D
 
 #endif // VIC3DConstantsH
