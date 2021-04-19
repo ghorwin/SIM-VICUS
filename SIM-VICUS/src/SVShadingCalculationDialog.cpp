@@ -283,8 +283,8 @@ void SVShadingCalculationDialog::on_pushButtonCalculate_clicked(){
 
 	connect( m_progressDialog, &QProgressDialog::canceled, this, &SVShadingCalculationDialog::stopCalculation );
 
-	connect( &m_shading, SIGNAL(progress(double)), this, SLOT(setProgressBar(double) ) );
-	connect( &m_shading, &SH::StructuralShading::finished, this, &SVShadingCalculationDialog::evaluateResults );
+//	connect( &m_shading, SIGNAL(progress(double)), this, SLOT(setProgressBar(double) ) );
+//	connect( &m_shading, &SH::StructuralShading::finished, this, &SVShadingCalculationDialog::evaluateResults );
 
 	for (const VICUS::Surface *s: m_selSurfaces) {
 		VICUS::Surface *surf = const_cast<VICUS::Surface *>(s);
@@ -293,9 +293,9 @@ void SVShadingCalculationDialog::on_pushButtonCalculate_clicked(){
 		m_shading.m_surfaces.push_back( SH::Polygon(surf->m_id, surfInverted.m_geometry.vertexes() ) );
 	}
 
-	m_timer->setSingleShot(true);
-	connect(m_timer, &QTimer::timeout, &m_shading, &SH::StructuralShading::calculateShadingFactors);
-	m_timer->start();
+//	m_timer->setSingleShot(true);
+//	connect(m_timer, &QTimer::timeout, &m_shading, &SH::StructuralShading::calculateShadingFactors);
+//	m_timer->start();
 
 
 }

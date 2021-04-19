@@ -17,7 +17,6 @@
 
 #include "SH_StructuralShading.h"
 
-#include <QtGui/QMatrix4x4>
 
 #include <IBK_messages.h>
 #include <IBK_FormatString.h>
@@ -182,8 +181,9 @@ void StructuralShading::calculateShadingFactors() {
 
 			double progressCount = ( (double)surfCounter + (double)( (double)counter / mapSize ) ) / (double)m_surfaces.size();
 
-			if ( (int)progressCount % 300 == 0 )
-				emit progress( progressCount );
+			if ( (int)progressCount % 300 == 0 ) {
+//				TODO emit progress( progressCount );
+			}
 
 			if(i==std::numeric_limits<unsigned int>::max())
 				continue;
@@ -211,10 +211,10 @@ void StructuralShading::calculateShadingFactors() {
 				}
 
 				// rotate sun to fit to south wall
-				QVector3D sunVector ( sunNormal.m_x, sunNormal.m_y, sunNormal.m_z );
+				IBKMK::Vector3D sunVector ( sunNormal.m_x, sunNormal.m_y, sunNormal.m_z );
 
 				// calculate shading factors
-				m_shading.calcShading(IBKMK::Vector3D ( sunVector.x(), sunVector.y(), sunVector.z() ) );
+				m_shading.calcShading(sunVector);
 
 				for (size_t j=0; j<itNormal->second.size(); ++j)
 					sunShadings[itNormal->second[j]] = m_shading.m_shadingObjects.back().m_shadingValue;
@@ -248,11 +248,8 @@ void StructuralShading::calculateShadingFactors() {
 		}
 		++surfCounter;
 	}
-
-	emit progress( 100.0 );
-
-	emit finished();
 }
+
 
 void StructuralShading::createSunNormals(std::vector<SunPosition>& sunPositions){
 

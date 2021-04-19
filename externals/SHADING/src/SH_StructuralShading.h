@@ -24,8 +24,6 @@
 
 #include <IBKMK_Vector3D.h>
 
-#include <QObject>
-
 #include "SH_SunShadingAlgorithm.h"
 #include "SH_Polygon.h"
 
@@ -36,10 +34,7 @@ namespace SH {
 		both geometrical configurations of standard shapes and/or external shadings provided
 		via file name.
 	*/
-	class StructuralShading : public QObject  {
-
-		Q_OBJECT
-
+	class StructuralShading  {
 	public:
 
 		struct Location {
@@ -96,13 +91,7 @@ namespace SH {
 
 		std::vector<SunPosition> sunPositions() const;
 
-	public slots:
 		void calculateShadingFactors();
-
-	signals:
-		void progress(double progress);
-
-		void finished();
 
 	private:
 
