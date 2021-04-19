@@ -27,6 +27,8 @@
 #include "NANDRAD_NaturalVentilationModel.h"
 #include "NANDRAD_InternalLoadsModel.h"
 #include "NANDRAD_ShadingControlModel.h"
+#include "NANDRAD_Thermostat.h"
+#include "NANDRAD_CodeGenMacros.h"
 
 namespace NANDRAD {
 
@@ -44,11 +46,13 @@ public:
 	void checkForUniqueIDs() const;
 
 	/*! Container for all natural ventilation models. */
-	std::vector<NaturalVentilationModel>	m_naturalVentilationModels;
+	std::vector<NaturalVentilationModel>	m_naturalVentilationModels;			// XML:E
 	/*! Container for all internal loads models. */
-	std::vector<InternalLoadsModel>			m_internalLoadsModels;
+	std::vector<InternalLoadsModel>			m_internalLoadsModels;				// XML:E
 	/*! Container for all shading control models. */
-	std::vector<ShadingControlModel>		m_shadingControlModels;
+	std::vector<ShadingControlModel>		m_shadingControlModels;				// XML:E
+	/*! Container for all thermostat control models. */
+	std::vector<Thermostat>					m_thermostats;						// XML:E
 };
 
 } // namespace NANDRAD

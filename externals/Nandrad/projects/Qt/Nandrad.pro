@@ -158,6 +158,7 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_Location.cpp \
 	../../src/ncg/ncg_NANDRAD_Material.cpp \
 	../../src/ncg/ncg_NANDRAD_MaterialLayer.cpp \
+	../../src/ncg/ncg_NANDRAD_Models.cpp \
 	../../src/ncg/ncg_NANDRAD_NaturalVentilationModel.cpp \
 	../../src/ncg/ncg_NANDRAD_ObjectList.cpp \
 	../../src/ncg/ncg_NANDRAD_OutputDefinition.cpp \
@@ -172,6 +173,7 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_SimulationParameter.cpp \
 	../../src/ncg/ncg_NANDRAD_SolarLoadsDistributionModel.cpp \
 	../../src/ncg/ncg_NANDRAD_SolverParameter.cpp \
+	../../src/ncg/ncg_NANDRAD_Thermostat.cpp \
 	../../src/ncg/ncg_NANDRAD_WindowDivider.cpp \
 	../../src/ncg/ncg_NANDRAD_WindowFrame.cpp \
 	../../src/ncg/ncg_NANDRAD_WindowGlazingLayer.cpp \

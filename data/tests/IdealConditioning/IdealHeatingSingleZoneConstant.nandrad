@@ -81,15 +81,19 @@
 
 
 		<Models>
+			<!-- A thermostat with constant heating set point, no cooling. Uses air temperature as sensor value. -->
 			<Thermostat id="1001" displayName="Constant air temperature thermostat" modelType="Constant">
 				<ZoneObjectList>All zones</ZoneObjectList>
 				<IBK:Parameter name="HeatingSetpoint" unit="C">20</IBK:Parameter>
+				<!-- Cooling is disabled through very large setpoint -->
+				<IBK:Parameter name="CoolingSetpoint" unit="C">100</IBK:Parameter>
 				<!-- Cooling is disabled through very large setpoint -->
 				<IBK:Parameter name="CoolingSetpoint" unit="C">100</IBK:Parameter>
 				<!-- Control temperature is "Air temperature" -->
 				<TemperatureType>AirTemperature</TemperatureType>
 			</Thermostat>
 
+			<!-- 
 			<ZoneIdealHeatingCooling id="3001">
 				<ZoneObjectList>All zones</ZoneObjectList>
 				<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">50</IBK:Parameter>
