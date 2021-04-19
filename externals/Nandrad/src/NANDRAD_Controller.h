@@ -12,6 +12,8 @@ namespace NANDRAD {
 	Controller objects are explicitely defined in the project when they control more than one object/model. They
 	can then be referenced by the models that use them via their ID. Most models, however, will contain own
 	parametrization of control strategies that are meaningful to the respective model.
+
+	TODO : remove if not needed
 */
 class Controller {
 public:
