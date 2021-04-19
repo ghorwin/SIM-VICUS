@@ -1,5 +1,5 @@
-#ifndef NM_SHADINGCONTROLMODEL_H
-#define NM_SHADINGCONTROLMODEL_H
+#ifndef NM_ShadingControlModelH
+#define NM_ShadingControlModelH
 
 #include "NM_Controller.h"
 #include "NM_AbstractModel.h"
@@ -18,12 +18,10 @@ class Loads;
 
 /*! A model for sensor based shading control.
 	It can be used as controller instance for different windows and implements a digital hysteresis
-	control.
+	control. This model depends only on time.
 */
-class ShadingControlModel : public DigitalHysteresisController, public AbstractModel
-{
+class ShadingControlModel : public DigitalHysteresisController, public AbstractModel {
 public:
-
 	ShadingControlModel(unsigned int id, const std::string &displayName):
 		m_id(id), m_displayName(displayName)
 	{
@@ -32,11 +30,8 @@ public:
 	/*! Initializes object.
 		\param controller Model data.
 	*/
-	void setup(const NANDRAD::ShadingControlModel &controller,
-			   const Loads &loads);
+	void setup(const NANDRAD::ShadingControlModel &controller, const Loads &loads);
 
-	/*! D'tor, definition is in NM_ShadingControlModel.cpp. */
-	virtual ~ShadingControlModel() override { }
 
 	// *** Re-implemented from AbstractModel
 
@@ -79,4 +74,4 @@ private:
 
 } // namespace NANDRAD_MODEL
 
-#endif // NM_SHADINGCONTROLMODEL_H
+#endif // NM_ShadingControlModelH

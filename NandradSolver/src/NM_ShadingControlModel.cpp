@@ -11,9 +11,7 @@
 namespace NANDRAD_MODEL {
 
 
-void ShadingControlModel::setup(const NANDRAD::ShadingControlModel & controller,
-								const Loads &loads)
-{
+void ShadingControlModel::setup(const NANDRAD::ShadingControlModel & controller, const Loads &loads) {
 	// overwrite tolerance band
 	double maxValue = controller.m_para[NANDRAD::ShadingControlModel::P_MaxIntensity].value;
 	double minValue = controller.m_para[NANDRAD::ShadingControlModel::P_MinIntensity].value;
@@ -21,7 +19,7 @@ void ShadingControlModel::setup(const NANDRAD::ShadingControlModel & controller,
 	m_targetValue = 0.5 * (minValue + maxValue);
 	// tolerance band is mean diffence to target
 	m_hysteresisBand = 0.5 * (maxValue - minValue);
-	// copy controller
+	// copy controller parameter block
 	m_controller = &controller;
 	// store loads
 	m_loads = &loads;
