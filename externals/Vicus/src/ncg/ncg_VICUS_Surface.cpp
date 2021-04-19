@@ -61,18 +61,7 @@ void Surface::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "IBK:LinearSpline") {
-				IBK::LinearSpline p;
-				std::string name;
-				NANDRAD::readLinearSplineElement(c, p, name, nullptr, nullptr);
-				bool success = false;
-				if (name == "ShadingFactor") {
-					m_shadingFactor = p; success = true;
-				}
-				if (!success)
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			else if (cName == "PlaneGeometry")
+			if (cName == "PlaneGeometry")
 				m_geometry.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
@@ -100,8 +89,6 @@ TiXmlElement * Surface::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 
 	m_geometry.writeXML(e);
-	if (!m_shadingFactor.empty())
-		NANDRAD::writeLinearSplineElement(e, "ShadingFactor", m_shadingFactor, "-", "-");
 	return e;
 }
 
