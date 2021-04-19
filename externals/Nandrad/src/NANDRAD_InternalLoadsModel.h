@@ -26,6 +26,7 @@
 
 #include "NANDRAD_Constants.h"
 #include "NANDRAD_CodeGenMacros.h"
+#include "NANDRAD_KeywordList.h"
 
 namespace NANDRAD {
 
