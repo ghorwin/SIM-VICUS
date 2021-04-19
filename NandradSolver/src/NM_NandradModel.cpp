@@ -1648,7 +1648,7 @@ void NandradModel::initModelDependencies() {
 			std::vector<InputReference> inputRefs;
 			currentStateDependency->inputReferences(inputRefs);
 #if defined(_OPENMP)
-#pragma omp single
+			// TODO OPENMP FIX
 #endif
 {
 			/// TODO : Andreas, openMP upgrade, use thread specific globalInputRefLists and merge at end
@@ -1797,18 +1797,19 @@ void NandradModel::initModelDependencies() {
 		}
 	} // end - pragma parallel omp for
 
-#if defined(_OPENMP)
-	// error checking
-	for (int i=0; i<m_numThreads; ++i)
-		if (!threadErrors[i].empty()) {
-			throw IBK::Exception(threadErrors[i], FUNC_ID);
-		}
+	// TODO : OpenMP
+//#if defined(_OPENMP)
+//	// error checking
+//	for (int i=0; i<m_numThreads; ++i)
+//		if (!threadErrors[i].empty()) {
+//			throw IBK::Exception(threadErrors[i], FUNC_ID);
+//		}
 
-	for (unsigned int i=0; i<(unsigned int)m_numThreads; ++i) {
-		for (unsigned int j=0; j<modelInputReferencesVec[i].size(); ++j)
-			modelInputReferences[ modelInputReferencesVec[i][j].first] = modelInputReferencesVec[i][j].second;
-	}
-#endif
+//	for (unsigned int i=0; i<(unsigned int)m_numThreads; ++i) {
+//		for (unsigned int j=0; j<modelInputReferencesVec[i].size(); ++j)
+//			modelInputReferences[ modelInputReferencesVec[i][j].first] = modelInputReferencesVec[i][j].second;
+//	}
+//#endif
 
 	// set backward connections for all objects before initializing model graph
 	// we will need parents for identifying single sequential connections
@@ -2930,9 +2931,9 @@ int NandradModel::updateStateDependentModels() {
 	if (!m_useSerialCode) {
 #pragma omp parallel for
 		for (int i = 0; i < (int)m_constructionStatesModelContainer.size(); ++i) {
-			m_constructionStatesModelContainer[i]->setY(&m_y[0] + m_constructionVariableOffset[i]);
+			m_constructionStatesModelContainer[i]->update(&m_y[0] + m_constructionVariableOffset[i]);
 		}
-}
+	}
 #endif // _OPENMP
 	if (m_useSerialCode) {
 		for (unsigned int i = 0; i < m_constructionStatesModelContainer.size(); ++i) {
