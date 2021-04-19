@@ -17,16 +17,16 @@ void ShadingControlModel::setup(const NANDRAD::ShadingControlModel & controller,
 	double minValue = controller.m_para[NANDRAD::ShadingControlModel::P_MinIntensity].value;
 	// target value is average
 	m_targetValue = 0.5 * (minValue + maxValue);
-	// tolerance band is mean diffence to target
+	// tolerance band is mean difference to target
 	m_hysteresisBand = 0.5 * (maxValue - minValue);
 	// copy controller parameter block
 	m_controller = &controller;
-	// store loads
+	// store loads for direct evaluation of radiation sensor value
 	m_loads = &loads;
 }
 
-void ShadingControlModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const
-{
+
+void ShadingControlModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 	QuantityDescription result;
 
 	// shaidng factor
@@ -47,27 +47,29 @@ void ShadingControlModel::resultDescriptions(std::vector<QuantityDescription> & 
 	resDesc.push_back(result);
 }
 
-void ShadingControlModel::resultValueRefs(std::vector<const double *> & res) const
-{
+
+void ShadingControlModel::resultValueRefs(std::vector<const double *> & res) const {
 	res.push_back(&m_controllerOutput);
+	// TODO : is this really needed? what about the second output?
 }
 
-const double *ShadingControlModel::resultValueRef(const InputReference & quantity) const
-{
+
+const double *ShadingControlModel::resultValueRef(const InputReference & quantity) const {
 	const QuantityName & quantityName = quantity.m_name;
-	if(quantityName.m_name == "ShadingFactor")
+	if (quantityName.m_name == "ShadingFactor")
 		return &m_controllerOutput;
-	if(quantityName.m_name == "SolarIntensity")
+	if (quantityName.m_name == "SolarIntensity")
 		return &m_currentState;
 
 	return nullptr;
 }
 
-int ShadingControlModel::setTime(double /*t*/)
-{
+
+int ShadingControlModel::setTime(double /*t*/) {
 	// set current state value from sensor
 	double qSWRadDir, qSWRadDiff, incidenceAngle;
 
+	// update the radiation sensor value (this includes precomputed shading in case of constructions or embedded objects)
 	m_currentState = m_loads->qSWRad(m_controller->m_sensorID, qSWRadDir, qSWRadDiff, incidenceAngle);
 	// calculate controller output
 	updateControllerOutput();

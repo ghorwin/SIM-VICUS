@@ -19,6 +19,8 @@ class Loads;
 /*! A model for sensor based shading control.
 	It can be used as controller instance for different windows and implements a digital hysteresis
 	control. This model depends only on time.
+
+	The implementation of the controller is encapsulated in class DigitalHysteresisController.
 */
 class ShadingControlModel : public DigitalHysteresisController, public AbstractModel {
 public:

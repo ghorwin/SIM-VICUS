@@ -112,7 +112,7 @@ public:
 	/*! Returns vector of all scalar and vector valued results pointer.
 		\param res Vector with pointers to resulting values.
 
-		\todo Clarify, when this is needed...for iterative solution of cycles?
+		\todo Anne, Clarify, when this is needed...for iterative solution of cycles?
 
 		Default implementation does nothing (i.e. no results generated).
 	*/

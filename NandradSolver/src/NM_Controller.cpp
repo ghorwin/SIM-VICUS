@@ -4,6 +4,8 @@
 
 namespace NANDRAD_MODEL {
 
+AbstractController::~AbstractController() {
+}
 
 // *** Digital direct Controller ***
 
