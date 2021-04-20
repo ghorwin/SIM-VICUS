@@ -57,6 +57,15 @@ Eine Projektdatei kann die folgenden untergeordneten Tags enthalten (die Reihenf
 | `ObjectLists` | Definition von Objektlisten/Objektreferenzgruppe -> <<object_lists>>
 |====================
 
+## Eindeutigkeitsforderungen für Definitions-IDs
+
+Im NANDRAD müssen folgenden Objekttypen in einem einzigen ID-Raum definiert werden, d.h. die IDs der unterschiedlichen Objekte dürfen sich nicht doppeln:
+
+- `Zone`
+- `ConstructionInstance`
+- `EmbeddedObjects`
+- `Location.Sensors`
+
 
 [[basic_types]]
 # Grundlegende Datentypen in der NANDRAD-Projektdatei-Spezifikation

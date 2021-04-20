@@ -147,8 +147,14 @@ void Project::readXML(const IBK::Path & filename) {
 	checkForUniqueNames(m_outputs.m_grids, "OutputGrid");
 	checkForUniqueNames(m_objectLists, "ObjectList");
 
+
+	// The following objects share a common ID space and must be unique:
+	// - Zone
+	// - ConstructionInstance
+	// - EmbeddedObjects
+	// - Location.Sensors
 	std::set<unsigned int> usedIDs;
-	// TODO: Anne add unqiqueness requirements in adoc file
+
 	try {
 		// check all zone ids against each other and against
 		// all entries in usedIDs container
