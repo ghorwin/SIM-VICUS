@@ -276,11 +276,14 @@ void SVShadingCalculationDialog::on_pushButtonCalculate_clicked(){
 
 	SVProjectHandler &prj = SVProjectHandler::instance();
 
-	QString path = prj.nandradProjectFilePath() + "/shadingFactros.tsv" ;
+	QString projectName = QFileInfo(prj.projectFile()).completeBaseName();
+	QString shadingPath = QFileInfo(prj.projectFile()).dir().filePath(projectName) + '/';
+
+	QString path = shadingPath  + projectName + "_shadingFactors.tsv" ;
 
 	IBK::Path exportFile(path.toStdString() );
 
-	m_shading.shadingFactorsTSV(exportFile);
+	m_shading.writeShadingFactorsToTSV(exportFile);
 
 }
 
