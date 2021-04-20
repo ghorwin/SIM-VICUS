@@ -16,3 +16,7 @@ This model has two shading control model instances.
 
 This model has the same controllers as `ControlledShading.nandrad`, yet with a reduction factor of 1. This means,
 there is no reduction effect.
+
+## PrecomputedShading.nandrad
+
+One window has a pre-computed shading applied.

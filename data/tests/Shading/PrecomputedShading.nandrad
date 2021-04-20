@@ -97,70 +97,6 @@
 				</EmbeddedObjects>
 			</ConstructionInstance>
 
-			<ConstructionInstance id="13" displayName="South">
-				<ConstructionTypeId>10001</ConstructionTypeId>
-				<!-- South -->
-				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
-				<!-- Wall -->
-				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
-				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
-				<InterfaceA id="105" zoneId="1">
-					<!--Interface to room -->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</InterfaceA>
-				<InterfaceB id="106" zoneId="0">
-					<!--Interface to outside-->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
-					</InterfaceHeatConduction>
-					<!-- Solar adsorption -->
-					<InterfaceSolarAbsorption modelType="Constant">
-						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
-					</InterfaceSolarAbsorption>
-					<!-- No long wave emission -->
-				</InterfaceB>
-				<EmbeddedObjects>
-					<EmbeddedObject id="1003" displayName="Simple window, no frame and divider">
-						<IBK:Parameter name="Area" unit="m2">5</IBK:Parameter>
-						<Window glazingSystemID="10000" />
-					</EmbeddedObject>
-				</EmbeddedObjects>
-			</ConstructionInstance>
-
-			<ConstructionInstance id="14" displayName="West">
-				<ConstructionTypeId>10001</ConstructionTypeId>
-				<!-- West -->
-				<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
-				<!-- Wall -->
-				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
-				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
-				<InterfaceA id="108" zoneId="1">
-					<!--Interface to room -->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</InterfaceA>
-				<InterfaceB id="109" zoneId="0">
-					<!--Interface to outside-->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
-					</InterfaceHeatConduction>
-					<!-- Solar adsorption -->
-					<InterfaceSolarAbsorption modelType="Constant">
-						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
-					</InterfaceSolarAbsorption>
-					<!-- No long wave emission -->
-				</InterfaceB>
-				<EmbeddedObjects>
-					<EmbeddedObject id="1004" displayName="Simple window, no frame and divider">
-						<IBK:Parameter name="Area" unit="m2">5</IBK:Parameter>
-						<Window glazingSystemID="10000" />
-					</EmbeddedObject>
-				</EmbeddedObjects>
-			</ConstructionInstance>
-
 		</ConstructionInstances>
 		<ConstructionTypes>
 			<ConstructionType id="10001" displayName="Construction 1">
@@ -205,17 +141,7 @@
 					<GridName>Minutes</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>WindowSolarRadiationFluxSum</Quantity>
-					<ObjectListName>Zones</ObjectListName>
-					<GridName>Minutes</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>WindowSolarRadiationLoad</Quantity>
-					<ObjectListName>Zones</ObjectListName>
-					<GridName>Minutes</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>FluxShortWaveRadiationB</Quantity>
+					<Quantity>ShadingFactor</Quantity>
 					<ObjectListName>Windows</ObjectListName>
 					<GridName>Minutes</GridName>
 				</OutputDefinition>
