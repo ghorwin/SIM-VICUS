@@ -2,6 +2,7 @@
 
 #include <NANDRAD_ConstructionInstance.h>
 #include <NANDRAD_WindowGlazingSystem.h>
+#include <NANDRAD_SimulationParameter.h>
 
 #include "NM_KeywordList.h"
 #include "NM_Loads.h"
@@ -207,13 +208,11 @@ void WindowModel::stateDependencies(std::vector<std::pair<const double *, const 
 
 int WindowModel::setTime(double t) {
 	// update linear spline defined shading factor
-	if(m_windowModel->m_shading.m_modelType == NANDRAD::WindowShading::MT_Precomputed) {
+	if (m_windowModel->m_shading.m_modelType == NANDRAD::WindowShading::MT_Precomputed) {
 		// parameters were checked already
 		IBK_ASSERT(! m_windowModel->m_shading.m_precomputedReductionFactor.m_name.empty());
 
-		// TODO : apply time shift -> move simulation time t to "time of since beginning of start year"
-
-		m_shadingFactor = m_windowModel->m_shading.m_precomputedReductionFactor.m_values.value(t);
+		m_shadingFactor = m_simPara->evaluateTimeSeries(t, m_windowModel->m_shading.m_precomputedReductionFactor);
 	}
 	return 0;
 }
