@@ -35,9 +35,9 @@ Die NANDRAD-Projektspezifikation ist in einer XML-Datei mit der Erweiterung `nan
 
 Mit dem optionalen `DirectoryPlaceholders` können relative Pfadplatzhalter definiert werden, die für extern referenzierte Dateien verwendet werden sollen (siehe Abschnitt <<path_placeholders>>).
 
-Alle Projektdaten werden in den `<Project>`-Tag eingeschlossen.
+Alle Projektdaten werden in den `<Project>`-tag eingeschlossen.
 
-Eine Projektdatei kann die folgenden untergeordneten Tags enthalten (die Reihenfolge ist beliebig):
+Eine Projektdatei kann die folgenden untergeordneten tags enthalten (die Reihenfolge ist beliebig):
 
 [width="100%",options="header", cols="15%,85%"]
 |====================
@@ -70,12 +70,12 @@ Im NANDRAD müssen folgenden Objekttypen in einem einzigen ID-Raum definiert wer
 [[basic_types]]
 # Grundlegende Datentypen in der NANDRAD-Projektdatei-Spezifikation
 
-Innerhalb der verschiedenen Spezifikationsabschnitte der Projektdatei werden einige grundlegende Datentypen / xml-Tags häufig verwendet. Die Regeln für die Spezifikation dieser Parameter sind im Folgenden definiert.
+Innerhalb der verschiedenen Spezifikationsabschnitte der Projektdatei werden einige grundlegende Datentypen / XML-tags häufig verwendet. Die Regeln für die Spezifikation dieser Parameter sind im Folgenden definiert.
 
 [[IBK_Parameter]]
 ## IBK:Parameter
 
-Ein XML-Tag mit dem Namen `IBK:Parameter` definiert einen Fließkommaparameter (floating point value parameter), der durch einen Namen und eine physikalische Einheit identifiziert wird (obligatorische XML-Attribute `name` und `unit`). Der Wert des XML-Tags ist der eigentliche Parameterwert.
+Ein XML-Tag mit dem Namen `IBK:Parameter` definiert einen Fließkommaparameter (floating point value parameter), der durch einen Namen und eine physikalische Einheit identifiziert wird (obligatorische XML-Attribute `name` und `unit`). Der Wert des XML-tags ist der eigentliche Parameterwert.
 
 .Parameter mit verschiedenen Einheiten
 ====
@@ -94,9 +94,9 @@ Die Einheiten müssen aus der globalen Einheitenliste ausgewählt werden, siehe 
 [[IBK_IntPara]]
 ## IBK:IntPara
 
-Wird für Flaggen verwendet. Das obligatorische Attribut `name` identifiziert das Flag. Wird ein Flag nicht definiert, wird es als _fehlend_ markiert, was bedeutet, dass entweder ein Standardwert verwendet wird oder - im Falle von obligatorischen Benutzerparametern - ein Fehler ausgelöst wird.
+Dieser Parameter wird für Flags verwendet. Das obligatorische Attribut `name` identifiziert das Flag. Wird ein Flag nicht definiert, wird es als _fehlend_ markiert, was bedeutet, dass entweder ein Standardwert verwendet wird oder - im Falle von obligatorischen Benutzerparametern - ein Fehler ausgelöst wird.
 
-Wird für ganzzahlige Parameter verwendet. Das obligatorische Attribut `Name` identifiziert den Parameter. XML-Tag value ist der Parameterwert. Wird ein Parameter nicht definiert, wird er als _fehlend_ markiert, was bedeutet, dass entweder ein Standardwert verwendet wird oder - im Falle von obligatorischen Benutzerparametern - ein Fehler ausgelöst wird.
+Wird für ganzzahlige Parameter verwendet. Das obligatorische Attribut `Name` identifiziert den Parameter. Der XML-tag `value` ist der Parameterwert. Wird ein Parameter nicht definiert, wird er als _fehlend_ markiert, was bedeutet, dass entweder ein Standardwert verwendet wird oder - im Falle von obligatorischen Benutzerparametern - ein Fehler ausgelöst wird.
 
 .Ganze Zahl (Integer) Parameter-Definition
 ====
@@ -157,7 +157,7 @@ Ein LinearSpline-Parameter ist effektiv ein erweiterter `IBK:LinearSpline`-Param
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 |Attribut|Beschreibung|Format|Verwendung
-| `Name` | Spezifischer Name, der sich auf den Raumtyp bezieht, für den der Jahresplan gesetzt wird | string | _required_
+| `name` | Spezifischer Name, der sich auf den Raumtyp bezieht, für den der Jahresplan gesetzt wird | string | _required_
 | `interpolationMethod` 
 a| Gibt die Interpolationsmethode zwischen den definierten y-Werten an.
 
@@ -178,7 +178,7 @@ a| Gibt an, was getan werden soll, wenn Werte mit x-Werten außerhalb des x-Wert
 
 Die Child-Tags `X` und `Y` enthalten jeweils ein obligatorisches Attribut `unit` mit der jeweiligen Werteinheit (siehe <<units>>).
 
-Alternativ kann man auch eine Datei mit Tabulator-getrennten Spalten angeben, unter Verwendung des XML-Tags `TSVFile`.
+Alternativ kann man auch eine Datei mit Tabulator-getrennten Spalten angeben, unter Verwendung des XML-tags `TSVFile`.
 
 .Linear Spline-Definition mit Angabe der Datei
 ====
@@ -232,8 +232,8 @@ Die einzelnen Pfadplatzhalter werden in den `DirectoryPlaceholders` definiert:
 [source,xml]
 ----
 <DirectoryPlaceholders>
-  <Platzhalter name="Klima DB">/home/sim/climate_DB</Placeholder>
-  <Platzhalter name="DataFiles">/home/sim/data</Placeholder>
+  <Placeholder name="Klima DB">/home/sim/climate_DB</Placeholder>
+  <Placeholder name="DataFiles">/home/sim/data</Placeholder>
 </DirectoryPlaceholder>
 ----
 ====
@@ -243,7 +243,7 @@ Es gibt einen eingebauten Platzhalter `${Project Directory}`, der automatisch mi
 [[project_info]]
 # Projektinformationen
 
-Dieser Abschnitt enthält Änderungszeiten/-daten und eine kurze Beschreibung des Projekts. Die folgenden untergeordneten Tags werden unterstützt.
+Dieser Abschnitt enthält Änderungszeiten/-daten und eine kurze Beschreibung des Projekts. Die folgenden untergeordneten tags werden unterstützt.
 
 [width="100%",options="header", cols="15%,70%,^15%"]
 |====================
