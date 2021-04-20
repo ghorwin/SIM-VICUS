@@ -296,7 +296,7 @@ void StructuralShading::calculateShadingFactors(Notification * notify) {
 	}
 }
 
-void StructuralShading::shadingFactorsTSV(const IBK::Path & path) {
+void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path) {
 	FUNCID(StructuralShading::shadingFactorsTSV);
 
 	std::vector< double >			   timePoints;
@@ -343,7 +343,7 @@ void StructuralShading::shadingFactorsTSV(const IBK::Path & path) {
 	tsvFile.close();
 }
 
-void StructuralShading::shadingFactorsDataIO(const IBK::Path & path, bool isBinary) {
+void StructuralShading::writeShadingFactorsToDataIO(const IBK::Path & path, bool isBinary) {
 
 	// We create a dataIO container
 	DATAIO::DataIO dataContainer;

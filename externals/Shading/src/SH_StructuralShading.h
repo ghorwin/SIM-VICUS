@@ -88,24 +88,25 @@ public:
 		m_sunConeDeg(sunConeDeg)
 	{ }
 
-
+	/*! Initializes all variables for shading calculation such as obstacles and sun positions
+		\param obstacles vector with all obstacle interfaces
+	*/
 	void initializeShadingCalculation(const std::vector<std::vector<IBKMK::Vector3D> > &obstacles);
 
+	/*! Calculates the shading factors for the given period */
+	void calculateShadingFactors(Notification * notify);
+
+	/*! Exports Shading Factors to a TSV-File */
+	void writeShadingFactorsToTSV(const IBK::Path &path);
+
+	/*! Exports Shading Factors to a DataIO-File */
+	void writeShadingFactorsToDataIO(const IBK::Path &path, bool isBinary = true);
+
+	std::vector<SunPosition> sunPositions() const;
 
 	std::vector<Polygon>								m_obstacles;						///< Shading obstacles
 
 	std::vector<Polygon>								m_surfaces;							///< Shading surface
-
-
-	std::vector<SunPosition> sunPositions() const;
-
-	void calculateShadingFactors(Notification * notify);
-
-	/*! Exports Shading Factors to a TSV-File */
-	void shadingFactorsTSV(const IBK::Path &path);
-
-	/*! Exports Shading Factors to a DataIO-File */
-	void shadingFactorsDataIO(const IBK::Path &path, bool isBinary = true);
 
 private:
 
