@@ -312,10 +312,12 @@ int WindowModel::update() {
 		if (m_windowModel->m_shading.m_modelType == NANDRAD::WindowShading::MT_Controlled) {
 			// retrieve shading factor from input references
 			IBK_ASSERT(m_valueRefs[InputRef_ShadingFactor] != nullptr);
-			double controlledShadingFactor = *m_valueRefs[InputRef_ShadingFactor];
-			qRadGlobal *= m_shadingFactor * controlledShadingFactor;
-			qRadDir *= m_shadingFactor * controlledShadingFactor;
-			qRadDiff *= m_shadingFactor * controlledShadingFactor;
+			double controlledShadingFactor = *m_valueRefs[InputRef_ShadingFactor]; // Fz value
+			// effect
+			double z = 1 - (1-m_shadingFactor)*controlledShadingFactor;
+			qRadGlobal *= z;
+			qRadDir *= z;
+			qRadDiff *= z;
 		}
 		// reduce by shading factor
 		else {
