@@ -18,16 +18,17 @@ unix {
 }
 
 LIBS += -L../../../lib$${DIR_PREFIX} \
-								-lCCM \
-								-lShading \
-								-lIBK \
-								-lIBKMK \
 								-lNandrad \
 								-lQtExt \
 								-lQuaZIP \
 								-lTiCPP \
 								-lGenericBuildings \
 								-lVicus \
+								-lShading \
+								-lDataIO \
+								-lCCM \
+								-lIBK \
+								-lIBKMK \
 								-lqwt6
 
 win32 {
