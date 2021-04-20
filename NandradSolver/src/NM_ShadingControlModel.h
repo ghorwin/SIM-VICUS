@@ -21,6 +21,8 @@ class Loads;
 	control. This model depends only on time.
 
 	The implementation of the controller is encapsulated in class DigitalHysteresisController.
+
+	The model provides 'ShadingControlValue' and 'SolarIntensityOnShadingSensor'.
 */
 class ShadingControlModel : public DigitalHysteresisController, public AbstractModel {
 public:

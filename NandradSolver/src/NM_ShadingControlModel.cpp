@@ -29,18 +29,18 @@ void ShadingControlModel::setup(const NANDRAD::ShadingControlModel & controller,
 void ShadingControlModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 	QuantityDescription result;
 
-	// shaidng factor
+	// shading control factor (do not mistake with shading factor)
 	result.m_constant = false;
-	result.m_description = "Controlled shading factor [0,...,1].";
-	result.m_name = "ShadingFactor";
+	result.m_description = "Shading control factor [0,...,1].";
+	result.m_name = "ShadingControlValue";
 	result.m_displayName = m_displayName;
 	result.m_unit = "---";
 
 	resDesc.push_back(result);
 
 	result.m_constant = false;
-	result.m_description = "Solar radiation flux intensity on surface [W/m2].";
-	result.m_name = "SolarIntensity";
+	result.m_description = "Solar radiation flux intensity on shading sensor [W/m2].";
+	result.m_name = "SolarIntensityOnShadingSensor";
 	result.m_displayName = m_displayName;
 	result.m_unit = "W/m2";
 
@@ -56,9 +56,9 @@ void ShadingControlModel::resultValueRefs(std::vector<const double *> & res) con
 
 const double *ShadingControlModel::resultValueRef(const InputReference & quantity) const {
 	const QuantityName & quantityName = quantity.m_name;
-	if (quantityName.m_name == "ShadingFactor")
+	if (quantityName.m_name == "ShadingControlValue")
 		return &m_controllerOutput;
-	if (quantityName.m_name == "SolarIntensity")
+	if (quantityName.m_name == "SolarIntensityOnShadingSensor")
 		return &m_currentState;
 
 	return nullptr;

@@ -263,11 +263,11 @@
 				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>ShadingFactor</Quantity>
-					<ObjectListName>Models</ObjectListName>
+					<ObjectListName>Windows</ObjectListName>
 					<GridName>Minutes</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
-					<Quantity>SolarIntensity</Quantity>
+					<Quantity>SolarIntensityOnShadingSensor</Quantity>
 					<ObjectListName>Models</ObjectListName>
 					<GridName>Minutes</GridName>
 				</OutputDefinition>

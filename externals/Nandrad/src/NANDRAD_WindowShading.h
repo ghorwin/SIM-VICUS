@@ -75,7 +75,7 @@ public:
 		Interpretation and definition is done exactly like climatic data. Cyclic spline data must not exceed one year.
 		Start time shift is applied when evaluating value for given simulation time.
 	*/
-	LinearSplineParameter				m_shadingFactor;						// XML:E
+	LinearSplineParameter				m_precomputedReductionFactor;			// XML:E
 
 }; // WindowShading
 

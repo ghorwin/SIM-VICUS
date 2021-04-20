@@ -22,12 +22,13 @@ class WindowModel : public AbstractModel, public AbstractTimeDependency, public 
 public:
 	/*! Computed results, provided with access via construction instance ID. */
 	enum Results {
-		R_FluxHeatConductionA,				// Keyword: FluxHeatConductionA			[W]			'Heat conduction flux across interface A (into window).'
-		R_FluxHeatConductionB,				// Keyword: FluxHeatConductionB			[W]			'Heat conduction flux across interface B (into window).'
-		R_FluxShortWaveRadiationA,			// Keyword: FluxShortWaveRadiationA		[W]			'Short wave radiation flux across interface A (into window).'
-		R_FluxShortWaveRadiationB,			// Keyword: FluxShortWaveRadiationB		[W]			'Short wave radiation flux across interface B (into window).'
+		R_FluxHeatConductionA,				// Keyword: FluxHeatConductionA			[W]			'Heat conduction flux across interface A (into window)'
+		R_FluxHeatConductionB,				// Keyword: FluxHeatConductionB			[W]			'Heat conduction flux across interface B (into window)'
+		R_FluxShortWaveRadiationA,			// Keyword: FluxShortWaveRadiationA		[W]			'Short wave radiation flux across interface A (into window)'
+		R_FluxShortWaveRadiationB,			// Keyword: FluxShortWaveRadiationB		[W]			'Short wave radiation flux across interface B (into window)'
 		R_SurfaceTemperatureA,				// Keyword: SurfaceTemperatureA			[C]			'Surface temperature at interface A'
 		R_SurfaceTemperatureB,				// Keyword: SurfaceTemperatureB			[C]			'Surface temperature at interface B'
+		R_ShadingFactor,					// Keyword: ShadingFactor				[---]		'Computed reduction factor due to shading'
 		NUM_R
 	};
 
@@ -117,7 +118,7 @@ private:
 	enum InputReferences {
 		InputRef_SideATemperature,
 		InputRef_SideBTemperature,
-		InputRef_ShadingFactor,
+		InputRef_ShadingControlValue,
 		NUM_InputRef
 	};
 

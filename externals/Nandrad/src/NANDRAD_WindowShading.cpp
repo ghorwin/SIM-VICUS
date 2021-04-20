@@ -29,8 +29,8 @@ void WindowShading::checkParameters(const std::vector<ShadingControlModel> &cont
 		break;
 
 		case MT_Precomputed :
-			m_shadingFactor.checkAndInitialize("ShadingFactor", IBK::Unit("s"), IBK::Unit("---"), IBK::Unit("---"), 0, true, 1, true,
-								"Shading factor be between 0 and 1.");
+			m_precomputedReductionFactor.checkAndInitialize("PrecomputedReductionFactor", IBK::Unit("s"), IBK::Unit("---"), IBK::Unit("---"), 0, true, 1, true,
+								"Reduction factor must be between 0 and 1.");
 		break;
 
 		case MT_Controlled :

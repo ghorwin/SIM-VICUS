@@ -2,21 +2,11 @@
 <NandradProject fileVersion="1.999">
 	<Project>
 		<ProjectInfo>
-			<Comment>Test case with different shading models/parameters for each of the 4 windows</Comment>
+			<Comment>Test case with 4 windows, one has pre-computed (spline) shading. Mind the start time shift!</Comment>
 		</ProjectInfo>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<ClimateFilePath>${Project Directory}/../climate/DEU_Potsdam_60.c6b</ClimateFilePath>
-			<Sensors>
-				<!-- Radiation sensors automatically provide sensor quantities like DirectSWRadOnPlane, DiffuseSWRadOnPlane, GlobalSWRadOnPlane and IncidenceAngle, which
-					can be queried as vector-valued results of the LOCATION object using the sensor ID as modelID-index. -->
-
-				<!-- Flat roof -->
-				<Sensor id="50000">
-					<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
-					<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
-				</Sensor>
-			</Sensors>
 		</Location>
 		<SimulationParameter>
 			<IBK:IntPara name="StartYear">2015</IBK:IntPara>
@@ -60,11 +50,15 @@
 					<!-- No long wave emission -->
 				</InterfaceB>
 				<EmbeddedObjects>
-					<EmbeddedObject id="1001" displayName="Window with constant shading">
+					<EmbeddedObject id="1001" displayName="Simple window, no frame and divider">
 						<IBK:Parameter name="Area" unit="m2">5</IBK:Parameter>
-						<Window glazingSystemID="10000">
-							<Shading modelType="Constant">
-								<IBK:Parameter name="ReductionFactor" unit="---">0.6</IBK:Parameter>
+						<Window glazingSystemID="10000" >
+							<!-- Shading is provided as pre-computed spline -->
+							<Shading modelType="Precomputed">
+								<LinearSplineParameter name="PrecomputedReductionFactor">
+									<X unit="d">  0 182 183 190 191 200</X>
+									<Y unit="---">0   0   1   1   0   0</Y>
+								</LinearSplineParameter>
 							</Shading>
 						</Window>
 					</EmbeddedObject>
@@ -98,13 +92,7 @@
 				<EmbeddedObjects>
 					<EmbeddedObject id="1002" displayName="Simple window, no frame and divider">
 						<IBK:Parameter name="Area" unit="m2">5</IBK:Parameter>
-						<Window glazingSystemID="10000">
-							<!-- Shading is controlled by control model with ID 2000 (global horizontal radiation sensor) -->
-							<Shading modelType="Controlled" controlModelID="2000">
-								<!-- When control model says "shading down" and returns 1, the factor 0.4 is to be applied. -->
-								<IBK:Parameter name="ReductionFactor" unit="---">0.4</IBK:Parameter>
-							</Shading>
-						</Window>
+						<Window glazingSystemID="10000" />
 					</EmbeddedObject>
 				</EmbeddedObjects>
 			</ConstructionInstance>
@@ -136,13 +124,7 @@
 				<EmbeddedObjects>
 					<EmbeddedObject id="1003" displayName="Simple window, no frame and divider">
 						<IBK:Parameter name="Area" unit="m2">5</IBK:Parameter>
-						<Window glazingSystemID="10000">
-							<!-- Shading is controlled by control model with ID 2000 (global horizontal radiation sensor) -->
-							<Shading modelType="Controlled" controlModelID="2000">
-								<!-- When control model says "shading down" and returns 1, the factor 0.8 is to be applied. -->
-								<IBK:Parameter name="ReductionFactor" unit="---">0.8</IBK:Parameter>
-							</Shading>
-						</Window>
+						<Window glazingSystemID="10000" />
 					</EmbeddedObject>
 				</EmbeddedObjects>
 			</ConstructionInstance>
@@ -174,19 +156,12 @@
 				<EmbeddedObjects>
 					<EmbeddedObject id="1004" displayName="Simple window, no frame and divider">
 						<IBK:Parameter name="Area" unit="m2">5</IBK:Parameter>
-						<Window glazingSystemID="10000">
-							<!-- Shading is controlled by control model with ID 2001 (radiation sensor on window) -->
-							<Shading modelType="Controlled" controlModelID="2001">
-								<!-- When control model says "shading down" and returns 1, the factor 0.6 is to be applied. -->
-								<IBK:Parameter name="ReductionFactor" unit="---">1</IBK:Parameter>
-							</Shading>
-						</Window>
+						<Window glazingSystemID="10000" />
 					</EmbeddedObject>
 				</EmbeddedObjects>
 			</ConstructionInstance>
 
 		</ConstructionInstances>
-		
 		<ConstructionTypes>
 			<ConstructionType id="10001" displayName="Construction 1">
 				<MaterialLayers>
@@ -196,7 +171,6 @@
 				</MaterialLayers>
 			</ConstructionType>
 		</ConstructionTypes>
-		
 		<Materials>
 			<Material id="1001" displayName="Stein">
 				<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
@@ -223,22 +197,6 @@
 				</LinearSplineParameter>
 			</WindowGlazingSystem>
 		</WindowGlazingSystems>
-		
-		<Models>
-			<ShadingControlModels>
-				<!-- First controller model uses a global radiation sensor -->
-				<ShadingControlModel id="2000" displayName="Global horizontal sensor controller" sensorID="50000">
-					<IBK:Parameter name="MaxIntensity" unit="W/m2">300</IBK:Parameter>
-					<IBK:Parameter name="MinIntensity" unit="W/m2">150</IBK:Parameter>
-				</ShadingControlModel> 
-
-				<!-- Second controller model uses a radiation sensor on Window 1004 -->
-				<ShadingControlModel id="2001" displayName="Global horizontal sensor controller" sensorID="1004">
-					<IBK:Parameter name="MaxIntensity" unit="W/m2">500</IBK:Parameter>
-					<IBK:Parameter name="MinIntensity" unit="W/m2">200</IBK:Parameter>
-				</ShadingControlModel>
-			</ShadingControlModels>
-		</Models>
 		<Outputs>
 			<Definitions>
 				<OutputDefinition>
@@ -261,16 +219,6 @@
 					<ObjectListName>Windows</ObjectListName>
 					<GridName>Minutes</GridName>
 				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>ShadingFactor</Quantity>
-					<ObjectListName>Windows</ObjectListName>
-					<GridName>Minutes</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>SolarIntensityOnShadingSensor</Quantity>
-					<ObjectListName>Models</ObjectListName>
-					<GridName>Minutes</GridName>
-				</OutputDefinition>
 			</Definitions>
 			<Grids>
 				<OutputGrid name="Minutes">
@@ -290,10 +238,6 @@
 			<ObjectList name="Windows">
 				<FilterID>*</FilterID>
 				<ReferenceType>EmbeddedObject</ReferenceType>
-			</ObjectList>
-			<ObjectList name="Models">
-				<FilterID>*</FilterID>
-				<ReferenceType>Model</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
 	</Project>

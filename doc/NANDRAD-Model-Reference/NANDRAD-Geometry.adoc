@@ -522,13 +522,20 @@ Wenn die Größe des Fensters (oder des eingebetteten Objekts) geändert wird, m
 [[window_shading]]
 ### Fensterverschattung
 
-Es ist möglich, vorberechnete Verschattung bzw. Verschattungseinrichtungen sowohl auf opake als auch auf transluzente Fassadenelemente anzuwenden. Der vorberechnete Umgebungsverschattung bzw. Eigenverschattung wird im Allgemeinen als globale Eigenschaft im `Location`-tag definiert (siehe <<precomputed_shading>>).
+Es ist möglich, vorberechnete Verschattung bzw. Verschattungseinrichtungen sowohl auf opake als auch auf transluzente Fassadenelemente anzuwenden. Dabei wird zwischen geregelter/fester Verschattungsvorrichtung am Fenster und einer geometrischen Umgebungs-/Eigenverschattung unterschieden.
 
-Wenn eine vorberechnete Umgebungsverschattung definiert ist, wird für *jede* opake und transluzente Fläche ein Verschattungsgrad (Abminderungsfaktor) angegeben.
+[IMPORTANT]
+====
+Die vorberechnete Umgebungsverschattung bzw. Eigenverschattung wird als globale Eigenschaft im `Location`-tag definiert (siehe <<precomputed_shading>>).
+====
+
+Wenn eine vorberechnete Umgebungsverschattung definiert ist, wird für *jede* opake und transluzente Fläche ein Verschattungsgrad (Abminderungsfaktor) angegeben. Dieser wird automatisch bei der Strahlungsberechnung auf Flächen und Fenster einbezogen.
+
+Die nachfolgend beschriebene (geregelte) Fensterverschattung wird *zusätzlich* berücksichtigt.
 
 [NOTE]
 ====
-Wie im Abschnitt <<precomputed_shading>> beschrieben, erfolgt die Zuordnung zwischen bereitgestellten Datenspalten und Objekt-ID über einen Identifikationsstring, der sich aus Objekttyp und ID-Nummer zusammensetzt. Zum Beispiel würde ein eingebettetes Objekt mit der ID 14 die Spaltenüberschrift/Bezeichnung _embObj.14_ erhalten und eine Konstruktionsinstanz (opake Oberfläche) mit der ID 29 die Bezeichnung _conInst.29_.
+Wie im Abschnitt <<precomputed_shading>> beschrieben, erfolgt die Zuordnung zwischen bereitgestellten Datenspalten und Objekt-ID über die eindeutige ID Nummer der Konstruktionsinstanz bzw. des eingebetteten Objekts.
 ====
 
 Alternativ oder zusätzlich zur vorberechneten Umgebungsverschattung ist es möglich, eine geregelte Verschattung für das Fenster zu definieren.
@@ -569,7 +576,7 @@ a| Setzt den Typ des Schattierungsmodells
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Element | Beschreibung | Format | Verwendung 
-| `ShadingFactor` | Zeitreihe mit vorberechneten Verschattungsfaktoren | | _erforderlich für_ `Precomputed`
+| `PrecomputedReductionFactor` | Zeitreihe mit vorberechneten Abminderungsfaktoren infolge Verschattung (sollte für eine vorberechnete, geregelte Verschattung verwendet werden) | | _erforderlich für_ `Precomputed`
 |====================
 
 Es können XML-tags mit dem Namen `IBK:Parameters` mit den XML-Attributen `name` und `unit` mit den folgenden Einträgen definiert werden:

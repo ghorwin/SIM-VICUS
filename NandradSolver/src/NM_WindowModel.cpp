@@ -152,16 +152,16 @@ void WindowModel::inputReferences(std::vector<InputReference> & inputRefs) const
 	}
 
 	// set shading factor as optional
-	inputRefs[InputRef_ShadingFactor].m_required = false;
+	inputRefs[InputRef_ShadingControlValue].m_required = false;
 
 	// shading control model: create reference to shading factor
 	if(m_windowModel->m_shading.m_modelType == NANDRAD::WindowShading::MT_Controlled) {
 		InputReference ref;
 		ref.m_id = m_windowModel->m_shading.m_controlModelID;
 		ref.m_referenceType = NANDRAD::ModelInputReference::MRT_MODEL;
-		ref.m_name.m_name = "ShadingFactor";
+		ref.m_name.m_name = "ShadingControlValue";
 		ref.m_required = true;
-		inputRefs[InputRef_ShadingFactor] = ref;
+		inputRefs[InputRef_ShadingControlValue] = ref;
 	}
 }
 
@@ -187,6 +187,21 @@ void WindowModel::stateDependencies(std::vector<std::pair<const double *, const 
 		resultInputValueReferences.push_back(
 				std::make_pair(&m_results[R_FluxHeatConductionB], m_valueRefs[InputRef_SideBTemperature]) );
 	}
+
+	// *** solar radiation flux ***
+
+	if (m_haveSolarLoadsOnA || m_haveSolarLoadsOnB) {
+		// the shading factor and the radiation fluxes depend on control model, but only if a controlled shading is defined
+		if (m_windowModel->m_shading.m_modelType == NANDRAD::WindowShading::MT_Controlled) {
+			resultInputValueReferences.push_back(
+					std::make_pair(&m_results[R_FluxShortWaveRadiationA], m_valueRefs[InputRef_ShadingControlValue]) );
+			resultInputValueReferences.push_back(
+					std::make_pair(&m_results[R_FluxShortWaveRadiationB], m_valueRefs[InputRef_ShadingControlValue]) );
+			resultInputValueReferences.push_back(
+					std::make_pair(&m_results[R_ShadingFactor], m_valueRefs[InputRef_ShadingControlValue]) );
+		}
+	}
+
 }
 
 
@@ -194,8 +209,11 @@ int WindowModel::setTime(double t) {
 	// update linear spline defined shading factor
 	if(m_windowModel->m_shading.m_modelType == NANDRAD::WindowShading::MT_Precomputed) {
 		// parameters were checked already
-		IBK_ASSERT(! m_windowModel->m_shading.m_shadingFactor.m_name.empty());
-		m_shadingFactor = m_windowModel->m_shading.m_shadingFactor.m_values.value(t);
+		IBK_ASSERT(! m_windowModel->m_shading.m_precomputedReductionFactor.m_name.empty());
+
+		// TODO : apply time shift -> move simulation time t to "time of since beginning of start year"
+
+		m_shadingFactor = m_windowModel->m_shading.m_precomputedReductionFactor.m_values.value(t);
 	}
 	return 0;
 }
@@ -261,8 +279,8 @@ int WindowModel::update() {
 		m_results[R_SurfaceTemperatureA] = surfaceTempA;
 		m_results[R_SurfaceTemperatureB] = surfaceTempB;
 
-		 // check if we have a frame
-		if(m_windowModel->m_frame.m_materialID != NANDRAD::INVALID_ID) {
+		// check if we have a frame
+		if (m_windowModel->m_frame.m_materialID != NANDRAD::INVALID_ID) {
 			// parameters were checked for validity already
 			IBK_ASSERT(m_windowModel->m_frame.m_lambda > 0);
 			IBK_ASSERT(m_windowModel->m_frame.m_thickness.value > 0);
@@ -276,7 +294,7 @@ int WindowModel::update() {
 			fluxHeatCondRight -= fluxHeatCondFrameLeft;
 		}
 		// check if we have a divider
-		if(m_windowModel->m_divider.m_materialID != NANDRAD::INVALID_ID) {
+		if (m_windowModel->m_divider.m_materialID != NANDRAD::INVALID_ID) {
 			// parameters were checked for validity already
 			IBK_ASSERT(m_windowModel->m_divider.m_lambda > 0);
 			IBK_ASSERT(m_windowModel->m_divider.m_thickness.value > 0);
@@ -311,10 +329,11 @@ int WindowModel::update() {
 		// update controlled shading factor
 		if (m_windowModel->m_shading.m_modelType == NANDRAD::WindowShading::MT_Controlled) {
 			// retrieve shading factor from input references
-			IBK_ASSERT(m_valueRefs[InputRef_ShadingFactor] != nullptr);
-			double controlledShadingFactor = *m_valueRefs[InputRef_ShadingFactor]; // Fz value
+			IBK_ASSERT(m_valueRefs[InputRef_ShadingControlValue] != nullptr);
+			double controlledShadingFactor = *m_valueRefs[InputRef_ShadingControlValue]; // Fz value
 			// effect
 			double z = 1 - (1-m_shadingFactor)*controlledShadingFactor;
+			m_results[R_ShadingFactor] = z;
 			qRadGlobal *= z;
 			qRadDir *= z;
 			qRadDiff *= z;
@@ -324,6 +343,7 @@ int WindowModel::update() {
 			qRadGlobal *= m_shadingFactor;
 			qRadDir *= m_shadingFactor;
 			qRadDiff *= m_shadingFactor;
+			m_results[R_ShadingFactor] = m_shadingFactor;
 		}
 
 		// compute solar flux density [W/m2] through the glazing system
