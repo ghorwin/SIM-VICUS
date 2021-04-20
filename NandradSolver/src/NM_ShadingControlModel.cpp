@@ -33,7 +33,6 @@ void ShadingControlModel::resultDescriptions(std::vector<QuantityDescription> & 
 	result.m_constant = false;
 	result.m_description = "Shading control factor [0,...,1].";
 	result.m_name = "ShadingControlValue";
-	result.m_displayName = m_displayName;
 	result.m_unit = "---";
 
 	resDesc.push_back(result);
@@ -41,7 +40,6 @@ void ShadingControlModel::resultDescriptions(std::vector<QuantityDescription> & 
 	result.m_constant = false;
 	result.m_description = "Solar radiation flux intensity on shading sensor [W/m2].";
 	result.m_name = "SolarIntensityOnShadingSensor";
-	result.m_displayName = m_displayName;
 	result.m_unit = "W/m2";
 
 	resDesc.push_back(result);

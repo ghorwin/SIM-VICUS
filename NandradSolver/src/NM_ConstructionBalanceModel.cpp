@@ -74,7 +74,6 @@ void ConstructionBalanceModel::resultDescriptions(std::vector<QuantityDescriptio
 		result.m_constant = true;
 		result.m_description = NANDRAD_MODEL::KeywordList::Description("ConstructionBalanceModel::Results", i);
 		result.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionBalanceModel::Results", i);
-		result.m_displayName = m_displayName;
 		result.m_unit = NANDRAD_MODEL::KeywordList::Unit("ConstructionBalanceModel::Results", i);
 
 		resDesc.push_back(result);

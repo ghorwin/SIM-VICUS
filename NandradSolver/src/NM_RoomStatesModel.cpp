@@ -98,7 +98,6 @@ void RoomStatesModel::resultDescriptions(std::vector<QuantityDescription> & resD
 		result.m_constant = true;
 		result.m_description = NANDRAD_MODEL::KeywordList::Description("RoomStatesModel::Results", i);
 		result.m_name = NANDRAD_MODEL::KeywordList::Keyword("RoomStatesModel::Results", i);
-		result.m_displayName = m_displayName;
 		result.m_unit = NANDRAD_MODEL::KeywordList::Unit("RoomStatesModel::Results", i);
 
 		resDesc.push_back(result);

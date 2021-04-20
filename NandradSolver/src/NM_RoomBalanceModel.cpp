@@ -73,7 +73,6 @@ void RoomBalanceModel::resultDescriptions(std::vector<QuantityDescription> & res
 		result.m_constant = true;
 		result.m_description = NANDRAD_MODEL::KeywordList::Description("RoomBalanceModel::Results", i);
 		result.m_name = NANDRAD_MODEL::KeywordList::Keyword("RoomBalanceModel::Results", i);
-		result.m_displayName = m_displayName;
 		result.m_unit = NANDRAD_MODEL::KeywordList::Unit("RoomBalanceModel::Results", i);
 
 		resDesc.push_back(result);

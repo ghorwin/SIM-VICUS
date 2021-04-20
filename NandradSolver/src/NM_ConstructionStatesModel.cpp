@@ -182,7 +182,6 @@ void ConstructionStatesModel::resultDescriptions(std::vector<QuantityDescription
 		result.m_constant = true;
 		result.m_description = NANDRAD_MODEL::KeywordList::Description("ConstructionStatesModel::Results", i);
 		result.m_name = NANDRAD_MODEL::KeywordList::Keyword("ConstructionStatesModel::Results", i);
-		result.m_displayName = m_displayName;
 		result.m_unit = NANDRAD_MODEL::KeywordList::Unit("ConstructionStatesModel::Results", i);
 
 		resDesc.push_back(result);
@@ -205,7 +204,6 @@ void ConstructionStatesModel::resultDescriptions(std::vector<QuantityDescription
 		result.m_constant = true;
 		result.m_description = "Temperature of the active material layer";
 		result.m_name = "ActiveLayerTemperature";
-		result.m_displayName = m_displayName;
 		result.m_unit = "C";
 
 		resDesc.push_back(result);

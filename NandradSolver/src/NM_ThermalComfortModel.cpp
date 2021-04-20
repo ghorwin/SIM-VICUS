@@ -22,7 +22,6 @@ void ThermalComfortModel::resultDescriptions(std::vector<QuantityDescription> & 
 	result.m_constant = true;
 	result.m_description = NANDRAD_MODEL::KeywordList::Description("ThermalComfortModel::Results", R_OperativeTemperature);
 	result.m_name = NANDRAD_MODEL::KeywordList::Keyword("ThermalComfortModel::Results", R_OperativeTemperature);
-	result.m_displayName = m_displayName;
 	result.m_unit = NANDRAD_MODEL::KeywordList::Unit("ThermalComfortModel::Results", R_OperativeTemperature);
 
 	resDesc.push_back(result);
