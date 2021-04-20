@@ -33,6 +33,8 @@
 
 namespace NANDRAD {
 
+class LinearSplineParameter;
+
 /*!	Simulation parameters define global model settings. */
 class SimulationParameter {
 public:
@@ -76,6 +78,13 @@ public:
 
 	/*! To be called after readXML() and mainly used to check whether user-provided parameters are in the valid ranges. */
 	void checkParameters() const;
+
+	/*! Takes the linear spline parameter and evalutes the data using potential time shift defined due to
+		simulation start and also considers continuous/cyclic usage of the spline.
+		\param t Time point in simulation time (i.e. simulation always starts with 0)
+		\param spl The spline data.
+	*/
+	double evaluateTimeSeries(double t, const NANDRAD::LinearSplineParameter & spl) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

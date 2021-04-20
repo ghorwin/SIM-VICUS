@@ -22,6 +22,7 @@
 #include "NANDRAD_SimulationParameter.h"
 #include "NANDRAD_Constants.h"
 #include "NANDRAD_KeywordList.h"
+#include "NANDRAD_LinearSplineParameter.h"
 
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
@@ -68,6 +69,25 @@ void SimulationParameter::checkParameters() const {
 		throw IBK::Exception(ex, "Invalid/missing parameters in SolarDistributionLoadsModel.", FUNC_ID);
 	}
 	/// \todo Implementation of other value range checks
+}
+
+
+double SimulationParameter::evaluateTimeSeries(double t, const LinearSplineParameter & spl) const {
+	// apply start time shift
+
+	t += m_interval.m_para[Interval::P_Start].value;
+
+	// if spline defines cyclic usage, limit t to full years
+	if (spl.m_wrapMethod == NANDRAD::LinearSplineParameter::C_CYCLIC) {
+		while (t > IBK::SECONDS_PER_YEAR)
+			t -= IBK::SECONDS_PER_YEAR;
+	}
+
+	// now evaluate spline
+	if (spl.m_interpolationMethod == NANDRAD::LinearSplineParameter::I_CONSTANT)
+		return spl.m_values.nonInterpolatedValue(t);
+	else
+		return spl.m_values.value(t);
 }
 
 
