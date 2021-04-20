@@ -79,38 +79,49 @@ public:
 
 	StructuralShading() :
 		m_gridWidth(0.1),
-		m_sunCone(3.0)
+		m_sunConeDeg(3.0)
 	{}
 
-	void setLocation(int timeZone, double longitudeInDeg, double latitudeInDeg);
+	StructuralShading(int timeZone, double longitudeInDeg, double latitudeInDeg, double gridWidth, double sunConeDeg) :
+		m_location( Location(timeZone, longitudeInDeg, latitudeInDeg ) ),
+		m_gridWidth(gridWidth),
+		m_sunConeDeg(sunConeDeg)
+	{ }
 
-	void setShadingParameters(double gridWith, double sunCone);
 
 	void initializeShadingCalculation(const std::vector<std::vector<IBKMK::Vector3D> > &obstacles);
 
 
-	std::vector<Polygon>						m_obstacles;	///< Shading obstacles
+	std::vector<Polygon>								m_obstacles;						///< Shading obstacles
 
-	std::vector<Polygon>						m_surfaces;		///< Shading surface
+	std::vector<Polygon>								m_surfaces;							///< Shading surface
 
 
 	std::vector<SunPosition> sunPositions() const;
 
 	void calculateShadingFactors(Notification * notify);
 
+	/*! Exports Shading Factors to a TSV-File */
+	void shadingFactorsTSV(const IBK::Path &path);
+
+	/*! Exports Shading Factors to a DataIO-File */
+	void shadingFactorsDataIO(const IBK::Path &path, bool isBinary = true);
+
 private:
 
 	void createSunNormals(std::vector<SunPosition>& sunPositions);
 
-	Location									m_location;	///< Location
+	Location											m_location;							///< Location object
 
-	std::vector<SunPosition>					m_sunPositions;	///< vector with all sun positions
+	std::vector<SunPosition>							m_sunPositions;						///< vector with all sun positions
 
-	double										m_gridWidth;	///< Grid width in m used for shading calculation
+	std::map<unsigned int, std::vector<unsigned int>>	m_timepointToAllEqualTimepoints; 	///< we store all time points that already have a time point with a similar sun
 
-	double										m_sunCone;		///< minimum sun cone angle used for shading calculation in Degree
+	double												m_gridWidth;						///< Grid width in m used for shading calculation
 
-	SunShadingAlgorithm							m_shading;		///< Object for shading calculation
+	double												m_sunConeDeg;						///< minimum sun cone angle used for shading calculation in Degree
+
+	SunShadingAlgorithm									m_shading;							///< Object for shading calculation
 
 };
 

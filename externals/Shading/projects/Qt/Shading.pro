@@ -20,13 +20,14 @@ unix|mac {
 		VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 }
 
-LIBS += -lCCM -lTiCPP -lIBK -lIBKMK
+LIBS += -lCCM -lCCM -lTiCPP -lIBK -lIBKMK
 
 INCLUDEPATH +=	\
 		../../../IBK/src \
 		../../../IBKMK/src \
 		../../../CCM/src \
-		../../../TiCPP/src
+		../../../TiCPP/src \
+		../../../DataIO/src
 
 SOURCES += \
 		../../src/SH_StructuralShading.cpp \

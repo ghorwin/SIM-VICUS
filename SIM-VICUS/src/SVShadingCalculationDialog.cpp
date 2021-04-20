@@ -121,11 +121,6 @@ void SVShadingCalculationDialog::evaluateResults() {
 			out << (double)i/2 << "\t" << m_shading.sunPositions()[i].m_azimuth / IBK::DEG2RAD << "\t" << m_shading.sunPositions()[i].m_altitude / IBK::DEG2RAD <<
 				   "\t" << s->m_shadingFactor.value(i * 3600) << "\n";
 
-			if ( i%300 == 0 ) {
-//				double progress = (double)( ( (double)surfCounter + ((double)i / 8760.0) ) / (double)m_selSurfaces.size() );
-//				m_progressDialog->setValue( (int)( progress*100 ) );
-//				qApp->processEvents();
-			}
 		}
 
 		out.close();
@@ -242,15 +237,14 @@ void SVShadingCalculationDialog::on_pushButtonCalculate_clicked(){
 
 	NANDRAD::Location loc = project().m_location;
 
+
 	NANDRAD::KeywordList::setParameter(loc.m_para, "Location::para_t", NANDRAD::Location::P_Latitude, 50 );
 	NANDRAD::KeywordList::setParameter(loc.m_para, "Location::para_t", NANDRAD::Location::P_Longitude, 14.27 );
 
 	loc.m_timeZone = 1;
 
-	m_shading.setLocation(loc.m_timeZone, loc.m_para[NANDRAD::Location::P_Longitude].get_value("Deg"),
-														 loc.m_para[NANDRAD::Location::P_Latitude].get_value("Deg") );
-
-	m_shading.setShadingParameters(m_ui->lineEditGridSize->text().toDouble(), m_ui->lineEditSunCone->text().toDouble() );
+	m_shading = SH::StructuralShading(loc.m_timeZone, loc.m_para[NANDRAD::Location::P_Longitude].get_value("Deg"), loc.m_para[NANDRAD::Location::P_Latitude].get_value("Deg"),
+									  m_ui->lineEditGridSize->value(), m_ui->lineEditSunCone->value() );
 
 	for (const VICUS::Surface *s: m_selObstacles) {
 		selObst.push_back( s->m_geometry.vertexes() );
@@ -279,6 +273,14 @@ void SVShadingCalculationDialog::on_pushButtonCalculate_clicked(){
 
 	if (progressNotifyer.m_aborted)
 		return;
+
+	SVProjectHandler &prj = SVProjectHandler::instance();
+
+	QString path = prj.nandradProjectFilePath() + "/shadingFactros.tsv" ;
+
+	IBK::Path exportFile(path.toStdString() );
+
+	m_shading.shadingFactorsTSV(exportFile);
 
 }
 
