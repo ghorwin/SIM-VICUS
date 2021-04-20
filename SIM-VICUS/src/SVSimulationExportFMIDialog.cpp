@@ -571,6 +571,7 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerate_clicked() {
 	try {
 		SVSettings::instance().m_db.updateEmbeddedDatabase(m_localProject);
 		m_localProject.generateNandradProject(p);
+		p.m_fmiDescription = m_localProject.m_fmiDescription;
 	}
 	catch (VICUS::Project::ConversionError & ex) {
 		QMessageBox::critical(this, tr("NANDRAD Project Generation Error"),
@@ -624,6 +625,7 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerate_clicked() {
 	QFile f(":/fmu/modelDescription.xml.template");
 	f.open(QFile::ReadOnly);
 	QTextStream strm(&f);
+
 
 	QString modelDesc = strm.readAll();
 

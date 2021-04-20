@@ -41,9 +41,6 @@ public:
 
 	NANDRAD_READWRITE
 
-	/*! Generates a modelDescription.xml file. */
-	void writeModelDescription(const IBK::Path & modelDesc, const std::string & modelDescTemplate) const;
-
 	/*! Tests if a variable for this model quantity exists already in the variable list.
 		Only the NANDRAD model variable properties (name, objectID, vector index/id) are compared.
 	*/
