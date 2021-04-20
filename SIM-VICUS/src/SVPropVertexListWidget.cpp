@@ -296,11 +296,11 @@ void SVPropVertexListWidget::addVertex(const IBKMK::Vector3D & p) {
 	if (SVViewStateHandler::instance().m_newGeometryObject->planeGeometry().isValid()) {
 		// only enabled floor done button (i.e. start extrusion) if we are in NGM_ZoneFloor mode
 		if (SVViewStateHandler::instance().m_newGeometryObject->newGeometryMode() == Vic3D::NewGeometryObject::NGM_ZoneFloor)
-			m_ui->pushButtonFloorDone->setEnabled(true);
+			m_ui->pushButtonFloorDone->setEnabled(m_ui->tableWidgetVertexes->rowCount() > 2);
 	}
-
-	m_ui->pushButtonFloorDone->setEnabled(m_ui->tableWidgetVertexes->rowCount() > 2);
-	m_ui->pushButtonFinish->setEnabled(m_ui->tableWidgetVertexes->rowCount() > 2);
+	else {
+		m_ui->pushButtonFloorDone->setEnabled(false);
+	}
 }
 
 
@@ -317,7 +317,10 @@ void SVPropVertexListWidget::removeVertex(unsigned int idx) {
 	if (SVViewStateHandler::instance().m_newGeometryObject->planeGeometry().isValid()) {
 		// only enabled floor done button (i.e. start extrusion) if we are in NGM_ZoneFloor mode
 		if (SVViewStateHandler::instance().m_newGeometryObject->newGeometryMode() == Vic3D::NewGeometryObject::NGM_ZoneFloor)
-			m_ui->pushButtonFloorDone->setEnabled(true);
+			m_ui->pushButtonFloorDone->setEnabled(m_ui->tableWidgetVertexes->rowCount() > 2);
+	}
+	else {
+		m_ui->pushButtonFloorDone->setEnabled(false);
 	}
 
 	// continue in place-vertex mode (setting the viewstate also triggers a repaint)
@@ -326,9 +329,6 @@ void SVPropVertexListWidget::removeVertex(unsigned int idx) {
 	vs.m_propertyWidgetMode = SVViewState::PM_VertexList;
 	SVViewStateHandler::instance().setViewState(vs);
 	SVViewStateHandler::instance().m_geometryView->focusSceneView();
-
-	m_ui->pushButtonFloorDone->setEnabled(m_ui->tableWidgetVertexes->rowCount() > 2);
-	m_ui->pushButtonFinish->setEnabled(m_ui->tableWidgetVertexes->rowCount() > 2);
 }
 
 

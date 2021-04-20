@@ -306,12 +306,6 @@
      </item>
      <item>
       <widget class="QPushButton" name="pushButtonFinish">
-       <property name="minimumSize">
-        <size>
-         <width>80</width>
-         <height>0</height>
-        </size>
-       </property>
        <property name="text">
         <string>Create object</string>
        </property>
