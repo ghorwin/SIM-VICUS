@@ -51,6 +51,7 @@ void WindowModel::setup(const NANDRAD::EmbeddedObjectWindow & windowModelPara,
 	m_results[R_FluxShortWaveRadiationB] = 110004;
 	m_results[R_SurfaceTemperatureA] = 110005;
 	m_results[R_SurfaceTemperatureB] = 110006;
+	m_results[R_ShadingFactor] = 110007;
 }
 
 
@@ -326,20 +327,21 @@ int WindowModel::update() {
 		//       potential external shading
 		qRadGlobal = m_loads->qSWRad(m_id, qRadDir, qRadDiff, incidenceAngle);
 
-		// update controlled shading factor
+		// apply reduction factor due to shading
+		// we assume something like a curtain or else that uniformely reduces direct and diffuse radiation
 		if (m_windowModel->m_shading.m_modelType == NANDRAD::WindowShading::MT_Controlled) {
 			// retrieve shading factor from input references
 			IBK_ASSERT(m_valueRefs[InputRef_ShadingControlValue] != nullptr);
 			double controlledShadingFactor = *m_valueRefs[InputRef_ShadingControlValue]; // Fz value
-			// effect
+			// compute effective shading factor (reduction factor due to shading)
 			double z = 1 - (1-m_shadingFactor)*controlledShadingFactor;
 			m_results[R_ShadingFactor] = z;
 			qRadGlobal *= z;
 			qRadDir *= z;
 			qRadDiff *= z;
 		}
-		// reduce by shading factor
 		else {
+			// reduce by constant/precomputed shading factor
 			qRadGlobal *= m_shadingFactor;
 			qRadDir *= m_shadingFactor;
 			qRadDiff *= m_shadingFactor;

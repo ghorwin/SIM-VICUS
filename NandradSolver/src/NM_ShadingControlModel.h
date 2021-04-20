@@ -69,6 +69,8 @@ private:
 	unsigned int									m_id;
 	/*! Display name (for error messages). */
 	std::string										m_displayName;
+	/*! Shading control value (controller output). */
+	double											m_shadingControlValue = 666;
 	/*! Base model definition. */
 	const NANDRAD::ShadingControlModel				*m_controller = nullptr;
 	/*! Cached pointer to climate loads model, to retrieve climatic loads. */

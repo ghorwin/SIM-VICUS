@@ -271,6 +271,11 @@
 					<ObjectListName>Models</ObjectListName>
 					<GridName>Minutes</GridName>
 				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>ShadingControlValue</Quantity>
+					<ObjectListName>Models</ObjectListName>
+					<GridName>Minutes</GridName>
+				</OutputDefinition>
 			</Definitions>
 			<Grids>
 				<OutputGrid name="Minutes">

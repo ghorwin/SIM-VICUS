@@ -57,7 +57,7 @@ void ShadingControlModel::resultValueRefs(std::vector<const double *> & res) con
 const double *ShadingControlModel::resultValueRef(const InputReference & quantity) const {
 	const QuantityName & quantityName = quantity.m_name;
 	if (quantityName.m_name == "ShadingControlValue")
-		return &m_controllerOutput;
+		return &m_shadingControlValue;
 	if (quantityName.m_name == "SolarIntensityOnShadingSensor")
 		return &m_currentState;
 
@@ -73,6 +73,9 @@ int ShadingControlModel::setTime(double /*t*/) {
 	m_currentState = m_loads->qSWRad(m_controller->m_sensorID, qSWRadDir, qSWRadDiff, incidenceAngle);
 	// calculate controller output
 	updateControllerOutput();
+
+	// Mind: generic controllers returns 0 if control condition is exceeded, but we want to return 1 in this case
+	m_shadingControlValue = 1-m_controllerOutput;
 	// signal success
 	return 0;
 }
