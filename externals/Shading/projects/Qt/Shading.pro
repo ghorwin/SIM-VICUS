@@ -20,7 +20,7 @@ unix|mac {
 		VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 }
 
-LIBS += -lCCM -lCCM -lTiCPP -lIBK -lIBKMK
+LIBS += -lDataIO -lCCM -lCCM -lTiCPP -lIBK -lIBKMK
 
 INCLUDEPATH +=	\
 		../../../IBK/src \

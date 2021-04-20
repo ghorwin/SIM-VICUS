@@ -122,6 +122,7 @@ target_link_libraries( ${PROJECT_NAME}
 	QuaZIP
 	Nandrad
 	Shading
+	DataIO
 	CCM
 	QtExt
 	GenericBuildings
