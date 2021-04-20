@@ -212,14 +212,16 @@ Ein Verschattungregelungsmodell ist eine spezielle Art von Regelungsmodell, das 
 ====
 ----
 <Models>
-	<!-- ShadingControlModel liefert einen Wert zwischen 0 und 1 
-		0 = keine Reduktion (Verschattung offen)
-		1 = volle Reduktion (Verschattung geschlossen)
-	-->
-	<ShadingControlModel id="2000" displayName="Global horizontal sensor controller" sensorID="50000">
-		<IBK:Parameter name="MaxIntensity" unit="W/m2">300</IBK:Parameter>
-		<IBK:Parameter name="MinIntensity" unit="W/m2">150</IBK:Parameter>
-	</ShadingControlModel> 
+    <ShadingControlModels>
+    	<!-- ShadingControlModel liefert einen Wert zwischen 0 und 1 
+    		0 = keine Reduktion (Verschattung offen)
+    		1 = volle Reduktion (Verschattung geschlossen)
+    	-->
+    	<ShadingControlModel id="2000" displayName="Global horizontal sensor controller" sensorID="50000">
+    		<IBK:Parameter name="MaxIntensity" unit="W/m2">300</IBK:Parameter>
+    		<IBK:Parameter name="MinIntensity" unit="W/m2">150</IBK:Parameter>
+    	</ShadingControlModel> 
+    </ShadingControlModels>
 </Models>
 ----
 ====
@@ -233,6 +235,13 @@ Für die Auswertung wird eine Horizontalstrahlung benötigt. Dafür muss eine Ob
 - ID einer opaquen Fläche; hier wird die Globalstrahlung auf eine opaque Fläche als Eingangsgröße verwendet, einschließlich eventueller externer Verschattung bzw. Eigenverschattung 
 
 Damit diese IDs eindeutig auflösbar sind, müssen Sensoren, Fenster und Konstruktionen global eindeutige IDs tragen.
+
+### Ausgabegrößen
+
+Das Verschattungssteuerungsmodell liefert als Ergebnisgrößen:
+
+- `ShadingControlValue` - Steuerungssignal für Verschattung: 0 - komplett offen, 1 - komplett geschlossen, Zwischenwerte sind möglich
+- `SolarIntensityOnShadingSensor` - Solarstrahlungsintensität auf ausgewählten Sensor, der für die Regelung verwendet wird
 
 
 ## Modell für interne Lasten
