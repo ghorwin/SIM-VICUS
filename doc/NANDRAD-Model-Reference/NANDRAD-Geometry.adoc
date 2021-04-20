@@ -586,13 +586,13 @@ Es können XML-tags mit dem Namen `IBK:Parameters` mit den XML-Attributen `name`
 Berechnung des Beschattungsfaktors auf Basis des Steuersignals
 ====
 ----
-ReductionFactor = 80%
+Nominale (maximale) ReductionFactor = z = 80%
 
-Fz in Abhängigkeit vom Steuersignal: 
+z-Wert in Abhängigkeit vom Steuersignal Fz: 
 
-1   = voll beschattet:           Fz = 1 - (1 - 80%) * 1 = 0,8
-0   = unverschattet verschattet: Fz = 1 - (1 - 80%) * 0 = 1
-0,5 = teilweise verschattet:     Fz = 1 - (1 - 80%) * 0,5 = 0,9
+Fz = 1   = voll beschattet:           z = 1 - (1 - 80%) * Fz = 0,8
+Fz = 0   = unverschattet verschattet: z = 1 - (1 - 80%) * Fz = 1
+Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9
 ----
 ====
 
