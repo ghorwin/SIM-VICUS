@@ -1199,6 +1199,9 @@ void NandradModel::initWallsAndInterfaces() {
 
 						// register model for evaluation
 						registerStateDependendModel(windowModel);
+						// also store as time-dependent model (for pre-computed shading)
+						if (e.m_window.m_shading.m_modelType == NANDRAD::WindowShading::MT_Precomputed)
+							m_timeModelContainer.push_back(windowModel);
 					}
 					break;
 					default: IBK_ASSERT(false);

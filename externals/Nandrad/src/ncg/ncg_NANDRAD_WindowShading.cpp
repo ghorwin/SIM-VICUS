@@ -83,7 +83,7 @@ void WindowShading::readXMLPrivate(const TiXmlElement * element) {
 				NANDRAD::LinearSplineParameter p;
 				p.readXML(c);
 				bool success = false;
-				if (p.m_name == "ShadingFactor") {
+				if (p.m_name == "PrecomputedReductionFactor") {
 					m_precomputedReductionFactor = p; success = true;
 				}
 				if (!success)
@@ -118,7 +118,7 @@ TiXmlElement * WindowShading::writeXMLPrivate(TiXmlElement * parent) const {
 		}
 	}
 	if (!m_precomputedReductionFactor.m_name.empty()) {
-		IBK_ASSERT("ShadingFactor" == m_precomputedReductionFactor.m_name);
+		IBK_ASSERT("PrecomputedReductionFactor" == m_precomputedReductionFactor.m_name);
 		m_precomputedReductionFactor.writeXML(e);
 	}
 	return e;
