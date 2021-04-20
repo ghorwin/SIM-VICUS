@@ -4,18 +4,182 @@
 	<Directories>
 		<Directory>
 			<Path>.</Path>
-			<SubDir Color="#aaaa00" Checked="0">ControlledShading</SubDir>
+			<SubDir Color="#aaaa00" Checked="1">ControlledShading</SubDir>
 			<SubDir Color="#ffffff" Checked="0">ControlledShading.gcc_linux</SubDir>
 			<SubDir Color="#416fce" Checked="0">NoShading</SubDir>
 			<SubDir Color="#ffaa00" Checked="0">NoShading.gcc_linux</SubDir>
+			<SubDir Color="#ffee00" Checked="1">NoShadingButWithController</SubDir>
+			<SubDir Color="#ffaaff" Checked="0">NoShadingButWithController.gcc_linux</SubDir>
+			<ExpandedSubDir>.</ExpandedSubDir>
 		</Directory>
 	</Directories>
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
+	<!--All mappers.-->
+	<Mappers>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>ControlledShading/results/states.tsv?1</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>NoShading/results/states.tsv?1</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>NoShadingButWithController/results/states.tsv?1</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$project</TitleText>
+						<PenWidth>2</PenWidth>
+						<PenColor>#fcaf3e</PenColor>
+						<MarkerColor>#fcaf3e</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$project</TitleText>
+						<PenColor>#a40000</PenColor>
+						<MarkerColor>#a40000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$project</TitleText>
+						<PenWidth>2</PenWidth>
+						<PenColor>#729fcf</PenColor>
+						<MarkerColor>#729fcf</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0">
+						<TitleText>Time [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">d</IBK:Unit>
+						<Maximum>186.10337698139213</Maximum>
+						<Minimum>185.61543762922122</Minimum>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>0</MinorGridVisible>
+						<TitleSpacing>30</TitleSpacing>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<Maximum>21.019108280254777</Maximum>
+						<Minimum>18.653321201091902</Minimum>
+						<MinorGridVisible>0</MinorGridVisible>
+						<TitleSpacing>30</TitleSpacing>
+					</Axis>
+					<Axis index="2" enabled="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>420.23701002734731</Maximum>
+						<Minimum>372.83500455788516</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>$project: $basename</TitleText>
+					<TitleFont>Roboto Condensed,10,-1,5,75,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend>
+						<Position>Inside</Position>
+						<Alignment>1</Alignment>
+						<MaxColumns>1</MaxColumns>
+						<Font>Roboto Condensed,8,-1,5,50,0,0,0,0,0</Font>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>ControlledShading/results/states.tsv?2|3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>NoShadingButWithController/results/states.tsv?2|3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$project:$quantity</TitleText>
+						<PenWidth>2</PenWidth>
+						<PenColor>#fcaf3e</PenColor>
+						<MarkerColor>#fcaf3e</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$project:$quantity</TitleText>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0">
+						<TitleText>Time [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">d</IBK:Unit>
+						<Maximum>185.276361130255</Maximum>
+						<Minimum>184.83804272915231</Minimum>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>0</MinorGridVisible>
+						<TitleSpacing>30</TitleSpacing>
+					</Axis>
+					<Axis index="1" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">---</IBK:Unit>
+						<Maximum>1.2</Maximum>
+						<MinorGridVisible>0</MinorGridVisible>
+						<TitleSpacing>30</TitleSpacing>
+					</Axis>
+					<Axis index="2" enabled="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>392.15013349576083</Maximum>
+						<Minimum>391.06986901377672</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>$project: $basename</TitleText>
+					<TitleFont>Roboto Condensed,10,-1,5,75,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend>
+						<Position>Inside</Position>
+						<Alignment>1</Alignment>
+						<MaxColumns>1</MaxColumns>
+						<Font>Roboto Condensed,8,-1,5,50,0,0,0,0,0</Font>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+	</Mappers>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="-1" size1="1" size2="1" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="1" size1="1" size2="1" orientation="2" />
 		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 

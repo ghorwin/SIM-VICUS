@@ -194,29 +194,29 @@
 				<OutputDefinition>
 					<Quantity>AirTemperature</Quantity>
 					<ObjectListName>Zones</ObjectListName>
-					<GridName>hourly</GridName>
+					<GridName>Minutes</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>WindowSolarRadiationFluxSum</Quantity>
 					<ObjectListName>Zones</ObjectListName>
-					<GridName>hourly</GridName>
+					<GridName>Minutes</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>WindowSolarRadiationLoad</Quantity>
 					<ObjectListName>Zones</ObjectListName>
-					<GridName>hourly</GridName>
+					<GridName>Minutes</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>FluxShortWaveRadiationB</Quantity>
 					<ObjectListName>Windows</ObjectListName>
-					<GridName>hourly</GridName>
+					<GridName>Minutes</GridName>
 				</OutputDefinition>
 			</Definitions>
 			<Grids>
-				<OutputGrid name="hourly">
+				<OutputGrid name="Minutes">
 					<Intervals>
 						<Interval>
-							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">10</IBK:Parameter>
 						</Interval>
 					</Intervals>
 				</OutputGrid>
