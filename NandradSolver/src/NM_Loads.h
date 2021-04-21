@@ -38,9 +38,6 @@ namespace NANDRAD {
 	class SimulationParameter;
 }
 
-namespace DATAIO {
-	class DataIO;
-}
 
 namespace NANDRAD_MODEL {
 
@@ -214,8 +211,17 @@ private:
 	/*! Maps that related construction instance/embedded object ids to the storage locations of the respective shading/reduction factors. */
 	std::map<unsigned int, const double*>	m_shadingFactorsForObjectID;
 
-	/*! Precomputed shading factor file content. */
-	DATAIO::DataIO							*m_shadingFactorFile = nullptr;
+	/*! All time points (offset to midnight January 1st of the start year) that we have external shading factors for. */
+	std::vector<double>						m_externalShadingFactorTimePoints;
+	/*! Stores the IDs (construction instance/embedded object) that we have external shading factors for. */
+	std::vector<unsigned int>				m_externalShadingFactorIDs;
+	/*! Matrix with time series data of the external shading factors. Rows hold values per time point
+		(size m_externalShadingFactorTimePoints.size()) with values for each surface (size m_externalShadingFactorIDs.size()).
+		\code
+		double shadingFactor = m_externalShadingFactors[timePointIdx][surfaceColumnIndex];
+		\endcodde
+	*/
+	std::vector< std::vector<double> >		m_externalShadingFactors;
 };
 
 } // namespace NANDRAD_MODEL

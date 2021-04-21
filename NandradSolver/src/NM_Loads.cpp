@@ -159,29 +159,49 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 		// if we have a shading factor file given, read it and cache it in memory (not file access during simulation)
 
 		// create a data IO file for shading factor
-		if (!location.m_shadingFactorFileName.str().empty()) {
-#ifdef TODO
-			try {
-				// remove all place holde attributes
-				IBK::Path filename = IBK::Path(location.m_shadingFactorFileName)
-					.withReplacedPlaceholders(pathPlaceHolders);
-				m_shadingFactorFile.read(filename);
-			}
-			catch (IBK::Exception &ex) {
-				throw IBK::Exception(ex, IBK::FormatString("Error reading shading factors data from file '%1")
-					.arg(location.m_shadingFactorFileName), FUNC_ID);
-			}
-			// empty files are not allowed
-			if(m_shadingFactorFile.m_timepoints.empty() || m_shadingFactorFile.nValues() == 0) {
-				throw IBK::Exception(IBK::FormatString("Error reading shading factors data from file '%1: "
-					"No shading data!")
-					.arg(location.m_shadingFactorFileName), FUNC_ID);
-			}
+		if (location.m_shadingFactorFileName.isValid()) {
+			// check file extension: tsv are read with tsv-reader, d6o and d6b are read with DataIO.
 
-			// resize shading factor vector
-			m_shadingFactors.resize(m_shadingFactorFile.nValues());
-#endif // TODO
+			// replace path placeholders
+			IBK::Path fullShadingFilePath = location.m_shadingFactorFileName.withReplacedPlaceholders(pathPlaceHolders);
+
+			// data is transfered into IBK::Matrix structure where it will be interpolated accordingly
+			if (IBK::string_nocase_compare(fullShadingFilePath.extension(), "tsv")) {
+
+			}
+			else if (IBK::string_nocase_compare(fullShadingFilePath.extension(), "d6o") ||
+					 IBK::string_nocase_compare(fullShadingFilePath.extension(), "d6b"))
+			{
+				DATAIO::DataIO shadingFile;
+				try {
+					shadingFile.read(fullShadingFilePath);
+				}
+				catch (IBK::Exception &ex) {
+					throw IBK::Exception(ex, IBK::FormatString("Error reading shading factors data from file '%1'.")
+						.arg(fullShadingFilePath), FUNC_ID);
+				}
+				// empty files are not allowed
+				if (shadingFile.m_timepoints.empty() || shadingFile.nValues() == 0) {
+					throw IBK::Exception(IBK::FormatString("Shading factor file '%1' does not contain valid data (no time points or columns).")
+						.arg(fullShadingFilePath), FUNC_ID);
+				}
+				// transfer data into our working data structure
+				m_externalShadingFactorTimePoints = shadingFile.m_timepoints;
+				m_externalShadingFactorIDs = shadingFile.m_nums;
+
+				for (unsigned int i=0; i<shadingFile.m_timepoints.size(); ++i) {
+					try {
+						const double * data = shadingFile.data(i);
+						std::vector<double> dataVec(data, data + shadingFile.nValues());
+						m_externalShadingFactors.emplace_back(dataVec);
+					} catch (IBK::Exception & ex) {
+						throw IBK::Exception(ex, IBK::FormatString("Error reading shading factors data from file '%1'.")
+							.arg(fullShadingFilePath), FUNC_ID);
+					}
+				}
+			}
 		}
+
 
 		// setup all sensors
 		// 1. for all sensors check that the requested quantity is known to the model
@@ -444,6 +464,9 @@ void Loads::addSurface(unsigned int objectID, double orientationInDeg, double in
 	// store mapping
 	m_objectID2inclinations[objectID] = inclinationIdx;
 
+
+	// Issue warning if no shading factors are provided for a construction/embedded object surface
+
 #ifdef TODO
 	// retrieve all values for external shading
 	if (!m_shadingFactorFile.m_filename.str().empty() ) {
@@ -476,43 +499,50 @@ double Loads::qSWRad(unsigned int objectID, double & qRadDir, double & qRadDiff,
 	FUNCID(Loads::qSWRad);
 	try {
 
-		std::map<unsigned int, unsigned int>::const_iterator it =
-			m_objectID2surfaceID.find(objectID);
-		// a real surface
+		// test if objectID matches a construction instance or embedded object
+		std::map<unsigned int, unsigned int>::const_iterator it = m_objectID2surfaceID.find(objectID);
 		if (it != m_objectID2surfaceID.end()) {
-			// find unique surface id
-			unsigned int surfaceId = it->second;
-			// we only need surface id for rdaiant loads calculation
+			// we only need surface id for radiant loads calculation
 			// (surface is equal for all surface with same incidenceAngle)
+			unsigned int surfaceId = it->second; // surface id used in CCM RadiationModel
+			// retrieve cached radiation loads onto surface from CCM library
 			m_solarRadiationModel.radiationLoad(surfaceId, qRadDir, qRadDiff, incidenceAngle);
 
-			if (m_shadingFactors.empty()) {
+			// without external shading we can already return these results
+			if (m_shadingFactors.empty())
 				return qRadDir + qRadDiff;
-			}
+
 			// reduce radiation by external shading
-			std::map<unsigned int, const double*>::const_iterator valueIt
-				= m_shadingFactorsForObjectID.find(objectID);
-			// TODO Anne: exception in case of missing column -> addSurface may be a good place
-			// we alread checked validity
-			IBK_ASSERT(valueIt != m_shadingFactorsForObjectID.end());
+			std::map<unsigned int, const double*>::const_iterator valueIt = m_shadingFactorsForObjectID.find(objectID);
+
+			// if no shading factor is available for this surface ID, we return 1 ("unshaded" by default)
+			if (valueIt == m_shadingFactorsForObjectID.end())
+				return qRadDir + qRadDiff;
+
 			IBK_ASSERT(valueIt->second != nullptr);
+
 			const double shadingFactor = *valueIt->second;
-			// reduce radiation
-			return shadingFactor * qRadDir + qRadDiff;
+			// reduce direct radiation
+			qRadDir *= shadingFactor;
+			return qRadDir + qRadDiff;
 		}
 		// a sensor id
 		else {
 			// find unique sensor id
-			std::map<unsigned int, unsigned int>::const_iterator it =
-				m_sensorID2surfaceID.find(objectID);
+			std::map<unsigned int, unsigned int>::const_iterator it = m_sensorID2surfaceID.find(objectID);
 
-			IBK_ASSERT(it != m_sensorID2surfaceID.end());
+			// Callers of this function may directly send an ID for a surface from user parametrization, and hence
+			// this ID may be invalid and unchecked. Hence, we must handle the case with an exception.
+			if (it != m_sensorID2surfaceID.end())
+				throw IBK::Exception(IBK::FormatString("Unknown sensor/construction instance/embedded "
+													   "object ID #%1.").arg(objectID), FUNC_ID);
 			// find unique surface id
 			unsigned int surfaceId = it->second;
 			// we only need surface id for rdaiant loads calculation
 			// (surface is equal for all surface with same incidenceAngle)
 			m_solarRadiationModel.radiationLoad(surfaceId, qRadDir, qRadDiff, incidenceAngle);
-			// sensors are not shaded
+			// sensors are never shaded (if you need a shaded window sensor, use the radiation on the embedded object
+			// itself as sensor)
 			return qRadDir + qRadDiff;
 		}
 	}
