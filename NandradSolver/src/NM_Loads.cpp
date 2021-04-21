@@ -175,7 +175,7 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 			if (IBK::string_nocase_compare(fullShadingFilePath.extension(), "tsv")) {
 				IBK::CSVReader reader;
 				try {
-					reader.read(fullShadingFilePath);
+					reader.read(fullShadingFilePath, false /*read full file*/, true /*extract units*/);
 				}
 				catch (IBK::Exception &ex) {
 					throw IBK::Exception(ex, IBK::FormatString("Error reading shading factors data from file '%1'.")
@@ -190,8 +190,9 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 				if (reader.m_units[0].empty())
 					throw IBK::Exception(IBK::FormatString("Missing time unit in first column of file '%1'.")
 						.arg(fullShadingFilePath), FUNC_ID);
+				IBK::Unit timeUnit;
 				try {
-					IBK::Unit timeUnit(reader.m_units[0]);
+					timeUnit = IBK::Unit(reader.m_units[0]);
 					if (timeUnit.base_id() != IBK_UNIT_ID_SECONDS)
 						throw IBK::Exception(IBK::FormatString("'%1' is not a known time unit.").arg(timeUnit.name()), FUNC_ID);
 				}
@@ -214,7 +215,7 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 				}
 
 				// now copy data to vectors
-				IBK::UnitVector tvec("tvec", IBK::Unit("s"));
+				IBK::UnitVector tvec("tvec", timeUnit);
 				tvec.resize(reader.m_nRows);
 				m_externalShadingFactors.resize(reader.m_nRows);
 
@@ -227,7 +228,8 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 					}
 
 				}
-
+				tvec.convert(IBK::Unit(IBK_UNIT_ID_SECONDS));
+				m_externalShadingFactorTimePoints.swap(tvec.m_data);
 			}
 
 
@@ -259,7 +261,7 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 						IBK::UnitVector tvec("vec", timeUnit);
 						tvec.m_data = shadingFile.m_timepoints;
 						tvec.convert(IBK::Unit(IBK_UNIT_ID_SECONDS));
-						m_externalShadingFactorTimePoints = tvec.m_data;
+						m_externalShadingFactorTimePoints.swap(tvec.m_data);
 					}
 					else {
 						// time points are already in seconds
