@@ -153,6 +153,8 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 		m_year = simPara.m_intPara[NANDRAD::SimulationParameter::IP_StartYear].value;
 		m_startTime = simPara.m_interval.m_para[NANDRAD::Interval::P_Start].value;
 
+
+
 		// *** shading factors ***
 
 		// shading factor files are expected to be cyclic data, except flag is set
@@ -685,7 +687,7 @@ double Loads::qSWRad(unsigned int objectID, double & qRadDir, double & qRadDiff,
 
 			// Callers of this function may directly send an ID for a surface from user parametrization, and hence
 			// this ID may be invalid and unchecked. Hence, we must handle the case with an exception.
-			if (it != m_sensorID2surfaceID.end())
+			if (it == m_sensorID2surfaceID.end())
 				throw IBK::Exception(IBK::FormatString("Unknown sensor/construction instance/embedded "
 													   "object ID #%1.").arg(objectID), FUNC_ID);
 			// find unique surface id
@@ -699,7 +701,7 @@ double Loads::qSWRad(unsigned int objectID, double & qRadDir, double & qRadDiff,
 		}
 	}
 	catch(IBK::Exception &ex) {
-		throw IBK::Exception(ex, IBK::FormatString("Error calulation solar radiation on object with id %1 at time %2!")
+		throw IBK::Exception(ex, IBK::FormatString("Error calculating solar radiation on object with id %1 at time %2!")
 			.arg(objectID).arg(m_startTime + m_t), FUNC_ID);
 	}
 }
