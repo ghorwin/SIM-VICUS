@@ -66,13 +66,13 @@ Innerhalb des Objekts `Schedules` können auch die folgenden XML-tags angegeben 
 | `FirstDayOfYear` 
 a| Der Tagestyp des 1. Januar (Offset des Wochentages des Startjahres.  
 
-* `Mon` - Montag (_Standard_)
-* `Tue` - Dienstag
-* `Wed` - Mittwoch
-* `Thu` - Donnerstag
-* `Fri` - Freitag
-* `Sat` - Samstag
-* `Sun` - Sonntag
+* `Mon` - Monday (_Standard_)
+* `Tue` - Tuesday
+* `Wed` - Wednesday
+* `Thu` - Thursday
+* `Fri` - Friday
+* `Sat` - Saturday
+* `Sun` - Sunday
 
 | string | _optional_
 | `Holidays` 
@@ -129,7 +129,7 @@ Regelmäßige Zeitpläne werden auf Basis eines Tagesschemas definiert. Einige P
 ====
 [source,xml,tabsize=4]
 ----
-<ObjektListen>
+<ObjectLists>
     <ObjectList name="All Zones">
         <FilterID>*</FilterID>
         <ReferenzTyp>Zone</ReferenzTyp>
@@ -153,11 +153,11 @@ Regelmäßige Zeitpläne werden innerhalb des XML-tags `ScheduleGroup` mit einem
 
 ### Tägliche Zyklen
 
-Innerhalb der `ScheduleGroup` können mehrere Objekte namens `Schedule` definiert werden. Die `Schedule`-Objekte benötigen ein XML-Attribut namens `type` mit unterschiedlichen Namen für bestimmte Tagestypen (siehe <<tab_ScheduleTypes>>). Innerhalb einer `ScheduleGroup` dürfen sich nicht zwei `Schedule`-Objekte mit demselben `type` befinden. Innerhalb jedes `Schedule`-Objekts wird ein Zeitplan definiert, der für alle Tage des angegebenen `Typs` im Laufe eines ganzen Jahres gilt. Bei der Konstruktion von Zeitplänen gelten die folgenden Regeln.
+Innerhalb der `ScheduleGroup` können mehrere Objekte namens `Schedule` definiert werden. Die `Schedule`-Objekte benötigen ein XML-Attribut namens `type` mit unterschiedlichen Namen für bestimmte Tagestypen (siehe <<tab_ScheduleTypes>>). Innerhalb einer `ScheduleGroup` dürfen sich nicht zwei `Schedule`-Objekte mit demselben `type` befinden. Innerhalb jedes `Schedule`-Objekts wird ein Zeitplan definiert, der für alle Tage des angegebenen `Type` im Laufe eines ganzen Jahres gilt. Bei der Konstruktion von Zeitplänen gelten die folgenden Regeln.
 
 In der ersten Priorität werden beim Typ `AllDays` angegebene tägliche Zeitplanwerte (z.B. `HeatingSetPoint`) auf alle Tage des ganzen Jahres gesetzt (Priorität 0). <<ex_schedule_alldays>> zeigt eine solche Zeitplandefinition.
 
-Danach überschreiben die `Typen` namens `WeekEnd` und `WeekDay`, falls definiert, die bereits definierten Zeitplanwerte nur für alle Wochentage oder Wochenendtage (Priorität 1). Weiterhin definieren die Wochentage namens `Monday`, `Tuesday`, ... für welche Tage die Zeitplanwerte wieder überschrieben werden (Priorität 2). Weiter geht es mit dem Tagestyp `Holiday` (Priorität 3) für die angegebenen Feiertage innerhalb des Objekts `Holidays`. 
+Danach überschreiben die `Types` `WeekEnd` und `WeekDay`, falls definiert, die bereits definierten Zeitplanwerte nur für alle Wochentage oder Wochenendtage (Priorität 1). Weiterhin definieren die Wochentage namens `Monday`, `Tuesday`, ... für welche Tage die Zeitplanwerte wieder überschrieben werden (Priorität 2). Weiter geht es mit dem Tagestyp `Holiday` (Priorität 3) für die angegebenen Feiertage innerhalb des Objekts `Holidays`. 
 
 Es ist möglich, unterschiedliche Zeitpläne für einzelne Zeiträume des Jahres zu definieren, z. B. für das reguläre Jahr und die Sommerferien etc. Auf diese Weise kann ein Zeitplan für das gesamte Jahr definiert werden. 
 
@@ -169,7 +169,7 @@ Es ist möglich, unterschiedliche Zeitpläne für einzelne Zeiträume des Jahres
 <ScheduleGroup objectList="Zone01">
     <!-- Konstante "AllDays" -->
     <Schedule type="AllDays">
-        <TagesZyklen>
+        <DailyCycles>
             <DailyCycle interpolation="Constant">
                 <ZeitPunkte>0</ZeitPunkte>
                 <Werte>InfiltrationRateSchedule [1/h]:0</Werte>
@@ -299,7 +299,7 @@ Um ein einzelnes Intervall für den ganzen Tag zu definieren, geben Sie einfach 
 
 ### Tägliche Zyklusparameterwerte
 
-Für jedes im Tag `TimePoints` angegebene Intervall können eine oder mehrere Größen mit zugehörigen Einheiten angegeben werden. Dies geschieht durch die Definition der Datentabelle im XML-Tochtertag `Values` des `DailyCycle`-tags. Die Daten der Datentabelle werden wie folgt formatiert:
+Für jedes im tag `TimePoints` angegebene Intervall können eine oder mehrere Größen mit zugehörigen Einheiten angegeben werden. Dies geschieht durch die Definition der Datentabelle im XML-Tochtertag `Values` des `DailyCycle`-tags. Die Daten der Datentabelle werden wie folgt formatiert:
 
 ----
     quantity1 [unit]:val11 val12 val13; quantity2 [unit]:val21 val22 val23;...
@@ -312,7 +312,7 @@ Jeder Mengenstring setzt sich aus einem Header und den eigentlichen Werten zusam
 
 Der Header ist ein Mengenstichwort (siehe auch <<schedule_variable_list>>), gefolgt von seiner Einheit in Klammern. So hat z. B. eine Heizungssolltemperatur die Kopfzeile `HeatingSetPointTemperature [C]` und die Werte werden dann in Grad C angegeben.
 
-Es müssen _exakt_ so viele Werte angegeben werden, wie es Zeitpunkte im XML-Tag `TimePoints` gibt. In dieser Datentabelle können Sie so viele Größen angeben, wie Sie benötigen.
+Es müssen _exakt_ so viele Werte angegeben werden, wie es Zeitpunkte im XML-tag `TimePoints` gibt. In dieser Datentabelle können Sie so viele Größen angeben, wie Sie benötigen.
 
 :xrefstyle: short
 
@@ -373,7 +373,7 @@ Die vom linearen Spline gelieferten Werte können als linear/konstant interpolie
 Bei linearen Splines wird die Schrittglättung *nicht* vom Solver angewendet. Es ist Sache des Anwenders, geeignete Daten bereitzustellen oder durch langsame Simulationszeiten bestraft zu werden.
 ====
 
-Innerhalb des XML-tags `AnnualSchedules` gibt es ein oder mehrere XML-Tochter-tags `ScheduleGroup`, jedes mit einem obligatorischen XML-Attribut `objectList`. Dieses referenziert, genau wie bei den täglichen Zyklusplänen eine Objektliste und damit Objekte, auf die sich die geplanten Variablen beziehen. <<ex_AnnualSchedule>> zeigt ein Beispiel für jährliche Zeitpläne, die innerhalb einer einzigen `ScheduleGroup` definiert sind.
+Innerhalb des XML-tags `AnnualSchedules` gibt es ein oder mehrere XML-Tochtertags `ScheduleGroup`, jedes mit einem obligatorischen XML-Attribut `objectList`. Dieses referenziert, genau wie bei den täglichen Zyklusplänen eine Objektliste und damit Objekte, auf die sich die geplanten Variablen beziehen. <<ex_AnnualSchedule>> zeigt ein Beispiel für jährliche Zeitpläne, die innerhalb einer einzigen `ScheduleGroup` definiert sind.
 
 :xrefstyle: basic 
 

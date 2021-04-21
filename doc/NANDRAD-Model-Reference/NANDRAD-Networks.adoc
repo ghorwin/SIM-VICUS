@@ -5,7 +5,7 @@
 
 Dieser Abschnitt beschreibt die Parametrisierung von thermo-hydraulischen Netzwerken.
 
-In einer Projektdatei kann es mehrere Netzwerke geben. Diese sind im XML tag `HydraulicNetworks` abgelegt.
+In einer Projektdatei kann es mehrere Netzwerke geben. Diese sind im XML-tag `HydraulicNetworks` abgelegt.
 
 .Hydraulische Netzwerke
 ====
@@ -28,7 +28,7 @@ In einer Projektdatei kann es mehrere Netzwerke geben. Diese sind im XML tag `Hy
 
 [IMPORTANT]
 ====
-Die einzelnen Netzwerke sind hydraulisch unabhängig, d.h. es gibt keinen Fluidaustausch zwischen Netzwerken. Die Netzwerke können aber thermisch verknüpft sein, z.B. kann ein Quartierswärmenetz mit einem Gebäudeanlagennetz Wärme austauschen. Dies bedingt auch _eindeutige ID_ der in _allen_ Netzwerken definierten hydraulischen Netzwerkkomponenten.
+Die einzelnen Netzwerke sind hydraulisch unabhängig, d.h. es gibt keinen Fluidaustausch zwischen Netzwerken. Die Netzwerke können aber thermisch verknüpft sein, z.B. kann ein Quartierswärmenetz mit einem Gebäudeanlagennetz Wärme austauschen. Dies bedingt auch die _eindeutige ID_ der in _allen_ Netzwerken definierten hydraulischen Netzwerkkomponenten.
 ====
 
 
@@ -95,7 +95,7 @@ Die Wahl des Netzwerkberechnungsmodells hat Auswirkungen auf die benötigte Para
 
 :xrefstyle: basic
 
-Je nach Modelltyp können mehrere globale Netzwerkparameter definiert werden (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des `IBK:Parameter` Tags):
+Je nach Modelltyp können mehrere globale Netzwerkparameter definiert werden (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des `IBK:Parameter` tags):
 
 [options="header",cols="30%,^ 10%, 30%,^ 10%,^ 20%",width="100%"]
 |====================
@@ -158,7 +158,7 @@ Da es nur eine Fluid-Definition per Netzwerk geben darf, ist das _id_ Attribut e
 
 :xrefstyle: basic
 
-Parameter des Netzwerkfluids (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des `IBK:Parameter` Tags):
+Parameter des Netzwerkfluids (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des `IBK:Parameter` tags):
 
 [options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
 |====================
@@ -348,7 +348,7 @@ Die tatsächlichen Strömungselemente des Netzwerks werden innerhalb des XML-tag
 ----
 ====
 
-`HydraulicNetworkElement`-Tags haben die folgenden Attribute:
+`HydraulicNetworkElement`-tags haben die folgenden Attribute:
 
 .Attribute
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]

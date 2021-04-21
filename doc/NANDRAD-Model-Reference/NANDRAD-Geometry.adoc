@@ -19,7 +19,7 @@ Objekte vom Typ `Zone` speichern alle Eigenschaften die benötigt werden, um die
 ----
 ====
 
-Innerhalb des XML-Tags namens `Zones` beginnt jede Zone mit dem XML-Tag `Zone`. Die folgenden XML-Attribute müssen definiert werden:
+Innerhalb des XML-tags namens `Zones` beginnt jede Zone mit dem XML-tag `Zone`. Die folgenden XML-Attribute müssen definiert werden:
 
 [source,xml]
 ----
@@ -103,7 +103,7 @@ Konstruktionsinstanzen repräsentieren tatsächlich verbaute eindimensionale Tei
 ----
 ====
 
-Die Konstruktionsinstanzen werden innerhalb des XML-Tags `ConstructionInstances` definiert. Innerhalb des Abschnitts beginnt jede Konstruktionsdefinition mit dem XML-tag `ConstructionInstance` mit den Attributen `id` und `displayName`. 
+Die Konstruktionsinstanzen werden innerhalb des XML-tags `ConstructionInstances` definiert. Innerhalb des Abschnitts beginnt jede Konstruktionsdefinition mit dem XML-tag `ConstructionInstance` mit den Attributen `id` und `displayName`. 
 
 .Attribute
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
@@ -128,7 +128,7 @@ Die Konstruktionsinstanz hat das folgende _erforderliche_ Child-tags:
 
 `ConstructionTypeId` ist eindeutige Id, die den Konstruktionstyp (Schichtenaufbau) der Konstruktionsinstanz definiert.
 
-Für die Parameter der Konstruktionsinstanz können die folgenden XML-Tags mit dem Namen `IBK:Parameters` mit den XML-Attributen `name` und `unit` mit den folgenden Einträgen definiert werden:
+Für die Parameter der Konstruktionsinstanz können die folgenden XML-tags mit dem Namen `IBK:Parameters` mit den XML-Attributen `name` und `unit` mit den folgenden Einträgen definiert werden:
 
 [options="header",cols="15%,^ 10%,45%,^ 20%,^ 10%",width="100%"]
 |====================
@@ -147,7 +147,7 @@ wenn eine Schnittstelle kurz- und/oder langwellige Strahlungsrandbedingung hat, 
 | `Area` | m2 | Bruttofläche der Wand (inkl. evtl. vorhandener Fenster, Löcher etc.) | > 0 | _erforderlich_
 |====================
 
-Darin müssen die Schnittstellen mit dem XML-Tag `InterfaceA` und `InterfaceB` angegeben werden. Schließlich müssen die Interfaces mit dem XML-Tag `InterfaceA` und `InterfaceB` mit den XML-Attributen `id` und `zoneId` definiert werden.
+Darin müssen die Schnittstellen mit dem XML-tag `InterfaceA` und `InterfaceB` angegeben werden. Schließlich müssen die Interfaces mit dem XML-tag `InterfaceA` und `InterfaceB` mit den XML-Attributen `id` und `zoneId` definiert werden.
 Im Folgenden wird dies im Detail beschrieben.
 
 [[construction_discretization]]
@@ -380,7 +380,7 @@ a| Setzt den Typ des Wärmeleitungsmodells
 |====================
 
 
-Es können XML-Tags mit dem Namen `IBK:Parameter` mit den XML-Attributen `name` und `unit` mit den folgenden Einträgen definiert werden:
+Es können XML-tags mit dem Namen `IBK:Parameter` mit den XML-Attributen `name` und `unit` mit den folgenden Einträgen definiert werden:
 
 [options="header"]
 [cols="25%,^ 8%,42%,^ 10%,^ 10%"]
@@ -485,7 +485,7 @@ Ein Fenster besteht aus einer Verglasung und optional einem Rahmen und Trennwän
 
 Nur das Verglasungssystem wird über die ID referenziert. Verglasungssysteme sind in der Datenbankliste der Verglasungssysteme definiert, siehe <<glazing_systems>>.
 
-Das Fenster kann einen Rahmen und/oder Trennwände haben. Diese sind separate Entitäten, da das Material von Rahmen und Trennwänden (und damit die Wärmeleitfähigkeit zwischen diesen Materialien) unterschiedlich sein kann. Diese werden in den XML-Tags `Frame` und `Divider` definiert:
+Das Fenster kann einen Rahmen und/oder Trennwände haben. Diese sind separate Entitäten, da das Material von Rahmen und Trennwänden (und damit die Wärmeleitfähigkeit zwischen diesen Materialien) unterschiedlich sein kann. Diese werden in den XML-tags `Frame` und `Divider` definiert:
 
 .Parameterdefinition für Basisfenster mit Rahmen und Trennwand
 ====
@@ -553,7 +553,7 @@ Alternativ oder zusätzlich zur vorberechneten Umgebungsverschattung ist es mög
 ----
 ====
 
-Das XML-Tag `Shading` muss mit den folgenden XML-Attributen definiert werden:
+Das XML-tag `Shading` muss mit den folgenden XML-Attributen definiert werden:
 
 .Attribute
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]

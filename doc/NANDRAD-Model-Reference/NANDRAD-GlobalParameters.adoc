@@ -123,7 +123,7 @@ Die _Absolute Zeit_ ist eine bestimmte Zeit/ein bestimmtes Datum, z. B. "20.09.2
 
 In NANDRAD wird dieser Simulationsstartzeitpunkt in zwei Parametern angegeben:
 
-- das `StartJahr` und 
+- das `StartYear` und 
 - das Offset der Zeit seit Beginn (Mitternacht 1. Januar) dieses Jahres als `Start` Intervallparameter.
 
 Ein `Start`-Offset von `1 d` lässt die Simulation am _Januar 2, 0:00_ beginnen. Wenn die Simulation z.B. am _15. Januar 2003, 6:00_ beginnen soll, muss folgendes angegeben werden:

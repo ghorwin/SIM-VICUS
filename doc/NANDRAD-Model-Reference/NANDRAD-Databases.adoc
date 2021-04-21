@@ -7,7 +7,7 @@ Um Gebäudekomponenten wie Wände, Decken und Böden usw. zu modellieren, ist es
 [[materials]]
 ## Materialien
 
-In der NANDRAD-Projektdatei beginnt der Abschnitt der Materialdatenbank mit einem XML-Tag namens `materials`. 
+In der NANDRAD-Projektdatei beginnt der Abschnitt der Materialdatenbank mit einem XML-tag namens `materials`. 
 
 .Materialien mit Parametern
 ====
@@ -28,7 +28,7 @@ In der NANDRAD-Projektdatei beginnt der Abschnitt der Materialdatenbank mit eine
 ----
 ====
 
-In diesem tag beginnt jedes Materialeigenschaften-Set mit einem XML-Tag namens `Material` mit zwei XML-Attributen `id` und `displayName`.  
+In diesem tag beginnt jedes Materialeigenschaften-Set mit einem XML-tag namens `Material` mit zwei XML-Attributen `id` und `displayName`.  
 
 .Attribute
 [options="header",cols="15%,55%,^ 20%,^ 10%",width="100%"]
@@ -38,7 +38,7 @@ In diesem tag beginnt jedes Materialeigenschaften-Set mit einem XML-Tag namens `
 | `displayName`  |  Name des Materials (wird für Informations-/Fehlermeldungen verwendet) | string | _optional_
 |====================
 
-Für die Materialparameter wie Dichte, Wärmekapazität und Wärmeleitfähigkeit müssen diese im XML-Tag `IBK:Parameter` definiert werden (siehe <<IBK_Parameter>>):
+Für die Materialparameter wie Dichte, Wärmekapazität und Wärmeleitfähigkeit müssen diese im XML-tag `IBK:Parameter` definiert werden (siehe <<IBK_Parameter>>):
 
 [options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
 |====================
@@ -53,7 +53,7 @@ Für die Materialparameter wie Dichte, Wärmekapazität und Wärmeleitfähigkeit
 [[construction_types]]
 ## Konstruktionstypen
 
-Konstruktionen werden innerhalb des Abschnitts definiert, der mit einem XML-Tag `ConstructionTypes` beginnt.  
+Konstruktionen werden innerhalb des Abschnitts definiert, der mit einem XML-tag `ConstructionTypes` beginnt.  
 
 .construction types mit Referenzen zu Materialobjekten
 ====
@@ -70,7 +70,7 @@ Konstruktionen werden innerhalb des Abschnitts definiert, der mit einem XML-Tag 
 ----
 ====
 
-Innerhalb dieses Abschnitts beginnt jede Konstruktionsdefinition mit dem XML-Tag `ConstructionType` mit den XML-Attributen `id` und optional `displayName`:
+Innerhalb dieses Abschnitts beginnt jede Konstruktionsdefinition mit dem XML-tag `ConstructionType` mit den XML-Attributen `id` und optional `displayName`:
 
 .Attribute
 [options="header",cols="15%,55%,20%,^ 10%",width="100%"]
@@ -81,7 +81,7 @@ Innerhalb dieses Abschnitts beginnt jede Konstruktionsdefinition mit dem XML-Tag
 |====================
 
 
-Eine Konstruktion besteht aus einer oder mehreren Materialschichten. Diese werden im untergeordneten XML-Tag mit dem Namen `MaterialLayers` definiert. Jede Materialschicht wird mit dem XML-Tag `MaterialLayer` mit den folgenden XML-Attributen definiert:
+Eine Konstruktion besteht aus einer oder mehreren Materialschichten. Diese werden im untergeordneten XML-tag mit dem Namen `MaterialLayers` definiert. Jede Materialschicht wird mit dem XML-tag `MaterialLayer` mit den folgenden XML-Attributen definiert:
 
 [options="header",cols="15%,55%,^ 20%,^ 10%",width="100%"]
 |====================
@@ -96,20 +96,20 @@ Mit der Verwendung des Attributs _matId_ referenzieren Schichten von Konstruktio
 image::Mat_ConstInst.png[]
 
 
-Das `MaterialLayer` hat keine Child-Tags, da alle benötigten Daten wie oben beschrieben als XML-Attribute definiert sind. 
+Das `MaterialLayer` hat keine Child-tags, da alle benötigten Daten wie oben beschrieben als XML-Attribute definiert sind. 
 
 
 [[construction_active_layer]]
 ### Aktive/beheizte Schichten
 
-Jeder Konstruktionsaufbau kann genau eine aktive Schicht haben, welche mit einem Heizregister versehen wird. Falls eine solche Schicht existiert, muss das XML-Tag `ActiveLayerIndex` angegeben sein. Dieses XML-Element enthalt den 0-basierten Index der Schicht, d.h. Index 0 entspricht der ersten Schicht in der `MaterialLayers`-Liste.
+Jeder Konstruktionsaufbau kann genau eine aktive Schicht haben, welche mit einem Heizregister versehen wird. Falls eine solche Schicht existiert, muss das XML-tag `ActiveLayerIndex` angegeben sein. Dieses XML-Element enthalt den 0-basierten Index der Schicht, d.h. Index 0 entspricht der ersten Schicht in der `MaterialLayers`-Liste.
 
 Falls eine aktive Schicht definiert wurde, muss es irgendwo ein Modell geben, welches passend dafür eine Heizleistung berechnet. Beispielsweise kann dies eine Fußbodenheizung sein (siehe <<network_floor_heating>>).
 
 [[glazing_systems]]
 ## Verglasungssysteme
 
-Verglasungssysteme werden in einer Liste innerhalb des XML-Tags `WindowGlazingSystems` definiert.
+Verglasungssysteme werden in einer Liste innerhalb des XML-tags `WindowGlazingSystems` definiert.
 
 .Parameterdefinition für ein Verglasungssystem
 [Quelle,xml, indent=0]
@@ -129,7 +129,7 @@ Verglasungssysteme werden in einer Liste innerhalb des XML-Tags `WindowGlazingSy
 ----
 ====
 
-Innerhalb dieses Abschnitts beginnt jede Definition eines Verglasungssystem mit dem XML-Tag `WindowGlazingSystem` mit den XML-Attributen `id`, `modelType` und optional `displayName`:
+Innerhalb dieses Abschnitts beginnt jede Definition eines Verglasungssystem mit dem XML-tag `WindowGlazingSystem` mit den XML-Attributen `id`, `modelType` und optional `displayName`:
 
 .Attribute
 [options="header",cols="15%,55%,20%,^ 10%",width="100%"]
@@ -145,7 +145,7 @@ a| Identifiziert die Modellkomplexität:
 |====================
 
 
-Skalare Parameter werden innerhalb eines XML-Tags `IBK:Parameter` definiert (siehe <<IBK_Parameter>>):
+Skalare Parameter werden innerhalb eines XML-tags `IBK:Parameter` definiert (siehe <<IBK_Parameter>>):
 
 [options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
 |====================
@@ -153,7 +153,7 @@ Skalare Parameter werden innerhalb eines XML-Tags `IBK:Parameter` definiert (sie
 | `ThermalTransmittance` | W/m2K | Wärmedurchgangskoeffizient der Verglasung | > 0 | _erforderlich für Modelltyp Simple_
 |====================
 
-Parameter, die vom Einfallswinkel abhängen, werden in einem XML-Tag `LinearSplineParameter` definiert (siehe <<LinearSplineParameter>>):
+Parameter, die vom Einfallswinkel abhängen, werden in einem XML-tag `LinearSplineParameter` definiert (siehe <<LinearSplineParameter>>):
 
 [options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
 |====================

@@ -30,7 +30,7 @@ In NANDRAD werden physikalische Gleichungen in Form von Modellobjekten organisie
 <ObjectLists>
 	<ObjectList name="All zones">
 		<FilterID>*</FilterID>
-		<ReferenzTyp>Zone</ReferenzTyp>
+		<ReferenceType>Zone</ReferenceType>
 	</ObjectList>
 	<ObjectList name="Zone Var01">
 		<FilterID>1</FilterID>
@@ -66,11 +66,11 @@ Das XML-tag `ObjectList` hat die folgenden untergeordneten tags.
 
 ## ID-Filter-Muster
 
-Objekte (mit gleichem Referenztyp) werden durch ihre ID-Nummer eindeutig identifiziert.
+Objekte (mit gleichem `ReferenceType`) werden durch ihre ID-Nummer eindeutig identifiziert.
 
 [NOTE]
 ====
-ID-Nummern müssen nur für Objekte mit gleichem Referenztyp eindeutig sein. Daher ist es möglich, Zone #1 und ConstructionInstance #1 gleichzeitig zu definieren.
+ID-Nummern müssen nur für Objekte mit gleichem `ReferenceType` eindeutig sein. Daher ist es möglich, Zone #1 und ConstructionInstance #1 gleichzeitig zu definieren.
 ====
 
 Ein Filtermuster kann aus mehreren Teilen bestehen, die durch , (Komma) getrennt sind, zum Beispiel: `1,4,13-20`. Jeder Teil kann das folgende Format haben:

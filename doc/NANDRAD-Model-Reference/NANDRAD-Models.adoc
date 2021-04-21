@@ -86,7 +86,7 @@ a| Setzt den Typ des Lüftungsmodells
 |====================
 
 
-Gleitkommazahlen-Parameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des Tags `IBK:Parameter`):
+Gleitkommazahlen-Parameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des tags `IBK:Parameter`):
 
 [options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
 |====================
@@ -167,7 +167,7 @@ Folgende Bedingungen müssen _alle_ erfüllt sein, damit der erhöhte Luftwechse
 
 Damit das Modell mit der Ausprägung `ScheduledWithBaseACR` verwendbar ist, müssen beide Parameter _VentilationRate_ und _VentilationRateSchedule_ spezifiziert werden.
 
-Gleitkommazahlen-Parameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des Tags `IBK:Parameter`):
+Gleitkommazahlen-Parameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des tags `IBK:Parameter`):
 
 [options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
 |====================
@@ -199,7 +199,7 @@ TODO : Spezifizieren
 
 #### Ausgabegrößen
 
-Die berechneten Lüftungswärmeverlust/-gewinnen können als zonenspezifische Größen über die Ergebnisgröße
+Die berechneten Lüftungswärmeverluste/-gewinne können als zonenspezifische Größen über die Ergebnisgröße
 `Zone.VentilationHeatLoad` in [W] abgerufen werden.
 
 
@@ -295,7 +295,7 @@ Fließkommaparameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung d
 
 [NOTE]
 ====
-Die Zonennutzfläche ist nicht zwingend die Grundfläche einer Zone sondern wird aus dem Parameter _Area_ der Zonendefinition gewählt. Dadurch ist es möglich, z.B. im Dachgeschoss mit Schrägen die tatsächlich nutzbare Fläche zu definieren verwenden. Deshalb wird der _Area_ Parameter in allen Zonen benötigt, für die ein `InternalLoadsModel` angewendet werden soll.
+Die Zonennutzfläche ist nicht zwingend die Grundfläche einer Zone sondern wird aus dem Parameter _Area_ der Zonendefinition gewählt. Dadurch ist es möglich, z.B. im Dachgeschoss mit Schrägen die tatsächlich nutzbare Fläche zu definieren und zu verwenden. Deshalb wird der _Area_ Parameter in allen Zonen benötigt, für die ein `InternalLoadsModel` angewendet werden soll.
 ====
 
 Der Modelltyp `Constant` übernimmt die internen Lasten aus den Parametern (siehe oben).
@@ -431,7 +431,7 @@ Das `ZoneIdealHeatingCooling` muss mit den folgenden XML-Attributen definiert we
 |====================
 
 
-Fließkommaparameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des Tags `IBK:Parameter`):
+Fließkommaparameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des tags `IBK:Parameter`):
 
 [options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
 |====================

@@ -5,7 +5,7 @@
 [[units]]
 ## Einheitendefinitionen
 
-Im gesamten NANDRAD-Solver werden Einheiten _nur_ für Ein-/Ausgabezwecke verwendet. Innerhalb der Berechnungsfunktionen werden _immer_ die SI-Basiseinheiten verwendet, wodurch Probleme durch Einheitenumrechnungen vermieden werden.
+Im gesamten NANDRAD-Solver werden Einheiten _nur_ für Ein-/ Ausgabezwecke verwendet. Innerhalb der Berechnungsfunktionen werden _immer_ die SI-Basiseinheiten verwendet, wodurch Probleme durch Einheitenumrechnungen vermieden werden.
 
 Das Einheitensystem in NANDRAD verwendet die Konvention, dass maximal ein / (Schrägstrich) Teil des Einheitennamens sein darf. Alle Einheiten, die dem Schrägstrich folgen, stehen im Nenner der Einheit. Exponenten stehen nur hinter der Einheit, zum Beispiel `m2`. Punkte in Exponenten werden weggelassen, z. B. `h05` für die Quadratwurzel der Stunde. Mehrere Einheiten werden einfach ohne . oder *-Zeichen aneinandergereiht, z. B. `kWh` oder `kg/m2s`.
 
@@ -119,9 +119,9 @@ Einige der Größen sind vektorwertige Größen, gekennzeichnet mit einem Suffix
 |ConstructionInstance|SurfaceTemperatureB|C|Oberflächentemperatur an Grenzfläche B.
 |Location|AirPressure |Pa|Luftdruck.
 |Location|Albedo |---|Albedo-Wert der Umgebung [0..1].
-|Location|AzimutWinkel |Deg|Solarer Azimut (0 - Nord).
-|Location|CO2-Konzentration |---|Umgebende CO2-Konzentration.
-|Location|CO2Dichte |kg/m3|Ambiente CO2-Dichte.
+|Location|AzimuthAngle |Deg|Solarer Azimut (0 - Nord).
+|Location|CO2-CO2Concentration |---|Umgebende CO2-Konzentration.
+|Location|CO2Density |kg/m3|Ambiente CO2-Dichte.
 |Location|DeclinationAngle |Deg|Solare Deklination (0 - Nord).
 |Location|ElevationAngle |Deg|Solare Elevation (0 - am Horizont, 90 - direkt darüber).
 |Location|LWSkyRadiation |W/m2|Langwellige Himmelsstrahlung.
@@ -131,13 +131,13 @@ Einige der Größen sind vektorwertige Größen, gekennzeichnet mit einem Suffix
 |Location|RelativeHumidity |%|Relative Feuchte.
 |Location|SWRadDiffuseHorizontal|W/m2|Diffuse kurzwellige Strahlungsflussdichte auf horizontaler Fläche.
 |Location|SWRadDirectNormal |W/m2|Direkte kurzwellige Strahlungsflussdichte in normaler Richtung.
-|Location|Temperatur |C|Außentemperatur.
+|Location|Temperature |C|Außentemperatur.
 |Location|VaporPressure |Pa|Umgebungs-Dampfdruck.
 |Location|WindDirection |Deg|Windrichtung (0 - Nord).
 |Location|WindVelocity |m/s|Windgeschwindigkeit.
 |Model|VentilationHeatFlux(id,xxx)|W|Wärmestrom durch natürliche Lüftung
 |Model|VentilationRate(id,xxx) |1/h|Luftwechselrate (natürliche Lüftung)
-|Zone|LuftTemperatur |C|Raumlufttemperatur.
+|Zone|AirTemperature |C|Raumlufttemperatur.
 |Zone|CompleteThermalLoad |W|Summe aller Wärmeströme in den Raum und Energiequellen.
 |Zone|ConstructionHeatConductionLoad|W|Summe der Wärmeleitungsflüsse von Konstruktionsoberflächen in den Raum.
 |Zone|VentilationHeatLoad |W|Wärmelast in den Raum durch natürliche Lüftung.

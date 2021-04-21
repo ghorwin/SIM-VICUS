@@ -272,7 +272,7 @@ Es ist wichtig zu beachten, dass Durchschnittswerte immer Mittelwerte der Werte 
 	<ObjectList name="Walls">
 		<FilterID>*</FilterID>
 		<!-- Objektliste muss auf Konstruktionsinstanzen verweisen -->
-		<ReferenzTyp>ConstructionInstance</ReferenzTyp>
+		<ReferenceType>ConstructionInstance</ReferenceType>
 	</ObjectList>
     ... <!-- andere Objektlisten -->
 </ObjectLists>
