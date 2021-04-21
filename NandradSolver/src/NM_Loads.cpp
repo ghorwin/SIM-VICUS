@@ -37,6 +37,8 @@
 #include <IBK_messages.h>
 #include <IBK_Constants.h>
 #include <IBK_FormatString.h>
+#include <IBK_CSVReader.h>
+#include <IBK_UnitVector.h>
 
 #include <DATAIO_DataIO.h>
 
@@ -166,9 +168,71 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 			IBK::Path fullShadingFilePath = location.m_shadingFactorFileName.withReplacedPlaceholders(pathPlaceHolders);
 
 			// data is transfered into IBK::Matrix structure where it will be interpolated accordingly
+
+
+			// *** TSV Files ***
+
 			if (IBK::string_nocase_compare(fullShadingFilePath.extension(), "tsv")) {
+				IBK::CSVReader reader;
+				try {
+					reader.read(fullShadingFilePath);
+				}
+				catch (IBK::Exception &ex) {
+					throw IBK::Exception(ex, IBK::FormatString("Error reading shading factors data from file '%1'.")
+						.arg(fullShadingFilePath), FUNC_ID);
+				}
+				// empty files are not allowed
+				if (reader.m_nRows == 0 || reader.m_nColumns < 2) {
+					throw IBK::Exception(IBK::FormatString("Shading factor file '%1' does not contain valid data (no time points or columns).")
+						.arg(fullShadingFilePath), FUNC_ID);
+				}
+				// first column header must have time unit
+				if (reader.m_units[0].empty())
+					throw IBK::Exception(IBK::FormatString("Missing time unit in first column of file '%1'.")
+						.arg(fullShadingFilePath), FUNC_ID);
+				try {
+					IBK::Unit timeUnit(reader.m_units[0]);
+					if (timeUnit.base_id() != IBK_UNIT_ID_SECONDS)
+						throw IBK::Exception(IBK::FormatString("'%1' is not a known time unit.").arg(timeUnit.name()), FUNC_ID);
+				}
+				catch (IBK::Exception &ex) {
+					throw IBK::Exception(ex, IBK::FormatString("Invalid time unit '%2' in first column of file '%1'.")
+						.arg(fullShadingFilePath).arg(reader.m_units[0]), FUNC_ID);
+				}
+				// check units of all other columns units of all other columns are not checked
+				try {
+					for (unsigned int i=1; i<reader.m_nColumns; ++i) {
+						m_externalShadingFactorIDs.push_back(IBK::string2val<unsigned int>(reader.m_captions[i]));
+						if (reader.m_units[i] != "---")
+							throw IBK::Exception(IBK::FormatString("Invalid unit for shading factors '%1', expected '---'.")
+												 .arg(reader.m_units[i]), FUNC_ID);
+					}
+				}
+				catch (IBK::Exception &ex) {
+					throw IBK::Exception(ex, IBK::FormatString("Invalid value unit in file '%1'.")
+						.arg(fullShadingFilePath), FUNC_ID);
+				}
+
+				// now copy data to vectors
+				IBK::UnitVector tvec("tvec", IBK::Unit("s"));
+				tvec.resize(reader.m_nRows);
+				m_externalShadingFactors.resize(reader.m_nRows);
+
+				for (unsigned int i=0; i<reader.m_nRows; ++i) {
+					tvec.m_data[i] = reader.colData(0)[i]; // first column - time point
+
+					m_externalShadingFactors[i].resize(reader.m_nColumns-1);
+					for (unsigned int j=1; j<reader.m_nColumns; ++j) {
+						m_externalShadingFactors[i][j-1] = reader.colData(j)[i];
+					}
+
+				}
 
 			}
+
+
+			// *** DATAIO ***
+
 			else if (IBK::string_nocase_compare(fullShadingFilePath.extension(), "d6o") ||
 					 IBK::string_nocase_compare(fullShadingFilePath.extension(), "d6b"))
 			{
@@ -186,19 +250,53 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 						.arg(fullShadingFilePath), FUNC_ID);
 				}
 				// transfer data into our working data structure
-				m_externalShadingFactorTimePoints = shadingFile.m_timepoints;
+				try {
+					IBK::Unit timeUnit(shadingFile.m_timeUnit);
+					if (timeUnit.base_id() != IBK_UNIT_ID_SECONDS)
+						throw IBK::Exception(IBK::FormatString("'%1' is not a known time unit.").arg(timeUnit.name()), FUNC_ID);
+					if (timeUnit.id() != IBK_UNIT_ID_SECONDS) {
+						// convert time points to seconds
+						IBK::UnitVector tvec("vec", timeUnit);
+						tvec.m_data = shadingFile.m_timepoints;
+						tvec.convert(IBK::Unit(IBK_UNIT_ID_SECONDS));
+						m_externalShadingFactorTimePoints = tvec.m_data;
+					}
+					else {
+						// time points are already in seconds
+						m_externalShadingFactorTimePoints = shadingFile.m_timepoints;
+					}
+				}
+				catch (IBK::Exception &ex) {
+					throw IBK::Exception(ex, IBK::FormatString("Invalid time unit '%2' in file '%1'.")
+						.arg(fullShadingFilePath).arg(shadingFile.m_timeUnit), FUNC_ID);
+				}
 				m_externalShadingFactorIDs = shadingFile.m_nums;
 
+				// check value unit - we require unit --- so that we do not have to convert units while reading
+				try {
+					if (shadingFile.m_valueUnit != "---")
+						throw IBK::Exception(IBK::FormatString("Invalid unit for shading factors '%1', expected '---'.").arg(shadingFile.m_valueUnit), FUNC_ID);
+				}
+				catch (IBK::Exception &ex) {
+					throw IBK::Exception(ex, IBK::FormatString("Invalid value unit in file '%1'.")
+						.arg(fullShadingFilePath), FUNC_ID);
+				}
 				for (unsigned int i=0; i<shadingFile.m_timepoints.size(); ++i) {
 					try {
 						const double * data = shadingFile.data(i);
 						std::vector<double> dataVec(data, data + shadingFile.nValues());
 						m_externalShadingFactors.emplace_back(dataVec);
-					} catch (IBK::Exception & ex) {
+					}
+					catch (IBK::Exception & ex) {
 						throw IBK::Exception(ex, IBK::FormatString("Error reading shading factors data from file '%1'.")
 							.arg(fullShadingFilePath), FUNC_ID);
 					}
 				}
+			}
+
+			else {
+				throw IBK::Exception(IBK::FormatString("Unrecognized file type for shading factors file '%1'.")
+					.arg(fullShadingFilePath), FUNC_ID);
 			}
 		}
 

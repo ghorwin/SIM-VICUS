@@ -431,12 +431,20 @@ werden die Reglerparameter
 \begin_inset Formula $k_{p}$
 \end_inset
 
- und ggf.
- 
-\begin_inset Formula $k_{i}$
+ [
+\begin_inset Formula $1/K$
 \end_inset
 
- benötigt
+] und ggf.
+ 
+\begin_inset Formula $k_{i}=k_{p}/T_{N}$
+\end_inset
+
+ [
+\begin_inset Formula $1/Ks$
+\end_inset
+
+] benötigt
 \begin_inset Formula 
 \[
 y=k_{p}e+k_{i}\int edt
@@ -483,7 +491,7 @@ ControlledPressureLossCoefficientElement
  ist dann
 \begin_inset Formula 
 \[
-\Delta p=(\zeta_{fix}+\zeta_{control})\frac{\rho}{2}v^{2}
+\Delta p=(\zeta_{fix}+\zeta_{control}\left(\dot{m}\right))\frac{\rho}{2}v^{2}
 \]
 
 \end_inset
@@ -502,6 +510,50 @@ ControlledPressureLossCoefficientElement
 0=p_{inlet}-p_{outlet}-\Delta p
 \]
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Nutzerparameter sind:
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $T_{soll}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\dot{Q}_{loss}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $k_{p}$
+\end_inset
+
+ und ggfs.
+ 
+\begin_inset Formula $k_{i}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\zeta_{fix}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\zeta_{max}$
 \end_inset
 
 
