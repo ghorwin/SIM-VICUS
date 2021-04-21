@@ -38,6 +38,10 @@ namespace NANDRAD {
 	class SimulationParameter;
 }
 
+namespace DATAIO {
+	class DataIO;
+}
+
 namespace NANDRAD_MODEL {
 
 
@@ -202,12 +206,16 @@ private:
 	/*! Vector of sky visibility for all inclinations (in [---]). */
 	std::vector< double >					m_skyVisbility;
 
-	/*! Vector containing shading factors for current time point. */
-	std::vector<double>						m_shadingFactors;
-	/*! References to shading factors for each outside surface and embedded object id.
-
+	/*! Vector containing shading/reduction factors for current time point.
+		These are updated in setTime() and used in qSWRad() when computing direct radiation loads (and global radiation).
+		Diffuse radiation loads are currently not reduced due to shading.
 	*/
+	std::vector<double>						m_shadingFactors;
+	/*! Maps that related construction instance/embedded object ids to the storage locations of the respective shading/reduction factors. */
 	std::map<unsigned int, const double*>	m_shadingFactorsForObjectID;
+
+	/*! Precomputed shading factor file content. */
+	DATAIO::DataIO							*m_shadingFactorFile = nullptr;
 };
 
 } // namespace NANDRAD_MODEL

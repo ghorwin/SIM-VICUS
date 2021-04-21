@@ -22,9 +22,10 @@ unix|mac {
 LIBS += \
 	-lIntegratorFramework \
 	-lNandrad \
-	-lIBKMK \
 	-lZeppelin \
+	-lDataIO \
 	-lCCM \
+	-lIBKMK \
 	-lIBK \
 	-lTiCPP \
 	-lsundials \
@@ -36,6 +37,7 @@ contains( OPTIONS, lapack ) {
 
 INCLUDEPATH = \
 	../../src \
+	../../../externals/DataIO/src \
 	../../../externals/CCM/src \
 	../../../externals/IBK/src \
 	../../../externals/IBKMK/src \
@@ -84,8 +86,8 @@ SOURCES += \
 	../../src/NM_ThermalNetworkStatesModel.cpp \
 	../../src/NM_ThermalNetworkBalanceModel.cpp \
 	../../src/NM_ThermalNetworkFlowElements.cpp \
-    ../../src/NM_Controller.cpp \
-    ../../src/NM_ShadingControlModel.cpp
+	../../src/NM_Controller.cpp \
+	../../src/NM_ShadingControlModel.cpp
 
 HEADERS += \
 	../../doc/NandradSolverMainPage.h \
@@ -129,8 +131,8 @@ HEADERS += \
 	../../src/NM_ThermalNetworkPrivate.h \
 	../../src/NM_ThermalNetworkAbstractFlowElement.h \
 	../../src/NM_ThermalNetworkFlowElements.h \
-    ../../src/NM_AbstractController.h \
-    ../../src/NM_AbstractTransientController.h \
-    ../../src/NM_Controller.h \
-    ../../src/NM_ShadingControlModel.h
+	../../src/NM_AbstractController.h \
+	../../src/NM_AbstractTransientController.h \
+	../../src/NM_Controller.h \
+	../../src/NM_ShadingControlModel.h
 
