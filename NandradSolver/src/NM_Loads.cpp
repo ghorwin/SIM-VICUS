@@ -556,7 +556,7 @@ void Loads::resultDescriptions(std::vector<QuantityDescription> & resDesc) const
 
 
 void Loads::addSurface(unsigned int objectID, double orientationInDeg, double inclinationInDeg) {
-//	FUNCID(Loads::addSurface);
+	FUNCID(Loads::addSurface);
 
 	double inclination = inclinationInDeg*DEG2RAD; // in rad
 	unsigned int surfaceID = m_solarRadiationModel.addSurface(orientationInDeg*DEG2RAD, inclination);
@@ -604,30 +604,19 @@ void Loads::addSurface(unsigned int objectID, double orientationInDeg, double in
 
 	// Issue warning if no shading factors are provided for a construction/embedded object surface
 
-#ifdef TODO
-	// retrieve all values for external shading
-	if (!m_shadingFactorFile.m_filename.str().empty() ) {
-		// find object id inside shading factor data container
-		unsigned int index = 0;
-		for ( ; index < m_shadingFactorFile.m_nums.size(); ++index) {
-			// nums vector must! contain all outside object ids
-			if (m_shadingFactorFile.m_nums[index] == objectID) {
+	if (!m_externalShadingFactors.empty()) {
+		int idx = -1;
+		for (unsigned int i=0; i<m_externalShadingFactorIDs.size(); ++i) {
+			if (m_externalShadingFactorIDs[i] == objectID) {
+				m_shadingFactorsForObjectID[objectID] = &m_shadingFactors[i];
+				idx = (int)i;
 				break;
 			}
 		}
-		// error: object is not found
-		if (index == m_shadingFactorFile.m_nums.size()) {
-			throw IBK::Exception(IBK::FormatString("Missing shading factor inside file '#%1'!"
-				"Error registering ourtside surface object with id %2!")
-				.arg(m_shadingFactorFile.m_filename).arg(objectID),
-				FUNC_ID);
-		}
-		// error: shading factor file is not resized correctly
-		IBK_ASSERT(index < m_shadingFactors.size());
-		// store pointer to shading factor
-		m_shadingFactorsForObjectID[objectID] = &m_shadingFactors[index];
+		if (idx == -1)
+			IBK::IBK_Message(IBK::FormatString("Exterior shading factor file does not contain data for surface/object with ID #%1.")
+							 .arg(objectID), IBK::MSG_WARNING, FUNC_ID);
 	}
-#endif // TODO
 
 }
 
