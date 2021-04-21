@@ -35,6 +35,7 @@ set( LINK_LIBS
 	NandradModel
 	IntegratorFramework 
 	Nandrad 
+	DataIO
 	IBKMK
 	CCM
 	IBK

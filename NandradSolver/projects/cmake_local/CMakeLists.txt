@@ -65,7 +65,8 @@ endif (OPENMP_FOUND)
 set( LINK_LIBS
 	NandradModel
 	IntegratorFramework 
-	Nandrad 
+	Nandrad
+	DataIO
 	IBKMK
 	CCM
 	IBK
