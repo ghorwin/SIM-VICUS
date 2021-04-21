@@ -147,25 +147,26 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 		m_solarRadiationModel.m_sunPositionModel.m_longitude = m_solarRadiationModel.m_climateDataLoader.m_longitudeInDegree * DEG2RAD;
 
 		// enable Perez-Model if requested
-		if (location.m_perezDiffuseRadiationModel.isEnabled())
-			m_solarRadiationModel.m_diffuseRadiationPerezEnabled = true;
-
+		m_solarRadiationModel.m_diffuseRadiationPerezEnabled = location.m_flags[NANDRAD::Location::F_PerezDiffuseRadiationModel].isEnabled();
 
 		// store start time offset as year and start time
 		m_year = simPara.m_intPara[NANDRAD::SimulationParameter::IP_StartYear].value;
 		m_startTime = simPara.m_interval.m_para[NANDRAD::Interval::P_Start].value;
 
-
 		// *** shading factors ***
+
+		// shading factor files are expected to be cyclic data, except flag is set
+		if (location.m_flags[NANDRAD::Location::F_ContinuousShadingFactorData].isEnabled())
+			m_cyclicShadingFactors = false;
 
 		// if we have a shading factor file given, read it and cache it in memory (not file access during simulation)
 
 		// create a data IO file for shading factor
-		if (location.m_shadingFactorFileName.isValid()) {
+		if (location.m_shadingFactorFilePath.isValid()) {
 			// check file extension: tsv are read with tsv-reader, d6o and d6b are read with DataIO.
 
 			// replace path placeholders
-			IBK::Path fullShadingFilePath = location.m_shadingFactorFileName.withReplacedPlaceholders(pathPlaceHolders);
+			IBK::Path fullShadingFilePath = location.m_shadingFactorFilePath.withReplacedPlaceholders(pathPlaceHolders);
 
 			// data is transfered into IBK::Matrix structure where it will be interpolated accordingly
 
@@ -300,6 +301,25 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 				throw IBK::Exception(IBK::FormatString("Unrecognized file type for shading factors file '%1'.")
 					.arg(fullShadingFilePath), FUNC_ID);
 			}
+
+			// in cyclic use, make sure, that time points do not exceed one year
+			if (m_cyclicShadingFactors) {
+				if (m_externalShadingFactorTimePoints.back() >= SECONDS_PER_YEAR)
+					throw IBK::Exception(IBK::FormatString("Last time point in shading factors file '%1' exceeds one year but must be < one year for cyclic usage.")
+						.arg(fullShadingFilePath), FUNC_ID);
+			}
+
+			// check for continuous time points
+			double t_last = m_externalShadingFactorTimePoints.front();
+			for (unsigned int i=1; m_externalShadingFactorTimePoints.size(); ++i) {
+				if (t_last >= m_externalShadingFactorTimePoints[i])
+					throw IBK::Exception(IBK::FormatString("Time point '%1' in shading factors file '%2' exceeds previous time point (strictly monotonic time series required).")
+						.arg(m_externalShadingFactorTimePoints[i]).arg(fullShadingFilePath), FUNC_ID);
+				t_last = m_externalShadingFactorTimePoints[i];
+			}
+
+			// resize shading factor cache for calculates values
+			m_externalShadingFactors.resize(m_externalShadingFactorIDs.size());
 		}
 
 
@@ -349,9 +369,9 @@ int Loads::setTime(double t) {
 
 	// cache time
 	m_t = t;
+	double t_climate = m_startTime + m_t;
 
 	try {
-		double t_climate = m_startTime + m_t;
 		// Mind: if the climate data is not a cyclic (annual) data set, this is handled inside the solar radiation model
 		//       hence, we do not need to apply cyclic clipping here
 		m_solarRadiationModel.setTime(m_year, t_climate);
@@ -387,39 +407,71 @@ int Loads::setTime(double t) {
 	m_results[R_MoistureDensity] = moistureDensity;
 	m_results[R_CO2Density] = CO2Density;
 
-#ifdef TODO
 	// calculate shading factors for current time points
-	if (!m_shadingFactorFile.m_filename.str().empty()) {
+	if (!m_externalShadingFactors.empty()) {
 
-		IBK_ASSERT(m_startTime != nullptr);
 		// correct cyclic time
-		double time = *m_startTime + m_t;
-
-		while (time >= 365. * 24. * 3600.) {
-			time -= 365. * 24. * 3600.;
-		}
-
-		unsigned int upperIndex = 0;
-		if (m_indexOfLastAcceptedTimePoint >= 0) {
-			upperIndex = m_indexOfLastAcceptedTimePoint;
-			// reset counter
-			if (m_shadingFactorFile.m_timepoints[upperIndex] > time) {
-				upperIndex = 0;
+		if (m_cyclicShadingFactors) {
+			while (t_climate >= SECONDS_PER_YEAR) {
+				t_climate -= SECONDS_PER_YEAR;
 			}
 		}
-		for (; upperIndex < m_shadingFactorFile.m_timepoints.size(); ++upperIndex) {
-			if (m_shadingFactorFile.m_timepoints[upperIndex] > time)
-				break;
-		}
-		IBK_ASSERT(upperIndex > 0);
 
-		unsigned int lowerIndex = upperIndex - 1;
-		// we exceed index
-		if (upperIndex == m_shadingFactorFile.m_timepoints.size()) {
-			throw IBK::Exception(IBK::FormatString("Missing shading factors for time point #%1! "
-				"We expect shading factor values for one year!")
-				.arg(t), FUNC_ID);
+		std::vector<double>::const_iterator tIt = std::lower_bound(
+					m_externalShadingFactorTimePoints.begin(),
+					m_externalShadingFactorTimePoints.end(), t_climate);
+		unsigned int timeIndex = tIt - m_externalShadingFactorTimePoints.begin();
+
+		unsigned int upperIndex, lowerIndex;
+		double alpha;
+		bool needInterpolation = true;
+		// special case handling
+		if (t_climate < m_externalShadingFactorTimePoints.front()) {
+			if (m_cyclicShadingFactors) {
+				// interpolate between last time point (of last year) and first time point of this year
+				upperIndex = m_externalShadingFactorTimePoints.size()-1;
+				lowerIndex = 0;
+				double time_left_at_end_of_year = SECONDS_PER_YEAR - m_externalShadingFactorTimePoints.back();
+				alpha = (time_left_at_end_of_year + t_climate)/(m_externalShadingFactorTimePoints.front() + time_left_at_end_of_year);
+			}
+			else {
+				// not-cyclic data, just copy first data set
+				std::copy(m_externalShadingFactors.front().begin(),
+						  m_externalShadingFactors.front().end(),
+						  m_shadingFactors.begin());
+				needInterpolation = false;
+			}
 		}
+		else if (t_climate > m_externalShadingFactorTimePoints.back()) {
+			if (m_cyclicShadingFactors) {
+				// interpolate between last time point (of last year) and first time point of this year
+				upperIndex = m_externalShadingFactorTimePoints.size()-1;
+				lowerIndex = 0;
+				double time_left_at_end_of_year = SECONDS_PER_YEAR - m_externalShadingFactorTimePoints.back();
+				alpha = (t_climate - m_externalShadingFactorTimePoints.back())/(m_externalShadingFactorTimePoints.front() + time_left_at_end_of_year);
+			}
+			else {
+				// not-cyclic data, just copy first data set
+				std::copy(m_externalShadingFactors.back().begin(),
+						  m_externalShadingFactors.back().end(),
+						  m_shadingFactors.begin());
+				needInterpolation = false;
+			}
+		}
+		else {
+			// standard case, set interval that contains current time point
+			upperIndex = timeIndex;
+			lowerIndex = timeIndex-1;
+			alpha = (t_climate - m_externalShadingFactorTimePoints[lowerIndex])/
+					(m_externalShadingFactorTimePoints[upperIndex] - m_externalShadingFactorTimePoints[lowerIndex]);
+		}
+
+
+		if (needInterpolation) {
+
+		}
+	}
+#if 0
 		// interpolate shading factors
 		double alpha = 1, beta = 0;
 		if (upperIndex > lowerIndex) {

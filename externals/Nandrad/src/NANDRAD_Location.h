@@ -50,6 +50,12 @@ public:
 		NUM_P
 	};
 
+	/*! Calculation flags. */
+	enum flag_t {
+		F_PerezDiffuseRadiationModel,	// Keyword: PerezDiffuseRadiationModel		'Use diffuse radiation model for anisotropic radiation (Perez)'
+		F_ContinuousShadingFactorData,	// Keyword: ContinuousShadingFactorData		'If true, shading factors for exterior shading are stored for continuous time points (no cyclic use)'
+		NUM_F
+	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -59,6 +65,8 @@ public:
 
 	/*! Parameter set. */
 	IBK::Parameter				m_para[NUM_P];							// XML:E
+	/*! List of flags. */
+	IBK::Flag					m_flags[NUM_F];							// XML:E
 
 	/*! Time zone, only used when both P_Longitude and P_Latitude are given and thus
 		a custom climatic location is being used.
@@ -69,10 +77,7 @@ public:
 	IBK::Path					m_climateFilePath;						// XML:E
 
 	/*! Optional: name of the external shading factor data file. */
-	IBK::Path					m_shadingFactorFileName;				// XML:E
-
-	/*! If enabled, Perez model for diffuse radiation is used. */
-	IBK::Flag					m_perezDiffuseRadiationModel;			// XML:E
+	IBK::Path					m_shadingFactorFilePath;				// XML:E
 
 	/*! We may place one or more radiation sensors outside. */
 	std::vector<Sensor>			m_sensors;								// XML:E

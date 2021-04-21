@@ -54,22 +54,24 @@ void Location::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
-			else if (cName == "TimeZone")
-				m_timeZone = NANDRAD::readPODElement<int>(c, cName);
-			else if (cName == "ClimateFilePath")
-				m_climateFilePath = IBK::Path(c->GetText());
-			else if (cName == "ShadingFactorFileName")
-				m_shadingFactorFileName = IBK::Path(c->GetText());
 			else if (cName == "IBK:Flag") {
 				IBK::Flag f;
 				NANDRAD::readFlagElement(c, f);
 				bool success = false;
-				if (f.name() == "PerezDiffuseRadiationModel") {
-					m_perezDiffuseRadiationModel = f; success=true;
+				try {
+					flag_t ftype = (flag_t)KeywordList::Enumeration("Location::flag_t", f.name());
+					m_flags[ftype] = f; success=true;
 				}
+				catch (...) { /* intentional fail */  }
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
+			else if (cName == "TimeZone")
+				m_timeZone = NANDRAD::readPODElement<int>(c, cName);
+			else if (cName == "ClimateFilePath")
+				m_climateFilePath = IBK::Path(c->GetText());
+			else if (cName == "ShadingFactorFilePath")
+				m_shadingFactorFilePath = IBK::Path(c->GetText());
 			else if (cName == "Sensors") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
@@ -106,15 +108,17 @@ TiXmlElement * Location::writeXML(TiXmlElement * parent) const {
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 		}
 	}
+
+	for (int i=0; i<NUM_F; ++i) {
+		if (!m_flags[i].name().empty()) {
+			TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_flags[i].name(), m_flags[i].isEnabled() ? "true" : "false");
+		}
+	}
 	TiXmlElement::appendSingleAttributeElement(e, "TimeZone", nullptr, std::string(), IBK::val2string<int>(m_timeZone));
 	if (m_climateFilePath.isValid())
 		TiXmlElement::appendSingleAttributeElement(e, "ClimateFilePath", nullptr, std::string(), m_climateFilePath.str());
-	if (m_shadingFactorFileName.isValid())
-		TiXmlElement::appendSingleAttributeElement(e, "ShadingFactorFileName", nullptr, std::string(), m_shadingFactorFileName.str());
-	if (!m_perezDiffuseRadiationModel.name().empty()) {
-		IBK_ASSERT("PerezDiffuseRadiationModel" == m_perezDiffuseRadiationModel.name());
-		TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", "PerezDiffuseRadiationModel", m_perezDiffuseRadiationModel.isEnabled() ? "true" : "false");
-	}
+	if (m_shadingFactorFilePath.isValid())
+		TiXmlElement::appendSingleAttributeElement(e, "ShadingFactorFilePath", nullptr, std::string(), m_shadingFactorFilePath.str());
 
 	if (!m_sensors.empty()) {
 		TiXmlElement * child = new TiXmlElement("Sensors");

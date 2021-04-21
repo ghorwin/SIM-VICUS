@@ -19,6 +19,7 @@ LIBS += \
 	-lNandradModel \
 	-lIntegratorFramework \
 	-lNandrad \
+	-lDataIO \
 	-lIBKMK \
 	-lZeppelin \
 	-lCCM \

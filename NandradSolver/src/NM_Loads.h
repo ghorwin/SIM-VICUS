@@ -203,6 +203,9 @@ private:
 	/*! Vector of sky visibility for all inclinations (in [---]). */
 	std::vector< double >					m_skyVisbility;
 
+	/*! Set to false, if shading factor file contains continuous data. */
+	bool									m_cyclicShadingFactors = true;
+
 	/*! Vector containing shading/reduction factors for current time point.
 		These are updated in setTime() and used in qSWRad() when computing direct radiation loads (and global radiation).
 		Diffuse radiation loads are currently not reduced due to shading.

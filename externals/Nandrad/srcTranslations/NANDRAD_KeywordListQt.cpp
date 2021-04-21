@@ -123,6 +123,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Longitude.");
 	tr("Albedo value [0..100 %].");
 	tr("Altitude of building as height above NN [m].");
+	tr("Use diffuse radiation model for anisotropic radiation (Perez)");
+	tr("If true, shading factors for exterior shading are stored for continuous time points (no cyclic use)");
 	tr("Dry density of the material.");
 	tr("Specific heat capacity of the material.");
 	tr("Thermal conductivity of the dry material.");

@@ -51,6 +51,7 @@ LIBS += \
 	-lNandradModel \
 	-lIntegratorFramework \
 	-lNandrad \
+	-lDataIO \
 	-lIBKMK \
 	-lZeppelin \
 	-lCCM \
@@ -78,7 +79,7 @@ SOURCES += \
 	../../src/InstanceData.cpp \
 	../../src/NandradModelFMU.cpp \
 	../../src/fmi2common/fmi2Functions.cpp \
-	../../src/fmi2common/InstanceDataCommon.cpp 
+	../../src/fmi2common/InstanceDataCommon.cpp
 
 HEADERS += \
 	../../src/InstanceData.h \
