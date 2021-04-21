@@ -394,7 +394,7 @@ Die Regelabweichung
 \begin_layout Standard
 \begin_inset Formula 
 \[
-e=T_{soll}-\Delta T
+e=\Delta T_{soll}-\Delta T\left(\dot{m}\right)
 \]
 
 \end_inset
@@ -520,7 +520,7 @@ Nutzerparameter sind:
 \end_layout
 
 \begin_layout Itemize
-\begin_inset Formula $T_{soll}$
+\begin_inset Formula $\Delta T_{soll}$
 \end_inset
 
 
@@ -557,6 +557,168 @@ Nutzerparameter sind:
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+....
+\end_layout
+
+\begin_layout Section
+Fußbodenheizung mit Thermostatventil
+\end_layout
+
+\begin_layout Standard
+Regelgröße: Sensortemperatur (Luft/Operativ) im Raum 
+\begin_inset Formula $T_{R}$
+\end_inset
+
+, Vergleichswert 
+\begin_inset Formula $T_{soll}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $e=T_{soll}-T_{R}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Regler: P/PI-Regler, Digitale Hysterese + Band 
+\begin_inset Formula $\Delta T_{Band}$
+\end_inset
+
+ um Sollwert herum
+\end_layout
+
+\begin_layout Standard
+...
+ regler mit Klipping und Skalierung
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\zeta_{control}$
+\end_inset
+
+ist während der Lösung des hydraulischen Netzwerks eine Konstante.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\Delta p=(\zeta_{fix}+\zeta_{control}\left(T_{soll},T_{R}\right))\frac{\rho}{2}v^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Wärmetauscher zwischen zwei Kreisen
+\end_layout
+
+\begin_layout Standard
+Pufferspeicher: zwei unabhängige Kreise mit Wärmeströmen zwischen Kreisen
+\end_layout
+
+\begin_layout Standard
+Pufferspeichervolumen wird künstlich geteilt, sodass zwei hydraulische Netzwerke
+lemente (eins für jede) mit gemeinschaftlich der Kapazität des Puffers entstehen.
+\end_layout
+
+\begin_layout Standard
+Es wird ein Wärmeausgleichsstrom zwischen beiden Volumina definiert, abhängig
+ von der Differenz der jeweiligen Medientemperaturen.
+\begin_inset Formula 
+\begin{equation}
+\dot{Q}=\alpha\Delta T
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Parameter 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ in W/K.
+\end_layout
+
+\begin_layout Section
+Wärmepumpe
+\end_layout
+
+\begin_layout Standard
+Digitaler Kontroller (verschiedene Einschaltbedingungen)
+\end_layout
+
+\begin_layout Standard
+Stetigen Kontroller (P/PI, für Luftwärmepumpen)
+\end_layout
+
+\begin_layout Subsection
+Regelbedingungen
+\end_layout
+
+\begin_layout Standard
+Regelsignal wird jeweils mit nominalem Wärmepumpenstrom multipliziert.
+\end_layout
+
+\begin_layout Standard
+Digital: 
+\end_layout
+
+\begin_layout Itemize
+Sensor im Verbraucherelement (Speicher) unter Grenzwert
+\end_layout
+
+\begin_layout Itemize
+Sensor im Thermostat
+\end_layout
+
+\begin_layout Standard
+Stetig:
+\end_layout
+
+\begin_layout Itemize
+Sensortemperatur vs.
+ Regeltemperatur (Quellenvorlauf)
+\end_layout
+
+\begin_layout Subsection
+Wärmepumpenstrom
+\end_layout
+
+\begin_layout Standard
+Eingangsgrößen: 
+\begin_inset Formula $T_{in,Quelle},$
+\end_inset
+
+
+\begin_inset Formula $T_{Rücklauf,Verbraucher},\text{\ensuremath{\dot{m}}}$
+\end_inset
+
+ (Temperaturpunkte 4 und 2)
+\end_layout
+
+\begin_layout Standard
+-> Tabelle/Carnot-Faktoren -> 
+\begin_inset Formula $\dot{Q}_{nominal}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+–> benötige elekt.
+ Leistung
 \end_layout
 
 \end_body
