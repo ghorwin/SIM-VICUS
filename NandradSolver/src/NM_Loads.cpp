@@ -313,7 +313,7 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 
 			// check for continuous time points
 			double t_last = m_externalShadingFactorTimePoints.front();
-			for (unsigned int i=1; m_externalShadingFactorTimePoints.size(); ++i) {
+			for (unsigned int i=1; i<m_externalShadingFactorTimePoints.size(); ++i) {
 				if (t_last >= m_externalShadingFactorTimePoints[i])
 					throw IBK::Exception(IBK::FormatString("Time point '%1' in shading factors file '%2' exceeds previous time point (strictly monotonic time series required).")
 						.arg(m_externalShadingFactorTimePoints[i]).arg(fullShadingFilePath), FUNC_ID);
@@ -321,7 +321,7 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 			}
 
 			// resize shading factor cache for calculates values
-			m_externalShadingFactors.resize(m_externalShadingFactorIDs.size());
+			m_shadingFactors.resize(m_externalShadingFactorIDs.size());
 		}
 
 
@@ -424,8 +424,8 @@ int Loads::setTime(double t) {
 					m_externalShadingFactorTimePoints.end(), t_climate);
 		unsigned int timeIndex = tIt - m_externalShadingFactorTimePoints.begin();
 
-		unsigned int upperIndex, lowerIndex;
-		double alpha;
+		unsigned int upperIndex = 0, lowerIndex = 0;
+		double alpha = 0.0;
 		bool needInterpolation = true;
 		// special case handling
 		if (t_climate < m_externalShadingFactorTimePoints.front()) {
@@ -470,34 +470,17 @@ int Loads::setTime(double t) {
 
 
 		if (needInterpolation) {
+			const double *lastData = m_externalShadingFactors[lowerIndex].data();
+			const double *nextData = m_externalShadingFactors[upperIndex].data();
+			double beta = 1 - alpha;
+			IBK_ASSERT(beta >= 0.0 && beta <= 1.0);
 
-		}
-	}
-#if 0
-		// interpolate shading factors
-		double alpha = 1, beta = 0;
-		if (upperIndex > lowerIndex) {
-			double dt = m_shadingFactorFile.m_timepoints[upperIndex] -
-				m_shadingFactorFile.m_timepoints[lowerIndex];
-			// error in data file
-			if (dt < 0) {
-				throw IBK::Exception(IBK::FormatString("Error loading shading factors for time point %#1: "
-					"Time points are expected in increasing order!")
-					.arg(t), FUNC_ID);
+			for (unsigned int i = 0; i < m_shadingFactors.size(); ++i) {
+				m_shadingFactors[i] = alpha * nextData[i] +	beta * lastData[i];
 			}
-			alpha = (time - m_shadingFactorFile.m_timepoints[lowerIndex]) / dt;
-			beta = 1. - alpha;
-			IBK_ASSERT(alpha <= 1 && beta <= 1 && alpha >= 0 && beta >= 0);
-		}
-		// update data
-		const double *lastData = m_shadingFactorFile.data(lowerIndex);
-		const double *nextData = m_shadingFactorFile.data(upperIndex);
 
-		for (unsigned int i = 0; i < m_shadingFactors.size(); ++i) {
-			m_shadingFactors[i] = alpha * nextData[i] +	beta * lastData[i];
 		}
 	}
-#endif
 
 	if (!m_sensorID2surfaceID.empty()) {
 		IBK_ASSERT(m_sensorID2surfaceID.size() == m_vectorValuedResults[VVR_DirectSWRadOnPlane].size());
