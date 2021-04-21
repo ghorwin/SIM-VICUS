@@ -2,13 +2,11 @@
 <NandradProject fileVersion="1.999">
 	<Project>
 		<ProjectInfo>
-			<Comment>Test case with 4 windows, exterior shading is defined through tsv file. Mind the time shift.</Comment>
+			<Comment>Test case with 4 windows, no exterior shading.</Comment>
 		</ProjectInfo>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0</IBK:Parameter>
 			<ClimateFilePath>${Project Directory}/../climate/DirectRadiationLoads.c6b</ClimateFilePath>
-			<!-- We define the path to the shading factor file here -->
-			<ShadingFactorFilePath>${Project Directory}/ShadingFactors.tsv</ShadingFactorFilePath>
 		</Location>
 		<SimulationParameter>
 			<IBK:IntPara name="StartYear">2015</IBK:IntPara>
