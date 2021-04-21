@@ -259,17 +259,8 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 					IBK::Unit timeUnit(shadingFile.m_timeUnit);
 					if (timeUnit.base_id() != IBK_UNIT_ID_SECONDS)
 						throw IBK::Exception(IBK::FormatString("'%1' is not a known time unit.").arg(timeUnit.name()), FUNC_ID);
-					if (timeUnit.id() != IBK_UNIT_ID_SECONDS) {
-						// convert time points to seconds
-						IBK::UnitVector tvec("vec", timeUnit);
-						tvec.m_data = shadingFile.m_timepoints;
-						tvec.convert(IBK::Unit(IBK_UNIT_ID_SECONDS));
-						m_externalShadingFactorTimePoints.swap(tvec.m_data);
-					}
-					else {
-						// time points are already in seconds
-						m_externalShadingFactorTimePoints = shadingFile.m_timepoints;
-					}
+					// time points in DataIO containers are already in seconds
+					m_externalShadingFactorTimePoints = shadingFile.m_timepoints;
 				}
 				catch (IBK::Exception &ex) {
 					throw IBK::Exception(ex, IBK::FormatString("Invalid time unit '%2' in file '%1'.")
