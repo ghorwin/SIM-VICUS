@@ -164,6 +164,10 @@ void StructuralShading::initializeShadingCalculation(const std::vector<std::vect
 
 }
 
+void StructuralShading::setCalculationPeriod(IBK::Time startTime, double duration) {
+	m_startTime = startTime;
+	m_periodInSec = duration;
+}
 
 
 void StructuralShading::calculateShadingFactors(Notification * notify) {
@@ -221,7 +225,7 @@ void StructuralShading::calculateShadingFactors(Notification * notify) {
 
 			unsigned int i = itNormal->first;
 
-			if ( counter % 300 == 0 ) {
+			if ( counter % 10 == 0 ) {
 
 #if defined(_OPENMP)
 				if (omp_get_thread_num() == 0)
@@ -277,10 +281,10 @@ void StructuralShading::calculateShadingFactors(Notification * notify) {
 			}
 		}
 
-		IBK::UnitVector time(8760, 0, IBK::Unit(IBK_UNIT_ID_SECONDS));
-		IBK::UnitVector shadingFact(8760, 1, IBK::Unit("---"));
-		for(size_t i=0; i<8760; ++i) {
-			time.m_data[i] = i * 3600;
+		IBK::UnitVector time(m_sunPositions.size(), 0, IBK::Unit(IBK_UNIT_ID_SECONDS));
+		IBK::UnitVector shadingFact(m_sunPositions.size(), 1, IBK::Unit("---"));
+		for(size_t i=0; i<m_sunPositions.size(); ++i) {
+			time.m_data[i] = m_sunPositions[i].m_secOfYear;
 			shadingFact.m_data[i] = sunShadings[i];
 		}
 		// now generate the spline
@@ -326,16 +330,16 @@ void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path) {
 	// write header line
 	tsvFile << "Time [h]\t"; // write header
 	for ( unsigned int i=0; i<m_surfaces.size(); ++i ) {
-		tsvFile << m_surfaces[i].m_id << "\t";
+		tsvFile << m_surfaces[i].m_id << " [---]\t";
 	}
 	tsvFile << "\n";
 
 	for( unsigned int i=0; i<m_sunPositions.size(); ++i) {
-		tsvFile << i << "\t";
+		tsvFile << IBK::val2string<int>(m_sunPositions[i].m_secOfYear/3600) << "\t";
 		for ( unsigned int j=0; j<m_surfaces.size(); ++j ) {
 			const Polygon &poly = m_surfaces[j];
 
-			tsvFile	<< poly.m_shadingFactors.value(i*3600) << "\t";
+			tsvFile	<< poly.m_shadingFactors.value(m_sunPositions[i].m_secOfYear) << "\t";
 		}
 		tsvFile << "\n";
 	}
@@ -349,26 +353,38 @@ void StructuralShading::writeShadingFactorsToDataIO(const IBK::Path & path, bool
 	DATAIO::DataIO dataContainer;
 	dataContainer.m_filename = path;
 	dataContainer.m_isBinary = isBinary;
+	dataContainer.m_type = DATAIO::DataIO::T_REFERENCE;
+	dataContainer.m_spaceType = DATAIO::DataIO::ST_SINGLE;
+	dataContainer.m_timeType = DATAIO::DataIO::TT_NONE;
+	dataContainer.m_timeUnit = "h";
 
-	std::vector< double >			   timePoints;
-	std::vector< std::vector<double> > data;
+	std::vector< double > timePoints ( m_sunPositions.size() ) ;
+	std::vector< std::vector<double> > values ( m_sunPositions.size(), std::vector<double> (m_surfaces.size() ) );
+	std::vector<unsigned int> nums;
+	std::string quantity;
 
+	for( unsigned int i=0; i<m_sunPositions.size(); ++i) {
+		timePoints[i] = m_sunPositions[i].m_secOfYear; // mind that we need time points in seconds
+	}
 
-	for ( unsigned int i=0; i<m_surfaces.size(); ++i ) {
-		const Polygon &poly = m_surfaces[i];
-		std::vector<double> surfData;
-		for( unsigned int j=0; j<m_sunPositions.size(); ++j) {
-			if ( i == 0 )
-				timePoints.emplace_back(i*3600); // mind that we need time points in seconds
-
-			surfData.emplace_back( poly.m_shadingFactors.value(i*3600) );
+	for( unsigned int j=0; j<m_sunPositions.size(); ++j) {
+		for ( unsigned int i=0; i<m_surfaces.size(); ++i ) {
+			const Polygon &poly = m_surfaces[i];
+			if ( j == 0 ) {
+				nums.emplace_back(poly.m_id);
+				quantity += IBK::val2string<unsigned int>(poly.m_id);
+				if ( i < m_surfaces.size() - 1 )
+					quantity += " | ";
+			}
+			values[j][i] = poly.m_shadingFactors.value(m_sunPositions[j].m_secOfYear);
 		}
-		data.emplace_back(surfData);
 	}
 
 	// we set our data
-	dataContainer.setData(timePoints, data);
-
+	dataContainer.m_nums = nums;
+	dataContainer.m_quantity = quantity;
+	dataContainer.m_valueUnit = "---";
+	dataContainer.setData(timePoints, values);
 	dataContainer.write();
 }
 
@@ -380,14 +396,17 @@ void StructuralShading::createSunNormals(std::vector<SunPosition>& sunPositions)
 	sunModel.m_latitude = m_location.m_latitudeInDeg * IBK::DEG2RAD;
 	sunModel.m_longitude = m_location.m_longitudeInDeg * IBK::DEG2RAD;
 
-	for( unsigned int i=0; i<8760; ++i) {
-		double timeInSec = i * 3600.0;
+	unsigned int startHourOfYear = m_startTime.secondsOfYear()/60/60;
+	unsigned int periodLenght = m_periodInSec/60/60;
+
+	for( unsigned int i=0; i<periodLenght; ++i) {
+		double timeInSec = ( startHourOfYear + i ) * 3600.0;
 		double localMeanTime = CCM::SolarRadiationModel::localMeanTimeFromLocalStandardTime(timeInSec,m_location.m_timeZone,
 																							m_location.m_longitudeInDeg);
 		double apparentTime = CCM::SolarRadiationModel::apparentSolarTimeFromLocalMeanTime(localMeanTime);
 		sunModel.setTime(apparentTime);		//sun position at middle of the hour; hourly interval
 
-		sunPositions.emplace_back( SunPosition(sunModel.m_azimuth, sunModel.m_elevation) );
+		sunPositions.emplace_back( SunPosition( timeInSec, sunModel.m_azimuth, sunModel.m_elevation ) );
 	}
 }
 
