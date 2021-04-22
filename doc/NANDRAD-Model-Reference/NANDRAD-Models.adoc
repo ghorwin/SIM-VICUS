@@ -6,6 +6,35 @@
 In diesem Abschnitt werden die verschiedenen Modellparametrisierungsblöcke beschrieben. Modelle werden verwendet, um gleichartige Funktionalität für mehrere Objekte (meist Zonen) zu definieren. Die in den Modellblöcken abgelegten Parameter gelten dann für alle (via Objektlisten) ausgewählten Objekte. Allerdings können objektspezifische Eigenschaften (bspw. Nutzfläche bei Zonen) in die Modell einfließen.
 
 
+.Modelldefinitionslisten innerhalb des XML-Elements `Models`
+====
+[source,xml]
+----
+<Models>
+	<NaturalVentilationModels>
+	    ...
+	</NaturalVentilationModels>
+	
+	<ShadingControlModels>
+	    ...
+    </ShadingControlModels>
+
+	<Thermostats>
+	    ...
+	</Thermostats>
+
+	<HVACControlModels>
+	    ...
+	</HVACControlModels>
+
+	<IdealHeatingCoolingModels>
+        ...
+	</IdealHeatingCoolingModels>
+	
+	.... // weitere Modellblöcke
+</Models>
+----
+====
 
 
 
@@ -307,12 +336,15 @@ Der Objektlisten-tag `ZoneObjectList` identifiziert die Zonen, in denen Thermost
 ====
 [source,xml]
 ----
-<ZoneControlThermostat id="200" modelType="Constant">
-	<ZoneObjectList>Office zones</ZoneObjectList>
+<!-- A thermostat with constant heating set point, no cooling. Uses air temperature as sensor value. -->
+<Thermostat id="1001" displayName="Constant air temperature thermostat" modelType="Constant">
+	<ZoneObjectList>All zones</ZoneObjectList>
 	<IBK:Parameter name="HeatingSetpoint" unit="C">20</IBK:Parameter>
-	<IBK:Parameter name="CoolingSetpoint" unit="C">21</IBK:Parameter>
+	<!-- Cooling is disabled through very large setpoint -->
+	<IBK:Parameter name="CoolingSetpoint" unit="C">100</IBK:Parameter>
+	<!-- Control temperature is "Air temperature" -->
 	<TemperatureType>AirTemperature</TemperatureType>
-</ZoneControlThermostat>
+</Thermostat>
 ----
 ====
 
