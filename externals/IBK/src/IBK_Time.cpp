@@ -207,7 +207,7 @@ void Time::decomposeTOY(unsigned int& day, unsigned int & hour, unsigned int & m
 
 
 double Time::secondsUntil(const Time& other) const {
-	return other.m_sec - m_sec + (other.m_year - m_year)*double(SECONDS_PER_YEAR);
+	return other.m_sec - m_sec + (other.m_year - m_year)*(double)SECONDS_PER_YEAR;
 }
 // ---------------------------------------------------------------------------
 
