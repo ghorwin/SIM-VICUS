@@ -57,6 +57,7 @@ Eine Projektdatei kann die folgenden untergeordneten tags enthalten (die Reihenf
 | `ObjectLists` | Definition von Objektlisten/Objektreferenzgruppe -> <<object_lists>>
 |====================
 
+[[uniqueness_requirements]]
 ## Eindeutigkeitsforderungen für Definitions-IDs
 
 Im NANDRAD müssen folgenden Objekttypen in einem einzigen ID-Raum definiert werden, d.h. die IDs der unterschiedlichen Objekte dürfen sich nicht doppeln:

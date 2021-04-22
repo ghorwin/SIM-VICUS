@@ -5,10 +5,15 @@
 
 In diesem Abschnitt werden die verschiedenen Modellparametrisierungsblöcke beschrieben. Modelle werden verwendet, um gleichartige Funktionalität für mehrere Objekte (meist Zonen) zu definieren. Die in den Modellblöcken abgelegten Parameter gelten dann für alle (via Objektlisten) ausgewählten Objekte. Allerdings können objektspezifische Eigenschaften (bspw. Nutzfläche bei Zonen) in die Modell einfließen.
 
+
+
+
+
 ## Natürliches Lüftungsmodell
 
 Das Modell für natürliche Lüftung definiert den Luftaustausch mit der Außenluft und beinhaltet Nutzerlüftung wie ungewollte Lüftung durch Leckagen (Fugenlüftung/Infiltration). Die natürliche Lüftung wird für bestimmte Zonen aktiviert, indem ein Modellparametersatz `NaturalVentilationModel` definiert wird. Über die Objektliste werden die Zonen ausgewählt.
 
+.Drei veschiedene Modellvarianten und deren Parameter beim Modell für natürliche Lüftung/Infiltration
 ====
 [source,xml]
 ----
@@ -17,42 +22,25 @@ Das Modell für natürliche Lüftung definiert den Luftaustausch mit der Außenl
 	<ZoneObjectList>Office zones</ZoneObjectList>
 	<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
 </NaturalVentilationModel>
+
 <!-- Lüftungsmodell mit zeitabhängig geregelter Luftwechselrate -->
 <NaturalVentilationModel id="502" displayName="Zone vent" modelType="Scheduled">
 	<ZoneObjectList>Other zones</ZoneObjectList>
 </NaturalVentilationModel>
+
 <!-- Lüftungsmodell mit zeitabhängig geregelter, erhöhter Luftwechselrate und Grundluftwechsel -->
 <NaturalVentilationModel id="503" displayName="Zone vent" modelType="ScheduledWithBaseACR">
+	<ZoneObjectList>Special zones</ZoneObjectList>
 	<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
-	<!-- Erhöhte Lüftungsrate verwenden, wenn Raumtemperature 23°C überschreitet -->
-	<IBK:Parameter name="MinimumRoomAirTemperatureACRLimit" unit="C">23</IBK:Parameter>
 	<!-- Keine Begrenzung der erhöhten Lüftung bei hohen Raumtemperaturen  -->
 	<IBK:Parameter name="MaximumRoomAirTemperatureACRLimit" unit="C">100</IBK:Parameter>
-	<!-- Parameter muss gegeben sein, um Regelung auszuschalten, sehr hohe Grenzwerte verwenden -->
+	<!-- Erhöhte Lüftungsrate verwenden, wenn Raumtemperature 23°C überschreitet -->
+	<IBK:Parameter name="MinimumRoomAirTemperatureACRLimit" unit="C">23</IBK:Parameter>
+	<!-- extreme Grenzwerte schalten Regelung aus -->
 	<IBK:Parameter name="MaximumEnviromentAirTemperatureACRLimit" unit="C">100</IBK:Parameter>
 	<IBK:Parameter name="MinimumEnviromentAirTemperatureACRLimit" unit="C">-100</IBK:Parameter>
 	<IBK:Parameter name="DeltaTemperatureACRLimit" unit="K">0</IBK:Parameter>
 	<IBK:Parameter name="WindSpeedACRLimit" unit="m/s">10</IBK:Parameter>
-	<ZoneObjectList>Special zones</ZoneObjectList>
-</NaturalVentilationModel>
-
-<!-- Lüftungsmodell mit zeitabhängig geregelter, erhöhter Luftwechselrate und Grundluftwechsel,
-     Regelparameter werden über Schedules geliefert.
--->
-<NaturalVentilationModel id="504" displayName="Zone vent" modelType="ScheduledWithBaseACR">
-	<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
-	<ZoneObjectList>Special zones</ZoneObjectList>
-</NaturalVentilationModel>
-
-<!-- Lüftungsmodell mit realistischer Berechnung der Luftwechselrate basierend auf 
-     Windgeschwindigkeit und Temperaturgradienten -->
-<NaturalVentilationModel id="505" displayName="Zone vent" modelType="Realistic">
-	<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
-	<IBK:Parameter name="ConstantCoefficient" unit="-">0.6</IBK:Parameter>
-	<IBK:Parameter name="TemperaturCoefficient" unit="1/K">0.04</IBK:Parameter>
-	<IBK:Parameter name="WindCoefficient" unit="s/m">0.04</IBK:Parameter>
-	<IBK:Parameter name="SquaredWindCoefficient" unit="s2/m2">0.0</IBK:Parameter>
-	<ZoneObjectList>Special other zones</ZoneObjectList>
 </NaturalVentilationModel>
 ----
 ====
@@ -60,7 +48,7 @@ Das Modell für natürliche Lüftung definiert den Luftaustausch mit der Außenl
 
 [IMPORTANT]
 ====
-Es darf nur ein Lüftungsmodellblock für eine Zone definiert werden. Es dürfen also nicht zwei Lüftungsmodellblöcke mit Objektlisten definiert werden, die beide die gleiche(n) Zone(n) enthalten.
+Es darf nur ein Lüftungsmodellblock pro Zone gelten. Es dürfen also nicht zwei Lüftungsmodellblöcke mit Objektlisten definiert werden, die beide die gleiche(n) Zone(n) enthalten.
 ====
 
 Das `NaturalVentilationModel` muss mit den folgenden XML-Attributen definiert werden:
@@ -80,26 +68,26 @@ a| Setzt den Typ des Lüftungsmodells
 
 * `ScheduledWithBaseACR` - Es wird ein konstanter Luftwechsel und ein zeitabhängiger Luftwechsel - Scheduled with base air change rate -  integriert. Dabei kann der zeitabhängige Luftwechsel zusätzlich durch Steuerungsmodelle auf null gesetzt werden.
 
-* `Realistic`- TODO 
+* (*)`Realistic`- Lüftungsrate ergibt sich aus physikalischen Bedingungen (Wind, Temperaturdifferenzen, Fensteröffnungszustand, ...)
 
 | key | _erforderlich_
 |====================
 
+_(*) wird noch nicht verwendet/noch nicht implementiert_
 
-Gleitkommazahlen-Parameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des tags `IBK:Parameter`):
+Gleitkommazahlen-Parameter (siehe <<IBK_Parameter>> für eine Beschreibung des Elementtyps `IBK:Parameter`):
 
 [options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
 |====================
 |Name|Vorgabeeinheit|Beschreibung|Wertebereich |Verwendung
 | `VentilationRate` | 1/h | Konstante Luftwechselrate | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich für Modelltyp_ `Constant` oder `ScheduledWithBaseACR`
-| *`ConstantCoefficient` | - | Modifikationsfaktor C1 für die Luftwechselrate (Standardwert 1) | {nbsp}>={nbsp}0.0{nbsp} | _optional_
-| *`TemperatureCoefficient` | 1/K | Modifikationsfaktor C2 für die Luftwechselrate (Standardwert 0) | {nbsp}>={nbsp}0.0{nbsp} | _optional_
-| *`WindCoefficient` | s/m | Modifikationsfaktor C3 für die Luftwechselrate (Standardwert 0) | {nbsp}>={nbsp}0.0{nbsp} | _optional_
-| *`SquaredWindCoefficient` | s2/m2 | Modifikationsfaktor C4 für die Luftwechselrate (Standardwert 0) | {nbsp}>={nbsp}0.0{nbsp} | _optional_
+| `MaximumRoomAirTemperatureACRLimit` | C | obere Raumluft-Grenztemperatur | {nbsp}>={nbsp}-100.0{nbsp} | _erforderlich für Modelltyp_ `ScheduledWithBaseACR`
+| `MinimumRoomAirTemperatureACRLimit` | C | untere Raumluft-Grenztemperatur | {nbsp}>={nbsp}-100.0{nbsp} | _erforderlich für Modelltyp_ `ScheduledWithBaseACR`
+| `MaximumEnviromentAirTemperatureACRLimit` | C | obere Außenluft-Grenztemperatur | {nbsp}>={nbsp}-100.0{nbsp} | _erforderlich für Modelltyp_ `ScheduledWithBaseACR`
+| `MinimumEnviromentAirTemperatureACRLimit` | C | untere Außenluft-Grenztemperatur | {nbsp}>={nbsp}-100.0{nbsp} | _erforderlich für Modelltyp_ `ScheduledWithBaseACR`
+| `DeltaTemperatureACRLimit` | K | mind. erforderlicher Temperaturabstand | {nbsp}>={nbsp}-100.0{nbsp} | _erforderlich für Modelltyp_ `ScheduledWithBaseACR`
+| `WindSpeedACRLimit` | m/s | maximale Windgeschwindigkeit für erhöhte Lüftung | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich für Modelltyp_ `ScheduledWithBaseACR`
 |====================
-
-(*) noch nicht implementiert
-
 
 Beim Modelltyp `Constant` wird durchweg eine konstante Luftwechselrate (Parameter `VentilationRate`) verwendet.
 
@@ -112,7 +100,7 @@ Nachfolgend finden Sie ein Beispiel für einen Zeitplan, der den Parameter `Vent
 [source,xml]
 ----
 <ScheduleGroup objectList="All zones">
-	<!-- jeden Tag zwischen 8-10 -->
+	<!-- jeden Tag zwischen 6-10 -->
 	<Schedule type="AllDays">
 		<DailyCycles>
 			<DailyCycle interpolation="Constant">
@@ -144,7 +132,7 @@ Nachfolgend finden Sie ein Beispiel für einen Zeitplan, der den Parameter `Vent
 ====
 
 
-Beim Modelltyp `ScheduledWithBaseACR` wird ein konstanter Grundluftwechsel (Parameter `VentilationRate`) verwendet und unter bestimmten Bedingungen wird ein zusätzlicher Luftwechsel `VentilationRateSchedule` verwendet.
+Beim Modelltyp `ScheduledWithBaseACR` wird ein konstanter Grundluftwechsel (Parameter `VentilationRate`) verwendet und unter bestimmten Bedingungen wird ein zusätzlicher Luftwechsel entsprechend eines gegebenen Zeitplans in  `VentilationRateSchedule` verwendet.
 
 Die Luftwechselrate wird berechnet:
 
@@ -153,62 +141,45 @@ n = n_Grundluftwechsel                          // wenn Bedingungen nicht erfül
 n = n_Grundluftwechsel + n_erhöhterLuftwechsel  // wenn Bedingungen erfüllt
 ```
 
+[IMPORTANT]
+====
+Bei Definition der `VentilationRateSchedule` für das `ScheduledWithBaseACR` beachten, dass dies die _zusätzliche_ Lüftungsrate zum Grundluftwechsel ist. Beim Modelltyp `Scheduled` hingegen wird der Wert im Zeitplan `VentilationRateSchedule` direkt verwendet.
+====
+
 ### Regelbedingungen
 
 Folgende Bedingungen müssen _alle_ erfüllt sein, damit der erhöhte Luftwechsel addiert wird.
 
-- Raumluftzustand: `MinimumRoomAirTemperatureACRLimit` < T_Raum < `MaximumRoomAirTemperatureACRLimit`
-- Außentemperatur: `MinimumEnviromentAirTemperatureACRLimit`< T_Außenluft < `MaximumEnviromentAirTemperatureACRLimit`
-- Temperaturdifferenz: T_Raum - T_Außenluft < `DeltaTemperatureACRLimit`, dabei kann `DeltaTemperatureACRLimit` auch negativ sein. Damit können auch Heizeffekte (Raum kalt, Außenluft warm) berücksichtigt werden. 
+- Raumluftzustand: `MinimumRoomAirTemperatureACRLimit` < Raumlufttemperatur < `MaximumRoomAirTemperatureACRLimit`
+- Außentemperatur: `MinimumEnviromentAirTemperatureACRLimit`< Außenlufttemperatur < `MaximumEnviromentAirTemperatureACRLimit`
+- Temperaturdifferenz: Raumlufttemperatur - Außenlufttemperatur < `DeltaTemperatureACRLimit`; dabei kann `DeltaTemperatureACRLimit` auch negativ sein. Darüber können auch Heizeffekte (Raum kalt, Außenluft warm) berücksichtigt werden. 
 - Windgeschwindigkeit: akt. Wingeschwindigkeit < `WindSpeedACRLimit`
 
 
+Damit das Modell `ScheduledWithBaseACR` verwendbar ist, müssen sowohl der Parameter _VentilationRate_ als auch der Zeitplan _VentilationRateSchedule_ spezifiziert werden.
 
-Damit das Modell mit der Ausprägung `ScheduledWithBaseACR` verwendbar ist, müssen beide Parameter _VentilationRate_ und _VentilationRateSchedule_ spezifiziert werden.
-
-Gleitkommazahlen-Parameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des tags `IBK:Parameter`):
-
-[options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
-|====================
-|Name|Vorgabeeinheit|Beschreibung|Wertebereich |Verwendung
-| `MaximumRoomAirTemperatureACRLimit` | C | Maximale Raumlufttemperatur für aktive Lüftung. | -100 ... 100  | _xxx_
-| `MinimumRoomAirTemperatureACRLimit` | C | Minimale Raumlufttemperatur für aktive Lüftung. | -100 ... 100  | _xxx_
-| `MaximumEnviromentAirTemperatureACRLimit` | C | Maximale Außenlufttemperatur für aktive Lüftung. | -100 ... 100  | _xxx_
-| `MinimumEnviromentAirTemperatureACRLimit` | C | Minimale Außenlufttemperatur für aktive Lüftung. | -100 ... 100  | _xxx_
-| `DeltaTemperatureACRLimit` | K | Minimale Differenz von Raumlufttemperatur minus Außenlufttemperatur (Tzone - Tout) für aktive Lüftung. | -100 ... 100  | _xxx_
-| `WindSpeedACRLimit` | m/s | Maximale Windgeschwindigkeit für aktive Lüftung. | 0 ... 40  | _xxx_
-|====================
-
-Die dazugehörigen zeitabhängigen Schedule-Parameter sind gleichartig benannt, jedoch jeweils mit dem Suffix `Schedule`.
-
-
-
-[NOTE]
-====
-Eine allgemeine Abhängigkeit von Wind- und/oder Temperaturpotentialen ist möglich, wenn man für einen odere mehrere Koeffizienten Abweichungen von dem/den Standardwert(en) setzt. Die allgemeine Formel zur modifizierten Luftwechselrate lautet:
-
-n = n * (C1 + C2 * (Tzone - Tout) + C3 * windSpeed + C4 * windSpeed²)
-
-Die Modifikation der Luftwechselrate wird immer auf beide Luftwechselraten (konstant und zeitgesteuert) angewendet.
-
-TODO : Spezifizieren
-
-====
-
+Die Regelparameter müssen für das Modell `ScheduledWithBaseACR` stets komplett als konstante Parameter definiert werden. Sie können jedoch durch die zugehörigen Zeitplanparameter überschrieben werden. Die dazugehörigen zeitabhängigen Schedule-Parameter sind gleichartig benannt, jedoch jeweils mit dem Suffix `Schedule`.
 
 ### Ausgabegrößen
 
-Die berechneten Lüftungswärmeverluste/-gewinne können als zonenspezifische Größen über die Ergebnisgröße
-`Zone.VentilationHeatLoad` in [W] abgerufen werden.
+Das Lüftungsmodell generiert eine zonenspezifische Ergebnisgröße:
+
+- `VentilationHeatFlux` in [W]
+
+
+Die dafür berechneten Lüftungsraten werden als vektorwertige Ergebnisgrößen des Modellobjekts selbst bereitgestellt:
+
+- `VentilationRate` in [1/h] und 
+
 
 
 ## Steuerungsmodell für Verschattung
 
-Ein Verschattungregelungsmodell ist eine spezielle Art von Regelungsmodell, das einen Signalwert zwischen 0 (keine Verschattung) und 1 (volle Verschattung) zurückgibt. Das tatsächliche Ausmaß der Verschattung bzw. die Reduzierung der solaren Gewinne wird durch den Verschattungs-Parameterblock (`Shading`, siehe <<window_shading>>) bestimmt. Somit kann das gleiche Regelmodell für verschiedene Verschattungseinrichtungen verwendet werden.
+Ein Verschattungregelungsmodell ist eine spezielle Art von Regelungsmodell, das einen Signalwert zwischen 0 (keine Verschattung) und 1 (volle Verschattung) zurückgibt. Das tatsächliche Ausmaß der Verschattung bzw. die Reduzierung der solaren Gewinne wird durch den Verschattungs-Parameterblock (`Shading`, siehe <<window_shading>>) bestimmt. Somit kann das gleiche Regelmodell für verschiedene Verschattungseinrichtungen verwendet werden. Da es bei Verschattungseinrichtungen keinen expliziten Zonenbezug gibt, werden Verschattungskontrollmodelle über ihre eindeutige ID referenziert.
 
 .Parameterdefinition für Verschattungsregelungsmodell
-[source,xml, indent=0]
 ====
+[source,xml, indent=0]
 ----
 <Models>
     <ShadingControlModels>
@@ -225,28 +196,29 @@ Ein Verschattungregelungsmodell ist eine spezielle Art von Regelungsmodell, das 
 ----
 ====
 
-Das Verschattungskontrollmodell verlangt 2 Parameter `MaxIntensity` und `MinIntensity` und implementiert eine digitale Regelung mit Hysterese. Zunächst muss die Globalstrahlungsintensität auf den Sensor den oberen Grenzwert überschreiten `MaxIntensity`, wonach die Verschattung geschlossen wird (Kontrollmodell liefert 1). Danach muss die Strahlungsintensität zunächst unter die untere Grenze sinken (`MinIntensity`), bevor die Verschattung wieder geöffnet wird (Kontrollmodell liefert 0).
+Das Verschattungskontrollmodell verlangt zwei Parameter `MaxIntensity` und `MinIntensity` und implementiert eine digitale Regelung mit Hysterese. Zunächst muss die Globalstrahlungsintensität auf den Sensor den oberen Grenzwert (`MaxIntensity`) überschreiten, wonach die Verschattung geschlossen wird (Kontrollmodell liefert 1). Danach muss die Strahlungsintensität zunächst unter die untere Grenze sinken (`MinIntensity`), bevor die Verschattung wieder geöffnet wird (Kontrollmodell liefert 0).
 
-Für die Auswertung wird eine Horizontalstrahlung benötigt. Dafür muss eine Oberfläche ausgewählt werden und als `sensorID` angegeben werden. Möglich sind hier 3 Optionen:
+Für die Auswertung wird eine Horizontalstrahlung benötigt. Dafür muss eine Oberfläche ausgewählt werden und als `sensorID` angegeben werden. 
+
+Möglich sind hier 3 Optionen:
 
 - allgemeiner Sensor auf einer Fläche (siehe <<location_sensors>>)
 - ID eines Fensters (eigentlich ID des _embedded object_, welches das Fenster enthält); hier wird die Globalstrahlung durch das Fenster als Eingangsgröße verwendet, einschließlich eventueller externer Verschattung bzw. Eigenverschattung 
 - ID einer opaquen Fläche; hier wird die Globalstrahlung auf eine opaque Fläche als Eingangsgröße verwendet, einschließlich eventueller externer Verschattung bzw. Eigenverschattung 
 
-Damit diese IDs eindeutig auflösbar sind, müssen Sensoren, Fenster und Konstruktionen global eindeutige IDs tragen.
+Damit diese IDs eindeutig auflösbar sind, müssen Sensoren, Fenster und Konstruktionen global eindeutige IDs tragen (siehe auch <<uniqueness_requirements>>).
 
 ### Ausgabegrößen
 
 Das Verschattungssteuerungsmodell liefert als Ergebnisgrößen:
 
 - `ShadingControlValue` - Steuerungssignal für Verschattung: 0 - komplett offen, 1 - komplett geschlossen, Zwischenwerte sind möglich
-- `SolarIntensityOnShadingSensor` - Solarstrahlungsintensität auf ausgewählten Sensor, der für die Regelung verwendet wird
+- `SolarIntensityOnShadingSensor` - Solarstrahlungsintensität in [W/m2] auf ausgewählten Sensor, der für die Regelung verwendet wird
 
 
 ## Modell für interne Lasten
 
-Das interne Lastenmodell wird verwendet, um die Wärmelasten von Geräten, Personen und Beleuchtung für Zonen zu definieren. Interne Lasten werden genauso definiert wie natürliche Lüftungsmodelle. Der Objektlisten-tag `ZoneObjectList` identifiziert die Zonen, in denen interne Lasten berücksichtigt werden sollen.
-Es dürfen nicht zwei interne Lastmodelle existieren, die sich auf dieselben Zonen beziehen (nur eine interne Last pro Zone).
+Das Modell für interne Lasten wird verwendet, um die Wärmelasten von Geräten, Personen und Beleuchtung für Zonen zu definieren. Interne Lasten werden genauso definiert wie natürliche Lüftungsmodelle. Der Objektlisten-tag `ZoneObjectList` identifiziert die Zonen, in denen interne Lasten berücksichtigt werden sollen. Wie auch beim Modell für natürliche Lüften dürfen Zonen immer nur einmal referenziert werden (es  dürfen nicht zwei interne Lastmodelle existieren, die sich auf dieselben Zonen beziehen).
 
 .Definitionsblock für interne Lasten
 ====
@@ -279,7 +251,7 @@ a| Gibt an, wie die internen Lasten angesetzt werden sollen
 |====================
 
 
-Fließkommaparameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des Tags `IBK:Parameter`):
+Fließkommaparameter (siehe <<IBK_Parameter>> für eine Beschreibung des Elementtyps `IBK:Parameter`):
 
 [options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
 |====================
@@ -294,10 +266,13 @@ Fließkommaparameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung d
 
 [NOTE]
 ====
-Die Zonennutzfläche ist nicht zwingend die Grundfläche einer Zone sondern wird aus dem Parameter _Area_ der Zonendefinition gewählt. Dadurch ist es möglich, z.B. im Dachgeschoss mit Schrägen die tatsächlich nutzbare Fläche zu definieren und zu verwenden. Deshalb wird der _Area_ Parameter in allen Zonen benötigt, für die ein `InternalLoadsModel` angewendet werden soll.
+Die _Zonennutzfläche_ ist nicht zwingend die _Grundfläche_ einer Zone sondern wird aus dem Parameter _Area_ der Zonendefinition gewählt. Dadurch ist es möglich, z.B. im Dachgeschoss mit Schrägen, die tatsächlich nutzbare Fläche zu definieren und zu verwenden. Deshalb wird der _Area_ Parameter in allen Zonen benötigt, für die ein `InternalLoadsModel` angewendet werden soll.
 ====
 
+Die Parameter `xxxRadiationFraction` geben an, welcher Prozentsatz der berechneten internen Lasten als Strahlungsfluss flächengewichtet auf opake Oberflächen, die die Zone umschließen, aufgebracht werden soll. 
+
 Der Modelltyp `Constant` übernimmt die internen Lasten aus den Parametern (siehe oben).
+
 Wenn der Modelltyp `Scheduled` verwendet wird, werden die tatsächlichen Lasten aus dem Zeitplan entnommen.
 
 Die folgenden Zeitplanparameter sind erforderlich:
@@ -306,7 +281,9 @@ Die folgenden Zeitplanparameter sind erforderlich:
 - `PersonHeatLoadPerAreaSchedule [W/m2]`
 - `LightingHeatLoadPerAreaSchedule [W/m2]`
 
-Die zonenspezifischen Ausgangsgrößen heißen: 
+### Ausgaben 
+
+Das Modell stellt folgende Ausgangsgrößen zur Verfügung: 
 
 - `ConvectiveEquipmentHeatLoad [W]`
 - `ConvectivePersonHeatLoad [W]`
@@ -318,14 +295,13 @@ Die zonenspezifischen Ausgangsgrößen heißen:
 Dies sind vektoriell dargestellte Größen, die in Ausgangsdefinitionen referenziert werden müssen, z. B. mit: `ConvectiveEquipmentHeatLoad[id=3]` für die konvektive Gerätelast in Zone #3.
 
 
-Die Parameter `xxxRadiationFraction` geben an, welcher Prozentsatz der berechneten internen Lasten als Strahlungsfluss flächengewichtet auf opake Oberflächen, die die Zone umschließen, aufgebracht werden soll. 
 
 
 [[ZoneControlThermostat]]
 ## Modell für Thermostate
 
 Das Thermostatmodell beschreibt, auf welche Raumsollwerte konditioniert werden soll. Angegeben werden können Heiz- und/oder Kühlsolltemperaturen für die Raumluft oder operative Raumluft.
-Der Objektlisten-tag `ZoneObjectList` identifiziert die Zonen, in denen Thermostate berücksichtigt werden sollen. Es darf nur ein Modell pro Zone existieren.
+Der Objektlisten-tag `ZoneObjectList` identifiziert die Zonen, in denen Thermostate berücksichtigt werden sollen. Wie auch beim Lüftungsmodell  darf nur ein Modell pro Zone existieren.
 
 .Definitionsblock für Thermostate
 ====
@@ -360,7 +336,7 @@ a| Gibt an, wie die Thermostat-Parameter angesetzt werden sollen
 |====================
 
 
-Fließkommaparameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des Tags `IBK:Parameter`):
+Fließkommaparameter (siehe <<IBK_Parameter>> für eine Beschreibung des Elementtyps `IBK:Parameter`):
 
 [options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
 |====================
@@ -369,11 +345,19 @@ Fließkommaparameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung d
 | `CoolingSetpoint` | C | konstanter Kühlsollwert | > `HeatingSetpoint` | _erforderlich für Modelltyp_ `Constant`
 |====================
 
+Der Modelltyp `Constant` übernimmt die Sollwerte aus den Parametern (siehe oben).
+
+Wenn der Modelltyp `Scheduled` verwendet wird, werden die tatsächlichen Sollwerte aus dem Zeitplan entnommen. Dafür sind folgende Zeitplanparameter erforderlich:
+
+- `HeatingSetpointSchedule [C]`
+- `CoolingSetpointSchedule [C]`
+
+
 ### TemperatureType
 
-Der XML-tag `TemperatureType` enthält eine Zeichenkette zur Auswahl eines bestimmten Typs (`AirTemperature` wird standardmäßig verwendet, wenn das tag fehlt).
+Das XML-Element `TemperatureType` enthält eine Zeichenkette zur Auswahl eines bestimmten Typs (`AirTemperature` wird standardmäßig verwendet, wenn das Element fehlt).
 
-.verfügbare TemperatureTypes
+.Verfügbare Temperatursensoren
 [options="header", cols="20%, 80%", width="100%"]
 |====================
 |Name|Beschreibung
@@ -383,23 +367,15 @@ Der XML-tag `TemperatureType` enthält eine Zeichenkette zur Auswahl eines besti
 
 [NOTE]
 ====
-Ein Thermostat hält nur die Sollwerte für die Zone. Eine Konditionierung der Zone erfolgt erst wenn zusätzlich eine Heizungs- und/oder Kühlmodell für die Zone integriert ist. Auch bei den Zeitplänen ist immer darauf zu achten, dass der Heizsollwert < Kühlsollwert ist.
+Ein Thermostat hält nur die Sollwerte für die Zone. Eine Konditionierung der Zone erfolgt erst, wenn zusätzlich eine Heizungs- und/oder Kühlmodell für die Zone integriert ist. Bei den Zeitplänen ist immer darauf zu achten, dass der Heizsollwert < Kühlsollwert ist.
 ====
 
-Der Modelltyp `Constant` übernimmt die Sollwerte aus den Parametern (siehe oben).
-Wenn der Modelltyp `Scheduled` verwendet wird, werden die tatsächlichen Sollwerte aus dem Zeitplan entnommen.
+### Ausgaben
 
-Die folgenden Zeitplanparameter sind erforderlich:
-
-- `HeatingSetpointSchedule [C]`
-- `CoolingSetpointSchedule [C]`
-
-Die zonenspezifischen Ausgangsgrößen heißen: 
+Die zonenspezifischen Ausgangsgrößen heißen:
 
 - `HeatingSetpoint [C]`
 - `CoolingSetpoint [C]`
-
-Dies sind vektoriell dargestellte Größen, die in Ausgangsdefinitionen referenziert werden müssen, z. B. mit: `HeatingSetpoint[id=3]` für den Heizsollwert in Zone #3.
 
 
 ## Modell für ideale thermische Konditionierung
