@@ -219,6 +219,12 @@ void SVSimulationLocationOptions::updateLocationInfo(const SVClimateFileInfo * c
 	// also update the location line edits
 	m_ui->lineEditLatitude->setValue(climateInfoPtr->m_latitudeInDegree);
 	m_ui->lineEditLongitude->setValue(climateInfoPtr->m_longitudeInDegree);
+
+	// we also want to update the NANDRAD::Location (needed for shading calculation)
+	NANDRAD::KeywordList::setParameter(m_location->m_para, "Location::para_t", NANDRAD::Location::P_Longitude, climateInfoPtr->m_longitudeInDegree);
+	NANDRAD::KeywordList::setParameter(m_location->m_para, "Location::para_t", NANDRAD::Location::P_Latitude, climateInfoPtr->m_latitudeInDegree);
+	m_location->m_timeZone = climateInfoPtr->m_timeZone;
+
 	int index = climateInfoPtr->m_timeZone+12;
 	if (index < 0 || index > 24)
 		index = 12;
