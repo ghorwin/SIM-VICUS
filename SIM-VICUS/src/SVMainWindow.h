@@ -263,9 +263,9 @@ private slots:
 	void on_actionResetView_triggered();
 
 	void on_actionSimulationExportFMI_triggered();
-	void on_actionExport_View3D_triggered();
+	void on_actionExportView3D_triggered();
 
-	void on_actionCalculate_Shading_Factors_triggered();
+	void on_actionCalculateShadingFactors_triggered();
 
 private:
 	/*! Sets up all dock widgets with definition lists. */

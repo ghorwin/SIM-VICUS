@@ -171,8 +171,8 @@
     <addaction name="actionSimulationHydraulicNetwork"/>
     <addaction name="separator"/>
     <addaction name="actionSimulationExportFMI"/>
-    <addaction name="actionExport_View3D"/>
-    <addaction name="actionCalculate_Shading_Factors"/>
+    <addaction name="actionExportView3D"/>
+    <addaction name="actionCalculateShadingFactors"/>
    </widget>
    <widget class="QMenu" name="menu_Buildings">
     <property name="title">
@@ -650,12 +650,12 @@
     <string>Opens the FMU export dialog.</string>
    </property>
   </action>
-  <action name="actionExport_View3D">
+  <action name="actionExportView3D">
    <property name="text">
     <string>Export View3D</string>
    </property>
   </action>
-  <action name="actionCalculate_Shading_Factors">
+  <action name="actionCalculateShadingFactors">
    <property name="text">
     <string>Calculate Shading Factors</string>
    </property>
