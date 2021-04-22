@@ -114,6 +114,7 @@ Verglasungssysteme werden in einer Liste innerhalb des XML-tags `WindowGlazingSy
 .Parameterdefinition für ein Verglasungssystem
 [Quelle,xml, indent=0]
 ====
+[source,xml]
 ----
 <WindowGlazingSystems>
 	<WindowGlazingSystem id="123" modelType="Standard">

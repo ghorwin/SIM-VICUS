@@ -153,7 +153,7 @@ n = n_Grundluftwechsel                          // wenn Bedingungen nicht erfül
 n = n_Grundluftwechsel + n_erhöhterLuftwechsel  // wenn Bedingungen erfüllt
 ```
 
-#### Regelbedingungen
+### Regelbedingungen
 
 Folgende Bedingungen müssen _alle_ erfüllt sein, damit der erhöhte Luftwechsel addiert wird.
 
@@ -161,7 +161,6 @@ Folgende Bedingungen müssen _alle_ erfüllt sein, damit der erhöhte Luftwechse
 - Außentemperatur: `MinimumEnviromentAirTemperatureACRLimit`< T_Außenluft < `MaximumEnviromentAirTemperatureACRLimit`
 - Temperaturdifferenz: T_Raum - T_Außenluft < `DeltaTemperatureACRLimit`, dabei kann `DeltaTemperatureACRLimit` auch negativ sein. Damit können auch Heizeffekte (Raum kalt, Außenluft warm) berücksichtigt werden. 
 - Windgeschwindigkeit: akt. Wingeschwindigkeit < `WindSpeedACRLimit`
-
 
 
 
@@ -197,7 +196,7 @@ TODO : Spezifizieren
 ====
 
 
-#### Ausgabegrößen
+### Ausgabegrößen
 
 Die berechneten Lüftungswärmeverluste/-gewinne können als zonenspezifische Größen über die Ergebnisgröße
 `Zone.VentilationHeatLoad` in [W] abgerufen werden.
@@ -445,7 +444,7 @@ Fließkommaparameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung d
 Damit das Modell auf die jeweilige Zone angewendet wird, ist zwingend das <<ZoneControlThermostat>> nötig, welches für die gleichen Zone parametriert sein muss. Dieses liefert als Eingangsgrößen für das `ZoneIdealHeatingCooling` die Größen `HeatingSetpoint` und `CoolingSetpoint`.
 ====
 
-#### Regelungsimplementierung
+### Regelungsimplementierung
 
 Standardmäßig verwendet das ideale Konditionierungsmodell einen P-Regler, nach dem Schema:
 
@@ -461,7 +460,7 @@ Heizlast = MaxHeatingPowerPerArea * clip( (T_soll - T_raum) / DeltaT + 0.5))
 `T_raum` ist entweder die Lufttemperatur oder die operative Temperatur. Dafür ist die Information im ThermostatModell notwendig.
 
 
-#### Ausgaben
+### Ausgaben
 
 Die zonenspezifischen Ausgangsgrößen heißen: 
 

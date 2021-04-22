@@ -1,10 +1,12 @@
 :imagesdir: ./images
 [[climatic_loads]]
-# Klimalasten
+# Klimadaten und Standortinformationen
+
+:xrefstyle: short
 
 ## Übersicht
 
-Klimalasten werden in NANDRAD über Klimadateien bereitgestellt. Für die Berechnung der Sonneneinstrahlung werden Informationen über den Gebäudestandort (in der Regel in der Klimadatei enthalten) sowie die Ausrichtung und Neigung der verschiedenen Konstruktionsflächen (definiert für Außenflächen, siehe <<construction_instances,Geometry/Constructions>>) benötigt.
+Klimalasten werden in NANDRAD über Klimadateien bereitgestellt. Für die Berechnung der Sonneneinstrahlung werden Informationen über den Gebäudestandort (in der Regel in der Klimadatei enthalten) sowie die Ausrichtung und Neigung der verschiedenen Konstruktionsflächen benötigt (definiert für Außenflächen, siehe <<construction_instances>>).
 
 ## Spezifikation
 
@@ -15,70 +17,75 @@ Informationen über Standort- und Klimadaten werden im Abschnitt `Location` der 
 [source,xml]
 ----
 <Location>
+	<ClimateFilePath>${Projektverzeichnis}/climate/GER_Potsdam_2017.c6b</ClimateFilePath>
 	<IBK:Parameter name="Latitude" unit="Deg">51</IBK:Parameter>
 	<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
 	<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 	<IBK:Parameter name="Altitude" unit="m">100</IBK:Parameter>
 	<IBK:Flag name="PerezDiffuseRadiationModel">false</IBK:Flag>
-	<ClimateFileName>${Projektverzeichnis}/climate/GER_Potsdam_2017.c6b</ClimateFileName>
 </Location>
 ----
 ====
 
-Parameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des tags `IBK:Parameter`):
+Die Außenklimabedingungen, einschließlich Standortinformationen werden aus einer Klimadatei bezogen, angegeben im Element `<ClimateFilePath>`. Dieser kann Platzhalter enthalten (siehe <<path_placeholders>>).
+
+Zusätzliche Parameter (siehe <<IBK_Parameter>> für eine Beschreibung des Elementtyps `IBK:Parameter`):
 
 [options="header",cols="18%,^ 15%,38%,^ 20%,10%",width="100%"]
 |====================
 |Name|Einheit|Beschreibung|Wertebereich |Verwendung
 |`Albedo`|---|Wird für die Berechnung der diffusen Sonneneinstrahlung verwendet (siehe <<loads_solar_radiation>>)| 0...1 |_erforderlich_
-|`Altitude`|m|wird für bestimmte höhenbezogene Parameter benötigt (**TODO**)| >0 | _optional_
+|(*)`Altitude`|m|wird für bestimmte höhenbezogene Parameter benötigt | >0 | _optional_
 |`Longitude`|Deg|Wenn angegeben, wird der Ortsparameter `Longitude` der Klimadatendatei überschrieben (siehe <<location_settings>>).|-180...180|_optional_
 |`Latitude`|Deg|Wenn angegeben, wird der Ortsparameter `Latitude` der Klimadatendatei überschrieben (siehe <<location_settings>>).|-90...90|_optional_
 |====================
 
-Flags und Optionen (siehe Abschnitt <<IBK_Flag>> für eine Beschreibung des tags `IBK:Flag`):
+_(*) wird noch nicht verwendet._
+
+Flags und Optionen (siehe <<IBK_Flag>> für eine Beschreibung des Elementtyps `IBK:Flag`):
 
 [options="header",cols="15%,65%,10%,10%",width="100%"]
 |====================
 | Name | Beschreibung | Standard | Verwendung 
 | `PerezDiffuseRadiationModel` | Legt fest, ob das Perez-Modell für die Berechnung der diffusen Sonnenstrahlung verwendet werden soll | _false_ | _optional_
+| `ContinuousShadingFactorData` | Wenn gesetzt werden Verschattungsdaten als kontinuierliche Zeitreihen behandelt (siehe <<precomputed_shading>>) | _false_ | _optional_
 |====================
 
-Schließlich definiert das tag `<ClimateFileName>` den Pfad zur Klimadatei.
 
 [[loads_climate_files]]
 ### Klimadateien
 
-Derzeit werden `c6b`, `wac` und `epw` Dateien unterstützt (siehe auch Hilfe zum Werkzeug https://bauklimatik-dresden.de/ccmeditor/help[CCM-Editor]).
+Derzeit werden `c6b`, `wac` und `epw` Dateien unterstützt (siehe auch Dokumentation zur Software https://bauklimatik-dresden.de/ccmeditor/help[CCM-Editor]).
 
-Sie müssen den Pfad zur Klimadatei im `<ClimateFileName>`-tag angeben. Dabei können Sie einen absoluten oder relativen Pfad angeben.
+Sie müssen den Pfad zur Klimadatei im `<ClimateFileName>`-Element angeben. Dabei können Sie einen absoluten oder relativen Pfad angeben.
 
 Wenn ein relativer Pfad angegeben wird, wird dieser mit dem aktuellen Arbeitsverzeichnis als Referenz aufgelöst. Wenn Sie zum Beispiel angegeben haben 
 
 [source,xml]
 ----
-<KlimaDateiname>GER_Potsdam_2017.c6b</KlimaDateiname>
+<ClimateFilePath>GER_Potsdam_2017.c6b</ClimateFilePath>
 ----
 
 und der Solver aus dem Verzeichnis `/home/user/sim/Project1` gestartet wird, wird die Klimadatendatei in `/home/user/sim/Project1/GER_Potsdam_2017.c6b` gesucht. Wenn der Solver von einem anderen Verzeichnis aus gestartet wird, wird die referenzierte Klimadatendatei nicht gefunden und es wird eine Fehlermeldung ausgegeben.
 
-Um dieses Problem zu vermeiden, können Sie Verzeichnisplatzhalter angeben, um die Klimadatendatei _relativ_ zum Speicherort der Projektdatei zu finden. Der eingebaute Pfadplatzhalter `${Project Directory}` wird durch das Verzeichnis ersetzt, in dem sich die Projektdatei befindet. Verwenden Sie den Platzhalter einfach wie einen regulären Verzeichnisteil, z. B:
+Um dieses Problem zu vermeiden, können Sie Verzeichnisplatzhalter angeben, um den Pfad zur die Klimadatendatei _relativ_ zum Speicherort der Projektdatei anzugeben. Der eingebaute Pfadplatzhalter `${Project Directory}` wird durch das Verzeichnis ersetzt, in dem sich die Projektdatei befindet. Verwenden Sie den Platzhalter einfach wie einen regulären Verzeichnisteil, z. B:
 
 [source,xml]
 ----
-<KlimaDateiname>${Project Directory}/Klima /GER_Potsdam_2017.c6b</KlimaDateiname>
+<ClimateFilePath>${Project Directory}/climate /GER_Potsdam_2017.c6b</ClimateFilePath>
 ----
 
 Es ist möglich, für alle extern referenzierten Dateien eigene Platzhalter im Projekt zu definieren, siehe <<path_placeholders>>.
 
 
 [[location_settings]]
-### Gebäude-/Stationsstandort
+### Gebäude-/Klimastandort
 
-Klimadatendateien enthalten Informationen über Breiten- und Längengrad der Wetterstation, die auch als Standort des Gebäudes angenommen wird. Dadurch wird sichergestellt, dass simulierte Zeit und Sonnenstand übereinstimmen.
+Klimadatendateien enthalten Informationen über Breiten- und Längengrad der Wetterstation, die auch als Standort des Gebäudes angenommen wird. Dadurch wird sichergestellt, dass Simulationszeit und Sonnenstand übereinstimmen.
 
-Es ist möglich, Breitengrad/Längengrad in der Projektdatei zu definieren. Wenn diese Parameter in der Projektdatei angegeben werden, müssen immer **beide** Parameter angegeben werden (und gültig sein), dann werden diese Parameter aus der Projektdatei anstelle der Standortparameter der Klimadatei verwendet.
-[VORSICHT]
+Es ist jedoch auch möglich, den Breitengrad/Längengrad in der Projektdatei anders zu definieren. Wenn diese Parameter in der Projektdatei angegeben werden (es müssen immer **beide** Parameter angegeben werden und gültig sein), werden diese Parameter aus der Projektdatei anstelle der Standortparameter der Klimadatei verwendet.
+
+[CAUTION]
 ====
 Durch die Angabe eines von der Klimastation abweichenden Breitengrades kann der berechnete Sonnenstand nicht mehr mit dem Sonnenstand an der Wetterstation übereinstimmen, was zu möglicherweise falschen Solarstrahlungslasten führt.
 ====
@@ -88,12 +95,12 @@ Gültiger Wertebereich für `Latitude` ist [-90,90] Grad (positive Werte entspre
 
 ### Zyklische (jährliche) und kontinuierliche (mehrjährige) Klimadaten
 
-Die Klimadaten-Datei kann 8760 Stundenwerte für ein ganzes Jahr enthalten. Alles andere wird als beliebiger Bereich von Zeitwerten betrachtet, der ein bestimmtes Zeitintervall angibt, eventuell auch mit variierenden Zeitabständen zwischen den Datenpunkten. Die letztgenannten Klimadateien können nicht für die jährliche/zyklische Berechnung verwendet werden, sondern benötigen ein bestimmtes (passendes) Simulationszeitintervall (siehe auch Abschnitt <<simulation_interval>>).
+Die Klimadaten-Datei kann 8760 Stundenwerte für ein ganzes Jahr enthalten. Anderfalls werden die Klimadaten als kontinuierlich abgelegte Daten für Zeitwerte in einem beliebigen Zeitbereich betrachtet. Dabei können die Klimadaten auch mit variierenden Zeitabständen zwischen den Datenpunkten definiert sein. Solche Klimadateien können nicht für die jährliche/zyklische Berechnung verwendet werden, sondern benötigen ein bestimmtes (passendes) Simulationszeitintervall (siehe <<simulation_interval>>).
 
 
 #### Zyklisches Jahresklima
 
-Die Klimadaten werden in Stundenwerten bereitgestellt. Die Interpretation dieser Werte hängt von der Art der Größe ab. NANDRAD unterscheidet zwischen Zustandsgrößen und Fluß-/Lastgrößen.
+Hierbei werden die Klimadaten in Stundenwerten bereitgestellt. Die Interpretation dieser Werte hängt von der Art der physikalischen Größe ab. NANDRAD unterscheidet zwischen _Zustandsgrößen_ und _Fluss-/Lastgrößen_.
 
 Zustandsgrößen sind:
 
@@ -108,49 +115,48 @@ Fluss-/Lastgrößen sind:
 - direkte Sonnenstrahlungsintensität (in Normalrichtung der Sonne)
 - diffuse solare Strahlungsintensität (in horizontaler Ebene)
 - Regenlast
-- langwellige Himmelsemission
+- langwellige Himmelsemission/-gegenstrahlung
 
-:xrefstyle: short
-
-Es wird erwartet, dass die Zustandsgrößen als _instantielle Werte_ am __Ende jeder Stunde__ überwacht werden. Substündliche Werte werden durch lineare Interpolation erhalten, wie in <<fig_hourly_values>> gezeigt.
+Es wird erwartet, dass die Zustandsgrößen als _Momentanwerte_ am __Ende jeder Stunde__ angegeben werden. Substündliche Werte werden durch lineare Interpolation erhalten, wie in <<fig_hourly_values>> gezeigt.
 
 [[fig_hourly_values]]
-.lineare Interpolation verwenden, um sub-stündliche Werte aus stündlichen Datenpunkten zu rekonstruieren
+.Bei Zustandsgrößen wird eine lineare Interpolation verwendet, um den Zeitverlauf zwischen den stündlichen Momentanwerten zu rekonstruieren
 image::CCM_Interpolation1.png[]
 
 Fluss-/Lastgrößen werden als _Mittelwerte_ über die __letzte Stunde__ erwartet. Die substündlichen Werte werden durch lineare Interpolation zwischen den in der Mitte jeder Stunde platzierten Mittelwerten erhalten, wie in <<fig_hourly_load_values>> gezeigt.
 
 [[fig_hourly_load_values]]
-.mit linearer Interpolation zur Rekonstruktion von substündlichen Werten aus stündlichen Mittelwerten
+.Bei Flussgrößen/Lasten werden die Werte in die Stundenmitte verschoben und dann linear interpoliert.
 image::CCM_Interpolation2.png[]
-
-:xrefstyle: basic
-
-
-
-#### Kontinuierliche Daten
-
-Die Klimadatendatei enthält Datenpunkte (mindestens 2), die den frühesten Start- und spätesten Endpunkt der Simulation markieren.
 
 [NOTE]
 ====
-Wenn Sie die Simulation über die verfügbaren Klimadaten hinaus fortsetzen, werden die letzten Werte im Klimadatensatz konstant gehalten. Dies führt letztendlich zu sinnlosen Ergebnissen (es sei denn, dies ist in künstlichen Testfällen beabsichtigt).
+Die so erhaltenen Integralwerte in einer Stunde weichen leicht von den ursprünglichen integralen Mittelwerten ab (siehe z. B. Stunde zwischen 2:00 und 3:00). Die Fehler sind jedoch klein und heben sich im Tagesverlauf fast komplett auf. Dafür sind die generierten Zeitreihen und substündlichen Werte stets stetig.
 ====
 
-Da der Benutzer in den Klimadatendateien beliebige Zeitschritte bis hin zu winzigen Werten wählen kann, hängt die Genauigkeit der Eingabedaten von den Benutzereingaben ab. Zwischen den Zeitpunkten wird der Solver *alle Größen* in der Klimadatendatei linear interpolieren und nicht wie bei stündlichen Daten zwischen Zuständen und Lasten unterscheiden.
+#### Kontinuierliche Daten
+
+Hierbei enthält die Klimadatendatei Datenpunkte (mindestens 2), wodurch auch der früheste Start- und späteste Endpunkt der Simulation definiert wird.
+
+[NOTE]
+====
+Wenn Sie die Simulation über die verfügbaren Klimadaten hinaus fortsetzen, werden die letzten Werte im Klimadatensatz konstant gehalten. Dies führt in der Regel zu sinnlosen Ergebnissen (es sei denn, dies ist in künstlichen Testfällen beabsichtigt).
+====
+
+Da der Benutzer in den Klimadatendateien beliebige Zeitschritte bis hin zu winzigen Werten wählen kann, hängt die Genauigkeit der Eingabedaten von den Benutzereingaben ab. Zwischen den Zeitpunkten wird der Solver *alle Größen* in der Klimadatendatei linear interpolieren und **nicht** wie bei stündlichen Daten zwischen Zuständen und Lasten unterscheiden.
 
 [TIP]
 ====
-Um das gleiche Ergebnis wie bei jährlichen Stundendaten zu erzielen, müssen Klimadaten in 30-Minuten-Intervallen angegeben und interpolierte Werte am Ende und in der Mitte jeder Stunde selbst berechnet werden.
+Um das gleiche Ergebnis wie bei jährlichen, zyklischen Stundendaten zu erzielen, müssen Klimadaten in 30-Minuten-Intervallen angegeben und interpolierte Werte am Ende und in der Mitte jeder Stunde selbst berechnet werden.
 ====
 
 
 [[location_sensors]]
 ### Zusätzliche Strahlungssensoren
 
-Es ist möglich zusätzliche Ebenen (Sensoren) zu spezifizieren, um Lastausgänge für die Sonneneinstrahlung zu erzeugen. Dies geschieht durch die Angabe einer `Sensor`-Definition.
+Es ist möglich zusätzliche Ebenen (Sensoren) zu spezifizieren, um Strahlungslasten zu berechnen und für andere Modelle als Sensorgrößen zur Verfügung zu stellen. Dies geschieht durch die Angabe einer `Sensor`-Definition.
 
-.Definition eines Sensors am Standort
+.Definition von Sensoren
 ====
 [source,xml]
 ----
@@ -180,7 +186,7 @@ Es ist möglich zusätzliche Ebenen (Sensoren) zu spezifizieren, um Lastausgäng
 |====================
 
 
-Parameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des tags `IBK:Parameter`):
+Parameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des Elementtyps `IBK:Parameter`):
 
 [options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]
 |====================
@@ -195,17 +201,17 @@ Parameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des tags `IB
  | 0...180 | _erforderlich_
 |====================
 
-Einem Sensor muss eine eindeutige ID-Nummer und die obligatorischen Parameter `Orientation` und `Inclination` gegeben werden (siehe Abschnitt <<construction_instances,Construction Instances>> für Details zu deren Definition).
+Einem Sensor muss eine eindeutige ID-Nummer und die obligatorischen Parameter `Orientation` und `Inclination` gegeben werden (siehe  <<construction_instances>> für Details zu deren Definition).
 
 Für jeden Sensor werden 4 Ausgangsgrößen erzeugt:
 
-* `DirectSWRadOnPlane[<sensor id>]` - direkte Sonnenstrahlungsintensität auf der Ebene in [W/m2]
-* `DiffuseSWRadOnPlane[<sensor id>]` - diffuse Sonnenstrahlungsintensität auf der Ebene in [W/m2]
-* `GlobalSWRadOnPlane[<sensor id>]` - globale Strahlungsintensität auf der Ebene in [W/m2] (die Summe der beiden erstgenannten Größen)
-* `IncidenceAngleOnPlane[<sensor id>]` - der Einfallswinkel auf die Ebene in [Grad] (0°, wenn der Sonnenstrahl senkrecht zur Ebene steht, 90°, wenn der Strahl parallel zur Ebene steht oder wenn die Sonne unter dem Horizont ist)
+* `DirectSWRadOnPlane[<sensor id>]` - direkte Sonnenstrahlungsintensität auf die Sensorfläche in [W/m2]
+* `DiffuseSWRadOnPlane[<sensor id>]` - diffuse Sonnenstrahlungsintensität auf die Sensorfläche in [W/m2]
+* `GlobalSWRadOnPlane[<sensor id>]` - globale Strahlungsintensität auf die Sensorfläche in [W/m2] (die Summe der beiden erstgenannten Größen)
+* `IncidenceAngleOnPlane[<sensor id>]` - der Sonneneinfallswinkel auf die Sensorfläche in [Grad] (0°, wenn der Sonnenstrahl senkrecht zur Ebene steht, 90°, wenn der Strahl parallel zur Ebene verläuft oder wenn die Sonne unter dem Horizont ist)
 
-Beispiel für einen Sensorausgang (siehe auch Ausgangsbeschreibung im Abschnitt <<outputs>>).
-
+.Ausgabedefinition für Sensorwerte (siehe auch Beschreibung von Ergebnisdefinitionen in <<outputs>>).
+====
 [source,xml]
 ----
 <OutputDefinitionen>
@@ -213,86 +219,120 @@ Beispiel für einen Sensorausgang (siehe auch Ausgangsbeschreibung im Abschnitt 
     <!-- direkte Strahlung intensiv vom Sensor mit id=2 -->
 	<OutputDefinition>
 		<Quantity>DirektSWRadOnPlane[2]</Quantity> 
-		<ObjectListName>Ort</ObjectListName>
+		<ObjectListName>Location</ObjectListName>
 		<GridName>minütlich</GridName>
 	</OutputDefinition>
 	<!-- Einfallswinkel vom Sensor mit id=42 -->
 	<OutputDefinition>
 		<Quantity>IncidenceAngleOnPlane[42]</Quantity>
-		<ObjectListName>Ort</ObjectListName>
-		<GridName>Minütlich</GridName>
+		<ObjectListName>Location</ObjectListName>
+		<GridName>minütlich</GridName>
 	</OutputDefinition>
     ...
 </OutputDefinitions>
 ----
+====
 
 [[loads_solar_radiation]]
 ## Sonnenstrahlungsberechnung
 
-Die Berechnung der Sonneneinstrahlung folgt den in der __Physikalischen Modellreferenz__ aufgeführten Gleichungen. Der Parameter `Albedo` wird bei der Berechnung der diffusen Strahlungslast verwendet.
+Die Berechnung der Sonneneinstrahlung folgt den in der __Physikalischen Modellreferenz__ aufgeführten Gleichungen. Der Parameter `Albedo` wird bei der Berechnung der diffusen Strahlungslast verwendet. Die Schalter `PerezDiffuseRadiationModel` beinflusst die Berechnung der Diffusstrahlung.
 
 
 [[precomputed_shading]]
-## Vorberechnete Schattierung
+## Vorberechnete externe Verschattung/Eigenverschattung
 
-:xrefstyle: short
-
-Eine vorverarbeitende Software kann für jedes Flächenelement des Gebäudes den prozentualen Anteil der Fläche mit Sonneneinstrahlung berechnen. In <<fig_shading_factors>> wird zum Beispiel eine Fassade teilweise verschattet.
+In einem vorgelagerten Rechenschritt kann für jedes Flächenelement des Gebäudes der Anteil der sonnenbeschienenen Fläche berechnet werden. In <<fig_shading_factors>> wird zum Beispiel eine Fassade teilweise verschattet.
 
 [[fig_shading_factors]]
 .Darstellung einer teilverschatteten Fassade mit einem Fenster
 image::SolarShading.png[pdfwidth=12cm]
 
-Die Software kann nun den Prozentsatz der verschatteten Fläche sowohl für das opake Fassadenelement als auch für das eingebettete Fensterobjekt separat berechnen. Das Fenster ist zu ca. 80 % verschattet, und ca. 20 % der Fläche sind noch der Sonne ausgesetzt. Der Faktor, der für diese Zeit und die Fensterfläche gespeichert wird beträgt 0,2.
+Die Software kann nun den Prozentsatz der verschatteten Fläche sowohl für das opake Fassadenelement als auch für das Fensterobjekt separat berechnen. Das Fenster ist zu ca. 80 % verschattet, und ca. 20 % der opaquen Fläche sind noch der Sonne ausgesetzt. Der letztere Anteil wird auch als _Sonnenlichtfaktor_ bzw. _Abminderungsfaktor infolge Verschattung_ (engl. _shading factors_)  bezeichnet.
 
-Der für eine Konstruktion gespeicherte Faktor ist immer _exklusive_ aller eingebettete Objekte zu verstehen.  <<fig_shading_factor_example>> zeigt ein ähnliches Bild, jedoch einfacher zu berechnen.
+Der für eine opaque Konstruktion gespeicherte Faktor ist immer _exklusive_ aller eingebetteter Objekte zu verstehen.  <<fig_shading_factor_example>> zeigt ein ähnliches Beispiel, bei dem die Berechnung der Flächen und Sonnenlichfaktoren erläutert wird.
 
 [[fig_shading_factor_example]]
 .Berechnungsbeispiel für eine teilverschattete Fassade mit einem Fenster
 image::SolarShading_example.png[pdfwidth=12cm]
 
-Die Konstruktion hat eine Fläche von 18x8 = 144 m2. Das Fenster hat eine Fläche von 10x4 = 40 m2. Damit verbleibt für die Konstruktion eine opaque Fläche von 144 - 40 = 104 m2. 
+Die Konstruktion hat eine Fläche von 18x8 = 144 m2. Das Fenster hat eine Fläche von 10x4 = 40 m2. Damit verbleibt für die eine opaque Konstruktionsfläche von 144 - 40 = 104 m2. 
 
 Der Schatten auf dem Fenster allein nimmt 8x4 = 32 m2 ein. Der Sonnenlichtfaktor für das Fenster allein beträgt also 1 - 32/40 = 20%. 
 
-Die schattierte Fläche auf der opaken Fläche beträgt 12x8 - 8x4 = 96 - 32 = 64 m2.
+Die verschattete Fläche auf der opaken Konstruktion beträgt 12x8 - 8x4 = 96 - 32 = 64 m2.
 Der Sonnenlichtfaktor, der in der Gleichung für die Belastung durch die Sonneneinstrahlung verwendet werden muss beträgt also 1 - 64/104 = 38,5 %.
 
-Die Werte *0.385* und *0.2* werden in der Datei für die schattierten Flächenanteile gespeichert.
+Die Werte *0.385* und *0.2* werden in der Datei für die vorberechneten Sonnenlichtfaktoren gespeichert.
 
 Die mittlere Strahlungsintensität auf eine opaque Fläche ergibt sich dann aus:
 
 ```
-Mittlere direkte Strahlungslast in [W/m2] = Verschattungsfaktor (aus Datei) * direkte Strahlungslast
+Mittlere direkte Strahlungslast in [W/m2] = Sonnenlichtfaktor (aus Datei) * direkte Strahlungslast
 ```
 
-.Berechnung der Strahlungslast bei teilverschatteten Flächen
+### Dateiformat für vorberechnete Sonnenlichtfaktoren
+
+Die Datei mit den vorberechneten Sonnenlichtfaktoren wird im XML-Element `Location` definiert, im Kind-Element 
+`ShadingFactorFilePath`. Der hier angegebene Pfad kann ein absoluter Pfad oder ein relativer Pfad sein, der einem Platzhalter folgt (bspw. `${Project Directory}`, siehe <<path_placeholders>>).
+
+Die Datei kann als `tsv` Datei oder DataIO-Datei (ASCII oder Binärformat, Endungen `d6o` und `d6b`) bereitgestellt werden.
+
+Die Dateien enthalten für bestimmte, kontinuierlich ansteigende Zeitpunkte die jeweilse berechneten Sonnenlichtfaktoren.
+
+[NOTE]
 ====
-Es wird der Sonnenlichtfaktor 0.2 für das Fenster gelesen.
-
-Die Strahlungsintensität auf das Fenster ergibt sich zu:
-```
-direkte Strahlungslast mit Verschattung = 0.2 * direkte Strahlungslast
-```
-====
-
 Bei der Berechnung werden die Werte in der Datentabelle linear interpoliert.
+====
 
+Standardmäßig wird von zyklischen Jahresdaten ausgegangen. Dabei müssen die Zeitpunkte stets < 365 d bleiben. Sollen kontinuierliche Daten verwendet werden, muss der Schalter `ContinuousShadingFactorData` eingeschaltet sein.
 
-:xrefstyle: basic
+#### TSV-Format für Sonnenlichtfaktor-Dateien
 
-### Dateiformat für vorberechnete schattierte Fraktionen
+Bei Verwendung des  `tsv`-Formats müssen die Regeln des `tsv`-Dateiformats (siehe _PostProc 2_ Dokumentation) eingehalten werden. Es gibt eine einzelne Kopfzeile. Die erste Spalte ist die Zeitspalte mit Zeit-offsets relativ zu Mitternacht des 1. Januar des Startjahres. Es können beliebige Zeiteinheiten verwendet werden.
 
-Die Datei mit den vorberechneten Schattierungsfaktoren wird im XML-tag `Location` referenziert, als Child-tag 
-`ShadingFactorFileName`. Der hier angegebene Pfad kann ein absoluter Pfad oder ein relativer Pfad sein, der dem Platzhalter `${Project Directory}` folgt (siehe <<path_placeholders>>).
+Alle anderen Spalten enthalten die berechneten Sonnenlichtfaktoren, wobei jeder Spaltenkopf die jeweilige Fläche mit eindeutiger ID identifiziert. 
+Für opaque Flächen werden die IDs der jeweiligen Konstruktionsinstanzen verwendet. Bei Fenstern werden die IDs der eingebetteten Objekte verwendet.
+Als Werteeinheit muss `---` verwendet werden.
 
-Die Datei kann als `tsv` Datei oder DataIO-Datei (ASCII oder Binärformat) bereitgestellt werden.
+.TSV-Datei mit Sonnenlichtfaktoren für 4 Flächen
+====
+----
+Time [d]	1001 [---]	1002 [---]	1003 [---]	1004 [---]
+0	1	1	1	1
+181	1	1	1	1
+182	0	0	1	1
+185	0	0	1	1
+186	0	1	1	1
+188	0	1	1	1
+189	1	1	1	1
 
-Bei Verwendung des  `tsv`-Formats müssen die Regeln des `tsv`-Dateiformats (siehe _PostProc 2_ Dokumentation) eingehalten werden. Es gibt eine einzelne Kopfzeile. Die erste Spalte ist die Zeitspalte, mit entweder absoluten Zeitstempeln oder Zeit-offsets relativ zu Mitternacht des 1. Januar des Startjahres.
+----
+Fenster/Konstruktion mit IDs 1001 und 1002 werden in den Tagen 182 bis 188 verschattet. Die Fenster 1003 und 1004 bleiben die ganze Zeit unverschattet.
+====
 
-Alle anderen Spalten enthalten die berechneten Sonnenlichtfaktoren, wobei jeder Spaltenkopf die jeweilige Fläche mit eindeutiger ID identifiziert. Für opaque Flächen werden die IDs der jeweiligen Konstruktionsinstanzen verwendet. Bei Fenstern werden die IDs der eingebetteten Objekte verwendet.
-
+#### DataIO Format
 
 Bei Verwendung des DataIO-Formats muss das REFERENCE-Format verwendet werden. Das Feld INDICES enthält die IDs der jeweiligen Flächen.
 
+.DataIO-Datei mit Sonnenlichtfaktoren für 4 Flächen, analog zum obigen TSV-Beispiel
+====
+----
+D6OARLZ! 007.000
+TYPE          = REFERENCE
+QUANTITY      = 1001 | 1002 | 1003 | 1004
+VALUE_UNIT    = ---
+TIME_UNIT     = d
+INDICES       = 1001 1002 1003 1004
 
+0	1	1	1	1
+181	1	1	1	1
+182	0	0	1	1
+185	0	0	1	1
+186	0	1	1	1
+188	0	1	1	1
+189	1	1	1	1
+----
+====
+
+Für größere Gebäude ist das binäre DataIO-Format (mit gleichem Inhalt) zu empfehlen.

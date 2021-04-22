@@ -72,7 +72,7 @@ table {
 <h1>NANDRAD Modell-Referenz</h1>
 <div class="details">
 <span id="author" class="author">Andreas Nicolai &lt;andreas.nicolai@tu-dresden.de&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke</span><br>
-<span id="revnumber">version 0.2 (20.04.2021)</span>
+<span id="revnumber">version 0.2 (22.04.2021)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Inhaltsverzeichnis</div>
@@ -80,7 +80,11 @@ table {
 <li><a href="#_überblick">1. Überblick</a></li>
 <li><a href="#_nandrad_eingabedaten_und_projektdatei_referenz">2. NANDRAD Eingabedaten- und Projektdatei-Referenz</a>
 <ul class="sectlevel2">
-<li><a href="#project_file">2.1. Struktur der Projektdatei</a></li>
+<li><a href="#project_file">2.1. Struktur der Projektdatei</a>
+<ul class="sectlevel3">
+<li><a href="#_eindeutigkeitsforderungen_für_definitions_ids">2.1.1. Eindeutigkeitsforderungen für Definitions-IDs</a></li>
+</ul>
+</li>
 <li><a href="#basic_types">2.2. Grundlegende Datentypen in der NANDRAD-Projektdatei-Spezifikation</a>
 <ul class="sectlevel3">
 <li><a href="#IBK_Parameter">2.2.1. IBK:Parameter</a></li>
@@ -120,12 +124,12 @@ table {
 <li><a href="#_fenster">2.10.1. Fenster</a></li>
 </ul>
 </li>
-<li><a href="#climatic_loads">2.11. Klimalasten</a>
+<li><a href="#climatic_loads">2.11. Klimadaten und Standortinformationen</a>
 <ul class="sectlevel3">
 <li><a href="#_übersicht">2.11.1. Übersicht</a></li>
 <li><a href="#_spezifikation">2.11.2. Spezifikation</a></li>
 <li><a href="#loads_solar_radiation">2.11.3. Sonnenstrahlungsberechnung</a></li>
-<li><a href="#precomputed_shading">2.11.4. Vorberechnete Schattierung</a></li>
+<li><a href="#precomputed_shading">2.11.4. Vorberechnete externe Verschattung/Eigenverschattung</a></li>
 </ul>
 </li>
 <li><a href="#object_lists">2.12. Objektlisten und Ergebnisreferenzen</a>
@@ -245,10 +249,10 @@ um sich einen Überblick über die NANDRAD Projektdefinition zu verschaffen.</p>
 <p>Mit dem optionalen <code>DirectoryPlaceholders</code> können relative Pfadplatzhalter definiert werden, die für extern referenzierte Dateien verwendet werden sollen (siehe Abschnitt <a href="#path_placeholders">Pfad-Platzhalter</a>).</p>
 </div>
 <div class="paragraph">
-<p>Alle Projektdaten werden in den <code>&lt;Project&gt;</code>-Tag eingeschlossen.</p>
+<p>Alle Projektdaten werden in den <code>&lt;Project&gt;</code>-tag eingeschlossen.</p>
 </div>
 <div class="paragraph">
-<p>Eine Projektdatei kann die folgenden untergeordneten Tags enthalten (die Reihenfolge ist beliebig):</p>
+<p>Eine Projektdatei kann die folgenden untergeordneten tags enthalten (die Reihenfolge ist beliebig):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -268,7 +272,7 @@ um sich einen Überblick über die NANDRAD Projektdefinition zu verschaffen.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Location</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Klimadaten und Standorteinstellungen &#8594; <a href="#climatic_loads">Klimalasten</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Klimadaten und Standorteinstellungen &#8594; <a href="#climatic_loads">Klimadaten und Standortinformationen</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>SimulationParameter</code></p></td>
@@ -316,16 +320,38 @@ um sich einen Überblick über die NANDRAD Projektdefinition zu verschaffen.</p>
 </tr>
 </tbody>
 </table>
+<div class="sect3">
+<h4 id="_eindeutigkeitsforderungen_für_definitions_ids">2.1.1. Eindeutigkeitsforderungen für Definitions-IDs</h4>
+<div class="paragraph">
+<p>Im NANDRAD müssen folgenden Objekttypen in einem einzigen ID-Raum definiert werden, d.h. die IDs der unterschiedlichen Objekte dürfen sich nicht doppeln:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Zone</code></p>
+</li>
+<li>
+<p><code>ConstructionInstance</code></p>
+</li>
+<li>
+<p><code>EmbeddedObjects</code></p>
+</li>
+<li>
+<p><code>Location.Sensors</code></p>
+</li>
+</ul>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="basic_types">2.2. Grundlegende Datentypen in der NANDRAD-Projektdatei-Spezifikation</h3>
 <div class="paragraph">
-<p>Innerhalb der verschiedenen Spezifikationsabschnitte der Projektdatei werden einige grundlegende Datentypen / xml-Tags häufig verwendet. Die Regeln für die Spezifikation dieser Parameter sind im Folgenden definiert.</p>
+<p>Innerhalb der verschiedenen Spezifikationsabschnitte der Projektdatei werden einige grundlegende Datentypen / XML-tags häufig verwendet. Die Regeln für die Spezifikation dieser Parameter sind im Folgenden definiert.</p>
 </div>
 <div class="sect3">
 <h4 id="IBK_Parameter">2.2.1. IBK:Parameter</h4>
 <div class="paragraph">
-<p>Ein XML-Tag mit dem Namen <code>IBK:Parameter</code> definiert einen Fließkommaparameter (floating point value parameter), der durch einen Namen und eine physikalische Einheit identifiziert wird (obligatorische XML-Attribute <code>name</code> und <code>unit</code>). Der Wert des XML-Tags ist der eigentliche Parameterwert.</p>
+<p>Ein XML-Tag mit dem Namen <code>IBK:Parameter</code> definiert einen Fließkommaparameter (floating point value parameter), der durch einen Namen und eine physikalische Einheit identifiziert wird (obligatorische XML-Attribute <code>name</code> und <code>unit</code>). Der Wert des XML-tags ist der eigentliche Parameterwert.</p>
 </div>
 <div class="exampleblock">
 <div class="title">Beispiel 2. Parameter mit verschiedenen Einheiten</div>
@@ -348,10 +374,10 @@ um sich einen Überblick über die NANDRAD Projektdefinition zu verschaffen.</p>
 <div class="sect3">
 <h4 id="IBK_IntPara">2.2.2. IBK:IntPara</h4>
 <div class="paragraph">
-<p>Wird für Flaggen verwendet. Das obligatorische Attribut <code>name</code> identifiziert das Flag. Wird ein Flag nicht definiert, wird es als <em>fehlend</em> markiert, was bedeutet, dass entweder ein Standardwert verwendet wird oder - im Falle von obligatorischen Benutzerparametern - ein Fehler ausgelöst wird.</p>
+<p>Dieser Parameter wird für Flags verwendet. Das obligatorische Attribut <code>name</code> identifiziert das Flag. Wird ein Flag nicht definiert, wird es als <em>fehlend</em> markiert, was bedeutet, dass entweder ein Standardwert verwendet wird oder - im Falle von obligatorischen Benutzerparametern - ein Fehler ausgelöst wird.</p>
 </div>
 <div class="paragraph">
-<p>Wird für ganzzahlige Parameter verwendet. Das obligatorische Attribut <code>Name</code> identifiziert den Parameter. XML-Tag value ist der Parameterwert. Wird ein Parameter nicht definiert, wird er als <em>fehlend</em> markiert, was bedeutet, dass entweder ein Standardwert verwendet wird oder - im Falle von obligatorischen Benutzerparametern - ein Fehler ausgelöst wird.</p>
+<p>Wird für ganzzahlige Parameter verwendet. Das obligatorische Attribut <code>Name</code> identifiziert den Parameter. Der XML-tag <code>value</code> ist der Parameterwert. Wird ein Parameter nicht definiert, wird er als <em>fehlend</em> markiert, was bedeutet, dass entweder ein Standardwert verwendet wird oder - im Falle von obligatorischen Benutzerparametern - ein Fehler ausgelöst wird.</p>
 </div>
 <div class="exampleblock">
 <div class="title">Beispiel 3. Ganze Zahl (Integer) Parameter-Definition</div>
@@ -438,7 +464,7 @@ um sich einen Überblick über die NANDRAD Projektdefinition zu verschaffen.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Spezifischer Name, der sich auf den Raumtyp bezieht, für den der Jahresplan gesetzt wird</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>required</em></p></td>
@@ -485,7 +511,7 @@ um sich einen Überblick über die NANDRAD Projektdefinition zu verschaffen.</p>
 <p>Die Child-Tags <code>X</code> und <code>Y</code> enthalten jeweils ein obligatorisches Attribut <code>unit</code> mit der jeweiligen Werteinheit (siehe <a href="#units">Einheitendefinitionen</a>).</p>
 </div>
 <div class="paragraph">
-<p>Alternativ kann man auch eine Datei mit Tabulator-getrennten Spalten angeben, unter Verwendung des XML-Tags <code>TSVFile</code>.</p>
+<p>Alternativ kann man auch eine Datei mit Tabulator-getrennten Spalten angeben, unter Verwendung des XML-tags <code>TSVFile</code>.</p>
 </div>
 <div class="exampleblock">
 <div class="title">Beispiel 7. Linear Spline-Definition mit Angabe der Datei</div>
@@ -566,8 +592,8 @@ die Platzhalterpfade zu den Verzeichnissen auf dem lokalen Rechner leicht geänd
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;DirectoryPlaceholders&gt;</span>
-  <span class="nt">&lt;Platzhalter</span> <span class="na">name=</span><span class="s">"Klima DB"</span><span class="nt">&gt;</span>/home/sim/climate_DB<span class="nt">&lt;/Placeholder&gt;</span>
-  <span class="nt">&lt;Platzhalter</span> <span class="na">name=</span><span class="s">"DataFiles"</span><span class="nt">&gt;</span>/home/sim/data<span class="nt">&lt;/Placeholder&gt;</span>
+  <span class="nt">&lt;Placeholder</span> <span class="na">name=</span><span class="s">"Klima DB"</span><span class="nt">&gt;</span>/home/sim/climate_DB<span class="nt">&lt;/Placeholder&gt;</span>
+  <span class="nt">&lt;Placeholder</span> <span class="na">name=</span><span class="s">"DataFiles"</span><span class="nt">&gt;</span>/home/sim/data<span class="nt">&lt;/Placeholder&gt;</span>
 <span class="nt">&lt;/DirectoryPlaceholder&gt;</span></code></pre>
 </div>
 </div>
@@ -580,7 +606,7 @@ die Platzhalterpfade zu den Verzeichnissen auf dem lokalen Rechner leicht geänd
 <div class="sect2">
 <h3 id="project_info">2.4. Projektinformationen</h3>
 <div class="paragraph">
-<p>Dieser Abschnitt enthält Änderungszeiten/-daten und eine kurze Beschreibung des Projekts. Die folgenden untergeordneten Tags werden unterstützt.</p>
+<p>Dieser Abschnitt enthält Änderungszeiten/-daten und eine kurze Beschreibung des Projekts. Die folgenden untergeordneten tags werden unterstützt.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -625,7 +651,7 @@ die Platzhalterpfade zu den Verzeichnissen auf dem lokalen Rechner leicht geänd
 <div class="sect3">
 <h4 id="materials">2.5.1. Materialien</h4>
 <div class="paragraph">
-<p>In der NANDRAD-Projektdatei beginnt der Abschnitt der Materialdatenbank mit einem XML-Tag namens <code>materials</code>.</p>
+<p>In der NANDRAD-Projektdatei beginnt der Abschnitt der Materialdatenbank mit einem XML-tag namens <code>materials</code>.</p>
 </div>
 <div class="exampleblock">
 <div class="title">Beispiel 10. Materialien mit Parametern</div>
@@ -649,7 +675,7 @@ die Platzhalterpfade zu den Verzeichnissen auf dem lokalen Rechner leicht geänd
 </div>
 </div>
 <div class="paragraph">
-<p>In diesem tag beginnt jedes Materialeigenschaften-Set mit einem XML-Tag namens <code>Material</code> mit zwei XML-Attributen <code>id</code> und <code>displayName</code>.</p>
+<p>In diesem tag beginnt jedes Materialeigenschaften-Set mit einem XML-tag namens <code>Material</code> mit zwei XML-Attributen <code>id</code> und <code>displayName</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Tabelle 2. Attribute</caption>
@@ -683,7 +709,7 @@ die Platzhalterpfade zu den Verzeichnissen auf dem lokalen Rechner leicht geänd
 </tbody>
 </table>
 <div class="paragraph">
-<p>Für die Materialparameter wie Dichte, Wärmekapazität und Wärmeleitfähigkeit müssen diese im XML-Tag <code>IBK:Parameter</code> definiert werden (siehe <a href="#IBK_Parameter">IBK:Parameter</a>):</p>
+<p>Für die Materialparameter wie Dichte, Wärmekapazität und Wärmeleitfähigkeit müssen diese im XML-tag <code>IBK:Parameter</code> definiert werden (siehe <a href="#IBK_Parameter">IBK:Parameter</a>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -730,7 +756,7 @@ die Platzhalterpfade zu den Verzeichnissen auf dem lokalen Rechner leicht geänd
 <div class="sect3">
 <h4 id="construction_types">2.5.2. Konstruktionstypen</h4>
 <div class="paragraph">
-<p>Konstruktionen werden innerhalb des Abschnitts definiert, der mit einem XML-Tag <code>ConstructionTypes</code> beginnt.</p>
+<p>Konstruktionen werden innerhalb des Abschnitts definiert, der mit einem XML-tag <code>ConstructionTypes</code> beginnt.</p>
 </div>
 <div class="exampleblock">
 <div class="title">Beispiel 11. construction types mit Referenzen zu Materialobjekten</div>
@@ -750,7 +776,7 @@ die Platzhalterpfade zu den Verzeichnissen auf dem lokalen Rechner leicht geänd
 </div>
 </div>
 <div class="paragraph">
-<p>Innerhalb dieses Abschnitts beginnt jede Konstruktionsdefinition mit dem XML-Tag <code>ConstructionType</code> mit den XML-Attributen <code>id</code> und optional <code>displayName</code>:</p>
+<p>Innerhalb dieses Abschnitts beginnt jede Konstruktionsdefinition mit dem XML-tag <code>ConstructionType</code> mit den XML-Attributen <code>id</code> und optional <code>displayName</code>:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Tabelle 3. Attribute</caption>
@@ -784,7 +810,7 @@ die Platzhalterpfade zu den Verzeichnissen auf dem lokalen Rechner leicht geänd
 </tbody>
 </table>
 <div class="paragraph">
-<p>Eine Konstruktion besteht aus einer oder mehreren Materialschichten. Diese werden im untergeordneten XML-Tag mit dem Namen <code>MaterialLayers</code> definiert. Jede Materialschicht wird mit dem XML-Tag <code>MaterialLayer</code> mit den folgenden XML-Attributen definiert:</p>
+<p>Eine Konstruktion besteht aus einer oder mehreren Materialschichten. Diese werden im untergeordneten XML-tag mit dem Namen <code>MaterialLayers</code> definiert. Jede Materialschicht wird mit dem XML-tag <code>MaterialLayer</code> mit den folgenden XML-Attributen definiert:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -826,12 +852,12 @@ die Platzhalterpfade zu den Verzeichnissen auf dem lokalen Rechner leicht geänd
 <div class="title">Abbildung 1. Kollaborationsdiagramm für ConstructionType- und Material-Objekte</div>
 </div>
 <div class="paragraph">
-<p>Das <code>MaterialLayer</code> hat keine Child-Tags, da alle benötigten Daten wie oben beschrieben als XML-Attribute definiert sind.</p>
+<p>Das <code>MaterialLayer</code> hat keine Child-tags, da alle benötigten Daten wie oben beschrieben als XML-Attribute definiert sind.</p>
 </div>
 <div class="sect4">
 <h5 id="construction_active_layer">Aktive/beheizte Schichten</h5>
 <div class="paragraph">
-<p>Jeder Konstruktionsaufbau kann genau eine aktive Schicht haben, welche mit einem Heizregister versehen wird. Falls eine solche Schicht existiert, muss das XML-Tag <code>ActiveLayerIndex</code> angegeben sein. Dieses XML-Element enthalt den 0-basierten Index der Schicht, d.h. Index 0 entspricht der ersten Schicht in der <code>MaterialLayers</code>-Liste.</p>
+<p>Jeder Konstruktionsaufbau kann genau eine aktive Schicht haben, welche mit einem Heizregister versehen wird. Falls eine solche Schicht existiert, muss das XML-tag <code>ActiveLayerIndex</code> angegeben sein. Dieses XML-Element enthalt den 0-basierten Index der Schicht, d.h. Index 0 entspricht der ersten Schicht in der <code>MaterialLayers</code>-Liste.</p>
 </div>
 <div class="paragraph">
 <p>Falls eine aktive Schicht definiert wurde, muss es irgendwo ein Modell geben, welches passend dafür eine Heizleistung berechnet. Beispielsweise kann dies eine Fußbodenheizung sein (siehe <a href="#network_floor_heating">[network_floor_heating]</a>).</p>
@@ -841,30 +867,30 @@ die Platzhalterpfade zu den Verzeichnissen auf dem lokalen Rechner leicht geänd
 <div class="sect3">
 <h4 id="glazing_systems">2.5.3. Verglasungssysteme</h4>
 <div class="paragraph">
-<p>Verglasungssysteme werden in einer Liste innerhalb des XML-Tags <code>WindowGlazingSystems</code> definiert.</p>
+<p>Verglasungssysteme werden in einer Liste innerhalb des XML-tags <code>WindowGlazingSystems</code> definiert.</p>
 </div>
 <div class="exampleblock">
 <div class="title">Beispiel 12. Parameterdefinition für ein Verglasungssystem</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
-<pre>&lt;WindowGlazingSystems&gt;
-  &lt;WindowGlazingSystem id="123" modelType="Standard"&gt;
-    &lt;IBK:Parameter name="ThermalTransmittance" unit="W/m2K"&gt;0,4&lt;/IBK:Parameter&gt;
-    &lt;LinearSplineParameter name="SHGC" interpolationMethod="linear" wrapMethod="cyclic"&gt;
-      &lt;!-- X incidence angle - 90 deg = Sonne steht senkrecht/normal zur Oberfläche --&gt;
-      &lt;X unit="Deg"&gt;0 90 &lt;/X&gt;
-      &lt;!-- Hinweis: kein konstanter Parameter - SHGC konstant wird wie unten definiert --&gt;
-      &lt;Y unit="---"&gt;0.6 0.6 &lt;/Y&gt;
-    &lt;/LinearSplineParameter&gt;
-  &lt;/WindowGlazingSystem&gt;
-&lt;/WindowGlazingSystems&gt;</pre>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;WindowGlazingSystems&gt;</span>
+  <span class="nt">&lt;WindowGlazingSystem</span> <span class="na">id=</span><span class="s">"123"</span> <span class="na">modelType=</span><span class="s">"Standard"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"ThermalTransmittance"</span> <span class="na">unit=</span><span class="s">"W/m2K"</span><span class="nt">&gt;</span>0,4<span class="nt">&lt;/IBK:Parameter&gt;</span>
+    <span class="nt">&lt;LinearSplineParameter</span> <span class="na">name=</span><span class="s">"SHGC"</span> <span class="na">interpolationMethod=</span><span class="s">"linear"</span> <span class="na">wrapMethod=</span><span class="s">"cyclic"</span><span class="nt">&gt;</span>
+      <span class="c">&lt;!-- X incidence angle - 90 deg = Sonne steht senkrecht/normal zur Oberfläche --&gt;</span>
+      <span class="nt">&lt;X</span> <span class="na">unit=</span><span class="s">"Deg"</span><span class="nt">&gt;</span>0 90 <span class="nt">&lt;/X&gt;</span>
+      <span class="c">&lt;!-- Hinweis: kein konstanter Parameter - SHGC konstant wird wie unten definiert --&gt;</span>
+      <span class="nt">&lt;Y</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.6 0.6 <span class="nt">&lt;/Y&gt;</span>
+    <span class="nt">&lt;/LinearSplineParameter&gt;</span>
+  <span class="nt">&lt;/WindowGlazingSystem&gt;</span>
+<span class="nt">&lt;/WindowGlazingSystems&gt;</span></code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="paragraph">
-<p>Innerhalb dieses Abschnitts beginnt jede Definition eines Verglasungssystem mit dem XML-Tag <code>WindowGlazingSystem</code> mit den XML-Attributen <code>id</code>, <code>modelType</code> und optional <code>displayName</code>:</p>
+<p>Innerhalb dieses Abschnitts beginnt jede Definition eines Verglasungssystem mit dem XML-tag <code>WindowGlazingSystem</code> mit den XML-Attributen <code>id</code>, <code>modelType</code> und optional <code>displayName</code>:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Tabelle 4. Attribute</caption>
@@ -913,7 +939,7 @@ die Platzhalterpfade zu den Verzeichnissen auf dem lokalen Rechner leicht geänd
 </tbody>
 </table>
 <div class="paragraph">
-<p>Skalare Parameter werden innerhalb eines XML-Tags <code>IBK:Parameter</code> definiert (siehe <a href="#IBK_Parameter">IBK:Parameter</a>):</p>
+<p>Skalare Parameter werden innerhalb eines XML-tags <code>IBK:Parameter</code> definiert (siehe <a href="#IBK_Parameter">IBK:Parameter</a>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -943,7 +969,7 @@ die Platzhalterpfade zu den Verzeichnissen auf dem lokalen Rechner leicht geänd
 </tbody>
 </table>
 <div class="paragraph">
-<p>Parameter, die vom Einfallswinkel abhängen, werden in einem XML-Tag <code>LinearSplineParameter</code> definiert (siehe <a href="#LinearSplineParameter">LinearSplineParameter</a>):</p>
+<p>Parameter, die vom Einfallswinkel abhängen, werden in einem XML-tag <code>LinearSplineParameter</code> definiert (siehe <a href="#LinearSplineParameter">LinearSplineParameter</a>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -998,7 +1024,7 @@ die Platzhalterpfade zu den Verzeichnissen auf dem lokalen Rechner leicht geänd
 </div>
 </div>
 <div class="paragraph">
-<p>Innerhalb des XML-Tags namens <code>Zones</code> beginnt jede Zone mit dem XML-Tag <code>Zone</code>. Die folgenden XML-Attribute müssen definiert werden:</p>
+<p>Innerhalb des XML-tags namens <code>Zones</code> beginnt jede Zone mit dem XML-tag <code>Zone</code>. Die folgenden XML-Attribute müssen definiert werden:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1179,7 +1205,7 @@ vorgegeben ist, während in <em>Active</em> Zonen die Temperatur berechnet wird 
 </div>
 </div>
 <div class="paragraph">
-<p>Die Konstruktionsinstanzen werden innerhalb des XML-Tags <code>ConstructionInstances</code> definiert. Innerhalb des Abschnitts beginnt jede Konstruktionsdefinition mit dem XML-tag <code>ConstructionInstance</code> mit den Attributen <code>id</code> und <code>displayName</code>.</p>
+<p>Die Konstruktionsinstanzen werden innerhalb des XML-tags <code>ConstructionInstances</code> definiert. Innerhalb des Abschnitts beginnt jede Konstruktionsdefinition mit dem XML-tag <code>ConstructionInstance</code> mit den Attributen <code>id</code> und <code>displayName</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Tabelle 6. Attribute</caption>
@@ -1250,7 +1276,7 @@ vorgegeben ist, während in <em>Active</em> Zonen die Temperatur berechnet wird 
 <p><code>ConstructionTypeId</code> ist eindeutige Id, die den Konstruktionstyp (Schichtenaufbau) der Konstruktionsinstanz definiert.</p>
 </div>
 <div class="paragraph">
-<p>Für die Parameter der Konstruktionsinstanz können die folgenden XML-Tags mit dem Namen <code>IBK:Parameters</code> mit den XML-Attributen <code>name</code> und <code>unit</code> mit den folgenden Einträgen definiert werden:</p>
+<p>Für die Parameter der Konstruktionsinstanz können die folgenden XML-tags mit dem Namen <code>IBK:Parameters</code> mit den XML-Attributen <code>name</code> und <code>unit</code> mit den folgenden Einträgen definiert werden:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1313,7 +1339,7 @@ vorgegeben ist, während in <em>Active</em> Zonen die Temperatur berechnet wird 
 </tbody>
 </table>
 <div class="paragraph">
-<p>Darin müssen die Schnittstellen mit dem XML-Tag <code>InterfaceA</code> und <code>InterfaceB</code> angegeben werden. Schließlich müssen die Interfaces mit dem XML-Tag <code>InterfaceA</code> und <code>InterfaceB</code> mit den XML-Attributen <code>id</code> und <code>zoneId</code> definiert werden.
+<p>Darin müssen die Schnittstellen mit dem XML-tag <code>InterfaceA</code> und <code>InterfaceB</code> angegeben werden. Schließlich müssen die Interfaces mit dem XML-tag <code>InterfaceA</code> und <code>InterfaceB</code> mit den XML-Attributen <code>id</code> und <code>zoneId</code> definiert werden.
 Im Folgenden wird dies im Detail beschrieben.</p>
 </div>
 <div class="sect3">
@@ -1762,7 +1788,7 @@ Im Folgenden wird dies im Detail beschrieben.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Es können XML-Tags mit dem Namen <code>IBK:Parameter</code> mit den XML-Attributen <code>name</code> und <code>unit</code> mit den folgenden Einträgen definiert werden:</p>
+<p>Es können XML-tags mit dem Namen <code>IBK:Parameter</code> mit den XML-Attributen <code>name</code> und <code>unit</code> mit den folgenden Einträgen definiert werden:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1951,7 +1977,7 @@ Im Folgenden wird dies im Detail beschrieben.</p>
 <p>Nur das Verglasungssystem wird über die ID referenziert. Verglasungssysteme sind in der Datenbankliste der Verglasungssysteme definiert, siehe <a href="#glazing_systems">Section 2.5.3</a>.</p>
 </div>
 <div class="paragraph">
-<p>Das Fenster kann einen Rahmen und/oder Trennwände haben. Diese sind separate Entitäten, da das Material von Rahmen und Trennwänden (und damit die Wärmeleitfähigkeit zwischen diesen Materialien) unterschiedlich sein kann. Diese werden in den XML-Tags <code>Frame</code> und <code>Divider</code> definiert:</p>
+<p>Das Fenster kann einen Rahmen und/oder Trennwände haben. Diese sind separate Entitäten, da das Material von Rahmen und Trennwänden (und damit die Wärmeleitfähigkeit zwischen diesen Materialien) unterschiedlich sein kann. Diese werden in den XML-tags <code>Frame</code> und <code>Divider</code> definiert:</p>
 </div>
 <div class="exampleblock">
 <div class="title">Beispiel 23. Parameterdefinition für Basisfenster mit Rahmen und Trennwand</div>
@@ -2065,7 +2091,7 @@ Im Folgenden wird dies im Detail beschrieben.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Das XML-Tag <code>Shading</code> muss mit den folgenden XML-Attributen definiert werden:</p>
+<p>Das XML-tag <code>Shading</code> muss mit den folgenden XML-Attributen definiert werden:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Tabelle 13. Attribute</caption>
@@ -2190,11 +2216,11 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="climatic_loads">2.11. Klimalasten</h3>
+<h3 id="climatic_loads">2.11. Klimadaten und Standortinformationen</h3>
 <div class="sect3">
 <h4 id="_übersicht">2.11.1. Übersicht</h4>
 <div class="paragraph">
-<p>Klimalasten werden in NANDRAD über Klimadateien bereitgestellt. Für die Berechnung der Sonneneinstrahlung werden Informationen über den Gebäudestandort (in der Regel in der Klimadatei enthalten) sowie die Ausrichtung und Neigung der verschiedenen Konstruktionsflächen (definiert für Außenflächen, siehe <a href="#construction_instances">Geometry/Constructions</a>) benötigt.</p>
+<p>Klimalasten werden in NANDRAD über Klimadateien bereitgestellt. Für die Berechnung der Sonneneinstrahlung werden Informationen über den Gebäudestandort (in der Regel in der Klimadatei enthalten) sowie die Ausrichtung und Neigung der verschiedenen Konstruktionsflächen benötigt (definiert für Außenflächen, siehe <a href="#construction_instances">Section 2.7</a>).</p>
 </div>
 </div>
 <div class="sect3">
@@ -2208,19 +2234,22 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Location&gt;</span>
+  <span class="nt">&lt;ClimateFilePath&gt;</span>${Projektverzeichnis}/climate/GER_Potsdam_2017.c6b<span class="nt">&lt;/ClimateFilePath&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Latitude"</span> <span class="na">unit=</span><span class="s">"Deg"</span><span class="nt">&gt;</span>51<span class="nt">&lt;/IBK:Parameter&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Longitude"</span> <span class="na">unit=</span><span class="s">"Deg"</span><span class="nt">&gt;</span>13<span class="nt">&lt;/IBK:Parameter&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Albedo"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.2<span class="nt">&lt;/IBK:Parameter&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Altitude"</span> <span class="na">unit=</span><span class="s">"m"</span><span class="nt">&gt;</span>100<span class="nt">&lt;/IBK:Parameter&gt;</span>
   <span class="nt">&lt;IBK:Flag</span> <span class="na">name=</span><span class="s">"PerezDiffuseRadiationModel"</span><span class="nt">&gt;</span>false<span class="nt">&lt;/IBK:Flag&gt;</span>
-  <span class="nt">&lt;ClimateFileName&gt;</span>${Projektverzeichnis}/climate/GER_Potsdam_2017.c6b<span class="nt">&lt;/ClimateFileName&gt;</span>
 <span class="nt">&lt;/Location&gt;</span></code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="paragraph">
-<p>Parameter (siehe Abschnitt <a href="#IBK_Parameter">Section 2.2.1</a> für eine Beschreibung des tags <code>IBK:Parameter</code>):</p>
+<p>Die Außenklimabedingungen, einschließlich Standortinformationen werden aus einer Klimadatei bezogen, angegeben im Element <code>&lt;ClimateFilePath&gt;</code>. Dieser kann Platzhalter enthalten (siehe <a href="#path_placeholders">Section 2.3</a>).</p>
+</div>
+<div class="paragraph">
+<p>Zusätzliche Parameter (siehe <a href="#IBK_Parameter">Section 2.2.1</a> für eine Beschreibung des Elementtyps <code>IBK:Parameter</code>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2248,9 +2277,9 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Altitude</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(*)<code>Altitude</code></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">m</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">wird für bestimmte höhenbezogene Parameter benötigt (<strong>TODO</strong>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">wird für bestimmte höhenbezogene Parameter benötigt</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">&gt;0</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
@@ -2271,7 +2300,10 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Flags und Optionen (siehe Abschnitt <a href="#IBK_Flag">Section 2.2.3</a> für eine Beschreibung des tags <code>IBK:Flag</code>):</p>
+<p><em>(*) wird noch nicht verwendet.</em></p>
+</div>
+<div class="paragraph">
+<p>Flags und Optionen (siehe <a href="#IBK_Flag">Section 2.2.3</a> für eine Beschreibung des Elementtyps <code>IBK:Flag</code>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2295,36 +2327,39 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>false</em></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ContinuousShadingFactorData</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wenn gesetzt werden Verschattungsdaten als kontinuierliche Zeitreihen behandelt (siehe <a href="#precomputed_shading">Section 2.11.4</a>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>false</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
+</tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>Schließlich definiert das tag <code>&lt;ClimateFileName&gt;</code> den Pfad zur Klimadatei.</p>
-</div>
 <div class="sect4">
 <h5 id="loads_climate_files">Klimadateien</h5>
 <div class="paragraph">
-<p>Derzeit werden <code>c6b</code>, <code>wac</code> und <code>epw</code> Dateien unterstützt (siehe auch Hilfe zum Werkzeug <a href="https://bauklimatik-dresden.de/ccmeditor/help">CCM-Editor</a>).</p>
+<p>Derzeit werden <code>c6b</code>, <code>wac</code> und <code>epw</code> Dateien unterstützt (siehe auch Dokumentation zur Software <a href="https://bauklimatik-dresden.de/ccmeditor/help">CCM-Editor</a>).</p>
 </div>
 <div class="paragraph">
-<p>Sie müssen den Pfad zur Klimadatei im <code>&lt;ClimateFileName&gt;</code>-tag angeben. Dabei können Sie einen absoluten oder relativen Pfad angeben.</p>
+<p>Sie müssen den Pfad zur Klimadatei im <code>&lt;ClimateFileName&gt;</code>-Element angeben. Dabei können Sie einen absoluten oder relativen Pfad angeben.</p>
 </div>
 <div class="paragraph">
 <p>Wenn ein relativer Pfad angegeben wird, wird dieser mit dem aktuellen Arbeitsverzeichnis als Referenz aufgelöst. Wenn Sie zum Beispiel angegeben haben</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;KlimaDateiname&gt;</span>GER_Potsdam_2017.c6b<span class="nt">&lt;/KlimaDateiname&gt;</span></code></pre>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ClimateFilePath&gt;</span>GER_Potsdam_2017.c6b<span class="nt">&lt;/ClimateFilePath&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>und der Solver aus dem Verzeichnis <code>/home/user/sim/Project1</code> gestartet wird, wird die Klimadatendatei in <code>/home/user/sim/Project1/GER_Potsdam_2017.c6b</code> gesucht. Wenn der Solver von einem anderen Verzeichnis aus gestartet wird, wird die referenzierte Klimadatendatei nicht gefunden und es wird eine Fehlermeldung ausgegeben.</p>
 </div>
 <div class="paragraph">
-<p>Um dieses Problem zu vermeiden, können Sie Verzeichnisplatzhalter angeben, um die Klimadatendatei <em>relativ</em> zum Speicherort der Projektdatei zu finden. Der eingebaute Pfadplatzhalter <code>${Project Directory}</code> wird durch das Verzeichnis ersetzt, in dem sich die Projektdatei befindet. Verwenden Sie den Platzhalter einfach wie einen regulären Verzeichnisteil, z. B:</p>
+<p>Um dieses Problem zu vermeiden, können Sie Verzeichnisplatzhalter angeben, um den Pfad zur die Klimadatendatei <em>relativ</em> zum Speicherort der Projektdatei anzugeben. Der eingebaute Pfadplatzhalter <code>${Project Directory}</code> wird durch das Verzeichnis ersetzt, in dem sich die Projektdatei befindet. Verwenden Sie den Platzhalter einfach wie einen regulären Verzeichnisteil, z. B:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;KlimaDateiname&gt;</span>${Project Directory}/Klima /GER_Potsdam_2017.c6b<span class="nt">&lt;/KlimaDateiname&gt;</span></code></pre>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ClimateFilePath&gt;</span>${Project Directory}/climate /GER_Potsdam_2017.c6b<span class="nt">&lt;/ClimateFilePath&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2332,19 +2367,26 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="location_settings">Gebäude-/Stationsstandort</h5>
+<h5 id="location_settings">Gebäude-/Klimastandort</h5>
 <div class="paragraph">
-<p>Klimadatendateien enthalten Informationen über Breiten- und Längengrad der Wetterstation, die auch als Standort des Gebäudes angenommen wird. Dadurch wird sichergestellt, dass simulierte Zeit und Sonnenstand übereinstimmen.</p>
+<p>Klimadatendateien enthalten Informationen über Breiten- und Längengrad der Wetterstation, die auch als Standort des Gebäudes angenommen wird. Dadurch wird sichergestellt, dass Simulationszeit und Sonnenstand übereinstimmen.</p>
 </div>
 <div class="paragraph">
-<p>Es ist möglich, Breitengrad/Längengrad in der Projektdatei zu definieren. Wenn diese Parameter in der Projektdatei angegeben werden, müssen immer <strong>beide</strong> Parameter angegeben werden (und gültig sein), dann werden diese Parameter aus der Projektdatei anstelle der Standortparameter der Klimadatei verwendet.</p>
+<p>Es ist jedoch auch möglich, den Breitengrad/Längengrad in der Projektdatei anders zu definieren. Wenn diese Parameter in der Projektdatei angegeben werden (es müssen immer <strong>beide</strong> Parameter angegeben werden und gültig sein), werden diese Parameter aus der Projektdatei anstelle der Standortparameter der Klimadatei verwendet.</p>
 </div>
-<div class="exampleblock">
-<div class="content">
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Achtung"></i>
+</td>
+<td class="content">
 <div class="paragraph">
 <p>Durch die Angabe eines von der Klimastation abweichenden Breitengrades kann der berechnete Sonnenstand nicht mehr mit dem Sonnenstand an der Wetterstation übereinstimmen, was zu möglicherweise falschen Solarstrahlungslasten führt.</p>
 </div>
-</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Gültiger Wertebereich für <code>Latitude</code> ist [-90,90] Grad (positive Werte entsprechen der nördlichen Hemisphäre), für <code>Longitude</code> ist es [-180,180] Grad (positive Werte sind östlich von Greenwich).</p>
@@ -2353,12 +2395,12 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 <div class="sect4">
 <h5 id="_zyklische_jährliche_und_kontinuierliche_mehrjährige_klimadaten">Zyklische (jährliche) und kontinuierliche (mehrjährige) Klimadaten</h5>
 <div class="paragraph">
-<p>Die Klimadaten-Datei kann 8760 Stundenwerte für ein ganzes Jahr enthalten. Alles andere wird als beliebiger Bereich von Zeitwerten betrachtet, der ein bestimmtes Zeitintervall angibt, eventuell auch mit variierenden Zeitabständen zwischen den Datenpunkten. Die letztgenannten Klimadateien können nicht für die jährliche/zyklische Berechnung verwendet werden, sondern benötigen ein bestimmtes (passendes) Simulationszeitintervall (siehe auch Abschnitt <a href="#simulation_interval">Section 2.15.1.1</a>).</p>
+<p>Die Klimadaten-Datei kann 8760 Stundenwerte für ein ganzes Jahr enthalten. Anderfalls werden die Klimadaten als kontinuierlich abgelegte Daten für Zeitwerte in einem beliebigen Zeitbereich betrachtet. Dabei können die Klimadaten auch mit variierenden Zeitabständen zwischen den Datenpunkten definiert sein. Solche Klimadateien können nicht für die jährliche/zyklische Berechnung verwendet werden, sondern benötigen ein bestimmtes (passendes) Simulationszeitintervall (siehe <a href="#simulation_interval">Section 2.15.1.1</a>).</p>
 </div>
 <div class="sect5">
 <h6 id="_zyklisches_jahresklima">Zyklisches Jahresklima</h6>
 <div class="paragraph">
-<p>Die Klimadaten werden in Stundenwerten bereitgestellt. Die Interpretation dieser Werte hängt von der Art der Größe ab. NANDRAD unterscheidet zwischen Zustandsgrößen und Fluß-/Lastgrößen.</p>
+<p>Hierbei werden die Klimadaten in Stundenwerten bereitgestellt. Die Interpretation dieser Werte hängt von der Art der physikalischen Größe ab. NANDRAD unterscheidet zwischen <em>Zustandsgrößen</em> und <em>Fluss-/Lastgrößen</em>.</p>
 </div>
 <div class="paragraph">
 <p>Zustandsgrößen sind:</p>
@@ -2397,18 +2439,18 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 <p>Regenlast</p>
 </li>
 <li>
-<p>langwellige Himmelsemission</p>
+<p>langwellige Himmelsemission/-gegenstrahlung</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Es wird erwartet, dass die Zustandsgrößen als <em>instantielle Werte</em> am <em>Ende jeder Stunde</em> überwacht werden. Substündliche Werte werden durch lineare Interpolation erhalten, wie in <a href="#fig_hourly_values">Abbildung 3</a> gezeigt.</p>
+<p>Es wird erwartet, dass die Zustandsgrößen als <em>Momentanwerte</em> am <em>Ende jeder Stunde</em> angegeben werden. Substündliche Werte werden durch lineare Interpolation erhalten, wie in <a href="#fig_hourly_values">Abbildung 3</a> gezeigt.</p>
 </div>
 <div id="fig_hourly_values" class="imageblock">
 <div class="content">
 <img src="./images/CCM_Interpolation1.png" alt="CCM Interpolation1">
 </div>
-<div class="title">Abbildung 3. lineare Interpolation verwenden, um sub-stündliche Werte aus stündlichen Datenpunkten zu rekonstruieren</div>
+<div class="title">Abbildung 3. Bei Zustandsgrößen wird eine lineare Interpolation verwendet, um den Zeitverlauf zwischen den stündlichen Momentanwerten zu rekonstruieren</div>
 </div>
 <div class="paragraph">
 <p>Fluss-/Lastgrößen werden als <em>Mittelwerte</em> über die <em>letzte Stunde</em> erwartet. Die substündlichen Werte werden durch lineare Interpolation zwischen den in der Mitte jeder Stunde platzierten Mittelwerten erhalten, wie in <a href="#fig_hourly_load_values">Abbildung 4</a> gezeigt.</p>
@@ -2417,13 +2459,7 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 <div class="content">
 <img src="./images/CCM_Interpolation2.png" alt="CCM Interpolation2">
 </div>
-<div class="title">Abbildung 4. mit linearer Interpolation zur Rekonstruktion von substündlichen Werten aus stündlichen Mittelwerten</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_kontinuierliche_daten">Kontinuierliche Daten</h6>
-<div class="paragraph">
-<p>Die Klimadatendatei enthält Datenpunkte (mindestens 2), die den frühesten Start- und spätesten Endpunkt der Simulation markieren.</p>
+<div class="title">Abbildung 4. Bei Flussgrößen/Lasten werden die Werte in die Stundenmitte verschoben und dann linear interpoliert.</div>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2433,14 +2469,34 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Wenn Sie die Simulation über die verfügbaren Klimadaten hinaus fortsetzen, werden die letzten Werte im Klimadatensatz konstant gehalten. Dies führt letztendlich zu sinnlosen Ergebnissen (es sei denn, dies ist in künstlichen Testfällen beabsichtigt).</p>
+<p>Die so erhaltenen Integralwerte in einer Stunde weichen leicht von den ursprünglichen integralen Mittelwerten ab (siehe z. B. Stunde zwischen 2:00 und 3:00). Die Fehler sind jedoch klein und heben sich im Tagesverlauf fast komplett auf. Dafür sind die generierten Zeitreihen und substündlichen Werte stets stetig.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_kontinuierliche_daten">Kontinuierliche Daten</h6>
+<div class="paragraph">
+<p>Hierbei enthält die Klimadatendatei Datenpunkte (mindestens 2), wodurch auch der früheste Start- und späteste Endpunkt der Simulation definiert wird.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Wenn Sie die Simulation über die verfügbaren Klimadaten hinaus fortsetzen, werden die letzten Werte im Klimadatensatz konstant gehalten. Dies führt in der Regel zu sinnlosen Ergebnissen (es sei denn, dies ist in künstlichen Testfällen beabsichtigt).</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Da der Benutzer in den Klimadatendateien beliebige Zeitschritte bis hin zu winzigen Werten wählen kann, hängt die Genauigkeit der Eingabedaten von den Benutzereingaben ab. Zwischen den Zeitpunkten wird der Solver <strong>alle Größen</strong> in der Klimadatendatei linear interpolieren und nicht wie bei stündlichen Daten zwischen Zuständen und Lasten unterscheiden.</p>
+<p>Da der Benutzer in den Klimadatendateien beliebige Zeitschritte bis hin zu winzigen Werten wählen kann, hängt die Genauigkeit der Eingabedaten von den Benutzereingaben ab. Zwischen den Zeitpunkten wird der Solver <strong>alle Größen</strong> in der Klimadatendatei linear interpolieren und <strong>nicht</strong> wie bei stündlichen Daten zwischen Zuständen und Lasten unterscheiden.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -2450,7 +2506,7 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Um das gleiche Ergebnis wie bei jährlichen Stundendaten zu erzielen, müssen Klimadaten in 30-Minuten-Intervallen angegeben und interpolierte Werte am Ende und in der Mitte jeder Stunde selbst berechnet werden.</p>
+<p>Um das gleiche Ergebnis wie bei jährlichen, zyklischen Stundendaten zu erzielen, müssen Klimadaten in 30-Minuten-Intervallen angegeben und interpolierte Werte am Ende und in der Mitte jeder Stunde selbst berechnet werden.</p>
 </div>
 </td>
 </tr>
@@ -2461,10 +2517,10 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 <div class="sect4">
 <h5 id="location_sensors">Zusätzliche Strahlungssensoren</h5>
 <div class="paragraph">
-<p>Es ist möglich zusätzliche Ebenen (Sensoren) zu spezifizieren, um Lastausgänge für die Sonneneinstrahlung zu erzeugen. Dies geschieht durch die Angabe einer <code>Sensor</code>-Definition.</p>
+<p>Es ist möglich zusätzliche Ebenen (Sensoren) zu spezifizieren, um Strahlungslasten zu berechnen und für andere Modelle als Sensorgrößen zur Verfügung zu stellen. Dies geschieht durch die Angabe einer <code>Sensor</code>-Definition.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 26. Definition eines Sensors am Standort</div>
+<div class="title">Beispiel 26. Definition von Sensoren</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -2514,7 +2570,7 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Parameter (siehe Abschnitt <a href="#IBK_Parameter">IBK:Parameter</a> für eine Beschreibung des tags <code>IBK:Parameter</code>):</p>
+<p>Parameter (siehe Abschnitt <a href="#IBK_Parameter">Section 2.2.1</a> für eine Beschreibung des Elementtyps <code>IBK:Parameter</code>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2566,7 +2622,7 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Einem Sensor muss eine eindeutige ID-Nummer und die obligatorischen Parameter <code>Orientation</code> und <code>Inclination</code> gegeben werden (siehe Abschnitt <a href="#construction_instances">Construction Instances</a> für Details zu deren Definition).</p>
+<p>Einem Sensor muss eine eindeutige ID-Nummer und die obligatorischen Parameter <code>Orientation</code> und <code>Inclination</code> gegeben werden (siehe  <a href="#construction_instances">Section 2.7</a> für Details zu deren Definition).</p>
 </div>
 <div class="paragraph">
 <p>Für jeden Sensor werden 4 Ausgangsgrößen erzeugt:</p>
@@ -2574,22 +2630,22 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 <div class="ulist">
 <ul>
 <li>
-<p><code>DirectSWRadOnPlane[&lt;sensor id&gt;]</code> - direkte Sonnenstrahlungsintensität auf der Ebene in [W/m2]</p>
+<p><code>DirectSWRadOnPlane[&lt;sensor id&gt;]</code> - direkte Sonnenstrahlungsintensität auf die Sensorfläche in [W/m2]</p>
 </li>
 <li>
-<p><code>DiffuseSWRadOnPlane[&lt;sensor id&gt;]</code> - diffuse Sonnenstrahlungsintensität auf der Ebene in [W/m2]</p>
+<p><code>DiffuseSWRadOnPlane[&lt;sensor id&gt;]</code> - diffuse Sonnenstrahlungsintensität auf die Sensorfläche in [W/m2]</p>
 </li>
 <li>
-<p><code>GlobalSWRadOnPlane[&lt;sensor id&gt;]</code> - globale Strahlungsintensität auf der Ebene in [W/m2] (die Summe der beiden erstgenannten Größen)</p>
+<p><code>GlobalSWRadOnPlane[&lt;sensor id&gt;]</code> - globale Strahlungsintensität auf die Sensorfläche in [W/m2] (die Summe der beiden erstgenannten Größen)</p>
 </li>
 <li>
-<p><code>IncidenceAngleOnPlane[&lt;sensor id&gt;]</code> - der Einfallswinkel auf die Ebene in [Grad] (0°, wenn der Sonnenstrahl senkrecht zur Ebene steht, 90°, wenn der Strahl parallel zur Ebene steht oder wenn die Sonne unter dem Horizont ist)</p>
+<p><code>IncidenceAngleOnPlane[&lt;sensor id&gt;]</code> - der Sonneneinfallswinkel auf die Sensorfläche in [Grad] (0°, wenn der Sonnenstrahl senkrecht zur Ebene steht, 90°, wenn der Strahl parallel zur Ebene verläuft oder wenn die Sonne unter dem Horizont ist)</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>Beispiel für einen Sensorausgang (siehe auch Ausgangsbeschreibung im Abschnitt <a href="#outputs">Outputs/Ergebnisse</a>).</p>
-</div>
+<div class="exampleblock">
+<div class="title">Beispiel 27. Ausgabedefinition für Sensorwerte (siehe auch Beschreibung von Ergebnisdefinitionen in <a href="#outputs">Section 2.14</a>).</div>
+<div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;OutputDefinitionen&gt;</span>
@@ -2597,14 +2653,14 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
     <span class="c">&lt;!-- direkte Strahlung intensiv vom Sensor mit id=2 --&gt;</span>
   <span class="nt">&lt;OutputDefinition&gt;</span>
     <span class="nt">&lt;Quantity&gt;</span>DirektSWRadOnPlane[2]<span class="nt">&lt;/Quantity&gt;</span>
-    <span class="nt">&lt;ObjectListName&gt;</span>Ort<span class="nt">&lt;/ObjectListName&gt;</span>
+    <span class="nt">&lt;ObjectListName&gt;</span>Location<span class="nt">&lt;/ObjectListName&gt;</span>
     <span class="nt">&lt;GridName&gt;</span>minütlich<span class="nt">&lt;/GridName&gt;</span>
   <span class="nt">&lt;/OutputDefinition&gt;</span>
   <span class="c">&lt;!-- Einfallswinkel vom Sensor mit id=42 --&gt;</span>
   <span class="nt">&lt;OutputDefinition&gt;</span>
     <span class="nt">&lt;Quantity&gt;</span>IncidenceAngleOnPlane[42]<span class="nt">&lt;/Quantity&gt;</span>
-    <span class="nt">&lt;ObjectListName&gt;</span>Ort<span class="nt">&lt;/ObjectListName&gt;</span>
-    <span class="nt">&lt;GridName&gt;</span>Minütlich<span class="nt">&lt;/GridName&gt;</span>
+    <span class="nt">&lt;ObjectListName&gt;</span>Location<span class="nt">&lt;/ObjectListName&gt;</span>
+    <span class="nt">&lt;GridName&gt;</span>minütlich<span class="nt">&lt;/GridName&gt;</span>
   <span class="nt">&lt;/OutputDefinition&gt;</span>
     ...
 <span class="nt">&lt;/OutputDefinitions&gt;</span></code></pre>
@@ -2612,16 +2668,18 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 </div>
 </div>
 </div>
+</div>
+</div>
 <div class="sect3">
 <h4 id="loads_solar_radiation">2.11.3. Sonnenstrahlungsberechnung</h4>
 <div class="paragraph">
-<p>Die Berechnung der Sonneneinstrahlung folgt den in der <em>Physikalischen Modellreferenz</em> aufgeführten Gleichungen. Der Parameter <code>Albedo</code> wird bei der Berechnung der diffusen Strahlungslast verwendet.</p>
+<p>Die Berechnung der Sonneneinstrahlung folgt den in der <em>Physikalischen Modellreferenz</em> aufgeführten Gleichungen. Der Parameter <code>Albedo</code> wird bei der Berechnung der diffusen Strahlungslast verwendet. Die Schalter <code>PerezDiffuseRadiationModel</code> beinflusst die Berechnung der Diffusstrahlung.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="precomputed_shading">2.11.4. Vorberechnete Schattierung</h4>
+<h4 id="precomputed_shading">2.11.4. Vorberechnete externe Verschattung/Eigenverschattung</h4>
 <div class="paragraph">
-<p>Eine vorverarbeitende Software kann für jedes Flächenelement des Gebäudes den prozentualen Anteil der Fläche mit Sonneneinstrahlung berechnen. In <a href="#fig_shading_factors">Abbildung 5</a> wird zum Beispiel eine Fassade teilweise verschattet.</p>
+<p>In einem vorgelagerten Rechenschritt kann für jedes Flächenelement des Gebäudes der Anteil der sonnenbeschienenen Fläche berechnet werden. In <a href="#fig_shading_factors">Abbildung 5</a> wird zum Beispiel eine Fassade teilweise verschattet.</p>
 </div>
 <div id="fig_shading_factors" class="imageblock">
 <div class="content">
@@ -2630,10 +2688,10 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 <div class="title">Abbildung 5. Darstellung einer teilverschatteten Fassade mit einem Fenster</div>
 </div>
 <div class="paragraph">
-<p>Die Software kann nun den Prozentsatz der verschatteten Fläche sowohl für das opake Fassadenelement als auch für das eingebettete Fensterobjekt separat berechnen. Das Fenster ist zu ca. 80 % verschattet, und ca. 20 % der Fläche sind noch der Sonne ausgesetzt. Der Faktor, der für diese Zeit und die Fensterfläche gespeichert wird beträgt 0,2.</p>
+<p>Die Software kann nun den Prozentsatz der verschatteten Fläche sowohl für das opake Fassadenelement als auch für das Fensterobjekt separat berechnen. Das Fenster ist zu ca. 80 % verschattet, und ca. 20 % der opaquen Fläche sind noch der Sonne ausgesetzt. Der letztere Anteil wird auch als <em>Sonnenlichtfaktor</em> bzw. <em>Abminderungsfaktor infolge Verschattung</em> (engl. <em>shading factors</em>)  bezeichnet.</p>
 </div>
 <div class="paragraph">
-<p>Der für eine Konstruktion gespeicherte Faktor ist immer exklusive aller eingebettete Objekte zu verstehen.  <a href="#fig_shading_factor_example">Abbildung 6</a> zeigt ein ähnliches Bild, jedoch einfacher zu berechnen.</p>
+<p>Der für eine opaque Konstruktion gespeicherte Faktor ist immer <em>exklusive</em> aller eingebetteter Objekte zu verstehen.  <a href="#fig_shading_factor_example">Abbildung 6</a> zeigt ein ähnliches Beispiel, bei dem die Berechnung der Flächen und Sonnenlichfaktoren erläutert wird.</p>
 </div>
 <div id="fig_shading_factor_example" class="imageblock">
 <div class="content">
@@ -2642,56 +2700,117 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 <div class="title">Abbildung 6. Berechnungsbeispiel für eine teilverschattete Fassade mit einem Fenster</div>
 </div>
 <div class="paragraph">
-<p>Die Konstruktion hat eine Fläche von 18x8 = 144 m2. Das Fenster hat eine Fläche von 10x4 = 40 m2. Damit verbleibt für die Konstruktion eine
-opaque Fläche von 144 - 40 = 104 m2. Der Schatten auf dem Fenster allein nimmt (13-(18-10)/2)x4 = 9x4 = 36 m2 ein.
-Der Verschattungsflächenfaktor für das Fenster allein beträgt also 90%. Die schattierte Fläche auf der opaken Fläche beträgt 104 - 36 = 68 m2.
-er Abminderungsfaktor, der in der Gleichung für die Belastung durch die Sonneneinstrahlung verwendet werden muss beträgt also 68/104 = 65,4 %.</p>
+<p>Die Konstruktion hat eine Fläche von 18x8 = 144 m2. Das Fenster hat eine Fläche von 10x4 = 40 m2. Damit verbleibt für die eine opaque Konstruktionsfläche von 144 - 40 = 104 m2.</p>
 </div>
 <div class="paragraph">
-<p>Die Werte <strong>100% - 65,4% = 0.278</strong> und <strong>100% - 90% = 0.346</strong> werden in der Datei für die schattierten Flächenanteile gespeichert.</p>
+<p>Der Schatten auf dem Fenster allein nimmt 8x4 = 32 m2 ein. Der Sonnenlichtfaktor für das Fenster allein beträgt also 1 - 32/40 = 20%.</p>
 </div>
 <div class="paragraph">
-<p>Beachte: Die Gesamtkonstruktion (opque und nicht opaque) ist größer als die tatsächlich opaque Flächhe, und zwar 144 - 40 = 104 m2. Der Schatten auf der Gesamtkonstruktion nimmt 13x8 = 104 m2 ein, daher wäre der Schattenanteil (Faktor) für die Konstruktion: 104/144 = 72,2 %, also der flächengewichtete Faktor 40/144 * 90% + 104/144 * 65.4%.</p>
+<p>Die verschattete Fläche auf der opaken Konstruktion beträgt 12x8 - 8x4 = 96 - 32 = 64 m2.
+Der Sonnenlichtfaktor, der in der Gleichung für die Belastung durch die Sonneneinstrahlung verwendet werden muss beträgt also 1 - 64/104 = 38,5 %.</p>
 </div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
 <div class="paragraph">
-<p>Denken Sie daran, den prozentualen Anteil der verschatteten Fläche für Konstruktionen <strong>immer einschließlich aller eingebetteten Objekte</strong> zu berechnen.</p>
-</div>
-</td>
-</tr>
-</table>
+<p>Die Werte <strong>0.385</strong> und <strong>0.2</strong> werden in der Datei für die vorberechneten Sonnenlichtfaktoren gespeichert.</p>
 </div>
 <div class="paragraph">
 <p>Die mittlere Strahlungsintensität auf eine opaque Fläche ergibt sich dann aus:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code>Mittlere direkte Strahlungslast in [W/m2] = Verschattungsfaktor (aus Datei) * direkte Strahlungslast</code></pre>
+<pre class="rouge highlight"><code>Mittlere direkte Strahlungslast in [W/m2] = Sonnenlichtfaktor (aus Datei) * direkte Strahlungslast</code></pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_dateiformat_für_vorberechnete_schattierte_fraktionen">Dateiformat für vorberechnete schattierte Fraktionen</h5>
+<h5 id="_dateiformat_für_vorberechnete_sonnenlichtfaktoren">Dateiformat für vorberechnete Sonnenlichtfaktoren</h5>
 <div class="paragraph">
-<p>Die Datei mit den vorberechneten Schattierungsfaktoren wird im XML-tag <code>Location</code> referenziert, als Child-tag
-<code>ShadingFactorFileName</code>. Der hier angegebene Pfad kann ein absoluter Pfad oder ein relativer Pfad sein, der dem Platzhalter <code>${Project Directory}</code> folgt (siehe <a href="#path_placeholders">Pfad-Platzhalter</a>).</p>
+<p>Die Datei mit den vorberechneten Sonnenlichtfaktoren wird im XML-Element <code>Location</code> definiert, im Kind-Element
+<code>ShadingFactorFilePath</code>. Der hier angegebene Pfad kann ein absoluter Pfad oder ein relativer Pfad sein, der einem Platzhalter folgt (bspw. <code>${Project Directory}</code>, siehe <a href="#path_placeholders">Section 2.3</a>).</p>
 </div>
 <div class="paragraph">
-<p>Die Datei folgt den Regeln des <code>tsv</code>-Dateiformats (siehe <em>PostProc 2</em> Dokumentation) und hat eine einzelne Kopfzeile. Die erste Spalte ist die Zeitspalte, mit entweder absoluten Zeitstempeln oder Zeit-offsets relativ zu Mitternacht des 1. Januar des Startjahres.</p>
+<p>Die Datei kann als <code>tsv</code> Datei oder DataIO-Datei (ASCII oder Binärformat, Endungen <code>d6o</code> und <code>d6b</code>) bereitgestellt werden.</p>
 </div>
 <div class="paragraph">
-<p>Alle anderen Spalten enthalten die berechneten Bruchwerte für die schattierteten Flächen, wobei jeder Spaltenkopf die jeweilige Fläche mit einer ID-Zeichenkette identifiziert.</p>
+<p>Die Dateien enthalten für bestimmte, kontinuierlich ansteigende Zeitpunkte die jeweilse berechneten Sonnenlichtfaktoren.</p>
 </div>
-<div class="paragraph">
-<p>Die ID-Zeichenkette folgt dem Muster: <code>&lt;objID&gt;.&lt;ID-number&gt;</code>. Objekt-IDs sind entweder <code>conInst</code> oder <code>embObj</code>.</p>
-</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 <div class="paragraph">
 <p>Bei der Berechnung werden die Werte in der Datentabelle linear interpoliert.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Standardmäßig wird von zyklischen Jahresdaten ausgegangen. Dabei müssen die Zeitpunkte stets &lt; 365 d bleiben. Sollen kontinuierliche Daten verwendet werden, muss der Schalter <code>ContinuousShadingFactorData</code> eingeschaltet sein.</p>
+</div>
+<div class="sect5">
+<h6 id="_tsv_format_für_sonnenlichtfaktor_dateien">TSV-Format für Sonnenlichtfaktor-Dateien</h6>
+<div class="paragraph">
+<p>Bei Verwendung des  <code>tsv</code>-Formats müssen die Regeln des <code>tsv</code>-Dateiformats (siehe <em>PostProc 2</em> Dokumentation) eingehalten werden. Es gibt eine einzelne Kopfzeile. Die erste Spalte ist die Zeitspalte mit Zeit-offsets relativ zu Mitternacht des 1. Januar des Startjahres. Es können beliebige Zeiteinheiten verwendet werden.</p>
+</div>
+<div class="paragraph">
+<p>Alle anderen Spalten enthalten die berechneten Sonnenlichtfaktoren, wobei jeder Spaltenkopf die jeweilige Fläche mit eindeutiger ID identifiziert.
+Für opaque Flächen werden die IDs der jeweiligen Konstruktionsinstanzen verwendet. Bei Fenstern werden die IDs der eingebetteten Objekte verwendet.
+Als Werteeinheit muss <code>---</code> verwendet werden.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Beispiel 28. TSV-Datei mit Sonnenlichtfaktoren für 4 Flächen</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre>Time [d]  1001 [---]  1002 [---]  1003 [---]  1004 [---]
+0 1 1 1 1
+181 1 1 1 1
+182 0 0 1 1
+185 0 0 1 1
+186 0 1 1 1
+188 0 1 1 1
+189 1 1 1 1</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Fenster/Konstruktion mit IDs 1001 und 1002 werden in den Tagen 182 bis 188 verschattet. Die Fenster 1003 und 1004 bleiben die ganze Zeit unverschattet.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_dataio_format">DataIO Format</h6>
+<div class="paragraph">
+<p>Bei Verwendung des DataIO-Formats muss das REFERENCE-Format verwendet werden. Das Feld INDICES enthält die IDs der jeweiligen Flächen.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Beispiel 29. DataIO-Datei mit Sonnenlichtfaktoren für 4 Flächen, analog zum obigen TSV-Beispiel</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre>D6OARLZ! 007.000
+TYPE          = REFERENCE
+QUANTITY      = 1001 | 1002 | 1003 | 1004
+VALUE_UNIT    = ---
+TIME_UNIT     = d
+INDICES       = 1001 1002 1003 1004
+
+0 1 1 1 1
+181 1 1 1 1
+182 0 0 1 1
+185 0 0 1 1
+186 0 1 1 1
+188 0 1 1 1
+189 1 1 1 1</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Für größere Gebäude ist das binäre DataIO-Format (mit gleichem Inhalt) zu empfehlen.</p>
+</div>
 </div>
 </div>
 </div>
@@ -2740,17 +2859,17 @@ er Abminderungsfaktor, der in der Gleichung für die Belastung durch die Sonnene
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="#ex_objectLists">Beispiel 27</a> zeigt mehrere Beispiele für Definitionen der Objektliste.</p>
+<p><a href="#ex_objectLists">Beispiel 30</a> zeigt mehrere Beispiele für Definitionen der Objektliste.</p>
 </div>
 <div id="ex_objectLists" class="exampleblock">
-<div class="title">Beispiel 27. Definition von mehreren Objektlisten</div>
+<div class="title">Beispiel 30. Definition von mehreren Objektlisten</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ObjectLists&gt;</span>
   <span class="nt">&lt;ObjectList</span> <span class="na">name=</span><span class="s">"All zones"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;FilterID&gt;</span>*<span class="nt">&lt;/FilterID&gt;</span>
-    <span class="nt">&lt;ReferenzTyp&gt;</span>Zone<span class="nt">&lt;/ReferenzTyp&gt;</span>
+    <span class="nt">&lt;ReferenceType&gt;</span>Zone<span class="nt">&lt;/ReferenceType&gt;</span>
   <span class="nt">&lt;/ObjectList&gt;</span>
   <span class="nt">&lt;ObjectList</span> <span class="na">name=</span><span class="s">"Zone Var01"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;FilterID&gt;</span>1<span class="nt">&lt;/FilterID&gt;</span>
@@ -2805,7 +2924,7 @@ er Abminderungsfaktor, der in der Gleichung für die Belastung durch die Sonnene
 <div class="sect3">
 <h4 id="_id_filter_muster">2.12.2. ID-Filter-Muster</h4>
 <div class="paragraph">
-<p>Objekte (mit gleichem Referenztyp) werden durch ihre ID-Nummer eindeutig identifiziert.</p>
+<p>Objekte (mit gleichem <code>ReferenceType</code>) werden durch ihre ID-Nummer eindeutig identifiziert.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2815,7 +2934,7 @@ er Abminderungsfaktor, der in der Gleichung für die Belastung durch die Sonnene
 </td>
 <td class="content">
 <div class="paragraph">
-<p>ID-Nummern müssen nur für Objekte mit gleichem Referenztyp eindeutig sein. Daher ist es möglich, Zone #1 und ConstructionInstance #1 gleichzeitig zu definieren.</p>
+<p>ID-Nummern müssen nur für Objekte mit gleichem <code>ReferenceType</code> eindeutig sein. Daher ist es möglich, Zone #1 und ConstructionInstance #1 gleichzeitig zu definieren.</p>
 </div>
 </td>
 </tr>
@@ -2905,7 +3024,7 @@ Sie werden z. B. in den folgenden Objekten oder Objektlisten verwendet:</p>
 <p><strong>Nicht-zyklische</strong> Daten werden immer nur einmal verwendet. Dies ist sinnvoll, wenn gemessene Daten (Monitoring) zum Einrichten von Zeitplänen verwendet werden sollen. Dann muss die Simulation nur für die Zeitspanne eingestellt werden, in der die gemessenen Daten vorhanden sind. <strong>Nicht-zyklische</strong> Daten können nur durch <code>AnnualSchedules</code> definiert werden.</p>
 </div>
 <div id="ex_Schedules" class="exampleblock">
-<div class="title">Beispiel 28. Definition eines Zeitplans</div>
+<div class="title">Beispiel 31. Definition eines Zeitplans</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -2973,25 +3092,25 @@ Sie werden z. B. in den folgenden Objekten oder Objektlisten verwendet:</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code>Mon</code> - Montag (<em>Standard</em>)</p>
+<p><code>Mon</code> - Monday (<em>Standard</em>)</p>
 </li>
 <li>
-<p><code>Tue</code> - Dienstag</p>
+<p><code>Tue</code> - Tuesday</p>
 </li>
 <li>
-<p><code>Wed</code> - Mittwoch</p>
+<p><code>Wed</code> - Wednesday</p>
 </li>
 <li>
-<p><code>Thu</code> - Donnerstag</p>
+<p><code>Thu</code> - Thursday</p>
 </li>
 <li>
-<p><code>Fri</code> - Freitag</p>
+<p><code>Fri</code> - Friday</p>
 </li>
 <li>
-<p><code>Sat</code> - Samstag</p>
+<p><code>Sat</code> - Saturday</p>
 </li>
 <li>
-<p><code>Sun</code> - Sonntag</p>
+<p><code>Sun</code> - Sunday</p>
 </li>
 </ul>
 </div></div></td>
@@ -3063,7 +3182,7 @@ Sie werden z. B. in den folgenden Objekten oder Objektlisten verwendet:</p>
 <p>Regelmäßige Zeitpläne werden auf Basis eines Tagesschemas definiert. Einige Parameter müssen wie in dem nachfolgenden  XML-tag definiert werden.</p>
 </div>
 <div id="ex_ScheduleGroup" class="exampleblock">
-<div class="title">Beispiel 29. Definition einer Zeitplangruppe</div>
+<div class="title">Beispiel 32. Definition einer Zeitplangruppe</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3083,11 +3202,11 @@ Sie werden z. B. in den folgenden Objekten oder Objektlisten verwendet:</p>
 </div>
 </div>
 <div id="ex_ScheduleGroup_refObjList" class="exampleblock">
-<div class="title">Beispiel 30. ObjectList-Definition, die Zonenobjekte auswählt und "All Zones" heißt</div>
+<div class="title">Beispiel 33. ObjectList-Definition, die Zonenobjekte auswählt und "All Zones" heißt</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ObjektListen&gt;</span>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ObjectLists&gt;</span>
     <span class="nt">&lt;ObjectList</span> <span class="na">name=</span><span class="s">"All Zones"</span><span class="nt">&gt;</span>
         <span class="nt">&lt;FilterID&gt;</span>*<span class="nt">&lt;/FilterID&gt;</span>
         <span class="nt">&lt;ReferenzTyp&gt;</span>Zone<span class="nt">&lt;/ReferenzTyp&gt;</span>
@@ -3126,31 +3245,31 @@ Sie werden z. B. in den folgenden Objekten oder Objektlisten verwendet:</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="#ex_ScheduleGroup">Beispiel 29</a> zeigt eine solche Definition und <a href="#ex_ScheduleGroup_refObjList">Beispiel 30</a> die entsprechende Objektliste.</p>
+<p><a href="#ex_ScheduleGroup">Beispiel 32</a> zeigt eine solche Definition und <a href="#ex_ScheduleGroup_refObjList">Beispiel 33</a> die entsprechende Objektliste.</p>
 </div>
 <div class="sect4">
 <h5 id="_tägliche_zyklen">Tägliche Zyklen</h5>
 <div class="paragraph">
-<p>Innerhalb der <code>ScheduleGroup</code> können mehrere Objekte namens <code>Schedule</code> definiert werden. Die <code>Schedule</code>-Objekte benötigen ein XML-Attribut namens <code>type</code> mit unterschiedlichen Namen für bestimmte Tagestypen (siehe <a href="#tab_ScheduleTypes">Tabelle 20</a>). Innerhalb einer <code>ScheduleGroup</code> dürfen sich nicht zwei <code>Schedule</code>-Objekte mit demselben <code>type</code> befinden. Innerhalb jedes <code>Schedule</code>-Objekts wird ein Zeitplan definiert, der für alle Tage des angegebenen <code>Typs</code> im Laufe eines ganzen Jahres gilt. Bei der Konstruktion von Zeitplänen gelten die folgenden Regeln.</p>
+<p>Innerhalb der <code>ScheduleGroup</code> können mehrere Objekte namens <code>Schedule</code> definiert werden. Die <code>Schedule</code>-Objekte benötigen ein XML-Attribut namens <code>type</code> mit unterschiedlichen Namen für bestimmte Tagestypen (siehe <a href="#tab_ScheduleTypes">Tabelle 20</a>). Innerhalb einer <code>ScheduleGroup</code> dürfen sich nicht zwei <code>Schedule</code>-Objekte mit demselben <code>type</code> befinden. Innerhalb jedes <code>Schedule</code>-Objekts wird ein Zeitplan definiert, der für alle Tage des angegebenen <code>Type</code> im Laufe eines ganzen Jahres gilt. Bei der Konstruktion von Zeitplänen gelten die folgenden Regeln.</p>
 </div>
 <div class="paragraph">
-<p>In der ersten Priorität werden beim Typ <code>AllDays</code> angegebene tägliche Zeitplanwerte (z.B. <code>HeatingSetPoint</code>) auf alle Tage des ganzen Jahres gesetzt (Priorität 0). <a href="#ex_schedule_alldays">Beispiel 31</a> zeigt eine solche Zeitplandefinition.</p>
+<p>In der ersten Priorität werden beim Typ <code>AllDays</code> angegebene tägliche Zeitplanwerte (z.B. <code>HeatingSetPoint</code>) auf alle Tage des ganzen Jahres gesetzt (Priorität 0). <a href="#ex_schedule_alldays">Beispiel 34</a> zeigt eine solche Zeitplandefinition.</p>
 </div>
 <div class="paragraph">
-<p>Danach überschreiben die <code>Typen</code> namens <code>WeekEnd</code> und <code>WeekDay</code>, falls definiert, die bereits definierten Zeitplanwerte nur für alle Wochentage oder Wochenendtage (Priorität 1). Weiterhin definieren die Wochentage namens <code>Monday</code>, <code>Tuesday</code>, &#8230;&#8203; für welche Tage die Zeitplanwerte wieder überschrieben werden (Priorität 2). Weiter geht es mit dem Tagestyp <code>Holiday</code> (Priorität 3) für die angegebenen Feiertage innerhalb des Objekts <code>Holidays</code>.</p>
+<p>Danach überschreiben die <code>Types</code> <code>WeekEnd</code> und <code>WeekDay</code>, falls definiert, die bereits definierten Zeitplanwerte nur für alle Wochentage oder Wochenendtage (Priorität 1). Weiterhin definieren die Wochentage namens <code>Monday</code>, <code>Tuesday</code>, &#8230;&#8203; für welche Tage die Zeitplanwerte wieder überschrieben werden (Priorität 2). Weiter geht es mit dem Tagestyp <code>Holiday</code> (Priorität 3) für die angegebenen Feiertage innerhalb des Objekts <code>Holidays</code>.</p>
 </div>
 <div class="paragraph">
 <p>Es ist möglich, unterschiedliche Zeitpläne für einzelne Zeiträume des Jahres zu definieren, z. B. für das reguläre Jahr und die Sommerferien etc. Auf diese Weise kann ein Zeitplan für das gesamte Jahr definiert werden.</p>
 </div>
 <div id="ex_schedule_alldays" class="exampleblock">
-<div class="title">Beispiel 31. Zeitplandefinition mit Typ "AllDays"</div>
+<div class="title">Beispiel 34. Zeitplandefinition mit Typ "AllDays"</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ScheduleGroup</span> <span class="na">objectList=</span><span class="s">"Zone01"</span><span class="nt">&gt;</span>
     <span class="c">&lt;!-- Konstante "AllDays" --&gt;</span>
     <span class="nt">&lt;Schedule</span> <span class="na">type=</span><span class="s">"AllDays"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;TagesZyklen&gt;</span>
+        <span class="nt">&lt;DailyCycles&gt;</span>
             <span class="nt">&lt;DailyCycle</span> <span class="na">interpolation=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
                 <span class="nt">&lt;ZeitPunkte&gt;</span>0<span class="nt">&lt;/ZeitPunkte&gt;</span>
                 <span class="nt">&lt;Werte&gt;</span>InfiltrationRateSchedule [1/h]:0<span class="nt">&lt;/Werte&gt;</span>
@@ -3238,10 +3357,10 @@ Sie werden z. B. in den folgenden Objekten oder Objektlisten verwendet:</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="#ex_schedule_week">Beispiel 32</a> veranschaulicht die Verwendung verschiedener Zeitpläne zur Definition eines Wochenplans. Zunächst wird der grundlegende tägliche Zeitplan definiert. Dann werden spezielle Regeln für Dienstage und Wochenenden definiert. <a href="#fig_schedule_week">Abbildung 7</a> veranschaulicht den resultierenden Zeitplan.</p>
+<p><a href="#ex_schedule_week">Beispiel 35</a> veranschaulicht die Verwendung verschiedener Zeitpläne zur Definition eines Wochenplans. Zunächst wird der grundlegende tägliche Zeitplan definiert. Dann werden spezielle Regeln für Dienstage und Wochenenden definiert. <a href="#fig_schedule_week">Abbildung 7</a> veranschaulicht den resultierenden Zeitplan.</p>
 </div>
 <div id="ex_schedule_week" class="exampleblock">
-<div class="title">Beispiel 32. Zeitplandefinition mit verschiedenen Tagestypen</div>
+<div class="title">Beispiel 35. Zeitplandefinition mit verschiedenen Tagestypen</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3287,7 +3406,7 @@ Sie werden z. B. in den folgenden Objekten oder Objektlisten verwendet:</p>
 <div class="content">
 <img src="./images/ScheduleExample_weekly.png" alt="ScheduleExample weekly">
 </div>
-<div class="title">Abbildung 7. Abbildung des wöchentlichen Zeitplans, definiert durch das Beispiel <a href="#ex_schedule_week">Beispiel 32</a></div>
+<div class="title">Abbildung 7. Abbildung des wöchentlichen Zeitplans, definiert durch das Beispiel <a href="#ex_schedule_week">Beispiel 35</a></div>
 </div>
 </div>
 <div class="sect4">
@@ -3380,7 +3499,7 @@ die geplanten Werte)</p>
 <div class="sect4">
 <h5 id="_tägliche_zyklusparameterwerte">Tägliche Zyklusparameterwerte</h5>
 <div class="paragraph">
-<p>Für jedes im Tag <code>TimePoints</code> angegebene Intervall können eine oder mehrere Größen mit zugehörigen Einheiten angegeben werden. Dies geschieht durch die Definition der Datentabelle im XML-Tochtertag <code>Values</code> des <code>DailyCycle</code>-tags. Die Daten der Datentabelle werden wie folgt formatiert:</p>
+<p>Für jedes im tag <code>TimePoints</code> angegebene Intervall können eine oder mehrere Größen mit zugehörigen Einheiten angegeben werden. Dies geschieht durch die Definition der Datentabelle im XML-Tochtertag <code>Values</code> des <code>DailyCycle</code>-tags. Die Daten der Datentabelle werden wie folgt formatiert:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3397,13 +3516,13 @@ die geplanten Werte)</p>
 <p>Der Header ist ein Mengenstichwort (siehe auch <a href="#schedule_variable_list">Variablenliste</a>), gefolgt von seiner Einheit in Klammern. So hat z. B. eine Heizungssolltemperatur die Kopfzeile <code>HeatingSetPointTemperature [C]</code> und die Werte werden dann in Grad C angegeben.</p>
 </div>
 <div class="paragraph">
-<p>Es müssen <em>exakt</em> so viele Werte angegeben werden, wie es Zeitpunkte im XML-Tag <code>TimePoints</code> gibt. In dieser Datentabelle können Sie so viele Größen angeben, wie Sie benötigen.</p>
+<p>Es müssen <em>exakt</em> so viele Werte angegeben werden, wie es Zeitpunkte im XML-tag <code>TimePoints</code> gibt. In dieser Datentabelle können Sie so viele Größen angeben, wie Sie benötigen.</p>
 </div>
 <div class="paragraph">
-<p><a href="#ex_schedule_dailycycle_quantities">Beispiel 33</a> zeigt einen Tageszyklus mit zwei geplanten Mengen und drei Intervallen.</p>
+<p><a href="#ex_schedule_dailycycle_quantities">Beispiel 36</a> zeigt einen Tageszyklus mit zwei geplanten Mengen und drei Intervallen.</p>
 </div>
 <div id="ex_schedule_dailycycle_quantities" class="exampleblock">
-<div class="title">Beispiel 33. Tageszyklus mit zwei disponierten Mengen</div>
+<div class="title">Beispiel 36. Tageszyklus mit zwei disponierten Mengen</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3503,10 +3622,10 @@ die geplanten Werte)</p>
 </table>
 </div>
 <div class="paragraph">
-<p>Innerhalb des XML-tags <code>AnnualSchedules</code> gibt es ein oder mehrere XML-Tochter-tags <code>ScheduleGroup</code>, jedes mit einem obligatorischen XML-Attribut <code>objectList</code>. Dieses referenziert, genau wie bei den täglichen Zyklusplänen eine Objektliste und damit Objekte, auf die sich die geplanten Variablen beziehen. <a href="#ex_AnnualSchedule">Beispiel 34</a> zeigt ein Beispiel für jährliche Zeitpläne, die innerhalb einer einzigen <code>ScheduleGroup</code> definiert sind.</p>
+<p>Innerhalb des XML-tags <code>AnnualSchedules</code> gibt es ein oder mehrere XML-Tochtertags <code>ScheduleGroup</code>, jedes mit einem obligatorischen XML-Attribut <code>objectList</code>. Dieses referenziert, genau wie bei den täglichen Zyklusplänen eine Objektliste und damit Objekte, auf die sich die geplanten Variablen beziehen. <a href="#ex_AnnualSchedule">Beispiel 37</a> zeigt ein Beispiel für jährliche Zeitpläne, die innerhalb einer einzigen <code>ScheduleGroup</code> definiert sind.</p>
 </div>
 <div id="ex_AnnualSchedule" class="exampleblock">
-<div class="title">Beispiel 34. Definition von Jahresplänen</div>
+<div class="title">Beispiel 37. Definition von Jahresplänen</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3737,7 +3856,7 @@ die geplanten Werte)</p>
 <p>Die Ausgaben werden im XML-tag <code>Outputs</code> definiert, mit der folgenden allgemeinen Struktur:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 35. Parameter-Definition für Ausgaben</div>
+<div class="title">Beispiel 38. Parameter-Definition für Ausgaben</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3772,7 +3891,7 @@ die geplanten Werte)</p>
 </ul>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 36. Globale Ausgabeparameter</div>
+<div class="title">Beispiel 39. Globale Ausgabeparameter</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3792,7 +3911,7 @@ die geplanten Werte)</p>
 <p>Ausgaberaster legen fest, <em>wann</em> Ausgaben geschrieben werden. Ein Ausgaberaster enthält eine Liste von Intervallen, wobei für jedes Intervall eine Ausgabenschrittgröße definiert ist. Wenn Sie z. B. stündliche Ausgabeschritte von Anfang bis Ende haben möchten, müssen Sie ein Raster mit einem Intervall und einem Schrittgrößenparameter von einer Stunde definieren:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 37. Ausgaberaster für die gesamte Simulation mit stündlichen Schritten</div>
+<div class="title">Beispiel 40. Ausgaberaster für die gesamte Simulation mit stündlichen Schritten</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3911,7 +4030,7 @@ die geplanten Werte)</p>
 </ul>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 38. Ausgaberasterauswertung</div>
+<div class="title">Beispiel 41. Ausgaberasterauswertung</div>
 <div class="content">
 <div class="paragraph">
 <p>Angenommen, ein Ausgabeintervall ist so definiert, dass es bei 12,5 h beginnt, mit einer Schrittweite von 2 h. Die Simulationszeit soll t=16,5 h betragen. Dann wäre 16,5 - 12,5 = 4 h. 4h ist ein exaktes Vielfaches von 2 h. Das Ausgaberaster wäre also zu diesem Simulationszeitpunkt "aktiv" und alle Ausgaben, die mit diesem Ausgangsgitter verbunden sind, werden geschrieben.</p>
@@ -3922,7 +4041,7 @@ die geplanten Werte)</p>
 <p>Zwischen den Intervallen kann es Lücken geben, in denen keine Ausgaben geschrieben werden:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 39. Ausgaberaster für Tageswerte im ersten Jahr und Stundenwerte im dritten Jahr (beginnend zum Zeitpunkt "2 a")</div>
+<div class="title">Beispiel 42. Ausgaberaster für Tageswerte im ersten Jahr und Stundenwerte im dritten Jahr (beginnend zum Zeitpunkt "2 a")</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -3952,7 +4071,7 @@ die geplanten Werte)</p>
 <p>Nachfolgend finden Sie ein Beispiel für eine Ausgabedefinition:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 40. Ausgabe der Lufttemperatur von allen Zonen in der Objektliste <em>All zones</em> und unter Verwendung des Ausgaberasters <em>hourly</em></div>
+<div class="title">Beispiel 43. Ausgabe der Lufttemperatur von allen Zonen in der Objektliste <em>All zones</em> und unter Verwendung des Ausgaberasters <em>hourly</em></div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -4185,7 +4304,7 @@ die geplanten Werte)</p>
 <div class="sect4">
 <h5 id="_beispiele">Beispiele</h5>
 <div class="exampleblock">
-<div class="title">Beispiel 41. Abfrage von Oberflächentemperaturen der Konstruktionen</div>
+<div class="title">Beispiel 44. Abfrage von Oberflächentemperaturen der Konstruktionen</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -4209,7 +4328,7 @@ die geplanten Werte)</p>
   <span class="nt">&lt;ObjectList</span> <span class="na">name=</span><span class="s">"Walls"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;FilterID&gt;</span>*<span class="nt">&lt;/FilterID&gt;</span>
     <span class="c">&lt;!-- Objektliste muss auf Konstruktionsinstanzen verweisen --&gt;</span>
-    <span class="nt">&lt;ReferenzTyp&gt;</span>ConstructionInstance<span class="nt">&lt;/ReferenzTyp&gt;</span>
+    <span class="nt">&lt;ReferenceType&gt;</span>ConstructionInstance<span class="nt">&lt;/ReferenceType&gt;</span>
   <span class="nt">&lt;/ObjectList&gt;</span>
     ... <span class="c">&lt;!-- andere Objektlisten --&gt;</span>
 <span class="nt">&lt;/ObjectLists&gt;</span></code></pre>
@@ -4218,7 +4337,7 @@ die geplanten Werte)</p>
 </div>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 42. Anforderung von Energie, die der Schicht in einer Konstruktion zugeführt wird (Fußbodenheizung)</div>
+<div class="title">Beispiel 45. Anforderung von Energie, die der Schicht in einer Konstruktion zugeführt wird (Fußbodenheizung)</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -4385,10 +4504,10 @@ Als Nächstes ?? Datensätze: unsigned int - n (zur Überprüfung) und danach n 
 <div class="sect3">
 <h4 id="simulation_parameters">2.15.1. Simulationsparameter</h4>
 <div class="paragraph">
-<p>Im Folgenden werden alle Simulationsparameter beschrieben, siehe <a href="#ex_simpara">Beispiel 43</a>. Alle Parameter werden als <code>IBK:Parameter</code>, <code>IBK:Flags</code> oder <code>IBK:IntPara</code> gesetzt.</p>
+<p>Im Folgenden werden alle Simulationsparameter beschrieben, siehe <a href="#ex_simpara">Beispiel 46</a>. Alle Parameter werden als <code>IBK:Parameter</code>, <code>IBK:Flags</code> oder <code>IBK:IntPara</code> gesetzt.</p>
 </div>
 <div id="ex_simpara" class="exampleblock">
-<div class="title">Beispiel 43. Simulationsparameter</div>
+<div class="title">Beispiel 46. Simulationsparameter</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -4682,7 +4801,7 @@ Als Nächstes ?? Datensätze: unsigned int - n (zur Überprüfung) und danach n 
 <div class="ulist">
 <ul>
 <li>
-<p>das <code>StartJahr</code> und</p>
+<p>das <code>StartYear</code> und</p>
 </li>
 <li>
 <p>das Offset der Zeit seit Beginn (Mitternacht 1. Januar) dieses Jahres als <code>Start</code> Intervallparameter.</p>
@@ -5391,7 +5510,7 @@ Start = 14*24 + 6 = 342 h</pre>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Gleitkommazahlen-Parameter (siehe Abschnitt <a href="#IBK_Parameter">IBK:Parameter</a> für eine Beschreibung des Tags <code>IBK:Parameter</code>):</p>
+<p>Gleitkommazahlen-Parameter (siehe Abschnitt <a href="#IBK_Parameter">IBK:Parameter</a> für eine Beschreibung des tags <code>IBK:Parameter</code>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -5461,7 +5580,7 @@ Start = 14*24 + 6 = 342 h</pre>
 <p>Nachfolgend finden Sie ein Beispiel für einen Zeitplan, der den Parameter <code>VentilationRateSchedule</code> für ein solches Modell der geplanten natürlichen Lüftung bereitstellt:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 44. Zeitplan, der den Parameter <em>VentilationRateSchedule</em> bereitstellt</div>
+<div class="title">Beispiel 47. Zeitplan, der den Parameter <em>VentilationRateSchedule</em> bereitstellt</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -5510,8 +5629,8 @@ Start = 14*24 + 6 = 342 h</pre>
 n = n_Grundluftwechsel + n_erhöhterLuftwechsel  // wenn Bedingungen erfüllt</code></pre>
 </div>
 </div>
-<div class="sect5">
-<h6 id="_regelbedingungen">Regelbedingungen</h6>
+<div class="sect4">
+<h5 id="_regelbedingungen">Regelbedingungen</h5>
 <div class="paragraph">
 <p>Folgende Bedingungen müssen <em>alle</em> erfüllt sein, damit der erhöhte Luftwechsel addiert wird.</p>
 </div>
@@ -5535,7 +5654,7 @@ n = n_Grundluftwechsel + n_erhöhterLuftwechsel  // wenn Bedingungen erfüllt</c
 <p>Damit das Modell mit der Ausprägung <code>ScheduledWithBaseACR</code> verwendbar ist, müssen beide Parameter <em>VentilationRate</em> und <em>VentilationRateSchedule</em> spezifiziert werden.</p>
 </div>
 <div class="paragraph">
-<p>Gleitkommazahlen-Parameter (siehe Abschnitt <a href="#IBK_Parameter">IBK:Parameter</a> für eine Beschreibung des Tags <code>IBK:Parameter</code>):</p>
+<p>Gleitkommazahlen-Parameter (siehe Abschnitt <a href="#IBK_Parameter">IBK:Parameter</a> für eine Beschreibung des tags <code>IBK:Parameter</code>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -5626,10 +5745,10 @@ n = n_Grundluftwechsel + n_erhöhterLuftwechsel  // wenn Bedingungen erfüllt</c
 </table>
 </div>
 </div>
-<div class="sect5">
-<h6 id="_ausgabegrößen">Ausgabegrößen</h6>
+<div class="sect4">
+<h5 id="_ausgabegrößen">Ausgabegrößen</h5>
 <div class="paragraph">
-<p>Die berechneten Lüftungswärmeverlust/-gewinnen können als zonenspezifische Größen über die Ergebnisgröße
+<p>Die berechneten Lüftungswärmeverluste/-gewinne können als zonenspezifische Größen über die Ergebnisgröße
 <code>Zone.VentilationHeatLoad</code> in [W] abgerufen werden.</p>
 </div>
 </div>
@@ -5640,7 +5759,7 @@ n = n_Grundluftwechsel + n_erhöhterLuftwechsel  // wenn Bedingungen erfüllt</c
 <p>Ein Verschattungregelungsmodell ist eine spezielle Art von Regelungsmodell, das einen Signalwert zwischen 0 (keine Verschattung) und 1 (volle Verschattung) zurückgibt. Das tatsächliche Ausmaß der Verschattung bzw. die Reduzierung der solaren Gewinne wird durch den Verschattungs-Parameterblock (<code>Shading</code>, siehe <a href="#window_shading">Fensterverschattung</a>) bestimmt. Somit kann das gleiche Regelmodell für verschiedene Verschattungseinrichtungen verwendet werden.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 45. Parameterdefinition für Verschattungsregelungsmodell</div>
+<div class="title">Beispiel 48. Parameterdefinition für Verschattungsregelungsmodell</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -5706,7 +5825,7 @@ n = n_Grundluftwechsel + n_erhöhterLuftwechsel  // wenn Bedingungen erfüllt</c
 Es dürfen nicht zwei interne Lastmodelle existieren, die sich auf dieselben Zonen beziehen (nur eine interne Last pro Zone).</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 46. Definitionsblock für interne Lasten</div>
+<div class="title">Beispiel 49. Definitionsblock für interne Lasten</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -5837,7 +5956,7 @@ Es dürfen nicht zwei interne Lastmodelle existieren, die sich auf dieselben Zon
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Die Zonennutzfläche ist nicht zwingend die Grundfläche einer Zone sondern wird aus dem Parameter <em>Area</em> der Zonendefinition gewählt. Dadurch ist es möglich, z.B. im Dachgeschoss mit Schrägen die tatsächlich nutzbare Fläche zu definieren verwenden. Deshalb wird der <em>Area</em> Parameter in allen Zonen benötigt, für die ein <code>InternalLoadsModel</code> angewendet werden soll.</p>
+<p>Die Zonennutzfläche ist nicht zwingend die Grundfläche einer Zone sondern wird aus dem Parameter <em>Area</em> der Zonendefinition gewählt. Dadurch ist es möglich, z.B. im Dachgeschoss mit Schrägen die tatsächlich nutzbare Fläche zu definieren und zu verwenden. Deshalb wird der <em>Area</em> Parameter in allen Zonen benötigt, für die ein <code>InternalLoadsModel</code> angewendet werden soll.</p>
 </div>
 </td>
 </tr>
@@ -5902,7 +6021,7 @@ Wenn der Modelltyp <code>Scheduled</code> verwendet wird, werden die tatsächlic
 Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in denen Thermostate berücksichtigt werden sollen. Es darf nur ein Modell pro Zone existieren.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 47. Definitionsblock für Thermostate</div>
+<div class="title">Beispiel 50. Definitionsblock für Thermostate</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6083,7 +6202,7 @@ Wenn der Modelltyp <code>Scheduled</code> verwendet wird, werden die tatsächlic
 Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in denen das Modell berücksichtigt werden sollen. Es darf nur ein Modell pro Zone existieren.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 48. Definitionsblock für Ideale thermische Konditionierung</div>
+<div class="title">Beispiel 51. Definitionsblock für Ideale thermische Konditionierung</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6125,7 +6244,7 @@ Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in den
 </tbody>
 </table>
 <div class="paragraph">
-<p>Fließkommaparameter (siehe Abschnitt <a href="#IBK_Parameter">IBK:Parameter</a> für eine Beschreibung des Tags <code>IBK:Parameter</code>):</p>
+<p>Fließkommaparameter (siehe Abschnitt <a href="#IBK_Parameter">IBK:Parameter</a> für eine Beschreibung des tags <code>IBK:Parameter</code>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -6175,8 +6294,8 @@ Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in den
 </tr>
 </table>
 </div>
-<div class="sect5">
-<h6 id="_regelungsimplementierung">Regelungsimplementierung</h6>
+<div class="sect4">
+<h5 id="_regelungsimplementierung">Regelungsimplementierung</h5>
 <div class="paragraph">
 <p>Standardmäßig verwendet das ideale Konditionierungsmodell einen P-Regler, nach dem Schema:</p>
 </div>
@@ -6195,8 +6314,8 @@ Heizlast = MaxHeatingPowerPerArea * clip( (T_soll - T_raum) / DeltaT + 0.5))</co
 <p><code>T_raum</code> ist entweder die Lufttemperatur oder die operative Temperatur. Dafür ist die Information im ThermostatModell notwendig.</p>
 </div>
 </div>
-<div class="sect5">
-<h6 id="_ausgaben">Ausgaben</h6>
+<div class="sect4">
+<h5 id="_ausgaben">Ausgaben</h5>
 <div class="paragraph">
 <p>Die zonenspezifischen Ausgangsgrößen heißen:</p>
 </div>
@@ -6222,10 +6341,10 @@ Heizlast = MaxHeatingPowerPerArea * clip( (T_soll - T_raum) / DeltaT + 0.5))</co
 <p>Dieser Abschnitt beschreibt die Parametrisierung von thermo-hydraulischen Netzwerken.</p>
 </div>
 <div class="paragraph">
-<p>In einer Projektdatei kann es mehrere Netzwerke geben. Diese sind im XML tag <code>HydraulicNetworks</code> abgelegt.</p>
+<p>In einer Projektdatei kann es mehrere Netzwerke geben. Diese sind im XML-tag <code>HydraulicNetworks</code> abgelegt.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 49. Hydraulische Netzwerke</div>
+<div class="title">Beispiel 52. Hydraulische Netzwerke</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6253,7 +6372,7 @@ Heizlast = MaxHeatingPowerPerArea * clip( (T_soll - T_raum) / DeltaT + 0.5))</co
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Die einzelnen Netzwerke sind hydraulisch unabhängig, d.h. es gibt keinen Fluidaustausch zwischen Netzwerken. Die Netzwerke können aber thermisch verknüpft sein, z.B. kann ein Quartierswärmenetz mit einem Gebäudeanlagennetz Wärme austauschen. Dies bedingt auch <em>eindeutige ID</em> der in <em>allen</em> Netzwerken definierten hydraulischen Netzwerkkomponenten.</p>
+<p>Die einzelnen Netzwerke sind hydraulisch unabhängig, d.h. es gibt keinen Fluidaustausch zwischen Netzwerken. Die Netzwerke können aber thermisch verknüpft sein, z.B. kann ein Quartierswärmenetz mit einem Gebäudeanlagennetz Wärme austauschen. Dies bedingt auch die <em>eindeutige ID</em> der in <em>allen</em> Netzwerken definierten hydraulischen Netzwerkkomponenten.</p>
 </div>
 </td>
 </tr>
@@ -6265,7 +6384,7 @@ Heizlast = MaxHeatingPowerPerArea * clip( (T_soll - T_raum) / DeltaT + 0.5))</co
 <p>Ein einzelnes Netzwerk wird im XML-tag <code>HydraulicNetwork</code> definiert, wie im folgenden Beispiel:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 50. Typische Definition eines einzelnen Netzwerks</div>
+<div class="title">Beispiel 53. Typische Definition eines einzelnen Netzwerks</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6371,7 +6490,7 @@ Heizlast = MaxHeatingPowerPerArea * clip( (T_soll - T_raum) / DeltaT + 0.5))</co
 <div class="sect4">
 <h5 id="_parameter">Parameter</h5>
 <div class="paragraph">
-<p>Je nach Modelltyp können mehrere globale Netzwerkparameter definiert werden (siehe Abschnitt <a href="#IBK_Parameter">IBK:Parameter</a> für eine Beschreibung des <code>IBK:Parameter</code> Tags):</p>
+<p>Je nach Modelltyp können mehrere globale Netzwerkparameter definiert werden (siehe Abschnitt <a href="#IBK_Parameter">IBK:Parameter</a> für eine Beschreibung des <code>IBK:Parameter</code> tags):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -6455,7 +6574,7 @@ Heizlast = MaxHeatingPowerPerArea * clip( (T_soll - T_raum) / DeltaT + 0.5))</co
 </table>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 51. Definition eines Netzwerkfluids</div>
+<div class="title">Beispiel 54. Definition eines Netzwerkfluids</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6521,7 +6640,7 @@ Heizlast = MaxHeatingPowerPerArea * clip( (T_soll - T_raum) / DeltaT + 0.5))</co
 </table>
 </div>
 <div class="paragraph">
-<p>Parameter des Netzwerkfluids (siehe Abschnitt <a href="#IBK_Parameter">IBK:Parameter</a> für eine Beschreibung des <code>IBK:Parameter</code> Tags):</p>
+<p>Parameter des Netzwerkfluids (siehe Abschnitt <a href="#IBK_Parameter">IBK:Parameter</a> für eine Beschreibung des <code>IBK:Parameter</code> tags):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -6615,7 +6734,7 @@ Heizlast = MaxHeatingPowerPerArea * clip( (T_soll - T_raum) / DeltaT + 0.5))</co
 <p>Die Rohreigenschaften legen die physikalische/geometrischen Eigenschaften eines Rohrtyps fest. Diese werden in XML-tags we <code>HydraulicNetworkPipeProperties</code> im Katalog <code>PipeProperties</code> mit eindeutigen IDs aufgelistet.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 52. Definition von Rohreigenschaften</div>
+<div class="title">Beispiel 55. Definition von Rohreigenschaften</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6725,7 +6844,7 @@ Heizlast = MaxHeatingPowerPerArea * clip( (T_soll - T_raum) / DeltaT + 0.5))</co
 <p>Eine <code>HydraulicNetworkComponent</code> definiert die Basiseigenschaften eines Strömungselements. Diese werden in dem Katalog <code>Components</code> mit eindeutigen IDs aufgelistet.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 53. Definition einer Komponente</div>
+<div class="title">Beispiel 56. Definition einer Komponente</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -6930,7 +7049,7 @@ Heizlast = MaxHeatingPowerPerArea * clip( (T_soll - T_raum) / DeltaT + 0.5))</co
 <p>Die tatsächlichen Strömungselemente des Netzwerks werden innerhalb des XML-tags <code>Elements</code> mit dem XML-tag <code>HydraulicNetworkElement</code> definiert.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 54. Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)</div>
+<div class="title">Beispiel 57. Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)</div>
 <div class="content">
 <div id="xml_example_flow_element" class="listingblock">
 <div class="content">
@@ -6947,7 +7066,7 @@ Heizlast = MaxHeatingPowerPerArea * clip( (T_soll - T_raum) / DeltaT + 0.5))</co
 </div>
 </div>
 <div class="paragraph">
-<p><code>HydraulicNetworkElement</code>-Tags haben die folgenden Attribute:</p>
+<p><code>HydraulicNetworkElement</code>-tags haben die folgenden Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Tabelle 37. Attribute</caption>
@@ -7028,10 +7147,10 @@ Heizlast = MaxHeatingPowerPerArea * clip( (T_soll - T_raum) / DeltaT + 0.5))</co
 <p>Die Strömungselemente sind miteinander durch Knoten verknüpft. In jedem Strömungselement fließt das Fluid (geplant) von dem Knoten mit der <code>inletNodeId</code> zu dem Knoten mit der <code>outletNodeId</code>. Während der Berechnung ist es jedoch möglich, dass sich der Massestrom umkehrt. Dies ändert aber nichts an der Topologiedefinition des Netzwerkes. Man könnte <code>inletNodeId</code> auch mit "Knoten 1 des Elements" und <code>outletNodeId</code> mit "Knoten 2 des Elements" bezeichnen.</p>
 </div>
 <div class="paragraph">
-<p><a href="#fig_network_example1">Abbildung 12</a> zeigt ein einfaches Netzwerk bestehend aus 3 Elementen.  Ein solches Netzwerk würde wie folgt definiert werden (<a href="#ex_network_example1">Beispiel 55</a>).</p>
+<p><a href="#fig_network_example1">Abbildung 12</a> zeigt ein einfaches Netzwerk bestehend aus 3 Elementen.  Ein solches Netzwerk würde wie folgt definiert werden (<a href="#ex_network_example1">Beispiel 58</a>).</p>
 </div>
 <div id="ex_network_example1" class="exampleblock">
-<div class="title">Beispiel 55. XML-Definition eines einfachen Strömungsnetzwerks mit 3 Knoten und 3 Elementen</div>
+<div class="title">Beispiel 58. XML-Definition eines einfachen Strömungsnetzwerks mit 3 Knoten und 3 Elementen</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7074,7 +7193,7 @@ Heizlast = MaxHeatingPowerPerArea * clip( (T_soll - T_raum) / DeltaT + 0.5))</co
 <p>Ist eine Komponente ein Rohr (z.B. <code>DynamicPipe</code>), <strong>müssen</strong> entsprechende Rohrparameter mit der <code>pipePropertiesId</code> referenziert werden.</p>
 </div>
 <div class="paragraph">
-<p>Weiterhin <strong>muss</strong> für ein Rohrelement der Parameter <code>Length</code> definiert werden (siehe auch <a href="#ex_pipe_element">Beispiel 56</a>):</p>
+<p>Weiterhin <strong>muss</strong> für ein Rohrelement der Parameter <code>Length</code> definiert werden (siehe auch <a href="#ex_pipe_element">Beispiel 59</a>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -7104,7 +7223,7 @@ Heizlast = MaxHeatingPowerPerArea * clip( (T_soll - T_raum) / DeltaT + 0.5))</co
 </tbody>
 </table>
 <div id="ex_pipe_element" class="exampleblock">
-<div class="title">Beispiel 56. Definition eines Rohrelements</div>
+<div class="title">Beispiel 59. Definition eines Rohrelements</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7121,7 +7240,7 @@ Heizlast = MaxHeatingPowerPerArea * clip( (T_soll - T_raum) / DeltaT + 0.5))</co
 <p>Durch Angabe des <code>IBK:IntPara</code> Tags mit dem Namen <code>NumberParallelPipes</code> kann man ein Rohrregister definieren und so z.B. eine Flächenheizung/Fußbodenheizung modellieren. Dabei strömt letztlich das Fluid parallel durch die angebene Anzahl gleichartiger Rohre.</p>
 </div>
 <div id="ex_pipe_register" class="exampleblock">
-<div class="title">Beispiel 57. Definition eines Rohrregisters</div>
+<div class="title">Beispiel 60. Definition eines Rohrregisters</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7157,7 +7276,7 @@ Heizlast = MaxHeatingPowerPerArea * clip( (T_soll - T_raum) / DeltaT + 0.5))</co
 <p>Für thermische Netzwerken kann für jedes Strömungselement (<a href="#HydraulicNetworkElements">Section 2.17.5</a>) ein Wärmeaustausch definiert werden. Dafür muss innerhalb der Definition des Strömungselements ein XML-Element <code>HeatExchangeType</code> definiert werden.</p>
 </div>
 <div id="ex_heat_exchange_type" class="exampleblock">
-<div class="title">Beispiel 58. Definition von Strömungselementen mit <code>HeatExchangeType</code></div>
+<div class="title">Beispiel 61. Definition von Strömungselementen mit <code>HeatExchangeType</code></div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7373,10 +7492,10 @@ Heizlast = MaxHeatingPowerPerArea * clip( (T_soll - T_raum) / DeltaT + 0.5))</co
 <div class="sect3">
 <h4 id="_ausgaben_2">2.17.7. Ausgaben</h4>
 <div class="paragraph">
-<p>Die Ergebnisgrößen eines thermo-hydraulischen Netzwerkmodells werden wie folgt definiert. Als Referenzierungstyp dient entweder <code>Network</code> für Ausgaben des Netzwerks insgesamt, oder <code>NetworkElement</code> für die Adressierung individueller Strömungselemente (siehe <a href="#ex_objectList_networks">Beispiel 59</a>).</p>
+<p>Die Ergebnisgrößen eines thermo-hydraulischen Netzwerkmodells werden wie folgt definiert. Als Referenzierungstyp dient entweder <code>Network</code> für Ausgaben des Netzwerks insgesamt, oder <code>NetworkElement</code> für die Adressierung individueller Strömungselemente (siehe <a href="#ex_objectList_networks">Beispiel 62</a>).</p>
 </div>
 <div id="ex_objectList_networks" class="exampleblock">
-<div class="title">Beispiel 59. Objektlist für die Referenzierung eines Netzwerks mit der ID 1 und ausgewählter Elemente des Netzwerks</div>
+<div class="title">Beispiel 62. Objektlist für die Referenzierung eines Netzwerks mit der ID 1 und ausgewählter Elemente des Netzwerks</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7578,10 +7697,10 @@ ThermalTransmittance                [W/K]       Total thermal transmittance of f
 </ul>
 </div>
 <div class="paragraph">
-<p>Die Variablen sind vektor-wertige Größen und es muss der <em>Index</em> des jeweils angeforderten Vektorelements verwendet werden. Die Indizierung entspricht der Reihenfolge der  <code>HydraulicNetworkElement</code> Tags. <a href="#ex_network_outputs">Beispiel 60</a> zeigt die Definition einer indexbasierten Ausgabe für Masseströme des Netzwerks.</p>
+<p>Die Variablen sind vektor-wertige Größen und es muss der <em>Index</em> des jeweils angeforderten Vektorelements verwendet werden. Die Indizierung entspricht der Reihenfolge der  <code>HydraulicNetworkElement</code> Tags. <a href="#ex_network_outputs">Beispiel 63</a> zeigt die Definition einer indexbasierten Ausgabe für Masseströme des Netzwerks.</p>
 </div>
 <div id="ex_network_outputs" class="exampleblock">
-<div class="title">Beispiel 60. Beispiel für Ausgabedefinitionen mit Network als Referenztyp</div>
+<div class="title">Beispiel 63. Beispiel für Ausgabedefinitionen mit Network als Referenztyp</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7629,7 +7748,7 @@ NetworkActiveLayerHeatLoad(id,1)            [W]         Heat load to the constru
 <div class="sect2">
 <h3 id="units">3.1. Einheitendefinitionen</h3>
 <div class="paragraph">
-<p>Im gesamten NANDRAD-Solver werden Einheiten <em>nur</em> für Ein-/Ausgabezwecke verwendet. Innerhalb der Berechnungsfunktionen werden <em>immer</em> die SI-Basiseinheiten verwendet, wodurch Probleme durch Einheitenumrechnungen vermieden werden.</p>
+<p>Im gesamten NANDRAD-Solver werden Einheiten <em>nur</em> für Ein-/ Ausgabezwecke verwendet. Innerhalb der Berechnungsfunktionen werden <em>immer</em> die SI-Basiseinheiten verwendet, wodurch Probleme durch Einheitenumrechnungen vermieden werden.</p>
 </div>
 <div class="paragraph">
 <p>Das Einheitensystem in NANDRAD verwendet die Konvention, dass maximal ein / (Schrägstrich) Teil des Einheitennamens sein darf. Alle Einheiten, die dem Schrägstrich folgen, stehen im Nenner der Einheit. Exponenten stehen nur hinter der Einheit, zum Beispiel <code>m2</code>. Punkte in Exponenten werden weggelassen, z. B. <code>h05</code> für die Quadratwurzel der Stunde. Mehrere Einheiten werden einfach ohne . oder *-Zeichen aneinandergereiht, z. B. <code>kWh</code> oder <code>kg/m2s</code>.</p>
@@ -8057,19 +8176,19 @@ NetworkActiveLayerHeatLoad(id,1)            [W]         Heat load to the constru
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Location</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AzimutWinkel</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AzimuthAngle</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Deg</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Solarer Azimut (0 - Nord).</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Location</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">CO2-Konzentration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CO2-CO2Concentration</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">---</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Umgebende CO2-Konzentration.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Location</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">CO2Dichte</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CO2Density</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">kg/m3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Ambiente CO2-Dichte.</p></td>
 </tr>
@@ -8129,7 +8248,7 @@ NetworkActiveLayerHeatLoad(id,1)            [W]         Heat load to the constru
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Location</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Temperatur</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Temperature</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">C</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Außentemperatur.</p></td>
 </tr>
@@ -8165,7 +8284,7 @@ NetworkActiveLayerHeatLoad(id,1)            [W]         Heat load to the constru
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Zone</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LuftTemperatur</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AirTemperature</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">C</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Raumlufttemperatur.</p></td>
 </tr>
@@ -8195,8 +8314,8 @@ NetworkActiveLayerHeatLoad(id,1)            [W]         Heat load to the constru
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.2 (20.04.2021)<br>
-Last updated 2021-04-20 09:05:35 +0200
+Version 0.2 (22.04.2021)<br>
+Last updated 2021-04-22 09:35:45 +0200
 </div>
 </div>
 <style>
