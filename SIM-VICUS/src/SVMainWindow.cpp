@@ -1741,12 +1741,12 @@ void SVMainWindow::on_actionResetView_triggered() {
 	SVViewStateHandler::instance().m_geometryView->resetCamera();
 }
 
-void SVMainWindow::on_actionExport_View3D_triggered() {
+void SVMainWindow::on_actionExportView3D_triggered() {
 	SVView3D v3d;
 	v3d.exportView3d();
 }
 
-void SVMainWindow::on_actionCalculate_Shading_Factors_triggered() {
+void SVMainWindow::on_actionCalculateShadingFactors_triggered() {
 	if (m_shadingCalculationDialog == nullptr)
 		m_shadingCalculationDialog = new SVShadingCalculationDialog;
 	// open simulation start dialog, with settings for climate location, simulation and
