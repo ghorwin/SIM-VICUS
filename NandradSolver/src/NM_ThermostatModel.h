@@ -23,8 +23,10 @@ class ThermostatModel : public AbstractModel, public AbstractStateDependency {
 public:
 	/*! Computed results, provided with access via zone ID. */
 	enum VectorValuedResults {
-		VVR_HeatingSetpoint,			// Keyword: HeatingSetpoint				[C]		'Heating set point'
-		VVR_CoolingSetpoint,			// Keyword: CoolingSetpoint				[C]		'Cooling set point'
+		/*! Control signal for heating, 0 - off, 1 - on. */
+		VVR_HeatingControlValue,		// Keyword: HeatingControlValue			[---]	'Heating control signal'
+		/*! Control signal for cooling, 0 - off, 1 - on. */
+		VVR_CoolingControlValue,		// Keyword: CoolingControlValue			[---]	'Cooling control signal'
 		NUM_VVR
 	};
 
@@ -108,8 +110,13 @@ private:
 	/*! Cached pointer to zone parameters, to access zone volumes during init. */
 	const std::vector<NANDRAD::Zone>				*m_zones = nullptr;
 
-	/*! The actual controller instance. */
-	NANDRAD_MODEL::AbstractController				*m_controller = nullptr;
+	/*! The actual controller instances.
+		If we have a reference zone, we only have one controller.
+		Otherwise we have one controller per zone.
+		Note: for PControllers without state this is a bit of an overhead, but to stay generic,
+			  we must provide a state-containing controller instance in case someone defines a hysteresis or PI controller.
+	*/
+	std::vector<NANDRAD_MODEL::AbstractController*>	m_controllers;
 
 	/*! Vector valued results, computed/updated during the calculation. */
 	std::vector<VectorValuedQuantity>				m_vectorValuedResults;

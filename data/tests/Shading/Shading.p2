@@ -6,8 +6,9 @@
 			<Path>.</Path>
 			<SubDir Color="#416fce" Checked="0">.</SubDir>
 			<SubDir Color="#aaaa00" Checked="0">ControlledShading</SubDir>
-			<SubDir Color="#ffffff" Checked="0">ControlledShading.gcc_linux</SubDir>
-			<SubDir Color="#7141d1" Checked="1">ExteriorShadingDataIO</SubDir>
+			<SubDir Color="#ffffff" Checked="1">ControlledShading.gcc_linux</SubDir>
+			<SubDir Color="#7141d1" Checked="0">ExteriorShadingDataIO</SubDir>
+			<SubDir Color="#ffee00" Checked="0">ExteriorShadingDataIO.gcc_linux</SubDir>
 			<SubDir Color="#aaaa00" Checked="0">ExteriorShadingReference</SubDir>
 			<SubDir Color="#45ad45" Checked="0">ExteriorShadingReference.gcc_linux</SubDir>
 			<SubDir Color="#7141d1" Checked="0">ExteriorShadingTSV</SubDir>
@@ -464,7 +465,7 @@
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="4" size1="1" size2="1" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="1" size1="1" size2="1" orientation="2" />
 		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 

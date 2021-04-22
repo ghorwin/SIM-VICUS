@@ -199,8 +199,8 @@ namespace NANDRAD_MODEL {
 			// ThermostatModel::VectorValuedResults
 			case 15 :
 			switch (t) {
-				case 0 : return "HeatingSetpoint";
-				case 1 : return "CoolingSetpoint";
+				case 0 : return "HeatingControlValue";
+				case 1 : return "CoolingControlValue";
 			} break;
 			// WindowModel::Results
 			case 16 :
@@ -352,8 +352,8 @@ namespace NANDRAD_MODEL {
 			// ThermostatModel::VectorValuedResults
 			case 15 :
 			switch (t) {
-				case 0 : return "HeatingSetpoint";
-				case 1 : return "CoolingSetpoint";
+				case 0 : return "HeatingControlValue";
+				case 1 : return "CoolingControlValue";
 			} break;
 			// WindowModel::Results
 			case 16 :
@@ -506,8 +506,8 @@ namespace NANDRAD_MODEL {
 			// ThermostatModel::VectorValuedResults
 			case 15 :
 			switch (t) {
-				case 0 : return "Heating set point";
-				case 1 : return "Cooling set point";
+				case 0 : return "Heating control signal";
+				case 1 : return "Cooling control signal";
 			} break;
 			// WindowModel::Results
 			case 16 :
@@ -659,8 +659,8 @@ namespace NANDRAD_MODEL {
 			// ThermostatModel::VectorValuedResults
 			case 15 :
 			switch (t) {
-				case 0 : return "C";
-				case 1 : return "C";
+				case 0 : return "---";
+				case 1 : return "---";
 			} break;
 			// WindowModel::Results
 			case 16 :

@@ -14,6 +14,13 @@
 namespace NANDRAD_MODEL {
 
 
+ThermostatModel::~ThermostatModel() {
+	// memory cleanup
+	for (AbstractController * ptr : m_controllers)
+		delete ptr;
+	m_controllers.clear();
+}
+
 
 void ThermostatModel::setup(const NANDRAD::Thermostat & thermostat,
 							const std::vector<NANDRAD::ObjectList> & objLists,
@@ -52,24 +59,7 @@ void ThermostatModel::setup(const NANDRAD::Thermostat & thermostat,
 								 .arg(m_thermostat->m_referenceZoneID), FUNC_ID);
 	}
 
-	// initialize controller
-	switch (m_thermostat->m_controllerType) {
-		case NANDRAD::Thermostat::NUM_CT : // default to P-Controller
-		case NANDRAD::Thermostat::CT_PController : {
-			PController * con = new PController;
-			con->m_kP = m_thermostat->m_para[NANDRAD::Thermostat::P_TemperatureTolerance].value;
-			m_controller = con;
-		} break;
-
-		case NANDRAD::Thermostat::CT_DigitalController : {
-			DigitalHysteresisController * con = new DigitalHysteresisController;
-			con->m_hysteresisBand = m_thermostat->m_para[NANDRAD::Thermostat::P_TemperatureBand].value;
-			m_controller = con;
-		} break;
-
-	}
-
-	// the rest of the initialization can only be done when the object lists have been initialized, i.e. this happens in resultDescriptions()
+	// the rest of the initialization can only be done when the object lists have been initialized, i.e. this happens in initResults()
 }
 
 
@@ -84,6 +74,44 @@ void ThermostatModel::initResults(const std::vector<AbstractModel *> &) {
 	// resize result vectors accordingly
 	for (unsigned int varIndex=0; varIndex<NUM_VVR; ++varIndex)
 		m_vectorValuedResults[varIndex] = VectorValuedQuantity(indexKeys);
+
+	// initialize controller
+	if (m_thermostat->m_referenceZoneID != NANDRAD::INVALID_ID) {
+		// reference zone selected -> only one controller
+		switch (m_thermostat->m_controllerType) {
+			case NANDRAD::Thermostat::NUM_CT : // default to P-Controller
+			case NANDRAD::Thermostat::CT_PController : {
+				PController * con = new PController;
+				con->m_kP = m_thermostat->m_para[NANDRAD::Thermostat::P_TemperatureTolerance].value;
+				m_controllers.push_back(con);
+			} break;
+
+			case NANDRAD::Thermostat::CT_DigitalController : {
+				DigitalHysteresisController * con = new DigitalHysteresisController;
+				con->m_hysteresisBand = m_thermostat->m_para[NANDRAD::Thermostat::P_TemperatureBand].value;
+				m_controllers.push_back(con);
+			} break;
+		}
+	}
+	else {
+		// create a thermostat for each zone
+		for (unsigned int i = 0; i<indexKeys.size(); ++i) {
+			switch (m_thermostat->m_controllerType) {
+				case NANDRAD::Thermostat::NUM_CT : // default to P-Controller
+				case NANDRAD::Thermostat::CT_PController : {
+					PController * con = new PController;
+					con->m_kP = m_thermostat->m_para[NANDRAD::Thermostat::P_TemperatureTolerance].value;
+					m_controllers.push_back(con);
+				} break;
+
+				case NANDRAD::Thermostat::CT_DigitalController : {
+					DigitalHysteresisController * con = new DigitalHysteresisController;
+					con->m_hysteresisBand = m_thermostat->m_para[NANDRAD::Thermostat::P_TemperatureBand].value;
+					m_controllers.push_back(con);
+				} break;
+			}
+		}
+	}
 }
 
 
@@ -231,21 +259,70 @@ void ThermostatModel::setInputValueRefs(const std::vector<QuantityDescription> &
 void ThermostatModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
 	if (m_objectList->m_filterID.m_ids.empty())
 		return; // nothing to compute, return
-	// we compute ventilation rates per zone and heat fluxes per zone, ventilation rates (currently) have
-	// no dependencies (only from schedules), but heat fluxes depend on ambient temperatures and on zone temperatures
-	for (unsigned int i=0; i<m_objectList->m_filterID.m_ids.size(); ++i) {
-		// pair: result - input
 
-		// dependency on room air temperature of corresponding zone
-		resultInputValueReferences.push_back(
-					std::make_pair(m_vectorValuedResults[VVR_HeatingSetpoint].dataPtr() + i, m_valueRefs[1+i]) );
-		resultInputValueReferences.push_back(
-					std::make_pair(m_vectorValuedResults[VVR_CoolingSetpoint].dataPtr() + i, m_valueRefs[1+i]) );
+	// resultInputValueReferences holds pairs: result - input
+
+	// do we have a reference zone?
+	if (m_thermostat->m_referenceZoneID != NANDRAD::INVALID_ID) {
+		// all zone's heating and cooling control values depend on this zone's temperature
+		for (unsigned int i=0; i<m_objectList->m_filterID.m_ids.size(); ++i) {
+			// dependency on room air temperature of corresponding zone
+			resultInputValueReferences.push_back(
+						std::make_pair(m_vectorValuedResults[VVR_HeatingControlValue].dataPtr() + i, m_valueRefs[0]) );
+			resultInputValueReferences.push_back(
+						std::make_pair(m_vectorValuedResults[VVR_CoolingControlValue].dataPtr() + i, m_valueRefs[0]) );
+			// if we have scheduled setpoints, we also depend on those
+			if (m_thermostat->m_modelType == NANDRAD::Thermostat::MT_Scheduled) {
+				// valueref index 1 - heating set point
+				resultInputValueReferences.push_back(
+							std::make_pair(m_vectorValuedResults[VVR_HeatingControlValue].dataPtr() + i, m_valueRefs[1]) );
+				resultInputValueReferences.push_back(
+							std::make_pair(m_vectorValuedResults[VVR_CoolingControlValue].dataPtr() + i, m_valueRefs[1]) );
+				// valueref index 2 - cooling set point
+				resultInputValueReferences.push_back(
+							std::make_pair(m_vectorValuedResults[VVR_HeatingControlValue].dataPtr() + i, m_valueRefs[2]) );
+				resultInputValueReferences.push_back(
+							std::make_pair(m_vectorValuedResults[VVR_CoolingControlValue].dataPtr() + i, m_valueRefs[2]) );
+			}
+		}
 	}
+
+	else {
+		// each zone's heating and cooling control values depend on the zone's temperatures
+		unsigned int valRefIndex = 0;
+		for (unsigned int i=0; i<m_objectList->m_filterID.m_ids.size(); ++i) {
+			// dependency on room air temperature of corresponding zone
+			resultInputValueReferences.push_back(
+						std::make_pair(m_vectorValuedResults[VVR_HeatingControlValue].dataPtr() + i, m_valueRefs[valRefIndex]) );
+			resultInputValueReferences.push_back(
+						std::make_pair(m_vectorValuedResults[VVR_CoolingControlValue].dataPtr() + i, m_valueRefs[valRefIndex]) );
+			++valRefIndex;
+
+			// if we have scheduled setpoints, we also depend on those
+			if (m_thermostat->m_modelType == NANDRAD::Thermostat::MT_Scheduled) {
+				// valueref index 1 - heating set point
+				resultInputValueReferences.push_back(
+							std::make_pair(m_vectorValuedResults[VVR_HeatingControlValue].dataPtr() + i, m_valueRefs[valRefIndex]) );
+				resultInputValueReferences.push_back(
+							std::make_pair(m_vectorValuedResults[VVR_CoolingControlValue].dataPtr() + i, m_valueRefs[valRefIndex]) );
+				++valRefIndex;
+
+				// valueref index 2 - cooling set point
+				resultInputValueReferences.push_back(
+							std::make_pair(m_vectorValuedResults[VVR_HeatingControlValue].dataPtr() + i, m_valueRefs[valRefIndex]) );
+				resultInputValueReferences.push_back(
+							std::make_pair(m_vectorValuedResults[VVR_CoolingControlValue].dataPtr() + i, m_valueRefs[valRefIndex]) );
+				++valRefIndex;
+			}
+		}
+	}
+
 }
 
 
 int ThermostatModel::update() {
+
+	// TODO :
 
 	return 0; // signal success
 }
