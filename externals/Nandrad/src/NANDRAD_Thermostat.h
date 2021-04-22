@@ -41,13 +41,6 @@ public:
 		NUM_MT
 	};
 
-	/*! Control temperature to use. */
-	enum TemperatureType {
-		TT_AirTemperature,				// Keyword: AirTemperature				'Air temperature'
-		TT_OperativeTemperature,		// Keyword: OperativeTemperature		'Operative temperature'
-		NUM_TT
-	};
-
 	/*! Model parameters. */
 	enum para_t {
 		P_HeatingSetpoint,				// Keyword: HeatingSetpoint				[C]			'Heating set point'
@@ -57,30 +50,46 @@ public:
 		NUM_P
 	};
 
+	/*! Control temperature to use. */
+	enum TemperatureType {
+		TT_AirTemperature,				// Keyword: AirTemperature				'Air temperature'
+		TT_OperativeTemperature,		// Keyword: OperativeTemperature		'Operative temperature'
+		NUM_TT
+	};
+
+	enum ControllerType {
+		CT_PController,					// Keyword: PController					'P-Controller'
+		CT_DigitalController,			// Keyword: DigitalController			'DigitalController'
+		NUM_CT
+	};
+
 	NANDRAD_READWRITE
 
 	/*! Checks parameters for valid values. */
 	void checkParameters() const;
 
 	/*! Unique ID-number for this ventilation rate model. */
-	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required
+	unsigned int						m_id = NANDRAD::INVALID_ID;						// XML:A:required
 	/*! Some display/comment name for this model (optional). */
-	std::string							m_displayName;					// XML:A
+	std::string							m_displayName;									// XML:A
+
+	/*! Model type. */
+	modelType_t							m_modelType = NUM_MT;							// XML:A:required
+
+	/*! Object list with zones that this model is to be apply to. */
+	std::string							m_zoneObjectList;								// XML:E:required
+
+	/*! Model parameters. */
+	IBK::Parameter						m_para[NUM_P];									// XML:E
 
 	/*! Optional ID of reference zone to use for sensor and setpoint input. */
 	unsigned int						m_referenceZoneID = NANDRAD::INVALID_ID;		// XML:E
 
-	/*! Model type. */
-	modelType_t							m_modelType = NUM_MT;			// XML:A:required
-
 	/*! Temperature sensor type. */
-	TemperatureType						m_temperatureType = NUM_TT;		// XML:A:required
+	TemperatureType						m_temperatureType = NUM_TT;						// XML:E
 
-	/*! Object list with zones that this model is to be apply to. */
-	std::string							m_zoneObjectList;				// XML:E:required
-
-	/*! Model parameters. */
-	IBK::Parameter						m_para[NUM_P];					// XML:E
+	/*! The controller to use for the thermostat. */
+	ControllerType						m_controllerType = NUM_CT;						// XML:E
 };
 
 } // namespace NANDRAD

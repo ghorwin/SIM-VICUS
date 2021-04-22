@@ -237,12 +237,14 @@ KeywordListQt::KeywordListQt() {
 	tr("Automatic selection of preconditioner");
 	tr("Constant set points");
 	tr("Scheduled ste points");
-	tr("Air temperature");
-	tr("Operative temperature");
 	tr("Heating set point");
 	tr("Cooling set point");
 	tr("Control tolerance for temperatures");
 	tr("Difference between lower and upper hysteresis band, centered around set points");
+	tr("Air temperature");
+	tr("Operative temperature");
+	tr("P-Controller");
+	tr("DigitalController");
 	tr("Gas layer");
 	tr("Glass layer");
 	tr("Thickness of the window layer.");

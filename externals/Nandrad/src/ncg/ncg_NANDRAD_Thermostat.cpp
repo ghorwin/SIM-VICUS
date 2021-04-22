@@ -46,10 +46,6 @@ void Thermostat::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'modelType' attribute.") ), FUNC_ID);
 
-		if (!TiXmlAttribute::attributeByName(element, "temperatureType"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'temperatureType' attribute.") ), FUNC_ID);
-
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
@@ -61,14 +57,6 @@ void Thermostat::readXML(const TiXmlElement * element) {
 			else if (attribName == "modelType")
 				try {
 					m_modelType = (modelType_t)KeywordList::Enumeration("Thermostat::modelType_t", attrib->ValueStr());
-				}
-				catch (IBK::Exception & ex) {
-					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-						IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
-				}
-			else if (attribName == "temperatureType")
-				try {
-					m_temperatureType = (TemperatureType)KeywordList::Enumeration("Thermostat::TemperatureType", attrib->ValueStr());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
@@ -88,9 +76,7 @@ void Thermostat::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "ReferenceZoneID")
-				m_referenceZoneID = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "ZoneObjectList")
+			if (cName == "ZoneObjectList")
 				m_zoneObjectList = c->GetText();
 			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
@@ -104,6 +90,26 @@ void Thermostat::readXML(const TiXmlElement * element) {
 				catch (...) { /* intentional fail */  }
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			else if (cName == "ReferenceZoneID")
+				m_referenceZoneID = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "TemperatureType") {
+				try {
+					m_temperatureType = (TemperatureType)KeywordList::Enumeration("Thermostat::TemperatureType", c->GetText());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
+				}
+			}
+			else if (cName == "ControllerType") {
+				try {
+					m_controllerType = (ControllerType)KeywordList::Enumeration("Thermostat::ControllerType", c->GetText());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
+				}
 			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
@@ -129,10 +135,6 @@ TiXmlElement * Thermostat::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("displayName", m_displayName);
 	if (m_modelType != NUM_MT)
 		e->SetAttribute("modelType", KeywordList::Keyword("Thermostat::modelType_t",  m_modelType));
-	if (m_temperatureType != NUM_TT)
-		e->SetAttribute("temperatureType", KeywordList::Keyword("Thermostat::TemperatureType",  m_temperatureType));
-	if (m_referenceZoneID != NANDRAD::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "ReferenceZoneID", nullptr, std::string(), IBK::val2string<unsigned int>(m_referenceZoneID));
 	if (!m_zoneObjectList.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "ZoneObjectList", nullptr, std::string(), m_zoneObjectList);
 
@@ -141,6 +143,14 @@ TiXmlElement * Thermostat::writeXML(TiXmlElement * parent) const {
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 		}
 	}
+	if (m_referenceZoneID != NANDRAD::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "ReferenceZoneID", nullptr, std::string(), IBK::val2string<unsigned int>(m_referenceZoneID));
+
+	if (m_temperatureType != NUM_TT)
+		TiXmlElement::appendSingleAttributeElement(e, "TemperatureType", nullptr, std::string(), KeywordList::Keyword("Thermostat::TemperatureType",  m_temperatureType));
+
+	if (m_controllerType != NUM_CT)
+		TiXmlElement::appendSingleAttributeElement(e, "ControllerType", nullptr, std::string(), KeywordList::Keyword("Thermostat::ControllerType",  m_controllerType));
 	return e;
 }
 

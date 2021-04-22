@@ -59,6 +59,7 @@ SOURCES += \
 	../../src/NM_ThermalComfortModel.cpp \
 	../../src/NM_ThermalNetworkAbstractFlowElement.cpp \
 	../../src/NM_ThermalNetworkAbstractFlowElementWithHeatLoss.cpp \
+	../../src/NM_ThermostatModel.cpp \
 	../../src/NM_WindowModel.cpp \
 	../../src/NM_AbstractModel.cpp \
 	../../src/NM_ConstructionBalanceModel.cpp \
@@ -124,6 +125,7 @@ HEADERS += \
 	../../src/NM_ThermalNetworkAbstractFlowElementWithHeatLoss.h \
 	../../src/NM_ThermalNetworkBalanceModel.h \
 	../../src/NM_ThermalNetworkStatesModel.h \
+	../../src/NM_ThermostatModel.h \
 	../../src/NM_VectorValuedQuantity.h \
 	../../src/NM_VectorValuedQuantityIndex.h \
 	../../src/NM_WindowModel.h \
