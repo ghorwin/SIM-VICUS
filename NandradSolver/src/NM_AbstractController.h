@@ -4,23 +4,20 @@
 namespace NANDRAD_MODEL {
 
 /*! Defines the interface for an abstract controller.
-	Given a setpoint and a process variable, the controller instance
-	calculates controller error and controler output, normalized to [0,...,1].
 	This interface can be called from any model that provides abstract quantities.
 	\code
-	//derived class from AbstractController
-	PController controller;
-	// set parameters
-	// ...
-	// new calculation step:
-	// set current state and target value
-	controller.m_currentState = temperatureDifference;
-	controller.m_targetValue = setPointTemperatureDifference
-	// calculate new controller output
-	controller.updateControllerOutput();
-	// retrieve new control value
-	double massFlux = contoller.m_controllerOutput
-	// ...
+		//derived class from AbstractController
+		PController controller;
+		// set parameters
+		// ...
+		// new calculation step:
+		// compute error value as difference between target and current process value
+		errorValue = setPointTemperatureDifference - temperatureDifference;
+		// calculate new controller output
+		controller.update(errorValue);
+		// retrieve new control value
+		double massFlux = contoller.m_controlValue
+		// ...
 	\endcode
 */
 class AbstractController {
@@ -28,15 +25,17 @@ public:
 	/*! D'tor, definition is in NM_Controller.cpp. */
 	virtual ~AbstractController();
 
-	/*! Calculates controller output and controller error.*/
-	virtual void updateControllerOutput() = 0;
+	/*! Calculates controller signal/control value. This function must be re-implemented in derived classes.
+		Default implementation caches the errorValue. Call the base class implementation from derived classes.
+		\param errorValue This is the input error value, i.e. the difference between
+				desired setpoint and current process variable.
+	*/
+	virtual void update(double errorValue) { m_errorValue = errorValue; }
 
-	/*! Stores controller output.*/
-	double				m_controllerOutput;
-	/*! Stores internal conroller state.*/
-	double				m_currentState;
-	/*! Stores controller target.*/
-	double				m_targetValue;
+	/*! Stores result of controller calculation, updated in each call to update(). */
+	double				m_controlValue;
+	/*! Cache of error value updated in last call to update(). */
+	double				m_errorValue;
 };
 
 } // namespace NANDRAD_MODEL

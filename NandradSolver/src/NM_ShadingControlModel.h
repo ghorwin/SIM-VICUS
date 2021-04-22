@@ -69,10 +69,12 @@ private:
 	unsigned int									m_id;
 	/*! Display name (for error messages). */
 	std::string										m_displayName;
-	/*! Shading control value (controller output). */
-	double											m_shadingControlValue = 666;
-	/*! Base model definition. */
-	const NANDRAD::ShadingControlModel				*m_controller = nullptr;
+	/*! Cached set point for the shading controller (average between min and max intensity). */
+	double											m_targetValue;
+	/*! Cached solar radiation intensity in [W/m2] on sensor. */
+	double											m_currentIntensity = 666;
+	/*! Model parameters. */
+	const NANDRAD::ShadingControlModel				*m_shadingControlModel = nullptr;
 	/*! Cached pointer to climate loads model, to retrieve climatic loads. */
 	const Loads 									*m_loads = nullptr;
 };

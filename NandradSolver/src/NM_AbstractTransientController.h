@@ -6,40 +6,21 @@
 namespace NANDRAD_MODEL {
 
 /*! Defines the interface for an abstract controller with integral part.
-	The controller requests an control error as time integration
-	quantity.
-	\code
-	//derived class from AbstractTransientController
-	PIController controller;
-	// set parameters
-	// ...
-	// set current integration value
-	controller.setY(m_y[offset]);
-	// ...
-	// set current state and target value
-	// ...
-	controller.m_currentState = temperatureDifference;
-	controller.m_targetValue = setPointTemperatureDifference
-	// calculate new controller output
-	controller.updateControllerOutput();
-	// retrieve new control value
-	double massFlux = contoller.m_controllerOutput
-	// ...
-	// retrieve derivative
-	constroller.ydot(m_ydot[offset]);
+	This class essentially adds two functions that can are used by time integrators to add time integration
+	functionality.
 */
 class AbstractTransientController: public AbstractController {
 public:
-	AbstractTransientController() {}
+	/*! Sets the new controller error integral so that it can be used in derived classes control value
+		calculation functions.
+	*/
+	void setY(const double *y) { m_errorValueIntegral = y[0]; }
 
-	/*! Calculates controller output and controller error.*/
-	virtual void setY(const double *y) { m_controllerErrorIntegral = y[0]; }
+	/*! The error value is the time-derivative of the integral value. */
+	void ydot(double *ydot) { ydot[0] = m_errorValue; }
 
-	/*! Calculates controller output and controller error.*/
-	virtual void ydot(double *ydot) { ydot[0] = m_targetValue - m_currentState; }
-
-	/*! Stores controller target.*/
-	double				m_controllerErrorIntegral;
+	/*! Cached error value integral. */
+	double				m_errorValueIntegral;
 };
 
 } // namespace NANDRAD_MODEL

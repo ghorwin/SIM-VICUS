@@ -51,7 +51,7 @@ void InternalLoadsModel::setup(const NANDRAD::InternalLoadsModel & internalLoads
 																		  m_internalLoadsModel->m_zoneObjectList);
 	if (oblst_it == objLists.end())
 		throw IBK::Exception(IBK::FormatString("Invalid/undefined object list '%1'.")
-							 .arg(m_internalLoadsModel->m_zoneObjectList).arg(m_internalLoadsModel->m_id), FUNC_ID);
+							 .arg(m_internalLoadsModel->m_zoneObjectList), FUNC_ID);
 	m_objectList = &(*oblst_it);
 	// ensure correct reference type of object list
 	if (m_objectList->m_referenceType != NANDRAD::ModelInputReference::MRT_ZONE)

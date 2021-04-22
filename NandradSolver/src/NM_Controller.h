@@ -12,78 +12,82 @@ namespace NANDRAD {
 namespace NANDRAD_MODEL {
 
 /*! Defines a digital direct controller instance.
+	\code
+		// example for heating control
+		errorValue = setpoint - current_temperature;
+		// turn heating on when below setpoint
+		controlValue = errorValue < 0 : 1 : 0;
+	\endcode
 */
 class DigitalDirectController: public AbstractController { // NO KEYWORDS
 public:
-	DigitalDirectController();
-
-	/*! D'tor, definition is in NM_Controller.cpp. */
-	virtual ~DigitalDirectController() { }
-
-	/*! Calculates controller output and controller error.*/
-	virtual void updateControllerOutput();
+	/*! Calculates controller signal/control value. */
+	void update(double errorValue) override;
 };
 
 
 /*! Defines a digital controller instance with hystersis.
+	The controller logic switches at +hysteresisBand and -hysteresisBand.
+	\code
+		// hysteresis band set to 2 K (+2K ... -2K, total 4 K distance between switch points)
+		controller.m_hysteresisBand = 2;
+
+		controller.update(-2.3); // below hysteresis band, controller will be turned on
+		controller.update(-1.3); // inside hysteresis band, controller stays on
+		controller.update(2.1);  // above hysteresis band, controller is turned off
+	\endcode
+	Current on/off state is updated after each integration step.
+
+	CAUTION: Oscillation is possible during Newton iteration,
+	if error value moves around switching value. This might need to be dampened!
 */
 class DigitalHysteresisController: public AbstractController, public AbstractTimeDependency { // NO KEYWORDS
 public:
-	DigitalHysteresisController();
+	/*! Calculates controller signal/control value. */
+	virtual void update(double errorValue) override;
 
-	/*! D'tor, definition is in NM_Controller.cpp. */
-	virtual ~DigitalHysteresisController() { }
+	/*! Re-implemented from AbstractTimeDependency::setTime(). Does nothing. */
+	virtual int setTime(double /*t*/) override { return 0; }
 
-	/*! Calculates controller output and controller error.*/
-	virtual void updateControllerOutput();
+	/*! Stores state after a successful iteration step. */
+	virtual void stepCompleted(double t) override;
 
-	/*! Does nothing.*/
-	virtual int setTime(double /*t*/) { return 0;}
-
-	/*! Stores state after a successful iteration step.
-	*/
-	virtual void stepCompleted(double t);
-
-	/*! Tolerance band: must be set from outside.*/
+	/*! Tolerance band: must be set from outside. */
 	double			m_hysteresisBand;
-	/*! Controller signal of the previos time step.*/
-	double			m_previousControllerOutput = 0.0;
+	/*! Controller signal of the previos time step. */
+	double			m_previousControlValue = 0.0;
 };
 
 
-/*! Defines a P controller instance.
+/*! Defines a proportional controller instance.
+	\code
+		controlValue = errorValue*kP;
+	\endcode
 */
 class PController: public AbstractController { // NO KEYWORDS
 public:
-	PController(const NANDRAD::Controller &controller);
+	/*! Calculates controller signal/control value. */
+	void update(double errorValue) override;
 
-	/*! D'tor, definition is in NM_Controller.cpp. */
-	virtual ~PController() { }
-
-	/*! Calculates controller output and controller error.*/
-	virtual void updateControllerOutput();
-
-	/*! P-controller, slope.*/
-	double			m_kP;
+	/*! P-term factor (1 by default, just pass through of signal). */
+	double			m_kP = 1;
 };
 
 
 /*! Defines a PI controller instance.
+	\code
+		controlValue = errorValue*kP + errorValueIntegral*kI;
+	\endcode
 */
 class PIController: public AbstractTransientController { // NO KEYWORDS
 public:
-	PIController(const NANDRAD::Controller &controller);
+	/*! Calculates controller signal/control value. */
+	void update(double errorValue) override;
 
-	/*! D'tor, definition is in NM_Controller.cpp. */
-	virtual ~PIController() { }
-
-	/*! Calculates controller output and controller error.*/
-	virtual void updateControllerOutput();
-
-	/*! P-controller, slope.*/
-	double			m_kP;
-	/*! P-controller, integral slop.*/
-	double			m_kI;
+	/*! P-term factor.*/
+	double			m_kP = 1;
+	/*! I-term factor.*/
+	double			m_kI = 1;
 };
 
 } // namespace NANDRAD_MODEL

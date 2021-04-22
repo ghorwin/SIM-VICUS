@@ -9,73 +9,47 @@ AbstractController::~AbstractController() {
 
 // *** Digital direct Controller ***
 
-DigitalDirectController::DigitalDirectController() {
-}
-
-
-void DigitalDirectController::updateControllerOutput()
-{
+void DigitalDirectController::update(double errorValue) {
+	AbstractController::update(errorValue);
 	// calculate controller output
-	if(m_currentState < m_targetValue )
-		m_controllerOutput = 1.0;
-	else
-		m_controllerOutput = 0.0;
+	// example: if below setpoint, turn heating on
+	m_controlValue = (errorValue < 0 ) ? 1.0 : 0.0;
 }
 
 
 // *** Digital hysteresis Controller ***
 
-DigitalHysteresisController::DigitalHysteresisController() {
-}
+void DigitalHysteresisController::update(double errorValue) {
+	AbstractController::update(errorValue);
 
-
-void DigitalHysteresisController::updateControllerOutput()
-{
-
-	m_controllerOutput = m_previousControllerOutput;
+	m_controlValue = m_previousControlValue;
 	// change controller output only if we are outside tolerance band
-	if(m_currentState > m_targetValue + m_hysteresisBand)
-		m_controllerOutput = 0.0;
-	else if(m_currentState < m_targetValue - m_hysteresisBand)
-		m_controllerOutput = 1.0;
+	if (errorValue > m_hysteresisBand) // too warm, turn heating off
+		m_controlValue = 0.0;
+	else if(errorValue < -m_hysteresisBand) // too cold, turn heating on
+		m_controlValue = 1.0;
 }
 
 void DigitalHysteresisController::stepCompleted(double /*t*/) {
-	m_previousControllerOutput = m_controllerOutput;
+	m_previousControlValue = m_controlValue;
 }
 
 
 // *** P-Controller ***
 
-PController::PController(const NANDRAD::Controller &controller) {
-	// copy kP parameter
-	m_kP = controller.m_para[NANDRAD::Controller::P_Kp].value;
-}
-
-
-void PController::updateControllerOutput()
-{
-	// calculate controller output
-	m_controllerOutput = m_kP * (m_targetValue - m_currentState);
+void PController::update(double errorValue) {
+	AbstractController::update(errorValue);
+	m_controlValue = m_kP * errorValue;
 }
 
 
 // *** PI-Controller ***
 
-PIController::PIController(const NANDRAD::Controller &controller) {
-	// copy kP parameter
-	m_kP = controller.m_para[NANDRAD::Controller::P_Kp].value;
-	// copy kI parameter
-	m_kI = controller.m_para[NANDRAD::Controller::P_Ki].value;
-}
-
-
-void PIController::updateControllerOutput()
-{
+void PIController::update(double errorValue) {
+	AbstractController::update(errorValue);
 	// calculate controller output
-	m_controllerOutput = m_kP * (m_targetValue - m_currentState) + m_kI * m_controllerErrorIntegral;
+	m_controlValue = m_kP * errorValue + m_kI * m_errorValueIntegral;
 }
-
 
 
 } // namespace NANDRAD_MODEL

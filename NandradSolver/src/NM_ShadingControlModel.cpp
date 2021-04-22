@@ -1,12 +1,11 @@
 #include "NM_ShadingControlModel.h"
 
-#include "NM_Loads.h"
-
-
 #include <NANDRAD_ConstructionInstance.h>
 #include <NANDRAD_ShadingControlModel.h>
 #include <NANDRAD_Sensor.h>
 
+#include "NM_Loads.h"
+#include "NM_Controller.h"
 
 namespace NANDRAD_MODEL {
 
@@ -20,7 +19,7 @@ void ShadingControlModel::setup(const NANDRAD::ShadingControlModel & controller,
 	// tolerance band is mean difference to target
 	m_hysteresisBand = 0.5 * (maxValue - minValue);
 	// copy controller parameter block
-	m_controller = &controller;
+	m_shadingControlModel = &controller;
 	// store loads for direct evaluation of radiation sensor value
 	m_loads = &loads;
 }
@@ -47,17 +46,19 @@ void ShadingControlModel::resultDescriptions(std::vector<QuantityDescription> & 
 
 
 void ShadingControlModel::resultValueRefs(std::vector<const double *> & res) const {
-	res.push_back(&m_controllerOutput);
+	res.push_back(&m_controlValue);
 	// TODO : is this really needed? what about the second output?
 }
 
 
 const double *ShadingControlModel::resultValueRef(const InputReference & quantity) const {
 	const QuantityName & quantityName = quantity.m_name;
+
+	// we directly return the cached state of the controller
 	if (quantityName.m_name == "ShadingControlValue")
-		return &m_shadingControlValue;
+		return &m_controlValue;
 	if (quantityName.m_name == "SolarIntensityOnShadingSensor")
-		return &m_currentState;
+		return &m_currentIntensity;
 
 	return nullptr;
 }
@@ -68,12 +69,10 @@ int ShadingControlModel::setTime(double /*t*/) {
 	double qSWRadDir, qSWRadDiff, incidenceAngle;
 
 	// update the radiation sensor value (this includes precomputed shading in case of constructions or embedded objects)
-	m_currentState = m_loads->qSWRad(m_controller->m_sensorID, qSWRadDir, qSWRadDiff, incidenceAngle);
-	// calculate controller output
-	updateControllerOutput();
+	m_currentIntensity = m_loads->qSWRad(m_shadingControlModel->m_sensorID, qSWRadDir, qSWRadDiff, incidenceAngle);
+	// update controller state: error value = setpointIntensity - currentIntensity
+	update(m_targetValue - m_currentIntensity);
 
-	// Mind: generic controllers returns 0 if control condition is exceeded, but we want to return 1 in this case
-	m_shadingControlValue = 1-m_controllerOutput;
 	// signal success
 	return 0;
 }

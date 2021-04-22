@@ -39,7 +39,7 @@ void NaturalVentilationModel::setup(const NANDRAD::NaturalVentilationModel & ven
 																		  m_ventilationModel->m_zoneObjectList);
 	if (oblst_it == objLists.end())
 		throw IBK::Exception(IBK::FormatString("Invalid/undefined ZoneObjectList '%1'.")
-							 .arg(m_ventilationModel->m_zoneObjectList).arg(m_ventilationModel->m_id), FUNC_ID);
+							 .arg(m_ventilationModel->m_zoneObjectList), FUNC_ID);
 	m_objectList = &(*oblst_it);
 	// ensure correct reference type of object list
 	if (m_objectList->m_referenceType != NANDRAD::ModelInputReference::MRT_ZONE)
