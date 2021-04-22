@@ -21,6 +21,7 @@
 #include <vector>
 
 #include <IBK_LinearSpline.h>
+#include <IBK_Time.h>
 
 #include <IBKMK_Vector3D.h>
 
@@ -35,7 +36,7 @@ public:
 };
 
 
-/*! Window-specific data structure to hold structural shading data,
+/*! data structure to hold structural shading data,
 	both geometrical configurations of standard shapes and/or external shadings provided
 	via file name.
 */
@@ -60,7 +61,8 @@ public:
 
 	struct SunPosition {
 
-		SunPosition(double azi, double alti):
+		SunPosition(double secOfYear, double azi, double alti):
+			m_secOfYear(secOfYear),
 			m_azimuth(azi),
 			m_altitude(alti)
 		{}
@@ -73,6 +75,7 @@ public:
 			return sunNormal;
 		}
 
+		unsigned int		m_secOfYear;						///< seconds of year
 		double				m_azimuth;							///< in rad
 		double				m_altitude;							///< in rad
 	};
@@ -92,6 +95,11 @@ public:
 		\param obstacles vector with all obstacle interfaces
 	*/
 	void initializeShadingCalculation(const std::vector<std::vector<IBKMK::Vector3D> > &obstacles);
+
+	/*! Sets the calculation period
+		\param duration Duration of period in seconds
+	*/
+	void setCalculationPeriod(IBK::Time startTime, double duration );
 
 	/*! Calculates the shading factors for the given period */
 	void calculateShadingFactors(Notification * notify);
@@ -113,6 +121,10 @@ private:
 	void createSunNormals(std::vector<SunPosition>& sunPositions);
 
 	Location											m_location;							///< Location object
+
+	IBK::Time											m_startTime;
+
+	double												m_periodInSec;
 
 	std::vector<SunPosition>							m_sunPositions;						///< vector with all sun positions
 
