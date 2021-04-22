@@ -22,11 +22,11 @@
 			<ClimateFilePath>${Project Directory}/../climate/Konstantopol_20C.c6b</ClimateFilePath>
 		</Location>
 		<Models>
-			<NaturalVentilationModel>
+			<NaturalVentilationModels>
 				<NaturalVentilationModel id="501" displayName="Zone vent" modelType="Scheduled">
 					<ZoneObjectList>All zones</ZoneObjectList>
 				</NaturalVentilationModel>
-			</NaturalVentilationModel>
+			</NaturalVentilationModels>
 			
 			<InternalLoadsModels>
 				<InternalLoadsModel id="1" displayName="Test Zone Template" modelType="Scheduled">
