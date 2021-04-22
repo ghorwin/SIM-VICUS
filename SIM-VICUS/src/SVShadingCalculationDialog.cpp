@@ -49,6 +49,16 @@ SVShadingCalculationDialog::SVShadingCalculationDialog(QWidget *parent) :
 
 	m_ui->lineEditGridSize->setText(QString::number(0.1));
 	m_ui->lineEditSunCone->setText(QString::number(3));
+
+	m_ui->lineEditLatitude->setText( QString::number(m_localProject.m_location.m_para[NANDRAD::Location::P_Latitude].get_value(IBK::Unit("Deg") ), 'f', 2 ) );
+	m_ui->lineEditLongitude->setText( QString::number(m_localProject.m_location.m_para[NANDRAD::Location::P_Longitude].get_value(IBK::Unit("Deg") ), 'f', 2 ) );
+	m_ui->lineEditTimeZone->setText( QString::number(m_localProject.m_location.m_timeZone, 'f', 2 ) );
+
+	m_ui->comboBoxFileType->addItem( "tsv" );
+	m_ui->comboBoxFileType->addItem( "d6o" );
+	m_ui->comboBoxFileType->addItem( "d6b" );
+
+	m_ui->comboBoxFileType->setCurrentIndex( m_outputType );
 }
 
 
@@ -225,38 +235,73 @@ void SVShadingCalculationDialog::on_lineEditDuration_editingFinishedSuccessfully
 
 
 void SVShadingCalculationDialog::on_pushButtonCalculate_clicked(){
+	FUNCID(SVShadingCalculationDialog::on_pushButtonCalculate_clicked);
 
 	// Start calculation
 
-	std::vector<std::vector<IBKMK::Vector3D> > selSurf;
 	std::vector<std::vector<IBKMK::Vector3D> > selObst;
+	std::vector<const VICUS::Surface *> selSurf;
 
 	// We take all our selected surfaces
 	project().selectedSurfaces(m_selSurfaces,VICUS::Project::SG_Building);
 	project().selectedSurfaces(m_selObstacles,VICUS::Project::SG_Obstacle);
 
-	NANDRAD::Location loc = project().m_location;
+	const NANDRAD::Location &loc = project().m_location;
 
+	const NANDRAD::SimulationParameter &simuPara = project().m_simulationParameter;
 
-	NANDRAD::KeywordList::setParameter(loc.m_para, "Location::para_t", NANDRAD::Location::P_Latitude, 50 );
-	NANDRAD::KeywordList::setParameter(loc.m_para, "Location::para_t", NANDRAD::Location::P_Longitude, 14.27 );
+	const SVDatabase &db = SVSettings::instance().m_db;
 
-	loc.m_timeZone = 1;
-
-	m_shading = SH::StructuralShading(loc.m_timeZone, loc.m_para[NANDRAD::Location::P_Longitude].get_value("Deg"), loc.m_para[NANDRAD::Location::P_Latitude].get_value("Deg"),
+	m_shading = SH::StructuralShading(loc.m_timeZone, loc.m_para[NANDRAD::Location::P_Latitude].value, loc.m_para[NANDRAD::Location::P_Longitude].value,
 									  m_ui->lineEditGridSize->value(), m_ui->lineEditSunCone->value() );
 
 	for (const VICUS::Surface *s: m_selObstacles) {
 		selObst.push_back( s->m_geometry.vertexes() );
 	}
 
-	m_shading.initializeShadingCalculation(selObst);
+	IBK::IntPara startYear = simuPara.m_intPara[NANDRAD::SimulationParameter::IP_StartYear];
+	IBK::Parameter startDay = simuPara.m_interval.m_para[NANDRAD::Interval::P_Start];
+	IBK::Parameter endDay = simuPara.m_interval.m_para[NANDRAD::Interval::P_End];
+
+	if ( startYear.empty() )
+		throw IBK::Exception( IBK::FormatString("Start year of simulation has not been set.") , FUNC_ID );
+
+	if ( startDay.empty() )
+		throw IBK::Exception( IBK::FormatString("Start day of simulation has not been set.") , FUNC_ID );
+
+	if ( endDay.empty() )
+		throw IBK::Exception( IBK::FormatString("End day of simulation has not been set.") , FUNC_ID );
+
 
 	for (const VICUS::Surface *s: m_selSurfaces) {
-		VICUS::Surface *surf = const_cast<VICUS::Surface *>(s);
-		VICUS::Surface surfInverted = *s;
 
-		m_shading.m_surfaces.push_back( SH::Polygon(surf->m_id, surfInverted.m_geometry.vertexes() ) );
+		if ( s->m_componentInstance == nullptr )
+			continue; // we want to take only surface connected to ambient
+
+		VICUS::Component::ComponentType type = db.m_components[ s->m_componentInstance->m_componentID ]->m_type;
+		if ( type == VICUS::Component::CT_InsideWall ||	type == VICUS::Component::CT_FloorToCellar ||
+			 type == VICUS::Component::CT_FloorToAir || type == VICUS::Component::CT_FloorToGround )
+			continue;
+
+		selObst.push_back( s->m_geometry.vertexes() );
+		selSurf.push_back( s );
+	}
+
+	IBK::Time simTimeStart (startYear.value, startDay.get_value(IBK::Unit("s") ) );
+	IBK::Time simTimeEnd (startYear.value, endDay.get_value(IBK::Unit("s") ) );
+
+	double period;
+	double periodInSec = simTimeStart.secondsUntil(simTimeEnd);
+
+	// we initialize our period
+	m_shading.setCalculationPeriod(simTimeStart, periodInSec);
+
+	// we initialize our sun positions
+	m_shading.initializeShadingCalculation(selObst);
+
+
+	for (const VICUS::Surface *s: selSurf) {
+		m_shading.m_surfaces.push_back( SH::Polygon(s->m_id, s->m_geometry.vertexes() ) );
 	}
 
 	QProgressDialog progressDialog(tr("Calculate shading factors"), tr("Abort"), 0, 100, this);
@@ -279,11 +324,29 @@ void SVShadingCalculationDialog::on_pushButtonCalculate_clicked(){
 	QString projectName = QFileInfo(prj.projectFile()).completeBaseName();
 	QString shadingPath = QFileInfo(prj.projectFile()).dir().filePath(projectName) + '/';
 
-	QString path = shadingPath  + projectName + "_shadingFactors.tsv" ;
+	QDir shadingDir (shadingPath);
 
-	IBK::Path exportFile(path.toStdString() );
 
-	m_shading.writeShadingFactorsToTSV(exportFile);
+	if ( !shadingDir.exists() && !shadingDir.mkdir(shadingPath) )
+		throw IBK::Exception( IBK::FormatString("Could not create directory '%1'").arg(shadingPath.toStdString()), FUNC_ID );
+
+	switch ( m_outputType ) {
+	case TsvFile : {
+		QString pathTSV = shadingPath  + projectName + "_shadingFactors.tsv" ;
+		IBK::Path exportFileTSV(pathTSV.toStdString() );
+		m_shading.writeShadingFactorsToTSV(exportFileTSV);
+	} break;
+	case D6oFile : {
+		QString pathD6O = shadingPath  + projectName + "_shadingFactors.d6o" ;
+		IBK::Path exportFileD6O(pathD6O.toStdString() );
+		m_shading.writeShadingFactorsToDataIO(exportFileD6O, false);
+	} break;
+	case D6bFile : {
+		QString pathD6B = shadingPath  + projectName + "_shadingFactors.d6b" ;
+		IBK::Path exportFileD6B(pathD6B.toStdString() );
+		m_shading.writeShadingFactorsToDataIO(exportFileD6B, true);
+	} break;
+	}
 
 }
 
@@ -303,4 +366,8 @@ void SVShadingCalculationDialog::on_lineEditSunCone_editingFinished() {
 	else {
 		m_ui->lineEditGridSize->setValue(m_sunCone);
 	}
+}
+
+void SVShadingCalculationDialog::on_comboBoxFileType_currentIndexChanged(int index) {
+	m_outputType = (OutputType)index;
 }

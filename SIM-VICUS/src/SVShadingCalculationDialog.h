@@ -24,6 +24,12 @@ public:
 	explicit SVShadingCalculationDialog(QWidget *parent = nullptr);
 	~SVShadingCalculationDialog();
 
+	enum OutputType {
+		TsvFile,		///< write output to tsv file
+		D6oFile,		///< write output to d6o file
+		D6bFile			///< write output to d6b file
+	};
+
 	int edit();
 
 public slots:
@@ -33,12 +39,16 @@ private slots:
 	void on_pushButtonCalculate_clicked();
 
 	void on_lineEditStartDate_editingFinished();
+
 	void on_lineEditEndDate_editingFinished();
+
 	void on_lineEditDuration_editingFinishedSuccessfully();
 
 	void on_lineEditGridSize_editingFinished();
 
 	void on_lineEditSunCone_editingFinished();
+
+	void on_comboBoxFileType_currentIndexChanged(int index);
 
 private:
 	void								updateTimeFrameEdits();
@@ -51,6 +61,8 @@ private:
 
 	double								m_gridSize = 0.1;
 	double								m_sunCone = 3;
+
+	OutputType							m_outputType = OutputType::TsvFile;
 
 	std::vector<const VICUS::Surface*>	m_selSurfaces;
 	std::vector<const VICUS::Surface*>	m_selObstacles;
