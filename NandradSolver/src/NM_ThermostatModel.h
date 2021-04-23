@@ -111,8 +111,8 @@ private:
 	const std::vector<NANDRAD::Zone>				*m_zones = nullptr;
 
 	/*! The actual controller instances.
-		If we have a reference zone, we only have one controller.
-		Otherwise we have one controller per zone.
+		If we have a reference zone, we only have two controllers (one for heating, one for cooling).
+		Otherwise we have two controllers per zone.
 		Note: for PControllers without state this is a bit of an overhead, but to stay generic,
 			  we must provide a state-containing controller instance in case someone defines a hysteresis or PI controller.
 	*/

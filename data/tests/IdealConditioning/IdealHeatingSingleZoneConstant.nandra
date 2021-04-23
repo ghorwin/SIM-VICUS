@@ -2,7 +2,7 @@
 <NandradProject fileVersion="1.99">
 	<Project>
 		<ProjectInfo>
-			<Comment>Test for P-controlled thermostat with constant heating/cooling setpoints</Comment>
+			<Comment>Ideal heating to constant temperature</Comment>
 		</ProjectInfo>
 
 		<Location>
@@ -15,8 +15,7 @@
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 			<Interval>
-				<IBK:Parameter name="End" unit="d">90</IBK:Parameter>
-				<IBK:Parameter name="End" unit="d">100</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">10</IBK:Parameter>
 			</Interval>
 		</SimulationParameter>
 
@@ -60,7 +59,7 @@
 		<ConstructionTypes>
 			<ConstructionType id="10001" displayName="Inside insulated construction">
 				<MaterialLayers>
-					<MaterialLayer thickness="0.02" matId="1002" />
+					<MaterialLayer thickness="0.04" matId="1002" />
 					<MaterialLayer thickness="0.12" matId="1001" />
 				</MaterialLayers>
 			</ConstructionType>
@@ -86,19 +85,26 @@
 				<!-- A thermostat with constant heating set point, no cooling. Uses air temperature as sensor value. -->
 				<Thermostat id="1001" displayName="Constant air temperature thermostat" modelType="Constant">
 					<ZoneObjectList>All zones</ZoneObjectList>
-					<!-- Heating starts below 22 C -->
-					<IBK:Parameter name="HeatingSetpoint" unit="C">22</IBK:Parameter>
-					<!-- Cooling starts above 28 C -->
-					<IBK:Parameter name="CoolingSetpoint" unit="C">28</IBK:Parameter>
-					<!-- P-controller is accurate to 0.2 K -->
-					<IBK:Parameter name="TemperatureTolerance" unit="K">0.2</IBK:Parameter>
-					<!-- Control temperature is "Air temperature", this is the default and could be omitted -->
+					<IBK:Parameter name="HeatingSetpoint" unit="C">20</IBK:Parameter>
+					<!-- Cooling is disabled through very large setpoint -->
+					<IBK:Parameter name="CoolingSetpoint" unit="C">100</IBK:Parameter>
+					<!-- Control temperature is "Air temperature" -->
 					<TemperatureType>AirTemperature</TemperatureType>
-					<!-- Controller type PController is the default, so we could omit this-->
-					<ControllerType>PController</ControllerType>
 				</Thermostat>
 			</Thermostats>
 
+			<HVACControlModels>
+				<HVACControlModel id="3001" modelType="Heating" operatingMode="Parallel"/>
+				<ZoneObjectList>All zones</ZoneObjectList>
+			</HVACControlModels>
+
+			<IdealHeatingCoolingModels>
+				<IdealHeatingCoolingModel id="4001">
+					<ZoneObjectList>All zones</ZoneObjectList>
+					<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">50</IBK:Parameter>
+					<IBK:Parameter name="MaxCoolingPowerPerArea" unit="W/m2">20</IBK:Parameter>
+				</IdealHeatingCoolingModel>
+			</IdealHeatingCoolingModels>
 		</Models>
 
 		<Outputs>
@@ -110,25 +116,13 @@
 					<GridName>Minutes</GridName>
 				</OutputDefinition>
 				
-				<OutputDefinition>
-					<Quantity>HeatingControlValue[1]</Quantity>
-					<ObjectListName>Thermostat</ObjectListName>
-					<GridName>Minutes</GridName>
-				</OutputDefinition>
-
-				<OutputDefinition>
-					<Quantity>CoolingControlValue[1]</Quantity>
-					<ObjectListName>Thermostat</ObjectListName>
-					<GridName>Minutes</GridName>
-				</OutputDefinition>
-				
 			</Definitions>
 			
 			<Grids>
 				<OutputGrid name="Minutes">
 					<Intervals>
 						<Interval>
-							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">15</IBK:Parameter>
 						</Interval>
 					</Intervals>
 				</OutputGrid>
@@ -138,10 +132,6 @@
 			<ObjectList name="All zones">
 				<FilterID>*</FilterID>
 				<ReferenceType>Zone</ReferenceType>
-			</ObjectList>
-			<ObjectList name="Thermostat">
-				<FilterID>1001</FilterID>
-				<ReferenceType>Model</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
 	</Project>

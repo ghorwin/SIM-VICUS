@@ -76,13 +76,21 @@ void ThermostatModel::initResults(const std::vector<AbstractModel *> &) {
 		m_vectorValuedResults[varIndex] = VectorValuedQuantity(indexKeys);
 
 	// initialize controller
-	if (m_thermostat->m_referenceZoneID != NANDRAD::INVALID_ID) {
-		// reference zone selected -> only one controller
+	unsigned int controllerCount = 1; // assome reference zone
+	if (m_thermostat->m_referenceZoneID == NANDRAD::INVALID_ID)
+		controllerCount = indexKeys.size(); // one for each zone
+
+	// actually, we create two controllers for each zone, one for heating, one for cooling
+	for (unsigned int i = 0; i<controllerCount; ++i) {
 		switch (m_thermostat->m_controllerType) {
 			case NANDRAD::Thermostat::NUM_CT : // default to P-Controller
 			case NANDRAD::Thermostat::CT_PController : {
 				PController * con = new PController;
-				con->m_kP = m_thermostat->m_para[NANDRAD::Thermostat::P_TemperatureTolerance].value;
+				con->m_kP = 1/m_thermostat->m_para[NANDRAD::Thermostat::P_TemperatureTolerance].value;
+				m_controllers.push_back(con);
+				// now the cooling controller
+				con = new PController;
+				con->m_kP = 1/m_thermostat->m_para[NANDRAD::Thermostat::P_TemperatureTolerance].value;
 				m_controllers.push_back(con);
 			} break;
 
@@ -90,26 +98,11 @@ void ThermostatModel::initResults(const std::vector<AbstractModel *> &) {
 				DigitalHysteresisController * con = new DigitalHysteresisController;
 				con->m_hysteresisBand = m_thermostat->m_para[NANDRAD::Thermostat::P_TemperatureBand].value;
 				m_controllers.push_back(con);
+				// now the cooling controller
+				con = new DigitalHysteresisController;
+				con->m_hysteresisBand = m_thermostat->m_para[NANDRAD::Thermostat::P_TemperatureBand].value;
+				m_controllers.push_back(con);
 			} break;
-		}
-	}
-	else {
-		// create a thermostat for each zone
-		for (unsigned int i = 0; i<indexKeys.size(); ++i) {
-			switch (m_thermostat->m_controllerType) {
-				case NANDRAD::Thermostat::NUM_CT : // default to P-Controller
-				case NANDRAD::Thermostat::CT_PController : {
-					PController * con = new PController;
-					con->m_kP = m_thermostat->m_para[NANDRAD::Thermostat::P_TemperatureTolerance].value;
-					m_controllers.push_back(con);
-				} break;
-
-				case NANDRAD::Thermostat::CT_DigitalController : {
-					DigitalHysteresisController * con = new DigitalHysteresisController;
-					con->m_hysteresisBand = m_thermostat->m_para[NANDRAD::Thermostat::P_TemperatureBand].value;
-					m_controllers.push_back(con);
-				} break;
-			}
 		}
 	}
 }
@@ -322,7 +315,41 @@ void ThermostatModel::stateDependencies(std::vector<std::pair<const double *, co
 
 int ThermostatModel::update() {
 
-	// TODO :
+	unsigned int inputVarsPerZone = 1;
+	if (m_thermostat->m_modelType == NANDRAD::Thermostat::MT_Scheduled)
+		inputVarsPerZone = 3;
+
+	// loop over all thermostats
+	unsigned int nZones = m_controllers.size()/2;
+	for (unsigned int i=0; i<nZones; ++i) {
+		double Troom = *m_valueRefs[i*inputVarsPerZone];
+		double TSetpointHeating = m_thermostat->m_para[NANDRAD::Thermostat::P_HeatingSetpoint].value;
+		double TSetpointCooling = m_thermostat->m_para[NANDRAD::Thermostat::P_CoolingSetpoint].value;
+		if (m_thermostat->m_modelType == NANDRAD::Thermostat::MT_Scheduled) {
+			TSetpointHeating = *m_valueRefs[i*inputVarsPerZone + 1];
+			TSetpointCooling = *m_valueRefs[i*inputVarsPerZone + 2];
+		}
+
+		// update heating and cooling controllers
+		m_controllers[i*2]->update(TSetpointHeating - Troom);
+		m_controllers[i*2+1]->update(Troom - TSetpointCooling); // Mind the sign! Turn on cooling when room is _above_ setpoint
+	}
+
+	// transfer results
+	if (m_thermostat->m_referenceZoneID != NANDRAD::INVALID_ID) {
+		// reference zone - all results get the same control values
+		for (unsigned int i=0; i<nZones; ++i) {
+			*(m_vectorValuedResults[VVR_HeatingControlValue].dataPtr() + i) = m_controllers[0]->m_controlValue;
+			*(m_vectorValuedResults[VVR_CoolingControlValue].dataPtr() + i) = m_controllers[1]->m_controlValue;
+		}
+	}
+	else {
+		// each zone gets the results of its own controller
+		for (unsigned int i=0; i<nZones; ++i) {
+			*(m_vectorValuedResults[VVR_HeatingControlValue].dataPtr() + i) = m_controllers[i*2]->m_controlValue;
+			*(m_vectorValuedResults[VVR_CoolingControlValue].dataPtr() + i) = m_controllers[i*2 + 1]->m_controlValue;
+		}
+	}
 
 	return 0; // signal success
 }

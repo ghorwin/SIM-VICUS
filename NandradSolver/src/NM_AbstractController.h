@@ -33,9 +33,9 @@ public:
 	virtual void update(double errorValue) { m_errorValue = errorValue; }
 
 	/*! Stores result of controller calculation, updated in each call to update(). */
-	double				m_controlValue;
+	double				m_controlValue = 888;
 	/*! Cache of error value updated in last call to update(). */
-	double				m_errorValue;
+	double				m_errorValue = 777;
 };
 
 } // namespace NANDRAD_MODEL

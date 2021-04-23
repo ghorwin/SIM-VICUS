@@ -85,6 +85,8 @@
 #include "NM_RoomRadiationLoadsModel.h"
 #include "NM_HydraulicNetworkModel.h"
 #include "NM_ShadingControlModel.h"
+#include "NM_ThermostatModel.h"
+
 #include "NM_ThermalNetworkStatesModel.h"
 #include "NM_ThermalNetworkBalanceModel.h"
 #include "NM_ThermalComfortModel.h"
@@ -1274,20 +1276,42 @@ void NandradModel::initModels() {
 		IBK::IBK_Message(IBK::FormatString("Initializing shading control models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		IBK_MSG_INDENT;
 
-		for (NANDRAD::ShadingControlModel & s: m_project->m_models.m_shadingControlModels) {
-			NANDRAD_MODEL::ShadingControlModel * mod = new NANDRAD_MODEL::ShadingControlModel(s.m_id, s.m_displayName);
+		for (NANDRAD::ShadingControlModel & m: m_project->m_models.m_shadingControlModels) {
+			NANDRAD_MODEL::ShadingControlModel * mod = new NANDRAD_MODEL::ShadingControlModel(m.m_id, m.m_displayName);
 			m_modelContainer.push_back(mod); // transfer ownership
 
 			try {
-				s.checkParameters(m_project->m_location.m_sensors, m_project->m_constructionInstances);
-				mod->setup(s, *m_loads);
+				m.checkParameters(m_project->m_location.m_sensors, m_project->m_constructionInstances);
+				mod->setup(m, *m_loads);
 			}
 			catch (IBK::Exception & ex) {
 				throw IBK::Exception(ex, IBK::FormatString("Error initializing shading control model "
-														   "(id=%1).").arg(s.m_id), FUNC_ID);
+														   "(id=%1).").arg(m.m_id), FUNC_ID);
 			}
 			// insert into time model container
 			m_timeModelContainer.push_back(mod);
+		}
+	}
+
+	// thermostats
+	if (!m_project->m_models.m_thermostats.empty()) {
+		IBK::IBK_Message(IBK::FormatString("Initializing thermostat models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		IBK_MSG_INDENT;
+
+		for (NANDRAD::Thermostat & m: m_project->m_models.m_thermostats) {
+			NANDRAD_MODEL::ThermostatModel * mod = new NANDRAD_MODEL::ThermostatModel(m.m_id, m.m_displayName);
+			m_modelContainer.push_back(mod); // transfer ownership
+
+			try {
+				m.checkParameters();
+				mod->setup(m, m_project->m_objectLists, m_project->m_zones);
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString("Error initializing thermostat model "
+														   "(id=%1).").arg(m.m_id), FUNC_ID);
+			}
+			// register model for calculation
+			registerStateDependendModel(mod);
 		}
 	}
 
