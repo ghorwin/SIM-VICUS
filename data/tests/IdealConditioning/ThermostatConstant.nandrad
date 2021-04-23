@@ -47,12 +47,12 @@
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</InterfaceA>
-				<InterfaceA id="2" zoneId="0">
+				<InterfaceB id="2" zoneId="0">
 					<!--Interface to 'Outside'-->
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">12</IBK:Parameter>
 					</InterfaceHeatConduction>
-				</InterfaceA>
+				</InterfaceB>
 			</ConstructionInstance>
 		</ConstructionInstances>
 
@@ -111,14 +111,14 @@
 				</OutputDefinition>
 				
 				<OutputDefinition>
-					<Quantity>HeatingControlValue</Quantity>
-					<ObjectListName>All zones</ObjectListName>
+					<Quantity>HeatingControlValue[1]</Quantity>
+					<ObjectListName>Thermostat</ObjectListName>
 					<GridName>Minutes</GridName>
 				</OutputDefinition>
 
 				<OutputDefinition>
-					<Quantity>CoolingControlValue</Quantity>
-					<ObjectListName>All zones</ObjectListName>
+					<Quantity>CoolingControlValue[1]</Quantity>
+					<ObjectListName>Thermostat</ObjectListName>
 					<GridName>Minutes</GridName>
 				</OutputDefinition>
 				
@@ -138,6 +138,10 @@
 			<ObjectList name="All zones">
 				<FilterID>*</FilterID>
 				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Thermostat">
+				<FilterID>1001</FilterID>
+				<ReferenceType>Model</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
 	</Project>
