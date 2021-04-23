@@ -925,8 +925,6 @@ void NandradModel::initFMI() {
 		m_fmiInputOutput = new FMIInputOutput;
 		// setup model
 		m_fmiInputOutput->setup(*m_project);
-		// insert into model container
-		m_modelContainer.push_back(m_fmiInputOutput);	// now owns the model and handles memory cleanup
 		// insert into time model container
 		m_timeModelContainer.push_back(m_fmiInputOutput);
 

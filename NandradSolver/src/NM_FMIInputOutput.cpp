@@ -57,11 +57,6 @@ const double * FMIInputOutput::resolveResultReference(const NANDRAD_MODEL::Input
 	if(m_fmiDescription->m_variables.empty())
 		return nullptr;
 
-	// TODO Anne: resolve object list definitions of combined ids and object lists
-	// TODO Andreas + Anne: clearify how to handle object lists. Are all value references
-	// to one quantity in a coherent memory block? Note, that this cannot be guaranteed,
-	// if we register references according to their apperance in FMIVariableDescription block.
-
 	// search for value reference inside fmi descriptions:
 	// we create a FMIVariable and search for an identic type inside fmi descriptions
 	NANDRAD::FMIVariableDefinition compVariable;
