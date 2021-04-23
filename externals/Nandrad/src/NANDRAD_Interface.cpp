@@ -27,6 +27,23 @@
 
 namespace NANDRAD {
 
+void Interface::readXML(const TiXmlElement * element) {
+	FUNCID(Interface::readXML);
+
+	// sanity check against duplicate InterfaceA or InterfaceB definitions inside constructions
+	if (m_id != NANDRAD::INVALID_ID)
+		throw IBK::Exception("Duplicate interface definition in project file.", FUNC_ID);
+
+	readXMLPrivate(element);
+}
+
+
+TiXmlElement * Interface::writeXML(TiXmlElement * parent) const {
+	if (m_id != INVALID_ID)
+		return writeXMLPrivate(parent); else return nullptr;
+}
+
+
 void Interface::checkParameters() const {
 	m_heatConduction.checkParameters();
 	m_solarAbsorption.checkParameters();

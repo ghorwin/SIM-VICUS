@@ -52,7 +52,9 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	NANDRAD_READWRITE_IFNOT_INVALID_ID
+	void readXML(const TiXmlElement * element);
+	TiXmlElement * writeXML(TiXmlElement * parent) const;
+
 	NANDRAD_COMPARE_WITH_ID
 
 	/*! Checks for valid parameters.
