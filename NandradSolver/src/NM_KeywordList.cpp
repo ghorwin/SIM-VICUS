@@ -201,6 +201,8 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "HeatingControlValue";
 				case 1 : return "CoolingControlValue";
+				case 2 : return "ThermostatHeatingSetpoint";
+				case 3 : return "ThermostatCoolingSetpoint";
 			} break;
 			// WindowModel::Results
 			case 16 :
@@ -354,6 +356,8 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "HeatingControlValue";
 				case 1 : return "CoolingControlValue";
+				case 2 : return "ThermostatHeatingSetpoint";
+				case 3 : return "ThermostatCoolingSetpoint";
 			} break;
 			// WindowModel::Results
 			case 16 :
@@ -508,6 +512,8 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "Heating control signal";
 				case 1 : return "Cooling control signal";
+				case 2 : return "Heating setpoint";
+				case 3 : return "Cooling setpoint";
 			} break;
 			// WindowModel::Results
 			case 16 :
@@ -661,6 +667,8 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "---";
 				case 1 : return "---";
+				case 2 : return "C";
+				case 3 : return "C";
 			} break;
 			// WindowModel::Results
 			case 16 :
@@ -814,6 +822,8 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
 			} break;
 			// WindowModel::Results
 			case 16 :
@@ -967,6 +977,8 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// WindowModel::Results
 			case 16 :
@@ -1018,7 +1030,7 @@ namespace NANDRAD_MODEL {
 			// ThermalComfortModel::Results
 			case 14 : return 1;
 			// ThermostatModel::VectorValuedResults
-			case 15 : return 2;
+			case 15 : return 4;
 			// WindowModel::Results
 			case 16 : return 7;
 		} // switch
@@ -1060,7 +1072,7 @@ namespace NANDRAD_MODEL {
 			// ThermalComfortModel::Results
 			case 14 : return 0;
 			// ThermostatModel::VectorValuedResults
-			case 15 : return 1;
+			case 15 : return 3;
 			// WindowModel::Results
 			case 16 : return 7;
 		} // switch

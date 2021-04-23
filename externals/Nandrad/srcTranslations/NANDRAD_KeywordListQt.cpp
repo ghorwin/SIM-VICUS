@@ -240,7 +240,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Heating set point");
 	tr("Cooling set point");
 	tr("Control tolerance for temperatures");
-	tr("Difference between lower and upper hysteresis band, centered around set points");
+	tr("Offset of lower and upper hysteresis band from set points");
 	tr("Air temperature");
 	tr("Operative temperature");
 	tr("P-Controller");

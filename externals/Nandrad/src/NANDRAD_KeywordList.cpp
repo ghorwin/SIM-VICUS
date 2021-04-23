@@ -1752,7 +1752,7 @@ namespace NANDRAD {
 				case 0 : return "Heating set point";
 				case 1 : return "Cooling set point";
 				case 2 : return "Control tolerance for temperatures";
-				case 3 : return "Difference between lower and upper hysteresis band, centered around set points";
+				case 3 : return "Offset of lower and upper hysteresis band from set points";
 			} break;
 			// Thermostat::TemperatureType
 			case 66 :

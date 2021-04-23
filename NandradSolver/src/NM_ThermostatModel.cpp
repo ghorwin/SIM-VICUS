@@ -76,12 +76,12 @@ void ThermostatModel::initResults(const std::vector<AbstractModel *> &) {
 		m_vectorValuedResults[varIndex] = VectorValuedQuantity(indexKeys);
 
 	// initialize controller
-	unsigned int controllerCount = 1; // assome reference zone
+	unsigned int zoneCount = 1; // assome reference zone
 	if (m_thermostat->m_referenceZoneID == NANDRAD::INVALID_ID)
-		controllerCount = indexKeys.size(); // one for each zone
+		zoneCount = indexKeys.size(); // one for each zone
 
 	// actually, we create two controllers for each zone, one for heating, one for cooling
-	for (unsigned int i = 0; i<controllerCount; ++i) {
+	for (unsigned int i = 0; i<zoneCount; ++i) {
 		switch (m_thermostat->m_controllerType) {
 			case NANDRAD::Thermostat::NUM_CT : // default to P-Controller
 			case NANDRAD::Thermostat::CT_PController : {
@@ -264,49 +264,20 @@ void ThermostatModel::stateDependencies(std::vector<std::pair<const double *, co
 						std::make_pair(m_vectorValuedResults[VVR_HeatingControlValue].dataPtr() + i, m_valueRefs[0]) );
 			resultInputValueReferences.push_back(
 						std::make_pair(m_vectorValuedResults[VVR_CoolingControlValue].dataPtr() + i, m_valueRefs[0]) );
-			// if we have scheduled setpoints, we also depend on those
-			if (m_thermostat->m_modelType == NANDRAD::Thermostat::MT_Scheduled) {
-				// valueref index 1 - heating set point
-				resultInputValueReferences.push_back(
-							std::make_pair(m_vectorValuedResults[VVR_HeatingControlValue].dataPtr() + i, m_valueRefs[1]) );
-				resultInputValueReferences.push_back(
-							std::make_pair(m_vectorValuedResults[VVR_CoolingControlValue].dataPtr() + i, m_valueRefs[1]) );
-				// valueref index 2 - cooling set point
-				resultInputValueReferences.push_back(
-							std::make_pair(m_vectorValuedResults[VVR_HeatingControlValue].dataPtr() + i, m_valueRefs[2]) );
-				resultInputValueReferences.push_back(
-							std::make_pair(m_vectorValuedResults[VVR_CoolingControlValue].dataPtr() + i, m_valueRefs[2]) );
-			}
 		}
 	}
 
 	else {
 		// each zone's heating and cooling control values depend on the zone's temperatures
-		unsigned int valRefIndex = 0;
+		unsigned int inputVarsPerZone = 1;
+		if (m_thermostat->m_modelType == NANDRAD::Thermostat::MT_Scheduled)
+			inputVarsPerZone = 3;
 		for (unsigned int i=0; i<m_objectList->m_filterID.m_ids.size(); ++i) {
 			// dependency on room air temperature of corresponding zone
 			resultInputValueReferences.push_back(
-						std::make_pair(m_vectorValuedResults[VVR_HeatingControlValue].dataPtr() + i, m_valueRefs[valRefIndex]) );
+						std::make_pair(m_vectorValuedResults[VVR_HeatingControlValue].dataPtr() + i, m_valueRefs[inputVarsPerZone*i]) );
 			resultInputValueReferences.push_back(
-						std::make_pair(m_vectorValuedResults[VVR_CoolingControlValue].dataPtr() + i, m_valueRefs[valRefIndex]) );
-			++valRefIndex;
-
-			// if we have scheduled setpoints, we also depend on those
-			if (m_thermostat->m_modelType == NANDRAD::Thermostat::MT_Scheduled) {
-				// valueref index 1 - heating set point
-				resultInputValueReferences.push_back(
-							std::make_pair(m_vectorValuedResults[VVR_HeatingControlValue].dataPtr() + i, m_valueRefs[valRefIndex]) );
-				resultInputValueReferences.push_back(
-							std::make_pair(m_vectorValuedResults[VVR_CoolingControlValue].dataPtr() + i, m_valueRefs[valRefIndex]) );
-				++valRefIndex;
-
-				// valueref index 2 - cooling set point
-				resultInputValueReferences.push_back(
-							std::make_pair(m_vectorValuedResults[VVR_HeatingControlValue].dataPtr() + i, m_valueRefs[valRefIndex]) );
-				resultInputValueReferences.push_back(
-							std::make_pair(m_vectorValuedResults[VVR_CoolingControlValue].dataPtr() + i, m_valueRefs[valRefIndex]) );
-				++valRefIndex;
-			}
+						std::make_pair(m_vectorValuedResults[VVR_CoolingControlValue].dataPtr() + i, m_valueRefs[inputVarsPerZone*i]) );
 		}
 	}
 
@@ -330,6 +301,12 @@ int ThermostatModel::update() {
 			TSetpointCooling = *m_valueRefs[i*inputVarsPerZone + 2];
 		}
 
+		// if we have setpoint temperatures in each zone, we store the corresponding setpoint right here
+		if (m_thermostat->m_referenceZoneID == NANDRAD::INVALID_ID) {
+			*(m_vectorValuedResults[VVR_ThermostatHeatingSetpoint].dataPtr() + i) = TSetpointHeating;
+			*(m_vectorValuedResults[VVR_ThermostatCoolingSetpoint].dataPtr() + i) = TSetpointCooling;
+		}
+
 		// update heating and cooling controllers
 		m_controllers[i*2]->update(TSetpointHeating - Troom);
 		m_controllers[i*2+1]->update(Troom - TSetpointCooling); // Mind the sign! Turn on cooling when room is _above_ setpoint
@@ -337,10 +314,20 @@ int ThermostatModel::update() {
 
 	// transfer results
 	if (m_thermostat->m_referenceZoneID != NANDRAD::INVALID_ID) {
+		double TSetpointHeating = m_thermostat->m_para[NANDRAD::Thermostat::P_HeatingSetpoint].value;
+		double TSetpointCooling = m_thermostat->m_para[NANDRAD::Thermostat::P_CoolingSetpoint].value;
+		if (m_thermostat->m_modelType == NANDRAD::Thermostat::MT_Scheduled) {
+			TSetpointHeating = *m_valueRefs[1];
+			TSetpointCooling = *m_valueRefs[2];
+		}
+
 		// reference zone - all results get the same control values
 		for (unsigned int i=0; i<nZones; ++i) {
 			*(m_vectorValuedResults[VVR_HeatingControlValue].dataPtr() + i) = m_controllers[0]->m_controlValue;
 			*(m_vectorValuedResults[VVR_CoolingControlValue].dataPtr() + i) = m_controllers[1]->m_controlValue;
+			// setpoints are the same for all zones
+			*(m_vectorValuedResults[VVR_ThermostatHeatingSetpoint].dataPtr() + i) = TSetpointHeating;
+			*(m_vectorValuedResults[VVR_ThermostatCoolingSetpoint].dataPtr() + i) = TSetpointCooling;
 		}
 	}
 	else {

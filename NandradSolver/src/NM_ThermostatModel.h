@@ -24,9 +24,13 @@ public:
 	/*! Computed results, provided with access via zone ID. */
 	enum VectorValuedResults {
 		/*! Control signal for heating, 0 - off, 1 - on. */
-		VVR_HeatingControlValue,		// Keyword: HeatingControlValue			[---]	'Heating control signal'
+		VVR_HeatingControlValue,			// Keyword: HeatingControlValue			[---]	'Heating control signal'
 		/*! Control signal for cooling, 0 - off, 1 - on. */
-		VVR_CoolingControlValue,		// Keyword: CoolingControlValue			[---]	'Cooling control signal'
+		VVR_CoolingControlValue,			// Keyword: CoolingControlValue			[---]	'Cooling control signal'
+		/*! Setpoint for heating. */
+		VVR_ThermostatHeatingSetpoint,		// Keyword: ThermostatHeatingSetpoint	[C]		'Heating setpoint'
+		/*! Control signal for cooling, 0 - off, 1 - on. */
+		VVR_ThermostatCoolingSetpoint,		// Keyword: ThermostatCoolingSetpoint	[C]		'Cooling setpoint'
 		NUM_VVR
 	};
 

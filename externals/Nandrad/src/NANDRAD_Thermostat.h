@@ -46,7 +46,7 @@ public:
 		P_HeatingSetpoint,				// Keyword: HeatingSetpoint				[C]			'Heating set point'
 		P_CoolingSetpoint,				// Keyword: CoolingSetpoint				[C]			'Cooling set point'
 		P_TemperatureTolerance,			// Keyword: TemperatureTolerance		[K]			'Control tolerance for temperatures'
-		P_TemperatureBand,				// Keyword: TemperatureBand				[K]			'Difference between lower and upper hysteresis band, centered around set points'
+		P_TemperatureBand,				// Keyword: TemperatureBand				[K]			'Offset of lower and upper hysteresis band from set points'
 		NUM_P
 	};
 

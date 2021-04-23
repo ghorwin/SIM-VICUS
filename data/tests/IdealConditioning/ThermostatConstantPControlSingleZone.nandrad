@@ -136,6 +136,18 @@
 					<ObjectListName>Thermostat</ObjectListName>
 					<GridName>Minutes</GridName>
 				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>ThermostatHeatingSetpoint[1]</Quantity>
+					<ObjectListName>Thermostat</ObjectListName>
+					<GridName>Minutes</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>ThermostatCoolingSetpoint[1]</Quantity>
+					<ObjectListName>Thermostat</ObjectListName>
+					<GridName>Minutes</GridName>
+				</OutputDefinition>
 				
 			</Definitions>
 			
