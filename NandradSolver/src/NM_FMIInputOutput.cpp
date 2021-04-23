@@ -21,14 +21,27 @@
 
 #include "NM_FMIInputOutput.h"
 
+#include "NANDRAD_FMIVariableDefinition.h"
+#include "NANDRAD_Project.h"
+
 namespace NANDRAD_MODEL {
 
 
 void FMIInputOutput::setup(const NANDRAD::Project & prj) {
+	// store pointer to fmi description
+	m_fmiDescription = &prj.m_fmiDescription;
 
+	// check size of results vector
+	unsigned int nResults = 0;
+	for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_variables) {
+		if(variable.m_inputVariable)
+			++nResults;
+	}
+	// resize results vector
+	m_results.resize(nResults);
 }
 
-int FMIInputOutput::setTime(double t) {
+int FMIInputOutput::setTime(double /*t*/) {
 	// if interpolation of input variables is enabled, calculate
 	// value in integration interval based on Taylor series expansion rule
 	// and store in m_results
@@ -39,10 +52,50 @@ int FMIInputOutput::setTime(double t) {
 const double * FMIInputOutput::resolveResultReference(const NANDRAD_MODEL::InputReference & valueRef,
 													  QuantityDescription & quantityDesc) const
 {
+	IBK_ASSERT(m_fmiDescription != nullptr);
+	// no fmi variables
+	if(m_fmiDescription->m_variables.empty())
+		return nullptr;
 
-	/// \todo implement
+	// TODO Anne: resolve object list definitions of combined ids and object lists
+	// TODO Andreas + Anne: clearify how to handle object lists. Are all value references
+	// to one quantity in a coherent memory block? Note, that this cannot be guaranteed,
+	// if we register references according to their apperance in FMIVariableDescription block.
 
-	return nullptr;
+	// search for value reference inside fmi descriptions:
+	// we create a FMIVariable and search for an identic type inside fmi descriptions
+	NANDRAD::FMIVariableDefinition compVariable;
+	// we only request inputs
+	compVariable.m_inputVariable = true;
+	// copy data from input reference
+	compVariable.m_objectID = valueRef.m_id;
+	compVariable.m_varName = valueRef.m_name.m_name;
+	// copy index
+	if(valueRef.m_name.m_index != -1)
+		compVariable.m_vectorIndex = (unsigned int) valueRef.m_name.m_index;
+
+	// search inside container
+	unsigned int index = 0;
+	for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_variables) {
+		if(variable.sameModelVarAs(compVariable)) {
+			break;
+		}
+		// update index
+		if(variable.m_inputVariable)
+			++index;
+	}
+
+	// not found
+	if(index == m_fmiDescription->m_variables.size())
+		return nullptr;
+
+	// copy quantity description
+	quantityDesc.m_id = valueRef.m_id;
+	quantityDesc.m_name = valueRef.m_name.m_name;
+	quantityDesc.m_referenceType = valueRef.m_referenceType;
+
+	// return suitable value reference
+	return &m_results[index];
 }
 
 

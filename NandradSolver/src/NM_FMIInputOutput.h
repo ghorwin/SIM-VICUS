@@ -28,6 +28,7 @@
 #include "NM_AbstractStateDependency.h"
 
 namespace NANDRAD {
+	class FMIDescription;
 	class Project;
 }
 
@@ -125,6 +126,9 @@ private:
 		These values will be updated based on cached FMI variable input data.
 	*/
 	std::vector<double>				m_results;
+
+	/*! Stored constant reference to FMI description. */
+	const NANDRAD::FMIDescription	*m_fmiDescription = nullptr;
 };
 
 } // namespace NANDRAD_MODEL

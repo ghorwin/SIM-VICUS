@@ -203,6 +203,8 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 //	initFMUComponents();
 	// *** Initialize all models ***
 	initModels();
+	// *** Initialize FMI model ***
+	initFMI();
 	// *** Initialize Object Lists ***
 	initObjectLists();
 	// *** Initialize outputs ***
@@ -921,6 +923,8 @@ void NandradModel::initFMI() {
 
 	try {
 		m_fmiInputOutput = new FMIInputOutput;
+		// setup model
+		m_fmiInputOutput->setup(*m_project);
 		// insert into model container
 		m_modelContainer.push_back(m_fmiInputOutput);	// now owns the model and handles memory cleanup
 		// insert into time model container
