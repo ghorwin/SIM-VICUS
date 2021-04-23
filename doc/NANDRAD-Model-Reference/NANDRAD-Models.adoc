@@ -88,6 +88,7 @@ Das `NaturalVentilationModel` muss mit den folgenden XML-Attributen definiert we
 |====================
 | Attribut | Beschreibung | Format | Verwendung 
 | `id` | Kennung des natürlichen Lüftungsmodells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+| `displayName` | Anzeigename/Beschreibung | string | _optional_
 
 | `modelType` 
 a| Setzt den Typ des Lüftungsmodells 
@@ -269,6 +270,7 @@ Das `InternalLoadsModel` muss mit den folgenden XML-Attributen definiert werden:
 |====================
 | Attribut | Beschreibung | Format | Verwendung 
 | `id` | Kennung des Modells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+| `displayName` | Anzeigename/Beschreibung | string | _optional_
 
 | `modelType` 
 a| Gibt an, wie die internen Lasten angesetzt werden sollen
@@ -336,20 +338,25 @@ Der Objektlisten-tag `ZoneObjectList` identifiziert die Zonen, in denen Thermost
 ====
 [source,xml]
 ----
-<!-- A thermostat with constant heating set point, no cooling. Uses air temperature as sensor value. -->
+<!-- A thermostat with constant heating and cooling set points. Uses air temperature as sensor value. -->
 <Thermostat id="1001" displayName="Constant air temperature thermostat" modelType="Constant">
 	<ZoneObjectList>All zones</ZoneObjectList>
-	<IBK:Parameter name="HeatingSetpoint" unit="C">20</IBK:Parameter>
-	<!-- Cooling is disabled through very large setpoint -->
-	<IBK:Parameter name="CoolingSetpoint" unit="C">100</IBK:Parameter>
-	<!-- Control temperature is "Air temperature" -->
+	<!-- Heating starts below 22 C -->
+	<IBK:Parameter name="HeatingSetpoint" unit="C">22</IBK:Parameter>
+	<!-- Cooling starts above 26 C -->
+	<IBK:Parameter name="CoolingSetpoint" unit="C">26</IBK:Parameter>
+	<!-- P-controller is accurate to 0.2 K -->
+	<IBK:Parameter name="TemperatureTolerance" unit="K">0.2</IBK:Parameter>
+	<!-- Control temperature is "Air temperature", this is the default and could be omitted -->
 	<TemperatureType>AirTemperature</TemperatureType>
+	<!-- Controller type PController is the default, so we could omit this-->
+	<ControllerType>PController</ControllerType>
 </Thermostat>
 ----
 ====
 
 
-Das `ZoneControlThermostat` muss mit den folgenden XML-Attributen definiert werden:
+Das `Thermostat`-Element unterstützt folgende XML-Attributen:
 
 .Attribute
 [.indent-me]
@@ -357,6 +364,7 @@ Das `ZoneControlThermostat` muss mit den folgenden XML-Attributen definiert werd
 |====================
 | Attribut | Beschreibung | Format | Verwendung 
 | `id` | Kennung des Modells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+| `displayName` | Anzeigename/Beschreibung | string | _optional_
 
 | `modelType` 
 a| Gibt an, wie die Thermostat-Parameter angesetzt werden sollen
@@ -404,10 +412,17 @@ Ein Thermostat hält nur die Sollwerte für die Zone. Eine Konditionierung der Z
 
 ### Ausgaben
 
-Die zonenspezifischen Ausgangsgrößen heißen:
+Das Modell liefert vektorwertige Modellergebnisgrößen, wobei der Vektorindex die jeweilige Zonen-ID ist.
 
-- `HeatingSetpoint [C]`
-- `CoolingSetpoint [C]`
+- `HeatingControlValue [---]` - Steuersignal für die Heizungsanlage: 0 - aus, 1 - maximal an, Wertebereich unbegrenzt
+- `CoolingControlValue [---]` - Steuersignal für die Klimaanlage: 0 - aus, 1 - maximal an, Wertebereich unbegrenzt
+- `ThermostatHeatingSetpoint [C]` - Setpoint, der für die Heizung verwendet wurde
+- `ThermostatCoolingSetpoint [C]` - Setpoint, der für die Kühlung verwendet wurde
+
+
+## Anlagensystem-Modell
+
+... TODO 
 
 
 ## Modell für ideale thermische Konditionierung
