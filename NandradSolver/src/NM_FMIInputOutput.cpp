@@ -39,6 +39,15 @@ void FMIInputOutput::setup(const NANDRAD::Project & prj) {
 	}
 	// resize results vector
 	m_results.resize(nResults);
+	// resize input value references
+	// set all output quantities as input references
+	for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_variables) {
+		if(variable.m_inputVariable) {
+			continue;
+		}
+		// store reference
+		m_valueRefs[variable.m_fmiValueRef] = nullptr;
+	}
 }
 
 
@@ -103,6 +112,9 @@ void FMIInputOutput::inputReferences(std::vector<InputReference> & inputRefs) co
 	if(m_fmiDescription->m_variables.empty())
 		return;
 
+	// input references sorted via id
+	std::map<unsigned int, InputReference> inputRefsMap;
+
 	// set all output quantities as input references
 	for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_variables) {
 		if(variable.m_inputVariable) {
@@ -117,8 +129,12 @@ void FMIInputOutput::inputReferences(std::vector<InputReference> & inputRefs) co
 		if(variable.m_vectorIndex != NANDRAD::INVALID_ID)
 			inputRef.m_name.m_index = (int) variable.m_vectorIndex;
 		// store reference
-		inputRefs.push_back(inputRef);
+		inputRefsMap[variable.m_fmiValueRef] = inputRef;
 	}
+
+	// copy input references
+	for (const std::pair<unsigned int, InputReference> &inputRef : inputRefsMap)
+		inputRefs.push_back(inputRef.second);
 }
 
 
@@ -130,7 +146,13 @@ void FMIInputOutput::initInputReferences(const std::vector<AbstractModel *> &) {
 void FMIInputOutput::setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) {
 
 	FUNCID(FMIInputOutput::setInputValueRefs);
-	m_valueRefs = resultValueRefs;
+
+	// fill value references according to id
+	IBK_ASSERT(m_valueRefs.size() == resultValueRefs.size());
+	std::map<unsigned int, const double*>::iterator valueRefIt = m_valueRefs.begin();
+
+	for(unsigned int i = 0; i < resultValueRefs.size(); ++i, ++valueRefIt)
+		valueRefIt->second = resultValueRefs[i];
 
 	// process result descriptions and check if they match FMI output variable specs
 	for(const QuantityDescription &resDesc : resultDescriptions) {

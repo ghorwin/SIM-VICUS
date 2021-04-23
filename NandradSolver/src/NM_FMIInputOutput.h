@@ -119,8 +119,8 @@ public:
 
 private:
 
-	/*! Stored value references (pointers to result variables exported via FMI). */
-	std::vector<const double *>		m_valueRefs;
+	/*! Stored value references (pointers to result variables exported via FMI), sorted via fmi id number. */
+	std::map<unsigned int, const double *>		m_valueRefs;
 
 	/*! Cached current values, updated in setTime().
 		These values will be updated based on cached FMI variable input data.
