@@ -41,6 +41,7 @@ void FMIInputOutput::setup(const NANDRAD::Project & prj) {
 	m_results.resize(nResults);
 }
 
+
 int FMIInputOutput::setTime(double /*t*/) {
 	// if interpolation of input variables is enabled, calculate
 	// value in integration interval based on Taylor series expansion rule
@@ -88,6 +89,7 @@ const double * FMIInputOutput::resolveResultReference(const NANDRAD_MODEL::Input
 	quantityDesc.m_id = valueRef.m_id;
 	quantityDesc.m_name = valueRef.m_name.m_name;
 	quantityDesc.m_referenceType = valueRef.m_referenceType;
+	// TODO: add description
 
 	// return suitable value reference
 	return &m_results[index];
@@ -96,7 +98,27 @@ const double * FMIInputOutput::resolveResultReference(const NANDRAD_MODEL::Input
 
 void FMIInputOutput::inputReferences(std::vector<InputReference> & inputRefs) const {
 
-	/// \todo implement
+	IBK_ASSERT(m_fmiDescription != nullptr);
+	// no fmi variables
+	if(m_fmiDescription->m_variables.empty())
+		return;
+
+	// set all output quantities as input references
+	for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_variables) {
+		if(variable.m_inputVariable) {
+			continue;
+		}
+		// fill input reference
+		InputReference inputRef;
+		// copy data from input reference
+		inputRef.m_id = variable.m_objectID;
+		inputRef.m_name.m_name = variable.m_varName;
+		// copy index
+		if(variable.m_vectorIndex != NANDRAD::INVALID_ID)
+			inputRef.m_name.m_index = (int) variable.m_vectorIndex;
+		// store reference
+		inputRefs.push_back(inputRef);
+	}
 }
 
 
@@ -106,8 +128,35 @@ void FMIInputOutput::initInputReferences(const std::vector<AbstractModel *> &) {
 
 
 void FMIInputOutput::setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) {
+
+	FUNCID(FMIInputOutput::setInputValueRefs);
 	m_valueRefs = resultValueRefs;
-	/// \todo process result descriptions and check if they match FMI output variable specs
+
+	// process result descriptions and check if they match FMI output variable specs
+	for(const QuantityDescription &resDesc : resultDescriptions) {
+		// multiple index is not allowed index
+		if(!resDesc.m_indexKeys.empty())
+			throw IBK::Exception(IBK::FormatString("Malformed variable '%1' in FMI definitions!").
+								 arg(resDesc.m_name), FUNC_ID);
+
+		bool found = false;
+
+		for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_variables) {
+			// skip inputs
+			if(variable.m_inputVariable) {
+				continue;
+			}
+			// mismatching name
+			if(variable.m_varName != resDesc.m_name)
+				continue;
+			found = true;
+			break;
+		}
+		if(!found) {
+			throw IBK::Exception(IBK::FormatString("Mismatching variable '%1' in FMI definitions!").
+								 arg(resDesc.m_name), FUNC_ID);
+		}
+	}
 }
 
 
