@@ -246,15 +246,14 @@
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>Ideal heating/cooling</TitleText>
+					<TitleText>Ideal heating</TitleText>
 					<TitleFont>Roboto Condensed,10,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
 						<Position>Inside</Position>
-						<OffsetX>284</OffsetX>
-						<OffsetY>11</OffsetY>
+						<Alignment>1</Alignment>
 						<IconStyle>1</IconStyle>
-						<MaxColumns>1</MaxColumns>
+						<MaxColumns>2</MaxColumns>
 						<Font>Roboto Condensed,8,-1,5,50,0,0,0,0,0</Font>
 					</Legend>
 				</ChartProperties>
@@ -348,11 +347,11 @@
 					<TitleText>Ideal cooling</TitleText>
 					<TitleFont>Roboto Condensed,10,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
-					<Legend>
+					<Legend hasFrame="0">
 						<Position>Inside</Position>
 						<Alignment>7</Alignment>
-						<OffsetX>97</OffsetX>
-						<OffsetY>263</OffsetY>
+						<OffsetX>15</OffsetX>
+						<OffsetY>175</OffsetY>
 						<IconStyle>1</IconStyle>
 						<MaxColumns>1</MaxColumns>
 						<Font>Roboto Condensed,8,-1,5,50,0,0,0,0,0</Font>
