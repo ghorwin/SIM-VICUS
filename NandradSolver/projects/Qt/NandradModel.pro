@@ -54,6 +54,7 @@ DEPENDPATH = $${INCLUDEPATH} \
 SOURCES += \
 	../../src/NM_HydraulicNetworkFlowElements.cpp \
 	../../src/NM_HydraulicNetworkModel.cpp \
+	../../src/NM_IdealHeatingCoolingModel.cpp \
 	../../src/NM_Physics.cpp \
 	../../src/NM_RoomRadiationLoadsModel.cpp \
 	../../src/NM_ThermalComfortModel.cpp \
@@ -105,6 +106,7 @@ HEADERS += \
 	../../src/NM_HydraulicNetworkFlowElements.h \
 	../../src/NM_HydraulicNetworkModel.h \
 	../../src/NM_HydraulicNetworkModel_p.h \
+	../../src/NM_IdealHeatingCoolingModel.h \
 	../../src/NM_InputReference.h \
 	../../src/NM_KeywordList.h \
 	../../src/NM_Loads.h \

@@ -448,19 +448,19 @@ TODO :
 Das Modell beschreibt ein ideles thermisches Konditionierungsmodell für eine ideale Raumluftkonditionierung.
 Der Objektlisten-tag `ZoneObjectList` identifiziert die Zonen, in denen das Modell berücksichtigt werden sollen. Es darf nur ein Modell pro Zone existieren.
 
-.Definitionsblock für Ideale thermische Konditionierung
+.Definitionsblock für ideale thermische Konditionierung
 ====
 [source,xml]
 ----
-<ZoneIdealHeatingCooling id="200">
+<IdealHeatingCoolingModel id="200">
 	<ZoneObjectList>Office zones</ZoneObjectList>
 	<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">50</IBK:Parameter>
 	<IBK:Parameter name="MaxCoolingPowerPerArea" unit="W/m2">20</IBK:Parameter>
-</ZoneIdealHeatingCooling>
+</IdealHeatingCoolingModel>
 ----
 ====
 
-Das `ZoneIdealHeatingCooling` muss mit den folgenden XML-Attributen definiert werden:
+Das `IdealHeatingCoolingModel` muss mit den folgenden XML-Attributen definiert werden:
 
 .Attribute
 [.indent-me]
@@ -484,7 +484,7 @@ Fließkommaparameter (siehe <<IBK_Parameter>> für eine Beschreibung des Element
 ====
 Damit das Modell auf die jeweilige Zone angewendet wird, ist zwingend das <<Thermostat, Thermostat>> nötig, welches für die gleichen Zone parametriert sein muss. Dieses liefert dann eine Ergebnisgröße `Model(<thermostat_id>).HeatingControlValue[<zone id>]`. 
 
-Ein zwischengeschaltetes `HVACControlSystem` kann optional verwendet werden (auch als FMU), welches ein konkretisiertes Regelsignal `Model(<HVACControlSystem_id>).IdealHeatingControlValue[<zone id>]` liefert. Das `ZoneIdealHeatingCooling`-Modell sucht _zuerst_ nach einer gülten Variable vom HVACControlSystem-Modell, und dann nach dem Thermostat. 
+Ein zwischengeschaltetes `HVACControlSystem` kann optional verwendet werden (auch als FMU), welches ein konkretisiertes Regelsignal `Model(<HVACControlSystem_id>).IdealHeatingControlValue[<zone id>]` liefert. Das `IdealHeatingCoolingModel`-Modell sucht _zuerst_ nach einer gülten Variable vom HVACControlSystem-Modell, und dann nach dem Thermostat. 
 ====
 
 ### Heiz- und Kühlleistung
@@ -506,4 +506,4 @@ Ergebnisgrößen des Modells sind:
 - `IdealCoolingLoad [W]` (negativ)
 
 Analog zu Lüftungswärmeverlusten werden diese zonenspezifischen Ausgangsgrößen als vektorwertige Ergebnisgrößen bereitgestellt.
-Z. B. ist `Model<ZoneIdealHeatingCooling_id>).IdealHeatingLoad[id=3]` die Heizlast in Zone #3.
+Z. B. ist `Model<IdealHeatingCoolingModel_id>).IdealHeatingLoad[id=3]` die Heizlast in Zone #3.

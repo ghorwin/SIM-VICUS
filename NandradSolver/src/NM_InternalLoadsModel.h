@@ -14,9 +14,9 @@ namespace NANDRAD {
 
 namespace NANDRAD_MODEL {
 
-/*! A model for natural internal loads.
-	The model instances is identified by reference type MODEL and the id of the NANDRAD model parametrization block.
-	It implements either constant or schedules load per ares and computes convective/radiant
+/*! A model for internal loads.
+	The model instance is identified by reference type MODEL and the id of the NANDRAD model parametrization block.
+	It implements either constant or scheduled loads per ares and computes convective/radiant
 	equipment, person and lighting loads for all zones referenced in the object list.
 */
 class InternalLoadsModel : public AbstractModel, public AbstractStateDependency {
