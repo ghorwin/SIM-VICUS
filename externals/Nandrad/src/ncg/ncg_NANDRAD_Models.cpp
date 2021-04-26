@@ -88,6 +88,18 @@ void Models::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "IdealHeatingCoolingModels") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "IdealHeatingCoolingModel")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					IdealHeatingCoolingModel obj;
+					obj.readXML(c2);
+					m_idealHeatingCoolingModels.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -149,6 +161,18 @@ TiXmlElement * Models::writeXML(TiXmlElement * parent) const {
 
 		for (std::vector<Thermostat>::const_iterator it = m_thermostats.begin();
 			it != m_thermostats.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_idealHeatingCoolingModels.empty()) {
+		TiXmlElement * child = new TiXmlElement("IdealHeatingCoolingModels");
+		e->LinkEndChild(child);
+
+		for (std::vector<IdealHeatingCoolingModel>::const_iterator it = m_idealHeatingCoolingModels.begin();
+			it != m_idealHeatingCoolingModels.end(); ++it)
 		{
 			it->writeXML(child);
 		}

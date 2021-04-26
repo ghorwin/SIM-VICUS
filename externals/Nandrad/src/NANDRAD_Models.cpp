@@ -21,7 +21,6 @@
 
 #include "NANDRAD_Models.h"
 
-#include <tinyxml.h>
 #include <IBK_messages.h>
 
 namespace NANDRAD {
@@ -39,6 +38,7 @@ void checkForUniqueModelIDs(const std::vector<T> & vec, std::set<unsigned int> &
 	}
 }
 
+
 void Models::checkForUniqueIDs() const {
 	FUNCID(Models::checkForUniqueIDs);
 
@@ -55,6 +55,8 @@ void Models::checkForUniqueIDs() const {
 		checkForUniqueModelIDs(m_shadingControlModels, usedIDs);
 		// the same for thermostats
 		checkForUniqueModelIDs(m_thermostats, usedIDs);
+		// the same for heating models
+		checkForUniqueModelIDs(m_idealHeatingCoolingModels, usedIDs);
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, "Duplicate ID found in model parameter blocks.", FUNC_ID);

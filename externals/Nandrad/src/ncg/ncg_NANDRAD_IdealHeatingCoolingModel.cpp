@@ -47,6 +47,8 @@ void IdealHeatingCoolingModel::readXML(const TiXmlElement * element) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id")
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "displayName")
+				m_displayName = attrib->ValueStr();
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -96,6 +98,8 @@ TiXmlElement * IdealHeatingCoolingModel::writeXML(TiXmlElement * parent) const {
 
 	if (m_id != NANDRAD::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
+	if (!m_displayName.empty())
+		e->SetAttribute("displayName", m_displayName);
 	if (!m_zoneObjectList.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "ZoneObjectList", nullptr, std::string(), m_zoneObjectList);
 

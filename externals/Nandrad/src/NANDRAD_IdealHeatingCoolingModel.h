@@ -48,6 +48,8 @@ public:
 
 	/*! Unique ID-number for this model. */
 	unsigned int		m_id = NANDRAD::INVALID_ID;					// XML:A:required
+	/*! Some display/comment name for this model (optional). */
+	std::string			m_displayName;								// XML:A
 
 	/*! Object list with zones that this model is to be apply to. */
 	std::string			m_zoneObjectList;							// XML:E:required

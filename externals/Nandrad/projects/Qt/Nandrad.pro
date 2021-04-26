@@ -152,6 +152,7 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_HydraulicNetworkElement.cpp \
 	../../src/ncg/ncg_NANDRAD_HydraulicNetworkHeatExchange.cpp \
 	../../src/ncg/ncg_NANDRAD_HydraulicNetworkPipeProperties.cpp \
+	../../src/ncg/ncg_NANDRAD_IdealHeatingCoolingModel.cpp \
 	../../src/ncg/ncg_NANDRAD_InterfaceAirFlow.cpp \
 	../../src/ncg/ncg_NANDRAD_Interface.cpp \
 	../../src/ncg/ncg_NANDRAD_InterfaceHeatConduction.cpp \
