@@ -20,6 +20,9 @@
 */
 
 #include "NandradModelFMU.h"
+#include "NM_FMIInputOutput.h"
+
+#include <IBK_assert.h>
 
 
 NandradModelFMU::NandradModelFMU() :
@@ -33,6 +36,15 @@ NandradModelFMU::NandradModelFMU() :
 void NandradModelFMU::setReal(int varID, double value) {
 	FUNCID(NandradModelFMU::setRealParameter);
 
+	IBK_ASSERT(m_fmiInputOutput != nullptr);
+
+	try {
+		m_fmiInputOutput->setInputValue((unsigned int) varID, value);
+	}
+	catch(IBK::Exception &ex) {
+		throw IBK::Exception(ex, IBK::FormatString("Error setting input value for quantity with FMI id %1!")
+							 .arg(varID), FUNC_ID);
+	}
 }
 
 
@@ -54,6 +66,14 @@ void NandradModelFMU::setBoolean(int varID, bool value) {
 
 void NandradModelFMU::getReal(int varID, double & value) {
 	FUNCID(NandradModelFMU::getReal);
+	IBK_ASSERT(m_fmiInputOutput != nullptr);
+	try {
+		m_fmiInputOutput->getOutputValue((unsigned int) varID, value);
+	}
+	catch(IBK::Exception &ex) {
+		throw IBK::Exception(ex, IBK::FormatString("Error retrieving output value for quantity with FMI id %1!")
+							 .arg(varID), FUNC_ID);
+	}
 }
 
 

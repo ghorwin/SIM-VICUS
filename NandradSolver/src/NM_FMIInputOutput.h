@@ -91,6 +91,12 @@ public:
 
 	// *** Other public member functions
 
+	/*! Sets a new input value for a given single id number. */
+	void setInputValue(unsigned int varID, double value);
+
+	/*! Gets output value for a given single id number. */
+	void getOutputValue(unsigned int varID, double &value) const;
+
 	/*! Retrieves reference pointer to a requested input reference.
 
 		This function looks through the list of published FMI input variables and parameters and
@@ -119,16 +125,23 @@ public:
 
 private:
 
-	/*! Stored value references (pointers to result variables exported via FMI), sorted via fmi id number. */
-	std::map<unsigned int, const double *>		m_valueRefs;
+	/*! Stored value references for output quantities (pointers to result variables exported via FMI),
+		sorted via fmi id number. */
+	std::map<unsigned int, const double *>		m_outputValueRefs;
+
+	/*! Stored value references for input quantities (pointers to internal result variables that contain
+		via FMI imported values), sorted via fmi id number. */
+	std::map<unsigned int, double *>			m_inputValueRefs;
 
 	/*! Cached current values, updated in setTime().
 		These values will be updated based on cached FMI variable input data.
 	*/
-	std::vector<double>				m_results;
+	std::vector<double>							m_results;
 
 	/*! Stored constant reference to FMI description. */
-	const NANDRAD::FMIDescription	*m_fmiDescription = nullptr;
+	const NANDRAD::FMIDescription				*m_fmiDescription = nullptr;
+
+	friend class NandradModelFMU;
 };
 
 } // namespace NANDRAD_MODEL

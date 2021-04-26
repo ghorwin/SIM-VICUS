@@ -41,12 +41,18 @@ void FMIInputOutput::setup(const NANDRAD::Project & prj) {
 	m_results.resize(nResults);
 	// resize input value references
 	// set all output quantities as input references
+	unsigned int resultIndex = 0;
 	for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_variables) {
 		if(variable.m_inputVariable) {
-			continue;
+			// declare FMI input value references as results
+			m_inputValueRefs[variable.m_fmiValueRef] = &m_results[resultIndex];
+			// inputs are stored as results inside container
+			++resultIndex;
 		}
-		// store reference
-		m_valueRefs[variable.m_fmiValueRef] = nullptr;
+		else {
+			// store reference
+			m_outputValueRefs[variable.m_fmiValueRef] = nullptr;
+		}
 	}
 }
 
@@ -80,18 +86,18 @@ const double * FMIInputOutput::resolveResultReference(const NANDRAD_MODEL::Input
 		compVariable.m_vectorIndex = (unsigned int) valueRef.m_name.m_index;
 
 	// search inside container
-	unsigned int index = 0;
+	unsigned int resultIndex = 0;
 	for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_variables) {
 		if(variable.sameModelVarAs(compVariable)) {
 			break;
 		}
 		// update index
 		if(variable.m_inputVariable)
-			++index;
+			++resultIndex;
 	}
 
 	// not found
-	if(index == m_fmiDescription->m_variables.size())
+	if(resultIndex == m_fmiDescription->m_variables.size())
 		return nullptr;
 
 	// copy quantity description
@@ -101,7 +107,7 @@ const double * FMIInputOutput::resolveResultReference(const NANDRAD_MODEL::Input
 	// TODO: add description
 
 	// return suitable value reference
-	return &m_results[index];
+	return &m_results[resultIndex];
 }
 
 
@@ -148,8 +154,8 @@ void FMIInputOutput::setInputValueRefs(const std::vector<QuantityDescription> & 
 	FUNCID(FMIInputOutput::setInputValueRefs);
 
 	// fill value references according to id
-	IBK_ASSERT(m_valueRefs.size() == resultValueRefs.size());
-	std::map<unsigned int, const double*>::iterator valueRefIt = m_valueRefs.begin();
+	IBK_ASSERT(m_outputValueRefs.size() == resultValueRefs.size());
+	std::map<unsigned int, const double*>::iterator valueRefIt = m_outputValueRefs.begin();
 
 	for(unsigned int i = 0; i < resultValueRefs.size(); ++i, ++valueRefIt)
 		valueRefIt->second = resultValueRefs[i];
@@ -179,6 +185,30 @@ void FMIInputOutput::setInputValueRefs(const std::vector<QuantityDescription> & 
 								 arg(resDesc.m_name), FUNC_ID);
 		}
 	}
+}
+
+
+void FMIInputOutput::setInputValue(unsigned int varID, double value)
+{
+	std::map<unsigned int, double*>::iterator inputVarIt =
+			m_inputValueRefs.find(varID);
+	// non-existent variable id is a progammer error (error in FMU export)
+	IBK_ASSERT(inputVarIt != m_inputValueRefs.end());
+	IBK_ASSERT(inputVarIt->second != nullptr);
+	// set value
+	*inputVarIt->second = value;
+}
+
+
+void FMIInputOutput::getOutputValue(unsigned int varID, double & value) const
+{
+	std::map<unsigned int, const double*>::const_iterator outputVarIt =
+			m_outputValueRefs.find(varID);
+	// non-existent variable id is a progammer error (error in FMU export)
+	IBK_ASSERT(outputVarIt != m_outputValueRefs.end());
+	IBK_ASSERT(outputVarIt->second != nullptr);
+	// get value
+	value = *outputVarIt->second;
 }
 
 
