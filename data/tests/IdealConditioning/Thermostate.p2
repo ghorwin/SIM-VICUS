@@ -21,34 +21,6 @@
 		<Mapper name="$project: $basename">
 			<Extractors>
 				<Extractor>
-					<DataIOFileName>ThermostatConstantPControlSingleZone/results/states.tsv?1|2</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>ThermostatConstantPControlSingleZone/results/states.tsv?1|2</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>ThermostatConstantPControlSingleZone/results/control_values.tsv?1|2</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>ThermostatConstantPControlSingleZone/results/control_values.tsv?1|2</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
 					<DataIOFileName>/home/ghorwin/git/SIM-VICUS/data/tests/climate/DEU_Potsdam_60.c6b?T</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
@@ -56,7 +28,14 @@
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>ThermostatConstantPControlSingleZone/results/misc.tsv?1|2</DataIOFileName>
+					<DataIOFileName>ThermostatConstantPControlSingleZone/results/states.tsv?1|2</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ThermostatConstantPControlSingleZone/results/states.tsv?1|2</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
@@ -69,25 +48,51 @@
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
+				<Extractor>
+					<DataIOFileName>ThermostatConstantPControlSingleZone/results/control_values.tsv?1|2</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ThermostatConstantPControlSingleZone/results/misc.tsv?1|2</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ThermostatConstantPControlSingleZone/results/control_values.tsv?1|2</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
 			</Extractors>
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>$quantity</TitleText>
-						<PenWidth>2</PenWidth>
-						<PenColor>#fcaf3e</PenColor>
-						<MarkerColor>#fcaf3e</MarkerColor>
+						<TitleText>Außenlufttemperatur</TitleText>
+						<PenColor>#a40000</PenColor>
+						<MarkerColor>#a40000</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>$quantity</TitleText>
-						<PenColor>#ce5c00</PenColor>
-						<MarkerColor>#ce5c00</MarkerColor>
-					</Series>
-					<Series leftAxis="0">
-						<TitleText>$quantity</TitleText>
 						<PenWidth>2</PenWidth>
-						<PenColor>#5c3566</PenColor>
-						<MarkerColor>#5c3566</MarkerColor>
+						<PenColor>#f57900</PenColor>
+						<MarkerColor>#f57900</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#edd400</PenColor>
+						<MarkerColor>#edd400</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenStyle>2</PenStyle>
+						<PenColor>#729fcf</PenColor>
+						<MarkerColor>#729fcf</MarkerColor>
 					</Series>
 					<Series leftAxis="0">
 						<TitleText>$quantity</TitleText>
@@ -96,19 +101,16 @@
 						<MarkerColor>#729fcf</MarkerColor>
 					</Series>
 					<Series>
-						<TitleText>Außenlufttemperatur</TitleText>
-						<PenColor>#73d216</PenColor>
-						<MarkerColor>#73d216</MarkerColor>
-					</Series>
-					<Series>
 						<TitleText>$quantity</TitleText>
-						<PenColor>#579d1c</PenColor>
-						<MarkerColor>#579d1c</MarkerColor>
+						<PenStyle>2</PenStyle>
+						<PenColor>#75507b</PenColor>
+						<MarkerColor>#75507b</MarkerColor>
 					</Series>
-					<Series>
+					<Series leftAxis="0">
 						<TitleText>$quantity</TitleText>
-						<PenColor>#7e0021</PenColor>
-						<MarkerColor>#7e0021</MarkerColor>
+						<PenWidth>2</PenWidth>
+						<PenColor>#75507b</PenColor>
+						<MarkerColor>#75507b</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
@@ -129,7 +131,6 @@
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
 						<Maximum>28.962693357597814</Maximum>
-						<Minimum>9.1264786169244765</Minimum>
 						<MinorGridVisible>0</MinorGridVisible>
 						<TitleSpacing>30</TitleSpacing>
 					</Axis>
@@ -138,8 +139,8 @@
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">---</IBK:Unit>
-						<Maximum>75.850773430391257</Maximum>
-						<Minimum>-3.4940855323020927</Minimum>
+						<Maximum>100</Maximum>
+						<Minimum>-1</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -148,7 +149,10 @@
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
 						<Position>Inside</Position>
-						<Alignment>1</Alignment>
+						<Alignment>7</Alignment>
+						<OffsetX>97</OffsetX>
+						<OffsetY>263</OffsetY>
+						<IconStyle>1</IconStyle>
 						<MaxColumns>1</MaxColumns>
 						<Font>Roboto Condensed,8,-1,5,50,0,0,0,0,0</Font>
 					</Legend>
