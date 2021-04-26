@@ -6259,21 +6259,21 @@ Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in den
 Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in denen das Modell berücksichtigt werden sollen. Es darf nur ein Modell pro Zone existieren.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 54. Definitionsblock für Ideale thermische Konditionierung</div>
+<div class="title">Beispiel 54. Definitionsblock für ideale thermische Konditionierung</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ZoneIdealHeatingCooling</span> <span class="na">id=</span><span class="s">"200"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;IdealHeatingCoolingModel</span> <span class="na">id=</span><span class="s">"200"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;ZoneObjectList&gt;</span>Office zones<span class="nt">&lt;/ZoneObjectList&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"MaxHeatingPowerPerArea"</span> <span class="na">unit=</span><span class="s">"W/m2"</span><span class="nt">&gt;</span>50<span class="nt">&lt;/IBK:Parameter&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"MaxCoolingPowerPerArea"</span> <span class="na">unit=</span><span class="s">"W/m2"</span><span class="nt">&gt;</span>20<span class="nt">&lt;/IBK:Parameter&gt;</span>
-<span class="nt">&lt;/ZoneIdealHeatingCooling&gt;</span></code></pre>
+<span class="nt">&lt;/IdealHeatingCoolingModel&gt;</span></code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="paragraph">
-<p>Das <code>ZoneIdealHeatingCooling</code> muss mit den folgenden XML-Attributen definiert werden:</p>
+<p>Das <code>IdealHeatingCoolingModel</code> muss mit den folgenden XML-Attributen definiert werden:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch indent-me">
 <caption class="title">Tabelle 31. Attribute</caption>
@@ -6348,7 +6348,7 @@ Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in den
 <p>Damit das Modell auf die jeweilige Zone angewendet wird, ist zwingend das <a href="#Thermostat">Thermostat</a> nötig, welches für die gleichen Zone parametriert sein muss. Dieses liefert dann eine Ergebnisgröße <code>Model(&lt;thermostat_id&gt;).HeatingControlValue[&lt;zone id&gt;]</code>.</p>
 </div>
 <div class="paragraph">
-<p>Ein zwischengeschaltetes <code>HVACControlSystem</code> kann optional verwendet werden (auch als FMU), welches ein konkretisiertes Regelsignal <code>Model(&lt;HVACControlSystem_id&gt;).IdealHeatingControlValue[&lt;zone id&gt;]</code> liefert. Das <code>ZoneIdealHeatingCooling</code>-Modell sucht <em>zuerst</em> nach einer gülten Variable vom HVACControlSystem-Modell, und dann nach dem Thermostat.</p>
+<p>Ein zwischengeschaltetes <code>HVACControlSystem</code> kann optional verwendet werden (auch als FMU), welches ein konkretisiertes Regelsignal <code>Model(&lt;HVACControlSystem_id&gt;).IdealHeatingControlValue[&lt;zone id&gt;]</code> liefert. Das <code>IdealHeatingCoolingModel</code>-Modell sucht <em>zuerst</em> nach einer gülten Variable vom HVACControlSystem-Modell, und dann nach dem Thermostat.</p>
 </div>
 </td>
 </tr>
@@ -6362,20 +6362,6 @@ Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in den
 <div class="paragraph">
 <p>Die Kühlung ist analog definiert. Bei einem Kontrollwert von 1 läuft die Kühlung mit maximaler Kraft, bei 0 ist sie aus.</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Die berechnete Kühlleistung hat ein negatives Vorzeichen!</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
 </div>
 <div class="sect4">
 <h5 id="_ausgaben_3">Ausgaben</h5>
@@ -6385,16 +6371,30 @@ Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in den
 <div class="ulist">
 <ul>
 <li>
-<p><code>IdealHeatingLoad [W]</code> (positiv)</p>
+<p><code>IdealHeatingLoad [W]</code></p>
 </li>
 <li>
-<p><code>IdealCoolingLoad [W]</code> (negativ)</p>
+<p><code>IdealCoolingLoad [W]</code></p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
 <p>Analog zu Lüftungswärmeverlusten werden diese zonenspezifischen Ausgangsgrößen als vektorwertige Ergebnisgrößen bereitgestellt.
-Z. B. ist <code>Model&lt;ZoneIdealHeatingCooling_id&gt;).IdealHeatingLoad[id=3]</code> die Heizlast in Zone #3.</p>
+Z. B. ist <code>Model&lt;IdealHeatingCoolingModel_id&gt;).IdealHeatingLoad[id=3]</code> die Heizlast in Zone #3.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Achtung"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Die Kühllast ist positiv definiert, geht jedoch als negative Flussgröße in die Raumenergiebilanz ein. In Ausgaben wird die Kühllast <code>IdealCoolingLoad</code> jedoch immer als positive Größe ausgegeben.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -8379,7 +8379,7 @@ NetworkActiveLayerHeatLoad(id,1)            [W]         Heat load to the constru
 <div id="footer">
 <div id="footer-text">
 Version 0.2 (26.04.2021)<br>
-Last updated 2021-04-26 08:09:51 +0200
+Last updated 2021-04-26 13:49:57 +0200
 </div>
 </div>
 <style>

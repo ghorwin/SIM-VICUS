@@ -505,5 +505,5 @@ Z. B. ist `Model<IdealHeatingCoolingModel_id>).IdealHeatingLoad[id=3]` die Heizl
 
 [CAUTION]
 ====
-Die Kühllast ist positiv definiert, geht jedoch als negative Flussgröße in die Raumenergiebilanz ein. In Ausgaben wird die Kühllast `IdealCoolingLoad` jedoch immer also positive Größe ausgegeben.
+Die Kühllast ist positiv definiert, geht jedoch als negative Flussgröße in die Raumenergiebilanz ein. In Ausgaben wird die Kühllast `IdealCoolingLoad` jedoch immer als positive Größe ausgegeben.
 ====
