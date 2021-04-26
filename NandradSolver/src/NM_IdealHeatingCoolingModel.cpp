@@ -260,7 +260,7 @@ int IdealHeatingCoolingModel::update() {
 		coolingControlValue = std::max(0.0, std::min(1.0, coolingControlValue));
 
 		*(m_vectorValuedResults[VVR_IdealHeatingLoad].dataPtr() + i) = heatingControlValue*area*m_maxHeatingPower;
-		*(m_vectorValuedResults[VVR_IdealCoolingLoad].dataPtr() + i) = - coolingControlValue*area*m_maxCoolingPower; // Mind the sign!
+		*(m_vectorValuedResults[VVR_IdealCoolingLoad].dataPtr() + i) = coolingControlValue*area*m_maxCoolingPower; // Cooling load is positively defined!
 	}
 
 	return 0; // signal success

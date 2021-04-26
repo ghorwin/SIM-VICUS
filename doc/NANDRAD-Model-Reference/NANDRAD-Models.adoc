@@ -493,17 +493,17 @@ Das Regelsignal `HeatingControlValue` bzw. `IdealHeatingControlValue` wird als W
 
 Die Kühlung ist analog definiert. Bei einem Kontrollwert von 1 läuft die Kühlung mit maximaler Kraft, bei 0 ist sie aus. 
 
-[NOTE]
-====
-Die berechnete Kühlleistung hat ein negatives Vorzeichen!
-====
-
 ### Ausgaben
 
 Ergebnisgrößen des Modells sind:
 
-- `IdealHeatingLoad [W]` (positiv)
-- `IdealCoolingLoad [W]` (negativ)
+- `IdealHeatingLoad [W]`
+- `IdealCoolingLoad [W]`
 
 Analog zu Lüftungswärmeverlusten werden diese zonenspezifischen Ausgangsgrößen als vektorwertige Ergebnisgrößen bereitgestellt.
 Z. B. ist `Model<IdealHeatingCoolingModel_id>).IdealHeatingLoad[id=3]` die Heizlast in Zone #3.
+
+[CAUTION]
+====
+Die Kühllast ist positiv definiert, geht jedoch als negative Flussgröße in die Raumenergiebilanz ein. In Ausgaben wird die Kühllast `IdealCoolingLoad` jedoch immer also positive Größe ausgegeben.
+====

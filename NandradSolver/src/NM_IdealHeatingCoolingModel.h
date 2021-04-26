@@ -23,6 +23,7 @@ public:
 	/*! Computed results, vector-valued results that provide access via zone ID. */
 	enum VectorValuedResults {
 		VVR_IdealHeatingLoad,				// Keyword: IdealHeatingLoad			[W]		'Ideal, convective heat load'
+		/*! Cooling _load_ is always positive, even though it reduces energy in zones */
 		VVR_IdealCoolingLoad,				// Keyword: IdealCoolingLoad			[W]		'Ideal, convective cooling load'
 		NUM_VVR
 	};

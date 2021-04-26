@@ -5,6 +5,7 @@
 		<Directory>
 			<Path>.</Path>
 			<SubDir Color="#416fce" Checked="1">IdealHeatingCoolingConstantPControlSingleZone</SubDir>
+			<SubDir Color="#ffaa00" Checked="0">IdealHeatingCoolingConstantPControlSingleZone.gcc_linux</SubDir>
 			<SubDir Color="#ffaa00" Checked="0">ThermostatConstantPControlSingleZone</SubDir>
 			<SubDir Color="#ffaa00" Checked="0">ThermostatConstantPControlSingleZone.gcc_linux</SubDir>
 			<ExpandedSubDir>.</ExpandedSubDir>
@@ -250,8 +251,8 @@
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
 						<Position>Inside</Position>
-						<OffsetX>165</OffsetX>
-						<OffsetY>15</OffsetY>
+						<OffsetX>284</OffsetX>
+						<OffsetY>11</OffsetY>
 						<IconStyle>1</IconStyle>
 						<MaxColumns>1</MaxColumns>
 						<Font>Roboto Condensed,8,-1,5,50,0,0,0,0,0</Font>
@@ -340,8 +341,7 @@
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">W</IBK:Unit>
-						<Maximum>1000</Maximum>
-						<Minimum>-200</Minimum>
+						<Maximum>1200</Maximum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>

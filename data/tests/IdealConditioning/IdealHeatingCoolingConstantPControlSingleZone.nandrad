@@ -97,8 +97,8 @@
 					<IBK:Parameter name="HeatingSetpoint" unit="C">22</IBK:Parameter>
 					<!-- Cooling starts above 26 C -->
 					<IBK:Parameter name="CoolingSetpoint" unit="C">26</IBK:Parameter>
-					<!-- P-controller is accurate to 0.2 K -->
-					<IBK:Parameter name="TemperatureTolerance" unit="K">0.2</IBK:Parameter>
+					<!-- P-controller is accurate to 0.1 K -->
+					<IBK:Parameter name="TemperatureTolerance" unit="K">0.1</IBK:Parameter>
 					<!-- Control temperature is "Air temperature", this is the default and could be omitted -->
 					<TemperatureType>AirTemperature</TemperatureType>
 					<!-- Controller type PController is the default, so we could omit this-->
@@ -110,7 +110,7 @@
 				<IdealHeatingCoolingModel id="4001">
 					<ZoneObjectList>All zones</ZoneObjectList>
 					<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">50</IBK:Parameter>
-					<IBK:Parameter name="MaxCoolingPowerPerArea" unit="W/m2">20</IBK:Parameter>
+					<IBK:Parameter name="MaxCoolingPowerPerArea" unit="W/m2">40</IBK:Parameter>
 				</IdealHeatingCoolingModel>
 			</IdealHeatingCoolingModels>
 
