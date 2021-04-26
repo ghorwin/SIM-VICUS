@@ -130,6 +130,8 @@
 					<ObjectListName>All zones</ObjectListName>
 					<GridName>Minutes</GridName>
 				</OutputDefinition>
+
+				<!-- model outputs -->
 				
 				<OutputDefinition>
 					<FileName>control_values</FileName>
@@ -156,7 +158,19 @@
 					<ObjectListName>Thermostat</ObjectListName>
 					<GridName>Minutes</GridName>
 				</OutputDefinition>
-				
+
+				<OutputDefinition>
+					<Quantity>IdealHeatingLoad[1]</Quantity>
+					<ObjectListName>All models</ObjectListName>
+					<GridName>Minutes</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>IdealCoolingLoad[1]</Quantity>
+					<ObjectListName>All models</ObjectListName>
+					<GridName>Minutes</GridName>
+				</OutputDefinition>
+
 			</Definitions>
 			
 			<Grids>
@@ -176,6 +190,10 @@
 			</ObjectList>
 			<ObjectList name="Thermostat">
 				<FilterID>1001</FilterID>
+				<ReferenceType>Model</ReferenceType>
+			</ObjectList>
+			<ObjectList name="All models">
+				<FilterID>*</FilterID>
 				<ReferenceType>Model</ReferenceType>
 			</ObjectList>
 		</ObjectLists>

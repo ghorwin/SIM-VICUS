@@ -71,7 +71,9 @@ const char * const FLUX_QUANTITIES[] = {
 	"WindowSolarRadiationFluxSum",
 	"NetworkHeatLoad",
 	"ThermalLoad",
-	"SolarIntensityOnShadingSensor"
+	"SolarIntensityOnShadingSensor",
+	"IdealHeatingLoad",
+	"IdealCoolingLoad"
 };
 
 // The quantities listed below will be stored in file "network.tsv" or "network_<gridname>.tsv"
