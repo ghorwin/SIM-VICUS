@@ -90,7 +90,7 @@ public:
 	/*! Flag indicating that the output buffer was cleared at last call,
 		thus, no reset inside buffer can be performed.
 	*/
-	bool				m_outputBufferCleared;
+//	bool				m_outputBufferCleared;
 
 }; // class NandradModelFMU
 

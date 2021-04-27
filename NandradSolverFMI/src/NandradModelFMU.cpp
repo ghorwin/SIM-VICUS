@@ -25,8 +25,8 @@
 #include <IBK_assert.h>
 
 
-NandradModelFMU::NandradModelFMU() :
-	m_outputBufferCleared(false)
+NandradModelFMU::NandradModelFMU()/* :
+	m_outputBufferCleared(false)*/
 {
 }
 
