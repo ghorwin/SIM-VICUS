@@ -15,8 +15,8 @@
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 			<Interval>
-				<IBK:Parameter name="Start" unit="d">90</IBK:Parameter>
-				<IBK:Parameter name="End" unit="d">120</IBK:Parameter>
+				<IBK:Parameter name="Start" unit="d">190</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">200</IBK:Parameter>
 			</Interval>
 		</SimulationParameter>
 
@@ -44,13 +44,13 @@
 				<InterfaceA id="1" zoneId="1">
 					<!--Interface to 'Room'-->
 					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">6</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</InterfaceA>
 				<InterfaceB id="2" zoneId="0">
 					<!--Interface to 'Outside'-->
 					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">17</IBK:Parameter>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">12</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</InterfaceB>
 			</ConstructionInstance>
@@ -85,19 +85,23 @@
 			<NaturalVentilationModels>
 				<NaturalVentilationModel id="501" displayName="Zone vent" modelType="Constant">
 					<ZoneObjectList>All zones</ZoneObjectList>
-					<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
+					<IBK:Parameter name="VentilationRate" unit="1/h">2</IBK:Parameter>
 				</NaturalVentilationModel>
 			</NaturalVentilationModels>
 
 			<Thermostats>
 				<!-- A thermostat with constant heating set point, no cooling. Uses air temperature as sensor value. -->
-				<Thermostat id="1001" displayName="Air temperature thermostat" modelType="Scheduled">
+				<Thermostat id="1001" displayName="Constant air temperature thermostat" modelType="Constant">
 					<ZoneObjectList>All zones</ZoneObjectList>
+					<!-- Heating starts below 22 C -->
+					<IBK:Parameter name="HeatingSetpoint" unit="C">22</IBK:Parameter>
+					<!-- Cooling starts above 26 C -->
+					<IBK:Parameter name="CoolingSetpoint" unit="C">26</IBK:Parameter>
 					<!-- +- 0.5 K band -->
 					<IBK:Parameter name="TemperatureBand" unit="K">0.5</IBK:Parameter>
 					<!-- Control temperature is "Air temperature", this is the default and could be omitted -->
 					<TemperatureType>AirTemperature</TemperatureType>
-					<!-- Controller type PController is the default, so we could omit this-->
+					<!-- Controller type DigitalController -->
 					<ControllerType>DigitalController</ControllerType>
 				</Thermostat>
 			</Thermostats>
@@ -111,37 +115,6 @@
 			</IdealHeatingCoolingModels>
 
 		</Models>
-
-		<Schedules>
-			<WeekEndDays>Sat,Sun</WeekEndDays>
-			<ScheduleGroups>
-				<ScheduleGroup objectList="All zones">
-					<!-- every day between 8-20 -->
-					<Schedule type="AllDays">
-						<DailyCycles>
-							<DailyCycle interpolation="Constant">
-								<TimePoints>0 8 20</TimePoints>
-								<Values>HeatingSetpointSchedule [C]:16,23,16</Values>
-							</DailyCycle>
-							<DailyCycle interpolation="Constant">
-								<TimePoints>0</TimePoints>
-								<!-- cooling is disabled -->
-								<Values>CoolingSetpointSchedule [C]:50</Values>
-							</DailyCycle>
-						</DailyCycles>
-					</Schedule>
-					<!-- Weekend only on afternoon -->
-					<Schedule type="WeekEnd">
-						<DailyCycles>
-							<DailyCycle interpolation="Constant">
-								<TimePoints>0</TimePoints>
-								<Values>HeatingSetpointSchedule [C]:23</Values>
-							</DailyCycle>
-						</DailyCycles>
-					</Schedule>
-				</ScheduleGroup>
-			</ScheduleGroups>
-		</Schedules>
 
 		<Outputs>
 			<Definitions>
@@ -193,6 +166,13 @@
 				</OutputDefinition>
 
 				<OutputDefinition>
+					<Quantity>IdealHeatingLoad[1]</Quantity>
+					<ObjectListName>All models</ObjectListName>
+					<TimeType>Integral</TimeType>
+					<GridName>Minutes</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
 					<Quantity>IdealCoolingLoad[1]</Quantity>
 					<ObjectListName>All models</ObjectListName>
 					<GridName>Minutes</GridName>
@@ -204,7 +184,7 @@
 				<OutputGrid name="Minutes">
 					<Intervals>
 						<Interval>
-							<IBK:Parameter name="StepSize" unit="min">10</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">30</IBK:Parameter>
 						</Interval>
 					</Intervals>
 				</OutputGrid>

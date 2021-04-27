@@ -166,6 +166,13 @@
 				</OutputDefinition>
 
 				<OutputDefinition>
+					<Quantity>IdealHeatingLoad[1]</Quantity>
+					<ObjectListName>All models</ObjectListName>
+					<TimeType>Integral</TimeType>
+					<GridName>Minutes</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
 					<Quantity>IdealCoolingLoad[1]</Quantity>
 					<ObjectListName>All models</ObjectListName>
 					<GridName>Minutes</GridName>
@@ -177,7 +184,7 @@
 				<OutputGrid name="Minutes">
 					<Intervals>
 						<Interval>
-							<IBK:Parameter name="StepSize" unit="min">10</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">30</IBK:Parameter>
 						</Interval>
 					</Intervals>
 				</OutputGrid>
