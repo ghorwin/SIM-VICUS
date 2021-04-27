@@ -164,8 +164,7 @@ void PlaneGeometry::computeGeometry() {
 	if (!update2DPolygon())
 		return; // can happen, if a point is not in the plane
 
-	//darf nicht verwunden sein
-	//wenn es verwunden ist dann keine triangulierung
+	// polygon must not be winding into itself, otherwise triangulation would not be meaningful
 	if (isSimplePolygon())
 		triangulate();
 }
@@ -396,8 +395,9 @@ void PlaneGeometry::triangulate() {
 			break;
 
 		case T_Rectangle :
-			// TODO : there might be a faster way for rectangles, but for now
-			//        we use the same triangulation algorithm as for polygons
+			m_triangles.push_back( triangle_t(0, 1, 2) );
+			m_triangles.push_back( triangle_t(2, 3, 1) );
+		break;
 
 		case T_Polygon : {
 			//here the index is stored which is already taken into account
@@ -418,29 +418,27 @@ void PlaneGeometry::triangulate() {
 			}
 			edges.back().second = 0;
 
+			// add windows
+
+			// loop all windows
+
+			// for each vertex in window do:
+			//  - check if vertex is already in vertex list, then re-use same vertex index,
+			//    otherwise add vertex and get new index
+			//  - add edge to this index
+
 			triangu.setPoints(points, edges);
 
-			for (auto tri : triangu.m_triangles)
+			for (auto tri : triangu.m_triangles) {
+				// TODO : only add triangles if not degenerated (i.e. area = 0) (may happen in case of windows aligned to outer bounds)
 				m_triangles.push_back(triangle_t(tri.i1, tri.i2, tri.i3));
-
-			//check normal
-			IBKMK::Vector3D aaaa = m_vertexes[triangu.m_triangles[0].i2] - m_vertexes[triangu.m_triangles[0].i1];
-			IBKMK::Vector3D bbbb = m_vertexes[triangu.m_triangles[0].i3] - m_vertexes[triangu.m_triangles[0].i2];
-			IBKMK::Vector3D n2;
-			aaaa.crossProduct(bbbb, n2);
-			n2.normalize();
-
-			if((n2+m_normal).magnitude() < 1){
-				//flip normal
-				m_normal = n2;
-				m_localY *= -1;
 			}
 
 		}
 		break;
+
 		case NUM_T : ; // shouldn't happen
 		break;
-
 	}
 }
 
@@ -450,20 +448,57 @@ void PlaneGeometry::updateLocalCoordinateSystem() {
 	if (m_vertexes.size() < 3)
 		return;
 
+	// We define our normal via the winding order of the polygon.
+	// Since our polygon may be concave (i.e. have dents), we cannot
+	// just pick any point and compute the normal via the adjacent edge vectors.
+	// Instead, we first calculate the normal vector based on the first two edges.
+	// Then, we loop around the entire polygon, compute the normal vectors at
+	// each vertex and compare it with the first. If pointing in the same direction,
+	// we count up, otherwise down. The direction with the most normal vectors wins
+	// and will become our polygon's normal vector.
+
 	// calculate normal with first 3 points
 	m_localX = m_vertexes[1] - m_vertexes[0];
 	IBKMK::Vector3D y = m_vertexes.back() - m_vertexes[0];
 	IBKMK::Vector3D n;
 	m_localX.crossProduct(y, n);
+	if (n.magnitude() < 1e-9)
+		return; // invalid vertex input
+	n.normalize();
+
+	int sameDirectionCount = 0;
+
+	// now process all other points and generate their normal vectors as well
+	for (unsigned int i=1; i<m_vertexes.size(); ++i) {
+		IBKMK::Vector3D vx = m_vertexes[(i+1) % m_vertexes.size()] - m_vertexes[i];
+		IBKMK::Vector3D vy = m_vertexes[i-1] - m_vertexes[i];
+		IBKMK::Vector3D vn;
+		vx.crossProduct(vy, vn);
+		if (vn.magnitude() < 1e-9)
+			return; // invalid vertex input
+		vn.normalize();
+		// adding reference normal to current vertexes normal and checking magnitude works
+		if ((vn + n).magnitude() > 1) // can be 0 or 2, so comparing against 1 is good even for rounding errors
+			++sameDirectionCount;
+		else
+			--sameDirectionCount;
+	}
+
+	if (sameDirectionCount < 0) {
+		// invert our normal vector
+		n *= -1;
+	}
+
+	// save-guard against degenerate polygons (i.e. all points close to each other or whatever error may cause
+	// the normal vector to have near zero magnitude... this may happen for extremely small polygons, when
+	// the x and y vector lengths are less than 1 mm in length).
+	m_normal = n;
+	// now compute local Y axis
 	n.crossProduct(m_localX, m_localY);
 	// normalize localX and localY
 	m_localX.normalize();
 	m_localY.normalize();
 
-	if (n.magnitude() > 1e-4) {
-		m_normal = n;
-		m_normal.normalize();
-	}
 }
 
 
