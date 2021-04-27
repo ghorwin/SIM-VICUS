@@ -15,16 +15,46 @@ int main() {
 	// vector as vertex vector
 	std::vector<CDT::V2d<double> > vertices;
 
+	// outer
 	vertices.push_back(CDT::V2d<double>::make(0,0));
 	vertices.push_back(CDT::V2d<double>::make(5,0));
 	vertices.push_back(CDT::V2d<double>::make(5,4));
 	vertices.push_back(CDT::V2d<double>::make(0,4));
+
+#if 1
+	// hole
+	vertices.push_back(CDT::V2d<double>::make(1,1));
+	vertices.push_back(CDT::V2d<double>::make(4,1));
+	vertices.push_back(CDT::V2d<double>::make(4,2));
+	vertices.push_back(CDT::V2d<double>::make(1,2));
+#endif
+
+#if 0
+	// loch am rand geht
+	vertices.push_back(CDT::V2d<double>::make(1,1));
+	vertices.push_back(CDT::V2d<double>::make(5,0));
+	vertices.push_back(CDT::V2d<double>::make(5,4));
+	vertices.push_back(CDT::V2d<double>::make(1,2));
+#endif
+
+#if 0
+	// vollflächig geht nicht!
+	vertices.push_back(CDT::V2d<double>::make(0,0));
+	vertices.push_back(CDT::V2d<double>::make(5,0));
+	vertices.push_back(CDT::V2d<double>::make(5,4));
+	vertices.push_back(CDT::V2d<double>::make(0,4));
+#endif
 
 	std::vector<CDT::Edge> edgeVec;
 	edgeVec.push_back( CDT::Edge(0, 1) );
 	edgeVec.push_back( CDT::Edge(1, 2) );
 	edgeVec.push_back( CDT::Edge(2, 3) );
 	edgeVec.push_back( CDT::Edge(3, 0) );
+
+	edgeVec.push_back( CDT::Edge(4, 5) );
+	edgeVec.push_back( CDT::Edge(5, 6) );
+	edgeVec.push_back( CDT::Edge(6, 7) );
+	edgeVec.push_back( CDT::Edge(7, 4) );
 
 	cdt.insertVertices(vertices);
 	cdt.insertEdges(edgeVec);
