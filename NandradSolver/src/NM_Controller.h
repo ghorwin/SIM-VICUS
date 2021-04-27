@@ -38,24 +38,21 @@ public:
 	\endcode
 	Current on/off state is updated after each integration step.
 
-	CAUTION: Oscillation is possible during Newton iteration,
-	if error value moves around switching value. This might need to be dampened!
+	Since controller state change only takes effect in the _next_ step, this is effectively
+	an explicit controller, and rapid oscillations and instability is only prevented due to the dead band.
 */
-class DigitalHysteresisController: public AbstractController, public AbstractTimeDependency { // NO KEYWORDS
+class DigitalHysteresisController: public AbstractController { // NO KEYWORDS
 public:
 	/*! Calculates controller signal/control value. */
-	virtual void update(double errorValue) override;
-
-	/*! Re-implemented from AbstractTimeDependency::setTime(). Does nothing. */
-	virtual int setTime(double /*t*/) override { return 0; }
+	void update(double errorValue) override;
 
 	/*! Stores state after a successful iteration step. */
-	virtual void stepCompleted(double t) override;
+	void stepCompleted(double) override;
 
 	/*! Tolerance band: must be set from outside. */
 	double			m_hysteresisBand;
-	/*! Controller signal of the previos time step. */
-	double			m_previousControlValue = 0.0;
+	/*! Controller signal to be used for next step (updated in update()). */
+	double			m_nextControlValue = 0.0;
 };
 
 

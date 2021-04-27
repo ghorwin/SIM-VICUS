@@ -3,6 +3,7 @@
 
 #include "NM_AbstractModel.h"
 #include "NM_AbstractStateDependency.h"
+#include "NM_AbstractTimeDependency.h"
 #include "NM_VectorValuedQuantity.h"
 
 namespace NANDRAD {
@@ -19,7 +20,7 @@ class AbstractController;
 	The thermostat generates a HeatingControlValue and CoolingControlValue for each zone in the referenced
 	object list.
 */
-class ThermostatModel : public AbstractModel, public AbstractStateDependency {
+class ThermostatModel : public AbstractModel, public AbstractStateDependency, public AbstractTimeDependency {
 public:
 	/*! Computed results, provided with access via zone ID. */
 	enum VectorValuedResults {
@@ -77,6 +78,14 @@ public:
 	/*! Retrieves reference pointer to a value with given input reference name. */
 	virtual const double * resultValueRef(const InputReference & quantity) const override;
 
+	// *** Re-implemented from AbstractTimeDependency
+
+	/*! Does nothing. */
+	int setTime(double /*t*/) override { return 0; }
+
+	/*! Updates controller state. */
+	void stepCompleted(double t) override;
+
 
 	// *** Re-implemented from AbstractStateDependency
 
@@ -133,7 +142,9 @@ private:
 		- modelType = Scheduled, reference zone given: {AirTemperatures, HeatingSetpointSchedule, CoolingSetpointSchedule} for reference zone only
 	*/
 	std::vector<const double*>						m_valueRefs;
+
 };
+
 
 } // namespace NANDRAD_MODEL
 

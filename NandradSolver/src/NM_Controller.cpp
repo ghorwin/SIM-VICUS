@@ -22,16 +22,15 @@ void DigitalDirectController::update(double errorValue) {
 void DigitalHysteresisController::update(double errorValue) {
 	AbstractController::update(errorValue);
 
-	m_controlValue = m_previousControlValue;
 	// change controller output only if we are outside tolerance band
 	if (errorValue > m_hysteresisBand) // too cold, turn heating on: example: setpoint = 23, Troom = 22 -> errorValue = 1 K
-		m_controlValue = 1.0;
+		m_nextControlValue = 1.0;
 	else if(errorValue < -m_hysteresisBand) // too warm, turn heating off: example: setpoint = 23, Troom = 24 -> errorValue = -1 K
-		m_controlValue = 0.0;
+		m_nextControlValue = 0.0;
 }
 
 void DigitalHysteresisController::stepCompleted(double /*t*/) {
-	m_previousControlValue = m_controlValue;
+	m_controlValue = m_nextControlValue;
 }
 
 

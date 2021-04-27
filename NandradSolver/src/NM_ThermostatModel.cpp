@@ -162,6 +162,12 @@ const double * ThermostatModel::resultValueRef(const InputReference & quantity) 
 }
 
 
+void ThermostatModel::stepCompleted(double t) {
+	for (NANDRAD_MODEL::AbstractController* c : m_controllers)
+		c->stepCompleted(t);
+}
+
+
 void ThermostatModel::inputReferences(std::vector<InputReference> & inputRefs) const {
 	if (m_objectList->m_filterID.m_ids.empty())
 		return; // nothing to compute, return
