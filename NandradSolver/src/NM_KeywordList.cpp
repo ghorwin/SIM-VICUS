@@ -199,6 +199,14 @@ namespace NANDRAD_MODEL {
 				case 1 : return "EquipmentHeatLoadPerAreaSchedule";
 				case 2 : return "PersonHeatLoadPerAreaSchedule";
 				case 3 : return "LightingHeatLoadPerAreaSchedule";
+				case 4 : return "MaximumRoomAirTemperatureACRLimitSchedule";
+				case 5 : return "MinimumRoomAirTemperatureACRLimitSchedule";
+				case 6 : return "MaximumEnviromentAirTemperatureACRLimitSchedule";
+				case 7 : return "MinimumEnviromentAirTemperatureACRLimitSchedule";
+				case 8 : return "DeltaTemperatureACRLimitSchedule";
+				case 9 : return "WindSpeedACRLimitSchedule";
+				case 10 : return "HeatingSetpointSchedule";
+				case 11 : return "CoolingSetpointSchedule";
 			} break;
 			// ThermalComfortModel::Results
 			case 15 :
@@ -362,6 +370,14 @@ namespace NANDRAD_MODEL {
 				case 1 : return "EquipmentHeatLoadPerAreaSchedule";
 				case 2 : return "PersonHeatLoadPerAreaSchedule";
 				case 3 : return "LightingHeatLoadPerAreaSchedule";
+				case 4 : return "MaximumRoomAirTemperatureACRLimitSchedule";
+				case 5 : return "MinimumRoomAirTemperatureACRLimitSchedule";
+				case 6 : return "MaximumEnviromentAirTemperatureACRLimitSchedule";
+				case 7 : return "MinimumEnviromentAirTemperatureACRLimitSchedule";
+				case 8 : return "DeltaTemperatureACRLimitSchedule";
+				case 9 : return "WindSpeedACRLimitSchedule";
+				case 10 : return "HeatingSetpointSchedule";
+				case 11 : return "CoolingSetpointSchedule";
 			} break;
 			// ThermalComfortModel::Results
 			case 15 :
@@ -526,6 +542,14 @@ namespace NANDRAD_MODEL {
 				case 1 : if (no_description != nullptr) *no_description = true; return "EquipmentHeatLoadPerAreaSchedule";
 				case 2 : if (no_description != nullptr) *no_description = true; return "PersonHeatLoadPerAreaSchedule";
 				case 3 : if (no_description != nullptr) *no_description = true; return "LightingHeatLoadPerAreaSchedule";
+				case 4 : if (no_description != nullptr) *no_description = true; return "MaximumRoomAirTemperatureACRLimitSchedule";
+				case 5 : if (no_description != nullptr) *no_description = true; return "MinimumRoomAirTemperatureACRLimitSchedule";
+				case 6 : if (no_description != nullptr) *no_description = true; return "MaximumEnviromentAirTemperatureACRLimitSchedule";
+				case 7 : if (no_description != nullptr) *no_description = true; return "MinimumEnviromentAirTemperatureACRLimitSchedule";
+				case 8 : if (no_description != nullptr) *no_description = true; return "DeltaTemperatureACRLimitSchedule";
+				case 9 : if (no_description != nullptr) *no_description = true; return "WindSpeedACRLimitSchedule";
+				case 10 : if (no_description != nullptr) *no_description = true; return "HeatingSetpointSchedule";
+				case 11 : if (no_description != nullptr) *no_description = true; return "CoolingSetpointSchedule";
 			} break;
 			// ThermalComfortModel::Results
 			case 15 :
@@ -689,6 +713,14 @@ namespace NANDRAD_MODEL {
 				case 1 : return "W/m2";
 				case 2 : return "W/m2";
 				case 3 : return "W/m2";
+				case 4 : return "C";
+				case 5 : return "C";
+				case 6 : return "C";
+				case 7 : return "C";
+				case 8 : return "K";
+				case 9 : return "m/s";
+				case 10 : return "C";
+				case 11 : return "C";
 			} break;
 			// ThermalComfortModel::Results
 			case 15 :
@@ -852,6 +884,14 @@ namespace NANDRAD_MODEL {
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
+				case 4 : return "#FFFFFF";
+				case 5 : return "#FFFFFF";
+				case 6 : return "#FFFFFF";
+				case 7 : return "#FFFFFF";
+				case 8 : return "#FFFFFF";
+				case 9 : return "#FFFFFF";
+				case 10 : return "#FFFFFF";
+				case 11 : return "#FFFFFF";
 			} break;
 			// ThermalComfortModel::Results
 			case 15 :
@@ -1015,6 +1055,14 @@ namespace NANDRAD_MODEL {
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
+				case 4 : return std::numeric_limits<double>::quiet_NaN();
+				case 5 : return std::numeric_limits<double>::quiet_NaN();
+				case 6 : return std::numeric_limits<double>::quiet_NaN();
+				case 7 : return std::numeric_limits<double>::quiet_NaN();
+				case 8 : return std::numeric_limits<double>::quiet_NaN();
+				case 9 : return std::numeric_limits<double>::quiet_NaN();
+				case 10 : return std::numeric_limits<double>::quiet_NaN();
+				case 11 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// ThermalComfortModel::Results
 			case 15 :
@@ -1077,7 +1125,7 @@ namespace NANDRAD_MODEL {
 			// RoomStatesModel::Results
 			case 13 : return 3;
 			// Schedules::KnownQuantities
-			case 14 : return 4;
+			case 14 : return 12;
 			// ThermalComfortModel::Results
 			case 15 : return 1;
 			// ThermostatModel::VectorValuedResults
@@ -1121,7 +1169,7 @@ namespace NANDRAD_MODEL {
 			// RoomStatesModel::Results
 			case 13 : return 2;
 			// Schedules::KnownQuantities
-			case 14 : return 3;
+			case 14 : return 11;
 			// ThermalComfortModel::Results
 			case 15 : return 0;
 			// ThermostatModel::VectorValuedResults

@@ -391,6 +391,10 @@ Wenn der Modelltyp `Scheduled` verwendet wird, werden die tatsächlichen Sollwer
 - `HeatingSetpointSchedule [C]`
 - `CoolingSetpointSchedule [C]`
 
+[NOTE]
+====
+Ein Thermostat hält nur die Sollwerte für die Zone. Eine Konditionierung der Zone erfolgt erst, wenn zusätzlich eine Heizungs- und/oder Kühlmodell für die Zone integriert ist. Bei den Zeitplänen ist immer darauf zu achten, dass der Heizsollwert < Kühlsollwert ist.
+====
 
 ### TemperatureType
 
@@ -404,10 +408,29 @@ Das XML-Element `TemperatureType` enthält eine Zeichenkette zur Auswahl eines b
 |`OperativeTemperature`| Als Referenztemperatur wird die operative Raumlufttempatur verwendet. Diese setzt sich aus der mittleren Oberflächentemperatur aller Innenoberflächen und aus der Raumlufttemperatur zusammen. Die Anteile betragen jeweils 50%.
 |====================
 
-[NOTE]
-====
-Ein Thermostat hält nur die Sollwerte für die Zone. Eine Konditionierung der Zone erfolgt erst, wenn zusätzlich eine Heizungs- und/oder Kühlmodell für die Zone integriert ist. Bei den Zeitplänen ist immer darauf zu achten, dass der Heizsollwert < Kühlsollwert ist.
-====
+
+### ControllerType
+
+Das XML-Element `ControllerType` enthält eine Zeichenkette zur Auswahl eines bestimmten Controllers (`PController` wird standardmäßig verwendet, wenn das Element fehlt).
+
+.Verfügbare Controller
+[options="header", cols="20%, 80%", width="100%"]
+|====================
+|Name|Beschreibung
+|`PController`| Ein einfacher P-Controller wird verwendet.
+|`DigitalController`| Ein digitaler Controller mit Hysterese wird verwendet.
+|====================
+
+Beim `PController` muss der Parameter `TemperatureTolerance` angegeben werden, welche die maximale erlaubte Regelabweichung definiert. Wird z.B. die Heizsolltemperatur um genau diese Toleranz unterschritten, so liefert der Regler eine 1 zurück (bei größeren Abweichungen entsprechend höhere Werte). Damit entspricht diese Toleranz dem inversen des KP-Parameters: `Kp = 1/TemperatureTolerance`.
+
+Beim `DigitalController` muss der Parameter `TemperatureBand` angegeben werden. Der Regler regelt dann im Bereich;
+
+----
+obere Grenze = Sollwert + TemperatureBand
+untere Grenze = Sollwert - TemperatureBand
+----
+
+
 
 ### Ausgaben
 
