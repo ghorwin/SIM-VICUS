@@ -56,6 +56,8 @@ public:
 		R_ConvectiveEquipmentHeatLoad,						// Keyword: ConvectiveEquipmentHeatLoad					[W]		'Equipment heat load inside the room'
 		R_ConvectivePersonHeatLoad,							// Keyword: ConvectivePersonHeatLoad					[W]		'Person heat load inside the room'
 		R_ConvectiveLightingHeatLoad,						// Keyword: ConvectiveLightingHeatLoad					[W]		'Lighting heat load inside the room'
+		R_IdealHeatingLoad,									// Keyword: IdealHeatingLoad							[W]		'Ideal heating load'
+		R_IdealCoolingLoad,									// Keyword: IdealCoolingLoad							[W]		'Ideal cooling load (positive)'
 		R_ConstructionHeatConductionLoad,					// Keyword: ConstructionHeatConductionLoad				[W]		'Sum of heat conduction fluxes from construction surfaces into the room'
 		R_WindowHeatConductionLoad,							// Keyword: WindowHeatConductionLoad					[W]		'Sum of heat conduction fluxes through windows into the room'
 		R_WindowSolarRadiationLoad,							// Keyword: WindowSolarRadiationLoad					[W]		'Sum of solar radiation fluxes through windows into the room (only the fraction applied to room volume)'
@@ -171,20 +173,30 @@ private:
 	bool											m_haveSolarRadiationModel = false;
 	/*! Value reference for sum of all window solar radiation fluxes in [W] (positive if into room). */
 	const double *									m_windowSolarRadiationLoadsRef = nullptr;
+
 	/*! Number of infiltration model input refs that we have generated and that we get value refs for. */
 	unsigned int									m_infiltrationModelCount = 0;
 	/*! Value reference for natural ventilation/infiltration flux in [W] (positive if into room). */
 	const double *									m_infiltrationValueRef = nullptr;
+
 	/*! Number of internal loads model input refs that we have generated and that we get value refs for. */
 	unsigned int									m_internalLoadsModelCount = 0;
-	/*! Number of network load model input refs that we have generated and that we get value refs for. */
-	unsigned int									m_networkHeatLoadsModelCount = 0;
 	/*! Value reference for natural equipment loads in [W] (positive if into room). */
 	const double *									m_equipmentLoadValueRef = nullptr;
 	/*! Value reference for natural person loads in [W] (positive if into room). */
 	const double *									m_personLoadValueRef = nullptr;
 	/*! Value reference for natural lighting loads in [W] (positive if into room). */
 	const double *									m_lightingLoadValueRef = nullptr;
+
+	/*! Number of network load model input refs that we have generated and that we get value refs for. */
+	unsigned int									m_networkHeatLoadsModelCount = 0;
+
+	/*! Number of ideal heating/cooling loads model input refs that we have generated and that we get value refs for. */
+	unsigned int									m_idealHeatingCoolingModelCount = 0;
+	/*! Value reference for ideal heating loads in [W] (positive if into room). */
+	const double *									m_idealHeatingLoadValueRef = nullptr;
+	/*! Value reference for ideal cooling loads in [W] (positive if into room). */
+	const double *									m_idealCoolingLoadValueRef = nullptr;
 
 	/*! Vector with cached derivatives, updated at last call to update(). */
 	std::vector<double>								m_ydot;

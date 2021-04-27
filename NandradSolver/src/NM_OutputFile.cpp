@@ -117,19 +117,19 @@ void OutputFile::setInputValueRefs(const std::vector<QuantityDescription> & resu
 						u.set("kWh");
 				m_valueUnits.back() = u;
 			}
+
+			// check that scalar and vector-valued variables are not mixed
+			if (m_inputRefs[i].m_name.m_index == -1 && m_quantityDescs[i].m_size != 1)
+				throw IBK::Exception(IBK::FormatString("Requested scalar output quantity '%1', but model "
+													   "generates vector-valued quantity with this name.").arg(m_inputRefs[i].m_name.m_name), FUNC_ID);
+			if (m_inputRefs[i].m_name.m_index != -1 && m_quantityDescs[i].m_indexKeyType == NANDRAD_MODEL::VectorValuedQuantityIndex::NUM_IndexKeyType)
+				throw IBK::Exception(IBK::FormatString("Requested vector-valued output quantity '%1', but model "
+													   "generates a scalar quantity with this name.").arg(m_inputRefs[i].m_name.encodedString()), FUNC_ID);
 		}
 		else {
 			// add dummy unit, since result is not available
 			m_valueUnits.push_back(IBK::Unit());
 		}
-
-		// check that scalar and vector-valued variables are not mixed
-		if (m_inputRefs[i].m_name.m_index == -1 && m_quantityDescs[i].m_size != 1)
-			throw IBK::Exception(IBK::FormatString("Requested scalar output quantity '%1', but model "
-												   "generates vector-valued quantity with this name.").arg(m_inputRefs[i].m_name.m_name), FUNC_ID);
-		if (m_inputRefs[i].m_name.m_index != -1 && m_quantityDescs[i].m_indexKeyType == NANDRAD_MODEL::VectorValuedQuantityIndex::NUM_IndexKeyType)
-			throw IBK::Exception(IBK::FormatString("Requested vector-valued output quantity '%1', but model "
-												   "generates a scalar quantity with this name.").arg(m_inputRefs[i].m_name.encodedString()), FUNC_ID);
 	}
 
 	// initialize our cache vectors
@@ -138,6 +138,14 @@ void OutputFile::setInputValueRefs(const std::vector<QuantityDescription> & resu
 	m_numCols = 0;
 	m_haveIntegrals = false;
 	for (unsigned int i=0; i<m_valueRefs.size(); ++i) {
+
+		// TODO : when requesting vector-valued results from models, it may be the case that two model instances provide
+		//        vector valued-results for different zones. Since input references are generated for all models, but only
+		//        one model delivers results, a warning will be issued for all other models, even though the requested
+		//        variable was found.
+		//        We need an additional check that if the requested quantity was a vector-valued quantity, and it was
+		//        found in _any_ of the models in the object list, the warning will not be printed.
+
 		if (m_valueRefs[i] == nullptr) {
 			IBK::IBK_Message(IBK::FormatString("Output for %1(id=%2).%3 not available, skipped.\n")
 							 .arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", m_inputRefs[i].m_referenceType))

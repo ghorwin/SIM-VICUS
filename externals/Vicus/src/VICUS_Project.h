@@ -182,8 +182,10 @@ public:
 	void generateNandradProject(NANDRAD::Project & p) const;
 	void generateBuildingProjectData(NANDRAD::Project & p) const;
 	void generateNetworkProjectData(NANDRAD::Project & p) const;
-	NANDRAD::Interface generateInterface(const VICUS::ComponentInstance & ci,
-										 const VICUS::Surface * s, unsigned int bcID, unsigned int & interfaceID) const;
+	NANDRAD::Interface generateInterface(const VICUS::ComponentInstance & ci, unsigned int bcID,
+										 std::vector<unsigned int> &allModelIds,
+										 std::map<unsigned int, unsigned int> &vicusToNandradIds,
+										 unsigned int & interfaceID, bool takeASide = true) const;
 
 	// *** STATIC FUNCTIONS ***
 
@@ -230,6 +232,27 @@ public:
 				return id;
 		}
 		return 999999; // just to make compiler happy, we will find an unused ID in the loop above
+	}
+
+	/*! Function to generate unique ID. First check predefined id. And the Id to the container. */
+	template <typename T>
+	static unsigned int uniqueIdWithPredef(std::vector<T>& vec, unsigned int newId) {
+		if(std::find(vec.begin(), vec.end(), newId) == vec.end()){
+			vec.push_back(newId);
+			return newId;
+		}
+		unsigned id=uniqueId(vec);
+		vec.push_back(id);
+		return id;
+	}
+
+	/*! Function to generate unique ID. First check predefined id. Add the Id to the container.  */
+	template <typename T>
+	static unsigned int uniqueIdWithPredef(std::vector<T>& vec, unsigned int id, std::map<T,T> mapOldToNewId){
+
+		if(mapOldToNewId.find(id) == mapOldToNewId.end())
+			mapOldToNewId[id] = uniqueIdWithPredef(vec, id);
+		return mapOldToNewId[id];
 	}
 
 	/*! Function to generate a unique ID that is larger than all the other IDs used.
@@ -317,6 +340,8 @@ public:
 private:
 	/*! Return room name by id. */
 	std::string getRoomNameById(unsigned int id) const;
+
+
 
 };
 

@@ -1102,6 +1102,9 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 	//floor area (rounded)
 	//vector of room ids
 	std::map<unsigned int, std::map < double, std::vector< unsigned int> > > zoneTemplateIdToObjListNameToRoomIds;
+	//container for unique ids
+	std::vector<unsigned int>							allModelIds;
+	std::map<unsigned int, unsigned int>				vicusToNandradIds;
 	// *** m_zones ***
 
 	for (const VICUS::Building & b : m_buildings) {
@@ -1109,7 +1112,8 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 			for (const VICUS::Room & r : bl.m_rooms) {
 				// first create a NANDRAD zone for the room
 				NANDRAD::Zone z;
-				z.m_id = r.m_id;
+				z.m_id = uniqueIdWithPredef(allModelIds, r.m_id, vicusToNandradIds);
+
 				z.m_displayName = r.m_displayName.toStdString();
 				// Note: in the code below we expect the parameter's base units to be the same as the default unit for the
 				//       populated parameters
@@ -1122,7 +1126,6 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 				z.m_type = NANDRAD::Zone::ZT_Active;
 				// finally append zone
 				p.m_zones.push_back(z);
-
 
 				//if zone template id is invalid skip it
 				if ( r.m_idZoneTemplate != VICUS::INVALID_ID ){
@@ -1165,7 +1168,6 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 	std::vector<ztBool>	ztBools(zoneTemplateIdToObjListNameToRoomIds.size());
 	unsigned int counter = 0;
-	std::vector<unsigned int>							allModelIds;
 
 	///TODO Dirk->Andreas warum muss beim Internen Lastmodell immer alles angegeben werden?
 	/// Geräte, Licht, Personen
@@ -1603,10 +1605,10 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 		// now generate a construction instance
 		NANDRAD::ConstructionInstance cinst;
-		cinst.m_id = ci.m_id;
+		cinst.m_id = uniqueIdWithPredef(allModelIds, ci.m_id, vicusToNandradIds);
 
 		// store reference to construction type (i.e. to be generated from component)
-		cinst.m_constructionTypeId = comp->m_idConstruction;
+		cinst.m_constructionTypeId = uniqueIdWithPredef<unsigned int>(allModelIds, comp->m_idConstruction, vicusToNandradIds);
 
 		// set construction instance parameters, area, orientation etc.
 
@@ -1680,8 +1682,8 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 
 		// now generate interfaces
-		cinst.m_interfaceA = generateInterface(ci, ci.m_sideASurface, comp->m_idSideABoundaryCondition, interfaceID);
-		cinst.m_interfaceB = generateInterface(ci, ci.m_sideBSurface, comp->m_idSideBBoundaryCondition, interfaceID);
+		cinst.m_interfaceA = generateInterface(ci, comp->m_idSideABoundaryCondition, allModelIds, vicusToNandradIds, interfaceID);
+		cinst.m_interfaceB = generateInterface(ci, comp->m_idSideBBoundaryCondition, allModelIds, vicusToNandradIds, interfaceID, false);
 
 		// add to list of construction instances
 		p.m_constructionInstances.push_back(cinst);
@@ -1737,13 +1739,20 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 }
 
 
-NANDRAD::Interface Project::generateInterface(const VICUS::ComponentInstance & ci,
-											  const VICUS::Surface * s, unsigned int bcID,
-											  unsigned int & interfaceID) const
+NANDRAD::Interface Project::generateInterface(const VICUS::ComponentInstance & ci, unsigned int bcID,
+											  std::vector<unsigned int> &allModelIds,
+											  std::map<unsigned int, unsigned int> &vicusToNandradIds,
+											  unsigned int & interfaceID, bool takeASide) const
 {
 	// no boundary condition ID? -> no interface
 	if (bcID == VICUS::INVALID_ID)
 		return NANDRAD::Interface();
+
+	const VICUS::Surface * s;
+	if(takeASide)
+		s = ci.m_sideASurface;
+	else
+		s = ci.m_sideBSurface;
 
 	// lookup boundary condition definition in embedded database
 	const VICUS::BoundaryCondition * bc = element(m_embeddedDB.m_boundaryConditions, bcID);
@@ -1767,8 +1776,8 @@ NANDRAD::Interface Project::generateInterface(const VICUS::ComponentInstance & c
 
 		// generate a new interface to the zone, which always only includes heat conduction
 		NANDRAD::Interface iface;
-		iface.m_id = ++interfaceID;
-		iface.m_zoneId = room->m_id;
+		iface.m_id = uniqueIdWithPredef(allModelIds, interfaceID);
+		iface.m_zoneId = uniqueIdWithPredef(allModelIds, room->m_id, vicusToNandradIds);
 
 		// only transfer heat conduction parameters
 		iface.m_heatConduction = bc->m_heatConduction;

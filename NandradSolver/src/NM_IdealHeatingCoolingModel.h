@@ -1,50 +1,50 @@
-#ifndef NM_NaturalVentilationModelH
-#define NM_NaturalVentilationModelH
+#ifndef NM_IdealHeatingCoolingModelH
+#define NM_IdealHeatingCoolingModelH
 
 #include "NM_AbstractModel.h"
 #include "NM_AbstractStateDependency.h"
 #include "NM_VectorValuedQuantity.h"
 
+#include <NANDRAD_ObjectList.h>
+
 namespace NANDRAD {
-	class SimulationParameter;
-	class NaturalVentilationModel;
+	class IdealHeatingCoolingModel;
 	class Zone;
-	class ObjectList;
 }
 
 namespace NANDRAD_MODEL {
 
-/*! A model for natural ventilation rate.
+/*! A model for ideal heating/cooling (air heating).
 	The model instance is identified by reference type MODEL and the id of the NANDRAD model parametrization block.
-	It implements either constant or scheduled ventilation rates and computes thermal ventilation loads
-	for all zones referenced in the object list.
+	It implements ideal heating/cooling loads for all zones referenced in the object list.
 */
-class NaturalVentilationModel : public AbstractModel, public AbstractStateDependency {
+class IdealHeatingCoolingModel : public AbstractModel, public AbstractStateDependency {
 public:
-	/*! Computed results, provided with access via zone ID. */
+	/*! Computed results, vector-valued results that provide access via zone ID. */
 	enum VectorValuedResults {
-		VVR_VentilationRate,				// Keyword: VentilationRate					[1/h]	'Natural ventilation/infiltration air change rate'
-		VVR_VentilationHeatFlux,			// Keyword: VentilationHeatFlux				[W]		'Natural ventilation/infiltration heat flux'
+		VVR_IdealHeatingLoad,				// Keyword: IdealHeatingLoad			[W]		'Ideal, convective heat load'
+		/*! Cooling _load_ is always positive, even though it reduces energy in zones */
+		VVR_IdealCoolingLoad,				// Keyword: IdealCoolingLoad			[W]		'Ideal, convective cooling load'
 		NUM_VVR
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS
 
 	/*! Constructor. */
-	NaturalVentilationModel(unsigned int id, const std::string &displayName) :
+	IdealHeatingCoolingModel(unsigned int id, const std::string &displayName) :
 		m_id(id), m_displayName(displayName)
 	{
 	}
 
 	/*! Initializes object.
-		\param ventilationModel Ventilation model data.
-		\param simPara Required simulation parameter.
+		\param model Model data.
 		\param objLists The object list stored in the project file (persistent, remains unmodified so that persistent
 			pointers to object list elements can be stored).
 	*/
-	void setup(const NANDRAD::NaturalVentilationModel & ventilationModel, const NANDRAD::SimulationParameter &simPara,
-			   const std::vector<NANDRAD::ObjectList> & objLists, const std::vector<NANDRAD::Zone> & zones);
+	void setup(const NANDRAD::IdealHeatingCoolingModel & model, const std::vector<NANDRAD::ObjectList> & objLists, const std::vector<NANDRAD::Zone> & zones);
 
+	/*! Returns object list of all referenced models. */
+	const NANDRAD::ObjectList &objectList() const;
 
 	// *** Re-implemented from AbstractModel
 
@@ -54,7 +54,7 @@ public:
 	}
 
 	/*! Return unique class ID name of implemented model. */
-	virtual const char * ModelIDName() const override { return "NaturalVentilationModel"; }
+	virtual const char * ModelIDName() const override { return "IdealHeatingCoolingModel"; }
 
 	/*! Returns unique ID of this model instance. */
 	virtual unsigned int id() const override { return m_id; }
@@ -70,6 +70,12 @@ public:
 
 
 	// *** Re-implemented from AbstractStateDependency
+
+	/*! Composes all input references.
+		Here we collect all loads/fluxes into the room and store them such, that we can efficiently compute
+		sums, for example for all heat fluxes from constructions into the room etc.
+	*/
+	virtual void initInputReferences(const std::vector<AbstractModel*> & models) override;
 
 	/*! Returns vector with model input references.
 		Implicit models must generate their own model input references and populate the
@@ -89,38 +95,42 @@ public:
 	/*! Sums up all provided input quantities and computes divergence of balance equations. */
 	int update() override;
 
-
 private:
-	/*! Constant pointer to the referenced zone parameter block. */
-	const NANDRAD::NaturalVentilationModel			*m_ventilationModel = nullptr;
-	/*! Reference to simulation parameter block. */
-	const NANDRAD::SimulationParameter				*m_simPara = nullptr;
-
 	/*! Model instance ID (unused since results are provided for zones). */
 	unsigned int									m_id;
+
 	/*! Display name (for error messages). */
 	std::string										m_displayName;
-	/*! True if moisture balance is enabled. */
-	bool											m_moistureBalanceEnabled;
-
-	/*! Constant ventilation rate in 1/s (only for constant model). */
-	double											m_ventilationRate = 999;
 
 	/*! Quick access pointer to object list (for scheduled model). */
 	const NANDRAD::ObjectList						*m_objectList = nullptr;
 
-	/*! Cached pointer to zone parameters, to access zone volumes during init. */
+	/*! Cached heating power per zone area in [W/m2] */
+	double											m_maxHeatingPower = 666;
+	/*! Cached cooling power per zone area in [W/m2] */
+	double											m_maxCoolingPower = 777;
+
+	/*! Cached pointer to zone parameters, needed to check for valid zones in initReslts(). */
 	const std::vector<NANDRAD::Zone>				*m_zones = nullptr;
 
 	/*! Air volumes of the zones in [m3], size matches ids in m_objectList. */
-	std::vector<double>								m_zoneVolumes;
+	std::vector<double>								m_zoneAreas;
 
 	/*! Vector valued results, computed/updated during the calculation. */
 	std::vector<VectorValuedQuantity>				m_vectorValuedResults;
-	/*! Vector with input references. */
+
+	/*! Vector with input references.
+		For each thermostat model found, this vector contains 2*number of zones input refs, for each zone
+		a heating and cooling control values is requested.
+	*/
+	std::vector<InputReference>						m_inputRefs;
+	/*! Holds number of thermostat model objects that values were requested from. */
+	unsigned int									m_thermostatModelObjects = 0;
+
+	/*! Vector with value references. */
 	std::vector<const double*>						m_valueRefs;
 };
 
 } // namespace NANDRAD_MODEL
 
-#endif // NM_NaturalVentilationModelH
+#endif // NM_IdealHeatingCoolingModelH

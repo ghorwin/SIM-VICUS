@@ -2,7 +2,7 @@
 <NandradProject fileVersion="1.99">
 	<Project>
 		<ProjectInfo>
-			<Comment>Ideal heating to constant temperature</Comment>
+			<Comment>Test for P-controlled thermostat with constant heating/cooling setpoints</Comment>
 		</ProjectInfo>
 
 		<Location>
@@ -15,7 +15,8 @@
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 			<Interval>
-				<IBK:Parameter name="End" unit="d">10</IBK:Parameter>
+				<IBK:Parameter name="Start" unit="d">190</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">200</IBK:Parameter>
 			</Interval>
 		</SimulationParameter>
 
@@ -43,7 +44,7 @@
 				<InterfaceA id="1" zoneId="1">
 					<!--Interface to 'Room'-->
 					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">6</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</InterfaceA>
 				<InterfaceB id="2" zoneId="0">
@@ -57,10 +58,10 @@
 
 
 		<ConstructionTypes>
-			<ConstructionType id="10001" displayName="Inside insulated construction">
+			<ConstructionType id="10001" displayName="Insulated construction">
 				<MaterialLayers>
-					<MaterialLayer thickness="0.04" matId="1002" />
 					<MaterialLayer thickness="0.12" matId="1001" />
+					<MaterialLayer thickness="0.06" matId="1002" />
 				</MaterialLayers>
 			</ConstructionType>
 		</ConstructionTypes>
@@ -81,30 +82,38 @@
 
 
 		<Models>
+			<NaturalVentilationModels>
+				<NaturalVentilationModel id="501" displayName="Zone vent" modelType="Constant">
+					<ZoneObjectList>All zones</ZoneObjectList>
+					<IBK:Parameter name="VentilationRate" unit="1/h">2</IBK:Parameter>
+				</NaturalVentilationModel>
+			</NaturalVentilationModels>
+
 			<Thermostats>
 				<!-- A thermostat with constant heating set point, no cooling. Uses air temperature as sensor value. -->
 				<Thermostat id="1001" displayName="Constant air temperature thermostat" modelType="Constant">
 					<ZoneObjectList>All zones</ZoneObjectList>
-					<IBK:Parameter name="HeatingSetpoint" unit="C">20</IBK:Parameter>
-					<!-- Cooling is disabled through very large setpoint -->
-					<IBK:Parameter name="CoolingSetpoint" unit="C">100</IBK:Parameter>
-					<!-- Control temperature is "Air temperature" -->
+					<!-- Heating starts below 22 C -->
+					<IBK:Parameter name="HeatingSetpoint" unit="C">22</IBK:Parameter>
+					<!-- Cooling starts above 26 C -->
+					<IBK:Parameter name="CoolingSetpoint" unit="C">26</IBK:Parameter>
+					<!-- P-controller is accurate to 0.01 K -->
+					<IBK:Parameter name="TemperatureTolerance" unit="K">0.01</IBK:Parameter>
+					<!-- Control temperature is "Air temperature", this is the default and could be omitted -->
 					<TemperatureType>AirTemperature</TemperatureType>
+					<!-- Controller type PController is the default, so we could omit this-->
+					<ControllerType>PController</ControllerType>
 				</Thermostat>
 			</Thermostats>
-
-			<HVACControlModels>
-				<HVACControlModel id="3001" modelType="Heating" operatingMode="Parallel"/>
-				<ZoneObjectList>All zones</ZoneObjectList>
-			</HVACControlModels>
 
 			<IdealHeatingCoolingModels>
 				<IdealHeatingCoolingModel id="4001">
 					<ZoneObjectList>All zones</ZoneObjectList>
 					<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">50</IBK:Parameter>
-					<IBK:Parameter name="MaxCoolingPowerPerArea" unit="W/m2">20</IBK:Parameter>
+					<IBK:Parameter name="MaxCoolingPowerPerArea" unit="W/m2">40</IBK:Parameter>
 				</IdealHeatingCoolingModel>
 			</IdealHeatingCoolingModels>
+
 		</Models>
 
 		<Outputs>
@@ -115,14 +124,60 @@
 					<ObjectListName>All zones</ObjectListName>
 					<GridName>Minutes</GridName>
 				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>OperativeTemperature</Quantity>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>Minutes</GridName>
+				</OutputDefinition>
+
+				<!-- model outputs -->
 				
+				<OutputDefinition>
+					<FileName>control_values</FileName>
+					<Quantity>HeatingControlValue[1]</Quantity>
+					<ObjectListName>Thermostat</ObjectListName>
+					<GridName>Minutes</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<FileName>control_values</FileName>
+					<Quantity>CoolingControlValue[1]</Quantity>
+					<ObjectListName>Thermostat</ObjectListName>
+					<GridName>Minutes</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>ThermostatHeatingSetpoint[1]</Quantity>
+					<ObjectListName>Thermostat</ObjectListName>
+					<GridName>Minutes</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>ThermostatCoolingSetpoint[1]</Quantity>
+					<ObjectListName>Thermostat</ObjectListName>
+					<GridName>Minutes</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>IdealHeatingLoad[1]</Quantity>
+					<ObjectListName>All models</ObjectListName>
+					<GridName>Minutes</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>IdealCoolingLoad[1]</Quantity>
+					<ObjectListName>All models</ObjectListName>
+					<GridName>Minutes</GridName>
+				</OutputDefinition>
+
 			</Definitions>
 			
 			<Grids>
 				<OutputGrid name="Minutes">
 					<Intervals>
 						<Interval>
-							<IBK:Parameter name="StepSize" unit="min">15</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">10</IBK:Parameter>
 						</Interval>
 					</Intervals>
 				</OutputGrid>
@@ -132,6 +187,14 @@
 			<ObjectList name="All zones">
 				<FilterID>*</FilterID>
 				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Thermostat">
+				<FilterID>1001</FilterID>
+				<ReferenceType>Model</ReferenceType>
+			</ObjectList>
+			<ObjectList name="All models">
+				<FilterID>*</FilterID>
+				<ReferenceType>Model</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
 	</Project>

@@ -88,6 +88,7 @@ Das `NaturalVentilationModel` muss mit den folgenden XML-Attributen definiert we
 |====================
 | Attribut | Beschreibung | Format | Verwendung 
 | `id` | Kennung des natürlichen Lüftungsmodells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+| `displayName` | Anzeigename/Beschreibung | string | _optional_
 
 | `modelType` 
 a| Setzt den Typ des Lüftungsmodells 
@@ -191,16 +192,15 @@ Die Regelparameter müssen für das Modell `ScheduledWithBaseACR` stets komplett
 
 ### Ausgabegrößen
 
-Das Lüftungsmodell generiert eine zonenspezifische Ergebnisgröße:
+Das Lüftungsmodell generiert folgende vektorwertige Ergebnisgrößen:
 
 - `VentilationHeatFlux` in [W]
-
-
-Die dafür berechneten Lüftungsraten werden als vektorwertige Ergebnisgrößen des Modellobjekts selbst bereitgestellt:
-
 - `VentilationRate` in [1/h] und 
 
-
+[NOTE]
+====
+Da es mehrere Lüftungsmodellinstanzen geben kann, sucht das jeweilige Zonenmodell zunächst, welche Modellinstanz eine Ergebnisgröße liefert und erstellt dann die Verknüpfung zur Eingangsvariable.
+====
 
 ## Steuerungsmodell für Verschattung
 
@@ -269,6 +269,7 @@ Das `InternalLoadsModel` muss mit den folgenden XML-Attributen definiert werden:
 |====================
 | Attribut | Beschreibung | Format | Verwendung 
 | `id` | Kennung des Modells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+| `displayName` | Anzeigename/Beschreibung | string | _optional_
 
 | `modelType` 
 a| Gibt an, wie die internen Lasten angesetzt werden sollen
@@ -326,7 +327,7 @@ Dies sind vektoriell dargestellte Größen, die in Ausgangsdefinitionen referenz
 
 
 
-[[ZoneControlThermostat]]
+[[Thermostat]]
 ## Modell für Thermostate
 
 Das Thermostatmodell beschreibt, auf welche Raumsollwerte konditioniert werden soll. Angegeben werden können Heiz- und/oder Kühlsolltemperaturen für die Raumluft oder operative Raumluft.
@@ -336,20 +337,25 @@ Der Objektlisten-tag `ZoneObjectList` identifiziert die Zonen, in denen Thermost
 ====
 [source,xml]
 ----
-<!-- A thermostat with constant heating set point, no cooling. Uses air temperature as sensor value. -->
+<!-- A thermostat with constant heating and cooling set points. Uses air temperature as sensor value. -->
 <Thermostat id="1001" displayName="Constant air temperature thermostat" modelType="Constant">
 	<ZoneObjectList>All zones</ZoneObjectList>
-	<IBK:Parameter name="HeatingSetpoint" unit="C">20</IBK:Parameter>
-	<!-- Cooling is disabled through very large setpoint -->
-	<IBK:Parameter name="CoolingSetpoint" unit="C">100</IBK:Parameter>
-	<!-- Control temperature is "Air temperature" -->
+	<!-- Heating starts below 22 C -->
+	<IBK:Parameter name="HeatingSetpoint" unit="C">22</IBK:Parameter>
+	<!-- Cooling starts above 26 C -->
+	<IBK:Parameter name="CoolingSetpoint" unit="C">26</IBK:Parameter>
+	<!-- P-controller is accurate to 0.2 K -->
+	<IBK:Parameter name="TemperatureTolerance" unit="K">0.2</IBK:Parameter>
+	<!-- Control temperature is "Air temperature", this is the default and could be omitted -->
 	<TemperatureType>AirTemperature</TemperatureType>
+	<!-- Controller type PController is the default, so we could omit this-->
+	<ControllerType>PController</ControllerType>
 </Thermostat>
 ----
 ====
 
 
-Das `ZoneControlThermostat` muss mit den folgenden XML-Attributen definiert werden:
+Das `Thermostat`-Element unterstützt folgende XML-Attributen:
 
 .Attribute
 [.indent-me]
@@ -357,6 +363,7 @@ Das `ZoneControlThermostat` muss mit den folgenden XML-Attributen definiert werd
 |====================
 | Attribut | Beschreibung | Format | Verwendung 
 | `id` | Kennung des Modells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+| `displayName` | Anzeigename/Beschreibung | string | _optional_
 
 | `modelType` 
 a| Gibt an, wie die Thermostat-Parameter angesetzt werden sollen
@@ -404,30 +411,56 @@ Ein Thermostat hält nur die Sollwerte für die Zone. Eine Konditionierung der Z
 
 ### Ausgaben
 
-Die zonenspezifischen Ausgangsgrößen heißen:
+Das Modell liefert vektorwertige Modellergebnisgrößen, wobei der Vektorindex die jeweilige Zonen-ID ist.
 
-- `HeatingSetpoint [C]`
-- `CoolingSetpoint [C]`
+- `HeatingControlValue [---]` - Steuersignal für die Heizungsanlage: 0 - aus, 1 - maximal an, Wertebereich unbegrenzt
+- `CoolingControlValue [---]` - Steuersignal für die Klimaanlage: 0 - aus, 1 - maximal an, Wertebereich unbegrenzt
+- `ThermostatHeatingSetpoint [C]` - Setpoint, der für die Heizung verwendet wurde
+- `ThermostatCoolingSetpoint [C]` - Setpoint, der für die Kühlung verwendet wurde
 
+[NOTE]
+====
+Es kann mehrere Thermostat-Modell-Instanzen im Gebäude geben. Da die Ergebnisgrößen von der jeweiligen Modellinstanz selbst zur Verfügung gestellt werden, muss beim Zugriff auf die jeweiligen zonenspezifischen Regelgrößen (`XXXControlValue`) das richtige Modell addressiert werden. In der Praxis kann das so geschehen, dass ein nachfolgendes Modell einfach optionale Eingangsreferenzen für Regelgrößen einer Zonen an _alle_ Thermostatmodelle schickt. Es darf dann nur exakt ein Modell eine Ergebnisgröße liefern, die dann verwendet wird.
+====
+
+## Anlagensystem-Modell
+
+Ein Anlagensystem-Modell wandelt Regelinformationen aus einem Thermostat und ggfs. anderen Prozessbedingungen in Regelgrößen für spezifische Heizsysteme um. So können auch Priorisierungen implementiert werden.
+
+Ein Anlagensystem-Modell ist optional - ohne ein solches System kann ein Heizungssystem auch direkt die Kontrollgrößen eines Thermostats abgreifen.
+
+.Anlagensystemmodell für die Umsetzung einer idealen Heizung
+====
+[source,xml]
+----
+<HVACControlSystem id="200" modelType="Heating">
+    <HeatingSystems>Ideal</HeatingSystem>
+    <Priority>Parallel</Priority>
+</HVACControlSystem>
+----
+
+TODO : 
+
+====
 
 ## Modell für ideale thermische Konditionierung
 
 Das Modell beschreibt ein ideles thermisches Konditionierungsmodell für eine ideale Raumluftkonditionierung.
 Der Objektlisten-tag `ZoneObjectList` identifiziert die Zonen, in denen das Modell berücksichtigt werden sollen. Es darf nur ein Modell pro Zone existieren.
 
-.Definitionsblock für Ideale thermische Konditionierung
+.Definitionsblock für ideale thermische Konditionierung
 ====
 [source,xml]
 ----
-<ZoneIdealHeatingCooling id="200">
+<IdealHeatingCoolingModel id="200">
 	<ZoneObjectList>Office zones</ZoneObjectList>
 	<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">50</IBK:Parameter>
 	<IBK:Parameter name="MaxCoolingPowerPerArea" unit="W/m2">20</IBK:Parameter>
-</ZoneIdealHeatingCooling>
+</IdealHeatingCoolingModel>
 ----
 ====
 
-Das `ZoneIdealHeatingCooling` muss mit den folgenden XML-Attributen definiert werden:
+Das `IdealHeatingCoolingModel` muss mit den folgenden XML-Attributen definiert werden:
 
 .Attribute
 [.indent-me]
@@ -438,7 +471,7 @@ Das `ZoneIdealHeatingCooling` muss mit den folgenden XML-Attributen definiert we
 |====================
 
 
-Fließkommaparameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des tags `IBK:Parameter`):
+Fließkommaparameter (siehe <<IBK_Parameter>> für eine Beschreibung des Elementtyps `IBK:Parameter`):
 
 [options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
 |====================
@@ -447,32 +480,30 @@ Fließkommaparameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung d
 | `MaxCoolingPowerPerArea` | W/m2 | maximale flächenbezogene Kühlleistung | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_ 
 |====================
 
-[NOTE]
+[IMPORTANT]
 ====
-Damit das Modell auf die jeweilige Zone angewendet wird, ist zwingend das <<ZoneControlThermostat>> nötig, welches für die gleichen Zone parametriert sein muss. Dieses liefert als Eingangsgrößen für das `ZoneIdealHeatingCooling` die Größen `HeatingSetpoint` und `CoolingSetpoint`.
+Damit das Modell auf die jeweilige Zone angewendet wird, ist zwingend das <<Thermostat, Thermostat>> nötig, welches für die gleichen Zone parametriert sein muss. Dieses liefert dann eine Ergebnisgröße `Model(<thermostat_id>).HeatingControlValue[<zone id>]`. 
+
+Ein zwischengeschaltetes `HVACControlSystem` kann optional verwendet werden (auch als FMU), welches ein konkretisiertes Regelsignal `Model(<HVACControlSystem_id>).IdealHeatingControlValue[<zone id>]` liefert. Das `IdealHeatingCoolingModel`-Modell sucht _zuerst_ nach einer gülten Variable vom HVACControlSystem-Modell, und dann nach dem Thermostat. 
 ====
 
-### Regelungsimplementierung
+### Heiz- und Kühlleistung
 
-Standardmäßig verwendet das ideale Konditionierungsmodell einen P-Regler, nach dem Schema:
+Das Regelsignal `HeatingControlValue` bzw. `IdealHeatingControlValue` wird als Wert zwischen 0..1 intepretiert. Werte außerhalb dieser Grenzen werden abgeschnitten. Bei 1 läuft die Heizung mit maximaler Heizlast, entsprechend des `MaxHeatingPowerPerArea`-Parameters. Bei 0 ist die Heizung aus. Dazwischen wird linear interpoliert.
 
-```
-Heizlast = MaxHeatingPowerPerArea * clip( (T_soll - T_raum) / DeltaT )
-
-// alternativ mit Mittelpunktsverschiebung
-Heizlast = MaxHeatingPowerPerArea * clip( (T_soll - T_raum) / DeltaT + 0.5))
-```
-
-`clip` heißt: zwischen 0 und 1 begrenzen.
-
-`T_raum` ist entweder die Lufttemperatur oder die operative Temperatur. Dafür ist die Information im ThermostatModell notwendig.
-
+Die Kühlung ist analog definiert. Bei einem Kontrollwert von 1 läuft die Kühlung mit maximaler Kraft, bei 0 ist sie aus. 
 
 ### Ausgaben
 
-Die zonenspezifischen Ausgangsgrößen heißen: 
+Ergebnisgrößen des Modells sind:
 
 - `IdealHeatingLoad [W]`
 - `IdealCoolingLoad [W]`
 
-Dies sind vektoriell dargestellte Größen, die in Ausgangsdefinitionen referenziert werden müssen, z. B. mit: `IdealHeatingLoad[id=3]` für die Heizlast in Zone #3.
+Analog zu Lüftungswärmeverlusten werden diese zonenspezifischen Ausgangsgrößen als vektorwertige Ergebnisgrößen bereitgestellt.
+Z. B. ist `Model<IdealHeatingCoolingModel_id>).IdealHeatingLoad[id=3]` die Heizlast in Zone #3.
+
+[CAUTION]
+====
+Die Kühllast ist positiv definiert, geht jedoch als negative Flussgröße in die Raumenergiebilanz ein. In Ausgaben wird die Kühllast `IdealCoolingLoad` jedoch immer als positive Größe ausgegeben.
+====
