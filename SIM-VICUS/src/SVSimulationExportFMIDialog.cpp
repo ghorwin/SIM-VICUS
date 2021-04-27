@@ -674,35 +674,36 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerate_clicked() {
 	// process all variables
 	QSet<QString> units;
 
-#if 0
-	int i=1;
-	for (std::vector<DelFMIExportDialog::FMIVariable>::const_iterator it = m_fmiExportDialog->m_fmiVariables.begin();
-		 it != m_fmiExportDialog->m_fmiVariables.end(); ++it, ++i)
+	int index=1;
+	for (std::vector<NANDRAD::FMIVariableDefinition>::const_iterator
+		 varIt = m_localProject.m_fmiDescription.m_variables.begin();
+		 varIt != m_localProject.m_fmiDescription.m_variables.end();
+		 ++varIt, ++index)
 	{
-		const DelFMIExportDialog::FMIVariable & var = *it;
+		const NANDRAD::FMIVariableDefinition & varDef = *varIt;
 		QString varDesc;
-		if (var.input)
+		if (varDef.m_inputVariable)
 			varDesc = INPUT_VAR_TEMPLATE;
 		else
 			varDesc = OUTPUT_VAR_TEMPLATE;
-		varDesc.replace("${INDEX}", QString("%1").arg(i));
-		varDesc.replace("${NAME}", var.name);
-		varDesc.replace("${VALUEREF}", QString("%1").arg(100+i));
+		varDesc.replace("${INDEX}", QString("%1").arg(index));
+		varDesc.replace("${NAME}", varDef.m_fmiVarName.c_str());
+		varDesc.replace("${VALUEREF}", QString("%1").arg(index));
 		// special handling for differen variable types
 		double startValue = 0;
-		if (var.unit == "K")		startValue = 293.15;
-		if (var.unit == "C")		startValue = 23;
-		else if (var.unit == "%")	startValue = 50;
-		else if (var.unit == "Pa")	startValue = 2000;
+		if (varDef.m_unit == "K")		startValue = 293.15;
+		if (varDef.m_unit == "C")		startValue = 23;
+		else if (varDef.m_unit == "%")	startValue = 50;
+		else if (varDef.m_unit == "Pa")	startValue = 101325;
 		varDesc.replace("${STARTVALUE}", QString::number(startValue));
-		varDesc.replace("${REALVARUNIT}", var.unit);
-		units.insert(var.unit);
+		varDesc.replace("${REALVARUNIT}", varDef.m_unit.c_str());
+		units.insert(varDef.m_unit.c_str());
 		modelVariables += varDesc;
-		if (!var.input) {
-			modelStructure += QString(" 			<Unknown index=\"%1\"/>\n").arg(i);
+		if (!varDef.m_inputVariable) {
+			modelStructure += QString(" 			<Unknown index=\"%1\"/>\n").arg(index);
 		}
 	}
-#endif
+
 	// ${MODELVARIABLES}
 	modelDesc.replace("${MODELVARIABLES}", modelVariables);
 

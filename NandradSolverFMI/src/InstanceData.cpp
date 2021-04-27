@@ -80,7 +80,6 @@ void InstanceData::init() {
 	// Model Init
 	try {
 
-		// TODO
 		// Generate project filename
 		IBK::Path projectFile = IBK::Path::fromURI(m_resourceLocation);
 		projectFile /= "Project.nandrad"; // append project file, always the same within FMU container
@@ -213,12 +212,12 @@ void InstanceData::integrateTo(double tCommunicationIntervalEnd) {
 			m_model.setTime(m_model.t0());
 			m_model.setY(m_model.y0());
 			m_model.ydot(nullptr);
-//			m_model.pushOutputOnBuffer( m_model.t0(), m_model.y0());
+			m_model.pushOutputOnBuffer( m_model.t0(), m_model.y0());
 		}
-//		else {
-//			// reset outputs if necessary
-//			m_model.resetOutputBuffer(tCommunicationIntervalStart);
-//		}
+		else {
+			// reset outputs if necessary
+			m_model.resetOutputBuffer(tCommunicationIntervalStart);
+		}
 
 		m_model.startCommunicationInterval(tCommunicationIntervalStart);
 		// integration loop
@@ -251,7 +250,7 @@ void InstanceData::integrateTo(double tCommunicationIntervalEnd) {
 				m_model.setTime(tOutput);
 				m_model.setY(yOutput);
 				m_model.ydot(nullptr);
-//				m_model.pushOutputOnBuffer( tOutput, yOutput);
+				m_model.pushOutputOnBuffer( tOutput, yOutput);
 
 				// retrieve new output time point
 				tOutputNext = outputScheduler->nextOutputTime(tOutput);
