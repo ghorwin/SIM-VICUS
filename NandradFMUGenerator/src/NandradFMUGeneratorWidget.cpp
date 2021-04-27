@@ -5,6 +5,8 @@
 #include <QMessageBox>
 #include <QProcess>
 #include <QTextStream>
+#include <QTimer>
+#include <QFileDialog>
 
 #include <QtExt_Directories.h>
 
@@ -54,6 +56,10 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 			  << tr("FMI value reference"));
 	m_ui->tableWidgetOutputVars->horizontalHeader()->setStretchLastSection(true);
 //	SVStyle::formatDatabaseTableView(m_ui->tableWidgetOutputVars);
+
+	// If we do not yet have a file path to NANDRAD project, ask for it on start
+	if (!m_nandradFilePath.isValid())
+		QTimer::singleShot(0, this, &NandradFMUGeneratorWidget::on_pushButtonSelectNandradProject_clicked);
 }
 
 
@@ -64,68 +70,41 @@ NandradFMUGeneratorWidget::~NandradFMUGeneratorWidget() {
 
 void NandradFMUGeneratorWidget::setup() {
 
-	// TODO : Anne
-	// ask user to select NANDRAD Project file -> QFileDialog
-
-	QString pathToNandradProject = "~/git/SIM-VICUS/data/test/FMI/test.nandrad";
-
-	m_nandradFilePath = IBK::Path(pathToNandradProject.toStdString());
 	// read NANDRAD project
 	try {
 		m_project.readXML(m_nandradFilePath);
 	} catch (IBK::Exception & ex) {
 		// TODO : show error message -> QMessageBox::critical()
+		// TODO : disable all UI elements, until project was read successfully
 		return;
 	}
 
 	if (m_project.m_fmiDescription.m_modelName.empty())
-		m_project.m_fmiDescription.m_modelName = QFileInfo(pathToNandradProject).baseName().toStdString();
+		m_project.m_fmiDescription.m_modelName = m_nandradFilePath.filename().withoutExtension().str();
 
 	if (!m_project.m_fmiDescription.m_FMUPath.isValid())
 		m_project.m_fmiDescription.m_FMUPath = m_nandradFilePath.withoutExtension() + ".fmu";
 
 	// *** transfer general parameters
 
+	m_ui->lineEditNandradProjectFilePath->setText( QString::fromStdString(m_nandradFilePath.str()) );
 	m_ui->lineEditModelName->setText( QString::fromStdString(m_project.m_fmiDescription.m_modelName) );
-	m_ui->lineEditTargetPath->setFilename( QString::fromStdString(m_project.m_fmiDescription.m_FMUPath.str()) );
+	m_ui->lineEditTargetPath->setFilename( QString::fromStdString(m_project.m_fmiDescription.m_FMUPath.parentPath().str()) );
+	// check correct FMU name and update target file path
 	on_lineEditModelName_editingFinished();
-	updateVariableLists(true);
+	// now test-init the solver and update the variable tables
+	on_pushButtonUpdateVariableList_clicked();
 }
 
 
 void NandradFMUGeneratorWidget::on_pushButtonUpdateVariableList_clicked() {
-	// create local copy of project
-#if 0
-	// generate NANDRAD project, start solver as background process and read variable lists
-	NANDRAD::Project p;
-
-	try {
-		m_db.updateEmbeddedDatabase(m_project);
-		m_project.generateNandradProject(p);
-	}
-	catch (VICUS::Project::ConversionError & ex) {
-		QMessageBox::critical(this, tr("NANDRAD Project Generation Error"),
-							  tr("%1\nBefore exporting an FMU, please make sure that the simulation runs correctly!").arg(ex.what()) );
-		return;
-	}
-	catch (IBK::Exception & ex) {
-		// just show a generic error message
-		ex.writeMsgStackToError();
-		QMessageBox::critical(this, tr("NANDRAD Project Generation Error"),
-							  tr("An error occurred during NANDRAD project generation.\n"
-								 "Before exporting an FMU, please make sure that the simulation runs correctly!"));
-		return;
-	}
-
-	// save project
-	QString nandradProjectFilePath = SVProjectHandler::instance().nandradProjectFilePath();
-	p.writeXML(IBK::Path(nandradProjectFilePath.toStdString()));
+	// Test-Init project and then read input/output value refs
 
 	QStringList commandLineArgs;
 	commandLineArgs.append("--test-init");
-	commandLineArgs.append(nandradProjectFilePath);
+	commandLineArgs.append(QString::fromStdString(m_nandradFilePath.str()));
 
-	QString solverExecutable = SVSettings::nandradSolverExecutable();
+	QString solverExecutable = m_nandradSolverExecutable;
 
 	QProcess proc(this);
 	proc.setProgram(solverExecutable);
@@ -144,13 +123,15 @@ void NandradFMUGeneratorWidget::on_pushButtonUpdateVariableList_clicked() {
 
 	updateVariableLists(false);
 	updateFMUVariableTables();
-#endif
+	QMessageBox::information(this, tr("NANDRAD Test-init successful"),
+							 tr("NANDRAD solver was started and the project was initialised, successfully. "
+								"%1 FMU input-variables and %2 output variables available.")
+							 .arg(m_modelInputVariables.size()).arg(m_modelOutputVariables.size()));
 }
 
 
 void NandradFMUGeneratorWidget::updateVariableLists(bool silent) {
-#if 0
-	QString nandradProjectFilePath = SVProjectHandler::instance().nandradProjectFilePath();
+	QString nandradProjectFilePath = QString::fromStdString(m_nandradFilePath.str());
 	// now parse the variable lists
 	IBK::Path varDir(nandradProjectFilePath.toStdString());
 	varDir = varDir.withoutExtension() / "var";
@@ -163,7 +144,6 @@ void NandradFMUGeneratorWidget::updateVariableLists(bool silent) {
 	if (!parseVariableList(outputVarsFile, m_modelOutputVariables, silent))
 		return;
 	updateFMUVariableTables();
-#endif
 }
 
 
@@ -313,8 +293,6 @@ void NandradFMUGeneratorWidget::appendVariableEntry(unsigned int index, QTableWi
 	tableWidget->setSortingEnabled(true);
 	tableWidget->selectRow(row);
 }
-
-
 
 
 void NandradFMUGeneratorWidget::on_tableWidgetInputVars_currentCellChanged(int , int , int , int ) {
@@ -859,4 +837,23 @@ bool NandradFMUGeneratorWidget::checkModelName() {
 	}
 
 	return true;
+}
+
+
+void NandradFMUGeneratorWidget::on_pushButtonSaveNandradProject_clicked() {
+	// TODO
+}
+
+
+void NandradFMUGeneratorWidget::on_pushButtonSelectNandradProject_clicked() {
+	QString fname = QFileDialog::getOpenFileName(this, tr("Select NANDRAD Project"), QString(),
+												 tr("NANDRAD Project Files (*.nandrad);;All files (*)"), nullptr,
+												 QFileDialog::DontUseNativeDialog);
+	if (fname.isEmpty())
+		return; // dialog was cancelled
+
+	m_nandradFilePath = IBK::Path(fname.toStdString());
+
+	// setup user interface with project file data
+	setup();
 }

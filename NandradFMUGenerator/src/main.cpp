@@ -1,5 +1,8 @@
 #include <QApplication>
 
+#include <QFileInfo>
+#include <QDir>
+
 #include <IBK_Exception.h>
 
 #include "NandradFMUGeneratorWidget.h"
@@ -24,16 +27,27 @@ int main(int argc, char *argv[]) {
 #endif
 
 
-	// *** Setup and show MainWindow and start event loop ***
+	// *** Setup and show main widget and start event loop ***
 	int res;
-	try { // open scope to control lifetime of main window, ensure that main window instance dies before settings or project handler
+	try {
 
 		NandradFMUGeneratorWidget w;
-		w.show();
+
+		// TODO : For now we assume install dir to be same as NandradSolver dir
+		w.m_installDir					= QFileInfo(argv[0]).dir().absolutePath();
+		w.m_nandradSolverExecutable		= QFileInfo(argv[0]).dir().absoluteFilePath("NandradSolver");
+
+		// if started as: NandradFMUGenerator /path/to/projectFile.nandrad
+		// we copy /path/to/projectFile.nandrad as path to NANDRAD
+		if (argc > 1) {
+			w.m_nandradFilePath = IBK::Path(argv[1]);
+		}
+		w.show(); // show widget
 
 		// start event loop
 		res = a.exec();
-	} // here our mainwindow dies, main window goes out of scope and UI goes down -> destructor does ui and thread cleanup
+
+	} // here our widget dies, main window goes out of scope and UI goes down -> destructor does ui and thread cleanup
 	catch (IBK::Exception & ex) {
 		ex.writeMsgStackToError();
 		return EXIT_FAILURE;

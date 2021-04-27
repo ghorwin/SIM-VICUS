@@ -55,3 +55,6 @@ FORMS += \
 
 HEADERS += \
 	../../src/NandradFMUGeneratorWidget.h
+
+RESOURCES += \
+	../../resources/gfx.qrc

@@ -23,6 +23,12 @@ public:
 
 	void setup();
 
+	IBK::Path							m_nandradFilePath;
+	/*! Path to dll/lib files. */
+	QString								m_installDir;
+	/*! Path to NANDRAD solver. */
+	QString								m_nandradSolverExecutable;
+
 private slots:
 	void on_pushButtonUpdateVariableList_clicked();
 
@@ -41,6 +47,9 @@ private slots:
 	void on_lineEditModelName_editingFinished();
 	void on_lineEditTargetPath_editingFinished();
 	void on_lineEditTargetPath_returnPressed();
+
+	void on_pushButtonSaveNandradProject_clicked();
+	void on_pushButtonSelectNandradProject_clicked();
 
 private:
 	/*! Checks if the model name and/or the path is conforming to the requirements.
@@ -93,10 +102,7 @@ private:
 	Ui::NandradFMUGeneratorWidget		*m_ui;
 
 	NANDRAD::Project					m_project;
-	IBK::Path							m_nandradFilePath;
 
-	/*! Path to dll/lib files. */
-	QString								m_installDir;
 
 	std::map<QString, IDInfo>			m_modelInputVariables;
 	std::map<QString, IDInfo>			m_modelOutputVariables;

@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>edit.png</file>
+        <file>minus.png</file>
+        <file>plus.png</file>
+        <file>editcopy.png</file>
+    </qresource>
+</RCC>
