@@ -213,6 +213,8 @@ void SerializationTest::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.m_name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
+			else if (cName == "Coordinate2D")
+				NANDRAD::readPoint2D(c, "Coordinate2D", m_coordinate2D);
 			else if (cName == "TestBlo") {
 				try {
 					m_testBlo = (test_t)KeywordList::Enumeration("SerializationTest::test_t", c->GetText());
@@ -378,6 +380,7 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 		if (customElement != nullptr)
 			customElement->ToElement()->SetValue("OtherSchedule");
 	}
+	NANDRAD::writePoint2D(e, "Coordinate2D", m_coordinate2D);
 	return e;
 }
 

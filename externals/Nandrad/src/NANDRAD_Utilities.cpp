@@ -242,6 +242,25 @@ void readVector<double>(const TiXmlElement * element, const std::string & name, 
 }
 
 
+template<>
+void readPoint2D<double>(const TiXmlElement * element, const std::string & name, IBK::point2D<double> & p) {
+	FUNCID(NANDRAD::readVector);
+	std::string text = element->GetText();
+	text = IBK::replace_string(text, ",", " ");
+	try {
+		std::vector<double> vec;
+		IBK::string2valueVector(text, vec);
+		if (vec.size() != 2)
+			throw IBK::Exception("Size mismatch, expected 2 numbers separated by , .", FUNC_ID);
+		p.m_x = vec[0];
+		p.m_y = vec[1];
+	} catch (IBK::Exception & ex) {
+		throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+			IBK::FormatString("Error reading point2D element '%1'.").arg(name) ), FUNC_ID);
+	}
+}
+
+
 void setParameter(IBK::Parameter para[], const char * const enumtype, int n, const double &val) {
 	para[n] = IBK::Parameter(NANDRAD::KeywordList::Keyword(enumtype, n), val, NANDRAD::KeywordList::Unit(enumtype, n));
 }
