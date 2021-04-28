@@ -551,7 +551,7 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerate_clicked() {
 
 	// if we have a target path, copy the referenced climate data file to the new location and modify the path
 	IBK::Path resourcePath(copyPath.toStdString());
-	IBK::Path fullClimatePath = p.m_location.m_climateFilePath.withReplacedPlaceholders(p.m_placeholders);
+	IBK::Path fullClimatePath = m_project.m_location.m_climateFilePath.withReplacedPlaceholders(m_project.m_placeholders);
 	if (!fullClimatePath.isFile()) {
 		QMessageBox::critical(this, tr("FMU Export Error"),
 			tr("The referenced climate data file '%1' does not exist. Please select a climate data file!")
