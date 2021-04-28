@@ -57,6 +57,7 @@ public:
 	IBK::MultiLanguageString		m_dataSource;							// XML:E
 
 	/// TODO Dirk->Andreas wie initialisiere ich alle im array mit einer invalid id vor?
+	/// TODO Dirk, int var[xxx] geht so nicht!
 	/*! Schedule ID. */
 	unsigned int					m_scheduleId[NUM_ST];					// XML:E
 
