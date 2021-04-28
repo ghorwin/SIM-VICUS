@@ -5,6 +5,8 @@
 #include <vector>
 #include <IBK_point.h>
 
+
+
 int main() {
 
 	CDT::Triangulation<double> cdt(CDT::FindingClosestPoint::ClosestRandom); // Note: we don't want to use boost
@@ -14,14 +16,14 @@ int main() {
 	// since IBK::point2D<double> and CDT::V2d<double> are internally the same, we can just re-interpret our original
 	// vector as vertex vector
 	std::vector<CDT::V2d<double> > vertices;
-
+#if 0
 	// outer
 	vertices.push_back(CDT::V2d<double>::make(0,0));
 	vertices.push_back(CDT::V2d<double>::make(5,0));
 	vertices.push_back(CDT::V2d<double>::make(5,4));
 	vertices.push_back(CDT::V2d<double>::make(0,4));
-
-#if 1
+#endif
+#if 0
 	// hole
 	vertices.push_back(CDT::V2d<double>::make(1,1));
 	vertices.push_back(CDT::V2d<double>::make(4,1));
@@ -44,18 +46,57 @@ int main() {
 	vertices.push_back(CDT::V2d<double>::make(5,4));
 	vertices.push_back(CDT::V2d<double>::make(0,4));
 #endif
+#if 0
+	//outer bound
+	vertices.push_back(CDT::V2d<double>::make(0,0));
+	vertices.push_back(CDT::V2d<double>::make(2,0));
+	vertices.push_back(CDT::V2d<double>::make(2,2));
+	vertices.push_back(CDT::V2d<double>::make(4,2));
+	vertices.push_back(CDT::V2d<double>::make(4,0));
+	vertices.push_back(CDT::V2d<double>::make(6,0));
+	vertices.push_back(CDT::V2d<double>::make(6,6));
+	vertices.push_back(CDT::V2d<double>::make(0,6));
+#endif
+	//outer bound
+	vertices.push_back(CDT::V2d<double>::make(0,0));
+	vertices.push_back(CDT::V2d<double>::make(5,0));
+	vertices.push_back(CDT::V2d<double>::make(5,3));
+	vertices.push_back(CDT::V2d<double>::make(0,3));
 
 	std::vector<CDT::Edge> edgeVec;
-	edgeVec.push_back( CDT::Edge(0, 1) );
-	edgeVec.push_back( CDT::Edge(1, 2) );
-	edgeVec.push_back( CDT::Edge(2, 3) );
-	edgeVec.push_back( CDT::Edge(3, 0) );
+	for(unsigned int i=0; i<vertices.size(); ++i){
+
+		edgeVec.push_back( CDT::Edge(i, (i+1)%vertices.size()) );
+	}
+
+	// hole
+	vertices.push_back(CDT::V2d<double>::make(1,1));
+	vertices.push_back(CDT::V2d<double>::make(2,1));
+	vertices.push_back(CDT::V2d<double>::make(2,2));
+	vertices.push_back(CDT::V2d<double>::make(1,2));
 
 	edgeVec.push_back( CDT::Edge(4, 5) );
 	edgeVec.push_back( CDT::Edge(5, 6) );
 	edgeVec.push_back( CDT::Edge(6, 7) );
 	edgeVec.push_back( CDT::Edge(7, 4) );
 
+	// hole
+	vertices.push_back(CDT::V2d<double>::make(3,1));
+	vertices.push_back(CDT::V2d<double>::make(4,1));
+	vertices.push_back(CDT::V2d<double>::make(4,2));
+	vertices.push_back(CDT::V2d<double>::make(3,2));
+
+	edgeVec.push_back( CDT::Edge(8, 9) );
+	edgeVec.push_back( CDT::Edge(9, 10) );
+	edgeVec.push_back( CDT::Edge(10, 11) );
+	edgeVec.push_back( CDT::Edge(11, 8) );
+
+#if 0
+	edgeVec.push_back( CDT::Edge(4, 5) );
+	edgeVec.push_back( CDT::Edge(5, 6) );
+	edgeVec.push_back( CDT::Edge(6, 7) );
+	edgeVec.push_back( CDT::Edge(7, 4) );
+#endif
 	cdt.insertVertices(vertices);
 	cdt.insertEdges(edgeVec);
 	cdt.eraseOuterTrianglesAndHoles();
