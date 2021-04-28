@@ -1532,40 +1532,19 @@ void Vic3DScene::deleteSelected() {
 	// process all project geometry and keep (in a copy) only those that need to be removed
 	std::vector<unsigned int> selectedObjectIDs;
 	// generate vector of surfaces
-	std::vector<const VICUS::Surface *> selectedSurfaces;
-	for (const VICUS::Object * obj : m_selectedGeometryObject.m_selectedObjects) {
-		selectedObjectIDs.push_back(obj->uniqueID());
-		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(obj);
-		if (s != nullptr)
-			selectedSurfaces.push_back(s);
-	}
+	std::set<const VICUS::Object *> selectedObjects;
+	project().selectObjects(selectedObjects, VICUS::Project::SG_All, true, true);
 
-	if (selectedObjectIDs.empty())
+	// nothing selected - nothing to do
+	if (selectedObjects.empty())
 		return;
 
-
-	// also collect component instances that can be safely deleted, i.e. keep only those that reference at least one surface
-	// that is not selected
-	std::vector<VICUS::ComponentInstance> selectedComponentInstances;
-	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
-		VICUS::ComponentInstance modCi(ci);
-
-		// if side A references a selected surfaces, clear the ID
-		if (ci.m_sideASurfaceID != VICUS::INVALID_ID && VICUS::Project::contains(selectedSurfaces, ci.m_sideASurfaceID))
-			modCi.m_sideASurfaceID = VICUS::INVALID_ID;
-		// same for side B
-		if (ci.m_sideBSurfaceID != VICUS::INVALID_ID && VICUS::Project::contains(selectedSurfaces, ci.m_sideBSurfaceID))
-			modCi.m_sideBSurfaceID = VICUS::INVALID_ID;
-
-		// only keep component instance around if at least one side-ID is valid
-		if (modCi.m_sideASurfaceID != VICUS::INVALID_ID || modCi.m_sideBSurfaceID != VICUS::INVALID_ID)
-			selectedComponentInstances.push_back(ci);
-	}
-
+	// collect unique IDs of selected objects
+	for (const VICUS::Object * o : selectedObjects)
+		selectedObjectIDs.push_back(o->uniqueID());
 
 	// clear selected objects (since they are now removed)
-	SVUndoDeleteSelected * undo = new SVUndoDeleteSelected(tr("Removing selected geometry"),
-														   selectedObjectIDs, selectedComponentInstances);
+	SVUndoDeleteSelected * undo = new SVUndoDeleteSelected(tr("Removing selected geometry"), selectedObjectIDs);
 	// clear selection
 	undo->push();
 }

@@ -17,7 +17,7 @@ void ShadingControlModel::setup(const NANDRAD::ShadingControlModel & controller,
 	// target value is average
 	m_targetValue = 0.5 * (minValue + maxValue);
 	// tolerance band is mean difference to target
-	m_hysteresisBand = 0.5 * (maxValue - minValue);
+	m_controller.m_hysteresisBand = 0.5 * (maxValue - minValue);
 	// copy controller parameter block
 	m_shadingControlModel = &controller;
 	// store loads for direct evaluation of radiation sensor value
@@ -46,7 +46,7 @@ void ShadingControlModel::resultDescriptions(std::vector<QuantityDescription> & 
 
 
 void ShadingControlModel::resultValueRefs(std::vector<const double *> & res) const {
-	res.push_back(&m_controlValue);
+	res.push_back(&m_controller.m_controlValue);
 	// TODO : is this really needed? what about the second output?
 }
 
@@ -56,7 +56,7 @@ const double *ShadingControlModel::resultValueRef(const InputReference & quantit
 
 	// we directly return the cached state of the controller
 	if (quantityName.m_name == "ShadingControlValue")
-		return &m_controlValue;
+		return &m_controller.m_controlValue;
 	if (quantityName.m_name == "SolarIntensityOnShadingSensor")
 		return &m_currentIntensity;
 
@@ -71,10 +71,15 @@ int ShadingControlModel::setTime(double /*t*/) {
 	// update the radiation sensor value (this includes precomputed shading in case of constructions or embedded objects)
 	m_currentIntensity = m_loads->qSWRad(m_shadingControlModel->m_sensorID, qSWRadDir, qSWRadDiff, incidenceAngle);
 	// update controller state: error value = currentIntensity - setpointIntensity
-	update(m_currentIntensity - m_targetValue);
+	m_controller.update(m_currentIntensity - m_targetValue);
 
 	// signal success
 	return 0;
+}
+
+
+void ShadingControlModel::stepCompleted(double t) {
+	m_controller.stepCompleted(t);
 }
 
 

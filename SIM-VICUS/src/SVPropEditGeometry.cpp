@@ -1374,5 +1374,31 @@ void SVPropEditGeometry::on_pushButtonEdit_clicked() {
 
 void SVPropEditGeometry::on_pushButtonThreePointRotation_clicked() {
 	// when clicked, we set the scene into three-point-rotation mode
+	// TODO Stephan
+}
 
+
+void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
+	// compose vector of modified surface geometries
+	std::vector<VICUS::Surface> modifiedSurfaces;
+
+	// flip all plane geometries
+	for (const VICUS::Object * o : SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects) {
+		// handle surfaces
+		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
+		if (s != nullptr) {
+			VICUS::Surface modS(*s);
+			modS.m_geometry.flip();
+			modifiedSurfaces.push_back(modS);
+		}
+	}
+
+
+	// in case operation was executed without any selected objects - should be prevented
+	if (modifiedSurfaces.empty())
+		return;
+
+	// create undo-action
+	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Flipped normal vectors"), modifiedSurfaces );
+	undo->push();
 }

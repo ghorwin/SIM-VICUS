@@ -3,15 +3,7 @@
 
 #include "SVViewStateHandler.h"
 
-SVUndoDeleteSelected::SVUndoDeleteSelected(const QString & label, const std::vector<unsigned int> & selectedIDs,
-										   const std::vector<VICUS::ComponentInstance> & componentIDs) :
-	m_selectedIDs(selectedIDs),
-	m_compInstances(componentIDs)
-{
-	setText( label );
-}
-
-
+// Utility comparison operator to search for unique ID
 class hasUniqueID {
 public:
 	hasUniqueID(unsigned int uID) : m_uID(uID) {}
@@ -24,94 +16,89 @@ public:
 };
 
 
+SVUndoDeleteSelected::SVUndoDeleteSelected(const QString & label, const std::vector<unsigned int> & objectIDsToBeRemoved) :
+	m_selectedIDs(objectIDsToBeRemoved.begin(), objectIDsToBeRemoved.end())
+{
+	setText( label );
+
+	// create a copy of all data structures that need something removed from
+	m_buildings = project().m_buildings;
+
+	// we now erase objects throughout the hierarchy
+	// surface -> (empty) rooms -> (empty) building levels -> (empty) buildings
+	for (unsigned int bIdx = 0; bIdx < m_buildings.size(); /* no counter increase here */) {
+		VICUS::Building & b = m_buildings[bIdx];
+		for (unsigned int blIdx = 0; blIdx < b.m_buildingLevels.size(); /* no counter increase here */) {
+			VICUS::BuildingLevel & bl = b.m_buildingLevels[blIdx];
+			for (unsigned int rIdx = 0; rIdx < bl.m_rooms.size(); /* no counter increase here */) {
+				VICUS::Room & r = bl.m_rooms[rIdx];
+				for (unsigned int sIdx = 0; sIdx < r.m_surfaces.size(); /* no counter increase here */) {
+					// is surface selected for deletion?
+					if (m_selectedIDs.find(r.m_surfaces[sIdx].uniqueID()) != m_selectedIDs.end())
+						r.m_surfaces.erase(r.m_surfaces.begin() + sIdx); // remove surface, keep counter
+					else
+						++sIdx; // go to next surface
+				}
+				// selected for deletion and empty?
+				if (m_selectedIDs.find(r.uniqueID()) != m_selectedIDs.end() && r.m_surfaces.empty())
+					bl.m_rooms.erase(bl.m_rooms.begin() + rIdx); // remove, keep counter
+				else
+					++rIdx; // go to next room
+			}
+			// selected for deletion and empty?
+			if (m_selectedIDs.find(bl.uniqueID()) != m_selectedIDs.end() && bl.m_rooms.empty())
+				b.m_buildingLevels.erase(b.m_buildingLevels.begin() + blIdx); // remove, keep counter
+			else
+				++blIdx; // go to next room
+		}
+		// selected for deletion and empty?
+		if (m_selectedIDs.find(b.uniqueID()) != m_selectedIDs.end() && b.m_buildingLevels.empty())
+			m_buildings.erase(m_buildings.begin() + bIdx); // remove, keep counter
+		else
+			++bIdx; // go to next room
+	}
+
+	// reserve memory for plain geometry and then copy all but selected surfaces
+	m_plainGeometry.reserve(project().m_plainGeometry.size());
+	for (const VICUS::Surface & s : project().m_plainGeometry) {
+		// not found? -> not marked for deletion!
+		if (m_selectedIDs.find(s.uniqueID()) == m_selectedIDs.end())
+			m_plainGeometry.push_back(s); // copy surface over to data store
+	}
+
+
+	// also collect component instances that can be safely deleted, i.e. keep only those that reference at least one surface
+	// that is not selected
+	m_compInstances.reserve(project().m_componentInstances.size());
+	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+		unsigned int sideASurfID = ci.m_sideASurfaceID;
+		unsigned int sideBSurfID = ci.m_sideBSurfaceID;
+
+		// if side A references a surface marked for deletion, clear the ID
+		if (ci.m_sideASurfaceID != VICUS::INVALID_ID && m_selectedIDs.find(ci.m_sideASurfaceID) != m_selectedIDs.end())
+			sideASurfID = VICUS::INVALID_ID;
+		// same for side B
+		if (ci.m_sideBSurfaceID != VICUS::INVALID_ID && m_selectedIDs.find(ci.m_sideBSurfaceID) != m_selectedIDs.end())
+			sideBSurfID = VICUS::INVALID_ID;
+
+		// only keep component instance around if at least one side-ID is valid
+		if (sideASurfID != VICUS::INVALID_ID || sideBSurfID != VICUS::INVALID_ID)
+			m_compInstances.push_back(ci);
+	}
+}
+
+
 void SVUndoDeleteSelected::undo() {
-
-	// we now insert the cached data back into the data model
-	// Note: we need to do this backwards, in order to keep the insert positions!
-	for (std::vector<RemovedSurfaceInfo>::const_reverse_iterator rit = m_roomGeometry.rbegin();
-		 rit != m_roomGeometry.rend(); ++rit)
-	{
-		const RemovedSurfaceInfo & rsi = *rit;
-		// find the room with given ID
-		const VICUS::Object * o = theProject().objectById(rsi.m_parentRoomId);
-		Q_ASSERT(o != nullptr);
-		const VICUS::Room * r = dynamic_cast<const VICUS::Room*>(o);
-		Q_ASSERT(r != nullptr);
-		VICUS::Room * rptr = const_cast<VICUS::Room*>(r);
-		rptr->m_surfaces.insert(rptr->m_surfaces.begin()+rsi.m_insertIdx, rsi.m_surface);
-	}
-
-	// we now insert the cached data back into the data model
-	// Note: we need to do this backwards, in order to keep the insert positions!
-	for (std::vector<RemovedSurfaceInfo>::const_reverse_iterator rit = m_plainGeometry.rbegin();
-		 rit != m_plainGeometry.rend(); ++rit)
-	{
-		const RemovedSurfaceInfo & rsi = *rit;
-		theProject().m_plainGeometry.insert(theProject().m_plainGeometry.begin()+rsi.m_insertIdx, rsi.m_surface);
-	}
-
-	theProject().m_componentInstances.swap(m_compInstances);
-
-	// rebuild pointer hierarchy
-	theProject().updatePointers();
-	// tell project that the geometry has changed (i.e. rebuild navigation tree and scene)
-	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);
+	redo();  // same as redo, just swap memory
 }
 
 
 void SVUndoDeleteSelected::redo() {
 
 	VICUS::Project & prj = theProject();
-
-	m_roomGeometry.clear();
-	m_plainGeometry.clear();
-
-	// now process all IDs
-	for (unsigned int uID : m_selectedIDs) {
-		// process all building surfaces
-		bool found = false;
-		for (std::vector<VICUS::Building>::iterator buildingIt = prj.m_buildings.begin();
-			 !found && buildingIt != prj.m_buildings.end(); ++buildingIt)
-		{
-			for (std::vector<VICUS::BuildingLevel>::iterator levelIt = buildingIt->m_buildingLevels.begin();
-				 !found && levelIt != buildingIt->m_buildingLevels.end(); ++levelIt)
-			{
-				for (std::vector<VICUS::Room>::iterator roomIt = levelIt->m_rooms.begin();
-					 !found && roomIt != levelIt->m_rooms.end(); ++roomIt)
-				{
-					std::vector<VICUS::Surface>::iterator it = std::find_if(
-								roomIt->m_surfaces.begin(), roomIt->m_surfaces.end(), hasUniqueID(uID));
-					if (it != roomIt->m_surfaces.end()) {
-						// copy surface over to data store
-						unsigned int idx = std::distance(roomIt->m_surfaces.begin(), it);
-						m_roomGeometry.push_back(RemovedSurfaceInfo(roomIt->uniqueID(), idx, *it));
-						// now remove the surface
-						roomIt->m_surfaces.erase(it);
-						found = true;
-					}
-				}
-			}
-		}
-		if (found)
-			continue; // next ID
-
-		// also search through naive geometry
-		found = false;
-		std::vector<VICUS::Surface>::iterator it = std::find_if(
-					prj.m_plainGeometry.begin(), prj.m_plainGeometry.end(), hasUniqueID(uID));
-		if (it != prj.m_plainGeometry.end()) {
-			// copy surface over to data store
-			unsigned int idx = std::distance(prj.m_plainGeometry.begin(), it);
-			m_plainGeometry.push_back(RemovedSurfaceInfo(0, idx, *it));
-			// now remove the surface
-			prj.m_plainGeometry.erase(it);
-			found = true;
-		}
-
-		// TODO : search through nodes/edges
-	}
-
-	theProject().m_componentInstances.swap(m_compInstances);
+	prj.m_buildings.swap(m_buildings);
+	prj.m_plainGeometry.swap(m_plainGeometry);
+	prj.m_componentInstances.swap(m_compInstances);
 
 	// rebuild pointer hierarchy
 	theProject().updatePointers();

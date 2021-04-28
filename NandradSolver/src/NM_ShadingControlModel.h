@@ -24,7 +24,7 @@ class Loads;
 
 	The model provides 'ShadingControlValue' and 'SolarIntensityOnShadingSensor'.
 */
-class ShadingControlModel : public DigitalHysteresisController, public AbstractModel {
+class ShadingControlModel : public AbstractModel, public AbstractTimeDependency {
 public:
 	ShadingControlModel(unsigned int id, const std::string &displayName):
 		m_id(id), m_displayName(displayName)
@@ -64,11 +64,17 @@ public:
 	/*! Sets a new controller state. */
 	int setTime(double t) override;
 
+	/*! Forwarded to controller. */
+	void stepCompleted(double t) override;
+
+
 private:
 	/*! Model instance ID. */
 	unsigned int									m_id;
 	/*! Display name (for error messages). */
 	std::string										m_displayName;
+	/*! The shading controller. */
+	DigitalHysteresisController						m_controller;
 	/*! Cached set point for the shading controller (average between min and max intensity). */
 	double											m_targetValue;
 	/*! Cached solar radiation intensity in [W/m2] on sensor. */
@@ -77,7 +83,9 @@ private:
 	const NANDRAD::ShadingControlModel				*m_shadingControlModel = nullptr;
 	/*! Cached pointer to climate loads model, to retrieve climatic loads. */
 	const Loads 									*m_loads = nullptr;
+
 };
+
 
 
 } // namespace NANDRAD_MODEL

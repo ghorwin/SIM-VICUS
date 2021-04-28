@@ -32,6 +32,9 @@ public:
 	*/
 	virtual void update(double errorValue) { m_errorValue = errorValue; }
 
+	/*! This function is called after each integration step (default implementation does nothing). */
+	virtual void stepCompleted(double t) { (void)t; }
+
 	/*! Stores result of controller calculation, updated in each call to update(). */
 	double				m_controlValue = 888;
 	/*! Cache of error value updated in last call to update(). */

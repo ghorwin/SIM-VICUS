@@ -1,3 +1,6 @@
 /ThermostatConstant/
 /ThermostatConstantPControlSingleZone/
 /IdealHeatingCoolingConstantPControlSingleZone/
+/IdealHeatingCoolingScheduledDigitalControlSingleZone/
+/IdealHeatingCoolingScheduledPControlSingleZone/
+/IdealHeatingCoolingConstantDigitalControlSingleZone/
