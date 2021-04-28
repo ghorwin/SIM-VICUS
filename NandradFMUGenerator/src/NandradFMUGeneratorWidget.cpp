@@ -584,7 +584,11 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerate_clicked() {
 	// generate the modelDescription.xml file
 
 	// load template and replace variables
-	QFile f(":/fmu/modelDescription.xml.template");
+	IBK::Path fPath(":/../../../SIM-VICUS/resources/fmu/modelDescription.xml.template");
+	fPath = fPath.absolutePath();
+	if(!fPath.isFile())
+		return;
+	QFile f(fPath.c_str());
 	f.open(QFile::ReadOnly);
 	QTextStream strm(&f);
 
