@@ -61,7 +61,19 @@ void Surface::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "PlaneGeometry")
+			if (cName == "SubSurfaces") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "SubSurface")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					SubSurface obj;
+					obj.readXML(c2);
+					m_subSurfaces.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "PlaneGeometry")
 				m_geometry.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
@@ -89,6 +101,18 @@ TiXmlElement * Surface::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 
 	m_geometry.writeXML(e);
+
+	if (!m_subSurfaces.empty()) {
+		TiXmlElement * child = new TiXmlElement("SubSurfaces");
+		e->LinkEndChild(child);
+
+		for (std::vector<SubSurface>::const_iterator it = m_subSurfaces.begin();
+			it != m_subSurfaces.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
 	return e;
 }
 
