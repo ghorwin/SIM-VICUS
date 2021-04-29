@@ -154,6 +154,9 @@ KeywordListQt::KeywordListQt() {
 	tr("Triangle");
 	tr("Rectangle");
 	tr("Polygon");
+	tr("Triangle");
+	tr("Rectangle");
+	tr("Polygon");
 	tr("Floor area of the zone.");
 	tr("Volume of the zone.");
 	tr("Specularity of the material.");
