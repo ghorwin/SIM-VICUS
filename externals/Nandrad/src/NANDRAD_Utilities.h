@@ -151,7 +151,6 @@ template <typename T>
 void readPoint2D(const TiXmlElement * element, const std::string & name, IBK::point2D<T> & p) {
 	FUNCID(NANDRAD::readPoint2D);
 	std::string text = element->GetText();
-	text = IBK::replace_string(text, ",", " ");
 	try {
 		typename std::vector<T> vec;
 		IBK::string2vector(text, vec);
@@ -176,7 +175,7 @@ void writePoint2D(TiXmlElement * parent, const std::string & name, const IBK::po
 	parent->LinkEndChild(child);
 
 	std::stringstream vals;
-	vals << p.m_x << "," << p.m_y;
+	vals << p.m_x << " " << p.m_y;
 	TiXmlText * text = new TiXmlText( vals.str() );
 	child->LinkEndChild( text );
 }
