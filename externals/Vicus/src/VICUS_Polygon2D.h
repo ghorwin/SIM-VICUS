@@ -88,9 +88,9 @@ public:
 	/*! Inverts vertexes so that normal vector is inverted/flipped. */
 	void flip();
 
-	/*! Check for intersection of each edge with the line(p1, p2)
-	*/
-	bool intersectsLine(const QPointF &p1, const QPointF &p2,
+	/*! Check for intersection of each edge with the line(p1, p2).
+Intersection point*/
+	bool intersectsLine2D(const QPointF &p1, const QPointF &p2,
 						QPointF & intersectionPoint) const;
 
 	/*! Returns current vector of triangles. */
@@ -115,6 +115,11 @@ public:
 
 //	/*! Returns the y-vector of the local coordinate system. */
 //	const IBKMK::Vector3D & localY() const { return m_localY; }
+
+
+
+//	/*! Comparison operator == */
+//	bool operator==(const Polygon2D &other) const {return !(*this != other);}
 
 private:
 	// *** PRIVATE MEMBER FUNCTIONS ***

@@ -6,6 +6,7 @@
 
 #include <IBK_Line.h>
 #include <IBK_math.h>
+#include <IBK_messages.h>
 
 #include <IBKMK_Triangulation.h>
 
@@ -16,6 +17,31 @@
 
 namespace VICUS {
 
+/*! Comparison operator != */
+bool Polygon2D::operator!=(const Polygon2D &other) const {
+	if(m_type != other.m_type)
+		return true;
+	if(m_vertexes != other.m_vertexes)
+		return true;
+	return false;
+}
+
+void Polygon2D::readXML(const TiXmlElement * element) {
+	FUNCID(Polygon2D::readXML);
+	readXMLPrivate(element);
+	unsigned int nVert = m_vertexes.size();
+	computeGeometry();
+	if (nVert != m_vertexes.size())
+		IBK::IBK_Message(IBK::FormatString("Invalid polygon in project, removed invalid vertexes."), IBK::MSG_WARNING, FUNC_ID);
+}
+
+
+TiXmlElement * Polygon2D::writeXML(TiXmlElement * parent) const {
+	if (*this != Polygon2D())
+		return writeXMLPrivate(parent);
+	else
+		return nullptr;
+}
 
 void Polygon2D::addVertex(const QPointF &v) {
 	m_vertexes << v;
@@ -49,21 +75,16 @@ void Polygon2D::computeGeometry(){
 void Polygon2D::flip(){
 	std::vector<QPointF> inverseVertexes;
 
-	for(int i=m_vertexes.size()-1; i>=0; --i )
-		inverseVertexes.push_back(m_vertexes[i]);
-
-	///TODO Dirk->Andreas das untere funktioniert nicht mehr brauch da hilfe.
-//	for (std::vector<QPointF>::const_reverse_iterator rit = m_vertexes.rbegin();
-//		 rit != m_vertexes.rend(); ++rit) {
-//		inverseVertexes.push_back(*rit);
-//	}
-
-
+	for (QVector<QPointF>::const_reverse_iterator rit = m_vertexes.rbegin();
+		 rit != m_vertexes.rend(); ++rit) {
+		inverseVertexes.push_back(*rit);
+	}
+	///TODO Dirk implement
 //		 setVertexes(inverseVertexes);
 }
 
 
-bool Polygon2D::intersectsLine(const QPointF &p1, const QPointF &p2, QPointF &intersectionPoint) const{
+bool Polygon2D::intersectsLine2D(const QPointF &p1, const QPointF &p2, QPointF &intersectionPoint) const{
 	QLineF otherLine(p1,p2);
 	int vertSize=m_vertexes.size();
 	for(int i=0; i<vertSize; ++i){
@@ -96,6 +117,7 @@ double Polygon2D::area() const{
 	surfArea *= 0.5;
 	return surfArea;
 }
+
 
 void Polygon2D::simplify() {
 	if (m_vertexes.size() == 3) {
