@@ -64,7 +64,7 @@ static int crossProdTest(QPointF a, QPointF b, QPointF c){
 static int pointInPolygon(const QPointF &point, const QPolygonF& poly)
 {
 	int t=-1;
-	unsigned int polySize = poly.size();
+	size_t polySize = (size_t)poly.size();
 	for (size_t i=0; i<polySize; ++i) {
 		t *= crossProdTest(point, poly.value(i), poly.value((i+1)%polySize));//  m_polyline[(i+1)%m_polyline.size()]);
 		if(t==0)
@@ -205,16 +205,16 @@ void PlaneGeometry::update3DPolygon() {
 	QQuaternion qq;
 	double angle = std::acos(m_normal.scalarProduct(IBKMK::Vector3D(0,0,1)))/IBK::DEG2RAD;
 	IBKMK::Vector3D vec = m_normal.crossProduct(IBKMK::Vector3D(0,0,1));
-	QVector3D axis(vec.m_x, vec.m_y, vec.m_z);
-	qq.fromAxisAndAngle(axis, angle);
+	QVector3D axis((float)vec.m_x, (float)vec.m_y, (float)vec.m_z);
+	qq.fromAxisAndAngle(axis, (float)angle);
 
 	IBKMK::Vector3D translation = m_vertexes[0];
-	std::vector<QVector3D>	newVerties(m_polygon.size());
+	std::vector<QVector3D>	newVerties((size_t)m_polygon.size());
 
 	m_vertexes.clear();
 
 	for (int i=0; i< m_polygon.size(); ++i) {
-		QVector3D vecA(m_polygon.value(i).x(), m_polygon.value(i).y(), 0);
+		QVector3D vecA((float)m_polygon.value(i).x(), (float)m_polygon.value(i).y(), 0);
 		vecA = qq * vecA;
 		IBKMK::Vector3D vecB(vecA.x(),vecA.y(),vecA.z());
 
@@ -382,11 +382,11 @@ void PlaneGeometry::eleminateColinearPts(){
 void PlaneGeometry::triangulate() {
 //	FUNCID(PlaneGeometry::triangulate);
 	Q_ASSERT(m_vertexes.size() >= 3);
-	Q_ASSERT(m_polygon.size() == m_vertexes.size());
+	Q_ASSERT(m_polygon.size() == (int)m_vertexes.size());
 
-	bool isDrawMode = true;
+	//bool isDrawMode = true;
 
-	const double eps = 1e-4;
+	//const double eps = 1e-4;
 	m_triangles.clear();
 	switch (m_type) {
 
@@ -410,10 +410,10 @@ void PlaneGeometry::triangulate() {
 			std::vector<std::pair<unsigned int, unsigned int> > edges;
 
 			// fill points vector
-			points.resize(m_polygon.size());
-			for (unsigned int i=0; i<m_polygon.size(); ++i) {
+			points.resize((size_t)m_polygon.size());
+			for (int i=0; i<(int)m_polygon.size(); ++i) {
 				const QPointF  & p = m_polygon[i];
-				points[i] = IBK::point2D<double>(p.x(), p.y());
+				points[(size_t)i] = IBK::point2D<double>(p.x(), p.y());
 				edges.push_back(std::make_pair(i, (i+1)%m_polygon.size()));
 			}
 			edges.back().second = 0;
