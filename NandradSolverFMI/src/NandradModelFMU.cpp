@@ -36,7 +36,9 @@ NandradModelFMU::NandradModelFMU()/* :
 void NandradModelFMU::setReal(int varID, double value) {
 	FUNCID(NandradModelFMU::setRealParameter);
 
-	IBK_ASSERT(m_fmiInputOutput != nullptr);
+	// For now, we ignore call to setRealParameter() *before* initialization was done
+	if (m_fmiInputOutput == nullptr)
+		return;
 
 	try {
 		m_fmiInputOutput->setInputValue((unsigned int) varID, value);
