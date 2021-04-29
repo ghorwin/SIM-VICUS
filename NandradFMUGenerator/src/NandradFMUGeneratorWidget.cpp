@@ -579,7 +579,7 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerate_clicked() {
 		p.m_placeholders.erase(it);
 
 	// now write the project into the export directory, it will always be called "project.nandrad"
-	p.writeXML(resourcePath / "project.nandrad");
+	p.writeXML(resourcePath / "Project.nandrad");
 
 	// generate the modelDescription.xml file
 
@@ -727,6 +727,150 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerate_clicked() {
 		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 	}
+
+//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libNandradModel.so.2";
+//	if (QFile(fmuLibFile).exists()) {
+//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//		QFile::copy(fmuLibFile,
+//					baseDir.absoluteFilePath("binaries/linux64/libNandradModel.so.2"));
+//	}
+//	else {
+//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//	}
+
+//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libIntegratorFramework.so.1";
+//	if (QFile(fmuLibFile).exists()) {
+//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//		QFile::copy(fmuLibFile,
+//					baseDir.absoluteFilePath("binaries/linux64/libIntegratorFramework.so.1"));
+//	}
+//	else {
+//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//	}
+
+//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libsundials.so.2";
+//	if (QFile(fmuLibFile).exists()) {
+//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//		QFile::copy(fmuLibFile,
+//					baseDir.absoluteFilePath("binaries/linux64/libsundials.so.2"));
+//	}
+//	else {
+//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//	}
+
+//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libSuiteSparse.so.1";
+//	if (QFile(fmuLibFile).exists()) {
+//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//		QFile::copy(fmuLibFile,
+//					baseDir.absoluteFilePath("binaries/linux64/libSuiteSparse.so.1"));
+//	}
+//	else {
+//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//	}
+
+//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libDataIO.so.7";
+//	if (QFile(fmuLibFile).exists()) {
+//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//		QFile::copy(fmuLibFile,
+//					baseDir.absoluteFilePath("binaries/linux64/libDataIO.so.7"));
+//	}
+//	else {
+//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//	}
+
+//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libShading.so.1";
+//	if (QFile(fmuLibFile).exists()) {
+//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//		QFile::copy(fmuLibFile,
+//					baseDir.absoluteFilePath("binaries/linux64/libShading.so.1"));
+//	}
+//	else {
+//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//	}
+
+//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libZeppelin.so.1";
+//	if (QFile(fmuLibFile).exists()) {
+//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//		QFile::copy(fmuLibFile,
+//					baseDir.absoluteFilePath("binaries/linux64/libZeppelin.so.1"));
+//	}
+//	else {
+//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//	}
+
+//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libCCM.so.1";
+//	if (QFile(fmuLibFile).exists()) {
+//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//		QFile::copy(fmuLibFile,
+//					baseDir.absoluteFilePath("binaries/linux64/libCCM.so.1"));
+//	}
+//	else {
+//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//	}
+
+//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libNandrad.so.2";
+//	if (QFile(fmuLibFile).exists()) {
+//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//		QFile::copy(fmuLibFile,
+//					baseDir.absoluteFilePath("binaries/linux64/libNandrad.so.2"));
+//	}
+//	else {
+//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//	}
+
+//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libIBKMK.so.1";
+//	if (QFile(fmuLibFile).exists()) {
+//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//		QFile::copy(fmuLibFile,
+//					baseDir.absoluteFilePath("binaries/linux64/libIBKMK.so.1"));
+//	}
+//	else {
+//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//	}
+
+//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libTiCPP.so.1";
+//	if (QFile(fmuLibFile).exists()) {
+//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//		QFile::copy(fmuLibFile,
+//					baseDir.absoluteFilePath("binaries/linux64/libTiCPP.so.1"));
+//	}
+//	else {
+//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//	}
+
+//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libIBK.so.5";
+//	if (QFile(fmuLibFile).exists()) {
+//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//		QFile::copy(fmuLibFile,
+//					baseDir.absoluteFilePath("binaries/linux64/libIBK.so.5"));
+//	}
+//	else {
+//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
+//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+//	}
 
 	// macos
 	fmuLibFile = m_installDir + "/libNandradSolverFMI.dylib";
