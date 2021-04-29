@@ -5,8 +5,9 @@
 #include "VICUS_Constants.h"
 #include "VICUS_PlaneGeometry.h"
 #include "VICUS_Object.h"
+#include "VICUS_SubSurface.h"
 
-#include "IBK_LinearSpline.h"
+#include <IBK_LinearSpline.h>
 
 #include <QString>
 #include <QColor>
@@ -39,7 +40,7 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID of building. */
+	/*! Unique ID of surface. */
 	unsigned int						m_id = INVALID_ID;			// XML:A:required
 
 	QString								m_displayName;				// XML:A
@@ -51,6 +52,9 @@ public:
 		TODO : move to different places or use for visualization
 	*/
 	IBK::LinearSpline					m_shadingFactor;
+
+	/*! Subsurfaces of the surface. */
+	std::vector<SubSurface>				m_subSurfaces;				// XML:E
 
 	/*! Stores visibility information for this surface.
 		Note: keep the next line - this will cause the code generator to create serialization code
