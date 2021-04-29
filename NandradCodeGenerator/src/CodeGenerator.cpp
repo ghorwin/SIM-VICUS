@@ -417,7 +417,7 @@ void CodeGenerator::generateReadWriteCode() {
 				// - IBK::Parameter and IBK::Parameter[NUM_xxx]
 				// - IBK::IntPara and IBK::IntPara[NUM_xxx]
 				// - IBK::Flag and IBK::Flag[NUM_xxx]
-				// - IBK::point2D<double>
+				// - IBK::point2D<double|int|unsigned int>
 				// - IDType[NUM_xxx]
 				// - std::vector<xxx> and special handling for:
 				//   - std::vector<double|int|unsigned int>
