@@ -78,7 +78,7 @@ public:
 	unsigned int					m_idConstruction = INVALID_ID;				// XML:E
 
 	/*! Transparent construction ID. */
-	unsigned int					m_idGlazingSystem = INVALID_ID;				// XML:E
+	unsigned int					m_idWindow = INVALID_ID;					// XML:E
 
 	/*! Boundary condition ID for Side A (usually outside). */
 	unsigned int					m_idSideABoundaryCondition = INVALID_ID;	// XML:E
