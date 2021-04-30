@@ -141,7 +141,7 @@ IBK::Unit readUnitElement(const TiXmlElement * element, const std::string & eNam
 IBK::Time readTimeElement(const TiXmlElement * element, const std::string & eName);
 
 /*! Writes out a vector of Vector3D elements. */
-void writeVector3D(TiXmlElement * parent, const std::string & name, const std::vector<IBKMK::Vector3D> & vec);
+TiXmlElement * writeVector3D(TiXmlElement * parent, const std::string & name, const std::vector<IBKMK::Vector3D> & vec);
 
 /*! Reads a vector of Vector3D elements. */
 void readVector3D(const TiXmlElement * element, const std::string & name, std::vector<IBKMK::Vector3D> & vec);

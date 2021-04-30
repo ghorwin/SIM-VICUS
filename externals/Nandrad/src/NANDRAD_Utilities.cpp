@@ -190,7 +190,8 @@ IBK::Time readTimeElement(const TiXmlElement * element, const std::string & eNam
 	return t;
 }
 
-void writeVector3D(TiXmlElement * parent, const std::string & name, const std::vector<IBKMK::Vector3D> & vec) {
+
+TiXmlElement * writeVector3D(TiXmlElement * parent, const std::string & name, const std::vector<IBKMK::Vector3D> & vec) {
 	if (!vec.empty()) {
 		TiXmlElement * child = new TiXmlElement(name);
 		parent->LinkEndChild(child);
@@ -202,7 +203,9 @@ void writeVector3D(TiXmlElement * parent, const std::string & name, const std::v
 		}
 		TiXmlText * text = new TiXmlText( vals.str() );
 		child->LinkEndChild( text );
+		return child;
 	}
+	return nullptr;
 }
 
 
