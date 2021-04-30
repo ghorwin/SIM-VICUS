@@ -112,15 +112,15 @@ TiXmlElement * PlaneGeometry::writeXML(TiXmlElement * parent) const {
 		return nullptr;
 }
 
-double PlaneGeometry::inclination() const
-{
+
+double PlaneGeometry::inclination() const {
 	return std::acos(normal().m_z) / IBK::DEG2RAD;
 }
 
-double PlaneGeometry::orientation() const
-{
+
+double PlaneGeometry::orientation() const {
 	double val = 90 - std::atan2(normal().m_y, normal().m_x) / IBK::DEG2RAD;
-	if(val<0)
+	if (val<0)
 		val += 360;
 	return  val;
 }
@@ -171,13 +171,13 @@ void PlaneGeometry::computeGeometry() {
 
 
 void PlaneGeometry::flip() {
-//	std::vector<IBKMK::Vector3D> invertedVertexes(m_vertexes.rbegin(), m_vertexes.rend());
-	std::vector<IBKMK::Vector3D> inverseVertexes;
-	for (std::vector<IBKMK::Vector3D>::const_reverse_iterator rit = m_vertexes.rbegin();
-		 rit != m_vertexes.rend(); ++rit)
-	{
-		inverseVertexes.push_back(*rit);
-	}
+	std::vector<IBKMK::Vector3D> inverseVertexes(m_vertexes.rbegin(), m_vertexes.rend());
+//	std::vector<IBKMK::Vector3D> inverseVertexes;
+//	for (std::vector<IBKMK::Vector3D>::const_reverse_iterator rit = m_vertexes.rbegin();
+//		 rit != m_vertexes.rend(); ++rit)
+//	{
+//		inverseVertexes.push_back(*rit);
+//	}
 	setVertexes(inverseVertexes);
 }
 
@@ -508,8 +508,8 @@ void PlaneGeometry::setVertexes(const std::vector<IBKMK::Vector3D> & vertexes) {
 	computeGeometry();
 }
 
-bool PlaneGeometry::isSimplePolygon()
-{
+
+bool PlaneGeometry::isSimplePolygon() {
 	std::vector<IBK::Line>	lines;
 	for (int i=0; i<m_polygon.size(); ++i) {
 		lines.emplace_back(
@@ -521,7 +521,7 @@ bool PlaneGeometry::isSimplePolygon()
 								  m_polygon.value((i+1)%m_polygon.size()).x(),
 								  m_polygon.value((i+1)%m_polygon.size()).y())));
 	}
-	if(lines.size()<4)
+	if (lines.size()<4)
 		return true;
 	for (unsigned int i=0; i<lines.size();++i) {
 		for (unsigned int j=0; j<lines.size()-2; ++j) {
@@ -627,28 +627,28 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 	return false;
 }
 
-double PlaneGeometry::area() const
-{
-	if(m_polygon.empty())
-		throw IBK::Exception(IBK::FormatString("Points of Polygon are not set.\n"), "[PlaneGeometry::area]");
+
+double PlaneGeometry::area() const {
+	FUNCID(PlaneGeometry::area);
+	if (m_polygon.empty())
+		throw IBK::Exception(IBK::FormatString("Points of Polygon are not set."), FUNC_ID);
 
 	double area = 0.0;
 
-	for (int i=0; i<m_polygon.size(); ++i)
-	{
-		int iN = (i+1)%m_polygon.size();
+	for (int i=0, pCount = m_polygon.size(); i<pCount; ++i) {
+		int iN = (i+1) % pCount;
 		area += 0.5 * (m_polygon.value(i).x() * m_polygon.value(iN).y()
 					   - m_polygon.value(iN).x() * m_polygon.value(i).y());
 	}
-	return std::abs(area);
+	return std::fabs(area);
 }
 
-IBKMK::Vector3D PlaneGeometry::centerPoint() const
-{
+
+IBKMK::Vector3D PlaneGeometry::centerPoint() const {
 	size_t counter=0;
 	IBKMK::Vector3D vCenter;
 
-	for ( IBKMK::Vector3D v : vertexes()) {
+	for (const IBKMK::Vector3D & v : vertexes()) {
 		vCenter += v;
 		++counter;
 	}
@@ -661,6 +661,7 @@ IBKMK::Vector3D PlaneGeometry::centerPoint() const
 bool PlaneGeometry::operator!=(const PlaneGeometry & other) const {
 	if (m_type != other.m_type) return true;
 	if (m_vertexes != other.m_vertexes) return true;
+	// Note: all other properties are derived from m_vertexes and m_type, so there's no need to check them.
 	return false;
 }
 

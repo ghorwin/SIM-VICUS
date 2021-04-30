@@ -188,12 +188,15 @@ private:
 	*/
 	std::vector<IBKMK::Vector3D>		m_vertexes;
 
+
 	// *** Runtime Variables ***
+
+	// The variables below are not serialized into XML data structure and are generated from m_vertexes at runtime.
 
 	/*! Polyline in 2D-coordinates. */
 	QPolygonF							m_polygon;
 
-	/*! Normal vector of plane, updated in updateNormal(). */
+	/*! Normal vector of plane, updated in updateLocalCoordinateSystem(). */
 	IBKMK::Vector3D						m_normal = IBKMK::Vector3D(0,0,0);
 
 	/*! Contains the vertex indexes for each triangle that the polygon is composed of (in anti-clock-wise order, so
@@ -202,7 +205,9 @@ private:
 	*/
 	std::vector<triangle_t>				m_triangles;
 
+	/*! Local X-vector, updated in updateLocalCoordinateSystem(). */
 	IBKMK::Vector3D						m_localX;
+	/*! Local Y-vector, updated in updateLocalCoordinateSystem(). */
 	IBKMK::Vector3D						m_localY;
 
 private:
