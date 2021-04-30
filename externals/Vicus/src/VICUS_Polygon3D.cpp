@@ -9,7 +9,7 @@
 #include <IBK_math.h>
 #include <IBK_messages.h>
 
-#include <IBKMK_2DCalculations.h>
+#include <IBKMK_3DCalculations.h>
 
 #include <NANDRAD_Utilities.h>
 
@@ -194,60 +194,9 @@ bool Polygon3D::isSimplePolygon() {
 }
 
 
-
-/* Eleminate one coolinear point. If a point is erased return true. */
-bool eleminateColinearPtsHelper(std::vector<IBKMK::Vector3D> &polyline){
-
-	if(polyline.size()<=2)
-		return false;
-
-	const double eps = 1e-4;
-	unsigned int polySize = polyline.size();
-
-	for(unsigned int idx=0; idx<polySize; ++idx){
-		unsigned int idx0 = idx-1;
-		if(idx==0)
-			idx0 = polySize-1;
-
-		IBKMK::Vector3D a = polyline.at(idx0) - polyline.at(idx);
-		IBKMK::Vector3D b = polyline.at((idx+1) % polySize) - polyline.at(idx);
-		a.normalize();
-		b.normalize();
-
-		double cosAngle = a.scalarProduct(b);
-
-
-		if(cosAngle < -1+eps || cosAngle > 1-eps){
-			polyline.erase(polyline.begin()+idx);
-			return true;
-		}
-	}
-	return false;
+void Polygon3D::eleminateColinearPts() {
+	IBKMK::eleminateColinearPoints(m_vertexes);
 }
-
-
-void Polygon3D::eleminateColinearPts(){
-
-	if(m_vertexes.size()<2)
-		return;
-	//check for duplicate points in polyline and remove duplicates
-	for (int i=(int)m_vertexes.size()-1; i>=0; --i) {
-		if(i==std::numeric_limits<size_t>::max())
-			break;
-		if(m_vertexes.size()<2)
-			return;
-		size_t j=i-1;
-		if(i==0)
-			j=m_vertexes.size()-1;
-		if((m_vertexes[i]-m_vertexes[j]).magnitude()<0.001)
-			m_vertexes.erase(m_vertexes.begin()+i);
-	}
-
-	bool tryAgain =true;
-	while (tryAgain)
-		tryAgain = eleminateColinearPtsHelper(m_vertexes);
-}
-
 
 
 void Polygon3D::updateLocalCoordinateSystem() {
