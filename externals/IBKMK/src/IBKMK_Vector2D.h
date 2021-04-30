@@ -36,76 +36,46 @@
 
 */
 
-#ifndef IBKMK_Vector3DH
-#define IBKMK_Vector3DH
+#ifndef IBKMK_Vector2DH
+#define IBKMK_Vector2DH
 
 #include <IBK_point.h>
 #include <IBK_Exception.h>
 
-/*! The namespace IBKMK contains math calculation routines that are not part of the IBK
-	library. IBKMK is short for 'IBK math kernel'.
-	The name IBK stands for Institut fuer Bauklimatik der TU Dresden
-	(TUD) in Germany, where most of this library was coded.
-*/
 namespace IBKMK {
 
-/*! A vector class in 3D, extends the IBK::point3D<> template class with computation
+/*! A vector class in 2D, extends the IBK::point2D<> template class with computation
 	functionality.
 */
-class Vector3D : public IBK::point3D<double> {
+class Vector2D : public IBK::point2D<double> {
 public:
 
 	/*! Default constructor, initializes default point/vector. */
-	Vector3D() {}
-
-	/*! Convenience constructor. */
-	Vector3D(const IBK::point2D<double> &p) : IBK::point3D<double>(p.m_x, p.m_y, 0.0)
-	{
-	}
-
-	/*! Convenience constructor. */
-	Vector3D(double a, double b, double c) : IBK::point3D<double>(a,b,c)
-	{
-	}
+	Vector2D() {}
 
 	/*! Initializing constructor for base class. */
-	Vector3D(const IBK::point3D<double> & pt) : IBK::point3D<double>(pt)
+	Vector2D(const IBK::point2D<double> &p) : IBK::point2D<double>(p.m_x, p.m_y)
+	{
+	}
+
+	/*! Convenience constructor. */
+	Vector2D(double a, double b) : IBK::point2D<double>(a,b)
 	{
 	}
 
 	/*! returns distance to other vector */
-	double distanceTo(const Vector3D &v){
-		return Vector3D(*this - v).magnitude();
+	double distanceTo(const Vector2D &v){
+		return Vector2D(*this - v).magnitude();
 	}
 
 	/*! Returns the magnitude of the vector. */
 	double magnitude() const {
-		return std::sqrt(m_x*m_x + m_y*m_y + m_z*m_z);
-	}
-
-	/*! Returns the cross product of this vector with another.
-		Computes result = this x other.
-	*/
-	Vector3D crossProduct(const Vector3D & other) const {
-		Vector3D result;
-		crossProduct(other, result);
-		return result;
-	}
-
-	/*! Returns the cross product of this vector with another.
-		Computes result = this x other.
-		This function is implemented performance oriented, but not as
-		readible as the other crossProduct() version.
-	*/
-	void crossProduct(const Vector3D & other, Vector3D & result) const {
-		result.m_x = m_y*other.m_z - m_z*other.m_y;
-		result.m_y = m_z*other.m_x - m_x*other.m_z;
-		result.m_z = m_x*other.m_y - m_y*other.m_x;
+		return std::sqrt(m_x*m_x + m_y*m_y);
 	}
 
 	/*! Returns the scalar product of this and another vector. */
-	double scalarProduct(const Vector3D & other) const {
-		return m_x*other.m_x + m_y*other.m_y + m_z*other.m_z;
+	double scalarProduct(const Vector2D & other) const {
+		return m_x*other.m_x + m_y*other.m_y;
 	}
 
 	/*! Normalizes the vector: <math>v = \frac{v}{\left| v \right|}</math>. */
@@ -116,82 +86,73 @@ public:
 	}
 
 	/*! Normalizes the vector: <math>v = \frac{v}{\left| v \right|}</math>. */
-	Vector3D normalized() const {
-		Vector3D t(*this);
+	Vector2D normalized() const {
+		Vector2D t(*this);
 		t.normalize();
 		return t;
 	}
 
 	/*! Assignment operator. */
-	const Vector3D & operator=(const IBK::point3D<double> & pt) {
+	const Vector2D & operator=(const IBK::point3D<double> & pt) {
 		m_x = pt.m_x;
 		m_y = pt.m_y;
-		m_z = pt.m_z;
 		return *this;
 	}
 
 	/*! Scales all components of the vector with the scalar \a scalar. */
-	const Vector3D & operator*=(double scalar) {
+	const Vector2D & operator*=(double scalar) {
 		m_x *= scalar;
 		m_y *= scalar;
-		m_z *= scalar;
 		return *this;
 	}
 
 	/*! Devides all components of the vector by the scalar \a scalar. */
-	const Vector3D & operator/=(double scalar) {
+	const Vector2D & operator/=(double scalar) {
 		if (scalar == 0.0)
-			throw IBK::Exception("Division by zero", "[Vector3D::operator/=]");
+			throw IBK::Exception("Division by zero", "[Vector2D::operator/=]");
 		return operator*=(1/scalar);
 	}
 
 	/*! Adds another vector to this point/vector. */
-	const Vector3D & operator+=(const Vector3D & other){
+	const Vector2D & operator+=(const Vector2D & other){
 		m_x += other.m_x;
 		m_y += other.m_y;
-		m_z += other.m_z;
 		return *this;
 	}
 
 	/*! Subtracts another vector from this point/vector. */
-	const Vector3D & operator-=(const Vector3D & other){
+	const Vector2D & operator-=(const Vector2D & other){
 		m_x -= other.m_x;
 		m_y -= other.m_y;
-		m_z -= other.m_z;
 		return *this;
 	}
 
 	/*! Adds another vector to this vector and returns the result. */
-	Vector3D operator+(const Vector3D & other) const {
-		Vector3D tmp = *this;
+	Vector2D operator+(const Vector2D & other) const {
+		Vector2D tmp = *this;
 		tmp += other;
 		return tmp;
 	}
 
 	/*! Subtracts another vector from this vector and returns the result. */
-	Vector3D operator-(const Vector3D & other) const {
-		Vector3D tmp = *this;
+	Vector2D operator-(const Vector2D & other) const {
+		Vector2D tmp = *this;
 		tmp -= other;
 		return tmp;
-	}
-
-	/*! returns point2D with z=0 */
-	IBK::point2D<double> point2D(){
-		return IBK::point2D<double>(m_x, m_y);
 	}
 
 };
 
 /*! Scales all components of the vector with the scalar \a scalar. */
-inline IBKMK::Vector3D operator*(double scalar, const IBKMK::Vector3D &other) {
-	IBKMK::Vector3D tmp = other;
+inline IBKMK::Vector2D operator*(double scalar, const IBKMK::Vector2D &other) {
+	IBKMK::Vector2D tmp = other;
 	tmp *= scalar;
 	return tmp;
 }
 
 /*! Scales all components of the vector with the scalar \a scalar. */
-inline IBKMK::Vector3D operator*(const IBKMK::Vector3D &other, double scalar) {
-	IBKMK::Vector3D tmp = other;
+inline IBKMK::Vector2D operator*(const IBKMK::Vector2D &other, double scalar) {
+	IBKMK::Vector2D tmp = other;
 	tmp *= scalar;
 	return tmp;
 }
@@ -199,4 +160,4 @@ inline IBKMK::Vector3D operator*(const IBKMK::Vector3D &other, double scalar) {
 } // namespace IBKMK
 
 
-#endif // IBKMK_Vector3DH
+#endif // IBKMK_Vector2DH

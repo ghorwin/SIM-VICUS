@@ -61,6 +61,7 @@ HEADERS += \
 	../../src/IBKMK_SparseMatrixCSR.h \
 	../../src/IBKMK_SparseMatrixPattern.h \
 	../../src/IBKMK_Triangulation.h \
+	../../src/IBKMK_Vector2D.h \
 	../../src/IBKMK_Vector3D.h \
 	../../src/IBKMK_common_defines.h
 
