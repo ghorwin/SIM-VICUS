@@ -29,6 +29,9 @@ public:
 	/*! Checks if all parameters are valid. */
 	bool isValid() const;
 
+	/*! Comparison operator */
+	ComparisonResult equal(const AbstractDBElement *other) const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique id number. */
@@ -38,6 +41,7 @@ public:
 	/*! Identification color. */
 	QColor								m_color;						// XML:A
 
+	///TODO Hauke bitte die variablen in ein array m_para[...] umbauen
 
 	/*! Outside diameter pipe in [mm]. */
 	double								m_diameterOutside;				// XML:A:required

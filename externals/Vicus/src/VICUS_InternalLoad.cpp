@@ -95,5 +95,36 @@ bool InternalLoad::isValid() const
 	return true;
 }
 
+AbstractDBElement::ComparisonResult InternalLoad::equal(const AbstractDBElement *other) const {
+	const InternalLoad * otherIntLoad = dynamic_cast<const InternalLoad*>(other);
+	if (otherIntLoad == nullptr)
+		return Different;
+
+	//first check critical data
+
+	//check parameters
+	for(unsigned int i=0; i<NUM_P; ++i){
+		if(m_para[i] != otherIntLoad->m_para[i])
+			return Different;
+	}
+	if(m_category != otherIntLoad->m_category ||
+			m_personCountMethod != otherIntLoad->m_personCountMethod||
+			m_powerMethod != otherIntLoad->m_powerMethod ||
+			m_occupancyScheduleId != otherIntLoad->m_occupancyScheduleId ||
+			m_activityScheduleId != otherIntLoad->m_activityScheduleId ||
+			m_powerManagementScheduleId != otherIntLoad->m_powerManagementScheduleId)
+		return Different;
+
+	//check meta data
+
+	if(m_displayName != otherIntLoad->m_displayName ||
+			m_color != otherIntLoad->m_color ||
+			m_dataSource != otherIntLoad->m_dataSource ||
+			m_notes != otherIntLoad->m_notes)
+		return OnlyMetaDataDiffers;
+
+	return Equal;
+}
+
 
 }

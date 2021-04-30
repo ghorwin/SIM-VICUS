@@ -36,6 +36,11 @@ public:
 	/*! Multiply a value to schedule intervals and create a new one. */
 	ScheduleInterval multiply(double val)const;
 
+	/*! Comparsion operator. */
+	bool operator!=(const ScheduleInterval &other) const;
+
+	/*! Comparsion operator. */
+	bool operator==(const ScheduleInterval &other) const {return !(*this != other); }
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

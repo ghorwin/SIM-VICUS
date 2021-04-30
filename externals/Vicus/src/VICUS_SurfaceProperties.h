@@ -35,6 +35,9 @@ public:
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
+	/*! Comparison operator */
+	ComparisonResult equal(const AbstractDBElement *other) const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID-number for this glazing system (INVALID_ID = disabled/undefined). */

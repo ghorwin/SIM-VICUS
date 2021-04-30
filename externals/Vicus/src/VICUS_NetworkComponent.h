@@ -75,6 +75,9 @@ public:
 	/*! Checks if all parameters are valid. */
 	bool isValid() const;
 
+	/*! Comparison operator */
+	ComparisonResult equal(const AbstractDBElement *other) const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID for this component. */

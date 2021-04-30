@@ -62,6 +62,9 @@ public:
 	/*! Computes the u-value. */
 	bool calculateUValue(double & UValue, const VICUS::Database<Material> & materials, double ri, double re) const;
 
+	/*! Comparison operator */
+	ComparisonResult equal(const AbstractDBElement *other) const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of construction. */

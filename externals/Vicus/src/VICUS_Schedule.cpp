@@ -150,5 +150,27 @@ Schedule Schedule::multiply(double val) const {
 	return sched;
 }
 
+AbstractDBElement::ComparisonResult Schedule::equal(const AbstractDBElement *other) const {
+	const Schedule * otherSched = dynamic_cast<const Schedule*>(other);
+	if (otherSched  == nullptr)
+		return Different;
+
+	//first check critical data
+
+	if(m_useLinearInterpolation != otherSched ->m_useLinearInterpolation ||
+			m_annualSchedule != otherSched ->m_annualSchedule ||
+			m_periods != otherSched ->m_periods )
+		return Different;
+
+	//check meta data
+
+	if(m_displayName != otherSched ->m_displayName ||
+			m_notes != otherSched ->m_notes ||
+			m_dataSource != otherSched ->m_dataSource )
+		return OnlyMetaDataDiffers;
+
+	return Equal;
+}
+
 
 } // namespace VICUS

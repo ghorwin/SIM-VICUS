@@ -117,6 +117,8 @@ SOURCES += \
 	../../src/VICUS_SubSurface.cpp \
 	../../src/VICUS_Surface.cpp \
 	../../src/VICUS_VentilationNatural.cpp \
+	../../src/VICUS_Window.cpp \
+	../../src/VICUS_WindowGlazingSystem.cpp \
 	../../src/VICUS_ZoneControlNaturalVentilation.cpp \
 	../../src/VICUS_ZoneControlShading.cpp \
 	../../src/VICUS_ZoneControlThermostat.cpp \

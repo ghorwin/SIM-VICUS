@@ -63,6 +63,28 @@ public:
 
 	VICUS_READWRITE
 
+	/*! Comparison operator. */
+	bool operator!=(const WindowGlazingLayer &other)const {
+		if(m_type != other.m_type ||
+				m_id != other.m_id ||
+				m_displayName != other.m_displayName)
+			return true;
+
+		for(unsigned int i=0; i<NUM_P; ++i)
+			if(m_para[i] != other.m_para[i])
+				return true;
+
+		for(unsigned int i=0; i<NUM_SP; ++i)
+			if(m_splinePara[i] != other.m_splinePara[i])
+				return true;
+
+		return false;
+	}
+
+	/*! Comparison operator. */
+	bool operator==(const WindowGlazingLayer &other) const { return !(*this != other);}
+
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	type_t							m_type = NUM_T;						// XML:A:required
