@@ -51,6 +51,9 @@ public:
 				 const VICUS::Database<VICUS::Construction> & constructions,
 				 const VICUS::Database<VICUS::BoundaryCondition> & bcs) const;
 
+	/*! Comparison operator */
+	ComparisonResult equal(const AbstractDBElement *other) const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of component. */

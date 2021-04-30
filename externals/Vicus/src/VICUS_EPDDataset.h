@@ -76,6 +76,9 @@ public:
 	*/
 	bool behavesLike(const EPDDataset &other) const;
 
+	/*! Comparison operator */
+	ComparisonResult equal(const AbstractDBElement *other) const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of lca material. */

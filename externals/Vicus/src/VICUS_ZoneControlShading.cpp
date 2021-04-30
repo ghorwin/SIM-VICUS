@@ -46,5 +46,31 @@ bool ZoneControlShading::isValid() const
 	return true;
 }
 
+AbstractDBElement::ComparisonResult ZoneControlShading::equal(const AbstractDBElement *other) const {
+	const ZoneControlShading * otherCtrl = dynamic_cast<const ZoneControlShading*>(other);
+	if (otherCtrl == nullptr)
+		return Different;
+
+	//first check critical data
+
+	//check parameters
+	for(unsigned int i=0; i<NUM_P; ++i){
+		if(m_para[i] != otherCtrl->m_para[i])
+			return Different;
+	}
+	if(m_category != otherCtrl->m_category)
+		return Different;
+
+	//check meta data
+
+	if(m_displayName != otherCtrl->m_displayName ||
+			m_color != otherCtrl->m_color ||
+			m_dataSource != otherCtrl->m_dataSource ||
+			m_notes != otherCtrl->m_notes)
+		return OnlyMetaDataDiffers;
+
+	return Equal;
+}
+
 
 }

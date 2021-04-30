@@ -34,5 +34,29 @@ bool Construction::calculateUValue(double & UValue, const VICUS::Database<Materi
 	return true;
 }
 
+AbstractDBElement::ComparisonResult Construction::equal(const AbstractDBElement *other) const{
+	const Construction * otherConstr = dynamic_cast<const Construction*>(other);
+	if (otherConstr == nullptr)
+		return Different;
+
+	//first check critical data
+
+	if(m_materialLayers != otherConstr->m_materialLayers)
+		return Different;
+
+	//check meta data
+
+	if(m_displayName != otherConstr->m_displayName ||
+			m_color != otherConstr->m_color ||
+			m_dataSource != otherConstr->m_dataSource ||
+			m_notes != otherConstr->m_notes ||
+			m_usageType != otherConstr->m_usageType ||
+			m_insulationKind != otherConstr->m_insulationKind ||
+			m_materialKind != otherConstr->m_materialKind)
+		return OnlyMetaDataDiffers;
+
+	return Equal;
+}
+
 
 } // namespace VICUS

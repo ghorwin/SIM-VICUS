@@ -30,5 +30,31 @@ bool VentilationNatural::isValid() const {
 	return true;
 }
 
+AbstractDBElement::ComparisonResult VentilationNatural::equal(const AbstractDBElement *other) const {
+	const VentilationNatural * otherVent = dynamic_cast<const VentilationNatural*>(other);
+	if (otherVent == nullptr)
+		return Different;
+
+	//first check critical data
+
+	//check parameters
+	for(unsigned int i=0; i<NUM_P; ++i){
+		if(m_para[i] != otherVent->m_para[i])
+			return Different;
+	}
+	if(m_scheduleId != otherVent->m_scheduleId)
+		return Different;
+
+	//check meta data
+
+	if(m_displayName != otherVent->m_displayName ||
+			m_color != otherVent->m_color ||
+			m_dataSource != otherVent->m_dataSource ||
+			m_notes != otherVent->m_notes)
+		return OnlyMetaDataDiffers;
+
+	return Equal;
+}
+
 
 }

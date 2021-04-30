@@ -40,6 +40,9 @@ public:
 	/*! Generates a short html-description of the defined parameters. */
 	QString htmlDescription() const;
 
+	/*! Comparison operator */
+	ComparisonResult equal(const AbstractDBElement *other) const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of boundary condition. */

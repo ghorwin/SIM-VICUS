@@ -28,6 +28,24 @@ public:
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
+	/*! Comparison operator. */
+	bool operator!=(const WindowDivider &other)const {
+		for(unsigned int i=0; i< NUM_P; ++i)
+			if(m_para[i] != other.m_para[i])
+				return true;
+
+		if( m_id != other.m_id ||
+				m_idMaterial != other.m_idMaterial ||
+				m_dataSource != other.m_dataSource ||
+				m_displayName != other.m_displayName ||
+				m_notes != other.m_notes)
+			return true;
+		return false;
+	}
+
+	/*! Comparison operator. */
+	bool operator==(const WindowDivider &other) const { return !(*this != other);}
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of divider. */

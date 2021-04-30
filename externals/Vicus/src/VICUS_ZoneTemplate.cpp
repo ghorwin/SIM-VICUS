@@ -51,6 +51,29 @@ ZoneTemplate::SubTemplateType ZoneTemplate::usedReference(unsigned int index) co
 	return (ZoneTemplate::SubTemplateType)i; // if index > number of used references, we return NUM_ST here
 }
 
+AbstractDBElement::ComparisonResult ZoneTemplate::equal(const AbstractDBElement *other) const{
+	const ZoneTemplate * otherEPD = dynamic_cast<const ZoneTemplate*>(other);
+	if (otherEPD == nullptr)
+		return Different;
+
+	//first check critical data
+
+	//check parameters
+	for(unsigned int i=0; i<NUM_ST; ++i){
+		if(m_idReferences[i] != otherEPD->m_idReferences[i])
+			return Different;
+	}
+	//check meta data
+
+	if(m_displayName != otherEPD->m_displayName ||
+			m_color != otherEPD->m_color ||
+			m_dataSource != otherEPD->m_dataSource ||
+			m_notes != otherEPD->m_notes)
+		return OnlyMetaDataDiffers;
+
+	return Equal;
+}
+
 
 
 } // namespace VICUS

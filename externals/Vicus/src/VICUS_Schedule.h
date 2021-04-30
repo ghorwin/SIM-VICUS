@@ -32,6 +32,9 @@ public:
 
 	Schedule multiply(double val) const;
 
+	/*! Comparison operator */
+	ComparisonResult equal(const AbstractDBElement *other) const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of Schedule. */
@@ -58,6 +61,8 @@ public:
 		Periods in vector must be consecutive in time.
 	*/
 	std::vector<ScheduleInterval>	m_periods;							// XML:E
+
+
 
 };
 

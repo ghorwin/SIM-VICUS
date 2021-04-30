@@ -30,7 +30,31 @@ bool NetworkFluid::isValid() const
 //												std::numeric_limits<double>::max(), true, nullptr);
 //	} catch (IBK::Exception &ex) {
 //		return false;
-//	}
+	//	}
+}
+
+AbstractDBElement::ComparisonResult NetworkFluid::equal(const AbstractDBElement *other) const {
+	const NetworkFluid * otherNetFluid = dynamic_cast<const NetworkFluid*>(other);
+	if (otherNetFluid == nullptr)
+		return Different;
+
+	//first check critical data
+
+	//check parameters
+	for(unsigned int i=0; i<NUM_P; ++i){
+		if(m_para[i] != otherNetFluid->m_para[i])
+			return Different;
+	}
+	if(m_kinematicViscosity != otherNetFluid->m_kinematicViscosity)
+		return Different;
+
+	//check meta data
+
+	if(m_displayName != otherNetFluid->m_displayName ||
+			m_color != otherNetFluid->m_color)
+		return OnlyMetaDataDiffers;
+
+	return Equal;
 }
 
 } // namespace VICUS
