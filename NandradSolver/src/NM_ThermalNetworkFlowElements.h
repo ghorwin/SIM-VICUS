@@ -445,7 +445,7 @@ private:
 	/*! Reference to external heat loss in [W] */
 	const double*					m_externalHeatLossRef = nullptr;
 	/*! Mean condender temperature [K]*/
-	double							m_condenserMeanTemperature = 999;
+//	double							m_condenserMeanTemperature = 999;
 
 	/*! Carnot efficiency [0...1] */
 	double							m_carnotEfficiency = 999;

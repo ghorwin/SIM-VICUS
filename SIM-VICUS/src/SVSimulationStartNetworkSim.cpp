@@ -341,16 +341,16 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 
 
 
-		// add control element as example
-		if (comp->m_modelType == VICUS::NetworkComponent::MT_HeatExchanger){
-			NANDRAD::ControlElement controlE;
-			controlE.m_controlType = NANDRAD::ControlElement::CT_ControlTemperatureDifference;
-			controlE.m_setPoint = IBK::Parameter("SetPoint", 3.0, IBK::Unit("K"));
-//			controlE.m_maximumControllerError = IBK::Parameter("MaximumControllerError", 10.0, IBK::Unit("K"));
-			controlE.m_maximumSystemInput = IBK::Parameter("MaximumSystemInput", 5.0, IBK::Unit("-"));
-			controlE.m_controllerId = 1;
-			elem.m_controlElement = controlE;
-		}
+//		// add control element as example
+//		if (comp->m_modelType == VICUS::NetworkComponent::MT_HeatExchanger){
+//			NANDRAD::ControlElement controlE;
+//			controlE.m_controlType = NANDRAD::ControlElement::CT_ControlTemperatureDifference;
+//			controlE.m_setPoint = IBK::Parameter("SetPoint", 3.0, IBK::Unit("K"));
+////			controlE.m_maximumControllerError = IBK::Parameter("MaximumControllerError", 10.0, IBK::Unit("K"));
+//			controlE.m_maximumSystemInput = IBK::Parameter("MaximumSystemInput", 5.0, IBK::Unit("-"));
+//			controlE.m_controllerId = 1;
+//			elem.m_controlElement = controlE;
+//		}
 
 
 
@@ -372,12 +372,12 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 
 
 
-	// add controller as example
-	NANDRAD::Controller contr;
-	contr.m_id = 1;
-	contr.m_para[NANDRAD::Controller::P_Kp] = IBK::Parameter("Kp", 10, IBK::Unit("-"));
-	contr.m_modelType = NANDRAD::Controller::MT_PController;
-	p.m_controllers.push_back(contr);
+//	// add controller as example
+//	NANDRAD::Controller contr;
+//	contr.m_id = 1;
+//	contr.m_para[NANDRAD::Controller::P_Kp] = IBK::Parameter("Kp", 10, IBK::Unit("-"));
+//	contr.m_modelType = NANDRAD::Controller::MT_PController;
+//	p.m_controllers.push_back(contr);
 
 
 

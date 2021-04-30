@@ -496,7 +496,7 @@ TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(const NANDRAD::HydraulicFluid & flu
 											 const double &QExt)
 {
 	m_fluidVolume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
-	m_condenserMeanTemperature = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_CondenserMeanTemperature].value;
+//	m_condenserMeanTemperature = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_CondenserMeanTemperature].value;
 	m_carnotEfficiency = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiency].value;
 
 	// copy fluid properties
@@ -512,9 +512,9 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 	// copy inflow temperature
 	m_inflowTemperature = Tinflow;
 	// TODO Hauke: use mean evaporator temperature instead of evaporator inlet temperature?
-	const double COPMax = m_condenserMeanTemperature / (m_condenserMeanTemperature - Tinflow);
-	const double m_COP = m_carnotEfficiency * COPMax;
-	m_heatLoss = *m_externalHeatLossRef * (m_COP - 1)/m_COP;
+//	const double COPMax = m_condenserMeanTemperature / (m_condenserMeanTemperature - Tinflow);
+//	const double m_COP = m_carnotEfficiency * COPMax;
+//	m_heatLoss = *m_externalHeatLossRef * (m_COP - 1)/m_COP;
 }
 
 

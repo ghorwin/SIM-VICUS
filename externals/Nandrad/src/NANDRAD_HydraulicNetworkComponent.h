@@ -5,6 +5,7 @@
 
 #include "NANDRAD_CodeGenMacros.h"
 #include "NANDRAD_Constants.h"
+#include "NANDRAD_LinearSplineParameter.h"
 
 
 namespace NANDRAD {
@@ -21,8 +22,8 @@ public:
 		MT_DynamicPipe,						// Keyword: DynamicPipe					'Pipe with a discretized fluid volume and heat exchange'
 		MT_ConstantPressurePump,			// Keyword: ConstantPressurePump		'Pump with constant pressure'
 		MT_HeatExchanger,					// Keyword: HeatExchanger				'Simple heat exchanger with given heat flux'
-		MT_HeatPumpIdealCarnot,				// Keyword: HeatPumpIdealCarnot			'Heat pump with unlimited heating power and constant carnot efficiency'
-
+		MT_HeatPumpIdealCarnot,				// Keyword: HeatPumpIdealCarnot			'Heat pump with variable heating power based on carnot efficiency'
+		MT_HeatPumpReal,					// Keyword: HeatPumpReal				'On-off-type heat pump with based on manufacturer data sheet'
 
 		// models below not supported yet
 
@@ -44,21 +45,31 @@ public:
 		P_PumpEfficiency,					// Keyword: PumpEfficiency						[---]	'Pump efficiency'
 		P_Volume,							// Keyword: Volume								[m3]	'Water or air volume of the component'
 		P_PipeMaxDiscretizationWidth,		// Keyword: PipeMaxDiscretizationWidth			[m]		'Maximum width of discretized volumes in pipe'
-		P_CarnotEfficiency,					// Keyword: CarnotEfficiency					[---]	'Carnot efficiency'
-		P_CondenserMeanTemperature,			// Keyword: CondenserMeanTemperature			[C]		'Mean fluid temperature in condenser'
-
-// we can add those, once we know what to do with them
-
-//		P_TemperatureTolerance,				// xKxeyword: TemperatureTolerance				[K]		'Temperature tolerance for e.g. thermostats'
-//		P_RatedHeatingCapacity,				// xKxeyword: RatedHeatingCapacity				[W]		'Rated heating capacity of the component'
-//		P_RatedCoolingCapacity,				// xKxeyword: RatedCoolingCapacity				[W]		'Rated Cooling capacity of the component'
-//		P_AuxiliaryPower,					// xKxeyword: AuxiliaryPower						[W]		'Auxiliary power of the component'
-//		P_ConvectiveFraction,				// xKxeyword: ConvectiveFraction					[---]	'Convective fraction for heating or cooling'
-//		P_ExternalSurfaceArea,				// xKxeyword: ExternalSurfaceArea					[m2]	'External surface area of the component'
-
+		P_CarnotEfficiency,					// Keyword: CarnotEfficiency					[---]	'Carnot efficiency eta'
+		P_MaximumHeatHeatingPower,			// Keyword: MaximumHeatHeatingPower				[W]		'Maximum heating power'
 		NUM_P
 	};
 
+	/*! Defines which side of heat pump is part of the network */
+	enum HeatPumpIntegration {
+		HP_SupplySide,						// Keyword: SupplySide				'The network is connected to the hot side (supply) of the heat pump'
+		HP_SourceSide,						// Keyword: SourceSide				'The network is connected to the cold side (source) of the heat pump'
+		HP_SupplyAndSourceSide,				// Keyword: SupplyAndSourceSide		'Two networks are connected, one to the cold side, the other to the hot side of the heat pump'
+		NUM_HP
+	};
+
+	/*! Spline parameter as functions of time with the implied assumption that
+		t = 0 means begin of simulation.
+		TODO Andreas + Anne + Hauke
+	*/
+	enum splinePara_t {
+		SPL_CondenserHeatingDemand,			// Keyword: CondenserHeatingDemand				[W]		'Heating demand of condenser'
+		SPL_CondenserOutletSetPoint,		// Keyword: CondenserOutletSetPoint				[C]		'Set point temperature for condenser outlet'
+		SPL_CondenserMeanTemperature,		// Keyword: CondenserMeanTemperature			[C]		'Mean fluid temperature in condenser'
+		SPL_EvaporatorMeanTemperature,		// Keyword: EvaporatorMeanTemperature			[C]		'Mean fluid temperature in evaporator'
+		SPL_HeatPumpControlSignal,			// Keyword: HeatPumpControlSignal				[---]	'Digital control signal (on/off) for heat pump'
+		NUM_SPL
+	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -85,9 +96,14 @@ public:
 	/*! Model type. */
 	ModelType						m_modelType		= NUM_MT;							// XML:A:required
 
+	/*! Defines which side of heat pump is part of the network */
+	HeatPumpIntegration				m_heatPumpIntegration = NUM_HP;						// XML:E
+
 	/*! Parameters of the flow component. */
 	IBK::Parameter					m_para[NUM_P];										// XML:E
 
+	/*! Time-series of parameter (can be spline or tsv-file). */
+	LinearSplineParameter			m_splPara[NUM_SPL];									// XML:E
 
 	// *** STATIC FUNCTIONS ***
 
