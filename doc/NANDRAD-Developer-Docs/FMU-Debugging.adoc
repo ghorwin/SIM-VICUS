@@ -1,0 +1,99 @@
+:imagesdir: ./images
+# Debugging NANDRAD FMUs mit Qt Creator und MasterSim
+
+## Linux
+
+- MasterSim von SourceForge herunterladen
+
+oder
+
+- MasterSim-Repository von SourceForge herunterladen und mit CMake kompilieren
+
+[IMPORTANT]
+====
+Es wird ein statisch gelinktes `MasterSimulator`-Programm benötigt.
+====
+
+
+### Aufsetzen der Co-Simulation
+
+1. Ein Co-simulationsprojekt in MasterSim erstellen und speichern, beispielsweise unter `/home/ghorwin/git/SIM-VICUS/data/fmu/coSimulation.msim`
+2. einmal mit _MasterSimulator_ ausführen:
+
+[source,bash]
+----
+> /path/to/MasterSimulator /home/ghorwin/git/SIM-VICUS/data/fmu/coSimulation.msim
+----
+
+Dies erstellt die übliche Verzeichnisstruktur unter: `/home/ghorwin/git/SIM-VICUS/data/fmu/coSimulation.msim`.
+
+### Qt-Creator für das FMU-Debuggen konfigurieren
+
+. Qt Creator öffnen
+. Modus "Projekte" öffnen 
+
+image::QtCreator_DebugFmuConfig.png[]
+
+[start=3]
+. In der Rubrik "Ausführen", in der Zeile mit "Ausführungskonfiguration" (da steht normalerweise _SIM-VICUS_ oder _NandradSolver_ drin) auf "Add..." klicken
+. In der Liste "Benutzerdefinierte ausführbare Datei" anklicken und bestätigen -> es wird eine neue Ausführungskonfiguration erstellt.
+. Wie in der Abbildung oben zu sehen eintragen:
+
+  - (rot) Pfad zum _MasterSimulator_ Programm
+  - (blau) Pfad zur `msim`-Projektdatei und zusätzlich das Argument `--skip-unzip`
+  
+. Dann unten bei der Ausführungsumgebung die Details ausklappen
+. Die Umgebungsvariable `LD_LIBRARY_PATH` hinzufügen, und als Wert den Pfad zum `SIM-VICUS/externals/lib_x64` Pfad eintragen
+
+
+Jetzt kann man den Debugger starten (F5) und man müsste MasterSim durchlaufen sehen.
+
+[IMPORTANT]
+====
+Trotz der Angabe von `--skip-unzip` führt MasterSimulation die vorher entpackte FMU-shared-Library aus. Also im Beispiel mit der `coSimulation.msim` soll eine FMU `singleRoom.fmu` simuliert werden. Die dazugehörige Shared Library liegt dann in:
+
+`/home/ghorwin/git/SIM-VICUS/data/fmu/coSimulation.msim/fmus/singleRoom/binaries/linux64/singleRoom.so`
+====
+
+Wenn man im QtCreator irgendwo einen Breakpoint setzt, und dann in der Debugger-Module-Ansicht die geladenen Shared Libraries ansieht, kann man diesen Pfad wiederfinden.
+
+
+Beispiel: 
+
+- MasterSim Projekt: `/home/ghorwin/git/SIM-VICUS/data/fmu/coSimulation.msim`
+- Lib-Pfad: `/home/ghorwin/git/SIM-VICUS/externals/lib_x64/`
+
+.Ausgabe im QtCreator gleich nach Anhalten der Simulation in `fmi2Instantiate`
+image::QtCreator_DebugFmuLoadedLibs.png[]
+
+
+- (rosa) Im Bild *rosa* markiert sind die geladenen FMUs im Co-Simulationsszenario.
+- (grün) Im Bild *grün* markiert sind die davon abhängigen Bibliotheken
+
+[CAUTION]
+====
+Es kann jetzt sein, dass die FMU-Bibliothek im `.fmu` Archiv gegen ältere Versionen der abhängigen Bibliotheken gelinkt worden ist. In diesem Fall kann es zu Zugriffsverletztungen und harten Crashs kommen.
+====
+
+
+### Debuggen der aktuellen Entwicklungsversion
+
+Löscht man die "alte" FMU Bibliothek aus dem binaries/linux64-Verzeichnis erhält man eine Fehlermeldung, z.B.
+
+`Shared library '/home/ghorwin/git/SIM-VICUS/data/fmu/coSimulation/fmus/singleRoom/binaries/linux64/singleRoom.so' does not exist.`
+
+Man erstellt nun einen Symlink auf die aktuell entwickelte FMU-Bibliothek an Stelle der originalen FMU-Bibliothek, welche von MasterSim geladen wird.
+
+Im Verzeichnis: `/home/ghorwin/git/SIM-VICUS/data/fmu/coSimulation/fmus/singleRoom/binaries/linux64/`:
+
+[source,bash]
+----
+ln -s /home/ghorwin/git/SIM-VICUS/bin/debug_x64/libNandradSolverFMI.so singleRoom.so
+----
+
+Dies erstellt eine symbolische Verknüpfung zur gerade entwickelten Bibliothek `libNandradSolverFMI.so`.
+
+Wenn man nun den Debugger startet, lädt MasterSim stattdessen diese aktuelle Bibliothek. Damit der symbolische Link nicht wieder überschrieben wird, muss das Argument `--skip-unzip` verwendet werden.
+
+Nun kann man die FMU ganz normal debuggen.
+

@@ -73,7 +73,7 @@ table {
 <div class="details">
 <span id="author" class="author">Andreas Nicolai</span><br>
 <span id="email" class="email"><a href="mailto:andreas.nicolai@tu-dresden.de">andreas.nicolai@tu-dresden.de</a></span><br>
-<span id="revdate">0.2.0 (24.01.2021)</span>
+<span id="revdate">0.2.0 (30.04.2021)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -162,6 +162,15 @@ table {
 </ul>
 </li>
 <li><a href="#UI-object_picking">4.5. Objekt-Pick-Operation</a></li>
+</ul>
+</li>
+<li><a href="#_nandrad_fmu">5. NANDRAD FMU</a>
+<ul class="sectlevel2">
+<li><a href="#_debugging_nandrad_fmus_mit_qt_creator_und_mastersim">5.1. Debugging NANDRAD FMUs mit Qt Creator und MasterSim</a>
+<ul class="sectlevel3">
+<li><a href="#_linux_2">5.1.1. Linux</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -2260,10 +2269,215 @@ erfolgt in folgenden Schritten:</p>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_nandrad_fmu">5. NANDRAD FMU</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_debugging_nandrad_fmus_mit_qt_creator_und_mastersim">5.1. Debugging NANDRAD FMUs mit Qt Creator und MasterSim</h3>
+<div class="sect3">
+<h4 id="_linux_2">5.1.1. Linux</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>MasterSim von SourceForge herunterladen</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>oder</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>MasterSim-Repository von SourceForge herunterladen und mit CMake kompilieren</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Es wird ein statisch gelinktes <code>MasterSimulator</code>-Programm benötigt.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_aufsetzen_der_co_simulation">Aufsetzen der Co-Simulation</h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Ein Co-simulationsprojekt in MasterSim erstellen und speichern, beispielsweise unter <code>/home/ghorwin/git/SIM-VICUS/data/fmu/coSimulation.msim</code></p>
+</li>
+<li>
+<p>einmal mit <em>MasterSimulator</em> ausführen:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="o">&gt;</span> /path/to/MasterSimulator /home/ghorwin/git/SIM-VICUS/data/fmu/coSimulation.msim</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dies erstellt die übliche Verzeichnisstruktur unter: <code>/home/ghorwin/git/SIM-VICUS/data/fmu/coSimulation.msim</code>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_qt_creator_für_das_fmu_debuggen_konfigurieren">Qt-Creator für das FMU-Debuggen konfigurieren</h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Qt Creator öffnen</p>
+</li>
+<li>
+<p>Modus "Projekte" öffnen</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/QtCreator_DebugFmuConfig.png" alt="QtCreator DebugFmuConfig">
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="3">
+<li>
+<p>In der Rubrik "Ausführen", in der Zeile mit "Ausführungskonfiguration" (da steht normalerweise <em>SIM-VICUS</em> oder <em>NandradSolver</em> drin) auf "Add&#8230;&#8203;" klicken</p>
+</li>
+<li>
+<p>In der Liste "Benutzerdefinierte ausführbare Datei" anklicken und bestätigen &#8594; es wird eine neue Ausführungskonfiguration erstellt.</p>
+</li>
+<li>
+<p>Wie in der Abbildung oben zu sehen eintragen:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>(rot) Pfad zum <em>MasterSimulator</em> Programm</p>
+</li>
+<li>
+<p>(blau) Pfad zur <code>msim</code>-Projektdatei und zusätzlich das Argument <code>--skip-unzip</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Dann unten bei der Ausführungsumgebung die Details ausklappen</p>
+</li>
+<li>
+<p>Die Umgebungsvariable <code>LD_LIBRARY_PATH</code> hinzufügen, und als Wert den Pfad zum <code>SIM-VICUS/externals/lib_x64</code> Pfad eintragen</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Jetzt kann man den Debugger starten (F5) und man müsste MasterSim durchlaufen sehen.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Trotz der Angabe von <code>--skip-unzip</code> führt MasterSimulation die vorher entpackte FMU-shared-Library aus. Also im Beispiel mit der <code>coSimulation.msim</code> soll eine FMU <code>singleRoom.fmu</code> simuliert werden. Die dazugehörige Shared Library liegt dann in:</p>
+</div>
+<div class="paragraph">
+<p><code>/home/ghorwin/git/SIM-VICUS/data/fmu/coSimulation.msim/fmus/singleRoom/binaries/linux64/singleRoom.so</code></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Wenn man im QtCreator irgendwo einen Breakpoint setzt, und dann in der Debugger-Module-Ansicht die geladenen Shared Libraries ansieht, kann man diesen Pfad wiederfinden.</p>
+</div>
+<div class="paragraph">
+<p>Beispiel:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>MasterSim Projekt: <code>/home/ghorwin/git/SIM-VICUS/data/fmu/coSimulation.msim</code></p>
+</li>
+<li>
+<p>Lib-Pfad: <code>/home/ghorwin/git/SIM-VICUS/externals/lib_x64/</code></p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/QtCreator_DebugFmuLoadedLibs.png" alt="QtCreator DebugFmuLoadedLibs">
+</div>
+<div class="title">Figure 4. Ausgabe im QtCreator gleich nach Anhalten der Simulation in <code>fmi2Instantiate</code></div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>(rosa) Im Bild <strong>rosa</strong> markiert sind die geladenen FMUs im Co-Simulationsszenario.</p>
+</li>
+<li>
+<p>(grün) Im Bild <strong>grün</strong> markiert sind die davon abhängigen Bibliotheken</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Es kann jetzt sein, dass die FMU-Bibliothek im <code>.fmu</code> Archiv gegen ältere Versionen der abhängigen Bibliotheken gelinkt worden ist. In diesem Fall kann es zu Zugriffsverletztungen und harten Crashs kommen.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_debuggen_der_aktuellen_entwicklungsversion">Debuggen der aktuellen Entwicklungsversion</h5>
+<div class="paragraph">
+<p>Löscht man die "alte" FMU Bibliothek aus dem binaries/linux64-Verzeichnis erhält man eine Fehlermeldung, z.B.</p>
+</div>
+<div class="paragraph">
+<p><code>Shared library '/home/ghorwin/git/SIM-VICUS/data/fmu/coSimulation/fmus/singleRoom/binaries/linux64/singleRoom.so' does not exist.</code></p>
+</div>
+<div class="paragraph">
+<p>Man erstellt nun einen Symlink auf die aktuell entwickelte FMU-Bibliothek an Stelle der originalen FMU-Bibliothek, welche von MasterSim geladen wird.</p>
+</div>
+<div class="paragraph">
+<p>Im Verzeichnis: <code>/home/ghorwin/git/SIM-VICUS/data/fmu/coSimulation/fmus/singleRoom/binaries/linux64/</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="nb">ln</span> <span class="nt">-s</span> /home/ghorwin/git/SIM-VICUS/bin/debug_x64/libNandradSolverFMI.so singleRoom.so</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dies erstellt eine symbolische Verknüpfung zur gerade entwickelten Bibliothek <code>libNandradSolverFMI.so</code>.</p>
+</div>
+<div class="paragraph">
+<p>Wenn man nun den Debugger startet, lädt MasterSim stattdessen diese aktuelle Bibliothek. Damit der symbolische Link nicht wieder überschrieben wird, muss das Argument <code>--skip-unzip</code> verwendet werden.</p>
+</div>
+<div class="paragraph">
+<p>Nun kann man die FMU ganz normal debuggen.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-01-24 11:37:56 +0100
+Last updated 2021-04-30 13:30:06 +0200
 </div>
 </div>
 <style>
