@@ -24,6 +24,20 @@
 namespace NANDRAD {
 
 
+void FMIDescription::checkParameters() {
+	FUNCID(FMIDescription::checkParameters);
+	// check all variables
+	try {
+		for(FMIVariableDefinition &varDef : m_variables) {
+			varDef.checkParameters();
+		}
+	}
+	catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Missing/invalid parameters for FMIDescription."),
+				 FUNC_ID);
+	}
+}
+
 bool FMIDescription::hasVariable(const FMIVariableDefinition & var) const {
 	for (const FMIVariableDefinition & v : m_variables)
 		if (v.sameModelVarAs(var)) return true;

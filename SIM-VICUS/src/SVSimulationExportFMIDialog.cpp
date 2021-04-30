@@ -401,6 +401,7 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerateAllVariables_clicked() {
 		for (const unsigned int & id : var.second.m_objectIDs) {
 			NANDRAD::FMIVariableDefinition fmiVar;
 			fmiVar.m_inputVariable = true;
+			fmiVar.m_causality = "input";
 			fmiVar.m_varName = var.first.toStdString();
 			fmiVar.m_objectID = id;
 			fmiVar.m_fmiValueRef = ++valRef;
@@ -437,6 +438,7 @@ void SVSimulationExportFMIDialog::on_pushButtonGenerateAllVariables_clicked() {
 		for (const unsigned int & id : var.second.m_objectIDs) {
 			NANDRAD::FMIVariableDefinition fmiVar;
 			fmiVar.m_inputVariable = false;
+			fmiVar.m_causality = "output";
 			fmiVar.m_varName = var.first.toStdString();
 			fmiVar.m_objectID = id;
 			QString desc;

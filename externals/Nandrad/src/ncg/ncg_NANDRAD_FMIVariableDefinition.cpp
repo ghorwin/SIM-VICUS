@@ -37,6 +37,10 @@ void FMIVariableDefinition::readXML(const TiXmlElement * element) {
 
 	try {
 		// search for mandatory attributes
+		if (!TiXmlAttribute::attributeByName(element, "causality"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'causality' attribute.") ), FUNC_ID);
+
 		if (!TiXmlAttribute::attributeByName(element, "fmiVarName"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'fmiVarName' attribute.") ), FUNC_ID);
@@ -49,7 +53,9 @@ void FMIVariableDefinition::readXML(const TiXmlElement * element) {
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
-			if (attribName == "fmiVarName")
+			if (attribName == "causality")
+				m_causality = attrib->ValueStr();
+			else if (attribName == "fmiVarName")
 				m_fmiVarName = attrib->ValueStr();
 			else if (attribName == "fmiValueRef")
 				m_fmiValueRef = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
@@ -97,6 +103,8 @@ TiXmlElement * FMIVariableDefinition::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("FMIVariableDefinition");
 	parent->LinkEndChild(e);
 
+	if (!m_causality.empty())
+		e->SetAttribute("causality", m_causality);
 	if (!m_fmiVarName.empty())
 		e->SetAttribute("fmiVarName", m_fmiVarName);
 	e->SetAttribute("fmiValueRef", IBK::val2string<IDType>(m_fmiValueRef));

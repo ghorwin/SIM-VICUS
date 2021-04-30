@@ -39,6 +39,10 @@ public:
 
 	NANDRAD_READWRITE
 
+	/*! Checks for valid parameters and fills boolean variables.
+	*/
+	void checkParameters();
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	bool operator<(const FMIVariableDefinition & other) const {
@@ -78,6 +82,9 @@ public:
 	/*! Unit of the variable. */
 	std::string	m_unit;
 
+	/*! String ("input"/"output") specifying whether we have an input or an output variable  (note, that
+		some quantities may be both input and output, i.e. Zone().AirTemperature. */
+	std::string m_causality;																// XML:A:required
 	/*! The variable name as it appears in the FMI model description. */
 	std::string m_fmiVarName;																// XML:A:required
 	/*! The variable variable type as it appears in the FMI model description. */

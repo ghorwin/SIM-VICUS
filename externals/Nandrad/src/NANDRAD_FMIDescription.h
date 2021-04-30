@@ -41,6 +41,10 @@ public:
 
 	NANDRAD_READWRITE
 
+	/*! Checks for valid parameters and fills boolean variables.
+	*/
+	void checkParameters();
+
 	/*! Tests if a variable for this model quantity exists already in the variable list.
 		Only the NANDRAD model variable properties (name, objectID, vector index/id) are compared.
 	*/

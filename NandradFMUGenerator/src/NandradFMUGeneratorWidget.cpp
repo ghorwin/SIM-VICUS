@@ -312,6 +312,8 @@ void NandradFMUGeneratorWidget::on_toolButtonAddInputVariable_clicked() {
 
 	NANDRAD::FMIVariableDefinition var;
 	var.m_varName = "Zone.AirTemperature";
+	var.m_causality = "input";
+	var.m_inputVariable = true;
 	var.m_objectID = 1;
 	var.m_unit = "K";
 	var.m_vectorIndex = NANDRAD::INVALID_ID; // scalar variable
@@ -380,6 +382,7 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerateAllVariables_clicked() {
 
 		for (const unsigned int & id : var.second.m_objectIDs) {
 			NANDRAD::FMIVariableDefinition fmiVar;
+			fmiVar.m_causality = "input";
 			fmiVar.m_inputVariable = true;
 			fmiVar.m_varName = var.first.toStdString();
 			fmiVar.m_objectID = id;
@@ -416,6 +419,7 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerateAllVariables_clicked() {
 
 		for (const unsigned int & id : var.second.m_objectIDs) {
 			NANDRAD::FMIVariableDefinition fmiVar;
+			fmiVar.m_causality = "output";
 			fmiVar.m_inputVariable = false;
 			fmiVar.m_varName = var.first.toStdString();
 			fmiVar.m_objectID = id;
@@ -546,12 +550,12 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerate_clicked() {
 	// now create subdirectories
 	baseDir.mkdir("resources");
 
-	NANDRAD::Project p;
+	NANDRAD::Project p = m_project;
 	QString copyPath = baseDir.absoluteFilePath("resources");
 
 	// if we have a target path, copy the referenced climate data file to the new location and modify the path
 	IBK::Path resourcePath(copyPath.toStdString());
-	IBK::Path fullClimatePath = m_project.m_location.m_climateFilePath.withReplacedPlaceholders(m_project.m_placeholders);
+	IBK::Path fullClimatePath = p.m_location.m_climateFilePath.withReplacedPlaceholders(p.m_placeholders);
 	if (!fullClimatePath.isFile()) {
 		QMessageBox::critical(this, tr("FMU Export Error"),
 			tr("The referenced climate data file '%1' does not exist. Please select a climate data file!")
