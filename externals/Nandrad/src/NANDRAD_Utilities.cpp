@@ -246,7 +246,6 @@ template<>
 void readPoint2D<double>(const TiXmlElement * element, const std::string & name, IBK::point2D<double> & p) {
 	FUNCID(NANDRAD::readVector);
 	std::string text = element->GetText();
-	text = IBK::replace_string(text, ",", " ");
 	try {
 		std::vector<double> vec;
 		IBK::string2valueVector(text, vec);
