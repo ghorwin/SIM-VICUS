@@ -4,6 +4,11 @@
 
 namespace VICUS {
 
+AbstractDBElement::~AbstractDBElement() {
+}
+
+
+
 Material::Material( unsigned int id, const IBK::MultiLanguageString &name,
 					double conductivity, double density, double specHeatCapa) :
 	m_id(id),
@@ -39,6 +44,17 @@ bool Material::isValid(bool hygrothermalCalculation) const {
 	}
 
 	return true;
+}
+
+
+AbstractDBElement::ComparisonResult Material::equal(const AbstractDBElement * other) const {
+	const Material * otherMaterial = dynamic_cast<const Material*>(other);
+	if (otherMaterial == nullptr)
+		return Different;
+
+	// TODO : Dirk
+
+	return Equal;
 }
 
 

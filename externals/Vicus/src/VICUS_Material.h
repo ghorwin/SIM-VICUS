@@ -83,6 +83,8 @@ public:
 	/*! Checks if all parameters are valid. */
 	bool isValid(bool hygrothermalCalculation = false) const;
 
+	/*! Comparison operator. */
+	ComparisonResult equal(const AbstractDBElement * other) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
