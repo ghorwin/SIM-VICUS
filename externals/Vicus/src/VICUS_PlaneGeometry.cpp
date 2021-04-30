@@ -357,7 +357,6 @@ bool eleminateColinearPtsHelper(std::vector<IBKMK::Vector3D> &polyline){
 
 void PlaneGeometry::eleminateColinearPts(){
 
-	QPolygonF newPoly;
 	if(m_vertexes.size()<2)
 		return;
 	//check for duplicate points in polyline and remove duplicates
@@ -384,7 +383,7 @@ void PlaneGeometry::triangulate() {
 	Q_ASSERT(m_vertexes.size() >= 3);
 	Q_ASSERT(m_polygon.size() == (int)m_vertexes.size());
 
-	//bool isDrawMode = true;
+	// we now check all subsurfaces
 
 	//const double eps = 1e-4;
 	m_triangles.clear();

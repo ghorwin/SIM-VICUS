@@ -63,6 +63,7 @@ HEADERS += \
 	../../src/VICUS_Outputs.h \
 	../../src/VICUS_PlaneGeometry.h \
 	../../src/VICUS_Polygon2D.h \
+	../../src/VICUS_Polygon3D.h \
 	../../src/VICUS_Project.h \
 	../../src/VICUS_Room.h \
 	../../src/VICUS_RotationMatrix.h \
@@ -109,6 +110,7 @@ SOURCES += \
 	../../src/VICUS_Outputs.cpp \
 	../../src/VICUS_PlaneGeometry.cpp \
 	../../src/VICUS_Polygon2D.cpp \
+	../../src/VICUS_Polygon3D.cpp \
 	../../src/VICUS_Project.cpp \
 	../../src/VICUS_Schedule.cpp \
 	../../src/VICUS_ScheduleInterval.cpp \
