@@ -640,7 +640,7 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces, IBKM
 	double minY = std::numeric_limits<double>::max();
 	double minZ = std::numeric_limits<double>::max();
 	for (const VICUS::Surface *s : surfaces ) {
-		for ( IBKMK::Vector3D v : s->m_geometry.vertexes() ) {
+		for ( IBKMK::Vector3D v : s->m_polygon3D.vertexes() ) {
 			( v.m_x > maxX ) ? maxX = v.m_x : 0;
 			( v.m_y > maxY ) ? maxY = v.m_y : 0;
 			( v.m_z > maxZ ) ? maxZ = v.m_z : 0;
@@ -1617,11 +1617,11 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 		// we have either one or two surfaces associated
 		if (ci.m_sideASurface != nullptr) {
 			// get area of surface A
-			double areaA = ci.m_sideASurface->m_geometry.area();
+			double areaA = ci.m_sideASurface->geometry().area();
 			// do we have surfaces at both sides?
 			if (ci.m_sideBSurface != nullptr) {
 				// have both
-				double areaB = ci.m_sideBSurface->m_geometry.area();
+				double areaB = ci.m_sideBSurface->geometry().area();
 				// check if both areas are approximately the same
 				if (std::fabs(areaA - areaB) > SAME_DISTANCE_PARAMETER_ABSTOL) {
 					throw ConversionError(ConversionError::ET_MismatchingSurfaceArea,
@@ -1647,9 +1647,9 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 				// set parameters
 				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
-												   NANDRAD::ConstructionInstance::P_Inclination, s->m_geometry.inclination());
+												   NANDRAD::ConstructionInstance::P_Inclination, s->geometry().inclination());
 				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
-												   NANDRAD::ConstructionInstance::P_Orientation, s->m_geometry.orientation());
+												   NANDRAD::ConstructionInstance::P_Orientation, s->geometry().orientation());
 
 				cinst.m_displayName = ci.m_sideASurface->m_displayName.toStdString();
 			}
@@ -1668,12 +1668,12 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 			// set parameters
 			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
-											   NANDRAD::ConstructionInstance::P_Inclination, s->m_geometry.inclination());
+											   NANDRAD::ConstructionInstance::P_Inclination, s->geometry().inclination());
 			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
-											   NANDRAD::ConstructionInstance::P_Orientation, s->m_geometry.orientation());
+											   NANDRAD::ConstructionInstance::P_Orientation, s->geometry().orientation());
 
 			// set area parameter
-			double area = ci.m_sideBSurface->m_geometry.area();
+			double area = ci.m_sideBSurface->geometry().area();
 			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
 											   NANDRAD::ConstructionInstance::P_Area, area);
 

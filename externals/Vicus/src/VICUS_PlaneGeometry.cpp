@@ -25,7 +25,7 @@
 #include <tinyxml.h>
 
 namespace VICUS {
-
+#if 0
 static int crossProdTest(QPointF a, QPointF b, QPointF c){
 
 	if(a.y() == b.y() && a.y() == c.y()){
@@ -95,24 +95,6 @@ PlaneGeometry::PlaneGeometry(PlaneGeometry::type_t t,
 }
 
 
-void PlaneGeometry::readXML(const TiXmlElement * element) {
-	FUNCID(PlaneGeometry::readXML);
-	readXMLPrivate(element);
-	unsigned int nVert = m_vertexes.size();
-	computeGeometry();
-	if (nVert != m_vertexes.size())
-		IBK::IBK_Message(IBK::FormatString("Invalid polygon in project, removed invalid vertexes."), IBK::MSG_WARNING, FUNC_ID);
-}
-
-
-TiXmlElement * PlaneGeometry::writeXML(TiXmlElement * parent) const {
-	if (*this != PlaneGeometry())
-		return writeXMLPrivate(parent);
-	else
-		return nullptr;
-}
-
-
 double PlaneGeometry::inclination() const {
 	return std::acos(normal().m_z) / IBK::DEG2RAD;
 }
@@ -170,16 +152,16 @@ void PlaneGeometry::computeGeometry() {
 }
 
 
-void PlaneGeometry::flip() {
-	std::vector<IBKMK::Vector3D> inverseVertexes(m_vertexes.rbegin(), m_vertexes.rend());
-//	std::vector<IBKMK::Vector3D> inverseVertexes;
-//	for (std::vector<IBKMK::Vector3D>::const_reverse_iterator rit = m_vertexes.rbegin();
-//		 rit != m_vertexes.rend(); ++rit)
-//	{
-//		inverseVertexes.push_back(*rit);
-//	}
-	setVertexes(inverseVertexes);
-}
+//void PlaneGeometry::flip() {
+//	std::vector<IBKMK::Vector3D> inverseVertexes(m_vertexes.rbegin(), m_vertexes.rend());
+////	std::vector<IBKMK::Vector3D> inverseVertexes;
+////	for (std::vector<IBKMK::Vector3D>::const_reverse_iterator rit = m_vertexes.rbegin();
+////		 rit != m_vertexes.rend(); ++rit)
+////	{
+////		inverseVertexes.push_back(*rit);
+////	}
+//	setVertexes(inverseVertexes);
+//}
 
 
 void PlaneGeometry::simplify() {
@@ -201,27 +183,27 @@ void PlaneGeometry::simplify() {
 }
 
 
-void PlaneGeometry::update3DPolygon() {
-	QQuaternion qq;
-	double angle = std::acos(m_normal.scalarProduct(IBKMK::Vector3D(0,0,1)))/IBK::DEG2RAD;
-	IBKMK::Vector3D vec = m_normal.crossProduct(IBKMK::Vector3D(0,0,1));
-	QVector3D axis((float)vec.m_x, (float)vec.m_y, (float)vec.m_z);
-	qq.fromAxisAndAngle(axis, (float)angle);
+//void PlaneGeometry::update3DPolygon() {
+//	QQuaternion qq;
+//	double angle = std::acos(m_normal.scalarProduct(IBKMK::Vector3D(0,0,1)))/IBK::DEG2RAD;
+//	IBKMK::Vector3D vec = m_normal.crossProduct(IBKMK::Vector3D(0,0,1));
+//	QVector3D axis((float)vec.m_x, (float)vec.m_y, (float)vec.m_z);
+//	qq.fromAxisAndAngle(axis, (float)angle);
 
-	IBKMK::Vector3D translation = m_vertexes[0];
-	std::vector<QVector3D>	newVerties((size_t)m_polygon.size());
+//	IBKMK::Vector3D translation = m_vertexes[0];
+//	std::vector<QVector3D>	newVerties((size_t)m_polygon.size());
 
-	m_vertexes.clear();
+//	m_vertexes.clear();
 
-	for (int i=0; i< m_polygon.size(); ++i) {
-		QVector3D vecA((float)m_polygon.value(i).x(), (float)m_polygon.value(i).y(), 0);
-		vecA = qq * vecA;
-		IBKMK::Vector3D vecB(vecA.x(),vecA.y(),vecA.z());
+//	for (int i=0; i< m_polygon.size(); ++i) {
+//		QVector3D vecA((float)m_polygon.value(i).x(), (float)m_polygon.value(i).y(), 0);
+//		vecA = qq * vecA;
+//		IBKMK::Vector3D vecB(vecA.x(),vecA.y(),vecA.z());
 
-		m_vertexes.push_back(vecB+translation);
-	}
+//		m_vertexes.push_back(vecB+translation);
+//	}
 
-}
+//}
 
 
 bool PlaneGeometry::update2DPolygon() {
@@ -441,6 +423,16 @@ void PlaneGeometry::triangulate() {
 	}
 }
 
+std::vector<Polygon2D> PlaneGeometry::holes() const
+{
+	return m_holes;
+}
+
+void PlaneGeometry::setHoles(const std::vector<Polygon2D> & holes)
+{
+	m_holes = holes;
+}
+
 
 void PlaneGeometry::updateLocalCoordinateSystem() {
 	m_normal = IBKMK::Vector3D(0,0,0);
@@ -656,60 +648,5 @@ IBKMK::Vector3D PlaneGeometry::centerPoint() const {
 	return vCenter;
 }
 
-
-bool PlaneGeometry::operator!=(const PlaneGeometry & other) const {
-	if (m_type != other.m_type) return true;
-	if (m_vertexes != other.m_vertexes) return true;
-	// Note: all other properties are derived from m_vertexes and m_type, so there's no need to check them.
-	return false;
-}
-
-
-void PlaneGeometry::readXMLPrivate(const TiXmlElement * element) {
-	FUNCID(PlaneGeometry::readXMLPrivate);
-
-	try {
-		// search for mandatory attributes
-		// reading attributes
-		const TiXmlAttribute * attrib = element->FirstAttribute();
-		while (attrib) {
-			const std::string & attribName = attrib->NameStr();
-			if (attribName == "type")
-				try {
-				m_type = (type_t)KeywordList::Enumeration("PlaneGeometry::type_t", attrib->ValueStr());
-			}
-			catch (IBK::Exception & ex) {
-				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-										  IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
-			}
-			attrib = attrib->Next();
-		}
-		// read data
-		NANDRAD::readVector3D(element, "PlaneGeometry", m_vertexes);
-	}
-	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error reading 'PlaneGeometry' element."), FUNC_ID);
-	}
-	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'PlaneGeometry' element.").arg(ex2.what()), FUNC_ID);
-	}
-}
-
-
-TiXmlElement * PlaneGeometry::writeXMLPrivate(TiXmlElement * parent) const {
-	TiXmlElement * e = new TiXmlElement("PlaneGeometry");
-	parent->LinkEndChild(e);
-
-	if (m_type != NUM_T)
-		e->SetAttribute("type", KeywordList::Keyword("PlaneGeometry::type_t",  m_type));
-	std::stringstream vals;
-	for (unsigned int i=0; i<m_vertexes.size(); ++i) {
-		vals << m_vertexes[i].m_x << " " << m_vertexes[i].m_y << " " << m_vertexes[i].m_z;
-		if (i<m_vertexes.size()-1)  vals << ", ";
-	}
-	TiXmlText * text = new TiXmlText( vals.str() );
-	e->LinkEndChild( text );
-	return e;
-}
-
+#endif
 } // namespace VICUS

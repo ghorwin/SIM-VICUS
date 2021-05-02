@@ -72,6 +72,11 @@ static int pointInPolygon(const QPointF &point, const QPolygonF& poly)
 
 // *** Polygon3D ***
 
+Polygon3D::Polygon3D(const std::vector<IBKMK::Vector3D> & vertexes) {
+	setVertexes(vertexes);
+}
+
+
 void Polygon3D::readXML(const TiXmlElement * element) {
 	FUNCID(Polygon3D::readXML);
 
@@ -254,7 +259,13 @@ void Polygon3D::updateLocalCoordinateSystem() {
 	// normalize localX and localY
 	m_localX.normalize();
 	m_localY.normalize();
-
 }
+
+
+void Polygon3D::setVertexes(const std::vector<IBKMK::Vector3D> & vertexes) {
+	m_vertexes = vertexes;
+	checkPolygon(); // if we have a triangle/rectangle, this is detected here
+}
+
 } // namespace VICUS
 

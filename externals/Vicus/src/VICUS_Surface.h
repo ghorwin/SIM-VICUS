@@ -6,6 +6,7 @@
 #include "VICUS_PlaneGeometry.h"
 #include "VICUS_Object.h"
 #include "VICUS_SubSurface.h"
+#include "VICUS_Polygon3D.h"
 
 #include <IBK_LinearSpline.h>
 
@@ -38,6 +39,14 @@ public:
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
+	/*! Gives read-access to the surface's geometry. */
+	const PlaneGeometry					geometry() const { return m_geometry; }
+
+	/*! This function updates the triangulation of the surface and its subsurfaces.
+		Call this function whenever you change m_polygon3D and/or m_subsurfaces.
+	*/
+	void computeGeometry();
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of surface. */
@@ -45,8 +54,8 @@ public:
 
 	QString								m_displayName;				// XML:A
 
-	/*! The actual geometry. */
-	PlaneGeometry						m_geometry;					// XML:E
+	/*! The polygon describing this surface. */
+	Polygon3D							m_polygon3D;				// XML:E
 
 	/*! Linear Spline that holds annual shading factors, only for visualization
 		TODO : move to different places or use for visualization
@@ -77,6 +86,13 @@ public:
 		The pointer is updated in VICUS::Project::updatePointers().
 	*/
 	ComponentInstance					*m_componentInstance = nullptr;
+
+private:
+
+	/*! The actual geometry. This object manages the triangulation of the surface's polygon and
+		its embedded subsurfaces.
+	*/
+	PlaneGeometry						m_geometry;
 
 };
 

@@ -33,6 +33,9 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
+	Polygon3D() = default;
+	Polygon3D(const std::vector<IBKMK::Vector3D> & vertexes);
+
 	void readXML(const TiXmlElement * element);
 	TiXmlElement * writeXML(TiXmlElement * parent) const;
 	VICUS_COMP(Polygon3D)
@@ -58,6 +61,18 @@ public:
 
 	/*! Returns 3D vertex coordinates. */
 	std::vector<IBKMK::Vector3D> vertexes() const { return m_vertexes; }
+
+	/*! Sets all vertexes. */
+	void setVertexes(const std::vector<IBKMK::Vector3D> & vertexes);
+
+	/*! Returns the normal vector of the polygon (only defined if polygon is valid).
+		Normal vector is defined based on winding order of polygon.
+	*/
+	const IBKMK::Vector3D & normal() const { return m_normal; }
+
+	const IBKMK::Vector3D & localX() const { return m_localX; }
+	const IBKMK::Vector3D & localY() const { return m_localY; }
+
 
 private:
 

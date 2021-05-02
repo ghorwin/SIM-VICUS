@@ -14,4 +14,15 @@ void Surface::updateColor() {
 		m_color = QColor(150,50,20,1);
 }
 
+
+void Surface::computeGeometry() {
+	// copy polygon to plane geometry
+	m_geometry.setPolygon( m_polygon3D );
+	std::vector<Polygon2D> holes;
+	for (const SubSurface & ssurf : m_subSurfaces)
+		holes.push_back(ssurf.m_geometry);
+	m_geometry.setHoles( holes );
+}
+
+
 } // namespace VICUS
