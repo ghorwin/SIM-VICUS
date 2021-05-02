@@ -58,9 +58,10 @@ public:
 	double orientation() const;
 
 	const IBKMK::Vector3D & normal() const { return m_polygon.normal(); }
-
 	const IBKMK::Vector3D & localX() const { return m_polygon.localX(); }
 	const IBKMK::Vector3D & localY() const { return m_polygon.localY(); }
+	/*! Returns the offset point (origin of the plane's local coordinate system) */
+	const IBKMK::Vector3D & offset() const { return m_polygon.vertexes()[0]; }
 
 	/*! Adds a new 2D vertex in the plane of the outer polygon.
 		Calculates 3D vertex coordinates.
