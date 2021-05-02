@@ -470,12 +470,12 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 			// 3. we need to create an undo-action
 
 			// take the polygon
-			VICUS::PlaneGeometry floor = po->planeGeometry();
-			VICUS::PlaneGeometry ceiling = po->offsetPlaneGeometry();
+			std::vector<IBKMK::Vector3D> floor = po->planeGeometry().vertexes();
+			std::vector<IBKMK::Vector3D> ceiling = po->offsetPlaneGeometry().vertexes();
 			// Note: both polygons still have the same normal vector!
 
 			// compute offset vector
-			IBKMK::Vector3D offset = ceiling.vertexes()[0] - floor.vertexes()[0];
+			IBKMK::Vector3D offset = ceiling[0] - floor[0];
 			// now check if ceiling is offset in same direction as normal vector of floor plane?
 			double dotProduct = offset.scalarProduct(floor.normal());
 			if (dotProduct > 0) {

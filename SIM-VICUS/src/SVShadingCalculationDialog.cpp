@@ -256,7 +256,7 @@ void SVShadingCalculationDialog::on_pushButtonCalculate_clicked(){
 									  m_ui->lineEditGridSize->value(), m_ui->lineEditSunCone->value() );
 
 	for (const VICUS::Surface *s: m_selObstacles) {
-		selObst.push_back( s->m_geometry.vertexes() );
+		selObst.push_back( s->geometry().polygon().vertexes() );
 	}
 
 	IBK::IntPara startYear = simuPara.m_intPara[NANDRAD::SimulationParameter::IP_StartYear];
@@ -283,7 +283,7 @@ void SVShadingCalculationDialog::on_pushButtonCalculate_clicked(){
 			 type == VICUS::Component::CT_FloorToAir || type == VICUS::Component::CT_FloorToGround )
 			continue;
 
-		selObst.push_back( s->m_geometry.vertexes() );
+		selObst.push_back( s->geometry().polygon().vertexes() );
 		selSurf.push_back( s );
 	}
 
@@ -301,7 +301,7 @@ void SVShadingCalculationDialog::on_pushButtonCalculate_clicked(){
 
 
 	for (const VICUS::Surface *s: selSurf) {
-		m_shading.m_surfaces.push_back( SH::Polygon(s->m_id, s->m_geometry.vertexes() ) );
+		m_shading.m_surfaces.push_back( SH::Polygon(s->m_id, s->geometry().polygon().vertexes() ) );
 	}
 
 	QProgressDialog progressDialog(tr("Calculate shading factors"), tr("Abort"), 0, 100, this);

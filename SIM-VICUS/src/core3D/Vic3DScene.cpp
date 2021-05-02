@@ -63,7 +63,7 @@ void Vic3DScene::create(SceneView * parent, std::vector<ShaderProgram> & shaderP
 	// create surface normals object already, though we update vertex buffer object later when we actually have geometry
 	m_surfaceNormalsObject.create(m_surfaceNormalsShader);
 
-	m_gridPlanes.push_back( VICUS::PlaneGeometry(VICUS::PlaneGeometry::T_Triangle,
+	m_gridPlanes.push_back( VICUS::PlaneGeometry(VICUS::Polygon3D::T_Triangle,
 												 IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(1,0,0), IBKMK::Vector3D(0,1,0)) );
 
 
@@ -812,10 +812,10 @@ bool Vic3DScene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const 
 				// but maybe a nullptr, if we hit a sphere/cylinder from a network object
 				if (s != nullptr) {
 					// now get normal vector
-					IBKMK::Vector3D n = s->m_geometry.normal();
+					IBKMK::Vector3D n = s->geometry().normal();
 					// get also local X and Y vectors
-					IBKMK::Vector3D localX = s->m_geometry.localX();
-					IBKMK::Vector3D localY = s->m_geometry.localY();
+					IBKMK::Vector3D localX = s->geometry().localX();
+					IBKMK::Vector3D localY = s->geometry().localY();
 					// compose rotation angle from global to local system via the following math:
 					// we have local system axes x,y,z and global axes g1, g2, g3
 					// and the rotation matrix R should do:
@@ -1736,7 +1736,7 @@ void Vic3DScene::pick(PickObject & pickObject) {
 					double dist;
 					// check if we hit the surface - since we show the surface from both sides, we
 					// can also pick both sides
-					if (s.m_geometry.intersectsLine(nearPoint, direction, intersectionPoint, dist, true)) {
+					if (s.geometry().intersectsLine(nearPoint, direction, intersectionPoint, dist, true)) {
 						PickObject::PickResult r;
 						r.m_snapPointType = PickObject::RT_Object;
 						r.m_depth = dist;
@@ -1759,7 +1759,7 @@ void Vic3DScene::pick(PickObject & pickObject) {
 		IBKMK::Vector3D intersectionPoint;
 		double dist;
 		// dump geometry is rendered front/back facing and also picked from both sides
-		if (s.m_geometry.intersectsLine(nearPoint, direction, intersectionPoint, dist, true)) {
+		if (s.geometry().intersectsLine(nearPoint, direction, intersectionPoint, dist, true)) {
 			PickObject::PickResult r;
 			r.m_snapPointType = PickObject::RT_Object;
 			r.m_depth = dist;
@@ -1977,6 +1977,9 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 					std::vector<SnapCandidate> snapCandidates;
 					float closestDepthSoFar = SNAP_DISTANCES_THRESHHOLD;
 
+					// for now we snap to the vertexes of the outer polygon and all holes
+					const std::vector<IBKMK::Vector3D> & sVertexes = s->geometry().triangleVertexes();
+
 					// we always add the intersection point with the surface as fall-back snappoint,
 					// but with a large distance so that it is only used as last resort
 					SnapCandidate sc;
@@ -1986,7 +1989,7 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 
 					if (snapOptions & SVViewState::Snap_ObjectVertex) {
 						// insert distances to all vertexes of selected object
-						for (const IBKMK::Vector3D & v : s->m_geometry.vertexes()) {
+						for (const IBKMK::Vector3D & v : sVertexes) {
 							QVector3D p = QtExt::IBKVector2QVector(v);
 							float dist = (p - pickPoint).lengthSquared();
 							// Only add if close enough (< SNAP_DISTANCES_THRESHHOLD) and if there isn't yet
@@ -2002,9 +2005,9 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 					if (snapOptions & SVViewState::Snap_ObjectCenter) {
 						// insert center point
 						IBKMK::Vector3D center(0,0,0);
-						for (const IBKMK::Vector3D & v : s->m_geometry.vertexes())
+						for (const IBKMK::Vector3D & v : sVertexes)
 							center += v;
-						center /= s->m_geometry.vertexes().size();
+						center /= sVertexes.size();
 						QVector3D p = QtExt::IBKVector2QVector(center);
 						float dist = (p - pickPoint).lengthSquared();
 						if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
@@ -2016,10 +2019,10 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 					}
 					if (snapOptions & SVViewState::Snap_ObjectEdgeCenter) {
 						// process all edges
-						IBKMK::Vector3D lastNode = s->m_geometry.vertexes().front();
-						for (unsigned int i=0; i<s->m_geometry.vertexes().size()+1; ++i) {
+						IBKMK::Vector3D lastNode = sVertexes.front();
+						for (unsigned int i=0; i<sVertexes.size()+1; ++i) {
 							IBKMK::Vector3D center = lastNode;
-							lastNode = s->m_geometry.vertexes()[i % s->m_geometry.vertexes().size()];
+							lastNode = sVertexes[i % sVertexes.size()];
 							center += lastNode;
 							center /= 2;
 							QVector3D p = QtExt::IBKVector2QVector(center);

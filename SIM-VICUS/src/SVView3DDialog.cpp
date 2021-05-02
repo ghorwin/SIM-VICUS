@@ -43,10 +43,11 @@ void SVView3D::exportView3d() {
 		// then we triangulate them and compose our View3D Objects
 
 		VICUS::Surface s = *surf;
-		s.m_geometry.computeGeometry(); // is this necessary???
 
-		const std::vector<VICUS::PlaneGeometry::triangle_t> &triangles = s.m_geometry.triangles();
-		const std::vector<IBKMK::Vector3D> &vertexes = s.m_geometry.vertexes();
+		// TODO : Stephan/Dirk, review if this still works when there are windows in the wall
+
+		const std::vector<VICUS::PlaneGeometry::triangle_t> &triangles = s.geometry().triangles();
+		const std::vector<IBKMK::Vector3D> &vertexes = s.geometry().polygon().vertexes();
 
 
 		const VICUS::Room *r = dynamic_cast<const VICUS::Room *>(s.m_parent);

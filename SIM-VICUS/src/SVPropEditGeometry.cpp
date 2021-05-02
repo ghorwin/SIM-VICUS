@@ -271,12 +271,12 @@ void SVPropEditGeometry::translate() {
 		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
 		if (s != nullptr) {
 			VICUS::Surface modS(*s);
-			std::vector<IBKMK::Vector3D> vertexes = modS.m_geometry.vertexes();
+			std::vector<IBKMK::Vector3D> vertexes = modS.geometry().vertexes();
 			for ( IBKMK::Vector3D & v : vertexes ) {
 				// use just this instead of making a QVetor3D
 				v += translation;
 			}
-			modS.m_geometry.setVertexes(vertexes);
+			modS.m_polygon3D.setVertexes(vertexes);
 			modifiedSurfaces.push_back(modS);
 		}
 		// TODO : Netzwerk zeugs
@@ -309,7 +309,7 @@ void SVPropEditGeometry::scale() {
 		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
 		if (s != nullptr) {
 			VICUS::Surface modS(*s);
-			std::vector<IBKMK::Vector3D> vertexes = modS.m_geometry.vertexes();
+			std::vector<IBKMK::Vector3D> vertexes = modS.geometry().vertexes();
 			for ( IBKMK::Vector3D & v : vertexes ) {
 				// use just this instead of making a QVetor3D
 				Vic3D::Transform3D t;
@@ -318,7 +318,7 @@ void SVPropEditGeometry::scale() {
 				t.setTranslation(t.toMatrix()*QtExt::IBKVector2QVector(v) );
 				v = QtExt::QVector2IBKVector(t.translation());
 			}
-			modS.m_geometry.setVertexes(vertexes);
+			modS.m_polygon3D.setVertexes(vertexes);
 			modifiedSurfaces.push_back(modS);
 		}
 		// TODO : Netzwerk zeugs

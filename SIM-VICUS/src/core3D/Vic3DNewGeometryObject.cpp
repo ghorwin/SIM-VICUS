@@ -79,7 +79,7 @@ void NewGeometryObject::create(ShaderProgram * shaderProgram) {
 	m_vertexBufferObject.release();
 	m_indexBufferObject.release();
 
-	m_planeGeometry = VICUS::PlaneGeometry(VICUS::PlaneGeometry::T_Polygon);
+	m_planeGeometry = VICUS::PlaneGeometry();
 }
 
 
@@ -103,7 +103,10 @@ void NewGeometryObject::switchTo(NewGeometryObject::NewGeometryMode m) {
 
 
 void NewGeometryObject::flipGeometry() {
-	m_planeGeometry.flip();
+	// TODO : Andreas, improve performance?
+	VICUS::Polygon3D polygon = m_planeGeometry.polygon();
+	polygon.flip();
+	m_planeGeometry.setPolygon(polygon); // Note: no holes in this polygon, no need to flip the holes as well
 	updateBuffers(false);
 }
 
@@ -132,12 +135,12 @@ void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
 				IBKMK::Vector3D b = m_vertexList.back();
 				IBKMK::Vector3D c = p;
 				IBKMK::Vector3D d = a + (c-b);
-				m_planeGeometry = VICUS::PlaneGeometry(VICUS::PlaneGeometry::T_Rectangle, a, b, d);
+				m_planeGeometry = VICUS::PlaneGeometry(VICUS::Polygon3D::T_Rectangle, a, b, d);
 				SVViewStateHandler::instance().m_propVertexListWidget->addVertex(p);
 			}
 			else {
 				m_vertexList.push_back(p);
-				m_planeGeometry.setVertexes(m_vertexList);
+				m_planeGeometry.setPolygon( VICUS::Polygon3D(m_vertexList) );
 				// also tell the vertex list widget about our new point
 				SVViewStateHandler::instance().m_propVertexListWidget->addVertex(p);
 			}
@@ -148,12 +151,12 @@ void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
 			// if we have already a valid plane (i.e. normal vector not 0,0,0), then check if point is in plane
 			if (m_planeGeometry.normal() != IBKMK::Vector3D(0,0,0)) {
 				IBKMK::Vector3D projected;
-				IBKMK::pointProjectedOnPlane(m_planeGeometry.vertexes()[0], m_planeGeometry.normal(), p, projected);
+				IBKMK::pointProjectedOnPlane(m_planeGeometry.triangleVertexes()[0], m_planeGeometry.normal(), p, projected);
 				m_vertexList.push_back(projected);
 			}
 			else
 				m_vertexList.push_back(p);
-			m_planeGeometry.setVertexes(m_vertexList);
+			m_planeGeometry.setPolygon( VICUS::Polygon3D(m_vertexList) );
 			// also tell the vertex list widget about our new point
 			SVViewStateHandler::instance().m_propVertexListWidget->addVertex(p);
 		break;
@@ -185,7 +188,7 @@ void NewGeometryObject::removeVertex(unsigned int idx) {
 	switch (m_newGeometryMode) {
 		case NGM_Polygon :
 		case NGM_ZoneFloor :
-			m_planeGeometry.setVertexes(m_vertexList);
+			m_planeGeometry.setPolygon( VICUS::Polygon3D(m_vertexList) );
 			SVViewStateHandler::instance().m_propVertexListWidget->removeVertex(idx);
 		break;
 		case NGM_Rect :
@@ -216,7 +219,7 @@ void NewGeometryObject::removeLastVertex() {
 
 
 void NewGeometryObject::clear() {
-	m_planeGeometry.setVertexes(std::vector<IBKMK::Vector3D>());
+	m_planeGeometry.setPolygon( VICUS::Polygon3D() );
 	m_vertexList.clear();
 	updateBuffers(false);
 }
