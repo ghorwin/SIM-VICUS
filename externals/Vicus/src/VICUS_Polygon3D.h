@@ -52,8 +52,8 @@ public:
 	*/
 	bool isValid() const { return m_valid; }
 
-	/*! Adds a new 2D vertex in the plane of the polygon. Afterwards simplifies polygon. */
-	void addVertex(const IBK::point2D<double> & v);
+	/*! Adds a new 3D vertex in the plane of the polygon. Afterwards simplifies polygon. */
+	void addVertex(const IBK::point3D<double> & v);
 
 	/*! Removes the vertex at given location.
 		\warning Throws an exception if index is out of range.
@@ -69,6 +69,9 @@ public:
 	/*! Sets all vertexes. */
 	void setVertexes(const std::vector<IBKMK::Vector3D> & vertexes);
 
+	/*! Returns the center point (average of all vertexes of the polygon). */
+	IBKMK::Vector3D centerPoint() const;
+
 	/*! Returns the normal vector of the polygon (only defined if polygon is valid).
 		Normal vector is defined based on winding order of polygon.
 	*/
@@ -77,6 +80,8 @@ public:
 	const IBKMK::Vector3D & localX() const { return m_localX; }
 	const IBKMK::Vector3D & localY() const { return m_localY; }
 
+	/*! Returns the points of the polygon within the local coordinate system of the plane. */
+	const Polygon2D & polyline() const { return m_polyline; }
 
 private:
 
@@ -123,7 +128,7 @@ private:
 	bool								m_valid = false;
 
 	/*! Polyline in 2D-coordinates. */
-	Polygon2D							m_polygon;
+	Polygon2D							m_polyline;
 
 	/*! Normal vector of plane, updated in updateLocalCoordinateSystem(). */
 	IBKMK::Vector3D						m_normal = IBKMK::Vector3D(0,0,0);

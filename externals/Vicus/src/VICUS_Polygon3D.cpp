@@ -123,7 +123,7 @@ bool Polygon3D::operator!=(const Polygon3D &other) const {
 }
 
 
-void Polygon3D::addVertex(const IBK::point2D<double> & v) {
+void Polygon3D::addVertex(const IBK::point3D<double> & v) {
 	m_vertexes.push_back(v);
 	checkPolygon(); // if we have a triangle/rectangle, this is detected here
 }
@@ -280,6 +280,24 @@ void Polygon3D::updateLocalCoordinateSystem() {
 void Polygon3D::setVertexes(const std::vector<IBKMK::Vector3D> & vertexes) {
 	m_vertexes = vertexes;
 	checkPolygon(); // if we have a triangle/rectangle, this is detected here
+}
+
+
+IBKMK::Vector3D Polygon3D::centerPoint() const {
+	FUNCID(Polygon3D::centerPoint);
+	if (!isValid())
+		throw IBK::Exception("Invalid polygon.", FUNC_ID);
+
+	size_t counter=0;
+	IBKMK::Vector3D vCenter;
+
+	for (const IBKMK::Vector3D & v : vertexes()) {
+		vCenter += v;
+		++counter;
+	}
+	vCenter/=static_cast<double>(counter);
+
+	return vCenter;
 }
 
 } // namespace VICUS

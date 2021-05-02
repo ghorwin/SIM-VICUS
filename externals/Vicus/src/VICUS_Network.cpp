@@ -362,8 +362,8 @@ void Network::connectBuildings(const bool extendSupplyPipes) {
 			double dist2 = NetworkLine2D::distanceBetweenPoints(pBranch, m_edges[idEdgeMin].m_node2->m_position.point2D());
 			idBranch = (dist1 < dist2) ? m_edges[idEdgeMin].nodeId1() : m_edges[idEdgeMin].nodeId2();
 			// if pipe should be extended, change coordinates of branch node
-			if (extendSupplyPipes){
-				m_nodes[idBranch].m_position = pBranch;
+			if (extendSupplyPipes) {
+				m_nodes[idBranch].m_position = IBKMK::Vector3D(pBranch);
 				for (NetworkEdge *e: m_nodes[idBranch].m_edges)
 					e->setLengthFromCoordinates();
 			}

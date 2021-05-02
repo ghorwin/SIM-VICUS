@@ -30,10 +30,10 @@ public:
 	*/
 	struct triangle_t {
 		triangle_t() {}
-		triangle_t(unsigned short i1, unsigned short i2, unsigned short i3) :
+		triangle_t(unsigned int i1, unsigned int i2, unsigned int i3) :
 			a(i1), b(i2), c(i3)
 		{}
-		unsigned short a,b,c;
+		unsigned int a,b,c;
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -62,11 +62,6 @@ public:
 	const IBKMK::Vector3D & localY() const { return m_polygon.localY(); }
 	/*! Returns the offset point (origin of the plane's local coordinate system) */
 	const IBKMK::Vector3D & offset() const { return m_polygon.vertexes()[0]; }
-
-	/*! Adds a new 2D vertex in the plane of the outer polygon.
-		Calculates 3D vertex coordinates.
-	*/
-	void addVertex(const IBKMK::Vector2D & v);
 
 	/*! Adds a new 3D vertex.
 		Calculates 2D plane coordinates and throws an exception, if vertex is out of plane.
@@ -109,7 +104,7 @@ public:
 	void setPolygon(const Polygon3D & polygon3D);
 
 	/*! Returns the vector of holes (2D polygons in the plane of the polygon). */
-	std::vector<Polygon2D> holes() const;
+	const std::vector<Polygon2D> & holes() const { return m_holes; }
 	/*! Sets the vector of holes (2D polygons in the plane of the polygon). */
 	void setHoles(const std::vector<Polygon2D> & holes);
 
@@ -122,24 +117,12 @@ public:
 	/*! Calculates the center point of the surface/polygon */
 	IBKMK::Vector3D centerPoint() const;
 
-
 private:
+
 	// *** PRIVATE MEMBER FUNCTIONS ***
 
-	/*! This computes the normal vector, performs the triangulation and attempts to simplify a polygon to a rectangle/triangle
-		primitive.
-		This function is called from all functions that modify the internal polygon/holes vertexes.
-	*/
-	void computeGeometry();
-
-	/*! Creates a 2D representation of the 3D polygon.
-		Function updateLocalCoordinateSystem() must compute first.
-		\sa updateLocalCoordinateSystem()
-	*/
-	bool update2DPolygon();
-
-	/*! This function triangulates the geometry and populate the m_triangles vector.
-		This function is called from computeGeometry().
+	/*! This function triangulates the geometry and populate the m_triangles and m_triangleVertexes vectors.
+		This function is called whenever the polygon or the holes change.
 	*/
 	void triangulate();
 
