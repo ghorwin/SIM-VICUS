@@ -73,8 +73,8 @@ void Surface::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
-			else if (cName == "PlaneGeometry")
-				m_geometry.readXML(c);
+			else if (cName == "Polygon3D")
+				m_polygon3D.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -100,7 +100,7 @@ TiXmlElement * Surface::writeXML(TiXmlElement * parent) const {
 	if (m_visible != Surface().m_visible)
 		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 
-	m_geometry.writeXML(e);
+	m_polygon3D.writeXML(e);
 
 	if (!m_subSurfaces.empty()) {
 		TiXmlElement * child = new TiXmlElement("SubSurfaces");
