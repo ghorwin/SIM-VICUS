@@ -47,6 +47,9 @@ public:
 	*/
 	void computeGeometry();
 
+	/*! Flip the geometry of the polygon and recompute local coordinates of all embedded (and also flipped) subsurfaces */
+	void flip();
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of surface. */

@@ -25,4 +25,15 @@ void Surface::computeGeometry() {
 }
 
 
+void Surface::flip() {
+	// TODO  : Dirk
+
+	// compute 3D vertex coordinates of all subsurfaces
+	// flip polygon
+	// flip subsurface polygons (3D vertex variants)
+	// recompute 2D vertex coordinates for all subsurfaces
+
+}
+
+
 } // namespace VICUS
