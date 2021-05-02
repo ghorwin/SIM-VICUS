@@ -49,6 +49,18 @@ namespace IBKMK {
 bool intersectsLine2D(const std::vector<Vector2D> & polygon,
 		const IBK::point2D<double> &p1, const IBK::point2D<double> &p2, IBK::point2D<double> & intersectionPoint);
 
+/*! Point in Polygon function. Result:
+	-1 point not in polyline
+	0 point on polyline
+	1 point in polyline
+
+	\param	point test point
+	Source https://de.wikipedia.org/wiki/Punkt-in-Polygon-Test_nach_Jordan
+
+*/
+int pointInPolygon(const std::vector<Vector2D> & poly, const IBK::point2D<double> &p);
+
+
 } // namespace IBKMK
 
 #endif // IBKMK_2DCalculationsH

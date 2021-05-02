@@ -65,4 +65,49 @@ bool intersectsLine2D(const std::vector<Vector2D> & polygon,
 	return false;
 }
 
+
+static int crossProdTest(const IBKMK::Vector2D & a, IBKMK::Vector2D b, IBKMK::Vector2D c) {
+
+	if (a.m_y == b.m_y && a.m_y == c.m_y) {
+		if (	(b.m_x<= a.m_x && a.m_x <= c.m_x) ||
+				(c.m_x<= a.m_x && a.m_x <= b.m_x) )
+			return 0;
+		else
+			return 1;
+	}
+
+	if (b.m_y > c.m_y)
+		std::swap(b,c);
+
+	if (a.m_y <= b.m_y || a.m_y > c.m_y)
+		return 1;
+
+	double delta = (b.m_x - a.m_x) * (c.m_y - a.m_y) -(b.m_y - a.m_y) * (c.m_x - a.m_x);
+	if(delta > 0)			return	1;
+	else if(delta < 0)		return	-1;
+	else					return	0;
+}
+
+
+/* Point in Polygon function. Result:
+	-1 point not in polyline
+	0 point on polyline
+	1 point in polyline
+
+	\param	point test point
+	Source https://de.wikipedia.org/wiki/Punkt-in-Polygon-Test_nach_Jordan
+
+*/
+int pointInPolygon(const std::vector<Vector2D> & polygon, const IBK::point2D<double> &p) {
+	int t=-1;
+	size_t polySize = polygon.size();
+	for (size_t i=0; i<polySize; ++i) {
+		t *= crossProdTest(p, polygon[i], polygon[i+1 % polySize]);
+		if (t==0)
+			break;
+	}
+
+	return  t;
+}
+
 } // namespace IBKMK

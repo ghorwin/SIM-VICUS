@@ -59,7 +59,7 @@ public:
 	Vector3D() {}
 
 	/*! Convenience constructor. */
-	Vector3D(const IBK::point2D<double> &p) : IBK::point3D<double>(p.m_x, p.m_y, 0.0)
+	explicit Vector3D(const IBK::point2D<double> &p) : IBK::point3D<double>(p.m_x, p.m_y, 0.0)
 	{
 	}
 
