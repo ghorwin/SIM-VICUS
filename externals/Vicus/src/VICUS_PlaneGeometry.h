@@ -109,7 +109,7 @@ public:
 	void setHoles(const std::vector<Polygon2D> & holes);
 
 	/*! Returns the 2D polygon (only if it exists) in the plane of the polygon. */
-	const Polygon2D & polygon2D() const { return m_polygon2D; }
+	const Polygon2D & polygon2D() const { return m_polygon.polyline(); }
 
 	/*! Calculates surface area in m2. */
 	double area() const;
@@ -131,9 +131,6 @@ private:
 
 	/*! Contains the information about the polygon that encloses this surface. */
 	Polygon3D							m_polygon;
-
-	/*! Polyline in 2D-coordinates in the plane of the polygon. */
-	Polygon2D							m_polygon2D;
 
 	/*! Polygons with holes/subsurfaces inside the polygon. */
 	std::vector<Polygon2D>				m_holes;

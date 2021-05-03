@@ -304,7 +304,7 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 	// TODO : we need to test for individual triangles, since we now have holes
 	//        or we need to check for holes first, and then for the enclosing polygons. Then
 	//        this function should also indicate, which hole was clicked on (if any).
-	if (IBKMK::pointInPolygon(m_polygon2D.vertexes(), IBK::point2D<double>(x,y) ) != -1) {
+	if (IBKMK::pointInPolygon(polygon2D().vertexes(), IBK::point2D<double>(x,y) ) != -1) {
 		dist = t;
 		intersectionPoint = x0;
 		return true;
@@ -328,16 +328,13 @@ void PlaneGeometry::setHoles(const std::vector<Polygon2D> & holes) {
 }
 
 
-
 double PlaneGeometry::area() const {
 	FUNCID(PlaneGeometry::area);
 	if (!isValid())
 		throw IBK::Exception(IBK::FormatString("Invalid polygon set."), FUNC_ID);
 
-	return m_polygon2D.area();
+	return polygon2D().area();
 }
-
-
 
 
 } // namespace VICUS
