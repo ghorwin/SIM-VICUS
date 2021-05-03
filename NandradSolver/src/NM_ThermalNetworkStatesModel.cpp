@@ -265,14 +265,15 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 							m_p->m_heatLossElements.push_back(element); // copy of pointer
 
 						} break;
-						case (NANDRAD::HydraulicNetworkComponent::HP_SupplySide): {
-
-							// not implemented yet ...
-
+						case NANDRAD::HydraulicNetworkComponent::HP_SupplySide:
+						case NANDRAD::HydraulicNetworkComponent::HP_SupplyAndSourceSide:
+						case NANDRAD::HydraulicNetworkComponent::NUM_HP:
+						{
+							throw IBK::Exception(IBK::FormatString("Heat pump integration type %1 is not supported yet!")
+										.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatPumpIntegration",
+										e.m_component->m_heatPumpIntegration)), FUNC_ID);
 						}
 
-						default:
-							break;
 					} // switch heat pump integration type
 
 				} break; // NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot

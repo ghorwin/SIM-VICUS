@@ -47,8 +47,7 @@ public:
 		P_PipeMaxDiscretizationWidth,			// Keyword: PipeMaxDiscretizationWidth			[m]		'Maximum width of discretized volumes in pipe'
 		P_CarnotEfficiency,						// Keyword: CarnotEfficiency					[---]	'Carnot efficiency eta'
 		P_MaximumHeatHeatingPower,				// Keyword: MaximumHeatHeatingPower				[W]		'Maximum heating power'
-		P_CondenserNominalTemperatureDifference,	// Keyword: CondenserNominalTemperatureDifference	[C]		'Nominal temperature difference at condenser'
-		P_EvaporatorNominalTemperatureDifference,	// Keyword: EvaporatorNominalTemperatureDifference	[C]		'Nominal temperature difference at evaporator'
+		P_HeatPumpNominalTemperatureDifference,	// Keyword: HeatPumpNominalTemperatureDifference	[K]		'Nominal temperature difference at condenser or evaporator'
 		NUM_P
 	};
 
@@ -65,10 +64,10 @@ public:
 		TODO Andreas + Anne + Hauke
 	*/
 	enum splinePara_t {
-		SPL_CondenserOutletSetPoint,		// Keyword: CondenserOutletSetPoint				[C]		'Set point temperature for condenser outlet'
-		SPL_CondenserMeanTemperature,		// Keyword: CondenserMeanTemperature			[C]		'Mean fluid temperature in condenser'
-		SPL_EvaporatorMeanTemperature,		// Keyword: EvaporatorMeanTemperature			[C]		'Mean fluid temperature in evaporator'
-		SPL_HeatPumpControlSignal,			// Keyword: HeatPumpControlSignal				[---]	'Digital control signal (on/off) for heat pump'
+		SPL_CondenserOutletSetPointTemperature,		// Keyword: CondenserOutletSetPointTemperature	[C]		'Set point temperature for condenser outlet'
+		SPL_CondenserMeanTemperature,				// Keyword: CondenserMeanTemperature			[C]		'Mean fluid temperature in condenser'
+		SPL_EvaporatorMeanTemperature,				// Keyword: EvaporatorMeanTemperature			[C]		'Mean fluid temperature in evaporator'
+		SPL_HeatPumpControlSignal,					// Keyword: HeatPumpControlSignal				[---]	'Digital control signal (on/off) for heat pump'
 		NUM_SPL
 	};
 
@@ -84,7 +83,7 @@ public:
 	/*! Checks for valid and required parameters (value ranges).
 		\param networkModelType Type of network calculation model (HydraulicNetwork::ModelType).
 	*/
-	void checkParameters(int networkModelType) const;
+	void checkParameters(int networkModelType);
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -113,11 +112,21 @@ public:
 	*/
 	static std::vector<unsigned int> requiredParameter(const ModelType modelType, int networkModelType);
 
+	/*! returns required spline parameters */
+	static std::vector<unsigned int> requiredSplineParameter(const HydraulicNetworkComponent::ModelType modelType,
+													const HydraulicNetworkComponent::HeatPumpIntegration heatPumpIntegration);
+
 	/*! Helper function that implements specific rules for testing a single parameter.
 		This is useful if the same parameter is used by several models and we want to avoid implementing
 		the same checking rule multiple times.
+		Is used in Nandrad as well as in the graphical user interface.
 	*/
 	static void checkModelParameter(const IBK::Parameter &para, const unsigned int numPara);
+
+	/*! Helper function that implements specific rules for testing the spline parameters
+	 * Is used in Nandrad as well as in the graphical user interface.
+	*/
+	static void checkModelSplineParameter(LinearSplineParameter &paraSpl, const unsigned int numPara);
 
 };
 

@@ -498,6 +498,8 @@ TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(const NANDRAD::HydraulicFluid & flu
 	m_fluidVolume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
 	m_condenserMeanTemperature = &comp.m_splPara[NANDRAD::HydraulicNetworkComponent::SPL_CondenserMeanTemperature];
 	m_carnotEfficiency = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiency].value;
+	m_condenserMaximumHeatFlux = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumHeatHeatingPower].value;
+	m_nominalTemperatureDifference = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_HeatPumpNominalTemperatureDifference].value;
 
 	// copy fluid properties
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
@@ -512,17 +514,34 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 	// copy inflow temperature
 	m_inflowTemperature = Tinflow;
 
-	// we need the time here!!!
-	const double evaporatorMeanTemperature = Tinflow + m_nominalEvaporatorTemperatureDiff;
-	const double condenserMeanTemperature = m_condenserMeanTemperature->m_values.value(0.0);
+	switch (m_heatpumpIntegration ) {
 
-	// COP
-	const double COPMax = condenserMeanTemperature / (condenserMeanTemperature - evaporatorMeanTemperature);
-	const double m_COP = m_carnotEfficiency * COPMax;
+		case NANDRAD::HydraulicNetworkComponent::HP_SourceSide: {
+		// we need the time here!!!
+		const double condenserMeanTemperature = m_condenserMeanTemperature->m_values.value(0.0);
 
-	// heat loss = - evaporator heat flux
-	m_heatLoss = - *m_heatFluxCondenserRef * (m_COP - 1) / m_COP;
-	m_electricalPower  = *m_heatFluxCondenserRef / m_COP;
+		// COP
+		const double evaporatorMeanTemperature = Tinflow + m_nominalTemperatureDifference / 2;
+		const double COPMax = condenserMeanTemperature / (condenserMeanTemperature - evaporatorMeanTemperature);
+		const double m_COP = m_carnotEfficiency * COPMax;
+
+		// cut condenser heat flux
+		double condenserHeatFlux = *m_heatFluxCondenserRef;
+		if (condenserHeatFlux > m_condenserMaximumHeatFlux)
+			condenserHeatFlux = m_condenserMaximumHeatFlux;
+
+		// heat loss = - evaporator heat flux
+		m_heatLoss = - condenserHeatFlux * (m_COP - 1) / m_COP;
+		m_electricalPower  = *m_heatFluxCondenserRef / m_COP;
+
+		} break;
+
+		case NANDRAD::HydraulicNetworkComponent::HP_SupplySide:
+		case NANDRAD::HydraulicNetworkComponent::HP_SupplyAndSourceSide:
+		case NANDRAD::HydraulicNetworkComponent::NUM_HP: {
+
+		}
+	}
 }
 
 
