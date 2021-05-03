@@ -178,16 +178,40 @@ void PlaneGeometry::triangulate() {
 	for (unsigned int i=0; i<points.size(); ++i) {
 		edges.push_back(std::make_pair(i, (i+1) % points.size()));
 	}
-	edges.back().second = 0; // close the loop
 
 	// add windows
 
 	// loop all windows
+	for (const Polygon2D & p2 : m_holes) {
+		std::vector<unsigned int> vertexIndexes;
+		// process all vertexes
+		for (unsigned int i=0, vertexCount = p2.vertexes().size(); i<vertexCount; ++i) {
+			const IBKMK::Vector2D & v = p2.vertexes()[i];
 
-	// for each vertex in window do:
-	//  - check if vertex is already in vertex list, then re-use same vertex index,
-	//    otherwise add vertex and get new index
-	//  - add edge to this index
+			// for each vertex in window do:
+			//  - check if vertex is already in vertex list, then re-use same vertex index,
+			//    otherwise add vertex and get new index
+			unsigned int j=0;
+			for (;j<points.size();++j)
+				if (points[j] == v)
+					break;
+			// store index (either of existing vertex or next vertex to be added)
+			vertexIndexes.push_back(j);
+			if (j == points.size()) {
+				points.push_back(v);
+				// compute the matching 3D vertex and add to list of vertexes
+				IBKMK::Vector3D v3 = offset() + localX()*v.m_x + localY()*v.m_y;
+				vertexes.push_back(v3);
+			}
+		}
+		// add edges
+		for (unsigned int i=0, vertexCount = p2.vertexes().size(); i<vertexCount; ++i) {
+			unsigned int i1 = vertexIndexes[i];
+			unsigned int i2 = vertexIndexes[(i+1) % vertexCount];
+			edges.push_back(std::make_pair(i1, i2));
+		}
+	}
+
 
 	IBKMK::Triangulation triangu;
 
