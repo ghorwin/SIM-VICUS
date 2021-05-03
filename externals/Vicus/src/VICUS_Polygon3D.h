@@ -64,7 +64,7 @@ public:
 	void flip();
 
 	/*! Returns 3D vertex coordinates. */
-	std::vector<IBKMK::Vector3D> vertexes() const { return m_vertexes; }
+	const std::vector<IBKMK::Vector3D> & vertexes() const { return m_vertexes; }
 
 	/*! Sets all vertexes. */
 	void setVertexes(const std::vector<IBKMK::Vector3D> & vertexes);
