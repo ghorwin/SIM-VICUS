@@ -39,14 +39,16 @@ public:
 
 	/*! Parameters for the component. */
 	enum para_t {
-		P_HydraulicDiameter,				// Keyword: HydraulicDiameter					[mm]	'Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)'
-		P_PressureLossCoefficient,			// Keyword: PressureLossCoefficient				[-]		'Pressure loss coefficient for the component (zeta-value)'
-		P_PressureHead,						// Keyword: PressureHead						[Pa]	'Pressure head form a pump'
-		P_PumpEfficiency,					// Keyword: PumpEfficiency						[---]	'Pump efficiency'
-		P_Volume,							// Keyword: Volume								[m3]	'Water or air volume of the component'
-		P_PipeMaxDiscretizationWidth,		// Keyword: PipeMaxDiscretizationWidth			[m]		'Maximum width of discretized volumes in pipe'
-		P_CarnotEfficiency,					// Keyword: CarnotEfficiency					[---]	'Carnot efficiency eta'
-		P_MaximumHeatHeatingPower,			// Keyword: MaximumHeatHeatingPower				[W]		'Maximum heating power'
+		P_HydraulicDiameter,					// Keyword: HydraulicDiameter					[mm]	'Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)'
+		P_PressureLossCoefficient,				// Keyword: PressureLossCoefficient				[-]		'Pressure loss coefficient for the component (zeta-value)'
+		P_PressureHead,							// Keyword: PressureHead						[Pa]	'Pressure head form a pump'
+		P_PumpEfficiency,						// Keyword: PumpEfficiency						[---]	'Pump efficiency'
+		P_Volume,								// Keyword: Volume								[m3]	'Water or air volume of the component'
+		P_PipeMaxDiscretizationWidth,			// Keyword: PipeMaxDiscretizationWidth			[m]		'Maximum width of discretized volumes in pipe'
+		P_CarnotEfficiency,						// Keyword: CarnotEfficiency					[---]	'Carnot efficiency eta'
+		P_MaximumHeatHeatingPower,				// Keyword: MaximumHeatHeatingPower				[W]		'Maximum heating power'
+		P_CondenserNominalTemperatureDifference,	// Keyword: CondenserNominalTemperatureDifference	[C]		'Nominal temperature difference at condenser'
+		P_EvaporatorNominalTemperatureDifference,	// Keyword: EvaporatorNominalTemperatureDifference	[C]		'Nominal temperature difference at evaporator'
 		NUM_P
 	};
 
@@ -63,7 +65,6 @@ public:
 		TODO Andreas + Anne + Hauke
 	*/
 	enum splinePara_t {
-		SPL_CondenserHeatingDemand,			// Keyword: CondenserHeatingDemand				[W]		'Heating demand of condenser'
 		SPL_CondenserOutletSetPoint,		// Keyword: CondenserOutletSetPoint				[C]		'Set point temperature for condenser outlet'
 		SPL_CondenserMeanTemperature,		// Keyword: CondenserMeanTemperature			[C]		'Mean fluid temperature in condenser'
 		SPL_EvaporatorMeanTemperature,		// Keyword: EvaporatorMeanTemperature			[C]		'Mean fluid temperature in evaporator'

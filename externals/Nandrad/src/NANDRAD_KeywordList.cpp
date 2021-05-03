@@ -228,6 +228,8 @@ namespace NANDRAD {
 				case 5 : return "PipeMaxDiscretizationWidth";
 				case 6 : return "CarnotEfficiency";
 				case 7 : return "MaximumHeatHeatingPower";
+				case 8 : return "CondenserNominalTemperatureDifference";
+				case 9 : return "EvaporatorNominalTemperatureDifference";
 			} break;
 			// HydraulicNetworkComponent::HeatPumpIntegration
 			case 14 :
@@ -239,11 +241,10 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::splinePara_t
 			case 15 :
 			switch (t) {
-				case 0 : return "CondenserHeatingDemand";
-				case 1 : return "CondenserOutletSetPoint";
-				case 2 : return "CondenserMeanTemperature";
-				case 3 : return "EvaporatorMeanTemperature";
-				case 4 : return "HeatPumpControlSignal";
+				case 0 : return "CondenserOutletSetPoint";
+				case 1 : return "CondenserMeanTemperature";
+				case 2 : return "EvaporatorMeanTemperature";
+				case 3 : return "HeatPumpControlSignal";
 			} break;
 			// HydraulicNetworkElement::para_t
 			case 16 :
@@ -817,6 +818,8 @@ namespace NANDRAD {
 				case 5 : return "PipeMaxDiscretizationWidth";
 				case 6 : return "CarnotEfficiency";
 				case 7 : return "MaximumHeatHeatingPower";
+				case 8 : return "CondenserNominalTemperatureDifference";
+				case 9 : return "EvaporatorNominalTemperatureDifference";
 			} break;
 			// HydraulicNetworkComponent::HeatPumpIntegration
 			case 14 :
@@ -828,11 +831,10 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::splinePara_t
 			case 15 :
 			switch (t) {
-				case 0 : return "CondenserHeatingDemand";
-				case 1 : return "CondenserOutletSetPoint";
-				case 2 : return "CondenserMeanTemperature";
-				case 3 : return "EvaporatorMeanTemperature";
-				case 4 : return "HeatPumpControlSignal";
+				case 0 : return "CondenserOutletSetPoint";
+				case 1 : return "CondenserMeanTemperature";
+				case 2 : return "EvaporatorMeanTemperature";
+				case 3 : return "HeatPumpControlSignal";
 			} break;
 			// HydraulicNetworkElement::para_t
 			case 16 :
@@ -1407,6 +1409,8 @@ namespace NANDRAD {
 				case 5 : return "Maximum width of discretized volumes in pipe";
 				case 6 : return "Carnot efficiency eta";
 				case 7 : return "Maximum heating power";
+				case 8 : return "Nominal temperature difference at condenser";
+				case 9 : return "Nominal temperature difference at evaporator";
 			} break;
 			// HydraulicNetworkComponent::HeatPumpIntegration
 			case 14 :
@@ -1418,11 +1422,10 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::splinePara_t
 			case 15 :
 			switch (t) {
-				case 0 : return "Heating demand of condenser";
-				case 1 : return "Set point temperature for condenser outlet";
-				case 2 : return "Mean fluid temperature in condenser";
-				case 3 : return "Mean fluid temperature in evaporator";
-				case 4 : return "Digital control signal (on/off) for heat pump";
+				case 0 : return "Set point temperature for condenser outlet";
+				case 1 : return "Mean fluid temperature in condenser";
+				case 2 : return "Mean fluid temperature in evaporator";
+				case 3 : return "Digital control signal (on/off) for heat pump";
 			} break;
 			// HydraulicNetworkElement::para_t
 			case 16 :
@@ -1996,6 +1999,8 @@ namespace NANDRAD {
 				case 5 : return "m";
 				case 6 : return "---";
 				case 7 : return "W";
+				case 8 : return "C";
+				case 9 : return "C";
 			} break;
 			// HydraulicNetworkComponent::HeatPumpIntegration
 			case 14 :
@@ -2007,11 +2012,10 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::splinePara_t
 			case 15 :
 			switch (t) {
-				case 0 : return "W";
+				case 0 : return "C";
 				case 1 : return "C";
 				case 2 : return "C";
-				case 3 : return "C";
-				case 4 : return "---";
+				case 3 : return "---";
 			} break;
 			// HydraulicNetworkElement::para_t
 			case 16 :
@@ -2585,6 +2589,8 @@ namespace NANDRAD {
 				case 5 : return "#FFFFFF";
 				case 6 : return "#FFFFFF";
 				case 7 : return "#FFFFFF";
+				case 8 : return "#FFFFFF";
+				case 9 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkComponent::HeatPumpIntegration
 			case 14 :
@@ -2600,7 +2606,6 @@ namespace NANDRAD {
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
-				case 4 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkElement::para_t
 			case 16 :
@@ -3174,6 +3179,8 @@ namespace NANDRAD {
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 				case 7 : return std::numeric_limits<double>::quiet_NaN();
+				case 8 : return std::numeric_limits<double>::quiet_NaN();
+				case 9 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkComponent::HeatPumpIntegration
 			case 14 :
@@ -3189,7 +3196,6 @@ namespace NANDRAD {
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
-				case 4 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkElement::para_t
 			case 16 :
@@ -3693,11 +3699,11 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::ModelType
 			case 12 : return 6;
 			// HydraulicNetworkComponent::para_t
-			case 13 : return 8;
+			case 13 : return 10;
 			// HydraulicNetworkComponent::HeatPumpIntegration
 			case 14 : return 3;
 			// HydraulicNetworkComponent::splinePara_t
-			case 15 : return 5;
+			case 15 : return 4;
 			// HydraulicNetworkElement::para_t
 			case 16 : return 1;
 			// HydraulicNetworkElement::intPara_t
@@ -3861,11 +3867,11 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::ModelType
 			case 12 : return 5;
 			// HydraulicNetworkComponent::para_t
-			case 13 : return 7;
+			case 13 : return 9;
 			// HydraulicNetworkComponent::HeatPumpIntegration
 			case 14 : return 2;
 			// HydraulicNetworkComponent::splinePara_t
-			case 15 : return 4;
+			case 15 : return 3;
 			// HydraulicNetworkElement::para_t
 			case 16 : return 0;
 			// HydraulicNetworkElement::intPara_t

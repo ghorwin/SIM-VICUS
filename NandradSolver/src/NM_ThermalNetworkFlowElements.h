@@ -2,15 +2,16 @@
 #define ThermalNetworkFlowElementsH
 
 #include "NM_ThermalNetworkAbstractFlowElementWithHeatLoss.h"
+
 #include "NANDRAD_HydraulicNetworkHeatExchange.h"
 
-#include <IBK_LinearSpline.h>
 
 namespace NANDRAD {
 	class HydraulicNetworkElement;
 	class HydraulicNetworkComponent;
 	class HydraulicNetworkPipeProperties;
 	class HydraulicFluid;
+	class LinearSplineParameter;
 }
 
 #define PI				3.141592653589793238
@@ -443,15 +444,21 @@ public:
 
 private:
 	/*! Reference to external heat loss in [W] */
-	const double*					m_externalHeatLossRef = nullptr;
-	/*! Mean condender temperature [K]*/
-//	double							m_condenserMeanTemperature = 999;
+	const double*							m_heatFluxCondenserRef = nullptr;
+
+	/*! Mean condenser temperature [K]*/
+	const NANDRAD::LinearSplineParameter*	m_condenserMeanTemperature = nullptr;
+
+	/*! Nominal evaporator temperature difference [K] */
+	double									m_nominalEvaporatorTemperatureDiff = 999;
 
 	/*! Carnot efficiency [0...1] */
-	double							m_carnotEfficiency = 999;
+	double									m_carnotEfficiency = 999;
 
-	/*! Performance coefficient for mechaniscal heat pumps [0...1] */
-	double							m_COP = 999;
+	/*! Coefficient of performance for heat pump */
+	double									m_COP = 999;
+
+	double									m_electricalPower = 999;
 };
 
 
