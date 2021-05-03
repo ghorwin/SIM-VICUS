@@ -35,7 +35,7 @@ void Surface::setSubSurfaces(const std::vector<SubSurface> & subSurfaces) {
 	m_subSurfaces = subSurfaces;
 	std::vector<Polygon2D> holes;
 	for (const SubSurface & s : subSurfaces)
-		holes.push_back(s.m_geometry);
+		holes.push_back(s.m_polygon2D);
 	m_geometry.setHoles(holes);
 }
 
@@ -43,10 +43,7 @@ void Surface::setSubSurfaces(const std::vector<SubSurface> & subSurfaces) {
 void Surface::computeGeometry() {
 	// copy polygon to plane geometry
 	m_geometry.setPolygon( m_polygon3D );
-	std::vector<Polygon2D> holes;
-	for (const SubSurface & ssurf : m_subSurfaces)
-		holes.push_back(ssurf.m_geometry);
-	m_geometry.setHoles( holes );
+	setSubSurfaces(m_subSurfaces);
 }
 
 
