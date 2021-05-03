@@ -24,16 +24,23 @@ public:
 	explicit SVShadingCalculationDialog(QWidget *parent = nullptr);
 	~SVShadingCalculationDialog();
 
+	/*! Defines the specific output type */
 	enum OutputType {
 		TsvFile,		///< write output to tsv file
 		D6oFile,		///< write output to d6o file
-		D6bFile			///< write output to d6b file
+		D6bFile,			///< write output to d6b file
+		NUM_OT
+	};
+
+	/*! Defines the specific output type */
+	enum DetailType {
+		Fast,			///< fast calculation parameters
+		Detailed,		///< detailed calculation paramtesers
+		Manual,			///< manually defined parameters
+		NUM_DT
 	};
 
 	int edit();
-
-public slots:
-	void evaluateResults();
 
 private slots:
 	void on_pushButtonCalculate_clicked();
@@ -50,29 +57,46 @@ private slots:
 
 	void on_comboBoxFileType_currentIndexChanged(int index);
 
+	void on_pushButtonChangeTime_clicked();
+
+	void on_radioButtonFast_toggled(bool checked);
+
+	void on_radioButtonManual_toggled(bool checked);
+
+	void on_radioButtonDetailed_toggled(bool checked);
+
 private:
-	void								updateTimeFrameEdits();
+	/*! Function that calculates the shading factors for selected outside surfaces
+		Returns false if some error occurred during creation of the NANDRAD project.
+	*/
+	void calculateShadingFactors();
 
 
-	Ui::SVShadingCalculationDialog		*m_ui;
+	void updateTimeFrameEdits();
 
-	const NANDRAD::SimulationParameter	*m_simulationParameter;
-	const SVSimulationStartNandrad		*m_simStartWidget;
+	/*! Sets the simulation parameters */
+	void setSimulationParameters(const DetailType &dt);
 
-	double								m_gridSize = 0.1;
-	double								m_sunCone = 3;
 
-	OutputType							m_outputType = OutputType::TsvFile;
+	Ui::SVShadingCalculationDialog		*m_ui;								///< pointer to UI
 
-	std::vector<const VICUS::Surface*>	m_selSurfaces;
-	std::vector<const VICUS::Surface*>	m_selObstacles;
+	NANDRAD::SimulationParameter		*m_simulationParameter = nullptr;	///< stores pointer to NANDRAD simulation parameters
+	SVSimulationStartNandrad			*m_simStartWidget = nullptr;		///< stores pointer to SV Simulation parameters
+
+	double								m_gridSize = 0.1;					///< size of grid
+	double								m_sunCone = 3;						///< half opening angle of the cone for sun mapping
+
+	OutputType							m_outputType = OutputType::TsvFile;	///< stores the output file type
+
+	std::vector<const VICUS::Surface*>	m_selSurfaces;						///< vector with selected surfaces
+	std::vector<const VICUS::Surface*>	m_selObstacles;						///< vector with selected dump geometry (obstacles)
 
 	/*! Local copy of our project data, modified in dialog and synced with global
 		project when dialog is confirmed.
 	*/
 	VICUS::Project						m_localProject;
 
-	SH::StructuralShading				m_shading;
+	SH::StructuralShading				m_shading;							///< shading object, that does the calculation
 };
 
 #endif // SVShadingCalculationDialogH
