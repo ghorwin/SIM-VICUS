@@ -37,31 +37,21 @@
 */
 
 #include "IBKMK_2DCalculations.h"
+#include "IBK_Line.h"
 
 namespace IBKMK {
 
 bool intersectsLine2D(const std::vector<Vector2D> & polygon,
 					  const IBK::point2D<double> &p1, const IBK::point2D<double> &p2, IBK::point2D<double> & intersectionPoint)
 {
-	// TODO : Dirk, rewrite using only IBK/IBKMK types
-#if 0
-	QLineF otherLine(p1,p2);
-	int vertSize=m_vertexes.size();
-	for(int i=0; i<vertSize; ++i){
-		QLineF line(m_vertexes[i], m_vertexes[(i+1)%vertSize]);
-		QPointF *intP = nullptr;
-		QLineF::IntersectType type = line.intersect(otherLine, intP);
+	IBK::Line line(p1, p2);
+	unsigned int polySize = polygon.size();
+	for(unsigned int i=0; i<polySize; ++i){
+		IBK::Line otherLine(polygon[i], polygon[(i+1)%polySize]);
 
-		if(intP==nullptr || type == QLineF::UnboundedIntersection)
-			//no intersection go to next
-			continue;
-
-		//no we have an intersection
-		intersectionPoint = *intP;
-		//stop here
-		return true;
+		if(line.intersects(otherLine, intersectionPoint))
+			return true;
 	}
-#endif
 	return false;
 }
 
