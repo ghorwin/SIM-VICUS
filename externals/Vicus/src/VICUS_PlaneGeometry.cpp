@@ -162,7 +162,21 @@ void PlaneGeometry::triangulate() {
 	std::vector<unsigned int> validPolygons;
 	for (const Polygon2D & p2 : m_holes) {
 		// check if any of the holes are invalid
-		// TODO
+		/// TODO Stephan/Dirk
+
+		/* erster Test: Prüfe alle Mittelpunkte der Hole-Strecken auf PointInPolygon mit der Outer-Bound.
+			Falls true --> Hole is invalid
+
+			Zweiter Test:
+			Schnitt aller Strecken des Holes mit allen Strecken der Outerbound
+			Falls Schnittpunkt existiert und nicht gleich den Punkten der Outerbound-Strecke ist
+			--> hole invalid
+
+			Falls es ein invalides Hole is weghauen?
+		*/
+
+
+
 	}
 
 	// now populate global vertex vector and generate 2D polygon
