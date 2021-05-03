@@ -129,8 +129,7 @@ void Polygon2D::flip() {
 
 
 bool Polygon2D::intersectsLine2D(const IBK::point2D<double> &p1, const IBK::point2D<double> &p2,
-								 IBK::point2D<double> & intersectionPoint) const
-{
+								 IBK::point2D<double> & intersectionPoint) const{
 	return IBKMK::intersectsLine2D(m_vertexes, p1, p2, intersectionPoint);
 }
 
