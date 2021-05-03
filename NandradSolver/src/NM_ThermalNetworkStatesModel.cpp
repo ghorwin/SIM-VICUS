@@ -68,6 +68,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 	// resize components
 	m_heatExchangeRefValues.resize(m_elementIds.size(), -999);
+	m_splineParameterRefValues.resize(m_elementIds.size(), std::vector<double> ());
 
 
 	// We now loop over all flow elements of the network and create a corresponding thermal
@@ -81,6 +82,13 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 		try {
 			// set reference to heat exchange value
 			double &heatExchangeValue = m_heatExchangeRefValues[i];
+
+			// get a list of spline parameters
+			std::vector<unsigned int> splineParameter =
+					e.m_component->requiredSplineParameter(e.m_component->m_modelType, e.m_component->m_heatPumpIntegration);
+			// set all spline paramter references
+			m_splineParameterRefValues[i].resize(splineParameter.size(), 999);
+			std::vector<double> &parameterSplineValues = m_splineParameterRefValues[i];
 
 			// Instantiate thermal flow element calculation objects.
 			// The objects are selected based on a **combination** of modelType and heatExchangeType and
@@ -259,7 +267,9 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 							// create general model with given heat flux
 							TNHeatPumpIdealCarnot * element = new TNHeatPumpIdealCarnot(m_network->m_fluid,
-																						*e.m_component, heatExchangeValue);
+																						*e.m_component,
+																						heatExchangeValue,
+																						parameterSplineValues);
 							// add to flow elements
 							m_p->m_flowElements.push_back(element); // transfer ownership
 							m_p->m_heatLossElements.push_back(element); // copy of pointer

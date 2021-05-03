@@ -428,7 +428,7 @@ public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	TNHeatPumpIdealCarnot(const NANDRAD::HydraulicFluid & fluid,
 							const NANDRAD::HydraulicNetworkComponent & comp,
-							const double &QExt);
+							const double &QExt, const std::vector<double> &parameterRefs);
 
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
@@ -450,7 +450,7 @@ private:
 	const double*							m_heatFluxCondenserRef = nullptr;
 
 	/*! Mean condenser temperature [K]*/
-	const NANDRAD::LinearSplineParameter*	m_condenserMeanTemperature = nullptr;
+	const double*							m_condenserMeanTemperature = nullptr;
 
 	/*! Nominal evaporator temperature difference [K] */
 	double									m_nominalTemperatureDifference = 999;

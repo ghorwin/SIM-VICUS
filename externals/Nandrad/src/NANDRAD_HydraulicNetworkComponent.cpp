@@ -166,6 +166,7 @@ void HydraulicNetworkComponent::checkModelSplineParameter(LinearSplineParameter 
 	try {
 
 		switch (numPara) {
+
 			// can be any value
 			case SPL_CondenserMeanTemperature:
 			case SPL_EvaporatorMeanTemperature:

@@ -33,6 +33,10 @@ namespace IBK {
 	class LinearSpline;
 }
 
+namespace NANDRAD {
+	class LinearSplineParameter;
+}
+
 namespace NANDRAD_MODEL {
 
 class ThermalNetworkStatesModel;
@@ -208,6 +212,11 @@ private:
 
 		/*! Reference to heat exchange spline: nullptr if not needed. */
 		const IBK::LinearSpline*			m_heatExchangeSplineRef = nullptr;
+
+		/*! References to spline parameters of NANDRAD::HydraulicComponent, there can be
+		 * multiple spline parameters for each HydraulicComponent, so this is a vector
+		 */
+		std::vector<const NANDRAD::LinearSplineParameter*> m_splineParameterRefs;
 	};
 
 

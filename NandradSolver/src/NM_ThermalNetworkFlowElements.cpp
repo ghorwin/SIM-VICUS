@@ -493,13 +493,13 @@ void TNPumpWithPerformanceLoss::setInflowTemperature(double Tinflow) {
 
 TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(const NANDRAD::HydraulicFluid & fluid,
 											 const NANDRAD::HydraulicNetworkComponent & comp,
-											 const double &QExt)
+											 const double &QExt, const std::vector<double> &parameterRefs)
 {
 	m_fluidVolume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
-	m_condenserMeanTemperature = &comp.m_splPara[NANDRAD::HydraulicNetworkComponent::SPL_CondenserMeanTemperature];
 	m_carnotEfficiency = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiency].value;
 	m_condenserMaximumHeatFlux = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumHeatHeatingPower].value;
 	m_nominalTemperatureDifference = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_HeatPumpNominalTemperatureDifference].value;
+	m_heatpumpIntegration = comp.m_heatPumpIntegration;
 
 	// copy fluid properties
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
@@ -507,6 +507,9 @@ TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(const NANDRAD::HydraulicFluid & flu
 
 	// set reference to external heat loss
 	m_heatFluxCondenserRef = &QExt;
+
+	// set reference to condenser mean temperature: the value will be updated from a spline throughout the simulation
+	m_condenserMeanTemperature = &parameterRefs[0];
 }
 
 
@@ -517,12 +520,10 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 	switch (m_heatpumpIntegration ) {
 
 		case NANDRAD::HydraulicNetworkComponent::HP_SourceSide: {
-		// we need the time here!!!
-		const double condenserMeanTemperature = m_condenserMeanTemperature->m_values.value(0.0);
 
 		// COP
 		const double evaporatorMeanTemperature = Tinflow + m_nominalTemperatureDifference / 2;
-		const double COPMax = condenserMeanTemperature / (condenserMeanTemperature - evaporatorMeanTemperature);
+		const double COPMax = *m_condenserMeanTemperature / (*m_condenserMeanTemperature - evaporatorMeanTemperature);
 		const double m_COP = m_carnotEfficiency * COPMax;
 
 		// cut condenser heat flux

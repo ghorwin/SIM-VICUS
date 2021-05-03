@@ -140,6 +140,11 @@ private:
 	*/
 	std::vector<double>								m_heatExchangeRefValues;
 
+	/*! references to spline parameter values of NANDRAD::HydraulicComponent
+		the values will be updated in ThermalNetworkBalanceModel::setTime()
+	*/
+	std::vector<std::vector<double> >				m_splineParameterRefValues;
+
 	/*! Vector with references to mean fluid temperatures (size = m_elementIds.size()).
 		Result quantity of current model, published as 'FluidTemperature' result for each flow element. */
 	std::vector<const double*>						m_meanTemperatureRefs;
