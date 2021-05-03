@@ -1692,6 +1692,11 @@ bool SVMainWindow::exportProjectCopy(QString targetDirPath, const VICUS::Project
 	return true;
 }
 
+SVSimulationStartNandrad * SVMainWindow::simulationStartNandrad() const
+{
+	return m_simulationStartNandrad;
+}
+
 
 
 //https://qt.gitorious.org/qt-creator/qt-creator/source/1a37da73abb60ad06b7e33983ca51b266be5910e:src/app/main.cpp#L13-189
