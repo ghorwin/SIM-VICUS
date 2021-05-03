@@ -128,6 +128,7 @@ int wn_PnPoly( QPoint P, QPoint *V, int n )
 void PlaneGeometry::triangulate() {
 	m_triangles.clear();
 	m_triangleVertexes.clear();
+	m_holeTriangles.clear();
 
 	// only continue, if the polygon itself is valid
 	if (!m_polygon.isValid())
@@ -176,7 +177,6 @@ void PlaneGeometry::triangulate() {
 			Falls es ein invalides Hole is weghauen?
 		*/
 
-
 		validPolygons.push_back(i); // mark as valid
 	}
 
@@ -195,6 +195,8 @@ void PlaneGeometry::triangulate() {
 	}
 
 	// add windows
+
+	m_holeTriangles.resize(m_holes.size()); // now an empty triangle vector exists for each hole in the surface
 
 	// loop all windows
 	for (unsigned int holeIdx : validPolygons) {
@@ -221,11 +223,26 @@ void PlaneGeometry::triangulate() {
 				vertexes.push_back(v3);
 			}
 		}
+
 		// add edges
+		std::vector<std::pair<unsigned int, unsigned int> > holeOnlyEdges;
 		for (unsigned int i=0, vertexCount = p2.vertexes().size(); i<vertexCount; ++i) {
 			unsigned int i1 = vertexIndexes[i];
 			unsigned int i2 = vertexIndexes[(i+1) % vertexCount];
 			edges.push_back(std::make_pair(i1, i2));
+			holeOnlyEdges.push_back(std::make_pair(i1, i2));
+		}
+
+
+		// now do the triangulation of the window alone
+		IBKMK::Triangulation triangu;
+
+		// IBK::point2D<double> is a IBKMK::Vector2D
+		triangu.setPoints(reinterpret_cast< const std::vector<IBK::point2D<double> > & >(points), holeOnlyEdges);
+		// and copy the triangle data
+		for (auto tri : triangu.m_triangles) {
+			// TODO : only add triangles if not degenerated (i.e. area = 0) (may happen in case of windows aligned to outer bounds)
+			m_holeTriangles[holeIdx].push_back(triangle_t(tri.i1, tri.i2, tri.i3));
 		}
 	}
 

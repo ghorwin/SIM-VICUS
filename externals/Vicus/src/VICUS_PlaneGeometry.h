@@ -147,6 +147,12 @@ private:
 
 	/*! The vertexes used by the triangles. */
 	std::vector<IBKMK::Vector3D>		m_triangleVertexes;
+
+	/*! Contains the triangle indexes of each hole.
+		Invalid hole definitions will yield empty triangle vectors.
+		The triangles use the same vertexes as in m_triangleVertexes (a subset).
+	*/
+	std::vector< std::vector<triangle_t> >	m_holeTriangles;
 };
 
 } // namespace VICUS
