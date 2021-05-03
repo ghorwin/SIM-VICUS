@@ -26,22 +26,22 @@
 							<Room id="1" displayName="SingleRoom">
 								<Surfaces>
 									<Surface id="1" displayName="South_1">
-										<PlaneGeometry type="Rectangle">0 0 0, 2 0 0, 0 0 3</PlaneGeometry>
+										<Polygon3D type="Rectangle">0 0 0, 2 0 0, 0 0 3</Polygon3D>
 									</Surface>
 									<Surface id="2" displayName="West_2">
-										<PlaneGeometry type="Rectangle">0 5 0, 0 0 0, 0 5 3</PlaneGeometry>
+										<Polygon3D type="Rectangle">0 5 0, 0 0 0, 0 5 3</Polygon3D>
 									</Surface>
 									<Surface id="3" displayName="East_3">
-										<PlaneGeometry type="Rectangle">2 0 0, 2 5 0, 2 0 3</PlaneGeometry>
+										<Polygon3D type="Rectangle">2 0 0, 2 5 0, 2 0 3</Polygon3D>
 									</Surface>
 									<Surface id="4" displayName="North_4">
-										<PlaneGeometry type="Rectangle">2 5 0, 0 5 0, 2 5 3</PlaneGeometry>
+										<Polygon3D type="Rectangle">2 5 0, 0 5 0, 2 5 3</Polygon3D>
 									</Surface>
 									<Surface id="5" displayName="Floor_5">
-										<PlaneGeometry type="Rectangle">2 0 0, 0 0 0, 2 5 0</PlaneGeometry>
+										<Polygon3D type="Rectangle">2 0 0, 0 0 0, 2 5 0</Polygon3D>
 									</Surface>
 									<Surface id="6" displayName="Roof_6">
-										<PlaneGeometry type="Rectangle">0 0 3, 2 0 3, 0 5 3</PlaneGeometry>
+										<Polygon3D type="Rectangle">0 0 3, 2 0 3, 0 5 3</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>

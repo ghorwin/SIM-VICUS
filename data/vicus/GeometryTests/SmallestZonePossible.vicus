@@ -36,19 +36,19 @@
 								<IBK:Parameter name="Volume" unit="m3">4.190631866</IBK:Parameter>
 								<Surfaces>
 									<Surface id="11" displayName="Floor">
-										<PlaneGeometry type="Triangle">2 3 0, 2 0 0, 0 0 0</PlaneGeometry>
+										<Polygon3D type="Triangle">2 3 0, 2 0 0, 0 0 0</Polygon3D>
 									</Surface>
 									<Surface id="12" displayName="Ceiling">
-										<PlaneGeometry type="Triangle">0 0 1.39688, 2 0 1.39688, 2 3 1.39688</PlaneGeometry>
+										<Polygon3D type="Triangle">0 0 1.39688, 2 0 1.39688, 2 3 1.39688</Polygon3D>
 									</Surface>
 									<Surface id="13" displayName="Wall 1">
-										<PlaneGeometry type="Rectangle">2 0 0, 2 3 0, 2 3 1.39688, 2 0 1.39688</PlaneGeometry>
+										<Polygon3D type="Rectangle">2 0 0, 2 3 0, 2 3 1.39688, 2 0 1.39688</Polygon3D>
 									</Surface>
 									<Surface id="14" displayName="Wall 2">
-										<PlaneGeometry type="Rectangle">0 0 0, 2 0 0, 2 0 1.39688, 0 0 1.39688</PlaneGeometry>
+										<Polygon3D type="Rectangle">0 0 0, 2 0 0, 2 0 1.39688, 0 0 1.39688</Polygon3D>
 									</Surface>
 									<Surface id="15" displayName="Wall 3">
-										<PlaneGeometry type="Rectangle">2 3 0, 0 0 0, 0 0 1.39688, 2 3 1.39688</PlaneGeometry>
+										<Polygon3D type="Rectangle">2 3 0, 0 0 0, 0 0 1.39688, 2 3 1.39688</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -57,19 +57,19 @@
 								<IBK:Parameter name="Volume" unit="m3">2.630864859</IBK:Parameter>
 								<Surfaces>
 									<Surface id="17" displayName="Floor">
-										<PlaneGeometry type="Triangle">0 -1 0, 2 -1 0, 2 -3 0</PlaneGeometry>
+										<Polygon3D type="Triangle">0 -1 0, 2 -1 0, 2 -3 0</Polygon3D>
 									</Surface>
 									<Surface id="18" displayName="Ceiling">
-										<PlaneGeometry type="Triangle">2 -3 1.31543, 2 -1 1.31543, 0 -1 1.31543</PlaneGeometry>
+										<Polygon3D type="Triangle">2 -3 1.31543, 2 -1 1.31543, 0 -1 1.31543</Polygon3D>
 									</Surface>
 									<Surface id="19" displayName="Wall 1">
-										<PlaneGeometry type="Rectangle">2 -1 0, 0 -1 0, 0 -1 1.31543, 2 -1 1.31543</PlaneGeometry>
+										<Polygon3D type="Rectangle">2 -1 0, 0 -1 0, 0 -1 1.31543, 2 -1 1.31543</Polygon3D>
 									</Surface>
 									<Surface id="20" displayName="Wall 2">
-										<PlaneGeometry type="Rectangle">2 -3 0, 2 -1 0, 2 -1 1.31543, 2 -3 1.31543</PlaneGeometry>
+										<Polygon3D type="Rectangle">2 -3 0, 2 -1 0, 2 -1 1.31543, 2 -3 1.31543</Polygon3D>
 									</Surface>
 									<Surface id="21" displayName="Wall 3">
-										<PlaneGeometry type="Rectangle">0 -1 0, 2 -3 0, 2 -3 1.31543, 0 -1 1.31543</PlaneGeometry>
+										<Polygon3D type="Rectangle">0 -1 0, 2 -3 0, 2 -3 1.31543, 0 -1 1.31543</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
