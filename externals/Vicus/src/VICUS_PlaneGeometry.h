@@ -100,6 +100,8 @@ public:
 
 	/*! Returns the stored polygon. */
 	const Polygon3D & polygon() const { return m_polygon; }
+
+	///TODO Dirk->Andreas was passiert mit den Holes? Sind die dann noch valide?
 	/*! Sets a new polygon and updates triangulation. */
 	void setPolygon(const Polygon3D & polygon3D);
 
