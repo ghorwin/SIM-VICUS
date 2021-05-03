@@ -78,11 +78,14 @@ public:
 		The optional argument hitBackfacingPlanes disables the front-facing check (if true).
 		The optional argument endlessPlane disables the check if the intersection point
 		lies within the plane (useful for getting intersections with, for example, the xy-plane).
+
+		If plane contains holes, 'holeIndex' contains the index of the respective hole. If the plane
+		does not have any holes or the opaque surface was clicked, holeIndex will be -1.
 	*/
 	bool intersectsLine(const IBKMK::Vector3D & p1,
 						const IBKMK::Vector3D & d,
 						IBKMK::Vector3D & intersectionPoint,
-						double & dist,
+						double & dist, int & holeIndex,
 						bool hitBackfacingPlanes = false,
 						bool endlessPlane = false) const;
 

@@ -160,7 +160,8 @@ void PlaneGeometry::triangulate() {
 
 	// process all holes and check if they are valid (i.e. their polygons do not intersect our polygons
 	std::vector<unsigned int> validPolygons;
-	for (const Polygon2D & p2 : m_holes) {
+	for (unsigned int i=0; i<m_holes.size(); ++i) {
+		const Polygon2D & p2 = m_holes[i];
 		// check if any of the holes are invalid
 		/// TODO Stephan/Dirk
 
@@ -176,7 +177,7 @@ void PlaneGeometry::triangulate() {
 		*/
 
 
-
+		validPolygons.push_back(i); // mark as valid
 	}
 
 	// now populate global vertex vector and generate 2D polygon
@@ -196,7 +197,9 @@ void PlaneGeometry::triangulate() {
 	// add windows
 
 	// loop all windows
-	for (const Polygon2D & p2 : m_holes) {
+	for (unsigned int holeIdx : validPolygons) {
+		const Polygon2D & p2 = m_holes[holeIdx];
+
 		std::vector<unsigned int> vertexIndexes;
 		// process all vertexes
 		for (unsigned int i=0, vertexCount = p2.vertexes().size(); i<vertexCount; ++i) {
@@ -243,8 +246,9 @@ void PlaneGeometry::triangulate() {
 
 
 bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & d, IBKMK::Vector3D & intersectionPoint,
-								   double & dist, bool hitBackfacingPlanes, bool endlessPlane) const
+								   double & dist, int & holeIndex, bool hitBackfacingPlanes, bool endlessPlane) const
 {
+	holeIndex = -1;
 	// We need to guard against invalid geometry
 	if (!isValid())
 		return false;
@@ -271,7 +275,7 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 	// now determine location on plane
 	IBKMK::Vector3D x0 = p1 + t*d;
 
-	// plane is endless - return intersection point and normalized distance t
+	// plane is endless - return intersection point and normalized distance t (no hole checking here!)
 	if (endlessPlane) {
 		intersectionPoint = x0;
 		dist = t;
@@ -315,12 +319,19 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 		return false;
 
 	// test if point is in polygon
-	// TODO : we need to test for individual triangles, since we now have holes
-	//        or we need to check for holes first, and then for the enclosing polygons. Then
-	//        this function should also indicate, which hole was clicked on (if any).
 	if (IBKMK::pointInPolygon(polygon2D().vertexes(), IBK::point2D<double>(x,y) ) != -1) {
 		dist = t;
 		intersectionPoint = x0;
+		// TODO Dirk/Stephan: test if we hit a hole:
+		// - loop all holes
+		// - if hole is valid, check if we are inside the polygon
+		//   if yes, return index of hole that we hit
+
+		for (unsigned int j=0; j<m_holes.size(); ++j) {
+			// if "we hit the hole":
+			//    holeIndex = j; break;
+		}
+
 		return true;
 	}
 	else

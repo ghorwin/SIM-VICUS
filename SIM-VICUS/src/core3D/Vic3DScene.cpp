@@ -1708,7 +1708,8 @@ void Vic3DScene::pick(PickObject & pickObject) {
 	double t;
 	// process all grid planes - being transparent, these are picked from both sides
 	for (unsigned int i=0; i< m_gridPlanes.size(); ++i) {
-		if (m_gridPlanes[i].intersectsLine(nearPoint, direction, intersectionPoint, t, true, true)) {
+		int holeIndex;
+		if (m_gridPlanes[i].intersectsLine(nearPoint, direction, intersectionPoint, t, holeIndex, true, true)) {
 			// got an intersection point, store it
 			PickObject::PickResult r;
 			r.m_snapPointType = PickObject::RT_GridPlane;
@@ -1736,12 +1737,19 @@ void Vic3DScene::pick(PickObject & pickObject) {
 					double dist;
 					// check if we hit the surface - since we show the surface from both sides, we
 					// can also pick both sides
-					if (s.geometry().intersectsLine(nearPoint, direction, intersectionPoint, dist, true)) {
+					int holeIndex;
+					if (s.geometry().intersectsLine(nearPoint, direction, intersectionPoint, dist, holeIndex, true)) {
 						PickObject::PickResult r;
 						r.m_snapPointType = PickObject::RT_Object;
 						r.m_depth = dist;
 						r.m_pickPoint = intersectionPoint;
-						r.m_uniqueObjectID = s.uniqueID();
+						if (holeIndex != -1) {
+							IBK_ASSERT(s.subSurfaces().size() > (unsigned int)holeIndex);
+							// store ID of window/embedded surface
+							r.m_uniqueObjectID = s.subSurfaces()[(unsigned int)holeIndex].uniqueID();
+						}
+						else
+							r.m_uniqueObjectID = s.uniqueID();
 						pickObject.m_candidates.push_back(r);
 					}
 				}
@@ -1759,11 +1767,13 @@ void Vic3DScene::pick(PickObject & pickObject) {
 		IBKMK::Vector3D intersectionPoint;
 		double dist;
 		// dump geometry is rendered front/back facing and also picked from both sides
-		if (s.geometry().intersectsLine(nearPoint, direction, intersectionPoint, dist, true)) {
+		int holeIndex;
+		if (s.geometry().intersectsLine(nearPoint, direction, intersectionPoint, dist, holeIndex, true)) {
 			PickObject::PickResult r;
 			r.m_snapPointType = PickObject::RT_Object;
 			r.m_depth = dist;
 			r.m_pickPoint = intersectionPoint;
+			// TODO : Dirk, can "dump geometry" contain sub-surfaces?
 			r.m_uniqueObjectID = s.uniqueID();
 			pickObject.m_candidates.push_back(r);
 		}
