@@ -32,6 +32,9 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
+	Polygon2D() = default;
+	Polygon2D(const std::vector<IBKMK::Vector2D> & vertexes);
+
 	void readXML(const TiXmlElement * element);
 	TiXmlElement * writeXML(TiXmlElement * parent) const;
 	VICUS_COMP(Polygon2D)
@@ -43,6 +46,9 @@ public:
 		it has enough vertexes and can be correctly triangulated (triangles not empty).
 	*/
 	bool isValid() const { return m_valid; }
+
+	/*! Resets the polygon. */
+	void clear() { m_type = NUM_T; m_vertexes.clear(); m_valid = false; }
 
 	/*! Adds a new 2D vertex in the plane of the polygon. Afterwards simplifies polygon. */
 	void addVertex(const IBK::point2D<double> & v);
@@ -60,8 +66,10 @@ public:
 	*/
 	bool intersectsLine2D(const IBK::point2D<double> &p1, const IBK::point2D<double> &p2, IBK::point2D<double> & intersectionPoint) const;
 
-	/*! Returns 3D vertex coordinates. */
-	std::vector<IBKMK::Vector2D> vertexes() const { return m_vertexes; }
+	/*! Returns 2D coordinates of the polygon. */
+	const std::vector<IBKMK::Vector2D> & vertexes() const { return m_vertexes; }
+
+	void setVertexes(const std::vector<IBKMK::Vector2D> & vertexes);
 
 	/*! Calculates surface area in m2. */
 	double area() const;
@@ -71,6 +79,7 @@ public:
 		return false if minimum one intersection
 	*/
 	bool isSimplePolygon() const;
+
 
 private:
 

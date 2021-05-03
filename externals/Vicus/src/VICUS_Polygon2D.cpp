@@ -18,6 +18,11 @@
 
 namespace VICUS {
 
+Polygon2D::Polygon2D(const std::vector<IBKMK::Vector2D> & vertexes) {
+	setVertexes(vertexes);
+}
+
+
 void Polygon2D::readXML(const TiXmlElement * element) {
 	FUNCID(Polygon2D::readXML);
 
@@ -101,6 +106,7 @@ void Polygon2D::removeVertex(unsigned int idx){
 	checkPolygon(); // if we have a triangle/rectangle, this is detected here
 }
 
+
 void Polygon2D::checkPolygon() {
 	m_valid = false;
 	eleminateColinearPts();
@@ -129,6 +135,12 @@ bool Polygon2D::intersectsLine2D(const IBK::point2D<double> &p1, const IBK::poin
 }
 
 
+void Polygon2D::setVertexes(const std::vector<IBKMK::Vector2D> & vertexes) {
+	m_vertexes = vertexes;
+	checkPolygon();
+}
+
+
 double Polygon2D::area() const {
 	double surfArea=0;
 	unsigned int sizeV = m_vertexes.size();
@@ -144,6 +156,7 @@ double Polygon2D::area() const {
 
 
 void Polygon2D::detectType() {
+	m_type = T_Polygon;
 	if (m_vertexes.size() == 3) {
 		m_type = T_Triangle;
 		return;
@@ -235,6 +248,7 @@ void Polygon2D::eleminateColinearPts() {
 		++count;
 	}
 }
+
 
 
 } // namespace VICUS

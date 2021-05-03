@@ -107,6 +107,9 @@ private:
 	*/
 	void updateLocalCoordinateSystem();
 
+	/*! Computes the 2D polyline (polygon's vertex coordinates projected onto the xy-plane of the polygon's local coordinate system). */
+	void update2DPolyline();
+
 	// *** PRIVATE MEMBER VARIABLES ***
 
 	/*! Stores the vertexes in 3D of the polygon. */

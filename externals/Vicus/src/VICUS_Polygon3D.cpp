@@ -141,6 +141,8 @@ void Polygon3D::removeVertex(unsigned int idx){
 
 void Polygon3D::checkPolygon() {
 	m_valid = false;
+	m_polyline.clear();
+
 	eleminateColinearPts();
 
 	// try to simplify polygon to internal rectangle/parallelogram definition
@@ -151,6 +153,8 @@ void Polygon3D::checkPolygon() {
 	if (m_vertexes.size() < 3)
 		return;
 
+	update2DPolyline();
+
 	// polygon must not be winding into itself, otherwise triangulation would not be meaningful
 	m_valid = m_polyline.isSimplePolygon();
 }
@@ -159,6 +163,35 @@ void Polygon3D::checkPolygon() {
 void Polygon3D::flip() {
 	std::vector<IBKMK::Vector3D>(m_vertexes.rbegin(), m_vertexes.rend()).swap(m_vertexes);
 }
+
+
+
+void Polygon3D::setVertexes(const std::vector<IBKMK::Vector3D> & vertexes) {
+	m_vertexes = vertexes;
+	checkPolygon(); // if we have a triangle/rectangle, this is detected here
+}
+
+
+IBKMK::Vector3D Polygon3D::centerPoint() const {
+	FUNCID(Polygon3D::centerPoint);
+	if (!isValid())
+		throw IBK::Exception("Invalid polygon.", FUNC_ID);
+
+	size_t counter=0;
+	IBKMK::Vector3D vCenter;
+
+	for (const IBKMK::Vector3D & v : vertexes()) {
+		vCenter += v;
+		++counter;
+	}
+	vCenter/=static_cast<double>(counter);
+
+	return vCenter;
+}
+
+
+
+// *** PRIVATE MEMBER FUNCTIONS ***
 
 
 void Polygon3D::detectType() {
@@ -244,28 +277,34 @@ void Polygon3D::updateLocalCoordinateSystem() {
 }
 
 
-void Polygon3D::setVertexes(const std::vector<IBKMK::Vector3D> & vertexes) {
-	m_vertexes = vertexes;
-	checkPolygon(); // if we have a triangle/rectangle, this is detected here
-}
 
+void Polygon3D::update2DPolyline() {
+	IBK_ASSERT(m_vertexes.size() >= 3);
 
-IBKMK::Vector3D Polygon3D::centerPoint() const {
-	FUNCID(Polygon3D::centerPoint);
-	if (!isValid())
-		throw IBK::Exception("Invalid polygon.", FUNC_ID);
+	std::vector<IBKMK::Vector2D>		poly;
+	poly.reserve(m_vertexes.size());
 
-	size_t counter=0;
-	IBKMK::Vector3D vCenter;
+	// first point is v0 = origin
+	poly.push_back( IBKMK::Vector2D(0,0) );
 
-	for (const IBKMK::Vector3D & v : vertexes()) {
-		vCenter += v;
-		++counter;
+	// now process all other points
+	for (unsigned int i=1; i<m_vertexes.size(); ++i) {
+		const IBKMK::Vector3D & v = m_vertexes[i];
+		double x,y;
+		/// TODO: Dirk, improve this - by simply calling planeCoordinates we
+		///       redo the same stuff several times for the same plane.
+		///       We should use a function that passes vX, vY, offset and then
+		///       a vector with v,x,y to process.
+		if (IBKMK::planeCoordinates(m_vertexes[0], m_localX, m_localY, v, x, y)) {
+			poly.push_back( IBKMK::Vector2D(x,y) );
+		}
+		else {
+			return;
+		}
 	}
-	vCenter/=static_cast<double>(counter);
-
-	return vCenter;
+	m_polyline.setVertexes(poly);
 }
+
 
 } // namespace VICUS
 
