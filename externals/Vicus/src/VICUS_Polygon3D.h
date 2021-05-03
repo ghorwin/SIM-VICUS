@@ -98,12 +98,6 @@ private:
 	*/
 	void detectType();
 
-	/*! A simple polygon is a polygon without intersects by itself.
-		return true if no intersections
-		return false if minimum one intersection
-	*/
-	bool isSimplePolygon();
-
 	/*! Eleminate colinear points in a polygon and return a new polygon. */
 	void eleminateColinearPts();
 

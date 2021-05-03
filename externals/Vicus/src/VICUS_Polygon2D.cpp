@@ -162,7 +162,7 @@ void Polygon2D::detectType() {
 }
 
 
-bool Polygon2D::isSimplePolygon() {
+bool Polygon2D::isSimplePolygon() const {
 	std::vector<IBK::Line>	lines;
 	for (unsigned int i=0, vertexCount = m_vertexes.size(); i<vertexCount; ++i) {
 		lines.emplace_back(

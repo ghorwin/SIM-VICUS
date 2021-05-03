@@ -640,7 +640,7 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces, IBKM
 	double minY = std::numeric_limits<double>::max();
 	double minZ = std::numeric_limits<double>::max();
 	for (const VICUS::Surface *s : surfaces ) {
-		for ( IBKMK::Vector3D v : s->m_polygon3D.vertexes() ) {
+		for ( IBKMK::Vector3D v : s->polygon3D().vertexes() ) {
 			( v.m_x > maxX ) ? maxX = v.m_x : 0;
 			( v.m_y > maxY ) ? maxY = v.m_y : 0;
 			( v.m_z > maxZ ) ? maxZ = v.m_z : 0;

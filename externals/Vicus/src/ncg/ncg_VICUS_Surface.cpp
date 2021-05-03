@@ -32,8 +32,8 @@
 
 namespace VICUS {
 
-void Surface::readXML(const TiXmlElement * element) {
-	FUNCID(Surface::readXML);
+void Surface::readXMLPrivate(const TiXmlElement * element) {
+	FUNCID(Surface::readXMLPrivate);
 
 	try {
 		// search for mandatory attributes
@@ -89,7 +89,7 @@ void Surface::readXML(const TiXmlElement * element) {
 	}
 }
 
-TiXmlElement * Surface::writeXML(TiXmlElement * parent) const {
+TiXmlElement * Surface::writeXMLPrivate(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("Surface");
 	parent->LinkEndChild(e);
 

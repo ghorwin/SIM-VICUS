@@ -130,7 +130,7 @@ void PlaneGeometry::triangulate() {
 	m_triangleVertexes.clear();
 
 	// only continue, if the polygon itself is valid
-	if (m_polygon.isValid())
+	if (!m_polygon.isValid())
 		return;
 
 	// We have special handling for type triangle and rectangle, but only if
@@ -145,7 +145,7 @@ void PlaneGeometry::triangulate() {
 
 			case Polygon3D::T_Rectangle :
 				m_triangles.push_back( triangle_t(0, 1, 2) );
-				m_triangles.push_back( triangle_t(2, 3, 1) );
+				m_triangles.push_back( triangle_t(2, 3, 0) );
 			break;
 
 			default: ;
@@ -297,6 +297,8 @@ void PlaneGeometry::setPolygon(const Polygon3D & polygon3D) {
 
 
 void PlaneGeometry::setHoles(const std::vector<Polygon2D> & holes) {
+	if (m_holes.empty() && holes.empty())
+		return;
 	m_holes = holes;
 	triangulate();
 }

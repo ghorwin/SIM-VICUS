@@ -368,7 +368,7 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 
 	// no vertexes, nothing to draw - we need at least one vertex in the geometry, so that we
 	// can draw a line from the last vertex to the current coordinate system's location
-	if (m_planeGeometry.triangleVertexes().empty())
+	if (m_planeGeometry.polygon().vertexes().empty())
 		return;
 
 	unsigned int currentVertexIndex = 0;

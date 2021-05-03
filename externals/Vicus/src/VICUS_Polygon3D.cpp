@@ -152,7 +152,7 @@ void Polygon3D::checkPolygon() {
 		return;
 
 	// polygon must not be winding into itself, otherwise triangulation would not be meaningful
-	m_valid = isSimplePolygon();
+	m_valid = m_polyline.isSimplePolygon();
 }
 
 
@@ -162,6 +162,7 @@ void Polygon3D::flip() {
 
 
 void Polygon3D::detectType() {
+	m_type = T_Polygon;
 	if (m_vertexes.size() == 3) {
 		m_type = T_Triangle;
 		return;
@@ -177,40 +178,6 @@ void Polygon3D::detectType() {
 	// we assume we have zero length for an rectangle
 	if (c2.magnitude() < 1e-4)  // TODO : should this be a relative error? suppose we have a polygon of size 1 mm x 1 mm, then any polygon will be a rectangle
 		m_type = T_Rectangle;
-}
-
-
-bool Polygon3D::isSimplePolygon() {
-	std::vector<IBK::Line>	lines;
-	for (unsigned int i=0, vertexCount = m_vertexes.size(); i<vertexCount; ++i) {
-		lines.emplace_back(
-					IBK::Line(
-					IBK::point2D<double>(
-								  m_vertexes[i].m_x,
-								  m_vertexes[i].m_y),
-					IBK::point2D<double>(
-								  m_vertexes[(i+1) % vertexCount].m_x,
-								  m_vertexes[(i+1) % vertexCount].m_y))
-				);
-	}
-	if (lines.size()<4)
-		return true;
-	for (unsigned int i=0; i<lines.size();++i) {
-		for (unsigned int j=0; j<lines.size()-2; ++j) {
-			unsigned int k1 = (i+1)%lines.size();
-			unsigned int k2 = (i-1);
-			if(i==0)
-				k2 = lines.size()-1;
-			if(i==j || k1 == j || k2 == j )
-				continue;
-			//int k = (i+j+2)%lines.size();
-			IBK::point2D<double> p;
-			if (lines[i].intersects(lines[j], p))
-				return false;
-		}
-	}
-
-	return true;
 }
 
 

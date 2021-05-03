@@ -19,6 +19,7 @@ class ComponentInstance;
 
 /*! Represents a surface and its associated properties. */
 class Surface : public Object {
+	VICUS_READWRITE_PRIVATE
 public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -39,6 +40,15 @@ public:
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
+	/*! Gives read-access to the surface's main polygon. */
+	const Polygon3D &					polygon3D() const {	return m_polygon3D; }
+
+	/*! Sets the polygon. */
+	void setPolygon3D(const Polygon3D & polygon3D);
+
+	const std::vector<SubSurface>		subSurfaces() const { return m_subSurfaces; }
+	void setSubSurfaces(const std::vector<SubSurface> & subSurfaces);
+
 	/*! Gives read-access to the surface's geometry. */
 	const PlaneGeometry					geometry() const { return m_geometry; }
 
@@ -57,16 +67,12 @@ public:
 
 	QString								m_displayName;				// XML:A
 
-	/*! The polygon describing this surface. */
-	Polygon3D							m_polygon3D;				// XML:E
 
 	/*! Linear Spline that holds annual shading factors, only for visualization
 		TODO : move to different places or use for visualization
 	*/
 	IBK::LinearSpline					m_shadingFactor;
 
-	/*! Subsurfaces of the surface. */
-	std::vector<SubSurface>				m_subSurfaces;				// XML:E
 
 	/*! Stores visibility information for this surface.
 		Note: keep the next line - this will cause the code generator to create serialization code
@@ -91,6 +97,18 @@ public:
 	ComponentInstance					*m_componentInstance = nullptr;
 
 private:
+	/*! The polygon describing this surface. */
+	Polygon3D							m_polygon3D;				// XML:E
+
+	/*! Subsurfaces of the surface. */
+	std::vector<SubSurface>				m_subSurfaces;				// XML:E
+
+	// *** Runtime Variables ***
+
+	/*! This variable is set whenever the polygon or the subsurfaces have been modified.
+		When the geometry is being accessed, and m_dirty is true, we perform the triangulation.
+	*/
+//	bool								m_dirty = false;
 
 	/*! The actual geometry. This object manages the triangulation of the surface's polygon and
 		its embedded subsurfaces.

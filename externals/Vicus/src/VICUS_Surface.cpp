@@ -15,6 +15,31 @@ void Surface::updateColor() {
 }
 
 
+void Surface::readXML(const TiXmlElement * element) {
+	readXMLPrivate(element);
+	computeGeometry();
+}
+
+
+TiXmlElement * Surface::writeXML(TiXmlElement * parent) const {
+	return writeXMLPrivate(parent);
+}
+
+
+void Surface::setPolygon3D(const Polygon3D & polygon) {
+	m_geometry.setPolygon(polygon);
+}
+
+
+void Surface::setSubSurfaces(const std::vector<SubSurface> & subSurfaces) {
+	m_subSurfaces = subSurfaces;
+	std::vector<Polygon2D> holes;
+	for (const SubSurface & s : subSurfaces)
+		holes.push_back(s.m_geometry);
+	m_geometry.setHoles(holes);
+}
+
+
 void Surface::computeGeometry() {
 	// copy polygon to plane geometry
 	m_geometry.setPolygon( m_polygon3D );

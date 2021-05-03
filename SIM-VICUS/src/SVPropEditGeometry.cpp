@@ -270,13 +270,13 @@ void SVPropEditGeometry::translate() {
 		// handle surfaces
 		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
 		if (s != nullptr) {
-			std::vector<IBKMK::Vector3D> vertexes = s->m_polygon3D.vertexes();
+			std::vector<IBKMK::Vector3D> vertexes = s->polygon3D().vertexes();
 			for ( IBKMK::Vector3D & v : vertexes ) {
 				// use just this instead of making a QVetor3D
 				v += translation;
 			}
 			VICUS::Surface modS(*s);
-			modS.m_polygon3D.setVertexes(vertexes); // No need to re-compute triangulation here, this will be done in the undo-action
+			modS.setPolygon3D( VICUS::Polygon3D(vertexes) );
 			modifiedSurfaces.push_back(modS);
 		}
 		// TODO : Netzwerk zeugs
@@ -308,7 +308,7 @@ void SVPropEditGeometry::scale() {
 		// handle surfaces
 		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
 		if (s != nullptr) {
-			std::vector<IBKMK::Vector3D> vertexes = s->m_polygon3D.vertexes();
+			std::vector<IBKMK::Vector3D> vertexes = s->polygon3D().vertexes();
 			for ( IBKMK::Vector3D & v : vertexes ) {
 				// use just this instead of making a QVetor3D
 				Vic3D::Transform3D t;
@@ -318,7 +318,7 @@ void SVPropEditGeometry::scale() {
 				v = QtExt::QVector2IBKVector(t.translation());
 			}
 			VICUS::Surface modS(*s);
-			modS.m_polygon3D.setVertexes(vertexes); // No need to re-compute triangulation here, this will be done in the undo-action
+			modS.setPolygon3D( VICUS::Polygon3D(vertexes) );
 			modifiedSurfaces.push_back(modS);
 		}
 		// TODO : Netzwerk zeugs
@@ -350,7 +350,7 @@ void SVPropEditGeometry::rotate() {
 		// handle surfaces
 		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
 		if (s != nullptr) {
-			std::vector<IBKMK::Vector3D> vertexes = s->m_polygon3D.vertexes();
+			std::vector<IBKMK::Vector3D> vertexes = s->polygon3D().vertexes();
 			for ( IBKMK::Vector3D & v : vertexes ) {
 				// use just this instead of making a QVetor3D
 				QVector3D v3D = rotate.rotatedVector(QtExt::IBKVector2QVector(v) );
@@ -362,7 +362,7 @@ void SVPropEditGeometry::rotate() {
 				v = QtExt::QVector2IBKVector(t.translation() );
 			}
 			VICUS::Surface modS(*s);
-			modS.m_polygon3D.setVertexes(vertexes); // No need to re-compute triangulation here, this will be done in the undo-action
+			modS.setPolygon3D( VICUS::Polygon3D(vertexes) );
 			modifiedSurfaces.push_back(modS);
 		}
 		// TODO : Netzwerk zeugs
@@ -1307,11 +1307,11 @@ void SVPropEditGeometry::on_pushButtonCopySurfaces_clicked() {
 		newSurf.m_id = VICUS::Project::uniqueId(idsUsedBySurfaces);
 		idsUsedBySurfaces.push_back(newSurf.m_id); // also remember the new ID as used
 
-		std::vector<IBKMK::Vector3D> vertexes = newSurf.m_polygon3D.vertexes();
+		std::vector<IBKMK::Vector3D> vertexes = newSurf.polygon3D().vertexes();
 		for ( IBKMK::Vector3D &v : vertexes ) {
 			v += m_translation;
 		}
-		newSurf.m_polygon3D.setVertexes(vertexes); // Note: holes/subsurfaces do not need to be modified, they move just along
+		newSurf.setPolygon3D( VICUS::Polygon3D(vertexes) );
 
 		newSurfaces.push_back(newSurf);
 
