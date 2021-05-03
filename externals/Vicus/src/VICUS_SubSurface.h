@@ -46,7 +46,7 @@ public:
 	QString								m_displayName;				// XML:A
 
 	/*! The actual geometry. */
-	Polygon2D							m_geometry;					// XML:E
+	Polygon2D							m_polygon2D;				// XML:E
 
 	/*! Offset from first point of the parent surface to the first point this sub surface. */
 	IBK::point2D<double>				m_offset;					// XML:E
