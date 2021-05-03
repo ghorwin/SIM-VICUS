@@ -131,6 +131,8 @@ public:
 	/*! Returns the pipe edit dialog. */
 	SVDatabaseEditDialog *dbFluidEditDialog();
 
+	/*! Returns the pointer to the Start Simulation Nandrad Widget */
+	SVSimulationStartNandrad * simulationStartNandrad() const;
 
 public slots:
 	void on_actionDBMaterials_triggered();
