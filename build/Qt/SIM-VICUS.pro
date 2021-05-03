@@ -56,7 +56,7 @@ NandradCodeGenerator.depends = IBK
 SIM-VICUS.depends = QuaZIP qwt Vicus Nandrad IBK TiCPP CCM QtExt Zeppelin GenericBuildings
 
 CCM.depends = IBK TiCPP
-Shading.depends = IBK TiCPP CCM IBKMK
+Shading.depends = IBK TiCPP CCM IBKMK DataIO
 DataIO.depends = IBK
 IBKMK.depends = IBK
 TiCPP.depends = IBK
