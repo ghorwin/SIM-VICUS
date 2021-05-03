@@ -162,6 +162,9 @@ void Polygon3D::checkPolygon() {
 
 void Polygon3D::flip() {
 	std::vector<IBKMK::Vector3D>(m_vertexes.rbegin(), m_vertexes.rend()).swap(m_vertexes);
+
+	// TODO : flip and recalculate also embedded holes
+	checkPolygon(); // if we have a triangle/rectangle, this is detected here
 }
 
 
