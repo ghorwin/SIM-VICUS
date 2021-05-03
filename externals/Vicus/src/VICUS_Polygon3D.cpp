@@ -281,7 +281,8 @@ void Polygon3D::updateLocalCoordinateSystem() {
 void Polygon3D::update2DPolyline() {
 	IBK_ASSERT(m_vertexes.size() >= 3);
 
-	std::vector<IBKMK::Vector2D>		poly(m_vertexes.size());
+	std::vector<IBKMK::Vector2D>		poly;
+	poly.reserve(m_vertexes.size());
 
 	// first point is v0 = origin
 	poly.push_back( IBKMK::Vector2D(0,0) );
