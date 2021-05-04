@@ -119,7 +119,6 @@ private:
 	/*! Display name (for error messages). */
 	std::string										m_displayName;
 
-
 	/*! Total number of unknowns. */
 	unsigned int									m_n;
 	/*! Cached input data vector (size m_n == nPrimaryStateResults()). */
@@ -127,21 +126,22 @@ private:
 
 	/*! Storage of all network element ids, used for vector output. */
 	std::vector<unsigned int>						m_elementIds;
-	/*! Container with current reference values for heat exchange calculation: either temperature [K] or heat flux [W]
-		(size = m_elementIds.size()). Is needed for initialization of flow element.
 
-		This vector contains pointer references to memory slots containing the temperatures/heat fluxes needed for calculation.
-		For the states model (and the flow element models) it does not matter if these are stored in constant IBK::Parameter,
-		or linear splines or any other data location.
+	/*! Container with values for heat exchange calculation: either temperature [K] or heat flux [W]
+		(size = m_elementIds.size()).
 
-		These input values are actually not needed by the states model itself, but by the ThermalNetworkBalanceModel.
-		They are, however, already initialized in this model (in setup()), because they need to be available when
+		This vector stores the temperatures/heat fluxes needed for calculation. The actual flow elements pull these
+		values (take reference to these memory locations during constructions) and use these during own model evaluation.
+
+		They are already initialized in this model (in setup()), because they need to be available when
 		constructing the flow element calculation objects.
 	*/
 	std::vector<double>								m_heatExchangeRefValues;
 
 	/*! references to spline parameter values of NANDRAD::HydraulicComponent
 		the values will be updated in ThermalNetworkBalanceModel::setTime()
+
+		// TODO Hauke, discuss design with Andreas/Anne
 	*/
 	std::vector<std::vector<double> >				m_splineParameterRefValues;
 

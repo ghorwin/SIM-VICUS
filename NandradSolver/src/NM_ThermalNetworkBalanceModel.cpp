@@ -516,6 +516,8 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 
 
 int ThermalNetworkBalanceModel::setTime(double t) {
+	// TODO : Hauke, since we update StatesModel parameters, setTime should be implemented in the states model
+
 	// update all spline values
 	for(unsigned int i = 0; i < m_flowElementProperties.size(); ++i) {
 		const FlowElementProperties &elemProp = m_flowElementProperties[i];
