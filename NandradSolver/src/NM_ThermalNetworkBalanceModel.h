@@ -36,6 +36,7 @@ namespace IBK {
 
 namespace NANDRAD {
 	class LinearSplineParameter;
+	class SimulationParameter;
 }
 
 namespace NANDRAD_MODEL {
@@ -60,7 +61,7 @@ class ThermalNetworkStatesModel;
 	The other dependencies are formulated by the flow element thermal models themselves, and simply forwarded by
 	the ThermalNetworkBalanceModel to the framework.
 */
-class ThermalNetworkBalanceModel : public AbstractModel, public AbstractStateDependency {
+class ThermalNetworkBalanceModel : public AbstractModel, public AbstractStateDependency, public AbstractTimeDependency {
 public:
 
 	/*! Constructor */
@@ -72,7 +73,8 @@ public:
 	/*! Initializes model by resizing the y and ydot vectors.
 		Most of the data structures are already initialized by ThermalNetworkStatesModel.
 	*/
-	void setup(ThermalNetworkStatesModel *statesModel);
+	void setup(ThermalNetworkStatesModel *statesModel,
+			   const NANDRAD::SimulationParameter &simPara);
 
 	// *** Re-implemented from AbstractModel
 
@@ -102,6 +104,10 @@ public:
 	*/
 	virtual const double * resultValueRef(const InputReference & quantity) const override;
 
+	// *** Re-implemented from AbstractTimeStateDependency
+
+	/*! Updates time-dependent spline data (temperatures/heat losses). */
+	virtual int setTime(double t) override;
 
 	// *** Re-implemented from AbstractStateDependency
 
@@ -198,7 +204,7 @@ private:
 		ActiveLayerProperties				*m_activeLayerProperties = nullptr;
 
 		/*! Reference to heat exchange spline (heat flow or temperature), nullptr if not needed. */
-		const IBK::LinearSpline*			m_heatExchangeSplineRef = nullptr;
+		const NANDRAD::LinearSplineParameter*	m_heatExchangeSplineRef = nullptr;
 
 		/*! This memory slot is used when the respective heat exchange value (heat flow or temperature) is interpolated
 			from a linear spline parameter.
@@ -247,7 +253,10 @@ private:
 	std::vector<unsigned int>						m_modelQuantityOffset;
 
 	/*! Pointer to states model. */
-	ThermalNetworkStatesModel						*m_statesModel;
+	ThermalNetworkStatesModel						*m_statesModel = nullptr;
+
+	/*! Pointer to simulation parameter object. */
+	const NANDRAD::SimulationParameter				*m_simPara = nullptr;
 };
 
 } // namespace NANDRAD_MODEL

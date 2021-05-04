@@ -32,6 +32,7 @@
 
 #include <NANDRAD_HydraulicNetwork.h>
 #include <NANDRAD_HydraulicNetworkComponent.h>
+#include <NANDRAD_SimulationParameter.h>
 
 #include <IBKMK_SparseMatrixPattern.h>
 
@@ -41,9 +42,12 @@
 namespace NANDRAD_MODEL {
 
 
-void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
+void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel,
+									   const NANDRAD::SimulationParameter & simPara)
+{
 	// copy states model pointer
 	m_statesModel = statesModel;
+	m_simPara = &simPara;
 
 	// sanity checks
 	IBK_ASSERT(m_statesModel->m_network != nullptr);
@@ -58,11 +62,11 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 	for (unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i)
 		m_flowElementProperties.push_back(FlowElementProperties(m_statesModel->m_network->m_elements[i].m_id));
 
-	// first set all zone and construction properties
+	// Process all flow elements, create storage locations of zone/active layer exchange and populate the
+	// FlowElementProperties objects.
 	for (unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
 
 		const NANDRAD::HydraulicNetworkHeatExchange &heatExchange = m_statesModel->m_network->m_elements[i].m_heatExchange;
-
 		switch (heatExchange.m_modelType) {
 			// zone heat exchange
 			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureZone: {
@@ -96,16 +100,18 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 				m_flowElementProperties[i].m_activeLayerProperties = &(*m_activeProperties.rbegin());
 			} break;
 
+			// exchange with purely time-dependent temperature spline data
 			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline: {
 				// store reference to spline
-				m_flowElementProperties[i].m_heatExchangeSplineRef = &heatExchange.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature].m_values;
+				m_flowElementProperties[i].m_heatExchangeSplineRef = &heatExchange.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature];
 				// store pointer to interpolated value into respective flow element
 			}
 			break;
 
+				// exchange with purely time-dependent heat loss spline data
 			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
 				// store reference to spline
-				m_flowElementProperties[i].m_heatExchangeSplineRef = &heatExchange.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss].m_values;
+				m_flowElementProperties[i].m_heatExchangeSplineRef = &heatExchange.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss];
 			break;
 
 			default: break;
@@ -225,10 +231,11 @@ void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescript
 
 
 void ThermalNetworkBalanceModel::resultValueRefs(std::vector<const double *> &res) const {
+#if 0
 	if(!res.empty())
 		res.clear();
 	// heat flux vector is a result quantity
-	for(unsigned int i = 0; i < m_flowElementProperties.size(); ++i)
+	for (unsigned int i = 0; i < m_flowElementProperties.size(); ++i)
 		res.push_back(m_flowElementProperties[i].m_heatLossRef);
 	// heat flux vector is a result quantity
 	for(unsigned int i = 0; i < m_zoneProperties.size(); ++i)
@@ -245,6 +252,7 @@ void ThermalNetworkBalanceModel::resultValueRefs(std::vector<const double *> &re
 	// add individual model result value references
 	if(!m_modelQuantityRefs.empty())
 		res.insert(res.end(), m_modelQuantityRefs.begin(), m_modelQuantityRefs.end());
+#endif
 }
 
 
@@ -252,22 +260,21 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference &
 	const QuantityName & quantityName = quantity.m_name;
 
 	// return ydot
-	if(quantityName == std::string("ydot")) {
+	if (quantityName == std::string("ydot")) {
 		// whole vector access
 		if(quantityName.m_index == -1)
 			return &m_ydot[0];
 		return nullptr;
 	}
-	if(quantityName.m_name == std::string("NetworkZoneHeatLoad")) {
+	if (quantityName.m_name == std::string("NetworkZoneHeatLoad")) {
 		// no zones are given
-		if(m_zoneProperties.empty())
+		if (m_zoneProperties.empty())
 			return nullptr;
 		// find zone id
-		std::vector<ZoneProperties>::const_iterator fIt =
-			std::find(m_zoneProperties.begin(), m_zoneProperties.end(),
+		std::list<ZoneProperties>::const_iterator fIt = std::find(m_zoneProperties.begin(), m_zoneProperties.end(),
 				  (unsigned int) quantityName.m_index);
 		// invalid index access
-		if(fIt == m_zoneProperties.end())
+		if (fIt == m_zoneProperties.end())
 			return nullptr;
 
 		// found a valid entry
@@ -278,12 +285,10 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference &
 		if(m_activeProperties.empty())
 			return nullptr;
 		// find zone id
-		std::vector<ActiveLayerProperties>::const_iterator fIt =
-			std::find(m_activeProperties.begin(),
-					  m_activeProperties.end(),
+		std::list<ActiveLayerProperties>::const_iterator fIt = std::find(m_activeProperties.begin(), m_activeProperties.end(),
 				  (unsigned int) quantityName.m_index);
 		// invalid index access
-		if(fIt == m_activeProperties.end())
+		if (fIt == m_activeProperties.end())
 			return nullptr;
 
 		// found a valid entry
@@ -318,15 +323,27 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference &
 	// check if element contains requested quantity
 	for(unsigned int resIdx = startIdx; resIdx < endIdx; ++resIdx) {
 		const QuantityDescription &modelDesc = m_modelQuantities[resIdx];
-		if(modelDesc.m_name == quantityName.m_name) {
+		if (modelDesc.m_name == quantityName.m_name) {
 			// index is not allowed for network element output
-			if(quantityName.m_index != -1)
+			if (quantityName.m_index != -1)
 				return nullptr;
 			return m_modelQuantityRefs[resIdx];
 		}
 	}
 
 	return nullptr;
+}
+
+
+int ThermalNetworkBalanceModel::setTime(double t) {
+	// update all spline values
+	for (unsigned int i = 0; i < m_flowElementProperties.size(); ++i) {
+		FlowElementProperties &elemProp = m_flowElementProperties[i];
+		if (elemProp.m_heatExchangeSplineRef != nullptr) {
+			elemProp.m_heatExchangeSplineValue = m_simPara->evaluateTimeSeries(t, *elemProp.m_heatExchangeSplineRef);
+		}
+	}
+	return 0;
 }
 
 
@@ -404,8 +421,8 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 	for(unsigned int i = 0; i < m_flowElementProperties.size(); ++i) {
 
 		const FlowElementProperties &elemProp = m_flowElementProperties[i];
-		const ZoneProperties *zoneProp = m_flowElementProperties[i].m_zoneProperties;
-		const ActiveLayerProperties *layerProp = m_flowElementProperties[i].m_activeLayerProperties;
+		const ZoneProperties *zoneProp = elemProp.m_zoneProperties;
+		const ActiveLayerProperties *layerProp = elemProp.m_activeLayerProperties;
 		// set dependencies between heat exchange values and zone inputs
 		if(zoneProp != nullptr) {
 			// zone temperature is requested
@@ -464,10 +481,10 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 				if(elemProp.m_heatLossRef != nullptr)
 					resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + n], elemProp.m_heatLossRef) );
 
-				// dependencyies to ydot: heat exchange values (either externbal temperature or heat flux)
+				// dependencyies to ydot: heat exchange values (either external temperature or heat flux)
 				resultInputValueReferences.push_back(std::make_pair(&m_ydot[offset + n], &m_statesModel->m_heatExchangeRefValues[i]) );
 
-				// TODO Anne, eigentlich könnten/müssten die rein states-Modell-spezifischen Abhängigkeiten auch
+				// TODO Anne, eigentlich könnten/müssten die rein states-model-spezifischen Abhängigkeiten auch
 				//            im ThermalNetworkStatesModel gemacht werden - hier ist es aber auch ok, sofern man später bei Erweiterungen
 				//            des ThermalNetworkStatesModel nicht irgendwas vergisst. Siehe auch Kommentar in ThermalNetworkStatesModel::dependencies()
 
@@ -482,7 +499,7 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 													 &m_statesModel->m_y[offset + n] ) );
 
 				// dependencies of y to result quantities: heat loss
-				if(elemProp.m_heatLossRef != nullptr)
+				if (elemProp.m_heatLossRef != nullptr)
 					resultInputValueReferences.push_back(std::make_pair(elemProp.m_heatLossRef,
 																		&m_statesModel->m_y[offset + n] ) );
 			}

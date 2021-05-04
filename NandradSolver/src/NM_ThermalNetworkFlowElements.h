@@ -451,6 +451,9 @@ public:
 	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
 	void setInflowTemperature(double Tinflow) override;
 
+	/*! Nothing to be done here. */
+	void setHeatExchangeValueRef(const double *) override { }
+
 	/*! Sets references to externally calculated values. */
 	void setExternalReferences(const double * heatFluxCondenserRef, const double * condenserMeanTemperature);
 
