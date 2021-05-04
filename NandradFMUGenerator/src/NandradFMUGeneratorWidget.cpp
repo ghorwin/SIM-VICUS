@@ -356,6 +356,7 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveOutputVariable_clicked() {
 
 	m_project.m_fmiDescription.m_outputVariables.erase(m_project.m_fmiDescription.m_outputVariables.begin()+varIndex);
 	m_ui->tableWidgetOutputVars->removeRow(row);
+	// TODO: update table and data index
 //	updateFMUVariableTables();
 	row = qMin(row, m_ui->tableWidgetOutputVars->rowCount()-1);
 	m_ui->tableWidgetOutputVars->selectRow(row);
@@ -660,7 +661,7 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerate_clicked() {
 		varDesc = INPUT_VAR_TEMPLATE;
 		varDesc.replace("${INDEX}", QString("%1").arg(index));
 		varDesc.replace("${NAME}", varDef.m_fmiVarName.c_str());
-		varDesc.replace("${VALUEREF}", QString("%1").arg(index));
+		varDesc.replace("${VALUEREF}", QString("%1").arg(varIt->m_fmiValueRef));
 		// special handling for differen variable types
 		double startValue = 0;
 		if (varDef.m_unit == "K")		startValue = 293.15;
@@ -683,7 +684,7 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerate_clicked() {
 		varDesc = OUTPUT_VAR_TEMPLATE;
 		varDesc.replace("${INDEX}", QString("%1").arg(index));
 		varDesc.replace("${NAME}", varDef.m_fmiVarName.c_str());
-		varDesc.replace("${VALUEREF}", QString("%1").arg(index));
+		varDesc.replace("${VALUEREF}", QString("%1").arg(varIt->m_fmiValueRef));
 		// special handling for differen variable types
 		double startValue = 0;
 		if (varDef.m_unit == "K")		startValue = 293.15;
