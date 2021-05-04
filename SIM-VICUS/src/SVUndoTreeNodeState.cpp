@@ -45,6 +45,10 @@ SVUndoTreeNodeState::SVUndoTreeNodeState(const QString & label,
 				for (const VICUS::Surface & s : r.m_surfaces) {
 					if (exclusive || nodeIDs.find(s.uniqueID()) != nodeIDs.end())
 						storeState(s, m_nodeStates[s.uniqueID()]);
+					for (const VICUS::SubSurface & sub : s.subSurfaces()) {
+						if (exclusive || nodeIDs.find(sub.uniqueID()) != nodeIDs.end())
+							storeState(sub, m_nodeStates[sub.uniqueID()]);
+					}
 				}
 			}
 		}
@@ -176,6 +180,15 @@ void SVUndoTreeNodeState::redo() {
 					if ((it = m_nodeStates.find(s.uniqueID())) != m_nodeStates.end()) {
 						setState(s, it->second);
 						modifiedIDs.push_back(it->first);
+					}
+
+					// Note: use of const-cast is ok here, since we do not modify polygons or anything else that
+					//       changes triangulation
+					for (VICUS::SubSurface & sub : const_cast<std::vector<VICUS::SubSurface> &>(s.subSurfaces())) {
+						if ((it = m_nodeStates.find(sub.uniqueID())) != m_nodeStates.end()) {
+							setState(sub, it->second);
+							modifiedIDs.push_back(it->first);
+						}
 					}
 				}
 			}

@@ -37,6 +37,14 @@ public:
 		return r;
 	}
 
+	void updateParents() {
+		m_children.clear();
+		for (SubSurface & sub : m_subSurfaces) {
+			m_children.push_back(&sub);
+			sub.m_parent = this;
+		}
+	}
+
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
@@ -46,11 +54,11 @@ public:
 	/*! Sets the polygon. */
 	void setPolygon3D(const Polygon3D & polygon3D);
 
-	const std::vector<SubSurface>		subSurfaces() const { return m_subSurfaces; }
+	const std::vector<SubSurface> &		subSurfaces() const { return m_subSurfaces; }
 	void setSubSurfaces(const std::vector<SubSurface> & subSurfaces);
 
 	/*! Gives read-access to the surface's geometry. */
-	const PlaneGeometry					geometry() const { return m_geometry; }
+	const PlaneGeometry &				geometry() const { return m_geometry; }
 
 	/*! This function updates the triangulation of the surface and its subsurfaces.
 		Call this function whenever you change m_polygon3D and/or m_subsurfaces.

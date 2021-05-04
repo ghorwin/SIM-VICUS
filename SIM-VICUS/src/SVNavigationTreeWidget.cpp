@@ -87,6 +87,10 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 						for (const VICUS::Surface & s : r.m_surfaces) {
 							if (modifiedIDs.find(s.uniqueID()) != modifiedIDs.end())
 								setFlags(s.uniqueID(), s.m_visible, s.m_selected);
+							for (const VICUS::SubSurface & sub : s.subSurfaces()) {
+								if (modifiedIDs.find(sub.uniqueID()) != modifiedIDs.end())
+									setFlags(sub.uniqueID(), sub.m_visible, sub.m_selected);
+							}
 						}
 					}
 				}
@@ -165,6 +169,14 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 					surface->setData(0, SVNavigationTreeItemDelegate::NodeID, s.uniqueID());
 					surface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, s.m_visible);
 					surface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, s.m_selected);
+					for (const VICUS::SubSurface & sub : s.subSurfaces()) {
+						QTreeWidgetItem * subsurface = new QTreeWidgetItem(QStringList() << sub.m_displayName, QTreeWidgetItem::Type);
+						m_treeItemMap[sub.uniqueID()] = subsurface;
+						surface->addChild(subsurface);
+						subsurface->setData(0, SVNavigationTreeItemDelegate::NodeID, sub.uniqueID());
+						subsurface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, sub.m_visible);
+						subsurface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, sub.m_selected);
+					}
 				}
 			}
 		}

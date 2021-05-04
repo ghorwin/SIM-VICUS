@@ -403,8 +403,12 @@ void Project::updatePointers() {
 	for (VICUS::Building & b : m_buildings)
 		for (VICUS::BuildingLevel & bl : b.m_buildingLevels)
 			for (VICUS::Room & r : bl.m_rooms)
-				for (VICUS::Surface & s : r.m_surfaces)
+				for (VICUS::Surface & s : r.m_surfaces) {
 					s.m_componentInstance = nullptr;
+					for (VICUS::SubSurface & sub : const_cast<std::vector<VICUS::SubSurface> &>(s.subSurfaces()) )
+						sub.m_componentInstance = nullptr;
+				}
+
 	// update pointers
 	for (VICUS::ComponentInstance & ci : m_componentInstances) {
 		// lookup surfaces
@@ -488,11 +492,13 @@ Surface * Project::surfaceByID(unsigned int surfaceID) {
 	return nullptr;
 }
 
+
 bool selectionCheck(const VICUS::Object & o, bool takeSelected, bool takeVisible) {
 	bool selCheck = takeSelected ? o.m_selected : true;
 	bool visCheck = takeVisible ? o.m_visible : true;
 	return (selCheck && visCheck);
 }
+
 
 void Project::selectedBuildingObjects(std::set<const Object *> &selectedObjs, Object *obj) const {
 
