@@ -137,7 +137,7 @@ void SVPropEditGeometry::setCurrentPage(const SVPropEditGeometry::Operation & op
 
 
 void SVPropEditGeometry::setCoordinates(const Vic3D::Transform3D &t) {
-	// is being call from local coordinate system object, whenever this has changed location (regardless of
+	// is being called from local coordinate system object, whenever this has changed location (regardless of
 	// its own visibility)
 	m_localCoordinatePosition =  t;
 	updateInputs();
