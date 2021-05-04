@@ -352,21 +352,19 @@ void ThermalNetworkStatesModel::resultDescriptions(std::vector<QuantityDescripti
 const double * ThermalNetworkStatesModel::resultValueRef(const InputReference & quantity) const {
 	const QuantityName & quantityName = quantity.m_name;
 	// return y
-	if(quantityName == std::string("y")) {
+	if (quantityName == std::string("y")) {
 		// whole vector access
-		if(quantityName.m_index == -1)
+		if (quantityName.m_index == -1)
 			return &m_y[0];
 		return nullptr;
 	}
-	if(quantityName == std::string("FluidTemperature")) {
-		if(quantity.m_referenceType != NANDRAD::ModelInputReference::MRT_NETWORKELEMENT)
+	if (quantityName == std::string("FluidTemperature")) {
+		if (quantity.m_referenceType != NANDRAD::ModelInputReference::MRT_NETWORKELEMENT)
 			return nullptr;
 		// access to an element temperature
-		std::vector<unsigned int>::const_iterator fIt =
-				std::find(m_elementIds.begin(), m_elementIds.end(),
-						  (unsigned int) quantity.m_id);
+		std::vector<unsigned int>::const_iterator fIt = std::find(m_elementIds.begin(), m_elementIds.end(), (unsigned int) quantity.m_id);
 		// invalid index access
-		if(fIt == m_elementIds.end())
+		if (fIt == m_elementIds.end())
 			return nullptr;
 		unsigned int pos = (unsigned int) std::distance(m_elementIds.begin(), fIt);
 		return m_meanTemperatureRefs[pos];

@@ -58,34 +58,28 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 	for (unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i)
 		m_flowElementProperties.push_back(FlowElementProperties(m_statesModel->m_network->m_elements[i].m_id));
 
-	//
-
-	// store index of zone ids for each exchanging flow element
-	std::vector<unsigned int> zoneIdx(m_flowElementProperties.size(), NANDRAD::INVALID_ID);
-	// store index of construction instance ids for each exchanging flow element
-	std::vector<unsigned int> constructionInstanceIdx(m_flowElementProperties.size(), NANDRAD::INVALID_ID);
-
 	// first set all zone and construction properties
-	for(unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
+	for (unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
 
 		const NANDRAD::HydraulicNetworkHeatExchange &heatExchange = m_statesModel->m_network->m_elements[i].m_heatExchange;
 
-		switch(heatExchange.m_modelType) {
+		switch (heatExchange.m_modelType) {
 			// zone heat exchange
 			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureZone: {
 				unsigned int zoneId = heatExchange.m_idReferences[NANDRAD::HydraulicNetworkHeatExchange::ID_ZoneId];
 				IBK_ASSERT(zoneId != NANDRAD::INVALID_ID);
-				// parameters are checked, already
+
 				// check whether zone is registered
-				std::vector<ZoneProperties>::iterator fIt = std::find(m_zoneProperties.begin(), m_zoneProperties.end(), zoneId);
-				// add a new entry
-				if(fIt == m_zoneProperties.end()) {
-					zoneIdx[i] = m_zoneProperties.size();
-					m_zoneProperties.push_back(ZoneProperties(zoneId));
+				std::list<ZoneProperties>::iterator fIt = std::find(m_zoneProperties.begin(), m_zoneProperties.end(), zoneId);
+				if (fIt == m_zoneProperties.end()) {
+					// not yet in list, add a new entry
+					m_zoneProperties.push_back(ZoneProperties(zoneId)); // Note: does not invalidate pointers already in list!
+					// store pointer to newly added object (last object = first from end)
+					m_flowElementProperties[i].m_zoneProperties = &(*m_zoneProperties.rbegin());
 				}
 				else {
-					unsigned int index = std::distance(m_zoneProperties.begin(), fIt);
-					zoneIdx[i] = index;
+					// store pointer to object
+					m_flowElementProperties[i].m_zoneProperties = &(*fIt);
 				}
 			} break;
 
@@ -97,14 +91,16 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 				// double entry is not allowed - this has been checked already in HydraulicNetwork::checkParameters()
 				IBK_ASSERT(std::find(m_activeProperties.begin(), m_activeProperties.end(), conInstanceId) == m_activeProperties.end());
 
-				constructionInstanceIdx[i] = m_activeProperties.size();
 				m_activeProperties.push_back(ActiveLayerProperties(conInstanceId));
-
+				// store pointer to newly added object (last object = first from end)
+				m_flowElementProperties[i].m_activeLayerProperties = &(*m_activeProperties.rbegin());
 			} break;
 
-			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline:
+			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline: {
 				// store reference to spline
 				m_flowElementProperties[i].m_heatExchangeSplineRef = &heatExchange.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature].m_values;
+				// store pointer to interpolated value into respective flow element
+			}
 			break;
 
 			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
@@ -113,22 +109,6 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 			break;
 
 			default: break;
-		}
-	}
-
-
-	// set spline parameter references
-	for(unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
-		// get component of flow element
-		const NANDRAD::HydraulicNetworkComponent* comp = m_statesModel->m_network->m_elements[i].m_component;
-		if (comp == nullptr)
-			continue;
-
-		// go through the list of spline parameters and set references
-		std::vector<unsigned int> splineParameter = NANDRAD::HydraulicNetworkComponent::requiredSplineParameter(comp->m_modelType,
-																												comp->m_heatPumpIntegration);
-		for (unsigned j: splineParameter){
-			m_flowElementProperties[i].m_splineParameterRefs.push_back(&comp->m_splPara[j]);
 		}
 	}
 
@@ -143,18 +123,6 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 		// copy nodal temperatures
 		elemProp.m_inletNodeTemperatureRef = &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexInlet];
 		elemProp.m_outletNodeTemperatureRef = &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexOutlet];
-
-		// set zone or conmstruction properties
-		if(zoneIdx[i] != NANDRAD::INVALID_ID) {
-			unsigned int idx = zoneIdx[i];
-			IBK_ASSERT(idx < m_zoneProperties.size());
-			elemProp.m_zoneProperties = &m_zoneProperties[idx];
-		}
-		else if(constructionInstanceIdx[i] != NANDRAD::INVALID_ID) {
-			unsigned int idx = constructionInstanceIdx[i];
-			IBK_ASSERT(idx < m_activeProperties.size());
-			elemProp.m_activeLayerProperties = &m_activeProperties[idx];
-		}
 	}
 
 	// set references to heat fluxes

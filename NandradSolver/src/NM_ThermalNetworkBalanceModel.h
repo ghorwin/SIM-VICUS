@@ -28,6 +28,7 @@
 
 #include <NANDRAD_Constants.h>
 
+#include <list>
 
 namespace IBK {
 	class LinearSpline;
@@ -104,11 +105,6 @@ public:
 
 	// *** Re-implemented from AbstractStateDependency
 
-	/*! Updates time-dependent spline data (temperatures/heat losses). */
-	virtual int setTime(double t) override;
-
-	// *** Re-implemented from AbstractStateDependency
-
 	/*! Returns model evaluation priority. */
 	int priorityOfModelEvaluation() const override;
 
@@ -156,11 +152,6 @@ private:
 		unsigned int						m_zoneId = NANDRAD::INVALID_ID;
 		/*! Heat flux (sum) of *all* flow elements into selected zone. */
 		double								m_zoneHeatLoad = -999;
-
-		/*! Reference to temperatures of selected zone.
-			TODO : Remove
-		*/
-//		const double*						m_zoneTemperatureRef = nullptr;
 	};
 
 	/*!	Struct for all value references exchanged between element model
@@ -182,8 +173,6 @@ private:
 		unsigned int						m_constructionInstanceId = NANDRAD::INVALID_ID;
 		/*! Heat flux into (the one and only) active layer if the selected construction instance. */
 		double								m_activeLayerHeatLoad = -999;
-		/*! Reference to mean temperature (the one and only) active layer if the selected construction instance. */
-//		const double*						m_activeLayerTemperatureRef = nullptr;
 	};
 
 
@@ -208,11 +197,14 @@ private:
 		*/
 		ActiveLayerProperties				*m_activeLayerProperties = nullptr;
 
-		/*! This memory slot is used when the respective heat loss value (heat flow or temperature) is interpolated
+		/*! Reference to heat exchange spline (heat flow or temperature), nullptr if not needed. */
+		const IBK::LinearSpline*			m_heatExchangeSplineRef = nullptr;
+
+		/*! This memory slot is used when the respective heat exchange value (heat flow or temperature) is interpolated
 			from a linear spline parameter.
 			Elements with spline-based input values hold a pointer reference to this slot.
 		*/
-		double								m_heatLossSplineValue = 999;
+		double								m_heatExchangeSplineValue = 999;
 
 		// the following references point to results computed from flow elements.
 
@@ -234,13 +226,16 @@ private:
 
 	/*! Properties of all zones involved in heat exchange to a network element.
 		One ZoneProperties element for each zone that one or more flow elements exchange heat with.
+		The objects in this list are accessed via pointer, stored in the respective FlowElementProperties object.
 	*/
-	std::vector<ZoneProperties>						m_zoneProperties;
+	std::list<ZoneProperties>						m_zoneProperties;
 	/*! Properties of all active layers involved in heat exchange to a network element.
 		One ActiveLayerProperties object for each construction instance that has heat exchange with a flow
 		element.
+		The objects in this list are accessed via pointer, stored in the respective FlowElementProperties object.
 	*/
-	std::vector<ActiveLayerProperties>				m_activeProperties;
+	std::list<ActiveLayerProperties>				m_activeProperties;
+
 	/*! Physical properties of all network elements (size = ThermalNetworkModelImpl::m_flowElements.size()).*/
 	std::vector<FlowElementProperties>				m_flowElementProperties;
 
