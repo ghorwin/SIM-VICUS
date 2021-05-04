@@ -56,10 +56,10 @@ public:
 	*/
 	void setInflowTemperature(double Tinflow) override;
 
-	/*! Reference to external temperature in K.
-		Set to the result of a temperature-calculating object.
-	*/
-	const double *					m_externalTemperatureRef = nullptr;
+	/*! Sets the reference to external temperature. */
+	void setHeatExchangeValueRef(const double * heatExchangeValueRef) override {
+		m_externalTemperatureRef = heatExchangeValueRef;
+	}
 
 private:
 
@@ -114,6 +114,11 @@ private:
 
 	/*! Heat transfer coefficient from outer pipe wall to environment in [W/m2K] */
 	double							m_outerHeatTransferCoefficient = -999;
+
+	/*! Reference to external temperature in K.
+		Set to the result of a temperature-calculating object.
+	*/
+	const double *					m_externalTemperatureRef = nullptr;
 };
 
 
@@ -134,10 +139,10 @@ public:
 	/*! Overloaded from ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
 	void setInflowTemperature(double Tinflow) override;
 
-	/*! Reference to external temperature in K.
-		Set to the result of a temperature-calculating object.
-	*/
-	const double *					m_externalTemperatureRef = nullptr;
+	/*! Sets the reference to external temperature. */
+	void setHeatExchangeValueRef(const double * heatExchangeValueRef) override {
+		m_externalTemperatureRef = heatExchangeValueRef;
+	}
 
 private:
 
@@ -163,6 +168,11 @@ private:
 
 	/*! Heat transfer coefficient from outer pipe wall to environment in [W/m2K] */
 	double							m_outerHeatTransferCoefficient;
+
+	/*! Reference to external temperature in K.
+		Set to the result of a temperature-calculating object.
+	*/
+	const double *					m_externalTemperatureRef = nullptr;
 };
 #endif // STATIC_PIPE_MODEL_ENABLED
 
@@ -179,36 +189,25 @@ public:
 				  const NANDRAD::HydraulicFluid & fluid);
 
 	/*! Publishes individual model quantities via descriptions. */
-	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
+	void modelQuantities(std::vector<QuantityDescription> &quantities) const override {
 		quantities.push_back(QuantityDescription("FluidVolumeFlow","m3/h","Fluid volume flow", false));
 		quantities.push_back(QuantityDescription("FluidVelocity","m/s","Fluid velocity", false));
-
-		// check heat transfer type
-		if (m_heatExchangeType != (int) NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant &&
-			m_heatExchangeType != (int) NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline)
-		{
-			quantities.push_back(QuantityDescription("FluidViscosity","m2/s","Fluid dynamic viscosity", false));
-			quantities.push_back(QuantityDescription("Reynolds","---","Reynolds number", false));
-			quantities.push_back(QuantityDescription("Prandtl","---","Prandtl number", false));
-			quantities.push_back(QuantityDescription("Nusselt","---","Nusselt number", false));
-			quantities.push_back(QuantityDescription("ThermalTransmittance","W/K","Total thermal transmittance of fluid and pipe wall", false));
-		}
+		quantities.push_back(QuantityDescription("FluidViscosity","m2/s","Fluid dynamic viscosity", false));
+		quantities.push_back(QuantityDescription("Reynolds","---","Reynolds number", false));
+		quantities.push_back(QuantityDescription("Prandtl","---","Prandtl number", false));
+		quantities.push_back(QuantityDescription("Nusselt","---","Nusselt number", false));
+		quantities.push_back(QuantityDescription("ThermalTransmittance","W/K","Total thermal transmittance of fluid and pipe wall", false));
 	}
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
 	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
 		valRefs.push_back(&m_volumeFlow);
 		valRefs.push_back(&m_velocity);
-		// check heat transfer type
-		if (m_heatExchangeType != (int) NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant &&
-			m_heatExchangeType != (int) NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline)
-		{
 		valRefs.push_back(&m_viscosity);
-			valRefs.push_back(&m_reynolds);
-			valRefs.push_back(&m_prandtl);
-			valRefs.push_back(&m_nusselt);
-			valRefs.push_back(&m_thermalTransmittance);
-		}
+		valRefs.push_back(&m_reynolds);
+		valRefs.push_back(&m_prandtl);
+		valRefs.push_back(&m_nusselt);
+		valRefs.push_back(&m_thermalTransmittance);
 	}
 
 	/*! Function retrieving number of internal states.*/
@@ -238,8 +237,10 @@ public:
 							  const double *mdot, const double* TInflowLeft, const double*TInflowRight,
 							  std::vector<std::pair<const double *, const double *> > & ) const override;
 
-	/*! Reference to external temperature in [K] */
-	const double*					m_externalTemperatureRef = nullptr;
+	/*! Sets the reference to external temperature. */
+	void setHeatExchangeValueRef(const double * heatExchangeValueRef) override {
+		m_externalTemperatureRef = heatExchangeValueRef;
+	}
 
 private:
 
@@ -309,6 +310,9 @@ private:
 
 	/*! Total thermal resistance in [W/K]*/
 	double							m_thermalTransmittance = -999;
+
+	/*! Reference to external temperature in [K] */
+	const double*					m_externalTemperatureRef = nullptr;
 };
 
 
@@ -405,6 +409,9 @@ public:
 	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
 	void setInflowTemperature(double Tinflow) override;
 
+	/*! Nothing to be done here. */
+	void setHeatExchangeValueRef(const double *) override { }
+
 private:
 	/*! Constant pressure head [Pa] */
 	double							m_pressureHead = 888;
@@ -490,7 +497,12 @@ public:
 	TNElementWithExternalHeatLoss(const NANDRAD::HydraulicFluid & fluid, double fluidVolume);
 
 	/*! Function for retrieving heat fluxes out of the flow element.*/
-	void internalDerivatives(double *ydot);
+	void internalDerivatives(double *ydot) override;
+
+	/*! Nothing to be done here. */
+	void setHeatExchangeValueRef(const double * heatExchangeValueRef) override {
+		m_externalHeatLossRef = heatExchangeValueRef;
+	}
 
 	/*! Reference to external heat loss [W] */
 	const double*					m_externalHeatLossRef = nullptr;

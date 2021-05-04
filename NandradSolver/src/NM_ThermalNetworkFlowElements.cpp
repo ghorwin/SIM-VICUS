@@ -198,47 +198,41 @@ void TNDynamicPipeElement::setInflowTemperature(double Tinflow) {
 	// note: velcoty is caluclated for a single pipe (but mass flux interpreted as flux through all parallel pipes
 	m_velocity = m_volumeFlow/m_fluidCrossSection;
 
-	// check heat transfer type
-	if (m_heatExchangeType != (int) NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant &&
-		m_heatExchangeType != (int) NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline)
-	{
+	m_heatLoss = 0.0;
 
-		m_heatLoss = 0.0;
+	// assume constant heat transfer coefficient along pipe, using average temperature
+	m_viscosity = m_fluidViscosity.value(m_meanTemperature);
+	m_reynolds = ReynoldsNumber(m_velocity, m_viscosity, m_innerDiameter);
+	m_prandtl = PrandtlNumber(m_viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
+	m_nusselt = NusseltNumber(m_reynolds, m_prandtl, m_length, m_innerDiameter);
+	double innerHeatTransferCoefficient = m_nusselt * m_fluidConductivity / m_innerDiameter;
 
-		// assume constant heat transfer coefficient along pipe, using average temperature
-		m_viscosity = m_fluidViscosity.value(m_meanTemperature);
-		m_reynolds = ReynoldsNumber(m_velocity, m_viscosity, m_innerDiameter);
-		m_prandtl = PrandtlNumber(m_viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
-		m_nusselt = NusseltNumber(m_reynolds, m_prandtl, m_length, m_innerDiameter);
-		double innerHeatTransferCoefficient = m_nusselt * m_fluidConductivity / m_innerDiameter;
-
+	// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
+	// see documentation above
+	if(m_outerHeatTransferCoefficient == 0.) {
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-		// see documentation above
-		if(m_outerHeatTransferCoefficient == 0.) {
-			// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-			m_thermalTransmittance = m_discLength / (
-						  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
-						+ 1.0/m_UValuePipeWall )
-				);
-		}
-		else {
-			// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-			m_thermalTransmittance = m_discLength / (
-						  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
-						+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)
-						+ 1.0/m_UValuePipeWall )
-				);
-		}
+		m_thermalTransmittance = m_discLength / (
+					  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
+					+ 1.0/m_UValuePipeWall )
+			);
+	}
+	else {
+		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
+		m_thermalTransmittance = m_discLength / (
+					  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
+					+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)
+					+ 1.0/m_UValuePipeWall )
+			);
+	}
 
 
-		IBK_ASSERT(m_externalTemperatureRef != nullptr);
-		const double externalTemperature = *m_externalTemperatureRef;
-		for(unsigned int i = 0; i < m_nVolumes; ++i) {
-			// calculate heat loss with given parameters
-			m_heatLosses[i] = m_thermalTransmittance * (m_temperatures[i] - externalTemperature) * m_nParallelPipes;
-			// sum up heat losses
-			m_heatLoss += m_heatLosses[i];
-		}
+	IBK_ASSERT(m_externalTemperatureRef != nullptr);
+	const double externalTemperature = *m_externalTemperatureRef;
+	for(unsigned int i = 0; i < m_nVolumes; ++i) {
+		// calculate heat loss with given parameters
+		m_heatLosses[i] = m_thermalTransmittance * (m_temperatures[i] - externalTemperature) * m_nParallelPipes;
+		// sum up heat losses
+		m_heatLoss += m_heatLosses[i];
 	}
 }
 
