@@ -32,27 +32,22 @@ void FMIInputOutput::setup(const NANDRAD::Project & prj) {
 	m_fmiDescription = &prj.m_fmiDescription;
 
 	// check size of results vector
-	unsigned int nResults = 0;
-	for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_variables) {
-		if(variable.m_inputVariable)
-			++nResults;
-	}
+	unsigned int nResults = m_fmiDescription->m_inputVariables.size();
 	// resize results vector
 	m_results.resize(nResults);
 	// resize input value references
 	// set all output quantities as input references
 	unsigned int resultIndex = 0;
-	for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_variables) {
-		if(variable.m_inputVariable) {
-			// declare FMI input value references as results
-			m_inputValueRefs[variable.m_fmiValueRef] = &m_results[resultIndex];
-			// inputs are stored as results inside container
-			++resultIndex;
-		}
-		else {
-			// store reference
-			m_outputValueRefs[variable.m_fmiValueRef] = nullptr;
-		}
+
+	for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_inputVariables) {
+		// declare FMI input value references as results
+		m_FMIInputValueRefs[variable.m_fmiValueRef] = &m_results[resultIndex];
+		// inputs are stored as results inside container
+		++resultIndex;
+	}
+	for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_outputVariables) {
+		// store reference
+		m_FMIOutputValueRefs[variable.m_fmiValueRef] = nullptr;
 	}
 }
 
@@ -70,14 +65,12 @@ const double * FMIInputOutput::resolveResultReference(const NANDRAD_MODEL::Input
 {
 	IBK_ASSERT(m_fmiDescription != nullptr);
 	// no fmi variables
-	if(m_fmiDescription->m_variables.empty())
+	if(m_fmiDescription->m_inputVariables.empty())
 		return nullptr;
 
 	// search for value reference inside fmi descriptions:
 	// we create a FMIVariable and search for an identic type inside fmi descriptions
 	NANDRAD::FMIVariableDefinition compVariable;
-	// we only request inputs
-	compVariable.m_inputVariable = true;
 	// copy data from input reference
 	compVariable.m_objectID = valueRef.m_id;
 	compVariable.m_varName = valueRef.m_name.m_name;
@@ -87,24 +80,26 @@ const double * FMIInputOutput::resolveResultReference(const NANDRAD_MODEL::Input
 
 	// search inside container
 	unsigned int resultIndex = 0;
-	for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_variables) {
+	std::string fmiUnit;
+	for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_inputVariables) {
 		if(variable.sameModelVarAs(compVariable)) {
+			fmiUnit = variable.m_unit;
 			break;
 		}
 		// update index
-		if(variable.m_inputVariable)
-			++resultIndex;
+		++resultIndex;
 	}
 
 	// not found
-	if(resultIndex == m_fmiDescription->m_variables.size())
+	if(resultIndex == m_fmiDescription->m_inputVariables.size())
 		return nullptr;
 
 	// copy quantity description
 	quantityDesc.m_id = valueRef.m_id;
 	quantityDesc.m_name = valueRef.m_name.m_name;
 	quantityDesc.m_referenceType = valueRef.m_referenceType;
-	// TODO: add description
+	quantityDesc.m_unit = fmiUnit;
+
 
 	// return suitable value reference
 	return &m_results[resultIndex];
@@ -115,17 +110,14 @@ void FMIInputOutput::inputReferences(std::vector<InputReference> & inputRefs) co
 
 	IBK_ASSERT(m_fmiDescription != nullptr);
 	// no fmi variables
-	if(m_fmiDescription->m_variables.empty())
+	if(m_fmiDescription->m_outputVariables.empty())
 		return;
 
 	// input references sorted via id
 	std::map<unsigned int, InputReference> inputRefsMap;
 
 	// set all output quantities as input references
-	for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_variables) {
-		if(variable.m_inputVariable) {
-			continue;
-		}
+	for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_outputVariables) {
 		// fill input reference
 		InputReference inputRef;
 		// copy data from input reference
@@ -154,8 +146,8 @@ void FMIInputOutput::setInputValueRefs(const std::vector<QuantityDescription> & 
 	FUNCID(FMIInputOutput::setInputValueRefs);
 
 	// fill value references according to id
-	IBK_ASSERT(m_outputValueRefs.size() == resultValueRefs.size());
-	std::map<unsigned int, const double*>::iterator valueRefIt = m_outputValueRefs.begin();
+	IBK_ASSERT(m_FMIOutputValueRefs.size() == resultValueRefs.size());
+	std::map<unsigned int, const double*>::iterator valueRefIt = m_FMIOutputValueRefs.begin();
 
 	for(unsigned int i = 0; i < resultValueRefs.size(); ++i, ++valueRefIt)
 		valueRefIt->second = resultValueRefs[i];
@@ -169,11 +161,7 @@ void FMIInputOutput::setInputValueRefs(const std::vector<QuantityDescription> & 
 
 		bool found = false;
 
-		for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_variables) {
-			// skip inputs
-			if(variable.m_inputVariable) {
-				continue;
-			}
+		for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_outputVariables) {
 			// mismatching name
 			if(variable.m_varName != resDesc.m_name)
 				continue;
@@ -188,24 +176,24 @@ void FMIInputOutput::setInputValueRefs(const std::vector<QuantityDescription> & 
 }
 
 
-void FMIInputOutput::setInputValue(unsigned int varID, double value)
+void FMIInputOutput::setFMIInputValue(unsigned int varID, double value)
 {
 	std::map<unsigned int, double*>::iterator inputVarIt =
-			m_inputValueRefs.find(varID);
+			m_FMIInputValueRefs.find(varID);
 	// non-existent variable id is a progammer error (error in FMU export)
-	IBK_ASSERT(inputVarIt != m_inputValueRefs.end());
+	IBK_ASSERT(inputVarIt != m_FMIInputValueRefs.end());
 	IBK_ASSERT(inputVarIt->second != nullptr);
 	// set value
 	*inputVarIt->second = value;
 }
 
 
-void FMIInputOutput::getOutputValue(unsigned int varID, double & value) const
+void FMIInputOutput::getFMIOutputValue(unsigned int varID, double & value) const
 {
 	std::map<unsigned int, const double*>::const_iterator outputVarIt =
-			m_outputValueRefs.find(varID);
+			m_FMIOutputValueRefs.find(varID);
 	// non-existent variable id is a progammer error (error in FMU export)
-	IBK_ASSERT(outputVarIt != m_outputValueRefs.end());
+	IBK_ASSERT(outputVarIt != m_FMIOutputValueRefs.end());
 	IBK_ASSERT(outputVarIt->second != nullptr);
 	// get value
 	value = *outputVarIt->second;

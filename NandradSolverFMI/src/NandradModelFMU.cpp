@@ -41,7 +41,7 @@ void NandradModelFMU::setReal(int varID, double value) {
 		return;
 
 	try {
-		m_fmiInputOutput->setInputValue((unsigned int) varID, value);
+		m_fmiInputOutput->setFMIInputValue((unsigned int) varID, value);
 	}
 	catch(IBK::Exception &ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Error setting input value for quantity with FMI id %1!")
@@ -70,7 +70,7 @@ void NandradModelFMU::getReal(int varID, double & value) {
 	FUNCID(NandradModelFMU::getReal);
 	IBK_ASSERT(m_fmiInputOutput != nullptr);
 	try {
-		m_fmiInputOutput->getOutputValue((unsigned int) varID, value);
+		m_fmiInputOutput->getFMIOutputValue((unsigned int) varID, value);
 	}
 	catch(IBK::Exception &ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Error retrieving output value for quantity with FMI id %1!")

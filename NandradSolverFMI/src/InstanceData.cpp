@@ -39,7 +39,8 @@
 #include <IBK_Time.h>
 
 
-const char * const InstanceDataCommon::GUID = "{471a3b52-4923-44d8-ab4b-fcdb813c8465}";
+const char * const InstanceDataCommon::GUID ="{471a3b52-4923-44d8-ab4b-fcdb813c1244}";
+		//"{471a3b52-4923-44d8-ab4b-fcdb813c8465}";
 
 const char * const PROGRAM_INFO =
 	"NANDRAD Solver Functional Mock-Up Interface\n"

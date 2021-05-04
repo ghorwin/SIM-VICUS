@@ -92,10 +92,10 @@ public:
 	// *** Other public member functions
 
 	/*! Sets a new input value for a given single id number. */
-	void setInputValue(unsigned int varID, double value);
+	void setFMIInputValue(unsigned int varID, double value);
 
 	/*! Gets output value for a given single id number. */
-	void getOutputValue(unsigned int varID, double &value) const;
+	void getFMIOutputValue(unsigned int varID, double &value) const;
 
 	/*! Retrieves reference pointer to a requested input reference.
 
@@ -125,13 +125,13 @@ public:
 
 private:
 
-	/*! Stored value references for output quantities (pointers to result variables exported via FMI),
-		sorted via fmi id number. */
-	std::map<unsigned int, const double *>		m_outputValueRefs;
-
 	/*! Stored value references for input quantities (pointers to internal result variables that contain
 		via FMI imported values), sorted via fmi id number. */
-	std::map<unsigned int, double *>			m_inputValueRefs;
+	std::map<unsigned int, double *>			m_FMIInputValueRefs;
+
+	/*! Stored value references for output quantities (pointers to result variables exported via FMI),
+		sorted via fmi id number. */
+	std::map<unsigned int, const double *>		m_FMIOutputValueRefs;
 
 	/*! Cached current values, updated in setTime().
 		These values will be updated based on cached FMI variable input data.

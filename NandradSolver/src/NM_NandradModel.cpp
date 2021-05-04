@@ -921,9 +921,6 @@ void NandradModel::initFMI() {
 	IBK::IBK_Message(IBK::FormatString("Initializing FMI interface\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK_MSG_INDENT;
 
-	// check validity of the parameter data
-	m_project->m_fmiDescription.checkParameters();
-
 	try {
 		m_fmiInputOutput = new FMIInputOutput;
 		// setup model

@@ -41,14 +41,15 @@ public:
 
 	NANDRAD_READWRITE
 
-	/*! Checks for valid parameters and fills boolean variables.
-	*/
-	void checkParameters();
-
-	/*! Tests if a variable for this model quantity exists already in the variable list.
+	/*! Tests if an input variable for this model quantity exists already in the variable list.
 		Only the NANDRAD model variable properties (name, objectID, vector index/id) are compared.
 	*/
-	bool hasVariable(const FMIVariableDefinition & var) const;
+	bool hasInputVariable(const FMIVariableDefinition & var) const;
+
+	/*! Tests if an output variable for this model quantity exists already in the variable list.
+		Only the NANDRAD model variable properties (name, objectID, vector index/id) are compared.
+	*/
+	bool hasOutputVariable(const FMIVariableDefinition & var) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -62,8 +63,10 @@ public:
 	*/
 	IBK::Path							m_FMUPath;								// XML:E
 
-	/*! Holds all variable definitions. */
-	std::vector<FMIVariableDefinition>	m_variables;							// XML:E
+	/*! Holds all input variable definitions. */
+	std::vector<FMIVariableDefinition>	m_inputVariables;							// XML:E
+	/*! Holds all output variable definitions. */
+	std::vector<FMIVariableDefinition>	m_outputVariables;							// XML:E
 };
 
 } // namespace NANDRAD

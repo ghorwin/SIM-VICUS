@@ -151,18 +151,17 @@ void NandradFMUGeneratorWidget::updateFMUVariableTables() {
 
 	m_ui->tableWidgetInputVars->setRowCount(0);
 	m_ui->tableWidgetOutputVars->setRowCount(0);
-	for (unsigned int i = 0; i<m_project.m_fmiDescription.m_variables.size(); ++i) {
-		const NANDRAD::FMIVariableDefinition & var = m_project.m_fmiDescription.m_variables[i];
-		if (var.m_inputVariable) {
-			// check if variable exists
-			bool exists = (m_modelInputVariables.find(QString::fromStdString(var.m_varName)) != m_modelInputVariables.end());
-			appendVariableEntry(i, m_ui->tableWidgetInputVars, exists);
-		}
-		else {
-			// check if variable exists
-			bool exists = (m_modelOutputVariables.find(QString::fromStdString(var.m_varName)) != m_modelOutputVariables.end());
-			appendVariableEntry(i, m_ui->tableWidgetOutputVars, exists);
-		}
+	for (unsigned int i = 0; i<m_project.m_fmiDescription.m_inputVariables.size(); ++i) {
+		const NANDRAD::FMIVariableDefinition & var = m_project.m_fmiDescription.m_inputVariables[i];
+		// check if variable exists
+		bool exists = (m_modelInputVariables.find(QString::fromStdString(var.m_varName)) != m_modelInputVariables.end());
+		appendVariableEntry(i, m_ui->tableWidgetInputVars, exists);
+	}
+	for (unsigned int i = 0; i<m_project.m_fmiDescription.m_outputVariables.size(); ++i) {
+		const NANDRAD::FMIVariableDefinition & var = m_project.m_fmiDescription.m_outputVariables[i];
+		// check if variable exists
+		bool exists = (m_modelOutputVariables.find(QString::fromStdString(var.m_varName)) != m_modelOutputVariables.end());
+		appendVariableEntry(i, m_ui->tableWidgetOutputVars, exists);
 	}
 
 	m_ui->tableWidgetInputVars->resizeColumnsToContents();
@@ -217,7 +216,13 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 
 
 void NandradFMUGeneratorWidget::appendVariableEntry(unsigned int index, QTableWidget * tableWidget, bool exists) {
-	const NANDRAD::FMIVariableDefinition & var = m_project.m_fmiDescription.m_variables[index];
+	NANDRAD::FMIVariableDefinition var;
+	if(index < m_project.m_fmiDescription.m_inputVariables.size())
+		var = m_project.m_fmiDescription.m_inputVariables[index];
+	else {
+		unsigned int outputIndex = index - m_project.m_fmiDescription.m_inputVariables.size();
+		var = m_project.m_fmiDescription.m_outputVariables[outputIndex];
+	}
 
 	tableWidget->blockSignals(true);
 	// Important: disable sorting of table, otherwise index access might be complicated
@@ -312,8 +317,6 @@ void NandradFMUGeneratorWidget::on_toolButtonAddInputVariable_clicked() {
 
 	NANDRAD::FMIVariableDefinition var;
 	var.m_varName = "Zone.AirTemperature";
-	var.m_causality = "input";
-	var.m_inputVariable = true;
 	var.m_objectID = 1;
 	var.m_unit = "K";
 	var.m_vectorIndex = NANDRAD::INVALID_ID; // scalar variable
@@ -322,10 +325,10 @@ void NandradFMUGeneratorWidget::on_toolButtonAddInputVariable_clicked() {
 	var.m_fmiTypeName = "Temperature";
 	var.m_fmiValueRef = 160;
 
-	m_project.m_fmiDescription.m_variables.push_back(var);
+	m_project.m_fmiDescription.m_inputVariables.push_back(var);
 
 	// now also add an entry into the table
-	appendVariableEntry(m_project.m_fmiDescription.m_variables.size()-1, m_ui->tableWidgetInputVars, true);
+	appendVariableEntry(m_project.m_fmiDescription.m_inputVariables.size()-1, m_ui->tableWidgetInputVars, true);
 }
 
 
@@ -334,9 +337,9 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveInputVariable_clicked() {
 	Q_ASSERT(row != -1);
 	QTableWidgetItem * item = m_ui->tableWidgetInputVars->item(row, 0);
 	unsigned int varIndex = item->data(Qt::UserRole).toUInt();
-	Q_ASSERT(varIndex < m_project.m_fmiDescription.m_variables.size());
+	Q_ASSERT(varIndex < m_project.m_fmiDescription.m_inputVariables.size());
 
-	m_project.m_fmiDescription.m_variables.erase(m_project.m_fmiDescription.m_variables.begin()+varIndex);
+	m_project.m_fmiDescription.m_inputVariables.erase(m_project.m_fmiDescription.m_inputVariables.begin()+varIndex);
 	m_ui->tableWidgetInputVars->removeRow(row);
 //	updateFMUVariableTables();
 	row = qMin(row, m_ui->tableWidgetInputVars->rowCount()-1);
@@ -349,9 +352,9 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveOutputVariable_clicked() {
 	Q_ASSERT(row != -1);
 	QTableWidgetItem * item = m_ui->tableWidgetOutputVars->item(row, 0);
 	unsigned int varIndex = item->data(Qt::UserRole).toUInt();
-	Q_ASSERT(varIndex < m_project.m_fmiDescription.m_variables.size());
+	Q_ASSERT(varIndex < m_project.m_fmiDescription.m_outputVariables.size());
 
-	m_project.m_fmiDescription.m_variables.erase(m_project.m_fmiDescription.m_variables.begin()+varIndex);
+	m_project.m_fmiDescription.m_outputVariables.erase(m_project.m_fmiDescription.m_outputVariables.begin()+varIndex);
 	m_ui->tableWidgetOutputVars->removeRow(row);
 //	updateFMUVariableTables();
 	row = qMin(row, m_ui->tableWidgetOutputVars->rowCount()-1);
@@ -369,10 +372,14 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerateAllVariables_clicked() {
 
 	unsigned int valRef = 100;
 	// get lowest possible unique value ref
-	for (const NANDRAD::FMIVariableDefinition & var : m_project.m_fmiDescription.m_variables)
+	for (const NANDRAD::FMIVariableDefinition & var : m_project.m_fmiDescription.m_inputVariables)
+		valRef = std::max(valRef, var.m_fmiValueRef+1);
+	for (const NANDRAD::FMIVariableDefinition & var : m_project.m_fmiDescription.m_outputVariables)
 		valRef = std::max(valRef, var.m_fmiValueRef+1);
 
-	std::vector<NANDRAD::FMIVariableDefinition> newVars;
+
+	std::vector<NANDRAD::FMIVariableDefinition> newInputVars;
+	std::vector<NANDRAD::FMIVariableDefinition> newOutputVars;
 
 	// first input variables
 	for (const auto & var : m_modelInputVariables) {
@@ -382,8 +389,6 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerateAllVariables_clicked() {
 
 		for (const unsigned int & id : var.second.m_objectIDs) {
 			NANDRAD::FMIVariableDefinition fmiVar;
-			fmiVar.m_causality = "input";
-			fmiVar.m_inputVariable = true;
 			fmiVar.m_varName = var.first.toStdString();
 			fmiVar.m_objectID = id;
 			fmiVar.m_fmiValueRef = ++valRef;
@@ -394,8 +399,8 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerateAllVariables_clicked() {
 				fmiVar.m_vectorIndex = NANDRAD::INVALID_ID;
 				fmiVar.m_fmiVarName = IBK::FormatString("%1(%2).%3")
 						.arg(varParts[0]).arg(id).arg(varParts[1]).str();
-				if (!m_project.m_fmiDescription.hasVariable(fmiVar))
-					newVars.push_back(fmiVar);
+				if (!m_project.m_fmiDescription.hasInputVariable(fmiVar))
+					newInputVars.push_back(fmiVar);
 			}
 			else {
 				for (const unsigned int & vectorID : var.second.m_vectorIndexes) {
@@ -403,8 +408,8 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerateAllVariables_clicked() {
 					fmiVar.m_fmiVarName = IBK::FormatString("%1(%2).%3(%4)")
 							.arg(varParts[0]).arg(fmiVar.m_objectID)
 							.arg(varParts[1]).arg(vectorID).str();
-					if (!m_project.m_fmiDescription.hasVariable(fmiVar))
-						newVars.push_back(fmiVar);
+					if (!m_project.m_fmiDescription.hasInputVariable(fmiVar))
+						newInputVars.push_back(fmiVar);
 				}
 			}
 		}
@@ -419,8 +424,6 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerateAllVariables_clicked() {
 
 		for (const unsigned int & id : var.second.m_objectIDs) {
 			NANDRAD::FMIVariableDefinition fmiVar;
-			fmiVar.m_causality = "output";
-			fmiVar.m_inputVariable = false;
 			fmiVar.m_varName = var.first.toStdString();
 			fmiVar.m_objectID = id;
 			QString desc;
@@ -431,8 +434,8 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerateAllVariables_clicked() {
 				fmiVar.m_vectorIndex = NANDRAD::INVALID_ID;
 				fmiVar.m_fmiVarName = IBK::FormatString("%1(%2).%3")
 						.arg(varParts[0]).arg(id).arg(varParts[1]).str();
-				if (!m_project.m_fmiDescription.hasVariable(fmiVar))
-					newVars.push_back(fmiVar);
+				if (!m_project.m_fmiDescription.hasOutputVariable(fmiVar))
+					newOutputVars.push_back(fmiVar);
 			}
 			else {
 				for (const unsigned int & vectorID : var.second.m_vectorIndexes) {
@@ -442,15 +445,17 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerateAllVariables_clicked() {
 							.arg(varParts[0]).arg(fmiVar.m_objectID)
 							.arg(varParts[1]).arg(vectorID).str();
 					// add only those new variables to project that do not exist already in variable list
-					if (!m_project.m_fmiDescription.hasVariable(fmiVar))
-						newVars.push_back(fmiVar);
+					if (!m_project.m_fmiDescription.hasOutputVariable(fmiVar))
+						newOutputVars.push_back(fmiVar);
 				}
 			}
 		}
 	}
 
-	m_project.m_fmiDescription.m_variables.insert(m_project.m_fmiDescription.m_variables.end(),
-													   newVars.begin(), newVars.end());
+	m_project.m_fmiDescription.m_inputVariables.insert(m_project.m_fmiDescription.m_inputVariables.end(),
+													   newInputVars.begin(), newInputVars.end());
+	m_project.m_fmiDescription.m_outputVariables.insert(m_project.m_fmiDescription.m_outputVariables.end(),
+													   newOutputVars.begin(), newOutputVars.end());
 	updateFMUVariableTables();
 }
 
@@ -646,16 +651,13 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerate_clicked() {
 
 	int index=1;
 	for (std::vector<NANDRAD::FMIVariableDefinition>::const_iterator
-		 varIt = m_project.m_fmiDescription.m_variables.begin();
-		 varIt != m_project.m_fmiDescription.m_variables.end();
+		 varIt = m_project.m_fmiDescription.m_inputVariables.begin();
+		 varIt != m_project.m_fmiDescription.m_inputVariables.end();
 		 ++varIt, ++index)
 	{
 		const NANDRAD::FMIVariableDefinition & varDef = *varIt;
 		QString varDesc;
-		if (varDef.m_inputVariable)
-			varDesc = INPUT_VAR_TEMPLATE;
-		else
-			varDesc = OUTPUT_VAR_TEMPLATE;
+		varDesc = INPUT_VAR_TEMPLATE;
 		varDesc.replace("${INDEX}", QString("%1").arg(index));
 		varDesc.replace("${NAME}", varDef.m_fmiVarName.c_str());
 		varDesc.replace("${VALUEREF}", QString("%1").arg(index));
@@ -669,9 +671,30 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerate_clicked() {
 		varDesc.replace("${REALVARUNIT}", varDef.m_unit.c_str());
 		units.insert(varDef.m_unit.c_str());
 		modelVariables += varDesc;
-		if (!varDef.m_inputVariable) {
-			modelStructure += QString(" 			<Unknown index=\"%1\"/>\n").arg(index);
-		}
+	}
+
+	for (std::vector<NANDRAD::FMIVariableDefinition>::const_iterator
+		 varIt = m_project.m_fmiDescription.m_outputVariables.begin();
+		 varIt != m_project.m_fmiDescription.m_outputVariables.end();
+		 ++varIt, ++index)
+	{
+		const NANDRAD::FMIVariableDefinition & varDef = *varIt;
+		QString varDesc;
+		varDesc = OUTPUT_VAR_TEMPLATE;
+		varDesc.replace("${INDEX}", QString("%1").arg(index));
+		varDesc.replace("${NAME}", varDef.m_fmiVarName.c_str());
+		varDesc.replace("${VALUEREF}", QString("%1").arg(index));
+		// special handling for differen variable types
+		double startValue = 0;
+		if (varDef.m_unit == "K")		startValue = 293.15;
+		if (varDef.m_unit == "C")		startValue = 23;
+		else if (varDef.m_unit == "%")	startValue = 50;
+		else if (varDef.m_unit == "Pa")	startValue = 101325;
+		varDesc.replace("${STARTVALUE}", QString::number(startValue));
+		varDesc.replace("${REALVARUNIT}", varDef.m_unit.c_str());
+		units.insert(varDef.m_unit.c_str());
+		modelVariables += varDesc;
+		modelStructure += QString(" 			<Unknown index=\"%1\"/>\n").arg(index);
 	}
 
 	// ${MODELVARIABLES}
