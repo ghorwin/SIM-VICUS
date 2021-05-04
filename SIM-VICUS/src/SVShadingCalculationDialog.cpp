@@ -283,8 +283,6 @@ void SVShadingCalculationDialog::on_comboBoxFileType_currentIndexChanged(int ind
 void SVShadingCalculationDialog::calculateShadingFactors() {
 	FUNCID(SVShadingCalculationDialog::calculateShadingFactors);
 
-	// Start calculation
-
 	std::vector<std::vector<IBKMK::Vector3D> > selObst;
 	std::vector<const VICUS::Surface *> selSurf;
 
@@ -292,6 +290,7 @@ void SVShadingCalculationDialog::calculateShadingFactors() {
 	project().selectedSurfaces(m_selSurfaces,VICUS::Project::SG_Building);
 	project().selectedSurfaces(m_selObstacles,VICUS::Project::SG_Obstacle);
 
+	//
 	const NANDRAD::Location &loc = project().m_location;
 
 	const NANDRAD::SimulationParameter &simuPara = project().m_simulationParameter;
@@ -336,7 +335,6 @@ void SVShadingCalculationDialog::calculateShadingFactors() {
 	IBK::Time simTimeStart (startYear.value, startDay.get_value(IBK::Unit("s") ) );
 	IBK::Time simTimeEnd (startYear.value, endDay.get_value(IBK::Unit("s") ) );
 
-	double period;
 	double periodInSec = simTimeStart.secondsUntil(simTimeEnd);
 
 	// we initialize our period

@@ -16,7 +16,8 @@ namespace Ui {
 	class SVShadingCalculationDialog;
 }
 
-/*! Starts shading calculation. */
+/*! The widget holds all data needed for pre calculated shading factors.
+*/
 class SVShadingCalculationDialog : public QDialog {
 	Q_OBJECT
 
@@ -28,11 +29,11 @@ public:
 	enum OutputType {
 		TsvFile,		///< write output to tsv file
 		D6oFile,		///< write output to d6o file
-		D6bFile,			///< write output to d6b file
+		D6bFile,		///< write output to d6b file
 		NUM_OT
 	};
 
-	/*! Defines the specific output type */
+	/*! Defines the detail type */
 	enum DetailType {
 		Fast,			///< fast calculation parameters
 		Detailed,		///< detailed calculation paramtesers
@@ -74,8 +75,11 @@ private:
 
 	void updateTimeFrameEdits();
 
-	/*! Sets the simulation parameters */
+	/*! Sets the simulation parameters grid size and cone deg */
 	void setSimulationParameters(const DetailType &dt);
+
+	/*! Checks if all boundary conditions are set. */
+	bool checkLocationAndPeriodParameters();
 
 
 	Ui::SVShadingCalculationDialog		*m_ui;								///< pointer to UI
