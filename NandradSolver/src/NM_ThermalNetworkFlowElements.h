@@ -27,8 +27,7 @@ public:
 	TNSimplePipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 				  const NANDRAD::HydraulicNetworkComponent & comp,
 				  const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
-				  const NANDRAD::HydraulicFluid & fluid,
-				  const double &TExt);
+				  const NANDRAD::HydraulicFluid & fluid);
 
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
@@ -52,8 +51,15 @@ public:
 		valRefs.push_back(&m_thermalTransmittance);
 	}
 
-	/*! Overloaded from ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
+	/*! Overloaded from ThermalNetworkAbstractFlowElement::setInflowTemperature().
+		This is the actual calculation function.
+	*/
 	void setInflowTemperature(double Tinflow) override;
+
+	/*! Reference to external temperature in K.
+		Set to the result of a temperature-calculating object.
+	*/
+	const double *					m_externalTemperatureRef = nullptr;
 
 private:
 
@@ -108,14 +114,10 @@ private:
 
 	/*! Heat transfer coefficient from outer pipe wall to environment in [W/m2K] */
 	double							m_outerHeatTransferCoefficient = -999;
-
-	/*! Reference to external temperature in K */
-	const double*					m_externalTemperatureRef = nullptr;
-
 };
 
 
-//#define STATIC_PIPE_MODEL_ENABLED
+#define STATIC_PIPE_MODEL_ENABLED
 #ifdef STATIC_PIPE_MODEL_ENABLED
 
 // **** Static Pipe ***
@@ -127,11 +129,15 @@ public:
 	TNStaticPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 				  const NANDRAD::HydraulicNetworkComponent & comp,
 				  const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
-				  const NANDRAD::HydraulicFluid & fluid,
-				  const double &TExt);
+				  const NANDRAD::HydraulicFluid & fluid);
 
 	/*! Overloaded from ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
 	void setInflowTemperature(double Tinflow) override;
+
+	/*! Reference to external temperature in K.
+		Set to the result of a temperature-calculating object.
+	*/
+	const double *					m_externalTemperatureRef = nullptr;
 
 private:
 
@@ -157,10 +163,6 @@ private:
 
 	/*! Heat transfer coefficient from outer pipe wall to environment in [W/m2K] */
 	double							m_outerHeatTransferCoefficient;
-
-	/*! Reference to external temperature [K] */
-	const double*					m_externalTemperatureRef = nullptr;
-
 };
 #endif // STATIC_PIPE_MODEL_ENABLED
 
@@ -174,8 +176,7 @@ public:
 	TNDynamicPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 				  const NANDRAD::HydraulicNetworkComponent & comp,
 				  const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
-				  const NANDRAD::HydraulicFluid & fluid,
-				  const double &TExt);
+				  const NANDRAD::HydraulicFluid & fluid);
 
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
@@ -236,6 +237,9 @@ public:
 	virtual void dependencies(const double *ydot, const double *y,
 							  const double *mdot, const double* TInflowLeft, const double*TInflowRight,
 							  std::vector<std::pair<const double *, const double *> > & ) const override;
+
+	/*! Reference to external temperature in [K] */
+	const double*					m_externalTemperatureRef = nullptr;
 
 private:
 
@@ -305,10 +309,6 @@ private:
 
 	/*! Total thermal resistance in [W/K]*/
 	double							m_thermalTransmittance = -999;
-
-	/*! Reference to external temperature in [K] */
-	const double*					m_externalTemperatureRef = nullptr;
-
 };
 
 
@@ -388,7 +388,7 @@ public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	TNPumpWithPerformanceLoss(const NANDRAD::HydraulicFluid & fluid,
 							  const NANDRAD::HydraulicNetworkComponent & comp,
-							  const double &pRef);
+							  double pRef);
 
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
@@ -406,8 +406,8 @@ public:
 	void setInflowTemperature(double Tinflow) override;
 
 private:
-	/*! Reference to pressure head [Pa] */
-	const double *					m_pressureHeadRef = nullptr;
+	/*! Constant pressure head [Pa] */
+	double							m_pressureHead = 888;
 
 	/*! Pump efficiency [0...1] */
 	double							m_pumpEfficiency = -999;
@@ -427,8 +427,7 @@ class TNHeatPumpIdealCarnot : public ThermalNetworkAbstractFlowElementWithHeatLo
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	TNHeatPumpIdealCarnot(const NANDRAD::HydraulicFluid & fluid,
-							const NANDRAD::HydraulicNetworkComponent & comp,
-							const double &QExt, const std::vector<double> &parameterRefs);
+							const NANDRAD::HydraulicNetworkComponent & comp);
 
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
@@ -444,6 +443,9 @@ public:
 
 	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
 	void setInflowTemperature(double Tinflow) override;
+
+	/*! Sets references to externally calculated values. */
+	void setExternalReferences(const double * heatFluxCondenserRef, const double * condenserMeanTemperature);
 
 private:
 	/*! Reference to external heat loss in [W] */
@@ -485,9 +487,7 @@ public:
 class TNElementWithExternalHeatLoss : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	TNElementWithExternalHeatLoss(const NANDRAD::HydraulicFluid & fluid,
-				  double fluidVolume,
-				  const double &QExt);
+	TNElementWithExternalHeatLoss(const NANDRAD::HydraulicFluid & fluid, double fluidVolume);
 
 	/*! Function for retrieving heat fluxes out of the flow element.*/
 	void internalDerivatives(double *ydot);
