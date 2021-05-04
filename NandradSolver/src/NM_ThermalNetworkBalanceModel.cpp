@@ -445,12 +445,19 @@ void ThermalNetworkBalanceModel::setInputValueRefs(const std::vector<QuantityDes
 	for (unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
 		const FlowElementProperties &elemProp = m_flowElementProperties[i];
 
-		// do we have a zone temperature dependence
+		// do we have a zone temperature dependence?
 		if (elemProp.m_zoneProperties != nullptr) {
 			ThermalNetworkAbstractFlowElementWithHeatLoss *fe =
 					dynamic_cast<ThermalNetworkAbstractFlowElementWithHeatLoss *>(m_statesModel->m_p->m_flowElements[i]);
 			IBK_ASSERT(fe != nullptr);
 			fe->m_heatExchangeValueRef = elemProp.m_zoneProperties->m_zoneTemperatureRef;
+		}
+		// or do we have an active layer temperature dependence?
+		else if (elemProp.m_activeLayerProperties != nullptr) {
+			ThermalNetworkAbstractFlowElementWithHeatLoss *fe =
+					dynamic_cast<ThermalNetworkAbstractFlowElementWithHeatLoss *>(m_statesModel->m_p->m_flowElements[i]);
+			IBK_ASSERT(fe != nullptr);
+			fe->m_heatExchangeValueRef = elemProp.m_activeLayerProperties->m_activeLayerTemperatureRef;
 		}
 
 	}
