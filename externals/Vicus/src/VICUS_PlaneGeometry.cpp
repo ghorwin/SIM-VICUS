@@ -159,16 +159,35 @@ void PlaneGeometry::triangulate() {
 
 	// now the generic code
 
+	const std::vector<IBKMK::Vector2D> &parentPoly = m_polygon.polyline().vertexes();
 	// process all holes and check if they are valid (i.e. their polygons do not intersect our polygons
-	std::vector<unsigned int> validPolygons;
+	std::vector<unsigned int> validPolygons, invalidPolygons;
 	for (unsigned int i=0; i<m_holes.size(); ++i) {
 		const Polygon2D & p2 = m_holes[i];
+		const std::vector<IBKMK::Vector2D> &subSurfacePoly = m_holes[i].vertexes();
+
 		// check if any of the holes are invalid
 		/// TODO Stephan/Dirk
 
 		/* erster Test: Prüfe alle Mittelpunkte der Hole-Strecken auf PointInPolygon mit der Outer-Bound.
 			Falls true --> Hole is invalid
+		*/
 
+		bool valid = true;
+
+		unsigned int pointCountHole = subSurfacePoly.size();
+
+		for(unsigned int j=0; j<pointCountHole; ++j){
+			if(IBKMK::pointInPolygon(parentPoly, subSurfacePoly[j]) == -1){
+				valid = false;
+				break;
+			}
+		}
+
+		if(!valid)
+			continue;
+
+		/*
 			Zweiter Test:
 			Schnitt aller Strecken des Holes mit allen Strecken der Outerbound
 			Falls Schnittpunkt existiert und nicht gleich den Punkten der Outerbound-Strecke ist
@@ -177,7 +196,21 @@ void PlaneGeometry::triangulate() {
 			Falls es ein invalides Hole is weghauen?
 		*/
 
-		validPolygons.push_back(i); // mark as valid
+		for(unsigned int j=0; j<pointCountHole; ++j){
+			const IBKMK::Vector2D &point1 = subSurfacePoly[j];
+			const IBKMK::Vector2D &point2 = subSurfacePoly[(j+1)%pointCountHole];
+			IBKMK::Vector2D intersectP;
+			if(IBKMK::intersectsLine2D(parentPoly, point1, point2, intersectP)){
+				if(		!(IBK::nearly_equal<3>(intersectP.distanceTo(point1),0) ||
+						IBK::nearly_equal<3>(intersectP.distanceTo(point2),0) )){
+					valid = false;
+					break;
+				}
+			}
+
+		}
+		if(valid)
+			validPolygons.push_back(i); // mark as valid
 	}
 
 	// now populate global vertex vector and generate 2D polygon
