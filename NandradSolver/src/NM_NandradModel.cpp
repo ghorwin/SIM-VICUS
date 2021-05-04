@@ -126,7 +126,6 @@ NandradModel::~NandradModel() {
 	}
 
 	delete m_schedules;
-	delete m_fmiInputOutput;
 	delete m_outputHandler;
 	m_outputHandler = nullptr;
 	// note: m_loads is handled just as any other model and cleaned up as part of the m_modelContainer cleanup above
@@ -921,10 +920,16 @@ void NandradModel::initFMI() {
 	IBK::IBK_Message(IBK::FormatString("Initializing FMI interface\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK_MSG_INDENT;
 
+	// check validity of the parameter data
+	m_project->m_fmiDescription.checkParameters();
+
 	try {
+		// create FMIInputOutput model
 		m_fmiInputOutput = new FMIInputOutput;
 		// setup model
 		m_fmiInputOutput->setup(*m_project);
+		// insert into model container
+		m_modelContainer.push_back(m_fmiInputOutput);
 		// insert into time model container
 		m_timeModelContainer.push_back(m_fmiInputOutput);
 

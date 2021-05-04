@@ -39,6 +39,9 @@ public:
 
 	NANDRAD_READWRITE
 
+	/*! Checks variable names. */
+	void checkParameters();
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	bool operator<(const FMIVariableDefinition & other) const {

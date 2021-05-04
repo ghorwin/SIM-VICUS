@@ -24,6 +24,8 @@
 #include "NANDRAD_FMIVariableDefinition.h"
 #include "NANDRAD_Project.h"
 
+#include <IBK_StringUtils.h>
+
 namespace NANDRAD_MODEL {
 
 
@@ -73,7 +75,8 @@ const double * FMIInputOutput::resolveResultReference(const NANDRAD_MODEL::Input
 	NANDRAD::FMIVariableDefinition compVariable;
 	// copy data from input reference
 	compVariable.m_objectID = valueRef.m_id;
-	compVariable.m_varName = valueRef.m_name.m_name;
+	compVariable.m_varName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", valueRef.m_referenceType);
+	compVariable.m_varName += std::string(".") + valueRef.m_name.m_name;
 	// copy index
 	if(valueRef.m_name.m_index != -1)
 		compVariable.m_vectorIndex = (unsigned int) valueRef.m_name.m_index;
@@ -122,7 +125,13 @@ void FMIInputOutput::inputReferences(std::vector<InputReference> & inputRefs) co
 		InputReference inputRef;
 		// copy data from input reference
 		inputRef.m_id = variable.m_objectID;
-		inputRef.m_name.m_name = variable.m_varName;
+		// split variable name into name and reference type
+		std::vector<std::string> tokens;
+		IBK_ASSERT(IBK::explode_in2(variable.m_varName, tokens, '.') == 2);
+		// set name and reference type
+		inputRef.m_name.m_name = tokens[0];
+		inputRef.m_referenceType = (NANDRAD::ModelInputReference::referenceType_t)
+				NANDRAD::KeywordList::Enumeration("ModelInputReference::referenceType_t", tokens[0]);
 		// copy index
 		if(variable.m_vectorIndex != NANDRAD::INVALID_ID)
 			inputRef.m_name.m_index = (int) variable.m_vectorIndex;
@@ -160,6 +169,8 @@ void FMIInputOutput::setInputValueRefs(const std::vector<QuantityDescription> & 
 								 arg(resDesc.m_name), FUNC_ID);
 
 		bool found = false;
+		std::string varName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", resDesc.m_referenceType);
+		varName += std::string(".") + resDesc.m_name;
 
 		for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_outputVariables) {
 			// mismatching name

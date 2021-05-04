@@ -24,6 +24,17 @@
 namespace NANDRAD {
 
 
+void FMIDescription::checkParameters()
+{
+	// check inpuzt and output variable definition
+	for(FMIVariableDefinition &var : m_inputVariables) {
+		var.checkParameters();
+	}
+	for(FMIVariableDefinition &var : m_outputVariables) {
+		var.checkParameters();
+	}
+}
+
 bool FMIDescription::hasInputVariable(const FMIVariableDefinition & var) const {
 	for (const FMIVariableDefinition & v : m_inputVariables)
 		if (v.sameModelVarAs(var)) return true;

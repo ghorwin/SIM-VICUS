@@ -41,6 +41,9 @@ public:
 
 	NANDRAD_READWRITE
 
+	/*! Checks all input and output variables. */
+	void checkParameters();
+
 	/*! Tests if an input variable for this model quantity exists already in the variable list.
 		Only the NANDRAD model variable properties (name, objectID, vector index/id) are compared.
 	*/
