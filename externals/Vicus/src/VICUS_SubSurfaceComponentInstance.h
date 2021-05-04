@@ -1,25 +1,25 @@
-#ifndef VICUS_ComponentInstanceH
-#define VICUS_ComponentInstanceH
+#ifndef VICUS_SubSurfaceComponentInstanceH
+#define VICUS_SubSurfaceComponentInstanceH
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
 
 namespace VICUS {
 
-class Surface;
+class SubSurface;
 
-/*! Defines a construction/component of the building.
+/*! Defines an embedded object (a subsurface).
 	It is basically just a connection data member and does not hold any
 	physical parameters itself.
 */
-class ComponentInstance {
+class SubSurfaceComponentInstance {
 public:
 	/*! Default c'tor. */
-	ComponentInstance() {}
+	SubSurfaceComponentInstance() {}
 	/*! Initializing constructor. */
-	ComponentInstance(unsigned int id,
+	SubSurfaceComponentInstance(unsigned int id,
 					  unsigned int componentID, unsigned int sideASurfaceID, unsigned int sideBSurfaceID)
-		: m_id(id), m_componentID(componentID), m_sideASurfaceID(sideASurfaceID), m_sideBSurfaceID(sideBSurfaceID)
+		: m_id(id), m_subSurfaceComponentID(componentID), m_sideASurfaceID(sideASurfaceID), m_sideBSurfaceID(sideBSurfaceID)
 	{}
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -30,13 +30,13 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! ID of component instance (will be used for NANDRAD::ConstructionInstance). */
-	unsigned int						m_id = INVALID_ID;					// XML:A:required
+	unsigned int						m_id = INVALID_ID;						// XML:A:required
 	/*! ID of referenced component. */
-	unsigned int						m_componentID = INVALID_ID;			// XML:A
+	unsigned int						m_subSurfaceComponentID = INVALID_ID;	// XML:A
 	/*! ID of surface at side A (optional, ID = 0 reserved for "ambient", INVALID_ID means adiabatic). */
-	unsigned int						m_sideASurfaceID = INVALID_ID;		// XML:A
+	unsigned int						m_sideASurfaceID = INVALID_ID;			// XML:A
 	/*! ID of surface at side B (optional, ID = 0 reserved for "ambient", INVALID_ID means adiabatic). */
-	unsigned int						m_sideBSurfaceID = INVALID_ID;		// XML:A
+	unsigned int						m_sideBSurfaceID = INVALID_ID;			// XML:A
 
 
 	// *** RUNTIME VARIABLES ***
@@ -44,11 +44,11 @@ public:
 	// These pointers are updated in VICUS::Project::updatePointers() and can be used
 	// to quicky travers the data model.
 
-	VICUS::Surface		*m_sideASurface		= nullptr;
-	VICUS::Surface		*m_sideBSurface		= nullptr;
+	VICUS::SubSurface					*m_sideASubSurface		= nullptr;
+	VICUS::SubSurface					*m_sideBSubSurface		= nullptr;
 };
 
 } // namespace VICUS
 
 
-#endif // VICUS_ComponentInstanceH
+#endif // VICUS_SubSurfaceComponentInstanceH

@@ -406,7 +406,7 @@ void Project::updatePointers() {
 				for (VICUS::Surface & s : r.m_surfaces) {
 					s.m_componentInstance = nullptr;
 					for (VICUS::SubSurface & sub : const_cast<std::vector<VICUS::SubSurface> &>(s.subSurfaces()) )
-						sub.m_componentInstance = nullptr;
+						sub.m_subSurfaceComponentInstance = nullptr;
 				}
 
 	// update pointers
@@ -433,6 +433,35 @@ void Project::updatePointers() {
 			}
 			else {
 				ci.m_sideBSurface->m_componentInstance = &ci;
+			}
+		}
+
+	}
+
+	// update pointers in subsurfaces
+	for (VICUS::SubSurfaceComponentInstance & ci : m_subSurfaceComponentInstances) {
+		// lookup surfaces
+		ci.m_sideASubSurface = subSurfaceByID(ci.m_sideASurfaceID);
+		if (ci.m_sideASubSurface != nullptr) {
+			// check that no two components reference the same surface
+			if (ci.m_sideASubSurface->m_subSurfaceComponentInstance != nullptr) {
+				IBK::IBK_Message(IBK::FormatString("Sub-Surface %1 is referenced by multiple component instances!")
+								 .arg(ci.m_sideASurfaceID), IBK::MSG_ERROR, FUNC_ID);
+			}
+			else {
+				ci.m_sideASubSurface->m_subSurfaceComponentInstance = &ci;
+			}
+		}
+
+		ci.m_sideBSubSurface = subSurfaceByID(ci.m_sideBSurfaceID);
+		if (ci.m_sideBSubSurface != nullptr) {
+			// check that no two components reference the same surface
+			if (ci.m_sideBSubSurface->m_subSurfaceComponentInstance != nullptr) {
+				IBK::IBK_Message(IBK::FormatString("Sub-Surface %1 is referenced by multiple component instances!")
+								 .arg(ci.m_sideBSurfaceID), IBK::MSG_ERROR, FUNC_ID);
+			}
+			else {
+				ci.m_sideBSubSurface->m_subSurfaceComponentInstance = &ci;
 			}
 		}
 
@@ -489,6 +518,20 @@ Surface * Project::surfaceByID(unsigned int surfaceID) {
 					if (s.m_id == surfaceID)
 						return &s;
 				}
+	return nullptr;
+}
+
+
+SubSurface * Project::subSurfaceByID(unsigned int surfID) {
+	for (Building & b : m_buildings)
+		for (BuildingLevel & bl : b.m_buildingLevels)
+			for (Room & r : bl.m_rooms)
+				for (Surface & s : r.m_surfaces)
+					for (const SubSurface & sub : s.subSurfaces())
+					{
+						if (sub.m_id == surfID)
+							return const_cast<SubSurface*>(&sub);
+					}
 	return nullptr;
 }
 

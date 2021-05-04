@@ -14,7 +14,7 @@
 
 namespace VICUS {
 
-class ComponentInstance;
+class SubSurfaceComponentInstance;
 
 /*! Represents a SubSurface and its associated properties. */
 class SubSurface : public Object {
@@ -66,13 +66,12 @@ public:
 	*/
 	mutable QColor						m_color; // Note: mutable so that it can be modified on const project
 
-	/*! Runtime-only pointer to the associated component instance (or nullptr, if SubSurface
+	/*! Runtime-only pointer to the associated subsurface component instance (or nullptr, if SubSurface
 		is not yet connected to any component. This would be considered an incomplete
-		data model.
+		data model).
 		The pointer is updated in VICUS::Project::updatePointers().
 	*/
-	ComponentInstance					*m_componentInstance = nullptr;
-
+	SubSurfaceComponentInstance			*m_subSurfaceComponentInstance = nullptr;
 };
 
 } // namespace VICUS
