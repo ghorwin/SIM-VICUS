@@ -27,6 +27,7 @@ TiXmlElement * Surface::writeXML(TiXmlElement * parent) const {
 
 
 void Surface::setPolygon3D(const Polygon3D & polygon) {
+	m_polygon3D = polygon;
 	m_geometry.setPolygon(polygon);
 }
 
