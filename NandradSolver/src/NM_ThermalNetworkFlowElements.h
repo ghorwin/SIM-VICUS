@@ -56,10 +56,6 @@ public:
 	*/
 	void setInflowTemperature(double Tinflow) override;
 
-	/*! Sets the reference to external temperature. */
-	void setHeatExchangeValueRef(const double * heatExchangeValueRef) override {
-		m_externalTemperatureRef = heatExchangeValueRef;
-	}
 
 private:
 
@@ -114,11 +110,6 @@ private:
 
 	/*! Heat transfer coefficient from outer pipe wall to environment in [W/m2K] */
 	double							m_outerHeatTransferCoefficient = -999;
-
-	/*! Reference to external temperature in K.
-		Set to the result of a temperature-calculating object.
-	*/
-	const double *					m_externalTemperatureRef = nullptr;
 };
 
 
@@ -237,11 +228,6 @@ public:
 							  const double *mdot, const double* TInflowLeft, const double*TInflowRight,
 							  std::vector<std::pair<const double *, const double *> > & ) const override;
 
-	/*! Sets the reference to external temperature. */
-	void setHeatExchangeValueRef(const double * heatExchangeValueRef) override {
-		m_externalTemperatureRef = heatExchangeValueRef;
-	}
-
 private:
 
 	/*! Number of discretization volumes */
@@ -310,9 +296,6 @@ private:
 
 	/*! Total thermal resistance in [W/K]*/
 	double							m_thermalTransmittance = -999;
-
-	/*! Reference to external temperature in [K] */
-	const double*					m_externalTemperatureRef = nullptr;
 };
 
 
@@ -409,9 +392,6 @@ public:
 	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
 	void setInflowTemperature(double Tinflow) override;
 
-	/*! Nothing to be done here. */
-	void setHeatExchangeValueRef(const double *) override { }
-
 private:
 	/*! Constant pressure head [Pa] */
 	double							m_pressureHead = 888;
@@ -450,9 +430,6 @@ public:
 
 	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
 	void setInflowTemperature(double Tinflow) override;
-
-	/*! Nothing to be done here. */
-	void setHeatExchangeValueRef(const double *) override { }
 
 	/*! Sets references to externally calculated values. */
 	void setExternalReferences(const double * heatFluxCondenserRef, const double * condenserMeanTemperature);
@@ -501,14 +478,6 @@ public:
 
 	/*! Function for retrieving heat fluxes out of the flow element.*/
 	void internalDerivatives(double *ydot) override;
-
-	/*! Nothing to be done here. */
-	void setHeatExchangeValueRef(const double * heatExchangeValueRef) override {
-		m_externalHeatLossRef = heatExchangeValueRef;
-	}
-
-	/*! Reference to external heat loss [W] */
-	const double*					m_externalHeatLossRef = nullptr;
 };
 
 

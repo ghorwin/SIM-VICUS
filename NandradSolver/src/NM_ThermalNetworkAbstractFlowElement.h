@@ -109,11 +109,13 @@ public:
 	/*! Once all node temperatures have been computed, the flow element gets the temperature of the inlowing fluid. */
 	virtual void setInflowTemperature(double Tinflow) { m_inflowTemperature = Tinflow; }
 
-	/*! Optional function for registering dependencies between derivatives and internal states.*/
+	/*! Optional function for registering dependencies between derivatives and internal states.
+		Default implementation simply adds dependencies between ydot and meanTemperature and _all_ inputs
+		(y, mdot, TInflowLeft, TInflowRight).
+	*/
 	virtual void dependencies(const double */*ydot*/, const double */*y*/,
 							  const double */*mdot*/, const double* /*TInflowLeft*/, const double*/*TInflowRight*/,
-							  std::vector<std::pair<const double *, const double *> > & ) const
-	{ }
+							  std::vector<std::pair<const double *, const double *> > & ) const;
 
 
 	// Common variables for flow elements

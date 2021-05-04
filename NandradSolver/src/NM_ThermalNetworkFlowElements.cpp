@@ -72,8 +72,8 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 			);
 	}
 
-	IBK_ASSERT(m_externalTemperatureRef != nullptr);
-	const double externalTemperature = *m_externalTemperatureRef;
+	IBK_ASSERT(m_heatExchangeValueRef != nullptr);
+	const double externalTemperature = *m_heatExchangeValueRef;
 	// calculate heat loss with given parameters
 	// Q in [W] = DeltaT * UAValueTotal
 	m_heatLoss = m_thermalTransmittance * (m_meanTemperature - externalTemperature) * m_nParallelPipes;
@@ -143,7 +143,7 @@ void TNStaticPipeElement::setInflowTemperature(double Tinflow) {
 // *** DynamicPipeElement ***
 
 TNDynamicPipeElement::TNDynamicPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
-							 const NANDRAD::HydraulicNetworkComponent & comp,
+							const NANDRAD::HydraulicNetworkComponent & comp,
 							const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
 							const NANDRAD::HydraulicFluid & fluid)
 {
@@ -226,8 +226,8 @@ void TNDynamicPipeElement::setInflowTemperature(double Tinflow) {
 	}
 
 
-	IBK_ASSERT(m_externalTemperatureRef != nullptr);
-	const double externalTemperature = *m_externalTemperatureRef;
+	IBK_ASSERT(m_heatExchangeValueRef != nullptr);
+	const double externalTemperature = *m_heatExchangeValueRef;
 	for(unsigned int i = 0; i < m_nVolumes; ++i) {
 		// calculate heat loss with given parameters
 		m_heatLosses[i] = m_thermalTransmittance * (m_temperatures[i] - externalTemperature) * m_nParallelPipes;
@@ -284,8 +284,17 @@ double TNDynamicPipeElement::outflowTemperature() const {
 
 
 void TNDynamicPipeElement::dependencies(const double *ydot, const double *y,
-										const double *mdot, const double* TInflowLeft, const double*TInflowRight,
-										std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const {
+					const double *mdot, const double* TInflowLeft, const double*TInflowRight,
+					std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const
+{
+	// The model computes ydot[...], m_meanTemperature and m_heatLoss
+
+	// Dependencies correspond to a 1D Finite Volume discretization using first-order upwinding
+	// flux approxiation. Since flow go into either direction, we use the dependencies for central differencing,
+	// thus ydot[i] depends on y[i-1], y[i] and y[i+1]. The boundary elements depend on the inlet and outlet temperatures.
+	// And of course, all ydot depend on the mass flux.
+
+	// Also, since we have heat exchange to the environment, each ydot depends on the external temperature.
 
 	// set dependency to inlet and outlet enthalpy
 	resultInputDependencies.push_back(std::make_pair(TInflowLeft, y) );
@@ -293,31 +302,31 @@ void TNDynamicPipeElement::dependencies(const double *ydot, const double *y,
 	resultInputDependencies.push_back(std::make_pair(ydot, TInflowLeft) );
 	resultInputDependencies.push_back(std::make_pair(ydot + nInternalStates() - 1, TInflowRight) );
 
-
-	for(unsigned int n = 0; n < nInternalStates(); ++n) {
+	for (unsigned int n = 0; n < nInternalStates(); ++n) {
 		// set dependency to mean temperatures
 		resultInputDependencies.push_back(std::make_pair(&m_meanTemperature, y + n) );
 
-		// set depedency to ydot
-		// heat balance per default sums up heat fluxes and entahpy flux differences through the pipe
-		if(n > 0)
+		// set dependency to ydot from y i-1, i and i+1
+		if (n > 0)
 			resultInputDependencies.push_back(std::make_pair(ydot + n, y + n - 1) );
 
 		resultInputDependencies.push_back(std::make_pair(ydot + n, y + n) );
 
-		if(n < nInternalStates() - 1)
+		if (n < nInternalStates() - 1)
 			resultInputDependencies.push_back(std::make_pair(ydot + n, y + n + 1) );
 
+		// set dependency to mdot
 		resultInputDependencies.push_back(std::make_pair(ydot + n, mdot) );
-		resultInputDependencies.push_back(std::make_pair(ydot + n, m_externalTemperatureRef));
+		// and to external temperature
+		resultInputDependencies.push_back(std::make_pair(ydot + n, m_heatExchangeValueRef));
 
-		// set dependeny to Qdot
+		// set dependency to Qdot
 		resultInputDependencies.push_back(std::make_pair(&m_heatLoss, y + n) );
 	}
 
-	// set dependeny to Qdot
+	// set dependency to Qdot
 	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, mdot) );
-	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, m_externalTemperatureRef) );
+	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, m_heatExchangeValueRef) );
 }
 
 
@@ -410,8 +419,13 @@ double TNDynamicAdiabaticPipeElement::outflowTemperature() const {
 
 
 void TNDynamicAdiabaticPipeElement::dependencies(const double *ydot, const double *y,
-										const double *mdot, const double* TInflowLeft, const double*TInflowRight,
-										std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const {
+			const double *mdot, const double* TInflowLeft, const double*TInflowRight,
+			std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const
+{
+	// Dependencies correspond to a 1D Finite Volume discretization using first-order upwinding
+	// flux approxiation. Since flow go into either direction, we use the dependencies for central differencing,
+	// thus ydot[i] depends on y[i-1], y[i] and y[i+1]. The boundary elements depend on the inlet and outlet temperatures.
+	// And of course, all ydot depend on the mass flux.
 
 	// set dependency to inlet and outlet enthalpy
 	resultInputDependencies.push_back(std::make_pair(TInflowLeft, y) );
@@ -419,21 +433,20 @@ void TNDynamicAdiabaticPipeElement::dependencies(const double *ydot, const doubl
 	resultInputDependencies.push_back(std::make_pair(ydot, TInflowLeft) );
 	resultInputDependencies.push_back(std::make_pair(ydot + nInternalStates() - 1, TInflowRight) );
 
-
-	for(unsigned int n = 0; n < nInternalStates(); ++n) {
+	for (unsigned int n = 0; n < nInternalStates(); ++n) {
 		// set dependency to mean temperatures
 		resultInputDependencies.push_back(std::make_pair(&m_meanTemperature, y + n) );
 
-		// heat balance per default sums up heat fluxes and entahpy flux differences through the pipe
-		if(n > 0)
+		// set dependency to ydot from y i-1, i and i+1
+		if (n > 0)
 			resultInputDependencies.push_back(std::make_pair(ydot + n, y + n - 1) );
 
 		resultInputDependencies.push_back(std::make_pair(ydot + n, y + n) );
 
-		if(n < nInternalStates() - 1)
+		if (n < nInternalStates() - 1)
 			resultInputDependencies.push_back(std::make_pair(ydot + n, y + n + 1) );
 
-		// set depedency to mdot
+		// set dependency to mdot
 		resultInputDependencies.push_back(std::make_pair(ydot + n, mdot) );
 	}
 }
@@ -443,7 +456,7 @@ void TNDynamicAdiabaticPipeElement::dependencies(const double *ydot, const doubl
 // *** PumpWithPerformanceLoss ***
 
 TNPumpWithPerformanceLoss::TNPumpWithPerformanceLoss(
-							 const NANDRAD::HydraulicFluid & fluid,
+							const NANDRAD::HydraulicFluid & fluid,
 							const NANDRAD::HydraulicNetworkComponent & comp,
 							double pRef)
 {
@@ -545,6 +558,7 @@ TNAdiabaticElement::TNAdiabaticElement(const NANDRAD::HydraulicFluid & fluid, do
 }
 
 
+
 // *** ElementWithExternalHeatLoss ***
 
 TNElementWithExternalHeatLoss::TNElementWithExternalHeatLoss(const NANDRAD::HydraulicFluid & fluid, double fluidVolume) {
@@ -557,8 +571,8 @@ TNElementWithExternalHeatLoss::TNElementWithExternalHeatLoss(const NANDRAD::Hydr
 
 void TNElementWithExternalHeatLoss::internalDerivatives(double * ydot) {
 	// set heat loss
-	IBK_ASSERT(m_externalHeatLossRef != nullptr);
-	m_heatLoss = *m_externalHeatLossRef;
+	IBK_ASSERT(m_heatExchangeValueRef != nullptr);
+	m_heatLoss = *m_heatExchangeValueRef;
 	// use basic routine
 	ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(ydot);
 }

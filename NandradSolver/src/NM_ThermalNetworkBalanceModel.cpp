@@ -131,14 +131,20 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel,
 				ThermalNetworkAbstractFlowElementWithHeatLoss * heatLossElement =
 						dynamic_cast<ThermalNetworkAbstractFlowElementWithHeatLoss*>(m_statesModel->m_p->m_flowElements[i]);
 				IBK_ASSERT(heatLossElement != nullptr);
-				heatLossElement->setHeatExchangeValueRef(&elemProp.m_heatExchangeSplineValue);
+				heatLossElement->m_heatExchangeValueRef = &elemProp.m_heatExchangeSplineValue;
 			}
 			break;
 
 				// exchange with purely time-dependent heat loss spline data
-			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
+			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline: {
 				// store reference to spline
 				elemProp.m_heatExchangeSplineRef = &heatExchange.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss];
+				// store pointer to interpolated value into respective flow element
+				ThermalNetworkAbstractFlowElementWithHeatLoss * heatLossElement =
+						dynamic_cast<ThermalNetworkAbstractFlowElementWithHeatLoss*>(m_statesModel->m_p->m_flowElements[i]);
+				IBK_ASSERT(heatLossElement != nullptr);
+				heatLossElement->m_heatExchangeValueRef = &elemProp.m_heatExchangeSplineValue;
+			}
 			break;
 
 			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
@@ -407,25 +413,47 @@ void ThermalNetworkBalanceModel::inputReferences(std::vector<InputReference> & i
 void ThermalNetworkBalanceModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
 										 const std::vector<const double *> & resultValueRefs)
 {
+	// layout of resultValueRefs vector:
+	// 0                                 - FluidMassFluxes
+	// 1..m_zoneProperties.size()        - AirTemperature
+	// ...m_activeProperties.size()      - ActiveLayerTemperature
+	// ...m_scheduelParameters.size()    - ..
+
 	// copy references into mass flux vector
 	m_statesModel->m_p->m_fluidMassFluxes = resultValueRefs[0];
 
 	// set zone temparture references inside network
-	for(unsigned int i = 0; i < m_zoneProperties.size(); ++i) {
-
-		// lookup all elements that require this zone temperature and set the pointer there
-		// TODO
-
+	unsigned int resultValIdx = 0;
+	for (std::list<ZoneProperties>::iterator it = m_zoneProperties.begin();
+		 it != m_zoneProperties.end(); ++it)
+	{
+		// set reference to zone temperature
+		it->m_zoneTemperatureRef = resultValueRefs[++resultValIdx];
 	}
-	//set active layer references inside network
-	for(unsigned int i = 0; i < m_activeProperties.size(); ++i) {
 
-		// lookup all elements that require this active layer temperature and set the pointer there
-		// TODO
-
+	// set active layer references inside network
+	for (std::list<ActiveLayerProperties>::iterator it = m_activeProperties.begin();
+		 it != m_activeProperties.end(); ++it)
+	{
+		// set reference to zone temperature
+		it->m_activeLayerTemperatureRef = resultValueRefs[++resultValIdx];
 	}
 
 	// TODO : Schedule parameter
+
+	// now transfer stored references to elements
+	for (unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
+		const FlowElementProperties &elemProp = m_flowElementProperties[i];
+
+		// do we have a zone temperature dependence
+		if (elemProp.m_zoneProperties != nullptr) {
+			ThermalNetworkAbstractFlowElementWithHeatLoss *fe =
+					dynamic_cast<ThermalNetworkAbstractFlowElementWithHeatLoss *>(m_statesModel->m_p->m_flowElements[i]);
+			IBK_ASSERT(fe != nullptr);
+			fe->m_heatExchangeValueRef = elemProp.m_zoneProperties->m_zoneTemperatureRef;
+		}
+
+	}
 }
 
 
@@ -436,19 +464,18 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 		const FlowElementProperties &elemProp = m_flowElementProperties[i];
 		const ZoneProperties *zoneProp = elemProp.m_zoneProperties;
 		const ActiveLayerProperties *layerProp = elemProp.m_activeLayerProperties;
+
+		const ThermalNetworkAbstractFlowElement *fe = m_statesModel->m_p->m_flowElements[i];
+
 		// set dependencies between heat exchange values and zone inputs
-		if(zoneProp != nullptr) {
-			// zone temperature is requested
-			resultInputValueReferences.push_back(std::make_pair( &m_statesModel->m_heatExchangeRefValues[i],
-																 zoneProp->m_zoneTemperatureRef));
+		if (zoneProp != nullptr) {
+			// heat loss computed in element depends also on requested zone temperature
 			resultInputValueReferences.push_back(std::make_pair( &zoneProp->m_zoneHeatLoad,
 																 elemProp.m_heatLossRef));
 		}
 		// set dependencies between heat exchange values and active layer inputs
-		if(layerProp !=  nullptr) {
-			// layer temperature is requested
-			resultInputValueReferences.push_back(std::make_pair( &m_statesModel->m_heatExchangeRefValues[i],
-																 layerProp->m_activeLayerTemperatureRef));
+		if (layerProp != nullptr) {
+			// heat loss computed in element depends also on requested layer temperature
 			resultInputValueReferences.push_back(std::make_pair( &layerProp->m_activeLayerHeatLoad,
 																 elemProp.m_heatLossRef));
 		}
@@ -456,7 +483,7 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 
 	unsigned int offset = 0;
 	// we at first try use dense pattern between all internal element divergences and internal states
-	for(unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
+	for (unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
 
 		const ThermalNetworkAbstractFlowElement *fe = m_statesModel->m_p->m_flowElements[i];
 		const Element &elem = m_statesModel->m_p->m_network->m_elements[i];
@@ -471,11 +498,14 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 						 deps);
 
 		// copy dependencies
-		if(!deps.empty()) {
+		if (!deps.empty()) {
 			resultInputValueReferences.insert(resultInputValueReferences.end(), deps.begin(), deps.end());
 		}
-		// not implemented: assume all ydot and y values to depend on all inputs and result quantities
+#if 0
+		// dependencies() may not be implemented: in this case assume all ydot and y values to depend on all
+		// inputs and result quantities
 		else {
+
 			for(unsigned int n = 0; n < fe->nInternalStates(); ++n) {
 				// dependencyies to ydot: y
 				// assume a dense matrix between ydot and y
@@ -517,6 +547,7 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 																		&m_statesModel->m_y[offset + n] ) );
 			}
 		}
+#endif
 		offset += fe->nInternalStates();
 	}
 	// retrieve dependencies of network connections

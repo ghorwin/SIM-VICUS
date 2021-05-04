@@ -117,7 +117,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 							m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
 							// for constant heat loss, already pass pointer to existing constant value
 							if (e.m_heatExchange.m_modelType == NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant)
-								pipeElement->m_externalHeatLossRef = &e.m_heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_HeatLoss].value;
+								pipeElement->m_heatExchangeValueRef = &e.m_heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_HeatLoss].value;
 						} break;
 
 						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstant:
@@ -147,7 +147,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 							m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
 							// for constant heat exchange type already store the pointer to the given temperature
 							if (e.m_heatExchange.m_modelType ==NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstant)
-								pipeElement->setHeatExchangeValueRef( &e.m_heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_Temperature].value );
+								pipeElement->m_heatExchangeValueRef = &e.m_heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_Temperature].value;
 						} break;
 
 						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureFMUInterface :
@@ -195,7 +195,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 							// for the constant variant, store already reference to the given parameter value
 							if (e.m_heatExchange.m_modelType ==NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstant)
-								pipeElement->setHeatExchangeValueRef( &e.m_heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_Temperature].value );
+								pipeElement->m_heatExchangeValueRef = &e.m_heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_Temperature].value;
 						} break;
 
 						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureFMUInterface :
@@ -244,7 +244,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 							m_p->m_flowElements.push_back(element); // transfer ownership
 							m_p->m_heatLossElements.push_back(element); // copy of pointer
 							if (e.m_heatExchange.m_modelType == NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant)
-								element->m_externalHeatLossRef = &e.m_heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_HeatLoss].value;
+								element->m_heatExchangeValueRef = &e.m_heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_HeatLoss].value;
 						} break;
 
 						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstant:
