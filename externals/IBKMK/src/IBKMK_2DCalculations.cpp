@@ -92,7 +92,7 @@ int pointInPolygon(const std::vector<Vector2D> & polygon, const IBK::point2D<dou
 	int t=-1;
 	size_t polySize = polygon.size();
 	for (size_t i=0; i<polySize; ++i) {
-		t *= crossProdTest(p, polygon[i], polygon[i+1 % polySize]);
+		t *= crossProdTest(p, polygon[i], polygon[(i+1) % polySize]);
 		if (t==0)
 			break;
 	}
