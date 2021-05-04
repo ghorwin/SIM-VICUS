@@ -58,16 +58,39 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel,
 
 	// For each flow element we create an object of type FlowElementProperties to store information needed
 	// to publish results (inlet/outlet temperatures, mean temperatures, heat exchange fluxes, ...)
-
 	for (unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i)
 		m_flowElementProperties.push_back(FlowElementProperties(m_statesModel->m_network->m_elements[i].m_id));
 
-	// Process all flow elements, create storage locations of zone/active layer exchange and populate the
-	// FlowElementProperties objects.
-	for (unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
+	// Note: the vector m_flowElementProperties will not be changed in size lateron, so we can store persistent
+	//       pointers to vector elements and their data members.
 
+	// process all flow elements
+	for (unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
+		FlowElementProperties &elemProp = m_flowElementProperties[i]; // readability improvement
+
+		// *** Store Value References ***
+
+		// Store value references to inlet and outlet temperatures
+		const Element &elem = m_statesModel->m_p->m_network->m_elements[i];
+		elemProp.m_inletNodeTemperatureRef = &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexInlet];
+		elemProp.m_outletNodeTemperatureRef = &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexOutlet];
+
+		// Store value reference to computed heatLoss
+		// Note: vector m_heatLossElements has same length as m_network->m_elements. For all elements without
+		//       heat loss calculation, this vector contains a nullptr
+		const ThermalNetworkAbstractFlowElementWithHeatLoss *heatLossElem = m_statesModel->m_p->m_heatLossElements[i];
+		if (heatLossElem != nullptr)
+			elemProp.m_heatLossRef = &heatLossElem->m_heatLoss;
+
+
+		// *** Zone/Active Layer Interface Objects ***
+
+		// Create storage locations of zone/active layer exchange and populate the FlowElementProperties objects.
 		const NANDRAD::HydraulicNetworkHeatExchange &heatExchange = m_statesModel->m_network->m_elements[i].m_heatExchange;
 		switch (heatExchange.m_modelType) {
+			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstant:
+			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant: break;
+
 			// zone heat exchange
 			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureZone: {
 				unsigned int zoneId = heatExchange.m_idReferences[NANDRAD::HydraulicNetworkHeatExchange::ID_ZoneId];
@@ -79,15 +102,15 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel,
 					// not yet in list, add a new entry
 					m_zoneProperties.push_back(ZoneProperties(zoneId)); // Note: does not invalidate pointers already in list!
 					// store pointer to newly added object (last object = first from end)
-					m_flowElementProperties[i].m_zoneProperties = &(*m_zoneProperties.rbegin());
+					elemProp.m_zoneProperties = &(*m_zoneProperties.rbegin());
 				}
 				else {
 					// store pointer to object
-					m_flowElementProperties[i].m_zoneProperties = &(*fIt);
+					elemProp.m_zoneProperties = &(*fIt);
 				}
 			} break;
 
-			// construction heat exchange
+				// construction heat exchange
 			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer: {
 				// check for zone id
 				unsigned int conInstanceId = heatExchange.m_idReferences[NANDRAD::HydraulicNetworkHeatExchange::ID_ConstructionInstanceId];
@@ -95,57 +118,45 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel,
 				// double entry is not allowed - this has been checked already in HydraulicNetwork::checkParameters()
 				IBK_ASSERT(std::find(m_activeProperties.begin(), m_activeProperties.end(), conInstanceId) == m_activeProperties.end());
 
-				m_activeProperties.push_back(ActiveLayerProperties(conInstanceId));
+				m_activeProperties.push_back(ActiveLayerProperties(conInstanceId)); // Note: does not invalidate pointers already in list!
 				// store pointer to newly added object (last object = first from end)
-				m_flowElementProperties[i].m_activeLayerProperties = &(*m_activeProperties.rbegin());
+				elemProp.m_activeLayerProperties = &(*m_activeProperties.rbegin());
 			} break;
 
-			// exchange with purely time-dependent temperature spline data
+				// exchange with purely time-dependent temperature spline data
 			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline: {
 				// store reference to spline
-				m_flowElementProperties[i].m_heatExchangeSplineRef = &heatExchange.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature];
+				elemProp.m_heatExchangeSplineRef = &heatExchange.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature];
 				// store pointer to interpolated value into respective flow element
+				ThermalNetworkAbstractFlowElementWithHeatLoss * heatLossElement =
+						dynamic_cast<ThermalNetworkAbstractFlowElementWithHeatLoss*>(m_statesModel->m_p->m_flowElements[i]);
+				IBK_ASSERT(heatLossElement != nullptr);
+				heatLossElement->setHeatExchangeValueRef(&elemProp.m_heatExchangeSplineValue);
 			}
 			break;
 
 				// exchange with purely time-dependent heat loss spline data
 			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
 				// store reference to spline
-				m_flowElementProperties[i].m_heatExchangeSplineRef = &heatExchange.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss];
+				elemProp.m_heatExchangeSplineRef = &heatExchange.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss];
 			break;
 
-			default: break;
+			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
+				// TODO
+			break;
+
+			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureFMUInterface:
+				// TODO
+			break;
+
+			case NANDRAD::HydraulicNetworkHeatExchange::NUM_T: ;
 		}
-	}
 
 
-	// first set all zone and construction properties
-	for(unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
+		// *** Collect Model Quantities ***
 
-		// set all value references
-		const Element &elem = m_statesModel->m_p->m_network->m_elements[i];
-		FlowElementProperties &elemProp = m_flowElementProperties[i];
-
-		// copy nodal temperatures
-		elemProp.m_inletNodeTemperatureRef = &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexInlet];
-		elemProp.m_outletNodeTemperatureRef = &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexOutlet];
-	}
-
-	// set references to heat fluxes
-	for(unsigned int i = 0; i < m_statesModel->m_p->m_heatLossElements.size(); ++i) {
-		const ThermalNetworkAbstractFlowElementWithHeatLoss *heatLossElem = m_statesModel->m_p->m_heatLossElements[i];
-		// skip empty elements
-		if(heatLossElem == nullptr)
-			continue;
-		// copy heat fluxes
-		m_flowElementProperties[i].m_heatLossRef = &heatLossElem->m_heatLoss;
-	}
-
-	// fill model model quanities vector
-	for(unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
-		// add offset
 		m_modelQuantityOffset.push_back(m_modelQuantities.size());
-		// retrieve current flow element
+		// retrieve current flow element (m_flowElements vector has same size as
 		const ThermalNetworkAbstractFlowElement *fe = m_statesModel->m_p->m_flowElements[i];
 		fe->modelQuantities(m_modelQuantities);
 		fe->modelQuantityValueRefs(m_modelQuantityRefs);
