@@ -1553,6 +1553,8 @@ void Vic3DScene::deleteSelected() {
 void Vic3DScene::showSelected() {
 	std::set<const VICUS::Object*> selectedObjects;
 	// process all objects in project, take all objects that are selected, yet invisible
+
+	// TODO : use project selected object function instead
 	WireFrameObject::updateSelectedObjectsFromProject(selectedObjects, true);
 	std::set<unsigned int> selectedObjectIDs;
 	// Note: all objects in m_selectedGeometryObject.m_selectedObjects are required to be visible!

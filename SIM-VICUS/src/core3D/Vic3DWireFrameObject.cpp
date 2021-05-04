@@ -196,6 +196,9 @@ void WireFrameObject::updateSelectedObjectsFromProject(std::set<const VICUS::Obj
 				for (const VICUS::Surface & s : r.m_surfaces) {
 					if (s.m_selected)
 						selectedObjects.insert(&s);
+					for (const VICUS::SubSurface & sub : s.subSurfaces()) {
+						selectedObjects.insert(&sub);
+					}
 				}
 			}
 		}
