@@ -59,7 +59,7 @@ class ThermalNetworkStatesModel;
 	The other dependencies are formulated by the flow element thermal models themselves, and simply forwarded by
 	the ThermalNetworkBalanceModel to the framework.
 */
-class ThermalNetworkBalanceModel : public AbstractModel, public AbstractStateDependency, public AbstractTimeDependency {
+class ThermalNetworkBalanceModel : public AbstractModel, public AbstractStateDependency {
 public:
 
 	/*! Constructor */
@@ -139,8 +139,9 @@ private:
 	void printVars() const;
 
 
-	/*!	Struct for all value references exchanged between element model
-		and ThermalNetworkStatesModel/ThermalNetworkBalanceModel.
+	/*!	This struct stores information needed for exchange between the ThermalNetworkBalanceModel and
+		RoomBalanceModels. The ThermalNetworkBalanceModel collects in this struct for each zone
+		the sum of energy loads into the zone and publishes that as
 
 		Such a struct is *only* created for each zone that one or more flow elements exchanges heat with.
 	*/
@@ -155,7 +156,10 @@ private:
 		unsigned int						m_zoneId = NANDRAD::INVALID_ID;
 		/*! Heat flux (sum) of *all* flow elements into selected zone. */
 		double								m_zoneHeatLoad = -999;
-		/*! Reference to temperatures of selected zone. */
+
+		/*! Reference to temperatures of selected zone.
+			TODO : Remove
+		*/
 		const double*						m_zoneTemperatureRef = nullptr;
 	};
 
@@ -209,14 +213,6 @@ private:
 		const double*						m_inletNodeTemperatureRef = nullptr;
 		/*! Reference to temperatures for outlet node of the flow element. */
 		const double*						m_outletNodeTemperatureRef = nullptr;
-
-		/*! Reference to heat exchange spline: nullptr if not needed. */
-		const IBK::LinearSpline*			m_heatExchangeSplineRef = nullptr;
-
-		/*! References to spline parameters of NANDRAD::HydraulicComponent, there can be
-		 * multiple spline parameters for each HydraulicComponent, so this is a vector
-		 */
-		std::vector<const NANDRAD::LinearSplineParameter*> m_splineParameterRefs;
 	};
 
 

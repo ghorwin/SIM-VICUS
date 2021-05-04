@@ -1,4 +1,4 @@
-/*	NANDRAD Solver Framework and Model Implementation.
+﻿/*	NANDRAD Solver Framework and Model Implementation.
 
 	Copyright (c) 2012-today, Institut für Bauklimatik, TU Dresden, Germany
 
@@ -411,6 +411,8 @@ void ThermalNetworkBalanceModel::setInputValueRefs(const std::vector<QuantityDes
 	for(unsigned int i = 0; i < m_zoneProperties.size(); ++i) {
 		// set reference to zone temperature
 		m_zoneProperties[i].m_zoneTemperatureRef = resultValueRefs[1 + i];
+
+		// TODO : Update all elements that use this zone temperature as input
 	}
 	//set active layer references inside network
 	for(unsigned int i = 0; i < m_activeProperties.size(); ++i) {
@@ -512,28 +514,6 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 	}
 	// retrieve dependencies of network connections
 	m_statesModel->m_p->dependencies(resultInputValueReferences);
-}
-
-
-int ThermalNetworkBalanceModel::setTime(double t) {
-	// TODO : Hauke, since we update StatesModel parameters, setTime should be implemented in the states model
-
-	// update all spline values
-	for(unsigned int i = 0; i < m_flowElementProperties.size(); ++i) {
-		const FlowElementProperties &elemProp = m_flowElementProperties[i];
-		// no spline
-		if(elemProp.m_heatExchangeSplineRef != nullptr){
-			m_statesModel->m_heatExchangeRefValues[i] =
-					elemProp.m_heatExchangeSplineRef->value(t);
-		}
-
-		// update spline parameter values
-		for (unsigned int j = 0; j < elemProp.m_splineParameterRefs.size(); ++j){
-			if (elemProp.m_splineParameterRefs[j] != nullptr)
-				m_statesModel->m_splineParameterRefValues[i][j] = elemProp.m_splineParameterRefs[j]->m_values.value(t);
-		}
-	}
-	return 0;
 }
 
 
