@@ -41,20 +41,24 @@
 namespace NANDRAD_MODEL {
 
 
-
 void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 	// copy states model pointer
 	m_statesModel = statesModel;
 
-	// create id vector for later access to heat fluxes
+	// sanity checks
 	IBK_ASSERT(m_statesModel->m_network != nullptr);
 	IBK_ASSERT(!m_statesModel->m_network->m_elements.empty());
-	IBK_ASSERT(m_statesModel->m_network->m_elements.size() ==
-			   m_statesModel->m_p->m_flowElements.size());
+	IBK_ASSERT(m_statesModel->m_network->m_elements.size() == m_statesModel->m_p->m_flowElements.size());
 
-	// resize element properties and copy ids
-	for(unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i)
+	// here we initialize all data structures needed to communicate our results to other NANDRAD models
+
+	// For each flow element we create an object of type FlowElementProperties to store information needed
+	// to publish results (inlet/outlet temperatures, mean temperatures, heat exchange fluxes, ...)
+
+	for (unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i)
 		m_flowElementProperties.push_back(FlowElementProperties(m_statesModel->m_network->m_elements[i].m_id));
+
+	//
 
 	// store index of zone ids for each exchanging flow element
 	std::vector<unsigned int> zoneIdx(m_flowElementProperties.size(), NANDRAD::INVALID_ID);
@@ -407,18 +411,23 @@ void ThermalNetworkBalanceModel::setInputValueRefs(const std::vector<QuantityDes
 {
 	// copy references into mass flux vector
 	m_statesModel->m_p->m_fluidMassFluxes = resultValueRefs[0];
-	//set zone temparture references inside network
-	for(unsigned int i = 0; i < m_zoneProperties.size(); ++i) {
-		// set reference to zone temperature
-		m_zoneProperties[i].m_zoneTemperatureRef = resultValueRefs[1 + i];
 
-		// TODO : Update all elements that use this zone temperature as input
+	// set zone temparture references inside network
+	for(unsigned int i = 0; i < m_zoneProperties.size(); ++i) {
+
+		// lookup all elements that require this zone temperature and set the pointer there
+		// TODO
+
 	}
 	//set active layer references inside network
 	for(unsigned int i = 0; i < m_activeProperties.size(); ++i) {
-		// set reference to zone temperature
-		m_activeProperties[i].m_activeLayerTemperatureRef = resultValueRefs[1 + i];
+
+		// lookup all elements that require this active layer temperature and set the pointer there
+		// TODO
+
 	}
+
+	// TODO : Schedule parameter
 }
 
 
@@ -518,7 +527,7 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 
 
 int ThermalNetworkBalanceModel::update() {
-
+#if 0
 	// update zone and construction layer temperatures
 	for(unsigned int i = 0; i < m_flowElementProperties.size(); ++i) {
 		// skip invalid elements without access to zone temperature
@@ -534,34 +543,43 @@ int ThermalNetworkBalanceModel::update() {
 			m_statesModel->m_heatExchangeRefValues[i] = *layerProp->m_activeLayerTemperatureRef;
 		}
 	}
+#endif
 
-	// update all network internal calculation quantities
+	// Update all network internal calculation quantities,
+	// basically transfer mass fluxes (already computed) and inflow temperatures into all flow elements.
+	// Setting the inflow temperatures in flow elements triggers their calculation.
+	// Afterwards, outflow temperatures and heat exchange fluxes are available.
 	int res = m_statesModel->m_p->update();
 	if (res != 0)
 		return res;
 
-	// update zone specific fluxes
-	if(!m_zoneProperties.empty() || !m_activeProperties.empty()) {
+	// sum up zonal and construction layer heat loads from all elements
+	if (!m_zoneProperties.empty() || !m_activeProperties.empty()) {
 		// set zone heat fluxes to 0
-		for(ZoneProperties &zoneProp : m_zoneProperties)
+		for (ZoneProperties &zoneProp : m_zoneProperties)
 			zoneProp.m_zoneHeatLoad = 0.0;
 
-		for(unsigned int i = 0; i < m_flowElementProperties.size(); ++i) {
+		for (unsigned int i = 0; i < m_flowElementProperties.size(); ++i) {
 
 			const FlowElementProperties &elemProp = m_flowElementProperties[i];
 			// skip invalid elements without access to zone temperature
 			ZoneProperties *zoneProp = m_flowElementProperties[i].m_zoneProperties;
 			ActiveLayerProperties *layerProp = m_flowElementProperties[i].m_activeLayerProperties;
 
-			if(zoneProp != nullptr) {
+			// exchange heat with a zone?
+			if (zoneProp != nullptr) {
 				zoneProp->m_zoneHeatLoad += *elemProp.m_heatLossRef;
 			}
-			else if(layerProp != nullptr) {
-				IBK_ASSERT(layerProp->m_activeLayerTemperatureRef != nullptr);
+
+			// or exchange heat with construction layer?
+			else if (layerProp != nullptr) {
 				layerProp->m_activeLayerHeatLoad = *elemProp.m_heatLossRef;
 			}
 		}
 	}
+
+	// Now the sums of heat loads in all ZoneProperties and ActiveLayerProperties are up-to-date and can be
+	// accessed as model results by other NANDRAD models.
 
 	// update derivatives
 	unsigned int offset = 0;

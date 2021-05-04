@@ -117,7 +117,7 @@ private:
 };
 
 
-#define STATIC_PIPE_MODEL_ENABLED
+//#define STATIC_PIPE_MODEL_ENABLED
 #ifdef STATIC_PIPE_MODEL_ENABLED
 
 // **** Static Pipe ***

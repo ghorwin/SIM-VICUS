@@ -160,7 +160,7 @@ private:
 		/*! Reference to temperatures of selected zone.
 			TODO : Remove
 		*/
-		const double*						m_zoneTemperatureRef = nullptr;
+//		const double*						m_zoneTemperatureRef = nullptr;
 	};
 
 	/*!	Struct for all value references exchanged between element model
@@ -183,7 +183,7 @@ private:
 		/*! Heat flux into (the one and only) active layer if the selected construction instance. */
 		double								m_activeLayerHeatLoad = -999;
 		/*! Reference to mean temperature (the one and only) active layer if the selected construction instance. */
-		const double*						m_activeLayerTemperatureRef = nullptr;
+//		const double*						m_activeLayerTemperatureRef = nullptr;
 	};
 
 
@@ -207,6 +207,15 @@ private:
 			(nullptr if no heat exchange with a construtcion layer is defined).
 		*/
 		ActiveLayerProperties				*m_activeLayerProperties = nullptr;
+
+		/*! This memory slot is used when the respective heat loss value (heat flow or temperature) is interpolated
+			from a linear spline parameter.
+			Elements with spline-based input values hold a pointer reference to this slot.
+		*/
+		double								m_heatLossSplineValue = 999;
+
+		// the following references point to results computed from flow elements.
+
 		/*! Reference to heat flux out of the flow element). */
 		const double*						m_heatLossRef = nullptr;
 		/*! Reference to temperatures for inlet node of the flow element. */
