@@ -153,6 +153,9 @@ KeywordListQt::KeywordListQt() {
 	tr("If true, default output definitions for zones are created.");
 	tr("Floor area of the zone.");
 	tr("Volume of the zone.");
+	tr("A window");
+	tr("A door");
+	tr("Some other component type");
 	tr("Specularity of the material.");
 	tr("Roughness of the material.");
 	tr("Plastic");

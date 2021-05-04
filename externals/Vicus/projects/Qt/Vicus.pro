@@ -70,6 +70,7 @@ HEADERS += \
 	../../src/VICUS_Schedule.h \
 	../../src/VICUS_ScheduleInterval.h \
 	../../src/VICUS_SubSurface.h \
+	../../src/VICUS_SubSurfaceComponent.h \
 	../../src/VICUS_Surface.h \
 	../../src/VICUS_SurfaceProperties.h \
 	../../src/VICUS_VentilationNatural.h \
@@ -115,6 +116,7 @@ SOURCES += \
 	../../src/VICUS_Schedule.cpp \
 	../../src/VICUS_ScheduleInterval.cpp \
 	../../src/VICUS_SubSurface.cpp \
+	../../src/VICUS_SubSurfaceComponent.cpp \
 	../../src/VICUS_Surface.cpp \
 	../../src/VICUS_VentilationNatural.cpp \
 	../../src/VICUS_Window.cpp \
@@ -150,6 +152,7 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_Schedule.cpp \
 	../../src/ncg/ncg_VICUS_ScheduleInterval.cpp \
 	../../src/ncg/ncg_VICUS_SubSurface.cpp \
+	../../src/ncg/ncg_VICUS_SubSurfaceComponent.cpp \
 	../../src/ncg/ncg_VICUS_Surface.cpp \
 	../../src/ncg/ncg_VICUS_SurfaceProperties.cpp \
 	../../src/ncg/ncg_VICUS_VentilationNatural.cpp \

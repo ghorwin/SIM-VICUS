@@ -19,7 +19,7 @@
 	Lesser General Public License for more details.
 */
 
-#include <VICUS_Component.h>
+#include <VICUS_SubSurfaceComponent.h>
 #include <VICUS_KeywordList.h>
 
 #include <IBK_messages.h>
@@ -33,8 +33,8 @@
 
 namespace VICUS {
 
-void Component::readXML(const TiXmlElement * element) {
-	FUNCID(Component::readXML);
+void SubSurfaceComponent::readXML(const TiXmlElement * element) {
+	FUNCID(SubSurfaceComponent::readXML);
 
 	try {
 		// search for mandatory attributes
@@ -66,23 +66,15 @@ void Component::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "Notes")
-				m_notes.setEncodedString(c->GetText());
-			else if (cName == "Manufacturer")
-				m_manufacturer.setEncodedString(c->GetText());
-			else if (cName == "DataSource")
-				m_dataSource.setEncodedString(c->GetText());
-			else if (cName == "IdConstruction")
-				m_idConstruction = NANDRAD::readPODElement<unsigned int>(c, cName);
+			if (cName == "IdWindow")
+				m_idWindow = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IdSideABoundaryCondition")
 				m_idSideABoundaryCondition = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IdSideBBoundaryCondition")
 				m_idSideBBoundaryCondition = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "IdSurfaceProperty")
-				m_idSurfaceProperty = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "Type") {
 				try {
-					m_type = (ComponentType)KeywordList::Enumeration("Component::ComponentType", c->GetText());
+					m_type = (SubSurfaceComponentType)KeywordList::Enumeration("SubSurfaceComponent::SubSurfaceComponentType", c->GetText());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
@@ -96,15 +88,15 @@ void Component::readXML(const TiXmlElement * element) {
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Component' element."), FUNC_ID);
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'SubSurfaceComponent' element."), FUNC_ID);
 	}
 	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'Component' element.").arg(ex2.what()), FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'SubSurfaceComponent' element.").arg(ex2.what()), FUNC_ID);
 	}
 }
 
-TiXmlElement * Component::writeXML(TiXmlElement * parent) const {
-	TiXmlElement * e = new TiXmlElement("Component");
+TiXmlElement * SubSurfaceComponent::writeXML(TiXmlElement * parent) const {
+	TiXmlElement * e = new TiXmlElement("SubSurfaceComponent");
 	parent->LinkEndChild(e);
 
 	if (m_id != VICUS::INVALID_ID)
@@ -113,23 +105,15 @@ TiXmlElement * Component::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
-	if (!m_notes.empty())
-		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.encodedString());
-	if (!m_manufacturer.empty())
-		TiXmlElement::appendSingleAttributeElement(e, "Manufacturer", nullptr, std::string(), m_manufacturer.encodedString());
-	if (!m_dataSource.empty())
-		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.encodedString());
 
 	if (m_type != NUM_CT)
-		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("Component::ComponentType",  m_type));
-	if (m_idConstruction != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "IdConstruction", nullptr, std::string(), IBK::val2string<unsigned int>(m_idConstruction));
+		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("SubSurfaceComponent::SubSurfaceComponentType",  m_type));
+	if (m_idWindow != VICUS::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "IdWindow", nullptr, std::string(), IBK::val2string<unsigned int>(m_idWindow));
 	if (m_idSideABoundaryCondition != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "IdSideABoundaryCondition", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSideABoundaryCondition));
 	if (m_idSideBBoundaryCondition != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "IdSideBBoundaryCondition", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSideBBoundaryCondition));
-	if (m_idSurfaceProperty != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "IdSurfaceProperty", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSurfaceProperty));
 	return e;
 }
 

@@ -240,7 +240,7 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::splinePara_t
 			case 15 :
 			switch (t) {
-				case 0 : return "CondenserOutletSetPoint";
+				case 0 : return "CondenserOutletSetPointTemperature";
 				case 1 : return "CondenserMeanTemperature";
 				case 2 : return "EvaporatorMeanTemperature";
 				case 3 : return "HeatPumpControlSignal";
@@ -829,7 +829,7 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::splinePara_t
 			case 15 :
 			switch (t) {
-				case 0 : return "CondenserOutletSetPoint";
+				case 0 : return "CondenserOutletSetPointTemperature";
 				case 1 : return "CondenserMeanTemperature";
 				case 2 : return "EvaporatorMeanTemperature";
 				case 3 : return "HeatPumpControlSignal";
