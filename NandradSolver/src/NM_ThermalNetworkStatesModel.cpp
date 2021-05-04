@@ -66,11 +66,6 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 	// copy element ids
 	m_elementIds = networkModel.m_elementIds;
 
-	// resize components
-	m_heatExchangeRefValues.resize(m_elementIds.size(), -999);
-	m_splineParameterRefValues.resize(m_elementIds.size(), std::vector<double> ());
-
-
 	// We now loop over all flow elements of the network and create a corresponding thermal
 	// model objects for _each_ of the hydraulic calculation objects.
 	// The model objects are stored in m_p->m_flowElements vector.
@@ -80,15 +75,6 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 		IBK_ASSERT(e.m_component != nullptr);
 
 		try {
-			// set reference to heat exchange value
-			double &heatExchangeValue = m_heatExchangeRefValues[i];
-
-			// get a list of spline parameters
-			std::vector<unsigned int> splineParameter =
-					e.m_component->requiredSplineParameter(e.m_component->m_modelType, e.m_component->m_heatPumpIntegration);
-			// set all spline paramter references
-			m_splineParameterRefValues[i].resize(splineParameter.size(), 999);
-			std::vector<double> &parameterSplineValues = m_splineParameterRefValues[i];
 
 			// Instantiate thermal flow element calculation objects.
 			// The objects are selected based on a **combination** of modelType and heatExchangeType and
@@ -125,7 +111,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 							// create generic flow element with given heat flux
 							TNElementWithExternalHeatLoss * pipeElement = new TNElementWithExternalHeatLoss(
-									m_network->m_fluid, volume, heatExchangeValue);
+									m_network->m_fluid, volume);
 							// add to flow elements
 							m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 							m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
@@ -137,7 +123,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						{
 							// create pipe model with heat exchange and static properties
 							TNStaticPipeElement * pipeElement = new TNStaticPipeElement(e, *e.m_component,
-									*e.m_pipeProperties, m_network->m_fluid, heatExchangeValue);
+									*e.m_pipeProperties, m_network->m_fluid);
 							// add to flow elements
 							m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 							m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
@@ -151,7 +137,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						{
 							// create pipe model with heat exchange
 							TNSimplePipeElement * pipeElement = new TNSimplePipeElement(e, *e.m_component,
-									*e.m_pipeProperties, m_network->m_fluid, heatExchangeValue);
+									*e.m_pipeProperties, m_network->m_fluid);
 							// add to flow elements
 							m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 							m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
@@ -195,7 +181,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						{
 							// create pipe model with heat exchange
 							TNDynamicPipeElement * pipeElement = new TNDynamicPipeElement(e,
-									*e.m_component, *e.m_pipeProperties, m_network->m_fluid, heatExchangeValue);
+									*e.m_component, *e.m_pipeProperties, m_network->m_fluid);
 							// add to flow elements
 							m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 							m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
@@ -242,7 +228,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						{
 							// create general model with given heat flux
 							TNElementWithExternalHeatLoss * element = new TNElementWithExternalHeatLoss(m_network->m_fluid,
-									e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value, heatExchangeValue);
+									e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value);
 							// add to flow elements
 							m_p->m_flowElements.push_back(element); // transfer ownership
 							m_p->m_heatLossElements.push_back(element); // copy of pointer
@@ -266,10 +252,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						case (NANDRAD::HydraulicNetworkComponent::HP_SourceSide): {
 
 							// create general model with given heat flux
-							TNHeatPumpIdealCarnot * element = new TNHeatPumpIdealCarnot(m_network->m_fluid,
-																						*e.m_component,
-																						heatExchangeValue,
-																						parameterSplineValues);
+							TNHeatPumpIdealCarnot * element = new TNHeatPumpIdealCarnot(m_network->m_fluid, *e.m_component);
 							// add to flow elements
 							m_p->m_flowElements.push_back(element); // transfer ownership
 							m_p->m_heatLossElements.push_back(element); // copy of pointer
@@ -292,7 +275,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				break; // just to make compiler happy
 			}
 
-
+#if 0
 			// retrieve component and decide which heat exchange is chosen
 			// only constant values are set here, splines will be updated in ThermalNetworkBalanceModel::setTime
 			switch(e.m_heatExchange.m_modelType) {
@@ -322,6 +305,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 								.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType",
 								e.m_heatExchange.m_modelType)), FUNC_ID);
 			}
+#endif
 		}
 		catch(IBK::Exception &ex) {
 			throw IBK::Exception(ex, IBK::FormatString("Error initializing HydraulicFlowElement with id %1")
