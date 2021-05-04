@@ -184,16 +184,19 @@ void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescript
 	// set a description for each flow element
 	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	// loop through all flow elements
-	for(unsigned int i = 0; i < m_flowElementProperties.size(); ++i) {
+	for (unsigned int i = 0; i < m_flowElementProperties.size(); ++i) {
+		// skip elements without heat loss
+		if (m_statesModel->m_p->m_heatLossElements[i] == nullptr)
+			continue;
 		desc.m_id = m_flowElementProperties[i].m_elementId;
 		resDesc.push_back(desc);
 	}
 
-	// add output
+	// heat load to zones with heat exchange
 	if (!m_zoneProperties.empty()) {
 		// select all zone ids
 		std::vector<unsigned int> zoneIds;
-		for(const ZoneProperties &zoneProp : m_zoneProperties)
+		for (const ZoneProperties &zoneProp : m_zoneProperties)
 			zoneIds.push_back(zoneProp.m_zoneId);
 
 		// set a description for each zone
@@ -202,10 +205,12 @@ void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescript
 		desc.resize(zoneIds, VectorValuedQuantityIndex::IK_ModelID);
 		resDesc.push_back(desc);
 	}
+
+	// heat load to heated contruction layers
 	if (!m_activeProperties.empty()) {
 		// select all constrcution instance ids
 		std::vector<unsigned int> conInstanceIds;
-		for(const ActiveLayerProperties &layerProp : m_activeProperties)
+		for (const ActiveLayerProperties &layerProp : m_activeProperties)
 			conInstanceIds.push_back(layerProp.m_constructionInstanceId);
 
 		// set a description for each construction
@@ -220,7 +225,7 @@ void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescript
 	// set a description for each flow element
 	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	// loop through all flow elements
-	for(unsigned int i = 0; i < m_flowElementProperties.size(); ++i) {
+	for (unsigned int i = 0; i < m_flowElementProperties.size(); ++i) {
 		desc.m_id = m_flowElementProperties[i].m_elementId;
 		resDesc.push_back(desc);
 	}
@@ -230,13 +235,13 @@ void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescript
 	// set a description for each flow element
 	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	// loop through all flow elements
-	for(unsigned int i = 0; i < m_flowElementProperties.size(); ++i) {
+	for (unsigned int i = 0; i < m_flowElementProperties.size(); ++i) {
 		desc.m_id = m_flowElementProperties[i].m_elementId;
 		resDesc.push_back(desc);
 	}
 
 	// add individual model results
-	if(!m_modelQuantities.empty())
+	if (!m_modelQuantities.empty())
 		resDesc.insert(resDesc.end(), m_modelQuantities.begin(), m_modelQuantities.end());
 }
 
@@ -273,12 +278,12 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference &
 	// return ydot
 	if (quantityName == std::string("ydot")) {
 		// whole vector access
-		if(quantityName.m_index == -1)
+		if (quantityName.m_index == -1)
 			return &m_ydot[0];
 		return nullptr;
 	}
 	if (quantityName.m_name == std::string("NetworkZoneHeatLoad")) {
-		// no zones are given
+		// no zones are given?
 		if (m_zoneProperties.empty())
 			return nullptr;
 		// find zone id
@@ -291,11 +296,11 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference &
 		// found a valid entry
 		return &fIt->m_zoneHeatLoad;
 	}
-	if(quantityName.m_name == std::string("NetworkActiveLayerHeatLoad")) {
-		// no zones are given
+	if (quantityName.m_name == std::string("NetworkActiveLayerHeatLoad")) {
+		// no active layers are given?
 		if(m_activeProperties.empty())
 			return nullptr;
-		// find zone id
+		// find id
 		std::list<ActiveLayerProperties>::const_iterator fIt = std::find(m_activeProperties.begin(), m_activeProperties.end(),
 				  (unsigned int) quantityName.m_index);
 		// invalid index access
@@ -307,7 +312,7 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference &
 	}
 
 
-	// everything below will be reftype NETWORKELEMENT, so ignore everything else
+	// everything else must be of reftype NETWORKELEMENT, so ignore everything else
 	if (quantity.m_referenceType != NANDRAD::ModelInputReference::MRT_NETWORKELEMENT)
 		return nullptr;
 
@@ -332,7 +337,7 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference &
 	unsigned int endIdx = m_modelQuantityOffset[pos + 1];
 
 	// check if element contains requested quantity
-	for(unsigned int resIdx = startIdx; resIdx < endIdx; ++resIdx) {
+	for (unsigned int resIdx = startIdx; resIdx < endIdx; ++resIdx) {
 		const QuantityDescription &modelDesc = m_modelQuantities[resIdx];
 		if (modelDesc.m_name == quantityName.m_name) {
 			// index is not allowed for network element output
@@ -365,10 +370,7 @@ int ThermalNetworkBalanceModel::priorityOfModelEvaluation() const {
 
 
 void ThermalNetworkBalanceModel::inputReferences(std::vector<InputReference> & inputRefs) const {
-	// set input references to hydraulic network calculation
-	if(!inputRefs.empty())
-		inputRefs.clear();
-	// use hydraulic network model to generate mass flux references
+	// request mass fluxes from hydraulic network model with same ID
 	InputReference inputRef;
 	inputRef.m_id = id();
 	inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORK;
@@ -377,24 +379,24 @@ void ThermalNetworkBalanceModel::inputReferences(std::vector<InputReference> & i
 	// register reference
 	inputRefs.push_back(inputRef);
 
-	// set references to zone air temperatures
-	if(!m_zoneProperties.empty()) {
+	// request zone air temperatures
+	if (!m_zoneProperties.empty()) {
 		InputReference inputRef;
 		inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
 		inputRef.m_name = std::string("AirTemperature");
 		inputRef.m_required = true;
-		for(const ZoneProperties &zoneProp : m_zoneProperties) {
+		for (const ZoneProperties &zoneProp : m_zoneProperties) {
 			inputRef.m_id = zoneProp.m_zoneId;
 			inputRefs.push_back(inputRef);
 		}
 	}
-	// set references to construction layer temperatures
-	if(!m_activeProperties.empty()) {
+	// request construction layer temperatures
+	if (!m_activeProperties.empty()) {
 		InputReference inputRef;
 		inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
 		inputRef.m_name = std::string("ActiveLayerTemperature");
 		inputRef.m_required = true;
-		for(const ActiveLayerProperties &actLayerProp : m_activeProperties) {
+		for (const ActiveLayerProperties &actLayerProp : m_activeProperties) {
 			inputRef.m_id = actLayerProp.m_constructionInstanceId;
 			inputRefs.push_back(inputRef);
 		}
