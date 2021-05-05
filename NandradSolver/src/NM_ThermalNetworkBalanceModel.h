@@ -51,6 +51,7 @@ class ThermalNetworkStatesModel;
 	gets a pointer to the corresponding ThermalNetworkStatesModel instance.
 
 	To evaluate the thermal balances in each flow element of the network, it needs:
+
 	- prescribed/imposed fluxes to flow elements (externally computed)
 	- surrounding temperatures (for example room air and radiation surface temperatures for heater equation models)
 	- mass fluxes computed by network model
@@ -60,6 +61,22 @@ class ThermalNetworkStatesModel;
 
 	The other dependencies are formulated by the flow element thermal models themselves, and simply forwarded by
 	the ThermalNetworkBalanceModel to the framework.
+
+	## Provided results ##
+
+	ModelReferenceType = MRT_NETWORK
+	id = (id of network)
+	Quantities:
+		- NetworkZoneHeatLoad (in [W]), vector-valued, access via zone ID
+		- NetworkActiveLayerHeatLoad (in [W]), vector-valued, access via construction instance ID
+
+	ModelReferenceType = MRT_NETWORKELEMENT
+	id = (id of flow element)
+	Quantities:
+		- FlowElementHeatLoss  (in [W])
+		- InletNodeTemperature (in [C])
+		- OutletNodeTemperature (in [C])
+		- ... additional, flow-element specific outputs
 */
 class ThermalNetworkBalanceModel : public AbstractModel, public AbstractStateDependency, public AbstractTimeDependency {
 public:
