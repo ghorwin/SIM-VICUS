@@ -1,0 +1,4 @@
+Network(id=1)	static network
+NetworkElement(id=1001)	pump
+NetworkElement(id=1002)	pipe
+NetworkElement(id=1003)	heatpump

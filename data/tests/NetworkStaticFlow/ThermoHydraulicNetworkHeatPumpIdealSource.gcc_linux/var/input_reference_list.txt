@@ -1,0 +1,12 @@
+Variable name                                     	Source object id(s) 	Vector indexes/ids  
+Network.FluidMassFluxes                           	1                   	
+Network.NetworkZoneHeatLoad                       	1                   	1                   
+NetworkElement.COP                                	1003                	
+NetworkElement.CondenserHeatFlux                  	1003                	
+NetworkElement.CondenserMeanTemperatureSchedule   	1003                	
+NetworkElement.ElectricalPower                    	1003                	
+NetworkElement.FlowElementHeatLoss                	1001,1002,1003      	
+NetworkElement.FluidMassFlux                      	1001,1002,1003      	
+NetworkElement.FluidTemperature                   	1001,1002,1003      	
+NetworkElement.OutletNodeTemperature              	1001,1002,1003      	
+Zone.AirTemperature                               	1                   	
