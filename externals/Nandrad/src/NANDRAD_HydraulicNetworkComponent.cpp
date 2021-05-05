@@ -41,13 +41,6 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) {
 			checkModelParameter(m_para[i], i);
 		}
 
-		// get all necessary spline parameters of current model type
-		std::vector<unsigned int> paraSpl = requiredSplineParameter(m_modelType, m_heatPumpIntegration);
-		// check the parameters
-		for (unsigned int i: paraSpl){
-			checkModelSplineParameter(m_splPara[i], i);
-		}
-
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Missing/invalid parameters for component '%1' (#%2) of type %3.")
@@ -99,31 +92,6 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 }
 
 
-
-std::vector<unsigned int> HydraulicNetworkComponent::requiredSplineParameter(const HydraulicNetworkComponent::ModelType modelType,
-																			 const HydraulicNetworkComponent::HeatPumpIntegration heatPumpIntegration){
-
-	switch (modelType) {
-
-		case MT_HeatPumpIdealCarnot:
-			switch (heatPumpIntegration) {
-				case HydraulicNetworkComponent::HP_SourceSide :
-					return {SPL_CondenserMeanTemperature};
-				case HydraulicNetworkComponent::HP_SupplySide :
-				case HydraulicNetworkComponent::HP_SupplyAndSourceSide :
-				case HydraulicNetworkComponent::NUM_HP:
-					;
-			}
-		case MT_HeatPumpReal:
-		case MT_ConstantPressurePump:
-		case MT_HeatExchanger:
-		case MT_DynamicPipe:
-		case MT_SimplePipe:
-		case NUM_MT: ;
-	}
-	return {};
-}
-
 void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, const unsigned int numPara) {
 	const char * enumName = "HydraulicNetworkComponent::para_t";
 	const char * name = KeywordList::Keyword(enumName, (int)numPara);
@@ -155,40 +123,6 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 	}
 }
 
-void HydraulicNetworkComponent::checkModelSplineParameter(LinearSplineParameter &paraSpl, const unsigned int numPara)
-{
-	FUNCID("HydraulicNetworkComponent::checkModelSplineParameter");
-
-	const char * enumName = "HydraulicNetworkComponent::splinePara_t";
-	const char * name = KeywordList::Keyword(enumName, (int)numPara);
-	const char * unit = KeywordList::Unit(enumName, (int)numPara);
-
-	try {
-
-		switch (numPara) {
-
-			// can be any value
-			case SPL_CondenserMeanTemperature:
-			case SPL_EvaporatorMeanTemperature:
-			case SPL_CondenserOutletSetPointTemperature: {
-				paraSpl.checkAndInitialize(name, IBK::Unit("s"), IBK::Unit("K"),
-											IBK::Unit(unit), std::numeric_limits<double>::min(), false,
-											std::numeric_limits<double>::max(), false,
-											nullptr);
-			} break;
-
-			// must be between 0 and 1
-			case SPL_HeatPumpControlSignal:{
-				paraSpl.checkAndInitialize(name, IBK::Unit("s"), IBK::Unit(unit),
-											IBK::Unit(unit), 0, true, 1, true, nullptr);
-			}
-		}
-
-	} catch (IBK::Exception &ex) {
-		throw IBK::Exception(ex, IBK::FormatString("Error initializing spline '%1'.").arg(name), FUNC_ID);
-	}
-
-}
 
 
 } // namespace NANDRAD

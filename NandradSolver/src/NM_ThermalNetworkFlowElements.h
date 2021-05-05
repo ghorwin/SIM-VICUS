@@ -419,14 +419,16 @@ public:
 
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
-		quantities.push_back(QuantityDescription("COP","---","Coefficient of performance for heat pump", false));
-		quantities.push_back(QuantityDescription("ElectricalPower","---","Electrical power for heat pump", false));
+		quantities.push_back(QuantityDescription("COP","---", "Coefficient of performance for heat pump", false));
+		quantities.push_back(QuantityDescription("ElectricalPower", "W", "Electrical power for heat pump", false));
+		quantities.push_back(QuantityDescription("CondenserHeatFlux", "W", "Heat Flux at condenser side of heat pump", false));
 	}
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
 	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
 		valRefs.push_back(&m_COP);
 		valRefs.push_back(&m_electricalPower);
+		valRefs.push_back(&m_condenserHeatFlux);
 	}
 
 	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
@@ -446,14 +448,25 @@ private:
 	/*! Id number of flow element. */
 	unsigned int							m_flowElementId = NANDRAD::INVALID_ID;
 
+	/*! Temperatures from schedules [K]. These temperatures are interpreted within the model depending on which
+	 * side of the heat pump is connected to the network (m_heatpumpIntegration) */
+	const double							*m_scheduledTemperature1 = nullptr;
+	const double							*m_scheduledTemperature2 = nullptr;
+
 	/*! Mean condenser temperature [K]*/
-	const double							*m_condenserMeanTemperature = nullptr;
+	double									m_condenserMeanTemperature = 999;
+
+	/*! Mean evaporator temperature [K]*/
+	double									m_evaporatorMeanTemperature = 999;
 
 	/*! Nominal evaporator temperature difference [K] */
 	double									m_nominalTemperatureDifference = 999;
 
-	/*! maximum heating power of heat pump (condenser) in [W] */
+	/*! Maximum heating power of heat pump (condenser) in [W] */
 	double m_condenserMaximumHeatFlux = 999999;
+
+	/*! Actual heating power of heat pump (condenser) in [W] */
+	double m_condenserHeatFlux = 999999;
 
 	/*! Carnot efficiency [0...1] */
 	double									m_carnotEfficiency = 999;
@@ -461,9 +474,11 @@ private:
 	/*! Coefficient of performance for heat pump */
 	double									m_COP = 999;
 
+	/*! Electrical power of the heat pump compressor [W] */
 	double									m_electricalPower = 999;
 
 	NANDRAD::HydraulicNetworkComponent::HeatPumpIntegration m_heatpumpIntegration = NANDRAD::HydraulicNetworkComponent::NUM_HP;
+
 };
 
 

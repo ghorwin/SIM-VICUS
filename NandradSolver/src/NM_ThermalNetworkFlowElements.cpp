@@ -8,6 +8,7 @@
 
 #include "numeric"
 
+#include "IBK_messages.h"
 
 
 namespace NANDRAD_MODEL {
@@ -510,6 +511,8 @@ TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(unsigned int flowElementId,
 
 
 void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
+	FUNCID("TNHeatPumpIdealCarnot::setInflowTemperature");
+
 	// copy inflow temperature
 	m_inflowTemperature = Tinflow;
 
@@ -517,51 +520,131 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 
 		case NANDRAD::HydraulicNetworkComponent::HP_SourceSide: {
 
-		// COP
-		const double evaporatorMeanTemperature = Tinflow + m_nominalTemperatureDifference / 2;
-		const double COPMax = *m_condenserMeanTemperature / (*m_condenserMeanTemperature - evaporatorMeanTemperature);
-		const double m_COP = m_carnotEfficiency * COPMax;
+			// get scheduled temperature
+			m_condenserMeanTemperature = *m_scheduledTemperature1;
 
-		// cut condenser heat flux
-		IBK_ASSERT(m_heatExchangeValueRef != nullptr);
-		double condenserHeatFlux = *m_heatExchangeValueRef;
-		if (condenserHeatFlux > m_condenserMaximumHeatFlux)
-			condenserHeatFlux = m_condenserMaximumHeatFlux;
+			// cut condenser heat flux
+			IBK_ASSERT(m_heatExchangeValueRef != nullptr);
+			m_condenserHeatFlux = *m_heatExchangeValueRef;
+			if (m_condenserHeatFlux > m_condenserMaximumHeatFlux)
+				m_condenserHeatFlux = m_condenserMaximumHeatFlux;
 
-		// heat loss = - evaporator heat flux
-		m_heatLoss = - condenserHeatFlux * (m_COP - 1) / m_COP;
-		m_electricalPower  = *m_heatExchangeValueRef / m_COP;
+			// heat pump physics only work when condenser temperature is above evaporator temperature
+			m_evaporatorMeanTemperature = Tinflow - m_nominalTemperatureDifference / 2;
+			if (m_condenserMeanTemperature > m_evaporatorMeanTemperature){
+				const double COPMax = m_condenserMeanTemperature / (m_condenserMeanTemperature - m_evaporatorMeanTemperature);
+				m_COP = m_carnotEfficiency * COPMax;
+				m_heatLoss = m_condenserHeatFlux * (m_COP - 1) / m_COP;
+				m_electricalPower  = m_condenserHeatFlux / m_COP;
+			}
+			else {
+				IBK::IBK_Message(IBK::FormatString("Condenser temperature >= evaporator temperature in "
+												   "HeatPumpIdealCarnot, flow element with id '%1'\n").arg(m_flowElementId),
+													IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
+				m_COP = 0.0;
+				m_heatLoss = 0.0;
+				m_electricalPower  = 0.0;
+			}
+		} break;
+
+
+		// not fully implemented yet
+		case NANDRAD::HydraulicNetworkComponent::HP_SupplySide:{
+
+			// get scheduled temperatures
+			m_evaporatorMeanTemperature = *m_scheduledTemperature1;
+			const double condenserOutletSetpointTemperature = *m_scheduledTemperature2;
+
+			// implement controller here
+			double y = 100; // = f(Tinflow, condenserOutletSetpointTemperature)
+			// cut condenser heat flux
+			m_condenserHeatFlux = y;
+			if (m_condenserHeatFlux > m_condenserMaximumHeatFlux)
+				m_condenserHeatFlux = m_condenserMaximumHeatFlux;
+			// heat pump can only add heat
+			if (m_condenserHeatFlux < 0)
+				m_condenserHeatFlux = 0;
+
+			// heat pump physics only work when condenser temperature is above evaporator temperature
+			m_condenserMeanTemperature = Tinflow + m_nominalTemperatureDifference / 2;
+			if (m_condenserMeanTemperature > m_evaporatorMeanTemperature){
+				const double COPMax = m_condenserMeanTemperature / (m_condenserMeanTemperature - m_evaporatorMeanTemperature);
+				m_COP = m_carnotEfficiency * COPMax;
+				m_heatLoss = - m_condenserHeatFlux;
+				m_electricalPower  = m_condenserHeatFlux / m_COP;
+			}
+			else {
+				IBK::IBK_Message(IBK::FormatString("Condenser temperature >= evaporator temperature in "
+												   "HeatPumpIdealCarnot, flow element with id '%1'\n").arg(m_flowElementId),
+													IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
+				m_COP = 0.0;
+				m_heatLoss = 0.0;
+				m_electricalPower  = 0.0;
+			}
 
 		} break;
 
-		case NANDRAD::HydraulicNetworkComponent::HP_SupplySide:
 		case NANDRAD::HydraulicNetworkComponent::HP_SupplyAndSourceSide:
-		case NANDRAD::HydraulicNetworkComponent::NUM_HP: {
-
-		}
+		case NANDRAD::HydraulicNetworkComponent::NUM_HP:
+			break;
 	}
 }
 
 
+
 void TNHeatPumpIdealCarnot::inputReferences(std::vector<InputReference> & inputRefs) const {
 
-	// TODO Hauke : Add switch for m_heatpumpIntegration and configure input reference accordingly
+	switch (m_heatpumpIntegration) {
 
-	InputReference ref;
-	ref.m_id = m_flowElementId;
-	ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
-	ref.m_name.m_name = "CondenserMeanTemperatureSchedule";
-	ref.m_required = true;
-	inputRefs.push_back(ref);
+		case NANDRAD::HydraulicNetworkComponent::HP_SourceSide: {
+			InputReference ref;
+			ref.m_id = m_flowElementId;
+			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+			ref.m_name.m_name = "CondenserMeanTemperatureSchedule";
+			ref.m_required = true;
+			inputRefs.push_back(ref);
+		} break;
+
+		case NANDRAD::HydraulicNetworkComponent::HP_SupplySide: {
+			InputReference ref;
+			ref.m_id = m_flowElementId;
+			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+			ref.m_name.m_name = "EvaporatorMeanTemperatureSchedule";
+			ref.m_required = true;
+			inputRefs.push_back(ref);
+			InputReference ref2;
+			ref2.m_id = m_flowElementId;
+			ref2.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+			ref2.m_name.m_name = "HeatingSetpointSchedule";
+			ref2.m_required = true;
+			inputRefs.push_back(ref2);
+		} break;
+
+		case NANDRAD::HydraulicNetworkComponent::HP_SupplyAndSourceSide:
+		case NANDRAD::HydraulicNetworkComponent::NUM_HP:
+			break;
+	}
 }
 
 
 void TNHeatPumpIdealCarnot::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
-	// TODO Hauke : Add switch for m_heatpumpIntegration and configure input reference accordingly
 
 	// now store the pointer returned for our input ref request and advance the iterator by one
-	m_condenserMeanTemperature = *(resultValueRefs++);
+	switch (m_heatpumpIntegration) {
+
+		case NANDRAD::HydraulicNetworkComponent::HP_SourceSide:
+			m_scheduledTemperature1 = *(resultValueRefs++); // CondenserMeanTemperatureSchedule
+			break;
+		case NANDRAD::HydraulicNetworkComponent::HP_SupplySide:
+			m_scheduledTemperature1 = *(resultValueRefs++); // EvaporatorMeanTemperatureSchedule
+			m_scheduledTemperature2 = *(resultValueRefs++); // HeatingSetpointSchedule
+			break;
+		case NANDRAD::HydraulicNetworkComponent::HP_SupplyAndSourceSide:
+		case NANDRAD::HydraulicNetworkComponent::NUM_HP:
+			break;
+	}
 }
+
 
 
 // *** AdiabaticElement ***
