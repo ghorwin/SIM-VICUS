@@ -56,13 +56,12 @@
 						<IBK:Parameter name="PipeMaxDiscretizationWidth" unit="m">5</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" modelType="HeatPumpIdealCarnot">
-						<HeatExchangeType>HeatFluxDataFile</HeatExchangeType>
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PressureLossCoefficient" unit="-">5</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 						<IBK:Parameter name="CarnotEfficiency" unit="---">0.4</IBK:Parameter>
 						<IBK:Parameter name="HeatPumpNominalTemperatureDifference" unit="K">3</IBK:Parameter>
-						<IBK:Parameter name="MaximumHeatHeatingPower" unit="W">4000</IBK:Parameter>
+						<IBK:Parameter name="MaximumHeatingPower" unit="W">4000</IBK:Parameter>
 						<HeatPumpIntegration>SourceSide</HeatPumpIntegration>
 					</HydraulicNetworkComponent>
 				</Components>
@@ -98,7 +97,7 @@
 								<Values>CondenserMeanTemperatureSchedule [C]:35,50,35,50,35;</Values>
 							</DailyCycle>
 						</DailyCycles>
-					</Schedule>					
+					</Schedule>
 				</ScheduleGroup>
 			</ScheduleGroups>
 		</Schedules>

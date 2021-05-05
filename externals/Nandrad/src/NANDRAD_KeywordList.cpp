@@ -226,7 +226,7 @@ namespace NANDRAD {
 				case 4 : return "Volume";
 				case 5 : return "PipeMaxDiscretizationWidth";
 				case 6 : return "CarnotEfficiency";
-				case 7 : return "MaximumHeatHeatingPower";
+				case 7 : return "MaximumHeatingPower";
 				case 8 : return "HeatPumpNominalTemperatureDifference";
 			} break;
 			// HydraulicNetworkComponent::HeatPumpIntegration
@@ -807,7 +807,7 @@ namespace NANDRAD {
 				case 4 : return "Volume";
 				case 5 : return "PipeMaxDiscretizationWidth";
 				case 6 : return "CarnotEfficiency";
-				case 7 : return "MaximumHeatHeatingPower";
+				case 7 : return "MaximumHeatingPower";
 				case 8 : return "HeatPumpNominalTemperatureDifference";
 			} break;
 			// HydraulicNetworkComponent::HeatPumpIntegration
