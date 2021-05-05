@@ -46,13 +46,21 @@ public:
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const;
 
+	/*! Returns the calculate or given uValue depending on model type. [W/m2K] */
+	double uValue();
+
+	/*! Returns the calculate or given SHGC depending on model type. [---] */
+	double SHGC();
+
+	bool isValid() const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID-number for this glazing system (INVALID_ID = disabled/undefined). */
 	unsigned int						m_id = INVALID_ID;							// XML:A:required
 
 	/*! Some display/comment name for this model (optional). */
-	QString								m_displayName;								// XML:A
+	IBK::MultiLanguageString			m_displayName;								// XML:A
 
 	/*! False color. */
 	QColor								m_color;									// XML:A
