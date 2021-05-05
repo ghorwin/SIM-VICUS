@@ -62,11 +62,16 @@ HEADERS += \
 	../../src/VICUS_Object.h \
 	../../src/VICUS_Outputs.h \
 	../../src/VICUS_PlaneGeometry.h \
+	../../src/VICUS_Polygon2D.h \
+	../../src/VICUS_Polygon3D.h \
 	../../src/VICUS_Project.h \
 	../../src/VICUS_Room.h \
 	../../src/VICUS_RotationMatrix.h \
 	../../src/VICUS_Schedule.h \
 	../../src/VICUS_ScheduleInterval.h \
+	../../src/VICUS_SubSurface.h \
+	../../src/VICUS_SubSurfaceComponent.h \
+	../../src/VICUS_SubSurfaceComponentInstance.h \
 	../../src/VICUS_Surface.h \
 	../../src/VICUS_SurfaceProperties.h \
 	../../src/VICUS_VentilationNatural.h \
@@ -106,11 +111,17 @@ SOURCES += \
 	../../src/VICUS_Object.cpp \
 	../../src/VICUS_Outputs.cpp \
 	../../src/VICUS_PlaneGeometry.cpp \
+	../../src/VICUS_Polygon2D.cpp \
+	../../src/VICUS_Polygon3D.cpp \
 	../../src/VICUS_Project.cpp \
 	../../src/VICUS_Schedule.cpp \
 	../../src/VICUS_ScheduleInterval.cpp \
+	../../src/VICUS_SubSurface.cpp \
+	../../src/VICUS_SubSurfaceComponent.cpp \
 	../../src/VICUS_Surface.cpp \
 	../../src/VICUS_VentilationNatural.cpp \
+	../../src/VICUS_Window.cpp \
+	../../src/VICUS_WindowGlazingSystem.cpp \
 	../../src/VICUS_ZoneControlNaturalVentilation.cpp \
 	../../src/VICUS_ZoneControlShading.cpp \
 	../../src/VICUS_ZoneControlThermostat.cpp \
@@ -141,6 +152,9 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_RotationMatrix.cpp \
 	../../src/ncg/ncg_VICUS_Schedule.cpp \
 	../../src/ncg/ncg_VICUS_ScheduleInterval.cpp \
+	../../src/ncg/ncg_VICUS_SubSurface.cpp \
+	../../src/ncg/ncg_VICUS_SubSurfaceComponent.cpp \
+	../../src/ncg/ncg_VICUS_SubSurfaceComponentInstance.cpp \
 	../../src/ncg/ncg_VICUS_Surface.cpp \
 	../../src/ncg/ncg_VICUS_SurfaceProperties.cpp \
 	../../src/ncg/ncg_VICUS_VentilationNatural.cpp \

@@ -60,5 +60,30 @@ QString BoundaryCondition::htmlDescription() const {
 	return html;
 }
 
+AbstractDBElement::ComparisonResult BoundaryCondition::equal(const AbstractDBElement *other) const {
+	const BoundaryCondition * otherBC = dynamic_cast<const BoundaryCondition*>(other);
+	if (otherBC == nullptr)
+		return Different;
+
+	//first check critical data
+
+	//check parameters
+
+	if(m_heatConduction != otherBC->m_heatConduction ||
+			m_longWaveEmission != otherBC->m_longWaveEmission ||
+			m_solarAbsorption != otherBC->m_solarAbsorption ||
+			m_vaporDiffusion != otherBC->m_vaporDiffusion ||
+			m_airFlow != otherBC->m_airFlow)
+		return Different;
+
+	//check meta data
+
+	if(m_displayName != otherBC->m_displayName ||
+			m_color != otherBC->m_color)
+		return OnlyMetaDataDiffers;
+
+	return Equal;
+}
+
 
 } // namespace VICUS

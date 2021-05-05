@@ -339,15 +339,15 @@ void SVGeometryView::coordinateInputFinished() {
 	}
 
 	// add last vertex, if existing
-	if (po->planeGeometry().vertexes().size() > 0) {
-		offset += po->planeGeometry().vertexes().back();
+	if (po->planeGeometry().polygon().vertexes().size() > 0) {
+		offset += po->planeGeometry().polygon().vertexes().back();
 	}
 
 	// check if adding the vertex would invalidate the polygon
 	VICUS::PlaneGeometry p = po->planeGeometry();
 	p.addVertex(offset);
 	// two vertexes are always valid, so we do not check for valid vertexes then
-	if (p.vertexes().size() > 2 && !p.isValid()) {
+	if (p.polygon().vertexes().size() > 2 && !p.isValid()) {
 		QMessageBox::critical(this, QString(), tr("Adding this vertex would invalidate the polygon."));
 		m_lineEditCoordinateInput->setFocus();
 		m_lineEditCoordinateInput->selectAll();

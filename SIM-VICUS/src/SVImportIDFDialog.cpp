@@ -138,8 +138,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 			VICUS::Surface surf;
 			surf.m_id = surf.uniqueID();
 			surf.m_displayName = QString::fromStdString(bsd.m_name);
-			surf.m_geometry = VICUS::PlaneGeometry(VICUS::PlaneGeometry::T_Polygon);
-			surf.m_geometry.setVertexes(bsd.m_polyline);
+			surf.setPolygon3D( VICUS::Polygon3D( bsd.m_polyline ) );
 
 			surf.updateColor();
 			bl.m_rooms[idx].m_surfaces.push_back(surf);

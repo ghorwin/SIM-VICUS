@@ -40,6 +40,7 @@
 #include "VICUS_NetworkPipe.h"
 #include "VICUS_Outputs.h"
 #include "VICUS_ComponentInstance.h"
+#include "VICUS_SubSurfaceComponentInstance.h"
 #include "VICUS_EmbeddedDatabase.h"
 
 
@@ -110,6 +111,11 @@ public:
 		is not the uniqueID, but the persistant id from the data model.
 	*/
 	VICUS::Surface * surfaceByID(unsigned int surfaceID);
+
+	/*! Searches through all buildings and tries to find a subsurface with given subsurface ID (this
+		is not the uniqueID, but the persistant id from the data model).
+	*/
+	VICUS::SubSurface * subSurfaceByID(unsigned int surfID);
 
 	/*! Selects objects and returns set with pointers according to additional filters.
 		\param selectedObjs Here the pointers to selected objects are returned.
@@ -311,7 +317,8 @@ public:
 		This vector is outside buildings, so that two building parts can be connected with
 		a component.
 	*/
-	std::vector<ComponentInstance>						m_componentInstances;		// XML:E
+	std::vector<ComponentInstance>						m_componentInstances;				// XML:E
+	std::vector<SubSurfaceComponentInstance>			m_subSurfaceComponentInstances;		// XML:E
 
 	/*! Vector with plain (dumb) geometry. */
 	std::vector<Surface>								m_plainGeometry;			// XML:E

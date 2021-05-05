@@ -34,8 +34,6 @@ public:
 		///TODO Heiko ist der Kommentar hier richtig?
 		CT_ColdRoof,				// Keyword: ColdRoof				'Flat roof construction (to heated/insulated space)'
 		CT_WarmRoof,				// Keyword: WarmRoof				'Flat roof construction (to cold/ventilated space)'
-//		CT_Window,
-//		CT_Door,
 		CT_Miscellaneous,			// Keyword: Miscellaneous			'Some other component type'
 		NUM_CT
 	};
@@ -50,6 +48,9 @@ public:
 	bool isValid(const VICUS::Database<VICUS::Material> & materials,
 				 const VICUS::Database<VICUS::Construction> & constructions,
 				 const VICUS::Database<VICUS::BoundaryCondition> & bcs) const;
+
+	/*! Comparison operator */
+	ComparisonResult equal(const AbstractDBElement *other) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -77,16 +78,15 @@ public:
 	/*! Opaque construction ID. */
 	unsigned int					m_idConstruction = INVALID_ID;				// XML:E
 
-	/*! Transparent construction ID. */
-	unsigned int					m_idGlazingSystem = INVALID_ID;				// XML:E
-
 	/*! Boundary condition ID for Side A (usually outside). */
 	unsigned int					m_idSideABoundaryCondition = INVALID_ID;	// XML:E
 
 	/*! Boundary condition ID for Side B (usually inside). */
 	unsigned int					m_idSideBBoundaryCondition = INVALID_ID;	// XML:E
 
-	/*! Surface property ID. */
+	/*! Surface property ID.
+		TODO Dirk, kann das weg?
+	*/
 	unsigned int					m_idSurfaceProperty = INVALID_ID;			// XML:E
 };
 

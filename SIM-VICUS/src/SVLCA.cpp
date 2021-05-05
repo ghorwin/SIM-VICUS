@@ -117,7 +117,7 @@ void LCA::calculateLCA()
 					VICUS::Component comp = elementExists<VICUS::Component>(m_dbComponents, compInstance->m_componentID,
 													s.m_displayName.toStdString(),"Component", "surface");
 					//save surface area
-					compRes[comp.m_id].m_area += surf.m_geometry.area();
+					compRes[comp.m_id].m_area += surf.geometry().area();
 				}
 				else {
 					/// TODO : error handling if component instance pointer is empty (no component associated)

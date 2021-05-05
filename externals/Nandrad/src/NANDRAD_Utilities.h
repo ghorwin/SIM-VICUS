@@ -31,6 +31,7 @@
 #include <IBK_Time.h>
 #include <IBK_LinearSpline.h>
 #include <IBK_StringUtils.h>
+#include <IBK_point.h>
 
 #include <IBKMK_Vector3D.h>
 
@@ -111,6 +112,7 @@ void writeVector(TiXmlElement * parent, const std::string & name, const std::vec
 	}
 }
 
+
 template <typename T>
 T readPODAttributeValue(const TiXmlElement * element, const TiXmlAttribute * attrib) {
 	FUNCID(NANDRAD::readPODAttributeValue);
@@ -139,11 +141,44 @@ IBK::Unit readUnitElement(const TiXmlElement * element, const std::string & eNam
 IBK::Time readTimeElement(const TiXmlElement * element, const std::string & eName);
 
 /*! Writes out a vector of Vector3D elements. */
-void writeVector3D(TiXmlElement * parent, const std::string & name, const std::vector<IBKMK::Vector3D> & vec);
+TiXmlElement * writeVector3D(TiXmlElement * parent, const std::string & name, const std::vector<IBKMK::Vector3D> & vec);
 
 /*! Reads a vector of Vector3D elements. */
 void readVector3D(const TiXmlElement * element, const std::string & name, std::vector<IBKMK::Vector3D> & vec);
 
+
+template <typename T>
+void readPoint2D(const TiXmlElement * element, const std::string & name, IBK::point2D<T> & p) {
+	FUNCID(NANDRAD::readPoint2D);
+	std::string text = element->GetText();
+	try {
+		typename std::vector<T> vec;
+		IBK::string2vector(text, vec);
+		if (vec.size() != 2)
+			throw IBK::Exception("Size mismatch, expected 2 numbers separated by , .", FUNC_ID);
+		p.m_x = vec[0];
+		p.m_y = vec[1];
+	}
+	catch (IBK::Exception & ex) {
+		throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+			IBK::FormatString("Error reading point2D element '%1'.").arg(name) ), FUNC_ID);
+	}
+}
+
+/*! Special implementation for double-type point2D. */
+template <>
+void readPoint2D(const TiXmlElement * element, const std::string & name, IBK::point2D<double> & p);
+
+template <typename T>
+void writePoint2D(TiXmlElement * parent, const std::string & name, const IBK::point2D<T> & p) {
+	TiXmlElement * child = new TiXmlElement(name);
+	parent->LinkEndChild(child);
+
+	std::stringstream vals;
+	vals << p.m_x << " " << p.m_y;
+	TiXmlText * text = new TiXmlText( vals.str() );
+	child->LinkEndChild( text );
+}
 
 
 } // namespace NANDRAD

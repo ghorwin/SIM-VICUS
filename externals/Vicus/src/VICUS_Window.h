@@ -12,14 +12,20 @@
 
 namespace VICUS {
 
+/*! Data for a window (embedded object), defined through glazing system, frame a dividers. */
 class Window : public AbstractDBElement {
 public:
-
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
+
+	/*! Comparison operator */
+	ComparisonResult equal(const AbstractDBElement *other) const;
+
+	/*! Checks if references glazing system exist and if all parameters are valid. */
+	bool isValid() const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

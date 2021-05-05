@@ -32,5 +32,33 @@ bool ZoneControlThermostat::isValid() const
 	return true;
 }
 
+AbstractDBElement::ComparisonResult ZoneControlThermostat::equal(const AbstractDBElement *other) const {
+	const ZoneControlThermostat * otherCtrl = dynamic_cast<const ZoneControlThermostat*>(other);
+	if (otherCtrl == nullptr)
+		return Different;
+
+	//first check critical data
+
+	//check parameters
+	for(unsigned int i=0; i<NUM_P; ++i){
+		if(m_para[i] != otherCtrl->m_para[i])
+			return Different;
+	}
+	if(m_heatingSetpointScheduleId != otherCtrl->m_heatingSetpointScheduleId ||
+			m_coolingSetpointScheduleId != otherCtrl->m_coolingSetpointScheduleId ||
+			m_ctrlVal != otherCtrl->m_ctrlVal)
+		return Different;
+
+	//check meta data
+
+	if(m_displayName != otherCtrl->m_displayName ||
+			m_color != otherCtrl->m_color ||
+			m_dataSource != otherCtrl->m_dataSource ||
+			m_notes != otherCtrl->m_notes)
+		return OnlyMetaDataDiffers;
+
+	return Equal;
+}
+
 
 }

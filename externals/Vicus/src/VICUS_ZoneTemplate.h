@@ -59,6 +59,9 @@ public:
 	*/
 	SubTemplateType usedReference(unsigned int index) const;
 
+	/*! Comparison operator */
+	ComparisonResult equal(const AbstractDBElement *other) const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of ZoneTemplate. */

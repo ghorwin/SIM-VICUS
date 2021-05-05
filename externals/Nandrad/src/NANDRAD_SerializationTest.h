@@ -30,6 +30,7 @@
 #include <IBK_Unit.h>
 #include <IBK_IntPara.h>
 #include <IBK_Time.h>
+#include <IBK_point.h>
 
 #include <NANDRAD_Schedule.h>
 #include <NANDRAD_Interface.h>
@@ -232,6 +233,9 @@ public:
 	// generic class with custom tag name
 	// -> <OtherSchedule...>...</OtherSchedule>
 	Schedule			m_sched2;								// XML:E:tag=OtherSchedule
+
+	// -> <Point2D>x,y</Point2D>
+	IBK::point2D<double>	m_coordinate2D;						// XML:E
 };
 
 }

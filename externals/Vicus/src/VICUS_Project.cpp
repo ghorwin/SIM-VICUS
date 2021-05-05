@@ -403,8 +403,12 @@ void Project::updatePointers() {
 	for (VICUS::Building & b : m_buildings)
 		for (VICUS::BuildingLevel & bl : b.m_buildingLevels)
 			for (VICUS::Room & r : bl.m_rooms)
-				for (VICUS::Surface & s : r.m_surfaces)
+				for (VICUS::Surface & s : r.m_surfaces) {
 					s.m_componentInstance = nullptr;
+					for (VICUS::SubSurface & sub : const_cast<std::vector<VICUS::SubSurface> &>(s.subSurfaces()) )
+						sub.m_subSurfaceComponentInstance = nullptr;
+				}
+
 	// update pointers
 	for (VICUS::ComponentInstance & ci : m_componentInstances) {
 		// lookup surfaces
@@ -429,6 +433,35 @@ void Project::updatePointers() {
 			}
 			else {
 				ci.m_sideBSurface->m_componentInstance = &ci;
+			}
+		}
+
+	}
+
+	// update pointers in subsurfaces
+	for (VICUS::SubSurfaceComponentInstance & ci : m_subSurfaceComponentInstances) {
+		// lookup surfaces
+		ci.m_sideASubSurface = subSurfaceByID(ci.m_sideASurfaceID);
+		if (ci.m_sideASubSurface != nullptr) {
+			// check that no two components reference the same surface
+			if (ci.m_sideASubSurface->m_subSurfaceComponentInstance != nullptr) {
+				IBK::IBK_Message(IBK::FormatString("Sub-Surface %1 is referenced by multiple component instances!")
+								 .arg(ci.m_sideASurfaceID), IBK::MSG_ERROR, FUNC_ID);
+			}
+			else {
+				ci.m_sideASubSurface->m_subSurfaceComponentInstance = &ci;
+			}
+		}
+
+		ci.m_sideBSubSurface = subSurfaceByID(ci.m_sideBSurfaceID);
+		if (ci.m_sideBSubSurface != nullptr) {
+			// check that no two components reference the same surface
+			if (ci.m_sideBSubSurface->m_subSurfaceComponentInstance != nullptr) {
+				IBK::IBK_Message(IBK::FormatString("Sub-Surface %1 is referenced by multiple component instances!")
+								 .arg(ci.m_sideBSurfaceID), IBK::MSG_ERROR, FUNC_ID);
+			}
+			else {
+				ci.m_sideBSubSurface->m_subSurfaceComponentInstance = &ci;
 			}
 		}
 
@@ -488,11 +521,27 @@ Surface * Project::surfaceByID(unsigned int surfaceID) {
 	return nullptr;
 }
 
+
+SubSurface * Project::subSurfaceByID(unsigned int surfID) {
+	for (Building & b : m_buildings)
+		for (BuildingLevel & bl : b.m_buildingLevels)
+			for (Room & r : bl.m_rooms)
+				for (Surface & s : r.m_surfaces)
+					for (const SubSurface & sub : s.subSurfaces())
+					{
+						if (sub.m_id == surfID)
+							return const_cast<SubSurface*>(&sub);
+					}
+	return nullptr;
+}
+
+
 bool selectionCheck(const VICUS::Object & o, bool takeSelected, bool takeVisible) {
 	bool selCheck = takeSelected ? o.m_selected : true;
 	bool visCheck = takeVisible ? o.m_visible : true;
 	return (selCheck && visCheck);
 }
+
 
 void Project::selectedBuildingObjects(std::set<const Object *> &selectedObjs, Object *obj) const {
 
@@ -640,7 +689,7 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces, IBKM
 	double minY = std::numeric_limits<double>::max();
 	double minZ = std::numeric_limits<double>::max();
 	for (const VICUS::Surface *s : surfaces ) {
-		for ( IBKMK::Vector3D v : s->m_geometry.vertexes() ) {
+		for ( IBKMK::Vector3D v : s->polygon3D().vertexes() ) {
 			( v.m_x > maxX ) ? maxX = v.m_x : 0;
 			( v.m_y > maxY ) ? maxY = v.m_y : 0;
 			( v.m_z > maxZ ) ? maxZ = v.m_z : 0;
@@ -1617,11 +1666,11 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 		// we have either one or two surfaces associated
 		if (ci.m_sideASurface != nullptr) {
 			// get area of surface A
-			double areaA = ci.m_sideASurface->m_geometry.area();
+			double areaA = ci.m_sideASurface->geometry().area();
 			// do we have surfaces at both sides?
 			if (ci.m_sideBSurface != nullptr) {
 				// have both
-				double areaB = ci.m_sideBSurface->m_geometry.area();
+				double areaB = ci.m_sideBSurface->geometry().area();
 				// check if both areas are approximately the same
 				if (std::fabs(areaA - areaB) > SAME_DISTANCE_PARAMETER_ABSTOL) {
 					throw ConversionError(ConversionError::ET_MismatchingSurfaceArea,
@@ -1647,9 +1696,9 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 				// set parameters
 				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
-												   NANDRAD::ConstructionInstance::P_Inclination, s->m_geometry.inclination());
+												   NANDRAD::ConstructionInstance::P_Inclination, s->geometry().inclination());
 				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
-												   NANDRAD::ConstructionInstance::P_Orientation, s->m_geometry.orientation());
+												   NANDRAD::ConstructionInstance::P_Orientation, s->geometry().orientation());
 
 				cinst.m_displayName = ci.m_sideASurface->m_displayName.toStdString();
 			}
@@ -1668,12 +1717,12 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 			// set parameters
 			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
-											   NANDRAD::ConstructionInstance::P_Inclination, s->m_geometry.inclination());
+											   NANDRAD::ConstructionInstance::P_Inclination, s->geometry().inclination());
 			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
-											   NANDRAD::ConstructionInstance::P_Orientation, s->m_geometry.orientation());
+											   NANDRAD::ConstructionInstance::P_Orientation, s->geometry().orientation());
 
 			// set area parameter
-			double area = ci.m_sideBSurface->m_geometry.area();
+			double area = ci.m_sideBSurface->geometry().area();
 			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
 											   NANDRAD::ConstructionInstance::P_Area, area);
 

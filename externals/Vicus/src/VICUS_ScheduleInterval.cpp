@@ -165,5 +165,16 @@ ScheduleInterval ScheduleInterval::multiply(double val) const{
 
 }
 
+bool ScheduleInterval::operator!=(const ScheduleInterval &other) const {
+	if(m_displayName != other.m_displayName ||
+			m_intervalStartDay != other.m_intervalStartDay)
+		return true;
+
+	if(m_dailyCycles != other.m_dailyCycles)
+		return true;
+
+	return false;
+}
+
 
 } // namespace VICUS

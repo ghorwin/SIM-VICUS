@@ -6,7 +6,6 @@
 
 namespace VICUS {
 
-class Component;
 class Surface;
 
 /*! Defines a construction/component of the building.

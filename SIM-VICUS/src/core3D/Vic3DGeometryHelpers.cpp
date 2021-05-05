@@ -22,7 +22,7 @@ void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
 			  bool inverted)
 {
 	// add vertex data to buffers
-	unsigned int nVertexes = g.vertexes().size();
+	unsigned int nVertexes = g.triangleVertexes().size();
 	// insert count vertexes
 	vertexBufferData.resize(vertexBufferData.size()+nVertexes);
 	colorBufferData.resize(colorBufferData.size()+nVertexes);
@@ -31,84 +31,31 @@ void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
 	if (inverted)
 		n *= -1;
 	for (unsigned int i=0; i<nVertexes; ++i) {
-		vertexBufferData[currentVertexIndex + i].m_coords = QtExt::IBKVector2QVector(g.vertexes()[i]);
+		vertexBufferData[currentVertexIndex + i].m_coords = QtExt::IBKVector2QVector(g.triangleVertexes()[i]);
 		vertexBufferData[currentVertexIndex + i].m_normal = n;
 		colorBufferData[currentVertexIndex  + i] = col;
 	}
 
-	// index buffer is populated differently, depending on geometry type
-	switch (g.type()) {
-		case VICUS::PlaneGeometry::T_Triangle : {
-			// 3 elements for the triangle
-			indexBufferData.resize(indexBufferData.size()+3);
-			// anti-clock-wise winding order for all triangles in strip
-			if (inverted) {
-				indexBufferData[currentElementIndex    ] = currentVertexIndex + 0;
-				indexBufferData[currentElementIndex + 1] = currentVertexIndex + 2;
-				indexBufferData[currentElementIndex + 2] = currentVertexIndex + 1;
-			}
-			else {
-				indexBufferData[currentElementIndex    ] = currentVertexIndex + 0;
-				indexBufferData[currentElementIndex + 1] = currentVertexIndex + 1;
-				indexBufferData[currentElementIndex + 2] = currentVertexIndex + 2;
-			}
-			// advance index in element/index buffer
-			currentElementIndex += 3;
-		} break;
+	unsigned int triangleIndexCount = g.triangles().size()*3;
+	indexBufferData.resize(indexBufferData.size()+triangleIndexCount);
+	// add all triangles
 
-		case VICUS::PlaneGeometry::T_Rectangle : {
-			// 6 elements (2 triangles)
-			indexBufferData.resize(indexBufferData.size()+6);
+	for (const VICUS::PlaneGeometry::triangle_t & t : g.triangles()) {
+		if (inverted) {
+			indexBufferData[currentElementIndex    ] = currentVertexIndex + t.a;
+			indexBufferData[currentElementIndex + 1] = currentVertexIndex + t.c;
+			indexBufferData[currentElementIndex + 2] = currentVertexIndex + t.b;
+		}
+		else {
+			indexBufferData[currentElementIndex    ] = currentVertexIndex + t.a;
+			indexBufferData[currentElementIndex + 1] = currentVertexIndex + t.b;
+			indexBufferData[currentElementIndex + 2] = currentVertexIndex + t.c;
+		}
+		// advance index in element/index buffer
+		currentElementIndex += 3;
+	}
 
-			if (inverted) {
-				indexBufferData[currentElementIndex    ] = currentVertexIndex + 0;
-				indexBufferData[currentElementIndex + 1] = currentVertexIndex + 2;
-				indexBufferData[currentElementIndex + 2] = currentVertexIndex + 1;
-				indexBufferData[currentElementIndex + 3] = currentVertexIndex + 2;
-				indexBufferData[currentElementIndex + 4] = currentVertexIndex + 0;
-				indexBufferData[currentElementIndex + 5] = currentVertexIndex + 3;
-			}
-			else {
-				// anti-clock-wise winding order for all triangles in strip
-				// 0, 1, 2
-				// 2, 3, 0
-				indexBufferData[currentElementIndex    ] = currentVertexIndex + 0;
-				indexBufferData[currentElementIndex + 1] = currentVertexIndex + 1;
-				indexBufferData[currentElementIndex + 2] = currentVertexIndex + 2;
-				indexBufferData[currentElementIndex + 3] = currentVertexIndex + 2;
-				indexBufferData[currentElementIndex + 4] = currentVertexIndex + 3;
-				indexBufferData[currentElementIndex + 5] = currentVertexIndex + 0;
-			}
-
-			// advance index in element/index buffer
-			currentElementIndex += 6;
-		} break;
-
-		case VICUS::PlaneGeometry::T_Polygon : {
-			unsigned int triangleIndexCount = g.triangles().size()*3;
-			indexBufferData.resize(indexBufferData.size()+triangleIndexCount);
-			// add all triangles
-
-			for (const VICUS::PlaneGeometry::triangle_t & t : g.triangles()) {
-				if (inverted) {
-					indexBufferData[currentElementIndex    ] = currentVertexIndex + t.a;
-					indexBufferData[currentElementIndex + 1] = currentVertexIndex + t.c;
-					indexBufferData[currentElementIndex + 2] = currentVertexIndex + t.b;
-				}
-				else {
-					indexBufferData[currentElementIndex    ] = currentVertexIndex + t.a;
-					indexBufferData[currentElementIndex + 1] = currentVertexIndex + t.b;
-					indexBufferData[currentElementIndex + 2] = currentVertexIndex + t.c;
-				}
-				// advance index in element/index buffer
-				currentElementIndex += 3;
-			}
-
-			// index in element/index buffer has already been advanced
-		} break;
-
-		case VICUS::PlaneGeometry::NUM_T:; // just to make compiler happy
-	} // switch
+	// index in element/index buffer has already been advanced
 
 	// finally advance vertex index
 	currentVertexIndex += nVertexes;
@@ -119,62 +66,24 @@ void addPlane(const VICUS::PlaneGeometry & g, unsigned int & currentVertexIndex,
 			  std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData)
 {
 	// add vertex data to buffers
-	unsigned int nVertexes = g.vertexes().size();
+	unsigned int nVertexes = g.triangleVertexes().size();
 	// insert count vertexes
 	vertexBufferData.resize(vertexBufferData.size()+nVertexes);
 	// set data
 	for (unsigned int i=0; i<nVertexes; ++i)
-		vertexBufferData[currentVertexIndex + i].m_coords = QtExt::IBKVector2QVector(g.vertexes()[i]);
+		vertexBufferData[currentVertexIndex + i].m_coords = QtExt::IBKVector2QVector(g.triangleVertexes()[i]);
 
-	// index buffer is populated differently, depending on geometry type
-	switch (g.type()) {
-		case VICUS::PlaneGeometry::T_Triangle : {
-			// 3 elements for the triangle
-			indexBufferData.resize(indexBufferData.size()+3);
-			// anti-clock-wise winding order for all triangles in strip
-			indexBufferData[currentElementIndex    ] = currentVertexIndex + 0;
-			indexBufferData[currentElementIndex + 1] = currentVertexIndex + 1;
-			indexBufferData[currentElementIndex + 2] = currentVertexIndex + 2;
-			// advance index in element/index buffer
-			currentElementIndex += 3;
-		} break;
+	unsigned int triangleIndexCount = g.triangles().size()*3;
+	indexBufferData.resize(indexBufferData.size()+triangleIndexCount);
+	// add all triangles
 
-		case VICUS::PlaneGeometry::T_Rectangle : {
-			// 6 elements (2 triangles)
-			indexBufferData.resize(indexBufferData.size()+6);
-
-			// anti-clock-wise winding order for all triangles in strip
-			// 0, 1, 2
-			// 2, 3, 0
-			indexBufferData[currentElementIndex    ] = currentVertexIndex + 0;
-			indexBufferData[currentElementIndex + 1] = currentVertexIndex + 1;
-			indexBufferData[currentElementIndex + 2] = currentVertexIndex + 2;
-			indexBufferData[currentElementIndex + 3] = currentVertexIndex + 2;
-			indexBufferData[currentElementIndex + 4] = currentVertexIndex + 3;
-			indexBufferData[currentElementIndex + 5] = currentVertexIndex + 0;
-
-			// advance index in element/index buffer
-			currentElementIndex += 6;
-		} break;
-
-		case VICUS::PlaneGeometry::T_Polygon : {
-			unsigned int triangleIndexCount = g.triangles().size()*3;
-			indexBufferData.resize(indexBufferData.size()+triangleIndexCount);
-			// add all triangles
-
-			for (const VICUS::PlaneGeometry::triangle_t & t : g.triangles()) {
-				indexBufferData[currentElementIndex    ] = currentVertexIndex + t.a;
-				indexBufferData[currentElementIndex + 1] = currentVertexIndex + t.b;
-				indexBufferData[currentElementIndex + 2] = currentVertexIndex + t.c;
-				// advance index in element/index buffer
-				currentElementIndex += 3;
-			}
-
-			// index in element/index buffer has already been advanced
-		} break;
-
-		case VICUS::PlaneGeometry::NUM_T:; // just to make compiler happy
-	} // switch
+	for (const VICUS::PlaneGeometry::triangle_t & t : g.triangles()) {
+		indexBufferData[currentElementIndex    ] = currentVertexIndex + t.a;
+		indexBufferData[currentElementIndex + 1] = currentVertexIndex + t.b;
+		indexBufferData[currentElementIndex + 2] = currentVertexIndex + t.c;
+		// advance index in element/index buffer
+		currentElementIndex += 3;
+	}
 
 	// finally advance vertex index
 	currentVertexIndex += nVertexes;
@@ -182,36 +91,12 @@ void addPlane(const VICUS::PlaneGeometry & g, unsigned int & currentVertexIndex,
 
 
 void updateColors(const VICUS::PlaneGeometry & g, const QColor & col, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
-	// different handling based on surface type
-	switch (g.type()) {
-		case VICUS::PlaneGeometry::T_Triangle : {
-			colorBufferData[currentVertexIndex     ] = col;
-			colorBufferData[currentVertexIndex  + 1] = col;
-			colorBufferData[currentVertexIndex  + 2] = col;
-
-			// finally advance buffer indexes
-			currentVertexIndex += 3;
-		} break;
-
-		case VICUS::PlaneGeometry::T_Rectangle : {
-			colorBufferData[currentVertexIndex     ] = col;
-			colorBufferData[currentVertexIndex  + 1] = col;
-			colorBufferData[currentVertexIndex  + 2] = col;
-			colorBufferData[currentVertexIndex  + 3] = col;
-			currentVertexIndex += 4;
-		} break;
-
-		case VICUS::PlaneGeometry::T_Polygon : {
-			unsigned int nvert = g.vertexes().size();
-			// add all vertices to buffer
-			for (unsigned int i=0; i<nvert; ++i)
-				colorBufferData[currentVertexIndex + i] = col;
-			// finally advance buffer indexes
-			currentVertexIndex += nvert;
-		} break;
-
-		case VICUS::PlaneGeometry::NUM_T:; // just to make compiler happy
-	} // switch
+	unsigned int nvert = g.triangleVertexes().size();
+	// add all vertices to buffer
+	for (unsigned int i=0; i<nvert; ++i)
+		colorBufferData[currentVertexIndex + i] = col;
+	// finally advance buffer indexes
+	currentVertexIndex += nvert;
 }
 
 
@@ -642,7 +527,7 @@ void addSurface(const VICUS::Surface & s,
 				std::vector<GLuint> & indexBufferData)
 {
 	// skip invalid geometry
-	if (!s.m_geometry.isValid())
+	if (!s.geometry().isValid())
 		return;
 	// change color depending on visibility state and selection state
 	QColor col = s.m_color;
@@ -652,16 +537,16 @@ void addSurface(const VICUS::Surface & s,
 		col.setAlphaF(0);
 	}
 	// first add the plane regular
-	addPlane(s.m_geometry, col, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
+	addPlane(s.geometry(), col, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
 	// then add the plane again inverted
-	addPlane(s.m_geometry, col, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, true);
+	addPlane(s.geometry(), col, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, true);
 }
 
 
 // This updates the surface color of the two planes generated from a single surface definition
 void updateColors(const VICUS::Surface & s, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
 	// skip invalid geometry
-	if (!s.m_geometry.isValid())
+	if (!s.geometry().isValid())
 		return;
 	// change color depending on visibility and selection state
 	// invisible objects are not drawn, and selected objects are drawn by a different object (and are hence invisible in this
@@ -671,8 +556,8 @@ void updateColors(const VICUS::Surface & s, unsigned int & currentVertexIndex, s
 		col.setAlphaF(0);
 	}
 	// call updatePlaneColor() twice, since we have front and backside planes to color
-	updateColors(s.m_geometry, col, currentVertexIndex, colorBufferData);
-	updateColors(s.m_geometry, col, currentVertexIndex, colorBufferData);
+	updateColors(s.geometry(), col, currentVertexIndex, colorBufferData);
+	updateColors(s.geometry(), col, currentVertexIndex, colorBufferData);
 }
 
 
@@ -680,17 +565,17 @@ void addPlaneAsStrip(const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const
 					 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 					 std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLuint> & indexBufferData)
 {
-	VICUS::PlaneGeometry g(VICUS::PlaneGeometry::T_Rectangle, a, b, d);
+	VICUS::PlaneGeometry g(VICUS::Polygon3D::T_Rectangle, a, b, d);
 
 	// add vertex data to buffers
-	unsigned int nVertexes = g.vertexes().size();
+	unsigned int nVertexes = g.triangleVertexes().size();
 	// insert count vertexes
 	vertexBufferData.resize(vertexBufferData.size()+nVertexes);
 	colorBufferData.resize(colorBufferData.size()+nVertexes);
 	// set data
 	QVector3D n = QtExt::IBKVector2QVector(g.normal());
 	for (unsigned int i=0; i<nVertexes; ++i) {
-		vertexBufferData[currentVertexIndex + i].m_coords = QtExt::IBKVector2QVector(g.vertexes()[i]);
+		vertexBufferData[currentVertexIndex + i].m_coords = QtExt::IBKVector2QVector(g.triangleVertexes()[i]);
 		vertexBufferData[currentVertexIndex + i].m_normal = n;
 		colorBufferData[currentVertexIndex  + i] = col;
 	}
@@ -711,10 +596,6 @@ void addPlaneAsStrip(const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const
 	// advance index in element/index buffer
 	currentElementIndex += 5;
 }
-
-
-
-
 
 
 

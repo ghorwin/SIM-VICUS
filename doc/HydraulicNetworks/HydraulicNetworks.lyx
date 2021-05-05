@@ -3564,7 +3564,7 @@ with
 \end_layout
 
 \begin_layout Subsection
-Heat Exchangers and Heat Pumps
+Ideal Heat Exchangers
 \end_layout
 
 \begin_layout Standard
@@ -3621,10 +3621,6 @@ noprefix "false"
  
 \end_layout
 
-\begin_layout Subsubsection
-Ideal heat exchanger
-\end_layout
-
 \begin_layout Standard
 An ideal heat exchanger is modelled as element with a predefined external
  heat loss, see 
@@ -3640,22 +3636,76 @@ noprefix "false"
 
 \end_layout
 
-\begin_layout Subsubsection
-Ideal heat pump based on carnot efficiency
+\begin_layout Subsection
+Ideal Carnot Heat Pump
 \end_layout
 
 \begin_layout Standard
-This model represents a heat pump with unlimited heating capacity.
- The COP is calculated based on a constant carnot efficieny.
-\end_layout
+Equation
+\begin_inset space ~
+\end_inset
 
-\begin_layout Standard
-The maximum possible COP of a heat pump according to Carnots theorem is
+
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:FlowElementSystemFunctionFriction"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ is used for heat pumps.
+ The pressure drop 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ is computed according to 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "subsec:Fixed-pressure-loss"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ The diameter 
+\begin_inset Formula $d$
+\end_inset
+
+ to evaluate equation
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:FlowVelocity"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ is an equivalent diameter, specific to the heat pump component, and is
+ provided as constant parameter.
  
+\end_layout
+
+\begin_layout Subsubsection
+General equations
+\end_layout
+
+\begin_layout Standard
+This model represents a heat pump with constant carnot efficiency.
+ The maximum possible COP of a heat pump according to thermodynamical limitation
+s (Carnots Theorem) is 
 \begin_inset Formula 
-\[
-COP_{max}=\frac{T_{cond,m}}{T_{cond,m}-T_{evap,m}}
-\]
+\begin{equation}
+COP_{max}=\frac{T_{cond,m}}{T_{cond,m}-T_{evap,m}}\label{eq:COP_max_carnot}
+\end{equation}
 
 \end_inset
 
@@ -3668,9 +3718,9 @@ Hence, the actual COP of the heat pump can be described as
 
 \begin_layout Standard
 \begin_inset Formula 
-\[
-COP=\eta_{carnot}COP_{max}
-\]
+\begin{equation}
+COP=\eta_{carnot}COP_{max}\label{eq:COP_carnot}
+\end{equation}
 
 \end_inset
 
@@ -3678,7 +3728,18 @@ COP=\eta_{carnot}COP_{max}
 \end_layout
 
 \begin_layout Standard
-where
+where:
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\eta_{carnot}$
+\end_inset
+
+ is the Carnot efficiency (a common value is 
+\begin_inset Formula $\eta_{carnot}=0.4$
+\end_inset
+
+) in [-]
 \end_layout
 
 \begin_layout Itemize
@@ -3695,6 +3756,22 @@ where
  is the average fluid temperature in the evaporator in [C]
 \end_layout
 
+\begin_layout Subsubsection
+Ideal Carnot Heat Pump in Supply Network
+\end_layout
+
+\begin_layout Standard
+This model represents a heat pump in a heat supply network.
+ The heat output of the heat pump (the condenser heat flux) is controlled
+ in order to reach a given supply temperature set point (condenser outlet
+ temperature).
+ 
+\end_layout
+
+\begin_layout Standard
+The constant parameters are 
+\end_layout
+
 \begin_layout Itemize
 \begin_inset Formula $\eta_{carnot}$
 \end_inset
@@ -3706,12 +3783,262 @@ where
 ) in [-]
 \end_layout
 
+\begin_layout Itemize
+\begin_inset Formula $\dot{Q}_{cond,max}$
+\end_inset
+
+ is the maximum heating power in [W]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\Delta T_{cond,nominal}$
+\end_inset
+
+ is the nominal temperature difference at the condenser in [K]
+\end_layout
+
 \begin_layout Standard
-For a given condenser heat flux 
+The time-dependent parameters are
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $T_{evap,m}$
+\end_inset
+
+ is the average fluid temperature in the evaporator in [C]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $T_{cond,out,setpoint}$
+\end_inset
+
+ is the condenser outlet temperature set point in [C]
+\end_layout
+
+\begin_layout Standard
+A controller calculates a signal 
+\begin_inset Formula $y$
+\end_inset
+
+ based on the given inlet temperature and the set point temperature
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+y=f_{controller}(T_{in},T_{cond,out,setpoint})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The condenser heat flux 
 \begin_inset Formula $\dot{Q}_{cond}$
 \end_inset
 
-, the model calculates the heat flux at the evaporator 
+ is then
+\begin_inset Formula 
+\[
+\dot{Q}_{cond}=\begin{cases}
+y & \dot{Q}_{cond}\dot{<Q}_{cond,max}\\
+\dot{Q}_{cond,max} & \dot{Q}_{cond}\geq\dot{Q}_{cond,max}
+\end{cases}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Which is identical to the flow element heat loss
+\begin_inset Formula 
+\[
+\dot{Q}_{loss}=\dot{Q}_{cond}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The mean condenser temperature is 
+\begin_inset Formula 
+\[
+T_{cond,m}=T_{in}+\frac{\Delta T_{cond,nominal}}{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now the 
+\begin_inset Formula $COP$
+\end_inset
+
+ of the heat pump is calculated according to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:COP_carnot"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:COP_max_carnot"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+The heat pumps electrical energy demand is 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P_{el}=\frac{\dot{Q}_{cond}}{COP}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Ideal Carnot Heat Pump in Source Network
+\end_layout
+
+\begin_layout Standard
+This model represents a heat pump in a source network, i.e.
+ the cold side of the heat pump is part of the network.
+ 
+\end_layout
+
+\begin_layout Standard
+The constant parameters are 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\eta_{carnot}$
+\end_inset
+
+ is the Carnot efficiency (a common value is 
+\begin_inset Formula $\eta_{carnot}=0.4$
+\end_inset
+
+) in [-]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\dot{Q}_{cond,max}$
+\end_inset
+
+ is the maximum heating demand of the condenser in [W]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\Delta T_{evap,nominal}$
+\end_inset
+
+ is the nominal temperature difference at the evaporator in [K]
+\end_layout
+
+\begin_layout Standard
+The time-dependent parameters are
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\dot{Q}_{cond,demand}$
+\end_inset
+
+ is the heating demand of the condenser in [W]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $T_{cond,m}$
+\end_inset
+
+ is the average fluid temperature in the condenser in [C]
+\end_layout
+
+\begin_layout Standard
+The actual heat flux of the condenser 
+\begin_inset Formula $\dot{Q}_{cond}$
+\end_inset
+
+ is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\dot{Q}_{cond}=\begin{cases}
+\dot{Q}_{cond,demand} & \dot{Q}_{cond,demand}\dot{<Q}_{cond,max}\\
+\dot{Q}_{cond,max} & \dot{Q}_{cond,demand}\geq\dot{Q}_{cond,max}
+\end{cases}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The mean evaporator temperature is 
+\begin_inset Formula 
+\[
+T_{evap,m}=T_{in}+\frac{\Delta T_{evap,nominal}}{2}
+\]
+
+\end_inset
+
+Now the 
+\begin_inset Formula $COP$
+\end_inset
+
+ of the heat pump is calculated according to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:COP_carnot"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:COP_max_carnot"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+The model calculates the heat flux at the evaporator 
 \begin_inset Formula $\dot{Q}_{evap}$
 \end_inset
 
@@ -3730,11 +4057,10 @@ For a given condenser heat flux
 \end_layout
 
 \begin_layout Standard
-which is the heat loss of this element, as we assume the evaporator to exchange
- heat with the network
+which is identical to the negative heat loss of the flow element
 \begin_inset Formula 
 \[
-\dot{Q}_{loss}=\dot{Q}_{evap}
+\dot{Q}_{loss}=-\dot{Q}_{evap}
 \]
 
 \end_inset
@@ -3743,10 +4069,7 @@ which is the heat loss of this element, as we assume the evaporator to exchange
 \end_layout
 
 \begin_layout Standard
-Futhermore, we can calculate the electrical energy demand 
-\end_layout
-
-\begin_layout Standard
+The heat pumps electrical energy demand is 
 \begin_inset Formula 
 \[
 P_{el}=\frac{\dot{Q}_{cond}}{COP}
@@ -3758,7 +4081,7 @@ P_{el}=\frac{\dot{Q}_{cond}}{COP}
 \end_layout
 
 \begin_layout Subsubsection
-Heat pump
+Real Heat pump
 \end_layout
 
 \begin_layout Standard

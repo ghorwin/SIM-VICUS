@@ -311,6 +311,12 @@ void CodeGenerator::generateReadWriteCode() {
 				writeCode = IBK::replace_string(writeCode, "${COMMENTS}", commentCode);
 			}
 
+
+			// *********************************
+			// *** Write code for Attributes ***
+			// *********************************
+
+
 			std::string attribs;
 			// generate attribute write code
 			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
@@ -387,8 +393,10 @@ void CodeGenerator::generateReadWriteCode() {
 			}
 
 
+			// *******************************
+			// *** Write code for Elements ***
+			// *******************************
 
-			// now the elements
 			std::string elements;
 
 			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
@@ -409,6 +417,7 @@ void CodeGenerator::generateReadWriteCode() {
 				// - IBK::Parameter and IBK::Parameter[NUM_xxx]
 				// - IBK::IntPara and IBK::IntPara[NUM_xxx]
 				// - IBK::Flag and IBK::Flag[NUM_xxx]
+				// - IBK::point2D<double|int|unsigned int>
 				// - IDType[NUM_xxx]
 				// - std::vector<xxx> and special handling for:
 				//   - std::vector<double|int|unsigned int>
@@ -612,8 +621,11 @@ void CodeGenerator::generateReadWriteCode() {
 				}
 				else if (xmlInfo.typeStr.find("std::vector<") == 0) {
 					// extract subtype
-					std::string::size_type pos1 = xmlInfo.typeStr.find("<");
+					std::string::size_type pos1 = xmlInfo.typeStr.find("<"); // must be 11
 					std::string::size_type pos2 = xmlInfo.typeStr.find(">");
+					if (pos2 == std::string::npos)
+						throw IBK::Exception(IBK::FormatString("Invalid type declaration in variable type '%1' of variable '%2' in writeXML.")
+											 .arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
 					std::string childType = xmlInfo.typeStr.substr(pos1+1, pos2-pos1-1);
 
 					// special handling for vector of double or vector of int/unsigned int
@@ -642,6 +654,26 @@ void CodeGenerator::generateReadWriteCode() {
 								"	}\n"
 								"\n";
 					}
+
+				}
+				else if (xmlInfo.typeStr.find("IBK::point2D<") == 0) {
+					// extract subtype
+					std::string::size_type pos1 = xmlInfo.typeStr.find("<");
+					std::string::size_type pos2 = xmlInfo.typeStr.find(">");
+					if (pos2 == std::string::npos)
+						throw IBK::Exception(IBK::FormatString("Invalid type declaration in variable type '%1' of variable '%2' in writeXML.")
+											 .arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
+					std::string childType = xmlInfo.typeStr.substr(pos1+1, pos2-pos1-1);
+
+					// special handling for vector of double or vector of int/unsigned int
+					if (childType == "double" || childType == "int" || childType == "unsigned int") {
+						includes.insert("NANDRAD_Utilities.h");
+						// we generate the parent element and afterwards the loop
+						elements += "	NANDRAD::writePoint2D(e, \""+tagName+"\", m_"+varName+");\n";
+					}
+					else
+						throw IBK::Exception(IBK::FormatString("Unsupported template type in variable type '%1' of variable '%2' in writeXML.")
+							 .arg(xmlInfo.typeStr).arg(xmlInfo.varName), FUNC_ID);
 
 				}
 				else if (xmlInfo.typeStr == "DataTable") {
@@ -687,6 +719,7 @@ void CodeGenerator::generateReadWriteCode() {
 
 
 
+
 			// *** Generate readXML() content ****
 
 			std::string readCode;
@@ -706,6 +739,11 @@ void CodeGenerator::generateReadWriteCode() {
 				haveAttribs = true;
 				break;
 			}
+
+
+			// ********************************
+			// *** Read code for Attributes ***
+			// ********************************
 
 			// generate code for attributes
 			std::string elseStr;
@@ -822,7 +860,9 @@ void CodeGenerator::generateReadWriteCode() {
 			}
 
 
-
+			// ******************************
+			// *** Read code for Elements ***
+			// ******************************
 
 			// check if we have any elements to read
 			bool haveTags = false;
@@ -1361,7 +1401,24 @@ void CodeGenerator::generateReadWriteCode() {
 						// generate code for reading std::vector
 						handledVariables.insert(xmlInfo.varName);
 					}
-					else {
+					else if (xmlInfo.typeStr.find("IBK::point2D<") != std::string::npos) {
+
+						std::string::size_type pos1 = xmlInfo.typeStr.find("<");
+						std::string::size_type pos2 = xmlInfo.typeStr.find(">"); // error handling already in read code
+						std::string childType = xmlInfo.typeStr.substr(pos1+1, pos2-pos1-1);
+
+						// special handling for vector of double or vector of int/unsigned int
+						if (childType == "double" || childType == "int" || childType == "unsigned int") {
+							// we generate the parent element and afterwards the loop
+							elements +=
+									"			"+elseStr+"if (cName == \""+tagName+"\")\n"
+									"				NANDRAD::readPoint2D(c, \""+tagName+"\", m_"+varName+");\n";
+						}
+						// error handling already in read code
+
+						// generate code for reading std::vector
+						handledVariables.insert(xmlInfo.varName);
+					}					else {
 						continue; // skip for now, we'll handle these variables below
 					}
 					elseStr = "else ";

@@ -111,7 +111,7 @@ void WireFrameObject::updateBuffers() {
 
 		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
 		if (s != nullptr) {
-			addPlane(s->m_geometry, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			addPlane(s->geometry(), currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
 			continue;
 		}
 
@@ -196,6 +196,9 @@ void WireFrameObject::updateSelectedObjectsFromProject(std::set<const VICUS::Obj
 				for (const VICUS::Surface & s : r.m_surfaces) {
 					if (s.m_selected)
 						selectedObjects.insert(&s);
+					for (const VICUS::SubSurface & sub : s.subSurfaces()) {
+						selectedObjects.insert(&sub);
+					}
 				}
 			}
 		}

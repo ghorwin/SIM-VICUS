@@ -76,6 +76,18 @@ void Project::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "SubSurfaceComponentInstances") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "SubSurfaceComponentInstance")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					SubSurfaceComponentInstance obj;
+					obj.readXML(c2);
+					m_subSurfaceComponentInstances.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else if (cName == "PlainGeometry") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
@@ -161,6 +173,18 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 
 		for (std::vector<ComponentInstance>::const_iterator it = m_componentInstances.begin();
 			it != m_componentInstances.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_subSurfaceComponentInstances.empty()) {
+		TiXmlElement * child = new TiXmlElement("SubSurfaceComponentInstances");
+		e->LinkEndChild(child);
+
+		for (std::vector<SubSurfaceComponentInstance>::const_iterator it = m_subSurfaceComponentInstances.begin();
+			it != m_subSurfaceComponentInstances.end(); ++it)
 		{
 			it->writeXML(child);
 		}

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<VicusProject fileVersion="0.2">
+	<ProjectInfo>
+		<Created>Mo. Jan. 4 22:04:35 2021</Created>
+		<LastEdited>Mo. Mai 3 09:04:37 2021</LastEdited>
+	</ProjectInfo>
+	<Project>
+		<SolverParameter />
+		<SimulationParameter>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<Location>
+			<TimeZone>13</TimeZone>
+		</Location>
+		<ViewSettings>
+			<GridSpacing>10</GridSpacing>
+			<GridWidth>100</GridWidth>
+			<CameraTranslation>15.5507 -6.0929 4.58627</CameraTranslation>
+			<RotationMatrix>
+				<Wp>0.724191</Wp>
+				<X>0.506617</X>
+				<Y>0.268203</Y>
+				<Z>0.383335</Z>
+			</RotationMatrix>
+			<FarDistance>10000</FarDistance>
+		</ViewSettings>
+		<Buildings>
+			<Building id="1" displayName="Building">
+				<BuildingLevels>
+					<BuildingLevel id="1" displayName="Level">
+						<Elevation>0</Elevation>
+						<Height>2.7</Height>
+						<Rooms>
+							<Room id="10" displayName="New zone">
+								<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">45</IBK:Parameter>
+								<Surfaces>
+									<Surface id="11" displayName="New zone-floor">
+										<Polygon3D>0 5 0, 3 5 0, 3 0 0, 0 0 0</Polygon3D>
+									</Surface>
+									<Surface id="11" displayName="New zone-ceiling">
+										<Polygon3D>0 0 3, 3 0 3, 3 5 3, 0 5 3</Polygon3D>
+									</Surface>
+									<Surface id="13" displayName="Wall 1">
+										<Polygon3D>0 0 0, 3 0 0, 3 0 3, 0 0 3</Polygon3D>
+									</Surface>
+									<Surface id="14" displayName="Wall 2">
+										<Polygon3D>3 0 0, 3 5 0, 3 5 3, 3 0 3</Polygon3D>
+										<SubSurfaces>
+											<SubSurface id="1000" displayName="Fenster">
+												<Polygon2D>0.5 0.5, 1 0.5, 1 1, 0.5 1</Polygon2D>
+												<Offset>1 1</Offset>
+											</SubSurface>
+											<SubSurface id="1001" displayName="Fenster">
+												<Polygon2D>1.5 0.5, 3.8 0.5, 3.8 2.8, 1.5 2.8</Polygon2D>
+												<Offset>1 1</Offset>
+											</SubSurface>
+										</SubSurfaces>
+									</Surface>
+									<Surface id="15" displayName="Wall 3">
+										<Polygon3D>3 5 0, 0 5 0, 0 5 3, 3 5 3</Polygon3D>
+									</Surface>
+									<Surface id="16" displayName="Wall 4">
+										<Polygon3D>0 5 0, 0 0 0, 0 0 3, 0 5 3</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+						</Rooms>
+					</BuildingLevel>
+				</BuildingLevels>
+			</Building>
+		</Buildings>
+		<EmbeddedDatabase />
+		<FMIDescription />
+	</Project>
+</VicusProject>

@@ -43,7 +43,7 @@
 #include <IBK_Exception.h>
 
 /*! The namespace IBKMK contains math calculation routines that are not part of the IBK
-	library. IBKMK is short for 'IBK math kernel'. 
+	library. IBKMK is short for 'IBK math kernel'.
 	The name IBK stands for Institut fuer Bauklimatik der TU Dresden
 	(TUD) in Germany, where most of this library was coded.
 */
@@ -59,7 +59,7 @@ public:
 	Vector3D() {}
 
 	/*! Convenience constructor. */
-	Vector3D(const IBK::point2D<double> &p) : IBK::point3D<double>(p.m_x, p.m_y, 0.0)
+	explicit Vector3D(const IBK::point2D<double> &p) : IBK::point3D<double>(p.m_x, p.m_y, 0.0)
 	{
 	}
 
@@ -140,7 +140,7 @@ public:
 
 	/*! Devides all components of the vector by the scalar \a scalar. */
 	const Vector3D & operator/=(double scalar) {
-		if (scalar == 0)
+		if (scalar == 0.0)
 			throw IBK::Exception("Division by zero", "[Vector3D::operator/=]");
 		return operator*=(1/scalar);
 	}

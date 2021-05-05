@@ -27,8 +27,10 @@ public:
 	/*! Multiply a value to the daily cycle. */
 	DailyCycle multiply(double val) const;
 
+	/*! Multiply operator. */
 	DailyCycle operator *(const DailyCycle &other) const {return multiply(other);}
 
+	/*! Multiply operator. */
 	DailyCycle operator *(double val) const {return multiply(val);}
 
 	// *** PUBLIC MEMBER VARIABLES ***

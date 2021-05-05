@@ -193,5 +193,57 @@ void pointProjectedOnPlane(const Vector3D & a, const Vector3D & normal, const Ve
 	projectedP = p - dist*normal;
 }
 
+
+// Eleminate one coolinear point. If a point is erased return true.
+static bool eleminateColinearPtsHelper(std::vector<IBKMK::Vector3D> &polyline) {
+
+	if(polyline.size()<=2)
+		return false;
+
+	const double eps = 1e-4;
+	unsigned int polySize = polyline.size();
+
+	for(unsigned int idx=0; idx<polySize; ++idx){
+		unsigned int idx0 = idx-1;
+		if(idx==0)
+			idx0 = polySize-1;
+
+		IBKMK::Vector3D a = polyline.at(idx0) - polyline.at(idx);
+		IBKMK::Vector3D b = polyline.at((idx+1) % polySize) - polyline.at(idx);
+		a.normalize();
+		b.normalize();
+
+		double cosAngle = a.scalarProduct(b);
+
+
+		if(cosAngle < -1+eps || cosAngle > 1-eps){
+			polyline.erase(polyline.begin()+idx);
+			return true;
+		}
+	}
+	return false;
+}
+
+
+void eleminateColinearPoints(std::vector<IBKMK::Vector3D> & polygon) {
+	if(polygon.size()<2)
+		return;
+	//check for duplicate points in polyline and remove duplicates
+	for (int i=(int)polygon.size()-1; i>=0; --i) {
+		if(polygon.size()<2)
+			return;
+		size_t j=(size_t)i-1;
+		if(i==0)
+			j=polygon.size()-1;
+		if((polygon[(size_t)i]-polygon[j]).magnitude()<0.001)
+			polygon.erase(polygon.begin()+i);
+	}
+
+	bool tryAgain =true;
+	while (tryAgain)
+		tryAgain = eleminateColinearPtsHelper(polygon);
+}
+
+
 } // namespace IBKMK
 

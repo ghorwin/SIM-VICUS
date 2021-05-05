@@ -137,7 +137,7 @@ void SVPropEditGeometry::setCurrentPage(const SVPropEditGeometry::Operation & op
 
 
 void SVPropEditGeometry::setCoordinates(const Vic3D::Transform3D &t) {
-	// is being call from local coordinate system object, whenever this has changed location (regardless of
+	// is being called from local coordinate system object, whenever this has changed location (regardless of
 	// its own visibility)
 	m_localCoordinatePosition =  t;
 	updateInputs();
@@ -270,13 +270,13 @@ void SVPropEditGeometry::translate() {
 		// handle surfaces
 		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
 		if (s != nullptr) {
-			VICUS::Surface modS(*s);
-			std::vector<IBKMK::Vector3D> vertexes = modS.m_geometry.vertexes();
+			std::vector<IBKMK::Vector3D> vertexes = s->polygon3D().vertexes();
 			for ( IBKMK::Vector3D & v : vertexes ) {
 				// use just this instead of making a QVetor3D
 				v += translation;
 			}
-			modS.m_geometry.setVertexes(vertexes);
+			VICUS::Surface modS(*s);
+			modS.setPolygon3D( VICUS::Polygon3D(vertexes) );
 			modifiedSurfaces.push_back(modS);
 		}
 		// TODO : Netzwerk zeugs
@@ -308,8 +308,7 @@ void SVPropEditGeometry::scale() {
 		// handle surfaces
 		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
 		if (s != nullptr) {
-			VICUS::Surface modS(*s);
-			std::vector<IBKMK::Vector3D> vertexes = modS.m_geometry.vertexes();
+			std::vector<IBKMK::Vector3D> vertexes = s->polygon3D().vertexes();
 			for ( IBKMK::Vector3D & v : vertexes ) {
 				// use just this instead of making a QVetor3D
 				Vic3D::Transform3D t;
@@ -318,7 +317,8 @@ void SVPropEditGeometry::scale() {
 				t.setTranslation(t.toMatrix()*QtExt::IBKVector2QVector(v) );
 				v = QtExt::QVector2IBKVector(t.translation());
 			}
-			modS.m_geometry.setVertexes(vertexes);
+			VICUS::Surface modS(*s);
+			modS.setPolygon3D( VICUS::Polygon3D(vertexes) );
 			modifiedSurfaces.push_back(modS);
 		}
 		// TODO : Netzwerk zeugs
@@ -350,8 +350,7 @@ void SVPropEditGeometry::rotate() {
 		// handle surfaces
 		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
 		if (s != nullptr) {
-			VICUS::Surface modS(*s);
-			std::vector<IBKMK::Vector3D> vertexes = modS.m_geometry.vertexes();
+			std::vector<IBKMK::Vector3D> vertexes = s->polygon3D().vertexes();
 			for ( IBKMK::Vector3D & v : vertexes ) {
 				// use just this instead of making a QVetor3D
 				QVector3D v3D = rotate.rotatedVector(QtExt::IBKVector2QVector(v) );
@@ -362,7 +361,8 @@ void SVPropEditGeometry::rotate() {
 
 				v = QtExt::QVector2IBKVector(t.translation() );
 			}
-			modS.m_geometry.setVertexes(vertexes);
+			VICUS::Surface modS(*s);
+			modS.setPolygon3D( VICUS::Polygon3D(vertexes) );
 			modifiedSurfaces.push_back(modS);
 		}
 		// TODO : Netzwerk zeugs
@@ -434,7 +434,7 @@ void SVPropEditGeometry::update() {
 		if ( surfaces.size() == 1 ) {
 			const VICUS::Surface *s = surfaces[0];
 			m_ui->labelIndication->setText(tr("Normal:"));
-			setRotation(s->m_geometry.normal() );
+			setRotation(s->geometry().normal() );
 		}
 		else {
 			m_ui->labelIndication->setText(tr("z-Axis:"));
@@ -1307,11 +1307,11 @@ void SVPropEditGeometry::on_pushButtonCopySurfaces_clicked() {
 		newSurf.m_id = VICUS::Project::uniqueId(idsUsedBySurfaces);
 		idsUsedBySurfaces.push_back(newSurf.m_id); // also remember the new ID as used
 
-		std::vector<IBKMK::Vector3D> vertexes = newSurf.m_geometry.vertexes();
+		std::vector<IBKMK::Vector3D> vertexes = newSurf.polygon3D().vertexes();
 		for ( IBKMK::Vector3D &v : vertexes ) {
 			v += m_translation;
 		}
-		newSurf.m_geometry.setVertexes(vertexes);
+		newSurf.setPolygon3D( VICUS::Polygon3D(vertexes) );
 
 		newSurfaces.push_back(newSurf);
 
@@ -1388,7 +1388,7 @@ void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
 		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
 		if (s != nullptr) {
 			VICUS::Surface modS(*s);
-			modS.m_geometry.flip();
+			modS.flip();
 			modifiedSurfaces.push_back(modS);
 		}
 	}

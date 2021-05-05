@@ -85,6 +85,28 @@ void HydraulicNetworkComponent::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
+			else if (cName == "LinearSplineParameter") {
+				NANDRAD::LinearSplineParameter p;
+				p.readXML(c);
+				bool success = false;
+				try {
+					splinePara_t ptype;
+					ptype = (splinePara_t)KeywordList::Enumeration("HydraulicNetworkComponent::splinePara_t", p.m_name);
+					m_splPara[ptype] = p; success = true;
+				}
+				catch (...) { /* intentional fail */  }
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.m_name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			else if (cName == "HeatPumpIntegration") {
+				try {
+					m_heatPumpIntegration = (HeatPumpIntegration)KeywordList::Enumeration("HydraulicNetworkComponent::HeatPumpIntegration", c->GetText());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
+				}
+			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -110,9 +132,17 @@ TiXmlElement * HydraulicNetworkComponent::writeXML(TiXmlElement * parent) const 
 	if (m_modelType != NUM_MT)
 		e->SetAttribute("modelType", KeywordList::Keyword("HydraulicNetworkComponent::ModelType",  m_modelType));
 
+	if (m_heatPumpIntegration != NUM_HP)
+		TiXmlElement::appendSingleAttributeElement(e, "HeatPumpIntegration", nullptr, std::string(), KeywordList::Keyword("HydraulicNetworkComponent::HeatPumpIntegration",  m_heatPumpIntegration));
+
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
+		}
+	}
+	for (int i=0; i<NUM_SPL; ++i) {
+		if (!m_splPara[i].m_name.empty()) {
+			m_splPara[i].writeXML(e);
 		}
 	}
 	return e;

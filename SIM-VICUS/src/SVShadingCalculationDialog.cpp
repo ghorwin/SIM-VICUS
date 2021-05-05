@@ -18,6 +18,7 @@
 
 
 #include <SVProjectHandler.h>
+#include <SVSimulationStartNandrad.h>
 #include <SVSettings.h>
 #include <SVMainWindow.h>
 
@@ -41,22 +42,40 @@ SVShadingCalculationDialog::SVShadingCalculationDialog(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
+	// we save a local copy of our project
 	m_localProject = project();
 	m_simulationParameter = &m_localProject.m_simulationParameter; // readability improvements
 
-	m_ui->lineEditDuration->setup(m_ui->comboBoxUnitDuration, IBK::Unit("s"),
+	// we set the duration time of the simulation
+	m_ui->lineEditDuration->setup(m_ui->comboBoxUnitDuration, IBK::Unit("h"),
 								  0, std::numeric_limits<double>::max(), tr("Duration of the simulation.") );
 
-	m_ui->lineEditGridSize->setText(QString::number(0.1));
-	m_ui->lineEditSunCone->setText(QString::number(3));
+	if ( m_simStartWidget == nullptr ) {
+		m_simStartWidget = new SVSimulationStartNandrad();
+		m_simStartWidget->exec();
+	}
 
-	m_ui->lineEditLatitude->setText( QString::number(m_localProject.m_location.m_para[NANDRAD::Location::P_Latitude].get_value(IBK::Unit("Deg") ), 'f', 2 ) );
-	m_ui->lineEditLongitude->setText( QString::number(m_localProject.m_location.m_para[NANDRAD::Location::P_Longitude].get_value(IBK::Unit("Deg") ), 'f', 2 ) );
-	m_ui->lineEditTimeZone->setText( QString::number(m_localProject.m_location.m_timeZone, 'f', 2 ) );
+	if ( m_localProject.m_location.m_para[NANDRAD::Location::P_Latitude].empty() ||
+		 m_localProject.m_location.m_para[NANDRAD::Location::P_Longitude].empty() ) {
+		m_ui->lineEditLatitude->setText( QString::number(13) );
+		m_ui->lineEditLongitude->setText( QString::number(50) );
+	}
+	else {
+
+		try {
+			m_ui->lineEditLatitude->setText( QString::number(m_localProject.m_location.m_para[NANDRAD::Location::P_Latitude].get_value(IBK::Unit("Deg") ), 'f', 2 ) );
+			m_ui->lineEditLongitude->setText( QString::number(m_localProject.m_location.m_para[NANDRAD::Location::P_Longitude].get_value(IBK::Unit("Deg") ), 'f', 2 ) );
+			m_ui->lineEditTimeZone->setText( QString::number(m_localProject.m_location.m_timeZone, 'f', 2 ) );
+		} catch (IBK::Exception &ex) {
+
+		}
+	}
 
 	m_ui->comboBoxFileType->addItem( "tsv" );
 	m_ui->comboBoxFileType->addItem( "d6o" );
 	m_ui->comboBoxFileType->addItem( "d6b" );
+
+	m_ui->radioButtonFast->toggle();
 
 	m_ui->comboBoxFileType->setCurrentIndex( m_outputType );
 }
@@ -104,41 +123,6 @@ int SVShadingCalculationDialog::edit() {
 	// if dialog was confirmed, data is transfered into project
 }
 
-void SVShadingCalculationDialog::evaluateResults() {
-	FUNCID(SVShadingCalculationDialog::evaluateResults);
-
-	unsigned int surfCounter = 0;
-
-	for ( const VICUS::Surface *s : m_selSurfaces) {
-
-		VICUS::Surface *surf = const_cast<VICUS::Surface *>(s);
-
-		for ( SH::Polygon &s : m_shading.m_surfaces) {
-			if ( s.m_id == surf->m_id ) {
-				surf->m_shadingFactor = s.m_shadingFactors;
-				break;
-			}
-		}
-
-		std::ofstream out( "../../data/validation/SimQuality/TF09/ShadingFactor_" + s->m_displayName.toStdString() + "_" +
-							QString::number(m_gridSize, 'f', 2).toStdString() + "_" + QString::number(m_sunCone, 'f', 2).toStdString() + ".tsv" );
-
-		if( !out.is_open() )
-			throw IBK::Exception(IBK::FormatString(), FUNC_ID);
-		out << "Time [h]\tAzimut [Deg]\tAltitude [Deg]\tShading Factor [-]\n";
-
-		for (unsigned int i=0; i<8760*2; ++i) {
-			out << (double)i/2 << "\t" << m_shading.sunPositions()[i].m_azimuth / IBK::DEG2RAD << "\t" << m_shading.sunPositions()[i].m_altitude / IBK::DEG2RAD <<
-				   "\t" << s->m_shadingFactor.value(i * 3600) << "\n";
-
-		}
-
-		out.close();
-
-		++surfCounter;
-	}
-}
-
 
 void SVShadingCalculationDialog::updateTimeFrameEdits() {
 
@@ -173,6 +157,33 @@ void SVShadingCalculationDialog::updateTimeFrameEdits() {
 	m_ui->lineEditStartDate->blockSignals(false);
 	m_ui->lineEditEndDate->blockSignals(false);
 	m_ui->lineEditDuration->blockSignals(false);
+}
+
+void SVShadingCalculationDialog::setSimulationParameters(const DetailType & dt) {
+
+	m_ui->lineEditSunCone->setEnabled(false);
+	m_ui->lineEditGridSize->setEnabled(false);
+
+	switch (dt) {
+		case Fast: {
+			m_gridSize = 0.2;
+			m_sunCone = 2;
+		}
+		break;
+		case Detailed: {
+			m_gridSize = 0.1;
+			m_sunCone = 1;
+		}
+		break;
+		case Manual: {
+			m_ui->lineEditSunCone->setEnabled(true);
+			m_ui->lineEditGridSize->setEnabled(true);
+		}
+		break;
+	}
+
+	m_ui->lineEditGridSize->setText( IBK::val2string<double>(m_gridSize).c_str() );
+	m_ui->lineEditSunCone->setText( IBK::val2string<double>(m_sunCone).c_str() );
 }
 
 
@@ -237,7 +248,40 @@ void SVShadingCalculationDialog::on_lineEditDuration_editingFinishedSuccessfully
 void SVShadingCalculationDialog::on_pushButtonCalculate_clicked(){
 	FUNCID(SVShadingCalculationDialog::on_pushButtonCalculate_clicked);
 
-	// Start calculation
+	try {
+		calculateShadingFactors();
+	} catch (IBK::Exception &ex) {
+
+		QMessageBox msgBox(QMessageBox::Critical, "Error", ex.what(), QMessageBox::Ok, this);
+		msgBox.exec();
+
+	}
+}
+
+
+void SVShadingCalculationDialog::on_lineEditGridSize_editingFinished() {
+	if (m_ui->lineEditGridSize->isValid() )
+		m_gridSize = m_ui->lineEditGridSize->value();
+	else {
+		m_ui->lineEditGridSize->setValue(m_gridSize);
+	}
+}
+
+
+void SVShadingCalculationDialog::on_lineEditSunCone_editingFinished() {
+	if (m_ui->lineEditSunCone->isValid() )
+		m_sunCone = m_ui->lineEditSunCone->value();
+	else {
+		m_ui->lineEditGridSize->setValue(m_sunCone);
+	}
+}
+
+void SVShadingCalculationDialog::on_comboBoxFileType_currentIndexChanged(int index) {
+	m_outputType = (OutputType)index;
+}
+
+void SVShadingCalculationDialog::calculateShadingFactors() {
+	FUNCID(SVShadingCalculationDialog::calculateShadingFactors);
 
 	std::vector<std::vector<IBKMK::Vector3D> > selObst;
 	std::vector<const VICUS::Surface *> selSurf;
@@ -246,6 +290,7 @@ void SVShadingCalculationDialog::on_pushButtonCalculate_clicked(){
 	project().selectedSurfaces(m_selSurfaces,VICUS::Project::SG_Building);
 	project().selectedSurfaces(m_selObstacles,VICUS::Project::SG_Obstacle);
 
+	//
 	const NANDRAD::Location &loc = project().m_location;
 
 	const NANDRAD::SimulationParameter &simuPara = project().m_simulationParameter;
@@ -256,7 +301,7 @@ void SVShadingCalculationDialog::on_pushButtonCalculate_clicked(){
 									  m_ui->lineEditGridSize->value(), m_ui->lineEditSunCone->value() );
 
 	for (const VICUS::Surface *s: m_selObstacles) {
-		selObst.push_back( s->m_geometry.vertexes() );
+		selObst.push_back( s->geometry().polygon().vertexes() );
 	}
 
 	IBK::IntPara startYear = simuPara.m_intPara[NANDRAD::SimulationParameter::IP_StartYear];
@@ -283,14 +328,13 @@ void SVShadingCalculationDialog::on_pushButtonCalculate_clicked(){
 			 type == VICUS::Component::CT_FloorToAir || type == VICUS::Component::CT_FloorToGround )
 			continue;
 
-		selObst.push_back( s->m_geometry.vertexes() );
+		selObst.push_back( s->geometry().polygon().vertexes() );
 		selSurf.push_back( s );
 	}
 
 	IBK::Time simTimeStart (startYear.value, startDay.get_value(IBK::Unit("s") ) );
 	IBK::Time simTimeEnd (startYear.value, endDay.get_value(IBK::Unit("s") ) );
 
-	double period;
 	double periodInSec = simTimeStart.secondsUntil(simTimeEnd);
 
 	// we initialize our period
@@ -301,7 +345,7 @@ void SVShadingCalculationDialog::on_pushButtonCalculate_clicked(){
 
 
 	for (const VICUS::Surface *s: selSurf) {
-		m_shading.m_surfaces.push_back( SH::Polygon(s->m_id, s->m_geometry.vertexes() ) );
+		m_shading.m_surfaces.push_back( SH::Polygon(s->m_id, s->geometry().polygon().vertexes() ) );
 	}
 
 	QProgressDialog progressDialog(tr("Calculate shading factors"), tr("Abort"), 0, 100, this);
@@ -350,24 +394,18 @@ void SVShadingCalculationDialog::on_pushButtonCalculate_clicked(){
 
 }
 
-
-void SVShadingCalculationDialog::on_lineEditGridSize_editingFinished() {
-	if (m_ui->lineEditGridSize->isValid() )
-		m_gridSize = m_ui->lineEditGridSize->value();
-	else {
-		m_ui->lineEditGridSize->setValue(m_gridSize);
-	}
+void SVShadingCalculationDialog::on_pushButtonChangeTime_clicked() {
+	m_simStartWidget->exec();
 }
 
-
-void SVShadingCalculationDialog::on_lineEditSunCone_editingFinished() {
-	if (m_ui->lineEditSunCone->isValid() )
-		m_sunCone = m_ui->lineEditSunCone->value();
-	else {
-		m_ui->lineEditGridSize->setValue(m_sunCone);
-	}
+void SVShadingCalculationDialog::on_radioButtonFast_toggled(bool checked) {
+	setSimulationParameters(DetailType::Fast);
 }
 
-void SVShadingCalculationDialog::on_comboBoxFileType_currentIndexChanged(int index) {
-	m_outputType = (OutputType)index;
+void SVShadingCalculationDialog::on_radioButtonManual_toggled(bool checked) {
+	setSimulationParameters(DetailType::Manual);
+}
+
+void SVShadingCalculationDialog::on_radioButtonDetailed_toggled(bool checked) {
+	setSimulationParameters(DetailType::Detailed);
 }

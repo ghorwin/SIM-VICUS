@@ -2,15 +2,16 @@
 #define ThermalNetworkFlowElementsH
 
 #include "NM_ThermalNetworkAbstractFlowElementWithHeatLoss.h"
+
 #include "NANDRAD_HydraulicNetworkHeatExchange.h"
 
-#include <IBK_LinearSpline.h>
 
 namespace NANDRAD {
 	class HydraulicNetworkElement;
 	class HydraulicNetworkComponent;
 	class HydraulicNetworkPipeProperties;
 	class HydraulicFluid;
+	class LinearSplineParameter;
 }
 
 #define PI				3.141592653589793238
@@ -422,20 +423,23 @@ private:
 // **** TNHeatPumpIdealCarnot ***
 
 class TNHeatPumpIdealCarnot : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
+
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	TNHeatPumpIdealCarnot(const NANDRAD::HydraulicFluid & fluid,
 							const NANDRAD::HydraulicNetworkComponent & comp,
-							const double &QExt);
+							const double &QExt, const std::vector<double> &parameterRefs);
 
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
-		quantities.push_back(QuantityDescription("PerformanceCoefficient","---","Performance coefficient for mechaniscal heat pumps", false));
+		quantities.push_back(QuantityDescription("COP","---","Coefficient of performance for heat pump", false));
+		quantities.push_back(QuantityDescription("ElectricalPower","---","Electrical power for heat pump", false));
 	}
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
 	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
 		valRefs.push_back(&m_COP);
+		valRefs.push_back(&m_electricalPower);
 	}
 
 	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
@@ -443,15 +447,26 @@ public:
 
 private:
 	/*! Reference to external heat loss in [W] */
-	const double*					m_externalHeatLossRef = nullptr;
-	/*! Mean condender temperature [K]*/
-	double							m_condenserMeanTemperature = 999;
+	const double*							m_heatFluxCondenserRef = nullptr;
+
+	/*! Mean condenser temperature [K]*/
+	const double*							m_condenserMeanTemperature = nullptr;
+
+	/*! Nominal evaporator temperature difference [K] */
+	double									m_nominalTemperatureDifference = 999;
+
+	/*! maximum heating power of heat pump (condenser) in [W] */
+	double m_condenserMaximumHeatFlux = 999999;
 
 	/*! Carnot efficiency [0...1] */
-	double							m_carnotEfficiency = 999;
+	double									m_carnotEfficiency = 999;
 
-	/*! Performance coefficient for mechaniscal heat pumps [0...1] */
-	double							m_COP = 999;
+	/*! Coefficient of performance for heat pump */
+	double									m_COP = 999;
+
+	double									m_electricalPower = 999;
+
+	NANDRAD::HydraulicNetworkComponent::HeatPumpIntegration m_heatpumpIntegration = NANDRAD::HydraulicNetworkComponent::NUM_HP;
 };
 
 

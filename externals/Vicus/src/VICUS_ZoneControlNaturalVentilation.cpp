@@ -51,5 +51,33 @@ bool ZoneControlNaturalVentilation::isValid() const
 
 }
 
+AbstractDBElement::ComparisonResult ZoneControlNaturalVentilation::equal(const AbstractDBElement *other) const {
+	const ZoneControlNaturalVentilation * otherVent = dynamic_cast<const ZoneControlNaturalVentilation*>(other);
+	if (otherVent == nullptr)
+		return Different;
+
+	//first check critical data
+
+	//check parameters
+	for(unsigned int i=0; i<NUM_ST; ++i){
+		if(m_para[i] != otherVent->m_para[i])
+			return Different;
+	}
+
+	for(unsigned int i=0; i<NUM_ST; ++i)
+		if(m_scheduleId[i] != otherVent->m_scheduleId[i])
+			return Different;
+
+	//check meta data
+
+	if(m_displayName != otherVent->m_displayName ||
+			m_color != otherVent->m_color ||
+			m_dataSource != otherVent->m_dataSource ||
+			m_notes != otherVent->m_notes)
+		return OnlyMetaDataDiffers;
+
+	return Equal;
+}
+
 
 }

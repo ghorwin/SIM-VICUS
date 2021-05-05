@@ -34,6 +34,7 @@ public:
 		for (Surface & s : m_surfaces) {
 			m_children.push_back(&s);
 			s.m_parent = this;
+			s.updateParents();
 		}
 	}
 

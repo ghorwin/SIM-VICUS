@@ -83,6 +83,9 @@ bool lineShereIntersection(const Vector3D & a, const Vector3D & d, const Vector3
 void pointProjectedOnPlane(const Vector3D & a, const Vector3D & normal,
 						  const Vector3D & p, Vector3D & projectedP);
 
+/*! Eleminates colinear points in a polygon. */
+void eleminateColinearPoints(std::vector<IBKMK::Vector3D> & polygon);
+
 } // namespace IBKMK
 
 #endif // IBKMK_3DCalculationsH

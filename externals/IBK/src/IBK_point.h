@@ -126,9 +126,6 @@ public:
 	/*! Constructor (initialises with coordinates 'a', 'b' and 'c'). */
 	point3D(T a, T b, T c) : m_x(a), m_y(b), m_z(c) {}
 
-	/*! Virtual destructor, so that destructor of derived classes is called. */
-	virtual ~point3D() {}
-
 	/*! Sets all coordinates. */
 	void set(T x, T y, T z) {
 		m_x = x;

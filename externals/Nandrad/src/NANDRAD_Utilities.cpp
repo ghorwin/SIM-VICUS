@@ -190,7 +190,8 @@ IBK::Time readTimeElement(const TiXmlElement * element, const std::string & eNam
 	return t;
 }
 
-void writeVector3D(TiXmlElement * parent, const std::string & name, const std::vector<IBKMK::Vector3D> & vec) {
+
+TiXmlElement * writeVector3D(TiXmlElement * parent, const std::string & name, const std::vector<IBKMK::Vector3D> & vec) {
 	if (!vec.empty()) {
 		TiXmlElement * child = new TiXmlElement(name);
 		parent->LinkEndChild(child);
@@ -202,7 +203,9 @@ void writeVector3D(TiXmlElement * parent, const std::string & name, const std::v
 		}
 		TiXmlText * text = new TiXmlText( vals.str() );
 		child->LinkEndChild( text );
+		return child;
 	}
+	return nullptr;
 }
 
 
@@ -238,6 +241,24 @@ void readVector<double>(const TiXmlElement * element, const std::string & name, 
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 			IBK::FormatString("Error reading vector element '%1'.").arg(name) ), FUNC_ID);
+	}
+}
+
+
+template<>
+void readPoint2D<double>(const TiXmlElement * element, const std::string & name, IBK::point2D<double> & p) {
+	FUNCID(NANDRAD::readVector);
+	std::string text = element->GetText();
+	try {
+		std::vector<double> vec;
+		IBK::string2valueVector(text, vec);
+		if (vec.size() != 2)
+			throw IBK::Exception("Size mismatch, expected 2 numbers separated by , .", FUNC_ID);
+		p.m_x = vec[0];
+		p.m_y = vec[1];
+	} catch (IBK::Exception & ex) {
+		throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+			IBK::FormatString("Error reading point2D element '%1'.").arg(name) ), FUNC_ID);
 	}
 }
 

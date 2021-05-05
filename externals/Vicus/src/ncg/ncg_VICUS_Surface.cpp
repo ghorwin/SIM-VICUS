@@ -32,8 +32,8 @@
 
 namespace VICUS {
 
-void Surface::readXML(const TiXmlElement * element) {
-	FUNCID(Surface::readXML);
+void Surface::readXMLPrivate(const TiXmlElement * element) {
+	FUNCID(Surface::readXMLPrivate);
 
 	try {
 		// search for mandatory attributes
@@ -61,8 +61,20 @@ void Surface::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "PlaneGeometry")
-				m_geometry.readXML(c);
+			if (cName == "SubSurfaces") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "SubSurface")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					SubSurface obj;
+					obj.readXML(c2);
+					m_subSurfaces.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "Polygon3D")
+				m_polygon3D.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -77,7 +89,7 @@ void Surface::readXML(const TiXmlElement * element) {
 	}
 }
 
-TiXmlElement * Surface::writeXML(TiXmlElement * parent) const {
+TiXmlElement * Surface::writeXMLPrivate(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("Surface");
 	parent->LinkEndChild(e);
 
@@ -88,7 +100,19 @@ TiXmlElement * Surface::writeXML(TiXmlElement * parent) const {
 	if (m_visible != Surface().m_visible)
 		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 
-	m_geometry.writeXML(e);
+	m_polygon3D.writeXML(e);
+
+	if (!m_subSurfaces.empty()) {
+		TiXmlElement * child = new TiXmlElement("SubSurfaces");
+		e->LinkEndChild(child);
+
+		for (std::vector<SubSurface>::const_iterator it = m_subSurfaces.begin();
+			it != m_subSurfaces.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
 	return e;
 }
 

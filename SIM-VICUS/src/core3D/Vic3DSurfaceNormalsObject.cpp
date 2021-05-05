@@ -59,18 +59,21 @@ void SurfaceNormalsObject::updateVertexBuffers() {
 		if (s == nullptr)
 			continue;
 		// skip all surfaces with invalid polygons
-		if (!s->m_geometry.isValid())
+		if (!s->geometry().isValid())
 			continue;
+		const std::vector<IBKMK::Vector3D> & vertexes = s->geometry().triangleVertexes();
 		// take the normal vector and normalize
-		IBKMK::Vector3D n = s->m_geometry.normal();
+		IBKMK::Vector3D n = s->geometry().normal();
 		n.normalize(); // now has length 1 (as in 1 m)
 		// process all vertexes
-		for (const IBKMK::Vector3D & v : s->m_geometry.vertexes()) {
+		for (const IBKMK::Vector3D & v : vertexes) {
 			vertexBufferData.push_back(VertexC(QtExt::IBKVector2QVector(v)));
 			vertexBufferData.push_back(VertexC(QtExt::IBKVector2QVector(v + n)));
 		}
-		m_vertexCount += s->m_geometry.vertexes().size()*2;
+		m_vertexCount += vertexes.size()*2;
 	}
+
+	// TODO Andreas, add normals of subsurfaces
 
 #if 0
 	vertexBufferData.clear();

@@ -68,6 +68,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 	// resize components
 	m_heatExchangeRefValues.resize(m_elementIds.size(), -999);
+	m_splineParameterRefValues.resize(m_elementIds.size(), std::vector<double> ());
 
 
 	// We now loop over all flow elements of the network and create a corresponding thermal
@@ -81,6 +82,13 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 		try {
 			// set reference to heat exchange value
 			double &heatExchangeValue = m_heatExchangeRefValues[i];
+
+			// get a list of spline parameters
+			std::vector<unsigned int> splineParameter =
+					e.m_component->requiredSplineParameter(e.m_component->m_modelType, e.m_component->m_heatPumpIntegration);
+			// set all spline paramter references
+			m_splineParameterRefValues[i].resize(splineParameter.size(), 999);
+			std::vector<double> &parameterSplineValues = m_splineParameterRefValues[i];
 
 			// Instantiate thermal flow element calculation objects.
 			// The objects are selected based on a **combination** of modelType and heatExchangeType and
@@ -254,19 +262,29 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot :
 				{
-					switch (e.m_heatExchange.m_modelType) {
-						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser : {
+					switch (e.m_component->m_heatPumpIntegration) {
+						case (NANDRAD::HydraulicNetworkComponent::HP_SourceSide): {
+
 							// create general model with given heat flux
 							TNHeatPumpIdealCarnot * element = new TNHeatPumpIdealCarnot(m_network->m_fluid,
-									*e.m_component, heatExchangeValue);
+																						*e.m_component,
+																						heatExchangeValue,
+																						parameterSplineValues);
 							// add to flow elements
 							m_p->m_flowElements.push_back(element); // transfer ownership
 							m_p->m_heatLossElements.push_back(element); // copy of pointer
-						} break;
 
-						default:
-							break;
-					} // switch heat exchange type
+						} break;
+						case NANDRAD::HydraulicNetworkComponent::HP_SupplySide:
+						case NANDRAD::HydraulicNetworkComponent::HP_SupplyAndSourceSide:
+						case NANDRAD::HydraulicNetworkComponent::NUM_HP:
+						{
+							throw IBK::Exception(IBK::FormatString("Heat pump integration type %1 is not supported yet!")
+										.arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatPumpIntegration",
+										e.m_component->m_heatPumpIntegration)), FUNC_ID);
+						}
+
+					} // switch heat pump integration type
 
 				} break; // NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot
 
@@ -275,8 +293,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 			}
 
 
-			// retrieve component
-			// and decide which heat exchange is chosen
+			// retrieve component and decide which heat exchange is chosen
+			// only constant values are set here, splines will be updated in ThermalNetworkBalanceModel::setTime
 			switch(e.m_heatExchange.m_modelType) {
 				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstant:
 					heatExchangeValue = e.m_heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_Temperature].value;

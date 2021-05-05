@@ -60,8 +60,8 @@ namespace VICUS {
 		"NetworkHeatExchange::References",
 		"NetworkNode::NodeType",
 		"Outputs::flag_t",
-		"PlaneGeometry::type_t",
 		"Room::para_t",
+		"SubSurfaceComponent::SubSurfaceComponentType",
 		"SurfaceProperties::para_t",
 		"SurfaceProperties::Type",
 		"VentilationNatural::para_t",
@@ -321,18 +321,18 @@ namespace VICUS {
 				case 0 : return "BinaryOutputs";
 				case 1 : return "CreateDefaultZoneOutputs";
 			} break;
-			// PlaneGeometry::type_t
-			case 25 :
-			switch (t) {
-				case 0 : return "Triangle";
-				case 1 : return "Rectangle";
-				case 2 : return "Polygon";
-			} break;
 			// Room::para_t
-			case 26 :
+			case 25 :
 			switch (t) {
 				case 0 : return "Area";
 				case 1 : return "Volume";
+			} break;
+			// SubSurfaceComponent::SubSurfaceComponentType
+			case 26 :
+			switch (t) {
+				case 0 : return "Window";
+				case 1 : return "Door";
+				case 2 : return "Miscellaneous";
 			} break;
 			// SurfaceProperties::para_t
 			case 27 :
@@ -689,18 +689,18 @@ namespace VICUS {
 				case 0 : return "BinaryOutputs";
 				case 1 : return "CreateDefaultZoneOutputs";
 			} break;
-			// PlaneGeometry::type_t
-			case 25 :
-			switch (t) {
-				case 0 : return "Triangle";
-				case 1 : return "Rectangle";
-				case 2 : return "Polygon";
-			} break;
 			// Room::para_t
-			case 26 :
+			case 25 :
 			switch (t) {
 				case 0 : return "Area";
 				case 1 : return "Volume";
+			} break;
+			// SubSurfaceComponent::SubSurfaceComponentType
+			case 26 :
+			switch (t) {
+				case 0 : return "Window";
+				case 1 : return "Door";
+				case 2 : return "Miscellaneous";
 			} break;
 			// SurfaceProperties::para_t
 			case 27 :
@@ -1058,18 +1058,18 @@ namespace VICUS {
 				case 0 : return "If true, output files are written in binary format (the default, if flag is missing).";
 				case 1 : return "If true, default output definitions for zones are created.";
 			} break;
-			// PlaneGeometry::type_t
-			case 25 :
-			switch (t) {
-				case 0 : if (no_description != nullptr) *no_description = true; return "Triangle";
-				case 1 : if (no_description != nullptr) *no_description = true; return "Rectangle";
-				case 2 : if (no_description != nullptr) *no_description = true; return "Polygon";
-			} break;
 			// Room::para_t
-			case 26 :
+			case 25 :
 			switch (t) {
 				case 0 : return "Floor area of the zone.";
 				case 1 : return "Volume of the zone.";
+			} break;
+			// SubSurfaceComponent::SubSurfaceComponentType
+			case 26 :
+			switch (t) {
+				case 0 : return "A window";
+				case 1 : return "A door";
+				case 2 : return "Some other component type";
 			} break;
 			// SurfaceProperties::para_t
 			case 27 :
@@ -1426,18 +1426,18 @@ namespace VICUS {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
-			// PlaneGeometry::type_t
+			// Room::para_t
 			case 25 :
+			switch (t) {
+				case 0 : return "m2";
+				case 1 : return "m3";
+			} break;
+			// SubSurfaceComponent::SubSurfaceComponentType
+			case 26 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
-			} break;
-			// Room::para_t
-			case 26 :
-			switch (t) {
-				case 0 : return "m2";
-				case 1 : return "m3";
 			} break;
 			// SurfaceProperties::para_t
 			case 27 :
@@ -1794,18 +1794,18 @@ namespace VICUS {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
-			// PlaneGeometry::type_t
+			// Room::para_t
 			case 25 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
-				case 2 : return "#FFFFFF";
 			} break;
-			// Room::para_t
+			// SubSurfaceComponent::SubSurfaceComponentType
 			case 26 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
 			} break;
 			// SurfaceProperties::para_t
 			case 27 :
@@ -2162,18 +2162,18 @@ namespace VICUS {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// PlaneGeometry::type_t
+			// Room::para_t
 			case 25 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
-				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Room::para_t
+			// SubSurfaceComponent::SubSurfaceComponentType
 			case 26 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SurfaceProperties::para_t
 			case 27 :
@@ -2354,10 +2354,10 @@ namespace VICUS {
 			case 23 : return 3;
 			// Outputs::flag_t
 			case 24 : return 2;
-			// PlaneGeometry::type_t
-			case 25 : return 3;
 			// Room::para_t
-			case 26 : return 2;
+			case 25 : return 2;
+			// SubSurfaceComponent::SubSurfaceComponentType
+			case 26 : return 3;
 			// SurfaceProperties::para_t
 			case 27 : return 2;
 			// SurfaceProperties::Type
@@ -2450,10 +2450,10 @@ namespace VICUS {
 			case 23 : return 2;
 			// Outputs::flag_t
 			case 24 : return 1;
-			// PlaneGeometry::type_t
-			case 25 : return 2;
 			// Room::para_t
-			case 26 : return 1;
+			case 25 : return 1;
+			// SubSurfaceComponent::SubSurfaceComponentType
+			case 26 : return 2;
 			// SurfaceProperties::para_t
 			case 27 : return 1;
 			// SurfaceProperties::Type

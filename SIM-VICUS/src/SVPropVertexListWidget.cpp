@@ -422,7 +422,7 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 			// compose a surface object based on the current content of the new polygon object
 			VICUS::Surface s;
 			s.m_displayName = m_ui->lineEditName->text().trimmed();
-			s.m_geometry = po->planeGeometry();
+			s.setPolygon3D( po->planeGeometry().polygon() );
 
 			// we need all properties, unless we create annonymous geometry
 			if (m_ui->checkBoxAnnonymousGeometry->isChecked()) {
@@ -470,8 +470,8 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 			// 3. we need to create an undo-action
 
 			// take the polygon
-			VICUS::PlaneGeometry floor = po->planeGeometry();
-			VICUS::PlaneGeometry ceiling = po->offsetPlaneGeometry();
+			VICUS::Polygon3D floor = po->planeGeometry().polygon();
+			VICUS::Polygon3D ceiling = po->offsetPlaneGeometry().polygon();
 			// Note: both polygons still have the same normal vector!
 
 			// compute offset vector
@@ -500,12 +500,12 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 			sCeiling.m_id = sCeiling.uniqueID();
 			// if the ceiling has a normal vector pointing up, we take it as ceiling, otherwise it's going to be the floor
 			if (IBKMK::Vector3D(0,0,1).scalarProduct(ceiling.normal()) > 0) {
-				sCeiling.m_geometry = ceiling;
-				sFloor.m_geometry = floor;
+				sCeiling.setPolygon3D(ceiling);
+				sFloor.setPolygon3D(floor);
 			}
 			else {
-				sCeiling.m_geometry = floor;
-				sFloor.m_geometry = ceiling;
+				sCeiling.setPolygon3D(floor);
+				sFloor.setPolygon3D(ceiling);
 			}
 
 			sFloor.updateColor();
@@ -550,7 +550,7 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 				VICUS::Surface sWall;
 				sWall.m_id = sWall.uniqueID();
 				sWall.m_displayName = tr("Wall %1").arg(i+1);
-				sWall.m_geometry = VICUS::PlaneGeometry( VICUS::PlaneGeometry::T_Rectangle, p0, p1, p2);
+				sWall.setPolygon3D( VICUS::Polygon3D(VICUS::Polygon3D::T_Rectangle, p0, p1, p2) );
 				sWall.updateColor();
 				// wall surface is attached to "Side A"
 				componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
@@ -559,7 +559,7 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 				r.m_surfaces.push_back(sWall);
 			}
 
-			double area = sFloor.m_geometry.area();
+			double area = sFloor.geometry().area();
 			VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Area, area);
 			VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Volume, area*offset.magnitude());
 

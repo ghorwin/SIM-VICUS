@@ -112,6 +112,23 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 		}
 	}
 
+
+	// set spline parameter references
+	for(unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
+		// get component of flow element
+		const NANDRAD::HydraulicNetworkComponent* comp = m_statesModel->m_network->m_elements[i].m_component;
+		if (comp == nullptr)
+			continue;
+
+		// go through the list of spline parameters and set references
+		std::vector<unsigned int> splineParameter = NANDRAD::HydraulicNetworkComponent::requiredSplineParameter(comp->m_modelType,
+																												comp->m_heatPumpIntegration);
+		for (unsigned j: splineParameter){
+			m_flowElementProperties[i].m_splineParameterRefs.push_back(&comp->m_splPara[j]);
+		}
+	}
+
+
 	// first set all zone and construction properties
 	for(unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
 
@@ -499,14 +516,22 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 
 
 int ThermalNetworkBalanceModel::setTime(double t) {
+	// TODO : Hauke, since we update StatesModel parameters, setTime should be implemented in the states model
+
 	// update all spline values
 	for(unsigned int i = 0; i < m_flowElementProperties.size(); ++i) {
 		const FlowElementProperties &elemProp = m_flowElementProperties[i];
 		// no spline
-		if(elemProp.m_heatExchangeSplineRef == nullptr)
-			continue;
-		m_statesModel->m_heatExchangeRefValues[i] =
-				elemProp.m_heatExchangeSplineRef->value(t);
+		if(elemProp.m_heatExchangeSplineRef != nullptr){
+			m_statesModel->m_heatExchangeRefValues[i] =
+					elemProp.m_heatExchangeSplineRef->value(t);
+		}
+
+		// update spline parameter values
+		for (unsigned int j = 0; j < elemProp.m_splineParameterRefs.size(); ++j){
+			if (elemProp.m_splineParameterRefs[j] != nullptr)
+				m_statesModel->m_splineParameterRefValues[i][j] = elemProp.m_splineParameterRefs[j]->m_values.value(t);
+		}
 	}
 	return 0;
 }

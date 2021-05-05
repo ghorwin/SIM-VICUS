@@ -22,6 +22,20 @@ public:
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
+	/*! Comparison operator. */
+	bool operator!=(const WindowFrame &other)const {
+		if( m_id != other.m_id ||
+				m_isPercentageCalcMethode != other.m_isPercentageCalcMethode ||
+				m_dataSource != other.m_dataSource ||
+				m_materialLayer != other.m_materialLayer ||
+				m_notes != other.m_notes)
+			return true;
+		return false;
+	}
+
+	/*! Comparison operator. */
+	bool operator==(const WindowFrame &other) const { return !(*this != other);}
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of frame. */

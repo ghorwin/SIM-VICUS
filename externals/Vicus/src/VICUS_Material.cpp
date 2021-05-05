@@ -4,6 +4,11 @@
 
 namespace VICUS {
 
+AbstractDBElement::~AbstractDBElement() {
+}
+
+
+
 Material::Material( unsigned int id, const IBK::MultiLanguageString &name,
 					double conductivity, double density, double specHeatCapa) :
 	m_id(id),
@@ -39,6 +44,37 @@ bool Material::isValid(bool hygrothermalCalculation) const {
 	}
 
 	return true;
+}
+
+AbstractDBElement::ComparisonResult Material::equal(const AbstractDBElement * other) const {
+	const Material * otherMaterial = dynamic_cast<const Material*>(other);
+	if (otherMaterial == nullptr)
+		return Different;
+
+	//first check critical data
+
+	//check parameters
+	for(unsigned int i=0; i<NUM_P; ++i){
+		if(m_para[i] != otherMaterial->m_para[i])
+			return Different;
+	}
+
+	if(m_idEpds != otherMaterial->m_idEpds)
+		return Different;
+
+	if(m_category != otherMaterial->m_category)
+		return Different;
+
+	//check meta data
+
+	if(m_displayName != otherMaterial->m_displayName ||
+			m_notes != otherMaterial->m_notes ||
+			m_dataSource != otherMaterial->m_dataSource ||
+			m_manufacturer != otherMaterial->m_manufacturer ||
+			m_color != otherMaterial->m_color)
+		return OnlyMetaDataDiffers;
+
+	return Equal;
 }
 
 
