@@ -229,8 +229,9 @@ void TNDynamicPipeElement::setInflowTemperature(double Tinflow) {
 
 	IBK_ASSERT(m_heatExchangeValueRef != nullptr);
 	const double externalTemperature = *m_heatExchangeValueRef;
-	for(unsigned int i = 0; i < m_nVolumes; ++i) {
+	for (unsigned int i = 0; i < m_nVolumes; ++i) {
 		// calculate heat loss with given parameters
+		// TODO : Hauke, check equation... hier fehlt glaub ich noch der Faktor 1/m_nVolumes
 		m_heatLosses[i] = m_thermalTransmittance * (m_temperatures[i] - externalTemperature) * m_nParallelPipes;
 		// sum up heat losses
 		m_heatLoss += m_heatLosses[i];
