@@ -155,7 +155,9 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						break;
 
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
-						break;
+							throw IBK::Exception(IBK::FormatString("Heat exchange model %1 cannot be used with SimplePipe components.")
+												 .arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", e.m_heatExchange.m_modelType)), FUNC_ID);
+
 
 					} // switch heat exchange type
 
@@ -178,6 +180,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant :
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline :
+						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser :
 							throw IBK::Exception(IBK::FormatString("Heat exchange model %1 cannot be used with DynamicPipe components.")
 												 .arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", e.m_heatExchange.m_modelType)), FUNC_ID);
 
@@ -200,9 +203,6 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureFMUInterface :
 							// TODO : Andreas, Milestone FMU-Networks
-						break;
-
-						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser :
 						break;
 
 					} // switch heat exchange type
