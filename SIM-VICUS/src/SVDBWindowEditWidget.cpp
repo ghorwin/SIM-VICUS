@@ -3,33 +3,52 @@
 
 #include <QSortFilterProxyModel>
 
-#include <QtExt_LanguageStringEditWidget1.h>
+#include <VICUS_KeywordList.h>
+#include <VICUS_KeywordListQt.h>
+
+
 #include <QtExt_LanguageHandler.h>
-#include <SVConstants.h>
+#include <QtExt_Conversions.h>
 
 #include "SVSettings.h"
-#include "SVUtils.h"
+#include "SVDBWindowTableModel.h"
+#include "SVDatabaseEditDialog.h"
+#include "SVMainWindow.h"
+#include "SVConstants.h"
 
 SVDBWindowEditWidget::SVDBWindowEditWidget(QWidget *parent) :
-	QWidget(parent),
+	SVAbstractDatabaseEditWidget(parent),
 	m_ui(new Ui::SVDBWindowEditWidget)
 {
 	m_ui->setupUi(this);
+	m_ui->masterLayout->setMargin(4);
 
 	// style the table widget
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Window"));
 
-	QStringList captions;
-	captions << tr("Name") << tr("Category"); // TODO other captions
-	m_ui->tableWidget->setColumnCount(2);
-	m_ui->tableWidget->setHorizontalHeaderLabels(captions);
+	//header elements
+	m_ui->lineEditUValue->setReadOnly(true);
+	m_ui->lineEditSHGC->setReadOnly(true);
 
-	// create sort/filter proxy model
-//	m_sortFilterModel = new QSortFilterProxyModel(this);
-	m_ui->tableWidget->setSortingEnabled(true);
-	m_ui->splitter->setCollapsible(0,false);
+	//glazing system
+	m_ui->lineEditGlazingSystemName->setReadOnly(true);
+
+	//Frame + Divider
+	m_ui->lineEditFrameMaterialName->setReadOnly(true);
+	m_ui->lineEditDividerMaterialName->setReadOnly(true);
+	m_ui->comboBoxFrameMethod->blockSignals(true);
+	m_ui->comboBoxDividerMethod->blockSignals(true);
+	for (int i=0; i<VICUS::Window::NUM_M; ++i) {
+		m_ui->comboBoxFrameMethod->addItem(VICUS::KeywordListQt::Keyword("Window::Method", i), i);
+		m_ui->comboBoxDividerMethod->addItem(VICUS::KeywordListQt::Keyword("Window::Method", i), i);
+	}
+	m_ui->comboBoxFrameMethod->blockSignals(false);
+	m_ui->comboBoxDividerMethod->blockSignals(false);
+
+	// initial state is "nothing selected"
+	updateInput(-1);
 }
 
 
@@ -38,165 +57,311 @@ SVDBWindowEditWidget::~SVDBWindowEditWidget() {
 }
 
 
-void SVDBWindowEditWidget::edit() {
-	updateUi();
-	on_tableWidget_itemSelectionChanged();
-	show();
+void SVDBWindowEditWidget::setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) {
+	m_db = db;
+	m_dbModel = dynamic_cast<SVDBWindowTableModel*>(dbModel);
 }
 
 
-void SVDBWindowEditWidget::on_toolButtonAdd_clicked() {
-#if 0
-	// add a new window definition
-	VICUS::Window * w = newDatabaseElement(SVSettings::instance().m_dbWindows);
-	unsigned int newID = w->m_id;
-	w->m_displayName.setEncodedString("en:New Window|de:Neues Fenster");
+void SVDBWindowEditWidget::updateInput(int id) {
+	m_current = nullptr; // disable edit triggers
 
-	updateUi();	// update table
+	m_ui->lineEditGlazingSystemName->setText("");
 
-	QTableWidgetItem * newItem = nullptr;
-	do {
-		// and select it (mind the sorting of the table!)
-		for (int i=0; i<m_ui->tableWidget->rowCount(); ++i) {
-			QTableWidgetItem * it = m_ui->tableWidget->item(i,0);
-			if (it->data(Qt::UserRole).toUInt() == newID)
-				newItem = it;
-		}
-		if (newItem == nullptr) {
-			// item is now shown? Remove filter and try again
-			// TODO : Andreas, add filter
-		}
-	} while (newItem == nullptr);
+	m_ui->lineEditFrameMaterialName->setText("");
+	m_ui->lineEditFrameMaterialThickness->setText("---");
 
-	// now select row of the item
-	m_ui->tableWidget->selectRow(newItem->row());
-#endif
-}
+	m_ui->lineEditDividerMaterialName->setText("");
+	m_ui->lineEditDividerMaterialThickness->setText("---");
 
+	if (id == -1) {
+		// disable all controls
+		setEnabled(false);
 
-void SVDBWindowEditWidget::on_toolButtonCopy_clicked() {
-#if 0
-	// get ID of selected item
-	Q_ASSERT(!m_ui->tableWidget->selectedItems().isEmpty());
-	QTableWidgetItem * item = m_ui->tableWidget->selectedItems().front();
-	unsigned int id = item->data(Qt::UserRole).toUInt();
+		// clear input controls
+		m_ui->lineEditName->setString(IBK::MultiLanguageString());
 
-	const VICUS::Window * w = databaseElement(SVSettings::instance().m_dbWindows, id);
-	Q_ASSERT(w != nullptr);
+		// property info fields
+		m_ui->lineEditUValue->setText("");
+		m_ui->lineEditSHGC->setText("");
 
-	// add a new database element with same properties
-	const VICUS::Window * wNew = addDatabaseElement(SVSettings::instance().m_dbWindows, *w);
-	Q_ASSERT(wNew != nullptr);
+		m_ui->pushButtonWindowColor->setColor(Qt::black);
 
-	updateUi();	// update table
-
-	QTableWidgetItem * newItem = nullptr;
-	// and select
-	for (int i=0; i<m_ui->tableWidget->rowCount(); ++i) {
-		QTableWidgetItem * it = m_ui->tableWidget->item(i,0);
-		if (it->data(Qt::UserRole).toUInt() == wNew->m_id)
-			newItem = it;
-	}
-	Q_ASSERT(newItem != nullptr);
-
-	// now select row of the item
-	m_ui->tableWidget->selectRow(newItem->row());
-#endif
-}
-
-
-void SVDBWindowEditWidget::on_toolButtonRemove_clicked() {
-#if 0
-	// get ID of selected item
-	Q_ASSERT(!m_ui->tableWidget->selectedItems().isEmpty());
-	QTableWidgetItem * item = m_ui->tableWidget->selectedItems().front();
-	unsigned int id = item->data(Qt::UserRole).toUInt();
-
-	// remember current row
-	int currentRow = m_ui->tableWidget->currentRow();
-
-	// remove element from DB
-	Q_ASSERT(SVSettings::instance().m_dbWindows.find(id) != SVSettings::instance().m_dbWindows.end());
-	SVSettings::instance().m_dbWindows.erase( SVSettings::instance().m_dbWindows.find(id) );
-
-	updateUi();	// update table
-
-	// and reselect row
-	if (currentRow != -1 && m_ui->tableWidget->rowCount() > 0) {
-		if (currentRow >= m_ui->tableWidget->rowCount())
-			currentRow = m_ui->tableWidget->rowCount()-1;
-		m_ui->tableWidget->selectRow(currentRow);
-	}
-
-#endif
-}
-
-
-void SVDBWindowEditWidget::updateUi() {
-#if 0
-	m_ui->tableWidget->clearContents();
-	m_ui->tableWidget->setRowCount(SVSettings::instance().m_dbWindows.size());
-
-	// turn off sorting
-	m_ui->tableWidget->setSortingEnabled(false);
-
-	// add all database elements
-	int row = 0;
-	for (const auto & d : SVSettings::instance().m_dbWindows) {
-		QTableWidgetItem * item = new QTableWidgetItem( QString::fromStdString(d.second.m_displayName.string("en")) );
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		// store ID
-		item->setData(Qt::UserRole, d.first);
-		// store built-in role
-		item->setData(Qt::UserRole+5, d.second.m_builtIn);
-		m_ui->tableWidget->setItem(row, 0, item);
-		++row;
-	}
-	m_ui->tableWidget->setSortingEnabled(true);
-#endif
-}
-
-
-void SVDBWindowEditWidget::updateEditWidget(unsigned int id) {
-#if 0
-	if (id == VICUS::INVALID_ID) {
-		// TODO : hide edit widget, or place all widets
-		m_ui->groupBoxEditProperties->hide();
 		return;
 	}
-	else {
-		m_ui->groupBoxEditProperties->show();
+	// re-enable all controls
+	setEnabled(true);
+	//TODO Dirk anderen Namen vergeben
+	m_current = const_cast<VICUS::Window *>(m_db->m_windows[(unsigned int) id ]);
+	m_ui->pushButtonWindowColor->setColor(m_current->m_color);
 
-		// get selected database element
-		const VICUS::Window * w = databaseElement(SVSettings::instance().m_dbWindows, id);
-		Q_ASSERT(w != nullptr);
+	// we must have a valid internal load model pointer
+	Q_ASSERT(m_current != nullptr);
 
-		// populate widget
-		m_ui->nameEditWidget->setString( w->m_displayName );
+	// now update the GUI controls
+
+	m_ui->lineEditUValue->setText("---");
+	m_ui->lineEditSHGC->setText("---");
+
+	// for built-ins, disable editing/make read-only
+	bool isEditable = !m_current->m_builtIn;
+
+	// *** glazing system ***
+
+	if(m_current->m_idGlazingSystem != VICUS::INVALID_ID){
+		VICUS::WindowGlazingSystem *glazSys = const_cast<VICUS::WindowGlazingSystem *>(m_db->m_windowGlazingSystems[(unsigned int)id]);
+		if(glazSys != nullptr){
+			m_ui->lineEditUValue->setText(QString("%L1").arg(glazSys->uValue(), 0, 'f', 4));
+			m_ui->lineEditSHGC->setText(QString("%L1").arg(glazSys->SHGC(), 0, 'f', 4));
+			m_ui->lineEditGlazingSystemName->setText(QtExt::MultiLangString2QString(glazSys->m_displayName));
+		}
+	}
+
+
+	// *** frame ***
+	int frameIdx;
+	switch(m_current->m_methodFrame){
+		case VICUS::Window::M_Fraction:{
+			m_ui->labelFrameInput->setText(tr("Fraction of Window:"));
+			m_ui->labelFrameInputUnit->setText(tr("-"));
+			m_ui->lineEditFrameInput->setup(0,1,tr("Frame fraction of the window"), false, true);
+			frameIdx = 1;
+		}
+		break;
+		case VICUS::Window::M_ConstantWidth:{
+			m_ui->labelFrameInput->setText(tr("Width:"));
+			m_ui->labelFrameInputUnit->setText(tr("m"));
+			m_ui->lineEditFrameInput->setup(0,2,tr("Frame width."), false, true);
+			frameIdx = 2;
+
+		}
+		break;
+		case VICUS::Window::M_None:
+		case VICUS::Window::NUM_M:
+			frameIdx = 0;
+		break;
 
 	}
-#endif
+
+	if(m_current->m_frame.m_id != VICUS::INVALID_ID && frameIdx > 0){
+		m_ui->lineEditFrameMaterialThickness->setValue(m_current->m_frame.m_para[VICUS::WindowFrame::P_Thickness].get_value());
+		VICUS::Material *mat = const_cast<VICUS::Material*>(m_db->m_materials[m_current->m_frame.m_idMaterial]);
+		if(mat != nullptr)
+			m_ui->lineEditFrameMaterialName->setText(QtExt::MultiLangString2QString(mat->m_displayName));
+	}
+
+	m_ui->comboBoxFrameMethod->blockSignals(true);
+	m_ui->comboBoxFrameMethod->setCurrentIndex(frameIdx);
+	m_ui->comboBoxFrameMethod->blockSignals(false);
+
+	m_ui->comboBoxFrameMethod->setEnabled(isEditable);
+	m_ui->lineEditFrameMaterialName->setEnabled(frameIdx>0);
+	m_ui->lineEditFrameInput->setReadOnly(!isEditable && frameIdx>0);
+	m_ui->lineEditFrameMaterialThickness->setReadOnly(!isEditable && frameIdx>0);
+	m_ui->lineEditFrameMaterialThickness->setEnabled(frameIdx>0);
+	m_ui->lineEditFrameInput->setEnabled(frameIdx>0);
+	m_ui->toolButtonSelectFrameMaterial->setEnabled(isEditable && frameIdx > 0);
+
+	// *** divider ***
+	int dividerIdx;
+	switch(m_current->m_methodDivider){
+		case VICUS::Window::M_Fraction:{
+			m_ui->labelDividerInput->setText(tr("Fraction of Window:"));
+			m_ui->labelDividerInputUnit->setText(tr("-"));
+			m_ui->lineEditDividerInput->setup(0,1,tr("Divider fraction of the window"), false, true);
+			dividerIdx = 1;
+		}
+		break;
+		case VICUS::Window::M_ConstantWidth:{
+			m_ui->labelDividerInput->setText(tr("Width:"));
+			m_ui->labelDividerInputUnit->setText(tr("m"));
+			m_ui->lineEditDividerInput->setup(0,2,tr("Divider width."), false, true);
+			dividerIdx = 2;
+
+		}
+		break;
+		case VICUS::Window::M_None:
+		case VICUS::Window::NUM_M:
+			dividerIdx = 0;
+		break;
+
+	}
+
+	if(m_current->m_divider.m_id != VICUS::INVALID_ID && dividerIdx > 0){
+		m_ui->lineEditDividerMaterialThickness->setValue(m_current->m_frame.m_para[VICUS::WindowDivider::P_Thickness].get_value());
+		VICUS::Material *mat = const_cast<VICUS::Material*>(m_db->m_materials[m_current->m_divider.m_idMaterial]);
+		if(mat != nullptr)
+			m_ui->lineEditDividerMaterialName->setText(QtExt::MultiLangString2QString(mat->m_displayName));
+	}
+
+	m_ui->comboBoxDividerMethod->blockSignals(true);
+	m_ui->comboBoxDividerMethod->setCurrentIndex(dividerIdx);
+	m_ui->comboBoxDividerMethod->blockSignals(false);
+
+	m_ui->comboBoxDividerMethod->setEnabled(isEditable);
+	m_ui->lineEditDividerInput->setReadOnly(!isEditable && dividerIdx>0);
+	m_ui->lineEditDividerMaterialThickness->setReadOnly(!isEditable  && dividerIdx>0);
+	m_ui->toolButtonSelectDividerMaterial->setEnabled(isEditable && dividerIdx > 0);
+	m_ui->lineEditDividerInput->setEnabled(dividerIdx>0);
+	m_ui->lineEditDividerMaterialThickness->setEnabled(dividerIdx>0);
+	m_ui->lineEditDividerMaterialName->setEnabled(dividerIdx>0);
+
+	m_ui->pushButtonWindowColor->blockSignals(true);
+	m_ui->pushButtonWindowColor->setColor(m_current->m_color);
+	m_ui->pushButtonWindowColor->blockSignals(false);
+
+
+	m_ui->lineEditName->setReadOnly(!isEditable);
+	m_ui->pushButtonWindowColor->setReadOnly(!isEditable);
+	m_ui->toolButtonSelectGlazingSystemName->setEnabled(isEditable);
+
+
+}
+
+void SVDBWindowEditWidget::on_lineEditName_editingFinished(){
+	Q_ASSERT(m_current != nullptr);
+	if (m_current->m_displayName != m_ui->lineEditName->string()) {  // currentdisplayname is multilanguage string
+		m_current->m_displayName = m_ui->lineEditName->string();
+		modelModify();
+		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+	}
+}
+
+void SVDBWindowEditWidget::modelModify() {
+	m_db->m_windows.m_modified = true;
+}
+
+void SVDBWindowEditWidget::on_toolButtonSelectGlazingSystemName_clicked() {
+	// get glazing system edit dialog from mainwindow
+	SVDatabaseEditDialog * glazSysEditDialog = SVMainWindow::instance().dbWindowGlazingSystemEditDialog();
+	unsigned int conId = glazSysEditDialog->select(m_current->m_idGlazingSystem);
+	if (conId != m_current->m_idGlazingSystem) {
+		m_current->m_idGlazingSystem = conId;
+		modelModify(); // tell model that we changed the data
+	}
+	updateInput((int)m_current->m_id);
 }
 
 
-void SVDBWindowEditWidget::on_tableWidget_itemSelectionChanged() {
-	// enable/disable buttons based on selection state
-	if (m_ui->tableWidget->selectedItems().isEmpty()) {
-		m_ui->toolButtonCopy->setEnabled(false);
-		m_ui->toolButtonRemove->setEnabled(false);
-	}
-	else {
-		// copying is always possible
-		m_ui->toolButtonCopy->setEnabled(true);
-		// removing not allowed for built-in database elements
-		QTableWidgetItem * item = m_ui->tableWidget->selectedItems().first();
-		if (item->data(Qt::UserRole+5).toBool())
-			m_ui->toolButtonRemove->setEnabled(false); // built-ins cannot be removed
-		else
-			m_ui->toolButtonRemove->setEnabled(true);
+void SVDBWindowEditWidget::on_pushButtonWindowColor_colorChanged() {
 
-		// update edit widget
-		unsigned int itemID = item->data(Qt::UserRole).toUInt();
-		updateEditWidget(itemID);
+	Q_ASSERT(m_current != nullptr);
+
+	if (m_current->m_color != m_ui->pushButtonWindowColor->color()) {
+		m_current->m_color = m_ui->pushButtonWindowColor->color();
+		modelModify(); // tell model that we changed the data
+		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
+
+}
+
+
+
+void SVDBWindowEditWidget::on_toolButtonSelectFrameMaterial_clicked(){
+	// get material edit dialog from mainwindow
+	SVDatabaseEditDialog * matEditDialog = SVMainWindow::instance().dbMaterialEditDialog();
+	unsigned int matId = matEditDialog->select(m_current->m_frame.m_idMaterial);
+	if (matId != m_current->m_frame.m_idMaterial) {
+		m_current->m_frame.m_idMaterial = matId;
+		modelModify(); // tell model that we changed the data
+	}
+	updateInput((int)m_current->m_id);
+}
+
+void SVDBWindowEditWidget::on_toolButtonSelectDividerMaterial_clicked(){
+
+	// get material edit dialog from mainwindow
+	SVDatabaseEditDialog * matEditDialog = SVMainWindow::instance().dbMaterialEditDialog();
+	unsigned int matId = matEditDialog->select(m_current->m_divider.m_idMaterial);
+	if (matId != m_current->m_divider.m_idMaterial) {
+		m_current->m_divider.m_idMaterial = matId;
+		modelModify(); // tell model that we changed the data
+	}
+	updateInput((int)m_current->m_id);
+
+}
+
+void SVDBWindowEditWidget::on_lineEditFrameMaterialThickness_editingFinished(){
+	Q_ASSERT(m_current != nullptr);
+	if(m_ui->lineEditFrameMaterialThickness->isValid()){
+		VICUS::KeywordList::setParameter(m_current->m_frame.m_para, "WindowFrame::para_t", VICUS::WindowFrame::P_Thickness, m_ui->lineEditFrameMaterialThickness->value());
+		modelModify(); // tell model that we changed the data
+		updateInput((int)m_current->m_id);
+	}
+}
+
+void SVDBWindowEditWidget::on_lineEditDividerMaterialThickness_editingFinished(){
+	Q_ASSERT(m_current != nullptr);
+	if(m_ui->lineEditDividerMaterialThickness->isValid()){
+		VICUS::KeywordList::setParameter(m_current->m_divider.m_para, "WindowDivider::para_t", VICUS::WindowDivider::P_Thickness, m_ui->lineEditDividerMaterialThickness->value());
+		modelModify(); // tell model that we changed the data
+		updateInput((int)m_current->m_id);
+	}
+}
+
+void SVDBWindowEditWidget::on_lineEditDividerInput_editingFinished() {
+	Q_ASSERT(m_current != nullptr);
+	if(m_ui->lineEditDividerInput->isValid()){
+		bool isModi = true;
+		if(m_current->m_methodDivider == VICUS::Window::M_ConstantWidth)
+			VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_DividerWidth, m_ui->lineEditDividerInput->value());
+		else if(m_current->m_methodDivider == VICUS::Window::M_Fraction)
+			VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_DividerFraction, m_ui->lineEditDividerInput->value());
+		else
+			isModi = false;
+		if(isModi){
+			modelModify(); // tell model that we changed the data
+			updateInput((int)m_current->m_id);
+		}
+	}
+}
+
+void SVDBWindowEditWidget::on_lineEditFrameInput_editingFinished() {
+	Q_ASSERT(m_current != nullptr);
+	if(m_ui->lineEditFrameInput->isValid()){
+		bool isModi = true;
+		if(m_current->m_methodFrame == VICUS::Window::M_ConstantWidth)
+			VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_FrameWidth, m_ui->lineEditFrameInput->value());
+		else if(m_current->m_methodFrame == VICUS::Window::M_Fraction)
+			VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_FrameFraction, m_ui->lineEditFrameInput->value());
+		else
+			isModi = false;
+		if(isModi){
+			modelModify(); // tell model that we changed the data
+			updateInput((int)m_current->m_id);
+		}
+	}
+}
+
+void SVDBWindowEditWidget::on_comboBoxFrameMethod_currentIndexChanged(int index) {
+	Q_ASSERT(m_current != nullptr);
+
+	// update database but only if different from original
+	if (index != (int)m_current->m_methodFrame)
+	{
+		m_current->m_methodFrame = static_cast<VICUS::Window::Method>(index);
+		if(m_current->m_methodFrame == VICUS::Window::M_Fraction || m_current->m_methodFrame == VICUS::Window::M_ConstantWidth)
+			m_current->m_frame.m_id = 1;
+		else
+			m_current->m_frame.m_id = VICUS::INVALID_ID;
+		modelModify(); // tell model that we changed the data
+		updateInput((int)m_current->m_id);
+	}
+}
+
+void SVDBWindowEditWidget::on_comboBoxDividerMethod_currentIndexChanged(int index) {
+	Q_ASSERT(m_current != nullptr);
+
+	// update database but only if different from original
+	if (index != (int)m_current->m_methodDivider)
+	{
+		m_current->m_methodDivider = static_cast<VICUS::Window::Method>(index);
+		if(m_current->m_methodDivider== VICUS::Window::M_Fraction || m_current->m_methodDivider== VICUS::Window::M_ConstantWidth)
+			m_current->m_divider.m_id = 1;
+		else
+			m_current->m_divider.m_id = VICUS::INVALID_ID;
+		modelModify(); // tell model that we changed the data
+		updateInput((int)m_current->m_id);
+	}
+
 }
