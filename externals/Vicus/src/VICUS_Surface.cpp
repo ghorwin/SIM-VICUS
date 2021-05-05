@@ -15,6 +15,23 @@ void Surface::updateColor() {
 }
 
 
+Surface Surface::clone() const{
+	Surface r(*this); // create new surface with same unique ID
+	Object & o = r;
+	(Object&)r = o.clone(); // assign new ID only
+	return r;
+}
+
+
+void Surface::updateParents() {
+	m_children.clear();
+	for (SubSurface & sub : m_subSurfaces) {
+		m_children.push_back(&sub);
+		sub.m_parent = this;
+	}
+}
+
+
 void Surface::readXML(const TiXmlElement * element) {
 	readXMLPrivate(element);
 	computeGeometry();

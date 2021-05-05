@@ -41,6 +41,14 @@ void addPlane(const VICUS::PlaneGeometry & g,
 			  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 			  std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData);
 
+/*! Same as addPlane, but only adds coordinates (no normals, no color buffer). Also, instead of
+	transferring the polygon itself, it will instead transfer the triangles of the hole with the given index.
+	Index buffer contains data for triangles.
+*/
+void addPlane(const VICUS::PlaneGeometry & g, unsigned int holeIdx,
+			  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+			  std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData);
+
 /*! This updates the plane color in the vertex buffer. */
 void updateColors(const VICUS::PlaneGeometry & g, const QColor & c,
 				  unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData);

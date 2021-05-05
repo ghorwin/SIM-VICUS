@@ -92,6 +92,9 @@ public:
 	/*! Returns current vector of triangles of the opaque surface (not including holes). */
 	const std::vector<triangle_t> & triangles() const { return m_triangles; }
 
+	/*! Returns the triangles for each hole in this polygon. */
+	const std::vector< std::vector<triangle_t> > & holeTriangles() const { return m_holeTriangles; }
+
 	/*! Returns the vertexes used by the triangles.
 		This is a combination of the polygon's vertexes and vertexes of any (valid) holes inside
 		the polygon.

@@ -90,6 +90,40 @@ void addPlane(const VICUS::PlaneGeometry & g, unsigned int & currentVertexIndex,
 }
 
 
+void addPlane(const VICUS::PlaneGeometry & g, unsigned int holeIdx, unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+			  std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData)
+{
+	// check for valid hole geometry
+	if (g.holeTriangles().empty())
+		return;
+
+	IBK_ASSERT(g.holeTriangles().size() > holeIdx);
+
+	// add vertex data to buffers
+	unsigned int nVertexes = g.triangleVertexes().size();
+	// insert count vertexes
+	vertexBufferData.resize(vertexBufferData.size()+nVertexes);
+	// set data
+	for (unsigned int i=0; i<nVertexes; ++i)
+		vertexBufferData[currentVertexIndex + i].m_coords = QtExt::IBKVector2QVector(g.triangleVertexes()[i]);
+
+	unsigned int triangleIndexCount = g.triangles().size()*3;
+	indexBufferData.resize(indexBufferData.size()+triangleIndexCount);
+	// add all triangles
+
+	for (const VICUS::PlaneGeometry::triangle_t & t : g.triangles()) {
+		indexBufferData[currentElementIndex    ] = currentVertexIndex + t.a;
+		indexBufferData[currentElementIndex + 1] = currentVertexIndex + t.b;
+		indexBufferData[currentElementIndex + 2] = currentVertexIndex + t.c;
+		// advance index in element/index buffer
+		currentElementIndex += 3;
+	}
+
+	// finally advance vertex index
+	currentVertexIndex += nVertexes;
+}
+
+
 void updateColors(const VICUS::PlaneGeometry & g, const QColor & col, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
 	unsigned int nvert = g.triangleVertexes().size();
 	// add all vertices to buffer

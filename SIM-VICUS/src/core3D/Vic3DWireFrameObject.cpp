@@ -116,6 +116,15 @@ void WireFrameObject::updateBuffers() {
 			continue;
 		}
 
+#if 0
+		const VICUS::SubSurface * sub = dynamic_cast<const VICUS::SubSurface *>(o);
+		if (sub != nullptr) {
+			// get index of subsurface
+			addPlane(sub->geometry(), currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			continue;
+		}
+#endif
+
 		const VICUS::NetworkEdge * e = dynamic_cast<const VICUS::NetworkEdge *>(o);
 		if (e != nullptr) {
 			double radius = e->m_visualizationRadius;
