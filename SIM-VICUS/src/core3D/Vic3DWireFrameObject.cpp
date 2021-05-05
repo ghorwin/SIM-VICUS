@@ -87,11 +87,12 @@ void WireFrameObject::destroy() {
 
 
 void WireFrameObject::updateBuffers() {
-
-	updateSelectedObjectsFromProject(m_selectedObjects);
+	// get all selected and visible objects
+	m_selectedObjects.clear();
+	project().selectObjects(m_selectedObjects, VICUS::Project::SG_All, true, true);
 
 	if (m_selectedObjects.empty())
-		return; // nothing to render
+		return; // nothing to render, return. Note: the buffer remains unmodified on the GPU, yet we don't draw anything.
 
 	// clear out existing cache
 
@@ -181,62 +182,5 @@ void WireFrameObject::render() {
 	m_vao.release();
 }
 
-
-void WireFrameObject::updateSelectedObjectsFromProject(std::set<const VICUS::Object*> & selectedObjects, bool takeInvisible) {
-	selectedObjects.clear();
-
-	// first, we take *all* objects that are selected
-
-	// process all building surfaces
-	const VICUS::Project & prj = project();
-	// Buildings
-	for (const VICUS::Building & b : prj.m_buildings) {
-		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
-			for (const VICUS::Room & r : bl.m_rooms) {
-				for (const VICUS::Surface & s : r.m_surfaces) {
-					if (s.m_selected)
-						selectedObjects.insert(&s);
-					for (const VICUS::SubSurface & sub : s.subSurfaces()) {
-						selectedObjects.insert(&sub);
-					}
-				}
-			}
-		}
-	}
-
-	// Networks
-	for (const VICUS::Network & n : prj.m_geometricNetworks) {
-		for (const VICUS::NetworkEdge & e : n.m_edges) {
-			if (e.m_selected)
-				selectedObjects.insert(&e);
-		}
-
-		for (const VICUS::NetworkNode & nod : n.m_nodes) {
-			if (nod.m_selected)
-				selectedObjects.insert(&nod);
-		}
-	}
-
-	// Dumb plain geometry
-	for (const VICUS::Surface & s : prj.m_plainGeometry) {
-		if (s.m_selected)
-			selectedObjects.insert(&s);
-	}
-
-	// now filter out those that are not wanted
-
-	std::set<const VICUS::Object*> filteredSet;
-	if (takeInvisible) {
-		for (const VICUS::Object* o : selectedObjects)
-			if (!o->m_visible)
-				filteredSet.insert(o);
-	}
-	else {
-		for (const VICUS::Object* o : selectedObjects)
-			if (o->m_visible)
-				filteredSet.insert(o);
-	}
-	selectedObjects.swap(filteredSet);
-}
 
 } // namespace Vic3D
