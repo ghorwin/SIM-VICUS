@@ -75,6 +75,8 @@ private:
 	static SVDatabaseEditDialog * createMaterialEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createConstructionEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createComponentEditDialog(QWidget * parent);
+	static SVDatabaseEditDialog * createWindowEditDialog(QWidget * parent);
+	static SVDatabaseEditDialog * createWindowGlazingSystemEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createBoundaryConditionsEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createScheduleEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createInternalLoadsEditDialog(QWidget * parent, VICUS::InternalLoad::Category category);

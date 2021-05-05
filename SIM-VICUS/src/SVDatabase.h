@@ -42,6 +42,7 @@ public:
 		DT_Components,
 		DT_BoundaryConditions,
 		DT_Windows,
+		DT_WindowGlazingSystems,
 		DT_Pipes,
 		DT_Fluids,
 		DT_NetworkComponents,
@@ -87,8 +88,8 @@ public:
 	/*! Map of all window definitions. */
 	VICUS::Database<VICUS::Window>						m_windows;
 
-//	/*! Map of all database glazing systems. */
-//	VICUS::Database<VICUS::WindowGlazingSystem>			m_windowGlazingSystems;
+	/*! Map of all database glazing systems. */
+	VICUS::Database<VICUS::WindowGlazingSystem>			m_windowGlazingSystems;
 
 	/*! Map of all database boundary conditions. */
 	VICUS::Database<VICUS::BoundaryCondition>			m_boundaryConditions;

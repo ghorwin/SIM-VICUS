@@ -23,6 +23,10 @@
 #include "SVDBConstructionEditWidget.h"
 #include "SVDBComponentTableModel.h"
 #include "SVDBComponentEditWidget.h"
+#include "SVDBWindowTableModel.h"
+#include "SVDBWindowEditWidget.h"
+#include "SVDBWindowGlazingSystemTableModel.h"
+#include "SVDBWindowGlazingSystemEditWidget.h"
 #include "SVDBBoundaryConditionTableModel.h"
 #include "SVDBBoundaryConditionEditWidget.h"
 #include "SVDBScheduleTableModel.h"
@@ -327,6 +331,25 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createComponentEditDialog(QWidget *
 	return dlg;
 }
 
+SVDatabaseEditDialog * SVDatabaseEditDialog::createWindowEditDialog(QWidget * parent) {
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBWindowTableModel(parent, SVSettings::instance().m_db),
+		new SVDBWindowEditWidget(parent),
+		tr("Window Database"), tr("Window properties"), true
+	);
+	dlg->resize(1400,800);
+	return dlg;
+}
+
+SVDatabaseEditDialog * SVDatabaseEditDialog::createWindowGlazingSystemEditDialog(QWidget * parent) {
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBWindowGlazingSystemTableModel(parent, SVSettings::instance().m_db),
+		new SVDBWindowGlazingSystemEditWidget(parent),
+		tr("Window glazing system Database"), tr("Window glazing system properties"), true
+	);
+	dlg->resize(1400,800);
+	return dlg;
+}
 
 SVDatabaseEditDialog * SVDatabaseEditDialog::createBoundaryConditionsEditDialog(QWidget * parent) {
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,

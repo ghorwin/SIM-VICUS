@@ -163,7 +163,15 @@ KeywordListQt::KeywordListQt() {
 	tr("Glass");
 	tr("Air change rate.");
 	tr("Grid is visible");
-	tr("Area of the divider.");
+	tr("None");
+	tr("Fraction");
+	tr("ConstantWidth");
+	tr("Frame width of the window.");
+	tr("Frame area fraction of the window.");
+	tr("Divider width of the window.");
+	tr("Divider area fraction of the window.");
+	tr("Divider material thickness.");
+	tr("Frame material thickness.");
 	tr("Gas layer");
 	tr("Glass layer");
 	tr("Thickness of the window layer.");

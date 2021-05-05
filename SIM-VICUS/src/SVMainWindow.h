@@ -102,6 +102,8 @@ public:
 	SVDatabaseEditDialog * dbBoundaryConditionEditDialog();
 	/*! Returns the window edit dialog. */
 	SVDatabaseEditDialog * dbWindowEditDialog();
+	/*! Returns the window glazing system edit dialog. */
+	SVDatabaseEditDialog * dbWindowGlazingSystemEditDialog();
 	/*! Returns the pipe edit dialog. */
 	SVDatabaseEditDialog *dbPipeEditDialog();
 	/*! Returns the network component edit dialog. */
@@ -137,6 +139,7 @@ public:
 public slots:
 	void on_actionDBMaterials_triggered();
 	void on_actionDBWindows_triggered();
+	void on_actionDBWindowGlazingSystems_triggered();
 	void on_actionDBConstructions_triggered();
 	void on_actionDBComponents_triggered();
 	void on_actionDBBoundaryConditions_triggered();
@@ -268,6 +271,7 @@ private slots:
 	void on_actionExportView3D_triggered();
 
 	void on_actionCalculateShadingFactors_triggered();
+
 
 private:
 	/*! Sets up all dock widgets with definition lists. */
@@ -407,6 +411,7 @@ private:
 	SVDatabaseEditDialog				*m_dbMaterialEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbConstructionEditDialog						= nullptr;
 	SVDatabaseEditDialog				*m_dbWindowEditDialog							= nullptr;
+	SVDatabaseEditDialog				*m_dbWindowGlazingSystemEditDialog				= nullptr;
 	SVDatabaseEditDialog				*m_dbComponentEditDialog						= nullptr;
 	SVDatabaseEditDialog				*m_dbBoundaryConditionEditDialog				= nullptr;
 	SVDatabaseEditDialog				*m_dbPipeEditDialog								= nullptr;
