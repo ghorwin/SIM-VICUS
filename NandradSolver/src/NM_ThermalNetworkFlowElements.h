@@ -413,8 +413,9 @@ class TNHeatPumpIdealCarnot : public ThermalNetworkAbstractFlowElementWithHeatLo
 
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	TNHeatPumpIdealCarnot(const NANDRAD::HydraulicFluid & fluid,
-							const NANDRAD::HydraulicNetworkComponent & comp);
+	TNHeatPumpIdealCarnot(unsigned int flowElementId,
+						  const NANDRAD::HydraulicFluid & fluid,
+						  const NANDRAD::HydraulicNetworkComponent & comp);
 
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
@@ -431,15 +432,22 @@ public:
 	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
 	void setInflowTemperature(double Tinflow) override;
 
-	/*! Sets references to externally calculated values. */
-	void setExternalReferences(const double * heatFluxCondenserRef, const double * condenserMeanTemperature);
+	/*! Adds flow-element-specific input references (schedules etc.) to the list of input references.
+	*/
+	void inputReferences(std::vector<NANDRAD_MODEL::InputReference> & inputRefs) const override;
+
+	/*! Provides the element with its own requested model inputs.
+		The element must take exactly as many input values from the vector and move the iterator forward.
+		When the function returns, the iterator must point to the first input reference past this element's inputs.
+	*/
+	void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
 
 private:
-	/*! Reference to external heat loss in [W] */
-	const double*							m_heatFluxCondenserRef = nullptr;
+	/*! Id number of flow element. */
+	unsigned int							m_flowElementId = NANDRAD::INVALID_ID;
 
 	/*! Mean condenser temperature [K]*/
-	const double*							m_condenserMeanTemperature = nullptr;
+	const double							*m_condenserMeanTemperature = nullptr;
 
 	/*! Nominal evaporator temperature difference [K] */
 	double									m_nominalTemperatureDifference = 999;

@@ -492,8 +492,10 @@ void TNPumpWithPerformanceLoss::setInflowTemperature(double Tinflow) {
 
 // *** TNHeatPumpIdealCarnot ***
 
-TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(const NANDRAD::HydraulicFluid & fluid,
-											 const NANDRAD::HydraulicNetworkComponent & comp)
+TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(unsigned int flowElementId,
+											 const NANDRAD::HydraulicFluid & fluid,
+											 const NANDRAD::HydraulicNetworkComponent & comp) :
+	m_flowElementId(flowElementId)
 {
 	m_fluidVolume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
 	m_carnotEfficiency = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiency].value;
@@ -521,13 +523,14 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 		const double m_COP = m_carnotEfficiency * COPMax;
 
 		// cut condenser heat flux
-		double condenserHeatFlux = *m_heatFluxCondenserRef;
+		IBK_ASSERT(m_heatExchangeValueRef != nullptr);
+		double condenserHeatFlux = *m_heatExchangeValueRef;
 		if (condenserHeatFlux > m_condenserMaximumHeatFlux)
 			condenserHeatFlux = m_condenserMaximumHeatFlux;
 
 		// heat loss = - evaporator heat flux
 		m_heatLoss = - condenserHeatFlux * (m_COP - 1) / m_COP;
-		m_electricalPower  = *m_heatFluxCondenserRef / m_COP;
+		m_electricalPower  = *m_heatExchangeValueRef / m_COP;
 
 		} break;
 
@@ -540,11 +543,25 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 }
 
 
-void TNHeatPumpIdealCarnot::setExternalReferences(const double * heatFluxCondenserRef, const double * condenserMeanTemperature) {
-	m_heatFluxCondenserRef = heatFluxCondenserRef;
-	m_condenserMeanTemperature = condenserMeanTemperature;
+void TNHeatPumpIdealCarnot::inputReferences(std::vector<InputReference> & inputRefs) const {
+
+	// TODO Hauke : Add switch for m_heatpumpIntegration and configure input reference accordingly
+
+	InputReference ref;
+	ref.m_id = m_flowElementId;
+	ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	ref.m_name.m_name = "CondenserMeanTemperatureSchedule";
+	ref.m_required = true;
+	inputRefs.push_back(ref);
 }
 
+
+void TNHeatPumpIdealCarnot::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
+	// TODO Hauke : Add switch for m_heatpumpIntegration and configure input reference accordingly
+
+	// now store the pointer returned for our input ref request and advance the iterator by one
+	m_condenserMeanTemperature = *(resultValueRefs++);
+}
 
 
 // *** AdiabaticElement ***

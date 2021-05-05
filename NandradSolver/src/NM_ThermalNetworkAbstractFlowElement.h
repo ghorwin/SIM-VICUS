@@ -5,6 +5,7 @@
 #include <utility>
 
 #include "NM_QuantityDescription.h"
+#include "NM_InputReference.h"
 
 namespace NANDRAD_MODEL {
 
@@ -117,6 +118,16 @@ public:
 							  const double */*mdot*/, const double* /*TInflowLeft*/, const double*/*TInflowRight*/,
 							  std::vector<std::pair<const double *, const double *> > & ) const;
 
+	/*! Adds flow-element-specific input references (schedules etc.) to the list of input references.
+		Default implementation does nothing.
+	*/
+	virtual void inputReferences(std::vector<NANDRAD_MODEL::InputReference> & /*inputRefs*/) const {}
+
+	/*! Provides the element with its own requested model inputs.
+		The element must take exactly as many input values from the vector and move the iterator forward.
+		When the function returns, the iterator must point to the first input reference past this element's inputs.
+	*/
+	virtual void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {}
 
 	// Common variables for flow elements
 

@@ -207,6 +207,7 @@ namespace NANDRAD_MODEL {
 				case 9 : return "WindSpeedACRLimitSchedule";
 				case 10 : return "HeatingSetpointSchedule";
 				case 11 : return "CoolingSetpointSchedule";
+				case 12 : return "CondenserMeanTemperatureSchedule";
 			} break;
 			// ThermalComfortModel::Results
 			case 15 :
@@ -378,6 +379,7 @@ namespace NANDRAD_MODEL {
 				case 9 : return "WindSpeedACRLimitSchedule";
 				case 10 : return "HeatingSetpointSchedule";
 				case 11 : return "CoolingSetpointSchedule";
+				case 12 : return "CondenserMeanTemperatureSchedule";
 			} break;
 			// ThermalComfortModel::Results
 			case 15 :
@@ -550,6 +552,7 @@ namespace NANDRAD_MODEL {
 				case 9 : if (no_description != nullptr) *no_description = true; return "WindSpeedACRLimitSchedule";
 				case 10 : if (no_description != nullptr) *no_description = true; return "HeatingSetpointSchedule";
 				case 11 : if (no_description != nullptr) *no_description = true; return "CoolingSetpointSchedule";
+				case 12 : if (no_description != nullptr) *no_description = true; return "CondenserMeanTemperatureSchedule";
 			} break;
 			// ThermalComfortModel::Results
 			case 15 :
@@ -721,6 +724,7 @@ namespace NANDRAD_MODEL {
 				case 9 : return "m/s";
 				case 10 : return "C";
 				case 11 : return "C";
+				case 12 : return "C";
 			} break;
 			// ThermalComfortModel::Results
 			case 15 :
@@ -892,6 +896,7 @@ namespace NANDRAD_MODEL {
 				case 9 : return "#FFFFFF";
 				case 10 : return "#FFFFFF";
 				case 11 : return "#FFFFFF";
+				case 12 : return "#FFFFFF";
 			} break;
 			// ThermalComfortModel::Results
 			case 15 :
@@ -1063,6 +1068,7 @@ namespace NANDRAD_MODEL {
 				case 9 : return std::numeric_limits<double>::quiet_NaN();
 				case 10 : return std::numeric_limits<double>::quiet_NaN();
 				case 11 : return std::numeric_limits<double>::quiet_NaN();
+				case 12 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// ThermalComfortModel::Results
 			case 15 :
@@ -1125,7 +1131,7 @@ namespace NANDRAD_MODEL {
 			// RoomStatesModel::Results
 			case 13 : return 3;
 			// Schedules::KnownQuantities
-			case 14 : return 12;
+			case 14 : return 13;
 			// ThermalComfortModel::Results
 			case 15 : return 1;
 			// ThermostatModel::VectorValuedResults
@@ -1169,7 +1175,7 @@ namespace NANDRAD_MODEL {
 			// RoomStatesModel::Results
 			case 13 : return 2;
 			// Schedules::KnownQuantities
-			case 14 : return 11;
+			case 14 : return 12;
 			// ThermalComfortModel::Results
 			case 15 : return 0;
 			// ThermostatModel::VectorValuedResults
