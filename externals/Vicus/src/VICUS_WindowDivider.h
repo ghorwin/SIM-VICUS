@@ -19,9 +19,10 @@ public:
 
 	/*! Basic parameters. */
 	enum para_t {
-		P_Area,						// Keyword: Area					[m2]	'Area of the divider.'
+		P_Thickness,				// Keyword: Thickness			[m]		'Divider material thickness.'
 		NUM_P
 	};
+
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -30,17 +31,34 @@ public:
 
 	/*! Comparison operator. */
 	bool operator!=(const WindowDivider &other)const {
-		for(unsigned int i=0; i< NUM_P; ++i)
-			if(m_para[i] != other.m_para[i])
-				return true;
+//		for(unsigned int i=0; i< NUM_P; ++i)
+//			if(m_para[i] != other.m_para[i])
+//				return true;
 
 		if( m_id != other.m_id ||
-				m_idMaterial != other.m_idMaterial ||
+				m_idMaterial != other.m_idMaterial||
 				m_dataSource != other.m_dataSource ||
 				m_displayName != other.m_displayName ||
 				m_notes != other.m_notes)
 			return true;
+
+		for(unsigned int i=0; i<NUM_P; ++i)
+			if(m_para[i] != other.m_para[i])
+				return true;
+
 		return false;
+	}
+
+	bool isValid(){
+		if(m_id == INVALID_ID ||
+				m_idMaterial == INVALID_ID)
+			return false;
+
+		for(unsigned int i=0; i<NUM_P; ++i)
+			if(m_para[i].empty())
+				return false;
+
+		return true;
 	}
 
 	/*! Comparison operator. */
@@ -60,12 +78,10 @@ public:
 	/*! Data source. */
 	QString							m_dataSource;				// XML:E
 
-	/*! Material id of divider. */
-	unsigned int					m_idMaterial = INVALID_ID;	// XML:A:required
+	/*! Material ID. */
+	unsigned int					m_idMaterial;				// XML:A
 
-	/// TODO : Dirk, add geometry to describe divider
-
-	/*! List of parameters. */
+	/*! Parameters. */
 	IBK::Parameter					m_para[NUM_P];				// XML:E
 
 
