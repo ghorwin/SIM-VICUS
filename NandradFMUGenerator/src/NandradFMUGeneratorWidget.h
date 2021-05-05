@@ -84,7 +84,7 @@ private:
 		\param tableWidget The target table widget.
 		\param exists True, if such a model variable exists in the current model.
 	*/
-	void appendVariableEntry(unsigned int index, QTableWidget * tableWidget, bool exists);
+	void appendVariableEntry(unsigned int index, const NANDRAD::FMIVariableDefinition &var, QTableWidget * tableWidget, bool exists);
 
 	/*! This function returns detailed variable information to be used when generating FMU variables.
 		This might be better placed somewhere in the VICUS library?

@@ -155,13 +155,13 @@ void NandradFMUGeneratorWidget::updateFMUVariableTables() {
 		const NANDRAD::FMIVariableDefinition & var = m_project.m_fmiDescription.m_inputVariables[i];
 		// check if variable exists
 		bool exists = (m_modelInputVariables.find(QString::fromStdString(var.m_varName)) != m_modelInputVariables.end());
-		appendVariableEntry(i, m_ui->tableWidgetInputVars, exists);
+		appendVariableEntry(i, var, m_ui->tableWidgetInputVars, exists);
 	}
 	for (unsigned int i = 0; i<m_project.m_fmiDescription.m_outputVariables.size(); ++i) {
 		const NANDRAD::FMIVariableDefinition & var = m_project.m_fmiDescription.m_outputVariables[i];
 		// check if variable exists
 		bool exists = (m_modelOutputVariables.find(QString::fromStdString(var.m_varName)) != m_modelOutputVariables.end());
-		appendVariableEntry(i, m_ui->tableWidgetOutputVars, exists);
+		appendVariableEntry(i, var, m_ui->tableWidgetOutputVars, exists);
 	}
 
 	m_ui->tableWidgetInputVars->resizeColumnsToContents();
@@ -215,14 +215,7 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 }
 
 
-void NandradFMUGeneratorWidget::appendVariableEntry(unsigned int index, QTableWidget * tableWidget, bool exists) {
-	NANDRAD::FMIVariableDefinition var;
-	if(index < m_project.m_fmiDescription.m_inputVariables.size())
-		var = m_project.m_fmiDescription.m_inputVariables[index];
-	else {
-		unsigned int outputIndex = index - m_project.m_fmiDescription.m_inputVariables.size();
-		var = m_project.m_fmiDescription.m_outputVariables[outputIndex];
-	}
+void NandradFMUGeneratorWidget::appendVariableEntry(unsigned int index, const NANDRAD::FMIVariableDefinition &var, QTableWidget * tableWidget, bool exists) {
 
 	tableWidget->blockSignals(true);
 	// Important: disable sorting of table, otherwise index access might be complicated
@@ -328,18 +321,20 @@ void NandradFMUGeneratorWidget::on_toolButtonAddInputVariable_clicked() {
 	m_project.m_fmiDescription.m_inputVariables.push_back(var);
 
 	// now also add an entry into the table
-	appendVariableEntry(m_project.m_fmiDescription.m_inputVariables.size()-1, m_ui->tableWidgetInputVars, true);
+	appendVariableEntry(m_project.m_fmiDescription.m_inputVariables.size()-1, var, m_ui->tableWidgetInputVars, true);
 }
 
 
 void NandradFMUGeneratorWidget::on_toolButtonRemoveInputVariable_clicked() {
 	int row = m_ui->tableWidgetInputVars->currentRow();
 	Q_ASSERT(row != -1);
-	QTableWidgetItem * item = m_ui->tableWidgetInputVars->item(row, 0);
-	unsigned int varIndex = item->data(Qt::UserRole).toUInt();
-	Q_ASSERT(varIndex < m_project.m_fmiDescription.m_inputVariables.size());
+	// TODO: find out why this code does not work
+//	QTableWidgetItem * item = m_ui->tableWidgetInputVars->item(row, 0);
+//	unsigned int varIndex = item->data(Qt::UserRole).toUInt();
+//	Q_ASSERT(varIndex < m_project.m_fmiDescription.m_inputVariables.size());
 
-	m_project.m_fmiDescription.m_inputVariables.erase(m_project.m_fmiDescription.m_inputVariables.begin()+varIndex);
+//	m_project.m_fmiDescription.m_inputVariables.erase(m_project.m_fmiDescription.m_inputVariables.begin()+varIndex);
+	m_project.m_fmiDescription.m_inputVariables.erase(m_project.m_fmiDescription.m_inputVariables.begin()+row);
 	m_ui->tableWidgetInputVars->removeRow(row);
 //	updateFMUVariableTables();
 	row = qMin(row, m_ui->tableWidgetInputVars->rowCount()-1);
@@ -350,13 +345,15 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveInputVariable_clicked() {
 void NandradFMUGeneratorWidget::on_toolButtonRemoveOutputVariable_clicked() {
 	int row = m_ui->tableWidgetOutputVars->currentRow();
 	Q_ASSERT(row != -1);
-	QTableWidgetItem * item = m_ui->tableWidgetOutputVars->item(row, 0);
-	unsigned int varIndex = item->data(Qt::UserRole).toUInt();
-	Q_ASSERT(varIndex < m_project.m_fmiDescription.m_outputVariables.size());
+	// TODO: find out why this code does not work
+//	QTableWidgetItem * item = m_ui->tableWidgetOutputVars->item(row, 0);
+//	unsigned int varIndex = item->data(Qt::UserRole).toUInt();
+//	Q_ASSERT(varIndex < m_project.m_fmiDescription.m_outputVariables.size());
 
-	m_project.m_fmiDescription.m_outputVariables.erase(m_project.m_fmiDescription.m_outputVariables.begin()+varIndex);
+//	m_project.m_fmiDescription.m_outputVariables.erase(m_project.m_fmiDescription.m_outputVariables.begin()+varIndex);
+
+	m_project.m_fmiDescription.m_outputVariables.erase(m_project.m_fmiDescription.m_outputVariables.begin()+row);
 	m_ui->tableWidgetOutputVars->removeRow(row);
-	// TODO: update table and data index
 //	updateFMUVariableTables();
 	row = qMin(row, m_ui->tableWidgetOutputVars->rowCount()-1);
 	m_ui->tableWidgetOutputVars->selectRow(row);
