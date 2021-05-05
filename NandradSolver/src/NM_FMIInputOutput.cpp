@@ -129,7 +129,7 @@ void FMIInputOutput::inputReferences(std::vector<InputReference> & inputRefs) co
 		std::vector<std::string> tokens;
 		IBK_ASSERT(IBK::explode_in2(variable.m_varName, tokens, '.') == 2);
 		// set name and reference type
-		inputRef.m_name.m_name = tokens[0];
+		inputRef.m_name.m_name = tokens[1];
 		inputRef.m_referenceType = (NANDRAD::ModelInputReference::referenceType_t)
 				NANDRAD::KeywordList::Enumeration("ModelInputReference::referenceType_t", tokens[0]);
 		// copy index
@@ -174,7 +174,7 @@ void FMIInputOutput::setInputValueRefs(const std::vector<QuantityDescription> & 
 
 		for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_outputVariables) {
 			// mismatching name
-			if(variable.m_varName != resDesc.m_name)
+			if(variable.m_varName != varName)
 				continue;
 			found = true;
 			break;

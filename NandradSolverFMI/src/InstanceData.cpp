@@ -159,6 +159,43 @@ void InstanceData::init() {
 			throw IBK::Exception(ex, "Model initialization error.", FUNC_ID);
 		}
 
+//		// resize all internal quantities for model exchange
+//		if (m_modelExchange) {
+//			// resize all internal quantities
+//			m_yInput.resize(m_nandradModel.n());
+//			std::memcpy(&m_yInput[0], m_nandradModel.y0(), m_nandradModel.n() * sizeof(double) );
+//			m_ydot.resize(m_nandradModel.n());
+//		}
+		// initialize integrator for co-simulation
+//		else {
+		IBK_ASSERT(!m_modelExchange);
+		// retrieve integrator, les-solver, ... from model
+		SOLFRA::IntegratorInterface *integrator = m_model.integratorInterface();
+		IBK_ASSERT(integrator != NULL);
+
+		SOLFRA::LESInterface *lesSolver = m_model.lesInterface();
+		SOLFRA::PrecondInterface  *precond  = m_model.preconditionerInterface();
+		SOLFRA::JacobianInterface *jacobian = m_model.jacobianInterface();
+
+		// initialize integrator with read solution
+		try {
+			integrator->init(&m_model, m_model.t0(), m_model.y0(), lesSolver, precond, jacobian);
+		}
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, "Initialization of Integrator failed.", FUNC_ID);
+		}
+		// update model with all initial states and time
+		try {
+			m_model.setTime(m_model.t0());
+			m_model.setY(m_model.y0());
+			m_model.ydot(nullptr);
+		}
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, "Calculation of initial states failed.", FUNC_ID);
+		}
+//		}
+		logger(fmi2OK, "progress", "Initialization complete.");
+		IBK::IBK_Message("Model initialization finished.\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		logger(fmi2OK, "progress", "Initialization complete.");
 		IBK::IBK_Message("Model initialization finished.\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	}
