@@ -59,7 +59,7 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 
 	if (m_outerHeatTransferCoefficient == 0.) {
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-		m_thermalTransmittance = m_length /
+		m_UAValue = m_length /
 				(
 					  1.0 / (innerHeatTransferCoefficient * m_innerDiameter * PI )
 					+ 1.0 / m_UValuePipeWall
@@ -67,7 +67,7 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 	}
 	else {
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-		m_thermalTransmittance = m_length /
+		m_UAValue = m_length /
 				(
 					  1.0 / (innerHeatTransferCoefficient * m_innerDiameter * PI)
 					+ 1.0 / (m_outerHeatTransferCoefficient * m_outerDiameter * PI)
@@ -79,7 +79,7 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 	const double externalTemperature = *m_heatExchangeValueRef;
 	// calculate heat loss with given parameters
 	// Q in [W] = DeltaT * UAValueTotal
-	m_heatLoss = m_thermalTransmittance * (m_meanTemperature - externalTemperature) * m_nParallelPipes;
+	m_heatLoss = m_UAValue * (m_meanTemperature - externalTemperature) * m_nParallelPipes;
 }
 
 
@@ -132,8 +132,8 @@ void TNStaticPipeElement::setInflowTemperature(double Tinflow) {
 			);
 
 	// Q in [W] = DeltaT * UAValueTotal
-	IBK_ASSERT(m_externalTemperatureRef != nullptr);
-	const double externalTemperature = *m_externalTemperatureRef;
+	IBK_ASSERT(m_heatExchangeValueRef != nullptr);
+	const double externalTemperature = *m_heatExchangeValueRef;
 	// calculate heat loss with given (for steady state model we interpret mean temperature as
 	// outflow temperature and calculate a corresponding heat flux)
 	m_heatLoss = m_massFlux * m_fluidHeatCapacity *
@@ -215,7 +215,7 @@ void TNDynamicPipeElement::setInflowTemperature(double Tinflow) {
 	// see documentation above
 	if(m_outerHeatTransferCoefficient == 0.) {
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-		m_thermalTransmittance = m_discLength /
+		m_UAValue = m_discLength /
 				(
 					  1.0 / ( innerHeatTransferCoefficient * m_innerDiameter * PI)
 					+ 1.0 / m_UValuePipeWall
@@ -223,7 +223,7 @@ void TNDynamicPipeElement::setInflowTemperature(double Tinflow) {
 	}
 	else {
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-		m_thermalTransmittance = m_discLength /
+		m_UAValue = m_discLength /
 				(
 					  1.0 / (innerHeatTransferCoefficient * m_innerDiameter * PI)
 					+ 1.0 / (m_outerHeatTransferCoefficient * m_outerDiameter * PI)
@@ -237,7 +237,7 @@ void TNDynamicPipeElement::setInflowTemperature(double Tinflow) {
 	for (unsigned int i = 0; i < m_nVolumes; ++i) {
 		// calculate heat loss with given parameters
 		// TODO : Hauke, check equation... hier fehlt glaub ich noch der Faktor 1/m_nVolumes
-		m_heatLosses[i] = m_thermalTransmittance * (m_temperatures[i] - externalTemperature) * m_nParallelPipes;
+		m_heatLosses[i] = m_UAValue * (m_temperatures[i] - externalTemperature) * m_nParallelPipes;
 		// sum up heat losses
 		m_heatLoss += m_heatLosses[i];
 	}

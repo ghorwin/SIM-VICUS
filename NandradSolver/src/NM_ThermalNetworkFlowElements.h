@@ -48,7 +48,7 @@ public:
 		valRefs.push_back(&m_reynolds);
 		valRefs.push_back(&m_prandtl);
 		valRefs.push_back(&m_nusselt);
-		valRefs.push_back(&m_thermalTransmittance);
+		valRefs.push_back(&m_UAValue);
 	}
 
 	/*! Overloaded from ThermalNetworkAbstractFlowElement::setInflowTemperature().
@@ -105,8 +105,8 @@ private:
 	/*! Nusselt number in [---]*/
 	double							m_nusselt = -999;
 
-	/*! Total thermal resistance in [W/K]*/
-	double							m_thermalTransmittance = -999;
+	/*! Total thermal transmittance multiplied with the surface area of a pipe segment in [W/K]. */
+	double							m_UAValue = -999;
 
 	/*! Heat transfer coefficient from outer pipe wall to environment in [W/m2K] */
 	double							m_outerHeatTransferCoefficient = -999;
@@ -129,11 +129,6 @@ public:
 
 	/*! Overloaded from ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
 	void setInflowTemperature(double Tinflow) override;
-
-	/*! Sets the reference to external temperature. */
-	void setHeatExchangeValueRef(const double * heatExchangeValueRef) override {
-		m_externalTemperatureRef = heatExchangeValueRef;
-	}
 
 private:
 
@@ -159,11 +154,6 @@ private:
 
 	/*! Heat transfer coefficient from outer pipe wall to environment in [W/m2K] */
 	double							m_outerHeatTransferCoefficient;
-
-	/*! Reference to external temperature in K.
-		Set to the result of a temperature-calculating object.
-	*/
-	const double *					m_externalTemperatureRef = nullptr;
 };
 #endif // STATIC_PIPE_MODEL_ENABLED
 
@@ -198,7 +188,7 @@ public:
 		valRefs.push_back(&m_reynolds);
 		valRefs.push_back(&m_prandtl);
 		valRefs.push_back(&m_nusselt);
-		valRefs.push_back(&m_thermalTransmittance);
+		valRefs.push_back(&m_UAValue);
 	}
 
 	/*! Function retrieving number of internal states.*/
@@ -294,8 +284,8 @@ private:
 	/*! Nusselt number in [---]*/
 	double							m_nusselt = -999;
 
-	/*! Total thermal resistance in [W/K]*/
-	double							m_thermalTransmittance = -999;
+	/*! Total thermal transmittance multiplied with the surface area of a pipe segment in [W/K]. */
+	double							m_UAValue = -999;
 };
 
 
