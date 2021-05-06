@@ -11,6 +11,16 @@
 #include <QtExt_LanguageHandler.h>
 #include <QtExt_Conversions.h>
 
+#include <qwt_plot.h>
+#include <qwt_math.h>
+#include <qwt_scale_engine.h>
+#include <qwt_symbol.h>
+#include <qwt_plot_grid.h>
+#include <qwt_plot_marker.h>
+#include <qwt_plot_curve.h>
+#include <qwt_text.h>
+#include <qwt_counter.h>
+
 #include "SVSettings.h"
 #include "SVDBWindowGlazingSystemTableModel.h"
 #include "SVDatabaseEditDialog.h"
@@ -38,7 +48,7 @@ SVDBWindowGlazingSystemEditWidget::SVDBWindowGlazingSystemEditWidget(QWidget *pa
 	m_ui->tableWidgetSHGC->setColumnCount(2);
 	m_ui->tableWidgetSHGC->setRowCount(10);
 	// Note: valid column is self-explanatory and does not need a caption
-	m_ui->tableWidgetSHGC->setHorizontalHeaderLabels(QStringList() << tr("Angle") << QString() << tr("SHGC"));
+	m_ui->tableWidgetSHGC->setHorizontalHeaderLabels(QStringList() << tr("Angle") << tr("SHGC"));
 
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetSHGC);
 
@@ -46,24 +56,103 @@ SVDBWindowGlazingSystemEditWidget::SVDBWindowGlazingSystemEditWidget(QWidget *pa
 
 	m_ui->tableWidgetSHGC->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
 	QFontMetrics fm(m_ui->tableWidgetSHGC->horizontalHeader()->font());
-	int width = fm.boundingRect(tr("Angle")).width();
+
+	int width = 100;
 	m_ui->tableWidgetSHGC->setColumnWidth(0, width);
+
 	m_ui->tableWidgetSHGC->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 
-	unsigned int i=9;
-	while (true){
-		m_ui->tableWidgetSHGC->setItem((int)i, 0, new QTableWidgetItem(QString::number((i)*10)));
-		m_ui->tableWidgetSHGC->setItem((int)i, 1, new QTableWidgetItem(""));
+	for (int i = 10; i > 0; --i) {
+		// we need the Angle to go from 0 ... 90 Deg
+		// so we then make the iterator go from 0 ... 9
+		int idx = i-1;
 
-		if(i == 0)
-			break;
-		--i;
+		m_ui->tableWidgetSHGC->setItem( i-1, 0, new QTableWidgetItem( QString::number(i*10) ) );
+		m_ui->tableWidgetSHGC->setItem( i-1, 1, new QTableWidgetItem(""));
+
+		m_ui->tableWidgetSHGC->item( i-1, 0)->setFlags(m_ui->tableWidgetSHGC->item(i-1,0)->flags() & ~Qt::ItemIsEditable);
+		m_ui->tableWidgetSHGC->item( i-1, 0)->setTextAlignment(Qt::AlignCenter);
+		m_ui->tableWidgetSHGC->item( i-1, 1)->setTextAlignment(Qt::AlignCenter);
 	}
+
+
+
+//	unsigned int i=9;
+//	while (true){
+//		m_ui->tableWidgetSHGC->setItem((int)i, 0, new QTableWidgetItem(QString::number((i)*10)));
+//		m_ui->tableWidgetSHGC->setItem((int)i, 1, new QTableWidgetItem(""));
+
+//		if(i == 0)
+//			break;
+//		--i;
+//	}
 
 	m_ui->comboBoxType->blockSignals(true);
 	for (int i=0; i<VICUS::WindowGlazingSystem::NUM_MT; ++i)
 		m_ui->comboBoxType->addItem(VICUS::KeywordListQt::Keyword("WindowGlazingSystem::modelType_t", i), i);
 	m_ui->comboBoxType->blockSignals(false);
+
+	// QWT Plot is initialized
+	QwtPlot * plt = m_ui->shgcPlot;
+	plt->setAutoReplot(false);
+	plt->setContentsMargins(5, 5, 5, 5);
+	//plt->setMargin(5);
+	plt->setAxisScale(QwtPlot::xBottom, 0, 90);
+	plt->setAxisScale(QwtPlot::yLeft, 0, 1);
+
+
+	// axes
+	QwtText theAxisTitle(tr("Incident Angle [Deg]")); // no axis title for left diagram
+	QFont f(theAxisTitle.font());
+	f.setPointSize(9);
+	theAxisTitle.setFont(f);
+	plt->setAxisTitle(QwtPlot::xBottom, theAxisTitle);
+	theAxisTitle.setText(tr("SHGC [-]"), QwtText::RichText);
+	plt->setAxisTitle(QwtPlot::yLeft, theAxisTitle);
+
+#if defined(Q_OS_MAC)
+	// tick font
+	f.setPointSize(10);
+	QColor backgroundColor(240,240,240);
+#else
+	// tick font
+	f.setPointSize(8);
+	QColor backgroundColor(240,240,240);
+#endif
+	plt->setAxisFont(QwtPlot::xBottom, f);
+	plt->setAxisFont(QwtPlot::yLeft, f);
+
+	// background color
+	plt->setCanvasBackground(backgroundColor);
+
+	// grid
+	QwtPlotGrid *grid = new QwtPlotGrid;
+	grid->enableXMin(true);
+	grid->setMajorPen(QPen(Qt::gray, 0, Qt::DotLine));
+	grid->setMinorPen(QPen(Qt::lightGray, 0 , Qt::DotLine));
+	grid->attach(plt);
+
+	// set up shgc curve
+	m_shgcCurve = new QwtPlotCurve("");
+	m_shgcCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
+	m_shgcCurve->setPen(QPen(Qt::black));
+	m_shgcCurve->setYAxis(QwtPlot::yLeft);
+	m_shgcCurve->setZ(1);
+	m_shgcCurve->setVisible(false);
+	m_shgcCurve->attach(plt);
+
+	std::vector<double> degVec;
+	std::vector<double> plotSHGCVec;
+
+	degVec.push_back(0);
+	degVec.push_back(90);
+
+	plotSHGCVec.push_back(60);
+	plotSHGCVec.push_back(60);
+
+	m_shgcCurve->setRawSamples(&degVec[0], &plotSHGCVec[0], (int)degVec.size() );
+
+	m_ui->shgcPlot->replot();
 
 	// initial state is "nothing selected"
 	updateInput(-1);
@@ -126,7 +215,13 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 	m_ui->comboBoxType->setCurrentIndex(m_current->m_modelType);
 	m_ui->comboBoxType->blockSignals(false);
 
+
 	if(m_current->m_modelType == VICUS::WindowGlazingSystem::MT_Simple){
+		std::vector<double> degVec;
+		std::vector<double> plotSHGCVec;
+		degVec.resize(10);
+		plotSHGCVec.resize(10);
+
 		const IBK::LinearSpline &spline=m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values;
 
 		if(!spline.empty()){
@@ -135,12 +230,22 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 				IBK::Unit unit = m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_xUnit;
 				double val = spline.value(i * 10 / (unit == IBK::Unit("Deg") ? 1 : IBK::DEG2RAD));
 				m_ui->tableWidgetSHGC->item(i,1)->setText(QString::number(val));
+				// first we compose the vectors with data for the plot
+				degVec[i] = i * 10;
+				plotSHGCVec[i] = val*100;
+
 			}
+			// we update the plot
+			m_shgcCurve->setSamples(&degVec[0], &plotSHGCVec[0], (int)degVec.size() );
+			m_ui->shgcPlot->replot();
+			m_ui->shgcPlot->repaint();
 		}
 	}
 	else if(m_current->m_modelType == VICUS::WindowGlazingSystem::MT_Detailed){
 		///TODO Stephan implement detailed model
 	}
+
+
 	m_ui->pushButtonWindowColor->blockSignals(true);
 	m_ui->pushButtonWindowColor->setColor(m_current->m_color);
 	m_ui->pushButtonWindowColor->blockSignals(false);
