@@ -256,6 +256,7 @@ namespace VICUS {
 				case 2 : return "ConstantPressurePump";
 				case 3 : return "HeatExchanger";
 				case 4 : return "HeatPumpIdealCarnot";
+				case 5 : return "HeatPumpReal";
 			} break;
 			// NetworkComponent::para_t
 			case 17 :
@@ -267,7 +268,8 @@ namespace VICUS {
 				case 4 : return "Volume";
 				case 5 : return "PipeMaxDiscretizationWidth";
 				case 6 : return "CarnotEfficiency";
-				case 7 : return "CondenserMeanTemperature";
+				case 7 : return "MaximumHeatingPower";
+				case 8 : return "HeatPumpNominalTemperatureDifference";
 			} break;
 			// NetworkFluid::para_t
 			case 18 :
@@ -617,6 +619,7 @@ namespace VICUS {
 				case 2 : return "ConstantPressurePump";
 				case 3 : return "HeatExchanger";
 				case 4 : return "HeatPumpIdealCarnot";
+				case 5 : return "HeatPumpReal";
 			} break;
 			// NetworkComponent::para_t
 			case 17 :
@@ -628,7 +631,8 @@ namespace VICUS {
 				case 4 : return "Volume";
 				case 5 : return "PipeMaxDiscretizationWidth";
 				case 6 : return "CarnotEfficiency";
-				case 7 : return "CondenserMeanTemperature";
+				case 7 : return "MaximumHeatingPower";
+				case 8 : return "HeatPumpNominalTemperatureDifference";
 			} break;
 			// NetworkFluid::para_t
 			case 18 :
@@ -974,23 +978,25 @@ namespace VICUS {
 			// NetworkComponent::ModelType
 			case 16 :
 			switch (t) {
-				case 0 : return "Simple pipe at stationary flow conditions with heat exchange";
+				case 0 : return "Pipe with a single fluid volume and with heat exchange";
 				case 1 : return "Pipe with a discretized fluid volume and heat exchange";
 				case 2 : return "Pump with constant pressure";
 				case 3 : return "Simple heat exchanger with given heat flux";
-				case 4 : return "Heat pump with unlimited heating power and constant carnot efficiency";
+				case 4 : return "Heat pump with variable heating power based on carnot efficiency";
+				case 5 : return "On-off-type heat pump with based on manufacturer data sheet";
 			} break;
 			// NetworkComponent::para_t
 			case 17 :
 			switch (t) {
-				case 0 : return "Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes).";
-				case 1 : return "Pressure loss coefficient for the component (zeta-value).";
-				case 2 : return "Pressure head form a pump.";
-				case 3 : return "Pump efficiency.";
-				case 4 : return "Water or air volume of the component.";
+				case 0 : return "Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)";
+				case 1 : return "Pressure loss coefficient for the component (zeta-value)";
+				case 2 : return "Pressure head form a pump";
+				case 3 : return "Pump efficiency";
+				case 4 : return "Water or air volume of the component";
 				case 5 : return "Maximum width of discretized volumes in pipe";
-				case 6 : return "Carnot efficiency";
-				case 7 : return "Mean fluid temperature in condenser";
+				case 6 : return "Carnot efficiency eta";
+				case 7 : return "Maximum heating power";
+				case 8 : return "Nominal temperature difference at condenser or evaporator";
 			} break;
 			// NetworkFluid::para_t
 			case 18 :
@@ -1340,6 +1346,7 @@ namespace VICUS {
 				case 2 : return "";
 				case 3 : return "";
 				case 4 : return "";
+				case 5 : return "";
 			} break;
 			// NetworkComponent::para_t
 			case 17 :
@@ -1351,7 +1358,8 @@ namespace VICUS {
 				case 4 : return "m3";
 				case 5 : return "m";
 				case 6 : return "---";
-				case 7 : return "C";
+				case 7 : return "W";
+				case 8 : return "K";
 			} break;
 			// NetworkFluid::para_t
 			case 18 :
@@ -1701,6 +1709,7 @@ namespace VICUS {
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
+				case 5 : return "#FFFFFF";
 			} break;
 			// NetworkComponent::para_t
 			case 17 :
@@ -1713,6 +1722,7 @@ namespace VICUS {
 				case 5 : return "#FFFFFF";
 				case 6 : return "#FFFFFF";
 				case 7 : return "#FFFFFF";
+				case 8 : return "#FFFFFF";
 			} break;
 			// NetworkFluid::para_t
 			case 18 :
@@ -2062,6 +2072,7 @@ namespace VICUS {
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
+				case 5 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkComponent::para_t
 			case 17 :
@@ -2074,6 +2085,7 @@ namespace VICUS {
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 				case 7 : return std::numeric_limits<double>::quiet_NaN();
+				case 8 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkFluid::para_t
 			case 18 :
@@ -2294,9 +2306,9 @@ namespace VICUS {
 			// Network::para_t
 			case 15 : return 6;
 			// NetworkComponent::ModelType
-			case 16 : return 5;
+			case 16 : return 6;
 			// NetworkComponent::para_t
-			case 17 : return 8;
+			case 17 : return 9;
 			// NetworkFluid::para_t
 			case 18 : return 3;
 			// NetworkHeatExchange::ModelType
@@ -2388,9 +2400,9 @@ namespace VICUS {
 			// Network::para_t
 			case 15 : return 5;
 			// NetworkComponent::ModelType
-			case 16 : return 4;
+			case 16 : return 5;
 			// NetworkComponent::para_t
-			case 17 : return 7;
+			case 17 : return 8;
 			// NetworkFluid::para_t
 			case 18 : return 2;
 			// NetworkHeatExchange::ModelType
