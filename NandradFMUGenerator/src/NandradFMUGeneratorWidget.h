@@ -77,7 +77,7 @@ private:
 	void updateFMUVariableTables();
 
 	/*! Reads a variable definition file and generates a map with model variables versus object/vector IDs. */
-	bool parseVariableList(const QString & varsFile, std::map<QString, IDInfo> & modelVariables, bool silent);
+	bool parseVariableList(const QString & varsFile, std::vector<NANDRAD::FMIVariableDefinition> & modelVariables, bool silent);
 
 	/*! Adds a new row to a table widget.
 		\param var The variable to add.
@@ -101,11 +101,14 @@ private:
 
 	Ui::NandradFMUGeneratorWidget		*m_ui;
 
+	/*! The project, contains the currently defined FMI input/output variables. */
 	NANDRAD::Project					m_project;
 
+	/*! Holds all _available_ input variable definitions. */
+	std::vector<NANDRAD::FMIVariableDefinition>		m_availableInputVariables;
+	/*! Holds all _available_ output variable definitions. */
+	std::vector<NANDRAD::FMIVariableDefinition>		m_availableOutputVariables;
 
-	std::map<QString, IDInfo>			m_modelInputVariables;
-	std::map<QString, IDInfo>			m_modelOutputVariables;
 };
 
 #endif // NandradFMUGeneratorWidgetH

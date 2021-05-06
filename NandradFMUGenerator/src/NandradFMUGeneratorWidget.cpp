@@ -43,7 +43,21 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 			  << tr("FMI Type")
 			  << tr("FMI value reference"));
 	m_ui->tableWidgetInputVars->horizontalHeader()->setStretchLastSection(true);
-//	SVStyle::formatDatabaseTableView(m_ui->tableWidgetInputVars);
+
+	QTableView * v = m_ui->tableWidgetInputVars;
+	v->verticalHeader()->setDefaultSectionSize(19);
+	v->verticalHeader()->setVisible(false);
+	v->horizontalHeader()->setMinimumSectionSize(19);
+	v->setSelectionBehavior(QAbstractItemView::SelectRows);
+	v->setSelectionMode(QAbstractItemView::SingleSelection);
+	v->setAlternatingRowColors(true);
+	v->setSortingEnabled(true);
+	v->sortByColumn(0, Qt::AscendingOrder);
+	QFont f;
+	f.setPointSizeF(f.pointSizeF()*0.8);
+	v->setFont(f);
+	v->horizontalHeader()->setFont(f); // Note: on Linux/Mac this won't work until Qt 5.11.1 - this was a bug between Qt 4.8...5.11.1
+
 
 	m_ui->tableWidgetOutputVars->setColumnCount(7);
 	m_ui->tableWidgetOutputVars->setHorizontalHeaderLabels(QStringList()
@@ -55,7 +69,17 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 			  << tr("FMI Type")
 			  << tr("FMI value reference"));
 	m_ui->tableWidgetOutputVars->horizontalHeader()->setStretchLastSection(true);
-//	SVStyle::formatDatabaseTableView(m_ui->tableWidgetOutputVars);
+	v = m_ui->tableWidgetOutputVars;
+		v->verticalHeader()->setDefaultSectionSize(19);
+		v->verticalHeader()->setVisible(false);
+		v->horizontalHeader()->setMinimumSectionSize(19);
+		v->setSelectionBehavior(QAbstractItemView::SelectRows);
+		v->setSelectionMode(QAbstractItemView::SingleSelection);
+		v->setAlternatingRowColors(true);
+		v->setSortingEnabled(true);
+		v->sortByColumn(0, Qt::AscendingOrder);
+		v->setFont(f);
+		v->horizontalHeader()->setFont(f); // Note: on Linux/Mac this won't work until Qt 5.11.1 - this was a bug between Qt 4.8...5.11.1
 
 	// If we do not yet have a file path to NANDRAD project, ask for it on start
 	if (!m_nandradFilePath.isValid())
@@ -126,7 +150,7 @@ void NandradFMUGeneratorWidget::on_pushButtonUpdateVariableList_clicked() {
 	QMessageBox::information(this, tr("NANDRAD Test-init successful"),
 							 tr("NANDRAD solver was started and the project was initialised, successfully. "
 								"%1 FMU input-variables and %2 output variables available.")
-							 .arg(m_modelInputVariables.size()).arg(m_modelOutputVariables.size()));
+							 .arg(m_availableInputVariables.size()).arg(m_availableOutputVariables.size()));
 }
 
 
@@ -137,18 +161,18 @@ void NandradFMUGeneratorWidget::updateVariableLists(bool silent) {
 	varDir = varDir.withoutExtension() / "var";
 
 	QString inputVarsFile = QString::fromStdString( (varDir / "input_reference_list.txt").str() );
-	if (!parseVariableList(inputVarsFile, m_modelInputVariables, silent))
+	if (!parseVariableList(inputVarsFile, m_availableInputVariables, silent))
 		return;
 
 	QString outputVarsFile = QString::fromStdString( (varDir / "output_reference_list.txt").str() );
-	if (!parseVariableList(outputVarsFile, m_modelOutputVariables, silent))
+	if (!parseVariableList(outputVarsFile, m_availableOutputVariables, silent))
 		return;
 	updateFMUVariableTables();
 }
 
 
 void NandradFMUGeneratorWidget::updateFMUVariableTables() {
-
+#if 0
 	m_ui->tableWidgetInputVars->setRowCount(0);
 	m_ui->tableWidgetOutputVars->setRowCount(0);
 	for (unsigned int i = 0; i<m_project.m_fmiDescription.m_inputVariables.size(); ++i) {
@@ -163,14 +187,15 @@ void NandradFMUGeneratorWidget::updateFMUVariableTables() {
 		bool exists = (m_modelOutputVariables.find(QString::fromStdString(var.m_varName)) != m_modelOutputVariables.end());
 		appendVariableEntry(i, var, m_ui->tableWidgetOutputVars, exists);
 	}
-
+#endif
 	m_ui->tableWidgetInputVars->resizeColumnsToContents();
 	m_ui->tableWidgetOutputVars->resizeColumnsToContents();
+
 }
 
 
 bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
-													std::map<QString, IDInfo> & modelVariables, bool silent)
+													std::vector<NANDRAD::FMIVariableDefinition> & modelVariables, bool silent)
 {
 	QFile inputVarF(varsFile);
 	if (!inputVarF.open(QFile::ReadOnly)) {
@@ -209,7 +234,7 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 				info.m_vectorIndexes.push_back( idstr.toUInt());
 		}
 
-		modelVariables[tokens[0].trimmed()] = info;
+//		modelVariables[tokens[0].trimmed()] = info;
 	}
 	return true;
 }
@@ -361,6 +386,7 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveOutputVariable_clicked() {
 
 
 void NandradFMUGeneratorWidget::on_pushButtonGenerateAllVariables_clicked() {
+#if 0
 	// process all input and output variables and generate new variables
 
 	// naming scheme for FMI variables:
@@ -455,6 +481,7 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerateAllVariables_clicked() {
 	m_project.m_fmiDescription.m_outputVariables.insert(m_project.m_fmiDescription.m_outputVariables.end(),
 													   newOutputVars.begin(), newOutputVars.end());
 	updateFMUVariableTables();
+#endif
 }
 
 
@@ -498,6 +525,9 @@ void NandradFMUGeneratorWidget::variableInfo(const std::string & fullVarName, QS
 
 void NandradFMUGeneratorWidget::on_pushButtonGenerate_clicked() {
 	FUNCID(NandradFMUGeneratorWidget::on_pushButtonGenerate_clicked);
+
+	// first update NANDRAD Project and save it to file
+	on_pushButtonSaveNandradProject_clicked();
 
 	// input data check
 	if (!checkModelName())
@@ -1014,7 +1044,13 @@ bool NandradFMUGeneratorWidget::checkModelName() {
 
 
 void NandradFMUGeneratorWidget::on_pushButtonSaveNandradProject_clicked() {
-	// TODO
+	// input data check
+	if (!checkModelName())
+		return;
+
+	QString fmuModelName = m_ui->lineEditModelName->text().trimmed();
+
+
 }
 
 
