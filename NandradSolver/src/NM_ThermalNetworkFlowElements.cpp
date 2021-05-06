@@ -59,18 +59,15 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 
 	if (m_outerHeatTransferCoefficient == 0.) {
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-		m_thermalTransmittance = m_length / (
-					  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
-					+ 1.0/m_UValuePipeWall )
-			);
+		m_thermalTransmittance = m_length /
+					  ( 1.0 / (innerHeatTransferCoefficient * m_innerDiameter * PI ) + 1.0/m_UValuePipeWall ) ;
 	}
 	else {
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-		m_thermalTransmittance = m_length / (
-					  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
-					+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)
-					+ 1.0/m_UValuePipeWall )
-			);
+		m_thermalTransmittance = m_length /
+					( 1.0 / (innerHeatTransferCoefficient * m_innerDiameter * PI
+					+ 1.0 / (m_outerHeatTransferCoefficient * m_outerDiameter * PI)
+					+ 1.0 / m_UValuePipeWall ) );
 	}
 
 	IBK_ASSERT(m_heatExchangeValueRef != nullptr);
@@ -212,18 +209,15 @@ void TNDynamicPipeElement::setInflowTemperature(double Tinflow) {
 	// see documentation above
 	if(m_outerHeatTransferCoefficient == 0.) {
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-		m_thermalTransmittance = m_discLength / (
-					  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
-					+ 1.0/m_UValuePipeWall )
-			);
+		m_thermalTransmittance = m_discLength /
+					   ( 1.0 / ( innerHeatTransferCoefficient * m_innerDiameter * PI ) +  1 / m_UValuePipeWall  );
 	}
 	else {
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-		m_thermalTransmittance = m_discLength / (
-					  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
-					+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)
-					+ 1.0/m_UValuePipeWall )
-			);
+		m_thermalTransmittance = m_discLength /
+								( 1.0 / (innerHeatTransferCoefficient * m_innerDiameter * PI)
+								+ 1.0 / (m_outerHeatTransferCoefficient * m_outerDiameter * PI)
+								+ 1.0 / m_UValuePipeWall ) ;
 	}
 
 
@@ -501,7 +495,7 @@ TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(unsigned int flowElementId,
 {
 	m_fluidVolume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
 	m_carnotEfficiency = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiency].value;
-	m_condenserMaximumHeatFlux = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumHeatHeatingPower].value;
+	m_condenserMaximumHeatFlux = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumHeatingPower].value;
 	m_nominalTemperatureDifference = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_HeatPumpNominalTemperatureDifference].value;
 	m_heatpumpIntegration = comp.m_heatPumpIntegration;
 

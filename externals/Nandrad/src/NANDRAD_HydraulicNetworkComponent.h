@@ -46,7 +46,7 @@ public:
 		P_Volume,								// Keyword: Volume								[m3]	'Water or air volume of the component'
 		P_PipeMaxDiscretizationWidth,			// Keyword: PipeMaxDiscretizationWidth			[m]		'Maximum width of discretized volumes in pipe'
 		P_CarnotEfficiency,						// Keyword: CarnotEfficiency					[---]	'Carnot efficiency eta'
-		P_MaximumHeatHeatingPower,				// Keyword: MaximumHeatingPower					[W]		'Maximum heating power'
+		P_MaximumHeatingPower,					// Keyword: MaximumHeatingPower					[W]		'Maximum heating power'
 		P_HeatPumpNominalTemperatureDifference,	// Keyword: HeatPumpNominalTemperatureDifference	[K]		'Nominal temperature difference at condenser or evaporator'
 		NUM_P
 	};

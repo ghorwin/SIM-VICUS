@@ -273,7 +273,7 @@ private:
 	/*! Fluid volume flow [m3/s]. */
 	double							m_volumeFlow = -999;
 
-	/*! thermal resistance of the pipe wall in [W/mK] */
+	/*! Equivalent u-value of the pipe wall and insulation per length of pipe in [W/mK] */
 	double							m_UValuePipeWall = -999;
 
 	/*! Heat transfer coefficient from outer pipe wall to environment in [W/m2K] */

@@ -78,7 +78,7 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 				return {P_PressureHead, P_PumpEfficiency, P_Volume};
 			case MT_HeatPumpIdealCarnot:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume, P_CarnotEfficiency,
-						P_HeatPumpNominalTemperatureDifference, P_MaximumHeatHeatingPower};
+						P_HeatPumpNominalTemperatureDifference, P_MaximumHeatingPower};
 			case MT_HeatExchanger:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
 			case MT_DynamicPipe:
@@ -103,7 +103,7 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 		case P_PressureLossCoefficient:
 		case P_Volume:
 		case P_HeatPumpNominalTemperatureDifference:
-		case P_MaximumHeatHeatingPower:
+		case P_MaximumHeatingPower:
 		case P_PipeMaxDiscretizationWidth:{
 			para.checkedValue(name, unit, unit, 0, false, std::numeric_limits<double>::max(), true, nullptr);
 			break;
