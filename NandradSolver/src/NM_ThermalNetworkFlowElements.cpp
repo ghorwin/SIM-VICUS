@@ -65,9 +65,9 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 	else {
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
 		m_thermalTransmittance = m_length /
-					( 1.0 / (innerHeatTransferCoefficient * m_innerDiameter * PI
+					( 1.0 / (innerHeatTransferCoefficient * m_innerDiameter * PI )
 					+ 1.0 / (m_outerHeatTransferCoefficient * m_outerDiameter * PI)
-					+ 1.0 / m_UValuePipeWall ) );
+					+ 1.0 / m_UValuePipeWall ) ;
 	}
 
 	IBK_ASSERT(m_heatExchangeValueRef != nullptr);
