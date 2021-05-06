@@ -9,6 +9,7 @@ namespace Ui {
 
 class SVDBWindowGlazingSystemTableModel;
 class SVDatabase;
+class QwtPlotCurve;
 
 namespace VICUS {
 	class WindowGlazingSystem;
@@ -69,6 +70,9 @@ private:
 		A nullptr pointer means that there is no window glazing system to edit.
 	*/
 	VICUS::WindowGlazingSystem				*m_current;
+
+	/*! Diagram curve for SHGC-plot. */
+	QwtPlotCurve							*m_shgcCurve;
 };
 
 #endif // SVDBWindowGlazingSystemEditWidgetH
