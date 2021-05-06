@@ -24,10 +24,10 @@ public:
 	};
 
 	enum para_t {
-		P_FrameWidth,					// Keyword: FrameWidth					[m]	'Frame width of the window.'
-		P_FrameFraction,				// Keyword: FrameFraction				[-]	'Frame area fraction of the window.'
-		P_DividerWidth,					// Keyword: DividerWidth				[m]	'Divider width of the window.'
-		P_DividerFraction,				// Keyword: DividerFraction				[-]	'Divider area fraction of the window.'
+		P_FrameWidth,					// Keyword: FrameWidth					[m]		'Frame width of the window.'
+		P_FrameFraction,				// Keyword: FrameFraction				[---]	'Frame area fraction of the window.'
+		P_DividerWidth,					// Keyword: DividerWidth				[m]		'Divider width of the window.'
+		P_DividerFraction,				// Keyword: DividerFraction				[---]	'Divider area fraction of the window.'
 		NUM_P
 	};
 
@@ -41,6 +41,7 @@ public:
 
 	/*! Checks if references glazing system exist and if all parameters are valid. */
 	bool isValid() const;
+
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
