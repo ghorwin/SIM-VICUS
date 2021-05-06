@@ -59,7 +59,7 @@ void checkForUniqueGeometryIDs(const std::vector<T> & vec, std::set<unsigned int
 
 	for (const T & t : vec) {
 		if (usedIDs.find(t.m_id) != usedIDs.end())
-			throw IBK::Exception(IBK::FormatString("Duplicate model ID #%1.")
+			throw IBK::Exception(IBK::FormatString("Duplicate model/object ID #%1.")
 								 .arg(t.m_id), FUNC_ID);
 		usedIDs.insert(t.m_id);
 	}
@@ -161,7 +161,7 @@ void Project::readXML(const IBK::Path & filename) {
 		checkForUniqueGeometryIDs(m_zones, usedIDs);
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception(ex, "Duplicate ID found in zone parameter blocks.", FUNC_ID);
+		throw IBK::Exception(ex, "Zone ID was previously used (Zones, Constructions, Sensors share same ID space).", FUNC_ID);
 	}
 	try {
 		// check all constructionInstances for unique ids and store
@@ -174,7 +174,7 @@ void Project::readXML(const IBK::Path & filename) {
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception(ex, "Duplicate ID found in construction instance parameter blocks.", FUNC_ID);
+		throw IBK::Exception(ex, "Construction ID was previously used (Zones, Constructions, Sensors share same ID space).", FUNC_ID);
 	}
 	try {
 		// check all sensor ids against each other and against
@@ -182,7 +182,7 @@ void Project::readXML(const IBK::Path & filename) {
 		checkForUniqueGeometryIDs(m_location.m_sensors, usedIDs);
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception(ex, "Duplicate ID found in location parameter blocks.", FUNC_ID);
+		throw IBK::Exception(ex, "Sensor ID was previously used (Zones, Constructions, Sensors share same ID space).", FUNC_ID);
 	}
 
 	// Note:
