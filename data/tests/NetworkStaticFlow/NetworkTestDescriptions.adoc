@@ -169,14 +169,14 @@ Ein Kreis, 3 Elemente:
 Abkühlung des Systems von einer einheitlichen Fluidtemperatur von 20 C
 - Anfänglich erwärmt der Wärmetauscher das Fluid in der Pumpe etwas, bis 
   sich das im Rohr abgekühlte Fluid auswirkt
-- nach Einlaufen in den stationären Zustand (ca. 40 h), gibt es eine analytische Lösung
+- nach Einlaufen in den stationären Zustand (ca. 8 d), gibt es eine analytische Lösung
 
 500 W = Wärmeverlust im Rohr, bei einer Temperaturspreizung von:
 
 ```
-  T_in    = 3.3263 C
-  T_out   = 1.2272 C
-  dT      = 2.0991 K
+  T_in    = 15.699 C
+  T_out   = 13.600 C
+  dT      =  2.099 K
   
   mdot     = 0.0569877 kg/s
   cTFluid  = 4180 J/kgK
@@ -184,39 +184,16 @@ Abkühlung des Systems von einer einheitlichen Fluidtemperatur von 20 C
 
 Bilanz über Vor- und Rücklauf des Rohres ist:  
 ```
-  Q_heatloss = 2.0991 * 0.0569877 * 4180 J/kgK  = 500.0236428726 W
+  Q_heatloss = 2.099 * 0.0569877 * 4180 J/kgK  = 500.0236428726 W
 ```
 
-Der Wärmeverlust im Rohr kommt durch Wärmeübertragung zur 0 C kalten Außenseite
-zu stande. Für alle Temperaturen in der Berechnung (Viskosität, 
-Temperaturdifferenz zur Außenseite) wird die Rohrmitteltemperatur = T_out verwendet.
-
+Wärmeström über den Mantel des Rohres ist:
 ```
-   dT = 1.2272 K
-
-   din         = 0.00256 m
-   length      = 100 m
-   fluidVolume = 0.05147 m3   = din*din * Pi/4 * length
-   fluidDensity = 998 kg/m3
-   
-   velocity = 0.001109 m/s = mdot/(volume*density)
-   viscosity = 1.793e-6   (konstant)
-   
-   reynolds = 15.84
-   prandtl = 12.466
-   nusselt = 1
-
-   fluidConductivity = 0.6
-   innerHeatTransferCoefficient = 23.4375 = nusselt * fluidConductivity/din
-   outerHeatTransferCoefficient =  5
-   UValuePipeWall               =  5
-
-   UValueTotal                  = 4.0744
-   
-   UAValueTotal                 = 407.4392 W/K = UValueTotal * length
-
-   m_heatLoss                   = 500.2 W 
+UA = 36.765 W/K
+Q_heatloss = UA * (T_out - T_Erdreich) = 36.765 * ( 13.600 - 0 ) = 500.004 W
 ```
+
+
 
 ### ThermoHydraulicNetworkConstantHeatloss_KLU.nandrad
 
@@ -226,31 +203,33 @@ Temperaturdifferenz zur Außenseite) wird die Rohrmitteltemperatur = T_out verwe
 
 ```
                              Dense      KLU
-WallClockTime                0.014948   0.015597
-FrameworkTimeWriteOutputs    0.015563   0.017207
-FrameworkTimeStepCompleted   3.00E-06   4.00E-06
-IntegratorSteps              94         94
-IntegratorErrorTestFails     2          2
+WallClockTime                0.015162   0.015187
+FrameworkTimeWriteOutputs    0.018107   0.018112
+FrameworkTimeStepCompleted   1.00E-06   5.00E-06
+IntegratorSteps              73         73
+IntegratorErrorTestFails     1          1
 IntegratorNonLinearConvFails 0          0
-IntegratorFunctionEvals      109        109
-IntegratorTimeFunctionEvals  0.00014    0.000141
-IntegratorLESSetup           19         19
-IntegratorTimeLESSetup       8.00E-06   2.40E-05
-IntegratorLESSolve           108        108
-IntegratorTimeLESSolve       1.20E-05   1.30E-05
-LESSetups                    19         19
+IntegratorFunctionEvals      86         86
+IntegratorTimeFunctionEvals  9.00E-05   9.40E-05
+IntegratorLESSetup           13         13
+IntegratorTimeLESSetup       7.00E-06   1.90E-05
+IntegratorLESSolve           85         85
+IntegratorTimeLESSolve       1.20E-05   9.00E-06
+LESSetups                    13         13
 LESJacEvals                  2          2
-LESTimeJacEvals              3.00E-06   6.00E-06
+LESTimeJacEvals              0          6.00E-06
 LESRHSEvals                  8          6
-LESTimeRHSEvals              4.00E-06   1.00E-06
+LESTimeRHSEvals              3.00E-06   2.00E-06
 ```
 
 Identische Counter!
 
 
+
 ### ThermoHydraulicNetworkSerialPipes.nandrad
 
-Zwei unterschiedliche Rohre in einem Kreis zusammen mit Pumpe und Wärmetauscher (konstant 2000 W Wärmeabgabe). Rohre geben Wärme an konstant temperiertes Erdreich ab. In Summe muss die Bilanz im Kreislauf stimmig sein,
+Zwei unterschiedliche Rohre in einem Kreis zusammen mit Pumpe und Wärmetauscher (konstant 2000 W Wärmeabgabe). 
+Rohre geben Wärme an konstant temperiertes Erdreich ab. In Summe muss die Bilanz im Kreislauf stimmig sein,
 das bedeutet, der Wärmegewinn über beide Rohre im stationären Zustand muss exakt 2000 W entsprechen. D
 Die Temperaturspreizung dT = Tin -Tout im Wärmetauscher ermittelt sich durch die Bilanzgleichung
 ```
@@ -264,8 +243,10 @@ Es ergeben sich die Werte
    dT   = 1.74 K
 ```
 
-Diese Temperaturdifferenz muss innerhalb des verbleibenden Kreislaufes ausgeglichen werden. Das erste Rohr muss dabei entscheidend mehr Wärme als das erste aufnehmen, passend zu einer 
-Temperatur < AmbientTemperature, die geringer ist als die des zweiten. Dieser Effekt wird verstärkt durch den größeren Rohrdurchmesser des zweiten Rohrs, welches in Folge eine geringere 
+Diese Temperaturdifferenz muss innerhalb des verbleibenden Kreislaufes ausgeglichen werden. 
+Das erste Rohr muss dabei entscheidend mehr Wärme als das erste aufnehmen, passend zu einer 
+Temperatur < AmbientTemperature, die geringer ist als die des zweiten. Dieser Effekt wird 
+verstärkt durch den größeren Rohrdurchmesser des zweiten Rohrs, welches in Folge eine geringere 
 Strömungsgeschwindigkeit und somit einen geringeren Wärmeaustausch aufweist. 
  
 
@@ -291,7 +272,10 @@ Ein Kreis, 5 Elemente:
 Wärmetauscher 301, Wärmeaustauschmodell `HeatFluxConstant`, 500 W konstante Energiequelle, 
   Druckverlustbeiwert ~ 0 (0.01)
 
-**Erwartung**: doppelter Massestrom und doppelter Wärmeverlust durch Rohr 2, identische Fluidaustrittstemperaturen für beide Rohrstränge. Die Summe der Rohrwärmeverluste muss der aufgenommenen Wärmemenge (Wärmestrom) im Wärmetauscher entsprechen und somit die thermische Bilanz im Netzwerk erhalten.
+**Erwartung**: doppelter Massestrom und doppelter Wärmeverlust durch Rohr 2, identische 
+Fluidaustrittstemperaturen für beide Rohrstränge. Die Summe der Rohrwärmeverluste muss der 
+aufgenommenen Wärmemenge (Wärmestrom) im Wärmetauscher entsprechen und somit die thermische 
+Bilanz im Netzwerk erhalten.
 
 
 
