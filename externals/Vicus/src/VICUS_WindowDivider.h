@@ -4,7 +4,7 @@
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
-#include "VICUS_MaterialLayer.h"
+#include "VICUS_KeywordList.h"
 
 #include <QString>
 #include <QColor>
@@ -49,14 +49,15 @@ public:
 		return false;
 	}
 
-	bool isValid(){
+	bool isValid() const{
 		if(m_id == INVALID_ID ||
 				m_idMaterial == INVALID_ID)
 			return false;
 
-		for(unsigned int i=0; i<NUM_P; ++i)
-			if(m_para[i].empty())
-				return false;
+
+		m_para[P_Thickness].checkedValue(KeywordList::Keyword("WindowDivider::para_t", P_Thickness),
+									 "m", "m", 0, false, 1, true, nullptr);
+
 
 		return true;
 	}
