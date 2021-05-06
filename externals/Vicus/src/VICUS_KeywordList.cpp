@@ -92,7 +92,7 @@ namespace VICUS {
 		//std::cerr << "Unknown enumeration type '" << enumtype<< "'." << std::endl;
 		return -1;
 	}
-
+	
 
 	/*! Returns a keyword string for a given category (typenum) and type number t. */
 	const char * theKeyword(int typenum, int t) {
@@ -2652,7 +2652,7 @@ namespace VICUS {
 	bool KeywordList::KeywordExists(const char * const enumtype, const std::string & kw) {
 		int typenum = enum2index(enumtype);
 		int i = 0;
-		int maxIndexInCategory = MaxIndex( enumtype );
+		int maxIndexInCategory = MaxIndex( enumtype ); 
 		for ( ; i <= maxIndexInCategory; ++i ) {
 			std::string keywords = allKeywords(typenum, i);
 			if (keywords == INVALID_KEYWORD_INDEX_STRING)
@@ -2673,7 +2673,7 @@ namespace VICUS {
 	int KeywordList::Enumeration(const char * const enumtype, const std::string & kw, bool * deprecated) {
 		int typenum = enum2index(enumtype);
 		int i = 0;
-		int maxIndexInCategory = MaxIndex( enumtype );
+		int maxIndexInCategory = MaxIndex( enumtype ); 
 		for ( ; i <= maxIndexInCategory; ++i ) {
 			std::string keywords = allKeywords(typenum, i);
 			if (keywords == INVALID_KEYWORD_INDEX_STRING)
