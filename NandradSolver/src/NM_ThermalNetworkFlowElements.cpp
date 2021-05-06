@@ -60,14 +60,19 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 	if (m_outerHeatTransferCoefficient == 0.) {
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
 		m_thermalTransmittance = m_length /
-					  ( 1.0 / (innerHeatTransferCoefficient * m_innerDiameter * PI ) + 1.0/m_UValuePipeWall ) ;
+				(
+					  1.0 / (innerHeatTransferCoefficient * m_innerDiameter * PI )
+					+ 1.0 / m_UValuePipeWall
+				);
 	}
 	else {
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
 		m_thermalTransmittance = m_length /
-					( 1.0 / (innerHeatTransferCoefficient * m_innerDiameter * PI )
+				(
+					  1.0 / (innerHeatTransferCoefficient * m_innerDiameter * PI)
 					+ 1.0 / (m_outerHeatTransferCoefficient * m_outerDiameter * PI)
-					+ 1.0 / m_UValuePipeWall ) ;
+					+ 1.0 / m_UValuePipeWall
+				);
 	}
 
 	IBK_ASSERT(m_heatExchangeValueRef != nullptr);
@@ -119,11 +124,12 @@ void TNStaticPipeElement::setInflowTemperature(double Tinflow) {
 	// calculate heat transfer
 
 	// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-	const double UAValueTotal = m_length / (
-				  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
-				+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)
-				+ 1.0/m_UValuePipeWall )
-		);
+	const double UAValueTotal = m_length /
+			(
+				  1.0 / (innerHeatTransferCoefficient * m_innerDiameter * PI)
+				+ 1.0 / (m_outerHeatTransferCoefficient * m_outerDiameter * PI)
+				+ 1.0 / m_UValuePipeWall
+			);
 
 	// Q in [W] = DeltaT * UAValueTotal
 	IBK_ASSERT(m_externalTemperatureRef != nullptr);
@@ -210,14 +216,19 @@ void TNDynamicPipeElement::setInflowTemperature(double Tinflow) {
 	if(m_outerHeatTransferCoefficient == 0.) {
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
 		m_thermalTransmittance = m_discLength /
-					   ( 1.0 / ( innerHeatTransferCoefficient * m_innerDiameter * PI ) +  1 / m_UValuePipeWall  );
+				(
+					  1.0 / ( innerHeatTransferCoefficient * m_innerDiameter * PI)
+					+ 1.0 / m_UValuePipeWall
+				);
 	}
 	else {
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
 		m_thermalTransmittance = m_discLength /
-								( 1.0 / (innerHeatTransferCoefficient * m_innerDiameter * PI)
-								+ 1.0 / (m_outerHeatTransferCoefficient * m_outerDiameter * PI)
-								+ 1.0 / m_UValuePipeWall ) ;
+				(
+					  1.0 / (innerHeatTransferCoefficient * m_innerDiameter * PI)
+					+ 1.0 / (m_outerHeatTransferCoefficient * m_outerDiameter * PI)
+					+ 1.0 / m_UValuePipeWall
+				);
 	}
 
 
@@ -257,14 +268,14 @@ void TNDynamicPipeElement::internalDerivatives(double * ydot) {
 		// first element copies boundary conditions
 
 		ydot[0] = -m_heatLosses[0] + m_massFlux * m_fluidHeatCapacity * (m_inflowTemperature  - m_temperatures[0]);
-		for(unsigned int i = 1; i < m_nVolumes; ++i) {
+		for (unsigned int i = 1; i < m_nVolumes; ++i) {
 			ydot[i] = -m_heatLosses[i] + m_massFlux * m_fluidHeatCapacity * (m_temperatures[i - 1] - m_temperatures[i]);
 		}
 	}
 	else { // m_massFlux < 0
 		// last element copies boundary conditions
 		ydot[m_nVolumes - 1] = -m_heatLosses[m_nVolumes - 1] + m_massFlux * m_fluidHeatCapacity * (m_temperatures[m_nVolumes - 1] - m_inflowTemperature);
-		for(unsigned int i = 0; i < m_nVolumes - 1; ++i) {
+		for (unsigned int i = 0; i < m_nVolumes - 1; ++i) {
 			ydot[i] = -m_heatLosses[i] + m_massFlux * m_fluidHeatCapacity * (m_temperatures[i] - m_temperatures[i + 1]);
 		}
 	}
