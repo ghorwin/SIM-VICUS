@@ -52,10 +52,10 @@ SVDBWindowGlazingSystemEditWidget::SVDBWindowGlazingSystemEditWidget(QWidget *pa
 
 	unsigned int i=9;
 	while (true){
-		m_ui->tableWidgetSHGC->setItem((int)i, 0, new QTableWidgetItem(QString::number((i+1)*10)));
+		m_ui->tableWidgetSHGC->setItem((int)i, 0, new QTableWidgetItem(QString::number((i)*10)));
 		m_ui->tableWidgetSHGC->setItem((int)i, 1, new QTableWidgetItem(""));
 
-		if(i)
+		if(i == 0)
 			break;
 		--i;
 	}
@@ -131,10 +131,10 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 
 		if(!spline.empty()){
 			for(unsigned int i=0; i<10; ++i){
-				double val = spline.value(i *
-										  (m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_xUnit == IBK::Unit("Deg") ?
-											  1 : IBK::DEG2RAD));
-				m_ui->tableWidgetSHGC->item(9-i,1)->setText(QString::number(val));
+
+				IBK::Unit unit = m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_xUnit;
+				double val = spline.value(i * 10 / (unit == IBK::Unit("Deg") ? 1 : IBK::DEG2RAD));
+				m_ui->tableWidgetSHGC->item(i,1)->setText(QString::number(val));
 			}
 		}
 	}

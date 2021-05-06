@@ -130,8 +130,9 @@ QModelIndex SVDBWindowGlazingSystemTableModel::addNewItem() {
 	spline.m_yUnit = IBK::Unit("---");
 
 	spline.m_interpolationMethod = NANDRAD::LinearSplineParameter::I_LINEAR;
-	spline.m_values.setValues(std::vector<double>{90,80,70,60,50,40,30,20,10,0},
-							  std::vector<double>{.6,.6,.6,.59,.57,.45,.3,.2,.1,0});
+	spline.m_values.setValues(std::vector<double>{0, 10, 20, 30, 40, 50, 60, 70, 80, 90},
+							  std::vector<double>{.6, .6, .6, .59,.57,.45,.3, .2, .1,0.0});
+
 	std::string errorMsg;
 	spline.m_values.makeSpline(errorMsg);
 

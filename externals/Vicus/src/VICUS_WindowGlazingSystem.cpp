@@ -57,7 +57,7 @@ double WindowGlazingSystem::uValue() {
 double WindowGlazingSystem::SHGC() {
 	switch (m_modelType) {
 		case VICUS::WindowGlazingSystem::MT_Simple:
-			return m_splinePara[SP_SHGC].m_values.value(90*IBK::DEG2RAD);
+			return m_splinePara[SP_SHGC].m_values.value(0);
 		case VICUS::WindowGlazingSystem::MT_Detailed:
 			///TODO Dirk implement calculation SHGC detailed window model
 			///TODO Stephan implement calculation SHGC detailed window model

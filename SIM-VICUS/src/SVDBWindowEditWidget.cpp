@@ -109,7 +109,7 @@ void SVDBWindowEditWidget::updateInput(int id) {
 	// *** glazing system ***
 
 	if(m_current->m_idGlazingSystem != VICUS::INVALID_ID){
-		VICUS::WindowGlazingSystem *glazSys = const_cast<VICUS::WindowGlazingSystem *>(m_db->m_windowGlazingSystems[(unsigned int)id]);
+		VICUS::WindowGlazingSystem *glazSys = const_cast<VICUS::WindowGlazingSystem *>(m_db->m_windowGlazingSystems[m_current->m_idGlazingSystem]);
 		if(glazSys != nullptr){
 			m_ui->lineEditUValue->setText(QString("%L1").arg(glazSys->uValue(), 0, 'f', 4));
 			m_ui->lineEditSHGC->setText(QString("%L1").arg(glazSys->SHGC(), 0, 'f', 4));
@@ -137,8 +137,13 @@ void SVDBWindowEditWidget::updateInput(int id) {
 		}
 		break;
 		case VICUS::Window::M_None:
-		case VICUS::Window::NUM_M:
 			frameIdx = 0;
+		break;
+		case VICUS::Window::NUM_M: {
+			m_current->m_methodFrame = VICUS::Window::M_None;
+			modelModify();
+			frameIdx = 0;
+		}
 		break;
 
 	}
@@ -181,8 +186,13 @@ void SVDBWindowEditWidget::updateInput(int id) {
 		}
 		break;
 		case VICUS::Window::M_None:
-		case VICUS::Window::NUM_M:
 			dividerIdx = 0;
+		break;
+		case VICUS::Window::NUM_M: {
+			m_current->m_methodDivider = VICUS::Window::M_None;
+			modelModify();
+			dividerIdx = 0;
+		}
 		break;
 
 	}
@@ -223,12 +233,13 @@ void SVDBWindowEditWidget::on_lineEditName_editingFinished(){
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {  // currentdisplayname is multilanguage string
 		m_current->m_displayName = m_ui->lineEditName->string();
 		modelModify();
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 }
 
 void SVDBWindowEditWidget::modelModify() {
 	m_db->m_windows.m_modified = true;
+	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+
 }
 
 void SVDBWindowEditWidget::on_toolButtonSelectGlazingSystemName_clicked() {
@@ -238,6 +249,7 @@ void SVDBWindowEditWidget::on_toolButtonSelectGlazingSystemName_clicked() {
 	if (conId != m_current->m_idGlazingSystem) {
 		m_current->m_idGlazingSystem = conId;
 		modelModify(); // tell model that we changed the data
+
 	}
 	updateInput((int)m_current->m_id);
 }
@@ -250,7 +262,6 @@ void SVDBWindowEditWidget::on_pushButtonWindowColor_colorChanged() {
 	if (m_current->m_color != m_ui->pushButtonWindowColor->color()) {
 		m_current->m_color = m_ui->pushButtonWindowColor->color();
 		modelModify(); // tell model that we changed the data
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 
 }
@@ -263,7 +274,8 @@ void SVDBWindowEditWidget::on_toolButtonSelectFrameMaterial_clicked(){
 	unsigned int matId = matEditDialog->select(m_current->m_frame.m_idMaterial);
 	if (matId != m_current->m_frame.m_idMaterial) {
 		m_current->m_frame.m_idMaterial = matId;
-		modelModify(); // tell model that we changed the data
+		modelModify(); // tell model that we changed the data,
+
 	}
 	updateInput((int)m_current->m_id);
 }
@@ -276,6 +288,7 @@ void SVDBWindowEditWidget::on_toolButtonSelectDividerMaterial_clicked(){
 	if (matId != m_current->m_divider.m_idMaterial) {
 		m_current->m_divider.m_idMaterial = matId;
 		modelModify(); // tell model that we changed the data
+
 	}
 	updateInput((int)m_current->m_id);
 
