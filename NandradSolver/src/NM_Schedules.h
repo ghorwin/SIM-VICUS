@@ -77,6 +77,8 @@ public:
 		SQ_WindSpeedACRLimitSchedule,							// Keyword: WindSpeedACRLimitSchedule						[m/s]
 		SQ_HeatingSetpointSchedule,								// Keyword: HeatingSetpointSchedule							[C]
 		SQ_CoolingSetpointSchedule,								// Keyword: CoolingSetpointSchedule							[C]
+		SQ_CondenserMeanTemperatureSchedule,					// Keyword: CondenserMeanTemperatureSchedule				[C]
+		SQ_EvaporatorMeanTemperatureSchedule,					// Keyword: EvaporatorMeanTemperatureSchedule				[C]
 		NUM_SQ
 	};
 

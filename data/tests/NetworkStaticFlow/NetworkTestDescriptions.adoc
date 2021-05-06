@@ -724,4 +724,30 @@ TZone1 = -TZone2 = 19.7 C
 ```
 
 
+### ThermoHydraulicNetworkHeatPumpIdealSource
 
+Test des `TNHeatPumpIdealCarnot` Models im Betriebsmodus `SourceSide`. Das Netzwerk besteht aus einer Pumpe, einem Rohr mit konstanter Umgebungstemperatur von 5°C und einer Wärmepumpe welche als `TNHeatPumpIdealCarnot` implementiert ist und im Betriebsmodus `SourceSide` angeshlossen ist.
+Es wird ein variabler Wärmebedarf des Kondensator über eine tsv Datei vorgegeben und die Temperatur des Kondensators ist über ein Schedule vorgegeben.
+
+Der COP beträgt bei t = 0 h
+```
+T_cond,m = 35 + 273.15 K
+T_evap,m = 5 + 273.15 K
+eta = 0.4
+COP = eta * Tcond,m / (Tcond,m - Tevap,m) = 3.91
+HeatLoss = 744.4 W
+P_el = 255.55 W
+```
+
+und bei t = 6 h
+```
+T_cond,m = 50 + 273.15 K
+T_evap,m = 5 + 273.15 K
+eta = 0.4
+COP = eta * Tcond,m / (Tcond,m - Tevap,m) = 2.78
+HeatLoss = 640.25 W
+P_el = 359.74 W
+```
+
+Der gegebene Wärmebedarf des Kondensators ist bei t > 45 h `Q_cond=5000 W`. Das Modell ist aber mit `MaximumHeatHeatingPower=4000 W` parametrisiert.
+Dementsprechned beträgt die Ausgabe `CondenserHeatFlux=4000 W` bei t>45 h

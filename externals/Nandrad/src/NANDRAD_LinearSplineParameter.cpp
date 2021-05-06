@@ -176,6 +176,7 @@ void LinearSplineParameter::checkAndInitialize(const std::string & expectedName,
 
 		if (!IBK::Path(tsvFilePath).exists())
 			throw IBK::Exception(IBK::FormatString("File '%1' does not exist").arg(m_tsvFile.str()), FUNC_ID);
+		IBK::IBK_Message(IBK::FormatString("Reading: '%1'\n").arg(m_tsvFile.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		IBK::CSVReader reader;
 		reader.read(tsvFilePath, false, true);  // may throw exception
 		if (reader.m_nColumns <= colIndex)
@@ -219,6 +220,12 @@ void LinearSplineParameter::checkAndInitialize(const std::string & expectedName,
 //	for (double d : m_values.y()) {
 
 //	}
+
+	// apply default rules for wrapMethod and interpolationMode
+	if (m_wrapMethod == NUM_C)
+		m_wrapMethod = C_CONTINUOUS;
+	if (m_interpolationMethod == NUM_I)
+		m_interpolationMethod = I_LINEAR;
 
 }
 

@@ -5,6 +5,7 @@
 #include <utility>
 
 #include "NM_QuantityDescription.h"
+#include "NM_InputReference.h"
 
 namespace NANDRAD_MODEL {
 
@@ -109,12 +110,24 @@ public:
 	/*! Once all node temperatures have been computed, the flow element gets the temperature of the inlowing fluid. */
 	virtual void setInflowTemperature(double Tinflow) { m_inflowTemperature = Tinflow; }
 
-	/*! Optional function for registering dependencies between derivatives and internal states.*/
+	/*! Optional function for registering dependencies between derivatives and internal states.
+		Default implementation simply adds dependencies between ydot and meanTemperature and _all_ inputs
+		(y, mdot, TInflowLeft, TInflowRight).
+	*/
 	virtual void dependencies(const double */*ydot*/, const double */*y*/,
 							  const double */*mdot*/, const double* /*TInflowLeft*/, const double*/*TInflowRight*/,
-							  std::vector<std::pair<const double *, const double *> > & ) const
-	{ }
+							  std::vector<std::pair<const double *, const double *> > & ) const;
 
+	/*! Adds flow-element-specific input references (schedules etc.) to the list of input references.
+		Default implementation does nothing.
+	*/
+	virtual void inputReferences(std::vector<NANDRAD_MODEL::InputReference> & /*inputRefs*/) const {}
+
+	/*! Provides the element with its own requested model inputs.
+		The element must take exactly as many input values from the vector and move the iterator forward.
+		When the function returns, the iterator must point to the first input reference past this element's inputs.
+	*/
+	virtual void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {}
 
 	// Common variables for flow elements
 

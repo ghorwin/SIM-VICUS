@@ -71,10 +71,6 @@ KeywordListQt::KeywordListQt() {
 	tr("The network is connected to the hot side (supply) of the heat pump");
 	tr("The network is connected to the cold side (source) of the heat pump");
 	tr("Two networks are connected, one to the cold side, the other to the hot side of the heat pump");
-	tr("Set point temperature for condenser outlet");
-	tr("Mean fluid temperature in condenser");
-	tr("Mean fluid temperature in evaporator");
-	tr("Digital control signal (on/off) for heat pump");
 	tr("Pipe length");
 	tr("Number of parallel pipes");
 	tr("Difference to constant temperature");
