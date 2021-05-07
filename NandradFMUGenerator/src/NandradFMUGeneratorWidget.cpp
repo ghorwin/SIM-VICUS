@@ -342,10 +342,10 @@ void NandradFMUGeneratorWidget::on_pushButtonSaveNandradProject_clicked() {
 	if (!checkModelName())
 		return;
 
-	QString fmuModelName = m_ui->lineEditModelName->text().trimmed();
-	m_project.m_fmiDescription.m_modelName = fmuModelName.toStdString();
-
-
+	// data in m_project is already up-to-date, so just write out the project
+	m_project.writeXML(m_nandradFilePath);
+	QMessageBox::information(this, tr("Project file written"),
+							 tr("Saved NANDRAD Project '%1'.").arg(QString::fromStdString(m_nandradFilePath.str())));
 }
 
 
