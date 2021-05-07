@@ -42,6 +42,8 @@ int main(int argc, char *argv[]) {
 		if (argc > 1) {
 			w.m_nandradFilePath = IBK::Path(argv[1]);
 		}
+
+		w.init();
 		w.show(); // show widget
 
 		// start event loop

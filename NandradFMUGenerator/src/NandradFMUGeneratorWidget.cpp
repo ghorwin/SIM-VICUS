@@ -24,17 +24,8 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	m_ui->lineEditTargetPath->setup("", false, true, QString());
 
 	m_ui->tableWidgetInputVars->setColumnCount(7);
-	m_ui->tableWidgetInputVars->setRowCount(3);
+	m_ui->tableWidgetInputVars->setRowCount(0);
 
-	QTableWidgetItem * item = new QTableWidgetItem("1");
-	m_ui->tableWidgetInputVars->setItem(0,0,item);
-
-	item = new QTableWidgetItem("2");
-	m_ui->tableWidgetInputVars->setItem(0,1,item);
-	item = new QTableWidgetItem("3");
-	m_ui->tableWidgetInputVars->setItem(1,0,item);
-	item = new QTableWidgetItem("4");
-	m_ui->tableWidgetInputVars->setItem(1,1,item);
 	m_ui->tableWidgetInputVars->setHorizontalHeaderLabels(QStringList()
 			  << tr("Model variable")
 			  << tr("Object ID")
@@ -82,23 +73,31 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 		v->setFont(f);
 		v->horizontalHeader()->setFont(f); // Note: on Linux/Mac this won't work until Qt 5.11.1 - this was a bug between Qt 4.8...5.11.1
 
-	// If we do not yet have a file path to NANDRAD project, ask for it on start
-	if (!m_nandradFilePath.isValid())
-		QTimer::singleShot(0, this, &NandradFMUGeneratorWidget::on_pushButtonSelectNandradProject_clicked);
-	else {
-		// restore last correct project file
-		QSettings s("IBK", "NANDRADFMUGenerator");
-		QString projectFile = s.value("LastNANDRADProject").toString();
-		if (!projectFile.isEmpty() && QFile(projectFile).exists())
-			m_nandradFilePath = IBK::Path(projectFile.toStdString());
-		// setup user interface with project file data
-		setup();
-	}
 }
 
 
 NandradFMUGeneratorWidget::~NandradFMUGeneratorWidget() {
 	delete m_ui;
+}
+
+
+void NandradFMUGeneratorWidget::init() {
+	// If we do not yet have a file path to NANDRAD project, try to load the last one used
+	if (!m_nandradFilePath.isValid()) {
+		// restore last correct project file
+		QSettings s("IBK", "NANDRADFMUGenerator");
+		QString projectFile = s.value("LastNANDRADProject").toString();
+		if (!projectFile.isEmpty() && QFile(projectFile).exists())
+			m_nandradFilePath = IBK::Path(projectFile.toStdString());
+	}
+	if (!m_nandradFilePath.isValid()) {
+		// If we do not yet have a file path to NANDRAD project, ask for it on start
+		QTimer::singleShot(0, this, &NandradFMUGeneratorWidget::on_pushButtonSelectNandradProject_clicked);
+	}
+	else {
+		// setup user interface with project file data
+		QTimer::singleShot(0, this, &NandradFMUGeneratorWidget::setup);
+	}
 }
 
 
@@ -485,7 +484,7 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 		}
 
 		// extract all the data we need from the strings
-		QStringList varNameTokens = tokens[0].split(".");
+		QStringList varNameTokens = tokens[0].trimmed().split(".");
 		if (varNameTokens.count() != 2) {
 			QMessageBox::critical(this, QString(), tr("Invalid data in file '%1'. Malformed variable name '%2'. Re-run solver initialization!")
 				.arg(varsFile).arg(tokens[0]));
@@ -495,10 +494,10 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 		QString nandradVarName = varNameTokens[1];
 		QString unit;
 		if (tokens.count() > 3)
-			unit = tokens[3];
+			unit = tokens[3].trimmed();
 		QString description;
 		if (tokens.count() > 4)
-			description = tokens[4];
+			description = tokens[4].trimmed();
 
 
 		// split object IDs and vector-value IDs
@@ -527,22 +526,30 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 
 			if (m_vectorIndexes.empty()) {
 				NANDRAD::FMIVariableDefinition varDef;
-				// retrieve variable definition for given
-				varDef.m_fmiVarName = tokens[0].toStdString();
+				varDef.m_varName = nandradVarName.toStdString();
+				// compose a variable name
+				varDef.m_fmiVarName = QString("%1(%2).%3")
+						.arg(objTypeName).arg(objID).arg(nandradVarName)
+						.toStdString();
 				varDef.m_objectID = objID;
 				varDef.m_fmiTypeName = ""; // TODO : how to determine the correct type?
-				varDef.m_unit = ""; // will be determined later
+				varDef.m_unit = unit.toStdString();
+				varDef.m_fmiVarDescription = description.toStdString();
+				varDef.m_fmiValueRef = NANDRAD::INVALID_ID; // will be set from either existing var in project or when configured
 
 				modelVariables.push_back(varDef);
 			}
 			else {
 				for (unsigned int vecIdx : m_vectorIndexes) {
 					NANDRAD::FMIVariableDefinition varDef;
-					// retrieve variable definition for given
-					varDef.m_fmiVarName = QString("%1[%2]").arg(tokens[0]).arg(vecIdx).toStdString();
+					varDef.m_fmiVarName = QString("%1(%2).%3(%4)")
+							.arg(objTypeName).arg(objID).arg(nandradVarName).arg(vecIdx)
+							.toStdString();
 					varDef.m_objectID = objID;
 					varDef.m_fmiTypeName = ""; // TODO : how to determine the correct type?
-
+					varDef.m_unit = unit.toStdString();
+					varDef.m_fmiVarDescription = description.toStdString();
+					varDef.m_fmiValueRef = NANDRAD::INVALID_ID; // will be set from either existing var in project or when configured
 
 					modelVariables.push_back(varDef);
 				}

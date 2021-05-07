@@ -21,7 +21,8 @@ public:
 	explicit NandradFMUGeneratorWidget(QWidget *parent = nullptr);
 	~NandradFMUGeneratorWidget();
 
-	void setup();
+	/*! Handles the initial file selection. */
+	void init();
 
 	IBK::Path							m_nandradFilePath;
 	/*! Path to dll/lib files. */
@@ -30,6 +31,9 @@ public:
 	QString								m_nandradSolverExecutable;
 
 private slots:
+	/*! Reads the NANDRAD project and if successful, configures the user interface and calls updateVariableLists(). */
+	void setup();
+
 	void on_tableWidgetInputVars_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
 	void on_tableWidgetOutputVars_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
 
