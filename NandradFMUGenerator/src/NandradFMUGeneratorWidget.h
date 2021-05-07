@@ -30,8 +30,6 @@ public:
 	QString								m_nandradSolverExecutable;
 
 private slots:
-	void on_pushButtonUpdateVariableList_clicked();
-
 	void on_tableWidgetInputVars_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
 	void on_tableWidgetOutputVars_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
 
@@ -39,8 +37,6 @@ private slots:
 	void on_toolButtonRemoveOutputVariable_clicked();
 
 	void on_toolButtonRemoveInputVariable_clicked();
-
-	void on_pushButtonGenerateAllVariables_clicked();
 
 	void on_pushButtonGenerate_clicked();
 
@@ -52,6 +48,9 @@ private slots:
 	void on_pushButtonSelectNandradProject_clicked();
 
 private:
+	/*! Toggles the GUI state depending on whether a valid NANDRAD Project was read or not. */
+	void setGUIState(bool active);
+
 	/*! Checks if the model name and/or the path is conforming to the requirements.
 		- no umlaute/special characters in model name
 		- no spaces
@@ -62,12 +61,14 @@ private:
 	*/
 	bool checkModelName();
 
-	struct IDInfo {
-		std::vector<unsigned int>	m_objectIDs;
-		std::vector<unsigned int>	m_vectorIndexes;
-	};
+	/*! Runs the currently loaded NANDRAD project in test-init mode and parses the
+		input and output references files, then updates m_availableInputVariables and
+		m_availableOutputVariables.
+	*/
+	void updateVariableLists();
 
-	void updateVariableLists(bool silent);
+	/*! Reads a variable definition file and generates a map with model variables versus object/vector IDs. */
+	bool parseVariableList(const QString & varsFile, std::vector<NANDRAD::FMIVariableDefinition> & modelVariables);
 
 	/*! Fills in the FMU data tables with already configured FMU variables.
 		All FMI variables stored in m_localProject.m_fmiDescription are shown in the table,
@@ -76,8 +77,6 @@ private:
 	*/
 	void updateFMUVariableTables();
 
-	/*! Reads a variable definition file and generates a map with model variables versus object/vector IDs. */
-	bool parseVariableList(const QString & varsFile, std::vector<NANDRAD::FMIVariableDefinition> & modelVariables, bool silent);
 
 	/*! Adds a new row to a table widget.
 		\param var The variable to add.
@@ -85,6 +84,13 @@ private:
 		\param exists True, if such a model variable exists in the current model.
 	*/
 	void appendVariableEntry(unsigned int index, const NANDRAD::FMIVariableDefinition &var, QTableWidget * tableWidget, bool exists);
+
+	/*! This is the work-horse function that does the entire generation stuff.
+		Expects the project file to be saved already.
+		\param silent If true, the generation process does not pop-up any message box or dialog in case of error, but
+			just dumps errors to console. This is meant for command-line exporting functionality.
+	*/
+	int generate(bool silent);
 
 	/*! This function returns detailed variable information to be used when generating FMU variables.
 		This might be better placed somewhere in the VICUS library?
@@ -98,6 +104,8 @@ private:
 		function here. We can move this static function elsewhere, later.
 	*/
 	static void variableInfo(const std::string & fullVarName, QString & description, std::string & unit, std::string & fmuType);
+
+
 
 	Ui::NandradFMUGeneratorWidget		*m_ui;
 

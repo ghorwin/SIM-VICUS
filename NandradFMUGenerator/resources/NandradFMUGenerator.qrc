@@ -4,5 +4,6 @@
         <file>minus.png</file>
         <file>plus.png</file>
         <file>editcopy.png</file>
+        <file>modelDescription.xml.template</file>
     </qresource>
 </RCC>

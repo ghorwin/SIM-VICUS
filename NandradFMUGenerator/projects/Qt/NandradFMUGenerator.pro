@@ -57,4 +57,5 @@ HEADERS += \
 	../../src/NandradFMUGeneratorWidget.h
 
 RESOURCES += \
-	../../resources/gfx.qrc
+	../../resources/NandradFMUGenerator.qrc
+

@@ -7,6 +7,7 @@
 #include <QTextStream>
 #include <QTimer>
 #include <QFileDialog>
+#include <QSettings>
 
 #include <QtExt_Directories.h>
 
@@ -84,6 +85,15 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	// If we do not yet have a file path to NANDRAD project, ask for it on start
 	if (!m_nandradFilePath.isValid())
 		QTimer::singleShot(0, this, &NandradFMUGeneratorWidget::on_pushButtonSelectNandradProject_clicked);
+	else {
+		// restore last correct project file
+		QSettings s("IBK", "NANDRADFMUGenerator");
+		QString projectFile = s.value("LastNANDRADProject").toString();
+		if (!projectFile.isEmpty() && QFile(projectFile).exists())
+			m_nandradFilePath = IBK::Path(projectFile.toStdString());
+		// setup user interface with project file data
+		setup();
+	}
 }
 
 
@@ -97,11 +107,21 @@ void NandradFMUGeneratorWidget::setup() {
 	// read NANDRAD project
 	try {
 		m_project.readXML(m_nandradFilePath);
-	} catch (IBK::Exception & ex) {
-		// TODO : show error message -> QMessageBox::critical()
-		// TODO : disable all UI elements, until project was read successfully
+	}
+	catch (IBK::Exception & ex) {
+		ex.writeMsgStackToError();
+		QMessageBox::critical(this, tr("Error reading NANDRAD project"),
+							  tr("Reading of NANDRAD project file '%1' failed.").arg(QString::fromStdString(m_nandradFilePath.str())) );
+		// disable all GUI elements
+		setGUIState(false);
 		return;
 	}
+
+	// store project file for next start of generator tool
+	QSettings s("IBK", "NANDRADFMUGenerator");
+	s.setValue("LastNANDRADProject", QString::fromStdString(m_nandradFilePath.str()) );
+
+	setGUIState(true);
 
 	if (m_project.m_fmiDescription.m_modelName.empty())
 		m_project.m_fmiDescription.m_modelName = m_nandradFilePath.filename().withoutExtension().str();
@@ -117,127 +137,10 @@ void NandradFMUGeneratorWidget::setup() {
 	// check correct FMU name and update target file path
 	on_lineEditModelName_editingFinished();
 	// now test-init the solver and update the variable tables
-	on_pushButtonUpdateVariableList_clicked();
+	updateVariableLists();
 }
 
 
-void NandradFMUGeneratorWidget::on_pushButtonUpdateVariableList_clicked() {
-	// Test-Init project and then read input/output value refs
-
-	QStringList commandLineArgs;
-	commandLineArgs.append("--test-init");
-	commandLineArgs.append(QString::fromStdString(m_nandradFilePath.str()));
-
-	QString solverExecutable = m_nandradSolverExecutable;
-
-	QProcess proc(this);
-	proc.setProgram(solverExecutable);
-	proc.setArguments(commandLineArgs);
-
-	proc.start();
-	bool success = proc.waitForFinished();
-
-	// TODO : For extremely large simulation projects, the intialization itself may take more than 30 seconds, so
-	//        we may add a progress indicator dialog
-
-	if (!success) {
-		QMessageBox::critical(this, QString(), tr("Could not run solver '%1'").arg(solverExecutable));
-		return;
-	}
-
-	updateVariableLists(false);
-	updateFMUVariableTables();
-	QMessageBox::information(this, tr("NANDRAD Test-init successful"),
-							 tr("NANDRAD solver was started and the project was initialised, successfully. "
-								"%1 FMU input-variables and %2 output variables available.")
-							 .arg(m_availableInputVariables.size()).arg(m_availableOutputVariables.size()));
-}
-
-
-void NandradFMUGeneratorWidget::updateVariableLists(bool silent) {
-	QString nandradProjectFilePath = QString::fromStdString(m_nandradFilePath.str());
-	// now parse the variable lists
-	IBK::Path varDir(nandradProjectFilePath.toStdString());
-	varDir = varDir.withoutExtension() / "var";
-
-	QString inputVarsFile = QString::fromStdString( (varDir / "input_reference_list.txt").str() );
-	if (!parseVariableList(inputVarsFile, m_availableInputVariables, silent))
-		return;
-
-	QString outputVarsFile = QString::fromStdString( (varDir / "output_reference_list.txt").str() );
-	if (!parseVariableList(outputVarsFile, m_availableOutputVariables, silent))
-		return;
-	updateFMUVariableTables();
-}
-
-
-void NandradFMUGeneratorWidget::updateFMUVariableTables() {
-#if 0
-	m_ui->tableWidgetInputVars->setRowCount(0);
-	m_ui->tableWidgetOutputVars->setRowCount(0);
-	for (unsigned int i = 0; i<m_project.m_fmiDescription.m_inputVariables.size(); ++i) {
-		const NANDRAD::FMIVariableDefinition & var = m_project.m_fmiDescription.m_inputVariables[i];
-		// check if variable exists
-		bool exists = (m_modelInputVariables.find(QString::fromStdString(var.m_varName)) != m_modelInputVariables.end());
-		appendVariableEntry(i, var, m_ui->tableWidgetInputVars, exists);
-	}
-	for (unsigned int i = 0; i<m_project.m_fmiDescription.m_outputVariables.size(); ++i) {
-		const NANDRAD::FMIVariableDefinition & var = m_project.m_fmiDescription.m_outputVariables[i];
-		// check if variable exists
-		bool exists = (m_modelOutputVariables.find(QString::fromStdString(var.m_varName)) != m_modelOutputVariables.end());
-		appendVariableEntry(i, var, m_ui->tableWidgetOutputVars, exists);
-	}
-#endif
-	m_ui->tableWidgetInputVars->resizeColumnsToContents();
-	m_ui->tableWidgetOutputVars->resizeColumnsToContents();
-
-}
-
-
-bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
-													std::vector<NANDRAD::FMIVariableDefinition> & modelVariables, bool silent)
-{
-	QFile inputVarF(varsFile);
-	if (!inputVarF.open(QFile::ReadOnly)) {
-		if (!silent)
-			QMessageBox::critical(this, QString(), tr("Could not read file '%1'. Re-run solver initialization!")
-								  .arg(varsFile));
-		return false;
-	}
-
-	QStringList vars = QString(inputVarF.readAll()).split('\n');
-
-	// we process all but first line
-	for (int j=1; j<vars.count(); ++j) {
-		if (vars[j].trimmed().isEmpty())
-			continue; // skip (trailing) empty lines)
-		// Note: vars[j] must not be trimmed before calling split, since we may have several trailing \t which are important!
-		QStringList tokens = vars[j].split('\t');
-		if (tokens.count() < 3) {
-			QMessageBox::critical(this, QString(), tr("Invalid data in file '%1'. Re-run solver initialization!")
-				.arg(varsFile));
-			return false;
-		}
-
-		// split object IDs and vector-value IDs
-		IDInfo info;
-		QString idString = tokens[1].trimmed();
-		if (!idString.isEmpty()) {
-			QStringList ids = idString.split(",");
-			for (QString idstr : ids)
-				info.m_objectIDs.push_back( idstr.toUInt());
-		}
-		idString = tokens[2].trimmed();
-		if (!idString.isEmpty()) {
-			QStringList ids = idString.split(",");
-			for (QString idstr : ids)
-				info.m_vectorIndexes.push_back( idstr.toUInt());
-		}
-
-//		modelVariables[tokens[0].trimmed()] = info;
-	}
-	return true;
-}
 
 
 void NandradFMUGeneratorWidget::appendVariableEntry(unsigned int index, const NANDRAD::FMIVariableDefinition &var, QTableWidget * tableWidget, bool exists) {
@@ -385,147 +288,7 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveOutputVariable_clicked() {
 }
 
 
-void NandradFMUGeneratorWidget::on_pushButtonGenerateAllVariables_clicked() {
-#if 0
-	// process all input and output variables and generate new variables
-
-	// naming scheme for FMI variables:
-
-	// Zone(5).AirTemperature
-	// Network(1).MassFlux(10)  - no distinguishing between ID and index
-
-	unsigned int valRef = 100;
-	// get lowest possible unique value ref
-	for (const NANDRAD::FMIVariableDefinition & var : m_project.m_fmiDescription.m_inputVariables)
-		valRef = std::max(valRef, var.m_fmiValueRef+1);
-	for (const NANDRAD::FMIVariableDefinition & var : m_project.m_fmiDescription.m_outputVariables)
-		valRef = std::max(valRef, var.m_fmiValueRef+1);
-
-
-	std::vector<NANDRAD::FMIVariableDefinition> newInputVars;
-	std::vector<NANDRAD::FMIVariableDefinition> newOutputVars;
-
-	// first input variables
-	for (const auto & var : m_modelInputVariables) {
-		std::vector<std::string> varParts = IBK::explode(var.first.toStdString(), '.');
-
-		Q_ASSERT(varParts.size() == 2);
-
-		for (const unsigned int & id : var.second.m_objectIDs) {
-			NANDRAD::FMIVariableDefinition fmiVar;
-			fmiVar.m_varName = var.first.toStdString();
-			fmiVar.m_objectID = id;
-			fmiVar.m_fmiValueRef = ++valRef;
-			QString desc;
-			variableInfo(fmiVar.m_varName, desc, fmiVar.m_unit, fmiVar.m_fmiTypeName);
-			if (var.second.m_vectorIndexes.empty()) {
-				// scalar variable
-				fmiVar.m_vectorIndex = NANDRAD::INVALID_ID;
-				fmiVar.m_fmiVarName = IBK::FormatString("%1(%2).%3")
-						.arg(varParts[0]).arg(id).arg(varParts[1]).str();
-				if (!m_project.m_fmiDescription.hasInputVariable(fmiVar))
-					newInputVars.push_back(fmiVar);
-			}
-			else {
-				for (const unsigned int & vectorID : var.second.m_vectorIndexes) {
-					fmiVar.m_vectorIndex = vectorID;
-					fmiVar.m_fmiVarName = IBK::FormatString("%1(%2).%3(%4)")
-							.arg(varParts[0]).arg(fmiVar.m_objectID)
-							.arg(varParts[1]).arg(vectorID).str();
-					if (!m_project.m_fmiDescription.hasInputVariable(fmiVar))
-						newInputVars.push_back(fmiVar);
-				}
-			}
-		}
-
-	}
-
-	// now output variables
-	for (const auto & var : m_modelOutputVariables) {
-		std::vector<std::string> varParts = IBK::explode(var.first.toStdString(), '.');
-
-		Q_ASSERT(varParts.size() == 2);
-
-		for (const unsigned int & id : var.second.m_objectIDs) {
-			NANDRAD::FMIVariableDefinition fmiVar;
-			fmiVar.m_varName = var.first.toStdString();
-			fmiVar.m_objectID = id;
-			QString desc;
-			variableInfo(fmiVar.m_varName, desc, fmiVar.m_unit, fmiVar.m_fmiTypeName);
-			if (var.second.m_vectorIndexes.empty()) {
-				// scalar variable
-				fmiVar.m_fmiValueRef = ++valRef;
-				fmiVar.m_vectorIndex = NANDRAD::INVALID_ID;
-				fmiVar.m_fmiVarName = IBK::FormatString("%1(%2).%3")
-						.arg(varParts[0]).arg(id).arg(varParts[1]).str();
-				if (!m_project.m_fmiDescription.hasOutputVariable(fmiVar))
-					newOutputVars.push_back(fmiVar);
-			}
-			else {
-				for (const unsigned int & vectorID : var.second.m_vectorIndexes) {
-					fmiVar.m_vectorIndex = vectorID;
-					fmiVar.m_fmiValueRef = ++valRef;
-					fmiVar.m_fmiVarName = IBK::FormatString("%1(%2).%3(%4)")
-							.arg(varParts[0]).arg(fmiVar.m_objectID)
-							.arg(varParts[1]).arg(vectorID).str();
-					// add only those new variables to project that do not exist already in variable list
-					if (!m_project.m_fmiDescription.hasOutputVariable(fmiVar))
-						newOutputVars.push_back(fmiVar);
-				}
-			}
-		}
-	}
-
-	m_project.m_fmiDescription.m_inputVariables.insert(m_project.m_fmiDescription.m_inputVariables.end(),
-													   newInputVars.begin(), newInputVars.end());
-	m_project.m_fmiDescription.m_outputVariables.insert(m_project.m_fmiDescription.m_outputVariables.end(),
-													   newOutputVars.begin(), newOutputVars.end());
-	updateFMUVariableTables();
-#endif
-}
-
-
-
-// **** static functions ****
-
-struct VarInfo {
-	VarInfo() = default;
-	VarInfo(QString description, std::string unit, std::string fmuVarType) :
-		m_description(description), m_unit(unit), m_fmuVarType(fmuVarType)
-	{
-	}
-
-	QString			m_description;
-	std::string		m_unit;
-	std::string		m_fmuVarType;
-};
-
-static std::map<std::string, VarInfo> varInfo;
-
-void NandradFMUGeneratorWidget::variableInfo(const std::string & fullVarName, QString & description, std::string & unit, std::string & fmuType) {
-	// populate map on first call
-	if (varInfo.empty()) {
-		varInfo["Zone.AirTemperature"] = VarInfo(tr("Zone well-mixed air temperature"), "K", "Temperature");
-		varInfo["Zone.WindowSolarRadiationFluxSum"] = VarInfo(tr("Sum of all short wave radiation fluxes across all windows of a zone (positive into zone)"), "W", "HeatFlux");
-		varInfo["ConstructionInstance.FluxHeatConductionA"] = VarInfo(tr("Heat conduction flux across interface A (into construction)"), "W", "HeatFlux");
-		varInfo["ConstructionInstance.FluxHeatConductionB"] = VarInfo(tr("Heat conduction flux across interface B (into construction)"), "W", "HeatFlux");
-		varInfo["ConstructionInstance.FluxShortWaveRadiationA"] = VarInfo(tr("Short wave radiation flux across interface A (into construction)"), "W", "HeatFlux");
-		varInfo["ConstructionInstance.FluxShortWaveRadiationB"] = VarInfo(tr("Short wave radiation flux across interface B (into construction)"), "W", "HeatFlux");
-		varInfo["Location.Temperature"] = VarInfo(tr("Outside temperature"), "K", "Temperature");
-	}
-
-	const auto & it = varInfo.find(fullVarName);
-	if (it != varInfo.end()) {
-		description = it->second.m_description;
-		unit = it->second.m_unit;
-		fmuType = it->second.m_fmuVarType;
-	}
-}
-
-
 void NandradFMUGeneratorWidget::on_pushButtonGenerate_clicked() {
-	FUNCID(NandradFMUGeneratorWidget::on_pushButtonGenerate_clicked);
-
 	// first update NANDRAD Project and save it to file
 	on_pushButtonSaveNandradProject_clicked();
 
@@ -533,8 +296,289 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerate_clicked() {
 	if (!checkModelName())
 		return;
 
-	// need variables
-	// need meta data
+	// now generate the FMU
+	generate(false);
+}
+
+
+void NandradFMUGeneratorWidget::on_lineEditModelName_editingFinished() {
+	m_ui->lineEditFMUPath->setText("---");
+	if (!checkModelName())
+		return;
+	QString modelName = m_ui->lineEditModelName->text();
+	// update FMU path
+	QDir targetDir(m_ui->lineEditTargetPath->filename());
+	m_ui->lineEditFMUPath->setText( targetDir.absoluteFilePath(modelName + ".fmu"));
+	m_project.m_fmiDescription.m_FMUPath = targetDir.absolutePath().toStdString();
+	m_project.m_fmiDescription.m_modelName = modelName.toStdString();
+}
+
+
+void NandradFMUGeneratorWidget::on_lineEditTargetPath_editingFinished() {
+	on_lineEditModelName_editingFinished();
+}
+
+
+void NandradFMUGeneratorWidget::on_lineEditTargetPath_returnPressed() {
+	on_lineEditModelName_editingFinished();
+}
+
+
+
+void NandradFMUGeneratorWidget::on_pushButtonSaveNandradProject_clicked() {
+	// input data check
+	if (!checkModelName())
+		return;
+
+	QString fmuModelName = m_ui->lineEditModelName->text().trimmed();
+
+
+}
+
+
+void NandradFMUGeneratorWidget::on_pushButtonSelectNandradProject_clicked() {
+	QString fname = QFileDialog::getOpenFileName(this, tr("Select NANDRAD Project"), QString(),
+												 tr("NANDRAD Project Files (*.nandrad);;All files (*)"), nullptr,
+												 QFileDialog::DontUseNativeDialog);
+	if (fname.isEmpty()) {
+		setGUIState(false);
+		return; // dialog was cancelled
+	}
+
+	m_nandradFilePath = IBK::Path(fname.toStdString());
+
+	// setup user interface with project file data
+	setup();
+}
+
+
+// *** PRIVATE MEMBER FUNCTIONS ****
+
+void NandradFMUGeneratorWidget::setGUIState(bool active) {
+	// if active, all table widgets and push buttons are enabled, otherwise disabled
+	m_ui->tabInputVariables->setEnabled(active);
+	m_ui->tabOutputVariables->setEnabled(active);
+	if (!active)
+		m_ui->tabWidget->setCurrentIndex(0);
+	m_ui->pushButtonGenerate->setEnabled(active);
+	m_ui->pushButtonSaveNandradProject->setEnabled(active);
+	m_ui->lineEditModelName->setEnabled(active);
+	m_ui->lineEditTargetPath->setEnabled(active);
+	m_ui->lineEditFMUPath->setEnabled(active);
+}
+
+
+bool NandradFMUGeneratorWidget::checkModelName() {
+	QString modelName = m_ui->lineEditModelName->text().trimmed();
+	if (modelName.isEmpty()) {
+		QMessageBox::critical(this, QString(), tr("Missing model name."));
+		return false;
+	}
+
+	// check model name for allowed characters
+	const std::string allowedChars = "-.,";
+	for (unsigned int i=0; i<modelName.size(); ++i) {
+		// check if character is an accepted char
+		QChar ch = modelName[i];
+		if (ch >= 'A' && ch <= 'Z') continue;
+		if (ch >= 'a' && ch <= 'z') continue;
+		if (ch >= '0' && ch <= '9') continue;
+		// check any other acceptable chars
+		if (allowedChars.find(ch.toLatin1()) != std::string::npos) continue;
+		QMessageBox::critical(this, QString(), tr("Model name contains invalid characters."));
+		return false;
+	}
+
+	// check leading 0
+	if (modelName[0] >= '0' && modelName[0] <= '9') {
+		QMessageBox::critical(this, QString(), tr("Model name must not start with a number character."));
+		return false;
+	}
+
+	if (m_ui->lineEditTargetPath->filename().trimmed().isEmpty()) {
+		QMessageBox::critical(this, QString(), tr("Missing target path name."));
+		return false;
+	}
+
+	return true;
+}
+
+
+void NandradFMUGeneratorWidget::updateVariableLists() {
+	// Test-Init project and then read input/output value refs
+
+	QStringList commandLineArgs;
+	commandLineArgs.append("--test-init");
+	commandLineArgs.append(QString::fromStdString(m_nandradFilePath.str()));
+
+	QString solverExecutable = m_nandradSolverExecutable;
+
+	QProcess proc(this);
+	proc.setProgram(solverExecutable);
+	proc.setArguments(commandLineArgs);
+
+	proc.start();
+	bool success = proc.waitForFinished();
+
+	// TODO : For extremely large simulation projects, the intialization itself may take more than 30 seconds, so
+	//        we may add a progress indicator dialog
+
+	if (!success) {
+		QMessageBox::critical(this, QString(), tr("Could not run solver '%1'").arg(solverExecutable));
+		return;
+	}
+
+	QString nandradProjectFilePath = QString::fromStdString(m_nandradFilePath.str());
+	// now parse the variable lists
+	IBK::Path varDir(nandradProjectFilePath.toStdString());
+	varDir = varDir.withoutExtension() / "var";
+
+	QString inputVarsFile = QString::fromStdString( (varDir / "input_reference_list.txt").str() );
+	if (!parseVariableList(inputVarsFile, m_availableInputVariables))
+		return;
+
+	QString outputVarsFile = QString::fromStdString( (varDir / "output_reference_list.txt").str() );
+	if (!parseVariableList(outputVarsFile, m_availableOutputVariables))
+		return;
+
+	QMessageBox::information(this, tr("NANDRAD Test-init successful"),
+							 tr("NANDRAD solver was started and the project was initialised, successfully. "
+								"%1 FMU input-variables and %2 output variables available.")
+							 .arg(m_availableInputVariables.size()).arg(m_availableOutputVariables.size()));
+
+	updateFMUVariableTables();
+}
+
+
+bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
+												  std::vector<NANDRAD::FMIVariableDefinition> & modelVariables)
+{
+	QFile inputVarF(varsFile);
+	if (!inputVarF.open(QFile::ReadOnly)) {
+			QMessageBox::critical(this, QString(), tr("Could not read file '%1'. Re-run solver initialization!")
+								  .arg(varsFile));
+		return false;
+	}
+
+	QStringList vars = QString(inputVarF.readAll()).split('\n');
+
+	//	Parse variable definitions as in the following lines:
+	//
+	//	Model.VentilationHeatFlux                         	1                   	1,2,3
+	//	Zone.AirTemperature                               	1,2,3
+	//
+	// or in the output ref list file
+	//
+	//	Model.VentilationHeatFlux                         	1                   	2,3                 	W         	Natural ventilation/infiltration heat flux
+	//	Zone.AirTemperature                               	1,2,3               	                    	C         	Room air temperature.
+
+	// we process all but first line
+	for (int j=1; j<vars.count(); ++j) {
+		if (vars[j].trimmed().isEmpty())
+			continue; // skip (trailing) empty lines)
+		// Note: vars[j] must not be trimmed before calling split, since we may have several trailing \t which are important!
+		QStringList tokens = vars[j].split('\t');
+		if (tokens.count() < 3) {
+			QMessageBox::critical(this, QString(), tr("Invalid data in file '%1'. Re-run solver initialization!")
+				.arg(varsFile));
+			return false;
+		}
+
+		// extract all the data we need from the strings
+		QStringList varNameTokens = tokens[0].split(".");
+		if (varNameTokens.count() != 2) {
+			QMessageBox::critical(this, QString(), tr("Invalid data in file '%1'. Malformed variable name '%2'. Re-run solver initialization!")
+				.arg(varsFile).arg(tokens[0]));
+			return false;
+		}
+		QString objTypeName = varNameTokens[0];
+		QString nandradVarName = varNameTokens[1];
+		QString unit;
+		if (tokens.count() > 3)
+			unit = tokens[3];
+		QString description;
+		if (tokens.count() > 4)
+			description = tokens[4];
+
+
+		// split object IDs and vector-value IDs
+		std::vector<unsigned int>	m_objectIDs;
+		std::vector<unsigned int>	m_vectorIndexes;
+		QString idString = tokens[1].trimmed();
+		if (idString.isEmpty()) {
+			QMessageBox::critical(this, QString(), tr("Invalid data in file '%1'. Object ID required for variable '%2'. Re-run solver initialization!")
+				.arg(varsFile).arg(tokens[0]));
+			return false;
+		}
+		QStringList ids = idString.split(",");
+		for (QString idstr : ids)
+			m_objectIDs.push_back( idstr.toUInt());
+
+
+		idString = tokens[2].trimmed();
+		if (!idString.isEmpty()) { // empty column with vector indexes is ok for scalar results
+			QStringList ids = idString.split(",");
+			for (QString idstr : ids)
+				m_vectorIndexes.push_back( idstr.toUInt());
+		}
+
+		// generate a variable for each combination of object ID and vector reference
+		for (unsigned int objID : m_objectIDs) {
+
+			if (m_vectorIndexes.empty()) {
+				NANDRAD::FMIVariableDefinition varDef;
+				// retrieve variable definition for given
+				varDef.m_fmiVarName = tokens[0].toStdString();
+				varDef.m_objectID = objID;
+				varDef.m_fmiTypeName = ""; // TODO : how to determine the correct type?
+				varDef.m_unit = ""; // will be determined later
+
+				modelVariables.push_back(varDef);
+			}
+			else {
+				for (unsigned int vecIdx : m_vectorIndexes) {
+					NANDRAD::FMIVariableDefinition varDef;
+					// retrieve variable definition for given
+					varDef.m_fmiVarName = QString("%1[%2]").arg(tokens[0]).arg(vecIdx).toStdString();
+					varDef.m_objectID = objID;
+					varDef.m_fmiTypeName = ""; // TODO : how to determine the correct type?
+
+
+					modelVariables.push_back(varDef);
+				}
+
+			}
+		}
+	}
+	return true;
+}
+
+
+void NandradFMUGeneratorWidget::updateFMUVariableTables() {
+#if 0
+	m_ui->tableWidgetInputVars->setRowCount(0);
+	m_ui->tableWidgetOutputVars->setRowCount(0);
+	for (unsigned int i = 0; i<m_project.m_fmiDescription.m_inputVariables.size(); ++i) {
+		const NANDRAD::FMIVariableDefinition & var = m_project.m_fmiDescription.m_inputVariables[i];
+		// check if variable exists
+		bool exists = (m_modelInputVariables.find(QString::fromStdString(var.m_varName)) != m_modelInputVariables.end());
+		appendVariableEntry(i, var, m_ui->tableWidgetInputVars, exists);
+	}
+	for (unsigned int i = 0; i<m_project.m_fmiDescription.m_outputVariables.size(); ++i) {
+		const NANDRAD::FMIVariableDefinition & var = m_project.m_fmiDescription.m_outputVariables[i];
+		// check if variable exists
+		bool exists = (m_modelOutputVariables.find(QString::fromStdString(var.m_varName)) != m_modelOutputVariables.end());
+		appendVariableEntry(i, var, m_ui->tableWidgetOutputVars, exists);
+	}
+#endif
+	m_ui->tableWidgetInputVars->resizeColumnsToContents();
+	m_ui->tableWidgetOutputVars->resizeColumnsToContents();
+
+}
+
+
+int  NandradFMUGeneratorWidget::generate(bool silent) {
+	FUNCID(NandradFMUGeneratorWidget::generate);
 
 	QString fmuModelName = m_ui->lineEditModelName->text().trimmed();
 
@@ -548,7 +592,6 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerate_clicked() {
 	//    - NANDRAD FMI logo image
 
 	// zip directory structure
-
 
 	// get target directory
 	QString targetPath = m_ui->lineEditFMUPath->text();
@@ -590,10 +633,16 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerate_clicked() {
 	IBK::Path resourcePath(copyPath.toStdString());
 	IBK::Path fullClimatePath = p.m_location.m_climateFilePath.withReplacedPlaceholders(p.m_placeholders);
 	if (!fullClimatePath.isFile()) {
-		QMessageBox::critical(this, tr("FMU Export Error"),
-			tr("The referenced climate data file '%1' does not exist. Please select a climate data file!")
-				.arg(QString::fromStdString(fullClimatePath.str())) );
-		return;
+		if (silent) {
+			IBK_Message(IBK::FormatString("The referenced climate data file '%1' does not exist. Please select a climate data file!")
+					.arg(fullClimatePath.str()), IBK::MSG_ERROR, FUNC_ID);
+		}
+		else {
+			QMessageBox::critical(this, tr("FMU Export Error"),
+				tr("The referenced climate data file '%1' does not exist. Please select a climate data file!")
+					.arg(QString::fromStdString(fullClimatePath.str())) );
+		}
+		return 1;
 	}
 	// target file path
 	std::string targetFName = fullClimatePath.filename().str();
@@ -621,14 +670,10 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerate_clicked() {
 	// generate the modelDescription.xml file
 
 	// load template and replace variables
-	IBK::Path fPath(":/../../../SIM-VICUS/resources/fmu/modelDescription.xml.template");
-	fPath = fPath.absolutePath();
-	if(!fPath.isFile())
-		return;
+	IBK::Path fPath(":/modelDescription.xml.template");
 	QFile f(fPath.c_str());
 	f.open(QFile::ReadOnly);
 	QTextStream strm(&f);
-
 
 	QString modelDesc = strm.readAll();
 
@@ -783,150 +828,6 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerate_clicked() {
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 	}
 
-//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libNandradModel.so.2";
-//	if (QFile(fmuLibFile).exists()) {
-//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//		QFile::copy(fmuLibFile,
-//					baseDir.absoluteFilePath("binaries/linux64/libNandradModel.so.2"));
-//	}
-//	else {
-//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//	}
-
-//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libIntegratorFramework.so.1";
-//	if (QFile(fmuLibFile).exists()) {
-//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//		QFile::copy(fmuLibFile,
-//					baseDir.absoluteFilePath("binaries/linux64/libIntegratorFramework.so.1"));
-//	}
-//	else {
-//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//	}
-
-//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libsundials.so.2";
-//	if (QFile(fmuLibFile).exists()) {
-//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//		QFile::copy(fmuLibFile,
-//					baseDir.absoluteFilePath("binaries/linux64/libsundials.so.2"));
-//	}
-//	else {
-//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//	}
-
-//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libSuiteSparse.so.1";
-//	if (QFile(fmuLibFile).exists()) {
-//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//		QFile::copy(fmuLibFile,
-//					baseDir.absoluteFilePath("binaries/linux64/libSuiteSparse.so.1"));
-//	}
-//	else {
-//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//	}
-
-//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libDataIO.so.7";
-//	if (QFile(fmuLibFile).exists()) {
-//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//		QFile::copy(fmuLibFile,
-//					baseDir.absoluteFilePath("binaries/linux64/libDataIO.so.7"));
-//	}
-//	else {
-//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//	}
-
-//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libShading.so.1";
-//	if (QFile(fmuLibFile).exists()) {
-//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//		QFile::copy(fmuLibFile,
-//					baseDir.absoluteFilePath("binaries/linux64/libShading.so.1"));
-//	}
-//	else {
-//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//	}
-
-//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libZeppelin.so.1";
-//	if (QFile(fmuLibFile).exists()) {
-//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//		QFile::copy(fmuLibFile,
-//					baseDir.absoluteFilePath("binaries/linux64/libZeppelin.so.1"));
-//	}
-//	else {
-//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//	}
-
-//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libCCM.so.1";
-//	if (QFile(fmuLibFile).exists()) {
-//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//		QFile::copy(fmuLibFile,
-//					baseDir.absoluteFilePath("binaries/linux64/libCCM.so.1"));
-//	}
-//	else {
-//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//	}
-
-//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libNandrad.so.2";
-//	if (QFile(fmuLibFile).exists()) {
-//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//		QFile::copy(fmuLibFile,
-//					baseDir.absoluteFilePath("binaries/linux64/libNandrad.so.2"));
-//	}
-//	else {
-//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//	}
-
-//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libIBKMK.so.1";
-//	if (QFile(fmuLibFile).exists()) {
-//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//		QFile::copy(fmuLibFile,
-//					baseDir.absoluteFilePath("binaries/linux64/libIBKMK.so.1"));
-//	}
-//	else {
-//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//	}
-
-//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libTiCPP.so.1";
-//	if (QFile(fmuLibFile).exists()) {
-//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//		QFile::copy(fmuLibFile,
-//					baseDir.absoluteFilePath("binaries/linux64/libTiCPP.so.1"));
-//	}
-//	else {
-//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//	}
-
-//	fmuLibFile = m_installDir + "/../../externals/lib_x64/libIBK.so.5";
-//	if (QFile(fmuLibFile).exists()) {
-//		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//		QFile::copy(fmuLibFile,
-//					baseDir.absoluteFilePath("binaries/linux64/libIBK.so.5"));
-//	}
-//	else {
-//		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
-//						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-//	}
-
 	// macos
 	fmuLibFile = m_installDir + "/libNandradSolverFMI.dylib";
 	if (QFile(fmuLibFile).exists()) {
@@ -972,97 +873,65 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerate_clicked() {
 		// zip up the archive
 		success = JlCompress::compressDir(targetPath, baseDir.absolutePath());
 		if (!success) {
-			QMessageBox::critical(this, tr("FMU Export Error"), tr("Error compressing the FMU archive (maybe invalid target path or invalid characters used?)."));
+			if (silent) {
+				IBK::IBK_Message(IBK::FormatString("Error compressing the FMU archive (maybe invalid target path or "
+												   "invalid characters used?)."), IBK::MSG_ERROR, FUNC_ID);
+			}
+			else {
+				QMessageBox::critical(this, tr("FMU Export Error"), tr("Error compressing the FMU archive (maybe invalid target path or invalid characters used?)."));
+			}
+			return 1;
 		}
 	}
 
 	// remove temporary directory structure
 	QtExt::Directories::removeDirRecursively(baseDir.absolutePath());
 
-	if (success)
-		QMessageBox::information(this, tr("FMU Export complete"), tr("FMU '%1' created.").arg(targetPath));
+	if (success) {
+		if (!silent)
+			QMessageBox::information(this, tr("FMU Export complete"), tr("FMU '%1' created.").arg(targetPath));
+		return 0;
+	}
+	else
+		return 1;
 }
 
 
-void NandradFMUGeneratorWidget::on_lineEditModelName_editingFinished() {
-	m_ui->lineEditFMUPath->setText("---");
-	if (!checkModelName())
-		return;
-	QString modelName = m_ui->lineEditModelName->text();
-	// update FMU path
-	QDir targetDir(m_ui->lineEditTargetPath->filename());
-	m_ui->lineEditFMUPath->setText( targetDir.absoluteFilePath(modelName + ".fmu"));
-	m_project.m_fmiDescription.m_FMUPath = targetDir.absolutePath().toStdString();
-	m_project.m_fmiDescription.m_modelName = modelName.toStdString();
-}
 
 
-void NandradFMUGeneratorWidget::on_lineEditTargetPath_editingFinished() {
-	on_lineEditModelName_editingFinished();
-}
 
+// **** static functions ****
 
-void NandradFMUGeneratorWidget::on_lineEditTargetPath_returnPressed() {
-	on_lineEditModelName_editingFinished();
-}
-
-
-bool NandradFMUGeneratorWidget::checkModelName() {
-	QString modelName = m_ui->lineEditModelName->text().trimmed();
-	if (modelName.isEmpty()) {
-		QMessageBox::critical(this, QString(), tr("Missing model name."));
-		return false;
+struct VarInfo {
+	VarInfo() = default;
+	VarInfo(QString description, std::string unit, std::string fmuVarType) :
+		m_description(description), m_unit(unit), m_fmuVarType(fmuVarType)
+	{
 	}
 
-	// check model name for allowed characters
-	const std::string allowedChars = "-.,";
-	for (unsigned int i=0; i<modelName.size(); ++i) {
-		// check if character is an accepted char
-		QChar ch = modelName[i];
-		if (ch >= 'A' && ch <= 'Z') continue;
-		if (ch >= 'a' && ch <= 'z') continue;
-		if (ch >= '0' && ch <= '9') continue;
-		// check any other acceptable chars
-		if (allowedChars.find(ch.toLatin1()) != std::string::npos) continue;
-		QMessageBox::critical(this, QString(), tr("Model name contains invalid characters."));
-		return false;
+	QString			m_description;
+	std::string		m_unit;
+	std::string		m_fmuVarType;
+};
+
+static std::map<std::string, VarInfo> varInfo;
+
+void NandradFMUGeneratorWidget::variableInfo(const std::string & fullVarName, QString & description, std::string & unit, std::string & fmuType) {
+	// populate map on first call
+	if (varInfo.empty()) {
+		varInfo["Zone.AirTemperature"] = VarInfo(tr("Zone well-mixed air temperature"), "K", "Temperature");
+		varInfo["Zone.WindowSolarRadiationFluxSum"] = VarInfo(tr("Sum of all short wave radiation fluxes across all windows of a zone (positive into zone)"), "W", "HeatFlux");
+		varInfo["ConstructionInstance.FluxHeatConductionA"] = VarInfo(tr("Heat conduction flux across interface A (into construction)"), "W", "HeatFlux");
+		varInfo["ConstructionInstance.FluxHeatConductionB"] = VarInfo(tr("Heat conduction flux across interface B (into construction)"), "W", "HeatFlux");
+		varInfo["ConstructionInstance.FluxShortWaveRadiationA"] = VarInfo(tr("Short wave radiation flux across interface A (into construction)"), "W", "HeatFlux");
+		varInfo["ConstructionInstance.FluxShortWaveRadiationB"] = VarInfo(tr("Short wave radiation flux across interface B (into construction)"), "W", "HeatFlux");
+		varInfo["Location.Temperature"] = VarInfo(tr("Outside temperature"), "K", "Temperature");
 	}
 
-	// check leading 0
-	if (modelName[0] >= '0' && modelName[0] <= '9') {
-		QMessageBox::critical(this, QString(), tr("Model name must not start with a number character."));
-		return false;
+	const auto & it = varInfo.find(fullVarName);
+	if (it != varInfo.end()) {
+		description = it->second.m_description;
+		unit = it->second.m_unit;
+		fmuType = it->second.m_fmuVarType;
 	}
-
-	if (m_ui->lineEditTargetPath->filename().trimmed().isEmpty()) {
-		QMessageBox::critical(this, QString(), tr("Missing target path name."));
-		return false;
-	}
-
-	return true;
-}
-
-
-void NandradFMUGeneratorWidget::on_pushButtonSaveNandradProject_clicked() {
-	// input data check
-	if (!checkModelName())
-		return;
-
-	QString fmuModelName = m_ui->lineEditModelName->text().trimmed();
-
-
-}
-
-
-void NandradFMUGeneratorWidget::on_pushButtonSelectNandradProject_clicked() {
-	QString fname = QFileDialog::getOpenFileName(this, tr("Select NANDRAD Project"), QString(),
-												 tr("NANDRAD Project Files (*.nandrad);;All files (*)"), nullptr,
-												 QFileDialog::DontUseNativeDialog);
-	if (fname.isEmpty())
-		return; // dialog was cancelled
-
-	m_nandradFilePath = IBK::Path(fname.toStdString());
-
-	// setup user interface with project file data
-	setup();
 }

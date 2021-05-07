@@ -74,6 +74,8 @@ public:
 
 	/*! The variable name as it appears in the FMI model description. */
 	std::string m_fmiVarName;																// XML:A:required
+	/*! Optional description of the variable. */
+	std::string m_fmiVarDescription;														// XML:E
 	/*! Unit of the variable. */
 	std::string	m_unit;																		// XML:A:required
 	/*! The variable variable type as it appears in the FMI model description. */
