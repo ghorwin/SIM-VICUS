@@ -24,11 +24,17 @@ public:
 	/*! Handles the initial file selection. */
 	void init();
 
+	/*! Full file path to the currently used nandrad file. */
 	IBK::Path							m_nandradFilePath;
 	/*! Path to dll/lib files. */
 	QString								m_installDir;
 	/*! Path to NANDRAD solver. */
 	QString								m_nandradSolverExecutable;
+
+	/*! Directory where fmu-file shall be placed into.
+		By default the same directory as the .nandrad file, but can be changed by user.
+	*/
+	IBK::Path							m_fmuExportDirectory;
 
 private slots:
 	/*! Reads the NANDRAD project and if successful, configures the user interface and calls updateVariableLists(). */
@@ -45,8 +51,8 @@ private slots:
 	void on_pushButtonGenerate_clicked();
 
 	void on_lineEditModelName_editingFinished();
-	void on_lineEditTargetPath_editingFinished();
-	void on_lineEditTargetPath_returnPressed();
+	void on_lineEditTargetDirectory_editingFinished();
+	void on_lineEditTargetDirectory_returnPressed();
 
 	void on_pushButtonSaveNandradProject_clicked();
 	void on_pushButtonSelectNandradProject_clicked();

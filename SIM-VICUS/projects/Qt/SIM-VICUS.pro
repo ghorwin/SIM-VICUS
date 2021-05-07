@@ -98,7 +98,6 @@ SOURCES += \
 								../../src/SVDBZoneControlVentilationNaturalEditWidget.cpp \
 								../../src/SVDBZoneControlVentilationNaturalTableModel.cpp \
 								../../src/SVShadingCalculationDialog.cpp \
-								../../src/SVSimulationExportFMIDialog.cpp \
 								../../src/SVView3DDialog.cpp \
 								../../src/actions/SVUndoAddBuilding.cpp \
 								../../src/actions/SVUndoAddBuildingLevel.cpp \
@@ -236,7 +235,6 @@ HEADERS  += \
 								../../src/SVDBZoneControlVentilationNaturalEditWidget.h \
 								../../src/SVDBZoneControlVentilationNaturalTableModel.h \
 								../../src/SVShadingCalculationDialog.h \
-								../../src/SVSimulationExportFMIDialog.h \
 								../../src/SVView3DDialog.h \
 								../../src/actions/SVUndoAddBuilding.h \
 								../../src/actions/SVUndoAddBuildingLevel.h \
@@ -405,7 +403,6 @@ FORMS    += \
 								../../src/SVPropVertexListWidget.ui \
 								../../src/SVScheduleHolidayWidget.ui \
 								../../src/SVShadingCalculationDialog.ui \
-								../../src/SVSimulationExportFMIDialog.ui \
 								../../src/SVSimulationLocationOptions.ui \
 								../../src/SVSimulationModelOptions.ui \
 								../../src/SVSimulationOutputOptions.ui \

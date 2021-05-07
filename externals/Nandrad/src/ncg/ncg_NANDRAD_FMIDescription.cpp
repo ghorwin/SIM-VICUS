@@ -42,8 +42,6 @@ void FMIDescription::readXML(const TiXmlElement * element) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "ModelName")
 				m_modelName = c->GetText();
-			else if (cName == "FMUPath")
-				m_FMUPath = IBK::Path(c->GetText());
 			else if (cName == "InputVariables") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
@@ -88,8 +86,6 @@ TiXmlElement * FMIDescription::writeXML(TiXmlElement * parent) const {
 
 	if (!m_modelName.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "ModelName", nullptr, std::string(), m_modelName);
-	if (m_FMUPath.isValid())
-		TiXmlElement::appendSingleAttributeElement(e, "FMUPath", nullptr, std::string(), m_FMUPath.str());
 
 	if (!m_inputVariables.empty()) {
 		TiXmlElement * child = new TiXmlElement("InputVariables");

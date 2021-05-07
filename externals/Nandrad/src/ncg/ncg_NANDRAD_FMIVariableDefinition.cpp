@@ -77,7 +77,9 @@ void FMIVariableDefinition::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "FmiTypeName")
+			if (cName == "FmiVarDescription")
+				m_fmiVarDescription = c->GetText();
+			else if (cName == "FmiTypeName")
 				m_fmiTypeName = c->GetText();
 			else if (cName == "VarName")
 				m_varName = c->GetText();
@@ -108,6 +110,8 @@ TiXmlElement * FMIVariableDefinition::writeXML(TiXmlElement * parent) const {
 	if (!m_unit.empty())
 		e->SetAttribute("unit", m_unit);
 	e->SetAttribute("fmiValueRef", IBK::val2string<IDType>(m_fmiValueRef));
+	if (!m_fmiVarDescription.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "FmiVarDescription", nullptr, std::string(), m_fmiVarDescription);
 	if (!m_fmiTypeName.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "FmiTypeName", nullptr, std::string(), m_fmiTypeName);
 	if (!m_varName.empty())

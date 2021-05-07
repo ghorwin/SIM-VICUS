@@ -37,4 +37,4 @@ void FMIVariableDefinition::checkParameters() {
 	}
 }
 
-}
+} // namespace NANDRAD

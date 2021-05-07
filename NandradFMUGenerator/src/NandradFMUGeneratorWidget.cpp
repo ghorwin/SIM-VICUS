@@ -15,13 +15,16 @@
 
 #include <IBK_messages.h>
 
+const char * const ORGANIZATION = "IBK";
+const char * const PROGRAM_NAME = "NANDRADFMUGenerator";
+
 NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	QWidget(parent),
 	m_ui(new Ui::NandradFMUGeneratorWidget)
 {
 	m_ui->setupUi(this);
 
-	m_ui->lineEditTargetPath->setup("", false, true, QString());
+	m_ui->lineEditTargetDirectory->setup("", false, true, QString());
 
 	m_ui->tableWidgetInputVars->setColumnCount(7);
 	m_ui->tableWidgetInputVars->setRowCount(0);
@@ -85,10 +88,15 @@ void NandradFMUGeneratorWidget::init() {
 	// If we do not yet have a file path to NANDRAD project, try to load the last one used
 	if (!m_nandradFilePath.isValid()) {
 		// restore last correct project file
-		QSettings s("IBK", "NANDRADFMUGenerator");
+		QSettings s(ORGANIZATION, PROGRAM_NAME);
 		QString projectFile = s.value("LastNANDRADProject").toString();
-		if (!projectFile.isEmpty() && QFile(projectFile).exists())
+		if (!projectFile.isEmpty() && QFile(projectFile).exists()) {
 			m_nandradFilePath = IBK::Path(projectFile.toStdString());
+			// also restore FMU target path
+			QString FMUExportDirectory = s.value("LastFMUExportDirectory").toString();
+			if (!FMUExportDirectory.isEmpty())
+				m_fmuExportDirectory = IBK::Path(FMUExportDirectory.toStdString());
+		}
 	}
 	if (!m_nandradFilePath.isValid()) {
 		// If we do not yet have a file path to NANDRAD project, ask for it on start
@@ -105,6 +113,7 @@ void NandradFMUGeneratorWidget::setup() {
 
 	// read NANDRAD project
 	try {
+		m_project = NANDRAD::Project();
 		m_project.readXML(m_nandradFilePath);
 	}
 	catch (IBK::Exception & ex) {
@@ -117,22 +126,24 @@ void NandradFMUGeneratorWidget::setup() {
 	}
 
 	// store project file for next start of generator tool
-	QSettings s("IBK", "NANDRADFMUGenerator");
+	QSettings s(ORGANIZATION, PROGRAM_NAME);
 	s.setValue("LastNANDRADProject", QString::fromStdString(m_nandradFilePath.str()) );
 
 	setGUIState(true);
 
+	// we set default FMU model name automatically if not yet specified
 	if (m_project.m_fmiDescription.m_modelName.empty())
 		m_project.m_fmiDescription.m_modelName = m_nandradFilePath.filename().withoutExtension().str();
 
-	if (!m_project.m_fmiDescription.m_FMUPath.isValid())
-		m_project.m_fmiDescription.m_FMUPath = m_nandradFilePath.withoutExtension() + ".fmu";
+	// initialize fmu export path from project file if still empty
+	if (!m_fmuExportDirectory.isValid())
+		m_fmuExportDirectory = m_nandradFilePath.parentPath();
 
 	// *** transfer general parameters
 
 	m_ui->lineEditNandradProjectFilePath->setText( QString::fromStdString(m_nandradFilePath.str()) );
 	m_ui->lineEditModelName->setText( QString::fromStdString(m_project.m_fmiDescription.m_modelName) );
-	m_ui->lineEditTargetPath->setFilename( QString::fromStdString(m_project.m_fmiDescription.m_FMUPath.parentPath().str()) );
+	m_ui->lineEditTargetDirectory->setFilename( QString::fromStdString(m_fmuExportDirectory.str()) );
 	// check correct FMU name and update target file path
 	on_lineEditModelName_editingFinished();
 	// now test-init the solver and update the variable tables
@@ -306,22 +317,24 @@ void NandradFMUGeneratorWidget::on_lineEditModelName_editingFinished() {
 		return;
 	QString modelName = m_ui->lineEditModelName->text();
 	// update FMU path
-	QDir targetDir(m_ui->lineEditTargetPath->filename());
-	m_ui->lineEditFMUPath->setText( targetDir.absoluteFilePath(modelName + ".fmu"));
-	m_project.m_fmiDescription.m_FMUPath = targetDir.absolutePath().toStdString();
+	m_ui->lineEditFMUPath->setText( QString::fromStdString(m_fmuExportDirectory.str()) + "/" + modelName + ".fmu");
 	m_project.m_fmiDescription.m_modelName = modelName.toStdString();
 }
 
-
-void NandradFMUGeneratorWidget::on_lineEditTargetPath_editingFinished() {
+void NandradFMUGeneratorWidget::on_lineEditTargetDirectory_editingFinished() {
+	if (m_ui->lineEditTargetDirectory->filename().trimmed().isEmpty())
+		return;
+	m_fmuExportDirectory = IBK::Path(m_ui->lineEditTargetDirectory->filename().trimmed().toStdString());
 	on_lineEditModelName_editingFinished();
 }
 
 
-void NandradFMUGeneratorWidget::on_lineEditTargetPath_returnPressed() {
+void NandradFMUGeneratorWidget::on_lineEditTargetDirectory_returnPressed() {
+	if (m_ui->lineEditTargetDirectory->filename().trimmed().isEmpty())
+		return;
+	m_fmuExportDirectory = IBK::Path(m_ui->lineEditTargetDirectory->filename().trimmed().toStdString());
 	on_lineEditModelName_editingFinished();
 }
-
 
 
 void NandradFMUGeneratorWidget::on_pushButtonSaveNandradProject_clicked() {
@@ -330,13 +343,16 @@ void NandradFMUGeneratorWidget::on_pushButtonSaveNandradProject_clicked() {
 		return;
 
 	QString fmuModelName = m_ui->lineEditModelName->text().trimmed();
+	m_project.m_fmiDescription.m_modelName = fmuModelName.toStdString();
 
 
 }
 
 
 void NandradFMUGeneratorWidget::on_pushButtonSelectNandradProject_clicked() {
-	QString fname = QFileDialog::getOpenFileName(this, tr("Select NANDRAD Project"), QString(),
+	QSettings s(ORGANIZATION, PROGRAM_NAME);
+	QString projectFile = s.value("LastNANDRADProject").toString();
+	QString fname = QFileDialog::getOpenFileName(this, tr("Select NANDRAD Project"), projectFile,
 												 tr("NANDRAD Project Files (*.nandrad);;All files (*)"), nullptr,
 												 QFileDialog::DontUseNativeDialog);
 	if (fname.isEmpty()) {
@@ -362,7 +378,7 @@ void NandradFMUGeneratorWidget::setGUIState(bool active) {
 	m_ui->pushButtonGenerate->setEnabled(active);
 	m_ui->pushButtonSaveNandradProject->setEnabled(active);
 	m_ui->lineEditModelName->setEnabled(active);
-	m_ui->lineEditTargetPath->setEnabled(active);
+	m_ui->lineEditTargetDirectory->setEnabled(active);
 	m_ui->lineEditFMUPath->setEnabled(active);
 }
 
@@ -394,7 +410,7 @@ bool NandradFMUGeneratorWidget::checkModelName() {
 		return false;
 	}
 
-	if (m_ui->lineEditTargetPath->filename().trimmed().isEmpty()) {
+	if (m_ui->lineEditTargetDirectory->filename().trimmed().isEmpty()) {
 		QMessageBox::critical(this, QString(), tr("Missing target path name."));
 		return false;
 	}
@@ -432,10 +448,12 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 	IBK::Path varDir(nandradProjectFilePath.toStdString());
 	varDir = varDir.withoutExtension() / "var";
 
+	m_availableInputVariables.clear();
 	QString inputVarsFile = QString::fromStdString( (varDir / "input_reference_list.txt").str() );
 	if (!parseVariableList(inputVarsFile, m_availableInputVariables))
 		return;
 
+	m_availableOutputVariables.clear();
 	QString outputVarsFile = QString::fromStdString( (varDir / "output_reference_list.txt").str() );
 	if (!parseVariableList(outputVarsFile, m_availableOutputVariables))
 		return;

@@ -24,13 +24,12 @@
 namespace NANDRAD {
 
 
-void FMIDescription::checkParameters()
-{
-	// check inpuzt and output variable definition
-	for(FMIVariableDefinition &var : m_inputVariables) {
+void FMIDescription::checkParameters() {
+	// check input and output variable definition
+	for (FMIVariableDefinition &var : m_inputVariables) {
 		var.checkParameters();
 	}
-	for(FMIVariableDefinition &var : m_outputVariables) {
+	for (FMIVariableDefinition &var : m_outputVariables) {
 		var.checkParameters();
 	}
 }
