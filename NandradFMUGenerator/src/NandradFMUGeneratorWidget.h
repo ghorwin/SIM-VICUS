@@ -125,6 +125,11 @@ private:
 	/*! The project, contains the currently defined FMI input/output variables. */
 	NANDRAD::Project					m_project;
 
+	/*! This set contains a list of all value references currently used by variables
+		in the NANDRAD Project (i.e. configured variables).
+	*/
+	std::set<unsigned int>							m_usedValueRefs;
+
 	/*! Holds all _available_ input variable definitions. */
 	std::vector<NANDRAD::FMIVariableDefinition>		m_availableInputVariables;
 	/*! Holds all _available_ output variable definitions. */
