@@ -26,17 +26,20 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 
 	m_ui->lineEditTargetDirectory->setup("", false, true, QString());
 
-	m_ui->tableWidgetInputVars->setColumnCount(7);
+	m_ui->tableWidgetInputVars->setColumnCount(8);
 	m_ui->tableWidgetInputVars->setRowCount(0);
 
 	m_ui->tableWidgetInputVars->setHorizontalHeaderLabels(QStringList()
-			  << tr("Model variable")
+			  << tr("NANDRAD Variable Name")
 			  << tr("Object ID")
 			  << tr("Vector value index/ID")
 			  << tr("Unit")
-			  << tr("FMI variable name")
+			  << tr("FMI Variable Name")
+			  << tr("FMI value reference")
 			  << tr("FMI Type")
-			  << tr("FMI value reference"));
+			  << tr("Description")
+	);
+
 	m_ui->tableWidgetInputVars->horizontalHeader()->setStretchLastSection(true);
 
 	QTableView * v = m_ui->tableWidgetInputVars;
@@ -48,21 +51,23 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	v->setAlternatingRowColors(true);
 	v->setSortingEnabled(true);
 	v->sortByColumn(0, Qt::AscendingOrder);
+	// smaller font for entire table
 	QFont f;
 	f.setPointSizeF(f.pointSizeF()*0.8);
 	v->setFont(f);
 	v->horizontalHeader()->setFont(f); // Note: on Linux/Mac this won't work until Qt 5.11.1 - this was a bug between Qt 4.8...5.11.1
 
-
-	m_ui->tableWidgetOutputVars->setColumnCount(7);
+	m_ui->tableWidgetOutputVars->setColumnCount(8);
 	m_ui->tableWidgetOutputVars->setHorizontalHeaderLabels(QStringList()
-			  << tr("Model variable")
-			  << tr("Object ID")
-			  << tr("Vector value index/ID")
-			  << tr("Unit")
-			  << tr("FMI variable name")
-			  << tr("FMI Type")
-			  << tr("FMI value reference"));
+			   << tr("NANDRAD Variable Name")
+			   << tr("Object ID")
+			   << tr("Vector value index/ID")
+			   << tr("Unit")
+			   << tr("FMI Variable Name")
+			   << tr("FMI value reference")
+			   << tr("FMI Type")
+			   << tr("Description")
+	 );
 	m_ui->tableWidgetOutputVars->horizontalHeader()->setStretchLastSection(true);
 	v = m_ui->tableWidgetOutputVars;
 		v->verticalHeader()->setDefaultSectionSize(19);
@@ -75,7 +80,6 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 		v->sortByColumn(0, Qt::AscendingOrder);
 		v->setFont(f);
 		v->horizontalHeader()->setFont(f); // Note: on Linux/Mac this won't work until Qt 5.11.1 - this was a bug between Qt 4.8...5.11.1
-
 }
 
 
@@ -152,114 +156,53 @@ void NandradFMUGeneratorWidget::setup() {
 
 
 
-
-void NandradFMUGeneratorWidget::appendVariableEntry(unsigned int index, const NANDRAD::FMIVariableDefinition &var, QTableWidget * tableWidget, bool exists) {
-
-	tableWidget->blockSignals(true);
-	// Important: disable sorting of table, otherwise index access might be complicated
-	tableWidget->setSortingEnabled(false);
-	int row = tableWidget->rowCount();
-	tableWidget->setRowCount(row+1);
-
-	QFont disabledFont(tableWidget->font());
-	disabledFont.setItalic(true);
-	QColor disabledColor(Qt::gray);
-
-	QTableWidgetItem * item = new QTableWidgetItem(QString::fromStdString(var.m_varName));
-	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-	if (!exists) {
-		item->setFont(disabledFont);
-		item->setTextColor(disabledColor);
+void NandradFMUGeneratorWidget::on_tableWidgetInputVars_currentCellChanged(int currentRow, int , int , int ) {
+	m_ui->toolButtonAddInputVariable->setEnabled(false);
+	m_ui->toolButtonRemoveInputVariable->setEnabled(false);
+	if (currentRow == -1) {
+		return;
 	}
-	item->setData(Qt::UserRole, index);
-	tableWidget->setItem(row, 0, item);
-
-	item = new QTableWidgetItem(QString("%1").arg(var.m_objectID));
-	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-	if (!exists) {
-		item->setFont(disabledFont);
-		item->setTextColor(disabledColor);
+	QTableWidgetItem * item = m_ui->tableWidgetInputVars->item(currentRow, 0);
+	// valid entry?
+	if (item->data(Qt::UserRole).toBool()) {
+		// already configured?
+		if (item->data(Qt::UserRole+1).toUInt() == NANDRAD::INVALID_ID)
+			m_ui->toolButtonAddInputVariable->setEnabled(true); // not yet configured -> add button on
+		else
+			m_ui->toolButtonRemoveInputVariable->setEnabled(true); // already configured -> remove button on
 	}
-	tableWidget->setItem(row, 1, item);
-
-	item = new QTableWidgetItem(QString("%1").arg(var.m_vectorIndex));
-	if (var.m_vectorIndex == NANDRAD::INVALID_ID)
-		item->setText(""); // no -1 display
-	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-	if (!exists) {
-		item->setFont(disabledFont);
-		item->setTextColor(disabledColor);
+	else {
+		m_ui->toolButtonRemoveInputVariable->setEnabled(true); // invalid -> remove button on
 	}
-	tableWidget->setItem(row, 2, item);
-
-	item = new QTableWidgetItem(QString::fromStdString(var.m_unit));
-	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-	if (!exists) {
-		item->setFont(disabledFont);
-		item->setTextColor(disabledColor);
-	}
-	tableWidget->setItem(row, 3, item);
-
-	item = new QTableWidgetItem(QString::fromStdString(var.m_fmiVarName));
-	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-	if (!exists) {
-		item->setFont(disabledFont);
-		item->setTextColor(disabledColor);
-	}
-	tableWidget->setItem(row, 4, item);
-
-	item = new QTableWidgetItem(QString::fromStdString(var.m_fmiTypeName));
-	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-	if (!exists) {
-		item->setFont(disabledFont);
-		item->setTextColor(disabledColor);
-	}
-	tableWidget->setItem(row, 5, item);
-
-	item = new QTableWidgetItem(QString("%1").arg(var.m_fmiValueRef));
-	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-	if (!exists) {
-		item->setFont(disabledFont);
-		item->setTextColor(disabledColor);
-	}
-	tableWidget->setItem(row, 6, item);
-
-	tableWidget->resizeColumnsToContents();
-	tableWidget->blockSignals(false);
-	tableWidget->setSortingEnabled(true);
-	tableWidget->selectRow(row);
 }
 
 
-void NandradFMUGeneratorWidget::on_tableWidgetInputVars_currentCellChanged(int , int , int , int ) {
-	m_ui->toolButtonCopyInputVariable->setEnabled(m_ui->tableWidgetInputVars->currentRow() != -1);
-	m_ui->toolButtonRemoveInputVariable->setEnabled(m_ui->tableWidgetInputVars->currentRow() != -1);
-}
-
-
-void NandradFMUGeneratorWidget::on_tableWidgetOutputVars_currentCellChanged(int , int , int , int ) {
-	m_ui->toolButtonCopyOutputVariable->setEnabled(m_ui->tableWidgetOutputVars->currentRow() != -1);
-	m_ui->toolButtonRemoveOutputVariable->setEnabled(m_ui->tableWidgetOutputVars->currentRow() != -1);
+void NandradFMUGeneratorWidget::on_tableWidgetOutputVars_currentCellChanged(int currentRow, int , int , int ) {
+	m_ui->toolButtonAddOutputVariable->setEnabled(false);
+	m_ui->toolButtonRemoveOutputVariable->setEnabled(false);
+	if (currentRow == -1) {
+		return;
+	}
+	QTableWidgetItem * item = m_ui->tableWidgetOutputVars->item(currentRow, 0);
+	// valid entry?
+	if (item->data(Qt::UserRole).toBool()) {
+		// already configured?
+		if (item->data(Qt::UserRole+1).toUInt() == NANDRAD::INVALID_ID)
+			m_ui->toolButtonAddOutputVariable->setEnabled(true); // not yet configured -> add button on
+		else
+			m_ui->toolButtonRemoveOutputVariable->setEnabled(true); // already configured -> remove button on
+	}
+	else {
+		m_ui->toolButtonRemoveOutputVariable->setEnabled(true); // invalid -> remove button on
+	}
 }
 
 
 void NandradFMUGeneratorWidget::on_toolButtonAddInputVariable_clicked() {
 	// add FMU variable to input vars
 
-	NANDRAD::FMIVariableDefinition var;
-	var.m_varName = "Zone.AirTemperature";
-	var.m_objectID = 1;
-	var.m_unit = "K";
-	var.m_vectorIndex = NANDRAD::INVALID_ID; // scalar variable
+	// determine new unique value reference, add variable definition to project and update row in table
 
-	var.m_fmiVarName = "Zone(1).AirTemperature";
-	var.m_fmiTypeName = "Temperature";
-	var.m_fmiValueRef = 160;
-
-	m_project.m_fmiDescription.m_inputVariables.push_back(var);
-
-	// now also add an entry into the table
-	appendVariableEntry(m_project.m_fmiDescription.m_inputVariables.size()-1, var, m_ui->tableWidgetInputVars, true);
 }
 
 
@@ -367,7 +310,9 @@ void NandradFMUGeneratorWidget::on_pushButtonSelectNandradProject_clicked() {
 }
 
 
+
 // *** PRIVATE MEMBER FUNCTIONS ****
+
 
 void NandradFMUGeneratorWidget::setGUIState(bool active) {
 	// if active, all table widgets and push buttons are enabled, otherwise disabled
@@ -458,6 +403,20 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 	if (!parseVariableList(outputVarsFile, m_availableOutputVariables))
 		return;
 
+	// now we set units and descriptions in input variables that match output variables
+	for (NANDRAD::FMIVariableDefinition & var : m_availableInputVariables) {
+		// lookup matching output variable by name
+		for (std::vector<NANDRAD::FMIVariableDefinition>::const_iterator it = m_availableOutputVariables.begin();
+			 it != m_availableOutputVariables.end(); ++it)
+		{
+			if (var.m_varName == it->m_varName) {
+				var.m_unit = it->m_unit;
+				var.m_fmiVarDescription = it->m_fmiVarDescription;
+				break;
+			}
+		}
+	}
+
 	QMessageBox::information(this, tr("NANDRAD Test-init successful"),
 							 tr("NANDRAD solver was started and the project was initialised, successfully. "
 								"%1 FMU input-variables and %2 output variables available.")
@@ -508,8 +467,8 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 				.arg(varsFile).arg(tokens[0]));
 			return false;
 		}
-		QString objTypeName = varNameTokens[0];
-		QString nandradVarName = varNameTokens[1];
+		QString objTypeName = varNameTokens[0];			// "Zone"
+		QString nandradVarName = varNameTokens[1];		// "AirTemperature"
 		QString unit;
 		if (tokens.count() > 3)
 			unit = tokens[3].trimmed();
@@ -544,12 +503,13 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 
 			if (m_vectorIndexes.empty()) {
 				NANDRAD::FMIVariableDefinition varDef;
-				varDef.m_varName = nandradVarName.toStdString();
+				varDef.m_varName = tokens[0].trimmed().toStdString(); // "Zone.AirTemperature"
 				// compose a variable name
 				varDef.m_fmiVarName = QString("%1(%2).%3")
 						.arg(objTypeName).arg(objID).arg(nandradVarName)
 						.toStdString();
 				varDef.m_objectID = objID;
+				varDef.m_vectorIndex = NANDRAD::INVALID_ID;
 				varDef.m_fmiTypeName = ""; // TODO : how to determine the correct type?
 				varDef.m_unit = unit.toStdString();
 				varDef.m_fmiVarDescription = description.toStdString();
@@ -560,10 +520,12 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 			else {
 				for (unsigned int vecIdx : m_vectorIndexes) {
 					NANDRAD::FMIVariableDefinition varDef;
+					varDef.m_varName = tokens[0].trimmed().toStdString(); // "Zone.AirTemperature"
 					varDef.m_fmiVarName = QString("%1(%2).%3(%4)")
 							.arg(objTypeName).arg(objID).arg(nandradVarName).arg(vecIdx)
 							.toStdString();
 					varDef.m_objectID = objID;
+					varDef.m_vectorIndex = vecIdx;
 					varDef.m_fmiTypeName = ""; // TODO : how to determine the correct type?
 					varDef.m_unit = unit.toStdString();
 					varDef.m_fmiVarDescription = description.toStdString();
@@ -580,27 +542,146 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 
 
 void NandradFMUGeneratorWidget::updateFMUVariableTables() {
-#if 0
-	m_ui->tableWidgetInputVars->setRowCount(0);
-	m_ui->tableWidgetOutputVars->setRowCount(0);
-	for (unsigned int i = 0; i<m_project.m_fmiDescription.m_inputVariables.size(); ++i) {
-		const NANDRAD::FMIVariableDefinition & var = m_project.m_fmiDescription.m_inputVariables[i];
-		// check if variable exists
-		bool exists = (m_modelInputVariables.find(QString::fromStdString(var.m_varName)) != m_modelInputVariables.end());
-		appendVariableEntry(i, var, m_ui->tableWidgetInputVars, exists);
+	// we first process all variables already defined in the project, separately for inputs and ouputs
+	std::vector<NANDRAD::FMIVariableDefinition> invalidInputVars;
+	for (const NANDRAD::FMIVariableDefinition & var : m_project.m_fmiDescription.m_inputVariables) {
+		// lookup variable in available variables
+		std::vector<NANDRAD::FMIVariableDefinition>::iterator it = m_availableInputVariables.begin();
+		for (; it != m_availableInputVariables.end(); ++it) {
+			if (var.m_varName == it->m_varName)
+				break;
+		}
+		// not found?
+		if (it == m_availableInputVariables.end())
+			invalidInputVars.push_back(var); // remember as invalid input var definition
+		else
+			it->m_fmiValueRef = var.m_fmiValueRef; // setting a valid value ref marks this variable as used and valid
 	}
-	for (unsigned int i = 0; i<m_project.m_fmiDescription.m_outputVariables.size(); ++i) {
-		const NANDRAD::FMIVariableDefinition & var = m_project.m_fmiDescription.m_outputVariables[i];
-		// check if variable exists
-		bool exists = (m_modelOutputVariables.find(QString::fromStdString(var.m_varName)) != m_modelOutputVariables.end());
-		appendVariableEntry(i, var, m_ui->tableWidgetOutputVars, exists);
-	}
-#endif
-	m_ui->tableWidgetInputVars->resizeColumnsToContents();
-	m_ui->tableWidgetOutputVars->resizeColumnsToContents();
 
+	std::vector<NANDRAD::FMIVariableDefinition> invalidOutputVars;
+	for (const NANDRAD::FMIVariableDefinition & var : m_project.m_fmiDescription.m_outputVariables) {
+		// lookup variable in available variables
+		std::vector<NANDRAD::FMIVariableDefinition>::iterator it = m_availableOutputVariables.begin();
+		for (; it != m_availableOutputVariables.end(); ++it) {
+			if (var.m_varName == it->m_varName)
+				break;
+		}
+		// not found?
+		if (it == m_availableOutputVariables.end())
+			invalidOutputVars.push_back(var); // remember as invalid input var definition
+		else
+			it->m_fmiValueRef = var.m_fmiValueRef; // setting a valid value ref marks this variable as used and valid
+	}
+
+	// now populate the tables
+	populateTable(m_ui->tableWidgetInputVars, m_availableInputVariables, invalidInputVars);
+	populateTable(m_ui->tableWidgetOutputVars, m_availableOutputVariables, invalidOutputVars);
+
+	m_ui->tableWidgetInputVars->selectRow(m_ui->tableWidgetInputVars->rowCount()-1);
+	if (m_ui->tableWidgetInputVars->rowCount() != 0)
+		m_ui->tableWidgetInputVars->scrollToItem(m_ui->tableWidgetInputVars->currentItem());
+	m_ui->tableWidgetOutputVars->selectRow(m_ui->tableWidgetOutputVars->rowCount()-1);
+	if (m_ui->tableWidgetOutputVars->rowCount() != 0)
+		m_ui->tableWidgetOutputVars->scrollToItem(m_ui->tableWidgetOutputVars->currentItem());
 }
 
+
+void NandradFMUGeneratorWidget::populateTable(QTableWidget * table,
+											  const std::vector<NANDRAD::FMIVariableDefinition> & availableVars,
+											  const std::vector<NANDRAD::FMIVariableDefinition> & invalidVars)
+{
+	table->setRowCount(0);
+	table->setSortingEnabled(false); // disable sorting while we add rows
+	// first add the invalid variables
+	for (const NANDRAD::FMIVariableDefinition & var : invalidVars)
+		appendVariableEntry(table, var, false);
+	// then add the valid variables
+	for (const NANDRAD::FMIVariableDefinition & var : availableVars)
+		appendVariableEntry(table, var, true);
+
+	table->setSortingEnabled(true); // re-enable sorting
+	table->resizeColumnsToContents();
+}
+
+
+
+void NandradFMUGeneratorWidget::appendVariableEntry(QTableWidget * tableWidget,
+													const NANDRAD::FMIVariableDefinition & var, bool valid)
+{
+	tableWidget->blockSignals(true);
+
+	// add new row
+	int row = tableWidget->rowCount();
+	tableWidget->setRowCount(row+1);
+
+	QFont itemFont(tableWidget->font());
+	QColor itemColor(Qt::black);
+	if (!valid)
+		itemColor = QColor("#808080");
+	else if (var.m_fmiValueRef == NANDRAD::INVALID_ID) {
+		itemFont.setItalic(true);
+		itemColor = QColor(Qt::gray);
+	}
+
+	QTableWidgetItem * item = new QTableWidgetItem(QString::fromStdString(var.m_varName));
+	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	item->setFont(itemFont);
+	item->setTextColor(itemColor);
+	item->setData(Qt::UserRole, valid);
+	item->setData(Qt::UserRole+1, var.m_fmiValueRef);
+	tableWidget->setItem(row, 0, item);
+
+
+	item = new QTableWidgetItem(QString("%1").arg(var.m_objectID));
+	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	item->setFont(itemFont);
+	item->setTextColor(itemColor);
+	tableWidget->setItem(row, 1, item);
+
+	item = new QTableWidgetItem(QString("%1").arg(var.m_vectorIndex));
+	if (var.m_vectorIndex == NANDRAD::INVALID_ID)
+		item->setText(""); // no -1 display
+	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	item->setFont(itemFont);
+	item->setTextColor(itemColor);
+	tableWidget->setItem(row, 2, item);
+
+	item = new QTableWidgetItem(QString::fromStdString(var.m_unit));
+	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	item->setFont(itemFont);
+	item->setTextColor(itemColor);
+	tableWidget->setItem(row, 3, item);
+
+	item = new QTableWidgetItem(QString::fromStdString(var.m_fmiVarName));
+	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	item->setFont(itemFont);
+	item->setTextColor(itemColor);
+	tableWidget->setItem(row, 4, item);
+
+	item = new QTableWidgetItem();
+	if (var.m_fmiValueRef == NANDRAD::INVALID_ID)
+		item->setText("---");
+	else
+		item->setText(QString("%1").arg(var.m_fmiValueRef));
+	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	item->setFont(itemFont);
+	item->setTextColor(itemColor);
+	tableWidget->setItem(row, 5, item);
+
+	item = new QTableWidgetItem(QString::fromStdString(var.m_fmiTypeName));
+	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	item->setFont(itemFont);
+	item->setTextColor(itemColor);
+	tableWidget->setItem(row, 6, item);
+
+	item = new QTableWidgetItem(QString::fromStdString(var.m_fmiVarDescription));
+	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	item->setFont(itemFont);
+	item->setTextColor(itemColor);
+	tableWidget->setItem(row, 7, item);
+
+	tableWidget->blockSignals(false);
+}
 
 int  NandradFMUGeneratorWidget::generate(bool silent) {
 	FUNCID(NandradFMUGeneratorWidget::generate);

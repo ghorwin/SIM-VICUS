@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabGeneral">
       <attribute name="title">
@@ -112,7 +112,7 @@
        <string>Input variables</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="1" column="3">
+       <item row="1" column="2">
         <spacer name="horizontalSpacer_3">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -139,21 +139,10 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QToolButton" name="toolButtonCopyInputVariable">
-         <property name="icon">
-          <iconset resource="../resources/NandradFMUGenerator.qrc">
-           <normaloff>:/editcopy.png</normaloff>:/editcopy.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>24</width>
-           <height>24</height>
-          </size>
-         </property>
-        </widget>
+       <item row="0" column="0" colspan="3">
+        <widget class="QTableWidget" name="tableWidgetInputVars"/>
        </item>
-       <item row="1" column="2">
+       <item row="1" column="1">
         <widget class="QToolButton" name="toolButtonRemoveInputVariable">
          <property name="icon">
           <iconset resource="../resources/NandradFMUGenerator.qrc">
@@ -167,9 +156,6 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="0" colspan="4">
-        <widget class="QTableWidget" name="tableWidgetInputVars"/>
-       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tabOutputVariables">
@@ -177,7 +163,21 @@
        <string>Output variables</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="0" column="0" colspan="4">
+       <item row="1" column="1">
+        <widget class="QToolButton" name="toolButtonRemoveOutputVariable">
+         <property name="icon">
+          <iconset resource="../resources/NandradFMUGenerator.qrc">
+           <normaloff>:/minus.png</normaloff>:/minus.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="3">
         <widget class="QTableWidget" name="tableWidgetOutputVars"/>
        </item>
        <item row="1" column="0">
@@ -194,35 +194,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QToolButton" name="toolButtonCopyOutputVariable">
-         <property name="icon">
-          <iconset resource="../resources/NandradFMUGenerator.qrc">
-           <normaloff>:/editcopy.png</normaloff>:/editcopy.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>24</width>
-           <height>24</height>
-          </size>
-         </property>
-        </widget>
-       </item>
        <item row="1" column="2">
-        <widget class="QToolButton" name="toolButtonRemoveOutputVariable">
-         <property name="icon">
-          <iconset resource="../resources/NandradFMUGenerator.qrc">
-           <normaloff>:/minus.png</normaloff>:/minus.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>24</width>
-           <height>24</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="3">
         <spacer name="horizontalSpacer_4">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>

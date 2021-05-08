@@ -87,13 +87,16 @@ private:
 	*/
 	void updateFMUVariableTables();
 
+	/*! This fills in a table with FMI variables. */
+	void populateTable(QTableWidget * table, const std::vector<NANDRAD::FMIVariableDefinition> & availableVars,
+					   const std::vector<NANDRAD::FMIVariableDefinition> & invalidVars);
 
 	/*! Adds a new row to a table widget.
-		\param var The variable to add.
 		\param tableWidget The target table widget.
-		\param exists True, if such a model variable exists in the current model.
+		\param var The variable to add.
+		\param valid True, if such a model variable exists in the current model (invalid variables are marked in red).
 	*/
-	void appendVariableEntry(unsigned int index, const NANDRAD::FMIVariableDefinition &var, QTableWidget * tableWidget, bool exists);
+	void appendVariableEntry(QTableWidget * tableWidget, const NANDRAD::FMIVariableDefinition & var, bool valid);
 
 	/*! This is the work-horse function that does the entire generation stuff.
 		Expects the project file to be saved already.
