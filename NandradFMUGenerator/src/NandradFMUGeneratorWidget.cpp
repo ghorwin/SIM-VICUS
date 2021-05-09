@@ -488,7 +488,7 @@ bool NandradFMUGeneratorWidget::checkModelName() {
 
 	// check model name for allowed characters
 	const std::string allowedChars = "-.,";
-	for (unsigned int i=0; i<modelName.size(); ++i) {
+	for (int i=0; i<modelName.size(); ++i) {
 		// check if character is an accepted char
 		QChar ch = modelName[i];
 		if (ch >= 'A' && ch <= 'Z') continue;
