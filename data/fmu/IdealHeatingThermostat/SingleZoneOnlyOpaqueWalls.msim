@@ -1,0 +1,23 @@
+# Created:	So. Mai 9 11:26:23 2021
+# LastModified:	So. Mai 9 11:29:11 2021
+
+tStart                   0 a
+tEnd                     1 a
+hMax                     30 min
+hMin                     1e-05 s
+hFallBackLimit           0.001 s
+hStart                   10 min
+hOutputMin               10 min
+outputTimeUnit           s
+adjustStepSize           no
+preventOversteppingOfEndTime yes
+absTol                   1e-06
+relTol                   1e-05
+MasterMode               GAUSS_SEIDEL
+ErrorControlMode         NONE
+maxIterations            1
+writeInternalVariables   no
+
+simulator 0 0 SingleZoneOnlyOpaqueWalls #20b2aa "SingleZoneOnlyOpaqueWalls.fmu"
+
+

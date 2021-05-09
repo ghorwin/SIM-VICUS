@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BlockMod>
+	<!--Blocks-->
+	<Blocks>
+		<Block name="SingleZoneOnlyOpaqueWalls">
+			<Position>0, 0</Position>
+			<Size>192, 80</Size>
+			<!--Sockets-->
+			<Sockets>
+				<Socket name="Model(4001).IdealHeatingLoad(100)">
+					<Position>0, 16</Position>
+					<Orientation>Horizontal</Orientation>
+					<Inlet>true</Inlet>
+				</Socket>
+				<Socket name="Model(4001).IdealCoolingLoad(100)">
+					<Position>0, 32</Position>
+					<Orientation>Horizontal</Orientation>
+					<Inlet>true</Inlet>
+				</Socket>
+				<Socket name="Location(0).Temperature">
+					<Position>192, 16</Position>
+					<Orientation>Horizontal</Orientation>
+					<Inlet>false</Inlet>
+				</Socket>
+				<Socket name="Zone(100).AirTemperature">
+					<Position>192, 32</Position>
+					<Orientation>Horizontal</Orientation>
+					<Inlet>false</Inlet>
+				</Socket>
+			</Sockets>
+		</Block>
+	</Blocks>
+</BlockMod>

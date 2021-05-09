@@ -218,29 +218,29 @@
 		<FMIDescription>
 			<ModelName>SingleZoneOnlyOpaqueWalls</ModelName>
 			<InputVariables>
-				<FMIVariableDefinition fmiVarName="Model(4001).IdealHeatingLoad(100)" unit="W" fmiValueRef="43">
-					<FmiVarDescription>Ideal, convective heat load</FmiVarDescription>
-					<VarName>Model.IdealHeatingLoad</VarName>
-					<ObjectID>4001</ObjectID>
-					<VectorIndex>100</VectorIndex>
-				</FMIVariableDefinition>
-				<FMIVariableDefinition fmiVarName="Model(4001).IdealCoolingLoad(100)" unit="W" fmiValueRef="44">
+				<FMIVariableDefinition fmiVarName="Model(4001).IdealCoolingLoad(100)" unit="W" fmiValueRef="51">
 					<FmiVarDescription>Ideal, convective cooling load</FmiVarDescription>
 					<VarName>Model.IdealCoolingLoad</VarName>
 					<ObjectID>4001</ObjectID>
 					<VectorIndex>100</VectorIndex>
 				</FMIVariableDefinition>
+				<FMIVariableDefinition fmiVarName="Model(4001).IdealHeatingLoad(100)" unit="W" fmiValueRef="52">
+					<FmiVarDescription>Ideal, convective heat load</FmiVarDescription>
+					<VarName>Model.IdealHeatingLoad</VarName>
+					<ObjectID>4001</ObjectID>
+					<VectorIndex>100</VectorIndex>
+				</FMIVariableDefinition>
 			</InputVariables>
 			<OutputVariables>
-				<FMIVariableDefinition fmiVarName="Location(0).Temperature" unit="C" fmiValueRef="45">
-					<FmiVarDescription>Outside temperature.</FmiVarDescription>
-					<VarName>Location.Temperature</VarName>
-					<ObjectID>0</ObjectID>
-				</FMIVariableDefinition>
-				<FMIVariableDefinition fmiVarName="Zone(100).AirTemperature" unit="C" fmiValueRef="46">
+				<FMIVariableDefinition fmiVarName="Zone(100).AirTemperature" unit="C" fmiValueRef="49">
 					<FmiVarDescription>Room air temperature.</FmiVarDescription>
 					<VarName>Zone.AirTemperature</VarName>
 					<ObjectID>100</ObjectID>
+				</FMIVariableDefinition>
+				<FMIVariableDefinition fmiVarName="Location(0).Temperature" unit="C" fmiValueRef="50">
+					<FmiVarDescription>Outside temperature.</FmiVarDescription>
+					<VarName>Location.Temperature</VarName>
+					<ObjectID>0</ObjectID>
 				</FMIVariableDefinition>
 			</OutputVariables>
 		</FMIDescription>
