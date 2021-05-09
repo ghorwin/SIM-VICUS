@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<NandradProject fileVersion="1.99">
+<NandradProject fileVersion="1.999">
 	<Project>
 		<ProjectInfo>
 			<Comment>FMU Test project</Comment>
 		</ProjectInfo>
 		<Location>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<TimeZone>13</TimeZone>
 			<ClimateFilePath>${Project Directory}/../../DB_climate/Europe/Germany/TRY2011/DE-04-TRY-2010__Potsdam__Jahr_00000K0_00081m.c6b</ClimateFilePath>
 		</Location>
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 		</SimulationParameter>
+		<SolverParameter />
 		<Zones>
-			<Zone id="100" displayName="Var01" type="Active">
+			<Zone id="100" displayName="Room" type="Active">
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 			</Zone>
 		</Zones>
 		<ConstructionInstances>
-			<!-- Surface North Var 01 -->
 			<ConstructionInstance id="1" displayName="Surface North Var01">
 				<ConstructionTypeId>10005</ConstructionTypeId>
-				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
 				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
 				<InterfaceA id="10" zoneId="100">
 					<!--Interface to 'Room'-->
 					<InterfaceHeatConduction modelType="Constant">
@@ -40,12 +41,11 @@
 					</InterfaceSolarAbsorption>
 				</InterfaceB>
 			</ConstructionInstance>
-			<!-- Surface East Var 02 -->
 			<ConstructionInstance id="2" displayName="Surface East Var01">
 				<ConstructionTypeId>10005</ConstructionTypeId>
-				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
 				<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
 				<InterfaceA id="12" zoneId="100">
 					<!--Interface to 'Room'-->
 					<InterfaceHeatConduction modelType="Constant">
@@ -62,12 +62,11 @@
 					</InterfaceSolarAbsorption>
 				</InterfaceB>
 			</ConstructionInstance>
-			<!-- Surface South Var 01 -->
 			<ConstructionInstance id="3" displayName="Surface South Var01">
 				<ConstructionTypeId>10005</ConstructionTypeId>
-				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
 				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
 				<InterfaceA id="14" zoneId="100">
 					<!--Interface to 'Room'-->
 					<InterfaceHeatConduction modelType="Constant">
@@ -84,12 +83,11 @@
 					</InterfaceSolarAbsorption>
 				</InterfaceB>
 			</ConstructionInstance>
-			<!-- Surface West Var 01 -->
 			<ConstructionInstance id="4" displayName="Surface West Var01">
 				<ConstructionTypeId>10005</ConstructionTypeId>
-				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
 				<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
 				<InterfaceA id="10" zoneId="100">
 					<!--Interface to 'Room'-->
 					<InterfaceHeatConduction modelType="Constant">
@@ -106,12 +104,11 @@
 					</InterfaceSolarAbsorption>
 				</InterfaceB>
 			</ConstructionInstance>
-			<!-- Surface Roof Var 01 -->
 			<ConstructionInstance id="5" displayName="Surface Roof Var01">
 				<ConstructionTypeId>10005</ConstructionTypeId>
-				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<InterfaceA id="10" zoneId="100">
 					<!--Interface to 'Room'-->
 					<InterfaceHeatConduction modelType="Constant">
@@ -128,12 +125,11 @@
 					</InterfaceSolarAbsorption>
 				</InterfaceB>
 			</ConstructionInstance>
-			<!-- Surface North Var 01 -->
 			<ConstructionInstance id="6" displayName="Surface Floor Var01">
 				<ConstructionTypeId>10005</ConstructionTypeId>
-				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<InterfaceA id="10" zoneId="100">
 					<!--Interface to 'Room'-->
 					<InterfaceHeatConduction modelType="Constant">
@@ -150,9 +146,7 @@
 					</InterfaceSolarAbsorption>
 				</InterfaceB>
 			</ConstructionInstance>
-			
 		</ConstructionInstances>
-		
 		<ConstructionTypes>
 			<ConstructionType id="10005" displayName="Concrete wall">
 				<MaterialLayers>
@@ -160,7 +154,6 @@
 				</MaterialLayers>
 			</ConstructionType>
 		</ConstructionTypes>
-
 		<Materials>
 			<Material id="1001" displayName="Brick">
 				<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
@@ -168,7 +161,7 @@
 				<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
 			</Material>
 		</Materials>
-
+		<Schedules />
 		<Models>
 			<NaturalVentilationModels>
 				<NaturalVentilationModel id="501" displayName="Zone vent" modelType="Constant">
@@ -176,24 +169,16 @@
 					<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
 				</NaturalVentilationModel>
 			</NaturalVentilationModels>
-
 			<Thermostats>
-				<!-- A thermostat with constant heating set point, no cooling. Uses air temperature as sensor value. -->
 				<Thermostat id="1001" displayName="Constant air temperature thermostat" modelType="Constant">
 					<ZoneObjectList>Zone</ZoneObjectList>
-					<!-- Heating starts below 22 C -->
 					<IBK:Parameter name="HeatingSetpoint" unit="C">22</IBK:Parameter>
-					<!-- Cooling starts above 26 C -->
 					<IBK:Parameter name="CoolingSetpoint" unit="C">26</IBK:Parameter>
-					<!-- P-controller is accurate to 0.01 K -->
 					<IBK:Parameter name="TemperatureTolerance" unit="K">0.01</IBK:Parameter>
-					<!-- Control temperature is "Air temperature", this is the default and could be omitted -->
 					<TemperatureType>AirTemperature</TemperatureType>
-					<!-- Controller type PController is the default, so we could omit this-->
 					<ControllerType>PController</ControllerType>
 				</Thermostat>
 			</Thermostats>
-
 			<IdealHeatingCoolingModels>
 				<IdealHeatingCoolingModel id="4001">
 					<ZoneObjectList>Zone</ZoneObjectList>
@@ -202,7 +187,6 @@
 				</IdealHeatingCoolingModel>
 			</IdealHeatingCoolingModels>
 		</Models>
-		
 		<Outputs>
 			<Definitions>
 				<OutputDefinition>
@@ -231,5 +215,34 @@
 				<ReferenceType>ConstructionInstance</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
+		<FMIDescription>
+			<ModelName>SingleZoneOnlyOpaqueWalls</ModelName>
+			<InputVariables>
+				<FMIVariableDefinition fmiVarName="Model(4001).IdealHeatingLoad(100)" unit="W" fmiValueRef="43">
+					<FmiVarDescription>Ideal, convective heat load</FmiVarDescription>
+					<VarName>Model.IdealHeatingLoad</VarName>
+					<ObjectID>4001</ObjectID>
+					<VectorIndex>100</VectorIndex>
+				</FMIVariableDefinition>
+				<FMIVariableDefinition fmiVarName="Model(4001).IdealCoolingLoad(100)" unit="W" fmiValueRef="44">
+					<FmiVarDescription>Ideal, convective cooling load</FmiVarDescription>
+					<VarName>Model.IdealCoolingLoad</VarName>
+					<ObjectID>4001</ObjectID>
+					<VectorIndex>100</VectorIndex>
+				</FMIVariableDefinition>
+			</InputVariables>
+			<OutputVariables>
+				<FMIVariableDefinition fmiVarName="Location(0).Temperature" unit="C" fmiValueRef="45">
+					<FmiVarDescription>Outside temperature.</FmiVarDescription>
+					<VarName>Location.Temperature</VarName>
+					<ObjectID>0</ObjectID>
+				</FMIVariableDefinition>
+				<FMIVariableDefinition fmiVarName="Zone(100).AirTemperature" unit="C" fmiValueRef="46">
+					<FmiVarDescription>Room air temperature.</FmiVarDescription>
+					<VarName>Zone.AirTemperature</VarName>
+					<ObjectID>100</ObjectID>
+				</FMIVariableDefinition>
+			</OutputVariables>
+		</FMIDescription>
 	</Project>
 </NandradProject>

@@ -44,9 +44,12 @@ private slots:
 	void on_tableWidgetOutputVars_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
 
 	void on_toolButtonAddInputVariable_clicked();
-	void on_toolButtonRemoveOutputVariable_clicked();
-
 	void on_toolButtonRemoveInputVariable_clicked();
+	void on_tableWidgetInputVars_itemDoubleClicked(QTableWidgetItem *item);
+
+	void on_toolButtonAddOutputVariable_clicked();
+	void on_toolButtonRemoveOutputVariable_clicked();
+	void on_tableWidgetOutputVars_itemDoubleClicked(QTableWidgetItem *item);
 
 	void on_pushButtonGenerate_clicked();
 
@@ -56,8 +59,6 @@ private slots:
 
 	void on_pushButtonSaveNandradProject_clicked();
 	void on_pushButtonSelectNandradProject_clicked();
-
-	void on_tableWidgetInputVars_itemDoubleClicked(QTableWidgetItem *item);
 
 private:
 	/*! Toggles the GUI state depending on whether a valid NANDRAD Project was read or not. */

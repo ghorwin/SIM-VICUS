@@ -44,6 +44,7 @@ int main(int argc, char *argv[]) {
 		}
 
 		w.init();
+		w.resize(1600,800);
 		w.show(); // show widget
 
 		// start event loop
