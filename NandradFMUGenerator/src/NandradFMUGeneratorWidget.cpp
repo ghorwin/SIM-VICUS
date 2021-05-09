@@ -18,6 +18,75 @@
 const char * const ORGANIZATION = "IBK";
 const char * const PROGRAM_NAME = "NANDRADFMUGenerator";
 
+
+bool startProcess(const QString & executable, QStringList commandLineArgs, const QString & projectFile) {
+	bool success;
+	// spawn process
+#ifdef Q_OS_WIN
+
+	/// \todo use wide-string version of API and/or encapsulate spawn process into a function
+
+	// Use WinAPI to create a solver process
+	STARTUPINFO si;
+	PROCESS_INFORMATION pi;
+	ZeroMemory( &si, sizeof(si) );
+	si.cb = sizeof(si);
+	std::string utf8String = projectFile.toStdString().data();
+	si.lpTitle = (LPSTR)utf8String.c_str();
+//	si.dwFlags = STARTF_USESHOWWINDOW;
+//	si.wShowWindow = SW_SHOW;
+	ZeroMemory( &pi, sizeof(pi) );
+	const unsigned int lower_priority = 0x00004000;
+	QString cmdLine = QString("\"%1\" %2 \"%3\"")
+		.arg(executable)
+		.arg(commandLineArgs.join(" "))
+		.arg(projectFile);
+
+	std::string cmd = cmdLine.toLatin1().data();
+	// Start the child process.
+	if( !CreateProcess( NULL,   // No module name (use command line).
+		&cmd[0], 				// Command line.
+		NULL,             		// Process handle not inheritable.
+		NULL,             		// Thread handle not inheritable.
+		FALSE,            		// Set handle inheritance to FALSE.
+		lower_priority,   		// Create with priority lower then normal.
+		NULL,             		// Use parent's environment block.
+		NULL,             		// Use parent's starting directory.
+		&si,              		// Pointer to STARTUPINFO structure.
+		&pi )             		// Pointer to PROCESS_INFORMATION structure.
+	)
+	{
+		return false;
+	}
+	return true;
+
+#else // Q_OS_WIN
+
+	// append project file to arguments, no quotes needed, since Qt takes care of that
+	commandLineArgs << projectFile;
+//	qint64 pid;
+	commandLineArgs = QStringList() << "-hold"
+									<< "-fa" << "'Monospace'"
+									<< "-fs" << "9"
+									<< "-geometry" << "120x40" << "-e" << executable << commandLineArgs;
+	QString terminalProgram = "xterm";
+
+	QProcess proc;
+	proc.setProgram(terminalProgram);
+	proc.setArguments(commandLineArgs);
+
+	proc.start();
+	success = proc.waitForFinished();
+
+//	success = QProcess::startDetached(terminalProgram, commandLineArgs, QString(), &pid);
+
+	// TODO : do something with the process identifier... mayby check after a few seconds, if the process is still running?
+	return success;
+
+#endif // Q_OS_WIN
+}
+
+
 NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	QWidget(parent),
 	m_ui(new Ui::NandradFMUGeneratorWidget)
@@ -520,6 +589,9 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 
 	QStringList commandLineArgs;
 	commandLineArgs.append("--test-init");
+
+//	bool success = startProcess(m_nandradSolverExecutable, commandLineArgs, QString::fromStdString(m_nandradFilePath.str()));
+
 	commandLineArgs.append(QString::fromStdString(m_nandradFilePath.str()));
 
 	QString solverExecutable = m_nandradSolverExecutable;
@@ -1128,33 +1200,33 @@ int  NandradFMUGeneratorWidget::generate(bool silent) {
 	// linux
 	QString fmuLibFile = m_installDir + "/libNandradSolverFMI.so";
 	if (QFile(fmuLibFile).exists()) {
-		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'").arg(fmuLibFile.toStdString()),
+		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'\n").arg(fmuLibFile.toStdString()),
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 		QFile::copy(fmuLibFile,
 					baseDir.absoluteFilePath("binaries/linux64/" + fmuModelName + ".so"));
 	}
 	else {
-		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed").arg(fmuLibFile.toStdString()),
+		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed.\n").arg(fmuLibFile.toStdString()),
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 	}
 
 	// macos
 	fmuLibFile = m_installDir + "/libNandradSolverFMI.dylib";
 	if (QFile(fmuLibFile).exists()) {
-		IBK::IBK_Message( IBK::FormatString("Copying MacOS FMU lib '%1'").arg(fmuLibFile.toStdString()),
+		IBK::IBK_Message( IBK::FormatString("Copying MacOS FMU lib '%1'\n").arg(fmuLibFile.toStdString()),
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 		QFile::copy(fmuLibFile,
 					baseDir.absoluteFilePath("binaries/darwin64/" + fmuModelName + ".dylib"));
 	}
 	else {
-		IBK::IBK_Message( IBK::FormatString("FMU lib file (darwin64) '%1' not installed").arg(fmuLibFile.toStdString()),
+		IBK::IBK_Message( IBK::FormatString("FMU lib file (darwin64) '%1' not installed.\n").arg(fmuLibFile.toStdString()),
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 	}
 
 	// win64
 	fmuLibFile = m_installDir + "/NandradSolverFMI.dll";
 	if (QFile(fmuLibFile).exists()) {
-		IBK::IBK_Message( IBK::FormatString("Copying Win64 FMU lib '%1'").arg(fmuLibFile.toStdString()),
+		IBK::IBK_Message( IBK::FormatString("Copying Win64 FMU lib '%1'\n").arg(fmuLibFile.toStdString()),
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 		QString binTargetPath = baseDir.absoluteFilePath("binaries/win64/");
 		QFile::copy(fmuLibFile, binTargetPath + "/" + fmuModelName + ".dll");
@@ -1165,7 +1237,7 @@ int  NandradFMUGeneratorWidget::generate(bool silent) {
 				  << m_installDir + "/vcruntime140.dll";
 		for (int i=0; i<copyFiles.count(); ++i) {
 			if (!QFile::exists(copyFiles[i])) {
-				IBK::IBK_Message( IBK::FormatString("Missing file '%1' to copy into FMU archive.").arg(copyFiles[i].toStdString()),
+				IBK::IBK_Message( IBK::FormatString("Missing file '%1' to copy into FMU archive.\n").arg(copyFiles[i].toStdString()),
 								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 			}
 			else {
@@ -1174,7 +1246,7 @@ int  NandradFMUGeneratorWidget::generate(bool silent) {
 		}
 	}
 	else {
-		IBK::IBK_Message( IBK::FormatString("FMU lib file (Win64) '%1' not installed").arg(fmuLibFile.toStdString()),
+		IBK::IBK_Message( IBK::FormatString("FMU lib file (Win64) '%1' not installed.\n").arg(fmuLibFile.toStdString()),
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 	}
 
