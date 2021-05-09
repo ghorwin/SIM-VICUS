@@ -202,27 +202,29 @@ void NandradFMUGeneratorWidget::on_toolButtonAddInputVariable_clicked() {
 	// add FMU variable to input vars
 
 	int row = m_ui->tableWidgetInputVars->currentRow();
+	Q_ASSERT(row != -1);
 	QTableWidgetItem * item = m_ui->tableWidgetInputVars->item(row,0);
 	unsigned int valRef = item->data(Qt::UserRole+1).toUInt();
 	Q_ASSERT(valRef == NANDRAD::INVALID_ID); // must be a valid, unused reference
 
 	// find corresponding FMI variable description
-	std::string fmiVarName = m_ui->tableWidgetInputVars->item(item->row(), 4)->text().toStdString();
+	std::string fmiVarName = m_ui->tableWidgetInputVars->item(row, 4)->text().toStdString();
 	for (NANDRAD::FMIVariableDefinition & var : m_availableInputVariables)  {
 		if (var.m_fmiVarName == fmiVarName) {
 			// got it, now create a copy of the variable description, copy it to the project and assign a valid value reference
 			unsigned int newValueRef = *m_usedValueRefs.rbegin() + 1;
+			m_usedValueRefs.insert(newValueRef);
 			var.m_fmiValueRef = newValueRef;
 			m_project.m_fmiDescription.m_inputVariables.push_back(var);
 			// set new value reference in table
-			m_ui->tableWidgetInputVars->item(item->row(), 5)->setText(QString("%1").arg(newValueRef));
+			m_ui->tableWidgetInputVars->item(row, 5)->setText(QString("%1").arg(newValueRef));
 			item->setData(Qt::UserRole+1, newValueRef);
 			// now update appearance of table row
 			QFont f(m_ui->tableWidgetInputVars->font());
 			f.setBold(true);
-			for (int i=0; i<7; ++i) {
-				m_ui->tableWidgetInputVars->item(item->row(), i)->setFont(f);
-				m_ui->tableWidgetInputVars->item(item->row(), i)->setTextColor(Qt::black);
+			for (int i=0; i<8; ++i) {
+				m_ui->tableWidgetInputVars->item(row, i)->setFont(f);
+				m_ui->tableWidgetInputVars->item(row, i)->setTextColor(Qt::black);
 			}
 			on_tableWidgetInputVars_currentCellChanged(row,0,0,0);
 			break;
@@ -235,27 +237,60 @@ void NandradFMUGeneratorWidget::on_toolButtonAddInputVariable_clicked() {
 void NandradFMUGeneratorWidget::on_toolButtonRemoveInputVariable_clicked() {
 	int row = m_ui->tableWidgetInputVars->currentRow();
 	Q_ASSERT(row != -1);
-	// TODO: find out why this code does not work
 
-	on_tableWidgetOutputVars_currentCellChanged(row,0,0,0);
+	QTableWidgetItem * item = m_ui->tableWidgetInputVars->item(row,0);
+	unsigned int valRef = item->data(Qt::UserRole+1).toUInt(); // Note: may be INVALID_ID in case of invalid definition
+	// remove value reference from set of used value references
+	m_usedValueRefs.erase(valRef);
+
+	// get selected FMI variable name
+	std::string fmiVarName = m_ui->tableWidgetInputVars->item(row, 4)->text().toStdString();
+	// lookup existing definition in m_project and remove it there
+	bool valid = item->data(Qt::UserRole).toBool();
+	for (std::vector<NANDRAD::FMIVariableDefinition>::iterator it = m_project.m_fmiDescription.m_inputVariables.begin();
+		 it != m_project.m_fmiDescription.m_inputVariables.end(); ++it)
+	{
+		if (it->m_fmiVarName == fmiVarName) {
+			m_project.m_fmiDescription.m_inputVariables.erase(it);
+			break;
+		}
+	}
+	// lookup existing definition in m_availableInputVariables and clear the value reference there
+	for (std::vector<NANDRAD::FMIVariableDefinition>::iterator it = m_availableInputVariables.begin();
+		 it != m_availableInputVariables.end(); ++it)
+	{
+		if (it->m_fmiVarName == fmiVarName) {
+			it->m_fmiValueRef = NANDRAD::INVALID_ID;
+			break;
+		}
+	}
+	// if valid, just clear item flags
+	if (valid) {
+		item->setData(Qt::UserRole+1, NANDRAD::INVALID_ID);
+		// now reset table row to uninitialized state
+		QFont f(m_ui->tableWidgetInputVars->font());
+		f.setItalic(true);
+		for (int i=0; i<8; ++i) {
+			m_ui->tableWidgetInputVars->item(row, i)->setFont(f);
+			m_ui->tableWidgetInputVars->item(row, i)->setTextColor(Qt::gray);
+		}
+		on_tableWidgetInputVars_currentCellChanged(row,0,0,0);
+	}
+	else {
+		// erase row in table
+		m_ui->tableWidgetInputVars->removeRow(row);
+		m_ui->tableWidgetInputVars->selectRow(std::min(row, m_ui->tableWidgetInputVars->rowCount()-1));
+		on_tableWidgetInputVars_currentCellChanged(row,0,0,0);
+	}
 }
 
 
 void NandradFMUGeneratorWidget::on_toolButtonRemoveOutputVariable_clicked() {
 	int row = m_ui->tableWidgetOutputVars->currentRow();
 	Q_ASSERT(row != -1);
-	// TODO: find out why this code does not work
-//	QTableWidgetItem * item = m_ui->tableWidgetOutputVars->item(row, 0);
-//	unsigned int varIndex = item->data(Qt::UserRole).toUInt();
-//	Q_ASSERT(varIndex < m_project.m_fmiDescription.m_outputVariables.size());
 
-//	m_project.m_fmiDescription.m_outputVariables.erase(m_project.m_fmiDescription.m_outputVariables.begin()+varIndex);
 
-	m_project.m_fmiDescription.m_outputVariables.erase(m_project.m_fmiDescription.m_outputVariables.begin()+row);
-	m_ui->tableWidgetOutputVars->removeRow(row);
-//	updateFMUVariableTables();
-	row = qMin(row, m_ui->tableWidgetOutputVars->rowCount()-1);
-	m_ui->tableWidgetOutputVars->selectRow(row);
+	on_tableWidgetOutputVars_currentCellChanged(row,0,0,0);
 }
 
 
@@ -281,6 +316,7 @@ void NandradFMUGeneratorWidget::on_lineEditModelName_editingFinished() {
 	m_ui->lineEditFMUPath->setText( QString::fromStdString(m_fmuExportDirectory.str()) + "/" + modelName + ".fmu");
 	m_project.m_fmiDescription.m_modelName = modelName.toStdString();
 }
+
 
 void NandradFMUGeneratorWidget::on_lineEditTargetDirectory_editingFinished() {
 	if (m_ui->lineEditTargetDirectory->filename().trimmed().isEmpty())
@@ -327,6 +363,14 @@ void NandradFMUGeneratorWidget::on_pushButtonSelectNandradProject_clicked() {
 	setup();
 }
 
+
+void NandradFMUGeneratorWidget::on_tableWidgetInputVars_itemDoubleClicked(QTableWidgetItem */*item*/) {
+	// depending on the state of the buttons, call either add or remove
+	if (m_ui->toolButtonAddInputVariable->isEnabled())
+		m_ui->toolButtonAddInputVariable->click();
+	else if (m_ui->toolButtonRemoveInputVariable->isEnabled())
+		m_ui->toolButtonRemoveInputVariable->click();
+}
 
 
 // *** PRIVATE MEMBER FUNCTIONS ****
@@ -1112,3 +1156,4 @@ void NandradFMUGeneratorWidget::variableInfo(const std::string & fullVarName, QS
 		fmuType = it->second.m_fmuVarType;
 	}
 }
+
