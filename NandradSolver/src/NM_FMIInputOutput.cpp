@@ -127,7 +127,8 @@ void FMIInputOutput::inputReferences(std::vector<InputReference> & inputRefs) co
 		inputRef.m_id = variable.m_objectID;
 		// split variable name into name and reference type
 		std::vector<std::string> tokens;
-		IBK_ASSERT(IBK::explode_in2(variable.m_varName, tokens, '.') == 2);
+		IBK::explode_in2(variable.m_varName, tokens, '.');
+		IBK_ASSERT(tokens.size() == 2);
 		// set name and reference type
 		inputRef.m_name.m_name = tokens[1];
 		inputRef.m_referenceType = (NANDRAD::ModelInputReference::referenceType_t)
@@ -140,7 +141,7 @@ void FMIInputOutput::inputReferences(std::vector<InputReference> & inputRefs) co
 	}
 
 	// copy input references
-	for (const std::pair<unsigned int, InputReference> &inputRef : inputRefsMap)
+	for (const std::pair<const unsigned int, InputReference> &inputRef : inputRefsMap)
 		inputRefs.push_back(inputRef.second);
 }
 

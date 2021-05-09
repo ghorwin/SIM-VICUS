@@ -926,15 +926,12 @@ void NandradModel::initFMI() {
 	try {
 		// create FMIInputOutput model
 		m_fmiInputOutput = new FMIInputOutput;
-		// setup model
+		// init FMI import/export model - this should only be done, if we are actually inside an FMU
 		m_fmiInputOutput->setup(*m_project);
 		// insert into model container
 		m_modelContainer.push_back(m_fmiInputOutput);
 		// insert into time model container
 		m_timeModelContainer.push_back(m_fmiInputOutput);
-
-		// init FMI import/export model - this should only be done, if we are actually inside an FMU
-		m_fmiInputOutput->setup(*m_project);
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Error initializing FMI interface model."), FUNC_ID);
