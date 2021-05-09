@@ -204,7 +204,8 @@ void NandradModel::init(const NANDRAD::ArgsParser & args) {
 	// *** Initialize all models ***
 	initModels();
 	// *** Initialize FMI model ***
-	initFMI();
+	if (!args.m_executablePath.isValid()) // empty executable path = we are inside an FMU -> initFMI()
+		initFMI();
 	// *** Initialize Object Lists ***
 	initObjectLists();
 	// *** Initialize outputs ***
@@ -914,8 +915,6 @@ void NandradModel::initSchedules() {
 
 
 void NandradModel::initFMI() {
-	/// \todo check here, if we are inside an FMU and only initialize FMI interface model when needed
-
 	FUNCID(NandradModel::initFMI);
 	IBK::IBK_Message(IBK::FormatString("Initializing FMI interface\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK_MSG_INDENT;
@@ -1741,7 +1740,7 @@ void NandradModel::initModelDependencies() {
 				// temperature will use the variable from the FMI import model, instead.
 
 				// prevent Option A (direct feedback) and do not allow fmiInputOutput model to get its own results!
-				if (m_fmiInputOutput != currentModel)
+				if (m_fmiInputOutput != nullptr && m_fmiInputOutput != currentModel)
 					srcVarAddress = m_fmiInputOutput->resolveResultReference(inputRef, quantityDesc);
 
 
