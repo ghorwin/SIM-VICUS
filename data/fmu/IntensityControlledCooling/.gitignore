@@ -1,3 +1,4 @@
 /SingleZoneOnlyOpaqueWalls/
 *.fmu
 /CooledZone/
+/IntensityControlledCooling/
