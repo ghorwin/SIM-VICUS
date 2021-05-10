@@ -5,6 +5,7 @@
 
 #include <IBK_Exception.h>
 #include <IBK_ArgParser.h>
+#include <IBK_messages.h>
 
 #include <iostream>
 
@@ -43,9 +44,11 @@ int main(int argc, char *argv[]) {
 
 		NandradFMUGeneratorWidget w;
 
-		// TODO : For now we assume install dir to be same as NandradSolver dir
+		// For now we assume install dir to be same as NandradSolver dir
 		w.m_installDir					= QFileInfo(argv[0]).dir().absolutePath();
 		w.m_nandradSolverExecutable		= QFileInfo(argv[0]).dir().absoluteFilePath("NandradSolver");
+		IBK::IBK_Message(IBK::FormatString("Using NandradSolver: '%1'\n").arg(w.m_nandradSolverExecutable.toStdString()),
+						 IBK::MSG_PROGRESS, FUNC_ID);
 
 		// if started as: NandradFMUGenerator /path/to/projectFile.nandrad
 		// we copy /path/to/projectFile.nandrad as path to NANDRAD

@@ -13,7 +13,8 @@ Die Kühlung läuft dann ungeregelt mit konstanter Leistung.
 Exportiert:
 
 - Solare Strahlungsintensität auf das Dach: `ConstructionInstance(id=5).SolarRadiationFluxB` in W/m2
-- Außenlufttemperatur: `Location.AirTemperature` in C
+- Außenlufttemperatur: `Location.Temperature` in C
+- Zonenlufttemperatur: `Zone(id=100).AirTemperature` in C
 
 Importiert:
 
@@ -24,22 +25,29 @@ Importiert:
 
 0. Vorbereitung
 
-`NandradFMUGenerator` und `MasterSimulator` müssen global ausführbar sein. Dazu am 
-Besten das `~/bin` Verzeichnis in den Suchpfad eintragen und dort symlinks auf die 
-ausführbaren Dateien anlegen.
+`MasterSimulator` muss global ausführbar sein. Dazu am 
+Besten das `~/bin` Verzeichnis in den Suchpfad eintragen und dort einen
+Symlink auf die ausführbare Datei anlegen.
 
 ```bash
-ln -s ~/git/SIM-VICUS/bin/release/NandradFMUGenerator NandradFMUGenerator
 ln -s ~/svn/mastersim-code/bin/release/MasterSimulator MasterSimulator
 ```
 
+Das Verzeichnis von `NandradFMUGenerator` und `NandradSolver` (müssen
+im gleichen Verzeichnis liegen), muss bekannt sein. Dazu den Pfad
+zu den ausführbaren Dateien in den Suchpfad in der .bashrc setzen:
+
+```
+export PATH=$PATH:/home/ghorwin/git/SIM-VICUS/bin/release
+
+```
 
 1. Generieren der FMU
 
 Im Testverzeichnis ausführen:
 
 ```bash
-> NandradFMUGenerator --generate SingleZoneOnlyOpaqueWalls.nandrad
+> $NANDRAD_PATH/NandradFMUGenerator --generate SingleZoneOnlyOpaqueWalls.nandrad
 ```
 
 Dies erstellt die Datei `SingleZoneOnlyOpaqueWalls.fmu`, oder gibt einen Fehler aus.

@@ -829,12 +829,15 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 void NandradFMUGeneratorWidget::updateFMUVariableTables() {
 	// we first process all variables already defined in the project, separately for inputs and ouputs
 	std::vector<NANDRAD::FMIVariableDefinition> invalidInputVars;
-	for (const NANDRAD::FMIVariableDefinition & var : m_project.m_fmiDescription.m_inputVariables) {
+	for (NANDRAD::FMIVariableDefinition & var : m_project.m_fmiDescription.m_inputVariables) {
 		// lookup variable in available variables
 		std::vector<NANDRAD::FMIVariableDefinition>::iterator it = m_availableInputVariables.begin();
 		for (; it != m_availableInputVariables.end(); ++it) {
-			if (var.m_varName == it->m_varName)
+			if (var.m_varName == it->m_varName) {
+				var.m_unit = it->m_unit;
+				var.m_fmiVarDescription = it->m_fmiVarDescription;
 				break;
+			}
 		}
 		// not found?
 		if (it == m_availableInputVariables.end())
@@ -844,12 +847,15 @@ void NandradFMUGeneratorWidget::updateFMUVariableTables() {
 	}
 
 	std::vector<NANDRAD::FMIVariableDefinition> invalidOutputVars;
-	for (const NANDRAD::FMIVariableDefinition & var : m_project.m_fmiDescription.m_outputVariables) {
+	for (NANDRAD::FMIVariableDefinition & var : m_project.m_fmiDescription.m_outputVariables) {
 		// lookup variable in available variables
 		std::vector<NANDRAD::FMIVariableDefinition>::iterator it = m_availableOutputVariables.begin();
 		for (; it != m_availableOutputVariables.end(); ++it) {
-			if (var.m_varName == it->m_varName)
+			if (var.m_varName == it->m_varName) {
+				var.m_unit = it->m_unit;
+				var.m_fmiVarDescription = it->m_fmiVarDescription;
 				break;
+			}
 		}
 		// not found?
 		if (it == m_availableOutputVariables.end())
@@ -909,7 +915,7 @@ void NandradFMUGeneratorWidget::appendVariableEntry(QTableWidget * tableWidget,
 	QFont itemFont(tableWidget->font());
 	QColor itemColor(Qt::black);
 	if (!valid)
-		itemColor = QColor("#808080");
+		itemColor = QColor("#a00000");
 	else {
 		if (var.m_fmiValueRef == NANDRAD::INVALID_ID) {
 			itemFont.setItalic(true);
