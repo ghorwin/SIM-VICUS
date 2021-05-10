@@ -101,6 +101,7 @@ SOURCES += \
 	../../src/NANDRAD_EmbeddedObject.cpp \
 	../../src/NANDRAD_EmbeddedObjectWindow.cpp \
 	../../src/NANDRAD_FMIDescription.cpp \
+	../../src/NANDRAD_FMIVariableDefinition.cpp \
 	../../src/NANDRAD_HVACControlModel.cpp \
 	../../src/NANDRAD_HydraulicFluid.cpp \
 	../../src/NANDRAD_HydraulicNetworkComponent.cpp \
