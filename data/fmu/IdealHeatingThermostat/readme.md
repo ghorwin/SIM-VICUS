@@ -20,3 +20,39 @@ Importiert:
 - Kontrollsignal für Kühlung: `Zone(id=100).CoolingControlValue` in ---
 
 
+## Automatisierte Tests
+
+0. Vorbereitung
+
+`NandradFMUGenerator` und `MasterSimulator` müssen global ausführbar sein. Dazu am 
+Besten das `~/bin` Verzeichnis in den Suchpfad eintragen und dort symlinks auf die 
+ausführbaren Dateien anlegen.
+
+```bash
+ln -s ~/git/SIM-VICUS/bin/release/NandradFMUGenerator NandradFMUGenerator
+ln -s ~/svn/mastersim-code/bin/release/MasterSimulator MasterSimulator
+```
+
+
+1. Generieren der FMU
+
+Im Testverzeichnis ausführen:
+
+```bash
+> NandradFMUGenerator --generate SingleZoneOnlyOpaqueWalls.nandrad
+```
+
+Dies erstellt die Datei `SingleZoneOnlyOpaqueWalls.fmu`, oder gibt einen Fehler aus.
+
+2. Durchlaufen der Testsimulation
+
+```bash
+> MasterSimulator IntensityControlledCooling.msim
+```
+
+3. Vergleich der Testergebnisse
+
+...
+
+
+

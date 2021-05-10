@@ -18,6 +18,6 @@ ErrorControlMode         NONE
 maxIterations            1
 writeInternalVariables   no
 
-simulator 0 0 SingleZoneOnlyOpaqueWalls #20b2aa "SingleZoneOnlyOpaqueWalls.fmu"
+simulator 0 0 CooledZone #20b2aa "CooledZone.nandrad"
 
 

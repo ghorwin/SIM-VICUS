@@ -2,7 +2,7 @@
 <BlockMod>
 	<!--Blocks-->
 	<Blocks>
-		<Block name="SingleZoneOnlyOpaqueWalls">
+		<Block name="CooledZone">
 			<Position>0, 0</Position>
 			<Size>192, 80</Size>
 			<!--Sockets-->
