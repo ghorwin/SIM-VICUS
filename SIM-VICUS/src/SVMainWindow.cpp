@@ -217,8 +217,15 @@ SVDatabaseEditDialog * SVMainWindow::dbBoundaryConditionEditDialog() {
 }
 
 SVDatabaseEditDialog * SVMainWindow::dbWindowEditDialog() {
-	Q_ASSERT(false); // not implemented yet
-	return nullptr;
+	if (m_dbWindowEditDialog == nullptr)
+		m_dbWindowEditDialog = SVDatabaseEditDialog::createWindowEditDialog(this);
+	return m_dbWindowEditDialog;
+}
+
+SVDatabaseEditDialog * SVMainWindow::dbWindowGlazingSystemEditDialog() {
+	if (m_dbWindowGlazingSystemEditDialog == nullptr)
+		m_dbWindowGlazingSystemEditDialog = SVDatabaseEditDialog::createWindowGlazingSystemEditDialog(this);
+	return m_dbWindowGlazingSystemEditDialog;
 }
 
 SVDatabaseEditDialog * SVMainWindow::dbPipeEditDialog(){
@@ -322,8 +329,10 @@ void SVMainWindow::on_actionDBConstructions_triggered() {
 
 
 void SVMainWindow::on_actionDBWindows_triggered() {
-	// TODO Stephan, Window edit dialog with WINDOW data file referencing
-	//	dbWindowEditDialog()->edit();
+	dbWindowEditDialog()->edit();
+}
+void SVMainWindow::on_actionDBWindowGlazingSystems_triggered() {
+	dbWindowGlazingSystemEditDialog()->edit();
 }
 
 
@@ -1741,4 +1750,3 @@ void SVMainWindow::on_actionCalculateShadingFactors_triggered() {
 		undo->push();
 	}
 }
-

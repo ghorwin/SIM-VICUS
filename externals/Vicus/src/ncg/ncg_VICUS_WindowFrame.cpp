@@ -49,6 +49,8 @@ void WindowFrame::readXML(const TiXmlElement * element) {
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName = QString::fromStdString(attrib->ValueStr());
+			else if (attribName == "idMaterial")
+				m_idMaterial = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -63,10 +65,19 @@ void WindowFrame::readXML(const TiXmlElement * element) {
 				m_notes = QString::fromStdString(c->GetText());
 			else if (cName == "DataSource")
 				m_dataSource = QString::fromStdString(c->GetText());
-			else if (cName == "IsPercentageCalcMethode")
-				m_isPercentageCalcMethode = NANDRAD::readPODElement<bool>(c, cName);
-			else if (cName == "MaterialLayer")
-				m_materialLayer.readXML(c);
+			else if (cName == "IBK:Parameter") {
+				IBK::Parameter p;
+				NANDRAD::readParameterElement(c, p);
+				bool success = false;
+				para_t ptype;
+				try {
+					ptype = (para_t)KeywordList::Enumeration("WindowFrame::para_t", p.name);
+					m_para[ptype] = p; success = true;
+				}
+				catch (...) { /* intentional fail */  }
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -89,13 +100,18 @@ TiXmlElement * WindowFrame::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
+	if (m_idMaterial != VICUS::INVALID_ID)
+		e->SetAttribute("idMaterial", IBK::val2string<unsigned int>(m_idMaterial));
 	if (!m_notes.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.toStdString());
 	if (!m_dataSource.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.toStdString());
 
-	m_materialLayer.writeXML(e);
-	TiXmlElement::appendSingleAttributeElement(e, "IsPercentageCalcMethode", nullptr, std::string(), IBK::val2string<bool>(m_isPercentageCalcMethode));
+	for (unsigned int i=0; i<NUM_P; ++i) {
+		if (!m_para[i].name.empty()) {
+			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
+		}
+	}
 	return e;
 }
 

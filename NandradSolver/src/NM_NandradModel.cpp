@@ -1473,7 +1473,7 @@ void NandradModel::initNetworks() {
 				ThermalNetworkBalanceModel *balanceModel = new ThermalNetworkBalanceModel(nw.m_id, nw.m_displayName);
 				m_modelContainer.push_back(balanceModel); // transfer ownership
 				// initialize
-				balanceModel->setup(statesModel);
+				balanceModel->setup(statesModel, m_project->m_simulationParameter);
 				// register model for evaluation
 				registerStateDependendModel(balanceModel);
 				// register model as time dependend (spline values update needed for each time step)

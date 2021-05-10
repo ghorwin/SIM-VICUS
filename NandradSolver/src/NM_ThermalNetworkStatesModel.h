@@ -127,24 +127,6 @@ private:
 	/*! Storage of all network element ids, used for vector output. */
 	std::vector<unsigned int>						m_elementIds;
 
-	/*! Container with values for heat exchange calculation: either temperature [K] or heat flux [W]
-		(size = m_elementIds.size()).
-
-		This vector stores the temperatures/heat fluxes needed for calculation. The actual flow elements pull these
-		values (take reference to these memory locations during constructions) and use these during own model evaluation.
-
-		They are already initialized in this model (in setup()), because they need to be available when
-		constructing the flow element calculation objects.
-	*/
-	std::vector<double>								m_heatExchangeRefValues;
-
-	/*! references to spline parameter values of NANDRAD::HydraulicComponent
-		the values will be updated in ThermalNetworkBalanceModel::setTime()
-
-		// TODO Hauke, discuss design with Andreas/Anne
-	*/
-	std::vector<std::vector<double> >				m_splineParameterRefValues;
-
 	/*! Vector with references to mean fluid temperatures (size = m_elementIds.size()).
 		Result quantity of current model, published as 'FluidTemperature' result for each flow element. */
 	std::vector<const double*>						m_meanTemperatureRefs;

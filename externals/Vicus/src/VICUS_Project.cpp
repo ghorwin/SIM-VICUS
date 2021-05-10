@@ -603,6 +603,10 @@ void Project::selectObjects(std::set<const Object*> &selectedObjs, SelectionGrou
 					for (const VICUS::Surface & s : r.m_surfaces) {
 						if (selectionCheck(s, takeSelected, takeVisible))
 							selectedObjs.insert(&s);
+						for (const VICUS::SubSurface & sub : s.subSurfaces()) {
+							if (selectionCheck(sub, takeSelected, takeVisible))
+								selectedObjs.insert(&sub);
+						}
 					}
 					if (selectionCheck(r, takeSelected, takeVisible))
 						selectedObjs.insert(&r);

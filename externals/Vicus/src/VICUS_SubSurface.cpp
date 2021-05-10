@@ -2,10 +2,11 @@
 
 namespace VICUS {
 
-void SubSurface::updateColor() {
-	// default color for walls
-	m_color = QColor(200,200,140,1);
-	const double angleForWalls = 0.707;
+SubSurface SubSurface::clone() const {
+	SubSurface r(*this); // create new SubSurface with same unique ID
+	Object & o = r;
+	(Object&)r = o.clone(); // assign new ID only
+	return r;
 }
 
 } // namespace VICUS

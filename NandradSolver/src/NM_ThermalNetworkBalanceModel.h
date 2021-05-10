@@ -28,6 +28,7 @@
 
 #include <NANDRAD_Constants.h>
 
+#include <list>
 
 namespace IBK {
 	class LinearSpline;
@@ -35,6 +36,7 @@ namespace IBK {
 
 namespace NANDRAD {
 	class LinearSplineParameter;
+	class SimulationParameter;
 }
 
 namespace NANDRAD_MODEL {
@@ -49,6 +51,7 @@ class ThermalNetworkStatesModel;
 	gets a pointer to the corresponding ThermalNetworkStatesModel instance.
 
 	To evaluate the thermal balances in each flow element of the network, it needs:
+
 	- prescribed/imposed fluxes to flow elements (externally computed)
 	- surrounding temperatures (for example room air and radiation surface temperatures for heater equation models)
 	- mass fluxes computed by network model
@@ -58,6 +61,22 @@ class ThermalNetworkStatesModel;
 
 	The other dependencies are formulated by the flow element thermal models themselves, and simply forwarded by
 	the ThermalNetworkBalanceModel to the framework.
+
+	## Provided results ##
+
+	ModelReferenceType = MRT_NETWORK
+	id = (id of network)
+	Quantities:
+		- NetworkZoneHeatLoad (in [W]), vector-valued, access via zone ID
+		- NetworkActiveLayerHeatLoad (in [W]), vector-valued, access via construction instance ID
+
+	ModelReferenceType = MRT_NETWORKELEMENT
+	id = (id of flow element)
+	Quantities:
+		- FlowElementHeatLoss  (in [W])
+		- InletNodeTemperature (in [C])
+		- OutletNodeTemperature (in [C])
+		- ... additional, flow-element specific outputs
 */
 class ThermalNetworkBalanceModel : public AbstractModel, public AbstractStateDependency, public AbstractTimeDependency {
 public:
@@ -71,7 +90,8 @@ public:
 	/*! Initializes model by resizing the y and ydot vectors.
 		Most of the data structures are already initialized by ThermalNetworkStatesModel.
 	*/
-	void setup(ThermalNetworkStatesModel *statesModel);
+	void setup(ThermalNetworkStatesModel *statesModel,
+			   const NANDRAD::SimulationParameter &simPara);
 
 	// *** Re-implemented from AbstractModel
 
@@ -101,8 +121,7 @@ public:
 	*/
 	virtual const double * resultValueRef(const InputReference & quantity) const override;
 
-
-	// *** Re-implemented from AbstractStateDependency
+	// *** Re-implemented from AbstractTimeStateDependency
 
 	/*! Updates time-dependent spline data (temperatures/heat losses). */
 	virtual int setTime(double t) override;
@@ -139,8 +158,9 @@ private:
 	void printVars() const;
 
 
-	/*!	Struct for all value references exchanged between element model
-		and ThermalNetworkStatesModel/ThermalNetworkBalanceModel.
+	/*!	This struct stores information needed for exchange between the ThermalNetworkBalanceModel and
+		RoomBalanceModels. The ThermalNetworkBalanceModel collects in this struct for each zone
+		the sum of energy loads into the zone and publishes that as
 
 		Such a struct is *only* created for each zone that one or more flow elements exchanges heat with.
 	*/
@@ -155,12 +175,14 @@ private:
 		unsigned int						m_zoneId = NANDRAD::INVALID_ID;
 		/*! Heat flux (sum) of *all* flow elements into selected zone. */
 		double								m_zoneHeatLoad = -999;
-		/*! Reference to temperatures of selected zone. */
-		const double*						m_zoneTemperatureRef = nullptr;
+		/*! Reference to temperatures of selected zone.
+			The pointer is stored here during initialization and then distributed to all flow elements that
+			require this temperature.
+		*/
+		const double						*m_zoneTemperatureRef = nullptr;
 	};
 
-	/*!	Struct for all value references exchanged between element model
-		and ThermalNetworkStatesModel/ThermalNetworkBalanceModel.
+	/*!	Struct stores information needed for exchange between ThermalNetworkBalanceModel and ConstructionBalanceModels.
 
 		Such a struct is *only* created for each construction instance that a flow element exchanges heat with.
 
@@ -178,7 +200,10 @@ private:
 		unsigned int						m_constructionInstanceId = NANDRAD::INVALID_ID;
 		/*! Heat flux into (the one and only) active layer if the selected construction instance. */
 		double								m_activeLayerHeatLoad = -999;
-		/*! Reference to mean temperature (the one and only) active layer if the selected construction instance. */
+		/*! Reference to mean temperature (the one and only) active layer of the selected construction instance.
+			The pointer is stored here during initialization and then distributed to all flow elements that
+			require this temperature.
+		*/
 		const double*						m_activeLayerTemperatureRef = nullptr;
 	};
 
@@ -203,20 +228,24 @@ private:
 			(nullptr if no heat exchange with a construtcion layer is defined).
 		*/
 		ActiveLayerProperties				*m_activeLayerProperties = nullptr;
+
+		/*! Reference to heat exchange spline (heat flow or temperature), nullptr if not needed. */
+		const NANDRAD::LinearSplineParameter*	m_heatExchangeSplineRef = nullptr;
+
+		/*! This memory slot is used when the respective heat exchange value (heat flow or temperature) is interpolated
+			from a linear spline parameter.
+			Elements with spline-based input values hold a pointer reference to this slot.
+		*/
+		double								m_heatExchangeSplineValue = 999;
+
+		// the following references point to results computed from flow elements.
+
 		/*! Reference to heat flux out of the flow element). */
 		const double*						m_heatLossRef = nullptr;
 		/*! Reference to temperatures for inlet node of the flow element. */
 		const double*						m_inletNodeTemperatureRef = nullptr;
 		/*! Reference to temperatures for outlet node of the flow element. */
 		const double*						m_outletNodeTemperatureRef = nullptr;
-
-		/*! Reference to heat exchange spline: nullptr if not needed. */
-		const IBK::LinearSpline*			m_heatExchangeSplineRef = nullptr;
-
-		/*! References to spline parameters of NANDRAD::HydraulicComponent, there can be
-		 * multiple spline parameters for each HydraulicComponent, so this is a vector
-		 */
-		std::vector<const NANDRAD::LinearSplineParameter*> m_splineParameterRefs;
 	};
 
 
@@ -229,13 +258,16 @@ private:
 
 	/*! Properties of all zones involved in heat exchange to a network element.
 		One ZoneProperties element for each zone that one or more flow elements exchange heat with.
+		The objects in this list are accessed via pointer, stored in the respective FlowElementProperties object.
 	*/
-	std::vector<ZoneProperties>						m_zoneProperties;
+	std::list<ZoneProperties>						m_zoneProperties;
 	/*! Properties of all active layers involved in heat exchange to a network element.
 		One ActiveLayerProperties object for each construction instance that has heat exchange with a flow
 		element.
+		The objects in this list are accessed via pointer, stored in the respective FlowElementProperties object.
 	*/
-	std::vector<ActiveLayerProperties>				m_activeProperties;
+	std::list<ActiveLayerProperties>				m_activeProperties;
+
 	/*! Physical properties of all network elements (size = ThermalNetworkModelImpl::m_flowElements.size()).*/
 	std::vector<FlowElementProperties>				m_flowElementProperties;
 
@@ -247,7 +279,10 @@ private:
 	std::vector<unsigned int>						m_modelQuantityOffset;
 
 	/*! Pointer to states model. */
-	ThermalNetworkStatesModel						*m_statesModel;
+	ThermalNetworkStatesModel						*m_statesModel = nullptr;
+
+	/*! Pointer to simulation parameter object. */
+	const NANDRAD::SimulationParameter				*m_simPara = nullptr;
 };
 
 } // namespace NANDRAD_MODEL

@@ -84,6 +84,10 @@ public:
 	/*! Comparison operator. */
 	bool operator==(const WindowGlazingLayer &other) const { return !(*this != other);}
 
+	bool isValid() const {
+		///TODO Stephan implement valid function
+		return true;
+	}
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

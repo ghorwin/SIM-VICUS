@@ -165,7 +165,7 @@ a| Gibt die Interpolationsmethode zwischen den definierten y-Werten an.
 * `constant` - konstante Interpolation (Werte konstant während des Zeitschritts) 
 * `linear` - lineare Interpolation (Werte linear interpoliert zwischen Zeitschritten)  
 
-| Schlüsselwort | _required_
+| Schlüsselwort | _optional_ (`linear` ist der Standard)
 
 | `WrapMethod` 
 a| Gibt an, was getan werden soll, wenn Werte mit x-Werten außerhalb des x-Wertebereichs angefordert werden.
@@ -173,7 +173,7 @@ a| Gibt an, was getan werden soll, wenn Werte mit x-Werten außerhalb des x-Wert
 * `continuous` - konstante Extrapolation (ersten bzw. letzten Wert nehmen)
 * `cyclic` - zyklische Anpassung mit der modellspezifischen Periodenlänge anwenden (z. B. ein Jahr)
 
-| key | _required_
+| key | _optional_ (`continuous` ist der Standard)
 
 |====================
 

@@ -22,18 +22,8 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	/*! Update SubSurface colors based on orientation of associated plane geometry.
-		Color is only updated if current color is QColor::Invalid.
-	*/
-	void updateColor();
-
 	/*! Creates a copy of the SubSurface object but with a new unique ID. */
-	SubSurface clone() const{
-		SubSurface r(*this); // create new SubSurface with same unique ID
-		Object & o = r;
-		(Object&)r = o.clone(); // assign new ID only
-		return r;
-	}
+	SubSurface clone() const;
 
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
@@ -72,6 +62,10 @@ public:
 		The pointer is updated in VICUS::Project::updatePointers().
 	*/
 	SubSurfaceComponentInstance			*m_subSurfaceComponentInstance = nullptr;
+
+private:
+
+
 };
 
 } // namespace VICUS

@@ -3857,7 +3857,7 @@ y & \dot{Q}_{cond}\dot{<Q}_{cond,max}\\
 Which is identical to the flow element heat loss
 \begin_inset Formula 
 \[
-\dot{Q}_{loss}=\dot{Q}_{cond}
+\dot{Q}_{loss}=-\dot{Q}_{cond}
 \]
 
 \end_inset
@@ -4004,7 +4004,7 @@ The actual heat flux of the condenser
 The mean evaporator temperature is 
 \begin_inset Formula 
 \[
-T_{evap,m}=T_{in}+\frac{\Delta T_{evap,nominal}}{2}
+T_{evap,m}=T_{in}-\frac{\Delta T_{evap,nominal}}{2}
 \]
 
 \end_inset
@@ -4057,10 +4057,10 @@ The model calculates the heat flux at the evaporator
 \end_layout
 
 \begin_layout Standard
-which is identical to the negative heat loss of the flow element
+which is identical to the heat loss of the flow element
 \begin_inset Formula 
 \[
-\dot{Q}_{loss}=-\dot{Q}_{evap}
+\dot{Q}_{loss}=\dot{Q}_{evap}
 \]
 
 \end_inset

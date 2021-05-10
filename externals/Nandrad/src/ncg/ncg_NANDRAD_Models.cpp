@@ -100,6 +100,30 @@ void Models::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "IdealSurfaceHeatingModels") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "IdealSurfaceHeatingModel")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					IdealSurfaceHeatingModel obj;
+					obj.readXML(c2);
+					m_idealSurfaceHeatingModels.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "IdealPipeRegisterModels") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "IdealPipeRegisterModel")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					IdealPipeRegisterModel obj;
+					obj.readXML(c2);
+					m_idealPipeRegisterModels.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -173,6 +197,30 @@ TiXmlElement * Models::writeXML(TiXmlElement * parent) const {
 
 		for (std::vector<IdealHeatingCoolingModel>::const_iterator it = m_idealHeatingCoolingModels.begin();
 			it != m_idealHeatingCoolingModels.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_idealSurfaceHeatingModels.empty()) {
+		TiXmlElement * child = new TiXmlElement("IdealSurfaceHeatingModels");
+		e->LinkEndChild(child);
+
+		for (std::vector<IdealSurfaceHeatingModel>::const_iterator it = m_idealSurfaceHeatingModels.begin();
+			it != m_idealSurfaceHeatingModels.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_idealPipeRegisterModels.empty()) {
+		TiXmlElement * child = new TiXmlElement("IdealPipeRegisterModels");
+		e->LinkEndChild(child);
+
+		for (std::vector<IdealPipeRegisterModel>::const_iterator it = m_idealPipeRegisterModels.begin();
+			it != m_idealPipeRegisterModels.end(); ++it)
 		{
 			it->writeXML(child);
 		}

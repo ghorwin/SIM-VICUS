@@ -29,6 +29,8 @@
 #include "NANDRAD_ShadingControlModel.h"
 #include "NANDRAD_Thermostat.h"
 #include "NANDRAD_IdealHeatingCoolingModel.h"
+#include "NANDRAD_IdealPipeRegisterModel.h"
+#include "NANDRAD_IdealSurfaceHeatingModel.h"
 #include "NANDRAD_CodeGenMacros.h"
 
 namespace NANDRAD {
@@ -55,7 +57,11 @@ public:
 	/*! Container for all thermostat control models. */
 	std::vector<Thermostat>					m_thermostats;						// XML:E
 	/*! Container for all ideal heating/cooling models. */
-	std::vector<IdealHeatingCoolingModel>	m_idealHeatingCoolingModels;			// XML:E
+	std::vector<IdealHeatingCoolingModel>	m_idealHeatingCoolingModels;		// XML:E
+	/*! Container for all ideal surface heating models. */
+	std::vector<IdealSurfaceHeatingModel>	m_idealSurfaceHeatingModels;		// XML:E
+	/*! Container for all ideal pipe register models. */
+	std::vector<IdealPipeRegisterModel>		m_idealPipeRegisterModels;			// XML:E
 };
 
 } // namespace NANDRAD

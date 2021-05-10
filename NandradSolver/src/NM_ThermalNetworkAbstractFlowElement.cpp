@@ -31,6 +31,25 @@ void ThermalNetworkAbstractFlowElement::internalDerivatives(double * ydot) {
 }
 
 
+void ThermalNetworkAbstractFlowElement::dependencies(const double *ydot, const double *y,
+			const double *mdot, const double* TInflowLeft, const double*TInflowRight,
+			std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const
+{
+	// meanTemperature is computed from y
+	resultInputDependencies.push_back(std::make_pair(&m_meanTemperature, y) );
+
+	// ydot depends on inflow conditions, mean temperature (=outflowTemperature()) and mdot
+	resultInputDependencies.push_back(std::make_pair(ydot, TInflowLeft) );
+	resultInputDependencies.push_back(std::make_pair(ydot, TInflowRight) );
+	resultInputDependencies.push_back(std::make_pair(ydot, mdot) );
+	resultInputDependencies.push_back(std::make_pair(ydot, &m_meanTemperature) );
+
+	// outflow conditions depend on mean temperature
+	resultInputDependencies.push_back(std::make_pair(TInflowLeft, &m_meanTemperature) );
+	resultInputDependencies.push_back(std::make_pair(TInflowRight, &m_meanTemperature) );
+}
+
+
 
 
 } // namespace NANDRAD_MODEL

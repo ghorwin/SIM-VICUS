@@ -8,6 +8,7 @@
 
 #include "numeric"
 
+#include "IBK_messages.h"
 
 
 namespace NANDRAD_MODEL {
@@ -17,8 +18,7 @@ namespace NANDRAD_MODEL {
 TNSimplePipeElement::TNSimplePipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 							 const NANDRAD::HydraulicNetworkComponent & /*comp*/,
 							const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
-							const NANDRAD::HydraulicFluid & fluid,
-							const double &TExt)
+							const NANDRAD::HydraulicFluid & fluid)
 {
 	m_length = elem.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
 	m_innerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
@@ -37,8 +37,6 @@ TNSimplePipeElement::TNSimplePipeElement(const NANDRAD::HydraulicNetworkElement 
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 	m_fluidConductivity = fluid.m_para[NANDRAD::HydraulicFluid::P_Conductivity].value;
 	m_fluidViscosity = fluid.m_kinematicViscosity.m_values;
-	// set reference to external temperature
-	m_externalTemperatureRef = &TExt;
 }
 
 
@@ -59,26 +57,29 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 	double innerHeatTransferCoefficient = m_nusselt * m_fluidConductivity /
 											m_innerDiameter;
 
-	if(m_outerHeatTransferCoefficient == 0.) {
+	if (m_outerHeatTransferCoefficient == 0.) {
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-		m_thermalTransmittance = m_length / (
-					  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
-					+ 1.0/m_UValuePipeWall )
-			);
+		m_UAValue = m_length /
+				(
+					  1.0 / (innerHeatTransferCoefficient * m_innerDiameter * PI )
+					+ 1.0 / m_UValuePipeWall
+				);
 	}
 	else {
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-		m_thermalTransmittance = m_length / (
-					  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
-					+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)
-					+ 1.0/m_UValuePipeWall )
-			);
+		m_UAValue = m_length /
+				(
+					  1.0 / (innerHeatTransferCoefficient * m_innerDiameter * PI)
+					+ 1.0 / (m_outerHeatTransferCoefficient * m_outerDiameter * PI)
+					+ 1.0 / m_UValuePipeWall
+				);
 	}
 
-	const double externalTemperature = *m_externalTemperatureRef;
+	IBK_ASSERT(m_heatExchangeValueRef != nullptr);
+	const double externalTemperature = *m_heatExchangeValueRef;
 	// calculate heat loss with given parameters
 	// Q in [W] = DeltaT * UAValueTotal
-	m_heatLoss = m_thermalTransmittance * (m_meanTemperature - externalTemperature) * m_nParallelPipes;
+	m_heatLoss = m_UAValue * (m_meanTemperature - externalTemperature) * m_nParallelPipes;
 }
 
 
@@ -89,15 +90,14 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 TNStaticPipeElement::TNStaticPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 							 const NANDRAD::HydraulicNetworkComponent & comp,
 							const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
-							const NANDRAD::HydraulicFluid & fluid,
-							const double &TExt)
+							const NANDRAD::HydraulicFluid & fluid)
 {
 	m_length = elem.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
 	m_innerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
 	m_outerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeOuterDiameter].value;
 	m_UValuePipeWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_UValuePipeWall].value;
 	m_outerHeatTransferCoefficient =
-			comp.m_para[NANDRAD::HydraulicNetworkComponent::P_ExternalHeatTransferCoefficient].value;
+			elem.m_heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_ExternalHeatTransferCoefficient].value;
 	// compute fluid volume
 	m_fluidVolume = 0.01;
 
@@ -106,8 +106,6 @@ TNStaticPipeElement::TNStaticPipeElement(const NANDRAD::HydraulicNetworkElement 
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 	m_fluidConductivity = fluid.m_para[NANDRAD::HydraulicFluid::P_Conductivity].value;
 	m_fluidViscosity = fluid.m_kinematicViscosity.m_values;
-	// set reference to external temperature
-	m_externalTemperatureRef = &TExt;
 }
 
 
@@ -126,19 +124,21 @@ void TNStaticPipeElement::setInflowTemperature(double Tinflow) {
 	// calculate heat transfer
 
 	// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-	const double UAValueTotal = m_length / (
-				  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
-				+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)
-				+ 1.0/m_UValuePipeWall )
-		);
+	const double UAValueTotal = m_length /
+			(
+				  1.0 / (innerHeatTransferCoefficient * m_innerDiameter * PI)
+				+ 1.0 / (m_outerHeatTransferCoefficient * m_outerDiameter * PI)
+				+ 1.0 / m_UValuePipeWall
+			);
 
 	// Q in [W] = DeltaT * UAValueTotal
-	const double externalTemperature = *m_externalTemperatureRef;
+	IBK_ASSERT(m_heatExchangeValueRef != nullptr);
+	const double externalTemperature = *m_heatExchangeValueRef;
 	// calculate heat loss with given (for steady state model we interpret mean temperature as
 	// outflow temperature and calculate a corresponding heat flux)
 	m_heatLoss = m_massFlux * m_fluidHeatCapacity *
 			(m_inflowTemperature - externalTemperature) *
-			(1. - std::exp(-UAValueTotal / (std::fabs(m_massFlux) * m_fluidHeatCapacity )));
+			(1. - std::exp(-UAValueTotal / (std::fabs(m_massFlux) * m_fluidHeatCapacity )) );
 }
 #endif // STATIC_PIPE_MODEL_ENABLED
 
@@ -147,10 +147,9 @@ void TNStaticPipeElement::setInflowTemperature(double Tinflow) {
 // *** DynamicPipeElement ***
 
 TNDynamicPipeElement::TNDynamicPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
-							 const NANDRAD::HydraulicNetworkComponent & comp,
+							const NANDRAD::HydraulicNetworkComponent & comp,
 							const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
-							const NANDRAD::HydraulicFluid & fluid,
-							const double &TExt)
+							const NANDRAD::HydraulicFluid & fluid)
 {
 	m_length = elem.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
 	m_innerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
@@ -185,8 +184,6 @@ TNDynamicPipeElement::TNDynamicPipeElement(const NANDRAD::HydraulicNetworkElemen
 	// calculate segment specific quantities
 	m_discLength = m_length/(double) m_nVolumes;
 	m_discVolume = m_fluidVolume/(double) m_nVolumes;
-	// set reference to external temperature
-	m_externalTemperatureRef = &TExt;
 }
 
 
@@ -205,46 +202,44 @@ void TNDynamicPipeElement::setInflowTemperature(double Tinflow) {
 	// note: velcoty is caluclated for a single pipe (but mass flux interpreted as flux through all parallel pipes
 	m_velocity = m_volumeFlow/m_fluidCrossSection;
 
-	// check heat transfer type
-	if (m_heatExchangeType != (int) NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant &&
-		m_heatExchangeType != (int) NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline)
-	{
+	m_heatLoss = 0.0;
 
-		m_heatLoss = 0.0;
+	// assume constant heat transfer coefficient along pipe, using average temperature
+	m_viscosity = m_fluidViscosity.value(m_meanTemperature);
+	m_reynolds = ReynoldsNumber(m_velocity, m_viscosity, m_innerDiameter);
+	m_prandtl = PrandtlNumber(m_viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
+	m_nusselt = NusseltNumber(m_reynolds, m_prandtl, m_length, m_innerDiameter);
+	double innerHeatTransferCoefficient = m_nusselt * m_fluidConductivity / m_innerDiameter;
 
-		// assume constant heat transfer coefficient along pipe, using average temperature
-		m_viscosity = m_fluidViscosity.value(m_meanTemperature);
-		m_reynolds = ReynoldsNumber(m_velocity, m_viscosity, m_innerDiameter);
-		m_prandtl = PrandtlNumber(m_viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
-		m_nusselt = NusseltNumber(m_reynolds, m_prandtl, m_length, m_innerDiameter);
-		double innerHeatTransferCoefficient = m_nusselt * m_fluidConductivity / m_innerDiameter;
-
+	// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
+	// see documentation above
+	if(m_outerHeatTransferCoefficient == 0.) {
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-		// see documentation above
-		if(m_outerHeatTransferCoefficient == 0.) {
-			// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-			m_thermalTransmittance = m_discLength / (
-						  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
-						+ 1.0/m_UValuePipeWall )
+		m_UAValue = m_discLength /
+				(
+					  1.0 / ( innerHeatTransferCoefficient * m_innerDiameter * PI)
+					+ 1.0 / m_UValuePipeWall
 				);
-		}
-		else {
-			// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-			m_thermalTransmittance = m_discLength / (
-						  1.0/(innerHeatTransferCoefficient * m_innerDiameter * PI
-						+ 1.0/(m_outerHeatTransferCoefficient * m_outerDiameter * PI)
-						+ 1.0/m_UValuePipeWall )
+	}
+	else {
+		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
+		m_UAValue = m_discLength /
+				(
+					  1.0 / (innerHeatTransferCoefficient * m_innerDiameter * PI)
+					+ 1.0 / (m_outerHeatTransferCoefficient * m_outerDiameter * PI)
+					+ 1.0 / m_UValuePipeWall
 				);
-		}
+	}
 
 
-		const double externalTemperature = *m_externalTemperatureRef;
-		for(unsigned int i = 0; i < m_nVolumes; ++i) {
-			// calculate heat loss with given parameters
-			m_heatLosses[i] = m_thermalTransmittance * (m_temperatures[i] - externalTemperature) * m_nParallelPipes;
-			// sum up heat losses
-			m_heatLoss += m_heatLosses[i];
-		}
+	IBK_ASSERT(m_heatExchangeValueRef != nullptr);
+	const double externalTemperature = *m_heatExchangeValueRef;
+	for (unsigned int i = 0; i < m_nVolumes; ++i) {
+		// calculate heat loss with given parameters
+		// TODO : Hauke, check equation... hier fehlt glaub ich noch der Faktor 1/m_nVolumes
+		m_heatLosses[i] = m_UAValue * (m_temperatures[i] - externalTemperature) * m_nParallelPipes;
+		// sum up heat losses
+		m_heatLoss += m_heatLosses[i];
 	}
 }
 
@@ -273,14 +268,14 @@ void TNDynamicPipeElement::internalDerivatives(double * ydot) {
 		// first element copies boundary conditions
 
 		ydot[0] = -m_heatLosses[0] + m_massFlux * m_fluidHeatCapacity * (m_inflowTemperature  - m_temperatures[0]);
-		for(unsigned int i = 1; i < m_nVolumes; ++i) {
+		for (unsigned int i = 1; i < m_nVolumes; ++i) {
 			ydot[i] = -m_heatLosses[i] + m_massFlux * m_fluidHeatCapacity * (m_temperatures[i - 1] - m_temperatures[i]);
 		}
 	}
 	else { // m_massFlux < 0
 		// last element copies boundary conditions
 		ydot[m_nVolumes - 1] = -m_heatLosses[m_nVolumes - 1] + m_massFlux * m_fluidHeatCapacity * (m_temperatures[m_nVolumes - 1] - m_inflowTemperature);
-		for(unsigned int i = 0; i < m_nVolumes - 1; ++i) {
+		for (unsigned int i = 0; i < m_nVolumes - 1; ++i) {
 			ydot[i] = -m_heatLosses[i] + m_massFlux * m_fluidHeatCapacity * (m_temperatures[i] - m_temperatures[i + 1]);
 		}
 	}
@@ -296,8 +291,17 @@ double TNDynamicPipeElement::outflowTemperature() const {
 
 
 void TNDynamicPipeElement::dependencies(const double *ydot, const double *y,
-										const double *mdot, const double* TInflowLeft, const double*TInflowRight,
-										std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const {
+					const double *mdot, const double* TInflowLeft, const double*TInflowRight,
+					std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const
+{
+	// The model computes ydot[...], m_meanTemperature and m_heatLoss
+
+	// Dependencies correspond to a 1D Finite Volume discretization using first-order upwinding
+	// flux approxiation. Since flow go into either direction, we use the dependencies for central differencing,
+	// thus ydot[i] depends on y[i-1], y[i] and y[i+1]. The boundary elements depend on the inlet and outlet temperatures.
+	// And of course, all ydot depend on the mass flux.
+
+	// Also, since we have heat exchange to the environment, each ydot depends on the external temperature.
 
 	// set dependency to inlet and outlet enthalpy
 	resultInputDependencies.push_back(std::make_pair(TInflowLeft, y) );
@@ -305,31 +309,31 @@ void TNDynamicPipeElement::dependencies(const double *ydot, const double *y,
 	resultInputDependencies.push_back(std::make_pair(ydot, TInflowLeft) );
 	resultInputDependencies.push_back(std::make_pair(ydot + nInternalStates() - 1, TInflowRight) );
 
-
-	for(unsigned int n = 0; n < nInternalStates(); ++n) {
+	for (unsigned int n = 0; n < nInternalStates(); ++n) {
 		// set dependency to mean temperatures
 		resultInputDependencies.push_back(std::make_pair(&m_meanTemperature, y + n) );
 
-		// set depedency to ydot
-		// heat balance per default sums up heat fluxes and entahpy flux differences through the pipe
-		if(n > 0)
+		// set dependency to ydot from y i-1, i and i+1
+		if (n > 0)
 			resultInputDependencies.push_back(std::make_pair(ydot + n, y + n - 1) );
 
 		resultInputDependencies.push_back(std::make_pair(ydot + n, y + n) );
 
-		if(n < nInternalStates() - 1)
+		if (n < nInternalStates() - 1)
 			resultInputDependencies.push_back(std::make_pair(ydot + n, y + n + 1) );
 
+		// set dependency to mdot
 		resultInputDependencies.push_back(std::make_pair(ydot + n, mdot) );
-		resultInputDependencies.push_back(std::make_pair(ydot + n, m_externalTemperatureRef));
+		// and to external temperature
+		resultInputDependencies.push_back(std::make_pair(ydot + n, m_heatExchangeValueRef));
 
-		// set dependeny to Qdot
+		// set dependency to Qdot
 		resultInputDependencies.push_back(std::make_pair(&m_heatLoss, y + n) );
 	}
 
-	// set dependeny to Qdot
+	// set dependency to Qdot
 	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, mdot) );
-	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, m_externalTemperatureRef) );
+	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, m_heatExchangeValueRef) );
 }
 
 
@@ -422,8 +426,13 @@ double TNDynamicAdiabaticPipeElement::outflowTemperature() const {
 
 
 void TNDynamicAdiabaticPipeElement::dependencies(const double *ydot, const double *y,
-										const double *mdot, const double* TInflowLeft, const double*TInflowRight,
-										std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const {
+			const double *mdot, const double* TInflowLeft, const double*TInflowRight,
+			std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const
+{
+	// Dependencies correspond to a 1D Finite Volume discretization using first-order upwinding
+	// flux approxiation. Since flow go into either direction, we use the dependencies for central differencing,
+	// thus ydot[i] depends on y[i-1], y[i] and y[i+1]. The boundary elements depend on the inlet and outlet temperatures.
+	// And of course, all ydot depend on the mass flux.
 
 	// set dependency to inlet and outlet enthalpy
 	resultInputDependencies.push_back(std::make_pair(TInflowLeft, y) );
@@ -431,21 +440,20 @@ void TNDynamicAdiabaticPipeElement::dependencies(const double *ydot, const doubl
 	resultInputDependencies.push_back(std::make_pair(ydot, TInflowLeft) );
 	resultInputDependencies.push_back(std::make_pair(ydot + nInternalStates() - 1, TInflowRight) );
 
-
-	for(unsigned int n = 0; n < nInternalStates(); ++n) {
+	for (unsigned int n = 0; n < nInternalStates(); ++n) {
 		// set dependency to mean temperatures
 		resultInputDependencies.push_back(std::make_pair(&m_meanTemperature, y + n) );
 
-		// heat balance per default sums up heat fluxes and entahpy flux differences through the pipe
-		if(n > 0)
+		// set dependency to ydot from y i-1, i and i+1
+		if (n > 0)
 			resultInputDependencies.push_back(std::make_pair(ydot + n, y + n - 1) );
 
 		resultInputDependencies.push_back(std::make_pair(ydot + n, y + n) );
 
-		if(n < nInternalStates() - 1)
+		if (n < nInternalStates() - 1)
 			resultInputDependencies.push_back(std::make_pair(ydot + n, y + n + 1) );
 
-		// set depedency to mdot
+		// set dependency to mdot
 		resultInputDependencies.push_back(std::make_pair(ydot + n, mdot) );
 	}
 }
@@ -455,9 +463,9 @@ void TNDynamicAdiabaticPipeElement::dependencies(const double *ydot, const doubl
 // *** PumpWithPerformanceLoss ***
 
 TNPumpWithPerformanceLoss::TNPumpWithPerformanceLoss(
-							 const NANDRAD::HydraulicFluid & fluid,
+							const NANDRAD::HydraulicFluid & fluid,
 							const NANDRAD::HydraulicNetworkComponent & comp,
-							const double &pRef)
+							double pRef)
 {
 	// copy component properties
 	m_fluidVolume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
@@ -465,8 +473,8 @@ TNPumpWithPerformanceLoss::TNPumpWithPerformanceLoss(
 	// copy fluid properties
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
-	// copy references to hydraulic simulation
-	m_pressureHeadRef = &pRef;
+	// store pressure head
+	m_pressureHead = pRef;
 }
 
 
@@ -477,7 +485,7 @@ void TNPumpWithPerformanceLoss::setInflowTemperature(double Tinflow) {
 	// Pa * m3/s = N/m2 * m3/s = N*m/s
 
 	// calculate pump performance
-	m_mechanicalPower = m_massFlux/m_fluidDensity * (*m_pressureHeadRef);
+	m_mechanicalPower = m_massFlux/m_fluidDensity * m_pressureHead;
 
 	// efficiency is defined as portion of total electrical power used for mechanical
 	// Pelectrical * m_pumpEfficiency = Pmechanical
@@ -491,29 +499,26 @@ void TNPumpWithPerformanceLoss::setInflowTemperature(double Tinflow) {
 
 // *** TNHeatPumpIdealCarnot ***
 
-TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(const NANDRAD::HydraulicFluid & fluid,
-											 const NANDRAD::HydraulicNetworkComponent & comp,
-											 const double &QExt, const std::vector<double> &parameterRefs)
+TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(unsigned int flowElementId,
+											 const NANDRAD::HydraulicFluid & fluid,
+											 const NANDRAD::HydraulicNetworkComponent & comp) :
+	m_flowElementId(flowElementId)
 {
 	m_fluidVolume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
 	m_carnotEfficiency = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiency].value;
-	m_condenserMaximumHeatFlux = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumHeatHeatingPower].value;
+	m_condenserMaximumHeatFlux = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumHeatingPower].value;
 	m_nominalTemperatureDifference = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_HeatPumpNominalTemperatureDifference].value;
 	m_heatpumpIntegration = comp.m_heatPumpIntegration;
 
 	// copy fluid properties
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
-
-	// set reference to external heat loss
-	m_heatFluxCondenserRef = &QExt;
-
-	// set reference to condenser mean temperature: the value will be updated from a spline throughout the simulation
-	m_condenserMeanTemperature = &parameterRefs[0];
 }
 
 
 void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
+	FUNCID("TNHeatPumpIdealCarnot::setInflowTemperature");
+
 	// copy inflow temperature
 	m_inflowTemperature = Tinflow;
 
@@ -521,27 +526,128 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 
 		case NANDRAD::HydraulicNetworkComponent::HP_SourceSide: {
 
-		// COP
-		const double evaporatorMeanTemperature = Tinflow + m_nominalTemperatureDifference / 2;
-		const double COPMax = *m_condenserMeanTemperature / (*m_condenserMeanTemperature - evaporatorMeanTemperature);
-		const double m_COP = m_carnotEfficiency * COPMax;
+			// get scheduled temperature
+			m_condenserMeanTemperature = *m_scheduledTemperature1;
 
-		// cut condenser heat flux
-		double condenserHeatFlux = *m_heatFluxCondenserRef;
-		if (condenserHeatFlux > m_condenserMaximumHeatFlux)
-			condenserHeatFlux = m_condenserMaximumHeatFlux;
+			// cut condenser heat flux
+			IBK_ASSERT(m_heatExchangeValueRef != nullptr);
+			m_condenserHeatFlux = *m_heatExchangeValueRef;
+			if (m_condenserHeatFlux > m_condenserMaximumHeatFlux)
+				m_condenserHeatFlux = m_condenserMaximumHeatFlux;
 
-		// heat loss = - evaporator heat flux
-		m_heatLoss = - condenserHeatFlux * (m_COP - 1) / m_COP;
-		m_electricalPower  = *m_heatFluxCondenserRef / m_COP;
+			// heat pump physics only work when condenser temperature is above evaporator temperature
+			m_evaporatorMeanTemperature = Tinflow - m_nominalTemperatureDifference / 2;
+			if (m_condenserMeanTemperature > m_evaporatorMeanTemperature){
+				const double COPMax = m_condenserMeanTemperature / (m_condenserMeanTemperature - m_evaporatorMeanTemperature);
+				m_COP = m_carnotEfficiency * COPMax;
+				m_heatLoss = m_condenserHeatFlux * (m_COP - 1) / m_COP;
+				m_electricalPower  = m_condenserHeatFlux / m_COP;
+			}
+			else {
+				IBK::IBK_Message(IBK::FormatString("Condenser temperature >= evaporator temperature in "
+												   "HeatPumpIdealCarnot, flow element with id '%1'\n").arg(m_flowElementId),
+													IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
+				m_COP = 0.0;
+				m_heatLoss = 0.0;
+				m_electricalPower  = 0.0;
+			}
+		} break;
+
+
+		// not fully implemented yet
+		case NANDRAD::HydraulicNetworkComponent::HP_SupplySide:{
+
+			// get scheduled temperatures
+			m_evaporatorMeanTemperature = *m_scheduledTemperature1;
+			const double condenserOutletSetpointTemperature = *m_scheduledTemperature2;
+
+			// implement controller here
+			double y = 100; // = f(Tinflow, condenserOutletSetpointTemperature)
+			// cut condenser heat flux
+			m_condenserHeatFlux = y;
+			if (m_condenserHeatFlux > m_condenserMaximumHeatFlux)
+				m_condenserHeatFlux = m_condenserMaximumHeatFlux;
+			// heat pump can only add heat
+			if (m_condenserHeatFlux < 0)
+				m_condenserHeatFlux = 0;
+
+			// heat pump physics only work when condenser temperature is above evaporator temperature
+			m_condenserMeanTemperature = Tinflow + m_nominalTemperatureDifference / 2;
+			if (m_condenserMeanTemperature > m_evaporatorMeanTemperature){
+				const double COPMax = m_condenserMeanTemperature / (m_condenserMeanTemperature - m_evaporatorMeanTemperature);
+				m_COP = m_carnotEfficiency * COPMax;
+				m_heatLoss = - m_condenserHeatFlux;
+				m_electricalPower  = m_condenserHeatFlux / m_COP;
+			}
+			else {
+				IBK::IBK_Message(IBK::FormatString("Condenser temperature >= evaporator temperature in "
+												   "HeatPumpIdealCarnot, flow element with id '%1'\n").arg(m_flowElementId),
+													IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
+				m_COP = 0.0;
+				m_heatLoss = 0.0;
+				m_electricalPower  = 0.0;
+			}
 
 		} break;
 
-		case NANDRAD::HydraulicNetworkComponent::HP_SupplySide:
 		case NANDRAD::HydraulicNetworkComponent::HP_SupplyAndSourceSide:
-		case NANDRAD::HydraulicNetworkComponent::NUM_HP: {
+		case NANDRAD::HydraulicNetworkComponent::NUM_HP:
+			break;
+	}
+}
 
-		}
+
+
+void TNHeatPumpIdealCarnot::inputReferences(std::vector<InputReference> & inputRefs) const {
+
+	switch (m_heatpumpIntegration) {
+
+		case NANDRAD::HydraulicNetworkComponent::HP_SourceSide: {
+			InputReference ref;
+			ref.m_id = m_flowElementId;
+			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+			ref.m_name.m_name = "CondenserMeanTemperatureSchedule";
+			ref.m_required = true;
+			inputRefs.push_back(ref);
+		} break;
+
+		case NANDRAD::HydraulicNetworkComponent::HP_SupplySide: {
+			InputReference ref;
+			ref.m_id = m_flowElementId;
+			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+			ref.m_name.m_name = "EvaporatorMeanTemperatureSchedule";
+			ref.m_required = true;
+			inputRefs.push_back(ref);
+			InputReference ref2;
+			ref2.m_id = m_flowElementId;
+			ref2.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+			ref2.m_name.m_name = "HeatingSetpointSchedule";
+			ref2.m_required = true;
+			inputRefs.push_back(ref2);
+		} break;
+
+		case NANDRAD::HydraulicNetworkComponent::HP_SupplyAndSourceSide:
+		case NANDRAD::HydraulicNetworkComponent::NUM_HP:
+			break;
+	}
+}
+
+
+void TNHeatPumpIdealCarnot::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
+
+	// now store the pointer returned for our input ref request and advance the iterator by one
+	switch (m_heatpumpIntegration) {
+
+		case NANDRAD::HydraulicNetworkComponent::HP_SourceSide:
+			m_scheduledTemperature1 = *(resultValueRefs++); // CondenserMeanTemperatureSchedule
+			break;
+		case NANDRAD::HydraulicNetworkComponent::HP_SupplySide:
+			m_scheduledTemperature1 = *(resultValueRefs++); // EvaporatorMeanTemperatureSchedule
+			m_scheduledTemperature2 = *(resultValueRefs++); // HeatingSetpointSchedule
+			break;
+		case NANDRAD::HydraulicNetworkComponent::HP_SupplyAndSourceSide:
+		case NANDRAD::HydraulicNetworkComponent::NUM_HP:
+			break;
 	}
 }
 
@@ -558,25 +664,21 @@ TNAdiabaticElement::TNAdiabaticElement(const NANDRAD::HydraulicFluid & fluid, do
 }
 
 
+
 // *** ElementWithExternalHeatLoss ***
 
-TNElementWithExternalHeatLoss::TNElementWithExternalHeatLoss(
-							 const NANDRAD::HydraulicFluid & fluid,
-							 double fluidVolume,
-							 const double &QExt)
-{
+TNElementWithExternalHeatLoss::TNElementWithExternalHeatLoss(const NANDRAD::HydraulicFluid & fluid, double fluidVolume) {
 	m_fluidVolume = fluidVolume;
 	// copy fluid properties
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
-	// set reference to external heat loss
-	m_externalHeatLossRef = &QExt;
 }
 
 
 void TNElementWithExternalHeatLoss::internalDerivatives(double * ydot) {
 	// set heat loss
-	m_heatLoss = *m_externalHeatLossRef;
+	IBK_ASSERT(m_heatExchangeValueRef != nullptr);
+	m_heatLoss = *m_heatExchangeValueRef;
 	// use basic routine
 	ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(ydot);
 }

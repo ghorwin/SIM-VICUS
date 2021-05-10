@@ -92,6 +92,9 @@ public:
 	/*! Returns current vector of triangles of the opaque surface (not including holes). */
 	const std::vector<triangle_t> & triangles() const { return m_triangles; }
 
+	/*! Returns the triangles for each hole in this polygon. */
+	const std::vector< std::vector<triangle_t> > & holeTriangles() const { return m_holeTriangles; }
+
 	/*! Returns the vertexes used by the triangles.
 		This is a combination of the polygon's vertexes and vertexes of any (valid) holes inside
 		the polygon.
@@ -104,8 +107,12 @@ public:
 	/*! Returns the stored polygon. */
 	const Polygon3D & polygon() const { return m_polygon; }
 
-	///TODO Dirk->Andreas was passiert mit den Holes? Sind die dann noch valide?
-	/*! Sets a new polygon and updates triangulation. */
+	/*! Sets a new polygon and updates triangulation.
+		Any holes previously set remain in the polygon. However, if the polygon now clips any
+		of the holes, this will be detected in the triangulation and may lead to
+		invalidation of holes.
+		To clear/remove the holes, simply set an empty vector in setHoles().
+	*/
 	void setPolygon(const Polygon3D & polygon3D);
 
 	/*! Returns the vector of holes (2D polygons in the plane of the polygon). */

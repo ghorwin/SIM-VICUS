@@ -9,5 +9,27 @@ void ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(double *
 }
 
 
+void ThermalNetworkAbstractFlowElementWithHeatLoss::dependencies(const double *ydot, const double *y,
+			const double *mdot, const double* TInflowLeft, const double*TInflowRight,
+			std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const
+{
+	// add default dependencies for computed ydot, m_meanTemperature, InflowLeft and TInflowRight
+	ThermalNetworkAbstractFlowElement::dependencies(ydot, y, mdot, TInflowLeft, TInflowRight, resultInputDependencies);
+
+	// m_heatLoss depends on all inputs, just as ydot
+	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, TInflowLeft) );
+	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, TInflowRight) );
+	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, mdot) );
+	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, &m_meanTemperature) );
+
+	// if we have an external reference, heat loss also depends on it
+	if (m_heatExchangeValueRef != nullptr)
+		resultInputDependencies.push_back(std::make_pair(&m_heatLoss, m_heatExchangeValueRef) );
+
+	// ydot also depends on m_heatLoss
+	resultInputDependencies.push_back(std::make_pair(ydot, &m_heatLoss) );
+}
+
+
 } // namespace NANDRAD_MODEL
 

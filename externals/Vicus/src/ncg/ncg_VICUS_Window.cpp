@@ -27,6 +27,7 @@
 #include <IBK_StringUtils.h>
 #include <VICUS_Constants.h>
 #include <NANDRAD_Utilities.h>
+#include <VICUS_KeywordList.h>
 
 #include <tinyxml.h>
 
@@ -49,8 +50,26 @@ void Window::readXML(const TiXmlElement * element) {
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName.setEncodedString(attrib->ValueStr());
-			else if (attribName == "glazingSystemID")
-				m_glazingSystemID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "idGlazingSystem")
+				m_idGlazingSystem = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "color")
+				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
+			else if (attribName == "methodFrame")
+				try {
+					m_methodFrame = (Method)KeywordList::Enumeration("Window::Method", attrib->ValueStr());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
+				}
+			else if (attribName == "methodDivider")
+				try {
+					m_methodDivider = (Method)KeywordList::Enumeration("Window::Method", attrib->ValueStr());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
+				}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -65,6 +84,19 @@ void Window::readXML(const TiXmlElement * element) {
 				m_notes = QString::fromStdString(c->GetText());
 			else if (cName == "DataSource")
 				m_dataSource = QString::fromStdString(c->GetText());
+			else if (cName == "IBK:Parameter") {
+				IBK::Parameter p;
+				NANDRAD::readParameterElement(c, p);
+				bool success = false;
+				para_t ptype;
+				try {
+					ptype = (para_t)KeywordList::Enumeration("Window::para_t", p.name);
+					m_para[ptype] = p; success = true;
+				}
+				catch (...) { /* intentional fail */  }
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
 			else if (cName == "WindowFrame")
 				m_frame.readXML(c);
 			else if (cName == "WindowDivider")
@@ -91,12 +123,24 @@ TiXmlElement * Window::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName.encodedString());
-	if (m_glazingSystemID != VICUS::INVALID_ID)
-		e->SetAttribute("glazingSystemID", IBK::val2string<unsigned int>(m_glazingSystemID));
+	if (m_idGlazingSystem != VICUS::INVALID_ID)
+		e->SetAttribute("idGlazingSystem", IBK::val2string<unsigned int>(m_idGlazingSystem));
+	if (m_color.isValid())
+		e->SetAttribute("color", m_color.name().toStdString());
+	if (m_methodFrame != NUM_M)
+		e->SetAttribute("methodFrame", KeywordList::Keyword("Window::Method",  m_methodFrame));
+	if (m_methodDivider != NUM_M)
+		e->SetAttribute("methodDivider", KeywordList::Keyword("Window::Method",  m_methodDivider));
 	if (!m_notes.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.toStdString());
 	if (!m_dataSource.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.toStdString());
+
+	for (unsigned int i=0; i<NUM_P; ++i) {
+		if (!m_para[i].name.empty()) {
+			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
+		}
+	}
 
 	m_frame.writeXML(e);
 
