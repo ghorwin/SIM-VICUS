@@ -216,18 +216,12 @@
 			</ObjectList>
 		</ObjectLists>
 		<FMIDescription>
-			<ModelName>SingleZoneOnlyOpaqueWalls</ModelName>
+			<ModelName>CooledZone</ModelName>
 			<InputVariables>
-				<FMIVariableDefinition fmiVarName="Model(4001).IdealCoolingLoad(100)" unit="W" fmiValueRef="51">
-					<FmiVarDescription>Ideal, convective cooling load</FmiVarDescription>
-					<VarName>Model.IdealCoolingLoad</VarName>
-					<ObjectID>4001</ObjectID>
-					<VectorIndex>100</VectorIndex>
-				</FMIVariableDefinition>
-				<FMIVariableDefinition fmiVarName="Model(4001).IdealHeatingLoad(100)" unit="W" fmiValueRef="52">
-					<FmiVarDescription>Ideal, convective heat load</FmiVarDescription>
-					<VarName>Model.IdealHeatingLoad</VarName>
-					<ObjectID>4001</ObjectID>
+				<FMIVariableDefinition fmiVarName="CoolingControlValue" unit="---" fmiValueRef="51">
+					<FmiVarDescription>Cooling control signal</FmiVarDescription>
+					<VarName>Model.CoolingControlValue</VarName>
+					<ObjectID>1001</ObjectID>
 					<VectorIndex>100</VectorIndex>
 				</FMIVariableDefinition>
 			</InputVariables>
@@ -237,10 +231,20 @@
 					<VarName>Zone.AirTemperature</VarName>
 					<ObjectID>100</ObjectID>
 				</FMIVariableDefinition>
-				<FMIVariableDefinition fmiVarName="Location(0).Temperature" unit="C" fmiValueRef="50">
+				<FMIVariableDefinition fmiVarName="ConstructionInstance(5).FluxShortWaveRadiationB" unit="W" fmiValueRef="53">
+					<FmiVarDescription>Short wave radiation flux across interface B (into construction)</FmiVarDescription>
+					<VarName>ConstructionInstance.FluxShortWaveRadiationB</VarName>
+					<ObjectID>5</ObjectID>
+				</FMIVariableDefinition>
+				<FMIVariableDefinition fmiVarName="Location(0).Temperature" unit="C" fmiValueRef="52">
 					<FmiVarDescription>Outside temperature.</FmiVarDescription>
 					<VarName>Location.Temperature</VarName>
 					<ObjectID>0</ObjectID>
+				</FMIVariableDefinition>
+				<FMIVariableDefinition fmiVarName="ConstructionInstance(5).SolarRadiationFluxB" unit="W/m2" fmiValueRef="54">
+					<FmiVarDescription>Solar radiation flux density into surface B</FmiVarDescription>
+					<VarName>ConstructionInstance.SolarRadiationFluxB</VarName>
+					<ObjectID>5</ObjectID>
 				</FMIVariableDefinition>
 			</OutputVariables>
 		</FMIDescription>
