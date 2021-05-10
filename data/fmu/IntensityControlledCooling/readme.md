@@ -35,32 +35,38 @@ ln -s ~/svn/mastersim-code/bin/release/MasterSimulator MasterSimulator
 
 Das Verzeichnis von `NandradFMUGenerator` und `NandradSolver` (müssen
 im gleichen Verzeichnis liegen), muss bekannt sein. Dazu den Pfad
-zu den ausführbaren Dateien in den Suchpfad in der .bashrc setzen:
+zu den NANDRAD-Dateien in der .bashrc setzen:
 
 ```
-export PATH=$PATH:/home/ghorwin/git/SIM-VICUS/bin/release
-
+export NANDRAD_PATH=/home/ghorwin/git/SIM-VICUS/bin/release
 ```
 
-1. Generieren der FMU
+1. Generieren der NANDRAD-FMU
 
 Im Testverzeichnis ausführen:
 
 ```bash
-> $NANDRAD_PATH/NandradFMUGenerator --generate SingleZoneOnlyOpaqueWalls.nandrad
+> $NANDRAD_PATH/NandradFMUGenerator --generate="CooledZone" CooledZone.nandrad
 ```
 
-Dies erstellt die Datei `SingleZoneOnlyOpaqueWalls.fmu`, oder gibt einen Fehler aus.
+Dies erstellt die Datei `CooledZone.fmu`.
 
-2. Durchlaufen der Testsimulation
+2. Generieren der Controller-FMU
+
+Im Verzeichnis `Controller/CoolingController/build/` ausführen:
+
+```bash
+> ./build.sh
+> ./deploy.sh
+```
+
+3. Durchlaufen der Testsimulation
+
+fmu-Dateien ins Verzeichnis `release_mode` kopieren. Dort Simulation starten:
 
 ```bash
 > MasterSimulator IntensityControlledCooling.msim
 ```
-
-3. Vergleich der Testergebnisse
-
-...
 
 
 
