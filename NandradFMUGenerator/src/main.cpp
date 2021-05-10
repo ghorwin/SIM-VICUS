@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
 
 	IBK::ArgParser args;
 	args.m_appname = "NandradFMUGenerator";
-	args.addOption(0, "generate", "Generates this FMU from the provided project file (requires project file argument).", "fmu-filename", "");
+	args.addOption(0, "generate", "Generates this FMU from the provided project file (requires project file argument).", "FMU-model-name", "");
 	args.parse(argc, argv);
 	if (args.handleDefaultFlags(std::cout))
 		return EXIT_SUCCESS;
