@@ -183,8 +183,13 @@ void NandradFMUGeneratorWidget::init() {
 	}
 }
 
+void NandradFMUGeneratorWidget::setModelName(const QString & modelName) {
+	m_ui->lineEditModelName->setText(modelName);
+	on_lineEditModelName_editingFinished();
+}
 
-void NandradFMUGeneratorWidget::setup() {
+
+int NandradFMUGeneratorWidget::setup() {
 
 	// read NANDRAD project
 	try {
@@ -197,7 +202,7 @@ void NandradFMUGeneratorWidget::setup() {
 							  tr("Reading of NANDRAD project file '%1' failed.").arg(QString::fromStdString(m_nandradFilePath.str())) );
 		// disable all GUI elements
 		setGUIState(false);
-		return;
+		return 1;
 	}
 
 	// store project file for next start of generator tool
@@ -223,6 +228,8 @@ void NandradFMUGeneratorWidget::setup() {
 	on_lineEditModelName_editingFinished();
 	// now test-init the solver and update the variable tables
 	updateVariableLists();
+
+	return 0; // success
 }
 
 
@@ -470,7 +477,7 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerate_clicked() {
 		return;
 
 	// now generate the FMU
-	generate(false);
+	generate();
 }
 
 
@@ -959,7 +966,8 @@ void NandradFMUGeneratorWidget::appendVariableEntry(QTableWidget * tableWidget,
 	tableWidget->blockSignals(false);
 }
 
-int  NandradFMUGeneratorWidget::generate(bool silent) {
+
+int  NandradFMUGeneratorWidget::generate() {
 	FUNCID(NandradFMUGeneratorWidget::generate);
 
 	QString fmuModelName = m_ui->lineEditModelName->text().trimmed();
@@ -1015,7 +1023,7 @@ int  NandradFMUGeneratorWidget::generate(bool silent) {
 	IBK::Path resourcePath(copyPath.toStdString());
 	IBK::Path fullClimatePath = p.m_location.m_climateFilePath.withReplacedPlaceholders(p.m_placeholders);
 	if (!fullClimatePath.isFile()) {
-		if (silent) {
+		if (m_silent) {
 			IBK_Message(IBK::FormatString("The referenced climate data file '%1' does not exist. Please select a climate data file!")
 					.arg(fullClimatePath.str()), IBK::MSG_ERROR, FUNC_ID);
 		}
@@ -1255,7 +1263,7 @@ int  NandradFMUGeneratorWidget::generate(bool silent) {
 		// zip up the archive
 		success = JlCompress::compressDir(targetPath, baseDir.absolutePath());
 		if (!success) {
-			if (silent) {
+			if (m_silent) {
 				IBK::IBK_Message(IBK::FormatString("Error compressing the FMU archive (maybe invalid target path or "
 												   "invalid characters used?)."), IBK::MSG_ERROR, FUNC_ID);
 			}
@@ -1270,7 +1278,7 @@ int  NandradFMUGeneratorWidget::generate(bool silent) {
 	QtExt::Directories::removeDirRecursively(baseDir.absolutePath());
 
 	if (success) {
-		if (!silent)
+		if (!m_silent)
 			QMessageBox::information(this, tr("FMU Export complete"), tr("FMU '%1' created.").arg(targetPath));
 		return 0;
 	}

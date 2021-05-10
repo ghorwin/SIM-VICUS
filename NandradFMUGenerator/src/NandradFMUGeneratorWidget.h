@@ -24,6 +24,16 @@ public:
 	/*! Handles the initial file selection. */
 	void init();
 
+	/*! Sets the target FMU filename. */
+	void setModelName(const QString & fname);
+
+	/*! This is the work-horse function that does the entire generation stuff.
+		Expects the project file to be saved already.
+		\param silent If true, the generation process does not pop-up any message box or dialog in case of error, but
+			just dumps errors to console. This is meant for command-line exporting functionality.
+	*/
+	int generate();
+
 	/*! Full file path to the currently used nandrad file. */
 	IBK::Path							m_nandradFilePath;
 	/*! Path to dll/lib files. */
@@ -36,9 +46,16 @@ public:
 	*/
 	IBK::Path							m_fmuExportDirectory;
 
-private slots:
+	/*! If true, all user-interactive dialogs are disabled and exporter runs as command-line-tool
+		with just command line error messages.
+	*/
+	bool								m_silent = false;
+
+public slots:
 	/*! Reads the NANDRAD project and if successful, configures the user interface and calls updateVariableLists(). */
-	void setup();
+	int setup();
+
+private slots:
 
 	void on_tableWidgetInputVars_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
 	void on_tableWidgetOutputVars_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
@@ -101,12 +118,6 @@ private:
 	*/
 	void appendVariableEntry(QTableWidget * tableWidget, const NANDRAD::FMIVariableDefinition & var, bool valid);
 
-	/*! This is the work-horse function that does the entire generation stuff.
-		Expects the project file to be saved already.
-		\param silent If true, the generation process does not pop-up any message box or dialog in case of error, but
-			just dumps errors to console. This is meant for command-line exporting functionality.
-	*/
-	int generate(bool silent);
 
 	/*! This function returns detailed variable information to be used when generating FMU variables.
 		This might be better placed somewhere in the VICUS library?
