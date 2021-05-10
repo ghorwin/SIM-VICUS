@@ -46,8 +46,10 @@ HEADERS += \
 	../../src/NANDRAD_HydraulicNetwork.h \
 	../../src/NANDRAD_HydraulicNetworkHeatExchange.h \
 	../../src/NANDRAD_HydraulicNetworkPipeProperties.h \
-	../../src/NANDRAD_IDGroup.h \
 	../../src/NANDRAD_IdealHeatingCoolingModel.h \
+	../../src/NANDRAD_IdealPipeRegisterModel.h \
+	../../src/NANDRAD_IdealSurfaceHeatingModel.h \
+	../../src/NANDRAD_IDGroup.h \
 	../../src/NANDRAD_InterfaceAirFlow.h \
 	../../src/NANDRAD_Interface.h \
 	../../src/NANDRAD_InterfaceHeatConduction.h \
@@ -85,9 +87,7 @@ HEADERS += \
 	../../src/NANDRAD_WindowGlazingLayer.h \
 	../../src/NANDRAD_WindowGlazingSystem.h \
 	../../src/NANDRAD_WindowShading.h \
-	../../src/NANDRAD_Zone.h \
-    ../../src/NANDRAD_IdealSurfaceHeatingModel.h \
-    ../../src/NANDRAD_IdealPipeRegisterModel.h
+	../../src/NANDRAD_Zone.h
 
 SOURCES += \
 	../../src/NANDRAD_ArgsParser.cpp \
@@ -108,8 +108,10 @@ SOURCES += \
 	../../src/NANDRAD_HydraulicNetworkElement.cpp \
 	../../src/NANDRAD_HydraulicNetworkHeatExchange.cpp \
 	../../src/NANDRAD_HydraulicNetworkPipeProperties.cpp \
-	../../src/NANDRAD_IDGroup.cpp \
 	../../src/NANDRAD_IdealHeatingCoolingModel.cpp \
+	../../src/NANDRAD_IdealPipeRegisterModel.cpp \
+	../../src/NANDRAD_IdealSurfaceHeatingModel.cpp \
+	../../src/NANDRAD_IDGroup.cpp \
 	../../src/NANDRAD_InterfaceAirFlow.cpp \
 	../../src/NANDRAD_Interface.cpp \
 	../../src/NANDRAD_InterfaceHeatConduction.cpp \
@@ -131,6 +133,7 @@ SOURCES += \
 	../../src/NANDRAD_Schedule.cpp \
 	../../src/NANDRAD_Schedules.cpp \
 	../../src/NANDRAD_Sensor.cpp \
+	../../src/NANDRAD_ShadingControlModel.cpp \
 	../../src/NANDRAD_SimulationParameter.cpp \
 	../../src/NANDRAD_SolarLoadsDistributionModel.cpp \
 	../../src/NANDRAD_SolverParameter.cpp \
@@ -155,6 +158,8 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_HydraulicNetworkHeatExchange.cpp \
 	../../src/ncg/ncg_NANDRAD_HydraulicNetworkPipeProperties.cpp \
 	../../src/ncg/ncg_NANDRAD_IdealHeatingCoolingModel.cpp \
+	../../src/ncg/ncg_NANDRAD_IdealPipeRegisterModel.cpp \
+	../../src/ncg/ncg_NANDRAD_IdealSurfaceHeatingModel.cpp \
 	../../src/ncg/ncg_NANDRAD_InterfaceAirFlow.cpp \
 	../../src/ncg/ncg_NANDRAD_Interface.cpp \
 	../../src/ncg/ncg_NANDRAD_InterfaceHeatConduction.cpp \
@@ -187,12 +192,7 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_WindowGlazingLayer.cpp \
 	../../src/ncg/ncg_NANDRAD_WindowGlazingSystem.cpp \
 	../../src/ncg/ncg_NANDRAD_WindowShading.cpp \
-	../../src/ncg/ncg_NANDRAD_Zone.cpp \
-    ../../src/NANDRAD_ShadingControlModel.cpp \
-    ../../src/NANDRAD_IdealSurfaceHeatingModel.cpp \
-    ../../src/NANDRAD_IdealPipeRegisterModel.cpp \
-    ../../src/ncg/ncg_NANDRAD_IdealPipeRegisterModel.cpp \
-    ../../src/ncg/ncg_NANDRAD_IdealSurfaceHeatingModel.cpp
+	../../src/ncg/ncg_NANDRAD_Zone.cpp
 
 
 
