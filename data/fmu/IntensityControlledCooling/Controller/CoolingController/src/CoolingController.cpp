@@ -113,17 +113,19 @@ void CoolingController::updateIfModified() {
 		return;
 
 	// get input variables
-	const std::string & ResultRootDir = m_stringVar[FMI_PARA_ResultRootDir];
 	double SolarRadiationIntensityOnSensor = m_realVar[FMI_INPUT_SolarRadiationIntensityOnSensor];
 	double AmbientAirTemperature = m_realVar[FMI_INPUT_AmbientAirTemperature];
 	double RoomAirTemperature = m_realVar[FMI_INPUT_RoomAirTemperature];
 
 
-	// TODO : implement your code here
+	m_realVar[FMI_OUTPUT_CoolingControlValue] = 0; // off by default
 
-	// output variables
-	m_realVar[FMI_OUTPUT_CoolingControlValue] = 0; // TODO : store your results here
-
+	if (SolarRadiationIntensityOnSensor > 300 &&
+		AmbientAirTemperature > (30 + 273.15) &&
+		RoomAirTemperature > (26 + 273.15) )
+	{
+		m_realVar[FMI_OUTPUT_CoolingControlValue] = 1; // cooling on
+	}
 
 	// reset externalInputVarsModified flag
 	m_externalInputVarsModified = false;
@@ -132,29 +134,9 @@ void CoolingController::updateIfModified() {
 
 // Co-simulation: time integration
 void CoolingController::integrateTo(double tCommunicationIntervalEnd) {
-
-	// state of FMU before integration:
-	//   m_currentTimePoint = t_IntervalStart;
-
-	// get input variables
-	const std::string & ResultRootDir = m_stringVar[FMI_PARA_ResultRootDir];
-	double SolarRadiationIntensityOnSensor = m_realVar[FMI_INPUT_SolarRadiationIntensityOnSensor];
-	double AmbientAirTemperature = m_realVar[FMI_INPUT_AmbientAirTemperature];
-	double RoomAirTemperature = m_realVar[FMI_INPUT_RoomAirTemperature];
-
-
-
-	// TODO : implement your code here
-
-
-	// output variables
-	m_realVar[FMI_OUTPUT_CoolingControlValue] = 0; // TODO : store your results here
-
+	updateIfModified();
 
 	m_currentTimePoint = tCommunicationIntervalEnd;
-
-	// state of FMU after integration:
-	//   m_currentTimePoint = tCommunicationIntervalEnd;
 }
 
 
