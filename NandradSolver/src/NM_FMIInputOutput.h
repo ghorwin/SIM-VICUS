@@ -72,16 +72,6 @@ public:
 	*/
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override;
 
-	/*! Sets all object dependencies.
-		Called when all model results have been initialized (i.e. the function
-		initResults() was called in all model objects).
-
-		Re-implement this function and provide all information, so that function
-		inputReferences() can be called afterwards (e.g. resize and fill a vector
-		of Type std::vector<ModelInputReference>).
-	*/
-	virtual void initInputReferences(const std::vector<AbstractModel*> & /* models */) override;
-
 	/*! Provides the object with references to requested input variables (persistent memory location). */
 	virtual void setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) override;
 

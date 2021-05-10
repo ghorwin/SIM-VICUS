@@ -65,6 +65,10 @@ void FMIVariableDefinition::readXML(const TiXmlElement * element) {
 			attrib = attrib->Next();
 		}
 		// search for mandatory elements
+		if (!element->FirstChildElement("FmiStartValue"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'FmiStartValue' element.") ), FUNC_ID);
+
 		if (!element->FirstChildElement("VarName"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'VarName' element.") ), FUNC_ID);
@@ -81,6 +85,8 @@ void FMIVariableDefinition::readXML(const TiXmlElement * element) {
 				m_fmiVarDescription = c->GetText();
 			else if (cName == "FmiTypeName")
 				m_fmiTypeName = c->GetText();
+			else if (cName == "FmiStartValue")
+				m_fmiStartValue = NANDRAD::readPODElement<double>(c, cName);
 			else if (cName == "VarName")
 				m_varName = c->GetText();
 			else if (cName == "ObjectID")
@@ -114,6 +120,7 @@ TiXmlElement * FMIVariableDefinition::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "FmiVarDescription", nullptr, std::string(), m_fmiVarDescription);
 	if (!m_fmiTypeName.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "FmiTypeName", nullptr, std::string(), m_fmiTypeName);
+	TiXmlElement::appendSingleAttributeElement(e, "FmiStartValue", nullptr, std::string(), IBK::val2string<double>(m_fmiStartValue));
 	if (!m_varName.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "VarName", nullptr, std::string(), m_varName);
 	if (m_objectID != NANDRAD::INVALID_ID)

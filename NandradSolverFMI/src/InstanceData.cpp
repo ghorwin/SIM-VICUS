@@ -196,8 +196,6 @@ void InstanceData::init() {
 //		}
 		logger(fmi2OK, "progress", "Initialization complete.");
 		IBK::IBK_Message("Model initialization finished.\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-		logger(fmi2OK, "progress", "Initialization complete.");
-		IBK::IBK_Message("Model initialization finished.\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	}
 	catch (IBK::Exception & ex) {
 		logger(fmi2Error, "error", IBK::FormatString("Exception caught: %1").arg(ex.what()));

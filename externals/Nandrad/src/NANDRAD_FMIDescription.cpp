@@ -32,6 +32,7 @@ void FMIDescription::checkParameters() {
 	for (FMIVariableDefinition &var : m_outputVariables) {
 		var.checkParameters();
 	}
+	// TODO : check for uniqueness of value references in all variables (mind valueref 42)
 }
 
 bool FMIDescription::hasInputVariable(const FMIVariableDefinition & var) const {

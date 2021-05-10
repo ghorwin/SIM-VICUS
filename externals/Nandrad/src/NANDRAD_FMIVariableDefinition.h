@@ -82,6 +82,8 @@ public:
 	std::string m_fmiTypeName;																// XML:E
 	/*! The unqiue variable reference number for the FMI model description. */
 	IDType m_fmiValueRef = NANDRAD::INVALID_ID;												// XML:A:required
+	/*! The start value to be used for this variable. */
+	double m_fmiStartValue;																	// XML:E:required
 
 	/*! The variable name for the variable reference in NANDRAD.
 		This is an encoded name in format <objectRefType>.<variableName>, for example

@@ -44,12 +44,10 @@ void FMIInputOutput::setup(const NANDRAD::Project & prj) {
 	for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_inputVariables) {
 		// declare FMI input value references as results
 		m_FMIInputValueRefs[variable.m_fmiValueRef] = &m_results[resultIndex];
+		// store input value
+		m_results[resultIndex] = variable.m_fmiStartValue;
 		// inputs are stored as results inside container
 		++resultIndex;
-	}
-	for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_outputVariables) {
-		// store reference
-		m_FMIOutputValueRefs[variable.m_fmiValueRef] = nullptr;
 	}
 }
 
@@ -116,10 +114,10 @@ void FMIInputOutput::inputReferences(std::vector<InputReference> & inputRefs) co
 	if(m_fmiDescription->m_outputVariables.empty())
 		return;
 
-	// input references sorted via id
-	std::map<unsigned int, InputReference> inputRefsMap;
 
 	// set all output quantities as input references
+	// order of inputRefs matches order of m_outputVariables
+
 	for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_outputVariables) {
 		// fill input reference
 		InputReference inputRef;
@@ -137,54 +135,18 @@ void FMIInputOutput::inputReferences(std::vector<InputReference> & inputRefs) co
 		if(variable.m_vectorIndex != NANDRAD::INVALID_ID)
 			inputRef.m_name.m_index = (int) variable.m_vectorIndex;
 		// store reference
-		inputRefsMap[variable.m_fmiValueRef] = inputRef;
+		inputRefs.push_back( inputRef );
 	}
-
-	// copy input references
-	for (const std::pair<const unsigned int, InputReference> &inputRef : inputRefsMap)
-		inputRefs.push_back(inputRef.second);
 }
 
 
-void FMIInputOutput::initInputReferences(const std::vector<AbstractModel *> &) {
 
-}
+void FMIInputOutput::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/, const std::vector<const double *> & resultValueRefs) {
+	IBK_ASSERT(resultValueRefs.size() == m_fmiDescription->m_outputVariables.size());
+	// value refs are sorted in same order as output variables -> we store them in map based on fmiValueRef
+	for (unsigned int i=0; i<resultValueRefs.size(); ++i)
+		m_FMIOutputValueRefs[m_fmiDescription->m_outputVariables[i].m_fmiValueRef] = resultValueRefs[i];
 
-
-void FMIInputOutput::setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) {
-
-	FUNCID(FMIInputOutput::setInputValueRefs);
-
-	// fill value references according to id
-	IBK_ASSERT(m_FMIOutputValueRefs.size() == resultValueRefs.size());
-	std::map<unsigned int, const double*>::iterator valueRefIt = m_FMIOutputValueRefs.begin();
-
-	for(unsigned int i = 0; i < resultValueRefs.size(); ++i, ++valueRefIt)
-		valueRefIt->second = resultValueRefs[i];
-
-	// process result descriptions and check if they match FMI output variable specs
-	for(const QuantityDescription &resDesc : resultDescriptions) {
-		// multiple index is not allowed index
-		if(!resDesc.m_indexKeys.empty())
-			throw IBK::Exception(IBK::FormatString("Malformed variable '%1' in FMI definitions!").
-								 arg(resDesc.m_name), FUNC_ID);
-
-		bool found = false;
-		std::string varName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", resDesc.m_referenceType);
-		varName += std::string(".") + resDesc.m_name;
-
-		for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_outputVariables) {
-			// mismatching name
-			if(variable.m_varName != varName)
-				continue;
-			found = true;
-			break;
-		}
-		if(!found) {
-			throw IBK::Exception(IBK::FormatString("Mismatching variable '%1' in FMI definitions!").
-								 arg(resDesc.m_name), FUNC_ID);
-		}
-	}
 }
 
 
@@ -206,7 +168,6 @@ void FMIInputOutput::getFMIOutputValue(unsigned int varID, double & value) const
 			m_FMIOutputValueRefs.find(varID);
 	// non-existent variable id is a progammer error (error in FMU export)
 	IBK_ASSERT(outputVarIt != m_FMIOutputValueRefs.end());
-	IBK_ASSERT(outputVarIt->second != nullptr);
 	// get value
 	value = *outputVarIt->second;
 }
