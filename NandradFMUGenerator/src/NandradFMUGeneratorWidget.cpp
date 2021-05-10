@@ -833,7 +833,10 @@ void NandradFMUGeneratorWidget::updateFMUVariableTables() {
 		// lookup variable in available variables
 		std::vector<NANDRAD::FMIVariableDefinition>::iterator it = m_availableInputVariables.begin();
 		for (; it != m_availableInputVariables.end(); ++it) {
-			if (var.m_varName == it->m_varName) {
+			if (var.m_varName == it->m_varName &&
+				var.m_objectID == it->m_objectID &&
+				var.m_vectorIndex == it->m_vectorIndex)
+			{
 				var.m_unit = it->m_unit;
 				var.m_fmiVarDescription = it->m_fmiVarDescription;
 				break;
@@ -851,7 +854,10 @@ void NandradFMUGeneratorWidget::updateFMUVariableTables() {
 		// lookup variable in available variables
 		std::vector<NANDRAD::FMIVariableDefinition>::iterator it = m_availableOutputVariables.begin();
 		for (; it != m_availableOutputVariables.end(); ++it) {
-			if (var.m_varName == it->m_varName) {
+			if (var.m_varName == it->m_varName &&
+				var.m_objectID == it->m_objectID &&
+				var.m_vectorIndex == it->m_vectorIndex)
+			{
 				var.m_unit = it->m_unit;
 				var.m_fmiVarDescription = it->m_fmiVarDescription;
 				break;

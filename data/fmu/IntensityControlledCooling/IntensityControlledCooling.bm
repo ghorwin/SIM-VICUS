@@ -4,26 +4,26 @@
 	<Blocks>
 		<Block name="CooledZone">
 			<Position>0, 0</Position>
-			<Size>192, 80</Size>
+			<Size>192, 64</Size>
 			<!--Sockets-->
 			<Sockets>
-				<Socket name="Model(4001).IdealHeatingLoad(100)">
+				<Socket name="CoolingControlValue">
 					<Position>0, 16</Position>
 					<Orientation>Horizontal</Orientation>
 					<Inlet>true</Inlet>
 				</Socket>
-				<Socket name="Model(4001).IdealCoolingLoad(100)">
-					<Position>0, 32</Position>
-					<Orientation>Horizontal</Orientation>
-					<Inlet>true</Inlet>
-				</Socket>
-				<Socket name="Location(0).Temperature">
+				<Socket name="Zone(100).AirTemperature">
 					<Position>192, 16</Position>
 					<Orientation>Horizontal</Orientation>
 					<Inlet>false</Inlet>
 				</Socket>
-				<Socket name="Zone(100).AirTemperature">
+				<Socket name="Location(0).Temperature">
 					<Position>192, 32</Position>
+					<Orientation>Horizontal</Orientation>
+					<Inlet>false</Inlet>
+				</Socket>
+				<Socket name="ConstructionInstance(5).SolarRadiationFluxB">
+					<Position>192, 48</Position>
 					<Orientation>Horizontal</Orientation>
 					<Inlet>false</Inlet>
 				</Socket>

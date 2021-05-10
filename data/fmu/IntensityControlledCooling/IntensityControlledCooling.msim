@@ -1,5 +1,5 @@
 # Created:	So. Mai 9 11:26:23 2021
-# LastModified:	So. Mai 9 11:29:11 2021
+# LastModified:	Mo. Mai 10 11:37:53 2021
 
 tStart                   0 a
 tEnd                     1 a
@@ -18,6 +18,6 @@ ErrorControlMode         NONE
 maxIterations            1
 writeInternalVariables   no
 
-simulator 0 0 CooledZone #20b2aa "CooledZone.nandrad"
+simulator 0 0 CooledZone #20b2aa "CooledZone.fmu"
 
 

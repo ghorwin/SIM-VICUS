@@ -231,11 +231,6 @@
 					<VarName>Zone.AirTemperature</VarName>
 					<ObjectID>100</ObjectID>
 				</FMIVariableDefinition>
-				<FMIVariableDefinition fmiVarName="ConstructionInstance(5).FluxShortWaveRadiationB" unit="W" fmiValueRef="53">
-					<FmiVarDescription>Short wave radiation flux across interface B (into construction)</FmiVarDescription>
-					<VarName>ConstructionInstance.FluxShortWaveRadiationB</VarName>
-					<ObjectID>5</ObjectID>
-				</FMIVariableDefinition>
 				<FMIVariableDefinition fmiVarName="Location(0).Temperature" unit="C" fmiValueRef="52">
 					<FmiVarDescription>Outside temperature.</FmiVarDescription>
 					<VarName>Location.Temperature</VarName>
