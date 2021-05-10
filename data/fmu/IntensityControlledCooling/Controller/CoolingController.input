@@ -1,0 +1,61 @@
+{
+    "variables": [
+        {
+            "variability": "fixed", 
+            "causality": "parameter", 
+            "name": "ResultRootDir", 
+            "typeID": "String", 
+            "valueRef": 42, 
+            "initial": "exact", 
+            "startValue": "", 
+            "unit": "", 
+            "description": "A writeable directory generated for each slave of this FMU to store slave-specific output/data files."
+        }, 
+        {
+            "variability": "continuous", 
+            "causality": "input", 
+            "name": "SolarRadiationIntensityOnSensor", 
+            "typeID": "Real", 
+            "valueRef": -1, 
+            "initial": "exact", 
+            "startValue": "0", 
+            "unit": "W/m2", 
+            "description": "Solar radiation sensor value"
+        }, 
+        {
+            "variability": "continuous", 
+            "causality": "input", 
+            "name": "AmbientAirTemperature", 
+            "typeID": "Real", 
+            "valueRef": -1, 
+            "initial": "exact", 
+            "startValue": "293.15", 
+            "unit": "K", 
+            "description": "Outside air temperature"
+        }, 
+        {
+            "variability": "continuous", 
+            "causality": "input", 
+            "name": "RoomAirTemperature", 
+            "typeID": "Real", 
+            "valueRef": -1, 
+            "initial": "exact", 
+            "startValue": "293.15", 
+            "unit": "K", 
+            "description": "Room temperature"
+        }, 
+        {
+            "variability": "continuous", 
+            "causality": "output", 
+            "name": "CoolingControlValue", 
+            "typeID": "Real", 
+            "valueRef": -1, 
+            "initial": "calculated", 
+            "startValue": "0", 
+            "unit": "---", 
+            "description": "Controller value (0 off, 1 on)"
+        }
+    ], 
+    "modelName": "CoolingController", 
+    "description": "An intensity controlled cooling control."
+}
