@@ -24,7 +24,7 @@ public:
 		NUM_CT
 	};
 
-	ControlType						m_controlType = NUM_CT;								// XML:A:required
+	ControlType						m_controlType = NUM_CT;								// XML:A
 
 	/*! reference to a controller (P, PI, ..) */
 	IDType							m_controllerId = INVALID_ID;						// XML:A
