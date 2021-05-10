@@ -104,6 +104,64 @@ void HNFixedPressureLossCoeffElement::partials(double mdot, double p_inlet, doub
 
 
 
+// *** HNControlledPressureLossCoeffElement ***
+
+HNControlledPressureLossCoeffElement::HNControlledPressureLossCoeffElement(const NANDRAD::HydraulicNetworkComponent &component,
+																		   const NANDRAD::HydraulicFluid &fluid,
+																		   const NANDRAD::ControlElement &controlElement)
+{
+	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
+	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+	m_zetaFix = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient].value;
+	m_diameter = component.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].value;
+	m_controlEl = &controlElement;
+}
+
+
+double HNControlledPressureLossCoeffElement::systemFunction(double mdot, double p_inlet, double p_outlet) const {
+
+	// calculate zetaControlled value for valve
+	double zetaControlled = 0;
+	if (m_controlEl->m_controlType == NANDRAD::ControlElement::CT_ControlTemperatureDifference){
+		double currentTempDiff = m_heatLoss / (mdot * m_fluidHeatCapacity);
+		double e = m_controlEl->m_setPoint.value - currentTempDiff;
+		double kp = 1000; // get this from control element (which should have a pointer to controller)
+		double y = kp * e;
+		double zetaControlled;
+		if (y > m_controlEl->m_maximumSystemInput.value)
+			zetaControlled = m_controlEl->m_maximumSystemInput.value;
+		else if (y > 0)
+			zetaControlled = y;
+	}
+
+	// for negative mass flow: dp is negative
+	double area = PI / 4 * m_diameter * m_diameter;
+	double velocity = mdot / (m_fluidDensity * area); // signed!
+	double dp = (m_zetaFix + zetaControlled) * m_fluidDensity / 2 * std::abs(velocity) * velocity;
+	return p_inlet - p_outlet - dp;
+}
+
+
+void HNControlledPressureLossCoeffElement::partials(double mdot, double p_inlet, double p_outlet,
+							 double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
+{
+	// partial derivatives of the system function to pressures are constants
+	df_dp_inlet = 1;
+	df_dp_outlet = -1;
+	// generic DQ approximation of partial derivative
+	const double EPS = 1e-5; // in kg/s
+	double f_eps = systemFunction(mdot+EPS, p_inlet, p_outlet);
+	double f = systemFunction(mdot, p_inlet, p_outlet);
+	df_dmdot = (f_eps - f)/EPS;
+}
+
+void HNControlledPressureLossCoeffElement::setHeatLoss(double heatLoss)
+{
+	m_heatLoss = heatLoss;
+}
+
+
+
 // *** HNConstantPressurePump ***
 
 HNConstantPressurePump::HNConstantPressurePump(const NANDRAD::HydraulicNetworkComponent &component) {

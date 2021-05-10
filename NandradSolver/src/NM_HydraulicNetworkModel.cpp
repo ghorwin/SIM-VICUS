@@ -205,10 +205,21 @@ void HydraulicNetworkModel::setup() {
 
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
 			{
-				// create fixed pressure loss model
-				HNFixedPressureLossCoeffElement * hxElement = new HNFixedPressureLossCoeffElement(*e.m_component, m_hydraulicNetwork->m_fluid);
-				// add to flow elements
-				m_p->m_flowElements.push_back(hxElement); // transfer ownership
+				if (e.m_controlElement.m_controlType == NANDRAD::ControlElement::NUM_CT) {
+					// create fixed pressure loss model
+					HNFixedPressureLossCoeffElement * hxElement = new HNFixedPressureLossCoeffElement(*e.m_component, m_hydraulicNetwork->m_fluid);
+					// add to flow elements
+					m_p->m_flowElements.push_back(hxElement); // transfer ownership
+				}
+				else{
+					HNControlledPressureLossCoeffElement * hxElement = new HNControlledPressureLossCoeffElement(*e.m_component,
+																												m_hydraulicNetwork->m_fluid,
+																												e.m_controlElement);
+					// add to flow elements
+					m_p->m_flowElements.push_back(hxElement); // transfer ownership
+				}
+
+
 			} break;
 
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot :
@@ -393,6 +404,18 @@ void HydraulicNetworkModel::inputReferences(std::vector<InputReference> & inputR
 			// register reference
 			inputRefs.push_back(inputRef);
 		}
+
+		// use hydraulic network model to generate heat loss references
+		InputReference inputRef2;
+		inputRef2.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+		inputRef2.m_name = std::string("HeatLoss");
+		inputRef2.m_required = true;
+		for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
+			inputRef2.m_id = m_elementIds[i];
+			// register reference
+			inputRefs.push_back(inputRef2);
+		}
+
 	}
 }
 
@@ -400,11 +423,13 @@ void HydraulicNetworkModel::inputReferences(std::vector<InputReference> & inputR
 void HydraulicNetworkModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
 											  const std::vector<const double *> & resultValueRefs)
 {
-	if (resultValueRefs.size() == m_elementIds.size()) {
-		// copy references into fluid temperature vector
-		for(const double* resRef : resultValueRefs)
-			m_fluidTemperatureRefs.push_back(resRef);
-	}
+	IBK_ASSERT(resultValueRefs.size() == 2*m_elementIds.size());
+	// copy references into fluid temperature vector
+	for(unsigned int i=0; i<m_elementIds.size(); ++i)
+		m_fluidTemperatureRefs.push_back(resultValueRefs[i]);
+	// copy references into heat loss vector
+	for(unsigned int i=m_elementIds.size(); i<2*m_elementIds.size(); ++i)
+		m_fluidHeatLossesRefs.push_back(resultValueRefs[i]);
 }
 
 
@@ -417,10 +442,11 @@ int HydraulicNetworkModel::update() {
 	FUNCID(HydraulicNetworkModel::update);
 
 	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
-		// set all fluid temperatures
+		// set all fluid temperatures and heat losses
 		for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
 			HydraulicNetworkAbstractFlowElement *fe = m_p->m_flowElements[i];
 			fe->setFluidTemperature(*m_fluidTemperatureRefs[i]);
+			fe->setHeatLoss(*m_fluidHeatLossesRefs[i]);
 		}
 	}
 

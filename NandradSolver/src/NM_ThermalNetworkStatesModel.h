@@ -131,6 +131,9 @@ private:
 		Result quantity of current model, published as 'FluidTemperature' result for each flow element. */
 	std::vector<const double*>						m_meanTemperatureRefs;
 
+	/*! Vector with references to heat losses */
+	std::vector<const double*>						m_heatLossRefs;
+
 	/*! Pointer to NANDRAD network structure*/
 	const NANDRAD::HydraulicNetwork					*m_network=nullptr;
 

@@ -8,6 +8,7 @@ namespace NANDRAD {
 	class HydraulicNetworkComponent;
 	class HydraulicNetworkPipeProperties;
 	class HydraulicFluid;
+	class ControlElement;
 }
 
 namespace NANDRAD_MODEL {
@@ -82,6 +83,44 @@ private:
 	double							m_diameter = -999;
 
 }; // HNFixedPressureLossCoeffElement
+
+
+
+/*! Element that calculates the pressure loss according to a given fixed pressure loss coefficient
+	(which is in Germany usually called zeta-value)
+*/
+class HNControlledPressureLossCoeffElement : public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
+public:
+	/*! C'tor, takes and caches parameters needed for function evaluation. */
+	HNControlledPressureLossCoeffElement(const NANDRAD::HydraulicNetworkComponent & component,
+		const NANDRAD::HydraulicFluid & fluid, const NANDRAD::ControlElement &controlElement);
+
+	// HydraulicNetworkAbstractFlowElement interface
+	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
+	void partials(double mdot, double p_inlet, double p_outlet,
+				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
+
+	void setHeatLoss(double heatLoss) override;
+
+private:
+	/*! Cached fluid density [kg/m3] */
+	double							m_fluidDensity = -999;
+
+	/*! The fixed pressure loss coefficient [-] */
+	double							m_zetaFix = -999;
+
+	/*! Effective hydraulic (inner) diameter of pipe in [m] */
+	double							m_diameter = -999;
+
+	double							m_fluidHeatCapacity = -999;
+
+	double							m_heatLoss = -999;
+
+	const NANDRAD::ControlElement	*m_controlEl = nullptr;
+
+}; // HNFixedPressureLossCoeffElement
+
+
 
 
 

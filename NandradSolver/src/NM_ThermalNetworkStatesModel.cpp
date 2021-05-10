@@ -51,7 +51,7 @@ ThermalNetworkStatesModel::~ThermalNetworkStatesModel() {
 
 
 void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
-									  const HydraulicNetworkModel &networkModel,
+									  const HydraulicNetworkModel &hydrNetworkModel,
 									  const NANDRAD::SimulationParameter &simPara)
 {
 	FUNCID(ThermalNetworkStatesModel::setup);
@@ -65,7 +65,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 	// be used during initialization.
 
 	// copy element ids
-	m_elementIds = networkModel.m_elementIds;
+	m_elementIds = hydrNetworkModel.m_elementIds;
 
 	// We now loop over all flow elements of the network and create a corresponding thermal
 	// model objects for _each_ of the hydraulic calculation objects.
@@ -303,9 +303,9 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 		}
 	}
 
-	// setup the enetwork
+	// setup the network
 	try {
-		m_p->setup(*networkModel.network(), nw.m_fluid);
+		m_p->setup(*hydrNetworkModel.network(), nw.m_fluid);
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, "Error setting up flow network.", FUNC_ID);
 	}
@@ -320,6 +320,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 	// resize reference values
 	m_meanTemperatureRefs.resize(m_elementIds.size(), nullptr);
+	m_heatLossRefs.resize(m_elementIds.size(), nullptr);
 
 	// initialize all fluid temperatures
 	for(unsigned int i = 0; i < m_p->m_flowElements.size(); ++i) {
@@ -328,6 +329,11 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 		double fluidTemp = m_network->m_para[NANDRAD::HydraulicNetwork::P_InitialFluidTemperature].value;
 		fe->setInitialTemperature(fluidTemp);
 		m_meanTemperatureRefs[i] = &fe->m_meanTemperature;
+
+		// from Hauke
+		ThermalNetworkAbstractFlowElementWithHeatLoss *feHeatLoss = dynamic_cast<ThermalNetworkAbstractFlowElementWithHeatLoss*>(fe);
+		if (feHeatLoss!=nullptr)
+			m_heatLossRefs[i] = &feHeatLoss->m_heatLoss;
 	}
 
 	// remaining initialization related to flow element result value communication within NANDRAD model world
@@ -338,6 +344,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 void ThermalNetworkStatesModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 	if(!resDesc.empty())
 		resDesc.clear();
+
+	// add fluid temperatures to descriptions
 	QuantityDescription desc("FluidTemperature", "C", "Internal fluid temperature of network element", false);
 	// adjust reference type
 	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
@@ -346,6 +354,17 @@ void ThermalNetworkStatesModel::resultDescriptions(std::vector<QuantityDescripti
 		desc.m_id = m_elementIds[i];
 		resDesc.push_back(desc);
 	}
+
+	// add heat losses to descriptions
+	QuantityDescription desc2("HeatLoss", "W", "Heat loss of network element", false);
+	// adjust reference type
+	desc2.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	// loop through all flow elements
+	for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
+		desc2.m_id = m_elementIds[i];
+		resDesc.push_back(desc2);
+	}
+
 }
 
 
@@ -369,6 +388,18 @@ const double * ThermalNetworkStatesModel::resultValueRef(const InputReference & 
 		unsigned int pos = (unsigned int) std::distance(m_elementIds.begin(), fIt);
 		return m_meanTemperatureRefs[pos];
 	}
+	if (quantityName == std::string("HeatLoss")) {
+		if (quantity.m_referenceType != NANDRAD::ModelInputReference::MRT_NETWORKELEMENT)
+			return nullptr;
+		// access to an element temperature
+		std::vector<unsigned int>::const_iterator fIt = std::find(m_elementIds.begin(), m_elementIds.end(), (unsigned int) quantity.m_id);
+		// invalid index access
+		if (fIt == m_elementIds.end())
+			return nullptr;
+		unsigned int pos = (unsigned int) std::distance(m_elementIds.begin(), fIt);
+		return m_heatLossRefs[pos];
+	}
+
 	return nullptr;
 }
 
