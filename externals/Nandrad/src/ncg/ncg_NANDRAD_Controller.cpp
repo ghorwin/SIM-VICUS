@@ -54,7 +54,7 @@ void Controller::readXML(const TiXmlElement * element) {
 				m_id = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "modelType")
 				try {
-					m_modelType = (modelType_t)KeywordList::Enumeration("Controller::modelType_t", attrib->ValueStr());
+					m_modelType = (ModelType)KeywordList::Enumeration("Controller::modelType_t", attrib->ValueStr());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(

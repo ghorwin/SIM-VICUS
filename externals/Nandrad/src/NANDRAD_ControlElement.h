@@ -8,6 +8,8 @@
 
 namespace NANDRAD {
 
+class Controller;
+
 class ControlElement
 {
 
@@ -16,6 +18,10 @@ public:
 	NANDRAD_READWRITE
 
 	ControlElement();
+
+	/*! Checks for valid and required parameters (value ranges).
+	*/
+	void checkParameters();
 
 	enum ControlType{
 		CT_ControlTemperatureDifference,	// Keyword: ControlTemperatureDifference	'ControlTemperatureDifference'
@@ -41,6 +47,9 @@ public:
 	/*! used to cut the system input */
 	IBK::Parameter					m_maximumSystemInput;								// XML:E
 
+
+	// *** run time variables ***
+	NANDRAD::Controller				*m_controller = nullptr;
 };
 
 } // namespace NANDRAD

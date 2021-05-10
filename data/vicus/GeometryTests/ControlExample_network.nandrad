@@ -70,15 +70,12 @@
 				</HydraulicNetworkElement>
 				
 				<HydraulicNetworkElement id="1" inletNodeId="0" outletNodeId="101" componentId="10020004" displayName="heat exchanger">
-						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
-							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear">
-								<TSVFile>${Project Directory}/climate/Qdot_test.tsv</TSVFile>
-							</LinearSplineParameter>
+						<HydraulicNetworkHeatExchange modelType="HeatLossConstant">
+							<IBK:Parameter name="HeatLoss" unit="W">100</IBK:Parameter>
 						</HydraulicNetworkHeatExchange>
 						<ControlElement controlType="ControlTemperatureDifference" controllerId="1">
 							<IBK:Parameter name="SetPoint" unit="K">3</IBK:Parameter>
-							<IBK:Parameter name="MaximumControllerError" unit="K">10</IBK:Parameter>
-							<IBK:Parameter name="MaximumSystemInput" unit="-">5</IBK:Parameter>
+							<IBK:Parameter name="MaximumSystemInput" unit="-">100000</IBK:Parameter>
 						</ControlElement>
 				</HydraulicNetworkElement>
 
@@ -141,7 +138,7 @@
 			</ObjectList>
 		</ObjectLists>
 		<Controllers>
-			<Controller id="1" tolerance="0.1">
+			<Controller id="1" modelType="PController">
 				<Type>PController</Type>
 				<IBK:Parameter name="Kp" unit="-">10</IBK:Parameter>
 			</Controller>

@@ -70,6 +70,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
 		case HydraulicNetworkComponent::MT_HeatExchanger:
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:
+		case HydraulicNetworkComponent::MT_HeatPumpReal:
 			// nothing to check for
 		break;
 
