@@ -45,7 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // FMI interface variables
 
-#define FMI_PARA_ResultRootDir 42
+#define FMI_PARA_ResultsRootDir 42
 #define FMI_INPUT_SolarRadiationIntensityOnSensor 1
 #define FMI_INPUT_AmbientAirTemperature 2
 #define FMI_INPUT_RoomAirTemperature 3
@@ -67,7 +67,7 @@ CoolingController::CoolingController() :
 	InstanceData()
 {
 	// initialize input variables and/or parameters
-	m_stringVar[FMI_PARA_ResultRootDir] = "";
+	m_stringVar[FMI_PARA_ResultsRootDir] = "";
 	m_realVar[FMI_INPUT_SolarRadiationIntensityOnSensor] = 0;
 	m_realVar[FMI_INPUT_AmbientAirTemperature] = 293.15;
 	m_realVar[FMI_INPUT_RoomAirTemperature] = 293.15;
@@ -121,8 +121,7 @@ void CoolingController::updateIfModified() {
 	m_realVar[FMI_OUTPUT_CoolingControlValue] = 0; // off by default
 
 	if (SolarRadiationIntensityOnSensor > 300 &&
-		AmbientAirTemperature > (30 + 273.15) &&
-		RoomAirTemperature > (26 + 273.15) )
+		AmbientAirTemperature > (24 + 273.15) )
 	{
 		m_realVar[FMI_OUTPUT_CoolingControlValue] = 1; // cooling on
 	}

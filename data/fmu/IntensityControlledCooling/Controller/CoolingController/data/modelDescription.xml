@@ -58,7 +58,7 @@
 
 		<!-- Index of variable = "1" -->
 		<ScalarVariable
-			name="ResultRootDir"
+			name="ResultsRootDir"
             description="A writeable directory generated for each slave of this FMU to store slave-specific output/data files."
 			valueReference="42"
 			variability="fixed"

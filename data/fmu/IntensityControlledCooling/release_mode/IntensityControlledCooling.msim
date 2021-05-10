@@ -1,5 +1,5 @@
 # Created:	So. Mai 9 11:26:23 2021
-# LastModified:	Mo. Mai 10 16:37:27 2021
+# LastModified:	Mo. Mai 10 16:54:43 2021
 
 tStart                   0 a
 tEnd                     1 a
@@ -13,7 +13,7 @@ adjustStepSize           no
 preventOversteppingOfEndTime yes
 absTol                   1e-06
 relTol                   1e-05
-MasterMode               GAUSS_SEIDEL
+MasterMode               GAUSS_JACOBI
 ErrorControlMode         NONE
 maxIterations            1
 writeInternalVariables   no

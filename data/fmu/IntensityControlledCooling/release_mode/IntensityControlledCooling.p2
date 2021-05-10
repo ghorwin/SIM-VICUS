@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<PostProc version="2.2.4">
+	<!--List of all directories-->
+	<Directories>
+		<Directory>
+			<Path>.</Path>
+			<SubDir Color="#ffaa00" Checked="1">IntensityControlledCooling</SubDir>
+			<SubDir Color="#416fce" Checked="0">IntensityControlledCooling/fmus/CooledZone/resources</SubDir>
+			<SubDir Color="#ff007f" Checked="0">IntensityControlledCooling/slaves/CooledZone</SubDir>
+			<ExpandedSubDir>.</ExpandedSubDir>
+		</Directory>
+	</Directories>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--All mappers.-->
+	<Mappers>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>IntensityControlledCooling/results/values.csv?4</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>IntensityControlledCooling/results/values.csv?2|3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>IntensityControlledCooling/results/values.csv?2|3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series leftAxis="0">
+						<TitleText>$quantity</TitleText>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenWidth>2</PenWidth>
+						<PenColor>#8f5902</PenColor>
+						<MarkerColor>#8f5902</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ef2929</PenColor>
+						<MarkerColor>#ef2929</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<IBK:Unit name="AxisUnit">a</IBK:Unit>
+						<Maximum>995846400553</Maximum>
+						<Minimum>995155200547</Minimum>
+						<MaxMajorScale>5</MaxMajorScale>
+						<DateTimeEnabled>1</DateTimeEnabled>
+					</Axis>
+					<Axis index="1" enabled="0" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<Maximum>42</Maximum>
+						<Minimum>11.089385474860332</Minimum>
+					</Axis>
+					<Axis index="2" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">---</IBK:Unit>
+						<Maximum>5</Maximum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText />
+					<Legend />
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>IntensityControlledCooling/results/values.csv?1</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#c4a000</PenColor>
+						<MarkerColor>#c4a000</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<IBK:Unit name="AxisUnit">d</IBK:Unit>
+						<Maximum>995846400000</Maximum>
+						<Minimum>995155200000</Minimum>
+						<MaxMajorScale>5</MaxMajorScale>
+						<DateTimeEnabled>1</DateTimeEnabled>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">W/m2</IBK:Unit>
+						<Maximum>298.21840002899438</Maximum>
+						<Minimum>277.92493566876016</Minimum>
+					</Axis>
+					<Axis index="2" enabled="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>28.015728635400546</Maximum>
+						<Minimum>27.985030868270336</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText />
+					<Legend />
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+	</Mappers>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--Split window state.-->
+	<Splitting>
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="0" size1="391" size2="410" orientation="2" />
+		<Widget id="2" parent="1" viewTable="0" mapperIndex="1" size1="391" size2="410" orientation="2" />
+		<FocusedWidget>2</FocusedWidget>
+	</Splitting>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+</PostProc>

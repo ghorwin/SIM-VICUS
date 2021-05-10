@@ -30,7 +30,7 @@
 			</Sockets>
 		</Block>
 		<Block name="CoolingController">
-			<Position>704, 16</Position>
+			<Position>784, 16</Position>
 			<Size>128, 64</Size>
 			<!--Sockets-->
 			<Sockets>
@@ -65,12 +65,16 @@
 			<!--Connector segments (between start and end lines)-->
 			<Segments>
 				<Segment>
+					<Orientation>Horizontal</Orientation>
+					<Offset>256</Offset>
+				</Segment>
+				<Segment>
 					<Orientation>Vertical</Orientation>
 					<Offset>-32</Offset>
 				</Segment>
 				<Segment>
 					<Orientation>Horizontal</Orientation>
-					<Offset>448</Offset>
+					<Offset>272</Offset>
 				</Segment>
 			</Segments>
 		</Connector>
@@ -81,7 +85,7 @@
 			<Segments>
 				<Segment>
 					<Orientation>Horizontal</Orientation>
-					<Offset>448</Offset>
+					<Offset>528</Offset>
 				</Segment>
 			</Segments>
 		</Connector>
@@ -91,12 +95,20 @@
 			<!--Connector segments (between start and end lines)-->
 			<Segments>
 				<Segment>
+					<Orientation>Horizontal</Orientation>
+					<Offset>208</Offset>
+				</Segment>
+				<Segment>
 					<Orientation>Vertical</Orientation>
-					<Offset>32</Offset>
+					<Offset>48</Offset>
 				</Segment>
 				<Segment>
 					<Orientation>Horizontal</Orientation>
-					<Offset>448</Offset>
+					<Offset>320</Offset>
+				</Segment>
+				<Segment>
+					<Orientation>Vertical</Orientation>
+					<Offset>-16</Offset>
 				</Segment>
 			</Segments>
 		</Connector>
@@ -106,8 +118,20 @@
 			<!--Connector segments (between start and end lines)-->
 			<Segments>
 				<Segment>
+					<Orientation>Vertical</Orientation>
+					<Offset>128</Offset>
+				</Segment>
+				<Segment>
 					<Orientation>Horizontal</Orientation>
-					<Offset>-896</Offset>
+					<Offset>-992</Offset>
+				</Segment>
+				<Segment>
+					<Orientation>Vertical</Orientation>
+					<Offset>-128</Offset>
+				</Segment>
+				<Segment>
+					<Orientation>Horizontal</Orientation>
+					<Offset>16</Offset>
 				</Segment>
 			</Segments>
 		</Connector>
