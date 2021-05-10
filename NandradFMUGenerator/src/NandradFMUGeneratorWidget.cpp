@@ -1001,7 +1001,7 @@ bool  NandradFMUGeneratorWidget::generate() {
 	QString targetPath = m_ui->lineEditFMUPath->text();
 	QDir baseDir = QtExt::Directories::tmpDir() + "/" + QFileInfo(targetPath).baseName();
 
-	IBK::IBK_Message( IBK::FormatString("Generating FMU in directory '%1'\n").arg(baseDir.absolutePath().toStdString()),
+	IBK::IBK_Message( IBK::FormatString("Composing FMU in temporary directory '%1'\n").arg(baseDir.absolutePath().toStdString()),
 					  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 	// we create the following directory structure:
 	// targetPath = /home/ghorwin/fmuexport/TestModel1.fmu
@@ -1052,7 +1052,7 @@ bool  NandradFMUGeneratorWidget::generate() {
 	std::string targetFName = fullClimatePath.filename().str();
 	targetFName = IBK::replace_string(targetFName, " ", "_");
 	IBK::Path targetClimatePath = resourcePath / targetFName;
-	IBK::IBK_Message( IBK::FormatString("Copying climate data file '%1'\n").arg(fullClimatePath.filename()),
+	IBK::IBK_Message( IBK::FormatString("Copying climate data file '%1' to '<fmu>/resources'\n").arg(fullClimatePath.filename()),
 					  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 	if (!IBK::Path::copy(fullClimatePath, targetClimatePath))
 		QMessageBox::critical(this, tr("FMU Export Error"),
@@ -1070,6 +1070,8 @@ bool  NandradFMUGeneratorWidget::generate() {
 
 	// now write the project into the export directory, it will always be called "project.nandrad"
 	p.writeXML(resourcePath / "Project.nandrad");
+	IBK::IBK_Message( IBK::FormatString("Creating 'Project.nandrad' in '<fmu>/resources'\n"),
+					  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 
 	// generate the modelDescription.xml file
 
@@ -1200,6 +1202,8 @@ bool  NandradFMUGeneratorWidget::generate() {
 	modelDesc.replace("${MODEL_STRUCTURE_OUTPUTS}", modelStructure);
 
 	// finally write the file
+	IBK::IBK_Message( IBK::FormatString("Creating '<fmu>/modelDescription.xml'\n"),
+					  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 	QFile of(baseDir.absoluteFilePath("modelDescription.xml"));
 	of.open(QFile::WriteOnly);
 	of.write(modelDesc.toUtf8());
@@ -1222,10 +1226,10 @@ bool  NandradFMUGeneratorWidget::generate() {
 	// linux
 	QString fmuLibFile = m_installDir + "/libNandradSolverFMI.so";
 	if (QFile(fmuLibFile).exists()) {
-		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1'\n").arg(fmuLibFile.toStdString()),
+		QString targetPath = "binaries/linux64/" + fmuModelName + ".so";
+		IBK::IBK_Message( IBK::FormatString("Copying Linux FMU lib '%1' to '%2'\n").arg(fmuLibFile.toStdString()).arg(targetPath.toStdString()),
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-		QFile::copy(fmuLibFile,
-					baseDir.absoluteFilePath("binaries/linux64/" + fmuModelName + ".so"));
+		QFile::copy(fmuLibFile, baseDir.absoluteFilePath(targetPath));
 	}
 	else {
 		IBK::IBK_Message( IBK::FormatString("FMU lib file (linux64) '%1' not installed.\n").arg(fmuLibFile.toStdString()),
@@ -1235,10 +1239,10 @@ bool  NandradFMUGeneratorWidget::generate() {
 	// macos
 	fmuLibFile = m_installDir + "/libNandradSolverFMI.dylib";
 	if (QFile(fmuLibFile).exists()) {
-		IBK::IBK_Message( IBK::FormatString("Copying MacOS FMU lib '%1'\n").arg(fmuLibFile.toStdString()),
+		QString targetPath = "binaries/darwin64/" + fmuModelName + ".dylib";
+		IBK::IBK_Message( IBK::FormatString("Copying MacOS FMU lib '%1' to '%2'\n").arg(fmuLibFile.toStdString()).arg(targetPath.toStdString()),
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-		QFile::copy(fmuLibFile,
-					baseDir.absoluteFilePath("binaries/darwin64/" + fmuModelName + ".dylib"));
+		QFile::copy(fmuLibFile, baseDir.absoluteFilePath(targetPath));
 	}
 	else {
 		IBK::IBK_Message( IBK::FormatString("FMU lib file (darwin64) '%1' not installed.\n").arg(fmuLibFile.toStdString()),
@@ -1248,6 +1252,7 @@ bool  NandradFMUGeneratorWidget::generate() {
 	// win64
 	fmuLibFile = m_installDir + "/NandradSolverFMI.dll";
 	if (QFile(fmuLibFile).exists()) {
+		// TODO : Improve output for dll copy operations
 		IBK::IBK_Message( IBK::FormatString("Copying Win64 FMU lib '%1'\n").arg(fmuLibFile.toStdString()),
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 		QString binTargetPath = baseDir.absoluteFilePath("binaries/win64/");
@@ -1275,6 +1280,8 @@ bool  NandradFMUGeneratorWidget::generate() {
 	if (success) {
 
 		// zip up the archive
+		IBK::IBK_Message( IBK::FormatString("Compressing folder and creating FMU '%1'.\n").arg(targetPath.toStdString()),
+						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 		success = JlCompress::compressDir(targetPath, baseDir.absolutePath());
 		if (!success) {
 			if (m_silent) {
