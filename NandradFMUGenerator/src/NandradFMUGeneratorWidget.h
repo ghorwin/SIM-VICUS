@@ -32,7 +32,7 @@ public:
 		\param silent If true, the generation process does not pop-up any message box or dialog in case of error, but
 			just dumps errors to console. This is meant for command-line exporting functionality.
 	*/
-	int generate();
+	bool generate();
 
 	/*! Full file path to the currently used nandrad file. */
 	IBK::Path							m_nandradFilePath;
@@ -50,12 +50,14 @@ public:
 		with just command line error messages.
 	*/
 	bool								m_silent = false;
+	/*! Here the model name is stored when exported is run in automatic-mode. */
+	QString								m_autoExportModelName;
 
-public slots:
+private slots:
 	/*! Reads the NANDRAD project and if successful, configures the user interface and calls updateVariableLists(). */
 	int setup();
 
-private slots:
+	void autoGenerate();
 
 	void on_tableWidgetInputVars_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
 	void on_tableWidgetOutputVars_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);

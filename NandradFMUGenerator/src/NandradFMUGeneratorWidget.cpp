@@ -180,6 +180,10 @@ void NandradFMUGeneratorWidget::init() {
 	else {
 		// setup user interface with project file data
 		QTimer::singleShot(0, this, &NandradFMUGeneratorWidget::setup);
+
+		// afterwards trigger auto-export, if requested
+		if (!m_autoExportModelName.isEmpty())
+			QTimer::singleShot(0, this, &NandradFMUGeneratorWidget::autoGenerate);
 	}
 }
 
@@ -232,6 +236,16 @@ int NandradFMUGeneratorWidget::setup() {
 	return 0; // success
 }
 
+
+void NandradFMUGeneratorWidget::autoGenerate() {
+	// set override model name
+	setModelName(m_autoExportModelName);
+	bool success = generate();
+	if (!success)
+		QApplication::exit(); // exit with return code 1
+	else
+		QApplication::quit(); // exit with return code 0 = success
+}
 
 
 void NandradFMUGeneratorWidget::on_tableWidgetInputVars_currentCellChanged(int currentRow, int , int , int ) {
@@ -967,7 +981,7 @@ void NandradFMUGeneratorWidget::appendVariableEntry(QTableWidget * tableWidget,
 }
 
 
-int  NandradFMUGeneratorWidget::generate() {
+bool  NandradFMUGeneratorWidget::generate() {
 	FUNCID(NandradFMUGeneratorWidget::generate);
 
 	QString fmuModelName = m_ui->lineEditModelName->text().trimmed();
@@ -1032,7 +1046,7 @@ int  NandradFMUGeneratorWidget::generate() {
 				tr("The referenced climate data file '%1' does not exist. Please select a climate data file!")
 					.arg(QString::fromStdString(fullClimatePath.str())) );
 		}
-		return 1;
+		return false;
 	}
 	// target file path
 	std::string targetFName = fullClimatePath.filename().str();
@@ -1270,7 +1284,7 @@ int  NandradFMUGeneratorWidget::generate() {
 			else {
 				QMessageBox::critical(this, tr("FMU Export Error"), tr("Error compressing the FMU archive (maybe invalid target path or invalid characters used?)."));
 			}
-			return 1;
+			return false;
 		}
 	}
 
@@ -1280,10 +1294,10 @@ int  NandradFMUGeneratorWidget::generate() {
 	if (success) {
 		if (!m_silent)
 			QMessageBox::information(this, tr("FMU Export complete"), tr("FMU '%1' created.").arg(targetPath));
-		return 0;
+		return true;
 	}
 	else
-		return 1;
+		return false;
 }
 
 

@@ -6,6 +6,8 @@
 #include <IBK_Exception.h>
 #include <IBK_ArgParser.h>
 
+#include <iostream>
+
 #include "NandradFMUGeneratorWidget.h"
 
 int main(int argc, char *argv[]) {
@@ -32,6 +34,8 @@ int main(int argc, char *argv[]) {
 	args.m_appname = "NandradFMUGenerator";
 	args.addOption(0, "generate", "Generates this FMU from the provided project file (requires project file argument).", "fmu-filename", "");
 	args.parse(argc, argv);
+	if (args.handleDefaultFlags(std::cout))
+		return EXIT_SUCCESS;
 
 	// *** Setup and show main widget and start event loop ***
 	int res;
@@ -45,8 +49,8 @@ int main(int argc, char *argv[]) {
 
 		// if started as: NandradFMUGenerator /path/to/projectFile.nandrad
 		// we copy /path/to/projectFile.nandrad as path to NANDRAD
-		if (args.args().size() > 0) {
-			std::string projectFile = args.args()[0];
+		if (args.args().size() > 1) {
+			std::string projectFile = args.args()[1];
 			if (projectFile.find("file://") == 0)
 				projectFile = projectFile.substr(7);
 			w.m_nandradFilePath = IBK::Path(projectFile);
@@ -56,13 +60,7 @@ int main(int argc, char *argv[]) {
 				throw IBK::Exception("Oroject file argument expected when using '--generate'.", FUNC_ID);
 			}
 			w.m_silent = true; // set widget into silent mode
-			w.init(); // populate line edits
-			if (w.setup() != 0) // try to read project
-				return EXIT_FAILURE;
-			// override default model name
-			w.setModelName(QString::fromStdString(args.option("generate")));
-			// generate FMU and return
-			return w.generate();
+			w.m_autoExportModelName = QString::fromStdString(args.option("generate"));
 		}
 
 		w.init();
