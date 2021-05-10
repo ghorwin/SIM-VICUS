@@ -254,5 +254,42 @@ const double * Schedules::resolveResultReference(const InputReference & valueRef
 	return nullptr;
 }
 
+void Schedules::resultDescriptions(std::vector<QuantityDescription> & resDesc) const
+{
+	std::string objectListName;
+	// loop through all varibles and create a suitable result description
+	for (unsigned int i=0; i<m_variableNames.size(); ++i) {
+		// spilt into object list name and quantity name
+		size_t pos = m_variableNames[i].find("::");
+		size_t size = m_variableNames[i].size();
+		// name
+		const std::string &objectListName = m_variableNames[i].substr(0,pos);
+		const std::string &quantityName = m_variableNames[i].substr(pos + 2, size - pos - 2);
+		// find object list
+		const NANDRAD::ObjectList * objList = objectListByName(objectListName);
+		// skip empty object lists
+		if(objList->m_filterID.m_ids.empty())
+			continue;
+		// create a result description template
+		QuantityDescription quantityDesc;
+		quantityDesc.m_referenceType = objList->m_referenceType;
+		quantityDesc.m_name = quantityName;
+		quantityDesc.m_unit = m_variableUnits[i].name();
+		quantityDesc.m_size = 1;
+		quantityDesc.m_description = "Schedule parameter: '" + quantityName + "'";
+		quantityDesc.m_constant = true;
+
+		// object lists are resolved, already
+		// therefore, loop through all registered ids and create a quantity
+		// description
+		for(unsigned int id : objList->m_filterID.m_ids) {
+			// create an id entry for each quantity
+			quantityDesc.m_id = id;
+			// add to container
+			resDesc.push_back(quantityDesc);
+		}
+	}
+}
+
 
 } // namespace NANDRAD_MODEL
