@@ -32,7 +32,7 @@ void checkForUniqueModelIDs(const std::vector<T> & vec, std::set<unsigned int> &
 
 	for (const T & t : vec) {
 		if (usedIDs.find(t.m_id) != usedIDs.end())
-			throw IBK::Exception(IBK::FormatString("Duplicate model ID #%1.")
+			throw IBK::Exception(IBK::FormatString("Duplicate model/object ID #%1.")
 								 .arg(t.m_id), FUNC_ID);
 		usedIDs.insert(t.m_id);
 	}

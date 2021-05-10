@@ -30,7 +30,6 @@ class SVNetworkEditDialog;
 class SVViewStateHandler;
 class SVSimulationStartNandrad;
 class SVSimulationStartNetworkSim;
-class SVSimulationExportFMIDialog;
 class SVShadingCalculationDialog;
 
 class SVDatabaseEditDialog;
@@ -267,7 +266,6 @@ private slots:
 
 	void on_actionResetView_triggered();
 
-	void on_actionSimulationExportFMI_triggered();
 	void on_actionExportView3D_triggered();
 
 	void on_actionCalculateShadingFactors_triggered();
@@ -383,9 +381,6 @@ private:
 
 	/*! Network edit dialog */
 	SVNetworkEditDialog			*m_networkEditDialog									= nullptr;
-
-	/*! FMI Export dialog. */
-	SVSimulationExportFMIDialog	*m_simulationExportFMIDialog							= nullptr;
 
 	/*! Simulation start dialog. */
 	SVSimulationStartNandrad	*m_simulationStartNandrad								= nullptr;

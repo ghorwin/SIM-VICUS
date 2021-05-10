@@ -24,8 +24,26 @@
 namespace NANDRAD {
 
 
-bool FMIDescription::hasVariable(const FMIVariableDefinition & var) const {
-	for (const FMIVariableDefinition & v : m_variables)
+void FMIDescription::checkParameters() {
+	// check input and output variable definition
+	for (FMIVariableDefinition &var : m_inputVariables) {
+		var.checkParameters();
+	}
+	for (FMIVariableDefinition &var : m_outputVariables) {
+		var.checkParameters();
+	}
+	// TODO : check for uniqueness of value references in all variables (mind valueref 42)
+}
+
+bool FMIDescription::hasInputVariable(const FMIVariableDefinition & var) const {
+	for (const FMIVariableDefinition & v : m_inputVariables)
+		if (v.sameModelVarAs(var)) return true;
+	return false;
+}
+
+
+bool FMIDescription::hasOutputVariable(const FMIVariableDefinition & var) const {
+	for (const FMIVariableDefinition & v : m_outputVariables)
 		if (v.sameModelVarAs(var)) return true;
 	return false;
 }

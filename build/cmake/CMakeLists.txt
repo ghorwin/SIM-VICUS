@@ -191,6 +191,7 @@ add_subdirectory( ../../View3D/projects/cmake_local View3D)
 
 add_subdirectory( ../../NandradSolver/projects/cmake_local NandradSolver)
 add_subdirectory( ../../NandradSolverFMI/projects/cmake_local NandradSolverFMI)
+add_subdirectory( ../../NandradFMUGenerator/projects/cmake_local NandradFMUGenerator)
 
 if (NOT DISABLE_QT)
 	add_subdirectory( ../../SIM-VICUS/projects/cmake_local SIM-VICUS)

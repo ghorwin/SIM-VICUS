@@ -158,11 +158,13 @@ then
 	cp -r $BUILDDIR/SIM-VICUS/SIM-VICUS.app ../../bin/release/SIM-VICUS.app &&
 	cp $BUILDDIR/NandradSolver/NandradSolver ../../bin/release/NandradSolver &&
 	cp $BUILDDIR/View3D/View3D ../../bin/release/View3D &&
-	cp $BUILDDIR/NandradSolverFMI/libNandradSolverFMI.dylib ../../bin/release/libNandradSolverFMI.dylib
+	cp $BUILDDIR/NandradSolverFMI/libNandradSolverFMI.dylib ../../bin/release/libNandradSolverFMI.dylib &&
+	cp $BUILDDIR/NandradFMUGenerator/NandradFMUGenerator ../../bin/release/NandradFMUGenerator
 else
 	cp $BUILDDIR/NandradSolver/NandradSolver ../../bin/release/NandradSolver &&
 	cp $BUILDDIR/View3D/View3D ../../bin/release/View3D &&
 	cp $BUILDDIR/NandradSolverFMI/libNandradSolverFMI.so ../../bin/release/libNandradSolverFMI.so &&
+	cp $BUILDDIR/NandradFMUGenerator/NandradFMUGenerator ../../bin/release/NandradFMUGenerator &&
 	if [ -e $BUILDDIR/SIM-VICUS/SIM-VICUS ]
 	then
 		cp $BUILDDIR/SIM-VICUS/SIM-VICUS ../../bin/release/SIM-VICUS

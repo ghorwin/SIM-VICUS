@@ -39,13 +39,13 @@ public:
 
 	NANDRAD_READWRITE
 
+	/*! Checks variable names. */
+	void checkParameters();
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	bool operator<(const FMIVariableDefinition & other) const {
 		// Note: compare properties starting with fast comparisons (integers) before strings.
-		if (m_inputVariable < other.m_inputVariable) return true;
-		if (m_inputVariable > other.m_inputVariable) return false;
-
 		if (m_objectID < other.m_objectID) return true;
 		if (m_objectID > other.m_objectID) return false;
 
@@ -67,23 +67,23 @@ public:
 
 	/*! Compares NANDRAD model variable definitions (not FMI variables). */
 	bool sameModelVarAs(const FMIVariableDefinition & other) const {
-		return m_inputVariable == other.m_inputVariable &&
-				m_objectID == other.m_objectID &&
+		return m_objectID == other.m_objectID &&
 				m_vectorIndex == other.m_vectorIndex &&
 				m_varName == other.m_varName;
 	}
 
-	/*! If true, than this is an input variable. */
-	bool		m_inputVariable;
-	/*! Unit of the variable. */
-	std::string	m_unit;
-
 	/*! The variable name as it appears in the FMI model description. */
 	std::string m_fmiVarName;																// XML:A:required
+	/*! Optional description of the variable. */
+	std::string m_fmiVarDescription;														// XML:E
+	/*! Unit of the variable. */
+	std::string	m_unit;																		// XML:A:required
 	/*! The variable variable type as it appears in the FMI model description. */
 	std::string m_fmiTypeName;																// XML:E
 	/*! The unqiue variable reference number for the FMI model description. */
 	IDType m_fmiValueRef = NANDRAD::INVALID_ID;												// XML:A:required
+	/*! The start value to be used for this variable. */
+	double m_fmiStartValue;																	// XML:E:required
 
 	/*! The variable name for the variable reference in NANDRAD.
 		This is an encoded name in format <objectRefType>.<variableName>, for example

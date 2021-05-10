@@ -503,9 +503,6 @@ private:
 	/*! Single object/model providing schedules quantities. */
 	Schedules												*m_schedules = nullptr;
 
-	/*! FMI import/export model. */
-	FMIInputOutput											*m_fmiInputOutput = nullptr;
-
 
 	// *** Outputs ***
 
@@ -529,6 +526,11 @@ private:
 	double													m_elapsedSimTimeAtStart;
 
 	SOLFRA::SolverFeedback									m_feedback;
+
+protected:
+	/*! FMI import/export model. */
+	FMIInputOutput											*m_fmiInputOutput = nullptr;
+
 };
 
 } // namespace NANDRAD_MODEL

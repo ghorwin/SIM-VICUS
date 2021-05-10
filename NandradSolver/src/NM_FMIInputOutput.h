@@ -28,6 +28,7 @@
 #include "NM_AbstractStateDependency.h"
 
 namespace NANDRAD {
+	class FMIDescription;
 	class Project;
 }
 
@@ -71,16 +72,6 @@ public:
 	*/
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override;
 
-	/*! Sets all object dependencies.
-		Called when all model results have been initialized (i.e. the function
-		initResults() was called in all model objects).
-
-		Re-implement this function and provide all information, so that function
-		inputReferences() can be called afterwards (e.g. resize and fill a vector
-		of Type std::vector<ModelInputReference>).
-	*/
-	virtual void initInputReferences(const std::vector<AbstractModel*> & /* models */) override;
-
 	/*! Provides the object with references to requested input variables (persistent memory location). */
 	virtual void setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) override;
 
@@ -89,6 +80,12 @@ public:
 
 
 	// *** Other public member functions
+
+	/*! Sets a new input value for a given single id number. */
+	void setFMIInputValue(unsigned int varID, double value);
+
+	/*! Gets output value for a given single id number. */
+	void getFMIOutputValue(unsigned int varID, double &value) const;
 
 	/*! Retrieves reference pointer to a requested input reference.
 
@@ -118,13 +115,23 @@ public:
 
 private:
 
-	/*! Stored value references (pointers to result variables exported via FMI). */
-	std::vector<const double *>		m_valueRefs;
+	/*! Stored value references for input quantities (pointers to internal result variables that contain
+		via FMI imported values), sorted via fmi id number. */
+	std::map<unsigned int, double *>			m_FMIInputValueRefs;
+
+	/*! Stored value references for output quantities (pointers to result variables exported via FMI),
+		sorted via fmi id number. */
+	std::map<unsigned int, const double *>		m_FMIOutputValueRefs;
 
 	/*! Cached current values, updated in setTime().
 		These values will be updated based on cached FMI variable input data.
 	*/
-	std::vector<double>				m_results;
+	std::vector<double>							m_results;
+
+	/*! Stored constant reference to FMI description. */
+	const NANDRAD::FMIDescription				*m_fmiDescription = nullptr;
+
+	friend class NandradModelFMU;
 };
 
 } // namespace NANDRAD_MODEL

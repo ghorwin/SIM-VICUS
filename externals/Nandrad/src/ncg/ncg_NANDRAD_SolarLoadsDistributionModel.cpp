@@ -33,8 +33,8 @@
 
 namespace NANDRAD {
 
-void SolarLoadsDistributionModel::readXML(const TiXmlElement * element) {
-	FUNCID(SolarLoadsDistributionModel::readXML);
+void SolarLoadsDistributionModel::readXMLPrivate(const TiXmlElement * element) {
+	FUNCID(SolarLoadsDistributionModel::readXMLPrivate);
 
 	try {
 		// search for mandatory elements
@@ -78,7 +78,7 @@ void SolarLoadsDistributionModel::readXML(const TiXmlElement * element) {
 	}
 }
 
-TiXmlElement * SolarLoadsDistributionModel::writeXML(TiXmlElement * parent) const {
+TiXmlElement * SolarLoadsDistributionModel::writeXMLPrivate(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("SolarLoadsDistributionModel");
 	parent->LinkEndChild(e);
 

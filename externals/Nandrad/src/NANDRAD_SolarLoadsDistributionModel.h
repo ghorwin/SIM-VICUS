@@ -10,6 +10,7 @@ namespace NANDRAD {
 /*! This model stores global parameters related to solar loads distribution in zones.
 */
 class SolarLoadsDistributionModel {
+	NANDRAD_READWRITE_PRIVATE
 public:
 	/*! Short wave radiation model variant. */
 	enum distribution_t {
@@ -34,13 +35,13 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	/*! Init default values (called before readXML()).
+	/*! Init default values (called before readXML() in solver).
 		\note These values will be overwritten in readXML() when the respective property is set
 			  in the project file.
 	*/
 	void initDefaults();
 
-	NANDRAD_READWRITE
+	NANDRAD_READWRITE_IFNOTEMPTY(SolarLoadsDistributionModel)
 	NANDRAD_COMP(SolarLoadsDistributionModel)
 
 	/*! To be called after readXML() and mainly used to check whether user-provided parameters are in the valid ranges. */

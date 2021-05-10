@@ -20,10 +20,13 @@
 */
 
 #include "NandradModelFMU.h"
+#include "NM_FMIInputOutput.h"
+
+#include <IBK_assert.h>
 
 
-NandradModelFMU::NandradModelFMU() :
-	m_outputBufferCleared(false)
+NandradModelFMU::NandradModelFMU()/* :
+	m_outputBufferCleared(false)*/
 {
 }
 
@@ -33,6 +36,17 @@ NandradModelFMU::NandradModelFMU() :
 void NandradModelFMU::setReal(int varID, double value) {
 	FUNCID(NandradModelFMU::setRealParameter);
 
+	// For now, we ignore call to setRealParameter() *before* initialization was done
+	if (m_fmiInputOutput == nullptr)
+		return;
+
+	try {
+		m_fmiInputOutput->setFMIInputValue((unsigned int) varID, value);
+	}
+	catch(IBK::Exception &ex) {
+		throw IBK::Exception(ex, IBK::FormatString("Error setting input value for quantity with FMI id %1!")
+							 .arg(varID), FUNC_ID);
+	}
 }
 
 
@@ -54,6 +68,14 @@ void NandradModelFMU::setBoolean(int varID, bool value) {
 
 void NandradModelFMU::getReal(int varID, double & value) {
 	FUNCID(NandradModelFMU::getReal);
+	IBK_ASSERT(m_fmiInputOutput != nullptr);
+	try {
+		m_fmiInputOutput->getFMIOutputValue((unsigned int) varID, value);
+	}
+	catch(IBK::Exception &ex) {
+		throw IBK::Exception(ex, IBK::FormatString("Error retrieving output value for quantity with FMI id %1!")
+							 .arg(varID), FUNC_ID);
+	}
 }
 
 

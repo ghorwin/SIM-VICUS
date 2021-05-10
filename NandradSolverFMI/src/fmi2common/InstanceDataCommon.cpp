@@ -59,7 +59,7 @@ void InstanceDataCommon::logger(fmi2Status state, fmi2String category, const IBK
 void InstanceDataCommon::setupMessageHandler(const IBK::Path & logfile) {
 	const char * const FUNC_ID = "[InstanceDataCommon::setupMessageHandler]";
 
-	if (m_messageHandlerPtr != NULL)
+	if (m_messageHandlerPtr != nullptr)
 		throw IBK::Exception(IBK::FormatString("Message handler must not be created/initialized twice."), FUNC_ID);
 
 	unsigned int verbosityLevel = IBK::VL_STANDARD;

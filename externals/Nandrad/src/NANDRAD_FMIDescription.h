@@ -41,25 +41,28 @@ public:
 
 	NANDRAD_READWRITE
 
-	/*! Tests if a variable for this model quantity exists already in the variable list.
+	/*! Checks all input and output variables. */
+	void checkParameters();
+
+	/*! Tests if an input variable for this model quantity exists already in the variable list.
 		Only the NANDRAD model variable properties (name, objectID, vector index/id) are compared.
 	*/
-	bool hasVariable(const FMIVariableDefinition & var) const;
+	bool hasInputVariable(const FMIVariableDefinition & var) const;
+
+	/*! Tests if an output variable for this model quantity exists already in the variable list.
+		Only the NANDRAD model variable properties (name, objectID, vector index/id) are compared.
+	*/
+	bool hasOutputVariable(const FMIVariableDefinition & var) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! The FMI model name. */
 	std::string							m_modelName;							// XML:E
 
-	/*! Path to target directory, where FMU file shall be exported to.
-		FMU file path will be automatically generated from model name and FMU path.
-		This is stored so that it is not necessary to specify the FMU path again and again when
-		exporting new project variants.
-	*/
-	IBK::Path							m_FMUPath;								// XML:E
-
-	/*! Holds all variable definitions. */
-	std::vector<FMIVariableDefinition>	m_variables;							// XML:E
+	/*! Holds all input variable definitions. */
+	std::vector<FMIVariableDefinition>	m_inputVariables;							// XML:E
+	/*! Holds all output variable definitions. */
+	std::vector<FMIVariableDefinition>	m_outputVariables;							// XML:E
 };
 
 } // namespace NANDRAD
