@@ -218,28 +218,32 @@
 		<FMIDescription>
 			<ModelName>CooledZone</ModelName>
 			<InputVariables>
-				<FMIVariableDefinition fmiVarName="CoolingControlValue" unit="---" fmiValueRef="51">
+				<FMIVariableDefinition fmiVarName="Model(1001).CoolingControlValue(100)" unit="---" fmiValueRef="43">
 					<FmiVarDescription>Cooling control signal</FmiVarDescription>
+					<FmiStartValue>0</FmiStartValue>
 					<VarName>Model.CoolingControlValue</VarName>
 					<ObjectID>1001</ObjectID>
 					<VectorIndex>100</VectorIndex>
 				</FMIVariableDefinition>
 			</InputVariables>
 			<OutputVariables>
-				<FMIVariableDefinition fmiVarName="Zone(100).AirTemperature" unit="C" fmiValueRef="49">
-					<FmiVarDescription>Room air temperature.</FmiVarDescription>
-					<VarName>Zone.AirTemperature</VarName>
-					<ObjectID>100</ObjectID>
+				<FMIVariableDefinition fmiVarName="ConstructionInstance(5).SolarRadiationFluxB" unit="W/m2" fmiValueRef="44">
+					<FmiVarDescription>Solar radiation flux density into surface B</FmiVarDescription>
+					<FmiStartValue>0</FmiStartValue>
+					<VarName>ConstructionInstance.SolarRadiationFluxB</VarName>
+					<ObjectID>5</ObjectID>
 				</FMIVariableDefinition>
-				<FMIVariableDefinition fmiVarName="Location(0).Temperature" unit="C" fmiValueRef="52">
+				<FMIVariableDefinition fmiVarName="Location(0).Temperature" unit="K" fmiValueRef="45">
 					<FmiVarDescription>Outside temperature.</FmiVarDescription>
+					<FmiStartValue>293.15</FmiStartValue>
 					<VarName>Location.Temperature</VarName>
 					<ObjectID>0</ObjectID>
 				</FMIVariableDefinition>
-				<FMIVariableDefinition fmiVarName="ConstructionInstance(5).SolarRadiationFluxB" unit="W/m2" fmiValueRef="54">
-					<FmiVarDescription>Solar radiation flux density into surface B</FmiVarDescription>
-					<VarName>ConstructionInstance.SolarRadiationFluxB</VarName>
-					<ObjectID>5</ObjectID>
+				<FMIVariableDefinition fmiVarName="Zone(100).AirTemperature" unit="K" fmiValueRef="46">
+					<FmiVarDescription>Room air temperature.</FmiVarDescription>
+					<FmiStartValue>293.15</FmiStartValue>
+					<VarName>Zone.AirTemperature</VarName>
+					<ObjectID>100</ObjectID>
 				</FMIVariableDefinition>
 			</OutputVariables>
 		</FMIDescription>

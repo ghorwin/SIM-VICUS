@@ -307,6 +307,11 @@ void NandradFMUGeneratorWidget::on_toolButtonAddInputVariable_clicked() {
 			unsigned int newValueRef = *m_usedValueRefs.rbegin() + 1;
 			m_usedValueRefs.insert(newValueRef);
 			var.m_fmiValueRef = newValueRef;
+			// set default start value
+			var.m_fmiStartValue = 0;
+			if (var.m_unit == "K")				var.m_fmiStartValue = 293.15;
+			else if (var.m_unit == "Pa")		var.m_fmiStartValue = 101325;
+
 			m_project.m_fmiDescription.m_inputVariables.push_back(var);
 			// set new value reference in table
 			m_ui->tableWidgetInputVars->item(row, 5)->setText(QString("%1").arg(newValueRef));
@@ -403,6 +408,11 @@ void NandradFMUGeneratorWidget::on_toolButtonAddOutputVariable_clicked() {
 			unsigned int newValueRef = *m_usedValueRefs.rbegin() + 1;
 			m_usedValueRefs.insert(newValueRef);
 			var.m_fmiValueRef = newValueRef;
+			// set default start value
+			var.m_fmiStartValue = 0;
+			if (var.m_unit == "K")				var.m_fmiStartValue = 293.15;
+			else if (var.m_unit == "Pa")		var.m_fmiStartValue = 101325;
+
 			m_project.m_fmiDescription.m_outputVariables.push_back(var);
 			// set new value reference in table
 			m_ui->tableWidgetOutputVars->item(row, 5)->setText(QString("%1").arg(newValueRef));
@@ -755,8 +765,23 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 		QString objTypeName = varNameTokens[0];			// "Zone"
 		QString nandradVarName = varNameTokens[1];		// "AirTemperature"
 		QString unit;
-		if (tokens.count() > 3)
+		if (tokens.count() > 3) {
 			unit = tokens[3].trimmed();
+			try {
+				// convert to base SI unit, except for some commonly used units without conversion factor to base unit
+				if (unit != "W" &&
+					unit != "W/m2" &&
+					unit != "W/m3")
+				{
+					IBK::Unit u(unit.toStdString());
+					unit = QString::fromStdString(u.base_unit().name());
+				}
+			}
+			catch (...) {
+				QMessageBox::critical(this, QString(), tr("Invalid data in file '%1'. Unrecognized unit '%2'. Re-run solver initialization!")
+					.arg(varsFile).arg(unit));
+			}
+		}
 		QString description;
 		if (tokens.count() > 4)
 			description = tokens[4].trimmed();
@@ -1152,13 +1177,7 @@ bool  NandradFMUGeneratorWidget::generate() {
 		varDesc.replace("${INDEX}", QString("%1").arg(index));
 		varDesc.replace("${NAME}", varDef.m_fmiVarName.c_str());
 		varDesc.replace("${VALUEREF}", QString("%1").arg(varIt->m_fmiValueRef));
-		// special handling for differen variable types
-		double startValue = 0;
-		if (varDef.m_unit == "K")		startValue = 293.15;
-		if (varDef.m_unit == "C")		startValue = 23;
-		else if (varDef.m_unit == "%")	startValue = 50;
-		else if (varDef.m_unit == "Pa")	startValue = 101325;
-		varDesc.replace("${STARTVALUE}", QString::number(startValue));
+		varDesc.replace("${STARTVALUE}", QString::number(varIt->m_fmiStartValue));
 		varDesc.replace("${REALVARUNIT}", varDef.m_unit.c_str());
 		units.insert(varDef.m_unit.c_str());
 		modelVariables += varDesc;
@@ -1175,13 +1194,7 @@ bool  NandradFMUGeneratorWidget::generate() {
 		varDesc.replace("${INDEX}", QString("%1").arg(index));
 		varDesc.replace("${NAME}", varDef.m_fmiVarName.c_str());
 		varDesc.replace("${VALUEREF}", QString("%1").arg(varIt->m_fmiValueRef));
-		// special handling for differen variable types
-		double startValue = 0;
-		if (varDef.m_unit == "K")		startValue = 293.15;
-		if (varDef.m_unit == "C")		startValue = 23;
-		else if (varDef.m_unit == "%")	startValue = 50;
-		else if (varDef.m_unit == "Pa")	startValue = 101325;
-		varDesc.replace("${STARTVALUE}", QString::number(startValue));
+		varDesc.replace("${STARTVALUE}", QString::number(varIt->m_fmiStartValue));
 		varDesc.replace("${REALVARUNIT}", varDef.m_unit.c_str());
 		units.insert(varDef.m_unit.c_str());
 		modelVariables += varDesc;
