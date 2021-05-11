@@ -35,11 +35,14 @@ public:
 	/*! Set point as fixed scalar value. */
 	IBK::Parameter					m_setPoint;											// XML:E
 
-	/*! Set point as a schedule (TODO: refactor to select setpoint via modelType). */
+	/*! Set point as a schedule.
+		TODO Hauke, refactor to select setpoint via modelType with pre-defined schedule name. */
 	std::string						m_setPointScheduleName;								// XML:E
 
-	/*! Used to cut the system input. */
-	double							m_maximumControllerResultValue;						// XML:E
+	/*! Used to cut the system input.
+		TODO Hauke, can this be optional?
+	*/
+	double							m_maximumControllerResultValue = 0;					// XML:E:required
 
 
 	// *** run time variables ***

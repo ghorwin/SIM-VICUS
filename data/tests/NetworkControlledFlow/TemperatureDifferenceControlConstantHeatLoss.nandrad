@@ -12,7 +12,7 @@
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 			<Interval>
-				<IBK:Parameter name="End" unit="d">30</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">6</IBK:Parameter>
 			</Interval>
 			<SolarLoadsDistributionModel>
 				<DistributionType>AreaWeighted</DistributionType>
@@ -81,7 +81,7 @@
 						<!-- </HydraulicNetworkHeatExchange> -->
 						<ControlElement controlType="ControlTemperatureDifference" controllerId="1">
 							<IBK:Parameter name="SetPoint" unit="K">1.3</IBK:Parameter>
-							<IBK:Parameter name="MaximumSystemInput" unit="-">1000000</IBK:Parameter>
+							<MaximumControllerResultValue>1000000</MaximumControllerResultValue>
 						</ControlElement>
 				</HydraulicNetworkElement>
 
@@ -117,19 +117,11 @@
 					<ObjectListName>the objects</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>Reynolds</Quantity>
-					<TimeType>None</TimeType>
-					<ObjectListName>the objects</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
 			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
 					<Intervals>
 						<Interval>
-							<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
-							<IBK:Parameter name="End" unit="d">30</IBK:Parameter>
 							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
 						</Interval>
 					</Intervals>
