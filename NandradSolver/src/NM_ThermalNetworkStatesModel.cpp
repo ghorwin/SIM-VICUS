@@ -326,8 +326,13 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 			// the controller setup is type-specific; this cannot be done in a nice generic way :-(
 
 			switch (e.m_component->m_modelType) {
+
+				// ** HeatExchanger**
 				case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger:
 					switch (e.m_heatExchange.m_modelType) {
+
+						// ** Given HeatLoss **
+						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant:
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline: {
 							TNElementWithExternalHeatLoss * tnElement =
 									dynamic_cast<TNElementWithExternalHeatLoss *>(m_p->m_flowElements[i]);
