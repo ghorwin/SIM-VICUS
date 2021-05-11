@@ -2121,7 +2121,20 @@ void NandradModel::initOutputReferenceList() {
 			}
 		}
 
-		/// \todo append scheduled quantities
+		// append scheduled quantities
+		try  {
+			std::vector<QuantityDescription> scheduleDescs;
+			m_schedules->resultDescriptions(scheduleDescs);
+			// add to container
+			for(const QuantityDescription &refDesc : scheduleDescs) {
+				std::string refTypeName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", refDesc.m_referenceType);
+				std::string fullVariableName = refTypeName + "." + refDesc.m_name; // refobject type + variable name
+				refDescs[fullVariableName].push_back( refDesc );
+			}
+		}
+		catch (IBK::Exception & ex) {
+			IBK::IBK_Message(ex.what(), IBK::MSG_ERROR, FUNC_ID);
+		}
 
 
 		// dump output reference list to file

@@ -16,17 +16,18 @@
 #include <IBK_messages.h>
 
 #ifdef Q_OS_WIN
-	#include <Windows.h>
-	#undef min				// undefine the min from minwindef.h
+#undef UNICODE
+#ifndef NOMINMAX
+#define NOMINMAX
 #endif
-
+#include <Windows.h>
+#endif
 
 const char * const ORGANIZATION = "IBK";
 const char * const PROGRAM_NAME = "NANDRADFMUGenerator";
 
 
 bool startProcess(const QString & executable, QStringList commandLineArgs, const QString & projectFile) {
-	bool success;
 	// spawn process
 #ifdef Q_OS_WIN
 
@@ -388,7 +389,7 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveInputVariable_clicked() {
 }
 
 
-void NandradFMUGeneratorWidget::on_tableWidgetInputVars_itemDoubleClicked(QTableWidgetItem */*item*/) {
+void NandradFMUGeneratorWidget::on_tableWidgetInputVars_itemDoubleClicked(QTableWidgetItem * /*item*/) {
 	// depending on the state of the buttons, call either add or remove
 	if (m_ui->toolButtonAddInputVariable->isEnabled())
 		m_ui->toolButtonAddInputVariable->click();

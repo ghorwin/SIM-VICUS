@@ -100,6 +100,7 @@ const double * FMIInputOutput::resolveResultReference(const NANDRAD_MODEL::Input
 	quantityDesc.m_name = valueRef.m_name.m_name;
 	quantityDesc.m_referenceType = valueRef.m_referenceType;
 	quantityDesc.m_unit = fmiUnit;
+	quantityDesc.m_constant = true; // with respect to other models, this is a constant value during integration
 
 
 	// return suitable value reference

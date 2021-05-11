@@ -98,6 +98,11 @@ public:
 	const double * resolveResultReference(const InputReference & valueRef, QuantityDescription & quantityDesc) const;
 
 
+	/*! Retrieves a splitted description of all scheduled results, including name, reference type and id of
+		objectList member.
+	*/
+	void resultDescriptions(std::vector<QuantityDescription> & resDesc) const ;
+
 	// *** Re-implemented from AbstractTimeDependency
 
 	/*! Updates the state of the schedules object to the time point stored in AbstractTimeStateObject::m_t.

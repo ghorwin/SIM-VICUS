@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fmiModelDescription
+	fmiVersion="2.0"
+	modelName="CoolingController"
+	guid="{2d8e8f5c-b19b-11eb-99fe-48a4728dac0c}"
+	version="1.0.0"
+	author="not specified"
+	copyright="not specified"
+	license="not specified"
+	description="An intensity controlled cooling control."
+	generationTool="ghorwin/FMICodeGenerator@github - C++ Code using FMI support functions from IBK@TU Dresden"
+	generationDateAndTime="2021-05-10T04:22:40Z"
+	variableNamingConvention="structured"
+	numberOfEventIndicators="0">
+
+	<!-- The following properties are the defaults and can be omitted
+		needsExecutionTool="false"
+		canBeInstantiatedOnlyOncePerProcess="false"
+		providesDirectionalDerivative="false"
+
+		CoSim only:
+		canRunAsynchronuously = "false"
+
+	-->
+
+	<ModelExchange
+		modelIdentifier="CoolingController"
+		completedIntegratorStepNotNeeded="true"
+		canNotUseMemoryManagementFunctions="true"
+		canGetAndSetFMUstate="true"
+		canSerializeFMUstate="true"
+	/>
+
+	<CoSimulation
+		modelIdentifier="CoolingController"
+		canHandleVariableCommunicationStepSize="true"
+		canInterpolateInputs="false"
+		maxOutputDerivativeOrder="0"
+		canNotUseMemoryManagementFunctions="true"
+		canGetAndSetFMUstate="true"
+		canSerializeFMUstate="true"
+	/>
+
+	<LogCategories>
+		<Category name="logStatusWarning" />
+		<Category name="logStatusError" />
+		<Category name="logAll" />
+		<Category name="logFmi2Call" />
+	</LogCategories>
+
+	<DefaultExperiment startTime="0.0" stopTime="10.0" tolerance="1e-06"/>
+
+	<ModelVariables>
+
+		<!-- For input variables we need to give a 'start' attribute -->
+		<!-- For output variables with initial="exact" we need to give a 'start' attribute -->
+		
+
+		<!-- Index of variable = "1" -->
+		<ScalarVariable
+			name="ResultsRootDir"
+            description="A writeable directory generated for each slave of this FMU to store slave-specific output/data files."
+			valueReference="42"
+			variability="fixed"
+			causality="parameter"
+			initial="exact">
+			<String start=""/>
+		</ScalarVariable>		
+		
+
+		<!-- Index of variable = "2" -->
+		<ScalarVariable
+			name="SolarRadiationIntensityOnSensor"
+            description="Solar radiation sensor value"
+			valueReference="1"
+			variability="continuous"
+			causality="input"
+			initial="exact">
+			<Real start="0" unit="W/m2"/>
+		</ScalarVariable>		
+		
+
+		<!-- Index of variable = "3" -->
+		<ScalarVariable
+			name="AmbientAirTemperature"
+            description="Outside air temperature"
+			valueReference="2"
+			variability="continuous"
+			causality="input"
+			initial="exact">
+			<Real start="293.15" unit="K"/>
+		</ScalarVariable>		
+		
+
+		<!-- Index of variable = "4" -->
+		<ScalarVariable
+			name="RoomAirTemperature"
+            description="Room temperature"
+			valueReference="3"
+			variability="continuous"
+			causality="input"
+			initial="exact">
+			<Real start="293.15" unit="K"/>
+		</ScalarVariable>		
+		
+
+		<!-- Index of variable = "5" -->
+		<ScalarVariable
+			name="CoolingControlValue"
+            description="Controller value (0 off, 1 on)"
+			valueReference="4"
+			variability="continuous"
+			causality="output"
+			initial="calculated">
+			<Real unit="---"/>
+		</ScalarVariable>		
+		
+
+	</ModelVariables>
+
+	<ModelStructure>
+		<Outputs>
+			<!-- dependencies must be defined for all output quantities. 'dependencyKind' is only needed
+				when some dependencies are constant factors or parameters.
+			-->
+			
+			<Unknown index="5" dependencies="2 3 4"/>
+		
+
+		</Outputs>
+	</ModelStructure>
+
+</fmiModelDescription>
+

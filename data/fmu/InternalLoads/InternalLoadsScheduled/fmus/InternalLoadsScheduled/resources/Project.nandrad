@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.999">
+	<Project>
+		<ProjectInfo>
+			<Comment>Scheduled ventilation rate model test for single zone, no constructions, additional heat capacity in zone</Comment>
+			<Created>2021-04-16</Created>
+			<LastEdited>2021-04-16</LastEdited>
+		</ProjectInfo>
+		<Location>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<TimeZone>13</TimeZone>
+			<ClimateFilePath>${Project Directory}/DE-04-TRY-2010__Potsdam__Jahr_00000K0_00081m.c6b</ClimateFilePath>
+		</Location>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
+			<Interval>
+				<IBK:Parameter name="Start" unit="d">120</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">130</IBK:Parameter>
+			</Interval>
+		</SimulationParameter>
+		<SolverParameter />
+		<Zones>
+			<Zone id="1" displayName="Office" type="Active">
+				<IBK:Parameter name="Area" unit="m2">30</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">90</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="kJ/K">150</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<Schedules>
+			<WeekEndDays>Sat,Sun</WeekEndDays>
+			<ScheduleGroups>
+				<ScheduleGroup objectList="All zones">
+					<Schedule type="AllDays">
+						<StartDayOfTheYear>0</StartDayOfTheYear>
+						<EndDayOfTheYear>364</EndDayOfTheYear>
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>EquipmentHeatLoadPerAreaSchedule [W/m2]:0;LightingHeatLoadPerAreaSchedule [W/m2]:0;</Values>
+							</DailyCycle>
+							<DailyCycle interpolation="Linear">
+								<TimePoints>0,5,8,18,22</TimePoints>
+								<Values>PersonHeatLoadPerAreaSchedule [W/m2]:0,0,8,8,0;</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+					<Schedule type="Tuesday">
+						<StartDayOfTheYear>0</StartDayOfTheYear>
+						<EndDayOfTheYear>364</EndDayOfTheYear>
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>LightingHeatLoadPerAreaSchedule [W/m2]:0;</Values>
+							</DailyCycle>
+							<DailyCycle interpolation="Linear">
+								<TimePoints>0</TimePoints>
+								<Values>PersonHeatLoadPerAreaSchedule [W/m2]:0;</Values>
+							</DailyCycle>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0,10,12</TimePoints>
+								<Values>EquipmentHeatLoadPerAreaSchedule [W/m2]:0,12,0;</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+			</ScheduleGroups>
+		</Schedules>
+		<Models>
+			<InternalLoadsModels>
+				<InternalLoadsModel id="1" displayName="Test Zone Template" modelType="Scheduled">
+					<ZoneObjectList>All zones</ZoneObjectList>
+					<IBK:Parameter name="EquipmentRadiationFraction" unit="---">0.2</IBK:Parameter>
+					<IBK:Parameter name="PersonRadiationFraction" unit="---">0.2</IBK:Parameter>
+					<IBK:Parameter name="LightingRadiationFraction" unit="---">0</IBK:Parameter>
+				</InternalLoadsModel>
+			</InternalLoadsModels>
+		</Models>
+		<Outputs>
+			<Definitions>
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>10 mins</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>PersonHeatLoadPerAreaSchedule</Quantity>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>10 mins</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>EquipmentHeatLoadPerAreaSchedule</Quantity>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>10 mins</GridName>
+				</OutputDefinition>
+			</Definitions>
+			<Grids>
+				<OutputGrid name="10 mins">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="min">10</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+			<TimeUnit>h</TimeUnit>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="All zones">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="First zone">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Ventilation models">
+				<FilterID>501</FilterID>
+				<ReferenceType>Model</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+		<FMIDescription>
+			<ModelName>InternalLoadsScheduled</ModelName>
+			<OutputVariables>
+				<FMIVariableDefinition fmiVarName="Zone(1).PersonHeatLoadPerAreaSchedule" unit="W/m2" fmiValueRef="43">
+					<FmiVarDescription>Schedule parameter: &apos;PersonHeatLoadPerAreaSchedule&apos;</FmiVarDescription>
+					<FmiStartValue>4.63557e-310</FmiStartValue>
+					<VarName>Zone.PersonHeatLoadPerAreaSchedule</VarName>
+					<ObjectID>1</ObjectID>
+				</FMIVariableDefinition>
+				<FMIVariableDefinition fmiVarName="Zone(1).LightingHeatLoadPerAreaSchedule" unit="W/m2" fmiValueRef="44">
+					<FmiVarDescription>Schedule parameter: &apos;LightingHeatLoadPerAreaSchedule&apos;</FmiVarDescription>
+					<FmiStartValue>4.65373e-310</FmiStartValue>
+					<VarName>Zone.LightingHeatLoadPerAreaSchedule</VarName>
+					<ObjectID>1</ObjectID>
+				</FMIVariableDefinition>
+				<FMIVariableDefinition fmiVarName="Zone(1).EquipmentHeatLoadPerAreaSchedule" unit="W/m2" fmiValueRef="45">
+					<FmiVarDescription>Schedule parameter: &apos;EquipmentHeatLoadPerAreaSchedule&apos;</FmiVarDescription>
+					<FmiStartValue>4.65373e-310</FmiStartValue>
+					<VarName>Zone.EquipmentHeatLoadPerAreaSchedule</VarName>
+					<ObjectID>1</ObjectID>
+				</FMIVariableDefinition>
+			</OutputVariables>
+		</FMIDescription>
+	</Project>
+</NandradProject>
