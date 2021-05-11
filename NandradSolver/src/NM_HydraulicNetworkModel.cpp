@@ -153,8 +153,8 @@ HydraulicNetworkModel::HydraulicNetworkModel(const NANDRAD::HydraulicNetwork & n
 	}
 
 	// set reference pressure node
-	std::vector<NANDRAD::HydraulicNetworkElement>::const_iterator refFeIt = std::find(nw.m_elements.begin(), nw.m_elements.end(),
-														   nw.m_referenceElementId);
+	std::vector<NANDRAD::HydraulicNetworkElement>::const_iterator refFeIt = std::find(
+				nw.m_elements.begin(), nw.m_elements.end(), nw.m_referenceElementId);
 	unsigned int refElemeIdx = std::distance(nw.m_elements.begin(), refFeIt);
 	// create implementation instance
 	m_p = new HydraulicNetworkModelImpl(elems, refElemeIdx); // we take ownership

@@ -52,23 +52,17 @@ DEPENDPATH = $${INCLUDEPATH} \
 	../../../externals/TiCPP/src
 
 SOURCES += \
-	../../src/NM_HydraulicNetworkFlowElements.cpp \
-	../../src/NM_HydraulicNetworkModel.cpp \
-	../../src/NM_IdealHeatingCoolingModel.cpp \
-	../../src/NM_Physics.cpp \
-	../../src/NM_RoomRadiationLoadsModel.cpp \
-	../../src/NM_ThermalComfortModel.cpp \
-	../../src/NM_ThermalNetworkAbstractFlowElement.cpp \
-	../../src/NM_ThermalNetworkAbstractFlowElementWithHeatLoss.cpp \
-	../../src/NM_ThermostatModel.cpp \
-	../../src/NM_WindowModel.cpp \
 	../../src/NM_AbstractModel.cpp \
 	../../src/NM_ConstructionBalanceModel.cpp \
 	../../src/NM_ConstructionStatesModel.cpp \
+	../../src/NM_Controller.cpp \
 	../../src/NM_DefaultModel.cpp \
 	../../src/NM_DefaultStateDependency.cpp \
 	../../src/NM_Directories.cpp \
 	../../src/NM_FMIInputOutput.cpp \
+	../../src/NM_HydraulicNetworkFlowElements.cpp \
+	../../src/NM_HydraulicNetworkModel.cpp \
+	../../src/NM_IdealHeatingCoolingModel.cpp \
 	../../src/NM_InternalLoadsModel.cpp \
 	../../src/NM_KeywordList.cpp \
 	../../src/NM_Loads.cpp \
@@ -76,20 +70,27 @@ SOURCES += \
 	../../src/NM_NaturalVentilationModel.cpp \
 	../../src/NM_OutputFile.cpp \
 	../../src/NM_OutputHandler.cpp \
+	../../src/NM_Physics.cpp \
 	../../src/NM_QuantityName.cpp \
 	../../src/NM_RoomBalanceModel.cpp \
+	../../src/NM_RoomRadiationLoadsModel.cpp \
 	../../src/NM_RoomStatesModel.cpp \
 	../../src/NM_Schedules.cpp \
+	../../src/NM_ShadingControlModel.cpp \
 	../../src/NM_StateModelGroup.cpp \
 	../../src/NM_SteadyStateSolver.cpp \
-	../../src/NM_VectorValuedQuantity.cpp \
-	../../src/NM_VectorValuedQuantityIndex.cpp \
-	../../src/NM_ThermalNetworkPrivate.cpp \
-	../../src/NM_ThermalNetworkStatesModel.cpp \
+	../../src/NM_ThermalComfortModel.cpp \
+	../../src/NM_ThermalNetworkAbstractFlowElement.cpp \
+	../../src/NM_ThermalNetworkAbstractFlowElementWithHeatLoss.cpp \
 	../../src/NM_ThermalNetworkBalanceModel.cpp \
 	../../src/NM_ThermalNetworkFlowElements.cpp \
-	../../src/NM_Controller.cpp \
-	../../src/NM_ShadingControlModel.cpp
+	../../src/NM_ThermalNetworkPrivate.cpp \
+	../../src/NM_ThermalNetworkStatesModel.cpp \
+	../../src/NM_ThermostatModel.cpp \
+	../../src/NM_VectorValuedQuantity.cpp \
+	../../src/NM_VectorValuedQuantityIndex.cpp \
+	../../src/NM_WindowModel.cpp
+
 
 HEADERS += \
 	../../doc/NandradSolverMainPage.h \
