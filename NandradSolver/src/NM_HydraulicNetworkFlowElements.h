@@ -93,14 +93,15 @@ class HNControlledPressureLossCoeffElement : public HydraulicNetworkAbstractFlow
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	HNControlledPressureLossCoeffElement(const NANDRAD::HydraulicNetworkComponent & component,
-		const NANDRAD::HydraulicFluid & fluid, const NANDRAD::ControlElement &controlElement);
+		const NANDRAD::HydraulicFluid & fluid);
 
 	// HydraulicNetworkAbstractFlowElement interface
 	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
 	void partials(double mdot, double p_inlet, double p_outlet,
 				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
 
-	void setHeatLoss(double heatLoss) override;
+	/*! The controlled pressure loss coefficient [-] */
+	double							m_zetaControlled = 0;
 
 private:
 	/*! Cached fluid density [kg/m3] */
@@ -114,9 +115,6 @@ private:
 
 	double							m_fluidHeatCapacity = -999;
 
-	double							m_heatLoss = -999;
-
-	const NANDRAD::ControlElement	*m_controlEl = nullptr;
 
 }; // HNFixedPressureLossCoeffElement
 

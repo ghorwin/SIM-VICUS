@@ -12,11 +12,15 @@ namespace NANDRAD {
 	class HydraulicNetworkPipeProperties;
 	class HydraulicFluid;
 	class LinearSplineParameter;
+	class ControlElement;
 }
 
 #define PI				3.141592653589793238
 
 namespace NANDRAD_MODEL {
+
+class HNControlledPressureLossCoeffElement;
+
 
 // **** Pipe with single fluid volume but including a steady state temperature distribution***
 
@@ -487,10 +491,20 @@ public:
 class TNElementWithExternalHeatLoss : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	TNElementWithExternalHeatLoss(const NANDRAD::HydraulicFluid & fluid, double fluidVolume);
+	TNElementWithExternalHeatLoss(const NANDRAD::HydraulicFluid & fluid, double fluidVolume,
+								  const NANDRAD::ControlElement &controlElement,
+								  HNControlledPressureLossCoeffElement *hydraulicElement);
 
 	/*! Function for retrieving heat fluxes out of the flow element.*/
 	void internalDerivatives(double *ydot) override;
+
+	void setInflowTemperature(double Tinflow) override;
+
+private:
+	HNControlledPressureLossCoeffElement		*m_hydraulicElement = nullptr;
+	const NANDRAD::ControlElement				&m_controlElement;
+
+
 };
 
 

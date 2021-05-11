@@ -107,36 +107,21 @@ void HNFixedPressureLossCoeffElement::partials(double mdot, double p_inlet, doub
 // *** HNControlledPressureLossCoeffElement ***
 
 HNControlledPressureLossCoeffElement::HNControlledPressureLossCoeffElement(const NANDRAD::HydraulicNetworkComponent &component,
-																		   const NANDRAD::HydraulicFluid &fluid,
-																		   const NANDRAD::ControlElement &controlElement)
+																		   const NANDRAD::HydraulicFluid &fluid)
 {
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 	m_zetaFix = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient].value;
 	m_diameter = component.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].value;
-	m_controlEl = &controlElement;
 }
 
 
 double HNControlledPressureLossCoeffElement::systemFunction(double mdot, double p_inlet, double p_outlet) const {
 
-	// calculate zetaControlled value for valve
-	double zetaControlled = 0;
-	if (m_controlEl->m_controlType == NANDRAD::ControlElement::CT_ControlTemperatureDifference){
-		double currentTempDiff = m_heatLoss / (mdot * m_fluidHeatCapacity);
-		double e = m_controlEl->m_setPoint.value - currentTempDiff;
-		double kp = 100000; // get this from control element (which should have a pointer to controller)
-		double y = kp * e;
-		if (y > m_controlEl->m_maximumSystemInput.value)
-			zetaControlled = m_controlEl->m_maximumSystemInput.value;
-		else if (y > 0)
-			zetaControlled = y;
-	}
-
-	// for negative mass flow: dp is negative
+	// NOTE: m_zetaControlled is set by the ThermalNetwork in TNElementWithExternalHeatLoss::setInflowTemperature()
 	double area = PI / 4 * m_diameter * m_diameter;
 	double velocity = mdot / (m_fluidDensity * area); // signed!
-	double dp = (m_zetaFix + zetaControlled) * m_fluidDensity / 2 * std::abs(velocity) * velocity;
+	double dp = (m_zetaFix + m_zetaControlled) * m_fluidDensity / 2 * std::abs(velocity) * velocity;
 	return p_inlet - p_outlet - dp;
 }
 
@@ -152,11 +137,6 @@ void HNControlledPressureLossCoeffElement::partials(double mdot, double p_inlet,
 	double f_eps = systemFunction(mdot+EPS, p_inlet, p_outlet);
 	double f = systemFunction(mdot, p_inlet, p_outlet);
 	df_dmdot = (f_eps - f)/EPS;
-}
-
-void HNControlledPressureLossCoeffElement::setHeatLoss(double heatLoss)
-{
-	m_heatLoss = heatLoss;
 }
 
 

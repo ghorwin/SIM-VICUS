@@ -1448,7 +1448,7 @@ void NandradModel::initNetworks() {
 			IBK_MSG_INDENT;
 			// check network parameters
 			try {
-				nw.checkParameters(m_project->m_placeholders, m_project->m_zones, m_project->m_constructionInstances);
+				nw.checkParameters(*m_project);
 			}
 			catch (IBK::Exception & ex) {
 				throw IBK::Exception(ex, IBK::FormatString("Error initializing hydraulic network with id #%1.")

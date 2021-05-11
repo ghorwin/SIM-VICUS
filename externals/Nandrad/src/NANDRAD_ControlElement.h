@@ -21,7 +21,7 @@ public:
 
 	/*! Checks for valid and required parameters (value ranges).
 	*/
-	void checkParameters();
+	void checkParameters(const std::vector<Controller> &controllers);
 
 	enum ControlType{
 		CT_ControlTemperatureDifference,	// Keyword: ControlTemperatureDifference	'ControlTemperatureDifference'
@@ -38,9 +38,6 @@ public:
 	/*! the set point as fixed scalar value */
 	IBK::Parameter					m_setPoint;											// XML:E
 
-	/*! the set point as a linear spline */
-	NANDRAD::LinearSplineParameter	m_setPointSpline;									// XML:E
-
 	/*! the set point as a schedule */
 	std::string						m_setPointScheduleName;								// XML:E
 
@@ -49,7 +46,7 @@ public:
 
 
 	// *** run time variables ***
-	NANDRAD::Controller				*m_controller = nullptr;
+	const NANDRAD::Controller		*m_controller = nullptr;
 };
 
 } // namespace NANDRAD

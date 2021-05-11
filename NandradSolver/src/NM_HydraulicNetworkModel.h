@@ -43,6 +43,9 @@ public:
 	*/
 	void setup();
 
+	/*! gives read access to the HydraulicNetworkModelImpl */
+	const HydraulicNetworkModelImpl*	hydraulicNetworkModelImpl() const {return m_p;}
+
 
 	// *** Re-implemented from AbstractModel
 

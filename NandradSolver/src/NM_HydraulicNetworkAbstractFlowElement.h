@@ -25,8 +25,6 @@ public:
 	/*! Sets fluid temperature [K] for all internal pipe volumes. */
 	virtual void setFluidTemperature(double fluidTemp) { (void)fluidTemp; }
 
-	/*! Sets fluid temperature [K] for all internal pipe volumes. */
-	virtual void setHeatLoss(double heatLoss) { (void)heatLoss; }
 };
 
 } // namespace NANDRAD_MODEL

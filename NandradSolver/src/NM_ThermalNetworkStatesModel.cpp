@@ -30,6 +30,10 @@
 #include "NM_ThermalNetworkFlowElements.h"
 #include "NM_KeywordList.h"
 
+
+// TODO Andreas: include cpp???
+#include "NM_HydraulicNetworkModel.cpp"
+
 #include <NANDRAD_HydraulicNetwork.h>
 #include <NANDRAD_HydraulicNetworkComponent.h>
 #include <NANDRAD_KeywordList.h>
@@ -109,9 +113,14 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 							const double l = e.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
 							double volume = PI/4. * d * d * l;
 
+							// obtain HNControlledPressureLossCoeffElement from hydraulic network model
+							HNControlledPressureLossCoeffElement * hydrElement =
+									dynamic_cast<HNControlledPressureLossCoeffElement *>(
+										hydrNetworkModel.hydraulicNetworkModelImpl()->m_flowElements[m_p->m_flowElements.size()]);
+
 							// create generic flow element with given heat flux
 							TNElementWithExternalHeatLoss * pipeElement = new TNElementWithExternalHeatLoss(
-										m_network->m_fluid, volume);
+										m_network->m_fluid, volume, e.m_controlElement, hydrElement);
 							// add to flow elements
 							m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 							m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
@@ -237,9 +246,16 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant :
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline :
 						{
-							// create general model with given heat flux
-							TNElementWithExternalHeatLoss * element = new TNElementWithExternalHeatLoss(m_network->m_fluid,
-																										e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value);
+							// obtain HNControlledPressureLossCoeffElement from hydraulic network model
+							HNControlledPressureLossCoeffElement * hydrElement =
+									dynamic_cast<HNControlledPressureLossCoeffElement *>(
+										hydrNetworkModel.hydraulicNetworkModelImpl()->m_flowElements[m_p->m_flowElements.size()]);
+
+							// create generic flow element with given heat flux
+							TNElementWithExternalHeatLoss * element = new TNElementWithExternalHeatLoss(
+										m_network->m_fluid, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value,
+										e.m_controlElement, hydrElement);
+
 							// add to flow elements
 							m_p->m_flowElements.push_back(element); // transfer ownership
 							m_p->m_heatLossElements.push_back(element); // copy of pointer
@@ -320,20 +336,13 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 	// resize reference values
 	m_meanTemperatureRefs.resize(m_elementIds.size(), nullptr);
-	m_heatLossRefs.resize(m_elementIds.size(), nullptr);
 
 	// initialize all fluid temperatures
 	for(unsigned int i = 0; i < m_p->m_flowElements.size(); ++i) {
 		ThermalNetworkAbstractFlowElement *fe = m_p->m_flowElements[i];
-
 		double fluidTemp = m_network->m_para[NANDRAD::HydraulicNetwork::P_InitialFluidTemperature].value;
 		fe->setInitialTemperature(fluidTemp);
 		m_meanTemperatureRefs[i] = &fe->m_meanTemperature;
-
-		// from Hauke
-		ThermalNetworkAbstractFlowElementWithHeatLoss *feHeatLoss = dynamic_cast<ThermalNetworkAbstractFlowElementWithHeatLoss*>(fe);
-		if (feHeatLoss!=nullptr)
-			m_heatLossRefs[i] = &feHeatLoss->m_heatLoss;
 	}
 
 	// remaining initialization related to flow element result value communication within NANDRAD model world
@@ -354,17 +363,6 @@ void ThermalNetworkStatesModel::resultDescriptions(std::vector<QuantityDescripti
 		desc.m_id = m_elementIds[i];
 		resDesc.push_back(desc);
 	}
-
-	// add heat losses to descriptions
-	QuantityDescription desc2("HeatLoss", "W", "Heat loss of network element", false);
-	// adjust reference type
-	desc2.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
-	// loop through all flow elements
-	for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
-		desc2.m_id = m_elementIds[i];
-		resDesc.push_back(desc2);
-	}
-
 }
 
 
@@ -387,17 +385,6 @@ const double * ThermalNetworkStatesModel::resultValueRef(const InputReference & 
 			return nullptr;
 		unsigned int pos = (unsigned int) std::distance(m_elementIds.begin(), fIt);
 		return m_meanTemperatureRefs[pos];
-	}
-	if (quantityName == std::string("HeatLoss")) {
-		if (quantity.m_referenceType != NANDRAD::ModelInputReference::MRT_NETWORKELEMENT)
-			return nullptr;
-		// access to an element temperature
-		std::vector<unsigned int>::const_iterator fIt = std::find(m_elementIds.begin(), m_elementIds.end(), (unsigned int) quantity.m_id);
-		// invalid index access
-		if (fIt == m_elementIds.end())
-			return nullptr;
-		unsigned int pos = (unsigned int) std::distance(m_elementIds.begin(), fIt);
-		return m_heatLossRefs[pos];
 	}
 
 	return nullptr;

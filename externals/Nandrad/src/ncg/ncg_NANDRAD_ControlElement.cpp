@@ -77,16 +77,6 @@ void ControlElement::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
-			else if (cName == "LinearSplineParameter") {
-				NANDRAD::LinearSplineParameter p;
-				p.readXML(c);
-				bool success = false;
-				if (p.m_name == "SetPointSpline") {
-					m_setPointSpline = p; success = true;
-				}
-				if (!success)
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.m_name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
 			else if (cName == "SetPointScheduleName")
 				m_setPointScheduleName = c->GetText();
 			else {
@@ -113,10 +103,6 @@ TiXmlElement * ControlElement::writeXML(TiXmlElement * parent) const {
 	if (!m_setPoint.name.empty()) {
 		IBK_ASSERT("SetPoint" == m_setPoint.name);
 		TiXmlElement::appendIBKParameterElement(e, "SetPoint", m_setPoint.IO_unit.name(), m_setPoint.get_value());
-	}
-	if (!m_setPointSpline.m_name.empty()) {
-		IBK_ASSERT("SetPointSpline" == m_setPointSpline.m_name);
-		m_setPointSpline.writeXML(e);
 	}
 	if (!m_setPointScheduleName.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "SetPointScheduleName", nullptr, std::string(), m_setPointScheduleName);

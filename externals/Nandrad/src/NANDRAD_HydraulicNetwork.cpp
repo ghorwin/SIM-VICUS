@@ -4,12 +4,12 @@
 
 #include "NANDRAD_KeywordList.h"
 
+#include "NANDRAD_Project.h"
+
 namespace NANDRAD {
 
 
-void HydraulicNetwork::checkParameters( const std::map<std::string, IBK::Path> &placeholders,
-										const std::vector<Zone> &zones,
-										const std::vector<ConstructionInstance> &conInstances)  {
+void HydraulicNetwork::checkParameters(const Project & prj)  {
 	FUNCID(HydraulicNetwork::checkParameters);
 
 	if(m_elements.empty()) {
@@ -62,7 +62,7 @@ void HydraulicNetwork::checkParameters( const std::map<std::string, IBK::Path> &
 	for(HydraulicNetworkElement &e : m_elements) {
 		try {
 			// the checkParameters of HydraulicNetworkHeatExchange will be executed within this function
-			e.checkParameters(*this, placeholders, zones, conInstances);
+			e.checkParameters(*this, prj);
 			// select construction ids
 			unsigned int conInstanceId =
 					e.m_heatExchange.m_idReferences[HydraulicNetworkHeatExchange::ID_ConstructionInstanceId];
