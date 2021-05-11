@@ -8,10 +8,6 @@
 namespace NANDRAD {
 
 
-ControlElement::ControlElement() {
-}
-
-
 void ControlElement::checkParameters(const std::vector<Controller> &controllers) {
 	FUNCID("ControlElement::checkParameters");
 

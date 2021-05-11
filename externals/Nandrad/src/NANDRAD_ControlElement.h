@@ -10,20 +10,17 @@ namespace NANDRAD {
 
 class Controller;
 
-class ControlElement
-{
-
+/*! This class contains parameters for a controller that is used for network elements. */
+class ControlElement {
 public:
 
 	NANDRAD_READWRITE
 
-	ControlElement();
-
-	/*! Checks for valid and required parameters (value ranges).
-	*/
+	/*! Checks for valid and required parameters (value ranges). */
 	void checkParameters(const std::vector<Controller> &controllers);
 
-	enum ControlType{
+	/*! Availabel control types. */
+	enum ControlType {
 		CT_ControlTemperatureDifference,	// Keyword: ControlTemperatureDifference	'ControlTemperatureDifference'
 		CT_ControlMassFlow,					// Keyword: ControlMassFlow					'ControlMassFlow'
 		CT_ControlZoneAirTemperature,		// Keyword: ControlZoneAirTemperature		'ControlZoneAirTemperature'
@@ -32,17 +29,17 @@ public:
 
 	ControlType						m_controlType = NUM_CT;								// XML:A
 
-	/*! reference to a controller (P, PI, ..) */
+	/*! Reference to a controller (P, PI, ..) */
 	IDType							m_controllerId = INVALID_ID;						// XML:A
 
-	/*! the set point as fixed scalar value */
+	/*! Set point as fixed scalar value. */
 	IBK::Parameter					m_setPoint;											// XML:E
 
-	/*! the set point as a schedule */
+	/*! Set point as a schedule (TODO: refactor to select setpoint via modelType). */
 	std::string						m_setPointScheduleName;								// XML:E
 
-	/*! used to cut the system input */
-	IBK::Parameter					m_maximumSystemInput;								// XML:E
+	/*! Used to cut the system input. */
+	double							m_maximumControllerResultValue;						// XML:E
 
 
 	// *** run time variables ***

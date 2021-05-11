@@ -69,9 +69,6 @@ void ControlElement::readXML(const TiXmlElement * element) {
 				if (p.name == "SetPoint") {
 					m_setPoint = p; success = true;
 				}
-				else if (p.name == "MaximumSystemInput") {
-					m_maximumSystemInput = p; success = true;
-				}
 				if (!success) {
 				}
 				if (!success)
@@ -79,6 +76,8 @@ void ControlElement::readXML(const TiXmlElement * element) {
 			}
 			else if (cName == "SetPointScheduleName")
 				m_setPointScheduleName = c->GetText();
+			else if (cName == "MaximumControllerResultValue")
+				m_maximumControllerResultValue = NANDRAD::readPODElement<double>(c, cName);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -106,10 +105,7 @@ TiXmlElement * ControlElement::writeXML(TiXmlElement * parent) const {
 	}
 	if (!m_setPointScheduleName.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "SetPointScheduleName", nullptr, std::string(), m_setPointScheduleName);
-	if (!m_maximumSystemInput.name.empty()) {
-		IBK_ASSERT("MaximumSystemInput" == m_maximumSystemInput.name);
-		TiXmlElement::appendIBKParameterElement(e, "MaximumSystemInput", m_maximumSystemInput.IO_unit.name(), m_maximumSystemInput.get_value());
-	}
+	TiXmlElement::appendSingleAttributeElement(e, "MaximumControllerResultValue", nullptr, std::string(), IBK::val2string<double>(m_maximumControllerResultValue));
 	return e;
 }
 
