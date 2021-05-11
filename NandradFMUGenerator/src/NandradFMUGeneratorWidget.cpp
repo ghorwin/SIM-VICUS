@@ -83,7 +83,7 @@ bool startProcess(const QString & executable, QStringList commandLineArgs, const
 	proc.setArguments(commandLineArgs);
 
 	proc.start();
-	success = proc.waitForFinished();
+	bool success = proc.waitForFinished();
 
 //	success = QProcess::startDetached(terminalProgram, commandLineArgs, QString(), &pid);
 
