@@ -412,8 +412,9 @@ void HydraulicNetworkModel::setInputValueRefs(const std::vector<QuantityDescript
 {
 	IBK_ASSERT(resultValueRefs.size() == m_elementIds.size());
 	// copy references into fluid temperature vector
-	for(unsigned int i=0; i<m_elementIds.size(); ++i)
-		m_fluidTemperatureRefs.push_back(resultValueRefs[i]);
+	for(const double* resRef : resultValueRefs)
+		m_fluidTemperatureRefs.push_back(resRef);
+
 }
 
 
@@ -426,7 +427,7 @@ int HydraulicNetworkModel::update() {
 	FUNCID(HydraulicNetworkModel::update);
 
 	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
-		// set all fluid temperatures and heat losses
+		// set all fluid temperatures
 		for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
 			HydraulicNetworkAbstractFlowElement *fe = m_p->m_flowElements[i];
 			fe->setFluidTemperature(*m_fluidTemperatureRefs[i]);

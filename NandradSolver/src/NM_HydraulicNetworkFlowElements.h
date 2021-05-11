@@ -8,7 +8,6 @@ namespace NANDRAD {
 	class HydraulicNetworkComponent;
 	class HydraulicNetworkPipeProperties;
 	class HydraulicFluid;
-	class ControlElement;
 }
 
 namespace NANDRAD_MODEL {
