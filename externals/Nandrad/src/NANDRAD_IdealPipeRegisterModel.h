@@ -34,6 +34,15 @@ namespace NANDRAD {
 */
 class IdealPipeRegisterModel {
 public:
+	/*! Different model variants for supply tempertaure. */
+	enum modelType_t {
+		/*! Supply temperature is given as constant parameter. */
+		MT_Constant,					// Keyword: Constant				'Constant infiltration rate'
+		/*! Supply temperature is provided as 'SupplyTemperatureSchedule' schedule parameter. */
+		MT_Scheduled,					// Keyword: Scheduled				'Scheduled ventilation rate'
+		NUM_MT
+	};
+
 	/*! Model parameters. */
 	enum para_t {
 		P_SupplyTemperature,		// Keyword: SupplyTemperature			[C]			'Medium supply temperature'
@@ -50,6 +59,9 @@ public:
 	unsigned int		m_id = NANDRAD::INVALID_ID;					// XML:A:required
 	/*! Some display/comment name for this model (optional). */
 	std::string			m_displayName;								// XML:A
+
+	/*! Model type. */
+	modelType_t			m_modelType = NUM_MT;						// XML:A:required
 
 	/*! Object list with zones that this model is to be apply to. */
 	std::string			m_constructionObjectList;					// XML:E:required

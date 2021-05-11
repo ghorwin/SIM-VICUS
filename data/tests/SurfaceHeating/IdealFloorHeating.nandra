@@ -50,7 +50,7 @@
 				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
-				<InterfaceA id="1" zoneId="2">
+				<InterfaceA id="2" zoneId="2">
 					<!--Interface to 'Room'-->
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
@@ -109,19 +109,19 @@
 			<IdealSurfaceHeatingModels>
 				<IdealSurfaceHeatingModel id="701">
 					<ThermostatZoneID>1</ThermostatZoneID>
-					<ConstructionObjectList>Floor</ConstructionObjectList>
+					<ConstructionObjectList>Floor 1</ConstructionObjectList>
 					<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">50</IBK:Parameter>
 				</IdealSurfaceHeatingModel>
 			</IdealSurfaceHeatingModels>	
 				
-			<IdealPipeRegisterModels>
+<!--			<IdealPipeRegisterModels>
 				<IdealPipeRegisterModel id="702" modelType="Constant">
 					<ThermostatZoneID>2</ThermostatZoneID>
-					<ConstructionObjectList>Heated floor constructions</ConstructionObjectList>
+					<ConstructionObjectList>Floor 2</ConstructionObjectList>
 					<IBK:Parameter name="SupplyTemperature" unit="C">30</IBK:Parameter>
 					<IBK:Parameter name="MaxMassFlow" unit="kg/s">0.2</IBK:Parameter>
 				</IdealPipeRegisterModel>
-			</IdealPipeRegisterModels>		
+			</IdealPipeRegisterModels>		-->
 			
 		</Models>
 		<Schedules />
@@ -155,12 +155,12 @@
 				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>ThermalLoad[1]</Quantity>
-					<ObjectListName>Floor</ObjectListName>
+					<ObjectListName>Floors</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>ElementTemperature[1]</Quantity>
-					<ObjectListName>Floor</ObjectListName>
+					<ObjectListName>Floors</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
@@ -188,8 +188,16 @@
 				<FilterID>*</FilterID>
 				<ReferenceType>Zone</ReferenceType>
 			</ObjectList>
-			<ObjectList name="Floor">
+			<ObjectList name="Floors">
+				<FilterID>3001,3002</FilterID>
+				<ReferenceType>ConstructionInstance</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Floor 1">
 				<FilterID>3001</FilterID>
+				<ReferenceType>ConstructionInstance</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Floor 2">
+				<FilterID>3002</FilterID>
 				<ReferenceType>ConstructionInstance</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
