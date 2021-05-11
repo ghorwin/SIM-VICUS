@@ -125,9 +125,8 @@ double HNControlledPressureLossCoeffElement::systemFunction(double mdot, double 
 	if (m_controlEl->m_controlType == NANDRAD::ControlElement::CT_ControlTemperatureDifference){
 		double currentTempDiff = m_heatLoss / (mdot * m_fluidHeatCapacity);
 		double e = m_controlEl->m_setPoint.value - currentTempDiff;
-		double kp = 1000; // get this from control element (which should have a pointer to controller)
+		double kp = 100000; // get this from control element (which should have a pointer to controller)
 		double y = kp * e;
-		double zetaControlled;
 		if (y > m_controlEl->m_maximumSystemInput.value)
 			zetaControlled = m_controlEl->m_maximumSystemInput.value;
 		else if (y > 0)
