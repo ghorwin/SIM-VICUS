@@ -1,16 +1,18 @@
 #include "NANDRAD_ControlElement.h"
 
+#include <algorithm>
+
 #include "NANDRAD_Controller.h"
+
 
 namespace NANDRAD {
 
 
-ControlElement::ControlElement()
-{
+ControlElement::ControlElement() {
 }
 
-void ControlElement::checkParameters(const std::vector<Controller> &controllers)
-{
+
+void ControlElement::checkParameters(const std::vector<Controller> &controllers) {
 	FUNCID("ControlElement::checkParameters");
 
 	if (m_controlType != NUM_CT){
@@ -27,4 +29,5 @@ void ControlElement::checkParameters(const std::vector<Controller> &controllers)
 	// TODO: other checks
 }
 
-}
+
+} // namespace NANDRAD
