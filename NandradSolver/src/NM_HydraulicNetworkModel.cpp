@@ -212,8 +212,8 @@ void HydraulicNetworkModel::setup() {
 					m_p->m_flowElements.push_back(hxElement); // transfer ownership
 				}
 				else{
-					HNControlledPressureLossCoeffElement * hxElement = new HNControlledPressureLossCoeffElement(*e.m_component,
-																												m_hydraulicNetwork->m_fluid);
+					HNControlledPressureLossCoeffElement * hxElement = new HNControlledPressureLossCoeffElement(
+								*e.m_component, m_hydraulicNetwork->m_fluid);
 					// add to flow elements
 					m_p->m_flowElements.push_back(hxElement); // transfer ownership
 				}
