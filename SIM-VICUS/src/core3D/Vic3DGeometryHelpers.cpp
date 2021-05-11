@@ -1,5 +1,6 @@
 #include "Vic3DGeometryHelpers.h"
 
+#include <IBKMK_Triangulation.h>
 #include <QtExt_Conversions.h>
 #include <VICUS_NetworkLine.h>
 
@@ -40,9 +41,9 @@ void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
 	indexBufferData.resize(indexBufferData.size()+triangleIndexCount);
 	// add all triangles
 
-	for (const VICUS::PlaneGeometry::triangle_t & t : g.triangles()) {
+	for (const IBKMK::Triangulation::triangle_t & t : g.triangles()) {
 		if (inverted) {
-			indexBufferData[currentElementIndex    ] = currentVertexIndex + t.a;
+			indexBufferData[currentElementIndex    ] = currentVertexIndex + t.i1;
 			indexBufferData[currentElementIndex + 1] = currentVertexIndex + t.c;
 			indexBufferData[currentElementIndex + 2] = currentVertexIndex + t.b;
 		}
@@ -77,7 +78,7 @@ void addPlane(const VICUS::PlaneGeometry & g, unsigned int & currentVertexIndex,
 	indexBufferData.resize(indexBufferData.size()+triangleIndexCount);
 	// add all triangles
 
-	for (const VICUS::PlaneGeometry::triangle_t & t : g.triangles()) {
+	for (const IBKMK::Triangulation::triangle_t & t : g.triangles()) {
 		indexBufferData[currentElementIndex    ] = currentVertexIndex + t.a;
 		indexBufferData[currentElementIndex + 1] = currentVertexIndex + t.b;
 		indexBufferData[currentElementIndex + 2] = currentVertexIndex + t.c;
@@ -111,10 +112,10 @@ void addPlane(const VICUS::PlaneGeometry & g, unsigned int holeIdx, unsigned int
 	indexBufferData.resize(indexBufferData.size()+triangleIndexCount);
 	// add all triangles
 
-	for (const VICUS::PlaneGeometry::triangle_t & t : g.triangles()) {
-		indexBufferData[currentElementIndex    ] = currentVertexIndex + t.a;
-		indexBufferData[currentElementIndex + 1] = currentVertexIndex + t.b;
-		indexBufferData[currentElementIndex + 2] = currentVertexIndex + t.c;
+	for (const IBKMK::Triangulation::triangle_t & t : g.triangles()) {
+		indexBufferData[currentElementIndex    ] = currentVertexIndex + t.i1;
+		indexBufferData[currentElementIndex + 1] = currentVertexIndex + t.i2;
+		indexBufferData[currentElementIndex + 2] = currentVertexIndex + t.i3;
 		// advance index in element/index buffer
 		currentElementIndex += 3;
 	}

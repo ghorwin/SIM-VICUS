@@ -31,8 +31,6 @@ namespace VICUS {
 
 // *** PlaneGeometry ***
 
-
-
 PlaneGeometry::PlaneGeometry(Polygon3D::type_t t,
 							 const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c) :
 	m_polygon(t, a, b, c)
@@ -65,6 +63,8 @@ void PlaneGeometry::removeVertex(unsigned int idx) {
 	triangulate(); // if we have a triangle/rectangle, this is detected here
 }
 
+// TODO : Dirk, move the 2 functions below to IBKMK_2DCalculations and port them to
+//        use Vector2D or point2D
 
 /*!
 	Copyright 2000 softSurfer, 2012 Dan Sunday
@@ -126,32 +126,31 @@ int wn_PnPoly( QPoint P, QPoint *V, int n )
 
 
 void PlaneGeometry::triangulate() {
-	m_triangles.clear();
-	m_triangleVertexes.clear();
-	m_holeTriangles.clear();
+	m_triangulationData.clear();
+	m_holeTriangulationData.clear();
 
 	// only continue, if the polygon itself is valid
 	if (!m_polygon.isValid())
 		return;
 
 	// We have special handling for type triangle and rectangle, but only if
-	// we have no holes. This will safe some work for quite a lot of planes.
+	// we have no holes. This will save some work for quite a lot of planes.
 	std::vector<IBKMK::Vector3D> vertexes = m_polygon.vertexes();
 	if (m_holes.empty() && m_polygon.type() != VICUS::Polygon3D::T_Polygon) {
 		switch (m_polygon.type()) {
 
 			case Polygon3D::T_Triangle :
-				m_triangles.push_back( triangle_t(0, 1, 2) );
+				m_triangulationData.m_triangles.push_back( IBKMK::Triangulation::triangle_t(0, 1, 2) );
 				break;
 
 			case Polygon3D::T_Rectangle :
-				m_triangles.push_back( triangle_t(0, 1, 2) );
-				m_triangles.push_back( triangle_t(2, 3, 0) );
+				m_triangulationData.m_triangles.push_back( IBKMK::Triangulation::triangle_t(0, 1, 2) );
+				m_triangulationData.m_triangles.push_back( IBKMK::Triangulation::triangle_t(2, 3, 0) );
 			break;
 
 			default: ;
 		}
-		m_triangleVertexes.swap(vertexes);
+		m_triangulationData.m_vertexes.swap(vertexes);
 
 		return; // done
 	}
@@ -167,7 +166,7 @@ void PlaneGeometry::triangulate() {
 		const std::vector<IBKMK::Vector2D> &subSurfacePoly = m_holes[i].vertexes();
 
 		// check if any of the holes are invalid
-		/// TODO Stephan/Dirk
+		// TODO : Dirk
 
 		/* erster Test: Prüfe alle Mittelpunkte der Hole-Strecken auf PointInPolygon mit der Outer-Bound.
 			Falls true --> Hole is invalid
@@ -229,43 +228,28 @@ void PlaneGeometry::triangulate() {
 
 	// add windows
 
-	m_holeTriangles.resize(m_holes.size()); // now an empty triangle vector exists for each hole in the surface
+	m_holeTriangulationData.resize(m_holes.size()); // create an (empty) data structure for each hole
 
 	// loop all windows
 	for (unsigned int holeIdx : validPolygons) {
 		const Polygon2D & p2 = m_holes[holeIdx];
 
-		std::vector<unsigned int> vertexIndexes;
-		// process all vertexes
+		// process all vertexes and generate the 3D vertexes used by the hole
+		vertexes.clear();
 		for (unsigned int i=0, vertexCount = p2.vertexes().size(); i<vertexCount; ++i) {
 			const IBKMK::Vector2D & v = p2.vertexes()[i];
-
-			// for each vertex in window do:
-			//  - check if vertex is already in vertex list, then re-use same vertex index,
-			//    otherwise add vertex and get new index
-			unsigned int j=0;
-			for (;j<points.size();++j)
-				if (points[j] == v)
-					break;
-			// store index (either of existing vertex or next vertex to be added)
-			vertexIndexes.push_back(j);
-			if (j == points.size()) {
-				points.push_back(v);
-				// compute the matching 3D vertex and add to list of vertexes
-				IBKMK::Vector3D v3 = offset() + localX()*v.m_x + localY()*v.m_y;
-				vertexes.push_back(v3);
-			}
+			// compute the matching 3D vertex and add to list of vertexes
+			IBKMK::Vector3D v3 = offset() + localX()*v.m_x + localY()*v.m_y;
+			vertexes.push_back(v3);
 		}
 
 		// add edges
 		std::vector<std::pair<unsigned int, unsigned int> > holeOnlyEdges;
 		for (unsigned int i=0, vertexCount = p2.vertexes().size(); i<vertexCount; ++i) {
-			unsigned int i1 = vertexIndexes[i];
-			unsigned int i2 = vertexIndexes[(i+1) % vertexCount];
-			edges.push_back(std::make_pair(i1, i2));
-			holeOnlyEdges.push_back(std::make_pair(i1, i2));
+			unsigned int i2 = (i+1) % vertexCount;
+			edges.push_back(std::make_pair(i, i2));
+			holeOnlyEdges.push_back(std::make_pair(i, i2));
 		}
-
 
 		// now do the triangulation of the window alone
 		IBKMK::Triangulation triangu;
@@ -274,7 +258,8 @@ void PlaneGeometry::triangulate() {
 		triangu.setPoints(reinterpret_cast< const std::vector<IBK::point2D<double> > & >(points), holeOnlyEdges);
 		// and copy the triangle data
 		for (auto tri : triangu.m_triangles) {
-			// TODO : only add triangles if not degenerated (i.e. area = 0) (may happen in case of windows aligned to outer bounds)
+			// TODO Dirk, only add triangles if not degenerated (i.e. area = 0) (may happen in case of windows aligned to outer bounds)
+
 			m_holeTriangles[holeIdx].push_back(triangle_t(tri.i1, tri.i2, tri.i3));
 		}
 	}

@@ -7,6 +7,8 @@
 #include "VICUS_Polygon3D.h"
 #include "VICUS_Polygon2D.h"
 
+#include "VICUS_PlaneTriangulationData.h"
+
 namespace VICUS {
 
 /*! Class PlaneGeometry encapsulates the vertex data and plane type of a single plane
@@ -25,16 +27,6 @@ namespace VICUS {
 class PlaneGeometry {
 public:
 
-	/*! Simple storage member to hold vertex indexes of a single triangle.
-		\sa triangles()
-	*/
-	struct triangle_t {
-		triangle_t() {}
-		triangle_t(unsigned int i1, unsigned int i2, unsigned int i3) :
-			a(i1), b(i2), c(i3)
-		{}
-		unsigned int a,b,c;
-	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -49,7 +41,7 @@ public:
 	/*! A polygon is considered "fully valid" for painting and additing to the data structure, if
 		it has enough vertexes and can be correctly triangulated (triangles not empty).
 	*/
-	bool isValid() const { return m_polygon.isValid() && !m_triangles.empty(); }
+	bool isValid() const { return m_polygon.isValid() && !m_triangulationData.m_triangles.empty(); }
 
 	/*! Return the inclination in Deg. 0° -> Roof; 90° -> Wall; 180° -> Floor. */
 	double inclination() const;
@@ -89,20 +81,10 @@ public:
 						bool hitBackfacingPlanes = false,
 						bool endlessPlane = false) const;
 
-	/*! Returns current vector of triangles of the opaque surface (not including holes). */
-	const std::vector<triangle_t> & triangles() const { return m_triangles; }
-
-	/*! Returns the triangles for each hole in this polygon. */
-	const std::vector< std::vector<triangle_t> > & holeTriangles() const { return m_holeTriangles; }
-
-	/*! Returns the vertexes used by the triangles.
-		This is a combination of the polygon's vertexes and vertexes of any (valid) holes inside
-		the polygon.
-		Note: you need to transfer these polygons to the graphics pipeline.
-
-		Note: The first vertex is always the first vertex in the polygon.
-	*/
-	const std::vector<IBKMK::Vector3D> & triangleVertexes() const { return m_triangleVertexes; }
+	/*! Returns the triangulation data for the opaque surface. */
+	const PlaneTriangulationData & triangulationData() const { return m_triangulationData; }
+	/*! Returns the triangulation data for each of the holes. */
+	const std::vector<PlaneTriangulationData> & holeTriangulationData() const { return m_holeTriangulationData; }
 
 	/*! Returns the stored polygon. */
 	const Polygon3D & polygon() const { return m_polygon; }
@@ -150,16 +132,12 @@ private:
 	/*! Contains the vertex indexes for each triangle that the polygon is composed of.
 		Includes only the triangles of the opaque surfaces without any holes
 	*/
-	std::vector<triangle_t>				m_triangles;
+	PlaneTriangulationData				m_triangulationData;
 
-	/*! The vertexes used by the triangles. */
-	std::vector<IBKMK::Vector3D>		m_triangleVertexes;
-
-	/*! Contains the triangle indexes of each hole.
+	/*! Contains the triangulation data of each hole.
 		Invalid hole definitions will yield empty triangle vectors.
-		The triangles use the same vertexes as in m_triangleVertexes (a subset).
 	*/
-	std::vector< std::vector<triangle_t> >	m_holeTriangles;
+	std::vector<PlaneTriangulationData>	m_holeTriangulationData;
 };
 
 } // namespace VICUS
