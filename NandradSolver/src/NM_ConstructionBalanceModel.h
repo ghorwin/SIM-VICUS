@@ -206,6 +206,8 @@ private:
 	double											m_fluxDensityShortWaveRadiationB = 0;
 	/*! Number of thermal network model input refs that we have generated and that we get value refs for. */
 	unsigned int									m_thermalNetworkModelCount = 0;
+	/*! Number of ideal surface heating model input refs that we have generated and that we get value refs for. */
+	unsigned int									m_surfaceHeatingModelCount = 0;
 
 	double											m_totalAdsorptionAreaA = 6666;
 	double											m_totalAdsorptionAreaB = 7777;
