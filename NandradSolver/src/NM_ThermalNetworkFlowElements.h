@@ -492,7 +492,7 @@ class TNElementWithExternalHeatLoss : public ThermalNetworkAbstractFlowElementWi
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	TNElementWithExternalHeatLoss(const NANDRAD::HydraulicFluid & fluid, double fluidVolume,
-								  const NANDRAD::ControlElement &controlElement,
+								  const NANDRAD::ControlElement *controlElement,
 								  HNControlledPressureLossCoeffElement *hydraulicElement);
 
 	/*! Function for retrieving heat fluxes out of the flow element.*/
@@ -502,7 +502,7 @@ public:
 
 private:
 	HNControlledPressureLossCoeffElement		*m_hydraulicElement = nullptr;
-	const NANDRAD::ControlElement				&m_controlElement;
+	const NANDRAD::ControlElement				*m_controlElement;
 
 
 };

@@ -672,7 +672,7 @@ TNAdiabaticElement::TNAdiabaticElement(const NANDRAD::HydraulicFluid & fluid, do
 // *** ElementWithExternalHeatLoss ***
 
 TNElementWithExternalHeatLoss::TNElementWithExternalHeatLoss(const NANDRAD::HydraulicFluid & fluid, double fluidVolume,
-															 const NANDRAD::ControlElement &controlElement,
+															 const NANDRAD::ControlElement *controlElement,
 															 HNControlledPressureLossCoeffElement *hydraulicElement):
 m_controlElement(controlElement)
 {
@@ -692,25 +692,33 @@ void TNElementWithExternalHeatLoss::internalDerivatives(double * ydot) {
 	ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(ydot);
 }
 
-void TNElementWithExternalHeatLoss::setInflowTemperature(double Tinflow)
-{
+void TNElementWithExternalHeatLoss::setInflowTemperature(double Tinflow){
+	FUNCID("TNElementWithExternalHeatLoss::setInflowTemperature");
+
 	ThermalNetworkAbstractFlowElementWithHeatLoss::setInflowTemperature(Tinflow);
+
+	if (m_hydraulicElement == nullptr)
+		return;
 
 	// calculate zetaControlled value for valve
 	double zetaControlled = 0;
-	switch (m_controlElement.m_controlType) {
+	switch (m_controlElement->m_controlType) {
 		case NANDRAD::ControlElement::CT_ControlTemperatureDifference:{
 //			double heatLoss = m_massFlux * m_fluidHeatCapacity * (m_meanTemperature - Tinflow);
-//			double currentTempDiff = (Tinflow - m_meanTemperature);
-			double currentTempDiff = *m_heatExchangeValueRef / (m_massFlux * m_fluidHeatCapacity);
-			double e = m_controlElement.m_setPoint.value - currentTempDiff;
-			double kp = m_controlElement.m_controller->m_para[NANDRAD::Controller::P_Kp].value;
+			double currentTempDiff = (Tinflow - m_meanTemperature);
+//			double currentTempDiff = *m_heatExchangeValueRef / (m_massFlux * m_fluidHeatCapacity);
+			double e = m_controlElement->m_setPoint.value - currentTempDiff;
+			double kp = m_controlElement->m_controller->m_para[NANDRAD::Controller::P_Kp].value;
 			double y = kp * e;
-			if (y > m_controlElement.m_maximumSystemInput.value)
-				zetaControlled = m_controlElement.m_maximumSystemInput.value;
+			if (y > m_controlElement->m_maximumSystemInput.value)
+				zetaControlled = m_controlElement->m_maximumSystemInput.value;
 			else if (y > 0)
 				zetaControlled = y;
 		} break;
+		case NANDRAD::ControlElement::CT_ControlMassFlow:
+		case NANDRAD::ControlElement::CT_ControlZoneAirTemperature:
+		case NANDRAD::ControlElement::NUM_CT:
+			throw IBK::Exception("Control Type not implemented yet!", FUNC_ID);
 	}
 
 	// set the zetaControlled value of the according hydraulic element
