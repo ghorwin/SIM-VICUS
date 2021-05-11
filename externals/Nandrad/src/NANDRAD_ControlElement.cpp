@@ -23,6 +23,17 @@ void ControlElement::checkParameters(const std::vector<Controller> &controllers)
 
 		// assign controller pointer
 		m_controller = &(*it);
+
+		switch (m_controlType) {
+			case CT_ControlTemperatureDifference:
+				m_setPoint.checkedValue("SetPoint", "K", "K", 0, false, std::numeric_limits<double>::max(), false, nullptr);
+			case CT_ControlMassFlow:
+				m_setPoint.checkedValue("SetPoint", "kg/s", "kg/s", 0, false, std::numeric_limits<double>::max(), false, nullptr);
+			case CT_ControlZoneAirTemperature:
+				break;
+//				throw IBK::Exception(IBK::FormatString("ControlType %1 is not implemented yet" )
+		}
+
 	}
 
 

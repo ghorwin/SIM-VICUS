@@ -704,9 +704,7 @@ void TNElementWithExternalHeatLoss::setInflowTemperature(double Tinflow){
 	double zetaControlled = 0;
 	switch (m_controlElement->m_controlType) {
 		case NANDRAD::ControlElement::CT_ControlTemperatureDifference:{
-//			double heatLoss = m_massFlux * m_fluidHeatCapacity * (m_meanTemperature - Tinflow);
-			double currentTempDiff = (Tinflow - m_meanTemperature);
-//			double currentTempDiff = *m_heatExchangeValueRef / (m_massFlux * m_fluidHeatCapacity);
+			double currentTempDiff = (m_inflowTemperature - m_meanTemperature);
 			double e = m_controlElement->m_setPoint.value - currentTempDiff;
 			double kp = m_controlElement->m_controller->m_para[NANDRAD::Controller::P_Kp].value;
 			double y = kp * e;
