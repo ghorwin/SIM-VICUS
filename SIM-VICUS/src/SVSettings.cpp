@@ -9,7 +9,7 @@
 
 #ifdef Q_OS_WIN
 #undef UNICODE
-#include <windows.h>
+#include <Windows.h>
 #endif
 
 #include <QtExt_Directories.h>
