@@ -672,15 +672,13 @@ TNAdiabaticElement::TNAdiabaticElement(const NANDRAD::HydraulicFluid & fluid, do
 // *** ElementWithExternalHeatLoss ***
 
 TNElementWithExternalHeatLoss::TNElementWithExternalHeatLoss(const NANDRAD::HydraulicFluid & fluid, double fluidVolume,
-															 const NANDRAD::ControlElement *controlElement,
-															 HNControlledPressureLossCoeffElement *hydraulicElement):
-m_controlElement(controlElement)
+															 const NANDRAD::ControlElement & controlElement):
+	m_controlElement(&controlElement)
 {
 	m_fluidVolume = fluidVolume;
 	// copy fluid properties
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
-	m_hydraulicElement = hydraulicElement;
 }
 
 
@@ -703,8 +701,8 @@ double TNElementWithExternalHeatLoss::zetaControlled(double mdot) const {
 			double e = m_controlElement->m_setPoint.value - currentTempDiff;
 			double kp = m_controlElement->m_controller->m_para[NANDRAD::Controller::P_Kp].value;
 			double y = kp * e;
-			if (y > m_controlElement->m_maximumSystemInput.value)
-				zetaControlled = m_controlElement->m_maximumSystemInput.value;
+			if (y > m_controlElement->m_maximumControllerResultValue)
+				zetaControlled = m_controlElement->m_maximumControllerResultValue;
 			else if (y > 0)
 				zetaControlled = y;
 		} break;
