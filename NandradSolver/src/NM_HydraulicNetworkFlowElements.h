@@ -116,6 +116,8 @@ private:
 		This element computes the additional zeta value to be added to m_zetaFix.
 	*/
 	const TNElementWithExternalHeatLoss * m_thermalNetworkElement = nullptr;
+
+	friend class ThermalNetworkStatesModel;
 }; // HNFixedPressureLossCoeffElement
 
 
