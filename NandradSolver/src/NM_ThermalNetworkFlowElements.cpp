@@ -692,19 +692,14 @@ void TNElementWithExternalHeatLoss::internalDerivatives(double * ydot) {
 	ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(ydot);
 }
 
-void TNElementWithExternalHeatLoss::setInflowTemperature(double Tinflow){
-	FUNCID("TNElementWithExternalHeatLoss::setInflowTemperature");
 
-	ThermalNetworkAbstractFlowElementWithHeatLoss::setInflowTemperature(Tinflow);
-
-	if (m_hydraulicElement == nullptr)
-		return;
-
+double TNElementWithExternalHeatLoss::zetaControlled(double mdot) const {
+	FUNCID(TNElementWithExternalHeatLoss::zetaControlled);
 	// calculate zetaControlled value for valve
 	double zetaControlled = 0;
 	switch (m_controlElement->m_controlType) {
 		case NANDRAD::ControlElement::CT_ControlTemperatureDifference:{
-			double currentTempDiff = (m_inflowTemperature - m_meanTemperature);
+			double currentTempDiff = *m_heatExchangeValueRef/(mdot*m_fluidHeatCapacity);
 			double e = m_controlElement->m_setPoint.value - currentTempDiff;
 			double kp = m_controlElement->m_controller->m_para[NANDRAD::Controller::P_Kp].value;
 			double y = kp * e;
@@ -715,12 +710,11 @@ void TNElementWithExternalHeatLoss::setInflowTemperature(double Tinflow){
 		} break;
 		case NANDRAD::ControlElement::CT_ControlMassFlow:
 		case NANDRAD::ControlElement::CT_ControlZoneAirTemperature:
-		case NANDRAD::ControlElement::NUM_CT:
 			throw IBK::Exception("Control Type not implemented yet!", FUNC_ID);
-	}
 
-	// set the zetaControlled value of the according hydraulic element
-	m_hydraulicElement->m_zetaControlled = zetaControlled;
+		case NANDRAD::ControlElement::NUM_CT: ; // nothing todo - we return 0
+	}
+	return zetaControlled;
 }
 
 

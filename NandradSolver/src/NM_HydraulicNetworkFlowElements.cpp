@@ -1,10 +1,12 @@
 #include "NM_HydraulicNetworkFlowElements.h"
 #include "NM_Physics.h"
 
-#include "NANDRAD_HydraulicNetworkElement.h"
-#include "NANDRAD_HydraulicNetworkPipeProperties.h"
-#include "NANDRAD_HydraulicNetworkComponent.h"
-#include "NANDRAD_HydraulicFluid.h"
+#include <NANDRAD_HydraulicNetworkElement.h>
+#include <NANDRAD_HydraulicNetworkPipeProperties.h>
+#include <NANDRAD_HydraulicNetworkComponent.h>
+#include <NANDRAD_HydraulicFluid.h>
+
+#include "NM_ThermalNetworkFlowElements.h"
 
 #define PI				3.141592653589793238
 
@@ -121,7 +123,9 @@ double HNControlledPressureLossCoeffElement::systemFunction(double mdot, double 
 	// NOTE: m_zetaControlled is set by the ThermalNetwork in TNElementWithExternalHeatLoss::setInflowTemperature()
 	double area = PI / 4 * m_diameter * m_diameter;
 	double velocity = mdot / (m_fluidDensity * area); // signed!
-	double dp = (m_zetaFix + m_zetaControlled) * m_fluidDensity / 2 * std::abs(velocity) * velocity;
+	IBK_ASSERT(m_thermalNetworkElement != nullptr);
+	double zetaControlled = m_thermalNetworkElement->zetaControlled(mdot); // pass the current mdot
+	double dp = (m_zetaFix + zetaControlled) * m_fluidDensity / 2 * std::abs(velocity) * velocity;
 	return p_inlet - p_outlet - dp;
 }
 

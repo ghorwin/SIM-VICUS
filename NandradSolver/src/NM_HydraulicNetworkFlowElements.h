@@ -84,6 +84,7 @@ private:
 }; // HNFixedPressureLossCoeffElement
 
 
+class TNElementWithExternalHeatLoss;
 
 /*! Element that calculates the pressure loss according to a given fixed pressure loss coefficient
 	(which is in Germany usually called zeta-value)
@@ -99,9 +100,6 @@ public:
 	void partials(double mdot, double p_inlet, double p_outlet,
 				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
 
-	/*! The controlled pressure loss coefficient [-] */
-	double							m_zetaControlled = 0;
-
 private:
 	/*! Cached fluid density [kg/m3] */
 	double							m_fluidDensity = -999;
@@ -114,10 +112,11 @@ private:
 
 	double							m_fluidHeatCapacity = -999;
 
-
+	/*! Pointer to the corresponding thermal network flow element.
+		This element computes the additional zeta value to be added to m_zetaFix.
+	*/
+	const TNElementWithExternalHeatLoss * m_thermalNetworkElement = nullptr;
 }; // HNFixedPressureLossCoeffElement
-
-
 
 
 

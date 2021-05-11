@@ -498,7 +498,10 @@ public:
 	/*! Function for retrieving heat fluxes out of the flow element.*/
 	void internalDerivatives(double *ydot) override;
 
-	void setInflowTemperature(double Tinflow) override;
+	/*! Computes the controlled zeta-value if a control-model is implemented.
+		Otherwise returns 0.
+	*/
+	double zetaControlled(double mdot) const;
 
 private:
 	HNControlledPressureLossCoeffElement		*m_hydraulicElement = nullptr;
