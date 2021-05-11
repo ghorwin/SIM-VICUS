@@ -254,17 +254,17 @@ const double * Schedules::resolveResultReference(const InputReference & valueRef
 	return nullptr;
 }
 
-void Schedules::resultDescriptions(std::vector<QuantityDescription> & resDesc) const
-{
+
+void Schedules::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 	std::string objectListName;
-	// loop through all varibles and create a suitable result description
+	// loop through all variables and create a suitable result description
 	for (unsigned int i=0; i<m_variableNames.size(); ++i) {
 		// spilt into object list name and quantity name
 		size_t pos = m_variableNames[i].find("::");
-		size_t size = m_variableNames[i].size();
+		IBK_ASSERT(pos != std::string::npos);
 		// name
 		const std::string &objectListName = m_variableNames[i].substr(0,pos);
-		const std::string &quantityName = m_variableNames[i].substr(pos + 2, size - pos - 2);
+		const std::string &quantityName = m_variableNames[i].substr(pos + 2);
 		// find object list
 		const NANDRAD::ObjectList * objList = objectListByName(objectListName);
 		// skip empty object lists
@@ -275,7 +275,7 @@ void Schedules::resultDescriptions(std::vector<QuantityDescription> & resDesc) c
 		quantityDesc.m_referenceType = objList->m_referenceType;
 		quantityDesc.m_name = quantityName;
 		quantityDesc.m_unit = m_variableUnits[i].name();
-		quantityDesc.m_size = 1;
+		quantityDesc.m_size = 1; // we never have vector-valued schedule quantities
 		quantityDesc.m_description = "Schedule parameter: '" + quantityName + "'";
 		quantityDesc.m_constant = true;
 
