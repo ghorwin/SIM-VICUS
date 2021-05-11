@@ -1,10 +1,12 @@
 #include "NM_HydraulicNetworkFlowElements.h"
 #include "NM_Physics.h"
 
-#include "NANDRAD_HydraulicNetworkElement.h"
-#include "NANDRAD_HydraulicNetworkPipeProperties.h"
-#include "NANDRAD_HydraulicNetworkComponent.h"
-#include "NANDRAD_HydraulicFluid.h"
+#include <NANDRAD_HydraulicNetworkElement.h>
+#include <NANDRAD_HydraulicNetworkPipeProperties.h>
+#include <NANDRAD_HydraulicNetworkComponent.h>
+#include <NANDRAD_HydraulicFluid.h>
+
+#include "NM_ThermalNetworkFlowElements.h"
 
 #define PI				3.141592653589793238
 
@@ -90,6 +92,45 @@ double HNFixedPressureLossCoeffElement::systemFunction(double mdot, double p_inl
 
 
 void HNFixedPressureLossCoeffElement::partials(double mdot, double p_inlet, double p_outlet,
+							 double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
+{
+	// partial derivatives of the system function to pressures are constants
+	df_dp_inlet = 1;
+	df_dp_outlet = -1;
+	// generic DQ approximation of partial derivative
+	const double EPS = 1e-5; // in kg/s
+	double f_eps = systemFunction(mdot+EPS, p_inlet, p_outlet);
+	double f = systemFunction(mdot, p_inlet, p_outlet);
+	df_dmdot = (f_eps - f)/EPS;
+}
+
+
+
+// *** HNControlledPressureLossCoeffElement ***
+
+HNControlledPressureLossCoeffElement::HNControlledPressureLossCoeffElement(const NANDRAD::HydraulicNetworkComponent &component,
+																		   const NANDRAD::HydraulicFluid &fluid)
+{
+	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
+	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+	m_zetaFix = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient].value;
+	m_diameter = component.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].value;
+}
+
+
+double HNControlledPressureLossCoeffElement::systemFunction(double mdot, double p_inlet, double p_outlet) const {
+
+	// NOTE: m_zetaControlled is set by the ThermalNetwork in TNElementWithExternalHeatLoss::setInflowTemperature()
+	double area = PI / 4 * m_diameter * m_diameter;
+	double velocity = mdot / (m_fluidDensity * area); // signed!
+	IBK_ASSERT(m_thermalNetworkElement != nullptr);
+	double zetaControlled = m_thermalNetworkElement->zetaControlled(mdot); // pass the current mdot
+	double dp = (m_zetaFix + zetaControlled) * m_fluidDensity / 2 * std::abs(velocity) * velocity;
+	return p_inlet - p_outlet - dp;
+}
+
+
+void HNControlledPressureLossCoeffElement::partials(double mdot, double p_inlet, double p_outlet,
 							 double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
 {
 	// partial derivatives of the system function to pressures are constants

@@ -34,12 +34,12 @@ bool startProcess(const QString & executable, QStringList commandLineArgs, const
 	/// \todo use wide-string version of API and/or encapsulate spawn process into a function
 
 	// Use WinAPI to create a solver process
-	STARTUPINFO si;
+	STARTUPINFOA si;
 	PROCESS_INFORMATION pi;
 	ZeroMemory( &si, sizeof(si) );
 	si.cb = sizeof(si);
 	std::string utf8String = projectFile.toStdString().data();
-	si.lpTitle = (LPSTR)utf8String.c_str();
+	si.lpTitle = (char*)utf8String.c_str();
 //	si.dwFlags = STARTF_USESHOWWINDOW;
 //	si.wShowWindow = SW_SHOW;
 	ZeroMemory( &pi, sizeof(pi) );
@@ -51,7 +51,7 @@ bool startProcess(const QString & executable, QStringList commandLineArgs, const
 
 	std::string cmd = cmdLine.toLatin1().data();
 	// Start the child process.
-	if( !CreateProcess( NULL,   // No module name (use command line).
+	if( !CreateProcessA( NULL,   // No module name (use command line).
 		&cmd[0], 				// Command line.
 		NULL,             		// Process handle not inheritable.
 		NULL,             		// Thread handle not inheritable.
@@ -83,7 +83,7 @@ bool startProcess(const QString & executable, QStringList commandLineArgs, const
 	proc.setArguments(commandLineArgs);
 
 	proc.start();
-	success = proc.waitForFinished();
+	bool success = proc.waitForFinished();
 
 //	success = QProcess::startDetached(terminalProgram, commandLineArgs, QString(), &pid);
 

@@ -7,12 +7,12 @@
 			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="%">20</IBK:Parameter>
 			<TimeZone>13</TimeZone>
-			<ClimateFilePath>C:/Daten/git/SIMVICUS/data/DB_climate/Konstantopol_20C.c6b</ClimateFilePath>
+			<ClimateFilePath>${Project Directory}/../climate/Konstantopol_20C.c6b</ClimateFilePath>
 		</Location>
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 			<Interval>
-				<IBK:Parameter name="End" unit="d">30</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">6</IBK:Parameter>
 			</Interval>
 			<SolarLoadsDistributionModel>
 				<DistributionType>AreaWeighted</DistributionType>
@@ -55,8 +55,8 @@
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="10020004" displayName="simpleHX" modelType="HeatExchanger">
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">22.6</IBK:Parameter>
-						<IBK:Parameter name="PressureLossCoefficient" unit="-">16.6</IBK:Parameter>
-						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
+						<IBK:Parameter name="PressureLossCoefficient" unit="-">18</IBK:Parameter>
+						<IBK:Parameter name="Volume" unit="m3">0.1</IBK:Parameter>
 						<IBK:Parameter name="PipeMaxDiscretizationWidth" unit="m">5</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="10020001" displayName="detailled pipe" modelType="DynamicPipe">
@@ -66,12 +66,12 @@
 				
 				<Elements>
 				
-				<HydraulicNetworkElement id="0" inletNodeId="100" outletNodeId="0" componentId="10020002" displayName="pump_0_Quelle">
+				<HydraulicNetworkElement id="0" inletNodeId="100" outletNodeId="0" componentId="10020002" displayName="pump">
 				</HydraulicNetworkElement>
 				
 				<HydraulicNetworkElement id="1" inletNodeId="0" outletNodeId="101" componentId="10020004" displayName="heat exchanger">
 					<HydraulicNetworkHeatExchange modelType="HeatLossConstant">
-						<IBK:Parameter name="HeatLoss" unit="W">300</IBK:Parameter>
+						<IBK:Parameter name="HeatLoss" unit="W">1000</IBK:Parameter>
 					</HydraulicNetworkHeatExchange>
 						<!-- <HydraulicNetworkHeatExchange modelType="HeatLossSpline"> -->
 							<!-- <LinearSplineParameter name="HeatLoss"> -->
@@ -80,12 +80,12 @@
 							<!-- </LinearSplineParameter> -->
 						<!-- </HydraulicNetworkHeatExchange> -->
 						<ControlElement controlType="ControlTemperatureDifference" controllerId="1">
-							<IBK:Parameter name="SetPoint" unit="K">3</IBK:Parameter>
-							<IBK:Parameter name="MaximumSystemInput" unit="-">1000000</IBK:Parameter>
+							<IBK:Parameter name="SetPoint" unit="K">1.3</IBK:Parameter>
+							<MaximumControllerResultValue>1000000</MaximumControllerResultValue>
 						</ControlElement>
 				</HydraulicNetworkElement>
 
-				<HydraulicNetworkElement id="8" inletNodeId="101" outletNodeId="100" componentId="10020001" pipePropertiesId="9" displayName="detailled pipe">
+				<HydraulicNetworkElement id="8" inletNodeId="101" outletNodeId="100" componentId="10020001" pipePropertiesId="9" displayName="pipe">
 					<IBK:Parameter name="Length" unit="m">40</IBK:Parameter>
 					<HydraulicNetworkHeatExchange modelType="TemperatureConstant">
 						<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
@@ -117,19 +117,11 @@
 					<ObjectListName>the objects</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>Reynolds</Quantity>
-					<TimeType>None</TimeType>
-					<ObjectListName>the objects</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
 			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
 					<Intervals>
 						<Interval>
-							<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
-							<IBK:Parameter name="End" unit="d">30</IBK:Parameter>
 							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
 						</Interval>
 					</Intervals>
@@ -146,7 +138,7 @@
 		<Controllers>
 			<Controller id="1" modelType="PController">
 				<Type>PController</Type>
-				<IBK:Parameter name="Kp" unit="-">1000</IBK:Parameter>
+				<IBK:Parameter name="Kp" unit="-">3000</IBK:Parameter>
 			</Controller>
 		</Controllers>
 	</Project>

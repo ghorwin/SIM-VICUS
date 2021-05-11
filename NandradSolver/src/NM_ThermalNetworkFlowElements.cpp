@@ -1,10 +1,14 @@
 #include "NM_ThermalNetworkFlowElements.h"
+
 #include "NM_Physics.h"
+#include "NM_HydraulicNetworkFlowElements.h"
 
 #include "NANDRAD_HydraulicFluid.h"
 #include "NANDRAD_HydraulicNetworkElement.h"
 #include "NANDRAD_HydraulicNetworkPipeProperties.h"
 #include "NANDRAD_HydraulicNetworkComponent.h"
+#include "NANDRAD_Controller.h"
+
 
 #include "numeric"
 
@@ -667,7 +671,10 @@ TNAdiabaticElement::TNAdiabaticElement(const NANDRAD::HydraulicFluid & fluid, do
 
 // *** ElementWithExternalHeatLoss ***
 
-TNElementWithExternalHeatLoss::TNElementWithExternalHeatLoss(const NANDRAD::HydraulicFluid & fluid, double fluidVolume) {
+TNElementWithExternalHeatLoss::TNElementWithExternalHeatLoss(const NANDRAD::HydraulicFluid & fluid, double fluidVolume,
+															 const NANDRAD::ControlElement & controlElement):
+	m_controlElement(&controlElement)
+{
 	m_fluidVolume = fluidVolume;
 	// copy fluid properties
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
@@ -681,6 +688,31 @@ void TNElementWithExternalHeatLoss::internalDerivatives(double * ydot) {
 	m_heatLoss = *m_heatExchangeValueRef;
 	// use basic routine
 	ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(ydot);
+}
+
+
+double TNElementWithExternalHeatLoss::zetaControlled(double mdot) const {
+	FUNCID(TNElementWithExternalHeatLoss::zetaControlled);
+	// calculate zetaControlled value for valve
+	double zetaControlled = 0;
+	switch (m_controlElement->m_controlType) {
+		case NANDRAD::ControlElement::CT_ControlTemperatureDifference:{
+			double currentTempDiff = *m_heatExchangeValueRef/(mdot*m_fluidHeatCapacity);
+			double e = m_controlElement->m_setPoint.value - currentTempDiff;
+			double kp = m_controlElement->m_controller->m_para[NANDRAD::Controller::P_Kp].value;
+			double y = kp * e;
+			if (y > m_controlElement->m_maximumControllerResultValue)
+				zetaControlled = m_controlElement->m_maximumControllerResultValue;
+			else if (y > 0)
+				zetaControlled = y;
+		} break;
+		case NANDRAD::ControlElement::CT_ControlMassFlow:
+		case NANDRAD::ControlElement::CT_ControlZoneAirTemperature:
+			throw IBK::Exception("Control Type not implemented yet!", FUNC_ID);
+
+		case NANDRAD::ControlElement::NUM_CT: ; // nothing todo - we return 0
+	}
+	return zetaControlled;
 }
 
 

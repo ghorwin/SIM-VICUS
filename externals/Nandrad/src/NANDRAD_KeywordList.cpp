@@ -37,7 +37,7 @@ namespace NANDRAD {
 	const char * const ENUM_TYPES[81] = {
 		"ConstructionInstance::para_t",
 		"ControlElement::ControlType",
-		"Controller::modelType_t",
+		"Controller::ModelType",
 		"Controller::para_t",
 		"DailyCycle::interpolation_t",
 		"EmbeddedObject::para_t",
@@ -145,7 +145,7 @@ namespace NANDRAD {
 				case 1 : return "ControlMassFlow";
 				case 2 : return "ControlZoneAirTemperature";
 			} break;
-			// Controller::modelType_t
+			// Controller::ModelType
 			case 2 :
 			switch (t) {
 				case 0 : return "DigitalDirect";
@@ -737,7 +737,7 @@ namespace NANDRAD {
 				case 1 : return "ControlMassFlow";
 				case 2 : return "ControlZoneAirTemperature";
 			} break;
-			// Controller::modelType_t
+			// Controller::ModelType
 			case 2 :
 			switch (t) {
 				case 0 : return "DigitalDirect";
@@ -1330,7 +1330,7 @@ namespace NANDRAD {
 				case 1 : return "ControlMassFlow";
 				case 2 : return "ControlZoneAirTemperature";
 			} break;
-			// Controller::modelType_t
+			// Controller::ModelType
 			case 2 :
 			switch (t) {
 				case 0 : return "DigitalDirect";
@@ -1922,7 +1922,7 @@ namespace NANDRAD {
 				case 1 : return "";
 				case 2 : return "";
 			} break;
-			// Controller::modelType_t
+			// Controller::ModelType
 			case 2 :
 			switch (t) {
 				case 0 : return "";
@@ -2514,7 +2514,7 @@ namespace NANDRAD {
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
-			// Controller::modelType_t
+			// Controller::ModelType
 			case 2 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -3106,7 +3106,7 @@ namespace NANDRAD {
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Controller::modelType_t
+			// Controller::ModelType
 			case 2 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -3689,7 +3689,7 @@ namespace NANDRAD {
 			case 0 : return 3;
 			// ControlElement::ControlType
 			case 1 : return 3;
-			// Controller::modelType_t
+			// Controller::ModelType
 			case 2 : return 4;
 			// Controller::para_t
 			case 3 : return 3;
@@ -3859,7 +3859,7 @@ namespace NANDRAD {
 			case 0 : return 2;
 			// ControlElement::ControlType
 			case 1 : return 2;
-			// Controller::modelType_t
+			// Controller::ModelType
 			case 2 : return 3;
 			// Controller::para_t
 			case 3 : return 2;
