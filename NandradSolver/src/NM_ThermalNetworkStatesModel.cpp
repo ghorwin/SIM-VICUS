@@ -113,14 +113,10 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 							const double l = e.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
 							double volume = PI/4. * d * d * l;
 
-							// obtain HNControlledPressureLossCoeffElement from hydraulic network model
-							HNControlledPressureLossCoeffElement * hydrElement =
-									dynamic_cast<HNControlledPressureLossCoeffElement *>(
-										hydrNetworkModel.hydraulicNetworkModelImpl()->m_flowElements[m_p->m_flowElements.size()]);
-
 							// create generic flow element with given heat flux
 							TNElementWithExternalHeatLoss * pipeElement = new TNElementWithExternalHeatLoss(
-										m_network->m_fluid, volume, e.m_controlElement, hydrElement);
+										m_network->m_fluid, volume, &e.m_controlElement, nullptr);
+
 							// add to flow elements
 							m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 							m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
@@ -246,15 +242,18 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant :
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline :
 						{
-							// obtain HNControlledPressureLossCoeffElement from hydraulic network model
-							HNControlledPressureLossCoeffElement * hydrElement =
-									dynamic_cast<HNControlledPressureLossCoeffElement *>(
-										hydrNetworkModel.hydraulicNetworkModelImpl()->m_flowElements[m_p->m_flowElements.size()]);
+							HNControlledPressureLossCoeffElement * hydrElement = nullptr;
+
+							// if there is a controller, obtain HNControlledPressureLossCoeffElement from hydraulic network model
+							if (e.m_controlElement.m_controlType != NANDRAD::ControlElement::NUM_CT){
+								hydrElement = dynamic_cast<HNControlledPressureLossCoeffElement *>(
+											hydrNetworkModel.hydraulicNetworkModelImpl()->m_flowElements[m_p->m_flowElements.size()]);
+							}
 
 							// create generic flow element with given heat flux
 							TNElementWithExternalHeatLoss * element = new TNElementWithExternalHeatLoss(
 										m_network->m_fluid, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value,
-										e.m_controlElement, hydrElement);
+										&e.m_controlElement, hydrElement);
 
 							// add to flow elements
 							m_p->m_flowElements.push_back(element); // transfer ownership
