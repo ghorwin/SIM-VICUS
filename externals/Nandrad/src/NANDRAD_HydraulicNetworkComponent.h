@@ -24,16 +24,6 @@ public:
 		MT_HeatExchanger,					// Keyword: HeatExchanger				'Simple heat exchanger with given heat flux'
 		MT_HeatPumpIdealCarnot,				// Keyword: HeatPumpIdealCarnot			'Heat pump with variable heating power based on carnot efficiency'
 		MT_HeatPumpReal,					// Keyword: HeatPumpReal				'On-off-type heat pump with based on manufacturer data sheet'
-
-		// models below not supported yet
-
-//		MT_GasBoiler,						// xKeyword: GasBoiler					'Gas boiler'
-//		MT_ControlValve,					// xKeyword: ControlValve				'Control valve'
-//		MT_WaterStorage,					// xKeyword: WaterStorage				'Water storage'
-//		MT_ComponentConditionSystem,		// xKeyword: ComponentConditionSystem	'Component conditioning system is a system for heating or cooling of components'
-//		MT_Radiator,						// xKeyword: Radiator					'Radiator'
-//		MT_Mixer,							// xKeyword: Mixer						'Mixer component'
-//		MT_FMU,								// xKeyword: FMU						'Flow characteristics provided by FMU'
 		NUM_MT
 	};
 
@@ -47,7 +37,6 @@ public:
 		P_PipeMaxDiscretizationWidth,			// Keyword: PipeMaxDiscretizationWidth			[m]		'Maximum width of discretized volumes in pipe'
 		P_CarnotEfficiency,						// Keyword: CarnotEfficiency					[---]	'Carnot efficiency eta'
 		P_MaximumHeatingPower,					// Keyword: MaximumHeatingPower					[W]		'Maximum heating power'
-		P_HeatPumpNominalTemperatureDifference,	// Keyword: HeatPumpNominalTemperatureDifference	[K]		'Nominal temperature difference at condenser or evaporator'
 		NUM_P
 	};
 

@@ -220,7 +220,8 @@ namespace NANDRAD_MODEL {
 				case 10 : return "HeatingSetpointSchedule";
 				case 11 : return "CoolingSetpointSchedule";
 				case 12 : return "CondenserMeanTemperatureSchedule";
-				case 13 : return "EvaporatorMeanTemperatureSchedule";
+				case 13 : return "CondenserOutletSetpointSchedule";
+				case 14 : return "EvaporatorMeanTemperatureSchedule";
 			} break;
 			// ThermalComfortModel::Results
 			case 17 :
@@ -403,7 +404,8 @@ namespace NANDRAD_MODEL {
 				case 10 : return "HeatingSetpointSchedule";
 				case 11 : return "CoolingSetpointSchedule";
 				case 12 : return "CondenserMeanTemperatureSchedule";
-				case 13 : return "EvaporatorMeanTemperatureSchedule";
+				case 13 : return "CondenserOutletSetpointSchedule";
+				case 14 : return "EvaporatorMeanTemperatureSchedule";
 			} break;
 			// ThermalComfortModel::Results
 			case 17 :
@@ -587,7 +589,8 @@ namespace NANDRAD_MODEL {
 				case 10 : if (no_description != nullptr) *no_description = true; return "HeatingSetpointSchedule";
 				case 11 : if (no_description != nullptr) *no_description = true; return "CoolingSetpointSchedule";
 				case 12 : if (no_description != nullptr) *no_description = true; return "CondenserMeanTemperatureSchedule";
-				case 13 : if (no_description != nullptr) *no_description = true; return "EvaporatorMeanTemperatureSchedule";
+				case 13 : if (no_description != nullptr) *no_description = true; return "CondenserOutletSetpointSchedule";
+				case 14 : if (no_description != nullptr) *no_description = true; return "EvaporatorMeanTemperatureSchedule";
 			} break;
 			// ThermalComfortModel::Results
 			case 17 :
@@ -771,6 +774,7 @@ namespace NANDRAD_MODEL {
 				case 11 : return "C";
 				case 12 : return "C";
 				case 13 : return "C";
+				case 14 : return "C";
 			} break;
 			// ThermalComfortModel::Results
 			case 17 :
@@ -954,6 +958,7 @@ namespace NANDRAD_MODEL {
 				case 11 : return "#FFFFFF";
 				case 12 : return "#FFFFFF";
 				case 13 : return "#FFFFFF";
+				case 14 : return "#FFFFFF";
 			} break;
 			// ThermalComfortModel::Results
 			case 17 :
@@ -1137,6 +1142,7 @@ namespace NANDRAD_MODEL {
 				case 11 : return std::numeric_limits<double>::quiet_NaN();
 				case 12 : return std::numeric_limits<double>::quiet_NaN();
 				case 13 : return std::numeric_limits<double>::quiet_NaN();
+				case 14 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// ThermalComfortModel::Results
 			case 17 :

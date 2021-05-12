@@ -459,9 +459,6 @@ private:
 	/*! Mean evaporator temperature [K], can also be used as output */
 	double									m_evaporatorMeanTemperature = 999;
 
-	/*! Nominal evaporator temperature difference [K] */
-	double									m_nominalTemperatureDifference = 999;
-
 	/*! Maximum heating power of heat pump (condenser) in [W] */
 	double									m_condenserMaximumHeatFlux = 999999;
 

@@ -511,7 +511,6 @@ TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(unsigned int flowElementId,
 	m_fluidVolume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
 	m_carnotEfficiency = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiency].value;
 	m_condenserMaximumHeatFlux = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumHeatingPower].value;
-	m_nominalTemperatureDifference = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_HeatPumpNominalTemperatureDifference].value;
 	m_heatpumpIntegration = comp.m_heatPumpIntegration;
 
 	// copy fluid properties

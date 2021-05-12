@@ -67,7 +67,6 @@ KeywordListQt::KeywordListQt() {
 	tr("Maximum width of discretized volumes in pipe");
 	tr("Carnot efficiency eta");
 	tr("Maximum heating power");
-	tr("Nominal temperature difference at condenser or evaporator");
 	tr("The network is connected to the hot side (supply) of the heat pump");
 	tr("The network is connected to the cold side (source) of the heat pump");
 	tr("Two networks are connected, one to the cold side, the other to the hot side of the heat pump");
