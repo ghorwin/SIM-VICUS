@@ -416,6 +416,9 @@ public:
 		quantities.push_back(QuantityDescription("COP","---", "Coefficient of performance for heat pump", false));
 		quantities.push_back(QuantityDescription("ElectricalPower", "W", "Electrical power for heat pump", false));
 		quantities.push_back(QuantityDescription("CondenserHeatFlux", "W", "Heat Flux at condenser side of heat pump", false));
+		quantities.push_back(QuantityDescription("EvaporatorHeatFlux", "W", "Heat Flux at evaporator side of heat pump", false));
+		quantities.push_back(QuantityDescription("EvaporatorMeanTemperature", "C", "Mean temperature at evaporator side of heat pump", false));
+		quantities.push_back(QuantityDescription("CondenserMeanTemperature", "C", "Mean temperature at condenser side of heat pump", false));
 	}
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
@@ -423,6 +426,9 @@ public:
 		valRefs.push_back(&m_COP);
 		valRefs.push_back(&m_electricalPower);
 		valRefs.push_back(&m_condenserHeatFlux);
+		valRefs.push_back(&m_evaporatorHeatFlux);
+		valRefs.push_back(&m_evaporatorMeanTemperature);
+		valRefs.push_back(&m_condenserMeanTemperature);
 	}
 
 	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
@@ -442,25 +448,28 @@ private:
 	/*! Id number of flow element. */
 	unsigned int							m_flowElementId = NANDRAD::INVALID_ID;
 
-	/*! Temperatures from schedules [K]. These temperatures are interpreted within the model depending on which
-	 * side of the heat pump is connected to the network (m_heatpumpIntegration) */
-	const double							*m_scheduledTemperature1 = nullptr;
-	const double							*m_scheduledTemperature2 = nullptr;
+	/*! Temperatures from schedules [K] which will be set through input references */
+	const double							*m_condenserMeanTemperatureSchedule = nullptr;
+	const double							*m_evaporatorMeanTemperatureSchedule = nullptr;
+	const double							*m_condenserOutletSetpointSchedule = nullptr;
 
-	/*! Mean condenser temperature [K]*/
+	/*! Mean condenser temperature [K], can also be used as output */
 	double									m_condenserMeanTemperature = 999;
 
-	/*! Mean evaporator temperature [K]*/
+	/*! Mean evaporator temperature [K], can also be used as output */
 	double									m_evaporatorMeanTemperature = 999;
 
 	/*! Nominal evaporator temperature difference [K] */
 	double									m_nominalTemperatureDifference = 999;
 
 	/*! Maximum heating power of heat pump (condenser) in [W] */
-	double m_condenserMaximumHeatFlux = 999999;
+	double									m_condenserMaximumHeatFlux = 999999;
 
 	/*! Actual heating power of heat pump (condenser) in [W] */
-	double m_condenserHeatFlux = 999999;
+	double									m_condenserHeatFlux = 999999;
+
+	/*! Actual heating power of heat pump (condenser) in [W] */
+	double									m_evaporatorHeatFlux = 999999;
 
 	/*! Carnot efficiency [0...1] */
 	double									m_carnotEfficiency = 999;
