@@ -37,20 +37,20 @@ void IdealPipeRegisterModel::setup(const NANDRAD::IdealPipeRegisterModel & model
 		throw IBK::Exception(IBK::FormatString("Invalid reference type in object list '%1', expected type 'ConstructionInstance'.")
 							 .arg(m_objectList->m_name), FUNC_ID);
 
+	// retrieve reference to supply temperature parameter
+	if(model.m_modelType == NANDRAD::IdealPipeRegisterModel::MT_Constant) {
+		m_supplyTemperatureRef = &model.m_para[NANDRAD::IdealPipeRegisterModel::P_SupplyTemperature].value;
+	}
+
+	// retrieve model type
+	m_modelType = (int) model.m_modelType;
 	// parameters have been checked already
 	m_maxMassFlow = model.m_para[NANDRAD::IdealPipeRegisterModel::P_MaxMassFlow].value;
+
+	// TODO: initailize all aprameters
 	// compute fluid volume
 	m_fluidCrossSection = IBK::PI/4. * m_innerDiameter * m_innerDiameter * m_nParallelPipes;
 	m_fluidVolume = m_fluidCrossSection * m_length;
-
-	// resolve thermostat zone
-	std::vector<NANDRAD::Zone>::const_iterator zone_it = std::find(zones.begin(),
-																  zones.end(),
-																  model.m_thermostatZoneID);
-
-	if (zone_it == zones.end())
-		throw IBK::Exception(IBK::FormatString("Invalid/undefined zone with '%1' in ThermsotatZoneId.")
-							 .arg(model.m_thermostatZoneID), FUNC_ID);
 
 	// store zone
 	m_thermostatZoneId = model.m_thermostatZoneID;
@@ -134,15 +134,25 @@ void IdealPipeRegisterModel::initInputReferences(const std::vector<AbstractModel
 	// set an input reference to each layer temperature
 	std::vector<unsigned int> indexKeys(m_objectList->m_filterID.m_ids.begin(), m_objectList->m_filterID.m_ids.end());
 
-	InputReference l;
-	l.m_name.m_name = "ActiveLayerTemperature";
-	l.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
-	l.m_required = true;
+	InputReference tRef;
+	tRef.m_name.m_name = "ActiveLayerTemperature";
+	tRef.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
+	tRef.m_required = true;
 	// keys code construction id
 	for(unsigned int key : indexKeys) {
-		l.m_id = key;
+		tRef.m_id = key;
 		// store reference
-		m_inputRefs.push_back(l);
+		m_inputRefs.push_back(tRef);
+	}
+
+	// retrieve reference to scheduled supply temperature parameter
+	if(m_modelType == (int) NANDRAD::IdealPipeRegisterModel::MT_Scheduled) {
+		tRef.m_name.m_name = "SupplyTemperature";
+		tRef.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+		tRef.m_id = m_thermostatZoneId;
+		tRef.m_required = true;
+		// store reference
+		m_inputRefs.push_back(tRef);
 	}
 
 	// loop over all models, pick out the Thermostat-models and request input for a single zone. Only
@@ -185,6 +195,10 @@ void IdealPipeRegisterModel::setInputValueRefs(const std::vector<QuantityDescrip
 	for( ; index < m_objectList->m_filterID.m_ids.size(); ++index)
 		m_activeLayerTemperatureRefs.push_back(resultValueRefs[index]);
 
+	// retrieve reference to scheduled supply temperature parameter
+	if(m_modelType == (int) NANDRAD::IdealPipeRegisterModel::MT_Scheduled) {
+		m_supplyTemperatureRef = resultValueRefs[index++];
+	}
 	// we now must ensure, that for each zone there is exactly one matching control signal
 
 	IBK_ASSERT(m_thermostatModelObjects == resultValueRefs.size());

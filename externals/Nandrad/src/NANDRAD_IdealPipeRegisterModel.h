@@ -29,6 +29,8 @@
 
 namespace NANDRAD {
 
+class Zone;
+
 /*! An ideal heating and cooling model. Basically scales a heating/cooling control signal with
 	the nominal heating power per zone.
 */
@@ -53,7 +55,7 @@ public:
 	NANDRAD_READWRITE
 
 	/*! Checks parameters for valid values. */
-	void checkParameters() const;
+	void checkParameters(const std::vector<NANDRAD::Zone> &zones) const;
 
 	/*! Unique ID-number for this model. */
 	unsigned int		m_id = NANDRAD::INVALID_ID;					// XML:A:required

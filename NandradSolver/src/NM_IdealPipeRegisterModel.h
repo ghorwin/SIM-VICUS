@@ -105,6 +105,9 @@ private:
 	/*! Display name (for error messages). */
 	std::string										m_displayName;
 
+	/*! Model type (decides how to retrieve supply temperature). */
+	int												m_modelType;
+
 	/*! Quick access pointer to object list (for targetted construction instances). */
 	const NANDRAD::ObjectList						*m_objectList = nullptr;
 
