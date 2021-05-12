@@ -61,8 +61,8 @@
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 						<IBK:Parameter name="CarnotEfficiency" unit="---">0.4</IBK:Parameter>
 						<IBK:Parameter name="HeatPumpNominalTemperatureDifference" unit="K">3</IBK:Parameter>
-						<IBK:Parameter name="MaximumHeatingPower" unit="W">4000</IBK:Parameter>
-						<HeatPumpIntegration>SourceSide</HeatPumpIntegration>
+						<IBK:Parameter name="MaximumHeatingPower" unit="W">100000</IBK:Parameter>
+						<HeatPumpIntegration>SupplySide</HeatPumpIntegration>
 					</HydraulicNetworkComponent>
 				</Components>
 				<Elements>
@@ -71,16 +71,11 @@
 					<HydraulicNetworkElement id="1002" inletNodeId="1" outletNodeId="2" componentId="3" pipePropertiesId="1" displayName="pipe">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="TemperatureConstant">
-							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">1000</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">100</IBK:Parameter>
 							<IBK:Parameter name="Temperature" unit="C">5</IBK:Parameter>
 						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="1003" inletNodeId="2" outletNodeId="0" componentId="2" displayName="heatpump">
-						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
-							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear">
-								<TSVFile>${Project Directory}/0_climate/HeatFluxCondenser.csv</TSVFile>
-							</LinearSplineParameter>
-						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
 				</Elements>
 			</HydraulicNetwork>
@@ -90,11 +85,15 @@
 			<ScheduleGroups>
 				<ScheduleGroup objectList="heat pump">
 					<Schedule type="AllDays">
-						<DailyCycles>
+						<DailyCycles>							
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0,12</TimePoints>
+								<Values>EvaporatorMeanTemperatureSchedule [C]:0,10;</Values>
+							</DailyCycle>
 							<!-- Condenser Temperature is usually 35°C for space heating and two times per day 50°C for domestic hot water-->
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0,6,8,18,20</TimePoints>
-								<Values>CondenserMeanTemperatureSchedule [C]:35,50,35,50,35;</Values>
+								<Values>CondenserOutletSetpointSchedule [C]:35,50,35,50,35;</Values>
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>
@@ -148,7 +147,7 @@
 				<OutputGrid name="hourly">
 					<Intervals>
 						<Interval>
-							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">10</IBK:Parameter>
 						</Interval>
 					</Intervals>
 				</OutputGrid>
