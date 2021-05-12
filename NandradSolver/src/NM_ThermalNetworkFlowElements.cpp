@@ -500,20 +500,80 @@ void TNPumpWithPerformanceLoss::setInflowTemperature(double Tinflow) {
 
 
 
+// *** AdiabaticElement ***
+
+TNAdiabaticElement::TNAdiabaticElement(const NANDRAD::HydraulicFluid & fluid, double fluidVolume) {
+	// copy fluid parameters
+	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
+	// store fluid volume
+	m_fluidVolume = fluidVolume;
+}
+
+
+
+// *** ElementWithExternalHeatLoss ***
+
+TNElementWithExternalHeatLoss::TNElementWithExternalHeatLoss(const NANDRAD::HydraulicFluid & fluid, double fluidVolume,
+															 const NANDRAD::ControlElement & controlElement):
+	m_controlElement(&controlElement)
+{
+	m_fluidVolume = fluidVolume;
+	// copy fluid properties
+	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
+	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+}
+
+
+void TNElementWithExternalHeatLoss::internalDerivatives(double * ydot) {
+	// set heat loss
+	IBK_ASSERT(m_heatExchangeValueRef != nullptr);
+	m_heatLoss = *m_heatExchangeValueRef;
+	// use basic routine
+	ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(ydot);
+}
+
+
+double TNElementWithExternalHeatLoss::zetaControlled(double mdot) {
+	FUNCID(TNElementWithExternalHeatLoss::zetaControlled);
+	// calculate zetaControlled value for valve
+	m_zetaControlled = 0;
+	switch (m_controlElement->m_controlType) {
+		case NANDRAD::ControlElement::CT_ControlTemperatureDifference:{
+			double currentTempDiff = m_heatLoss/(mdot*m_fluidHeatCapacity);
+			double e = m_controlElement->m_setPoint.value - currentTempDiff;
+			double kp = m_controlElement->m_controller->m_para[NANDRAD::Controller::P_Kp].value;
+			double y = kp * e;
+			if (y > m_controlElement->m_maximumControllerResultValue)
+				m_zetaControlled = m_controlElement->m_maximumControllerResultValue;
+			else if (y > 0)
+				m_zetaControlled = y;
+		} break;
+		case NANDRAD::ControlElement::CT_ControlMassFlow:
+		case NANDRAD::ControlElement::CT_ControlZoneAirTemperature:
+			throw IBK::Exception("Control Type not implemented yet!", FUNC_ID);
+
+		case NANDRAD::ControlElement::NUM_CT: ; // nothing todo - we return 0
+	}
+	return m_zetaControlled;
+}
+
+
+
 
 // *** TNHeatPumpIdealCarnot ***
 
 TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(unsigned int flowElementId,
 											 const NANDRAD::HydraulicFluid & fluid,
-											 const NANDRAD::HydraulicNetworkComponent & comp) :
+											 const NANDRAD::HydraulicNetworkComponent & comp,
+											 const NANDRAD::ControlElement & controlElement):
+	TNElementWithExternalHeatLoss(fluid, comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value, controlElement),
 	m_flowElementId(flowElementId)
 {
 	m_fluidVolume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
 	m_carnotEfficiency = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiency].value;
 	m_condenserMaximumHeatFlux = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumHeatingPower].value;
 	m_heatpumpIntegration = comp.m_heatPumpIntegration;
-
-	// copy fluid properties
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 }
@@ -609,7 +669,6 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 }
 
 
-
 void TNHeatPumpIdealCarnot::inputReferences(std::vector<InputReference> & inputRefs) const {
 
 	switch (m_heatpumpIntegration) {
@@ -663,65 +722,9 @@ void TNHeatPumpIdealCarnot::setInputValueRefs(std::vector<const double *>::const
 	}
 }
 
-
-
-// *** AdiabaticElement ***
-
-TNAdiabaticElement::TNAdiabaticElement(const NANDRAD::HydraulicFluid & fluid, double fluidVolume) {
-	// copy fluid parameters
-	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
-	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
-	// store fluid volume
-	m_fluidVolume = fluidVolume;
-}
-
-
-
-// *** ElementWithExternalHeatLoss ***
-
-TNElementWithExternalHeatLoss::TNElementWithExternalHeatLoss(const NANDRAD::HydraulicFluid & fluid, double fluidVolume,
-															 const NANDRAD::ControlElement & controlElement):
-	m_controlElement(&controlElement)
+void TNHeatPumpIdealCarnot::internalDerivatives(double *ydot)
 {
-	m_fluidVolume = fluidVolume;
-	// copy fluid properties
-	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
-	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
-}
-
-
-void TNElementWithExternalHeatLoss::internalDerivatives(double * ydot) {
-	// set heat loss
-	IBK_ASSERT(m_heatExchangeValueRef != nullptr);
-	m_heatLoss = *m_heatExchangeValueRef;
-	// use basic routine
 	ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(ydot);
 }
-
-
-double TNElementWithExternalHeatLoss::zetaControlled(double mdot) const {
-	FUNCID(TNElementWithExternalHeatLoss::zetaControlled);
-	// calculate zetaControlled value for valve
-	double zetaControlled = 0;
-	switch (m_controlElement->m_controlType) {
-		case NANDRAD::ControlElement::CT_ControlTemperatureDifference:{
-			double currentTempDiff = *m_heatExchangeValueRef/(mdot*m_fluidHeatCapacity);
-			double e = m_controlElement->m_setPoint.value - currentTempDiff;
-			double kp = m_controlElement->m_controller->m_para[NANDRAD::Controller::P_Kp].value;
-			double y = kp * e;
-			if (y > m_controlElement->m_maximumControllerResultValue)
-				zetaControlled = m_controlElement->m_maximumControllerResultValue;
-			else if (y > 0)
-				zetaControlled = y;
-		} break;
-		case NANDRAD::ControlElement::CT_ControlMassFlow:
-		case NANDRAD::ControlElement::CT_ControlZoneAirTemperature:
-			throw IBK::Exception("Control Type not implemented yet!", FUNC_ID);
-
-		case NANDRAD::ControlElement::NUM_CT: ; // nothing todo - we return 0
-	}
-	return zetaControlled;
-}
-
 
 } // namespace NANDRAD_MODEL

@@ -204,6 +204,7 @@ void HydraulicNetworkModel::setup() {
 			} break;
 
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
+			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot :
 			{
 				if (e.m_controlElement.m_controlType == NANDRAD::ControlElement::NUM_CT) {
 					// create fixed pressure loss model
@@ -219,14 +220,6 @@ void HydraulicNetworkModel::setup() {
 				}
 
 
-			} break;
-
-			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot :
-			{
-				// create fixed pressure loss model
-				HNFixedPressureLossCoeffElement * hxElement = new HNFixedPressureLossCoeffElement(*e.m_component, m_hydraulicNetwork->m_fluid);
-				// add to flow elements
-				m_p->m_flowElements.push_back(hxElement); // transfer ownership
 			} break;
 
 			case NANDRAD::HydraulicNetworkComponent::NUM_MT:{

@@ -401,15 +401,64 @@ private:
 };
 
 
+
+// **** General adiabatic element ***
+
+class TNAdiabaticElement : public ThermalNetworkAbstractFlowElement { // NO KEYWORDS
+public:
+	/*! C'tor, takes and caches parameters needed for function evaluation. */
+	TNAdiabaticElement(const NANDRAD::HydraulicFluid & fluid, double fluidVolume);
+};
+
+
+
+// **** General element with given heat loss ***
+
+class TNElementWithExternalHeatLoss : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
+public:
+	/*! C'tor, takes and caches parameters needed for function evaluation. */
+	TNElementWithExternalHeatLoss(const NANDRAD::HydraulicFluid & fluid, double fluidVolume,
+								  const NANDRAD::ControlElement & controlElement);
+
+	/*! Publishes individual model quantities via descriptions. */
+	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
+		quantities.push_back(QuantityDescription("ControllerResultValue","---", "The calculated controller zeta value for the valve", false));
+	}
+
+	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
+	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
+		valRefs.push_back(&m_zetaControlled);
+	}
+
+	/*! Function for retrieving heat fluxes out of the flow element.*/
+	void internalDerivatives(double *ydot) override;
+
+	/*! Computes the controlled zeta-value if a control-model is implemented.
+		Otherwise returns 0.
+	*/
+	double zetaControlled(double mdot);
+
+protected:
+	/*! Reference to the controller parametrization object.*/
+	const NANDRAD::ControlElement				*m_controlElement = nullptr;
+
+	/*! the calculated controller zeta value for the valve */
+	double										m_zetaControlled = 0;
+};
+
+
+
+
 // **** TNHeatPumpIdealCarnot ***
 
-class TNHeatPumpIdealCarnot : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
+class TNHeatPumpIdealCarnot : public TNElementWithExternalHeatLoss { // NO KEYWORDS
 
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	TNHeatPumpIdealCarnot(unsigned int flowElementId,
 						  const NANDRAD::HydraulicFluid & fluid,
-						  const NANDRAD::HydraulicNetworkComponent & comp);
+						  const NANDRAD::HydraulicNetworkComponent & comp,
+						  const NANDRAD::ControlElement & controlElement);
 
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
@@ -419,6 +468,7 @@ public:
 		quantities.push_back(QuantityDescription("EvaporatorHeatFlux", "W", "Heat Flux at evaporator side of heat pump", false));
 		quantities.push_back(QuantityDescription("EvaporatorMeanTemperature", "C", "Mean temperature at evaporator side of heat pump", false));
 		quantities.push_back(QuantityDescription("CondenserMeanTemperature", "C", "Mean temperature at condenser side of heat pump", false));
+		quantities.push_back(QuantityDescription("ControllerResultValue","---", "The calculated controller zeta value for the valve", false));
 	}
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
@@ -429,6 +479,7 @@ public:
 		valRefs.push_back(&m_evaporatorHeatFlux);
 		valRefs.push_back(&m_evaporatorMeanTemperature);
 		valRefs.push_back(&m_condenserMeanTemperature);
+		valRefs.push_back(&m_zetaControlled);
 	}
 
 	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
@@ -443,6 +494,9 @@ public:
 		When the function returns, the iterator must point to the first input reference past this element's inputs.
 	*/
 	void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
+
+	/*! Function for retrieving heat fluxes out of the flow element.*/
+	void internalDerivatives(double *ydot) override;
 
 private:
 	/*! Id number of flow element. */
@@ -481,37 +535,6 @@ private:
 
 };
 
-
-// **** General adiabatic element ***
-
-class TNAdiabaticElement : public ThermalNetworkAbstractFlowElement { // NO KEYWORDS
-public:
-	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	TNAdiabaticElement(const NANDRAD::HydraulicFluid & fluid, double fluidVolume);
-};
-
-
-
-// **** General element with given heat loss ***
-
-class TNElementWithExternalHeatLoss : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
-public:
-	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	TNElementWithExternalHeatLoss(const NANDRAD::HydraulicFluid & fluid, double fluidVolume,
-								  const NANDRAD::ControlElement & controlElement);
-
-	/*! Function for retrieving heat fluxes out of the flow element.*/
-	void internalDerivatives(double *ydot) override;
-
-	/*! Computes the controlled zeta-value if a control-model is implemented.
-		Otherwise returns 0.
-	*/
-	double zetaControlled(double mdot) const;
-
-private:
-	/*! Reference to the controller parametrization object.*/
-	const NANDRAD::ControlElement				*m_controlElement;
-};
 
 
 } // namespace NANDRAD_MODEL

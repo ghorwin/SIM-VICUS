@@ -275,7 +275,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						case NANDRAD::HydraulicNetworkComponent::HP_SupplySide:{
 
 							// create general model with given heat flux
-							TNHeatPumpIdealCarnot * element = new TNHeatPumpIdealCarnot(e.m_id, m_network->m_fluid, *e.m_component);
+							TNHeatPumpIdealCarnot * element = new TNHeatPumpIdealCarnot(e.m_id, m_network->m_fluid, *e.m_component,
+																						e.m_controlElement);
 							// add to flow elements
 							m_p->m_flowElements.push_back(element); // transfer ownership
 							m_p->m_heatLossElements.push_back(element); // copy of pointer
@@ -351,6 +352,17 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:
 				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpReal:
+
+					if (e.m_heatExchange.m_modelType == NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser){
+						TNHeatPumpIdealCarnot * tnElement =
+								dynamic_cast<TNHeatPumpIdealCarnot *>(m_p->m_flowElements[i]);
+						IBK_ASSERT(tnElement != nullptr);
+						// get the corresponding element from the HydraulicNetworkModel
+						HNControlledPressureLossCoeffElement * hnElement =
+								dynamic_cast<HNControlledPressureLossCoeffElement *>(hydrNetworkModel.m_p->m_flowElements[i]);
+						IBK_ASSERT(hnElement != nullptr);
+						hnElement->m_thermalNetworkElement = tnElement;
+					} break;
 
 				default: ; // nothing implemented for the rest
 			}
