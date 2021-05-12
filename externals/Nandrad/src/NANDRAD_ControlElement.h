@@ -10,7 +10,11 @@ namespace NANDRAD {
 
 class Controller;
 
-/*! This class contains parameters for a controller that is used for network elements. */
+/*! This class contains parameters for a controller that is used for network elements.
+	A controller is actually a flow controller that impacts the way the flow elements-system function
+	is evaluated, usually adding a flow resistance (e.g. value) to the element. The additional flow resistance
+	can be controlled in different ways, as defined by ControlType.
+*/
 class ControlElement {
 public:
 
