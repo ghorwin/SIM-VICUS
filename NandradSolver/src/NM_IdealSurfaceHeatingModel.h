@@ -21,7 +21,7 @@ namespace NANDRAD_MODEL {
 */
 class IdealSurfaceHeatingModel : public AbstractModel, public AbstractStateDependency {
 public:
-	/*! Computed results, vector-valued results that provide access via zone ID. */
+	/*! Computed results. */
 	enum Results {
 		R_IdealSurfaceHeatingLoad,				// Keyword: IdealSurfaceHeatingLoad			[W]		'Ideal, surface heat load'
 		NUM_R

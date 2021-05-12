@@ -23,9 +23,15 @@ namespace NANDRAD_MODEL {
 */
 class IdealPipeRegisterModel : public AbstractModel, public AbstractStateDependency {
 public:
+	/*! Computed results. */
+	enum Results {
+		R_MassFlow,							// Keyword: MassFlow					[kg/s]	'ControlledS mass flow'
+		NUM_R
+	};
+
 	/*! Computed results, vector-valued results that provide access via zone ID. */
 	enum VectorValuedResults {
-		VVR_SurfaceHeatingLoad,				// Keyword: SurfaceHeatingLoad			[W]		'Ideal, surface heat load'
+		VVR_SurfaceHeatingLoad,				// Keyword: SurfaceHeatingLoad			[W]		'Surface heat load'
 		NUM_VVR
 	};
 
@@ -117,9 +123,6 @@ private:
 	/*! hydraulic (inner) diameter of pipe in [m] */
 	double											m_innerDiameter = -999;
 
-	/*! outer diameter of pipe in [m] */
-	double											m_outerDiameter = -999;
-
 	/*! pipe length in [m] */
 	double											m_length = -999;
 
@@ -168,6 +171,9 @@ private:
 
 	/*! Reference to active layer temperatures. */
 	std::vector<const double*>						m_activeLayerTemperatureRefs;
+
+	/*! Results, computed/updated during the calculation. */
+	std::vector<double>								m_results;
 
 	/*! Vector valued results, computed/updated during the calculation. */
 	std::vector<VectorValuedQuantity>				m_vectorValuedResults;

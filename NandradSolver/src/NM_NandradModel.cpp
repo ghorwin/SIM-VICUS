@@ -87,6 +87,7 @@
 #include "NM_ShadingControlModel.h"
 #include "NM_ThermostatModel.h"
 #include "NM_IdealHeatingCoolingModel.h"
+#include "NM_IdealPipeRegisterModel.h"
 #include "NM_IdealSurfaceHeatingModel.h"
 
 #include "NM_ThermalNetworkStatesModel.h"
@@ -1344,7 +1345,7 @@ void NandradModel::initModels() {
 
 	// ideal surface heating
 	if (!m_project->m_models.m_idealSurfaceHeatingModels.empty()) {
-		IBK::IBK_Message(IBK::FormatString("Initializing ideal heating/cooling models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		IBK::IBK_Message(IBK::FormatString("Initializing ideal surface heating models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		IBK_MSG_INDENT;
 
 		for (NANDRAD::IdealSurfaceHeatingModel & m: m_project->m_models.m_idealSurfaceHeatingModels) {
@@ -1353,6 +1354,27 @@ void NandradModel::initModels() {
 
 			try {
 				m.checkParameters();
+				mod->setup(m, m_project->m_objectLists, m_project->m_zones);
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString("Error initializing ideal heating/cooling model (id=%1).").arg(m.m_id), FUNC_ID);
+			}
+			// register model for calculation
+			registerStateDependendModel(mod);
+		}
+	}
+
+	// ideal pipe register models
+	if (!m_project->m_models.m_idealPipeRegisterModels.empty()) {
+		IBK::IBK_Message(IBK::FormatString("Initializing ideal pipe register models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		IBK_MSG_INDENT;
+
+		for (NANDRAD::IdealPipeRegisterModel & m: m_project->m_models.m_idealPipeRegisterModels) {
+			NANDRAD_MODEL::IdealPipeRegisterModel * mod = new NANDRAD_MODEL::IdealPipeRegisterModel(m.m_id, m.m_displayName);
+			m_modelContainer.push_back(mod); // transfer ownership
+
+			try {
+				m.checkParameters(m_project->m_zones);
 				mod->setup(m, m_project->m_objectLists, m_project->m_zones);
 			}
 			catch (IBK::Exception & ex) {

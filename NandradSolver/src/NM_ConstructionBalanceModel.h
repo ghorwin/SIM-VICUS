@@ -204,8 +204,6 @@ private:
 	double											m_fluxDensityShortWaveRadiationA = 0;
 	/*! Absorbed global radiation flux density at left side [W/m2] (positive from left to right). */
 	double											m_fluxDensityShortWaveRadiationB = 0;
-	/*! Number of thermal network model input refs that we have generated and that we get value refs for. */
-	unsigned int									m_thermalNetworkModelCount = 0;
 	/*! Number of ideal surface heating model input refs that we have generated and that we get value refs for. */
 	unsigned int									m_surfaceHeatingModelCount = 0;
 

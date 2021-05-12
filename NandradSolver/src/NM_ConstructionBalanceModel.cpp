@@ -28,6 +28,7 @@
 #include <NANDRAD_SimulationParameter.h>
 
 #include "NM_ConstructionStatesModel.h"
+#include "NM_IdealPipeRegisterModel.h"
 #include "NM_IdealSurfaceHeatingModel.h"
 #include "NM_InternalLoadsModel.h"
 #include "NM_KeywordList.h"
@@ -216,8 +217,6 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 	}
 	m_inputRefs[InputRef_SideBSolarRadiationFromWindowLoads] = ref;
 
-	// container for optional network heat loads
-	std::vector<InputReference> networkHeatLoadRH;
 	// container for optional surface heat loads
 	std::vector<InputReference> surfaceHeatLoadRH;
 
@@ -229,7 +228,8 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 		if (model->referenceType() == NANDRAD::ModelInputReference::MRT_MODEL) {
 
 			InternalLoadsModel * intLoadsModel = dynamic_cast<InternalLoadsModel *>(model);
-			IdealSurfaceHeatingModel * surfaceHeatingModel = dynamic_cast<IdealSurfaceHeatingModel *>(model);
+			IdealSurfaceHeatingModel * idealSurfaceHeatingModel = dynamic_cast<IdealSurfaceHeatingModel *>(model);
+			IdealPipeRegisterModel * idealPipeRegisterModel = dynamic_cast<IdealPipeRegisterModel *>(model);
 
 			if (intLoadsModel != nullptr) {
 				InputReference r;
@@ -294,10 +294,24 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 				}
 			}
 			// create input references for heat fluxes from ideal surface heatings
-			else if (surfaceHeatingModel != nullptr) {
+			else if (idealSurfaceHeatingModel != nullptr) {
 				++m_surfaceHeatingModelCount;
 				InputReference r;
 				r.m_name.m_name = "IdealSurfaceHeatingLoad";
+				// add current id as index so that we can sum uphat fluxes from all hetaing models
+				r.m_name.m_index = (int) id();
+				r.m_id = model->id();
+				r.m_referenceType = NANDRAD::ModelInputReference::MRT_MODEL;
+				// this reference is only provided if the corresponding network with element
+				// heat flux into current construction
+				r.m_required = false;
+				surfaceHeatLoadRH.push_back(r);
+			}
+			// create input references for heat fluxes from ideal pipe register model
+			else if (idealPipeRegisterModel != nullptr) {
+				++m_surfaceHeatingModelCount;
+				InputReference r;
+				r.m_name.m_name = "SurfaceHeatingLoad";
 				// add current id as index so that we can sum uphat fluxes from all hetaing models
 				r.m_name.m_index = (int) id();
 				r.m_id = model->id();
@@ -312,7 +326,7 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 		else if (model->referenceType() == NANDRAD::ModelInputReference::MRT_NETWORK) {
 			ThermalNetworkBalanceModel * thermNetworkModel = dynamic_cast<ThermalNetworkBalanceModel *>(model);
 			if (thermNetworkModel != nullptr) {
-				++m_thermalNetworkModelCount;
+				++m_surfaceHeatingModelCount;
 				InputReference r;
 				r.m_name.m_name = "NetworkActiveLayerHeatLoad";
 				// add current id as index so that we can sum uphat fluxes from all networks
@@ -322,16 +336,12 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 				// this reference is only provided if the corresponding network with element
 				// heat flux into current construction
 				r.m_required = false;
-				networkHeatLoadRH.push_back(r);
+				surfaceHeatLoadRH.push_back(r);
 			}
-		}
-		else if (model->referenceType() == NANDRAD::ModelInputReference::MRT_MODEL) {
 		}
 	} // model object loop
 
-	// insert references to hydraulic network heat load
-	m_inputRefs.insert(m_inputRefs.end(), networkHeatLoadRH.begin(), networkHeatLoadRH.end());
-	// insert references to ideal surface heating load
+	// insert references to all surface heating load mdoels
 	m_inputRefs.insert(m_inputRefs.end(), surfaceHeatLoadRH.begin(), surfaceHeatLoadRH.end());
 }
 
@@ -353,24 +363,13 @@ void ConstructionBalanceModel::setInputValueRefs(const std::vector<QuantityDescr
 		m_valueRefs[i] = resultValueRefs[i];
 
 	if(m_statesModel->m_activeLayerIndex != NANDRAD::INVALID_ID) {
-		// check network loads
-		for (unsigned int i= NUM_InputRef; i < NUM_InputRef + m_thermalNetworkModelCount; ++i) {
-			// check that only one active layer is references
-			if(resultValueRefs[i] != nullptr) {
-				if(m_valueRefs[InputRef_ActiveLayerHeatLoads] != nullptr)
-					throw IBK::Exception(IBK::FormatString("Active layer is referenced twice from a hydraulic network component "
-													   "for construction instance id=%1.").arg(m_id), FUNC_ID);
-				// copy pointer
-				m_valueRefs[InputRef_ActiveLayerHeatLoads] = resultValueRefs[i];
-			}
-		}
-		// check surface heating loads
+		// check all surface heating loads
 		for (unsigned int i= NUM_InputRef; i < NUM_InputRef + m_surfaceHeatingModelCount; ++i) {
 			// check that only one active layer is references
 			if(resultValueRefs[i] != nullptr) {
 				if(m_valueRefs[InputRef_ActiveLayerHeatLoads] != nullptr)
 					throw IBK::Exception(IBK::FormatString("Active layer is referenced twice from a network component or surface heating component "
-													   "for construction instance id=%1.").arg(m_id), FUNC_ID);
+														   "for construction instance id=%1.").arg(m_id), FUNC_ID);
 				// copy pointer
 				m_valueRefs[InputRef_ActiveLayerHeatLoads] = resultValueRefs[i];
 			}

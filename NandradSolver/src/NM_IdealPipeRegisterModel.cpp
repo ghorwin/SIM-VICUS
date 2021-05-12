@@ -44,10 +44,20 @@ void IdealPipeRegisterModel::setup(const NANDRAD::IdealPipeRegisterModel & model
 
 	// retrieve model type
 	m_modelType = (int) model.m_modelType;
-	// parameters have been checked already
-	m_maxMassFlow = model.m_para[NANDRAD::IdealPipeRegisterModel::P_MaxMassFlow].value;
 
-	// TODO: initailize all aprameters
+	// retrieve all parameters (have been checked already)
+	m_maxMassFlow = model.m_para[NANDRAD::IdealPipeRegisterModel::P_MaxMassFlow].value;
+	m_innerDiameter = model.m_para[NANDRAD::IdealPipeRegisterModel::P_PipeInnerDiameter].value;
+	m_length = model.m_para[NANDRAD::IdealPipeRegisterModel::P_PipeLength].value;
+	m_fluidHeatCapacity = model.m_para[NANDRAD::IdealPipeRegisterModel::P_FluidHeatCapacity].value;
+	m_fluidDensity = model.m_para[NANDRAD::IdealPipeRegisterModel::P_FluidDensity].value;
+	m_fluidConductivity = model.m_para[NANDRAD::IdealPipeRegisterModel::P_FluidConductivity].value;
+	m_UValuePipeWall = model.m_para[NANDRAD::IdealPipeRegisterModel::P_UValuePipeWall].value;
+	// integers
+	m_nParallelPipes = (unsigned int) model.m_intPara[NANDRAD::IdealPipeRegisterModel::IP_NumberParallelPipes].value;
+	// spline parameter
+	m_fluidViscosity = model.m_fluidViscosity.m_values;
+
 	// compute fluid volume
 	m_fluidCrossSection = IBK::PI/4. * m_innerDiameter * m_innerDiameter * m_nParallelPipes;
 	m_fluidVolume = m_fluidCrossSection * m_length;
@@ -56,6 +66,7 @@ void IdealPipeRegisterModel::setup(const NANDRAD::IdealPipeRegisterModel & model
 	m_thermostatZoneId = model.m_thermostatZoneID;
 
 	// reserve storage memory for results
+	m_results.resize(NUM_R);
 	m_vectorValuedResults.resize(NUM_VVR);
 
 	// the rest of the initialization can only be done when the object lists have been initialized, i.e. this happens in resultDescriptions()
@@ -84,10 +95,19 @@ void IdealPipeRegisterModel::resultDescriptions(std::vector<QuantityDescription>
 	// so we can rely on the existence of zones whose IDs are in our object list and we do not need to search
 	// through all the models
 
-	// it may be possible, that an object list does not contain a valid id, for example, when the
-	// requested IDs did not exist - in this case a warning was already printed, so we can just bail out here
-	if (m_objectList->m_filterID.m_ids.empty())
-		return; // nothing to compute, return
+	// For each of the constructions in the object list we generate results as defined
+	// in the type Results.
+	for (int varIndex=0; varIndex<NUM_R; ++varIndex) {
+		// store name, unit and description of the quantity
+		const std::string &quantityName = KeywordList::Keyword("IdealPipeRegisterModel::Results", varIndex );
+		const std::string &quantityUnit = KeywordList::Unit("IdealPipeRegisterModel::Results", varIndex );
+		const std::string &quantityDescription = KeywordList::Description("IdealPipeRegisterModel::Results", varIndex );
+		resDesc.push_back( QuantityDescription(
+			quantityName, quantityUnit, quantityDescription, false) );
+	}
+
+	// Retrieve index information from vector valued results.
+	std::vector<unsigned int> indexKeys(m_objectList->m_filterID.m_ids.begin(), m_objectList->m_filterID.m_ids.end());
 
 	// For each of the constructions in the object list we generate vector-valued results as defined
 	// in the type Results.
@@ -97,13 +117,22 @@ void IdealPipeRegisterModel::resultDescriptions(std::vector<QuantityDescription>
 		const std::string &quantityUnit = KeywordList::Unit("IdealPipeRegisterModel::VectorValuedResults", varIndex );
 		const std::string &quantityDescription = KeywordList::Description("IdealPipeRegisterModel::VectorValuedResults", varIndex );
 		resDesc.push_back( QuantityDescription(
-			quantityName, quantityUnit, quantityDescription, false) );
+			quantityName, quantityUnit, quantityDescription, false, VectorValuedQuantityIndex::IK_ModelID, indexKeys) );
 	}
 }
 
 
 const double * IdealPipeRegisterModel::resultValueRef(const InputReference & quantity) const {
 	const QuantityName & quantityName = quantity.m_name;
+
+	// search inside results vector
+	if(quantityName.m_index == -1) {
+		for (unsigned int varIndex=0; varIndex<NUM_VVR; ++varIndex) {
+			if (KeywordList::Keyword("IdealPipeRegisterModel::Results", (Results)varIndex ) == quantityName.m_name)
+				return &m_results[varIndex];
+		}
+	}
+
 	// determine variable enum index
 	unsigned int varIndex=0;
 	for (; varIndex<NUM_VVR; ++varIndex) {
@@ -201,7 +230,7 @@ void IdealPipeRegisterModel::setInputValueRefs(const std::vector<QuantityDescrip
 	}
 	// we now must ensure, that for each zone there is exactly one matching control signal
 
-	IBK_ASSERT(m_thermostatModelObjects == resultValueRefs.size());
+	IBK_ASSERT(m_thermostatModelObjects + index == resultValueRefs.size());
 
 	for (unsigned int i=0; i<m_thermostatModelObjects; ++i, ++index) {
 		// heating control value
@@ -229,6 +258,8 @@ void IdealPipeRegisterModel::stateDependencies(std::vector<std::pair<const doubl
 
 		resultInputValueReferences.push_back(
 					std::make_pair(m_vectorValuedResults[VVR_SurfaceHeatingLoad].dataPtr() + i, m_thermostatValueRef) );
+		resultInputValueReferences.push_back(
+					std::make_pair(m_vectorValuedResults[VVR_SurfaceHeatingLoad].dataPtr() + i, m_supplyTemperatureRef) );
 	}
 }
 
@@ -239,6 +270,10 @@ int IdealPipeRegisterModel::update() {
 	// clip
 	heatingControlValue = std::max(0.0, std::min(1.0, heatingControlValue));
 	double massFlow = heatingControlValue * m_maxMassFlow;
+	// store mass flow
+	m_results[R_MassFlow] = massFlow;
+
+	// retrieve supply temperature
 	double supplyTemperature = *m_supplyTemperatureRef;
 
 	// calculate inner heat transfer
@@ -252,22 +287,23 @@ int IdealPipeRegisterModel::update() {
 
 	// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
 	double UAValueTotal = m_length /
-			(
-				  1.0 / (innerHeatTransferCoefficient * m_innerDiameter * IBK::PI)
-				+ 1.0 / m_UValuePipeWall
-			);
+			( 1.0 / (innerHeatTransferCoefficient * m_innerDiameter * IBK::PI)
+			+ 1.0 / m_UValuePipeWall );
+
+	// compute exponential decay of thermal mass
+	double thermalMassDecay = massFlow * m_fluidHeatCapacity *
+			(1. - std::exp(-UAValueTotal / (std::fabs(massFlow) * m_fluidHeatCapacity ) ) );
 
 	// calculate heat load
 	double *surfaceHeatingLoadPtr = m_vectorValuedResults[VVR_SurfaceHeatingLoad].dataPtr();
 	unsigned int nTargets = (unsigned int) m_objectList->m_filterID.m_ids.size();
+
 	for(unsigned int i = 0; i < nTargets; ++i) {
 		// Q in [W] = DeltaT * UAValueTotal
 		double layerTemperature = *m_activeLayerTemperatureRefs[i];
 		// calculate heat loss with given (for steady state model we interpret mean temperature as
 		// outflow temperature and calculate a corresponding heat flux)
-		*(surfaceHeatingLoadPtr + i) = massFlow * m_fluidHeatCapacity *
-				(supplyTemperature - layerTemperature) *
-				(1. - std::exp(-UAValueTotal / (std::fabs(massFlow) * m_fluidHeatCapacity )) );
+		*(surfaceHeatingLoadPtr + i) = (supplyTemperature - layerTemperature) * thermalMassDecay;
 	}
 
 	return 0; // signal success
