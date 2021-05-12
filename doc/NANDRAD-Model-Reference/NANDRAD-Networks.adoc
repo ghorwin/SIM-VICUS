@@ -590,7 +590,7 @@ Je nach Bedingungen im Netzwerk ist es jedoch auch möglich, dass sich die Strö
 
 [TIP]
 ====
-Mächte man alle Knotendrücke oder Knotentemperaturen erhalten, so kann man einfach von allen Strömungselementen die Drück am Auslass erfragen. Darüber erhält man dann alle Drücke an den jeweiligen Knoten.
+Möchte man alle Knotendrücke oder Knotentemperaturen erhalten, so kann man einfach von allen Strömungselementen die Drück am Auslass erfragen. Darüber erhält man dann alle Drücke an den jeweiligen Knoten.
 ====
 
 
