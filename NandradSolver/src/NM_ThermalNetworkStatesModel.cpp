@@ -271,7 +271,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot :
 				{
 					switch (e.m_component->m_heatPumpIntegration) {
-						case (NANDRAD::HydraulicNetworkComponent::HP_SourceSide): {
+						case NANDRAD::HydraulicNetworkComponent::HP_SourceSide:
+						case NANDRAD::HydraulicNetworkComponent::HP_SupplySide:{
 
 							// create general model with given heat flux
 							TNHeatPumpIdealCarnot * element = new TNHeatPumpIdealCarnot(e.m_id, m_network->m_fluid, *e.m_component);
@@ -280,7 +281,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 							m_p->m_heatLossElements.push_back(element); // copy of pointer
 
 						} break;
-						case NANDRAD::HydraulicNetworkComponent::HP_SupplySide:
+
 						case NANDRAD::HydraulicNetworkComponent::HP_SupplyAndSourceSide:
 						case NANDRAD::HydraulicNetworkComponent::NUM_HP:
 						{
@@ -333,7 +334,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 						// ** Given HeatLoss **
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant:
-						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline: {
+						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:  {
 							TNElementWithExternalHeatLoss * tnElement =
 									dynamic_cast<TNElementWithExternalHeatLoss *>(m_p->m_flowElements[i]);
 							IBK_ASSERT(tnElement != nullptr);
@@ -346,8 +347,10 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 						default:;
 					}
-
 				break;
+
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpReal:
 
 				default: ; // nothing implemented for the rest
 			}
