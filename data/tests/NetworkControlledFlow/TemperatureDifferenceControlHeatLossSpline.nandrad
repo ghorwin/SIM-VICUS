@@ -12,7 +12,7 @@
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 			<Interval>
-				<IBK:Parameter name="End" unit="d">6</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">3</IBK:Parameter>
 			</Interval>
 			<SolarLoadsDistributionModel>
 				<DistributionType>AreaWeighted</DistributionType>
@@ -56,11 +56,10 @@
 					<HydraulicNetworkComponent id="10020004" displayName="simpleHX" modelType="HeatExchanger">
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">22.6</IBK:Parameter>
 						<IBK:Parameter name="PressureLossCoefficient" unit="-">18</IBK:Parameter>
-						<IBK:Parameter name="Volume" unit="m3">0.1</IBK:Parameter>
+						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
 						<IBK:Parameter name="PipeMaxDiscretizationWidth" unit="m">5</IBK:Parameter>
 					</HydraulicNetworkComponent>
-					<HydraulicNetworkComponent id="10020001" displayName="detailled pipe" modelType="DynamicPipe">
-						<IBK:Parameter name="PipeMaxDiscretizationWidth" unit="m">5</IBK:Parameter>
+					<HydraulicNetworkComponent id="10020001" displayName="simple pipe" modelType="SimplePipe">
 					</HydraulicNetworkComponent>
 				</Components>
 				
@@ -70,26 +69,23 @@
 				</HydraulicNetworkElement>
 				
 				<HydraulicNetworkElement id="1" inletNodeId="0" outletNodeId="101" componentId="10020004" displayName="heat exchanger">
-					<HydraulicNetworkHeatExchange modelType="HeatLossConstant">
-						<IBK:Parameter name="HeatLoss" unit="W">1000</IBK:Parameter>
-					</HydraulicNetworkHeatExchange>
-						<!-- <HydraulicNetworkHeatExchange modelType="HeatLossSpline"> -->
-							<!-- <LinearSplineParameter name="HeatLoss"> -->
-								<!-- <X unit="h">0 200 400 600</X> -->
-								<!-- <Y unit="W">300 500 1000 700</Y> -->
-							<!-- </LinearSplineParameter> -->
-						<!-- </HydraulicNetworkHeatExchange> -->
+						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
+							<LinearSplineParameter name="HeatLoss">
+								<X unit="d">0 1 2 3</X>
+								<Y unit="W">0 500 1000 800</Y>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
 						<ControlElement controlType="ControlTemperatureDifference" controllerId="1">
-							<IBK:Parameter name="SetPoint" unit="K">1.3</IBK:Parameter>
-							<MaximumControllerResultValue>1000000</MaximumControllerResultValue>
+							<IBK:Parameter name="SetPoint" unit="K">3</IBK:Parameter>
+							<MaximumControllerResultValue>1000</MaximumControllerResultValue>
 						</ControlElement>
 				</HydraulicNetworkElement>
 
 				<HydraulicNetworkElement id="8" inletNodeId="101" outletNodeId="100" componentId="10020001" pipePropertiesId="9" displayName="pipe">
-					<IBK:Parameter name="Length" unit="m">40</IBK:Parameter>
+					<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 					<HydraulicNetworkHeatExchange modelType="TemperatureConstant">
 						<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
-						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
+						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">10000</IBK:Parameter>
 					</HydraulicNetworkHeatExchange>
 				</HydraulicNetworkElement>
 
@@ -117,6 +113,12 @@
 					<ObjectListName>the objects</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>ControllerResultValue</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>the objects</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
 			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
@@ -138,7 +140,7 @@
 		<Controllers>
 			<Controller id="1" modelType="PController">
 				<Type>PController</Type>
-				<IBK:Parameter name="Kp" unit="-">3000</IBK:Parameter>
+				<IBK:Parameter name="Kp" unit="-">1000</IBK:Parameter>
 			</Controller>
 		</Controllers>
 	</Project>
