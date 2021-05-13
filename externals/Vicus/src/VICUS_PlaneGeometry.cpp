@@ -151,6 +151,7 @@ void PlaneGeometry::triangulate() {
 			default: ;
 		}
 		m_triangulationData.m_vertexes.swap(vertexes);
+		m_triangulationData.m_normal = m_polygon.normal(); // cache normal for easy access
 
 		return; // done
 	}

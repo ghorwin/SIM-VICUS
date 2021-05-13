@@ -2089,7 +2089,7 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 
 	} // with snapping
 
-	qDebug() << "Snap to: " << snapInfo.c_str();
+//	qDebug() << "Snap to: " << snapInfo.c_str();
 
 	// we now have a snap point
 	// if we also have line snap on, calculate the projection of this intersection point with the line
