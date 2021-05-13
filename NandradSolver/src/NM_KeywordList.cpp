@@ -1242,7 +1242,7 @@ namespace NANDRAD_MODEL {
 			// RoomStatesModel::Results
 			case 16 : return 3;
 			// Schedules::KnownQuantities
-			case 17 : return 14;
+			case 17 : return 15;
 			// ThermalComfortModel::Results
 			case 18 : return 1;
 			// ThermostatModel::VectorValuedResults
@@ -1292,7 +1292,7 @@ namespace NANDRAD_MODEL {
 			// RoomStatesModel::Results
 			case 16 : return 2;
 			// Schedules::KnownQuantities
-			case 17 : return 13;
+			case 17 : return 14;
 			// ThermalComfortModel::Results
 			case 18 : return 0;
 			// ThermostatModel::VectorValuedResults

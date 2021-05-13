@@ -26,6 +26,7 @@
 #include <IBK_Exception.h>
 #include <IBK_StringUtils.h>
 #include <NANDRAD_Constants.h>
+#include <NANDRAD_KeywordList.h>
 #include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
@@ -41,6 +42,10 @@ void IdealPipeRegisterModel::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
 
+		if (!TiXmlAttribute::attributeByName(element, "modelType"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'modelType' attribute.") ), FUNC_ID);
+
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
@@ -49,6 +54,14 @@ void IdealPipeRegisterModel::readXML(const TiXmlElement * element) {
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName = attrib->ValueStr();
+			else if (attribName == "modelType")
+				try {
+					m_modelType = (modelType_t)KeywordList::Enumeration("IdealPipeRegisterModel::modelType_t", attrib->ValueStr());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
+				}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -106,6 +119,8 @@ TiXmlElement * IdealPipeRegisterModel::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
+	if (m_modelType != NUM_MT)
+		e->SetAttribute("modelType", KeywordList::Keyword("IdealPipeRegisterModel::modelType_t",  m_modelType));
 	if (!m_constructionObjectList.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "ConstructionObjectList", nullptr, std::string(), m_constructionObjectList);
 	if (m_thermostatZoneID != NANDRAD::INVALID_ID)
