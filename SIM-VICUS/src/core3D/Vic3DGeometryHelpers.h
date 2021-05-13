@@ -20,7 +20,7 @@ namespace Vic3D {
 	The 'inverted' flag indicates, that a plane should be added with reversed
 	indexes (normal vector facing the other direction).
 */
-void addPlane(const VICUS::PlaneGeometry & g, const QColor & c,
+void addPlane(const VICUS::PlaneTriangulationData & g, const QColor & c,
 			  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 			  std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
 			  std::vector<GLuint> & indexBufferData,
@@ -37,20 +37,12 @@ void addPlaneAsStrip(const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const
 /*! Same as addPlane, but only adds coordinates (no normals, no color buffer).
 	Index buffer contains data for triangles.
 */
-void addPlane(const VICUS::PlaneGeometry & g,
-			  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
-			  std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData);
-
-/*! Same as addPlane, but only adds coordinates (no normals, no color buffer). Also, instead of
-	transferring the polygon itself, it will instead transfer the triangles of the hole with the given index.
-	Index buffer contains data for triangles.
-*/
-void addPlane(const VICUS::PlaneGeometry & g, unsigned int holeIdx,
+void addPlane(const VICUS::PlaneTriangulationData & g,
 			  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 			  std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData);
 
 /*! This updates the plane color in the vertex buffer. */
-void updateColors(const VICUS::PlaneGeometry & g, const QColor & c,
+void updateColors(const VICUS::PlaneTriangulationData & g, const QColor & c,
 				  unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData);
 
 

@@ -71,8 +71,8 @@
 						<!-- Heat loss from element (to environment) is given via time-series. -->
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss">
-								<X unit="d">0 1 2 3</X>
-								<Y unit="W">0 500 1000 800</Y>
+								<X unit="d">0 1   2    2.2  2.3  2.7  2.8 3</X>
+								<Y unit="W">0 500 1000 1000 3000 3000 800 0</Y>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 

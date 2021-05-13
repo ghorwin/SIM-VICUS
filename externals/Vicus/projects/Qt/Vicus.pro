@@ -62,6 +62,7 @@ HEADERS += \
 	../../src/VICUS_Object.h \
 	../../src/VICUS_Outputs.h \
 	../../src/VICUS_PlaneGeometry.h \
+	../../src/VICUS_PlaneTriangulationData.h \
 	../../src/VICUS_Polygon2D.h \
 	../../src/VICUS_Polygon3D.h \
 	../../src/VICUS_Project.h \

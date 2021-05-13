@@ -61,7 +61,7 @@ void SurfaceNormalsObject::updateVertexBuffers() {
 		// skip all surfaces with invalid polygons
 		if (!s->geometry().isValid())
 			continue;
-		const std::vector<IBKMK::Vector3D> & vertexes = s->geometry().triangleVertexes();
+		const std::vector<IBKMK::Vector3D> & vertexes = s->geometry().triangulationData().m_vertexes;
 		// take the normal vector and normalize
 		IBKMK::Vector3D n = s->geometry().normal();
 		n.normalize(); // now has length 1 (as in 1 m)
