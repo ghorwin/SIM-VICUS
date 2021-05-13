@@ -44,8 +44,8 @@ void addPlane(const VICUS::PlaneTriangulationData & g, const QColor & col,
 	for (const IBKMK::Triangulation::triangle_t & t : g.m_triangles) {
 		if (inverted) {
 			indexBufferData[currentElementIndex    ] = currentVertexIndex + t.i1;
-			indexBufferData[currentElementIndex + 1] = currentVertexIndex + t.i2;
-			indexBufferData[currentElementIndex + 2] = currentVertexIndex + t.i3;
+			indexBufferData[currentElementIndex + 1] = currentVertexIndex + t.i3;
+			indexBufferData[currentElementIndex + 2] = currentVertexIndex + t.i2;
 		}
 		else {
 			indexBufferData[currentElementIndex    ] = currentVertexIndex + t.i1;

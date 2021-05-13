@@ -164,7 +164,7 @@ void PlaneGeometry::triangulate() {
 	std::vector<unsigned int> validPolygons, invalidPolygons;
 	for (unsigned int i=0; i<m_holes.size(); ++i) {
 		const Polygon2D & p2 = m_holes[i];
-		const std::vector<IBKMK::Vector2D> &subSurfacePoly = m_holes[i].vertexes();
+		const std::vector<IBKMK::Vector2D> &subSurfacePoly = p2.vertexes();
 
 		// check if any of the holes are invalid
 		// TODO : Dirk
