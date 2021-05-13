@@ -2014,7 +2014,7 @@ void Vic3DScene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 					float closestDepthSoFar = SNAP_DISTANCES_THRESHHOLD;
 
 					// for now we snap to the vertexes of the outer polygon and all holes
-					const std::vector<IBKMK::Vector3D> & sVertexes = s->geometry().triangleVertexes();
+					const std::vector<IBKMK::Vector3D> & sVertexes = s->geometry().triangulationData().m_vertexes;
 
 					// we always add the intersection point with the surface as fall-back snappoint,
 					// but with a large distance so that it is only used as last resort

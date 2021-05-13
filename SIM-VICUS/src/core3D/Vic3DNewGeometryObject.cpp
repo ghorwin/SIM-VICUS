@@ -151,7 +151,7 @@ void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
 			// if we have already a valid plane (i.e. normal vector not 0,0,0), then check if point is in plane
 			if (m_planeGeometry.normal() != IBKMK::Vector3D(0,0,0)) {
 				IBKMK::Vector3D projected;
-				IBKMK::pointProjectedOnPlane(m_planeGeometry.triangleVertexes()[0], m_planeGeometry.normal(), p, projected);
+				IBKMK::pointProjectedOnPlane(m_planeGeometry.offset(), m_planeGeometry.normal(), p, projected);
 				m_vertexList.push_back(projected);
 			}
 			else
@@ -384,7 +384,7 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 			// - if we have a valid polygon: 4 * VC
 
 			if (m_planeGeometry.isValid()) {
-				addPlane(m_planeGeometry, currentVertexIndex, currentElementIndex,
+				addPlane(m_planeGeometry.triangulationData(), currentVertexIndex, currentElementIndex,
 						 m_vertexBufferData, m_indexBufferData);
 				// re-add first vertex so that we have a closed loop
 				m_vertexBufferData.push_back( m_vertexBufferData[0] );
@@ -401,7 +401,7 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 				IBKMK::Vector3D c = QtExt::QVector2IBKVector(m_localCoordinateSystemPosition);
 				IBKMK::Vector3D d = a + (c-b);
 				VICUS::PlaneGeometry pg(VICUS::Polygon3D::T_Rectangle, a, b, d);
-				addPlane(pg, currentVertexIndex, currentElementIndex,
+				addPlane(pg.triangulationData(), currentVertexIndex, currentElementIndex,
 						 m_vertexBufferData, m_indexBufferData);
 				// re-add first vertex so that we have a closed loop
 				m_vertexBufferData.push_back( m_vertexBufferData[0] );
@@ -433,7 +433,7 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 			//   the transparent shape is drawn only for valid polygons
 
 			if (m_planeGeometry.isValid()) {
-				addPlane(m_planeGeometry, currentVertexIndex, currentElementIndex,
+				addPlane(m_planeGeometry.triangulationData(), currentVertexIndex, currentElementIndex,
 						 m_vertexBufferData, m_indexBufferData);
 				// re-add first vertex so that we have a closed loop
 				m_vertexBufferData.push_back( m_vertexBufferData[0] );
@@ -469,28 +469,28 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 			if (m_zoneHeight != 0.0) {
 				Q_ASSERT(m_planeGeometry.isValid());
 				// we need to create at first the base polygon
-				addPlane(m_planeGeometry, currentVertexIndex, currentElementIndex,
+				addPlane(m_planeGeometry.triangulationData(), currentVertexIndex, currentElementIndex,
 						 m_vertexBufferData, m_indexBufferData);
 				// re-add first vertex so that we have a closed loop
 				m_vertexBufferData.push_back( m_vertexBufferData[0] ); ++currentVertexIndex;
 
 				// now we create the polygon that is offset by m_zoneHeight along the plane normal vector
 				VICUS::PlaneGeometry topPlane;
-				std::vector<IBKMK::Vector3D> vertexes = m_planeGeometry.triangleVertexes();
+				std::vector<IBKMK::Vector3D> vertexes = m_planeGeometry.triangulationData().m_vertexes; // create copy since we move vertexes
 
 				// the offset vector is the normal vector times the zoneHeight
 				IBKMK::Vector3D offset = QtExt::QVector2IBKVector(m_localCoordinateSystemPosition) - vertexes[0];
 				for (IBKMK::Vector3D & v : vertexes)
 					v += offset;
 				topPlane.setPolygon( VICUS::Polygon3D(vertexes) );
-				addPlane(topPlane, currentVertexIndex, currentElementIndex,
+				addPlane(topPlane.triangulationData(), currentVertexIndex, currentElementIndex,
 						 m_vertexBufferData, m_indexBufferData);
 				// re-add first vertex so that we have a closed loop
-				m_vertexBufferData.push_back( m_vertexBufferData[m_planeGeometry.triangleVertexes().size()+1] ); ++currentVertexIndex;
+				m_vertexBufferData.push_back( m_vertexBufferData[0] ); ++currentVertexIndex;
 
 				// now add vertexes to draw the vertical zone walls
 				for (unsigned int i=0; i<vertexes.size(); ++i) {
-					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(m_planeGeometry.triangleVertexes()[i])) );
+					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(m_planeGeometry.triangulationData().m_vertexes[i])) );
 					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(vertexes[i])) );
 				}
 
@@ -563,10 +563,11 @@ void NewGeometryObject::renderOpaque() {
 
 				// if we have a valid polygon, draw the outline using the first npg+1 vertexes
 				size_t offset = 0;
+				size_t vertexCount = m_planeGeometry.triangulationData().m_vertexes.size();
 				if (m_planeGeometry.isValid()) {
-					glDrawArrays(GL_LINE_STRIP, 0, m_planeGeometry.triangleVertexes().size() + 1);
+					glDrawArrays(GL_LINE_STRIP, 0, vertexCount + 1);
 					// start offset for the two lines of the local coordinate system - use the last vertex again
-					offset = m_planeGeometry.triangleVertexes().size() + 1;
+					offset = vertexCount + 1;
 				}
 				else {
 					glDrawArrays(GL_LINE_STRIP, 0, m_vertexList.size());
@@ -583,6 +584,7 @@ void NewGeometryObject::renderOpaque() {
 				glDrawArrays(GL_LINE_STRIP, offset, 3);
 			}
 		break;
+
 		case NGM_ZoneExtrusion: {
 			QColor lineCol;
 			if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
@@ -592,13 +594,14 @@ void NewGeometryObject::renderOpaque() {
 
 			m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], lineCol);
 			// draw outlines of bottom and top polygons first
-			glDrawArrays(GL_LINE_STRIP, 0, m_planeGeometry.triangleVertexes().size()+1);
+			size_t vertexCount = m_planeGeometry.triangulationData().m_vertexes.size();
+			glDrawArrays(GL_LINE_STRIP, 0, vertexCount+1);
 			// draw outlines of bottom and top polygons first
-			glDrawArrays(GL_LINE_STRIP, m_planeGeometry.triangleVertexes().size()+1, m_planeGeometry.triangleVertexes().size()+1);
+			glDrawArrays(GL_LINE_STRIP, vertexCount+1, vertexCount+1);
 
 			// now draw the zone wall segments
-			unsigned int offset = 2*m_planeGeometry.triangleVertexes().size()+2;
-			for (unsigned int i=0; i<m_planeGeometry.triangleVertexes().size(); ++i) {
+			unsigned int offset = 2*vertexCount+2;
+			for (unsigned int i=0; i<vertexCount; ++i) {
 				glDrawArrays(GL_LINES, (int)(2*i + offset), 2);
 			}
 

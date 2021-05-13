@@ -112,7 +112,7 @@ void WireFrameObject::updateBuffers() {
 
 		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
 		if (s != nullptr) {
-			addPlane(s->geometry(), currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			addPlane(s->geometry().triangulationData(), currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
 			continue;
 		}
 

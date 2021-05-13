@@ -23,6 +23,9 @@ public:
 
 	/*! The vertexes used by the triangles. */
 	std::vector<IBKMK::Vector3D>						m_vertexes;
+
+	/*! The normal vector. */
+	IBKMK::Vector3D										m_normal;
 };
 
 } // namespace VICUS

@@ -17,40 +17,40 @@ namespace Vic3D {
 
 // *** Primitives ***
 
-void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
+void addPlane(const VICUS::PlaneTriangulationData & g, const QColor & col,
 			  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 			  std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLuint> & indexBufferData,
 			  bool inverted)
 {
 	// add vertex data to buffers
-	unsigned int nVertexes = g.triangleVertexes().size();
+	unsigned int nVertexes = g.m_vertexes.size();
 	// insert count vertexes
 	vertexBufferData.resize(vertexBufferData.size()+nVertexes);
 	colorBufferData.resize(colorBufferData.size()+nVertexes);
 	// set data
-	QVector3D n = QtExt::IBKVector2QVector(g.normal());
+	QVector3D n = QtExt::IBKVector2QVector(g.m_normal);
 	if (inverted)
 		n *= -1;
 	for (unsigned int i=0; i<nVertexes; ++i) {
-		vertexBufferData[currentVertexIndex + i].m_coords = QtExt::IBKVector2QVector(g.triangleVertexes()[i]);
+		vertexBufferData[currentVertexIndex + i].m_coords = QtExt::IBKVector2QVector(g.m_vertexes[i]);
 		vertexBufferData[currentVertexIndex + i].m_normal = n;
 		colorBufferData[currentVertexIndex  + i] = col;
 	}
 
-	unsigned int triangleIndexCount = g.triangles().size()*3;
+	unsigned int triangleIndexCount = g.m_triangles.size()*3;
 	indexBufferData.resize(indexBufferData.size()+triangleIndexCount);
 	// add all triangles
 
-	for (const IBKMK::Triangulation::triangle_t & t : g.triangles()) {
+	for (const IBKMK::Triangulation::triangle_t & t : g.m_triangles) {
 		if (inverted) {
 			indexBufferData[currentElementIndex    ] = currentVertexIndex + t.i1;
-			indexBufferData[currentElementIndex + 1] = currentVertexIndex + t.c;
-			indexBufferData[currentElementIndex + 2] = currentVertexIndex + t.b;
+			indexBufferData[currentElementIndex + 1] = currentVertexIndex + t.i2;
+			indexBufferData[currentElementIndex + 2] = currentVertexIndex + t.i3;
 		}
 		else {
-			indexBufferData[currentElementIndex    ] = currentVertexIndex + t.a;
-			indexBufferData[currentElementIndex + 1] = currentVertexIndex + t.b;
-			indexBufferData[currentElementIndex + 2] = currentVertexIndex + t.c;
+			indexBufferData[currentElementIndex    ] = currentVertexIndex + t.i1;
+			indexBufferData[currentElementIndex + 1] = currentVertexIndex + t.i2;
+			indexBufferData[currentElementIndex + 2] = currentVertexIndex + t.i3;
 		}
 		// advance index in element/index buffer
 		currentElementIndex += 3;
@@ -63,56 +63,59 @@ void addPlane(const VICUS::PlaneGeometry & g, const QColor & col,
 }
 
 
-void addPlane(const VICUS::PlaneGeometry & g, unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
-			  std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData)
+void addPlaneAsStrip(const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & d, const QColor & col,
+					 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+					 std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLuint> & indexBufferData)
 {
+	VICUS::PlaneGeometry g(VICUS::Polygon3D::T_Rectangle, a, b, d);
+
 	// add vertex data to buffers
-	unsigned int nVertexes = g.triangleVertexes().size();
+	unsigned int nVertexes = g.triangulationData().m_vertexes.size();
 	// insert count vertexes
 	vertexBufferData.resize(vertexBufferData.size()+nVertexes);
+	colorBufferData.resize(colorBufferData.size()+nVertexes);
 	// set data
-	for (unsigned int i=0; i<nVertexes; ++i)
-		vertexBufferData[currentVertexIndex + i].m_coords = QtExt::IBKVector2QVector(g.triangleVertexes()[i]);
-
-	unsigned int triangleIndexCount = g.triangles().size()*3;
-	indexBufferData.resize(indexBufferData.size()+triangleIndexCount);
-	// add all triangles
-
-	for (const IBKMK::Triangulation::triangle_t & t : g.triangles()) {
-		indexBufferData[currentElementIndex    ] = currentVertexIndex + t.a;
-		indexBufferData[currentElementIndex + 1] = currentVertexIndex + t.b;
-		indexBufferData[currentElementIndex + 2] = currentVertexIndex + t.c;
-		// advance index in element/index buffer
-		currentElementIndex += 3;
+	QVector3D n = QtExt::IBKVector2QVector(g.normal());
+	for (unsigned int i=0; i<nVertexes; ++i) {
+		vertexBufferData[currentVertexIndex + i].m_coords = QtExt::IBKVector2QVector(g.triangulationData().m_vertexes[i]);
+		vertexBufferData[currentVertexIndex + i].m_normal = n;
+		colorBufferData[currentVertexIndex  + i] = col;
 	}
 
-	// finally advance vertex index
-	currentVertexIndex += nVertexes;
+
+	// 5 elements (4 triangle strip indexs + 1 stop index)
+	indexBufferData.resize(indexBufferData.size()+5);
+
+	// anti-clock-wise winding order for all triangles in strip
+	// 0, 1, 2
+	// 2, 3, 0
+	indexBufferData[currentElementIndex    ] = currentVertexIndex + 0;
+	indexBufferData[currentElementIndex + 1] = currentVertexIndex + 1;
+	indexBufferData[currentElementIndex + 2] = currentVertexIndex + 3;
+	indexBufferData[currentElementIndex + 3] = currentVertexIndex + 2;
+	indexBufferData[currentElementIndex + 4] = VIC3D_STRIP_STOP_INDEX;
+
+	// advance index in element/index buffer
+	currentElementIndex += 5;
 }
 
 
-void addPlane(const VICUS::PlaneGeometry & g, unsigned int holeIdx, unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+void addPlane(const VICUS::PlaneTriangulationData & g, unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 			  std::vector<VertexC> & vertexBufferData, std::vector<GLuint> & indexBufferData)
 {
-	// check for valid hole geometry
-	if (g.holeTriangles().empty())
-		return;
-
-	IBK_ASSERT(g.holeTriangles().size() > holeIdx);
-
 	// add vertex data to buffers
-	unsigned int nVertexes = g.triangleVertexes().size();
+	unsigned int nVertexes = g.m_vertexes.size();
 	// insert count vertexes
 	vertexBufferData.resize(vertexBufferData.size()+nVertexes);
 	// set data
 	for (unsigned int i=0; i<nVertexes; ++i)
-		vertexBufferData[currentVertexIndex + i].m_coords = QtExt::IBKVector2QVector(g.triangleVertexes()[i]);
+		vertexBufferData[currentVertexIndex + i].m_coords = QtExt::IBKVector2QVector(g.m_vertexes[i]);
 
-	unsigned int triangleIndexCount = g.triangles().size()*3;
+	unsigned int triangleIndexCount = g.m_triangles.size()*3;
 	indexBufferData.resize(indexBufferData.size()+triangleIndexCount);
 	// add all triangles
 
-	for (const IBKMK::Triangulation::triangle_t & t : g.triangles()) {
+	for (const IBKMK::Triangulation::triangle_t & t : g.m_triangles) {
 		indexBufferData[currentElementIndex    ] = currentVertexIndex + t.i1;
 		indexBufferData[currentElementIndex + 1] = currentVertexIndex + t.i2;
 		indexBufferData[currentElementIndex + 2] = currentVertexIndex + t.i3;
@@ -125,8 +128,8 @@ void addPlane(const VICUS::PlaneGeometry & g, unsigned int holeIdx, unsigned int
 }
 
 
-void updateColors(const VICUS::PlaneGeometry & g, const QColor & col, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
-	unsigned int nvert = g.triangleVertexes().size();
+void updateColors(const VICUS::PlaneTriangulationData & g, const QColor & col, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
+	unsigned int nvert = g.m_vertexes.size();
 	// add all vertices to buffer
 	for (unsigned int i=0; i<nvert; ++i)
 		colorBufferData[currentVertexIndex + i] = col;
@@ -134,6 +137,8 @@ void updateColors(const VICUS::PlaneGeometry & g, const QColor & col, unsigned i
 	currentVertexIndex += nvert;
 }
 
+
+// ** Cylinders **
 
 void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const QColor & c, double radius,
 				 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
@@ -339,6 +344,8 @@ void updateCylinderColors(const QColor & c, unsigned int & currentVertexIndex, s
 }
 
 
+// ** Spheres **
+
 void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 			   unsigned int & currentVertexIndex,
 			   unsigned int & currentElementIndex,
@@ -500,6 +507,8 @@ void updateSphereColors(const QColor & c, unsigned int & currentVertexIndex, std
 }
 
 
+// ** Ikosaeder **
+
 void addIkosaeder(const IBKMK::Vector3D & p, const std::vector<QColor> & cols, double radius,
 				  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 				  std::vector<VertexCR> & vertexBufferData, std::vector<GLuint> & indexBufferData)
@@ -572,9 +581,9 @@ void addSurface(const VICUS::Surface & s,
 		col.setAlphaF(0);
 	}
 	// first add the plane regular
-	addPlane(s.geometry(), col, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
+	addPlane(s.geometry().triangulationData(), col, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
 	// then add the plane again inverted
-	addPlane(s.geometry(), col, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, true);
+	addPlane(s.geometry().triangulationData(), col, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, true);
 }
 
 
@@ -591,46 +600,10 @@ void updateColors(const VICUS::Surface & s, unsigned int & currentVertexIndex, s
 		col.setAlphaF(0);
 	}
 	// call updatePlaneColor() twice, since we have front and backside planes to color
-	updateColors(s.geometry(), col, currentVertexIndex, colorBufferData);
-	updateColors(s.geometry(), col, currentVertexIndex, colorBufferData);
+	updateColors(s.geometry().triangulationData(), col, currentVertexIndex, colorBufferData);
+	updateColors(s.geometry().triangulationData(), col, currentVertexIndex, colorBufferData);
 }
 
-
-void addPlaneAsStrip(const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & d, const QColor & col,
-					 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
-					 std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLuint> & indexBufferData)
-{
-	VICUS::PlaneGeometry g(VICUS::Polygon3D::T_Rectangle, a, b, d);
-
-	// add vertex data to buffers
-	unsigned int nVertexes = g.triangleVertexes().size();
-	// insert count vertexes
-	vertexBufferData.resize(vertexBufferData.size()+nVertexes);
-	colorBufferData.resize(colorBufferData.size()+nVertexes);
-	// set data
-	QVector3D n = QtExt::IBKVector2QVector(g.normal());
-	for (unsigned int i=0; i<nVertexes; ++i) {
-		vertexBufferData[currentVertexIndex + i].m_coords = QtExt::IBKVector2QVector(g.triangleVertexes()[i]);
-		vertexBufferData[currentVertexIndex + i].m_normal = n;
-		colorBufferData[currentVertexIndex  + i] = col;
-	}
-
-
-	// 5 elements (4 triangle strip indexs + 1 stop index)
-	indexBufferData.resize(indexBufferData.size()+5);
-
-	// anti-clock-wise winding order for all triangles in strip
-	// 0, 1, 2
-	// 2, 3, 0
-	indexBufferData[currentElementIndex    ] = currentVertexIndex + 0;
-	indexBufferData[currentElementIndex + 1] = currentVertexIndex + 1;
-	indexBufferData[currentElementIndex + 2] = currentVertexIndex + 3;
-	indexBufferData[currentElementIndex + 3] = currentVertexIndex + 2;
-	indexBufferData[currentElementIndex + 4] = VIC3D_STRIP_STOP_INDEX;
-
-	// advance index in element/index buffer
-	currentElementIndex += 5;
-}
 
 
 

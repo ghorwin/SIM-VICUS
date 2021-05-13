@@ -46,7 +46,7 @@ void SVView3D::exportView3d() {
 
 		// TODO : Stephan/Dirk, review if this still works when there are windows in the wall
 
-		const std::vector<VICUS::PlaneGeometry::triangle_t> &triangles = s.geometry().triangles();
+		const std::vector<IBKMK::Triangulation::triangle_t> &triangles = s.geometry().triangulationData().m_triangles;
 		const std::vector<IBKMK::Vector3D> &vertexes = s.geometry().polygon().vertexes();
 
 
@@ -82,14 +82,14 @@ void SVView3D::exportView3d() {
 
 
 		// we take all triangles from triangulation and combine them in view3D
-		for ( const VICUS::PlaneGeometry::triangle_t &triangle : triangles) { // mind that our surfaces have to point inwards
+		for ( const IBKMK::Triangulation::triangle_t &triangle : triangles) { // mind that our surfaces have to point inwards
 
 			if ( !v3dRoom.m_surfaces.empty() )
 				surfaceId = v3dRoom.m_surfaces.back().m_id;
 			else
 				surfaceId = 0;
 
-			view3dSurface sView3d (++surfaceId, s.m_id, offset + triangle.c, offset + triangle.b, offset + triangle.a, 0, counter, 0.001,
+			view3dSurface sView3d (++surfaceId, s.m_id, offset + triangle.i3, offset + triangle.i2, offset + triangle.i1, 0, counter, 0.001,
 								   "[" + std::to_string(s.m_id) + "] " + s.m_displayName.toStdString() + "["  + std::to_string(++surfId) + "]" );
 
 			v3dRoom.m_surfaces.push_back(sView3d);
