@@ -325,6 +325,24 @@ Das Model `HeatExchanger` ist ein einfacher Wärmeübertrager, welcher mit dem F
 
 
 
+### ModellTyp: HeatPumpIdealCarnot
+
+Das Model `HeatPumpIdealCarnot` ist eine ideale Wärmepumpe mit gegebener Carnot-Effizienz. Es werden diese Parameter benötigt:
+
+[options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
+|====================
+|Name | Einheit | Beschreibung | Wertebereich | Verwendung
+| `HydraulicDiameter` | mm | Äquivalenter hydraulischer Durchmesser (wird für die Berechnung des Strömungsquerschnitts und der Strömungsgeschwindigkeit benötigt) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `Volume` | m3 | Fluidvolumen im Wärmetauscher | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `CarnotEfficiency` | --- | Carnot-Faktor zur Berechnung des COP | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `MaximumHeatingPower` | W | Maximale Heizleistung (= maximaler Wärmestrom des Kondensators) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+|====================
+
+Außerdem muss noch der Parameter `HeatPumpIntegration` mit den Werten `SourceSide` oder `SupplySide` gesetzt sein. Damit wird festgelegt ob die Quellenseite oder Senkenseite der Wärmepumpe im Netzwerk betrachtet wird.
+Weiterhin werden verschiedene Parameter als Schedules benötigt: Ist der Modus `SourceSide` gewählt muss der Parameter `CondenserMeanTemperatureSchedule` als Schedule gegeben sein. 
+Wird der Modus `SupplySide` gewählt, müssen die Parameter `EvaporatorMeanTemperatureSchedule` und `CondenserOutletSetpointSchedule` als Schedule gegeben sein.
+
 [[HydraulicNetworkElements]]
 ## Strömungselemente
 
@@ -495,6 +513,7 @@ Der `HeatExchangeType` kann folgende Werte haben:
 | `TemperatureConstructionLayer` | Wärmeaustausch mit einer Konstruktionsschicht (Fußbodenheizung/Flächenheizung); Schichttemperatur wird als Umgebungstemperatur verwendet.  | `SimplePipe`, `DynamicPipe`
 | `HeatLossConstant` | Konstanter Wärmestrom (positiv aus dem Element) ist als konstanter Parameter gegeben | `SimplePipe`, `DynamicPipe`, `HeatExchanger`
 | `HeatLossSpline` | Wärmestrom (positiv aus dem Element) ist als Zeitreihe in einem LinearSplineParameter (<<LinearSplineParameter>>) gegeben | `SimplePipe`, `DynamicPipe`, `HeatExchanger`
+| `HeatLossSplineCondenser` | Wärmestrom (positiv aus dem Element) des Kondensators bei Verwendung eines Wärmepumpen-Modells als Zeitreihe in einem LinearSplineParameter (<<LinearSplineParameter>>) gegeben | `HeatPumpIdealCarnot`
 | `TemperatureFMUInterface` | Temperatur wird von FMU gegeben |
 |====================
 
@@ -525,7 +544,7 @@ Spline-Parameter (Tag: `LinearSplineParameter`):
 |Name | Einheit | Beschreibung | Wertebereich | Verwendung
 | `Temperature` | K | Zeitreihe mit Temperaturen | --- | `TemperatureSpline`
 
-| `HeatLoss` | W | Zeitreihe mit Wärmeverlustströmen | --- | `HeatLossSpline`
+| `HeatLoss` | W | Zeitreihe mit Wärmeverlustströmen | --- | `HeatLossSpline`, `HeatLossSplineCondenser`
 |====================
 
 
@@ -537,6 +556,13 @@ ID-Referenzen:
 | `ZoneId` | Referenz zur Zone | `Zone` | `TemperatureZone`
 | `ConstructionInstanceId` | Referenz zu beheizter/gekühlter Konstruktion | `ConstructionInstance` | `TemperatureConstructionLayer`
 |====================
+
+
+
+## Regelung von Strömungselementen
+
+
+
 
 
 
@@ -561,7 +587,6 @@ Die Ergebnisgrößen eines thermo-hydraulischen Netzwerkmodells werden wie folgt
 </ObjectLists>
 ----
 ====
-
 
 
 ### Verfügbare Ausgaben
@@ -590,7 +615,7 @@ Je nach Bedingungen im Netzwerk ist es jedoch auch möglich, dass sich die Strö
 
 [TIP]
 ====
-Mächte man alle Knotendrücke oder Knotentemperaturen erhalten, so kann man einfach von allen Strömungselementen die Drück am Auslass erfragen. Darüber erhält man dann alle Drücke an den jeweiligen Knoten.
+Möchte man alle Knotendrücke oder Knotentemperaturen erhalten, so kann man einfach von allen Strömungselementen die Drück am Auslass erfragen. Darüber erhält man dann alle Drücke an den jeweiligen Knoten.
 ====
 
 

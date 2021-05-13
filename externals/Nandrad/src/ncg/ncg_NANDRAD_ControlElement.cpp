@@ -58,6 +58,10 @@ void ControlElement::readXML(const TiXmlElement * element) {
 			attrib = attrib->Next();
 		}
 		// search for mandatory elements
+		if (!element->FirstChildElement("MaximumControllerResultValue"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'MaximumControllerResultValue' element.") ), FUNC_ID);
+
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
@@ -69,26 +73,15 @@ void ControlElement::readXML(const TiXmlElement * element) {
 				if (p.name == "SetPoint") {
 					m_setPoint = p; success = true;
 				}
-				else if (p.name == "MaximumSystemInput") {
-					m_maximumSystemInput = p; success = true;
-				}
 				if (!success) {
 				}
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
-			else if (cName == "LinearSplineParameter") {
-				NANDRAD::LinearSplineParameter p;
-				p.readXML(c);
-				bool success = false;
-				if (p.m_name == "SetPointSpline") {
-					m_setPointSpline = p; success = true;
-				}
-				if (!success)
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.m_name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
 			else if (cName == "SetPointScheduleName")
 				m_setPointScheduleName = c->GetText();
+			else if (cName == "MaximumControllerResultValue")
+				m_maximumControllerResultValue = NANDRAD::readPODElement<double>(c, cName);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -114,16 +107,9 @@ TiXmlElement * ControlElement::writeXML(TiXmlElement * parent) const {
 		IBK_ASSERT("SetPoint" == m_setPoint.name);
 		TiXmlElement::appendIBKParameterElement(e, "SetPoint", m_setPoint.IO_unit.name(), m_setPoint.get_value());
 	}
-	if (!m_setPointSpline.m_name.empty()) {
-		IBK_ASSERT("SetPointSpline" == m_setPointSpline.m_name);
-		m_setPointSpline.writeXML(e);
-	}
 	if (!m_setPointScheduleName.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "SetPointScheduleName", nullptr, std::string(), m_setPointScheduleName);
-	if (!m_maximumSystemInput.name.empty()) {
-		IBK_ASSERT("MaximumSystemInput" == m_maximumSystemInput.name);
-		TiXmlElement::appendIBKParameterElement(e, "MaximumSystemInput", m_maximumSystemInput.IO_unit.name(), m_maximumSystemInput.get_value());
-	}
+	TiXmlElement::appendSingleAttributeElement(e, "MaximumControllerResultValue", nullptr, std::string(), IBK::val2string<double>(m_maximumControllerResultValue));
 	return e;
 }
 

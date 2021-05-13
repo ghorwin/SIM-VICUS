@@ -13,6 +13,7 @@ namespace NANDRAD {
 class HydraulicNetworkComponent;
 class HydraulicNetworkPipeProperties;
 class HydraulicNetwork;
+class Project;
 
 /*! Contains data of a flow element inside a network.
 	Pipe-specific parameters are stored in HydraulicNetworkPipeProperties objects, referenced via m_pipeID. For
@@ -63,10 +64,7 @@ public:
 		If referenced TSV file is given, this is read and checked and data is transferred into
 		variable m_tsvFileContent.
 	*/
-	void checkParameters(const HydraulicNetwork & nw,
-						 const std::map<std::string, IBK::Path> &placeholders,
-						 const std::vector<Zone> &zones,
-						 const std::vector<ConstructionInstance> &conInstances);
+	void checkParameters(const HydraulicNetwork & nw, const Project & prj);
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

@@ -1,10 +1,11 @@
 #include "NANDRAD_HydraulicNetworkElement.h"
 
 #include "NANDRAD_HydraulicNetwork.h"
-
-#include <NANDRAD_KeywordList.h>
+#include "NANDRAD_KeywordList.h"
+#include "NANDRAD_Project.h"
 
 #include <algorithm>
+
 
 namespace NANDRAD {
 
@@ -20,10 +21,7 @@ HydraulicNetworkElement::HydraulicNetworkElement(unsigned int id, unsigned int i
 }
 
 
-void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
-											  const std::map<std::string, IBK::Path> &placeholders,
-											  const std::vector<Zone> &zones,
-											  const std::vector<ConstructionInstance> &conInstances)
+void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const Project & prj)
 {
 	FUNCID(HydraulicNetworkElement::checkParameters);
 
@@ -70,6 +68,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
 		case HydraulicNetworkComponent::MT_HeatExchanger:
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:
+		case HydraulicNetworkComponent::MT_HeatPumpReal:
 			// nothing to check for
 		break;
 
@@ -89,8 +88,11 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw,
 								 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_component->m_modelType)), FUNC_ID);
 	}
 
-	// finally check for valid heat exchange parameters
-	m_heatExchange.checkParameters(placeholders, zones, conInstances);
+	// check for valid heat exchange parameters
+	m_heatExchange.checkParameters(prj.m_placeholders, prj.m_zones, prj.m_constructionInstances);
+
+	// check control element
+	m_controlElement.checkParameters(prj.m_controllers);
 }
 
 

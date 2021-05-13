@@ -30,6 +30,10 @@
 #include "NM_ThermalNetworkFlowElements.h"
 #include "NM_KeywordList.h"
 
+
+// TODO Andreas: include cpp???
+#include "NM_HydraulicNetworkModel.cpp"
+
 #include <NANDRAD_HydraulicNetwork.h>
 #include <NANDRAD_HydraulicNetworkComponent.h>
 #include <NANDRAD_KeywordList.h>
@@ -51,7 +55,7 @@ ThermalNetworkStatesModel::~ThermalNetworkStatesModel() {
 
 
 void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
-									  const HydraulicNetworkModel &networkModel,
+									  const HydraulicNetworkModel &hydrNetworkModel,
 									  const NANDRAD::SimulationParameter &simPara)
 {
 	FUNCID(ThermalNetworkStatesModel::setup);
@@ -65,7 +69,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 	// be used during initialization.
 
 	// copy element ids
-	m_elementIds = networkModel.m_elementIds;
+	m_elementIds = hydrNetworkModel.m_elementIds;
 
 	// We now loop over all flow elements of the network and create a corresponding thermal
 	// model objects for _each_ of the hydraulic calculation objects.
@@ -111,7 +115,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 							// create generic flow element with given heat flux
 							TNElementWithExternalHeatLoss * pipeElement = new TNElementWithExternalHeatLoss(
-										m_network->m_fluid, volume);
+										m_network->m_fluid, volume, e.m_controlElement);
+
 							// add to flow elements
 							m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 							m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
@@ -214,7 +219,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				{
 					// create pump model with heat loss
 					TNPumpWithPerformanceLoss * element = new TNPumpWithPerformanceLoss(m_network->m_fluid,
-																						*e.m_component, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value);
+									*e.m_component, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value);
 					// add to flow elements
 					m_p->m_flowElements.push_back(element); // transfer ownership
 					m_p->m_heatLossElements.push_back(element); // no heat loss
@@ -228,7 +233,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						// create general adiabatic model
 						case NANDRAD::HydraulicNetworkHeatExchange::NUM_T : {
 							TNAdiabaticElement * element = new TNAdiabaticElement(m_network->m_fluid,
-																				  e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value);
+										e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value);
 							// add to flow elements
 							m_p->m_flowElements.push_back(element); // transfer ownership
 							m_p->m_heatLossElements.push_back(nullptr); // no heat loss
@@ -237,9 +242,11 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant :
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline :
 						{
-							// create general model with given heat flux
-							TNElementWithExternalHeatLoss * element = new TNElementWithExternalHeatLoss(m_network->m_fluid,
-																										e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value);
+							// create generic flow element with given heat flux
+							TNElementWithExternalHeatLoss * element = new TNElementWithExternalHeatLoss(
+										m_network->m_fluid, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value,
+										e.m_controlElement);
+
 							// add to flow elements
 							m_p->m_flowElements.push_back(element); // transfer ownership
 							m_p->m_heatLossElements.push_back(element); // copy of pointer
@@ -264,16 +271,18 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot :
 				{
 					switch (e.m_component->m_heatPumpIntegration) {
-						case (NANDRAD::HydraulicNetworkComponent::HP_SourceSide): {
+						case NANDRAD::HydraulicNetworkComponent::HP_SourceSide:
+						case NANDRAD::HydraulicNetworkComponent::HP_SupplySide:{
 
 							// create general model with given heat flux
-							TNHeatPumpIdealCarnot * element = new TNHeatPumpIdealCarnot(e.m_id, m_network->m_fluid, *e.m_component);
+							TNHeatPumpIdealCarnot * element = new TNHeatPumpIdealCarnot(e.m_id, m_network->m_fluid, *e.m_component,
+																						e.m_controlElement);
 							// add to flow elements
 							m_p->m_flowElements.push_back(element); // transfer ownership
 							m_p->m_heatLossElements.push_back(element); // copy of pointer
 
 						} break;
-						case NANDRAD::HydraulicNetworkComponent::HP_SupplySide:
+
 						case NANDRAD::HydraulicNetworkComponent::HP_SupplyAndSourceSide:
 						case NANDRAD::HydraulicNetworkComponent::NUM_HP:
 						{
@@ -303,9 +312,67 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 		}
 	}
 
-	// setup the enetwork
+
+	// *** controller setup ***
+
+	// some of our flow elements may have a flow controller, so we do another pass over all flow elements and
+	// setup the communication between HydraulicFlowElements and ThermalHydraulicFlowElements
+
+	for (unsigned int i = 0; i<m_p->m_flowElements.size(); ++i) {
+		// check parametrization for this element if a controller is configured
+		const NANDRAD::HydraulicNetworkElement & e = nw.m_elements[i];
+
+		// if we have a controller, give the corresponding hydraulic network element access to the newly created object
+		if (e.m_controlElement.m_controlType != NANDRAD::ControlElement::NUM_CT) {
+
+			// the controller setup is type-specific; this cannot be done in a nice generic way :-(
+
+			switch (e.m_component->m_modelType) {
+
+				// ** HeatExchanger**
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger:
+					switch (e.m_heatExchange.m_modelType) {
+
+						// ** Given HeatLoss **
+						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant:
+						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:  {
+							TNElementWithExternalHeatLoss * tnElement =
+									dynamic_cast<TNElementWithExternalHeatLoss *>(m_p->m_flowElements[i]);
+							IBK_ASSERT(tnElement != nullptr);
+							// get the corresponding element from the HydraulicNetworkModel
+							HNControlledPressureLossCoeffElement * hnElement =
+									dynamic_cast<HNControlledPressureLossCoeffElement *>(hydrNetworkModel.m_p->m_flowElements[i]);
+							IBK_ASSERT(hnElement != nullptr);
+							hnElement->m_thermalNetworkElement = tnElement;
+						} break;
+
+						default:;
+					}
+				break;
+
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpReal:
+
+					if (e.m_heatExchange.m_modelType == NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser){
+						TNHeatPumpIdealCarnot * tnElement =
+								dynamic_cast<TNHeatPumpIdealCarnot *>(m_p->m_flowElements[i]);
+						IBK_ASSERT(tnElement != nullptr);
+						// get the corresponding element from the HydraulicNetworkModel
+						HNControlledPressureLossCoeffElement * hnElement =
+								dynamic_cast<HNControlledPressureLossCoeffElement *>(hydrNetworkModel.m_p->m_flowElements[i]);
+						IBK_ASSERT(hnElement != nullptr);
+						hnElement->m_thermalNetworkElement = tnElement;
+					} break;
+
+				default: ; // nothing implemented for the rest
+			}
+		}
+	}
+
+
+	// setup the network
 	try {
-		m_p->setup(*networkModel.network(), nw.m_fluid);
+		m_p->setup(*hydrNetworkModel.network(), nw.m_fluid);
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, "Error setting up flow network.", FUNC_ID);
 	}
@@ -324,7 +391,6 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 	// initialize all fluid temperatures
 	for(unsigned int i = 0; i < m_p->m_flowElements.size(); ++i) {
 		ThermalNetworkAbstractFlowElement *fe = m_p->m_flowElements[i];
-
 		double fluidTemp = m_network->m_para[NANDRAD::HydraulicNetwork::P_InitialFluidTemperature].value;
 		fe->setInitialTemperature(fluidTemp);
 		m_meanTemperatureRefs[i] = &fe->m_meanTemperature;
@@ -338,6 +404,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 void ThermalNetworkStatesModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 	if(!resDesc.empty())
 		resDesc.clear();
+
+	// add fluid temperatures to descriptions
 	QuantityDescription desc("FluidTemperature", "C", "Internal fluid temperature of network element", false);
 	// adjust reference type
 	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
@@ -369,6 +437,7 @@ const double * ThermalNetworkStatesModel::resultValueRef(const InputReference & 
 		unsigned int pos = (unsigned int) std::distance(m_elementIds.begin(), fIt);
 		return m_meanTemperatureRefs[pos];
 	}
+
 	return nullptr;
 }
 

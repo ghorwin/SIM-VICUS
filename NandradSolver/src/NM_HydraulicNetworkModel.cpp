@@ -153,8 +153,8 @@ HydraulicNetworkModel::HydraulicNetworkModel(const NANDRAD::HydraulicNetwork & n
 	}
 
 	// set reference pressure node
-	std::vector<NANDRAD::HydraulicNetworkElement>::const_iterator refFeIt = std::find(nw.m_elements.begin(), nw.m_elements.end(),
-														   nw.m_referenceElementId);
+	std::vector<NANDRAD::HydraulicNetworkElement>::const_iterator refFeIt = std::find(
+				nw.m_elements.begin(), nw.m_elements.end(), nw.m_referenceElementId);
 	unsigned int refElemeIdx = std::distance(nw.m_elements.begin(), refFeIt);
 	// create implementation instance
 	m_p = new HydraulicNetworkModelImpl(elems, refElemeIdx); // we take ownership
@@ -204,19 +204,22 @@ void HydraulicNetworkModel::setup() {
 			} break;
 
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
-			{
-				// create fixed pressure loss model
-				HNFixedPressureLossCoeffElement * hxElement = new HNFixedPressureLossCoeffElement(*e.m_component, m_hydraulicNetwork->m_fluid);
-				// add to flow elements
-				m_p->m_flowElements.push_back(hxElement); // transfer ownership
-			} break;
-
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot :
 			{
-				// create fixed pressure loss model
-				HNFixedPressureLossCoeffElement * hxElement = new HNFixedPressureLossCoeffElement(*e.m_component, m_hydraulicNetwork->m_fluid);
-				// add to flow elements
-				m_p->m_flowElements.push_back(hxElement); // transfer ownership
+				if (e.m_controlElement.m_controlType == NANDRAD::ControlElement::NUM_CT) {
+					// create fixed pressure loss model
+					HNFixedPressureLossCoeffElement * hxElement = new HNFixedPressureLossCoeffElement(*e.m_component, m_hydraulicNetwork->m_fluid);
+					// add to flow elements
+					m_p->m_flowElements.push_back(hxElement); // transfer ownership
+				}
+				else{
+					HNControlledPressureLossCoeffElement * hxElement = new HNControlledPressureLossCoeffElement(
+								*e.m_component, m_hydraulicNetwork->m_fluid);
+					// add to flow elements
+					m_p->m_flowElements.push_back(hxElement); // transfer ownership
+				}
+
+
 			} break;
 
 			case NANDRAD::HydraulicNetworkComponent::NUM_MT:{
@@ -400,11 +403,11 @@ void HydraulicNetworkModel::inputReferences(std::vector<InputReference> & inputR
 void HydraulicNetworkModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
 											  const std::vector<const double *> & resultValueRefs)
 {
-	if (resultValueRefs.size() == m_elementIds.size()) {
-		// copy references into fluid temperature vector
-		for(const double* resRef : resultValueRefs)
-			m_fluidTemperatureRefs.push_back(resRef);
-	}
+	IBK_ASSERT(resultValueRefs.size() == m_elementIds.size());
+	// copy references into fluid temperature vector
+	for(const double* resRef : resultValueRefs)
+		m_fluidTemperatureRefs.push_back(resRef);
+
 }
 
 

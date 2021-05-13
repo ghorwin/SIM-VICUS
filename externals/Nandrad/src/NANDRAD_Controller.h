@@ -18,7 +18,7 @@ namespace NANDRAD {
 class Controller {
 public:
 	/*! Different model variants. */
-	enum modelType_t {
+	enum ModelType {
 		MT_DigitalDirect,		// Keyword: DigitalDirect			'DigitalDirect'
 		MT_DigitalHysteresis,	// Keyword: DigitalHysteresis		'DigitalHysteresis'
 		MT_PController,			// Keyword: PController				'PController'
@@ -49,7 +49,7 @@ public:
 	IDType				m_id = INVALID_ID;							// XML:A:required
 
 	/* Controller type. */
-	modelType_t			m_modelType = NUM_MT;						// XML:A:required
+	ModelType			m_modelType = NUM_MT;						// XML:A:required
 
 	/*! Controller parameters. */
 	IBK::Parameter		m_para[NUM_P];								// XML:E

@@ -48,7 +48,7 @@
 				</PipeProperties>
 				<Components>
 					<HydraulicNetworkComponent id="1" modelType="ConstantPressurePump">
-						<IBK:Parameter name="PressureHead" unit="Pa">1e6</IBK:Parameter>
+						<IBK:Parameter name="PressureHead" unit="Pa">10000</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
 					</HydraulicNetworkComponent>
@@ -130,6 +130,16 @@
 			</OutputDefinition>
 			<OutputDefinition>
 				<Quantity>CondenserHeatFlux</Quantity>
+				<ObjectListName>heat pump</ObjectListName>
+				<GridName>hourly</GridName>
+			</OutputDefinition>
+			<OutputDefinition>
+				<Quantity>EvaporatorMeanTemperature</Quantity>
+				<ObjectListName>heat pump</ObjectListName>
+				<GridName>hourly</GridName>
+			</OutputDefinition>
+			<OutputDefinition>
+				<Quantity>CondenserMeanTemperature</Quantity>
 				<ObjectListName>heat pump</ObjectListName>
 				<GridName>hourly</GridName>
 			</OutputDefinition>

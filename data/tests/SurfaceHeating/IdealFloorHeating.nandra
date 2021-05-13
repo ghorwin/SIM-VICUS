@@ -50,7 +50,7 @@
 				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
-				<InterfaceA id="1" zoneId="2">
+				<InterfaceA id="2" zoneId="2">
 					<!--Interface to 'Room'-->
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
@@ -109,7 +109,7 @@
 			<IdealSurfaceHeatingModels>
 				<IdealSurfaceHeatingModel id="701">
 					<ThermostatZoneID>1</ThermostatZoneID>
-					<ConstructionObjectList>Floor</ConstructionObjectList>
+					<ConstructionObjectList>Floor 1</ConstructionObjectList>
 					<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">50</IBK:Parameter>
 				</IdealSurfaceHeatingModel>
 			</IdealSurfaceHeatingModels>	
@@ -117,9 +117,20 @@
 			<IdealPipeRegisterModels>
 				<IdealPipeRegisterModel id="702" modelType="Constant">
 					<ThermostatZoneID>2</ThermostatZoneID>
-					<ConstructionObjectList>Heated floor constructions</ConstructionObjectList>
+					<ConstructionObjectList>Floor 2</ConstructionObjectList>
 					<IBK:Parameter name="SupplyTemperature" unit="C">30</IBK:Parameter>
 					<IBK:Parameter name="MaxMassFlow" unit="kg/s">0.2</IBK:Parameter>
+					<IBK:Parameter name="PipeLength" unit="m">100</IBK:Parameter>
+					<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
+					<IBK:Parameter name="UValuePipeWall" unit="W/mK">5</IBK:Parameter>
+					<IBK:Parameter name="FluidDensity" unit="kg/m3">998</IBK:Parameter>
+					<IBK:Parameter name="FluidHeatCapacity" unit="J/kgK">4180</IBK:Parameter>
+					<IBK:Parameter name="FluidConductivity" unit="W/mK">0.6</IBK:Parameter>
+					<LinearSplineParameter name="FluidViscosity" interpolationMethod="linear">
+						<X unit="C">0 90 </X>
+						<Y unit="m2/s">1.307e-06 1.307e-06</Y>
+					</LinearSplineParameter>
+					<IBK:IntPara name="NumberParallelPipes">1</IBK:IntPara>
 				</IdealPipeRegisterModel>
 			</IdealPipeRegisterModels>		
 			
@@ -128,21 +139,6 @@
 		
 		<Outputs>
 			<Definitions>
-				<OutputDefinition>
-					<Quantity>FluidTemperature</Quantity>
-					<ObjectListName>the Network</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>FluidMassFlux</Quantity>
-					<ObjectListName>the Network</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>FlowElementHeatLoss</Quantity>
-					<ObjectListName>the Network</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>InfiltrationHeatLoad</Quantity>
 					<ObjectListName>Zones</ObjectListName>
@@ -155,17 +151,22 @@
 				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>ThermalLoad[1]</Quantity>
-					<ObjectListName>Floor</ObjectListName>
+					<ObjectListName>Floors</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>ElementTemperature[1]</Quantity>
-					<ObjectListName>Floor</ObjectListName>
+					<ObjectListName>Floors</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>AirTemperature</Quantity>
 					<ObjectListName>Zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>MassFlow</Quantity>
+					<ObjectListName>Register Model</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 			</Definitions>
@@ -180,16 +181,24 @@
 			</Grids>
 		</Outputs>
 		<ObjectLists>
-			<ObjectList name="the Network">
-				<FilterID>*</FilterID>
-				<ReferenceType>NetworkElement</ReferenceType>
+			<ObjectList name="Register Model">
+				<FilterID>702</FilterID>
+				<ReferenceType>Model</ReferenceType>
 			</ObjectList>
 			<ObjectList name="Zones">
 				<FilterID>*</FilterID>
 				<ReferenceType>Zone</ReferenceType>
 			</ObjectList>
-			<ObjectList name="Floor">
+			<ObjectList name="Floors">
+				<FilterID>3001,3002</FilterID>
+				<ReferenceType>ConstructionInstance</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Floor 1">
 				<FilterID>3001</FilterID>
+				<ReferenceType>ConstructionInstance</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Floor 2">
+				<FilterID>3002</FilterID>
 				<ReferenceType>ConstructionInstance</ReferenceType>
 			</ObjectList>
 		</ObjectLists>

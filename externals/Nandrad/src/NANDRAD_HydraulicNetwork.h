@@ -14,6 +14,8 @@
 
 namespace NANDRAD {
 
+class Project;
+
 /*! Contains all data for a hydraulic network. */
 class HydraulicNetwork {
 	NANDRAD_READWRITE_PRIVATE
@@ -40,9 +42,7 @@ public:
 	NANDRAD_COMPARE_WITH_ID
 
 	/*! Checks for valid and required parameters (value ranges). */
-	void checkParameters( const std::map<std::string, IBK::Path> &placeholders,
-						  const std::vector<Zone> &zones,
-						  const std::vector<ConstructionInstance> &conInstances) ;
+	void checkParameters(const Project & prj) ;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

@@ -43,6 +43,9 @@ public:
 	*/
 	void setup();
 
+	/*! gives read access to the HydraulicNetworkModelImpl */
+	const HydraulicNetworkModelImpl*	hydraulicNetworkModelImpl() const {return m_p;}
+
 
 	// *** Re-implemented from AbstractModel
 
@@ -113,9 +116,11 @@ private:
 	/*! Private implementation (Pimpl) of the network solver. */
 	HydraulicNetworkModelImpl						*m_p = nullptr;
 
-	/*! Container with global pointer to calculated fluid temperatures.
-	*/
+	/*! Container with global pointer to calculated fluid temperatures.	*/
 	std::vector<const double*>						m_fluidTemperatureRefs;
+
+	/*! Container with global pointer to calculated fluid temperatures.	*/
+	std::vector<const double*>						m_fluidHeatLossesRefs;
 
 	friend class ThermalNetworkStatesModel;
 
