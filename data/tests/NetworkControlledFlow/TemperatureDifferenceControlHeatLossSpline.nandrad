@@ -62,32 +62,40 @@
 					<HydraulicNetworkComponent id="10020001" displayName="simple pipe" modelType="SimplePipe">
 					</HydraulicNetworkComponent>
 				</Components>
-				
+
 				<Elements>
-				
-				<HydraulicNetworkElement id="0" inletNodeId="100" outletNodeId="0" componentId="10020002" displayName="pump">
-				</HydraulicNetworkElement>
-				
-				<HydraulicNetworkElement id="1" inletNodeId="0" outletNodeId="101" componentId="10020004" displayName="heat exchanger">
+
+					<HydraulicNetworkElement id="0" inletNodeId="100" outletNodeId="0" componentId="10020002" displayName="pump"/>
+
+					<HydraulicNetworkElement id="1" inletNodeId="0" outletNodeId="101" componentId="10020004" displayName="heat exchanger">
+						<!-- Heat loss from element (to environment) is given via time-series. -->
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss">
 								<X unit="d">0 1 2 3</X>
 								<Y unit="W">0 500 1000 800</Y>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
+
+						<!-- Mass flow is controlled (valve) depending on temperature difference between supply and return side
+							 of element. The controller uses the HeatLoss defined through HeatExchange parameter block above.
+						-->
 						<ControlElement controlType="ControlTemperatureDifference" controllerId="1">
 							<IBK:Parameter name="SetPoint" unit="K">3</IBK:Parameter>
+							<!-- The controller computes a zeta-value that is added to the zeta-value of the "pipe"-like
+								 heat exchanger. The maximum zeta-value (when valve is fully closed) is given in the parameter
+								 below
+							-->
 							<MaximumControllerResultValue>1000</MaximumControllerResultValue>
 						</ControlElement>
-				</HydraulicNetworkElement>
+					</HydraulicNetworkElement>
 
-				<HydraulicNetworkElement id="8" inletNodeId="101" outletNodeId="100" componentId="10020001" pipePropertiesId="9" displayName="pipe">
-					<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
-					<HydraulicNetworkHeatExchange modelType="TemperatureConstant">
-						<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
-						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">10000</IBK:Parameter>
-					</HydraulicNetworkHeatExchange>
-				</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="8" inletNodeId="101" outletNodeId="100" componentId="10020001" pipePropertiesId="9" displayName="pipe">
+						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="TemperatureConstant">
+							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">10000</IBK:Parameter>
+						</HydraulicNetworkHeatExchange>
+					</HydraulicNetworkElement>
 
 				</Elements>
 			</HydraulicNetwork>
