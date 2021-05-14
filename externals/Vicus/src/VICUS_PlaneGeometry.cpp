@@ -407,22 +407,29 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 		return false;
 	}
 
+	// compute 2D coordinates in local plane - if that fails, bail out (can happen when line is parallel to plane)
 	double x,y;
 	if (!IBKMK::planeCoordinates(planeOffset, localX(), localY(), x0, x, y))
 		return false;
 
+	IBK::point2D<double> intersectionPoint2D(x,y);
 	// test if point is in polygon
-	if (IBKMK::pointInPolygon(polygon2D().vertexes(), IBK::point2D<double>(x,y) ) != -1) {
+	if (IBKMK::pointInPolygon(polygon2D().vertexes(), intersectionPoint2D ) != -1) {
 		dist = t;
 		intersectionPoint = x0;
-		// TODO Dirk/Stephan: test if we hit a hole:
-		// - loop all holes
-		// - if hole is valid, check if we are inside the polygon
-		//   if yes, return index of hole that we hit
 
+		// now check if we hit a hole
+
+		// - loop all holes
 		for (unsigned int j=0; j<m_holes.size(); ++j) {
-			// if "we hit the hole":
-			//    holeIndex = j; break;
+			// - if hole is valid, check if we are inside the polygon
+			if (m_holes[j].isValid()) {
+				// run point in polygon algorithm
+				if (IBKMK::pointInPolygon(m_holes[j].vertexes(), intersectionPoint2D) != -1) {
+					holeIndex = (int)j;
+					return true;
+				}
+			}
 		}
 
 		return true;
