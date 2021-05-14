@@ -137,16 +137,33 @@ void OpaqueGeometryObject::updateColorBuffer(unsigned int startIndex, unsigned i
 }
 
 
-void OpaqueGeometryObject::render() {
+void OpaqueGeometryObject::renderOpaque() {
 	// bind all buffers ("position", "normal" and "color" arrays)
 	m_vao.bind();
 	// now draw the geometry
 	if (m_drawTriangleStrips)
-		glDrawElements(GL_TRIANGLE_STRIP, m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLE_STRIP, m_transparentStartIndex, GL_UNSIGNED_INT, nullptr);
 	else
-		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, m_transparentStartIndex, GL_UNSIGNED_INT, nullptr);
 	// release buffers again
 	m_vao.release();
 }
+
+
+void OpaqueGeometryObject::renderTransparent() {
+	// bind all buffers ("position", "normal" and "color" arrays)
+	m_vao.bind();
+	// now draw the geometry
+	if (m_drawTriangleStrips)
+		glDrawElements(GL_TRIANGLE_STRIP, (GLsizei)m_indexBufferData.size() - m_transparentStartIndex,
+			GL_UNSIGNED_INT, (const GLvoid*)(sizeof(GLuint) * m_transparentStartIndex));
+	else
+		glDrawElements(GL_TRIANGLES, (GLsizei)m_indexBufferData.size() - m_transparentStartIndex,
+			GL_UNSIGNED_INT, (const GLvoid*)(sizeof(GLuint) * m_transparentStartIndex));
+	// release buffers again
+	m_vao.release();
+
+}
+
 
 } // namespace Vic3D
