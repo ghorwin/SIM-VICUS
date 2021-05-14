@@ -1179,11 +1179,13 @@ void Vic3DScene::generateBuildingGeometry() {
 
 	// recursively process all buildings, building levels etc.
 
+	const SVDatabase & db = SVSettings::instance().m_db;
+
 	unsigned int currentVertexIndex = 0;
 	unsigned int currentElementIndex = 0;
 
 	// set collects pointers to all visible, not selected sub-surfaces
-	std::set<VICUS::SubSurface *> transparentSubsurfaces;
+	std::vector<const VICUS::SubSurface *> transparentSubsurfaces;
 
 	for (const VICUS::Building & b : p.m_buildings) {
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
@@ -1200,6 +1202,31 @@ void Vic3DScene::generateBuildingGeometry() {
 							   m_opaqueGeometryObject.m_vertexBufferData,
 							   m_opaqueGeometryObject.m_colorBufferData,
 							   m_opaqueGeometryObject.m_indexBufferData);
+
+					// process all subsurfaces, add opaque surfaces but remember transparent surfaces for later
+					for (unsigned int i=0; i<s.subSurfaces().size(); ++i) {
+						const VICUS::SubSurface & sub = s.subSurfaces()[i];
+						if (sub.m_subSurfaceComponentInstance != nullptr &&
+							sub.m_subSurfaceComponentInstance->m_subSurfaceComponentID != VICUS::INVALID_ID)
+						{
+							// lookup subsurface component - if it exists
+							const VICUS::SubSurfaceComponent * comp = db.m_subSurfaceComponents[sub.m_subSurfaceComponentInstance->m_subSurfaceComponentID];
+							if (comp != nullptr) {
+								// now select transparent or opaque surface based on type
+								if (comp->m_type == VICUS::SubSurfaceComponent::CT_Window) {
+									transparentSubsurfaces.push_back(&sub);
+									continue; // next surface
+								}
+							}
+						}
+
+						// not a transparent surface, just add surface as opaque surface
+						addSubSurface(s, i, currentVertexIndex, currentElementIndex,
+								   m_opaqueGeometryObject.m_vertexBufferData,
+								   m_opaqueGeometryObject.m_colorBufferData,
+								   m_opaqueGeometryObject.m_indexBufferData);
+
+					}
 				}
 			}
 		}
@@ -1221,7 +1248,7 @@ void Vic3DScene::generateBuildingGeometry() {
 	}
 
 	// done with all opaque planes, remember start index for transparent geometry
-	m_opaqueGeometryObject.m_transparentStartIndex = 12; //m_opaqueGeometryObject.m_indexBufferData.size();
+	m_opaqueGeometryObject.m_transparentStartIndex = m_opaqueGeometryObject.m_indexBufferData.size();
 
 	if (t.elapsed() > 20)
 		qDebug() << t.elapsed() << "ms for building generation";
@@ -1323,14 +1350,14 @@ void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int i
 							const_cast<VICUS::Surface&>(s).updateColor();
 						break;
 						case SVViewState::OCM_Components:
-							s.m_color = QColor(64,64,64); // dark gray
+							s.m_color = QColor(64,64,64,255); // dark gray
 						break;
 						case SVViewState::OCM_ComponentOrientation:
-							s.m_color = QColor(128,128,128); // gray (later semi-transparent)
+							s.m_color = QColor(128,128,128,255); // gray (later semi-transparent)
 						break;
 						case SVViewState::OCM_BoundaryConditions:
 						case SVViewState::OCM_ZoneTemplates:
-							s.m_color = QColor(64,64,64); // dark gray
+							s.m_color = QColor(64,64,64,255); // dark gray
 						break;
 
 						// the other cases are just to get rid of compiler warnings
@@ -1339,6 +1366,33 @@ void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int i
 						case SVViewState::OCM_NetworkNode:
 						case SVViewState::OCM_NetworkComponents:
 						break;
+					}
+
+					// now the subsurfaces
+					for (const VICUS::SubSurface & sub : s.subSurfaces()) {
+						switch (ocm) {
+							case SVViewState::OCM_None:
+								// const cast is ok here, since color is not a project property
+								const_cast<VICUS::SubSurface&>(sub).updateColor();
+							break;
+							case SVViewState::OCM_Components:
+								sub.m_color = QColor(64,64,64,128); // dark gray
+							break;
+							case SVViewState::OCM_ComponentOrientation:
+								sub.m_color = QColor(128,128,128,128); // gray (later semi-transparent)
+							break;
+							case SVViewState::OCM_BoundaryConditions:
+							case SVViewState::OCM_ZoneTemplates:
+								sub.m_color = QColor(64,64,64,255); // dark gray
+							break;
+
+							// the other cases are just to get rid of compiler warnings
+							case SVViewState::OCM_Network:
+							case SVViewState::OCM_NetworkEdge:
+							case SVViewState::OCM_NetworkNode:
+							case SVViewState::OCM_NetworkComponents:
+							break;
+						}
 					}
 				}
 			}
@@ -1412,6 +1466,9 @@ void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int i
 					break;
 				}
 			}
+
+			// TODO : subsurfaces
+
 		} break;
 
 		case SVViewState::OCM_ZoneTemplates: {
@@ -1429,6 +1486,8 @@ void Vic3DScene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int i
 							// color all surfaces of room based on zone template color
 							for (const VICUS::Surface & s : r.m_surfaces)
 								s.m_color = zt->m_color;
+								// TODO : subsurfaces
+
 						}
 					}
 				}

@@ -28,6 +28,9 @@ public:
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
+	/*! Sets color based on sub-surface type. */
+	void updateColor();
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of sub surface. */

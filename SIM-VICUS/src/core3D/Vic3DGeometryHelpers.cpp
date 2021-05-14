@@ -587,6 +587,30 @@ void addSurface(const VICUS::Surface & s,
 }
 
 
+void addSubSurface(const VICUS::Surface & s, unsigned int subSurfaceIndex,
+				unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+				std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
+				std::vector<GLuint> & indexBufferData)
+{
+	// skip invalid geometry
+	if (!s.geometry().isValid())
+		return;
+	const VICUS::PlaneTriangulationData & subTriangulation = s.geometry().holeTriangulationData()[subSurfaceIndex];
+	const VICUS::SubSurface & sub = s.subSurfaces()[subSurfaceIndex];
+	// change color depending on visibility state and selection state
+	QColor col = sub.m_color;
+	// invisible objects are not drawn, and selected objects are drawn by a different object (and are hence invisible in this
+	// object as well).
+	if (!sub.m_visible || sub.m_selected) {
+		col.setAlphaF(0);
+	}
+	// first add the plane regular
+	addPlane(subTriangulation, col, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
+	// then add the plane again inverted
+	addPlane(subTriangulation, col, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, true);
+}
+
+
 // This updates the surface color of the two planes generated from a single surface definition
 void updateColors(const VICUS::Surface & s, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData) {
 	// skip invalid geometry

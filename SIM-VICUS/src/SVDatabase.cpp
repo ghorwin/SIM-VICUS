@@ -17,6 +17,7 @@ SVDatabase::SVDatabase() :
 	m_windowGlazingSystems(30*USER_ID_SPACE_START),
 	m_boundaryConditions(4*USER_ID_SPACE_START),
 	m_components(5*USER_ID_SPACE_START),
+	m_subSurfaceComponents(16*USER_ID_SPACE_START),
 	m_pipes(USER_ID_SPACE_START*100),
 	m_fluids(USER_ID_SPACE_START*1001),
 	m_networkComponents(USER_ID_SPACE_START*1002),
@@ -46,6 +47,7 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_windowGlazingSystems.readXML(		dbDir / "db_windowGlazingSystems.xml", "WindowGlazingSystems", "WindowGlazingSystem", true);
 		m_boundaryConditions.readXML(		dbDir / "db_boundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", true);
 		m_components.readXML(				dbDir / "db_components.xml", "Components", "Component", true);
+		m_subSurfaceComponents.readXML(		dbDir / "db_subSurfaceComponents.xml", "SubSurfaceComponents", "SubSurfaceComponent", true);
 		m_pipes.readXML(					dbDir / "db_pipes.xml", "NetworkPipes", "NetworkPipe", true);
 		m_fluids.readXML(					dbDir / "db_fluids.xml", "NetworkFluids", "NetworkFluid", true);
 		m_networkComponents.readXML(		dbDir / "db_networkComponents.xml", "NetworkComponents", "NetworkComponent", true);
@@ -78,6 +80,8 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_boundaryConditions.readXML(userDbDir / "db_boundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", false);
 	if (t == NUM_DT || t == DT_Components)
 		m_components.readXML(		userDbDir / "db_components.xml", "Components", "Component", false);
+	if (t == NUM_DT || t == DT_SubSurfaceComponents)
+		m_subSurfaceComponents.readXML(		userDbDir / "db_subSurfaceComponents.xml", "SubSurfaceComponents", "SubSurfaceComponent", false);
 	if (t == NUM_DT || t == DT_Pipes)
 		m_pipes.readXML(			userDbDir / "db_pipes.xml", "NetworkPipes", "NetworkPipe", false);
 	if (t == NUM_DT || t == DT_Fluids)
@@ -114,6 +118,7 @@ void SVDatabase::writeDatabases() const {
 	m_windowGlazingSystems.writeXML(userDbDir / "db_windowGlazingSystems.xml", "WindowGlazingSystems");
 	m_boundaryConditions.writeXML(	userDbDir / "db_boundaryConditions.xml", "BoundaryConditions");
 	m_components.writeXML(			userDbDir / "db_components.xml", "Components");
+	m_subSurfaceComponents.writeXML(userDbDir / "db_subSurfaceComponents.xml", "SubSurfaceComponents");
 	m_pipes.writeXML(				userDbDir / "db_pipes.xml", "NetworkPipes");
 	m_fluids.writeXML(				userDbDir / "db_fluids.xml", "NetworkFluids");
 	m_networkComponents.writeXML(	userDbDir / "db_networkComponents.xml", "NetworkComponents");
@@ -154,6 +159,8 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	}
 	referencedConstructions.erase(nullptr);
 	referencedBC.erase(nullptr);
+
+	// TODO : subsurfacecomponents
 
 	p.m_embeddedDB.m_constructions.clear();
 	for (const VICUS::Construction * c : referencedConstructions)

@@ -40,6 +40,7 @@ public:
 		DT_Materials,
 		DT_Constructions,
 		DT_Components,
+		DT_SubSurfaceComponents,
 		DT_BoundaryConditions,
 		DT_Windows,
 		DT_WindowGlazingSystems,
@@ -96,6 +97,9 @@ public:
 
 	/*! Map of all database components. */
 	VICUS::Database<VICUS::Component>					m_components;
+
+	/*! Map of all database subsurface-components. */
+	VICUS::Database<VICUS::SubSurfaceComponent>			m_subSurfaceComponents;
 
 	/*! Map of all database pipes */
 	VICUS::Database<VICUS::NetworkPipe>					m_pipes;

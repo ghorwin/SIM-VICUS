@@ -9,4 +9,10 @@ SubSurface SubSurface::clone() const {
 	return r;
 }
 
+
+void SubSurface::updateColor() {
+	// for now always transparent blue
+	m_color = QColor(96,96,255,128);
+}
+
 } // namespace VICUS

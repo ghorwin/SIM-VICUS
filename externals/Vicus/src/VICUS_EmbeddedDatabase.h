@@ -6,6 +6,7 @@
 #include "VICUS_Material.h"
 #include "VICUS_Component.h"
 #include "VICUS_Construction.h"
+#include "VICUS_SubSurfaceComponent.h"
 #include "VICUS_WindowGlazingSystem.h"
 #include "VICUS_Window.h"
 #include "VICUS_WindowFrame.h"
@@ -53,6 +54,9 @@ public:
 
 	/*! Map of all database components. */
 	std::vector<VICUS::Component>						m_components;						// XML:E
+
+	/*! Map of all database subsurface components (holes/windows...). */
+	std::vector<VICUS::SubSurfaceComponent>				m_subSurfaceComponents;				// XML:E
 
 	/*! Map of all database pipes */
 	std::vector<VICUS::NetworkPipe>						m_pipes;							// XML:E
