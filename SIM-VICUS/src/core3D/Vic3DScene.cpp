@@ -1185,7 +1185,7 @@ void Vic3DScene::generateBuildingGeometry() {
 	unsigned int currentElementIndex = 0;
 
 	// set collects pointers to all visible, not selected sub-surfaces
-	std::vector<const VICUS::SubSurface *> transparentSubsurfaces;
+	std::vector<std::pair<const VICUS::SubSurface *, const VICUS::PlaneTriangulationData*> > transparentSubsurfaces;
 
 	for (const VICUS::Building & b : p.m_buildings) {
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
@@ -1214,18 +1214,21 @@ void Vic3DScene::generateBuildingGeometry() {
 							if (comp != nullptr) {
 								// now select transparent or opaque surface based on type
 								if (comp->m_type == VICUS::SubSurfaceComponent::CT_Window) {
-									transparentSubsurfaces.push_back(&sub);
+									transparentSubsurfaces.push_back(std::make_pair(&sub, &s.geometry().holeTriangulationData()[i]) );
 									continue; // next surface
 								}
 							}
 						}
 
+#if 1
+						transparentSubsurfaces.push_back(std::make_pair(&sub, &s.geometry().holeTriangulationData()[i]) );
+#else
 						// not a transparent surface, just add surface as opaque surface
 						addSubSurface(s, i, currentVertexIndex, currentElementIndex,
 								   m_opaqueGeometryObject.m_vertexBufferData,
 								   m_opaqueGeometryObject.m_colorBufferData,
 								   m_opaqueGeometryObject.m_indexBufferData);
-
+#endif
 					}
 				}
 			}
@@ -1249,6 +1252,17 @@ void Vic3DScene::generateBuildingGeometry() {
 
 	// done with all opaque planes, remember start index for transparent geometry
 	m_opaqueGeometryObject.m_transparentStartIndex = m_opaqueGeometryObject.m_indexBufferData.size();
+
+	// now add all transparent surfaces
+	for (std::pair<const VICUS::SubSurface *, const VICUS::PlaneTriangulationData*> & p : transparentSubsurfaces) {
+		// change color depending on visibility state and selection state
+		QColor col = p.first->m_color;
+		// first add the plane regular
+		addPlane(*p.second, col, currentVertexIndex, currentElementIndex,
+				 m_opaqueGeometryObject.m_vertexBufferData,
+				 m_opaqueGeometryObject.m_colorBufferData,
+				 m_opaqueGeometryObject.m_indexBufferData, false);
+	}
 
 	if (t.elapsed() > 20)
 		qDebug() << t.elapsed() << "ms for building generation";
@@ -1589,6 +1603,10 @@ void Vic3DScene::deselectAll() {
 				for (const VICUS::Surface & s : r.m_surfaces) {
 					if (s.m_selected)
 						objIDs.insert(s.uniqueID());
+					for (const VICUS::SubSurface & sub : s.subSurfaces()) {
+						if (sub.m_selected)
+							objIDs.insert(sub.uniqueID());
+					}
 				}
 			}
 		}
