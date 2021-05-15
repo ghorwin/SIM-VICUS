@@ -116,14 +116,20 @@ void WireFrameObject::updateBuffers() {
 			continue;
 		}
 
-#if 0
 		const VICUS::SubSurface * sub = dynamic_cast<const VICUS::SubSurface *>(o);
 		if (sub != nullptr) {
+			const VICUS::Surface * surf = dynamic_cast<const VICUS::Surface *>(sub->m_parent);
+			IBK_ASSERT(surf != nullptr);
 			// get index of subsurface
-			addPlane(sub->geometry(), currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+			for (unsigned int i=0; i<surf->subSurfaces().size(); ++i) {
+				if (&surf->subSurfaces()[i] == sub) { // Pointer comparison or comparison by unique ID?
+					addPlane(surf->geometry().holeTriangulationData()[i],
+							 currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
+					break;
+				}
+			}
 			continue;
 		}
-#endif
 
 		const VICUS::NetworkEdge * e = dynamic_cast<const VICUS::NetworkEdge *>(o);
 		if (e != nullptr) {

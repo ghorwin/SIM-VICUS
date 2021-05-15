@@ -553,6 +553,9 @@ void SVProjectHandler::updateSurfaceColors() {
 			for (VICUS::Room &r : bl.m_rooms) {
 				for (VICUS::Surface &s : r.m_surfaces) {
 					s.updateColor();
+					for (const VICUS::SubSurface &sub : s.subSurfaces()) {
+						const_cast<VICUS::SubSurface &>(sub).updateColor();
+					}
 				}
 			}
 		}

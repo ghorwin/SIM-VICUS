@@ -653,8 +653,6 @@ void NewGeometryObject::renderTransparent() {
 
 		// now draw the geometry
 
-		// disable updating of z-buffer
-		glDepthMask(GL_FALSE);
 		// set selected plane color (QColor is passed as vec4, so no conversion is needed, here).
 		QColor planeCol = QColor(255,0,128,64);
 		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], planeCol);
@@ -666,8 +664,6 @@ void NewGeometryObject::renderTransparent() {
 		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr);
 		// turn off line offset mode
 		glDisable(GL_POLYGON_OFFSET_FILL);
-
-		glEnable(GL_CULL_FACE);
 
 		// release buffers again
 		m_vao.release();

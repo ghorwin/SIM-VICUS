@@ -51,7 +51,12 @@ public:
 	void updateColorBuffer(unsigned int startIndex = 0, unsigned int count = 0);
 
 	/*! Binds the vertex array object and renders the geometry. */
-	void render();
+	void renderOpaque();
+
+	/*! Returns true, if transparent geometry is visible. */
+	bool canDrawTransparent() const { return m_transparentStartIndex != m_indexBufferData.size(); }
+	/*! Renders in transparent mode (OpenGL context is expected to be setup correctly, already). */
+	void renderTransparent();
 
 	/*! If true, this object expects index buffer to hold indexes suitable for drawing GL_TRIANGLE_STRIP (including
 		primitive restart indexes) and uses this to draw the objects.
@@ -67,6 +72,13 @@ public:
 	std::vector<ColorRGBA>		m_colorBufferData;
 	/*! Index buffer on CPU memory. */
 	std::vector<GLuint>			m_indexBufferData;
+
+	// We have one set of buffers, the vertexBufferObject holds all vertexes of opaque
+	// and transparent planes alike. Same applies to the color and index buffer.
+	// The variable m_transparentStartIndex holds the index position where the
+	// transparent planes start.
+
+	GLsizei						m_transparentStartIndex = 0;
 
 	/*! Maps unique surface/node ID to vertex start index in m_vertexBufferData. */
 	std::map<unsigned int, unsigned int>	m_vertexStartMap;

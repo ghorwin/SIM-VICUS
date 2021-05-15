@@ -108,6 +108,14 @@ void addSurface(const VICUS::Surface & s,
 				std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
 				std::vector<GLuint> & indexBufferData);
 
+/*! This function adds a sub-surface object to a vertex, color and index buffer.
+	Index buffer contains data for triangles. Contains code to adjust color based on visibility and selection settings.
+*/
+void addSubSurface(const VICUS::Surface & s, unsigned int subSurfaceIndex,
+				unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+				std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
+				std::vector<GLuint> & indexBufferData);
+
 /*! This updates the surface color of the selected surface in the color buffer. */
 void updateColors(const VICUS::Surface & s, unsigned int & currentVertexIndex,
 				  std::vector<ColorRGBA> & colorBufferData);
