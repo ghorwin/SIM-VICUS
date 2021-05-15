@@ -210,6 +210,12 @@ SVDatabaseEditDialog * SVMainWindow::dbComponentEditDialog() {
 	return m_dbComponentEditDialog;
 }
 
+SVDatabaseEditDialog * SVMainWindow::dbSubSurfaceComponentEditDialog() {
+	if (m_dbSubSurfaceComponentEditDialog == nullptr)
+		m_dbSubSurfaceComponentEditDialog = SVDatabaseEditDialog::createSubSurfaceComponentEditDialog(this);
+	return m_dbSubSurfaceComponentEditDialog;
+}
+
 SVDatabaseEditDialog * SVMainWindow::dbBoundaryConditionEditDialog() {
 	if (m_dbBoundaryConditionEditDialog == nullptr)
 		m_dbBoundaryConditionEditDialog = SVDatabaseEditDialog::createBoundaryConditionsEditDialog(this);
@@ -341,6 +347,14 @@ void SVMainWindow::on_actionDBComponents_triggered() {
 	// update all widgets that show the components somewhere (in a combo box or else)
 	if (SVViewStateHandler::instance().m_propVertexListWidget != nullptr) // guard against not yet created property widget
 		SVViewStateHandler::instance().m_propVertexListWidget->updateComponentComboBoxes();
+}
+
+
+void SVMainWindow::on_actionDBSubSurfaceComponents_triggered() {
+	dbSubSurfaceComponentEditDialog()->edit();
+	// update all widgets that show the components somewhere (in a combo box or else)
+	if (SVViewStateHandler::instance().m_propVertexListWidget != nullptr) // guard against not yet created property widget
+		SVViewStateHandler::instance().m_propVertexListWidget->updateSubSurfaceComponentComboBoxes();
 }
 
 
@@ -1750,3 +1764,4 @@ void SVMainWindow::on_actionCalculateShadingFactors_triggered() {
 		undo->push();
 	}
 }
+

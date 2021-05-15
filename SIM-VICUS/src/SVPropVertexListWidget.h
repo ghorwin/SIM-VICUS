@@ -40,6 +40,9 @@ public:
 	/*! Updates the component combo boxes (this needs to be done whenever the component DB has been changed). */
 	void updateComponentComboBoxes();
 
+	/*! Updates the subsurface.component combo boxes (this needs to be done whenever the subsurface component DB has been changed). */
+	void updateSubSurfaceComponentComboBoxes();
+
 	/*! Appends a new vertex to the list of vertexes in the table widget.
 		Called from NewGeometryObject.
 	*/

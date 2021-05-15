@@ -13,18 +13,7 @@
   <property name="windowTitle">
    <string>DelMainWindow</string>
   </property>
-  <widget class="QWidget" name="centralWidget">
-   <widget class="QTextEdit" name="textEdit">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>270</y>
-      <width>104</width>
-      <height>64</height>
-     </rect>
-    </property>
-   </widget>
-  </widget>
+  <widget class="QWidget" name="centralWidget"/>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
@@ -151,6 +140,7 @@
     <addaction name="actionDBMaterials"/>
     <addaction name="actionDBConstructions"/>
     <addaction name="actionDBComponents"/>
+    <addaction name="actionDBSubSurfaceComponents"/>
     <addaction name="actionDBWindows"/>
     <addaction name="actionDBWindowGlazingSystems"/>
     <addaction name="actionDBBoundaryConditions"/>
@@ -664,6 +654,11 @@
   <action name="actionDBWindowGlazingSystems">
    <property name="text">
     <string>Window glazing systems...</string>
+   </property>
+  </action>
+  <action name="actionDBSubSurfaceComponents">
+   <property name="text">
+    <string>Window/Door (sub-surface) components...</string>
    </property>
   </action>
  </widget>

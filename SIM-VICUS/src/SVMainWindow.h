@@ -97,6 +97,8 @@ public:
 	SVDatabaseEditDialog * dbConstructionEditDialog();
 	/*! Returns the component edit dialog. */
 	SVDatabaseEditDialog * dbComponentEditDialog();
+	/*! Returns the subsurface component edit dialog. */
+	SVDatabaseEditDialog * dbSubSurfaceComponentEditDialog();
 	/*! Returns the boundary condition edit dialog. */
 	SVDatabaseEditDialog * dbBoundaryConditionEditDialog();
 	/*! Returns the window edit dialog. */
@@ -136,27 +138,8 @@ public:
 	SVSimulationStartNandrad * simulationStartNandrad() const;
 
 public slots:
-	void on_actionDBMaterials_triggered();
-	void on_actionDBWindows_triggered();
-	void on_actionDBWindowGlazingSystems_triggered();
-	void on_actionDBConstructions_triggered();
+
 	void on_actionDBComponents_triggered();
-	void on_actionDBBoundaryConditions_triggered();
-	void on_actionDBSchedules_triggered();
-	void on_actionDBInternalLoadsPerson_triggered();
-	void on_actionDBInternalLoadsElectricEquipment_triggered();
-	void on_actionDBInternalLoadsLights_triggered();
-	void on_actionDBInternalLoadsOther_triggered();
-
-	void on_actionDBZoneControlThermostat_triggered();
-	void on_actionDBZoneControlVentilationNatural_triggered();
-	void on_actionDBZoneControlShading_triggered();
-
-	void on_actionDBInfiltration_triggered();
-	void on_actionDBVentilationNatural_triggered();
-
-	void on_actionDBHydraulicComponents_triggered();
-	void on_actionDBNetworkPipes_triggered();
 
 protected:
 	/*! Checks if project file has been changed by external application. */
@@ -238,6 +221,31 @@ private slots:
 	void on_actionEditPreferences_triggered();
 	void on_actionEditCleanProject_triggered();
 
+	void on_actionDBMaterials_triggered();
+	void on_actionDBWindows_triggered();
+	void on_actionDBWindowGlazingSystems_triggered();
+	void on_actionDBConstructions_triggered();
+	void on_actionDBSubSurfaceComponents_triggered();
+	void on_actionDBBoundaryConditions_triggered();
+	void on_actionDBSchedules_triggered();
+	void on_actionDBInternalLoadsPerson_triggered();
+	void on_actionDBInternalLoadsElectricEquipment_triggered();
+	void on_actionDBInternalLoadsLights_triggered();
+	void on_actionDBInternalLoadsOther_triggered();
+
+	void on_actionDBZoneTemplates_triggered();
+	void on_actionDBZoneControlThermostat_triggered();
+	void on_actionDBZoneControlVentilationNatural_triggered();
+	void on_actionDBZoneControlShading_triggered();
+
+	void on_actionDBInfiltration_triggered();
+	void on_actionDBVentilationNatural_triggered();
+
+	void on_actionDBHydraulicComponents_triggered();
+	void on_actionDBNetworkPipes_triggered();
+	void on_actionDBFluids_triggered();
+
+
 	void on_actionBuildingFloorManager_triggered();
 
 	void on_actionNetworkImport_triggered();
@@ -260,15 +268,12 @@ private slots:
 
 	void on_actionViewShowSurfaceNormals_toggled(bool visible);
 
-	void on_actionDBZoneTemplates_triggered();
-
-	void on_actionDBFluids_triggered();
-
 	void on_actionResetView_triggered();
 
 	void on_actionExportView3D_triggered();
 
 	void on_actionCalculateShadingFactors_triggered();
+
 
 
 private:
@@ -408,6 +413,7 @@ private:
 	SVDatabaseEditDialog				*m_dbWindowEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbWindowGlazingSystemEditDialog				= nullptr;
 	SVDatabaseEditDialog				*m_dbComponentEditDialog						= nullptr;
+	SVDatabaseEditDialog				*m_dbSubSurfaceComponentEditDialog				= nullptr;
 	SVDatabaseEditDialog				*m_dbBoundaryConditionEditDialog				= nullptr;
 	SVDatabaseEditDialog				*m_dbPipeEditDialog								= nullptr;
 	SVDatabaseEditDialog				*m_dbFluidEditDialog							= nullptr;

@@ -23,6 +23,8 @@
 #include "SVDBConstructionEditWidget.h"
 #include "SVDBComponentTableModel.h"
 #include "SVDBComponentEditWidget.h"
+#include "SVDBSubSurfaceComponentTableModel.h"
+#include "SVDBSubSurfaceComponentEditWidget.h"
 #include "SVDBWindowTableModel.h"
 #include "SVDBWindowEditWidget.h"
 #include "SVDBWindowGlazingSystemTableModel.h"
@@ -330,6 +332,18 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createComponentEditDialog(QWidget *
 	dlg->resize(1400,800);
 	return dlg;
 }
+
+
+SVDatabaseEditDialog * SVDatabaseEditDialog::createSubSurfaceComponentEditDialog(QWidget * parent) {
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBSubSurfaceComponentTableModel(parent, SVSettings::instance().m_db),
+		new SVDBSubSurfaceComponentEditWidget(parent),
+		tr("Sub-Surface Component Database"), tr("Sub-Surface properties"), true
+	);
+	dlg->resize(1400,800);
+	return dlg;
+}
+
 
 SVDatabaseEditDialog * SVDatabaseEditDialog::createWindowEditDialog(QWidget * parent) {
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,

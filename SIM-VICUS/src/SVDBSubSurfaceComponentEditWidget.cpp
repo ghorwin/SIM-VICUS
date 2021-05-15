@@ -26,7 +26,7 @@ SVDBSubSurfaceComponentEditWidget::SVDBSubSurfaceComponentEditWidget(QWidget *pa
 	// enter categories into combo box
 	// block signals to avoid getting "changed" calls
 	m_ui->comboBoxSubSurfaceType->blockSignals(true);
-	for(int i=0; i<VICUS::Component::NUM_CT; ++i)
+	for(int i=0; i<VICUS::SubSurfaceComponent::NUM_CT; ++i)
 		m_ui->comboBoxSubSurfaceType->addItem(VICUS::KeywordListQt::Keyword("SubSurfaceComponent::SubSurfaceComponentType", i), i);
 	m_ui->comboBoxSubSurfaceType->blockSignals(false);
 

@@ -278,6 +278,11 @@ void SVPropVertexListWidget::updateComponentComboBoxes() {
 }
 
 
+void SVPropVertexListWidget::updateSubSurfaceComponentComboBoxes() {
+	// TODO
+}
+
+
 void SVPropVertexListWidget::addVertex(const IBKMK::Vector3D & p) {
 	// Note: the vertex is already in the NewGeometryObject, we only
 	//       modify the table widget and update the button enabled states
