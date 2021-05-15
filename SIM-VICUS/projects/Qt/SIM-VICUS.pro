@@ -89,6 +89,8 @@ SOURCES += \
 								../../src/SVDBInternalLoadsOtherEditWidget.cpp \
 								../../src/SVDBNetworkFluidEditWidget.cpp \
 								../../src/SVDBNetworkFluidTableModel.cpp \
+								../../src/SVDBSubSurfaceComponentEditWidget.cpp \
+								../../src/SVDBSubSurfaceComponentTableModel.cpp \
 								../../src/SVDBVentilationNaturalEditWidget.cpp \
 								../../src/SVDBVentilationNaturalTableModel.cpp \
 								../../src/SVDBWindowGlazingSystemEditWidget.cpp \
@@ -229,6 +231,8 @@ HEADERS  += \
 								../../src/SVDBInternalLoadsOtherEditWidget.h \
 								../../src/SVDBNetworkFluidEditWidget.h \
 								../../src/SVDBNetworkFluidTableModel.h \
+								../../src/SVDBSubSurfaceComponentEditWidget.h \
+								../../src/SVDBSubSurfaceComponentTableModel.h \
 								../../src/SVDBVentilationNaturalEditWidget.h \
 								../../src/SVDBVentilationNaturalTableModel.h \
 								../../src/SVDBWindowGlazingSystemEditWidget.h \
@@ -370,6 +374,7 @@ FORMS    += \
 								../../src/SVDBInternalLoadsLightsEditWidget.ui \
 								../../src/SVDBInternalLoadsOtherEditWidget.ui \
 								../../src/SVDBNetworkFluidEditWidget.ui \
+								../../src/SVDBSubSurfaceComponentEditWidget.ui \
 								../../src/SVDBVentilationNaturalEditWidget.ui \
 								../../src/SVDBWindowGlazingSystemEditWidget.ui \
 								../../src/SVDBZoneControlShadingEditWidget.ui \

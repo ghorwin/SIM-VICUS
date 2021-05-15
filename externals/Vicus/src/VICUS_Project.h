@@ -345,7 +345,9 @@ public:
 	NANDRAD::FMIDescription								m_fmiDescription;			// XML:E
 
 private:
-	/*! Return room name by id. */
+	/*! Return room name by id.
+		TODO Coding style beachten!
+	*/
 	std::string getRoomNameById(unsigned int id) const;
 
 
