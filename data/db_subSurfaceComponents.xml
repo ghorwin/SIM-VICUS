@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<SubSurfaceComponents>
+	<SubSurfaceComponent id="10001" displayName="DE: Standard-Fenster |EN: Default-Window;" color="#f3ff99">
+		<Type>Window</Type>
+		<IdWindow>3001</IdWindow>
+		<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
+	</SubSurfaceComponent>
+</SubSurfaceComponents>

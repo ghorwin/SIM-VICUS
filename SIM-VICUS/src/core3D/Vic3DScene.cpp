@@ -1220,15 +1220,11 @@ void Vic3DScene::generateBuildingGeometry() {
 							}
 						}
 
-#if 1
-						transparentSubsurfaces.push_back(std::make_pair(&sub, &s.geometry().holeTriangulationData()[i]) );
-#else
 						// not a transparent surface, just add surface as opaque surface
 						addSubSurface(s, i, currentVertexIndex, currentElementIndex,
 								   m_opaqueGeometryObject.m_vertexBufferData,
 								   m_opaqueGeometryObject.m_colorBufferData,
 								   m_opaqueGeometryObject.m_indexBufferData);
-#endif
 					}
 				}
 			}
@@ -1255,9 +1251,7 @@ void Vic3DScene::generateBuildingGeometry() {
 
 	// now add all transparent surfaces
 	for (std::pair<const VICUS::SubSurface *, const VICUS::PlaneTriangulationData*> & p : transparentSubsurfaces) {
-		// change color depending on visibility state and selection state
 		QColor col = p.first->m_color;
-		// first add the plane regular
 		addPlane(*p.second, col, currentVertexIndex, currentElementIndex,
 				 m_opaqueGeometryObject.m_vertexBufferData,
 				 m_opaqueGeometryObject.m_colorBufferData,

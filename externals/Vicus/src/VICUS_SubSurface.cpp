@@ -11,8 +11,15 @@ SubSurface SubSurface::clone() const {
 
 
 void SubSurface::updateColor() {
-	// for now always transparent blue
-	m_color = QColor(96,96,255,128);
+	if (m_subSurfaceComponentInstance == nullptr) {
+		// no subsurface assigned -> dark gray
+		m_color = QColor(64,64,64,255);
+	}
+	else {
+		// TODO : depending on assigned subsurface type, select suitable color
+		// for now always transparent blue
+		m_color = QColor(96,96,255,128);
+	}
 }
 
 } // namespace VICUS

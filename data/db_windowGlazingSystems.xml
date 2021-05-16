@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<WindowGlazingSystems>
+	<WindowGlazingSystem id="3001" displayName="DE: Doppelscheibenverglasung |EN: Double-layer glazing" color="#66f4ff" modelType="Simple">
+		<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">1.2</IBK:Parameter>
+		<LinearSplineParameter name="SHGC" interpolationMethod="linear">
+			<X unit="Deg">0 10 20 30 40 50 60 70 80 90 </X>
+			<Y unit="---">0.6 0.6 0.6 0.59 0.57 0.45 0.3 0.2 0.1 0 </Y>
+		</LinearSplineParameter>
+	</WindowGlazingSystem>
+</WindowGlazingSystems>
