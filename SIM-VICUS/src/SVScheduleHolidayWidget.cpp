@@ -3,12 +3,12 @@
 
 SVScheduleHolidayWidget::SVScheduleHolidayWidget(QWidget *parent) :
 	QWidget(parent),
-	ui(new Ui::SVScheduleHolidayWidget)
+	m_ui(new Ui::SVScheduleHolidayWidget)
 {
-	ui->setupUi(this);
+	m_ui->setupUi(this);
 }
 
-SVScheduleHolidayWidget::~SVScheduleHolidayWidget()
-{
-	delete ui;
+
+SVScheduleHolidayWidget::~SVScheduleHolidayWidget() {
+	delete m_ui;
 }

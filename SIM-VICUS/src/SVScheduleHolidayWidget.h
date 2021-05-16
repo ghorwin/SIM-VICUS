@@ -4,11 +4,11 @@
 #include <QWidget>
 
 namespace Ui {
-class SVScheduleHolidayWidget;
+	class SVScheduleHolidayWidget;
 }
 
-class SVScheduleHolidayWidget : public QWidget
-{
+// TODO Dirk, wird das gebraucht oder kann das weg?
+class SVScheduleHolidayWidget : public QWidget {
 	Q_OBJECT
 
 public:
@@ -16,7 +16,7 @@ public:
 	~SVScheduleHolidayWidget();
 
 private:
-	Ui::SVScheduleHolidayWidget *ui;
+	Ui::SVScheduleHolidayWidget *m_ui;
 };
 
 #endif // SVSCHEDULEHOLIDAYWIDGET_H
