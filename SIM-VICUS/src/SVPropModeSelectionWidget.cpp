@@ -19,6 +19,7 @@ SVPropModeSelectionWidget::SVPropModeSelectionWidget(QWidget *parent) :
 
 	m_ui->comboBoxBuildingProperties->blockSignals(true);
 	m_ui->comboBoxBuildingProperties->addItem(tr("Component"), BT_Components);
+	m_ui->comboBoxBuildingProperties->addItem(tr("Sub-Surfaces"), BT_SubSurfaceComponents);
 	m_ui->comboBoxBuildingProperties->addItem(tr("Construction orientation"), BT_ComponentOrientation);
 	m_ui->comboBoxBuildingProperties->addItem(tr("Boundary conditions"), BT_BoundaryConditions);
 	m_ui->comboBoxBuildingProperties->addItem(tr("Building levels"), BT_FloorManager);
@@ -80,8 +81,8 @@ void SVPropModeSelectionWidget::selectionChanged() {
 		// now check the selected objects and if we have only nodes - go to node edit more,
 		// if we have only edges - go to edge edit mode
 
-		std::set<const VICUS::Object*> objs;
-		project().selectObjects(objs, VICUS::Project::SG_Network, true, true);
+//		std::set<const VICUS::Object*> objs;
+//		project().selectObjects(objs, VICUS::Project::SG_Network, true, true);
 //		bool haveNode = false;
 //		bool haveNetwork = false;
 //		blockSignals(true);

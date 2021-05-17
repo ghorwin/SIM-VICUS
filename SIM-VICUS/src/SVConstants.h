@@ -52,6 +52,8 @@ enum DataRoles {
 enum BuildingPropertyTypes {
 	/*! Assigned component. */
 	BT_Components,
+	/*! Assigned sub-surface components. */
+	BT_SubSurfaceComponents,
 	/*! Orientation of component (side A/B colors). */
 	BT_ComponentOrientation,
 	/*! Boundary conditions of component. */

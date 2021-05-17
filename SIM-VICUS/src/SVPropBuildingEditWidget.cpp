@@ -27,6 +27,7 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->setupUi(this);
 	m_ui->verticalLayout->setMargin(0);
 	m_ui->verticalLayoutComponents->setMargin(0);
+	m_ui->verticalLayoutSubSurfaceComponents->setMargin(0);
 	m_ui->verticalLayoutComponentOrientation->setMargin(0);
 	m_ui->verticalLayoutBoundaryConditions->setMargin(0);
 	m_ui->verticalLayoutZoneTemplates->setMargin(0);
@@ -39,6 +40,14 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->tableWidgetComponents->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
 	m_ui->tableWidgetComponents->horizontalHeader()->resizeSection(0,20);
 	m_ui->tableWidgetComponents->horizontalHeader()->setStretchLastSection(true);
+
+	m_ui->tableWidgetSubSurfaceComponents->setColumnCount(3);
+	m_ui->tableWidgetSubSurfaceComponents->setHorizontalHeaderLabels(QStringList() << QString() << tr("Type") << tr("Sub-Surface Component") );
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetSubSurfaceComponents);
+	m_ui->tableWidgetSubSurfaceComponents->setSortingEnabled(false);
+	m_ui->tableWidgetSubSurfaceComponents->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+	m_ui->tableWidgetSubSurfaceComponents->horizontalHeader()->resizeSection(0,20);
+	m_ui->tableWidgetSubSurfaceComponents->horizontalHeader()->setStretchLastSection(true);
 
 	m_ui->tableWidgetBoundaryConditions->setColumnCount(2);
 	m_ui->tableWidgetBoundaryConditions->setHorizontalHeaderLabels(QStringList() << QString() << tr("Boundary condition"));
@@ -91,9 +100,10 @@ void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
 
 	switch ((BuildingPropertyTypes)buildingPropertyType) {
 		case BT_Components				: m_ui->stackedWidget->setCurrentIndex(1); break;
-		case BT_ComponentOrientation	: m_ui->stackedWidget->setCurrentIndex(2); break;
-		case BT_BoundaryConditions		: m_ui->stackedWidget->setCurrentIndex(3); break;
-		case BT_ZoneTemplates			: m_ui->stackedWidget->setCurrentIndex(4); break;
+		case BT_SubSurfaceComponents	: m_ui->stackedWidget->setCurrentIndex(2); break;
+		case BT_ComponentOrientation	: m_ui->stackedWidget->setCurrentIndex(3); break;
+		case BT_BoundaryConditions		: m_ui->stackedWidget->setCurrentIndex(4); break;
+		case BT_ZoneTemplates			: m_ui->stackedWidget->setCurrentIndex(5); break;
 		case BT_FloorManager : break; // just to remove compiler warning, FloorManager is not handled here
 	}
 }
@@ -219,6 +229,11 @@ void SVPropBuildingEditWidget::on_pushButtonAssignInsideComponent_clicked() {
 }
 
 
+void SVPropBuildingEditWidget::on_tableWidgetSubSurfaceComponents_itemSelectionChanged() {
+
+}
+
+
 void SVPropBuildingEditWidget::on_checkBoxShowAllComponentOrientations_toggled(bool checked) {
 	m_ui->labelComponentSelection->setEnabled(!checked);
 	m_ui->comboBoxComponentSelection->setEnabled(!checked);
@@ -289,10 +304,26 @@ void SVPropBuildingEditWidget::updateUi() {
 
 	// get all visible "building" type objects in the scene
 	std::set<const VICUS::Object * > objs;
-	project().selectObjects(objs, VICUS::Project::SG_Building, false, false);
+	project().selectObjects(objs, VICUS::Project::SG_Building, false, true); // just visible
+	std::vector<const VICUS::Object * > selObjs;
+	std::vector<const VICUS::Surface * > surfObjs;
+	std::vector<const VICUS::SubSurface * > subSurfObjs;
+	for (const VICUS::Object * o : objs) {
+		if (!o->m_selected) continue;
+		selObjs.push_back(o);
+		const VICUS::Surface * surf = dynamic_cast<const VICUS::Surface *>(o);
+		if (surf != nullptr)
+			surfObjs.push_back(surf);
+		const VICUS::SubSurface * subsurf = dynamic_cast<const VICUS::SubSurface *>(o);
+		if (subsurf != nullptr)
+			subSurfObjs.push_back(subsurf);
+	}
+
+	// ** Components data structure update **
 	// now build a map of component IDs versus visible surfaces
 	m_componentSurfacesMap.clear();
 	m_selectedComponentInstances.clear();
+
 	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
 		// component ID assigned?
 		if (ci.m_componentID == VICUS::INVALID_ID)
@@ -327,6 +358,44 @@ void SVPropBuildingEditWidget::updateUi() {
 		}
 	}
 
+	// ** Sub-Surface Components data structure update **
+	m_subComponentSurfacesMap.clear();
+	m_selectedSubComponentInstances.clear();
+
+	for (const VICUS::SubSurfaceComponentInstance & ci : project().m_subSurfaceComponentInstances) {
+		// component ID assigned?
+		if (ci.m_subSurfaceComponentID == VICUS::INVALID_ID)
+			continue; // no component, skip
+		// lookup component in DB
+		const VICUS::SubSurfaceComponent * comp = SVSettings::instance().m_db.m_subSurfaceComponents[ci.m_subSurfaceComponentID];
+		if (comp == nullptr) {
+			// invalid component ID... should we notify the user about that somehow?
+			// for now we keep the nullptr and use this to identify "invalid component" in the table
+		}
+
+		// now test the surfaces associated with this component instance
+
+		// side A
+		if (ci.m_sideASubSurface != nullptr) {
+			// is this surface visible? then it must be in the set 'obj'
+			std::set<const VICUS::Object * >::const_iterator it_A = objs.find(ci.m_sideASubSurface);
+			if (it_A != objs.end()) {
+				m_subComponentSurfacesMap[comp].push_back(ci.m_sideASubSurface);
+				if (ci.m_sideASubSurface->m_selected)
+					m_selectedSubComponentInstances.insert(&ci);
+			}
+		}
+		// side B
+		if (ci.m_sideBSubSurface != nullptr) {
+			std::set<const VICUS::Object * >::const_iterator it_B = objs.find(ci.m_sideBSubSurface);
+			if (it_B != objs.end()) {
+				m_subComponentSurfacesMap[comp].push_back(ci.m_sideBSubSurface);
+				if (ci.m_sideBSubSurface->m_selected)
+					m_selectedSubComponentInstances.insert(&ci);
+			}
+		}
+	}
+
 	m_zoneTemplateAssignments.clear();
 	const VICUS::Database<VICUS::ZoneTemplate> & db_zt = SVSettings::instance().m_db.m_zoneTemplates;
 	// loop over all rooms and store zone template associations
@@ -344,73 +413,157 @@ void SVPropBuildingEditWidget::updateUi() {
 
 
 	// *** Update Component Page ***
-
-	// now put the data of the map into the table
-	int currentRow = m_ui->tableWidgetComponents->currentRow();
-	m_ui->tableWidgetComponents->blockSignals(true);
-	m_ui->tableWidgetComponents->clearContents();
-	m_ui->tableWidgetComponents->setRowCount(m_componentSurfacesMap.size());
-	int row=0;
-	for (std::map<const VICUS::Component*, std::vector<const VICUS::Surface *> >::const_iterator
-		 it = m_componentSurfacesMap.begin(); it != m_componentSurfacesMap.end(); ++it, ++row)
 	{
-		QTableWidgetItem * item = new QTableWidgetItem();
-		// special handling for components with "invalid" component id
-		if (it->first == nullptr)
-			item->setBackground(QColor(255,128,128));
-		else
-			item->setBackground(it->first->m_color);
-		item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
-		m_ui->tableWidgetComponents->setItem(row, 0, item);
 
-		item = new QTableWidgetItem();
-		if (it->first == nullptr)
-			item->setText(tr("<invalid component id>"));
-		else
-			item->setText(QString::fromStdString(it->first->m_displayName.string(IBK::MultiLanguageString::m_language, "en")));
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		m_ui->tableWidgetComponents->setItem(row, 1, item);
-	}
-	// reselect row
-	m_ui->tableWidgetComponents->blockSignals(false);
-	m_ui->tableWidgetComponents->selectRow(std::min(currentRow, m_ui->tableWidgetComponents->rowCount()-1));
-	// process all selected surfaces and determine which component they have assigned
-	std::vector<const VICUS::Surface*> surfaces;
-	project().selectedSurfaces(surfaces, VICUS::Project::SG_Building);
-	if (surfaces.empty()) {
-		m_ui->labelSelectedComponents->setText("");
-		m_ui->groupBoxSelectedComponent->setEnabled(false);
-	}
-	else {
-		m_ui->groupBoxSelectedComponent->setEnabled(true);
-	}
-	m_ui->pushButtonAssignInsideComponent->setEnabled(surfaces.size() == 2);
+		// now put the data of the map into the table
+		int currentRow = m_ui->tableWidgetComponents->currentRow();
+		m_ui->tableWidgetComponents->blockSignals(true);
+		m_ui->tableWidgetComponents->clearContents();
+		m_ui->tableWidgetComponents->setRowCount(m_componentSurfacesMap.size());
+		int row=0;
+		for (std::map<const VICUS::Component*, std::vector<const VICUS::Surface *> >::const_iterator
+			 it = m_componentSurfacesMap.begin(); it != m_componentSurfacesMap.end(); ++it, ++row)
+		{
+			QTableWidgetItem * item = new QTableWidgetItem();
+			// special handling for components with "invalid" component id
+			if (it->first == nullptr)
+				item->setBackground(QColor(255,128,128));
+			else
+				item->setBackground(it->first->m_color);
+			item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
+			m_ui->tableWidgetComponents->setItem(row, 0, item);
 
-	// update selection-related info
-	std::set<const VICUS::Component *> selectedComponents;
-	for (const VICUS::Surface* s : surfaces) {
-		if (s->m_componentInstance != nullptr) {
-			const VICUS::Component * surfcomp = db.m_components[s->m_componentInstance->m_componentID];
-			selectedComponents.insert(surfcomp);
+			item = new QTableWidgetItem();
+			if (it->first == nullptr)
+				item->setText(tr("<invalid component id>"));
+			else
+				item->setText(QString::fromStdString(it->first->m_displayName.string(IBK::MultiLanguageString::m_language, "en")));
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			m_ui->tableWidgetComponents->setItem(row, 1, item);
 		}
-	}
-	if (selectedComponents.empty()) {
-		m_ui->labelSelectedComponents->setText(tr("None"));
-	}
-	else if (selectedComponents.size() == 1) {
-		if (*selectedComponents.begin() == nullptr)
-			m_ui->labelSelectedComponents->setText(tr("Component with invalid/unknown ID"));
-		else
-			m_ui->labelSelectedComponents->setText(tr("%1 [%2]")
-			   .arg(QtExt::MultiLangString2QString((*selectedComponents.begin())->m_displayName)).arg((*selectedComponents.begin())->m_id));
-	}
-	else {
-		m_ui->labelSelectedComponents->setText(tr("%1 different components")
-		   .arg(selectedComponents.size()));
-	}
-	// update table related button states
-	on_tableWidgetComponents_itemSelectionChanged();
+		// reselect row
+		m_ui->tableWidgetComponents->blockSignals(false);
+		m_ui->tableWidgetComponents->selectRow(std::min(currentRow, m_ui->tableWidgetComponents->rowCount()-1));
+		// process all selected surfaces and determine which component they have assigned
+		if (surfObjs.empty()) {
+			m_ui->labelSelectedComponents->setText("");
+			m_ui->groupBoxSelectedComponent->setEnabled(false);
+		}
+		else {
+			m_ui->groupBoxSelectedComponent->setEnabled(true);
+		}
+		m_ui->pushButtonAssignInsideComponent->setEnabled(surfObjs.size() == 2);
 
+		// update selection-related info
+		std::set<const VICUS::Component *> selectedComponents;
+		for (const VICUS::Surface* s : surfObjs) {
+			if (s->m_componentInstance != nullptr) {
+				const VICUS::Component * surfcomp = db.m_components[s->m_componentInstance->m_componentID];
+				selectedComponents.insert(surfcomp);
+			}
+		}
+		if (selectedComponents.empty()) {
+			m_ui->labelSelectedComponents->setText(tr("None"));
+		}
+		else if (selectedComponents.size() == 1) {
+			if (*selectedComponents.begin() == nullptr)
+				m_ui->labelSelectedComponents->setText(tr("Component with invalid/unknown ID"));
+			else
+				m_ui->labelSelectedComponents->setText(tr("%1 [%2]")
+				   .arg(QtExt::MultiLangString2QString((*selectedComponents.begin())->m_displayName)).arg((*selectedComponents.begin())->m_id));
+		}
+		else {
+			m_ui->labelSelectedComponents->setText(tr("%1 different components")
+			   .arg(selectedComponents.size()));
+		}
+		// update table related button states
+		on_tableWidgetComponents_itemSelectionChanged();
+	}
+
+
+	// *** Update Sub-Surface Component Page ***
+
+	{
+		// now put the data of the map into the table
+		int currentRow = m_ui->tableWidgetSubSurfaceComponents->currentRow();
+		m_ui->tableWidgetSubSurfaceComponents->blockSignals(true);
+		m_ui->tableWidgetSubSurfaceComponents->clearContents();
+		m_ui->tableWidgetSubSurfaceComponents->setRowCount(m_subComponentSurfacesMap.size());
+		int row=0;
+		for (std::map<const VICUS::SubSurfaceComponent*, std::vector<const VICUS::SubSurface *> >::const_iterator
+			 it = m_subComponentSurfacesMap.begin(); it != m_subComponentSurfacesMap.end(); ++it, ++row)
+		{
+			QTableWidgetItem * item = new QTableWidgetItem();
+			// special handling for components with "invalid" component id
+			if (it->first == nullptr)
+				item->setBackground(QColor(255,128,128));
+			else
+				item->setBackground(it->first->m_color);
+			item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
+			m_ui->tableWidgetSubSurfaceComponents->setItem(row, 0, item);
+
+			// insert type
+			item = new QTableWidgetItem();
+			if (it->first == nullptr) {
+				item->setText(tr("<invalid>"));
+			}
+			else {
+				switch (it->first->m_type) {
+					case VICUS::SubSurfaceComponent::CT_Window : item->setText(tr("Window")); break;
+					case VICUS::SubSurfaceComponent::CT_Door : item->setText(tr("Door")); break;
+					case VICUS::SubSurfaceComponent::CT_Miscellaneous : item->setText(tr("Miscellaneous")); break;
+					default: item->setText(tr("<invalid>"));
+				}
+			}
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			m_ui->tableWidgetSubSurfaceComponents->setItem(row, 1, item);
+
+			item = new QTableWidgetItem();
+			if (it->first == nullptr)
+				item->setText(tr("<invalid sub-surface component id>"));
+			else
+				item->setText(QString::fromStdString(it->first->m_displayName.string(IBK::MultiLanguageString::m_language, "en")));
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			m_ui->tableWidgetSubSurfaceComponents->setItem(row, 2, item);
+		}
+		// reselect row
+		m_ui->tableWidgetSubSurfaceComponents->blockSignals(false);
+		m_ui->tableWidgetSubSurfaceComponents->selectRow(std::min(currentRow, m_ui->tableWidgetSubSurfaceComponents->rowCount()-1));
+		// process all selected sub surfaces and determine which component they have assigned
+		if (subSurfObjs.empty()) {
+			m_ui->labelSelectedSubSurfaceComponents->setText("");
+			m_ui->groupBoxSelectedSubComponent->setEnabled(false);
+		}
+		else {
+			m_ui->groupBoxSelectedSubComponent->setEnabled(true);
+		}
+		m_ui->pushButtonAssignInsideSubSurfaceComponent->setEnabled(subSurfObjs.size() == 2);
+
+		// update selection-related info
+		std::set<const VICUS::SubSurfaceComponent *> selectedComponents;
+		for (const VICUS::SubSurface* s : subSurfObjs) {
+			if (s->m_subSurfaceComponentInstance != nullptr) {
+				const VICUS::SubSurfaceComponent * surfcomp = db.m_subSurfaceComponents[s->m_subSurfaceComponentInstance->m_subSurfaceComponentID];
+				selectedComponents.insert(surfcomp);
+			}
+		}
+		if (selectedComponents.empty()) {
+			m_ui->labelSelectedSubSurfaceComponents->setText(tr("None"));
+		}
+		else if (selectedComponents.size() == 1) {
+			if (*selectedComponents.begin() == nullptr)
+				m_ui->labelSelectedSubSurfaceComponents->setText(tr("Sub-surface component with invalid/unknown ID"));
+			else
+				m_ui->labelSelectedSubSurfaceComponents->setText(tr("%1 [%2]")
+				   .arg(QtExt::MultiLangString2QString((*selectedComponents.begin())->m_displayName)).arg((*selectedComponents.begin())->m_id));
+		}
+		else {
+			m_ui->labelSelectedSubSurfaceComponents->setText(tr("%1 different sub-surface components")
+			   .arg(selectedComponents.size()));
+		}
+		// update table related button states
+		on_tableWidgetSubSurfaceComponents_itemSelectionChanged();
+	}
 
 
 	// *** Update ComponentOrientation Page ***
@@ -442,138 +595,141 @@ void SVPropBuildingEditWidget::updateUi() {
 
 	// *** Update BoundaryCondition Page ***
 
-	// now build a map of component IDs versus visible surfaces
-	m_bcSurfacesMap.clear();
-	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
-		// component ID assigned?
-		if (ci.m_componentID == VICUS::INVALID_ID)
-			continue; // no component, skip
-		// lookup component in DB
-		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_componentID];
-		const VICUS::BoundaryCondition * bcSideA = nullptr;
-		const VICUS::BoundaryCondition * bcSideB = nullptr;
-		if (comp != nullptr) {
-			// lookup boundary condition pointers
-			if (comp->m_idSideABoundaryCondition != VICUS::INVALID_ID)
-				bcSideA = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
-			if (comp->m_idSideBBoundaryCondition != VICUS::INVALID_ID)
-				bcSideB = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
-		}
-		// side A
-		if (ci.m_sideASurface != nullptr) {
-			std::set<const VICUS::Object * >::const_iterator it_A = objs.find(ci.m_sideASurface);
-			if (it_A != objs.end()) {
-				m_bcSurfacesMap[bcSideA].push_back(ci.m_sideASurface);
+	{
+		// now build a map of component IDs versus visible surfaces
+		m_bcSurfacesMap.clear();
+		for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+			// component ID assigned?
+			if (ci.m_componentID == VICUS::INVALID_ID)
+				continue; // no component, skip
+			// lookup component in DB
+			const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_componentID];
+			const VICUS::BoundaryCondition * bcSideA = nullptr;
+			const VICUS::BoundaryCondition * bcSideB = nullptr;
+			if (comp != nullptr) {
+				// lookup boundary condition pointers
+				if (comp->m_idSideABoundaryCondition != VICUS::INVALID_ID)
+					bcSideA = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
+				if (comp->m_idSideBBoundaryCondition != VICUS::INVALID_ID)
+					bcSideB = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
+			}
+			// side A
+			if (ci.m_sideASurface != nullptr) {
+				std::set<const VICUS::Object * >::const_iterator it_A = objs.find(ci.m_sideASurface);
+				if (it_A != objs.end()) {
+					m_bcSurfacesMap[bcSideA].push_back(ci.m_sideASurface);
+				}
+			}
+			// side B
+			if (ci.m_sideBSurface != nullptr) {
+				std::set<const VICUS::Object * >::const_iterator it_B = objs.find(ci.m_sideBSurface);
+				if (it_B != objs.end())
+					m_bcSurfacesMap[bcSideB].push_back(ci.m_sideBSurface);
 			}
 		}
-		// side B
-		if (ci.m_sideBSurface != nullptr) {
-			std::set<const VICUS::Object * >::const_iterator it_B = objs.find(ci.m_sideBSurface);
-			if (it_B != objs.end())
-				m_bcSurfacesMap[bcSideB].push_back(ci.m_sideBSurface);
-		}
-	}
-	// now put the data of the map into the table
-	currentRow = m_ui->tableWidgetBoundaryConditions->currentRow();
-	m_ui->tableWidgetBoundaryConditions->blockSignals(true);
-	m_ui->tableWidgetBoundaryConditions->clearContents();
-	m_ui->tableWidgetBoundaryConditions->setRowCount(m_bcSurfacesMap.size());
-	row=0;
-	for (std::map<const VICUS::BoundaryCondition*, std::vector<const VICUS::Surface *> >::const_iterator
-		 it = m_bcSurfacesMap.begin(); it != m_bcSurfacesMap.end(); ++it, ++row)
-	{
-		QTableWidgetItem * item = new QTableWidgetItem();
-		// special handling for surfaces without bc assigned
-		if (it->first == nullptr)
-			item->setBackground(QColor(64,64,64));
-		else
-			item->setBackground(it->first->m_color);
-		item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
-		m_ui->tableWidgetBoundaryConditions->setItem(row, 0, item);
+		// now put the data of the map into the table
+		int currentRow = m_ui->tableWidgetBoundaryConditions->currentRow();
+		m_ui->tableWidgetBoundaryConditions->blockSignals(true);
+		m_ui->tableWidgetBoundaryConditions->clearContents();
+		m_ui->tableWidgetBoundaryConditions->setRowCount(m_bcSurfacesMap.size());
+		int row=0;
+		for (std::map<const VICUS::BoundaryCondition*, std::vector<const VICUS::Surface *> >::const_iterator
+			 it = m_bcSurfacesMap.begin(); it != m_bcSurfacesMap.end(); ++it, ++row)
+		{
+			QTableWidgetItem * item = new QTableWidgetItem();
+			// special handling for surfaces without bc assigned
+			if (it->first == nullptr)
+				item->setBackground(QColor(64,64,64));
+			else
+				item->setBackground(it->first->m_color);
+			item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
+			m_ui->tableWidgetBoundaryConditions->setItem(row, 0, item);
 
-		item = new QTableWidgetItem();
-		if (it->first == nullptr)
-			item->setText(tr("<no/invalid boundary condition>"));
-		else
-			item->setText(QtExt::MultiLangString2QString(it->first->m_displayName) );
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		m_ui->tableWidgetBoundaryConditions->setItem(row, 1, item);
+			item = new QTableWidgetItem();
+			if (it->first == nullptr)
+				item->setText(tr("<no/invalid boundary condition>"));
+			else
+				item->setText(QtExt::MultiLangString2QString(it->first->m_displayName) );
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			m_ui->tableWidgetBoundaryConditions->setItem(row, 1, item);
+		}
+		// reselect row
+		m_ui->tableWidgetBoundaryConditions->blockSignals(false);
+		m_ui->tableWidgetBoundaryConditions->selectRow(std::min(currentRow, m_ui->tableWidgetBoundaryConditions->rowCount()-1));
 	}
-	// reselect row
-	m_ui->tableWidgetBoundaryConditions->blockSignals(false);
-	m_ui->tableWidgetBoundaryConditions->selectRow(std::min(currentRow, m_ui->tableWidgetBoundaryConditions->rowCount()-1));
 
 
 	// *** Update ZoneTemplates Page ***
 
-	// now put the data of the map into the table
-	currentRow = m_ui->tableWidgetZoneTemplates->currentRow();
-	m_ui->tableWidgetZoneTemplates->blockSignals(true);
-	m_ui->tableWidgetZoneTemplates->clearContents();
-	m_ui->tableWidgetZoneTemplates->setRowCount(m_zoneTemplateAssignments.size());
-	row=0;
-	for (std::map<const VICUS::ZoneTemplate*, std::vector<const VICUS::Room *> >::const_iterator
-		 it = m_zoneTemplateAssignments.begin(); it != m_zoneTemplateAssignments.end(); ++it, ++row)
 	{
-		QTableWidgetItem * item = new QTableWidgetItem();
-		// special handling for zone template with "invalid" id
-		if (it->first == nullptr)
-			item->setBackground(QColor(255,128,128));
-		else
-			item->setBackground(it->first->m_color);
-		item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
-		m_ui->tableWidgetZoneTemplates->setItem(row, 0, item);
+		// now put the data of the map into the table
+		int currentRow = m_ui->tableWidgetZoneTemplates->currentRow();
+		m_ui->tableWidgetZoneTemplates->blockSignals(true);
+		m_ui->tableWidgetZoneTemplates->clearContents();
+		m_ui->tableWidgetZoneTemplates->setRowCount(m_zoneTemplateAssignments.size());
+		int row=0;
+		for (std::map<const VICUS::ZoneTemplate*, std::vector<const VICUS::Room *> >::const_iterator
+			 it = m_zoneTemplateAssignments.begin(); it != m_zoneTemplateAssignments.end(); ++it, ++row)
+		{
+			QTableWidgetItem * item = new QTableWidgetItem();
+			// special handling for zone template with "invalid" id
+			if (it->first == nullptr)
+				item->setBackground(QColor(255,128,128));
+			else
+				item->setBackground(it->first->m_color);
+			item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
+			m_ui->tableWidgetZoneTemplates->setItem(row, 0, item);
 
-		item = new QTableWidgetItem();
-		if (it->first == nullptr)
-			item->setText(tr("<invalid zone template id>"));
-		else
-			item->setText(QtExt::MultiLangString2QString(it->first->m_displayName) );
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		m_ui->tableWidgetZoneTemplates->setItem(row, 1, item);
-	}
-	m_ui->tableWidgetZoneTemplates->blockSignals(false);
-	m_ui->tableWidgetZoneTemplates->selectRow(std::min(currentRow, m_ui->tableWidgetZoneTemplates->rowCount()-1));
-
-	// process all selected rooms and determine which zone template they have assigned
-	std::vector<const VICUS::Room*> rooms;
-	project().selectedRooms(rooms);
-	if (rooms.empty()) {
-		m_ui->labelSelectedZoneTemplates->setText("");
-		m_ui->groupBoxSelectedRooms->setEnabled(false);
-	}
-	else {
-		m_ui->groupBoxSelectedRooms->setEnabled(true);
-	}
-
-	// update selection-related info
-	std::set<const VICUS::ZoneTemplate *> selectedZoneTemplate;
-	// loop over all selected rooms and store pointer to assigned zone template
-	for (const VICUS::Room* r : rooms) {
-		if (r->m_idZoneTemplate != VICUS::INVALID_ID) {
-			const VICUS::ZoneTemplate * zt= db.m_zoneTemplates[r->m_idZoneTemplate];
-			selectedZoneTemplate.insert(zt); // when ID is invalid/unknown, we store a nullptr
+			item = new QTableWidgetItem();
+			if (it->first == nullptr)
+				item->setText(tr("<invalid zone template id>"));
+			else
+				item->setText(QtExt::MultiLangString2QString(it->first->m_displayName) );
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			m_ui->tableWidgetZoneTemplates->setItem(row, 1, item);
 		}
-	}
-	if (selectedZoneTemplate.empty()) {
-		m_ui->labelSelectedZoneTemplates->setText(tr("None"));
-	}
-	else if (selectedZoneTemplate.size() == 1) {
-		const VICUS::ZoneTemplate * zt = *selectedZoneTemplate.begin();
-		// special handling: exactly one room with invalid zone template ID is selected
-		if (zt == nullptr)
-			m_ui->labelSelectedZoneTemplates->setText(tr("Zone template with invalid/unknown ID"));
-		else // otherwise show info about the selected zone template
-			m_ui->labelSelectedZoneTemplates->setText(tr("%1 [%2]")
-			   .arg(QtExt::MultiLangString2QString(zt->m_displayName)).arg(zt->m_id) );
-	}
-	else {
-		m_ui->labelSelectedZoneTemplates->setText(tr("%1 different templates")
-		   .arg(selectedZoneTemplate.size()));
-	}
-	// update table related button states
-	on_tableWidgetZoneTemplates_itemSelectionChanged();
+		m_ui->tableWidgetZoneTemplates->blockSignals(false);
+		m_ui->tableWidgetZoneTemplates->selectRow(std::min(currentRow, m_ui->tableWidgetZoneTemplates->rowCount()-1));
 
+		// process all selected rooms and determine which zone template they have assigned
+		std::vector<const VICUS::Room*> rooms;
+		project().selectedRooms(rooms);
+		if (rooms.empty()) {
+			m_ui->labelSelectedZoneTemplates->setText("");
+			m_ui->groupBoxSelectedRooms->setEnabled(false);
+		}
+		else {
+			m_ui->groupBoxSelectedRooms->setEnabled(true);
+		}
+
+		// update selection-related info
+		std::set<const VICUS::ZoneTemplate *> selectedZoneTemplate;
+		// loop over all selected rooms and store pointer to assigned zone template
+		for (const VICUS::Room* r : rooms) {
+			if (r->m_idZoneTemplate != VICUS::INVALID_ID) {
+				const VICUS::ZoneTemplate * zt= db.m_zoneTemplates[r->m_idZoneTemplate];
+				selectedZoneTemplate.insert(zt); // when ID is invalid/unknown, we store a nullptr
+			}
+		}
+		if (selectedZoneTemplate.empty()) {
+			m_ui->labelSelectedZoneTemplates->setText(tr("None"));
+		}
+		else if (selectedZoneTemplate.size() == 1) {
+			const VICUS::ZoneTemplate * zt = *selectedZoneTemplate.begin();
+			// special handling: exactly one room with invalid zone template ID is selected
+			if (zt == nullptr)
+				m_ui->labelSelectedZoneTemplates->setText(tr("Zone template with invalid/unknown ID"));
+			else // otherwise show info about the selected zone template
+				m_ui->labelSelectedZoneTemplates->setText(tr("%1 [%2]")
+				   .arg(QtExt::MultiLangString2QString(zt->m_displayName)).arg(zt->m_id) );
+		}
+		else {
+			m_ui->labelSelectedZoneTemplates->setText(tr("%1 different templates")
+			   .arg(selectedZoneTemplate.size()));
+		}
+		// update table related button states
+		on_tableWidgetZoneTemplates_itemSelectionChanged();
+	}
 }
 
 

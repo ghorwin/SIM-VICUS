@@ -12,10 +12,13 @@ namespace Ui {
 namespace VICUS {
 	class Component;
 	class ComponentInstance;
+	class SubSurface;
 	class Surface;
 	class BoundaryCondition;
 	class ZoneTemplate;
 	class Room;
+	class SubSurfaceComponentInstance;
+	class SubSurfaceComponent;
 }
 
 class QTableWidgetItem;
@@ -93,8 +96,13 @@ private slots:
 
 	void on_comboBoxComponentSelection_currentIndexChanged(int);
 
-
 	void on_pushButtonAssignInsideComponent_clicked();
+
+
+
+	void on_tableWidgetSubSurfaceComponents_itemSelectionChanged();
+
+
 
 	void on_pushButtonAssignZoneTemplate_clicked();
 
@@ -144,12 +152,21 @@ private:
 
 	/*! Stores the current property type (set in setPropertyType()). */
 	int								m_propertyType = -1;
+
 	/*! This maps holds component->surface associations when in BM_Components mode. */
 	std::map<const VICUS::Component*, std::vector<const VICUS::Surface *> >			m_componentSurfacesMap;
 	/*! This map links boundary conditions to surfaces. */
 	std::map<const VICUS::BoundaryCondition*, std::vector<const VICUS::Surface *> > m_bcSurfacesMap;
 	/*! This set contains all shown component instances that have one or more sides selected. */
 	std::set<const VICUS::ComponentInstance*>										m_selectedComponentInstances;
+
+	/*! This maps holds component->surface associations when in BM_SubSurfaceComponents mode. */
+	std::map<const VICUS::SubSurfaceComponent*, std::vector<const VICUS::SubSurface *> >	m_subComponentSurfacesMap;
+	/*! This map links boundary conditions to surfaces. */
+	std::map<const VICUS::BoundaryCondition*, std::vector<const VICUS::SubSurface *> >	m_bcSubSurfacesMap;
+	/*! This set contains all shown component instances that have one or more sides selected. */
+	std::set<const VICUS::SubSurfaceComponentInstance*>									m_selectedSubComponentInstances;
+
 
 	/*! Maps stores pointers to room objects grouped for assigned zone templates.
 		Note: rooms without zone template ID are ignored.

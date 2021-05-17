@@ -63,12 +63,6 @@ private:
 		m_propWidgets[propWidget]->setVisible(true);
 	}
 
-	/*! This function configures the viewstate object vs in property-edit-mode to match the
-		edit mode selection in the SVPropModeSelectionWidget.
-		This function should be called when the property mode is just switched on.
-	*/
-	void updateViewStateToEditMode(SVViewState & vs) const;
-
 	/*! The layout, that holds all widgets. */
 	QVBoxLayout				*m_layout = nullptr;
 	/*! Pointer to property widget: add polygon */
