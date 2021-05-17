@@ -106,7 +106,7 @@ namespace NANDRAD_MODEL {
 			// IdealPipeRegisterModel::Results
 			case 5 :
 			switch (t) {
-				case 0 : return "MassFlow";
+				case 0 : return "MassFlux";
 			} break;
 			// IdealPipeRegisterModel::VectorValuedResults
 			case 6 :
@@ -295,7 +295,7 @@ namespace NANDRAD_MODEL {
 			// IdealPipeRegisterModel::Results
 			case 5 :
 			switch (t) {
-				case 0 : return "MassFlow";
+				case 0 : return "MassFlux";
 			} break;
 			// IdealPipeRegisterModel::VectorValuedResults
 			case 6 :

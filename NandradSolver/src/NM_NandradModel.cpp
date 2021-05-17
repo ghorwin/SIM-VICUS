@@ -1375,7 +1375,7 @@ void NandradModel::initModels() {
 
 			try {
 				m.checkParameters(m_project->m_zones);
-				mod->setup(m, m_project->m_objectLists, m_project->m_zones);
+				mod->setup(m, m_project->m_objectLists);
 			}
 			catch (IBK::Exception & ex) {
 				throw IBK::Exception(ex, IBK::FormatString("Error initializing ideal heating/cooling model (id=%1).").arg(m.m_id), FUNC_ID);

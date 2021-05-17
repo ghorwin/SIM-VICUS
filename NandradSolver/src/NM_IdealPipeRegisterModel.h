@@ -25,7 +25,7 @@ class IdealPipeRegisterModel : public AbstractModel, public AbstractStateDepende
 public:
 	/*! Computed results. */
 	enum Results {
-		R_MassFlow,							// Keyword: MassFlow					[kg/s]	'ControlledS mass flow'
+		R_MassFlux,						// Keyword: MassFlux				[kg/s]	'ControlledS mass flow'
 		NUM_R
 	};
 
@@ -49,8 +49,7 @@ public:
 			pointers to object list elements can be stored).
 	*/
 	void setup(const NANDRAD::IdealPipeRegisterModel & model,
-			   const std::vector<NANDRAD::ObjectList> & objLists,
-			   const std::vector<NANDRAD::Zone> & zones);
+			   const std::vector<NANDRAD::ObjectList> & objLists);
 
 	/*! Returns object list of all referenced models. */
 	const NANDRAD::ObjectList &objectList() const;

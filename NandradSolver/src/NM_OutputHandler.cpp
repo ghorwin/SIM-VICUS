@@ -44,6 +44,7 @@ const char * const STATE_QUANTITIES[] = {
 	"VentilationRate",
 	"SurfaceTemperatureA",
 	"SurfaceTemperatureB",
+	"ElementTemperature",
 	"ShadingFactor",
 	"ShadingControlValue"
 };
@@ -73,7 +74,8 @@ const char * const FLUX_QUANTITIES[] = {
 	"ThermalLoad",
 	"SolarIntensityOnShadingSensor",
 	"IdealHeatingLoad",
-	"IdealCoolingLoad"
+	"IdealCoolingLoad",
+	"MassFlux"
 };
 
 // The quantities listed below will be stored in file "network.tsv" or "network_<gridname>.tsv"

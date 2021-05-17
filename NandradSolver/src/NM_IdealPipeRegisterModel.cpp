@@ -16,8 +16,7 @@
 namespace NANDRAD_MODEL {
 
 void IdealPipeRegisterModel::setup(const NANDRAD::IdealPipeRegisterModel & model,
-									 const std::vector<NANDRAD::ObjectList> & objLists,
-									 const std::vector<NANDRAD::Zone> & zones)
+									 const std::vector<NANDRAD::ObjectList> & objLists)
 {
 	FUNCID(IdealPipeRegisterModel::setup);
 
@@ -271,7 +270,7 @@ int IdealPipeRegisterModel::update() {
 	heatingControlValue = std::max(0.0, std::min(1.0, heatingControlValue));
 	double massFlow = heatingControlValue * m_maxMassFlow;
 	// store mass flow
-	m_results[R_MassFlow] = massFlow;
+	m_results[R_MassFlux] = massFlow;
 
 	// retrieve supply temperature
 	double supplyTemperature = *m_supplyTemperatureRef;
