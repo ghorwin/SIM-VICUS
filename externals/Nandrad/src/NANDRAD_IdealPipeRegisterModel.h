@@ -22,10 +22,12 @@
 #ifndef NANDRAD_IdealPipeRegisterModelH
 #define NANDRAD_IdealPipeRegisterModelH
 
+#include <IBK_IntPara.h>
 #include <IBK_Parameter.h>
 
 #include "NANDRAD_Constants.h"
 #include "NANDRAD_CodeGenMacros.h"
+#include "NANDRAD_LinearSplineParameter.h"
 
 namespace NANDRAD {
 
@@ -49,13 +51,25 @@ public:
 	enum para_t {
 		P_SupplyTemperature,		// Keyword: SupplyTemperature			[C]			'Medium supply temperature'
 		P_MaxMassFlow,				// Keyword: MaxMassFlow					[kg/s]		'Maximum mass flow through the pipe'
+		P_PipeLength,				// Keyword: PipeLength					[m]			'Pipe length'
+		P_PipeInnerDiameter,		// Keyword: PipeInnerDiameter			[mm]		'Inner diameter of pipe'
+		P_UValuePipeWall,			// Keyword: UValuePipeWall				[W/mK]		'Length-specific U-Value of pipe wall incl. insulation'
+		P_FluidDensity,				// Keyword: FluidDensity				[kg/m3]		'Fluid mass density.'
+		P_FluidHeatCapacity,		// Keyword: FluidHeatCapacity			[J/kgK]		'Fluid specific heat capacity.'
+		P_FluidConductivity,		// Keyword: FluidConductivity			[W/mK]		'Fluid thermal conductivity.'
 		NUM_P
+	};
+
+	/*! Whole number parameters. */
+	enum intPara_t {
+		IP_NumberParallelPipes,		// Keyword: NumberParallelPipes						'Number of parallel pipes'
+		NUM_IP
 	};
 
 	NANDRAD_READWRITE
 
 	/*! Checks parameters for valid values. */
-	void checkParameters(const std::vector<NANDRAD::Zone> &zones) const;
+	void checkParameters(const std::vector<NANDRAD::Zone> &zones);
 
 	/*! Unique ID-number for this model. */
 	unsigned int		m_id = NANDRAD::INVALID_ID;					// XML:A:required
@@ -74,6 +88,10 @@ public:
 
 	/*! Parameters. */
 	IBK::Parameter		m_para[NUM_P];								// XML:E
+	/*! Integaer parameters. */
+	IBK::IntPara		m_intPara[NUM_IP];							// XML:E
+	/*! Fluid kinematic viscosity [m2/s]. */
+	LinearSplineParameter	m_fluidViscosity;			// XML:E
 };
 
 } // namespace NANDRAD
