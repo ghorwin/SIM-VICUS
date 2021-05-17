@@ -79,15 +79,17 @@
 			<Material id="1002" displayName="Insulation">
 				<IBK:Parameter name="Density" unit="kg/m3">100</IBK:Parameter>
 				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
-				<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
 			</Material>
 		</Materials>
 
 		<Models>
-			<NaturalVentilationModel id="501" displayName="Zone ventilation" modelType="Constant">
-				<ZoneObjectList>Zones</ZoneObjectList>
-				<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
-			</NaturalVentilationModel>
+			<NaturalVentilationModels>
+				<NaturalVentilationModel id="501" displayName="Zone ventilation" modelType="Constant">
+					<ZoneObjectList>Zones</ZoneObjectList>
+					<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
+				</NaturalVentilationModel>
+			</NaturalVentilationModels>
 			
 			<Thermostats>
 				<!-- A thermostat with constant heating set point, no cooling. Uses air temperature as sensor value. -->
@@ -118,7 +120,7 @@
 				<IdealPipeRegisterModel id="702" modelType="Constant">
 					<ThermostatZoneID>2</ThermostatZoneID>
 					<ConstructionObjectList>Floor 2</ConstructionObjectList>
-					<IBK:Parameter name="SupplyTemperature" unit="C">30</IBK:Parameter>
+					<IBK:Parameter name="SupplyTemperature" unit="C">40</IBK:Parameter>
 					<IBK:Parameter name="MaxMassFlow" unit="kg/s">0.2</IBK:Parameter>
 					<IBK:Parameter name="PipeLength" unit="m">100</IBK:Parameter>
 					<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
@@ -139,36 +141,43 @@
 		
 		<Outputs>
 			<Definitions>
+				
 				<OutputDefinition>
-					<Quantity>InfiltrationHeatLoad</Quantity>
+					<Quantity>VentilationHeatLoad</Quantity>
 					<ObjectListName>Zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
+
 				<OutputDefinition>
 					<Quantity>ConstructionHeatConductionLoad</Quantity>
 					<ObjectListName>Zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
+
 				<OutputDefinition>
 					<Quantity>ThermalLoad[1]</Quantity>
 					<ObjectListName>Floors</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
+				
 				<OutputDefinition>
 					<Quantity>ElementTemperature[1]</Quantity>
 					<ObjectListName>Floors</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
+				
 				<OutputDefinition>
 					<Quantity>AirTemperature</Quantity>
 					<ObjectListName>Zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
+				
 				<OutputDefinition>
-					<Quantity>MassFlow</Quantity>
+					<Quantity>MassFlux</Quantity>
 					<ObjectListName>Register Model</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
+				
 			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
