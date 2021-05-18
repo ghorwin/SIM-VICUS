@@ -93,6 +93,8 @@ void IdealPipeRegisterModel::resultDescriptions(std::vector<QuantityDescription>
 	// during initialization of the object lists, only those zones were added, that are actually parameterized
 	// so we can rely on the existence of zones whose IDs are in our object list and we do not need to search
 	// through all the models
+	if (m_objectList->m_filterID.m_ids.empty())
+		return; // nothing to compute, return
 
 	// For each of the constructions in the object list we generate results as defined
 	// in the type Results.
@@ -249,8 +251,6 @@ void IdealPipeRegisterModel::setInputValueRefs(const std::vector<QuantityDescrip
 
 
 void IdealPipeRegisterModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
-	IBK_ASSERT(!m_objectList->m_filterID.m_ids.empty());
-
 	// our heating loads depend on heating control values, and cooling loads depend on cooling control values
 	for (unsigned int i=0; i<m_objectList->m_filterID.m_ids.size(); ++i) {
 		// pair: result - input
@@ -264,7 +264,11 @@ void IdealPipeRegisterModel::stateDependencies(std::vector<std::pair<const doubl
 
 
 int IdealPipeRegisterModel::update() {
-	// get control values
+
+	if (m_objectList->m_filterID.m_ids.empty())
+		return 0; // nothing to compute, return
+
+		// get control values
 	double heatingControlValue = *m_thermostatValueRef;
 	// clip
 	heatingControlValue = std::max(0.0, std::min(1.0, heatingControlValue));
