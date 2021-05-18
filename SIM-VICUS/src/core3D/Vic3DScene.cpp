@@ -1699,6 +1699,21 @@ void Vic3DScene::hideSelected() {
 }
 
 
+void Vic3DScene::leaveAnySpecialMode() {
+	// turn on AlignLocalCoordinateSystem mode
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	// leave any mode we are currently in and restore previous state
+	switch (vs.m_sceneOperationMode) {
+		case SVViewState::OM_AlignLocalCoordinateSystem :
+			leaveCoordinateSystemAdjustmentMode(true);
+		break;
+		case SVViewState::OM_MoveLocalCoordinateSystem :
+			leaveCoordinateSystemTranslationMode(true);
+		break;
+		default: ; // no other modes
+	}
+}
+
 void Vic3DScene::enterCoordinateSystemAdjustmentMode() {
 	// store current transformation of local coordinate system object
 	m_oldCoordinateSystemTransform = m_coordinateSystemObject.transform();

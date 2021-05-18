@@ -160,14 +160,7 @@ void SceneView::toggleAlignCoordinateSystem() {
 	if (vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem)
 		m_mainScene.leaveCoordinateSystemAdjustmentMode(true); // pass true to signal "abort"
 	else {
-		// we can go into "align coordinate system" mode at any time, but only if local coordinate system is visible
-		if (vs.m_sceneOperationMode == SVViewState::NUM_OM)
-			return;
-
-		if (vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem) {
-			// first leave local coordinate system mode
-			toggleTranslateCoordinateSystem();
-		}
+		m_mainScene.leaveAnySpecialMode(); // now leave any other, special mode
 		m_mainScene.enterCoordinateSystemAdjustmentMode();
 	}
 }
@@ -178,14 +171,7 @@ void SceneView::toggleTranslateCoordinateSystem() {
 	if (vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem)
 		m_mainScene.leaveCoordinateSystemTranslationMode(true); // pass true to signal "abort"
 	else {
-		// we can go into "translate coordinate system" mode at any time, but only if local coordinate system is visible
-		if (vs.m_sceneOperationMode == SVViewState::NUM_OM)
-			return;
-
-		if (vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem) {
-			// first leave local coordinate system mode
-			toggleAlignCoordinateSystem();
-		}
+		m_mainScene.leaveAnySpecialMode(); // now leave any other, special mode
 		m_mainScene.enterCoordinateSystemTranslationMode();
 	}
 }

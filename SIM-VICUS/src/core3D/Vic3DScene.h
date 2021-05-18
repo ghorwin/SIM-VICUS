@@ -91,7 +91,10 @@ public:
 	/*! Shows all selected geometry. */
 	void hideSelected();
 
-
+	/*! Leave any special operation mode ("snap"-mode, "place local coordinate system"-mode, ...).
+		This function is called when switching from one mode to the next.
+	*/
+	void leaveAnySpecialMode();
 	/*! Toggles "align coordinate system" mode on. */
 	void enterCoordinateSystemAdjustmentMode();
 	/*! Leaves the coordinate system alignment mode and returns to previous mode. */
