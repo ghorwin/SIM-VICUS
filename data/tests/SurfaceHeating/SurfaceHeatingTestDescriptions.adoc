@@ -4,21 +4,11 @@
 
 ## IdealFloorHeating.nandrad
 
-- Zwei Zonen, beide mit Flächenheizsystem
-- 1. Zone: ideales Flächenheizsystem
+Zone mit idealem Flächenheizsystem
 	- Volumen 100 m3
 	- maximale Heizlast: 50 W/m2 = 5000 W
 
-- 2. Zone: Ideales Rohrregister
-	- Volumen 100 m3
-	- Rohrlänge: 100 m
-	- Heizmedium: Wasser
-	- Rohrdicke: 25.6 mmm
-	- U-Wert Rohrwand: 5 W/m2K
-	- Vorlauftemperatur: 40 °C
-	- maximaler Massestrom: 0.2 kg/s
-	
-Beide Zonen werden bei einer Außentemperatur von -10 °C durchj natürliche Lüftung gekühlt mit einer konstanten
+Die Zone wird bei einer Außentemperatur von -10 °C durch natürliche Lüftung gekühlt mit einer konstanten
 Austauschrate von 0.5 1/h. Eine Solltemperatur von 22 °C wird angestrebt. Für den stationären Sollzustand ergibt sich:
 
 ```
@@ -27,8 +17,8 @@ rhoAir = 1.205 kg/m3
 QdotVentlation = 0.5/3600 1/s * 100 m3 * 1.205 kg/m3  * 1006 J/kgK * 32 K = 538.7 W
 ```
 
-Um den Sollzustand zu erreichen, müssen also diese Heizlasten durch das Flächensystem (zumindest annähernd) ausgeglichen werden. Das ideale
-Flächenheizsystem kann diese Leistung in  jedem Fall liefern.
+Um den Sollzustand zu erreichen, muss also diese Heizlast durch das Flächensystem (zumindest annähernd) ausgeglichen werden. Das ideale
+Flächenheizsystem kann diese Leistung in jedem Fall liefern.
 Die begrenzende Schicht zum Raum ist mit einer Wärmeleitfähigkeit von 1.2 W/mK und einer Dicke von 0.01 m charakterisiert bei einer Wandfläche
 von 10 m2. Zum Raum besteht ein Wärmeübergang von 20 W/m2K. Dies ergibt eine notwendige Temperaturspreizung zwischen Raumluft und beheizter Schichttemperatur 
 deltaT von:
@@ -39,8 +29,20 @@ QdotHeating = 538.7 = UElementWall * (TElementWall- TRoom)
 TElementWall - TRoom = 3 K
 ```
 
-Bei Einhaltung der Solltemperatur wird also eine Schichttemperatur von ca 25 °C erreicht. Die Vorlauftemperatur beträgt 40 °C
-Der U-Wert der Rohrwand beläuft sich auf 136.9 W/mK. Damit ergibt sich für das ideale Rohrregister die Schätzung:
+## IdealPipeRegisterHeating.nandrad
+
+Zone mit idealem Rohrregister
+	- Volumen 100 m3
+	- Rohrlänge: 100 m
+	- Heizmedium: Wasser
+	- Rohrdicke: 25.6 mmm
+	- U-Wert Rohrwand: 5 W/m2K
+	- Vorlauftemperatur: 40 °C
+	- maximaler Massestrom: 0.2 kg/s
+	- natürliche Lüftungsrate: 0.5 1/h
+	
+Die Außentemperatur beträgt konstant -10 °C, die Solltemperatur 22 °C. Bei Einhaltung der Solltemperatur wird also eine Schichttemperatur von ca 25 °C erreicht. 
+Die Vorlauftemperatur beträgt 40 °C. Der U-Wert der Rohrwand beläuft sich auf 136.9 W/mK. Damit ergibt sich für das ideale Rohrregister die Schätzung:
 
 ```
 CpWater = 4180 J/kgK
