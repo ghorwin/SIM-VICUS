@@ -48,7 +48,7 @@ void IdealSurfaceHeatingModel::setup(const NANDRAD::IdealSurfaceHeatingModel & m
 
 	// store zone
 	m_thermostatZoneId = model.m_thermostatZoneID;
-	// store zone are (checked already)
+	// store zone area (checked already)
 	m_thermostatZoneArea = zone_it->m_para[NANDRAD::Zone::P_Area].value;
 
 	// resize result vector
@@ -57,21 +57,12 @@ void IdealSurfaceHeatingModel::setup(const NANDRAD::IdealSurfaceHeatingModel & m
 }
 
 
-const NANDRAD::ObjectList & IdealSurfaceHeatingModel::objectList() const{
-	return *m_objectList;
-}
-
-
-void IdealSurfaceHeatingModel::initResults(const std::vector<AbstractModel *> &) {
-}
-
-
 void IdealSurfaceHeatingModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 	// during initialization of the object lists, only those zones were added, that are actually parameterized
 	// so we can rely on the existence of zones whose IDs are in our object list and we do not need to search
 	// through all the models
 
-	// it may be possible, that an object list does not contain a valid id, for example, when the
+	// it may be possible that an object list does not contain a valid id, for example, when the
 	// requested IDs did not exist - in this case a warning was already printed, so we can just bail out here
 	if (m_objectList->m_filterID.m_ids.empty())
 		return; // nothing to compute, return
@@ -103,7 +94,7 @@ const double * IdealSurfaceHeatingModel::resultValueRef(const InputReference & q
 	if (quantityName.m_index == -1) // no index - not allowed
 		return nullptr;
 	// search for index = construction instance id (must be contained inside object list)
-	if(!m_objectList->m_filterID.contains((unsigned int) quantityName.m_index) )
+	if (!m_objectList->m_filterID.contains((unsigned int) quantityName.m_index) )
 		// exception is thrown when index is not available - return nullptr
 		return nullptr;
 
@@ -180,13 +171,11 @@ void IdealSurfaceHeatingModel::stateDependencies(std::vector<std::pair<const dou
 
 
 int IdealSurfaceHeatingModel::update() {
-	// retrieve zone area
-	double area = m_thermostatZoneArea;
-	// get control values
+	// get control value
 	double heatingControlValue = *m_thermostatValueRef;
 	// clip
 	heatingControlValue = std::max(0.0, std::min(1.0, heatingControlValue));
-	m_results[R_IdealSurfaceHeatingLoad] = heatingControlValue*area*m_maxHeatingPower;
+	m_results[R_IdealSurfaceHeatingLoad] = heatingControlValue*m_thermostatZoneArea*m_maxHeatingPower;
 
 	return 0; // signal success
 }

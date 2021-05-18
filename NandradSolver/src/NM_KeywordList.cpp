@@ -495,7 +495,7 @@ namespace NANDRAD_MODEL {
 			// IdealSurfaceHeatingModel::Results
 			case 7 :
 			switch (t) {
-				case 0 : return "Ideal, surface heat load";
+				case 0 : return "Ideal surface heat load";
 			} break;
 			// InternalLoadsModel::VectorValuedResults
 			case 8 :

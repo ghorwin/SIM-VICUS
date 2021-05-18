@@ -15,15 +15,12 @@ namespace NANDRAD {
 
 namespace NANDRAD_MODEL {
 
-/*! A model for ideal heating/cooling (air heating).
-	The model instance is identified by reference type MODEL and the id of the NANDRAD model parametrization block.
-	It implements ideal heating/cooling loads for all zones referenced in the object list.
-*/
+/*! A model for ideal heating via surface heating. */
 class IdealSurfaceHeatingModel : public AbstractModel, public AbstractStateDependency {
 public:
 	/*! Computed results. */
 	enum Results {
-		R_IdealSurfaceHeatingLoad,				// Keyword: IdealSurfaceHeatingLoad			[W]		'Ideal, surface heat load'
+		R_IdealSurfaceHeatingLoad,				// Keyword: IdealSurfaceHeatingLoad			[W]		'Ideal surface heat load'
 		NUM_R
 	};
 
@@ -44,9 +41,6 @@ public:
 			   const std::vector<NANDRAD::ObjectList> & objLists,
 			   const std::vector<NANDRAD::Zone> & zones);
 
-	/*! Returns object list of all referenced models. */
-	const NANDRAD::ObjectList &objectList() const;
-
 	// *** Re-implemented from AbstractModel
 
 	/*! Thermal ventilation loads can be requested via MODEL reference. */
@@ -59,9 +53,6 @@ public:
 
 	/*! Returns unique ID of this model instance. */
 	virtual unsigned int id() const override { return m_id; }
-
-	/*! Resizes m_results vector. */
-	virtual void initResults(const std::vector<AbstractModel*> & /* models */) override;
 
 	/*! Populates the vector resDesc with descriptions of all results provided by this model. */
 	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const override;
@@ -103,7 +94,7 @@ private:
 	/*! Display name (for error messages). */
 	std::string										m_displayName;
 
-	/*! Quick access pointer to object list (for targetted construction instances). */
+	/*! Quick access pointer to object list (for targeted construction instances). */
 	const NANDRAD::ObjectList						*m_objectList = nullptr;
 
 	/*! Cached heating power per zone area in [W/m2] */
@@ -125,8 +116,8 @@ private:
 	std::vector<double>								m_results;
 
 	/*! Vector with input references.
-		For each thermostat model found, this vector contains 2*number of zones input refs, for each zone
-		a heating and cooling control values is requested.
+		For each thermostat model found, this vector contains one input ref = for each zone
+		a heating control value is requested.
 	*/
 	std::vector<InputReference>						m_inputRefs;
 
