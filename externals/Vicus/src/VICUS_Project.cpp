@@ -735,7 +735,8 @@ void Project::generateNandradProject(NANDRAD::Project & p) const {
 		throw ConversionError(ConversionError::ET_MissingClimate,
 							  tr("A climate data file is needed. Please select a climate data file!"));
 
-	p.m_location.m_climateFilePath.removeRelativeParts();
+//	m_placeholders
+//	p.m_location.m_climateFilePath.extractPlaceholder();
 	/*
 	//change $Database -> $Project Directory
 	std::string climPath = p.m_location.m_climateFilePath.str();
@@ -749,7 +750,6 @@ void Project::generateNandradProject(NANDRAD::Project & p) const {
 	// directory placeholders
 	for (const auto & placeholder : m_placeholders)
 		p.m_placeholders[placeholder.first] = placeholder.second;
-
 
 	// *** building geometry data and databases ***
 

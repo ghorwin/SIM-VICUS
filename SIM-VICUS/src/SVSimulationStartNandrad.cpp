@@ -7,6 +7,8 @@
 
 #include <VICUS_Project.h>
 
+#include <QtExt_Directories.h>
+
 #include "SVProjectHandler.h"
 #include "SVSettings.h"
 #include "SVSimulationPerformanceOptions.h"
@@ -324,6 +326,9 @@ bool SVSimulationStartNandrad::startSimulation(bool testInit) {
 
 	SVSettings::instance().m_db.updateEmbeddedDatabase(m_localProject);
 	try {
+		//add default placeholder
+		p.m_placeholders[VICUS::DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::databasesDir() + "/DB_climate").toStdString());
+		p.m_placeholders[VICUS::USER_DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::userDataDir() + "/DB_climate").toStdString());
 		m_localProject.generateNandradProject(p);
 	}
 	catch (VICUS::Project::ConversionError & ex) {
