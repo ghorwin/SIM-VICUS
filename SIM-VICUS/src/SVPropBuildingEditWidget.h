@@ -118,9 +118,13 @@ private slots:
 
 	void on_tableWidgetZoneTemplates_itemClicked(QTableWidgetItem *item);
 
+	void on_pushButtonEditSubSurfaceComponents_clicked();
+
 private:
 	/*! Returns a pointer to the currently selected component in the component table. */
 	const VICUS::Component * currentlySelectedComponent() const;
+	/*! Returns a pointer to the currently selected sub-surface component in the sub-surface component table. */
+	const VICUS::SubSurfaceComponent * currentlySelectedSubSurfaceComponent() const;
 	/*! Returns a pointer to the currently selected zone template in the zone template table. */
 	const VICUS::ZoneTemplate * currentlySelectedZoneTemplate() const;
 

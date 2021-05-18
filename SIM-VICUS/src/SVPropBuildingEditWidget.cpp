@@ -230,7 +230,21 @@ void SVPropBuildingEditWidget::on_pushButtonAssignInsideComponent_clicked() {
 
 
 void SVPropBuildingEditWidget::on_tableWidgetSubSurfaceComponents_itemSelectionChanged() {
+	// check if the table is empty or there is no currently selected row
+	int r = m_ui->tableWidgetSubSurfaceComponents->currentRow();
+	if (r == -1 || m_subComponentSurfacesMap.empty()) {
+		m_ui->pushButtonEditSubSurfaceComponents->setEnabled(false);
+		m_ui->pushButtonExchangeSubSurfaceComponents->setEnabled(false);
+		m_ui->pushButtonSelectObjectsWithSubSurfaceComponent->setEnabled(false);
+		return;
+	}
+	// enable/disable buttons that require valid components
+	bool enabled = (currentlySelectedSubSurfaceComponent() != nullptr);
+	m_ui->pushButtonEditSubSurfaceComponents->setEnabled(enabled);
+	m_ui->pushButtonExchangeSubSurfaceComponents->setEnabled(enabled);
 
+	// the select buttons are always active, even if no component is assigned, yet
+	m_ui->pushButtonSelectObjectsWithSubSurfaceComponent->setEnabled(true);
 }
 
 
@@ -278,6 +292,17 @@ const VICUS::Component * SVPropBuildingEditWidget::currentlySelectedComponent() 
 	if (r == -1 || m_componentSurfacesMap.empty())
 		return nullptr;
 	std::map<const VICUS::Component*, std::vector<const VICUS::Surface *> >::const_iterator cit = m_componentSurfacesMap.begin();
+	std::advance(cit, r);
+	return cit->first;
+}
+
+
+const VICUS::SubSurfaceComponent * SVPropBuildingEditWidget::currentlySelectedSubSurfaceComponent() const {
+	// check if selected "sub-surface component" is actually missing
+	int r = m_ui->tableWidgetSubSurfaceComponents->currentRow();
+	if (r == -1 || m_subComponentSurfacesMap.empty())
+		return nullptr;
+	std::map<const VICUS::SubSurfaceComponent*, std::vector<const VICUS::SubSurface *> >::const_iterator cit = m_subComponentSurfacesMap.begin();
 	std::advance(cit, r);
 	return cit->first;
 }
@@ -1060,4 +1085,9 @@ void SVPropBuildingEditWidget::on_tableWidgetZoneTemplates_itemClicked(QTableWid
 		zoneTemplateVisibilityChanged();
 	if (m_ui->checkBoxZoneTemplateShowOnlyActive->isChecked())
 		zoneTemplateSelectionChanged();
+}
+
+
+void SVPropBuildingEditWidget::on_pushButtonEditSubSurfaceComponents_clicked() {
+
 }

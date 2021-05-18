@@ -223,7 +223,7 @@
             <item>
              <widget class="QPushButton" name="pushButtonAssignSubSurfaceComponent">
               <property name="text">
-               <string>Assign component...</string>
+               <string>Assign sub-surface...</string>
               </property>
               <property name="iconSize">
                <size>
