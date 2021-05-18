@@ -735,6 +735,17 @@ void Project::generateNandradProject(NANDRAD::Project & p) const {
 		throw ConversionError(ConversionError::ET_MissingClimate,
 							  tr("A climate data file is needed. Please select a climate data file!"));
 
+	p.m_location.m_climateFilePath.removeRelativeParts();
+	/*
+	//change $Database -> $Project Directory
+	std::string climPath = p.m_location.m_climateFilePath.str();
+	size_t pos = climPath.find("${Database}") ;
+	if(pos != std::string::npos){
+		climPath = IBK::replace_string(climPath, "${Database}", "${Project Directory}");
+		p.m_location.m_climateFilePath = climPath;
+	}
+	*/
+
 	// directory placeholders
 	for (const auto & placeholder : m_placeholders)
 		p.m_placeholders[placeholder.first] = placeholder.second;
@@ -1830,7 +1841,11 @@ NANDRAD::Interface Project::generateInterface(const VICUS::ComponentInstance & c
 		// generate a new interface to the zone, which always only includes heat conduction
 		NANDRAD::Interface iface;
 		iface.m_id = uniqueIdWithPredef(allModelIds, interfaceID);
-		iface.m_zoneId = uniqueIdWithPredef(allModelIds, room->m_id, vicusToNandradIds);
+		if(vicusToNandradIds.find(room->m_id) != vicusToNandradIds.end())
+			iface.m_zoneId = vicusToNandradIds[room->m_id];
+		else
+			iface.m_zoneId = room->m_id;
+
 
 		// only transfer heat conduction parameters
 		iface.m_heatConduction = bc->m_heatConduction;
