@@ -12,47 +12,25 @@
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 			<Interval>
-				<IBK:Parameter name="End" unit="d">30</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">5</IBK:Parameter>
 			</Interval>
 			<SolarLoadsDistributionModel>
 				<DistributionType>AreaWeighted</DistributionType>
 			</SolarLoadsDistributionModel>
 		</SimulationParameter>
-		<SolverParameter>
-			<IBK:Parameter name="RelTol" unit="---">1e-05</IBK:Parameter>
-		</SolverParameter> 
 		<Zones>
-			<Zone id="2" displayName="dummy" type="Active">
+			<Zone id="1" displayName="dummy" type="Active">
 				<IBK:Parameter name="Area" unit="m2">30</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">100</IBK:Parameter>
 			</Zone>
 		</Zones>
 		<ConstructionInstances>
-			<ConstructionInstance id="3001" displayName="Wall">
-				<ConstructionTypeId>10002</ConstructionTypeId>
+			<ConstructionInstance id="3001" displayName="Floor">
+				<ConstructionTypeId>10001</ConstructionTypeId>
 				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
-				<InterfaceA id="2" zoneId="2">
-					<!--Interface to 'Room'-->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</InterfaceA>
-				<InterfaceB id="2" zoneId="0">
-					<!--Interface to 'Outside'-->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</InterfaceB>
-			</ConstructionInstance>
-
-			<ConstructionInstance id="3002" displayName="Floor 2">
-				<ConstructionTypeId>10001</ConstructionTypeId>
-				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
-				<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
-				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
-				<InterfaceA id="4" zoneId="2">
+				<InterfaceA id="1" zoneId="1">
 					<!--Interface to 'Room'-->
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
@@ -60,7 +38,6 @@
 				</InterfaceA>
 			</ConstructionInstance>
 		</ConstructionInstances>
-		
 		<ConstructionTypes>
 			<ConstructionType id="10001" displayName="Construction with heated slab">
 				<!-- Layer index starts with 0 (index matches index in MaterialLayers vector) -->
@@ -69,12 +46,6 @@
 					<MaterialLayer thickness="0.01" matId="1002" />
 					<MaterialLayer thickness="0.06" matId="1001" /> <!-- heated layer -->
 					<MaterialLayer thickness="0.12" matId="1001" />
-				</MaterialLayers>
-			</ConstructionType>
-			<ConstructionType id="10002" displayName="Wall construction">
-				<MaterialLayers>
-					<MaterialLayer thickness="0.06" matId="1001" />
-					<MaterialLayer thickness="0.12" matId="1002" /> <!-- outside insulation layer -->
 				</MaterialLayers>
 			</ConstructionType>
 		</ConstructionTypes>
@@ -118,8 +89,8 @@
 			</Thermostats>
 
 			<IdealPipeRegisterModels>
-				<IdealPipeRegisterModel id="702" modelType="Constant">
-					<ThermostatZoneID>2</ThermostatZoneID>
+				<IdealPipeRegisterModel id="701" modelType="Constant">
+					<ThermostatZoneID>1</ThermostatZoneID>
 					<ConstructionObjectList>Floor</ConstructionObjectList>
 					<IBK:Parameter name="SupplyTemperature" unit="C">40</IBK:Parameter>
 					<IBK:Parameter name="MaxMassFlow" unit="kg/s">0.2</IBK:Parameter>
@@ -135,8 +106,8 @@
 					</LinearSplineParameter>
 					<IBK:IntPara name="NumberParallelPipes">1</IBK:IntPara>
 				</IdealPipeRegisterModel>
-			</IdealPipeRegisterModels>
-
+			</IdealPipeRegisterModels>		
+			
 		</Models>
 		<Schedules />
 		
@@ -192,7 +163,7 @@
 		</Outputs>
 		<ObjectLists>
 			<ObjectList name="Register Model">
-				<FilterID>702</FilterID>
+				<FilterID>701</FilterID>
 				<ReferenceType>Model</ReferenceType>
 			</ObjectList>
 			<ObjectList name="Zones">
@@ -200,11 +171,7 @@
 				<ReferenceType>Zone</ReferenceType>
 			</ObjectList>
 			<ObjectList name="Floor">
-				<FilterID>3000</FilterID>
-				<ReferenceType>ConstructionInstance</ReferenceType>
-			</ObjectList>
-			<ObjectList name="Floor 2">
-				<FilterID>3002</FilterID>
+				<FilterID>3001</FilterID>
 				<ReferenceType>ConstructionInstance</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
