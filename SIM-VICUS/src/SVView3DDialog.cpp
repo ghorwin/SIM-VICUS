@@ -223,7 +223,8 @@ void SVView3D::exportView3d() {
 		out.close();
 
 
-		SVSettings::TerminalEmulators runOption = SVSettings::TerminalEmulators::TE_XTerm;
+		//SVSettings::TerminalEmulators runOption = SVSettings::TerminalEmulators::TE_XTerm;
+		SVSettings::TerminalEmulators runOption = SVSettings::TerminalEmulators::TE_None;
 
 		/// Example for terminal:
 		/// ===================================================
