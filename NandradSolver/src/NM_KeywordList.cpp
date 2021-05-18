@@ -479,23 +479,23 @@ namespace NANDRAD_MODEL {
 			// IdealHeatingCoolingModel::VectorValuedResults
 			case 4 :
 			switch (t) {
-				case 0 : return "Ideal, convective heat load";
-				case 1 : return "Ideal, convective cooling load";
+				case 0 : return "Ideal convective heat load";
+				case 1 : return "Ideal convective cooling load";
 			} break;
 			// IdealPipeRegisterModel::Results
 			case 5 :
 			switch (t) {
-				case 0 : return "ControlledS mass flow";
+				case 0 : return "Controlled mass flow";
 			} break;
 			// IdealPipeRegisterModel::VectorValuedResults
 			case 6 :
 			switch (t) {
-				case 0 : return "Surface heat load";
+				case 0 : return "Layer heat load";
 			} break;
 			// IdealSurfaceHeatingModel::Results
 			case 7 :
 			switch (t) {
-				case 0 : return "Ideal surface heat load";
+				case 0 : return "Ideal layer heat load";
 			} break;
 			// InternalLoadsModel::VectorValuedResults
 			case 8 :

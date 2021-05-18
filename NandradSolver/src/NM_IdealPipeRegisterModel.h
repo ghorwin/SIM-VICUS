@@ -17,21 +17,18 @@ namespace NANDRAD {
 
 namespace NANDRAD_MODEL {
 
-/*! A model for ideal heating/cooling (air heating).
-	The model instance is identified by reference type MODEL and the id of the NANDRAD model parametrization block.
-	It implements ideal heating/cooling loads for all zones referenced in the object list.
-*/
+/*! A model for an ideal pipe register heating. */
 class IdealPipeRegisterModel : public AbstractModel, public AbstractStateDependency {
 public:
 	/*! Computed results. */
 	enum Results {
-		R_MassFlux,						// Keyword: MassFlux				[kg/s]	'ControlledS mass flow'
+		R_MassFlux,						// Keyword: MassFlux				[kg/s]	'Controlled mass flow'
 		NUM_R
 	};
 
 	/*! Computed results, vector-valued results that provide access via zone ID. */
 	enum VectorValuedResults {
-		VVR_SurfaceHeatingLoad,				// Keyword: SurfaceHeatingLoad			[W]		'Surface heat load'
+		VVR_SurfaceHeatingLoad,				// Keyword: SurfaceHeatingLoad			[W]		'Layer heat load'
 		NUM_VVR
 	};
 
@@ -50,9 +47,6 @@ public:
 	*/
 	void setup(const NANDRAD::IdealPipeRegisterModel & model,
 			   const std::vector<NANDRAD::ObjectList> & objLists);
-
-	/*! Returns object list of all referenced models. */
-	const NANDRAD::ObjectList &objectList() const;
 
 	// *** Re-implemented from AbstractModel
 

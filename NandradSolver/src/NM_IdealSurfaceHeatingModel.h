@@ -20,7 +20,7 @@ class IdealSurfaceHeatingModel : public AbstractModel, public AbstractStateDepen
 public:
 	/*! Computed results. */
 	enum Results {
-		R_IdealSurfaceHeatingLoad,				// Keyword: IdealSurfaceHeatingLoad			[W]		'Ideal surface heat load'
+		R_IdealSurfaceHeatingLoad,				// Keyword: IdealSurfaceHeatingLoad			[W]		'Ideal layer heat load'
 		NUM_R
 	};
 

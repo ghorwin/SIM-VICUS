@@ -43,7 +43,7 @@ void IdealSurfaceHeatingModel::setup(const NANDRAD::IdealSurfaceHeatingModel & m
 																  model.m_thermostatZoneID);
 
 	if (zone_it == zones.end())
-		throw IBK::Exception(IBK::FormatString("Invalid/undefined zone with '%1' in ThermsotatZoneId.")
+		throw IBK::Exception(IBK::FormatString("Invalid/undefined zone with '%1' in ThermostatZoneId.")
 							 .arg(model.m_thermostatZoneID), FUNC_ID);
 
 	// store zone

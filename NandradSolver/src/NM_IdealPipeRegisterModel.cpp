@@ -37,9 +37,9 @@ void IdealPipeRegisterModel::setup(const NANDRAD::IdealPipeRegisterModel & model
 							 .arg(m_objectList->m_name), FUNC_ID);
 
 	// retrieve reference to supply temperature parameter
-	if(model.m_modelType == NANDRAD::IdealPipeRegisterModel::MT_Constant) {
+	if (model.m_modelType == NANDRAD::IdealPipeRegisterModel::MT_Constant)
 		m_supplyTemperatureRef = &model.m_para[NANDRAD::IdealPipeRegisterModel::P_SupplyTemperature].value;
-	}
+
 
 	// retrieve model type
 	m_modelType = (int) model.m_modelType;
@@ -69,11 +69,6 @@ void IdealPipeRegisterModel::setup(const NANDRAD::IdealPipeRegisterModel & model
 	m_vectorValuedResults.resize(NUM_VVR);
 
 	// the rest of the initialization can only be done when the object lists have been initialized, i.e. this happens in resultDescriptions()
-}
-
-
-const NANDRAD::ObjectList & IdealPipeRegisterModel::objectList() const{
-	return *m_objectList;
 }
 
 
