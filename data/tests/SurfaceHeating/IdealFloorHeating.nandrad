@@ -49,7 +49,7 @@
 				</MaterialLayers>
 			</ConstructionType>
 		</ConstructionTypes>
-		
+
 		<Materials>
 			<Material id="1001" displayName="Brick">
 				<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
@@ -70,7 +70,7 @@
 					<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
 				</NaturalVentilationModel>
 			</NaturalVentilationModels>
-			
+
 			<Thermostats>
 				<!-- A thermostat with constant heating set point, no cooling. Uses air temperature as sensor value. -->
 				<Thermostat id="601" displayName="Constant air temperature thermostat" modelType="Constant">
@@ -94,14 +94,13 @@
 					<ConstructionObjectList>Floor</ConstructionObjectList>
 					<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">50</IBK:Parameter>
 				</IdealSurfaceHeatingModel>
-			</IdealSurfaceHeatingModels>	
-				
+			</IdealSurfaceHeatingModels>
+
 		</Models>
-		<Schedules />
-		
+
 		<Outputs>
 			<Definitions>
-				
+
 				<OutputDefinition>
 					<Quantity>VentilationHeatLoad</Quantity>
 					<ObjectListName>Zones</ObjectListName>
@@ -119,25 +118,25 @@
 					<ObjectListName>Floor</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
-				
+
 				<OutputDefinition>
 					<Quantity>ElementTemperature[1]</Quantity>
 					<ObjectListName>Floor</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
-				
+
 				<OutputDefinition>
 					<Quantity>AirTemperature</Quantity>
 					<ObjectListName>Zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
-				
+
 			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
 					<Intervals>
 						<Interval>
-							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
 						</Interval>
 					</Intervals>
 				</OutputGrid>
@@ -153,6 +152,6 @@
 				<ReferenceType>ConstructionInstance</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
-		
+
 	</Project>
 </NandradProject>
