@@ -223,7 +223,6 @@ void GridObject::render() {
 
 	// TODO : Stephan farbe schick machen
 //	QVector3D yColor(0.2f, 1.0f, 0.2f);
-	QVector3D v = qColorToQVector3D(yLine);
 	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], qColorToQVector3D(yLine));
 	glDrawArrays(GL_LINES, m_vertexCount-2, 2);
 

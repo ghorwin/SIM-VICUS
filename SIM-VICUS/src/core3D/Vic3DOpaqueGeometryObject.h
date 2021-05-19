@@ -54,7 +54,7 @@ public:
 	void renderOpaque();
 
 	/*! Returns true, if transparent geometry is visible. */
-	bool canDrawTransparent() const { return m_transparentStartIndex != m_indexBufferData.size(); }
+	bool canDrawTransparent() const { return m_transparentStartIndex != (GLsizei)m_indexBufferData.size(); }
 	/*! Renders in transparent mode (OpenGL context is expected to be setup correctly, already). */
 	void renderTransparent();
 
