@@ -31,8 +31,7 @@
 #include "NM_KeywordList.h"
 
 
-// TODO Andreas: include cpp???
-#include "NM_HydraulicNetworkModel.cpp"
+#include "NM_HydraulicNetworkModelPrivate.h"
 
 #include <NANDRAD_HydraulicNetwork.h>
 #include <NANDRAD_HydraulicNetworkComponent.h>

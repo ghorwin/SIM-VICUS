@@ -24,7 +24,7 @@
 #include "NM_ThermalNetworkPrivate.h"
 
 #include "NM_HydraulicNetworkModel.h"
-#include "NM_HydraulicNetworkModel_p.h"
+#include "NM_HydraulicNetworkModelPrivate.h"
 
 #include <NANDRAD_HydraulicFluid.h>
 
