@@ -542,56 +542,6 @@ bool selectionCheck(const VICUS::Object & o, bool takeSelected, bool takeVisible
 	return (selCheck && visCheck);
 }
 
-
-void Project::selectedBuildingObjects(std::set<const Object *> &selectedObjs, Object *obj) const {
-
-	bool takeSelected = true;
-	bool takeVisible = false;
-
-	selectedObjs.clear();
-
-	for (const VICUS::Building & b : m_buildings) {
-		//
-		VICUS::Building *bcheck = dynamic_cast<VICUS::Building *>(obj);
-		if ( bcheck != nullptr) {
-			 if (selectionCheck(b, takeSelected, takeVisible) )
-				selectedObjs.insert(&b);
-			 continue;
-		}
-
-		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
-
-			VICUS::BuildingLevel *blcheck = dynamic_cast<VICUS::BuildingLevel *>(obj);
-			if ( blcheck != nullptr ) {
-				if (selectionCheck(bl, takeSelected, takeVisible) )
-					selectedObjs.insert(&bl);
-				continue;
-			}
-
-			for (const VICUS::Room & r : bl.m_rooms) {
-
-				VICUS::Room *rcheck = dynamic_cast<VICUS::Room *>(obj);
-				if ( rcheck != nullptr){
-					if (selectionCheck(r, takeSelected, takeVisible) )
-						selectedObjs.insert(&r);
-					continue;
-				}
-
-				for (const VICUS::Surface & s : r.m_surfaces) {
-
-					VICUS::Surface *scheck = dynamic_cast<VICUS::Surface *>(obj);
-					if ( scheck != nullptr ) {
-						if ( selectionCheck(s, takeSelected, takeVisible) )
-							selectedObjs.insert(&s);
-						continue;
-					}
-				}
-			}
-		}
-	}
-}
-
-
 void Project::selectObjects(std::set<const Object*> &selectedObjs, SelectionGroups sg,
 							bool takeSelected, bool takeVisible) const
 {

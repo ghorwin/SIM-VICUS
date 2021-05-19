@@ -136,14 +136,6 @@ public:
 	*/
 	VICUS::SubSurface * subSurfaceByID(unsigned int surfID);
 
-	/*! Selects objects and returns set with pointers according to additional filters.
-		\param selectedObjs Here the pointers to selected objects are returned.
-		\param sg			Selection group, that the object belongs to.
-		\param takeSelected	If true, only objects with "selected" property enabled are taken. If false,
-			selection property is ignored.
-	*/
-	void selectedBuildingObjects(std::set<const Object *> &selectedObjs, Object *obj) const;
-
 	/*! Selects objects and return set with pointers according to additional filters.
 		\param selectedObjs Here the pointers to selected objects are returned.
 		\param sg			Selection group, that the object belongs to.
