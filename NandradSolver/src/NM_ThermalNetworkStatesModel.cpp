@@ -25,7 +25,6 @@
 #include "NM_ThermalNetworkStatesModel.h"
 
 #include "NM_HydraulicNetworkModel.h"
-#include "NM_HydraulicNetworkModel_p.h"
 #include "NM_ThermalNetworkPrivate.h"
 #include "NM_ThermalNetworkFlowElements.h"
 #include "NM_KeywordList.h"
