@@ -8,6 +8,7 @@
 #include <QTimer>
 #include <QFileDialog>
 #include <QSettings>
+#include <QDebug>
 
 #include <QtExt_Directories.h>
 
@@ -129,7 +130,9 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	v->sortByColumn(0, Qt::AscendingOrder);
 	// smaller font for entire table
 	QFont f;
+#ifndef Q_OS_WIN
 	f.setPointSizeF(f.pointSizeF()*0.8);
+#endif // Q_OS_WIN
 	v->setFont(f);
 	v->horizontalHeader()->setFont(f); // Note: on Linux/Mac this won't work until Qt 5.11.1 - this was a bug between Qt 4.8...5.11.1
 
@@ -490,7 +493,7 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveOutputVariable_clicked() {
 }
 
 
-void NandradFMUGeneratorWidget::on_tableWidgetOutputVars_itemDoubleClicked(QTableWidgetItem */*item*/) {
+void NandradFMUGeneratorWidget::on_tableWidgetOutputVars_itemDoubleClicked(QTableWidgetItem * /*item*/) {
 	// depending on the state of the buttons, call either add or remove
 	if (m_ui->toolButtonAddOutputVariable->isEnabled())
 		m_ui->toolButtonAddOutputVariable->click();
@@ -569,6 +572,16 @@ void NandradFMUGeneratorWidget::on_pushButtonSelectNandradProject_clicked() {
 }
 
 
+void NandradFMUGeneratorWidget::onProcessStarted() {
+	qDebug() << "Started NandradSolver successfully";
+}
+
+
+void NandradFMUGeneratorWidget::onProcessErrorOccurred() {
+	qDebug() << "NandradSolver start error";
+}
+
+
 // *** PRIVATE MEMBER FUNCTIONS ****
 
 
@@ -628,6 +641,10 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 	QStringList commandLineArgs;
 	commandLineArgs.append("--test-init");
 
+#ifdef Q_OS_WIN
+	commandLineArgs.append("-x"); // do not show "press key"
+#endif
+
 //	bool success = startProcess(m_nandradSolverExecutable, commandLineArgs, QString::fromStdString(m_nandradFilePath.str()));
 
 	commandLineArgs.append(QString::fromStdString(m_nandradFilePath.str()));
@@ -638,16 +655,28 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 	proc.setProgram(solverExecutable);
 	proc.setArguments(commandLineArgs);
 
+	connect(&proc, &QProcess::started, this, &NandradFMUGeneratorWidget::onProcessStarted);
+	connect(&proc, &QProcess::errorOccurred, this, &NandradFMUGeneratorWidget::onProcessErrorOccurred);
 	proc.start();
-	bool success = proc.waitForFinished();
-
-	// TODO : For extremely large simulation projects, the intialization itself may take more than 30 seconds, so
-	//        we may add a progress indicator dialog
-
+	// start process
+	bool success = proc.waitForStarted();
 	if (!success) {
 		QMessageBox::critical(this, QString(), tr("Could not run solver '%1'").arg(solverExecutable));
 		return;
 	}
+
+	proc.waitForFinished();
+
+	if (proc.exitStatus() == QProcess::NormalExit) {
+		if (proc.exitCode() != 0) {
+			QMessageBox::critical(this, QString(), tr("There were errors during project test-initialization. Please ensure that the NANDRAD project runs successfully!"));
+			return;
+		}
+	}
+
+	// TODO : For extremely large simulation projects, the intialization itself may take more than 30 seconds, so
+	//        we may add a progress indicator dialog
+
 
 	QString nandradProjectFilePath = QString::fromStdString(m_nandradFilePath.str());
 	// now parse the variable lists
