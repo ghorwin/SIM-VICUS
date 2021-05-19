@@ -537,16 +537,17 @@ void TNElementWithExternalHeatLoss::internalDerivatives(double * ydot) {
 double TNElementWithExternalHeatLoss::zetaControlled(double mdot) {
 	FUNCID(TNElementWithExternalHeatLoss::zetaControlled);
 	// calculate zetaControlled value for valve
-	m_zetaControlled = 0;
 	switch (m_controlElement->m_controlType) {
 		case NANDRAD::ControlElement::CT_ControlTemperatureDifference:{
 			double currentTempDiff = m_heatLoss/(mdot*m_fluidHeatCapacity);
 			double e = m_controlElement->m_setPoint.value - currentTempDiff;
 			double kp = m_controlElement->m_controller->m_para[NANDRAD::Controller::P_Kp].value;
 			double y = kp * e;
-			if (y > m_controlElement->m_maximumControllerResultValue)
+			if (y <= 0)
+				m_zetaControlled = 0;
+			else if (y > m_controlElement->m_maximumControllerResultValue)
 				m_zetaControlled = m_controlElement->m_maximumControllerResultValue;
-			else if (y > 0)
+			else
 				m_zetaControlled = y;
 		} break;
 		case NANDRAD::ControlElement::CT_ControlMassFlow:
@@ -598,13 +599,18 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 			if (m_condenserHeatFlux > m_condenserMaximumHeatFlux)
 				m_condenserHeatFlux = m_condenserMaximumHeatFlux;
 
+
+			// TODO: Andreas, sollte man das so implementieren?
+
 			// we need a small iteration (10 steps is enough) to determine COP and evaporatorHeatFlux, since they depend on evaporatorMeanTemperature
 			m_evaporatorMeanTemperature = (m_inflowTemperature + m_meanTemperature) / 2;	// initial guess
 			for (unsigned int n=0; n<10; ++n){
 
-				// heat pump physics only work when condenser temperature is above evaporator temperature
-				if (m_condenserMeanTemperature > m_evaporatorMeanTemperature){
-					m_COP = m_carnotEfficiency * m_condenserMeanTemperature / (m_condenserMeanTemperature - m_evaporatorMeanTemperature);
+				// cop
+				m_COP = m_carnotEfficiency * m_condenserMeanTemperature / (m_condenserMeanTemperature - m_evaporatorMeanTemperature);
+
+				// heat pump physics only work if COP > 1
+				if (m_COP > 1){
 					m_evaporatorHeatFlux = m_condenserHeatFlux * (m_COP - 1) / m_COP;
 					m_heatLoss = m_evaporatorHeatFlux;
 					m_electricalPower  = m_condenserHeatFlux / m_COP;
@@ -613,13 +619,17 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 					IBK::IBK_Message(IBK::FormatString("Condenser temperature >= evaporator temperature in "
 													   "HeatPumpIdealCarnot, flow element with id '%1'\n").arg(m_flowElementId),
 														IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
+				m_evaporatorHeatFlux = 0;
+				m_condenserHeatFlux = 0;
 				m_COP = 0.0;
 				m_heatLoss = 0.0;
 				m_electricalPower  = 0.0;
+				m_evaporatorMeanTemperature = 0;
+				break;
 				}
 
 				// correction for iteration
-				const double outflowTemperature = m_inflowTemperature + m_evaporatorHeatFlux / (m_massFlux * m_fluidHeatCapacity);
+				const double outflowTemperature = m_inflowTemperature - m_evaporatorHeatFlux / (m_massFlux * m_fluidHeatCapacity);
 				m_evaporatorMeanTemperature = (m_inflowTemperature + outflowTemperature) / 2;
 			}
 

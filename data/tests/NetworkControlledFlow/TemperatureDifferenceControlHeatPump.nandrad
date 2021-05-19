@@ -12,7 +12,7 @@
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 			<Interval>
-				<IBK:Parameter name="End" unit="d">3</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">4</IBK:Parameter>
 			</Interval>
 			<SolarLoadsDistributionModel>
 				<DistributionType>AreaWeighted</DistributionType>
@@ -26,7 +26,7 @@
 			</Zone>
 		</Zones>
 		<HydraulicNetworks>
-			<HydraulicNetwork id="1" displayName="Mini Netzwerk" modelType="ThermalHydraulicNetwork" referenceElementId="0">
+			<HydraulicNetwork id="1" displayName="Mini Netzwerk" modelType="ThermalHydraulicNetwork" referenceElementId="1">
 				<HydraulicFluid id="1">
 					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
@@ -42,65 +42,74 @@
 				<PipeProperties>
 					<HydraulicNetworkPipeProperties id="9">
 						<IBK:Parameter name="PipeRoughness" unit="mm">0.007</IBK:Parameter>
-						<IBK:Parameter name="PipeInnerDiameter" unit="mm">130.8</IBK:Parameter>
-						<IBK:Parameter name="PipeOuterDiameter" unit="mm">160</IBK:Parameter>
+						<IBK:Parameter name="PipeInnerDiameter" unit="mm">13</IBK:Parameter>
+						<IBK:Parameter name="PipeOuterDiameter" unit="mm">16</IBK:Parameter>
 						<IBK:Parameter name="UValuePipeWall" unit="W/mK">12.47255355</IBK:Parameter>
 					</HydraulicNetworkPipeProperties>
 				</PipeProperties>
 				<Components>
-					<HydraulicNetworkComponent id="10020002" displayName="pump" modelType="ConstantPressurePump">
-						<IBK:Parameter name="PressureHead" unit="Pa">10000</IBK:Parameter>
+					<HydraulicNetworkComponent id="1" displayName="pump" modelType="ConstantPressurePump">
+						<IBK:Parameter name="PressureHead" unit="Pa">100000</IBK:Parameter>
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
 					</HydraulicNetworkComponent>
-					<HydraulicNetworkComponent id="10020004" displayName="simpleHX" modelType="HeatExchanger">
-						<IBK:Parameter name="HydraulicDiameter" unit="mm">22.6</IBK:Parameter>
-						<IBK:Parameter name="PressureLossCoefficient" unit="-">18</IBK:Parameter>
-						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
-						<IBK:Parameter name="PipeMaxDiscretizationWidth" unit="m">5</IBK:Parameter>
+					<HydraulicNetworkComponent id="2" modelType="HeatPumpIdealCarnot">
+						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
+						<IBK:Parameter name="PressureLossCoefficient" unit="-">5</IBK:Parameter>
+						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
+						<IBK:Parameter name="CarnotEfficiency" unit="---">0.4</IBK:Parameter>
+						<IBK:Parameter name="MaximumHeatingPower" unit="W">1000000</IBK:Parameter>
+						<HeatPumpIntegration>SourceSide</HeatPumpIntegration>
 					</HydraulicNetworkComponent>
-					<HydraulicNetworkComponent id="10020001" displayName="simple pipe" modelType="SimplePipe">
+					<HydraulicNetworkComponent id="3" displayName="simple pipe" modelType="SimplePipe">
 					</HydraulicNetworkComponent>
 				</Components>
-
+				
 				<Elements>
-
-					<HydraulicNetworkElement id="0" inletNodeId="100" outletNodeId="0" componentId="10020002" displayName="pump"/>
-
-					<HydraulicNetworkElement id="1" inletNodeId="0" outletNodeId="101" componentId="10020004" displayName="heat exchanger">
-						<!-- Heat loss from element (to environment) is given via time-series. -->
-						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
-							<LinearSplineParameter name="HeatLoss">
-								<X unit="d">0 1   2    2.2  2.3  2.7  2.8 3</X>
-								<Y unit="W">0 500 1000 1000 3000 3000 800 0</Y>
+				
+				<HydraulicNetworkElement id="1" inletNodeId="100" outletNodeId="0" componentId="1" displayName="pump">
+				</HydraulicNetworkElement>
+				
+				<HydraulicNetworkElement id="2" inletNodeId="0" outletNodeId="101" componentId="2" displayName="heat pump">
+						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
+							<LinearSplineParameter name="HeatLoss" interpolation="Constant">
+								<X unit="d">0 1 1.2 2 3.1 4</X>
+								<Y unit="W">500 500 1000 1000 999000 999000</Y>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
-
-						<!-- Mass flow is controlled (valve) depending on temperature difference between supply and return side
-							 of element. The controller uses the HeatLoss defined through HeatExchange parameter block above.
-						-->
 						<ControlElement controlType="ControlTemperatureDifference" controllerId="1">
 							<IBK:Parameter name="SetPoint" unit="K">3</IBK:Parameter>
-							<!-- The controller computes a zeta-value that is added to the zeta-value of the "pipe"-like
-								 heat exchanger. The maximum zeta-value (when valve is fully closed) is given in the parameter
-								 below
-							-->
 							<MaximumControllerResultValue>1e99</MaximumControllerResultValue>
 						</ControlElement>
-					</HydraulicNetworkElement>
+				</HydraulicNetworkElement>
 
-					<HydraulicNetworkElement id="8" inletNodeId="101" outletNodeId="100" componentId="10020001" pipePropertiesId="9" displayName="pipe">
-						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
-						<HydraulicNetworkHeatExchange modelType="TemperatureConstant">
-							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
-							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">10000</IBK:Parameter>
-						</HydraulicNetworkHeatExchange>
-					</HydraulicNetworkElement>
+				<HydraulicNetworkElement id="3" inletNodeId="101" outletNodeId="100" componentId="3" pipePropertiesId="9" displayName="pipe">
+					<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+					<HydraulicNetworkHeatExchange modelType="TemperatureConstant">
+						<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
+						<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">1e10</IBK:Parameter>
+					</HydraulicNetworkHeatExchange>
+				</HydraulicNetworkElement>
 
 				</Elements>
 			</HydraulicNetwork>
 		</HydraulicNetworks>
-		<Schedules />
+		<Schedules>
+			<WeekEndDays>Sat,Sun</WeekEndDays>
+			<ScheduleGroups>
+				<ScheduleGroup objectList="heat pump">
+					<Schedule type="AllDays">
+						<DailyCycles>
+							<!-- Condenser Temperature is usually 35°C for space heating and two times per day 50°C for domestic hot water-->
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0,12</TimePoints>
+								<Values>CondenserMeanTemperatureSchedule [C]:35,50;</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>					
+				</ScheduleGroup>
+			</ScheduleGroups>
+		</Schedules>
 		<Outputs>
 			<Definitions>
 				<OutputDefinition>
@@ -127,6 +136,36 @@
 					<ObjectListName>the objects</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
+			<OutputDefinition>
+				<Quantity>COP</Quantity>
+				<ObjectListName>heat pump</ObjectListName>
+				<GridName>hourly</GridName>
+			</OutputDefinition>
+			<OutputDefinition>
+				<Quantity>ElectricalPower</Quantity>
+				<ObjectListName>heat pump</ObjectListName>
+				<GridName>hourly</GridName>
+			</OutputDefinition>
+			<OutputDefinition>
+				<Quantity>CondenserHeatFlux</Quantity>
+				<ObjectListName>heat pump</ObjectListName>
+				<GridName>hourly</GridName>
+			</OutputDefinition>
+			<OutputDefinition>
+				<Quantity>EvaporatorHeatFlux</Quantity>
+				<ObjectListName>heat pump</ObjectListName>
+				<GridName>hourly</GridName>
+			</OutputDefinition>
+			<OutputDefinition>
+				<Quantity>EvaporatorMeanTemperature</Quantity>
+				<ObjectListName>heat pump</ObjectListName>
+				<GridName>hourly</GridName>
+			</OutputDefinition>
+			<OutputDefinition>
+				<Quantity>CondenserMeanTemperature</Quantity>
+				<ObjectListName>heat pump</ObjectListName>
+				<GridName>hourly</GridName>
+			</OutputDefinition>
 			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
@@ -144,11 +183,15 @@
 				<FilterID>*</FilterID>
 				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>
+			<ObjectList name="heat pump">
+				<FilterID>2</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
+			</ObjectList>
 		</ObjectLists>
 		<Controllers>
 			<Controller id="1" modelType="PController">
 				<Type>PController</Type>
-				<IBK:Parameter name="Kp" unit="-">1e5</IBK:Parameter>
+				<IBK:Parameter name="Kp" unit="-">1e6</IBK:Parameter>
 			</Controller>
 		</Controllers>
 	</Project>
