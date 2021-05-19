@@ -30,7 +30,7 @@
 #include "NANDRAD_Thermostat.h"
 #include "NANDRAD_IdealHeatingCoolingModel.h"
 #include "NANDRAD_IdealPipeRegisterModel.h"
-#include "NANDRAD_IdealSurfaceHeatingModel.h"
+#include "NANDRAD_IdealSurfaceHeatingCoolingModel.h"
 #include "NANDRAD_CodeGenMacros.h"
 
 namespace NANDRAD {
@@ -49,19 +49,19 @@ public:
 	void checkForUniqueIDs() const;
 
 	/*! Container for all natural ventilation models. */
-	std::vector<NaturalVentilationModel>	m_naturalVentilationModels;			// XML:E
+	std::vector<NaturalVentilationModel>			m_naturalVentilationModels;			// XML:E
 	/*! Container for all internal loads models. */
-	std::vector<InternalLoadsModel>			m_internalLoadsModels;				// XML:E
+	std::vector<InternalLoadsModel>					m_internalLoadsModels;				// XML:E
 	/*! Container for all shading control models. */
-	std::vector<ShadingControlModel>		m_shadingControlModels;				// XML:E
+	std::vector<ShadingControlModel>				m_shadingControlModels;				// XML:E
 	/*! Container for all thermostat control models. */
-	std::vector<Thermostat>					m_thermostats;						// XML:E
+	std::vector<Thermostat>							m_thermostats;						// XML:E
 	/*! Container for all ideal heating/cooling models. */
-	std::vector<IdealHeatingCoolingModel>	m_idealHeatingCoolingModels;		// XML:E
-	/*! Container for all ideal surface heating models. */
-	std::vector<IdealSurfaceHeatingModel>	m_idealSurfaceHeatingModels;		// XML:E
+	std::vector<IdealHeatingCoolingModel>			m_idealHeatingCoolingModels;		// XML:E
+	/*! Container for all ideal surface heating/cooling models. */
+	std::vector<IdealSurfaceHeatingCoolingModel>	m_idealSurfaceHeatingCoolingModels;	// XML:E
 	/*! Container for all ideal pipe register models. */
-	std::vector<IdealPipeRegisterModel>		m_idealPipeRegisterModels;			// XML:E
+	std::vector<IdealPipeRegisterModel>				m_idealPipeRegisterModels;			// XML:E
 };
 
 } // namespace NANDRAD

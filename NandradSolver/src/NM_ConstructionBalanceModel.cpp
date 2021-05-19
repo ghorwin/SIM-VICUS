@@ -29,7 +29,7 @@
 
 #include "NM_ConstructionStatesModel.h"
 #include "NM_IdealPipeRegisterModel.h"
-#include "NM_IdealSurfaceHeatingModel.h"
+#include "NM_IdealSurfaceHeatingCoolingModel.h"
 #include "NM_InternalLoadsModel.h"
 #include "NM_KeywordList.h"
 #include "NM_ThermalNetworkBalanceModel.h"
@@ -228,7 +228,7 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 		if (model->referenceType() == NANDRAD::ModelInputReference::MRT_MODEL) {
 
 			InternalLoadsModel * intLoadsModel = dynamic_cast<InternalLoadsModel *>(model);
-			IdealSurfaceHeatingModel * idealSurfaceHeatingModel = dynamic_cast<IdealSurfaceHeatingModel *>(model);
+			IdealSurfaceHeatingCoolingModel * idealSurfaceHeatingCoolingModel = dynamic_cast<IdealSurfaceHeatingCoolingModel *>(model);
 			IdealPipeRegisterModel * idealPipeRegisterModel = dynamic_cast<IdealPipeRegisterModel *>(model);
 
 			if (intLoadsModel != nullptr) {
@@ -294,8 +294,8 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 				}
 			}
 			// create input references for heat fluxes from ideal surface heatings
-			else if (idealSurfaceHeatingModel != nullptr) {
-				++m_surfaceHeatingModelCount;
+			else if (idealSurfaceHeatingCoolingModel != nullptr) {
+				++m_surfaceHeatingCoolingModelCount;
 				InputReference r;
 				r.m_name.m_name = "IdealSurfaceHeatingLoad";
 				// add current id as index so that we can sum uphat fluxes from all hetaing models
@@ -309,7 +309,7 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 			}
 			// create input references for heat fluxes from ideal pipe register model
 			else if (idealPipeRegisterModel != nullptr) {
-				++m_surfaceHeatingModelCount;
+				++m_surfaceHeatingCoolingModelCount;
 				InputReference r;
 				r.m_name.m_name = "SurfaceHeatingLoad";
 				// add current id as index so that we can sum uphat fluxes from all hetaing models
@@ -326,7 +326,7 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 		else if (model->referenceType() == NANDRAD::ModelInputReference::MRT_NETWORK) {
 			ThermalNetworkBalanceModel * thermNetworkModel = dynamic_cast<ThermalNetworkBalanceModel *>(model);
 			if (thermNetworkModel != nullptr) {
-				++m_surfaceHeatingModelCount;
+				++m_surfaceHeatingCoolingModelCount;
 				InputReference r;
 				r.m_name.m_name = "NetworkActiveLayerHeatLoad";
 				// add current id as index so that we can sum uphat fluxes from all networks
@@ -364,7 +364,7 @@ void ConstructionBalanceModel::setInputValueRefs(const std::vector<QuantityDescr
 
 	if(m_statesModel->m_activeLayerIndex != NANDRAD::INVALID_ID) {
 		// check all surface heating loads
-		for (unsigned int i= NUM_InputRef; i < NUM_InputRef + m_surfaceHeatingModelCount; ++i) {
+		for (unsigned int i= NUM_InputRef; i < NUM_InputRef + m_surfaceHeatingCoolingModelCount; ++i) {
 			// check that only one active layer is references
 			if(resultValueRefs[i] != nullptr) {
 				if(m_valueRefs[InputRef_ActiveLayerHeatLoads] != nullptr)

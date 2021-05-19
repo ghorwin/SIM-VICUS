@@ -1,5 +1,5 @@
-#ifndef NM_IdealSurfaceHeatingModelH
-#define NM_IdealSurfaceHeatingModelH
+#ifndef NM_IdealSurfaceHeatingCoolingModelH
+#define NM_IdealSurfaceHeatingCoolingModelH
 
 #include "NM_AbstractModel.h"
 #include "NM_AbstractStateDependency.h"
@@ -8,7 +8,7 @@
 #include <NANDRAD_ObjectList.h>
 
 namespace NANDRAD {
-	class IdealSurfaceHeatingModel;
+	class IdealSurfaceHeatingCoolingModel;
 	class Thermostat;
 	class Zone;
 }
@@ -16,18 +16,18 @@ namespace NANDRAD {
 namespace NANDRAD_MODEL {
 
 /*! A model for ideal heating via surface heating. */
-class IdealSurfaceHeatingModel : public AbstractModel, public AbstractStateDependency {
+class IdealSurfaceHeatingCoolingModel : public AbstractModel, public AbstractStateDependency {
 public:
 	/*! Computed results. */
 	enum Results {
-		R_IdealSurfaceHeatingLoad,				// Keyword: IdealSurfaceHeatingLoad			[W]		'Ideal layer heat load'
+		R_ThermalLoad,				// Keyword: ThermalLoad			[W]		'Layer thermal load'
 		NUM_R
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS
 
 	/*! Constructor. */
-	IdealSurfaceHeatingModel(unsigned int id, const std::string &displayName) :
+	IdealSurfaceHeatingCoolingModel(unsigned int id, const std::string &displayName) :
 		m_id(id), m_displayName(displayName)
 	{
 	}
@@ -37,7 +37,7 @@ public:
 		\param objLists The object list stored in the project file (persistent, remains unmodified so that persistent
 			pointers to object list elements can be stored).
 	*/
-	void setup(const NANDRAD::IdealSurfaceHeatingModel & model,
+	void setup(const NANDRAD::IdealSurfaceHeatingCoolingModel & model,
 			   const std::vector<NANDRAD::ObjectList> & objLists,
 			   const std::vector<NANDRAD::Zone> & zones);
 
@@ -49,7 +49,7 @@ public:
 	}
 
 	/*! Return unique class ID name of implemented model. */
-	virtual const char * ModelIDName() const override { return "IdealSurfaceHeatingModel"; }
+	virtual const char * ModelIDName() const override { return "IdealSurfaceHeatingCoolingModel"; }
 
 	/*! Returns unique ID of this model instance. */
 	virtual unsigned int id() const override { return m_id; }
@@ -100,6 +100,9 @@ private:
 	/*! Cached heating power per zone area in [W/m2] */
 	double											m_maxHeatingPower = 666;
 
+	/*! Cached cooling power per zone area in [W/m2] */
+	double											m_maxCoolingPower = 666;
+
 	/*! Cached thermostat zone area in [m2] */
 	double											m_thermostatZoneArea = 666;
 
@@ -109,8 +112,11 @@ private:
 	/*! Holds number of thermostat model objects that values were requested from. */
 	unsigned int									m_thermostatModelObjects = 0;
 
-	/*! Reference to thermotat control value. */
-	const double*									m_thermostatValueRef = nullptr;
+	/*! Reference to heating thermotat control value. */
+	const double*									m_heatingThermostatValueRef = nullptr;
+
+	/*! Reference to cooling thermotat control value. */
+	const double*									m_coolingThermostatValueRef = nullptr;
 
 	/*! Vector valued results, computed/updated during the calculation. */
 	std::vector<double>								m_results;
@@ -125,4 +131,4 @@ private:
 
 } // namespace NANDRAD_MODEL
 
-#endif // NM_IdealSurfaceHeatingModelH
+#endif // NM_IdealSurfaceHeatingCoolingModelH

@@ -19,7 +19,7 @@
 	Lesser General Public License for more details.
 */
 
-#include <NANDRAD_IdealSurfaceHeatingModel.h>
+#include <NANDRAD_IdealSurfaceHeatingCoolingModel.h>
 #include <NANDRAD_KeywordList.h>
 
 #include <IBK_messages.h>
@@ -32,8 +32,8 @@
 
 namespace NANDRAD {
 
-void IdealSurfaceHeatingModel::readXML(const TiXmlElement * element) {
-	FUNCID(IdealSurfaceHeatingModel::readXML);
+void IdealSurfaceHeatingCoolingModel::readXML(const TiXmlElement * element) {
+	FUNCID(IdealSurfaceHeatingCoolingModel::readXML);
 
 	try {
 		// search for mandatory attributes
@@ -77,7 +77,7 @@ void IdealSurfaceHeatingModel::readXML(const TiXmlElement * element) {
 				bool success = false;
 				para_t ptype;
 				try {
-					ptype = (para_t)KeywordList::Enumeration("IdealSurfaceHeatingModel::para_t", p.name);
+					ptype = (para_t)KeywordList::Enumeration("IdealSurfaceHeatingCoolingModel::para_t", p.name);
 					m_para[ptype] = p; success = true;
 				}
 				catch (...) { /* intentional fail */  }
@@ -91,15 +91,15 @@ void IdealSurfaceHeatingModel::readXML(const TiXmlElement * element) {
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error reading 'IdealSurfaceHeatingModel' element."), FUNC_ID);
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'IdealSurfaceHeatingCoolingModel' element."), FUNC_ID);
 	}
 	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'IdealSurfaceHeatingModel' element.").arg(ex2.what()), FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'IdealSurfaceHeatingCoolingModel' element.").arg(ex2.what()), FUNC_ID);
 	}
 }
 
-TiXmlElement * IdealSurfaceHeatingModel::writeXML(TiXmlElement * parent) const {
-	TiXmlElement * e = new TiXmlElement("IdealSurfaceHeatingModel");
+TiXmlElement * IdealSurfaceHeatingCoolingModel::writeXML(TiXmlElement * parent) const {
+	TiXmlElement * e = new TiXmlElement("IdealSurfaceHeatingCoolingModel");
 	parent->LinkEndChild(e);
 
 	if (m_id != NANDRAD::INVALID_ID)

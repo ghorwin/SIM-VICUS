@@ -42,7 +42,7 @@ namespace NANDRAD_MODEL {
 		"IdealHeatingCoolingModel::VectorValuedResults",
 		"IdealPipeRegisterModel::Results",
 		"IdealPipeRegisterModel::VectorValuedResults",
-		"IdealSurfaceHeatingModel::Results",
+		"IdealSurfaceHeatingCoolingModel::Results",
 		"InternalLoadsModel::VectorValuedResults",
 		"KeywordList::MyParameters",
 		"Loads::Results",
@@ -113,10 +113,10 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "SurfaceHeatingLoad";
 			} break;
-			// IdealSurfaceHeatingModel::Results
+			// IdealSurfaceHeatingCoolingModel::Results
 			case 7 :
 			switch (t) {
-				case 0 : return "IdealSurfaceHeatingLoad";
+				case 0 : return "ThermalLoad";
 			} break;
 			// InternalLoadsModel::VectorValuedResults
 			case 8 :
@@ -302,10 +302,10 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "SurfaceHeatingLoad";
 			} break;
-			// IdealSurfaceHeatingModel::Results
+			// IdealSurfaceHeatingCoolingModel::Results
 			case 7 :
 			switch (t) {
-				case 0 : return "IdealSurfaceHeatingLoad";
+				case 0 : return "ThermalLoad";
 			} break;
 			// InternalLoadsModel::VectorValuedResults
 			case 8 :
@@ -492,10 +492,10 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "Layer heat load";
 			} break;
-			// IdealSurfaceHeatingModel::Results
+			// IdealSurfaceHeatingCoolingModel::Results
 			case 7 :
 			switch (t) {
-				case 0 : return "Ideal layer heat load";
+				case 0 : return "Layer thermal load";
 			} break;
 			// InternalLoadsModel::VectorValuedResults
 			case 8 :
@@ -681,7 +681,7 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "W";
 			} break;
-			// IdealSurfaceHeatingModel::Results
+			// IdealSurfaceHeatingCoolingModel::Results
 			case 7 :
 			switch (t) {
 				case 0 : return "W";
@@ -870,7 +870,7 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
-			// IdealSurfaceHeatingModel::Results
+			// IdealSurfaceHeatingCoolingModel::Results
 			case 7 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -1059,7 +1059,7 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// IdealSurfaceHeatingModel::Results
+			// IdealSurfaceHeatingCoolingModel::Results
 			case 7 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -1221,7 +1221,7 @@ namespace NANDRAD_MODEL {
 			case 5 : return 1;
 			// IdealPipeRegisterModel::VectorValuedResults
 			case 6 : return 1;
-			// IdealSurfaceHeatingModel::Results
+			// IdealSurfaceHeatingCoolingModel::Results
 			case 7 : return 1;
 			// InternalLoadsModel::VectorValuedResults
 			case 8 : return 6;
@@ -1271,7 +1271,7 @@ namespace NANDRAD_MODEL {
 			case 5 : return 0;
 			// IdealPipeRegisterModel::VectorValuedResults
 			case 6 : return 0;
-			// IdealSurfaceHeatingModel::Results
+			// IdealSurfaceHeatingCoolingModel::Results
 			case 7 : return 0;
 			// InternalLoadsModel::VectorValuedResults
 			case 8 : return 5;

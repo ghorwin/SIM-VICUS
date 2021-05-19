@@ -109,6 +109,7 @@ HEADERS += \
     ../../src/NM_HydraulicNetworkFlowElements.h \
     ../../src/NM_HydraulicNetworkModel.h \
     ../../src/NM_HydraulicNetworkModel_p.h \
+    ../../src/NM_HydraulicNetworkModelPrivate.h \
     ../../src/NM_IdealHeatingCoolingModel.h \
     ../../src/NM_IdealPipeRegisterModel.h \
     ../../src/NM_IdealSurfaceHeatingModel.h \

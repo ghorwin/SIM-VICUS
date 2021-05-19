@@ -100,15 +100,15 @@ void Models::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
-			else if (cName == "IdealSurfaceHeatingModels") {
+			else if (cName == "IdealSurfaceHeatingCoolingModels") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "IdealSurfaceHeatingModel")
+					if (c2Name != "IdealSurfaceHeatingCoolingModel")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					IdealSurfaceHeatingModel obj;
+					IdealSurfaceHeatingCoolingModel obj;
 					obj.readXML(c2);
-					m_idealSurfaceHeatingModels.push_back(obj);
+					m_idealSurfaceHeatingCoolingModels.push_back(obj);
 					c2 = c2->NextSiblingElement();
 				}
 			}
@@ -203,12 +203,12 @@ TiXmlElement * Models::writeXML(TiXmlElement * parent) const {
 	}
 
 
-	if (!m_idealSurfaceHeatingModels.empty()) {
-		TiXmlElement * child = new TiXmlElement("IdealSurfaceHeatingModels");
+	if (!m_idealSurfaceHeatingCoolingModels.empty()) {
+		TiXmlElement * child = new TiXmlElement("IdealSurfaceHeatingCoolingModels");
 		e->LinkEndChild(child);
 
-		for (std::vector<IdealSurfaceHeatingModel>::const_iterator it = m_idealSurfaceHeatingModels.begin();
-			it != m_idealSurfaceHeatingModels.end(); ++it)
+		for (std::vector<IdealSurfaceHeatingCoolingModel>::const_iterator it = m_idealSurfaceHeatingCoolingModels.begin();
+			it != m_idealSurfaceHeatingCoolingModels.end(); ++it)
 		{
 			it->writeXML(child);
 		}

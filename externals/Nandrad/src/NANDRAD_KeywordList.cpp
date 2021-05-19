@@ -61,7 +61,7 @@ namespace NANDRAD {
 		"IdealPipeRegisterModel::modelType_t",
 		"IdealPipeRegisterModel::para_t",
 		"IdealPipeRegisterModel::intPara_t",
-		"IdealSurfaceHeatingModel::para_t",
+		"IdealSurfaceHeatingCoolingModel::para_t",
 		"InterfaceAirFlow::splinePara_t",
 		"InterfaceAirFlow::modelType_t",
 		"InterfaceHeatConduction::modelType_t",
@@ -316,10 +316,11 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "NumberParallelPipes";
 			} break;
-			// IdealSurfaceHeatingModel::para_t
+			// IdealSurfaceHeatingCoolingModel::para_t
 			case 26 :
 			switch (t) {
 				case 0 : return "MaxHeatingPowerPerArea";
+				case 1 : return "MaxCoolingPowerPerArea";
 			} break;
 			// InterfaceAirFlow::splinePara_t
 			case 27 :
@@ -923,10 +924,11 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "NumberParallelPipes";
 			} break;
-			// IdealSurfaceHeatingModel::para_t
+			// IdealSurfaceHeatingCoolingModel::para_t
 			case 26 :
 			switch (t) {
 				case 0 : return "MaxHeatingPowerPerArea";
+				case 1 : return "MaxCoolingPowerPerArea";
 			} break;
 			// InterfaceAirFlow::splinePara_t
 			case 27 :
@@ -1531,10 +1533,11 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "Number of parallel pipes";
 			} break;
-			// IdealSurfaceHeatingModel::para_t
+			// IdealSurfaceHeatingCoolingModel::para_t
 			case 26 :
 			switch (t) {
 				case 0 : return "Maximum heating power per floor area";
+				case 1 : return "Maximum heating power per floor area";
 			} break;
 			// InterfaceAirFlow::splinePara_t
 			case 27 :
@@ -2138,10 +2141,11 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "";
 			} break;
-			// IdealSurfaceHeatingModel::para_t
+			// IdealSurfaceHeatingCoolingModel::para_t
 			case 26 :
 			switch (t) {
 				case 0 : return "W/m2";
+				case 1 : return "W/m2";
 			} break;
 			// InterfaceAirFlow::splinePara_t
 			case 27 :
@@ -2745,10 +2749,11 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
-			// IdealSurfaceHeatingModel::para_t
+			// IdealSurfaceHeatingCoolingModel::para_t
 			case 26 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
 			} break;
 			// InterfaceAirFlow::splinePara_t
 			case 27 :
@@ -3352,10 +3357,11 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// IdealSurfaceHeatingModel::para_t
+			// IdealSurfaceHeatingCoolingModel::para_t
 			case 26 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// InterfaceAirFlow::splinePara_t
 			case 27 :
@@ -3829,8 +3835,8 @@ namespace NANDRAD {
 			case 24 : return 8;
 			// IdealPipeRegisterModel::intPara_t
 			case 25 : return 1;
-			// IdealSurfaceHeatingModel::para_t
-			case 26 : return 1;
+			// IdealSurfaceHeatingCoolingModel::para_t
+			case 26 : return 2;
 			// InterfaceAirFlow::splinePara_t
 			case 27 : return 1;
 			// InterfaceAirFlow::modelType_t
@@ -4003,8 +4009,8 @@ namespace NANDRAD {
 			case 24 : return 7;
 			// IdealPipeRegisterModel::intPara_t
 			case 25 : return 0;
-			// IdealSurfaceHeatingModel::para_t
-			case 26 : return 0;
+			// IdealSurfaceHeatingCoolingModel::para_t
+			case 26 : return 1;
 			// InterfaceAirFlow::splinePara_t
 			case 27 : return 0;
 			// InterfaceAirFlow::modelType_t

@@ -88,7 +88,7 @@
 #include "NM_ThermostatModel.h"
 #include "NM_IdealHeatingCoolingModel.h"
 #include "NM_IdealPipeRegisterModel.h"
-#include "NM_IdealSurfaceHeatingModel.h"
+#include "NM_IdealSurfaceHeatingCoolingModel.h"
 
 #include "NM_ThermalNetworkStatesModel.h"
 #include "NM_ThermalNetworkBalanceModel.h"
@@ -1344,12 +1344,12 @@ void NandradModel::initModels() {
 	}
 
 	// ideal surface heating
-	if (!m_project->m_models.m_idealSurfaceHeatingModels.empty()) {
+	if (!m_project->m_models.m_idealSurfaceHeatingCoolingModels.empty()) {
 		IBK::IBK_Message(IBK::FormatString("Initializing ideal surface heating models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		IBK_MSG_INDENT;
 
-		for (NANDRAD::IdealSurfaceHeatingModel & m: m_project->m_models.m_idealSurfaceHeatingModels) {
-			NANDRAD_MODEL::IdealSurfaceHeatingModel * mod = new NANDRAD_MODEL::IdealSurfaceHeatingModel(m.m_id, m.m_displayName);
+		for (NANDRAD::IdealSurfaceHeatingCoolingModel & m: m_project->m_models.m_idealSurfaceHeatingCoolingModels) {
+			NANDRAD_MODEL::IdealSurfaceHeatingCoolingModel * mod = new NANDRAD_MODEL::IdealSurfaceHeatingCoolingModel(m.m_id, m.m_displayName);
 			m_modelContainer.push_back(mod); // transfer ownership
 
 			try {

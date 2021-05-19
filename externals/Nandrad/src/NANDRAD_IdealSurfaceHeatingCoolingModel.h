@@ -19,8 +19,8 @@
 	Lesser General Public License for more details.
 */
 
-#ifndef NANDRAD_IdealSurfaceHeatingModelH
-#define NANDRAD_IdealSurfaceHeatingModelH
+#ifndef NANDRAD_IdealSurfaceHeatingCoolingModelH
+#define NANDRAD_IdealSurfaceHeatingCoolingModelH
 
 #include <IBK_Parameter.h>
 
@@ -32,18 +32,19 @@ namespace NANDRAD {
 /*! An ideal heating and cooling model. Basically scales a heating/cooling control signal with
 	the nominal heating power per zone.
 */
-class IdealSurfaceHeatingModel {
+class IdealSurfaceHeatingCoolingModel {
 public:
 	/*! Model parameters. */
 	enum para_t {
 		P_MaxHeatingPowerPerArea,	// Keyword: MaxHeatingPowerPerArea		[W/m2]		'Maximum heating power per floor area'
+		P_MaxCoolingPowerPerArea,	// Keyword: MaxCoolingPowerPerArea		[W/m2]		'Maximum heating power per floor area'
 		NUM_P
 	};
 
 	NANDRAD_READWRITE
 
 	/*! Checks parameters for valid values. */
-	void checkParameters() const;
+	void checkParameters();
 
 	/*! Unique ID-number for this model. */
 	unsigned int		m_id = NANDRAD::INVALID_ID;					// XML:A:required
@@ -63,4 +64,4 @@ public:
 
 } // namespace NANDRAD
 
-#endif // NANDRAD_IdealSurfaceHeatingModelH
+#endif // NANDRAD_IdealSurfaceHeatingCoolingModelH

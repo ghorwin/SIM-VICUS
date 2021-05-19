@@ -58,7 +58,7 @@ void Models::checkForUniqueIDs() const {
 		// the same for heating models
 		checkForUniqueModelIDs(m_idealHeatingCoolingModels, usedIDs);
 		// the same for heating surface models
-		checkForUniqueModelIDs(m_idealSurfaceHeatingModels, usedIDs);
+		checkForUniqueModelIDs(m_idealSurfaceHeatingCoolingModels, usedIDs);
 		// the same for pipe register models
 		checkForUniqueModelIDs(m_idealPipeRegisterModels, usedIDs);
 	}

@@ -1,8 +1,8 @@
-#include "NM_IdealSurfaceHeatingModel.h"
+#include "NM_IdealSurfaceHeatingCoolingModel.h"
 
 #include <IBK_Exception.h>
 
-#include <NANDRAD_IdealSurfaceHeatingModel.h>
+#include <NANDRAD_IdealSurfaceHeatingCoolingModel.h>
 #include <NANDRAD_ObjectList.h>
 #include <NANDRAD_Thermostat.h>
 #include <NANDRAD_Zone.h>
@@ -12,11 +12,11 @@
 
 namespace NANDRAD_MODEL {
 
-void IdealSurfaceHeatingModel::setup(const NANDRAD::IdealSurfaceHeatingModel & model,
+void IdealSurfaceHeatingCoolingModel::setup(const NANDRAD::IdealSurfaceHeatingCoolingModel & model,
 									 const std::vector<NANDRAD::ObjectList> & objLists,
 									 const std::vector<NANDRAD::Zone> & zones)
 {
-	FUNCID(IdealSurfaceHeatingModel::setup);
+	FUNCID(IdealSurfaceHeatingCoolingModel::setup);
 
 	// all models require an object list with indication of zones that this model applies to
 	if (model.m_constructionObjectList.empty())
@@ -35,7 +35,8 @@ void IdealSurfaceHeatingModel::setup(const NANDRAD::IdealSurfaceHeatingModel & m
 							 .arg(m_objectList->m_name), FUNC_ID);
 
 	// parameters have been checked already
-	m_maxHeatingPower = model.m_para[NANDRAD::IdealSurfaceHeatingModel::P_MaxHeatingPowerPerArea].value;
+	m_maxHeatingPower = model.m_para[NANDRAD::IdealSurfaceHeatingCoolingModel::P_MaxHeatingPowerPerArea].value;
+	m_maxCoolingPower = model.m_para[NANDRAD::IdealSurfaceHeatingCoolingModel::P_MaxCoolingPowerPerArea].value;
 
 	// resolve thermostat zone
 	std::vector<NANDRAD::Zone>::const_iterator zone_it = std::find(zones.begin(),
@@ -57,7 +58,7 @@ void IdealSurfaceHeatingModel::setup(const NANDRAD::IdealSurfaceHeatingModel & m
 }
 
 
-void IdealSurfaceHeatingModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
+void IdealSurfaceHeatingCoolingModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 	// during initialization of the object lists, only those zones were added, that are actually parameterized
 	// so we can rely on the existence of zones whose IDs are in our object list and we do not need to search
 	// through all the models
@@ -71,21 +72,21 @@ void IdealSurfaceHeatingModel::resultDescriptions(std::vector<QuantityDescriptio
 	// in the type Results.
 	for (int varIndex=0; varIndex<NUM_R; ++varIndex) {
 		// store name, unit and description of the quantity
-		const std::string &quantityName = KeywordList::Keyword("IdealSurfaceHeatingModel::Results", varIndex );
-		const std::string &quantityUnit = KeywordList::Unit("IdealSurfaceHeatingModel::Results", varIndex );
-		const std::string &quantityDescription = KeywordList::Description("IdealSurfaceHeatingModel::Results", varIndex );
+		const std::string &quantityName = KeywordList::Keyword("IdealSurfaceHeatingCoolingModel::Results", varIndex );
+		const std::string &quantityUnit = KeywordList::Unit("IdealSurfaceHeatingCoolingModel::Results", varIndex );
+		const std::string &quantityDescription = KeywordList::Description("IdealSurfaceHeatingCoolingModel::Results", varIndex );
 		resDesc.push_back( QuantityDescription(
 			quantityName, quantityUnit, quantityDescription, false) );
 	}
 }
 
 
-const double * IdealSurfaceHeatingModel::resultValueRef(const InputReference & quantity) const {
+const double * IdealSurfaceHeatingCoolingModel::resultValueRef(const InputReference & quantity) const {
 	const QuantityName & quantityName = quantity.m_name;
 	// determine variable enum index
 	unsigned int varIndex=0;
 	for (; varIndex<NUM_R; ++varIndex) {
-		if (KeywordList::Keyword("IdealSurfaceHeatingModel::Results", (Results)varIndex ) == quantityName.m_name)
+		if (KeywordList::Keyword("IdealSurfaceHeatingCoolingModel::Results", (Results)varIndex ) == quantityName.m_name)
 			break;
 	}
 	if (varIndex == NUM_R)
@@ -103,7 +104,7 @@ const double * IdealSurfaceHeatingModel::resultValueRef(const InputReference & q
 }
 
 
-void IdealSurfaceHeatingModel::initInputReferences(const std::vector<AbstractModel *> & models) {
+void IdealSurfaceHeatingCoolingModel::initInputReferences(const std::vector<AbstractModel *> & models) {
 
 	IBK_ASSERT (!m_objectList->m_filterID.m_ids.empty());
 	// set reference to zone air temperature
@@ -124,21 +125,23 @@ void IdealSurfaceHeatingModel::initInputReferences(const std::vector<AbstractMod
 			r.m_name.m_index = (int) m_thermostatZoneId; // vector gets ID of requested zone
 			r.m_required = false;
 			m_inputRefs.push_back(r);
+			r.m_name.m_name = "CoolingControlValue";
+			m_inputRefs.push_back(r);
 			++m_thermostatModelObjects;
 		}
 	}
 }
 
 
-void IdealSurfaceHeatingModel::inputReferences(std::vector<InputReference> & inputRefs) const {
+void IdealSurfaceHeatingCoolingModel::inputReferences(std::vector<InputReference> & inputRefs) const {
 	inputRefs = m_inputRefs;
 }
 
 
-void IdealSurfaceHeatingModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
+void IdealSurfaceHeatingCoolingModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
 												const std::vector<const double *> & resultValueRefs)
 {
-	FUNCID(IdealSurfaceHeatingModel::setInputValueRefs);
+	FUNCID(IdealSurfaceHeatingCoolingModel::setInputValueRefs);
 	IBK_ASSERT (!m_objectList->m_filterID.m_ids.empty());
 
 	// we now must ensure, that for each zone there is exactly one matching control signal
@@ -147,35 +150,69 @@ void IdealSurfaceHeatingModel::setInputValueRefs(const std::vector<QuantityDescr
 
 	for (unsigned int i=0; i<m_thermostatModelObjects; ++i) {
 		// heating control value
-		if (resultValueRefs[i] != nullptr) {
-			// do we have already a result value for this zone?
-			if (m_thermostatValueRef != nullptr)
-				throw IBK::Exception(IBK::FormatString("Duplicate heating control value result generated by different thermostats "
-													   "for zone id=%1.").arg(m_thermostatZoneId), FUNC_ID);
-			m_thermostatValueRef = resultValueRefs[i];
+		if (resultValueRefs[2 * i] != nullptr) {
+			// we check only for heating control value if maximum power is > 0
+			// perform check for each zone in order to avoid duplicate definition
+			if (m_maxHeatingPower > 0) {
+				if(m_heatingThermostatValueRef != nullptr)
+					throw IBK::Exception(IBK::FormatString("Duplicate heating control value result generated by different thermostats "
+														   "for zone id=%1.").arg(m_thermostatZoneId), FUNC_ID);
+				m_heatingThermostatValueRef = resultValueRefs[2 * i];
+			}
+		}
+		if (resultValueRefs[2 * i + 1] != nullptr) {
+			// we check only for cooling control value if maximum power is > 0
+			// perform check for each zone in order to avoid duplicate definition
+			if (m_maxCoolingPower > 0) {
+				if( m_coolingThermostatValueRef != nullptr)
+					throw IBK::Exception(IBK::FormatString("Duplicate cooling control value result generated by different thermostats "
+														   "for zone id=%1.").arg(m_thermostatZoneId), FUNC_ID);
+				m_coolingThermostatValueRef = resultValueRefs[2 * i + 1];
+			}
 		}
 	}
 
-	// check that we have indeed value refs for all zones
-	if (m_thermostatValueRef == nullptr)
+	// check that we have a heating control value for positive maximum heating power
+	if (m_maxHeatingPower > 0 && m_heatingThermostatValueRef == nullptr)
 		throw IBK::Exception(IBK::FormatString("Missing heating control value for zone id=%1.").arg(m_thermostatZoneId), FUNC_ID);
+	// check that we have indeed value refs for all zones
+	if (m_maxCoolingPower > 0 && m_coolingThermostatValueRef == nullptr)
+		throw IBK::Exception(IBK::FormatString("Missing heating or cooling control value for zone id=%1.").arg(m_thermostatZoneId), FUNC_ID);
 }
 
 
-void IdealSurfaceHeatingModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
+void IdealSurfaceHeatingCoolingModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
 	IBK_ASSERT(!m_objectList->m_filterID.m_ids.empty());
 
-	resultInputValueReferences.push_back(
-					std::make_pair(&m_results[R_IdealSurfaceHeatingLoad], m_thermostatValueRef) );
+	// we have heating defined
+	if(m_heatingThermostatValueRef != nullptr)
+		resultInputValueReferences.push_back(
+						std::make_pair(&m_results[R_ThermalLoad], m_heatingThermostatValueRef) );
+	// we operate in cooling mode
+	if(m_coolingThermostatValueRef != nullptr)
+		resultInputValueReferences.push_back(
+						std::make_pair(&m_results[R_ThermalLoad], m_coolingThermostatValueRef) );
 }
 
 
-int IdealSurfaceHeatingModel::update() {
-	// get control value
-	double heatingControlValue = *m_thermostatValueRef;
-	// clip
-	heatingControlValue = std::max(0.0, std::min(1.0, heatingControlValue));
-	m_results[R_IdealSurfaceHeatingLoad] = heatingControlValue*m_thermostatZoneArea*m_maxHeatingPower;
+int IdealSurfaceHeatingCoolingModel::update() {
+
+	m_results[R_ThermalLoad] = 0;
+
+	// get control value for heating
+	if(m_heatingThermostatValueRef != nullptr) {
+		double heatingControlValue = *m_heatingThermostatValueRef;
+		// clip
+		heatingControlValue = std::max(0.0, std::min(1.0, heatingControlValue));
+		m_results[R_ThermalLoad] += heatingControlValue*m_thermostatZoneArea*m_maxHeatingPower;
+	}
+	// get control value for cooling
+	if(m_coolingThermostatValueRef != nullptr) {
+		double coolingControlValue = *m_coolingThermostatValueRef;
+		// clip
+		coolingControlValue = std::max(0.0, std::min(1.0, coolingControlValue));
+		m_results[R_ThermalLoad] -= coolingControlValue*m_thermostatZoneArea*m_maxCoolingPower;
+	}
 
 	return 0; // signal success
 }
