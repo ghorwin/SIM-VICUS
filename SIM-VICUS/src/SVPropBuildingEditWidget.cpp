@@ -17,6 +17,7 @@
 
 #include "SVUndoTreeNodeState.h"
 #include "SVUndoModifyComponentInstances.h"
+#include "SVUndoModifySubSurfaceComponentInstances.h"
 #include "SVUndoModifyRoomZoneTemplateAssociation.h"
 #include "SVUndoTreeNodeState.h"
 
@@ -136,6 +137,28 @@ void SVPropBuildingEditWidget::onColorRefreshNeeded() {
 }
 
 
+
+// *** Component property mode ***
+
+void SVPropBuildingEditWidget::on_tableWidgetComponents_itemSelectionChanged() {
+	// check if the table is empty or there is no currently selected row
+	int r = m_ui->tableWidgetComponents->currentRow();
+	if (r == -1 || m_componentSurfacesMap.empty()) {
+		m_ui->pushButtonEditComponents->setEnabled(false);
+		m_ui->pushButtonExchangeComponents->setEnabled(false);
+		m_ui->pushButtonSelectObjectsWithComponent->setEnabled(false);
+		return;
+	}
+	// enable/disable buttons that require valid components
+	bool enabled = (currentlySelectedComponent() != nullptr);
+	m_ui->pushButtonEditComponents->setEnabled(enabled);
+	m_ui->pushButtonExchangeComponents->setEnabled(enabled);
+
+	// the select buttons are always active, even if no component is assigned, yet
+	m_ui->pushButtonSelectObjectsWithComponent->setEnabled(true);
+}
+
+
 void SVPropBuildingEditWidget::on_pushButtonEditComponents_clicked() {
 	const VICUS::Component * comp = currentlySelectedComponent();
 	Q_ASSERT(comp != nullptr); // if nullptr, the button should be disabled!
@@ -200,25 +223,6 @@ void SVPropBuildingEditWidget::on_pushButtonSelectObjectsWithComponent_clicked()
 }
 
 
-void SVPropBuildingEditWidget::on_tableWidgetComponents_itemSelectionChanged() {
-	// check if the table is empty or there is no currently selected row
-	int r = m_ui->tableWidgetComponents->currentRow();
-	if (r == -1 || m_componentSurfacesMap.empty()) {
-		m_ui->pushButtonEditComponents->setEnabled(false);
-		m_ui->pushButtonExchangeComponents->setEnabled(false);
-		m_ui->pushButtonSelectObjectsWithComponent->setEnabled(false);
-		return;
-	}
-	// enable/disable buttons that require valid components
-	bool enabled = (currentlySelectedComponent() != nullptr);
-	m_ui->pushButtonEditComponents->setEnabled(enabled);
-	m_ui->pushButtonExchangeComponents->setEnabled(enabled);
-
-	// the select buttons are always active, even if no component is assigned, yet
-	m_ui->pushButtonSelectObjectsWithComponent->setEnabled(true);
-}
-
-
 void SVPropBuildingEditWidget::on_pushButtonAssignComponent_clicked() {
 	assignComponent(false);
 }
@@ -228,6 +232,8 @@ void SVPropBuildingEditWidget::on_pushButtonAssignInsideComponent_clicked() {
 	assignComponent(true);
 }
 
+
+// *** Sub-Surface component property mode ***
 
 void SVPropBuildingEditWidget::on_tableWidgetSubSurfaceComponents_itemSelectionChanged() {
 	// check if the table is empty or there is no currently selected row
@@ -247,6 +253,82 @@ void SVPropBuildingEditWidget::on_tableWidgetSubSurfaceComponents_itemSelectionC
 	m_ui->pushButtonSelectObjectsWithSubSurfaceComponent->setEnabled(true);
 }
 
+
+void SVPropBuildingEditWidget::on_pushButtonEditSubSurfaceComponents_clicked() {
+	const VICUS::SubSurfaceComponent * comp = currentlySelectedSubSurfaceComponent();
+	Q_ASSERT(comp != nullptr); // if nullptr, the button should be disabled!
+	int currentRow = m_ui->tableWidgetSubSurfaceComponents->currentRow();
+	SVMainWindow::instance().dbSubSurfaceComponentEditDialog()->edit(comp->m_id);
+	// Note: project data isn't modified, since only user DB data was changed.
+	// reselect row, because closing the edit dialog recreates the table (due to possible color change)
+	if (m_ui->tableWidgetSubSurfaceComponents->rowCount() > currentRow)
+		m_ui->tableWidgetSubSurfaceComponents->selectRow(currentRow);
+}
+
+
+void SVPropBuildingEditWidget::on_pushButtonExchangeSubSurfaceComponents_clicked() {
+	const VICUS::SubSurfaceComponent * comp = currentlySelectedSubSurfaceComponent();
+	Q_ASSERT(comp != nullptr); // if nullptr, the button should be disabled!
+	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoReplaceComponent",
+		tr("Replace component"), tr("This will replace all associations with component '%1 [%2]' with another component.")
+			 .arg(QtExt::MultiLangString2QString(comp->m_displayName)).arg(comp->m_id));
+	unsigned int oldId = comp->m_id;
+	unsigned int newId = SVMainWindow::instance().dbSubSurfaceComponentEditDialog()->select(oldId);
+	if (newId == VICUS::INVALID_ID)
+		return; // user has aborted the dialog
+
+	// now compose an undo action and modify the project
+
+	// first, we need to find the component instances which reference the "old" id
+	comp = SVSettings::instance().m_db.m_subSurfaceComponents[oldId];
+	if (comp == nullptr) {
+		// the user has done something stupid and deleted the component that he wanted to replace. In this
+		// case there is no longer a component with this ID and we have a nullptr
+		QMessageBox::critical(this, tr("Replace component"), tr("Sub-surface component with id %1 no longer found in DB.").arg(oldId));
+		return;
+	}
+	// now process all component instances and modify the component
+	std::vector<VICUS::SubSurfaceComponentInstance> modCI = project().m_subSurfaceComponentInstances;
+	for (VICUS::SubSurfaceComponentInstance & ci : modCI) {
+		if (ci.m_subSurfaceComponentID == oldId)
+			ci.m_subSurfaceComponentID = (unsigned int)newId;
+	}
+	// create the undo action and modify project
+	SVUndoModifySubSurfaceComponentInstances * undo = new SVUndoModifySubSurfaceComponentInstances(tr("Sub-surface components exchanged"), modCI);
+	undo->push();
+}
+
+
+void SVPropBuildingEditWidget::on_pushButtonSelectObjectsWithSubSurfaceComponent_clicked() {
+	const VICUS::SubSurfaceComponent * comp = currentlySelectedSubSurfaceComponent();
+	Q_ASSERT(m_subComponentSurfacesMap.find(comp) != m_subComponentSurfacesMap.end());
+	// compose set of objects to be selected
+	std::set<unsigned int> objs;
+	for (auto s : m_subComponentSurfacesMap[comp])
+		objs.insert(s->uniqueID());
+
+	QString undoText;
+	if (comp != nullptr)
+		undoText = tr("Select objects with sub-surface component '%1'").arg(QtExt::MultiLangString2QString(comp->m_displayName));
+	else
+		undoText = tr("Select objects with invalid sub-surface component.");
+
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(undoText, SVUndoTreeNodeState::SelectedState, objs, true);
+	undo->push();
+}
+
+
+void SVPropBuildingEditWidget::on_pushButtonAssignSubSurfaceComponent_clicked() {
+	assignSubSurfaceComponent(false);
+}
+
+
+void SVPropBuildingEditWidget::on_pushButtonAssignInsideSubSurfaceComponent_clicked() {
+	assignSubSurfaceComponent(true);
+}
+
+
+// *** Component orientation property mode ***
 
 void SVPropBuildingEditWidget::on_checkBoxShowAllComponentOrientations_toggled(bool checked) {
 	m_ui->labelComponentSelection->setEnabled(!checked);
@@ -866,7 +948,7 @@ void SVPropBuildingEditWidget::zoneTemplateSelectionChanged() {
 void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
 	// ask user to select a new component
 	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignComponent",
-		tr("Assign component"), tr("You may now select a component from the component database, which will then be "
+		tr("Assign component"), tr("You may now select a component from the database, which will then be "
 								   "assigned to the selected surfaces."));
 	unsigned int selectedComponentId = SVMainWindow::instance().dbComponentEditDialog()->select(0);
 	if (selectedComponentId == VICUS::INVALID_ID)
@@ -980,6 +1062,128 @@ void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
 }
 
 
+void SVPropBuildingEditWidget::assignSubSurfaceComponent(bool connectTwoSurfaces) {
+	// ask user to select a new component
+	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignComponent",
+		tr("Assign component"), tr("You may now select a component from the database, which will then be "
+								   "assigned to the selected surfaces."));
+	unsigned int selectedComponentId = SVMainWindow::instance().dbSubSurfaceComponentEditDialog()->select(0);
+	if (selectedComponentId == VICUS::INVALID_ID)
+		return; // user aborted the dialog
+
+	std::set<const VICUS::Object*> selObjs;
+	project().selectObjects(selObjs, VICUS::Project::SG_Building, true, true);
+	std::set<const VICUS::SubSurface*> surfaces;
+	for (const VICUS::Object* o : selObjs) {
+		const VICUS::SubSurface* surf = dynamic_cast<const VICUS::SubSurface*>(o);
+		if (surf != nullptr)
+			surfaces.insert(surf);
+	}
+
+	Q_ASSERT(!surfaces.empty());
+
+	std::vector<VICUS::SubSurfaceComponentInstance> compInstances;
+	if (connectTwoSurfaces) {
+		Q_ASSERT(surfaces.size() == 2); // must have exactly two
+		// we handle the following cases
+		// - both surfaces are not yet used in a componentInstance -> we create a new one
+		// - both surfaces are already used in the same componentInstance -> we just replace the component
+		// - both surfaces are already used in different componentInstances -> we modify the first and delete the second
+		// - only one surface is already used in a componentInstance -> we modify it
+
+		// we achieve all that with just one loop
+		bool compInstanceFound = false;
+		// process all component instances
+		for (const VICUS::SubSurfaceComponentInstance & ci : project().m_subSurfaceComponentInstances) {
+			// does the component instance reference either of our selected surfaces/or both?
+			std::set<const VICUS::SubSurface*>::iterator it = surfaces.find(ci.m_sideASubSurface);
+			std::set<const VICUS::SubSurface*>::iterator it2 = surfaces.find(ci.m_sideBSubSurface);
+			if (it != surfaces.end() || it2 != surfaces.end()) {
+				// yes, but did we already have a component instance with these surfaces?
+				if (compInstanceFound) {
+					// already handled, so we can just skip this component instance
+					continue;
+				}
+				// remember, that we handled a componentInstance already
+				compInstanceFound = true;
+				VICUS::SubSurfaceComponentInstance newCi(ci);
+				// set the selected component
+				newCi.m_subSurfaceComponentID = (unsigned int)selectedComponentId;
+				// no, first time a component instance references the selected surfaces, modify it such,
+				// that any original assignment remains untouched
+				if (it != surfaces.end()) {
+					// side A connected?, set side B to the other surface
+					if (it == surfaces.begin())
+						newCi.m_sideBSurfaceID = (*surfaces.rbegin())->m_id;
+					else
+						newCi.m_sideBSurfaceID = (*surfaces.begin())->m_id;
+				}
+				else {
+					// must be side B connected, set side A to the other surface
+					if (it2 == surfaces.begin())
+						newCi.m_sideASurfaceID = (*surfaces.rbegin())->m_id;
+					else
+						newCi.m_sideASurfaceID = (*surfaces.begin())->m_id;
+				}
+				// remember modified component instance
+				compInstances.push_back(newCi);
+			}
+			else {
+				// not related to our surfaces, just dump to the new compInstances vector
+				compInstances.push_back(ci);
+			}
+		}
+		// if we didn't have a component instance yet, create a new one
+		if (!compInstanceFound) {
+			VICUS::SubSurfaceComponentInstance newCi;
+			unsigned int nextId = VICUS::Project::largestUniqueId(compInstances);
+			newCi.m_id = nextId;
+			newCi.m_subSurfaceComponentID = (unsigned int)selectedComponentId;
+			newCi.m_sideASurfaceID = (*surfaces.begin())->m_id;
+			newCi.m_sideBSurfaceID = (*surfaces.rbegin())->m_id;
+			compInstances.push_back(newCi);
+		}
+
+	}
+	else {
+		// now create a copy of the currently defined componentInstances
+		compInstances = project().m_subSurfaceComponentInstances;
+
+		// process all componentInstances and for all that reference any of the selected surfaces, replace component
+		for (VICUS::SubSurfaceComponentInstance & ci : compInstances) {
+			std::set<const VICUS::SubSurface*>::iterator it = surfaces.find(ci.m_sideASubSurface);
+			if (it != surfaces.end()) {
+				ci.m_subSurfaceComponentID = (unsigned int)selectedComponentId;
+				surfaces.erase(it);
+				continue;
+			}
+			it = surfaces.find(ci.m_sideBSubSurface);
+			if (it != surfaces.end()) {
+				ci.m_subSurfaceComponentID = (unsigned int)selectedComponentId;
+				surfaces.erase(it);
+			}
+		}
+
+		// now all surfaces still left in selSurfaces are not yet referenced in ComponentInstances
+		// hence, we need to create a new componentInstance for each of them
+		if (!surfaces.empty()) {
+			unsigned int nextId = VICUS::Project::largestUniqueId(compInstances);
+			for (const VICUS::SubSurface * s : surfaces) {
+				VICUS::SubSurfaceComponentInstance c;
+				c.m_id = nextId++;
+				c.m_sideASurfaceID = s->m_id;
+				c.m_subSurfaceComponentID = (unsigned int)selectedComponentId;
+				compInstances.push_back(c);
+			}
+		}
+
+	}
+	// create the undo action and modify project
+	SVUndoModifySubSurfaceComponentInstances * undo = new SVUndoModifySubSurfaceComponentInstances(tr("Sub-surface components assigned"), compInstances);
+	undo->push();
+}
+
+
 void SVPropBuildingEditWidget::on_pushButtonAssignZoneTemplate_clicked() {
 	// ask user to select a the zone template to assign
 	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignZoneTemplate",
@@ -1088,6 +1292,3 @@ void SVPropBuildingEditWidget::on_tableWidgetZoneTemplates_itemClicked(QTableWid
 }
 
 
-void SVPropBuildingEditWidget::on_pushButtonEditSubSurfaceComponents_clicked() {
-
-}

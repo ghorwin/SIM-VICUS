@@ -69,14 +69,14 @@ private slots:
 
 	// *** Component property mode ***
 
+	/*! Triggered when user switches component in table. */
+	void on_tableWidgetComponents_itemSelectionChanged();
+
 	/*! Launches component db edit dialog. */
 	void on_pushButtonEditComponents_clicked();
 
 	/*! Action to swap all occurances of currently selected component with newly selected component. */
 	void on_pushButtonExchangeComponents_clicked();
-
-	/*! Triggered when user switches component in table. */
-	void on_tableWidgetComponents_itemSelectionChanged();
 
 	/*! All surfaces that reference the currently selected component (in the table) will be selected. */
 	void on_pushButtonSelectObjectsWithComponent_clicked();
@@ -88,19 +88,26 @@ private slots:
 	*/
 	void on_pushButtonAssignComponent_clicked();
 
-	void on_checkBoxShowAllComponentOrientations_toggled(bool checked);
-
-	void on_pushButtonAlignComponentToSideA_clicked();
-
-	void on_pushButtonAlignComponentToSideB_clicked();
-
-	void on_comboBoxComponentSelection_currentIndexChanged(int);
-
 	void on_pushButtonAssignInsideComponent_clicked();
 
 
+	// *** Sub-Surface Component property mode ***
 
 	void on_tableWidgetSubSurfaceComponents_itemSelectionChanged();
+	void on_pushButtonEditSubSurfaceComponents_clicked();
+	void on_pushButtonExchangeSubSurfaceComponents_clicked();
+	void on_pushButtonSelectObjectsWithSubSurfaceComponent_clicked();
+	void on_pushButtonAssignSubSurfaceComponent_clicked();
+	void on_pushButtonAssignInsideSubSurfaceComponent_clicked();
+
+
+	// *** Component orientation property mode ***
+
+	void on_checkBoxShowAllComponentOrientations_toggled(bool checked);
+	void on_pushButtonAlignComponentToSideA_clicked();
+	void on_pushButtonAlignComponentToSideB_clicked();
+	void on_comboBoxComponentSelection_currentIndexChanged(int);
+
 
 
 
@@ -118,7 +125,7 @@ private slots:
 
 	void on_tableWidgetZoneTemplates_itemClicked(QTableWidgetItem *item);
 
-	void on_pushButtonEditSubSurfaceComponents_clicked();
+
 
 private:
 	/*! Returns a pointer to the currently selected component in the component table. */
@@ -136,6 +143,12 @@ private:
 		If insideWall is true, the two selected surfaces are connected to each other with an inside-wall-component.
 	*/
 	void assignComponent(bool insideWall);
+
+	/*! This function opens the sub-surface component DB dialog and lets the user select a sub-surface component.
+		Then, it creates new sub-surface component instances for all selected surfaces.
+		If connectTwoSurfaces is true, the two selected sub-surface surfaces are connected to each other.
+	*/
+	void assignSubSurfaceComponent(bool connectTwoSurfaces);
 
 	/*! This function toggles side assignments in component instances for selected components. */
 	void alignSelectedComponents(bool toSideA);
