@@ -1313,23 +1313,24 @@ bool  NandradFMUGeneratorWidget::generate() {
 	// win64
 	fmuLibFile = m_installDir + "/NandradSolverFMI.dll";
 	if (QFile(fmuLibFile).exists()) {
-		// TODO : Improve output for dll copy operations
 		IBK::IBK_Message( IBK::FormatString("Copying Win64 FMU lib '%1'\n").arg(fmuLibFile.toStdString()),
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 		QString binTargetPath = baseDir.absoluteFilePath("binaries/win64/");
 		QFile::copy(fmuLibFile, binTargetPath + "/" + fmuModelName + ".dll");
 
 		QStringList copyFiles;
-		copyFiles << m_installDir + "/msvcp140.dll"
-				  << m_installDir + "/vcomp140.dll"
-				  << m_installDir + "/vcruntime140.dll";
+		copyFiles << "msvcp140.dll"
+				  << "vcomp140.dll"
+				  << "vcruntime140.dll";
 		for (int i=0; i<copyFiles.count(); ++i) {
 			if (!QFile::exists(copyFiles[i])) {
 				IBK::IBK_Message( IBK::FormatString("Missing file '%1' to copy into FMU archive.\n").arg(copyFiles[i].toStdString()),
 								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 			}
 			else {
-				QFile::copy(copyFiles[i], binTargetPath + "/" + QFileInfo(copyFiles[i]).fileName());
+				QFile::copy(m_installDir + "/" + copyFiles[i], binTargetPath + "/" + QFileInfo(copyFiles[i]).fileName());
+				IBK::IBK_Message( IBK::FormatString("Copying '%1' into FMU archive\n").arg(copyFiles[i].toStdString()),
+								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 			}
 		}
 	}
