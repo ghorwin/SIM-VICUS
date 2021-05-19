@@ -145,7 +145,6 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "ControlTemperatureDifference";
 				case 1 : return "ControlMassFlow";
-				case 2 : return "ControlZoneAirTemperature";
 			} break;
 			// Controller::ModelType
 			case 2 :
@@ -753,7 +752,6 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "ControlTemperatureDifference";
 				case 1 : return "ControlMassFlow";
-				case 2 : return "ControlZoneAirTemperature";
 			} break;
 			// Controller::ModelType
 			case 2 :
@@ -1362,7 +1360,6 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "ControlTemperatureDifference";
 				case 1 : return "ControlMassFlow";
-				case 2 : return "ControlZoneAirTemperature";
 			} break;
 			// Controller::ModelType
 			case 2 :
@@ -1970,7 +1967,6 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
-				case 2 : return "";
 			} break;
 			// Controller::ModelType
 			case 2 :
@@ -2578,7 +2574,6 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
-				case 2 : return "#FFFFFF";
 			} break;
 			// Controller::ModelType
 			case 2 :
@@ -3186,7 +3181,6 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
-				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// Controller::ModelType
 			case 2 :
@@ -3786,7 +3780,7 @@ namespace NANDRAD {
 			// ConstructionInstance::para_t
 			case 0 : return 3;
 			// ControlElement::ControlType
-			case 1 : return 3;
+			case 1 : return 2;
 			// Controller::ModelType
 			case 2 : return 4;
 			// Controller::para_t
@@ -3960,7 +3954,7 @@ namespace NANDRAD {
 			// ConstructionInstance::para_t
 			case 0 : return 2;
 			// ControlElement::ControlType
-			case 1 : return 2;
+			case 1 : return 1;
 			// Controller::ModelType
 			case 2 : return 3;
 			// Controller::para_t

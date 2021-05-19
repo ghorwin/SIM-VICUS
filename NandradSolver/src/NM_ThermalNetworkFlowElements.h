@@ -417,7 +417,8 @@ public:
 class TNElementWithExternalHeatLoss : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	TNElementWithExternalHeatLoss(const NANDRAD::HydraulicFluid & fluid, double fluidVolume,
+	TNElementWithExternalHeatLoss(unsigned int flowElementId,
+								  const NANDRAD::HydraulicFluid & fluid, double fluidVolume,
 								  const NANDRAD::ControlElement & controlElement);
 
 	/*! Publishes individual model quantities via descriptions. */
@@ -439,6 +440,13 @@ public:
 	double zetaControlled(double mdot);
 
 protected:
+	/*! Id number of flow element. */
+	unsigned int								m_flowElementId = NANDRAD::INVALID_ID;
+
+	/*! Set point for the controller as a schedule. If this is a nullptr, the constant setpoint of the
+	 * ControleElement will be used */
+	const double								*m_setpointSchedule = nullptr;
+
 	/*! Reference to the controller parametrization object.*/
 	const NANDRAD::ControlElement				*m_controlElement = nullptr;
 

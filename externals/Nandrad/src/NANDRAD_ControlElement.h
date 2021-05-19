@@ -25,9 +25,8 @@ public:
 
 	/*! Availabel control types. */
 	enum ControlType {
-		CT_ControlTemperatureDifference,	// Keyword: ControlTemperatureDifference	'ControlTemperatureDifference'
-		CT_ControlMassFlow,					// Keyword: ControlMassFlow					'ControlMassFlow'
-		CT_ControlZoneAirTemperature,		// Keyword: ControlZoneAirTemperature		'ControlZoneAirTemperature'
+		CT_ControlTemperatureDifference,			// Keyword: ControlTemperatureDifference	'ControlTemperatureDifference'
+		CT_ControlMassFlow,							// Keyword: ControlMassFlow					'ControlMassFlow'
 		NUM_CT
 	};
 
@@ -39,14 +38,9 @@ public:
 	/*! Set point as fixed scalar value. */
 	IBK::Parameter					m_setPoint;											// XML:E
 
-	/*! Set point as a schedule.
-		TODO Hauke, refactor to select setpoint via modelType with pre-defined schedule name. */
-	std::string						m_setPointScheduleName;								// XML:E
-
-	/*! Used to cut the system input.
-		TODO Hauke, can this be optional?
+	/*! Used to cut the system input, if this is a negative value, it will not be considered
 	*/
-	double							m_maximumControllerResultValue = 0;					// XML:E:required
+	double							m_maximumControllerResultValue = -999;				// XML:E
 
 
 	// *** run time variables ***

@@ -58,10 +58,6 @@ void ControlElement::readXML(const TiXmlElement * element) {
 			attrib = attrib->Next();
 		}
 		// search for mandatory elements
-		if (!element->FirstChildElement("MaximumControllerResultValue"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'MaximumControllerResultValue' element.") ), FUNC_ID);
-
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
@@ -78,8 +74,6 @@ void ControlElement::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
-			else if (cName == "SetPointScheduleName")
-				m_setPointScheduleName = c->GetText();
 			else if (cName == "MaximumControllerResultValue")
 				m_maximumControllerResultValue = NANDRAD::readPODElement<double>(c, cName);
 			else {
@@ -107,8 +101,6 @@ TiXmlElement * ControlElement::writeXML(TiXmlElement * parent) const {
 		IBK_ASSERT("SetPoint" == m_setPoint.name);
 		TiXmlElement::appendIBKParameterElement(e, "SetPoint", m_setPoint.IO_unit.name(), m_setPoint.get_value());
 	}
-	if (!m_setPointScheduleName.empty())
-		TiXmlElement::appendSingleAttributeElement(e, "SetPointScheduleName", nullptr, std::string(), m_setPointScheduleName);
 	TiXmlElement::appendSingleAttributeElement(e, "MaximumControllerResultValue", nullptr, std::string(), IBK::val2string<double>(m_maximumControllerResultValue));
 	return e;
 }

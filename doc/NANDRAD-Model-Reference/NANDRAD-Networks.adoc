@@ -340,8 +340,25 @@ Das Model `HeatPumpIdealCarnot` ist eine ideale Wärmepumpe mit gegebener Carnot
 |====================
 
 Außerdem muss noch der Parameter `HeatPumpIntegration` mit den Werten `SourceSide` oder `SupplySide` gesetzt sein. Damit wird festgelegt ob die Quellenseite oder Senkenseite der Wärmepumpe im Netzwerk betrachtet wird.
-Weiterhin werden verschiedene Parameter als Schedules benötigt: Ist der Modus `SourceSide` gewählt muss der Parameter `CondenserMeanTemperatureSchedule` als Schedule gegeben sein. 
+
+[IMPORTANT]
+Es werden verschiedene Parameter als Schedules benötigt: Ist der Modus `SourceSide` gewählt muss der Parameter `CondenserMeanTemperatureSchedule` als Schedule gegeben sein. 
 Wird der Modus `SupplySide` gewählt, müssen die Parameter `EvaporatorMeanTemperatureSchedule` und `CondenserOutletSetpointSchedule` als Schedule gegeben sein.
+
+.Definition einer HeatPumpIdealCarnot
+====
+[[xml_HeatPumpIdealCarnot]]
+[source,xml]
+<HydraulicNetworkComponent id="2" modelType="HeatPumpIdealCarnot">
+	<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
+	<IBK:Parameter name="PressureLossCoefficient" unit="-">5</IBK:Parameter>
+	<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
+	<IBK:Parameter name="CarnotEfficiency" unit="---">0.4</IBK:Parameter>
+	<IBK:Parameter name="MaximumHeatingPower" unit="W">4000</IBK:Parameter>
+	<HeatPumpIntegration>SourceSide</HeatPumpIntegration>
+</HydraulicNetworkComponent>
+----
+====
 
 [[HydraulicNetworkElements]]
 ## Strömungselemente
@@ -561,8 +578,37 @@ ID-Referenzen:
 
 ## Regelung von Strömungselementen
 
+Strömungselemente können ein geregeltes Ventil enthalten. Das Ventil wird z.B. so geregelt, dass eine vorgegebene Temperaturdifferenz oder ein vorgegebener Massenstrom erreicht wird. Ein Beispiel zeigt <<controlled_heat_exchanger>>.
+Das `HydraulicNetworkElement` enthält dazu ein `ControlElement`. 
 
+[[controlled_heat_exchanger]]
+.Beispiel für ein Wärmeübertrager mit geregelter Temperaturdifferenz
+====
+[source,xml]
+----
+<HydraulicNetworkElement id="1" inletNodeId="0" outletNodeId="101" componentId="1000" displayName="heat exchanger">
+	<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
+		<LinearSplineParameter name="HeatLoss">
+			<X unit="d">0 1   2    2.2  2.3  2.7  2.8 3</X>
+			<Y unit="W">0 500 1000 1000 3000 3000 800 0</Y>
+		</LinearSplineParameter>
+	</HydraulicNetworkHeatExchange>
+    <ControlElement controlType="ControlTemperatureDifference" controllerId="1">
+    	<IBK:Parameter name="SetPoint" unit="K">3</IBK:Parameter>
+    	<MaximumControllerResultValue>10000</MaximumControllerResultValue>
+    </ControlElement>
+</HydraulicNetworkElement>
 
+...
+
+<Controllers>
+	<Controller id="1" modelType="PController">
+		<Type>PController</Type>
+		<IBK:Parameter name="Kp" unit="-">1e5</IBK:Parameter>
+	</Controller>
+</Controllers>
+----
+====
 
 
 

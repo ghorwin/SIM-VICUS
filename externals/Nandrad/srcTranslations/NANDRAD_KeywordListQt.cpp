@@ -29,7 +29,6 @@ KeywordListQt::KeywordListQt() {
 	tr("Gross area of the wall [m2].");
 	tr("ControlTemperatureDifference");
 	tr("ControlMassFlow");
-	tr("ControlZoneAirTemperature");
 	tr("DigitalDirect");
 	tr("DigitalHysteresis");
 	tr("PController");
