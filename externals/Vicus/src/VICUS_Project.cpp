@@ -735,18 +735,6 @@ void Project::generateNandradProject(NANDRAD::Project & p) const {
 		throw ConversionError(ConversionError::ET_MissingClimate,
 							  tr("A climate data file is needed. Please select a climate data file!"));
 
-//	m_placeholders
-//	p.m_location.m_climateFilePath.extractPlaceholder();
-	/*
-	//change $Database -> $Project Directory
-	std::string climPath = p.m_location.m_climateFilePath.str();
-	size_t pos = climPath.find("${Database}") ;
-	if(pos != std::string::npos){
-		climPath = IBK::replace_string(climPath, "${Database}", "${Project Directory}");
-		p.m_location.m_climateFilePath = climPath;
-	}
-	*/
-
 	// directory placeholders
 	for (const auto & placeholder : m_placeholders)
 		p.m_placeholders[placeholder.first] = placeholder.second;
@@ -1169,6 +1157,10 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 	//container for unique ids
 	std::vector<unsigned int>							allModelIds;
 	std::map<unsigned int, unsigned int>				vicusToNandradIds;
+
+	std::vector<IdMap>									m_idMaps{NUM_IdSpaces};
+
+	std::map<unsigned int, unsigned int>				vicusToNandradConstructionIds;
 	// *** m_zones ***
 
 	for (const VICUS::Building & b : m_buildings) {
@@ -1176,8 +1168,9 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 			for (const VICUS::Room & r : bl.m_rooms) {
 				// first create a NANDRAD zone for the room
 				NANDRAD::Zone z;
-				z.m_id = uniqueIdWithPredef(allModelIds, r.m_id, vicusToNandradIds);
+				z.m_id = uniqueIdWithPredef2(Zone, r.m_id, m_idMaps);
 
+				//unsigned int testId = uniqueIdWithPredef(allModelIds, r.m_id, vicusToNandradIds);
 				z.m_displayName = r.m_displayName.toStdString();
 				// Note: in the code below we expect the parameter's base units to be the same as the default unit for the
 				//       populated parameters
@@ -1350,9 +1343,9 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 				intLoad.m_displayName = zt->m_displayName.string();
 				intLoad.m_modelType = NANDRAD::InternalLoadsModel::MT_Scheduled;
 				intLoad.m_zoneObjectList = uniqueName;
-				intLoad.m_id = VICUS::Project::uniqueId<unsigned int>(allModelIds);
+				intLoad.m_id = uniqueIdWithPredef2(Profile, 1, m_idMaps); //VICUS::Project::uniqueId<unsigned int>(allModelIds);
 				//save all model ids
-				allModelIds.push_back(intLoad.m_id);
+				//allModelIds.push_back(intLoad.m_id);
 
 				NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_EquipmentRadiationFraction, 0);
 				NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_LightingRadiationFraction, 0);
@@ -1408,7 +1401,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 							//multiply the two schedules and add this to vector
 							intLoadSched = schedAct->multiply(*schedOcc);
 							///TODO Dirk->Andreas ist das richtig? welche Id-spaces brauchen die Schedules?
-							intLoadSched.m_id = VICUS::Project::uniqueId<unsigned int>(allModelIds);
+							intLoadSched.m_id = uniqueIdWithPredef2(Profile, 1, m_idMaps); //VICUS::Project::uniqueId<unsigned int>(allModelIds);
 
 							//multiply sched and constant val
 
@@ -1433,7 +1426,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 							addVicusScheduleToNandradProject(intLoadSched,subTempTypeToNameWithUnit[VICUS::ZoneTemplate::SubTemplateType(e)],
 									p, uniqueName);
 
-							allModelIds.push_back(intLoadSched.m_id);
+							//allModelIds.push_back(intLoadSched.m_id);
 
 							//override zero values in NANDRAD model
 							NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t",
@@ -1483,7 +1476,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 							}
 							intLoadScheds[enum1] = *schedMan;
 							///TODO Dirk->Andreas ist das richtig? welche Id-spaces brauchen die Schedules?
-							intLoadScheds[enum1].m_id = VICUS::Project::uniqueId<unsigned int>(allModelIds);
+							intLoadScheds[enum1].m_id = uniqueIdWithPredef2(Profile, 1, m_idMaps);//VICUS::Project::uniqueId<unsigned int>(allModelIds);
 							//get val
 							//multiply sched*val
 							//multiply sched and constant val
@@ -1504,7 +1497,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 							addVicusScheduleToNandradProject(intLoadScheds[enum1],subTempTypeToNameWithUnit[VICUS::ZoneTemplate::SubTemplateType(e)],
 									p, uniqueName);
 
-							allModelIds.push_back(intLoadScheds[enum1].m_id);
+							//allModelIds.push_back(intLoadScheds[enum1].m_id);
 						}
 						break;
 					}
@@ -1547,8 +1540,8 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 				//create a NANDRAD natural ventilation model
 				NANDRAD::NaturalVentilationModel natVentMod;
 				natVentMod.m_displayName = zt->m_displayName.string();
-				natVentMod.m_id = VICUS::Project::uniqueId<unsigned int>(allModelIds);
-				allModelIds.push_back(natVentMod.m_id);
+				natVentMod.m_id = uniqueIdWithPredef2(Profile, 1, m_idMaps);//VICUS::Project::uniqueId<unsigned int>(allModelIds);
+				//allModelIds.push_back(natVentMod.m_id);
 				natVentMod.m_zoneObjectList =
 						createUniqueNandradObjListAndName(zt->m_displayName.string(), allRoomIdsForThisZt, p,
 														  NANDRAD::ModelInputReference::MRT_ZONE);
@@ -1669,10 +1662,12 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 		// now generate a construction instance
 		NANDRAD::ConstructionInstance cinst;
-		cinst.m_id = uniqueIdWithPredef(allModelIds, ci.m_id, vicusToNandradIds);
+		//cinst.m_id = uniqueIdWithPredef(allModelIds, ci.m_id, vicusToNandradIds);
+		cinst.m_id = uniqueIdWithPredef2(ConstructionInstance, ci.m_id, m_idMaps, true);
 
 		// store reference to construction type (i.e. to be generated from component)
-		cinst.m_constructionTypeId = uniqueIdWithPredef<unsigned int>(allModelIds, comp->m_idConstruction, vicusToNandradIds);
+		//cinst.m_constructionTypeId = uniqueIdWithPredef<unsigned int>(allModelIds, comp->m_idConstruction, vicusToNandradIds);
+		cinst.m_constructionTypeId = uniqueIdWithPredef2(Construction, comp->m_idConstruction, m_idMaps);
 
 		// set construction instance parameters, area, orientation etc.
 
@@ -1746,8 +1741,8 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 
 		// now generate interfaces
-		cinst.m_interfaceA = generateInterface(ci, comp->m_idSideABoundaryCondition, allModelIds, vicusToNandradIds, interfaceID);
-		cinst.m_interfaceB = generateInterface(ci, comp->m_idSideBBoundaryCondition, allModelIds, vicusToNandradIds, interfaceID, false);
+		cinst.m_interfaceA = generateInterface(ci, comp->m_idSideABoundaryCondition, allModelIds, vicusToNandradIds, m_idMaps, ++interfaceID);
+		cinst.m_interfaceB = generateInterface(ci, comp->m_idSideBBoundaryCondition, allModelIds, vicusToNandradIds, m_idMaps, ++interfaceID, false);
 
 		// add to list of construction instances
 		p.m_constructionInstances.push_back(cinst);
@@ -1762,7 +1757,8 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 	// we have constructions and materials already in the embedded database, so we can just copy them over
 	for (const VICUS::Material & m : m_embeddedDB.m_materials) {
 		NANDRAD::Material matdata;
-		matdata.m_id = m.m_id;
+
+		matdata.m_id = uniqueIdWithPredef2(Material, m.m_id, m_idMaps);
 		matdata.m_displayName = m.m_displayName.string(IBK::MultiLanguageString::m_language, "en");
 
 		// now transfer parameters - fortunately, they have the same keywords, what a coincidence :-)
@@ -1778,12 +1774,12 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 		// now create a construction type
 		NANDRAD::ConstructionType conType;
-		conType.m_id = c.m_id;
+		conType.m_id = uniqueIdWithPredef2(Construction, c.m_id, m_idMaps);
 		conType.m_displayName = c.m_displayName.string(IBK::MultiLanguageString::m_language, "en");
 
 		for (const VICUS::MaterialLayer & ml : c.m_materialLayers) {
 			NANDRAD::MaterialLayer mlayer;
-			mlayer.m_matId = ml.m_matId;
+			mlayer.m_matId = uniqueIdWithPredef2(Material, ml.m_matId, m_idMaps);
 			mlayer.m_thickness = ml.m_thickness.value;
 			conType.m_materialLayers.push_back(mlayer);
 		}
@@ -1791,8 +1787,6 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 		// add to construction type list
 		p.m_constructionTypes.push_back(conType);
 	}
-
-
 	// TODO Andreas, Dirk, Stephan: Transfer other database elements/generate NANDRAD data objects
 }
 
@@ -1806,6 +1800,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 NANDRAD::Interface Project::generateInterface(const VICUS::ComponentInstance & ci, unsigned int bcID,
 											  std::vector<unsigned int> &allModelIds,
 											  std::map<unsigned int, unsigned int> &vicusToNandradIds,
+											  std::vector<IdMap> &maps,
 											  unsigned int & interfaceID, bool takeASide) const
 {
 	// no boundary condition ID? -> no interface
@@ -1840,12 +1835,12 @@ NANDRAD::Interface Project::generateInterface(const VICUS::ComponentInstance & c
 
 		// generate a new interface to the zone, which always only includes heat conduction
 		NANDRAD::Interface iface;
-		iface.m_id = uniqueIdWithPredef(allModelIds, interfaceID);
-		if(vicusToNandradIds.find(room->m_id) != vicusToNandradIds.end())
-			iface.m_zoneId = vicusToNandradIds[room->m_id];
+		//iface.m_id = uniqueIdWithPredef(allModelIds, interfaceID);
+		iface.m_id = uniqueIdWithPredef2(Interface, interfaceID, maps, true);
+		if(maps[Zone].m_vicusToNandrad.find(room->m_id) != maps[Zone].m_vicusToNandrad.end())
+			iface.m_zoneId = maps[Zone].m_vicusToNandrad[room->m_id];
 		else
 			iface.m_zoneId = room->m_id;
-
 
 		// only transfer heat conduction parameters
 		iface.m_heatConduction = bc->m_heatConduction;
@@ -1856,7 +1851,7 @@ NANDRAD::Interface Project::generateInterface(const VICUS::ComponentInstance & c
 
 		// generate a new interface to the zone, which always only includes heat conduction
 		NANDRAD::Interface iface;
-		iface.m_id = ++interfaceID;
+		iface.m_id = uniqueIdWithPredef2(Interface, interfaceID, maps, true);
 		iface.m_zoneId = 0; // outside zone
 		iface.m_heatConduction = bc->m_heatConduction;
 		iface.m_solarAbsorption = bc->m_solarAbsorption;

@@ -64,6 +64,25 @@ public:
 		NUM_SG
 	};
 
+	/*! For mapping the SIM-VICUS ids to NANDRAD unique ids. */
+	enum IdSpaces{
+		Material,
+		Component,
+		ConstructionInstance,
+		Construction,
+		Interface,
+		Other,
+		Zone,
+		Profile,
+		NUM_IdSpaces
+	};
+
+	/*! For mapping the SIM-VICUS ids to NANDRAD unique ids. */
+	struct IdMap{
+		std::map<unsigned int, unsigned int>			m_vicusToNandrad;	// mapping for VICUS to NANDRAD ids
+		std::vector<unsigned int>						m_ids;				// this vector hold all ids (NANDRAD) in this space
+	};
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	/*! Constructor, creates dummy data. */
@@ -191,6 +210,7 @@ public:
 	NANDRAD::Interface generateInterface(const VICUS::ComponentInstance & ci, unsigned int bcID,
 										 std::vector<unsigned int> &allModelIds,
 										 std::map<unsigned int, unsigned int> &vicusToNandradIds,
+										 std::vector<IdMap> &maps,
 										 unsigned int & interfaceID, bool takeASide = true) const;
 
 	// *** STATIC FUNCTIONS ***
@@ -344,13 +364,67 @@ public:
 	/*! Definitions for exporting an FMU from the model. */
 	NANDRAD::FMIDescription								m_fmiDescription;			// XML:E
 
+
+
+
+	/*! Function to generate unique ID. First check predefined id. Add the Id to the container.  */
+	static unsigned int uniqueIdWithPredef2(IdSpaces idSpace, unsigned int id, std::vector<IdMap> &maps, bool makeNewId = false){
+
+
+
+		Q_ASSERT(idSpace != NUM_IdSpaces);
+
+		unsigned int idOriginal = id;
+
+		IdMap &idMap = maps[idSpace];
+
+		//check if the id has already a other reference in this id space
+		if(idMap.m_vicusToNandrad.find(id) != idMap.m_vicusToNandrad.end())
+			return idMap.m_vicusToNandrad[id];
+
+		if(!makeNewId){
+			if(std::find(idMap.m_ids.begin(), idMap.m_ids.end(),id) != idMap.m_ids.end())
+				return id;
+		}
+
+		//find a unique id
+
+		bool foundId = false;
+		while (!foundId) {
+
+			//check if the id exists already in a other NANDRAD model
+			for(unsigned int i=0; i<NUM_IdSpaces; ++i){
+				std::vector<unsigned int> &vec = maps[(IdSpaces)i].m_ids;
+				for(unsigned int j=0; j<vec.size(); ++j){
+					if(vec[j] == id){
+						foundId = true;
+						break;
+					}
+				}
+			}
+			if(foundId){
+				++id;
+				foundId = false;
+			}
+			else{
+				//exit loop
+				foundId = true;
+			}
+		}
+		if(idOriginal != id)
+			idMap.m_vicusToNandrad[idOriginal] = id;
+		idMap.m_ids.push_back(id);
+
+		return id;
+		//if(idMap.m_vicusToNandrad.find(id) == idMap.m_vicusToNandrad.end())
+		//	idMap.m_vicusToNandrad[id] = uniqueIdWithPredef(idMap.m_ids, id);
+		//return idMap.m_vicusToNandrad[id];
+	}
 private:
 	/*! Return room name by id.
 		TODO Coding style beachten!
 	*/
 	std::string getRoomNameById(unsigned int id) const;
-
-
 
 };
 
