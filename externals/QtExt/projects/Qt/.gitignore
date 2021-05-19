@@ -2,3 +2,6 @@
 /moc/
 /ui/
 /qrc_QtExt.cpp
+/debug/
+/release/
+/release_x64/
