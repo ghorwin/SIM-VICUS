@@ -338,25 +338,6 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		elem.m_displayName = IBK::FormatString("%1_%2_%3").arg(comp->m_displayName.string()).arg(elem.m_id).arg(elem.m_displayName).str();
 
 
-
-
-
-//		// add control element as example
-//		if (comp->m_modelType == VICUS::NetworkComponent::MT_HeatExchanger){
-//			NANDRAD::ControlElement controlE;
-//			controlE.m_controlType = NANDRAD::ControlElement::CT_ControlTemperatureDifference;
-//			controlE.m_setPoint = IBK::Parameter("SetPoint", 3.0, IBK::Unit("K"));
-////			controlE.m_maximumControllerError = IBK::Parameter("MaximumControllerError", 10.0, IBK::Unit("K"));
-//			controlE.m_maximumSystemInput = IBK::Parameter("MaximumSystemInput", 5.0, IBK::Unit("-"));
-//			controlE.m_controllerId = 1;
-//			elem.m_controlElement = controlE;
-//		}
-
-
-
-
-
-
 		// transform heatExchange properties
 		elem.m_heatExchange = node.m_heatExchange.toNandradHeatExchange();
 
@@ -368,22 +349,6 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 			// TODO Hauke: continue algorithm for subnetworks
 		}
 	}
-
-
-
-
-//	// add controller as example
-//	NANDRAD::Controller contr;
-//	contr.m_id = 1;
-//	contr.m_para[NANDRAD::Controller::P_Kp] = IBK::Parameter("Kp", 10, IBK::Unit("-"));
-//	contr.m_modelType = NANDRAD::Controller::MT_PController;
-//	p.m_controllers.push_back(contr);
-
-
-
-
-
-
 
 	// find source node and create set of edges, which are ordered according to their distance to the source node
 	std::set<const VICUS::NetworkNode *> dummyNodeSet;
