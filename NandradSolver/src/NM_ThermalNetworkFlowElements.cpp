@@ -568,8 +568,7 @@ TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(unsigned int flowElementId,
 											 const NANDRAD::HydraulicFluid & fluid,
 											 const NANDRAD::HydraulicNetworkComponent & comp,
 											 const NANDRAD::ControlElement & controlElement):
-	TNElementWithExternalHeatLoss(flowElementId, fluid, comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value, controlElement),
-	m_flowElementId(flowElementId)
+	TNElementWithExternalHeatLoss(flowElementId, fluid, comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value, controlElement)
 {
 	m_fluidVolume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
 	m_carnotEfficiency = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiency].value;
