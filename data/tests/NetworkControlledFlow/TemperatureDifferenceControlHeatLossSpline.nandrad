@@ -62,6 +62,23 @@
 					<HydraulicNetworkComponent id="10020001" displayName="simple pipe" modelType="SimplePipe">
 					</HydraulicNetworkComponent>
 				</Components>
+				<ControlElements>
+					<!-- Mass flow is controlled (valve) depending on temperature difference between supply and return side
+						 of element. The controller uses the HeatLoss defined through HeatExchange parameter block above.
+					-->
+					<ControlElement id="123" controlType="ControlTemperatureDifference">
+						<Controller modelType="PController">
+							<Type>PController</Type>
+							<IBK:Parameter name="Kp" unit="-">1e5</IBK:Parameter>
+						</Controller>
+						<IBK:Parameter name="SetPoint" unit="K">3</IBK:Parameter>
+						<!-- The controller computes a zeta-value that is added to the zeta-value of the "pipe"-like
+							 heat exchanger. The maximum zeta-value (when valve is fully closed) is given in the parameter
+							 below
+						-->
+						<MaximumControllerResultValue>1e99</MaximumControllerResultValue>
+					</ControlElement>
+				</ControlElements>
 
 				<Elements>
 
@@ -76,17 +93,8 @@
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 
-						<!-- Mass flow is controlled (valve) depending on temperature difference between supply and return side
-							 of element. The controller uses the HeatLoss defined through HeatExchange parameter block above.
-						-->
-						<ControlElement controlType="ControlTemperatureDifference" controllerId="1">
-							<IBK:Parameter name="SetPoint" unit="K">3</IBK:Parameter>
-							<!-- The controller computes a zeta-value that is added to the zeta-value of the "pipe"-like
-								 heat exchanger. The maximum zeta-value (when valve is fully closed) is given in the parameter
-								 below
-							-->
-							<MaximumControllerResultValue>1e99</MaximumControllerResultValue>
-						</ControlElement>
+						<ControlElement controlElementID="123"/>
+						
 					</HydraulicNetworkElement>
 
 					<HydraulicNetworkElement id="8" inletNodeId="101" outletNodeId="100" componentId="10020001" pipePropertiesId="9" displayName="pipe">
@@ -145,11 +153,5 @@
 				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
-		<Controllers>
-			<Controller id="1" modelType="PController">
-				<Type>PController</Type>
-				<IBK:Parameter name="Kp" unit="-">1e5</IBK:Parameter>
-			</Controller>
-		</Controllers>
 	</Project>
 </NandradProject>
