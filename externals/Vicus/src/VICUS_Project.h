@@ -64,24 +64,6 @@ public:
 		NUM_SG
 	};
 
-	/*! For mapping the SIM-VICUS ids to NANDRAD unique ids. */
-	enum IdSpaces{
-		Material,
-		Component,
-		ConstructionInstance,
-		Construction,
-		Interface,
-		Other,
-		Zone,
-		Profile,
-		NUM_IdSpaces
-	};
-
-	/*! For mapping the SIM-VICUS ids to NANDRAD unique ids. */
-	struct IdMap{
-		std::map<unsigned int, unsigned int>			m_vicusToNandrad;	// mapping for VICUS to NANDRAD ids
-		std::vector<unsigned int>						m_ids;				// this vector hold all ids (NANDRAD) in this space
-	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -199,11 +181,6 @@ public:
 	void generateNandradProject(NANDRAD::Project & p) const;
 	void generateBuildingProjectData(NANDRAD::Project & p) const;
 	void generateNetworkProjectData(NANDRAD::Project & p) const;
-	NANDRAD::Interface generateInterface(const VICUS::ComponentInstance & ci, unsigned int bcID,
-										 std::vector<unsigned int> &allModelIds,
-										 std::map<unsigned int, unsigned int> &vicusToNandradIds,
-										 std::vector<IdMap> &maps,
-										 unsigned int & interfaceID, bool takeASide = true) const;
 
 	// *** STATIC FUNCTIONS ***
 
@@ -359,6 +336,38 @@ public:
 
 
 
+
+private:
+	/*! Return room name by id.
+		TODO Coding style beachten!
+	*/
+	std::string getRoomNameById(unsigned int id) const;
+
+
+	/*! For mapping the SIM-VICUS ids to NANDRAD unique ids. */
+	enum IdSpaces{
+		Material,
+		Component,
+		ConstructionInstance,
+		Construction,
+		Interface,
+		Other,
+		Zone,
+		Profile,
+		NUM_IdSpaces
+	};
+
+	/*! For mapping the SIM-VICUS ids to NANDRAD unique ids. */
+	struct IdMap{
+		std::map<unsigned int, unsigned int>			m_vicusToNandrad;	// mapping for VICUS to NANDRAD ids
+		std::vector<unsigned int>						m_ids;				// this vector hold all ids (NANDRAD) in this space
+	};
+
+
+	NANDRAD::Interface generateInterface(const VICUS::ComponentInstance & ci, unsigned int bcID,
+										 std::vector<IdMap> &maps,
+										 unsigned int & interfaceID, bool takeASide = true) const;
+
 	/*! Function to generate unique ID. First check predefined id. Add the Id to the container.  */
 	static unsigned int uniqueIdWithPredef2(IdSpaces idSpace, unsigned int id, std::vector<IdMap> &maps, bool makeNewId = false){
 
@@ -412,11 +421,6 @@ public:
 		//	idMap.m_vicusToNandrad[id] = uniqueIdWithPredef(idMap.m_ids, id);
 		//return idMap.m_vicusToNandrad[id];
 	}
-private:
-	/*! Return room name by id.
-		TODO Coding style beachten!
-	*/
-	std::string getRoomNameById(unsigned int id) const;
 
 };
 

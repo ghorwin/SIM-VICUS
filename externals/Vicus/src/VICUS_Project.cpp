@@ -1691,8 +1691,8 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 
 		// now generate interfaces
-		cinst.m_interfaceA = generateInterface(ci, comp->m_idSideABoundaryCondition, allModelIds, vicusToNandradIds, m_idMaps, ++interfaceID);
-		cinst.m_interfaceB = generateInterface(ci, comp->m_idSideBBoundaryCondition, allModelIds, vicusToNandradIds, m_idMaps, ++interfaceID, false);
+		cinst.m_interfaceA = generateInterface(ci, comp->m_idSideABoundaryCondition, m_idMaps, ++interfaceID);
+		cinst.m_interfaceB = generateInterface(ci, comp->m_idSideBBoundaryCondition, m_idMaps, ++interfaceID, false);
 
 		// add to list of construction instances
 		p.m_constructionInstances.push_back(cinst);
@@ -1748,8 +1748,6 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 
 
 NANDRAD::Interface Project::generateInterface(const VICUS::ComponentInstance & ci, unsigned int bcID,
-											  std::vector<unsigned int> &allModelIds,
-											  std::map<unsigned int, unsigned int> &vicusToNandradIds,
 											  std::vector<IdMap> &maps,
 											  unsigned int & interfaceID, bool takeASide) const
 {
