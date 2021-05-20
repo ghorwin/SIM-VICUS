@@ -88,13 +88,13 @@
 				</Thermostat>
 			</Thermostats>
 
-			<IdealSurfaceHeatingModels>
-				<IdealSurfaceHeatingModel id="701">
+			<IdealSurfaceHeatingCoolingModels>
+				<IdealSurfaceHeatingCoolingModel id="701">
 					<ThermostatZoneID>1</ThermostatZoneID>
 					<ConstructionObjectList>Floor</ConstructionObjectList>
 					<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">50</IBK:Parameter>
-				</IdealSurfaceHeatingModel>
-			</IdealSurfaceHeatingModels>
+				</IdealSurfaceHeatingCoolingModel>
+			</IdealSurfaceHeatingCoolingModels>
 
 		</Models>
 

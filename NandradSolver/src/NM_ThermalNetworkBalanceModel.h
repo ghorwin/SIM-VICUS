@@ -67,8 +67,8 @@ class ThermalNetworkStatesModel;
 	ModelReferenceType = MRT_NETWORK
 	id = (id of network)
 	Quantities:
-		- NetworkZoneHeatLoad (in [W]), vector-valued, access via zone ID
-		- NetworkActiveLayerHeatLoad (in [W]), vector-valued, access via construction instance ID
+		- NetworkZoneThermalLoad (in [W]), vector-valued, access via zone ID
+		- ActiveLayerThermalLoad (in [W]), vector-valued, access via construction instance ID
 
 	ModelReferenceType = MRT_NETWORKELEMENT
 	id = (id of flow element)

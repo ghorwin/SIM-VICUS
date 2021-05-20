@@ -109,8 +109,14 @@ void IdealSurfaceHeatingCoolingModel::initInputReferences(const std::vector<Abst
 	IBK_ASSERT (!m_objectList->m_filterID.m_ids.empty());
 	// set reference to zone air temperature
 
-	// loop over all models, pick out the Thermostat-models and request input for a single zone. Only
-	// one (and exactly) one request per zone must be fulfilled!
+	// we need control values for heating and cooling
+
+	// For this purpose, we access a zone thermostat control value (identified via zone id).
+	// Thermostat-modells provide 'HeatingControlValue' and 'CoolingControlValue'.
+	// Note, that for each zone only oine thermostat is allowed. Once we loop
+	// over all thermostat models, only one (and exactly) one request per zone must be fulfilled!
+	// All references are set as optional and later (setInputValueRefs) proved, whether exactly one value is found.
+
 	for (AbstractModel * model : models) {
 		// ignore all models that are not thermostat models
 		if (model->referenceType() != NANDRAD::ModelInputReference::MRT_MODEL)
@@ -144,9 +150,11 @@ void IdealSurfaceHeatingCoolingModel::setInputValueRefs(const std::vector<Quanti
 	FUNCID(IdealSurfaceHeatingCoolingModel::setInputValueRefs);
 	IBK_ASSERT (!m_objectList->m_filterID.m_ids.empty());
 
-	// we now must ensure, that for each zone there is exactly one matching control signal
+	// We now must ensure, that for each zone there is exactly one matching control signal
+	// In other means, exactly one result refernce value is filled with a valid adress
+	// for each control value
 
-	IBK_ASSERT(m_thermostatModelObjects == resultValueRefs.size());
+	IBK_ASSERT(2 * m_thermostatModelObjects == resultValueRefs.size());
 
 	for (unsigned int i=0; i<m_thermostatModelObjects; ++i) {
 		// heating control value
@@ -187,31 +195,31 @@ void IdealSurfaceHeatingCoolingModel::stateDependencies(std::vector<std::pair<co
 	// we have heating defined
 	if(m_heatingThermostatValueRef != nullptr)
 		resultInputValueReferences.push_back(
-						std::make_pair(&m_results[R_ThermalLoad], m_heatingThermostatValueRef) );
+						std::make_pair(&m_results[R_ActiveLayerThermalLoad], m_heatingThermostatValueRef) );
 	// we operate in cooling mode
 	if(m_coolingThermostatValueRef != nullptr)
 		resultInputValueReferences.push_back(
-						std::make_pair(&m_results[R_ThermalLoad], m_coolingThermostatValueRef) );
+						std::make_pair(&m_results[R_ActiveLayerThermalLoad], m_coolingThermostatValueRef) );
 }
 
 
 int IdealSurfaceHeatingCoolingModel::update() {
 
-	m_results[R_ThermalLoad] = 0;
+	m_results[R_ActiveLayerThermalLoad] = 0;
 
 	// get control value for heating
 	if(m_heatingThermostatValueRef != nullptr) {
 		double heatingControlValue = *m_heatingThermostatValueRef;
 		// clip
 		heatingControlValue = std::max(0.0, std::min(1.0, heatingControlValue));
-		m_results[R_ThermalLoad] += heatingControlValue*m_thermostatZoneArea*m_maxHeatingPower;
+		m_results[R_ActiveLayerThermalLoad] += heatingControlValue*m_thermostatZoneArea*m_maxHeatingPower;
 	}
 	// get control value for cooling
 	if(m_coolingThermostatValueRef != nullptr) {
 		double coolingControlValue = *m_coolingThermostatValueRef;
 		// clip
 		coolingControlValue = std::max(0.0, std::min(1.0, coolingControlValue));
-		m_results[R_ThermalLoad] -= coolingControlValue*m_thermostatZoneArea*m_maxCoolingPower;
+		m_results[R_ActiveLayerThermalLoad] -= coolingControlValue*m_thermostatZoneArea*m_maxCoolingPower;
 	}
 
 	return 0; // signal success

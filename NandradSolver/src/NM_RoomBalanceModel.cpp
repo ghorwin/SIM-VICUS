@@ -280,7 +280,7 @@ void RoomBalanceModel::initInputReferences(const std::vector<AbstractModel *> & 
 			if (thermNetworkModel != nullptr) {
 				++m_networkHeatLoadsModelCount;
 				InputReference r;
-				r.m_name.m_name = "NetworkZoneHeatLoad";
+				r.m_name.m_name = "NetworkZoneThermalLoad";
 				// add current id as index so that we can sum uphat fluxes from all networks
 				r.m_name.m_index = (int) id();
 				r.m_id = model->id();

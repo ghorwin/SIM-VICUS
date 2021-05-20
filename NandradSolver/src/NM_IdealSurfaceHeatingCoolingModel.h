@@ -20,7 +20,7 @@ class IdealSurfaceHeatingCoolingModel : public AbstractModel, public AbstractSta
 public:
 	/*! Computed results. */
 	enum Results {
-		R_ThermalLoad,				// Keyword: ThermalLoad			[W]		'Layer thermal load'
+		R_ActiveLayerThermalLoad,		// Keyword: ActiveLayerThermalLoad		[W]		'Active layer thermal load'
 		NUM_R
 	};
 

@@ -111,12 +111,12 @@ namespace NANDRAD_MODEL {
 			// IdealPipeRegisterModel::VectorValuedResults
 			case 6 :
 			switch (t) {
-				case 0 : return "SurfaceHeatingLoad";
+				case 0 : return "ActiveLayerThermalLoad";
 			} break;
 			// IdealSurfaceHeatingCoolingModel::Results
 			case 7 :
 			switch (t) {
-				case 0 : return "ThermalLoad";
+				case 0 : return "ActiveLayerThermalLoad";
 			} break;
 			// InternalLoadsModel::VectorValuedResults
 			case 8 :
@@ -300,12 +300,12 @@ namespace NANDRAD_MODEL {
 			// IdealPipeRegisterModel::VectorValuedResults
 			case 6 :
 			switch (t) {
-				case 0 : return "SurfaceHeatingLoad";
+				case 0 : return "ActiveLayerThermalLoad";
 			} break;
 			// IdealSurfaceHeatingCoolingModel::Results
 			case 7 :
 			switch (t) {
-				case 0 : return "ThermalLoad";
+				case 0 : return "ActiveLayerThermalLoad";
 			} break;
 			// InternalLoadsModel::VectorValuedResults
 			case 8 :
@@ -490,12 +490,12 @@ namespace NANDRAD_MODEL {
 			// IdealPipeRegisterModel::VectorValuedResults
 			case 6 :
 			switch (t) {
-				case 0 : return "Layer heat load";
+				case 0 : return "Active layer thermal load";
 			} break;
 			// IdealSurfaceHeatingCoolingModel::Results
 			case 7 :
 			switch (t) {
-				case 0 : return "Layer thermal load";
+				case 0 : return "Active layer thermal load";
 			} break;
 			// InternalLoadsModel::VectorValuedResults
 			case 8 :

@@ -251,9 +251,9 @@ void IdealPipeRegisterModel::stateDependencies(std::vector<std::pair<const doubl
 		// pair: result - input
 
 		resultInputValueReferences.push_back(
-					std::make_pair(m_vectorValuedResults[VVR_SurfaceHeatingLoad].dataPtr() + i, m_thermostatValueRef) );
+					std::make_pair(m_vectorValuedResults[VVR_ActiveLayerThermalLoad].dataPtr() + i, m_thermostatValueRef) );
 		resultInputValueReferences.push_back(
-					std::make_pair(m_vectorValuedResults[VVR_SurfaceHeatingLoad].dataPtr() + i, m_supplyTemperatureRef) );
+					std::make_pair(m_vectorValuedResults[VVR_ActiveLayerThermalLoad].dataPtr() + i, m_supplyTemperatureRef) );
 	}
 }
 
@@ -293,7 +293,7 @@ int IdealPipeRegisterModel::update() {
 			(1. - std::exp(-UAValueTotal / (std::fabs(massFlow) * m_fluidHeatCapacity ) ) );
 
 	// calculate heat load
-	double *surfaceHeatingLoadPtr = m_vectorValuedResults[VVR_SurfaceHeatingLoad].dataPtr();
+	double *surfaceHeatingLoadPtr = m_vectorValuedResults[VVR_ActiveLayerThermalLoad].dataPtr();
 	unsigned int nTargets = (unsigned int) m_objectList->m_filterID.m_ids.size();
 
 	for(unsigned int i = 0; i < nTargets; ++i) {

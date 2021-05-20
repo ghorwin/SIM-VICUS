@@ -64,7 +64,7 @@ SOURCES += \
     ../../src/NM_HydraulicNetworkModel.cpp \
     ../../src/NM_IdealHeatingCoolingModel.cpp \
     ../../src/NM_IdealPipeRegisterModel.cpp \
-    ../../src/NM_IdealSurfaceHeatingModel.cpp \
+    ../../src/NM_IdealSurfaceHeatingCoolingModel.cpp \
     ../../src/NM_InternalLoadsModel.cpp \
     ../../src/NM_KeywordList.cpp \
     ../../src/NM_Loads.cpp \
@@ -112,7 +112,7 @@ HEADERS += \
     ../../src/NM_HydraulicNetworkModelPrivate.h \
     ../../src/NM_IdealHeatingCoolingModel.h \
     ../../src/NM_IdealPipeRegisterModel.h \
-    ../../src/NM_IdealSurfaceHeatingModel.h \
+    ../../src/NM_IdealSurfaceHeatingCoolingModel.h \
     ../../src/NM_InputReference.h \
     ../../src/NM_KeywordList.h \
     ../../src/NM_Loads.h \
@@ -144,6 +144,5 @@ HEADERS += \
     ../../src/NM_AbstractController.h \
     ../../src/NM_AbstractTransientController.h \
     ../../src/NM_Controller.h \
-    ../../src/NM_ShadingControlModel.h \
-    ../../src/NM_HydraulicNetworkModelPrivate.h
+    ../../src/NM_ShadingControlModel.h
 

@@ -297,7 +297,7 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 			else if (idealSurfaceHeatingCoolingModel != nullptr) {
 				++m_surfaceHeatingCoolingModelCount;
 				InputReference r;
-				r.m_name.m_name = "IdealSurfaceHeatingLoad";
+				r.m_name.m_name = "ActiveLayerThermalLoad";
 				// add current id as index so that we can sum uphat fluxes from all hetaing models
 				r.m_name.m_index = (int) id();
 				r.m_id = model->id();
@@ -311,7 +311,7 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 			else if (idealPipeRegisterModel != nullptr) {
 				++m_surfaceHeatingCoolingModelCount;
 				InputReference r;
-				r.m_name.m_name = "SurfaceHeatingLoad";
+				r.m_name.m_name = "ActiveLayerThermalLoad";
 				// add current id as index so that we can sum uphat fluxes from all hetaing models
 				r.m_name.m_index = (int) id();
 				r.m_id = model->id();
@@ -328,7 +328,7 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 			if (thermNetworkModel != nullptr) {
 				++m_surfaceHeatingCoolingModelCount;
 				InputReference r;
-				r.m_name.m_name = "NetworkActiveLayerHeatLoad";
+				r.m_name.m_name = "ActiveLayerThermalLoad";
 				// add current id as index so that we can sum uphat fluxes from all networks
 				r.m_name.m_index = (int) id();
 				r.m_id = model->id();

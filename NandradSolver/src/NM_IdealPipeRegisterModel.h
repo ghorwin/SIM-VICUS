@@ -22,13 +22,13 @@ class IdealPipeRegisterModel : public AbstractModel, public AbstractStateDepende
 public:
 	/*! Computed results. */
 	enum Results {
-		R_MassFlux,						// Keyword: MassFlux				[kg/s]	'Controlled mass flow'
+		R_MassFlux,						// Keyword: MassFlux						[kg/s]	'Controlled mass flow'
 		NUM_R
 	};
 
 	/*! Computed results, vector-valued results that provide access via zone ID. */
 	enum VectorValuedResults {
-		VVR_SurfaceHeatingLoad,				// Keyword: SurfaceHeatingLoad			[W]		'Layer heat load'
+		VVR_ActiveLayerThermalLoad,		// Keyword: ActiveLayerThermalLoad			[W]		'Active layer thermal load'
 		NUM_VVR
 	};
 

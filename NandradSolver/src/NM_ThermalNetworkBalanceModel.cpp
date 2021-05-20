@@ -203,7 +203,7 @@ void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescript
 			zoneIds.push_back(zoneProp.m_zoneId);
 
 		// set a description for each zone
-		desc = QuantityDescription("NetworkZoneHeatLoad", "W", "Complete Heat load to zones from all hydraulic network elements", false);
+		desc = QuantityDescription("NetworkZoneThermalLoad", "W", "Complete Heat load to zones from all hydraulic network elements", false);
 		// add current index to description
 		desc.resize(zoneIds, VectorValuedQuantityIndex::IK_ModelID);
 		resDesc.push_back(desc);
@@ -217,7 +217,7 @@ void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescript
 			conInstanceIds.push_back(layerProp.m_constructionInstanceId);
 
 		// set a description for each construction
-		desc = QuantityDescription("NetworkActiveLayerHeatLoad", "W", "Heat load to the construction layers from all hydraulic network elements", false);
+		desc = QuantityDescription("ActiveLayerThermalLoad", "W", "Heat load to the construction layers from all hydraulic network elements", false);
 		// add current index to description
 		desc.resize(conInstanceIds, VectorValuedQuantityIndex::IK_ModelID);
 		resDesc.push_back(desc);
@@ -285,7 +285,7 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference &
 			return &m_ydot[0];
 		return nullptr;
 	}
-	if (quantityName.m_name == std::string("NetworkZoneHeatLoad")) {
+	if (quantityName.m_name == std::string("NetworkZoneThermalLoad")) {
 		// no zones are given?
 		if (m_zoneProperties.empty())
 			return nullptr;
@@ -299,7 +299,7 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference &
 		// found a valid entry
 		return &fIt->m_zoneHeatLoad;
 	}
-	if (quantityName.m_name == std::string("NetworkActiveLayerHeatLoad")) {
+	if (quantityName.m_name == std::string("ActiveLayerThermalLoad")) {
 		// no active layers are given?
 		if(m_activeProperties.empty())
 			return nullptr;
