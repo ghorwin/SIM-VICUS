@@ -28,7 +28,14 @@ QdotHeating = 538.7 = UElementWall * (TElementWall - TRoom)
 TElementWall - TRoom = 3 K
 ```
 
+## IdealFloorCooling.nandrad
 
+Identisch zu 'IdealFloorHeating.nandrad'. Die Außentemperatur wird allerdings auf 58 °C gesetzt und eine Solltemperatur von 26 °C angestrebt. Das Ergebnis ist umgekehrt proprtional zum Heizfall:
+
+```
+PCooling = -QdotCooling = 538 W
+TElementWall - TRoom = -3 K
+```
 
 
 ## IdealPipeRegisterHeating.nandrad
@@ -58,3 +65,14 @@ mdot ~ 0.009 kg/s
 ```
 
 Es ist davon auszugehen, dass die gewünschte Heizlast unter Einhaltung des Massestromes erreicht werden kann.
+
+
+
+## IdealPipeRegisterCooling.nandrad
+
+Identisch zu 'IdealPipeRegisterHeating.nandrad'. Die Außentemperatur wird allerdings auf 58 °C gesetzt und eine Solltemperatur von 26 °C angestrebt. Die Vorlauftemperatur wird mit
+8 °C so gewählt, dass sich die umgekehrt proportionale Temperaturspreizung zur Umgebung im Vergleich zum Heizfall ergibt. Es wird im stationären Fall ein identischer Massestrom erwartet: 
+
+```
+mdot ~ 0.009 kg/s
+```
