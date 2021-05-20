@@ -15,7 +15,11 @@ namespace NANDRAD {
 
 namespace NANDRAD_MODEL {
 
-/*! A model for ideal heating via surface heating. */
+/*! A model for ideal heating via surface heating. We control thermal load (positive or negative).
+	In the case of heating parametrize 'MaxHeatingPowerPerArea' with a positive value and the
+	same for 'MaxCoolingPowerPerArea' in the case of cooling (heating and cooling may be used
+	combined).
+	Control values for heating and cooling are retrieved from zone specific thermostat model.*/
 class IdealSurfaceHeatingCoolingModel : public AbstractModel, public AbstractStateDependency {
 public:
 	/*! Computed results. */

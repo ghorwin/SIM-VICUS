@@ -17,7 +17,14 @@ namespace NANDRAD {
 
 namespace NANDRAD_MODEL {
 
-/*! A model for an ideal pipe register heating. */
+/*! A model for an ideal pipe register heating and cooling. We regulate mass flow and
+	later compare supply temperature to layer temperature. In the case of heating only
+	a larger supply temperature opens valve and in the case of cooling only a smaller one.
+	For computation of heat tranfer we use steady state model with constant pipe mass flow
+	and constant environmental temperature.
+	Control values for heating and cooling are retrieved from zone specific thermostat model.
+	Note: in order to deactivate heating or cooling remove 'HeatingSetpoint' and 'CoolingSetpoint'
+	from Thermostat parametrization or chosse a high/low supply temperature.*/
 class IdealPipeRegisterModel : public AbstractModel, public AbstractStateDependency {
 public:
 	/*! Computed results. */
@@ -156,8 +163,11 @@ private:
 	/*! Holds number of thermostat model objects that values were requested from. */
 	unsigned int									m_thermostatModelObjects = 0;
 
-	/*! Reference to thermotat control value. */
-	const double*									m_thermostatValueRef = nullptr;
+	/*! Reference to heating thermotat control value. */
+	const double*									m_heatingThermostatValueRef = nullptr;
+
+	/*! Reference to cooling thermotat control value. */
+	const double*									m_coolingThermostatValueRef = nullptr;
 
 	/*! Reference to supply temperature. */
 	const double*									m_supplyTemperatureRef = nullptr;
