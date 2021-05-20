@@ -1,0 +1,97 @@
+2021-05-20 13:39:08	[Progress]	[main]                                          	NANDRAD Solver
+2021-05-20 13:39:08	[Progress]	[main]                                          	All rights reserved.
+2021-05-20 13:39:08	[Progress]	[main]                                          	
+2021-05-20 13:39:08	[Progress]	[main]                                          	The NANDRAD/SIM-VICUS Development Team.
+2021-05-20 13:39:08	[Progress]	[main]                                          	Core developers:
+2021-05-20 13:39:08	[Progress]	[main]                                          	Andreas Nicolai and Anne Paepcke
+2021-05-20 13:39:08	[Progress]	[main]                                          	Contact: 
+2021-05-20 13:39:08	[Progress]	[main]                                          	  andreas.nicolai [at] tu-dresden.de
+2021-05-20 13:39:08	[Progress]	[main]                                          	  anne.paepcke [at] tu-dresden.de
+2021-05-20 13:39:08	[Progress]	[main]                                          	
+2021-05-20 13:39:08	[Progress]	[Version::printCompilerVersion]                 	Compiled with Visual Studio 2015
+2021-05-20 13:39:08	[Progress]	[ModelImpl::printVersionStrings]                	
+2021-05-20 13:39:08	[Progress]	[ModelImpl::printVersionStrings]                	NANDRAD version                                  1.999.0
+2021-05-20 13:39:08	[Progress]	[ModelImpl::printVersionStrings]                	IBK library version                              4.3.0
+2021-05-20 13:39:08	[Progress]	[ModelImpl::printVersionStrings]                	CCM library version                              1.1.0
+2021-05-20 13:39:08	[Progress]	[SolverControlFramework::printVersionInfo]      	Integrator Framework Version                     0.9.6
+2021-05-20 13:39:08	[Progress]	[SolverControlFramework::printVersionInfo]      	SUNDIALS Release Version                         2.6.2
+2021-05-20 13:39:08	[Progress]	[main]                                          	
+2021-05-20 13:39:08	[Progress]	[NandradModel::init]                            	Project file:         'C:/Daten/git/SIMVICUS/data/tests/NetworkControlledFlow/TemperatureDifferenceControlHeatLossSpline.nandrad'
+2021-05-20 13:39:08	[Progress]	[NandradModel::init]                            	Output root dir:      'C:/Daten/git/SIMVICUS/data/tests/NetworkControlledFlow/TemperatureDifferenceControlHeatLossSpline'
+2021-05-20 13:39:08	[Progress]	[NandradModel::init]                            	Reading project file
+2021-05-20 13:39:08	[Progress]	[Project::mergeSameConstructions]               	Merging redundant construction instances
+2021-05-20 13:39:08	[Progress]	[NandradModel::init]                            	Initializing model
+2021-05-20 13:39:08	[Progress]	[NandradModel::initSolverParameter]             	  Initializing Solver Parameter
+2021-05-20 13:39:08	[Progress]	[NandradModel::initSolverParameter]             	    Auto-selecting KLU as linear equation system solver.
+2021-05-20 13:39:08	[Progress]	[NandradModel::initSimulationParameter]         	  Initializing Simulation Parameter
+2021-05-20 13:39:08	[Progress]	[NandradModel::initClimateData]                 	  Initializing Climatic Data
+2021-05-20 13:39:08	[Progress]	[Loads::setup]                                  	    Reading climate data file 'C:/Daten/git/SIMVICUS/data/tests/NetworkControlledFlow/../climate/Konstantopol_20C.c6b'
+2021-05-20 13:39:08	[Progress]	[NandradModel::initSchedules]                   	  Initializing Schedules
+2021-05-20 13:39:08	[Progress]	[NandradModel::initZones]                       	  Initializing Zones
+2021-05-20 13:39:08	[Progress]	[NandradModel::initWallsAndInterfaces]          	  Initializing Constructions and Interfaces
+2021-05-20 13:39:08	[Progress]	[NandradModel::initNetworks]                    	  Initializing Networks
+2021-05-20 13:39:08	[Progress]	[NandradModel::initNetworks]                    	    Initializing network 'Mini Netzwerk' (#1)
+2021-05-20 13:39:08	[Progress]	[HydraulicNetworkModelImpl::HydraulicNetworkModelImpl]	      Nodes:         3
+2021-05-20 13:39:08	[Progress]	[HydraulicNetworkModelImpl::HydraulicNetworkModelImpl]	      Flow elements: 3
+2021-05-20 13:39:08	[Progress]	[NandradModel::initModels]                      	  Initializing Models
+2021-05-20 13:39:08	[Progress]	[NandradModel::initObjectLists]                 	  Initializing Object Lists
+2021-05-20 13:39:08	[Progress]	[NandradModel::initOutputs]                     	  Initializing Outputs
+2021-05-20 13:39:08	[Progress]	[OutputHandler::setup]                          	    Initializing output grids
+2021-05-20 13:39:08	[Progress]	[OutputHandler::setup]                          	      Checking output grid 'hourly'
+2021-05-20 13:39:08	[Progress]	[NandradModel::initModelDependencies]           	  Initializing all model results
+2021-05-20 13:39:08	[Progress]	[NandradModel::initModelDependencies]           	  Initializing all model input references
+2021-05-20 13:39:08	[Progress]	[OutputFile::setInputValueRefs]                 	    Output for NetworkElement(id=0).ControllerResultValue not available, skipped.
+2021-05-20 13:39:08	[Progress]	[OutputFile::setInputValueRefs]                 	    Output for NetworkElement(id=8).ControllerResultValue not available, skipped.
+2021-05-20 13:39:08	[Progress]	[OutputFile::setInputValueRefs]                 	    Output for NetworkElement(id=0).TemperatureDifference not available, skipped.
+2021-05-20 13:39:08	[Progress]	[OutputFile::setInputValueRefs]                 	    Output for NetworkElement(id=8).TemperatureDifference not available, skipped.
+2021-05-20 13:39:08	[Progress]	[NandradModel::initModelGraph]                  	  Creating Dependency Graph for 2 State-Dependent Models
+2021-05-20 13:39:08	[Progress]	[NandradModel::initOutputReferenceList]         	  Initializing Output Quantity List
+2021-05-20 13:39:08	[Progress]	[NandradModel::initOutputReferenceList]         	  Writing Variable - Displayname Mapping Table
+2021-05-20 13:39:08	[Progress]	[NandradModel::initSolverVariables]             	  Initializing Solver Variables
+2021-05-20 13:39:08	[Progress]	[NandradModel::initSolverVariables]             	    4 unknowns
+2021-05-20 13:39:08	[Progress]	[NandradModel::initSolverMatrix]                	  Creating Jacobian matrix pattern
+2021-05-20 13:39:08	[Progress]	[NandradModel::initSolverMatrix]                	    Composing dependency pattern
+2021-05-20 13:39:08	[Progress]	[main]                                          	Model initialization complete, duration: 235 ms
+2021-05-20 13:39:08	[Progress]	[main]                                          	
+2021-05-20 13:39:08	[Progress]	[main]                                          	Creating solver framework
+2021-05-20 13:39:08	[Progress]	[NandradModel::integratorInterface]             	
+2021-05-20 13:39:08	[Progress]	[NandradModel::integratorInterface]             	Creating Integrator
+2021-05-20 13:39:08	[Progress]	[NandradModel::integratorInterface]             	  Using CVODE integrator.
+2021-05-20 13:39:08	[Progress]	[NandradModel::lesInterface]                    	
+2021-05-20 13:39:08	[Progress]	[NandradModel::lesInterface]                    	Creating Linear Equation Solver Modules
+2021-05-20 13:39:08	[Progress]	[NandradModel::lesInterface]                    	  Number of unknowns: 4
+2021-05-20 13:39:08	[Progress]	[NandradModel::lesInterface]                    	  Using generic KLU solver!
+2021-05-20 13:39:08	[Progress]	[IntegratorSundialsCVODE::init]                 	Initializing CVODE integrator
+2021-05-20 13:39:08	[Progress]	[IntegratorSundialsCVODE::init]                 	  Setting NonlinConvCoef to 0.1.
+2021-05-20 13:39:08	[Progress]	[IntegratorSundialsCVODE::init]                 	  Setting MaxNonLinIters (maxcor) to 3.
+2021-05-20 13:39:08	[Progress]	[IntegratorSundialsCVODE::init]                 	  Initializing Jacobian implementation
+2021-05-20 13:39:08	[Progress]	[JacobianSparseCSR::init]                       	  SparseMatrix: generating color arrays
+2021-05-20 13:39:08	[Progress]	[JacobianSparseCSR::init]                       	    3 colors
+2021-05-20 13:39:08	[Progress]	[IntegratorSundialsCVODE::init]                 	  Initializing LES solver implementation
+2021-05-20 13:39:08	[Progress]	[SolverControlFramework::run]                   	
+2021-05-20 13:39:08	[Progress]	[SolverControlFramework::run]                   	Running solver from time t=0 (01.01.01  0:00:00)
+2021-05-20 13:39:08	[Progress]	[OutputHandler::writeOutputs]                   	Creating output files:
+2021-05-20 13:39:08	[Progress]	[OutputFile::createFile]                        	  network_elements.tsv : 9 values
+2021-05-20 13:39:08	[Warning ]	[OutputFile::createFile]                        	  Output for NetworkElement(id=0).ControllerResultValue not available, skipped.
+2021-05-20 13:39:08	[Warning ]	[OutputFile::createFile]                        	  Output for NetworkElement(id=8).ControllerResultValue not available, skipped.
+2021-05-20 13:39:08	[Warning ]	[OutputFile::createFile]                        	  Output for NetworkElement(id=0).TemperatureDifference not available, skipped.
+2021-05-20 13:39:08	[Warning ]	[OutputFile::createFile]                        	  Output for NetworkElement(id=8).TemperatureDifference not available, skipped.
+2021-05-20 13:39:08	[Progress]	[OutputFile::createFile]                        	  misc.tsv             : 2 values
+2021-05-20 13:39:08	[Progress]	[SolverControlFramework::writeStatistics]       	
+2021-05-20 13:39:08	[Progress]	[SolverControlFramework::writeStatistics]       	Solver statistics
+2021-05-20 13:39:08	[Progress]	[SolverControlFramework::writeStatistics]       	------------------------------------------------------------------------------
+2021-05-20 13:39:08	[Progress]	[SolverControlFramework::writeStatistics]       	Wall clock time                            =  181.524 ms  
+2021-05-20 13:39:08	[Progress]	[SolverControlFramework::writeStatistics]       	------------------------------------------------------------------------------
+2021-05-20 13:39:08	[Progress]	[SolverControlFramework::writeStatistics]       	Framework: Output writing                  =   26.129 ms   (14.39 %)    
+2021-05-20 13:39:08	[Progress]	[SolverControlFramework::writeStatistics]       	Framework: Step-completed calculations     =    0.204 ms   ( 0.11 %)    
+2021-05-20 13:39:08	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Steps                          =                               123
+2021-05-20 13:39:08	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Newton iterations              =                               424
+2021-05-20 13:39:08	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Newton convergence failures    =                                 0
+2021-05-20 13:39:08	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Error test failures            =                                10
+2021-05-20 13:39:08	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Function evaluation (Newton)   =  117.292 ms   (64.62 %)       425
+2021-05-20 13:39:08	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: LES setup                      =   10.756 ms   ( 5.93 %)        74
+2021-05-20 13:39:08	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: LES solve                      =    0.188 ms   ( 0.10 %)       424
+2021-05-20 13:39:08	[Progress]	[LESInterfaceDirect::writeMetrics]              	LES: Jacobian matrix evaluations           =                                52
+2021-05-20 13:39:08	[Progress]	[LESInterfaceDirect::writeMetrics]              	LES: Matrix factorization                  =    0.075 ms   ( 0.04 %)        74
+2021-05-20 13:39:08	[Progress]	[LESInterfaceDirect::writeMetrics]              	LES: Function evaluation (Jacobian gen.)   =    9.726 ms   ( 5.36 %)       156
+2021-05-20 13:39:08	[Progress]	[SolverControlFramework::writeStatistics]       	------------------------------------------------------------------------------

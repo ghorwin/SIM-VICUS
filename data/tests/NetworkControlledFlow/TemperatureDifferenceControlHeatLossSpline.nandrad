@@ -62,6 +62,7 @@
 					<HydraulicNetworkComponent id="3" displayName="simple pipe" modelType="SimplePipe">
 					</HydraulicNetworkComponent>
 				</Components>
+				
 				<ControlElements>
 					<HydraulicNetworkControlElement id="1" controlledProperty="TemperatureDifference" controllerType="PController" >						
 						<IBK:Parameter name="Kp" unit="-">1e6</IBK:Parameter>						

@@ -65,12 +65,19 @@
 					</HydraulicNetworkComponent>
 				</Components>
 				
+				<ControlElements>
+					<HydraulicNetworkControlElement id="1" controlledProperty="TemperatureDifference" controllerType="PController" >						
+						<IBK:Parameter name="Kp" unit="-">1e6</IBK:Parameter>						
+						<IBK:Parameter name="SetPoint" unit="K">3</IBK:Parameter>						
+					</HydraulicNetworkControlElement>
+				</ControlElements>
+				
 				<Elements>
 				
 				<HydraulicNetworkElement id="1" inletNodeId="100" outletNodeId="0" componentId="1" displayName="pump">
 				</HydraulicNetworkElement>
 				
-				<HydraulicNetworkElement id="2" inletNodeId="0" outletNodeId="101" componentId="2" displayName="heat pump">
+				<HydraulicNetworkElement id="2" inletNodeId="0" outletNodeId="101" componentId="2" controlElementID="1" displayName="heat pump">
 						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
 							<LinearSplineParameter name="HeatLoss" interpolation="Constant">
 								<X unit="d">0 1 1.2 2 3.1 4</X>
@@ -165,6 +172,12 @@
 				<Quantity>CondenserMeanTemperature</Quantity>
 				<ObjectListName>heat pump</ObjectListName>
 				<GridName>hourly</GridName>
+			</OutputDefinition>
+			<OutputDefinition>
+					<Quantity>TemperatureDifference</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>heat pump</ObjectListName>
+					<GridName>hourly</GridName>
 			</OutputDefinition>
 			</Definitions>
 			<Grids>
