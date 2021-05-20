@@ -8,43 +8,61 @@
 
 namespace NANDRAD {
 
-class Controller;
 
 /*! This class contains parameters for a controller that is used for network elements.
 	A controller is actually a flow controller that impacts the way the flow elements-system function
 	is evaluated, usually adding a flow resistance (e.g. value) to the element. The additional flow resistance
 	can be controlled in different ways, as defined by ControlType.
 */
-class ControlElement {
+class HydraulicNetworkControlElement {
 public:
 
 	NANDRAD_READWRITE
+	NANDRAD_COMPARE_WITH_ID
+	NANDRAD_COMP(HydraulicNetworkControlElement)
 
 	/*! Checks for valid and required parameters (value ranges). */
-	void checkParameters(const std::vector<Controller> &controllers);
+	void checkParameters();
 
 	/*! Availabel control types. */
-	enum ControlType {
-		CT_ControlTemperatureDifference,			// Keyword: ControlTemperatureDifference	'ControlTemperatureDifference'
-		CT_ControlMassFlow,							// Keyword: ControlMassFlow					'ControlMassFlow'
+	enum ControlledProperty {
+		CP_TemperatureDifference,			// Keyword: TemperatureDifference	'TemperatureDifference'
+		CP_MassFlow,						// Keyword: MassFlow				'MassFlow'
+		NUM_CP
+	};
+
+	/*! Different model variants. */
+	enum ControllerType {
+		CT_PController,			// Keyword: PController				'PController'
+		CT_PIController,		// Keyword: PIController			'PIController'
 		NUM_CT
 	};
 
-	ControlType						m_controlType = NUM_CT;								// XML:A
+	/*! Model parameters. */
+	enum para_t {
+		P_Kp,					// Keyword: Kp						'Kp-parameter'
+		P_Ki,					// Keyword: Ki						'Ki-parameter'
+		P_Kd,					// Keyword: Kd						'Kd-parameter'
+		NUM_P
+	};
 
-	/*! Reference to a controller (P, PI, ..) */
-	IDType							m_controllerId = INVALID_ID;						// XML:A
+	IDType							m_id = NANDRAD::INVALID_ID;						// XML:A:required
+
+	/*! Controller type (P, PI, ...) */
+	ControllerType					m_controllerType = NUM_CT;						// XML:A:required
+
+	/*! property which shall be controlled (temperature difference, ...) */
+	ControlledProperty				m_controlledProperty = NUM_CP;					// XML:A:required
 
 	/*! Set point as fixed scalar value. */
-	IBK::Parameter					m_setPoint;											// XML:E
+	IBK::Parameter					m_setPoint;										// XML:E
 
-	/*! Used to cut the system input, if this is a negative value, it will not be considered
-	*/
-	double							m_maximumControllerResultValue = -999;				// XML:E
+	/*! Used to cut the system input, if this is a negative value, it will not be considered	*/
+	double							m_maximumControllerResultValue = -999;			// XML:E
 
+	/*! Controller parameters. */
+	IBK::Parameter					m_para[NUM_P];									// XML:E
 
-	// *** run time variables ***
-	const NANDRAD::Controller		*m_controller = nullptr;
 };
 
 } // namespace NANDRAD

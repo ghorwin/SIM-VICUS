@@ -11,6 +11,8 @@
 #include "NANDRAD_HydraulicFluid.h"
 #include "NANDRAD_HydraulicNetworkPipeProperties.h"
 #include "NANDRAD_HydraulicNetworkComponent.h"
+#include "NANDRAD_HydraulicNetworkControlElement.h"
+
 
 namespace NANDRAD {
 
@@ -69,6 +71,8 @@ public:
 
 	/*! List of flow elements that make up this network. */
 	std::vector<HydraulicNetworkElement>			m_elements;										// XML:E
+
+	std::vector<HydraulicNetworkControlElement>		m_controlElements;								// XML:E
 
 };
 

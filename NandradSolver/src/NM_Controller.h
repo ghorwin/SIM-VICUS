@@ -5,9 +5,6 @@
 #include "NM_AbstractTransientController.h"
 #include "NM_AbstractTimeDependency.h"
 
-namespace NANDRAD {
-	class Controller;
-};
 
 namespace NANDRAD_MODEL {
 

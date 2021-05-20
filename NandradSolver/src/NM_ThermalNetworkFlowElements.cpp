@@ -7,8 +7,7 @@
 #include "NANDRAD_HydraulicNetworkElement.h"
 #include "NANDRAD_HydraulicNetworkPipeProperties.h"
 #include "NANDRAD_HydraulicNetworkComponent.h"
-#include "NANDRAD_Controller.h"
-
+#include "NANDRAD_HydraulicNetworkControlElement.h"
 
 #include "numeric"
 
@@ -516,9 +515,9 @@ TNAdiabaticElement::TNAdiabaticElement(const NANDRAD::HydraulicFluid & fluid, do
 
 TNElementWithExternalHeatLoss::TNElementWithExternalHeatLoss(unsigned int flowElementId,
 															 const NANDRAD::HydraulicFluid & fluid, double fluidVolume,
-															 const NANDRAD::ControlElement & controlElement):
+															 const NANDRAD::HydraulicNetworkControlElement *controlElement):
 	m_flowElementId(flowElementId),
-	m_controlElement(&controlElement)
+	m_controlElement(controlElement)
 {
 	m_fluidVolume = fluidVolume;
 	// copy fluid properties
@@ -539,22 +538,24 @@ void TNElementWithExternalHeatLoss::internalDerivatives(double * ydot) {
 double TNElementWithExternalHeatLoss::zetaControlled(double mdot) {
 	FUNCID(TNElementWithExternalHeatLoss::zetaControlled);
 	// calculate zetaControlled value for valve
-	switch (m_controlElement->m_controlType) {
-		case NANDRAD::ControlElement::CT_ControlTemperatureDifference:{
-			double currentTempDiff = m_heatLoss/(mdot*m_fluidHeatCapacity);
-			const double e = m_controlElement->m_setPoint.value - currentTempDiff;
-			const double y = m_controlElement->m_controller->m_para[NANDRAD::Controller::P_Kp].value * e;
+	switch (m_controlElement->m_controlledProperty) {
+
+		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:{
+			m_temperatureDifference = m_heatLoss/(mdot*m_fluidHeatCapacity);
+			const double e = m_controlElement->m_setPoint.value - m_temperatureDifference;
+			const double y = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value * e;
+			const double zetaMax = m_controlElement->m_maximumControllerResultValue;
 			if (y <= 0)
 				m_zetaControlled = 0;
-			else if (y > m_controlElement->m_maximumControllerResultValue)
-				m_zetaControlled = m_controlElement->m_maximumControllerResultValue;
+			else if (zetaMax > 0 && y > zetaMax)
+				m_zetaControlled = zetaMax;
 			else
 				m_zetaControlled = y;
 		} break;
-		case NANDRAD::ControlElement::CT_ControlMassFlow:
+		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlow:
 			throw IBK::Exception("Control Type not implemented yet!", FUNC_ID);
 
-		case NANDRAD::ControlElement::NUM_CT: ; // nothing todo - we return 0
+		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ; // nothing todo - we return 0
 	}
 	return m_zetaControlled;
 }
@@ -567,7 +568,7 @@ double TNElementWithExternalHeatLoss::zetaControlled(double mdot) {
 TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(unsigned int flowElementId,
 											 const NANDRAD::HydraulicFluid & fluid,
 											 const NANDRAD::HydraulicNetworkComponent & comp,
-											 const NANDRAD::ControlElement & controlElement):
+											 const NANDRAD::HydraulicNetworkControlElement *controlElement):
 	TNElementWithExternalHeatLoss(flowElementId, fluid, comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value, controlElement)
 {
 	m_fluidVolume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;

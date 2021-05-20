@@ -6,13 +6,13 @@
 #include "NANDRAD_CodeGenMacros.h"
 #include "NANDRAD_Constants.h"
 #include "NANDRAD_HydraulicNetworkHeatExchange.h"
-#include "NANDRAD_ControlElement.h"
 
 namespace NANDRAD {
 
 class HydraulicNetworkComponent;
 class HydraulicNetworkPipeProperties;
 class HydraulicNetwork;
+class HydraulicNetworkControlElement;
 class Project;
 
 /*! Contains data of a flow element inside a network.
@@ -72,7 +72,7 @@ public:
 		ID is used for outputs and to reference heat sources/sinks connected to this element. For active elements,
 		this ID is used to connect control models.
 	*/
-	unsigned int					m_id				= NANDRAD::INVALID_ID;				// XML:A:required
+	IDType							m_id				= NANDRAD::INVALID_ID;				// XML:A:required
 	/*! Inlet node ID. */
 	unsigned int					m_inletNodeId		= NANDRAD::INVALID_ID;				// XML:A:required
 	/*! Outlet node ID. */
@@ -81,6 +81,8 @@ public:
 	unsigned int					m_componentId		= NANDRAD::INVALID_ID;				// XML:A:required
 	/*! Pipe ID (only needed for elements that are pipes). */
 	unsigned int					m_pipePropertiesId	= NANDRAD::INVALID_ID;				// XML:A
+
+	IDType							m_controlElementID = NANDRAD::INVALID_ID;				// XML:A
 
 	/*! Display name. */
 	std::string						m_displayName;											// XML:A
@@ -94,14 +96,12 @@ public:
 	/*! Optional definition of heat exchange calculation model (if missing, flow element is adiabat). */
 	HydraulicNetworkHeatExchange	m_heatExchange;											// XML:E
 
-	/*! Optional control element/valve forcing an additional pressure loss
-		(controlType = NUM_CT if control is missing). */
-	NANDRAD::ControlElement			m_controlElement;										// XML:E
 
 	// *** Variables used only during simulation ***
 
 	const HydraulicNetworkComponent			*m_component				= nullptr;
 	const HydraulicNetworkPipeProperties	*m_pipeProperties			= nullptr;
+	const HydraulicNetworkControlElement	*m_controlElement			= nullptr ;
 
 };
 
