@@ -11,6 +11,7 @@ namespace Ui {
 
 class QTableWidgetItem;
 class QTableWidget;
+class InputVariablesTableModel;
 
 /*! The dialog for configuring and exporting NANDRAD FMUs.
 */
@@ -85,6 +86,9 @@ private slots:
 	void onProcessErrorOccurred();
 
 private:
+	/*! Input varaibles table mdoel holds all input fmu data infromation. */
+	InputVariablesTableModel*				m_inputVariablesTableModel;
+
 	/*! Toggles the GUI state depending on whether a valid NANDRAD Project was read or not. */
 	void setGUIState(bool active);
 
@@ -151,8 +155,6 @@ private:
 	*/
 	std::set<unsigned int>							m_usedValueRefs;
 
-	/*! Holds all _available_ input variable definitions. */
-	std::vector<NANDRAD::FMIVariableDefinition>		m_availableInputVariables;
 	/*! Holds all _available_ output variable definitions. */
 	std::vector<NANDRAD::FMIVariableDefinition>		m_availableOutputVariables;
 
