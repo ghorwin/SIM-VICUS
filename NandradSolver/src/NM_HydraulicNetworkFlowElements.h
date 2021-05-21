@@ -126,11 +126,16 @@ private:
 class HNConstantPressurePump: public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	HNConstantPressurePump(const NANDRAD::HydraulicNetworkComponent & component);
+	HNConstantPressurePump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component);
 
 	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
 	void partials(double mdot, double p_inlet, double p_outlet,
 				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
+
+	/*! Element's ID, needed to formulated input references. */
+	unsigned int					m_id;
+	/*! If not nullptr, this pressure head value (from an external model) is used instead of the constant one. */
+	double							*m_pressureHeadRef = nullptr;
 
 private:
 	/*! Constant pressure head [Pa] to be added. */
@@ -145,11 +150,16 @@ private:
 class HNConstantMassFluxPump: public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	HNConstantMassFluxPump(const NANDRAD::HydraulicNetworkComponent & component);
+	HNConstantMassFluxPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component);
 
 	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
 	void partials(double mdot, double p_inlet, double p_outlet,
 				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
+
+	/*! Element's ID, needed to formulated input references. */
+	unsigned int					m_id;
+	/*! If not nullptr, this mass flux value (from an external model) is used instead of the constant one. */
+	double							*m_massFluxRef = nullptr;
 
 private:
 	/*! Constant mass flux [kg/s] to be enforced. */

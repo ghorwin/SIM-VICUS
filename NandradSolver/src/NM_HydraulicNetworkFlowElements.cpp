@@ -147,13 +147,18 @@ void HNControlledPressureLossCoeffElement::partials(double mdot, double p_inlet,
 
 // *** HNConstantPressurePump ***
 
-HNConstantPressurePump::HNConstantPressurePump(const NANDRAD::HydraulicNetworkComponent &component) {
+HNConstantPressurePump::HNConstantPressurePump(unsigned int id, const NANDRAD::HydraulicNetworkComponent &component)  :
+	m_id(id)
+{
 	m_pressureHead = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value;
 }
 
 
 double HNConstantPressurePump::systemFunction(double /*mdot*/, double p_inlet, double p_outlet) const {
-	return p_inlet - p_outlet + m_pressureHead;
+	if (m_pressureHeadRef != nullptr)
+		return p_inlet - p_outlet + *m_pressureHeadRef;
+	else
+		return p_inlet - p_outlet + m_pressureHead;
 }
 
 
@@ -169,13 +174,18 @@ void HNConstantPressurePump::partials(double /*mdot*/, double /*p_inlet*/, doubl
 
 // *** HNConstantMassFluxPump ***
 
-HNConstantMassFluxPump::HNConstantMassFluxPump(const NANDRAD::HydraulicNetworkComponent & component) {
+HNConstantMassFluxPump::HNConstantMassFluxPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component) :
+	m_id(id)
+{
 	m_massFlux = component.m_para[NANDRAD::HydraulicNetworkComponent::P_MassFlux].value;
 }
 
 
 double HNConstantMassFluxPump::systemFunction(double mdot, double /*p_inlet*/, double /*p_outlet*/) const {
-	return mdot - m_massFlux;
+	if (m_massFluxRef != nullptr)
+		return mdot - *m_massFluxRef;
+	else
+		return mdot - m_massFlux;
 }
 
 

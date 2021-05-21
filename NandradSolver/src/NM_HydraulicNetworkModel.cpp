@@ -83,9 +83,19 @@ void HydraulicNetworkModel::setup() {
 			case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump :
 			{
 				// create pump model
-				HNConstantPressurePump * pumpElement = new HNConstantPressurePump(*e.m_component);
+				HNConstantPressurePump * pumpElement = new HNConstantPressurePump(e.m_id, *e.m_component);
 				// add to flow elements
 				m_p->m_flowElements.push_back(pumpElement); // transfer ownership
+				m_pumpElements.push_back(pumpElement);
+			} break;
+
+			case NANDRAD::HydraulicNetworkComponent::MT_ConstantMassFluxPump :
+			{
+				// create pump model
+				HNConstantMassFluxPump * pumpElement = new HNConstantMassFluxPump(e.m_id, *e.m_component);
+				// add to flow elements
+				m_p->m_flowElements.push_back(pumpElement); // transfer ownership
+				m_pumpElements.push_back(pumpElement);
 			} break;
 
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
@@ -280,6 +290,30 @@ void HydraulicNetworkModel::inputReferences(std::vector<InputReference> & inputR
 			inputRef.m_id = m_elementIds[i];
 			// register reference
 			inputRefs.push_back(inputRef);
+		}
+	}
+	// generate optional input references for all pump elements
+	for (const HydraulicNetworkAbstractFlowElement* pumpE : m_pumpElements) {
+		// different handling for different pumps
+		const HNConstantPressurePump * pump = dynamic_cast<const HNConstantPressurePump *>(pumpE);
+		if (pump != nullptr) {
+			InputReference inputRef;
+			inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+			inputRef.m_name = std::string("PumpPressureHead");
+			inputRef.m_required = false;
+			inputRef.m_id = pump->m_id;
+			inputRefs.push_back(inputRef);
+			continue;
+		}
+		const HNConstantMassFluxPump * pumpConstantMassFlux = dynamic_cast<const HNConstantMassFluxPump *>(pumpE);
+		if (pumpConstantMassFlux != nullptr) {
+			InputReference inputRef;
+			inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+			inputRef.m_name = std::string("PumpMassFlux");
+			inputRef.m_required = false;
+			inputRef.m_id = pumpConstantMassFlux->m_id;
+			inputRefs.push_back(inputRef);
+			continue;
 		}
 	}
 }

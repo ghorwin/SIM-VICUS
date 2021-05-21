@@ -14,6 +14,7 @@ namespace NANDRAD {
 namespace NANDRAD_MODEL {
 
 class HydraulicNetworkModelImpl;
+class HydraulicNetworkAbstractFlowElement;
 
 struct Network;
 
@@ -121,6 +122,17 @@ private:
 
 	/*! Container with global pointer to calculated fluid temperatures.	*/
 	std::vector<const double*>						m_fluidHeatLossesRefs;
+
+	/*! This vector contains pointers to pump elements (either pressure difference or mass flux) defined in the network.
+		All pump elements provide optional input references to override the parametrized constant pressure difference/mass flux values.
+		This allows controlling the network from external model components or via FMU interface.
+
+		Note: there may be multiple pump elements in a network, but only in separate flow cycles. Two pumps in series in a
+		cycle will usually lead to an unsolvable problem. Such problems, however, cannot be easily detected.
+		Hence, modellers should avoid this.
+	*/
+	std::vector<HydraulicNetworkAbstractFlowElement*> m_pumpElements;
+
 
 	friend class ThermalNetworkStatesModel;
 
