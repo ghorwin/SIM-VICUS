@@ -27,14 +27,9 @@ namespace NANDRAD_MODEL {
 	from Thermostat parametrization or chosse a high/low supply temperature.*/
 class IdealPipeRegisterModel : public AbstractModel, public AbstractStateDependency {
 public:
-	/*! Computed results. */
-	enum Results {
-		R_MassFlux,						// Keyword: MassFlux						[kg/s]	'Controlled mass flow'
-		NUM_R
-	};
-
 	/*! Computed results, vector-valued results that provide access via construction ID. */
 	enum VectorValuedResults {
+		VVR_MassFlux,					// Keyword: MassFlux						[kg/s]	'Controlled mass flow'
 		VVR_ActiveLayerThermalLoad,		// Keyword: ActiveLayerThermalLoad			[W]		'Active layer thermal load'
 		NUM_VVR
 	};
@@ -80,18 +75,10 @@ public:
 
 	// *** Re-implemented from AbstractStateDependency
 
-	/*! Composes all input references.
-		Here we collect all loads/fluxes into the room and store them such, that we can efficiently compute
-		sums, for example for all heat fluxes from constructions into the room etc.
-	*/
+	/*! Composes all input references.*/
 	virtual void initInputReferences(const std::vector<AbstractModel*> & models) override;
 
-	/*! Returns vector with model input references.
-		Implicit models must generate their own model input references and populate the
-		vector argument.
-		\note This function is not the fastest, so never call this function from within the solver
-		(except maybe for output writing).
-	*/
+	/*! Returns vector with model input references.*/
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override;
 
 	/*! Provides the object with references to requested input variables (persistent memory location). */
@@ -126,27 +113,19 @@ private:
 	/*! pipe length in [m] */
 	double											m_length = -999;
 
-	/*! Fluid heat capacity [J/kgK].
-		Cached value from fluid properties.
-	*/
+	/*! Fluid heat capacity [J/kgK].*/
 	double											m_fluidHeatCapacity = -999;
 
-	/*! Fluid density [kg/m3].
-		Cached value from fluid properties.
-	*/
+	/*! Fluid density [kg/m3].*/
 	double											m_fluidDensity = -999;
 
 	/*! Fluid volume [m3]. */
 	double											m_fluidVolume = -999;
 
-	/*! Effective flow cross-section [m2].
-		\note This is the total cross section for fluid flow of all pipes (if m_nParallelPipes is larger than 1).
-	*/
+	/*! Effective flow cross-section [m2].*/
 	double											m_fluidCrossSection = -999;
 
-	/*! Fluid conductivity [W/mK].
-		Cached value from fluid properties.
-	*/
+	/*! Fluid conductivity [W/mK].*/
 	double											m_fluidConductivity = 0.01;
 
 	/*! Fluid dynamic viscosity [m/s] (temperature dependend).*/
@@ -174,9 +153,6 @@ private:
 
 	/*! Reference to active layer temperatures. */
 	std::vector<const double*>						m_activeLayerTemperatureRefs;
-
-	/*! Results, computed/updated during the calculation. */
-	std::vector<double>								m_results;
 
 	/*! Vector valued results, computed/updated during the calculation. */
 	std::vector<VectorValuedQuantity>				m_vectorValuedResults;
