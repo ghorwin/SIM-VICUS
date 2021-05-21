@@ -10,9 +10,7 @@
 
 namespace NANDRAD {
 
-/*! Contain dataset for a hydraulic component for the network.
-
-*/
+/*! Parameters for a hydraulic component for the network. */
 class HydraulicNetworkComponent {
 public:
 
@@ -20,7 +18,8 @@ public:
 	enum ModelType {
 		MT_SimplePipe,						// Keyword: SimplePipe					'Pipe with a single fluid volume and with heat exchange'
 		MT_DynamicPipe,						// Keyword: DynamicPipe					'Pipe with a discretized fluid volume and heat exchange'
-		MT_ConstantPressurePump,			// Keyword: ConstantPressurePump		'Pump with constant pressure'
+		MT_ConstantPressurePump,			// Keyword: ConstantPressurePump		'Pump with constant/externally defined pressure'
+		MT_ConstantMassFluxPump,			// Keyword: ConstantMassFluxPump		'Pump with constant/externally defined mass flux'
 		MT_HeatExchanger,					// Keyword: HeatExchanger				'Simple heat exchanger with given heat flux'
 		MT_HeatPumpIdealCarnot,				// Keyword: HeatPumpIdealCarnot			'Heat pump with variable heating power based on carnot efficiency'
 		MT_HeatPumpReal,					// Keyword: HeatPumpReal				'On-off-type heat pump with based on manufacturer data sheet'
@@ -31,7 +30,8 @@ public:
 	enum para_t {
 		P_HydraulicDiameter,					// Keyword: HydraulicDiameter					[mm]	'Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)'
 		P_PressureLossCoefficient,				// Keyword: PressureLossCoefficient				[-]		'Pressure loss coefficient for the component (zeta-value)'
-		P_PressureHead,							// Keyword: PressureHead						[Pa]	'Pressure head form a pump'
+		P_PressureHead,							// Keyword: PressureHead						[Pa]	'Pressure head for a pump'
+		P_MassFlux,								// Keyword: MassFlux							[kg/s]	'Mass flux for a pump'
 		P_PumpEfficiency,						// Keyword: PumpEfficiency						[---]	'Pump efficiency'
 		P_Volume,								// Keyword: Volume								[m3]	'Water or air volume of the component'
 		P_PipeMaxDiscretizationWidth,			// Keyword: PipeMaxDiscretizationWidth			[m]		'Maximum width of discretized volumes in pipe'

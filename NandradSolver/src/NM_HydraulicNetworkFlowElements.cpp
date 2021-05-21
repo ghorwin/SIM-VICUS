@@ -167,5 +167,25 @@ void HNConstantPressurePump::partials(double /*mdot*/, double /*p_inlet*/, doubl
 }
 
 
+// *** HNConstantMassFluxPump ***
+
+HNConstantMassFluxPump::HNConstantMassFluxPump(const NANDRAD::HydraulicNetworkComponent & component) {
+	m_massFlux = component.m_para[NANDRAD::HydraulicNetworkComponent::P_MassFlux].value;
+}
+
+
+double HNConstantMassFluxPump::systemFunction(double mdot, double /*p_inlet*/, double /*p_outlet*/) const {
+	return mdot - m_massFlux;
+}
+
+
+void HNConstantMassFluxPump::partials(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/,
+									  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
+{
+	df_dmdot = 1;
+	df_dp_inlet = 0;
+	df_dp_outlet = 0;
+}
+
 
 } // namespace NANDRAD_MODEL

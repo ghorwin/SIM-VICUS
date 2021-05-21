@@ -54,13 +54,15 @@ KeywordListQt::KeywordListQt() {
 	tr("Reference pressure of network");
 	tr("Pipe with a single fluid volume and with heat exchange");
 	tr("Pipe with a discretized fluid volume and heat exchange");
-	tr("Pump with constant pressure");
+	tr("Pump with constant/externally defined pressure");
+	tr("Pump with constant/externally defined mass flux");
 	tr("Simple heat exchanger with given heat flux");
 	tr("Heat pump with variable heating power based on carnot efficiency");
 	tr("On-off-type heat pump with based on manufacturer data sheet");
 	tr("Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)");
 	tr("Pressure loss coefficient for the component (zeta-value)");
-	tr("Pressure head form a pump");
+	tr("Pressure head for a pump");
+	tr("Mass flux for a pump");
 	tr("Pump efficiency");
 	tr("Water or air volume of the component");
 	tr("Maximum width of discretized volumes in pipe");

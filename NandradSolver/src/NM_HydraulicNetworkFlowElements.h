@@ -124,7 +124,6 @@ private:
 
 /*! Pump model with fixed constant pressure head */
 class HNConstantPressurePump: public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
-
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	HNConstantPressurePump(const NANDRAD::HydraulicNetworkComponent & component);
@@ -136,6 +135,25 @@ public:
 private:
 	/*! Constant pressure head [Pa] to be added. */
 	double							m_pressureHead = -999;
+
+}; // HNConstantPressurePump
+
+
+/*! A network that dictates either mass flux or pressure difference.
+	Note: there must be only one of these models in the network.
+*/
+class HNConstantMassFluxPump: public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
+public:
+	/*! C'tor, takes and caches parameters needed for function evaluation. */
+	HNConstantMassFluxPump(const NANDRAD::HydraulicNetworkComponent & component);
+
+	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
+	void partials(double mdot, double p_inlet, double p_outlet,
+				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
+
+private:
+	/*! Constant mass flux [kg/s] to be enforced. */
+	double							m_massFlux = -999;
 
 }; // HNConstantPressurePump
 

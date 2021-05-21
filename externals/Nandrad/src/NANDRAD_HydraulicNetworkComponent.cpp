@@ -118,6 +118,11 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 							  std::numeric_limits<double>::max(), true, nullptr);
 			break;
 		}
+		case P_MassFlux: {
+			para.checkedValue(name, unit, unit, 0, true,
+							  std::numeric_limits<double>::max(), true, nullptr);
+			break;
+		}
 	}
 }
 
