@@ -94,6 +94,8 @@ private slots:
 
 	void on_pushButtonSelectFluid_clicked();
 
+	void on_pushButtonEditController_clicked();
+
 private:
 	/*! This function is called whenever the current selection of edges/nodes/objects has changed.
 		This can be due to user interaction with the scene, or because objects were added/deleted or
@@ -119,6 +121,8 @@ private:
 
 	void updateHeatExchangeWidgets();
 
+	void updateController();
+
 	void modifyStatus();
 
 	void modifySizingParams();
@@ -138,6 +142,8 @@ private:
 	QString smallestDiameter() const;
 
 	void modifyHeatExchangeProperties();
+
+	void modifyController();
 
 	/*! modifies the given property of selected edge(s).
 	 * Encapsulates the process of retrieving the according edge and conducting the undo */

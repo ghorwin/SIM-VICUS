@@ -103,6 +103,9 @@ public:
 	/*! reference id to a plant (hydraulic network) */
 	unsigned int					m_subNetworkId = INVALID_ID;									// XML:A
 
+	/*! reference id to NetworkController */
+	unsigned int					m_controllerId = INVALID_ID;									// XML:A
+
 	std::string						m_displayName;													// XML:A
 
 	NetworkHeatExchange				m_heatExchange;													// XML:E
@@ -115,18 +118,24 @@ public:
 
 	// *** RUNTIME VARIABLES ***
 
+	/*! pointers to adjacent edges */
+	std::vector<NetworkEdge*>		m_edges;
+
 	/*! The radius used for the visualization of this node in the 3D scene
 		Updated whenever the scale factor Network::m_scaleNodes changes.
 	*/
 	mutable double					m_visualizationRadius;
+
 	/*! Color to be used for displaying (visible) nodes. */
 	mutable QColor					m_color;
 
-
+	/*! used in dijkstra algorithm */
 	double							m_distanceToStart = (std::numeric_limits<double>::max)();
 	NetworkNode *					m_predecessor = nullptr;
+
+	/*! defines wether this node is a dead end */
 	bool							m_isDeadEnd = false;
-	std::vector<NetworkEdge*>		m_edges;
+
 
 };
 
