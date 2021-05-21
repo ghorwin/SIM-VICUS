@@ -9,6 +9,11 @@ namespace NANDRAD {
 
 void IdealPipeRegisterModel::checkParameters(const std::vector<NANDRAD::Zone> &zones) {
 	FUNCID(IdealPipeRegisterModel::checkParameters);
+
+	// all models require an object list with indication of construction instances that this model applies to
+	if (m_constructionObjectList.empty())
+		throw IBK::Exception(IBK::FormatString("Missing 'ConstructionObjectList' parameter."), FUNC_ID);
+
 	// check parameters
 	m_para[P_MaxMassFlow].checkedValue("MaxMassFlow", "kg/s", "kg/s",
 											   0, false,
