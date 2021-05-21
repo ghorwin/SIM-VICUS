@@ -145,7 +145,7 @@
 				</OutputDefinition>
 				
 				<OutputDefinition>
-					<Quantity>MassFlux</Quantity>
+					<Quantity>MassFlux[3001]</Quantity>
 					<ObjectListName>Register Model</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>

@@ -1,4 +1,4 @@
-Time [h]	Zone(id=1).VentilationHeatLoad [W]	Zone(id=1).ConstructionHeatConductionLoad [W]	ConstructionInstance(id=3001).ThermalLoad(id=1) [W]	Model(id=701).MassFlux [kg/s]
+Time [h]	Zone(id=1).VentilationHeatLoad [W]	Zone(id=1).ConstructionHeatConductionLoad [W]	ConstructionInstance(id=3001).ThermalLoad(id=1) [W]	Model(id=701).MassFlux(id=3001) [kg/s]
 0	-505.096	0	2525.39	0.2
 1	-503.77	585.291	2141.05	0.2
 2	-536.113	585.918	1858.15	0.157753
