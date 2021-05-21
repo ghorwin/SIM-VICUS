@@ -9,19 +9,16 @@
 
 #include "NM_KeywordList.h"
 #include "NM_ThermostatModel.h"
+#include "NM_ConstructionStatesModel.h"
 
 namespace NANDRAD_MODEL {
 
 void IdealSurfaceHeatingCoolingModel::setup(const NANDRAD::IdealSurfaceHeatingCoolingModel & model,
-									 const std::vector<NANDRAD::ObjectList> & objLists,
-									 const std::vector<NANDRAD::Zone> & zones)
+									 const std::vector<NANDRAD::ObjectList> & objLists)
 {
 	FUNCID(IdealSurfaceHeatingCoolingModel::setup);
 
-	// all models require an object list with indication of zones that this model applies to
-	if (model.m_constructionObjectList.empty())
-		throw IBK::Exception(IBK::FormatString("Missing 'ConstructionObjectList' parameter."), FUNC_ID);
-	// check and resolve reference to object list
+	// check and resolve reference to object list (object list not empty has been checked already)
 	std::vector<NANDRAD::ObjectList>::const_iterator oblst_it = std::find(objLists.begin(),
 																		  objLists.end(),
 																		  model.m_constructionObjectList);
@@ -34,49 +31,72 @@ void IdealSurfaceHeatingCoolingModel::setup(const NANDRAD::IdealSurfaceHeatingCo
 		throw IBK::Exception(IBK::FormatString("Invalid reference type in object list '%1', expected type 'ConstructionInstance'.")
 							 .arg(m_objectList->m_name), FUNC_ID);
 
-	// parameters have been checked already
+	// parameters have been checked already, power per surface/construction area
 	m_maxHeatingPower = model.m_para[NANDRAD::IdealSurfaceHeatingCoolingModel::P_MaxHeatingPowerPerArea].value;
 	m_maxCoolingPower = model.m_para[NANDRAD::IdealSurfaceHeatingCoolingModel::P_MaxCoolingPowerPerArea].value;
 
-	// resolve thermostat zone
-	std::vector<NANDRAD::Zone>::const_iterator zone_it = std::find(zones.begin(),
-																  zones.end(),
-																  model.m_thermostatZoneID);
-
-	if (zone_it == zones.end())
-		throw IBK::Exception(IBK::FormatString("Invalid/undefined zone with '%1' in ThermostatZoneId.")
-							 .arg(model.m_thermostatZoneID), FUNC_ID);
 
 	// store zone
 	m_thermostatZoneId = model.m_thermostatZoneID;
-	// store zone area (checked already)
-	m_thermostatZoneArea = zone_it->m_para[NANDRAD::Zone::P_Area].value;
 
 	// resize result vector
-	m_results.resize(NUM_R);
+	m_vectorValuedResults.resize(NUM_VVR);
 	// the rest of the initialization can only be done when the object lists have been initialized, i.e. this happens in resultDescriptions()
 }
 
 
-void IdealSurfaceHeatingCoolingModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
-	// during initialization of the object lists, only those zones were added, that are actually parameterized
-	// so we can rely on the existence of zones whose IDs are in our object list and we do not need to search
-	// through all the models
+void IdealSurfaceHeatingCoolingModel::initResults(const std::vector<AbstractModel *> & models) {
+	// no model IDs, nothing to do (see explanation in resultDescriptions())
+	if (m_objectList->m_filterID.m_ids.empty())
+		return; // nothing to compute, return
+	// get IDs of referenced constructions
+	std::vector<unsigned int> indexKeys(m_objectList->m_filterID.m_ids.begin(), m_objectList->m_filterID.m_ids.end());
+	// resize result vectors accordingly
+	for (unsigned int varIndex=0; varIndex<NUM_VVR; ++varIndex)
+		m_vectorValuedResults[varIndex] = VectorValuedQuantity(indexKeys);
 
+	// reserve memory for construction areas
+	unsigned int idSize = m_objectList->m_filterID.m_ids.size();
+	m_constructionAreas.resize(idSize, -999);
+
+	// now search through all models and lookup all construction areas
+	for (const AbstractModel * mod : models) {
+		// skip all that are not ConstructionStatesModels
+		const ConstructionStatesModel * conMod = dynamic_cast<const ConstructionStatesModel *>(mod);
+		if (conMod == nullptr)
+			continue;
+		// check if ID is in our ID vector
+		unsigned int j=0;
+		for (; j<idSize; ++j) {
+			if (conMod->id() == indexKeys[j]) {
+				// already set?
+				IBK_ASSERT(m_constructionAreas[j] == -999);
+				m_constructionAreas[j] = conMod->construction()->m_para[NANDRAD::ConstructionInstance::P_Area].value;
+				break;
+			}
+		}
+	}
+}
+
+
+void IdealSurfaceHeatingCoolingModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 	// it may be possible that an object list does not contain a valid id, for example, when the
 	// requested IDs did not exist - in this case a warning was already printed, so we can just bail out here
 	if (m_objectList->m_filterID.m_ids.empty())
 		return; // nothing to compute, return
 
-	// For each of the zones in the object list we generate vector-valued results as defined
+	// Retrieve index information from vector valued results.
+	std::vector<unsigned int> indexKeys(m_objectList->m_filterID.m_ids.begin(), m_objectList->m_filterID.m_ids.end());
+
+	// For each of the constructions in the object list we generate vector-valued results as defined
 	// in the type Results.
-	for (int varIndex=0; varIndex<NUM_R; ++varIndex) {
+	for (int varIndex=0; varIndex<NUM_VVR; ++varIndex) {
 		// store name, unit and description of the quantity
-		const std::string &quantityName = KeywordList::Keyword("IdealSurfaceHeatingCoolingModel::Results", varIndex );
-		const std::string &quantityUnit = KeywordList::Unit("IdealSurfaceHeatingCoolingModel::Results", varIndex );
-		const std::string &quantityDescription = KeywordList::Description("IdealSurfaceHeatingCoolingModel::Results", varIndex );
+		const std::string &quantityName = KeywordList::Keyword("IdealSurfaceHeatingCoolingModel::VectorValuedResults", varIndex );
+		const std::string &quantityUnit = KeywordList::Unit("IdealSurfaceHeatingCoolingModel::VectorValuedResults", varIndex );
+		const std::string &quantityDescription = KeywordList::Description("IdealSurfaceHeatingCoolingModel::VectorValuedResults", varIndex );
 		resDesc.push_back( QuantityDescription(
-			quantityName, quantityUnit, quantityDescription, false) );
+			quantityName, quantityUnit, quantityDescription, false, VectorValuedQuantityIndex::IK_ModelID, indexKeys) );
 	}
 }
 
@@ -85,35 +105,35 @@ const double * IdealSurfaceHeatingCoolingModel::resultValueRef(const InputRefere
 	const QuantityName & quantityName = quantity.m_name;
 	// determine variable enum index
 	unsigned int varIndex=0;
-	for (; varIndex<NUM_R; ++varIndex) {
-		if (KeywordList::Keyword("IdealSurfaceHeatingCoolingModel::Results", (Results)varIndex ) == quantityName.m_name)
+	for (; varIndex<NUM_VVR; ++varIndex) {
+		if (KeywordList::Keyword("IdealSurfaceHeatingCoolingModel::VectorValuedResults", (VectorValuedResults)varIndex ) == quantityName.m_name)
 			break;
 	}
-	if (varIndex == NUM_R)
+	if (varIndex == NUM_VVR)
 		return nullptr;
 	// now check the index
 	if (quantityName.m_index == -1) // no index - not allowed
-		return nullptr;
-	// search for index = construction instance id (must be contained inside object list)
-	if (!m_objectList->m_filterID.contains((unsigned int) quantityName.m_index) )
+		return &m_vectorValuedResults[varIndex][0];
+	// search for index
+	try {
+		const double & valRef = m_vectorValuedResults[varIndex][(unsigned int)quantityName.m_index];
+		return &valRef;
+	} catch (...) {
 		// exception is thrown when index is not available - return nullptr
 		return nullptr;
-
-	// one result quantitiy is stored for all referencing construction instances
-	return &m_results[varIndex];
+	}
 }
 
 
 void IdealSurfaceHeatingCoolingModel::initInputReferences(const std::vector<AbstractModel *> & models) {
-
-	IBK_ASSERT (!m_objectList->m_filterID.m_ids.empty());
-	// set reference to zone air temperature
+	if (m_objectList->m_filterID.m_ids.empty())
+		return;
 
 	// we need control values for heating and cooling
 
 	// For this purpose, we access a zone thermostat control value (identified via zone id).
-	// Thermostat-modells provide 'HeatingControlValue' and 'CoolingControlValue'.
-	// Note, that for each zone only oine thermostat is allowed. Once we loop
+	// Thermostat-models provide 'HeatingControlValue' and 'CoolingControlValue'.
+	// Note, that for each zone only one thermostat is allowed. Once we loop
 	// over all thermostat models, only one (and exactly) one request per zone must be fulfilled!
 	// All references are set as optional and later (setInputValueRefs) proved, whether exactly one value is found.
 
@@ -148,7 +168,8 @@ void IdealSurfaceHeatingCoolingModel::setInputValueRefs(const std::vector<Quanti
 												const std::vector<const double *> & resultValueRefs)
 {
 	FUNCID(IdealSurfaceHeatingCoolingModel::setInputValueRefs);
-	IBK_ASSERT (!m_objectList->m_filterID.m_ids.empty());
+	if (m_objectList->m_filterID.m_ids.empty())
+		return;
 
 	// We now must ensure, that for each zone there is exactly one matching control signal
 	// In other means, exactly one result refernce value is filled with a valid adress
@@ -185,41 +206,45 @@ void IdealSurfaceHeatingCoolingModel::setInputValueRefs(const std::vector<Quanti
 		throw IBK::Exception(IBK::FormatString("Missing heating control value for zone id=%1.").arg(m_thermostatZoneId), FUNC_ID);
 	// check that we have indeed value refs for all zones
 	if (m_maxCoolingPower > 0 && m_coolingThermostatValueRef == nullptr)
-		throw IBK::Exception(IBK::FormatString("Missing heating or cooling control value for zone id=%1.").arg(m_thermostatZoneId), FUNC_ID);
+		throw IBK::Exception(IBK::FormatString("Missing cooling control value for zone id=%1.").arg(m_thermostatZoneId), FUNC_ID);
 }
 
 
 void IdealSurfaceHeatingCoolingModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
-	IBK_ASSERT(!m_objectList->m_filterID.m_ids.empty());
+	for (unsigned int i=0; i<m_objectList->m_filterID.m_ids.size(); ++i) {
+		// pair: result - input
 
-	// we have heating defined
-	if(m_heatingThermostatValueRef != nullptr)
-		resultInputValueReferences.push_back(
-						std::make_pair(&m_results[R_ActiveLayerThermalLoad], m_heatingThermostatValueRef) );
-	// we operate in cooling mode
-	if(m_coolingThermostatValueRef != nullptr)
-		resultInputValueReferences.push_back(
-						std::make_pair(&m_results[R_ActiveLayerThermalLoad], m_coolingThermostatValueRef) );
+		// we have heating defined
+		if(m_heatingThermostatValueRef != nullptr)
+			resultInputValueReferences.push_back(
+						std::make_pair(m_vectorValuedResults[VVR_ActiveLayerThermalLoad].dataPtr() + i, m_heatingThermostatValueRef) );
+		// we operate in cooling mode
+		if(m_coolingThermostatValueRef != nullptr)
+			resultInputValueReferences.push_back(
+							std::make_pair(m_vectorValuedResults[VVR_ActiveLayerThermalLoad].dataPtr() + i, m_coolingThermostatValueRef) );
+	}
 }
 
 
 int IdealSurfaceHeatingCoolingModel::update() {
+	for (unsigned int i=0; i<m_objectList->m_filterID.m_ids.size(); ++i) {
+		double & activeLayerLoad = *(m_vectorValuedResults[VVR_ActiveLayerThermalLoad].dataPtr() + i);
+		activeLayerLoad = 0; // initialize with 0 W
 
-	m_results[R_ActiveLayerThermalLoad] = 0;
-
-	// get control value for heating
-	if(m_heatingThermostatValueRef != nullptr) {
-		double heatingControlValue = *m_heatingThermostatValueRef;
-		// clip
-		heatingControlValue = std::max(0.0, std::min(1.0, heatingControlValue));
-		m_results[R_ActiveLayerThermalLoad] += heatingControlValue*m_thermostatZoneArea*m_maxHeatingPower;
-	}
-	// get control value for cooling
-	if(m_coolingThermostatValueRef != nullptr) {
-		double coolingControlValue = *m_coolingThermostatValueRef;
-		// clip
-		coolingControlValue = std::max(0.0, std::min(1.0, coolingControlValue));
-		m_results[R_ActiveLayerThermalLoad] -= coolingControlValue*m_thermostatZoneArea*m_maxCoolingPower;
+		// get control value for heating
+		if(m_heatingThermostatValueRef != nullptr) {
+			double heatingControlValue = *m_heatingThermostatValueRef;
+			// clip
+			heatingControlValue = std::max(0.0, std::min(1.0, heatingControlValue));
+			activeLayerLoad += heatingControlValue*m_maxHeatingPower*m_constructionAreas[i];
+		}
+		// get control value for cooling
+		if(m_coolingThermostatValueRef != nullptr) {
+			double coolingControlValue = *m_coolingThermostatValueRef;
+			// clip
+			coolingControlValue = std::max(0.0, std::min(1.0, coolingControlValue));
+			activeLayerLoad -= coolingControlValue*m_maxCoolingPower*m_constructionAreas[i];
+		}
 	}
 
 	return 0; // signal success

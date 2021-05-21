@@ -26,6 +26,7 @@
 
 #include "NANDRAD_Constants.h"
 #include "NANDRAD_CodeGenMacros.h"
+#include "NANDRAD_Zone.h"
 
 namespace NANDRAD {
 
@@ -44,7 +45,7 @@ public:
 	NANDRAD_READWRITE
 
 	/*! Checks parameters for valid values. */
-	void checkParameters();
+	void checkParameters(const std::vector<NANDRAD::Zone> & zones);
 
 	/*! Unique ID-number for this model. */
 	unsigned int		m_id = NANDRAD::INVALID_ID;					// XML:A:required

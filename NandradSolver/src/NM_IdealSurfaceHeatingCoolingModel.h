@@ -6,6 +6,7 @@
 #include "NM_VectorValuedQuantity.h"
 
 #include <NANDRAD_ObjectList.h>
+#include <NANDRAD_ConstructionInstance.h>
 
 namespace NANDRAD {
 	class IdealSurfaceHeatingCoolingModel;
@@ -15,17 +16,18 @@ namespace NANDRAD {
 
 namespace NANDRAD_MODEL {
 
-/*! A model for ideal heating via surface heating. We control thermal load (positive or negative).
-	In the case of heating parametrize 'MaxHeatingPowerPerArea' with a positive value and the
+/*! A model for ideal heating/cooling via surface. We control thermal active layer load (positive or negative).
+	In the case of heating parametrised 'MaxHeatingPowerPerArea' with a positive value and the
 	same for 'MaxCoolingPowerPerArea' in the case of cooling (heating and cooling may be used
 	combined).
-	Control values for heating and cooling are retrieved from zone specific thermostat model.*/
+	Control values for heating and cooling are retrieved from zone specific thermostat model.
+*/
 class IdealSurfaceHeatingCoolingModel : public AbstractModel, public AbstractStateDependency {
 public:
-	/*! Computed results. */
-	enum Results {
-		R_ActiveLayerThermalLoad,		// Keyword: ActiveLayerThermalLoad		[W]		'Active layer thermal load'
-		NUM_R
+	/*! Computed results, vector-valued results that provide access via construction ID. */
+	enum VectorValuedResults {
+		VVR_ActiveLayerThermalLoad,		// Keyword: ActiveLayerThermalLoad			[W]		'Active layer thermal load'
+		NUM_VVR
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS
@@ -42,8 +44,7 @@ public:
 			pointers to object list elements can be stored).
 	*/
 	void setup(const NANDRAD::IdealSurfaceHeatingCoolingModel & model,
-			   const std::vector<NANDRAD::ObjectList> & objLists,
-			   const std::vector<NANDRAD::Zone> & zones);
+			   const std::vector<NANDRAD::ObjectList> & objLists);
 
 	// *** Re-implemented from AbstractModel
 
@@ -58,6 +59,8 @@ public:
 	/*! Returns unique ID of this model instance. */
 	virtual unsigned int id() const override { return m_id; }
 
+	void initResults(const std::vector<AbstractModel *> &) override;
+
 	/*! Populates the vector resDesc with descriptions of all results provided by this model. */
 	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const override;
 
@@ -67,10 +70,7 @@ public:
 
 	// *** Re-implemented from AbstractStateDependency
 
-	/*! Composes all input references.
-		Here we collect all loads/fluxes into the room and store them such, that we can efficiently compute
-		sums, for example for all heat fluxes from constructions into the room etc.
-	*/
+	/*! Composes all input references. */
 	virtual void initInputReferences(const std::vector<AbstractModel*> & models) override;
 
 	/*! Returns vector with model input references.
@@ -101,14 +101,11 @@ private:
 	/*! Quick access pointer to object list (for targeted construction instances). */
 	const NANDRAD::ObjectList						*m_objectList = nullptr;
 
-	/*! Cached heating power per zone area in [W/m2] */
+	/*! Cached heating power per surface area in [W/m2] */
 	double											m_maxHeatingPower = 666;
 
-	/*! Cached cooling power per zone area in [W/m2] */
+	/*! Cached cooling power per surface area in [W/m2] */
 	double											m_maxCoolingPower = 666;
-
-	/*! Cached thermostat zone area in [m2] */
-	double											m_thermostatZoneArea = 666;
 
 	/*! Cached thermostat zone id. */
 	unsigned int									m_thermostatZoneId = NANDRAD::INVALID_ID;
@@ -122,12 +119,15 @@ private:
 	/*! Reference to cooling thermotat control value. */
 	const double*									m_coolingThermostatValueRef = nullptr;
 
+	/*! Construction areas in [m2]. */
+	std::vector<double>								m_constructionAreas;
+
 	/*! Vector valued results, computed/updated during the calculation. */
-	std::vector<double>								m_results;
+	std::vector<VectorValuedQuantity>				m_vectorValuedResults;
 
 	/*! Vector with input references.
-		For each thermostat model found, this vector contains one input ref = for each zone
-		a heating control value is requested.
+		For each thermostat model found, this vector contains at two input refs; for each thermostat/zone
+		a heating/cooling control value is requested.
 	*/
 	std::vector<InputReference>						m_inputRefs;
 

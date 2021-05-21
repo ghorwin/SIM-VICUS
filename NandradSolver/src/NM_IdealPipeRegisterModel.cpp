@@ -76,7 +76,7 @@ void IdealPipeRegisterModel::initResults(const std::vector<AbstractModel *> &) {
 	// no model IDs, nothing to do (see explanation in resultDescriptions())
 	if (m_objectList->m_filterID.m_ids.empty())
 		return; // nothing to compute, return
-	// get IDs of referenced zones
+	// get IDs of referenced constructions
 	std::vector<unsigned int> indexKeys(m_objectList->m_filterID.m_ids.begin(), m_objectList->m_filterID.m_ids.end());
 	// resize result vectors accordingly
 	for (unsigned int varIndex=0; varIndex<NUM_VVR; ++varIndex)
@@ -123,7 +123,7 @@ const double * IdealPipeRegisterModel::resultValueRef(const InputReference & qua
 
 	// search inside results vector
 	if(quantityName.m_index == -1) {
-		for (unsigned int varIndex=0; varIndex<NUM_VVR; ++varIndex) {
+		for (unsigned int varIndex=0; varIndex<NUM_R; ++varIndex) {
 			if (KeywordList::Keyword("IdealPipeRegisterModel::Results", (Results)varIndex ) == quantityName.m_name)
 				return &m_results[varIndex];
 		}
@@ -267,6 +267,8 @@ void IdealPipeRegisterModel::stateDependencies(std::vector<std::pair<const doubl
 	// our heating loads depend on heating control values, and cooling loads depend on cooling control values
 	for (unsigned int i=0; i<m_objectList->m_filterID.m_ids.size(); ++i) {
 		// pair: result - input
+
+		// TODO : massflux
 
 		// we have heating defined
 		if(m_heatingThermostatValueRef != nullptr)

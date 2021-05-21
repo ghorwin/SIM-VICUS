@@ -103,8 +103,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Fluid specific heat capacity.");
 	tr("Fluid thermal conductivity.");
 	tr("Number of parallel pipes");
-	tr("Maximum heating power per floor area");
-	tr("Maximum heating power per floor area");
+	tr("Maximum heating power per surface area");
+	tr("Maximum heating power per surface area");
 	tr("Pressure coeffient.");
 	tr("Use results from external wind flow calculation.");
 	tr("Constant heat exchange coefficient");

@@ -1536,8 +1536,8 @@ namespace NANDRAD {
 			// IdealSurfaceHeatingCoolingModel::para_t
 			case 26 :
 			switch (t) {
-				case 0 : return "Maximum heating power per floor area";
-				case 1 : return "Maximum heating power per floor area";
+				case 0 : return "Maximum heating power per surface area";
+				case 1 : return "Maximum heating power per surface area";
 			} break;
 			// InterfaceAirFlow::splinePara_t
 			case 27 :

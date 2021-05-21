@@ -1,10 +1,12 @@
 #include "NANDRAD_IdealSurfaceHeatingCoolingModel.h"
 
+#include <algorithm>
+
 #include "NANDRAD_KeywordList.h"
 
 namespace NANDRAD {
 
-void IdealSurfaceHeatingCoolingModel::checkParameters() {
+void IdealSurfaceHeatingCoolingModel::checkParameters(const std::vector<NANDRAD::Zone> & zones) {
 	FUNCID(IdealSurfaceHeatingCoolingModel::checkParameters);
 
 	// all models require an object list with indication of construction that this model applies to
@@ -41,6 +43,14 @@ void IdealSurfaceHeatingCoolingModel::checkParameters() {
 	{
 		m_para[P_MaxCoolingPowerPerArea].set("MaxCoolingPowerPerArea", 0, IBK::Unit("W/m2"));
 	}
+
+	// resolve thermostat zone
+	std::vector<NANDRAD::Zone>::const_iterator zone_it = std::find(zones.begin(), zones.end(), m_thermostatZoneID);
+
+	if (zone_it == zones.end())
+		throw IBK::Exception(IBK::FormatString("Invalid/undefined zone with '%1' in ThermostatZoneId.")
+							 .arg(m_thermostatZoneID), FUNC_ID);
+
 }
 
 

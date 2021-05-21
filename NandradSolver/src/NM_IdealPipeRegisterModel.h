@@ -33,7 +33,7 @@ public:
 		NUM_R
 	};
 
-	/*! Computed results, vector-valued results that provide access via zone ID. */
+	/*! Computed results, vector-valued results that provide access via construction ID. */
 	enum VectorValuedResults {
 		VVR_ActiveLayerThermalLoad,		// Keyword: ActiveLayerThermalLoad			[W]		'Active layer thermal load'
 		NUM_VVR
