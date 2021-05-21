@@ -7,6 +7,10 @@ namespace NANDRAD {
 void IdealSurfaceHeatingCoolingModel::checkParameters() {
 	FUNCID(IdealSurfaceHeatingCoolingModel::checkParameters);
 
+	// all models require an object list with indication of construction that this model applies to
+	if (m_constructionObjectList.empty())
+		throw IBK::Exception(IBK::FormatString("Missing 'ConstructionObjectList' parameter."), FUNC_ID);
+
 	// either maximum heating or cooling power must be given
 	if(m_para[P_MaxHeatingPowerPerArea].name.empty() &&
 	   m_para[P_MaxCoolingPowerPerArea].name.empty()) {

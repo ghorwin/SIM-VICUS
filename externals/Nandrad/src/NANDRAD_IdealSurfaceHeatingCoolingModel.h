@@ -30,14 +30,14 @@
 namespace NANDRAD {
 
 /*! An ideal heating and cooling model. Basically scales a heating/cooling control signal with
-	the nominal heating power per zone.
+	the nominal heating power per area of heated/cooled construction.
 */
 class IdealSurfaceHeatingCoolingModel {
 public:
 	/*! Model parameters. */
 	enum para_t {
-		P_MaxHeatingPowerPerArea,	// Keyword: MaxHeatingPowerPerArea		[W/m2]		'Maximum heating power per floor area'
-		P_MaxCoolingPowerPerArea,	// Keyword: MaxCoolingPowerPerArea		[W/m2]		'Maximum heating power per floor area'
+		P_MaxHeatingPowerPerArea,	// Keyword: MaxHeatingPowerPerArea		[W/m2]		'Maximum heating power per surface area'
+		P_MaxCoolingPowerPerArea,	// Keyword: MaxCoolingPowerPerArea		[W/m2]		'Maximum heating power per surface area'
 		NUM_P
 	};
 
