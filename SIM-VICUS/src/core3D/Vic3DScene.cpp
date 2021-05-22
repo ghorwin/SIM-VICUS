@@ -1329,7 +1329,7 @@ void Vic3DScene::generateNetworkGeometry() {
 	}
 
 	// done with all opaque geometry, remember start index for transparent geometry
-	m_networkGeometryObject.m_transparentStartIndex = m_opaqueGeometryObject.m_indexBufferData.size();
+	m_networkGeometryObject.m_transparentStartIndex = m_networkGeometryObject.m_indexBufferData.size();
 
 	if (t.elapsed() > 20)
 		qDebug() << t.elapsed() << "ms for network generation";
