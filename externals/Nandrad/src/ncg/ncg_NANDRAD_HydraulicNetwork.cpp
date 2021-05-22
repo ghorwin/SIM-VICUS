@@ -74,9 +74,9 @@ void HydraulicNetwork::readXMLPrivate(const TiXmlElement * element) {
 			attrib = attrib->Next();
 		}
 		// search for mandatory elements
-		if (!element->FirstChildElement("Fluid"))
+		if (!element->FirstChildElement("HydraulicFluid"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'Fluid' element.") ), FUNC_ID);
+				IBK::FormatString("Missing required 'HydraulicFluid' element.") ), FUNC_ID);
 
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
