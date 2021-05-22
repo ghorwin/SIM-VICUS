@@ -225,6 +225,17 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				} break; // NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump
 
 
+				case NANDRAD::HydraulicNetworkComponent::MT_ConstantMassFluxPump : {
+					// create pump model with heat loss
+					TNPumpWithPerformanceLoss * element = new TNPumpWithPerformanceLoss(m_network->m_fluid,
+									*e.m_component, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value);
+					// add to flow elements
+					m_p->m_flowElements.push_back(element); // transfer ownership
+					m_p->m_heatLossElements.push_back(element); // no heat loss
+
+				} break; // NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump
+
+
 				case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
 				{
 					switch (e.m_heatExchange.m_modelType) {
