@@ -1519,8 +1519,8 @@ namespace NANDRAD {
 			// IdealPipeRegisterModel::modelType_t
 			case 23 :
 			switch (t) {
-				case 0 : return "Constant infiltration rate";
-				case 1 : return "Scheduled ventilation rate";
+				case 0 : return "Constant supply temperature";
+				case 1 : return "Scheduled supply temperature";
 			} break;
 			// IdealPipeRegisterModel::para_t
 			case 24 :

@@ -33,17 +33,18 @@ namespace NANDRAD {
 
 class Zone;
 
-/*! An ideal heating and cooling model. Basically scales a heating/cooling control signal with
-	the nominal heating power per zone.
+/*! An idealised pipe-register model inside a heated layer of a construction.
+	Supply temperature is fixed, mass flux is controlled based on heating/cooling requirements in
+	associated thermostat.
 */
 class IdealPipeRegisterModel {
 public:
-	/*! Different model variants for supply tempertaure. */
+	/*! Different model variants for supply temperature. */
 	enum modelType_t {
 		/*! Supply temperature is given as constant parameter. */
-		MT_Constant,					// Keyword: Constant				'Constant infiltration rate'
+		MT_Constant,					// Keyword: Constant				'Constant supply temperature'
 		/*! Supply temperature is provided as 'SupplyTemperatureSchedule' schedule parameter. */
-		MT_Scheduled,					// Keyword: Scheduled				'Scheduled ventilation rate'
+		MT_Scheduled,					// Keyword: Scheduled				'Scheduled supply temperature'
 		NUM_MT
 	};
 
@@ -82,8 +83,7 @@ public:
 	/*! Object list with zones that this model is to be apply to. */
 	std::string			m_constructionObjectList;					// XML:E:required
 
-	/*! Id of zone whose thermostat is used for control (one zone thermostat may be responsible
-		for the control of different heating systems, but only one id is allowed per model). */
+	/*! Id of zone whose thermostat is used for control. */
 	unsigned int		m_thermostatZoneID;							// XML:E:required
 
 	/*! Parameters. */
@@ -91,7 +91,7 @@ public:
 	/*! Integaer parameters. */
 	IBK::IntPara		m_intPara[NUM_IP];							// XML:E
 	/*! Fluid kinematic viscosity [m2/s]. */
-	LinearSplineParameter	m_fluidViscosity;			// XML:E
+	LinearSplineParameter	m_fluidViscosity;						// XML:E
 };
 
 } // namespace NANDRAD

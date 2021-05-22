@@ -26,7 +26,7 @@ void IdealPipeRegisterModel::checkParameters(const std::vector<NANDRAD::Zone> &z
 	m_para[P_PipeInnerDiameter].checkedValue("PipeInnerDiameter", "mm", "mm",
 											   0, false,
 											   std::numeric_limits<double>::max(), true,
-											   "Pipe inner diameter flow must be > 0 kg/s.");
+											   "Pipe inner diameter flow must be > 0 mm.");
 	m_para[P_UValuePipeWall].checkedValue("UValuePipeWall", "W/mK", "W/mK",
 											   0, false,
 											   std::numeric_limits<double>::max(), true,
@@ -45,7 +45,7 @@ void IdealPipeRegisterModel::checkParameters(const std::vector<NANDRAD::Zone> &z
 											   "Fluid conductivity must be > 0 W/mK.");
 
 	// decide how to recieve supply temperature
-	if(m_modelType == MT_Constant) {
+	if (m_modelType == MT_Constant) {
 		m_para[P_SupplyTemperature].checkedValue("SupplyTemperature", "C", "K",
 												   0.0, true,
 												   std::numeric_limits<double>::max(), true,
@@ -53,24 +53,22 @@ void IdealPipeRegisterModel::checkParameters(const std::vector<NANDRAD::Zone> &z
 	}
 
 	// set default value for int parameters
-	if(m_intPara[IP_NumberParallelPipes].name.empty()) {
+	if (m_intPara[IP_NumberParallelPipes].name.empty()) {
 		// one pipe is default
 		m_intPara[IP_NumberParallelPipes].set("NumberParallelPipes", 1);
 	}
 	else {
-		// prove value
+		// check that given number is >= 1
 		m_intPara[IP_NumberParallelPipes].checkIfValueIsAboveLimit(IBK::IntPara("NumberParallelPipes", 1), true);
 	}
 
 	// kinematic viscosity is always needed, here we check the spline and convert it to base units automatically
-	m_fluidViscosity.checkAndInitialize("FluidViscosity", IBK::Unit("K"), IBK::Unit("m2/s"),
-											IBK::Unit("m2/s"), 0, false, std::numeric_limits<double>::max(), false,
-											"Fluid viscosity must be > 0 m2/s.");
+	m_fluidViscosity.checkAndInitialize("FluidViscosity", IBK::Unit("K"), IBK::Unit("m2/s"), IBK::Unit("m2/s"),
+										0, false, std::numeric_limits<double>::max(), false,
+										"Fluid viscosity must be > 0 m2/s.");
 
 	// check validity of thermostat zone
-	std::vector<NANDRAD::Zone>::const_iterator zone_it = std::find(zones.begin(),
-																  zones.end(),
-																  m_thermostatZoneID);
+	std::vector<NANDRAD::Zone>::const_iterator zone_it = std::find(zones.begin(), zones.end(), m_thermostatZoneID);
 
 	if (zone_it == zones.end())
 		throw IBK::Exception(IBK::FormatString("Invalid/undefined zone with '%1' in ThermostatZoneId.")
