@@ -26,6 +26,7 @@ class IdealSurfaceHeatingCoolingModel : public AbstractModel, public AbstractSta
 public:
 	/*! Computed results, vector-valued results that provide access via construction ID. */
 	enum VectorValuedResults {
+		/*! Heat load into active layer, positive heating, negative cooling. */
 		VVR_ActiveLayerThermalLoad,		// Keyword: ActiveLayerThermalLoad			[W]		'Active layer thermal load'
 		NUM_VVR
 	};

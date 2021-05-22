@@ -148,7 +148,7 @@
 						<PenColor>#ff420e</PenColor>
 					</Series>
 					<Series>
-						<TitleText>Schichttemperatur (beheizte Schicht)</TitleText>
+						<TitleText>Schichttemperatur (gekühlte Schicht)</TitleText>
 						<PenColor>#fcaf3e</PenColor>
 						<MarkerColor>#fcaf3e</MarkerColor>
 					</Series>
@@ -157,7 +157,7 @@
 						<PenColor>#aecf00</PenColor>
 					</Series>
 					<Series leftAxis="0">
-						<TitleText>Heizleistung in beheizte Schicht</TitleText>
+						<TitleText>Wärmeentzug aus gekühlter Schicht</TitleText>
 						<PenColor>#7e0021</PenColor>
 					</Series>
 				</SeriesProperties>
@@ -188,12 +188,11 @@
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>Ideal Floor Heating</TitleText>
+					<TitleText>Ideal Floor Cooling</TitleText>
 					<TitleFont>Roboto Condensed,10,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend hasFrame="0">
 						<Position>Inside</Position>
-						<Alignment>5</Alignment>
 						<MaxColumns>1</MaxColumns>
 						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
 					</Legend>
