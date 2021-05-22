@@ -4,8 +4,13 @@
 	<Directories>
 		<Directory>
 			<Path>.</Path>
-			<SubDir Color="#ff007f" Checked="1">IdealFloorHeating</SubDir>
+			<SubDir Color="#416fce" Checked="0">IdealFloorCooling</SubDir>
+			<SubDir Color="#ffaa00" Checked="0">IdealFloorCooling.gcc_linux</SubDir>
+			<SubDir Color="#ff007f" Checked="0">IdealFloorHeating</SubDir>
 			<SubDir Color="#7141d1" Checked="0">IdealFloorHeating.gcc_linux</SubDir>
+			<SubDir Color="#ffee00" Checked="0">IdealPipeRegisterCooling</SubDir>
+			<SubDir Color="#45ad45" Checked="0">IdealPipeRegisterCooling.gcc_linux</SubDir>
+			<SubDir Color="#aa0000" Checked="0">IdealPipeRegisterHeating</SubDir>
 			<SubDir Color="#ffee00" Checked="0">IdealPipeRegisterHeating.gcc_linux</SubDir>
 			<ExpandedSubDir>.</ExpandedSubDir>
 		</Directory>
@@ -105,13 +110,103 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>IdealFloorCooling/results/states.tsv?1|2</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>IdealFloorCooling/results/states.tsv?1|2</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>IdealFloorCooling/results/fluxes.tsv?1|2|3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>IdealFloorCooling/results/fluxes.tsv?1|2|3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>2</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>Raumlufttemperatur</TitleText>
+						<PenColor>#ff420e</PenColor>
+					</Series>
+					<Series>
+						<TitleText>Schichttemperatur (beheizte Schicht)</TitleText>
+						<PenColor>#fcaf3e</PenColor>
+						<MarkerColor>#fcaf3e</MarkerColor>
+					</Series>
+					<Series leftAxis="0">
+						<TitleText>Wärmeleitungsstrom von Fußbodenoberfläche in Raum</TitleText>
+						<PenColor>#aecf00</PenColor>
+					</Series>
+					<Series leftAxis="0">
+						<TitleText>Heizleistung in beheizte Schicht</TitleText>
+						<PenColor>#7e0021</PenColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<TitleText>Time [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">d</IBK:Unit>
+						<Maximum>1.5</Maximum>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>0</MinorGridVisible>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<MinorGridVisible>0</MinorGridVisible>
+					</Axis>
+					<Axis index="2" enabled="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">W</IBK:Unit>
+						<Maximum>1827.9329608938547</Maximum>
+						<Minimum>17.877094972067038</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>Ideal Floor Heating</TitleText>
+					<TitleFont>Roboto Condensed,10,-1,5,75,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend hasFrame="0">
+						<Position>Inside</Position>
+						<Alignment>5</Alignment>
+						<MaxColumns>1</MaxColumns>
+						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
 	</Mappers>
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="0" size1="1" size2="1" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="1" size1="1" size2="1" orientation="2" />
 		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 
