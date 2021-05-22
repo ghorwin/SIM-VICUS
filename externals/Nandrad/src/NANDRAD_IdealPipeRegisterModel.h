@@ -91,8 +91,6 @@ public:
 	IBK::Parameter		m_para[NUM_P];								// XML:E
 	/*! Integaer parameters. */
 	IBK::IntPara		m_intPara[NUM_IP];							// XML:E
-	/*! Fluid kinematic viscosity [m2/s]. */
-	LinearSplineParameter	m_fluidViscosity;						// XML:E
 };
 
 } // namespace NANDRAD

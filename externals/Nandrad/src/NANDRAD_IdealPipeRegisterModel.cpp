@@ -51,11 +51,6 @@ void IdealPipeRegisterModel::checkParameters(const std::vector<NANDRAD::Zone> &z
 		m_intPara[IP_NumberParallelPipes].checkIfValueIsAboveLimit(IBK::IntPara("NumberParallelPipes", 1), true);
 	}
 
-	// kinematic viscosity is always needed, here we check the spline and convert it to base units automatically
-	m_fluidViscosity.checkAndInitialize("FluidViscosity", IBK::Unit("K"), IBK::Unit("m2/s"), IBK::Unit("m2/s"),
-										0, false, std::numeric_limits<double>::max(), false,
-										"Fluid viscosity must be > 0 m2/s.");
-
 	// check validity of thermostat zone
 	std::vector<NANDRAD::Zone>::const_iterator zone_it = std::find(zones.begin(), zones.end(), m_thermostatZoneID);
 

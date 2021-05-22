@@ -43,16 +43,17 @@ void IdealPipeRegisterModel::setup(const NANDRAD::IdealPipeRegisterModel & model
 
 	// retrieve all parameters (have been checked already)
 	m_maxMassFlow = model.m_para[NANDRAD::IdealPipeRegisterModel::P_MaxMassFlow].value;
+	// pipe properties
 	m_innerDiameter = model.m_para[NANDRAD::IdealPipeRegisterModel::P_PipeInnerDiameter].value;
 	m_length = model.m_para[NANDRAD::IdealPipeRegisterModel::P_PipeLength].value;
-	m_fluidHeatCapacity = model.m_fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
-	m_fluidDensity = model.m_fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
-	m_fluidConductivity = model.m_fluid.m_para[NANDRAD::HydraulicFluid::P_Conductivity].value;
 	m_UValuePipeWall = model.m_para[NANDRAD::IdealPipeRegisterModel::P_UValuePipeWall].value;
 	// integers
 	m_nParallelPipes = (unsigned int) model.m_intPara[NANDRAD::IdealPipeRegisterModel::IP_NumberParallelPipes].value;
-	// spline parameter
-	m_fluidViscosity = model.m_fluidViscosity.m_values;
+	// fluid properties
+	m_fluidHeatCapacity = model.m_fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+	m_fluidDensity = model.m_fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
+	m_fluidConductivity = model.m_fluid.m_para[NANDRAD::HydraulicFluid::P_Conductivity].value;
+	m_fluidViscosity = model.m_fluid.m_kinematicViscosity.m_values;
 
 	// compute fluid cross section and volume
 	m_fluidCrossSection = IBK::PI/4. * m_innerDiameter * m_innerDiameter * m_nParallelPipes;

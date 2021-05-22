@@ -113,16 +113,6 @@ void IdealPipeRegisterModel::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
-			else if (cName == "LinearSplineParameter") {
-				NANDRAD::LinearSplineParameter p;
-				p.readXML(c);
-				bool success = false;
-				if (p.m_name == "FluidViscosity") {
-					m_fluidViscosity = p; success = true;
-				}
-				if (!success)
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.m_name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
 			else if (cName == "HydraulicFluid")
 				m_fluid.readXML(c);
 			else {
@@ -166,10 +156,6 @@ TiXmlElement * IdealPipeRegisterModel::writeXML(TiXmlElement * parent) const {
 		if (!m_intPara[i].name.empty()) {
 			TiXmlElement::appendSingleAttributeElement(e, "IBK:IntPara", "name", m_intPara[i].name, IBK::val2string(m_intPara[i].value));
 		}
-	}
-	if (!m_fluidViscosity.m_name.empty()) {
-		IBK_ASSERT("FluidViscosity" == m_fluidViscosity.m_name);
-		m_fluidViscosity.writeXML(e);
 	}
 	return e;
 }
