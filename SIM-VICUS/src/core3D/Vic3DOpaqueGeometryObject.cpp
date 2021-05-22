@@ -119,7 +119,7 @@ void OpaqueGeometryObject::updateBuffers() {
 }
 
 
-void OpaqueGeometryObject::updateColorBuffer(unsigned int startIndex, unsigned int count) {
+void OpaqueGeometryObject::updateColorBuffer() {
 	if (m_colorBufferData.empty())
 		return;
 	m_colorBufferObject.bind();
@@ -156,10 +156,10 @@ void OpaqueGeometryObject::renderTransparent() {
 	// now draw the geometry
 	if (m_drawTriangleStrips)
 		glDrawElements(GL_TRIANGLE_STRIP, (GLsizei)m_indexBufferData.size() - m_transparentStartIndex,
-			GL_UNSIGNED_INT, (const GLvoid*)(sizeof(GLuint) * m_transparentStartIndex));
+			GL_UNSIGNED_INT, (const GLvoid*)(sizeof(GLuint) * (unsigned long)m_transparentStartIndex));
 	else
 		glDrawElements(GL_TRIANGLES, (GLsizei)m_indexBufferData.size() - m_transparentStartIndex,
-			GL_UNSIGNED_INT, (const GLvoid*)(sizeof(GLuint) * m_transparentStartIndex));
+			GL_UNSIGNED_INT, (const GLvoid*)(sizeof(GLuint) * (unsigned long)m_transparentStartIndex));
 	// release buffers again
 	m_vao.release();
 
