@@ -45,9 +45,9 @@ void IdealPipeRegisterModel::setup(const NANDRAD::IdealPipeRegisterModel & model
 	m_maxMassFlow = model.m_para[NANDRAD::IdealPipeRegisterModel::P_MaxMassFlow].value;
 	m_innerDiameter = model.m_para[NANDRAD::IdealPipeRegisterModel::P_PipeInnerDiameter].value;
 	m_length = model.m_para[NANDRAD::IdealPipeRegisterModel::P_PipeLength].value;
-	m_fluidHeatCapacity = model.m_para[NANDRAD::IdealPipeRegisterModel::P_FluidHeatCapacity].value;
-	m_fluidDensity = model.m_para[NANDRAD::IdealPipeRegisterModel::P_FluidDensity].value;
-	m_fluidConductivity = model.m_para[NANDRAD::IdealPipeRegisterModel::P_FluidConductivity].value;
+	m_fluidHeatCapacity = model.m_fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+	m_fluidDensity = model.m_fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
+	m_fluidConductivity = model.m_fluid.m_para[NANDRAD::HydraulicFluid::P_Conductivity].value;
 	m_UValuePipeWall = model.m_para[NANDRAD::IdealPipeRegisterModel::P_UValuePipeWall].value;
 	// integers
 	m_nParallelPipes = (unsigned int) model.m_intPara[NANDRAD::IdealPipeRegisterModel::IP_NumberParallelPipes].value;

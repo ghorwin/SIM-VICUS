@@ -101,9 +101,6 @@ KeywordListQt::KeywordListQt() {
 	tr("Pipe length");
 	tr("Inner diameter of pipe");
 	tr("Length-specific U-Value of pipe wall incl. insulation");
-	tr("Fluid mass density.");
-	tr("Fluid specific heat capacity.");
-	tr("Fluid thermal conductivity.");
 	tr("Number of parallel pipes");
 	tr("Maximum heating power per surface area");
 	tr("Maximum heating power per surface area");

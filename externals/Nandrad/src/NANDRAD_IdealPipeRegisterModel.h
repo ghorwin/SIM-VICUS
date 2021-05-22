@@ -28,6 +28,7 @@
 #include "NANDRAD_Constants.h"
 #include "NANDRAD_CodeGenMacros.h"
 #include "NANDRAD_LinearSplineParameter.h"
+#include "NANDRAD_HydraulicFluid.h"
 
 namespace NANDRAD {
 
@@ -55,9 +56,6 @@ public:
 		P_PipeLength,				// Keyword: PipeLength					[m]			'Pipe length'
 		P_PipeInnerDiameter,		// Keyword: PipeInnerDiameter			[mm]		'Inner diameter of pipe'
 		P_UValuePipeWall,			// Keyword: UValuePipeWall				[W/mK]		'Length-specific U-Value of pipe wall incl. insulation'
-		P_FluidDensity,				// Keyword: FluidDensity				[kg/m3]		'Fluid mass density.'
-		P_FluidHeatCapacity,		// Keyword: FluidHeatCapacity			[J/kgK]		'Fluid specific heat capacity.'
-		P_FluidConductivity,		// Keyword: FluidConductivity			[W/mK]		'Fluid thermal conductivity.'
 		NUM_P
 	};
 
@@ -79,6 +77,9 @@ public:
 
 	/*! Model type. */
 	modelType_t			m_modelType = NUM_MT;						// XML:A:required
+
+	/*! Fluid properties. */
+	HydraulicFluid		m_fluid;									// XML:E:required
 
 	/*! Object list with zones that this model is to be apply to. */
 	std::string			m_constructionObjectList;					// XML:E:required

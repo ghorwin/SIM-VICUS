@@ -309,9 +309,6 @@ namespace NANDRAD {
 				case 2 : return "PipeLength";
 				case 3 : return "PipeInnerDiameter";
 				case 4 : return "UValuePipeWall";
-				case 5 : return "FluidDensity";
-				case 6 : return "FluidHeatCapacity";
-				case 7 : return "FluidConductivity";
 			} break;
 			// IdealPipeRegisterModel::intPara_t
 			case 25 :
@@ -919,9 +916,6 @@ namespace NANDRAD {
 				case 2 : return "PipeLength";
 				case 3 : return "PipeInnerDiameter";
 				case 4 : return "UValuePipeWall";
-				case 5 : return "FluidDensity";
-				case 6 : return "FluidHeatCapacity";
-				case 7 : return "FluidConductivity";
 			} break;
 			// IdealPipeRegisterModel::intPara_t
 			case 25 :
@@ -1530,9 +1524,6 @@ namespace NANDRAD {
 				case 2 : return "Pipe length";
 				case 3 : return "Inner diameter of pipe";
 				case 4 : return "Length-specific U-Value of pipe wall incl. insulation";
-				case 5 : return "Fluid mass density.";
-				case 6 : return "Fluid specific heat capacity.";
-				case 7 : return "Fluid thermal conductivity.";
 			} break;
 			// IdealPipeRegisterModel::intPara_t
 			case 25 :
@@ -2140,9 +2131,6 @@ namespace NANDRAD {
 				case 2 : return "m";
 				case 3 : return "mm";
 				case 4 : return "W/mK";
-				case 5 : return "kg/m3";
-				case 6 : return "J/kgK";
-				case 7 : return "W/mK";
 			} break;
 			// IdealPipeRegisterModel::intPara_t
 			case 25 :
@@ -2750,9 +2738,6 @@ namespace NANDRAD {
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
-				case 5 : return "#FFFFFF";
-				case 6 : return "#FFFFFF";
-				case 7 : return "#FFFFFF";
 			} break;
 			// IdealPipeRegisterModel::intPara_t
 			case 25 :
@@ -3360,9 +3345,6 @@ namespace NANDRAD {
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
-				case 5 : return std::numeric_limits<double>::quiet_NaN();
-				case 6 : return std::numeric_limits<double>::quiet_NaN();
-				case 7 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// IdealPipeRegisterModel::intPara_t
 			case 25 :
@@ -3844,7 +3826,7 @@ namespace NANDRAD {
 			// IdealPipeRegisterModel::modelType_t
 			case 23 : return 2;
 			// IdealPipeRegisterModel::para_t
-			case 24 : return 8;
+			case 24 : return 5;
 			// IdealPipeRegisterModel::intPara_t
 			case 25 : return 1;
 			// IdealSurfaceHeatingCoolingModel::para_t
@@ -4018,7 +4000,7 @@ namespace NANDRAD {
 			// IdealPipeRegisterModel::modelType_t
 			case 23 : return 1;
 			// IdealPipeRegisterModel::para_t
-			case 24 : return 7;
+			case 24 : return 4;
 			// IdealPipeRegisterModel::intPara_t
 			case 25 : return 0;
 			// IdealSurfaceHeatingCoolingModel::para_t

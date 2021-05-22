@@ -219,7 +219,6 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	const SVDatabase  & db = SVSettings::instance().m_db;
 	VICUS::NetworkFluid fluid;
 	fluid.defaultFluidWater(1);
-	nandradNetwork.m_fluid.m_id = fluid.m_id;
 	nandradNetwork.m_fluid.m_displayName = fluid.m_displayName.string();
 
 	fluid.m_kinematicViscosity.m_values.setValues(std::vector<double>{0,20}, std::vector<double>{1.793e-6,1.793e-6});

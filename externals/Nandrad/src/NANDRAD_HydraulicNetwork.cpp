@@ -53,8 +53,7 @@ void HydraulicNetwork::checkParameters(const Project & prj)  {
 		m_fluid.checkParameters(m_modelType);
 	}
 	catch(IBK::Exception &ex) {
-		throw IBK::Exception(ex, IBK::FormatString("Error initializing fluid with id #%1.")
-							 .arg(m_fluid.m_id), FUNC_ID);
+		throw IBK::Exception(ex, IBK::FormatString("Error initializing fluid properties."), FUNC_ID);
 	}
 
 	std::set<unsigned int> conInstanceIds;

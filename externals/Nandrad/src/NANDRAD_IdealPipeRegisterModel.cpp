@@ -2,6 +2,7 @@
 
 #include "NANDRAD_KeywordList.h"
 #include "NANDRAD_Zone.h"
+#include "NANDRAD_HydraulicNetwork.h"
 
 #include <algorithm>
 
@@ -31,18 +32,6 @@ void IdealPipeRegisterModel::checkParameters(const std::vector<NANDRAD::Zone> &z
 											   0, false,
 											   std::numeric_limits<double>::max(), true,
 											   "Pipe wall U-value must be > 0 W/mK.");
-	m_para[P_FluidDensity].checkedValue("FluidDensity", "kg/m3", "kg/m3",
-											   0, false,
-											   std::numeric_limits<double>::max(), true,
-											   "Fluid density must be > 0 kg/m3.");
-	m_para[P_FluidHeatCapacity].checkedValue("FluidHeatCapacity", "J/kgK", "J/kgK",
-											   0, false,
-											   std::numeric_limits<double>::max(), true,
-											   "Fluid heat capacity must be > 0 J/kgK.");
-	m_para[P_FluidConductivity].checkedValue("FluidConductivity", "W/mK", "W/mK",
-											   0, false,
-											   std::numeric_limits<double>::max(), true,
-											   "Fluid conductivity must be > 0 W/mK.");
 
 	// decide how to recieve supply temperature
 	if (m_modelType == MT_Constant) {
@@ -74,6 +63,7 @@ void IdealPipeRegisterModel::checkParameters(const std::vector<NANDRAD::Zone> &z
 		throw IBK::Exception(IBK::FormatString("Invalid/undefined zone with '%1' in ThermostatZoneId.")
 							 .arg(m_thermostatZoneID), FUNC_ID);
 
+	m_fluid.checkParameters(HydraulicNetwork::MT_ThermalHydraulicNetwork);
 }
 
 

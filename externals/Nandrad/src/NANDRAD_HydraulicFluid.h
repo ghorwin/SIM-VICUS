@@ -25,7 +25,6 @@ public:
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE
-	NANDRAD_COMPARE_WITH_ID
 
 	/*! Populates the HydraulicFluid object with properties of water. */
 	void defaultFluidWater(unsigned int id);
@@ -35,8 +34,6 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique id number. */
-	unsigned int						m_id = INVALID_ID;				// XML:A:required
 	/*! Display name of fluid. */
 	std::string							m_displayName;					// XML:A
 	/*! List of parameters. */

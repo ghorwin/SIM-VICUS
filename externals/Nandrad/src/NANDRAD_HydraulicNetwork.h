@@ -53,11 +53,13 @@ public:
 
 	ModelType										m_modelType		= MT_ThermalHydraulicNetwork;	// XML:A:required
 
-	/*! at the inlet node of the reference element,
-	 * the reference pressure will be applied (usually should be the pump) */
+	/*! At the inlet node of the reference element the reference pressure will be applied
+		(usually, this should be a pump model).
+	*/
 	unsigned int									m_referenceElementId = INVALID_ID;				// XML:A:required
 
-	HydraulicFluid									m_fluid;										// XML:E
+	/*! Fluid properties. */
+	HydraulicFluid									m_fluid;										// XML:E:required
 
 	/*! Global network parameters. */
 	IBK::Parameter									m_para[NUM_P];									// XML:E
