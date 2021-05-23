@@ -155,6 +155,7 @@ SOURCES += \
     ../../src/ncg/ncg_NANDRAD_HydraulicFluid.cpp \
     ../../src/ncg/ncg_NANDRAD_HydraulicNetworkComponent.cpp \
     ../../src/ncg/ncg_NANDRAD_HydraulicNetwork.cpp \
+    ../../src/ncg/ncg_NANDRAD_HydraulicNetworkControlElement.cpp \
     ../../src/ncg/ncg_NANDRAD_HydraulicNetworkElement.cpp \
     ../../src/ncg/ncg_NANDRAD_HydraulicNetworkHeatExchange.cpp \
     ../../src/ncg/ncg_NANDRAD_HydraulicNetworkPipeProperties.cpp \
