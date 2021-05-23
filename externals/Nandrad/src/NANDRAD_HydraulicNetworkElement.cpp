@@ -125,6 +125,8 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 		m_controlElement = &(*ctit);
 	}
 	else{
+		// TODO : Hauke, hier wird Speicher reserviert, der aber niemals wieder freigegeben wird...! besser nullptr lassen und beim Zugriff
+		//        auf die Variable Fallunterscheidung einbauen
 		m_controlElement = new HydraulicNetworkControlElement;
 	}
 

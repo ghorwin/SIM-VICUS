@@ -62,11 +62,17 @@
 					<HydraulicNetworkComponent id="3" displayName="simple pipe" modelType="SimplePipe">
 					</HydraulicNetworkComponent>
 				</Components>
-				
+
 				<ControlElements>
-					<HydraulicNetworkControlElement id="1" controlledProperty="TemperatureDifference" controllerType="PController" >						
-						<IBK:Parameter name="Kp" unit="-">1e6</IBK:Parameter>						
-						<IBK:Parameter name="SetPoint" unit="K">3</IBK:Parameter>						
+					<!-- This controller generates a control signal based on temperature difference using a P-controller.
+						The temperature difference is computed from heat loss (from pipe to xxx) and current mass flux.
+						Hence, this controller can only be used in a flow element that defines heat exchange.
+
+						This control element can be referenced by all flow elements with similar mass flow control strategy.
+					-->
+					<HydraulicNetworkControlElement id="1" controlledProperty="TemperatureDifference" controllerType="PController" >
+						<IBK:Parameter name="Kp" unit="-">1e6</IBK:Parameter>
+						<IBK:Parameter name="SetPoint" unit="K">3</IBK:Parameter>
 					</HydraulicNetworkControlElement>
 				</ControlElements>
 
@@ -75,14 +81,19 @@
 					<HydraulicNetworkElement id="0" inletNodeId="100" outletNodeId="0" componentId="1" displayName="pump"/>
 
 					<HydraulicNetworkElement id="1" inletNodeId="0" outletNodeId="101" componentId="2" controlElementID="1" displayName="heat exchanger">
-						<!-- Heat loss from element (to environment) is given via time-series. -->
+						<!-- Heat loss from element (to environment) is given via time-series.
+							This heat loss is used together with the current mass flux to compute the temperature difference between
+							inlet and outlet. Then, this temperature difference goes into the controller referenced via
+							controlElementID which then computes a correction zeta-value (flow resistance) and effectively controls
+							the mass flux.
+						-->
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss">
 								<X unit="d">0 1   2    2.2  2.3  2.7  2.8 3</X>
 								<Y unit="W">0 500 1000 1000 3000 3000 800 0</Y>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
-						
+
 					</HydraulicNetworkElement>
 
 					<HydraulicNetworkElement id="8" inletNodeId="101" outletNodeId="100" componentId="3" pipePropertiesId="9" displayName="pipe">
@@ -128,7 +139,7 @@
 					<TimeType>None</TimeType>
 					<ObjectListName>the objects</ObjectListName>
 					<GridName>hourly</GridName>
-				</OutputDefinition>				
+				</OutputDefinition>
 			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">

@@ -122,6 +122,7 @@ void HydraulicNetworkModel::setup() {
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot :
 			{
+				// TODO : Hauke, kann man hier sicher sein, dass m_controlElement != nullptr???
 				switch (e.m_controlElement->m_controlledProperty) {
 
 					case NANDRAD::HydraulicNetworkControlElement::NUM_CP:{

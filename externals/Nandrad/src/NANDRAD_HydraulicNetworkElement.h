@@ -103,6 +103,7 @@ public:
 	/*! Pipe ID (only needed for elements that are pipes). */
 	unsigned int					m_pipePropertiesId	= NANDRAD::INVALID_ID;				// XML:A
 
+	/*! Optional reference to a flow controller element. */
 	IDType							m_controlElementID = NANDRAD::INVALID_ID;				// XML:A
 
 	/*! Display name. */
