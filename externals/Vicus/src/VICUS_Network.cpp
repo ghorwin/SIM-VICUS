@@ -1,3 +1,24 @@
+/*	The SIM-VICUS data model library.
+
+	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  ... all the others from the SIM-VICUS team ... :-)
+
+	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Lesser General Public
+	License as published by the Free Software Foundation; either
+	version 3 of the License, or (at your option) any later version.
+
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	Lesser General Public License for more details.
+*/
+
 #include "VICUS_Network.h"
 #include "VICUS_NetworkLine.h"
 #include "VICUS_NetworkFluid.h"
@@ -304,8 +325,8 @@ bool Network::findAndAddIntersection() {
 		for (unsigned i2=i1+1; i2<m_edges.size(); ++i2) {
 
 			// calculate intersection
-			NetworkLine2D l1 = NetworkLine2D(m_edges[i1]);
-			NetworkLine2D l2 = NetworkLine2D(m_edges[i2]);
+			NetworkLine l1 = NetworkLine(m_edges[i1]);
+			NetworkLine l2 = NetworkLine(m_edges[i2]);
 			IBK::point2D<double> ps;
 			l1.intersection(l2, ps);
 
@@ -338,14 +359,14 @@ void Network::connectBuildings(const bool extendSupplyPipes) {
 		for (unsigned id=0; id<m_edges.size(); ++id){
 			if (!m_edges[id].m_supply)
 				continue;
-			double dist = NetworkLine2D(m_edges[id]).distanceToPoint(m_nodes[idBuilding].m_position.point2D());
+			double dist = NetworkLine(m_edges[id]).distanceToPoint(m_nodes[idBuilding].m_position.point2D());
 			if (dist<distMin){
 				distMin = dist;
 				idEdgeMin = id;
 			}
 		}
 		// branch node
-		NetworkLine2D lMin = NetworkLine2D(m_edges[idEdgeMin]);
+		NetworkLine lMin = NetworkLine(m_edges[idEdgeMin]);
 		IBK::point2D<double> pBranch;
 		unsigned idBranch;
 		lMin.projectionFromPoint(m_nodes[idBuilding].m_position.point2D(), pBranch);
@@ -358,8 +379,8 @@ void Network::connectBuildings(const bool extendSupplyPipes) {
 		}
 		// branch node is outside edge
 		else{
-			double dist1 = NetworkLine2D::distanceBetweenPoints(pBranch, m_edges[idEdgeMin].m_node1->m_position.point2D());
-			double dist2 = NetworkLine2D::distanceBetweenPoints(pBranch, m_edges[idEdgeMin].m_node2->m_position.point2D());
+			double dist1 = NetworkLine::distanceBetweenPoints(pBranch, m_edges[idEdgeMin].m_node1->m_position.point2D());
+			double dist2 = NetworkLine::distanceBetweenPoints(pBranch, m_edges[idEdgeMin].m_node2->m_position.point2D());
 			idBranch = (dist1 < dist2) ? m_edges[idEdgeMin].nodeId1() : m_edges[idEdgeMin].nodeId2();
 			// if pipe should be extended, change coordinates of branch node
 			if (extendSupplyPipes) {

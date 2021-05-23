@@ -4,7 +4,7 @@
 
 	Primary authors:
 	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
-	  ... all the others ... :-)
+	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
 

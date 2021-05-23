@@ -1,10 +1,10 @@
-/*	The NANDRAD data model library.
+/*	The SIM-VICUS data model library.
 
-	Copyright (c) 2012-today, Institut für Bauklimatik, TU Dresden, Germany
+	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
 
 	Primary authors:
 	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
-	  Anne Paepcke     <anne.paepcke -[at]- tu-dresden.de>
+	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
 
