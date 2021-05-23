@@ -272,6 +272,7 @@ HEADERS  += \
 								../../src/core3D/Vic3DKeyboardMouseHandler.h \
 								../../src/core3D/Vic3DNewGeometryObject.h \
 								../../src/core3D/Vic3DOpaqueGeometryObject.h \
+								../../src/core3D/Vic3DOpenGLException.h \
 								../../src/core3D/Vic3DOpenGLWindow.h \
 								../../src/core3D/Vic3DOrbitControllerObject.h \
 								../../src/core3D/Vic3DPickObject.h \

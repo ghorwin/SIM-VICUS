@@ -4,6 +4,8 @@
 #include <QString>
 #include <IBK_Exception.h>
 
+namespace Vic3D {
+
 /*! A wrapper around IBK::Exception, that accepts QString arguments. */
 class OpenGLException : public IBK::Exception {
 public:
@@ -27,5 +29,7 @@ public:
 	{
 	}
 };
+
+} // namespace Vic3D
 
 #endif // OPENGLEXCEPTION_H

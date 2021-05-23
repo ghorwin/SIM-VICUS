@@ -32,7 +32,7 @@
 #include <IBK_Exception.h>
 #include <IBK_messages.h>
 
-#include "OpenGLException.h"
+#include "Vic3DOpenGLException.h"
 #include "SVViewStateHandler.h"
 #include "SVGeometryView.h"
 
@@ -58,7 +58,7 @@ bool SVDebugApplication::notify( QObject *recv, QEvent *e ) {
 		}
 		return QApplication::notify( recv, e );
 	}
-	catch (OpenGLException &ex) {
+	catch (Vic3D::OpenGLException &ex) {
 		ex.writeMsgStackToError();
 		IBK::IBK_Message("IBK::Exception caught.", IBK::MSG_ERROR, FUNC_ID);
 		m_aboutToTerminate = true;
