@@ -340,10 +340,11 @@ Außerdem muss noch der Parameter `HeatPumpIntegration` mit den Werten `SourceSi
 Es werden verschiedene Parameter als Schedules benötigt: Ist der Modus `SourceSide` gewählt muss der Parameter `CondenserMeanTemperatureSchedule` als Schedule gegeben sein. 
 Wird der Modus `SupplySide` gewählt, müssen die Parameter `EvaporatorMeanTemperatureSchedule` und `CondenserOutletSetpointSchedule` als Schedule gegeben sein.
 
+[[xml_HeatPumpIdealCarnot]]
 .Definition einer HeatPumpIdealCarnot
 ====
-[[xml_HeatPumpIdealCarnot]]
 [source,xml]
+----
 <HydraulicNetworkComponent id="2" modelType="HeatPumpIdealCarnot">
 	<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
 	<IBK:Parameter name="PressureLossCoefficient" unit="-">5</IBK:Parameter>
@@ -355,6 +356,7 @@ Wird der Modus `SupplySide` gewählt, müssen die Parameter `EvaporatorMeanTempe
 ----
 ====
 
+
 [[HydraulicNetworkElements]]
 ## Strömungselemente
 
@@ -362,9 +364,9 @@ Das eigentliche Netzwerk wird durch die Definition konkreter Strömungselemente 
 
 Die tatsächlichen Strömungselemente des Netzwerks werden innerhalb des XML-tags `Elements` mit dem XML-tag `HydraulicNetworkElement` definiert. 
 
+[[xml_example_flow_element]]
 .Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)
 ====
-[[xml_example_flow_element]]
 [source,xml]
 ----
 <Elements>
