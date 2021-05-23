@@ -43,7 +43,7 @@ Ein einzelnes Netzwerk wird im XML-tag `HydraulicNetwork` definiert, wie im folg
 ----
 <HydraulicNetwork id="1" displayName="Simple network" modelType="ThermalHydraulicNetwork"
         referenceElementId="201">
-	<HydraulicFluid id="1" displayName="Water">
+	<HydraulicFluid displayName="Water">
         ... <!-- fluid parameters -->
     </HydraulicFluid>
     
@@ -129,7 +129,7 @@ In jedem Netzwerk gibt es nur ein einziges Fluid, und deshalb ist auch nur eine 
 ====
 [source,xml]
 ----
-<HydraulicFluid id="1" displayName="Water">
+<HydraulicFluid displayName="Water">
 	<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
 	<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
 	<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
@@ -147,14 +147,9 @@ Der XML-tag `HydraulicFluid` hat folgende Attribute:
 [options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
 |====================
 | Attribut  | Beschreibung | Format | Verwendung
-| `id` |  Eindeutige Identifikationsnummer | {nbsp}>{nbsp}0{nbsp}  | _benötigt_
 | `displayName`  |  Beschreibung des Fluids | string | _optional_
 |====================
 
-[NOTE]
-====
-Da es nur eine Fluid-Definition per Netzwerk geben darf, ist das _id_ Attribut eigentlich überflüssig. Es wird lediglich zur Aktualisierung der Programmdatenbank beim Import eines Projekts benötigt.
-====
 
 :xrefstyle: basic
 

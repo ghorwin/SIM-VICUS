@@ -167,7 +167,7 @@ a| Gibt die Interpolationsmethode zwischen den definierten y-Werten an.
 
 | Schlüsselwort | _optional_ (`linear` ist der Standard)
 
-| `WrapMethod` 
+| `wrapMethod` 
 a| Gibt an, was getan werden soll, wenn Werte mit x-Werten außerhalb des x-Wertebereichs angefordert werden.
 
 * `continuous` - konstante Extrapolation (ersten bzw. letzten Wert nehmen)
