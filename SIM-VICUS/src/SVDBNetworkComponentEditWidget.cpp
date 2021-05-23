@@ -73,8 +73,6 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetParameters);
 	m_ui->tableWidgetParameters->setSortingEnabled(false);
 
-	// TODO : Hauke, implement table item delegate if needed
-
 	updateInput(-1);
 
 	// check if enums are identical
@@ -85,6 +83,7 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_Volume == (int)VICUS::NetworkComponent::P_Volume);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_PipeMaxDiscretizationWidth == (int)VICUS::NetworkComponent::P_PipeMaxDiscretizationWidth);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiency == (int)VICUS::NetworkComponent::P_CarnotEfficiency);
+	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_MaximumHeatingPower == (int)VICUS::NetworkComponent::P_MaximumHeatingPower);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::NUM_P == (int)VICUS::NetworkComponent::NUM_P);
 
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_SimplePipe == (int)VICUS::NetworkComponent::MT_SimplePipe);

@@ -122,19 +122,26 @@ void HydraulicNetworkModel::setup() {
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot :
 			{
-				if (e.m_controlElement.m_controlType == NANDRAD::ControlElement::NUM_CT) {
-					// create fixed pressure loss model
-					HNFixedPressureLossCoeffElement * hxElement = new HNFixedPressureLossCoeffElement(*e.m_component, m_hydraulicNetwork->m_fluid);
-					// add to flow elements
-					m_p->m_flowElements.push_back(hxElement); // transfer ownership
-				}
-				else{
-					HNControlledPressureLossCoeffElement * hxElement = new HNControlledPressureLossCoeffElement(
-								*e.m_component, m_hydraulicNetwork->m_fluid);
-					// add to flow elements
-					m_p->m_flowElements.push_back(hxElement); // transfer ownership
-				}
+				switch (e.m_controlElement->m_controlledProperty) {
 
+					case NANDRAD::HydraulicNetworkControlElement::NUM_CP:{
+						// create fixed pressure loss model
+						HNFixedPressureLossCoeffElement * hxElement = new HNFixedPressureLossCoeffElement(*e.m_component, m_hydraulicNetwork->m_fluid);
+						// add to flow elements
+						m_p->m_flowElements.push_back(hxElement); // transfer ownership
+					} break;
+
+					case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:{
+						HNControlledPressureLossCoeffElement * hxElement = new HNControlledPressureLossCoeffElement(
+									*e.m_component, m_hydraulicNetwork->m_fluid);
+						// add to flow elements
+						m_p->m_flowElements.push_back(hxElement); // transfer ownership
+					} break;
+
+					case NANDRAD::HydraulicNetworkControlElement::CP_MassFlow:
+						throw IBK::Exception(IBK::FormatString("Controlled property of ControlElement with id '%1' "
+															   "not implemented yet!").arg(e.m_controlElementID),FUNC_ID);
+				}
 
 			} break;
 

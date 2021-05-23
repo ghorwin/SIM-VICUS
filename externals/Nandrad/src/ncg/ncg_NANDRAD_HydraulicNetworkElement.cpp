@@ -58,7 +58,7 @@ void HydraulicNetworkElement::readXML(const TiXmlElement * element) {
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id")
-				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+				m_id = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "inletNodeId")
 				m_inletNodeId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "outletNodeId")
@@ -67,6 +67,8 @@ void HydraulicNetworkElement::readXML(const TiXmlElement * element) {
 				m_componentId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "pipePropertiesId")
 				m_pipePropertiesId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "controlElementID")
+				m_controlElementID = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName = attrib->ValueStr();
 			else {
@@ -106,8 +108,6 @@ void HydraulicNetworkElement::readXML(const TiXmlElement * element) {
 			}
 			else if (cName == "HydraulicNetworkHeatExchange")
 				m_heatExchange.readXML(c);
-			else if (cName == "ControlElement")
-				m_controlElement.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -126,8 +126,7 @@ TiXmlElement * HydraulicNetworkElement::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("HydraulicNetworkElement");
 	parent->LinkEndChild(e);
 
-	if (m_id != NANDRAD::INVALID_ID)
-		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
+	e->SetAttribute("id", IBK::val2string<IDType>(m_id));
 	if (m_inletNodeId != NANDRAD::INVALID_ID)
 		e->SetAttribute("inletNodeId", IBK::val2string<unsigned int>(m_inletNodeId));
 	if (m_outletNodeId != NANDRAD::INVALID_ID)
@@ -136,6 +135,7 @@ TiXmlElement * HydraulicNetworkElement::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("componentId", IBK::val2string<unsigned int>(m_componentId));
 	if (m_pipePropertiesId != NANDRAD::INVALID_ID)
 		e->SetAttribute("pipePropertiesId", IBK::val2string<unsigned int>(m_pipePropertiesId));
+	e->SetAttribute("controlElementID", IBK::val2string<IDType>(m_controlElementID));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
 
@@ -152,8 +152,6 @@ TiXmlElement * HydraulicNetworkElement::writeXML(TiXmlElement * parent) const {
 	}
 
 	m_heatExchange.writeXML(e);
-
-	m_controlElement.writeXML(e);
 	return e;
 }
 

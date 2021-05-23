@@ -102,6 +102,7 @@ SOURCES += \
 								../../src/SVDBZoneControlThermostatTableModel.cpp \
 								../../src/SVDBZoneControlVentilationNaturalEditWidget.cpp \
 								../../src/SVDBZoneControlVentilationNaturalTableModel.cpp \
+								../../src/SVNetworkControllerDialog.cpp \
 								../../src/SVShadingCalculationDialog.cpp \
 								../../src/SVView3DDialog.cpp \
 								../../src/actions/SVUndoAddBuilding.cpp \
@@ -245,6 +246,7 @@ HEADERS  += \
 								../../src/SVDBZoneControlThermostatTableModel.h \
 								../../src/SVDBZoneControlVentilationNaturalEditWidget.h \
 								../../src/SVDBZoneControlVentilationNaturalTableModel.h \
+								../../src/SVNetworkControllerDialog.h \
 								../../src/SVShadingCalculationDialog.h \
 								../../src/SVView3DDialog.h \
 								../../src/actions/SVUndoAddBuilding.h \
@@ -405,6 +407,7 @@ FORMS    += \
 								../../src/SVLogFileDialog.ui \
 								../../src/SVMainWindow.ui \
 								../../src/SVNavigationTreeWidget.ui \
+								../../src/SVNetworkControllerDialog.ui \
 								../../src/SVNetworkImportDialog.ui \
 								../../src/SVPreferencesDialog.ui \
 								../../src/SVPreferencesPageStyle.ui \

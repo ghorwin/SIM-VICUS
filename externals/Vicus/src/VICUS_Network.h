@@ -44,6 +44,7 @@
 #include <NANDRAD_HydraulicNetworkComponent.h>
 
 #include "VICUS_Object.h"
+#include "VICUS_NetworkController.h"
 
 namespace IBK {
 	class Path;
@@ -77,11 +78,6 @@ public:
 		NUM_P
 	};
 
-	enum HeatExchangeParameter {
-		HE_Temperature,
-		HE_HeatFlux,
-		NUM_HE
-	};
 
 	Network();
 
@@ -229,6 +225,8 @@ public:
 	double									m_scaleNodes = 30;							// XML:E
 
 	double									m_scaleEdges = 30;							// XML:E
+
+	std::vector<VICUS::NetworkController>	m_controllers;								// XML:E
 
 
 	/*! Stores visibility information for this network.

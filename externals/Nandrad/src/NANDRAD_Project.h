@@ -42,7 +42,6 @@
 #include "NANDRAD_HydraulicNetwork.h"
 #include "NANDRAD_HydraulicNetworkComponent.h"
 #include "NANDRAD_KeywordList.h"
-#include "NANDRAD_Controller.h"
 #include "NANDRAD_FMIDescription.h"
 
 /*! The namespace NANDRAD contains the data model classes that make up
@@ -144,9 +143,6 @@ public:
 
 	/*! References to object lists.*/
 	std::vector<ObjectList>							m_objectLists;						// XML:E
-
-	/*! References to controllers */
-	std::vector<Controller>							m_controllers;						// XML:E
 
 	/*! Definitions for exporting an FMU from the model. */
 	FMIDescription									m_fmiDescription;					// XML:E

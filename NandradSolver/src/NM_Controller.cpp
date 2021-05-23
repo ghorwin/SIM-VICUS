@@ -21,7 +21,6 @@
 
 #include "NM_Controller.h"
 
-#include <NANDRAD_Controller.h>
 
 namespace NANDRAD_MODEL {
 

@@ -332,7 +332,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 		const NANDRAD::HydraulicNetworkElement & e = nw.m_elements[i];
 
 		// if we have a controller, give the corresponding hydraulic network element access to the newly created object
-		if (e.m_controlElement.m_controlType != NANDRAD::ControlElement::NUM_CT) {
+		if (e.m_controlElement->m_controlledProperty != NANDRAD::HydraulicNetworkControlElement::NUM_CP) {
 
 			// the controller setup is type-specific; this cannot be done in a nice generic way :-(
 
