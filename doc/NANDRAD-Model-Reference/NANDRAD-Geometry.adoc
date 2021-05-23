@@ -126,7 +126,7 @@ Die Konstruktionsinstanz hat das folgende _erforderliche_ Child-tags:
 |====================
 
 
-`ConstructionTypeId` ist eindeutige Id, die den Konstruktionstyp (Schichtenaufbau) der Konstruktionsinstanz definiert.
+`ConstructionTypeId` ist eindeutige Id, die den Konstruktionstyp (Schichtenaufbau) der Konstruktionsinstanz definiert (siehe <<construction_types>>).
 
 Für die Parameter der Konstruktionsinstanz können die folgenden XML-tags mit dem Namen `IBK:Parameters` mit den XML-Attributen `name` und `unit` mit den folgenden Einträgen definiert werden:
 
