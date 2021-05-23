@@ -33,23 +33,19 @@ Dieses Dokument enthält eine Beschreibung der verschiedenen Modelle und deren P
 Der Abschnitt <<project_file>> enthält einen Überblick über die Struktur der Projektdatei mit Referenzen zu den einzelnen Abschnitten. Deshalb ist das ein guter Startpunkt,
 um sich einen Überblick über die NANDRAD Projektdefinition zu verschaffen.
 
-## NANDRAD Eingabedaten- und Projektdatei-Referenz
+include::NANDRAD-Basics.adoc[leveloffset=+1]
 
+include::NANDRAD-Databases.adoc[leveloffset=+1]
+include::NANDRAD-Geometry.adoc[leveloffset=+1]
+include::NANDRAD-Loads.adoc[leveloffset=+1]
+include::NANDRAD-ObjectLists.adoc[leveloffset=+1]
+include::NANDRAD-Schedules.adoc[leveloffset=+1]
 
-include::NANDRAD-Basics.adoc[leveloffset=+2]
+include::NANDRAD-Outputs.adoc[leveloffset=+1]
 
-include::NANDRAD-Databases.adoc[leveloffset=+2]
-include::NANDRAD-Geometry.adoc[leveloffset=+2]
-include::NANDRAD-Loads.adoc[leveloffset=+2]
-include::NANDRAD-ObjectLists.adoc[leveloffset=+2]
-include::NANDRAD-Schedules.adoc[leveloffset=+2]
-
-include::NANDRAD-Outputs.adoc[leveloffset=+2]
-
-include::NANDRAD-GlobalParameters.adoc[leveloffset=+2]
-include::NANDRAD-Models.adoc[leveloffset=+2]
-include::NANDRAD-Networks.adoc[leveloffset=+2]
-
+include::NANDRAD-GlobalParameters.adoc[leveloffset=+1]
+include::NANDRAD-Models.adoc[leveloffset=+1]
+include::NANDRAD-Networks.adoc[leveloffset=+1]
 
 include::NANDRAD-Reference.adoc[leveloffset=+1]
 
