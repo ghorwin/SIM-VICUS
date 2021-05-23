@@ -640,13 +640,13 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 					IBK::IBK_Message(IBK::FormatString("Condenser temperature >= evaporator temperature in "
 													   "HeatPumpIdealCarnot, flow element with id '%1'\n").arg(m_flowElementId),
 														IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
-				m_evaporatorHeatFlux = 0;
-				m_condenserHeatFlux = 0;
-				m_COP = 0.0;
-				m_heatLoss = 0.0;
-				m_electricalPower  = 0.0;
-				m_evaporatorMeanTemperature = 0;
-				break;
+					m_evaporatorHeatFlux = 0;
+					m_condenserHeatFlux = 0;
+					m_COP = 0.0;
+					m_heatLoss = 0.0;
+					m_electricalPower  = 0.0;
+					m_evaporatorMeanTemperature = 0;
+					break;
 				}
 
 				// correction for iteration

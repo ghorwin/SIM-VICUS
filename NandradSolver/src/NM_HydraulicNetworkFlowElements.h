@@ -156,7 +156,7 @@ public:
 	/*! Element's ID, needed to formulated input references. */
 	unsigned int					m_id;
 	/*! If not nullptr, this pressure head value (from an external model) is used instead of the constant one. */
-	double							*m_pressureHeadRef = nullptr;
+	const double					*m_pressureHeadRef = nullptr;
 
 private:
 	/*! Constant pressure head [Pa] to be added. */
@@ -180,7 +180,7 @@ public:
 	/*! Element's ID, needed to formulated input references. */
 	unsigned int					m_id;
 	/*! If not nullptr, this mass flux value (from an external model) is used instead of the constant one. */
-	double							*m_massFluxRef = nullptr;
+	const double					*m_massFluxRef = nullptr;
 
 private:
 	/*! Constant mass flux [kg/s] to be enforced. */

@@ -350,11 +350,33 @@ void HydraulicNetworkModel::inputReferences(std::vector<InputReference> & inputR
 void HydraulicNetworkModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
 											  const std::vector<const double *> & resultValueRefs)
 {
-	IBK_ASSERT(resultValueRefs.size() == m_elementIds.size());
-	// copy references into fluid temperature vector
-	for(const double* resRef : resultValueRefs)
-		m_fluidTemperatureRefs.push_back(resRef);
-
+	unsigned int currentIndex = 0;
+	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
+		// copy references into fluid temperature vector
+		for (unsigned int i = 0; i < m_elementIds.size(); ++i)
+			m_fluidTemperatureRefs.push_back(resultValueRefs[i]);
+		currentIndex = m_elementIds.size();
+	}
+	// now transfer input references to pump models
+	for (HydraulicNetworkAbstractFlowElement* pumpE : m_pumpElements) {
+		// different handling for different pumps
+		HNConstantPressurePump * pump = dynamic_cast<HNConstantPressurePump *>(pumpE);
+		if (pump != nullptr) {
+			// is the optional pressure head provided?
+			if (resultValueRefs[currentIndex] != nullptr)
+				pump->m_pressureHeadRef = resultValueRefs[currentIndex];
+			++currentIndex;
+			continue;
+		}
+		HNConstantMassFluxPump * pumpConstantMassFlux = dynamic_cast<HNConstantMassFluxPump *>(pumpE);
+		if (pumpConstantMassFlux != nullptr) {
+			// is the optional pressure head provided?
+			if (resultValueRefs[currentIndex] != nullptr)
+				pumpConstantMassFlux->m_massFluxRef = resultValueRefs[currentIndex];
+			++currentIndex;
+			continue;
+		}
+	}
 }
 
 
