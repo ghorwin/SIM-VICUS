@@ -5,31 +5,33 @@
 #include "NM_AbstractStateDependency.h"
 #include "NM_VectorValuedQuantity.h"
 
-#include <NANDRAD_ObjectList.h>
-
 #include <IBK_LinearSpline.h>
 
 namespace NANDRAD {
 	class IdealPipeRegisterModel;
 	class Thermostat;
 	class Zone;
+	class ObjectList;
 }
 
 namespace NANDRAD_MODEL {
 
-/*! A model for an ideal pipe register heating and cooling. We regulate mass flow and
-	later compare supply temperature to layer temperature. In the case of heating only
-	a larger supply temperature opens valve and in the case of cooling only a smaller one.
-	For computation of heat tranfer we use steady state model with constant pipe mass flow
+/*! A model for an ideal pipe register heating and cooling. We regulate mass flow based on
+	a zone thermostat control. We also compare supply temperature to layer temperature. In
+	the case of heating only a larger supply temperature opens valve and in the case of cooling
+	only a smaller one.
+	For computation of heat tranfer we use steady-state model with constant pipe mass flow
 	and constant environmental temperature.
 	Control values for heating and cooling are retrieved from zone specific thermostat model.
+
 	Note: in order to deactivate heating or cooling remove 'HeatingSetpoint' and 'CoolingSetpoint'
-	from Thermostat parametrization or chosse a high/low supply temperature.*/
+	from Thermostat parametrisation or chose a high/low supply temperature.*/
 class IdealPipeRegisterModel : public AbstractModel, public AbstractStateDependency {
 public:
 	/*! Computed results, vector-valued results that provide access via construction ID. */
 	enum VectorValuedResults {
 		VVR_MassFlux,					// Keyword: MassFlux						[kg/s]	'Controlled mass flow'
+		/*! Heat load into active layer, positive heating, negative cooling */
 		VVR_ActiveLayerThermalLoad,		// Keyword: ActiveLayerThermalLoad			[W]		'Active layer thermal load'
 		NUM_VVR
 	};
@@ -107,10 +109,10 @@ private:
 	/*! Cached heating power per zone area in [W/m2] */
 	double											m_maxMassFlow = 666;
 
-	/*! hydraulic (inner) diameter of pipe in [m] */
+	/*! Hydraulic (inner) diameter of pipe in [m] */
 	double											m_innerDiameter = -999;
 
-	/*! pipe length in [m] */
+	/*! Pipe length in [m] */
 	double											m_length = -999;
 
 	/*! Fluid heat capacity [J/kgK].*/
@@ -122,7 +124,7 @@ private:
 	/*! Fluid volume [m3]. */
 	double											m_fluidVolume = -999;
 
-	/*! Effective flow cross-section [m2].*/
+	/*! Effective flow cross-section [m2]. */
 	double											m_fluidCrossSection = -999;
 
 	/*! Fluid conductivity [W/mK].*/
@@ -139,19 +141,23 @@ private:
 	/*! Cached thermostat zone id. */
 	unsigned int									m_thermostatZoneId = NANDRAD::INVALID_ID;
 
-	/*! Holds number of thermostat model objects that values were requested from. */
+	/*! Holds number of thermostat model objects that values were requested from.
+		Note: since we don't know which thermostat model instance generates the results for
+			  the zone we are interested in, we create input references to all and count here
+			  the total number of adressed objects.
+	*/
 	unsigned int									m_thermostatModelObjects = 0;
 
-	/*! Reference to heating thermotat control value. */
+	/*! Reference to heating thermostat control value. */
 	const double*									m_heatingThermostatValueRef = nullptr;
 
-	/*! Reference to cooling thermotat control value. */
+	/*! Reference to cooling thermostat control value. */
 	const double*									m_coolingThermostatValueRef = nullptr;
 
-	/*! Reference to supply temperature. */
+	/*! Reference to supply temperature in [W]. */
 	const double*									m_supplyTemperatureRef = nullptr;
 
-	/*! Reference to active layer temperatures. */
+	/*! Reference to active layer temperatures in [W]. */
 	std::vector<const double*>						m_activeLayerTemperatureRefs;
 
 	/*! Vector valued results, computed/updated during the calculation. */
@@ -159,7 +165,7 @@ private:
 
 	/*! Vector with input references.
 		For each thermostat model found, this vector contains 2*number of zones input refs, for each zone
-		a heating and cooling control values is requested.
+		a heating and cooling control value is requested.
 	*/
 	std::vector<InputReference>						m_inputRefs;
 

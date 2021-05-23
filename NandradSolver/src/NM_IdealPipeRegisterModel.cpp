@@ -21,8 +21,7 @@ void IdealPipeRegisterModel::setup(const NANDRAD::IdealPipeRegisterModel & model
 	FUNCID(IdealPipeRegisterModel::setup);
 
 	// check and resolve reference to object list
-	std::vector<NANDRAD::ObjectList>::const_iterator oblst_it = std::find(objLists.begin(),
-																		  objLists.end(),
+	std::vector<NANDRAD::ObjectList>::const_iterator oblst_it = std::find(objLists.begin(), objLists.end(),
 																		  model.m_constructionObjectList);
 	if (oblst_it == objLists.end())
 		throw IBK::Exception(IBK::FormatString("Invalid/undefined object list '%1'.")
@@ -33,10 +32,9 @@ void IdealPipeRegisterModel::setup(const NANDRAD::IdealPipeRegisterModel & model
 		throw IBK::Exception(IBK::FormatString("Invalid reference type in object list '%1', expected type 'ConstructionInstance'.")
 							 .arg(m_objectList->m_name), FUNC_ID);
 
-	// retrieve reference to supply temperature parameter
+	// retrieve reference to supply temperature parameter; in case of schedules we formulate an input reference later
 	if (model.m_modelType == NANDRAD::IdealPipeRegisterModel::MT_Constant)
 		m_supplyTemperatureRef = &model.m_para[NANDRAD::IdealPipeRegisterModel::P_SupplyTemperature].value;
-
 
 	// retrieve model type
 	m_modelType = (int) model.m_modelType;
@@ -82,10 +80,10 @@ void IdealPipeRegisterModel::initResults(const std::vector<AbstractModel *> &) {
 
 
 void IdealPipeRegisterModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
-	// during initialization of the object lists, only those construction instances were added,
-	// that are actually parameterized
-	// so we can rely on the existence of construction instances whose IDs are in our object list and we
-	// do not need to search through all the models
+	// During initialization of the object lists, only those construction instance IDs were added,
+	// that actually exist in the project.
+	// So we can rely on the existence of construction instances whose IDs are in our object list and we
+	// do not need to search through all the models.
 	if (m_objectList->m_filterID.m_ids.empty())
 		return; // nothing to compute, return
 
@@ -131,26 +129,27 @@ const double * IdealPipeRegisterModel::resultValueRef(const InputReference & qua
 
 
 void IdealPipeRegisterModel::initInputReferences(const std::vector<AbstractModel *> & models) {
-
 	if (m_objectList->m_filterID.m_ids.empty())
 		return;
 
 	// set an input reference to each layer temperature
 	std::vector<unsigned int> indexKeys(m_objectList->m_filterID.m_ids.begin(), m_objectList->m_filterID.m_ids.end());
 
+	// create an input reference for each layer temperature
+
 	InputReference tRef;
 	tRef.m_name.m_name = "ActiveLayerTemperature";
 	tRef.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
 	tRef.m_required = true;
-	// keys code construction id
-	for(unsigned int key : indexKeys) {
+	// keys contain construction id
+	for (unsigned int key : indexKeys) {
 		tRef.m_id = key;
 		// store reference
 		m_inputRefs.push_back(tRef);
 	}
 
 	// retrieve reference to scheduled supply temperature parameter
-	if(m_modelType == (int) NANDRAD::IdealPipeRegisterModel::MT_Scheduled) {
+	if (m_modelType == (int) NANDRAD::IdealPipeRegisterModel::MT_Scheduled) {
 		tRef.m_name.m_name = "SupplyTemperature";
 		tRef.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
 		tRef.m_id = m_thermostatZoneId;
@@ -159,8 +158,8 @@ void IdealPipeRegisterModel::initInputReferences(const std::vector<AbstractModel
 		m_inputRefs.push_back(tRef);
 	}
 
-	// loop over all models, pick out the Thermostat-models and request input for a single zone. Only
-	// one (and exactly) ome request per zone must be fulfilled!
+	// loop over all models, pick out the Thermostat-models and request input for a single zone. Later we check
+	// that one (and exactly) one request must be fulfilled!
 	for (AbstractModel * model : models) {
 		// ignore all models that are not thermostat models
 		if (model->referenceType() != NANDRAD::ModelInputReference::MRT_MODEL)
@@ -196,6 +195,11 @@ void IdealPipeRegisterModel::setInputValueRefs(const std::vector<QuantityDescrip
 	if (m_objectList->m_filterID.m_ids.empty())
 		return;
 
+	// Layout of resultValueRefs:
+	//   idCount                     - layer temperatures
+	//   0/1                         - scheduled supply temperature (only if model type MT_Scheduled)
+	//   m_thermostatModelObjects*2  - answers for requested thermostat results
+
 	// we fill layer temperatures
 	unsigned int index = 0;
 	for( ; index < m_objectList->m_filterID.m_ids.size(); ++index)
@@ -209,20 +213,19 @@ void IdealPipeRegisterModel::setInputValueRefs(const std::vector<QuantityDescrip
 
 	IBK_ASSERT(2 * m_thermostatModelObjects + index == resultValueRefs.size());
 
+	// m_heatingThermostatValueRef and m_coolingThermostatValueRef are initially nullptr -> not set
 	for (unsigned int i=0; i<m_thermostatModelObjects; ++i) {
 		// heating control value
-		// heating control value
-		if (resultValueRefs[2 * i] != nullptr) {
-			// we check only for heating control value if maximum power is > 0
-			// perform check for each zone in order to avoid duplicate definition
-			if(m_heatingThermostatValueRef != nullptr)
+		if (resultValueRefs[2 * i + index] != nullptr) {
+			// we must not yet have a reference!
+			if (m_heatingThermostatValueRef != nullptr)
 				throw IBK::Exception(IBK::FormatString("Duplicate heating control value result generated by different thermostats "
 													   "for zone id=%1.").arg(m_thermostatZoneId), FUNC_ID);
 			m_heatingThermostatValueRef = resultValueRefs[2 * i + index];
 		}
-		if (resultValueRefs[2 * i + 1] != nullptr) {
-			// we check only for cooling control value if maximum power is > 0
-			// perform check for each zone in order to avoid duplicate definition
+		// cooling control value
+		if (resultValueRefs[2 * i + index + 1] != nullptr) {
+			// we must not yet have a reference!
 			if( m_coolingThermostatValueRef != nullptr)
 				throw IBK::Exception(IBK::FormatString("Duplicate cooling control value result generated by different thermostats "
 													   "for zone id=%1.").arg(m_thermostatZoneId), FUNC_ID);
@@ -230,7 +233,7 @@ void IdealPipeRegisterModel::setInputValueRefs(const std::vector<QuantityDescrip
 		}
 	}
 
-	// check that we have indeed value refs for all zones
+	// check that we have at least one of the control value references
 	if (m_heatingThermostatValueRef == nullptr && m_coolingThermostatValueRef == nullptr)
 		throw IBK::Exception(IBK::FormatString("Missing heating or cooling control value for zone id=%1.")
 							 .arg(m_thermostatZoneId), FUNC_ID);
@@ -239,25 +242,29 @@ void IdealPipeRegisterModel::setInputValueRefs(const std::vector<QuantityDescrip
 
 void IdealPipeRegisterModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
 	// our heating loads depend on heating control values, and cooling loads depend on cooling control values
+	// mass fluxes depend on both. Also, all results depend on supplyTemperature, but only when using model scheduled
+	// (otherwise the supply temperature is a constant)
 	for (unsigned int i=0; i<m_objectList->m_filterID.m_ids.size(); ++i) {
 
 		// we have heating defined
-		if(m_heatingThermostatValueRef != nullptr) {
+		if (m_heatingThermostatValueRef != nullptr) {
 			resultInputValueReferences.push_back(
 						std::make_pair(m_vectorValuedResults[VVR_MassFlux].dataPtr() + i, m_heatingThermostatValueRef) );
 			resultInputValueReferences.push_back(
 						std::make_pair(m_vectorValuedResults[VVR_ActiveLayerThermalLoad].dataPtr() + i, m_heatingThermostatValueRef) );
 		}
 		// we operate in cooling mode
-		if(m_coolingThermostatValueRef != nullptr){
+		if (m_coolingThermostatValueRef != nullptr){
 			resultInputValueReferences.push_back(
 						std::make_pair(m_vectorValuedResults[VVR_MassFlux].dataPtr() + i, m_coolingThermostatValueRef) );
 			resultInputValueReferences.push_back(
 						std::make_pair(m_vectorValuedResults[VVR_ActiveLayerThermalLoad].dataPtr() + i, m_coolingThermostatValueRef) );
 		}
-		// add supply temperature reference
-		resultInputValueReferences.push_back(
-					std::make_pair(m_vectorValuedResults[VVR_ActiveLayerThermalLoad].dataPtr() + i, m_supplyTemperatureRef) );
+		// add supply temperature dependency for type Scheduled
+		if (m_modelType ==  (int) NANDRAD::IdealPipeRegisterModel::MT_Scheduled) {
+			resultInputValueReferences.push_back(
+						std::make_pair(m_vectorValuedResults[VVR_ActiveLayerThermalLoad].dataPtr() + i, m_supplyTemperatureRef) );
+		}
 	}
 }
 
@@ -271,14 +278,14 @@ int IdealPipeRegisterModel::update() {
 	double coolingMassFlow = 0.0;
 
 	// get control value for heating
-	if(m_heatingThermostatValueRef != nullptr) {
+	if (m_heatingThermostatValueRef != nullptr) {
 		double heatingControlValue = *m_heatingThermostatValueRef;
 		// clip
 		heatingControlValue = std::max(0.0, std::min(1.0, heatingControlValue));
 		heatingMassFlow = heatingControlValue * m_maxMassFlow;
 	}
 	// get control value for cooling
-	if(m_coolingThermostatValueRef != nullptr) {
+	if (m_coolingThermostatValueRef != nullptr) {
 		double coolingControlValue = *m_coolingThermostatValueRef;
 		// clip
 		coolingControlValue = std::max(0.0, std::min(1.0, coolingControlValue));
@@ -291,10 +298,10 @@ int IdealPipeRegisterModel::update() {
 	double viscosity = m_fluidViscosity.value(supplyTemperature);
 	double prandtl = PrandtlNumber(viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
 
-	// store number of active layers heated by current model
+	// number of active layers heated by current model
 	unsigned int nTargets = (unsigned int) m_objectList->m_filterID.m_ids.size();
 
-	// access all vector quantities
+	// fast-access pointers to all vector result quantities
 	double *massFluxPtr = m_vectorValuedResults[VVR_MassFlux].dataPtr();
 	double *surfaceLoadPtr = m_vectorValuedResults[VVR_ActiveLayerThermalLoad].dataPtr();
 
@@ -302,19 +309,18 @@ int IdealPipeRegisterModel::update() {
 	std::memset(massFluxPtr, 0.0, nTargets * sizeof (double) );
 	std::memset(surfaceLoadPtr, 0.0, nTargets * sizeof (double) );
 
-	// both heating and cooling may request a positive mass flux
+	// Both heating and cooling may request a positive mass flux
 	// anyhow, we demand for a supply temperature > layer temperature in the case
-	// of heating and a supply temperature < layer temperature in the case of cooling
-	// both demands never will be fulfilled together and therefor mass flux is uniquely defined
+	// of heating and a supply temperature < layer temperature in the case of cooling.
+	// Both demands will never be fulfilled together and therefore mass flux is uniquely defined.
 
 	// heating is requested
-	if(heatingMassFlow > 0.0) {
+	if (heatingMassFlow > 0.0) {
 		// calculate inner heat transfer
 		double velocity = std::fabs(heatingMassFlow)/(m_fluidVolume * m_fluidDensity);
 		double reynolds = ReynoldsNumber(velocity, viscosity, m_innerDiameter);
 		double nusselt = NusseltNumber(reynolds, prandtl, m_length, m_innerDiameter);
-		double innerHeatTransferCoefficient = nusselt * m_fluidConductivity /
-												m_innerDiameter;
+		double innerHeatTransferCoefficient = nusselt * m_fluidConductivity / m_innerDiameter;
 
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
 		double UAValueTotal = m_length /
@@ -327,26 +333,25 @@ int IdealPipeRegisterModel::update() {
 				(1. - std::exp(-UAValueTotal / (std::fabs(heatingMassFlow) * m_fluidHeatCapacity ) ) );
 
 		// distribute load for all targets
-		for(unsigned int i = 0; i < nTargets; ++i) {
+		for (unsigned int i = 0; i < nTargets; ++i) {
 			// only accept layers whose temperature < supply temperature
 			double layerTemperature = *m_activeLayerTemperatureRefs[i];
-			if(layerTemperature >= supplyTemperature) {
-				continue;
-			}
+			if (layerTemperature >= supplyTemperature)
+				continue; // skip, layer too warm
+
 			// store mass flow
-			*(massFluxPtr + i) = heatingMassFlow;
+			massFluxPtr[i] = heatingMassFlow;
 			// calculate heat gain in [W]
-			*(surfaceLoadPtr + i) = (supplyTemperature - layerTemperature) * thermalMassDecay;
+			surfaceLoadPtr[i] = (supplyTemperature - layerTemperature) * thermalMassDecay;
 		}
 	}
 	// cooling is requested
-	if(coolingMassFlow > 0.0) {
+	if (coolingMassFlow > 0.0) {
 		// calculate inner heat transfer
 		double velocity = std::fabs(coolingMassFlow)/(m_fluidVolume * m_fluidDensity);
 		double reynolds = ReynoldsNumber(velocity, viscosity, m_innerDiameter);
 		double nusselt = NusseltNumber(reynolds, prandtl, m_length, m_innerDiameter);
-		double innerHeatTransferCoefficient = nusselt * m_fluidConductivity /
-												m_innerDiameter;
+		double innerHeatTransferCoefficient = nusselt * m_fluidConductivity / m_innerDiameter;
 
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
 		double UAValueTotal = m_length /
@@ -358,16 +363,16 @@ int IdealPipeRegisterModel::update() {
 				(1. - std::exp(-UAValueTotal / (std::fabs(coolingMassFlow) * m_fluidHeatCapacity ) ) );
 
 		// distribute load for all targets
-		for(unsigned int i = 0; i < nTargets; ++i) {
+		for (unsigned int i = 0; i < nTargets; ++i) {
 			// only accept layers whose temperature > supply temperature
 			double layerTemperature = *m_activeLayerTemperatureRefs[i];
-			if(layerTemperature <= supplyTemperature) {
-				continue;
-			}
+			if (layerTemperature <= supplyTemperature)
+				continue; // skip, layer too cold
+
 			// store mass flow
-			*(massFluxPtr + i) = coolingMassFlow;
+			massFluxPtr[i] = coolingMassFlow;
 			// calculate heat loss in [W]
-			*(surfaceLoadPtr + i) = (supplyTemperature - layerTemperature) * thermalMassDecay;
+			surfaceLoadPtr[i] = (supplyTemperature - layerTemperature) * thermalMassDecay;
 		}
 	}
 
