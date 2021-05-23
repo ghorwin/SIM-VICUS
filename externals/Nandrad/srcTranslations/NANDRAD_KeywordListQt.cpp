@@ -27,6 +27,15 @@ KeywordListQt::KeywordListQt() {
 	tr("Orientation of the wall [deg].");
 	tr("Inclination of the wall [deg].");
 	tr("Gross area of the wall [m2].");
+	tr("ControlTemperatureDifference");
+	tr("ControlMassFlow");
+	tr("DigitalDirect");
+	tr("DigitalHysteresis");
+	tr("PController");
+	tr("PIController");
+	tr("Kp-parameter");
+	tr("Ki-parameter");
+	tr("Kd-parameter");
 	tr("Constant values in defined intervals.");
 	tr("Linear interpolation between values.");
 	tr("Area of the embedded object [m2].");

@@ -129,6 +129,13 @@ KeywordListQt::KeywordListQt() {
 	tr("Maximum width of discretized volumes in pipe");
 	tr("Carnot efficiency eta");
 	tr("Maximum heating power");
+	tr("Control the temperature difference at the flow element");
+	tr("Control the mass flow of the flow element");
+	tr("PController");
+	tr("PIController");
+	tr("Kp-parameter");
+	tr("Ki-parameter");
+	tr("Kd-parameter");
 	tr("Dry density of the material.");
 	tr("Specific heat capacity of the material.");
 	tr("Thermal conductivity of the dry material.");
