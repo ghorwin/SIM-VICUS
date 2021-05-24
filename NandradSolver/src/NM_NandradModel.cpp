@@ -355,6 +355,7 @@ SOLFRA::ModelInterface::CalculationResult NandradModel::ydot(double * ydot) {
 
 
 void NandradModel::writeOutputs(double t_out, const double * y_out) {
+	//IBK::IBK_Message(IBK::FormatString("Writing output at t_out = %1 s\n").arg(t_out));
 	// update state of model to output time and variables
 	// finally write the output
 	setTime(t_out);

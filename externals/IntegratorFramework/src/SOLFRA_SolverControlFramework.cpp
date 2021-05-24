@@ -332,8 +332,8 @@ void SolverControlFramework::printVersionInfo() {
 // *** PRIVATE FUNCTIONS ***
 
 void SolverControlFramework::run(double t) {
-
 	FUNCID(SolverControlFramework::run);
+
 	if (m_model == nullptr || m_integrator == nullptr || m_outputScheduler == nullptr)
 		throw IBK::Exception("Missing model, integrator or outputScheduler.", FUNC_ID);
 

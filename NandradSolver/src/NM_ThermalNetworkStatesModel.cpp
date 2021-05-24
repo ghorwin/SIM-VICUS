@@ -43,8 +43,6 @@
 
 namespace NANDRAD_MODEL {
 
-
-
 // *** ThermalNetworkStatesModel members ***
 
 ThermalNetworkStatesModel::~ThermalNetworkStatesModel() {
@@ -500,6 +498,7 @@ void ThermalNetworkStatesModel::yInitial(double * y) {
 
 
 int ThermalNetworkStatesModel::update(const double * y) {
+//	IBK_FUNCID_Message(ThermalNetworkStatesModel::update)
 	// copy states vector
 	std::memcpy(&m_y[0], y, m_n*sizeof(double));
 

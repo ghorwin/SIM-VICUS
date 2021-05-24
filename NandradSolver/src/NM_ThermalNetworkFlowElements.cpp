@@ -558,12 +558,18 @@ void TNElementWithExternalHeatLoss::internalDerivatives(double * ydot) {
 
 double TNElementWithExternalHeatLoss::zetaControlled(double mdot) {
 	FUNCID(TNElementWithExternalHeatLoss::zetaControlled);
+
+	// NOTE: When solving the hydraulic network equations, we already have a new value stored in
+	//       m_heatExchangeValueRef. However, the m_heatLoss member is only set much later, when
+	//       internalDerivatives() is called as part of ThermalNetworkBalanceModel::update().
+
 	// calculate zetaControlled value for valve
 	switch (m_controlElement->m_controlledProperty) {
 
 		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference: {
 			// compute current temperature for given heat loss and mass flux
-			m_temperatureDifference = m_heatLoss/(mdot*m_fluidHeatCapacity);
+			// Mind: access m_heatExchangeValueRef and not m_heatLoss here!
+			m_temperatureDifference = *m_heatExchangeValueRef/(mdot*m_fluidHeatCapacity);
 			// if temperature difference is larger than the set point (negative e), we want maximum mass flux -> zeta = 0
 			// if temperature difference is smaller than the set point (positive e), we decrease mass flow by increasing zeta
 			const double e = m_controlElement->m_setPoint.value - m_temperatureDifference;
@@ -587,6 +593,8 @@ double TNElementWithExternalHeatLoss::zetaControlled(double mdot) {
 
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ; // nothing todo - we return 0
 	}
+//	IBK::IBK_Message(IBK::FormatString("zeta = %1, m_heatLoss = %4 W, dT = %2 K, mdot = %3 kg/s, heatExchangeValueRef = %5 W\n")
+//					 .arg(m_zetaControlled).arg(m_temperatureDifference).arg(mdot).arg(m_heatLoss).arg(*m_heatExchangeValueRef));
 	return m_zetaControlled;
 }
 

@@ -355,6 +355,8 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference &
 
 
 int ThermalNetworkBalanceModel::setTime(double t) {
+//	IBK_FUNCID_Message(ThermalNetworkBalanceModel::setTime)
+
 	// update all spline values
 	for (unsigned int i = 0; i < m_flowElementProperties.size(); ++i) {
 		FlowElementProperties &elemProp = m_flowElementProperties[i];
