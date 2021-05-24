@@ -27,7 +27,7 @@
 		</Zones>
 		<HydraulicNetworks>
 			<HydraulicNetwork id="1" displayName="Mini Netzwerk" modelType="ThermalHydraulicNetwork" referenceElementId="1">
-				<HydraulicFluid id="1">
+				<HydraulicFluid>
 					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
@@ -55,7 +55,7 @@
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" modelType="HeatPumpIdealCarnot">
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
-						<IBK:Parameter name="PressureLossCoefficient" unit="-">5</IBK:Parameter>
+						<IBK:Parameter name="PressureLossCoefficient" unit="---">5</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 						<IBK:Parameter name="CarnotEfficiency" unit="---">0.4</IBK:Parameter>
 						<IBK:Parameter name="MaximumHeatingPower" unit="W">1000000</IBK:Parameter>
@@ -64,19 +64,19 @@
 					<HydraulicNetworkComponent id="3" displayName="simple pipe" modelType="SimplePipe">
 					</HydraulicNetworkComponent>
 				</Components>
-				
+
 				<ControlElements>
-					<HydraulicNetworkControlElement id="1" controlledProperty="TemperatureDifference" controllerType="PController" >						
-						<IBK:Parameter name="Kp" unit="-">1e6</IBK:Parameter>						
-						<IBK:Parameter name="SetPoint" unit="K">3</IBK:Parameter>						
+					<HydraulicNetworkControlElement id="1" controlledProperty="TemperatureDifference" controllerType="PController" >
+						<IBK:Parameter name="Kp" unit="---">1e6</IBK:Parameter>
+						<IBK:Parameter name="SetPoint" unit="K">3</IBK:Parameter>
 					</HydraulicNetworkControlElement>
 				</ControlElements>
-				
+
 				<Elements>
-				
+
 				<HydraulicNetworkElement id="1" inletNodeId="100" outletNodeId="0" componentId="1" displayName="pump">
 				</HydraulicNetworkElement>
-				
+
 				<HydraulicNetworkElement id="2" inletNodeId="0" outletNodeId="101" componentId="2" controlElementID="1" displayName="heat pump">
 						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
 							<LinearSplineParameter name="HeatLoss" interpolation="Constant">
@@ -113,7 +113,7 @@
 								<Values>CondenserMeanTemperatureSchedule [C]:35,50;</Values>
 							</DailyCycle>
 						</DailyCycles>
-					</Schedule>					
+					</Schedule>
 				</ScheduleGroup>
 			</ScheduleGroups>
 		</Schedules>
@@ -204,7 +204,7 @@
 		<Controllers>
 			<Controller id="1" modelType="PController">
 				<Type>PController</Type>
-				<IBK:Parameter name="Kp" unit="-">1e6</IBK:Parameter>
+				<IBK:Parameter name="Kp" unit="---">1e6</IBK:Parameter>
 			</Controller>
 		</Controllers>
 	</Project>

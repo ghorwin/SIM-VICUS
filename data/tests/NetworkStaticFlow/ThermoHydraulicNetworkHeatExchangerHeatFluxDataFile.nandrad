@@ -46,7 +46,7 @@
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" modelType="HeatExchanger">
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
-						<IBK:Parameter name="PressureLossCoefficient" unit="-">5</IBK:Parameter>
+						<IBK:Parameter name="PressureLossCoefficient" unit="---">5</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 					</HydraulicNetworkComponent>
 				</Components>

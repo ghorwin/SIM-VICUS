@@ -27,7 +27,7 @@
 		</Zones>
 		<HydraulicNetworks>
 			<HydraulicNetwork id="1" displayName="Mini Netzwerk" modelType="ThermalHydraulicNetwork" referenceElementId="0">
-				<HydraulicFluid id="1">
+				<HydraulicFluid>
 					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
@@ -55,7 +55,7 @@
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" displayName="simpleHX" modelType="HeatExchanger">
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">22.6</IBK:Parameter>
-						<IBK:Parameter name="PressureLossCoefficient" unit="-">18</IBK:Parameter>
+						<IBK:Parameter name="PressureLossCoefficient" unit="---">18</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
 						<IBK:Parameter name="PipeMaxDiscretizationWidth" unit="m">5</IBK:Parameter>
 					</HydraulicNetworkComponent>
@@ -65,27 +65,26 @@
 
 				<ControlElements>
 					<!-- This controller generates a control signal based on temperature difference using a P-controller.
-						The temperature difference is computed from heat loss (from pipe to xxx) and current mass flux.
-						Hence, this controller can only be used in a flow element that defines heat exchange.
-
-						This control element can be referenced by all flow elements with similar mass flow control strategy.
+						 The temperature difference is computed from heat loss (from pipe to xxx) and current mass flux.
+						 Hence, this controller can only be used in a flow element that defines heat exchange.
+						 This control element can be referenced by all flow elements with similar mass flow control strategy.
 					-->
 					<HydraulicNetworkControlElement id="1" controlledProperty="TemperatureDifference" controllerType="PController" >
-						<IBK:Parameter name="Kp" unit="-">1e6</IBK:Parameter>
+						<IBK:Parameter name="Kp" unit="---">1e6</IBK:Parameter>
 						<IBK:Parameter name="SetPoint" unit="K">3</IBK:Parameter>
 					</HydraulicNetworkControlElement>
 				</ControlElements>
 
 				<Elements>
 
-					<HydraulicNetworkElement id="0" inletNodeId="100" outletNodeId="0" componentId="1" displayName="pump"/>
+					<HydraulicNetworkElement id="0" inletNodeId="100" outletNodeId="0" componentId="1" displayName="Pump"/>
 
-					<HydraulicNetworkElement id="1" inletNodeId="0" outletNodeId="101" componentId="2" controlElementID="1" displayName="heat exchanger">
+					<HydraulicNetworkElement id="1" inletNodeId="0" outletNodeId="101" componentId="2" controlElementID="1" displayName="Heat exchanger">
 						<!-- Heat loss from element (to environment) is given via time-series.
-							This heat loss is used together with the current mass flux to compute the temperature difference between
-							inlet and outlet. Then, this temperature difference goes into the controller referenced via
-							controlElementID which then computes a correction zeta-value (flow resistance) and effectively controls
-							the mass flux.
+							 This heat loss is used together with the current mass flux to compute the temperature difference between
+							 inlet and outlet. Then, this temperature difference goes into the controller referenced via
+							 controlElementID which then computes a correction zeta-value (flow resistance) and effectively controls
+							 the mass flux.
 						-->
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss">
@@ -96,7 +95,7 @@
 
 					</HydraulicNetworkElement>
 
-					<HydraulicNetworkElement id="8" inletNodeId="101" outletNodeId="100" componentId="3" pipePropertiesId="9" displayName="pipe">
+					<HydraulicNetworkElement id="8" inletNodeId="101" outletNodeId="100" componentId="3" pipePropertiesId="9" displayName="Pipe">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="TemperatureConstant">
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
@@ -113,31 +112,31 @@
 				<OutputDefinition>
 					<Quantity>FluidMassFlux</Quantity>
 					<TimeType>None</TimeType>
-					<ObjectListName>the objects</ObjectListName>
+					<ObjectListName>All flow elements</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>OutletNodeTemperature</Quantity>
 					<TimeType>None</TimeType>
-					<ObjectListName>the objects</ObjectListName>
+					<ObjectListName>All flow elements</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>PressureDifference</Quantity>
 					<TimeType>None</TimeType>
-					<ObjectListName>the objects</ObjectListName>
+					<ObjectListName>All flow elements</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>ControllerResultValue</Quantity>
 					<TimeType>None</TimeType>
-					<ObjectListName>the objects</ObjectListName>
+					<ObjectListName>Heat exchanger with flow control</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>TemperatureDifference</Quantity>
 					<TimeType>None</TimeType>
-					<ObjectListName>the objects</ObjectListName>
+					<ObjectListName>Heat exchanger with flow control</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 			</Definitions>
@@ -153,8 +152,12 @@
 			<TimeUnit>h</TimeUnit>
 		</Outputs>
 		<ObjectLists>
-			<ObjectList name="the objects">
+			<ObjectList name="All flow elements">
 				<FilterID>*</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Heat exchanger with flow control">
+				<FilterID>1</FilterID>
 				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
