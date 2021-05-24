@@ -26,7 +26,7 @@
 			</Zone>
 		</Zones>
 		<HydraulicNetworks>
-			<HydraulicNetwork id="1" displayName="Mini Netzwerk" modelType="ThermalHydraulicNetwork" referenceElementId="0">
+			<HydraulicNetwork id="1" displayName="Mini Netzwerk" modelType="ThermalHydraulicNetwork" referenceElementId="1">
 				<HydraulicFluid>
 					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
@@ -77,9 +77,9 @@
 
 				<Elements>
 
-					<HydraulicNetworkElement id="0" inletNodeId="100" outletNodeId="0" componentId="1" displayName="Pump"/>
+					<HydraulicNetworkElement id="1" inletNodeId="100" outletNodeId="0" componentId="1" displayName="Pump"/>
 
-					<HydraulicNetworkElement id="1" inletNodeId="0" outletNodeId="101" componentId="2" controlElementID="1" displayName="Heat exchanger">
+					<HydraulicNetworkElement id="2" inletNodeId="0" outletNodeId="101" componentId="2" controlElementID="1" displayName="Heat exchanger">
 						<!-- Heat loss from element (to environment) is given via time-series.
 							 This heat loss is used together with the current mass flux to compute the temperature difference between
 							 inlet and outlet. Then, this temperature difference goes into the controller referenced via
@@ -95,7 +95,7 @@
 
 					</HydraulicNetworkElement>
 
-					<HydraulicNetworkElement id="8" inletNodeId="101" outletNodeId="100" componentId="3" pipePropertiesId="9" displayName="Pipe">
+					<HydraulicNetworkElement id="3" inletNodeId="101" outletNodeId="100" componentId="3" pipePropertiesId="9" displayName="Pipe">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="TemperatureConstant">
 							<IBK:Parameter name="Temperature" unit="C">10</IBK:Parameter>
@@ -144,7 +144,7 @@
 				<OutputGrid name="hourly">
 					<Intervals>
 						<Interval>
-							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
 						</Interval>
 					</Intervals>
 				</OutputGrid>
@@ -157,7 +157,7 @@
 				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>
 			<ObjectList name="Heat exchanger with flow control">
-				<FilterID>1</FilterID>
+				<FilterID>2</FilterID>
 				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
