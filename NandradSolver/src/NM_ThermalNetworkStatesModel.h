@@ -60,8 +60,7 @@ public:
 
 	/*! Initializes model. */
 	void setup(const NANDRAD::HydraulicNetwork & nw,
-			   const HydraulicNetworkModel &networkModel,
-			   const NANDRAD::SimulationParameter &simPara);
+			   const HydraulicNetworkModel &networkModel);
 
 	// *** Re-implemented from AbstractModel
 

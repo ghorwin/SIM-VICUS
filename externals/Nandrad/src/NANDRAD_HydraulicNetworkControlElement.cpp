@@ -1,21 +1,19 @@
 #include "NANDRAD_HydraulicNetworkControlElement.h"
 
-
 #include "NANDRAD_KeywordList.h"
 
-
 namespace NANDRAD {
-
 
 void HydraulicNetworkControlElement::checkParameters() {
 	FUNCID(HydraulicNetworkControlElement::checkParameters);
 
+	// NOTE: the check below is unecessary - should be ensured already through the "xml:required" specification!
+
 	// this is a valid controller if a controlled property is chosen
 	// so we need a valid controller type then
-	if (m_controlledProperty != NUM_CP){
+	if (m_controlledProperty != NUM_CP) {
 		if (m_controllerType == NUM_CT)
-			throw IBK::Exception(IBK::FormatString("Missing ControllerType for ControlElement '%1'")
-							 .arg(m_id),FUNC_ID);
+			throw IBK::Exception("Missing ControllerType.", FUNC_ID);
 	}
 
 	// check set point
@@ -29,8 +27,6 @@ void HydraulicNetworkControlElement::checkParameters() {
 		case NUM_CP:
 			break;
 	}
-
-
 
 	try {
 		// decide which parameters are needed
@@ -47,12 +43,8 @@ void HydraulicNetworkControlElement::checkParameters() {
 		}
 	}
 	catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Missing/invalid parameters for ControlElement '%1'")
-				 .arg(m_id),FUNC_ID);
+			throw IBK::Exception(ex, "Missing/invalid parameters.", FUNC_ID);
 	}
-
-
 }
-
 
 } // namespace NANDRAD

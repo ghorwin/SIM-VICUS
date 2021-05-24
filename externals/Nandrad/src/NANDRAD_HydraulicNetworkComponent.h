@@ -50,7 +50,7 @@ public:
 	/*! Parameters for the component. */
 	enum para_t {
 		P_HydraulicDiameter,					// Keyword: HydraulicDiameter					[mm]	'Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)'
-		P_PressureLossCoefficient,				// Keyword: PressureLossCoefficient				[-]		'Pressure loss coefficient for the component (zeta-value)'
+		P_PressureLossCoefficient,				// Keyword: PressureLossCoefficient				[---]	'Pressure loss coefficient for the component (zeta-value)'
 		P_PressureHead,							// Keyword: PressureHead						[Pa]	'Pressure head for a pump'
 		P_MassFlux,								// Keyword: MassFlux							[kg/s]	'Mass flux for a pump'
 		P_PumpEfficiency,						// Keyword: PumpEfficiency						[---]	'Pump efficiency'

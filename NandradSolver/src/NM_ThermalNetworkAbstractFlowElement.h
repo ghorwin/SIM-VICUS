@@ -148,7 +148,7 @@ public:
 		The element must take exactly as many input values from the vector and move the iterator forward.
 		When the function returns, the iterator must point to the first input reference past this element's inputs.
 	*/
-	virtual void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {}
+	virtual void setInputValueRefs(std::vector<const double *>::const_iterator & /*resultValueRefs*/) {}
 
 	// Common variables for flow elements
 

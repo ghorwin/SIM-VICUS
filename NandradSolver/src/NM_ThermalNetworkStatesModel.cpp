@@ -53,8 +53,7 @@ ThermalNetworkStatesModel::~ThermalNetworkStatesModel() {
 
 
 void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
-									  const HydraulicNetworkModel &hydrNetworkModel,
-									  const NANDRAD::SimulationParameter &simPara)
+									  const HydraulicNetworkModel &hydrNetworkModel)
 {
 	FUNCID(ThermalNetworkStatesModel::setup);
 
@@ -382,15 +381,15 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 			// If we had a controller configured, we now must have a pointer to the respective control calculation element
 			// set. If not, user has provided mismatching configuration and we bail out.
-
-			throw IBK::Exception(IBK::FormatString("You cannot use a 'TemperatureDifference' controller in combination with "
-												   "flow element model type '%1' and heat exchange type '%2'!")
+			if (hnElement->m_thermalNetworkElement == nullptr)
+				throw IBK::Exception(IBK::FormatString("You cannot use a 'TemperatureDifference' controller in combination with "
+													   "flow element model type '%1' and heat exchange type '%2'!")
 								 .arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::ModelType", e.m_component->m_modelType))
 								 .arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", e.m_heatExchange.m_modelType)), FUNC_ID);
 
-		} // end CP_TemperatureDifference controller setup
+		} // end CP_TemperatureDifference
 
-		// other controllers?
+		// TODO : other controllers?
 	}
 
 

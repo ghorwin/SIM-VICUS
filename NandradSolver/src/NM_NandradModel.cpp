@@ -1510,7 +1510,7 @@ void NandradModel::initNetworks() {
 				ThermalNetworkStatesModel *statesModel = new ThermalNetworkStatesModel(nw.m_id, nw.m_displayName);
 				m_modelContainer.push_back(statesModel); // transfer ownership
 				// initialize
-				statesModel->setup(nw, *nwmodel, m_project->m_simulationParameter);
+				statesModel->setup(nw, *nwmodel);
 				// add to thermal network states container
 				m_networkStatesModelContainer.push_back(statesModel);
 				// add thermal network balance model

@@ -40,9 +40,9 @@ public:
 
 	/*! Model parameters. */
 	enum para_t {
-		P_Kp,					// Keyword: Kp						'Kp-parameter'
-		P_Ki,					// Keyword: Ki						'Ki-parameter'
-		P_Kd,					// Keyword: Kd						'Kd-parameter'
+		P_Kp,					// Keyword: Kp					[---]	'Kp-parameter'
+		P_Ki,					// Keyword: Ki					[---]	'Ki-parameter'
+		P_Kd,					// Keyword: Kd					[---]	'Kd-parameter'
 		NUM_P
 	};
 
@@ -57,8 +57,8 @@ public:
 	/*! Set point as fixed scalar value. */
 	IBK::Parameter					m_setPoint;										// XML:E
 
-	/*! Used to cut the system input, if this is a negative value, it will not be considered	*/
-	double							m_maximumControllerResultValue = -999;			// XML:E
+	/*! Used to cut the system input, if this is zero, it will not be considered	*/
+	double							m_maximumControllerResultValue = 0;				// XML:E
 
 	/*! Controller parameters. */
 	IBK::Parameter					m_para[NUM_P];									// XML:E

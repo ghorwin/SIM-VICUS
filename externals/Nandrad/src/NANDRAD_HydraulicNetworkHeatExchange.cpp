@@ -156,6 +156,7 @@ std::vector<unsigned int> NANDRAD::HydraulicNetworkHeatExchange::availableHeatEx
 		case HydraulicNetworkComponent::MT_HeatExchanger:
 			return {T_HeatLossConstant, T_HeatLossSpline};
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
+		case HydraulicNetworkComponent::MT_ConstantMassFluxPump:
 		case HydraulicNetworkComponent::NUM_MT: ;
 	}
 	return {};

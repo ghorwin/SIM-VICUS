@@ -561,17 +561,26 @@ double TNElementWithExternalHeatLoss::zetaControlled(double mdot) {
 	// calculate zetaControlled value for valve
 	switch (m_controlElement->m_controlledProperty) {
 
-		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:{
+		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference: {
+			// compute current temperature for given heat loss and mass flux
 			m_temperatureDifference = m_heatLoss/(mdot*m_fluidHeatCapacity);
+			// if temperature difference is larger than the set point (negative e), we want maximum mass flux -> zeta = 0
+			// if temperature difference is smaller than the set point (positive e), we decrease mass flow by increasing zeta
 			const double e = m_controlElement->m_setPoint.value - m_temperatureDifference;
-			const double y = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value * e;
-			const double zetaMax = m_controlElement->m_maximumControllerResultValue;
-			if (y <= 0)
+			if (e <= 0) {
 				m_zetaControlled = 0;
-			else if (zetaMax > 0 && y > zetaMax)
-				m_zetaControlled = zetaMax;
-			else
-				m_zetaControlled = y;
+			}
+			else {
+				// relate controller error e to zeta
+				const double y = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value * e;
+				const double zetaMax = m_controlElement->m_maximumControllerResultValue;
+				// apply clipping
+				if (zetaMax > 0 && y > zetaMax)
+					m_zetaControlled = zetaMax;
+				else {
+					m_zetaControlled = y;
+				}
+			}
 		} break;
 		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlow:
 			throw IBK::Exception("Control Type not implemented yet!", FUNC_ID);
