@@ -8,7 +8,7 @@ namespace NANDRAD {
 
 
 void HydraulicNetworkControlElement::checkParameters() {
-	FUNCID("HydraulicNetworkControlElement::checkParameters");
+	FUNCID(HydraulicNetworkControlElement::checkParameters);
 
 	// this is a valid controller if a controlled property is chosen
 	// so we need a valid controller type then

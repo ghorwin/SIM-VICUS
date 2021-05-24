@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -171,7 +171,7 @@ ScheduleInterval ScheduleInterval::multiply(const ScheduleInterval &other, unsig
 }
 
 ScheduleInterval ScheduleInterval::multiply(double val) const{
-	FUNCID("ScheduleInterval::multiply");
+	FUNCID(ScheduleInterval::multiply);
 	ScheduleInterval schedInt;
 	if(!isValid()){
 		//Schedule interval '%1' with (id=%2) is not valid.

@@ -33,10 +33,6 @@ namespace NANDRAD {
 void HydraulicNetwork::checkParameters(const Project & prj)  {
 	FUNCID(HydraulicNetwork::checkParameters);
 
-	if(m_elements.empty()) {
-		throw IBK::Exception("Empty network is not allowed!", FUNC_ID);
-	}
-
 	// check our own properties, first
 	switch (m_modelType) {
 		case MT_HydraulicNetwork :
@@ -79,15 +75,15 @@ void HydraulicNetwork::checkParameters(const Project & prj)  {
 
 	std::set<unsigned int> conInstanceIds;
 	// check all elements and fill references to components and pipe properties
-	for(HydraulicNetworkElement &e : m_elements) {
+	for (HydraulicNetworkElement &e : m_elements) {
 		try {
 			// the checkParameters of HydraulicNetworkHeatExchange will be executed within this function
 			e.checkParameters(*this, prj);
 			// select construction ids
 			unsigned int conInstanceId =
 					e.m_heatExchange.m_idReferences[HydraulicNetworkHeatExchange::ID_ConstructionInstanceId];
-			if(conInstanceId != INVALID_ID) {
-				if(!conInstanceIds.empty() && conInstanceIds.find(conInstanceId) != conInstanceIds.end())
+			if (conInstanceId != INVALID_ID) {
+				if (!conInstanceIds.empty() && conInstanceIds.find(conInstanceId) != conInstanceIds.end())
 					// error: construction is already covered by a hydraulic element
 					throw IBK::Exception(IBK::FormatString("Construction instance with id #%1 is referenced twice! There must not be two flow elements "
 														   "exchanging heat with the same construction instance.")
@@ -97,7 +93,7 @@ void HydraulicNetwork::checkParameters(const Project & prj)  {
 			}
 
 		}
-		catch(IBK::Exception &ex) {
+		catch (IBK::Exception &ex) {
 			if (e.m_component != nullptr)
 				throw IBK::Exception(ex, IBK::FormatString("Error initializing network element with id #%1 and type %2.")
 									 .arg(e.m_id).arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::ModelType",
@@ -108,8 +104,8 @@ void HydraulicNetwork::checkParameters(const Project & prj)  {
 		}
 	}
 
-	// check parameters of all network elements
-	for(HydraulicNetworkComponent &c : m_components) {
+	// check parameters of all components
+	for (HydraulicNetworkComponent &c : m_components) {
 		try {
 			c.checkParameters(m_modelType);
 		}
@@ -119,7 +115,7 @@ void HydraulicNetwork::checkParameters(const Project & prj)  {
 		}
 	}
 	// check parameters of all pipe properties
-	for(HydraulicNetworkPipeProperties &p : m_pipeProperties) {
+	for (HydraulicNetworkPipeProperties &p : m_pipeProperties) {
 		try {
 			p.checkParameters(m_modelType);
 		}
@@ -128,6 +124,17 @@ void HydraulicNetwork::checkParameters(const Project & prj)  {
 								 .arg(p.m_id), FUNC_ID);
 		}
 	}
+	// check control elements
+	for (HydraulicNetworkControlElement &e : m_controlElements) {
+		try {
+			e.checkParameters();
+		}
+		catch(IBK::Exception &ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error initializing control element with id #%1.")
+								 .arg(e.m_id), FUNC_ID);
+		}
+	}
+
 }
 
 

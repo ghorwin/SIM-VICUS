@@ -113,9 +113,8 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 	// check for valid heat exchange parameters
 	m_heatExchange.checkParameters(prj.m_placeholders, prj.m_zones, prj.m_constructionInstances);
 
-
 	// set pointer to control element
-	if (m_controlElementID != NANDRAD::INVALID_ID){
+	if (m_controlElementID != NANDRAD::INVALID_ID) {
 		auto ctit  = std::find(nw.m_controlElements.begin(), nw.m_controlElements.end(), m_controlElementID);
 		if (ctit == nw.m_controlElements.end()) {
 			throw IBK::Exception(IBK::FormatString("ControlElement with id #%1 does not exist.")
@@ -123,11 +122,6 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 		}
 		// set reference
 		m_controlElement = &(*ctit);
-	}
-	else{
-		// TODO : Hauke, hier wird Speicher reserviert, der aber niemals wieder freigegeben wird...! besser nullptr lassen und beim Zugriff
-		//        auf die Variable Fallunterscheidung einbauen
-		m_controlElement = new HydraulicNetworkControlElement;
 	}
 
 }

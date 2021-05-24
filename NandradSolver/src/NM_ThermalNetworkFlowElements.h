@@ -40,8 +40,6 @@ namespace NANDRAD {
 
 namespace NANDRAD_MODEL {
 
-class HNControlledPressureLossCoeffElement;
-
 
 // **** Pipe with single fluid volume but including a steady state temperature distribution***
 

@@ -602,7 +602,7 @@ TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(unsigned int flowElementId,
 
 
 void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
-	FUNCID("TNHeatPumpIdealCarnot::setInflowTemperature");
+	FUNCID(TNHeatPumpIdealCarnot::setInflowTemperature);
 
 	ThermalNetworkAbstractFlowElementWithHeatLoss::setInflowTemperature(Tinflow);
 
@@ -753,8 +753,8 @@ void TNHeatPumpIdealCarnot::setInputValueRefs(std::vector<const double *>::const
 	}
 }
 
-void TNHeatPumpIdealCarnot::internalDerivatives(double *ydot)
-{
+
+void TNHeatPumpIdealCarnot::internalDerivatives(double *ydot) {
 	ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(ydot);
 }
 
