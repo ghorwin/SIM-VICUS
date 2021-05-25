@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -126,13 +126,12 @@ void Network::updateNodeEdgeConnectionPointers() {
 	for (NetworkNode & n : m_nodes)
 		n.m_edges.clear();
 
-	const unsigned int nodeCount = m_nodes.size();
 	// loop over all edges
 	for (NetworkEdge & e : m_edges) {
 		// store pointers to connected nodes
-		IBK_ASSERT(e.nodeId1() < nodeCount);
+		IBK_ASSERT(e.nodeId1() < m_nodes.size());
 		e.m_node1 = &m_nodes[e.nodeId1()];
-		IBK_ASSERT(e.nodeId2() < nodeCount);
+		IBK_ASSERT(e.nodeId2() < m_nodes.size());
 		e.m_node2 = &m_nodes[e.nodeId2()];
 
 		// now also store pointer to this edge into connected nodes

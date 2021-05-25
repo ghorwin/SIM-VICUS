@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -42,21 +42,24 @@ void NetworkFluid::defaultFluidWater(unsigned int id){
 	m_kinematicViscosity.m_yUnit = IBK::Unit("m2/s");
 	m_kinematicViscosity.m_values.setValues(std::vector<double>{0,10,20,30,40,50,60,70,80,90},
 											std::vector<double>{1.793e-6,1.307e-6,1.004e-6,0.801e-6,0.658e-6,0.554e-6,0.475e-6,0.413e-6,0.365e-6,0.326e-6});
-
 }
 
-bool NetworkFluid::isValid() const
-{
+
+bool NetworkFluid::isValid() const {
 	if (! (m_para[P_Density].value > 0 && m_para[P_Conductivity].value > 0 && m_para[P_HeatCapacity].value > 0))
 		return false;
-//	try {
-//		m_kinematicViscosity.checkAndInitialize("KinematicViscosity", IBK::Unit("C"), IBK::Unit("m2/s"), IBK::Unit("m2/s"),
-//												std::numeric_limits<double>::lowest(), true,
-//												std::numeric_limits<double>::max(), true, nullptr);
-//	} catch (IBK::Exception &ex) {
-//		return false;
-	//	}
+	try {
+		NANDRAD::LinearSplineParameter kinVisc = m_kinematicViscosity;
+		kinVisc.checkAndInitialize("KinematicViscosity", IBK::Unit("C"), IBK::Unit("m2/s"), IBK::Unit("m2/s"),
+									std::numeric_limits<double>::lowest(), true,
+									std::numeric_limits<double>::max(), true, nullptr);
+	}
+	catch (IBK::Exception &) {
+		return false;
+	}
+	return true;
 }
+
 
 AbstractDBElement::ComparisonResult NetworkFluid::equal(const AbstractDBElement *other) const {
 	const NetworkFluid * otherNetFluid = dynamic_cast<const NetworkFluid*>(other);

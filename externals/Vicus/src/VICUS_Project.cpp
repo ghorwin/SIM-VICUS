@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -1485,7 +1485,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 			unsigned int idSubTempVent = zt->m_idReferences[type];
 			bool isVenti = idSubTempVent != VICUS::INVALID_ID;
 
-			VentiType ventiType;
+			VentiType ventiType = Infiltration;
 			if(isInf && !isVenti)				ventiType = Infiltration;
 			else if(!isInf && isVenti)			ventiType = Ventilation;
 			else if(isInf && isVenti)			ventiType = InfAndVenti;
