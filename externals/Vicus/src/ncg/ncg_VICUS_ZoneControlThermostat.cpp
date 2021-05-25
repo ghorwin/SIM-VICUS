@@ -58,9 +58,9 @@ void ZoneControlThermostat::readXML(const TiXmlElement * element) {
 			attrib = attrib->Next();
 		}
 		// search for mandatory elements
-		if (!element->FirstChildElement("ControlValue"))
+		if (!element->FirstChildElement("CtrlVal"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'ControlValue' element.") ), FUNC_ID);
+				IBK::FormatString("Missing required 'CtrlVal' element.") ), FUNC_ID);
 
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();

@@ -921,7 +921,22 @@ void CodeGenerator::generateReadWriteCode() {
 								"DataTable"
 							};
 							if (knownTagNames.find(xmlInfo.typeStr) == knownTagNames.end()) {
-								tagName = xmlInfo.typeStr;
+								// ok, not of the simple or special types
+
+								bool isEnum = false;
+								// for all enum types lookup type in enum info
+								std::vector<ClassInfo::EnumInfo>::const_iterator it = ci.m_enumInfo.begin();
+								for (; it != ci.m_enumInfo.end(); ++it) {
+									if (it->enumType() == xmlInfo.typeStr) {
+										isEnum = true;
+										break;
+									}
+								}
+
+								// not an enum? not a special/simple type? must be a complex type, so generate
+								// XML tag based on type name
+								if (!isEnum)
+									tagName = xmlInfo.typeStr;
 							}
 						}
 						elements +=
