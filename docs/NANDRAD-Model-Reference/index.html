@@ -72,7 +72,7 @@ table {
 <h1>NANDRAD Modell-Referenz</h1>
 <div class="details">
 <span id="author" class="author">Andreas Nicolai &lt;andreas.nicolai@tu-dresden.de&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke</span><br>
-<span id="revnumber">version 0.2 (23.05.2021)</span>
+<span id="revnumber">version 0.2 (25.05.2021)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Inhaltsverzeichnis</div>
@@ -6869,13 +6869,23 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 </tbody>
 </table>
 <div class="paragraph">
-<p>Für den Modelltyp <code>Scheduled</code> muss ein Zeitplan für die Größe <code>SupplyTemperature</code> für die Zone mit ID <code>ThermostatZoneID</code> definiert werden.</p>
+<p>Für den Modelltyp <code>Scheduled</code> müssen Zeitpläne für die Größen:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>SupplyTemperatureSchedule</code> und</p>
+</li>
+<li>
+<p><code>MaxMassFlowSchedule</code></p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p><strong>!PRÜFEN: Vorlauftemperatur je Thermostat? oder sollte es eher konstruktionsspezifisch sein?!</strong></p>
+<p>für die Konstruktion definiert werden. Häufig ist es sinnvoll, die gleiche Objektliste für die Schedule-Definition wie auch für das <code>IdealPipeRegisterModel</code> zu verwenden.</p>
 </div>
 <div class="paragraph">
-<p>Fließkommaparameter (siehe <a href="#IBK_Parameter">IBK:Parameter</a> für eine Beschreibung des Elementtyps <code>IBK:Parameter</code>):</p>
+<p>Folgende Fließkommaparameter (siehe <a href="#IBK_Parameter">IBK:Parameter</a> für eine Beschreibung des Elementtyps <code>IBK:Parameter</code>) sind anzugeben:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -6898,16 +6908,16 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>SupplyTemperature</code></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">C</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Vorlauftemperatur (für Modelltyp <code>Constant</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Vorlauftemperatur</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">&#160; &gt;= -100.0 &#160;</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich nur für Modelltyp</em> <code>Constant</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>MaxMassFlow</code></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">kg/s</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Maximaler Massestrom durch das gesamte Rohrregister</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;=&#160;0.0&#160;</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich nur für Modelltyp</em> <code>Constant</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>PipeLength</code></p></td>
@@ -7773,10 +7783,10 @@ Wird der Modus <code>SupplySide</code> gewählt, müssen die Parameter <code>Eva
 </tr>
 </table>
 </div>
-<div class="exampleblock">
+<div id="xml_HeatPumpIdealCarnot" class="exampleblock">
 <div class="title">Beispiel 62. Definition einer HeatPumpIdealCarnot</div>
 <div class="content">
-<div id="xml_HeatPumpIdealCarnot" class="listingblock">
+<div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;HydraulicNetworkComponent</span> <span class="na">id=</span><span class="s">"2"</span> <span class="na">modelType=</span><span class="s">"HeatPumpIdealCarnot"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"HydraulicDiameter"</span> <span class="na">unit=</span><span class="s">"mm"</span><span class="nt">&gt;</span>25.6<span class="nt">&lt;/IBK:Parameter&gt;</span>
@@ -7785,8 +7795,7 @@ Wird der Modus <code>SupplySide</code> gewählt, müssen die Parameter <code>Eva
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"CarnotEfficiency"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.4<span class="nt">&lt;/IBK:Parameter&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"MaximumHeatingPower"</span> <span class="na">unit=</span><span class="s">"W"</span><span class="nt">&gt;</span>4000<span class="nt">&lt;/IBK:Parameter&gt;</span>
   <span class="nt">&lt;HeatPumpIntegration&gt;</span>SourceSide<span class="nt">&lt;/HeatPumpIntegration&gt;</span>
-<span class="nt">&lt;/HydraulicNetworkComponent&gt;</span>
-----</code></pre>
+<span class="nt">&lt;/HydraulicNetworkComponent&gt;</span></code></pre>
 </div>
 </div>
 </div>
@@ -7801,10 +7810,10 @@ Wird der Modus <code>SupplySide</code> gewählt, müssen die Parameter <code>Eva
 <div class="paragraph">
 <p>Die tatsächlichen Strömungselemente des Netzwerks werden innerhalb des XML-tags <code>Elements</code> mit dem XML-tag <code>HydraulicNetworkElement</code> definiert.</p>
 </div>
-<div class="exampleblock">
+<div id="xml_example_flow_element" class="exampleblock">
 <div class="title">Beispiel 63. Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)</div>
 <div class="content">
-<div id="xml_example_flow_element" class="listingblock">
+<div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Elements&gt;</span>
   <span class="nt">&lt;HydraulicNetworkElement</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">inletNodeId=</span><span class="s">"5"</span> <span class="na">outletNodeId=</span><span class="s">"6"</span> <span class="na">componentId=</span><span class="s">"1"</span> <span class="na">pipePropertiesId=</span><span class="s">"1"</span><span class="nt">&gt;</span>
@@ -9106,8 +9115,8 @@ NetworkActiveLayerHeatLoad(id,1)            [W]         Heat load to the constru
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.2 (23.05.2021)<br>
-Last updated 2021-05-23 09:21:13 +0200
+Version 0.2 (25.05.2021)<br>
+Last updated 2021-05-25 17:25:35 +0200
 </div>
 </div>
 <style>

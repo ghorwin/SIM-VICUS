@@ -679,17 +679,20 @@ a| Definiert die Vorlauftemperatur
 | key | _erforderlich_
 |====================
 
-Für den Modelltyp `Scheduled` muss ein Zeitplan für die Größe `SupplyTemperature` für die Zone mit ID `ThermostatZoneID` definiert werden.
+Für den Modelltyp `Scheduled` müssen Zeitpläne für die Größen:
 
-*!PRÜFEN: Vorlauftemperatur je Thermostat? oder sollte es eher konstruktionsspezifisch sein?!*
+- `SupplyTemperatureSchedule` und
+- `MaxMassFlowSchedule`
 
-Fließkommaparameter (siehe <<IBK_Parameter>> für eine Beschreibung des Elementtyps `IBK:Parameter`):
+für die Konstruktion definiert werden. Häufig ist es sinnvoll, die gleiche Objektliste für die Schedule-Definition wie auch für das `IdealPipeRegisterModel` zu verwenden.
+
+Folgende Fließkommaparameter (siehe <<IBK_Parameter>> für eine Beschreibung des Elementtyps `IBK:Parameter`) sind anzugeben:
 
 [options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
 |====================
 |Name|Vorgabeeinheit|Beschreibung|Wertebereich |Verwendung
-| `SupplyTemperature` | C | Vorlauftemperatur (für Modelltyp `Constant`) | {nbsp} >= -100.0 {nbsp} | _erforderlich_ 
-| `MaxMassFlow` | kg/s | Maximaler Massestrom durch das gesamte Rohrregister | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_ 
+| `SupplyTemperature` | C | Vorlauftemperatur | {nbsp} >= -100.0 {nbsp} | _erforderlich nur für Modelltyp_ `Constant`
+| `MaxMassFlow` | kg/s | Maximaler Massestrom durch das gesamte Rohrregister | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich nur für Modelltyp_ `Constant`
 | `PipeLength` | m | Länge eines Rohrs im Rohrregister | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_ 
 | `PipeInnerDiameter` | m | Innendurchmesser des Rohrs | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_ 
 | `UValuePipeWall` | W/mK | Längenbezogener äquivalenter U-Wert der Rohrwand | {nbsp}>{nbsp}0.0{nbsp}  | _erforderlich_ 
