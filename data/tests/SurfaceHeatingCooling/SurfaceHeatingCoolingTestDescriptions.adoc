@@ -76,3 +76,9 @@ Identisch zu 'IdealPipeRegisterHeating.nandrad'. Die Außentemperatur wird aller
 ```
 mdot ~ 0.009 kg/s
 ```
+
+## IdealPipeRegisterScheduled.nandrad
+
+Wechsel von Heizung und Kühlung soll erreicht werden. Hierfür wird 0-6 Uhr und 12-24 Uhr eine Heizsolltemperatur von 22 °C erreicht werden, zwischen 6-12 Uhr soll der Raum auf 18 °C gekühlt werden. 
+Die Vorlauftemperatur schwankt dabei zwischen 40 °C und 10 °C, die Au0entemperatur wird mit 20 °C gewählt, natürliche Lüftung wie oben. Es wird erwartet, dass mit leichtem Überschwingen
+die gewünschte Raumlufttemperatur in beiden Intervallen erreicht wird.
