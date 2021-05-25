@@ -178,14 +178,14 @@ void IdealPipeRegisterModel::initInputReferences(const std::vector<AbstractModel
 
 		r.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
 		r.m_required = true;
-		r.m_name.m_name = "SupplyTemperature";
+		r.m_name.m_name = "SupplyTemperatureSchedule";
 
 		for (unsigned int key : indexKeys) {
 			r.m_id = key;
 			// store reference
 			m_inputRefs.push_back(r);
 		}
-		r.m_name.m_name = "MaxMassFlow";
+		r.m_name.m_name = "MaxMassFlowSchedule";
 		for (unsigned int key : indexKeys) {
 			r.m_id = key;
 			// store reference
