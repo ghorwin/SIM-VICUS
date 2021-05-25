@@ -121,14 +121,11 @@ private:
 	/*! Display name (for error messages). */
 	std::string										m_displayName;
 
-	/*! Model type (decides how to retrieve supply temperature). */
-	int												m_modelType;
+	/*! Pointer to model parametrization. */
+	const NANDRAD::IdealPipeRegisterModel*			m_model = nullptr;
 
 	/*! Quick access pointer to object list (for targetted construction instances). */
 	const NANDRAD::ObjectList						*m_objectList = nullptr;
-
-	/*! Cached heating power per zone area in [W/m2] */
-	double											m_maxMassFlow = 666;
 
 	/*! Hydraulic (inner) diameter of pipe in [m] */
 	double											m_innerDiameter = -999;
@@ -176,7 +173,10 @@ private:
 	const double*									m_coolingThermostatValueRef = nullptr;
 
 	/*! Reference to supply temperature in [W]. */
-	const double*									m_supplyTemperatureRef = nullptr;
+	std::vector<const double*>						m_supplyTemperatureRefs;
+
+	/*! Reference for maximum mass flux (either constant, scheduled or FMI input). */
+	std::vector<const double*>						m_maxMassFlowRefs;
 
 	/*! Reference to active layer temperatures in [W]. */
 	std::vector<const double*>						m_activeLayerTemperatureRefs;

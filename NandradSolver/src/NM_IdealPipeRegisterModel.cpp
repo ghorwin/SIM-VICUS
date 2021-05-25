@@ -53,15 +53,10 @@ void IdealPipeRegisterModel::setup(const NANDRAD::IdealPipeRegisterModel & model
 		throw IBK::Exception(IBK::FormatString("Invalid reference type in object list '%1', expected type 'ConstructionInstance'.")
 							 .arg(m_objectList->m_name), FUNC_ID);
 
-	// retrieve reference to supply temperature parameter; in case of schedules we formulate an input reference later
-	if (model.m_modelType == NANDRAD::IdealPipeRegisterModel::MT_Constant)
-		m_supplyTemperatureRef = &model.m_para[NANDRAD::IdealPipeRegisterModel::P_SupplyTemperature].value;
-
-	// retrieve model type
-	m_modelType = (int) model.m_modelType;
+	// copy model parametrization
+	m_model = &model;
 
 	// retrieve all parameters (have been checked already)
-	m_maxMassFlow = model.m_para[NANDRAD::IdealPipeRegisterModel::P_MaxMassFlow].value;
 	// pipe properties
 	m_innerDiameter = model.m_para[NANDRAD::IdealPipeRegisterModel::P_PipeInnerDiameter].value;
 	m_length = model.m_para[NANDRAD::IdealPipeRegisterModel::P_PipeLength].value;
@@ -97,6 +92,15 @@ void IdealPipeRegisterModel::initResults(const std::vector<AbstractModel *> &) {
 	// resize result vectors accordingly
 	for (unsigned int varIndex=0; varIndex<NUM_VVR; ++varIndex)
 		m_vectorValuedResults[varIndex] = VectorValuedQuantity(indexKeys);
+
+	// retrieve reference to supply temperature parameter; in case of schedules we formulate an input reference later
+	if (m_model->m_modelType == NANDRAD::IdealPipeRegisterModel::MT_Constant) {
+		m_supplyTemperatureRefs.resize(indexKeys.size(),
+								   &m_model->m_para[NANDRAD::IdealPipeRegisterModel::P_SupplyTemperature].value);
+		m_maxMassFlowRefs.resize(indexKeys.size(),
+								 &m_model->m_para[NANDRAD::IdealPipeRegisterModel::P_MaxMassFlow].value);
+	}
+
 }
 
 
@@ -158,25 +162,35 @@ void IdealPipeRegisterModel::initInputReferences(const std::vector<AbstractModel
 
 	// create an input reference for each layer temperature
 
-	InputReference tRef;
-	tRef.m_name.m_name = "ActiveLayerTemperature";
-	tRef.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
-	tRef.m_required = true;
+	InputReference r;
+	r.m_name.m_name = "ActiveLayerTemperature";
+	r.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
+	r.m_required = true;
 	// keys contain construction id
 	for (unsigned int key : indexKeys) {
-		tRef.m_id = key;
+		r.m_id = key;
 		// store reference
-		m_inputRefs.push_back(tRef);
+		m_inputRefs.push_back(r);
 	}
 
-	// retrieve reference to scheduled supply temperature parameter
-	if (m_modelType == (int) NANDRAD::IdealPipeRegisterModel::MT_Scheduled) {
-		tRef.m_name.m_name = "SupplyTemperature";
-		tRef.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
-		tRef.m_id = m_thermostatZoneId;
-		tRef.m_required = true;
-		// store reference
-		m_inputRefs.push_back(tRef);
+	// retrieve reference to scheduled supply temperature and maxium mass flux parameter
+	if (m_model->m_modelType == (int) NANDRAD::IdealPipeRegisterModel::MT_Scheduled) {
+
+		r.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
+		r.m_required = true;
+		r.m_name.m_name = "SupplyTemperature";
+
+		for (unsigned int key : indexKeys) {
+			r.m_id = key;
+			// store reference
+			m_inputRefs.push_back(r);
+		}
+		r.m_name.m_name = "MaxMassFlow";
+		for (unsigned int key : indexKeys) {
+			r.m_id = key;
+			// store reference
+			m_inputRefs.push_back(r);
+		}
 	}
 
 	// loop over all models, pick out the Thermostat-models and request input for a single zone. Later we check
@@ -188,7 +202,6 @@ void IdealPipeRegisterModel::initInputReferences(const std::vector<AbstractModel
 		ThermostatModel * mod = dynamic_cast<ThermostatModel *>(model);
 		if (mod != nullptr) {
 			// create an input reference to heating and cooling control values for all the constructions that we heat
-			InputReference r;
 			r.m_id = model->id();
 			r.m_referenceType = NANDRAD::ModelInputReference::MRT_MODEL;
 			r.m_name.m_name = "HeatingControlValue";
@@ -227,8 +240,16 @@ void IdealPipeRegisterModel::setInputValueRefs(const std::vector<QuantityDescrip
 		m_activeLayerTemperatureRefs.push_back(resultValueRefs[index]);
 
 	// retrieve reference to scheduled supply temperature parameter
-	if(m_modelType == (int) NANDRAD::IdealPipeRegisterModel::MT_Scheduled) {
-		m_supplyTemperatureRef = resultValueRefs[index++];
+	if(m_model->m_modelType == (int) NANDRAD::IdealPipeRegisterModel::MT_Scheduled) {
+		for( ; index < m_objectList->m_filterID.m_ids.size() * 2; ++index)
+		{
+			// store reference
+			m_supplyTemperatureRefs.push_back(resultValueRefs[index]);
+		}
+		for( ; index < m_objectList->m_filterID.m_ids.size() * 3; ++index) {
+			// store reference
+			m_maxMassFlowRefs.push_back(resultValueRefs[index]);
+		}
 	}
 	// we now must ensure, that for each zone there is exactly one matching control signal
 
@@ -281,10 +302,12 @@ void IdealPipeRegisterModel::stateDependencies(std::vector<std::pair<const doubl
 			resultInputValueReferences.push_back(
 						std::make_pair(m_vectorValuedResults[VVR_ActiveLayerThermalLoad].dataPtr() + i, m_coolingThermostatValueRef) );
 		}
-		// add supply temperature dependency for type Scheduled
-		if (m_modelType ==  (int) NANDRAD::IdealPipeRegisterModel::MT_Scheduled) {
+		// add supply temperature and maximum mass flux dependency for type Scheduled
+		if (m_model->m_modelType ==  (int) NANDRAD::IdealPipeRegisterModel::MT_Scheduled) {
 			resultInputValueReferences.push_back(
-						std::make_pair(m_vectorValuedResults[VVR_ActiveLayerThermalLoad].dataPtr() + i, m_supplyTemperatureRef) );
+						std::make_pair(m_vectorValuedResults[VVR_ActiveLayerThermalLoad].dataPtr() + i, m_supplyTemperatureRefs[i]) );
+			resultInputValueReferences.push_back(
+						std::make_pair(m_vectorValuedResults[VVR_ActiveLayerThermalLoad].dataPtr() + i, m_maxMassFlowRefs[i]) );
 		}
 	}
 }
@@ -295,29 +318,21 @@ int IdealPipeRegisterModel::update() {
 	if (m_objectList->m_filterID.m_ids.empty())
 		return 0; // nothing to compute, return
 
-	double heatingMassFlow = 0.0;
-	double coolingMassFlow = 0.0;
+	double heatingControlValue = 0.0;
+	double coolingControlValue = 0.0;
 
 	// get control value for heating
 	if (m_heatingThermostatValueRef != nullptr) {
-		double heatingControlValue = *m_heatingThermostatValueRef;
+		heatingControlValue = *m_heatingThermostatValueRef;
 		// clip
 		heatingControlValue = std::max(0.0, std::min(1.0, heatingControlValue));
-		heatingMassFlow = heatingControlValue * m_maxMassFlow;
 	}
 	// get control value for cooling
 	if (m_coolingThermostatValueRef != nullptr) {
-		double coolingControlValue = *m_coolingThermostatValueRef;
+		coolingControlValue = *m_coolingThermostatValueRef;
 		// clip
 		coolingControlValue = std::max(0.0, std::min(1.0, coolingControlValue));
-		coolingMassFlow = coolingControlValue * m_maxMassFlow;
 	}
-
-	// retrieve supply temperature
-	double supplyTemperature = *m_supplyTemperatureRef;
-	// calculate viscosity and prandtl number (independent from mass flow)
-	double viscosity = m_fluidViscosity.value(supplyTemperature);
-	double prandtl = PrandtlNumber(viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
 
 	// number of active layers heated by current model
 	unsigned int nTargets = (unsigned int) m_objectList->m_filterID.m_ids.size();
@@ -335,63 +350,87 @@ int IdealPipeRegisterModel::update() {
 	// of heating and a supply temperature < layer temperature in the case of cooling.
 	// Both demands will never be fulfilled together and therefore mass flux is uniquely defined.
 
+	IBK_ASSERT(!m_supplyTemperatureRefs.empty());
+	IBK_ASSERT(!m_maxMassFlowRefs.empty());
+
 	// heating is requested
-	if (heatingMassFlow > 0.0) {
-		// calculate inner heat transfer
-		double velocity = std::fabs(heatingMassFlow)/(m_fluidVolume * m_fluidDensity);
-		double reynolds = ReynoldsNumber(velocity, viscosity, m_innerDiameter);
-		double nusselt = NusseltNumber(reynolds, prandtl, m_length, m_innerDiameter);
-		double innerHeatTransferCoefficient = nusselt * m_fluidConductivity / m_innerDiameter;
-
-		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-		double UAValueTotal = m_length /
-				( 1.0 / (innerHeatTransferCoefficient * m_innerDiameter * IBK::PI)
-				+ 1.0 / m_UValuePipeWall );
-
-		// compute exponential decay of thermal mass (analytical soluation for heat
-		// loss over a pipe with constant environmental temperature
-		double thermalMassDecay = heatingMassFlow * m_fluidHeatCapacity *
-				(1. - std::exp(-UAValueTotal / (std::fabs(heatingMassFlow) * m_fluidHeatCapacity ) ) );
+	if (heatingControlValue > 0.0) {
 
 		// distribute load for all targets
 		for (unsigned int i = 0; i < nTargets; ++i) {
+			// retrieve supply temperature
+			double supplyTemperature = *m_supplyTemperatureRefs[i];
 			// only accept layers whose temperature < supply temperature
 			double layerTemperature = *m_activeLayerTemperatureRefs[i];
 			if (layerTemperature >= supplyTemperature)
 				continue; // skip, layer too warm
 
+			double heatingMassFlow = heatingControlValue * *m_maxMassFlowRefs[i];
+			// skip 0 mass flow
+			if(heatingMassFlow == 0.)
+				continue;
+
 			// store mass flow
 			massFluxPtr[i] = heatingMassFlow;
+
+			// calculate inner heat transfer
+			double viscosity = m_fluidViscosity.value(supplyTemperature);
+			double prandtl = PrandtlNumber(viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
+			double velocity = std::fabs(heatingMassFlow)/(m_fluidVolume * m_fluidDensity);
+			double reynolds = ReynoldsNumber(velocity, viscosity, m_innerDiameter);
+			double nusselt = NusseltNumber(reynolds, prandtl, m_length, m_innerDiameter);
+			double innerHeatTransferCoefficient = nusselt * m_fluidConductivity / m_innerDiameter;
+
+			// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
+			double UAValueTotal = m_length /
+					( 1.0 / (innerHeatTransferCoefficient * m_innerDiameter * IBK::PI)
+					+ 1.0 / m_UValuePipeWall );
+
+			// compute exponential decay of thermal mass (analytical soluation for heat
+			// loss over a pipe with constant environmental temperature
+			double thermalMassDecay = heatingMassFlow * m_fluidHeatCapacity *
+					(1. - std::exp(-UAValueTotal / (std::fabs(heatingMassFlow) * m_fluidHeatCapacity ) ) );
 			// calculate heat gain in [W]
 			surfaceLoadPtr[i] = (supplyTemperature - layerTemperature) * thermalMassDecay;
 		}
 	}
 	// cooling is requested
-	if (coolingMassFlow > 0.0) {
-		// calculate inner heat transfer
-		double velocity = std::fabs(coolingMassFlow)/(m_fluidVolume * m_fluidDensity);
-		double reynolds = ReynoldsNumber(velocity, viscosity, m_innerDiameter);
-		double nusselt = NusseltNumber(reynolds, prandtl, m_length, m_innerDiameter);
-		double innerHeatTransferCoefficient = nusselt * m_fluidConductivity / m_innerDiameter;
-
-		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-		double UAValueTotal = m_length /
-				( 1.0 / (innerHeatTransferCoefficient * m_innerDiameter * IBK::PI)
-				+ 1.0 / m_UValuePipeWall );
-
-		// compute exponential decay of thermal mass
-		double thermalMassDecay = coolingMassFlow * m_fluidHeatCapacity *
-				(1. - std::exp(-UAValueTotal / (std::fabs(coolingMassFlow) * m_fluidHeatCapacity ) ) );
+	if (coolingControlValue > 0.0) {
 
 		// distribute load for all targets
 		for (unsigned int i = 0; i < nTargets; ++i) {
+			// retrieve supply temperature
+			double supplyTemperature = *m_supplyTemperatureRefs[i];
 			// only accept layers whose temperature > supply temperature
 			double layerTemperature = *m_activeLayerTemperatureRefs[i];
 			if (layerTemperature <= supplyTemperature)
 				continue; // skip, layer too cold
 
+			double coolingMassFlow = coolingControlValue * *m_maxMassFlowRefs[i];
+			// skip 0 mass flow
+			if(coolingMassFlow == 0.)
+				continue;
+
 			// store mass flow
 			massFluxPtr[i] = coolingMassFlow;
+
+			// calculate inner heat transfer
+			double viscosity = m_fluidViscosity.value(supplyTemperature);
+			double prandtl = PrandtlNumber(viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
+			double velocity = std::fabs(coolingMassFlow)/(m_fluidVolume * m_fluidDensity);
+			double reynolds = ReynoldsNumber(velocity, viscosity, m_innerDiameter);
+			double nusselt = NusseltNumber(reynolds, prandtl, m_length, m_innerDiameter);
+			double innerHeatTransferCoefficient = nusselt * m_fluidConductivity / m_innerDiameter;
+
+			// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
+			double UAValueTotal = m_length /
+					( 1.0 / (innerHeatTransferCoefficient * m_innerDiameter * IBK::PI)
+					+ 1.0 / m_UValuePipeWall );
+
+			// compute exponential decay of thermal mass
+			double thermalMassDecay = coolingMassFlow * m_fluidHeatCapacity *
+					(1. - std::exp(-UAValueTotal / (std::fabs(coolingMassFlow) * m_fluidHeatCapacity ) ) );
+
 			// calculate heat loss in [W]
 			surfaceLoadPtr[i] = (supplyTemperature - layerTemperature) * thermalMassDecay;
 		}

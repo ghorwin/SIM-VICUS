@@ -240,7 +240,7 @@ void InternalLoadsModel::setInputValueRefs(const std::vector<QuantityDescription
 }
 
 
-void InternalLoadsModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
+void InternalLoadsModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & /*resultInputValueReferences*/) const {
 		return; // nothing to compute, we only depend on time dependend quantities
 }
 
