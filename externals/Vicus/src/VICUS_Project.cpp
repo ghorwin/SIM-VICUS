@@ -1669,6 +1669,25 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 			// set area parameter (computed from side A, but if side B is given as well, the area is the same
 			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
 											   NANDRAD::ConstructionInstance::P_Area, areaA);
+
+			// sub surface
+			const std::vector<SubSurface> & subSurfs = ci.m_sideASurface->subSurfaces();
+			if(subSurfs.size()>0){
+				//we have sub surfaces
+
+				double embArea = 0;
+
+				for(const SubSurface &ss : subSurfs){
+					NANDRAD::EmbeddedObject emb;
+
+					emb.m_id = uniqueIdWithPredef2(ConstructionInstance, 1, m_idMaps, true);
+					NANDRAD::KeywordList::setParameter(emb.m_para, "ConstructionInstance::para_t",
+													   NANDRAD::EmbeddedObject::P_Area, areaA);
+					emb.m_displayName = ss.m_displayName.toStdString();
+					//emb.m_window.
+				}
+			}
+
 		}
 		else {
 			// we must have a side B surface, otherwise this is an invalid component instance
@@ -1810,6 +1829,57 @@ NANDRAD::Interface Project::generateInterface(const VICUS::ComponentInstance & c
 		iface.m_longWaveEmission = bc->m_longWaveEmission;
 		return iface;
 	}
+}
+
+unsigned int Project::uniqueIdWithPredef2(Project::IdSpaces idSpace, unsigned int id, std::vector<Project::IdMap> &maps, bool makeNewId){
+
+	Q_ASSERT(idSpace != NUM_IdSpaces);
+
+	unsigned int idOriginal = id;
+
+	IdMap &idMap = maps[idSpace];
+
+	//check if the id has already a other reference in this id space
+	if(idMap.m_vicusToNandrad.find(id) != idMap.m_vicusToNandrad.end())
+		return idMap.m_vicusToNandrad[id];
+
+	if(!makeNewId){
+		if(std::find(idMap.m_ids.begin(), idMap.m_ids.end(),id) != idMap.m_ids.end())
+			return id;
+	}
+
+	//find a unique id
+
+	bool foundId = false;
+	while (!foundId) {
+
+		//check if the id exists already in a other NANDRAD model
+		for(unsigned int i=0; i<NUM_IdSpaces; ++i){
+			std::vector<unsigned int> &vec = maps[(IdSpaces)i].m_ids;
+			for(unsigned int j=0; j<vec.size(); ++j){
+				if(vec[j] == id){
+					foundId = true;
+					break;
+				}
+			}
+		}
+		if(foundId){
+			++id;
+			foundId = false;
+		}
+		else{
+			//exit loop
+			foundId = true;
+		}
+	}
+	if(idOriginal != id)
+		idMap.m_vicusToNandrad[idOriginal] = id;
+	idMap.m_ids.push_back(id);
+
+	return id;
+	//if(idMap.m_vicusToNandrad.find(id) == idMap.m_vicusToNandrad.end())
+	//	idMap.m_vicusToNandrad[id] = uniqueIdWithPredef(idMap.m_ids, id);
+	//return idMap.m_vicusToNandrad[id];
 }
 
 
