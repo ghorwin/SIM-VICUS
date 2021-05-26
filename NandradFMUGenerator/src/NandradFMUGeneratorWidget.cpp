@@ -209,6 +209,9 @@ int NandradFMUGeneratorWidget::setup() {
 	try {
 		m_project = NANDRAD::Project();
 		m_project.readXML(m_nandradFilePath);
+
+		// also perform basic sanity checks on fmi definitions
+		m_project.m_fmiDescription.checkParameters();
 	}
 	catch (IBK::Exception & ex) {
 		ex.writeMsgStackToError();
@@ -311,14 +314,23 @@ void NandradFMUGeneratorWidget::on_toolButtonAddInputVariable_clicked() {
 
 	// find corresponding FMI variable description
 	std::string fmiVarName = m_ui->tableWidgetInputVars->item(row, 4)->text().toStdString();
-	for (NANDRAD::FMIVariableDefinition & var : m_availableInputVariables)  {
+	for (unsigned int i=0; i<m_availableInputVariables.size(); ++i) {
+		NANDRAD::FMIVariableDefinition & var = m_availableInputVariables[i];
 		if (var.m_fmiVarName == fmiVarName) {
 			// got it, now create a copy of the variable description, copy it to the project and assign a valid value reference
 			unsigned int newValueRef = *m_usedValueRefs.rbegin() + 1;
 
-			// check if there is already another FMI variable with same name and type
-
-
+			// check if there is already another FMI variable with same name
+			unsigned int otherValueRef = 0;
+			for (unsigned int j=0; j<m_availableInputVariables.size(); ++j) {
+				if (i == j) continue; // skip ourself
+				if (m_availableInputVariables[j].m_fmiVarName == fmiVarName) {
+					otherValueRef = m_availableInputVariables[j].m_fmiValueRef;
+					break;
+				}
+			}
+			if (otherValueRef != 0)
+				newValueRef = otherValueRef;
 
 			m_usedValueRefs.insert(newValueRef);
 			var.m_fmiValueRef = newValueRef;
@@ -374,8 +386,8 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveInputVariable_clicked() {
 		}
 	}
 	// if valid, just clear item flags
-	m_ui->tableWidgetInputVars->blockSignals(true);
 	if (valid) {
+		m_ui->tableWidgetInputVars->blockSignals(true);
 		item->setData(Qt::UserRole+1, NANDRAD::INVALID_ID);
 		m_ui->tableWidgetInputVars->item(row, 5)->setText("---");
 		// now reset table row to uninitialized state
@@ -385,6 +397,7 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveInputVariable_clicked() {
 			m_ui->tableWidgetInputVars->item(row, i)->setFont(f);
 			m_ui->tableWidgetInputVars->item(row, i)->setTextColor(Qt::gray);
 		}
+		m_ui->tableWidgetInputVars->blockSignals(false);
 		on_tableWidgetInputVars_currentCellChanged(row,0,0,0);
 	}
 	else {
@@ -393,7 +406,6 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveInputVariable_clicked() {
 		m_ui->tableWidgetInputVars->selectRow(std::min(row, m_ui->tableWidgetInputVars->rowCount()-1));
 		on_tableWidgetInputVars_currentCellChanged(row,0,0,0);
 	}
-	m_ui->tableWidgetInputVars->blockSignals(false);
 }
 
 
@@ -402,8 +414,7 @@ void NandradFMUGeneratorWidget::on_tableWidgetInputVars_itemDoubleClicked(QTable
 	if (m_ui->toolButtonAddInputVariable->isEnabled())
 		m_ui->toolButtonAddInputVariable->click();
 	else if (m_ui->toolButtonRemoveInputVariable->isEnabled()) {
-		// special case, if in column 4, do not disable variable, since double-click is needed for
-		// "edit" mode
+		// special case, if in column 4, do not disable variable, since double-click is needed for "edit" mode
 		if (item->column() != 4)
 			m_ui->toolButtonRemoveInputVariable->click();
 	}
@@ -434,6 +445,7 @@ void NandradFMUGeneratorWidget::on_toolButtonAddOutputVariable_clicked() {
 
 			m_project.m_fmiDescription.m_outputVariables.push_back(var);
 			// set new value reference in table
+			m_ui->tableWidgetOutputVars->blockSignals(true);
 			m_ui->tableWidgetOutputVars->item(row, 5)->setText(QString("%1").arg(newValueRef));
 			item->setData(Qt::UserRole+1, newValueRef);
 			// now update appearance of table row
@@ -443,6 +455,7 @@ void NandradFMUGeneratorWidget::on_toolButtonAddOutputVariable_clicked() {
 				m_ui->tableWidgetOutputVars->item(row, i)->setFont(f);
 				m_ui->tableWidgetOutputVars->item(row, i)->setTextColor(Qt::black);
 			}
+			m_ui->tableWidgetOutputVars->blockSignals(false);
 			on_tableWidgetOutputVars_currentCellChanged(row,0,0,0);
 			break;
 		}
@@ -483,6 +496,7 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveOutputVariable_clicked() {
 	// if valid, just clear item flags
 	if (valid) {
 		item->setData(Qt::UserRole+1, NANDRAD::INVALID_ID);
+		m_ui->tableWidgetOutputVars->blockSignals(true);
 		m_ui->tableWidgetOutputVars->item(row, 5)->setText("---");
 		// now reset table row to uninitialized state
 		QFont f(m_ui->tableWidgetOutputVars->font());
@@ -491,6 +505,7 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveOutputVariable_clicked() {
 			m_ui->tableWidgetOutputVars->item(row, i)->setFont(f);
 			m_ui->tableWidgetOutputVars->item(row, i)->setTextColor(Qt::gray);
 		}
+		m_ui->tableWidgetOutputVars->blockSignals(false);
 		on_tableWidgetOutputVars_currentCellChanged(row,0,0,0);
 	}
 	else {
@@ -502,12 +517,15 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveOutputVariable_clicked() {
 }
 
 
-void NandradFMUGeneratorWidget::on_tableWidgetOutputVars_itemDoubleClicked(QTableWidgetItem * /*item*/) {
+void NandradFMUGeneratorWidget::on_tableWidgetOutputVars_itemDoubleClicked(QTableWidgetItem * item) {
 	// depending on the state of the buttons, call either add or remove
 	if (m_ui->toolButtonAddOutputVariable->isEnabled())
 		m_ui->toolButtonAddOutputVariable->click();
-	else if (m_ui->toolButtonRemoveOutputVariable->isEnabled())
-		m_ui->toolButtonRemoveOutputVariable->click();
+	else if (m_ui->toolButtonRemoveOutputVariable->isEnabled()) {
+		// special case, if in column 4, do not disable variable, since double-click is needed for "edit" mode
+		if (item->column() != 4)
+			m_ui->toolButtonRemoveOutputVariable->click();
+	}
 }
 
 
@@ -832,6 +850,10 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 				varDef.m_unit = unit.toStdString();
 				varDef.m_fmiVarDescription = description.toStdString();
 				varDef.m_fmiValueRef = NANDRAD::INVALID_ID; // will be set from either existing var in project or when configured
+				// set default start value
+				varDef.m_fmiStartValue = 0;
+				if (varDef.m_unit == "K")				varDef.m_fmiStartValue = 293.15;
+				else if (varDef.m_unit == "Pa")			varDef.m_fmiStartValue = 101325;
 
 				modelVariables.push_back(varDef);
 			}
@@ -848,6 +870,10 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 					varDef.m_unit = unit.toStdString();
 					varDef.m_fmiVarDescription = description.toStdString();
 					varDef.m_fmiValueRef = NANDRAD::INVALID_ID; // will be set from either existing var in project or when configured
+					// set default start value
+					varDef.m_fmiStartValue = 0;
+					if (varDef.m_unit == "K")				varDef.m_fmiStartValue = 293.15;
+					else if (varDef.m_unit == "Pa")			varDef.m_fmiStartValue = 101325;
 
 					modelVariables.push_back(varDef);
 				}
@@ -860,90 +886,92 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 
 
 void NandradFMUGeneratorWidget::updateFMUVariableTables() {
-
-	// TODO : sanity check on already defined variables:
-	// - ensure that there are not two variables with same name, yet different unit
-	// - also, there must not be output and input variables with same name
-	// - also, no two output variables with same value reference
-	// - if two input variables have same value reference, also their units and fmi var names must match
+	// ok, we have:
+	// - m_availableInputVariables - list of input variables to NANDRAD and default fmi variable names
+	// - m_availableOutputVariables - list of output variables from NANDRAD and default fmi variable names
+	// the variables in these lists have no value references yet (i.e. they are undefined)
 	//
-	// For each variable that invalidates any of the rules above, simply remove it from m_project.m_fmiDescription....
-	// and collect a list of warning messages to show to the user.
+	// we also have:
+	// - m_project.m_fmiDescription.m_inputVariables
+	// - m_project.m_fmiDescription.m_outputVariables
+	//
+	// This is user data and can be wrong/invalid in all possible ways.
+	// We are now optimistic and take each variable from the project and try to find a matching available
+	// variable by only comparing the NANDRAD variable reference (ref type, object ID, var name).
+	// If we do not find a match, this variable definition is bogus/outdated and marked as invalid.
+	// If we did find a match, we must check for all other things that might go wrong. The m_availableXXX lists
+	// serve as valid reference. Whenever a variable from the project has passed all checks, the m_availableXXX lists
+	// are updated to the variable's contents and now have the merged state (available + valid definitions from project).
+	//
+	// Note: some basic checks on the project's fmi definitions have already been done when the project was read.
+	//       At least we know that there are no invalid duplicate value references or FMI variable names around.
 
-	// process all defined variables
-	for (NANDRAD::FMIVariableDefinition & var : m_project.m_fmiDescription.m_inputVariables) {
-		// set default start value
-		var.m_fmiStartValue = 0;
-		if (var.m_unit == "K")				var.m_fmiStartValue = 293.15;
-		else if (var.m_unit == "Pa")		var.m_fmiStartValue = 101325;
-
-		// check for duplicate value references
-		if (m_usedValueRefs.find(var.m_fmiValueRef) != m_usedValueRefs.end()) {
-			// remove invalid value reference, we will assign new IDs in the next step
-			var.m_fmiValueRef = NANDRAD::INVALID_ID;
-		}
-		else
-			m_usedValueRefs.insert(var.m_fmiValueRef);
-	}
-	for (NANDRAD::FMIVariableDefinition & var : m_project.m_fmiDescription.m_outputVariables) {
-		// check for duplicate value references
-		if (m_usedValueRefs.find(var.m_fmiValueRef) != m_usedValueRefs.end()) {
-			// remove invalid value reference, we will assign new IDs in the next step
-			var.m_fmiValueRef = NANDRAD::INVALID_ID;
-		}
-		else
-			m_usedValueRefs.insert(var.m_fmiValueRef);
-	}
-	// determine first unused value reference
-	unsigned int firstFreeValueRef = *m_usedValueRefs.rbegin()+1;
-	// set unique value references to all existing variables (that had duplicates before)
-	for (unsigned int i=0; i<m_project.m_fmiDescription.m_inputVariables.size(); ++i) {
-		NANDRAD::FMIVariableDefinition & var = m_project.m_fmiDescription.m_inputVariables[i];
-		if (var.m_fmiValueRef != NANDRAD::INVALID_ID) continue;
-		// if we do not have a valid ID, we may have had an invalid/duplicate ID before
-
-		for (unsigned int j=0; j<i; ++j) {
-			// check against all other FMI input variables
-		}
-	}
-	for (NANDRAD::FMIVariableDefinition & var : m_project.m_fmiDescription.m_inputVariables) {
-		if (var.m_fmiValueRef == NANDRAD::INVALID_ID) {
-			var.m_fmiValueRef = firstFreeValueRef;
-			m_usedValueRefs.insert(firstFreeValueRef);
-			++firstFreeValueRef;
-		}
-	}
-	for (NANDRAD::FMIVariableDefinition & var : m_project.m_fmiDescription.m_outputVariables) {
-		if (var.m_fmiValueRef == NANDRAD::INVALID_ID) {
-			var.m_fmiValueRef = firstFreeValueRef;
-			m_usedValueRefs.insert(firstFreeValueRef);
-			++firstFreeValueRef;
-		}
-	}
-
-	// we first process all variables already defined in the project, separately for inputs and ouputs
+	// first process all defined input variables
 	std::vector<NANDRAD::FMIVariableDefinition> invalidInputVars;
+	std::vector<NANDRAD::FMIVariableDefinition> validInputVars;
+	QStringList errors;
 	for (NANDRAD::FMIVariableDefinition & var : m_project.m_fmiDescription.m_inputVariables) {
-		// lookup variable in available variables
+
+		// first check if there is already an *output* variable with same value reference
+		// -> then we have an invalid definition
+		bool invalid = false;
+		for (const NANDRAD::FMIVariableDefinition & outVar : m_availableOutputVariables) {
+			if (outVar.m_fmiValueRef != NANDRAD::INVALID_ID && outVar.m_fmiValueRef == var.m_fmiValueRef) {
+				errors.append(tr("Duplicate FMI value ref %1 in project.").arg(outVar.m_fmiValueRef));
+				invalid = true;
+				break;
+			}
+		}
+		if (invalid) {
+			invalidInputVars.push_back(var);
+			continue;
+		}
+
+		// lookup variable in available input variables
 		std::vector<NANDRAD::FMIVariableDefinition>::iterator it = m_availableInputVariables.begin();
 		for (; it != m_availableInputVariables.end(); ++it) {
 			if (var.m_varName == it->m_varName &&
 				var.m_objectID == it->m_objectID &&
 				var.m_vectorIndex == it->m_vectorIndex)
 			{
-				var.m_unit = it->m_unit;
-				var.m_fmiVarDescription = it->m_fmiVarDescription;
-				break;
+				break; // match found - stop search
 			}
 		}
-		// not found?
-		if (it == m_availableInputVariables.end())
+		// no such NANDRAD variable found?
+		if (it == m_availableInputVariables.end()) {
+			errors.append(tr("FMI input variable '%1' in project does not match any available NANDRAD input variables.")
+						  .arg(QString::fromStdString(var.m_fmiVarName)) );
 			invalidInputVars.push_back(var); // remember as invalid input var definition
-		else
-			it->m_fmiValueRef = var.m_fmiValueRef; // setting a valid value ref marks this variable as used and valid
+			continue;
+		}
+
+		// found a matching NANDRAD variable, now we do all the other checks
+
+		// check that the available input variable is not yet used (by a previous project FMI input variable)
+		if (it->m_fmiValueRef != NANDRAD::INVALID_ID) {
+			errors.append(tr("FMI input variable '%1' in project references a NANDRAD variable previously "
+							 "referenced by FMI variable with value ref %2.").arg(QString::fromStdString(var.m_fmiVarName))
+						  .arg(it->m_fmiValueRef));
+			invalidInputVars.push_back(var); // remember as invalid input var definition
+			continue;
+		}
+
+		// update m_availableInputVariables list with data from project
+		it->m_fmiVarName = var.m_fmiVarName;
+		it->m_fmiValueRef = var.m_fmiValueRef; // setting a valid value ref marks this variable as used and valid
+		m_usedValueRefs.insert(var.m_fmiValueRef); // remember value ref as used
+
+		var.m_unit = it->m_unit;
+		var.m_fmiVarDescription = it->m_fmiVarDescription;
+
+		// remember this variable as valid
+		validInputVars.push_back(var);
 	}
 
+	// now the same for outputs, but without allowing duplicate valueRefs
+
 	std::vector<NANDRAD::FMIVariableDefinition> invalidOutputVars;
+	std::vector<NANDRAD::FMIVariableDefinition> validOutputVars;
 	for (NANDRAD::FMIVariableDefinition & var : m_project.m_fmiDescription.m_outputVariables) {
 		// lookup variable in available variables
 		std::vector<NANDRAD::FMIVariableDefinition>::iterator it = m_availableOutputVariables.begin();
@@ -952,17 +980,32 @@ void NandradFMUGeneratorWidget::updateFMUVariableTables() {
 				var.m_objectID == it->m_objectID &&
 				var.m_vectorIndex == it->m_vectorIndex)
 			{
-				var.m_unit = it->m_unit;
-				var.m_fmiVarDescription = it->m_fmiVarDescription;
-				break;
+				break; // match found - stop search
 			}
 		}
 		// not found?
-		if (it == m_availableOutputVariables.end())
+		if (it == m_availableOutputVariables.end()) {
+			errors.append(tr("FMI input variable '%1' in project does not match any available NANDRAD input variables.")
+						  .arg(QString::fromStdString(var.m_fmiVarName)) );
 			invalidOutputVars.push_back(var); // remember as invalid input var definition
-		else
-			it->m_fmiValueRef = var.m_fmiValueRef; // setting a valid value ref marks this variable as used and valid
+			continue;
+		}
+
+		// update m_availableInputVariables list with data from project
+		it->m_fmiVarName = var.m_fmiVarName;
+		it->m_fmiValueRef = var.m_fmiValueRef; // setting a valid value ref marks this variable as used and valid
+		m_usedValueRefs.insert(var.m_fmiValueRef); // remember value ref as used
+
+		var.m_unit = it->m_unit;
+		var.m_fmiVarDescription = it->m_fmiVarDescription;
+		// remember this variable as valid
+		validOutputVars.push_back(var);
 	}
+
+
+	// now we keep only valid variables in project
+	m_project.m_fmiDescription.m_inputVariables.swap(validInputVars);
+	m_project.m_fmiDescription.m_outputVariables.swap(validOutputVars);
 
 	// now populate the tables
 	populateTable(m_ui->tableWidgetInputVars, m_availableInputVariables, invalidInputVars);
@@ -1457,8 +1500,9 @@ void NandradFMUGeneratorWidget::on_tableWidgetInputVars_itemChanged(QTableWidget
 	// assert that we are in the correct column
 	Q_ASSERT(item->column() == 4);
 	// read newly entered name
-	std::string oldFMIName = m_availableInputVariables[item->row()].m_fmiVarName;
+	unsigned int row = (unsigned int)item->row();
 	std::string newFMIName = item->text().trimmed().toStdString();
+	std::string oldFMIName = m_availableInputVariables[row].m_fmiVarName;
 
 	// check if this FMI variable name has been used somewhere already
 	// if yes, unit must match and the variable must be selected
@@ -1472,14 +1516,14 @@ void NandradFMUGeneratorWidget::on_tableWidgetInputVars_itemChanged(QTableWidget
 			continue;
 		if (m_availableInputVariables[i].m_fmiVarName == newFMIName) {
 			// found a duplicate, check unit
-			if (m_availableInputVariables[i].m_unit != m_availableInputVariables[item->row()].m_unit) {
+			if (m_availableInputVariables[i].m_unit != m_availableInputVariables[row].m_unit) {
 				QMessageBox::critical(this, tr("Naming error"), tr("There is already another FMI variable with name '%1', "
 																   "yet unit '%2', which differs from unit '%3' of currently selected variable.")
 									  .arg(QString::fromStdString(newFMIName),
 										   QString::fromStdString(m_availableInputVariables[i].m_unit),
-										   QString::fromStdString(m_availableInputVariables[item->row()].m_unit) ) );
+										   QString::fromStdString(m_availableInputVariables[row].m_unit) ) );
 				m_ui->tableWidgetInputVars->blockSignals(true);
-				item->setText( QString::fromStdString(m_availableInputVariables[item->row()].m_fmiVarName) );
+				item->setText( QString::fromStdString(m_availableInputVariables[row].m_fmiVarName) );
 				m_ui->tableWidgetInputVars->blockSignals(false);
 				return;
 			}
@@ -1488,15 +1532,15 @@ void NandradFMUGeneratorWidget::on_tableWidgetInputVars_itemChanged(QTableWidget
 		}
 	}
 	// all ok, keep the variable name
-	m_availableInputVariables[item->row()].m_fmiVarName = newFMIName;
+	m_availableInputVariables[row].m_fmiVarName = newFMIName;
 
 	// if we did find another variable, take its value reference
 	if (otherVarsValueRef != 0) {
 		// remove current variable's value ref from set of currently used value references
-		m_usedValueRefs.erase(m_availableInputVariables[item->row()].m_fmiValueRef);
+		m_usedValueRefs.erase(m_availableInputVariables[row].m_fmiValueRef);
 
 		// store new value ref
-		m_availableInputVariables[item->row()].m_fmiValueRef = otherVarsValueRef;
+		m_availableInputVariables[row].m_fmiValueRef = otherVarsValueRef;
 
 		// update table cell with value reference
 		m_ui->tableWidgetInputVars->blockSignals(true);
@@ -1508,7 +1552,43 @@ void NandradFMUGeneratorWidget::on_tableWidgetInputVars_itemChanged(QTableWidget
 	// also look up variable definition in project file and sync definition
 	for (unsigned int i=0; i<m_project.m_fmiDescription.m_inputVariables.size(); ++i) {
 		if (m_project.m_fmiDescription.m_inputVariables[i].m_fmiVarName == oldFMIName) {
-			m_project.m_fmiDescription.m_inputVariables[i] = m_availableInputVariables[item->row()];
+			m_project.m_fmiDescription.m_inputVariables[i] = m_availableInputVariables[row];
+			break;
+		}
+	}
+}
+
+
+void NandradFMUGeneratorWidget::on_tableWidgetOutputVars_itemChanged(QTableWidgetItem *item) {
+	// assert that we are in the correct column
+	Q_ASSERT(item->column() == 4);
+	// read newly entered name
+	unsigned int row = (unsigned int)item->row();
+	std::string newFMIName = item->text().trimmed().toStdString();
+	std::string oldFMIName = m_availableOutputVariables[row].m_fmiVarName;
+
+	// loop over all defined input variables and check for duplicate FMI variable name (only in output variables for now)
+	for (unsigned int i=0; i<m_availableOutputVariables.size(); ++i) {
+		// skip ourselves
+		if (item->row() == (int)i)
+			continue;
+		if (m_availableOutputVariables[i].m_fmiVarName == newFMIName) {
+			// found a duplicate, check unit
+			QMessageBox::critical(this, tr("Naming error"), tr("There is already another FMI output variable with name '%1'.")
+								  .arg(QString::fromStdString(newFMIName)) );
+			m_ui->tableWidgetOutputVars->blockSignals(true);
+			item->setText( QString::fromStdString(m_availableOutputVariables[row].m_fmiVarName) );
+			m_ui->tableWidgetOutputVars->blockSignals(false);
+			return;
+		}
+	}
+	// all ok, keep the variable name
+	m_availableOutputVariables[row].m_fmiVarName = newFMIName;
+
+	// also look up variable definition in project file and sync definition
+	for (unsigned int i=0; i<m_project.m_fmiDescription.m_outputVariables.size(); ++i) {
+		if (m_project.m_fmiDescription.m_outputVariables[i].m_fmiVarName == oldFMIName) {
+			m_project.m_fmiDescription.m_outputVariables[i] = m_availableOutputVariables[row];
 			break;
 		}
 	}

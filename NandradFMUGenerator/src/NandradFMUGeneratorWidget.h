@@ -86,6 +86,8 @@ private slots:
 
 	void on_tableWidgetInputVars_itemChanged(QTableWidgetItem *item);
 
+	void on_tableWidgetOutputVars_itemChanged(QTableWidgetItem *item);
+
 private:
 	/*! Toggles the GUI state depending on whether a valid NANDRAD Project was read or not. */
 	void setGUIState(bool active);
