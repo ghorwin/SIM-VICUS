@@ -125,6 +125,7 @@ private:
 
 	/*! Cached current values, updated in setTime().
 		These values will be updated based on cached FMI variable input data.
+		For all input variables with *different* value references a result value slot exists.
 	*/
 	std::vector<double>							m_results;
 

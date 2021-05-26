@@ -33,10 +33,12 @@ void FMIInputOutput::setup(const NANDRAD::Project & prj) {
 	// store pointer to fmi description
 	m_fmiDescription = &prj.m_fmiDescription;
 
+	// count number of different input variable -> create map (key = valueRef, value = vector of m_inputVariable index)
+	std::map<unsigned int, std::vector<unsigned int> > m_inputVariableValueRefMap;
 	// check size of results vector
 	unsigned int nResults = m_fmiDescription->m_inputVariables.size();
 	// resize results vector
-	m_results.resize(nResults);
+	m_results.resize(nResults); // only one slot per FMI variable
 	// resize input value references
 	// set all output quantities as input references
 	unsigned int resultIndex = 0;
@@ -78,6 +80,9 @@ const double * FMIInputOutput::resolveResultReference(const NANDRAD_MODEL::Input
 	// copy index
 	if(valueRef.m_name.m_index != -1)
 		compVariable.m_vectorIndex = (unsigned int) valueRef.m_name.m_index;
+
+	// TODO : first look up index of NANDRAD input variable
+	//        then search corresponding FMI variable index and return m_results[fmiVarIndex]
 
 	// search inside container
 	unsigned int resultIndex = 0;
