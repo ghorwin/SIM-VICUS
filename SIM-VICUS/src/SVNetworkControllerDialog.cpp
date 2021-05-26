@@ -46,9 +46,10 @@ unsigned int SVNetworkControllerDialog::select(unsigned int networkId, unsigned 
 	VICUS::NetworkController *currentController = p.element(nw.m_controllers, controllerId);
 	if (currentController != nullptr)
 		m_controller = *currentController;
-	else
+	else {
 		m_controller = VICUS::NetworkController();
 		m_controller.m_id = 1;
+	}
 
 	update();
 

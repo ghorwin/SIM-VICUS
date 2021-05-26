@@ -271,8 +271,6 @@ void SVShadingCalculationDialog::on_lineEditDuration_editingFinishedSuccessfully
 
 
 void SVShadingCalculationDialog::on_pushButtonCalculate_clicked(){
-	FUNCID(SVShadingCalculationDialog::on_pushButtonCalculate_clicked);
-
 	try {
 		calculateShadingFactors();
 	} catch (IBK::Exception &ex) {

@@ -54,6 +54,8 @@ private slots:
 	void on_filepathTextEditor_editingFinished();
 	void on_filepathTextEditor_returnPressed();
 
+	void on_pushButtonAutoDetectTextEditor_clicked();
+
 private:
 	Ui::SVPreferencesPageTools *m_ui;
 };
