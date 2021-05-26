@@ -61,9 +61,7 @@ void SubSurface::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "Offset")
-				NANDRAD::readPoint2D(c, "Offset", m_offset);
-			else if (cName == "Polygon2D")
+			if (cName == "Polygon2D")
 				m_polygon2D.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
@@ -91,7 +89,6 @@ TiXmlElement * SubSurface::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 
 	m_polygon2D.writeXML(e);
-	NANDRAD::writePoint2D(e, "Offset", m_offset);
 	return e;
 }
 

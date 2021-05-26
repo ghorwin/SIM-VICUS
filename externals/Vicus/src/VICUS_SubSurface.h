@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -56,6 +56,9 @@ public:
 	/*! Sets color based on sub-surface type. */
 	void updateColor();
 
+	/*! Offset from first point of the parent surface to the first point this sub surface. */
+	const IBK::point2D<double> & offset() const { return m_polygon2D.vertexes()[0]; }
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of sub surface. */
@@ -66,8 +69,6 @@ public:
 	/*! The actual geometry. */
 	Polygon2D							m_polygon2D;				// XML:E
 
-	/*! Offset from first point of the parent surface to the first point this sub surface. */
-	IBK::point2D<double>				m_offset;					// XML:E
 
 	/*! Stores visibility information for this SubSurface.
 		Note: keep the next line - this will cause the code generator to create serialization code
@@ -90,10 +91,6 @@ public:
 		The pointer is updated in VICUS::Project::updatePointers().
 	*/
 	SubSurfaceComponentInstance			*m_subSurfaceComponentInstance = nullptr;
-
-private:
-
-
 };
 
 } // namespace VICUS
