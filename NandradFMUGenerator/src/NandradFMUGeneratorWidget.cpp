@@ -268,17 +268,11 @@ void NandradFMUGeneratorWidget::on_tableWidgetInputVars_currentCellChanged(int c
 		return;
 	}
 	QTableWidgetItem * item = m_ui->tableWidgetInputVars->item(currentRow, 0);
-	// valid entry?
-	if (item->data(Qt::UserRole).toBool()) {
-		// already configured?
-		if (item->data(Qt::UserRole+1).toUInt() == NANDRAD::INVALID_ID)
-			m_ui->toolButtonAddInputVariable->setEnabled(true); // not yet configured -> add button on
-		else
-			m_ui->toolButtonRemoveInputVariable->setEnabled(true); // already configured -> remove button on
-	}
-	else {
-		m_ui->toolButtonRemoveInputVariable->setEnabled(true); // invalid -> remove button on
-	}
+	// already configured?
+	if (item->data(Qt::UserRole).toUInt() == NANDRAD::INVALID_ID)
+		m_ui->toolButtonAddInputVariable->setEnabled(true); // not yet configured -> add button on
+	else
+		m_ui->toolButtonRemoveInputVariable->setEnabled(true); // already configured -> remove button on
 }
 
 
@@ -289,17 +283,11 @@ void NandradFMUGeneratorWidget::on_tableWidgetOutputVars_currentCellChanged(int 
 		return;
 	}
 	QTableWidgetItem * item = m_ui->tableWidgetOutputVars->item(currentRow, 0);
-	// valid entry?
-	if (item->data(Qt::UserRole).toBool()) {
-		// already configured?
-		if (item->data(Qt::UserRole+1).toUInt() == NANDRAD::INVALID_ID)
-			m_ui->toolButtonAddOutputVariable->setEnabled(true); // not yet configured -> add button on
-		else
-			m_ui->toolButtonRemoveOutputVariable->setEnabled(true); // already configured -> remove button on
-	}
-	else {
-		m_ui->toolButtonRemoveOutputVariable->setEnabled(true); // invalid -> remove button on
-	}
+	// already configured?
+	if (item->data(Qt::UserRole).toUInt() == NANDRAD::INVALID_ID)
+		m_ui->toolButtonAddOutputVariable->setEnabled(true); // not yet configured -> add button on
+	else
+		m_ui->toolButtonRemoveOutputVariable->setEnabled(true); // already configured -> remove button on
 }
 
 
@@ -309,7 +297,7 @@ void NandradFMUGeneratorWidget::on_toolButtonAddInputVariable_clicked() {
 	int row = m_ui->tableWidgetInputVars->currentRow();
 	Q_ASSERT(row != -1);
 	QTableWidgetItem * item = m_ui->tableWidgetInputVars->item(row,0);
-	unsigned int valRef = item->data(Qt::UserRole+1).toUInt();
+	unsigned int valRef = item->data(Qt::UserRole).toUInt();
 	Q_ASSERT(valRef == NANDRAD::INVALID_ID); // must be a valid, unused reference
 
 	// find corresponding FMI variable description
@@ -339,7 +327,7 @@ void NandradFMUGeneratorWidget::on_toolButtonAddInputVariable_clicked() {
 			// set new value reference in table
 			m_ui->tableWidgetInputVars->blockSignals(true);
 			m_ui->tableWidgetInputVars->item(row, 5)->setText(QString("%1").arg(newValueRef));
-			item->setData(Qt::UserRole+1, newValueRef);
+			item->setData(Qt::UserRole, newValueRef);
 			// now update appearance of table row
 			QFont f(m_ui->tableWidgetInputVars->font());
 			f.setBold(true);
@@ -352,6 +340,7 @@ void NandradFMUGeneratorWidget::on_toolButtonAddInputVariable_clicked() {
 			break;
 		}
 	}
+	dumpUsedValueRefs();
 }
 
 
@@ -360,14 +349,14 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveInputVariable_clicked() {
 	Q_ASSERT(row != -1);
 
 	QTableWidgetItem * item = m_ui->tableWidgetInputVars->item(row,0);
-	unsigned int valRef = item->data(Qt::UserRole+1).toUInt(); // Note: may be INVALID_ID in case of invalid definition
-	// remove value reference from set of used value references
+	unsigned int valRef = item->data(Qt::UserRole).toUInt();
+	// remove value reference from set of used value references, unless it is used still by another input variable
+	// (with same fmiVarName)
 	m_usedValueRefs.erase(valRef);
 
 	// get selected FMI variable name
 	std::string fmiVarName = m_ui->tableWidgetInputVars->item(row, 4)->text().toStdString();
 	// lookup existing definition in m_project and remove it there
-	bool valid = item->data(Qt::UserRole).toBool();
 	for (std::vector<NANDRAD::FMIVariableDefinition>::iterator it = m_project.m_fmiDescription.m_inputVariables.begin();
 		 it != m_project.m_fmiDescription.m_inputVariables.end(); ++it)
 	{
@@ -386,26 +375,19 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveInputVariable_clicked() {
 		}
 	}
 	// if valid, just clear item flags
-	if (valid) {
-		m_ui->tableWidgetInputVars->blockSignals(true);
-		item->setData(Qt::UserRole+1, NANDRAD::INVALID_ID);
-		m_ui->tableWidgetInputVars->item(row, 5)->setText("---");
-		// now reset table row to uninitialized state
-		QFont f(m_ui->tableWidgetInputVars->font());
-		f.setItalic(true);
-		for (int i=0; i<8; ++i) {
-			m_ui->tableWidgetInputVars->item(row, i)->setFont(f);
-			m_ui->tableWidgetInputVars->item(row, i)->setTextColor(Qt::gray);
-		}
-		m_ui->tableWidgetInputVars->blockSignals(false);
-		on_tableWidgetInputVars_currentCellChanged(row,0,0,0);
+	m_ui->tableWidgetInputVars->blockSignals(true);
+	item->setData(Qt::UserRole, NANDRAD::INVALID_ID);
+	m_ui->tableWidgetInputVars->item(row, 5)->setText("---");
+	// now reset table row to uninitialized state
+	QFont f(m_ui->tableWidgetInputVars->font());
+	f.setItalic(true);
+	for (int i=0; i<8; ++i) {
+		m_ui->tableWidgetInputVars->item(row, i)->setFont(f);
+		m_ui->tableWidgetInputVars->item(row, i)->setTextColor(Qt::gray);
 	}
-	else {
-		// erase row in table
-		m_ui->tableWidgetInputVars->removeRow(row);
-		m_ui->tableWidgetInputVars->selectRow(std::min(row, m_ui->tableWidgetInputVars->rowCount()-1));
-		on_tableWidgetInputVars_currentCellChanged(row,0,0,0);
-	}
+	m_ui->tableWidgetInputVars->blockSignals(false);
+	on_tableWidgetInputVars_currentCellChanged(row,0,0,0);
+	dumpUsedValueRefs();
 }
 
 
@@ -427,7 +409,7 @@ void NandradFMUGeneratorWidget::on_toolButtonAddOutputVariable_clicked() {
 	int row = m_ui->tableWidgetOutputVars->currentRow();
 	Q_ASSERT(row != -1);
 	QTableWidgetItem * item = m_ui->tableWidgetOutputVars->item(row,0);
-	unsigned int valRef = item->data(Qt::UserRole+1).toUInt();
+	unsigned int valRef = item->data(Qt::UserRole).toUInt();
 	Q_ASSERT(valRef == NANDRAD::INVALID_ID); // must be a valid, unused reference
 
 	// find corresponding FMI variable description
@@ -447,7 +429,7 @@ void NandradFMUGeneratorWidget::on_toolButtonAddOutputVariable_clicked() {
 			// set new value reference in table
 			m_ui->tableWidgetOutputVars->blockSignals(true);
 			m_ui->tableWidgetOutputVars->item(row, 5)->setText(QString("%1").arg(newValueRef));
-			item->setData(Qt::UserRole+1, newValueRef);
+			item->setData(Qt::UserRole, newValueRef);
 			// now update appearance of table row
 			QFont f(m_ui->tableWidgetOutputVars->font());
 			f.setBold(true);
@@ -460,6 +442,7 @@ void NandradFMUGeneratorWidget::on_toolButtonAddOutputVariable_clicked() {
 			break;
 		}
 	}
+	dumpUsedValueRefs();
 }
 
 
@@ -468,14 +451,13 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveOutputVariable_clicked() {
 	Q_ASSERT(row != -1);
 
 	QTableWidgetItem * item = m_ui->tableWidgetOutputVars->item(row,0);
-	unsigned int valRef = item->data(Qt::UserRole+1).toUInt(); // Note: may be INVALID_ID in case of invalid definition
+	unsigned int valRef = item->data(Qt::UserRole).toUInt();
 	// remove value reference from set of used value references
 	m_usedValueRefs.erase(valRef);
 
 	// get selected FMI variable name
 	std::string fmiVarName = m_ui->tableWidgetOutputVars->item(row, 4)->text().toStdString();
 	// lookup existing definition in m_project and remove it there
-	bool valid = item->data(Qt::UserRole).toBool();
 	for (std::vector<NANDRAD::FMIVariableDefinition>::iterator it = m_project.m_fmiDescription.m_outputVariables.begin();
 		 it != m_project.m_fmiDescription.m_outputVariables.end(); ++it)
 	{
@@ -494,26 +476,19 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveOutputVariable_clicked() {
 		}
 	}
 	// if valid, just clear item flags
-	if (valid) {
-		item->setData(Qt::UserRole+1, NANDRAD::INVALID_ID);
-		m_ui->tableWidgetOutputVars->blockSignals(true);
-		m_ui->tableWidgetOutputVars->item(row, 5)->setText("---");
-		// now reset table row to uninitialized state
-		QFont f(m_ui->tableWidgetOutputVars->font());
-		f.setItalic(true);
-		for (int i=0; i<8; ++i) {
-			m_ui->tableWidgetOutputVars->item(row, i)->setFont(f);
-			m_ui->tableWidgetOutputVars->item(row, i)->setTextColor(Qt::gray);
-		}
-		m_ui->tableWidgetOutputVars->blockSignals(false);
-		on_tableWidgetOutputVars_currentCellChanged(row,0,0,0);
+	m_ui->tableWidgetOutputVars->blockSignals(true);
+	item->setData(Qt::UserRole, NANDRAD::INVALID_ID);
+	m_ui->tableWidgetOutputVars->item(row, 5)->setText("---");
+	// now reset table row to uninitialized state
+	QFont f(m_ui->tableWidgetOutputVars->font());
+	f.setItalic(true);
+	for (int i=0; i<8; ++i) {
+		m_ui->tableWidgetOutputVars->item(row, i)->setFont(f);
+		m_ui->tableWidgetOutputVars->item(row, i)->setTextColor(Qt::gray);
 	}
-	else {
-		// erase row in table
-		m_ui->tableWidgetOutputVars->removeRow(row);
-		m_ui->tableWidgetOutputVars->selectRow(std::min(row, m_ui->tableWidgetOutputVars->rowCount()-1));
-		on_tableWidgetOutputVars_currentCellChanged(row,0,0,0);
-	}
+	m_ui->tableWidgetOutputVars->blockSignals(false);
+	on_tableWidgetOutputVars_currentCellChanged(row,0,0,0);
+	dumpUsedValueRefs();
 }
 
 
@@ -1007,9 +982,11 @@ void NandradFMUGeneratorWidget::updateFMUVariableTables() {
 	m_project.m_fmiDescription.m_inputVariables.swap(validInputVars);
 	m_project.m_fmiDescription.m_outputVariables.swap(validOutputVars);
 
+	dumpUsedValueRefs();
+
 	// now populate the tables
-	populateTable(m_ui->tableWidgetInputVars, m_availableInputVariables, invalidInputVars);
-	populateTable(m_ui->tableWidgetOutputVars, m_availableOutputVariables, invalidOutputVars);
+	populateTable(m_ui->tableWidgetInputVars, m_availableInputVariables);
+	populateTable(m_ui->tableWidgetOutputVars, m_availableOutputVariables);
 
 	if (m_ui->tableWidgetInputVars->rowCount() != 0) {
 		m_ui->tableWidgetInputVars->selectRow(0);
@@ -1028,26 +1005,20 @@ void NandradFMUGeneratorWidget::updateFMUVariableTables() {
 
 
 void NandradFMUGeneratorWidget::populateTable(QTableWidget * table,
-											  const std::vector<NANDRAD::FMIVariableDefinition> & availableVars,
-											  const std::vector<NANDRAD::FMIVariableDefinition> & invalidVars)
+											  const std::vector<NANDRAD::FMIVariableDefinition> & availableVars)
 {
 	table->setRowCount(0);
 	table->setSortingEnabled(false); // disable sorting while we add rows
-	// first add the invalid variables
-	for (const NANDRAD::FMIVariableDefinition & var : invalidVars)
-		appendVariableEntry(table, var, false);
 	// then add the valid variables
 	for (const NANDRAD::FMIVariableDefinition & var : availableVars)
-		appendVariableEntry(table, var, true);
+		appendVariableEntry(table, var);
 
 	table->setSortingEnabled(true); // re-enable sorting
 	table->resizeColumnsToContents();
 }
 
 
-void NandradFMUGeneratorWidget::appendVariableEntry(QTableWidget * tableWidget,
-													const NANDRAD::FMIVariableDefinition & var, bool valid)
-{
+void NandradFMUGeneratorWidget::appendVariableEntry(QTableWidget * tableWidget, const NANDRAD::FMIVariableDefinition & var) {
 	tableWidget->blockSignals(true);
 
 	// add new row
@@ -1056,24 +1027,19 @@ void NandradFMUGeneratorWidget::appendVariableEntry(QTableWidget * tableWidget,
 
 	QFont itemFont(tableWidget->font());
 	QColor itemColor(Qt::black);
-	if (!valid)
-		itemColor = QColor("#a00000");
+	if (var.m_fmiValueRef == NANDRAD::INVALID_ID) {
+		itemFont.setItalic(true);
+		itemColor = QColor(Qt::gray);
+	}
 	else {
-		if (var.m_fmiValueRef == NANDRAD::INVALID_ID) {
-			itemFont.setItalic(true);
-			itemColor = QColor(Qt::gray);
-		}
-		else {
-			itemFont.setBold(true);
-		}
+		itemFont.setBold(true);
 	}
 
 	QTableWidgetItem * item = new QTableWidgetItem(QString::fromStdString(var.m_varName));
 	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	item->setFont(itemFont);
 	item->setTextColor(itemColor);
-	item->setData(Qt::UserRole, valid);
-	item->setData(Qt::UserRole+1, var.m_fmiValueRef);
+	item->setData(Qt::UserRole, var.m_fmiValueRef);
 	tableWidget->setItem(row, 0, item);
 
 
@@ -1126,6 +1092,12 @@ void NandradFMUGeneratorWidget::appendVariableEntry(QTableWidget * tableWidget,
 	tableWidget->setItem(row, 7, item);
 
 	tableWidget->blockSignals(false);
+}
+
+void NandradFMUGeneratorWidget::dumpUsedValueRefs() const {
+	qDebug() << "-----";
+	for (unsigned int id : m_usedValueRefs)
+		qDebug() << id;
 }
 
 

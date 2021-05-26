@@ -119,16 +119,15 @@ private:
 	void updateFMUVariableTables();
 
 	/*! This fills in a table with FMI variables. */
-	void populateTable(QTableWidget * table, const std::vector<NANDRAD::FMIVariableDefinition> & availableVars,
-					   const std::vector<NANDRAD::FMIVariableDefinition> & invalidVars);
+	void populateTable(QTableWidget * table, const std::vector<NANDRAD::FMIVariableDefinition> & availableVars);
 
 	/*! Adds a new row to a table widget.
 		\param tableWidget The target table widget.
 		\param var The variable to add.
-		\param valid True, if such a model variable exists in the current model (invalid variables are marked in red).
 	*/
-	void appendVariableEntry(QTableWidget * tableWidget, const NANDRAD::FMIVariableDefinition & var, bool valid);
+	void appendVariableEntry(QTableWidget * tableWidget, const NANDRAD::FMIVariableDefinition & var);
 
+	void dumpUsedValueRefs() const;
 
 	/*! This function returns detailed variable information to be used when generating FMU variables.
 		This might be better placed somewhere in the VICUS library?
