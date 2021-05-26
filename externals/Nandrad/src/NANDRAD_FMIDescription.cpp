@@ -91,7 +91,7 @@ void FMIDescription::checkParameters() {
 		// store name
 		usedFmiOutputNames.insert(var.m_fmiVarName);
 		// error: duplicate id
-		if(usedFmiOutputIds.find(var.m_fmiValueRef) != usedFmiInputIds.end()) {
+		if(usedFmiOutputIds.find(var.m_fmiValueRef) != usedFmiOutputIds.end()) {
 			throw IBK::Exception(IBK::FormatString("Duplicate id %1 for FMI output variable '%2'!")
 					.arg(var.m_fmiValueRef).arg(var.m_fmiVarName), FUNC_ID);
 		}
