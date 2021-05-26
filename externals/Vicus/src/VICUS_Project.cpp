@@ -1684,7 +1684,14 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 					NANDRAD::KeywordList::setParameter(emb.m_para, "ConstructionInstance::para_t",
 													   NANDRAD::EmbeddedObject::P_Area, areaA);
 					emb.m_displayName = ss.m_displayName.toStdString();
-					//emb.m_window.
+
+					NANDRAD::EmbeddedObjectWindow window;
+
+					//TODO Dirk hier muss noch eine ID rein
+					window.m_glazingSystemID = uniqueIdWithPredef2(Window, 1, m_idMaps, true);
+
+					//TODO Dirk Frame einbauen sobald verfügbar
+					//TODO Dirk Divider einbauen sobald verfügbar
 				}
 			}
 

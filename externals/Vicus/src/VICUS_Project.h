@@ -354,6 +354,7 @@ private:
 		Component,
 		ConstructionInstance,
 		Construction,
+		Window,
 		Interface,
 		Other,
 		Zone,
