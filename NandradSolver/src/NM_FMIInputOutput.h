@@ -117,17 +117,11 @@ private:
 
 	/*! Stored value references for input quantities (pointers to internal result variables that contain
 		via FMI imported values), sorted via fmi id number. */
-	std::map<unsigned int, double *>			m_FMIInputValueRefs;
+	std::map<unsigned int, double>				m_FMIInputValues;
 
 	/*! Stored value references for output quantities (pointers to result variables exported via FMI),
 		sorted via fmi id number. */
 	std::map<unsigned int, const double *>		m_FMIOutputValueRefs;
-
-	/*! Cached current values, updated in setTime().
-		These values will be updated based on cached FMI variable input data.
-		For all input variables with *different* value references a result value slot exists.
-	*/
-	std::vector<double>							m_results;
 
 	/*! Stored constant reference to FMI description. */
 	const NANDRAD::FMIDescription				*m_fmiDescription = nullptr;
