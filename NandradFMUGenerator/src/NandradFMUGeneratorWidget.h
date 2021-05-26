@@ -84,6 +84,8 @@ private slots:
 	/*! Called when solver process could not be started. */
 	void onProcessErrorOccurred();
 
+	void on_tableWidgetInputVars_itemChanged(QTableWidgetItem *item);
+
 private:
 	/*! Toggles the GUI state depending on whether a valid NANDRAD Project was read or not. */
 	void setGUIState(bool active);
