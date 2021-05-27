@@ -89,6 +89,15 @@ void ConstructionBalanceModel::resultDescriptions(std::vector<QuantityDescriptio
 	// and the temperatures returned are actually mean temperatures of the individual elements of the material layer
 	res.resize(m_con->m_constructionType->m_materialLayers.size());
 	resDesc.push_back(res);
+
+	if(m_statesModel->m_activeLayerIndex != NANDRAD::INVALID_ID)  {
+		// add active layewr heat load to quantity descriptions
+		res.m_constant = true;
+		res.m_description = "Thermal load of active layer";
+		res.m_name = "ActiveLayerThermalLoad";
+		res.m_unit = "W";
+		resDesc.push_back(res);
+	}
 }
 
 

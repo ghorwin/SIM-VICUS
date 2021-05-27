@@ -1388,11 +1388,11 @@ void NandradModel::initModels() {
 	}
 
 	// summation models
-	if (!m_project->m_models.m_heatloadSummationModels.empty()) {
+	if (!m_project->m_models.m_heatLoadSummationModels.empty()) {
 		IBK::IBK_Message(IBK::FormatString("Initializing ideal pipe register models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		IBK_MSG_INDENT;
 
-		for (NANDRAD::HeatLoadSummationModel & m: m_project->m_models.m_heatloadSummationModels) {
+		for (NANDRAD::HeatLoadSummationModel & m: m_project->m_models.m_heatLoadSummationModels) {
 			NANDRAD_MODEL::HeatLoadSummationModel * mod = new NANDRAD_MODEL::HeatLoadSummationModel(m.m_id, m.m_displayName);
 			m_modelContainer.push_back(mod); // transfer ownership
 

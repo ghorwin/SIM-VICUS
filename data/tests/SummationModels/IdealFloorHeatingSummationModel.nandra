@@ -148,6 +148,12 @@
 				</OutputDefinition>
 
 				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<ObjectListName>Zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
 					<Quantity>ConstructionHeatConductionLoad</Quantity>
 					<ObjectListName>Zones</ObjectListName>
 					<GridName>hourly</GridName>

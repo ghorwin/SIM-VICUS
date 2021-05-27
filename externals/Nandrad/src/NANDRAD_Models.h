@@ -65,7 +65,7 @@ public:
 	/*! Container for all ideal pipe register models. */
 	std::vector<IdealPipeRegisterModel>				m_idealPipeRegisterModels;			// XML:E
 	/*! Container for all heat load summation models. */
-	std::vector<HeatLoadSummationModel>				m_heatloadSummationModels;			// XML:E
+	std::vector<HeatLoadSummationModel>				m_heatLoadSummationModels;			// XML:E
 	/*! Container for all network interface models. */
 	std::vector<NetworkInterfaceAdapterModel>		m_networkInterfaceAdapterModel;		// XML:E
 };

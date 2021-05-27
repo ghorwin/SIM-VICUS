@@ -120,7 +120,6 @@ void HeatLoadSummationModel::initInputReferences(const std::vector<AbstractModel
 		r.m_id = id;
 		r.m_referenceType = refType;
 		r.m_name.m_name = quantity;
-		r.m_name.m_index = (int)id; // vector gets ID of current construction instance
 		r.m_required = false;
 		m_inputRefs.push_back(r);
 	}

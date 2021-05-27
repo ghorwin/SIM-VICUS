@@ -47,7 +47,7 @@ class HeatLoadSummationModel : public AbstractModel, public AbstractStateDepende
 public:
 	/*! Computed results. */
 	enum Results {
-		R_TotalHeatLoad,				// Keyword: TotalHeatLoad			[W]		'Sum of heat load'
+		R_TotalHeatLoad,			// Keyword: TotalHeatLoad			[W]		'Sum of heat load'
 		NUM_R
 	};
 
