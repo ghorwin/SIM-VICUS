@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -192,7 +192,13 @@ void PlaneGeometry::triangulate() {
 		const std::vector<IBKMK::Vector2D> &subSurfacePoly = p2.vertexes();
 
 		// check if any of the holes are invalid
-		// TODO : Dirk
+		// TODO : Dirk, invalide Polygone einfach ignorieren und nicht zeichnen? Oder als "outline" zeichnen?
+		//        Damit man diese "invaliden" Polygonflächen noch anfassen kann und vielleicht zurück in die
+		//        Konstruktion schieben kann, müsste man diese trotzdem triangulieren. Vorschlag:
+		//        Unterscheiden zwischen komplett ungültig (verwunden, nur 2 nicht-kollinieare Punkte, ...)
+		//        und korrigierbar falsch ("außerhalb des Polygons" oder "überlappend mit anderem Fenster").
+		//        Letztere könnte man zunächst auch noch zeichnen, sollte dann aber den "invalid" Zustand irgendwie
+		//        visualisiert bekommen (und beim NANDRAD -Export vielleicht als Fehler angezeigt bekommen?).
 
 		/* erster Test: Prüfe alle Mittelpunkte der Hole-Strecken auf PointInPolygon mit der Outer-Bound.
 			Falls true --> Hole is invalid
