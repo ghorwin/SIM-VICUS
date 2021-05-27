@@ -49,9 +49,14 @@ namespace IBKMK {
 	the function returns false.
 
 	Note: when the point p is not in the plane, this function will still get a valid result.
+
+	Optional argument tolerance defines the allowed distance (magnitude of distance vector) of a point from
+	the projected point on the plane. This can be used to correct rounding errors. If the distance is larger than
+	the given tolerance, the function returns false (rounding error too large).
 */
 bool planeCoordinates(const Vector3D & offset, const Vector3D & a, const Vector3D & b,
-					  const Vector3D & v, double & x, double & y);
+					  const Vector3D & v, double & x, double & y,
+					  double tolerance = 1e-4);
 
 
 /*! Computes the distance between a line (defined through offset point a, and directional vector d) and a point p.
