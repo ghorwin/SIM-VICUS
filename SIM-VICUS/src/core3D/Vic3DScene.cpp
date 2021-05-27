@@ -1400,7 +1400,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 						}
 						else {
 							// set "not interested/not applicable" color
-							s.m_color = QColor(128,64,64,64); // transparent dark-blue color; will be drawn opaque in most modes
+							sub.m_color = QColor(72,72,72,64); // will be drawn opaque in most modes
 						}
 					}
 				}
@@ -1426,6 +1426,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 		case SVViewState::OCM_None: break;
 
 		case SVViewState::OCM_Components:
+		case SVViewState::OCM_SubSurfaceComponents:
 		case SVViewState::OCM_ComponentOrientation:
 		case SVViewState::OCM_BoundaryConditions: {
 			// now color all surfaces, this works by first looking up the components, associated with each surface
@@ -1480,9 +1481,6 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 				}
 			}
 
-		} break;
-
-		case SVViewState::OCM_SubSurfaceComponents : {
 			// now color all sub-surfaces, this works by first looking up the components, associated with each surface
 			for (const VICUS::SubSurfaceComponentInstance & ci : project().m_subSurfaceComponentInstances) {
 				// lookup component definition
@@ -1491,10 +1489,15 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					continue; // no component definition - keep default (uninterested) color
 				switch (ocm) {
 					case SVViewState::OCM_SubSurfaceComponents:
-						if (ci.m_sideASubSurface != nullptr)
+						if (ci.m_sideASubSurface != nullptr) {
 							ci.m_sideASubSurface->m_color = comp->m_color;
-						if (ci.m_sideBSubSurface != nullptr)
+							// TODO : decide upon alpha value based on component type
+							ci.m_sideASubSurface->m_color.setAlpha(128);
+						}
+						if (ci.m_sideBSubSurface != nullptr) {
 							ci.m_sideBSubSurface->m_color = comp->m_color;
+							ci.m_sideBSubSurface->m_color.setAlpha(128);
+						}
 					break;
 					case SVViewState::OCM_ComponentOrientation:
 						// color surfaces when either filtering is off (id == 0)
@@ -1537,8 +1540,8 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					case SVViewState::OCM_NetworkNode:
 					case SVViewState::OCM_NetworkComponents:
 					break;
-				}
-			} // for sub-component-instances
+				} // switch
+			}
 
 		} break;
 
