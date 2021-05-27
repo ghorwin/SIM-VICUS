@@ -83,7 +83,7 @@ QVariant SVDBZoneControlThermostatTableModel::data ( const QModelIndex & index, 
 
 		case Qt::DecorationRole : {
 			if (index.column() == ColCheck) {
-				if (it->second.isValid()) // for now just check for validity
+				if (it->second.isValid(m_db->m_schedules)) // for now just check for validity
 					return QIcon("://gfx/actions/16x16/ok.png");
 				else
 					return QIcon("://gfx/actions/16x16/error.png");
@@ -149,7 +149,7 @@ QModelIndex SVDBZoneControlThermostatTableModel::addNewItem() {
 
 	// set default parameters
 
-	ctrl.m_ctrlVal = VICUS::ZoneControlThermostat::CV_AirTemperature;
+	ctrl.m_controlValue = VICUS::ZoneControlThermostat::CV_AirTemperature;
 	VICUS::KeywordList::setParameter(ctrl.m_para, "ZoneControlThermostat::para_t", VICUS::ZoneControlThermostat::P_ToleranceHeating, 0.0);
 	VICUS::KeywordList::setParameter(ctrl.m_para, "ZoneControlThermostat::para_t", VICUS::ZoneControlThermostat::P_ToleranceCooling, 0.0);
 

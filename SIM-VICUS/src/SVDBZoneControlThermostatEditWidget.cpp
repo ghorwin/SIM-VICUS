@@ -80,12 +80,6 @@ void SVDBZoneControlThermostatEditWidget::setup(SVDatabase * db, SVAbstractDatab
 void SVDBZoneControlThermostatEditWidget::updateInput(int id) {
 	m_current = nullptr; // disable edit triggers
 
-	m_ui->labelCategory_2->setText(tr("Control Type:"));
-	m_ui->labelScheduleHeating->setText(tr("Heating Schedule:"));
-	m_ui->labelScheduleCooling->setText(tr("Cooling Schedule:"));
-	m_ui->labelToleranceHeating->setText(tr("Tolerance:"));
-	m_ui->labelToleranceCooling->setText(tr("Tolerance:"));
-
 	if (id == -1) {
 		// clear input controls
 		m_ui->lineEditName->setString(IBK::MultiLanguageString());
@@ -107,7 +101,7 @@ void SVDBZoneControlThermostatEditWidget::updateInput(int id) {
 
 	//set method
 	m_ui->comboBoxMethod->blockSignals(true);
-	m_ui->comboBoxMethod->setCurrentIndex(m_current->m_ctrlVal);
+	m_ui->comboBoxMethod->setCurrentIndex(m_current->m_controlValue);
 	m_ui->comboBoxMethod->blockSignals(false);
 
 	m_ui->lineEditToleranceHeating->setValue(m_current->m_para[VICUS::ZoneControlThermostat::P_ToleranceHeating].value);
@@ -153,10 +147,9 @@ void SVDBZoneControlThermostatEditWidget::on_comboBoxControlValue_currentIndexCh
 
 	for(int i=0; i<VICUS::ZoneControlThermostat::ControlValue::NUM_CV; ++i){
 		if(index == i){
-			m_current->m_ctrlVal = static_cast<VICUS::ZoneControlThermostat::ControlValue>(i);
+			m_current->m_controlValue = static_cast<VICUS::ZoneControlThermostat::ControlValue>(i);
 			modelModify();
 			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-
 		}
 	}
 }
