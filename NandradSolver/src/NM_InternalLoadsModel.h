@@ -62,20 +62,20 @@ public:
 	}
 
 	/*! Initializes object.
-		\param ventilationModel Ventilation model data.
-		\param simPara Required simulation parameter.
+		\param internalLoadsModel Model data.
 		\param objLists The object list stored in the project file (persistent, remains unmodified so that persistent
 			pointers to object list elements can be stored).
+		\param zones List of defined zones.
 	*/
 	void setup(const NANDRAD::InternalLoadsModel & internalLoadsModel, const std::vector<NANDRAD::ObjectList> & objLists,
 			   const std::vector<NANDRAD::Zone> & zones);
 
-	/*! Returns object list of all referenced models. */
+	/*! Returns object list of all referenced zones. */
 	const NANDRAD::ObjectList &objectList() const;
 
 	// *** Re-implemented from AbstractModel
 
-	/*! Thermal ventilation loads can be requested via MODEL reference. */
+	/*! Internal loads can be requested via MODEL reference. */
 	virtual NANDRAD::ModelInputReference::referenceType_t referenceType() const override {
 		return NANDRAD::ModelInputReference::MRT_MODEL;
 	}

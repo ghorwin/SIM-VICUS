@@ -124,6 +124,18 @@ void Models::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "NetworkInterfaceAdapterModel") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "NetworkInterfaceAdapterModel")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					NetworkInterfaceAdapterModel obj;
+					obj.readXML(c2);
+					m_networkInterfaceAdapterModel.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -221,6 +233,18 @@ TiXmlElement * Models::writeXML(TiXmlElement * parent) const {
 
 		for (std::vector<IdealPipeRegisterModel>::const_iterator it = m_idealPipeRegisterModels.begin();
 			it != m_idealPipeRegisterModels.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_networkInterfaceAdapterModel.empty()) {
+		TiXmlElement * child = new TiXmlElement("NetworkInterfaceAdapterModel");
+		e->LinkEndChild(child);
+
+		for (std::vector<NetworkInterfaceAdapterModel>::const_iterator it = m_networkInterfaceAdapterModel.begin();
+			it != m_networkInterfaceAdapterModel.end(); ++it)
 		{
 			it->writeXML(child);
 		}

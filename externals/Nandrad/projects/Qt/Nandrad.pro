@@ -174,6 +174,7 @@ SOURCES += \
     ../../src/ncg/ncg_NANDRAD_MaterialLayer.cpp \
     ../../src/ncg/ncg_NANDRAD_Models.cpp \
     ../../src/ncg/ncg_NANDRAD_NaturalVentilationModel.cpp \
+    ../../src/ncg/ncg_NANDRAD_NetworkInterfaceAdapterModel.cpp \
     ../../src/ncg/ncg_NANDRAD_ObjectList.cpp \
     ../../src/ncg/ncg_NANDRAD_OutputDefinition.cpp \
     ../../src/ncg/ncg_NANDRAD_OutputGrid.cpp \
