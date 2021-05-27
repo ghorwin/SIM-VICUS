@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -30,32 +30,48 @@
 namespace VICUS {
 
 
-bool ZoneControlThermostat::isValid() const
-{
+bool ZoneControlThermostat::isValid(const Database<Schedule> & scheduleDB) const {
 	if(m_id == INVALID_ID)
 		return false;
 
-	if(m_ctrlVal == NUM_CV)
+	if (m_controlValue == NUM_CV)
 		return false;
 
-	if(m_coolingSetpointScheduleId == INVALID_ID || m_heatingSetpointScheduleId == INVALID_ID)
+	// if both setpoint schedules are undefined, the definition is incomplete (one is required)
+	if (m_coolingSetpointScheduleId == INVALID_ID && m_heatingSetpointScheduleId == INVALID_ID)
 		return false;
-	else{
-		/// TODO Dirk->Andreas wie komm ich jetzt an die Schedule Datenbank und kann die vorgegebene ID prüfen
-		/// ob dieser Schedule valide ist?
-	}
+
 	try {
-		m_para[P_ToleranceCooling].checkedValue(KeywordList::Keyword("ZoneControlThermostat::para_t", P_ToleranceCooling),
-							 "K", "K", 0, true, 5, true, nullptr);
-		m_para[P_ToleranceHeating].checkedValue(KeywordList::Keyword("ZoneControlThermostat::para_t", P_ToleranceHeating),
-							 "K", "K", 0, true, 5, true, nullptr);
+		if (m_heatingSetpointScheduleId != INVALID_ID) {
+			m_para[P_ToleranceHeating].checkedValue(KeywordList::Keyword("ZoneControlThermostat::para_t", P_ToleranceHeating),
+								 "K", "K", 0, true, 5, true, nullptr);
+			// check if schedule ID is existing and valid
+			const Schedule * sched = scheduleDB[m_heatingSetpointScheduleId];
+			if (sched == nullptr)
+				return false;
+			if (!sched->isValid())
+				return false;
+		}
 
-	}  catch (...) {
+		if (m_coolingSetpointScheduleId != INVALID_ID) {
+			m_para[P_ToleranceCooling].checkedValue(KeywordList::Keyword("ZoneControlThermostat::para_t", P_ToleranceCooling),
+							 "K", "K", 0, true, 5, true, nullptr);
+			// check if schedule ID is existing and valid
+			const Schedule * sched = scheduleDB[m_coolingSetpointScheduleId];
+			if (sched == nullptr)
+				return false;
+			if (!sched->isValid())
+				return false;
+		}
+
+	}
+	catch (...) {
 		return false;
 	}
 
 	return true;
 }
+
 
 AbstractDBElement::ComparisonResult ZoneControlThermostat::equal(const AbstractDBElement *other) const {
 	const ZoneControlThermostat * otherCtrl = dynamic_cast<const ZoneControlThermostat*>(other);
@@ -71,7 +87,7 @@ AbstractDBElement::ComparisonResult ZoneControlThermostat::equal(const AbstractD
 	}
 	if(m_heatingSetpointScheduleId != otherCtrl->m_heatingSetpointScheduleId ||
 			m_coolingSetpointScheduleId != otherCtrl->m_coolingSetpointScheduleId ||
-			m_ctrlVal != otherCtrl->m_ctrlVal)
+			m_controlValue != otherCtrl->m_controlValue)
 		return Different;
 
 	//check meta data
@@ -86,4 +102,4 @@ AbstractDBElement::ComparisonResult ZoneControlThermostat::equal(const AbstractD
 }
 
 
-}
+} // namespace VICUS
