@@ -186,7 +186,10 @@ void PlaneGeometry::triangulate() {
 
 	const std::vector<IBKMK::Vector2D> &parentPoly = m_polygon.polyline().vertexes();
 	// process all holes and check if they are valid (i.e. their polygons do not intersect our polygons
-	std::vector<unsigned int> validPolygons, invalidPolygons;
+
+	// here we store the state of the sub-surface polygon: 0 - invalid, 1 - partially valid, 2 - completely valid
+	// polygons with status 1 are drawn but not used in triangulation of polygon3D
+	std::vector<unsigned int> polygonStatus(m_holes.size(), 0);
 	for (unsigned int i=0; i<m_holes.size(); ++i) {
 		const Polygon2D & p2 = m_holes[i];
 		const std::vector<IBKMK::Vector2D> &subSurfacePoly = p2.vertexes();
@@ -200,48 +203,56 @@ void PlaneGeometry::triangulate() {
 		//        Letztere könnte man zunächst auch noch zeichnen, sollte dann aber den "invalid" Zustand irgendwie
 		//        visualisiert bekommen (und beim NANDRAD -Export vielleicht als Fehler angezeigt bekommen?).
 
-		/* erster Test: Prüfe alle Mittelpunkte der Hole-Strecken auf PointInPolygon mit der Outer-Bound.
-			Falls true --> Hole is invalid
-		*/
+
+		// skip invalid polygons alltogether
+		if (!p2.isValid()) {
+			polygonStatus[i] = 0;
+			continue;
+		}
+
+
+		// First check: test all vertexes of polygon;
+		// - if outside outer polygon, sub-surface is (partially) outside polygon
 
 		bool valid = true;
-
 		unsigned int pointCountHole = subSurfacePoly.size();
-
-		for(unsigned int j=0; j<pointCountHole; ++j){
-			if(IBKMK::pointInPolygon(parentPoly, subSurfacePoly[j]) == -1){
+		for(unsigned int j=0; j<pointCountHole; ++j) {
+			if (IBKMK::pointInPolygon(parentPoly, subSurfacePoly[j]) == -1){
 				valid = false;
 				break;
 			}
 		}
 
-		if(!valid)
+		if (!valid) {
+			polygonStatus[i] = 1;
 			continue;
+		}
 
-		/*
-			Zweiter Test:
-			Schnitt aller Strecken des Holes mit allen Strecken der Outerbound
-			Falls Schnittpunkt existiert und nicht gleich den Punkten der Outerbound-Strecke ist
-			--> hole invalid
-
-			Falls es ein invalides Hole is weghauen?
-		*/
-
+		// Second check: test intersections of all sub-surface polygon edges with edges of outer polygon
 		for(unsigned int j=0; j<pointCountHole; ++j){
 			const IBKMK::Vector2D &point1 = subSurfacePoly[j];
-			const IBKMK::Vector2D &point2 = subSurfacePoly[(j+1)%pointCountHole];
+			const IBKMK::Vector2D &point2 = subSurfacePoly[(j+1) % pointCountHole];
 			IBKMK::Vector2D intersectP;
-			if(IBKMK::intersectsLine2D(parentPoly, point1, point2, intersectP)){
-				if(		!(IBK::nearly_equal<3>(intersectP.distanceTo(point1),0) ||
-						IBK::nearly_equal<3>(intersectP.distanceTo(point2),0) )){
+			if (IBKMK::intersectsLine2D(parentPoly, point1, point2, intersectP)) {
+				// if intersection point is close to first or second point of line, polygon is ok
+				if (! (IBK::nearly_equal<3>(intersectP.distanceTo(point1),0) ||
+					   IBK::nearly_equal<3>(intersectP.distanceTo(point2),0)    )  )
+				{
 					valid = false;
 					break;
 				}
 			}
 
 		}
-		if(valid)
-			validPolygons.push_back(i); // mark as valid
+		if (!valid) {
+			polygonStatus[i] = 1;
+			continue;
+		}
+
+		// TODO Dirk, check intersections with other sub-surfaces
+
+		// all checks done
+		polygonStatus[i] = 2;
 	}
 
 	// now populate global vertex vector and generate 2D polygon
@@ -265,7 +276,11 @@ void PlaneGeometry::triangulate() {
 	m_holeTriangulationData.resize(m_holes.size()); // create an (empty) data structure for each hole
 
 	// loop all holes/windows
-	for (unsigned int holeIdx : validPolygons) {
+	for (unsigned int holeIdx = 0; holeIdx < polygonStatus.size(); ++holeIdx) {
+		// skip all entirely invalid polygons
+		if (polygonStatus[holeIdx] == 0)
+			continue;
+
 		const Polygon2D & p2 = m_holes[holeIdx];
 
 		std::vector<unsigned int> vertexIndexes; // mapping table, relates hole index to global index in 'points' vector
@@ -296,8 +311,9 @@ void PlaneGeometry::triangulate() {
 		for (unsigned int i=0, vertexCount = p2.vertexes().size(); i<vertexCount; ++i) {
 			unsigned int i1 = vertexIndexes[i];
 			unsigned int i2 = vertexIndexes[(i+1) % vertexCount];
-			// add edge to global edge list (for outer polygon)
-			edges.push_back(std::make_pair(i1, i2));
+			// add edge to global edge list (for outer polygon), but only, if polygon is entirely valid
+			if (polygonStatus[holeIdx] == 2)
+				edges.push_back(std::make_pair(i1, i2));
 			// add edge to vector with only hole edges
 			holeOnlyEdges.push_back(std::make_pair(i1, i2));
 		}
@@ -444,25 +460,23 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 		return false;
 
 	IBK::point2D<double> intersectionPoint2D(x,y);
-	// test if point is in polygon
+
+	// first check if we hit a hole
+	for (unsigned int j=0; j<m_holes.size(); ++j) {
+		// - if hole is valid, check if we are inside the polygon
+		if (m_holes[j].isValid()) {
+			// run point in polygon algorithm
+			if (IBKMK::pointInPolygon(m_holes[j].vertexes(), intersectionPoint2D) != -1) {
+				holeIndex = (int)j;
+				return true;
+			}
+		}
+	}
+
+	// otherwise we might still hit the rest of the polygon
 	if (IBKMK::pointInPolygon(polygon2D().vertexes(), intersectionPoint2D ) != -1) {
 		dist = t;
 		intersectionPoint = x0;
-
-		// now check if we hit a hole
-
-		// - loop all holes
-		for (unsigned int j=0; j<m_holes.size(); ++j) {
-			// - if hole is valid, check if we are inside the polygon
-			if (m_holes[j].isValid()) {
-				// run point in polygon algorithm
-				if (IBKMK::pointInPolygon(m_holes[j].vertexes(), intersectionPoint2D) != -1) {
-					holeIndex = (int)j;
-					return true;
-				}
-			}
-		}
-
 		return true;
 	}
 	else
@@ -480,6 +494,13 @@ void PlaneGeometry::setHoles(const std::vector<Polygon2D> & holes) {
 	if (m_holes.empty() && holes.empty())
 		return;
 	m_holes = holes;
+	triangulate();
+}
+
+
+void PlaneGeometry::setGeometry(const Polygon3D & polygon3D, const std::vector<Polygon2D> & holes) {
+	m_holes = holes;
+	m_polygon = polygon3D;
 	triangulate();
 }
 

@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -59,7 +59,11 @@ void Surface::updateParents() {
 
 void Surface::readXML(const TiXmlElement * element) {
 	readXMLPrivate(element);
-	computeGeometry();
+	// copy polygon to plane geometry
+	std::vector<Polygon2D> holes;
+	for (const SubSurface & s : m_subSurfaces)
+		holes.push_back(s.m_polygon2D);
+	m_geometry.setGeometry( m_polygon3D, holes);
 }
 
 
@@ -80,13 +84,6 @@ void Surface::setSubSurfaces(const std::vector<SubSurface> & subSurfaces) {
 	for (const SubSurface & s : subSurfaces)
 		holes.push_back(s.m_polygon2D);
 	m_geometry.setHoles(holes);
-}
-
-
-void Surface::computeGeometry() {
-	// copy polygon to plane geometry
-	m_geometry.setPolygon( m_polygon3D );
-	setSubSurfaces(m_subSurfaces);
 }
 
 

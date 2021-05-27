@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -126,6 +126,9 @@ public:
 	const std::vector<Polygon2D> & holes() const { return m_holes; }
 	/*! Sets the vector of holes (2D polygons in the plane of the polygon). */
 	void setHoles(const std::vector<Polygon2D> & holes);
+
+	/*! Set outer polygon and holes together (needs only one call to triangulate()). */
+	void setGeometry(const Polygon3D & polygon3D, const std::vector<Polygon2D> & holes);
 
 	/*! Returns the 2D polygon (only if it exists) in the plane of the polygon. */
 	const Polygon2D & polygon2D() const { return m_polygon.polyline(); }

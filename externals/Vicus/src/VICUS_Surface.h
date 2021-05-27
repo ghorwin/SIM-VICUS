@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -73,11 +73,6 @@ public:
 
 	/*! Gives read-access to the surface's geometry. */
 	const PlaneGeometry &				geometry() const { return m_geometry; }
-
-	/*! This function updates the triangulation of the surface and its subsurfaces.
-		Call this function whenever you change m_polygon3D and/or m_subsurfaces.
-	*/
-	void computeGeometry();
 
 	/*! Flip the geometry of the polygon and recompute local coordinates of all embedded (and also flipped) subsurfaces */
 	void flip();
