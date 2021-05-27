@@ -128,7 +128,7 @@
 				<!-- Model for summation of heat load -->
 				<HeatLoadSummationModel id="801">
 					<!-- Define object list whose load should be summed up -->
-					<ObjectList>Floors</ObjectList>
+					<ConstructionObjectList>Floors</ConstructionObjectList>
 				</HeatLoadSummationModel>
 			</SummationModels>
 
