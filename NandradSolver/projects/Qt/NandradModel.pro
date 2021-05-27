@@ -92,7 +92,8 @@ SOURCES += \
     ../../src/NM_ThermostatModel.cpp \
     ../../src/NM_VectorValuedQuantity.cpp \
     ../../src/NM_VectorValuedQuantityIndex.cpp \
-    ../../src/NM_WindowModel.cpp
+    ../../src/NM_WindowModel.cpp \
+    ../../src/NM_HeatLoadSummationModel.cpp
 
 
 HEADERS += \
@@ -147,6 +148,5 @@ HEADERS += \
     ../../src/NM_AbstractTransientController.h \
     ../../src/NM_Controller.h \
     ../../src/NM_ShadingControlModel.h \
-    ../../src/NM_HeatLoadSummationModel.h \
-    ../../src/NM_HeatLoadSummationModelcpp
+    ../../src/NM_HeatLoadSummationModel.h
 

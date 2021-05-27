@@ -21,8 +21,6 @@
 
 #include "NANDRAD_HeatLoadSummationModel.h"
 
-#include <algorithm>
-
 #include "NANDRAD_KeywordList.h"
 
 namespace NANDRAD {

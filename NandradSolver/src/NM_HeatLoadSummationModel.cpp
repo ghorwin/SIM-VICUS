@@ -24,11 +24,8 @@
 #include <IBK_Exception.h>
 
 #include <NANDRAD_HeatLoadSummationModel.h>
-#include <NANDRAD_ObjectList.h>
-#include <NANDRAD_Zone.h>
 
 #include "NM_KeywordList.h"
-#include "NM_ThermostatModel.h"
 
 namespace NANDRAD_MODEL {
 
@@ -43,7 +40,7 @@ void HeatLoadSummationModel::setup(const NANDRAD::HeatLoadSummationModel & model
 	// check and resolve reference to object list
 	std::vector<NANDRAD::ObjectList>::const_iterator oblst_it = std::find(objLists.begin(),
 																		  objLists.end(),
-																		  model.m_constructionObjectList);
+																		  model.m_objectList);
 	if (oblst_it == objLists.end())
 		throw IBK::Exception(IBK::FormatString("Invalid/undefined object list '%1'.")
 							 .arg(model.m_objectList), FUNC_ID);
