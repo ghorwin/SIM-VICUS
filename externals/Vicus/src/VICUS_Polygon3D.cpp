@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -45,55 +45,6 @@
 #include <tinyxml.h>
 
 namespace VICUS {
-
-static int crossProdTest(QPointF a, QPointF b, QPointF c){
-
-	if(a.y() == b.y() && a.y() == c.y()){
-		if(	(b.x()<= a.x() && a.x() <= c.x()) ||
-				(c.x()<= a.x() && a.x() <= b.x()))
-			return 0;
-		else
-			return 1;
-	}
-
-	if(b.y()> c.y()){
-		QPointF temp;
-		temp = c;
-		c=b;
-		b=temp;
-	}
-
-	if (a.y() <= b.y() || a.y() > c.y())
-		return 1;
-
-	double delta = (b.x() - a.x()) * (c.y() - a.y()) -(b.y() - a.y()) * (c.x() - a.x());
-	if(delta > 0)			return	1;
-	else if(delta < 0)		return	-1;
-	else					return	0;
-}
-
-/*! Point in Polygon function. Result:
-	-1 point not in polyline
-	0 point on polyline
-	1 point in polyline
-
-	\param	point test point
-	Source https://de.wikipedia.org/wiki/Punkt-in-Polygon-Test_nach_Jordan
-
-*/
-static int pointInPolygon(const QPointF &point, const QPolygonF& poly)
-{
-	int t=-1;
-	size_t polySize = (size_t)poly.size();
-	for (size_t i=0; i<polySize; ++i) {
-		t *= crossProdTest(point, poly.value(i), poly.value((i+1)%polySize));//  m_polyline[(i+1)%m_polyline.size()]);
-		if(t==0)
-			break;
-	}
-
-	return  t;
-}
-
 
 // *** Polygon3D ***
 
