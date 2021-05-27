@@ -89,7 +89,7 @@ void ZoneControlThermostat::readXML(const TiXmlElement * element) {
 			}
 			else if (cName == "CtrlVal") {
 				try {
-					m_ctrlVal = (ControlValue)KeywordList::Enumeration("ZoneControlThermostat::ControlValue", c->GetText());
+					m_controlValue = (ControlValue)KeywordList::Enumeration("ZoneControlThermostat::ControlValue", c->GetText());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
@@ -125,8 +125,8 @@ TiXmlElement * ZoneControlThermostat::writeXML(TiXmlElement * parent) const {
 	if (!m_dataSource.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.encodedString());
 
-	if (m_ctrlVal != NUM_CV)
-		TiXmlElement::appendSingleAttributeElement(e, "CtrlVal", nullptr, std::string(), KeywordList::Keyword("ZoneControlThermostat::ControlValue",  m_ctrlVal));
+	if (m_controlValue != NUM_CV)
+		TiXmlElement::appendSingleAttributeElement(e, "CtrlVal", nullptr, std::string(), KeywordList::Keyword("ZoneControlThermostat::ControlValue",  m_controlValue));
 	if (m_heatingSetpointScheduleId != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "HeatingSetpointScheduleId", nullptr, std::string(), IBK::val2string<unsigned int>(m_heatingSetpointScheduleId));
 	if (m_coolingSetpointScheduleId != VICUS::INVALID_ID)
