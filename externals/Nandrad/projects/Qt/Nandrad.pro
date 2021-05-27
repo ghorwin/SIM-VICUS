@@ -65,6 +65,7 @@ HEADERS += \
     ../../src/NANDRAD_ModelInputReference.h \
     ../../src/NANDRAD_Models.h \
     ../../src/NANDRAD_NaturalVentilationModel.h \
+    ../../src/NANDRAD_NetworkInterfaceAdapterModel.h \
     ../../src/NANDRAD_ObjectList.h \
     ../../src/NANDRAD_OutputDefinition.h \
     ../../src/NANDRAD_OutputGrid.h \
@@ -124,6 +125,7 @@ SOURCES += \
     ../../src/NANDRAD_Material.cpp \
     ../../src/NANDRAD_Models.cpp \
     ../../src/NANDRAD_NaturalVentilationModel.cpp \
+    ../../src/NANDRAD_NetworkInterfaceAdapterModel.cpp \
     ../../src/NANDRAD_ObjectList.cpp \
     ../../src/NANDRAD_OutputDefinition.cpp \
     ../../src/NANDRAD_OutputGrid.cpp \
