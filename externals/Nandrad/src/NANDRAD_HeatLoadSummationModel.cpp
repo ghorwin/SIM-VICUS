@@ -32,8 +32,8 @@ void HeatLoadSummationModel::checkParameters() {
 
 	// all models require an object list with indication of construction that this model applies to
 	// we enforce an object list for construction instances at the moment
-	if (m_constructionObjectList.empty())
-		throw IBK::Exception(IBK::FormatString("Missing 'ConstructionObjectList' parameter."), FUNC_ID);
+	if (m_objectList.empty())
+		throw IBK::Exception(IBK::FormatString("Missing 'ObjectList' parameter."), FUNC_ID);
 }
 
 

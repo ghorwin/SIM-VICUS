@@ -45,7 +45,7 @@ public:
 	std::string			m_displayName;								// XML:A
 
 	/*! Object list with zones that this model is to be apply to. */
-	std::string			m_constructionObjectList;					// XML:E:required
+	std::string			m_objectList;					// XML:E:required
 };
 
 } // namespace NANDRAD

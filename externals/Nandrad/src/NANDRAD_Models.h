@@ -28,6 +28,7 @@
 #include "NANDRAD_InternalLoadsModel.h"
 #include "NANDRAD_ShadingControlModel.h"
 #include "NANDRAD_Thermostat.h"
+#include "NANDRAD_HeatLoadSummationModel.h"
 #include "NANDRAD_IdealHeatingCoolingModel.h"
 #include "NANDRAD_IdealPipeRegisterModel.h"
 #include "NANDRAD_IdealSurfaceHeatingCoolingModel.h"
@@ -63,6 +64,8 @@ public:
 	std::vector<IdealSurfaceHeatingCoolingModel>	m_idealSurfaceHeatingCoolingModels;	// XML:E
 	/*! Container for all ideal pipe register models. */
 	std::vector<IdealPipeRegisterModel>				m_idealPipeRegisterModels;			// XML:E
+	/*! Container for all heat load summation models. */
+	std::vector<HeatLoadSummationModel>				m_heatloadSummationModels;			// XML:E
 	/*! Container for all network interface models. */
 	std::vector<NetworkInterfaceAdapterModel>		m_networkInterfaceAdapterModel;		// XML:E
 };

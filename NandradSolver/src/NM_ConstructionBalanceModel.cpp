@@ -125,6 +125,13 @@ const double * ConstructionBalanceModel::resultValueRef(const InputReference & q
 			return nullptr;
 		return &m_vectorValuedResults[VVR_ThermalLoad].data()[index];
 	}
+	else if(quantityName.m_name == "ActiveLayerThermalLoad") {
+		// no active layer
+		if( m_statesModel->m_activeLayerIndex == NANDRAD::INVALID_ID)
+			return nullptr;
+
+		return &m_vectorValuedResults[VVR_ThermalLoad].data()[m_statesModel->m_activeLayerIndex];
+	}
 
 	return nullptr; // not found
 }

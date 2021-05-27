@@ -146,5 +146,7 @@ HEADERS += \
     ../../src/NM_AbstractController.h \
     ../../src/NM_AbstractTransientController.h \
     ../../src/NM_Controller.h \
-    ../../src/NM_ShadingControlModel.h
+    ../../src/NM_ShadingControlModel.h \
+    ../../src/NM_HeatLoadSummationModel.h \
+    ../../src/NM_HeatLoadSummationModelcpp
 

@@ -55,16 +55,16 @@ void HeatLoadSummationModel::readXML(const TiXmlElement * element) {
 			attrib = attrib->Next();
 		}
 		// search for mandatory elements
-		if (!element->FirstChildElement("ConstructionObjectList"))
+		if (!element->FirstChildElement("ObjectList"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'ConstructionObjectList' element.") ), FUNC_ID);
+				IBK::FormatString("Missing required 'ObjectList' element.") ), FUNC_ID);
 
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "ConstructionObjectList")
-				m_constructionObjectList = c->GetText();
+			if (cName == "ObjectList")
+				m_objectList = c->GetText();
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -87,8 +87,8 @@ TiXmlElement * HeatLoadSummationModel::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
-	if (!m_constructionObjectList.empty())
-		TiXmlElement::appendSingleAttributeElement(e, "ConstructionObjectList", nullptr, std::string(), m_constructionObjectList);
+	if (!m_objectList.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "ObjectList", nullptr, std::string(), m_objectList);
 	return e;
 }
 

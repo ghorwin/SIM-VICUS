@@ -124,7 +124,7 @@
 				</IdealSurfaceHeatingCoolingModel>
 			</IdealSurfaceHeatingCoolingModels>
 
-			<SummationModels>
+			<HeatLoadSummationModels>
 				<!-- Model for summation of heat load 
 					 Requests 'ConstructionInstance(id...).ActiveLayerHeatLoad' as input ref from all
 					 constructions in ConstructionObjectList 'Floors'
@@ -132,9 +132,9 @@
 				-->
 				<HeatLoadSummationModel id="801">
 					<!-- Define object list with constructions, whose loads should be summed up -->
-					<ConstructionObjectList>Floors</ConstructionObjectList>
+					<ObjectList>Floors</ObjectList>
 				</HeatLoadSummationModel>
-			</SummationModels>
+			</HeatLoadSummationModels>
 
 		</Models>
 
@@ -160,7 +160,7 @@
 				</OutputDefinition>
 
 				<OutputDefinition>
-					<Quantity>ConstructionHeatLoad</Quantity>
+					<Quantity>TotalHeatLoad</Quantity>
 					<ObjectListName>Summation Model</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
