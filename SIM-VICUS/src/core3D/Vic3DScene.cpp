@@ -95,7 +95,7 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 }
 
 
-void Scene::onModified(int modificationType, ModificationInfo * data) {
+void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 
 	// no shader - not initialized yet, skip modified event
 	if (m_gridShader == nullptr)
@@ -152,6 +152,13 @@ void Scene::onModified(int modificationType, ModificationInfo * data) {
 			if (vs.m_viewMode == SVViewState::VM_PropertyEditMode)
 				refreshColors();
 			return;
+		}
+
+		case SVProjectHandler::SubSurfaceComponentInstancesModified : {
+			// changes in sub-surface assignments may change the transparency of constructions, hence
+			// requires a re-setup of building geometry
+			updateBuilding = true;
+			break;
 		}
 
 		// *** selection and visibility properties changed ***
@@ -1400,7 +1407,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 						}
 						else {
 							// set "not interested/not applicable" color
-							sub.m_color = QColor(72,72,72,64); // will be drawn opaque in most modes
+							sub.m_color = QColor(72,72,82,192); // will be drawn opaque in most modes
 						}
 					}
 				}
