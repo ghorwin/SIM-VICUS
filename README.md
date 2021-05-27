@@ -43,12 +43,15 @@ data                 - all kinds of data files, including test suite
 doc                  - base directory for all documentation, see doc/README.md for details
 docs                 - generated AsciiDoctor-based documentation, displayed in github-pages
 externals            - libraries including third-party libs
+lib_x64              - contains generated x64 libraries (nothing in here except .gitignore)
 NandradCodeGenerator - the NANDRAD code generator (keyword list and serialization support)
 NandradDevTests      - code snippeds used only during development, not for production code
+NandradFMUGenerator  - GUI tool for FMU export configuration and FMU generation
 NandradSolver        - sources for the NANDRAD command line solver
 NandradSolverFMI     - sources for the NANDRAD Functional Mock-Up Interface module
 scripts              - Python scripts (test suite etc.)
 SIM-VICUS            - sources for the SIM-VICUS user interface
+View3D               - View3D program from NIST
 ```
 
 ### Libraries
