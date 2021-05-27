@@ -191,12 +191,6 @@ const double * Schedules::resolveResultReference(const InputReference & valueRef
 
 	// variable lookup rules:
 
-	// if type is an object list (MRT_OBJECTLIST), then search for quantity within stored object lists maps:
-	// - search until requested quantity is found
-	//   - if more than one match is found, throw an exception with "ambiguous schedule definition" error
-	//     (should not be possible, since no two schedules may be parametrized for the same object list - would
-	//     already fail during reading
-	//
 	// if type is zone (MRT_ZONE), then do the following search:
 	// - look for object lists that address zones
 	//   - look in each object list, if id is part of the id group
@@ -207,46 +201,40 @@ const double * Schedules::resolveResultReference(const InputReference & valueRef
 	// similar for other schedules/reference types
 
 	std::string objectListName;
-	if (valueRef.m_referenceType == NANDRAD::ModelInputReference::MRT_OBJECTLIST) {
-		// quantity name is composed of
-		//objectListName
-	}
-	else {
-		// find the object list that contains the requested object
-		// first search the schedule groups
-		for (auto schedGrp : m_schedules->m_scheduleGroups) {
-			const NANDRAD::ObjectList * objList = objectListByName(schedGrp.first);
-			IBK_ASSERT(objList != nullptr);
-			objectListName = objList->m_name;
-			// correct reference type?
-			if (objList->m_referenceType != valueRef.m_referenceType)
-				continue; // not our input reference
-			// id range correct
-			if (!objList->m_filterID.contains(valueRef.m_id))
-				continue; // not our input reference
-			// search through results to find value
-			std::string valueName = objectListName + "::" + valueRef.m_name.m_name;
-			for (unsigned int i=0; i<m_variableNames.size(); ++i) {
-				if (m_variableNames[i] == valueName) {
-					// found the variable name - check that user did not (accidentally) request
-					// a vector-valued quantity
-					if (valueRef.m_name.m_index != -1)
-						throw IBK::Exception(IBK::FormatString("Vector-valued quantity '%1' matches a scheduled scalar "
-															   "parameter. This is an invalid reference.")
-											 .arg(valueRef.m_name.m_name), FUNC_ID);
+	// find the object list that contains the requested object
+	// first search the schedule groups
+	for (auto schedGrp : m_schedules->m_scheduleGroups) {
+		const NANDRAD::ObjectList * objList = objectListByName(schedGrp.first);
+		IBK_ASSERT(objList != nullptr);
+		objectListName = objList->m_name;
+		// correct reference type?
+		if (objList->m_referenceType != valueRef.m_referenceType)
+			continue; // not our input reference
+		// id range correct
+		if (!objList->m_filterID.contains(valueRef.m_id))
+			continue; // not our input reference
+		// search through results to find value
+		std::string valueName = objectListName + "::" + valueRef.m_name.m_name;
+		for (unsigned int i=0; i<m_variableNames.size(); ++i) {
+			if (m_variableNames[i] == valueName) {
+				// found the variable name - check that user did not (accidentally) request
+				// a vector-valued quantity
+				if (valueRef.m_name.m_index != -1)
+					throw IBK::Exception(IBK::FormatString("Vector-valued quantity '%1' matches a scheduled scalar "
+														   "parameter. This is an invalid reference.")
+										 .arg(valueRef.m_name.m_name), FUNC_ID);
 
-					/// \todo performance enhancement: remember, which of the schedules have been requested,
-					/// afterwards clear all linear splines that are unused and skip over these during model evaluation
+				/// \todo performance enhancement: remember, which of the schedules have been requested,
+				/// afterwards clear all linear splines that are unused and skip over these during model evaluation
 
-					// populate quantity description, which is needed for output purposes and possible other models
-					quantityDesc.m_name = valueRef.m_name.m_name;
-					quantityDesc.m_size = 1;
-					quantityDesc.m_unit = m_variableUnits[i].name();
-					quantityDesc.m_constant = true;
-					quantityDesc.m_description = "Schedule parameter: '" + valueRef.m_name.m_name + "'";
+				// populate quantity description, which is needed for output purposes and possible other models
+				quantityDesc.m_name = valueRef.m_name.m_name;
+				quantityDesc.m_size = 1;
+				quantityDesc.m_unit = m_variableUnits[i].name();
+				quantityDesc.m_constant = true;
+				quantityDesc.m_description = "Schedule parameter: '" + valueRef.m_name.m_name + "'";
 
-					return &m_results[i];
-				}
+				return &m_results[i];
 			}
 		}
 	}

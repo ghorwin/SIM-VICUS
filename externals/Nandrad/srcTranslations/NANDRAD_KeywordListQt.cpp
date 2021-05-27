@@ -145,11 +145,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Model references inside a room.");
 	tr("Model references a wall.");
 	tr("Model references an embedded object.");
-	tr("Model references an active object.");
-	tr("Model references scheduled data.");
-	tr("Model references an object list-specific value.");
-	tr("Model references of a generic model.");
-	tr("Model references to global physical quantities.");
+	tr("Model references generic scheduled data that is not associated with a specific object type.");
+	tr("Model references of a model object.");
 	tr("Model references of a hydraulic network.");
 	tr("Model references of flow elements of a hydraulic network.");
 	tr("Constant infiltration rate");
