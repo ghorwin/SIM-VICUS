@@ -58,6 +58,9 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 		QFont f = painter->font();
 		f.setBold(isSelected);
 		painter->setFont(f);
+		// TODO  : change text color in case of invalid properties
+//		painter->setPen( option.palette.color(QPalette::Text));
+//		painter->setPen( Qt::green);
 		painter->drawText(targetRect, Qt::AlignLeft | Qt::AlignVCenter, index.data(Qt::DisplayRole).toString());
 		return;
 	}

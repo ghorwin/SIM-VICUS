@@ -194,9 +194,18 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 					surface->setData(0, SVNavigationTreeItemDelegate::NodeID, s.uniqueID());
 					surface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, s.m_visible);
 					surface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, s.m_selected);
-					for (const VICUS::SubSurface & sub : s.subSurfaces()) {
+					for (unsigned int holeIdx = 0; holeIdx < s.subSurfaces().size(); ++holeIdx) {
+						const VICUS::SubSurface & sub = s.subSurfaces()[holeIdx];
+
 						QTreeWidgetItem * subsurface = new QTreeWidgetItem(QStringList() << sub.m_displayName, QTreeWidgetItem::Type);
 						m_treeItemMap[sub.uniqueID()] = subsurface;
+
+						// mark invalid subsurfaces in red and give tooltip with error
+						if (!s.geometry().holes()[holeIdx].isValid()) {
+							subsurface->setTextColor(0, QColor(128,0,0));
+							subsurface->setToolTip(0, tr("Invalid polygon data"));
+						}
+
 						surface->addChild(subsurface);
 						subsurface->setData(0, SVNavigationTreeItemDelegate::NodeID, sub.uniqueID());
 						subsurface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, sub.m_visible);
