@@ -226,7 +226,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		for (unsigned int i=0; i<fsd.m_polyline.size(); ++i) {
 			const IBKMK::Vector3D & x0 = fsd.m_polyline[i];
 			double x,y;
-			if (!IBKMK::planeCoordinates(surf->geometry().offset(), surf->geometry().localX(), surf->geometry().localY(), x0, x, y)) {
+			if (!IBKMK::planeCoordinates(surf->geometry().offset(), surf->geometry().localX(), surf->geometry().localY(), x0, x, y, 1e-4)) {
 				qDebug() << "Invalid point of subsurface polygon!";
 				subSurfaceVertexes.clear();
 				break;
