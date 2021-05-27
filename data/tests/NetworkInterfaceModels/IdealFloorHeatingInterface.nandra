@@ -23,29 +23,13 @@
 				<IBK:Parameter name="Area" unit="m2">30</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">100</IBK:Parameter>
 			</Zone>
-			<Zone id="2" displayName="dummy" type="Active">
-				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
-				<IBK:Parameter name="Volume" unit="m3">50</IBK:Parameter>
-			</Zone>
 		</Zones>
 		<ConstructionInstances>
-			<ConstructionInstance id="3001" displayName="Ground Floor">
+			<ConstructionInstance id="3001" displayName="Floor">
 				<ConstructionTypeId>10001</ConstructionTypeId>
 				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
-				<IBK:Parameter name="Area" unit="m2">30</IBK:Parameter>
-				<InterfaceA id="1" zoneId="1">
-					<!--Interface to 'Room'-->
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</InterfaceA>
-			</ConstructionInstance>
-			<ConstructionInstance id="3002" displayName="Upper Floor">
-				<ConstructionTypeId>10001</ConstructionTypeId>
-				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
-				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
-				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<InterfaceA id="1" zoneId="1">
 					<!--Interface to 'Room'-->
 					<InterfaceHeatConduction modelType="Constant">
@@ -108,17 +92,7 @@
 				<IdealSurfaceHeatingCoolingModel id="701">
 					<!-- Use thermostat in zone 1 for control -->
 					<ThermostatZoneID>1</ThermostatZoneID>
-					<ConstructionObjectList>Ground Floor</ConstructionObjectList>
-					<!-- Maximum heating power per construction/surface area, here: 10 m2 * 150 W/m2 = 1500 W -->
-					<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">150</IBK:Parameter>
-				</IdealSurfaceHeatingCoolingModel>
-			</IdealSurfaceHeatingCoolingModels>
-
-			<IdealSurfaceHeatingCoolingModels>
-				<IdealSurfaceHeatingCoolingModel id="702">
-					<!-- Use thermostat in zone 2 for control -->
-					<ThermostatZoneID>2</ThermostatZoneID>
-					<ConstructionObjectList>Upper Floor</ConstructionObjectList>
+					<ConstructionObjectList>Floor</ConstructionObjectList>
 					<!-- Maximum heating power per construction/surface area, here: 10 m2 * 150 W/m2 = 1500 W -->
 					<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">150</IBK:Parameter>
 				</IdealSurfaceHeatingCoolingModel>
@@ -130,13 +104,56 @@
 					 constructions in ConstructionObjectList 'Floors'
 					 Provides 'Model(id=801).TotalHeatLoad'.
 				-->
-				<HeatLoadSummationModel id="801">
+				<HeatLoadSummationModel id="801" displayName="Heat load in floor heating cycle">
 					<!-- Define object list with constructions, whose loads should be summed up -->
 					<ConstructionObjectList>Floors</ConstructionObjectList>
 				</HeatLoadSummationModel>
 			</SummationModels>
 
+			<!-- This model takes the summation heat load from the referenced heat load summation model
+				 and scheduled mass flux and supply temperatures. Input refs needed for the model:
+				 'Model(id=801).TotalHeatLoad'
+				 'Model(id=1212).SupplyTemperatureSchedule'
+				 'Model(id=1212).SupplyMassFluxSchedule'
+				 
+				 Provides return temperature in medium:
+			-->
+			<MediaTemperatureInterfaceModel id="1212" summationModelID="1234">
+				<!-- Only Density and HeatCapacity of a fluid are required. But, for consistency, we
+					 request a regular HydraulicFluid parameter block and rely on parameter checks.
+				-->
+				<HydraulicFluid displayName="Water">
+					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
+					<LinearSplineParameter name="KinematicViscosity" interpolationMethod="linear">
+						<X unit="C">0 90 </X>
+						<Y unit="m2/s">1.793e-06 1.793e-06 </Y>
+					</LinearSplineParameter>
+				</HydraulicFluid>
+			</MediaTemperatureInterfaceModel>
+
 		</Models>
+
+		<Schedules>
+			<WeekEndDays>Sat,Sun</WeekEndDays>
+			<ScheduleGroups>
+				<ScheduleGroup objectList="SupplyNetwork_1">
+					<!-- constant supply network properties -->
+					<Schedule type="AllDays">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>
+									SupplyTemperatureSchedule [C]:30;
+									SupplyMassFluxSchedule [kg/s]:1;
+								</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+			</ScheduleGroups>
+		</Schedules>
 
 		<Outputs>
 			<Definitions>
@@ -155,13 +172,19 @@
 
 				<OutputDefinition>
 					<Quantity>ThermalLoad[1]</Quantity>
-					<ObjectListName>Floors</ObjectListName>
+					<ObjectListName>Floor</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 
 				<OutputDefinition>
-					<Quantity>ConstructionHeatLoad</Quantity>
-					<ObjectListName>Summation Model</ObjectListName>
+					<Quantity>ElementTemperature[1]</Quantity>
+					<ObjectListName>Floor</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<ObjectListName>Zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 
@@ -182,20 +205,12 @@
 				<FilterID>*</FilterID>
 				<ReferenceType>Zone</ReferenceType>
 			</ObjectList>
-			<ObjectList name="Ground Floor">
+			<ObjectList name="Floor">
 				<FilterID>3001</FilterID>
 				<ReferenceType>ConstructionInstance</ReferenceType>
 			</ObjectList>
-			<ObjectList name="Upper Floor">
-				<FilterID>3002</FilterID>
-				<ReferenceType>ConstructionInstance</ReferenceType>
-			</ObjectList>
-			<ObjectList name="Floors">
-				<FilterID>3001,3002</FilterID>
-				<ReferenceType>ConstructionInstance</ReferenceType>
-			</ObjectList>
-			<ObjectList name="Summation Model">
-				<FilterID>801</FilterID>
+			<ObjectList name="SupplyNetwork_1">
+				<FilterID>1212</FilterID>
 				<ReferenceType>Model</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
