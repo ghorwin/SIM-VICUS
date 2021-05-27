@@ -87,7 +87,8 @@ HEADERS += \
     ../../src/NANDRAD_WindowGlazingLayer.h \
     ../../src/NANDRAD_WindowGlazingSystem.h \
     ../../src/NANDRAD_WindowShading.h \
-    ../../src/NANDRAD_Zone.h
+    ../../src/NANDRAD_Zone.h \
+    ../../src/NANDRAD_HeatLoadSummationModel.h
 
 SOURCES += \
     ../../src/NANDRAD_ArgsParser.cpp \
@@ -192,7 +193,8 @@ SOURCES += \
     ../../src/ncg/ncg_NANDRAD_WindowGlazingLayer.cpp \
     ../../src/ncg/ncg_NANDRAD_WindowGlazingSystem.cpp \
     ../../src/ncg/ncg_NANDRAD_WindowShading.cpp \
-    ../../src/ncg/ncg_NANDRAD_Zone.cpp
+    ../../src/ncg/ncg_NANDRAD_Zone.cpp \
+    ../../src/NANDRAD_HeatLoadSummationModel.cpp
 
 
 
