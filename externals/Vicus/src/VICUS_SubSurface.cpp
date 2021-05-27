@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -37,13 +37,13 @@ SubSurface SubSurface::clone() const {
 
 void SubSurface::updateColor() {
 	if (m_subSurfaceComponentInstance == nullptr) {
-		// no subsurface assigned -> dark gray
-		m_color = QColor(64,64,64,255);
+		// no subsurface assigned -> opaque light gray
+		m_color = QColor(164,164,164,255);
 	}
 	else {
 		// TODO : depending on assigned subsurface type, select suitable color
-		// for now always transparent blue
-		m_color = QColor(96,96,255,128);
+		// for now we only have windows, and these are always transparent blue
+		m_color = QColor(96,96,255,64);
 	}
 }
 

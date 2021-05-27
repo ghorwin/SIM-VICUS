@@ -44,7 +44,7 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 	m_ui->verticalLayoutNetwork->setMargin(0);
 
 	QPushButton * btn = new QPushButton(tr("Select"));
-	m_ui->buttonBox->addButton(btn, QDialogButtonBox::AcceptRole);
+	m_ui->buttonBox->addButton(btn, QDialogButtonBox::NoRole);
 	connect(btn, &QPushButton::clicked, this, &SVSmartSelectDialog::onSelectClicked);
 
 	// populate combo boxes
@@ -87,7 +87,7 @@ SVSmartSelectDialog::~SVSmartSelectDialog() {
 void SVSmartSelectDialog::onSelectClicked() {
 	// evaluate selection and create undo action for the selection
 	if (m_ui->tabWidgetGroup->currentIndex() == 0) {
-		// TODO : Building object selections
+		// TODO Dirk : Building object selections
 	}
 	else {
 
@@ -179,7 +179,8 @@ void SVSmartSelectDialog::onSelectClicked() {
 		}
 	}
 
-	// when this even is done, the dialog is closed automatically
+	// when this even is done, close dialog automatically
+	close();
 }
 
 

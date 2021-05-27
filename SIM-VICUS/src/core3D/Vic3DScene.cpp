@@ -1367,6 +1367,12 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 	// get VICUS project data
 	const VICUS::Project & p = project();
 
+	// coloring works as follows:
+	// - we process all surfaces and sub-surfaces
+	// - if we are not in a coloring mode (OCM_None) we select a default color for the surface/sub-surface/node/edge
+	//   (this is done always as default initialization step)
+	// - if we are in a coloring mode, all surfaces except those we need to color are grayed out
+
 	// process all surfaces and initialize colors
 	for (const VICUS::Building & b : p.m_buildings) {
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
@@ -1377,54 +1383,24 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					// here, it does not matter if the surfaces is selected or invisible -
 					// we just update the color that would be used if the surface would be drawn
 
-					switch (ocm) {
-						case SVViewState::OCM_None:
-							// const cast is ok here, since color is not a project property
-							const_cast<VICUS::Surface&>(s).updateColor();
-						break;
-						case SVViewState::OCM_Components:
-							s.m_color = QColor(64,64,64,255); // dark gray
-						break;
-						case SVViewState::OCM_ComponentOrientation:
-							s.m_color = QColor(128,128,128,255); // gray (later semi-transparent)
-						break;
-						case SVViewState::OCM_BoundaryConditions:
-						case SVViewState::OCM_ZoneTemplates:
-							s.m_color = QColor(64,64,64,255); // dark gray
-						break;
-
-						// the other cases are just to get rid of compiler warnings
-						case SVViewState::OCM_Network:
-						case SVViewState::OCM_NetworkEdge:
-						case SVViewState::OCM_NetworkNode:
-						case SVViewState::OCM_NetworkComponents:
-						break;
+					if (ocm == SVViewState::OCM_None) {
+						// const cast is ok here, since color is not a project property
+						const_cast<VICUS::Surface&>(s).updateColor();
+					}
+					else {
+						// set "not interested/not applicable" color
+						s.m_color = QColor(64,64,64,255); // dark opaque gray
 					}
 
 					// now the subsurfaces
 					for (const VICUS::SubSurface & sub : s.subSurfaces()) {
-						switch (ocm) {
-							case SVViewState::OCM_None:
-								// const cast is ok here, since color is not a project property
-								const_cast<VICUS::SubSurface&>(sub).updateColor();
-							break;
-							case SVViewState::OCM_Components:
-								sub.m_color = QColor(64,64,64,128); // dark gray
-							break;
-							case SVViewState::OCM_ComponentOrientation:
-								sub.m_color = QColor(128,128,128,128); // gray (later semi-transparent)
-							break;
-							case SVViewState::OCM_BoundaryConditions:
-							case SVViewState::OCM_ZoneTemplates:
-								sub.m_color = QColor(64,64,64,255); // dark gray
-							break;
-
-							// the other cases are just to get rid of compiler warnings
-							case SVViewState::OCM_Network:
-							case SVViewState::OCM_NetworkEdge:
-							case SVViewState::OCM_NetworkNode:
-							case SVViewState::OCM_NetworkComponents:
-							break;
+						if (ocm == SVViewState::OCM_None) {
+							// const cast is ok here, since color is not a project property
+							const_cast<VICUS::SubSurface&>(sub).updateColor();
+						}
+						else {
+							// set "not interested/not applicable" color
+							s.m_color = QColor(128,64,64,64); // transparent dark-blue color; will be drawn opaque in most modes
 						}
 					}
 				}
@@ -1433,7 +1409,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 	}
 
 	// initialize network colors, independent of current color mode
-	for (const VICUS::Network & net: p.m_geometricNetworks){
+	for (const VICUS::Network & net: p.m_geometricNetworks) {
 		// updateColor is a const-function, this is possible since
 		// the m_color property of edges and nodes is mutable
 		net.setDefaultColors();
@@ -1442,6 +1418,9 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 	const SVDatabase & db = SVSettings::instance().m_db;
 
 	// different handling different color modes
+	// Mind: the subsurfaces are drawn either transparent or opaque, depending on the associated
+	//       component. Without a subsurface-component assigned, they will be opaque and should
+	//       have a different color than regular surfaces without component
 
 	switch (ocm) {
 		case SVViewState::OCM_None: break;
@@ -1491,6 +1470,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 
 					// the color modes below are not handled here and are only added to get rid of compiler warnins
 					case SVViewState::OCM_ZoneTemplates:
+					case SVViewState::OCM_SubSurfaceComponents:
 					case SVViewState::OCM_None:
 					case SVViewState::OCM_Network:
 					case SVViewState::OCM_NetworkEdge:
@@ -1500,7 +1480,65 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 				}
 			}
 
-			// TODO : subsurfaces
+		} break;
+
+		case SVViewState::OCM_SubSurfaceComponents : {
+			// now color all sub-surfaces, this works by first looking up the components, associated with each surface
+			for (const VICUS::SubSurfaceComponentInstance & ci : project().m_subSurfaceComponentInstances) {
+				// lookup component definition
+				const VICUS::SubSurfaceComponent * comp = db.m_subSurfaceComponents[ci.m_subSurfaceComponentID];
+				if (comp == nullptr)
+					continue; // no component definition - keep default (uninterested) color
+				switch (ocm) {
+					case SVViewState::OCM_SubSurfaceComponents:
+						if (ci.m_sideASubSurface != nullptr)
+							ci.m_sideASubSurface->m_color = comp->m_color;
+						if (ci.m_sideBSubSurface != nullptr)
+							ci.m_sideBSubSurface->m_color = comp->m_color;
+					break;
+					case SVViewState::OCM_ComponentOrientation:
+						// color surfaces when either filtering is off (id == 0)
+						// or when component ID matches selected id
+						if (id == VICUS::INVALID_ID || ci.m_subSurfaceComponentID == id) {
+							// color side A surfaces with blue,
+							// side B surfaces with orange
+							// colors slightly brighter than components, to allow differntiation
+							if (ci.m_sideASubSurface != nullptr)
+								ci.m_sideASubSurface->m_color = QColor(92,149,212, 128); // set slightly transparent to have effect on windows
+							if (ci.m_sideBSubSurface != nullptr)
+								ci.m_sideBSubSurface->m_color = QColor(255, 223, 119, 128); // set slightly transparent to have effect on windows
+						}
+					break;
+					case SVViewState::OCM_BoundaryConditions :
+						if (ci.m_sideASubSurface != nullptr && comp->m_idSideABoundaryCondition != VICUS::INVALID_ID) {
+							// lookup boundary condition definition
+							const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
+							if (bc != nullptr) {
+								ci.m_sideASubSurface->m_color = bc->m_color.lighter(50);
+								ci.m_sideASubSurface->m_color.setAlpha(128);
+							}
+						}
+						if (ci.m_sideBSubSurface != nullptr && comp->m_idSideBBoundaryCondition != VICUS::INVALID_ID) {
+							// lookup boundary condition definition
+							const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
+							if (bc != nullptr) {
+								ci.m_sideBSubSurface->m_color = bc->m_color.lighter(50);
+								ci.m_sideBSubSurface->m_color.setAlpha(128);
+							}
+						}
+					break;
+
+					// the color modes below are not handled here and are only added to get rid of compiler warnins
+					case SVViewState::OCM_ZoneTemplates:
+					case SVViewState::OCM_Components:
+					case SVViewState::OCM_None:
+					case SVViewState::OCM_Network:
+					case SVViewState::OCM_NetworkEdge:
+					case SVViewState::OCM_NetworkNode:
+					case SVViewState::OCM_NetworkComponents:
+					break;
+				}
+			} // for sub-component-instances
 
 		} break;
 
@@ -1571,6 +1609,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					// rest only to avoid compiler warnings
 					case SVViewState::OCM_None:
 					case SVViewState::OCM_Components:
+					case SVViewState::OCM_SubSurfaceComponents:
 					case SVViewState::OCM_ComponentOrientation:
 					case SVViewState::OCM_BoundaryConditions:
 					case SVViewState::OCM_ZoneTemplates:

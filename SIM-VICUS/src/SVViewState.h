@@ -140,6 +140,10 @@ public:
 			gray value, if they are not yet associated with a component.
 		*/
 		OCM_Components,
+		/*! In this mode the sub-surfaces are colored based on the color assigned to their associated sub-surface component,
+			or a default gray value, if they are not yet associated with a component.
+		*/
+		OCM_SubSurfaceComponents,
 		/*! All surfaces that have a specific component assigned (m_propertyHighlightID) are colored based on whether they
 			are mapped to side A or B of the component, with a given color. All other surfaces are drawn semi-transparent
 			gray.

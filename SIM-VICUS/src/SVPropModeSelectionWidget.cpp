@@ -167,6 +167,7 @@ void SVPropModeSelectionWidget::viewStateProperties(SVViewState & vs) const {
 		case SVViewState::PM_BuildingProperties:
 			switch ((BuildingPropertyTypes)m_ui->comboBoxBuildingProperties->currentData().toInt()) {
 				case BT_Components:				vs.m_objectColorMode = SVViewState::OCM_Components; break;
+				case BT_SubSurfaceComponents:	vs.m_objectColorMode = SVViewState::OCM_SubSurfaceComponents; break;
 				case BT_ComponentOrientation:	vs.m_objectColorMode = SVViewState::OCM_ComponentOrientation; break;
 				case BT_BoundaryConditions:		vs.m_objectColorMode = SVViewState::OCM_BoundaryConditions; break;
 				case BT_FloorManager:			vs.m_objectColorMode = SVViewState::OCM_None; break;
