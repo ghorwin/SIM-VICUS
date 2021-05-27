@@ -58,9 +58,9 @@ void ZoneControlThermostat::readXML(const TiXmlElement * element) {
 			attrib = attrib->Next();
 		}
 		// search for mandatory elements
-		if (!element->FirstChildElement("CtrlVal"))
+		if (!element->FirstChildElement("ControlValue"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'CtrlVal' element.") ), FUNC_ID);
+				IBK::FormatString("Missing required 'ControlValue' element.") ), FUNC_ID);
 
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
@@ -87,7 +87,7 @@ void ZoneControlThermostat::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
-			else if (cName == "CtrlVal") {
+			else if (cName == "ControlValue") {
 				try {
 					m_controlValue = (ControlValue)KeywordList::Enumeration("ZoneControlThermostat::ControlValue", c->GetText());
 				}
@@ -126,7 +126,7 @@ TiXmlElement * ZoneControlThermostat::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.encodedString());
 
 	if (m_controlValue != NUM_CV)
-		TiXmlElement::appendSingleAttributeElement(e, "CtrlVal", nullptr, std::string(), KeywordList::Keyword("ZoneControlThermostat::ControlValue",  m_controlValue));
+		TiXmlElement::appendSingleAttributeElement(e, "ControlValue", nullptr, std::string(), KeywordList::Keyword("ZoneControlThermostat::ControlValue",  m_controlValue));
 	if (m_heatingSetpointScheduleId != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "HeatingSetpointScheduleId", nullptr, std::string(), IBK::val2string<unsigned int>(m_heatingSetpointScheduleId));
 	if (m_coolingSetpointScheduleId != VICUS::INVALID_ID)
