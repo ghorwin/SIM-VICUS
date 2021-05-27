@@ -67,7 +67,7 @@ public:
 	/*! Container for all heat load summation models. */
 	std::vector<HeatLoadSummationModel>				m_heatLoadSummationModels;			// XML:E
 	/*! Container for all network interface models. */
-	std::vector<NetworkInterfaceAdapterModel>		m_networkInterfaceAdapterModel;		// XML:E
+	std::vector<NetworkInterfaceAdapterModel>		m_networkInterfaceAdapterModels;	// XML:E
 };
 
 } // namespace NANDRAD

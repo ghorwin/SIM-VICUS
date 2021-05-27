@@ -7,45 +7,114 @@
 			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="%">20</IBK:Parameter>
 			<TimeZone>13</TimeZone>
-			<ClimateFilePath>${Project Directory}/../climate/Constant_Min10C.c6b</ClimateFilePath>
+			<ClimateFilePath>${Project Directory}/../climate/DEU_Potsdam_60.c6b</ClimateFilePath>
 		</Location>
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 			<Interval>
-				<IBK:Parameter name="End" unit="d">5</IBK:Parameter>
+				<IBK:Parameter name="Start" unit="d">110</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">10</IBK:Parameter>
 			</Interval>
 			<SolarLoadsDistributionModel>
 				<DistributionType>AreaWeighted</DistributionType>
 			</SolarLoadsDistributionModel>
 		</SimulationParameter>
 		<Zones>
-			<Zone id="1" displayName="dummy" type="Active">
-				<IBK:Parameter name="Area" unit="m2">30</IBK:Parameter>
+			<!-- Both zones have same volume (is not important in this test case) -->
+			<Zone id="1" displayName="Room 1" type="Active">
+				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">100</IBK:Parameter>
+			</Zone>
+			<Zone id="2" displayName="Room 2" type="Active">
+				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">100</IBK:Parameter>
 			</Zone>
 		</Zones>
 		<ConstructionInstances>
-			<ConstructionInstance id="3001" displayName="Floor">
-				<ConstructionTypeId>10001</ConstructionTypeId>
+			<ConstructionInstance id="2001" displayName="South">
+				<ConstructionTypeId>10003</ConstructionTypeId>
 				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<InterfaceA id="1" zoneId="1">
-					<!--Interface to 'Room'-->
+						<!--Interface to 'Room 1'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">6</IBK:Parameter>
+						</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">17</IBK:Parameter>
+						</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+
+			<ConstructionInstance id="3001" displayName="Ground Floor">
+				<ConstructionTypeId>10001</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<InterfaceA id="3" zoneId="1">
+					<!--Interface to 'Room 1'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+			</ConstructionInstance>
+			
+			
+			<ConstructionInstance id="2002" displayName="South">
+				<ConstructionTypeId>10003</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<InterfaceA id="4" zoneId="2">
+						<!--Interface to 'Room 2'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">6</IBK:Parameter>
+						</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="5" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">17</IBK:Parameter>
+						</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			
+			<ConstructionInstance id="3002" displayName="Upper Floor">
+				<ConstructionTypeId>10001</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">5</IBK:Parameter>
+				<InterfaceA id="6" zoneId="2">
+					<!--Interface to 'Room 2'-->
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</InterfaceA>
 			</ConstructionInstance>
 		</ConstructionInstances>
+		
+		
 		<ConstructionTypes>
+			<!-- Heated floor slab -->
 			<ConstructionType id="10001" displayName="Construction with heated slab">
 				<!-- Layer index starts with 0 (index matches index in MaterialLayers vector) -->
 				<ActiveLayerIndex>1</ActiveLayerIndex>
 				<MaterialLayers>
-					<MaterialLayer thickness="0.01" matId="1002" />
+					<MaterialLayer thickness="0.10" matId="1002" />
 					<MaterialLayer thickness="0.06" matId="1001" /> <!-- heated layer -->
-					<MaterialLayer thickness="0.12" matId="1001" />
+					<MaterialLayer thickness="0.20" matId="1001" />
+				</MaterialLayers>
+			</ConstructionType>
+			<!-- Insulated outside wall -->
+			<ConstructionType id="10003" displayName="Construction 3">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.2"   matId="1001" /> <!-- Brick      - inside -->
+					<MaterialLayer thickness="0.1"   matId="1002" /> <!-- Insulation -->
+					<MaterialLayer thickness="0.005" matId="1003" /> <!-- Board      - outside -->
 				</MaterialLayers>
 			</ConstructionType>
 		</ConstructionTypes>
@@ -61,24 +130,22 @@
 				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
 				<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
 			</Material>
+			<Material id="1003" displayName="Board">
+				<IBK:Parameter name="Density" unit="kg/m3">800</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.14</IBK:Parameter>
+			</Material>
 		</Materials>
 
 		<Models>
-			<NaturalVentilationModels>
-				<NaturalVentilationModel id="501" displayName="Zone ventilation" modelType="Constant">
-					<ZoneObjectList>Zones</ZoneObjectList>
-					<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
-				</NaturalVentilationModel>
-			</NaturalVentilationModels>
-
 			<Thermostats>
 				<!-- A thermostat with constant heating set point, no cooling. Uses air temperature as sensor value. -->
 				<Thermostat id="601" displayName="Constant air temperature thermostat" modelType="Constant">
 					<ZoneObjectList>Zones</ZoneObjectList>
 					<!-- Heating starts below 22 C -->
 					<IBK:Parameter name="HeatingSetpoint" unit="C">22</IBK:Parameter>
-					<!-- Cooling starts above 26 C -->
-					<IBK:Parameter name="CoolingSetpoint" unit="C">26</IBK:Parameter>
+					<!-- Cooling starts above 30 (effectively disabled) C -->
+					<IBK:Parameter name="CoolingSetpoint" unit="C">30</IBK:Parameter>
 					<!-- P-controller is accurate to 0.2 K -->
 					<IBK:Parameter name="TemperatureTolerance" unit="K">0.2</IBK:Parameter>
 					<!-- Control temperature is "Air temperature", this is the default and could be omitted -->
@@ -90,26 +157,35 @@
 
 			<IdealSurfaceHeatingCoolingModels>
 				<IdealSurfaceHeatingCoolingModel id="701">
-					<!-- Use thermostat in zone 1 for control -->
+					<!-- Use thermostat in zone 1 for control of heating for zone 1-->
 					<ThermostatZoneID>1</ThermostatZoneID>
-					<ConstructionObjectList>Floor</ConstructionObjectList>
+					<ConstructionObjectList>Ground Floor</ConstructionObjectList>
 					<!-- Maximum heating power per construction/surface area, here: 10 m2 * 150 W/m2 = 1500 W -->
 					<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">150</IBK:Parameter>
 				</IdealSurfaceHeatingCoolingModel>
 			</IdealSurfaceHeatingCoolingModels>
 
-			<SummationModels>
+			<IdealSurfaceHeatingCoolingModels>
+				<IdealSurfaceHeatingCoolingModel id="702">
+					<!-- Use thermostat in zone 2 for control -->
+					<ThermostatZoneID>2</ThermostatZoneID>
+					<ConstructionObjectList>Upper Floor</ConstructionObjectList>
+					<!-- Maximum heating power per construction/surface area, here: 5 m2 * 150 W/m2 = 750 W -->
+					<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">150</IBK:Parameter>
+				</IdealSurfaceHeatingCoolingModel>
+			</IdealSurfaceHeatingCoolingModels>
+
+			<HeatLoadSummationModels>
 				<!-- Model for summation of heat load 
 					 Requests 'ConstructionInstance(id...).ActiveLayerHeatLoad' as input ref from all
 					 constructions in ConstructionObjectList 'Floors'
 					 Provides 'Model(id=801).TotalHeatLoad'.
 				-->
-				<HeatLoadSummationModel id="801" displayName="Heat load in floor heating cycle">
+				<HeatLoadSummationModel id="801">
 					<!-- Define object list with constructions, whose loads should be summed up -->
-					<ConstructionObjectList>Floors</ConstructionObjectList>
+					<ObjectList>Floors</ObjectList>
 				</HeatLoadSummationModel>
-			</SummationModels>
-
+			</HeatLoadSummationModels>
 
 			<NetworkInterfaceAdapterModels>
 				<!-- This model takes the summation heat load from the referenced heat load summation model
@@ -120,7 +196,7 @@
 					 
 					 Provides return temperature in medium:
 				-->
-				<NetworkInterfaceAdapterModel id="1212" summationModelID="1234">
+				<NetworkInterfaceAdapterModel id="1212" summationModelID="801">
 					<!-- Only Density and HeatCapacity of a fluid are required. But, for consistency, we
 						 request a regular HydraulicFluid parameter block and rely on parameter checks.
 					-->
@@ -138,31 +214,23 @@
 
 		</Models>
 
-		<Schedules>
-			<WeekEndDays>Sat,Sun</WeekEndDays>
-			<ScheduleGroups>
-				<ScheduleGroup objectList="SupplyNetwork_1">
-					<!-- constant supply network properties -->
-					<Schedule type="AllDays">
-						<DailyCycles>
-							<DailyCycle interpolation="Constant">
-								<TimePoints>0</TimePoints>
-								<Values>
-									SupplyTemperatureSchedule [C]:30;
-									SupplyMassFluxSchedule [kg/s]:1;
-								</Values>
-							</DailyCycle>
-						</DailyCycles>
-					</Schedule>
-				</ScheduleGroup>
-			</ScheduleGroups>
-		</Schedules>
-
 		<Outputs>
 			<Definitions>
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<ObjectListName>Zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
 
 				<OutputDefinition>
-					<Quantity>VentilationHeatLoad</Quantity>
+					<Quantity>FluxHeatConductionA</Quantity>
+					<ObjectListName>Floors</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+<!--
+				<OutputDefinition>
+					<Quantity>CompleteThermalLoad</Quantity>
 					<ObjectListName>Zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
@@ -172,22 +240,17 @@
 					<ObjectListName>Zones</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
+-->
 
 				<OutputDefinition>
 					<Quantity>ThermalLoad[1]</Quantity>
-					<ObjectListName>Floor</ObjectListName>
+					<ObjectListName>Floors</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 
 				<OutputDefinition>
-					<Quantity>ElementTemperature[1]</Quantity>
-					<ObjectListName>Floor</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-
-				<OutputDefinition>
-					<Quantity>AirTemperature</Quantity>
-					<ObjectListName>Zones</ObjectListName>
+					<Quantity>TotalHeatLoad</Quantity>
+					<ObjectListName>Summation Model</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 
@@ -208,12 +271,20 @@
 				<FilterID>*</FilterID>
 				<ReferenceType>Zone</ReferenceType>
 			</ObjectList>
-			<ObjectList name="Floor">
+			<ObjectList name="Ground Floor">
 				<FilterID>3001</FilterID>
 				<ReferenceType>ConstructionInstance</ReferenceType>
 			</ObjectList>
-			<ObjectList name="SupplyNetwork_1">
-				<FilterID>1212</FilterID>
+			<ObjectList name="Upper Floor">
+				<FilterID>3002</FilterID>
+				<ReferenceType>ConstructionInstance</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Floors">
+				<FilterID>*</FilterID>
+				<ReferenceType>ConstructionInstance</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Summation Model">
+				<FilterID>801</FilterID>
 				<ReferenceType>Model</ReferenceType>
 			</ObjectList>
 		</ObjectLists>

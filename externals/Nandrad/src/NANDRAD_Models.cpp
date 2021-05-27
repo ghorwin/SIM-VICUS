@@ -64,7 +64,7 @@ void Models::checkForUniqueIDs() const {
 		// the same for heat load summation models
 		checkForUniqueModelIDs(m_heatLoadSummationModels, usedIDs);
 		// the same for network interface models
-		checkForUniqueModelIDs(m_networkInterfaceAdapterModel, usedIDs);
+		checkForUniqueModelIDs(m_networkInterfaceAdapterModels, usedIDs);
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, "Duplicate ID found in model parameter blocks.", FUNC_ID);
