@@ -31,6 +31,7 @@
 #include "NANDRAD_IdealHeatingCoolingModel.h"
 #include "NANDRAD_IdealPipeRegisterModel.h"
 #include "NANDRAD_IdealSurfaceHeatingCoolingModel.h"
+#include "NANDRAD_NetworkInterfaceAdapterModel.h"
 #include "NANDRAD_CodeGenMacros.h"
 
 namespace NANDRAD {
@@ -62,6 +63,8 @@ public:
 	std::vector<IdealSurfaceHeatingCoolingModel>	m_idealSurfaceHeatingCoolingModels;	// XML:E
 	/*! Container for all ideal pipe register models. */
 	std::vector<IdealPipeRegisterModel>				m_idealPipeRegisterModels;			// XML:E
+	/*! Container for all network interface models. */
+	std::vector<NetworkInterfaceAdapterModel>		m_networkInterfaceAdapterModel;		// XML:E
 };
 
 } // namespace NANDRAD
