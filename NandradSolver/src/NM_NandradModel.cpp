@@ -90,6 +90,7 @@
 #include "NM_IdealHeatingCoolingModel.h"
 #include "NM_IdealPipeRegisterModel.h"
 #include "NM_IdealSurfaceHeatingCoolingModel.h"
+#include "NM_NetworkInterfaceAdapterModel.h"
 
 #include "NM_ThermalNetworkStatesModel.h"
 #include "NM_ThermalNetworkBalanceModel.h"
@@ -1389,7 +1390,7 @@ void NandradModel::initModels() {
 
 	// summation models
 	if (!m_project->m_models.m_heatLoadSummationModels.empty()) {
-		IBK::IBK_Message(IBK::FormatString("Initializing ideal pipe register models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		IBK::IBK_Message(IBK::FormatString("Initializing heat load summation models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		IBK_MSG_INDENT;
 
 		for (NANDRAD::HeatLoadSummationModel & m: m_project->m_models.m_heatLoadSummationModels) {
@@ -1402,6 +1403,27 @@ void NandradModel::initModels() {
 			}
 			catch (IBK::Exception & ex) {
 				throw IBK::Exception(ex, IBK::FormatString("Error initializing heat load summation model (id=%1).").arg(m.m_id), FUNC_ID);
+			}
+			// register model for calculation
+			registerStateDependendModel(mod);
+		}
+	}
+
+	// network adapter models
+	if (!m_project->m_models.m_networkInterfaceAdapterModels.empty()) {
+		IBK::IBK_Message(IBK::FormatString("Initializing network interface adapter models models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		IBK_MSG_INDENT;
+
+		for (NANDRAD::NetworkInterfaceAdapterModel & m: m_project->m_models.m_networkInterfaceAdapterModels) {
+			NANDRAD_MODEL::NetworkInterfaceAdapterModel * mod = new NANDRAD_MODEL::NetworkInterfaceAdapterModel(m.m_id, m.m_displayName);
+			m_modelContainer.push_back(mod); // transfer ownership
+
+			try {
+				m.checkParameters();
+				mod->setup(m);
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString("Error initializing network interface adapter model (id=%1).").arg(m.m_id), FUNC_ID);
 			}
 			// register model for calculation
 			registerStateDependendModel(mod);

@@ -79,7 +79,7 @@ void NetworkInterfaceAdapterModel::inputReferences(std::vector<InputReference> &
 	ref.m_name.m_name = "SupplyTemperatureSchedule";
 	inputRefs.push_back(ref);
 
-	ref.m_name.m_name = "SupplyMassFluxSchedule";
+	ref.m_name.m_name = "SupplyMassFlowSchedule";
 	inputRefs.push_back(ref);
 }
 
@@ -105,15 +105,14 @@ int NetworkInterfaceAdapterModel::update() {
 	double supplyTemp = *m_valueRefs[1]; // K
 	double massFlux = *m_valueRefs[2]; // kg/s
 
-	// kg/m3
-	double density = m_modelData->m_fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 	// J/kgK
 	double heatCapacity = m_modelData->m_fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 
 	if (massFlux <= 0)
 		m_results[R_ReturnTemperature] = supplyTemp;
 	else {
-		double returnTemperature = supplyTemp - heatLoad/(massFlux*density*heatCapacity);
+		// J/(s * kg/s * J/kgK) = J/kg*kgK/J = K
+		double returnTemperature = supplyTemp - heatLoad/(massFlux*heatCapacity);
 		m_results[R_ReturnTemperature] = returnTemperature;
 	}
 	return 0; // signal success

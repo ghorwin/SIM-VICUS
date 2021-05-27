@@ -10,10 +10,10 @@
 			<ClimateFilePath>${Project Directory}/../climate/DEU_Potsdam_60.c6b</ClimateFilePath>
 		</Location>
 		<SimulationParameter>
-			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">22</IBK:Parameter>
 			<Interval>
-				<IBK:Parameter name="Start" unit="d">110</IBK:Parameter>
-				<IBK:Parameter name="End" unit="d">10</IBK:Parameter>
+				<IBK:Parameter name="Start" unit="d">160</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">165</IBK:Parameter>
 			</Interval>
 			<SolarLoadsDistributionModel>
 				<DistributionType>AreaWeighted</DistributionType>
@@ -214,6 +214,26 @@
 
 		</Models>
 
+		<Schedules>
+			<WeekEndDays>Sat,Sun</WeekEndDays>
+			<ScheduleGroups>
+				<ScheduleGroup objectList="SupplyNetwork_1">
+					<!-- constant supply network properties -->
+					<Schedule type="AllDays">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>
+									SupplyTemperatureSchedule [C]:30;
+									SupplyMassFlowSchedule [kg/s]:0.1
+								</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+			</ScheduleGroups>
+		</Schedules>
+
 		<Outputs>
 			<Definitions>
 				<OutputDefinition>
@@ -254,6 +274,12 @@
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 
+				<OutputDefinition>
+					<Quantity>ReturnTemperature</Quantity>
+					<ObjectListName>SupplyNetwork_1</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
 			</Definitions>
 			
 			<Grids>
@@ -285,6 +311,10 @@
 			</ObjectList>
 			<ObjectList name="Summation Model">
 				<FilterID>801</FilterID>
+				<ReferenceType>Model</ReferenceType>
+			</ObjectList>
+			<ObjectList name="SupplyNetwork_1">
+				<FilterID>1212</FilterID>
 				<ReferenceType>Model</ReferenceType>
 			</ObjectList>
 		</ObjectLists>

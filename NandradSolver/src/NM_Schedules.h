@@ -82,6 +82,7 @@ public:
 		SQ_EvaporatorMeanTemperatureSchedule,					// Keyword: EvaporatorMeanTemperatureSchedule				[C]
 		SQ_SupplyTemperatureSchedule,							// Keyword: SupplyTemperatureSchedule						[C]
 		SQ_MaxMassFlowSchedule,									// Keyword: MaxMassFlowSchedule								[kg/s]
+		SQ_SupplyMassFlowSchedule,								// Keyword: SupplyMassFlowSchedule							[kg/s]
 		NUM_SQ
 	};
 

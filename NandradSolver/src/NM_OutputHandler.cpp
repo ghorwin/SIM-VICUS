@@ -46,7 +46,8 @@ const char * const STATE_QUANTITIES[] = {
 	"SurfaceTemperatureB",
 	"ElementTemperature",
 	"ShadingFactor",
-	"ShadingControlValue"
+	"ShadingControlValue",
+	"ReturnTemperature"
 };
 
 const char * const FLUX_QUANTITIES[] = {
