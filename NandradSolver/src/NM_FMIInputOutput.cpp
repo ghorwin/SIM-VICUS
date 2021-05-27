@@ -33,16 +33,16 @@ void FMIInputOutput::setup(const NANDRAD::Project & prj) {
 	// store pointer to fmi description
 	m_fmiDescription = &prj.m_fmiDescription;
 
-	// resize fmi variables and set start value
+	// process all FMI input variables, create an element in the m_FMIInputValues map for each
+	// *different* value reference and set start value
 	for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_inputVariables) {
-
-		std::map<unsigned int, double>::const_iterator valIt =
-				m_FMIInputValues.find(variable.m_fmiValueRef);
-		// set first start value given in project file (more than one
-		// input variables with the same reference id are allowed)
-		if(valIt != m_FMIInputValues.end())
+		std::map<unsigned int, double>::const_iterator valIt = m_FMIInputValues.find(variable.m_fmiValueRef);
+		// if already an input var with this value ref exists in the map (more than one
+		// input variable with the same reference id are allowed), skip it
+		if (valIt != m_FMIInputValues.end())
 			continue;
 
+		// insert into map with its start value given in project file
 		m_FMIInputValues[variable.m_fmiValueRef] = variable.m_fmiStartValue;
 	}
 }
@@ -51,7 +51,7 @@ void FMIInputOutput::setup(const NANDRAD::Project & prj) {
 int FMIInputOutput::setTime(double /*t*/) {
 	// if interpolation of input variables is enabled, calculate
 	// value in integration interval based on Taylor series expansion rule
-	// and store in m_results
+	// and store in m_FMIInputValues
 	return 0; // signal success
 }
 
@@ -61,11 +61,10 @@ const double * FMIInputOutput::resolveResultReference(const NANDRAD_MODEL::Input
 {
 	IBK_ASSERT(m_fmiDescription != nullptr);
 	// no fmi variables
-	if(m_fmiDescription->m_inputVariables.empty())
+	if (m_fmiDescription->m_inputVariables.empty())
 		return nullptr;
 
-	// search for value reference inside fmi descriptions:
-	// we create a FMIVariable and search for an identic type inside fmi descriptions
+	// we create a FMIVariable and search for an identic type inside FMI descriptions
 	NANDRAD::FMIVariableDefinition variable;
 	// copy data from input reference
 	variable.m_objectID = valueRef.m_id;
@@ -74,21 +73,23 @@ const double * FMIInputOutput::resolveResultReference(const NANDRAD_MODEL::Input
 	// set an invalid fmi id
 	variable.m_fmiValueRef = NANDRAD::INVALID_ID;
 	// copy index
-	if(valueRef.m_name.m_index != -1)
+	if (valueRef.m_name.m_index != -1)
 		variable.m_vectorIndex = (unsigned int) valueRef.m_name.m_index;
 
-	// translate given value reference into an existing fmi variable
-	// (note that different value refreences may share the same fmi input quantity)
-	for(const NANDRAD::FMIVariableDefinition &compVar : m_fmiDescription->m_inputVariables) {
-		if(variable.sameModelVarAs(compVar)) {
-			// copy missingh fmi reference information
+	// translate given value reference into an existing FMI variable
+	// (note that different value references may share the same fmi input quantity)
+	for (const NANDRAD::FMIVariableDefinition &compVar : m_fmiDescription->m_inputVariables) {
+		if (variable.sameModelVarAs(compVar)) {
+			// copy missing FMI reference information
 			variable = compVar;
 			break;
 		}
 	}
+	// Note: alternative way of implementing this: use classic iterator loop, break when found and then
+	//       compare iterator with end-iterator to check if found -> later access iterator directly -> no copy necessary
 
 	// we dot not find a suitable fmi input variable
-	if(variable.m_fmiValueRef == NANDRAD::INVALID_ID)
+	if (variable.m_fmiValueRef == NANDRAD::INVALID_ID)
 		return nullptr;
 
 	// copy quantity description
@@ -98,9 +99,8 @@ const double * FMIInputOutput::resolveResultReference(const NANDRAD_MODEL::Input
 	quantityDesc.m_unit = variable.m_unit;
 	quantityDesc.m_constant = true; // with respect to other models, this is a constant value during integration
 
-	// return suitable value reference (sorted by fmi reference ids)
-	std::map<unsigned int, double>::const_iterator valIt =
-			m_FMIInputValues.find(variable.m_fmiValueRef);
+	// find suitable value reference (access via FMI reference ids)
+	std::map<unsigned int, double>::const_iterator valIt = m_FMIInputValues.find(variable.m_fmiValueRef);
 	// value reference must! exist
 	IBK_ASSERT(valIt != m_FMIInputValues.end());
 
@@ -111,14 +111,12 @@ const double * FMIInputOutput::resolveResultReference(const NANDRAD_MODEL::Input
 void FMIInputOutput::inputReferences(std::vector<InputReference> & inputRefs) const {
 
 	IBK_ASSERT(m_fmiDescription != nullptr);
-	// no fmi variables
-	if(m_fmiDescription->m_outputVariables.empty())
+	// no FMI variables
+	if (m_fmiDescription->m_outputVariables.empty())
 		return;
-
 
 	// set all output quantities as input references
 	// order of inputRefs matches order of m_outputVariables
-
 	for(const NANDRAD::FMIVariableDefinition &variable : m_fmiDescription->m_outputVariables) {
 		// fill input reference
 		InputReference inputRef;
@@ -133,7 +131,7 @@ void FMIInputOutput::inputReferences(std::vector<InputReference> & inputRefs) co
 		inputRef.m_referenceType = (NANDRAD::ModelInputReference::referenceType_t)
 				NANDRAD::KeywordList::Enumeration("ModelInputReference::referenceType_t", tokens[0]);
 		// copy index
-		if(variable.m_vectorIndex != NANDRAD::INVALID_ID)
+		if (variable.m_vectorIndex != NANDRAD::INVALID_ID)
 			inputRef.m_name.m_index = (int) variable.m_vectorIndex;
 		// store reference
 		inputRefs.push_back( inputRef );
@@ -151,10 +149,8 @@ void FMIInputOutput::setInputValueRefs(const std::vector<QuantityDescription> & 
 }
 
 
-void FMIInputOutput::setFMIInputValue(unsigned int varID, double value)
-{
-	std::map<unsigned int, double>::iterator inputVarIt =
-			m_FMIInputValues.find(varID);
+void FMIInputOutput::setFMIInputValue(unsigned int varID, double value) {
+	std::map<unsigned int, double>::iterator inputVarIt = m_FMIInputValues.find(varID);
 	// non-existent variable id is a progammer error (error in FMU export)
 	IBK_ASSERT(inputVarIt != m_FMIInputValues.end());
 	// set value
@@ -162,10 +158,8 @@ void FMIInputOutput::setFMIInputValue(unsigned int varID, double value)
 }
 
 
-void FMIInputOutput::getFMIOutputValue(unsigned int varID, double & value) const
-{
-	std::map<unsigned int, const double*>::const_iterator outputVarIt =
-			m_FMIOutputValueRefs.find(varID);
+void FMIInputOutput::getFMIOutputValue(unsigned int varID, double & value) const {
+	std::map<unsigned int, const double*>::const_iterator outputVarIt = m_FMIOutputValueRefs.find(varID);
 	// non-existent variable id is a progammer error (error in FMU export)
 	IBK_ASSERT(outputVarIt != m_FMIOutputValueRefs.end());
 	// get value
