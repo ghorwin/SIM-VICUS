@@ -91,11 +91,8 @@ void ConstructionBalanceModel::resultDescriptions(std::vector<QuantityDescriptio
 	resDesc.push_back(res);
 
 	if(m_statesModel->m_activeLayerIndex != NANDRAD::INVALID_ID)  {
-		// add active layewr heat load to quantity descriptions
-		res.m_constant = true;
-		res.m_description = "Thermal load of active layer";
-		res.m_name = "ActiveLayerThermalLoad";
-		res.m_unit = "W";
+		// add active layer heat load to quantity descriptions
+		res = QuantityDescription("ActiveLayerThermalLoad", "W", "Thermal load of active layer", true);
 		resDesc.push_back(res);
 	}
 }

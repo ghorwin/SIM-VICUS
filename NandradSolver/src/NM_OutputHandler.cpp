@@ -75,7 +75,8 @@ const char * const FLUX_QUANTITIES[] = {
 	"SolarIntensityOnShadingSensor",
 	"IdealHeatingLoad",
 	"IdealCoolingLoad",
-	"MassFlux"
+	"MassFlux",
+	"TotalHeatLoad"
 };
 
 
