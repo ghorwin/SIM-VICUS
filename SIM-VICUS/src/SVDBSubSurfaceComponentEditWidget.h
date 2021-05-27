@@ -71,6 +71,8 @@ private slots:
 	void on_toolButtonSelectBoundaryConditionSideAName_clicked();
 	void on_toolButtonSelectBoundaryConditionSideBName_clicked();
 
+	void on_pushButtonFalseColor_clicked();
+
 private:
 	Ui::SVDBSubSurfaceComponentEditWidget	*m_ui;
 

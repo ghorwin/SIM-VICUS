@@ -46,7 +46,7 @@ SVDBSubSurfaceComponentEditWidget::SVDBSubSurfaceComponentEditWidget(QWidget *pa
 	m_ui->masterLayout->setMargin(4);
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
-	m_ui->lineEditName->setDialog3Caption(tr("Component identification name"));
+	m_ui->lineEditName->setDialog3Caption(tr("Sub-Surface component identification name"));
 
 	// enter categories into combo box
 	// block signals to avoid getting "changed" calls
@@ -55,7 +55,7 @@ SVDBSubSurfaceComponentEditWidget::SVDBSubSurfaceComponentEditWidget(QWidget *pa
 		m_ui->comboBoxSubSurfaceType->addItem(VICUS::KeywordListQt::Keyword("SubSurfaceComponent::SubSurfaceComponentType", i), i);
 	m_ui->comboBoxSubSurfaceType->blockSignals(false);
 
-	//construction group box
+	// construction group box
 	m_ui->lineEditWindowName->setReadOnly(true);
 
 	updateInput(-1);
@@ -90,6 +90,7 @@ void SVDBSubSurfaceComponentEditWidget::updateInput(int id) {
 		m_ui->lineEditBoundaryConditionSideAName->setText("");
 
 		m_ui->lineEditBoundaryConditionSideBName->setText("");
+		m_ui->pushButtonFalseColor->setColor(Qt::black);
 
 		return;
 	}
@@ -105,6 +106,10 @@ void SVDBSubSurfaceComponentEditWidget::updateInput(int id) {
 	int typeIdx = m_ui->comboBoxSubSurfaceType->findData(comp->m_type);
 	m_ui->comboBoxSubSurfaceType->setCurrentIndex(typeIdx);
 	m_ui->comboBoxSubSurfaceType->blockSignals(false);
+
+	m_ui->pushButtonFalseColor->blockSignals(true);
+	m_ui->pushButtonFalseColor->setColor(m_current->m_color);
+	m_ui->pushButtonFalseColor->blockSignals(false);
 
 	m_ui->lineEditBoundaryConditionSideAName->setEnabled(true);
 	m_ui->lineEditBoundaryConditionSideBName->setEnabled(true);
@@ -195,6 +200,7 @@ void SVDBSubSurfaceComponentEditWidget::on_toolButtonSelectWindow_clicked() {
 	unsigned int winId = editDialog->select(m_current->m_idWindow);
 	if (winId != m_current->m_idWindow) {
 		m_current->m_idWindow = winId;
+		m_db->m_subSurfaceComponents.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 	updateInput((int)m_current->m_id);
@@ -207,6 +213,7 @@ void SVDBSubSurfaceComponentEditWidget::on_toolButtonSelectBoundaryConditionSide
 	unsigned int bcId = bcEditDialog->select(m_current->m_idSideABoundaryCondition);
 	if (bcId != m_current->m_idSideABoundaryCondition) {
 		m_current->m_idSideABoundaryCondition = bcId;
+		m_db->m_subSurfaceComponents.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 	updateInput((int)m_current->m_id);
@@ -219,9 +226,21 @@ void SVDBSubSurfaceComponentEditWidget::on_toolButtonSelectBoundaryConditionSide
 	unsigned int bcId = bcEditDialog->select(m_current->m_idSideBBoundaryCondition);
 	if (bcId != m_current->m_idSideBBoundaryCondition) {
 		m_current->m_idSideBBoundaryCondition = bcId;
+		m_db->m_subSurfaceComponents.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 	updateInput((int)m_current->m_id);
 }
 
 
+void SVDBSubSurfaceComponentEditWidget::on_pushButtonFalseColor_clicked() {
+	Q_ASSERT(m_current != nullptr);
+
+	if (m_current->m_color != m_ui->pushButtonFalseColor->color()) {
+		m_current->m_color = m_ui->pushButtonFalseColor->color();
+		m_db->m_subSurfaceComponents.m_modified = true;
+		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+	}
+
+
+}
