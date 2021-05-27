@@ -104,10 +104,12 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	VICUS::Project & vp = m_importedProject; // readability improvement
 	vp.m_buildings.resize(1);
 	vp.m_buildings[0].m_buildingLevels.resize(1);
-	VICUS::BuildingLevel & bl = vp.m_buildings[0].m_buildingLevels[0];
+	vp.m_buildings[0].m_id = vp.m_buildings[0].uniqueID();
+	vp.m_buildings[0].m_displayName = tr("Imported IDF Building Geometry");
 
-	vp.m_buildings[0].m_displayName = "Imported_IDF_Building";
-	bl.m_displayName = "Floor0";
+	VICUS::BuildingLevel & bl = vp.m_buildings[0].m_buildingLevels[0];
+	bl.m_id = bl.uniqueID();
+	bl.m_displayName = tr("Default building level");
 
 	QProgressDialog dlg(tr("Importing IDF project"), tr("Abort"), 0, prj.m_zones.size(), this);
 	dlg.setWindowModality(Qt::WindowModal);
