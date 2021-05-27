@@ -120,6 +120,29 @@
 		</ObjectLists>
 		<FMIDescription>
 			<ModelName>InternalLoadsScheduled</ModelName>
+			<InputVariables>
+				<FMIVariableDefinition fmiVarName="HeatLoad" unit="W" fmiValueRef="46">
+					<FmiVarDescription>Convective heat load due to electric equipment usage per zone</FmiVarDescription>
+					<FmiStartValue>4.63869e-310</FmiStartValue>
+					<VarName>Model.ConvectiveEquipmentHeatLoad</VarName>
+					<ObjectID>1</ObjectID>
+					<VectorIndex>1</VectorIndex>
+				</FMIVariableDefinition>
+				<FMIVariableDefinition fmiVarName="HeatLoad" unit="W" fmiValueRef="46">
+					<FmiVarDescription>Convective lighting heat load per zone</FmiVarDescription>
+					<FmiStartValue>4.63869e-310</FmiStartValue>
+					<VarName>Model.ConvectiveLightingHeatLoad</VarName>
+					<ObjectID>1</ObjectID>
+					<VectorIndex>1</VectorIndex>
+				</FMIVariableDefinition>
+				<FMIVariableDefinition fmiVarName="HeatLoad" unit="W" fmiValueRef="46">
+					<FmiVarDescription>Convective heat load due to person occupance per zone</FmiVarDescription>
+					<FmiStartValue>4.63869e-310</FmiStartValue>
+					<VarName>Model.ConvectivePersonHeatLoad</VarName>
+					<ObjectID>1</ObjectID>
+					<VectorIndex>1</VectorIndex>
+				</FMIVariableDefinition>
+			</InputVariables>
 			<OutputVariables>
 				<FMIVariableDefinition fmiVarName="Zone(1).PersonHeatLoadPerAreaSchedule" unit="W/m2" fmiValueRef="43">
 					<FmiVarDescription>Schedule parameter: &apos;PersonHeatLoadPerAreaSchedule&apos;</FmiVarDescription>
@@ -133,9 +156,9 @@
 					<VarName>Zone.LightingHeatLoadPerAreaSchedule</VarName>
 					<ObjectID>1</ObjectID>
 				</FMIVariableDefinition>
-				<FMIVariableDefinition fmiVarName="Zone(1).EquipmentHeatLoadPerAreaSchedule" unit="W/m2" fmiValueRef="45">
+				<FMIVariableDefinition fmiVarName="Zone(1).EquipmentHeatLoadPerAreaSchedule" unit="W/m2" fmiValueRef="47">
 					<FmiVarDescription>Schedule parameter: &apos;EquipmentHeatLoadPerAreaSchedule&apos;</FmiVarDescription>
-					<FmiStartValue>4.65373e-310</FmiStartValue>
+					<FmiStartValue>0</FmiStartValue>
 					<VarName>Zone.EquipmentHeatLoadPerAreaSchedule</VarName>
 					<ObjectID>1</ObjectID>
 				</FMIVariableDefinition>
