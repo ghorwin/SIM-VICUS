@@ -220,9 +220,10 @@ void SVDBSubSurfaceComponentEditWidget::on_toolButtonSelectBoundaryConditionSide
 	// get boundary condition edit dialog from mainwindow
 	SVDatabaseEditDialog * bcEditDialog = SVMainWindow::instance().dbBoundaryConditionEditDialog();
 	unsigned int bcId = bcEditDialog->select(m_current->m_idSideBBoundaryCondition);
-	if (bcId != m_current->m_idSideBBoundaryCondition)
+	if (bcId != m_current->m_idSideBBoundaryCondition){
+		m_current->m_idSideBBoundaryCondition = bcId;
 		modelModify();
-
+	}
 	updateInput((int)m_current->m_id);
 }
 
