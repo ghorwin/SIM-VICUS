@@ -1,3 +1,28 @@
+/*	SIM-VICUS - Building and District Energy Simulation Tool.
+
+	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
+	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
+	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
+
+	  ... all the others from the SIM-VICUS team ... :-)
+
+	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
 #include "SVNavigationTreeWidget.h"
 #include "ui_SVNavigationTreeWidget.h"
 
@@ -169,9 +194,18 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 					surface->setData(0, SVNavigationTreeItemDelegate::NodeID, s.uniqueID());
 					surface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, s.m_visible);
 					surface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, s.m_selected);
-					for (const VICUS::SubSurface & sub : s.subSurfaces()) {
+					for (unsigned int holeIdx = 0; holeIdx < s.subSurfaces().size(); ++holeIdx) {
+						const VICUS::SubSurface & sub = s.subSurfaces()[holeIdx];
+
 						QTreeWidgetItem * subsurface = new QTreeWidgetItem(QStringList() << sub.m_displayName, QTreeWidgetItem::Type);
 						m_treeItemMap[sub.uniqueID()] = subsurface;
+
+						// mark invalid subsurfaces in red and give tooltip with error
+						if (!s.geometry().holes()[holeIdx].isValid()) {
+							subsurface->setTextColor(0, QColor(128,0,0));
+							subsurface->setToolTip(0, tr("Invalid polygon data"));
+						}
+
 						surface->addChild(subsurface);
 						subsurface->setData(0, SVNavigationTreeItemDelegate::NodeID, sub.uniqueID());
 						subsurface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, sub.m_visible);

@@ -69,6 +69,8 @@ void NetworkNode::readXML(const TiXmlElement * element) {
 				m_componentId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "subNetworkId")
 				m_subNetworkId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "controllerId")
+				m_controllerId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName = attrib->ValueStr();
 			else if (attribName == "visible")
@@ -129,6 +131,8 @@ TiXmlElement * NetworkNode::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("componentId", IBK::val2string<unsigned int>(m_componentId));
 	if (m_subNetworkId != VICUS::INVALID_ID)
 		e->SetAttribute("subNetworkId", IBK::val2string<unsigned int>(m_subNetworkId));
+	if (m_controllerId != VICUS::INVALID_ID)
+		e->SetAttribute("controllerId", IBK::val2string<unsigned int>(m_controllerId));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
 	if (m_visible != NetworkNode().m_visible)

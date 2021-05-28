@@ -1,9 +1,6 @@
----
-
-# Referenz
-
+[appendix]
 [[units]]
-## Einheitendefinitionen
+# Einheitendefinitionen
 
 Im gesamten NANDRAD-Solver werden Einheiten _nur_ für Ein-/ Ausgabezwecke verwendet. Innerhalb der Berechnungsfunktionen werden _immer_ die SI-Basiseinheiten verwendet, wodurch Probleme durch Einheitenumrechnungen vermieden werden.
 
@@ -102,8 +99,9 @@ Bei Einheiten wird zwischen Groß- und Kleinschreibung unterschieden! Zum Beispi
 Die Einheit `undefined` bedeutet _nicht initialisiert_ (intern) und darf in Eingabedateien nicht verwendet werden.
 ====
 
+[appendix]
 [[quantities]]
-## Mengenreferenzen
+# Mengenreferenzen
 
 Die folgende Liste von Größen ist eine Übersicht über alle verfügbaren Ergebnisse, die als Ausgaben angefordert werden können. Welche Ausgaben tatsächlich verfügbar sind, hängt vom Projekt ab und wird in der Datei `var/output_reference_list.txt` ausgegeben (siehe Diskussion im Abschnitt <<outputs>>).
 

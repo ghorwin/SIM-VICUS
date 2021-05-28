@@ -6,19 +6,18 @@
 	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
 	  Anne Paepcke     <anne.paepcke -[at]- tu-dresden.de>
 
-	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
 
-	This library is free software; you can redistribute it and/or
-	modify it under the terms of the GNU Lesser General Public
-	License as published by the Free Software Foundation; either
-	version 3 of the License, or (at your option) any later version.
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-	This library is distributed in the hope that it will be useful,
+	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-	Lesser General Public License for more details.
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 */
-
 
 #include "NM_ConstructionBalanceModel.h"
 
@@ -90,6 +89,12 @@ void ConstructionBalanceModel::resultDescriptions(std::vector<QuantityDescriptio
 	// and the temperatures returned are actually mean temperatures of the individual elements of the material layer
 	res.resize(m_con->m_constructionType->m_materialLayers.size());
 	resDesc.push_back(res);
+
+	if(m_statesModel->m_activeLayerIndex != NANDRAD::INVALID_ID)  {
+		// add active layer heat load to quantity descriptions
+		res = QuantityDescription("ActiveLayerThermalLoad", "W", "Thermal load of active layer", true);
+		resDesc.push_back(res);
+	}
 }
 
 
@@ -125,6 +130,13 @@ const double * ConstructionBalanceModel::resultValueRef(const InputReference & q
 		if(index >= m_vectorValuedResults[VVR_ThermalLoad].size())
 			return nullptr;
 		return &m_vectorValuedResults[VVR_ThermalLoad].data()[index];
+	}
+	else if(quantityName.m_name == "ActiveLayerThermalLoad") {
+		// no active layer
+		if( m_statesModel->m_activeLayerIndex == NANDRAD::INVALID_ID)
+			return nullptr;
+
+		return &m_vectorValuedResults[VVR_ThermalLoad].data()[m_statesModel->m_activeLayerIndex];
 	}
 
 	return nullptr; // not found

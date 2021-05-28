@@ -36,9 +36,6 @@ namespace NANDRAD {
 	/*! Holds a list of all enum types/categories. */
 	const char * const ENUM_TYPES[83] = {
 		"ConstructionInstance::para_t",
-		"ControlElement::ControlType",
-		"Controller::ModelType",
-		"Controller::para_t",
 		"DailyCycle::interpolation_t",
 		"EmbeddedObject::para_t",
 		"EmbeddedObject::objectType_t",
@@ -50,6 +47,9 @@ namespace NANDRAD {
 		"HydraulicNetworkComponent::ModelType",
 		"HydraulicNetworkComponent::para_t",
 		"HydraulicNetworkComponent::HeatPumpIntegration",
+		"HydraulicNetworkControlElement::ControlledProperty",
+		"HydraulicNetworkControlElement::ControllerType",
+		"HydraulicNetworkControlElement::para_t",
 		"HydraulicNetworkElement::para_t",
 		"HydraulicNetworkElement::intPara_t",
 		"HydraulicNetworkHeatExchange::ModelType",
@@ -140,103 +140,103 @@ namespace NANDRAD {
 				case 1 : return "Inclination";
 				case 2 : return "Area";
 			} break;
-			// ControlElement::ControlType
-			case 1 :
-			switch (t) {
-				case 0 : return "ControlTemperatureDifference";
-				case 1 : return "ControlMassFlow";
-			} break;
-			// Controller::ModelType
-			case 2 :
-			switch (t) {
-				case 0 : return "DigitalDirect";
-				case 1 : return "DigitalHysteresis";
-				case 2 : return "PController";
-				case 3 : return "PIController";
-			} break;
-			// Controller::para_t
-			case 3 :
-			switch (t) {
-				case 0 : return "Kp";
-				case 1 : return "Ki";
-				case 2 : return "Kd";
-			} break;
 			// DailyCycle::interpolation_t
-			case 4 :
+			case 1 :
 			switch (t) {
 				case 0 : return "Constant";
 				case 1 : return "Linear";
 			} break;
 			// EmbeddedObject::para_t
-			case 5 :
+			case 2 :
 			switch (t) {
 				case 0 : return "Area";
 			} break;
 			// EmbeddedObject::objectType_t
-			case 6 :
+			case 3 :
 			switch (t) {
 				case 0 : return "Window";
 				case 1 : return "Door";
 				case 2 : return "Hole";
 			} break;
 			// HVACControlModel::modelType_t
-			case 7 :
+			case 4 :
 			switch (t) {
 				case 0 : return "Heating";
 			} break;
 			// HVACControlModel::OperatingMode
-			case 8 :
+			case 5 :
 			switch (t) {
 				case 0 : return "Parallel";
 			} break;
 			// HydraulicFluid::para_t
-			case 9 :
+			case 6 :
 			switch (t) {
 				case 0 : return "Density";
 				case 1 : return "HeatCapacity";
 				case 2 : return "Conductivity";
 			} break;
 			// HydraulicNetwork::ModelType
-			case 10 :
+			case 7 :
 			switch (t) {
 				case 0 : return "HydraulicNetwork";
 				case 1 : return "ThermalHydraulicNetwork";
 			} break;
 			// HydraulicNetwork::para_t
-			case 11 :
+			case 8 :
 			switch (t) {
 				case 0 : return "DefaultFluidTemperature";
 				case 1 : return "InitialFluidTemperature";
 				case 2 : return "ReferencePressure";
 			} break;
 			// HydraulicNetworkComponent::ModelType
-			case 12 :
+			case 9 :
 			switch (t) {
 				case 0 : return "SimplePipe";
 				case 1 : return "DynamicPipe";
 				case 2 : return "ConstantPressurePump";
-				case 3 : return "HeatExchanger";
-				case 4 : return "HeatPumpIdealCarnot";
-				case 5 : return "HeatPumpReal";
+				case 3 : return "ConstantMassFluxPump";
+				case 4 : return "HeatExchanger";
+				case 5 : return "HeatPumpIdealCarnot";
+				case 6 : return "HeatPumpReal";
 			} break;
 			// HydraulicNetworkComponent::para_t
-			case 13 :
+			case 10 :
 			switch (t) {
 				case 0 : return "HydraulicDiameter";
 				case 1 : return "PressureLossCoefficient";
 				case 2 : return "PressureHead";
-				case 3 : return "PumpEfficiency";
-				case 4 : return "Volume";
-				case 5 : return "PipeMaxDiscretizationWidth";
-				case 6 : return "CarnotEfficiency";
-				case 7 : return "MaximumHeatingPower";
+				case 3 : return "MassFlux";
+				case 4 : return "PumpEfficiency";
+				case 5 : return "Volume";
+				case 6 : return "PipeMaxDiscretizationWidth";
+				case 7 : return "CarnotEfficiency";
+				case 8 : return "MaximumHeatingPower";
 			} break;
 			// HydraulicNetworkComponent::HeatPumpIntegration
-			case 14 :
+			case 11 :
 			switch (t) {
 				case 0 : return "SupplySide";
 				case 1 : return "SourceSide";
 				case 2 : return "SupplyAndSourceSide";
+			} break;
+			// HydraulicNetworkControlElement::ControlledProperty
+			case 12 :
+			switch (t) {
+				case 0 : return "TemperatureDifference";
+				case 1 : return "MassFlow";
+			} break;
+			// HydraulicNetworkControlElement::ControllerType
+			case 13 :
+			switch (t) {
+				case 0 : return "PController";
+				case 1 : return "PIController";
+			} break;
+			// HydraulicNetworkControlElement::para_t
+			case 14 :
+			switch (t) {
+				case 0 : return "Kp";
+				case 1 : return "Ki";
+				case 2 : return "Kd";
 			} break;
 			// HydraulicNetworkElement::para_t
 			case 15 :
@@ -307,9 +307,6 @@ namespace NANDRAD {
 				case 2 : return "PipeLength";
 				case 3 : return "PipeInnerDiameter";
 				case 4 : return "UValuePipeWall";
-				case 5 : return "FluidDensity";
-				case 6 : return "FluidHeatCapacity";
-				case 7 : return "FluidConductivity";
 			} break;
 			// IdealPipeRegisterModel::intPara_t
 			case 25 :
@@ -444,13 +441,10 @@ namespace NANDRAD {
 				case 1 : return "Zone";
 				case 2 : return "ConstructionInstance";
 				case 3 : return "EmbeddedObject";
-				case 4 : return "ActiveObject";
-				case 5 : return "Schedule";
-				case 6 : return "ObjectList";
-				case 7 : return "Model";
-				case 8 : return "Global";
-				case 9 : return "Network";
-				case 10 : return "NetworkElement";
+				case 4 : return "Schedule";
+				case 5 : return "Model";
+				case 6 : return "Network";
+				case 7 : return "NetworkElement";
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 47 :
@@ -748,103 +742,103 @@ namespace NANDRAD {
 				case 1 : return "Inclination";
 				case 2 : return "Area";
 			} break;
-			// ControlElement::ControlType
-			case 1 :
-			switch (t) {
-				case 0 : return "ControlTemperatureDifference";
-				case 1 : return "ControlMassFlow";
-			} break;
-			// Controller::ModelType
-			case 2 :
-			switch (t) {
-				case 0 : return "DigitalDirect";
-				case 1 : return "DigitalHysteresis";
-				case 2 : return "PController";
-				case 3 : return "PIController";
-			} break;
-			// Controller::para_t
-			case 3 :
-			switch (t) {
-				case 0 : return "Kp";
-				case 1 : return "Ki";
-				case 2 : return "Kd";
-			} break;
 			// DailyCycle::interpolation_t
-			case 4 :
+			case 1 :
 			switch (t) {
 				case 0 : return "Constant";
 				case 1 : return "Linear";
 			} break;
 			// EmbeddedObject::para_t
-			case 5 :
+			case 2 :
 			switch (t) {
 				case 0 : return "Area";
 			} break;
 			// EmbeddedObject::objectType_t
-			case 6 :
+			case 3 :
 			switch (t) {
 				case 0 : return "Window";
 				case 1 : return "Door";
 				case 2 : return "Hole";
 			} break;
 			// HVACControlModel::modelType_t
-			case 7 :
+			case 4 :
 			switch (t) {
 				case 0 : return "Heating";
 			} break;
 			// HVACControlModel::OperatingMode
-			case 8 :
+			case 5 :
 			switch (t) {
 				case 0 : return "Parallel";
 			} break;
 			// HydraulicFluid::para_t
-			case 9 :
+			case 6 :
 			switch (t) {
 				case 0 : return "Density";
 				case 1 : return "HeatCapacity";
 				case 2 : return "Conductivity";
 			} break;
 			// HydraulicNetwork::ModelType
-			case 10 :
+			case 7 :
 			switch (t) {
 				case 0 : return "HydraulicNetwork";
 				case 1 : return "ThermalHydraulicNetwork";
 			} break;
 			// HydraulicNetwork::para_t
-			case 11 :
+			case 8 :
 			switch (t) {
 				case 0 : return "DefaultFluidTemperature";
 				case 1 : return "InitialFluidTemperature";
 				case 2 : return "ReferencePressure";
 			} break;
 			// HydraulicNetworkComponent::ModelType
-			case 12 :
+			case 9 :
 			switch (t) {
 				case 0 : return "SimplePipe";
 				case 1 : return "DynamicPipe";
 				case 2 : return "ConstantPressurePump";
-				case 3 : return "HeatExchanger";
-				case 4 : return "HeatPumpIdealCarnot";
-				case 5 : return "HeatPumpReal";
+				case 3 : return "ConstantMassFluxPump";
+				case 4 : return "HeatExchanger";
+				case 5 : return "HeatPumpIdealCarnot";
+				case 6 : return "HeatPumpReal";
 			} break;
 			// HydraulicNetworkComponent::para_t
-			case 13 :
+			case 10 :
 			switch (t) {
 				case 0 : return "HydraulicDiameter";
 				case 1 : return "PressureLossCoefficient";
 				case 2 : return "PressureHead";
-				case 3 : return "PumpEfficiency";
-				case 4 : return "Volume";
-				case 5 : return "PipeMaxDiscretizationWidth";
-				case 6 : return "CarnotEfficiency";
-				case 7 : return "MaximumHeatingPower";
+				case 3 : return "MassFlux";
+				case 4 : return "PumpEfficiency";
+				case 5 : return "Volume";
+				case 6 : return "PipeMaxDiscretizationWidth";
+				case 7 : return "CarnotEfficiency";
+				case 8 : return "MaximumHeatingPower";
 			} break;
 			// HydraulicNetworkComponent::HeatPumpIntegration
-			case 14 :
+			case 11 :
 			switch (t) {
 				case 0 : return "SupplySide";
 				case 1 : return "SourceSide";
 				case 2 : return "SupplyAndSourceSide";
+			} break;
+			// HydraulicNetworkControlElement::ControlledProperty
+			case 12 :
+			switch (t) {
+				case 0 : return "TemperatureDifference";
+				case 1 : return "MassFlow";
+			} break;
+			// HydraulicNetworkControlElement::ControllerType
+			case 13 :
+			switch (t) {
+				case 0 : return "PController";
+				case 1 : return "PIController";
+			} break;
+			// HydraulicNetworkControlElement::para_t
+			case 14 :
+			switch (t) {
+				case 0 : return "Kp";
+				case 1 : return "Ki";
+				case 2 : return "Kd";
 			} break;
 			// HydraulicNetworkElement::para_t
 			case 15 :
@@ -915,9 +909,6 @@ namespace NANDRAD {
 				case 2 : return "PipeLength";
 				case 3 : return "PipeInnerDiameter";
 				case 4 : return "UValuePipeWall";
-				case 5 : return "FluidDensity";
-				case 6 : return "FluidHeatCapacity";
-				case 7 : return "FluidConductivity";
 			} break;
 			// IdealPipeRegisterModel::intPara_t
 			case 25 :
@@ -1052,13 +1043,10 @@ namespace NANDRAD {
 				case 1 : return "Zone";
 				case 2 : return "ConstructionInstance";
 				case 3 : return "EmbeddedObject";
-				case 4 : return "ActiveObject";
-				case 5 : return "Schedule";
-				case 6 : return "ObjectList";
-				case 7 : return "Model";
-				case 8 : return "Global";
-				case 9 : return "Network";
-				case 10 : return "NetworkElement";
+				case 4 : return "Schedule";
+				case 5 : return "Model";
+				case 6 : return "Network";
+				case 7 : return "NetworkElement";
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 47 :
@@ -1357,103 +1345,103 @@ namespace NANDRAD {
 				case 1 : return "Inclination of the wall [deg].";
 				case 2 : return "Gross area of the wall [m2].";
 			} break;
-			// ControlElement::ControlType
-			case 1 :
-			switch (t) {
-				case 0 : return "ControlTemperatureDifference";
-				case 1 : return "ControlMassFlow";
-			} break;
-			// Controller::ModelType
-			case 2 :
-			switch (t) {
-				case 0 : return "DigitalDirect";
-				case 1 : return "DigitalHysteresis";
-				case 2 : return "PController";
-				case 3 : return "PIController";
-			} break;
-			// Controller::para_t
-			case 3 :
-			switch (t) {
-				case 0 : return "Kp-parameter";
-				case 1 : return "Ki-parameter";
-				case 2 : return "Kd-parameter";
-			} break;
 			// DailyCycle::interpolation_t
-			case 4 :
+			case 1 :
 			switch (t) {
 				case 0 : return "Constant values in defined intervals.";
 				case 1 : return "Linear interpolation between values.";
 			} break;
 			// EmbeddedObject::para_t
-			case 5 :
+			case 2 :
 			switch (t) {
 				case 0 : return "Area of the embedded object [m2].";
 			} break;
 			// EmbeddedObject::objectType_t
-			case 6 :
+			case 3 :
 			switch (t) {
 				case 0 : return "Parametrization of a window model.";
 				case 1 : return "Parametrization of a door model.";
 				case 2 : return "Parametrization of an opening model.";
 			} break;
 			// HVACControlModel::modelType_t
-			case 7 :
+			case 4 :
 			switch (t) {
 				case 0 : return "Heating control model";
 			} break;
 			// HVACControlModel::OperatingMode
-			case 8 :
+			case 5 :
 			switch (t) {
 				case 0 : return "Parallel operation";
 			} break;
 			// HydraulicFluid::para_t
-			case 9 :
+			case 6 :
 			switch (t) {
 				case 0 : return "Dry density of the material.";
 				case 1 : return "Specific heat capacity of the material.";
 				case 2 : return "Thermal conductivity of the dry material.";
 			} break;
 			// HydraulicNetwork::ModelType
-			case 10 :
+			case 7 :
 			switch (t) {
 				case 0 : return "Only Hydraulic calculation with constant temperature";
 				case 1 : return "Thermo-hydraulic calculation";
 			} break;
 			// HydraulicNetwork::para_t
-			case 11 :
+			case 8 :
 			switch (t) {
 				case 0 : return "Default temperature for HydraulicNetwork models";
 				case 1 : return "Initial temperature of the fluid";
 				case 2 : return "Reference pressure of network";
 			} break;
 			// HydraulicNetworkComponent::ModelType
-			case 12 :
+			case 9 :
 			switch (t) {
 				case 0 : return "Pipe with a single fluid volume and with heat exchange";
 				case 1 : return "Pipe with a discretized fluid volume and heat exchange";
-				case 2 : return "Pump with constant pressure";
-				case 3 : return "Simple heat exchanger with given heat flux";
-				case 4 : return "Heat pump with variable heating power based on carnot efficiency";
-				case 5 : return "On-off-type heat pump with based on manufacturer data sheet";
+				case 2 : return "Pump with constant/externally defined pressure";
+				case 3 : return "Pump with constant/externally defined mass flux";
+				case 4 : return "Simple heat exchanger with given heat flux";
+				case 5 : return "Heat pump with variable heating power based on carnot efficiency";
+				case 6 : return "On-off-type heat pump with based on manufacturer data sheet";
 			} break;
 			// HydraulicNetworkComponent::para_t
-			case 13 :
+			case 10 :
 			switch (t) {
 				case 0 : return "Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)";
 				case 1 : return "Pressure loss coefficient for the component (zeta-value)";
-				case 2 : return "Pressure head form a pump";
-				case 3 : return "Pump efficiency";
-				case 4 : return "Water or air volume of the component";
-				case 5 : return "Maximum width of discretized volumes in pipe";
-				case 6 : return "Carnot efficiency eta";
-				case 7 : return "Maximum heating power";
+				case 2 : return "Pressure head for a pump";
+				case 3 : return "Mass flux for a pump";
+				case 4 : return "Pump efficiency";
+				case 5 : return "Water or air volume of the component";
+				case 6 : return "Maximum width of discretized volumes in pipe";
+				case 7 : return "Carnot efficiency eta";
+				case 8 : return "Maximum heating power";
 			} break;
 			// HydraulicNetworkComponent::HeatPumpIntegration
-			case 14 :
+			case 11 :
 			switch (t) {
 				case 0 : return "The network is connected to the hot side (supply) of the heat pump";
 				case 1 : return "The network is connected to the cold side (source) of the heat pump";
 				case 2 : return "Two networks are connected, one to the cold side, the other to the hot side of the heat pump";
+			} break;
+			// HydraulicNetworkControlElement::ControlledProperty
+			case 12 :
+			switch (t) {
+				case 0 : return "TemperatureDifference";
+				case 1 : return "MassFlow";
+			} break;
+			// HydraulicNetworkControlElement::ControllerType
+			case 13 :
+			switch (t) {
+				case 0 : return "PController";
+				case 1 : return "PIController";
+			} break;
+			// HydraulicNetworkControlElement::para_t
+			case 14 :
+			switch (t) {
+				case 0 : return "Kp-parameter";
+				case 1 : return "Ki-parameter";
+				case 2 : return "Kd-parameter";
 			} break;
 			// HydraulicNetworkElement::para_t
 			case 15 :
@@ -1513,8 +1501,8 @@ namespace NANDRAD {
 			// IdealPipeRegisterModel::modelType_t
 			case 23 :
 			switch (t) {
-				case 0 : return "Constant infiltration rate";
-				case 1 : return "Scheduled ventilation rate";
+				case 0 : return "Constant supply temperature";
+				case 1 : return "Scheduled supply temperature";
 			} break;
 			// IdealPipeRegisterModel::para_t
 			case 24 :
@@ -1524,9 +1512,6 @@ namespace NANDRAD {
 				case 2 : return "Pipe length";
 				case 3 : return "Inner diameter of pipe";
 				case 4 : return "Length-specific U-Value of pipe wall incl. insulation";
-				case 5 : return "Fluid mass density.";
-				case 6 : return "Fluid specific heat capacity.";
-				case 7 : return "Fluid thermal conductivity.";
 			} break;
 			// IdealPipeRegisterModel::intPara_t
 			case 25 :
@@ -1536,8 +1521,8 @@ namespace NANDRAD {
 			// IdealSurfaceHeatingCoolingModel::para_t
 			case 26 :
 			switch (t) {
-				case 0 : return "Maximum heating power per floor area";
-				case 1 : return "Maximum heating power per floor area";
+				case 0 : return "Maximum heating power per surface area";
+				case 1 : return "Maximum heating power per surface area";
 			} break;
 			// InterfaceAirFlow::splinePara_t
 			case 27 :
@@ -1661,13 +1646,10 @@ namespace NANDRAD {
 				case 1 : return "Model references inside a room.";
 				case 2 : return "Model references a wall.";
 				case 3 : return "Model references an embedded object.";
-				case 4 : return "Model references an active object.";
-				case 5 : return "Model references scheduled data.";
-				case 6 : return "Model references an object list-specific value.";
-				case 7 : return "Model references of a generic model.";
-				case 8 : return "Model references to global physical quantities.";
-				case 9 : return "Model references of a hydraulic network.";
-				case 10 : return "Model references of flow elements of a hydraulic network.";
+				case 4 : return "Model references generic scheduled data that is not associated with a specific object type.";
+				case 5 : return "Model references of a model object.";
+				case 6 : return "Model references of a hydraulic network.";
+				case 7 : return "Model references of flow elements of a hydraulic network.";
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 47 :
@@ -1965,77 +1947,56 @@ namespace NANDRAD {
 				case 1 : return "Deg";
 				case 2 : return "m2";
 			} break;
-			// ControlElement::ControlType
+			// DailyCycle::interpolation_t
 			case 1 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
-			// Controller::ModelType
+			// EmbeddedObject::para_t
 			case 2 :
 			switch (t) {
-				case 0 : return "";
-				case 1 : return "";
-				case 2 : return "";
-				case 3 : return "";
+				case 0 : return "m2";
 			} break;
-			// Controller::para_t
+			// EmbeddedObject::objectType_t
 			case 3 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
 			} break;
-			// DailyCycle::interpolation_t
-			case 4 :
-			switch (t) {
-				case 0 : return "";
-				case 1 : return "";
-			} break;
-			// EmbeddedObject::para_t
-			case 5 :
-			switch (t) {
-				case 0 : return "m2";
-			} break;
-			// EmbeddedObject::objectType_t
-			case 6 :
-			switch (t) {
-				case 0 : return "";
-				case 1 : return "";
-				case 2 : return "";
-			} break;
 			// HVACControlModel::modelType_t
-			case 7 :
+			case 4 :
 			switch (t) {
 				case 0 : return "";
 			} break;
 			// HVACControlModel::OperatingMode
-			case 8 :
+			case 5 :
 			switch (t) {
 				case 0 : return "";
 			} break;
 			// HydraulicFluid::para_t
-			case 9 :
+			case 6 :
 			switch (t) {
 				case 0 : return "kg/m3";
 				case 1 : return "J/kgK";
 				case 2 : return "W/mK";
 			} break;
 			// HydraulicNetwork::ModelType
-			case 10 :
+			case 7 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
 			// HydraulicNetwork::para_t
-			case 11 :
+			case 8 :
 			switch (t) {
 				case 0 : return "C";
 				case 1 : return "C";
 				case 2 : return "Pa";
 			} break;
 			// HydraulicNetworkComponent::ModelType
-			case 12 :
+			case 9 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
@@ -2043,25 +2004,46 @@ namespace NANDRAD {
 				case 3 : return "";
 				case 4 : return "";
 				case 5 : return "";
+				case 6 : return "";
 			} break;
 			// HydraulicNetworkComponent::para_t
-			case 13 :
+			case 10 :
 			switch (t) {
 				case 0 : return "mm";
-				case 1 : return "-";
+				case 1 : return "---";
 				case 2 : return "Pa";
-				case 3 : return "---";
-				case 4 : return "m3";
-				case 5 : return "m";
-				case 6 : return "---";
-				case 7 : return "W";
+				case 3 : return "kg/s";
+				case 4 : return "---";
+				case 5 : return "m3";
+				case 6 : return "m";
+				case 7 : return "---";
+				case 8 : return "W";
 			} break;
 			// HydraulicNetworkComponent::HeatPumpIntegration
-			case 14 :
+			case 11 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
+			} break;
+			// HydraulicNetworkControlElement::ControlledProperty
+			case 12 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+			} break;
+			// HydraulicNetworkControlElement::ControllerType
+			case 13 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+			} break;
+			// HydraulicNetworkControlElement::para_t
+			case 14 :
+			switch (t) {
+				case 0 : return "---";
+				case 1 : return "---";
+				case 2 : return "---";
 			} break;
 			// HydraulicNetworkElement::para_t
 			case 15 :
@@ -2132,9 +2114,6 @@ namespace NANDRAD {
 				case 2 : return "m";
 				case 3 : return "mm";
 				case 4 : return "W/mK";
-				case 5 : return "kg/m3";
-				case 6 : return "J/kgK";
-				case 7 : return "W/mK";
 			} break;
 			// IdealPipeRegisterModel::intPara_t
 			case 25 :
@@ -2273,9 +2252,6 @@ namespace NANDRAD {
 				case 5 : return "";
 				case 6 : return "";
 				case 7 : return "";
-				case 8 : return "";
-				case 9 : return "";
-				case 10 : return "";
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 47 :
@@ -2573,77 +2549,56 @@ namespace NANDRAD {
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
-			// ControlElement::ControlType
+			// DailyCycle::interpolation_t
 			case 1 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
-			// Controller::ModelType
+			// EmbeddedObject::para_t
 			case 2 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-				case 2 : return "#FFFFFF";
-				case 3 : return "#FFFFFF";
 			} break;
-			// Controller::para_t
+			// EmbeddedObject::objectType_t
 			case 3 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
-			// DailyCycle::interpolation_t
+			// HVACControlModel::modelType_t
 			case 4 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
 			} break;
-			// EmbeddedObject::para_t
+			// HVACControlModel::OperatingMode
 			case 5 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
-			// EmbeddedObject::objectType_t
+			// HydraulicFluid::para_t
 			case 6 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
-			// HVACControlModel::modelType_t
-			case 7 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-			} break;
-			// HVACControlModel::OperatingMode
-			case 8 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-			} break;
-			// HydraulicFluid::para_t
-			case 9 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-				case 2 : return "#FFFFFF";
-			} break;
 			// HydraulicNetwork::ModelType
-			case 10 :
+			case 7 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
 			// HydraulicNetwork::para_t
-			case 11 :
+			case 8 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkComponent::ModelType
-			case 12 :
+			case 9 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2651,9 +2606,10 @@ namespace NANDRAD {
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
 				case 5 : return "#FFFFFF";
+				case 6 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkComponent::para_t
-			case 13 :
+			case 10 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2663,8 +2619,28 @@ namespace NANDRAD {
 				case 5 : return "#FFFFFF";
 				case 6 : return "#FFFFFF";
 				case 7 : return "#FFFFFF";
+				case 8 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkComponent::HeatPumpIntegration
+			case 11 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+			} break;
+			// HydraulicNetworkControlElement::ControlledProperty
+			case 12 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// HydraulicNetworkControlElement::ControllerType
+			case 13 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// HydraulicNetworkControlElement::para_t
 			case 14 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -2740,9 +2716,6 @@ namespace NANDRAD {
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
-				case 5 : return "#FFFFFF";
-				case 6 : return "#FFFFFF";
-				case 7 : return "#FFFFFF";
 			} break;
 			// IdealPipeRegisterModel::intPara_t
 			case 25 :
@@ -2881,9 +2854,6 @@ namespace NANDRAD {
 				case 5 : return "#FFFFFF";
 				case 6 : return "#FFFFFF";
 				case 7 : return "#FFFFFF";
-				case 8 : return "#FFFFFF";
-				case 9 : return "#FFFFFF";
-				case 10 : return "#FFFFFF";
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 47 :
@@ -3181,77 +3151,56 @@ namespace NANDRAD {
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// ControlElement::ControlType
+			// DailyCycle::interpolation_t
 			case 1 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Controller::ModelType
+			// EmbeddedObject::para_t
 			case 2 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-				case 2 : return std::numeric_limits<double>::quiet_NaN();
-				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Controller::para_t
+			// EmbeddedObject::objectType_t
 			case 3 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// DailyCycle::interpolation_t
+			// HVACControlModel::modelType_t
 			case 4 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// EmbeddedObject::para_t
+			// HVACControlModel::OperatingMode
 			case 5 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// EmbeddedObject::objectType_t
+			// HydraulicFluid::para_t
 			case 6 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// HVACControlModel::modelType_t
-			case 7 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// HVACControlModel::OperatingMode
-			case 8 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// HydraulicFluid::para_t
-			case 9 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-				case 2 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
 			// HydraulicNetwork::ModelType
-			case 10 :
+			case 7 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetwork::para_t
-			case 11 :
+			case 8 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkComponent::ModelType
-			case 12 :
+			case 9 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -3259,9 +3208,10 @@ namespace NANDRAD {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
+				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkComponent::para_t
-			case 13 :
+			case 10 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -3271,8 +3221,28 @@ namespace NANDRAD {
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 				case 7 : return std::numeric_limits<double>::quiet_NaN();
+				case 8 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkComponent::HeatPumpIntegration
+			case 11 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// HydraulicNetworkControlElement::ControlledProperty
+			case 12 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// HydraulicNetworkControlElement::ControllerType
+			case 13 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// HydraulicNetworkControlElement::para_t
 			case 14 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -3348,9 +3318,6 @@ namespace NANDRAD {
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
-				case 5 : return std::numeric_limits<double>::quiet_NaN();
-				case 6 : return std::numeric_limits<double>::quiet_NaN();
-				case 7 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// IdealPipeRegisterModel::intPara_t
 			case 25 :
@@ -3489,9 +3456,6 @@ namespace NANDRAD {
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 				case 7 : return std::numeric_limits<double>::quiet_NaN();
-				case 8 : return std::numeric_limits<double>::quiet_NaN();
-				case 9 : return std::numeric_limits<double>::quiet_NaN();
-				case 10 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NaturalVentilationModel::modelType_t
 			case 47 :
@@ -3785,33 +3749,33 @@ namespace NANDRAD {
 		switch (enum2index(enumtype)) {
 			// ConstructionInstance::para_t
 			case 0 : return 3;
-			// ControlElement::ControlType
-			case 1 : return 2;
-			// Controller::ModelType
-			case 2 : return 4;
-			// Controller::para_t
-			case 3 : return 3;
 			// DailyCycle::interpolation_t
-			case 4 : return 2;
+			case 1 : return 2;
 			// EmbeddedObject::para_t
-			case 5 : return 1;
+			case 2 : return 1;
 			// EmbeddedObject::objectType_t
-			case 6 : return 3;
+			case 3 : return 3;
 			// HVACControlModel::modelType_t
-			case 7 : return 1;
+			case 4 : return 1;
 			// HVACControlModel::OperatingMode
-			case 8 : return 1;
+			case 5 : return 1;
 			// HydraulicFluid::para_t
-			case 9 : return 3;
+			case 6 : return 3;
 			// HydraulicNetwork::ModelType
-			case 10 : return 2;
+			case 7 : return 2;
 			// HydraulicNetwork::para_t
-			case 11 : return 3;
+			case 8 : return 3;
 			// HydraulicNetworkComponent::ModelType
-			case 12 : return 6;
+			case 9 : return 7;
 			// HydraulicNetworkComponent::para_t
-			case 13 : return 8;
+			case 10 : return 9;
 			// HydraulicNetworkComponent::HeatPumpIntegration
+			case 11 : return 3;
+			// HydraulicNetworkControlElement::ControlledProperty
+			case 12 : return 2;
+			// HydraulicNetworkControlElement::ControllerType
+			case 13 : return 2;
+			// HydraulicNetworkControlElement::para_t
 			case 14 : return 3;
 			// HydraulicNetworkElement::para_t
 			case 15 : return 1;
@@ -3832,7 +3796,7 @@ namespace NANDRAD {
 			// IdealPipeRegisterModel::modelType_t
 			case 23 : return 2;
 			// IdealPipeRegisterModel::para_t
-			case 24 : return 8;
+			case 24 : return 5;
 			// IdealPipeRegisterModel::intPara_t
 			case 25 : return 1;
 			// IdealSurfaceHeatingCoolingModel::para_t
@@ -3876,7 +3840,7 @@ namespace NANDRAD {
 			// Material::para_t
 			case 45 : return 3;
 			// ModelInputReference::referenceType_t
-			case 46 : return 11;
+			case 46 : return 8;
 			// NaturalVentilationModel::modelType_t
 			case 47 : return 3;
 			// NaturalVentilationModel::para_t
@@ -3959,33 +3923,33 @@ namespace NANDRAD {
 		switch (enum2index(enumtype)) {
 			// ConstructionInstance::para_t
 			case 0 : return 2;
-			// ControlElement::ControlType
-			case 1 : return 1;
-			// Controller::ModelType
-			case 2 : return 3;
-			// Controller::para_t
-			case 3 : return 2;
 			// DailyCycle::interpolation_t
-			case 4 : return 1;
+			case 1 : return 1;
 			// EmbeddedObject::para_t
-			case 5 : return 0;
+			case 2 : return 0;
 			// EmbeddedObject::objectType_t
-			case 6 : return 2;
+			case 3 : return 2;
 			// HVACControlModel::modelType_t
-			case 7 : return 0;
+			case 4 : return 0;
 			// HVACControlModel::OperatingMode
-			case 8 : return 0;
+			case 5 : return 0;
 			// HydraulicFluid::para_t
-			case 9 : return 2;
+			case 6 : return 2;
 			// HydraulicNetwork::ModelType
-			case 10 : return 1;
+			case 7 : return 1;
 			// HydraulicNetwork::para_t
-			case 11 : return 2;
+			case 8 : return 2;
 			// HydraulicNetworkComponent::ModelType
-			case 12 : return 5;
+			case 9 : return 6;
 			// HydraulicNetworkComponent::para_t
-			case 13 : return 7;
+			case 10 : return 8;
 			// HydraulicNetworkComponent::HeatPumpIntegration
+			case 11 : return 2;
+			// HydraulicNetworkControlElement::ControlledProperty
+			case 12 : return 1;
+			// HydraulicNetworkControlElement::ControllerType
+			case 13 : return 1;
+			// HydraulicNetworkControlElement::para_t
 			case 14 : return 2;
 			// HydraulicNetworkElement::para_t
 			case 15 : return 0;
@@ -4006,7 +3970,7 @@ namespace NANDRAD {
 			// IdealPipeRegisterModel::modelType_t
 			case 23 : return 1;
 			// IdealPipeRegisterModel::para_t
-			case 24 : return 7;
+			case 24 : return 4;
 			// IdealPipeRegisterModel::intPara_t
 			case 25 : return 0;
 			// IdealSurfaceHeatingCoolingModel::para_t
@@ -4050,7 +4014,7 @@ namespace NANDRAD {
 			// Material::para_t
 			case 45 : return 2;
 			// ModelInputReference::referenceType_t
-			case 46 : return 10;
+			case 46 : return 7;
 			// NaturalVentilationModel::modelType_t
 			case 47 : return 2;
 			// NaturalVentilationModel::para_t

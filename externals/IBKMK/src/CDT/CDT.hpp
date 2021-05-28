@@ -24,7 +24,7 @@ static mt19937 randGen(9001);
 template <typename T>
 array<T, 3> arr3(const T& v0, const T& v1, const T& v2)
 {
-    const array<T, 3> out = {v0, v1, v2};
+    const array<T, 3> out = {{v0, v1, v2}};
     return out;
 }
 
@@ -218,8 +218,8 @@ TriInd Triangulation<T>::addTriangle()
     if(m_dummyTris.empty())
     {
         const Triangle dummy = {
-            {noVertex, noVertex, noVertex},
-            {noNeighbor, noNeighbor, noNeighbor}};
+            {{noVertex, noVertex, noVertex}},
+            {{noNeighbor, noNeighbor, noNeighbor}} };
         triangles.push_back(dummy);
         return TriInd(triangles.size() - 1);
     }
@@ -366,8 +366,9 @@ void Triangulation<T>::addSuperTriangle(const Box2d<T>& box)
     vertices.push_back(Vertex<T>::make(posV2, TriInd(0)));
     vertices.push_back(Vertex<T>::make(posV3, TriInd(0)));
     const Triangle superTri = {
-        {VertInd(0), VertInd(1), VertInd(2)},
-        {noNeighbor, noNeighbor, noNeighbor}};
+        {{VertInd(0), VertInd(1), VertInd(2)}},
+        {{noNeighbor, noNeighbor, noNeighbor}}
+    };
     addTriangle(superTri);
 #ifdef CDT_USE_BOOST
     if(m_closestPtMode == FindingClosestPoint::BoostRTree)
@@ -560,7 +561,7 @@ std::stack<TriInd> Triangulation<T>::insertPointOnEdge(
 template <typename T>
 array<TriInd, 2> Triangulation<T>::trianglesAt(const V2d<T>& pos) const
 {
-    array<TriInd, 2> out = {noNeighbor, noNeighbor};
+    array<TriInd, 2> out = {{noNeighbor, noNeighbor}};
     for(TriInd i = TriInd(0); i < TriInd(triangles.size()); ++i)
     {
         const Triangle& t = triangles[i];
@@ -621,7 +622,7 @@ template <typename T>
 array<TriInd, 2>
 Triangulation<T>::walkingSearchTrianglesAt(const V2d<T>& pos) const
 {
-    array<TriInd, 2> out = {noNeighbor, noNeighbor};
+    array<TriInd, 2> out = {{noNeighbor, noNeighbor}};
     // Query RTree for a vertex close to pos, to start the search
 #ifdef CDT_USE_BOOST
     const VertInd startVertex =
@@ -781,7 +782,8 @@ TriInd Triangulation<T>::triangulatePseudopolygon(
     TriInd iT2 = triangulatePseudopolygon(ic, ib, splitted.second);
     TriInd iT1 = triangulatePseudopolygon(ia, ic, splitted.first);
     // add new triangle
-    const Triangle t = {{ia, ib, ic}, {noNeighbor, iT2, iT1}};
+    const Triangle t = { {{ia, ib, ic}},
+                         {{noNeighbor, iT2, iT1}} };
     const TriInd iT = addTriangle(t);
     // adjust neighboring triangles and vertices
     if(iT1 != noNeighbor)

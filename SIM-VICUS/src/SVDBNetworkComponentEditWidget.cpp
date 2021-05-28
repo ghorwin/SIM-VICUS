@@ -1,3 +1,28 @@
+/*	SIM-VICUS - Building and District Energy Simulation Tool.
+
+	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
+	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
+	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
+
+	  ... all the others from the SIM-VICUS team ... :-)
+
+	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
 #include "SVDBNetworkComponentEditWidget.h"
 #include "ui_SVDBNetworkComponentEditWidget.h"
 
@@ -48,8 +73,6 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetParameters);
 	m_ui->tableWidgetParameters->setSortingEnabled(false);
 
-	// TODO : Hauke, implement table item delegate if needed
-
 	updateInput(-1);
 
 	// check if enums are identical
@@ -60,6 +83,7 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_Volume == (int)VICUS::NetworkComponent::P_Volume);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_PipeMaxDiscretizationWidth == (int)VICUS::NetworkComponent::P_PipeMaxDiscretizationWidth);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiency == (int)VICUS::NetworkComponent::P_CarnotEfficiency);
+	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_MaximumHeatingPower == (int)VICUS::NetworkComponent::P_MaximumHeatingPower);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::NUM_P == (int)VICUS::NetworkComponent::NUM_P);
 
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_SimplePipe == (int)VICUS::NetworkComponent::MT_SimplePipe);
@@ -178,8 +202,7 @@ void SVDBNetworkComponentEditWidget::on_lineEditName_editingFinished(){
 
 	if (m_currentComponent->m_displayName != m_ui->lineEditName->string()) {
 		m_currentComponent->m_displayName = m_ui->lineEditName->string();
-		m_db->m_networkComponents.m_modified = true;
-		m_dbModel->setItemModified(m_currentComponent->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -190,8 +213,7 @@ void SVDBNetworkComponentEditWidget::on_comboBoxComponentType_currentIndexChange
 	VICUS::NetworkComponent::ModelType ct = static_cast<VICUS::NetworkComponent::ModelType>(m_ui->comboBoxComponentType->currentData().toInt());
 	if (ct != m_currentComponent->m_modelType) {
 		m_currentComponent->m_modelType = ct;
-		m_db->m_networkComponents.m_modified = true;
-		m_dbModel->setItemModified(m_currentComponent->m_id); // tell model that we changed the data
+		modelModify();
 		updateInput((int)m_currentComponent->m_id);
 	}
 }
@@ -202,8 +224,7 @@ void SVDBNetworkComponentEditWidget::on_pushButtonComponentColor_colorChanged() 
 
 	if (m_currentComponent->m_color != m_ui->pushButtonComponentColor->color()) {
 		m_currentComponent->m_color = m_ui->pushButtonComponentColor->color();
-		m_db->m_networkComponents.m_modified = true;
-		m_dbModel->setItemModified(m_currentComponent->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -254,8 +275,13 @@ void SVDBNetworkComponentEditWidget::on_tableWidgetParameters_cellChanged(int ro
 
 	// finally set value
 	VICUS::KeywordList::setParameter(m_currentComponent->m_para, "NetworkComponent::para_t", paraNum, val);
+	modelModify();
+}
+
+void SVDBNetworkComponentEditWidget::modelModify() {
 	m_db->m_networkComponents.m_modified = true;
 	m_dbModel->setItemModified(m_currentComponent->m_id);
+
 }
 
 

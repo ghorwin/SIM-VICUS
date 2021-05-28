@@ -1,3 +1,28 @@
+/*	SIM-VICUS - Building and District Energy Simulation Tool.
+
+	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
+	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
+	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
+
+	  ... all the others from the SIM-VICUS team ... :-)
+
+	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
 #include "SVDBZoneControlThermostatEditWidget.h"
 #include "ui_SVDBZoneControlThermostatEditWidget.h"
 
@@ -55,12 +80,6 @@ void SVDBZoneControlThermostatEditWidget::setup(SVDatabase * db, SVAbstractDatab
 void SVDBZoneControlThermostatEditWidget::updateInput(int id) {
 	m_current = nullptr; // disable edit triggers
 
-	m_ui->labelCategory_2->setText(tr("Control Type:"));
-	m_ui->labelScheduleHeating->setText(tr("Heating Schedule:"));
-	m_ui->labelScheduleCooling->setText(tr("Cooling Schedule:"));
-	m_ui->labelToleranceHeating->setText(tr("Tolerance:"));
-	m_ui->labelToleranceCooling->setText(tr("Tolerance:"));
-
 	if (id == -1) {
 		// clear input controls
 		m_ui->lineEditName->setString(IBK::MultiLanguageString());
@@ -82,7 +101,7 @@ void SVDBZoneControlThermostatEditWidget::updateInput(int id) {
 
 	//set method
 	m_ui->comboBoxMethod->blockSignals(true);
-	m_ui->comboBoxMethod->setCurrentIndex(m_current->m_ctrlVal);
+	m_ui->comboBoxMethod->setCurrentIndex(m_current->m_controlValue);
 	m_ui->comboBoxMethod->blockSignals(false);
 
 	m_ui->lineEditToleranceHeating->setValue(m_current->m_para[VICUS::ZoneControlThermostat::P_ToleranceHeating].value);
@@ -118,7 +137,6 @@ void SVDBZoneControlThermostatEditWidget::on_lineEditName_editingFinished() {
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {  // currentdisplayname is multilanguage string
 		m_current->m_displayName = m_ui->lineEditName->string();
 		modelModify();
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 }
 
@@ -128,9 +146,8 @@ void SVDBZoneControlThermostatEditWidget::on_comboBoxControlValue_currentIndexCh
 
 	for(int i=0; i<VICUS::ZoneControlThermostat::ControlValue::NUM_CV; ++i){
 		if(index == i){
-			m_current->m_ctrlVal = static_cast<VICUS::ZoneControlThermostat::ControlValue>(i);
+			m_current->m_controlValue = static_cast<VICUS::ZoneControlThermostat::ControlValue>(i);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 
 		}
 	}
@@ -149,7 +166,6 @@ void SVDBZoneControlThermostatEditWidget::on_lineEditToleranceHeating_editingFin
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, "ZoneControlThermostat::para_t", paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
 
@@ -167,20 +183,19 @@ void SVDBZoneControlThermostatEditWidget::on_lineEditToleranceCooling_editingFin
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, "ZoneControlThermostat::para_t", paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
 }
 
 void SVDBZoneControlThermostatEditWidget::modelModify() {
 	m_db->m_zoneControlThermostat.m_modified = true;
+	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 }
 
 void SVDBZoneControlThermostatEditWidget::on_pushButtonColor_colorChanged() {
 	if (m_current->m_color != m_ui->pushButtonColor->color()) {
 		m_current->m_color = m_ui->pushButtonColor->color();
 		modelModify();
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 }
 

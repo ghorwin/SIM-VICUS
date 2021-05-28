@@ -1,3 +1,28 @@
+/*	SIM-VICUS - Building and District Energy Simulation Tool.
+
+	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
+	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
+	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
+
+	  ... all the others from the SIM-VICUS team ... :-)
+
+	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
 #include "SVDBZoneControlThermostatTableModel.h"
 
 #include <QTableView>
@@ -58,7 +83,7 @@ QVariant SVDBZoneControlThermostatTableModel::data ( const QModelIndex & index, 
 
 		case Qt::DecorationRole : {
 			if (index.column() == ColCheck) {
-				if (it->second.isValid()) // for now just check for validity
+				if (it->second.isValid(m_db->m_schedules)) // for now just check for validity
 					return QIcon("://gfx/actions/16x16/ok.png");
 				else
 					return QIcon("://gfx/actions/16x16/error.png");
@@ -124,7 +149,7 @@ QModelIndex SVDBZoneControlThermostatTableModel::addNewItem() {
 
 	// set default parameters
 
-	ctrl.m_ctrlVal = VICUS::ZoneControlThermostat::CV_AirTemperature;
+	ctrl.m_controlValue = VICUS::ZoneControlThermostat::CV_AirTemperature;
 	VICUS::KeywordList::setParameter(ctrl.m_para, "ZoneControlThermostat::para_t", VICUS::ZoneControlThermostat::P_ToleranceHeating, 0.0);
 	VICUS::KeywordList::setParameter(ctrl.m_para, "ZoneControlThermostat::para_t", VICUS::ZoneControlThermostat::P_ToleranceCooling, 0.0);
 

@@ -53,7 +53,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="labelScheduleHeating">
         <property name="text">
-         <string>Schedule Name:</string>
+         <string>Setpoint Schedule:</string>
         </property>
        </widget>
       </item>
@@ -120,7 +120,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="labelScheduleCooling">
         <property name="text">
-         <string>Schedule Name:</string>
+         <string>Setpoint Schedule:</string>
         </property>
        </widget>
       </item>

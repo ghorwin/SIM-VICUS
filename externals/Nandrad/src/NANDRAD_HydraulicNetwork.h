@@ -1,5 +1,26 @@
-#ifndef NANDRAD_HYDRAULICNETWORK_H
-#define NANDRAD_HYDRAULICNETWORK_H
+/*	The NANDRAD data model library.
+
+	Copyright (c) 2012-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Anne Paepcke     <anne.paepcke -[at]- tu-dresden.de>
+
+	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This library is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
+#ifndef NANDRAD_HydraulicNetworkH
+#define NANDRAD_HydraulicNetworkH
 
 #include <vector>
 
@@ -11,6 +32,8 @@
 #include "NANDRAD_HydraulicFluid.h"
 #include "NANDRAD_HydraulicNetworkPipeProperties.h"
 #include "NANDRAD_HydraulicNetworkComponent.h"
+#include "NANDRAD_HydraulicNetworkControlElement.h"
+
 
 namespace NANDRAD {
 
@@ -53,11 +76,13 @@ public:
 
 	ModelType										m_modelType		= MT_ThermalHydraulicNetwork;	// XML:A:required
 
-	/*! at the inlet node of the reference element,
-	 * the reference pressure will be applied (usually should be the pump) */
+	/*! At the inlet node of the reference element the reference pressure will be applied
+		(usually, this should be a pump model).
+	*/
 	unsigned int									m_referenceElementId = INVALID_ID;				// XML:A:required
 
-	HydraulicFluid									m_fluid;										// XML:E
+	/*! Fluid properties. */
+	HydraulicFluid									m_fluid;										// XML:E:required
 
 	/*! Global network parameters. */
 	IBK::Parameter									m_para[NUM_P];									// XML:E
@@ -70,8 +95,10 @@ public:
 	/*! List of flow elements that make up this network. */
 	std::vector<HydraulicNetworkElement>			m_elements;										// XML:E
 
+	std::vector<HydraulicNetworkControlElement>		m_controlElements;								// XML:E
+
 };
 
 } // namespace NANDRAD
 
-#endif // NANDRAD_HYDRAULICNETWORK_H
+#endif // NANDRAD_HydraulicNetworkH

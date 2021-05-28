@@ -102,6 +102,7 @@ SOURCES += \
 								../../src/SVDBZoneControlThermostatTableModel.cpp \
 								../../src/SVDBZoneControlVentilationNaturalEditWidget.cpp \
 								../../src/SVDBZoneControlVentilationNaturalTableModel.cpp \
+								../../src/SVNetworkControllerDialog.cpp \
 								../../src/SVShadingCalculationDialog.cpp \
 								../../src/SVView3DDialog.cpp \
 								../../src/actions/SVUndoAddBuilding.cpp \
@@ -245,6 +246,7 @@ HEADERS  += \
 								../../src/SVDBZoneControlThermostatTableModel.h \
 								../../src/SVDBZoneControlVentilationNaturalEditWidget.h \
 								../../src/SVDBZoneControlVentilationNaturalTableModel.h \
+								../../src/SVNetworkControllerDialog.h \
 								../../src/SVShadingCalculationDialog.h \
 								../../src/SVView3DDialog.h \
 								../../src/actions/SVUndoAddBuilding.h \
@@ -272,6 +274,7 @@ HEADERS  += \
 								../../src/core3D/Vic3DKeyboardMouseHandler.h \
 								../../src/core3D/Vic3DNewGeometryObject.h \
 								../../src/core3D/Vic3DOpaqueGeometryObject.h \
+								../../src/core3D/Vic3DOpenGLException.h \
 								../../src/core3D/Vic3DOpenGLWindow.h \
 								../../src/core3D/Vic3DOrbitControllerObject.h \
 								../../src/core3D/Vic3DPickObject.h \
@@ -404,6 +407,7 @@ FORMS    += \
 								../../src/SVLogFileDialog.ui \
 								../../src/SVMainWindow.ui \
 								../../src/SVNavigationTreeWidget.ui \
+								../../src/SVNetworkControllerDialog.ui \
 								../../src/SVNetworkImportDialog.ui \
 								../../src/SVPreferencesDialog.ui \
 								../../src/SVPreferencesPageStyle.ui \

@@ -1,3 +1,24 @@
+/*	NANDRAD Solver Framework and Model Implementation.
+
+	Copyright (c) 2012-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Anne Paepcke     <anne.paepcke -[at]- tu-dresden.de>
+
+	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
 #include "NM_HydraulicNetworkFlowElements.h"
 #include "NM_Physics.h"
 
@@ -73,7 +94,7 @@ double HNPipeElement::pressureLossFriction(const double &mdot) const {
 
 // *** HNFixedPressureLossCoeffElement ***
 
-HNFixedPressureLossCoeffElement::HNFixedPressureLossCoeffElement(const NANDRAD::HydraulicNetworkComponent &component,
+HNPressureLossCoeffElement::HNPressureLossCoeffElement(const NANDRAD::HydraulicNetworkComponent &component,
 																 const NANDRAD::HydraulicFluid &fluid)
 {
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
@@ -82,16 +103,21 @@ HNFixedPressureLossCoeffElement::HNFixedPressureLossCoeffElement(const NANDRAD::
 }
 
 
-double HNFixedPressureLossCoeffElement::systemFunction(double mdot, double p_inlet, double p_outlet) const {
+double HNPressureLossCoeffElement::systemFunction(double mdot, double p_inlet, double p_outlet) const {
 	// for negative mass flow: dp is negative
 	double area = PI / 4 * m_diameter * m_diameter;
 	double velocity = mdot / (m_fluidDensity * area); // signed!
-	double dp = m_zeta * m_fluidDensity / 2 * std::abs(velocity) * velocity;
+	double zeta = m_zeta;
+	if (m_thermalNetworkElement != nullptr) {
+		double zetaControlled = m_thermalNetworkElement->zetaControlled(mdot); // pass the current mdot
+		zeta += zetaControlled; // no clipping necessary here, function zetaControlled() takes care of that!
+	}
+	double dp = zeta * m_fluidDensity / 2 * std::abs(velocity) * velocity;
 	return p_inlet - p_outlet - dp;
 }
 
 
-void HNFixedPressureLossCoeffElement::partials(double mdot, double p_inlet, double p_outlet,
+void HNPressureLossCoeffElement::partials(double mdot, double p_inlet, double p_outlet,
 							 double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
 {
 	// partial derivatives of the system function to pressures are constants
@@ -103,57 +129,22 @@ void HNFixedPressureLossCoeffElement::partials(double mdot, double p_inlet, doub
 	double f = systemFunction(mdot, p_inlet, p_outlet);
 	df_dmdot = (f_eps - f)/EPS;
 }
-
-
-
-// *** HNControlledPressureLossCoeffElement ***
-
-HNControlledPressureLossCoeffElement::HNControlledPressureLossCoeffElement(const NANDRAD::HydraulicNetworkComponent &component,
-																		   const NANDRAD::HydraulicFluid &fluid)
-{
-	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
-	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
-	m_zetaFix = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient].value;
-	m_diameter = component.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].value;
-}
-
-
-double HNControlledPressureLossCoeffElement::systemFunction(double mdot, double p_inlet, double p_outlet) const {
-
-	// NOTE: m_zetaControlled is set by the ThermalNetwork in TNElementWithExternalHeatLoss::setInflowTemperature()
-	double area = PI / 4 * m_diameter * m_diameter;
-	double velocity = mdot / (m_fluidDensity * area); // signed!
-	IBK_ASSERT(m_thermalNetworkElement != nullptr);
-	double zetaControlled = m_thermalNetworkElement->zetaControlled(mdot); // pass the current mdot
-	double dp = (m_zetaFix + zetaControlled) * m_fluidDensity / 2 * std::abs(velocity) * velocity;
-	return p_inlet - p_outlet - dp;
-}
-
-
-void HNControlledPressureLossCoeffElement::partials(double mdot, double p_inlet, double p_outlet,
-							 double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
-{
-	// partial derivatives of the system function to pressures are constants
-	df_dp_inlet = 1;
-	df_dp_outlet = -1;
-	// generic DQ approximation of partial derivative
-	const double EPS = 1e-5; // in kg/s
-	double f_eps = systemFunction(mdot+EPS, p_inlet, p_outlet);
-	double f = systemFunction(mdot, p_inlet, p_outlet);
-	df_dmdot = (f_eps - f)/EPS;
-}
-
 
 
 // *** HNConstantPressurePump ***
 
-HNConstantPressurePump::HNConstantPressurePump(const NANDRAD::HydraulicNetworkComponent &component) {
+HNConstantPressurePump::HNConstantPressurePump(unsigned int id, const NANDRAD::HydraulicNetworkComponent &component)  :
+	m_id(id)
+{
 	m_pressureHead = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value;
 }
 
 
 double HNConstantPressurePump::systemFunction(double /*mdot*/, double p_inlet, double p_outlet) const {
-	return p_inlet - p_outlet + m_pressureHead;
+	if (m_pressureHeadRef != nullptr)
+		return p_inlet - p_outlet + *m_pressureHeadRef;
+	else
+		return p_inlet - p_outlet + m_pressureHead;
 }
 
 
@@ -166,6 +157,31 @@ void HNConstantPressurePump::partials(double /*mdot*/, double /*p_inlet*/, doubl
 	df_dmdot = 0;
 }
 
+
+// *** HNConstantMassFluxPump ***
+
+HNConstantMassFluxPump::HNConstantMassFluxPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component) :
+	m_id(id)
+{
+	m_massFlux = component.m_para[NANDRAD::HydraulicNetworkComponent::P_MassFlux].value;
+}
+
+
+double HNConstantMassFluxPump::systemFunction(double mdot, double /*p_inlet*/, double /*p_outlet*/) const {
+	if (m_massFluxRef != nullptr)
+		return mdot - *m_massFluxRef;
+	else
+		return mdot - m_massFlux;
+}
+
+
+void HNConstantMassFluxPump::partials(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/,
+									  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
+{
+	df_dmdot = 1;
+	df_dp_inlet = 0;
+	df_dp_outlet = 0;
+}
 
 
 } // namespace NANDRAD_MODEL

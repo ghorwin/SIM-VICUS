@@ -1,3 +1,24 @@
+/*	The NANDRAD data model library.
+
+	Copyright (c) 2012-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Anne Paepcke     <anne.paepcke -[at]- tu-dresden.de>
+
+	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This library is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
 #include "NANDRAD_HydraulicFluid.h"
 
 #include "NANDRAD_HydraulicNetwork.h"
@@ -6,8 +27,7 @@
 
 namespace NANDRAD {
 
-void HydraulicFluid::defaultFluidWater(unsigned int id){
-	m_id = id;
+void HydraulicFluid::defaultFluidWater() {
 	m_displayName = "Water";
 	m_para[P_Density] = IBK::Parameter("Density", 998, "kg/m3");
 	m_para[P_Conductivity] = IBK::Parameter("Conductivity", 0.6, "W/mK");
@@ -26,7 +46,7 @@ void HydraulicFluid::checkParameters(int networkModelType) {
 
 	// check for required parameters and meaningful value ranges
 	m_para[P_Density].checkedValue("Density", "kg/m3", "kg/m3", 0, false, std::numeric_limits<double>::max(), false,
-								   "Density must be > 0 kg/m3.");
+								   "Density of fluid must be > 0 kg/m3.");
 
 	// kinematic viscosity is always needed, here we check the spline and convert it to base units automatically
 	m_kinematicViscosity.checkAndInitialize("KinematicViscosity", IBK::Unit("K"), IBK::Unit("m2/s"),
@@ -37,9 +57,9 @@ void HydraulicFluid::checkParameters(int networkModelType) {
 	HydraulicNetwork::ModelType modelType = (HydraulicNetwork::ModelType) networkModelType;
 	if (modelType == HydraulicNetwork::MT_ThermalHydraulicNetwork) {
 		m_para[P_HeatCapacity].checkedValue("HeatCapacity", "J/kgK", "J/kgK", 0, false, std::numeric_limits<double>::max(), false,
-									   "Heat capacity must be > 0 J/kgK.");
+									   "Heat capacity of fluid must be > 0 J/kgK.");
 		m_para[P_Conductivity].checkedValue("Conductivity", "W/mK", "W/mK", 0, false, std::numeric_limits<double>::max(), false,
-									   "Thermal conductivity must be > 0 W/mK.");
+									   "Thermal conductivity of fluid must be > 0 W/mK.");
 	}
 
 }

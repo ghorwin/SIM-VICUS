@@ -1,3 +1,28 @@
+/*	SIM-VICUS - Building and District Energy Simulation Tool.
+
+	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
+	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
+	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
+
+	  ... all the others from the SIM-VICUS team ... :-)
+
+	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
 #include "SVDBPipeEditWidget.h"
 #include "ui_SVDBPipeEditWidget.h"
 
@@ -94,8 +119,7 @@ void SVDBPipeEditWidget::on_lineEditOuterDiameter_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 	if (m_ui->lineEditOuterDiameter->isValid()) {
 		m_current->m_diameterOutside = m_ui->lineEditOuterDiameter->value();
-		m_db->m_pipes.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -104,8 +128,7 @@ void SVDBPipeEditWidget::on_lineEditName_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {
 		m_current->m_displayName = m_ui->lineEditName->string();
-		m_db->m_pipes.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -113,8 +136,7 @@ void SVDBPipeEditWidget::on_lineEditName_editingFinished() {
 void SVDBPipeEditWidget::on_lineEditWallThickness_editingFinished() {
 	if (m_ui->lineEditWallThickness->isValid()) {
 		m_current->m_wallThickness = m_ui->lineEditWallThickness->value();
-		m_db->m_pipes.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -122,8 +144,7 @@ void SVDBPipeEditWidget::on_lineEditWallThickness_editingFinished() {
 void SVDBPipeEditWidget::on_lineEditWallLambda_editingFinished() {
 	if (m_ui->lineEditWallLambda->isValid()) {
 		m_current->m_lambdaWall = m_ui->lineEditWallLambda->value();
-		m_db->m_pipes.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -131,24 +152,21 @@ void SVDBPipeEditWidget::on_lineEditWallLambda_editingFinished() {
 void SVDBPipeEditWidget::on_lineEditWallRoughness_editingFinished() {
 	if (m_ui->lineEditWallRoughness->isValid()) {
 		m_current->m_roughness = m_ui->lineEditWallRoughness->value();
-		m_db->m_pipes.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
 void SVDBPipeEditWidget::on_lineEditInsulationThickness_editingFinished(){
 	if (m_ui->lineEditInsulationThickness->isValid()) {
 		m_current->m_insulationThickness = m_ui->lineEditInsulationThickness->value();
-		m_db->m_pipes.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
 void SVDBPipeEditWidget::on_lineEditInsulationLambda_editingFinished(){
 	if (m_ui->lineEditInsulationLambda->isValid()) {
 		m_current->m_lambdaInsulation = m_ui->lineEditInsulationLambda->value();
-		m_db->m_pipes.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -156,7 +174,11 @@ void SVDBPipeEditWidget::on_pushButtonPipeColor_colorChanged() {
 
 	if (m_current->m_color != m_ui->pushButtonPipeColor->color()) {
 		m_current->m_color = m_ui->pushButtonPipeColor->color();
-		m_db->m_pipes.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
+}
+
+void SVDBPipeEditWidget::modelModify() {
+	m_db->m_pipes.m_modified = true;
+	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 }

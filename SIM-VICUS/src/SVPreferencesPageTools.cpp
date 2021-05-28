@@ -1,3 +1,28 @@
+/*	SIM-VICUS - Building and District Energy Simulation Tool.
+
+	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
+	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
+	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
+
+	  ... all the others from the SIM-VICUS team ... :-)
+
+	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
 #include "SVPreferencesPageTools.h"
 #include "ui_SVPreferencesPageTools.h"
 
@@ -44,6 +69,9 @@ void SVPreferencesPageTools::updateUi() {
 	m_ui->filepathPostProc->setFilename(s.m_postProcExecutable);
 	m_ui->filePath7Zip->setFilename(s.m_7zExecutable);
 	m_ui->filePathCCMEditor->setFilename(s.m_CCMEditorExecutable);
+
+
+	// TODO : Refactor, let SVSettings auto-detect tool paths and just take them here
 
 	// auto-detect postproc 2 and CCM
 	QString postProc2Path, ccmPath;
@@ -117,6 +145,7 @@ void SVPreferencesPageTools::on_filepathPostProc_returnPressed() {
 
 
 void SVPreferencesPageTools::on_pushButtonAutoDetectPP2_clicked() {
+	// TODO : refactor! let SVSetting auto-detect the tool and if it exists, set it in the user-interface
 	SVSettings & s = SVSettings::instance();
 	QString postProc2Path;
 #ifdef Q_OS_WIN
@@ -171,6 +200,33 @@ void SVPreferencesPageTools::on_filepathTextEditor_returnPressed() {
 //        similar to the PostProc code
 
 //SVSettings & s = SVSettings::instance();
-//s.m_textEditorExecutable = m_ui->filepathTextEditor->filename();
 //s.m_7zExecutable = m_ui->filePath7Zip->filename();
 //s.m_CCMEditorExecutable = m_ui->filePathCCMEditor->filename();
+
+void SVPreferencesPageTools::on_pushButtonAutoDetectTextEditor_clicked() {
+	// TODO : refactor! let SVSetting auto-detect the tool and if it exists, set it in the user-interface
+	SVSettings & s = SVSettings::instance();
+	QString toolPath;
+#ifdef Q_OS_WIN
+	// search for installed x64 version of Notepad++
+	QString x64ToolPath = "c:\\Program Files\\Notepad++\\notepad++.exe";
+	if (QFileInfo(x64ToolPath).exists())
+		toolPath = x64ToolPath;
+	if (toolPath.isEmpty()) {
+		// search for installed x86 version
+		QString x86ToolPath = "c:\\Program Files (x86)\\Notepad++\\notepad++.exe";
+		if (QFileInfo(x86ToolPath).exists())
+			toolPath = x86ToolPath;
+	}
+#elif defined(Q_OS_MAC)
+
+	// text editor on Mac?
+#elif defined(Q_OS_LINUX)
+	toolPath = "/usr/bin/geany";
+#endif
+
+	if (!toolPath.isEmpty()) {
+		m_ui->filepathTextEditor->setFilename(toolPath);
+		s.m_textEditorExecutable = toolPath;
+	}
+}

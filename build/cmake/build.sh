@@ -158,8 +158,9 @@ then
 	cp -r $BUILDDIR/SIM-VICUS/SIM-VICUS.app ../../bin/release/SIM-VICUS.app &&
 	cp $BUILDDIR/NandradSolver/NandradSolver ../../bin/release/NandradSolver &&
 	cp $BUILDDIR/View3D/View3D ../../bin/release/View3D &&
-	cp $BUILDDIR/NandradSolverFMI/libNandradSolverFMI.dylib ../../bin/release/libNandradSolverFMI.dylib &&
-	cp $BUILDDIR/NandradFMUGenerator/NandradFMUGenerator ../../bin/release/NandradFMUGenerator
+	cp -r $BUILDDIR/NandradFMUGenerator/NandradFMUGenerator.app ../../bin/release/NandradFMUGenerator.app &&
+	cp $BUILDDIR/NandradSolverFMI/libNandradSolverFMI.dylib ../../bin/release/NandradFMUGenerator.app/Contents/MacOS/libNandradSolverFMI.dylib &&
+	cp $BUILDDIR/NandradSolver/NandradSolver ../../bin/release/NandradFMUGenerator.app/Contents/MacOS/NandradSolver
 else
 	cp $BUILDDIR/NandradSolver/NandradSolver ../../bin/release/NandradSolver &&
 	cp $BUILDDIR/View3D/View3D ../../bin/release/View3D &&
@@ -169,10 +170,12 @@ else
 	then
 		cp $BUILDDIR/SIM-VICUS/SIM-VICUS ../../bin/release/SIM-VICUS
 	fi
-fi &&
-
-if [[ $SKIP_TESTS = "false"  ]];
-then
-    echo "*** Running Testsuite ***" &&
-    ./run_tests.sh
+	
+	# tests only on Linux
+	if [[ $SKIP_TESTS = "false"  ]];
+	then
+		echo "*** Running Testsuite ***" &&
+		./run_tests.sh
+	fi
 fi
+

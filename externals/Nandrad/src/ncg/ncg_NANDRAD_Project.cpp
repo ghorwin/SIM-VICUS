@@ -124,18 +124,6 @@ void Project::readXMLPrivate(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
-			else if (cName == "Controllers") {
-				const TiXmlElement * c2 = c->FirstChildElement();
-				while (c2) {
-					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "Controller")
-						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					Controller obj;
-					obj.readXML(c2);
-					m_controllers.push_back(obj);
-					c2 = c2->NextSiblingElement();
-				}
-			}
 			else if (cName == "ProjectInfo")
 				m_projectInfo.readXML(c);
 			else if (cName == "Location")
@@ -263,18 +251,6 @@ TiXmlElement * Project::writeXMLPrivate(TiXmlElement * parent) const {
 
 		for (std::vector<ObjectList>::const_iterator it = m_objectLists.begin();
 			it != m_objectLists.end(); ++it)
-		{
-			it->writeXML(child);
-		}
-	}
-
-
-	if (!m_controllers.empty()) {
-		TiXmlElement * child = new TiXmlElement("Controllers");
-		e->LinkEndChild(child);
-
-		for (std::vector<Controller>::const_iterator it = m_controllers.begin();
-			it != m_controllers.end(); ++it)
 		{
 			it->writeXML(child);
 		}

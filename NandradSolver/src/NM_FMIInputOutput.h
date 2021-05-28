@@ -6,17 +6,17 @@
 	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
 	  Anne Paepcke     <anne.paepcke -[at]- tu-dresden.de>
 
-	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
 
-	This library is free software; you can redistribute it and/or
-	modify it under the terms of the GNU Lesser General Public
-	License as published by the Free Software Foundation; either
-	version 3 of the License, or (at your option) any later version.
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-	This library is distributed in the hope that it will be useful,
+	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-	Lesser General Public License for more details.
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 */
 
 #ifndef NM_FMIInputOutputH
@@ -117,16 +117,11 @@ private:
 
 	/*! Stored value references for input quantities (pointers to internal result variables that contain
 		via FMI imported values), sorted via fmi id number. */
-	std::map<unsigned int, double *>			m_FMIInputValueRefs;
+	std::map<unsigned int, double>				m_FMIInputValues;
 
 	/*! Stored value references for output quantities (pointers to result variables exported via FMI),
 		sorted via fmi id number. */
 	std::map<unsigned int, const double *>		m_FMIOutputValueRefs;
-
-	/*! Cached current values, updated in setTime().
-		These values will be updated based on cached FMI variable input data.
-	*/
-	std::vector<double>							m_results;
 
 	/*! Stored constant reference to FMI description. */
 	const NANDRAD::FMIDescription				*m_fmiDescription = nullptr;

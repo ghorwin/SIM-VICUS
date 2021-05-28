@@ -710,8 +710,11 @@ TZone1 = -TZone2 = 19.7 C
 
 ### ThermoHydraulicNetworkHeatPumpIdealSource
 
-Test des `TNHeatPumpIdealCarnot` Models im Betriebsmodus `SourceSide`. Das Netzwerk besteht aus einer Pumpe, einem Rohr mit konstanter Umgebungstemperatur von 5°C und einer Wärmepumpe welche als `TNHeatPumpIdealCarnot` implementiert ist und im Betriebsmodus `SourceSide` angeshlossen ist.
-Es wird ein variabler Wärmebedarf des Kondensator über eine tsv Datei vorgegeben und die Temperatur des Kondensators ist über ein Schedule vorgegeben.
+Test des `TNHeatPumpIdealCarnot` Models im Betriebsmodus `SourceSide`. Das Netzwerk besteht aus einer Pumpe, 
+einem Rohr mit konstanter Umgebungstemperatur von 5°C und einer Wärmepumpe welche als 
+`TNHeatPumpIdealCarnot` implementiert ist und im Betriebsmodus `SourceSide` angeshlossen ist.
+Es wird ein variabler Wärmebedarf des Kondensator über eine tsv Datei vorgegeben und die Temperatur des 
+Kondensators ist über ein Schedule vorgegeben.
 
 Der COP beträgt bei t = 0 h
 ```

@@ -1,3 +1,28 @@
+/*	SIM-VICUS - Building and District Energy Simulation Tool.
+
+	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
+	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
+	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
+
+	  ... all the others from the SIM-VICUS team ... :-)
+
+	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
 #include "SVDBConstructionEditWidget.h"
 #include "ui_SVDBConstructionEditWidget.h"
 
@@ -342,8 +367,7 @@ void SVDBConstructionEditWidget::on_spinBoxLayerCount_valueChanged(int val) {
 		}
 		// shrink vectors
 		m_current->m_materialLayers.resize(val);
-		m_db->m_constructions.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 		updateTable();
 		updateConstructionView();
 	}
@@ -355,8 +379,7 @@ void SVDBConstructionEditWidget::on_lineEditName_editingFinished() {
 
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {
 		m_current->m_displayName = m_ui->lineEditName->string();
-		m_db->m_constructions.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -366,8 +389,7 @@ void SVDBConstructionEditWidget::on_comboBoxInsulationKind_currentIndexChanged(i
 	VICUS::Construction::InsulationKind ik = static_cast<VICUS::Construction::InsulationKind>(m_ui->comboBoxInsulationKind->currentData().toInt());
 	if (ik != m_current->m_insulationKind) {
 		m_current->m_insulationKind = ik;
-		m_db->m_constructions.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -377,8 +399,7 @@ void SVDBConstructionEditWidget::on_comboBoxMaterialKind_currentIndexChanged(int
 	VICUS::Construction::MaterialKind mk = static_cast<VICUS::Construction::MaterialKind>(m_ui->comboBoxMaterialKind->currentData().toInt());
 	if (mk != m_current->m_materialKind) {
 		m_current->m_materialKind = mk;
-		m_db->m_constructions.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -389,8 +410,7 @@ void SVDBConstructionEditWidget::on_comboBoxConstructionUsage_currentIndexChange
 	VICUS::Construction::UsageType ut = static_cast<VICUS::Construction::UsageType>(m_ui->comboBoxConstructionUsage->currentData().toInt());
 	if (ut != m_current->m_usageType) {
 		m_current->m_usageType = ut;
-		m_db->m_constructions.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -431,8 +451,7 @@ void SVDBConstructionEditWidget::tableItemChanged(QTableWidgetItem * item) {
 	// we only accept changes up to 0.1 mm as different
 	if (!IBK::nearly_equal<4>(m_current->m_materialLayers[materialLayerIdx].m_thickness.value, valM)) {
 		m_current->m_materialLayers[materialLayerIdx].m_thickness.value = valM;
-		m_db->m_constructions.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 	updateUValue();
 	updateConstructionView();
@@ -538,8 +557,7 @@ void SVDBConstructionEditWidget::constructionViewInsert_layer(int index, bool le
 	}
 
 	m_ui->spinBoxLayerCount->setValue((int)m_current->m_materialLayers.size());
-	m_db->m_constructions.m_modified = true;
-	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+	modelModify();
 	updateTable();
 	updateConstructionView();
 }
@@ -551,8 +569,7 @@ void SVDBConstructionEditWidget::constructionViewRemove_layer(int index) {
 	m_current->m_materialLayers.erase(m_current->m_materialLayers.begin()+index);
 
 	m_ui->spinBoxLayerCount->setValue((int)m_current->m_materialLayers.size());
-	m_db->m_constructions.m_modified = true;
-	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+	modelModify();
 	updateTable();
 	updateConstructionView();
 }
@@ -574,9 +591,14 @@ void SVDBConstructionEditWidget::constructionViewMove_layer(int index, bool left
 		std::iter_swap(m_current->m_materialLayers.begin()+index, m_current->m_materialLayers.begin()+index+1);
 	}
 
-	m_db->m_constructions.m_modified = true;
-	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+	modelModify();
 	updateTable();
 	updateConstructionView();
 }
 
+
+
+void SVDBConstructionEditWidget::modelModify() {
+	m_db->m_constructions.m_modified = true;
+	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+}

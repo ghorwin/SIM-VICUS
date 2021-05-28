@@ -1,5 +1,26 @@
-#ifndef ThermalNetworkFlowElementsH
-#define ThermalNetworkFlowElementsH
+/*	NANDRAD Solver Framework and Model Implementation.
+
+	Copyright (c) 2012-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Anne Paepcke     <anne.paepcke -[at]- tu-dresden.de>
+
+	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
+#ifndef NM_ThermalNetworkFlowElementsH
+#define NM_ThermalNetworkFlowElementsH
 
 #include "NM_ThermalNetworkAbstractFlowElementWithHeatLoss.h"
 
@@ -12,14 +33,12 @@ namespace NANDRAD {
 	class HydraulicNetworkPipeProperties;
 	class HydraulicFluid;
 	class LinearSplineParameter;
-	class ControlElement;
+	class HydraulicNetworkControlElement;
 }
 
 #define PI				3.141592653589793238
 
 namespace NANDRAD_MODEL {
-
-class HNControlledPressureLossCoeffElement;
 
 
 // **** Pipe with single fluid volume but including a steady state temperature distribution***
@@ -419,16 +438,18 @@ public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	TNElementWithExternalHeatLoss(unsigned int flowElementId,
 								  const NANDRAD::HydraulicFluid & fluid, double fluidVolume,
-								  const NANDRAD::ControlElement & controlElement);
+								  const NANDRAD::HydraulicNetworkControlElement *controlElement);
 
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
 		quantities.push_back(QuantityDescription("ControllerResultValue","---", "The calculated controller zeta value for the valve", false));
+		quantities.push_back(QuantityDescription("TemperatureDifference","K", "The difference between inlet and outlet temperature", false));
 	}
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
 	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
 		valRefs.push_back(&m_zetaControlled);
+		valRefs.push_back(&m_temperatureDifference);
 	}
 
 	/*! Function for retrieving heat fluxes out of the flow element.*/
@@ -441,17 +462,19 @@ public:
 
 protected:
 	/*! Id number of flow element. */
-	unsigned int								m_flowElementId = NANDRAD::INVALID_ID;
+	unsigned int										m_flowElementId = NANDRAD::INVALID_ID;
 
 	/*! Set point for the controller as a schedule. If this is a nullptr, the constant setpoint of the
 	 * ControleElement will be used */
-	const double								*m_setpointSchedule = nullptr;
+	const double										*m_setpointSchedule = nullptr;
 
 	/*! Reference to the controller parametrization object.*/
-	const NANDRAD::ControlElement				*m_controlElement = nullptr;
+	const NANDRAD::HydraulicNetworkControlElement		*m_controlElement = nullptr;
 
 	/*! the calculated controller zeta value for the valve */
-	double										m_zetaControlled = 0;
+	double												m_zetaControlled = 0;
+
+	double												m_temperatureDifference = -999;
 };
 
 
@@ -466,7 +489,7 @@ public:
 	TNHeatPumpIdealCarnot(unsigned int flowElementId,
 						  const NANDRAD::HydraulicFluid & fluid,
 						  const NANDRAD::HydraulicNetworkComponent & comp,
-						  const NANDRAD::ControlElement & controlElement);
+						  const NANDRAD::HydraulicNetworkControlElement *controlElement);
 
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
@@ -477,6 +500,7 @@ public:
 		quantities.push_back(QuantityDescription("EvaporatorMeanTemperature", "C", "Mean temperature at evaporator side of heat pump", false));
 		quantities.push_back(QuantityDescription("CondenserMeanTemperature", "C", "Mean temperature at condenser side of heat pump", false));
 		quantities.push_back(QuantityDescription("ControllerResultValue","---", "The calculated controller zeta value for the valve", false));
+		quantities.push_back(QuantityDescription("TemperatureDifference","K", "The difference between inlet and outlet temperature", false));
 	}
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
@@ -488,6 +512,7 @@ public:
 		valRefs.push_back(&m_evaporatorMeanTemperature);
 		valRefs.push_back(&m_condenserMeanTemperature);
 		valRefs.push_back(&m_zetaControlled);
+		valRefs.push_back(&m_temperatureDifference);
 	}
 
 	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
@@ -507,8 +532,6 @@ public:
 	void internalDerivatives(double *ydot) override;
 
 private:
-	/*! Id number of flow element. */
-	unsigned int							m_flowElementId = NANDRAD::INVALID_ID;
 
 	/*! Temperatures from schedules [K] which will be set through input references */
 	const double							*m_condenserMeanTemperatureSchedule = nullptr;
@@ -547,4 +570,4 @@ private:
 
 } // namespace NANDRAD_MODEL
 
-#endif // ThermalNetworkFlowElementsH
+#endif // NM_ThermalNetworkFlowElementsH

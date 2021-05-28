@@ -6,17 +6,17 @@
 	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
 	  Anne Paepcke     <anne.paepcke -[at]- tu-dresden.de>
 
-	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
 
-	This library is free software; you can redistribute it and/or
-	modify it under the terms of the GNU Lesser General Public
-	License as published by the Free Software Foundation; either
-	version 3 of the License, or (at your option) any later version.
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-	This library is distributed in the hope that it will be useful,
+	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-	Lesser General Public License for more details.
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 */
 
 #include "NM_OutputHandler.h"
@@ -46,7 +46,8 @@ const char * const STATE_QUANTITIES[] = {
 	"SurfaceTemperatureB",
 	"ElementTemperature",
 	"ShadingFactor",
-	"ShadingControlValue"
+	"ShadingControlValue",
+	"ReturnTemperature"
 };
 
 const char * const FLUX_QUANTITIES[] = {
@@ -75,34 +76,8 @@ const char * const FLUX_QUANTITIES[] = {
 	"SolarIntensityOnShadingSensor",
 	"IdealHeatingLoad",
 	"IdealCoolingLoad",
-	"MassFlux"
-};
-
-// The quantities listed below will be stored in file "network.tsv" or "network_<gridname>.tsv"
-const char * const NETWORK_QUANTITIES[] = {
-	"FluidMassFluxes",
-	"FluidTemperatures"
-};
-
-// The quantities listed below will be stored in file "network_elements.tsv" or "network_elements_<gridname>.tsv"
-const char * const NETWORK_ELEMENT_QUANTITIES[] = {
-	"FluidMassFlux",
-	"FluidTemperature",
-	"InletNodeTemperature",
-	"OutletNodeTemperature",
-	"InletNodePressure",
-	"OutletNodePressure",
-	"PressureDifference",
-	"FlowElementHeatLoss",
-	"ElectricalPower",
-	"MechanicalPower",
-	"Nusselt",
-	"Prandtl",
-	"Reynolds",
-	"ThermalTransmittance",
-	"FluidVelocity",
-	"FluidViscosity",
-	"FluidVolumeFlow"
+	"MassFlux",
+	"TotalHeatLoad"
 };
 
 
@@ -269,6 +244,18 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 			throw IBK::Exception(ex, IBK::FormatString("Invalid quantity format string '%1' in output definition.").arg(od.m_quantity), FUNC_ID);
 		}
 
+		std::string prefix = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", od.m_objectListRef->m_referenceType);
+
+		// special handling for certain prefixes
+		if (prefix == "Network") {
+			groupMap[od.m_gridName][OFN_Network].push_back(od);
+			continue;
+		}
+		if (prefix == "NetworkElement") {
+			groupMap[od.m_gridName][OFN_NetworkElements].push_back(od);
+			continue;
+		}
+
 		// check if quantity is a state quantity
 		bool found = false;
 		for (const char * const quantityName : STATE_QUANTITIES) {
@@ -296,32 +283,6 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 				groupMap[od.m_gridName][OFN_FluxIntegrals].push_back(od);
 			else
 				groupMap[od.m_gridName][OFN_Fluxes].push_back(od);
-			continue;
-		}
-
-		// network element quantity?
-		found = false;
-		for (const char * const quantityName : NETWORK_ELEMENT_QUANTITIES) {
-			if (qn.m_name == quantityName) {
-				found = true;
-				break;
-			}
-		}
-		if (found) {
-			groupMap[od.m_gridName][OFN_NetworkElements].push_back(od);
-			continue;
-		}
-
-		// network quantity?
-		found = false;
-		for (const char * const quantityName : NETWORK_QUANTITIES) {
-			if (qn.m_name == quantityName) {
-				found = true;
-				break;
-			}
-		}
-		if (found) {
-			groupMap[od.m_gridName][OFN_Network].push_back(od);
 			continue;
 		}
 

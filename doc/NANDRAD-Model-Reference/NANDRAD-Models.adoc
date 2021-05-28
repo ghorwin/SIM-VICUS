@@ -15,29 +15,33 @@ In diesem Abschnitt werden die verschiedenen Modellparametrisierungsblöcke besc
 	    ...
 	</NaturalVentilationModels>
 	
-	<ShadingControlModels>
-	    ...
-    </ShadingControlModels>
+	... weitere Modell-Definitionsblöcke ...
 
-	<Thermostats>
-	    ...
-	</Thermostats>
-
-	<HVACControlModels>
-	    ...
-	</HVACControlModels>
-
-	<IdealHeatingCoolingModels>
+    <IdealPipeRegisterModels>
         ...
-	</IdealHeatingCoolingModels>
-	
-	.... // weitere Modellblöcke
+    </IdealPipeRegisterModels>
 </Models>
 ----
 ====
 
+## Modellüberblick
 
+[width="100%",options="header", cols="15%,85%"]
+|====================
+| XML-Tag | Modell/Kurzbeschreibung
+| `NaturalVentilationModels` | Natürliche Lüftung/Infiltration -> <<model_natural_ventilation>>
+| `ShadingControlModels` | Kontrollmodell für dynamische Verschattung -> <<model_shading_control>>
+| `InternalLoadsModels` | Interne Lasten (Geräte, Personen, Beleuchtung) -> <<model_internal_loads>>
+| `Thermostats` | Kontrollmodell für Temperaturregelung -> <<model_thermostats>>
+| (*) `HVACControlModels` | Kontrollmodell für erweiterte Klimaanlagenregelung -> <<model_HVAC_control>>
+| `IdealHeatingCoolingModels` | Ideale Beheizung/Kühlung von Zonen -> <<model_ideal_heating_cooling>>
+| `IdealSurfaceHeatingCoolingModels` | Ideale Flächenheizsysteme/Fußbodenheizungen/Betonkernaktivierung -> <<model_ideal_surface_heating_cooling>>
+| `IdealPipeRegisterModels` | Idealisierte Rohrregister-Flächenheizungen -> <<model_ideal_pipe_register>>
+|====================
 
+__(*) noch nicht implementiert__
+
+[[model_natural_ventilation]]
 ## Natürliches Lüftungsmodell
 
 Das Modell für natürliche Lüftung definiert den Luftaustausch mit der Außenluft und beinhaltet Nutzerlüftung wie ungewollte Lüftung durch Leckagen (Fugenlüftung/Infiltration). Die natürliche Lüftung wird für bestimmte Zonen aktiviert, indem ein Modellparametersatz `NaturalVentilationModel` definiert wird. Über die Objektliste werden die Zonen ausgewählt.
@@ -202,13 +206,15 @@ Das Lüftungsmodell generiert folgende vektorwertige Ergebnisgrößen:
 Da es mehrere Lüftungsmodellinstanzen geben kann, sucht das jeweilige Zonenmodell zunächst, welche Modellinstanz eine Ergebnisgröße liefert und erstellt dann die Verknüpfung zur Eingangsvariable.
 ====
 
+
+[[model_shading_control]]
 ## Steuerungsmodell für Verschattung
 
 Ein Verschattungregelungsmodell ist eine spezielle Art von Regelungsmodell, das einen Signalwert zwischen 0 (keine Verschattung) und 1 (volle Verschattung) zurückgibt. Das tatsächliche Ausmaß der Verschattung bzw. die Reduzierung der solaren Gewinne wird durch den Verschattungs-Parameterblock (`Shading`, siehe <<window_shading>>) bestimmt. Somit kann das gleiche Regelmodell für verschiedene Verschattungseinrichtungen verwendet werden. Da es bei Verschattungseinrichtungen keinen expliziten Zonenbezug gibt, werden Verschattungskontrollmodelle über ihre eindeutige ID referenziert.
 
 .Parameterdefinition für Verschattungsregelungsmodell
 ====
-[source,xml, indent=0]
+[source,xml]
 ----
 <Models>
     <ShadingControlModels>
@@ -245,6 +251,8 @@ Das Verschattungssteuerungsmodell liefert als Ergebnisgrößen:
 - `SolarIntensityOnShadingSensor` - Solarstrahlungsintensität in [W/m2] auf ausgewählten Sensor, der für die Regelung verwendet wird
 
 
+
+[[model_internal_loads]]
 ## Modell für interne Lasten
 
 Das Modell für interne Lasten wird verwendet, um die Wärmelasten von Geräten, Personen und Beleuchtung für Zonen zu definieren. Interne Lasten werden genauso definiert wie natürliche Lüftungsmodelle. Der Objektlisten-tag `ZoneObjectList` identifiziert die Zonen, in denen interne Lasten berücksichtigt werden sollen. Wie auch beim Modell für natürliche Lüften dürfen Zonen immer nur einmal referenziert werden (es  dürfen nicht zwei interne Lastmodelle existieren, die sich auf dieselben Zonen beziehen).
@@ -327,7 +335,7 @@ Dies sind vektoriell dargestellte Größen, die in Ausgangsdefinitionen referenz
 
 
 
-[[Thermostat]]
+[[model_thermostats]]
 ## Modell für Thermostate
 
 Das Thermostatmodell beschreibt, auf welche Raumsollwerte konditioniert werden soll. Angegeben werden können Heiz- und/oder Kühlsolltemperaturen für die Raumluft oder operative Raumluft.
@@ -446,7 +454,12 @@ Das Modell liefert vektorwertige Modellergebnisgrößen, wobei der Vektorindex d
 Es kann mehrere Thermostat-Modell-Instanzen im Gebäude geben. Da die Ergebnisgrößen von der jeweiligen Modellinstanz selbst zur Verfügung gestellt werden, muss beim Zugriff auf die jeweiligen zonenspezifischen Regelgrößen (`XXXControlValue`) das richtige Modell addressiert werden. In der Praxis kann das so geschehen, dass ein nachfolgendes Modell einfach optionale Eingangsreferenzen für Regelgrößen einer Zonen an _alle_ Thermostatmodelle schickt. Es darf dann nur exakt ein Modell eine Ergebnisgröße liefern, die dann verwendet wird.
 ====
 
+
+
+[[model_HVAC_control]]
 ## Anlagensystem-Modell
+
+!NOCH NICHT IMPLEMENTIERT!
 
 Ein Anlagensystem-Modell wandelt Regelinformationen aus einem Thermostat und ggfs. anderen Prozessbedingungen in Regelgrößen für spezifische Heizsysteme um. So können auch Priorisierungen implementiert werden.
 
@@ -466,10 +479,12 @@ TODO :
 
 ====
 
+
+
+[[model_ideal_heating_cooling]]
 ## Modell für ideale thermische Konditionierung
 
-Das Modell beschreibt ein ideles thermisches Konditionierungsmodell für eine ideale Raumluftkonditionierung.
-Der Objektlisten-tag `ZoneObjectList` identifiziert die Zonen, in denen das Modell berücksichtigt werden sollen. Es darf nur ein Modell pro Zone existieren.
+Das Modell beschreibt eine ideale thermisches Raumluftkonditionierung. Der Objektlisten-tag `ZoneObjectList` identifiziert die Zonen, in denen das Modell berücksichtigt werden sollen. Es darf  nur ein Modell pro Zone existieren (d.h. bei mehreren `IdealHeatingCoolingModel` Definitionen dürfen die Objektlisten nicht gleiche Zonen enthalten).
 
 .Definitionsblock für ideale thermische Konditionierung
 ====
@@ -499,15 +514,17 @@ Fließkommaparameter (siehe <<IBK_Parameter>> für eine Beschreibung des Element
 [options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
 |====================
 |Name|Vorgabeeinheit|Beschreibung|Wertebereich |Verwendung
-| `MaxHeatingPowerPerArea` | W/m2 | maximale flächenbezogene Heizleistung | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_ 
-| `MaxCoolingPowerPerArea` | W/m2 | maximale flächenbezogene Kühlleistung | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_ 
+| `MaxHeatingPowerPerArea` | W/m2 | maximale flächenbezogene Heizleistung in Bezug auf Raumnutzfläche | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_ 
+| `MaxCoolingPowerPerArea` | W/m2 | maximale flächenbezogene Kühlleistung in Bezug auf Raumnutzfläche | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_ 
 |====================
 
 [IMPORTANT]
 ====
-Damit das Modell auf die jeweilige Zone angewendet wird, ist zwingend das <<Thermostat, Thermostat>> nötig, welches für die gleichen Zone parametriert sein muss. Dieses liefert dann eine Ergebnisgröße `Model(<thermostat_id>).HeatingControlValue[<zone id>]`. 
+Damit das Modell auf die jeweilige Zone angewendet wird, ist zwingend das <<model_thermostats, Thermostat>> nötig, welches für die gleichen Zone parametriert sein muss. Dieses liefert dann eine Ergebnisgröße `Model(<thermostat_id>).HeatingControlValue[<zone id>]`. 
 
 Ein zwischengeschaltetes `HVACControlSystem` kann optional verwendet werden (auch als FMU), welches ein konkretisiertes Regelsignal `Model(<HVACControlSystem_id>).IdealHeatingControlValue[<zone id>]` liefert. Das `IdealHeatingCoolingModel`-Modell sucht _zuerst_ nach einer gülten Variable vom HVACControlSystem-Modell, und dann nach dem Thermostat. 
+
+!DIESES IST NOCH NICHT IMPLEMENTIERT!
 ====
 
 ### Heiz- und Kühlleistung
@@ -529,4 +546,191 @@ Z. B. ist `Model<IdealHeatingCoolingModel_id>).IdealHeatingLoad[id=3]` die Heizl
 [CAUTION]
 ====
 Die Kühllast ist positiv definiert, geht jedoch als negative Flussgröße in die Raumenergiebilanz ein. In Ausgaben wird die Kühllast `IdealCoolingLoad` jedoch immer als positive Größe ausgegeben.
+====
+
+
+
+[[model_ideal_surface_heating_cooling]]
+## Modell für ideale Flächenheizungen
+
+Das Modell beschreibt ein ideales thermisches Konditionierungsmodell für eine Flächenheizung. Dies kann eine Fußbodenheizung sein, eine Kapillarrohrmatte, ein elektrisches Heizregister oder eine Betonkernaktivierung. Der Wärmeübertragungsmechanismus ist nicht abgebildet, es wird lediglich Wärme der beheizten/gekühlten Konstruktionsschicht zugefügt oder entfernt.
+
+.Definitionsblock für ideale Flächenheizungen
+====
+[source,xml]
+----
+<IdealSurfaceHeatingCoolingModel id="701">
+	<!-- Use thermostat in zone 1 for control -->
+	<ThermostatZoneID>1</ThermostatZoneID>
+	<ConstructionObjectList>Floor</ConstructionObjectList>
+	<!-- Maximum heating power per construction/surface area, here: 10 m2 * 150 W/m2 = 1500 W -->
+	<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">150</IBK:Parameter>
+</IdealSurfaceHeatingCoolingModel>
+----
+====
+
+Das `IdealSurfaceHeatingCoolingModel` muss mit den folgenden XML-Attributen definiert werden:
+
+.Attribute
+[.indent-me]
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribut | Beschreibung | Format | Verwendung 
+| `id` | Kennung des Modells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+|====================
+
+
+Fließkommaparameter (siehe <<IBK_Parameter>> für eine Beschreibung des Elementtyps `IBK:Parameter`):
+
+[options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
+|====================
+|Name|Vorgabeeinheit|Beschreibung|Wertebereich |Verwendung
+| `MaxHeatingPowerPerArea` | W/m2 | maximale flächenbezogene Heizleistung in Bezug auf die Fläche der beheizten Konstruktion | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_ 
+| `MaxCoolingPowerPerArea` | W/m2 | maximale flächenbezogene Kühlleistung in Bezug auf die Fläche der beheizten Konstruktion| {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_ 
+|====================
+
+Ein `IdealSurfaceHeatingCoolingModel` kann die Heiz- und Kühlleistung in mehreren Konstruktionen berechnen. Dafür identifiziert der Objektlisten-tag `ConstructionObjectList` die Konstruktion, welche durch das Modell beheizt werden. Jede beheizte Konstruktion darf nur von einem Modell angesprochen werden.
+
+[IMPORTANT]
+====
+Die in der Objektliste referenzierten Konstruktionen müssen einen Konstruktionstyp haben, in dem eine aktive Schicht definiert ist (siehe <<construction_active_layer>>).
+====
+
+Die Flächenheizung/-kühlung wird durch ein Thermostat gesteuert. Die Zone, in der sich das Thermostat befindet, wird im Element `ThermostatZoneID` angegeben.
+
+### Heiz- und Kühlleistung
+
+Das Regelsignal `HeatingControlValue` wird als Wert zwischen 0..1 intepretiert. Werte außerhalb dieser Grenzen werden abgeschnitten. Bei 1 läuft die Heizung mit maximaler Heizlast, entsprechend des `MaxHeatingPowerPerArea`-Parameters. Bei 0 ist die Heizung aus. Dazwischen wird linear interpoliert.
+
+Die Kühlung ist genauso definiert. Bei einem Kontrollwert von 1 läuft die Kühlung mit maximaler Kraft, bei 0 ist sie aus. 
+
+### Ausgaben
+
+Ergebnisgrößen des Modells sind:
+
+- `ActiveLayerThermalLoad [W]`
+
+Diese konstruktionsspezifischen Größen werden als vektorwertige Ergebnisgrößen bereitgestellt, mit Zugriff über die ID der Konstruktionsinstanz:
+Z. B. ist `Model<IdealSurfaceHeatingCoolingModel_id>).ActiveLayerThermalLoad[id=3]` die Heizlast in Konstruktion #3.
+
+[NOTE]
+====
+Die `ActiveLayerThermalLoad` ist positiv bei Beheizung der Fläche und negativ bei Kühlung. Die Wärme-/Kälteleistung ist eine absolute Größe (nicht flächenbezogen).
+====
+
+
+
+[[model_ideal_pipe_register]]
+## Modell für idealisierte Rohrregister-Flächenheizungen
+
+Das Modell beschreibt ein Rohrregister, welches zur Beheizung/Kühlung von Flächen verwendet werden kann. Dabei wird das Rohrnetzwerk im Gebäude nicht abgebildet, sondern eine Vorlauftemperatur als gegeben angenommen (daher _idealisiert_).
+
+.Definitionsblock für Rohrregister-Heizungen
+====
+[source,xml]
+----
+<IdealPipeRegisterModel id="701" modelType="Constant">
+	<ThermostatZoneID>1</ThermostatZoneID>
+	<ConstructionObjectList>Floor</ConstructionObjectList>
+	<IBK:Parameter name="SupplyTemperature" unit="C">8</IBK:Parameter>
+	<IBK:Parameter name="MaxMassFlow" unit="kg/s">0.2</IBK:Parameter>
+	<IBK:Parameter name="PipeLength" unit="m">100</IBK:Parameter>
+	<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
+	<IBK:Parameter name="UValuePipeWall" unit="W/mK">5</IBK:Parameter>
+	<!-- The default value for number of pipes is 1, so this could be omitted. -->
+	<IBK:IntPara name="NumberParallelPipes">1</IBK:IntPara>
+	<!-- Fluid properties of water -->
+	<HydraulicFluid displayName="Water">
+		<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
+		<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
+		<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
+		<LinearSplineParameter name="KinematicViscosity" interpolationMethod="linear">
+			<X unit="C">0 90 </X>
+			<Y unit="m2/s">1.307e-06 1.307e-06</Y>
+		</LinearSplineParameter>
+	</HydraulicFluid>
+</IdealPipeRegisterModel>
+----
+====
+
+Ein `IdealPipeRegisterModel` kann die Heiz- und Kühlleistung in mehreren Konstruktionen berechnen. Dafür identifiziert der Objektlisten-tag `ConstructionObjectList` die Konstruktion, welche durch das Modell beheizt werden. Jede beheizte Konstruktion darf nur von einem Modell angesprochen werden.
+
+[IMPORTANT]
+====
+Die in der Objektliste referenzierten Konstruktionen müssen einen Konstruktionstyp haben, in dem eine aktive Schicht definiert ist (siehe <<construction_active_layer>>).
+====
+
+Die Heizleistung wird über die Anpassung des Massestroms in Abhängigkeit eines Thermostat-Kontrollsignals gesteuert. Die Zone, in der sich das Thermostat befindet, wird im Element `ThermostatZoneID` angegeben. 
+
+Das `IdealPipeRegisterModel` muss mit den folgenden XML-Attributen definiert werden:
+
+.Attribute
+[.indent-me]
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribut | Beschreibung | Format | Verwendung 
+| `id` | Kennung des Modells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+| `modelType` 
+a| Definiert die Vorlauftemperatur
+
+* `Constant` - Konstante Vorlauftemperatur
+* `Scheduled` - Vorlauftemperatur ändert sich nach einem definierten Zeitplan.
+
+| key | _erforderlich_
+|====================
+
+Für den Modelltyp `Scheduled` müssen Zeitpläne für die Größen:
+
+- `SupplyTemperatureSchedule` und
+- `MaxMassFlowSchedule`
+
+für die Konstruktion definiert werden. Häufig ist es sinnvoll, die gleiche Objektliste für die Schedule-Definition wie auch für das `IdealPipeRegisterModel` zu verwenden.
+
+Folgende Fließkommaparameter (siehe <<IBK_Parameter>> für eine Beschreibung des Elementtyps `IBK:Parameter`) sind anzugeben:
+
+[options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
+|====================
+|Name|Vorgabeeinheit|Beschreibung|Wertebereich |Verwendung
+| `SupplyTemperature` | C | Vorlauftemperatur | {nbsp} >= -100.0 {nbsp} | _erforderlich nur für Modelltyp_ `Constant`
+| `MaxMassFlow` | kg/s | Maximaler Massestrom durch das gesamte Rohrregister | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich nur für Modelltyp_ `Constant`
+| `PipeLength` | m | Länge eines Rohrs im Rohrregister | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_ 
+| `PipeInnerDiameter` | m | Innendurchmesser des Rohrs | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_ 
+| `UValuePipeWall` | W/mK | Längenbezogener äquivalenter U-Wert der Rohrwand | {nbsp}>{nbsp}0.0{nbsp}  | _erforderlich_ 
+|====================
+
+Der Parameter `NumberParallelPipes` gibt an, wie viele Rohre parallel in der Konstruktion durchströmt werden.
+
+[TIP]
+====
+Wenn man eine einzelne Rohrschlange in einer Konstruktion modelliert, dann gibt man die Länge der Rohrschlange und als `NumberParallelPipes` 1 an. Verlegt man mehrere Rohrschlangen, bzw. hat parallele Rohre, dann gibt man als Rohrlänge jeweils die Länge eines einzelnen Rohres an und die Anzahl der Rohrschlangen/parallel verlegten Rohre.
+====
+
+
+### Heiz- und Kühlleistung
+
+Das Regelsignal `HeatingControlValue` wird als Wert zwischen 0..1 intepretiert. Werte außerhalb dieser Grenzen werden abgeschnitten. Bei 1 wird der maximale Massestrom für Heizung auf den Wert `MaxMassFlow` gesetzt. Bei 0 ist die Heizung aus (Massestrom = 0). Dazwischen wird linear interpoliert.
+
+Die Kühlung ist genauso definiert. Bei einem Kontrollwert von 1 läuft die Kühlung mit maximaler Kraft, bei 0 ist sie aus.
+
+[IMPORTANT]
+====
+Grundsätzlich kann ein Rohrregister nur Wärme abgeben, wenn die Vorlauftemperatur höher aus die Schichttemperatur ist. Daher wird auch bei einer Heizanforderung durch das Thermostat der Massestrom auf 0 gesetzt, wenn die Vorlauftemperatur zu klein wird.
+
+Dadurch ist es auch niemals möglich, dass sowohl Heizung als auch Kühlung berechnet wird. Also selbst wenn das Thermostat sowohl Heiz- als auch Kühlanforderung gibt, kann es immer nur entweder Heizung oder Kühlung geben, je nach Vorlauf- und Schichttemperatur.
+==== 
+
+
+### Ausgaben
+
+Ergebnisgrößen des Modells sind:
+
+- `MassFlux [kg/s]`
+- `ActiveLayerThermalLoad [W]`
+
+Diese konstruktionsspezifischen Größen werden als vektorwertige Ergebnisgrößen bereitgestellt, mit Zugriff über die ID der Konstruktionsinstanz:
+Z. B. ist `Model<IdealSurfaceHeatingCoolingModel_id>).ActiveLayerThermalLoad[id=3]` die Heizlast in Konstruktion #3.
+
+[NOTE]
+====
+Die `ActiveLayerThermalLoad` ist positiv bei Beheizung der Fläche und negativ bei Kühlung. Die Wärme-/Kälteleistung ist eine absolute Größe (nicht flächenbezogen).
 ====

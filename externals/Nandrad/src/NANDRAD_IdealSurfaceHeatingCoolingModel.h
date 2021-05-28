@@ -8,15 +8,15 @@
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
 
-	This library is free software; you can redistribute it and/or
-	modify it under the terms of the GNU Lesser General Public
-	License as published by the Free Software Foundation; either
-	version 3 of the License, or (at your option) any later version.
+	This library is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
 	This library is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-	Lesser General Public License for more details.
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 */
 
 #ifndef NANDRAD_IdealSurfaceHeatingCoolingModelH
@@ -26,25 +26,26 @@
 
 #include "NANDRAD_Constants.h"
 #include "NANDRAD_CodeGenMacros.h"
+#include "NANDRAD_Zone.h"
 
 namespace NANDRAD {
 
 /*! An ideal heating and cooling model. Basically scales a heating/cooling control signal with
-	the nominal heating power per zone.
+	the nominal heating power per area of heated/cooled construction.
 */
 class IdealSurfaceHeatingCoolingModel {
 public:
 	/*! Model parameters. */
 	enum para_t {
-		P_MaxHeatingPowerPerArea,	// Keyword: MaxHeatingPowerPerArea		[W/m2]		'Maximum heating power per floor area'
-		P_MaxCoolingPowerPerArea,	// Keyword: MaxCoolingPowerPerArea		[W/m2]		'Maximum heating power per floor area'
+		P_MaxHeatingPowerPerArea,	// Keyword: MaxHeatingPowerPerArea		[W/m2]		'Maximum heating power per surface area'
+		P_MaxCoolingPowerPerArea,	// Keyword: MaxCoolingPowerPerArea		[W/m2]		'Maximum heating power per surface area'
 		NUM_P
 	};
 
 	NANDRAD_READWRITE
 
 	/*! Checks parameters for valid values. */
-	void checkParameters();
+	void checkParameters(const std::vector<NANDRAD::Zone> & zones);
 
 	/*! Unique ID-number for this model. */
 	unsigned int		m_id = NANDRAD::INVALID_ID;					// XML:A:required

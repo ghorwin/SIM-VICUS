@@ -104,7 +104,7 @@ Das `MaterialLayer` hat keine Child-tags, da alle benötigten Daten wie oben bes
 
 Jeder Konstruktionsaufbau kann genau eine aktive Schicht haben, welche mit einem Heizregister versehen wird. Falls eine solche Schicht existiert, muss das XML-tag `ActiveLayerIndex` angegeben sein. Dieses XML-Element enthalt den 0-basierten Index der Schicht, d.h. Index 0 entspricht der ersten Schicht in der `MaterialLayers`-Liste.
 
-Falls eine aktive Schicht definiert wurde, muss es irgendwo ein Modell geben, welches passend dafür eine Heizleistung berechnet. Beispielsweise kann dies eine Fußbodenheizung sein (siehe <<network_floor_heating>>).
+Falls eine aktive Schicht definiert wurde, muss es irgendwo ein Modell geben, welches passend dafür eine Heiz-/Kühlleistung berechnet. Beispielsweise kann dies eine Fußbodenheizung sein (siehe <<model_ideal_surface_heating_cooling>> oder <<model_ideal_pipe_register>>).
 
 [[glazing_systems]]
 ## Verglasungssysteme

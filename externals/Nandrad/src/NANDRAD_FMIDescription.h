@@ -8,15 +8,15 @@
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
 
-	This library is free software; you can redistribute it and/or
-	modify it under the terms of the GNU Lesser General Public
-	License as published by the Free Software Foundation; either
-	version 3 of the License, or (at your option) any later version.
+	This library is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
 	This library is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-	Lesser General Public License for more details.
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 */
 
 #ifndef NANDRAD_FMIDescriptionH
@@ -59,7 +59,11 @@ public:
 	/*! The FMI model name. */
 	std::string							m_modelName;							// XML:E
 
-	/*! Holds all input variable definitions. */
+	/*! Holds all input variable definitions.
+		Note: There may be several input variables with same valueRef and name, yet different
+			  NANDRAD variable names. In this case, only one FMI input variable is mapped to
+			  all NANDRAD variables.
+	*/
 	std::vector<FMIVariableDefinition>	m_inputVariables;							// XML:E
 	/*! Holds all output variable definitions. */
 	std::vector<FMIVariableDefinition>	m_outputVariables;							// XML:E

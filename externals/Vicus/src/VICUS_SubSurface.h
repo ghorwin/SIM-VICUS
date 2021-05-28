@@ -1,3 +1,28 @@
+/*	The SIM-VICUS data model library.
+
+	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
+	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
+	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
+
+	  ... all the others from the SIM-VICUS team ... :-)
+
+	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This library is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
 #ifndef VICUS_SubSurfaceH
 #define VICUS_SubSurfaceH
 
@@ -31,6 +56,9 @@ public:
 	/*! Sets color based on sub-surface type. */
 	void updateColor();
 
+	/*! Offset from first point of the parent surface to the first point this sub surface. */
+	const IBK::point2D<double> & offset() const { return m_polygon2D.vertexes()[0]; }
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of sub surface. */
@@ -41,8 +69,6 @@ public:
 	/*! The actual geometry. */
 	Polygon2D							m_polygon2D;				// XML:E
 
-	/*! Offset from first point of the parent surface to the first point this sub surface. */
-	IBK::point2D<double>				m_offset;					// XML:E
 
 	/*! Stores visibility information for this SubSurface.
 		Note: keep the next line - this will cause the code generator to create serialization code
@@ -65,10 +91,6 @@ public:
 		The pointer is updated in VICUS::Project::updatePointers().
 	*/
 	SubSurfaceComponentInstance			*m_subSurfaceComponentInstance = nullptr;
-
-private:
-
-
 };
 
 } // namespace VICUS

@@ -896,6 +896,49 @@ void CodeGenerator::generateReadWriteCode() {
 						// name, which indicates it was not found and read in the xml section
 					}
 					else {
+						// For all known basic variable types, like PODs (int, double, bool, ...) or any special
+						// parameters (IDType .. QString) we use the capitalized variable name as tag name (i.e. m_constructionID  -> ConstructionID).
+						// For complex parameters, we use the type name (i.e. "HydraulicFluid m_fluid; -> "HydraulicFluid").
+						// If a custom tag is given, like "xml:E:tag=MyTag", we use this custom tag instead
+						if (!xmlInfo.alternativeTagName.empty())
+							tagName = xmlInfo.alternativeTagName;
+						else {
+							const std::set<std::string> knownTagNames = {
+								"int",
+								"unsigned int",
+								"float",
+								"double",
+								"bool",
+								"IDType",
+								"std::string",
+								"QString",
+								"IBK::MultiLanguageString",
+								"QColor",
+								"IBKMK::Vector3D",
+								"IBK::Unit",
+								"IBK::Time",
+								"IBK::Path",
+								"DataTable"
+							};
+							if (knownTagNames.find(xmlInfo.typeStr) == knownTagNames.end()) {
+								// ok, not of the simple or special types
+
+								bool isEnum = false;
+								// for all enum types lookup type in enum info
+								std::vector<ClassInfo::EnumInfo>::const_iterator it = ci.m_enumInfo.begin();
+								for (; it != ci.m_enumInfo.end(); ++it) {
+									if (it->enumType() == xmlInfo.typeStr) {
+										isEnum = true;
+										break;
+									}
+								}
+
+								// not an enum? not a special/simple type? must be a complex type, so generate
+								// XML tag based on type name
+								if (!isEnum)
+									tagName = xmlInfo.typeStr;
+							}
+						}
 						elements +=
 							"		if (!element->FirstChildElement(\""+tagName+"\"))\n"
 							"			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(\n"

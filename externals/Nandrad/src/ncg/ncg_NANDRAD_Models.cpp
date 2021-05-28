@@ -124,6 +124,30 @@ void Models::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "HeatLoadSummationModels") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "HeatLoadSummationModel")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					HeatLoadSummationModel obj;
+					obj.readXML(c2);
+					m_heatLoadSummationModels.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "NetworkInterfaceAdapterModels") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "NetworkInterfaceAdapterModel")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					NetworkInterfaceAdapterModel obj;
+					obj.readXML(c2);
+					m_networkInterfaceAdapterModels.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -221,6 +245,30 @@ TiXmlElement * Models::writeXML(TiXmlElement * parent) const {
 
 		for (std::vector<IdealPipeRegisterModel>::const_iterator it = m_idealPipeRegisterModels.begin();
 			it != m_idealPipeRegisterModels.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_heatLoadSummationModels.empty()) {
+		TiXmlElement * child = new TiXmlElement("HeatLoadSummationModels");
+		e->LinkEndChild(child);
+
+		for (std::vector<HeatLoadSummationModel>::const_iterator it = m_heatLoadSummationModels.begin();
+			it != m_heatLoadSummationModels.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_networkInterfaceAdapterModels.empty()) {
+		TiXmlElement * child = new TiXmlElement("NetworkInterfaceAdapterModels");
+		e->LinkEndChild(child);
+
+		for (std::vector<NetworkInterfaceAdapterModel>::const_iterator it = m_networkInterfaceAdapterModels.begin();
+			it != m_networkInterfaceAdapterModels.end(); ++it)
 		{
 			it->writeXML(child);
 		}

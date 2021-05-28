@@ -8,15 +8,15 @@
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
 
-	This library is free software; you can redistribute it and/or
-	modify it under the terms of the GNU Lesser General Public
-	License as published by the Free Software Foundation; either
-	version 3 of the License, or (at your option) any later version.
+	This library is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
 	This library is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-	Lesser General Public License for more details.
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 */
 
 #ifndef NANDRAD_ProjectH
@@ -42,7 +42,6 @@
 #include "NANDRAD_HydraulicNetwork.h"
 #include "NANDRAD_HydraulicNetworkComponent.h"
 #include "NANDRAD_KeywordList.h"
-#include "NANDRAD_Controller.h"
 #include "NANDRAD_FMIDescription.h"
 
 /*! The namespace NANDRAD contains the data model classes that make up
@@ -144,9 +143,6 @@ public:
 
 	/*! References to object lists.*/
 	std::vector<ObjectList>							m_objectLists;						// XML:E
-
-	/*! References to controllers */
-	std::vector<Controller>							m_controllers;						// XML:E
 
 	/*! Definitions for exporting an FMU from the model. */
 	FMIDescription									m_fmiDescription;					// XML:E

@@ -1,3 +1,24 @@
+/*	NANDRAD Solver Framework and Model Implementation.
+
+	Copyright (c) 2012-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Anne Paepcke     <anne.paepcke -[at]- tu-dresden.de>
+
+	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
 #include "NM_ThermalNetworkFlowElements.h"
 
 #include "NM_Physics.h"
@@ -7,8 +28,7 @@
 #include "NANDRAD_HydraulicNetworkElement.h"
 #include "NANDRAD_HydraulicNetworkPipeProperties.h"
 #include "NANDRAD_HydraulicNetworkComponent.h"
-#include "NANDRAD_Controller.h"
-
+#include "NANDRAD_HydraulicNetworkControlElement.h"
 
 #include "numeric"
 
@@ -516,9 +536,9 @@ TNAdiabaticElement::TNAdiabaticElement(const NANDRAD::HydraulicFluid & fluid, do
 
 TNElementWithExternalHeatLoss::TNElementWithExternalHeatLoss(unsigned int flowElementId,
 															 const NANDRAD::HydraulicFluid & fluid, double fluidVolume,
-															 const NANDRAD::ControlElement & controlElement):
+															 const NANDRAD::HydraulicNetworkControlElement *controlElement):
 	m_flowElementId(flowElementId),
-	m_controlElement(&controlElement)
+	m_controlElement(controlElement)
 {
 	m_fluidVolume = fluidVolume;
 	// copy fluid properties
@@ -538,24 +558,43 @@ void TNElementWithExternalHeatLoss::internalDerivatives(double * ydot) {
 
 double TNElementWithExternalHeatLoss::zetaControlled(double mdot) {
 	FUNCID(TNElementWithExternalHeatLoss::zetaControlled);
+
+	// NOTE: When solving the hydraulic network equations, we already have a new value stored in
+	//       m_heatExchangeValueRef. However, the m_heatLoss member is only set much later, when
+	//       internalDerivatives() is called as part of ThermalNetworkBalanceModel::update().
+
 	// calculate zetaControlled value for valve
-	switch (m_controlElement->m_controlType) {
-		case NANDRAD::ControlElement::CT_ControlTemperatureDifference:{
-			double currentTempDiff = m_heatLoss/(mdot*m_fluidHeatCapacity);
-			const double e = m_controlElement->m_setPoint.value - currentTempDiff;
-			const double y = m_controlElement->m_controller->m_para[NANDRAD::Controller::P_Kp].value * e;
-			if (y <= 0)
+	switch (m_controlElement->m_controlledProperty) {
+
+		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference: {
+			// compute current temperature for given heat loss and mass flux
+			// Mind: access m_heatExchangeValueRef and not m_heatLoss here!
+			m_temperatureDifference = *m_heatExchangeValueRef/(mdot*m_fluidHeatCapacity);
+			// if temperature difference is larger than the set point (negative e), we want maximum mass flux -> zeta = 0
+			// if temperature difference is smaller than the set point (positive e), we decrease mass flow by increasing zeta
+			const double e = m_controlElement->m_setPoint.value - m_temperatureDifference;
+			if (e <= 0) {
 				m_zetaControlled = 0;
-			else if (y > m_controlElement->m_maximumControllerResultValue)
-				m_zetaControlled = m_controlElement->m_maximumControllerResultValue;
-			else
-				m_zetaControlled = y;
+			}
+			else {
+				// relate controller error e to zeta
+				const double y = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value * e;
+				const double zetaMax = m_controlElement->m_maximumControllerResultValue;
+				// apply clipping
+				if (zetaMax > 0 && y > zetaMax)
+					m_zetaControlled = zetaMax;
+				else {
+					m_zetaControlled = y;
+				}
+			}
 		} break;
-		case NANDRAD::ControlElement::CT_ControlMassFlow:
+		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlow:
 			throw IBK::Exception("Control Type not implemented yet!", FUNC_ID);
 
-		case NANDRAD::ControlElement::NUM_CT: ; // nothing todo - we return 0
+		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ; // nothing todo - we return 0
 	}
+//	IBK::IBK_Message(IBK::FormatString("zeta = %1, m_heatLoss = %4 W, dT = %2 K, mdot = %3 kg/s, heatExchangeValueRef = %5 W\n")
+//					 .arg(m_zetaControlled).arg(m_temperatureDifference).arg(mdot).arg(m_heatLoss).arg(*m_heatExchangeValueRef));
 	return m_zetaControlled;
 }
 
@@ -567,9 +606,8 @@ double TNElementWithExternalHeatLoss::zetaControlled(double mdot) {
 TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(unsigned int flowElementId,
 											 const NANDRAD::HydraulicFluid & fluid,
 											 const NANDRAD::HydraulicNetworkComponent & comp,
-											 const NANDRAD::ControlElement & controlElement):
-	TNElementWithExternalHeatLoss(flowElementId, fluid, comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value, controlElement),
-	m_flowElementId(flowElementId)
+											 const NANDRAD::HydraulicNetworkControlElement *controlElement):
+	TNElementWithExternalHeatLoss(flowElementId, fluid, comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value, controlElement)
 {
 	m_fluidVolume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
 	m_carnotEfficiency = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiency].value;
@@ -581,7 +619,7 @@ TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(unsigned int flowElementId,
 
 
 void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
-	FUNCID("TNHeatPumpIdealCarnot::setInflowTemperature");
+	FUNCID(TNHeatPumpIdealCarnot::setInflowTemperature);
 
 	ThermalNetworkAbstractFlowElementWithHeatLoss::setInflowTemperature(Tinflow);
 
@@ -619,13 +657,13 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 					IBK::IBK_Message(IBK::FormatString("Condenser temperature >= evaporator temperature in "
 													   "HeatPumpIdealCarnot, flow element with id '%1'\n").arg(m_flowElementId),
 														IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
-				m_evaporatorHeatFlux = 0;
-				m_condenserHeatFlux = 0;
-				m_COP = 0.0;
-				m_heatLoss = 0.0;
-				m_electricalPower  = 0.0;
-				m_evaporatorMeanTemperature = 0;
-				break;
+					m_evaporatorHeatFlux = 0;
+					m_condenserHeatFlux = 0;
+					m_COP = 0.0;
+					m_heatLoss = 0.0;
+					m_electricalPower  = 0.0;
+					m_evaporatorMeanTemperature = 0;
+					break;
 				}
 
 				// correction for iteration
@@ -732,8 +770,8 @@ void TNHeatPumpIdealCarnot::setInputValueRefs(std::vector<const double *>::const
 	}
 }
 
-void TNHeatPumpIdealCarnot::internalDerivatives(double *ydot)
-{
+
+void TNHeatPumpIdealCarnot::internalDerivatives(double *ydot) {
 	ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(ydot);
 }
 

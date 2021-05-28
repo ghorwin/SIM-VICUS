@@ -1,3 +1,28 @@
+/*	SIM-VICUS - Building and District Energy Simulation Tool.
+
+	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
+	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
+	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
+
+	  ... all the others from the SIM-VICUS team ... :-)
+
+	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
 #include "SVDBInternalLoadsLightsEditWidget.h"
 #include "ui_SVDBInternalLoadsLightsEditWidget.h"
 
@@ -81,7 +106,7 @@ void SVDBInternalLoadsLightsEditWidget::updateInput(int id) {
 	//change invalid Lights count method to a valid one
 	if (m_current->m_powerMethod == VICUS::InternalLoad::PowerMethod::NUM_PM){
 		m_current->m_powerMethod = VICUS::InternalLoad::PowerMethod::PM_Power;
-		m_db->m_internalLoads.m_modified=true;
+		modelModify();
 	}
 
 	updateLabel();
@@ -118,8 +143,7 @@ void SVDBInternalLoadsLightsEditWidget::on_lineEditName_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {  // currentdisplayname is multilanguage string
 		m_current->m_displayName = m_ui->lineEditName->string();
-		m_db->m_internalLoads.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -130,8 +154,7 @@ void SVDBInternalLoadsLightsEditWidget::on_comboBoxMethod_currentIndexChanged(in
 	for(int i=0; i<VICUS::InternalLoad::PowerMethod::NUM_PM; ++i){
 		if(index == i){
 			m_current->m_powerMethod = static_cast<VICUS::InternalLoad::PowerMethod>(i);
-			m_db->m_internalLoads.m_modified = true;
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+			modelModify();
 
 		}
 	}
@@ -159,8 +182,7 @@ void SVDBInternalLoadsLightsEditWidget::on_lineEditPower_editingFinished() {
 			val != m_current->m_para[paraName].value)
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
-			m_db->m_internalLoads.m_modified = true;
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+			modelModify();
 		}
 	}
 }
@@ -177,10 +199,15 @@ void SVDBInternalLoadsLightsEditWidget::on_lineEditConvectiveFactor_editingFinis
 			val != m_current->m_para[paraName].value)
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
-			m_db->m_internalLoads.m_modified = true;
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+			modelModify();
 		}
 	}
+}
+
+void SVDBInternalLoadsLightsEditWidget::modelModify() {
+	m_db->m_internalLoads.m_modified = true;
+	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+
 }
 
 void SVDBInternalLoadsLightsEditWidget::updateLabel()
@@ -205,7 +232,7 @@ void SVDBInternalLoadsLightsEditWidget::updateLabel()
 			m_ui->lineEditPower->setValue(m_current->m_para[VICUS::InternalLoad::P_Power].value);
 			m_ui->labelLightsInputUnit->setText(tr("W"));
 			m_current->m_powerMethod = VICUS::InternalLoad::PM_Power;
-			m_db->m_internalLoads.m_modified=true;
+			modelModify();
 		} break;
 	}
 }
@@ -214,8 +241,7 @@ void SVDBInternalLoadsLightsEditWidget::updateLabel()
 void SVDBInternalLoadsLightsEditWidget::on_pushButtonColor_colorChanged() {
 	if (m_current->m_color != m_ui->pushButtonColor->color()) {
 		m_current->m_color = m_ui->pushButtonColor->color();
-		m_db->m_internalLoads.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -225,7 +251,7 @@ void SVDBInternalLoadsLightsEditWidget::on_toolButtonSelectSchedule_clicked() {
 	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_powerManagementScheduleId);
 	if (m_current->m_powerManagementScheduleId != newId) {
 		m_current->m_powerManagementScheduleId = newId;
-		m_db->m_internalLoads.m_modified = true;
+		modelModify();
 	}
 	updateInput((int)m_current->m_id);
 }

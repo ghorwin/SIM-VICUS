@@ -1,7 +1,29 @@
+/*	The NANDRAD data model library.
+
+	Copyright (c) 2012-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Anne Paepcke     <anne.paepcke -[at]- tu-dresden.de>
+
+	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This library is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
 #include "NANDRAD_IdealPipeRegisterModel.h"
 
 #include "NANDRAD_KeywordList.h"
 #include "NANDRAD_Zone.h"
+#include "NANDRAD_HydraulicNetwork.h"
 
 #include <algorithm>
 
@@ -9,11 +31,11 @@ namespace NANDRAD {
 
 void IdealPipeRegisterModel::checkParameters(const std::vector<NANDRAD::Zone> &zones) {
 	FUNCID(IdealPipeRegisterModel::checkParameters);
-	// check parameters
-	m_para[P_MaxMassFlow].checkedValue("MaxMassFlow", "kg/s", "kg/s",
-											   0, false,
-											   std::numeric_limits<double>::max(), true,
-											   "Maximum mass flow must be > 0 kg/s.");
+
+	// all models require an object list with indication of construction instances that this model applies to
+	if (m_constructionObjectList.empty())
+		throw IBK::Exception(IBK::FormatString("Missing 'ConstructionObjectList' parameter."), FUNC_ID);
+
 	m_para[P_PipeLength].checkedValue("PipeLength", "m", "m",
 											   0, false,
 											   std::numeric_limits<double>::max(), true,
@@ -21,56 +43,43 @@ void IdealPipeRegisterModel::checkParameters(const std::vector<NANDRAD::Zone> &z
 	m_para[P_PipeInnerDiameter].checkedValue("PipeInnerDiameter", "mm", "mm",
 											   0, false,
 											   std::numeric_limits<double>::max(), true,
-											   "Pipe inner diameter flow must be > 0 kg/s.");
+											   "Pipe inner diameter flow must be > 0 mm.");
 	m_para[P_UValuePipeWall].checkedValue("UValuePipeWall", "W/mK", "W/mK",
 											   0, false,
 											   std::numeric_limits<double>::max(), true,
 											   "Pipe wall U-value must be > 0 W/mK.");
-	m_para[P_FluidDensity].checkedValue("FluidDensity", "kg/m3", "kg/m3",
-											   0, false,
-											   std::numeric_limits<double>::max(), true,
-											   "Fluid density must be > 0 kg/m3.");
-	m_para[P_FluidHeatCapacity].checkedValue("FluidHeatCapacity", "J/kgK", "J/kgK",
-											   0, false,
-											   std::numeric_limits<double>::max(), true,
-											   "Fluid heat capacity must be > 0 J/kgK.");
-	m_para[P_FluidConductivity].checkedValue("FluidConductivity", "W/mK", "W/mK",
-											   0, false,
-											   std::numeric_limits<double>::max(), true,
-											   "Fluid conductivity must be > 0 W/mK.");
 
 	// decide how to recieve supply temperature
-	if(m_modelType == MT_Constant) {
+	if (m_modelType == MT_Constant) {
 		m_para[P_SupplyTemperature].checkedValue("SupplyTemperature", "C", "K",
 												   0.0, true,
 												   std::numeric_limits<double>::max(), true,
 												   "Supply temperature must be >= 0 K.");
+		// check parameters
+		m_para[P_MaxMassFlow].checkedValue("MaxMassFlow", "kg/s", "kg/s",
+												   0, false,
+												   std::numeric_limits<double>::max(), true,
+												   "Maximum mass flow must be > 0 kg/s.");
 	}
 
 	// set default value for int parameters
-	if(m_intPara[IP_NumberParallelPipes].name.empty()) {
+	if (m_intPara[IP_NumberParallelPipes].name.empty()) {
 		// one pipe is default
 		m_intPara[IP_NumberParallelPipes].set("NumberParallelPipes", 1);
 	}
 	else {
-		// prove value
+		// check that given number is >= 1
 		m_intPara[IP_NumberParallelPipes].checkIfValueIsAboveLimit(IBK::IntPara("NumberParallelPipes", 1), true);
 	}
 
-	// kinematic viscosity is always needed, here we check the spline and convert it to base units automatically
-	m_fluidViscosity.checkAndInitialize("FluidViscosity", IBK::Unit("K"), IBK::Unit("m2/s"),
-											IBK::Unit("m2/s"), 0, false, std::numeric_limits<double>::max(), false,
-											"Fluid viscosity must be > 0 m2/s.");
-
 	// check validity of thermostat zone
-	std::vector<NANDRAD::Zone>::const_iterator zone_it = std::find(zones.begin(),
-																  zones.end(),
-																  m_thermostatZoneID);
+	std::vector<NANDRAD::Zone>::const_iterator zone_it = std::find(zones.begin(), zones.end(), m_thermostatZoneID);
 
 	if (zone_it == zones.end())
 		throw IBK::Exception(IBK::FormatString("Invalid/undefined zone with '%1' in ThermostatZoneId.")
 							 .arg(m_thermostatZoneID), FUNC_ID);
 
+	m_fluid.checkParameters(HydraulicNetwork::MT_ThermalHydraulicNetwork);
 }
 
 

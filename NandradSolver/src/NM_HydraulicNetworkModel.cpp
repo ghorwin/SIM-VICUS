@@ -1,3 +1,24 @@
+/*	NANDRAD Solver Framework and Model Implementation.
+
+	Copyright (c) 2012-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Anne Paepcke     <anne.paepcke -[at]- tu-dresden.de>
+
+	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
 #include "NM_HydraulicNetworkModel.h"
 
 #include <NANDRAD_HydraulicNetwork.h>
@@ -83,28 +104,27 @@ void HydraulicNetworkModel::setup() {
 			case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump :
 			{
 				// create pump model
-				HNConstantPressurePump * pumpElement = new HNConstantPressurePump(*e.m_component);
+				HNConstantPressurePump * pumpElement = new HNConstantPressurePump(e.m_id, *e.m_component);
 				// add to flow elements
 				m_p->m_flowElements.push_back(pumpElement); // transfer ownership
+				m_pumpElements.push_back(pumpElement);
+			} break;
+
+			case NANDRAD::HydraulicNetworkComponent::MT_ConstantMassFluxPump :
+			{
+				// create pump model
+				HNConstantMassFluxPump * pumpElement = new HNConstantMassFluxPump(e.m_id, *e.m_component);
+				// add to flow elements
+				m_p->m_flowElements.push_back(pumpElement); // transfer ownership
+				m_pumpElements.push_back(pumpElement);
 			} break;
 
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot :
 			{
-				if (e.m_controlElement.m_controlType == NANDRAD::ControlElement::NUM_CT) {
-					// create fixed pressure loss model
-					HNFixedPressureLossCoeffElement * hxElement = new HNFixedPressureLossCoeffElement(*e.m_component, m_hydraulicNetwork->m_fluid);
-					// add to flow elements
-					m_p->m_flowElements.push_back(hxElement); // transfer ownership
-				}
-				else{
-					HNControlledPressureLossCoeffElement * hxElement = new HNControlledPressureLossCoeffElement(
-								*e.m_component, m_hydraulicNetwork->m_fluid);
-					// add to flow elements
-					m_p->m_flowElements.push_back(hxElement); // transfer ownership
-				}
-
-
+				// create pressure loss flow element - controller is set up later
+				HNPressureLossCoeffElement * hxElement = new HNPressureLossCoeffElement(*e.m_component, m_hydraulicNetwork->m_fluid);
+				m_p->m_flowElements.push_back(hxElement); // transfer ownership
 			} break;
 
 			case NANDRAD::HydraulicNetworkComponent::NUM_MT:{
@@ -282,17 +302,63 @@ void HydraulicNetworkModel::inputReferences(std::vector<InputReference> & inputR
 			inputRefs.push_back(inputRef);
 		}
 	}
+	// generate optional input references for all pump elements
+	for (const HydraulicNetworkAbstractFlowElement* pumpE : m_pumpElements) {
+		// different handling for different pumps
+		const HNConstantPressurePump * pump = dynamic_cast<const HNConstantPressurePump *>(pumpE);
+		if (pump != nullptr) {
+			InputReference inputRef;
+			inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+			inputRef.m_name = std::string("PumpPressureHead");
+			inputRef.m_required = false;
+			inputRef.m_id = pump->m_id;
+			inputRefs.push_back(inputRef);
+			continue;
+		}
+		const HNConstantMassFluxPump * pumpConstantMassFlux = dynamic_cast<const HNConstantMassFluxPump *>(pumpE);
+		if (pumpConstantMassFlux != nullptr) {
+			InputReference inputRef;
+			inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+			inputRef.m_name = std::string("PumpMassFlux");
+			inputRef.m_required = false;
+			inputRef.m_id = pumpConstantMassFlux->m_id;
+			inputRefs.push_back(inputRef);
+			continue;
+		}
+	}
 }
 
 
 void HydraulicNetworkModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
 											  const std::vector<const double *> & resultValueRefs)
 {
-	IBK_ASSERT(resultValueRefs.size() == m_elementIds.size());
-	// copy references into fluid temperature vector
-	for(const double* resRef : resultValueRefs)
-		m_fluidTemperatureRefs.push_back(resRef);
-
+	unsigned int currentIndex = 0;
+	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
+		// copy references into fluid temperature vector
+		for (unsigned int i = 0; i < m_elementIds.size(); ++i)
+			m_fluidTemperatureRefs.push_back(resultValueRefs[i]);
+		currentIndex = m_elementIds.size();
+	}
+	// now transfer input references to pump models
+	for (HydraulicNetworkAbstractFlowElement* pumpE : m_pumpElements) {
+		// different handling for different pumps
+		HNConstantPressurePump * pump = dynamic_cast<HNConstantPressurePump *>(pumpE);
+		if (pump != nullptr) {
+			// is the optional pressure head provided?
+			if (resultValueRefs[currentIndex] != nullptr)
+				pump->m_pressureHeadRef = resultValueRefs[currentIndex];
+			++currentIndex;
+			continue;
+		}
+		HNConstantMassFluxPump * pumpConstantMassFlux = dynamic_cast<HNConstantMassFluxPump *>(pumpE);
+		if (pumpConstantMassFlux != nullptr) {
+			// is the optional pressure head provided?
+			if (resultValueRefs[currentIndex] != nullptr)
+				pumpConstantMassFlux->m_massFluxRef = resultValueRefs[currentIndex];
+			++currentIndex;
+			continue;
+		}
+	}
 }
 
 

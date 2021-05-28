@@ -1,3 +1,24 @@
+/*	NANDRAD Solver Framework and Model Implementation.
+
+	Copyright (c) 2012-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Anne Paepcke     <anne.paepcke -[at]- tu-dresden.de>
+
+	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
 #ifndef NM_InternalLoadsModelH
 #define NM_InternalLoadsModelH
 
@@ -41,20 +62,20 @@ public:
 	}
 
 	/*! Initializes object.
-		\param ventilationModel Ventilation model data.
-		\param simPara Required simulation parameter.
+		\param internalLoadsModel Model data.
 		\param objLists The object list stored in the project file (persistent, remains unmodified so that persistent
 			pointers to object list elements can be stored).
+		\param zones List of defined zones.
 	*/
 	void setup(const NANDRAD::InternalLoadsModel & internalLoadsModel, const std::vector<NANDRAD::ObjectList> & objLists,
 			   const std::vector<NANDRAD::Zone> & zones);
 
-	/*! Returns object list of all referenced models. */
+	/*! Returns object list of all referenced zones. */
 	const NANDRAD::ObjectList &objectList() const;
 
 	// *** Re-implemented from AbstractModel
 
-	/*! Thermal ventilation loads can be requested via MODEL reference. */
+	/*! Internal loads can be requested via MODEL reference. */
 	virtual NANDRAD::ModelInputReference::referenceType_t referenceType() const override {
 		return NANDRAD::ModelInputReference::MRT_MODEL;
 	}

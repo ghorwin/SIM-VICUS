@@ -82,6 +82,7 @@ inline void IBK_Message(const IBK::FormatString& msg, msg_type_t t = MSG_PROGRES
 	MessageHandlerRegistry::instance().msg(msg.str(), t, func_id, verbose_level);
 }
 
+#define IBK_FUNCID_Message(x) IBK::IBK_Message(#x "\n");
 
 /*! Indentor can be used to increase the message indentation level
 	within local function scopes.

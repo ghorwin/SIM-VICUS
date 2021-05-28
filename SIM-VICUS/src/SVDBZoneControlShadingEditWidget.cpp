@@ -1,3 +1,28 @@
+/*	SIM-VICUS - Building and District Energy Simulation Tool.
+
+	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
+	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
+	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
+
+	  ... all the others from the SIM-VICUS team ... :-)
+
+	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
 #include "SVDBZoneControlShadingEditWidget.h"
 #include "ui_SVDBZoneControlShadingEditWidget.h"
 
@@ -123,7 +148,6 @@ void SVDBZoneControlShadingEditWidget::on_lineEditName_editingFinished() {
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {  // currentdisplayname is multilanguage string
 		m_current->m_displayName = m_ui->lineEditName->string();
 		modelModify();
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 }
 
@@ -135,8 +159,6 @@ void SVDBZoneControlShadingEditWidget::on_comboBoxMethod_currentIndexChanged(int
 		if(index == i){
 			m_current->m_category = static_cast<VICUS::ZoneControlShading::Category>(i);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-
 		}
 	}
 }
@@ -158,7 +180,6 @@ void SVDBZoneControlShadingEditWidget::on_lineEditNorth_editingFinished() {
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
 }
@@ -179,7 +200,6 @@ void SVDBZoneControlShadingEditWidget::on_lineEditSouth_editingFinished() {
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
 }
@@ -198,7 +218,6 @@ void SVDBZoneControlShadingEditWidget::on_lineEditWest_editingFinished() {
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
 }
@@ -219,7 +238,6 @@ void SVDBZoneControlShadingEditWidget::on_lineEditEast_editingFinished() {
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
 }
@@ -240,7 +258,6 @@ void SVDBZoneControlShadingEditWidget::on_lineEditHorizontal_editingFinished() {
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
 }
@@ -261,7 +278,6 @@ void SVDBZoneControlShadingEditWidget::on_lineEditDeadBand_editingFinished() {
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
 }
@@ -269,12 +285,12 @@ void SVDBZoneControlShadingEditWidget::on_lineEditDeadBand_editingFinished() {
 
 void SVDBZoneControlShadingEditWidget::modelModify() {
 	m_db->m_zoneControlShading.m_modified = true;
+	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 }
 
 void SVDBZoneControlShadingEditWidget::on_pushButtonColor_colorChanged() {
 	if (m_current->m_color != m_ui->pushButtonColor->color()) {
 		m_current->m_color = m_ui->pushButtonColor->color();
 		modelModify();
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 }

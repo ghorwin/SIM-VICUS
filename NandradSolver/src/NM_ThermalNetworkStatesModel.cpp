@@ -6,17 +6,17 @@
 	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
 	  Anne Paepcke     <anne.paepcke -[at]- tu-dresden.de>
 
-	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
 
-	This library is free software; you can redistribute it and/or
-	modify it under the terms of the GNU Lesser General Public
-	License as published by the Free Software Foundation; either
-	version 3 of the License, or (at your option) any later version.
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-	This library is distributed in the hope that it will be useful,
+	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-	Lesser General Public License for more details.
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 */
 
 #include <IBK_LinearSpline.h>
@@ -43,8 +43,6 @@
 
 namespace NANDRAD_MODEL {
 
-
-
 // *** ThermalNetworkStatesModel members ***
 
 ThermalNetworkStatesModel::~ThermalNetworkStatesModel() {
@@ -53,8 +51,7 @@ ThermalNetworkStatesModel::~ThermalNetworkStatesModel() {
 
 
 void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
-									  const HydraulicNetworkModel &hydrNetworkModel,
-									  const NANDRAD::SimulationParameter &simPara)
+									  const HydraulicNetworkModel &hydrNetworkModel)
 {
 	FUNCID(ThermalNetworkStatesModel::setup);
 
@@ -225,6 +222,17 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				} break; // NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump
 
 
+				case NANDRAD::HydraulicNetworkComponent::MT_ConstantMassFluxPump : {
+					// create pump model with heat loss
+					TNPumpWithPerformanceLoss * element = new TNPumpWithPerformanceLoss(m_network->m_fluid,
+									*e.m_component, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value);
+					// add to flow elements
+					m_p->m_flowElements.push_back(element); // transfer ownership
+					m_p->m_heatLossElements.push_back(element); // no heat loss
+
+				} break; // NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump
+
+
 				case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
 				{
 					switch (e.m_heatExchange.m_modelType) {
@@ -320,11 +328,23 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 		// check parametrization for this element if a controller is configured
 		const NANDRAD::HydraulicNetworkElement & e = nw.m_elements[i];
 
-		// if we have a controller, give the corresponding hydraulic network element access to the newly created object
-		if (e.m_controlElement.m_controlType != NANDRAD::ControlElement::NUM_CT) {
+		// only process elements with a controller
+		if (e.m_controlElement == nullptr) continue;
 
-			// the controller setup is type-specific; this cannot be done in a nice generic way :-(
+		// The controller setup is type-specific; this cannot be done in a nice generic way :-(
+		// If we have a controller, give the corresponding hydraulic network element access to the
+		// corresponding thermal-hydraulic flow element
 
+		// *** TemperatureDifference based controller ***
+
+		if (e.m_controlElement->m_controlledProperty== NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference) {
+
+			// get the corresponding element from the HydraulicNetworkModel
+			HNPressureLossCoeffElement * hnElement =
+					dynamic_cast<HNPressureLossCoeffElement *>(hydrNetworkModel.m_p->m_flowElements[i]);
+			IBK_ASSERT(hnElement != nullptr);
+
+			// This controller needs a calculated heat loss.
 			switch (e.m_component->m_modelType) {
 
 				// ** HeatExchanger**
@@ -336,15 +356,10 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:  {
 							TNElementWithExternalHeatLoss * tnElement =
 									dynamic_cast<TNElementWithExternalHeatLoss *>(m_p->m_flowElements[i]);
-							IBK_ASSERT(tnElement != nullptr);
-							// get the corresponding element from the HydraulicNetworkModel
-							HNControlledPressureLossCoeffElement * hnElement =
-									dynamic_cast<HNControlledPressureLossCoeffElement *>(hydrNetworkModel.m_p->m_flowElements[i]);
-							IBK_ASSERT(hnElement != nullptr);
 							hnElement->m_thermalNetworkElement = tnElement;
 						} break;
 
-						default:;
+						default: ; // all other model types do not provide the means for such a controller;
 					}
 				break;
 
@@ -355,16 +370,24 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						TNHeatPumpIdealCarnot * tnElement =
 								dynamic_cast<TNHeatPumpIdealCarnot *>(m_p->m_flowElements[i]);
 						IBK_ASSERT(tnElement != nullptr);
-						// get the corresponding element from the HydraulicNetworkModel
-						HNControlledPressureLossCoeffElement * hnElement =
-								dynamic_cast<HNControlledPressureLossCoeffElement *>(hydrNetworkModel.m_p->m_flowElements[i]);
-						IBK_ASSERT(hnElement != nullptr);
 						hnElement->m_thermalNetworkElement = tnElement;
 					} break;
 
 				default: ; // nothing implemented for the rest
 			}
-		}
+
+
+			// If we had a controller configured, we now must have a pointer to the respective control calculation element
+			// set. If not, user has provided mismatching configuration and we bail out.
+			if (hnElement->m_thermalNetworkElement == nullptr)
+				throw IBK::Exception(IBK::FormatString("You cannot use a 'TemperatureDifference' controller in combination with "
+													   "flow element model type '%1' and heat exchange type '%2'!")
+								 .arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::ModelType", e.m_component->m_modelType))
+								 .arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", e.m_heatExchange.m_modelType)), FUNC_ID);
+
+		} // end CP_TemperatureDifference
+
+		// TODO : other controllers?
 	}
 
 
@@ -475,6 +498,7 @@ void ThermalNetworkStatesModel::yInitial(double * y) {
 
 
 int ThermalNetworkStatesModel::update(const double * y) {
+//	IBK_FUNCID_Message(ThermalNetworkStatesModel::update)
 	// copy states vector
 	std::memcpy(&m_y[0], y, m_n*sizeof(double));
 

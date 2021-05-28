@@ -67,8 +67,12 @@ static bool solve(double a, double b, double c,  double d,  double e,  double f,
 	Note: when the point p is not in the plane, this function will still get a valid result.
 */
 bool planeCoordinates(const Vector3D & offset, const Vector3D & a, const Vector3D & b,
-							 const Vector3D & v, double & x, double & y)
+							 const Vector3D & v, double & x, double & y, double tolerance)
 {
+	// TODO : first project vector v onto plane (using normal vector) and check distance between v and vOnPlane
+	//        if larger than tolerance, bail out
+	//        otherwise perform point-coordinate calculation with projected point
+
 	// We have 3 equations, but only two unknowns - so we have 3 different options to compute them.
 	// Some of them may fail, so we try them all.
 
@@ -87,21 +91,10 @@ bool planeCoordinates(const Vector3D & offset, const Vector3D & a, const Vector3
 	// check that the point was indeed in the plane
 	Vector3D v2 = offset + x*a + y*b;
 	v2 -= v;
-	if (v2.magnitude() > 1e-4) {
-//		// try a fix by correcting the vector to be in the place
-
-//		IBKMK::Vector3D norma = a.crossProduct(b);
-//		norma.normalize();
-
-//		// project vector on v - should result in a 0 vector, if in plane
-//		Vector3D projectedOnNormal = v.scalarProduct(norma)*norma;
-
-//		// correct vector by subtracting projecting
-//		Vector3D vdash = v - projectedOnNormal;
-
+	if (v2.magnitude() > tolerance)
 		return false;
-	}
-	return true;
+	else
+		return true;
 }
 
 

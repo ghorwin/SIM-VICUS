@@ -8,15 +8,15 @@
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
 
-	This library is free software; you can redistribute it and/or
-	modify it under the terms of the GNU Lesser General Public
-	License as published by the Free Software Foundation; either
-	version 3 of the License, or (at your option) any later version.
+	This library is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
 	This library is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-	Lesser General Public License for more details.
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 */
 
 #include "NANDRAD_Models.h"
@@ -61,6 +61,10 @@ void Models::checkForUniqueIDs() const {
 		checkForUniqueModelIDs(m_idealSurfaceHeatingCoolingModels, usedIDs);
 		// the same for pipe register models
 		checkForUniqueModelIDs(m_idealPipeRegisterModels, usedIDs);
+		// the same for heat load summation models
+		checkForUniqueModelIDs(m_heatLoadSummationModels, usedIDs);
+		// the same for network interface models
+		checkForUniqueModelIDs(m_networkInterfaceAdapterModels, usedIDs);
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, "Duplicate ID found in model parameter blocks.", FUNC_ID);

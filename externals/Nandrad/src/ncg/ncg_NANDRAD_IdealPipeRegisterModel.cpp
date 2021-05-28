@@ -68,6 +68,10 @@ void IdealPipeRegisterModel::readXML(const TiXmlElement * element) {
 			attrib = attrib->Next();
 		}
 		// search for mandatory elements
+		if (!element->FirstChildElement("HydraulicFluid"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'HydraulicFluid' element.") ), FUNC_ID);
+
 		if (!element->FirstChildElement("ConstructionObjectList"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'ConstructionObjectList' element.") ), FUNC_ID);
@@ -109,16 +113,8 @@ void IdealPipeRegisterModel::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
-			else if (cName == "LinearSplineParameter") {
-				NANDRAD::LinearSplineParameter p;
-				p.readXML(c);
-				bool success = false;
-				if (p.m_name == "FluidViscosity") {
-					m_fluidViscosity = p; success = true;
-				}
-				if (!success)
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.m_name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
+			else if (cName == "HydraulicFluid")
+				m_fluid.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -143,6 +139,8 @@ TiXmlElement * IdealPipeRegisterModel::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("displayName", m_displayName);
 	if (m_modelType != NUM_MT)
 		e->SetAttribute("modelType", KeywordList::Keyword("IdealPipeRegisterModel::modelType_t",  m_modelType));
+
+	m_fluid.writeXML(e);
 	if (!m_constructionObjectList.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "ConstructionObjectList", nullptr, std::string(), m_constructionObjectList);
 	if (m_thermostatZoneID != NANDRAD::INVALID_ID)
@@ -158,10 +156,6 @@ TiXmlElement * IdealPipeRegisterModel::writeXML(TiXmlElement * parent) const {
 		if (!m_intPara[i].name.empty()) {
 			TiXmlElement::appendSingleAttributeElement(e, "IBK:IntPara", "name", m_intPara[i].name, IBK::val2string(m_intPara[i].value));
 		}
-	}
-	if (!m_fluidViscosity.m_name.empty()) {
-		IBK_ASSERT("FluidViscosity" == m_fluidViscosity.m_name);
-		m_fluidViscosity.writeXML(e);
 	}
 	return e;
 }

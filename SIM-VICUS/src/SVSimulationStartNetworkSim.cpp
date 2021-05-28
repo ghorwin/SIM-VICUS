@@ -1,3 +1,28 @@
+/*	SIM-VICUS - Building and District Energy Simulation Tool.
+
+	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
+	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
+	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
+
+	  ... all the others from the SIM-VICUS team ... :-)
+
+	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
 #include "SVSimulationStartNetworkSim.h"
 #include "ui_SVSimulationStartNetworkSim.h"
 
@@ -219,7 +244,6 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	const SVDatabase  & db = SVSettings::instance().m_db;
 	VICUS::NetworkFluid fluid;
 	fluid.defaultFluidWater(1);
-	nandradNetwork.m_fluid.m_id = fluid.m_id;
 	nandradNetwork.m_fluid.m_displayName = fluid.m_displayName.string();
 
 	fluid.m_kinematicViscosity.m_values.setValues(std::vector<double>{0,20}, std::vector<double>{1.793e-6,1.793e-6});
@@ -338,25 +362,6 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		elem.m_displayName = IBK::FormatString("%1_%2_%3").arg(comp->m_displayName.string()).arg(elem.m_id).arg(elem.m_displayName).str();
 
 
-
-
-
-//		// add control element as example
-//		if (comp->m_modelType == VICUS::NetworkComponent::MT_HeatExchanger){
-//			NANDRAD::ControlElement controlE;
-//			controlE.m_controlType = NANDRAD::ControlElement::CT_ControlTemperatureDifference;
-//			controlE.m_setPoint = IBK::Parameter("SetPoint", 3.0, IBK::Unit("K"));
-////			controlE.m_maximumControllerError = IBK::Parameter("MaximumControllerError", 10.0, IBK::Unit("K"));
-//			controlE.m_maximumSystemInput = IBK::Parameter("MaximumSystemInput", 5.0, IBK::Unit("-"));
-//			controlE.m_controllerId = 1;
-//			elem.m_controlElement = controlE;
-//		}
-
-
-
-
-
-
 		// transform heatExchange properties
 		elem.m_heatExchange = node.m_heatExchange.toNandradHeatExchange();
 
@@ -368,22 +373,6 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 			// TODO Hauke: continue algorithm for subnetworks
 		}
 	}
-
-
-
-
-//	// add controller as example
-//	NANDRAD::Controller contr;
-//	contr.m_id = 1;
-//	contr.m_para[NANDRAD::Controller::P_Kp] = IBK::Parameter("Kp", 10, IBK::Unit("-"));
-//	contr.m_modelType = NANDRAD::Controller::MT_PController;
-//	p.m_controllers.push_back(contr);
-
-
-
-
-
-
 
 	// find source node and create set of edges, which are ordered according to their distance to the source node
 	std::set<const VICUS::NetworkNode *> dummyNodeSet;

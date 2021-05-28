@@ -50,18 +50,18 @@ void NandradModelFMU::setReal(int varID, double value) {
 }
 
 
-void NandradModelFMU::setInteger(int varID, int value) {
-	FUNCID(NandradModelFMU::setInteger);
+void NandradModelFMU::setInteger(int /*varID*/, int /*value*/) {
+//	FUNCID(NandradModelFMU::setInteger);
 }
 
 
-void NandradModelFMU::setString(int varID, ConstString  value) {
-	FUNCID(NandradModelFMU::setString);
+void NandradModelFMU::setString(int /*varID*/, ConstString  /*value*/) {
+//	FUNCID(NandradModelFMU::setString);
 }
 
 
-void NandradModelFMU::setBoolean(int varID, bool value) {
-	FUNCID(NandradModelFMU::setBoolean);
+void NandradModelFMU::setBoolean(int /*varID*/, bool /*value*/) {
+//	FUNCID(NandradModelFMU::setBoolean);
 }
 
 
@@ -79,43 +79,43 @@ void NandradModelFMU::getReal(int varID, double & value) {
 }
 
 
-void NandradModelFMU::getInteger(int varID, int & value) {
-	FUNCID(NandradModelFMU::getInteger);
+void NandradModelFMU::getInteger(int /*varID*/, int & /*value*/) {
+//	FUNCID(NandradModelFMU::getInteger);
 }
 
 
-void NandradModelFMU::getString(int varID, ConstString & value) {
-	FUNCID(NandradModelFMU::getString);
+void NandradModelFMU::getString(int /*varID*/, ConstString & /*value*/) {
+//	FUNCID(NandradModelFMU::getString);
 }
 
 
-void NandradModelFMU::getBoolean(int varID, bool & value) {
-	FUNCID(NandradModelFMU::getBoolean);
+void NandradModelFMU::getBoolean(int /*varID*/, bool & /*value*/) {
+//	FUNCID(NandradModelFMU::getBoolean);
 }
 
 
-void NandradModelFMU::startCommunicationInterval(double tStart) {
-	FUNCID(NandradModelFMU::startCommunicationInterval);
+void NandradModelFMU::startCommunicationInterval(double /*tStart*/) {
+//	FUNCID(NandradModelFMU::startCommunicationInterval);
 }
 
 
 void NandradModelFMU::completeCommunicationInterval() {
-	FUNCID(NandradModelFMU::completeCommunicationInterval);
+//	FUNCID(NandradModelFMU::completeCommunicationInterval);
 }
 
 
-void NandradModelFMU::pushOutputOnBuffer(double t_out, const double * y_out) {
-	FUNCID(NandradModelFMU::pushOutputOnBuffer);
+void NandradModelFMU::pushOutputOnBuffer(double /*t_out*/, const double * /*y_out*/) {
+//	FUNCID(NandradModelFMU::pushOutputOnBuffer);
 }
 
 
 void NandradModelFMU::clearOutputBuffer() {
-	FUNCID(NandradModelFMU::clearOutputBuffer);
+//	FUNCID(NandradModelFMU::clearOutputBuffer);
 }
 
 
-void NandradModelFMU::resetOutputBuffer(double t_reset) {
-	FUNCID(NandradModelFMU::resetOutputBuffer);
+void NandradModelFMU::resetOutputBuffer(double /*t_reset*/) {
+//	FUNCID(NandradModelFMU::resetOutputBuffer);
 }
 
 

@@ -80,7 +80,7 @@
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="3" displayName="Heat exchanger without heat exchange" modelType="HeatExchanger">
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
-						<IBK:Parameter name="PressureLossCoefficient" unit="-">0.01</IBK:Parameter>
+						<IBK:Parameter name="PressureLossCoefficient" unit="---">0.01</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.4</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="4" displayName="Pipe" modelType="SimplePipe"/>

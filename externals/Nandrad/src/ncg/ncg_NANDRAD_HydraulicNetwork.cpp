@@ -74,6 +74,10 @@ void HydraulicNetwork::readXMLPrivate(const TiXmlElement * element) {
 			attrib = attrib->Next();
 		}
 		// search for mandatory elements
+		if (!element->FirstChildElement("HydraulicFluid"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'HydraulicFluid' element.") ), FUNC_ID);
+
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
@@ -124,6 +128,18 @@ void HydraulicNetwork::readXMLPrivate(const TiXmlElement * element) {
 					HydraulicNetworkElement obj;
 					obj.readXML(c2);
 					m_elements.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "ControlElements") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "HydraulicNetworkControlElement")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					HydraulicNetworkControlElement obj;
+					obj.readXML(c2);
+					m_controlElements.push_back(obj);
 					c2 = c2->NextSiblingElement();
 				}
 			}
@@ -194,6 +210,18 @@ TiXmlElement * HydraulicNetwork::writeXMLPrivate(TiXmlElement * parent) const {
 
 		for (std::vector<HydraulicNetworkElement>::const_iterator it = m_elements.begin();
 			it != m_elements.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_controlElements.empty()) {
+		TiXmlElement * child = new TiXmlElement("ControlElements");
+		e->LinkEndChild(child);
+
+		for (std::vector<HydraulicNetworkControlElement>::const_iterator it = m_controlElements.begin();
+			it != m_controlElements.end(); ++it)
 		{
 			it->writeXML(child);
 		}

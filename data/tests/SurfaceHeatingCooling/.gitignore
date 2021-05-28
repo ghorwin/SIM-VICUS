@@ -1,4 +1,7 @@
-/IdealPipeRegisterHeating/
+/IdealPipeRegisterHeatingConstant/
 /IdealFloorHeating/
-/IdealPipeRegisterCooling/
+/IdealPipeRegisterCoolingConstant/
 /IdealFloorCooling/
+/IdealPipeRegisterCooling/
+/IdealPipeRegisterHeating/
+/IdealPipeRegisterScheduled/

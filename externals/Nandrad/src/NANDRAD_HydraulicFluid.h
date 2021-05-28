@@ -1,3 +1,24 @@
+/*	The NANDRAD data model library.
+
+	Copyright (c) 2012-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Anne Paepcke     <anne.paepcke -[at]- tu-dresden.de>
+
+	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This library is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
 #ifndef NANDRAD_HydraulicFluidH
 #define NANDRAD_HydraulicFluidH
 
@@ -25,18 +46,15 @@ public:
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE
-	NANDRAD_COMPARE_WITH_ID
 
 	/*! Populates the HydraulicFluid object with properties of water. */
-	void defaultFluidWater(unsigned int id);
+	void defaultFluidWater();
 
 	/*! Checks for valid and required parameters (value ranges). */
 	void checkParameters(int networkModelType);
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique id number. */
-	unsigned int						m_id = INVALID_ID;				// XML:A:required
 	/*! Display name of fluid. */
 	std::string							m_displayName;					// XML:A
 	/*! List of parameters. */

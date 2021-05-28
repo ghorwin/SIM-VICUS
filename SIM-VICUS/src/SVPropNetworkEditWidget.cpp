@@ -1,3 +1,28 @@
+/*	SIM-VICUS - Building and District Energy Simulation Tool.
+
+	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
+	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
+	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
+
+	  ... all the others from the SIM-VICUS team ... :-)
+
+	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
 #include "SVPropNetworkEditWidget.h"
 #include "ui_SVPropNetworkEditWidget.h"
 
@@ -19,6 +44,7 @@
 #include "SVMainWindow.h"
 #include "SVDatabaseEditDialog.h"
 #include "SVDBNetworkFluidEditWidget.h"
+#include "SVNetworkControllerDialog.h"
 
 
 SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
@@ -370,6 +396,28 @@ void SVPropNetworkEditWidget::updateHeatExchangeWidgets()
 	if (hx.m_splPara[VICUS::NetworkHeatExchange::SPL_HeatLoss].m_tsvFile.isValid())
 		m_ui->widgetBrowseFileNameTSVFile->setFilename(QString::fromStdString(
 												hx.m_splPara[VICUS::NetworkHeatExchange::SPL_HeatLoss].m_tsvFile.str()));
+
+
+}
+
+
+void SVPropNetworkEditWidget::updateController()
+{
+	// setup combobox
+	m_ui->comboBoxController->blockSignals(true);
+	m_ui->comboBoxController->clear();
+	for (const VICUS::NetworkController &cont: m_currentNetwork.m_controllers)
+		m_ui->comboBoxController->addItem(QString::fromStdString(cont.m_displayName.string("en")), cont.m_id);
+	m_ui->comboBoxController->blockSignals(false);
+
+	// update combobox
+	if (uniformProperty(m_currentNodes, &VICUS::NetworkNode::m_controllerId)){
+		unsigned int id = m_currentNodes[0]->m_controllerId;
+		m_ui->comboBoxController->setCurrentIndex((int)id);
+	}
+	else{
+		m_ui->comboBoxController->setCurrentIndex(-1);
+	}
 }
 
 
@@ -549,6 +597,21 @@ void SVPropNetworkEditWidget::modifyHeatExchangeProperties()
 }
 
 
+void SVPropNetworkEditWidget::modifyController()
+{
+	if (!setNetwork())
+		return;
+
+	int id = m_ui->comboBoxController->currentData().toInt();
+
+	if (!m_currentNodes.empty()){
+		for (const VICUS::NetworkNode * nodeConst: m_currentNodes){
+			m_currentNetwork.m_nodes[nodeConst->m_id].m_controllerId = id;
+		}
+	}
+}
+
+
 void SVPropNetworkEditWidget::setupComboboxPipeDB()
 {
 	const SVDatabase  & db = SVSettings::instance().m_db;
@@ -640,6 +703,7 @@ void SVPropNetworkEditWidget::showNetworkProperties() {
 	m_ui->groupBoxEdge->setVisible(false);
 	m_ui->groupBoxComponent->setVisible(false);
 	m_ui->groupBoxHeatExchange->setVisible(false);
+	m_ui->groupBoxController->setVisible(false);
 }
 
 
@@ -652,6 +716,7 @@ void SVPropNetworkEditWidget::showNodeProperties() {
 	m_ui->groupBoxEdge->setVisible(false);
 	m_ui->groupBoxComponent->setVisible(false);
 	m_ui->groupBoxHeatExchange->setVisible(false);
+	m_ui->groupBoxController->setVisible(false);
 }
 
 
@@ -664,6 +729,7 @@ void SVPropNetworkEditWidget::showEdgeProperties() {
 	m_ui->groupBoxEdge->setVisible(true);
 	m_ui->groupBoxComponent->setVisible(false);
 	m_ui->groupBoxHeatExchange->setVisible(false);
+	m_ui->groupBoxController->setVisible(false);
 }
 
 void SVPropNetworkEditWidget::showComponentProperties(){
@@ -675,6 +741,7 @@ void SVPropNetworkEditWidget::showComponentProperties(){
 	m_ui->groupBoxEdge->setVisible(false);
 	m_ui->groupBoxComponent->setVisible(true);
 	m_ui->groupBoxHeatExchange->setVisible(true);
+	m_ui->groupBoxController->setVisible(true);
 }
 
 
@@ -1034,5 +1101,23 @@ void SVPropNetworkEditWidget::on_pushButtonSelectFluid_clicked()
 		unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
 		SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
 		undo->push(); // modifies project and updates views
+	}
+}
+
+
+
+// TODO ...
+
+void SVPropNetworkEditWidget::on_pushButtonEditController_clicked()
+{
+	unsigned int currentId  = m_ui->comboBoxController->currentData().toUInt();
+	SVNetworkControllerDialog *dialog = new SVNetworkControllerDialog();
+	unsigned int newId = dialog->select(m_currentNetwork.m_id, currentId);
+	if (newId > 0){
+
+		// modify current node here and set controller id
+
+		updateController();
+		m_ui->comboBoxComponent->setCurrentIndex(m_ui->comboBoxComponent->findData(newId));
 	}
 }

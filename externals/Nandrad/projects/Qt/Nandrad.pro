@@ -31,8 +31,6 @@ HEADERS += \
     ../../src/NANDRAD_Constants.h \
     ../../src/NANDRAD_ConstructionInstance.h \
     ../../src/NANDRAD_ConstructionType.h \
-    ../../src/NANDRAD_ControlElement.h \
-    ../../src/NANDRAD_Controller.h \
     ../../src/NANDRAD_DailyCycle.h \
     ../../src/NANDRAD_DataTable.h \
     ../../src/NANDRAD_EmbeddedObject.h \
@@ -42,6 +40,7 @@ HEADERS += \
     ../../src/NANDRAD_HVACControlModel.h \
     ../../src/NANDRAD_HydraulicFluid.h \
     ../../src/NANDRAD_HydraulicNetworkComponent.h \
+    ../../src/NANDRAD_HydraulicNetworkControlElement.h \
     ../../src/NANDRAD_HydraulicNetworkElement.h \
     ../../src/NANDRAD_HydraulicNetwork.h \
     ../../src/NANDRAD_HydraulicNetworkHeatExchange.h \
@@ -66,6 +65,7 @@ HEADERS += \
     ../../src/NANDRAD_ModelInputReference.h \
     ../../src/NANDRAD_Models.h \
     ../../src/NANDRAD_NaturalVentilationModel.h \
+    ../../src/NANDRAD_NetworkInterfaceAdapterModel.h \
     ../../src/NANDRAD_ObjectList.h \
     ../../src/NANDRAD_OutputDefinition.h \
     ../../src/NANDRAD_OutputGrid.h \
@@ -87,15 +87,14 @@ HEADERS += \
     ../../src/NANDRAD_WindowGlazingLayer.h \
     ../../src/NANDRAD_WindowGlazingSystem.h \
     ../../src/NANDRAD_WindowShading.h \
-    ../../src/NANDRAD_Zone.h
+    ../../src/NANDRAD_Zone.h \
+    ../../src/NANDRAD_HeatLoadSummationModel.h
 
 SOURCES += \
     ../../src/NANDRAD_ArgsParser.cpp \
     ../../src/NANDRAD_Constants.cpp \
     ../../src/NANDRAD_ConstructionInstance.cpp \
     ../../src/NANDRAD_ConstructionType.cpp \
-    ../../src/NANDRAD_ControlElement.cpp \
-    ../../src/NANDRAD_Controller.cpp \
     ../../src/NANDRAD_DailyCycle.cpp \
     ../../src/NANDRAD_DataTable.cpp \
     ../../src/NANDRAD_EmbeddedObject.cpp \
@@ -106,6 +105,7 @@ SOURCES += \
     ../../src/NANDRAD_HydraulicFluid.cpp \
     ../../src/NANDRAD_HydraulicNetworkComponent.cpp \
     ../../src/NANDRAD_HydraulicNetwork.cpp \
+    ../../src/NANDRAD_HydraulicNetworkControlElement.cpp \
     ../../src/NANDRAD_HydraulicNetworkElement.cpp \
     ../../src/NANDRAD_HydraulicNetworkHeatExchange.cpp \
     ../../src/NANDRAD_HydraulicNetworkPipeProperties.cpp \
@@ -126,6 +126,7 @@ SOURCES += \
     ../../src/NANDRAD_Material.cpp \
     ../../src/NANDRAD_Models.cpp \
     ../../src/NANDRAD_NaturalVentilationModel.cpp \
+    ../../src/NANDRAD_NetworkInterfaceAdapterModel.cpp \
     ../../src/NANDRAD_ObjectList.cpp \
     ../../src/NANDRAD_OutputDefinition.cpp \
     ../../src/NANDRAD_OutputGrid.cpp \
@@ -144,8 +145,6 @@ SOURCES += \
     ../../src/NANDRAD_WindowShading.cpp \
     ../../src/ncg/ncg_NANDRAD_ConstructionInstance.cpp \
     ../../src/ncg/ncg_NANDRAD_ConstructionType.cpp \
-    ../../src/ncg/ncg_NANDRAD_ControlElement.cpp \
-    ../../src/ncg/ncg_NANDRAD_Controller.cpp \
     ../../src/ncg/ncg_NANDRAD_DailyCycle.cpp \
     ../../src/ncg/ncg_NANDRAD_EmbeddedObject.cpp \
     ../../src/ncg/ncg_NANDRAD_EmbeddedObjectWindow.cpp \
@@ -155,6 +154,7 @@ SOURCES += \
     ../../src/ncg/ncg_NANDRAD_HydraulicFluid.cpp \
     ../../src/ncg/ncg_NANDRAD_HydraulicNetworkComponent.cpp \
     ../../src/ncg/ncg_NANDRAD_HydraulicNetwork.cpp \
+    ../../src/ncg/ncg_NANDRAD_HydraulicNetworkControlElement.cpp \
     ../../src/ncg/ncg_NANDRAD_HydraulicNetworkElement.cpp \
     ../../src/ncg/ncg_NANDRAD_HydraulicNetworkHeatExchange.cpp \
     ../../src/ncg/ncg_NANDRAD_HydraulicNetworkPipeProperties.cpp \
@@ -174,6 +174,7 @@ SOURCES += \
     ../../src/ncg/ncg_NANDRAD_MaterialLayer.cpp \
     ../../src/ncg/ncg_NANDRAD_Models.cpp \
     ../../src/ncg/ncg_NANDRAD_NaturalVentilationModel.cpp \
+    ../../src/ncg/ncg_NANDRAD_NetworkInterfaceAdapterModel.cpp \
     ../../src/ncg/ncg_NANDRAD_ObjectList.cpp \
     ../../src/ncg/ncg_NANDRAD_OutputDefinition.cpp \
     ../../src/ncg/ncg_NANDRAD_OutputGrid.cpp \
@@ -193,7 +194,9 @@ SOURCES += \
     ../../src/ncg/ncg_NANDRAD_WindowGlazingLayer.cpp \
     ../../src/ncg/ncg_NANDRAD_WindowGlazingSystem.cpp \
     ../../src/ncg/ncg_NANDRAD_WindowShading.cpp \
-    ../../src/ncg/ncg_NANDRAD_Zone.cpp
+    ../../src/ncg/ncg_NANDRAD_Zone.cpp \
+    ../../src/NANDRAD_HeatLoadSummationModel.cpp \
+    ../../src/ncg/ncg_NANDRAD_HeatLoadSummationModel.cpp
 
 
 

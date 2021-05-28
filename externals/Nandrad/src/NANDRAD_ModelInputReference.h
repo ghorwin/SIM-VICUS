@@ -8,15 +8,15 @@
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
 
-	This library is free software; you can redistribute it and/or
-	modify it under the terms of the GNU Lesser General Public
-	License as published by the Free Software Foundation; either
-	version 3 of the License, or (at your option) any later version.
+	This library is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
 	This library is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-	Lesser General Public License for more details.
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 */
 
 #ifndef NANDRAD_ModelInputReferenceH
@@ -43,11 +43,8 @@ public:
 		MRT_ZONE,					// Keyword: Zone					'Model references inside a room.'
 		MRT_CONSTRUCTIONINSTANCE,	// Keyword: ConstructionInstance	'Model references a wall.'
 		MRT_EMBEDDED_OBJECT,		// Keyword: EmbeddedObject			'Model references an embedded object.'
-		MRT_ACTIVE_OBJECT,			// Keyword: ActiveObject			'Model references an active object.'
-		MRT_SCHEDULE,				// Keyword: Schedule				'Model references scheduled data.'
-		MRT_OBJECTLIST,				// Keyword: ObjectList				'Model references an object list-specific value.'
-		MRT_MODEL,					// Keyword: Model					'Model references of a generic model.'
-		MRT_GLOBAL,					// Keyword: Global					'Model references to global physical quantities.'
+		MRT_SCHEDULE,				// Keyword: Schedule				'Model references generic scheduled data that is not associated with a specific object type.'
+		MRT_MODEL,					// Keyword: Model					'Model references of a model object.'
 		MRT_NETWORK,				// Keyword: Network					'Model references of a hydraulic network.'
 		MRT_NETWORKELEMENT,			// Keyword: NetworkElement			'Model references of flow elements of a hydraulic network.'
 		NUM_MRT

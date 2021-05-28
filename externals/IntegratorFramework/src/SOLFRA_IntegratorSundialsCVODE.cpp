@@ -403,6 +403,7 @@ IntegratorInterface::StepResultType IntegratorSundialsCVODE::step() {
 
 	// tell cvode to take a step
 	int res = CVode(m_impl->m_mem, m_impl->m_model->tEnd(), m_impl->m_yStorage, &m_impl->m_t, CV_ONE_STEP);
+//	IBK::IBK_Message(IBK::FormatString("step completed, t = %1\n").arg(m_impl->m_t));
 
 	// if step was successful, collect statistics
 	if (res == CV_SUCCESS || res == CV_TSTOP_RETURN) {

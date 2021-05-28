@@ -6,17 +6,17 @@
 	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
 	  Anne Paepcke     <anne.paepcke -[at]- tu-dresden.de>
 
-	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
 
-	This library is free software; you can redistribute it and/or
-	modify it under the terms of the GNU Lesser General Public
-	License as published by the Free Software Foundation; either
-	version 3 of the License, or (at your option) any later version.
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-	This library is distributed in the hope that it will be useful,
+	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-	Lesser General Public License for more details.
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 */
 
 #include "NM_NandradModel.h"
@@ -86,9 +86,11 @@
 #include "NM_HydraulicNetworkModel.h"
 #include "NM_ShadingControlModel.h"
 #include "NM_ThermostatModel.h"
+#include "NM_HeatLoadSummationModel.h"
 #include "NM_IdealHeatingCoolingModel.h"
 #include "NM_IdealPipeRegisterModel.h"
 #include "NM_IdealSurfaceHeatingCoolingModel.h"
+#include "NM_NetworkInterfaceAdapterModel.h"
 
 #include "NM_ThermalNetworkStatesModel.h"
 #include "NM_ThermalNetworkBalanceModel.h"
@@ -355,6 +357,7 @@ SOLFRA::ModelInterface::CalculationResult NandradModel::ydot(double * ydot) {
 
 
 void NandradModel::writeOutputs(double t_out, const double * y_out) {
+	//IBK::IBK_Message(IBK::FormatString("Writing output at t_out = %1 s\n").arg(t_out));
 	// update state of model to output time and variables
 	// finally write the output
 	setTime(t_out);
@@ -1353,8 +1356,8 @@ void NandradModel::initModels() {
 			m_modelContainer.push_back(mod); // transfer ownership
 
 			try {
-				m.checkParameters();
-				mod->setup(m, m_project->m_objectLists, m_project->m_zones);
+				m.checkParameters(m_project->m_zones);
+				mod->setup(m, m_project->m_objectLists);
 			}
 			catch (IBK::Exception & ex) {
 				throw IBK::Exception(ex, IBK::FormatString("Error initializing ideal heating/cooling model (id=%1).").arg(m.m_id), FUNC_ID);
@@ -1379,6 +1382,48 @@ void NandradModel::initModels() {
 			}
 			catch (IBK::Exception & ex) {
 				throw IBK::Exception(ex, IBK::FormatString("Error initializing ideal heating/cooling model (id=%1).").arg(m.m_id), FUNC_ID);
+			}
+			// register model for calculation
+			registerStateDependendModel(mod);
+		}
+	}
+
+	// summation models
+	if (!m_project->m_models.m_heatLoadSummationModels.empty()) {
+		IBK::IBK_Message(IBK::FormatString("Initializing heat load summation models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		IBK_MSG_INDENT;
+
+		for (NANDRAD::HeatLoadSummationModel & m: m_project->m_models.m_heatLoadSummationModels) {
+			NANDRAD_MODEL::HeatLoadSummationModel * mod = new NANDRAD_MODEL::HeatLoadSummationModel(m.m_id, m.m_displayName);
+			m_modelContainer.push_back(mod); // transfer ownership
+
+			try {
+				m.checkParameters();
+				mod->setup(m, m_project->m_objectLists);
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString("Error initializing heat load summation model (id=%1).").arg(m.m_id), FUNC_ID);
+			}
+			// register model for calculation
+			registerStateDependendModel(mod);
+		}
+	}
+
+	// network adapter models
+	if (!m_project->m_models.m_networkInterfaceAdapterModels.empty()) {
+		IBK::IBK_Message(IBK::FormatString("Initializing network interface adapter models models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		IBK_MSG_INDENT;
+
+		for (NANDRAD::NetworkInterfaceAdapterModel & m: m_project->m_models.m_networkInterfaceAdapterModels) {
+			NANDRAD_MODEL::NetworkInterfaceAdapterModel * mod = new NANDRAD_MODEL::NetworkInterfaceAdapterModel(m.m_id, m.m_displayName);
+			m_modelContainer.push_back(mod); // transfer ownership
+
+			try {
+				m.checkParameters();
+				mod->setup(m);
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString("Error initializing network interface adapter model (id=%1).").arg(m.m_id), FUNC_ID);
 			}
 			// register model for calculation
 			registerStateDependendModel(mod);
@@ -1510,7 +1555,7 @@ void NandradModel::initNetworks() {
 				ThermalNetworkStatesModel *statesModel = new ThermalNetworkStatesModel(nw.m_id, nw.m_displayName);
 				m_modelContainer.push_back(statesModel); // transfer ownership
 				// initialize
-				statesModel->setup(nw, *nwmodel, m_project->m_simulationParameter);
+				statesModel->setup(nw, *nwmodel);
 				// add to thermal network states container
 				m_networkStatesModelContainer.push_back(statesModel);
 				// add thermal network balance model

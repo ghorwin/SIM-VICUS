@@ -8,15 +8,15 @@
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
 
-	This library is free software; you can redistribute it and/or
-	modify it under the terms of the GNU Lesser General Public
-	License as published by the Free Software Foundation; either
-	version 3 of the License, or (at your option) any later version.
+	This library is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
 	This library is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-	Lesser General Public License for more details.
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 */
 
 #ifndef NANDRAD_IdealPipeRegisterModelH
@@ -28,22 +28,24 @@
 #include "NANDRAD_Constants.h"
 #include "NANDRAD_CodeGenMacros.h"
 #include "NANDRAD_LinearSplineParameter.h"
+#include "NANDRAD_HydraulicFluid.h"
 
 namespace NANDRAD {
 
 class Zone;
 
-/*! An ideal heating and cooling model. Basically scales a heating/cooling control signal with
-	the nominal heating power per zone.
+/*! An idealised pipe-register model inside a heated layer of a construction.
+	Supply temperature is fixed, mass flux is controlled based on heating/cooling requirements in
+	associated thermostat.
 */
 class IdealPipeRegisterModel {
 public:
-	/*! Different model variants for supply tempertaure. */
+	/*! Different model variants for supply temperature. */
 	enum modelType_t {
 		/*! Supply temperature is given as constant parameter. */
-		MT_Constant,					// Keyword: Constant				'Constant infiltration rate'
+		MT_Constant,					// Keyword: Constant				'Constant supply temperature'
 		/*! Supply temperature is provided as 'SupplyTemperatureSchedule' schedule parameter. */
-		MT_Scheduled,					// Keyword: Scheduled				'Scheduled ventilation rate'
+		MT_Scheduled,					// Keyword: Scheduled				'Scheduled supply temperature'
 		NUM_MT
 	};
 
@@ -54,9 +56,6 @@ public:
 		P_PipeLength,				// Keyword: PipeLength					[m]			'Pipe length'
 		P_PipeInnerDiameter,		// Keyword: PipeInnerDiameter			[mm]		'Inner diameter of pipe'
 		P_UValuePipeWall,			// Keyword: UValuePipeWall				[W/mK]		'Length-specific U-Value of pipe wall incl. insulation'
-		P_FluidDensity,				// Keyword: FluidDensity				[kg/m3]		'Fluid mass density.'
-		P_FluidHeatCapacity,		// Keyword: FluidHeatCapacity			[J/kgK]		'Fluid specific heat capacity.'
-		P_FluidConductivity,		// Keyword: FluidConductivity			[W/mK]		'Fluid thermal conductivity.'
 		NUM_P
 	};
 
@@ -79,19 +78,19 @@ public:
 	/*! Model type. */
 	modelType_t			m_modelType = NUM_MT;						// XML:A:required
 
+	/*! Fluid properties. */
+	HydraulicFluid		m_fluid;									// XML:E:required
+
 	/*! Object list with zones that this model is to be apply to. */
 	std::string			m_constructionObjectList;					// XML:E:required
 
-	/*! Id of zone whose thermostat is used for control (one zone thermostat may be responsible
-		for the control of different heating systems, but only one id is allowed per model). */
+	/*! Id of zone whose thermostat is used for control. */
 	unsigned int		m_thermostatZoneID;							// XML:E:required
 
 	/*! Parameters. */
 	IBK::Parameter		m_para[NUM_P];								// XML:E
 	/*! Integaer parameters. */
 	IBK::IntPara		m_intPara[NUM_IP];							// XML:E
-	/*! Fluid kinematic viscosity [m2/s]. */
-	LinearSplineParameter	m_fluidViscosity;			// XML:E
 };
 
 } // namespace NANDRAD

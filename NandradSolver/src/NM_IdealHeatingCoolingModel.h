@@ -1,3 +1,24 @@
+/*	NANDRAD Solver Framework and Model Implementation.
+
+	Copyright (c) 2012-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Anne Paepcke     <anne.paepcke -[at]- tu-dresden.de>
+
+	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
 #ifndef NM_IdealHeatingCoolingModelH
 #define NM_IdealHeatingCoolingModelH
 
@@ -17,6 +38,11 @@ namespace NANDRAD_MODEL {
 /*! A model for ideal heating/cooling (air heating).
 	The model instance is identified by reference type MODEL and the id of the NANDRAD model parametrization block.
 	It implements ideal heating/cooling loads for all zones referenced in the object list.
+
+	For each zone in the object list, the model requests HeatingControlValue and CoolingControlValue quantities, that
+	are provided by thermostat models. Also, it retrieves the zone's net floor area and computed together with
+	parameters from NANDRAD::IdealHeatingCoolingModel the maximum heating/cooling power. The actual heating/cooling power
+	is obtained by multiplication of the heating/cooling control value with this maximum power.
 */
 class IdealHeatingCoolingModel : public AbstractModel, public AbstractStateDependency {
 public:

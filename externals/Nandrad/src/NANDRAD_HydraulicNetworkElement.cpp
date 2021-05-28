@@ -1,3 +1,24 @@
+/*	The NANDRAD data model library.
+
+	Copyright (c) 2012-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Anne Paepcke     <anne.paepcke -[at]- tu-dresden.de>
+
+	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This library is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
 #include "NANDRAD_HydraulicNetworkElement.h"
 
 #include "NANDRAD_HydraulicNetwork.h"
@@ -66,6 +87,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 		break;
 
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
+		case HydraulicNetworkComponent::MT_ConstantMassFluxPump:
 		case HydraulicNetworkComponent::MT_HeatExchanger:
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:
 		case HydraulicNetworkComponent::MT_HeatPumpReal:
@@ -91,8 +113,17 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 	// check for valid heat exchange parameters
 	m_heatExchange.checkParameters(prj.m_placeholders, prj.m_zones, prj.m_constructionInstances);
 
-	// check control element
-	m_controlElement.checkParameters(prj.m_controllers);
+	// set pointer to control element
+	if (m_controlElementID != NANDRAD::INVALID_ID) {
+		auto ctit  = std::find(nw.m_controlElements.begin(), nw.m_controlElements.end(), m_controlElementID);
+		if (ctit == nw.m_controlElements.end()) {
+			throw IBK::Exception(IBK::FormatString("ControlElement with id #%1 does not exist.")
+								 .arg(m_controlElementID), FUNC_ID);
+		}
+		// set reference
+		m_controlElement = &(*ctit);
+	}
+
 }
 
 
