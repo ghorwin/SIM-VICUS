@@ -202,20 +202,6 @@
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 
-<!--
-				<OutputDefinition>
-					<Quantity>CompleteThermalLoad</Quantity>
-					<ObjectListName>Zones</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-
-				<OutputDefinition>
-					<Quantity>ConstructionHeatConductionLoad</Quantity>
-					<ObjectListName>Zones</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
--->
-
 				<OutputDefinition>
 					<Quantity>ThermalLoad[1]</Quantity>
 					<ObjectListName>Floors</ObjectListName>
