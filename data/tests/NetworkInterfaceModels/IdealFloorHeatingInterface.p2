@@ -126,7 +126,9 @@
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
 						<Position>Inside</Position>
-						<Alignment>0</Alignment>
+						<Alignment>1</Alignment>
+						<OffsetX>14</OffsetX>
+						<OffsetY>110</OffsetY>
 						<MaxColumns>1</MaxColumns>
 						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
 					</Legend>

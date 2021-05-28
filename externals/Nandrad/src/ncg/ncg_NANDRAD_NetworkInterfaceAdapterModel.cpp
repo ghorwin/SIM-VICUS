@@ -65,8 +65,18 @@ void NetworkInterfaceAdapterModel::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "HydraulicFluid")
-				m_fluid.readXML(c);
+			if (cName == "IBK:Parameter") {
+				IBK::Parameter p;
+				NANDRAD::readParameterElement(c, p);
+				bool success = false;
+				if (p.name == "FluidHeatCapacity") {
+					m_fluidHeatCapacity = p; success = true;
+				}
+				if (!success) {
+				}
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -91,8 +101,10 @@ TiXmlElement * NetworkInterfaceAdapterModel::writeXML(TiXmlElement * parent) con
 		e->SetAttribute("displayName", m_displayName);
 	if (m_summationModelID != NANDRAD::INVALID_ID)
 		e->SetAttribute("summationModelID", IBK::val2string<unsigned int>(m_summationModelID));
-
-	m_fluid.writeXML(e);
+	if (!m_fluidHeatCapacity.name.empty()) {
+		IBK_ASSERT("FluidHeatCapacity" == m_fluidHeatCapacity.name);
+		TiXmlElement::appendIBKParameterElement(e, "FluidHeatCapacity", m_fluidHeatCapacity.IO_unit.name(), m_fluidHeatCapacity.get_value());
+	}
 	return e;
 }
 

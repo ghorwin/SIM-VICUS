@@ -106,7 +106,7 @@ int NetworkInterfaceAdapterModel::update() {
 	double massFlux = *m_valueRefs[2]; // kg/s
 
 	// J/kgK
-	double heatCapacity = m_modelData->m_fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+	double heatCapacity = m_modelData->m_fluidHeatCapacity.value;
 
 	if (massFlux <= 0)
 		m_results[R_ReturnTemperature] = supplyTemp;

@@ -213,16 +213,7 @@
 			<NetworkInterfaceAdapterModels>
 				<!-- Model for translating heat load into temperature spread inside a hydraulic networl-->
 				<NetworkInterfaceAdapterModel id="802" summationModelID="801">
-					<!-- Definition of hydraulic fluid -->
-					<HydraulicFluid displayName="Water">
-						<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
-						<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
-						<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
-						<LinearSplineParameter name="KinematicViscosity" interpolationMethod="linear">
-							<X unit="C">0 90 </X>
-							<Y unit="m2/s">1.307e-06 1.307e-06</Y>
-						</LinearSplineParameter>
-					</HydraulicFluid>
+					<IBK:Parameter name="FluidHeatCapacity" unit="J/kgK">4180</IBK:Parameter>
 				</NetworkInterfaceAdapterModel>
 			</NetworkInterfaceAdapterModels>
 

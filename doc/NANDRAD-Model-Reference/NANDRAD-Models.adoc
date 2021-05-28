@@ -37,6 +37,8 @@ In diesem Abschnitt werden die verschiedenen Modellparametrisierungsblöcke besc
 | `IdealHeatingCoolingModels` | Ideale Beheizung/Kühlung von Zonen -> <<model_ideal_heating_cooling>>
 | `IdealSurfaceHeatingCoolingModels` | Ideale Flächenheizsysteme/Fußbodenheizungen/Betonkernaktivierung -> <<model_ideal_surface_heating_cooling>>
 | `IdealPipeRegisterModels` | Idealisierte Rohrregister-Flächenheizungen -> <<model_ideal_pipe_register>>
+| `HeatLoadSummationModels` | Summationsmodelle für Heizleistungen -> <<model_heat_load_summation>>
+| `NetworkInterfaceAdapterModels` | Adaptermodelle für externe Netzwerkschnittstellen -> <<model_network_interface_adapter>>
 |====================
 
 __(*) noch nicht implementiert__
@@ -733,4 +735,89 @@ Z. B. ist `Model<IdealSurfaceHeatingCoolingModel_id>).ActiveLayerThermalLoad[id=
 [NOTE]
 ====
 Die `ActiveLayerThermalLoad` ist positiv bei Beheizung der Fläche und negativ bei Kühlung. Die Wärme-/Kälteleistung ist eine absolute Größe (nicht flächenbezogen).
+====
+
+
+
+[[model_heat_load_summation]]
+## Modell für die Summation von Heiz- und Kühlleistungen
+
+Das Modell summiert die Heizleistungen der ausgewählten Objekte und liefert die Gesamtwärmeleistung (Heizung/Kühlung).
+
+.Definitionsblock für ein Summationsmodell
+====
+[source,xml]
+----
+<HeatLoadSummationModel id="801" displayName="Floor heating loads">
+	<ObjectList>Floors</ObjectList>
+</HeatLoadSummationModel>
+----
+====
+
+Das `HeatLoadSummationModel` muss mit den folgenden XML-Attributen definiert werden:
+
+.Attribute
+[.indent-me]
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribut | Beschreibung | Format | Verwendung 
+| `id` | Kennung des Modells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+|====================
+
+Ein `HeatLoadSummationModel` summiert die Heiz- und Kühlleistung mehrerer Konstruktionen. Dafür identifiziert der Objektlisten-tag `ObjectList` die Konstruktion, deren Heizlast erfasst und summiert werden soll.
+
+[NOTE]
+====
+Falls in der Objektliste referenzierte Konstruktionen keine aktive Schicht definiert haben (siehe <<construction_active_layer>>), so werden diese einfach ignoriert.
+====
+
+### Ausgaben
+
+Das Modell hat eine einzige Ergebnisgröße:
+
+[NOTE]
+====
+Die `TotalThermalLoad` ist positiv bei Beheizung der Fläche und negativ bei Kühlung.
+====
+
+
+
+[[model_network_interface_adapter]]
+## Schnittstellen-Modell für die Anbindung externer Anlagennetze 
+
+Diese Modell ist für alleinstehende Simulation unwichtig und wird primär für die Co-Simulation mittels FMI gebraucht. Es bildet den Wärmeentzug des Gebäudes auf ein strömendes Medium ab, bspw. ein Versorgungsnetzwerk. Das Medium strömt mit gegebener Vorlauftemperatur und Massestrom ins Gebäude und das `NetworkInterfaceAdapterModel` berechnet die resultierende Rücklauftemperatur.
+
+
+.Definitionsblock für ein solches Schnittstellenmodell
+====
+[source,xml]
+----
+<NetworkInterfaceAdapterModel id="802" summationModelID="801">
+	<IBK:Parameter name="FluidHeatCapacity" unit="J/kgK">4180</IBK:Parameter>
+</NetworkInterfaceAdapterModel>
+----
+====
+
+Das `NetworkInterfaceAdapterModel` muss mit den folgenden XML-Attributen definiert werden:
+
+.Attribute
+[.indent-me]
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribut | Beschreibung | Format | Verwendung 
+| `id` | Kennung des Modells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+| `summationModelID` | ID des Summationsmodells, welches die Heiz-/Kühlleistung im Gebäude berechnet | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+|====================
+
+Für die Berechnung ist die spezifische Wärmekapazität des strömenden Mediums notwendig, angegeben im IBK-Parameterelement `FluidHeatCapacity`. 
+
+### Ausgaben
+
+Das Modell hat eine einzige Ergebnisgröße:
+
+- `ReturnTemperature [C]`
+
+[CAUTION]
+====
+Der Wärmeentzug aus dem Versorgungsstrang erfolgt unabhängig eventueller physikalischer Grenzen. So kann in der Realität die Rücklauftemperatur niemals unterhalb der Raum-/Konstruktionstemperatur sinken. Entsprechend sollten nachfolgende Modelle diese Temperatur nur für Regelungen als Sensorgröße behandeln und ggfs. auf sinnvolle Wertebereiche begrenzen.
 ====

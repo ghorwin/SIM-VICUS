@@ -194,21 +194,10 @@
 					 'Model(id=1212).SupplyTemperatureSchedule'
 					 'Model(id=1212).SupplyMassFluxSchedule'
 					 
-					 Provides return temperature in medium:
+					 Provides return temperature in medium: Model(id=1212).ReturnTemperature
 				-->
 				<NetworkInterfaceAdapterModel id="1212" summationModelID="801">
-					<!-- Only Density and HeatCapacity of a fluid are required. But, for consistency, we
-						 request a regular HydraulicFluid parameter block and rely on parameter checks.
-					-->
-					<HydraulicFluid displayName="Water">
-						<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
-						<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
-						<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
-						<LinearSplineParameter name="KinematicViscosity" interpolationMethod="linear">
-							<X unit="C">0 90 </X>
-							<Y unit="m2/s">1.793e-06 1.793e-06 </Y>
-						</LinearSplineParameter>
-					</HydraulicFluid>
+					<IBK:Parameter name="FluidHeatCapacity" unit="J/kgK">4180</IBK:Parameter>
 				</NetworkInterfaceAdapterModel>
 			</NetworkInterfaceAdapterModels>
 
