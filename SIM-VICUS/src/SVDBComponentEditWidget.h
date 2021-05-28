@@ -74,6 +74,9 @@ private slots:
 	void on_pushButtonComponentColor_colorChanged();
 
 private:
+	/*! Set up the modified variable of the model to true. */
+	void modelModify();
+
 	Ui::SVDBComponentEditWidget *m_ui;
 
 	/*! Cached pointer to database object. */

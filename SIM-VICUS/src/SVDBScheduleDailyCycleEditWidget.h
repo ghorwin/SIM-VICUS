@@ -54,6 +54,9 @@ private slots:
 	void on_tableWidgetDayCycle_cellChanged(int row, int);
 
 private:
+	/*! Set up the modified variable of the model to true. */
+	void modelModify();
+
 	Ui::SVDBScheduleDailyCycleEditWidget *m_ui;
 
 	/*! Cached pointer to actual daily cycle. */

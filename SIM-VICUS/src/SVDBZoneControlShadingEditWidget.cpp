@@ -148,7 +148,6 @@ void SVDBZoneControlShadingEditWidget::on_lineEditName_editingFinished() {
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {  // currentdisplayname is multilanguage string
 		m_current->m_displayName = m_ui->lineEditName->string();
 		modelModify();
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 }
 
@@ -160,8 +159,6 @@ void SVDBZoneControlShadingEditWidget::on_comboBoxMethod_currentIndexChanged(int
 		if(index == i){
 			m_current->m_category = static_cast<VICUS::ZoneControlShading::Category>(i);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-
 		}
 	}
 }
@@ -183,7 +180,6 @@ void SVDBZoneControlShadingEditWidget::on_lineEditNorth_editingFinished() {
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
 }
@@ -204,7 +200,6 @@ void SVDBZoneControlShadingEditWidget::on_lineEditSouth_editingFinished() {
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
 }
@@ -223,7 +218,6 @@ void SVDBZoneControlShadingEditWidget::on_lineEditWest_editingFinished() {
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
 }
@@ -244,7 +238,6 @@ void SVDBZoneControlShadingEditWidget::on_lineEditEast_editingFinished() {
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
 }
@@ -265,7 +258,6 @@ void SVDBZoneControlShadingEditWidget::on_lineEditHorizontal_editingFinished() {
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
 }
@@ -286,7 +278,6 @@ void SVDBZoneControlShadingEditWidget::on_lineEditDeadBand_editingFinished() {
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
 }
@@ -294,12 +285,12 @@ void SVDBZoneControlShadingEditWidget::on_lineEditDeadBand_editingFinished() {
 
 void SVDBZoneControlShadingEditWidget::modelModify() {
 	m_db->m_zoneControlShading.m_modified = true;
+	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 }
 
 void SVDBZoneControlShadingEditWidget::on_pushButtonColor_colorChanged() {
 	if (m_current->m_color != m_ui->pushButtonColor->color()) {
 		m_current->m_color = m_ui->pushButtonColor->color();
 		modelModify();
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 }

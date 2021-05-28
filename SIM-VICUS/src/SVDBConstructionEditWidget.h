@@ -67,6 +67,9 @@ public:
 	void updateInput(int id) override;
 
 private:
+	/*! Set up the modified variable of the model to true. */
+	void modelModify();
+
 	/*! Updates the content of the table. */
 	void updateTable();
 

@@ -222,8 +222,7 @@ void SVDBZoneTemplateEditWidget::on_lineEditName_editingFinished() {
 
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {
 		m_current->m_displayName = m_ui->lineEditName->string();
-		m_db->m_zoneTemplates.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -233,8 +232,7 @@ void SVDBZoneTemplateEditWidget::on_pushButtonColor_colorChanged() {
 
 	if (m_current->m_color != m_ui->pushButtonColor->color()) {
 		m_current->m_color = m_ui->pushButtonColor->color();
-		m_db->m_zoneTemplates.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -264,10 +262,9 @@ void SVDBZoneTemplateEditWidget::on_toolButtonSelectSubComponent_clicked() {
 	if (id != VICUS::INVALID_ID) {
 		// modify existing
 		m_current->m_idReferences[m_currentSubTemplateType] = id;
-		m_db->m_zoneTemplates.m_modified = true;
+		modelModify();
 	}
 	// we must assume that the name of the referenced sub-template has changed, so update controls accordingly
-	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	updateInput((int)m_current->m_id, (int)m_current->m_idReferences[m_currentSubTemplateType], m_currentSubTemplateType);
 }
 
@@ -293,8 +290,7 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddPersonLoad_clicked() {
 		else {
 			// modify existing
 			m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson] = id;
-			m_db->m_zoneTemplates.m_modified = true;
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+			modelModify();
 		}
 	}
 }
@@ -315,8 +311,7 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddElectricLoad_clicked() {
 		else {
 			// modify existing
 			m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadEquipment] = id;
-			m_db->m_zoneTemplates.m_modified = true;
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+			modelModify();
 		}
 	}
 }
@@ -336,8 +331,7 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddLightLoad_clicked() {
 		else {
 			// modify existing
 			m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadLighting] = id;
-			m_db->m_zoneTemplates.m_modified = true;
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+			modelModify();
 		}
 	}
 }
@@ -357,8 +351,7 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddInfiltration_clicked() {
 		else {
 			// modify existing
 			m_current->m_idReferences[subType] = id;
-			m_db->m_zoneTemplates.m_modified = true;
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+			modelModify();
 		}
 	}
 }
@@ -378,9 +371,14 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddVentilationNatrual_clicked(){
 		else {
 			// modify existing
 			m_current->m_idReferences[subType] = id;
-			m_db->m_zoneTemplates.m_modified = true;
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+			modelModify();
 		}
 	}
+
+}
+
+void SVDBZoneTemplateEditWidget::modelModify() {
+	m_db->m_zoneTemplates.m_modified = true;
+	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 
 }

@@ -102,7 +102,6 @@ void SVDBInfiltrationEditWidget::updateInput(int id) {
 	m_ui->lineEditName->setString(m_current->m_displayName);
 	m_ui->pushButtonColor->setColor(m_current->m_color);
 
-
 	//set method
 	m_ui->comboBoxMethod->blockSignals(true);
 	m_ui->comboBoxMethod->setCurrentIndex(m_current->m_airChangeType);
@@ -113,6 +112,7 @@ void SVDBInfiltrationEditWidget::updateInput(int id) {
 	}  catch (IBK::Exception &ex) {
 		//set up a new value
 		m_ui->lineEditAirChangeRate->setValue(0);
+		modelModify();
 	}
 	m_ui->lineEditShieldCoefficient->setValue(m_current->m_para[VICUS::Infiltration::P_ShieldingCoefficient].value);
 
@@ -136,7 +136,6 @@ void SVDBInfiltrationEditWidget::on_lineEditName_editingFinished() {
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {  // currentdisplayname is multilanguage string
 		m_current->m_displayName = m_ui->lineEditName->string();
 		modelModify();
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 }
 
@@ -148,8 +147,6 @@ void SVDBInfiltrationEditWidget::on_comboBoxMethod_currentIndexChanged(int index
 		if(index == i){
 			m_current->m_airChangeType = static_cast<VICUS::Infiltration::AirChangeType>(i);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-
 		}
 	}
 
@@ -179,7 +176,6 @@ void SVDBInfiltrationEditWidget::on_lineEditShieldCoefficient_editingFinished() 
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, "Infiltration::para_t", paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
 
@@ -197,7 +193,7 @@ void SVDBInfiltrationEditWidget::on_lineEditAirChangeRate_editingFinished() {
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, "Infiltration::para_t", paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+
 		}
 	}
 }
@@ -205,13 +201,13 @@ void SVDBInfiltrationEditWidget::on_lineEditAirChangeRate_editingFinished() {
 
 void SVDBInfiltrationEditWidget::modelModify() {
 	m_db->m_infiltration.m_modified = true;
+	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 }
 
 void SVDBInfiltrationEditWidget::on_pushButtonColor_colorChanged() {
 	if (m_current->m_color != m_ui->pushButtonColor->color()) {
 		m_current->m_color = m_ui->pushButtonColor->color();
 		modelModify();
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 }
 

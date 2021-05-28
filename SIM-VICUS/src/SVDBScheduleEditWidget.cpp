@@ -136,7 +136,7 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 		//initialize period with one period
 		if(m_current->m_periods.empty()){
 			m_current->m_periods.push_back(VICUS::ScheduleInterval());
-			m_db->m_schedules.m_modified=true;
+			modelModify();
 		}
 		m_ui->tableWidgetPeriods->selectRow(0);
 
@@ -205,7 +205,7 @@ void SVDBScheduleEditWidget::selectDailyCycle() {
 	// create first daily cycle if none exist yet
 	if (m_currentInterval->m_dailyCycles.empty()) {
 		m_currentInterval->m_dailyCycles.push_back(VICUS::DailyCycle());
-		m_db->m_schedules.m_modified=true;
+		modelModify();
 	}
 
 	// block signals in all check boxes, set then enabled and unchecked
@@ -299,8 +299,7 @@ void SVDBScheduleEditWidget::on_lineEditName_editingFinished() {
 
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {
 		m_current->m_displayName = m_ui->lineEditName->string();
-		m_db->m_schedules.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -341,6 +340,7 @@ void SVDBScheduleEditWidget::on_toolButtonAddPeriod_clicked(){
 
 	// get resulting index of new ScheduleInverval in vector
 	m_current->m_periods.insert(m_current->m_periods.begin()+idx+1,schedInt);
+	modelModify();
 
 	// update table widget
 	updatePeriodTable(m_current->m_periods.size()-1 );
@@ -361,6 +361,7 @@ void SVDBScheduleEditWidget::on_toolButtonRemovePeriode_clicked(){
 	//if first period is erased then change startDay of the next period to 0
 	if( rowIdx == 0)
 		m_current->m_periods.front().m_intervalStartDay = 0;
+	modelModify();
 	updatePeriodTable();
 }
 
@@ -409,7 +410,6 @@ void SVDBScheduleEditWidget::on_toolButtonForward_clicked() {
 
 	//create a new daily cycle
 	if (m_currentDailyCycleIndex == m_currentInterval->m_dailyCycles.size()-1) {
-		m_db->m_schedules.m_modified  =true;
 		m_currentInterval->m_dailyCycles.push_back(VICUS::DailyCycle());
 	}
 	++m_currentDailyCycleIndex;
@@ -444,6 +444,7 @@ void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellChanged(int row, int colu
 
 	QString periodName = m_ui->tableWidgetPeriods->item(schedIdx, colIdx)->text();
 	m_current->m_periods[schedIdx].m_displayName.setString(periodName.toStdString(), "de");
+	modelModify();
 }
 
 
@@ -476,7 +477,7 @@ void SVDBScheduleEditWidget::updateDayTypes(const NANDRAD::Schedule::ScheduledDa
 
 	updateDailyCycleSelectButtons();
 
-	m_db->m_schedules.m_modified = true;
+	modelModify();
 
 	// if schedule interval is valid -> green background
 	onValidityInfoUpdated();
@@ -607,6 +608,7 @@ void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellDoubleClicked(int row, in
 	periode.m_intervalStartDay = startDateInt;
 
 	m_current->m_periods.insert(m_current->m_periods.begin()+idx+1, periode);
+	modelModify();
 
 	// update table widget
 	updatePeriodTable(idx+1);
@@ -633,6 +635,7 @@ void SVDBScheduleEditWidget::on_radioButtonLinear_toggled(bool checked)
 		return;
 
 	m_current->m_useLinearInterpolation = (checked ? true : false);
+	modelModify();
 }
 
 
@@ -647,5 +650,11 @@ void SVDBScheduleEditWidget::onValidityInfoUpdated() {
 		m_ui->tableWidgetPeriods->item(currentIdx,1)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/error.png"));
 
 	// since this function is called whenever the data was added, we also need to inform the model about our modification
+	modelModify();
+}
+
+void SVDBScheduleEditWidget::modelModify() {
+
+	m_db->m_schedules.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id);
 }

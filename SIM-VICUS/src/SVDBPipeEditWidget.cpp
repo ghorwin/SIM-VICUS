@@ -119,8 +119,7 @@ void SVDBPipeEditWidget::on_lineEditOuterDiameter_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 	if (m_ui->lineEditOuterDiameter->isValid()) {
 		m_current->m_diameterOutside = m_ui->lineEditOuterDiameter->value();
-		m_db->m_pipes.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -129,8 +128,7 @@ void SVDBPipeEditWidget::on_lineEditName_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {
 		m_current->m_displayName = m_ui->lineEditName->string();
-		m_db->m_pipes.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -138,8 +136,7 @@ void SVDBPipeEditWidget::on_lineEditName_editingFinished() {
 void SVDBPipeEditWidget::on_lineEditWallThickness_editingFinished() {
 	if (m_ui->lineEditWallThickness->isValid()) {
 		m_current->m_wallThickness = m_ui->lineEditWallThickness->value();
-		m_db->m_pipes.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -147,8 +144,7 @@ void SVDBPipeEditWidget::on_lineEditWallThickness_editingFinished() {
 void SVDBPipeEditWidget::on_lineEditWallLambda_editingFinished() {
 	if (m_ui->lineEditWallLambda->isValid()) {
 		m_current->m_lambdaWall = m_ui->lineEditWallLambda->value();
-		m_db->m_pipes.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -156,24 +152,21 @@ void SVDBPipeEditWidget::on_lineEditWallLambda_editingFinished() {
 void SVDBPipeEditWidget::on_lineEditWallRoughness_editingFinished() {
 	if (m_ui->lineEditWallRoughness->isValid()) {
 		m_current->m_roughness = m_ui->lineEditWallRoughness->value();
-		m_db->m_pipes.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
 void SVDBPipeEditWidget::on_lineEditInsulationThickness_editingFinished(){
 	if (m_ui->lineEditInsulationThickness->isValid()) {
 		m_current->m_insulationThickness = m_ui->lineEditInsulationThickness->value();
-		m_db->m_pipes.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
 void SVDBPipeEditWidget::on_lineEditInsulationLambda_editingFinished(){
 	if (m_ui->lineEditInsulationLambda->isValid()) {
 		m_current->m_lambdaInsulation = m_ui->lineEditInsulationLambda->value();
-		m_db->m_pipes.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -181,7 +174,11 @@ void SVDBPipeEditWidget::on_pushButtonPipeColor_colorChanged() {
 
 	if (m_current->m_color != m_ui->pushButtonPipeColor->color()) {
 		m_current->m_color = m_ui->pushButtonPipeColor->color();
-		m_db->m_pipes.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
+}
+
+void SVDBPipeEditWidget::modelModify() {
+	m_db->m_pipes.m_modified = true;
+	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 }

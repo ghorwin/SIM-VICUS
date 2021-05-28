@@ -71,6 +71,9 @@ private slots:
 	void on_tableWidgetParameters_cellChanged(int row, int column);
 
 private:
+	/*! Set up the modified variable of the model to true. */
+	void modelModify();
+
 	Ui::SVDBNetworkComponentEditWidget *m_ui;
 
 	/*! Cached pointer to database object. */

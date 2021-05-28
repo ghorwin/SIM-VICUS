@@ -63,6 +63,8 @@ private slots:
 	//void on_lineEditLossFactor_editingFinished();
 
 private:
+	/*! Set up the modified variable of the model to true. */
+	void modelModify();
 
 	/*! Update the unit label of input method. */
 	void updateLabel();

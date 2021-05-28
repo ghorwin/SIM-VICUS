@@ -146,7 +146,6 @@ void SVDBInternalLoadsPersonEditWidget::updateInput(int id) {
 	m_ui->lineEditConvectiveFactor->setEnabled(!isbuiltIn);
 	m_ui->lineEditActivityScheduleName->setEnabled(!isbuiltIn);
 	m_ui->lineEditOccupancyScheduleName->setEnabled(!isbuiltIn);
-	//m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 
 }
 
@@ -155,8 +154,7 @@ void SVDBInternalLoadsPersonEditWidget::on_lineEditName_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {  // currentdisplayname is multilanguage string
 		m_current->m_displayName = m_ui->lineEditName->string();
-		m_db->m_internalLoads.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -167,8 +165,7 @@ void SVDBInternalLoadsPersonEditWidget::on_comboBoxPersonMethod_currentIndexChan
 	for(int i=0; i<VICUS::InternalLoad::PersonCountMethod::NUM_PCM; ++i){
 		if(index == i){
 			m_current->m_personCountMethod = static_cast<VICUS::InternalLoad::PersonCountMethod>(i);
-			m_db->m_internalLoads.m_modified = true;
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+			modelModify();
 			switch (m_current->m_personCountMethod) {
 				case VICUS::InternalLoad::PCM_PersonPerArea:
 					m_ui->lineEditPersonCount->setValue(m_current->m_para[VICUS::InternalLoad::P_PersonPerArea].value);
@@ -207,8 +204,7 @@ void SVDBInternalLoadsPersonEditWidget::on_lineEditPersonCount_editingFinished()
 			val != m_current->m_para[paraName].value)
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
-			m_db->m_internalLoads.m_modified = true;
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+			modelModify();
 		}
 	}
 }
@@ -225,8 +221,7 @@ void SVDBInternalLoadsPersonEditWidget::on_lineEditConvectiveFactor_editingFinis
 			val != m_current->m_para[paraName].value)
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
-			m_db->m_internalLoads.m_modified = true;
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+			modelModify();
 		}
 	}
 }
@@ -235,8 +230,7 @@ void SVDBInternalLoadsPersonEditWidget::on_lineEditConvectiveFactor_editingFinis
 void SVDBInternalLoadsPersonEditWidget::on_pushButtonPersonColor_colorChanged() {
 	if (m_current->m_color != m_ui->pushButtonPersonColor->color()) {
 		m_current->m_color = m_ui->pushButtonPersonColor->color();
-		m_db->m_internalLoads.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -246,10 +240,9 @@ void SVDBInternalLoadsPersonEditWidget::on_toolButtonSelectOccupancy_clicked() {
 	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_occupancyScheduleId);
 	if (m_current->m_occupancyScheduleId != newId) {
 		m_current->m_occupancyScheduleId = newId;
-		m_db->m_internalLoads.m_modified = true;
+		modelModify();
 	}
 	updateInput((int)m_current->m_id);
-	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 
 }
 
@@ -258,9 +251,14 @@ void SVDBInternalLoadsPersonEditWidget::on_toolButtonSelectActivity_clicked() {
 	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_activityScheduleId);
 	if (m_current->m_activityScheduleId != newId) {
 		m_current->m_activityScheduleId = newId;
-		m_db->m_internalLoads.m_modified = true;
+		modelModify();
 	}
 	updateInput((int)m_current->m_id);
+
+}
+
+void SVDBInternalLoadsPersonEditWidget::modelModify() {
+	m_db->m_internalLoads.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 
 }

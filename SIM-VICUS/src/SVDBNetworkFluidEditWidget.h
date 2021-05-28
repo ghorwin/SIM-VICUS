@@ -62,6 +62,9 @@ private slots:
 	void on_lineEditThermalConductivity_editingFinished();
 
 private:
+	/*! Set up the modified variable of the model to true. */
+	void modelModify();
+
 	Ui::SVDBNetworkFluidEditWidget *m_ui;
 
 	/*! Cached pointer to database object. */

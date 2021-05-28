@@ -92,6 +92,8 @@ private slots:
 	void onValidityInfoUpdated();
 
 private:
+	/*! Set up the modified variable of the model to true. */
+	void modelModify();
 
 	/*! Update the period table. */
 	void updatePeriodTable(const int &activeRow = 0);

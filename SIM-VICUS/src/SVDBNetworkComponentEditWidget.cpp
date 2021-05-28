@@ -202,8 +202,7 @@ void SVDBNetworkComponentEditWidget::on_lineEditName_editingFinished(){
 
 	if (m_currentComponent->m_displayName != m_ui->lineEditName->string()) {
 		m_currentComponent->m_displayName = m_ui->lineEditName->string();
-		m_db->m_networkComponents.m_modified = true;
-		m_dbModel->setItemModified(m_currentComponent->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -214,8 +213,7 @@ void SVDBNetworkComponentEditWidget::on_comboBoxComponentType_currentIndexChange
 	VICUS::NetworkComponent::ModelType ct = static_cast<VICUS::NetworkComponent::ModelType>(m_ui->comboBoxComponentType->currentData().toInt());
 	if (ct != m_currentComponent->m_modelType) {
 		m_currentComponent->m_modelType = ct;
-		m_db->m_networkComponents.m_modified = true;
-		m_dbModel->setItemModified(m_currentComponent->m_id); // tell model that we changed the data
+		modelModify();
 		updateInput((int)m_currentComponent->m_id);
 	}
 }
@@ -226,8 +224,7 @@ void SVDBNetworkComponentEditWidget::on_pushButtonComponentColor_colorChanged() 
 
 	if (m_currentComponent->m_color != m_ui->pushButtonComponentColor->color()) {
 		m_currentComponent->m_color = m_ui->pushButtonComponentColor->color();
-		m_db->m_networkComponents.m_modified = true;
-		m_dbModel->setItemModified(m_currentComponent->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -278,8 +275,13 @@ void SVDBNetworkComponentEditWidget::on_tableWidgetParameters_cellChanged(int ro
 
 	// finally set value
 	VICUS::KeywordList::setParameter(m_currentComponent->m_para, "NetworkComponent::para_t", paraNum, val);
+	modelModify();
+}
+
+void SVDBNetworkComponentEditWidget::modelModify() {
 	m_db->m_networkComponents.m_modified = true;
 	m_dbModel->setItemModified(m_currentComponent->m_id);
+
 }
 
 

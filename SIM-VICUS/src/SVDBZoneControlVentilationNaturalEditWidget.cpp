@@ -160,7 +160,6 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditName_editingFinishe
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {  // currentdisplayname is multilanguage string
 		m_current->m_displayName = m_ui->lineEditName->string();
 		modelModify();
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 }
 
@@ -181,7 +180,6 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirOutsi
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
 }
@@ -202,7 +200,6 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirOutsi
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
 }
@@ -223,7 +220,6 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirRoomM
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
 }
@@ -244,7 +240,6 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirRoomM
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
 }
@@ -265,7 +260,6 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureDifferen
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
 }
@@ -286,7 +280,7 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditWindSpeedMax_editin
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+
 		}
 	}
 }
@@ -295,13 +289,13 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditWindSpeedMax_editin
 
 void SVDBZoneControlVentilationNaturalEditWidget::modelModify() {
 	m_db->m_zoneControlVentilationNatural.m_modified = true;
+	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 }
 
 void SVDBZoneControlVentilationNaturalEditWidget::on_pushButtonColor_colorChanged() {
 	if (m_current->m_color != m_ui->pushButtonColor->color()) {
 		m_current->m_color = m_ui->pushButtonColor->color();
 		modelModify();
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 }
 

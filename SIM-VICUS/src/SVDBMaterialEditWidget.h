@@ -75,6 +75,8 @@ private slots:
 	void on_pushButtonOpaqueMaterialColor_colorChanged();
 
 private:
+	/*! Set up the modified variable of the model to true. */
+	void modelModify();
 
 	Ui::SVDBMaterialEditWidget *m_ui;
 

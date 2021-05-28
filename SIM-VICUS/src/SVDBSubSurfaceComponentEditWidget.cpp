@@ -175,8 +175,7 @@ void SVDBSubSurfaceComponentEditWidget::on_lineEditName_editingFinished(){
 
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {
 		m_current->m_displayName = m_ui->lineEditName->string();
-		m_db->m_subSurfaceComponents.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -188,8 +187,7 @@ void SVDBSubSurfaceComponentEditWidget::on_comboBoxSubSurfaceType_currentIndexCh
 				m_ui->comboBoxSubSurfaceType->currentData().toInt());
 	if (ct != m_current->m_type) {
 		m_current->m_type = ct;
-		m_db->m_subSurfaceComponents.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -200,8 +198,7 @@ void SVDBSubSurfaceComponentEditWidget::on_toolButtonSelectWindow_clicked() {
 	unsigned int winId = editDialog->select(m_current->m_idWindow);
 	if (winId != m_current->m_idWindow) {
 		m_current->m_idWindow = winId;
-		m_db->m_subSurfaceComponents.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 	updateInput((int)m_current->m_id);
 }
@@ -213,8 +210,7 @@ void SVDBSubSurfaceComponentEditWidget::on_toolButtonSelectBoundaryConditionSide
 	unsigned int bcId = bcEditDialog->select(m_current->m_idSideABoundaryCondition);
 	if (bcId != m_current->m_idSideABoundaryCondition) {
 		m_current->m_idSideABoundaryCondition = bcId;
-		m_db->m_subSurfaceComponents.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 	updateInput((int)m_current->m_id);
 }
@@ -224,12 +220,16 @@ void SVDBSubSurfaceComponentEditWidget::on_toolButtonSelectBoundaryConditionSide
 	// get boundary condition edit dialog from mainwindow
 	SVDatabaseEditDialog * bcEditDialog = SVMainWindow::instance().dbBoundaryConditionEditDialog();
 	unsigned int bcId = bcEditDialog->select(m_current->m_idSideBBoundaryCondition);
-	if (bcId != m_current->m_idSideBBoundaryCondition) {
-		m_current->m_idSideBBoundaryCondition = bcId;
-		m_db->m_subSurfaceComponents.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-	}
+	if (bcId != m_current->m_idSideBBoundaryCondition)
+		modelModify();
+
 	updateInput((int)m_current->m_id);
+}
+
+void SVDBSubSurfaceComponentEditWidget::modelModify() {
+	m_db->m_subSurfaceComponents.m_modified = true;
+	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+
 }
 
 

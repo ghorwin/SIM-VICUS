@@ -137,7 +137,6 @@ void SVDBZoneControlThermostatEditWidget::on_lineEditName_editingFinished() {
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {  // currentdisplayname is multilanguage string
 		m_current->m_displayName = m_ui->lineEditName->string();
 		modelModify();
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 }
 
@@ -149,7 +148,7 @@ void SVDBZoneControlThermostatEditWidget::on_comboBoxControlValue_currentIndexCh
 		if(index == i){
 			m_current->m_controlValue = static_cast<VICUS::ZoneControlThermostat::ControlValue>(i);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+
 		}
 	}
 }
@@ -167,7 +166,6 @@ void SVDBZoneControlThermostatEditWidget::on_lineEditToleranceHeating_editingFin
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, "ZoneControlThermostat::para_t", paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
 
@@ -185,20 +183,19 @@ void SVDBZoneControlThermostatEditWidget::on_lineEditToleranceCooling_editingFin
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, "ZoneControlThermostat::para_t", paraName, val);
 			modelModify();
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 		}
 	}
 }
 
 void SVDBZoneControlThermostatEditWidget::modelModify() {
 	m_db->m_zoneControlThermostat.m_modified = true;
+	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 }
 
 void SVDBZoneControlThermostatEditWidget::on_pushButtonColor_colorChanged() {
 	if (m_current->m_color != m_ui->pushButtonColor->color()) {
 		m_current->m_color = m_ui->pushButtonColor->color();
 		modelModify();
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 }
 

@@ -212,8 +212,7 @@ void SVDBComponentEditWidget::on_lineEditName_editingFinished(){
 
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {
 		m_current->m_displayName = m_ui->lineEditName->string();
-		m_db->m_components.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -224,8 +223,7 @@ void SVDBComponentEditWidget::on_comboBoxComponentType_currentIndexChanged(int /
 	VICUS::Component::ComponentType ct = static_cast<VICUS::Component::ComponentType>(m_ui->comboBoxComponentType->currentData().toInt());
 	if (ct != m_current->m_type) {
 		m_current->m_type = ct;
-		m_db->m_components.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -236,7 +234,7 @@ void SVDBComponentEditWidget::on_toolButtonSelectConstruction_clicked() {
 	unsigned int conId = conEditDialog->select(m_current->m_idConstruction);
 	if (conId != m_current->m_idConstruction) {
 		m_current->m_idConstruction = conId;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 	updateInput((int)m_current->m_id);
 }
@@ -248,7 +246,7 @@ void SVDBComponentEditWidget::on_toolButtonSelectBoundaryConditionSideAName_clic
 	unsigned int bcId = bcEditDialog->select(m_current->m_idSideABoundaryCondition);
 	if (bcId != m_current->m_idSideABoundaryCondition) {
 		m_current->m_idSideABoundaryCondition = bcId;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 	updateInput((int)m_current->m_id);
 }
@@ -260,7 +258,7 @@ void SVDBComponentEditWidget::on_toolButtonSelectBoundaryConditionSideBName_clic
 	unsigned int bcId = bcEditDialog->select(m_current->m_idSideBBoundaryCondition);
 	if (bcId != m_current->m_idSideBBoundaryCondition) {
 		m_current->m_idSideBBoundaryCondition = bcId;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 	updateInput((int)m_current->m_id);
 }
@@ -271,9 +269,13 @@ void SVDBComponentEditWidget::on_pushButtonComponentColor_colorChanged() {
 
 	if (m_current->m_color != m_ui->pushButtonComponentColor->color()) {
 		m_current->m_color = m_ui->pushButtonComponentColor->color();
-		m_db->m_components.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 
+}
+
+void SVDBComponentEditWidget::modelModify(){
+	m_db->m_components.m_modified = true;
+	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 }
 

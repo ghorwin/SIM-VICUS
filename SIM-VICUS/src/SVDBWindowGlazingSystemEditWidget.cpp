@@ -235,7 +235,6 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 	if(m_current->m_modelType != VICUS::WindowGlazingSystem::NUM_MT){
 		m_current->m_modelType = VICUS::WindowGlazingSystem::MT_Simple;
 		modelModify();
-		m_dbModel->setItemModified(m_current->m_id);
 	}
 	m_ui->comboBoxType->setCurrentIndex(m_current->m_modelType);
 	m_ui->comboBoxType->blockSignals(false);
@@ -290,12 +289,12 @@ void SVDBWindowGlazingSystemEditWidget::on_lineEditName_editingFinished(){
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {  // currentdisplayname is multilanguage string
 		m_current->m_displayName = m_ui->lineEditName->string();
 		modelModify();
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 }
 
 void SVDBWindowGlazingSystemEditWidget::modelModify() {
 	m_db->m_windowGlazingSystems.m_modified = true;
+	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 }
 
 void SVDBWindowGlazingSystemEditWidget::on_pushButtonWindowColor_colorChanged() {
@@ -305,7 +304,6 @@ void SVDBWindowGlazingSystemEditWidget::on_pushButtonWindowColor_colorChanged() 
 	if (m_current->m_color != m_ui->pushButtonWindowColor->color()) {
 		m_current->m_color = m_ui->pushButtonWindowColor->color();
 		modelModify(); // tell model that we changed the data
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 
 }

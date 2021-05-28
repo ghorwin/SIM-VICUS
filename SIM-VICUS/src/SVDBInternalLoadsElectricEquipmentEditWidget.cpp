@@ -106,7 +106,7 @@ void SVDBInternalLoadsElectricEquipmentEditWidget::updateInput(int id) {
 	//change invalid ElectricEquipment count method to a valid one
 	if (m_current->m_powerMethod == VICUS::InternalLoad::PowerMethod::NUM_PM){
 		m_current->m_powerMethod = VICUS::InternalLoad::PowerMethod::PM_Power;
-		m_db->m_internalLoads.m_modified=true;
+		modelModify();
 	}
 
 	updateLabel();
@@ -143,8 +143,7 @@ void SVDBInternalLoadsElectricEquipmentEditWidget::on_lineEditName_editingFinish
 	Q_ASSERT(m_current != nullptr);
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {  // currentdisplayname is multilanguage string
 		m_current->m_displayName = m_ui->lineEditName->string();
-		m_db->m_internalLoads.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -155,8 +154,7 @@ void SVDBInternalLoadsElectricEquipmentEditWidget::on_comboBoxMethod_currentInde
 	for(int i=0; i<VICUS::InternalLoad::PowerMethod::NUM_PM; ++i){
 		if(index == i){
 			m_current->m_powerMethod = static_cast<VICUS::InternalLoad::PowerMethod>(i);
-			m_db->m_internalLoads.m_modified = true;
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+			modelModify();
 
 		}
 	}
@@ -184,8 +182,7 @@ void SVDBInternalLoadsElectricEquipmentEditWidget::on_lineEditPower_editingFinis
 			val != m_current->m_para[paraName].value)
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
-			m_db->m_internalLoads.m_modified = true;
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+			modelModify();
 		}
 	}
 }
@@ -202,8 +199,7 @@ void SVDBInternalLoadsElectricEquipmentEditWidget::on_lineEditConvectiveFactor_e
 			val != m_current->m_para[paraName].value)
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
-			m_db->m_internalLoads.m_modified = true;
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+			modelModify();
 		}
 	}
 }
@@ -219,8 +215,7 @@ void SVDBInternalLoadsElectricEquipmentEditWidget::on_lineEditLatentFactor_editi
 				val != m_current->m_para[paraName].value)
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
-			m_db->m_internalLoads.m_modified = true;
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+			modelModify();
 		}
 	}
 }
@@ -236,10 +231,15 @@ void SVDBInternalLoadsElectricEquipmentEditWidget::on_lineEditLossFactor_editing
 				val != m_current->m_para[paraName].value)
 		{
 			VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
-			m_db->m_internalLoads.m_modified = true;
-			m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+			modelModify();
 		}
 	}
+}
+
+void SVDBInternalLoadsElectricEquipmentEditWidget::modelModify() {
+	m_db->m_internalLoads.m_modified = true;
+	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+
 }
 
 void SVDBInternalLoadsElectricEquipmentEditWidget::updateLabel()
@@ -264,7 +264,7 @@ void SVDBInternalLoadsElectricEquipmentEditWidget::updateLabel()
 			m_ui->lineEditPower->setValue(m_current->m_para[VICUS::InternalLoad::P_Power].value);
 			m_ui->labelElectricEquipmentInputUnit->setText(tr("W"));
 			m_current->m_powerMethod = VICUS::InternalLoad::PM_Power;
-			m_db->m_internalLoads.m_modified=true;
+			modelModify();
 		} break;
 	}
 }
@@ -273,8 +273,7 @@ void SVDBInternalLoadsElectricEquipmentEditWidget::updateLabel()
 void SVDBInternalLoadsElectricEquipmentEditWidget::on_pushButtonColor_colorChanged() {
 	if (m_current->m_color != m_ui->pushButtonColor->color()) {
 		m_current->m_color = m_ui->pushButtonColor->color();
-		m_db->m_internalLoads.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 }
 
@@ -284,8 +283,7 @@ void SVDBInternalLoadsElectricEquipmentEditWidget::on_toolButtonSelectSchedule_c
 	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_powerManagementScheduleId);
 	if (m_current->m_powerManagementScheduleId != newId) {
 		m_current->m_powerManagementScheduleId = newId;
-		m_db->m_internalLoads.m_modified = true;
-		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+		modelModify();
 	}
 	updateInput((int)m_current->m_id);
 }

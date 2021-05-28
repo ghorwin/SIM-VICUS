@@ -108,7 +108,7 @@ void SVDBScheduleDailyCycleEditWidget::updateInput(VICUS::DailyCycle *dc, SVData
 	if(m_dailyCycle->m_timePoints.empty()){
 		m_dailyCycle->m_timePoints.push_back(0);
 		m_dailyCycle->m_values.push_back(0);
-		m_db->m_schedules.m_modified = true;
+		modelModify();
 	}
 	m_ui->tableWidgetDayCycle->blockSignals(true);
 	//check time point in schedule interval and write the table values
@@ -181,5 +181,10 @@ void SVDBScheduleDailyCycleEditWidget::on_tableWidgetDayCycle_cellChanged(int ro
 	m_dailyCycle->m_values.swap(values);
 
 	//set database to modified
+	modelModify();
+}
+
+void SVDBScheduleDailyCycleEditWidget::modelModify() {
 	m_db->m_schedules.m_modified = true;
+
 }

@@ -62,6 +62,9 @@ private slots:
 	void on_toolButtonSelectActivity_clicked();
 
 private:
+	/*! Set up the modified variable of the model to true. */
+	void modelModify();
+
 	Ui::SVDBInternalLoadsPersonEditWidget	*m_ui;
 
 	/*! Cached pointer to database object. */

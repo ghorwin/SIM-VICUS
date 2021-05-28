@@ -88,6 +88,9 @@ private slots:
 	void on_pushButtonAddVentilationNatrual_clicked();
 
 private:
+	/*! Set up the modified variable of the model to true. */
+	void modelModify();
+
 	Ui::SVDBZoneTemplateEditWidget *m_ui;
 
 	/*! Cached pointer to database object. */
