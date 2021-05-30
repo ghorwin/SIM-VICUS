@@ -126,11 +126,11 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	v->setSelectionBehavior(QAbstractItemView::SelectRows);
 	v->setSelectionMode(QAbstractItemView::SingleSelection);
 	v->setAlternatingRowColors(true);
-	v->setSortingEnabled(true);
+	v->setSortingEnabled(false);
 	v->sortByColumn(0, Qt::AscendingOrder);
 	// smaller font for entire table
 	QFont f;
-#ifndef Q_OS_WIN
+#ifdef Q_OS_LINUX
 	f.setPointSizeF(f.pointSizeF()*0.8);
 #endif // Q_OS_WIN
 	v->setFont(f);
@@ -155,7 +155,7 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 		v->setSelectionBehavior(QAbstractItemView::SelectRows);
 		v->setSelectionMode(QAbstractItemView::SingleSelection);
 		v->setAlternatingRowColors(true);
-		v->setSortingEnabled(true);
+		v->setSortingEnabled(false);
 		v->sortByColumn(0, Qt::AscendingOrder);
 		v->setFont(f);
 		v->horizontalHeader()->setFont(f); // Note: on Linux/Mac this won't work until Qt 5.11.1 - this was a bug between Qt 4.8...5.11.1
@@ -990,7 +990,7 @@ void NandradFMUGeneratorWidget::populateTable(QTableWidget * table,
 	for (const NANDRAD::FMIVariableDefinition & var : availableVars)
 		appendVariableEntry(table, var);
 
-	table->setSortingEnabled(true); // re-enable sorting
+	table->setSortingEnabled(false); // no sorting!
 	table->resizeColumnsToContents();
 }
 
@@ -1071,9 +1071,11 @@ void NandradFMUGeneratorWidget::appendVariableEntry(QTableWidget * tableWidget, 
 }
 
 void NandradFMUGeneratorWidget::dumpUsedValueRefs() const {
+#if 0
 	qDebug() << "-----";
 	for (unsigned int id : m_usedValueRefs)
 		qDebug() << id;
+#endif
 }
 
 
