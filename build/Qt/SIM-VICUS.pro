@@ -1,35 +1,33 @@
 TEMPLATE = subdirs
 
 SUBDIRS = \
-        SIM-VICUS \
-        QuaZIP \
-        qwt \
-        QtExt \
-        Vicus \
-        CCM \
-        Shading \
-        DataIO \
-        IBK \
-        IBKMK \
-        IntegratorFramework \
-        Nandrad \
-        NandradSolver \
-        NandradModel \
-        SuiteSparse \
-        sundials \
-        TiCPP \
-        Zeppelin \
-        GenericBuildings\
-        NandradCodeGenerator \
-        NandradFMUGenerator \
-        View3D \
-        NandradSolverFMI
+		SIM-VICUS \
+		QuaZIP \
+		qwt \
+		QtExt \
+		Vicus \
+		CCM \
+		Shading \
+		DataIO \
+		IBK \
+		IBKMK \
+		IntegratorFramework \
+		Nandrad \
+		NandradSolver \
+		NandradModel \
+		SuiteSparse \
+		sundials \
+		TiCPP \
+		Zeppelin \
+		GenericBuildings\
+		NandradCodeGenerator \
+		NandradFMUGenerator \
+		NandradSolverFMI
 
 # where to find the sub projects
 SIM-VICUS.file = ../../SIM-VICUS/projects/Qt/SIM-VICUS.pro
 NandradSolver.file = ../../NandradSolver/projects/Qt/NandradSolver.pro
 NandradSolverFMI.file = ../../NandradSolverFMI/projects/Qt/NandradSolverFMI.pro
-View3D.file = ../../View3D/projects/Qt/View3D.pro
 NandradCodeGenerator.file = ../../NandradCodeGenerator/projects/Qt/NandradCodeGenerator.pro
 NandradFMUGenerator.file = ../../NandradFMUGenerator/projects/Qt/NandradFMUGenerator.pro
 
