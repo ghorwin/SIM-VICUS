@@ -53,4 +53,5 @@ private:
 	QImage m_selectedOff;
 };
 
+
 #endif // SVNavigationTreeItemDelegateH

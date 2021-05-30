@@ -52,7 +52,7 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 	m_ui->comboBoxNetwork->clear();
 	m_ui->comboBoxNetwork->addItem(tr("<all networks>"), -1);
 	for (const VICUS::Network & nw : project().m_geometricNetworks)
-		m_ui->comboBoxNetwork->addItem(QString::fromStdString(nw.m_name), nw.m_id);
+		m_ui->comboBoxNetwork->addItem(nw.m_displayName, nw.m_id);
 	m_ui->comboBoxNetwork->setCurrentIndex(0);
 
 	m_ui->comboBoxNodeType->blockSignals(true);

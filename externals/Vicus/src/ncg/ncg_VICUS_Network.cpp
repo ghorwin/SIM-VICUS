@@ -53,8 +53,8 @@ void Network::readXML(const TiXmlElement * element) {
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "fluidID")
 				m_fluidID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "name")
-				m_name = attrib->ValueStr();
+			else if (attribName == "displayName")
+				m_displayName = QString::fromStdString(attrib->ValueStr());
 			else if (attribName == "visible")
 				m_visible = NANDRAD::readPODAttributeValue<bool>(element, attrib);
 			else {
@@ -178,8 +178,8 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (m_fluidID != VICUS::INVALID_ID)
 		e->SetAttribute("fluidID", IBK::val2string<unsigned int>(m_fluidID));
-	if (!m_name.empty())
-		e->SetAttribute("name", m_name);
+	if (!m_displayName.isEmpty())
+		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (m_visible != Network().m_visible)
 		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 

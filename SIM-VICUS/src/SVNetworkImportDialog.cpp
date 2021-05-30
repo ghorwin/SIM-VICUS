@@ -74,7 +74,7 @@ bool SVNetworkImportDialog::edit() {
 	if (!p.m_geometricNetworks.empty()){
 		m_existingNetworksMap.clear();
 		for (auto it = p.m_geometricNetworks.begin(); it!=p.m_geometricNetworks.end(); ++it)
-			m_existingNetworksMap.insert(QString::fromStdString(it->m_name), it->m_id);
+			m_existingNetworksMap.insert(it->m_displayName, it->m_id);
 		m_ui->comboBoxNetworkSelectionBox->clear();
 		m_ui->comboBoxNetworkSelectionBox->addItems(QStringList(m_existingNetworksMap.keys()));
 	}
@@ -93,7 +93,7 @@ bool SVNetworkImportDialog::edit() {
 
 		// generate id, set name
 		m_network.m_id = VICUS::Project::uniqueId(p.m_geometricNetworks);
-		m_network.m_name = uniqueName(m_ui->lineEditNetworkName->text().toStdString());
+		m_network.m_displayName = uniqueName(m_ui->lineEditNetworkName->text());
 
 		m_network.updateExtends();
 
@@ -198,11 +198,10 @@ unsigned SVNetworkImportDialog::generateId()
 }
 
 
-std::string SVNetworkImportDialog::uniqueName(const std::string &name)
-{
-	std::string uniqueName = name;
+QString SVNetworkImportDialog::uniqueName(const QString &name) {
+	QString uniqueName = name;
 	for (auto it = project().m_geometricNetworks.begin(); it!=project().m_geometricNetworks.end(); ++it){
-		if (uniqueName == it->m_name)
+		if (uniqueName == it->m_displayName)
 			uniqueName += "_2";
 	}
 	return uniqueName;

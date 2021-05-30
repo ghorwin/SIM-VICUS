@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -28,6 +28,8 @@
 
 #include <vector>
 #include <set>
+
+#include <QString>
 
 namespace VICUS {
 
@@ -77,6 +79,9 @@ public:
 	bool								m_selected = false;
 	/*! Stores visibility information for this surface (serialized manually in derived classes). */
 	bool								m_visible = true;
+
+	/*! The descriptive name of the object. */
+	QString								m_displayName;
 
 protected:
 	/*! List of all children. */

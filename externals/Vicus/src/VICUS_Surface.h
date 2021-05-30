@@ -82,7 +82,7 @@ public:
 	/*! Unique ID of surface. */
 	unsigned int						m_id = INVALID_ID;			// XML:A:required
 
-	QString								m_displayName;				// XML:A
+	//:inherited	QString				m_displayName;				// XML:A
 
 
 	/*! Linear Spline that holds annual shading factors, only for visualization
@@ -121,11 +121,6 @@ private:
 	std::vector<SubSurface>				m_subSurfaces;				// XML:E
 
 	// *** Runtime Variables ***
-
-	/*! This variable is set whenever the polygon or the subsurfaces have been modified.
-		When the geometry is being accessed, and m_dirty is true, we perform the triangulation.
-	*/
-//	bool								m_dirty = false;
 
 	/*! The actual geometry. This object manages the triangulation of the surface's polygon and
 		its embedded subsurfaces.

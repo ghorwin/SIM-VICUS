@@ -71,6 +71,9 @@ private slots:
 
 	void on_actionSmartSelect_triggered();
 
+
+	void on_treeWidget_itemChanged(QTreeWidgetItem *item, int column);
+
 private:
 	/*! Recursively collapses all children. */
 	void collapseTreeWidgetItem(QTreeWidgetItem * parent);

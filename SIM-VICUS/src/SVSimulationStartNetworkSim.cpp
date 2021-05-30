@@ -60,7 +60,7 @@ void SVSimulationStartNetworkSim::edit() {
 	// populate networks combobox
 	m_networksMap.clear();
 	for (const VICUS::Network & n : project().m_geometricNetworks)
-		m_networksMap.insert(QString::fromStdString(n.m_name), n.m_id);
+		m_networksMap.insert(n.m_displayName, n.m_id);
 	m_ui->comboBoxNetwork->clear();
 	m_ui->comboBoxNetwork->addItems(m_networksMap.keys());
 	m_ui->comboBoxNetwork->setCurrentIndex(0);
@@ -231,7 +231,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	NANDRAD::HydraulicNetwork nandradNetwork;
 	nandradNetwork.m_modelType = NANDRAD::HydraulicNetwork::ModelType(m_ui->comboBoxModelType->currentData().toUInt());
 	nandradNetwork.m_id = vicusNetwork.m_id;
-	nandradNetwork.m_displayName = vicusNetwork.m_name;
+	nandradNetwork.m_displayName = vicusNetwork.m_displayName.toStdString();
 	nandradNetwork.m_para[NANDRAD::HydraulicNetwork::P_DefaultFluidTemperature] =
 			vicusNetwork.m_para[VICUS::Network::P_DefaultFluidTemperature];
 	nandradNetwork.m_para[NANDRAD::HydraulicNetwork::P_InitialFluidTemperature] =
@@ -348,12 +348,12 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		// place the source in reverse order
 		if (node.m_type == VICUS::NetworkNode::NT_Source){
 			elem = NANDRAD::HydraulicNetworkElement(node.m_id, node.m_id+ idOffsetOutlet, node.m_id, node.m_componentId);
-			elem.m_displayName = node.m_displayName;
+			elem.m_displayName = node.m_displayName.toStdString();
 			nandradNetwork.m_referenceElementId = node.m_id;
 		}
 		else{
 			elem = NANDRAD::HydraulicNetworkElement(node.m_id, node.m_id, node.m_id + idOffsetOutlet, node.m_componentId);
-			elem.m_displayName = node.m_displayName;
+			elem.m_displayName = node.m_displayName.toStdString();
 		}
 
 		// small hack to get component name in display name
@@ -411,7 +411,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 													edge->m_componentId,
 													edge->m_pipeId,
 													edge->length());
-		inletPipe.m_displayName = edge->m_displayName;
+		inletPipe.m_displayName = edge->m_displayName.toStdString();
 		inletPipe.m_heatExchange = edge->m_heatExchange.toNandradHeatExchange();
 
 		// small hack to get component name in display name
@@ -427,7 +427,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 													edge->m_componentId,
 													edge->m_pipeId,
 													edge->length());
-		outletPipe.m_displayName = edge->m_displayName;
+		outletPipe.m_displayName = edge->m_displayName.toStdString();
 		outletPipe.m_heatExchange = edge->m_heatExchange.toNandradHeatExchange();
 
 		// small hack to get component name in display name

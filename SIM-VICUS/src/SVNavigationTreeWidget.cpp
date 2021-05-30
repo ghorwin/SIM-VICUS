@@ -164,9 +164,11 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 	const VICUS::Project & prj = project();
 
 	// Buildings
+	m_ui->treeWidget->blockSignals(true);
 	for (const VICUS::Building & b : prj.m_buildings) {
 		QTreeWidgetItem * building = new QTreeWidgetItem(QStringList() << tr("Building: %1").arg(b.m_displayName), QTreeWidgetItem::Type);
 		m_treeItemMap[b.uniqueID()] = building;
+		building->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
 		building->setData(0, SVNavigationTreeItemDelegate::NodeID, b.uniqueID());
 		building->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, b.m_visible);
 		building->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, b.m_selected);
@@ -174,6 +176,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			QTreeWidgetItem * buildingLevel = new QTreeWidgetItem(QStringList() << bl.m_displayName, QTreeWidgetItem::Type);
 			m_treeItemMap[bl.uniqueID()] = buildingLevel;
+			buildingLevel->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
 			buildingLevel->setData(0, SVNavigationTreeItemDelegate::NodeID, bl.uniqueID());
 			buildingLevel->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, bl.m_visible);
 			buildingLevel->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, bl.m_selected);
@@ -181,6 +184,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 			for (const VICUS::Room & r : bl.m_rooms) {
 				QTreeWidgetItem * rooms = new QTreeWidgetItem(QStringList() << r.m_displayName, QTreeWidgetItem::Type);
 				m_treeItemMap[r.uniqueID()] = rooms;
+				rooms->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
 				rooms->setData(0, SVNavigationTreeItemDelegate::NodeID, r.uniqueID());
 				rooms->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, r.m_visible);
 				rooms->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, r.m_selected);
@@ -191,6 +195,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 					QTreeWidgetItem * surface = new QTreeWidgetItem(QStringList() << s.m_displayName, QTreeWidgetItem::Type);
 					m_treeItemMap[s.uniqueID()] = surface;
 					rooms->addChild(surface);
+					surface->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
 					surface->setData(0, SVNavigationTreeItemDelegate::NodeID, s.uniqueID());
 					surface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, s.m_visible);
 					surface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, s.m_selected);
@@ -199,6 +204,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 
 						QTreeWidgetItem * subsurface = new QTreeWidgetItem(QStringList() << sub.m_displayName, QTreeWidgetItem::Type);
 						m_treeItemMap[sub.uniqueID()] = subsurface;
+						subsurface->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
 
 						// mark invalid subsurfaces in red and give tooltip with error
 						if (!s.geometry().holes()[holeIdx].isValid()) {
@@ -220,7 +226,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 
 	// Networks
 	for (const VICUS::Network & n : prj.m_geometricNetworks) {
-		QTreeWidgetItem * networkItem = new QTreeWidgetItem(QStringList() << tr("Network: %1").arg(QString::fromStdString(n.m_name)), QTreeWidgetItem::Type);
+		QTreeWidgetItem * networkItem = new QTreeWidgetItem(QStringList() << tr("Network: %1").arg(n.m_displayName), QTreeWidgetItem::Type);
 		m_treeItemMap[n.uniqueID()] = networkItem;
 		root->addChild(networkItem);
 		networkItem->setData(0, SVNavigationTreeItemDelegate::NodeID, n.uniqueID());
@@ -270,6 +276,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		surface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, s.m_selected);
 	}
 
+	m_ui->treeWidget->blockSignals(false);
 	m_ui->treeWidget->expandAll();
 }
 
@@ -319,4 +326,25 @@ void SVNavigationTreeWidget::on_actionSmartSelect_triggered() {
 	if (m_smartSelectDialog == nullptr)
 		m_smartSelectDialog = new SVSmartSelectDialog(this);
 	m_smartSelectDialog->exec(); // selection undo actions are created in the dialog, nothing else to do here
+}
+
+
+
+void SVNavigationTreeWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, int column) {
+	// create an undo-action for renaming of the item
+	// but first check that item isn't empty
+	QString newText = item->text(0).trimmed();
+	unsigned int uID = item->data(0, SVNavigationTreeItemDelegate::NodeID).toUInt();
+	// lookup object in project data structure
+	const VICUS::Object * o = project().objectById(uID);
+	if (o == nullptr) {
+		qDebug() << "Invalid/unknown uid of tree node item";
+		return;
+	}
+	if (newText.isEmpty()) {
+		// reset value
+
+	}
+
+
 }

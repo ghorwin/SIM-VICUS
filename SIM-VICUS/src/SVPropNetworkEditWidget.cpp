@@ -216,7 +216,7 @@ void SVPropNetworkEditWidget::updateNodeProperties() {
 
 	if (m_currentNodes.size() == 1){
 		m_ui->labelNodeId->setText(QString("%1").arg(m_currentNodes[0]->m_id));
-		m_ui->lineEditNodeDisplayName->setText(QString::fromStdString(m_currentNodes[0]->m_displayName));
+		m_ui->lineEditNodeDisplayName->setText(m_currentNodes[0]->m_displayName);
 		m_ui->lineEditNodeX->setValue(m_currentNodes[0]->m_position.m_x);
 		m_ui->lineEditNodeY->setValue(m_currentNodes[0]->m_position.m_y);
 	}
@@ -259,7 +259,7 @@ void SVPropNetworkEditWidget::updateEdgeProperties() {
 
 	if (m_currentEdges.size() == 1){
 		m_ui->labelPipeLength->setText(QString("%1 m").arg(m_currentEdges[0]->length()));
-		m_ui->lineEditEdgeDisplayName->setText(QString::fromStdString(m_currentEdges[0]->m_displayName));
+		m_ui->lineEditEdgeDisplayName->setText(m_currentEdges[0]->m_displayName);
 	}
 	else{
 		m_ui->labelPipeLength->clear();
@@ -301,7 +301,7 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 {
 	Q_ASSERT(m_currentConstNetwork != nullptr);
 
-	m_ui->labelNetworkName->setText(QString::fromStdString(m_currentConstNetwork->m_name));
+	m_ui->labelNetworkName->setText(m_currentConstNetwork->m_displayName);
 	m_ui->labelEdgeCount->setText(QString("%1").arg(m_currentConstNetwork->m_edges.size()));
 	m_ui->labelNodeCount->setText(QString("%1").arg(m_currentConstNetwork->m_nodes.size()));
 
@@ -865,13 +865,13 @@ void SVPropNetworkEditWidget::on_lineEditHXTransferCoefficient_editingFinished()
 
 void SVPropNetworkEditWidget::on_lineEditNodeDisplayName_editingFinished()
 {
-	modifyNodeProperty(&VICUS::NetworkNode::m_displayName, m_ui->lineEditNodeDisplayName->text().toStdString());
+	modifyNodeProperty(&VICUS::NetworkNode::m_displayName, m_ui->lineEditNodeDisplayName->text());
 }
 
 
 void SVPropNetworkEditWidget::on_lineEditEdgeDisplayName_editingFinished()
 {
-	modifyEdgeProperty(&VICUS::NetworkEdge::m_displayName, m_ui->lineEditEdgeDisplayName->text().toStdString());
+	modifyEdgeProperty(&VICUS::NetworkEdge::m_displayName, m_ui->lineEditEdgeDisplayName->text());
 }
 
 void SVPropNetworkEditWidget::on_pushButtonSizePipeDimensions_clicked()
@@ -971,7 +971,7 @@ void SVPropNetworkEditWidget::on_pushButtonReduceRedundantNodes_clicked()
 	m_currentNetwork.updateNodeEdgeConnectionPointers();
 	m_currentNetwork.cleanRedundantEdges(newNetwork);
 	newNetwork.m_visible = true;
-	newNetwork.m_name += "_reduced";
+	newNetwork.m_displayName += "_reduced";
 	const VICUS::Project & p = project();
 	newNetwork.m_id = p.uniqueId(p.m_geometricNetworks);
 	newNetwork.updateNodeEdgeConnectionPointers();

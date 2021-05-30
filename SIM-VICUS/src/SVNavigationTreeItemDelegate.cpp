@@ -122,6 +122,7 @@ bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemMode
 																		   !withoutChildren,
 																		   !visible);
 					action->push();
+					return false; // handled
 				}
 			}
 			iconRect = QRect(targetRect.x() + 18, targetRect.y(), 16, 16);
@@ -138,6 +139,7 @@ bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemMode
 																		   !withoutChildren,
 																		   !selected);
 					action->push();
+					return false; // handled
 				}
 			}
 		}
@@ -146,3 +148,5 @@ bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemMode
 
 	return QItemDelegate::editorEvent(event, model, option, index);
 }
+
+
