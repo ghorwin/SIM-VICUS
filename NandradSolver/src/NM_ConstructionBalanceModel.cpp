@@ -98,14 +98,6 @@ void ConstructionBalanceModel::resultDescriptions(std::vector<QuantityDescriptio
 }
 
 
-void ConstructionBalanceModel::resultValueRefs(std::vector<const double *> & res) const {
-	for (const double & r : m_results)
-		res.push_back(&r);
-	for (const double &r : m_vectorValuedResults[VVR_ThermalLoad].data())
-		res.push_back(&r);
-}
-
-
 const double * ConstructionBalanceModel::resultValueRef(const InputReference & quantity) const {
 	const QuantityName & quantityName = quantity.m_name;
 	// search inside keyword list result quantities

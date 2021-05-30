@@ -300,7 +300,6 @@ void DefaultStateDependency::stateDependencies(std::vector< std::pair<const doub
 
 	// retrieve vector of pointer adresses to the value references
 	std::vector<const double *> valueRefs;
-	model->resultValueRefs(valueRefs);
 
 	// retrieve input value references
 	std::vector<const double *> inputRefs;

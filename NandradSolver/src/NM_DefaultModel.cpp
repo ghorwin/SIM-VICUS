@@ -133,27 +133,6 @@ void DefaultModel::resultDescriptions(std::vector<QuantityDescription> & resDesc
 }
 
 
-void DefaultModel::resultValueRefs(std::vector<const double *> &res) const {
-
-	res.clear();
-	// fill with all results and vector valued results
-
-	for (unsigned int i = 0; i < m_results.size(); ++i) {
-		res.push_back(&m_results[i]);
-	}
-#if 0
-	for (unsigned int i = 0; i < m_vectorValuedResults.size(); ++i) {
-		// loop over all vector valued results
-		for (std::vector<double>::const_iterator valueIt = m_vectorValuedResults[i].begin();
-			valueIt != m_vectorValuedResults[i].end(); ++valueIt)
-		{
-			res.push_back(&(*valueIt));
-		}
-	}
-#endif
-}
-
-
 const double * DefaultModel::resultValueRef(const InputReference & quantity) const {
 	const QuantityName & quantityName = quantity.m_name;
 //	FUNCID(DefaultModel::resultValueRef);

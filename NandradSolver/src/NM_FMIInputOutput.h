@@ -73,7 +73,8 @@ public:
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override;
 
 	/*! Provides the object with references to requested input variables (persistent memory location). */
-	virtual void setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) override;
+	virtual void setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions,
+								   const std::vector<const double *> & resultValueRefs) override;
 
 	/*! Since FMI export only pulls data when master requests, we have nothing to do here. */
 	virtual int update() override { return 0; }

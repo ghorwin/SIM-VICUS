@@ -60,41 +60,6 @@ StateModelGroup::~StateModelGroup(){
 }
 
 
-/*! Constant access to all result references.*/
-void StateModelGroup::resultValueRefs(std::vector<const double *> &res) {
-
-	res.clear();
-	// only needs constaints init for cyclic dependencies
-	if (m_groupType == ZEPPELIN::DependencyGroup::CYCLIC) {
-		// special case: cyclic group
-		// all cyclic group hold a vector of reult value references
-		// to all grouped models
-		if (m_resultValueRefs.empty()) {
-			// generate all dependency information
-			initResultValueRefs();
-			// generate constraints vector
-			initConstraints();
-		}
-		res.resize(m_resultValueRefs.size());
-		// copy vector of result references
-		for (unsigned i = 0; i < m_resultValueRefs.size(); ++i)
-			res[i] = m_resultValueRefs[i];
-		return;
-	}
-
-	// for sequential groups oder result erferences directly from
-	// each models
-	for (unsigned int i = 0; i < m_models.size(); ++i) {
-		std::vector<const double *> localRes;
-		// cast mdoel to abstract model: this will cause
-		// some more calculation efford and will be removed later
-		const AbstractModel* model = dynamic_cast<const AbstractModel*> (m_models[i]);
-		IBK_ASSERT(model != nullptr);
-		model->resultValueRefs(localRes);
-		res.insert(res.end(), localRes.begin(), localRes.end());
-	}
-}
-
 void StateModelGroup::init(const ZEPPELIN::DependencyGroup &group,
 	const NANDRAD::SolverParameter &solverPara) {
 

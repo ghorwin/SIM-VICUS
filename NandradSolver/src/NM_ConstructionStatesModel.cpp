@@ -213,20 +213,6 @@ void ConstructionStatesModel::resultDescriptions(std::vector<QuantityDescription
 }
 
 
-void ConstructionStatesModel::resultValueRefs(std::vector<const double *> & res) const {
-	for (const double & r : m_results)
-		res.push_back(&r);
-
-	for (const VectorValuedQuantity & r : m_vectorValuedResults) {
-		res.push_back(&r.data()[0]);
-	}
-
-	if(m_activeLayerIndex != NANDRAD::INVALID_ID) {
-		res.push_back(&m_vectorValuedResults[VVR_ElementTemperature][m_activeLayerIndex]);
-	}
-}
-
-
 const double * ConstructionStatesModel::resultValueRef(const InputReference & quantity) const {
 	const QuantityName & quantityName = quantity.m_name;
 	// search inside keyword list result quantities

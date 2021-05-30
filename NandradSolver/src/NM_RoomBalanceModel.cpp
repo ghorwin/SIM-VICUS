@@ -81,17 +81,6 @@ void RoomBalanceModel::resultDescriptions(std::vector<QuantityDescription> & res
 }
 
 
-void RoomBalanceModel::resultValueRefs(std::vector<const double *> &res) const {
-	// first seach in m_results vector
-	res.clear();
-	// fill with all results and vector valued results
-
-	for (unsigned int i = 0; i < m_results.size(); ++i) {
-		res.push_back(&m_results[i]);
-	}
-}
-
-
 const double * RoomBalanceModel::resultValueRef(const InputReference & quantity) const {
 	const QuantityName & quantityName = quantity.m_name;
 	// search inside keyword list result quantities

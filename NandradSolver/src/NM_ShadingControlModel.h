@@ -74,9 +74,6 @@ public:
 	/*! Populates the vector resDesc with descriptions of all results provided by this model. */
 	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const override;
 
-	/*! Returns vector of all scalar and vector valued results pointer.*/
-	virtual void resultValueRefs(std::vector<const double *> &res) const override;
-
 	/*! Retrieves reference pointer to a value with given input reference name. */
 	virtual const double * resultValueRef(const InputReference & quantity) const override;
 

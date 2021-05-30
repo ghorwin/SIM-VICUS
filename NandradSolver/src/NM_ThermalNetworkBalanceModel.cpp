@@ -249,32 +249,6 @@ void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescript
 }
 
 
-void ThermalNetworkBalanceModel::resultValueRefs(std::vector<const double *> &res) const {
-#if 0
-	if(!res.empty())
-		res.clear();
-	// heat flux vector is a result quantity
-	for (unsigned int i = 0; i < m_flowElementProperties.size(); ++i)
-		res.push_back(m_flowElementProperties[i].m_heatLossRef);
-	// heat flux vector is a result quantity
-	for(unsigned int i = 0; i < m_zoneProperties.size(); ++i)
-		res.push_back(&m_zoneProperties[i].m_zoneHeatLoad);
-	// heat flux vector is a result quantity
-	for(unsigned int i = 0; i < m_activeProperties.size(); ++i)
-		res.push_back(&m_activeProperties[i].m_activeLayerHeatLoad);
-	// inlet node temperature vector is a result quantity
-	for(unsigned int i = 0; i < m_flowElementProperties.size(); ++i)
-		res.push_back(m_flowElementProperties[i].m_inletNodeTemperatureRef);
-	// outlet node temperature vector is a result quantity
-	for(unsigned int i = 0; i < m_flowElementProperties.size(); ++i)
-		res.push_back(m_flowElementProperties[i].m_outletNodeTemperatureRef);
-	// add individual model result value references
-	if(!m_modelQuantityRefs.empty())
-		res.insert(res.end(), m_modelQuantityRefs.begin(), m_modelQuantityRefs.end());
-#endif
-}
-
-
 const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference & quantity) const {
 	const QuantityName & quantityName = quantity.m_name;
 

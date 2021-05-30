@@ -209,20 +209,6 @@ void HydraulicNetworkModel::resultDescriptions(std::vector<QuantityDescription> 
 }
 
 
-void HydraulicNetworkModel::resultValueRefs(std::vector<const double *> & res) const {
-	// mass flux vector is a result quantity
-	for(unsigned int i = 0; i < m_p->m_fluidMassFluxes.size(); ++i)
-		res.push_back(&m_p->m_fluidMassFluxes[i]);
-	// inlet and outlet node pressure are result quantities
-	for(unsigned int i = 0; i < m_p->m_inletNodePressures.size(); ++i)
-		res.push_back(&m_p->m_inletNodePressures[i]);
-	for(unsigned int i = 0; i < m_p->m_outletNodePressures.size(); ++i)
-		res.push_back(&m_p->m_outletNodePressures[i]);
-	for(unsigned int i = 0; i < m_p->m_outletNodePressures.size(); ++i)
-		res.push_back(&m_p->m_pressureDifferences[i]);
-}
-
-
 const double * HydraulicNetworkModel::resultValueRef(const InputReference & quantity) const {
 	FUNCID(HydraulicNetworkModel::resultValueRef);
 
