@@ -115,6 +115,8 @@ public:
 		PM_VertexList,
 		/*! Shows the widget with global site (and view) properties. */
 		PM_SiteProperties,
+		/*! Shows the widget for adding sub-surface geometries. */
+		PM_AddSubSurfaceGeometry,
 		/*! Shows the widget with building properties. */
 		PM_BuildingProperties,
 		/*! Shows the widget with network properties. */

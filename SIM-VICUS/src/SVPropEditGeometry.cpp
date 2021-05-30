@@ -45,6 +45,7 @@
 #include "SVUndoCopySurfaces.h"
 #include "SVPropVertexListWidget.h"
 #include "SVGeometryView.h"
+#include "SVPropAddWindowWidget.h"
 
 #include "Vic3DNewGeometryObject.h"
 #include "Vic3DCoordinateSystemObject.h"
@@ -248,7 +249,7 @@ void SVPropEditGeometry::on_pushButtonAddRect_clicked() {
 }
 
 
-void SVPropEditGeometry::on_pushButtonAddZoneBox_clicked() {
+void SVPropEditGeometry::on_pushButtonAddZone_clicked() {
 	// reset new polygon object and set it into zone floor drawing mode
 	SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_ZoneFloor);
 	// signal, that we want to start adding a new polygon
@@ -263,6 +264,14 @@ void SVPropEditGeometry::on_pushButtonAddZoneBox_clicked() {
 }
 
 
+void SVPropEditGeometry::on_pushButtonAddWindow_clicked() {
+	// set property widget into "add window/door" mode
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_propertyWidgetMode = SVViewState::PM_AddSubSurfaceGeometry;
+	SVViewStateHandler::instance().setViewState(vs);
+	// clear vertex list in property widget
+	SVViewStateHandler::instance().m_propAddWindowWidget->setup();
+}
 
 
 void SVPropEditGeometry::on_lineEditX_editingFinished() {
@@ -1427,3 +1436,4 @@ void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
 	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Flipped normal vectors"), modifiedSurfaces );
 	undo->push();
 }
+

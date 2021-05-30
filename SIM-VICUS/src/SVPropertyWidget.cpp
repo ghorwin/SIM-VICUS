@@ -41,6 +41,7 @@
 #include "SVPropModeSelectionWidget.h"
 #include "SVPropBuildingEditWidget.h"
 #include "SVPropFloorManagerWidget.h"
+#include "SVPropAddWindowWidget.h"
 
 
 #include "Vic3DNewGeometryObject.h"
@@ -107,6 +108,11 @@ void SVPropertyWidget::onViewStateChanged() {
 
 		case SVViewState::PM_VertexList:
 			showPropertyWidget<SVPropVertexListWidget>(M_VertexListWidget);
+			setMinimumWidth(500);
+		break;
+
+		case SVViewState::PM_AddSubSurfaceGeometry:
+			showPropertyWidget<SVPropAddWindowWidget>(M_AddWindowWidget);
 			setMinimumWidth(500);
 		break;
 

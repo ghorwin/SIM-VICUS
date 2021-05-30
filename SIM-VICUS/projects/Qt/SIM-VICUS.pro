@@ -103,6 +103,7 @@ SOURCES += \
 								../../src/SVDBZoneControlVentilationNaturalEditWidget.cpp \
 								../../src/SVDBZoneControlVentilationNaturalTableModel.cpp \
 								../../src/SVNetworkControllerDialog.cpp \
+								../../src/SVPropAddWindowWidget.cpp \
 								../../src/SVShadingCalculationDialog.cpp \
 								../../src/SVView3DDialog.cpp \
 								../../src/actions/SVUndoAddBuilding.cpp \
@@ -247,6 +248,7 @@ HEADERS  += \
 								../../src/SVDBZoneControlVentilationNaturalEditWidget.h \
 								../../src/SVDBZoneControlVentilationNaturalTableModel.h \
 								../../src/SVNetworkControllerDialog.h \
+								../../src/SVPropAddWindowWidget.h \
 								../../src/SVShadingCalculationDialog.h \
 								../../src/SVView3DDialog.h \
 								../../src/actions/SVUndoAddBuilding.h \
@@ -412,6 +414,7 @@ FORMS    += \
 								../../src/SVPreferencesDialog.ui \
 								../../src/SVPreferencesPageStyle.ui \
 								../../src/SVPreferencesPageTools.ui \
+								../../src/SVPropAddWindowWidget.ui \
 								../../src/SVPropBuildingEditWidget.ui \
 								../../src/SVPropEditGeometry.ui \
 								../../src/SVPropFloorManagerWidget.ui \

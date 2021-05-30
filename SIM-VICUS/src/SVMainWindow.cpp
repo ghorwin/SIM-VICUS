@@ -587,7 +587,7 @@ void SVMainWindow::setup() {
 
 	m_navigationTreeWidget = new SVNavigationTreeWidget(this);
 	m_geometryViewSplitter->addWidget(m_navigationTreeWidget);
-	m_geometryViewSplitter->setCollapsible(0, false);
+	m_geometryViewSplitter->setCollapsible(0, true);
 
 	// *** Geometry view ***
 

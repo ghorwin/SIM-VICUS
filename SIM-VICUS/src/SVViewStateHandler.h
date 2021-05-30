@@ -42,6 +42,7 @@ class SVPropVertexListWidget;
 class SVGeometryView;
 class SVPropModeSelectionWidget;
 class SVLocalCoordinateView;
+class SVPropAddWindowWidget;
 
 /*! This singleton makes the current UI view state available to all.
 	Widgets that need to be informed from view state changes, should
@@ -114,6 +115,9 @@ public:
 		when switching edit modes.
 	*/
 	SVPropModeSelectionWidget			*m_propModeSelectionWidget = nullptr;
+
+	/*! Pointer to property widget for adding windows/doors */
+	SVPropAddWindowWidget				*m_propAddWindowWidget = nullptr;
 
 signals:
 	/*! Emitted, when the state has changed. */

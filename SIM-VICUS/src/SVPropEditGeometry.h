@@ -165,7 +165,8 @@ private slots:
 
 	void on_pushButtonAddPolygon_clicked();
 	void on_pushButtonAddRect_clicked();
-	void on_pushButtonAddZoneBox_clicked();
+	void on_pushButtonAddZone_clicked();
+	void on_pushButtonAddWindow_clicked();
 
 	// all line edit specific functions
 
