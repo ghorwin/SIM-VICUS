@@ -58,6 +58,10 @@ Ein einzelnes Netzwerk wird im XML-tag `HydraulicNetwork` definiert, wie im folg
 	<Elements>
         ... <!-- network flow elements with topology definition -->
 	</Elements>
+
+	<ControlElements>
+        ... <!-- network flow controller parameters -->
+	</ControlElements>
 	
 </HydraulicNetwork>
 ----
@@ -191,7 +195,7 @@ Die Rohreigenschaften legen die physikalische/geometrischen Eigenschaften eines 
 ----
 <PipeProperties>
 	<HydraulicNetworkPipeProperties id="1">
-		<IBK:Parameter name="PipeRoughness" unit="m">0.007</IBK:Parameter>
+		<IBK:Parameter name="PipeRoughness" unit="mm">0.07</IBK:Parameter>
 		<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
 		<IBK:Parameter name="PipeOuterDiameter" unit="mm">32</IBK:Parameter>
 		<IBK:Parameter name="UValuePipeWall" unit="W/mK">5</IBK:Parameter>
@@ -285,7 +289,7 @@ Es werden die folgenden Parameter benötigt
 [options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
 |====================
 |Name | Einheit | Beschreibung | Wertebereich | Verwendung
-| `PipeMaxDiscretizationWidth` | m | Länge der diskretisierten Elemente | >0 |_benötigt_
+| `PipeMaxDiscretizationWidth` | m | Länge der diskretisierten Elemente | >0 | _benötigt_
 |====================
 
 
@@ -304,6 +308,21 @@ Für das Model `ConstantPressurePump` werden diese Parameter benötigt:
 
 Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definiert. D.h. die durch Volumenstrom und Druckhöhe gegebene mechanische Arbeit entspricht diesem Anteil der Gesamtarbeit. Die Differenz der Leistungen wird als Wärmequelle dem Fluid aufgeprägt.
 
+
+### Modelltyp: ConstantMassFluxPump
+
+Für das Model `ConstantMassFluxPump` werden diese Parameter benötigt:
+
+[options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
+|====================
+|Name | Einheit | Beschreibung | Wertebereich | Verwendung
+| `MassFlux` | kg/s | Vordefinierter Massestrom | _benötigt_ | 
+| `Volume` | m3 | Fluid volume inside the pump | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+|====================
+
+Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definiert. D.h. die durch Volumenstrom und Druckhöhe gegebene mechanische Arbeit entspricht diesem Anteil der Gesamtarbeit. Die Differenz der Leistungen wird als Wärmequelle dem Fluid aufgeprägt.
+
+TODO : Testbeispiel!
 
 
 ### ModellTyp: HeatExchanger
