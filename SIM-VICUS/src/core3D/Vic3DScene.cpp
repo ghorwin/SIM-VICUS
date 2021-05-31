@@ -259,6 +259,9 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 		m_opaqueGeometryObject.create(m_buildingShader->shaderProgram()); // Note: does nothing, if already existing
 
 		// transfer data from building geometry to vertex array caches
+		const SVViewState & vs = SVViewStateHandler::instance().viewState();
+		if (vs.m_viewMode == SVViewState::VM_PropertyEditMode)
+			recolorObjects(vs.m_objectColorMode, vs.m_colorModePropertyID); // only changes color set in objects
 		generateBuildingGeometry();
 	}
 
