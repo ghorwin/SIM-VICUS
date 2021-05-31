@@ -49,9 +49,8 @@ SVDBInternalLoadsPersonEditWidget::SVDBInternalLoadsPersonEditWidget(QWidget *pa
 	m_ui->comboBoxPersonMethod->blockSignals(true);
 
 	for (unsigned int i=0; i<VICUS::InternalLoad::NUM_PCM; ++i) {
-		m_ui->comboBoxPersonMethod->addItem(QString("%1 [%2]")
-			.arg(VICUS::KeywordListQt::Description("InternalLoad::PersonCountMethod", (int)i))
-			.arg(VICUS::KeywordListQt::Keyword("InternalLoad::PersonCountMethod", (int)i)), i);
+		m_ui->comboBoxPersonMethod->addItem(QString("%1").arg(VICUS::KeywordListQt::Description("InternalLoad::PersonCountMethod", (int)i)));
+			//.arg(VICUS::KeywordListQt::Keyword("InternalLoad::PersonCountMethod", (int)i)), i);
 	}
 	m_ui->comboBoxPersonMethod->blockSignals(false);
 
@@ -260,5 +259,5 @@ void SVDBInternalLoadsPersonEditWidget::on_toolButtonSelectActivity_clicked() {
 void SVDBInternalLoadsPersonEditWidget::modelModify() {
 	m_db->m_internalLoads.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-
+	updateInput((int)m_current->m_id);
 }
