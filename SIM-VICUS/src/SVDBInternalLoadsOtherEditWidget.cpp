@@ -226,9 +226,8 @@ void SVDBInternalLoadsOtherEditWidget::updateLabel()
 			m_ui->lineEditPower->setValue(m_current->m_para[VICUS::InternalLoad::P_Power].value);
 			m_ui->labelOtherInputUnit->setText(tr("W"));
 		} break;
-		/// TODO Dirk->Andreas Ist das ok einfach die Methode richtig zu setzen?
-		// set invalid method to power
 		case VICUS::InternalLoad::NUM_PM:{
+			// default to Power
 			m_ui->lineEditPower->setValue(m_current->m_para[VICUS::InternalLoad::P_Power].value);
 			m_ui->labelOtherInputUnit->setText(tr("W"));
 			m_current->m_powerMethod = VICUS::InternalLoad::PM_Power;

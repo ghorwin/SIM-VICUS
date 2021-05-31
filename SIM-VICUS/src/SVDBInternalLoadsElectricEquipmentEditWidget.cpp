@@ -246,9 +246,6 @@ void SVDBInternalLoadsElectricEquipmentEditWidget::updateLabel()
 {
 	Q_ASSERT(m_current != nullptr);
 
-	/// TODO Dirk->Andreas wie wollen wir mit verschiedenen Einheiten umgehen
-	/// Der Wert Power kann in W oder in W/m2 gegeben sein je nach Modeltyp
-	/// Sollen wir dafür mehrere Enums einführen oder einen einlosen IBK-Parameter erstellen der mit der Methode dann die Einheit erbringt?
 	switch (m_current->m_powerMethod) {
 		case VICUS::InternalLoad::PM_PowerPerArea: 	{
 			m_ui->lineEditPower->setValue(m_current->m_para[VICUS::InternalLoad::P_PowerPerArea].value);
@@ -258,9 +255,9 @@ void SVDBInternalLoadsElectricEquipmentEditWidget::updateLabel()
 			m_ui->lineEditPower->setValue(m_current->m_para[VICUS::InternalLoad::P_Power].value);
 			m_ui->labelElectricEquipmentInputUnit->setText(tr("W"));
 		} break;
-		/// TODO Dirk->Andreas Ist das ok einfach die Methode richtig zu setzen?
-		// set invalid method to power
+
 		case VICUS::InternalLoad::NUM_PM:{
+			// if no power method is given, default to Power
 			m_ui->lineEditPower->setValue(m_current->m_para[VICUS::InternalLoad::P_Power].value);
 			m_ui->labelElectricEquipmentInputUnit->setText(tr("W"));
 			m_current->m_powerMethod = VICUS::InternalLoad::PM_Power;

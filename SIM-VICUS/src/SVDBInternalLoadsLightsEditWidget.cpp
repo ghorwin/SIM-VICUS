@@ -46,8 +46,6 @@ SVDBInternalLoadsLightsEditWidget::SVDBInternalLoadsLightsEditWidget(QWidget *pa
 
 	// *** populate combo boxes ***
 
-	///TODO Dirk->Andreas Im Ui kann man die labels nicht lesen. Bitte breiter machen. Wie geht das?
-
 	m_ui->comboBoxMethod->blockSignals(true);
 
 	for (unsigned int i=0; i<VICUS::InternalLoad::NUM_PM; ++i) {
