@@ -1198,15 +1198,9 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 		ztBools[counter].m_subTemplateId.resize(VICUS::ZoneTemplate::NUM_ST, VICUS::INVALID_ID);
 
 		//set of available internal load enums
-		std::set<unsigned int> intLoadEnums;
+		std::set<VICUS::ZoneTemplate::SubTemplateType> intLoadEnums;
 
 		//fill up intLoadEnums
-
-		VICUS::ZoneTemplate::SubTemplateType testDirkEle, testDirkPers, testDirkLig, testDirkOther;
-		testDirkEle = zt->usedReference(VICUS::ZoneTemplate::ST_IntLoadEquipment);
-		testDirkPers = zt->usedReference(VICUS::ZoneTemplate::ST_IntLoadPerson);
-		testDirkLig = zt->usedReference(VICUS::ZoneTemplate::ST_IntLoadLighting);
-		testDirkOther = zt->usedReference(VICUS::ZoneTemplate::ST_IntLoadOther);
 
 		if(zt->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadEquipment] != VICUS::INVALID_ID)
 			intLoadEnums.insert(VICUS::ZoneTemplate::ST_IntLoadEquipment);
@@ -1216,16 +1210,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 			intLoadEnums.insert(VICUS::ZoneTemplate::ST_IntLoadLighting);
 		if(zt->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadOther] != VICUS::INVALID_ID)
 			intLoadEnums.insert(VICUS::ZoneTemplate::ST_IntLoadOther);
-		/*
-		if(zt->usedReference(VICUS::ZoneTemplate::ST_IntLoadEquipment) != VICUS::ZoneTemplate::NUM_ST)
-			intLoadEnums.insert(VICUS::ZoneTemplate::ST_IntLoadEquipment);
-		if(zt->usedReference(VICUS::ZoneTemplate::ST_IntLoadLighting) != VICUS::ZoneTemplate::NUM_ST)
-			intLoadEnums.insert(VICUS::ZoneTemplate::ST_IntLoadLighting);
-		if(zt->usedReference(VICUS::ZoneTemplate::ST_IntLoadOther) != VICUS::ZoneTemplate::NUM_ST)
-			intLoadEnums.insert(VICUS::ZoneTemplate::ST_IntLoadOther);
-		if(zt->usedReference(VICUS::ZoneTemplate::ST_IntLoadPerson) != VICUS::ZoneTemplate::NUM_ST)
-			intLoadEnums.insert(VICUS::ZoneTemplate::ST_IntLoadPerson);
-		*/
+
 		//check all internal loads for area depending
 		for(auto e : intLoadEnums){
 			//get id of int load template
@@ -1350,7 +1335,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 							VICUS::Schedule &intLoadSched = intLoadScheds[enum1];
 							//multiply the two schedules and add this to vector
 							intLoadSched = schedAct->multiply(*schedOcc);
-							///TODO Dirk->Andreas ist das richtig? welche Id-spaces brauchen die Schedules?
+							//id is not used
 							intLoadSched.m_id = uniqueIdWithPredef2(Profile, 1, m_idMaps); //VICUS::Project::uniqueId<unsigned int>(allModelIds);
 
 							//multiply sched and constant val
@@ -1425,7 +1410,6 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 								}break;
 							}
 							intLoadScheds[enum1] = *schedMan;
-							///TODO Dirk->Andreas ist das richtig? welche Id-spaces brauchen die Schedules?
 							intLoadScheds[enum1].m_id = uniqueIdWithPredef2(Profile, 1, m_idMaps);//VICUS::Project::uniqueId<unsigned int>(allModelIds);
 							//get val
 							//multiply sched*val
