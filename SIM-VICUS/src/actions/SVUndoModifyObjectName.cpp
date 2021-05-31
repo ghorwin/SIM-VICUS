@@ -42,7 +42,7 @@ void SVUndoModifyObjectName::undo() {
 
 	const_cast<VICUS::Object*>(o)->m_displayName.swap(m_displayName);
 	Data d;
-	d.uid = m_objectUid;
+	d.m_object = o;
 	SVProjectHandler::instance().setModified( SVProjectHandler::ObjectRenamed, &d);
 }
 

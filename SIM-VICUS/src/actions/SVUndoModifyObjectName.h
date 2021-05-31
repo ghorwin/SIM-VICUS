@@ -26,10 +26,13 @@
 #ifndef SVUndoModifyObjectNameH
 #define SVUndoModifyObjectNameH
 
-#include <VICUS_Object.h>
 #include <vector>
 
 #include "SVUndoCommandBase.h"
+
+namespace VICUS {
+	class Object;
+}
 
 /*! Modification of the display name of an object. */
 class SVUndoModifyObjectName : public SVUndoCommandBase {
@@ -39,7 +42,7 @@ public:
 	/*! The modification data object passed along with the undo action. */
 	class Data : public ModificationInfo {
 	public:
-		unsigned int uid;
+		const VICUS::Object * m_object = nullptr;
 	};
 
 	/*! Replaces building entity at given index in buildings vector. */

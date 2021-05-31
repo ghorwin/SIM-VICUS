@@ -94,7 +94,7 @@ public:
 			Note: if any selection property was changed, this undo-action also executes the SelectionChanged modification.
 		*/
 		NodeStateModified,
-		/*! An object's display name was renamed. Modification data is a unsigned int with the unique ID of the modified object. */
+		/*! An object's display name was renamed. Modification data is a pointer to the modified object. */
 		ObjectRenamed,
 		/*! Used whenever the project data changes completely (new project created, project loaded etc.)
 			and a complete reset of all views and models is needed.

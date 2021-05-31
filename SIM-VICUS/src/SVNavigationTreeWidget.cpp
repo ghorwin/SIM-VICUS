@@ -86,7 +86,19 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		case SVProjectHandler::BuildingGeometryChanged :
 		case SVProjectHandler::BuildingTopologyChanged :
 			/// \todo Andreas: parse 'data' to determine what has changed and avoid updating entire tree (and losing collapsed state)
-			break;
+		break;
+
+		case SVProjectHandler::ObjectRenamed : {
+			SVUndoModifyObjectName::Data * d = dynamic_cast<SVUndoModifyObjectName::Data *>(data);
+			Q_ASSERT(d != nullptr);
+			// modify tree item
+			QTreeWidgetItem * item = m_treeItemMap[d->m_object->uniqueID()];
+			Q_ASSERT(item != nullptr);
+			m_ui->treeWidget->blockSignals(true);
+			item->setText(0, d->m_object->m_displayName);
+			m_ui->treeWidget->blockSignals(false);
+			return;
+		}
 
 		case SVProjectHandler::NodeStateModified : {
 			// we only change data properties of existing nodes and emit itemChanged() signals, so
