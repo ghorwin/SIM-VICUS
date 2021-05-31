@@ -1020,7 +1020,7 @@ namespace VICUS {
 			// InternalLoad::PowerMethod
 			case 10 :
 			switch (t) {
-				case 0 : return "Power";
+				case 0 : return "Power per area";
 				case 1 : return "Power";
 			} break;
 			// KeywordList::MyParameters
@@ -1402,8 +1402,8 @@ namespace VICUS {
 			case 7 :
 			switch (t) {
 				case 0 : return "-";
-				case 1 : return "m2";
-				case 2 : return "m2";
+				case 1 : return "Person/m2";
+				case 2 : return "m2/Person";
 				case 3 : return "W";
 				case 4 : return "W/m2";
 				case 5 : return "---";
