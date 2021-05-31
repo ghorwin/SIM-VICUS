@@ -118,6 +118,7 @@ SOURCES += \
 								../../src/actions/SVUndoModifyBuildingLevel.cpp \
 								../../src/actions/SVUndoModifyBuildingTopology.cpp \
 								../../src/actions/SVUndoModifyComponentInstances.cpp \
+								../../src/actions/SVUndoModifyObjectName.cpp \
 								../../src/actions/SVUndoModifyProject.cpp \
 								../../src/actions/SVUndoModifyRoomZoneTemplateAssociation.cpp \
 								../../src/actions/SVUndoModifySiteData.cpp \
@@ -263,6 +264,7 @@ HEADERS  += \
 								../../src/actions/SVUndoModifyBuildingLevel.h \
 								../../src/actions/SVUndoModifyBuildingTopology.h \
 								../../src/actions/SVUndoModifyComponentInstances.h \
+								../../src/actions/SVUndoModifyObjectName.h \
 								../../src/actions/SVUndoModifyProject.h \
 								../../src/actions/SVUndoModifyRoomZoneTemplateAssociation.h \
 								../../src/actions/SVUndoModifySiteData.h \

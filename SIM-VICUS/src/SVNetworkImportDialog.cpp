@@ -42,7 +42,7 @@
 #include <VICUS_Project.h>
 
 #include "SVSettings.h"
-
+#include "SVProjectHandler.h"
 
 SVNetworkImportDialog::SVNetworkImportDialog(QWidget *parent) :
 	QDialog(parent),

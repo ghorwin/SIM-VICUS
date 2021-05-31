@@ -23,39 +23,30 @@
 	GNU General Public License for more details.
 */
 
-#include "SVUndoDeleteNetwork.h"
-#include "SVProjectHandler.h"
-
 #include <VICUS_Project.h>
 
-SVUndoDeleteNetwork::SVUndoDeleteNetwork(const QString & label, unsigned int networkIndex)
-	: m_networkIndex(networkIndex)
+#include "SVUndoModifyObjectName.h"
+#include "SVProjectHandler.h"
+
+SVUndoModifyObjectName::SVUndoModifyObjectName(const QString & label, const VICUS::Object * o, const QString & newName) :
+	m_objectUid(o->uniqueID()), m_displayName(newName)
 {
 	setText( label );
-
-	Q_ASSERT(project().m_geometricNetworks.size() > networkIndex);
-
-	m_deletedNetwork = project().m_geometricNetworks[networkIndex];
 }
 
 
-void SVUndoDeleteNetwork::undo() {
+void SVUndoModifyObjectName::undo() {
+	// get object
+	const VICUS::Object * o = theProject().objectById(m_objectUid);
+	Q_ASSERT(o != nullptr);
 
-	theProject().m_geometricNetworks.insert(theProject().m_geometricNetworks.begin() + m_networkIndex, m_deletedNetwork);
-	theProject().updatePointers();
-
-	// tell project that the network has changed
-	SVProjectHandler::instance().setModified( SVProjectHandler::NetworkModified);
+	const_cast<VICUS::Object*>(o)->m_displayName.swap(m_displayName);
+	Data d;
+	d.uid = m_objectUid;
+	SVProjectHandler::instance().setModified( SVProjectHandler::ObjectRenamed, &d);
 }
 
 
-void SVUndoDeleteNetwork::redo() {
-	Q_ASSERT(!theProject().m_geometricNetworks.empty());
-
-	theProject().m_geometricNetworks.erase(theProject().m_geometricNetworks.begin() + m_networkIndex);
-	theProject().updatePointers();
-
-	// tell project that the network has changed
-	SVProjectHandler::instance().setModified( SVProjectHandler::NetworkModified);
+void SVUndoModifyObjectName::redo() {
+	undo(); // same code as undo
 }
-

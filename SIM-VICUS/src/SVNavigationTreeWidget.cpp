@@ -35,6 +35,7 @@
 #include "SVStyle.h"
 #include "SVNavigationTreeItemDelegate.h"
 #include "SVUndoTreeNodeState.h"
+#include "SVUndoModifyObjectName.h"
 #include "SVViewStateHandler.h"
 #include "SVSmartSelectDialog.h"
 
@@ -348,6 +349,7 @@ void SVNavigationTreeWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, in
 		m_ui->treeWidget->blockSignals(false);
 		return;
 	}
-
-
+	// create undo action for renaming of object
+	SVUndoModifyObjectName * undo = new SVUndoModifyObjectName(tr("Renamed object to '%1'").arg(newText), o, newText);
+	undo->push();
 }

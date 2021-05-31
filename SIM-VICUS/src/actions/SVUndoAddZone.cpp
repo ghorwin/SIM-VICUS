@@ -26,6 +26,8 @@
 #include "SVUndoAddZone.h"
 #include "SVProjectHandler.h"
 
+#include <VICUS_Project.h>
+
 SVUndoAddZone::SVUndoAddZone(const QString & label, unsigned int buildingLevelUUID, const VICUS::Room & addedRoom,
 							 bool topologyOnly, const std::vector<VICUS::ComponentInstance> * componentInstances) :
 	m_addedRoom(addedRoom),

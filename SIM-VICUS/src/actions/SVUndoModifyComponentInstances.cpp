@@ -26,6 +26,8 @@
 #include "SVUndoModifyComponentInstances.h"
 #include "SVProjectHandler.h"
 
+#include <VICUS_Project.h>
+
 SVUndoModifyComponentInstances::SVUndoModifyComponentInstances(	const QString & label,
 								const std::vector<VICUS::ComponentInstance> & ci) :
 	m_componentInstances(ci)

@@ -23,26 +23,34 @@
 	GNU General Public License for more details.
 */
 
-#include "SVUndoModifyBuildingTopology.h"
-#include "SVProjectHandler.h"
+#ifndef SVUndoModifyObjectNameH
+#define SVUndoModifyObjectNameH
 
-#include <VICUS_Project.h>
+#include <VICUS_Object.h>
+#include <vector>
 
-SVUndoModifyBuildingTopology::SVUndoModifyBuildingTopology(const QString & label, const std::vector<VICUS::Building> & buildings) :
-	m_buildings(buildings)
-{
-	setText( label );
-}
+#include "SVUndoCommandBase.h"
 
+/*! Modification of the display name of an object. */
+class SVUndoModifyObjectName : public SVUndoCommandBase {
+	Q_DECLARE_TR_FUNCTIONS(SVUndoModifyObjectName)
+public:
 
-void SVUndoModifyBuildingTopology::undo() {
-	// exchange building meta data
-	std::swap( theProject().m_buildings, m_buildings);
-	theProject().updatePointers();
-	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);
-}
+	/*! The modification data object passed along with the undo action. */
+	class Data : public ModificationInfo {
+	public:
+		unsigned int uid;
+	};
 
+	/*! Replaces building entity at given index in buildings vector. */
+	SVUndoModifyObjectName(const QString & label, const VICUS::Object * o, const QString & newName);
 
-void SVUndoModifyBuildingTopology::redo() {
-	undo(); // same code as undo
-}
+	virtual void undo();
+	virtual void redo();
+
+private:
+	unsigned int	m_objectUid;
+	QString			m_displayName;
+};
+
+#endif // SVUndoModifyObjectNameH

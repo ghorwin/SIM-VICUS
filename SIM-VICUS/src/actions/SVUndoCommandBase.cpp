@@ -25,6 +25,8 @@
 
 #include "SVUndoCommandBase.h"
 
+#include <VICUS_Project.h>
+
 #include "SVMainWindow.h"
 #include "SVProjectHandler.h"
 #include "SVSettings.h"

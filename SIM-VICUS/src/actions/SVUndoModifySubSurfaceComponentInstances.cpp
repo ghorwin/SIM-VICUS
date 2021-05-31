@@ -26,6 +26,8 @@
 #include "SVUndoModifySubSurfaceComponentInstances.h"
 #include "SVProjectHandler.h"
 
+#include <VICUS_Project.h>
+
 SVUndoModifySubSurfaceComponentInstances::SVUndoModifySubSurfaceComponentInstances(const QString & label,
 								const std::vector<VICUS::SubSurfaceComponentInstance> & ci) :
 	m_componentInstances(ci)

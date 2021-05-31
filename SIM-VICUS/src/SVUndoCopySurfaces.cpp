@@ -26,6 +26,7 @@
 #include "SVUndoCopySurfaces.h"
 #include "SVProjectHandler.h"
 
+#include <VICUS_Project.h>
 
 SVUndoCopySurfaces::SVUndoCopySurfaces(const QString &label, const std::vector<VICUS::Surface> &copiedSurfaces,
 									   const std::set<unsigned int> & deselectedSurfaceUniqueIDs,

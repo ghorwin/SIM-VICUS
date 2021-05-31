@@ -25,6 +25,8 @@
 
 #include "SVUndoTreeNodeState.h"
 
+#include <VICUS_Project.h>
+
 template<typename T>
 void storeState(const T & obj, int & bitmask) {
 	bitmask = 0;

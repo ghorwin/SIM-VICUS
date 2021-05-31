@@ -26,6 +26,8 @@
 #include "SVUndoAddBuildingLevel.h"
 #include "SVProjectHandler.h"
 
+#include <VICUS_Project.h>
+
 SVUndoAddBuildingLevel::SVUndoAddBuildingLevel(const QString & label, unsigned int buildingUUID, const VICUS::BuildingLevel & addedLevel, bool topologyOnly) :
 	m_addedLevel(addedLevel),
 	m_topologyOnly(topologyOnly),

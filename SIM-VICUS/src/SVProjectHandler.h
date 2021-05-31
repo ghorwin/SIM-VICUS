@@ -32,17 +32,12 @@
 #include <QDateTime>
 
 #include <IBK_Path.h>
+#include "SVUndoCommandBase.h"
 
 namespace VICUS {
 	class Project;
 	class ViewSettings;
 }
-
-/*! Abstract base class for all modification data containers. */
-class ModificationInfo {
-public:
-	virtual ~ModificationInfo();
-};
 
 /*! Utility class that manages common project-related functions, in particular
 	modification state setting, project file reading/writing and other.
@@ -99,6 +94,8 @@ public:
 			Note: if any selection property was changed, this undo-action also executes the SelectionChanged modification.
 		*/
 		NodeStateModified,
+		/*! An object's display name was renamed. Modification data is a unsigned int with the unique ID of the modified object. */
+		ObjectRenamed,
 		/*! Used whenever the project data changes completely (new project created, project loaded etc.)
 			and a complete reset of all views and models is needed.
 		*/

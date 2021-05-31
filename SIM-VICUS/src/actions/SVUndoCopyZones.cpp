@@ -26,6 +26,8 @@
 #include "SVUndoCopyZones.h"
 #include "SVProjectHandler.h"
 
+#include <VICUS_Project.h>
+
 SVUndoCopyZones::SVUndoCopyZones(const QString & label, unsigned int buildingLevelUUID,
 							   const std::vector<VICUS::Room> copiedRooms,
 							   const std::vector<VICUS::ComponentInstance> * componentInstances) :
