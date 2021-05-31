@@ -80,14 +80,8 @@ public:
 	/*! Returns number of assigned sub-templates (needed by tree-model). */
 	unsigned int subTemplateCount() const;
 
-	///TODO Dirk->Andreas das funktioniert nicht wie beschrieben oder ich hab die Beschreibung nicht kapiert
-	/// wenn ich eine valide id in m_idReferences[ST_IntLoadEquipment] habe z.B. 70001
-	/// und sonst invalide ids nur
-	/// und ich den index ST_IntLoadEquipment (index wäre dann 1) abfrage
-	/// dann liefert er mir NUM_ST
-	/// das ist doch falsch oder?
 	/*! Returns the type of reference by index, counting only the used references, i.e. references not INVALID_ID.
-		For example, if m_idIntLoadPerson == INVALID_ID and m_idIntLoadElectricEquipment has a valid ID, than
+		For example, if m_idReferences[ST_IntLoadPerson] == INVALID_ID and m_idReferences[ST_IntLoadEquipment] has a valid ID, than
 		usedReference(0) returns ST_IntLoadEquipment.
 		\return Returns type of corresponding id reference or NUM_ST, if index is larger than the number of non-empty
 				id references.
@@ -116,35 +110,6 @@ public:
 
 	/*! Stores id references for all sub-templates. */
 	IDType							m_idReferences[NUM_ST];							// XML:E
-
-#if 0
-	/*! Internal loads person model id. */
-	unsigned int					m_idIntLoadPerson			= INVALID_ID;
-
-	/*! Internal loads electric equipment model id. */
-	unsigned int					m_idIntLoadElectricEquipment = INVALID_ID;
-
-	/*! Internal loads electric lighting model id. */
-	unsigned int					m_idIntLoadLighting			= INVALID_ID;
-
-	/*! Internal loads other equipment model id. */
-	unsigned int					m_idIntLoadOther			= INVALID_ID;
-
-	/*! Control thermostat model id. */
-	unsigned int					m_idControlThermostat		= INVALID_ID;
-
-	/*! Control shading model id. */
-	unsigned int					m_idControlShading			= INVALID_ID;
-
-	/*! Natural ventilation model id. */
-	unsigned int					m_idNaturalVentilation		= INVALID_ID;
-
-	/*! Mechanical ventilation model id. */
-	unsigned int					m_idMechanicalVentilation	= INVALID_ID;
-
-	/*! Infiltration model id. */
-	unsigned int					m_idInfiltration			= INVALID_ID;
-#endif
 };
 
 
