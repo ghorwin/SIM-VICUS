@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -30,7 +30,7 @@
 namespace VICUS {
 
 
-bool InternalLoad::isValid() const
+bool InternalLoad::isValid(const Database<Schedule> &scheduleDB) const
 {
 	///TODO DIRK/KATJA
 	if(m_id == INVALID_ID)
@@ -60,8 +60,19 @@ bool InternalLoad::isValid() const
 				return false;
 
 			//check schedules occ and act
-			/// TODO Dirk->Andreas wie komm ich jetzt an die Schedule Datenbank und kann die vorgegebene ID prüfen
-			/// ob dieser Schedule valide ist?
+			// check if schedule ID is existing and valid
+			const Schedule * actSched = scheduleDB[m_activityScheduleId];
+			if (actSched == nullptr)
+				return false;
+			if (!actSched->isValid())
+				return false;
+
+			const Schedule * occSched = scheduleDB[m_occupancyScheduleId];
+			if (occSched == nullptr)
+				return false;
+			if (!occSched->isValid())
+				return false;
+
 		}
 		break;
 		case VICUS::InternalLoad::IC_ElectricEquiment:
@@ -94,9 +105,12 @@ bool InternalLoad::isValid() const
 			if(m_powerManagementScheduleId == INVALID_ID)
 				return false;
 
-			//check schedules occ and act
-			/// TODO Dirk->Andreas wie komm ich jetzt an die Schedule Datenbank und kann die vorgegebene ID prüfen
-			/// ob dieser Schedule valide ist?
+			// check if schedule ID is existing and valid
+			const Schedule * powerSched = scheduleDB[m_powerManagementScheduleId];
+			if (powerSched == nullptr)
+				return false;
+			if (!powerSched->isValid())
+				return false;
 		}
 		break;
 
