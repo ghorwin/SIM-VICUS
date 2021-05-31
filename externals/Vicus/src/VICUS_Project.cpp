@@ -1180,10 +1180,6 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 	std::vector<ztBool>	ztBools(zoneTemplateIdToObjListNameToRoomIds.size());
 	unsigned int counter = 0;
 
-	///TODO Dirk->Andreas warum muss beim Internen Lastmodell immer alles angegeben werden?
-	/// Geräte, Licht, Personen
-	/// Sollte auch funktionieren wenn nur Personen eingeschrieben werden.
-
 	//loop for zone templates
 	for (const std::pair<unsigned int,std::map< double,  std::vector<unsigned int>>> &ob : zoneTemplateIdToObjListNameToRoomIds) {
 		//take zone template

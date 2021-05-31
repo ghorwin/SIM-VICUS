@@ -129,6 +129,7 @@ SOURCES += \
 								../../src/core3D/Vic3DGridObject.cpp \
 								../../src/core3D/Vic3DKeyboardMouseHandler.cpp \
 								../../src/core3D/Vic3DNewGeometryObject.cpp \
+								../../src/core3D/Vic3DNewSubSurfaceObject.cpp \
 								../../src/core3D/Vic3DOpaqueGeometryObject.cpp \
 								../../src/core3D/Vic3DOpenGLWindow.cpp \
 								../../src/core3D/Vic3DOrbitControllerObject.cpp \
@@ -277,6 +278,7 @@ HEADERS  += \
 								../../src/core3D/Vic3DGridObject.h \
 								../../src/core3D/Vic3DKeyboardMouseHandler.h \
 								../../src/core3D/Vic3DNewGeometryObject.h \
+								../../src/core3D/Vic3DNewSubSurfaceObject.h \
 								../../src/core3D/Vic3DOpaqueGeometryObject.h \
 								../../src/core3D/Vic3DOpenGLException.h \
 								../../src/core3D/Vic3DOpenGLWindow.h \

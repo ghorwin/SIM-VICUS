@@ -1679,12 +1679,12 @@ namespace VICUS {
 			// ZoneControlNaturalVentilation::ScheduleType
 			case 44 :
 			switch (t) {
-				case 0 : return "C";
-				case 1 : return "C";
-				case 2 : return "C";
-				case 3 : return "C";
-				case 4 : return "K";
-				case 5 : return "m/s";
+				case 0 : return "";
+				case 1 : return "";
+				case 2 : return "";
+				case 3 : return "";
+				case 4 : return "";
+				case 5 : return "";
 			} break;
 			// ZoneControlShading::para_t
 			case 45 :

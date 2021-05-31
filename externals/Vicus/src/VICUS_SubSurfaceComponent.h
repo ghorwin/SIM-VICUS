@@ -79,8 +79,11 @@ public:
 	/*! SubSurfaceComponent type. */
 	SubSurfaceComponentType			m_type = CT_Miscellaneous;					// XML:E:required
 
-	/*! Transparent construction ID. */
+	/*! Transparent construction ID (used for CT_Window). */
 	unsigned int					m_idWindow = INVALID_ID;					// XML:E
+
+	/*! Construction type ID in case of opaque component/door (used for all types but CT_Window). */
+	unsigned int					m_idConstructionType = INVALID_ID;			// XML:E
 
 	/*! Boundary condition ID for Side A (usually outside). */
 	unsigned int					m_idSideABoundaryCondition = INVALID_ID;	// XML:E
