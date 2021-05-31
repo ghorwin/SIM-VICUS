@@ -45,13 +45,16 @@ public:
 
 	void paint(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const override;
 	bool editorEvent(QEvent * event, QAbstractItemModel * model, const QStyleOptionViewItem & option, const QModelIndex & index) override;
+	void updateEditorGeometry(QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & index) const override;
 
 private:
 	QImage m_lightBulbOn;
 	QImage m_lightBulbOff;
 	QImage m_selectedOn;
 	QImage m_selectedOff;
+
 };
+
 
 
 #endif // SVNavigationTreeItemDelegateH

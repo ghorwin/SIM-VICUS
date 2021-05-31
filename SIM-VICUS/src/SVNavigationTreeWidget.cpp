@@ -343,7 +343,10 @@ void SVNavigationTreeWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, in
 	}
 	if (newText.isEmpty()) {
 		// reset value
-
+		m_ui->treeWidget->blockSignals(true);
+		item->setText(0, o->m_displayName);
+		m_ui->treeWidget->blockSignals(false);
+		return;
 	}
 
 

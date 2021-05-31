@@ -150,3 +150,8 @@ bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemMode
 }
 
 
+void SVNavigationTreeItemDelegate::updateEditorGeometry(QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & index) const {
+	QItemDelegate::updateEditorGeometry(editor, option, index);
+	// move inside a little
+	editor->setGeometry(editor->pos().x() + 36, editor->pos().y(),  editor->width()-36, editor->height());
+}
