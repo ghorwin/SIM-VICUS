@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>639</width>
-    <height>330</height>
+    <width>707</width>
+    <height>270</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -46,12 +46,6 @@
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="labelCategory_2">
-     <property name="minimumSize">
-      <size>
-       <width>60</width>
-       <height>0</height>
-      </size>
-     </property>
      <property name="text">
       <string>Method:</string>
      </property>
@@ -59,12 +53,6 @@
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="labelDisplayName">
-     <property name="minimumSize">
-      <size>
-       <width>60</width>
-       <height>0</height>
-      </size>
-     </property>
      <property name="text">
       <string>Name:</string>
      </property>
@@ -162,12 +150,6 @@
    </item>
    <item row="3" column="0">
     <widget class="QLabel" name="labelDisplayName_2">
-     <property name="minimumSize">
-      <size>
-       <width>60</width>
-       <height>0</height>
-      </size>
-     </property>
      <property name="text">
       <string>Power Management Schedule Name:</string>
      </property>
