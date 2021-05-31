@@ -46,8 +46,6 @@ SVDBInternalLoadsOtherEditWidget::SVDBInternalLoadsOtherEditWidget(QWidget *pare
 
 	// *** populate combo boxes ***
 
-	///TODO Dirk->Andreas Im Ui kann man die labels nicht lesen. Bitte breiter machen. Wie geht das?
-
 	m_ui->comboBoxMethod->blockSignals(true);
 
 	for (unsigned int i=0; i<VICUS::InternalLoad::NUM_PM; ++i) {
@@ -214,9 +212,6 @@ void SVDBInternalLoadsOtherEditWidget::updateLabel()
 {
 	Q_ASSERT(m_current != nullptr);
 
-	/// TODO Dirk->Andreas wie wollen wir mit verschiedenen Einheiten umgehen
-	/// Der Wert Power kann in W oder in W/m2 gegeben sein je nach Modeltyp
-	/// Sollen wir dafür mehrere Enums einführen oder einen einlosen IBK-Parameter erstellen der mit der Methode dann die Einheit erbringt?
 	switch (m_current->m_powerMethod) {
 		case VICUS::InternalLoad::PM_PowerPerArea: 	{
 			m_ui->lineEditPower->setValue(m_current->m_para[VICUS::InternalLoad::P_PowerPerArea].value);
