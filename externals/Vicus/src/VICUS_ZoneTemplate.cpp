@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -31,17 +31,68 @@ namespace VICUS {
 
 ZoneTemplate::ZoneTemplate() {
 	for (int i = 0; i<NUM_ST; ++i)
-		m_idReferences[i] = VICUS::INVALID_ID;
+		m_idReferences[i] = INVALID_ID;
 }
 
 
-bool ZoneTemplate::isValid() const {
+bool ZoneTemplate::isValid(const Database<InternalLoad> & intLoadDB,
+						   const Database<ZoneControlThermostat> & thermostatDB,
+						   const Database<Schedule> &schedulesDB,
+						   const Database<Infiltration> & infiltraionDB,
+						   const Database<VentilationNatural> &ventilationDB) const {
 
-	// TODO : Implement
 	if(m_id ==  INVALID_ID)
 		return false;
 
-	///TODO check the sub templates in SV-project with isValid()
+	for(unsigned int i=0; i<NUM_ST; ++i){
+		unsigned int id = m_idReferences[i];
+		if(id == INVALID_ID)
+			continue;
+
+		switch ((SubTemplateType)i) {
+			case ZoneTemplate::ST_IntLoadPerson:
+			case ZoneTemplate::ST_IntLoadLighting:
+			case ZoneTemplate::ST_IntLoadOther:
+			case ZoneTemplate::ST_IntLoadEquipment:{
+				const InternalLoad *intLoad = intLoadDB[id];
+				if(intLoad == nullptr)
+					return false;
+				if(!intLoad->isValid(schedulesDB))
+					return false;
+
+			}
+			break;
+			case ZoneTemplate::ST_ControlThermostat:{
+				const ZoneControlThermostat *thermo = thermostatDB[id];
+				if(thermo == nullptr)
+					return false;
+				if(!thermo->isValid(schedulesDB))
+					return false;
+
+			}
+			break;
+			case ZoneTemplate::ST_Infiltration:{
+				const Infiltration *inf = infiltraionDB[id];
+				if(inf == nullptr)
+					return false;
+				if(!inf->isValid())
+					return false;
+			}
+			break;
+			case ZoneTemplate::ST_VentilationNatural:{
+				const VentilationNatural *venti = ventilationDB[id];
+				if(venti == nullptr)
+					return false;
+				if(!venti->isValid(schedulesDB))
+					return false;
+			}
+			break;
+			case ZoneTemplate::NUM_ST:{
+				return false;
+			}
+			break;
+		}
+	}
 
 	return true;
 }
