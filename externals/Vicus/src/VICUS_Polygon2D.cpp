@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -176,6 +176,17 @@ double Polygon2D::area() const {
 	}
 	surfArea *= 0.5;
 	return surfArea;
+}
+
+double Polygon2D::circumference() const {
+	double circumference=0;
+	unsigned int sizeV = m_vertexes.size();
+	for (unsigned int i=0; i<sizeV; ++i){
+		const IBKMK::Vector2D &p0 = m_vertexes[i];
+		const IBKMK::Vector2D &p1 = m_vertexes[(i+1)%sizeV];
+		circumference += (p1-p0).magnitude();
+	}
+	return circumference;
 }
 
 
