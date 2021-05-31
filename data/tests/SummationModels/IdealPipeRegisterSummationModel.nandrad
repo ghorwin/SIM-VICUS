@@ -249,7 +249,7 @@
 				</OutputDefinition>
 
 				<OutputDefinition>
-					<Quantity>ThermalLoad[1]</Quantity>
+					<Quantity>ActiveLayerThermalLoad</Quantity>
 					<ObjectListName>Floors</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>

@@ -1,4 +1,4 @@
-Time [h]	Zone(id=1).VentilationHeatLoad [W]	Zone(id=1).ConstructionHeatConductionLoad [W]	ConstructionInstance(id=3001).ThermalLoad(id=1) [W]
+Time [h]	Zone(id=1).VentilationHeatLoad [W]	Zone(id=1).ConstructionHeatConductionLoad [W]	ConstructionInstance(id=3001).ActiveLayerThermalLoad [W]
 0	-505.096	0	1500
 1	-480.842	526.623	1500
 2	-502.654	542.462	1500
