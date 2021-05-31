@@ -137,10 +137,6 @@ Schedule Schedule::multiply(const Schedule &other) const {
 			++j;
 		}
 	}
-	///TODO Dirk->Andreas der neu erstellte Zeitplan hat jetzt die gleiche ID wie der OTHER
-	/// damit kracht es jetzt
-	/// Wie unterbinde ich das?
-	/// Wie finde ich eine Unique Id?
 	return sched;
 }
 
@@ -168,10 +164,6 @@ Schedule Schedule::multiply(double val) const {
 	for(unsigned int i=0; i<sched.m_periods.size(); ++i)
 		sched.m_periods[i] = sched.m_periods[i].multiply(val);
 
-	///TODO Dirk->Andreas der neu erstellte Zeitplan hat jetzt die gleiche ID wie der OTHER
-	/// damit kracht es jetzt
-	/// Wie unterbinde ich das?
-	/// Wie finde ich eine Unique Id?
 	return sched;
 }
 
