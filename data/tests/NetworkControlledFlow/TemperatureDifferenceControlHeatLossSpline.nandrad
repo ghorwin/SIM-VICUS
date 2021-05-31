@@ -36,12 +36,11 @@
 						<Y unit="m2/s">1.793e-06 1.793e-06 </Y>
 					</LinearSplineParameter>
 				</HydraulicFluid>
-				<IBK:Parameter name="DefaultFluidTemperature" unit="C">10</IBK:Parameter>
 				<IBK:Parameter name="InitialFluidTemperature" unit="C">10</IBK:Parameter>
 				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
 				<PipeProperties>
 					<HydraulicNetworkPipeProperties id="9">
-						<IBK:Parameter name="PipeRoughness" unit="mm">0.007</IBK:Parameter>
+						<IBK:Parameter name="PipeRoughness" unit="mm">0.07</IBK:Parameter>
 						<IBK:Parameter name="PipeInnerDiameter" unit="mm">130.8</IBK:Parameter>
 						<IBK:Parameter name="PipeOuterDiameter" unit="mm">160</IBK:Parameter>
 						<IBK:Parameter name="UValuePipeWall" unit="W/mK">12.47255355</IBK:Parameter>
@@ -59,8 +58,7 @@
 						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
 						<IBK:Parameter name="PipeMaxDiscretizationWidth" unit="m">5</IBK:Parameter>
 					</HydraulicNetworkComponent>
-					<HydraulicNetworkComponent id="3" displayName="simple pipe" modelType="SimplePipe">
-					</HydraulicNetworkComponent>
+					<HydraulicNetworkComponent id="3" displayName="simple pipe" modelType="SimplePipe" />
 				</Components>
 
 				<ControlElements>
