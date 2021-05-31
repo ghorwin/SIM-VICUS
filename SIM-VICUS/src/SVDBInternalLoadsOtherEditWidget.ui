@@ -48,7 +48,7 @@
     <widget class="QLabel" name="labelCategory_2">
      <property name="minimumSize">
       <size>
-       <width>60</width>
+       <width>0</width>
        <height>0</height>
       </size>
      </property>
@@ -61,7 +61,7 @@
     <widget class="QLabel" name="labelDisplayName">
      <property name="minimumSize">
       <size>
-       <width>60</width>
+       <width>0</width>
        <height>0</height>
       </size>
      </property>
@@ -164,7 +164,7 @@
     <widget class="QLabel" name="labelDisplayName_2">
      <property name="minimumSize">
       <size>
-       <width>60</width>
+       <width>0</width>
        <height>0</height>
       </size>
      </property>
@@ -197,6 +197,7 @@
    <class>QtExt::LanguageStringEditWidget1</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_LanguageStringEditWidget1.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
