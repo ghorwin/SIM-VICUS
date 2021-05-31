@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -29,6 +29,7 @@
 #include <QColor>
 
 #include <IBK_Parameter.h>
+#include <IBK_IntPara.h>
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
@@ -43,15 +44,14 @@ namespace VICUS {
 class ZoneControlNaturalVentilation : public AbstractDBElement {
 public:
 
-	///TODO Dirk->Andreas das sind hier die verschiedenen Zeitpläne im vector. Muss ich da eine Einheit definieren?
 	/*! Schedule types for control. */
 	enum ScheduleType{
-		ST_TemperatureAirMax,		// Keyword: TemperatureAirMax					[C]		'Upper limit for room air temperature.'
-		ST_TemperatureAirMin,		// Keyword: TemperatureAirMin					[C]		'Lower limit for room air temperature.'
-		ST_TemperatureOutsideMax,	// Keyword: TemperatureOutsideMax				[C]		'Upper limit for outside air temperature.'
-		ST_TemperatureOutsideMin,	// Keyword: TemperatureOutsideMin				[C]		'Lower limit for outside air temperature.'
-		ST_TemperatureDifference,	// Keyword: TemperatureDifference				[K]		'Temperature difference limit (inside - outside).'
-		ST_WindSpeedMax,			// Keyword: WindSpeedMax						[m/s]	'Limit for wind speed .'
+		ST_TemperatureAirMax,		// Keyword: TemperatureAirMax							'Upper limit for room air temperature.'
+		ST_TemperatureAirMin,		// Keyword: TemperatureAirMin							'Lower limit for room air temperature.'
+		ST_TemperatureOutsideMax,	// Keyword: TemperatureOutsideMax						'Upper limit for outside air temperature.'
+		ST_TemperatureOutsideMin,	// Keyword: TemperatureOutsideMin						'Lower limit for outside air temperature.'
+		ST_TemperatureDifference,	// Keyword: TemperatureDifference						'Temperature difference limit (inside - outside).'
+		ST_WindSpeedMax,			// Keyword: WindSpeedMax								'Limit for wind speed .'
 		NUM_ST
 	};
 
@@ -83,10 +83,8 @@ public:
 	/*! Data source. */
 	IBK::MultiLanguageString		m_dataSource;							// XML:E
 
-	/// TODO Dirk->Andreas wie initialisiere ich alle im array mit einer invalid id vor?
-	/// TODO Dirk, int var[xxx] geht so nicht!
 	/*! Schedule ID. */
-	unsigned int					m_scheduleId[NUM_ST];					// XML:E
+	IBK::IntPara					m_scheduleId[NUM_ST];					// XML:E
 
 	/// TODO Dirk Das ist nur vorläufig bis die Zeitpläne funktionieren.
 	/*! List of parameters. */
