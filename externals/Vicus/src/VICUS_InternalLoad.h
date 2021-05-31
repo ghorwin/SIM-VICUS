@@ -53,10 +53,10 @@ public:
 		P_PersonCount,					// Keyword: PersonCount				[-]		'Person Count.'
 		/*! Person per area. */
 		///TODO Einheit "Pers/m2" muss aufgenommen werden
-		P_PersonPerArea,				// Keyword: PersonPerArea			[m2]	'Person per area.'
+		P_PersonPerArea,				// Keyword: PersonPerArea			[Person/m2]	'Person per area.'
 		/*! Area per person. */
 		///TODO Einheit "m2/Pers muss aufgenommen werden
-		P_AreaPerPerson,				// Keyword: AreaPerPerson			[m2]	'Area per person.'
+		P_AreaPerPerson,				// Keyword: AreaPerPerson			[m2/Person]	'Area per person.'
 		/*! Power. */
 		P_Power,						// Keyword: Power					[W]		'Power.'
 		/*! Power per Area. */
@@ -90,7 +90,7 @@ public:
 
 	/*! The description is used to identify the unit in the gui for all other equipment (electric, lights, other, ...). */
 	enum PowerMethod{
-		PM_PowerPerArea,		// Keyword: PowerPerArea					[-]		'Power'
+		PM_PowerPerArea,		// Keyword: PowerPerArea					[-]		'Power per area'
 		PM_Power,				// Keyword: Power							[-]		'Power'
 		NUM_PM
 	};
