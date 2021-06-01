@@ -85,11 +85,16 @@ private slots:
 
 	void on_pushButtonAddInfiltration_clicked();
 
-	void on_pushButtonAddVentilationNatrual_clicked();
+	void on_pushButtonAddVentilationNatural_clicked();
+
+	void on_pushButtonAddThermostat_clicked();
 
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
+
+	/*! Refresh ui buttons and content. */
+	void refreshUi();
 
 	Ui::SVDBZoneTemplateEditWidget *m_ui;
 
