@@ -60,10 +60,7 @@ bool SVDebugApplication::notify( QObject *recv, QEvent *e ) {
 	}
 	catch (Vic3D::OpenGLException &ex) {
 		ex.writeMsgStackToError();
-		IBK::IBK_Message("IBK::Exception caught.", IBK::MSG_ERROR, FUNC_ID);
-		m_aboutToTerminate = true;
-		/// \todo Andreas: do emergency project save - to avoid data loss
-		QApplication::exit(1); // can't go on, quit here
+		IBK::IBK_Message("Vic3D::OpenGLException caught.", IBK::MSG_ERROR, FUNC_ID);
 	}
 	catch (IBK::Exception &ex) {
 		ex.writeMsgStackToError();
@@ -71,7 +68,7 @@ bool SVDebugApplication::notify( QObject *recv, QEvent *e ) {
 	}
 	catch (std::exception &ex) {
 		IBK::IBK_Message( ex.what(), IBK::MSG_ERROR, FUNC_ID);
-		IBK::IBK_Message( "IBK::Exception caught.", IBK::MSG_ERROR, FUNC_ID);
+		IBK::IBK_Message( "std::exception.", IBK::MSG_ERROR, FUNC_ID);
 	}
 
 	return false;
