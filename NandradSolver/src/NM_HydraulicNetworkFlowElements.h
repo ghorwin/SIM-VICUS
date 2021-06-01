@@ -118,6 +118,8 @@ public:
 	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
 	void partials(double mdot, double p_inlet, double p_outlet,
 				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
+	void inputReferences(std::vector<InputReference> &) const override;
+	void setInputValueRefs(std::vector<const double *>::const_iterator &resultValueRefIt) override;
 
 	/*! Element's ID, needed to formulated input references. */
 	unsigned int					m_id;
@@ -127,7 +129,6 @@ public:
 private:
 	/*! Constant pressure head [Pa] to be added. */
 	double							m_pressureHead = -999;
-
 }; // HNConstantPressurePump
 
 
@@ -142,6 +143,8 @@ public:
 	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
 	void partials(double mdot, double p_inlet, double p_outlet,
 				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
+	void inputReferences(std::vector<InputReference> &) const override;
+	void setInputValueRefs(std::vector<const double *>::const_iterator &) override;
 
 	/*! Element's ID, needed to formulated input references. */
 	unsigned int					m_id;

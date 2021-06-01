@@ -153,6 +153,22 @@ void HNConstantPressurePump::partials(double /*mdot*/, double /*p_inlet*/, doubl
 }
 
 
+void HNConstantPressurePump::inputReferences(std::vector<InputReference> & inputRefs) const {
+	InputReference inputRef;
+	inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	inputRef.m_name = std::string("PumpPressureHead");
+	inputRef.m_required = false;
+	inputRef.m_id = m_id;
+	inputRefs.push_back(inputRef);
+}
+
+
+void HNConstantPressurePump::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefIt) {
+	m_pressureHeadRef = *resultValueRefIt; // optional, may be nullptr
+	++resultValueRefIt;
+}
+
+
 // *** HNConstantMassFluxPump ***
 
 HNConstantMassFluxPump::HNConstantMassFluxPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component) :
@@ -176,6 +192,23 @@ void HNConstantMassFluxPump::partials(double /*mdot*/, double /*p_inlet*/, doubl
 	df_dmdot = 1;
 	df_dp_inlet = 0;
 	df_dp_outlet = 0;
+}
+
+
+void HNConstantMassFluxPump::inputReferences(std::vector<InputReference> & inputRefs) const {
+	// we allow an optional PumpMassFlux input reference to override our parameter
+	InputReference inputRef;
+	inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	inputRef.m_name = std::string("PumpMassFlux");
+	inputRef.m_required = false;
+	inputRef.m_id = m_id;
+	inputRefs.push_back(inputRef);
+}
+
+
+void HNConstantMassFluxPump::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefIt) {
+	m_massFluxRef = *resultValueRefIt; // optional, may be nullptr
+	++resultValueRefIt;
 }
 
 
