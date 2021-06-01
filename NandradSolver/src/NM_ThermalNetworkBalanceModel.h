@@ -219,15 +219,6 @@ private:
 		*/
 		ActiveLayerProperties				*m_activeLayerProperties = nullptr;
 
-		/*! Reference to heat exchange spline (heat flow or temperature), nullptr if not needed. */
-		const NANDRAD::LinearSplineParameter*	m_heatExchangeSplineRef = nullptr;
-
-		/*! This memory slot is used when the respective heat exchange value (heat flow or temperature) is interpolated
-			from a linear spline parameter.
-			Elements with spline-based input values hold a pointer reference to this slot.
-		*/
-		double								m_heatExchangeSplineValue = 999;
-
 		// the following references point to results computed from flow elements.
 
 		/*! Reference to heat flux out of the flow element). */

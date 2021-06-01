@@ -420,6 +420,45 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 		m_meanTemperatureRefs[i] = &fe->m_meanTemperature;
 	}
 
+	// set heat exchange spline values
+	// process all flow elements
+	for (unsigned int i = 0; i < m_network->m_elements.size(); ++i) {
+		// Create storage locations of zone/active layer exchange and populate the FlowElementProperties objects.
+		const NANDRAD::HydraulicNetworkHeatExchange &heatExchange = m_network->m_elements[i].m_heatExchange;
+		switch (heatExchange.m_modelType) {
+			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstant:
+			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant:
+			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureZone:
+			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer:
+			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureFMUInterface:
+			break;
+
+			// exchange with purely time-dependent temperature spline data
+			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline: {
+				// store pointer to interpolated value into respective flow element
+				ThermalNetworkAbstractFlowElementWithHeatLoss * heatLossElement =
+						dynamic_cast<ThermalNetworkAbstractFlowElementWithHeatLoss*>(m_p->m_flowElements[i]);
+				IBK_ASSERT(heatLossElement != nullptr);
+				heatLossElement->m_heatExchangeValueRef = &m_heatExchangeSplineValues[i];
+			}
+			break;
+
+			// exchange with purely time-dependent heat loss spline data
+			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
+			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser: {
+				// store pointer to interpolated value into respective flow element
+				ThermalNetworkAbstractFlowElementWithHeatLoss * heatLossElement =
+						dynamic_cast<ThermalNetworkAbstractFlowElementWithHeatLoss*>(m_p->m_flowElements[i]);
+				IBK_ASSERT(heatLossElement != nullptr);
+				heatLossElement->m_heatExchangeValueRef = &m_heatExchangeSplineValues[i];
+			}
+			break;
+
+			case NANDRAD::HydraulicNetworkHeatExchange::NUM_T: ;
+		}
+	}
+
+
 	// remaining initialization related to flow element result value communication within NANDRAD model world
 	// is done by ThermalNetworkBalanceModel
 }
