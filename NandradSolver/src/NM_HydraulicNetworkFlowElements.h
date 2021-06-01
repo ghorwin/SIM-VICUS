@@ -46,9 +46,6 @@ public:
 	void partials(double mdot, double p_inlet, double p_outlet,
 				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
 
-	/*! Sets fluid temperature [K] for all internal pipe volumes. */
-	void setFluidTemperature(double fluidTemp) override;
-
 private:
 	/*! Pressure loss due to pipe wall friction in [Pa]. For positive mass flows, there will be a positive pressure loss.
 		\param mdot Mass flow in [kg/s]
@@ -70,9 +67,6 @@ private:
 
 	/*! Number of parallel pipes (=1 per default).*/
 	unsigned int					m_nParallelPipes;
-
-	/*! Fluid temperature [K], will be updated in each call to setFluidTemperature(). */
-	double							m_fluidTemperature = -999;
 
 }; // HNPipeElement
 

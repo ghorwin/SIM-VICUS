@@ -137,9 +137,6 @@ private:
 	HydraulicNetworkModelImpl						*m_p = nullptr;
 
 	/*! Container with global pointer to calculated fluid temperatures.	*/
-	std::vector<const double*>						m_fluidTemperatureRefs;
-
-	/*! Container with global pointer to calculated fluid temperatures.	*/
 	std::vector<const double*>						m_fluidHeatLossesRefs;
 
 	/*! This vector contains pointers to pump elements (either pressure difference or mass flux) defined in the network.

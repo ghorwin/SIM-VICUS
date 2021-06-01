@@ -22,6 +22,8 @@
 #ifndef NM_HydraulicNetworkAbstractFlowElementH
 #define NM_HydraulicNetworkAbstractFlowElementH
 
+#include "NM_InputReference.h"
+
 namespace NANDRAD_MODEL {
 
 /*! Defines the abstract interface for a flow element.
@@ -43,9 +45,23 @@ public:
 	virtual void partials(double mdot, double p_inlet, double p_outlet,
 						  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const = 0;
 
-	/*! Sets fluid temperature [K] for all internal pipe volumes. */
-	virtual void setFluidTemperature(double fluidTemp) { (void)fluidTemp; }
+	/*! Adds flow-element-specific input references (schedules etc.) to the list of input references.
+		Default implementation does nothing.
+	*/
+	virtual void inputReferences(std::vector<NANDRAD_MODEL::InputReference> & /*inputRefs*/) const {}
 
+	/*! Provides the element with its own requested model inputs.
+		The element must take exactly as many input values from the vector and move the iterator forward.
+		When the function returns, the iterator must point to the first input reference past this element's inputs.
+	*/
+	virtual void setInputValueRefs(std::vector<const double *>::const_iterator & /*resultValueRefs*/) {}
+
+	/*! Reference to memory slot containing the (average) fluid temperature in [K] of the flow element.
+		For MT_HydraulicNetwork this points to the Network parameter HydraulicNetwork::P_DefaultFluidTemperature.
+		For MT_ThermalHydraulicNetwork this is a reference to the result "FluidTemperature" computed by
+		ThermalNetworkStatesModel.
+	*/
+	const double * m_fluidTemperatureRef = nullptr;
 };
 
 } // namespace NANDRAD_MODEL

@@ -140,9 +140,8 @@ void HydraulicNetworkModel::setup() {
 
 	// set initial temperature in case of HydraulicNetwork
 	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_HydraulicNetwork) {
-		double fluidTemp = m_hydraulicNetwork->m_para[NANDRAD::HydraulicNetwork::P_DefaultFluidTemperature].value;
 		for (HydraulicNetworkAbstractFlowElement * e : m_p->m_flowElements)
-			e->setFluidTemperature(fluidTemp);
+			e->m_fluidTemperatureRef = &m_hydraulicNetwork->m_para[NANDRAD::HydraulicNetwork::P_DefaultFluidTemperature].value;
 	}
 
 	// set reference pressure
@@ -288,6 +287,10 @@ void HydraulicNetworkModel::inputReferences(std::vector<InputReference> & inputR
 			inputRefs.push_back(inputRef);
 		}
 	}
+	// loop over all elements and ask them to request individual inputs, for example scheduled quantities
+	for (unsigned int i = 0; i < m_p->m_flowElements.size(); ++i)
+		m_p->m_flowElements[i]->inputReferences(inputRefs);
+
 	// generate optional input references for all pump elements
 	for (const HydraulicNetworkAbstractFlowElement* pumpE : m_pumpElements) {
 		// different handling for different pumps
@@ -320,9 +323,11 @@ void HydraulicNetworkModel::setInputValueRefs(const std::vector<QuantityDescript
 {
 	unsigned int currentIndex = 0;
 	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
-		// copy references into fluid temperature vector
-		for (unsigned int i = 0; i < m_elementIds.size(); ++i)
-			m_fluidTemperatureRefs.push_back(resultValueRefs[i]);
+		// set all fluid temperature references
+		for (unsigned int i = 0; i < m_elementIds.size(); ++i) {
+			HydraulicNetworkAbstractFlowElement *fe = m_p->m_flowElements[i];
+			fe->m_fluidTemperatureRef = resultValueRefs[i];
+		}
 		currentIndex = m_elementIds.size();
 	}
 	// now transfer input references to pump models
@@ -355,14 +360,6 @@ void HydraulicNetworkModel::stateDependencies(std::vector<std::pair<const double
 
 int HydraulicNetworkModel::update() {
 	FUNCID(HydraulicNetworkModel::update);
-
-	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
-		// set all fluid temperatures
-		for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
-			HydraulicNetworkAbstractFlowElement *fe = m_p->m_flowElements[i];
-			fe->setFluidTemperature(*m_fluidTemperatureRefs[i]);
-		}
-	}
 
 	// re-compute hydraulic network
 
