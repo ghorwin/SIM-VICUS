@@ -64,6 +64,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Two networks are connected, one to the cold side, the other to the hot side of the heat pump");
 	tr("TemperatureDifference");
 	tr("MassFlow");
+	tr("Zone air ThermostatValue");
 	tr("PController");
 	tr("PIController");
 	tr("Kp-parameter");

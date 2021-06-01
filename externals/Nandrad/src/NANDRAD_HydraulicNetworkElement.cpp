@@ -122,6 +122,20 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 		}
 		// set reference
 		m_controlElement = &(*ctit);
+
+		// for temperature difference we enforce heat exchange type 'HeatLossSpline' or 'HeatLossSplineCondenser'
+		if(ctit->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference) {
+			// wrong heat exchange type
+			switch(m_heatExchange.m_modelType ) {
+				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
+				break;
+				default:
+					throw IBK::Exception(IBK::FormatString("Only HeatExchangeType 'HeatLossSpline' or 'HeatLossSplineCondenser' "
+														   "is allowed in combination with HydraulicNetworkController property "
+														   "'TemperatureDifference'!"), FUNC_ID);
+			}
+		}
 	}
 
 }

@@ -42,10 +42,6 @@ void HydraulicNetworkControlElement::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
 
-		if (!TiXmlAttribute::attributeByName(element, "controllerType"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'controllerType' attribute.") ), FUNC_ID);
-
 		if (!TiXmlAttribute::attributeByName(element, "controlledProperty"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'controlledProperty' attribute.") ), FUNC_ID);
@@ -100,6 +96,8 @@ void HydraulicNetworkControlElement::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
+			else if (cName == "ThermostatZoneID")
+				m_thermostatZoneID = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "MaximumControllerResultValue")
 				m_maximumControllerResultValue = NANDRAD::readPODElement<double>(c, cName);
 			else {
@@ -129,6 +127,8 @@ TiXmlElement * HydraulicNetworkControlElement::writeXML(TiXmlElement * parent) c
 		IBK_ASSERT("SetPoint" == m_setPoint.name);
 		TiXmlElement::appendIBKParameterElement(e, "SetPoint", m_setPoint.IO_unit.name(), m_setPoint.get_value());
 	}
+	if (m_thermostatZoneID != NANDRAD::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "ThermostatZoneID", nullptr, std::string(), IBK::val2string<unsigned int>(m_thermostatZoneID));
 	TiXmlElement::appendSingleAttributeElement(e, "MaximumControllerResultValue", nullptr, std::string(), IBK::val2string<double>(m_maximumControllerResultValue));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
