@@ -216,6 +216,19 @@ void HNPressureLossCoeffElement::partials(double mdot, double p_inlet, double p_
 	df_dmdot = (f_eps - f)/EPS;
 }
 
+void HNPressureLossCoeffElement::updateResults(double mdot, double /*p_inlet*/, double /*p_outlet*/)
+{
+	// calculate zetaControlled value for valve
+	if (m_controlElement != nullptr) {
+
+		IBK_ASSERT(m_heatExchangeHeatLossRef != nullptr);
+		// compute current temperature for given heat loss and mass flux
+		// Mind: access m_heatExchangeValueRef and not m_heatLoss here!
+		m_temperatureDifference = *m_heatExchangeHeatLossRef/(mdot*m_fluidHeatCapacity);
+		m_zetaControlled = zetaControlled(mdot);
+	}
+}
+
 
 // *** HNConstantPressurePump ***
 

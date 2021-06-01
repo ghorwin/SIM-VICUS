@@ -100,22 +100,32 @@ public:
 	*/
 	virtual void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
 
-//	/*! Publishes individual model quantities via descriptions. */
-//	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
-//		quantities.push_back(QuantityDescription("ControllerResultValue","---", "The calculated controller zeta value for the valve", false));
-//		quantities.push_back(QuantityDescription("TemperatureDifference","K", "The difference between inlet and outlet temperature", false));
-//	}
+	/*! Publishes individual model quantities via descriptions. */
+	virtual void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
+		if(m_controlElement == nullptr)
+			return;
+		// calculate zetaControlled value for valve
+		quantities.push_back(QuantityDescription("ControllerResultValue","---", "The calculated controller zeta value for the valve", false));
+		quantities.push_back(QuantityDescription("TemperatureDifference","K", "The difference between inlet and outlet temperature", false));
+	}
 
-//	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
-//	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
-//		valRefs.push_back(&m_zetaControlled);
-//		valRefs.push_back(&m_temperatureDifference);
-//	}
+	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
+	virtual void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
+		if(m_controlElement == nullptr)
+			return;
+		// calculate zetaControlled value for valve
+		valRefs.push_back(&m_zetaControlled);
+		valRefs.push_back(&m_temperatureDifference);
+	}
 
 	// HydraulicNetworkAbstractFlowElement interface
-	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
-	void partials(double mdot, double p_inlet, double p_outlet,
+	virtual double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
+	virtual void partials(double mdot, double p_inlet, double p_outlet,
 				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
+
+	/*! Called at the end of a successful Newton iteration. Allows to calculte and store results.
+	*/
+	virtual void updateResults(double mdot, double p_inlet, double p_outlet) override;
 
 private:
 	/*! Computes the controlled zeta-value if a control-model is implemented.
@@ -139,6 +149,12 @@ private:
 
 	/*! Effective hydraulic (inner) diameter of pipe in [m] */
 	double							m_diameter = -999;
+
+	/*! the calculated controller zeta value for the valve */
+	double							m_zetaControlled = -999;
+
+	/*! the calculated temperature difference */
+	double							m_temperatureDifference = -999;
 
 	/*! Reference to the controller parametrization object.*/
 	const NANDRAD::HydraulicNetworkControlElement

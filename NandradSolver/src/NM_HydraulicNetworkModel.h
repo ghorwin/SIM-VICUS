@@ -149,6 +149,13 @@ private:
 	*/
 	std::vector<HydraulicNetworkAbstractFlowElement*> m_pumpElements;
 
+	/*! Vector of all additional model quantities for outputs. */
+	std::vector<QuantityDescription>				m_modelQuantities;
+	/*! Vector of all additional model quantity references. */
+	std::vector<const double *>						m_modelQuantityRefs;
+	/*! Offset of quantities for all models inside modelQuantities and modelQuantityRefs vector. */
+	std::vector<unsigned int>						m_modelQuantityOffset;
+
 
 	friend class ThermalNetworkStatesModel;
 

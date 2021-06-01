@@ -23,6 +23,7 @@
 #define NM_HydraulicNetworkAbstractFlowElementH
 
 #include "NM_InputReference.h"
+#include "NM_QuantityDescription.h"
 
 namespace NANDRAD_MODEL {
 
@@ -35,6 +36,12 @@ public:
 
 	/*! D'tor, definition is in NM_HydraulicNetworkFlowElements.cpp. */
 	virtual ~HydraulicNetworkAbstractFlowElement();
+
+	/*! Publishes individual model quantities via descriptions. */
+	virtual void modelQuantities(std::vector<QuantityDescription> &/*quantities*/) const { }
+
+	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
+	virtual void modelQuantityValueRefs(std::vector<const double*> &/*valRefs*/) const { }
 
 	/*! The flow element's system function. Actually evaluates the residual of the system function
 		for a given combination of mass flux [kg/s], inlet and output pressures [Pa].
@@ -55,6 +62,10 @@ public:
 		When the function returns, the iterator must point to the first input reference past this element's inputs.
 	*/
 	virtual void setInputValueRefs(std::vector<const double *>::const_iterator & /*resultValueRefs*/) {}
+
+	/*! Called at the end of a successful Newton iteration. Allows to calculte and store results.
+	*/
+	virtual void updateResults(double mdot, double p_inlet, double p_outlet) {}
 
 	/*! Reference to memory slot containing the (average) fluid temperature in [K] of the flow element.
 		For MT_HydraulicNetwork this points to the Network parameter HydraulicNetwork::P_DefaultFluidTemperature.

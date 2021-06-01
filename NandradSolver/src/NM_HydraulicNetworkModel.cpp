@@ -127,6 +127,7 @@ void HydraulicNetworkModel::setup() {
 				m_p->m_flowElements.push_back(hxElement); // transfer ownership
 			} break;
 
+			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpReal:
 			case NANDRAD::HydraulicNetworkComponent::NUM_MT:{
 				throw IBK::Exception(IBK::FormatString("Unsupported model type for "
 									"HydraulicNetworkComponent with id %1!")
@@ -136,7 +137,23 @@ void HydraulicNetworkModel::setup() {
 		// fill ids
 		m_elementIds.push_back(e.m_id);
 		m_elementDisplayNames.push_back(e.m_displayName);
+
+		// retrieve model quantities
+		m_modelQuantityOffset.push_back(m_modelQuantities.size());
+		// retrieve current flow element (m_flowElements vector has same size as
+		const HydraulicNetworkAbstractFlowElement *fe = m_p->m_flowElements.back();
+		fe->modelQuantities(m_modelQuantities);
+		fe->modelQuantityValueRefs(m_modelQuantityRefs);
+		// correct type and id of quantity description
+		for(unsigned int k = m_modelQuantityOffset.back(); k < m_modelQuantities.size(); ++k) {
+			m_modelQuantities[k].m_id = m_elementIds.back();
+			m_modelQuantities[k].m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+		}
+		// implementation check
+		IBK_ASSERT(m_modelQuantities.size() == m_modelQuantityRefs.size());
 	} // for m_hydraulicNetwork->m_elements
+	// mark end of vector
+	m_modelQuantityOffset.push_back(m_modelQuantities.size());
 
 	// set initial temperature in case of HydraulicNetwork
 	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_HydraulicNetwork) {
@@ -205,6 +222,10 @@ void HydraulicNetworkModel::resultDescriptions(std::vector<QuantityDescription> 
 		desc.m_id = m_elementIds[i];
 		resDesc.push_back(desc);
 	}
+
+	// add individual model results
+	if (!m_modelQuantities.empty())
+		resDesc.insert(resDesc.end(), m_modelQuantities.begin(), m_modelQuantities.end());
 }
 
 
@@ -251,6 +272,21 @@ const double * HydraulicNetworkModel::resultValueRef(const InputReference & quan
 	else if (quantityName == std::string("PressureDifference"))
 		return &m_p->m_pressureDifferences[pos];
 
+	// search for quantity inside individual element results
+	IBK_ASSERT(pos < m_modelQuantityOffset.size() - 1);
+	unsigned int startIdx = m_modelQuantityOffset[pos];
+	unsigned int endIdx = m_modelQuantityOffset[pos + 1];
+
+	// check if element contains requested quantity
+	for (unsigned int resIdx = startIdx; resIdx < endIdx; ++resIdx) {
+		const QuantityDescription &modelDesc = m_modelQuantities[resIdx];
+		if (modelDesc.m_name == quantityName.m_name) {
+			// index is not allowed for network element output
+			if (quantityName.m_index != -1)
+				return nullptr;
+			return m_modelQuantityRefs[resIdx];
+		}
+	}
 	// unknown quantity name
 	return nullptr;
 }
@@ -334,6 +370,11 @@ int HydraulicNetworkModel::update() {
 		if (res != 0) {
 			IBK_FastMessage(IBK::VL_DETAILED)("Network solver returned recoverable error.", IBK::MSG_ERROR, FUNC_ID, IBK::VL_DETAILED);
 			return res;
+		}
+		// update all model results
+		for (unsigned int i = 0; i < m_elementIds.size(); ++i) {
+			HydraulicNetworkAbstractFlowElement *fe = m_p->m_flowElements[i];
+			fe->updateResults(m_p->m_fluidMassFluxes[i], m_p->m_inletNodePressures[i], m_p->m_outletNodePressures[i]);
 		}
 	}
 	catch (IBK::Exception & ex) {
