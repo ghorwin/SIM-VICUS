@@ -151,7 +151,7 @@
          </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QPushButton" name="pushButtonAddVentilationNatrual">
+         <widget class="QPushButton" name="pushButtonAddVentilationNatural">
           <property name="text">
            <string>nat. Ventilation</string>
           </property>
@@ -170,7 +170,7 @@
        </property>
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="0">
-         <widget class="QPushButton" name="pushButtonAddThernmostat">
+         <widget class="QPushButton" name="pushButtonAddThermostat">
           <property name="text">
            <string>Thermostat</string>
           </property>
@@ -190,7 +190,7 @@
          </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QPushButton" name="pushButtonAddVentilationNatural">
+         <widget class="QPushButton" name="pushButtonAddVentilationNaturalControl">
           <property name="text">
            <string>nat. Ventilation</string>
           </property>
@@ -275,6 +275,7 @@
    <class>QtExt::LanguageStringEditWidget1</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_LanguageStringEditWidget1.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>
