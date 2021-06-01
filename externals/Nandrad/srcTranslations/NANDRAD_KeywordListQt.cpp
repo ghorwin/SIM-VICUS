@@ -63,13 +63,13 @@ KeywordListQt::KeywordListQt() {
 	tr("The network is connected to the cold side (source) of the heat pump");
 	tr("Two networks are connected, one to the cold side, the other to the hot side of the heat pump");
 	tr("TemperatureDifference");
-	tr("MassFlow");
-	tr("Zone air ThermostatValue");
+	tr("Zone thermostat control values");
 	tr("PController");
 	tr("PIController");
 	tr("Kp-parameter");
 	tr("Ki-parameter");
 	tr("Kd-parameter");
+	tr("Target temperature difference.");
 	tr("Pipe length");
 	tr("Number of parallel pipes");
 	tr("Difference to constant temperature");

@@ -164,29 +164,36 @@ double HNPressureLossCoeffElement::zetaControlled(double mdot) const {
 			const double temperatureDifference = *m_heatExchangeHeatLossRef/(mdot*m_fluidHeatCapacity);
 			// if temperature difference is larger than the set point (negative e), we want maximum mass flux -> zeta = 0
 			// if temperature difference is smaller than the set point (positive e), we decrease mass flow by increasing zeta
-			const double e = m_controlElement->m_setPoint.value - temperatureDifference;
+			const double e = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_TemperatureDifferenceSetpoint].value - temperatureDifference;
 			double zetaControlled = 0.0;
 			if (e <= 0) {
 				zetaControlled = 0;
 			}
 			else {
-				// relate controller error e to zeta
-				const double y = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value * e;
-				const double zetaMax = m_controlElement->m_maximumControllerResultValue;
-				// apply clipping
-				if (zetaMax > 0 && y > zetaMax)
-					zetaControlled = zetaMax;
-				else {
-					zetaControlled = y;
+				switch (m_controlElement->m_controllerType) {
+					case NANDRAD::HydraulicNetworkControlElement::CT_PController: {
+						// relate controller error e to zeta
+						const double y = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value * e;
+						const double zetaMax = m_controlElement->m_maximumControllerResultValue;
+						// apply clipping
+						if (zetaMax > 0 && y > zetaMax)
+							zetaControlled = zetaMax; // Note: this is problematic inside a Newton method without relaxation!
+						else {
+							zetaControlled = y;
+						}
+					} break;
+
+					case NANDRAD::HydraulicNetworkControlElement::CT_PIController:
+						throw IBK::Exception("PIController not implemented, yet.", FUNC_ID);
+
+					case NANDRAD::HydraulicNetworkControlElement::NUM_CT: break; // just to make compiler happy
 				}
+
 			}
 			return zetaControlled;
 		}
-		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlow:
-			throw IBK::Exception("Control Type not implemented yet!", FUNC_ID);
 
-		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue:
-			break;
+		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue: // not a possible combination
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ; // nothing todo - we return 0
 	}
 //	IBK::IBK_Message(IBK::FormatString("zeta = %1, m_heatLoss = %4 W, dT = %2 K, mdot = %3 kg/s, heatExchangeValueRef = %5 W\n")
