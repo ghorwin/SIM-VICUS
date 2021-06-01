@@ -42,12 +42,9 @@
 namespace NANDRAD_MODEL {
 
 
-void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel,
-									   const NANDRAD::SimulationParameter & simPara)
-{
+void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 	// copy states model pointer
 	m_statesModel = statesModel;
-	m_simPara = &simPara;
 
 	// sanity checks
 	IBK_ASSERT(m_statesModel->m_network != nullptr);
@@ -328,18 +325,6 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference &
 }
 
 
-int ThermalNetworkBalanceModel::setTime(double t) {
-//	IBK_FUNCID_Message(ThermalNetworkBalanceModel::setTime)
-
-	// update all spline values
-	for (unsigned int i = 0; i < m_flowElementProperties.size(); ++i) {
-		FlowElementProperties &elemProp = m_flowElementProperties[i];
-		if (elemProp.m_heatExchangeSplineRef != nullptr) {
-			elemProp.m_heatExchangeSplineValue = m_simPara->evaluateTimeSeries(t, *elemProp.m_heatExchangeSplineRef);
-		}
-	}
-	return 0;
-}
 
 
 int ThermalNetworkBalanceModel::priorityOfModelEvaluation() const {

@@ -51,12 +51,14 @@ ThermalNetworkStatesModel::~ThermalNetworkStatesModel() {
 
 
 void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
-									  const HydraulicNetworkModel &hydrNetworkModel)
+									  const HydraulicNetworkModel &hydrNetworkModel,
+									  const NANDRAD::SimulationParameter & simPara)
 {
 	FUNCID(ThermalNetworkStatesModel::setup);
 
 	// store network pointer
 	m_network = &nw;
+	m_simPara = &simPara;
 	// create implementation instance
 	m_p = new ThermalNetworkModelImpl; // we take ownership
 
@@ -408,6 +410,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 	// resize reference values
 	m_meanTemperatureRefs.resize(m_elementIds.size(), nullptr);
+	m_heatExchangeSplineValues.resize(m_elementIds.size(), 0);
 
 	// initialize all fluid temperatures
 	for(unsigned int i = 0; i < m_p->m_flowElements.size(); ++i) {
@@ -435,6 +438,28 @@ void ThermalNetworkStatesModel::resultDescriptions(std::vector<QuantityDescripti
 		desc.m_id = m_elementIds[i];
 		resDesc.push_back(desc);
 	}
+
+	// export all heat exchange values
+	for (unsigned int i=0; i<m_elementIds.size(); ++i) {
+		switch (m_network->m_elements[i].m_heatExchange.m_modelType) {
+			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline : {
+				QuantityDescription desc("HeatExchangeHeatLoss", "W", "Pre-described heat loss.", false);
+				desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+				desc.m_id = m_network->m_elements[i].m_id;
+				resDesc.push_back(desc);
+			} break;
+
+			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline : {
+				QuantityDescription desc("HeatExchangeTemperature", "K", "Pre-described external temperature.", false);
+				desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+				desc.m_id = m_network->m_elements[i].m_id;
+				resDesc.push_back(desc);
+			} break;
+
+			default: ;
+		}
+	}
+
 }
 
 
@@ -447,9 +472,9 @@ const double * ThermalNetworkStatesModel::resultValueRef(const InputReference & 
 			return &m_y[0];
 		return nullptr;
 	}
+
 	if (quantityName == std::string("FluidTemperature")) {
-		if (quantity.m_referenceType != NANDRAD::ModelInputReference::MRT_NETWORKELEMENT)
-			return nullptr;
+		IBK_ASSERT(quantity.m_referenceType == NANDRAD::ModelInputReference::MRT_NETWORKELEMENT);
 		// access to an element temperature
 		std::vector<unsigned int>::const_iterator fIt = std::find(m_elementIds.begin(), m_elementIds.end(), (unsigned int) quantity.m_id);
 		// invalid index access
@@ -459,29 +484,40 @@ const double * ThermalNetworkStatesModel::resultValueRef(const InputReference & 
 		return m_meanTemperatureRefs[pos];
 	}
 
+
+	if (quantityName == std::string("HeatExchangeHeatLoss") ||
+		quantityName == std::string("HeatExchangeTemperature"))
+	{
+		for (unsigned int i=0; i<m_elementIds.size(); ++i) {
+			if (quantity.m_id != m_network->m_elements[i].m_id) continue; // not our element
+			return &m_heatExchangeSplineValues[i];
+		}
+	}
+
 	return nullptr;
 }
 
 
-void ThermalNetworkStatesModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & /*resultInputValueReferences*/) const {
-	// the mean temperatures depend on the internal energies, but some elements like dynamic pipe
-	// have several states that impact a single mean temperature
+int ThermalNetworkStatesModel::setTime(double t) {
+//	IBK_FUNCID_Message(ThermalNetworkStatesModel::setTime)
 
-	// Note: This dependency is currently formulated in ThermalNetworkBalanceModel::stateDependencies().
-	//       It won't work to publish the dependency here, since NandradModel::initSolverMatrix() does not
-	//       yet take the m_meanTemperatureRefs into the result vector, causing an assert while building the matrix
+	// update all spline values
+	for (unsigned int i=0; i<m_elementIds.size(); ++i) {
+		switch (m_network->m_elements[i].m_heatExchange.m_modelType) {
+			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline : {
+				m_heatExchangeSplineValues[i] = m_simPara->evaluateTimeSeries(t,
+					m_network->m_elements[i].m_heatExchange.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss]);
+			} break;
 
-	// TODO Anne, for consistency-sake, move dependency information here and adjust NandradModel::initSolverMatrix() ???
-#if 0
-	// offset always points to y-vector memory range of the next element
-	unsigned int offset = 0;
-	// loop over all elements
-	for (unsigned int i=0; i<m_p->m_flowElements.size(); ++i) {
-		for (unsigned int j=0; j<m_p->m_flowElements[i]->nInternalStates(); ++j)
-			resultInputValueReferences.push_back(std::make_pair(m_meanTemperatureRefs[i], &m_y[offset + j]));
-		offset += m_p->m_flowElements[i]->nInternalStates();
+			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline : {
+				m_heatExchangeSplineValues[i] = m_simPara->evaluateTimeSeries(t,
+					m_network->m_elements[i].m_heatExchange.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature]);
+			} break;
+
+			default :;
+		}
 	}
-#endif
+	return 0;
 }
 
 
@@ -514,5 +550,8 @@ int ThermalNetworkStatesModel::update(const double * y) {
 	}
 	return 0;
 }
+
+
+
 
 } // namespace NANDRAD_MODEL

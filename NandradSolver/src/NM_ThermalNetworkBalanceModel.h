@@ -24,7 +24,6 @@
 
 #include "NM_AbstractModel.h"
 #include "NM_AbstractStateDependency.h"
-#include "NM_AbstractTimeDependency.h"
 
 #include <NANDRAD_Constants.h>
 
@@ -36,7 +35,6 @@ namespace IBK {
 
 namespace NANDRAD {
 	class LinearSplineParameter;
-	class SimulationParameter;
 }
 
 namespace NANDRAD_MODEL {
@@ -78,7 +76,7 @@ class ThermalNetworkStatesModel;
 		- OutletNodeTemperature (in [C])
 		- ... additional, flow-element specific outputs
 */
-class ThermalNetworkBalanceModel : public AbstractModel, public AbstractStateDependency, public AbstractTimeDependency {
+class ThermalNetworkBalanceModel : public AbstractModel, public AbstractStateDependency {
 public:
 
 	/*! Constructor */
@@ -90,8 +88,7 @@ public:
 	/*! Initializes model by resizing the y and ydot vectors.
 		Most of the data structures are already initialized by ThermalNetworkStatesModel.
 	*/
-	void setup(ThermalNetworkStatesModel *statesModel,
-			   const NANDRAD::SimulationParameter &simPara);
+	void setup(ThermalNetworkStatesModel *statesModel);
 
 	// *** Re-implemented from AbstractModel
 
@@ -117,11 +114,6 @@ public:
 		\return Returns pointer to memory location with this quantity, otherwise nullptr if parameter ID was not found.
 	*/
 	virtual const double * resultValueRef(const InputReference & quantity) const override;
-
-	// *** Re-implemented from AbstractTimeStateDependency
-
-	/*! Updates time-dependent spline data (temperatures/heat losses). */
-	virtual int setTime(double t) override;
 
 	// *** Re-implemented from AbstractStateDependency
 
@@ -279,8 +271,6 @@ private:
 	/*! Pointer to states model. */
 	ThermalNetworkStatesModel						*m_statesModel = nullptr;
 
-	/*! Pointer to simulation parameter object. */
-	const NANDRAD::SimulationParameter				*m_simPara = nullptr;
 };
 
 } // namespace NANDRAD_MODEL
