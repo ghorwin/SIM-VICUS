@@ -224,6 +224,7 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "TemperatureDifference";
 				case 1 : return "MassFlow";
+				case 2 : return "ThermostatValue";
 			} break;
 			// HydraulicNetworkControlElement::ControllerType
 			case 13 :
@@ -826,6 +827,7 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "TemperatureDifference";
 				case 1 : return "MassFlow";
+				case 2 : return "ThermostatValue";
 			} break;
 			// HydraulicNetworkControlElement::ControllerType
 			case 13 :
@@ -1429,6 +1431,7 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "TemperatureDifference";
 				case 1 : return "MassFlow";
+				case 2 : return "Zone air ThermostatValue";
 			} break;
 			// HydraulicNetworkControlElement::ControllerType
 			case 13 :
@@ -2031,6 +2034,7 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
+				case 2 : return "";
 			} break;
 			// HydraulicNetworkControlElement::ControllerType
 			case 13 :
@@ -2633,6 +2637,7 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkControlElement::ControllerType
 			case 13 :
@@ -3235,6 +3240,7 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkControlElement::ControllerType
 			case 13 :
@@ -3772,7 +3778,7 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::HeatPumpIntegration
 			case 11 : return 3;
 			// HydraulicNetworkControlElement::ControlledProperty
-			case 12 : return 2;
+			case 12 : return 3;
 			// HydraulicNetworkControlElement::ControllerType
 			case 13 : return 2;
 			// HydraulicNetworkControlElement::para_t
@@ -3946,7 +3952,7 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::HeatPumpIntegration
 			case 11 : return 2;
 			// HydraulicNetworkControlElement::ControlledProperty
-			case 12 : return 1;
+			case 12 : return 2;
 			// HydraulicNetworkControlElement::ControllerType
 			case 13 : return 1;
 			// HydraulicNetworkControlElement::para_t
