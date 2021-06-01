@@ -3,6 +3,7 @@
 
 #include "NANDRAD_LinearSplineParameter.h"
 #include "NANDRAD_Constants.h"
+#include "NANDRAD_Zone.h"
 
 #include <IBK_Parameter.h>
 
@@ -22,12 +23,13 @@ public:
 	NANDRAD_COMP(HydraulicNetworkControlElement)
 
 	/*! Checks for valid and required parameters (value ranges). */
-	void checkParameters();
+	void checkParameters(const std::vector<NANDRAD::Zone> &zones);
 
 	/*! Availabel control types. */
 	enum ControlledProperty {
-		CP_TemperatureDifference,			// Keyword: TemperatureDifference	'TemperatureDifference'
-		CP_MassFlow,						// Keyword: MassFlow				'MassFlow'
+		CP_TemperatureDifference,		// Keyword: TemperatureDifference			'TemperatureDifference'
+		CP_MassFlow,					// Keyword: MassFlow						'MassFlow'
+		CP_ThermostatValue,				// Keyword: ThermostatValue					'Zone air ThermostatValue'
 		NUM_CP
 	};
 
@@ -49,13 +51,16 @@ public:
 	IDType							m_id = NANDRAD::INVALID_ID;						// XML:A:required
 
 	/*! Controller type (P, PI, ...) */
-	ControllerType					m_controllerType = NUM_CT;						// XML:A:required
+	ControllerType					m_controllerType = NUM_CT;						// XML:A
 
 	/*! property which shall be controlled (temperature difference, ...) */
 	ControlledProperty				m_controlledProperty = NUM_CP;					// XML:A:required
 
 	/*! Set point as fixed scalar value. */
 	IBK::Parameter					m_setPoint;										// XML:E
+
+	/*! Id of zone whose thermostat is used for control: only for property 'ZoneAirTemperature'. */
+	unsigned int					m_thermostatZoneID = NANDRAD::INVALID_ID;								// XML:E
 
 	/*! Used to cut the system input, if this is zero, it will not be considered	*/
 	double							m_maximumControllerResultValue = 0;				// XML:E
