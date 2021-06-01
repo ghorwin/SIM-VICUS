@@ -72,8 +72,10 @@ void SVNavigationTreeWidget::setFlags(unsigned int uniqueID, bool visible, bool 
 		qDebug() << "Error, expected node with ID " << uniqueID << " in tree (tree corruption?)";
 		return;
 	}
+	m_ui->treeWidget->blockSignals(true);
 	treeIt->second->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, visible);
 	treeIt->second->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, selected);
+	m_ui->treeWidget->blockSignals(false);
 }
 
 
@@ -162,6 +164,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 	}
 
 	// for now, rebuild the entire tree
+	m_ui->treeWidget->blockSignals(true);
 	m_ui->treeWidget->clear();
 	// populate tree widget
 
@@ -177,7 +180,6 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 	const VICUS::Project & prj = project();
 
 	// Buildings
-	m_ui->treeWidget->blockSignals(true);
 	for (const VICUS::Building & b : prj.m_buildings) {
 		QTreeWidgetItem * building = new QTreeWidgetItem(QStringList() << tr("Building: %1").arg(b.m_displayName), QTreeWidgetItem::Type);
 		m_treeItemMap[b.uniqueID()] = building;

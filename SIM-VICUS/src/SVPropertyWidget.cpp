@@ -91,7 +91,6 @@ void SVPropertyWidget::onViewStateChanged() {
 		case SVViewState::NUM_VM: break; // just to make compiler happy
 	}
 
-
 	// now show the respective property widget
 	SVViewState::PropertyWidgetMode m = vs.m_propertyWidgetMode;
 	switch (m) {

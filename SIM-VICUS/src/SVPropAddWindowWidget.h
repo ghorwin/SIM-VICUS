@@ -7,6 +7,8 @@ namespace Ui {
 class SVPropAddWindowWidget;
 }
 
+class ModificationInfo;
+
 /*! Property widget for adding sub-surfaces. */
 class SVPropAddWindowWidget : public QWidget {
 	Q_OBJECT
@@ -21,7 +23,22 @@ public:
 	*/
 	void setup();
 
+public slots:
+
+	void onModified(int modificationType, ModificationInfo * /*data*/);
+
+private slots:
+	void onSpinBoxValueChanged(int arg1);
+
+	void on_lineEditWindowWidth_editingFinishedSuccessfully();
+
 private:
+	/*! Updates widget to current project state. */
+	void updateUi();
+
+	/*! Collects input data from widget and updates data in window geometry object. */
+	void updateGeometryObject();
+
 	Ui::SVPropAddWindowWidget *m_ui;
 };
 

@@ -40,6 +40,7 @@
 #include "Vic3DSmallCoordinateSystemObject.h"
 #include "Vic3DWireFrameObject.h"
 #include "Vic3DNewGeometryObject.h"
+#include "Vic3DNewSubSurfaceObject.h"
 #include "Vic3DSurfaceNormalsObject.h"
 #include "Vic3DPickObject.h"
 
@@ -234,6 +235,8 @@ private:
 	CoordinateSystemObject	m_coordinateSystemObject;
 	/*! Object to display newly drawn geometry. */
 	NewGeometryObject		m_newGeometryObject;
+	/*! Object to display new subsurface geometry. */
+	NewSubSurfaceObject		m_newSubSurfaceObject;
 
 	/*! The small coordinate system at the bottom/left. */
 	SmallCoordinateSystemObject	m_smallCoordinateSystemObject;

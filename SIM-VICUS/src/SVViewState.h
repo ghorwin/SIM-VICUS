@@ -158,6 +158,10 @@ public:
 		/*! All surfaces of rooms with associated zone template are colored based on that zone template color.
 		*/
 		OCM_ZoneTemplates,
+		/*! When this mode is active, all but the selected surfaces are shown in dark gray, but the selected surfaces
+			are shown in orange.
+		*/
+		OCM_SelectedSurfacesHighlighted,
 		OCM_Network			=	0x1000,
 		OCM_NetworkNode,
 		OCM_NetworkEdge,

@@ -84,14 +84,13 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 
 	// we create the new geometry object here, but data is added once it is used
 	m_newGeometryObject.create(m_fixedColorTransformShader);
+	m_newSubSurfaceObject.create(m_buildingShader->shaderProgram());
 
 	// create surface normals object already, though we update vertex buffer object later when we actually have geometry
 	m_surfaceNormalsObject.create(m_surfaceNormalsShader);
 
 	m_gridPlanes.push_back( VICUS::PlaneGeometry(VICUS::Polygon3D::T_Triangle,
 												 IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(1,0,0), IBKMK::Vector3D(0,1,0)) );
-
-
 }
 
 
@@ -305,6 +304,7 @@ void Scene::destroy() {
 	m_coordinateSystemObject.destroy();
 	m_smallCoordinateSystemObject.destroy();
 	m_newGeometryObject.destroy();
+	m_newSubSurfaceObject.destroy();
 	m_surfaceNormalsObject.destroy();
 }
 
@@ -1048,6 +1048,8 @@ void Scene::render() {
 
 	m_opaqueGeometryObject.renderOpaque();
 
+	m_newSubSurfaceObject.renderOpaque();
+
 	m_buildingShader->release();
 
 	// *** surface normals
@@ -1070,7 +1072,6 @@ void Scene::render() {
 	m_gridShader->release();
 
 
-
 	// *** transparent geometry ***
 
 	glEnable(GL_BLEND);
@@ -1081,12 +1082,14 @@ void Scene::render() {
 	// disable update of depth test but still use it
 	glDepthMask (GL_FALSE);
 
+
 	// ... windows, ...
+	m_buildingShader->bind();
 	if (m_opaqueGeometryObject.canDrawTransparent() != 0) {
-		m_buildingShader->bind();
 		m_opaqueGeometryObject.renderTransparent();
-		m_buildingShader->release();
 	}
+	m_newSubSurfaceObject.renderTransparent();
+	m_buildingShader->release();
 
 
 	// *** new polygon draw object (transparent plane) ***
@@ -1435,6 +1438,21 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 	switch (ocm) {
 		case SVViewState::OCM_None: break;
 
+		case SVViewState::OCM_SelectedSurfacesHighlighted: {
+			for (const VICUS::Building & b : p.m_buildings) {
+				for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+					for (const VICUS::Room & r : bl.m_rooms) {
+						for (const VICUS::Surface & s : r.m_surfaces) {
+
+							// change color of selected surfaces
+							if (s.m_selected)
+								s.m_color = QColor(255,144,0,255); // nice orange
+						}
+					}
+				}
+			}
+		} break;
+
 		case SVViewState::OCM_Components:
 		case SVViewState::OCM_SubSurfaceComponents:
 		case SVViewState::OCM_ComponentOrientation:
@@ -1479,7 +1497,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 						}
 					break;
 
-					// the color modes below are not handled here and are only added to get rid of compiler warnins
+						// the color modes below are not handled here and are only added to get rid of compiler warnins
 					case SVViewState::OCM_ZoneTemplates:
 					case SVViewState::OCM_SubSurfaceComponents:
 					case SVViewState::OCM_None:
@@ -1541,10 +1559,11 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 						}
 					break;
 
-					// the color modes below are not handled here and are only added to get rid of compiler warnins
+						// the color modes below are not handled here and are only added to get rid of compiler warnins
 					case SVViewState::OCM_ZoneTemplates:
 					case SVViewState::OCM_Components:
 					case SVViewState::OCM_None:
+					case SVViewState::OCM_SelectedSurfacesHighlighted:
 					case SVViewState::OCM_Network:
 					case SVViewState::OCM_NetworkEdge:
 					case SVViewState::OCM_NetworkNode:
@@ -1570,7 +1589,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 							// color all surfaces of room based on zone template color
 							for (const VICUS::Surface & s : r.m_surfaces)
 								s.m_color = zt->m_color;
-								// TODO : subsurfaces
+							// TODO : subsurfaces
 
 						}
 					}
@@ -1619,8 +1638,9 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					}
 					break;
 
-					// rest only to avoid compiler warnings
+						// rest only to avoid compiler warnings
 					case SVViewState::OCM_None:
+					case SVViewState::OCM_SelectedSurfacesHighlighted:
 					case SVViewState::OCM_Components:
 					case SVViewState::OCM_SubSurfaceComponents:
 					case SVViewState::OCM_ComponentOrientation:

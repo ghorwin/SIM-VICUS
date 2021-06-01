@@ -32,6 +32,7 @@
 #include "Vic3DVertex.h"
 
 #include <VICUS_PlaneGeometry.h>
+#include <VICUS_Surface.h>
 
 QT_BEGIN_NAMESPACE
 class QOpenGLShaderProgram;
@@ -41,7 +42,6 @@ class SVPropVertexListWidget;
 
 namespace Vic3D {
 
-class ShaderProgram;
 
 /*! This object is painted when new subsurfaces are being created.
 
@@ -68,7 +68,7 @@ public:
 	/*! The function is called during OpenGL initialization, where the OpenGL context is current.
 		This only initializes the buffers and vertex array object, but does not allocate data.
 	*/
-	void create(ShaderProgram * shaderProgram);
+	void create(QOpenGLShaderProgram * shaderProgram);
 
 	/*! Destroys allocated resources. */
 	void destroy();
@@ -77,7 +77,8 @@ public:
 	// Functions related to modifying the stored geometry
 
 	/*! This function clears the current buffer and vertex lists. */
-	void setup();
+	void createByPercentage(const std::vector<const VICUS::Surface*> & sel, double w, double h, double sillHeight, double distance, double percentage, unsigned int baseLineOffset);
+	void createWithOffset(const std::vector<const VICUS::Surface*> & sel, double w, double h, double sillHeight, double distance, double offset, unsigned int baseLineOffset);
 
 	/*! Renders opaque parts of geometry. */
 	void renderOpaque();
@@ -97,9 +98,6 @@ private:
 	void updateBuffers();
 
 
-	/*! Shader program (not owned). */
-	ShaderProgram					*m_shaderProgram = nullptr;
-
 	/*! Stores the current geometry of the painted polygon or floor polygon. */
 	VICUS::PlaneGeometry			m_planeGeometry;
 
@@ -108,23 +106,25 @@ private:
 	*/
 	std::vector<IBKMK::Vector3D>	m_vertexList;
 
-	/*! Vertex buffer in CPU memory, holds data of all vertices (coords).
-		The last vertex is always the vertex of the current movable coordinate system's location.
-		The line will be drawn between the last and the one before last vertex, using array draw command.
-	*/
-	std::vector<VertexC>			m_vertexBufferData;
-	/*! Index buffer on CPU memory (only for the triangle strip). */
+	/*! Vertex buffer in CPU memory, holds data of all vertices (coords and normals). */
+	std::vector<Vertex>				m_vertexBufferData;
+	/*! Color buffer in CPU memory, holds colors of all vertices (same size as m_vertexBufferData). */
+	std::vector<ColorRGBA>			m_colorBufferData;
+	/*! Index buffer on CPU memory. */
 	std::vector<GLuint>				m_indexBufferData;
+
+	/*! Startindex for line vertex numbers. */
+	int								m_lineIndex = 0;
 
 	/*! VertexArrayObject, references the vertex, color and index buffers. */
 	QOpenGLVertexArrayObject		m_vao;
 
 	/*! Handle for vertex buffer on GPU memory. */
 	QOpenGLBuffer					m_vertexBufferObject;
+	/*! Handle for color buffer on GPU memory. */
+	QOpenGLBuffer					m_colorBufferObject;
 	/*! Handle for index buffer on GPU memory */
 	QOpenGLBuffer					m_indexBufferObject;
-
-
 };
 
 } // namespace Vic3D

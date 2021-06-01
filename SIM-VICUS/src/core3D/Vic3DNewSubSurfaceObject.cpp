@@ -49,18 +49,22 @@ NewSubSurfaceObject::NewSubSurfaceObject() :
 	m_indexBufferObject(QOpenGLBuffer::IndexBuffer) // make this an Index Buffer
 {
 	// make us known to the world
-//	SVViewStateHandler::instance().m_newGeometryObject = this;
+	SVViewStateHandler::instance().m_newSubSurfaceObject = this;
 }
 
 
-void NewSubSurfaceObject::create(ShaderProgram * shaderProgram) {
-	m_shaderProgram = shaderProgram;
+void NewSubSurfaceObject::create(QOpenGLShaderProgram * shaderProgram) {
+	if (m_vao.isCreated())
+		return;
 
 	// *** create buffers on GPU memory ***
 
 	// create a new buffer for the vertices and colors, separate buffers because we will modify colors way more often than geometry
 	m_vertexBufferObject.create();
 	m_vertexBufferObject.setUsagePattern(QOpenGLBuffer::StaticDraw); // usage pattern will be used when tranferring data to GPU
+
+	m_colorBufferObject.create();
+	m_colorBufferObject.setUsagePattern(QOpenGLBuffer::StaticDraw);
 
 	// create a new buffer for the indexes
 	m_indexBufferObject = QOpenGLBuffer(QOpenGLBuffer::IndexBuffer); // Note: make sure this is an index buffer
@@ -81,6 +85,8 @@ void NewSubSurfaceObject::create(ShaderProgram * shaderProgram) {
 	// *** set attribute arrays for shader fetch stage ***
 
 #define VERTEX_ARRAY_INDEX 0
+#define NORMAL_ARRAY_INDEX 1
+#define COLOR_ARRAY_INDEX 2
 
 	m_vertexBufferObject.bind(); // this registers this buffer data object in the currently bound vao; in subsequent
 				  // calls to shaderProgramm->setAttributeBuffer() the buffer object is associated with the
@@ -89,12 +95,23 @@ void NewSubSurfaceObject::create(ShaderProgram * shaderProgram) {
 				  // this vbo
 
 	// coordinates
-	m_shaderProgram->shaderProgram()->enableAttributeArray(VERTEX_ARRAY_INDEX);
-	m_shaderProgram->shaderProgram()->setAttributeBuffer(VERTEX_ARRAY_INDEX, GL_FLOAT, 0, 3 /* vec3 */, sizeof(VertexC));
+	shaderProgram->enableAttributeArray(VERTEX_ARRAY_INDEX);
+	shaderProgram->setAttributeBuffer(VERTEX_ARRAY_INDEX, GL_FLOAT, 0, 3 /* vec3 */, sizeof(Vertex));
+
+	// normals
+	shaderProgram->enableAttributeArray(NORMAL_ARRAY_INDEX);
+	shaderProgram->setAttributeBuffer(NORMAL_ARRAY_INDEX, GL_FLOAT, offsetof(Vertex, m_normal), 3 /* vec3 */, sizeof(Vertex));
+
+
+	m_colorBufferObject.bind(); // now color buffer is active in vao
+
+	// colors
+	shaderProgram->enableAttributeArray(COLOR_ARRAY_INDEX);
+	shaderProgram->setAttributeBuffer(COLOR_ARRAY_INDEX, GL_UNSIGNED_BYTE, 0, 4, 4 /* bytes = sizeof(char) */);
 
 	// Release (unbind) all
 
-	// Mind: you can release the buffer data objects (vbo) before or after releasing vao. It does not
+	// Mind: you can release the buffer data objects (vbo and vboColors) before or after releasing vao. It does not
 	//       matter, because the buffers are associated already with the attribute arrays.
 	//       However, YOU MUST NOT release the index buffer (ebo) before releasing the vao, since this would remove
 	//       the index buffer association with the vao and when binding the vao before rendering, the element buffer
@@ -102,9 +119,8 @@ void NewSubSurfaceObject::create(ShaderProgram * shaderProgram) {
 	m_vao.release();
 
 	m_vertexBufferObject.release();
+	m_colorBufferObject.release();
 	m_indexBufferObject.release();
-
-	m_planeGeometry = VICUS::PlaneGeometry();
 }
 
 
@@ -115,47 +131,39 @@ void NewSubSurfaceObject::destroy() {
 }
 
 
+void NewSubSurfaceObject::createByPercentage(const std::vector<const VICUS::Surface *> & sel,
+											 double w, double h, double sillHeight, double distance, double percentage,
+											 unsigned int baseLineOffset)
+{
+	// populate PlaneGeometry-object
+}
+
+
+void NewSubSurfaceObject::createWithOffset(const std::vector<const VICUS::Surface *> & sel,
+										   double w, double h, double sillHeight, double distance, double offset,
+										   unsigned int baseLineOffset)
+{
+	// populate PlaneGeometry-object
+}
+
+
 void NewSubSurfaceObject::updateBuffers() {
-	// create geometry
-
-	// memory layout:
-	//   with valid polygon:          vertexBuffer = |polygon_vertexes|coordinate system vertex|
-	//   without valid polygon:       vertexBuffer = |last_polygon_vertex|coordinate system vertex|
-
-	// index buffer is only filled if valid polygon exists
-
-	// first copy polygon from PlaneGeometry, if at least 3 vertexes are inserted
-	// then add vertex to last
-
-	/* Vertex buffer layout:
-		vertexes plane geometry (only for valid polygon)
-		vertexes polyline (m_vertexList)
-		vertexe coordinate system
-	*/
-
-	m_vertexBufferData.clear();
-	m_indexBufferData.clear();
-
-	// no vertexes, nothing to draw - we need at least one vertex in the geometry, so that we
-	// can draw a line from the last vertex to the current coordinate system's location
-	if (m_planeGeometry.polygon().vertexes().empty())
+	if (m_indexBufferData.empty())
 		return;
-
-	unsigned int currentVertexIndex = 0;
-	unsigned int currentElementIndex = 0;
-
 
 	// transfer data stored in m_vertexBufferData
 	m_vertexBufferObject.bind();
-	m_vertexBufferObject.allocate(m_vertexBufferData.data(), m_vertexBufferData.size()*sizeof(VertexC));
+	m_vertexBufferObject.allocate(m_vertexBufferData.data(), m_vertexBufferData.size()*sizeof(Vertex));
 	m_vertexBufferObject.release();
 
-	if (!m_indexBufferData.empty()) {
-		m_indexBufferObject.bind();
-		m_indexBufferObject.allocate(m_indexBufferData.data(), m_indexBufferData.size()*sizeof(GLuint));
-		m_indexBufferObject.release();
-	}
+	m_indexBufferObject.bind();
+	m_indexBufferObject.allocate(m_indexBufferData.data(), m_indexBufferData.size()*sizeof(GLuint));
+	m_indexBufferObject.release();
 
+	// also update the color buffer
+	m_colorBufferObject.bind();
+	m_colorBufferObject.allocate(m_colorBufferData.data(), m_colorBufferData.size()*sizeof(ColorRGBA) );
+	m_colorBufferObject.release();
 }
 
 
@@ -163,12 +171,11 @@ void NewSubSurfaceObject::renderOpaque() {
 	if (m_vertexBufferData.empty())
 		return;
 
-	// bind all buffers
+	// bind all buffers ("position", "normal" and "color" arrays)
 	m_vao.bind();
-	// set transformation matrix - unity matrix, since we draw with world coordinates
-	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[1], QMatrix4x4());
-
-
+	// now draw the opaque
+	glDrawElements(GL_LINES, m_lineIndex, GL_UNSIGNED_INT,
+				   (const GLvoid*)(sizeof(GLuint) * (unsigned long)((GLsizei)m_indexBufferData.size() - m_lineIndex)) );
 	// release buffers again
 	m_vao.release();
 }
@@ -182,22 +189,16 @@ void NewSubSurfaceObject::renderTransparent() {
 
 	// the render code below is the same for all geometry types, since only the index buffer is used
 	if (!m_indexBufferData.empty()) {
-		// bind all buffers
+		// bind all buffers ("position", "normal" and "color" arrays)
 		m_vao.bind();
-		// set transformation matrix - unity matrix, since we draw with world coordinates
-		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[1], QMatrix4x4());
 
-		// now draw the geometry
-
-		// set selected plane color (QColor is passed as vec4, so no conversion is needed, here).
-		QColor planeCol = QColor(255,0,128,64);
-		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], planeCol);
 		// put OpenGL in offset mode
 		glEnable(GL_POLYGON_OFFSET_FILL);
-		// offset plane geometry a bit so that the plane is drawn behind the wireframe
-		glPolygonOffset(0.1f, 2.0f);
+		// offset plane geometry a bit so that our transparent planes are always drawn in front of opaque planes
+		glPolygonOffset(-0.1f, -2.0f);
 		// now draw the geometry
-		glDrawElements(GL_TRIANGLES, m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, 0,
+			GL_UNSIGNED_INT, (const GLvoid*)(sizeof(GLuint) * (unsigned long)m_lineIndex));
 		// turn off line offset mode
 		glDisable(GL_POLYGON_OFFSET_FILL);
 

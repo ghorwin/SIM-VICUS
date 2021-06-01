@@ -84,18 +84,12 @@ public:
 
 	//:inherited	QString				m_displayName;				// XML:A
 
-
-	/*! Linear Spline that holds annual shading factors, only for visualization
-		TODO : move to different places or use for visualization
-	*/
-	IBK::LinearSpline					m_shadingFactor;
-
-
 	/*! Stores visibility information for this surface.
 		Note: keep the next line - this will cause the code generator to create serialization code
 			  for the inherited m_visible variable.
 	*/
-	//:inherited	bool								m_visible = true;			// XML:A
+	//:inherited	bool				m_visible = true;			// XML:A
+
 
 	// *** Runtime Variables ***
 

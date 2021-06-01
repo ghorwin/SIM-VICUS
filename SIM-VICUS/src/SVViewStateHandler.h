@@ -32,6 +32,7 @@
 
 namespace Vic3D {
 	class NewGeometryObject;
+	class NewSubSurfaceObject;
 	class CoordinateSystemObject;
 	class WireFrameObject;
 }
@@ -84,6 +85,9 @@ public:
 		DO NOT DELETE the object or do any other crazy stuff with this pointer!
 	*/
 	Vic3D::NewGeometryObject			*m_newGeometryObject = nullptr;
+
+	/*! Caches pointer to the new sub-surface object, to allow direct access when sub-surfaces are being created. */
+	Vic3D::NewSubSurfaceObject			*m_newSubSurfaceObject = nullptr;
 
 	/*! Caches pointer to the coordinate system object, to allow direct access to object when removing vertexes.
 		The pointer is set in constructor of Vic3D::CoordinateSystemObject, object is not owned.
