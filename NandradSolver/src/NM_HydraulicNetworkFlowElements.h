@@ -26,6 +26,7 @@
 
 #include <NANDRAD_Constants.h>
 
+
 namespace NANDRAD {
 	class HydraulicNetworkElement;
 	class HydraulicNetworkComponent;
@@ -101,22 +102,10 @@ public:
 	virtual void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
 
 	/*! Publishes individual model quantities via descriptions. */
-	virtual void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
-		if(m_controlElement == nullptr)
-			return;
-		// calculate zetaControlled value for valve
-		quantities.push_back(QuantityDescription("ControllerResultValue","---", "The calculated controller zeta value for the valve", false));
-		quantities.push_back(QuantityDescription("TemperatureDifference","K", "The difference between inlet and outlet temperature", false));
-	}
+	virtual void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
-	virtual void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
-		if(m_controlElement == nullptr)
-			return;
-		// calculate zetaControlled value for valve
-		valRefs.push_back(&m_zetaControlled);
-		valRefs.push_back(&m_temperatureDifference);
-	}
+	virtual void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override;
 
 	// HydraulicNetworkAbstractFlowElement interface
 	virtual double systemFunction(double mdot, double p_inlet, double p_outlet) const override;

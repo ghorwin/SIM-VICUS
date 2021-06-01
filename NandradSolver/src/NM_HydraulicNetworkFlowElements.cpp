@@ -25,7 +25,7 @@
 #include <NANDRAD_HydraulicNetworkElement.h>
 #include <NANDRAD_HydraulicNetworkPipeProperties.h>
 #include <NANDRAD_HydraulicNetworkComponent.h>
-#include "NANDRAD_HydraulicNetworkControlElement.h"
+#include <NANDRAD_HydraulicNetworkControlElement.h>
 #include <NANDRAD_HydraulicFluid.h>
 
 #include "NM_ThermalNetworkFlowElements.h"
@@ -130,6 +130,24 @@ void HNPressureLossCoeffElement::setInputValueRefs(std::vector<const double*>::c
 			NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference);
 	// now store the pointer returned for our input ref request and advance the iterator by one
 	m_heatExchangeHeatLossRef = *(resultValueRefs++); // Heat exchange value reference
+}
+
+void HNPressureLossCoeffElement::modelQuantities(std::vector<QuantityDescription> & quantities) const{
+	if(m_controlElement == nullptr)
+		return;
+	// calculate zetaControlled value for valve
+	quantities.push_back(QuantityDescription("ControllerResultValue","---", "The calculated controller zeta value for the valve", false));
+	if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference)
+		quantities.push_back(QuantityDescription("TemperatureDifference","K", "The difference between inlet and outlet temperature", false));
+}
+
+void HNPressureLossCoeffElement::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
+	if(m_controlElement == nullptr)
+		return;
+	// calculate zetaControlled value for valve
+	valRefs.push_back(&m_zetaControlled);
+	if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference)
+		valRefs.push_back(&m_temperatureDifference);
 }
 
 
