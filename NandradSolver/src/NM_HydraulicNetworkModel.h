@@ -28,6 +28,7 @@
 namespace NANDRAD {
 	class HydraulicNetwork;
 	class HydraulicNetworkComponent;
+	class Thermostat;
 }
 
 #define BIDIRECTIONAL
@@ -52,6 +53,7 @@ class HydraulicNetworkModel : public AbstractModel, public AbstractStateDependen
 public:
 	/*! Constructor. */
 	HydraulicNetworkModel(const NANDRAD::HydraulicNetwork & nw,
+		const std::vector<NANDRAD::Thermostat> &thermostats,
 		unsigned int id, const std::string &displayName);
 
 	/*! D'tor, released pimpl object. */
@@ -132,6 +134,8 @@ private:
 	std::vector<std::string>						m_elementDisplayNames;
 	/*! Constant reference to NANDRAD network data structure */
 	const NANDRAD::HydraulicNetwork					*m_hydraulicNetwork= nullptr;
+	/*! Constant reference to all NANDRAD thermostat data structures */
+	const std::vector<NANDRAD::Thermostat>			*m_thermostats = nullptr;
 
 	/*! Private implementation (Pimpl) of the network solver. */
 	HydraulicNetworkModelImpl						*m_p = nullptr;

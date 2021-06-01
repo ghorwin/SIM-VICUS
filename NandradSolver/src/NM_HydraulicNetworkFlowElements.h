@@ -33,6 +33,7 @@ namespace NANDRAD {
 	class HydraulicNetworkControlElement;
 	class HydraulicNetworkPipeProperties;
 	class HydraulicFluid;
+	class Thermostat;
 }
 
 namespace NANDRAD_MODEL {
@@ -43,7 +44,19 @@ public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	HNPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 				  const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
-				  const NANDRAD::HydraulicFluid & fluid);
+				  const NANDRAD::HydraulicFluid & fluid,
+				  const std::vector<NANDRAD::Thermostat> *thermostats);
+
+	/*! Adds flow-element-specific input references (schedules etc.) to the list of input references.
+		Default implementation does nothing.
+	*/
+	virtual void inputReferences(std::vector<NANDRAD_MODEL::InputReference> & inputRefs) const override;
+
+	/*! Provides the element with its own requested model inputs.
+		The element must take exactly as many input values from the vector and move the iterator forward.
+		When the function returns, the iterator must point to the first input reference past this element's inputs.
+	*/
+	virtual void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
 
 	// HydraulicNetworkAbstractFlowElement interface
 	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
@@ -71,6 +84,22 @@ private:
 
 	/*! Number of parallel pipes (=1 per default).*/
 	unsigned int					m_nParallelPipes;
+
+	/*! the calculated controller zeta value for the valve */
+	double							m_zetaControlled = -999;
+
+	/*! Reference to the thermostat control value.*/
+	const double					*m_heatingControlValueRef = nullptr;
+
+	/*! Reference to the thermostat control value.*/
+	const double					*m_coolingControlValueRef = nullptr;
+
+	/*! Reference to the controller parametrization object.*/
+	const NANDRAD::HydraulicNetworkControlElement
+									*m_controlElement = nullptr;
+
+	/*! Reference to all thermsotat para,etrization obejcts.*/
+	const std::vector<NANDRAD::Thermostat> *m_thermostats = nullptr;
 
 }; // HNPipeElement
 

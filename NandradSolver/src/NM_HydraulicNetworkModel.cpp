@@ -24,6 +24,7 @@
 #include <NANDRAD_HydraulicNetwork.h>
 #include <NANDRAD_HydraulicNetworkComponent.h>
 #include <NANDRAD_KeywordList.h>
+#include <NANDRAD_Thermostat.h>
 
 #include <IBK_messages.h>
 #include <IBK_Exception.h>
@@ -38,8 +39,9 @@ namespace NANDRAD_MODEL {
 // *** HydraulicNetworkModel members ***
 
 HydraulicNetworkModel::HydraulicNetworkModel(const NANDRAD::HydraulicNetwork & nw,
-	unsigned int id, const std::string &displayName) :
-	m_id(id), m_displayName(displayName),m_hydraulicNetwork(&nw)
+											 const std::vector<NANDRAD::Thermostat> &thermostats,
+											 unsigned int id, const std::string &displayName) :
+	m_id(id), m_displayName(displayName),m_hydraulicNetwork(&nw), m_thermostats(&thermostats)
 {
 	// first register all nodes
 	std::set<unsigned int> nodeIds;
@@ -96,7 +98,9 @@ void HydraulicNetworkModel::setup() {
 			{
 				IBK_ASSERT(e.m_pipeProperties != nullptr);
 				// create hydraulic pipe model
-				HNPipeElement * pipeElement = new HNPipeElement(e, *e.m_pipeProperties, m_hydraulicNetwork->m_fluid);
+				HNPipeElement * pipeElement = new HNPipeElement(e, *e.m_pipeProperties,
+																m_hydraulicNetwork->m_fluid,
+																m_thermostats);
 				// add to flow elements
 				m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 			} break;
