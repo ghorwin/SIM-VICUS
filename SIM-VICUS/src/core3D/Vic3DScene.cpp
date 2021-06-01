@@ -431,7 +431,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 			m_camera.rotate(-MOUSE_ROTATION_SPEED * mouse_dx, LocalUp);
 			m_camera.rotate(-MOUSE_ROTATION_SPEED * mouse_dy, m_camera.right());
 			// cursor wrap adjustment
-			adjustCurserDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
+			adjustCursorDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
 		}
 	}
 
@@ -440,7 +440,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		// only do panning, if not in any other mode
 		if (m_navigationMode == NUM_NM) {
 			// we enter pan mode
-			panStart(localMousePos, pickObject);
+			panStart(localMousePos, pickObject, false);
 		}
 		if ((mouseDelta != QPoint(0,0)) && (m_navigationMode == NM_Panning)) {
 
@@ -454,7 +454,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 
 			m_camera.setTranslation(QtExt::IBKVector2QVector(m_panCameraStart + cameraTrans));
 			// cursor wrap adjustment
-			adjustCurserDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
+			adjustCursorDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
 		}
 	}
 
@@ -614,7 +614,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 						m_camera.setTranslation(newCamPos);
 
 						// cursor wrap adjustment
-						adjustCurserDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
+						adjustCursorDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
 					} break; // orbit controller active
 
 					case NM_InteractiveTranslation: {
@@ -756,6 +756,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		if (m_navigationMode == NM_Panning) {
 			qDebug() << "Leaving panning mode";
 			m_navigationMode = NUM_NM;
+			m_panObjectDepth = 0.01; // reset pan object depth
 		}
 	}
 
@@ -2305,7 +2306,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 }
 
 
-void Scene::adjustCurserDuringMouseDrag(const QPoint & mouseDelta, const QPoint & localMousePos,
+void Scene::adjustCursorDuringMouseDrag(const QPoint & mouseDelta, const QPoint & localMousePos,
 											 QPoint & newLocalMousePos, PickObject & pickObject)
 {
 	// cursor position moves out of window?
@@ -2320,9 +2321,11 @@ void Scene::adjustCurserDuringMouseDrag(const QPoint & mouseDelta, const QPoint 
 	}
 
 	if (localMousePos.y() < WINDOW_MOVE_MARGIN && mouseDelta.y() < 0) {
+		qDebug() << "Resetting mousepos to bottom side of window.";
 		newLocalMousePos.setY(m_viewPort.height()-WINDOW_MOVE_MARGIN);
 	}
 	else if (localMousePos.y() > (m_viewPort.height()-WINDOW_MOVE_MARGIN) && mouseDelta.y() > 0) {
+		qDebug() << "Resetting mousepos to top side of window.";
 		newLocalMousePos.setY(WINDOW_MOVE_MARGIN);
 	}
 
@@ -2330,7 +2333,7 @@ void Scene::adjustCurserDuringMouseDrag(const QPoint & mouseDelta, const QPoint 
 	if (m_navigationMode == NM_Panning && newLocalMousePos != localMousePos) {
 		pickObject.m_localMousePos = newLocalMousePos;
 		pick(pickObject);
-		panStart(newLocalMousePos, pickObject);
+		panStart(newLocalMousePos, pickObject, true);
 	}
 }
 
@@ -2456,34 +2459,46 @@ IBKMK::Vector3D Scene::calculateFarPoint(const QPoint & mousPos, const QMatrix4x
 }
 
 
-void Scene::panStart(const QPoint & localMousePos, PickObject & pickObject) {
+void Scene::panStart(const QPoint & localMousePos, PickObject & pickObject, bool reuseDepth) {
+	qDebug() << "Entering panning mode";
+	m_navigationMode = NM_Panning;
 
 	// configure the pick object and pick a point on the XY plane/or any visible surface
 	if (!pickObject.m_pickPerformed)
 		pick(pickObject);
 
 	// only enter orbit controller mode, if we actually hit something
-	if (!pickObject.m_candidates.empty()) {
-		m_navigationMode = NM_Panning;
-		qDebug() << "Entering panning mode";
+	if (pickObject.m_candidates.empty()) {
+		// create a virtual pick-point to start panning somewhere in the middle distance
+		PickObject::PickResult r;
+		r.m_depth = m_panObjectDepth;
+		r.m_pickPoint = pickObject.m_lineOfSightOffset + pickObject.m_lineOfSightDirection*r.m_depth;
+		pickObject.m_candidates.push_back(r);
+	}
+	else if (reuseDepth) {
+		pickObject.m_candidates.front().m_depth = m_panObjectDepth;
+		pickObject.m_candidates.front().m_pickPoint =
+				pickObject.m_lineOfSightOffset + pickObject.m_lineOfSightDirection*pickObject.m_candidates.front().m_depth;
+	}
 
-		// we need to store initial camera pos, selected object pos, far point
-		m_panCameraStart = QtExt::QVector2IBKVector(m_camera.translation());	// Point A
-		m_panObjectStart = pickObject.m_candidates.front().m_pickPoint;			// Point C
-		m_panFarPointStart = pickObject.m_lineOfSightOffset + pickObject.m_lineOfSightDirection;	// Point B
-		double BADistance = (m_panFarPointStart - m_panCameraStart).magnitude(); // Same as far distance?
-		double CADistance = (m_panObjectStart - m_panCameraStart).magnitude();
-		m_panCABARatio = CADistance/BADistance;
-		m_panMousePos = localMousePos;
+	// if pick point is very far away, we limit the depth and adjust the pick point
 
-		// invert world2view matrix, with m_worldToView = m_projection * m_camera.toMatrix() * m_transform.toMatrix();
-		bool invertible;
-		m_panOriginalTransformMatrix = m_worldToView.inverted(&invertible);
-		if (!invertible) {
-			qWarning()<< "Cannot invert projection matrix.";
-			m_panOriginalTransformMatrix = QMatrix4x4();
-		}
+	// we need to store initial camera pos, selected object pos, far point
+	m_panCameraStart = QtExt::QVector2IBKVector(m_camera.translation());	// Point A
+	m_panObjectStart = pickObject.m_candidates.front().m_pickPoint;			// Point C
+	m_panFarPointStart = pickObject.m_lineOfSightOffset + pickObject.m_lineOfSightDirection;	// Point B
+	m_panObjectDepth = pickObject.m_candidates.front().m_depth;
+	double BADistance = (m_panFarPointStart - m_panCameraStart).magnitude(); // Same as far distance?
+	double CADistance = (m_panObjectStart - m_panCameraStart).magnitude();
+	m_panCABARatio = CADistance/BADistance;
+	m_panMousePos = localMousePos;
 
+	// invert world2view matrix, with m_worldToView = m_projection * m_camera.toMatrix() * m_transform.toMatrix();
+	bool invertible;
+	m_panOriginalTransformMatrix = m_worldToView.inverted(&invertible);
+	if (!invertible) {
+		qWarning()<< "Cannot invert projection matrix.";
+		m_panOriginalTransformMatrix = QMatrix4x4();
 	}
 }
 
