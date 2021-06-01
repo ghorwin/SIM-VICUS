@@ -69,7 +69,7 @@
 					-->
 					<HydraulicNetworkControlElement id="1" controlledProperty="TemperatureDifference" controllerType="PController" >
 						<IBK:Parameter name="Kp" unit="---">1e6</IBK:Parameter>
-						<IBK:Parameter name="SetPoint" unit="K">3</IBK:Parameter>
+						<IBK:Parameter name="TemperatureDifferenceSetpoint" unit="K">3</IBK:Parameter>
 						<!-- Deactivate upper limit of controller result value - this is the default and could be omitted -->
 						<MaximumControllerResultValue>0</MaximumControllerResultValue>
 					</HydraulicNetworkControlElement>
