@@ -25,6 +25,7 @@
 #include <NANDRAD_HydraulicNetworkElement.h>
 #include <NANDRAD_HydraulicNetworkPipeProperties.h>
 #include <NANDRAD_HydraulicNetworkComponent.h>
+#include "NANDRAD_HydraulicNetworkControlElement.h"
 #include <NANDRAD_HydraulicFluid.h>
 
 #include "NM_ThermalNetworkFlowElements.h"
@@ -89,12 +90,46 @@ double HNPipeElement::pressureLossFriction(const double &mdot) const {
 
 // *** HNFixedPressureLossCoeffElement ***
 
-HNPressureLossCoeffElement::HNPressureLossCoeffElement(const NANDRAD::HydraulicNetworkComponent &component,
-																 const NANDRAD::HydraulicFluid &fluid)
+HNPressureLossCoeffElement::HNPressureLossCoeffElement(unsigned int flowElementId,
+														const NANDRAD::HydraulicNetworkComponent &component,
+														const NANDRAD::HydraulicFluid &fluid,
+														const NANDRAD::HydraulicNetworkControlElement *controlElement):
+	m_flowElementId(flowElementId),
+	m_controlElement(controlElement)
 {
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
+	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 	m_zeta = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient].value;
 	m_diameter = component.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].value;
+}
+
+
+void HNPressureLossCoeffElement::inputReferences(std::vector<InputReference> & inputRefs) const
+{
+	// in the case of control add heat exchange spline value to input references
+	if(m_controlElement != nullptr) {
+		switch (m_controlElement->m_controlledProperty) {
+
+			case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference: {
+				InputReference ref;
+				ref.m_id = m_flowElementId;
+				ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+				ref.m_name.m_name = "HeatExchangeHeatLoss";
+				ref.m_required = true;
+				inputRefs.push_back(ref);
+			} break;
+			default: ;
+		}
+	}
+}
+
+
+void HNPressureLossCoeffElement::setInputValueRefs(std::vector<const double*>::const_iterator & resultValueRefs)
+{
+	IBK_ASSERT(m_controlElement != nullptr && m_controlElement->m_controlledProperty ==
+			NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference);
+	// now store the pointer returned for our input ref request and advance the iterator by one
+	m_heatExchangeHeatLossRef = *(resultValueRefs++); // Heat exchange value reference
 }
 
 
@@ -103,13 +138,62 @@ double HNPressureLossCoeffElement::systemFunction(double mdot, double p_inlet, d
 	double area = PI / 4 * m_diameter * m_diameter;
 	double velocity = mdot / (m_fluidDensity * area); // signed!
 	double zeta = m_zeta;
-	if (m_thermalNetworkElement != nullptr) {
-		double zetaControlled = m_thermalNetworkElement->zetaControlled(mdot); // pass the current mdot
-		zeta += zetaControlled; // no clipping necessary here, function zetaControlled() takes care of that!
+	if (m_controlElement != nullptr) {
+		zeta += zetaControlled(mdot); // no clipping necessary here, function zetaControlled() takes care of that!
 	}
 	double dp = zeta * m_fluidDensity / 2 * std::abs(velocity) * velocity;
 	return p_inlet - p_outlet - dp;
 }
+
+
+double HNPressureLossCoeffElement::zetaControlled(double mdot) const {
+	FUNCID(TNElementWithExternalHeatLoss::zetaControlled);
+
+	// NOTE: When solving the hydraulic network equations, we already have a new value stored in
+	//       m_heatExchangeValueRef. However, the m_heatLoss member is only set much later, when
+	//       internalDerivatives() is called as part of ThermalNetworkBalanceModel::update().
+
+	// calculate zetaControlled value for valve
+	switch (m_controlElement->m_controlledProperty) {
+
+		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference: {
+
+			IBK_ASSERT(m_heatExchangeHeatLossRef != nullptr);
+			// compute current temperature for given heat loss and mass flux
+			// Mind: access m_heatExchangeValueRef and not m_heatLoss here!
+			const double temperatureDifference = *m_heatExchangeHeatLossRef/(mdot*m_fluidHeatCapacity);
+			// if temperature difference is larger than the set point (negative e), we want maximum mass flux -> zeta = 0
+			// if temperature difference is smaller than the set point (positive e), we decrease mass flow by increasing zeta
+			const double e = m_controlElement->m_setPoint.value - temperatureDifference;
+			double zetaControlled = 0.0;
+			if (e <= 0) {
+				zetaControlled = 0;
+			}
+			else {
+				// relate controller error e to zeta
+				const double y = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value * e;
+				const double zetaMax = m_controlElement->m_maximumControllerResultValue;
+				// apply clipping
+				if (zetaMax > 0 && y > zetaMax)
+					zetaControlled = zetaMax;
+				else {
+					zetaControlled = y;
+				}
+			}
+			return zetaControlled;
+		}
+		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlow:
+			throw IBK::Exception("Control Type not implemented yet!", FUNC_ID);
+
+		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue:
+			break;
+		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ; // nothing todo - we return 0
+	}
+//	IBK::IBK_Message(IBK::FormatString("zeta = %1, m_heatLoss = %4 W, dT = %2 K, mdot = %3 kg/s, heatExchangeValueRef = %5 W\n")
+//					 .arg(m_zetaControlled).arg(m_temperatureDifference).arg(mdot).arg(m_heatLoss).arg(*m_heatExchangeValueRef));
+	return 0.0;
+}
+
 
 
 void HNPressureLossCoeffElement::partials(double mdot, double p_inlet, double p_outlet,

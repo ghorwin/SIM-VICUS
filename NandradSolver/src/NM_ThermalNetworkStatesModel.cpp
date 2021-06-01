@@ -111,8 +111,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 							double volume = PI/4. * d * d * l;
 
 							// create generic flow element with given heat flux
-							TNElementWithExternalHeatLoss * pipeElement = new TNElementWithExternalHeatLoss(
-										e.m_id, m_network->m_fluid, volume, e.m_controlElement);
+							TNElementWithExternalHeatLoss * pipeElement = new TNElementWithExternalHeatLoss(m_network->m_fluid, volume);
 
 							// add to flow elements
 							m_p->m_flowElements.push_back(pipeElement); // transfer ownership
@@ -252,8 +251,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						{
 							// create generic flow element with given heat flux
 							TNElementWithExternalHeatLoss * element = new TNElementWithExternalHeatLoss(
-										e.m_id, m_network->m_fluid, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value,
-										e.m_controlElement);
+										m_network->m_fluid, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value);
 
 							// add to flow elements
 							m_p->m_flowElements.push_back(element); // transfer ownership
@@ -325,73 +323,6 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 	// some of our flow elements may have a flow controller, so we do another pass over all flow elements and
 	// setup the communication between HydraulicFlowElements and ThermalHydraulicFlowElements
-
-	for (unsigned int i = 0; i<m_p->m_flowElements.size(); ++i) {
-		// check parametrization for this element if a controller is configured
-		const NANDRAD::HydraulicNetworkElement & e = nw.m_elements[i];
-
-		// only process elements with a controller
-		if (e.m_controlElement == nullptr) continue;
-
-		// The controller setup is type-specific; this cannot be done in a nice generic way :-(
-		// If we have a controller, give the corresponding hydraulic network element access to the
-		// corresponding thermal-hydraulic flow element
-
-		// *** TemperatureDifference based controller ***
-
-		if (e.m_controlElement->m_controlledProperty== NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference) {
-
-			// get the corresponding element from the HydraulicNetworkModel
-			HNPressureLossCoeffElement * hnElement =
-					dynamic_cast<HNPressureLossCoeffElement *>(hydrNetworkModel.m_p->m_flowElements[i]);
-			IBK_ASSERT(hnElement != nullptr);
-
-			// This controller needs a calculated heat loss.
-			switch (e.m_component->m_modelType) {
-
-				// ** HeatExchanger**
-				case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger:
-					switch (e.m_heatExchange.m_modelType) {
-
-						// ** Given HeatLoss **
-						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant:
-						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:  {
-							TNElementWithExternalHeatLoss * tnElement =
-									dynamic_cast<TNElementWithExternalHeatLoss *>(m_p->m_flowElements[i]);
-							hnElement->m_thermalNetworkElement = tnElement;
-						} break;
-
-						default: ; // all other model types do not provide the means for such a controller;
-					}
-				break;
-
-				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:
-				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpReal:
-
-					if (e.m_heatExchange.m_modelType == NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser){
-						TNHeatPumpIdealCarnot * tnElement =
-								dynamic_cast<TNHeatPumpIdealCarnot *>(m_p->m_flowElements[i]);
-						IBK_ASSERT(tnElement != nullptr);
-						hnElement->m_thermalNetworkElement = tnElement;
-					} break;
-
-				default: ; // nothing implemented for the rest
-			}
-
-
-			// If we had a controller configured, we now must have a pointer to the respective control calculation element
-			// set. If not, user has provided mismatching configuration and we bail out.
-			if (hnElement->m_thermalNetworkElement == nullptr)
-				throw IBK::Exception(IBK::FormatString("You cannot use a 'TemperatureDifference' controller in combination with "
-													   "flow element model type '%1' and heat exchange type '%2'!")
-								 .arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::ModelType", e.m_component->m_modelType))
-								 .arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", e.m_heatExchange.m_modelType)), FUNC_ID);
-
-		} // end CP_TemperatureDifference
-
-		// TODO : other controllers?
-	}
-
 
 	// setup the network
 	try {

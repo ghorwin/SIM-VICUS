@@ -123,7 +123,7 @@ void HydraulicNetworkModel::setup() {
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot :
 			{
 				// create pressure loss flow element - controller is set up later
-				HNPressureLossCoeffElement * hxElement = new HNPressureLossCoeffElement(*e.m_component, m_hydraulicNetwork->m_fluid);
+				HNPressureLossCoeffElement * hxElement = new HNPressureLossCoeffElement(e.m_id, *e.m_component, m_hydraulicNetwork->m_fluid, e.m_controlElement);
 				m_p->m_flowElements.push_back(hxElement); // transfer ownership
 			} break;
 

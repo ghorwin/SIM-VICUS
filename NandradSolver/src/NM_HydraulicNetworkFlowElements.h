@@ -24,9 +24,12 @@
 
 #include "NM_HydraulicNetworkAbstractFlowElement.h"
 
+#include <NANDRAD_Constants.h>
+
 namespace NANDRAD {
 	class HydraulicNetworkElement;
 	class HydraulicNetworkComponent;
+	class HydraulicNetworkControlElement;
 	class HydraulicNetworkPipeProperties;
 	class HydraulicFluid;
 }
@@ -81,8 +84,33 @@ class TNElementWithExternalHeatLoss;
 class HNPressureLossCoeffElement : public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	HNPressureLossCoeffElement(const NANDRAD::HydraulicNetworkComponent & component,
-		const NANDRAD::HydraulicFluid & fluid);
+	HNPressureLossCoeffElement(unsigned int flowElementId,
+							   const NANDRAD::HydraulicNetworkComponent & component,
+							   const NANDRAD::HydraulicFluid & fluid,
+							   const NANDRAD::HydraulicNetworkControlElement *controlElement);
+
+	/*! Adds flow-element-specific input references (schedules etc.) to the list of input references.
+		Default implementation does nothing.
+	*/
+	virtual void inputReferences(std::vector<NANDRAD_MODEL::InputReference> & inputRefs) const override;
+
+	/*! Provides the element with its own requested model inputs.
+		The element must take exactly as many input values from the vector and move the iterator forward.
+		When the function returns, the iterator must point to the first input reference past this element's inputs.
+	*/
+	virtual void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
+
+//	/*! Publishes individual model quantities via descriptions. */
+//	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
+//		quantities.push_back(QuantityDescription("ControllerResultValue","---", "The calculated controller zeta value for the valve", false));
+//		quantities.push_back(QuantityDescription("TemperatureDifference","K", "The difference between inlet and outlet temperature", false));
+//	}
+
+//	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
+//	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
+//		valRefs.push_back(&m_zetaControlled);
+//		valRefs.push_back(&m_temperatureDifference);
+//	}
 
 	// HydraulicNetworkAbstractFlowElement interface
 	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
@@ -90,8 +118,21 @@ public:
 				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
 
 private:
+	/*! Computes the controlled zeta-value if a control-model is implemented.
+		Otherwise returns 0.
+	*/
+	double zetaControlled(double mdot) const;
+
+	/*! Id number of flow element. */
+	unsigned int					m_flowElementId = NANDRAD::INVALID_ID;
+
 	/*! Cached fluid density [kg/m3] */
 	double							m_fluidDensity = -999;
+
+	/*! Fluid heat capacity [J/kgK].
+		Cached value from fluid properties.
+	*/
+	double							m_fluidHeatCapacity = -999;
 
 	/*! The pressure loss coefficient [-] */
 	double							m_zeta = -999;
@@ -99,11 +140,13 @@ private:
 	/*! Effective hydraulic (inner) diameter of pipe in [m] */
 	double							m_diameter = -999;
 
-	/*! Optional pointer to the corresponding thermal network flow element. If nullptr, there is no
-		additional zeta-value to be calculated.
-		The referenced element computes the additional zeta value to be added to m_zeta.
-	*/
-	TNElementWithExternalHeatLoss * m_thermalNetworkElement = nullptr;
+	/*! Reference to the controller parametrization object.*/
+	const NANDRAD::HydraulicNetworkControlElement
+									*m_controlElement = nullptr;
+
+	/*! Value reference to external quantity. */
+	const double					*m_heatExchangeHeatLossRef = nullptr;
+
 	friend class ThermalNetworkStatesModel;
 
 }; // HNFixedPressureLossCoeffElement

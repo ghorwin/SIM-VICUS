@@ -436,45 +436,10 @@ public:
 class TNElementWithExternalHeatLoss : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	TNElementWithExternalHeatLoss(unsigned int flowElementId,
-								  const NANDRAD::HydraulicFluid & fluid, double fluidVolume,
-								  const NANDRAD::HydraulicNetworkControlElement *controlElement);
-
-	/*! Publishes individual model quantities via descriptions. */
-	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
-		quantities.push_back(QuantityDescription("ControllerResultValue","---", "The calculated controller zeta value for the valve", false));
-		quantities.push_back(QuantityDescription("TemperatureDifference","K", "The difference between inlet and outlet temperature", false));
-	}
-
-	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
-	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
-		valRefs.push_back(&m_zetaControlled);
-		valRefs.push_back(&m_temperatureDifference);
-	}
+	TNElementWithExternalHeatLoss(const NANDRAD::HydraulicFluid & fluid, double fluidVolume);
 
 	/*! Function for retrieving heat fluxes out of the flow element.*/
 	void internalDerivatives(double *ydot) override;
-
-	/*! Computes the controlled zeta-value if a control-model is implemented.
-		Otherwise returns 0.
-	*/
-	double zetaControlled(double mdot);
-
-protected:
-	/*! Id number of flow element. */
-	unsigned int										m_flowElementId = NANDRAD::INVALID_ID;
-
-	/*! Set point for the controller as a schedule. If this is a nullptr, the constant setpoint of the
-	 * ControleElement will be used */
-	const double										*m_setpointSchedule = nullptr;
-
-	/*! Reference to the controller parametrization object.*/
-	const NANDRAD::HydraulicNetworkControlElement		*m_controlElement = nullptr;
-
-	/*! the calculated controller zeta value for the valve */
-	double												m_zetaControlled = 0;
-
-	double												m_temperatureDifference = -999;
 };
 
 
@@ -499,8 +464,6 @@ public:
 		quantities.push_back(QuantityDescription("EvaporatorHeatFlux", "W", "Heat Flux at evaporator side of heat pump", false));
 		quantities.push_back(QuantityDescription("EvaporatorMeanTemperature", "C", "Mean temperature at evaporator side of heat pump", false));
 		quantities.push_back(QuantityDescription("CondenserMeanTemperature", "C", "Mean temperature at condenser side of heat pump", false));
-		quantities.push_back(QuantityDescription("ControllerResultValue","---", "The calculated controller zeta value for the valve", false));
-		quantities.push_back(QuantityDescription("TemperatureDifference","K", "The difference between inlet and outlet temperature", false));
 	}
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
@@ -511,8 +474,6 @@ public:
 		valRefs.push_back(&m_evaporatorHeatFlux);
 		valRefs.push_back(&m_evaporatorMeanTemperature);
 		valRefs.push_back(&m_condenserMeanTemperature);
-		valRefs.push_back(&m_zetaControlled);
-		valRefs.push_back(&m_temperatureDifference);
 	}
 
 	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
@@ -538,6 +499,9 @@ private:
 	const double							*m_evaporatorMeanTemperatureSchedule = nullptr;
 	const double							*m_condenserOutletSetpointSchedule = nullptr;
 
+	/*! Id number of flow element. */
+	unsigned int							m_flowElementId = NANDRAD::INVALID_ID;
+
 	/*! Mean condenser temperature [K], can also be used as output */
 	double									m_condenserMeanTemperature = 999;
 
@@ -561,6 +525,10 @@ private:
 
 	/*! Electrical power of the heat pump compressor [W] */
 	double									m_electricalPower = 999;
+
+	/*! Reference to the controller parametrization object.*/
+	const NANDRAD::HydraulicNetworkControlElement
+											*m_controlElement = nullptr;
 
 	NANDRAD::HydraulicNetworkComponent::HeatPumpIntegration m_heatpumpIntegration = NANDRAD::HydraulicNetworkComponent::NUM_HP;
 

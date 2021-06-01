@@ -534,11 +534,7 @@ TNAdiabaticElement::TNAdiabaticElement(const NANDRAD::HydraulicFluid & fluid, do
 
 // *** ElementWithExternalHeatLoss ***
 
-TNElementWithExternalHeatLoss::TNElementWithExternalHeatLoss(unsigned int flowElementId,
-															 const NANDRAD::HydraulicFluid & fluid, double fluidVolume,
-															 const NANDRAD::HydraulicNetworkControlElement *controlElement):
-	m_flowElementId(flowElementId),
-	m_controlElement(controlElement)
+TNElementWithExternalHeatLoss::TNElementWithExternalHeatLoss(const NANDRAD::HydraulicFluid & fluid, double fluidVolume)
 {
 	m_fluidVolume = fluidVolume;
 	// copy fluid properties
@@ -556,49 +552,6 @@ void TNElementWithExternalHeatLoss::internalDerivatives(double * ydot) {
 }
 
 
-double TNElementWithExternalHeatLoss::zetaControlled(double mdot) {
-	FUNCID(TNElementWithExternalHeatLoss::zetaControlled);
-
-	// NOTE: When solving the hydraulic network equations, we already have a new value stored in
-	//       m_heatExchangeValueRef. However, the m_heatLoss member is only set much later, when
-	//       internalDerivatives() is called as part of ThermalNetworkBalanceModel::update().
-
-	// calculate zetaControlled value for valve
-	switch (m_controlElement->m_controlledProperty) {
-
-		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference: {
-			// compute current temperature for given heat loss and mass flux
-			// Mind: access m_heatExchangeValueRef and not m_heatLoss here!
-			m_temperatureDifference = *m_heatExchangeValueRef/(mdot*m_fluidHeatCapacity);
-			// if temperature difference is larger than the set point (negative e), we want maximum mass flux -> zeta = 0
-			// if temperature difference is smaller than the set point (positive e), we decrease mass flow by increasing zeta
-			const double e = m_controlElement->m_setPoint.value - m_temperatureDifference;
-			if (e <= 0) {
-				m_zetaControlled = 0;
-			}
-			else {
-				// relate controller error e to zeta
-				const double y = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value * e;
-				const double zetaMax = m_controlElement->m_maximumControllerResultValue;
-				// apply clipping
-				if (zetaMax > 0 && y > zetaMax)
-					m_zetaControlled = zetaMax;
-				else {
-					m_zetaControlled = y;
-				}
-			}
-		} break;
-		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlow:
-			throw IBK::Exception("Control Type not implemented yet!", FUNC_ID);
-
-		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ; // nothing todo - we return 0
-	}
-//	IBK::IBK_Message(IBK::FormatString("zeta = %1, m_heatLoss = %4 W, dT = %2 K, mdot = %3 kg/s, heatExchangeValueRef = %5 W\n")
-//					 .arg(m_zetaControlled).arg(m_temperatureDifference).arg(mdot).arg(m_heatLoss).arg(*m_heatExchangeValueRef));
-	return m_zetaControlled;
-}
-
-
 
 
 // *** TNHeatPumpIdealCarnot ***
@@ -607,8 +560,10 @@ TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(unsigned int flowElementId,
 											 const NANDRAD::HydraulicFluid & fluid,
 											 const NANDRAD::HydraulicNetworkComponent & comp,
 											 const NANDRAD::HydraulicNetworkControlElement *controlElement):
-	TNElementWithExternalHeatLoss(flowElementId, fluid, comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value, controlElement)
+	TNElementWithExternalHeatLoss(fluid, comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value),
+	m_controlElement(controlElement)
 {
+	m_flowElementId = flowElementId;
 	m_fluidVolume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
 	m_carnotEfficiency = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiency].value;
 	m_condenserMaximumHeatFlux = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumHeatingPower].value;
