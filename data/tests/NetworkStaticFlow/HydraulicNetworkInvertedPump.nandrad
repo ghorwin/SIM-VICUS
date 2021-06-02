@@ -76,7 +76,7 @@
 				<OutputDefinition>
 					<!-- We choose the flow through the second element (pipe 101) as reference flux
 						 for the entire network -->
-					<Quantity>FluidMassFluxes[1]</Quantity>
+					<Quantity>FluidMassFluxes[id=101]</Quantity>
 					<ObjectListName>Entire network</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>

@@ -242,14 +242,18 @@ const double * HydraulicNetworkModel::resultValueRef(const InputReference & quan
 		// id must be ID of network, and reftype must be NETWORK
 		if (quantity.m_id == id() && quantity.m_referenceType == NANDRAD::ModelInputReference::MRT_NETWORK) {
 
-			// no element index? maybe the entire vector is requested
+			// no element id? maybe the entire vector is requested
 			if (quantity.m_name.m_index == -1)
 				return &m_p->m_fluidMassFluxes[0];
 			else {
-				if ((unsigned int)quantity.m_name.m_index >= m_p->m_fluidMassFluxes.size())
-					throw IBK::Exception(IBK::FormatString("Index out of range in requested output quantity '%1'")
-										 .arg(quantity.m_name.encodedString()), FUNC_ID);
-				return &m_p->m_fluidMassFluxes[quantity.m_name.m_index];
+				// we have published values via ID, so search through m_elementIds
+				for (unsigned int i=0; i<m_elementIds.size(); ++i) {
+					if (m_elementIds[i] == (unsigned int)quantity.m_name.m_index) {
+						return &m_p->m_fluidMassFluxes[i]; // return memory location of requested element
+					}
+				}
+				throw IBK::Exception(IBK::FormatString("Unknown flow element ID '%1' out of range in requested output quantity '%2'")
+									 .arg(quantity.m_name.m_index).arg(quantity.m_name.encodedString()), FUNC_ID);
 			}
 		}
 		return nullptr; // invalid ID or reftype...
