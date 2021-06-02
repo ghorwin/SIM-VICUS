@@ -34,7 +34,7 @@ namespace VICUS {
 	const char * const INVALID_KEYWORD_INDEX_STRING = "KEYWORD_ERROR_STRING: Invalid type index";
 
 	/*! Holds a list of all enum types/categories. */
-	const char * const ENUM_TYPES[50] = {
+	const char * const ENUM_TYPES[51] = {
 		"Component::ComponentType",
 		"Construction::UsageType",
 		"Construction::InsulationKind",
@@ -84,12 +84,13 @@ namespace VICUS {
 		"ZoneControlShading::Category",
 		"ZoneControlThermostat::para_t",
 		"ZoneControlThermostat::ControlValue",
+		"ZoneIdealHeatingCooling::para_t",
 		"ZoneTemplate::SubTemplateType"
 	};
 
 	/*! Converts a category string to respective enumeration value. */
 	int enum2index(const std::string & enumtype) {
-		for (int i=0; i<50; ++i) {
+		for (int i=0; i<51; ++i) {
 			if (enumtype == ENUM_TYPES[i]) return i;
 		}
 		//std::cerr << "Unknown enumeration type '" << enumtype<< "'." << std::endl;
@@ -490,8 +491,14 @@ namespace VICUS {
 				case 1 : return "RadiantTemperature";
 				case 2 : return "OperativeTemperature";
 			} break;
-			// ZoneTemplate::SubTemplateType
+			// ZoneIdealHeatingCooling::para_t
 			case 49 :
+			switch (t) {
+				case 0 : return "HeatingLimit";
+				case 1 : return "CoolingLimit";
+			} break;
+			// ZoneTemplate::SubTemplateType
+			case 50 :
 			switch (t) {
 				case 0 : return "IntLoadPerson";
 				case 1 : return "IntLoadEquipment";
@@ -500,6 +507,7 @@ namespace VICUS {
 				case 4 : return "ControlThermostat";
 				case 5 : return "Infiltration";
 				case 6 : return "NaturalVentilation";
+				case 7 : return "IdealHeatingCooling";
 			} break;
 		} // switch
 		return INVALID_KEYWORD_INDEX_STRING;
@@ -898,8 +906,14 @@ namespace VICUS {
 				case 1 : return "RadiantTemperature";
 				case 2 : return "OperativeTemperature";
 			} break;
-			// ZoneTemplate::SubTemplateType
+			// ZoneIdealHeatingCooling::para_t
 			case 49 :
+			switch (t) {
+				case 0 : return "HeatingLimit";
+				case 1 : return "CoolingLimit";
+			} break;
+			// ZoneTemplate::SubTemplateType
+			case 50 :
 			switch (t) {
 				case 0 : return "IntLoadPerson";
 				case 1 : return "IntLoadEquipment";
@@ -908,6 +922,7 @@ namespace VICUS {
 				case 4 : return "ControlThermostat";
 				case 5 : return "Infiltration";
 				case 6 : return "NaturalVentilation";
+				case 7 : return "IdealHeatingCooling";
 			} break;
 		} // switch
 		return INVALID_KEYWORD_INDEX_STRING;
@@ -1307,8 +1322,14 @@ namespace VICUS {
 				case 1 : return "Radiant temperature";
 				case 2 : return "Operative temperature";
 			} break;
-			// ZoneTemplate::SubTemplateType
+			// ZoneIdealHeatingCooling::para_t
 			case 49 :
+			switch (t) {
+				case 0 : return "Heating Limit.";
+				case 1 : return "Cooling Limit.";
+			} break;
+			// ZoneTemplate::SubTemplateType
+			case 50 :
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "IntLoadPerson";
 				case 1 : if (no_description != nullptr) *no_description = true; return "IntLoadEquipment";
@@ -1317,6 +1338,7 @@ namespace VICUS {
 				case 4 : if (no_description != nullptr) *no_description = true; return "ControlThermostat";
 				case 5 : if (no_description != nullptr) *no_description = true; return "Infiltration";
 				case 6 : if (no_description != nullptr) *no_description = true; return "NaturalVentilation";
+				case 7 : if (no_description != nullptr) *no_description = true; return "IdealHeatingCooling";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine description for enumeration type '%1' and index '%2'.")
@@ -1715,8 +1737,14 @@ namespace VICUS {
 				case 1 : return "-";
 				case 2 : return "-";
 			} break;
-			// ZoneTemplate::SubTemplateType
+			// ZoneIdealHeatingCooling::para_t
 			case 49 :
+			switch (t) {
+				case 0 : return "W/m2";
+				case 1 : return "W/m2";
+			} break;
+			// ZoneTemplate::SubTemplateType
+			case 50 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
@@ -1725,6 +1753,7 @@ namespace VICUS {
 				case 4 : return "";
 				case 5 : return "";
 				case 6 : return "";
+				case 7 : return "";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine default unit for enumeration type '%1' and index '%2'.")
@@ -2123,8 +2152,14 @@ namespace VICUS {
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
-			// ZoneTemplate::SubTemplateType
+			// ZoneIdealHeatingCooling::para_t
 			case 49 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// ZoneTemplate::SubTemplateType
+			case 50 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2133,6 +2168,7 @@ namespace VICUS {
 				case 4 : return "#FFFFFF";
 				case 5 : return "#FFFFFF";
 				case 6 : return "#FFFFFF";
+				case 7 : return "#FFFFFF";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine color for enumeration type '%1' and index '%2'.")
@@ -2531,8 +2567,14 @@ namespace VICUS {
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// ZoneTemplate::SubTemplateType
+			// ZoneIdealHeatingCooling::para_t
 			case 49 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// ZoneTemplate::SubTemplateType
+			case 50 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2541,6 +2583,7 @@ namespace VICUS {
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
+				case 7 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine default value for enumeration type '%1' and index '%2'.")
@@ -2648,8 +2691,10 @@ namespace VICUS {
 			case 47 : return 2;
 			// ZoneControlThermostat::ControlValue
 			case 48 : return 3;
+			// ZoneIdealHeatingCooling::para_t
+			case 49 : return 2;
 			// ZoneTemplate::SubTemplateType
-			case 49 : return 7;
+			case 50 : return 8;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::Count]");
@@ -2756,8 +2801,10 @@ namespace VICUS {
 			case 47 : return 1;
 			// ZoneControlThermostat::ControlValue
 			case 48 : return 2;
+			// ZoneIdealHeatingCooling::para_t
+			case 49 : return 1;
 			// ZoneTemplate::SubTemplateType
-			case 49 : return 7;
+			case 50 : return 8;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::MaxIndex]");
