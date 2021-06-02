@@ -84,8 +84,8 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_4">
-     <item>
+    <layout class="QGridLayout" name="gridLayout_4">
+     <item row="0" column="1">
       <widget class="QGroupBox" name="internalLoads">
        <property name="title">
         <string>Internal loads</string>
@@ -134,7 +134,7 @@
        </layout>
       </widget>
      </item>
-     <item>
+     <item row="0" column="2">
       <widget class="QGroupBox" name="infiltrationVentilation">
        <property name="title">
         <string>Infiltr./Venti.</string>
@@ -163,7 +163,7 @@
        </layout>
       </widget>
      </item>
-     <item>
+     <item row="0" column="3">
       <widget class="QGroupBox" name="Controls">
        <property name="title">
         <string>Controls</string>
@@ -193,6 +193,25 @@
          <widget class="QPushButton" name="pushButtonAddVentilationNaturalControl">
           <property name="text">
            <string>nat. Ventilation</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QGroupBox" name="groupBox">
+       <property name="title">
+        <string>HVAC</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_5">
+        <item row="0" column="0">
+         <widget class="QPushButton" name="pushButtonAddIdealHeatingCooling">
+          <property name="text">
+           <string>Ideal Heating/Cooling</string>
           </property>
           <property name="checkable">
            <bool>true</bool>

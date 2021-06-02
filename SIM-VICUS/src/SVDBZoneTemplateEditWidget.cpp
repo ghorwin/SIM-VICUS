@@ -158,6 +158,12 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, int subT
 		m_ui->pushButtonAddThermostat->setEnabled(false);
 		m_ui->pushButtonAddThermostat->setChecked(true);
 	}
+	if (item->m_idReferences[VICUS::ZoneTemplate::ST_IdealHeatingCooling] == VICUS::INVALID_ID)
+		m_ui->pushButtonAddIdealHeatingCooling->setEnabled(true);
+	else{
+		m_ui->pushButtonAddIdealHeatingCooling->setEnabled(false);
+		m_ui->pushButtonAddIdealHeatingCooling->setChecked(true);
+	}
 
 
 	// now the sub-template stuff
@@ -236,6 +242,16 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, int subT
 				m_ui->lineEditSubComponent->setText( QtExt::MultiLangString2QString(thermo->m_displayName) );
 		}
 		break;
+		case VICUS::ZoneTemplate::ST_IdealHeatingCooling:{
+			m_ui->labelSubTemplate->setText(tr("Ideal Heating/Cooling:"));
+			// lookup corresponding dataset entry in database
+			const VICUS::ZoneIdealHeatingCooling * ideal = m_db->m_zoneIdealHeatingCooling[(unsigned int)subTemplateId];
+			if (ideal == nullptr)
+				m_ui->lineEditSubComponent->setText(tr("<select>"));
+			else
+				m_ui->lineEditSubComponent->setText( QtExt::MultiLangString2QString(ideal->m_displayName) );
+		}
+		break;
 
 		case VICUS::ZoneTemplate::NUM_ST:
 		break;
@@ -254,7 +270,6 @@ void SVDBZoneTemplateEditWidget::on_lineEditName_editingFinished() {
 	refreshUi();
 }
 
-
 void SVDBZoneTemplateEditWidget::on_pushButtonColor_colorChanged() {
 	Q_ASSERT(m_current != nullptr);
 
@@ -264,8 +279,6 @@ void SVDBZoneTemplateEditWidget::on_pushButtonColor_colorChanged() {
 	}
 	refreshUi();
 }
-
-
 
 void SVDBZoneTemplateEditWidget::on_toolButtonSelectSubComponent_clicked() {
 	unsigned int id = VICUS::INVALID_ID;
@@ -278,7 +291,6 @@ void SVDBZoneTemplateEditWidget::on_toolButtonSelectSubComponent_clicked() {
 	// we must assume that the name of the referenced sub-template has changed, so update controls accordingly
 	refreshUi();
 }
-
 
 void SVDBZoneTemplateEditWidget::on_toolButtonRemoveSubComponent_clicked() {
 	m_dbModel->deleteChildItem( m_dbModel->indexById(m_current->m_id), m_currentSubTemplateType);
@@ -302,6 +314,9 @@ void SVDBZoneTemplateEditWidget::on_toolButtonRemoveSubComponent_clicked() {
 		break;
 		case VICUS::ZoneTemplate::ST_ControlThermostat:
 			m_ui->pushButtonAddThermostat->setChecked(false);
+		break;
+		case VICUS::ZoneTemplate::ST_IdealHeatingCooling:
+			m_ui->pushButtonAddIdealHeatingCooling->setChecked(false);
 		break;
 	}
 	refreshUi();
@@ -433,10 +448,34 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddVentilationNatural_clicked(){
 void SVDBZoneTemplateEditWidget::on_pushButtonAddThermostat_clicked(){
 	Q_ASSERT(m_current != nullptr);
 	VICUS::ZoneTemplate::SubTemplateType subType = VICUS::ZoneTemplate::ST_ControlThermostat;
-	// open the ventilation DB dialog and let user select one
+	// open the thermostat DB dialog and let user select one
 	unsigned int id = SVMainWindow::instance().dbZoneControlThermostatEditDialog()->select(VICUS::INVALID_ID);
 	if (id == VICUS::INVALID_ID){
 		m_ui->pushButtonAddThermostat->setChecked(false);
+		return;
+	}
+	if (m_current->m_idReferences[subType] != id) {
+		if (m_current->m_idReferences[subType] == VICUS::INVALID_ID) {
+			// add new child
+			m_dbModel->addChildItem( m_dbModel->indexById(m_current->m_id), subType, id);
+			emit selectSubTemplate(m_current->m_id, (int)subType);
+		}
+		else {
+			// modify existing
+			m_current->m_idReferences[subType] = id;
+			modelModify();
+		}
+	}
+	refreshUi();
+}
+
+void SVDBZoneTemplateEditWidget::on_pushButtonAddIdealHeatingCooling_clicked(){
+	Q_ASSERT(m_current != nullptr);
+	VICUS::ZoneTemplate::SubTemplateType subType = VICUS::ZoneTemplate::ST_IdealHeatingCooling;
+	// open the ideal heating cooling DB dialog and let user select one
+	unsigned int id = SVMainWindow::instance().dbZoneIdealHeatingCoolingEditDialog()->select(VICUS::INVALID_ID);
+	if (id == VICUS::INVALID_ID){
+		m_ui->pushButtonAddIdealHeatingCooling->setChecked(false);
 		return;
 	}
 	if (m_current->m_idReferences[subType] != id) {

@@ -88,6 +88,7 @@ private slots:
 	void on_pushButtonAddVentilationNatural_clicked();
 
 	void on_pushButtonAddThermostat_clicked();
+	void on_pushButtonAddIdealHeatingCooling_clicked();
 
 private:
 	/*! Set up the modified variable of the model to true. */
