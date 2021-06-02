@@ -173,7 +173,38 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 					else return iload->m_color;
 				}
 			} break;
-			case VICUS::ZoneTemplate::ST_ControlThermostat:
+			case VICUS::ZoneTemplate::ST_ControlThermostat:{
+				// lookup item in question
+				const VICUS::ZoneControlThermostat * thermo = m_db->m_zoneControlThermostat[zt.m_idReferences[subType]];
+				// Mind: il might be a nullptr, if index wasn't given
+				if (role == Qt::DisplayRole && index.column() == ColName) {
+					if (thermo == nullptr)
+						return tr("<invalid ID reference>");
+					else
+						return QtExt::MultiLangString2QString(thermo->m_displayName);
+				}
+				else if (role == Qt::BackgroundRole && index.column() == ColColor) {
+					if (thermo == nullptr) return QVariant();
+					else return thermo->m_color;
+				}
+			}
+			break;
+			case VICUS::ZoneTemplate::ST_IdealHeatingCooling:{
+				// lookup item in question
+				const VICUS::ZoneIdealHeatingCooling * ideal = m_db->m_zoneIdealHeatingCooling[zt.m_idReferences[subType]];
+				// Mind: il might be a nullptr, if index wasn't given
+				if (role == Qt::DisplayRole && index.column() == ColName) {
+					if (ideal == nullptr)
+						return tr("<invalid ID reference>");
+					else
+						return QtExt::MultiLangString2QString(ideal->m_displayName);
+				}
+				else if (role == Qt::BackgroundRole && index.column() == ColColor) {
+					if (ideal == nullptr) return QVariant();
+					else return ideal->m_color;
+				}
+			}
+			break;
 			case VICUS::ZoneTemplate::NUM_ST:
 			break;
 		}

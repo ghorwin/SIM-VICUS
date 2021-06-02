@@ -85,6 +85,7 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, int subT
 	m_ui->pushButtonAddVentilationNatural->setEnabled(false);			m_ui->pushButtonAddVentilationNatural->setChecked(false);
 
 	m_ui->pushButtonAddThermostat->setEnabled(false);					m_ui->pushButtonAddThermostat->setChecked(false);
+	m_ui->pushButtonAddIdealHeatingCooling->setEnabled(false);			m_ui->pushButtonAddIdealHeatingCooling->setChecked(false);
 
 	///TODO Dirk später aktivieren wenn funktion eingebaut ist
 	m_ui->pushButtonAddShading->setEnabled(false);						m_ui->pushButtonAddShading->setChecked(false);
