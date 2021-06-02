@@ -1,0 +1,2727 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\usepackage{parskip}
+
+\usepackage[hang,scriptsize]{subfigure}
+\usepackage[format=hang,
+font={footnotesize},
+labelfont={bf},
+margin=1cm,
+aboveskip=5pt,
+position=bottom]{caption}
+
+\usepackage{float}
+\usepackage{color}
+\usepackage{calc}
+
+\definecolor{linkblue}{rgb}{0,0,0.4}
+\definecolor{navy}{rgb}{0,0,0.3}
+\definecolor{light-gray}{gray}{0.98}
+\definecolor{dark-gray}{gray}{0.45}
+
+% for PDA/A complience, insert fonts correctly
+\usepackage[T1]{fontenc}
+
+\usepackage[utf8]{inputenc}
+
+\newcommand{\wframe}[1]{\frame{#1}}
+
+\usepackage[ruled,vlined]{algorithm2e}
+
+\usepackage{lastpage}
+\end_preamble
+\options fleqn
+\use_default_options false
+\begin_modules
+customHeadersFooters
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding utf8
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize 10
+\spacing single
+\use_hyperref true
+\pdf_title "Co-Simulations-Masteralgorithmen - Analyse und Details der Implementierung am Beispiel des Masterprogramms MASTERSIM"
+\pdf_author "Andreas Nicolai"
+\pdf_keywords "Co-Simulation, FMI, MASTERSIM, Masteralgorithmus, Gauss-Seidel, Richardson"
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks true
+\pdf_backref false
+\pdf_pdfusetitle true
+\pdf_quoted_options "linkcolor=linkblue, citecolor=linkblue, urlcolor=linkblue, bookmarksnumbered=true"
+\papersize a4paper
+\use_geometry true
+\use_package amsmath 2
+\use_package amssymb 2
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine biblatex-natbib
+\cite_engine_type authoryear
+\biblio_style plain
+\biblatex_bibstyle authoryear
+\biblatex_citestyle authoryear
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\use_minted 0
+\index Stichwortverzeichnis
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.5cm
+\topmargin 2.5cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip smallskip
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\listings_params "basicstyle={\scriptsize\ttfamily\color{black}},commentstyle={\ttfamily\itshape\color{dark-gray}},numberstyle={{\tiny}},stepnumber=1,showspaces=false,showstringspaces=false,showtabs=false,frame=single,tabsize=4,captionpos=b,breaklines=true,breakatwhitespace=false,texcl=true"
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Flow Element and Controller Equations for Thermo-Hydraulic Networks
+\end_layout
+
+\begin_layout Author
+Hauke Hirsch, Andreas Nicolai, Anne Paepcke
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+
+\size small
+Institut für Bauklimatik, Technische Universität Dresden
+\size default
+, 
+\family typewriter
+\size footnotesize
+andreas.nicolai@tu-dresden.de
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+thispagestyle{fancy}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+fancyhf{} %alle Kopf- und Fußzeilenfelder bereinigen
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+fancyhead[L]{
+\backslash
+includegraphics[width=3cm]{logolinks}} %Kopfzeile links
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+fancyhead[C]{
+\backslash
+includegraphics[width=9.4cm]{logomitte}} %zentrierte Kopfzeile
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+fancyhead[R]{
+\backslash
+includegraphics[width=2.5cm]{logorechts}} %Kopfzeile rechts
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+renewcommand{
+\backslash
+headrulewidth}{0pt} %obere Trennlinie
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+fancyfoot[C]{
+\backslash
+small Seite 
+\backslash
+thepage
+\backslash
+ von
+\backslash
+ 
+\backslash
+pageref{LastPage} } %Seitennummer
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+renewcommand{
+\backslash
+footrulewidth}{0.4pt} %untere Trennlinie
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Abstract
+This document contains a detailed description of the flow element equations
+ used in the solution of thermo-hydraulic networks as described in 
+\begin_inset Quotes eld
+\end_inset
+
+
+\emph on
+Modeling and Numerical Solution of Thermo-Hydraulic Networks
+\emph default
+
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+fancyhf{} %alle Kopf- und Fußzeilenfelder bereinigen
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+fancyhead[L]{} %Kopfzeile links
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+fancyhead[C]{} %zentrierte Kopfzeile
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+fancyhead[R]{Hydraulic Networks}
+\end_layout
+
+\begin_layout Plain Layout
+
+%
+\backslash
+fancyhead[R]{
+\backslash
+includegraphics[width=4cm]{gwt_logo}} %Kopfzeile rechts
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+renewcommand{
+\backslash
+headrulewidth}{0.4pt} %obere Trennlinie
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+fancyfoot[L]{
+\backslash
+small 
+\backslash
+today} %Seitennummer
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+fancyfoot[C]{
+\backslash
+small SIM-VICUS Developers } %Seitennummer
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+fancyfoot[R]{
+\backslash
+small Page 
+\backslash
+thepage
+\backslash
+ of
+\backslash
+ 
+\backslash
+pageref{LastPage} } %Seitennummer
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+renewcommand{
+\backslash
+footrulewidth}{0.4pt} %untere Trennlinie
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+General Equations
+\end_layout
+
+\begin_layout Subsection
+Fluid properties
+\end_layout
+
+\begin_layout Standard
+In thermo-hydraulic networks, fluid properties depend on temperature 
+\begin_inset Formula $T$
+\end_inset
+
+ and flow velocity 
+\begin_inset Formula $v$
+\end_inset
+
+.
+ The flow equations describe the relation of pressure-drop 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ and mass flux 
+\begin_inset Formula $\dot{m}$
+\end_inset
+
+ through a flow element.
+\end_layout
+
+\begin_layout Subsubsection
+Kinematic viscosity
+\end_layout
+
+\begin_layout Standard
+The kinematic viscosity 
+\begin_inset Formula $\nu$
+\end_inset
+
+ is temperature depent.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+maybe give an example for an analytical approximation here, such as the
+ Andrade equation.
+ Otherwise just state that this should be a fluid parameter.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\nu$
+\end_inset
+
+ kinematic viscosity [m2/s] (temperature dependent, fluid parameter)
+\end_layout
+
+\begin_layout Standard
+For adiabatic networks the fluid temperature to be used to evaluate kinematic
+ viscosity is a network parameter (constant).
+\end_layout
+
+\begin_layout Subsubsection
+Reynolds number
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+Re & =\frac{\left|v\right|d}{\nu}\label{eq:Reynolds}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+with 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $v$
+\end_inset
+
+ flow velocity [m/s]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $d$
+\end_inset
+
+ characteristic length [m], in pipes this will be the inner diameter
+\series bold
+
+\begin_inset Newline newline
+\end_inset
+
+Caution
+\series default
+: Different choices of characteristic lengths can cause differences with
+ other model parameter sets who use, for example, radius as characteristic
+ length.
+\end_layout
+
+\begin_layout Subsubsection
+Prandtl number
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+Pr & =\frac{\nu\rho c_{p}}{\lambda}\label{eq:Prandtl}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+with the fluid properties (constant parameters):
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\rho$
+\end_inset
+
+ density of the fluid [kg/m3]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $c_{p}$
+\end_inset
+
+ specific heat capacity (at constant pressure) [J/kgK]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\lambda$
+\end_inset
+
+ thermal conductivity [
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+W/mK]
+\end_layout
+
+\begin_layout Subsection
+General system function for friction-based flow elements
+\end_layout
+
+\begin_layout Standard
+Each flow element evaluates its individual sytsem funtion.
+ In local view, only one inlet and one outlet node exist for a single flow
+ element, and we set 
+\begin_inset Formula $\dot{m}=\dot{m_{i}}$
+\end_inset
+
+, 
+\begin_inset Formula $p_{in}=p_{node(in,i)}$
+\end_inset
+
+ 
+\begin_inset Formula $p_{out}=p_{node(out,i)}$
+\end_inset
+
+.
+ The system equation for general flow elements is
+\begin_inset Formula 
+\begin{equation}
+f\left(\dot{m},p_{in,}p_{out}\right)=p_{in}-p_{out}-\Delta p\left(\dot{m}\right)\label{eq:FlowElementSystemFunctionFriction}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $p_{in}$
+\end_inset
+
+ and 
+\begin_inset Formula $p_{out}$
+\end_inset
+
+ are the pressures at either side of the flow element.
+ 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\dot{m}$
+\end_inset
+
+ mass flux defined in the direction from inlet to outlet (may be negative
+ if flow goes from outlet to inlet)
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ pressure loss due to mass flux 
+\begin_inset Formula $\dot{m}$
+\end_inset
+
+ from through the flow element (may be negative)
+\end_layout
+
+\begin_layout Subsection
+Flow equations for pipes
+\end_layout
+
+\begin_layout Subsubsection
+Pipe Flow Equations
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:General-Hydraulic-Pipe"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Equation
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:FlowElementSystemFunctionFriction"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ is used for pipes.
+\end_layout
+
+\begin_layout Standard
+Pipe parameters:
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\ell$
+\end_inset
+
+ pipe length [m]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $d$
+\end_inset
+
+ inner diameter [m]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $k$
+\end_inset
+
+ roughness [m]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $f$
+\end_inset
+
+ Darcy friction factor/flow coefficient [—]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\zeta$
+\end_inset
+
+ pressure loss coefficient [—]
+\end_layout
+
+\begin_layout Standard
+The fluid flow velocity is 
+\begin_inset Formula 
+\begin{align}
+v & =\frac{\dot{m}}{\rho\frac{\pi}{4}d^{2}}\label{eq:FlowVelocity}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For laminar flows (
+\begin_inset Formula $Re<2300$
+\end_inset
+
+) the Darcy friction factor/flow coefficient 
+\begin_inset Formula $f$
+\end_inset
+
+ is
+\begin_inset Formula 
+\begin{align}
+f & =\frac{64}{Re}\label{eq:Reynolds_laminar}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For turbulent flows (
+\begin_inset Formula $Re>1e4)$
+\end_inset
+
+ we use the swamee-jain equation is used
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+TODO: QUELLE
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align}
+f & =\frac{0.25}{\left[log_{10}\left(\frac{\epsilon/D}{3.7}+\frac{5.74}{Re^{0.9}}\right)\right]^{2}}\label{eq:swamee-jain}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which is an approximation of the commonly used implicit equation from Colebrook-
+white with the benefit that it can be solved directly.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename imgs/Rohrreibungszahl_equations.png
+	lyxscale 50
+	scale 60
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Illustration of friction factor vs.
+ Reynolds number
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For 
+\begin_inset Formula $2300\leq Re\leq1e4$
+\end_inset
+
+ we use linear interpolation between the two equations.
+ Hereby the values for 
+\begin_inset Formula $f\left(2300\right)$
+\end_inset
+
+ obtained with equation 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:Reynolds_laminar"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and 
+\begin_inset Formula $f\left(10^{4}\right)$
+\end_inset
+
+ obtained with equation
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:swamee-jain"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ are interpolated linearly.
+\end_layout
+
+\begin_layout Standard
+The pressure loss coefficient 
+\begin_inset Formula $\zeta$
+\end_inset
+
+ can be expressed by the pipe friction factor 
+\begin_inset Formula $f$
+\end_inset
+
+, where
+\begin_inset Formula 
+\begin{align*}
+\text{\ensuremath{\zeta}} & =f\frac{\ell}{d}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The pressure drop is
+\begin_inset Formula 
+\begin{align}
+\Delta p & =\zeta\frac{\rho}{2}\left|v\right|v\label{eq:pressureLossPipe}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note: To allow reverse flow, equation
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:pressureLossPipe"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ expresses 
+\begin_inset Formula $v^{2}$
+\end_inset
+
+ as product of absolute and signed velocity.
+\end_layout
+
+\begin_layout Subsubsection
+Pump flow equations
+\end_layout
+
+\begin_layout Standard
+The system function for pumps
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+f\text{\left(\dot{m},p_{in},p_{out}\right)}=p_{in}-p_{out}-\Delta p
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+uses a fixed, predefined pressure drop 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ (can be negative).
+ Different pump models are used to compute this pressure difference.
+\end_layout
+
+\begin_layout Subsubsection
+Constant pressure pump
+\end_layout
+
+\begin_layout Standard
+The pressure difference is a constant pump parameter.
+\end_layout
+
+\begin_layout Subsubsection
+Fixed pressure loss coefficient
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Fixed-pressure-loss"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Thuis model uses a fixed pressure loss coefficient 
+\begin_inset Formula $\zeta_{const}$
+\end_inset
+
+ to compute the pressure loss through an element.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+The presure drop can be calculated similar as in 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:pressureLossPipe"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+
+\begin_inset Formula 
+\begin{align}
+\Delta p & =\zeta_{const}\frac{\rho}{2}\left|v\right|v\label{eq:fixed pressure loss coeff}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Thermohydraulic flow Element Equations
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Thermohydraulic-flow-Element"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Thermohydraulic properties may differ from pure hydraulic properties and
+ are therefore grouped and listet in this special section.
+\end_layout
+
+\begin_layout Subsection
+Element with external heat loss 
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Element-with-external"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+inputs
+\end_layout
+
+\begin_layout Itemize
+heat flux to ambient 
+\begin_inset Formula $\dot{Q}_{loss,ext}$
+\end_inset
+
+ in [W]
+\end_layout
+
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+outputs
+\end_layout
+
+\begin_layout Itemize
+heat flux to ambient 
+\begin_inset Formula $\dot{Q}_{loss}$
+\end_inset
+
+ in [W]
+\end_layout
+
+\begin_layout Standard
+For a simple element with given external heat loss we just transfer values:
+\begin_inset Formula 
+\[
+\dot{Q}_{loss}=\dot{Q}_{loss,ext}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Heat loss in pipes
+\end_layout
+
+\begin_layout Subsubsection
+Convection coefficient inside pipe
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Convection-coefficient-inside"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The heat transfer from fluid to pipe surface is expressed through the Nusselt
+ number, which depends on the flow regime.
+\end_layout
+
+\begin_layout Standard
+We use the following equation for fully developed laminar flows (
+\begin_inset Formula $Re<2300$
+\end_inset
+
+) with constant wall temperature according to 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+TODO: QUELLE VDI Wärmeatlas
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+Nu_{lam}=\left(49.37+\left(1.615\cdot\left(Re\,Pr\frac{d}{l}\right)-0.7\right)^{3}\right)^{\frac{1}{3}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where Pr is the Prandtl number (determined by fluid properties).
+\end_layout
+
+\begin_layout Standard
+For turbulent flows (
+\begin_inset Formula $Re>1e4$
+\end_inset
+
+), we use the equation for fully developed turbulent flows according to
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+TODO: QUELLE VDI Wärmeatlas
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+Nu_{turb}=\frac{\frac{\zeta}{8}Re\:Pr}{1+12.7\sqrt{\frac{\zeta}{8}}\,\left(Pr^{^{2/3}}-1\right)}\left(1+\left(\frac{d}{l}\right)^{2/3}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $\zeta$
+\end_inset
+
+ is the pressure loss coefficient, which is calculated with the simplified
+ equation
+\begin_inset Formula 
+\[
+\zeta=\left(1.8\:log_{10}\left(Re\right)-1.5\right)^{-2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For 
+\begin_inset Formula $2300\leq Re\leq1e4$
+\end_inset
+
+ we use linear interpolation
+\begin_inset Formula 
+\[
+Nu_{int}=Nu_{lam,Re=2300}+\frac{Re-2300}{1e4-2300}\:\left(Nu_{turb,Re=1e4}-Nu_{lam,Re=2300}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note, as above, 
+\begin_inset Formula $Re$
+\end_inset
+
+ and 
+\begin_inset Formula $Pr$
+\end_inset
+
+ are temperature dependent.
+ 
+\end_layout
+
+\begin_layout Standard
+The convection coefficient 
+\begin_inset Formula $h_{i}$
+\end_inset
+
+ inside a pipe is
+\begin_inset Formula 
+\[
+h_{i}=Nu\frac{\lambda}{d}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Length-specific U-Value pipe wa
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Length-specific-U-Value-pipe"
+
+\end_inset
+
+ll
+\end_layout
+
+\begin_layout Standard
+For the calculation of pipe heat losses, we need the length-specific U-Value
+ for the pipe wall 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+U_{pipe}=\frac{2\pi}{\frac{1}{\lambda_{pipe}}ln\left(\frac{d_{o}}{d}\right)+\frac{1}{\lambda_{insulation}}ln\left(\frac{d_{o}+2s_{insulation}}{d_{o}}\right)}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which has the unit 
+\begin_inset Formula $W/(Km)$
+\end_inset
+
+.
+ It requires the following properties 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $d_{o}$
+\end_inset
+
+ outer diameter of pipe wall in [m]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\lambda_{pipe}$
+\end_inset
+
+ thermal conductivity of pipe wall in [W/mK]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $s_{insulation}$
+\end_inset
+
+ thickness of pipe insulation in [m]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\lambda_{insulation}$
+\end_inset
+
+ thermal conductivity of pipe insulation in [W/mK]
+\end_layout
+
+\begin_layout Subsubsection
+Static pipe with heat exchange with the ambient
+\end_layout
+
+\begin_layout Standard
+This model considers pressure loss according to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:General-Hydraulic-Pipe"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ For simplification, we use the inlet temperature to determine the fluid
+ properties.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+p_{in}-p_{out}=\Delta p(\dot{m},T_{in},l,d,k)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This models assumes steady flow conditions for reasons of simplification.
+ The inlet temperature and mass flow are assumed constant over a period
+ long enough that the outlet temperature does not change anymore.
+ This leads to a logarithmic temperature profile along the pipe, so that
+ the heat exchange is given by 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\dot{Q}_{loss}=\dot{m}c_{fl}\left(T_{in}-T_{amb}\right)\left(1-e^{\left(-\frac{UA_{pipe}}{\dot{m}c_{p}}l\right)}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $UA_{pipe}$
+\end_inset
+
+is the UA-Value of the pipe including insulation and heat transfer coefficients
+ at the inner and outer surface 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+UA_{pipe}=\frac{l}{\frac{1}{h_{i}d}+\frac{1}{h_{o}d_{o}}+U_{pipe}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $h_{i}(T_{in})$
+\end_inset
+
+ the convection coefficient inside the pipe in [W/m²K], calculated according
+ to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Convection-coefficient-inside"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $U_{pipe}$
+\end_inset
+
+ the length-specific U-Value of the pipe wall including insulation in [W/mK],
+ calculated according to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Length-specific-U-Value-pipe"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $h_{o}$
+\end_inset
+
+ the convection coefficient at the exterior pipe surface in [W/m²K] 
+\end_layout
+
+\begin_layout Standard
+In order to neglect dynamic effects, the volume is set to a small value
+ of 
+\begin_inset Formula $V=0.01m^{3}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Dynamic pipe with heat exchange
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Dynamic-pipe-with"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This model represents a pipe, which is discretized with finite volumes in
+ one dimension along the pipe length.
+ The model considers pressure loss according to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:General-Hydraulic-Pipe"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ For simplification, we use the inlet temperature to determine the fluid
+ properties.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+p_{in}-p_{out}=\Delta p(\dot{m},T_{in},l,d,k)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The heat exchange between each single volume and the ambient is 
+\begin_inset Formula 
+\begin{equation}
+\dot{Q}_{loss,n}=dx\,UA_{pipe}\left(T_{amb}-T_{n}\right)\label{eq:Qloss_dynamic_pipe}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+with the UA-Value for each pipe volume 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+UA_{pipe}=\frac{dx}{\frac{1}{h_{i}d}+\frac{1}{h_{o}d_{o}}+U_{pipe}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $h_{i}(T_{in})$
+\end_inset
+
+ the convection coefficient inside the pipe in [W/m²K], calculated according
+ to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Convection-coefficient-inside"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $U_{pipe}$
+\end_inset
+
+ the length-specific U-Value of the pipe wall including insulation in [W/mK],
+ calculated according to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Length-specific-U-Value-pipe"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $h_{o}$
+\end_inset
+
+ the convection coefficient at the exterior pipe surface in [W/m²K] 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $T_{amb}$
+\end_inset
+
+ the ambient temperature in [°C]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $T_{n}$
+\end_inset
+
+ the temperature of each volume in [°C]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $dx$
+\end_inset
+
+ the spatial discretization along the pipe in [m]
+\end_layout
+
+\begin_layout Standard
+The total heat flux to the ambient is
+\begin_inset Formula 
+\[
+\dot{Q}_{loss}=\sum_{k=1}^{n}\dot{Q}_{loss,k}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Ground heat exchanger pipe
+\end_layout
+
+\begin_layout Standard
+This model represents a number of 
+\begin_inset Formula $N_{parallel}$
+\end_inset
+
+ pipes, which are connected parallel and have identical pressure losses
+ and heat losses.
+ It aims modelling a common horizontal ground heat exchanger, where each
+ pipe has the same length and the same adjacent soil temperature.
+\end_layout
+
+\begin_layout Standard
+Hence, it is similar to 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "subsec:Dynamic-pipe-with"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, but with some modifications.
+ The pressure loss is considered as described in 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "subsec:General-Hydraulic-Pipe"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, however the fluid velocity is 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+v=\frac{\dot{m}}{\rho\frac{\pi}{4}d^{2}N_{parallel}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The heat exchange between pipe and soil is identical to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Qloss_dynamic_pipe"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, however the UA-Value for each pipe volume does not take into account an
+ exterior heat exchange coefficient: 
+\begin_inset Formula 
+\[
+UA_{pipe}=\frac{dx}{\frac{1}{h_{i}d}+U_{pipe}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Other than in 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "subsec:Dynamic-pipe-with"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, the total heat flux to the ambient is 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\dot{Q}_{loss}=N_{parallel}\sum_{k=1}^{n}\dot{Q}_{loss,k}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Pumps
+\end_layout
+
+\begin_layout Subsubsection
+Ideal pump
+\end_layout
+
+\begin_layout Standard
+An ideal pump is an adiabatic element with
+\begin_inset Formula 
+\[
+\dot{Q}_{loss}=0.
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Pump with performance loss
+\end_layout
+
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+A pump with performance loss produces heat that is transfered directly to
+ the fluid volume.
+ We calculate heat loss as factor of electrical power
+\begin_inset Formula 
+\[
+P_{el}=\Delta p\dot{V}=\frac{\Delta p\dot{m}}{\rho}
+\]
+
+\end_inset
+
+with
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $P_{el}$
+\end_inset
+
+ pump electrical power [W]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\dot{V}$
+\end_inset
+
+ fluid volume flux [m³/s]
+\end_layout
+
+\begin_layout Standard
+Heat loss is directed positive into the fluid and therefore we obtain
+\begin_inset Formula 
+\[
+\dot{Q}_{loss}=-\left(1-\eta_{pump}\right)P_{el}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+with 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\eta_{pump}$
+\end_inset
+
+ pump efficiency [-]
+\end_layout
+
+\begin_layout Subsection
+Ideal Heat Exchangers
+\end_layout
+
+\begin_layout Standard
+Equation
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:FlowElementSystemFunctionFriction"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ is used for heat exchangers.
+ The pressure drop 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ is computed according to 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "subsec:Fixed-pressure-loss"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ The diameter 
+\begin_inset Formula $d$
+\end_inset
+
+ to evaluate equation
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:FlowVelocity"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ is an equivalent diameter, specific to the heat exchanger component, and
+ is provided as constant parameter.
+ 
+\end_layout
+
+\begin_layout Standard
+An ideal heat exchanger is modelled as element with a predefined external
+ heat loss, see 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "subsec:Element-with-external"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Ideal Carnot Heat Pump
+\end_layout
+
+\begin_layout Standard
+Equation
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:FlowElementSystemFunctionFriction"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ is used for heat pumps.
+ The pressure drop 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ is computed according to 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "subsec:Fixed-pressure-loss"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ The diameter 
+\begin_inset Formula $d$
+\end_inset
+
+ to evaluate equation
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:FlowVelocity"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ is an equivalent diameter, specific to the heat pump component, and is
+ provided as constant parameter.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+General equations
+\end_layout
+
+\begin_layout Standard
+This model represents a heat pump with constant carnot efficiency.
+ The maximum possible COP of a heat pump according to thermodynamical limitation
+s (Carnots Theorem) is 
+\begin_inset Formula 
+\begin{equation}
+COP_{max}=\frac{T_{cond,m}}{T_{cond,m}-T_{evap,m}}\label{eq:COP_max_carnot}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Hence, the actual COP of the heat pump can be described as 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+COP=\eta_{carnot}COP_{max}\label{eq:COP_carnot}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where:
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\eta_{carnot}$
+\end_inset
+
+ is the Carnot efficiency (a common value is 
+\begin_inset Formula $\eta_{carnot}=0.4$
+\end_inset
+
+) in [-]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $T_{cond,m}$
+\end_inset
+
+ is the average fluid temperature in the condenser in [C]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $T_{evap,m}$
+\end_inset
+
+ is the average fluid temperature in the evaporator in [C]
+\end_layout
+
+\begin_layout Subsubsection
+Ideal Carnot Heat Pump in Supply Network
+\end_layout
+
+\begin_layout Standard
+This model represents a heat pump in a heat supply network.
+ The heat output of the heat pump (the condenser heat flux) is controlled
+ in order to reach a given supply temperature set point (condenser outlet
+ temperature).
+ 
+\end_layout
+
+\begin_layout Standard
+The constant parameters are 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\eta_{carnot}$
+\end_inset
+
+ is the Carnot efficiency (a common value is 
+\begin_inset Formula $\eta_{carnot}=0.4$
+\end_inset
+
+) in [-]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\dot{Q}_{cond,max}$
+\end_inset
+
+ is the maximum heating power in [W]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\Delta T_{cond,nominal}$
+\end_inset
+
+ is the nominal temperature difference at the condenser in [K]
+\end_layout
+
+\begin_layout Standard
+The time-dependent parameters are
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $T_{evap,m}$
+\end_inset
+
+ is the average fluid temperature in the evaporator in [C]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $T_{cond,out,setpoint}$
+\end_inset
+
+ is the condenser outlet temperature set point in [C]
+\end_layout
+
+\begin_layout Standard
+A controller calculates a signal 
+\begin_inset Formula $y$
+\end_inset
+
+ based on the given inlet temperature and the set point temperature
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+y=f_{controller}(T_{in},T_{cond,out,setpoint})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The condenser heat flux 
+\begin_inset Formula $\dot{Q}_{cond}$
+\end_inset
+
+ is then
+\begin_inset Formula 
+\[
+\dot{Q}_{cond}=\begin{cases}
+y & \dot{Q}_{cond}\dot{<Q}_{cond,max}\\
+\dot{Q}_{cond,max} & \dot{Q}_{cond}\geq\dot{Q}_{cond,max}
+\end{cases}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Which is identical to the flow element heat loss
+\begin_inset Formula 
+\[
+\dot{Q}_{loss}=-\dot{Q}_{cond}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The mean condenser temperature is 
+\begin_inset Formula 
+\[
+T_{cond,m}=T_{in}+\frac{\Delta T_{cond,nominal}}{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now the 
+\begin_inset Formula $COP$
+\end_inset
+
+ of the heat pump is calculated according to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:COP_carnot"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:COP_max_carnot"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+The heat pumps electrical energy demand is 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P_{el}=\frac{\dot{Q}_{cond}}{COP}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Ideal Carnot Heat Pump in Source Network
+\end_layout
+
+\begin_layout Standard
+This model represents a heat pump in a source network, i.e.
+ the cold side of the heat pump is part of the network.
+ 
+\end_layout
+
+\begin_layout Standard
+The constant parameters are 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\eta_{carnot}$
+\end_inset
+
+ is the Carnot efficiency (a common value is 
+\begin_inset Formula $\eta_{carnot}=0.4$
+\end_inset
+
+) in [-]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\dot{Q}_{cond,max}$
+\end_inset
+
+ is the maximum heating demand of the condenser in [W]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\Delta T_{evap,nominal}$
+\end_inset
+
+ is the nominal temperature difference at the evaporator in [K]
+\end_layout
+
+\begin_layout Standard
+The time-dependent parameters are
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\dot{Q}_{cond,demand}$
+\end_inset
+
+ is the heating demand of the condenser in [W]
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $T_{cond,m}$
+\end_inset
+
+ is the average fluid temperature in the condenser in [C]
+\end_layout
+
+\begin_layout Standard
+The actual heat flux of the condenser 
+\begin_inset Formula $\dot{Q}_{cond}$
+\end_inset
+
+ is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\dot{Q}_{cond}=\begin{cases}
+\dot{Q}_{cond,demand} & \dot{Q}_{cond,demand}\dot{<Q}_{cond,max}\\
+\dot{Q}_{cond,max} & \dot{Q}_{cond,demand}\geq\dot{Q}_{cond,max}
+\end{cases}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The mean evaporator temperature is 
+\begin_inset Formula 
+\[
+T_{evap,m}=T_{in}-\frac{\Delta T_{evap,nominal}}{2}
+\]
+
+\end_inset
+
+Now the 
+\begin_inset Formula $COP$
+\end_inset
+
+ of the heat pump is calculated according to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:COP_carnot"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:COP_max_carnot"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+The model calculates the heat flux at the evaporator 
+\begin_inset Formula $\dot{Q}_{evap}$
+\end_inset
+
+ using
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\dot{Q}_{evap}=\dot{Q}_{cond}\frac{COP-1}{COP}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which is identical to the heat loss of the flow element
+\begin_inset Formula 
+\[
+\dot{Q}_{loss}=\dot{Q}_{evap}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The heat pumps electrical energy demand is 
+\begin_inset Formula 
+\[
+P_{el}=\frac{\dot{Q}_{cond}}{COP}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Real Heat pump
+\end_layout
+
+\begin_layout Standard
+parameter
+\end_layout
+
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+pressure loss
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\Delta p_{fix}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $Pa$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+polynom coefficients for COP
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $c_{1},c_{2},c_{3},c_{4},c_{5},c_{6}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+inputs
+\end_layout
+
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+condenser outlet temperature
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $T_{cond,out}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $C$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+condenser heat flux 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\dot{Q}_{cond}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $W$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+outputs
+\end_layout
+
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+COP
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $COP$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+electrical power
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $P_{el}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $W$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+The pressure difference is 
+\begin_inset Formula 
+\[
+p_{in}-p_{out}=\Delta p_{fix}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The energy balance is 
+\begin_inset Formula 
+\[
+\dot{Q}_{loss}=-\left(\dot{Q}_{cond}-P_{el}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The electrical power demand is
+\begin_inset Formula 
+\[
+P_{el}=\frac{Q_{cond}}{COP}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The coefficient of performance (COP) is modelled using a 2d-biquadratic
+ polynom 
+\begin_inset Formula 
+\[
+COP=c_{1}+c_{2}T_{in}+c_{3}T_{cond,out}+c_{4}T_{in}T_{cond,out}+c_{5}T_{in}^{2}+c_{6}T_{cond,out}^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Valves
+\end_layout
+
+\begin_layout Part
+Model Generation and Pre-Processing Algorithms
+\end_layout
+
+\begin_layout Section
+Model Generation Process / Transformation of GIS based Topologies
+\end_layout
+
+\begin_layout Standard
+The transformation process of GIS-based network data to model data is a
+ three-step process:
+\end_layout
+
+\begin_layout Enumerate
+Determine geometry of all active components (
+\begin_inset Quotes eld
+\end_inset
+
+nodes
+\begin_inset Quotes erd
+\end_inset
+
+ in GIS terminology), e.g.
+ houses, pumps, storage systems
+\end_layout
+
+\begin_layout Enumerate
+Semi-automatic routing of pipes (
+\begin_inset Quotes eld
+\end_inset
+
+edges
+\begin_inset Quotes erd
+\end_inset
+
+ in GIS terminology); Based on some predefined pipe layout the remaining
+ pipe connections are determined using a 
+\begin_inset Quotes eld
+\end_inset
+
+shortest path
+\begin_inset Quotes erd
+\end_inset
+
+ algorithm.
+ In the result all active component nodes are connected with the network.
+ Afterwards all redundant edges are merged, when they have the same property,
+ yet keeping their total length.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Idealization and creation of the Thermo-Hydraulic network.
+ Each of the 
+\begin_inset Quotes eld
+\end_inset
+
+nodes
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+edges
+\begin_inset Quotes erd
+\end_inset
+
+ from the GIS import process are transformed into 
+\begin_inset Quotes eld
+\end_inset
+
+nodes
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+elements
+\begin_inset Quotes erd
+\end_inset
+
+ in terms of the thermo-hydraulic network model.
+ Hereby all elements of the network are expressed in terms of elements with
+ exactly two flow connections and a finite (though maybe extremely small)
+ pressure drop across the element.
+ All elements are connected in nodes.
+\end_layout
+
+\begin_layout Standard
+TODO : Hauke, add figs from presentation and add specific example of step
+ 3
+\end_layout
+
+\end_body
+\end_document
