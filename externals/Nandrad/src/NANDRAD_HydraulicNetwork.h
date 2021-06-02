@@ -95,6 +95,7 @@ public:
 	/*! List of flow elements that make up this network. */
 	std::vector<HydraulicNetworkElement>			m_elements;										// XML:E
 
+	/*! List of mass flow controller elements. */
 	std::vector<HydraulicNetworkControlElement>		m_controlElements;								// XML:E
 
 };
