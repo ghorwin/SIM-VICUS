@@ -78,6 +78,7 @@ public:
 		DT_ZoneControlThermostat,
 		DT_ZoneControlNaturalVentilation,
 		DT_ZoneControlShading,
+		DT_ZoneIdealHeatingCooling,
 		DT_Infiltration,
 		DT_VentilationNatural,
 		NUM_DT // used for "all"
@@ -152,6 +153,9 @@ public:
 
 	/*! Map of all database Zone Control Natural Ventilation. */
 	VICUS::Database<VICUS::ZoneControlNaturalVentilation>	m_zoneControlVentilationNatural;
+
+	/*! Map of all database Zone Ideal Heating and Cooling. */
+	VICUS::Database<VICUS::ZoneIdealHeatingCooling>		m_zoneIdealHeatingCooling;
 
 	/*! Map of all database Natural Ventilation. */
 	VICUS::Database<VICUS::VentilationNatural>			m_ventilationNatural;

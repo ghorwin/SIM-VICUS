@@ -137,6 +137,11 @@
      <addaction name="actionDBZoneControlShading"/>
      <addaction name="actionDBZoneControlVentilationNatural"/>
     </widget>
+    <widget class="QMenu" name="menuZone_templates">
+     <property name="title">
+      <string>Zone templates...</string>
+     </property>
+    </widget>
     <addaction name="actionDBMaterials"/>
     <addaction name="actionDBConstructions"/>
     <addaction name="actionDBComponents"/>
@@ -148,7 +153,8 @@
     <addaction name="menuInternal_Loads"/>
     <addaction name="menuVentilation_Infiltration"/>
     <addaction name="menuZone_Control"/>
-    <addaction name="actionDBZoneTemplates"/>
+    <addaction name="actionDBZoneIdealHeatingCooling"/>
+    <addaction name="menuZone_templates"/>
     <addaction name="separator"/>
     <addaction name="actionDBNetworkPipes"/>
     <addaction name="actionDBHydraulicComponents"/>
@@ -574,14 +580,6 @@
     <string>Internal loads: Electric equipment</string>
    </property>
   </action>
-  <action name="actionDBZoneTemplates">
-   <property name="text">
-    <string>Zone templates...</string>
-   </property>
-   <property name="toolTip">
-    <string>Zone templates...</string>
-   </property>
-  </action>
   <action name="actionDBInternalLoadsLights">
    <property name="text">
     <string>Lights...</string>
@@ -659,6 +657,16 @@
   <action name="actionDBSubSurfaceComponents">
    <property name="text">
     <string>Window/Door (sub-surface) components...</string>
+   </property>
+  </action>
+  <action name="actiondsadd">
+   <property name="text">
+    <string>dsadd</string>
+   </property>
+  </action>
+  <action name="actionDBZoneIdealHeatingCooling">
+   <property name="text">
+    <string>Zone Ideal Heating/Cooling</string>
    </property>
   </action>
  </widget>

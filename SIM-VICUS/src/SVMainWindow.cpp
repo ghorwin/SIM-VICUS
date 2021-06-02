@@ -338,6 +338,12 @@ SVDatabaseEditDialog * SVMainWindow::dbInfiltrationEditDialog() {
 	return m_dbInfiltrationEditDialog;
 }
 
+SVDatabaseEditDialog * SVMainWindow::dbZoneIdealHeatingCoolingEditDialog() {
+	if (m_dbZoneIdealHeatingCoolingEditDialog == nullptr)
+		m_dbZoneIdealHeatingCoolingEditDialog = SVDatabaseEditDialog::createZoneIdealHeatingCoolingEditDialog(this);
+	return m_dbZoneIdealHeatingCoolingEditDialog;
+}
+
 SVDBZoneTemplateEditDialog * SVMainWindow::dbZoneTemplateEditDialog() {
 	if (m_dbZoneTemplateEditDialog == nullptr)
 		m_dbZoneTemplateEditDialog = new SVDBZoneTemplateEditDialog(this);
@@ -431,6 +437,10 @@ void SVMainWindow::on_actionDBInfiltration_triggered() {
 
 void SVMainWindow::on_actionDBZoneTemplates_triggered() {
 	dbZoneTemplateEditDialog()->edit();
+}
+
+void SVMainWindow::on_actionDBZoneIdealHeatingCooling_triggered() {
+	dbZoneIdealHeatingCoolingEditDialog()->edit();
 }
 
 

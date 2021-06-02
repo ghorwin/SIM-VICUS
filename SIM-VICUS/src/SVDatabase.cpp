@@ -54,6 +54,7 @@ SVDatabase::SVDatabase() :
 	m_zoneControlVentilationNatural(12*USER_ID_SPACE_START),
 	m_ventilationNatural(15*USER_ID_SPACE_START),
 	m_infiltration(14*USER_ID_SPACE_START),
+	m_zoneIdealHeatingCooling(20*USER_ID_SPACE_START),
 	m_zoneTemplates(8*USER_ID_SPACE_START)
 {
 }
@@ -81,6 +82,7 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_zoneControlThermostat.readXML(	dbDir / "db_zoneControlThermostat.xml", "ZoneControlThermostats", "ZoneControlThermostat", true);
 		m_zoneControlVentilationNatural.readXML(	dbDir / "db_zoneControlVentilationNatural.xml", "ZoneControlVentilationNaturals", "ZoneControlVentilationNatural", true);
 		m_zoneControlShading.readXML(		dbDir / "db_zoneControlShading.xml", "ZoneControlShadings", "ZoneControlShading", true);
+		m_zoneIdealHeatingCooling.readXML(	dbDir / "db_zoneIdealHeatingCooling.xml", "ZoneIdealHeatingCoolings", "ZoneIdealHeatingCooling", true);
 		m_infiltration.readXML(				dbDir / "db_infiltration.xml", "Infiltrations", "Infiltration", true);
 		m_ventilationNatural.readXML(				dbDir / "db_ventilationNatural.xml", "VentilationNaturals", "VentilationNatural", true);
 		m_zoneTemplates.readXML(			dbDir / "db_zoneTemplates.xml", "ZoneTemplates", "ZoneTemplate", true);
@@ -123,6 +125,8 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_zoneControlVentilationNatural.readXML(	userDbDir / "db_zoneControlVentilationNatural.xml", "ZoneControlVentilationNaturals", "ZoneControlVentilationNatural", false);
 	if (t == NUM_DT || t == DT_ZoneControlShading)
 		m_zoneControlShading.readXML(	userDbDir / "db_zoneControlShading.xml", "ZoneControlShadings", "ZoneControlShading", false);
+	if (t == NUM_DT || t == DT_ZoneIdealHeatingCooling)
+		m_zoneIdealHeatingCooling.readXML(	userDbDir / "db_zoneIdealHeatingCooling.xml", "ZoneIdealHeatingCoolings", "ZoneIdealHeatingCooling", false);
 	if (t == NUM_DT || t == DT_Infiltration)
 		m_infiltration.readXML(	userDbDir / "db_infiltration.xml", "Infiltrations", "Infiltration", false);
 	if (t == NUM_DT || t == DT_VentilationNatural)
@@ -152,6 +156,7 @@ void SVDatabase::writeDatabases() const {
 	m_zoneControlThermostat.writeXML(userDbDir / "db_zoneControlThermostat.xml", "ZoneControlThermostats");
 	m_zoneControlVentilationNatural.writeXML(userDbDir / "db_zoneControlVentilationNatural.xml", "ZoneControlVentilationNaturals");
 	m_zoneControlShading.writeXML(	userDbDir / "db_zoneControlShading.xml", "ZoneControlShadings");
+	m_zoneIdealHeatingCooling.writeXML(	userDbDir / "db_zoneIdealHeatingCooling.xml", "ZoneIdealHeatingCoolings");
 	m_infiltration.writeXML(		userDbDir / "db_infiltration.xml", "Infiltrations");
 	m_ventilationNatural.writeXML(	userDbDir / "db_ventilationNatural.xml", "VentilationNaturals");
 	m_zoneTemplates.writeXML(		userDbDir / "db_zoneTemplates.xml", "ZoneTemplates");
@@ -232,6 +237,7 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	std::set<const VICUS::ZoneControlThermostat *> referencedThermostats;
 	std::set<const VICUS::Infiltration *> referencedInfiltration;
 	std::set<const VICUS::VentilationNatural *> referencedVentilation;
+	std::set<const VICUS::ZoneIdealHeatingCooling *> referencedIdealHeatCool;
 
 	//also add all schedules
 	for (const VICUS::ZoneTemplate * zt : referencedZoneTemplates) {
@@ -239,6 +245,7 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 			IDType idType = zt->m_idReferences[i];
 			const VICUS::InternalLoad *intLoad = m_internalLoads[idType];
 			const VICUS::ZoneControlThermostat * thermo = m_zoneControlThermostat[idType];
+			const VICUS::ZoneIdealHeatingCooling * idealHeatCool = m_zoneIdealHeatingCooling[idType];
 			const VICUS::Infiltration *inf = m_infiltration[idType];
 			const VICUS::VentilationNatural *ventiNat = m_ventilationNatural[idType];
 			if(intLoad	!= nullptr){
@@ -285,6 +292,8 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 				if(sched != nullptr)
 					referencedSchedule.insert(sched);
 			}
+			else if(idealHeatCool != nullptr)
+				referencedIdealHeatCool.insert(idealHeatCool);
 		}
 	}
 
@@ -303,6 +312,10 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	p.m_embeddedDB.m_ventilationNatural.clear();
 	for (const VICUS::VentilationNatural * venti : referencedVentilation)
 		p.m_embeddedDB.m_ventilationNatural.push_back(*venti);
+
+	p.m_embeddedDB.m_zoneIdealHeatingCooling.clear();
+	for (const VICUS::ZoneIdealHeatingCooling * ideal : referencedIdealHeatCool)
+		p.m_embeddedDB.m_zoneIdealHeatingCooling.push_back(*ideal);
 
 	p.m_embeddedDB.m_schedules.clear();
 	for (const VICUS::Schedule * sched : referencedSchedule)

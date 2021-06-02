@@ -102,6 +102,8 @@ SOURCES += \
 								../../src/SVDBZoneControlThermostatTableModel.cpp \
 								../../src/SVDBZoneControlVentilationNaturalEditWidget.cpp \
 								../../src/SVDBZoneControlVentilationNaturalTableModel.cpp \
+								../../src/SVDBZoneIdealHeatingCoolingEditWidget.cpp \
+								../../src/SVDBZoneIdealHeatingCoolingTableModel.cpp \
 								../../src/SVNetworkControllerDialog.cpp \
 								../../src/SVPropAddWindowWidget.cpp \
 								../../src/SVShadingCalculationDialog.cpp \
@@ -249,6 +251,8 @@ HEADERS  += \
 								../../src/SVDBZoneControlThermostatTableModel.h \
 								../../src/SVDBZoneControlVentilationNaturalEditWidget.h \
 								../../src/SVDBZoneControlVentilationNaturalTableModel.h \
+								../../src/SVDBZoneIdealHeatingCoolingEditWidget.h \
+								../../src/SVDBZoneIdealHeatingCoolingTableModel.h \
 								../../src/SVNetworkControllerDialog.h \
 								../../src/SVPropAddWindowWidget.h \
 								../../src/SVShadingCalculationDialog.h \
@@ -391,6 +395,7 @@ FORMS    += \
 								../../src/SVDBZoneControlShadingEditWidget.ui \
 								../../src/SVDBZoneControlThermostatEditWidget.ui \
 								../../src/SVDBZoneControlVentilationNaturalEditWidget.ui \
+								../../src/SVDBZoneIdealHeatingCoolingEditWidget.ui \
 								../../src/SVDatabaseEditDialog.ui \
 								../../src/SVDBBoundaryConditionEditWidget.ui \
 								../../src/SVDBComponentEditWidget.ui \
