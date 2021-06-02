@@ -681,7 +681,7 @@ Möchte man alle Knotendrücke oder Knotentemperaturen erhalten, so kann man ein
 ====
 
 
-#### Ausgaben der hydraulischen Netzwerkberechnung
+### Ausgaben der hydraulischen Netzwerkberechnung
 
 Für jedes Strömungselement kann ein Massestrom ausgegen werden, wobei die Strömungsrichtung immer von _inletNode_ zu _outletNode_ positiv definiert ist. Der Massestrom kann über die Größe `FluidMassFlux` (in kg/s) abgefragt werden (Referenztyp `NetworkElement`).
 
@@ -691,7 +691,7 @@ Ebenso sind für jedes Strömungselement die Drücke am Ein- und Auslass abrufba
 - `OutletNodePressure` in Pa
 
 
-#### Ausgaben der thermo-hydraulischen Berechnung
+### Ausgaben der thermo-hydraulischen Berechnung
 
 Jedes Strömungselement hat eine (mittlere) Temperatur, welche über die Ausgabegröße `FluidTemperature` abgefragt werden kann (Referenztyp `NetworkElement`).
 
@@ -705,49 +705,28 @@ Die mittlere Temperatur einen Strömungselements kann zur Visualisierung/Farbgeb
 Je nach physikalischer Modellierung eines Strömungselements muss die Mitteltemperatur einen Strömungselements nicht mit der Auslasstemperatur übereinstimmen (siehe Modelldokumentation). Beispiele dafür sind Speicher oder lange verlustbehaftete Rohre.
 ====
 
-Die Temperaturen am Ein- bzw. Auslass sind (wie die Drücke) an den physischen Positionen _inletNode_ und _outletNode_ definiert und können ausgegeben werden. Es sind folgende Ausgabevariablen für den Referenztyp `NetworkElement` definiert:
+Die Temperaturen am Ein- bzw. Auslass sind (wie die Drücke) an den physischen Positionen _inletNode_ und _outletNode_ definiert und können ausgegeben werden. Es sind beispielsweise folgende Ausgabevariablen für den Referenztyp `NetworkElement` definiert:
 
 - `InletNodeTemperature` in C
 - `OutletNodeTemperature` in C
 - `FlowElementHeatLoss` in W - Wärmestrom abgegeben vom Strömungselement (Energie wird dem Fluid in diesem Element entzogen). Positive Werte bedeuten Abkühlen des Mediums (Wärmeverlust).
-
-
-Übersicht über Element-Ausgabegrößen:
-----
-ElectricalPower                    	[W]       	Requested electrical power for current working point
-FlowElementHeatLoss                	[W]       	Heat flux from flow element into environment
-FluidMassFlux                      	[kg/s]    	Fluid mass flux through a flow element
-FluidTemperature                   	[C]       	Internal fluid temperature of network element
-FluidVelocity                      	[m/s]     	Fluid velocity
-FluidViscosity                     	[m2/s]    	Fluid dynamic viscosity
-FluidVolumeFlow                    	[m3/h]    	Fluid Volume flow
-InletNodePressure                  	[Pa]      	Fluid pressure at inlet node of a flow element
-InletNodeTemperature               	[C]       	Inlet node temperature of a flow element
-MechanicalPower                    	[W]       	Mechanical power for current working point
-Nusselt                            	[---]     	Nusselt number
-OutletNodePressure                 	[Pa]      	Fluid pressure at outlet node of a flow element
-OutletNodeTemperature              	[C]       	Outlet node temperature of a flow element
-Prandtl                            	[---]     	Prandtl number
-PressureDifference                 	[Pa]      	Difference between pressures at outlet and inlet nodes
-Reynolds                           	[---]     	Reynolds number
-ThermalTransmittance               	[W/K]     	Total thermal transmittance of fluid and pipe wall
-----
-
 
 [TIP]
 ====
 Die Auswahl einzelner Elemente via ID kann über Objektlisten recht flexibel erfolgen.
 ====
 
+Je nach verwendetem Strömungselement sind individuelle zusätzliche Ausgabegrößen abrufbar (siehe Dokumentation der Strömungselemente).
 
-#### Ausgaben des Netzwerks
+### Ausgaben des Netzwerks
 
-Zur Vereinfachung gibt es Variablen, welche für ein gesamtes Netzwerk abgerufen werden können (Referenztyp `Network`). Diese enthalten jeweils Ausgaben für alle Strömungselemente.
+Es gibt seitens des Netzwerks selbst auch Variablen, welche für ein gesamtes Netzwerk abgerufen werden können (Referenztyp `Network`):
 
-- `FluidMassFluxes` - Masseströme durch alle Strömungselemente des Netzwerks
-- `FluidTemperatures` - Mittlere Temperaturen alle Strömungselemente des Netzwerks
+- `FluidMassFluxes` - Masseströme [kg/s] durch alle Strömungselemente des Netzwerks
+- `ActiveLayerThermalLoad` - Wärmestrom [W] in beheizte Schichten einer Konstruktion
+- `NetworkZoneThermalLoad` - Wärmestrom [W] in eine Zone
 
-Die Variablen sind vektor-wertige Größen und es muss der __Index__ des jeweils angeforderten Vektorelements verwendet werden. Die Indizierung entspricht der Reihenfolge der  `HydraulicNetworkElement` Tags. <<ex_network_outputs>> zeigt die Definition einer indexbasierten Ausgabe für Masseströme des Netzwerks.
+Diese Variablen sind vektor-wertige Größen und es muss die __Id__ des jeweils angeforderten Vektorelements verwendet werden. <<ex_network_outputs>> zeigt die Definition einer indexbasierten Ausgabe für Masseströme des Netzwerks.
 
 [[ex_network_outputs]]
 .Beispiel für Ausgabedefinitionen mit Network als Referenztyp
@@ -758,30 +737,12 @@ Die Variablen sind vektor-wertige Größen und es muss der __Index__ des jeweils
 <OutputDefinition>
 	<!-- We choose the flow through the second element (pipe 101) as reference flux
 		 for the entire network -->
-	<Quantity>FluidMassFluxes[1]</Quantity>
+	<Quantity>FluidMassFluxes[id=101]</Quantity>
 	<ObjectListName>Entire network</ObjectListName>
 	<GridName>hourly</GridName>
 </OutputDefinition>
 ----
 ====
-
-
-Übersicht über Netzwerk-Ausgabegrößen:
-
-----
-FluidMassFluxes(id,4)                     	[kg/s]    	Fluid mass flux trough all flow elements
-NetworkZoneHeatLoad(id,1)                 	[W]       	Complete Heat load to zones from all hydraulic network elements
-NetworkActiveLayerHeatLoad(id,1)          	[W]       	Heat load to the construction layers from all hydraulic network elements
-----
-
-
-### Variablennamen in Ausgabedateien
-
-Variablen für Ausgaben vom Referenztyp `NetworkElement` werden in den Ausgabedateien wie folgt angegeben: `NetworkElement(id=1).FluidMassFlux` wobei hier `id=1` die ID des ausgewählten Netzwerkelements.
-
-
-TODO : Datei `VariableSubstitutions.txt` beschreiben.
-
 
 
 :xrefstyle: basic
