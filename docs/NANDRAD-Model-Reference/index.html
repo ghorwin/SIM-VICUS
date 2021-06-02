@@ -72,7 +72,7 @@ table {
 <h1>NANDRAD Modell-Referenz</h1>
 <div class="details">
 <span id="author" class="author">Andreas Nicolai &lt;andreas.nicolai@tu-dresden.de&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke</span><br>
-<span id="revnumber">version 0.2 (28.05.2021)</span>
+<span id="revnumber">version 0.2 (02.06.2021)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Inhaltsverzeichnis</div>
@@ -293,7 +293,7 @@ table {
 <li><a href="#_rohr_elemente">18.5.1. Rohr-Elemente</a></li>
 </ul>
 </li>
-<li><a href="#HeatExchangeType">18.6. Definition der Wärmeaustauschmodells (HeatExchangeType)</a>
+<li><a href="#HeatExchangeType">18.6. Definition der Wärmeaustauschmodells (<code>HydraulicNetworkHeatExchange</code>)</a>
 <ul class="sectlevel3">
 <li><a href="#_parameter_für_wärmeaustauschdefinition">18.6.1. Parameter für Wärmeaustauschdefinition</a></li>
 </ul>
@@ -302,7 +302,9 @@ table {
 <li><a href="#_ausgaben_8">18.8. Ausgaben</a>
 <ul class="sectlevel3">
 <li><a href="#_verfügbare_ausgaben">18.8.1. Verfügbare Ausgaben</a></li>
-<li><a href="#_variablennamen_in_ausgabedateien">18.8.2. Variablennamen in Ausgabedateien</a></li>
+<li><a href="#_ausgaben_der_hydraulischen_netzwerkberechnung">18.8.2. Ausgaben der hydraulischen Netzwerkberechnung</a></li>
+<li><a href="#_ausgaben_der_thermo_hydraulischen_berechnung">18.8.3. Ausgaben der thermo-hydraulischen Berechnung</a></li>
+<li><a href="#_ausgaben_des_netzwerks">18.8.4. Ausgaben des Netzwerks</a></li>
 </ul>
 </li>
 </ul>
@@ -7124,7 +7126,23 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <div class="sect2">
 <h3 id="model_network_interface_adapter">17.11. Schnittstellen-Modell für die Anbindung externer Anlagennetze</h3>
 <div class="paragraph">
-<p>Diese Modell ist für alleinstehende Simulation unwichtig und wird primär für die Co-Simulation mittels FMI gebraucht. Es bildet den Wärmeentzug des Gebäudes auf ein strömendes Medium ab, bspw. ein Versorgungsnetzwerk. Das Medium strömt mit gegebener Vorlauftemperatur und Massestrom ins Gebäude und das <code>NetworkInterfaceAdapterModel</code> berechnet die resultierende Rücklauftemperatur.</p>
+<p>Diese Modell ist für alleinstehende Simulation unwichtig und wird primär für die Co-Simulation mittels FMI gebraucht. Es bildet den Wärmeentzug des Gebäudes auf ein strömendes Medium ab, bspw. ein Versorgungsnetzwerk. Das Medium strömt mit gegebener Vorlauftemperatur und Massenstrom ins Gebäude und das <code>NetworkInterfaceAdapterModel</code> berechnet die resultierende Rücklauftemperatur.</p>
+</div>
+<div class="paragraph">
+<p>Vorlauftemperatur und Massenstrom werden als Zeitpläne benötigt:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>SupplyTemperatureSchedule</code></p>
+</li>
+<li>
+<p><code>SupplyMassFlowSchedule</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Bei Verwendung der FMI-Kopplung sind diese Größen durch FMI-Input-Variablen zu überschreiben.</p>
 </div>
 <div class="exampleblock">
 <div class="title">Beispiel 58. Definitionsblock für ein solches Schnittstellenmodell</div>
@@ -7276,6 +7294,10 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
   <span class="nt">&lt;Elements&gt;</span>
         ... <span class="c">&lt;!-- network flow elements with topology definition --&gt;</span>
   <span class="nt">&lt;/Elements&gt;</span>
+
+  <span class="nt">&lt;ControlElements&gt;</span>
+        ... <span class="c">&lt;!-- network flow controller parameters --&gt;</span>
+  <span class="nt">&lt;/ControlElements&gt;</span>
 
 <span class="nt">&lt;/HydraulicNetwork&gt;</span></code></pre>
 </div>
@@ -7591,7 +7613,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;PipeProperties&gt;</span>
   <span class="nt">&lt;HydraulicNetworkPipeProperties</span> <span class="na">id=</span><span class="s">"1"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"PipeRoughness"</span> <span class="na">unit=</span><span class="s">"m"</span><span class="nt">&gt;</span>0.007<span class="nt">&lt;/IBK:Parameter&gt;</span>
+    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"PipeRoughness"</span> <span class="na">unit=</span><span class="s">"mm"</span><span class="nt">&gt;</span>0.07<span class="nt">&lt;/IBK:Parameter&gt;</span>
     <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"PipeInnerDiameter"</span> <span class="na">unit=</span><span class="s">"mm"</span><span class="nt">&gt;</span>25.6<span class="nt">&lt;/IBK:Parameter&gt;</span>
     <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"PipeOuterDiameter"</span> <span class="na">unit=</span><span class="s">"mm"</span><span class="nt">&gt;</span>32<span class="nt">&lt;/IBK:Parameter&gt;</span>
     <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"UValuePipeWall"</span> <span class="na">unit=</span><span class="s">"W/mK"</span><span class="nt">&gt;</span>5<span class="nt">&lt;/IBK:Parameter&gt;</span>
@@ -8216,12 +8238,12 @@ Wird der Modus <code>SupplySide</code> gewählt, müssen die Parameter <code>Eva
 </div>
 </div>
 <div class="sect2">
-<h3 id="HeatExchangeType">18.6. Definition der Wärmeaustauschmodells (HeatExchangeType)</h3>
+<h3 id="HeatExchangeType">18.6. Definition der Wärmeaustauschmodells (<code>HydraulicNetworkHeatExchange</code>)</h3>
 <div class="paragraph">
-<p>Für thermische Netzwerken kann für jedes Strömungselement (<a href="#HydraulicNetworkElements">Section 18.5</a>) ein Wärmeaustausch definiert werden. Dafür muss innerhalb der Definition des Strömungselements ein XML-Element <code>HeatExchangeType</code> definiert werden.</p>
+<p>In thermische Netzwerken kann für ein Strömungselement (<a href="#HydraulicNetworkElements">Section 18.5</a>) ein Wärmeaustausch (mit der Umgebung, anderen Modellen, etc.) definiert werden. Dafür muss innerhalb der Definition des Strömungselements ein XML-Element <code>HydraulicNetworkHeatExchange</code> definiert werden.</p>
 </div>
 <div id="ex_heat_exchange_type" class="exampleblock">
-<div class="title">Beispiel 69. Definition von Strömungselementen mit <code>HeatExchangeType</code></div>
+<div class="title">Beispiel 69. Definition von Strömungselementen mit <code>HydraulicNetworkHeatExchange</code></div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -8249,7 +8271,7 @@ Wird der Modus <code>SupplySide</code> gewählt, müssen die Parameter <code>Eva
 </div>
 </div>
 <div class="paragraph">
-<p>Der <code>HeatExchangeType</code> kann folgende Werte haben:</p>
+<p>Es gibt verschiedene Modelltypen für den Wärmeaustausch, angegeben über das Attribut <code>modelType</code>:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -8259,51 +8281,51 @@ Wird der Modus <code>SupplySide</code> gewählt, müssen die Parameter <code>Eva
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">HeatExchangeType</th>
+<th class="tableblock halign-left valign-top"><code>modelType</code></th>
 <th class="tableblock halign-left valign-top">Beschreibung</th>
-<th class="tableblock halign-center valign-top">Verwendbar für Modelltyp</th>
+<th class="tableblock halign-center valign-top">Verwendbar für Komponente</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>TemperatureConstant</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmeaustausch basierend auf Temperaturunterschied zwischen Medium und Umgebungstemperatur; Konstante Umgebungstemperatur ist als Parameter im <code>HydraulicNetworkElement</code> gegeben. Es muss zusätzlich der Parameter <code>ExternalHeatTransferCoefficient</code> gegeben sein.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmeaustausch basierend auf Temperaturunterschied zwischen Medium und Umgebungstemperatur; Konstante Umgebungstemperatur ist als Parameter <code>Temperature</code> im <code>HydraulicNetworkElement</code> gegeben. Es muss zusätzlich der Parameter <code>ExternalHeatTransferCoefficient</code> gegeben sein.</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>SimplePipe</code>, <code>DynamicPipe</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>TemperatureSpline</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmeaustausch basierend auf Temperaturunterschied zwischen Medium und Umgebungstemperatur; Umgebungstemperatur ist als Zeitreihe in einem LinearSplineParameter (<a href="#LinearSplineParameter">Section 3.5</a>) gegeben. Es muss zusätzlich der Parameter <code>ExternalHeatTransferCoefficient</code> gegeben sein.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmeaustausch basierend auf Temperaturunterschied zwischen Medium und Umgebungstemperatur; Umgebungstemperatur ist als Zeitreihe in einem LinearSplineParameter (<a href="#LinearSplineParameter">Section 3.5</a>) mit Namen <code>Temperature</code> gegeben. Es muss zusätzlich der Parameter <code>ExternalHeatTransferCoefficient</code> gegeben sein.</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>SimplePipe</code>, <code>DynamicPipe</code></p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TemperatureSplineEvaporator</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmeaustasch via Wärmepumpe, basierend auf gegebener Verdampfertemperatur. Verdampfertemperatur ist als  Zeitreihe in einem LinearSplineParameter (<a href="#LinearSplineParameter">Section 3.5</a>) mit Namen <code>Temperature</code> gegeben</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>HeatPumpIdealCarnot</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>TemperatureZone</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmeaustausch mit einer Zone; Raumlufttemperatur wird als Umgebungstemperatur verwendet.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmeaustausch mit einer Zone. Raumlufttemperatur der referenzierten Zone (<code>ZoneId</code>) wird als Umgebungstemperatur verwendet. Es muss zusätzlich der Parameter <code>ExternalHeatTransferCoefficient</code> gegeben sein.</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>SimplePipe</code>, <code>DynamicPipe</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>TemperatureConstructionLayer</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmeaustausch mit einer Konstruktionsschicht (Fußbodenheizung/Flächenheizung); Schichttemperatur wird als Umgebungstemperatur verwendet.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmeaustausch mit einer Konstruktionsschicht (Fußbodenheizung/Flächenheizung); Schichttemperatur (aktive Schicht) der referenzierten Konstruktion (<code>ConstructionInstanceId</code>) wird als Umgebungstemperatur verwendet.</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>SimplePipe</code>, <code>DynamicPipe</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>HeatLossConstant</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Konstanter Wärmestrom (positiv aus dem Element) ist als konstanter Parameter gegeben</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Konstanter Wärmestrom (positiv aus dem Element) ist als konstanter Parameter <code>HeatLoss</code> gegeben.</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>SimplePipe</code>, <code>DynamicPipe</code>, <code>HeatExchanger</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>HeatLossSpline</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmestrom (positiv aus dem Element) ist als Zeitreihe in einem LinearSplineParameter (<a href="#LinearSplineParameter">Section 3.5</a>) gegeben</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmestrom (positiv aus dem Element) ist als Zeitreihe in einem LinearSplineParameter (<a href="#LinearSplineParameter">Section 3.5</a>) mit Namen <code>HeatLoss</code> gegeben</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>SimplePipe</code>, <code>DynamicPipe</code>, <code>HeatExchanger</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>HeatLossSplineCondenser</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmestrom (positiv aus dem Element) des Kondensators bei Verwendung eines Wärmepumpen-Modells als Zeitreihe in einem LinearSplineParameter (<a href="#LinearSplineParameter">Section 3.5</a>) gegeben</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmestrom (positiv aus dem Element) des Kondensators bei Verwendung eines Wärmepumpen-Modells als Zeitreihe in einem LinearSplineParameter (<a href="#LinearSplineParameter">Section 3.5</a>) mit Namen <code>HeatLoss</code> gegeben</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>HeatPumpIdealCarnot</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TemperatureFMUInterface</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Temperatur wird von FMU gegeben</p></td>
-<td class="tableblock halign-center valign-top"></td>
 </tr>
 </tbody>
 </table>
@@ -8315,7 +8337,7 @@ Wird der Modus <code>SupplySide</code> gewählt, müssen die Parameter <code>Eva
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Wenn des XML-Element <code>HeatExchangeType</code> fehlt, wird die entsprechende Komponente als adiabat behandelt und verlangt entsprechend auch keine weiteren Parameter.</p>
+<p>Wenn des XML-Element <code>HydraulicNetworkHeatExchange</code> fehlt, wird die entsprechende Komponente als adiabat behandelt.</p>
 </div>
 </td>
 </tr>
@@ -8561,8 +8583,9 @@ Das <code>HydraulicNetworkElement</code> enthält dazu ein <code>ControlElement<
 </tr>
 </table>
 </div>
-<div class="sect4">
-<h5 id="_ausgaben_der_hydraulischen_netzwerkberechnung">Ausgaben der hydraulischen Netzwerkberechnung</h5>
+</div>
+<div class="sect3">
+<h4 id="_ausgaben_der_hydraulischen_netzwerkberechnung">18.8.2. Ausgaben der hydraulischen Netzwerkberechnung</h4>
 <div class="paragraph">
 <p>Für jedes Strömungselement kann ein Massestrom ausgegen werden, wobei die Strömungsrichtung immer von <em>inletNode</em> zu <em>outletNode</em> positiv definiert ist. Der Massestrom kann über die Größe <code>FluidMassFlux</code> (in kg/s) abgefragt werden (Referenztyp <code>NetworkElement</code>).</p>
 </div>
@@ -8580,8 +8603,8 @@ Das <code>HydraulicNetworkElement</code> enthält dazu ein <code>ControlElement<
 </ul>
 </div>
 </div>
-<div class="sect4">
-<h5 id="_ausgaben_der_thermo_hydraulischen_berechnung">Ausgaben der thermo-hydraulischen Berechnung</h5>
+<div class="sect3">
+<h4 id="_ausgaben_der_thermo_hydraulischen_berechnung">18.8.3. Ausgaben der thermo-hydraulischen Berechnung</h4>
 <div class="paragraph">
 <p>Jedes Strömungselement hat eine (mittlere) Temperatur, welche über die Ausgabegröße <code>FluidTemperature</code> abgefragt werden kann (Referenztyp <code>NetworkElement</code>).</p>
 </div>
@@ -8614,7 +8637,7 @@ Das <code>HydraulicNetworkElement</code> enthält dazu ein <code>ControlElement<
 </table>
 </div>
 <div class="paragraph">
-<p>Die Temperaturen am Ein- bzw. Auslass sind (wie die Drücke) an den physischen Positionen <em>inletNode</em> und <em>outletNode</em> definiert und können ausgegeben werden. Es sind folgende Ausgabevariablen für den Referenztyp <code>NetworkElement</code> definiert:</p>
+<p>Die Temperaturen am Ein- bzw. Auslass sind (wie die Drücke) an den physischen Positionen <em>inletNode</em> und <em>outletNode</em> definiert und können ausgegeben werden. Es sind beispielsweise folgende Ausgabevariablen für den Referenztyp <code>NetworkElement</code> definiert:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -8628,30 +8651,6 @@ Das <code>HydraulicNetworkElement</code> enthält dazu ein <code>ControlElement<
 <p><code>FlowElementHeatLoss</code> in W - Wärmestrom abgegeben vom Strömungselement (Energie wird dem Fluid in diesem Element entzogen). Positive Werte bedeuten Abkühlen des Mediums (Wärmeverlust).</p>
 </li>
 </ul>
-</div>
-<div class="paragraph">
-<p>Übersicht über Element-Ausgabegrößen:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>ElectricalPower                     [W]         Requested electrical power for current working point
-FlowElementHeatLoss                 [W]         Heat flux from flow element into environment
-FluidMassFlux                       [kg/s]      Fluid mass flux through a flow element
-FluidTemperature                    [C]         Internal fluid temperature of network element
-FluidVelocity                       [m/s]       Fluid velocity
-FluidViscosity                      [m2/s]      Fluid dynamic viscosity
-FluidVolumeFlow                     [m3/h]      Fluid Volume flow
-InletNodePressure                   [Pa]        Fluid pressure at inlet node of a flow element
-InletNodeTemperature                [C]         Inlet node temperature of a flow element
-MechanicalPower                     [W]         Mechanical power for current working point
-Nusselt                             [---]       Nusselt number
-OutletNodePressure                  [Pa]        Fluid pressure at outlet node of a flow element
-OutletNodeTemperature               [C]         Outlet node temperature of a flow element
-Prandtl                             [---]       Prandtl number
-PressureDifference                  [Pa]        Difference between pressures at outlet and inlet nodes
-Reynolds                            [---]       Reynolds number
-ThermalTransmittance                [W/K]       Total thermal transmittance of fluid and pipe wall</pre>
-</div>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -8667,24 +8666,30 @@ ThermalTransmittance                [W/K]       Total thermal transmittance of f
 </tr>
 </table>
 </div>
-</div>
-<div class="sect4">
-<h5 id="_ausgaben_des_netzwerks">Ausgaben des Netzwerks</h5>
 <div class="paragraph">
-<p>Zur Vereinfachung gibt es Variablen, welche für ein gesamtes Netzwerk abgerufen werden können (Referenztyp <code>Network</code>). Diese enthalten jeweils Ausgaben für alle Strömungselemente.</p>
+<p>Je nach verwendetem Strömungselement sind individuelle zusätzliche Ausgabegrößen abrufbar (siehe Dokumentation der Strömungselemente).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_ausgaben_des_netzwerks">18.8.4. Ausgaben des Netzwerks</h4>
+<div class="paragraph">
+<p>Es gibt seitens des Netzwerks selbst auch Variablen, welche für ein gesamtes Netzwerk abgerufen werden können (Referenztyp <code>Network</code>):</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>FluidMassFluxes</code> - Masseströme durch alle Strömungselemente des Netzwerks</p>
+<p><code>FluidMassFluxes</code> - Masseströme [kg/s] durch alle Strömungselemente des Netzwerks</p>
 </li>
 <li>
-<p><code>FluidTemperatures</code> - Mittlere Temperaturen alle Strömungselemente des Netzwerks</p>
+<p><code>ActiveLayerThermalLoad</code> - Wärmestrom [W] in beheizte Schichten einer Konstruktion</p>
+</li>
+<li>
+<p><code>NetworkZoneThermalLoad</code> - Wärmestrom [W] in eine Zone</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Die Variablen sind vektor-wertige Größen und es muss der <em>Index</em> des jeweils angeforderten Vektorelements verwendet werden. Die Indizierung entspricht der Reihenfolge der  <code>HydraulicNetworkElement</code> Tags. <a href="#ex_network_outputs">Beispiel 72</a> zeigt die Definition einer indexbasierten Ausgabe für Masseströme des Netzwerks.</p>
+<p>Diese Variablen sind vektor-wertige Größen und es muss die <em>Id</em> des jeweils angeforderten Vektorelements verwendet werden. <a href="#ex_network_outputs">Beispiel 72</a> zeigt die Definition einer indexbasierten Ausgabe für Masseströme des Netzwerks.</p>
 </div>
 <div id="ex_network_outputs" class="exampleblock">
 <div class="title">Beispiel 72. Beispiel für Ausgabedefinitionen mit Network als Referenztyp</div>
@@ -8695,33 +8700,13 @@ ThermalTransmittance                [W/K]       Total thermal transmittance of f
 <span class="nt">&lt;OutputDefinition&gt;</span>
   <span class="c">&lt;!-- We choose the flow through the second element (pipe 101) as reference flux
      for the entire network --&gt;</span>
-  <span class="nt">&lt;Quantity&gt;</span>FluidMassFluxes[1]<span class="nt">&lt;/Quantity&gt;</span>
+  <span class="nt">&lt;Quantity&gt;</span>FluidMassFluxes[id=101]<span class="nt">&lt;/Quantity&gt;</span>
   <span class="nt">&lt;ObjectListName&gt;</span>Entire network<span class="nt">&lt;/ObjectListName&gt;</span>
   <span class="nt">&lt;GridName&gt;</span>hourly<span class="nt">&lt;/GridName&gt;</span>
 <span class="nt">&lt;/OutputDefinition&gt;</span></code></pre>
 </div>
 </div>
 </div>
-</div>
-<div class="paragraph">
-<p>Übersicht über Netzwerk-Ausgabegrößen:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>FluidMassFluxes(id,4)                       [kg/s]      Fluid mass flux trough all flow elements
-NetworkZoneHeatLoad(id,1)                   [W]         Complete Heat load to zones from all hydraulic network elements
-NetworkActiveLayerHeatLoad(id,1)            [W]         Heat load to the construction layers from all hydraulic network elements</pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_variablennamen_in_ausgabedateien">18.8.2. Variablennamen in Ausgabedateien</h4>
-<div class="paragraph">
-<p>Variablen für Ausgaben vom Referenztyp <code>NetworkElement</code> werden in den Ausgabedateien wie folgt angegeben: <code>NetworkElement(id=1).FluidMassFlux</code> wobei hier <code>id=1</code> die ID des ausgewählten Netzwerkelements.</p>
-</div>
-<div class="paragraph">
-<p>TODO : Datei <code>VariableSubstitutions.txt</code> beschreiben.</p>
 </div>
 </div>
 </div>
@@ -9298,8 +9283,8 @@ NetworkActiveLayerHeatLoad(id,1)            [W]         Heat load to the constru
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.2 (28.05.2021)<br>
-Last updated 2021-05-28 17:04:01 +0200
+Version 0.2 (02.06.2021)<br>
+Last updated 2021-06-02 19:03:00 +0200
 </div>
 </div>
 <style>

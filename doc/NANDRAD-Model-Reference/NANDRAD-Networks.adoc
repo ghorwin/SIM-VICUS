@@ -309,22 +309,6 @@ Für das Model `ConstantPressurePump` werden diese Parameter benötigt:
 Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definiert. D.h. die durch Volumenstrom und Druckhöhe gegebene mechanische Arbeit entspricht diesem Anteil der Gesamtarbeit. Die Differenz der Leistungen wird als Wärmequelle dem Fluid aufgeprägt.
 
 
-### Modelltyp: ConstantMassFluxPump
-
-Für das Model `ConstantMassFluxPump` werden diese Parameter benötigt:
-
-[options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
-|====================
-|Name | Einheit | Beschreibung | Wertebereich | Verwendung
-| `MassFlux` | kg/s | Vordefinierter Massestrom | _benötigt_ | 
-| `Volume` | m3 | Fluid volume inside the pump | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
-|====================
-
-Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definiert. D.h. die durch Volumenstrom und Druckhöhe gegebene mechanische Arbeit entspricht diesem Anteil der Gesamtarbeit. Die Differenz der Leistungen wird als Wärmequelle dem Fluid aufgeprägt.
-
-TODO : Testbeispiel!
-
-
 ### ModellTyp: HeatExchanger
 
 Das Model `HeatExchanger` ist ein einfacher Wärmeübertrager, welcher mit dem Fluid einen vorgegebenen Wärmestrom austauscht. Es werden diese Parameter benötigt:
@@ -502,12 +486,12 @@ Die Ausgabe Massestrom `FluidMassFlux` und Volumenstrom `FluidVolumeFlow` bezieh
 ====
 
 [[HeatExchangeType]]
-## Definition der Wärmeaustauschmodells (HeatExchangeType)
+## Definition der Wärmeaustauschmodells (`HydraulicNetworkHeatExchange`)
 
-Für thermische Netzwerken kann für jedes Strömungselement (<<HydraulicNetworkElements>>) ein Wärmeaustausch definiert werden. Dafür muss innerhalb der Definition des Strömungselements ein XML-Element `HeatExchangeType` definiert werden. 
+In thermische Netzwerken kann für ein Strömungselement (<<HydraulicNetworkElements>>) ein Wärmeaustausch (mit der Umgebung, anderen Modellen, etc.) definiert werden. Dafür muss innerhalb der Definition des Strömungselements ein XML-Element `HydraulicNetworkHeatExchange` definiert werden. 
 
 [[ex_heat_exchange_type]]
-.Definition von Strömungselementen mit `HeatExchangeType`
+.Definition von Strömungselementen mit `HydraulicNetworkHeatExchange`
 ====
 [source,xml]
 ----
@@ -534,25 +518,33 @@ Für thermische Netzwerken kann für jedes Strömungselement (<<HydraulicNetwork
 ====
 
 
-Der `HeatExchangeType` kann folgende Werte haben:
+Es gibt verschiedene Modelltypen für den Wärmeaustausch, angegeben über das Attribut `modelType`:
 
 
 [options="header",cols="25%,50%, ^ 25%",width="100%"]
 |====================
-|HeatExchangeType| Beschreibung| Verwendbar für Modelltyp
-| `TemperatureConstant` | Wärmeaustausch basierend auf Temperaturunterschied zwischen Medium und Umgebungstemperatur; Konstante Umgebungstemperatur ist als Parameter im `HydraulicNetworkElement` gegeben. Es muss zusätzlich der Parameter `ExternalHeatTransferCoefficient` gegeben sein. | `SimplePipe`, `DynamicPipe` 
-| `TemperatureSpline` | Wärmeaustausch basierend auf Temperaturunterschied zwischen Medium und Umgebungstemperatur; Umgebungstemperatur ist als Zeitreihe in einem LinearSplineParameter (<<LinearSplineParameter>>) gegeben. Es muss zusätzlich der Parameter `ExternalHeatTransferCoefficient` gegeben sein. | `SimplePipe`, `DynamicPipe`
-| `TemperatureZone` | Wärmeaustausch mit einer Zone; Raumlufttemperatur wird als Umgebungstemperatur verwendet.  | `SimplePipe`, `DynamicPipe`
-| `TemperatureConstructionLayer` | Wärmeaustausch mit einer Konstruktionsschicht (Fußbodenheizung/Flächenheizung); Schichttemperatur wird als Umgebungstemperatur verwendet.  | `SimplePipe`, `DynamicPipe`
-| `HeatLossConstant` | Konstanter Wärmestrom (positiv aus dem Element) ist als konstanter Parameter gegeben | `SimplePipe`, `DynamicPipe`, `HeatExchanger`
-| `HeatLossSpline` | Wärmestrom (positiv aus dem Element) ist als Zeitreihe in einem LinearSplineParameter (<<LinearSplineParameter>>) gegeben | `SimplePipe`, `DynamicPipe`, `HeatExchanger`
-| `HeatLossSplineCondenser` | Wärmestrom (positiv aus dem Element) des Kondensators bei Verwendung eines Wärmepumpen-Modells als Zeitreihe in einem LinearSplineParameter (<<LinearSplineParameter>>) gegeben | `HeatPumpIdealCarnot`
-| `TemperatureFMUInterface` | Temperatur wird von FMU gegeben |
+|`modelType`| Beschreibung| Verwendbar für Komponente
+
+| `TemperatureConstant` | Wärmeaustausch basierend auf Temperaturunterschied zwischen Medium und Umgebungstemperatur; Konstante Umgebungstemperatur ist als Parameter `Temperature` im `HydraulicNetworkElement` gegeben. Es muss zusätzlich der Parameter `ExternalHeatTransferCoefficient` gegeben sein. | `SimplePipe`, `DynamicPipe`
+
+| `TemperatureSpline` | Wärmeaustausch basierend auf Temperaturunterschied zwischen Medium und Umgebungstemperatur; Umgebungstemperatur ist als Zeitreihe in einem LinearSplineParameter (<<LinearSplineParameter>>) mit Namen `Temperature` gegeben. Es muss zusätzlich der Parameter `ExternalHeatTransferCoefficient` gegeben sein. | `SimplePipe`, `DynamicPipe`
+
+| `TemperatureSplineEvaporator` | Wärmeaustasch via Wärmepumpe, basierend auf gegebener Verdampfertemperatur. Verdampfertemperatur ist als  Zeitreihe in einem LinearSplineParameter (<<LinearSplineParameter>>) mit Namen `Temperature` gegeben | `HeatPumpIdealCarnot`
+
+| `TemperatureZone` | Wärmeaustausch mit einer Zone. Raumlufttemperatur der referenzierten Zone (`ZoneId`) wird als Umgebungstemperatur verwendet. Es muss zusätzlich der Parameter `ExternalHeatTransferCoefficient` gegeben sein. | `SimplePipe`, `DynamicPipe`
+
+| `TemperatureConstructionLayer` | Wärmeaustausch mit einer Konstruktionsschicht (Fußbodenheizung/Flächenheizung); Schichttemperatur (aktive Schicht) der referenzierten Konstruktion (`ConstructionInstanceId`) wird als Umgebungstemperatur verwendet.  | `SimplePipe`, `DynamicPipe`
+
+| `HeatLossConstant` | Konstanter Wärmestrom (positiv aus dem Element) ist als konstanter Parameter `HeatLoss` gegeben. | `SimplePipe`, `DynamicPipe`, `HeatExchanger`
+
+| `HeatLossSpline` | Wärmestrom (positiv aus dem Element) ist als Zeitreihe in einem LinearSplineParameter (<<LinearSplineParameter>>) mit Namen `HeatLoss` gegeben | `SimplePipe`, `DynamicPipe`, `HeatExchanger`
+
+| `HeatLossSplineCondenser` | Wärmestrom (positiv aus dem Element) des Kondensators bei Verwendung eines Wärmepumpen-Modells als Zeitreihe in einem LinearSplineParameter (<<LinearSplineParameter>>) mit Namen `HeatLoss` gegeben | `HeatPumpIdealCarnot`
 |====================
 
 [IMPORTANT]
 ====
-Wenn des XML-Element `HeatExchangeType` fehlt, wird die entsprechende Komponente als adiabat behandelt und verlangt entsprechend auch keine weiteren Parameter.
+Wenn des XML-Element `HydraulicNetworkHeatExchange` fehlt, wird die entsprechende Komponente als adiabat behandelt.
 ====
 
 
