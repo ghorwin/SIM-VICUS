@@ -325,7 +325,7 @@ public:
 		string relative_path = "${Database}/db_materials.xml";
 		\endcode
 	*/
-	std::map< std::string, IBK::Path >	m_placeholders;
+	std::map< std::string, IBK::Path >					m_placeholders;
 
 
 	/*! Holds the database elements referenced in the project. These are a copy of db elements

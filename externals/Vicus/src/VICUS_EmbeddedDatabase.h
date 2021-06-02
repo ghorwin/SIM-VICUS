@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -44,11 +44,8 @@
 #include "VICUS_EPDDataset.h"
 #include "VICUS_Schedule.h"
 #include "VICUS_InternalLoad.h"
-#include "VICUS_ZoneControlThermostat.h"
 #include "VICUS_ZoneControlShading.h"
 #include "VICUS_ZoneControlNaturalVentilation.h"
-#include "VICUS_Infiltration.h"
-#include "VICUS_VentilationNatural.h"
 #include "VICUS_ZoneTemplate.h"
 
 namespace VICUS {
@@ -106,6 +103,9 @@ public:
 
 	/*! Map of all database Zone Control Thermostats. */
 	std::vector<VICUS::ZoneControlShading>				m_zoneControlShading;				// XML:E
+
+	/*! Map of all database Zone Control Thermostats. */
+	std::vector<VICUS::ZoneIdealHeatingCooling>			m_zoneIdealHeatingCooling;			// XML:E
 
 	/*! Map of all database Zone Control Natural Ventilation. */
 	std::vector<VICUS::ZoneControlNaturalVentilation>	m_zoneControlVentilationNatural;	// XML:E
