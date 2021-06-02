@@ -1109,9 +1109,9 @@ namespace VICUS {
 			// NetworkController::para_t
 			case 20 :
 			switch (t) {
-				case 0 : return "Kp-parameter";
-				case 1 : return "Ki-parameter";
-				case 2 : return "Kd-parameter";
+				case 0 : return "Proportional value of controller";
+				case 1 : return "Integral value of controller";
+				case 2 : return "Differential value of controller";
 			} break;
 			// NetworkFluid::para_t
 			case 21 :
@@ -1517,9 +1517,9 @@ namespace VICUS {
 			// NetworkController::para_t
 			case 20 :
 			switch (t) {
-				case 0 : return "";
-				case 1 : return "";
-				case 2 : return "";
+				case 0 : return "---";
+				case 1 : return "---";
+				case 2 : return "---";
 			} break;
 			// NetworkFluid::para_t
 			case 21 :

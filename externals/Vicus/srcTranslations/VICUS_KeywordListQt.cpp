@@ -133,9 +133,9 @@ KeywordListQt::KeywordListQt() {
 	tr("Control the mass flow of the flow element");
 	tr("PController");
 	tr("PIController");
-	tr("Kp-parameter");
-	tr("Ki-parameter");
-	tr("Kd-parameter");
+	tr("Proportional value of controller");
+	tr("Integral value of controller");
+	tr("Differential value of controller");
 	tr("Dry density of the material.");
 	tr("Specific heat capacity of the material.");
 	tr("Thermal conductivity of the dry material.");

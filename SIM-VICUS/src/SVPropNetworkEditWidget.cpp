@@ -401,7 +401,7 @@ void SVPropNetworkEditWidget::updateHeatExchangeWidgets()
 }
 
 
-void SVPropNetworkEditWidget::updateController()
+void SVPropNetworkEditWidget::updateControllerCombobox()
 {
 	// setup combobox
 	m_ui->comboBoxController->blockSignals(true);
@@ -462,6 +462,7 @@ void SVPropNetworkEditWidget::setAllEnabled(bool enabled)
 	m_ui->groupBoxEditNetwork->setEnabled(enabled);
 	m_ui->groupBoxComponent->setEnabled(enabled);
 	m_ui->groupBoxHeatExchange->setEnabled(enabled);
+	m_ui->groupBoxController->setEnabled(enabled);
 }
 
 void SVPropNetworkEditWidget::setAllHeatExchangeWidgetsVisible(bool visible)
@@ -1054,6 +1055,39 @@ void SVPropNetworkEditWidget::on_comboBoxHeatExchangeType_activated(int index)
 }
 
 
+void SVPropNetworkEditWidget::on_pushButtonSelectFluid_clicked()
+{
+	unsigned int currentId  = m_currentConstNetwork->m_fluidID;
+	SVDatabaseEditDialog *dialog = SVMainWindow::instance().dbFluidEditDialog();
+	unsigned int newId = dialog->select(currentId);
+	if (newId > 0){
+		if (!setNetwork())
+			return;
+		m_currentNetwork.m_fluidID = newId;
+		m_currentNetwork.updateNodeEdgeConnectionPointers();
+		unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
+		SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
+		undo->push(); // modifies project and updates views
+	}
+}
+
+
+
+void SVPropNetworkEditWidget::on_pushButtonEditController_clicked()
+{
+	unsigned int currentId  = m_ui->comboBoxController->currentData().toUInt();
+	SVNetworkControllerDialog *dialog = new SVNetworkControllerDialog();
+	unsigned int newId = dialog->select(m_currentNetwork.m_id, currentId);
+	if (newId > 0){
+
+		modifyNodeProperty(&VICUS::NetworkNode::m_controllerId, newId);
+
+		updateControllerCombobox();
+//		m_ui->comboBoxComponent->setCurrentIndex(m_ui->comboBoxComponent->findData(newId));
+	}
+}
+
+
 template <typename TEdgeProp, typename Tval>
 void SVPropNetworkEditWidget::modifyEdgeProperty(TEdgeProp property, const Tval & value)
 {
@@ -1087,37 +1121,3 @@ void SVPropNetworkEditWidget::modifyNodeProperty(TNodeProp property, const Tval 
 	undo->push(); // modifies project and updates views
 }
 
-
-void SVPropNetworkEditWidget::on_pushButtonSelectFluid_clicked()
-{
-	unsigned int currentId  = m_currentConstNetwork->m_fluidID;
-	SVDatabaseEditDialog *dialog = SVMainWindow::instance().dbFluidEditDialog();
-	unsigned int newId = dialog->select(currentId);
-	if (newId > 0){
-		if (!setNetwork())
-			return;
-		m_currentNetwork.m_fluidID = newId;
-		m_currentNetwork.updateNodeEdgeConnectionPointers();
-		unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
-		SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
-		undo->push(); // modifies project and updates views
-	}
-}
-
-
-
-// TODO ...
-
-void SVPropNetworkEditWidget::on_pushButtonEditController_clicked()
-{
-	unsigned int currentId  = m_ui->comboBoxController->currentData().toUInt();
-	SVNetworkControllerDialog *dialog = new SVNetworkControllerDialog();
-	unsigned int newId = dialog->select(m_currentNetwork.m_id, currentId);
-	if (newId > 0){
-
-		// modify current node here and set controller id
-
-		updateController();
-		m_ui->comboBoxComponent->setCurrentIndex(m_ui->comboBoxComponent->findData(newId));
-	}
-}

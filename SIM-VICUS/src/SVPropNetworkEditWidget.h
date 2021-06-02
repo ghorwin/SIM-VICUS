@@ -146,7 +146,7 @@ private:
 
 	void updateHeatExchangeWidgets();
 
-	void updateController();
+	void updateControllerCombobox();
 
 	void modifyStatus();
 
