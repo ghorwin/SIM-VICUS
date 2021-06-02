@@ -73,11 +73,11 @@ KeywordListQt::KeywordListQt() {
 	tr("Difference to constant temperature");
 	tr("Difference to time-dependent temperature from spline");
 	tr("Evaporator medium temperature for heat pump");
+	tr("Difference to zone air temperature");
+	tr("Difference to active construction layer (floor heating)");
 	tr("Constant heat loss");
 	tr("Heat loss from spline");
 	tr("Heat loss of condenser in heat pump model");
-	tr("Difference to zone air temperature");
-	tr("Difference to active construction layer (floor heating)");
 	tr("Temperature for heat exchange");
 	tr("Constant heat flux out of the element (heat loss)");
 	tr("External heat transfer coeffient for the outside boundary");

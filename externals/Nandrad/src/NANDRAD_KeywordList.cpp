@@ -253,11 +253,11 @@ namespace NANDRAD {
 				case 0 : return "TemperatureConstant";
 				case 1 : return "TemperatureSpline";
 				case 2 : return "TemperatureSplineEvaporator";
-				case 3 : return "HeatLossConstant";
-				case 4 : return "HeatLossSpline";
-				case 5 : return "HeatLossSplineCondenser";
-				case 6 : return "TemperatureZone";
-				case 7 : return "TemperatureConstructionLayer";
+				case 3 : return "TemperatureZone";
+				case 4 : return "TemperatureConstructionLayer";
+				case 5 : return "HeatLossConstant";
+				case 6 : return "HeatLossSpline";
+				case 7 : return "HeatLossSplineCondenser";
 			} break;
 			// HydraulicNetworkHeatExchange::para_t
 			case 18 :
@@ -854,11 +854,11 @@ namespace NANDRAD {
 				case 0 : return "TemperatureConstant";
 				case 1 : return "TemperatureSpline";
 				case 2 : return "TemperatureSplineEvaporator";
-				case 3 : return "HeatLossConstant";
-				case 4 : return "HeatLossSpline";
-				case 5 : return "HeatLossSplineCondenser";
-				case 6 : return "TemperatureZone";
-				case 7 : return "TemperatureConstructionLayer";
+				case 3 : return "TemperatureZone";
+				case 4 : return "TemperatureConstructionLayer";
+				case 5 : return "HeatLossConstant";
+				case 6 : return "HeatLossSpline";
+				case 7 : return "HeatLossSplineCondenser";
 			} break;
 			// HydraulicNetworkHeatExchange::para_t
 			case 18 :
@@ -1456,11 +1456,11 @@ namespace NANDRAD {
 				case 0 : return "Difference to constant temperature";
 				case 1 : return "Difference to time-dependent temperature from spline";
 				case 2 : return "Evaporator medium temperature for heat pump";
-				case 3 : return "Constant heat loss";
-				case 4 : return "Heat loss from spline";
-				case 5 : return "Heat loss of condenser in heat pump model";
-				case 6 : return "Difference to zone air temperature";
-				case 7 : return "Difference to active construction layer (floor heating)";
+				case 3 : return "Difference to zone air temperature";
+				case 4 : return "Difference to active construction layer (floor heating)";
+				case 5 : return "Constant heat loss";
+				case 6 : return "Heat loss from spline";
+				case 7 : return "Heat loss of condenser in heat pump model";
 			} break;
 			// HydraulicNetworkHeatExchange::para_t
 			case 18 :

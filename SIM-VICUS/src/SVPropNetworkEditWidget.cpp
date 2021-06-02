@@ -641,7 +641,7 @@ void SVPropNetworkEditWidget::setupComboboxHeatExchangeType()
 	if (comp==nullptr)
 		return;
 
-	std::vector<unsigned int> hxTypes = NANDRAD::HydraulicNetworkHeatExchange::availableHeatExchangeTypes(
+	std::vector<NANDRAD::HydraulicNetworkHeatExchange::ModelType> hxTypes = NANDRAD::HydraulicNetworkHeatExchange::availableHeatExchangeTypes(
 													(NANDRAD::HydraulicNetworkComponent::ModelType)comp->m_modelType);
 
 	m_ui->comboBoxHeatExchangeType->addItem(tr("Adiabatic"), VICUS::NetworkHeatExchange::NUM_T);

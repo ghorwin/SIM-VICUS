@@ -101,7 +101,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 
 	// check if given heat exchange type is supported for this component, but only for ThermoHydraulic networks
 	if (nw.m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
-		std::vector<unsigned int> hxTypes = HydraulicNetworkHeatExchange::availableHeatExchangeTypes(m_component->m_modelType);
+		std::vector<HydraulicNetworkHeatExchange::ModelType> hxTypes = HydraulicNetworkHeatExchange::availableHeatExchangeTypes(m_component->m_modelType);
 		if (std::find(hxTypes.begin(), hxTypes.end(), m_heatExchange.m_modelType) == hxTypes.end()) {
 			if (m_heatExchange.m_modelType == HydraulicNetworkHeatExchange::NUM_T)
 				throw IBK::Exception(IBK::FormatString("Heat exchange type required for component '%1'!")

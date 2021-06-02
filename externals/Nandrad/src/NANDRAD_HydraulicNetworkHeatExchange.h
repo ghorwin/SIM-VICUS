@@ -61,12 +61,12 @@ public:
 		T_TemperatureConstant,				// Keyword: TemperatureConstant			'Difference to constant temperature'
 		T_TemperatureSpline,				// Keyword: TemperatureSpline			'Difference to time-dependent temperature from spline'
 		T_TemperatureSplineEvaporator,		// Keyword: TemperatureSplineEvaporator	'Evaporator medium temperature for heat pump'
+		T_TemperatureZone,					// Keyword: TemperatureZone				'Difference to zone air temperature'
+		T_TemperatureConstructionLayer,		// Keyword: TemperatureConstructionLayer 'Difference to active construction layer (floor heating)'
 		T_HeatLossConstant,					// Keyword: HeatLossConstant			'Constant heat loss'
 		T_HeatLossSpline,					// Keyword: HeatLossSpline				'Heat loss from spline'
 		/*! Heat loss from condenser is not the heat loss of the fluid, hence different parameter than T_HeatLossSpline. */
 		T_HeatLossSplineCondenser,			// Keyword: HeatLossSplineCondenser		'Heat loss of condenser in heat pump model'
-		T_TemperatureZone,					// Keyword: TemperatureZone				'Difference to zone air temperature'
-		T_TemperatureConstructionLayer,		// Keyword: TemperatureConstructionLayer 'Difference to active construction layer (floor heating)'
 		NUM_T
 	};
 
@@ -102,16 +102,13 @@ public:
 	/*! Parameter */
 	IBK::Parameter					m_para[NUM_P];											// XML:E
 
-	/*! Time-series of heat flux or temperature (can be spline or tsv-file).
-		Note: the XML tag name is always the same "HeatExchangeSpline", yet the content (and physical units)
-		differ depending on selected heat exchange type.
-	*/
+	/*! Time-series of heat flux or temperature (can be spline or tsv-file). */
 	LinearSplineParameter			m_splPara[NUM_SPL];										// XML:E
 
 
 	// *** Static functions ***
 
-	static std::vector<unsigned int> availableHeatExchangeTypes(const HydraulicNetworkComponent::ModelType modelType);
+	static std::vector<ModelType> availableHeatExchangeTypes(const HydraulicNetworkComponent::ModelType modelType);
 
 };
 
