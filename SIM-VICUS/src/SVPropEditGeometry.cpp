@@ -417,16 +417,16 @@ int SVPropEditGeometry::requestCopyOperation(QWidget * parent, const QString & t
 	QMessageBox dlg(QMessageBox::Question, title, text, QMessageBox::Cancel, parent);
 
 	QPushButton * btn = new QPushButton(button1);
-	dlg.addButton(btn, (QMessageBox::ButtonRole)(QMessageBox::NRoles+1));
+	dlg.addButton(btn, (QMessageBox::ButtonRole)(QMessageBox::YesRole));
 	dlg.setDefaultButton(btn);
 
 	btn = new QPushButton(button2);
-	dlg.addButton(btn, (QMessageBox::ButtonRole)(QMessageBox::NRoles+2));
+	dlg.addButton(btn, (QMessageBox::ButtonRole)(QMessageBox::NoRole));
 
 	int res = dlg.exec();
 	if (res == QMessageBox::Cancel)
 		return -1;
-	if (res == QMessageBox::NRoles+1)
+	if (res == QMessageBox::YesRole)
 		return 1;
 	else
 		return 2;
