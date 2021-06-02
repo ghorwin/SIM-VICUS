@@ -208,6 +208,18 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "ZoneIdealHeatingCooling") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "VICUS::ZoneIdealHeatingCooling")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::ZoneIdealHeatingCooling obj;
+					obj.readXML(c2);
+					m_zoneIdealHeatingCooling.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else if (cName == "ZoneControlVentilationNatural") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
@@ -437,6 +449,18 @@ TiXmlElement * EmbeddedDatabase::writeXML(TiXmlElement * parent) const {
 
 		for (std::vector<VICUS::ZoneControlShading>::const_iterator it = m_zoneControlShading.begin();
 			it != m_zoneControlShading.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_zoneIdealHeatingCooling.empty()) {
+		TiXmlElement * child = new TiXmlElement("ZoneIdealHeatingCooling");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::ZoneIdealHeatingCooling>::const_iterator it = m_zoneIdealHeatingCooling.begin();
+			it != m_zoneIdealHeatingCooling.end(); ++it)
 		{
 			it->writeXML(child);
 		}
