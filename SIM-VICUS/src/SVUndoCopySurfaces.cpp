@@ -28,12 +28,14 @@
 
 #include <VICUS_Project.h>
 
-SVUndoCopySurfaces::SVUndoCopySurfaces(const QString &label, const std::vector<VICUS::Surface> &copiedSurfaces,
+SVUndoCopySurfaces::SVUndoCopySurfaces(const QString & label, const std::vector<VICUS::Surface> & copiedSurfaces,
 									   const std::set<unsigned int> & deselectedSurfaceUniqueIDs,
-									   const std::vector<VICUS::ComponentInstance> & newCompInstances) :
+									   const std::vector<VICUS::ComponentInstance> & compInstances,
+									   const std::vector<VICUS::SubSurfaceComponentInstance> & subSurfCompInstances) :
 	m_copiedSurfaces(copiedSurfaces),
 	m_deselectedSurfaceUniqueIDs(deselectedSurfaceUniqueIDs),
-	m_newComponentInstances(newCompInstances)
+	m_newComponentInstances(compInstances),
+	m_newSubSurfaceComponentInstances(subSurfCompInstances)
 {
 	setText( label );
 }
@@ -81,13 +83,19 @@ void SVUndoCopySurfaces::redo() {
 		for (VICUS::BuildingLevel & bl : b.m_buildingLevels)
 			for (VICUS::Room & r : bl.m_rooms)
 				for (VICUS::Surface & s : r.m_surfaces)
-					if (m_deselectedSurfaceUniqueIDs.find(s.uniqueID()) != m_deselectedSurfaceUniqueIDs.end())
+					if (m_deselectedSurfaceUniqueIDs.find(s.uniqueID()) != m_deselectedSurfaceUniqueIDs.end()) {
 						s.m_selected = false;
+						for (const VICUS::SubSurface & subS : s.subSurfaces() )
+							const_cast<VICUS::SubSurface &>(subS).m_selected = false;
+					}
 
 
 	// append component instances (if vector is empty, nothing happens here)
 	theProject().m_componentInstances.insert(theProject().m_componentInstances.end(),
 										 m_newComponentInstances.begin(), m_newComponentInstances.end());
+	// append component instances (if vector is empty, nothing happens here)
+	theProject().m_subSurfaceComponentInstances.insert(theProject().m_subSurfaceComponentInstances.end(),
+										 m_newSubSurfaceComponentInstances.begin(), m_newSubSurfaceComponentInstances.end());
 	theProject().updatePointers();
 
 	// tell project that the building geometry has changed
