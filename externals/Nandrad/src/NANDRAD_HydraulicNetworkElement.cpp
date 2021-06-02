@@ -125,6 +125,15 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 
 		// for temperature difference we enforce heat exchange type 'HeatLossSpline' or 'HeatLossSplineCondenser'
 		if(ctit->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference) {
+			// wrong component
+			switch(m_component->m_modelType ) {
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger:
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:
+					break;
+				default:
+					throw IBK::Exception("HydraulicNetworkControlElement with type 'TemperatureDifference' is only suppported for "
+										 "HydraulicNetworkComponent 'HeatExchanger' or 'HeatPumpIdealCarnot'!", FUNC_ID);
+			}
 			// wrong heat exchange type
 			switch(m_heatExchange.m_modelType ) {
 				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
@@ -134,6 +143,29 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 					throw IBK::Exception(IBK::FormatString("Only HeatExchangeType 'HeatLossSpline' or 'HeatLossSplineCondenser' "
 														   "is allowed in combination with HydraulicNetworkController property "
 														   "'TemperatureDifference'!"), FUNC_ID);
+			}
+		}
+		else if(ctit->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue) {
+			// thermostat control is only allowed for pipes with temperature dependend heat exchange
+			switch(m_component->m_modelType ) {
+				case NANDRAD::HydraulicNetworkComponent::MT_SimplePipe:
+					break;
+				default:
+					throw IBK::Exception("HydraulicNetworkControlElement with type 'ThermostatValue' is only suppported for "
+									 "HydraulicNetworkComponent 'SimplePipe'!", FUNC_ID);
+			}
+			// wrong heat exchange type
+			switch(m_heatExchange.m_modelType ) {
+				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstant:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureFMUInterface:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureZone:
+				break;
+				default:
+					throw IBK::Exception(IBK::FormatString("Only HeatExchangeType 'Temperature' "
+														   "is allowed in combination with HydraulicNetworkController property "
+														   "'ThermostatValue'!"), FUNC_ID);
 			}
 		}
 	}

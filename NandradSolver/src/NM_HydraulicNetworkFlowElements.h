@@ -47,6 +47,12 @@ public:
 				  const NANDRAD::HydraulicFluid & fluid,
 				  const std::vector<NANDRAD::Thermostat> *thermostats);
 
+	/*! Publishes individual model quantities via descriptions. */
+	virtual void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
+
+	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
+	virtual void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override;
+
 	/*! Adds flow-element-specific input references (schedules etc.) to the list of input references.
 		Default implementation does nothing.
 	*/
@@ -63,12 +69,20 @@ public:
 	void partials(double mdot, double p_inlet, double p_outlet,
 				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
 
+	/*! Called at the end of a successful Newton iteration. Allows to calculte and store results.
+	*/
+	virtual void updateResults(double mdot, double p_inlet, double p_outlet) override;
+
 private:
 	/*! Pressure loss due to pipe wall friction in [Pa]. For positive mass flows, there will be a positive pressure loss.
 		\param mdot Mass flow in [kg/s]
 	 */
 	double pressureLossFriction(const double &mdot) const;
 
+	/*! Computes the controlled zeta-value if a control-model is implemented.
+		Otherwise returns 0.
+	*/
+	double zetaControlled() const;
 
 	/*! The fluid, containing all physical parameters */
 	const NANDRAD::HydraulicFluid	*m_fluid = nullptr;
@@ -88,11 +102,11 @@ private:
 	/*! the calculated controller zeta value for the valve */
 	double							m_zetaControlled = -999;
 
-	/*! Reference to the thermostat control value.*/
-	const double					*m_heatingControlValueRef = nullptr;
+	/*! Reference to the heating thermostat control value.*/
+	const double					*m_heatingThermostatControlValueRef = nullptr;
 
-	/*! Reference to the thermostat control value.*/
-	const double					*m_coolingControlValueRef = nullptr;
+	/*! Reference to the cooling thermostat control value.*/
+	const double					*m_coolingThermostatControlValueRef = nullptr;
 
 	/*! Reference to the controller parametrization object.*/
 	const NANDRAD::HydraulicNetworkControlElement
@@ -119,6 +133,12 @@ public:
 							   const NANDRAD::HydraulicFluid & fluid,
 							   const NANDRAD::HydraulicNetworkControlElement *controlElement);
 
+	/*! Publishes individual model quantities via descriptions. */
+	virtual void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
+
+	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
+	virtual void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override;
+
 	/*! Adds flow-element-specific input references (schedules etc.) to the list of input references.
 		Default implementation does nothing.
 	*/
@@ -129,12 +149,6 @@ public:
 		When the function returns, the iterator must point to the first input reference past this element's inputs.
 	*/
 	virtual void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
-
-	/*! Publishes individual model quantities via descriptions. */
-	virtual void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
-
-	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
-	virtual void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override;
 
 	// HydraulicNetworkAbstractFlowElement interface
 	virtual double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
