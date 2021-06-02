@@ -165,8 +165,6 @@ std::vector<unsigned int> NANDRAD::HydraulicNetworkHeatExchange::availableHeatEx
 			return {T_HeatLossConstant, T_HeatLossSpline}; // must not be adiabatic
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
 			return {NUM_T};
-		case HydraulicNetworkComponent::MT_ConstantMassFluxPump:
-			return {NUM_T};
 		case HydraulicNetworkComponent::NUM_MT: ; // just to make compiler happy
 	}
 	return {};

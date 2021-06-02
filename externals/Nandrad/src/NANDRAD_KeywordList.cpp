@@ -194,10 +194,9 @@ namespace NANDRAD {
 				case 0 : return "SimplePipe";
 				case 1 : return "DynamicPipe";
 				case 2 : return "ConstantPressurePump";
-				case 3 : return "ConstantMassFluxPump";
-				case 4 : return "HeatExchanger";
-				case 5 : return "HeatPumpIdealCarnot";
-				case 6 : return "HeatPumpReal";
+				case 3 : return "HeatExchanger";
+				case 4 : return "HeatPumpIdealCarnot";
+				case 5 : return "HeatPumpReal";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -205,12 +204,11 @@ namespace NANDRAD {
 				case 0 : return "HydraulicDiameter";
 				case 1 : return "PressureLossCoefficient";
 				case 2 : return "PressureHead";
-				case 3 : return "MassFlux";
-				case 4 : return "PumpEfficiency";
-				case 5 : return "Volume";
-				case 6 : return "PipeMaxDiscretizationWidth";
-				case 7 : return "CarnotEfficiency";
-				case 8 : return "MaximumHeatingPower";
+				case 3 : return "PumpEfficiency";
+				case 4 : return "Volume";
+				case 5 : return "PipeMaxDiscretizationWidth";
+				case 6 : return "CarnotEfficiency";
+				case 7 : return "MaximumHeatingPower";
 			} break;
 			// HydraulicNetworkComponent::HeatPumpIntegration
 			case 11 :
@@ -797,10 +795,9 @@ namespace NANDRAD {
 				case 0 : return "SimplePipe";
 				case 1 : return "DynamicPipe";
 				case 2 : return "ConstantPressurePump";
-				case 3 : return "ConstantMassFluxPump";
-				case 4 : return "HeatExchanger";
-				case 5 : return "HeatPumpIdealCarnot";
-				case 6 : return "HeatPumpReal";
+				case 3 : return "HeatExchanger";
+				case 4 : return "HeatPumpIdealCarnot";
+				case 5 : return "HeatPumpReal";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -808,12 +805,11 @@ namespace NANDRAD {
 				case 0 : return "HydraulicDiameter";
 				case 1 : return "PressureLossCoefficient";
 				case 2 : return "PressureHead";
-				case 3 : return "MassFlux";
-				case 4 : return "PumpEfficiency";
-				case 5 : return "Volume";
-				case 6 : return "PipeMaxDiscretizationWidth";
-				case 7 : return "CarnotEfficiency";
-				case 8 : return "MaximumHeatingPower";
+				case 3 : return "PumpEfficiency";
+				case 4 : return "Volume";
+				case 5 : return "PipeMaxDiscretizationWidth";
+				case 6 : return "CarnotEfficiency";
+				case 7 : return "MaximumHeatingPower";
 			} break;
 			// HydraulicNetworkComponent::HeatPumpIntegration
 			case 11 :
@@ -1401,10 +1397,9 @@ namespace NANDRAD {
 				case 0 : return "Pipe with a single fluid volume and with heat exchange";
 				case 1 : return "Pipe with a discretized fluid volume and heat exchange";
 				case 2 : return "Pump with constant/externally defined pressure";
-				case 3 : return "Pump with constant/externally defined mass flux";
-				case 4 : return "Simple heat exchanger with given heat flux";
-				case 5 : return "Heat pump with variable heating power based on carnot efficiency";
-				case 6 : return "On-off-type heat pump with based on manufacturer data sheet";
+				case 3 : return "Simple heat exchanger with given heat flux";
+				case 4 : return "Heat pump with variable heating power based on carnot efficiency";
+				case 5 : return "On-off-type heat pump with based on manufacturer data sheet";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -1412,12 +1407,11 @@ namespace NANDRAD {
 				case 0 : return "Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)";
 				case 1 : return "Pressure loss coefficient for the component (zeta-value)";
 				case 2 : return "Pressure head for a pump";
-				case 3 : return "Mass flux for a pump";
-				case 4 : return "Pump efficiency";
-				case 5 : return "Water or air volume of the component";
-				case 6 : return "Maximum width of discretized volumes in pipe";
-				case 7 : return "Carnot efficiency eta";
-				case 8 : return "Maximum heating power";
+				case 3 : return "Pump efficiency";
+				case 4 : return "Water or air volume of the component";
+				case 5 : return "Maximum width of discretized volumes in pipe";
+				case 6 : return "Carnot efficiency eta";
+				case 7 : return "Maximum heating power";
 			} break;
 			// HydraulicNetworkComponent::HeatPumpIntegration
 			case 11 :
@@ -2007,7 +2001,6 @@ namespace NANDRAD {
 				case 3 : return "";
 				case 4 : return "";
 				case 5 : return "";
-				case 6 : return "";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -2015,12 +2008,11 @@ namespace NANDRAD {
 				case 0 : return "mm";
 				case 1 : return "---";
 				case 2 : return "Pa";
-				case 3 : return "kg/s";
-				case 4 : return "---";
-				case 5 : return "m3";
-				case 6 : return "m";
-				case 7 : return "---";
-				case 8 : return "W";
+				case 3 : return "---";
+				case 4 : return "m3";
+				case 5 : return "m";
+				case 6 : return "---";
+				case 7 : return "W";
 			} break;
 			// HydraulicNetworkComponent::HeatPumpIntegration
 			case 11 :
@@ -2610,7 +2602,6 @@ namespace NANDRAD {
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
 				case 5 : return "#FFFFFF";
-				case 6 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -2623,7 +2614,6 @@ namespace NANDRAD {
 				case 5 : return "#FFFFFF";
 				case 6 : return "#FFFFFF";
 				case 7 : return "#FFFFFF";
-				case 8 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkComponent::HeatPumpIntegration
 			case 11 :
@@ -3213,7 +3203,6 @@ namespace NANDRAD {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
-				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -3226,7 +3215,6 @@ namespace NANDRAD {
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 				case 7 : return std::numeric_limits<double>::quiet_NaN();
-				case 8 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkComponent::HeatPumpIntegration
 			case 11 :
@@ -3772,9 +3760,9 @@ namespace NANDRAD {
 			// HydraulicNetwork::para_t
 			case 8 : return 3;
 			// HydraulicNetworkComponent::ModelType
-			case 9 : return 7;
+			case 9 : return 6;
 			// HydraulicNetworkComponent::para_t
-			case 10 : return 9;
+			case 10 : return 8;
 			// HydraulicNetworkComponent::HeatPumpIntegration
 			case 11 : return 3;
 			// HydraulicNetworkControlElement::ControlledProperty
@@ -3946,9 +3934,9 @@ namespace NANDRAD {
 			// HydraulicNetwork::para_t
 			case 8 : return 2;
 			// HydraulicNetworkComponent::ModelType
-			case 9 : return 6;
+			case 9 : return 5;
 			// HydraulicNetworkComponent::para_t
-			case 10 : return 8;
+			case 10 : return 7;
 			// HydraulicNetworkComponent::HeatPumpIntegration
 			case 11 : return 2;
 			// HydraulicNetworkControlElement::ControlledProperty

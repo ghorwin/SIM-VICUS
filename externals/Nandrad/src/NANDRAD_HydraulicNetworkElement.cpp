@@ -87,7 +87,6 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 		break;
 
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
-		case HydraulicNetworkComponent::MT_ConstantMassFluxPump:
 		case HydraulicNetworkComponent::MT_HeatExchanger:
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:
 		case HydraulicNetworkComponent::MT_HeatPumpReal:

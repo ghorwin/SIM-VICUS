@@ -114,15 +114,6 @@ void HydraulicNetworkModel::setup() {
 				m_pumpElements.push_back(pumpElement);
 			} break;
 
-			case NANDRAD::HydraulicNetworkComponent::MT_ConstantMassFluxPump :
-			{
-				// create pump model
-				HNConstantMassFluxPump * pumpElement = new HNConstantMassFluxPump(e.m_id, *e.m_component);
-				// add to flow elements
-				m_p->m_flowElements.push_back(pumpElement); // transfer ownership
-				m_pumpElements.push_back(pumpElement);
-			} break;
-
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot :
 			{
