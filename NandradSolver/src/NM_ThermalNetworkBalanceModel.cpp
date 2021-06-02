@@ -122,12 +122,9 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 
 			// exchange with purely time-dependent temperature spline data
 			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline:
+			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSplineEvaporator:
 			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
 			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
-			break;
-
-			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureFMUInterface:
-				// TODO
 			break;
 
 			case NANDRAD::HydraulicNetworkHeatExchange::NUM_T: ;

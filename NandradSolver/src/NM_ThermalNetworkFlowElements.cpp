@@ -578,6 +578,8 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 
 	ThermalNetworkAbstractFlowElementWithHeatLoss::setInflowTemperature(Tinflow);
 
+	const double MIN_TEMPERATURE_DIFFERENCE_CONDENSER = 4; // K
+
 	switch (m_heatpumpIntegration ) {
 
 		case NANDRAD::HydraulicNetworkComponent::HP_SourceSide: {
@@ -602,9 +604,6 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 			// compute temperature level of evaporator side -> m_inflowTemperature and
 			// m_meanTemperature (fluid outlet temperature) are both known and given
 			m_evaporatorMeanTemperature = (m_inflowTemperature + m_meanTemperature) / 2;
-
-
-			const double MIN_TEMPERATURE_DIFFERENCE_CONDENSER = 4; // K
 
 			// turn off heat pump if evaporator temperature is out of valid range
 
@@ -638,37 +637,46 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 
 
 		case NANDRAD::HydraulicNetworkComponent::HP_SupplySide:{
+			// initialize all results with 0
+			m_COP = 0.0;
+			m_heatLoss = 0.0;
+			m_electricalPower  = 0.0;
 
 			// get scheduled temperatures
-			IBK_ASSERT(m_evaporatorMeanTemperatureRef != nullptr);
+			IBK_ASSERT(m_heatExchangeValueRef != nullptr);
 			IBK_ASSERT(m_condenserOutletSetpointRef != nullptr);
-			m_evaporatorMeanTemperature = *m_evaporatorMeanTemperatureRef;
+			m_evaporatorMeanTemperature = *m_heatExchangeValueRef;
 			const double outletSetpointTemperature = *m_condenserOutletSetpointRef;
 
-			// condenser heat flux
+			// condenser heat flux (heating power required by building/added to fluid)
 			m_condenserHeatFlux = m_massFlux * m_fluidHeatCapacity * (outletSetpointTemperature - m_inflowTemperature);
 			if (m_condenserHeatFlux > m_condenserMaximumHeatFlux)
 				m_condenserHeatFlux = m_condenserMaximumHeatFlux;
-			// heat pump can only add heat
-			if (m_condenserHeatFlux < 0)
+			// heat pump can only add heat; also, we expect positive mass flux
+			if (m_condenserHeatFlux < 0 || m_massFlux < 0)
 				m_condenserHeatFlux = 0;
-
-			// heat pump physics only work when condenser temperature is above evaporator temperature
-			const double outflowTemperature = m_inflowTemperature + m_condenserHeatFlux / (m_fluidHeatCapacity * m_massFlux);
-			m_condenserMeanTemperature = (m_inflowTemperature + outflowTemperature) / 2;
-			if (m_condenserMeanTemperature > m_evaporatorMeanTemperature){
-				m_COP = m_carnotEfficiency *  m_condenserMeanTemperature / (m_condenserMeanTemperature - m_evaporatorMeanTemperature);
-				m_evaporatorHeatFlux = m_condenserHeatFlux * (m_COP - 1) / m_COP;
-				m_heatLoss = - m_condenserHeatFlux;
-				m_electricalPower  = m_condenserHeatFlux / m_COP;
-			}
 			else {
-				IBK::IBK_Message(IBK::FormatString("Condenser temperature >= evaporator temperature in "
-												   "HeatPumpIdealCarnot, flow element with id '%1'\n").arg(m_flowElementId),
-													IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
-				m_COP = 0.0;
-				m_heatLoss = 0.0;
-				m_electricalPower  = 0.0;
+				m_condenserMeanTemperature = (m_inflowTemperature + m_meanTemperature) / 2;
+				// heat pump physics only work when condenser temperature is above evaporator temperature
+				// for examplanations of checks below, see above in HP_SourceSide
+				if (m_evaporatorMeanTemperature < 273.15 - 20 ||
+					(m_evaporatorMeanTemperature < m_condenserMeanTemperature*(1-m_carnotEfficiency)) )
+				{
+					IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("Evaporator temperature < -20 C, turning of "
+																		"HeatPumpIdealCarnot, flow element with id '%1'\n").arg(m_flowElementId),
+														IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
+				}
+				else if (m_condenserMeanTemperature - m_evaporatorMeanTemperature < MIN_TEMPERATURE_DIFFERENCE_CONDENSER) {
+					IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("Evaporator temperature must be at least %1 K lower than condenser temperature (%2 C)\n")
+													  .arg(MIN_TEMPERATURE_DIFFERENCE_CONDENSER).arg(m_condenserMeanTemperature - 273.15),
+														IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
+				}
+				else {
+					m_COP = m_carnotEfficiency *  m_condenserMeanTemperature / (m_condenserMeanTemperature - m_evaporatorMeanTemperature);
+					m_evaporatorHeatFlux = m_condenserHeatFlux * (m_COP - 1) / m_COP; // heat taken from source
+					m_heatLoss = - m_condenserHeatFlux; // negative, because building "removes" this heat from the fluid and heat loss is defined as positive quantity
+					m_electricalPower  = m_condenserHeatFlux - m_evaporatorHeatFlux;
+				}
 			}
 
 		} break; // HP_SupplySide
@@ -697,15 +705,9 @@ void TNHeatPumpIdealCarnot::inputReferences(std::vector<InputReference> & inputR
 			InputReference ref;
 			ref.m_id = m_flowElementId;
 			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
-			ref.m_name.m_name = "EvaporatorMeanTemperatureSchedule";
+			ref.m_name.m_name = "CondenserOutletSetpointSchedule";
 			ref.m_required = true;
 			inputRefs.push_back(ref);
-			InputReference ref2;
-			ref2.m_id = m_flowElementId;
-			ref2.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
-			ref2.m_name.m_name = "CondenserOutletSetpointSchedule";
-			ref2.m_required = true;
-			inputRefs.push_back(ref2);
 		} break;
 
 		case NANDRAD::HydraulicNetworkComponent::HP_SupplyAndSourceSide:
@@ -724,7 +726,6 @@ void TNHeatPumpIdealCarnot::setInputValueRefs(std::vector<const double *>::const
 			m_condenserMeanTemperatureRef = *(resultValueRefs++); // CondenserMeanTemperatureSchedule
 			break;
 		case NANDRAD::HydraulicNetworkComponent::HP_SupplySide:
-			m_evaporatorMeanTemperatureRef = *(resultValueRefs++); // EvaporatorMeanTemperatureSchedule
 			m_condenserOutletSetpointRef = *(resultValueRefs++); // CondenserOutletSetpointSchedule
 			break;
 		case NANDRAD::HydraulicNetworkComponent::HP_SupplyAndSourceSide:

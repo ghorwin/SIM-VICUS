@@ -496,7 +496,6 @@ private:
 
 	/*! Temperatures from schedules [K] which will be set through input references */
 	const double							*m_condenserMeanTemperatureRef = nullptr;
-	const double							*m_evaporatorMeanTemperatureRef = nullptr;
 	const double							*m_condenserOutletSetpointRef = nullptr;
 
 	/*! Id number of flow element. */

@@ -34,6 +34,7 @@
 #include <IBK_Exception.h>
 
 #include <NANDRAD_Utilities.h>
+#include <NANDRAD_Project.h>
 
 #include <tinyxml.h>
 

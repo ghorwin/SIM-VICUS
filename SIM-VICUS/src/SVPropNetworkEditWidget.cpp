@@ -81,8 +81,9 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::ModelType::T_HeatLossSplineCondenser == (int)VICUS::NetworkHeatExchange::ModelType::T_HeatLossSplineCondenser);
 	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::ModelType::T_TemperatureZone == (int)VICUS::NetworkHeatExchange::ModelType::T_TemperatureZone);
 	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::ModelType::T_TemperatureConstructionLayer == (int)VICUS::NetworkHeatExchange::ModelType::T_TemperatureConstructionLayer);
-	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::ModelType::T_TemperatureFMUInterface == (int)VICUS::NetworkHeatExchange::ModelType::T_TemperatureFMUInterface);
 	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::ModelType::NUM_T == (int)VICUS::NetworkHeatExchange::ModelType::NUM_T);
+
+	// TODO Hauke, neue typen unterstützen
 
 	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::para_t::P_Temperature == (int)VICUS::NetworkHeatExchange::para_t::P_Temperature);
 	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::para_t::P_HeatLoss == (int)VICUS::NetworkHeatExchange::para_t::P_HeatLoss);

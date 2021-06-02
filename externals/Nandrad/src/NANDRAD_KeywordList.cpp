@@ -254,12 +254,12 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "TemperatureConstant";
 				case 1 : return "TemperatureSpline";
-				case 2 : return "HeatLossConstant";
-				case 3 : return "HeatLossSpline";
-				case 4 : return "HeatLossSplineCondenser";
-				case 5 : return "TemperatureZone";
-				case 6 : return "TemperatureConstructionLayer";
-				case 7 : return "TemperatureFMUInterface";
+				case 2 : return "TemperatureSplineEvaporator";
+				case 3 : return "HeatLossConstant";
+				case 4 : return "HeatLossSpline";
+				case 5 : return "HeatLossSplineCondenser";
+				case 6 : return "TemperatureZone";
+				case 7 : return "TemperatureConstructionLayer";
 			} break;
 			// HydraulicNetworkHeatExchange::para_t
 			case 18 :
@@ -857,12 +857,12 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "TemperatureConstant";
 				case 1 : return "TemperatureSpline";
-				case 2 : return "HeatLossConstant";
-				case 3 : return "HeatLossSpline";
-				case 4 : return "HeatLossSplineCondenser";
-				case 5 : return "TemperatureZone";
-				case 6 : return "TemperatureConstructionLayer";
-				case 7 : return "TemperatureFMUInterface";
+				case 2 : return "TemperatureSplineEvaporator";
+				case 3 : return "HeatLossConstant";
+				case 4 : return "HeatLossSpline";
+				case 5 : return "HeatLossSplineCondenser";
+				case 6 : return "TemperatureZone";
+				case 7 : return "TemperatureConstructionLayer";
 			} break;
 			// HydraulicNetworkHeatExchange::para_t
 			case 18 :
@@ -1461,12 +1461,12 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "Difference to constant temperature";
 				case 1 : return "Difference to time-dependent temperature from spline";
-				case 2 : return "Constant heat loss";
-				case 3 : return "Heat loss from spline";
-				case 4 : return "Heat loss of condenser in heat pump model";
-				case 5 : return "Difference to zone air temperature";
-				case 6 : return "Difference to active construction layer (floor heating)";
-				case 7 : return "Difference to temperature from FMU interface, provided heat flux to FMU";
+				case 2 : return "Evaporator medium temperature for heat pump";
+				case 3 : return "Constant heat loss";
+				case 4 : return "Heat loss from spline";
+				case 5 : return "Heat loss of condenser in heat pump model";
+				case 6 : return "Difference to zone air temperature";
+				case 7 : return "Difference to active construction layer (floor heating)";
 			} break;
 			// HydraulicNetworkHeatExchange::para_t
 			case 18 :

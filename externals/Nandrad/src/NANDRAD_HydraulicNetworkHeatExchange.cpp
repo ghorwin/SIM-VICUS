@@ -103,8 +103,6 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 					throw IBK::Exception(ex, IBK::FormatString("Error initializing spline 'Temperature'."), FUNC_ID);
 				}
 
-				// replace place holders
-				m_splPara[SPL_Temperature].m_tsvFile = m_splPara[SPL_Temperature].m_tsvFile.withReplacedPlaceholders(placeholders);
 				// check for external heat transfer coefficient
 				m_para[P_ExternalHeatTransferCoefficient].checkedValue("ExternalHeatTransferCoefficient",
 																	   "W/m2K", "W/m2K", 0, false,
@@ -112,9 +110,18 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 																	   true, nullptr);
 			} break;
 
-			case T_TemperatureFMUInterface:
-				// TODO : Andreas
-				throw IBK::Exception(IBK::FormatString("Heat exchange type 'TemperatureFMUInterface' is not supported, yet!"), FUNC_ID);
+			case T_TemperatureSplineEvaporator : {
+				// replace place holders
+				m_splPara[SPL_Temperature].m_tsvFile = m_splPara[SPL_Temperature].m_tsvFile.withReplacedPlaceholders(placeholders);
+				try {
+					//  check the spline and convert it to base units automatically
+					m_splPara[SPL_Temperature].checkAndInitialize("Temperature", IBK::Unit("s"), IBK::Unit("K"),
+																  IBK::Unit("K"), 0, false, std::numeric_limits<double>::max(), false,
+																  "Temperature must be > 0 K.");
+				} catch (IBK::Exception &ex) {
+					throw IBK::Exception(ex, IBK::FormatString("Error initializing spline 'Temperature'."), FUNC_ID);
+				}
+			} break;
 
 			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer: {
 				// check for construction instance id
@@ -153,7 +160,7 @@ std::vector<unsigned int> NANDRAD::HydraulicNetworkHeatExchange::availableHeatEx
 		case HydraulicNetworkComponent::MT_DynamicPipe:
 			return {NUM_T, T_TemperatureConstant, T_TemperatureSpline, T_HeatLossConstant, T_HeatLossSpline, T_TemperatureZone, T_TemperatureConstructionLayer};
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:
-			return {T_HeatLossSplineCondenser};  // must not be adiabatic
+			return {T_HeatLossSplineCondenser, T_TemperatureSplineEvaporator};  // must not be adiabatic
 		case HydraulicNetworkComponent::MT_HeatExchanger:
 			return {T_HeatLossConstant, T_HeatLossSpline}; // must not be adiabatic
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
