@@ -218,6 +218,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Air temperature");
 	tr("Radiant temperature");
 	tr("Operative temperature");
+	tr("Heating Limit.");
+	tr("Cooling Limit.");
 	tr("IntLoadPerson");
 	tr("IntLoadEquipment");
 	tr("IntLoadLighting");
@@ -225,6 +227,7 @@ KeywordListQt::KeywordListQt() {
 	tr("ControlThermostat");
 	tr("Infiltration");
 	tr("NaturalVentilation");
+	tr("IdealHeatingCooling");
 }
 
 
