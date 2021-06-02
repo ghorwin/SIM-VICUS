@@ -39,7 +39,8 @@ bool ZoneTemplate::isValid(const Database<InternalLoad> & intLoadDB,
 						   const Database<ZoneControlThermostat> & thermostatDB,
 						   const Database<Schedule> &schedulesDB,
 						   const Database<Infiltration> & infiltraionDB,
-						   const Database<VentilationNatural> &ventilationDB) const {
+						   const Database<VentilationNatural> &ventilationDB,
+						   const Database<ZoneIdealHeatingCooling> &idealHeatingCoolingDB) const {
 
 	if(m_id ==  INVALID_ID)
 		return false;
@@ -84,6 +85,15 @@ bool ZoneTemplate::isValid(const Database<InternalLoad> & intLoadDB,
 				if(venti == nullptr)
 					return false;
 				if(!venti->isValid(schedulesDB))
+					return false;
+			}
+
+			break;
+			case ZoneTemplate::ST_IdealHeatingCooling:{
+				const ZoneIdealHeatingCooling *ideal = idealHeatingCoolingDB[id];
+				if(ideal == nullptr)
+					return false;
+				if(!ideal->isValid())
 					return false;
 			}
 			break;

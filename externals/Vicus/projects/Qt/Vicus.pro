@@ -86,6 +86,7 @@ HEADERS += \
 	../../src/VICUS_ZoneControlNaturalVentilation.h \
 	../../src/VICUS_ZoneControlShading.h \
 	../../src/VICUS_ZoneControlThermostat.h \
+	../../src/VICUS_ZoneIdealHeatingCooling.h \
 	../../src/VICUS_ZoneTemplate.h
 
 SOURCES += \
@@ -128,6 +129,7 @@ SOURCES += \
 	../../src/VICUS_ZoneControlNaturalVentilation.cpp \
 	../../src/VICUS_ZoneControlShading.cpp \
 	../../src/VICUS_ZoneControlThermostat.cpp \
+	../../src/VICUS_ZoneIdealHeatingCooling.cpp \
 	../../src/VICUS_ZoneTemplate.cpp \
 	../../src/ncg/ncg_VICUS_BoundaryCondition.cpp \
 	../../src/ncg/ncg_VICUS_Building.cpp \
@@ -171,4 +173,5 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_ZoneControlNaturalVentilation.cpp \
 	../../src/ncg/ncg_VICUS_ZoneControlShading.cpp \
 	../../src/ncg/ncg_VICUS_ZoneControlThermostat.cpp \
+	../../src/ncg/ncg_VICUS_ZoneIdealHeatingCooling.cpp \
 	../../src/ncg/ncg_VICUS_ZoneTemplate.cpp
