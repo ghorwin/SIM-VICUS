@@ -42,6 +42,8 @@ namespace VICUS {
 	class Project;
 	class Room;
 	class Surface;
+	class Building;
+	class BuildingLevel;
 }
 
 namespace Ui {
@@ -209,7 +211,6 @@ private slots:
 
 	void on_pushButtonCopyRooms_clicked();
 	void on_pushButtonCopySurfaces_clicked();
-	void on_pushButtonCopyBuildingLvls_clicked();
 
 	void on_pushButtonAdd_clicked();
 
@@ -269,10 +270,10 @@ private:
 	/*! Cached Translation vector for copy operations */
 	IBKMK::Vector3D						m_translation;
 
-//	std::set<const VICUS::Object*>		m_selBuild;
-//	std::set<const VICUS::Object*>		m_selBuildLvls;
-	std::vector<const VICUS::Room*>		m_selRooms;
-	std::vector<const VICUS::Surface*>	m_selSurfaces;
+	std::vector<const VICUS::Building*>			m_selBuildings;
+	std::vector<const VICUS::BuildingLevel*>	m_selBuildingLevels;
+	std::vector<const VICUS::Room*>				m_selRooms;
+	std::vector<const VICUS::Surface*>			m_selSurfaces;
 
 
 	/*! Pointer to UI */

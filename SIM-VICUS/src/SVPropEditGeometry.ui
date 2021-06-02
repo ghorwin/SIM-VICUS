@@ -628,28 +628,28 @@
             <item>
              <widget class="QPushButton" name="pushButtonCopySurfaces">
               <property name="text">
-               <string>surface</string>
+               <string>Surfaces</string>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="pushButtonCopyRooms">
               <property name="text">
-               <string>room</string>
+               <string>Rooms</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButtonCopyBuildingLvls">
+             <widget class="QPushButton" name="pushButtonCopyBuildingLevels">
               <property name="text">
-               <string>building level</string>
+               <string>Building levels</string>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="pushButtonCopyBuilding">
               <property name="text">
-               <string>building</string>
+               <string>Buildings</string>
               </property>
              </widget>
             </item>

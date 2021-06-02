@@ -436,26 +436,34 @@ int SVPropEditGeometry::requestCopyOperation(QWidget * parent, const QString & t
 
 void SVPropEditGeometry::update() {
 
-	std::vector<const VICUS::Surface*> surfaces;
+	// update our selection lists
+	std::set<const VICUS::Object*> sel;
 
 	// first we get how many surfaces are selected
-	project().selectedSurfaces(surfaces, VICUS::Project::SG_All);
+	project().selectObjects(sel, VICUS::Project::SG_All, true, true);
+
+	// process all selected objects and sort them into vectors
+	for (const VICUS::Object * o : sel) {
+		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
+		if (s != nullptr)
+			m_selSurfaces.push_back(s);
+		const VICUS::Room * r = dynamic_cast<const VICUS::Room *>(o);
+		if (r != nullptr)
+			m_selRooms.push_back(r);
+		// TODO Stephan
+	}
 
 	// we get the view state
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 
-	if ( surfaces.size() > 0 ) {
+	// enable copy functions only if respective objects are selected
+	m_ui->pushButtonCopySurfaces->setEnabled(!m_selSurfaces.empty());
+	m_ui->pushButtonCopyRooms->setEnabled(!m_selRooms.empty());
+	// TODO Stephan
+//	m_ui->pushButtonCopyBuildingLvls->setEnabled(false);
+//	m_ui->pushButtonCopyBuilding->setEnabled(false);
 
-		// we collect all selected objects
-//		project().selectedBuildingObjects(m_selBuild, new VICUS::Building);
-//		project().selectedBuildingObjects(m_selBuildLvls, new VICUS::BuildingLevel);
-		project().selectedRooms(m_selRooms);
-		project().selectedSurfaces(m_selSurfaces, VICUS::Project::SG_All);
-
-		m_ui->pushButtonCopyRooms->setEnabled(m_selRooms.size()>0);
-		m_ui->pushButtonCopyBuildingLvls->setEnabled(false);
-		m_ui->pushButtonCopyBuilding->setEnabled(false);
-
+	if (!m_selSurfaces.empty()) {
 		// adjust the view state to show selected geometry (i.e. local coordinate system is visible)
 		// and edit geometry property widget (makes us visible), but only, if we are in
 		// geometry editing mode
@@ -465,8 +473,8 @@ void SVPropEditGeometry::update() {
 			SVViewStateHandler::instance().setViewState(vs);
 		}
 
-		if ( surfaces.size() == 1 ) {
-			const VICUS::Surface *s = surfaces[0];
+		if ( m_selSurfaces.size() == 1 ) {
+			const VICUS::Surface *s = m_selSurfaces[0];
 			m_ui->labelIndication->setText(tr("Normal:"));
 			setRotation(s->geometry().normal() );
 		}
@@ -475,7 +483,7 @@ void SVPropEditGeometry::update() {
 			setRotation( QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis() ) );
 		}
 		// compute dimensions of bounding box (dx, dy, dz) and center point of all selected surfaces
-		m_boundingBoxDimension = project().boundingBox(surfaces, m_boundingBoxCenter);
+		m_boundingBoxDimension = project().boundingBox(m_selSurfaces, m_boundingBoxCenter);
 
 		// update local coordinates
 		Vic3D::Transform3D t;
@@ -1175,6 +1183,121 @@ void SVPropEditGeometry::on_lineEditInclination_textChanged(const QString &) {
 }
 
 
+void SVPropEditGeometry::on_pushButtonCopySurfaces_clicked() {
+
+	bool allSubSurfacesSelected = true;
+	// check if all subsurfaces (if existing) of selected surfaces are selected as well
+	for (const VICUS::Surface * s : m_selSurfaces) {
+		for (const VICUS::SubSurface & sub : s->subSurfaces()) {
+			if (!sub.m_selected) {
+				allSubSurfacesSelected = false;
+				break;
+			}
+		}
+		if (!allSubSurfacesSelected)
+			break;
+	}
+
+	// we get our copy method
+	int copyAllSubSurfaces = 1;
+
+	// if we have some invisible ones, ask user what to do
+	if (!allSubSurfacesSelected)
+		copyAllSubSurfaces = requestCopyOperation(this, tr("Method for copying surfaces"),
+			tr("Some of the surfaces have un-selected sub-surfaces. Copy them anyway?"),
+			tr("Copy all"),								// returns 1
+			tr("Copy only selected and visible") );		// returns 2
+
+	if (copyAllSubSurfaces == -1)
+		return;
+
+	// now create a vector for the new surfaces
+	std::vector<VICUS::Surface> newSurfaces;
+	std::set<unsigned int> deselectedSurfaceUniqueIDs;
+
+	// this map stores the old vs. new ID association, needed for copying component instance
+	std::map<unsigned int, unsigned int> oldNewIDMap;
+
+	// we go through all objects and find the hierarchy
+	for (const VICUS::Surface * s : m_selSurfaces) {
+		// remember ID of surface to be deselected
+		deselectedSurfaceUniqueIDs.insert(s->uniqueID());
+
+		// we make a copy of the surface but with a new unique ID
+		VICUS::Surface newSurf = s->clone();
+		newSurf.m_selected = true; // select copied surface
+
+		// if we copy only selected, remove all sub-surfaces that are not selected
+		if (copyAllSubSurfaces == 2) {
+			std::vector<VICUS::SubSurface> subs;
+			for (std::vector<VICUS::SubSurface>::const_iterator it = newSurf.subSurfaces().begin();
+				 it != newSurf.subSurfaces().end(); ++it)
+			{
+				if (it->m_selected)
+					subs.push_back(*it); // keeps unqiue ID
+			}
+			newSurf.setSubSurfaces(subs);
+		}
+
+		// TODO Stephan, lookup "name generation" function
+		newSurf.m_displayName = s->m_displayName + "-2"; // we can always append a 2 here
+
+		// now translate surface; no need to translate sub-surfaces, since they are embedded anyway
+		std::vector<IBKMK::Vector3D> vertexes = newSurf.polygon3D().vertexes();
+		for ( IBKMK::Vector3D &v : vertexes ) {
+			v += m_translation;
+		}
+		newSurf.setPolygon3D( VICUS::Polygon3D(vertexes) );
+
+		newSurfaces.push_back(newSurf);
+
+		// remember old vs. new surface ID map
+		oldNewIDMap[s->m_id] = newSurf.m_id;
+	}
+
+
+	// TODO Stephan, diskutieren mit Dirk -> Vermeiden von ComponentInstance-Kopien von Zwischenwänden
+
+	// new component instances to be created
+	std::vector<VICUS::ComponentInstance> newComponentInstances;
+
+	std::vector<unsigned int> compInstanceIDs;
+	for (const VICUS::ComponentInstance & ci : project().m_componentInstances)
+		compInstanceIDs.push_back(ci.m_id);
+
+	// process all existing component instances
+	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+		// we create a copy of the component instance
+		bool leftSideUsed =
+				(ci.m_sideASurfaceID != VICUS::INVALID_ID && VICUS::Project::contains(m_selSurfaces, ci.m_sideASurfaceID));
+		bool rightSideUsed =
+				(ci.m_sideBSurfaceID != VICUS::INVALID_ID && VICUS::Project::contains(m_selSurfaces, ci.m_sideBSurfaceID));
+
+		// skip unrelated component instances
+		if (!leftSideUsed && !rightSideUsed)
+			continue;
+
+		// create copy of CI
+		VICUS::ComponentInstance newCi;
+		newCi.m_id = VICUS::Project::uniqueId(compInstanceIDs);
+		compInstanceIDs.push_back(newCi.m_id);
+		newCi.m_componentID = ci.m_componentID;
+		if (leftSideUsed)
+			newCi.m_sideASurfaceID = oldNewIDMap[ci.m_sideASurfaceID];
+		if (rightSideUsed)
+			newCi.m_sideBSurfaceID = oldNewIDMap[ci.m_sideBSurfaceID];
+		newComponentInstances.push_back(newCi);
+	}
+
+	// TODO Stephan, also copy sub-surface component instances
+
+	SVUndoCopySurfaces *undo = new SVUndoCopySurfaces("Copied Surfaces.", newSurfaces, deselectedSurfaceUniqueIDs, newComponentInstances);
+	undo->push();
+}
+
+
+
+
 void SVPropEditGeometry::on_pushButtonCopyRooms_clicked() {
 #if 0
 	// selected objects
@@ -1274,123 +1397,6 @@ void SVPropEditGeometry::on_pushButtonCopyRooms_clicked() {
 	SVUndoCopyZones *undo = new SVUndoCopyZones("Copied Zones", 0, newRooms);
 	undo->push();
 #endif
-}
-
-void SVPropEditGeometry::on_pushButtonCopySurfaces_clicked() {
-	// get all selected objects (only those that are part of buildings, visible and invisible)
-	std::set<const VICUS::Object*> selectedObjs;
-	project().selectObjects(selectedObjs, VICUS::Project::SG_Building, true, false);
-
-	// extract all surfaces and create a vector with *all* selected surfaces and with
-	// only the visible selected surfaces
-	std::vector<const VICUS::Surface *> selectedSurfaces;
-	std::vector<const VICUS::Surface *> visibleSurfaces;
-	for (const VICUS::Object * o : selectedObjs) {
-		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
-		if (s == nullptr) continue;
-		if (s->m_visible)
-			visibleSurfaces.push_back(s); // remember as visible
-		selectedSurfaces.push_back(s);
-	}
-
-	// we get our copy method
-	int copyAllSubSurfaces = 1;
-
-	// if we have some invisible ones, ask user what to do
-	if (visibleSurfaces.size() != selectedSurfaces.size())
-		copyAllSubSurfaces = requestCopyOperation(this, tr("Method for copying surfaces"),
-			tr("Some of the selected surfaces are invisible. Copy them anyway?"),
-			tr("Copy all selected surfaces"), tr("Copy only selected and visible surfaces") );
-
-	if (copyAllSubSurfaces == -1)
-		return;
-
-	// if copy operation is "visible only", take only the visible surfaces
-	if (copyAllSubSurfaces == 2)
-		selectedSurfaces = visibleSurfaces;
-
-	// to generate new unique IDs, we need a vector with all surface IDs used so far
-	std::vector<unsigned int> idsUsedBySurfaces;
-	for (const VICUS::Building & b : project().m_buildings)
-		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels)
-			for (const VICUS::Room & r : bl.m_rooms)
-				for (const VICUS::Surface & s : r.m_surfaces)
-					idsUsedBySurfaces.push_back(s.m_id);
-
-	// now create a vector for the new surfaces
-	std::vector<VICUS::Surface> newSurfaces;
-	// unique-IDs of deselected surfaces
-	std::set<unsigned int> deselectedSurfaces;
-
-	// this map stores the old vs. new ID association, needed for copying component instance
-	std::map<unsigned int, unsigned int> oldNewIDMap;
-
-	// we go through all objects and find the hierarchy
-	for (const VICUS::Surface * s : selectedSurfaces) {
-
-		// we make a copy of the surface but with a new unique ID
-		VICUS::Surface newSurf = s->clone();
-		newSurf.m_selected = true; // select copied surface
-
-		// deselect old surface
-		// Warning: we must not do this directly in memory with a const_cast, because this screws up
-		//          undo history
-		deselectedSurfaces.insert(s->uniqueID());
-
-		newSurf.m_displayName = s->m_displayName + "-2"; // we can always append a 2 here
-		newSurf.m_id = VICUS::Project::uniqueId(idsUsedBySurfaces);
-		idsUsedBySurfaces.push_back(newSurf.m_id); // also remember the new ID as used
-
-		std::vector<IBKMK::Vector3D> vertexes = newSurf.polygon3D().vertexes();
-		for ( IBKMK::Vector3D &v : vertexes ) {
-			v += m_translation;
-		}
-		newSurf.setPolygon3D( VICUS::Polygon3D(vertexes) );
-
-		newSurfaces.push_back(newSurf);
-
-		// remember old vs. new surface ID map
-		oldNewIDMap[s->m_id] = newSurf.m_id;
-	}
-
-	// new component instances to be created
-	std::vector<VICUS::ComponentInstance> newComponentInstances;
-
-	std::vector<unsigned int> compInstanceIDs;
-	for (const VICUS::ComponentInstance & ci : project().m_componentInstances)
-		compInstanceIDs.push_back(ci.m_id);
-
-	// process all existing component instances
-	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
-		// we create a copy of the component instance
-		bool leftSideUsed =
-				(ci.m_sideASurfaceID != VICUS::INVALID_ID && VICUS::Project::contains(m_selSurfaces, ci.m_sideASurfaceID));
-		bool rightSideUsed =
-				(ci.m_sideBSurfaceID != VICUS::INVALID_ID && VICUS::Project::contains(m_selSurfaces, ci.m_sideBSurfaceID));
-
-		// skip unrelated component instances
-		if (!leftSideUsed && !rightSideUsed)
-			continue;
-
-		// create copy of CI
-		VICUS::ComponentInstance newCi;
-		newCi.m_id = VICUS::Project::uniqueId(compInstanceIDs);
-		compInstanceIDs.push_back(newCi.m_id);
-		newCi.m_componentID = ci.m_componentID;
-		if (leftSideUsed)
-			newCi.m_sideASurfaceID = oldNewIDMap[ci.m_sideASurfaceID];
-		if (rightSideUsed)
-			newCi.m_sideBSurfaceID = oldNewIDMap[ci.m_sideBSurfaceID];
-		newComponentInstances.push_back(newCi);
-	}
-
-	SVUndoCopySurfaces *undo = new SVUndoCopySurfaces("Copied Surfaces.", newSurfaces, deselectedSurfaces, newComponentInstances);
-	undo->push();
-}
-
-
-void SVPropEditGeometry::on_pushButtonCopyBuildingLvls_clicked() {
-
 }
 
 
