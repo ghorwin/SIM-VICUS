@@ -419,6 +419,14 @@ void ThermalNetworkStatesModel::resultDescriptions(std::vector<QuantityDescripti
 				resDesc.push_back(desc);
 			} break;
 
+			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser : {
+				// currently, this result value is not directly used in other models, yet may be useful for FMI exchange
+				QuantityDescription desc("HeatExchangeHeatLossCondenser", "W", "Pre-described heat loss at condenser of heat pump.", false);
+				desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+				desc.m_id = m_network->m_elements[i].m_id;
+				resDesc.push_back(desc);
+			} break;
+
 			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline : {
 				QuantityDescription desc("HeatExchangeTemperature", "K", "Pre-described external temperature.", false);
 				desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
@@ -456,6 +464,7 @@ const double * ThermalNetworkStatesModel::resultValueRef(const InputReference & 
 
 
 	if (quantityName == std::string("HeatExchangeHeatLoss") ||
+		quantityName == std::string("HeatExchangeHeatLossCondenser") ||
 		quantityName == std::string("HeatExchangeTemperature"))
 	{
 		for (unsigned int i=0; i<m_elementIds.size(); ++i) {
@@ -474,7 +483,8 @@ int ThermalNetworkStatesModel::setTime(double t) {
 	// update all spline values
 	for (unsigned int i=0; i<m_elementIds.size(); ++i) {
 		switch (m_network->m_elements[i].m_heatExchange.m_modelType) {
-			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline : {
+			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline :
+			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser : {
 				m_heatExchangeSplineValues[i] = m_simPara->evaluateTimeSeries(t,
 					m_network->m_elements[i].m_heatExchange.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss]);
 			} break;

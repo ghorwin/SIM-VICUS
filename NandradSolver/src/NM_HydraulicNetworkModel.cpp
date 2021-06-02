@@ -100,7 +100,7 @@ void HydraulicNetworkModel::setup() {
 				// create hydraulic pipe model
 				HNPipeElement * pipeElement = new HNPipeElement(e, *e.m_pipeProperties,
 																m_hydraulicNetwork->m_fluid,
-																m_thermostats);
+																*m_thermostats);
 				// add to flow elements
 				m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 			} break;

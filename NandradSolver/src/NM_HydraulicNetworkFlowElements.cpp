@@ -47,9 +47,9 @@ HydraulicNetworkAbstractFlowElement::~HydraulicNetworkAbstractFlowElement() {
 HNPipeElement::HNPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 							const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
 							const NANDRAD::HydraulicFluid & fluid,
-							const std::vector<NANDRAD::Thermostat> *thermostats):
+							const std::vector<NANDRAD::Thermostat> & thermostats):
 	m_fluid(&fluid),
-	m_thermostats(thermostats)
+	m_thermostats(&thermostats)
 {
 	m_length = elem.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
 	m_diameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
@@ -58,13 +58,11 @@ HNPipeElement::HNPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 }
 
 
-void HNPipeElement::inputReferences(std::vector<InputReference> & inputRefs) const
-{
+void HNPipeElement::inputReferences(std::vector<InputReference> & inputRefs) const {
 	// in the case of control add heat exchange spline value to input references
-	if(m_controlElement != nullptr && m_controlElement->m_controlledProperty ==
-	   NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue) {
-
-		IBK_ASSERT(m_thermostats != nullptr);
+	if (m_controlElement != nullptr &&
+		m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue)
+	{
 		// loop over all models, pick out the Thermostat-models and request input for a single zone. Later we check
 		// that one (and exactly) one request must be fulfilled!
 		for (const NANDRAD::Thermostat &thermostat : (*m_thermostats) ) {
@@ -83,11 +81,9 @@ void HNPipeElement::inputReferences(std::vector<InputReference> & inputRefs) con
 }
 
 
-void HNPipeElement::setInputValueRefs(std::vector<const double*>::const_iterator & resultValueRefs)
-{
+void HNPipeElement::setInputValueRefs(std::vector<const double*>::const_iterator & resultValueRefs) {
 	FUNCID(HNPipeElement::setInputValueRefs);
 
-	IBK_ASSERT(m_thermostats != nullptr);
 	// now store the pointer returned for our input ref request and advance the iterator by one
 	// m_heatingThermostatValueRef and m_coolingThermostatValueRef are initially nullptr -> not set
 	for (unsigned int i=0; i< m_thermostats->size(); ++i) {
@@ -164,36 +160,38 @@ HNPressureLossCoeffElement::HNPressureLossCoeffElement(unsigned int flowElementI
 }
 
 
-void HNPressureLossCoeffElement::inputReferences(std::vector<InputReference> & inputRefs) const
-{
-	// in the case of control add heat exchange spline value to input references
-	if(m_controlElement != nullptr) {
-		switch (m_controlElement->m_controlledProperty) {
+void HNPressureLossCoeffElement::inputReferences(std::vector<InputReference> & inputRefs) const {
+	if (m_controlElement == nullptr)
+		return; 	// only handle input reference when there is a controller
 
-			case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference: {
-				InputReference ref;
-				ref.m_id = m_flowElementId;
-				ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
-				ref.m_name.m_name = "HeatExchangeHeatLoss";
-				ref.m_required = true;
-				inputRefs.push_back(ref);
-			} break;
-			default: ;
-		}
+	switch (m_controlElement->m_controlledProperty) {
+
+		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference: {
+			InputReference ref;
+			ref.m_id = m_flowElementId;
+			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+			ref.m_name.m_name = "HeatExchangeHeatLoss";
+			ref.m_required = true;
+			inputRefs.push_back(ref);
+		} break;
+		default: ;
 	}
 }
 
 
-void HNPressureLossCoeffElement::setInputValueRefs(std::vector<const double*>::const_iterator & resultValueRefs)
-{
-	IBK_ASSERT(m_controlElement != nullptr && m_controlElement->m_controlledProperty ==
+void HNPressureLossCoeffElement::setInputValueRefs(std::vector<const double*>::const_iterator & resultValueRefs) {
+	if (m_controlElement == nullptr)
+		return; 	// only handle input reference when there is a controller
+
+	IBK_ASSERT(m_controlElement->m_controlledProperty ==
 			NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference);
 	// now store the pointer returned for our input ref request and advance the iterator by one
 	m_heatExchangeHeatLossRef = *(resultValueRefs++); // Heat exchange value reference
 }
 
+
 void HNPressureLossCoeffElement::modelQuantities(std::vector<QuantityDescription> & quantities) const{
-	if(m_controlElement == nullptr)
+	if (m_controlElement == nullptr)
 		return;
 	// calculate zetaControlled value for valve
 	quantities.push_back(QuantityDescription("ControllerResultValue","---", "The calculated controller zeta value for the valve", false));
@@ -201,8 +199,9 @@ void HNPressureLossCoeffElement::modelQuantities(std::vector<QuantityDescription
 		quantities.push_back(QuantityDescription("TemperatureDifference","K", "The difference between inlet and outlet temperature", false));
 }
 
+
 void HNPressureLossCoeffElement::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
-	if(m_controlElement == nullptr)
+	if (m_controlElement == nullptr)
 		return;
 	// calculate zetaControlled value for valve
 	valRefs.push_back(&m_zetaControlled);
@@ -226,10 +225,6 @@ double HNPressureLossCoeffElement::systemFunction(double mdot, double p_inlet, d
 
 double HNPressureLossCoeffElement::zetaControlled(double mdot) const {
 	FUNCID(TNElementWithExternalHeatLoss::zetaControlled);
-
-	// NOTE: When solving the hydraulic network equations, we already have a new value stored in
-	//       m_heatExchangeValueRef. However, the m_heatLoss member is only set much later, when
-	//       internalDerivatives() is called as part of ThermalNetworkBalanceModel::update().
 
 	// calculate zetaControlled value for valve
 	switch (m_controlElement->m_controlledProperty) {
@@ -294,16 +289,23 @@ void HNPressureLossCoeffElement::partials(double mdot, double p_inlet, double p_
 	df_dmdot = (f_eps - f)/EPS;
 }
 
-void HNPressureLossCoeffElement::updateResults(double mdot, double /*p_inlet*/, double /*p_outlet*/)
-{
-	// calculate zetaControlled value for valve
-	if (m_controlElement != nullptr) {
 
-		IBK_ASSERT(m_heatExchangeHeatLossRef != nullptr);
-		// compute current temperature for given heat loss and mass flux
-		// Mind: access m_heatExchangeValueRef and not m_heatLoss here!
-		m_temperatureDifference = *m_heatExchangeHeatLossRef/(mdot*m_fluidHeatCapacity);
-		m_zetaControlled = zetaControlled(mdot);
+void HNPressureLossCoeffElement::updateResults(double mdot, double /*p_inlet*/, double /*p_outlet*/) {
+	if (m_controlElement == nullptr)
+		return;
+
+	// calculate zetaControlled value for valve
+	switch (m_controlElement->m_controlledProperty) {
+
+		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference: {
+			IBK_ASSERT(m_heatExchangeHeatLossRef != nullptr);
+			// compute current temperature for given heat loss and mass flux
+			// Mind: access m_heatExchangeValueRef and not m_heatLoss here!
+			m_temperatureDifference = *m_heatExchangeHeatLossRef/(mdot*m_fluidHeatCapacity);
+			m_zetaControlled = zetaControlled(mdot);
+		} break;
+		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue: // not a possible combination
+		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ; // nothing todo - we return 0
 	}
 }
 

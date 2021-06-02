@@ -75,7 +75,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 																	   true, nullptr);
 			} break;
 
-			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
+			case T_HeatLossSplineCondenser:
 			case T_HeatLossSpline: {
 				// replace place holders
 				m_splPara[SPL_HeatLoss].m_tsvFile = m_splPara[SPL_HeatLoss].m_tsvFile.withReplacedPlaceholders(placeholders);
@@ -146,18 +146,21 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 std::vector<unsigned int> NANDRAD::HydraulicNetworkHeatExchange::availableHeatExchangeTypes(
 		const NANDRAD::HydraulicNetworkComponent::ModelType modelType)
 {
+	// some models may be adiabatic, hence we also return NUM_T as available heat exchange type
 	switch (modelType) {
 		case HydraulicNetworkComponent::MT_SimplePipe:
-			return {T_TemperatureConstant, T_TemperatureSpline, T_HeatLossConstant, T_HeatLossSpline, T_TemperatureZone, T_TemperatureConstructionLayer};
+			return {NUM_T, T_TemperatureConstant, T_TemperatureSpline, T_HeatLossConstant, T_HeatLossSpline, T_TemperatureZone, T_TemperatureConstructionLayer};
 		case HydraulicNetworkComponent::MT_DynamicPipe:
-			return {T_TemperatureConstant, T_TemperatureSpline, T_HeatLossConstant, T_HeatLossSpline, T_TemperatureZone, T_TemperatureConstructionLayer};
+			return {NUM_T, T_TemperatureConstant, T_TemperatureSpline, T_HeatLossConstant, T_HeatLossSpline, T_TemperatureZone, T_TemperatureConstructionLayer};
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:
-			return {T_HeatLossSplineCondenser};
+			return {T_HeatLossSplineCondenser};  // must not be adiabatic
 		case HydraulicNetworkComponent::MT_HeatExchanger:
-			return {T_HeatLossConstant, T_HeatLossSpline};
+			return {T_HeatLossConstant, T_HeatLossSpline}; // must not be adiabatic
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
+			return {NUM_T};
 		case HydraulicNetworkComponent::MT_ConstantMassFluxPump:
-		case HydraulicNetworkComponent::NUM_MT: ;
+			return {NUM_T};
+		case HydraulicNetworkComponent::NUM_MT: ; // just to make compiler happy
 	}
 	return {};
 }

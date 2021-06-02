@@ -62,6 +62,7 @@ public:
 		T_TemperatureSpline,				// Keyword: TemperatureSpline			'Difference to time-dependent temperature from spline'
 		T_HeatLossConstant,					// Keyword: HeatLossConstant			'Constant heat loss'
 		T_HeatLossSpline,					// Keyword: HeatLossSpline				'Heat loss from spline'
+		/*! Heat loss from condenser is not the heat loss of the fluid, hence different parameter than T_HeatLossSpline. */
 		T_HeatLossSplineCondenser,			// Keyword: HeatLossSplineCondenser		'Heat loss of condenser in heat pump model'
 		T_TemperatureZone,					// Keyword: TemperatureZone				'Difference to zone air temperature'
 		T_TemperatureConstructionLayer,		// Keyword: TemperatureConstructionLayer	'Difference to active construction layer (floor heating)'
@@ -77,12 +78,10 @@ public:
 		NUM_P
 	};
 
-	/*! Spline parameter as functions of time with the implied assumption that
-		t = 0 means begin of simulation.
-		TODO Andreas + Anne + Hauke
-	*/
+	/*! Spline parameter as functions of time. Defined similarly as time series for location object (i.e. with start time shift). */
 	enum splinePara_t {
 		SPL_Temperature,					// Keyword: Temperature							[C]		'Temperature for heat exchange'
+		/*! Heat loss spline is used for models T_HeatLossSpline and T_HeatLossSplineCondenser. */
 		SPL_HeatLoss,						// Keyword: HeatLoss							[W]		'Constant heat flux out of the element (heat loss)'
 		NUM_SPL
 	};

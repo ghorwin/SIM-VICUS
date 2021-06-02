@@ -495,9 +495,9 @@ public:
 private:
 
 	/*! Temperatures from schedules [K] which will be set through input references */
-	const double							*m_condenserMeanTemperatureSchedule = nullptr;
-	const double							*m_evaporatorMeanTemperatureSchedule = nullptr;
-	const double							*m_condenserOutletSetpointSchedule = nullptr;
+	const double							*m_condenserMeanTemperatureRef = nullptr;
+	const double							*m_evaporatorMeanTemperatureRef = nullptr;
+	const double							*m_condenserOutletSetpointRef = nullptr;
 
 	/*! Id number of flow element. */
 	unsigned int							m_flowElementId = NANDRAD::INVALID_ID;

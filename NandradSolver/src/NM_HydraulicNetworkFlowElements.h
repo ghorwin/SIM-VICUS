@@ -45,7 +45,7 @@ public:
 	HNPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 				  const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
 				  const NANDRAD::HydraulicFluid & fluid,
-				  const std::vector<NANDRAD::Thermostat> *thermostats);
+				  const std::vector<NANDRAD::Thermostat> &thermostats);
 
 	/*! Adds flow-element-specific input references (schedules etc.) to the list of input references.
 		Default implementation does nothing.
@@ -103,8 +103,6 @@ private:
 
 }; // HNPipeElement
 
-
-class TNElementWithExternalHeatLoss;
 
 /*! Element that calculates the pressure loss according to a given pressure loss coefficient
 	(which is in Germany usually called zeta-value).
@@ -232,7 +230,7 @@ private:
 	/*! Constant mass flux [kg/s] to be enforced. */
 	double							m_massFlux = -999;
 
-}; // HNConstantPressurePump
+}; // HNConstantMassFluxPump
 
 } // namespace NANDRAD_MODEL
 
