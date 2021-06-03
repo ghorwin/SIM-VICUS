@@ -85,7 +85,7 @@ public:
 	std::string			m_constructionObjectList;					// XML:E:required
 
 	/*! Id of zone whose thermostat is used for control. */
-	unsigned int		m_thermostatZoneID;							// XML:E:required
+	unsigned int		m_thermostatZoneId;							// XML:E:required
 
 	/*! Parameters. */
 	IBK::Parameter		m_para[NUM_P];								// XML:E

@@ -42,7 +42,8 @@ public:
 		MT_ConstantPressurePump,			// Keyword: ConstantPressurePump		'Pump with constant/externally defined pressure'
 		MT_HeatExchanger,					// Keyword: HeatExchanger				'Simple heat exchanger with given heat flux'
 		MT_HeatPumpIdealCarnot,				// Keyword: HeatPumpIdealCarnot			'Heat pump with variable heating power based on carnot efficiency'
-		MT_HeatPumpReal,					// Keyword: HeatPumpReal				'On-off-type heat pump with based on manufacturer data sheet'
+//		MT_HeatPumpReal,					// xKeyword: HeatPumpReal				'On-off-type heat pump with based on manufacturer data sheet'
+		MT_ControlledValve,					// Keyword: ControlledValve				'Valve with associated control model'
 		NUM_MT
 	};
 

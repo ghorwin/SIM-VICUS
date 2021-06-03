@@ -283,9 +283,11 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				} break; // NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot
 
 
-				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpReal:
-					// TODO Hauke
-				break;
+				case NANDRAD::HydraulicNetworkComponent::MT_ControlledValve: {
+					TNAdiabaticElement * element = new TNAdiabaticElement( m_network->m_fluid, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value);
+					m_p->m_flowElements.push_back(element); // transfer ownership
+					m_p->m_heatLossElements.push_back(nullptr); // no heat loss
+				} break;
 
 
 				case NANDRAD::HydraulicNetworkComponent::NUM_MT:

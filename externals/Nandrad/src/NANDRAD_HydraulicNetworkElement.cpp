@@ -21,11 +21,13 @@
 
 #include "NANDRAD_HydraulicNetworkElement.h"
 
+#include <algorithm>
+
+#include <IBK_messages.h>
+
 #include "NANDRAD_HydraulicNetwork.h"
 #include "NANDRAD_KeywordList.h"
 #include "NANDRAD_Project.h"
-
-#include <algorithm>
 
 
 namespace NANDRAD {
@@ -88,16 +90,16 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
 		case HydraulicNetworkComponent::MT_HeatExchanger:
-		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:
-		case HydraulicNetworkComponent::MT_HeatPumpReal:
+		case HydraulicNetworkComponent::MT_ControlledValve:
+			case HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:
 			// nothing to check for
 		break;
-
-		// TODO : add checks for other components
 
 		case HydraulicNetworkComponent::NUM_MT:
 			throw IBK::Exception("Invalid network component model type!", FUNC_ID);
 	}
+
+	// *** Heat Exchange Parameter compatibility checks ***
 
 	// check if given heat exchange type is supported for this component, but only for ThermoHydraulic networks
 	if (nw.m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
@@ -115,29 +117,37 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 		// check for valid heat exchange parameters
 		m_heatExchange.checkParameters(prj.m_placeholders, prj.m_zones, prj.m_constructionInstances);
 	}
+	else if (m_heatExchange.m_modelType != HydraulicNetworkHeatExchange::NUM_T) {
+		IBK::IBK_Message("HydraulicNetworkHeatExchange parameter in element #%1 has no effect for HydraulicNetwork calculation.", IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+	}
 
-	// set pointer to control element
-	if (m_controlElementID != NANDRAD::INVALID_ID) {
-		auto ctit  = std::find(nw.m_controlElements.begin(), nw.m_controlElements.end(), m_controlElementID);
+
+	// *** Flow Controller Parameter compatibility checks ***
+
+	if (m_controlElementId != NANDRAD::INVALID_ID) {
+		// first check if referenced controller exists
+		auto ctit  = std::find(nw.m_controlElements.begin(), nw.m_controlElements.end(), m_controlElementId);
 		if (ctit == nw.m_controlElements.end()) {
 			throw IBK::Exception(IBK::FormatString("ControlElement with id #%1 does not exist.")
-								 .arg(m_controlElementID), FUNC_ID);
+								 .arg(m_controlElementId), FUNC_ID);
 		}
-		// set reference
+		// set pointer to control element
 		m_controlElement = &(*ctit);
 
-		// for temperature difference we enforce heat exchange type 'HeatLossSpline' or 'HeatLossSplineCondenser'
-		if(ctit->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference) {
-			// wrong heat exchange type
-			switch(m_heatExchange.m_modelType ) {
-				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
-				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
-				break;
-				default:
-					throw IBK::Exception(IBK::FormatString("Only HeatExchangeType 'HeatLossSpline' or 'HeatLossSplineCondenser' "
-														   "is allowed in combination with HydraulicNetworkController property "
-														   "'TemperatureDifference'!"), FUNC_ID);
-			}
+		switch (ctit->m_controlledProperty) {
+			case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference : {
+				// first check for mandatory/allowed heat exchange types
+				switch(m_heatExchange.m_modelType ) {
+					case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
+					break;
+					default:
+						throw IBK::Exception(IBK::FormatString("Only HeatExchangeType 'HeatLossSpline' or 'HeatLossSplineCondenser' "
+															   "is allowed in combination with HydraulicNetworkController property "
+															   "'TemperatureDifference'!"), FUNC_ID);
+				}
+			} break;
+
+			// TODO : Hauke
 		}
 	}
 

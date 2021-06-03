@@ -174,7 +174,10 @@ void HNPressureLossCoeffElement::inputReferences(std::vector<InputReference> & i
 			ref.m_required = true;
 			inputRefs.push_back(ref);
 		} break;
-		default: ;
+
+		// TODO Hauke, temperaturen der benachbarten Elemente abfragen
+
+		default: ; // other control elements do not require inputs
 	}
 }
 
@@ -183,10 +186,16 @@ void HNPressureLossCoeffElement::setInputValueRefs(std::vector<const double*>::c
 	if (m_controlElement == nullptr)
 		return; 	// only handle input reference when there is a controller
 
-	IBK_ASSERT(m_controlElement->m_controlledProperty ==
-			NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference);
-	// now store the pointer returned for our input ref request and advance the iterator by one
-	m_heatExchangeHeatLossRef = *(resultValueRefs++); // Heat exchange value reference
+	switch (m_controlElement->m_controlledProperty) {
+		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference :
+			// now store the pointer returned for our input ref request and advance the iterator by one
+			m_heatExchangeHeatLossRef = *(resultValueRefs++); // Heat exchange value reference
+		break;
+
+		// TODO Hauke, temperaturen der benachbarten Elemente abfragen
+
+		default: ; // other control elements do not require inputs
+	}
 }
 
 
@@ -269,8 +278,9 @@ double HNPressureLossCoeffElement::zetaControlled(double mdot) const {
 		}
 
 
-		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlow: {
-			const double e = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_MassFlowSetpoint].value - mdot;
+		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlux: {
+			// e is > 0 if our mass flux exceeds the limit
+			const double e = mdot - m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_MassFluxSetpoint].value;
 
 			// TODO : use controller object here
 			double zetaControlled = 0.0;
@@ -340,7 +350,7 @@ void HNPressureLossCoeffElement::updateResults(double mdot, double /*p_inlet*/, 
 			m_zetaControlled = zetaControlled(mdot);
 		} break;
 
-		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlow: // not a possible combination
+		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlux: // not a possible combination
 			m_zetaControlled = zetaControlled(mdot);
 		break;
 

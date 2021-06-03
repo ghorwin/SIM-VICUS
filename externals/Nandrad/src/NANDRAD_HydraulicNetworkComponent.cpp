@@ -88,6 +88,8 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 				return {P_PipeMaxDiscretizationWidth};
 			case MT_SimplePipe:
 				return {};
+			case MT_ControlledValve:
+				return {P_PressureLossCoefficient, P_HydraulicDiameter};
 			case NUM_MT:
 				return {};
 		}
@@ -105,6 +107,8 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 				return {P_PipeMaxDiscretizationWidth};
 			case MT_SimplePipe:
 				return {};
+			case MT_ControlledValve:
+				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
 			case NUM_MT: ;
 		}
 	}

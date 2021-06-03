@@ -116,14 +116,16 @@ void HydraulicNetworkModel::setup() {
 
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot :
+			case NANDRAD::HydraulicNetworkComponent::MT_ControlledValve:
 			{
+				// Note: we have already checked that no controller is configured for HeatPumpIdealCarnot
+
 				// create pressure loss flow element - controller is set up later
 				HNPressureLossCoeffElement * hxElement = new HNPressureLossCoeffElement(e.m_id, *e.m_component, m_hydraulicNetwork->m_fluid, e.m_controlElement);
 				m_p->m_flowElements.push_back(hxElement); // transfer ownership
 			} break;
 
-			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpReal:
-			case NANDRAD::HydraulicNetworkComponent::NUM_MT:{
+			case NANDRAD::HydraulicNetworkComponent::NUM_MT: {
 				throw IBK::Exception(IBK::FormatString("Unsupported model type for "
 									"HydraulicNetworkComponent with id %1!")
 									.arg(e.m_componentId),FUNC_ID);

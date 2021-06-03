@@ -37,16 +37,16 @@ void WindowFrame::readXMLPrivate(const TiXmlElement * element) {
 
 	try {
 		// search for mandatory attributes
-		if (!TiXmlAttribute::attributeByName(element, "materialID"))
+		if (!TiXmlAttribute::attributeByName(element, "materialId"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'materialID' attribute.") ), FUNC_ID);
+				IBK::FormatString("Missing required 'materialId' attribute.") ), FUNC_ID);
 
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
-			if (attribName == "materialID")
-				m_materialID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			if (attribName == "materialId")
+				m_materialId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -90,8 +90,8 @@ TiXmlElement * WindowFrame::writeXMLPrivate(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("WindowFrame");
 	parent->LinkEndChild(e);
 
-	if (m_materialID != NANDRAD::INVALID_ID)
-		e->SetAttribute("materialID", IBK::val2string<unsigned int>(m_materialID));
+	if (m_materialId != NANDRAD::INVALID_ID)
+		e->SetAttribute("materialId", IBK::val2string<unsigned int>(m_materialId));
 	if (!m_area.name.empty()) {
 		IBK_ASSERT("Area" == m_area.name);
 		TiXmlElement::appendIBKParameterElement(e, "Area", m_area.IO_unit.name(), m_area.get_value());

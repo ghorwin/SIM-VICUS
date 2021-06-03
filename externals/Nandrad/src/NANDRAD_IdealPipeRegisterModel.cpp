@@ -73,11 +73,11 @@ void IdealPipeRegisterModel::checkParameters(const std::vector<NANDRAD::Zone> &z
 	}
 
 	// check validity of thermostat zone
-	std::vector<NANDRAD::Zone>::const_iterator zone_it = std::find(zones.begin(), zones.end(), m_thermostatZoneID);
+	std::vector<NANDRAD::Zone>::const_iterator zone_it = std::find(zones.begin(), zones.end(), m_thermostatZoneId);
 
 	if (zone_it == zones.end())
 		throw IBK::Exception(IBK::FormatString("Invalid/undefined zone with '%1' in ThermostatZoneId.")
-							 .arg(m_thermostatZoneID), FUNC_ID);
+							 .arg(m_thermostatZoneId), FUNC_ID);
 
 	m_fluid.checkParameters(HydraulicNetwork::MT_ThermalHydraulicNetwork);
 }

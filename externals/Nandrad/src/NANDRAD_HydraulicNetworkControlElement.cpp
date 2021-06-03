@@ -37,9 +37,9 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<NANDRAD::
 										 .arg(m_idReferences[ID_ThermostatZoneId]), FUNC_ID);
 			} break;
 
-			case CP_MassFlow : {
+			case CP_MassFlux : {
 				// we need mass flux, but > 0 (cannot set mass flux to zero)
-				m_para[P_MassFlowSetpoint].checkedValue("MassFlowSetpoint", "kg/s", "kg/s",
+				m_para[P_MassFluxSetpoint].checkedValue("MassFluxSetpoint", "kg/s", "kg/s",
 																	 0, false, std::numeric_limits<double>::max(), false, nullptr);
 			} break;
 

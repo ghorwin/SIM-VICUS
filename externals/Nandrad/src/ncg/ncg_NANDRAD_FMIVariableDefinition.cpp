@@ -73,9 +73,9 @@ void FMIVariableDefinition::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'VarName' element.") ), FUNC_ID);
 
-		if (!element->FirstChildElement("ObjectID"))
+		if (!element->FirstChildElement("ObjectId"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'ObjectID' element.") ), FUNC_ID);
+				IBK::FormatString("Missing required 'ObjectId' element.") ), FUNC_ID);
 
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
@@ -89,8 +89,8 @@ void FMIVariableDefinition::readXML(const TiXmlElement * element) {
 				m_fmiStartValue = NANDRAD::readPODElement<double>(c, cName);
 			else if (cName == "VarName")
 				m_varName = c->GetText();
-			else if (cName == "ObjectID")
-				m_objectID = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "ObjectId")
+				m_objectId = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "VectorIndex")
 				m_vectorIndex = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
 			else {
@@ -123,8 +123,8 @@ TiXmlElement * FMIVariableDefinition::writeXML(TiXmlElement * parent) const {
 	TiXmlElement::appendSingleAttributeElement(e, "FmiStartValue", nullptr, std::string(), IBK::val2string<double>(m_fmiStartValue));
 	if (!m_varName.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "VarName", nullptr, std::string(), m_varName);
-	if (m_objectID != NANDRAD::INVALID_ID)
-			TiXmlElement::appendSingleAttributeElement(e, "ObjectID", nullptr, std::string(), IBK::val2string<unsigned int>(m_objectID));
+	if (m_objectId != NANDRAD::INVALID_ID)
+			TiXmlElement::appendSingleAttributeElement(e, "ObjectId", nullptr, std::string(), IBK::val2string<unsigned int>(m_objectId));
 	if (m_vectorIndex != NANDRAD::INVALID_ID)
 			TiXmlElement::appendSingleAttributeElement(e, "VectorIndex", nullptr, std::string(), IBK::val2string<unsigned int>(m_vectorIndex));
 	return e;

@@ -74,7 +74,7 @@ void IdealPipeRegisterModel::setup(const NANDRAD::IdealPipeRegisterModel & model
 	m_fluidVolume = m_fluidCrossSection * m_length;
 
 	// store zone
-	m_thermostatZoneId = model.m_thermostatZoneID;
+	m_thermostatZoneId = model.m_thermostatZoneId;
 
 	// reserve storage memory for vector valued results
 	m_vectorValuedResults.resize(NUM_VVR);

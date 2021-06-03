@@ -32,7 +32,7 @@ public:
 		/*! Thermostat heating/cooling control values determine whether valve is open or closed. */
 		CP_ThermostatValue,				// Keyword: ThermostatValue					'Zone thermostat control values'
 		/*! Try to achieve target mass flow in current element. */
-		CP_MassFlow,					// Keyword: MassFlow						'Target mass flow'
+		CP_MassFlux,					// Keyword: MassFlux						'Target mass flux'
 		NUM_CP
 	};
 
@@ -49,7 +49,7 @@ public:
 		P_Ki,								// Keyword: Ki								[---]	'Ki-parameter'
 		P_Kd,								// Keyword: Kd								[---]	'Kd-parameter'
 		P_TemperatureDifferenceSetpoint,	// Keyword: TemperatureDifferenceSetpoint	[K]		'Target temperature difference'
-		P_MassFlowSetpoint,					// Keyword: MassFlowSetpoint				[kg/s]	'Target mass flow'
+		P_MassFluxSetpoint,					// Keyword: MassFluxSetpoint				[kg/s]	'Target mass flux'
 		NUM_P
 	};
 
@@ -57,7 +57,6 @@ public:
 	enum References {
 		/*! Id of zone whose thermostat is used for control: only for controlled property 'ThermostatValue'. */
 		ID_ThermostatZoneId,				// Keyword: ThermostatZoneId				[-]		'ID of zone containing thermostat'
-		ID_ControlledElementId,				// Keyword: ControlledElementId				[-]		'ID of flow element that is controlled'
 		NUM_ID
 	};
 

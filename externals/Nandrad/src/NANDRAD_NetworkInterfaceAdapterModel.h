@@ -46,7 +46,7 @@ public:
 	IBK::Parameter						m_fluidHeatCapacity;						// XML:E
 
 	/*! Reference to HeatLoadSummationModel required as source for heat load. */
-	unsigned int						m_summationModelID = NANDRAD::INVALID_ID;	// XML:A:required
+	unsigned int						m_summationModelId = NANDRAD::INVALID_ID;	// XML:A:required
 };
 
 } // namespace NANDRAD

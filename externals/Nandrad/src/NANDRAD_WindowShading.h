@@ -67,7 +67,7 @@ public:
 	/*! Model type (NUM_MT disables model). */
 	modelType_t							m_modelType = NUM_MT;					// XML:A:required
 	/*! Control model used for shading, for model type 'Controlled'. */
-	unsigned int						m_controlModelID = INVALID_ID;			// XML:A
+	unsigned int						m_controlModelId = INVALID_ID;			// XML:A
 	/*! List of constant parameters.*/
 	IBK::Parameter						m_para[NUM_P];							// XML:E
 

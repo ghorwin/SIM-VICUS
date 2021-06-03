@@ -48,7 +48,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Pump with constant/externally defined pressure");
 	tr("Simple heat exchanger with given heat flux");
 	tr("Heat pump with variable heating power based on carnot efficiency");
-	tr("On-off-type heat pump with based on manufacturer data sheet");
+	tr("Valve with associated control model");
 	tr("Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)");
 	tr("Pressure loss coefficient for the component (zeta-value)");
 	tr("Pressure head for a pump");
@@ -62,16 +62,15 @@ KeywordListQt::KeywordListQt() {
 	tr("Two networks are connected, one to the cold side, the other to the hot side of the heat pump");
 	tr("Temperature difference");
 	tr("Zone thermostat control values");
-	tr("Target mass flow");
+	tr("Target mass flux");
 	tr("PController");
 	tr("PIController");
 	tr("Kp-parameter");
 	tr("Ki-parameter");
 	tr("Kd-parameter");
 	tr("Target temperature difference");
-	tr("Target mass flow");
+	tr("Target mass flux");
 	tr("ID of zone containing thermostat");
-	tr("ID of flow element that is controlled");
 	tr("Pipe length");
 	tr("Number of parallel pipes");
 	tr("Difference to constant temperature");
