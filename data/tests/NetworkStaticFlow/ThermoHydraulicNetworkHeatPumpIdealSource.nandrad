@@ -65,8 +65,8 @@
 					</HydraulicNetworkComponent>
 				</Components>
 				<Elements>
-					<HydraulicNetworkElement id="1001" inletNodeId="0" outletNodeId="1" componentId="1" displayName="pump">
-					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="1001" inletNodeId="0" outletNodeId="1" componentId="1" displayName="pump" />
+					<!-- Pipe heat medium up to 5 C -->
 					<HydraulicNetworkElement id="1002" inletNodeId="1" outletNodeId="2" componentId="3" pipePropertiesId="1" displayName="pipe">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="TemperatureConstant">
@@ -74,6 +74,7 @@
 							<IBK:Parameter name="Temperature" unit="C">5</IBK:Parameter>
 						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
+					<!-- Heat pump has 1000...5000W supply power -->
 					<HydraulicNetworkElement id="1003" inletNodeId="2" outletNodeId="0" componentId="2" displayName="heatpump">
 						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear">

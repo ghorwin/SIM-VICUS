@@ -41,7 +41,7 @@ namespace NANDRAD_MODEL {
 HydraulicNetworkModel::HydraulicNetworkModel(const NANDRAD::HydraulicNetwork & nw,
 											 const std::vector<NANDRAD::Thermostat> &thermostats,
 											 unsigned int id, const std::string &displayName) :
-	m_id(id), m_displayName(displayName),m_hydraulicNetwork(&nw), m_thermostats(&thermostats)
+	m_id(id), m_displayName(displayName),m_hydraulicNetwork(&nw), m_thermostats(thermostats)
 {
 	// first register all nodes
 	std::set<unsigned int> nodeIds;
@@ -100,6 +100,7 @@ void HydraulicNetworkModel::setup() {
 				// create hydraulic pipe model
 				HNPipeElement * pipeElement = new HNPipeElement(e, *e.m_pipeProperties,
 																m_hydraulicNetwork->m_fluid,
+																e.m_controlElement,
 																m_thermostats);
 				// add to flow elements
 				m_p->m_flowElements.push_back(pipeElement); // transfer ownership

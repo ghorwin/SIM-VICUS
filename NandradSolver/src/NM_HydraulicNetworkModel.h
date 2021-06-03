@@ -135,7 +135,7 @@ private:
 	/*! Constant reference to NANDRAD network data structure */
 	const NANDRAD::HydraulicNetwork					*m_hydraulicNetwork= nullptr;
 	/*! Constant reference to all NANDRAD thermostat data structures */
-	const std::vector<NANDRAD::Thermostat>			*m_thermostats = nullptr;
+	const std::vector<NANDRAD::Thermostat>			&m_thermostats;
 
 	/*! Private implementation (Pimpl) of the network solver. */
 	HydraulicNetworkModelImpl						*m_p = nullptr;

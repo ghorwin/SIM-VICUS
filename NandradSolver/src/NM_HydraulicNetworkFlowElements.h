@@ -45,7 +45,8 @@ public:
 	HNPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
 				  const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
 				  const NANDRAD::HydraulicFluid & fluid,
-				  const std::vector<NANDRAD::Thermostat> *thermostats);
+				  const NANDRAD::HydraulicNetworkControlElement *controller,
+				  const std::vector<NANDRAD::Thermostat> &thermostats);
 
 	/*! Publishes individual model quantities via descriptions. */
 	virtual void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
@@ -113,12 +114,10 @@ private:
 									*m_controlElement = nullptr;
 
 	/*! Reference to all thermsotat para,etrization obejcts.*/
-	const std::vector<NANDRAD::Thermostat> *m_thermostats = nullptr;
+	const std::vector<NANDRAD::Thermostat> &m_thermostats;
 
 }; // HNPipeElement
 
-
-class TNElementWithExternalHeatLoss;
 
 /*! Element that calculates the pressure loss according to a given pressure loss coefficient
 	(which is in Germany usually called zeta-value).
@@ -246,7 +245,7 @@ private:
 	/*! Constant mass flux [kg/s] to be enforced. */
 	double							m_massFlux = -999;
 
-}; // HNConstantPressurePump
+}; // HNConstantMassFluxPump
 
 } // namespace NANDRAD_MODEL
 

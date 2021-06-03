@@ -100,18 +100,22 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 			throw IBK::Exception("Invalid network component model type!", FUNC_ID);
 	}
 
-	// check if given heat exchange type is supported for this component
-	if (m_heatExchange.m_modelType != HydraulicNetworkHeatExchange::NUM_T){
-
+	// check if given heat exchange type is supported for this component, but only for ThermoHydraulic networks
+	if (nw.m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
 		std::vector<unsigned int> hxTypes = HydraulicNetworkHeatExchange::availableHeatExchangeTypes(m_component->m_modelType);
-		if (std::find(hxTypes.begin(), hxTypes.end(), m_heatExchange.m_modelType) == hxTypes.end())
-			throw IBK::Exception(IBK::FormatString("Invalid type of heat exchange '%1' for component '%2'!")
-								 .arg(KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", m_heatExchange.m_modelType))
-								 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_component->m_modelType)), FUNC_ID);
-	}
+		if (std::find(hxTypes.begin(), hxTypes.end(), m_heatExchange.m_modelType) == hxTypes.end()) {
+			if (m_heatExchange.m_modelType == HydraulicNetworkHeatExchange::NUM_T)
+				throw IBK::Exception(IBK::FormatString("Heat exchange type required for component '%1'!")
+									 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_component->m_modelType)), FUNC_ID);
+			else
+				throw IBK::Exception(IBK::FormatString("Invalid type of heat exchange '%1' for component '%2'!")
+									 .arg(KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", m_heatExchange.m_modelType))
+									 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_component->m_modelType)), FUNC_ID);
+		}
 
-	// check for valid heat exchange parameters
-	m_heatExchange.checkParameters(prj.m_placeholders, prj.m_zones, prj.m_constructionInstances);
+		// check for valid heat exchange parameters
+		m_heatExchange.checkParameters(prj.m_placeholders, prj.m_zones, prj.m_constructionInstances);
+	}
 
 	// set pointer to control element
 	if (m_controlElementID != NANDRAD::INVALID_ID) {

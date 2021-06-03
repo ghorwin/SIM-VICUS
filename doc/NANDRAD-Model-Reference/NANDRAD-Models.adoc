@@ -785,8 +785,14 @@ Die `TotalThermalLoad` ist positiv bei Beheizung der Fläche und negativ bei Kü
 [[model_network_interface_adapter]]
 ## Schnittstellen-Modell für die Anbindung externer Anlagennetze 
 
-Diese Modell ist für alleinstehende Simulation unwichtig und wird primär für die Co-Simulation mittels FMI gebraucht. Es bildet den Wärmeentzug des Gebäudes auf ein strömendes Medium ab, bspw. ein Versorgungsnetzwerk. Das Medium strömt mit gegebener Vorlauftemperatur und Massestrom ins Gebäude und das `NetworkInterfaceAdapterModel` berechnet die resultierende Rücklauftemperatur.
+Diese Modell ist für alleinstehende Simulation unwichtig und wird primär für die Co-Simulation mittels FMI gebraucht. Es bildet den Wärmeentzug des Gebäudes auf ein strömendes Medium ab, bspw. ein Versorgungsnetzwerk. Das Medium strömt mit gegebener Vorlauftemperatur und Massenstrom ins Gebäude und das `NetworkInterfaceAdapterModel` berechnet die resultierende Rücklauftemperatur.
 
+Vorlauftemperatur und Massenstrom werden als Zeitpläne benötigt:
+
+- `SupplyTemperatureSchedule`
+- `SupplyMassFlowSchedule`
+
+Bei Verwendung der FMI-Kopplung sind diese Größen durch FMI-Input-Variablen zu überschreiben.
 
 .Definitionsblock für ein solches Schnittstellenmodell
 ====
