@@ -464,7 +464,7 @@ void SVPropEditGeometry::update() {
 		if (r != nullptr ) {
 			m_roomNames.insert(r->m_displayName );
 			if (r->m_selected && r->m_visible)
-				m_selSurfaces.push_back(s);
+				m_selRooms.push_back(r);
 		}
 		const VICUS::SubSurface * sub = dynamic_cast<const VICUS::SubSurface *>(o);
 		if (sub != nullptr ) {
