@@ -62,7 +62,7 @@
 				<EmbeddedObjects>
 					<EmbeddedObject id="1001" displayName="Window with constant shading">
 						<IBK:Parameter name="Area" unit="m2">5</IBK:Parameter>
-						<Window glazingSystemID="10000">
+						<Window glazingSystemId="10000">
 							<Shading modelType="Constant">
 								<IBK:Parameter name="ReductionFactor" unit="---">1</IBK:Parameter>
 							</Shading>
@@ -98,9 +98,9 @@
 				<EmbeddedObjects>
 					<EmbeddedObject id="1002" displayName="Simple window, no frame and divider">
 						<IBK:Parameter name="Area" unit="m2">5</IBK:Parameter>
-						<Window glazingSystemID="10000">
+						<Window glazingSystemId="10000">
 							<!-- Shading is controlled by control model with ID 2000 (global horizontal radiation sensor) -->
-							<Shading modelType="Controlled" controlModelID="2000">
+							<Shading modelType="Controlled" controlModelId="2000">
 								<!-- No shading effect, even if shaded -->
 								<IBK:Parameter name="ReductionFactor" unit="---">1</IBK:Parameter>
 							</Shading>
@@ -136,9 +136,9 @@
 				<EmbeddedObjects>
 					<EmbeddedObject id="1003" displayName="Simple window, no frame and divider">
 						<IBK:Parameter name="Area" unit="m2">5</IBK:Parameter>
-						<Window glazingSystemID="10000">
+						<Window glazingSystemId="10000">
 							<!-- Shading is controlled by control model with ID 2000 (global horizontal radiation sensor) -->
-							<Shading modelType="Controlled" controlModelID="2000">
+							<Shading modelType="Controlled" controlModelId="2000">
 								<!-- No shading effect, even if shaded -->
 								<IBK:Parameter name="ReductionFactor" unit="---">1</IBK:Parameter>
 							</Shading>
@@ -174,9 +174,9 @@
 				<EmbeddedObjects>
 					<EmbeddedObject id="1004" displayName="Simple window, no frame and divider">
 						<IBK:Parameter name="Area" unit="m2">5</IBK:Parameter>
-						<Window glazingSystemID="10000">
+						<Window glazingSystemId="10000">
 							<!-- Shading is controlled by control model with ID 2001 (radiation sensor on window) -->
-							<Shading modelType="Controlled" controlModelID="2001">
+							<Shading modelType="Controlled" controlModelId="2001">
 								<!-- No shading effect, even if shaded -->
 								<IBK:Parameter name="ReductionFactor" unit="---">1</IBK:Parameter>
 							</Shading>
@@ -227,13 +227,13 @@
 		<Models>
 			<ShadingControlModels>
 				<!-- First controller model uses a global radiation sensor -->
-				<ShadingControlModel id="2000" displayName="Global horizontal sensor controller" sensorID="50000">
+				<ShadingControlModel id="2000" displayName="Global horizontal sensor controller" sensorId="50000">
 					<IBK:Parameter name="MaxIntensity" unit="W/m2">300</IBK:Parameter>
 					<IBK:Parameter name="MinIntensity" unit="W/m2">150</IBK:Parameter>
 				</ShadingControlModel> 
 
 				<!-- Second controller model uses a radiation sensor on Window 1004 -->
-				<ShadingControlModel id="2001" displayName="Global horizontal sensor controller" sensorID="1004">
+				<ShadingControlModel id="2001" displayName="Global horizontal sensor controller" sensorId="1004">
 					<IBK:Parameter name="MaxIntensity" unit="W/m2">500</IBK:Parameter>
 					<IBK:Parameter name="MinIntensity" unit="W/m2">200</IBK:Parameter>
 				</ShadingControlModel>
