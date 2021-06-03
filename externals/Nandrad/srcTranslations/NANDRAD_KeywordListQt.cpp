@@ -97,7 +97,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Constant supply temperature");
 	tr("Scheduled supply temperature");
 	tr("Medium supply temperature");
-	tr("Maximum mass flow through the pipe");
+	tr("Maximum mass flux through the pipe");
 	tr("Pipe length");
 	tr("Inner diameter of pipe");
 	tr("Length-specific U-Value of pipe wall incl. insulation");

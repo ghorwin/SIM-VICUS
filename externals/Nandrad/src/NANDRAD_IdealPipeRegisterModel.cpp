@@ -56,7 +56,7 @@ void IdealPipeRegisterModel::checkParameters(const std::vector<NANDRAD::Zone> &z
 												   std::numeric_limits<double>::max(), true,
 												   "Supply temperature must be >= 0 K.");
 		// check parameters
-		m_para[P_MaxMassFlow].checkedValue("MaxMassFlow", "kg/s", "kg/s",
+		m_para[P_MaxMassFlux].checkedValue("MaxMassFlux", "kg/s", "kg/s",
 												   0, false,
 												   std::numeric_limits<double>::max(), true,
 												   "Maximum mass flow must be > 0 kg/s.");

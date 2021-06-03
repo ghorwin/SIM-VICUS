@@ -93,7 +93,7 @@
 					<ThermostatZoneId>1</ThermostatZoneId>
 					<ConstructionObjectList>Floor</ConstructionObjectList>
 					<IBK:Parameter name="SupplyTemperature" unit="C">40</IBK:Parameter>
-					<IBK:Parameter name="MaxMassFlow" unit="kg/s">0.2</IBK:Parameter>
+					<IBK:Parameter name="MaxMassFlux" unit="kg/s">0.2</IBK:Parameter>
 					<IBK:Parameter name="PipeLength" unit="m">100</IBK:Parameter>
 					<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
 					<IBK:Parameter name="UValuePipeWall" unit="W/mK">5</IBK:Parameter>

@@ -52,7 +52,7 @@ public:
 	/*! Model parameters. */
 	enum para_t {
 		P_SupplyTemperature,		// Keyword: SupplyTemperature			[C]			'Medium supply temperature'
-		P_MaxMassFlow,				// Keyword: MaxMassFlow					[kg/s]		'Maximum mass flow through the pipe'
+		P_MaxMassFlux,				// Keyword: MaxMassFlux					[kg/s]		'Maximum mass flux through the pipe'
 		P_PipeLength,				// Keyword: PipeLength					[m]			'Pipe length'
 		P_PipeInnerDiameter,		// Keyword: PipeInnerDiameter			[mm]		'Inner diameter of pipe'
 		P_UValuePipeWall,			// Keyword: UValuePipeWall				[W/mK]		'Length-specific U-Value of pipe wall incl. insulation'

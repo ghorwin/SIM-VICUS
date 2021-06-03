@@ -98,7 +98,7 @@ void IdealPipeRegisterModel::initResults(const std::vector<AbstractModel *> &) {
 		m_supplyTemperatureRefs.resize(indexKeys.size(),
 								   &m_model->m_para[NANDRAD::IdealPipeRegisterModel::P_SupplyTemperature].value);
 		m_maxMassFlowRefs.resize(indexKeys.size(),
-								 &m_model->m_para[NANDRAD::IdealPipeRegisterModel::P_MaxMassFlow].value);
+								 &m_model->m_para[NANDRAD::IdealPipeRegisterModel::P_MaxMassFlux].value);
 	}
 
 }

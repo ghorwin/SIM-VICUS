@@ -310,7 +310,7 @@ namespace NANDRAD {
 			case 25 :
 			switch (t) {
 				case 0 : return "SupplyTemperature";
-				case 1 : return "MaxMassFlow";
+				case 1 : return "MaxMassFlux";
 				case 2 : return "PipeLength";
 				case 3 : return "PipeInnerDiameter";
 				case 4 : return "UValuePipeWall";
@@ -918,7 +918,7 @@ namespace NANDRAD {
 			case 25 :
 			switch (t) {
 				case 0 : return "SupplyTemperature";
-				case 1 : return "MaxMassFlow";
+				case 1 : return "MaxMassFlux";
 				case 2 : return "PipeLength";
 				case 3 : return "PipeInnerDiameter";
 				case 4 : return "UValuePipeWall";
@@ -1527,7 +1527,7 @@ namespace NANDRAD {
 			case 25 :
 			switch (t) {
 				case 0 : return "Medium supply temperature";
-				case 1 : return "Maximum mass flow through the pipe";
+				case 1 : return "Maximum mass flux through the pipe";
 				case 2 : return "Pipe length";
 				case 3 : return "Inner diameter of pipe";
 				case 4 : return "Length-specific U-Value of pipe wall incl. insulation";
