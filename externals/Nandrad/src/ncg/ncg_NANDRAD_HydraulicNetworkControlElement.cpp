@@ -82,9 +82,7 @@ void HydraulicNetworkControlElement::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "ThermostatZoneID")
-				m_thermostatZoneID = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "MaximumControllerResultValue")
+			if (cName == "MaximumControllerResultValue")
 				m_maximumControllerResultValue = NANDRAD::readPODElement<double>(c, cName);
 			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
@@ -100,7 +98,16 @@ void HydraulicNetworkControlElement::readXML(const TiXmlElement * element) {
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+				bool found = false;
+				for (int i=0; i<NUM_ID; ++i) {
+					if (cName == KeywordList::Keyword("HydraulicNetworkControlElement::References",i)) {
+						m_idReferences[i] = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
+						found = true;
+						break;
+					}
+				}
+				if (!found)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			c = c->NextSiblingElement();
 		}
@@ -122,8 +129,11 @@ TiXmlElement * HydraulicNetworkControlElement::writeXML(TiXmlElement * parent) c
 		e->SetAttribute("controllerType", KeywordList::Keyword("HydraulicNetworkControlElement::ControllerType",  m_controllerType));
 	if (m_controlledProperty != NUM_CP)
 		e->SetAttribute("controlledProperty", KeywordList::Keyword("HydraulicNetworkControlElement::ControlledProperty",  m_controlledProperty));
-	if (m_thermostatZoneID != NANDRAD::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "ThermostatZoneID", nullptr, std::string(), IBK::val2string<unsigned int>(m_thermostatZoneID));
+
+	for (int i=0; i<NUM_ID; ++i) {
+		if (m_idReferences[i] != NANDRAD::INVALID_ID)
+				TiXmlElement::appendSingleAttributeElement(e, KeywordList::Keyword("HydraulicNetworkControlElement::References",  i), nullptr, std::string(), IBK::val2string<unsigned int>(m_idReferences[i]));
+	}
 	TiXmlElement::appendSingleAttributeElement(e, "MaximumControllerResultValue", nullptr, std::string(), IBK::val2string<double>(m_maximumControllerResultValue));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {

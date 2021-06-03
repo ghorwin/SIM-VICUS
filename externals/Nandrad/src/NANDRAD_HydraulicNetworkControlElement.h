@@ -28,9 +28,11 @@ public:
 	/*! Controlled property used as signal input for the controller. */
 	enum ControlledProperty {
 		/*! Temperature difference is computed from pre-defined heat loss and compared against target temperature difference. */
-		CP_TemperatureDifference,		// Keyword: TemperatureDifference			'TemperatureDifference'
+		CP_TemperatureDifference,		// Keyword: TemperatureDifference			'Temperature difference'
 		/*! Thermostat heating/cooling control values determine whether valve is open or closed. */
 		CP_ThermostatValue,				// Keyword: ThermostatValue					'Zone thermostat control values'
+		/*! Try to achieve target mass flow in current element. */
+		CP_MassFlow,					// Keyword: MassFlow						'Target mass flow'
 		NUM_CP
 	};
 
@@ -46,8 +48,17 @@ public:
 		P_Kp,								// Keyword: Kp								[---]	'Kp-parameter'
 		P_Ki,								// Keyword: Ki								[---]	'Ki-parameter'
 		P_Kd,								// Keyword: Kd								[---]	'Kd-parameter'
-		P_TemperatureDifferenceSetpoint,	// Keyword: TemperatureDifferenceSetpoint	[K]		'Target temperature difference.'
+		P_TemperatureDifferenceSetpoint,	// Keyword: TemperatureDifferenceSetpoint	[K]		'Target temperature difference'
+		P_MassFlowSetpoint,					// Keyword: MassFlowSetpoint				[kg/s]	'Target mass flow'
 		NUM_P
+	};
+
+	/*! Integer/whole number parameters. */
+	enum References {
+		/*! Id of zone whose thermostat is used for control: only for controlled property 'ThermostatValue'. */
+		ID_ThermostatZoneId,				// Keyword: ThermostatZoneId				[-]		'ID of zone containing thermostat'
+		ID_ControlledElementId,				// Keyword: ControlledElementId				[-]		'ID of flow element that is controlled'
+		NUM_ID
 	};
 
 	IDType							m_id = NANDRAD::INVALID_ID;						// XML:A:required
@@ -58,15 +69,14 @@ public:
 	/*! property which shall be controlled (temperature difference, ...) */
 	ControlledProperty				m_controlledProperty = NUM_CP;					// XML:A:required
 
-	/*! Id of zone whose thermostat is used for control: only for controlled property 'ThermostatValue'. */
-	unsigned int					m_thermostatZoneID = NANDRAD::INVALID_ID;		// XML:E
+	/*! Integer/ID reference parameters. */
+	IDType							m_idReferences[NUM_ID];							// XML:E
 
 	/*! Used to cut the system input, if this is zero, it will not be considered	*/
 	double							m_maximumControllerResultValue = 0;				// XML:E
 
 	/*! Controller parameters. */
 	IBK::Parameter					m_para[NUM_P];									// XML:E
-
 };
 
 } // namespace NANDRAD

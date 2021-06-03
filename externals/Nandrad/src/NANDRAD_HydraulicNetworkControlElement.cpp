@@ -26,15 +26,21 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<NANDRAD::
 			} break;
 
 			case CP_ThermostatValue: {
-				if (m_thermostatZoneID == NANDRAD::INVALID_ID)
+				if (m_idReferences[ID_ThermostatZoneId] == NANDRAD::INVALID_ID)
 					throw IBK::Exception("Missing 'ThermostatZoneId' for controlled property 'ThermostatValue'!", FUNC_ID);
 
 				// check validity of thermostat zone
-				std::vector<NANDRAD::Zone>::const_iterator zone_it = std::find(zones.begin(), zones.end(), m_thermostatZoneID);
+				std::vector<NANDRAD::Zone>::const_iterator zone_it = std::find(zones.begin(), zones.end(), m_idReferences[ID_ThermostatZoneId]);
 
 				if (zone_it == zones.end())
 					throw IBK::Exception(IBK::FormatString("Invalid/undefined zone with '%1' in ThermostatZoneId.")
-										 .arg(m_thermostatZoneID), FUNC_ID);
+										 .arg(m_idReferences[ID_ThermostatZoneId]), FUNC_ID);
+			} break;
+
+			case CP_MassFlow : {
+				// we need mass flux, but > 0 (cannot set mass flux to zero)
+				m_para[P_MassFlowSetpoint].checkedValue("MassFlowSetpoint", "kg/s", "kg/s",
+																	 0, false, std::numeric_limits<double>::max(), false, nullptr);
 			} break;
 
 			case NUM_CP: break; // just to make compiler happy
