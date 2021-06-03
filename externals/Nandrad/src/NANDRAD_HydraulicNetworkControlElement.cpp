@@ -14,13 +14,13 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<NANDRAD::
 	if (m_controlledProperty == NUM_CP)
 		throw IBK::Exception("Missing attribute 'controlledProperty'.", FUNC_ID);
 
-	if (m_controllerType == NUM_CT)
-		throw IBK::Exception("Missing attribute 'controllerType'.", FUNC_ID);
-
 	try {
 		// check individual configuations for different controller properties
 		switch (m_controlledProperty) {
 			case CP_TemperatureDifference: {
+				if (m_controllerType == NUM_CT)
+					throw IBK::Exception("Missing attribute 'controllerType'.", FUNC_ID);
+
 				m_para[P_TemperatureDifferenceSetpoint].checkedValue("TemperatureDifferenceSetpoint", "K", "K",
 																	 0, false, std::numeric_limits<double>::max(), false, nullptr);
 			} break;

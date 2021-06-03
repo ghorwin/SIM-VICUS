@@ -53,7 +53,7 @@ public:
 	IDType							m_id = NANDRAD::INVALID_ID;						// XML:A:required
 
 	/*! Controller type (P, PI, ...) */
-	ControllerType					m_controllerType = NUM_CT;						// XML:A:required
+	ControllerType					m_controllerType = NUM_CT;						// XML:A
 
 	/*! property which shall be controlled (temperature difference, ...) */
 	ControlledProperty				m_controlledProperty = NUM_CP;					// XML:A:required

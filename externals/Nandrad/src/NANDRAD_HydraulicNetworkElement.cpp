@@ -153,10 +153,11 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 			// thermostat control is only allowed for pipes with temperature dependend heat exchange
 			switch(m_component->m_modelType ) {
 				case NANDRAD::HydraulicNetworkComponent::MT_SimplePipe:
+				case NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe:
 					break;
 				default:
-					throw IBK::Exception("HydraulicNetworkControlElement with type 'ThermostatValue' is only suppported for "
-									 "HydraulicNetworkComponent 'SimplePipe'!", FUNC_ID);
+					throw IBK::Exception("HydraulicNetworkControlElement with type 'ThermostatValue' is only supported for "
+									 "HydraulicNetworkComponent 'SimplePipe' and 'DynamicPipe'!", FUNC_ID);
 			}
 			// wrong heat exchange type
 			switch(m_heatExchange.m_modelType ) {
