@@ -1,0 +1,5 @@
+Network(id=1)	simple test
+NetworkElement(id=101)	Pump
+NetworkElement(id=201)	Pipe
+NetworkElement(id=301)	Control Valve
+NetworkElement(id=401)	Heat Pump

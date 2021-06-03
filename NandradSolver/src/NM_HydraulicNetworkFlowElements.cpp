@@ -220,41 +220,31 @@ HNPressureLossCoeffElement::HNPressureLossCoeffElement(unsigned int flowElementI
 }
 
 
-void HNPressureLossCoeffElement::modelQuantities(std::vector<QuantityDescription> & quantities) const{
-	if(m_controlElement == nullptr)
-		return;
-	// calculate zetaControlled value for valve
-	quantities.push_back(QuantityDescription("ControllerResultValue","---", "The calculated controller zeta value for the valve", false));
-	if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference)
-		quantities.push_back(QuantityDescription("TemperatureDifference","K", "The difference between inlet and outlet temperature", false));
-}
+void HNPressureLossCoeffElement::inputReferences(std::vector<InputReference> & inputRefs) const {
+	if (m_controlElement == nullptr)
+		return; 	// only handle input reference when there is a controller
 
-void HNPressureLossCoeffElement::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
-	if(m_controlElement == nullptr)
-		return;
-	// calculate zetaControlled value for valve
-	valRefs.push_back(&m_zetaControlled);
-	if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference)
-		valRefs.push_back(&m_temperatureDifference);
-}
+	switch (m_controlElement->m_controlledProperty) {
 
+		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference: {
+			InputReference ref;
+			ref.m_id = m_flowElementId;
+			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+			ref.m_name.m_name = "HeatExchangeHeatLoss";
+			ref.m_required = true;
+			inputRefs.push_back(ref);
+		} break;
 
-void HNPressureLossCoeffElement::inputReferences(std::vector<InputReference> & inputRefs) const
-{
-	// in the case of control add heat exchange spline value to input references
-	if(m_controlElement != nullptr) {
-		switch (m_controlElement->m_controlledProperty) {
+		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement: {
+			InputReference ref;
+			ref.m_id = m_followingflowElementId;
+			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+			ref.m_name.m_name = "FluidTemperature";
+			ref.m_required = true;
+			inputRefs.push_back(ref);
+		} break;
 
-			case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference: {
-				InputReference ref;
-				ref.m_id = m_flowElementId;
-				ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
-				ref.m_name.m_name = "HeatExchangeHeatLoss";
-				ref.m_required = true;
-				inputRefs.push_back(ref);
-			} break;
-			default: ;
-		}
+		default: ; // other control elements do not require inputs
 	}
 }
 
@@ -263,11 +253,41 @@ void HNPressureLossCoeffElement::setInputValueRefs(std::vector<const double*>::c
 	if (m_controlElement == nullptr)
 		return; 	// only handle input reference when there is a controller
 
-	IBK_ASSERT(m_controlElement->m_controlledProperty ==
-			NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference);
-	// now store the pointer returned for our input ref request and advance the iterator by one
-	m_heatExchangeHeatLossRef = *(resultValueRefs++); // Heat exchange value reference
+	switch (m_controlElement->m_controlledProperty) {
+		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference :
+			// now store the pointer returned for our input ref request and advance the iterator by one
+			m_heatExchangeHeatLossRef = *(resultValueRefs++); // Heat exchange value reference
+		break;
+
+		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement :
+			// now store the pointer returned for our input ref request and advance the iterator by one
+			m_followingFlowElementFluidTemperatureRef = *(resultValueRefs++); // Fluid temperature of following element
+		break;
+
+		default: ; // other control elements do not require inputs
+	}
 }
+
+
+void HNPressureLossCoeffElement::modelQuantities(std::vector<QuantityDescription> & quantities) const{
+	if (m_controlElement == nullptr)
+		return;
+	// calculate zetaControlled value for valve
+	quantities.push_back(QuantityDescription("ControllerResultValue","---", "The calculated controller zeta value for the valve", false));
+	if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference)
+		quantities.push_back(QuantityDescription("TemperatureDifference","K", "The difference between inlet and outlet temperature", false));
+}
+
+void HNPressureLossCoeffElement::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
+	if (m_controlElement == nullptr)
+		return;
+	// calculate zetaControlled value for valve
+	valRefs.push_back(&m_zetaControlled);
+	if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference)
+		valRefs.push_back(&m_temperatureDifference);
+}
+
+
 
 double HNPressureLossCoeffElement::systemFunction(double mdot, double p_inlet, double p_outlet) const {
 	// for negative mass flow: dp is negative
@@ -288,12 +308,25 @@ double HNPressureLossCoeffElement::zetaControlled(double mdot) const {
 	// calculate zetaControlled value for valve
 	switch (m_controlElement->m_controlledProperty) {
 
-		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference: {
+		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:
+		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement: {
 
-			IBK_ASSERT(m_heatExchangeHeatLossRef != nullptr);
-			// compute current temperature for given heat loss and mass flux
-			// Mind: access m_heatExchangeValueRef and not m_heatLoss here!
-			const double temperatureDifference = *m_heatExchangeHeatLossRef/(mdot*m_fluidHeatCapacity);
+			double temperatureDifference;
+			// -> CP_TemperatureDifference
+			if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference){
+				IBK_ASSERT(m_heatExchangeHeatLossRef != nullptr);
+				// compute current temperature for given heat loss and mass flux
+				// Mind: access m_heatExchangeValueRef and not m_heatLoss here!
+				temperatureDifference = *m_heatExchangeHeatLossRef/(mdot*m_fluidHeatCapacity);
+			}
+			// -> CP_TemperatureDifferenceOfFollowingElement
+			else {
+				// compute temperature difference of the following element. We already know that the node between this
+				// and the following element is not connected to any other flow element
+				IBK_ASSERT(m_followingFlowElementFluidTemperatureRef != nullptr);
+				temperatureDifference = (*m_fluidTemperatureRef - *m_followingFlowElementFluidTemperatureRef);
+			}
+
 			// if temperature difference is larger than the set point (negative e), we want maximum mass flux -> zeta = 0
 			// if temperature difference is smaller than the set point (positive e), we decrease mass flow by increasing zeta
 			const double e = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_TemperatureDifferenceSetpoint].value - temperatureDifference;
@@ -400,6 +433,13 @@ void HNPressureLossCoeffElement::updateResults(double mdot, double /*p_inlet*/, 
 			m_zetaControlled = zetaControlled(mdot);
 		} break;
 
+		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement: {
+			IBK_ASSERT(m_followingFlowElementFluidTemperatureRef != nullptr);
+			// compute current temperature difference of following element
+			m_temperatureDifference = (*m_fluidTemperatureRef - *m_followingFlowElementFluidTemperatureRef);
+			m_zetaControlled = zetaControlled(mdot);
+		} break;
+
 		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlux: // not a possible combination
 			m_zetaControlled = zetaControlled(mdot);
 		break;
@@ -412,7 +452,7 @@ void HNPressureLossCoeffElement::updateResults(double mdot, double /*p_inlet*/, 
 
 // *** HNConstantPressurePump ***
 
-HNConstantPressurePump::HNConstantPressurePump(unsigned int id, const NANDRAD::HydraulicNetworkComponent &component)  :
+HNConstantPressurePump::HNConstantPressurePump(unsigned int id, const NANDRAD::HydraulicNetworkComponent &component) :
 	m_id(id)
 {
 	m_pressureHead = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value;

@@ -119,11 +119,49 @@ void HydraulicNetworkModel::setup() {
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot :
 			case NANDRAD::HydraulicNetworkComponent::MT_ControlledValve:
 			{
+
 				// Note: we have already checked that no controller is configured for HeatPumpIdealCarnot
 
 				// create pressure loss flow element - controller is set up later
-				HNPressureLossCoeffElement * hxElement = new HNPressureLossCoeffElement(e.m_id, *e.m_component, m_hydraulicNetwork->m_fluid, e.m_controlElement);
-				m_p->m_flowElements.push_back(hxElement); // transfer ownership
+				HNPressureLossCoeffElement * pressLossCoeffelement = new HNPressureLossCoeffElement(e.m_id, *e.m_component, m_hydraulicNetwork->m_fluid, e.m_controlElement);
+
+
+				// TODO Andreas / Anne: geht das woanders effizienter ?
+
+				// find the following flow element and make sure the node in between is only connected to this and the following element
+				if (e.m_controlElement != nullptr){
+					if (e.m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement){
+						// make sure there is not another element with the same outlet id
+						//(then our outlet temperature would not be equal to the next elements inlet temperature)
+						for (const NANDRAD::HydraulicNetworkElement & otherElems : m_hydraulicNetwork->m_elements) {
+							if (e.m_outletNodeId == otherElems.m_outletNodeId && e.m_id != otherElems.m_id )
+								throw IBK::Exception(IBK::FormatString("The element with id #%1 has a controller that has controlledProperty '%2'."
+																	   "This element can not be connected in parallel to any other element (share the same outletNodeId)")
+													 .arg(e.m_id)
+													 .arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkControlElement::ControlledProperty", e.m_controlElement->m_controlledProperty)),
+													 FUNC_ID);
+						}
+						// make sure there is only one following element (not another one in parallel)
+						unsigned int followingElementId = 0;
+						for (const NANDRAD::HydraulicNetworkElement & otherElems : m_hydraulicNetwork->m_elements) {
+							if (e.m_outletNodeId == otherElems.m_inletNodeId){
+								if (followingElementId != 0)
+									// there can not be two following flow elements in parallel (with same inletNodeId)
+									throw IBK::Exception(IBK::FormatString("The element with id #%1 has a controller that has controlledProperty '%2'."
+																		   "The follwoing element can not be connected in parallel to any other element (share the same inletNodeId)")
+														 .arg(e.m_id)
+														 .arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkControlElement::ControlledProperty", e.m_controlElement->m_controlledProperty)),
+														 FUNC_ID);
+								else
+									followingElementId = otherElems.m_id;
+							}
+						}
+						pressLossCoeffelement->m_followingflowElementId = followingElementId;
+					}
+				}
+
+				m_p->m_flowElements.push_back(pressLossCoeffelement); // transfer ownership
+
 			} break;
 
 			case NANDRAD::HydraulicNetworkComponent::NUM_MT: {

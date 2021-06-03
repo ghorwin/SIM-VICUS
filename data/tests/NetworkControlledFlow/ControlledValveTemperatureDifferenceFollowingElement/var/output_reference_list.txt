@@ -1,0 +1,58 @@
+Variable name                                     	Source object id(s) 	Vector indexes/ids  	Unit      	Description
+Location.AirPressure                              	0                   	                    	Pa        	Air pressure.
+Location.Albedo                                   	0                   	                    	---       	Albedo value of the surrounding [0..1].
+Location.AzimuthAngle                             	0                   	                    	Deg       	Solar azimuth (0 - north).
+Location.CO2Concentration                         	0                   	                    	---       	Ambient CO2 concentration.
+Location.CO2Density                               	0                   	                    	kg/m3     	Ambient CO2 density.
+Location.DeclinationAngle                         	0                   	                    	Deg       	Solar declination (0 - north).
+Location.ElevationAngle                           	0                   	                    	Deg       	Solar elevation (0 - at horizont, 90 - directly above).
+Location.LWSkyRadiation                           	0                   	                    	W/m2      	Long wave sky radiation.
+Location.Latitude                                 	0                   	                    	Deg       	Latitude.
+Location.Longitude                                	0                   	                    	Deg       	Longitude.
+Location.MoistureDensity                          	0                   	                    	kg/m3     	Ambient moisture density.
+Location.RelativeHumidity                         	0                   	                    	%         	Relative humidity.
+Location.SWRadDiffuseHorizontal                   	0                   	                    	W/m2      	Diffuse short-wave radiation flux density on horizontal surface.
+Location.SWRadDirectNormal                        	0                   	                    	W/m2      	Direct short-wave radiation flux density in normal direction.
+Location.Temperature                              	0                   	                    	C         	Outside temperature.
+Location.VaporPressure                            	0                   	                    	Pa        	Ambient vapor pressure.
+Location.WindDirection                            	0                   	                    	Deg       	Wind direction (0 - north).
+Location.WindVelocity                             	0                   	                    	m/s       	Wind velocity.
+Network.FluidMassFluxes                           	1                   	101,201,301,401     	kg/s      	Fluid mass flux trough all flow elements
+NetworkElement.COP                                	401                 	                    	---       	Coefficient of performance for heat pump
+NetworkElement.CondenserHeatFlux                  	401                 	                    	W         	Heat Flux at condenser side of heat pump
+NetworkElement.CondenserMeanTemperature           	401                 	                    	C         	Mean temperature at condenser side of heat pump
+NetworkElement.CondenserMeanTemperatureSchedule   	401                 	                    	C         	Schedule parameter: 'CondenserMeanTemperatureSchedule'
+NetworkElement.ControllerResultValue              	301                 	                    	---       	The calculated controller zeta value for the valve
+NetworkElement.ElectricalPower                    	101,401             	                    	W         	Requested electrical power for current working point
+NetworkElement.EvaporatorHeatFlux                 	401                 	                    	W         	Heat Flux at evaporator side of heat pump
+NetworkElement.EvaporatorMeanTemperature          	401                 	                    	C         	Mean temperature at evaporator side of heat pump
+NetworkElement.FlowElementHeatLoss                	101,201,401         	                    	W         	Heat flux from flow element into environment
+NetworkElement.FluidMassFlux                      	101,201,301,401     	                    	kg/s      	Fluid mass flux through a flow element
+NetworkElement.FluidTemperature                   	101,201,301,401     	                    	C         	Internal fluid temperature of network element
+NetworkElement.FluidVelocity                      	201                 	                    	m/s       	Fluid velocity
+NetworkElement.FluidViscosity                     	201                 	                    	m2/s      	Fluid dynamic viscosity
+NetworkElement.FluidVolumeFlow                    	201                 	                    	m3/h      	Fluid volume flow
+NetworkElement.HeatExchangeHeatLossCondenser      	401                 	                    	W         	Pre-described heat loss at condenser of heat pump.
+NetworkElement.InletNodePressure                  	101,201,301,401     	                    	Pa        	Fluid pressure at inlet node of a flow element
+NetworkElement.InletNodeTemperature               	101,201,301,401     	                    	C         	Inlet node temperature of a flow element
+NetworkElement.MechanicalPower                    	101                 	                    	W         	Mechanical power for current working point
+NetworkElement.Nusselt                            	201                 	                    	---       	Nusselt number
+NetworkElement.OutletNodePressure                 	101,201,301,401     	                    	Pa        	Fluid pressure at outlet node of a flow element
+NetworkElement.OutletNodeTemperature              	101,201,301,401     	                    	C         	Outlet node temperature of a flow element
+NetworkElement.Prandtl                            	201                 	                    	---       	Prandtl number
+NetworkElement.PressureDifference                 	101,201,301,401     	                    	Pa        	Fluid pressure difference over a flow element
+NetworkElement.Reynolds                           	201                 	                    	---       	Reynolds number
+NetworkElement.ThermalTransmittance               	201                 	                    	W/K       	Total thermal transmittance of fluid and pipe wall
+Zone.AirTemperature                               	1                   	                    	C         	Room air temperature.
+Zone.CompleteThermalLoad                          	1                   	                    	W         	Sum of all thermal fluxes into the room and energy sources
+Zone.ConstructionHeatConductionLoad               	1                   	                    	W         	Sum of heat conduction fluxes from construction surfaces into the room
+Zone.ConvectiveEquipmentHeatLoad                  	1                   	                    	W         	Equipment heat load inside the room
+Zone.ConvectiveLightingHeatLoad                   	1                   	                    	W         	Lighting heat load inside the room
+Zone.ConvectivePersonHeatLoad                     	1                   	                    	W         	Person heat load inside the room
+Zone.IdealCoolingLoad                             	1                   	                    	W         	Ideal cooling load (positive)
+Zone.IdealHeatingLoad                             	1                   	                    	W         	Ideal heating load
+Zone.NetworkHeatLoad                              	1                   	                    	W         	Sum of heat load from components of a hydraulic network into the room (only the fraction applied to room volume)
+Zone.OperativeTemperature                         	1                   	                    	C         	Operative temperature
+Zone.VentilationHeatLoad                          	1                   	                    	W         	Natural ventilation/infiltration heat flux into the room
+Zone.WindowHeatConductionLoad                     	1                   	                    	W         	Sum of heat conduction fluxes through windows into the room
+Zone.WindowSolarRadiationLoad                     	1                   	                    	W         	Sum of solar radiation fluxes through windows into the room (only the fraction applied to room volume)

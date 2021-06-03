@@ -158,6 +158,10 @@ public:
 	*/
 	virtual void updateResults(double mdot, double p_inlet, double p_outlet) override;
 
+	/*! Id number of following flow element. This is used to obtain the outlet temperature of the follwing
+	flow element in order to control e.g. its temperature difference */
+	unsigned int					m_followingflowElementId = NANDRAD::INVALID_ID;
+
 private:
 	/*! Computes the controlled zeta-value if a control-model is implemented.
 		Otherwise returns 0.
@@ -193,6 +197,9 @@ private:
 
 	/*! Value reference to external quantity. */
 	const double					*m_heatExchangeHeatLossRef = nullptr;
+
+	/*! Value reference to external quantity. */
+	const double					*m_followingFlowElementFluidTemperatureRef = nullptr;
 
 	friend class ThermalNetworkStatesModel;
 
