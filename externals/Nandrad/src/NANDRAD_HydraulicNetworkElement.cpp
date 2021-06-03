@@ -134,20 +134,41 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 		// set pointer to control element
 		m_controlElement = &(*ctit);
 
-		switch (ctit->m_controlledProperty) {
-			case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference : {
-				// first check for mandatory/allowed heat exchange types
-				switch(m_heatExchange.m_modelType ) {
-					case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
-					break;
-					default:
-						throw IBK::Exception(IBK::FormatString("Only HeatExchangeType 'HeatLossSpline' or 'HeatLossSplineCondenser' "
-															   "is allowed in combination with HydraulicNetworkController property "
-															   "'TemperatureDifference'!"), FUNC_ID);
+		// get avaiable controlledProperties
+		std::vector<NANDRAD::HydraulicNetworkControlElement::ControlledProperty> availableProps =
+				NANDRAD::HydraulicNetworkControlElement::availableControlledProperties(m_component->m_modelType);
+
+		// check if given controlledProperty is allowed
+		if (std::find(availableProps.begin(), availableProps.end(), m_controlElement->m_controlledProperty) == availableProps.end()) {
+				throw IBK::Exception(IBK::FormatString("Given ControlledProperty '%1' is not allowed for component '%2' with id #%3!")
+									 .arg(KeywordList::Keyword("HydraulicNetworkControlElement::ControlledProperty", m_controlElement->m_controlledProperty))
+									 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_component->m_modelType))
+									 .arg(m_componentId), FUNC_ID);
+		}
+
+
+		// check if it can be combined with given heat exchange type
+		switch (m_component->m_modelType){
+			// simple pipe can only be controlled when there is heat exchange with construction layer or zone
+			case NANDRAD::HydraulicNetworkComponent::MT_SimplePipe:{
+				if ( !(	m_heatExchange.m_modelType == NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer
+				|| m_heatExchange.m_modelType == NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureZone)){
+					throw IBK::Exception(IBK::FormatString("Given ControlledProperty '%1' is not allowed in combination with "
+														   "'%2' for component '%3' with id #%4!")
+										 .arg(KeywordList::Keyword("HydraulicNetworkControlElement::ControlledProperty", m_controlElement->m_controlledProperty))
+										 .arg(KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", m_heatExchange.m_modelType))
+										 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_component->m_modelType))
+										 .arg(m_componentId), FUNC_ID);
 				}
 			} break;
-
-			// TODO : Hauke
+			// no sepcial requirements for the other models. The availble heat exchange types they have can all be combined
+			// with available controlled properties
+			case NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe:
+			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger:
+			case NANDRAD::HydraulicNetworkComponent::MT_ControlledValve:
+			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:
+			case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump:
+				break;
 		}
 	}
 

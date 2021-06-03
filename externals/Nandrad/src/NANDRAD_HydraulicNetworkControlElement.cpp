@@ -71,4 +71,26 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<NANDRAD::
 	}
 }
 
+
+
+std::vector<HydraulicNetworkControlElement::ControlledProperty> HydraulicNetworkControlElement::availableControlledProperties(
+																	const HydraulicNetworkComponent::ModelType modelType)
+{
+	switch (modelType) {
+		case HydraulicNetworkComponent::MT_SimplePipe:
+			return {CP_ThermostatValue};
+		case HydraulicNetworkComponent::MT_HeatExchanger:
+			return {CP_TemperatureDifference};
+		case HydraulicNetworkComponent::MT_ControlledValve:
+			return {CP_MassFlux, CP_TemperatureDifferenceOfFollowingElement};
+		case HydraulicNetworkComponent::MT_ConstantPressurePump:
+			// we could control mass flux here as well ...
+		case HydraulicNetworkComponent::MT_DynamicPipe:
+		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:
+		case HydraulicNetworkComponent::NUM_MT:		// just for compiler
+			return {};
+	}
+}
+
+
 } // namespace NANDRAD
