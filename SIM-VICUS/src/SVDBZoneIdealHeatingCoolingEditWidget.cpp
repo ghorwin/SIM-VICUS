@@ -77,8 +77,12 @@ void SVDBZoneIdealHeatingCoolingEditWidget::updateInput(int id) {
 		m_ui->lineEditName->setString(IBK::MultiLanguageString());
 		m_ui->lineEditHeatingLimit->setText("");
 		m_ui->lineEditCoolingLimit->setText("");
+		m_ui->checkBoxHeatingLimit->blockSignals(true);
 		m_ui->checkBoxHeatingLimit->setChecked(false);
+		m_ui->checkBoxHeatingLimit->blockSignals(false);
+		m_ui->checkBoxCoolingLimit->blockSignals(true);
 		m_ui->checkBoxCoolingLimit->setChecked(false);
+		m_ui->checkBoxCoolingLimit->blockSignals(false);
 		return;
 	}
 
@@ -126,7 +130,7 @@ void SVDBZoneIdealHeatingCoolingEditWidget::on_lineEditName_editingFinished() {
 		m_current->m_displayName = m_ui->lineEditName->string();
 		modelModify();
 	}
-	updateInput(m_current->m_id);
+	updateInput((int)m_current->m_id);
 }
 
 void SVDBZoneIdealHeatingCoolingEditWidget::on_lineEditHeatingLimit_editingFinished() {
@@ -143,7 +147,7 @@ void SVDBZoneIdealHeatingCoolingEditWidget::on_lineEditHeatingLimit_editingFinis
 			modelModify();
 		}
 	}
-	updateInput(m_current->m_id);
+	updateInput((int)m_current->m_id);
 }
 
 void SVDBZoneIdealHeatingCoolingEditWidget::on_lineEditCoolingLimit_editingFinished() {
@@ -160,7 +164,7 @@ void SVDBZoneIdealHeatingCoolingEditWidget::on_lineEditCoolingLimit_editingFinis
 			modelModify();
 		}
 	}
-	updateInput(m_current->m_id);
+	updateInput((int)m_current->m_id);
 }
 
 void SVDBZoneIdealHeatingCoolingEditWidget::modelModify() {
@@ -169,11 +173,12 @@ void SVDBZoneIdealHeatingCoolingEditWidget::modelModify() {
 }
 
 void SVDBZoneIdealHeatingCoolingEditWidget::on_pushButtonColor_colorChanged() {
+	Q_ASSERT(m_current != nullptr);
 	if (m_current->m_color != m_ui->pushButtonColor->color()) {
 		m_current->m_color = m_ui->pushButtonColor->color();
 		modelModify();
 	}
-	updateInput(m_current->m_id);
+	updateInput((int)m_current->m_id);
 }
 
 void SVDBZoneIdealHeatingCoolingEditWidget::on_checkBoxHeatingLimit_toggled(bool checked) {
@@ -189,7 +194,7 @@ void SVDBZoneIdealHeatingCoolingEditWidget::on_checkBoxHeatingLimit_toggled(bool
 	else
 		m_current->m_para[paraName].clear();
 	modelModify();
-	updateInput(m_current->m_id);
+	updateInput((int)m_current->m_id);
 }
 
 void SVDBZoneIdealHeatingCoolingEditWidget::on_checkBoxCoolingLimit_toggled(bool checked) {
@@ -205,5 +210,5 @@ void SVDBZoneIdealHeatingCoolingEditWidget::on_checkBoxCoolingLimit_toggled(bool
 	else
 		m_current->m_para[paraName].clear();
 	modelModify();
-	updateInput(m_current->m_id);
+	updateInput((int)m_current->m_id);
 }
