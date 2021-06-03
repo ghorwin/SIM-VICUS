@@ -110,10 +110,16 @@
 						<IBK:Parameter name="PipeOuterDiameter" unit="mm">32</IBK:Parameter>
 						<IBK:Parameter name="UValuePipeWall" unit="W/mK">5</IBK:Parameter>
 					</HydraulicNetworkPipeProperties>
+					<HydraulicNetworkPipeProperties id="10">
+						<IBK:Parameter name="PipeRoughness" unit="mm">0.007</IBK:Parameter>
+						<IBK:Parameter name="PipeInnerDiameter" unit="mm">1000</IBK:Parameter>
+						<IBK:Parameter name="PipeOuterDiameter" unit="mm">1001</IBK:Parameter>
+						<IBK:Parameter name="UValuePipeWall" unit="W/mK">1000</IBK:Parameter>
+					</HydraulicNetworkPipeProperties>
 				</PipeProperties>
 				<Components>
 					<HydraulicNetworkComponent id="1" displayName="pump" modelType="ConstantPressurePump">
-						<IBK:Parameter name="PressureHead" unit="Pa">20000</IBK:Parameter>
+						<IBK:Parameter name="PressureHead" unit="Pa">10000</IBK:Parameter>
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
 					</HydraulicNetworkComponent>
@@ -124,7 +130,7 @@
 				<ControlElements>
 					<HydraulicNetworkControlElement id="1" controlledProperty="ThermostatValue">
 						<ThermostatZoneId>1</ThermostatZoneId>
-						<MaximumControllerResultValue>1e+06</MaximumControllerResultValue>
+						<MaximumControllerResultValue>1e+08</MaximumControllerResultValue>
 					</HydraulicNetworkControlElement>
 				</ControlElements>
 
@@ -139,8 +145,8 @@
 						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
 
-					<HydraulicNetworkElement id="3" inletNodeId="101" outletNodeId="100" componentId="2" pipePropertiesId="9" displayName="pipe">
-						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+					<HydraulicNetworkElement id="3" inletNodeId="101" outletNodeId="100" componentId="2" pipePropertiesId="10" displayName="pipe">
+						<IBK:Parameter name="Length" unit="m">1000</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="TemperatureConstant">
 							<IBK:Parameter name="Temperature" unit="C">40</IBK:Parameter>
 							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">1e10</IBK:Parameter>
@@ -210,6 +216,12 @@
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				
+				<OutputDefinition>
+					<Quantity>FluidTemperature</Quantity>
+					<ObjectListName>Pump</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
 			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
@@ -222,6 +234,10 @@
 			</Grids>
 		</Outputs>
 		<ObjectLists>
+			<ObjectList name="Pump">
+				<FilterID>1</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
+			</ObjectList>
 			<ObjectList name="Surface Heating">
 				<FilterID>2</FilterID>
 				<ReferenceType>NetworkElement</ReferenceType>
