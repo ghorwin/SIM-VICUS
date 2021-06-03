@@ -157,7 +157,7 @@
 			<IdealSurfaceHeatingCoolingModels>
 				<IdealSurfaceHeatingCoolingModel id="701">
 					<!-- Use thermostat in zone 1 for control of heating for zone 1-->
-					<ThermostatZoneID>1</ThermostatZoneID>
+					<ThermostatZoneId>1</ThermostatZoneId>
 					<ConstructionObjectList>Ground Floor</ConstructionObjectList>
 					<!-- Maximum heating power per construction/surface area, here: 10 m2 * 150 W/m2 = 1500 W -->
 					<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">150</IBK:Parameter>
@@ -167,7 +167,7 @@
 			<IdealSurfaceHeatingCoolingModels>
 				<IdealSurfaceHeatingCoolingModel id="702">
 					<!-- Use thermostat in zone 2 for control -->
-					<ThermostatZoneID>2</ThermostatZoneID>
+					<ThermostatZoneId>2</ThermostatZoneId>
 					<ConstructionObjectList>Upper Floor</ConstructionObjectList>
 					<!-- Maximum heating power per construction/surface area, here: 5 m2 * 150 W/m2 = 750 W -->
 					<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">150</IBK:Parameter>

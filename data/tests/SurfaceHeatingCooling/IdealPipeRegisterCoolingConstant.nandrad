@@ -90,7 +90,7 @@
 
 			<IdealPipeRegisterModels>
 				<IdealPipeRegisterModel id="701" modelType="Constant">
-					<ThermostatZoneID>1</ThermostatZoneID>
+					<ThermostatZoneId>1</ThermostatZoneId>
 					<ConstructionObjectList>Floor</ConstructionObjectList>
 					<IBK:Parameter name="SupplyTemperature" unit="C">8</IBK:Parameter>
 					<IBK:Parameter name="MaxMassFlow" unit="kg/s">0.2</IBK:Parameter>
