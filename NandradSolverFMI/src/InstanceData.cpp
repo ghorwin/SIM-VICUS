@@ -319,10 +319,10 @@ void InstanceData::integrateTo(double tCommunicationIntervalEnd) {
 
 
 void InstanceData::computeFMUStateSize() {
+#if 0
 	const char * const FUNC_ID = "[InstanceData::computeFMUStateSize]";
 	IBK_ASSERT(!m_modelExchange);
 
-#if 0
 
 	// ask all components of the integration framework for size
 	SOLFRA::ModelInterface * modelInterface = m_model.modelInterface();

@@ -52,10 +52,37 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 																	   true, nullptr);
 			} break;
 
-			case T_HeatLossConstant: {
-				// check heat flux
-				m_para[P_HeatLoss].checkedValue("HeatLoss", "W", "W",
-												std::numeric_limits<double>::lowest(), false, std::numeric_limits<double>::max(), false, nullptr);
+
+			case T_TemperatureSpline: {
+				// replace place holders
+				m_splPara[SPL_Temperature].m_tsvFile = m_splPara[SPL_Temperature].m_tsvFile.withReplacedPlaceholders(placeholders);
+				try {
+					//  check the spline and convert it to base units automatically
+					m_splPara[SPL_Temperature].checkAndInitialize("Temperature", IBK::Unit("s"), IBK::Unit("K"),
+																  IBK::Unit("K"), 0, false, std::numeric_limits<double>::max(), false,
+																  "Temperature must be > 0 K.");
+				} catch (IBK::Exception &ex) {
+					throw IBK::Exception(ex, IBK::FormatString("Error initializing spline 'Temperature'."), FUNC_ID);
+				}
+
+				// check for external heat transfer coefficient
+				m_para[P_ExternalHeatTransferCoefficient].checkedValue("ExternalHeatTransferCoefficient",
+																	   "W/m2K", "W/m2K", 0, false,
+																	   std::numeric_limits<double>::max(),
+																	   true, nullptr);
+			} break;
+
+			case T_TemperatureSplineEvaporator : {
+				// replace place holders
+				m_splPara[SPL_Temperature].m_tsvFile = m_splPara[SPL_Temperature].m_tsvFile.withReplacedPlaceholders(placeholders);
+				try {
+					//  check the spline and convert it to base units automatically
+					m_splPara[SPL_Temperature].checkAndInitialize("Temperature", IBK::Unit("s"), IBK::Unit("K"),
+																  IBK::Unit("K"), 0, false, std::numeric_limits<double>::max(), false,
+																  "Temperature must be > 0 K.");
+				} catch (IBK::Exception &ex) {
+					throw IBK::Exception(ex, IBK::FormatString("Error initializing spline 'Temperature'."), FUNC_ID);
+				}
 			} break;
 
 			case T_TemperatureZone: {
@@ -75,8 +102,26 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 																	   true, nullptr);
 			} break;
 
-			case T_HeatLossSplineCondenser:
-			case T_HeatLossSpline: {
+			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer: {
+				// check for construction instance id
+				unsigned int conInstanceId = m_idReferences[ID_ConstructionInstanceId];
+				// check for construction instance id
+				if (conInstanceId == INVALID_ID)
+					throw IBK::Exception(IBK::FormatString("Missing ID reference 'ConstructionInstanceId'."), FUNC_ID);
+				// find zone id
+				if (std::find(conInstances.begin(), conInstances.end(), conInstanceId) == conInstances.end())
+					throw IBK::Exception(IBK::FormatString("ConstructionInstance with id %1 does not exist.").arg(conInstanceId), FUNC_ID);
+			}
+			break;
+
+			case T_HeatLossConstant: {
+				// check heat flux
+				m_para[P_HeatLoss].checkedValue("HeatLoss", "W", "W",
+												std::numeric_limits<double>::lowest(), false, std::numeric_limits<double>::max(), false, nullptr);
+			} break;
+
+			case T_HeatLossSpline:
+			case T_HeatLossSplineCondenser: {
 				// replace place holders
 				m_splPara[SPL_HeatLoss].m_tsvFile = m_splPara[SPL_HeatLoss].m_tsvFile.withReplacedPlaceholders(placeholders);
 				try {
@@ -90,43 +135,6 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 				}
 
 			} break;
-
-			case T_TemperatureSpline: {
-				// replace place holders
-				m_splPara[SPL_Temperature].m_tsvFile = m_splPara[SPL_Temperature].m_tsvFile.withReplacedPlaceholders(placeholders);
-				try {
-					//  check the spline and convert it to base units automatically
-					m_splPara[SPL_Temperature].checkAndInitialize("Temperature", IBK::Unit("s"), IBK::Unit("K"),
-																  IBK::Unit("K"), 0, false, std::numeric_limits<double>::max(), false,
-																  "Temperature must be > 0 K.");
-				} catch (IBK::Exception &ex) {
-					throw IBK::Exception(ex, IBK::FormatString("Error initializing spline 'Temperature'."), FUNC_ID);
-				}
-
-				// replace place holders
-				m_splPara[SPL_Temperature].m_tsvFile = m_splPara[SPL_Temperature].m_tsvFile.withReplacedPlaceholders(placeholders);
-				// check for external heat transfer coefficient
-				m_para[P_ExternalHeatTransferCoefficient].checkedValue("ExternalHeatTransferCoefficient",
-																	   "W/m2K", "W/m2K", 0, false,
-																	   std::numeric_limits<double>::max(),
-																	   true, nullptr);
-			} break;
-
-			case T_TemperatureFMUInterface:
-				// TODO : Andreas
-				throw IBK::Exception(IBK::FormatString("Heat exchange type 'TemperatureFMUInterface' is not supported, yet!"), FUNC_ID);
-
-			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer: {
-				// check for construction instance id
-				unsigned int conInstanceId = m_idReferences[ID_ConstructionInstanceId];
-				// check for construction instance id
-				if (conInstanceId == INVALID_ID)
-					throw IBK::Exception(IBK::FormatString("Missing ID reference 'ConstructionInstanceId'."), FUNC_ID);
-				// find zone id
-				if (std::find(conInstances.begin(), conInstances.end(), conInstanceId) == conInstances.end())
-					throw IBK::Exception(IBK::FormatString("ConstructionInstance with id %1 does not exist.").arg(conInstanceId), FUNC_ID);
-			}
-			break;
 
 			case NUM_T:
 				// No thermal exchange, nothing to initialize
@@ -143,7 +151,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 
 
 
-std::vector<unsigned int> NANDRAD::HydraulicNetworkHeatExchange::availableHeatExchangeTypes(
+std::vector<HydraulicNetworkHeatExchange::ModelType> NANDRAD::HydraulicNetworkHeatExchange::availableHeatExchangeTypes(
 		const NANDRAD::HydraulicNetworkComponent::ModelType modelType)
 {
 	// some models may be adiabatic, hence we also return NUM_T as available heat exchange type
@@ -153,12 +161,11 @@ std::vector<unsigned int> NANDRAD::HydraulicNetworkHeatExchange::availableHeatEx
 		case HydraulicNetworkComponent::MT_DynamicPipe:
 			return {NUM_T, T_TemperatureConstant, T_TemperatureSpline, T_HeatLossConstant, T_HeatLossSpline, T_TemperatureZone, T_TemperatureConstructionLayer};
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:
-			return {T_HeatLossSplineCondenser};  // must not be adiabatic
+			return {T_HeatLossSplineCondenser, T_TemperatureSplineEvaporator};  // must not be adiabatic
 		case HydraulicNetworkComponent::MT_HeatExchanger:
 			return {T_HeatLossConstant, T_HeatLossSpline}; // must not be adiabatic
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
-			return {NUM_T};
-		case HydraulicNetworkComponent::MT_ConstantMassFluxPump:
+		case HydraulicNetworkComponent::MT_ControlledValve:
 			return {NUM_T};
 		case HydraulicNetworkComponent::NUM_MT: ; // just to make compiler happy
 	}

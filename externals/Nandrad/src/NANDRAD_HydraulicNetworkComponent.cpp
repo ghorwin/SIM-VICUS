@@ -80,8 +80,6 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 		switch (modelType) {
 			case MT_ConstantPressurePump:
 				return {P_PressureHead};
-			case MT_ConstantMassFluxPump:
-				return {P_MassFlux};
 			case MT_HeatPumpIdealCarnot:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter};
 			case MT_HeatExchanger:
@@ -90,6 +88,8 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 				return {P_PipeMaxDiscretizationWidth};
 			case MT_SimplePipe:
 				return {};
+			case MT_ControlledValve:
+				return {P_PressureLossCoefficient, P_HydraulicDiameter};
 			case NUM_MT:
 				return {};
 		}
@@ -99,8 +99,6 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 		switch (modelType) {
 			case MT_ConstantPressurePump:
 				return {P_PressureHead, P_PumpEfficiency, P_Volume};
-			case MT_ConstantMassFluxPump:
-				return {P_MassFlux, P_PumpEfficiency, P_Volume};
 			case MT_HeatPumpIdealCarnot:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume, P_CarnotEfficiency, P_MaximumHeatingPower};
 			case MT_HeatExchanger:
@@ -109,6 +107,8 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 				return {P_PipeMaxDiscretizationWidth};
 			case MT_SimplePipe:
 				return {};
+			case MT_ControlledValve:
+				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
 			case NUM_MT: ;
 		}
 	}
@@ -140,11 +140,6 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 		// value can be negative
 		case P_PressureHead: {
 			para.checkedValue(name, unit, unit, std::numeric_limits<double>::lowest(), true,
-							  std::numeric_limits<double>::max(), true, nullptr);
-			break;
-		}
-		case P_MassFlux: {
-			para.checkedValue(name, unit, unit, 0, true,
 							  std::numeric_limits<double>::max(), true, nullptr);
 			break;
 		}

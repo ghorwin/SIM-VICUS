@@ -28,7 +28,7 @@
 			<HydraulicNetwork id="1" displayName="simple test" modelType="HydraulicNetwork" referenceElementId="201">
 				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
 				<IBK:Parameter name="DefaultFluidTemperature" unit="C">20</IBK:Parameter>
-				<HydraulicFluid id="1" displayName="Water">
+				<HydraulicFluid displayName="Water">
 					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
@@ -49,19 +49,30 @@
 					<HydraulicNetworkComponent id="1" modelType="ConstantPressurePump">
 						<IBK:Parameter name="PressureHead" unit="Pa">1000</IBK:Parameter>
 					</HydraulicNetworkComponent>
-					<HydraulicNetworkComponent id="2" modelType="HeatExchanger">
+					<HydraulicNetworkComponent id="2" modelType="ControlledValve">
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PressureLossCoefficient" unit="---">5</IBK:Parameter>
 					</HydraulicNetworkComponent>
-					<HydraulicNetworkComponent id="3" modelType="SimplePipe">
-					</HydraulicNetworkComponent>
+					<HydraulicNetworkComponent id="3" modelType="SimplePipe"/>
 				</Components>
+
+				<ControlElements>
+					<!-- We have a mass flux controller that closes the valve if the mass flux through the element
+						 exceeds the given limit of 0.02 kg/s -->
+					<HydraulicNetworkControlElement id="1" controlledProperty="MassFlux" controllerType="PController" >
+						<IBK:Parameter name="Kp" unit="---">1e7</IBK:Parameter>
+						<IBK:Parameter name="MassFluxSetpoint" unit="kg/s">0.02</IBK:Parameter>
+						<!-- Deactivate upper limit of controller result value - this is the default and could be omitted -->
+						<MaximumControllerResultValue>0</MaximumControllerResultValue>
+					</HydraulicNetworkControlElement>
+				</ControlElements>
+
 				<Elements>
-					<HydraulicNetworkElement id="201" inletNodeId="2" outletNodeId="1" componentId="1" displayName="Pump" />
+					<HydraulicNetworkElement id="201" inletNodeId="1" outletNodeId="2" componentId="1" displayName="Pump" />
 					<HydraulicNetworkElement id="101" inletNodeId="2" outletNodeId="3" componentId="3" pipePropertiesId="1">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 					</HydraulicNetworkElement>
-					<HydraulicNetworkElement id="301" inletNodeId="3" outletNodeId="4" componentId="2" displayName="Heat Exchanger"/>
+					<HydraulicNetworkElement id="301" inletNodeId="3" outletNodeId="4" componentId="2" controlElementId="1" displayName="Heat Exchanger"/>
 					<HydraulicNetworkElement id="102" inletNodeId="4" outletNodeId="1" componentId="3" pipePropertiesId="1">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 					</HydraulicNetworkElement>
@@ -72,21 +83,11 @@
 		
 		<Outputs>
 			<Definitions>
-				<!-- Outputs go to file 'network.tsv' -->
-				<OutputDefinition>
-					<!-- We choose the flow through the second element (pipe 101) as reference flux
-						 for the entire network -->
-					<Quantity>FluidMassFluxes[id=101]</Quantity>
-					<ObjectListName>Entire network</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<!-- Outputs go to file 'network_elements.tsv' -->
 				<OutputDefinition>
 					<Quantity>FluidMassFlux</Quantity>
 					<ObjectListName>All flow elements</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
-				<!-- Outputs go to file 'network_elements.tsv' -->
 				<OutputDefinition>
 					<Quantity>OutletNodePressure</Quantity>
 					<ObjectListName>All flow elements</ObjectListName>
@@ -104,10 +105,6 @@
 			</Grids>
 		</Outputs>
 		<ObjectLists>
-			<ObjectList name="Entire network">
-				<FilterID>*</FilterID>
-				<ReferenceType>Network</ReferenceType>
-			</ObjectList>
 			<ObjectList name="All flow elements">
 				<FilterID>*</FilterID>
 				<ReferenceType>NetworkElement</ReferenceType>

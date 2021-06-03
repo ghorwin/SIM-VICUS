@@ -115,25 +115,18 @@ void HydraulicNetworkModel::setup() {
 				m_pumpElements.push_back(pumpElement);
 			} break;
 
-			case NANDRAD::HydraulicNetworkComponent::MT_ConstantMassFluxPump :
-			{
-				// create pump model
-				HNConstantMassFluxPump * pumpElement = new HNConstantMassFluxPump(e.m_id, *e.m_component);
-				// add to flow elements
-				m_p->m_flowElements.push_back(pumpElement); // transfer ownership
-				m_pumpElements.push_back(pumpElement);
-			} break;
-
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot :
+			case NANDRAD::HydraulicNetworkComponent::MT_ControlledValve:
 			{
+				// Note: we have already checked that no controller is configured for HeatPumpIdealCarnot
+
 				// create pressure loss flow element - controller is set up later
 				HNPressureLossCoeffElement * hxElement = new HNPressureLossCoeffElement(e.m_id, *e.m_component, m_hydraulicNetwork->m_fluid, e.m_controlElement);
 				m_p->m_flowElements.push_back(hxElement); // transfer ownership
 			} break;
 
-			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpReal:
-			case NANDRAD::HydraulicNetworkComponent::NUM_MT:{
+			case NANDRAD::HydraulicNetworkComponent::NUM_MT: {
 				throw IBK::Exception(IBK::FormatString("Unsupported model type for "
 									"HydraulicNetworkComponent with id %1!")
 									.arg(e.m_componentId),FUNC_ID);
@@ -243,14 +236,18 @@ const double * HydraulicNetworkModel::resultValueRef(const InputReference & quan
 		// id must be ID of network, and reftype must be NETWORK
 		if (quantity.m_id == id() && quantity.m_referenceType == NANDRAD::ModelInputReference::MRT_NETWORK) {
 
-			// no element index? maybe the entire vector is requested
+			// no element id? maybe the entire vector is requested
 			if (quantity.m_name.m_index == -1)
 				return &m_p->m_fluidMassFluxes[0];
 			else {
-				if ((unsigned int)quantity.m_name.m_index >= m_p->m_fluidMassFluxes.size())
-					throw IBK::Exception(IBK::FormatString("Index out of range in requested output quantity '%1'")
-										 .arg(quantity.m_name.encodedString()), FUNC_ID);
-				return &m_p->m_fluidMassFluxes[quantity.m_name.m_index];
+				// we have published values via ID, so search through m_elementIds
+				for (unsigned int i=0; i<m_elementIds.size(); ++i) {
+					if (m_elementIds[i] == (unsigned int)quantity.m_name.m_index) {
+						return &m_p->m_fluidMassFluxes[i]; // return memory location of requested element
+					}
+				}
+				throw IBK::Exception(IBK::FormatString("Unknown flow element ID '%1' out of range in requested output quantity '%2'")
+									 .arg(quantity.m_name.m_index).arg(quantity.m_name.encodedString()), FUNC_ID);
 			}
 		}
 		return nullptr; // invalid ID or reftype...

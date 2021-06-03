@@ -41,9 +41,9 @@ void NetworkInterfaceAdapterModel::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
 
-		if (!TiXmlAttribute::attributeByName(element, "summationModelID"))
+		if (!TiXmlAttribute::attributeByName(element, "summationModelId"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'summationModelID' attribute.") ), FUNC_ID);
+				IBK::FormatString("Missing required 'summationModelId' attribute.") ), FUNC_ID);
 
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
@@ -53,8 +53,8 @@ void NetworkInterfaceAdapterModel::readXML(const TiXmlElement * element) {
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName = attrib->ValueStr();
-			else if (attribName == "summationModelID")
-				m_summationModelID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "summationModelId")
+				m_summationModelId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -99,8 +99,8 @@ TiXmlElement * NetworkInterfaceAdapterModel::writeXML(TiXmlElement * parent) con
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
-	if (m_summationModelID != NANDRAD::INVALID_ID)
-		e->SetAttribute("summationModelID", IBK::val2string<unsigned int>(m_summationModelID));
+	if (m_summationModelId != NANDRAD::INVALID_ID)
+		e->SetAttribute("summationModelId", IBK::val2string<unsigned int>(m_summationModelId));
 	if (!m_fluidHeatCapacity.name.empty()) {
 		IBK_ASSERT("FluidHeatCapacity" == m_fluidHeatCapacity.name);
 		TiXmlElement::appendIBKParameterElement(e, "FluidHeatCapacity", m_fluidHeatCapacity.IO_unit.name(), m_fluidHeatCapacity.get_value());

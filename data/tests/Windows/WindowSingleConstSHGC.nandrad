@@ -53,7 +53,7 @@
 				<EmbeddedObjects>
 					<EmbeddedObject id="1000" displayName="Simple window, no frame and divider">
 						<IBK:Parameter name="Area" unit="m2">5</IBK:Parameter>
-						<Window glazingSystemID="10000" />
+						<Window glazingSystemId="10000" />
 					</EmbeddedObject>
 				</EmbeddedObjects>
 			</ConstructionInstance>

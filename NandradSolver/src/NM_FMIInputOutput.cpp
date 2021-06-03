@@ -67,7 +67,7 @@ const double * FMIInputOutput::resolveResultReference(const NANDRAD_MODEL::Input
 	// we create a FMIVariable and search for an identic type inside FMI descriptions
 	NANDRAD::FMIVariableDefinition variable;
 	// copy data from input reference
-	variable.m_objectID = valueRef.m_id;
+	variable.m_objectId = valueRef.m_id;
 	variable.m_varName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", valueRef.m_referenceType);
 	variable.m_varName += std::string(".") + valueRef.m_name.m_name;
 	// set an invalid fmi id
@@ -121,7 +121,7 @@ void FMIInputOutput::inputReferences(std::vector<InputReference> & inputRefs) co
 		// fill input reference
 		InputReference inputRef;
 		// copy data from input reference
-		inputRef.m_id = variable.m_objectID;
+		inputRef.m_id = variable.m_objectId;
 		// split variable name into name and reference type
 		std::vector<std::string> tokens;
 		IBK::explode_in2(variable.m_varName, tokens, '.');

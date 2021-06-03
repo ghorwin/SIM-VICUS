@@ -74,7 +74,7 @@ void IdealPipeRegisterModel::setup(const NANDRAD::IdealPipeRegisterModel & model
 	m_fluidVolume = m_fluidCrossSection * m_length;
 
 	// store zone
-	m_thermostatZoneId = model.m_thermostatZoneID;
+	m_thermostatZoneId = model.m_thermostatZoneId;
 
 	// reserve storage memory for vector valued results
 	m_vectorValuedResults.resize(NUM_VVR);
@@ -98,7 +98,7 @@ void IdealPipeRegisterModel::initResults(const std::vector<AbstractModel *> &) {
 		m_supplyTemperatureRefs.resize(indexKeys.size(),
 								   &m_model->m_para[NANDRAD::IdealPipeRegisterModel::P_SupplyTemperature].value);
 		m_maxMassFlowRefs.resize(indexKeys.size(),
-								 &m_model->m_para[NANDRAD::IdealPipeRegisterModel::P_MaxMassFlow].value);
+								 &m_model->m_para[NANDRAD::IdealPipeRegisterModel::P_MaxMassFlux].value);
 	}
 
 }

@@ -123,7 +123,7 @@
 
 				<ControlElements>
 					<HydraulicNetworkControlElement id="1" controlledProperty="ThermostatValue">
-						<ThermostatZoneID>1</ThermostatZoneID>
+						<ThermostatZoneId>1</ThermostatZoneId>
 						<MaximumControllerResultValue>1e+06</MaximumControllerResultValue>
 					</HydraulicNetworkControlElement>
 				</ControlElements>
@@ -132,7 +132,7 @@
 
 					<HydraulicNetworkElement id="1" inletNodeId="100" outletNodeId="0" componentId="1" displayName="pump" />
 
-					<HydraulicNetworkElement id="2" inletNodeId="0" outletNodeId="101" componentId="2" pipePropertiesId="9" controlElementID="1" displayName="surface heating">
+					<HydraulicNetworkElement id="2" inletNodeId="0" outletNodeId="101" componentId="2" pipePropertiesId="9" controlElementId="1" displayName="surface heating">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="TemperatureConstructionLayer">
 							<ConstructionInstanceId>3001</ConstructionInstanceId>

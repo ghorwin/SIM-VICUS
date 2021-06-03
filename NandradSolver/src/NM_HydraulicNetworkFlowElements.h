@@ -221,32 +221,6 @@ private:
 	double							m_pressureHead = -999;
 }; // HNConstantPressurePump
 
-
-/*! A network that dictates either mass flux or pressure difference.
-	Note: there must be only one of these models in the network.
-*/
-class HNConstantMassFluxPump: public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
-public:
-	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	HNConstantMassFluxPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component);
-
-	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
-	void partials(double mdot, double p_inlet, double p_outlet,
-				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
-	void inputReferences(std::vector<InputReference> &) const override;
-	void setInputValueRefs(std::vector<const double *>::const_iterator &) override;
-
-	/*! Element's ID, needed to formulated input references. */
-	unsigned int					m_id;
-	/*! If not nullptr, this mass flux value (from an external model) is used instead of the constant one. */
-	const double					*m_massFluxRef = nullptr;
-
-private:
-	/*! Constant mass flux [kg/s] to be enforced. */
-	double							m_massFlux = -999;
-
-}; // HNConstantMassFluxPump
-
 } // namespace NANDRAD_MODEL
 
 #endif // NM_HydraulicNetworkFlowElementsH

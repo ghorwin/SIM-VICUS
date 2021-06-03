@@ -157,7 +157,7 @@
 
 			<IdealPipeRegisterModels>
 				<IdealPipeRegisterModel id="701" modelType="Scheduled">
-					<ThermostatZoneID>1</ThermostatZoneID>
+					<ThermostatZoneId>1</ThermostatZoneId>
 					<ConstructionObjectList>Ground Floor</ConstructionObjectList>
 					<IBK:Parameter name="PipeLength" unit="m">100</IBK:Parameter>
 					<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
@@ -177,7 +177,7 @@
 				</IdealPipeRegisterModel>
 
 				<IdealPipeRegisterModel id="702" modelType="Scheduled">
-					<ThermostatZoneID>2</ThermostatZoneID>
+					<ThermostatZoneId>2</ThermostatZoneId>
 					<ConstructionObjectList>Upper Floor</ConstructionObjectList>
 					<IBK:Parameter name="PipeLength" unit="m">100</IBK:Parameter>
 					<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>

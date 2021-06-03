@@ -63,9 +63,8 @@ public:
 	*/
 	virtual void setInputValueRefs(std::vector<const double *>::const_iterator & /*resultValueRefs*/) {}
 
-	/*! Called at the end of a successful Newton iteration. Allows to calculte and store results.
-	*/
-	virtual void updateResults(double mdot, double p_inlet, double p_outlet) {}
+	/*! Called at the end of a successful Newton iteration. Allows to calculate and store results for other model objects. */
+	virtual void updateResults(double mdot, double p_inlet, double p_outlet) { (void)mdot; (void)p_inlet; (void)p_outlet; }
 
 	/*! Reference to memory slot containing the (average) fluid temperature in [K] of the flow element.
 		For MT_HydraulicNetwork this points to the Network parameter HydraulicNetwork::P_DefaultFluidTemperature.

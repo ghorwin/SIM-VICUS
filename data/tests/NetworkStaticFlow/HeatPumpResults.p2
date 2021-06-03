@@ -33,9 +33,9 @@
 			<SubDir Color="#ffffff" Checked="0">ThermoHydraulicNetworkHeatExchangerHeatFluxConst.gcc_linux</SubDir>
 			<SubDir Color="#c66300" Checked="0">ThermoHydraulicNetworkHeatExchangerHeatFluxDataFile</SubDir>
 			<SubDir Color="#ff007f" Checked="0">ThermoHydraulicNetworkHeatExchangerHeatFluxDataFile.gcc_linux</SubDir>
-			<SubDir Color="#ffaa00" Checked="1">ThermoHydraulicNetworkHeatPumpIdealSource</SubDir>
+			<SubDir Color="#ffaa00" Checked="0">ThermoHydraulicNetworkHeatPumpIdealSource</SubDir>
 			<SubDir Color="#ff007f" Checked="0">ThermoHydraulicNetworkHeatPumpIdealSource.gcc_linux</SubDir>
-			<SubDir Color="#ffffff" Checked="0">ThermoHydraulicNetworkHeatPumpIdealSupply</SubDir>
+			<SubDir Color="#ffffff" Checked="1">ThermoHydraulicNetworkHeatPumpIdealSupply</SubDir>
 			<SubDir Color="#416fce" Checked="0">ThermoHydraulicNetworkHeatPumpIdealSupply.gcc_linux</SubDir>
 			<SubDir Color="#ffaa00" Checked="0">ThermoHydraulicNetworkParallelPipes</SubDir>
 			<SubDir Color="#ffaa00" Checked="0">ThermoHydraulicNetworkParallelPipes.gcc_linux</SubDir>
@@ -271,13 +271,80 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>ThermoHydraulicNetworkHeatPumpIdealSupply/results/network_elements.tsv?10</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ThermoHydraulicNetworkHeatPumpIdealSupply/results/network_elements.tsv?7|8|9|11|12</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>4</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ThermoHydraulicNetworkHeatPumpIdealSupply/results/network_elements.tsv?7|8|9|11|12</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>3</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series leftAxis="0">
+						<TitleText>$basename:$quantity</TitleText>
+						<PenColor>#004586</PenColor>
+						<MarkerColor>#004586</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<PenColor>#aecf00</PenColor>
+						<MarkerColor>#aecf00</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<PenColor>#ffd320</PenColor>
+						<MarkerColor>#ffd320</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<TitleText>Time [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+						<Maximum>11.180351906158357</Maximum>
+						<Minimum>-2.2727272727272725</Minimum>
+					</Axis>
+					<Axis index="1" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">W</IBK:Unit>
+						<Maximum>7923.7368922783608</Maximum>
+						<Minimum>-9784.556720686367</Minimum>
+					</Axis>
+					<Axis index="2" enabled="0" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">---</IBK:Unit>
+						<Maximum>20</Maximum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText />
+					<Legend />
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
 	</Mappers>
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="0" size1="1" size2="1" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="2" size1="1" size2="1" orientation="2" />
 		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 

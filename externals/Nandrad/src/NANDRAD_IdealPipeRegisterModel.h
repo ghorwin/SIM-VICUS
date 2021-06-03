@@ -52,7 +52,7 @@ public:
 	/*! Model parameters. */
 	enum para_t {
 		P_SupplyTemperature,		// Keyword: SupplyTemperature			[C]			'Medium supply temperature'
-		P_MaxMassFlow,				// Keyword: MaxMassFlow					[kg/s]		'Maximum mass flow through the pipe'
+		P_MaxMassFlux,				// Keyword: MaxMassFlux					[kg/s]		'Maximum mass flux through the pipe'
 		P_PipeLength,				// Keyword: PipeLength					[m]			'Pipe length'
 		P_PipeInnerDiameter,		// Keyword: PipeInnerDiameter			[mm]		'Inner diameter of pipe'
 		P_UValuePipeWall,			// Keyword: UValuePipeWall				[W/mK]		'Length-specific U-Value of pipe wall incl. insulation'
@@ -85,7 +85,7 @@ public:
 	std::string			m_constructionObjectList;					// XML:E:required
 
 	/*! Id of zone whose thermostat is used for control. */
-	unsigned int		m_thermostatZoneID;							// XML:E:required
+	unsigned int		m_thermostatZoneId;							// XML:E:required
 
 	/*! Parameters. */
 	IBK::Parameter		m_para[NUM_P];								// XML:E

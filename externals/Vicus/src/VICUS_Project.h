@@ -32,8 +32,11 @@
 
 #include <IBK_Path.h>
 
-#include <NANDRAD_Project.h>
+#include <NANDRAD_ProjectInfo.h>
+#include <NANDRAD_Location.h>
 #include <NANDRAD_SolverParameter.h>
+#include <NANDRAD_SimulationParameter.h>
+#include <NANDRAD_Interface.h>
 #include <NANDRAD_FMIDescription.h>
 
 #include "VICUS_CodeGenMacros.h"

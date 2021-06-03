@@ -72,12 +72,12 @@ void ThermostatModel::setup(const NANDRAD::Thermostat & thermostat,
 	m_vectorValuedResults.resize(NUM_VVR);
 
 	// check if reference zone is given and check if such a zone exists
-	if (m_thermostat->m_referenceZoneID != NANDRAD::INVALID_ID) {
+	if (m_thermostat->m_referenceZoneId != NANDRAD::INVALID_ID) {
 		std::vector<NANDRAD::Zone>::const_iterator zone_it = std::find(zones.begin(), zones.end(),
-			m_thermostat->m_referenceZoneID);
+			m_thermostat->m_referenceZoneId);
 		if (zone_it == zones.end())
 			throw IBK::Exception(IBK::FormatString("Invalid/undefined zone ID #%1.")
-								 .arg(m_thermostat->m_referenceZoneID), FUNC_ID);
+								 .arg(m_thermostat->m_referenceZoneId), FUNC_ID);
 	}
 
 	// the rest of the initialization can only be done when the object lists have been initialized, i.e. this happens in initResults()
@@ -98,7 +98,7 @@ void ThermostatModel::initResults(const std::vector<AbstractModel *> &) {
 
 	// initialize controller
 	unsigned int zoneCount = 1; // assome reference zone
-	if (m_thermostat->m_referenceZoneID == NANDRAD::INVALID_ID)
+	if (m_thermostat->m_referenceZoneId == NANDRAD::INVALID_ID)
 		zoneCount = indexKeys.size(); // one for each zone
 
 	// actually, we create two controllers for each zone, one for heating, one for cooling
@@ -194,10 +194,10 @@ void ThermostatModel::inputReferences(std::vector<InputReference> & inputRefs) c
 		return; // nothing to compute, return
 
 	// distinguish between single-zone sensor and per-zone-sensor
-	if (m_thermostat->m_referenceZoneID != NANDRAD::INVALID_ID) {
+	if (m_thermostat->m_referenceZoneId != NANDRAD::INVALID_ID) {
 		// only one input reference to the selected zone
 		InputReference ref;
-		ref.m_id = m_thermostat->m_referenceZoneID;
+		ref.m_id = m_thermostat->m_referenceZoneId;
 		ref.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
 		switch (m_thermostat->m_temperatureType) {
 			case NANDRAD::Thermostat::NUM_TT: // default to air temperature
@@ -216,7 +216,7 @@ void ThermostatModel::inputReferences(std::vector<InputReference> & inputRefs) c
 			// Note: for now we require these... better to be very strict than to be lazy and cause hard-to-detect
 			//       problems when using the model.
 			InputReference ref;
-			ref.m_id = m_thermostat->m_referenceZoneID;
+			ref.m_id = m_thermostat->m_referenceZoneId;
 			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
 			ref.m_name.m_name = "HeatingSetpointSchedule";
 			ref.m_required = true;
@@ -266,7 +266,7 @@ void ThermostatModel::setInputValueRefs(const std::vector<QuantityDescription> &
 	// count number of inputs that we expect
 	// zone temperatures
 	unsigned int expectedSize =  m_objectList->m_filterID.m_ids.size(); // all zone's temperatures
-	if (m_thermostat->m_referenceZoneID != NANDRAD::INVALID_ID)
+	if (m_thermostat->m_referenceZoneId != NANDRAD::INVALID_ID)
 		expectedSize = 1;
 	// for thermostat with scheduled setpoints, we have a schedule input for each zone
 	if (m_thermostat->m_modelType == NANDRAD::Thermostat::MT_Scheduled)
@@ -283,7 +283,7 @@ void ThermostatModel::stateDependencies(std::vector<std::pair<const double *, co
 	// resultInputValueReferences holds pairs: result - input
 
 	// do we have a reference zone?
-	if (m_thermostat->m_referenceZoneID != NANDRAD::INVALID_ID) {
+	if (m_thermostat->m_referenceZoneId != NANDRAD::INVALID_ID) {
 		// all zone's heating and cooling control values depend on this zone's temperature
 		for (unsigned int i=0; i<m_objectList->m_filterID.m_ids.size(); ++i) {
 			// dependency on room air temperature of corresponding zone
@@ -329,7 +329,7 @@ int ThermostatModel::update() {
 		}
 
 		// if we have setpoint temperatures in each zone, we store the corresponding setpoint right here
-		if (m_thermostat->m_referenceZoneID == NANDRAD::INVALID_ID) {
+		if (m_thermostat->m_referenceZoneId == NANDRAD::INVALID_ID) {
 			*(m_vectorValuedResults[VVR_ThermostatHeatingSetpoint].dataPtr() + i) = TSetpointHeating;
 			*(m_vectorValuedResults[VVR_ThermostatCoolingSetpoint].dataPtr() + i) = TSetpointCooling;
 		}
@@ -340,7 +340,7 @@ int ThermostatModel::update() {
 	}
 
 	// transfer results
-	if (m_thermostat->m_referenceZoneID != NANDRAD::INVALID_ID) {
+	if (m_thermostat->m_referenceZoneId != NANDRAD::INVALID_ID) {
 		double TSetpointHeating = m_thermostat->m_para[NANDRAD::Thermostat::P_HeatingSetpoint].value;
 		double TSetpointCooling = m_thermostat->m_para[NANDRAD::Thermostat::P_CoolingSetpoint].value;
 		if (m_thermostat->m_modelType == NANDRAD::Thermostat::MT_Scheduled) {
