@@ -30,6 +30,7 @@
 
 #include "SVDatabase.h"
 
+class QTreeView;
 
 /*! Model for accessing zone templates.
 	Child nodes correspond to sub-templates, role Role_SubTemplateType delivers the type of the sub-template.
@@ -85,8 +86,7 @@ public:
 private:
 
 	/*! Pointer to the entire database (not owned). */
-	SVDatabase	* m_db;
-
+	SVDatabase	*m_db;
 };
 
 
