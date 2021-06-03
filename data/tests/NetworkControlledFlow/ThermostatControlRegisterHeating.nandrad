@@ -187,7 +187,7 @@
 				<OutputGrid name="hourly">
 					<Intervals>
 						<Interval>
-							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
 						</Interval>
 					</Intervals>
 				</OutputGrid>

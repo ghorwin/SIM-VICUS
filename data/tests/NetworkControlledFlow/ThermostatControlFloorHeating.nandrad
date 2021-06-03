@@ -112,9 +112,9 @@
 					</HydraulicNetworkPipeProperties>
 					<HydraulicNetworkPipeProperties id="10">
 						<IBK:Parameter name="PipeRoughness" unit="mm">0.007</IBK:Parameter>
-						<IBK:Parameter name="PipeInnerDiameter" unit="mm">1000</IBK:Parameter>
-						<IBK:Parameter name="PipeOuterDiameter" unit="mm">1001</IBK:Parameter>
-						<IBK:Parameter name="UValuePipeWall" unit="W/mK">1000</IBK:Parameter>
+						<IBK:Parameter name="PipeInnerDiameter" unit="mm">100000</IBK:Parameter>
+						<IBK:Parameter name="PipeOuterDiameter" unit="mm">100000.1</IBK:Parameter>
+						<IBK:Parameter name="UValuePipeWall" unit="W/mK">10000</IBK:Parameter>
 					</HydraulicNetworkPipeProperties>
 				</PipeProperties>
 				<Components>
@@ -146,7 +146,7 @@
 					</HydraulicNetworkElement>
 
 					<HydraulicNetworkElement id="3" inletNodeId="101" outletNodeId="100" componentId="2" pipePropertiesId="10" displayName="pipe">
-						<IBK:Parameter name="Length" unit="m">1000</IBK:Parameter>
+						<IBK:Parameter name="Length" unit="m">1</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="TemperatureConstant">
 							<IBK:Parameter name="Temperature" unit="C">40</IBK:Parameter>
 							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">1e10</IBK:Parameter>
@@ -218,7 +218,7 @@
 				
 				<OutputDefinition>
 					<Quantity>FluidTemperature</Quantity>
-					<ObjectListName>Pump</ObjectListName>
+					<ObjectListName>Surface Heating</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 
@@ -227,7 +227,7 @@
 				<OutputGrid name="hourly">
 					<Intervals>
 						<Interval>
-							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
 						</Interval>
 					</Intervals>
 				</OutputGrid>
