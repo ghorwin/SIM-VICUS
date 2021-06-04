@@ -3,3 +3,4 @@
 /ThermostatControlFloorHeating/
 /ThermostatControlRegisterHeating/
 /ControlledValveConstantMassFlux/
+/ControlledValveTemperatureDifferenceFollowingElement/
