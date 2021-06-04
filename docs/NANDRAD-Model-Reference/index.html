@@ -72,7 +72,7 @@ table {
 <h1>NANDRAD Modell-Referenz</h1>
 <div class="details">
 <span id="author" class="author">Andreas Nicolai &lt;andreas.nicolai@tu-dresden.de&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke</span><br>
-<span id="revnumber">version 0.2 (02.06.2021)</span>
+<span id="revnumber">version 0.2 (04.06.2021)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Inhaltsverzeichnis</div>
@@ -2111,7 +2111,7 @@ Im Folgenden wird dies im Detail beschrieben.</p>
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;EmbeddedObject</span> <span class="na">id=</span><span class="s">"2000"</span> <span class="na">displayName=</span><span class="s">"Ein Fenster"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Area"</span> <span class="na">unit=</span><span class="s">"m2"</span><span class="nt">&gt;</span>8<span class="nt">&lt;/IBK:Parameter&gt;</span>
-    <span class="nt">&lt;Window</span> <span class="na">glazingSystemID=</span><span class="s">"123"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;Window</span> <span class="na">glazingSystemId=</span><span class="s">"123"</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/EmbeddedObject&gt;</span></code></pre>
 </div>
 </div>
@@ -2130,11 +2130,11 @@ Im Folgenden wird dies im Detail beschrieben.</p>
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;EmbeddedObject</span> <span class="na">id=</span><span class="s">"2000"</span> <span class="na">displayName=</span><span class="s">"Ein Fenster"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Area"</span> <span class="na">unit=</span><span class="s">"m2"</span><span class="nt">&gt;</span>8<span class="nt">&lt;/IBK:Parameter&gt;</span>
-  <span class="nt">&lt;Window</span> <span class="na">glazingSystemID=</span><span class="s">"123"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;Frame</span> <span class="na">materialID=</span><span class="s">"1001"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;Window</span> <span class="na">glazingSystemId=</span><span class="s">"123"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;Frame</span> <span class="na">materialId=</span><span class="s">"1001"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Area"</span> <span class="na">unit=</span><span class="s">"m2"</span><span class="nt">&gt;</span>3<span class="nt">&lt;/IBK:Parameter&gt;</span>
     <span class="nt">&lt;/Frame&gt;</span>
-    <span class="nt">&lt;Divider</span> <span class="na">materialID=</span><span class="s">"1002"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;Divider</span> <span class="na">materialId=</span><span class="s">"1002"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Area"</span> <span class="na">unit=</span><span class="s">"m2"</span><span class="nt">&gt;</span>2<span class="nt">&lt;/IBK:Parameter&gt;</span>
     <span class="nt">&lt;/Divider&gt;</span>
   <span class="nt">&lt;/Window&gt;</span>
@@ -2224,7 +2224,7 @@ Im Folgenden wird dies im Detail beschrieben.</p>
 <div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Window</span> <span class="na">glazingSystemID=</span><span class="s">"123"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Window</span> <span class="na">glazingSystemId=</span><span class="s">"123"</span><span class="nt">&gt;</span>
     ...
   <span class="nt">&lt;Shading</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"ReductionFactor"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.6<span class="nt">&lt;/IBK:Parameter&gt;</span>
@@ -2276,7 +2276,7 @@ Im Folgenden wird dies im Detail beschrieben.</p>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>controlModelID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>controlModelId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ID des Verschattungskontrollmodells</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">ID</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich für</em> <code>Controlled</code></p></td>
@@ -3556,7 +3556,7 @@ Sie werden z. B. in den folgenden Objekten oder Objektlisten verwendet:</p>
 <div class="content">
 <img src="./images/ScheduleExample_weekly.png" alt="ScheduleExample weekly">
 </div>
-<div class="title">Abbildung 7. Abbildung des wöchentlichen Zeitplans, definiert durch das Beispiel <a href="#ex_schedule_week">Beispiel 35</a></div>
+<div class="title">Abbildung 7. Abbildung des wöchentlichen Zeitplans, definiert durch <a href="#ex_schedule_week">Beispiel 35</a></div>
 </div>
 </div>
 <div class="sect3">
@@ -5958,7 +5958,7 @@ n = n_Grundluftwechsel + n_erhöhterLuftwechsel  // wenn Bedingungen erfüllt</c
         0 = keine Reduktion (Verschattung offen)
         1 = volle Reduktion (Verschattung geschlossen)
       --&gt;</span>
-      <span class="nt">&lt;ShadingControlModel</span> <span class="na">id=</span><span class="s">"2000"</span> <span class="na">displayName=</span><span class="s">"Global horizontal sensor controller"</span> <span class="na">sensorID=</span><span class="s">"50000"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;ShadingControlModel</span> <span class="na">id=</span><span class="s">"2000"</span> <span class="na">displayName=</span><span class="s">"Global horizontal sensor controller"</span> <span class="na">sensorId=</span><span class="s">"50000"</span><span class="nt">&gt;</span>
         <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"MaxIntensity"</span> <span class="na">unit=</span><span class="s">"W/m2"</span><span class="nt">&gt;</span>300<span class="nt">&lt;/IBK:Parameter&gt;</span>
         <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"MinIntensity"</span> <span class="na">unit=</span><span class="s">"W/m2"</span><span class="nt">&gt;</span>150<span class="nt">&lt;/IBK:Parameter&gt;</span>
       <span class="nt">&lt;/ShadingControlModel&gt;</span>
@@ -5972,7 +5972,7 @@ n = n_Grundluftwechsel + n_erhöhterLuftwechsel  // wenn Bedingungen erfüllt</c
 <p>Das Verschattungskontrollmodell verlangt zwei Parameter <code>MaxIntensity</code> und <code>MinIntensity</code> und implementiert eine digitale Regelung mit Hysterese. Zunächst muss die Globalstrahlungsintensität auf den Sensor den oberen Grenzwert (<code>MaxIntensity</code>) überschreiten, wonach die Verschattung geschlossen wird (Kontrollmodell liefert 1). Danach muss die Strahlungsintensität zunächst unter die untere Grenze sinken (<code>MinIntensity</code>), bevor die Verschattung wieder geöffnet wird (Kontrollmodell liefert 0).</p>
 </div>
 <div class="paragraph">
-<p>Für die Auswertung wird eine Horizontalstrahlung benötigt. Dafür muss eine Oberfläche ausgewählt werden und als <code>sensorID</code> angegeben werden.</p>
+<p>Für die Auswertung wird eine Horizontalstrahlung benötigt. Dafür muss eine Oberfläche ausgewählt werden und als <code>sensorId</code> angegeben werden.</p>
 </div>
 <div class="paragraph">
 <p>Möglich sind hier 3 Optionen:</p>
@@ -6659,7 +6659,7 @@ Z. B. ist <code>Model&lt;IdealHeatingCoolingModel_id&gt;).IdealHeatingLoad[id=3]
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;IdealSurfaceHeatingCoolingModel</span> <span class="na">id=</span><span class="s">"701"</span><span class="nt">&gt;</span>
   <span class="c">&lt;!-- Use thermostat in zone 1 for control --&gt;</span>
-  <span class="nt">&lt;ThermostatZoneID&gt;</span>1<span class="nt">&lt;/ThermostatZoneID&gt;</span>
+  <span class="nt">&lt;ThermostatZoneId&gt;</span>1<span class="nt">&lt;/ThermostatZoneId&gt;</span>
   <span class="nt">&lt;ConstructionObjectList&gt;</span>Floor<span class="nt">&lt;/ConstructionObjectList&gt;</span>
   <span class="c">&lt;!-- Maximum heating power per construction/surface area, here: 10 m2 * 150 W/m2 = 1500 W --&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"MaxHeatingPowerPerArea"</span> <span class="na">unit=</span><span class="s">"W/m2"</span><span class="nt">&gt;</span>150<span class="nt">&lt;/IBK:Parameter&gt;</span>
@@ -6751,7 +6751,7 @@ Z. B. ist <code>Model&lt;IdealHeatingCoolingModel_id&gt;).IdealHeatingLoad[id=3]
 </table>
 </div>
 <div class="paragraph">
-<p>Die Flächenheizung/-kühlung wird durch ein Thermostat gesteuert. Die Zone, in der sich das Thermostat befindet, wird im Element <code>ThermostatZoneID</code> angegeben.</p>
+<p>Die Flächenheizung/-kühlung wird durch ein Thermostat gesteuert. Die Zone, in der sich das Thermostat befindet, wird im Element <code>ThermostatZoneId</code> angegeben.</p>
 </div>
 <div class="sect3">
 <h4 id="_heiz_und_kühlleistung_2">17.8.1. Heiz- und Kühlleistung</h4>
@@ -6805,7 +6805,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;IdealPipeRegisterModel</span> <span class="na">id=</span><span class="s">"701"</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;ThermostatZoneID&gt;</span>1<span class="nt">&lt;/ThermostatZoneID&gt;</span>
+  <span class="nt">&lt;ThermostatZoneId&gt;</span>1<span class="nt">&lt;/ThermostatZoneId&gt;</span>
   <span class="nt">&lt;ConstructionObjectList&gt;</span>Floor<span class="nt">&lt;/ConstructionObjectList&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"SupplyTemperature"</span> <span class="na">unit=</span><span class="s">"C"</span><span class="nt">&gt;</span>8<span class="nt">&lt;/IBK:Parameter&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"MaxMassFlow"</span> <span class="na">unit=</span><span class="s">"kg/s"</span><span class="nt">&gt;</span>0.2<span class="nt">&lt;/IBK:Parameter&gt;</span>
@@ -6847,7 +6847,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 </table>
 </div>
 <div class="paragraph">
-<p>Die Heizleistung wird über die Anpassung des Massestroms in Abhängigkeit eines Thermostat-Kontrollsignals gesteuert. Die Zone, in der sich das Thermostat befindet, wird im Element <code>ThermostatZoneID</code> angegeben.</p>
+<p>Die Heizleistung wird über die Anpassung des Massestroms in Abhängigkeit eines Thermostat-Kontrollsignals gesteuert. Die Zone, in der sich das Thermostat befindet, wird im Element <code>ThermostatZoneId</code> angegeben.</p>
 </div>
 <div class="paragraph">
 <p>Das <code>IdealPipeRegisterModel</code> muss mit den folgenden XML-Attributen definiert werden:</p>
@@ -7156,7 +7156,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;NetworkInterfaceAdapterModel</span> <span class="na">id=</span><span class="s">"802"</span> <span class="na">summationModelID=</span><span class="s">"801"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;NetworkInterfaceAdapterModel</span> <span class="na">id=</span><span class="s">"802"</span> <span class="na">summationModelId=</span><span class="s">"801"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"FluidHeatCapacity"</span> <span class="na">unit=</span><span class="s">"J/kgK"</span><span class="nt">&gt;</span>4180<span class="nt">&lt;/IBK:Parameter&gt;</span>
 <span class="nt">&lt;/NetworkInterfaceAdapterModel&gt;</span></code></pre>
 </div>
@@ -7190,7 +7190,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>summationModelID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>summationModelId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ID des Summationsmodells, welches die Heiz-/Kühlleistung im Gebäude berechnet</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
@@ -8487,14 +8487,14 @@ das <code>HydraulicNetworkElement</code> dafür ein <code>HydraulicNetworkContro
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;HydraulicNetworkElement</span> <span class="na">id=</span><span class="s">"2"</span> <span class="na">inletNodeId=</span><span class="s">"0"</span> <span class="na">outletNodeId=</span><span class="s">"101"</span> <span class="na">componentId=</span><span class="s">"2"</span>
-    <span class="na">controlElementID=</span><span class="s">"1"</span> <span class="na">displayName=</span><span class="s">"Heat exchanger"</span><span class="nt">&gt;</span>
+    <span class="na">controlElementId=</span><span class="s">"1"</span> <span class="na">displayName=</span><span class="s">"Heat exchanger"</span><span class="nt">&gt;</span>
 
   <span class="c">&lt;!-- Heat loss from element (to environment) is given via time-series.
      This heat loss is used together with the current mass
      flux to compute the temperature difference between
      inlet and outlet. Then, this temperature difference
      goes into the controller referenced via
-     controlElementID which then computes a correction
+     controlElementId which then computes a correction
      zeta-value (flow resistance) and effectively controls
      the mass flux.
   --&gt;</span>
@@ -9357,8 +9357,8 @@ das <code>HydraulicNetworkElement</code> dafür ein <code>HydraulicNetworkContro
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.2 (02.06.2021)<br>
-Last updated 2021-06-02 21:51:00 +0200
+Version 0.2 (04.06.2021)<br>
+Last updated 2021-06-04 08:16:21 +0200
 </div>
 </div>
 <style>

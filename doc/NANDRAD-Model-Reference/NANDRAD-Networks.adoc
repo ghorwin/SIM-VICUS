@@ -600,14 +600,14 @@ das `HydraulicNetworkElement` dafür ein `HydraulicNetworkControlElement` im Att
 [source,xml]
 ----
 <HydraulicNetworkElement id="2" inletNodeId="0" outletNodeId="101" componentId="2" 
-    controlElementID="1" displayName="Heat exchanger">
+    controlElementId="1" displayName="Heat exchanger">
 	
 	<!-- Heat loss from element (to environment) is given via time-series.
 		 This heat loss is used together with the current mass
 		 flux to compute the temperature difference between
 		 inlet and outlet. Then, this temperature difference
 		 goes into the controller referenced via
-		 controlElementID which then computes a correction
+		 controlElementId which then computes a correction
 		 zeta-value (flow resistance) and effectively controls
 		 the mass flux.
 	-->
