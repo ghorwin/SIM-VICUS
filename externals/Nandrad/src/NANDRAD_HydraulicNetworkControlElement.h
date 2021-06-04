@@ -29,14 +29,14 @@ public:
 	/*! Controlled property used as signal input for the controller. */
 	enum ControlledProperty {
 		/*! Temperature difference is computed from pre-defined heat loss and compared against target temperature difference. */
-		CP_TemperatureDifference,		// Keyword: TemperatureDifference			'Control temperature difference of this element '
+		CP_TemperatureDifference,						// Keyword: TemperatureDifference						'Control temperature difference of this element '
 		/*! Temperature difference of the following flow element is computed from outlet temperature of this element and outlet temperature of the following element.
-		 * This temperature difference is compared against target temperature difference. */
-		CP_TemperatureDifferenceOfFollowingElement,		// Keyword: TemperatureDifferenceOfFollowingElement			'Control temperature difference of the following element'
+			This temperature difference is compared against target temperature difference. */
+		CP_TemperatureDifferenceOfFollowingElement,		// Keyword: TemperatureDifferenceOfFollowingElement		'Control temperature difference of the following element'
 		/*! Thermostat heating/cooling control values determine whether valve is open or closed. */
-		CP_ThermostatValue,				// Keyword: ThermostatValue					'Control zone thermostat values'
+		CP_ThermostatValue,								// Keyword: ThermostatValue								'Control zone thermostat values'
 		/*! Try to achieve target mass flow in current element. */
-		CP_MassFlux,					// Keyword: MassFlux						'Control mass flux'
+		CP_MassFlux,									// Keyword: MassFlux									'Control mass flux'
 		NUM_CP
 	};
 
