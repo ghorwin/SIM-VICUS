@@ -169,33 +169,42 @@ double HNPipeElement::pressureLossFriction(const double &mdot) const {
 }
 
 
-double HNPipeElement::zetaControlled() const
-{
-	// valve is closed
+double HNPipeElement::zetaControlled() const {
+	// valve is closed by default
 	double heatingControlValue = m_controlElement->m_maximumControllerResultValue;
 	double coolingControlValue = m_controlElement->m_maximumControllerResultValue;
 
 	// get control value for heating
 	if (m_heatingThermostatControlValueRef != nullptr) {
-		// if setpoint is larger than room air temperature (control value > 0) set control value to 0 (open valve)
+		// het heating control value and clip to the range of 0..1
+		// 0 - no heating required (above setpoint)
+		// 1 - max. heating required (for p-controller, the defined allowed tolerance has been reached
+		//     for example, if Thermostat tolerance in set to 0.1 K, and the temperature difference to
+		//     the setpoint is >= 0.1 K, heatingControlValue will be 1
 		heatingControlValue = std::min(std::max(*m_heatingThermostatControlValueRef, 0.0), 1.0);
-		// clip
+
+		// if heating is required, we open the valve:
+		//   heatingControlValue = 1  -> zetaControlled = 0
+		// if no heating is required, we close the valve
+		//   heatingControlValue = 0  -> zetaControlled = m_maximumControllerResultValue
+		// in between we interpolate linearly
 		heatingControlValue = m_controlElement->m_maximumControllerResultValue * (1.0 - heatingControlValue);
 	}
+
 	// get control value for cooling
 	if (m_coolingThermostatControlValueRef != nullptr) {
-		// if setpoint is smaller m_coolingThermostatControlValueRef room air temperature (control value > 0) set control value to 0 (open valve
+		// same as for heating
 		coolingControlValue = std::min(std::max(*m_coolingThermostatControlValueRef, 0.0), 1.0);
-		// clip
-		coolingControlValue = m_controlElement->m_maximumControllerResultValue * (1.0 -coolingControlValue);
+		coolingControlValue = m_controlElement->m_maximumControllerResultValue * (1.0 - coolingControlValue);
 	}
 
-	// we only accept maximum
+	// either cooling or heating may require opening of the value
+	// we take the lesser of the selected additional resistances
 	return std::min(heatingControlValue, coolingControlValue);
 }
 
-void HNPipeElement::updateResults(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/)
-{
+
+void HNPipeElement::updateResults(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/) {
 	// calculate zetaControlled value for valve
 	if (m_controlElement != nullptr) {
 		m_zetaControlled = zetaControlled();
