@@ -52,7 +52,7 @@ NandradModel.file = ../../NandradSolver/projects/Qt/NandradModel.pro
 # dependencies
 NandradSolver.depends = NandradModel DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
 NandradSolverFMI.depends = NandradModel DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
-NandradCodeGenerator.depends = IBK
+NandradCodeGenerator.depends = IBK Nandrad QtExt TiCPP
 SIM-VICUS.depends = QuaZIP qwt Vicus Nandrad IBK TiCPP CCM QtExt Zeppelin GenericBuildings
 
 CCM.depends = IBK TiCPP
