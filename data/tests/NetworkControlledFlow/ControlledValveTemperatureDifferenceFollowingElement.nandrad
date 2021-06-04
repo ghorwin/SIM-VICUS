@@ -18,6 +18,9 @@
 				<IBK:Parameter name="End" unit="d">2</IBK:Parameter>
 			</Interval>
 		</SimulationParameter>
+		<SolverParameter>
+			<IBK:IntPara name="MaxOrder">1</IBK:IntPara>
+  		</SolverParameter>
 		<Zones>
 			<Zone id="1" displayName="dummy" type="Active">
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
@@ -47,7 +50,7 @@
 				</PipeProperties>
 				<Components>
 					<HydraulicNetworkComponent id="1" modelType="ConstantPressurePump">
-						<IBK:Parameter name="PressureHead" unit="Pa">50000</IBK:Parameter>
+						<IBK:Parameter name="PressureHead" unit="Pa">100000</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>						
 					</HydraulicNetworkComponent>
@@ -69,7 +72,7 @@
 
 				<ControlElements>
 					<HydraulicNetworkControlElement id="1" controlledProperty="TemperatureDifferenceOfFollowingElement" controllerType="PController" >
-						<IBK:Parameter name="Kp" unit="---">10000</IBK:Parameter>
+						<IBK:Parameter name="Kp" unit="---">1e5</IBK:Parameter>
 						<IBK:Parameter name="TemperatureDifferenceSetpoint" unit="K">5</IBK:Parameter>
 						<!-- Deactivate upper limit of controller result value - this is the default and could be omitted -->
 						<MaximumControllerResultValue>0</MaximumControllerResultValue>
@@ -141,6 +144,12 @@
 					<ObjectListName>All flow elements</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>TemperatureDifference</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>heat pump</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>				
 			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
