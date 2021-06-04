@@ -464,6 +464,7 @@ public:
 		quantities.push_back(QuantityDescription("EvaporatorHeatFlux", "W", "Heat Flux at evaporator side of heat pump", false));
 		quantities.push_back(QuantityDescription("EvaporatorMeanTemperature", "C", "Mean temperature at evaporator side of heat pump", false));
 		quantities.push_back(QuantityDescription("CondenserMeanTemperature", "C", "Mean temperature at condenser side of heat pump", false));
+		quantities.push_back(QuantityDescription("TemperatureDifference", "K", "Outlet temperature minus inlet temperature", false));
 	}
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
@@ -474,6 +475,7 @@ public:
 		valRefs.push_back(&m_evaporatorHeatFlux);
 		valRefs.push_back(&m_evaporatorMeanTemperature);
 		valRefs.push_back(&m_condenserMeanTemperature);
+		valRefs.push_back(&m_temperatureDifference);
 	}
 
 	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
@@ -524,6 +526,9 @@ private:
 
 	/*! Electrical power of the heat pump compressor [W] */
 	double									m_electricalPower = 999;
+
+	/*! Electrical power of the heat pump compressor [W] */
+	double									m_temperatureDifference = 999;
 
 	/*! Reference to the controller parametrization object.*/
 	const NANDRAD::HydraulicNetworkControlElement

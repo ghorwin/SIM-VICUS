@@ -590,6 +590,7 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 			m_heatLoss = 0.0;
 			m_electricalPower  = 0.0;
 			m_evaporatorMeanTemperature = 0;
+			m_temperatureDifference = 0;
 
 			// get scheduled temperature
 			IBK_ASSERT(m_condenserMeanTemperatureRef != nullptr);
@@ -631,6 +632,7 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 				m_evaporatorHeatFlux = m_condenserHeatFlux * (m_COP - 1) / m_COP;
 				m_heatLoss = m_evaporatorHeatFlux; // energy taken out of fluid medium
 				m_electricalPower  = m_condenserHeatFlux - m_evaporatorHeatFlux; // same as "m_condenserHeatFlux/m_COP", electrical power of heat pump
+				m_temperatureDifference = m_meanTemperature - m_inflowTemperature;
 			}
 
 		} break; // HP_SourceSide
@@ -638,9 +640,11 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 
 		case NANDRAD::HydraulicNetworkComponent::HP_SupplySide:{
 			// initialize all results with 0
+			m_evaporatorHeatFlux = 0;
 			m_COP = 0.0;
 			m_heatLoss = 0.0;
 			m_electricalPower  = 0.0;
+			m_temperatureDifference = 0;
 
 			// get scheduled temperatures
 			IBK_ASSERT(m_heatExchangeValueRef != nullptr);
@@ -676,6 +680,7 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 					m_evaporatorHeatFlux = m_condenserHeatFlux * (m_COP - 1) / m_COP; // heat taken from source
 					m_heatLoss = - m_condenserHeatFlux; // negative, because building "removes" this heat from the fluid and heat loss is defined as positive quantity
 					m_electricalPower  = m_condenserHeatFlux - m_evaporatorHeatFlux;
+					m_temperatureDifference = m_meanTemperature - m_inflowTemperature;
 				}
 			}
 
