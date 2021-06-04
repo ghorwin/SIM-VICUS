@@ -156,7 +156,6 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 							throw IBK::Exception(IBK::FormatString("Heat exchange model %1 cannot be used with SimplePipe components.")
 												 .arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", e.m_heatExchange.m_modelType)), FUNC_ID);
 
-
 					} // switch heat exchange type
 
 				} break; // NANDRAD::HydraulicNetworkComponent::MT_SimplePipe
@@ -219,15 +218,6 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 				case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger : {
 					switch (e.m_heatExchange.m_modelType) {
-						// create general adiabatic model
-						case NANDRAD::HydraulicNetworkHeatExchange::NUM_T : {
-							TNAdiabaticElement * element = new TNAdiabaticElement(m_network->m_fluid,
-										e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value);
-							// add to flow elements
-							m_p->m_flowElements.push_back(element); // transfer ownership
-							m_p->m_heatLossElements.push_back(nullptr); // no heat loss
-						} break;
-
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant :
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline :
 						{
@@ -248,6 +238,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
 						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureZone:
 						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer:
+						case NANDRAD::HydraulicNetworkHeatExchange::NUM_T:
 							throw IBK::Exception(IBK::FormatString("Heat exchange model %1 cannot be used with HeatExchanger components.")
 												 .arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", e.m_heatExchange.m_modelType)), FUNC_ID);
 
@@ -256,29 +247,13 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				} break; // NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger
 
 
-				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot : {
-					switch (e.m_component->m_heatPumpIntegration) {
-						case NANDRAD::HydraulicNetworkComponent::HP_SourceSide:
-						case NANDRAD::HydraulicNetworkComponent::HP_SupplySide:{
-
-							// create general model with given heat flux
-							TNHeatPumpIdealCarnot * element = new TNHeatPumpIdealCarnot(e.m_id, m_network->m_fluid, *e.m_component,
-																						e.m_controlElement);
-							// add to flow elements
-							m_p->m_flowElements.push_back(element); // transfer ownership
-							m_p->m_heatLossElements.push_back(element); // copy of pointer
-
-						} break;
-
-						case NANDRAD::HydraulicNetworkComponent::HP_SupplyAndSourceSide:
-						case NANDRAD::HydraulicNetworkComponent::NUM_HP:
-						{
-							throw IBK::Exception(IBK::FormatString("Heat pump integration type %1 is not supported yet!")
-												 .arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::HeatPumpIntegration",
-																					e.m_component->m_heatPumpIntegration)), FUNC_ID);
-						}
-
-					} // switch heat pump integration type
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide :
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide : {
+					// create general model with given heat flux
+					TNHeatPumpIdealCarnot * element = new TNHeatPumpIdealCarnot(e.m_id, m_network->m_fluid, e);
+					// add to flow elements
+					m_p->m_flowElements.push_back(element); // transfer ownership
+					m_p->m_heatLossElements.push_back(element); // copy of pointer
 
 				} break; // NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot
 

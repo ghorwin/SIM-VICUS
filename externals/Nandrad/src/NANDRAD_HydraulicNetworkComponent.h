@@ -37,13 +37,14 @@ public:
 
 	/*! The various types (equations) of the hydraulic component. */
 	enum ModelType {
-		MT_SimplePipe,						// Keyword: SimplePipe					'Pipe with a single fluid volume and with heat exchange'
-		MT_DynamicPipe,						// Keyword: DynamicPipe					'Pipe with a discretized fluid volume and heat exchange'
-		MT_ConstantPressurePump,			// Keyword: ConstantPressurePump		'Pump with constant/externally defined pressure'
-		MT_HeatExchanger,					// Keyword: HeatExchanger				'Simple heat exchanger with given heat flux'
-		MT_HeatPumpIdealCarnot,				// Keyword: HeatPumpIdealCarnot			'Heat pump with variable heating power based on carnot efficiency'
-//		MT_HeatPumpReal,					// xKeyword: HeatPumpReal				'On-off-type heat pump with based on manufacturer data sheet'
-		MT_ControlledValve,					// Keyword: ControlledValve				'Valve with associated control model'
+		MT_SimplePipe,						// Keyword: SimplePipe						'Pipe with a single fluid volume and with heat exchange'
+		MT_DynamicPipe,						// Keyword: DynamicPipe						'Pipe with a discretized fluid volume and heat exchange'
+		MT_ConstantPressurePump,			// Keyword: ConstantPressurePump			'Pump with constant/externally defined pressure'
+		MT_HeatExchanger,					// Keyword: HeatExchanger					'Simple heat exchanger with given heat flux'
+		MT_HeatPumpIdealCarnotSourceSide,	// Keyword: HeatPumpIdealCarnotSourceSide	'Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)'
+		MT_HeatPumpIdealCarnotSupplySide,	// Keyword: HeatPumpIdealCarnotSupplySide	'Heat pump with variable heating power based on carnot efficiency, installed at supply side'
+//		MT_HeatPumpReal,					// xKeyword: HeatPumpReal					'On-off-type heat pump with based on manufacturer data sheet'
+		MT_ControlledValve,					// Keyword: ControlledValve					'Valve with associated control model'
 		NUM_MT
 	};
 
@@ -58,14 +59,6 @@ public:
 		P_CarnotEfficiency,						// Keyword: CarnotEfficiency					[---]	'Carnot efficiency eta'
 		P_MaximumHeatingPower,					// Keyword: MaximumHeatingPower					[W]		'Maximum heating power'
 		NUM_P
-	};
-
-	/*! Defines which side of heat pump is part of the network */
-	enum HeatPumpIntegration {
-		HP_SupplySide,						// Keyword: SupplySide				'The network is connected to the hot side (supply) of the heat pump'
-		HP_SourceSide,						// Keyword: SourceSide				'The network is connected to the cold side (source) of the heat pump'
-		HP_SupplyAndSourceSide,				// Keyword: SupplyAndSourceSide		'Two networks are connected, one to the cold side, the other to the hot side of the heat pump'
-		NUM_HP
 	};
 
 
@@ -93,9 +86,6 @@ public:
 
 	/*! Model type. */
 	ModelType						m_modelType		= NUM_MT;							// XML:A:required
-
-	/*! Defines which side of heat pump is part of the network */
-	HeatPumpIntegration				m_heatPumpIntegration = NUM_HP;						// XML:E
 
 	/*! Parameters of the flow component. */
 	IBK::Parameter					m_para[NUM_P];										// XML:E

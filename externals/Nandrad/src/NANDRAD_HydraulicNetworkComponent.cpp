@@ -72,7 +72,8 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) {
 
 
 std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const HydraulicNetworkComponent::ModelType modelType,
-																	   int networkModelType) {
+																	   int networkModelType)
+{
 	HydraulicNetwork::ModelType netModelType = (HydraulicNetwork::ModelType) networkModelType;
 
 	// Hydraulic network with constant temperature
@@ -80,7 +81,8 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 		switch (modelType) {
 			case MT_ConstantPressurePump:
 				return {P_PressureHead};
-			case MT_HeatPumpIdealCarnot:
+			case MT_HeatPumpIdealCarnotSupplySide:
+			case MT_HeatPumpIdealCarnotSourceSide:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter};
 			case MT_HeatExchanger:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter};
@@ -99,7 +101,9 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 		switch (modelType) {
 			case MT_ConstantPressurePump:
 				return {P_PressureHead, P_PumpEfficiency, P_Volume};
-			case MT_HeatPumpIdealCarnot:
+			case MT_HeatPumpIdealCarnotSupplySide:
+			case MT_HeatPumpIdealCarnotSourceSide:
+				// TODO Hauke, check mandatory parameters for both heat pump variants
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume, P_CarnotEfficiency, P_MaximumHeatingPower};
 			case MT_HeatExchanger:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};

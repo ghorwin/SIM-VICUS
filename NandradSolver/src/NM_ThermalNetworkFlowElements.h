@@ -453,8 +453,7 @@ public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	TNHeatPumpIdealCarnot(unsigned int flowElementId,
 						  const NANDRAD::HydraulicFluid & fluid,
-						  const NANDRAD::HydraulicNetworkComponent & comp,
-						  const NANDRAD::HydraulicNetworkControlElement *controlElement);
+						  const NANDRAD::HydraulicNetworkElement & e);
 
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
@@ -495,6 +494,8 @@ public:
 	void internalDerivatives(double *ydot) override;
 
 private:
+	/*! Cached parametrization for heat pump flow element. */
+	const NANDRAD::HydraulicNetworkElement	*m_flowElement = nullptr;
 
 	/*! Temperatures from schedules [K] which will be set through input references */
 	const double							*m_condenserMeanTemperatureRef = nullptr;
@@ -527,14 +528,8 @@ private:
 	/*! Electrical power of the heat pump compressor [W] */
 	double									m_electricalPower = 999;
 
-	/*! Electrical power of the heat pump compressor [W] */
+	/*! Temperature difference across flow element [K]. */
 	double									m_temperatureDifference = 999;
-
-	/*! Reference to the controller parametrization object.*/
-	const NANDRAD::HydraulicNetworkControlElement
-											*m_controlElement = nullptr;
-
-	NANDRAD::HydraulicNetworkComponent::HeatPumpIntegration m_heatpumpIntegration = NANDRAD::HydraulicNetworkComponent::NUM_HP;
 
 };
 

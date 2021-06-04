@@ -558,16 +558,14 @@ void TNElementWithExternalHeatLoss::internalDerivatives(double * ydot) {
 
 TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(unsigned int flowElementId,
 											 const NANDRAD::HydraulicFluid & fluid,
-											 const NANDRAD::HydraulicNetworkComponent & comp,
-											 const NANDRAD::HydraulicNetworkControlElement *controlElement):
-	TNElementWithExternalHeatLoss(fluid, comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value),
-	m_controlElement(controlElement)
+											 const NANDRAD::HydraulicNetworkElement & e) :
+	TNElementWithExternalHeatLoss(fluid, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value),
+	m_flowElement(&e)
 {
 	m_flowElementId = flowElementId;
-	m_fluidVolume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
-	m_carnotEfficiency = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiency].value;
-	m_condenserMaximumHeatFlux = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumHeatingPower].value;
-	m_heatpumpIntegration = comp.m_heatPumpIntegration;
+	m_fluidVolume = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
+	m_carnotEfficiency = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiency].value;
+	m_condenserMaximumHeatFlux = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumHeatingPower].value;
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 }
@@ -580,9 +578,9 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 
 	const double MIN_TEMPERATURE_DIFFERENCE_CONDENSER = 4; // K
 
-	switch (m_heatpumpIntegration ) {
+	switch (m_flowElement->m_component->m_modelType) {
 
-		case NANDRAD::HydraulicNetworkComponent::HP_SourceSide: {
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide: {
 			// initialize all results with 0
 			m_evaporatorHeatFlux = 0;
 			m_condenserHeatFlux = 0;
@@ -638,7 +636,7 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 		} break; // HP_SourceSide
 
 
-		case NANDRAD::HydraulicNetworkComponent::HP_SupplySide:{
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide:{
 			// initialize all results with 0
 			m_evaporatorHeatFlux = 0;
 			m_COP = 0.0;
@@ -686,18 +684,16 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 
 		} break; // HP_SupplySide
 
-		case NANDRAD::HydraulicNetworkComponent::HP_SupplyAndSourceSide:
-		case NANDRAD::HydraulicNetworkComponent::NUM_HP:
-			break;
+		default: ; // just to make compiler happy
 	}
 }
 
 
 void TNHeatPumpIdealCarnot::inputReferences(std::vector<InputReference> & inputRefs) const {
 
-	switch (m_heatpumpIntegration) {
+	switch (m_flowElement->m_component->m_modelType) {
 
-		case NANDRAD::HydraulicNetworkComponent::HP_SourceSide: {
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide: {
 			InputReference ref;
 			ref.m_id = m_flowElementId;
 			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
@@ -706,7 +702,7 @@ void TNHeatPumpIdealCarnot::inputReferences(std::vector<InputReference> & inputR
 			inputRefs.push_back(ref);
 		} break;
 
-		case NANDRAD::HydraulicNetworkComponent::HP_SupplySide: {
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide: {
 			InputReference ref;
 			ref.m_id = m_flowElementId;
 			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
@@ -715,27 +711,21 @@ void TNHeatPumpIdealCarnot::inputReferences(std::vector<InputReference> & inputR
 			inputRefs.push_back(ref);
 		} break;
 
-		case NANDRAD::HydraulicNetworkComponent::HP_SupplyAndSourceSide:
-		case NANDRAD::HydraulicNetworkComponent::NUM_HP:
-			break;
+		default : ;
 	}
 }
 
 
 void TNHeatPumpIdealCarnot::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
-
 	// now store the pointer returned for our input ref request and advance the iterator by one
-	switch (m_heatpumpIntegration) {
-
-		case NANDRAD::HydraulicNetworkComponent::HP_SourceSide:
+	switch (m_flowElement->m_component->m_modelType) {
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide:
 			m_condenserMeanTemperatureRef = *(resultValueRefs++); // CondenserMeanTemperatureSchedule
 			break;
-		case NANDRAD::HydraulicNetworkComponent::HP_SupplySide:
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide:
 			m_condenserOutletSetpointRef = *(resultValueRefs++); // CondenserOutletSetpointSchedule
 			break;
-		case NANDRAD::HydraulicNetworkComponent::HP_SupplyAndSourceSide:
-		case NANDRAD::HydraulicNetworkComponent::NUM_HP:
-			break;
+		default : ;
 	}
 }
 

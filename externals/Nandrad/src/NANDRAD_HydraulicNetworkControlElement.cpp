@@ -17,7 +17,8 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<NANDRAD::
 	try {
 		// check individual configuations for different controller properties
 		switch (m_controlledProperty) {
-			case CP_TemperatureDifference: {
+			case CP_TemperatureDifference:
+			case CP_TemperatureDifferenceOfFollowingElement: {
 				if (m_controllerType == NUM_CT)
 					throw IBK::Exception("Missing attribute 'controllerType'.", FUNC_ID);
 
@@ -86,10 +87,11 @@ std::vector<HydraulicNetworkControlElement::ControlledProperty> HydraulicNetwork
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
 			// we could control mass flux here as well ...
 		case HydraulicNetworkComponent::MT_DynamicPipe:
-		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:
-		case HydraulicNetworkComponent::NUM_MT:		// just for compiler
-			return {};
+		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide:
+		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide:
+		case HydraulicNetworkComponent::NUM_MT: ;		// just for compiler
 	}
+	return {};
 }
 
 

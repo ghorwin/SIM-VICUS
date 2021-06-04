@@ -47,7 +47,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Pipe with a discretized fluid volume and heat exchange");
 	tr("Pump with constant/externally defined pressure");
 	tr("Simple heat exchanger with given heat flux");
-	tr("Heat pump with variable heating power based on carnot efficiency");
+	tr("Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)");
+	tr("Heat pump with variable heating power based on carnot efficiency, installed at supply side");
 	tr("Valve with associated control model");
 	tr("Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)");
 	tr("Pressure loss coefficient for the component (zeta-value)");
@@ -57,9 +58,6 @@ KeywordListQt::KeywordListQt() {
 	tr("Maximum width of discretized volumes in pipe");
 	tr("Carnot efficiency eta");
 	tr("Maximum heating power");
-	tr("The network is connected to the hot side (supply) of the heat pump");
-	tr("The network is connected to the cold side (source) of the heat pump");
-	tr("Two networks are connected, one to the cold side, the other to the hot side of the heat pump");
 	tr("Control temperature difference of this element");
 	tr("Control temperature difference of the following element");
 	tr("Control zone thermostat values");

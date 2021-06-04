@@ -109,7 +109,6 @@ public:
 	// *** Static functions ***
 
 	static std::vector<ModelType> availableHeatExchangeTypes(const HydraulicNetworkComponent::ModelType modelType);
-
 };
 
 

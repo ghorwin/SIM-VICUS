@@ -159,9 +159,11 @@ std::vector<HydraulicNetworkHeatExchange::ModelType> NANDRAD::HydraulicNetworkHe
 		case HydraulicNetworkComponent::MT_SimplePipe:
 			return {NUM_T, T_TemperatureConstant, T_TemperatureSpline, T_HeatLossConstant, T_HeatLossSpline, T_TemperatureZone, T_TemperatureConstructionLayer};
 		case HydraulicNetworkComponent::MT_DynamicPipe:
-			return {NUM_T, T_TemperatureConstant, T_TemperatureSpline, T_HeatLossConstant, T_HeatLossSpline, T_TemperatureZone, T_TemperatureConstructionLayer};
-		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:
-			return {T_HeatLossSplineCondenser, T_TemperatureSplineEvaporator};  // must not be adiabatic
+			return {NUM_T, T_TemperatureConstant, T_TemperatureSpline, T_TemperatureZone, T_TemperatureConstructionLayer};
+		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide:
+			return {T_HeatLossSplineCondenser};  // must not be adiabatic
+		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide:
+			return {T_TemperatureSplineEvaporator};  // must not be adiabatic
 		case HydraulicNetworkComponent::MT_HeatExchanger:
 			return {T_HeatLossConstant, T_HeatLossSpline}; // must not be adiabatic
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
