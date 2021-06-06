@@ -1441,10 +1441,131 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 				p.m_models.m_internalLoadsModels.push_back(intLoad);
 			}
 		}
+		// *** check for ideal heating and cooling in zone template ***
+
+		VICUS::ZoneTemplate::SubTemplateType type = VICUS::ZoneTemplate::ST_IdealHeatingCooling;
+		/// TODO Dirk->Andreas ich versteh immer noch nicht zt->usedReference
+		/// im Beispiel unten sollte doch jetzt ST_IdealHeat... raus kommen oder nicht?
+		/// eingestellt habe ich im ZoneTemplate nur ein Thermostat und ein Ideal System
+		auto testDIrk = zt->usedReference(type);
+		if(zt->m_idReferences[type] != VICUS::INVALID_ID){
+			IDType idSubTemp = zt->m_idReferences[type];
+			ztBools[counter].m_subTemplateId[type] = idSubTemp;
+			const VICUS::ZoneIdealHeatingCooling * ideal = element(m_embeddedDB.m_zoneIdealHeatingCooling, idSubTemp);
+
+			if(ideal != nullptr){
+				VICUS::ZoneTemplate::SubTemplateType thermoType = VICUS::ZoneTemplate::ST_ControlThermostat;
+				if(zt->m_idReferences[thermoType] != VICUS::INVALID_ID){
+					ztBools[counter].m_subTemplateId[thermoType] = zt->m_idReferences[thermoType];
+					const VICUS::ZoneControlThermostat * thermo =  element(m_embeddedDB.m_zoneControlThermostat,
+																		   zt->m_idReferences[thermoType]);
+					if(thermo != nullptr){
+						//first create an obj list for thermostat
+						NANDRAD::Thermostat thermoN;
+						thermoN.m_displayName = zt->m_displayName.string();
+						thermoN.m_id = uniqueIdWithPredef2(Profile, 1, m_idMaps);
+						thermoN.m_modelType = NANDRAD::Thermostat::MT_Scheduled;
+						thermoN.m_zoneObjectList = createUniqueNandradObjListAndName(zt->m_displayName.string(), allRoomIdsForThisZt, p,
+														  NANDRAD::ModelInputReference::MRT_ZONE);
+
+						//TODO Katja change SIM-VICUS Tolerance to one value for heating AND cooling
+						NANDRAD::KeywordList::setParameter(thermoN.m_para, "Thermostat::para_t",
+														   NANDRAD::Thermostat::P_TemperatureTolerance,
+														   thermo->m_para[VICUS::ZoneControlThermostat::P_ToleranceHeating].get_value("K"));
+						//add setpoint schedule in schedules
+						unsigned int heatingSchedId = thermo->m_heatingSetpointScheduleId;
+						unsigned int coolingSchedId = thermo->m_coolingSetpointScheduleId;
+
+						bool foundHeatOrCoolSched = false;
+						if(heatingSchedId != VICUS::INVALID_ID){
+							//check if schedule is in data base
+							const VICUS::Schedule *heatingSched = element(m_embeddedDB.m_schedules, heatingSchedId);
+							if(heatingSched != nullptr){
+								foundHeatOrCoolSched = true;
+								if(!heatingSched->isValid())
+									IBK::Exception(IBK::FormatString("Heating schedule with id %1 and name '%2' is not in valid.")
+												   .arg(heatingSchedId).arg(heatingSched->m_displayName.string()), FUNC_ID);
+								std::string heatSchedParaName = NANDRAD::KeywordList::Keyword("Thermostat::para_t", NANDRAD::Thermostat::P_HeatingSetpoint);
+										heatSchedParaName += "Schedule [C]";
+								//TODO Dirk hier unbedingt testen wie sich das mit einer Zonenliste verhält in der die internen
+								//Lasten nicht flächenbezogen eingestellt sind
+								addVicusScheduleToNandradProject(*heatingSched, heatSchedParaName, p, thermoN.m_zoneObjectList);
+							}
+						}
+						if(coolingSchedId != VICUS::INVALID_ID){
+							//check if schedule is in data base
+							const VICUS::Schedule *coolingSched = element(m_embeddedDB.m_schedules, coolingSchedId);
+							if(coolingSched != nullptr){
+								foundHeatOrCoolSched = true;
+								if(!coolingSched->isValid())
+									IBK::Exception(IBK::FormatString("Coolting schedule with id %1 and name '%2' is not in valid.")
+												   .arg(coolingSchedId).arg(coolingSched->m_displayName.string()), FUNC_ID);
+								std::string coolSchedParaName = NANDRAD::KeywordList::Keyword("Thermostat::para_t", NANDRAD::Thermostat::P_CoolingSetpoint);
+										coolSchedParaName += "Schedule [C]";
+								//TODO Dirk hier unbedingt testen wie sich das mit einer Zonenliste verhält in der die internen
+								//Lasten nicht flächenbezogen eingestellt sind
+								addVicusScheduleToNandradProject(*coolingSched, coolSchedParaName, p, thermoN.m_zoneObjectList);
+							}
+						}
+
+						if(!foundHeatOrCoolSched){
+							throw IBK::Exception(IBK::FormatString("No valid heating or cooling schedules were found. "
+											"Error in Thermostat #%1 with name '%2'").arg(thermo->m_id).arg(thermo->m_displayName.string()), FUNC_ID);
+						}
+
+						//we dont support RadiantTemperature
+						//TODO Dirk ändern in SIM-VICUS Thermostat
+						thermoN.m_temperatureType =  thermo->m_controlValue == VICUS::ZoneControlThermostat::CV_AirTemperature ?
+																			  NANDRAD::Thermostat::TT_AirTemperature :
+																			  NANDRAD::Thermostat::TT_OperativeTemperature;
+
+						//for now only provide p controller
+						thermoN.m_controllerType = NANDRAD::Thermostat::CT_PController;
+						//add thermostat to NANDRAD project
+						p.m_models.m_thermostats.push_back(thermoN);
+
+						//create an ideal heating cooling element
+						NANDRAD::IdealHeatingCoolingModel idealN;
+						idealN.m_id = uniqueIdWithPredef2(Profile, 1, m_idMaps);
+						idealN.m_zoneObjectList = thermoN.m_zoneObjectList;
+
+						// fill parameter
+						double heatVal = ideal->m_para[VICUS::ZoneIdealHeatingCooling::P_HeatingLimit].empty() ?
+									10000 : ideal->m_para[VICUS::ZoneIdealHeatingCooling::P_HeatingLimit].get_value("W/m2");
+
+						NANDRAD::KeywordList::setParameter(idealN.m_para, "IdealHeatingCoolingModel::para_t",
+														   NANDRAD::IdealHeatingCoolingModel::P_MaxHeatingPowerPerArea,
+														   heatVal);
+						double coolVal = ideal->m_para[VICUS::ZoneIdealHeatingCooling::P_CoolingLimit].empty() ?
+									10000 : ideal->m_para[VICUS::ZoneIdealHeatingCooling::P_CoolingLimit].get_value("W/m2");
+
+						NANDRAD::KeywordList::setParameter(idealN.m_para, "IdealHeatingCoolingModel::para_t",
+														   NANDRAD::IdealHeatingCoolingModel::P_MaxCoolingPowerPerArea,
+														   coolVal);
+
+						//add ideal to project
+						p.m_models.m_idealHeatingCoolingModels.push_back(idealN);
+
+					}
+
+				}
+				else{
+					//no thermostat --> no simulation possible
+					///TODO Dirk->Andreas wie sagen wir das dem Nutzer? Kommt da ein Dialog?
+					throw IBK::Exception(IBK::FormatString("Thermostat for ideal heating/cooling '%1' with #%2 is not defined.")
+										 .arg(ideal->m_displayName).arg(ideal->m_id), FUNC_ID);
+				}
+
+			}
+
+
+
+		}
+
 
 		// *** check for thermostat in zone template ***
 
-		VICUS::ZoneTemplate::SubTemplateType type = VICUS::ZoneTemplate::ST_ControlThermostat;
+		type = VICUS::ZoneTemplate::ST_ControlThermostat;
 		if(zt->usedReference(type) != VICUS::ZoneTemplate::NUM_ST){
 			ztBools[counter].m_subTemplateId[type] = zt->m_idReferences[type];
 			//TODO Dirk
@@ -1466,6 +1587,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 			bool isVenti = idSubTempVent != VICUS::INVALID_ID;
 
 			VentiType ventiType = Infiltration;
+			//check which type
 			if(isInf && !isVenti)				ventiType = Infiltration;
 			else if(!isInf && isVenti)			ventiType = Ventilation;
 			else if(isInf && isVenti)			ventiType = InfAndVenti;
