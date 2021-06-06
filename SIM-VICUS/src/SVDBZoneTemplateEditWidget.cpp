@@ -295,34 +295,16 @@ void SVDBZoneTemplateEditWidget::on_toolButtonSelectSubComponent_clicked() {
 
 void SVDBZoneTemplateEditWidget::on_toolButtonRemoveSubComponent_clicked() {
 
-	VICUS::ZoneTemplate::SubTemplateType t = m_currentSubTemplateType;
 	m_dbModel->deleteChildItem( m_dbModel->indexById(m_current->m_id), m_currentSubTemplateType);
 
-	switch (t) {
-		case VICUS::ZoneTemplate::ST_Infiltration:
-			m_ui->pushButtonAddInfiltration->setChecked(false);
-		break;
-		case VICUS::ZoneTemplate::ST_VentilationNatural:
-			m_ui->pushButtonAddVentilationNatural->setChecked(false);
-		break;
-		case VICUS::ZoneTemplate::ST_IntLoadPerson:
-			m_ui->pushButtonAddPersonLoad->setChecked(false);
-		break;
-		case VICUS::ZoneTemplate::ST_IntLoadEquipment:
-			m_ui->pushButtonAddElectricLoad->setChecked(false);
-		break;
-		case VICUS::ZoneTemplate::ST_IntLoadLighting:
-			m_ui->pushButtonAddLightLoad->setChecked(false);
-		break;
-		case VICUS::ZoneTemplate::ST_ControlThermostat:
-			m_ui->pushButtonAddThermostat->setChecked(false);
-		break;
-		case VICUS::ZoneTemplate::ST_IdealHeatingCooling:
-			m_ui->pushButtonAddIdealHeatingCooling->setChecked(false);
-		break;
-	}
-//	emit selectSubTemplate(m_current->m_id, VICUS::ZoneTemplate::NUM_ST);
-	refreshUi();
+	// model is updated, view shows state before model update
+	// with different node selected (parent or child)
+	// we need make the treeview to tell the dialog that his index
+	// has changed (triggers selectSubTemplate)
+	// because the treeview
+
+	// m_currentSubTemplate is now parent or an child element
+	emit selectSubTemplate(m_current->m_id, m_currentSubTemplateType);
 }
 
 
