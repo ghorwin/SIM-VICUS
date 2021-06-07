@@ -1550,13 +1550,15 @@ void NandradModel::initNetworks() {
 			nwmodel->setup();
 			// register model for evaluation
 			registerStateDependendModel(nwmodel);
+			// register model as time dependent (to backup Newton solution as starting value for next call)
+			m_timeModelContainer.push_back(nwmodel);
 			// add thermal network states model
 			if (nw.m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
 				ThermalNetworkStatesModel *statesModel = new ThermalNetworkStatesModel(nw.m_id, nw.m_displayName);
 				m_modelContainer.push_back(statesModel); // transfer ownership
 				// initialize
 				statesModel->setup(nw, *nwmodel, m_project->m_simulationParameter);
-				// register model as time dependend (spline values update needed for each time step)
+				// register model as time dependent (spline values update needed for each time step)
 				m_timeModelContainer.push_back(statesModel);
 				// add to thermal network states container
 				m_networkStatesModelContainer.push_back(statesModel);

@@ -24,6 +24,7 @@
 
 #include "NM_AbstractModel.h"
 #include "NM_AbstractStateDependency.h"
+#include "NM_AbstractTimeDependency.h"
 
 namespace NANDRAD {
 	class HydraulicNetwork;
@@ -49,7 +50,7 @@ struct Network;
 	The hydraulic network depends at runtime from other model inputs, for example through controlled valve
 	settings (may be supplied via scheduled parameters) and thermal properties (that may impact kinematic fluid viscosity).
 */
-class HydraulicNetworkModel : public AbstractModel, public AbstractStateDependency {
+class HydraulicNetworkModel : public AbstractModel, public AbstractStateDependency, public AbstractTimeDependency {
 public:
 	/*! Constructor. */
 	HydraulicNetworkModel(const NANDRAD::HydraulicNetwork & nw,
@@ -122,6 +123,14 @@ public:
 	int update() override;
 
 
+	// *** Re-implemented from AbstractTimeDependency
+
+	/*! Dummy, does nothing */
+	int setTime(double t) override { (void)t; return 0; }
+
+	/*! Stores last solution from Newton solver as new initial solution for next call. */
+	void stepCompleted(double t) override;
+
 private:
 
 	/*! Construction instance ID. */
@@ -163,7 +172,9 @@ private:
 
 	friend class ThermalNetworkStatesModel;
 
+
 };
+
 
 } // namespace NANDRAD_MODEL
 

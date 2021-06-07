@@ -429,6 +429,11 @@ int HydraulicNetworkModel::update() {
 }
 
 
+void HydraulicNetworkModel::stepCompleted(double /*t*/) {
+	m_p->storeSolution();
+}
+
+
 // *** HydraulicNetworkModelImpl members ***
 
 // constants that control Jacobian matrix generation
@@ -789,6 +794,12 @@ int HydraulicNetworkModelImpl::solve() {
 	}
 
 }
+
+
+void HydraulicNetworkModelImpl::storeSolution() {
+	std::memcpy(m_yLast.data(), m_y.data(), sizeof(double)*m_y.size());
+}
+
 
 void HydraulicNetworkModelImpl::jacobianInit() {
 

@@ -74,6 +74,9 @@ public:
 	*/
 	int solve();
 
+	/*! Copies current solution in m_y to m_yLast vector. */
+	void storeSolution();
+
 	/*! Container for flow element implementation objects.
 		Need to be populated before calling setup.
 	*/
