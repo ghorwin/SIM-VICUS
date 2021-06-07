@@ -630,7 +630,7 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 				m_evaporatorHeatFlux = m_condenserHeatFlux * (m_COP - 1) / m_COP;
 				m_heatLoss = m_evaporatorHeatFlux; // energy taken out of fluid medium
 				m_electricalPower  = m_condenserHeatFlux - m_evaporatorHeatFlux; // same as "m_condenserHeatFlux/m_COP", electrical power of heat pump
-				m_temperatureDifference = m_meanTemperature - m_inflowTemperature;
+				m_temperatureDifference = m_inflowTemperature - m_meanTemperature;
 			}
 
 		} break; // HP_SourceSide
