@@ -1342,10 +1342,10 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 							switch(pers->m_personCountMethod){
 								case VICUS::InternalLoad::PCM_PersonPerArea:
-									intLoadSched = intLoadSched.multiply(pers->m_para[VICUS::InternalLoad::P_PersonPerArea].get_value("m2"));
+									intLoadSched = intLoadSched.multiply(pers->m_para[VICUS::InternalLoad::P_PersonPerArea].get_value("Person/m2"));
 								break;
 								case VICUS::InternalLoad::PCM_AreaPerPerson: {
-									double val = pers->m_para[VICUS::InternalLoad::P_AreaPerPerson].get_value("m2");
+									double val = pers->m_para[VICUS::InternalLoad::P_AreaPerPerson].get_value("m2/Person");
 									//if value is zero do nothing
 									if(val>0)
 										intLoadSched = intLoadSched.multiply(1/val);
@@ -1596,7 +1596,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 				//create a NANDRAD natural ventilation model
 				NANDRAD::NaturalVentilationModel natVentMod;
 				natVentMod.m_displayName = zt->m_displayName.string();
-				natVentMod.m_id = uniqueIdWithPredef2(Profile, 1, m_idMaps);//VICUS::Project::uniqueId<unsigned int>(allModelIds);
+				natVentMod.m_id = uniqueIdWithPredef2(Profile, 1, m_idMaps, true);//VICUS::Project::uniqueId<unsigned int>(allModelIds);
 				//allModelIds.push_back(natVentMod.m_id);
 				natVentMod.m_zoneObjectList =
 						createUniqueNandradObjListAndName(zt->m_displayName.string(), allRoomIdsForThisZt, p,
