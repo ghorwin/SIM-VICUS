@@ -19,6 +19,9 @@
 			</Interval>
 		</SimulationParameter>
 		<SolverParameter>
+			<IBK:Parameter name="RelTol" unit="---">1e-7</IBK:Parameter>
+			<!-- The P-controller with temperature difference set point tends to lead to
+				 oscillations. With method order 1 these are dampened out much more quickly. -->
 			<IBK:IntPara name="MaxOrder">1</IBK:IntPara>
   		</SolverParameter>
 		<Zones>
@@ -59,19 +62,22 @@
 						<IBK:Parameter name="PressureLossCoefficient" unit="---">5</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 					</HydraulicNetworkComponent>
-					<HydraulicNetworkComponent id="3" modelType="HeatPumpIdealCarnot">
+					<HydraulicNetworkComponent id="3" modelType="HeatPumpIdealCarnotSourceSide">
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PressureLossCoefficient" unit="---">5</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 						<IBK:Parameter name="CarnotEfficiency" unit="---">0.4</IBK:Parameter>
 						<IBK:Parameter name="MaximumHeatingPower" unit="W">10000</IBK:Parameter>
-						<HeatPumpIntegration>SourceSide</HeatPumpIntegration>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="4" modelType="SimplePipe"/>
 				</Components>
 
 				<ControlElements>
 					<HydraulicNetworkControlElement id="1" controlledProperty="TemperatureDifferenceOfFollowingElement" controllerType="PController" >
+						<!-- This parameter related deviations from setpoint to zeta value.
+							 The larger this coefficient becomes, the stronger are temperature changes linked to mass flux changes.
+							 To avoid oscillations in the solution, you need to reduce the CVODE tolerance by setting the RelTol
+							 solver parameter. -->
 						<IBK:Parameter name="Kp" unit="---">1e5</IBK:Parameter>
 						<IBK:Parameter name="TemperatureDifferenceSetpoint" unit="K">5</IBK:Parameter>
 						<!-- Deactivate upper limit of controller result value - this is the default and could be omitted -->
@@ -107,7 +113,7 @@
 		<Schedules>
 			<WeekEndDays>Sat,Sun</WeekEndDays>
 			<ScheduleGroups>
-				<ScheduleGroup objectList="heat pump">
+				<ScheduleGroup objectList="Heat pump">
 					<Schedule type="AllDays">
 						<DailyCycles>
 							<!-- Condenser Temperature is usually 35°C for space heating and two times per day 50°C for domestic hot water-->
@@ -135,19 +141,19 @@
 				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>FlowElementHeatLoss</Quantity>
-					<ObjectListName>All flow elements</ObjectListName>
+					<ObjectListName>Heat pump</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>ControllerResultValue</Quantity>
 					<TimeType>None</TimeType>
-					<ObjectListName>All flow elements</ObjectListName>
+					<ObjectListName>Flow controller</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				<OutputDefinition>
 					<Quantity>TemperatureDifference</Quantity>
 					<TimeType>None</TimeType>
-					<ObjectListName>heat pump</ObjectListName>
+					<ObjectListName>Heat pump</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>				
 			</Definitions>
@@ -166,7 +172,11 @@
 				<FilterID>*</FilterID>
 				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>
-			<ObjectList name="heat pump">
+			<ObjectList name="Flow controller">
+				<FilterID>301</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
+			</ObjectList>			
+			<ObjectList name="Heat pump">
 				<FilterID>401</FilterID>
 				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>			
