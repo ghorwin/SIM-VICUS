@@ -621,6 +621,7 @@ void HydraulicNetworkModelImpl::setup() {
 
 	// set initial conditions (pressures and mass fluxes)
 	m_y.resize(n, 10);
+	m_yLast.resize(n, 10);
 
 	m_G.resize(n);
 	m_fluidMassFluxes.resize(m_elementCount);
@@ -681,7 +682,9 @@ int HydraulicNetworkModelImpl::solve() {
 
 	unsigned int n = m_nodeCount + m_elementCount;
 
-	std::vector<double> rhs(n);
+	// reset initial guess
+	std::vector<double> rhs(n, 0);
+	std::memcpy(m_y.data(), m_yLast.data(), sizeof(double)*n);
 
 	// now start the Newton iteration
 	int iterations = 100;

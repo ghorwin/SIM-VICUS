@@ -163,6 +163,10 @@ private:
 
 	/*! Vector with unknowns. */
 	std::vector<double>					m_y;
+	/*! Vector with solution obtained after last integration step was completed, used
+		to re-initialize solution for next step.
+	*/
+	std::vector<double>					m_yLast;
 	/*! Vector with system function. */
 	std::vector<double>					m_G;
 };
