@@ -494,6 +494,7 @@ TNPumpWithPerformanceLoss::TNPumpWithPerformanceLoss(
 	// copy component properties
 	m_fluidVolume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
 	m_pumpEfficiency = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency].value;
+	m_fractionOfMotorInefficienciesToFluidStream = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_FractionOfMotorInefficienciesToFluidStream].value;
 	// copy fluid properties
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
@@ -508,14 +509,21 @@ void TNPumpWithPerformanceLoss::setInflowTemperature(double Tinflow) {
 	// mechanical power of pump is pressure head times volumetric flow
 	// Pa * m3/s = N/m2 * m3/s = N*m/s
 
-	// calculate pump performance
-	m_mechanicalPower = m_massFlux/m_fluidDensity * m_pressureHead;
+	// mechanical power = volume flow * pressure head
+	m_mechanicalPower = std::fabs(m_massFlux/m_fluidDensity * m_pressureHead); // positive value!
 
 	// efficiency is defined as portion of total electrical power used for mechanical
 	// Pelectrical * m_pumpEfficiency = Pmechanical
 	m_electricalPower = m_mechanicalPower/m_pumpEfficiency;
-	// calculate heat flux into fluid
-	m_heatLoss = - (m_electricalPower - m_mechanicalPower);
+
+	// energy balance of pump: mechanical power + heating power = electrical power
+	double heatingPower = m_electricalPower - m_mechanicalPower; // always a positive value!
+
+	// compute fraction of heat that is supplied to the fluid
+	m_heatLoss = - m_fractionOfMotorInefficienciesToFluidStream * heatingPower; // negative, because we heat up the fluid
+
+	// store heat flux to the environment as optional output
+	m_heatLossToEnvironment = heatingPower + m_heatLoss; // mind: m_heatLoss is negative
 }
 
 

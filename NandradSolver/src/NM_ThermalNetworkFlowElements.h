@@ -412,11 +412,17 @@ private:
 	/*! Pump efficiency [0...1] */
 	double							m_pumpEfficiency = -999;
 
+	/*! FractionOfMotorInefficienciesToFluidStream [0...1] */
+	double							m_fractionOfMotorInefficienciesToFluidStream = -999;
+
 	/*! Requested electrical power for current working point [W] */
 	double							m_electricalPower = -999;
 
 	/*! Mechanical power for current working point [W] */
 	double							m_mechanicalPower = -999;
+
+	/*! Heat loss to the environment [W]. */
+	double							m_heatLossToEnvironment = 888;
 };
 
 

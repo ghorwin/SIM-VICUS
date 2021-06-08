@@ -303,10 +303,11 @@ Für das Model `ConstantPressurePump` werden diese Parameter benötigt:
 |Name | Einheit | Beschreibung | Wertebereich | Verwendung
 | `PressureHead` | Pa | Konstante Druckhöhe, welche die Pumpe erzeugt | beliebig | 
 | `PumpEfficiency` | - | Gesamtwirkungsgrad der Pumpe | 0...1,{nbsp}>{nbsp}0.0 | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `FractionOfMotorInefficienciesToFluidStream` | - | Anteil der ans Fluid abgegebenen Wärmeverluste der Pumpe (Standardwert 100%, Nassläufer) | 0...1,{nbsp}>{nbsp}0.0 | _optional für Modelltyp_ `ThermalHydraulicNetwork`
 | `Volume` | m3 | Fluid volume inside the pump | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
 |====================
 
-Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definiert. D.h. die durch Volumenstrom und Druckhöhe gegebene mechanische Arbeit entspricht diesem Anteil der Gesamtarbeit. Die Differenz der Leistungen wird als Wärmequelle dem Fluid aufgeprägt.
+Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definiert. D.h. die durch Volumenstrom und Druckhöhe gegebene mechanische Arbeit entspricht diesem Anteil der Gesamtarbeit. Die Differenz der Leistungen wird als anteilig entsprechend des Parameters `FractionOfMotorInefficienciesToFluidStream` als Wärmequelle dem Fluid aufgeprägt.
 
 
 ### ModellTyp: HeatExchanger

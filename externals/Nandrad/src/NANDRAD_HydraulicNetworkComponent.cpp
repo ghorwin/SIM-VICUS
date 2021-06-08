@@ -62,6 +62,11 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) {
 			checkModelParameter(m_para[i], i);
 		}
 
+		// check optional parameters, if given
+		if (!m_para[P_FractionOfMotorInefficienciesToFluidStream].name.empty())
+			checkModelParameter(m_para[P_FractionOfMotorInefficienciesToFluidStream], P_FractionOfMotorInefficienciesToFluidStream);
+		else
+			m_para[P_FractionOfMotorInefficienciesToFluidStream].value = 1; // set default value
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Missing/invalid parameters for component '%1' (#%2) of type %3.")
@@ -100,7 +105,7 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 	else {
 		switch (modelType) {
 			case MT_ConstantPressurePump:
-				return {P_PressureHead, P_PumpEfficiency, P_Volume};
+				return {P_PressureHead, P_PumpEfficiency, P_Volume}; // Note: P_FractionOfMotorInefficienciesToFluidStream is optional and defaults to 1
 			case MT_HeatPumpIdealCarnotSupplySide:
 			case MT_HeatPumpIdealCarnotSourceSide:
 				// TODO Hauke, check mandatory parameters for both heat pump variants
@@ -137,7 +142,8 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 		}
 		// value must be >0 and <1
 		case P_CarnotEfficiency:
-		case P_PumpEfficiency: {
+		case P_PumpEfficiency:
+		case P_FractionOfMotorInefficienciesToFluidStream: {
 			para.checkedValue(name, unit, unit, 0, false, 1.0, true, nullptr);
 			break;
 		}

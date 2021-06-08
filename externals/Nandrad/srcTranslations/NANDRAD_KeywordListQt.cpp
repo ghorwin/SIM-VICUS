@@ -54,6 +54,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Pressure loss coefficient for the component (zeta-value)");
 	tr("Pressure head for a pump");
 	tr("Pump efficiency");
+	tr("Fraction of pump heat loss due to inefficiency that heats up the fluid");
 	tr("Water or air volume of the component");
 	tr("Maximum width of discretized volumes in pipe");
 	tr("Carnot efficiency eta");

@@ -206,10 +206,11 @@ namespace NANDRAD {
 				case 1 : return "PressureLossCoefficient";
 				case 2 : return "PressureHead";
 				case 3 : return "PumpEfficiency";
-				case 4 : return "Volume";
-				case 5 : return "PipeMaxDiscretizationWidth";
-				case 6 : return "CarnotEfficiency";
-				case 7 : return "MaximumHeatingPower";
+				case 4 : return "FractionOfMotorInefficienciesToFluidStream";
+				case 5 : return "Volume";
+				case 6 : return "PipeMaxDiscretizationWidth";
+				case 7 : return "CarnotEfficiency";
+				case 8 : return "MaximumHeatingPower";
 			} break;
 			// HydraulicNetworkControlElement::ControlledProperty
 			case 11 :
@@ -809,10 +810,11 @@ namespace NANDRAD {
 				case 1 : return "PressureLossCoefficient";
 				case 2 : return "PressureHead";
 				case 3 : return "PumpEfficiency";
-				case 4 : return "Volume";
-				case 5 : return "PipeMaxDiscretizationWidth";
-				case 6 : return "CarnotEfficiency";
-				case 7 : return "MaximumHeatingPower";
+				case 4 : return "FractionOfMotorInefficienciesToFluidStream";
+				case 5 : return "Volume";
+				case 6 : return "PipeMaxDiscretizationWidth";
+				case 7 : return "CarnotEfficiency";
+				case 8 : return "MaximumHeatingPower";
 			} break;
 			// HydraulicNetworkControlElement::ControlledProperty
 			case 11 :
@@ -1413,10 +1415,11 @@ namespace NANDRAD {
 				case 1 : return "Pressure loss coefficient for the component (zeta-value)";
 				case 2 : return "Pressure head for a pump";
 				case 3 : return "Pump efficiency";
-				case 4 : return "Water or air volume of the component";
-				case 5 : return "Maximum width of discretized volumes in pipe";
-				case 6 : return "Carnot efficiency eta";
-				case 7 : return "Maximum heating power";
+				case 4 : return "Fraction of pump heat loss due to inefficiency that heats up the fluid";
+				case 5 : return "Water or air volume of the component";
+				case 6 : return "Maximum width of discretized volumes in pipe";
+				case 7 : return "Carnot efficiency eta";
+				case 8 : return "Maximum heating power";
 			} break;
 			// HydraulicNetworkControlElement::ControlledProperty
 			case 11 :
@@ -2016,10 +2019,11 @@ namespace NANDRAD {
 				case 1 : return "---";
 				case 2 : return "Pa";
 				case 3 : return "---";
-				case 4 : return "m3";
-				case 5 : return "m";
-				case 6 : return "---";
-				case 7 : return "W";
+				case 4 : return "---";
+				case 5 : return "m3";
+				case 6 : return "m";
+				case 7 : return "---";
+				case 8 : return "W";
 			} break;
 			// HydraulicNetworkControlElement::ControlledProperty
 			case 11 :
@@ -2623,6 +2627,7 @@ namespace NANDRAD {
 				case 5 : return "#FFFFFF";
 				case 6 : return "#FFFFFF";
 				case 7 : return "#FFFFFF";
+				case 8 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkControlElement::ControlledProperty
 			case 11 :
@@ -3226,6 +3231,7 @@ namespace NANDRAD {
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 				case 7 : return std::numeric_limits<double>::quiet_NaN();
+				case 8 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkControlElement::ControlledProperty
 			case 11 :
@@ -3774,7 +3780,7 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::ModelType
 			case 9 : return 7;
 			// HydraulicNetworkComponent::para_t
-			case 10 : return 8;
+			case 10 : return 9;
 			// HydraulicNetworkControlElement::ControlledProperty
 			case 11 : return 4;
 			// HydraulicNetworkControlElement::ControllerType
@@ -3948,7 +3954,7 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::ModelType
 			case 9 : return 6;
 			// HydraulicNetworkComponent::para_t
-			case 10 : return 7;
+			case 10 : return 8;
 			// HydraulicNetworkControlElement::ControlledProperty
 			case 11 : return 3;
 			// HydraulicNetworkControlElement::ControllerType

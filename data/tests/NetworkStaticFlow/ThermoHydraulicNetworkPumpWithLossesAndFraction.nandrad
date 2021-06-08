@@ -50,6 +50,7 @@
 						<IBK:Parameter name="PressureHead" unit="Pa">1000</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 						<IBK:Parameter name="PumpEfficiency" unit="---">0.4</IBK:Parameter>
+						<IBK:Parameter name="FractionOfMotorInefficienciesToFluidStream" unit="---">0.5</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" modelType="SimplePipe"/>
 				</Components>

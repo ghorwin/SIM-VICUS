@@ -54,6 +54,7 @@ public:
 		P_PressureLossCoefficient,				// Keyword: PressureLossCoefficient				[---]	'Pressure loss coefficient for the component (zeta-value)'
 		P_PressureHead,							// Keyword: PressureHead						[Pa]	'Pressure head for a pump'
 		P_PumpEfficiency,						// Keyword: PumpEfficiency						[---]	'Pump efficiency'
+		P_FractionOfMotorInefficienciesToFluidStream,	// Keyword: FractionOfMotorInefficienciesToFluidStream	[---]	'Fraction of pump heat loss due to inefficiency that heats up the fluid'
 		P_Volume,								// Keyword: Volume								[m3]	'Water or air volume of the component'
 		P_PipeMaxDiscretizationWidth,			// Keyword: PipeMaxDiscretizationWidth			[m]		'Maximum width of discretized volumes in pipe'
 		P_CarnotEfficiency,						// Keyword: CarnotEfficiency					[---]	'Carnot efficiency eta'
