@@ -1181,6 +1181,21 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 	std::vector<ztBool>	ztBools(zoneTemplateIdToObjListNameToRoomIds.size());
 	unsigned int counter = 0;
 
+	//create a zero-value schedule for internal loads later
+	VICUS::Schedule zeroValueSched;
+	zeroValueSched.m_periods.push_back(VICUS::ScheduleInterval());
+	VICUS::ScheduleInterval & zeroSchedInt = zeroValueSched.m_periods.back();
+	zeroSchedInt.m_intervalStartDay = 0;
+	zeroSchedInt.m_displayName.setEncodedString("Zero Value");
+	zeroSchedInt.m_dailyCycles.push_back(VICUS::DailyCycle());
+	VICUS::DailyCycle &zeroDC = zeroSchedInt.m_dailyCycles.back();
+	zeroDC.m_timePoints.push_back(0);
+	zeroDC.m_values.push_back(0);
+	zeroDC.m_dayTypes = std::vector<int>{NANDRAD::Schedule::ST_MONDAY, NANDRAD::Schedule::ST_TUESDAY, NANDRAD::Schedule::ST_WEDNESDAY,
+			NANDRAD::Schedule::ST_THURSDAY, NANDRAD::Schedule::ST_FRIDAY, NANDRAD::Schedule::ST_SATURDAY, NANDRAD::Schedule::ST_SUNDAY};
+
+
+
 	//loop for zone templates
 	for (const std::pair<unsigned int,std::map< double,  std::vector<unsigned int>>> &ob : zoneTemplateIdToObjListNameToRoomIds) {
 		//take zone template
@@ -1199,10 +1214,12 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 		ztBools[counter].m_subTemplateId.resize(VICUS::ZoneTemplate::NUM_ST, VICUS::INVALID_ID);
 
 		//set of available internal load enums
-		std::set<VICUS::ZoneTemplate::SubTemplateType> intLoadEnums;
+		std::set<VICUS::ZoneTemplate::SubTemplateType> intLoadEnums{VICUS::ZoneTemplate::ST_IntLoadEquipment,
+																	VICUS::ZoneTemplate::ST_IntLoadPerson,
+																   VICUS::ZoneTemplate::ST_IntLoadLighting};
 
 		//fill up intLoadEnums
-
+		/*
 		if(zt->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadEquipment] != VICUS::INVALID_ID)
 			intLoadEnums.insert(VICUS::ZoneTemplate::ST_IntLoadEquipment);
 		if(zt->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson] != VICUS::INVALID_ID)
@@ -1211,6 +1228,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 			intLoadEnums.insert(VICUS::ZoneTemplate::ST_IntLoadLighting);
 		if(zt->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadOther] != VICUS::INVALID_ID)
 			intLoadEnums.insert(VICUS::ZoneTemplate::ST_IntLoadOther);
+		*/
 
 		//check all internal loads for area depending
 		for(auto e : intLoadEnums){
@@ -1287,6 +1305,9 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 				NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_LightingRadiationFraction, 0);
 				NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_PersonRadiationFraction, 0);
 
+				//first create for all internal loads a zero-value schedule
+
+
 				enum posIntLoad{
 					P_Person,
 					P_Electric,
@@ -1312,62 +1333,67 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 							//check valid status
 							const VICUS::InternalLoad *pers = element(m_embeddedDB.m_internalLoads, ztBools[counter].m_subTemplateId[e]);
 							if(pers == nullptr)
-								break;
-							unsigned int schedId = pers->m_activityScheduleId;
-							const VICUS::Schedule *schedAct = element(m_embeddedDB.m_schedules, schedId);
-							if(schedAct == nullptr)
-								IBK::Exception(IBK::FormatString("Activity schedule with id %1 is not in database.")
-											   .arg(schedId), FUNC_ID);
-							if(!schedAct->isValid())
-								IBK::Exception(IBK::FormatString("Activity schedule with id %1 and name '%2' is not in valid.")
-											   .arg(schedId).arg(schedAct->m_displayName.string()), FUNC_ID);
+								addVicusScheduleToNandradProject(zeroValueSched,subTempTypeToNameWithUnit[VICUS::ZoneTemplate::SubTemplateType(e)],
+									p, uniqueName);
+							else{
+								unsigned int schedId = pers->m_activityScheduleId;
+								const VICUS::Schedule *schedAct = element(m_embeddedDB.m_schedules, schedId);
+								if(schedAct == nullptr)
+									IBK::Exception(IBK::FormatString("Activity schedule with id %1 is not in database.")
+												   .arg(schedId), FUNC_ID);
+								if(!schedAct->isValid())
+									IBK::Exception(IBK::FormatString("Activity schedule with id %1 and name '%2' is not in valid.")
+												   .arg(schedId).arg(schedAct->m_displayName.string()), FUNC_ID);
 
-							unsigned int schedId2 = pers->m_occupancyScheduleId;
-							const VICUS::Schedule *schedOcc = element(m_embeddedDB.m_schedules, schedId2);
-							//const VICUS::Schedule *schedOcc = const_cast<VICUS::Schedule *>(db.m_schedules[schedId2]);
-							if(schedOcc == nullptr)
-								IBK::Exception(IBK::FormatString("Occupancy schedule with id %1 is not in database.")
-											   .arg(schedId2), FUNC_ID);
-							if(!schedOcc->isValid())
-								IBK::Exception(IBK::FormatString("Occupancy schedule with id %1 and name '%2' is not in valid.")
-											   .arg(schedId2).arg(schedOcc->m_displayName.string()), FUNC_ID);
+								unsigned int schedId2 = pers->m_occupancyScheduleId;
+								const VICUS::Schedule *schedOcc = element(m_embeddedDB.m_schedules, schedId2);
+								//const VICUS::Schedule *schedOcc = const_cast<VICUS::Schedule *>(db.m_schedules[schedId2]);
+								if(schedOcc == nullptr)
+									IBK::Exception(IBK::FormatString("Occupancy schedule with id %1 is not in database.")
+												   .arg(schedId2), FUNC_ID);
+								if(!schedOcc->isValid())
+									IBK::Exception(IBK::FormatString("Occupancy schedule with id %1 and name '%2' is not in valid.")
+												   .arg(schedId2).arg(schedOcc->m_displayName.string()), FUNC_ID);
 
-							posIntLoad enum1 = P_Person;
-							VICUS::Schedule &intLoadSched = intLoadScheds[enum1];
-							//multiply the two schedules and add this to vector
-							intLoadSched = schedAct->multiply(*schedOcc);
-							//id is not used
-							intLoadSched.m_id = uniqueIdWithPredef2(Profile, 1, m_idMaps); //VICUS::Project::uniqueId<unsigned int>(allModelIds);
+								posIntLoad enum1 = P_Person;
+								VICUS::Schedule &intLoadSched = intLoadScheds[enum1];
+								//multiply the two schedules and add this to vector
+								intLoadSched = schedAct->multiply(*schedOcc);
+								//id is not used
+								intLoadSched.m_id = uniqueIdWithPredef2(Profile, 1, m_idMaps); //VICUS::Project::uniqueId<unsigned int>(allModelIds);
 
-							//multiply sched and constant val
+								//multiply sched and constant val
 
-							switch(pers->m_personCountMethod){
-								case VICUS::InternalLoad::PCM_PersonPerArea:
-									intLoadSched = intLoadSched.multiply(pers->m_para[VICUS::InternalLoad::P_PersonPerArea].get_value("Person/m2"));
-								break;
-								case VICUS::InternalLoad::PCM_AreaPerPerson: {
-									double val = pers->m_para[VICUS::InternalLoad::P_AreaPerPerson].get_value("m2/Person");
-									//if value is zero do nothing
-									if(val>0)
-										intLoadSched = intLoadSched.multiply(1/val);
-								} break;
-								case VICUS::InternalLoad::PCM_PersonCount:{
-									intLoadSched = intLoadSched.multiply(pers->m_para[VICUS::InternalLoad::P_PersonCount].get_value()/areaToRoomIdsObj.first);
-								} break;
-								case VICUS::InternalLoad::NUM_PCM:
-								break;
-
-							}
-
-							addVicusScheduleToNandradProject(intLoadSched,subTempTypeToNameWithUnit[VICUS::ZoneTemplate::SubTemplateType(e)],
+								switch(pers->m_personCountMethod){
+									case VICUS::InternalLoad::PCM_PersonPerArea:
+										intLoadSched = intLoadSched.multiply(pers->m_para[VICUS::InternalLoad::P_PersonPerArea].get_value("Person/m2"));
+									break;
+									case VICUS::InternalLoad::PCM_AreaPerPerson: {
+										double val = pers->m_para[VICUS::InternalLoad::P_AreaPerPerson].get_value("m2/Person");
+										//if value is zero do nothing
+										if(val>0)
+											intLoadSched = intLoadSched.multiply(1/val);
+									} break;
+									case VICUS::InternalLoad::PCM_PersonCount:{
+										intLoadSched = intLoadSched.multiply(pers->m_para[VICUS::InternalLoad::P_PersonCount].get_value()/areaToRoomIdsObj.first);
+									} break;
+									case VICUS::InternalLoad::NUM_PCM:
+									break;
+								}
+								addVicusScheduleToNandradProject(intLoadSched,subTempTypeToNameWithUnit[VICUS::ZoneTemplate::SubTemplateType(e)],
 									p, uniqueName);
 
-							//allModelIds.push_back(intLoadSched.m_id);
+								//override zero values in NANDRAD model
+								NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t",
+																   NANDRAD::InternalLoadsModel::P_PersonRadiationFraction,
+																   1 - pers->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].get_value("---"));
+							}
 
-							//override zero values in NANDRAD model
-							NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t",
-															   NANDRAD::InternalLoadsModel::P_PersonRadiationFraction,
-															   1 - pers->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].get_value("---"));
+
+
+
+
+							//allModelIds.push_back(intLoadSched.m_id);
 						}
 						break;
 						case VICUS::ZoneTemplate::ST_IntLoadEquipment:
@@ -1378,66 +1404,65 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 							//check valid status
 							const VICUS::InternalLoad *intLoadMod = element(m_embeddedDB.m_internalLoads, ztBools[counter].m_subTemplateId[e]);
 							if(intLoadMod == nullptr)
-								break;
-							unsigned int schedId = intLoadMod->m_powerManagementScheduleId;
-							const VICUS::Schedule *schedMan = element(m_embeddedDB.m_schedules, schedId);
-							if(schedMan == nullptr)
-								IBK::Exception(IBK::FormatString("Power management schedule with id %1 is not in database.")
-											   .arg(schedId), FUNC_ID);
-							if(!schedMan->isValid())
-								IBK::Exception(IBK::FormatString("Power management schedule with id %1 and name '%2' is not in valid.")
-											   .arg(schedId).arg(schedMan->m_displayName.string()), FUNC_ID);
-
-							posIntLoad enum1;
-							switch(e){
-								case VICUS::ZoneTemplate::ST_IntLoadEquipment:{
-									enum1 = P_Electric;
-									NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t",
-																	   NANDRAD::InternalLoadsModel::P_EquipmentRadiationFraction,
-																	   1 - intLoadMod->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].get_value("---"));
-								}break;
-								case VICUS::ZoneTemplate::ST_IntLoadLighting:{
-									enum1 = P_Lighting;
-									NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t",
-																	   NANDRAD::InternalLoadsModel::P_LightingRadiationFraction,
-																	   1 - intLoadMod->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].get_value("---"));
-								}break;
-								case VICUS::ZoneTemplate::ST_IntLoadOther:{
-									enum1 = P_Other;
-									//TODO Implement Model in NANDRAD
-									/*NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t",
-																	   NANDRAD::InternalLoadsModel::P_EquipmentRadiationFraction,
-																	   1 - intLoadMod->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].get_value("---")); */
-								}break;
-							}
-							intLoadScheds[enum1] = *schedMan;
-							intLoadScheds[enum1].m_id = uniqueIdWithPredef2(Profile, 1, m_idMaps);//VICUS::Project::uniqueId<unsigned int>(allModelIds);
-							//get val
-							//multiply sched*val
-							//multiply sched and constant val
-
-							switch(intLoadMod->m_powerMethod){
-								case VICUS::InternalLoad::PM_PowerPerArea:
-									intLoadScheds[enum1] = intLoadScheds[enum1].multiply(intLoadMod->m_para[VICUS::InternalLoad::P_PowerPerArea].get_value("W/m2"));
-								break;
-								case VICUS::InternalLoad::PM_Power: {
-									double val = intLoadMod->m_para[VICUS::InternalLoad::P_Power].get_value("W");
-									intLoadScheds[enum1] = intLoadScheds[enum1].multiply(val/areaToRoomIdsObj.first);
-								} break;
-								case VICUS::InternalLoad::NUM_PM:
-								break;
-
-							}
-
-							addVicusScheduleToNandradProject(intLoadScheds[enum1],subTempTypeToNameWithUnit[VICUS::ZoneTemplate::SubTemplateType(e)],
+								addVicusScheduleToNandradProject(zeroValueSched,subTempTypeToNameWithUnit[VICUS::ZoneTemplate::SubTemplateType(e)],
 									p, uniqueName);
+							else{
+								unsigned int schedId = intLoadMod->m_powerManagementScheduleId;
+								const VICUS::Schedule *schedMan = element(m_embeddedDB.m_schedules, schedId);
+								if(schedMan == nullptr)
+									IBK::Exception(IBK::FormatString("Power management schedule with id %1 is not in database.")
+												   .arg(schedId), FUNC_ID);
+								if(!schedMan->isValid())
+									IBK::Exception(IBK::FormatString("Power management schedule with id %1 and name '%2' is not in valid.")
+												   .arg(schedId).arg(schedMan->m_displayName.string()), FUNC_ID);
 
+								posIntLoad enum1;
+								switch(e){
+									case VICUS::ZoneTemplate::ST_IntLoadEquipment:{
+										enum1 = P_Electric;
+										NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t",
+																		   NANDRAD::InternalLoadsModel::P_EquipmentRadiationFraction,
+																		   1 - intLoadMod->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].get_value("---"));
+									}break;
+									case VICUS::ZoneTemplate::ST_IntLoadLighting:{
+										enum1 = P_Lighting;
+										NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t",
+																		   NANDRAD::InternalLoadsModel::P_LightingRadiationFraction,
+																		   1 - intLoadMod->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].get_value("---"));
+									}break;
+									case VICUS::ZoneTemplate::ST_IntLoadOther:{
+										enum1 = P_Other;
+										//TODO Implement Model in NANDRAD
+										/*NANDRAD::KeywordList::setParameter(intLoad.m_para, "InternalLoadsModel::para_t",
+																		   NANDRAD::InternalLoadsModel::P_EquipmentRadiationFraction,
+																		   1 - intLoadMod->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].get_value("---")); */
+									}break;
+								}
+								intLoadScheds[enum1] = *schedMan;
+								intLoadScheds[enum1].m_id = uniqueIdWithPredef2(Profile, 1, m_idMaps);//VICUS::Project::uniqueId<unsigned int>(allModelIds);
+								//get val
+								//multiply sched*val
+								//multiply sched and constant val
+
+								switch(intLoadMod->m_powerMethod){
+									case VICUS::InternalLoad::PM_PowerPerArea:
+										intLoadScheds[enum1] = intLoadScheds[enum1].multiply(intLoadMod->m_para[VICUS::InternalLoad::P_PowerPerArea].get_value("W/m2"));
+									break;
+									case VICUS::InternalLoad::PM_Power: {
+										double val = intLoadMod->m_para[VICUS::InternalLoad::P_Power].get_value("W");
+										intLoadScheds[enum1] = intLoadScheds[enum1].multiply(val/areaToRoomIdsObj.first);
+									} break;
+									case VICUS::InternalLoad::NUM_PM:
+									break;
+								}
+								addVicusScheduleToNandradProject(intLoadScheds[enum1],subTempTypeToNameWithUnit[VICUS::ZoneTemplate::SubTemplateType(e)],
+									p, uniqueName);
+							}
 							//allModelIds.push_back(intLoadScheds[enum1].m_id);
 						}
 						break;
 					}
 				}
-
 				//add internal loads model to NANDRAD project
 				p.m_models.m_internalLoadsModels.push_back(intLoad);
 			}
