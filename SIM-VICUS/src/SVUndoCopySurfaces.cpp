@@ -63,6 +63,10 @@ void SVUndoCopySurfaces::undo() {
 	Q_ASSERT(theProject().m_componentInstances.size() >= m_newComponentInstances.size());
 	theProject().m_componentInstances.resize(theProject().m_componentInstances.size() - m_newComponentInstances.size());
 
+	// remove appended sub-surface component instances (if any)
+	Q_ASSERT(theProject().m_subSurfaceComponentInstances.size() >= m_newSubSurfaceComponentInstances.size());
+	theProject().m_subSurfaceComponentInstances.resize(theProject().m_subSurfaceComponentInstances.size() - m_newSubSurfaceComponentInstances.size());
+
 	// tell project that the geometry has changed (i.e. rebuild navigation tree and scene)
 	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);
 }
