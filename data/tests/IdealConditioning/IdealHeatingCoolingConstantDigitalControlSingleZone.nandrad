@@ -101,8 +101,8 @@
 					<IBK:Parameter name="TemperatureBand" unit="K">0.5</IBK:Parameter>
 					<!-- Control temperature is "Air temperature", this is the default and could be omitted -->
 					<TemperatureType>AirTemperature</TemperatureType>
-					<!-- Controller type DigitalController -->
-					<ControllerType>DigitalController</ControllerType>
+					<!-- Controller type Digital -->
+					<ControllerType>Digital</ControllerType>
 				</Thermostat>
 			</Thermostats>
 

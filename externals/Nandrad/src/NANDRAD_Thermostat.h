@@ -29,10 +29,13 @@
 
 namespace NANDRAD {
 
-/*! Contains data for a thermostat control model. */
+/*! Contains data for a thermostat model, that compares the air/operative tempeature with
+	a setpoint and generates either an analog or digital control signal. The latter always uses
+	hysteresis.
+*/
 class Thermostat {
 public:
-	/*! Different model variants. */
+	/*! Different model variants regarding source of setpoint parametrization. */
 	enum modelType_t {
 		/*! Setpoints are constant parameters. */
 		MT_Constant,					// Keyword: Constant				'Constant set points'
@@ -58,8 +61,15 @@ public:
 	};
 
 	enum ControllerType {
-		CT_PController,					// Keyword: PController					'P-Controller'
-		CT_DigitalController,			// Keyword: DigitalController			'DigitalController'
+		/*! Signal is the difference between setpoint temperature and sensor temperature, normalized by
+			the given temperature tolerance. A signal value of 1 means that the temperature tolerance has been
+			reached, a value larger than 1 means the temperature difference is even larger (signal value is not clipped).
+		*/
+		CT_Analog,						// Keyword: Analog						'Analog'
+		/*! Signal is either 0 or 1, and corresponds with the digital hysteretic control logic. 1 is returned
+			if heating/cooling is required.
+		*/
+		CT_Digital,						// Keyword: Digital						'Digital'
 		NUM_CT
 	};
 

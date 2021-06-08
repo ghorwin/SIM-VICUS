@@ -254,8 +254,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Offset of lower and upper hysteresis band from set points");
 	tr("Air temperature");
 	tr("Operative temperature");
-	tr("P-Controller");
-	tr("DigitalController");
+	tr("Analog");
+	tr("Digital");
 	tr("Gas layer");
 	tr("Glass layer");
 	tr("Thickness of the window layer.");

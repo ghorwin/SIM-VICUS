@@ -654,8 +654,8 @@ namespace NANDRAD {
 			// Thermostat::ControllerType
 			case 72 :
 			switch (t) {
-				case 0 : return "PController";
-				case 1 : return "DigitalController";
+				case 0 : return "Analog";
+				case 1 : return "Digital";
 			} break;
 			// WindowGlazingLayer::type_t
 			case 73 :
@@ -1257,8 +1257,8 @@ namespace NANDRAD {
 			// Thermostat::ControllerType
 			case 72 :
 			switch (t) {
-				case 0 : return "PController";
-				case 1 : return "DigitalController";
+				case 0 : return "Analog";
+				case 1 : return "Digital";
 			} break;
 			// WindowGlazingLayer::type_t
 			case 73 :
@@ -1861,8 +1861,8 @@ namespace NANDRAD {
 			// Thermostat::ControllerType
 			case 72 :
 			switch (t) {
-				case 0 : return "P-Controller";
-				case 1 : return "DigitalController";
+				case 0 : return "Analog";
+				case 1 : return "Digital";
 			} break;
 			// WindowGlazingLayer::type_t
 			case 73 :

@@ -1521,7 +1521,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 																			  NANDRAD::Thermostat::TT_OperativeTemperature;
 
 						//for now only provide p controller
-						thermoN.m_controllerType = NANDRAD::Thermostat::CT_PController;
+						thermoN.m_controllerType = NANDRAD::Thermostat::CT_Analog;
 						//add thermostat to NANDRAD project
 						p.m_models.m_thermostats.push_back(thermoN);
 

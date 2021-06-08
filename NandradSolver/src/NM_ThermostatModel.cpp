@@ -105,7 +105,7 @@ void ThermostatModel::initResults(const std::vector<AbstractModel *> &) {
 	for (unsigned int i = 0; i<zoneCount; ++i) {
 		switch (m_thermostat->m_controllerType) {
 			case NANDRAD::Thermostat::NUM_CT : // default to P-Controller
-			case NANDRAD::Thermostat::CT_PController : {
+			case NANDRAD::Thermostat::CT_Analog : {
 				PController * con = new PController;
 				con->m_kP = 1/m_thermostat->m_para[NANDRAD::Thermostat::P_TemperatureTolerance].value;
 				m_controllers.push_back(con);
@@ -115,7 +115,7 @@ void ThermostatModel::initResults(const std::vector<AbstractModel *> &) {
 				m_controllers.push_back(con);
 			} break;
 
-			case NANDRAD::Thermostat::CT_DigitalController : {
+			case NANDRAD::Thermostat::CT_Digital : {
 				DigitalHysteresisController * con = new DigitalHysteresisController;
 				con->m_hysteresisBand = m_thermostat->m_para[NANDRAD::Thermostat::P_TemperatureBand].value;
 				m_controllers.push_back(con);
