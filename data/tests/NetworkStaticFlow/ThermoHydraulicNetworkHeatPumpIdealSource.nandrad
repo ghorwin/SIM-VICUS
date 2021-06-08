@@ -29,7 +29,7 @@
 			<HydraulicNetwork id="1" displayName="static network" modelType="ThermalHydraulicNetwork" referenceElementId="1001">
 				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
 				<IBK:Parameter name="InitialFluidTemperature" unit="C">20</IBK:Parameter>
-				<HydraulicFluid id="1" displayName="Water">
+				<HydraulicFluid displayName="Water">
 					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
@@ -43,7 +43,7 @@
 						<IBK:Parameter name="PipeRoughness" unit="m">0.007</IBK:Parameter>
 						<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PipeOuterDiameter" unit="mm">32</IBK:Parameter>
-						<IBK:Parameter name="UValuePipeWall" unit="W/mK">5</IBK:Parameter>						
+						<IBK:Parameter name="UValuePipeWall" unit="W/mK">5</IBK:Parameter>
 					</HydraulicNetworkPipeProperties>
 				</PipeProperties>
 				<Components>
@@ -55,27 +55,31 @@
 					<HydraulicNetworkComponent id="3" modelType="DynamicPipe">
 						<IBK:Parameter name="PipeMaxDiscretizationWidth" unit="m">5</IBK:Parameter>
 					</HydraulicNetworkComponent>
-					<HydraulicNetworkComponent id="2" modelType="HeatPumpIdealCarnot">
+					<HydraulicNetworkComponent id="2" modelType="HeatPumpIdealCarnotSourceSide">
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PressureLossCoefficient" unit="---">5</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 						<IBK:Parameter name="CarnotEfficiency" unit="---">0.4</IBK:Parameter>
-						<IBK:Parameter name="HeatPumpNominalTemperatureDifference" unit="K">3</IBK:Parameter>
-						<IBK:Parameter name="MaximumHeatingPower" unit="W">100000</IBK:Parameter>
-						<HeatPumpIntegration>SupplySide</HeatPumpIntegration>
+						<IBK:Parameter name="MaximumHeatingPower" unit="W">4000</IBK:Parameter>
 					</HydraulicNetworkComponent>
 				</Components>
 				<Elements>
-					<HydraulicNetworkElement id="1001" inletNodeId="0" outletNodeId="1" componentId="1" displayName="pump">
-					</HydraulicNetworkElement>
+					<HydraulicNetworkElement id="1001" inletNodeId="0" outletNodeId="1" componentId="1" displayName="pump" />
+					<!-- Pipe heat medium up to 5 C -->
 					<HydraulicNetworkElement id="1002" inletNodeId="1" outletNodeId="2" componentId="3" pipePropertiesId="1" displayName="pipe">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="TemperatureConstant">
-							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">100</IBK:Parameter>
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">1000</IBK:Parameter>
 							<IBK:Parameter name="Temperature" unit="C">5</IBK:Parameter>
 						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
+					<!-- Heat pump has 1000...5000W supply power -->
 					<HydraulicNetworkElement id="1003" inletNodeId="2" outletNodeId="0" componentId="2" displayName="heatpump">
+						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
+							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear">
+								<TSVFile>${Project Directory}/0_climate/HeatFluxCondenser.csv</TSVFile>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
 				</Elements>
 			</HydraulicNetwork>
@@ -85,15 +89,11 @@
 			<ScheduleGroups>
 				<ScheduleGroup objectList="heat pump">
 					<Schedule type="AllDays">
-						<DailyCycles>							
-							<DailyCycle interpolation="Constant">
-								<TimePoints>0,12</TimePoints>
-								<Values>EvaporatorMeanTemperatureSchedule [C]:0,10;</Values>
-							</DailyCycle>
+						<DailyCycles>
 							<!-- Condenser Temperature is usually 35°C for space heating and two times per day 50°C for domestic hot water-->
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0,6,8,18,20</TimePoints>
-								<Values>CondenserOutletSetpointSchedule [C]:35,50,35,50,35;</Values>
+								<Values>CondenserMeanTemperatureSchedule [C]:35,50,35,50,35;</Values>
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>
@@ -147,7 +147,7 @@
 				<OutputGrid name="hourly">
 					<Intervals>
 						<Interval>
-							<IBK:Parameter name="StepSize" unit="min">10</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
 						</Interval>
 					</Intervals>
 				</OutputGrid>

@@ -21,11 +21,13 @@
 
 #include "NANDRAD_HydraulicNetworkElement.h"
 
+#include <algorithm>
+
+#include <IBK_messages.h>
+
 #include "NANDRAD_HydraulicNetwork.h"
 #include "NANDRAD_KeywordList.h"
 #include "NANDRAD_Project.h"
-
-#include <algorithm>
 
 
 namespace NANDRAD {
@@ -87,41 +89,86 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 		break;
 
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
-		case HydraulicNetworkComponent::MT_ConstantMassFluxPump:
 		case HydraulicNetworkComponent::MT_HeatExchanger:
-		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnot:
-		case HydraulicNetworkComponent::MT_HeatPumpReal:
+		case HydraulicNetworkComponent::MT_ControlledValve:
+		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide:
+		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide:
 			// nothing to check for
 		break;
-
-		// TODO : add checks for other components
 
 		case HydraulicNetworkComponent::NUM_MT:
 			throw IBK::Exception("Invalid network component model type!", FUNC_ID);
 	}
 
-	// check if given heat exchange type is supported for this component
-	if (m_heatExchange.m_modelType != HydraulicNetworkHeatExchange::NUM_T){
+	// *** Heat Exchange Parameter compatibility checks ***
 
-		std::vector<unsigned int> hxTypes = HydraulicNetworkHeatExchange::availableHeatExchangeTypes(m_component->m_modelType);
-		if (std::find(hxTypes.begin(), hxTypes.end(), m_heatExchange.m_modelType) == hxTypes.end())
-			throw IBK::Exception(IBK::FormatString("Invalid type of heat exchange '%1' for component '%2'!")
-								 .arg(KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", m_heatExchange.m_modelType))
-								 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_component->m_modelType)), FUNC_ID);
+	// check if given heat exchange type is supported for this component, but only for ThermoHydraulic networks
+	if (nw.m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
+		std::vector<HydraulicNetworkHeatExchange::ModelType> hxTypes = HydraulicNetworkHeatExchange::availableHeatExchangeTypes(m_component->m_modelType);
+		if (std::find(hxTypes.begin(), hxTypes.end(), m_heatExchange.m_modelType) == hxTypes.end()) {
+			if (m_heatExchange.m_modelType == HydraulicNetworkHeatExchange::NUM_T)
+				throw IBK::Exception(IBK::FormatString("Heat exchange type required for component '%1'!")
+									 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_component->m_modelType)), FUNC_ID);
+			else
+				throw IBK::Exception(IBK::FormatString("Invalid type of heat exchange '%1' for component '%2'!")
+									 .arg(KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", m_heatExchange.m_modelType))
+									 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_component->m_modelType)), FUNC_ID);
+		}
+
+		// check for valid heat exchange parameters
+		m_heatExchange.checkParameters(prj.m_placeholders, prj.m_zones, prj.m_constructionInstances);
+	}
+	else if (m_heatExchange.m_modelType != HydraulicNetworkHeatExchange::NUM_T) {
+		IBK::IBK_Message("HydraulicNetworkHeatExchange parameter in element #%1 has no effect for HydraulicNetwork calculation.", IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 	}
 
-	// check for valid heat exchange parameters
-	m_heatExchange.checkParameters(prj.m_placeholders, prj.m_zones, prj.m_constructionInstances);
 
-	// set pointer to control element
-	if (m_controlElementID != NANDRAD::INVALID_ID) {
-		auto ctit  = std::find(nw.m_controlElements.begin(), nw.m_controlElements.end(), m_controlElementID);
+	// *** Flow Controller Parameter compatibility checks ***
+
+	if (m_controlElementId != NANDRAD::INVALID_ID) {
+		// first check if referenced controller exists
+		auto ctit  = std::find(nw.m_controlElements.begin(), nw.m_controlElements.end(), m_controlElementId);
 		if (ctit == nw.m_controlElements.end()) {
 			throw IBK::Exception(IBK::FormatString("ControlElement with id #%1 does not exist.")
-								 .arg(m_controlElementID), FUNC_ID);
+								 .arg(m_controlElementId), FUNC_ID);
 		}
-		// set reference
+		// set pointer to control element
 		m_controlElement = &(*ctit);
+
+		// get avaiable controlledProperties
+		std::vector<NANDRAD::HydraulicNetworkControlElement::ControlledProperty> availableProps =
+				NANDRAD::HydraulicNetworkControlElement::availableControlledProperties(m_component->m_modelType);
+
+		// check if given controlledProperty is allowed
+		if (std::find(availableProps.begin(), availableProps.end(), m_controlElement->m_controlledProperty) == availableProps.end()) {
+				throw IBK::Exception(IBK::FormatString("Given ControlledProperty '%1' is not allowed for component '%2' with id #%3!")
+									 .arg(KeywordList::Keyword("HydraulicNetworkControlElement::ControlledProperty", m_controlElement->m_controlledProperty))
+									 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_component->m_modelType))
+									 .arg(m_componentId), FUNC_ID);
+		}
+		else if(ctit->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue) {
+			// thermostat control is only allowed for pipes with temperature dependend heat exchange
+			switch(m_component->m_modelType ) {
+				case NANDRAD::HydraulicNetworkComponent::MT_SimplePipe:
+				case NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe:
+					break;
+				default:
+					throw IBK::Exception("HydraulicNetworkControlElement with type 'ThermostatValue' is only supported for "
+									 "HydraulicNetworkComponent 'SimplePipe' and 'DynamicPipe'!", FUNC_ID);
+			}
+			// wrong heat exchange type
+			switch(m_heatExchange.m_modelType ) {
+				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstant:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureZone:
+				break;
+				default:
+					throw IBK::Exception(IBK::FormatString("Only HeatExchangeType 'Temperature' "
+														   "is allowed in combination with HydraulicNetworkController property "
+														   "'ThermostatValue'!"), FUNC_ID);
+			}
+		}
 	}
 
 }

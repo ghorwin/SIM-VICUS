@@ -468,6 +468,7 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 			// run point in polygon algorithm
 			if (IBKMK::pointInPolygon(m_holes[j].vertexes(), intersectionPoint2D) != -1) {
 				holeIndex = (int)j;
+				intersectionPoint = x0;
 				return true;
 			}
 		}

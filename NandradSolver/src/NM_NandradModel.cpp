@@ -1544,29 +1544,32 @@ void NandradModel::initNetworks() {
 									.arg(nw.m_id), FUNC_ID);
 			}
 			// create a network model object
-			HydraulicNetworkModel * nwmodel = new HydraulicNetworkModel(nw, nw.m_id, nw.m_displayName);
+			HydraulicNetworkModel * nwmodel = new HydraulicNetworkModel(nw, m_project->m_models.m_thermostats, nw.m_id, nw.m_displayName);
 			m_modelContainer.push_back(nwmodel); // transfer ownership
 			// initialize
 			nwmodel->setup();
 			// register model for evaluation
 			registerStateDependendModel(nwmodel);
+			// register model as time dependent (to backup Newton solution as starting value for next call)
+			m_timeModelContainer.push_back(nwmodel);
 			// add thermal network states model
 			if (nw.m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
 				ThermalNetworkStatesModel *statesModel = new ThermalNetworkStatesModel(nw.m_id, nw.m_displayName);
 				m_modelContainer.push_back(statesModel); // transfer ownership
 				// initialize
-				statesModel->setup(nw, *nwmodel);
+				statesModel->setup(nw, *nwmodel, m_project->m_simulationParameter);
+				// register model as time dependent (spline values update needed for each time step)
+				m_timeModelContainer.push_back(statesModel);
 				// add to thermal network states container
 				m_networkStatesModelContainer.push_back(statesModel);
+
 				// add thermal network balance model
 				ThermalNetworkBalanceModel *balanceModel = new ThermalNetworkBalanceModel(nw.m_id, nw.m_displayName);
 				m_modelContainer.push_back(balanceModel); // transfer ownership
 				// initialize
-				balanceModel->setup(statesModel, m_project->m_simulationParameter);
+				balanceModel->setup(statesModel);
 				// register model for evaluation
 				registerStateDependendModel(balanceModel);
-				// register model as time dependend (spline values update needed for each time step)
-				m_timeModelContainer.push_back(balanceModel);
 				// add to thermal network balance container
 				m_networkBalanceModelContainer.push_back(balanceModel);
 			}
@@ -2743,6 +2746,7 @@ void NandradModel::initSolverMatrix() {
 
 
 		// add all dependencies
+
 		// all room state models
 		for (unsigned int i = 0; i < m_roomStatesModelContainer.size(); ++i) {
 
@@ -2836,51 +2840,8 @@ void NandradModel::initSolverMatrix() {
 			}
 		}
 
-		// ... all network states models
-		for (unsigned int i = 0; i < m_networkStatesModelContainer.size(); ++i) {
-
-			const ThermalNetworkStatesModel *networkModel = m_networkStatesModelContainer[i];
-			// find all dependencies
-			std::vector< std::pair<const double *, const double *> > dependenciesIJ;
-			// temporarilly store all elements that can be removed and that one that can be inserted
-			networkModel->stateDependencies(dependenciesIJ);
-
-			std::vector<std::pair<const double *, const double *> >::const_iterator
-				dependencyIJ = dependenciesIJ.begin();
-			// loop over all result quantities of the next pattern (elements aij)
-			for (; dependencyIJ != dependenciesIJ.end(); ++dependencyIJ) {
-				// retrieve row and column storage adresses
-				const double * resultRef = dependencyIJ->first;
-				const double * inputRef = dependencyIJ->second;
-
-				// do not allow nullptr
-				IBK_ASSERT(resultRef != nullptr);
-				IBK_ASSERT(inputRef != nullptr);
-
-				// search for input value reference inside result vector
-				std::map<const double*, unsigned int>::const_iterator inputRefIt =
-					resultValueRefs.find(inputRef);
-
-				// skip all references to quantiteis that are no results
-				if (inputRefIt == resultValueRefs.end())
-					continue;
-
-				// search result reference
-				std::map<const double*, unsigned int>::const_iterator resultRefIt = resultValueRefs.find(resultRef);
-				// result address must! be given
-				IBK_ASSERT(resultRefIt != resultValueRefs.end());
-
-				// get local index
-				unsigned int i = resultRefIt->second;
-				unsigned int j = inputRefIt->second;
-				// register pattern entry
-				if (!pattern.test(i, j))
-					pattern.set(i, j);
-				// register transpose pattern entry
-				if (!transposePattern.test(j, i))
-					transposePattern.set(j, i);
-			}
-		}
+		// NOTE: no need to get dependencies from ThermalNetworkStatesModel here, because all these dependencies
+		//       are included in ThermalNetworkBalanceModel which is in the m_stateModelContainer.
 
 		// ... and all remaining states model
 		for (unsigned int i = 0; i < m_stateModelContainer.size(); ++i) {

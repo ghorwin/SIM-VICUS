@@ -35,6 +35,8 @@
 #include "SVProjectHandler.h"
 #include "SVUndoModifyNetwork.h"
 
+#include <NANDRAD_Project.h>
+
 #include <VICUS_Project.h>
 #include <VICUS_KeywordList.h>
 

@@ -11,48 +11,40 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<NANDRAD::
 
 	// NOTE: the check below is unecessary - should be ensured already through the "xml:required" specification!
 
-	// this is a valid controller if a controlled property is chosen
-	// so we need a valid controller type then
-	if (m_controlledProperty != NUM_CP) {
-		if (m_controllerType == NUM_CT)
-			throw IBK::Exception("Missing ControllerType.", FUNC_ID);
-	}
+	if (m_controlledProperty == NUM_CP)
+		throw IBK::Exception("Missing attribute 'controlledProperty'.", FUNC_ID);
 
 	try {
 		// check individual configuations for different controller properties
 		switch (m_controlledProperty) {
-			case CP_TemperatureDifference: {
-				m_setPoint.checkedValue("SetPoint", "K", "K", 0, false, std::numeric_limits<double>::max(), false, nullptr);
-				// controller type must! be given
-				if(m_controllerType == NUM_CT)
-					throw IBK::Exception(IBK::FormatString("Missing attribute 'controllerType' for controlledProperty 'TemperatureDifference'!")
-										 .arg(m_thermostatZoneID), FUNC_ID);
+			case CP_TemperatureDifference:
+			case CP_TemperatureDifferenceOfFollowingElement: {
+				if (m_controllerType == NUM_CT)
+					throw IBK::Exception("Missing attribute 'controllerType'.", FUNC_ID);
+
+				m_para[P_TemperatureDifferenceSetpoint].checkedValue("TemperatureDifferenceSetpoint", "K", "K",
+																	 0, false, std::numeric_limits<double>::max(), false, nullptr);
 			} break;
-			case CP_MassFlow: {
-				m_setPoint.checkedValue("SetPoint", "kg/s", "kg/s", 0, false, std::numeric_limits<double>::max(), false, nullptr);
-				// controller type must! be given
-				if(m_controllerType == NUM_CT)
-					throw IBK::Exception(IBK::FormatString("Missing attribute 'controllerType' for controlledProperty 'MassFlow'!")
-										 .arg(m_thermostatZoneID), FUNC_ID);
-			} break;
+
 			case CP_ThermostatValue: {
-				if(m_thermostatZoneID == NANDRAD::INVALID_ID) {
-					throw IBK::Exception("Missing ThermostatZoneId!", FUNC_ID);
-				}
+				if (m_idReferences[ID_ThermostatZoneId] == NANDRAD::INVALID_ID)
+					throw IBK::Exception("Missing 'ThermostatZoneId' for controlled property 'ThermostatValue'!", FUNC_ID);
+
 				// check validity of thermostat zone
-				std::vector<NANDRAD::Zone>::const_iterator zone_it = std::find(zones.begin(), zones.end(), m_thermostatZoneID);
+				std::vector<NANDRAD::Zone>::const_iterator zone_it = std::find(zones.begin(), zones.end(), m_idReferences[ID_ThermostatZoneId]);
 
 				if (zone_it == zones.end())
 					throw IBK::Exception(IBK::FormatString("Invalid/undefined zone with '%1' in ThermostatZoneId.")
-										 .arg(m_thermostatZoneID), FUNC_ID);
-
-				// controller type must! not be given
-				if(m_controllerType != NUM_CT)
-					throw IBK::Exception(IBK::FormatString("Attribute 'controllerType' is not allowed for controlledProperty 'ThermostatValue'!")
-										 .arg(m_thermostatZoneID), FUNC_ID);
+										 .arg(m_idReferences[ID_ThermostatZoneId]), FUNC_ID);
 			} break;
-			case NUM_CP:
-				break;
+
+			case CP_MassFlux : {
+				// we need mass flux, but > 0 (cannot set mass flux to zero)
+				m_para[P_MassFluxSetpoint].checkedValue("MassFluxSetpoint", "kg/s", "kg/s",
+																	 0, false, std::numeric_limits<double>::max(), false, nullptr);
+			} break;
+
+			case NUM_CP: break; // just to make compiler happy
 		}
 	}
 	catch (IBK::Exception & ex) {
@@ -66,16 +58,41 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<NANDRAD::
 			case CT_PController: {
 				m_para[P_Kp].checkedValue("Kp", "---", "---", 0, false, std::numeric_limits<double>::max(), true, nullptr);
 			} break;
+
 			case CT_PIController: {
 				m_para[P_Kp].checkedValue("Kp", "---", "---", 0, false, std::numeric_limits<double>::max(), true, nullptr);
 				m_para[P_Ki].checkedValue("Ki", "---", "---", 0, false, std::numeric_limits<double>::max(), true, nullptr);
 			} break;
-			case NUM_CT: break;
+
+			case NUM_CT: break; // just to make compiler happy
 		}
 	}
 	catch (IBK::Exception & ex) {
 			throw IBK::Exception(ex, "Missing/invalid parameters.", FUNC_ID);
 	}
 }
+
+
+
+std::vector<HydraulicNetworkControlElement::ControlledProperty> HydraulicNetworkControlElement::availableControlledProperties(
+																	const HydraulicNetworkComponent::ModelType modelType)
+{
+	switch (modelType) {
+		case HydraulicNetworkComponent::MT_SimplePipe:
+			return {CP_ThermostatValue};
+		case HydraulicNetworkComponent::MT_HeatExchanger:
+			return {CP_TemperatureDifference};
+		case HydraulicNetworkComponent::MT_ControlledValve:
+			return {CP_MassFlux, CP_TemperatureDifferenceOfFollowingElement};
+		case HydraulicNetworkComponent::MT_ConstantPressurePump:
+			// we could control mass flux here as well ...
+		case HydraulicNetworkComponent::MT_DynamicPipe:
+		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide:
+		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide:
+		case HydraulicNetworkComponent::NUM_MT: ;		// just for compiler
+	}
+	return {};
+}
+
 
 } // namespace NANDRAD

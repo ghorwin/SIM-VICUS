@@ -24,7 +24,6 @@
 
 #include "NM_AbstractModel.h"
 #include "NM_AbstractStateDependency.h"
-#include "NM_AbstractTimeDependency.h"
 
 #include <NANDRAD_Constants.h>
 
@@ -36,7 +35,6 @@ namespace IBK {
 
 namespace NANDRAD {
 	class LinearSplineParameter;
-	class SimulationParameter;
 }
 
 namespace NANDRAD_MODEL {
@@ -78,7 +76,7 @@ class ThermalNetworkStatesModel;
 		- OutletNodeTemperature (in [C])
 		- ... additional, flow-element specific outputs
 */
-class ThermalNetworkBalanceModel : public AbstractModel, public AbstractStateDependency, public AbstractTimeDependency {
+class ThermalNetworkBalanceModel : public AbstractModel, public AbstractStateDependency {
 public:
 
 	/*! Constructor */
@@ -90,8 +88,7 @@ public:
 	/*! Initializes model by resizing the y and ydot vectors.
 		Most of the data structures are already initialized by ThermalNetworkStatesModel.
 	*/
-	void setup(ThermalNetworkStatesModel *statesModel,
-			   const NANDRAD::SimulationParameter &simPara);
+	void setup(ThermalNetworkStatesModel *statesModel);
 
 	// *** Re-implemented from AbstractModel
 
@@ -117,11 +114,6 @@ public:
 		\return Returns pointer to memory location with this quantity, otherwise nullptr if parameter ID was not found.
 	*/
 	virtual const double * resultValueRef(const InputReference & quantity) const override;
-
-	// *** Re-implemented from AbstractTimeStateDependency
-
-	/*! Updates time-dependent spline data (temperatures/heat losses). */
-	virtual int setTime(double t) override;
 
 	// *** Re-implemented from AbstractStateDependency
 
@@ -227,15 +219,6 @@ private:
 		*/
 		ActiveLayerProperties				*m_activeLayerProperties = nullptr;
 
-		/*! Reference to heat exchange spline (heat flow or temperature), nullptr if not needed. */
-		const NANDRAD::LinearSplineParameter*	m_heatExchangeSplineRef = nullptr;
-
-		/*! This memory slot is used when the respective heat exchange value (heat flow or temperature) is interpolated
-			from a linear spline parameter.
-			Elements with spline-based input values hold a pointer reference to this slot.
-		*/
-		double								m_heatExchangeSplineValue = 999;
-
 		// the following references point to results computed from flow elements.
 
 		/*! Reference to heat flux out of the flow element). */
@@ -279,8 +262,6 @@ private:
 	/*! Pointer to states model. */
 	ThermalNetworkStatesModel						*m_statesModel = nullptr;
 
-	/*! Pointer to simulation parameter object. */
-	const NANDRAD::SimulationParameter				*m_simPara = nullptr;
 };
 
 } // namespace NANDRAD_MODEL

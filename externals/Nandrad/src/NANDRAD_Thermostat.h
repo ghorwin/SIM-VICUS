@@ -83,7 +83,7 @@ public:
 	IBK::Parameter						m_para[NUM_P];									// XML:E
 
 	/*! Optional ID of reference zone to use for sensor and setpoint input. */
-	unsigned int						m_referenceZoneID = NANDRAD::INVALID_ID;		// XML:E
+	unsigned int						m_referenceZoneId = NANDRAD::INVALID_ID;		// XML:E
 
 	/*! Temperature sensor type. */
 	TemperatureType						m_temperatureType = NUM_TT;						// XML:E

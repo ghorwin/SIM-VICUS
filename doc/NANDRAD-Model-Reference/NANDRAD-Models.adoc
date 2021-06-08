@@ -224,7 +224,7 @@ Ein Verschattungregelungsmodell ist eine spezielle Art von Regelungsmodell, das 
     		0 = keine Reduktion (Verschattung offen)
     		1 = volle Reduktion (Verschattung geschlossen)
     	-->
-    	<ShadingControlModel id="2000" displayName="Global horizontal sensor controller" sensorID="50000">
+    	<ShadingControlModel id="2000" displayName="Global horizontal sensor controller" sensorId="50000">
     		<IBK:Parameter name="MaxIntensity" unit="W/m2">300</IBK:Parameter>
     		<IBK:Parameter name="MinIntensity" unit="W/m2">150</IBK:Parameter>
     	</ShadingControlModel> 
@@ -235,7 +235,7 @@ Ein Verschattungregelungsmodell ist eine spezielle Art von Regelungsmodell, das 
 
 Das Verschattungskontrollmodell verlangt zwei Parameter `MaxIntensity` und `MinIntensity` und implementiert eine digitale Regelung mit Hysterese. Zunächst muss die Globalstrahlungsintensität auf den Sensor den oberen Grenzwert (`MaxIntensity`) überschreiten, wonach die Verschattung geschlossen wird (Kontrollmodell liefert 1). Danach muss die Strahlungsintensität zunächst unter die untere Grenze sinken (`MinIntensity`), bevor die Verschattung wieder geöffnet wird (Kontrollmodell liefert 0).
 
-Für die Auswertung wird eine Horizontalstrahlung benötigt. Dafür muss eine Oberfläche ausgewählt werden und als `sensorID` angegeben werden. 
+Für die Auswertung wird eine Horizontalstrahlung benötigt. Dafür muss eine Oberfläche ausgewählt werden und als `sensorId` angegeben werden. 
 
 Möglich sind hier 3 Optionen:
 
@@ -563,7 +563,7 @@ Das Modell beschreibt ein ideales thermisches Konditionierungsmodell für eine F
 ----
 <IdealSurfaceHeatingCoolingModel id="701">
 	<!-- Use thermostat in zone 1 for control -->
-	<ThermostatZoneID>1</ThermostatZoneID>
+	<ThermostatZoneId>1</ThermostatZoneId>
 	<ConstructionObjectList>Floor</ConstructionObjectList>
 	<!-- Maximum heating power per construction/surface area, here: 10 m2 * 150 W/m2 = 1500 W -->
 	<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">150</IBK:Parameter>
@@ -598,7 +598,7 @@ Ein `IdealSurfaceHeatingCoolingModel` kann die Heiz- und Kühlleistung in mehrer
 Die in der Objektliste referenzierten Konstruktionen müssen einen Konstruktionstyp haben, in dem eine aktive Schicht definiert ist (siehe <<construction_active_layer>>).
 ====
 
-Die Flächenheizung/-kühlung wird durch ein Thermostat gesteuert. Die Zone, in der sich das Thermostat befindet, wird im Element `ThermostatZoneID` angegeben.
+Die Flächenheizung/-kühlung wird durch ein Thermostat gesteuert. Die Zone, in der sich das Thermostat befindet, wird im Element `ThermostatZoneId` angegeben.
 
 ### Heiz- und Kühlleistung
 
@@ -632,7 +632,7 @@ Das Modell beschreibt ein Rohrregister, welches zur Beheizung/Kühlung von Fläc
 [source,xml]
 ----
 <IdealPipeRegisterModel id="701" modelType="Constant">
-	<ThermostatZoneID>1</ThermostatZoneID>
+	<ThermostatZoneId>1</ThermostatZoneId>
 	<ConstructionObjectList>Floor</ConstructionObjectList>
 	<IBK:Parameter name="SupplyTemperature" unit="C">8</IBK:Parameter>
 	<IBK:Parameter name="MaxMassFlow" unit="kg/s">0.2</IBK:Parameter>
@@ -662,7 +662,7 @@ Ein `IdealPipeRegisterModel` kann die Heiz- und Kühlleistung in mehreren Konstr
 Die in der Objektliste referenzierten Konstruktionen müssen einen Konstruktionstyp haben, in dem eine aktive Schicht definiert ist (siehe <<construction_active_layer>>).
 ====
 
-Die Heizleistung wird über die Anpassung des Massestroms in Abhängigkeit eines Thermostat-Kontrollsignals gesteuert. Die Zone, in der sich das Thermostat befindet, wird im Element `ThermostatZoneID` angegeben. 
+Die Heizleistung wird über die Anpassung des Massestroms in Abhängigkeit eines Thermostat-Kontrollsignals gesteuert. Die Zone, in der sich das Thermostat befindet, wird im Element `ThermostatZoneId` angegeben. 
 
 Das `IdealPipeRegisterModel` muss mit den folgenden XML-Attributen definiert werden:
 
@@ -785,14 +785,20 @@ Die `TotalThermalLoad` ist positiv bei Beheizung der Fläche und negativ bei Kü
 [[model_network_interface_adapter]]
 ## Schnittstellen-Modell für die Anbindung externer Anlagennetze 
 
-Diese Modell ist für alleinstehende Simulation unwichtig und wird primär für die Co-Simulation mittels FMI gebraucht. Es bildet den Wärmeentzug des Gebäudes auf ein strömendes Medium ab, bspw. ein Versorgungsnetzwerk. Das Medium strömt mit gegebener Vorlauftemperatur und Massestrom ins Gebäude und das `NetworkInterfaceAdapterModel` berechnet die resultierende Rücklauftemperatur.
+Diese Modell ist für alleinstehende Simulation unwichtig und wird primär für die Co-Simulation mittels FMI gebraucht. Es bildet den Wärmeentzug des Gebäudes auf ein strömendes Medium ab, bspw. ein Versorgungsnetzwerk. Das Medium strömt mit gegebener Vorlauftemperatur und Massenstrom ins Gebäude und das `NetworkInterfaceAdapterModel` berechnet die resultierende Rücklauftemperatur.
 
+Vorlauftemperatur und Massenstrom werden als Zeitpläne benötigt:
+
+- `SupplyTemperatureSchedule`
+- `SupplyMassFlowSchedule`
+
+Bei Verwendung der FMI-Kopplung sind diese Größen durch FMI-Input-Variablen zu überschreiben.
 
 .Definitionsblock für ein solches Schnittstellenmodell
 ====
 [source,xml]
 ----
-<NetworkInterfaceAdapterModel id="802" summationModelID="801">
+<NetworkInterfaceAdapterModel id="802" summationModelId="801">
 	<IBK:Parameter name="FluidHeatCapacity" unit="J/kgK">4180</IBK:Parameter>
 </NetworkInterfaceAdapterModel>
 ----
@@ -806,7 +812,7 @@ Das `NetworkInterfaceAdapterModel` muss mit den folgenden XML-Attributen definie
 |====================
 | Attribut | Beschreibung | Format | Verwendung 
 | `id` | Kennung des Modells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
-| `summationModelID` | ID des Summationsmodells, welches die Heiz-/Kühlleistung im Gebäude berechnet | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+| `summationModelId` | ID des Summationsmodells, welches die Heiz-/Kühlleistung im Gebäude berechnet | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
 |====================
 
 Für die Berechnung ist die spezifische Wärmekapazität des strömenden Mediums notwendig, angegeben im IBK-Parameterelement `FluidHeatCapacity`. 

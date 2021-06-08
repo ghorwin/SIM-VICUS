@@ -362,7 +362,7 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveInputVariable_clicked() {
 	for (std::vector<NANDRAD::FMIVariableDefinition>::iterator it = m_project.m_fmiDescription.m_inputVariables.begin();
 		 it != m_project.m_fmiDescription.m_inputVariables.end(); ++it)
 	{
-		if (var.m_objectID == it->m_objectID && var.m_vectorIndex == it->m_vectorIndex && var.m_varName == it->m_varName) {
+		if (var.m_objectId == it->m_objectId && var.m_vectorIndex == it->m_vectorIndex && var.m_varName == it->m_varName) {
 			m_project.m_fmiDescription.m_inputVariables.erase(it);
 			break;
 		}
@@ -796,7 +796,7 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 				varDef.m_fmiVarName = QString("%1(%2).%3")
 						.arg(objTypeName).arg(objID).arg(nandradVarName)
 						.toStdString();
-				varDef.m_objectID = objID;
+				varDef.m_objectId = objID;
 				varDef.m_vectorIndex = NANDRAD::INVALID_ID;
 				varDef.m_fmiTypeName = ""; // TODO : how to determine the correct type?
 				varDef.m_unit = unit.toStdString();
@@ -816,7 +816,7 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 					varDef.m_fmiVarName = QString("%1(%2).%3(%4)")
 							.arg(objTypeName).arg(objID).arg(nandradVarName).arg(vecIdx)
 							.toStdString();
-					varDef.m_objectID = objID;
+					varDef.m_objectId = objID;
 					varDef.m_vectorIndex = vecIdx;
 					varDef.m_fmiTypeName = ""; // TODO : how to determine the correct type?
 					varDef.m_unit = unit.toStdString();
@@ -883,7 +883,7 @@ void NandradFMUGeneratorWidget::updateFMUVariableTables() {
 		std::vector<NANDRAD::FMIVariableDefinition>::iterator it = m_availableInputVariables.begin();
 		for (; it != m_availableInputVariables.end(); ++it) {
 			if (var.m_varName == it->m_varName &&
-				var.m_objectID == it->m_objectID &&
+				var.m_objectId == it->m_objectId &&
 				var.m_vectorIndex == it->m_vectorIndex)
 			{
 				break; // match found - stop search
@@ -929,7 +929,7 @@ void NandradFMUGeneratorWidget::updateFMUVariableTables() {
 		std::vector<NANDRAD::FMIVariableDefinition>::iterator it = m_availableOutputVariables.begin();
 		for (; it != m_availableOutputVariables.end(); ++it) {
 			if (var.m_varName == it->m_varName &&
-				var.m_objectID == it->m_objectID &&
+				var.m_objectId == it->m_objectId &&
 				var.m_vectorIndex == it->m_vectorIndex)
 			{
 				break; // match found - stop search
@@ -1019,7 +1019,7 @@ void NandradFMUGeneratorWidget::appendVariableEntry(QTableWidget * tableWidget, 
 	tableWidget->setItem(row, 0, item);
 
 
-	item = new QTableWidgetItem(QString("%1").arg(var.m_objectID));
+	item = new QTableWidgetItem(QString("%1").arg(var.m_objectId));
 	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	item->setFont(itemFont);
 	item->setTextColor(itemColor);
@@ -1504,7 +1504,7 @@ void NandradFMUGeneratorWidget::on_tableWidgetInputVars_itemChanged(QTableWidget
 	for (unsigned int i=0; i<m_project.m_fmiDescription.m_inputVariables.size(); ++i) {
 		// Mind: compare by NANDRAD variable definition, since we may have several vars with the same fmiVarName
 		if (var.m_varName == m_project.m_fmiDescription.m_inputVariables[i].m_varName &&
-			var.m_objectID == m_project.m_fmiDescription.m_inputVariables[i].m_objectID &&
+			var.m_objectId == m_project.m_fmiDescription.m_inputVariables[i].m_objectId &&
 			var.m_vectorIndex == m_project.m_fmiDescription.m_inputVariables[i].m_vectorIndex)
 		{
 			m_project.m_fmiDescription.m_inputVariables[i] = var;

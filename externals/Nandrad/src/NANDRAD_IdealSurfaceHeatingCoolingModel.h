@@ -57,7 +57,7 @@ public:
 
 	/*! Id of zone whose thermostat is used for control (one zone thermostat may be responsible
 		for the control of different heating systems, but only one id is allowed per model). */
-	unsigned int		m_thermostatZoneID;							// XML:E:required
+	unsigned int		m_thermostatZoneId;							// XML:E:required
 
 	/*! Parameters. */
 	IBK::Parameter		m_para[NUM_P];								// XML:E

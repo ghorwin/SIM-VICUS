@@ -42,12 +42,9 @@
 namespace NANDRAD_MODEL {
 
 
-void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel,
-									   const NANDRAD::SimulationParameter & simPara)
-{
+void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 	// copy states model pointer
 	m_statesModel = statesModel;
-	m_simPara = &simPara;
 
 	// sanity checks
 	IBK_ASSERT(m_statesModel->m_network != nullptr);
@@ -124,32 +121,10 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel,
 			} break;
 
 			// exchange with purely time-dependent temperature spline data
-			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline: {
-				// store reference to spline
-				elemProp.m_heatExchangeSplineRef = &heatExchange.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature];
-				// store pointer to interpolated value into respective flow element
-				ThermalNetworkAbstractFlowElementWithHeatLoss * heatLossElement =
-						dynamic_cast<ThermalNetworkAbstractFlowElementWithHeatLoss*>(m_statesModel->m_p->m_flowElements[i]);
-				IBK_ASSERT(heatLossElement != nullptr);
-				heatLossElement->m_heatExchangeValueRef = &elemProp.m_heatExchangeSplineValue;
-			}
-			break;
-
-			// exchange with purely time-dependent heat loss spline data
+			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline:
+			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSplineEvaporator:
 			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
-			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser: {
-				// store reference to spline
-				elemProp.m_heatExchangeSplineRef = &heatExchange.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss];
-				// store pointer to interpolated value into respective flow element
-				ThermalNetworkAbstractFlowElementWithHeatLoss * heatLossElement =
-						dynamic_cast<ThermalNetworkAbstractFlowElementWithHeatLoss*>(m_statesModel->m_p->m_flowElements[i]);
-				IBK_ASSERT(heatLossElement != nullptr);
-				heatLossElement->m_heatExchangeValueRef = &elemProp.m_heatExchangeSplineValue;
-			}
-			break;
-
-			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureFMUInterface:
-				// TODO
+			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
 			break;
 
 			case NANDRAD::HydraulicNetworkHeatExchange::NUM_T: ;
@@ -328,18 +303,6 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference &
 }
 
 
-int ThermalNetworkBalanceModel::setTime(double t) {
-//	IBK_FUNCID_Message(ThermalNetworkBalanceModel::setTime)
-
-	// update all spline values
-	for (unsigned int i = 0; i < m_flowElementProperties.size(); ++i) {
-		FlowElementProperties &elemProp = m_flowElementProperties[i];
-		if (elemProp.m_heatExchangeSplineRef != nullptr) {
-			elemProp.m_heatExchangeSplineValue = m_simPara->evaluateTimeSeries(t, *elemProp.m_heatExchangeSplineRef);
-		}
-	}
-	return 0;
-}
 
 
 int ThermalNetworkBalanceModel::priorityOfModelEvaluation() const {

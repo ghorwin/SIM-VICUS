@@ -179,7 +179,7 @@ void WindowModel::inputReferences(std::vector<InputReference> & inputRefs) const
 	// shading control model: create reference to shading factor
 	if(m_windowModel->m_shading.m_modelType == NANDRAD::WindowShading::MT_Controlled) {
 		InputReference ref;
-		ref.m_id = m_windowModel->m_shading.m_controlModelID;
+		ref.m_id = m_windowModel->m_shading.m_controlModelId;
 		ref.m_referenceType = NANDRAD::ModelInputReference::MRT_MODEL;
 		ref.m_name.m_name = "ShadingControlValue";
 		ref.m_required = true;
@@ -300,7 +300,7 @@ int WindowModel::update() {
 		m_results[R_SurfaceTemperatureB] = surfaceTempB;
 
 		// check if we have a frame
-		if (m_windowModel->m_frame.m_materialID != NANDRAD::INVALID_ID) {
+		if (m_windowModel->m_frame.m_materialId != NANDRAD::INVALID_ID) {
 			// parameters were checked for validity already
 			IBK_ASSERT(m_windowModel->m_frame.m_lambda > 0);
 			IBK_ASSERT(m_windowModel->m_frame.m_thickness.value > 0);
@@ -314,7 +314,7 @@ int WindowModel::update() {
 			fluxHeatCondRight -= fluxHeatCondFrameLeft;
 		}
 		// check if we have a divider
-		if (m_windowModel->m_divider.m_materialID != NANDRAD::INVALID_ID) {
+		if (m_windowModel->m_divider.m_materialId != NANDRAD::INVALID_ID) {
 			// parameters were checked for validity already
 			IBK_ASSERT(m_windowModel->m_divider.m_lambda > 0);
 			IBK_ASSERT(m_windowModel->m_divider.m_thickness.value > 0);

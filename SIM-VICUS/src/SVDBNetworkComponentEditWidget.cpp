@@ -88,10 +88,9 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_SimplePipe == (int)VICUS::NetworkComponent::MT_SimplePipe);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe == (int)VICUS::NetworkComponent::MT_DynamicPipe);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger == (int)VICUS::NetworkComponent::MT_HeatExchanger);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot == (int)VICUS::NetworkComponent::MT_HeatPumpIdealCarnot);
 	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump == (int)VICUS::NetworkComponent::MT_ConstantPressurePump);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::NUM_MT == (int)VICUS::NetworkComponent::NUM_MT);
+	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger == (int)VICUS::NetworkComponent::MT_HeatExchanger);
+//	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::NUM_MT == (int)VICUS::NetworkComponent::NUM_MT);
 }
 
 

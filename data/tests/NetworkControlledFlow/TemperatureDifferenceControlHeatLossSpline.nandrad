@@ -69,7 +69,7 @@
 					-->
 					<HydraulicNetworkControlElement id="1" controlledProperty="TemperatureDifference" controllerType="PController" >
 						<IBK:Parameter name="Kp" unit="---">1e6</IBK:Parameter>
-						<IBK:Parameter name="SetPoint" unit="K">3</IBK:Parameter>
+						<IBK:Parameter name="TemperatureDifferenceSetpoint" unit="K">3</IBK:Parameter>
 						<!-- Deactivate upper limit of controller result value - this is the default and could be omitted -->
 						<MaximumControllerResultValue>0</MaximumControllerResultValue>
 					</HydraulicNetworkControlElement>
@@ -79,7 +79,7 @@
 
 					<HydraulicNetworkElement id="1" inletNodeId="100" outletNodeId="0" componentId="1" displayName="Pump"/>
 
-					<HydraulicNetworkElement id="2" inletNodeId="0" outletNodeId="101" componentId="2" controlElementID="1" displayName="Heat exchanger">
+					<HydraulicNetworkElement id="2" inletNodeId="0" outletNodeId="101" componentId="2" controlElementId="1" displayName="Heat exchanger">
 						<!-- Heat loss from element (to environment) is given via time-series.
 							 This heat loss is used together with the current mass flux to compute the temperature difference between
 							 inlet and outlet. Then, this temperature difference goes into the controller referenced via

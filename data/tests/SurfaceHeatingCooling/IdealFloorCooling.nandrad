@@ -90,7 +90,7 @@
 
 			<IdealSurfaceHeatingCoolingModels>
 				<IdealSurfaceHeatingCoolingModel id="701">
-					<ThermostatZoneID>1</ThermostatZoneID>
+					<ThermostatZoneId>1</ThermostatZoneId>
 					<ConstructionObjectList>Floor</ConstructionObjectList>
 					<IBK:Parameter name="MaxCoolingPowerPerArea" unit="W/m2">150</IBK:Parameter>
 				</IdealSurfaceHeatingCoolingModel>

@@ -34,6 +34,7 @@
 #include <IBK_Exception.h>
 
 #include <NANDRAD_Utilities.h>
+#include <NANDRAD_Project.h>
 
 #include <tinyxml.h>
 
@@ -1790,7 +1791,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 					NANDRAD::EmbeddedObjectWindow window;
 
 					//TODO Dirk hier muss noch eine ID rein
-					window.m_glazingSystemID = uniqueIdWithPredef2(Window, 1, m_idMaps, true);
+					window.m_glazingSystemId = uniqueIdWithPredef2(Window, 1, m_idMaps, true);
 
 					//TODO Dirk Frame einbauen sobald verfügbar
 					//TODO Dirk Divider einbauen sobald verfügbar

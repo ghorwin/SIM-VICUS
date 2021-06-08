@@ -355,13 +355,13 @@ for project in projects:
 print ""
 print "Successful projects:"
 print ""
-print "{:70s} {}".format("Project path", "Wall clock time [s]")
+print "{:80s} {}".format("Project path", "Wall clock time [s]")
 filenames = eval_times.keys()
 filenames.sort()
 for filename in filenames:
 	fname = os.path.basename(filename)
 	onedir = os.path.join(os.path.basename(os.path.dirname(filename)), os.path.basename(filename))
-	printNotification("{:70s} {:>10.3f}".format(onedir, eval_times[filename]))
+	printNotification("{:80s} {:>10.3f}".format(onedir, eval_times[filename]))
 
 if len(failed_projects) > 0:
 	print ""

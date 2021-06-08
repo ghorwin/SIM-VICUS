@@ -84,7 +84,7 @@ int ShadingControlModel::setTime(double /*t*/) {
 	double qSWRadDir, qSWRadDiff, incidenceAngle;
 
 	// update the radiation sensor value (this includes precomputed shading in case of constructions or embedded objects)
-	m_currentIntensity = m_loads->qSWRad(m_shadingControlModel->m_sensorID, qSWRadDir, qSWRadDiff, incidenceAngle);
+	m_currentIntensity = m_loads->qSWRad(m_shadingControlModel->m_sensorId, qSWRadDir, qSWRadDiff, incidenceAngle);
 	// update controller state: error value = currentIntensity - setpointIntensity
 	m_controller.update(m_currentIntensity - m_targetValue);
 

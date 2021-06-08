@@ -4,8 +4,15 @@
 	<Directories>
 		<Directory>
 			<Path>.</Path>
-			<SubDir Color="#ff007f" Checked="1">TemperatureDifferenceControlHeatLossSpline</SubDir>
+			<SubDir Color="#416fce" Checked="0">ControlledValveConstantMassFlux</SubDir>
+			<SubDir Color="#ff5500" Checked="0">ControlledValveConstantMassFlux.gcc_linux</SubDir>
+			<SubDir Color="#ffaaff" Checked="1">ControlledValveTemperatureDifferenceFollowingElement</SubDir>
+			<SubDir Color="#ff007f" Checked="0">TemperatureDifferenceControlHeatLossSpline</SubDir>
 			<SubDir Color="#ffaa00" Checked="0">TemperatureDifferenceControlHeatLossSpline.gcc_linux</SubDir>
+			<SubDir Color="#ffee00" Checked="0">ThermostatControlFloorHeating</SubDir>
+			<SubDir Color="#ffffff" Checked="0">ThermostatControlFloorHeating.gcc_linux</SubDir>
+			<SubDir Color="#aa0000" Checked="0">ThermostatControlRegisterHeating</SubDir>
+			<SubDir Color="#416fce" Checked="0">ThermostatControlRegisterHeating.gcc_linux</SubDir>
 			<ExpandedSubDir>.</ExpandedSubDir>
 		</Directory>
 	</Directories>
@@ -14,10 +21,11 @@
 
 	<!--Quantity translation map.-->
 	<QuantityTranslations>
-		<Entry org="Network(id=1)">Mini Netzwerk</Entry>
-		<Entry org="NetworkElement(id=1)">Pump</Entry>
-		<Entry org="NetworkElement(id=2)">Heat exchanger</Entry>
-		<Entry org="NetworkElement(id=3)">Pipe</Entry>
+		<Entry org="Network(id=1)">simple test</Entry>
+		<Entry org="NetworkElement(id=101)">Pump</Entry>
+		<Entry org="NetworkElement(id=201)">Pipe</Entry>
+		<Entry org="NetworkElement(id=301)">Control Valve</Entry>
+		<Entry org="NetworkElement(id=401)">Heat Pump</Entry>
 	</QuantityTranslations>
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
@@ -189,13 +197,210 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>ControlledValveTemperatureDifferenceFollowingElement/results/network_elements.tsv?1|2|3|4</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>3</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ControlledValveTemperatureDifferenceFollowingElement/results/network_elements.tsv?1|2|3|4</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>2</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ControlledValveTemperatureDifferenceFollowingElement/results/network_elements.tsv?5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>2</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#ff420e</PenColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#4e9a06</PenColor>
+						<MarkerColor>#4e9a06</MarkerColor>
+					</Series>
+					<Series leftAxis="0">
+						<TitleText>$quantity</TitleText>
+						<PenColor>#729fcf</PenColor>
+						<MarkerColor>#729fcf</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0">
+						<TitleText>Zeit [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+						<Maximum>26.742532005689899</Maximum>
+						<Minimum>17.354196301564723</Minimum>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>0</MinorGridVisible>
+					</Axis>
+					<Axis index="1">
+						<TitleText>Temperature [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<Maximum>0.15105740181268779</Maximum>
+						<Minimum>-3.7764350453172204</Minimum>
+						<MinorGridVisible>0</MinorGridVisible>
+					</Axis>
+					<Axis index="2" enabled="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">kg/s</IBK:Unit>
+						<Maximum>0.060905681944931116</Maximum>
+						<Minimum>0.037341744620567219</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>$project</TitleText>
+					<TitleFont>Roboto Condensed,12,-1,5,75,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend>
+						<Position>Inside</Position>
+						<Alignment>4</Alignment>
+						<MaxColumns>1</MaxColumns>
+						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>ControlledValveTemperatureDifferenceFollowingElement/results/network_elements.tsv?5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>3</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ControlledValveTemperatureDifferenceFollowingElement/results/network_elements.tsv?11</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#4e9a06</PenColor>
+						<MarkerColor>#4e9a06</MarkerColor>
+					</Series>
+					<Series leftAxis="0">
+						<TitleText>$quantity</TitleText>
+						<PenColor>#ff420e</PenColor>
+						<MarkerColor>#ff420e</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0">
+						<TitleText>Time [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+						<Maximum>16.855524079320116</Maximum>
+						<Minimum>10.623229461756374</Minimum>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>0</MinorGridVisible>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">kg/s</IBK:Unit>
+						<Maximum>0.06308157099697885</Maximum>
+						<Minimum>0.053474320241691839</Minimum>
+						<MinorGridVisible>0</MinorGridVisible>
+					</Axis>
+					<Axis index="2" enabled="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">K</IBK:Unit>
+						<Maximum>1.7519609467185153</Maximum>
+						<Minimum>1.4903455416302755</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>$project: $basename</TitleText>
+					<TitleFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend>
+						<Position>Inside</Position>
+						<Alignment>5</Alignment>
+						<MaxColumns>1</MaxColumns>
+						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>ControlledValveTemperatureDifferenceFollowingElement/log/integrator_cvode_stats.tsv?CvodeStepSize</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<MarkerStyle>0</MarkerStyle>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0">
+						<TitleText>Time [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">s</IBK:Unit>
+						<Maximum>160497.23756906079</Maximum>
+						<Minimum>129558.01104972376</Minimum>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">s</IBK:Unit>
+						<Maximum>4000</Maximum>
+					</Axis>
+					<Axis index="2" enabled="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>0.037573992276446706</Maximum>
+						<Minimum>0.037571444309477765</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>$project: $basename</TitleText>
+					<Legend />
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
 	</Mappers>
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="1" size1="1" size2="1" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="2" size1="1" size2="1" orientation="2" />
 		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 

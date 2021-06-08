@@ -48,7 +48,7 @@ public:
 	NANDRAD_COMP(EmbeddedObjectWindow)
 
 	/*! Returns true, if a glazing system is defined. */
-	bool hasParameters() const { return m_glazingSystemID != INVALID_ID; }
+	bool hasParameters() const { return m_glazingSystemId != INVALID_ID; }
 
 	/*! Checks for valid parameters (value ranges). Also, this function creates
 		quick-access pointers to the referenced data structures, hereby testing for existence
@@ -64,7 +64,7 @@ public:
 
 	/*! ID of the glazing system used in this window.
 		A glazing system with invalid ID means that this Window object is now parametrized. */
-	unsigned int	m_glazingSystemID		= INVALID_ID;				// XML:A:required
+	unsigned int	m_glazingSystemId		= INVALID_ID;				// XML:A:required
 
 	/*! Frame parameters (optional). */
 	WindowFrame		m_frame;											// XML:E:tag=Frame

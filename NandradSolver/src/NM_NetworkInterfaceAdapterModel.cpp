@@ -68,7 +68,7 @@ void NetworkInterfaceAdapterModel::inputReferences(std::vector<InputReference> &
 	// - supply temperature from schedule
 
 	InputReference ref;
-	ref.m_id = m_modelData->m_summationModelID;
+	ref.m_id = m_modelData->m_summationModelId;
 	ref.m_referenceType = NANDRAD::ModelInputReference::MRT_MODEL;
 	ref.m_name.m_name = "TotalHeatLoad";
 	ref.m_required = true;
