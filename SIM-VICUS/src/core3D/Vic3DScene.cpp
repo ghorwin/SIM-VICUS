@@ -1253,7 +1253,9 @@ void Scene::generateBuildingGeometry() {
 							if (comp != nullptr) {
 								// now select transparent or opaque surface based on type
 								if (comp->m_type == VICUS::SubSurfaceComponent::CT_Window) {
-									transparentSubsurfaces.push_back(std::make_pair(&sub, &s.geometry().holeTriangulationData()[i]) );
+									// only add to transparent subsurfaces if visible and not selected
+									if (sub.m_visible && !sub.m_selected)
+										transparentSubsurfaces.push_back(std::make_pair(&sub, &s.geometry().holeTriangulationData()[i]) );
 									continue; // next surface
 								}
 							}
