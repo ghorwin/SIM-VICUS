@@ -4,3 +4,6 @@
 /ThermostatControlRegisterHeating/
 /ControlledValveConstantMassFlux/
 /ControlledValveTemperatureDifferenceFollowingElement/
+/ThermostatControlledIdealFloorHeating/
+/ThermostatControlledIdealPipeRegister/
+/ThermostatControlledPipeRegister/
