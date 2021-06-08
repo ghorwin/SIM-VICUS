@@ -94,6 +94,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Length-specific U-Value of pipe wall incl. insulation");
 	tr("Maximum heating power per floor area");
 	tr("Maximum cooling power per floor area");
+	tr("Kp-parameter");
+	tr("Ki-parameter");
 	tr("Constant supply temperature");
 	tr("Scheduled supply temperature");
 	tr("Medium supply temperature");

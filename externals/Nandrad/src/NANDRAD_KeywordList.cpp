@@ -294,6 +294,8 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "MaxHeatingPowerPerArea";
 				case 1 : return "MaxCoolingPowerPerArea";
+				case 2 : return "Kp";
+				case 3 : return "Ki";
 			} break;
 			// IdealPipeRegisterModel::modelType_t
 			case 23 :
@@ -898,6 +900,8 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "MaxHeatingPowerPerArea";
 				case 1 : return "MaxCoolingPowerPerArea";
+				case 2 : return "Kp";
+				case 3 : return "Ki";
 			} break;
 			// IdealPipeRegisterModel::modelType_t
 			case 23 :
@@ -1503,6 +1507,8 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "Maximum heating power per floor area";
 				case 1 : return "Maximum cooling power per floor area";
+				case 2 : return "Kp-parameter";
+				case 3 : return "Ki-parameter";
 			} break;
 			// IdealPipeRegisterModel::modelType_t
 			case 23 :
@@ -2107,6 +2113,8 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "W/m2";
 				case 1 : return "W/m2";
+				case 2 : return "---";
+				case 3 : return "---";
 			} break;
 			// IdealPipeRegisterModel::modelType_t
 			case 23 :
@@ -2711,6 +2719,8 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
 			} break;
 			// IdealPipeRegisterModel::modelType_t
 			case 23 :
@@ -3315,6 +3325,8 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// IdealPipeRegisterModel::modelType_t
 			case 23 :
@@ -3804,7 +3816,7 @@ namespace NANDRAD {
 			// HydraulicNetworkPipeProperties::para_t
 			case 21 : return 4;
 			// IdealHeatingCoolingModel::para_t
-			case 22 : return 2;
+			case 22 : return 4;
 			// IdealPipeRegisterModel::modelType_t
 			case 23 : return 2;
 			// IdealPipeRegisterModel::para_t
@@ -3978,7 +3990,7 @@ namespace NANDRAD {
 			// HydraulicNetworkPipeProperties::para_t
 			case 21 : return 3;
 			// IdealHeatingCoolingModel::para_t
-			case 22 : return 1;
+			case 22 : return 3;
 			// IdealPipeRegisterModel::modelType_t
 			case 23 : return 1;
 			// IdealPipeRegisterModel::para_t

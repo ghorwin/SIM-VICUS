@@ -60,6 +60,11 @@ void IdealHeatingCoolingModel::setup(const NANDRAD::IdealHeatingCoolingModel & m
 	m_maxHeatingPower = model.m_para[NANDRAD::IdealHeatingCoolingModel::P_MaxHeatingPowerPerArea].value;
 	m_maxCoolingPower = model.m_para[NANDRAD::IdealHeatingCoolingModel::P_MaxCoolingPowerPerArea].value;
 
+	if (!model.m_para[NANDRAD::IdealHeatingCoolingModel::P_Kp].name.empty())
+		m_Kp = model.m_para[NANDRAD::IdealHeatingCoolingModel::P_Kp].value;
+	if (!model.m_para[NANDRAD::IdealHeatingCoolingModel::P_Ki].name.empty())
+		m_Ki = model.m_para[NANDRAD::IdealHeatingCoolingModel::P_Ki].value;
+
 	// reserve storage memory for results
 	m_vectorValuedResults.resize(NUM_VVR);
 
@@ -272,16 +277,21 @@ int IdealHeatingCoolingModel::update() {
 	for (unsigned int i=0; i<m_objectList->m_filterID.m_ids.size(); ++i) {
 		// retrieve zone area
 		double area = m_zoneAreas[i];
-		// get control values
+		// get control values (controller error values)
 		double heatingControlValue = *m_valueRefs[i*2];
 		double coolingControlValue = *m_valueRefs[i*2 + 1];
 
-		// clip
-		heatingControlValue = std::max(0.0, std::min(1.0, heatingControlValue));
-		coolingControlValue = std::max(0.0, std::min(1.0, coolingControlValue));
+		double P_heating = m_Kp*heatingControlValue;
+		double P_cooling = m_Kp*coolingControlValue;
+		double deltaT = std::max(0.0, m_tCurrent - m_tEndOfLastStep); // protection against output errors
+		double I_heating = m_Ki*heatingControlValue*deltaT;
+		double I_cooling = m_Ki*coolingControlValue*deltaT;
+		heatingControlValue = std::max(0.0, std::min(1.0, P_heating + I_heating)); // max - to avoid cooling by heating; min - to clip to maximum power
+		coolingControlValue = std::max(0.0, std::min(1.0, P_cooling + I_cooling));
 
 		*(m_vectorValuedResults[VVR_IdealHeatingLoad].dataPtr() + i) = heatingControlValue*area*m_maxHeatingPower;
 		*(m_vectorValuedResults[VVR_IdealCoolingLoad].dataPtr() + i) = coolingControlValue*area*m_maxCoolingPower; // Cooling load is positively defined!
+
 	}
 
 	return 0; // signal success

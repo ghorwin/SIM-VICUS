@@ -24,6 +24,7 @@
 
 #include "NM_AbstractModel.h"
 #include "NM_AbstractStateDependency.h"
+#include "NM_AbstractTimeDependency.h"
 #include "NM_VectorValuedQuantity.h"
 
 #include <NANDRAD_ObjectList.h>
@@ -44,7 +45,7 @@ namespace NANDRAD_MODEL {
 	parameters from NANDRAD::IdealHeatingCoolingModel the maximum heating/cooling power. The actual heating/cooling power
 	is obtained by multiplication of the heating/cooling control value with this maximum power.
 */
-class IdealHeatingCoolingModel : public AbstractModel, public AbstractStateDependency {
+class IdealHeatingCoolingModel : public AbstractModel, public AbstractStateDependency, public AbstractTimeDependency {
 public:
 	/*! Computed results, vector-valued results that provide access via zone ID. */
 	enum VectorValuedResults {
@@ -95,6 +96,12 @@ public:
 	virtual const double * resultValueRef(const InputReference & quantity) const override;
 
 
+	// *** Re-implemented from AbstractTimeDependency
+
+	int setTime(double t) override { m_tCurrent = t; return 0; }
+	void stepCompleted(double t) override { m_tEndOfLastStep = t; }
+
+
 	// *** Re-implemented from AbstractStateDependency
 
 	/*! Composes all input references.
@@ -136,6 +143,11 @@ private:
 	/*! Cached cooling power per zone area in [W/m2] */
 	double											m_maxCoolingPower = 777;
 
+	/*! Kp-parameter for controller. */
+	double											m_Kp = 1;
+	/*! Ki-parameter for controller. */
+	double											m_Ki = 0;
+
 	/*! Cached pointer to zone parameters, needed to check for valid zones in initReslts(). */
 	const std::vector<NANDRAD::Zone>				*m_zones = nullptr;
 
@@ -155,7 +167,14 @@ private:
 
 	/*! Vector with value references. */
 	std::vector<const double*>						m_valueRefs;
+
+	/*! Time point at end of last step, updated in stepCompleted(). */
+	double											m_tEndOfLastStep = -1;
+	/*! Current time point, set in setTime(). */
+	double											m_tCurrent = -1;
+
 };
+
 
 } // namespace NANDRAD_MODEL
 

@@ -34,6 +34,12 @@ void IdealHeatingCoolingModel::checkParameters() const {
 											   0, true,
 											   std::numeric_limits<double>::max(), true,
 											   "Maximum for cooling power must be >= 0 W/m2.");
+	if (!m_para[P_Kp].name.empty())
+		m_para[P_Kp].checkedValue("Kp", "---", "---", 0, false, std::numeric_limits<double>::max(), true,
+											   "Kp value for PI controller.");
+	if (!m_para[P_Ki].name.empty())
+		m_para[P_Ki].checkedValue("Ki", "---", "---", 0, false, std::numeric_limits<double>::max(), true,
+											   "Ki value for PI controller.");
 }
 
 

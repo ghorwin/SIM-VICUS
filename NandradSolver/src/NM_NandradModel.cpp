@@ -1343,6 +1343,7 @@ void NandradModel::initModels() {
 			}
 			// register model for calculation
 			registerStateDependendModel(mod);
+			m_timeModelContainer.push_back(mod); // also a time-state model because of stepCompleted()
 		}
 	}
 
