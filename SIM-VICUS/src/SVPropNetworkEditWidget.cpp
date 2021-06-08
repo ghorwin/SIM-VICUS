@@ -76,6 +76,7 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 
 	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::ModelType::T_TemperatureConstant == (int)VICUS::NetworkHeatExchange::ModelType::T_TemperatureConstant);
 	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::ModelType::T_TemperatureSpline == (int)VICUS::NetworkHeatExchange::ModelType::T_TemperatureSpline);
+	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::ModelType::T_TemperatureSplineEvaporator == (int)VICUS::NetworkHeatExchange::ModelType::T_TemperatureSplineEvaporator);
 	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::ModelType::T_HeatLossConstant == (int)VICUS::NetworkHeatExchange::ModelType::T_HeatLossConstant);
 	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::ModelType::T_HeatLossSpline == (int)VICUS::NetworkHeatExchange::ModelType::T_HeatLossSpline);
 	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::ModelType::T_HeatLossSplineCondenser == (int)VICUS::NetworkHeatExchange::ModelType::T_HeatLossSplineCondenser);
@@ -83,12 +84,19 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::ModelType::T_TemperatureConstructionLayer == (int)VICUS::NetworkHeatExchange::ModelType::T_TemperatureConstructionLayer);
 	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::ModelType::NUM_T == (int)VICUS::NetworkHeatExchange::ModelType::NUM_T);
 
-	// TODO Hauke, neue typen unterstützen
-
 	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::para_t::P_Temperature == (int)VICUS::NetworkHeatExchange::para_t::P_Temperature);
 	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::para_t::P_HeatLoss == (int)VICUS::NetworkHeatExchange::para_t::P_HeatLoss);
 	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::para_t::P_ExternalHeatTransferCoefficient == (int)VICUS::NetworkHeatExchange::para_t::P_ExternalHeatTransferCoefficient);
 	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::para_t::NUM_P == (int)VICUS::NetworkHeatExchange::para_t::NUM_P);
+
+	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::splinePara_t::SPL_HeatLoss == (int)VICUS::NetworkHeatExchange::splinePara_t::SPL_HeatLoss);
+	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::splinePara_t::SPL_Temperature == (int)VICUS::NetworkHeatExchange::splinePara_t::SPL_Temperature);
+	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::splinePara_t::NUM_SPL == (int)VICUS::NetworkHeatExchange::splinePara_t::NUM_SPL);
+
+	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::References::ID_ZoneId == (int)VICUS::NetworkHeatExchange::References::ID_ZoneId);
+	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::References::ID_ConstructionInstanceId == (int)VICUS::NetworkHeatExchange::References::ID_ConstructionInstanceId);
+	Q_ASSERT(NANDRAD::HydraulicNetworkHeatExchange::References::NUM_ID == (int)VICUS::NetworkHeatExchange::References::NUM_ID);
+
 }
 
 
@@ -645,9 +653,11 @@ void SVPropNetworkEditWidget::setupComboboxHeatExchangeType()
 	std::vector<NANDRAD::HydraulicNetworkHeatExchange::ModelType> hxTypes = NANDRAD::HydraulicNetworkHeatExchange::availableHeatExchangeTypes(
 													(NANDRAD::HydraulicNetworkComponent::ModelType)comp->m_modelType);
 
-	m_ui->comboBoxHeatExchangeType->addItem(tr("Adiabatic"), VICUS::NetworkHeatExchange::NUM_T);
 	for (unsigned int i: hxTypes){
-		m_ui->comboBoxHeatExchangeType->addItem(QString::fromStdString(
+		if (i == VICUS::NetworkHeatExchange::NUM_T)
+			m_ui->comboBoxHeatExchangeType->addItem(tr("Adiabatic"), VICUS::NetworkHeatExchange::NUM_T);
+		else
+			m_ui->comboBoxHeatExchangeType->addItem(QString::fromStdString(
 											VICUS::KeywordList::Description("NetworkHeatExchange::ModelType", (int)i)), i);
 	}
 	m_ui->comboBoxHeatExchangeType->setCurrentIndex(-1);
@@ -836,7 +846,7 @@ void SVPropNetworkEditWidget::on_pushButtonEditComponents_clicked() {
 	}
 }
 
-void SVPropNetworkEditWidget::on_lineEditNodeHeatingDemand_editingFinished()
+void SVPropNetworkEditWidget::on_lineEditNodeMaxHeatingDemand_editingFinished()
 {
 	if (m_ui->lineEditNodeMaxHeatingDemand->isValid())
 		modifyNodeProperty(&VICUS::NetworkNode::m_maxHeatingDemand, m_ui->lineEditNodeMaxHeatingDemand->value());

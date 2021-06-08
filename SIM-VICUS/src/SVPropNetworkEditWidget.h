@@ -95,7 +95,7 @@ private slots:
 
 	void on_lineEditHeatFlux_editingFinished();
 
-	void on_lineEditNodeHeatingDemand_editingFinished();
+	void on_lineEditNodeMaxHeatingDemand_editingFinished();
 
 	void on_horizontalSliderScaleNodes_valueChanged(int value);
 
@@ -120,6 +120,7 @@ private slots:
 	void on_pushButtonSelectFluid_clicked();
 
 	void on_pushButtonEditController_clicked();
+
 
 private:
 	/*! This function is called whenever the current selection of edges/nodes/objects has changed.

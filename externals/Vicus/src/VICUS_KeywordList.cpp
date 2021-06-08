@@ -309,12 +309,12 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "TemperatureConstant";
 				case 1 : return "TemperatureSpline";
-				case 2 : return "HeatLossConstant";
-				case 3 : return "HeatLossSpline";
-				case 4 : return "HeatLossSplineCondenser";
-				case 5 : return "TemperatureZone";
-				case 6 : return "TemperatureConstructionLayer";
-				case 7 : return "TemperatureFMUInterface";
+				case 2 : return "TemperatureSplineEvaporator";
+				case 3 : return "TemperatureZone";
+				case 4 : return "TemperatureConstructionLayer";
+				case 5 : return "HeatLossConstant";
+				case 6 : return "HeatLossSpline";
+				case 7 : return "HeatLossSplineCondenser";
 			} break;
 			// NetworkHeatExchange::para_t
 			case 23 :
@@ -724,12 +724,12 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "TemperatureConstant";
 				case 1 : return "TemperatureSpline";
-				case 2 : return "HeatLossConstant";
-				case 3 : return "HeatLossSpline";
-				case 4 : return "HeatLossSplineCondenser";
-				case 5 : return "TemperatureZone";
-				case 6 : return "TemperatureConstructionLayer";
-				case 7 : return "TemperatureFMUInterface";
+				case 2 : return "TemperatureSplineEvaporator";
+				case 3 : return "TemperatureZone";
+				case 4 : return "TemperatureConstructionLayer";
+				case 5 : return "HeatLossConstant";
+				case 6 : return "HeatLossSpline";
+				case 7 : return "HeatLossSplineCondenser";
 			} break;
 			// NetworkHeatExchange::para_t
 			case 23 :
@@ -1138,14 +1138,14 @@ namespace VICUS {
 			// NetworkHeatExchange::ModelType
 			case 22 :
 			switch (t) {
-				case 0 : return "Constant ambient temperature";
-				case 1 : return "Time-dependent ambient temperature from spline";
-				case 2 : return "Constant heat loss";
-				case 3 : return "Heat loss from spline";
-				case 4 : return "Heat loss of condenser in heat pump model";
-				case 5 : return "Zone air temperature";
-				case 6 : return "Active construction layer (floor heating)";
-				case 7 : return "Temperature from FMU interface, provided heat flux to FMU";
+				case 0 : return "Difference to constant temperature";
+				case 1 : return "Difference to time-dependent temperature from spline";
+				case 2 : return "Evaporator medium temperature for heat pump";
+				case 3 : return "Difference to zone air temperature";
+				case 4 : return "Difference to active construction layer (floor heating)";
+				case 5 : return "Constant heat loss";
+				case 6 : return "Heat loss from spline";
+				case 7 : return "Heat loss of condenser in heat pump model";
 			} break;
 			// NetworkHeatExchange::para_t
 			case 23 :
@@ -1158,7 +1158,7 @@ namespace VICUS {
 			case 24 :
 			switch (t) {
 				case 0 : return "Temperature for heat exchange";
-				case 1 : return "Heat flux out of the element (heat loss)";
+				case 1 : return "Constant heat flux out of the element (heat loss)";
 			} break;
 			// NetworkHeatExchange::References
 			case 25 :
