@@ -665,6 +665,11 @@ Die Art der Regelung bzw. die zu überwachende Größe wird im Attribut `control
 
 Dieser Regler kann nur bei Elementen mit vorgegebenem Wärmeverluststrom verwendet werden (Wärmeaustauschmodell `HeatLossConstant` oder `HeatLossSpline`). Aus dem gegebenen Wärmeverlust wird mit dem aktuellen Massenstrom der Temperaturabfall über dem Strömungselement berechnet. Dieser wird mit einem Sollwert (Parameter `TemperatureDifferenceSetpoint`) verglichen - die Differenz zwischen Sollwert und Ist-Temperturdifferenz ist das Reglereingangssignal (Fehlerwert).
 
+### Regler: TemperatureDifferenceOfFollowingElement
+
+Mit diesem Regler wird ein Ventil implementiert, welches die Temperaturdifferenz des nächsten Strömungselements (in Verknüpfungsreihenfolge) regelt. Das nächste Strömungselement wird automatisch ermittelt und es wird geprüft ob der dazwischenliegende Knoten mit einem weiteren Strömungslement verbunden ist. In diesem Fall wäre die Regelung nicht mehr anwendbar und es wird ein Fehler ausgegeben. 
+
+
 ### Regler: ThermostatValue
 
 ... TODO Anne
