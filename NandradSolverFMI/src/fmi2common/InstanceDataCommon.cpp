@@ -122,10 +122,15 @@ void InstanceDataCommon::getInteger(int varID, int & value) {
 
 
 void InstanceDataCommon::getString(int varID, fmi2String & value) {
-	// update procedure for model exchnge
-	if(m_modelExchange)
-		updateIfModified();
-	m_model->getString(varID,value);
+	// special handling for results root dir
+	if (varID == 42)
+		value = &m_resultsRootDir[0];
+	else {
+		// update procedure for model exchnge
+		if(m_modelExchange)
+			updateIfModified();
+		m_model->getString(varID,value);
+	}
 }
 
 

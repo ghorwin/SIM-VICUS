@@ -79,18 +79,21 @@ void NandradModelFMU::getReal(int varID, double & value) {
 }
 
 
-void NandradModelFMU::getInteger(int /*varID*/, int & /*value*/) {
-//	FUNCID(NandradModelFMU::getInteger);
+void NandradModelFMU::getInteger(int varID, int & /*value*/) {
+	FUNCID(NandradModelFMU::getInteger);
+	throw IBK::Exception(IBK::FormatString("No such integer variable with value reference %1.").arg(varID), FUNC_ID);
 }
 
 
-void NandradModelFMU::getString(int /*varID*/, ConstString & /*value*/) {
-//	FUNCID(NandradModelFMU::getString);
+void NandradModelFMU::getString(int varID, ConstString & /*value*/) {
+	FUNCID(NandradModelFMU::getString);
+	throw IBK::Exception(IBK::FormatString("No such string variable with value reference %1.").arg(varID), FUNC_ID);
 }
 
 
-void NandradModelFMU::getBoolean(int /*varID*/, bool & /*value*/) {
-//	FUNCID(NandradModelFMU::getBoolean);
+void NandradModelFMU::getBoolean(int varID, bool & /*value*/) {
+	FUNCID(NandradModelFMU::getBoolean);
+	throw IBK::Exception(IBK::FormatString("No such boolean variable with value reference %1.").arg(varID), FUNC_ID);
 }
 
 
