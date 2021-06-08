@@ -72,7 +72,7 @@ table {
 <h1>NANDRAD Modell-Referenz</h1>
 <div class="details">
 <span id="author" class="author">Andreas Nicolai &lt;andreas.nicolai@tu-dresden.de&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke</span><br>
-<span id="revnumber">version 0.2 (04.06.2021)</span>
+<span id="revnumber">version 0.2 (08.06.2021)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Inhaltsverzeichnis</div>
@@ -6238,8 +6238,8 @@ Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in den
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"TemperatureTolerance"</span> <span class="na">unit=</span><span class="s">"K"</span><span class="nt">&gt;</span>0.2<span class="nt">&lt;/IBK:Parameter&gt;</span>
   <span class="c">&lt;!-- Control temperature is "Air temperature", this is the default and could be omitted --&gt;</span>
   <span class="nt">&lt;TemperatureType&gt;</span>AirTemperature<span class="nt">&lt;/TemperatureType&gt;</span>
-  <span class="c">&lt;!-- Controller type PController is the default, so we could omit this--&gt;</span>
-  <span class="nt">&lt;ControllerType&gt;</span>PController<span class="nt">&lt;/ControllerType&gt;</span>
+  <span class="c">&lt;!-- Controller type Analog is the default, so we could omit this--&gt;</span>
+  <span class="nt">&lt;ControllerType&gt;</span>Analog<span class="nt">&lt;/ControllerType&gt;</span>
 <span class="nt">&lt;/Thermostat&gt;</span></code></pre>
 </div>
 </div>
@@ -6396,10 +6396,10 @@ Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in den
 <div class="sect3">
 <h4 id="_controllertype">17.5.2. ControllerType</h4>
 <div class="paragraph">
-<p>Das XML-Element <code>ControllerType</code> enthält eine Zeichenkette zur Auswahl eines bestimmten Controllers (<code>PController</code> wird standardmäßig verwendet, wenn das Element fehlt).</p>
+<p>Das XML-Element <code>ControllerType</code> enthält eine Zeichenkette zur Auswahl des gewünschten Signaltyps (<code>Analog</code> wird standardmäßig verwendet, wenn das Element fehlt).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 31. Verfügbare Controller</caption>
+<caption class="title">Tabelle 31. Verfügbare Schalt-/Regelsignale</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 80%;">
@@ -6412,20 +6412,20 @@ Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in den
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PController</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Ein einfacher P-Controller wird verwendet.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Analog</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Die Abweichung zwischen Solltemperatur und Sensortemperatur wird durch die <code>TemperatureTolerance</code> geteilt zurückgeliefert. Je weiter von 0 verschieden das Sensorsignal ist, umso größer ist die Abweichung. Ein Wert &lt; 1 besagt, dass die Abweichung noch in der Toleranz liegt.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DigitalController</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Digital</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Ein digitaler Controller mit Hysterese wird verwendet.</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Beim <code>PController</code> muss der Parameter <code>TemperatureTolerance</code> angegeben werden, welche die maximale erlaubte Regelabweichung definiert. Wird z.B. die Heizsolltemperatur um genau diese Toleranz unterschritten, so liefert der Regler eine 1 zurück (bei größeren Abweichungen entsprechend höhere Werte). Damit entspricht diese Toleranz dem inversen des KP-Parameters: <code>Kp = 1/TemperatureTolerance</code>.</p>
+<p>Beim Typ <code>Analog</code> muss der Parameter <code>TemperatureTolerance</code> angegeben werden, welche die nominal erlaubte Regelabweichung definiert. Wird z.B. die Heizsolltemperatur um genau diese Toleranz unterschritten, so liefert der Regler eine 1 zurück (bei größeren Abweichungen entsprechend höhere Werte).</p>
 </div>
 <div class="paragraph">
-<p>Beim <code>DigitalController</code> muss der Parameter <code>TemperatureBand</code> angegeben werden. Der Regler regelt dann im Bereich;</p>
+<p>Beim Typ <code>Digital</code> muss der Parameter <code>TemperatureBand</code> angegeben werden. Der Regler regelt dann im Bereich;</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -9357,8 +9357,8 @@ das <code>HydraulicNetworkElement</code> dafür ein <code>HydraulicNetworkContro
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.2 (04.06.2021)<br>
-Last updated 2021-06-04 08:16:21 +0200
+Version 0.2 (08.06.2021)<br>
+Last updated 2021-06-08 05:33:32 +0200
 </div>
 </div>
 <style>
