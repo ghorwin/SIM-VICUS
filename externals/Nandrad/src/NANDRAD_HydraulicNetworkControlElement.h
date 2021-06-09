@@ -28,12 +28,12 @@ public:
 
 	/*! Defines variability options for set point values. */
 	enum modelType_t {
-		MT_Constant,
+		MT_Constant,					// Keyword: Constant				'Set points are given as constant parameters'
 		/*! Generates 'TemperatureDifferenceSetpointSchedule' or 'MassFluxSetpointSchedule' depending on
 			controlled property for each network element that uses this controller.
 			InputRef-Typ: NetworkElement, id = id of network element that uses the component with this controller
 		*/
-		MT_Scheduled,
+		MT_Scheduled,					// Keyword: Scheduled				'Scheduled set point values'
 		NUM_MT
 	};
 

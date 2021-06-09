@@ -59,6 +59,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Maximum width of discretized volumes in pipe");
 	tr("Carnot efficiency eta");
 	tr("Maximum heating power");
+	tr("Set points are given as constant parameters");
+	tr("Scheduled set point values");
 	tr("Control temperature difference of this element");
 	tr("Control temperature difference of the following element");
 	tr("Control zone thermostat values");

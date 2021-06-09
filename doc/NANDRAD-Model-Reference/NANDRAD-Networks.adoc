@@ -646,7 +646,7 @@ Alle Reglerkomponenten werden in einer Liste `ControlElements` abgelegt, welche 
 		 This control element can be referenced by all flow
 		 elements with similar mass flow control strategy.
 	-->
-	<HydraulicNetworkControlElement id="1" controlledProperty="TemperatureDifference" controllerType="PController" >
+	<HydraulicNetworkControlElement id="1" controlledProperty="TemperatureDifference" modelType="Constant" controllerType="PController" >
 		<IBK:Parameter name="Kp" unit="---">1e6</IBK:Parameter>
 		<IBK:Parameter name="TemperatureDifferenceSetpoint" unit="K">3</IBK:Parameter>
 		<!-- Deactivate upper limit of controller result value
@@ -660,6 +660,7 @@ Alle Reglerkomponenten werden in einer Liste `ControlElements` abgelegt, welche 
 Eine Reglerdefinition `HydraulicNetworkControlElement` beschreibt sowohl die Sensorgröße(n), das Berechnungsverfahren für das Reglereingangssignal und das Reglermodell selbst (P, PI-Regler, ...). Das Ergebnis des Reglers ist ein zusätzlicher Druckverlustbeiwert zwischen 0 (kein zusätzlicher Strömungswiderstand) bis zu einem sehr hohen Wert (bspw. Ventil geschlossen).
 
 Die Art der Regelung bzw. die zu überwachende Größe wird im Attribut `controlledProperty` definiert. 
+Das Attribute `modelType` (Optionen `Constant` oder `Scheduled`) definiert, ob die Setpoints als feste Parameter im `HydraulicNetworkControlElement` angegeben sind, oder als Zeitplanparameter angegeben sind.
 
 ### Regler: TemperatureDifference
 

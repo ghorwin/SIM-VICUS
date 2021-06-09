@@ -54,9 +54,7 @@ public:
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
 	virtual void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override;
 
-	/*! Adds flow-element-specific input references (schedules etc.) to the list of input references.
-		Default implementation does nothing.
-	*/
+	/*! Adds flow-element-specific input references (schedules etc.) to the list of input references. */
 	virtual void inputReferences(std::vector<NANDRAD_MODEL::InputReference> & inputRefs) const override;
 
 	/*! Provides the element with its own requested model inputs.
@@ -70,8 +68,7 @@ public:
 	void partials(double mdot, double p_inlet, double p_outlet,
 				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
 
-	/*! Called at the end of a successful Newton iteration. Allows to calculte and store results.
-	*/
+	/*! Called at the end of a successful Newton iteration. Allows to calculate and store results. */
 	virtual void updateResults(double mdot, double p_inlet, double p_outlet) override;
 
 private:
@@ -138,9 +135,7 @@ public:
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
 	virtual void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override;
 
-	/*! Adds flow-element-specific input references (schedules etc.) to the list of input references.
-		Default implementation does nothing.
-	*/
+	/*! Adds flow-element-specific input references (schedules etc.) to the list of input references. */
 	virtual void inputReferences(std::vector<NANDRAD_MODEL::InputReference> & inputRefs) const override;
 
 	/*! Provides the element with its own requested model inputs.
@@ -154,8 +149,7 @@ public:
 	virtual void partials(double mdot, double p_inlet, double p_outlet,
 				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
 
-	/*! Called at the end of a successful Newton iteration. Allows to calculte and store results.
-	*/
+	/*! Called at the end of a successful Newton iteration. Allows to calculate and store results. */
 	virtual void updateResults(double mdot, double p_inlet, double p_outlet) override;
 
 	/*! Id number of following flow element. This is used to obtain the outlet temperature of the follwing
@@ -188,7 +182,7 @@ private:
 	/*! the calculated controller zeta value for the valve */
 	double							m_zetaControlled = -999;
 
-	/*! the calculated temperature difference */
+	/*! The calculated temperature difference */
 	double							m_temperatureDifference = -999;
 
 	/*! Reference to the controller parametrization object.*/
@@ -198,6 +192,12 @@ private:
 	/*! Value reference to external quantity. */
 	const double					*m_heatExchangeHeatLossRef = nullptr;
 
+	/*! Value reference to temperature difference set point. */
+	const double					*m_temperatureDifferenceSetpointRef = nullptr;
+
+	/*! Value reference to mass flux set point. */
+	const double					*m_massFluxSetpointRef = nullptr;
+
 	/*! Value reference to external quantity. */
 	const double					*m_followingFlowElementFluidTemperatureRef = nullptr;
 
@@ -206,7 +206,7 @@ private:
 }; // HNFixedPressureLossCoeffElement
 
 
-/*! Pump model with fixed constant pressure head */
+/*! Pump model with fixed/scheduled constant pressure head */
 class HNConstantPressurePump: public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
@@ -218,7 +218,7 @@ public:
 	void inputReferences(std::vector<InputReference> &) const override;
 	void setInputValueRefs(std::vector<const double *>::const_iterator &resultValueRefIt) override;
 
-	/*! Element's ID, needed to formulated input references. */
+	/*! Element's ID, needed to formulate input references. */
 	unsigned int					m_id;
 	/*! If not nullptr, this pressure head value (from an external model) is used instead of the constant one. */
 	const double					*m_pressureHeadRef = nullptr;
@@ -230,13 +230,13 @@ private:
 
 
 
-/*! Pump model with fixed constant pressure head */
+/*! Pump model where pressure head is controlled based on mass flux requirements. */
 class HNControlledPump: public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	HNControlledPump(unsigned int id,
-							 unsigned int followingFlowElementId,
-							 const NANDRAD::HydraulicNetworkControlElement *controlElement);
+					 unsigned int followingFlowElementId,
+					 const NANDRAD::HydraulicNetworkControlElement *controlElement);
 
 	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
 	void partials(double mdot, double p_inlet, double p_outlet,
@@ -248,9 +248,7 @@ public:
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
 	virtual void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override;
 
-	/*! Adds flow-element-specific input references (schedules etc.) to the list of input references.
-		Default implementation does nothing.
-	*/
+	/*! Adds flow-element-specific input references (schedules etc.) to the list of input references. */
 	virtual void inputReferences(std::vector<NANDRAD_MODEL::InputReference> & inputRefs) const override;
 
 	/*! Provides the element with its own requested model inputs.
@@ -259,17 +257,13 @@ public:
 	*/
 	virtual void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
 
-	/*! Called at the end of a successful Newton iteration. Allows to calculte and store results.
-	*/
+	/*! Called at the end of a successful Newton iteration. Allows to calculate and store results. */
 	virtual void updateResults(double mdot, double p_inlet, double p_outlet) override;
 
-	/*! Element's ID, needed to formulated input references. */
+	/*! Element's ID, needed to formulate input references. */
 	unsigned int					m_id;
 	/*! Calculated pressure head. */
 	double							m_pressureHead = -999;
-	/*! If not nullptr, this setpoint mass flux (from an external model) is used instead of the given one
-		from controller. */
-	const double					*m_setpointMassFluxRef = nullptr;
 
 private:
 	/*! Computes the controlled pressure head if a control-model is implemented.
@@ -286,6 +280,10 @@ private:
 
 	/*! Value reference to external quantity. */
 	const double					*m_followingFlowElementFluidTemperatureRef = nullptr;
+	/*! Value reference to setpoint mass flux. */
+	const double					*m_massFluxSetpointRef = nullptr;
+	/*! Value reference to temperature difference set point. */
+	const double					*m_temperatureDifferenceSetpointRef = nullptr;
 
 }; // HNControlledPump
 
