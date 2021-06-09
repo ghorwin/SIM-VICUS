@@ -47,20 +47,24 @@ public:
 
 	/*! Basic parameters. */
 	enum para_t {
-		/*! Tolerance heating. */
-		P_ToleranceHeating,				// Keyword: ToleranceHeating			[K]			'Thermostat tolerance heating mode.'
-		/*! Tolerance cooling. */
-		P_ToleranceCooling,				// Keyword: ToleranceCooling			[K]			'Thermostat tolerance cooling mode.'
-
+		/*! Tolerance. */
+		P_Tolerance,				// Keyword: Tolerance						[K]			'Thermostat tolerance heating and cooling mode.'
 		NUM_P
 	};
 
 	/*! Zone control value.*/
 	enum ControlValue {
 		CV_AirTemperature,		// Keyword: AirTemperature					[-]		'Air temperature'
-		CV_RadiantTemperature,	// Keyword: RadiantTemperature				[-]		'Radiant temperature'
+		//CV_RadiantTemperature,	// Keyword: RadiantTemperature				[-]		'Radiant temperature'
 		CV_OperativeTemperature,// Keyword: OperativeTemperature			[-]		'Operative temperature'
 		NUM_CV
+	};
+
+	/*! Type results from the NANDRAD specification. */
+	enum ControllerType{
+		CT_Analog,						// Keyword: Analog						'Analog'
+		CT_Digital,						// Keyword: Digital						'Digital'
+		NUM_CT
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -99,6 +103,8 @@ public:
 
 	/*! Cooling setpoint schedule ID. */
 	unsigned int					m_coolingSetpointScheduleId = INVALID_ID;		// XML:E
+
+	ControllerType					m_controllerType = NUM_CT;						// XML:E:required
 
 	/*! List of parameters. */
 	IBK::Parameter					m_para[NUM_P];							// XML:E
