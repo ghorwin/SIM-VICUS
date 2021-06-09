@@ -548,7 +548,7 @@
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>PI-Controller, k_P=1/1, k_I = 1e-4</TitleText>
+					<TitleText>PI-Controller, DeltaT=1K, k_P=1/0.5=2, k_I = 1e-5</TitleText>
 					<TitleFont>Roboto Condensed,10,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
@@ -662,7 +662,7 @@
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="4" size1="1" size2="1" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="3" size1="1" size2="1" orientation="2" />
 		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 

@@ -108,7 +108,7 @@
 					<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">50</IBK:Parameter>
 					<IBK:Parameter name="MaxCoolingPowerPerArea" unit="W/m2">40</IBK:Parameter>
 					<IBK:Parameter name="Kp" unit="---">2</IBK:Parameter>
-					<IBK:Parameter name="Ki" unit="---">1e-7</IBK:Parameter>
+					<IBK:Parameter name="Ki" unit="---">1e-5</IBK:Parameter>
 				</IdealHeatingCoolingModel>
 			</IdealHeatingCoolingModels>
 
