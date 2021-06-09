@@ -545,7 +545,8 @@ void HNConstantPressurePump::inputReferences(std::vector<InputReference> & input
 
 
 void HNConstantPressurePump::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefIt) {
-	m_pressureHeadRef = *resultValueRefIt; // optional, may be nullptr
+	if (*resultValueRefIt != nullptr)
+		m_pressureHeadRef = *resultValueRefIt; // optional, may be nullptr
 	++resultValueRefIt;
 }
 
