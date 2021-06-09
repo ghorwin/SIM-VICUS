@@ -188,6 +188,7 @@ double HNPipeElement::zetaControlled() const {
 		//   heatingControlValue = 0  -> zetaControlled = m_maximumControllerResultValue
 		// in between we interpolate linearly
 		double e = (1.0 - heatingControlValue);
+		// TODO : use Kp instead of maximumControllerResultValue
 		heatingControlValue = m_controlElement->m_maximumControllerResultValue * e; // std::pow(10.,-2*(1-e));
 	}
 
