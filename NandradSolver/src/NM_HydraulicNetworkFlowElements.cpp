@@ -511,6 +511,8 @@ HNControlledPump::HNControlledPump(unsigned int id,
 	m_followingflowElementId(followingflowElementId),
 	m_controlElement(controlElement)
 {
+	if(m_controlElement->m_controllerType == NANDRAD::HydraulicNetworkControlElement::CP_MassFlux)
+		m_setpointMassFluxRef = &m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_MassFluxSetpoint].value;
 }
 
 
@@ -566,7 +568,8 @@ void HNControlledPump::setInputValueRefs(std::vector<const double*>::const_itera
 		break;
 		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlux:
 			// setpoint mass flux may be zero
-			m_setpointMassFluxRef = *(resultValueRefs++); // Fluid temperature of following element
+			if(*resultValueRefs != nullptr)
+				m_setpointMassFluxRef = *(resultValueRefs++); // Fluid temperature of following element
 		break;
 		default: ; // other control elements do not require inputs
 	}
@@ -646,13 +649,8 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 			return pressHeadControlled;
 		}
 		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlux: {
-			double mdotSetpoint = 0;
-			// external reference
-			if(m_setpointMassFluxRef != nullptr)
-				mdotSetpoint = *m_setpointMassFluxRef;
-			// alternatively: given as constant parameter values
-			else
-				mdotSetpoint = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_MassFluxSetpoint].value;
+			// external reference or constant parameter
+			const double mdotSetpoint = *m_setpointMassFluxRef;
 
 			// setpoint 0 returns 0
 			if(mdotSetpoint == 0.0)
