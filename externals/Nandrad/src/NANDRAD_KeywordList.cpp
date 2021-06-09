@@ -195,10 +195,11 @@ namespace NANDRAD {
 				case 0 : return "SimplePipe";
 				case 1 : return "DynamicPipe";
 				case 2 : return "ConstantPressurePump";
-				case 3 : return "HeatExchanger";
-				case 4 : return "HeatPumpIdealCarnotSourceSide";
-				case 5 : return "HeatPumpIdealCarnotSupplySide";
-				case 6 : return "ControlledValve";
+				case 3 : return "ControlledPump";
+				case 4 : return "HeatExchanger";
+				case 5 : return "HeatPumpIdealCarnotSourceSide";
+				case 6 : return "HeatPumpIdealCarnotSupplySide";
+				case 7 : return "ControlledValve";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -807,10 +808,11 @@ namespace NANDRAD {
 				case 0 : return "SimplePipe";
 				case 1 : return "DynamicPipe";
 				case 2 : return "ConstantPressurePump";
-				case 3 : return "HeatExchanger";
-				case 4 : return "HeatPumpIdealCarnotSourceSide";
-				case 5 : return "HeatPumpIdealCarnotSupplySide";
-				case 6 : return "ControlledValve";
+				case 3 : return "ControlledPump";
+				case 4 : return "HeatExchanger";
+				case 5 : return "HeatPumpIdealCarnotSourceSide";
+				case 6 : return "HeatPumpIdealCarnotSupplySide";
+				case 7 : return "ControlledValve";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -1420,10 +1422,11 @@ namespace NANDRAD {
 				case 0 : return "Pipe with a single fluid volume and with heat exchange";
 				case 1 : return "Pipe with a discretized fluid volume and heat exchange";
 				case 2 : return "Pump with constant/externally defined pressure";
-				case 3 : return "Simple heat exchanger with given heat flux";
-				case 4 : return "Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)";
-				case 5 : return "Heat pump with variable heating power based on carnot efficiency, installed at supply side";
-				case 6 : return "Valve with associated control model";
+				case 3 : return "Pump with pressure head controlled based on flow controller";
+				case 4 : return "Simple heat exchanger with given heat flux";
+				case 5 : return "Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)";
+				case 6 : return "Heat pump with variable heating power based on carnot efficiency, installed at supply side";
+				case 7 : return "Valve with associated control model";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -2036,6 +2039,7 @@ namespace NANDRAD {
 				case 4 : return "";
 				case 5 : return "";
 				case 6 : return "";
+				case 7 : return "";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -2648,6 +2652,7 @@ namespace NANDRAD {
 				case 4 : return "#FFFFFF";
 				case 5 : return "#FFFFFF";
 				case 6 : return "#FFFFFF";
+				case 7 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -3260,6 +3265,7 @@ namespace NANDRAD {
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
+				case 7 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -3827,7 +3833,7 @@ namespace NANDRAD {
 			// HydraulicNetwork::para_t
 			case 8 : return 3;
 			// HydraulicNetworkComponent::ModelType
-			case 9 : return 7;
+			case 9 : return 8;
 			// HydraulicNetworkComponent::para_t
 			case 10 : return 9;
 			// HydraulicNetworkControlElement::modelType_t
@@ -4003,7 +4009,7 @@ namespace NANDRAD {
 			// HydraulicNetwork::para_t
 			case 8 : return 2;
 			// HydraulicNetworkComponent::ModelType
-			case 9 : return 6;
+			case 9 : return 7;
 			// HydraulicNetworkComponent::para_t
 			case 10 : return 8;
 			// HydraulicNetworkControlElement::modelType_t

@@ -97,6 +97,7 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 				return {};
 			case MT_ControlledValve:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter};
+			case MT_ControlledPump:
 			case NUM_MT:
 				return {};
 		}
@@ -106,6 +107,8 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 		switch (modelType) {
 			case MT_ConstantPressurePump:
 				return {P_PressureHead, P_PumpEfficiency, P_Volume}; // Note: P_FractionOfMotorInefficienciesToFluidStream is optional and defaults to 1
+			case MT_ControlledPump:
+				return {P_PumpEfficiency, P_Volume}; // Note: P_FractionOfMotorInefficienciesToFluidStream is optional and defaults to 1
 			case MT_HeatPumpIdealCarnotSupplySide:
 			case MT_HeatPumpIdealCarnotSourceSide:
 				// TODO Hauke, check mandatory parameters for both heat pump variants

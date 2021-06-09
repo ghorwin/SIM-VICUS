@@ -234,9 +234,7 @@ private:
 class HNControlledPump: public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	HNControlledPump(unsigned int id,
-					 unsigned int followingFlowElementId,
-					 const NANDRAD::HydraulicNetworkControlElement *controlElement);
+	HNControlledPump(unsigned int id, const NANDRAD::HydraulicNetworkControlElement *controlElement);
 
 	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
 	void partials(double mdot, double p_inlet, double p_outlet,
@@ -260,10 +258,8 @@ public:
 	/*! Called at the end of a successful Newton iteration. Allows to calculate and store results. */
 	virtual void updateResults(double mdot, double p_inlet, double p_outlet) override;
 
-	/*! Element's ID, needed to formulate input references. */
-	unsigned int					m_id;
-	/*! Calculated pressure head. */
-	double							m_pressureHead = -999;
+	/*! Id number of flow element. */
+	unsigned int					m_followingflowElementId = NANDRAD::INVALID_ID;
 
 private:
 	/*! Computes the controlled pressure head if a control-model is implemented.
@@ -271,13 +267,15 @@ private:
 	*/
 	double pressureHeadControlled(double mdot) const;
 
-	/*! Id number of flow element. */
-	unsigned int					m_followingflowElementId = NANDRAD::INVALID_ID;
 
 	/*! Reference to the controller parametrization object.*/
 	const NANDRAD::HydraulicNetworkControlElement
 									*m_controlElement = nullptr;
 
+	/*! Calculated pressure head. */
+	double							m_pressureHead = -999;
+	/*! Element's ID, needed to formulate input references. */
+	unsigned int					m_id;
 	/*! Value reference to external quantity. */
 	const double					*m_followingFlowElementFluidTemperatureRef = nullptr;
 	/*! Value reference to setpoint mass flux. */

@@ -30,6 +30,7 @@ namespace NANDRAD {
 	class HydraulicNetwork;
 	class HydraulicNetworkComponent;
 	class Thermostat;
+	class HydraulicNetworkElement;
 }
 
 #define BIDIRECTIONAL
@@ -132,6 +133,10 @@ public:
 	void stepCompleted(double t) override;
 
 private:
+
+	/*! Convenience function that determines ID number of next element in flow network, when the flow element
+		is configured with a mass flow controller of type CP_TemperatureDifferenceOfFollowingElement */
+	void setFollowingElementId(HydraulicNetworkAbstractFlowElement* element, const NANDRAD::HydraulicNetworkElement & e);
 
 	/*! Construction instance ID. */
 	unsigned int									m_id;

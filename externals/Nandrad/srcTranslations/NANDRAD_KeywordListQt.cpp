@@ -46,6 +46,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Pipe with a single fluid volume and with heat exchange");
 	tr("Pipe with a discretized fluid volume and heat exchange");
 	tr("Pump with constant/externally defined pressure");
+	tr("Pump with pressure head controlled based on flow controller");
 	tr("Simple heat exchanger with given heat flux");
 	tr("Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)");
 	tr("Heat pump with variable heating power based on carnot efficiency, installed at supply side");

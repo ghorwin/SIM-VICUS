@@ -554,12 +554,9 @@ void HNConstantPressurePump::setInputValueRefs(std::vector<const double *>::cons
 
 // *** HNControlledPump ***
 
-HNControlledPump::HNControlledPump(unsigned int id,
-												   unsigned int followingflowElementId,
-												   const NANDRAD::HydraulicNetworkControlElement *controlElement) :
-	m_id(id),
-	m_followingflowElementId(followingflowElementId),
-	m_controlElement(controlElement)
+HNControlledPump::HNControlledPump(unsigned int id, const NANDRAD::HydraulicNetworkControlElement *controlElement) :
+	m_controlElement(controlElement),
+	m_id(id)
 {
 	// initialize setpoint references, in case of scheduled setpoints pointer will be updated in setInputValueRefs()
 	m_temperatureDifferenceSetpointRef = &m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_TemperatureDifferenceSetpoint].value;
