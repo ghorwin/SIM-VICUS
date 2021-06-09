@@ -26,6 +26,7 @@ public:
 	/*! Checks for valid and required parameters (value ranges). */
 	void checkParameters(const std::vector<NANDRAD::Zone> &zones);
 
+	/*! Defines variability options for set point values. */
 	enum modelType_t {
 		MT_Constant,
 		/*! Generates 'TemperatureDifferenceSetpointSchedule' or 'MassFluxSetpointSchedule' depending on

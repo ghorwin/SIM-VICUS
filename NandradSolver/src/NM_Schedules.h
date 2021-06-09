@@ -83,6 +83,8 @@ public:
 		SQ_SupplyTemperatureSchedule,							// Keyword: SupplyTemperatureSchedule						[C]
 		SQ_MaxMassFlowSchedule,									// Keyword: MaxMassFlowSchedule								[kg/s]
 		SQ_SupplyMassFlowSchedule,								// Keyword: SupplyMassFlowSchedule							[kg/s]
+		SQ_TemperatureDifferenceSetpointSchedule,				// Keyword: TemperatureDifferenceSetpointSchedule			[K]
+		SQ_MassFluxSetpointSchedule,							// Keyword: MassFluxSetpointSchedule						[kg/s]
 		NUM_SQ
 	};
 

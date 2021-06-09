@@ -22,8 +22,9 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<NANDRAD::
 				if (m_controllerType == NUM_CT)
 					throw IBK::Exception("Missing attribute 'controllerType'.", FUNC_ID);
 
-				m_para[P_TemperatureDifferenceSetpoint].checkedValue("TemperatureDifferenceSetpoint", "K", "K",
-																	 0, false, std::numeric_limits<double>::max(), false, nullptr);
+				if (m_modelType == MT_Constant)
+					m_para[P_TemperatureDifferenceSetpoint].checkedValue("TemperatureDifferenceSetpoint", "K", "K",
+						 0, false, std::numeric_limits<double>::max(), false, nullptr);
 			} break;
 
 			case CP_ThermostatValue: {
@@ -40,8 +41,9 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<NANDRAD::
 
 			case CP_MassFlux : {
 				// we need mass flux, but > 0 (cannot set mass flux to zero)
-				m_para[P_MassFluxSetpoint].checkedValue("MassFluxSetpoint", "kg/s", "kg/s",
-																	 0, false, std::numeric_limits<double>::max(), false, nullptr);
+				if (m_modelType == MT_Constant)
+					m_para[P_MassFluxSetpoint].checkedValue("MassFluxSetpoint", "kg/s", "kg/s",
+						 0, false, std::numeric_limits<double>::max(), false, nullptr);
 			} break;
 
 			case NUM_CP: break; // just to make compiler happy
