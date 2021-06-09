@@ -118,6 +118,9 @@ void HydraulicNetworkModel::setup() {
 
 			case NANDRAD::HydraulicNetworkComponent::MT_ControlledPump :
 			{
+				if (e.m_controlElement == nullptr)
+					throw IBK::Exception("Flow element component of type 'ControlledPump' requires mass flow controller.", FUNC_ID);
+
 				// create pump model
 				HNControlledPump * pumpElement = new HNControlledPump(e.m_id, e.m_controlElement);
 				// setup ID of following element, if such a controller is defined

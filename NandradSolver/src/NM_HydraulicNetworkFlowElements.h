@@ -218,14 +218,12 @@ public:
 	void inputReferences(std::vector<InputReference> &) const override;
 	void setInputValueRefs(std::vector<const double *>::const_iterator &resultValueRefIt) override;
 
+private:
+
 	/*! Element's ID, needed to formulate input references. */
 	unsigned int					m_id;
-	/*! If not nullptr, this pressure head value (from an external model) is used instead of the constant one. */
+	/*! Value reference to pressure head [Pa] */
 	const double					*m_pressureHeadRef = nullptr;
-
-private:
-	/*! Constant pressure head [Pa] to be added. */
-	double							m_pressureHead = -999;
 }; // HNConstantPressurePump
 
 
@@ -257,6 +255,9 @@ public:
 
 	/*! Called at the end of a successful Newton iteration. Allows to calculate and store results. */
 	virtual void updateResults(double mdot, double p_inlet, double p_outlet) override;
+
+	/*! Return value reference of pressure head computed by flow element. */
+	const double * pressureHeadRef() const { return &m_pressureHead; }
 
 	/*! Id number of flow element. */
 	unsigned int					m_followingflowElementId = NANDRAD::INVALID_ID;

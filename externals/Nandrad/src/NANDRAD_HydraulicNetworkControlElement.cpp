@@ -46,7 +46,8 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<NANDRAD::
 						 0, false, std::numeric_limits<double>::max(), false, nullptr);
 			} break;
 
-			case NUM_CP: break; // just to make compiler happy
+			case NUM_CP:
+				throw IBK::Exception("Missing or invalid attribute 'controlledProperty'.", FUNC_ID);
 		}
 	}
 	catch (IBK::Exception & ex) {
@@ -66,7 +67,8 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<NANDRAD::
 				m_para[P_Ki].checkedValue("Ki", "---", "---", 0, false, std::numeric_limits<double>::max(), true, nullptr);
 			} break;
 
-			case NUM_CT: break; // just to make compiler happy
+			case NUM_CT:
+				throw IBK::Exception("Missing or invalid attribute 'controllerType'.", FUNC_ID);
 		}
 	}
 	catch (IBK::Exception & ex) {
@@ -86,8 +88,9 @@ std::vector<HydraulicNetworkControlElement::ControlledProperty> HydraulicNetwork
 			return {CP_TemperatureDifference};
 		case HydraulicNetworkComponent::MT_ControlledValve:
 			return {CP_MassFlux, CP_TemperatureDifferenceOfFollowingElement};
+		case HydraulicNetworkComponent::MT_ControlledPump:
+			return {CP_MassFlux};
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
-			// we could control mass flux here as well ...
 		case HydraulicNetworkComponent::MT_DynamicPipe:
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide:
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide:

@@ -83,8 +83,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 			// the parametrization of the calculation objects differs.
 
 			switch (e.m_component->m_modelType) {
-				case NANDRAD::HydraulicNetworkComponent::MT_SimplePipe :
-				{
+				case NANDRAD::HydraulicNetworkComponent::MT_SimplePipe : {
 					IBK_ASSERT(e.m_pipeProperties != nullptr);
 
 					// distinguish based on heat exchange type
@@ -205,10 +204,21 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 
 				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump :
+				case NANDRAD::HydraulicNetworkComponent::MT_ControlledPump :
 				{
+					// get value reference to constant pressure ref parameter for constant pressure pump
+					const double * pressureHeadRef =  &e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value;
+					// set pointer to pressure head computed by controlled pump for controlled pump
+					if (e.m_component->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_ControlledPump) {
+						// TODO Anne: statt dem TNPumpWithPerformanceLoss-Objekt direkten Zeigerzugriff auf das Pumpenelement zu geben,
+						//            könnte man auch eine InputRef verwenden. Lohnt sich der Aufwand?
+						const HNControlledPump * pump = dynamic_cast<const HNControlledPump *>(hydrNetworkModel.m_p->m_flowElements[i]);
+						IBK_ASSERT(pump != nullptr);
+						pressureHeadRef = pump->pressureHeadRef();
+					}
 					// create pump model with heat loss
 					TNPumpWithPerformanceLoss * element = new TNPumpWithPerformanceLoss(m_network->m_fluid,
-									*e.m_component, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value);
+									*e.m_component, pressureHeadRef);
 					// add to flow elements
 					m_p->m_flowElements.push_back(element); // transfer ownership
 					m_p->m_heatLossElements.push_back(element); // no heat loss

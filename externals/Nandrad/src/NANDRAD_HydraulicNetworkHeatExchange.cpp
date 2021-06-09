@@ -167,6 +167,7 @@ std::vector<HydraulicNetworkHeatExchange::ModelType> NANDRAD::HydraulicNetworkHe
 		case HydraulicNetworkComponent::MT_HeatExchanger:
 			return {T_HeatLossConstant, T_HeatLossSpline}; // must not be adiabatic
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
+		case HydraulicNetworkComponent::MT_ControlledPump:
 		case HydraulicNetworkComponent::MT_ControlledValve:
 			return {NUM_T};
 		case HydraulicNetworkComponent::NUM_MT: ; // just to make compiler happy

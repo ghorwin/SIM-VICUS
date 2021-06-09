@@ -512,15 +512,13 @@ void HNPressureLossCoeffElement::updateResults(double mdot, double /*p_inlet*/, 
 HNConstantPressurePump::HNConstantPressurePump(unsigned int id, const NANDRAD::HydraulicNetworkComponent &component) :
 	m_id(id)
 {
-	m_pressureHead = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value;
+	// initialize value reference to pressure head, pointer will be updated for given schedules in setInputValueRefs()
+	m_pressureHeadRef = &component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value;
 }
 
 
 double HNConstantPressurePump::systemFunction(double /*mdot*/, double p_inlet, double p_outlet) const {
-	if (m_pressureHeadRef != nullptr)
-		return p_inlet - p_outlet + *m_pressureHeadRef;
-	else
-		return p_inlet - p_outlet + m_pressureHead;
+	return p_inlet - p_outlet + *m_pressureHeadRef;
 }
 
 
@@ -645,10 +643,9 @@ void HNControlledPump::setInputValueRefs(std::vector<const double*>::const_itera
 
 
 double HNControlledPump::systemFunction(double mdot, double p_inlet, double p_outlet) const {
-	if (m_controlElement != nullptr)
-		return p_inlet - p_outlet + pressureHeadControlled(mdot);
-	else
-		return p_inlet - p_outlet;
+	double deltaP = p_inlet - p_outlet;
+	double pressHead = pressureHeadControlled(mdot);
+	return deltaP + pressHead;
 }
 
 

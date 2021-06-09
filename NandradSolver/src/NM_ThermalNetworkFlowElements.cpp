@@ -486,10 +486,9 @@ void TNDynamicAdiabaticPipeElement::dependencies(const double *ydot, const doubl
 
 // *** PumpWithPerformanceLoss ***
 
-TNPumpWithPerformanceLoss::TNPumpWithPerformanceLoss(
-							const NANDRAD::HydraulicFluid & fluid,
+TNPumpWithPerformanceLoss::TNPumpWithPerformanceLoss(const NANDRAD::HydraulicFluid & fluid,
 							const NANDRAD::HydraulicNetworkComponent & comp,
-							double pRef)
+							const double * pressureHeadRef)
 {
 	// copy component properties
 	m_fluidVolume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
@@ -499,7 +498,7 @@ TNPumpWithPerformanceLoss::TNPumpWithPerformanceLoss(
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 	// store pressure head
-	m_pressureHead = pRef;
+	m_pressureHeadRef = pressureHeadRef;
 }
 
 
@@ -510,7 +509,7 @@ void TNPumpWithPerformanceLoss::setInflowTemperature(double Tinflow) {
 	// Pa * m3/s = N/m2 * m3/s = N*m/s
 
 	// mechanical power = volume flow * pressure head
-	m_mechanicalPower = std::fabs(m_massFlux/m_fluidDensity * m_pressureHead); // positive value!
+	m_mechanicalPower = std::fabs(m_massFlux/m_fluidDensity * *m_pressureHeadRef); // positive value!
 
 	// efficiency is defined as portion of total electrical power used for mechanical
 	// Pelectrical * m_pumpEfficiency = Pmechanical

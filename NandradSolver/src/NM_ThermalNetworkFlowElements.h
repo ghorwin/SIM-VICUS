@@ -388,7 +388,7 @@ public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	TNPumpWithPerformanceLoss(const NANDRAD::HydraulicFluid & fluid,
 							  const NANDRAD::HydraulicNetworkComponent & comp,
-							  double pRef);
+							  const double * pressureHeadRef);
 
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
@@ -406,8 +406,8 @@ public:
 	void setInflowTemperature(double Tinflow) override;
 
 private:
-	/*! Constant pressure head [Pa] */
-	double							m_pressureHead = 888;
+	/*! Value reference to pressure head [Pa] */
+	const double					*m_pressureHeadRef = nullptr;
 
 	/*! Pump efficiency [0...1] */
 	double							m_pumpEfficiency = -999;
