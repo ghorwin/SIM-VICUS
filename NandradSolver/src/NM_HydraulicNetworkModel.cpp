@@ -512,6 +512,8 @@ HydraulicNetworkModelImpl::~HydraulicNetworkModelImpl() {
 		klu_free_numeric(&(m_sparseSolver.m_KLUNumeric), &(m_sparseSolver.m_KLUParas));
 		delete m_sparseSolver.m_KLUNumeric;
 	}
+	for (HydraulicNetworkAbstractFlowElement* e : m_flowElements)
+		delete e;
 }
 
 
