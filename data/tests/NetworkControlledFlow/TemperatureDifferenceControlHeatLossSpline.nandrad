@@ -67,7 +67,7 @@
 						 Hence, this controller can only be used in a flow element that defines heat exchange.
 						 This control element can be referenced by all flow elements with similar mass flow control strategy.
 					-->
-					<HydraulicNetworkControlElement id="1" controlledProperty="TemperatureDifference" controllerType="PController" >
+					<HydraulicNetworkControlElement id="1" controlledProperty="TemperatureDifference"  modelType="Constant" controllerType="PController" >
 						<IBK:Parameter name="Kp" unit="---">1e6</IBK:Parameter>
 						<IBK:Parameter name="TemperatureDifferenceSetpoint" unit="K">3</IBK:Parameter>
 						<!-- Deactivate upper limit of controller result value - this is the default and could be omitted -->

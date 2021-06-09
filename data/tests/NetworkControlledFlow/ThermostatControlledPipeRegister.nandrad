@@ -135,7 +135,7 @@
 
 				<ControlElements>
 					<!-- Ein Ventil, zetaMax = 1e8 -->
-					<HydraulicNetworkControlElement id="1" controlledProperty="ThermostatValue">
+					<HydraulicNetworkControlElement id="1" controlledProperty="ThermostatValue" modelType="Constant">
 						<ThermostatZoneId>1</ThermostatZoneId>
 						<MaximumControllerResultValue>1e8</MaximumControllerResultValue>
 					</HydraulicNetworkControlElement>

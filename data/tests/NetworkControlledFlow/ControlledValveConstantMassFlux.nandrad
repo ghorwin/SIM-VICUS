@@ -59,7 +59,7 @@
 				<ControlElements>
 					<!-- We have a mass flux controller that closes the valve if the mass flux through the element
 						 exceeds the given limit of 0.02 kg/s -->
-					<HydraulicNetworkControlElement id="1" controlledProperty="MassFlux" controllerType="PController" >
+					<HydraulicNetworkControlElement id="1" controlledProperty="MassFlux"  modelType="Constant" controllerType="PController" >
 						<IBK:Parameter name="Kp" unit="---">1e7</IBK:Parameter>
 						<IBK:Parameter name="MassFluxSetpoint" unit="kg/s">0.02</IBK:Parameter>
 						<!-- Deactivate upper limit of controller result value - this is the default and could be omitted -->

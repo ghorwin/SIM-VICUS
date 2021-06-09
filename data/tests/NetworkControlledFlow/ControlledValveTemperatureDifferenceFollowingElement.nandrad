@@ -73,7 +73,7 @@
 				</Components>
 
 				<ControlElements>
-					<HydraulicNetworkControlElement id="1" controlledProperty="TemperatureDifferenceOfFollowingElement" controllerType="PController" >
+					<HydraulicNetworkControlElement id="1" controlledProperty="TemperatureDifferenceOfFollowingElement"  modelType="Constant" controllerType="PController" >
 						<!-- This parameter related deviations from setpoint to zeta value.
 							 The larger this coefficient becomes, the stronger are temperature changes linked to mass flux changes.
 							 To avoid oscillations in the solution, you need to reduce the CVODE tolerance by setting the RelTol
