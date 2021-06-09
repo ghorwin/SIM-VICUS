@@ -43,6 +43,11 @@ IntegratorExplicitEuler::IntegratorExplicitEuler() :
 }
 
 
+IntegratorExplicitEuler::~IntegratorExplicitEuler() {
+	delete m_statsFileStream;
+}
+
+
 void IntegratorExplicitEuler::init(	ModelInterface * model,
 									double t0,
 									const double * y0,
