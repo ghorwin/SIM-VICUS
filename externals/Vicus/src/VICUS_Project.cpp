@@ -1108,7 +1108,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 	//zone template id
 	//floor area (rounded)
 	//vector of room ids
-	std::map<unsigned int, std::map < double, std::vector< unsigned int> > > zoneTemplateIdToObjListNameToRoomIds;
+	std::map<unsigned int, std::map < double, std::vector< unsigned int> > > zoneTemplateIdToAreaToRoomIds;
 	//container for unique ids
 	std::vector<unsigned int>							allModelIds;
 	std::map<unsigned int, unsigned int>				vicusToNandradIds;
@@ -1143,9 +1143,9 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 				if ( r.m_idZoneTemplate != VICUS::INVALID_ID ){
 					//check if zone template id exists in map
 					bool wasFound =false;
-					if(zoneTemplateIdToObjListNameToRoomIds.find(r.m_idZoneTemplate) != zoneTemplateIdToObjListNameToRoomIds.end()){
+					if(zoneTemplateIdToAreaToRoomIds.find(r.m_idZoneTemplate) != zoneTemplateIdToAreaToRoomIds.end()){
 						//search for a equal floor area in this value map
-						for(auto & obj : zoneTemplateIdToObjListNameToRoomIds[r.m_idZoneTemplate]){
+						for(auto & obj : zoneTemplateIdToAreaToRoomIds[r.m_idZoneTemplate]){
 							if(IBK::nearly_equal<1>(obj.first,r.m_para[VICUS::Room::P_Area].get_value("m2"))){
 								obj.second.push_back(r.m_id);
 								wasFound =true;
@@ -1155,7 +1155,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 					}
 					if(!wasFound)
-						zoneTemplateIdToObjListNameToRoomIds[r.m_idZoneTemplate][r.m_para[VICUS::Room::P_Area].get_value("m2")].push_back(r.m_id);
+						zoneTemplateIdToAreaToRoomIds[r.m_idZoneTemplate][r.m_para[VICUS::Room::P_Area].get_value("m2")].push_back(r.m_id);
 				}
 
 				//set a name for the NANDRAD objlist
@@ -1178,7 +1178,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 	//vector of assigned room ids to obj list
 	std::map<std::string, std::vector<unsigned int>>	mapObjListNameToRoomIds;
 
-	std::vector<ztBool>	ztBools(zoneTemplateIdToObjListNameToRoomIds.size());
+	std::vector<ztBool>	ztBools(zoneTemplateIdToAreaToRoomIds.size());
 	unsigned int counter = 0;
 
 	//create a zero-value schedule for internal loads later
@@ -1197,7 +1197,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 
 	//loop for zone templates
-	for (const std::pair<unsigned int,std::map< double,  std::vector<unsigned int>>> &ob : zoneTemplateIdToObjListNameToRoomIds) {
+	for (const std::pair<unsigned int,std::map< double,  std::vector<unsigned int>>> &ob : zoneTemplateIdToAreaToRoomIds) {
 		//take zone template
 
 		const VICUS::ZoneTemplate *zt = element(m_embeddedDB.m_zoneTemplates, ob.first);
@@ -1214,7 +1214,13 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 		ztBools[counter].m_subTemplateId.resize(VICUS::ZoneTemplate::NUM_ST, VICUS::INVALID_ID);
 
 		//set of available internal load enums
-		std::set<VICUS::ZoneTemplate::SubTemplateType> intLoadEnums{VICUS::ZoneTemplate::ST_IntLoadEquipment,
+
+		std::set<VICUS::ZoneTemplate::SubTemplateType> intLoadEnums;
+
+		if(zt->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadEquipment] != VICUS::INVALID_ID ||
+				zt->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson] != VICUS::INVALID_ID ||
+				zt->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadLighting] != VICUS::INVALID_ID)
+			intLoadEnums = std::set<VICUS::ZoneTemplate::SubTemplateType>{VICUS::ZoneTemplate::ST_IntLoadEquipment,
 																	VICUS::ZoneTemplate::ST_IntLoadPerson,
 																   VICUS::ZoneTemplate::ST_IntLoadLighting};
 
@@ -1639,16 +1645,6 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 			}
 		}
 
-
-
-
-
-		type = VICUS::ZoneTemplate::ST_ControlThermostat;
-		if(zt->usedReference(type) != VICUS::ZoneTemplate::NUM_ST){
-			ztBools[counter].m_subTemplateId[type] = zt->m_idReferences[type];
-			//TODO Dirk
-		}
-
 		// *** infiltration and ventilation ***
 		{
 			//TODO Dirk
@@ -2027,7 +2023,7 @@ unsigned int Project::uniqueIdWithPredef2(Project::IdSpaces idSpace, unsigned in
 	IdMap &idMap = maps[idSpace];
 
 	//check if the id has already a other reference in this id space
-	if(idMap.m_vicusToNandrad.find(id) != idMap.m_vicusToNandrad.end())
+	if(idMap.m_vicusToNandrad.find(id) != idMap.m_vicusToNandrad.end() && !makeNewId)
 		return idMap.m_vicusToNandrad[id];
 
 	if(!makeNewId){
