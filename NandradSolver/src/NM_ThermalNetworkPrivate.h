@@ -42,6 +42,8 @@ struct Network;
 */
 class ThermalNetworkModelImpl {
 public:
+	~ThermalNetworkModelImpl();
+
 	/*! Initialized solver based on current content of m_flowElements.
 		Setup needs to be called whenever m_flowElements vector changes
 		(but not, when parameters inside flow elements change!).
