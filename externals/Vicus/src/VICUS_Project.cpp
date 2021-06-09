@@ -1486,10 +1486,9 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 						thermoN.m_zoneObjectList = createUniqueNandradObjListAndName(zt->m_displayName.string(), allRoomIdsForThisZt, p,
 														  NANDRAD::ModelInputReference::MRT_ZONE);
 
-						//TODO Katja change SIM-VICUS Tolerance to one value for heating AND cooling
 						NANDRAD::KeywordList::setParameter(thermoN.m_para, "Thermostat::para_t",
 														   NANDRAD::Thermostat::P_TemperatureTolerance,
-														   thermo->m_para[VICUS::ZoneControlThermostat::P_ToleranceHeating].get_value("K"));
+														   thermo->m_para[VICUS::ZoneControlThermostat::P_Tolerance].get_value("K"));
 						//add setpoint schedule in schedules
 						unsigned int heatingSchedId = thermo->m_heatingSetpointScheduleId;
 						unsigned int coolingSchedId = thermo->m_coolingSetpointScheduleId;
@@ -1505,8 +1504,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 												   .arg(heatingSchedId).arg(heatingSched->m_displayName.string()), FUNC_ID);
 								std::string heatSchedParaName = NANDRAD::KeywordList::Keyword("Thermostat::para_t", NANDRAD::Thermostat::P_HeatingSetpoint);
 										heatSchedParaName += "Schedule [C]";
-								//TODO Dirk hier unbedingt testen wie sich das mit einer Zonenliste verhält in der die internen
-								//Lasten nicht flächenbezogen eingestellt sind
+
 								addVicusScheduleToNandradProject(*heatingSched, heatSchedParaName, p, thermoN.m_zoneObjectList);
 							}
 						}
@@ -1520,8 +1518,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 												   .arg(coolingSchedId).arg(coolingSched->m_displayName.string()), FUNC_ID);
 								std::string coolSchedParaName = NANDRAD::KeywordList::Keyword("Thermostat::para_t", NANDRAD::Thermostat::P_CoolingSetpoint);
 										coolSchedParaName += "Schedule [C]";
-								//TODO Dirk hier unbedingt testen wie sich das mit einer Zonenliste verhält in der die internen
-								//Lasten nicht flächenbezogen eingestellt sind
+
 								addVicusScheduleToNandradProject(*coolingSched, coolSchedParaName, p, thermoN.m_zoneObjectList);
 							}
 						}
@@ -1532,13 +1529,14 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 						}
 
 						//we dont support RadiantTemperature
-						//TODO Dirk ändern in SIM-VICUS Thermostat
 						thermoN.m_temperatureType =  thermo->m_controlValue == VICUS::ZoneControlThermostat::CV_AirTemperature ?
 																			  NANDRAD::Thermostat::TT_AirTemperature :
 																			  NANDRAD::Thermostat::TT_OperativeTemperature;
 
 						//for now only provide p controller
-						thermoN.m_controllerType = NANDRAD::Thermostat::CT_Analog;
+						thermoN.m_controllerType = thermo->m_controllerType == VICUS::ZoneControlThermostat::CT_Analog ?
+									NANDRAD::Thermostat::CT_Analog : NANDRAD::Thermostat::CT_Digital;
+
 						//add thermostat to NANDRAD project
 						p.m_models.m_thermostats.push_back(thermoN);
 
@@ -1587,10 +1585,9 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 				thermoN.m_zoneObjectList = createUniqueNandradObjListAndName(zt->m_displayName.string(), allRoomIdsForThisZt, p,
 												  NANDRAD::ModelInputReference::MRT_ZONE);
 
-				//TODO Katja change SIM-VICUS Tolerance to one value for heating AND cooling
 				NANDRAD::KeywordList::setParameter(thermoN.m_para, "Thermostat::para_t",
 												   NANDRAD::Thermostat::P_TemperatureTolerance,
-												   thermo->m_para[VICUS::ZoneControlThermostat::P_ToleranceHeating].get_value("K"));
+												   thermo->m_para[VICUS::ZoneControlThermostat::P_Tolerance].get_value("K"));
 				//add setpoint schedule in schedules
 				unsigned int heatingSchedId = thermo->m_heatingSetpointScheduleId;
 				unsigned int coolingSchedId = thermo->m_coolingSetpointScheduleId;
@@ -1606,8 +1603,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 										   .arg(heatingSchedId).arg(heatingSched->m_displayName.string()), FUNC_ID);
 						std::string heatSchedParaName = NANDRAD::KeywordList::Keyword("Thermostat::para_t", NANDRAD::Thermostat::P_HeatingSetpoint);
 								heatSchedParaName += "Schedule [C]";
-						//TODO Dirk hier unbedingt testen wie sich das mit einer Zonenliste verhält in der die internen
-						//Lasten nicht flächenbezogen eingestellt sind
+
 						addVicusScheduleToNandradProject(*heatingSched, heatSchedParaName, p, thermoN.m_zoneObjectList);
 					}
 				}
@@ -1621,8 +1617,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 										   .arg(coolingSchedId).arg(coolingSched->m_displayName.string()), FUNC_ID);
 						std::string coolSchedParaName = NANDRAD::KeywordList::Keyword("Thermostat::para_t", NANDRAD::Thermostat::P_CoolingSetpoint);
 								coolSchedParaName += "Schedule [C]";
-						//TODO Dirk hier unbedingt testen wie sich das mit einer Zonenliste verhält in der die internen
-						//Lasten nicht flächenbezogen eingestellt sind
+
 						addVicusScheduleToNandradProject(*coolingSched, coolSchedParaName, p, thermoN.m_zoneObjectList);
 					}
 				}
@@ -1633,13 +1628,13 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 				}
 
 				//we dont support RadiantTemperature
-				//TODO Dirk ändern in SIM-VICUS Thermostat
 				thermoN.m_temperatureType =  thermo->m_controlValue == VICUS::ZoneControlThermostat::CV_AirTemperature ?
 																	  NANDRAD::Thermostat::TT_AirTemperature :
 																	  NANDRAD::Thermostat::TT_OperativeTemperature;
 
 				//for now only provide p controller
-				thermoN.m_controllerType = NANDRAD::Thermostat::CT_Analog;
+				thermoN.m_controllerType = thermo->m_controllerType == VICUS::ZoneControlThermostat::CT_Analog ?
+							NANDRAD::Thermostat::CT_Analog : NANDRAD::Thermostat::CT_Digital;
 				//add thermostat to NANDRAD project
 				p.m_models.m_thermostats.push_back(thermoN);
 			}
