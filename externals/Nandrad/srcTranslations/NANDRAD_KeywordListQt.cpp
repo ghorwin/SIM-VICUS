@@ -151,9 +151,9 @@ KeywordListQt::KeywordListQt() {
 	tr("Model references of a model object.");
 	tr("Model references of a hydraulic network.");
 	tr("Model references of flow elements of a hydraulic network.");
-	tr("Constant infiltration rate");
+	tr("Constant ventilation rate (also can used as infiltration)");
 	tr("Scheduled ventilation rate");
-	tr("Constant basic air exchange (infiltration) with an additional increased air exchange if the control conditions are met.");
+	tr("Constant basic air exchange (infiltration) with an additional increased air exchange (ventilation) if the control conditions are met.");
 	tr("Ventilation rate");
 	tr("Condition for ventilation increase");
 	tr("Condition for ventilation increase");

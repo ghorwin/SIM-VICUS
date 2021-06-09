@@ -34,7 +34,7 @@ namespace VICUS {
 	const char * const INVALID_KEYWORD_INDEX_STRING = "KEYWORD_ERROR_STRING: Invalid type index";
 
 	/*! Holds a list of all enum types/categories. */
-	const char * const ENUM_TYPES[51] = {
+	const char * const ENUM_TYPES[52] = {
 		"Component::ComponentType",
 		"Construction::UsageType",
 		"Construction::InsulationKind",
@@ -84,13 +84,14 @@ namespace VICUS {
 		"ZoneControlShading::Category",
 		"ZoneControlThermostat::para_t",
 		"ZoneControlThermostat::ControlValue",
+		"ZoneControlThermostat::ControllerType",
 		"ZoneIdealHeatingCooling::para_t",
 		"ZoneTemplate::SubTemplateType"
 	};
 
 	/*! Converts a category string to respective enumeration value. */
 	int enum2index(const std::string & enumtype) {
-		for (int i=0; i<51; ++i) {
+		for (int i=0; i<52; ++i) {
 			if (enumtype == ENUM_TYPES[i]) return i;
 		}
 		//std::cerr << "Unknown enumeration type '" << enumtype<< "'." << std::endl;
@@ -481,8 +482,7 @@ namespace VICUS {
 			// ZoneControlThermostat::para_t
 			case 47 :
 			switch (t) {
-				case 0 : return "ToleranceHeating";
-				case 1 : return "ToleranceCooling";
+				case 0 : return "Tolerance";
 			} break;
 			// ZoneControlThermostat::ControlValue
 			case 48 :
@@ -491,14 +491,20 @@ namespace VICUS {
 				case 1 : return "RadiantTemperature";
 				case 2 : return "OperativeTemperature";
 			} break;
-			// ZoneIdealHeatingCooling::para_t
+			// ZoneControlThermostat::ControllerType
 			case 49 :
+			switch (t) {
+				case 0 : return "Analog";
+				case 1 : return "Digital";
+			} break;
+			// ZoneIdealHeatingCooling::para_t
+			case 50 :
 			switch (t) {
 				case 0 : return "HeatingLimit";
 				case 1 : return "CoolingLimit";
 			} break;
 			// ZoneTemplate::SubTemplateType
-			case 50 :
+			case 51 :
 			switch (t) {
 				case 0 : return "IntLoadPerson";
 				case 1 : return "IntLoadEquipment";
@@ -896,8 +902,7 @@ namespace VICUS {
 			// ZoneControlThermostat::para_t
 			case 47 :
 			switch (t) {
-				case 0 : return "ToleranceHeating";
-				case 1 : return "ToleranceCooling";
+				case 0 : return "Tolerance";
 			} break;
 			// ZoneControlThermostat::ControlValue
 			case 48 :
@@ -906,14 +911,20 @@ namespace VICUS {
 				case 1 : return "RadiantTemperature";
 				case 2 : return "OperativeTemperature";
 			} break;
-			// ZoneIdealHeatingCooling::para_t
+			// ZoneControlThermostat::ControllerType
 			case 49 :
+			switch (t) {
+				case 0 : return "Analog";
+				case 1 : return "Digital";
+			} break;
+			// ZoneIdealHeatingCooling::para_t
+			case 50 :
 			switch (t) {
 				case 0 : return "HeatingLimit";
 				case 1 : return "CoolingLimit";
 			} break;
 			// ZoneTemplate::SubTemplateType
-			case 50 :
+			case 51 :
 			switch (t) {
 				case 0 : return "IntLoadPerson";
 				case 1 : return "IntLoadEquipment";
@@ -1312,8 +1323,7 @@ namespace VICUS {
 			// ZoneControlThermostat::para_t
 			case 47 :
 			switch (t) {
-				case 0 : return "Thermostat tolerance heating mode.";
-				case 1 : return "Thermostat tolerance cooling mode.";
+				case 0 : return "Thermostat tolerance heating and cooling mode.";
 			} break;
 			// ZoneControlThermostat::ControlValue
 			case 48 :
@@ -1322,14 +1332,20 @@ namespace VICUS {
 				case 1 : return "Radiant temperature";
 				case 2 : return "Operative temperature";
 			} break;
-			// ZoneIdealHeatingCooling::para_t
+			// ZoneControlThermostat::ControllerType
 			case 49 :
+			switch (t) {
+				case 0 : return "Analog";
+				case 1 : return "Digital";
+			} break;
+			// ZoneIdealHeatingCooling::para_t
+			case 50 :
 			switch (t) {
 				case 0 : return "Heating Limit.";
 				case 1 : return "Cooling Limit.";
 			} break;
 			// ZoneTemplate::SubTemplateType
-			case 50 :
+			case 51 :
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "IntLoadPerson";
 				case 1 : if (no_description != nullptr) *no_description = true; return "IntLoadEquipment";
@@ -1728,7 +1744,6 @@ namespace VICUS {
 			case 47 :
 			switch (t) {
 				case 0 : return "K";
-				case 1 : return "K";
 			} break;
 			// ZoneControlThermostat::ControlValue
 			case 48 :
@@ -1737,14 +1752,20 @@ namespace VICUS {
 				case 1 : return "-";
 				case 2 : return "-";
 			} break;
-			// ZoneIdealHeatingCooling::para_t
+			// ZoneControlThermostat::ControllerType
 			case 49 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+			} break;
+			// ZoneIdealHeatingCooling::para_t
+			case 50 :
 			switch (t) {
 				case 0 : return "W/m2";
 				case 1 : return "W/m2";
 			} break;
 			// ZoneTemplate::SubTemplateType
-			case 50 :
+			case 51 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
@@ -2143,7 +2164,6 @@ namespace VICUS {
 			case 47 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
 			} break;
 			// ZoneControlThermostat::ControlValue
 			case 48 :
@@ -2152,14 +2172,20 @@ namespace VICUS {
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
-			// ZoneIdealHeatingCooling::para_t
+			// ZoneControlThermostat::ControllerType
 			case 49 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
-			// ZoneTemplate::SubTemplateType
+			// ZoneIdealHeatingCooling::para_t
 			case 50 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// ZoneTemplate::SubTemplateType
+			case 51 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2558,7 +2584,6 @@ namespace VICUS {
 			case 47 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// ZoneControlThermostat::ControlValue
 			case 48 :
@@ -2567,14 +2592,20 @@ namespace VICUS {
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// ZoneIdealHeatingCooling::para_t
+			// ZoneControlThermostat::ControllerType
 			case 49 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// ZoneTemplate::SubTemplateType
+			// ZoneIdealHeatingCooling::para_t
 			case 50 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// ZoneTemplate::SubTemplateType
+			case 51 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2688,13 +2719,15 @@ namespace VICUS {
 			// ZoneControlShading::Category
 			case 46 : return 2;
 			// ZoneControlThermostat::para_t
-			case 47 : return 2;
+			case 47 : return 1;
 			// ZoneControlThermostat::ControlValue
 			case 48 : return 3;
-			// ZoneIdealHeatingCooling::para_t
+			// ZoneControlThermostat::ControllerType
 			case 49 : return 2;
+			// ZoneIdealHeatingCooling::para_t
+			case 50 : return 2;
 			// ZoneTemplate::SubTemplateType
-			case 50 : return 8;
+			case 51 : return 8;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::Count]");
@@ -2798,13 +2831,15 @@ namespace VICUS {
 			// ZoneControlShading::Category
 			case 46 : return 1;
 			// ZoneControlThermostat::para_t
-			case 47 : return 1;
+			case 47 : return 0;
 			// ZoneControlThermostat::ControlValue
 			case 48 : return 2;
-			// ZoneIdealHeatingCooling::para_t
+			// ZoneControlThermostat::ControllerType
 			case 49 : return 1;
+			// ZoneIdealHeatingCooling::para_t
+			case 50 : return 1;
 			// ZoneTemplate::SubTemplateType
-			case 50 : return 8;
+			case 51 : return 8;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::MaxIndex]");

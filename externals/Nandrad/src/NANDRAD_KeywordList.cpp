@@ -1660,9 +1660,9 @@ namespace NANDRAD {
 			// NaturalVentilationModel::modelType_t
 			case 47 :
 			switch (t) {
-				case 0 : return "Constant infiltration rate";
+				case 0 : return "Constant ventilation rate (also can used as infiltration)";
 				case 1 : return "Scheduled ventilation rate";
-				case 2 : return "Constant basic air exchange (infiltration) with an additional increased air exchange if the control conditions are met.";
+				case 2 : return "Constant basic air exchange (infiltration) with an additional increased air exchange (ventilation) if the control conditions are met.";
 			} break;
 			// NaturalVentilationModel::para_t
 			case 48 :

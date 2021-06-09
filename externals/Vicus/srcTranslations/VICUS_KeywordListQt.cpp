@@ -213,11 +213,12 @@ KeywordListQt::KeywordListQt() {
 	tr("Dead band value for all sensors.");
 	tr("One global horizontal sensor.");
 	tr("One global horizontal and for each direction (N, E, S, W) a vertical sensor.");
-	tr("Thermostat tolerance heating mode.");
-	tr("Thermostat tolerance cooling mode.");
+	tr("Thermostat tolerance heating and cooling mode.");
 	tr("Air temperature");
 	tr("Radiant temperature");
 	tr("Operative temperature");
+	tr("Analog");
+	tr("Digital");
 	tr("Heating Limit.");
 	tr("Cooling Limit.");
 	tr("IntLoadPerson");
