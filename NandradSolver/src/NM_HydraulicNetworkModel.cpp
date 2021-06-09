@@ -1070,7 +1070,13 @@ int HydraulicNetworkModelImpl::jacobianSetup() {
 				m_y[j] -= eps;
 			}
 		} // for i
+
 		// calculate lu composition for klu object (creating a new pivit ordering)
+		if (m_sparseSolver.m_KLUNumeric != nullptr) {
+			klu_free_numeric(&(m_sparseSolver.m_KLUNumeric), &(m_sparseSolver.m_KLUParas));
+			delete m_sparseSolver.m_KLUNumeric;
+			m_sparseSolver.m_KLUNumeric = nullptr;
+		}
 		m_sparseSolver.m_KLUNumeric = klu_factor((int*) jacobian.ia(),
 					(int*) jacobian.ja(),
 					 jacobian.data(),
