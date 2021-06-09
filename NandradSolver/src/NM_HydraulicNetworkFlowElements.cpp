@@ -188,7 +188,8 @@ double HNPipeElement::zetaControlled() const {
 		// if no heating is required, we close the valve
 		//   heatingControlValue = 0  -> zetaControlled = m_maximumControllerResultValue
 		// in between we interpolate linearly
-		heatingControlValue = m_controlElement->m_maximumControllerResultValue * (1.0 - heatingControlValue);
+		double e = (1.0 - heatingControlValue);
+		heatingControlValue = m_controlElement->m_maximumControllerResultValue * e; // std::pow(10.,-2*(1-e));
 	}
 
 	// get control value for cooling
@@ -242,6 +243,16 @@ void HNPressureLossCoeffElement::inputReferences(std::vector<InputReference> & i
 			ref.m_name.m_name = "HeatExchangeHeatLoss";
 			ref.m_required = true;
 			inputRefs.push_back(ref);
+			// if we have a scheduled temperature difference setpoint, also generate input reference for
+			// the scheduled value
+			if (m_controlElement->m_modelType == NANDRAD::HydraulicNetworkControlElement::MT_Scheduled) {
+				InputReference ref;
+				ref.m_id = m_flowElementId;
+				ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+				ref.m_name.m_name = "TemperatureDifferenceSetpointSchedule";
+				ref.m_required = true;
+				inputRefs.push_back(ref);
+			}
 		} break;
 
 		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement: {
@@ -251,6 +262,16 @@ void HNPressureLossCoeffElement::inputReferences(std::vector<InputReference> & i
 			ref.m_name.m_name = "FluidTemperature";
 			ref.m_required = true;
 			inputRefs.push_back(ref);
+			// if we have a scheduled temperature difference setpoint, also generate input reference for
+			// the scheduled value
+			if (m_controlElement->m_modelType == NANDRAD::HydraulicNetworkControlElement::MT_Scheduled) {
+				InputReference ref;
+				ref.m_id = m_flowElementId;
+				ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+				ref.m_name.m_name = "TemperatureDifferenceSetpointSchedule";
+				ref.m_required = true;
+				inputRefs.push_back(ref);
+			}
 		} break;
 
 		default: ; // other control elements do not require inputs

@@ -103,6 +103,8 @@ void IdealHeatingCoolingModel::initResults(const std::vector<AbstractModel *> &)
 			"Zone area must be >= 0 W/m2.") );
 
 	}
+
+	m_controllerIntegralValues.resize(indexKeys.size()*2,0);
 }
 
 
@@ -157,6 +159,29 @@ const double * IdealHeatingCoolingModel::resultValueRef(const InputReference & q
 		// exception is thrown when index is not available - return nullptr
 		return nullptr;
 	}
+}
+
+
+void IdealHeatingCoolingModel::stepCompleted(double t) {
+	if (m_Ki != 0.0) {
+		// integrate controller
+		for (unsigned int i=0; i<m_objectList->m_filterID.m_ids.size(); ++i) {
+			// get control values (controller error values)
+			double heatingControlValue = *m_valueRefs[i*2];        // might be positive and negative
+//			double coolingControlValue = *m_valueRefs[i*2 + 1];	   // might be positive and negative
+
+			double deltaT = std::max(0.0, t - m_tEndOfLastStep); // protection against output errors
+
+			// if control value < 0 we only integration until the integral itself is positve, i.e.
+			// we gradually reduce the integrated error, but we do not accumulate "negative error"
+
+			if (heatingControlValue > 0 || m_controllerIntegralValues[i*2] > 0) {
+				double I_heating = heatingControlValue*deltaT;
+				m_controllerIntegralValues[i*2] += I_heating;
+			}
+		}
+	}
+	m_tEndOfLastStep = t;
 }
 
 
@@ -284,8 +309,8 @@ int IdealHeatingCoolingModel::update() {
 		double P_heating = m_Kp*heatingControlValue;
 		double P_cooling = m_Kp*coolingControlValue;
 		double deltaT = std::max(0.0, m_tCurrent - m_tEndOfLastStep); // protection against output errors
-		double I_heating = m_Ki*heatingControlValue*deltaT;
-		double I_cooling = m_Ki*coolingControlValue*deltaT;
+		double I_heating = m_Ki*(m_controllerIntegralValues[i*2]     + heatingControlValue*deltaT);
+		double I_cooling = m_Ki*(m_controllerIntegralValues[i*2 + 1] + coolingControlValue*deltaT);
 		heatingControlValue = std::max(0.0, std::min(1.0, P_heating + I_heating)); // max - to avoid cooling by heating; min - to clip to maximum power
 		coolingControlValue = std::max(0.0, std::min(1.0, P_cooling + I_cooling));
 

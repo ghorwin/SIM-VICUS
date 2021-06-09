@@ -42,6 +42,10 @@ void HydraulicNetworkControlElement::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
 
+		if (!TiXmlAttribute::attributeByName(element, "modelType"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'modelType' attribute.") ), FUNC_ID);
+
 		if (!TiXmlAttribute::attributeByName(element, "controlledProperty"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'controlledProperty' attribute.") ), FUNC_ID);
@@ -52,6 +56,14 @@ void HydraulicNetworkControlElement::readXML(const TiXmlElement * element) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id")
 				m_id = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "modelType")
+				try {
+					m_modelType = (modelType_t)KeywordList::Enumeration("HydraulicNetworkControlElement::modelType_t", attrib->ValueStr());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
+				}
 			else if (attribName == "controllerType")
 				try {
 					m_controllerType = (ControllerType)KeywordList::Enumeration("HydraulicNetworkControlElement::ControllerType", attrib->ValueStr());
@@ -121,6 +133,8 @@ TiXmlElement * HydraulicNetworkControlElement::writeXML(TiXmlElement * parent) c
 	parent->LinkEndChild(e);
 
 	e->SetAttribute("id", IBK::val2string<IDType>(m_id));
+	if (m_modelType != NUM_MT)
+		e->SetAttribute("modelType", KeywordList::Keyword("HydraulicNetworkControlElement::modelType_t",  m_modelType));
 	if (m_controllerType != NUM_CT)
 		e->SetAttribute("controllerType", KeywordList::Keyword("HydraulicNetworkControlElement::ControllerType",  m_controllerType));
 	if (m_controlledProperty != NUM_CP)

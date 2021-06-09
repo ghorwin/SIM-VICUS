@@ -99,7 +99,7 @@ public:
 	// *** Re-implemented from AbstractTimeDependency
 
 	int setTime(double t) override { m_tCurrent = t; return 0; }
-	void stepCompleted(double t) override { m_tEndOfLastStep = t; }
+	void stepCompleted(double t) override;
 
 
 	// *** Re-implemented from AbstractStateDependency
@@ -167,6 +167,9 @@ private:
 
 	/*! Vector with value references. */
 	std::vector<const double*>						m_valueRefs;
+
+	/*! Integral values for each PI controller (if used). */
+	std::vector<double>								m_controllerIntegralValues;
 
 	/*! Time point at end of last step, updated in stepCompleted(). */
 	double											m_tEndOfLastStep = -1;

@@ -26,6 +26,16 @@ public:
 	/*! Checks for valid and required parameters (value ranges). */
 	void checkParameters(const std::vector<NANDRAD::Zone> &zones);
 
+	enum modelType_t {
+		MT_Constant,
+		/*! Generates 'TemperatureDifferenceSetpointSchedule' or 'MassFluxSetpointSchedule' depending on
+			controlled property for each network element that uses this controller.
+			InputRef-Typ: NetworkElement, id = id of network element that uses the component with this controller
+		*/
+		MT_Scheduled,
+		NUM_MT
+	};
+
 	/*! Controlled property used as signal input for the controller. */
 	enum ControlledProperty {
 		/*! Temperature difference is computed from pre-defined heat loss and compared against target temperature difference. */
@@ -65,6 +75,9 @@ public:
 	};
 
 	IDType							m_id = NANDRAD::INVALID_ID;						// XML:A:required
+
+	/*! Determines variability of setpoint parameters. */
+	modelType_t						m_modelType;									// XML:A:required
 
 	/*! Controller type (P, PI, ...) */
 	ControllerType					m_controllerType = NUM_CT;						// XML:A
