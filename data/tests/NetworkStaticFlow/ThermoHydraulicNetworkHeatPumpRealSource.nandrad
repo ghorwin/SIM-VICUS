@@ -59,6 +59,10 @@
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PressureLossCoefficient" unit="---">5</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
+						<PolynomCoefficients>
+							QdotCondensator: 9.92879892e+00 2.88001670e-01 -6.14962264e-02 -1.64339623e-03 1.82864120e-03 1.89999998e-04;
+							Pel: 9.67904904e-01 -1.15618685e-03 4.19591509e-03 9.77264129e-05 -2.20526428e-04 4.61199998e-04
+						</PolynomCoefficients>
 					</HydraulicNetworkComponent>
 				</Components>
 				<Elements>
@@ -68,12 +72,10 @@
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="TemperatureConstant">
 							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">1000</IBK:Parameter>
-							<IBK:Parameter name="Temperature" unit="C">5</IBK:Parameter>
+							<IBK:Parameter name="Temperature" unit="C">9</IBK:Parameter>
 						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
 					<HydraulicNetworkElement id="1003" inletNodeId="2" outletNodeId="0" componentId="2" displayName="heatpump">
-						<PolyCoefficientsQCond>9.92879892e+00, 2.88001670e-01, -6.14962264e-02, -1.64339623e-03, 1.82864120e-03, 1.89999998e-04</PolyCoefficientsQCond>					
-						<PolyCoefficientsPel>9.67904904e-01, -1.15618685e-03, 4.19591509e-03, 9.77264129e-05, -2.20526428e-04, 4.61199998e-04</PolyCoefficientsPel>					
 					</HydraulicNetworkElement>
 				</Elements>
 			</HydraulicNetwork>
@@ -87,7 +89,7 @@
 							<!-- Condenser Temperature is usually 35°C for space heating and two times per day 50°C for domestic hot water-->
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0,6,8,18,20</TimePoints>
-								<Values>CondenserOutletSetpointSchedule [C]:35,50,35,50,35;</Values>
+								<Values>CondenserOutletSetpointSchedule [C]:35,55,35,55,35;</Values>
 							</DailyCycle>
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0,2,8,16,22</TimePoints>
@@ -131,12 +133,12 @@
 				<GridName>hourly</GridName>
 			</OutputDefinition>
 			<OutputDefinition>
-				<Quantity>EvaporatorMeanTemperature</Quantity>
+				<Quantity>EvaporatorInletTemperature</Quantity>
 				<ObjectListName>heat pump</ObjectListName>
 				<GridName>hourly</GridName>
 			</OutputDefinition>
 			<OutputDefinition>
-				<Quantity>CondenserMeanTemperature</Quantity>
+				<Quantity>CondenserOutletTemperature</Quantity>
 				<ObjectListName>heat pump</ObjectListName>
 				<GridName>hourly</GridName>
 			</OutputDefinition>

@@ -27,6 +27,7 @@
 #include "NANDRAD_CodeGenMacros.h"
 #include "NANDRAD_Constants.h"
 #include "NANDRAD_LinearSplineParameter.h"
+#include "NANDRAD_DataTable.h"
 
 
 namespace NANDRAD {
@@ -66,12 +67,6 @@ public:
 		NUM_P
 	};
 
-	/*! Array-like parameters */
-	enum arrayPara_t {
-		AP_PolyCoefficientsQCond,				// Keyword: PolyCoefficientsQCond				'Polynom coefficients for condenser heat flux of heat pump'
-		AP_PolyCoefficientsPEl,					// Keyword: PolyCoefficientsPel					'Polynom coefficients for electrical power of heat pump'
-		NUM_AP
-	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -102,7 +97,7 @@ public:
 	IBK::Parameter					m_para[NUM_P];										// XML:E
 
 	/*! Array parameters of the flow component */
-	std::vector<double>				m_arrayPara[NUM_AP];								// XML:E
+	DataTable						m_polynomCoefficients;								// XML:E
 
 	// *** STATIC FUNCTIONS ***
 

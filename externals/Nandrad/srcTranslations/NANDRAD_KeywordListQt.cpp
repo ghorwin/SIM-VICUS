@@ -64,8 +64,6 @@ KeywordListQt::KeywordListQt() {
 	tr("Maximum width of discretized volumes in pipe");
 	tr("Carnot efficiency eta");
 	tr("Maximum heating power");
-	tr("Polynom coefficients for condenser heat flux of heat pump");
-	tr("Polynom coefficients for electrical power of heat pump");
 	tr("Set points are given as constant parameters");
 	tr("Scheduled set point values");
 	tr("Control temperature difference of this element");

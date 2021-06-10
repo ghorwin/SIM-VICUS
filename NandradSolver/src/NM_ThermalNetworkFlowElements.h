@@ -559,6 +559,8 @@ public:
 		quantities.push_back(QuantityDescription("CondenserHeatFlux", "W", "Heat Flux at condenser side of heat pump", false));
 		quantities.push_back(QuantityDescription("EvaporatorHeatFlux", "W", "Heat Flux at evaporator side of heat pump", false));
 		quantities.push_back(QuantityDescription("TemperatureDifference", "K", "Outlet temperature minus inlet temperature", false));
+		quantities.push_back(QuantityDescription("CondenserOutletTemperature", "C", "Outlet temperature of condenser", false));
+		quantities.push_back(QuantityDescription("EvaporatorInletTemperature", "C", "Inlet temperature of Evaporator", false));
 	}
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
@@ -568,6 +570,8 @@ public:
 		valRefs.push_back(&m_condenserHeatFlux);
 		valRefs.push_back(&m_evaporatorHeatFlux);
 		valRefs.push_back(&m_temperatureDifference);
+		valRefs.push_back(&m_condenserOutletTemperature);
+		valRefs.push_back(&m_evaporatorInletTemperature);
 	}
 
 	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
@@ -612,6 +616,10 @@ private:
 	/*! Temperature difference across flow element [K]. */
 	double									m_temperatureDifference = 999;
 
+	double									m_condenserOutletTemperature = 999;
+	double									m_evaporatorInletTemperature = 999;
+
+	/*! polynom coefficients */
 	std::vector<double>						m_coeffsQcond;
 	std::vector<double>						m_coeffsPel;
 

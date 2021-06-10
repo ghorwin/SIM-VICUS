@@ -62,16 +62,12 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) {
 			checkModelParameter(m_para[i], i);
 		}
 
-		// check array parameters
+		// check data table
 		if (m_modelType == MT_HeatPumpRealSourceSide){
-			if (m_arrayPara[AP_PolyCoefficientsQCond].size() != 6)
-				throw IBK::Exception(IBK::FormatString("There must be exactly 6 values in '%1'").arg(
-									KeywordList::Keyword("HydraulicNetworkComponent::arrayPara_t", AP_PolyCoefficientsQCond)),
-									FUNC_ID);
-			if (m_arrayPara[AP_PolyCoefficientsPEl].size() != 6)
-				throw IBK::Exception(IBK::FormatString("There must be exactly 6 values in '%1'").arg(
-									KeywordList::Keyword("HydraulicNetworkComponent::arrayPara_t", AP_PolyCoefficientsPEl)),
-									FUNC_ID);
+			if (m_polynomCoefficients.m_values["QdotCondensator"].size() != 6)
+				throw IBK::Exception("There must be exactly 6 values in QdotCondensator", FUNC_ID);
+			if (m_polynomCoefficients.m_values["Pel"].size() != 6)
+				throw IBK::Exception("There must be exactly 6 values in Pel", FUNC_ID);
 		}
 
 		// check optional parameters, if given
