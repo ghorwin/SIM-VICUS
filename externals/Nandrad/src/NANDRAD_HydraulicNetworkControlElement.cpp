@@ -94,6 +94,7 @@ std::vector<HydraulicNetworkControlElement::ControlledProperty> HydraulicNetwork
 		case HydraulicNetworkComponent::MT_DynamicPipe:
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide:
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide:
+		case HydraulicNetworkComponent::MT_SupplyTemperatureAdapter:
 		case HydraulicNetworkComponent::NUM_MT: ;		// just for compiler
 	}
 	return {};

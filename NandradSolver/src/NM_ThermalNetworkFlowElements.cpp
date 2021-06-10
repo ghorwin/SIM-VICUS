@@ -741,4 +741,26 @@ void TNHeatPumpIdealCarnot::internalDerivatives(double *ydot) {
 	ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(ydot);
 }
 
+
+
+// *** TNSupplyTemperatureAdapter ***
+
+TNSupplyTemperatureAdapter::TNSupplyTemperatureAdapter(unsigned int flowElementId) : m_id(flowElementId) {
+}
+
+
+void TNSupplyTemperatureAdapter::inputReferences(std::vector<InputReference> & inputRefs) const {
+	InputReference ref;
+	ref.m_id = m_id;
+	ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	ref.m_name.m_name = "SupplyTemperatureSchedule";
+	ref.m_required = true;
+	inputRefs.push_back(ref);
+}
+
+
+void TNSupplyTemperatureAdapter::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
+	m_supplyTemperatureScheduleRef = *(resultValueRefs++);
+}
+
 } // namespace NANDRAD_MODEL

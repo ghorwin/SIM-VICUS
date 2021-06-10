@@ -67,6 +67,12 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) {
 			checkModelParameter(m_para[P_FractionOfMotorInefficienciesToFluidStream], P_FractionOfMotorInefficienciesToFluidStream);
 		else
 			m_para[P_FractionOfMotorInefficienciesToFluidStream].value = 1; // set default value
+
+		// for MT_SupplyTemperatureAdapter, initialize zeta and diameter with defaults
+		if (m_modelType == MT_SupplyTemperatureAdapter) {
+			m_para[P_HydraulicDiameter].value=1;
+			m_para[P_PressureLossCoefficient].value=0;
+		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Missing/invalid parameters for component '%1' (#%2) of type %3.")
@@ -98,6 +104,7 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 			case MT_ControlledValve:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter};
 			case MT_ControlledPump:
+			case MT_SupplyTemperatureAdapter: // no parameters needed
 			case NUM_MT:
 				return {};
 		}
@@ -121,6 +128,7 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 				return {};
 			case MT_ControlledValve:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
+			case MT_SupplyTemperatureAdapter: // no parameters needed
 			case NUM_MT: ;
 		}
 	}

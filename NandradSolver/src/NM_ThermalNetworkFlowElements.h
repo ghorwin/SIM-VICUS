@@ -541,6 +541,30 @@ private:
 
 
 
+// **** Supply temperature adapter model ***
+
+class TNSupplyTemperatureAdapter : public ThermalNetworkAbstractFlowElement { // NO KEYWORDS
+public:
+	/*! C'tor, takes and caches parameters needed for function evaluation. */
+	TNSupplyTemperatureAdapter(unsigned int flowElementId);
+
+private:
+	unsigned int	m_id = 0;
+	const double	*m_supplyTemperatureScheduleRef = nullptr;
+
+	// *** ThermalNetworkAbstractFlowElement interface
+
+	/*! We have no internal state. */
+	unsigned int nInternalStates() const override { return 0; }
+	/*! Simply return given supply temperature. */
+	double outflowTemperature() const override { return *m_supplyTemperatureScheduleRef; }
+	/*! Publish request to supply temperature schedule. */
+	void inputReferences(std::vector<InputReference> & inputRefs) const override;
+	void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
+};
+
+
+
 } // namespace NANDRAD_MODEL
 
 #endif // NM_ThermalNetworkFlowElementsH

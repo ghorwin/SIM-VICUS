@@ -145,6 +145,13 @@ void HydraulicNetworkModel::setup() {
 
 			} break;
 
+			case NANDRAD::HydraulicNetworkComponent::MT_SupplyTemperatureAdapter :
+			{
+				// create pressure loss flow element - controller is set up later
+				HNPressureLossCoeffElement * pressLossCoeffelement = new HNPressureLossCoeffElement(e.m_id, *e.m_component, m_hydraulicNetwork->m_fluid, e.m_controlElement);
+				m_p->m_flowElements.push_back(pressLossCoeffelement); // transfer ownership
+			} break;
+
 			case NANDRAD::HydraulicNetworkComponent::NUM_MT: {
 				throw IBK::Exception(IBK::FormatString("Unsupported model type for "
 									"HydraulicNetworkComponent with id %1!")

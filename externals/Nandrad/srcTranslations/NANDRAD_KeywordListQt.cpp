@@ -51,6 +51,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)");
 	tr("Heat pump with variable heating power based on carnot efficiency, installed at supply side");
 	tr("Valve with associated control model");
+	tr("Adapter model that provides a defined supply temperature to the network");
 	tr("Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)");
 	tr("Pressure loss coefficient for the component (zeta-value)");
 	tr("Pressure head for a pump");
