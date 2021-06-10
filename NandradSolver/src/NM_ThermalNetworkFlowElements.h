@@ -556,11 +556,13 @@ private:
 
 	/*! We have no internal state. */
 	unsigned int nInternalStates() const override { return 0; }
+	void setInflowTemperature(double) override { m_meanTemperature = *m_supplyTemperatureScheduleRef; }
 	/*! Simply return given supply temperature. */
 	double outflowTemperature() const override { return *m_supplyTemperatureScheduleRef; }
 	/*! Publish request to supply temperature schedule. */
 	void inputReferences(std::vector<InputReference> & inputRefs) const override;
 	void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
+
 };
 
 

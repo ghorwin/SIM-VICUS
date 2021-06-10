@@ -95,6 +95,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 		case HydraulicNetworkComponent::MT_ControlledValve:
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide:
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide:
+		case HydraulicNetworkComponent::MT_SupplyTemperatureAdapter:
 			// nothing to check for
 		break;
 
@@ -118,7 +119,8 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 		}
 
 		// check for valid heat exchange parameters
-		m_heatExchange.checkParameters(prj.m_placeholders, prj.m_zones, prj.m_constructionInstances);
+		if (m_heatExchange.m_modelType != HydraulicNetworkHeatExchange::NUM_T)
+			m_heatExchange.checkParameters(prj.m_placeholders, prj.m_zones, prj.m_constructionInstances);
 	}
 	else if (m_heatExchange.m_modelType != HydraulicNetworkHeatExchange::NUM_T) {
 		IBK::IBK_Message("HydraulicNetworkHeatExchange parameter in element #%1 has no effect for HydraulicNetwork calculation.", IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
@@ -165,10 +167,16 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline:
 				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureZone:
 				break;
+
+				case NANDRAD::HydraulicNetworkHeatExchange::NUM_T:
+				break;
+
 				default:
-					throw IBK::Exception(IBK::FormatString("Only HeatExchangeType 'Temperature' "
-														   "is allowed in combination with HydraulicNetworkController property "
-														   "'ThermostatValue'!"), FUNC_ID);
+					throw IBK::Exception(IBK::FormatString("Flow controller #%1 is of type '%2'. However, this controller is not compatible with "
+														   "HeatExchangeType '%3'!")
+										 .arg(m_controlElementId)
+										 .arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkControlElement::ControlledProperty", m_controlElement->m_controlledProperty))
+										 .arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", m_heatExchange.m_modelType)), FUNC_ID);
 			}
 		}
 	}

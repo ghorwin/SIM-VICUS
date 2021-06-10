@@ -286,6 +286,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				case NANDRAD::HydraulicNetworkComponent::MT_SupplyTemperatureAdapter: {
 					TNSupplyTemperatureAdapter * element = new TNSupplyTemperatureAdapter(e.m_id);
 					m_p->m_flowElements.push_back(element); // transfer ownership
+					m_p->m_heatLossElements.push_back(nullptr); // add nullptr
 				} break;
 
 				case NANDRAD::HydraulicNetworkComponent::NUM_MT:

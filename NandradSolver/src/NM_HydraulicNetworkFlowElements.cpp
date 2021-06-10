@@ -188,12 +188,14 @@ double HNPipeElement::zetaControlled() const {
 		//   heatingControlValue = 0  -> zetaControlled = m_maximumControllerResultValue
 		// in between we interpolate linearly
 		double e = (1.0 - heatingControlValue);
-		// TODO : use Kp instead of maximumControllerResultValue
-		heatingControlValue = m_controlElement->m_maximumControllerResultValue * e; // std::pow(10.,-2*(1-e));
+		heatingControlValue = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value * e; // std::pow(10.,-2*(1-e));
+		// clip against max value
+		heatingControlValue = std::min(heatingControlValue, m_controlElement->m_maximumControllerResultValue);
 	}
 
 	// get control value for cooling
 	if (m_coolingThermostatControlValueRef != nullptr) {
+		// TODO : wie bei der heizung
 		// same as for heating
 		coolingControlValue = std::min(std::max(*m_coolingThermostatControlValueRef, 0.0), 1.0);
 		double e = (1.0 - coolingControlValue);
@@ -577,7 +579,7 @@ void HNConstantMassFluxPump::inputReferences(std::vector<InputReference> &inputR
 	ref.m_id = m_id;
 	ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	ref.m_name.m_name = "MassFluxSchedule";
-	ref.m_required = true;
+	ref.m_required = false;
 	inputRefs.push_back(ref);
 }
 
@@ -812,6 +814,8 @@ void HNControlledPump::updateResults(double mdot, double /*p_inlet*/, double /*p
 
 		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement:
 			m_temperatureDifference = (*m_fluidTemperatureRef - *m_followingFlowElementFluidTemperatureRef);
+		break;
+
 		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlux:
 			m_pressureHead = pressureHeadControlled(mdot);
 		break;

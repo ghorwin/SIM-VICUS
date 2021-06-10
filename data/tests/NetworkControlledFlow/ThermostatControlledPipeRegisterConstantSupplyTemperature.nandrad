@@ -103,22 +103,18 @@
 						<IBK:Parameter name="PipeOuterDiameter" unit="mm">16</IBK:Parameter>
 						<IBK:Parameter name="UValuePipeWall" unit="W/mK">3.66</IBK:Parameter>
 					</HydraulicNetworkPipeProperties>
-					<!-- Das ist kein Rohr, sondern ein Wärmetauscher - leider nicht ideal,
-						 weil Leistungsaufnahme durch inneren Wärmeübergangskoeffizienten bestimmt wird -->
-					<HydraulicNetworkPipeProperties id="10">
-						<IBK:Parameter name="PipeRoughness" unit="mm">0.07</IBK:Parameter>
-						<IBK:Parameter name="PipeInnerDiameter" unit="mm">40</IBK:Parameter>
-						<IBK:Parameter name="PipeOuterDiameter" unit="mm">44</IBK:Parameter>
-						<IBK:Parameter name="UValuePipeWall" unit="W/mK">10000</IBK:Parameter>
-					</HydraulicNetworkPipeProperties>
 				</PipeProperties>
+				
 				<Components>
 					<HydraulicNetworkComponent id="1" displayName="Pump" modelType="ConstantPressurePump">
 						<IBK:Parameter name="PressureHead" unit="kPa">3</IBK:Parameter>
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
 					</HydraulicNetworkComponent>
+
 					<HydraulicNetworkComponent id="2" displayName="Pipe" modelType="SimplePipe"/>
+
+					<HydraulicNetworkComponent id="3" displayName="SupplyTemperatureAdapter" modelType="SupplyTemperatureAdapter"/>
 				</Components>
 
 				<ControlElements>
@@ -126,7 +122,7 @@
 					<HydraulicNetworkControlElement id="1" controlledProperty="ThermostatValue" controllerType="PController" modelType="Constant">
 						<IBK:Parameter name="Kp" unit="---">1e8</IBK:Parameter>
 						<ThermostatZoneId>1</ThermostatZoneId>
-						<MaximumControllerResultValue>1e20</MaximumControllerResultValue>
+						<MaximumControllerResultValue>1e8</MaximumControllerResultValue>
 					</HydraulicNetworkControlElement>
 				</ControlElements>
 
@@ -141,14 +137,8 @@
 						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
 
-					<!-- Das Wärmetauscherrohr ist sehr lang und hat einen großen Druckabfall. Deshalb ist die Pumpe auch "etwas" größer. -->
-					<HydraulicNetworkElement id="3" inletNodeId="101" outletNodeId="100" componentId="2" pipePropertiesId="10" displayName="Heat exchanger">
-						<IBK:Parameter name="Length" unit="m">400</IBK:Parameter>
-						<HydraulicNetworkHeatExchange modelType="TemperatureConstant">
-							<IBK:Parameter name="Temperature" unit="C">35</IBK:Parameter>
-							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">1e10</IBK:Parameter>
-						</HydraulicNetworkHeatExchange>
-					</HydraulicNetworkElement>
+					<!-- Supply temperature adapter-->
+					<HydraulicNetworkElement id="3" inletNodeId="101" outletNodeId="100" componentId="3"/>
 
 				</Elements>
 			</HydraulicNetwork>
@@ -167,6 +157,16 @@
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0</TimePoints>
 								<Values>CoolingSetpointSchedule [C]:40</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+				<ScheduleGroup objectList="Adapter">
+					<Schedule type="AllDays">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>SupplyTemperatureSchedule [C]:35</Values>
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>
@@ -252,6 +252,10 @@
 			<ObjectList name="Zones">
 				<FilterID>*</FilterID>
 				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Adapter">
+				<FilterID>3</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>
 			<ObjectList name="Floor">
 				<FilterID>3001</FilterID>
