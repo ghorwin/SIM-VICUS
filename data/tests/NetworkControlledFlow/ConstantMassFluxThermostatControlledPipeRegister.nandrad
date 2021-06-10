@@ -142,7 +142,7 @@
 
 					<!-- Adiabatic Bypass pipe-->
 					<HydraulicNetworkElement id="3" inletNodeId="0" outletNodeId="101" componentId="2" pipePropertiesId="10" displayName="Bypass">
-						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+						<IBK:Parameter name="Length" unit="m">20</IBK:Parameter>
 					</HydraulicNetworkElement>
 
 					<!-- Supply temperature adapter-->
