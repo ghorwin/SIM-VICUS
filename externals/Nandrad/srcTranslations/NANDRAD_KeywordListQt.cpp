@@ -51,6 +51,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Simple heat exchanger with given heat flux");
 	tr("Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)");
 	tr("Heat pump with variable heating power based on carnot efficiency, installed at supply side");
+	tr("On-off-type heat pump based on polynoms, installed at source side");
 	tr("Valve with associated control model");
 	tr("Adapter model that provides a defined supply temperature to the network");
 	tr("Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)");
@@ -63,6 +64,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Maximum width of discretized volumes in pipe");
 	tr("Carnot efficiency eta");
 	tr("Maximum heating power");
+	tr("Polynom coefficients for condenser heat flux of heat pump");
+	tr("Polynom coefficients for electrical power of heat pump");
 	tr("Set points are given as constant parameters");
 	tr("Scheduled set point values");
 	tr("Control temperature difference of this element");
