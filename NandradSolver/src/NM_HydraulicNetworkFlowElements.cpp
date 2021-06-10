@@ -707,7 +707,7 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 			if (mdotSetpoint == 0.0)
 				return 0.0;
 			// compute controller error
-			const double e = mdotSetpoint - mdot;
+			e = mdotSetpoint - mdot;
 			// if e is > 0 if our mass flux is below the limit (we need to increase mass flux by increasing pressure head)
 			// if e <= 0, our mass flux is too large, we turn it off
 		} break;
