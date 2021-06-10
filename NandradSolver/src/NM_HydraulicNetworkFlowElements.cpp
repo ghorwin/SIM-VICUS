@@ -132,9 +132,24 @@ void HNPipeElement::setInputValueRefs(std::vector<const double*>::const_iterator
 
 
 double  HNPipeElement::systemFunction(double mdot, double p_inlet, double p_outlet) const {
+#if 0
+	// test implementation of special bypass-pipe model
+	if (m_diameter > 0.0049 && m_diameter < 0.0051) {
+		const double MDOT_GEGEBEN = 0.02;
+		double zeta = MDOT_GEGEBEN/(mdot+1e-10);
+		zeta *= zeta;
+		zeta *= zeta;
+		zeta *= 100000000;
+		double deltaP = zeta * std::abs(mdot) * mdot;
+		const double DP_MAX = 2750.0;
+		deltaP = std::min(deltaP, DP_MAX);
+		return p_inlet - p_outlet - deltaP;
+	}
+#endif
 	// In case of multiple parallel pipes, mdot is the mass flux through *all* pipes
 	// (but all parallel sections together need the same pressure drop as a single one
-	return p_inlet - p_outlet - pressureLossFriction(mdot/m_nParallelPipes);	// this is the system function
+	double deltaP = pressureLossFriction(mdot/m_nParallelPipes);
+	return p_inlet - p_outlet - deltaP;	// this is the system function
 }
 
 
