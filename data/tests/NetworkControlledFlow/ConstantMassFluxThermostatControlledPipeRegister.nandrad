@@ -105,8 +105,8 @@
 					</HydraulicNetworkPipeProperties>
 					<HydraulicNetworkPipeProperties id="10">
 						<IBK:Parameter name="PipeRoughness" unit="mm">0.07</IBK:Parameter>
-						<IBK:Parameter name="PipeInnerDiameter" unit="mm">1</IBK:Parameter>
-						<IBK:Parameter name="PipeOuterDiameter" unit="mm">1.1</IBK:Parameter>
+						<IBK:Parameter name="PipeInnerDiameter" unit="mm">5</IBK:Parameter>
+						<IBK:Parameter name="PipeOuterDiameter" unit="mm">5.1</IBK:Parameter>
 						<IBK:Parameter name="UValuePipeWall" unit="W/mK">5</IBK:Parameter>
 					</HydraulicNetworkPipeProperties>
 				</PipeProperties>
@@ -123,9 +123,9 @@
 				<ControlElements>
 					<!-- Ein Ventil, zetaMax = 1e8 -->
 					<HydraulicNetworkControlElement id="1" controlledProperty="ThermostatValue" controllerType="PController" modelType="Constant">
-						<IBK:Parameter name="Kp" unit="---">1</IBK:Parameter>
+						<IBK:Parameter name="Kp" unit="---">1e6</IBK:Parameter>
 						<ThermostatZoneId>1</ThermostatZoneId>
-						<MaximumControllerResultValue>1e8</MaximumControllerResultValue>
+						<MaximumControllerResultValue>1e12</MaximumControllerResultValue>
 					</HydraulicNetworkControlElement>
 				</ControlElements>
 
@@ -141,7 +141,7 @@
 					</HydraulicNetworkElement>
 
 					<!-- Adiabatic Bypass pipe-->
-					<HydraulicNetworkElement id="3" inletNodeId="0" outletNodeId="101" componentId="2" pipePropertiesId="9" controlElementId="1" displayName="Bypass">
+					<HydraulicNetworkElement id="3" inletNodeId="0" outletNodeId="101" componentId="2" pipePropertiesId="10" displayName="Bypass">
 						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 					</HydraulicNetworkElement>
 
@@ -217,7 +217,7 @@
 				
 				<OutputDefinition>
 					<Quantity>FluidMassFlux</Quantity>
-					<ObjectListName>Surface Heating</ObjectListName>
+					<ObjectListName>Flow elements</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 
@@ -238,7 +238,7 @@
 				<OutputGrid name="hourly">
 					<Intervals>
 						<Interval>
-							<IBK:Parameter name="StepSize" unit="min">30</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
 						</Interval>
 					</Intervals>
 				</OutputGrid>
