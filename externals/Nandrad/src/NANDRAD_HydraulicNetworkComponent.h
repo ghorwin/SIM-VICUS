@@ -45,7 +45,7 @@ public:
 		MT_HeatExchanger,					// Keyword: HeatExchanger					'Simple heat exchanger with given heat flux'
 		MT_HeatPumpIdealCarnotSourceSide,	// Keyword: HeatPumpIdealCarnotSourceSide	'Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)'
 		MT_HeatPumpIdealCarnotSupplySide,	// Keyword: HeatPumpIdealCarnotSupplySide	'Heat pump with variable heating power based on carnot efficiency, installed at supply side'
-//		MT_HeatPumpReal,					// xKeyword: HeatPumpReal					'On-off-type heat pump with based on manufacturer data sheet'
+		MT_HeatPumpRealSourceSide,			// xKeyword: HeatPumpReal					'On-off-type heat pump with based on manufacturer data sheet'
 		MT_ControlledValve,					// Keyword: ControlledValve					'Valve with associated control model'
 		MT_SupplyTemperatureAdapter,		// Keyword: SupplyTemperatureAdapter		'Adapter model that provides a defined supply temperature to the network'
 		NUM_MT
@@ -66,6 +66,12 @@ public:
 		NUM_P
 	};
 
+	/*! Array-like parameters */
+	enum arrayPara_t {
+		AP_PolyCoefficientsQCond,
+		AP_PolyCoefficientsPEl,
+		NUM_AP
+	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -94,6 +100,8 @@ public:
 
 	/*! Parameters of the flow component. */
 	IBK::Parameter					m_para[NUM_P];										// XML:E
+
+	std::vector<double>				m_ap[NUM_AP];
 
 	// *** STATIC FUNCTIONS ***
 
