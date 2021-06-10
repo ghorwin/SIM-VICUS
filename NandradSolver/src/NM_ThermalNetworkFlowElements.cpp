@@ -763,4 +763,106 @@ void TNSupplyTemperatureAdapter::setInputValueRefs(std::vector<const double *>::
 	m_supplyTemperatureScheduleRef = *(resultValueRefs++);
 }
 
+
+
+// *** TNHeatPumpReal ***
+
+TNHeatPumpReal::TNHeatPumpReal(unsigned int flowElementId, const NANDRAD::HydraulicFluid &fluid, const NANDRAD::HydraulicNetworkElement &e):
+	TNElementWithExternalHeatLoss(fluid, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value),
+	m_flowElement(&e)
+{
+	m_flowElementId = flowElementId;
+	m_fluidVolume = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
+	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
+	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+	m_coeffsQcond = e.m_component->m_arrayPara[NANDRAD::HydraulicNetworkComponent::AP_PolyCoefficientsQCond];
+	m_coeffsPel = e.m_component->m_arrayPara[NANDRAD::HydraulicNetworkComponent::AP_PolyCoefficientsPEl];
+}
+
+
+void TNHeatPumpReal::setInflowTemperature(double Tinflow)
+{
+	ThermalNetworkAbstractFlowElementWithHeatLoss::setInflowTemperature(Tinflow);
+
+	// convenience, equations below can be used for different model types
+	const double &Tc = *m_condenserOutletSetpointRef;
+	const double &Te = Tinflow;
+
+	// heat pump is ON
+	if (*m_onOffSignalRef > 0.5){
+
+		// condensator heat flux polynom
+		m_condenserHeatFlux = m_coeffsQcond[0] + m_coeffsQcond[1] * Te + m_coeffsQcond[2] * Tc + m_coeffsQcond[3] * Te * Tc +
+				m_coeffsQcond[4] * Te * Te + m_coeffsQcond[5] * Tc * Tc;
+		// electrical power polynom
+		m_electricalPower = m_coeffsPel[0] + m_coeffsPel[1] * Te + m_coeffsPel[2] * Tc + m_coeffsPel[3] * Te * Tc +
+				m_coeffsPel[4] * Te * Te + m_coeffsPel[5] * Tc * Tc;
+
+		m_evaporatorHeatFlux = m_condenserHeatFlux - m_electricalPower;
+		m_COP = m_condenserHeatFlux / m_electricalPower;
+		m_temperatureDifference = m_meanTemperature - m_inflowTemperature;
+
+		// heat loss depends on model type
+		if (m_flowElement->m_component->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpRealSourceSide){
+			m_heatLoss = m_evaporatorHeatFlux;
+		}
+		else {
+			// TODO
+		}
+
+	}
+
+	// heat pump is OFF
+	else {
+			m_condenserHeatFlux = 0;
+			m_evaporatorHeatFlux = 0;
+			m_electricalPower = 0;
+			m_COP = 0;
+			m_temperatureDifference = 0;
+	}
+}
+
+
+void TNHeatPumpReal::inputReferences(std::vector<InputReference> &inputRefs) const
+{
+	switch (m_flowElement->m_component->m_modelType) {
+
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpRealSourceSide: {
+			InputReference ref;
+			ref.m_id = m_flowElementId;
+			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+			ref.m_name.m_name = "CondenserOutletSetpointSchedule";
+			ref.m_required = true;
+			inputRefs.push_back(ref);
+
+			InputReference ref2;
+			ref2.m_id = m_flowElementId;
+			ref2.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+			ref2.m_name.m_name = "HeatPumpOnOffSignalSchedule";
+			ref2.m_required = true;
+			inputRefs.push_back(ref2);
+		} break;
+
+		default : ;
+	}
+}
+
+
+void TNHeatPumpReal::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
+	// now store the pointer returned for our input ref request and advance the iterator by one
+	switch (m_flowElement->m_component->m_modelType) {
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide:{
+			m_condenserOutletSetpointRef = *(resultValueRefs++);
+			m_onOffSignalRef = *(resultValueRefs++);
+		} break;
+		default : ;
+	}
+}
+
+void TNHeatPumpReal::internalDerivatives(double *ydot)
+{
+	ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(ydot);
+}
+
+
 } // namespace NANDRAD_MODEL

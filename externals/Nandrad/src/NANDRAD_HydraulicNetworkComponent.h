@@ -101,7 +101,7 @@ public:
 	/*! Parameters of the flow component. */
 	IBK::Parameter					m_para[NUM_P];										// XML:E
 
-	std::vector<double>				m_ap[NUM_AP];
+	std::vector<double>				m_arrayPara[NUM_AP];
 
 	// *** STATIC FUNCTIONS ***
 
