@@ -163,7 +163,7 @@ private:
 	double zetaControlled(double mdot) const;
 
 	/*! Id number of flow element. */
-	unsigned int					m_flowElementId = NANDRAD::INVALID_ID;
+	unsigned int					m_id = NANDRAD::INVALID_ID;
 
 	/*! Cached fluid density [kg/m3] */
 	double							m_fluidDensity = -999;

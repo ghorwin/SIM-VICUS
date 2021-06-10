@@ -238,7 +238,7 @@ HNPressureLossCoeffElement::HNPressureLossCoeffElement(unsigned int flowElementI
 														const NANDRAD::HydraulicNetworkComponent &component,
 														const NANDRAD::HydraulicFluid &fluid,
 														const NANDRAD::HydraulicNetworkControlElement *controlElement):
-	m_flowElementId(flowElementId),
+	m_id(flowElementId),
 	m_controlElement(controlElement)
 {
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
@@ -260,7 +260,7 @@ void HNPressureLossCoeffElement::inputReferences(std::vector<InputReference> & i
 
 		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference: {
 			InputReference ref;
-			ref.m_id = m_flowElementId;
+			ref.m_id = m_id;
 			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 			ref.m_name.m_name = "HeatExchangeHeatLoss";
 			ref.m_required = true;
@@ -269,7 +269,7 @@ void HNPressureLossCoeffElement::inputReferences(std::vector<InputReference> & i
 			// the scheduled value
 			if (m_controlElement->m_modelType == NANDRAD::HydraulicNetworkControlElement::MT_Scheduled) {
 				InputReference ref;
-				ref.m_id = m_flowElementId;
+				ref.m_id = m_id;
 				ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 				ref.m_name.m_name = "TemperatureDifferenceSetpointSchedule";
 				ref.m_required = true;
@@ -288,7 +288,7 @@ void HNPressureLossCoeffElement::inputReferences(std::vector<InputReference> & i
 			// the scheduled value
 			if (m_controlElement->m_modelType == NANDRAD::HydraulicNetworkControlElement::MT_Scheduled) {
 				InputReference ref;
-				ref.m_id = m_flowElementId;
+				ref.m_id = m_id;
 				ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 				ref.m_name.m_name = "TemperatureDifferenceSetpointSchedule";
 				ref.m_required = true;
@@ -300,7 +300,7 @@ void HNPressureLossCoeffElement::inputReferences(std::vector<InputReference> & i
 			// only create input reference for scheduled variant
 			if (m_controlElement->m_modelType == NANDRAD::HydraulicNetworkControlElement::MT_Scheduled) {
 				InputReference ref;
-				ref.m_id = m_flowElementId;
+				ref.m_id = m_id;
 				ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 				ref.m_name.m_name = "MassFluxSetpointSchedule";
 				ref.m_required = true;

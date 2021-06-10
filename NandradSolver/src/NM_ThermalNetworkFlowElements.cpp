@@ -749,6 +749,25 @@ TNSupplyTemperatureAdapter::TNSupplyTemperatureAdapter(unsigned int flowElementI
 }
 
 
+void TNSupplyTemperatureAdapter::setInflowTemperature(double Tinflow) {
+	m_meanTemperature = *m_supplyTemperatureScheduleRef;
+
+	if (m_massFluxSetpointRef != nullptr) {
+		// compute implied bypass flow
+		double absMassFlux = std::fabs(m_massFlux);
+		double massFluxByPass = *m_massFluxSetpointRef - absMassFlux;
+		// compute blended temperature
+
+		m_mixedReturnTemperature = Tinflow*absMassFlux + *m_supplyTemperatureScheduleRef*massFluxByPass;
+		m_mixedReturnTemperature /= *m_massFluxSetpointRef + 1e-10; // add small offset to avoid diff-by-zero
+	}
+	else {
+		// no mass flux schedule, no mixed temperature
+		m_mixedReturnTemperature = m_meanTemperature;
+	}
+}
+
+
 void TNSupplyTemperatureAdapter::inputReferences(std::vector<InputReference> & inputRefs) const {
 	InputReference ref;
 	ref.m_id = m_id;
@@ -756,11 +775,17 @@ void TNSupplyTemperatureAdapter::inputReferences(std::vector<InputReference> & i
 	ref.m_name.m_name = "SupplyTemperatureSchedule";
 	ref.m_required = true;
 	inputRefs.push_back(ref);
+
+	ref.m_name.m_name = "MassFluxSetpointSchedule";
+	ref.m_required = false;
+	inputRefs.push_back(ref);
 }
 
 
 void TNSupplyTemperatureAdapter::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
 	m_supplyTemperatureScheduleRef = *(resultValueRefs++);
+
+	m_massFluxSetpointRef = *(resultValueRefs++); // may be nullptr
 }
 
 } // namespace NANDRAD_MODEL

@@ -556,13 +556,28 @@ private:
 
 	/*! We have no internal state. */
 	unsigned int nInternalStates() const override { return 0; }
-	void setInflowTemperature(double) override { m_meanTemperature = *m_supplyTemperatureScheduleRef; }
+	void setInflowTemperature(double Tinflow) override;
 	/*! Simply return given supply temperature. */
 	double outflowTemperature() const override { return *m_supplyTemperatureScheduleRef; }
-	/*! Publish request to supply temperature schedule. */
+	/*! Publish request to supply temperature schedule and optional mass flux setpoint. */
 	void inputReferences(std::vector<InputReference> & inputRefs) const override;
 	void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
 
+	/*! Publishes individual model quantities via descriptions. */
+	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
+		quantities.push_back(QuantityDescription("MixedReturnTemperature", "C", "Mixed temperature from inlet and implied bypass", false));
+	}
+
+	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
+	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
+		valRefs.push_back(&m_mixedReturnTemperature);
+	}
+
+	/*! Reference to scheduled mass flux setpoint, if provided */
+	const double	*m_massFluxSetpointRef = nullptr;
+
+	/*! Mixed return temperature, updated in setInflowTemperature. */
+	double			m_mixedReturnTemperature = 888;
 };
 
 
