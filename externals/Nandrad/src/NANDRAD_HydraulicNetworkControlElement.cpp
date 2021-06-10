@@ -91,6 +91,7 @@ std::vector<HydraulicNetworkControlElement::ControlledProperty> HydraulicNetwork
 		case HydraulicNetworkComponent::MT_ControlledPump:
 			return {CP_MassFlux, CP_TemperatureDifferenceOfFollowingElement};
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
+		case HydraulicNetworkComponent::MT_ConstantMassFluxPump :
 		case HydraulicNetworkComponent::MT_DynamicPipe:
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide:
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide:

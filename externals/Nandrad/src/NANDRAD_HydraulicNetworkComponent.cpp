@@ -92,6 +92,8 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 		switch (modelType) {
 			case MT_ConstantPressurePump:
 				return {P_PressureHead};
+			case MT_ConstantMassFluxPump :
+				return {P_MassFlux};
 			case MT_HeatPumpIdealCarnotSupplySide:
 			case MT_HeatPumpIdealCarnotSourceSide:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter};
@@ -114,6 +116,8 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 		switch (modelType) {
 			case MT_ConstantPressurePump:
 				return {P_PressureHead, P_PumpEfficiency, P_Volume}; // Note: P_FractionOfMotorInefficienciesToFluidStream is optional and defaults to 1
+			case MT_ConstantMassFluxPump :
+				return {P_MassFlux, P_PumpEfficiency, P_Volume};
 			case MT_ControlledPump:
 				return {P_PumpEfficiency, P_Volume}; // Note: P_FractionOfMotorInefficienciesToFluidStream is optional and defaults to 1
 			case MT_HeatPumpIdealCarnotSupplySide:

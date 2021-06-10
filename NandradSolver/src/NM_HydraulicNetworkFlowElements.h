@@ -227,6 +227,47 @@ private:
 }; // HNConstantPressurePump
 
 
+/*! Pump model where pressure head is controlled based on mass flux requirements. */
+class HNConstantMassFluxPump: public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
+public:
+	/*! C'tor, takes and caches parameters needed for function evaluation. */
+	HNConstantMassFluxPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component);
+
+	/*! Publishes individual model quantities via descriptions. */
+	virtual void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
+
+	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
+	virtual void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override;
+
+	/*! Adds flow-element-specific input references (schedules etc.) to the list of input references. */
+	virtual void inputReferences(std::vector<NANDRAD_MODEL::InputReference> & inputRefs) const override;
+
+	/*! Provides the element with its own requested model inputs.
+		The element must take exactly as many input values from the vector and move the iterator forward.
+		When the function returns, the iterator must point to the first input reference past this element's inputs.
+	*/
+	virtual void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
+
+	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
+	void partials(double mdot, double p_inlet, double p_outlet,
+				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
+
+	/*! Called at the end of a successful Newton iteration. Allows to calculate and store results. */
+	virtual void updateResults(double mdot, double p_inlet, double p_outlet) override;
+
+	/*! Return value reference of pressure head computed by flow element. */
+	const double * pressureHeadRef() const { return &m_pressureHead; }
+
+private:
+	/*! Calculated pressure head. */
+	double							m_pressureHead = -999;
+	/*! Element's ID, needed to formulate input references. */
+	unsigned int					m_id;
+	/*! Value reference to pressure head [Pa] */
+	const double					*m_massFluxRef = nullptr;
+
+}; // HNControlledPump
+
 
 /*! Pump model where pressure head is controlled based on mass flux requirements. */
 class HNControlledPump: public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS

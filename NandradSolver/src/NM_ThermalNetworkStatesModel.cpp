@@ -204,12 +204,20 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 
 				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump :
+				case NANDRAD::HydraulicNetworkComponent::MT_ConstantMassFluxPump :
 				case NANDRAD::HydraulicNetworkComponent::MT_ControlledPump :
 				{
 					// get value reference to constant pressure ref parameter for constant pressure pump
 					const double * pressureHeadRef =  &e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value;
 					// set pointer to pressure head computed by controlled pump for controlled pump
-					if (e.m_component->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_ControlledPump) {
+					if (e.m_component->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_ConstantMassFluxPump) {
+						// TODO Anne: statt dem TNPumpWithPerformanceLoss-Objekt direkten Zeigerzugriff auf das Pumpenelement zu geben,
+						//            könnte man auch eine InputRef verwenden. Lohnt sich der Aufwand?
+						const HNConstantMassFluxPump * pump = dynamic_cast<const HNConstantMassFluxPump *>(hydrNetworkModel.m_p->m_flowElements[i]);
+						IBK_ASSERT(pump != nullptr);
+						pressureHeadRef = pump->pressureHeadRef();
+					}
+					else if (e.m_component->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_ControlledPump) {
 						// TODO Anne: statt dem TNPumpWithPerformanceLoss-Objekt direkten Zeigerzugriff auf das Pumpenelement zu geben,
 						//            könnte man auch eine InputRef verwenden. Lohnt sich der Aufwand?
 						const HNControlledPump * pump = dynamic_cast<const HNControlledPump *>(hydrNetworkModel.m_p->m_flowElements[i]);

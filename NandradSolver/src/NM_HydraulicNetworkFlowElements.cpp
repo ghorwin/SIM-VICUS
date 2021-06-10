@@ -552,6 +552,61 @@ void HNConstantPressurePump::setInputValueRefs(std::vector<const double *>::cons
 }
 
 
+// *** HNConstantMassFluxPump ***
+
+HNConstantMassFluxPump::HNConstantMassFluxPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component):
+	m_id(id)
+{
+	// initialize mass flux
+	m_massFluxRef = &component.m_para[NANDRAD::HydraulicNetworkComponent::P_MassFlux].value;
+}
+
+void HNConstantMassFluxPump::modelQuantities(std::vector<QuantityDescription> & quantities) const
+{
+	quantities.push_back(QuantityDescription("PumpPressureHead","Pa", "The calculated controlled pressure head of the pump", false));
+}
+
+void HNConstantMassFluxPump::modelQuantityValueRefs(std::vector<const double *> & valRefs) const
+{
+	valRefs.push_back(&m_pressureHead);
+}
+
+void HNConstantMassFluxPump::inputReferences(std::vector<InputReference> &inputRefs) const
+{
+	InputReference ref;
+	ref.m_id = m_id;
+	ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	ref.m_name.m_name = "MassFluxSchedule";
+	ref.m_required = true;
+	inputRefs.push_back(ref);
+}
+
+void HNConstantMassFluxPump::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefIt)
+{
+	// overwrite scheduled mass flux
+	if(*resultValueRefIt != nullptr)
+		m_massFluxRef = *resultValueRefIt;
+	++resultValueRefIt;
+}
+
+double HNConstantMassFluxPump::systemFunction(double mdot, double /*p_inlet*/, double /*p_outlet*/) const
+{
+	return mdot - *m_massFluxRef;
+}
+
+void HNConstantMassFluxPump::partials(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/, double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
+{
+	df_dmdot = 1.0;
+	df_dp_inlet = 0.0;
+	df_dp_outlet = 0.0;
+}
+
+void HNConstantMassFluxPump::updateResults(double /*mdot*/, double p_inlet, double p_outlet)
+{
+	m_pressureHead = p_outlet - p_inlet;
+}
+
+
 // *** HNControlledPump ***
 
 HNControlledPump::HNControlledPump(unsigned int id, const NANDRAD::HydraulicNetworkControlElement *controlElement) :
