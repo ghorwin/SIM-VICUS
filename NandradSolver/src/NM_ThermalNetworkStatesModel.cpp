@@ -288,6 +288,12 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 					m_p->m_flowElements.push_back(element); // transfer ownership
 				} break;
 
+
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpRealSourceSide: {
+					TNHeatPumpReal * element = new TNHeatPumpReal(e.m_id, m_network->m_fluid, e);
+					m_p->m_flowElements.push_back(element); // transfer ownership
+				} break;
+
 				case NANDRAD::HydraulicNetworkComponent::NUM_MT:
 				break; // just to make compiler happy
 			}
