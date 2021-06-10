@@ -568,11 +568,15 @@ void HNControlledPump::modelQuantities(std::vector<QuantityDescription> &quantit
 	if (m_controlElement == nullptr)
 		return;
 	quantities.push_back(QuantityDescription("PumpPressureHead","Pa", "The calculated controlled pressure head of the pump", false));
+	if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement)
+		quantities.push_back(QuantityDescription("TemperatureDifference","K", "The difference between inlet and outlet temperature", false));
 }
 
 
 void HNControlledPump::modelQuantityValueRefs(std::vector<const double*> &valRefs) const {
 	valRefs.push_back(&m_pressureHead);
+	if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement)
+		valRefs.push_back(&m_temperatureDifference);
 }
 
 
@@ -772,6 +776,7 @@ void HNControlledPump::updateResults(double mdot, double /*p_inlet*/, double /*p
 	switch (m_controlElement->m_controlledProperty) {
 
 		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement:
+			m_temperatureDifference = (*m_fluidTemperatureRef - *m_followingFlowElementFluidTemperatureRef);
 		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlux:
 			m_pressureHead = pressureHeadControlled(mdot);
 		break;

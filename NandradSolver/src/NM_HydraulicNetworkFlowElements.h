@@ -283,6 +283,8 @@ private:
 	const double					*m_massFluxSetpointRef = nullptr;
 	/*! Value reference to temperature difference set point. */
 	const double					*m_temperatureDifferenceSetpointRef = nullptr;
+	/*! the calculated temperature difference */
+	double							m_temperatureDifference = -999;
 
 }; // HNControlledPump
 
