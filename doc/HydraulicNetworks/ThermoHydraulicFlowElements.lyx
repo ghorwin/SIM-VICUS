@@ -967,6 +967,237 @@ noprefix "false"
 
 \end_layout
 
+\begin_layout Subsubsection
+Controlled Pump
+\end_layout
+
+\begin_layout Standard
+Dieses Model bildet eine regelbare Pumpe ab.
+ Die Pumpe kann nach dem Massenstrom oder nach der Temperaturdifferenz des
+ folgenden Strömungselements geregelt werden.
+ Die maximale Leistung der Pumpe ist begrenzt und es wird ein vereinfachtes
+ Modell für den Wirkungsgrad und die maximalen Druckdifferenz angenommen.
+\end_layout
+
+\begin_layout Standard
+Die Parameter sind:
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $P_{el,max}\;[W]$
+\end_inset
+
+ maximale elektrische Leistung im optimalen Betriebspunkt
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $p_{max,0\;}[Pa]$
+\end_inset
+
+ maximale Druckdifferenz im Betriebspunkt des minimalem Volumenstroms
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\eta_{pump}\;[W]$
+\end_inset
+
+ Wirkungsgrad im optimalen Betriebspunkt
+\end_layout
+
+\begin_layout Standard
+Eine tatsächliche Pumpe ist für einen optimalen Betriebspunkt ausgelegt.
+ Außerhalb des optmialen Betriebspunkts ist die hydraulische Leistung und
+ damit der Wirkungsgrad deutlich geringer.
+ Die hydraulische Leistung einer Pumpe ist 
+\begin_inset Formula 
+\[
+P_{mech}=\Delta p\dot{V}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Würde man von einer konstanten Leistung über den gesamten Volumenstrombereich
+ ausgehen, ergäbe sich die blaue Kurve in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Maximum-pressure-head"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+Der Betriebsbereich einer drehzahlgeregelten Pumpe ist aufgrund von hydraulische
+n Verlusten und der technischen Begrenzung des Drehzahlbereichs geringer
+ (schwarze Kurve).
+ Die Grenzen des Bereichs können mit den angegebenen Parametern bestimmt
+ werden.
+ 
+\end_layout
+
+\begin_layout Standard
+Der optimale Betriebspunkt ist in der Regel bei 50 % des maximalen Volumenstroms
+, also 
+\begin_inset Formula $\dot{V}_{opt}=\frac{\dot{V}_{max,0}}{2}$
+\end_inset
+
+ und 
+\begin_inset Formula $\Delta p_{opt}=\frac{\Delta p_{max,0}}{2}$
+\end_inset
+
+.
+ Die elektrische Leistung im optimalen Betriebspunkt ist
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P_{el,max}=\eta\:\Delta p_{opt}\dot{V}_{opt}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Aus der maximalen Leistung im optimalen Betriebspunkt und dem maximalen
+ Druckverlust lässt sich so der maximale Volumenstrom bestimmen
+\begin_inset Formula 
+\[
+\dot{V}_{max,0}=\frac{4\eta P_{el,max}}{\Delta p_{max,0}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Damit kann die Grenze des Betriebsbereichs der drehzahlgeregelten Pumpe
+ (schwarze Kurve) bestimmt werden
+\begin_inset Formula 
+\[
+\Delta p_{max}(\dot{V})=\Delta p_{max,0}-\frac{\Delta p_{max,0}}{\dot{V}_{max,0}}\dot{V}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Der Wirkungsgrad ist 
+\begin_inset Formula 
+\[
+\eta=\frac{\Delta p_{max}\dot{V}}{P_{el,max}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph*
+Regelung des Massenstroms
+\end_layout
+
+\begin_layout Standard
+Das Stellsignal 
+\begin_inset Formula $y$
+\end_inset
+
+ eines P-Reglers mit Verstärkung 
+\begin_inset Formula $k_{p}$
+\end_inset
+
+ ergibt sich aus der Differenze zwischen dem Massenstrom 
+\begin_inset Formula $\dot{m}$
+\end_inset
+
+und dem Sollwert des Massenstroms 
+\begin_inset Formula $\dot{m}_{soll}$
+\end_inset
+
+
+\begin_inset Formula 
+\[
+y=k_{p}(\dot{m}-\dot{m}_{soll})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Daraus kann die Druckdifferenz der Pumpe berechnet werden
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\Delta p=\begin{cases}
+y & y\leq\Delta p_{max}\\
+\Delta p_{max} & y>\Delta p_{max}
+\end{cases}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename imgs/ControlledPump.pdf
+	lyxscale 50
+	scale 60
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Maximum-pressure-head"
+
+\end_inset
+
+Maximum pressure head and efficiency of controlled pump
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Thermohydraulic flow Element Equations
 \begin_inset CommandInset label
@@ -1671,9 +1902,9 @@ A pump with performance loss produces heat that is transfered directly to
  the fluid volume.
  We calculate heat loss as factor of electrical power
 \begin_inset Formula 
-\[
-P_{el}=\Delta p\dot{V}=\frac{\Delta p\dot{m}}{\rho}
-\]
+\begin{equation}
+P_{el}=\Delta p\dot{V}=\frac{\Delta p\dot{m}}{\rho}\label{eq:hydraulical_power_pump}
+\end{equation}
 
 \end_inset
 
