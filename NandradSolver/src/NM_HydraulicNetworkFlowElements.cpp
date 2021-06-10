@@ -677,6 +677,8 @@ void HNControlledPump::partials(double mdot, double p_inlet, double p_outlet,
 double HNControlledPump::pressureHeadControlled(double mdot) const {
 	FUNCID(HNControlledMassFluxPump::pressureHeadControlled);
 
+	double e = 0;	// deviation of controlled property
+
 	// calculate zetaControlled value for valve
 	switch (m_controlElement->m_controlledProperty) {
 
@@ -687,38 +689,14 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 			temperatureDifference = (*m_fluidTemperatureRef - *m_followingFlowElementFluidTemperatureRef);
 
 			// compute control error
-			const double e = temperatureDifference - *m_temperatureDifferenceSetpointRef;
+			e = temperatureDifference - *m_temperatureDifferenceSetpointRef;
 			// if temperature difference is smaller than the required difference (negative e), our mass flux is too large,
 			// we stop it by returning 0
 			//    -> pressHeadControlled = 0
 			// if temperature difference is larger than the required difference (positive e), we gradually increase
 			// mass flow by increasing pressure head of pump
 			//    -> pressHeadControlled = e*Kp
-
-			// TODO : use controller object here
-			double pressHeadControlled = m_controlElement->m_maximumControllerResultValue;
-			if (e <= 0) {
-				pressHeadControlled = 0;
-			}
-			else {
-				switch (m_controlElement->m_controllerType) {
-					case NANDRAD::HydraulicNetworkControlElement::CT_PController: {
-						// relate controller error e to zeta
-						const double y = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value * e;
-						// apply clipping
-						if (y < pressHeadControlled)
-							pressHeadControlled = y;
-					} break;
-
-					case NANDRAD::HydraulicNetworkControlElement::CT_PIController:
-						throw IBK::Exception("PIController not implemented, yet.", FUNC_ID);
-
-					case NANDRAD::HydraulicNetworkControlElement::NUM_CT: break; // just to make compiler happy
-				}
-
-			}
-			return pressHeadControlled;
-		}
+		} break;
 
 
 		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlux: {
@@ -732,40 +710,42 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 			const double e = mdotSetpoint - mdot;
 			// if e is > 0 if our mass flux is below the limit (we need to increase mass flux by increasing pressure head)
 			// if e <= 0, our mass flux is too large, we turn it off
+		} break;
 
-			// TODO : use controller object here
-			double pressHeadControlled = m_controlElement->m_maximumControllerResultValue;
-			if (e <= 0) {
-				pressHeadControlled = 0;
-			}
-			else {
-				switch (m_controlElement->m_controllerType) {
-					case NANDRAD::HydraulicNetworkControlElement::CT_PController: {
-						// relate controller error e to pressure head
-						const double y = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value * e;
-						// apply clipping
-						if (y < pressHeadControlled)
-							pressHeadControlled = y;
-					} break;
-
-					case NANDRAD::HydraulicNetworkControlElement::CT_PIController:
-						throw IBK::Exception("PIController not implemented, yet.", FUNC_ID);
-
-					case NANDRAD::HydraulicNetworkControlElement::NUM_CT: break; // just to make compiler happy
-				}
-
-			}
-			return pressHeadControlled;
-		}
-
-			// not possible combinations
+		// not possible combinations
 		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:
 		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue:
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ;
 	}
-//	IBK::IBK_Message(IBK::FormatString("zeta = %1, m_heatLoss = %4 W, dT = %2 K, mdot = %3 kg/s, heatExchangeValueRef = %5 W\n")
-//					 .arg(m_zetaControlled).arg(m_temperatureDifference).arg(mdot).arg(m_heatLoss).arg(*m_heatExchangeValueRef));
-	return 0.0;
+
+	// TODO : use controller object here
+
+	// if controller deviation is <= 0,  return 0
+	if (e <= 0) {
+		return 0;
+	}
+
+	double pressHeadControlled = 0;
+	double pressHeadMax = m_controlElement->m_maximumControllerResultValue;
+
+	switch (m_controlElement->m_controllerType) {
+		case NANDRAD::HydraulicNetworkControlElement::CT_PController: {
+			// relate controller error e to zeta
+			const double y = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value * e;
+			// apply clipping (only when pressureHeadMax > 0)
+			if (y > pressHeadMax && pressHeadMax > 0)
+				pressHeadControlled = pressHeadMax;
+			else
+				pressHeadControlled = y;
+		} break;
+
+		case NANDRAD::HydraulicNetworkControlElement::CT_PIController:
+			throw IBK::Exception("PIController not implemented, yet.", FUNC_ID);
+
+		case NANDRAD::HydraulicNetworkControlElement::NUM_CT: break; // just to make compiler happy
+	}
+
+return pressHeadControlled;
 }
 
 void HNControlledPump::updateResults(double mdot, double /*p_inlet*/, double /*p_outlet*/) {
