@@ -982,40 +982,6 @@ void Scene::render() {
 
 
 
-	// *** movable coordinate system  ***
-
-	if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
-		vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry ||
-		vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
-		vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem )
-	{
-		m_coordinateSystemShader->bind();
-
-		// When we translate/rotate the local coordinate system, we actually move the world with respect to the camera
-		// by left-multiplying the model2world matrix with the coordinate system object.
-
-		// Suppose the local coordinate system shall be located at 20,0,0 and the camera looks at the coordinate
-		// system's origin from 20,-40,2. Now, inside the shader, all coordinates are multiplied by the
-		// model2world matrix, which basically moves all coordinates +20 in x direction. Now light and view position
-		// (the latter only being used to compute the phong shading) are at 40, -40, 2, wheras the local coordinate
-		// system is moved from local 0,0,0 to the desired 20,0,0.
-		// Consequently, the light and view position cause the phong shader to draw the sphere as if lighted slightly
-		// from the direction of positive x.
-
-		// To fix this, we translate/rotate the view/light position inversely to the model2world transformation and
-		// this revert the effect introduced by the model2world matrix on the light/view coordinates.
-		QVector3D translatedViewPos = m_coordinateSystemObject.inverseTransformationMatrix() * viewPos;
-//		qDebug() << viewPos << m_coordinateSystemObject.translation();
-
-		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[0], m_worldToView);
-		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[1], translatedViewPos); // lightpos
-		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[2], QtExt::QVector3DFromQColor(m_lightColor));
-		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[3], translatedViewPos); // viewpos
-		m_coordinateSystemObject.renderOpaque();
-		m_coordinateSystemShader->release();
-	}
-
-
 	// *** opaque background geometry ***
 
 	// tell OpenGL to show only faces whose normal vector points towards us
@@ -1102,10 +1068,53 @@ void Scene::render() {
 		m_fixedColorTransformShader->release();
 	}
 
+	// turn off blending
+	glDisable(GL_BLEND);
 	// re-enable updating of z-buffer
 	glDepthMask(GL_TRUE);
 	// tell OpenGL to turn on culling
 	glEnable(GL_CULL_FACE);
+
+	// clear depth buffer because we want to paint on top of all
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	// *** movable coordinate system  ***
+
+	if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
+		vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry ||
+		vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
+		vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem )
+	{
+		m_coordinateSystemShader->bind();
+
+		// When we translate/rotate the local coordinate system, we actually move the world with respect to the camera
+		// by left-multiplying the model2world matrix with the coordinate system object.
+
+		// Suppose the local coordinate system shall be located at 20,0,0 and the camera looks at the coordinate
+		// system's origin from 20,-40,2. Now, inside the shader, all coordinates are multiplied by the
+		// model2world matrix, which basically moves all coordinates +20 in x direction. Now light and view position
+		// (the latter only being used to compute the phong shading) are at 40, -40, 2, wheras the local coordinate
+		// system is moved from local 0,0,0 to the desired 20,0,0.
+		// Consequently, the light and view position cause the phong shader to draw the sphere as if lighted slightly
+		// from the direction of positive x.
+
+		// To fix this, we translate/rotate the view/light position inversely to the model2world transformation and
+		// this revert the effect introduced by the model2world matrix on the light/view coordinates.
+		QVector3D translatedViewPos = m_coordinateSystemObject.inverseTransformationMatrix() * viewPos;
+//		qDebug() << viewPos << m_coordinateSystemObject.translation();
+
+		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[0], m_worldToView);
+		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[1], translatedViewPos); // lightpos
+		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[2], QtExt::QVector3DFromQColor(m_lightColor));
+		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[3], translatedViewPos); // viewpos
+		m_coordinateSystemObject.renderOpaque();
+		m_coordinateSystemShader->release();
+	}
+
+	// clear depth buffer because we want to paint on top of all
+	glClear(GL_DEPTH_BUFFER_BIT);
+	// turn on blending
+	glEnable(GL_BLEND);
 
 	if (m_smallCoordinateSystemObjectVisible) {
 		glViewport(m_smallViewPort.x(), m_smallViewPort.y(), m_smallViewPort.width(), m_smallViewPort.height());
