@@ -157,6 +157,12 @@ KeywordListQt::KeywordListQt() {
 	tr("Building");
 	tr("Mixer");
 	tr("Source");
+	tr("Outer diameter");
+	tr("Pipe wall thickness");
+	tr("Pipe wall surface roughness");
+	tr("Thermal conductivity of pipe wall");
+	tr("Insulation thickness");
+	tr("Thermal conductivity of insulation");
 	tr("If true, output files are written in binary format (the default, if flag is missing).");
 	tr("If true, default output definitions for zones are created.");
 	tr("Floor area of the zone.");

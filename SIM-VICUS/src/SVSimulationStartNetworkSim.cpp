@@ -308,24 +308,29 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		NANDRAD::HydraulicNetworkPipeProperties pipeProp;
 		pipeProp.m_id = pipe->m_id;
 
-		// calculate length-specific pipe wall U-Value in W/mK
+		// calculate length-specific pipe wall U-Value in W/mK, some references to understand the equation better
 		double UValue;
-		if (pipe->m_insulationThickness>0 && pipe->m_lambdaInsulation>0){
-			UValue = 2*PI/ ( 1/pipe->m_lambdaWall * IBK::f_log(pipe->m_diameterOutside / pipe->diameterInside())
-						+ 1/pipe->m_lambdaInsulation *
-						  IBK::f_log((pipe->m_diameterOutside + 2*pipe->m_insulationThickness) / pipe->m_diameterOutside) );
+		const double &dInsulation = pipe->m_para[VICUS::NetworkPipe::P_ThicknessInsulation].value;
+		const double &lambdaInsulation = pipe->m_para[VICUS::NetworkPipe::P_ThermalConductivityInsulation].value;
+		const double &da = pipe->m_para[VICUS::NetworkPipe::P_DiameterOutside].value;
+		const double &lambdaWall = pipe->m_para[VICUS::NetworkPipe::P_ThermalConductivityWall].value;
+
+		if (dInsulation>0 && lambdaInsulation>0){
+			UValue = 2*PI/ ( 1/lambdaWall * IBK::f_log(da / pipe->diameterInside())
+						+ 1/lambdaInsulation *
+						  IBK::f_log((da + 2*dInsulation) / da) );
 		}
 		else {
-			UValue = 2*PI/ ( 1/pipe->m_lambdaWall * IBK::f_log(pipe->m_diameterOutside / pipe->diameterInside()) );
+			UValue = 2*PI/ ( lambdaWall * IBK::f_log(da / pipe->diameterInside()) );
 		}
 
 		// set pipe properties
 		NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
-										   NANDRAD::HydraulicNetworkPipeProperties::P_PipeOuterDiameter, pipe->m_diameterOutside);
+										   NANDRAD::HydraulicNetworkPipeProperties::P_PipeOuterDiameter, da);
 		NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
 										   NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter, pipe->diameterInside());
 		NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
-										   NANDRAD::HydraulicNetworkPipeProperties::P_PipeRoughness, pipe->m_roughness);
+										   NANDRAD::HydraulicNetworkPipeProperties::P_PipeRoughness, pipe->m_para[VICUS::NetworkPipe::P_RoughnessWall].value);
 		NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
 										   NANDRAD::HydraulicNetworkPipeProperties::P_UValuePipeWall, UValue);
 		nandradNetwork.m_pipeProperties.push_back(pipeProp);

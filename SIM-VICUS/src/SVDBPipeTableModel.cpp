@@ -145,10 +145,10 @@ QModelIndex SVDBPipeTableModel::addNewItem() {
 	VICUS::NetworkPipe pipe;
 	pipe.m_displayName.setEncodedString("en:<new pipe>");
 
-	pipe.m_roughness = 7e-6;
-	pipe.m_lambdaWall = 0.4;
-	pipe.m_diameterOutside = 0;
-	pipe.m_wallThickness = 0;
+	pipe.m_para[VICUS::NetworkPipe::P_RoughnessWall].value = 7e-6;
+	pipe.m_para[VICUS::NetworkPipe::P_ThermalConductivityWall].value = 0.4;
+	pipe.m_para[VICUS::NetworkPipe::P_DiameterOutside].value = 0;
+	pipe.m_para[VICUS::NetworkPipe::P_ThicknessWall].value = 0;
 
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_pipes.add( pipe );

@@ -512,8 +512,8 @@ QString SVPropNetworkEditWidget::largestDiameter() const
 		const VICUS::NetworkPipe * p = db.m_pipes[edge.m_pipeId];
 		if (p == nullptr)
 			return QString();
-		if (p->m_diameterOutside > dMax)
-			dMax = p->m_diameterOutside;
+		if (p->m_para[VICUS::NetworkPipe::P_DiameterOutside].value > dMax)
+			dMax = p->m_para[VICUS::NetworkPipe::P_DiameterOutside].value;
 	}
 	return QString("%1").arg(dMax);
 }
@@ -527,8 +527,8 @@ QString SVPropNetworkEditWidget::smallestDiameter() const
 		const VICUS::NetworkPipe * p = db.m_pipes[edge.m_pipeId];
 		if (p == nullptr)
 			return QString();
-		if (p->m_diameterOutside < dMin)
-			dMin = p->m_diameterOutside;
+		if (p->m_para[VICUS::NetworkPipe::P_DiameterOutside].value < dMin)
+			dMin = p->m_para[VICUS::NetworkPipe::P_DiameterOutside].value;
 	}
 	return QString("%1").arg(dMin);
 }
@@ -636,7 +636,7 @@ void SVPropNetworkEditWidget::setupComboboxPipeDB()
 			continue;
 		m_ui->comboBoxPipeDB->addItem(QString::fromStdString(IBK::FormatString("%1 [%2 mm]")
 			.arg(pipe->m_displayName.string(IBK::MultiLanguageString::m_language, "en"))
-			.arg(pipe->m_diameterOutside).str()), pipeID);
+			.arg(pipe->m_para[VICUS::NetworkPipe::P_DiameterOutside].value).str()), pipeID);
 	}
 	m_ui->comboBoxPipeDB->blockSignals(false);
 }

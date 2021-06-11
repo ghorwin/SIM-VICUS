@@ -41,22 +41,6 @@ void NetworkPipe::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
 
-		if (!TiXmlAttribute::attributeByName(element, "diameterOutside"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'diameterOutside' attribute.") ), FUNC_ID);
-
-		if (!TiXmlAttribute::attributeByName(element, "wallThickness"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'wallThickness' attribute.") ), FUNC_ID);
-
-		if (!TiXmlAttribute::attributeByName(element, "lambdaWall"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'lambdaWall' attribute.") ), FUNC_ID);
-
-		if (!TiXmlAttribute::attributeByName(element, "roughness"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'roughness' attribute.") ), FUNC_ID);
-
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
@@ -67,22 +51,35 @@ void NetworkPipe::readXML(const TiXmlElement * element) {
 				m_displayName.setEncodedString(attrib->ValueStr());
 			else if (attribName == "color")
 				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
-			else if (attribName == "diameterOutside")
-				m_diameterOutside = NANDRAD::readPODAttributeValue<double>(element, attrib);
-			else if (attribName == "wallThickness")
-				m_wallThickness = NANDRAD::readPODAttributeValue<double>(element, attrib);
-			else if (attribName == "lambdaWall")
-				m_lambdaWall = NANDRAD::readPODAttributeValue<double>(element, attrib);
-			else if (attribName == "roughness")
-				m_roughness = NANDRAD::readPODAttributeValue<double>(element, attrib);
-			else if (attribName == "insulationThickness")
-				m_insulationThickness = NANDRAD::readPODAttributeValue<double>(element, attrib);
-			else if (attribName == "lambdaInsulation")
-				m_lambdaInsulation = NANDRAD::readPODAttributeValue<double>(element, attrib);
+			else if (attribName == "categoryName")
+				m_categoryName = attrib->ValueStr();
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			attrib = attrib->Next();
+		}
+		// search for mandatory elements
+		// reading elements
+		const TiXmlElement * c = element->FirstChildElement();
+		while (c) {
+			const std::string & cName = c->ValueStr();
+			if (cName == "IBK:Parameter") {
+				IBK::Parameter p;
+				NANDRAD::readParameterElement(c, p);
+				bool success = false;
+				para_t ptype;
+				try {
+					ptype = (para_t)KeywordList::Enumeration("NetworkPipe::para_t", p.name);
+					m_para[ptype] = p; success = true;
+				}
+				catch (...) { /* intentional fail */  }
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			c = c->NextSiblingElement();
 		}
 	}
 	catch (IBK::Exception & ex) {
@@ -103,12 +100,14 @@ TiXmlElement * NetworkPipe::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
-	e->SetAttribute("diameterOutside", IBK::val2string<double>(m_diameterOutside));
-	e->SetAttribute("wallThickness", IBK::val2string<double>(m_wallThickness));
-	e->SetAttribute("lambdaWall", IBK::val2string<double>(m_lambdaWall));
-	e->SetAttribute("roughness", IBK::val2string<double>(m_roughness));
-	e->SetAttribute("insulationThickness", IBK::val2string<double>(m_insulationThickness));
-	e->SetAttribute("lambdaInsulation", IBK::val2string<double>(m_lambdaInsulation));
+	if (!m_categoryName.empty())
+		e->SetAttribute("categoryName", m_categoryName);
+
+	for (unsigned int i=0; i<NUM_P; ++i) {
+		if (!m_para[i].name.empty()) {
+			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
+		}
+	}
 	return e;
 }
 

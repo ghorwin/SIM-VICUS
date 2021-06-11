@@ -161,7 +161,7 @@ void Network::updateVisualizationRadius(const VICUS::Database<VICUS::NetworkPipe
 		if (e.m_pipeId != VICUS::INVALID_ID){
 			const VICUS::NetworkPipe * pipe = pipeDB[e.m_pipeId];
 			if (pipe != nullptr)
-				radius *= pipe->m_diameterOutside/1000 * m_scaleEdges;
+				radius *= pipe->m_para[VICUS::NetworkPipe::P_DiameterOutside].value * m_scaleEdges;
 		}
 		e.m_visualizationRadius = radius;
 	}
@@ -567,12 +567,12 @@ FUNCID(Network::sizePipeDimensions);
 
 		for (const NetworkPipe * pipe : availablePipes){
 			double massFlow = e.m_maxHeatingDemand / (m_para[P_TemperatureDifference].get_value("K") * cp);
-			double di = pipe->diameterInside() / 1000;
+			double di = pipe->diameterInside();
 			double area = PI/4 * di * di;
 			double vel = massFlow / (rho * area);
 			double re = ReynoldsNumber(vel, kinvis, di);
 			//  pressure loss per length (Pa/m)
-			double zeta = 1.0 / di * FrictionFactorSwamee(re, di, pipe->m_roughness);
+			double zeta = 1.0 / di * FrictionFactorSwamee(re, di, m_para[VICUS::NetworkPipe::P_DiameterOutside].value);
 			double dp = zeta * rho/2 * vel * vel;
 			// select smallest possible pipe
 			if (dp < deltaPMax){
