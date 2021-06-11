@@ -201,7 +201,7 @@ namespace NANDRAD {
 				case 6 : return "HeatPumpIdealCarnotSourceSide";
 				case 7 : return "HeatPumpIdealCarnotSupplySide";
 				case 8 : return "ControlledValve";
-				case 9 : return "SupplyTemperatureAdapter";
+				case 9 : return "IdealHeaterCooler";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -817,7 +817,7 @@ namespace NANDRAD {
 				case 6 : return "HeatPumpIdealCarnotSourceSide";
 				case 7 : return "HeatPumpIdealCarnotSupplySide";
 				case 8 : return "ControlledValve";
-				case 9 : return "SupplyTemperatureAdapter";
+				case 9 : return "IdealHeaterCooler";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -1434,7 +1434,7 @@ namespace NANDRAD {
 				case 6 : return "Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)";
 				case 7 : return "Heat pump with variable heating power based on carnot efficiency, installed at supply side";
 				case 8 : return "Valve with associated control model";
-				case 9 : return "Adapter model that provides a defined supply temperature to the network";
+				case 9 : return "Adapter model that provides a defined supply temperature to the network and calculates the heat loss/gain";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :

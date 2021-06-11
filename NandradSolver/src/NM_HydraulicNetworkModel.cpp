@@ -154,7 +154,7 @@ void HydraulicNetworkModel::setup() {
 
 			} break;
 
-			case NANDRAD::HydraulicNetworkComponent::MT_SupplyTemperatureAdapter :
+			case NANDRAD::HydraulicNetworkComponent::MT_IdealHeaterCooler :
 			{
 				// create pressure loss flow element - controller is set up later
 				HNPressureLossCoeffElement * pressLossCoeffelement = new HNPressureLossCoeffElement(e.m_id, *e.m_component, m_hydraulicNetwork->m_fluid, e.m_controlElement);

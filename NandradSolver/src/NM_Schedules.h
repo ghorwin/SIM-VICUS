@@ -80,7 +80,7 @@ public:
 		SQ_CondenserMeanTemperatureSchedule,					// Keyword: CondenserMeanTemperatureSchedule				[C]
 		SQ_CondenserOutletSetpointSchedule,						// Keyword: CondenserOutletSetpointSchedule					[C]
 		SQ_EvaporatorMeanTemperatureSchedule,					// Keyword: EvaporatorMeanTemperatureSchedule				[C]
-		SQ_SupplyTemperatureSchedule,							// Keyword: SupplyTemperatureSchedule						[C]
+		SQ_FluidOutletSetpointSchedule,							// Keyword: FluidOutletSetpointSchedule						[C]
 		SQ_MaxMassFlowSchedule,									// Keyword: MaxMassFlowSchedule								[kg/s]
 		SQ_SupplyMassFlowSchedule,								// Keyword: SupplyMassFlowSchedule							[kg/s]
 		SQ_TemperatureDifferenceSetpointSchedule,				// Keyword: TemperatureDifferenceSetpointSchedule			[K]

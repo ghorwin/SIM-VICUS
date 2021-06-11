@@ -543,14 +543,14 @@ private:
 
 // **** Supply temperature adapter model ***
 
-class TNSupplyTemperatureAdapter : public ThermalNetworkAbstractFlowElement { // NO KEYWORDS
+class TNIdealHeaterCooler : public ThermalNetworkAbstractFlowElement { // NO KEYWORDS
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	TNSupplyTemperatureAdapter(unsigned int flowElementId);
+	TNIdealHeaterCooler(unsigned int flowElementId, const NANDRAD::HydraulicFluid & fluid);
 
 private:
 	unsigned int	m_id = 0;
-	const double	*m_supplyTemperatureScheduleRef = nullptr;
+	const double	*m_fluidOutletSetpointScheduleRef = nullptr;
 
 	// *** ThermalNetworkAbstractFlowElement interface
 
@@ -558,7 +558,7 @@ private:
 	unsigned int nInternalStates() const override { return 0; }
 	void setInflowTemperature(double Tinflow) override;
 	/*! Simply return given supply temperature. */
-	double outflowTemperature() const override { return *m_supplyTemperatureScheduleRef; }
+	double outflowTemperature() const override { return *m_fluidOutletSetpointScheduleRef; }
 	/*! Publish request to supply temperature schedule and optional mass flux setpoint. */
 	void inputReferences(std::vector<InputReference> & inputRefs) const override;
 	void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
@@ -566,11 +566,13 @@ private:
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
 		quantities.push_back(QuantityDescription("MixedReturnTemperature", "C", "Mixed temperature from inlet and implied bypass", false));
+		quantities.push_back(QuantityDescription("HeatSupply", "W", "Heat added by the element", false));
 	}
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
 	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
 		valRefs.push_back(&m_mixedReturnTemperature);
+		valRefs.push_back(&m_suppliedHeat);
 	}
 
 	/*! Reference to scheduled mass flux setpoint, if provided */
@@ -578,6 +580,10 @@ private:
 
 	/*! Mixed return temperature, updated in setInflowTemperature. */
 	double			m_mixedReturnTemperature = 888;
+
+	/*! Heat needed to provide the given supply temperature */
+	double			m_suppliedHeat = 888;
+
 };
 
 

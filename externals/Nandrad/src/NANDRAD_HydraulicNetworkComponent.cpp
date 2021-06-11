@@ -69,7 +69,7 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) {
 			m_para[P_FractionOfMotorInefficienciesToFluidStream].value = 1; // set default value
 
 		// for MT_SupplyTemperatureAdapter, initialize zeta and diameter with defaults
-		if (m_modelType == MT_SupplyTemperatureAdapter) {
+		if (m_modelType == MT_IdealHeaterCooler) {
 			m_para[P_HydraulicDiameter].value=1;
 			m_para[P_PressureLossCoefficient].value=0;
 		}
@@ -106,7 +106,7 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 			case MT_ControlledValve:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter};
 			case MT_ControlledPump:
-			case MT_SupplyTemperatureAdapter: // no parameters needed
+			case MT_IdealHeaterCooler: // no parameters needed
 			case NUM_MT:
 				return {};
 		}
@@ -132,7 +132,7 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 				return {};
 			case MT_ControlledValve:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
-			case MT_SupplyTemperatureAdapter: // no parameters needed
+			case MT_IdealHeaterCooler: // no parameters needed
 			case NUM_MT: ;
 		}
 	}

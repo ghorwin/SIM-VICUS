@@ -47,7 +47,7 @@ public:
 		MT_HeatPumpIdealCarnotSupplySide,	// Keyword: HeatPumpIdealCarnotSupplySide	'Heat pump with variable heating power based on carnot efficiency, installed at supply side'
 //		MT_HeatPumpReal,					// xKeyword: HeatPumpReal					'On-off-type heat pump with based on manufacturer data sheet'
 		MT_ControlledValve,					// Keyword: ControlledValve					'Valve with associated control model'
-		MT_SupplyTemperatureAdapter,		// Keyword: SupplyTemperatureAdapter		'Adapter model that provides a defined supply temperature to the network'
+		MT_IdealHeaterCooler,				// Keyword: IdealHeaterCooler				'Adapter model that provides a defined supply temperature to the network and calculates the heat loss/gain'
 		NUM_MT
 	};
 

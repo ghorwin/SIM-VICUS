@@ -235,7 +235,7 @@ namespace NANDRAD_MODEL {
 				case 12 : return "CondenserMeanTemperatureSchedule";
 				case 13 : return "CondenserOutletSetpointSchedule";
 				case 14 : return "EvaporatorMeanTemperatureSchedule";
-				case 15 : return "SupplyTemperatureSchedule";
+				case 15 : return "FluidOutletSetpointSchedule";
 				case 16 : return "MaxMassFlowSchedule";
 				case 17 : return "SupplyMassFlowSchedule";
 				case 18 : return "TemperatureDifferenceSetpointSchedule";
@@ -435,7 +435,7 @@ namespace NANDRAD_MODEL {
 				case 12 : return "CondenserMeanTemperatureSchedule";
 				case 13 : return "CondenserOutletSetpointSchedule";
 				case 14 : return "EvaporatorMeanTemperatureSchedule";
-				case 15 : return "SupplyTemperatureSchedule";
+				case 15 : return "FluidOutletSetpointSchedule";
 				case 16 : return "MaxMassFlowSchedule";
 				case 17 : return "SupplyMassFlowSchedule";
 				case 18 : return "TemperatureDifferenceSetpointSchedule";
@@ -636,7 +636,7 @@ namespace NANDRAD_MODEL {
 				case 12 : if (no_description != nullptr) *no_description = true; return "CondenserMeanTemperatureSchedule";
 				case 13 : if (no_description != nullptr) *no_description = true; return "CondenserOutletSetpointSchedule";
 				case 14 : if (no_description != nullptr) *no_description = true; return "EvaporatorMeanTemperatureSchedule";
-				case 15 : if (no_description != nullptr) *no_description = true; return "SupplyTemperatureSchedule";
+				case 15 : if (no_description != nullptr) *no_description = true; return "FluidOutletSetpointSchedule";
 				case 16 : if (no_description != nullptr) *no_description = true; return "MaxMassFlowSchedule";
 				case 17 : if (no_description != nullptr) *no_description = true; return "SupplyMassFlowSchedule";
 				case 18 : if (no_description != nullptr) *no_description = true; return "TemperatureDifferenceSetpointSchedule";

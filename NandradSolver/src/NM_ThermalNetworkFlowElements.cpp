@@ -745,20 +745,28 @@ void TNHeatPumpIdealCarnot::internalDerivatives(double *ydot) {
 
 // *** TNSupplyTemperatureAdapter ***
 
-TNSupplyTemperatureAdapter::TNSupplyTemperatureAdapter(unsigned int flowElementId) : m_id(flowElementId) {
+TNIdealHeaterCooler::TNIdealHeaterCooler(unsigned int flowElementId, const NANDRAD::HydraulicFluid & fluid) :
+	m_id(flowElementId)
+{
+	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
+	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 }
 
 
-void TNSupplyTemperatureAdapter::setInflowTemperature(double Tinflow) {
-	m_meanTemperature = *m_supplyTemperatureScheduleRef;
+void TNIdealHeaterCooler::setInflowTemperature(double Tinflow) {
+
+	m_meanTemperature = *m_fluidOutletSetpointScheduleRef;
+	double absMassFlux = std::fabs(m_massFlux);
+
+	// heat needed to provide the given temperature (If we are heating up the fluid, this is positive)
+	m_suppliedHeat = absMassFlux * m_fluidDensity * m_fluidHeatCapacity * (m_meanTemperature - Tinflow);
 
 	if (m_massFluxSetpointRef != nullptr) {
 		// compute implied bypass flow
-		double absMassFlux = std::fabs(m_massFlux);
 		double massFluxByPass = *m_massFluxSetpointRef - absMassFlux;
 		// compute blended temperature
 
-		m_mixedReturnTemperature = Tinflow*absMassFlux + *m_supplyTemperatureScheduleRef*massFluxByPass;
+		m_mixedReturnTemperature = Tinflow*absMassFlux + *m_fluidOutletSetpointScheduleRef*massFluxByPass;
 		m_mixedReturnTemperature /= *m_massFluxSetpointRef + 1e-10; // add small offset to avoid diff-by-zero
 	}
 	else {
@@ -768,11 +776,11 @@ void TNSupplyTemperatureAdapter::setInflowTemperature(double Tinflow) {
 }
 
 
-void TNSupplyTemperatureAdapter::inputReferences(std::vector<InputReference> & inputRefs) const {
+void TNIdealHeaterCooler::inputReferences(std::vector<InputReference> & inputRefs) const {
 	InputReference ref;
 	ref.m_id = m_id;
 	ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
-	ref.m_name.m_name = "SupplyTemperatureSchedule";
+	ref.m_name.m_name = "FluidOutletSetpointSchedule";
 	ref.m_required = true;
 	inputRefs.push_back(ref);
 
@@ -782,8 +790,8 @@ void TNSupplyTemperatureAdapter::inputReferences(std::vector<InputReference> & i
 }
 
 
-void TNSupplyTemperatureAdapter::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
-	m_supplyTemperatureScheduleRef = *(resultValueRefs++);
+void TNIdealHeaterCooler::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
+	m_fluidOutletSetpointScheduleRef = *(resultValueRefs++);
 
 	m_massFluxSetpointRef = *(resultValueRefs++); // may be nullptr
 }
