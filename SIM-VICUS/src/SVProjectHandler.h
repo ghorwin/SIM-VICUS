@@ -315,6 +315,15 @@ private:
 	*/
 	void addToRecentFiles(const QString& fname);
 
+	/*! Compares embedded database in project with built-in and user database in SIM-VICUS and imports
+		all not-yet-existing DB elements.
+		For existing DB elements the IDs are compared and if different, the IDs in the project are
+		adjusted.
+		Afterwards, the embedded database is removed from the project data.
+		\return Returns true in the case of modified IDs. False, if the project's IDs are not modified.
+	*/
+	bool importEmbeddedDB();
+
 	/*! Set new colors for each invalid color in the surface data. */
 	void updateSurfaceColors();
 

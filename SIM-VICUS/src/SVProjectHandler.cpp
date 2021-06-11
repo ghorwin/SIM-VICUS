@@ -213,7 +213,7 @@ void SVProjectHandler::loadProject(QWidget * parent, const QString & fileName,	b
 	try {
 		bool have_modified_project = false;
 
-		/// \todo Dirk: add code merge embedded project database with built-in/user db
+		have_modified_project = importEmbeddedDB();
 
 		/// \todo Hauke, check uniqueness of IDs in networks
 
@@ -569,6 +569,30 @@ void SVProjectHandler::addToRecentFiles(const QString& fname) {
 
 	// update recent project list
 	emit updateRecentProjects();
+}
+
+
+bool SVProjectHandler::importEmbeddedDB() {
+	bool idsModified = false;
+
+	// we sync the embedded database with the built-in DB
+	// we process all lists
+	// - for each DB element, we check if such an element exists already in the DB
+	// - if not, it is imported into the user DB
+	// - if yes, the ID is checked and if mismatching, the ID is changed
+	// - the old-new-ID transfer is recorded in db element-specific ID-map
+
+	SVDatabase & db = SVSettings::instance().m_db; // readibility-improvement
+
+	// first materials
+	std::vector<VICUS::Material> newMaterials;
+	for (VICUS::Material & mat : m_project->m_embeddedDB.m_materials) {
+		// check, if material exists in built-in DB
+		const VICUS::Material * existingMat = db.m_materials.findEqual(mat);
+
+	}
+
+	return idsModified;
 }
 
 
