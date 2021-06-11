@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -42,6 +42,12 @@ namespace VICUS {
 class NetworkPipe: public AbstractDBElement {
 public:
 
+	enum para_t{
+		P_DiameterOutside,			// Keyword: DiameterOutside				[mm]	'Outer diameter'
+		P_ThicknessWall,			// Keyword: ThicknessWall				[mm]	'Pipe wall thickness'
+		P_ThermalConductivityWall,	// Keyword: ThermalConductivityWall		[W/mK]	'Thermal conductivity of pipe wall'
+	}
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	VICUS_READWRITE
@@ -65,6 +71,8 @@ public:
 	IBK::MultiLanguageString			m_displayName;					// XML:A
 	/*! Identification color. */
 	QColor								m_color;						// XML:A
+
+	std::string							m_categoryName;					// XML:A
 
 	///TODO Hauke bitte die variablen in ein array m_para[...] umbauen
 
