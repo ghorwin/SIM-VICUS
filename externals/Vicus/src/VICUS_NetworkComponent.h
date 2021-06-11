@@ -49,28 +49,34 @@ public:
 
 	/*! The various types (equations) of the hydraulic component. */
 	enum ModelType {
-		MT_SimplePipe,						// Keyword: SimplePipe					'Pipe with a single fluid volume and with heat exchange'
-		MT_DynamicPipe,						// Keyword: DynamicPipe					'Pipe with a discretized fluid volume and heat exchange'
-		MT_ConstantPressurePump,			// Keyword: ConstantPressurePump		'Pump with constant pressure'
-		MT_HeatExchanger,					// Keyword: HeatExchanger				'Simple heat exchanger with given heat flux'
-		MT_HeatPumpIdealCarnot,				// Keyword: HeatPumpIdealCarnot			'Heat pump with variable heating power based on carnot efficiency'
-		MT_HeatPumpReal,					// Keyword: HeatPumpReal				'On-off-type heat pump with based on manufacturer data sheet'
+		MT_SimplePipe,						// Keyword: SimplePipe						'Pipe with a single fluid volume and with heat exchange'
+		MT_DynamicPipe,						// Keyword: DynamicPipe						'Pipe with a discretized fluid volume and heat exchange'
+		MT_ConstantPressurePump,			// Keyword: ConstantPressurePump			'Pump with constant/externally defined pressure'
+		MT_ConstantMassFluxPump,			// Keyword: ConstantMassFluxPump			'Pump with constant/externally defined mass flux'
+		MT_ControlledPump,					// Keyword: ControlledPump					'Pump with pressure head controlled based on flow controller'
+		MT_HeatExchanger,					// Keyword: HeatExchanger					'Simple heat exchanger with given heat flux'
+		MT_HeatPumpIdealCarnotSourceSide,	// Keyword: HeatPumpIdealCarnotSourceSide	'Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)'
+		MT_HeatPumpIdealCarnotSupplySide,	// Keyword: HeatPumpIdealCarnotSupplySide	'Heat pump with variable heating power based on carnot efficiency, installed at supply side'
+		MT_HeatPumpRealSourceSide,			// Keyword: HeatPumpRealSourceSide			'On-off-type heat pump based on polynoms, installed at source side'
+		MT_ControlledValve,					// Keyword: ControlledValve					'Valve with associated control model'
+		MT_IdealHeaterCooler,				// Keyword: IdealHeaterCooler				'Adapter model that provides a defined supply temperature to the network and calculates the heat loss/gain'
 		NUM_MT
 	};
 
 	/*! Parameters for the component. */
 	enum para_t {
 		P_HydraulicDiameter,					// Keyword: HydraulicDiameter					[mm]	'Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)'
-		P_PressureLossCoefficient,				// Keyword: PressureLossCoefficient				[-]		'Pressure loss coefficient for the component (zeta-value)'
-		P_PressureHead,							// Keyword: PressureHead						[Pa]	'Pressure head form a pump'
+		P_PressureLossCoefficient,				// Keyword: PressureLossCoefficient				[---]	'Pressure loss coefficient for the component (zeta-value)'
+		P_PressureHead,							// Keyword: PressureHead						[Pa]	'Pressure head for a pump'
+		P_MassFlux,								// Keyword: MassFlux							[kg/s]	'Pump predefined mass flux'
 		P_PumpEfficiency,						// Keyword: PumpEfficiency						[---]	'Pump efficiency'
+		P_FractionOfMotorInefficienciesToFluidStream,	// Keyword: FractionOfMotorInefficienciesToFluidStream	[---]	'Fraction of pump heat loss due to inefficiency that heats up the fluid'
 		P_Volume,								// Keyword: Volume								[m3]	'Water or air volume of the component'
 		P_PipeMaxDiscretizationWidth,			// Keyword: PipeMaxDiscretizationWidth			[m]		'Maximum width of discretized volumes in pipe'
 		P_CarnotEfficiency,						// Keyword: CarnotEfficiency					[---]	'Carnot efficiency eta'
 		P_MaximumHeatingPower,					// Keyword: MaximumHeatingPower					[W]		'Maximum heating power'
 		NUM_P
 	};
-
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
