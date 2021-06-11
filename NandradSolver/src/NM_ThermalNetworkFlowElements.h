@@ -627,7 +627,7 @@ private:
 
 
 
-// **** Supply temperature adapter model ***
+// **** Ideal Heater / Cooler Model ***
 
 class TNIdealHeaterCooler : public ThermalNetworkAbstractFlowElement { // NO KEYWORDS
 public:
@@ -652,13 +652,13 @@ private:
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
 		quantities.push_back(QuantityDescription("MixedReturnTemperature", "C", "Mixed temperature from inlet and implied bypass", false));
-		quantities.push_back(QuantityDescription("HeatSupply", "W", "Heat added by the element", false));
+		quantities.push_back(QuantityDescription("FlowElementHeatLoss", "W", "Heat added by the element", false));
 	}
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
 	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
 		valRefs.push_back(&m_mixedReturnTemperature);
-		valRefs.push_back(&m_suppliedHeat);
+		valRefs.push_back(&m_heatLoss);
 	}
 
 	/*! Reference to scheduled mass flux setpoint, if provided */
@@ -667,8 +667,9 @@ private:
 	/*! Mixed return temperature, updated in setInflowTemperature. */
 	double			m_mixedReturnTemperature = 888;
 
-	/*! Heat needed to provide the given supply temperature */
-	double			m_suppliedHeat = 888;
+	/*! Heat loss needed to provide the given supply temperature (If we add heat this is negative).
+		 Is not part of the base class since we use ThermalNetworkAbstractFlowElement */
+	double			m_heatLoss = 888;
 
 };
 

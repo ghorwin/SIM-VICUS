@@ -759,8 +759,8 @@ void TNIdealHeaterCooler::setInflowTemperature(double Tinflow) {
 	m_meanTemperature = *m_fluidOutletSetpointScheduleRef;
 	double absMassFlux = std::fabs(m_massFlux);
 
-	// heat needed to provide the given temperature (If we are heating up the fluid, this is positive)
-	m_suppliedHeat = absMassFlux * m_fluidDensity * m_fluidHeatCapacity * (m_meanTemperature - Tinflow);
+	// heat needed to provide the given temperature (If we are heating up the fluid, this is negative)
+	m_heatLoss = absMassFlux * m_fluidDensity * m_fluidHeatCapacity * (Tinflow - m_meanTemperature);
 
 	if (m_massFluxSetpointRef != nullptr) {
 		// compute implied bypass flow
