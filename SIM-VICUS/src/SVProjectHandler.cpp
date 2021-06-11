@@ -651,10 +651,75 @@ bool SVProjectHandler::importEmbeddedDB() {
 		}
 	}
 
+	// window glazing systems
+	std::map<unsigned int, unsigned int> glazingSystemsIDMap;
+	for (VICUS::WindowGlazingSystem & e : m_project->m_embeddedDB.m_windowGlazingSystems) {
+		const VICUS::WindowGlazingSystem * existingElement = db.m_windowGlazingSystems.findEqual(e);
+		if (existingElement == nullptr) {
+			unsigned int oldId = e.m_id;
+			unsigned int newId = db.m_windowGlazingSystems.add(e, oldId);
+			IBK::IBK_Message( IBK::FormatString("Window glazing system '%1' with #%2 imported -> new ID #%3.\n")
+				.arg(e.m_displayName.string(),50,std::ios_base::left).arg(oldId).arg(newId),
+							  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+			if (newId != oldId)
+				glazingSystemsIDMap[oldId] = newId;
+		}
+		else {
+			if (existingElement->m_id != e.m_id) {
+				glazingSystemsIDMap[e.m_id] = existingElement->m_id;
+				IBK::IBK_Message( IBK::FormatString("Window glazing system '%1' with #%2 exists already -> new ID #%3.\n")
+					.arg(e.m_displayName.string(),50,std::ios_base::left).arg(e.m_id).arg(existingElement->m_id),
+								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+			}
+		}
+	}
+
+	// windows
+	std::map<unsigned int, unsigned int> windowIDMap;
+	for (VICUS::Window & e : m_project->m_embeddedDB.m_windows) {
+		auto idIt = glazingSystemsIDMap.find(e.m_idGlazingSystem);
+		if (idIt != glazingSystemsIDMap.end())
+			e.m_idGlazingSystem = idIt->second; // replace ID
+		// material IDs in frame and divider
+		if (e.m_frame.m_id != VICUS::INVALID_ID) {
+			auto matIt = materialIDMap.find(e.m_frame.m_idMaterial);
+			if (matIt != materialIDMap.end())
+				e.m_frame.m_idMaterial = idIt->second; // replace ID
+		}
+		if (e.m_divider.m_id != VICUS::INVALID_ID) {
+			auto matIt = materialIDMap.find(e.m_divider.m_idMaterial);
+			if (matIt != materialIDMap.end())
+				e.m_divider.m_idMaterial = idIt->second; // replace ID
+		}
+		const VICUS::Window * existingElement = db.m_windows.findEqual(e);
+		if (existingElement == nullptr) {
+			// element does not yet exist, import element; we try to keep the id from the embedded element
+			// but if this is already taken, the database assigns a new unused id for use
+			unsigned int oldId = e.m_id;
+			unsigned int newId = db.m_windows.add(e, oldId);
+			IBK::IBK_Message( IBK::FormatString("Window '%1' with #%2 imported -> new ID #%3.\n")
+				.arg(e.m_displayName.string(),50,std::ios_base::left).arg(oldId).arg(newId),
+							  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+			if (newId != oldId)
+				windowIDMap[oldId] = newId;
+		}
+		else {
+			// check if IDs match
+			if (existingElement->m_id != e.m_id) {
+				// we need to adjust the ID name of material
+				windowIDMap[e.m_id] = existingElement->m_id;
+				IBK::IBK_Message( IBK::FormatString("Window '%1' with #%2 exists already -> new ID #%3.\n")
+					.arg(e.m_displayName.string(),50,std::ios_base::left).arg(e.m_id).arg(existingElement->m_id),
+								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+			}
+		}
+	}
 
 	// any ids modified?
 	idsModified |= !materialIDMap.empty();
 	idsModified |= !constructionIDMap.empty();
+	idsModified |= !windowIDMap.empty();
+	idsModified |= !glazingSystemsIDMap.empty();
 	return idsModified;
 }
 

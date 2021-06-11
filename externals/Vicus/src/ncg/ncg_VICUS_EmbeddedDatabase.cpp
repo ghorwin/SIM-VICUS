@@ -76,6 +76,18 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "WindowGlazingSystems") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "WindowGlazingSystem")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::WindowGlazingSystem obj;
+					obj.readXML(c2);
+					m_windowGlazingSystems.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else if (cName == "BoundaryConditions") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
@@ -317,6 +329,18 @@ TiXmlElement * EmbeddedDatabase::writeXML(TiXmlElement * parent) const {
 
 		for (std::vector<VICUS::Window>::const_iterator it = m_windows.begin();
 			it != m_windows.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_windowGlazingSystems.empty()) {
+		TiXmlElement * child = new TiXmlElement("WindowGlazingSystems");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::WindowGlazingSystem>::const_iterator it = m_windowGlazingSystems.begin();
+			it != m_windowGlazingSystems.end(); ++it)
 		{
 			it->writeXML(child);
 		}

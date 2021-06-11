@@ -68,8 +68,8 @@ public:
 	/*! Map of all window definitions. */
 	std::vector<VICUS::Window>							m_windows;							// XML:E
 
-//	/*! Map of all database glazing systems. */
-//	std::vector<VICUS::WindowGlazingSystem>			m_windowGlazingSystems;
+	/*! Map of all database glazing systems. */
+	std::vector<VICUS::WindowGlazingSystem>				m_windowGlazingSystems;				// XML:E
 
 	/*! Map of all database boundary conditions. */
 	std::vector<VICUS::BoundaryCondition>				m_boundaryConditions;				// XML:E
