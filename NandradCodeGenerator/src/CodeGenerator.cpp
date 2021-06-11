@@ -1425,13 +1425,23 @@ void CodeGenerator::generateReadWriteCode() {
 									"				NANDRAD::readVector3D(c, \""+tagName+"\", m_"+varName+");\n";
 						}
 						else {
+							// *** SPECIAL HANDLING FOR NANDRAD AND VICUS NAMESPACES ***
+
+							std::string childTagName = childType;
+							// remove NANDRAD:: prefix
+							if (childTagName.find("NANDRAD::") == 0)
+								childTagName = childTagName.substr(9);
+							// remove VICUS:: prefix
+							if (childTagName.find("VICUS::") == 0)
+								childTagName = childTagName.substr(7);
+
 							// generate code for reading vector of complex data types with own readXML() functions
 							elements +=
 									"			"+elseStr+"if (cName == \""+tagName+"\") {\n"
 									"				const TiXmlElement * c2 = c->FirstChildElement();\n"
 									"				while (c2) {\n"
 									"					const std::string & c2Name = c2->ValueStr();\n"
-									"					if (c2Name != \""+childType+"\")\n"
+									"					if (c2Name != \""+childTagName+"\")\n"
 									"						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);\n"
 									"					"+childType+" obj;\n"
 									"					obj.readXML(c2);\n"

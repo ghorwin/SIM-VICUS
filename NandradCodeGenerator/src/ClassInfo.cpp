@@ -168,9 +168,14 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 				std::string typeStr = typeDeclaration.substr(0, pos2);
 				IBK::trim(typeStr);
 
+				// *** SPECIAL HANDLING FOR NANDRAD AND VICUS NAMESPACES ***
+
 				// remove NANDRAD:: prefix
 				if (typeStr.find("NANDRAD::") == 0)
 					typeStr = typeStr.substr(9);
+				// remove VICUS:: prefix
+				if (typeStr.find("VICUS::") == 0)
+					typeStr = typeStr.substr(7);
 
 				std::string varName = typeDeclaration.substr(pos2+2); // without m_
 				IBK::trim(varName, " \t;");

@@ -110,7 +110,7 @@ void Network::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "NANDRAD::HydraulicNetwork")
+					if (c2Name != "HydraulicNetwork")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					NANDRAD::HydraulicNetwork obj;
 					obj.readXML(c2);
@@ -139,7 +139,7 @@ void Network::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "VICUS::NetworkController")
+					if (c2Name != "NetworkController")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					VICUS::NetworkController obj;
 					obj.readXML(c2);

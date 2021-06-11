@@ -44,7 +44,7 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "VICUS::Material")
+					if (c2Name != "Material")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					VICUS::Material obj;
 					obj.readXML(c2);
@@ -56,7 +56,7 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "VICUS::Construction")
+					if (c2Name != "Construction")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					VICUS::Construction obj;
 					obj.readXML(c2);
@@ -68,7 +68,7 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "VICUS::Window")
+					if (c2Name != "Window")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					VICUS::Window obj;
 					obj.readXML(c2);
@@ -80,7 +80,7 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "VICUS::BoundaryCondition")
+					if (c2Name != "BoundaryCondition")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					VICUS::BoundaryCondition obj;
 					obj.readXML(c2);
@@ -92,7 +92,7 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "VICUS::Component")
+					if (c2Name != "Component")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					VICUS::Component obj;
 					obj.readXML(c2);
@@ -104,7 +104,7 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "VICUS::SubSurfaceComponent")
+					if (c2Name != "SubSurfaceComponent")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					VICUS::SubSurfaceComponent obj;
 					obj.readXML(c2);
@@ -116,7 +116,7 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "VICUS::NetworkPipe")
+					if (c2Name != "NetworkPipe")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					VICUS::NetworkPipe obj;
 					obj.readXML(c2);
@@ -128,7 +128,7 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "VICUS::NetworkFluid")
+					if (c2Name != "NetworkFluid")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					VICUS::NetworkFluid obj;
 					obj.readXML(c2);
@@ -140,7 +140,7 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "VICUS::NetworkComponent")
+					if (c2Name != "NetworkComponent")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					VICUS::NetworkComponent obj;
 					obj.readXML(c2);
@@ -152,7 +152,7 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "VICUS::EPDDataset")
+					if (c2Name != "EPDDataset")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					VICUS::EPDDataset obj;
 					obj.readXML(c2);
@@ -164,7 +164,7 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "VICUS::Schedule")
+					if (c2Name != "Schedule")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					VICUS::Schedule obj;
 					obj.readXML(c2);
@@ -176,7 +176,7 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "VICUS::InternalLoad")
+					if (c2Name != "InternalLoad")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					VICUS::InternalLoad obj;
 					obj.readXML(c2);
@@ -188,7 +188,7 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "VICUS::ZoneControlThermostat")
+					if (c2Name != "ZoneControlThermostat")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					VICUS::ZoneControlThermostat obj;
 					obj.readXML(c2);
@@ -200,7 +200,7 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "VICUS::ZoneControlShading")
+					if (c2Name != "ZoneControlShading")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					VICUS::ZoneControlShading obj;
 					obj.readXML(c2);
@@ -212,7 +212,7 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "VICUS::ZoneIdealHeatingCooling")
+					if (c2Name != "ZoneIdealHeatingCooling")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					VICUS::ZoneIdealHeatingCooling obj;
 					obj.readXML(c2);
@@ -224,7 +224,7 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "VICUS::ZoneControlNaturalVentilation")
+					if (c2Name != "ZoneControlNaturalVentilation")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					VICUS::ZoneControlNaturalVentilation obj;
 					obj.readXML(c2);
@@ -236,7 +236,7 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "VICUS::VentilationNatural")
+					if (c2Name != "VentilationNatural")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					VICUS::VentilationNatural obj;
 					obj.readXML(c2);
@@ -248,7 +248,7 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "VICUS::Infiltration")
+					if (c2Name != "Infiltration")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					VICUS::Infiltration obj;
 					obj.readXML(c2);
@@ -260,7 +260,7 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "VICUS::ZoneTemplate")
+					if (c2Name != "ZoneTemplate")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					VICUS::ZoneTemplate obj;
 					obj.readXML(c2);
