@@ -652,7 +652,7 @@ private:
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
 		quantities.push_back(QuantityDescription("MixedReturnTemperature", "C", "Mixed temperature from inlet and implied bypass", false));
-		quantities.push_back(QuantityDescription("FlowElementHeatLoss", "W", "Heat added by the element", false));
+		quantities.push_back(QuantityDescription("HeatLoss", "W", "Heat loss of element", false));
 	}
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */

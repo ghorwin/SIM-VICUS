@@ -748,7 +748,6 @@ void TNHeatPumpIdealCarnot::internalDerivatives(double *ydot) {
 TNIdealHeaterCooler::TNIdealHeaterCooler(unsigned int flowElementId, const NANDRAD::HydraulicFluid & fluid) :
 	m_id(flowElementId)
 {
-	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 }
 
@@ -760,7 +759,7 @@ void TNIdealHeaterCooler::setInflowTemperature(double Tinflow) {
 	double absMassFlux = std::fabs(m_massFlux);
 
 	// heat needed to provide the given temperature (If we are heating up the fluid, this is negative)
-	m_heatLoss = absMassFlux * m_fluidDensity * m_fluidHeatCapacity * (Tinflow - m_meanTemperature);
+	m_heatLoss = absMassFlux * m_fluidHeatCapacity * (Tinflow - m_meanTemperature);
 
 	if (m_massFluxSetpointRef != nullptr) {
 		// compute implied bypass flow
