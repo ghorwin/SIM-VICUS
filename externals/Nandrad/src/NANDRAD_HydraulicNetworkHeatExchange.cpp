@@ -170,7 +170,6 @@ std::vector<HydraulicNetworkHeatExchange::ModelType> NANDRAD::HydraulicNetworkHe
 		case HydraulicNetworkComponent::MT_ConstantMassFluxPump:
 		case HydraulicNetworkComponent::MT_ControlledPump:
 		case HydraulicNetworkComponent::MT_ControlledValve:
-		case HydraulicNetworkComponent::MT_SupplyTemperatureAdapter:
 		case HydraulicNetworkComponent::MT_HeatPumpRealSourceSide:
 		case HydraulicNetworkComponent::MT_IdealHeaterCooler:
 			return {NUM_T};

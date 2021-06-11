@@ -200,10 +200,9 @@ namespace NANDRAD {
 				case 5 : return "HeatExchanger";
 				case 6 : return "HeatPumpIdealCarnotSourceSide";
 				case 7 : return "HeatPumpIdealCarnotSupplySide";
-				case 8 : return "ControlledValve";
-				case 9 : return "IdealHeaterCooler";
 				case 8 : return "HeatPumpRealSourceSide";
 				case 9 : return "ControlledValve";
+				case 10 : return "IdealHeaterCooler";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -818,13 +817,9 @@ namespace NANDRAD {
 				case 5 : return "HeatExchanger";
 				case 6 : return "HeatPumpIdealCarnotSourceSide";
 				case 7 : return "HeatPumpIdealCarnotSupplySide";
-				case 8 : return "ControlledValve";
-				case 9 : return "IdealHeaterCooler";
-
 				case 8 : return "HeatPumpRealSourceSide";
 				case 9 : return "ControlledValve";
-				case 10 : return "SupplyTemperatureAdapter";
-
+				case 10 : return "IdealHeaterCooler";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -1440,12 +1435,9 @@ namespace NANDRAD {
 				case 5 : return "Simple heat exchanger with given heat flux";
 				case 6 : return "Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)";
 				case 7 : return "Heat pump with variable heating power based on carnot efficiency, installed at supply side";
-				case 8 : return "Valve with associated control model";
-				case 9 : return "Adapter model that provides a defined supply temperature to the network and calculates the heat loss/gain";
 				case 8 : return "On-off-type heat pump based on polynoms, installed at source side";
 				case 9 : return "Valve with associated control model";
-				case 10 : return "Adapter model that provides a defined supply temperature to the network";
-
+				case 10 : return "Adapter model that provides a defined supply temperature to the network and calculates the heat loss/gain";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :

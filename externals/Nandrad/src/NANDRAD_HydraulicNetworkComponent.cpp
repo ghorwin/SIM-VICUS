@@ -143,7 +143,6 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 			case MT_HeatPumpRealSourceSide:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
 			case MT_IdealHeaterCooler: // no parameters needed
-			case MT_SupplyTemperatureAdapter: // no parameters needed
 			case NUM_MT: ;
 		}
 	}
