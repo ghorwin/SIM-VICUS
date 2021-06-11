@@ -213,7 +213,7 @@
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0</TimePoints>
 								<Values>
-									SupplyTemperatureSchedule [C]:30;
+									FluidOutletSetpointSchedule [C]:30;
 									SupplyMassFlowSchedule [kg/s]:0.1
 								</Values>
 							</DailyCycle>

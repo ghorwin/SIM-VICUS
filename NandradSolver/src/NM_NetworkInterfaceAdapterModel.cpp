@@ -76,7 +76,7 @@ void NetworkInterfaceAdapterModel::inputReferences(std::vector<InputReference> &
 
 	// the scheduled parameters must be provided with the same ID as ourselfs (our own parameters)
 	ref.m_id = m_id;
-	ref.m_name.m_name = "SupplyTemperatureSchedule";
+	ref.m_name.m_name = "FluidOutletSetpointSchedule";
 	inputRefs.push_back(ref);
 
 	ref.m_name.m_name = "SupplyMassFlowSchedule";
