@@ -602,8 +602,8 @@ bool SVProjectHandler::importEmbeddedDB() {
 			IBK::IBK_Message( IBK::FormatString("Material '%1' with #%2 imported -> new ID #%3.\n")
 				.arg(e.m_displayName.string(),50,std::ios_base::left).arg(oldId).arg(newId),
 							  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-			if (newId != e.m_id)
-				materialIDMap[e.m_id] = existingElement->m_id;
+			if (newId != oldId)
+				materialIDMap[oldId] = newId;
 		}
 		else {
 			// check if IDs match
@@ -636,8 +636,8 @@ bool SVProjectHandler::importEmbeddedDB() {
 			IBK::IBK_Message( IBK::FormatString("Construction type '%1' with #%2 imported -> new ID #%3.\n")
 				.arg(e.m_displayName.string(),50,std::ios_base::left).arg(oldId).arg(newId),
 							  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-			if (newId != e.m_id)
-				constructionIDMap[e.m_id] = existingElement->m_id;
+			if (newId != oldId)
+				constructionIDMap[oldId] = newId;
 		}
 		else {
 			// check if IDs match
