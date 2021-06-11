@@ -36,13 +36,13 @@ namespace Ui {
 class SVDialogSelectNetworkPipes;
 }
 
-class SVDialogSelectNetworkPipes : public QDialog
+class SVNetworkDialogSelectPipes : public QDialog
 {
 	Q_OBJECT
 
 public:
-	explicit SVDialogSelectNetworkPipes(QWidget *parent = nullptr);
-	~SVDialogSelectNetworkPipes();
+	explicit SVNetworkDialogSelectPipes(QWidget *parent = nullptr);
+	~SVNetworkDialogSelectPipes();
 
 	void edit(VICUS::Network &network);
 

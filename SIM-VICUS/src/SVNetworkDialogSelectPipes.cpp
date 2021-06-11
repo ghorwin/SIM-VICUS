@@ -23,26 +23,26 @@
 	GNU General Public License for more details.
 */
 
-#include "SVDialogSelectNetworkPipes.h"
+#include "SVNetworkDialogSelectPipes.h"
 #include "ui_SVDialogSelectNetworkPipes.h"
 
 #include "SVSettings.h"
 
 #include <VICUS_Network.h>
 
-SVDialogSelectNetworkPipes::SVDialogSelectNetworkPipes(QWidget *parent) :
+SVNetworkDialogSelectPipes::SVNetworkDialogSelectPipes(QWidget *parent) :
 	QDialog(parent),
 	m_ui(new Ui::SVDialogSelectNetworkPipes)
 {
 	m_ui->setupUi(this);
 }
 
-SVDialogSelectNetworkPipes::~SVDialogSelectNetworkPipes()
+SVNetworkDialogSelectPipes::~SVNetworkDialogSelectPipes()
 {
 	delete m_ui;
 }
 
-void SVDialogSelectNetworkPipes::edit(VICUS::Network &network)
+void SVNetworkDialogSelectPipes::edit(VICUS::Network &network)
 {
 	if (exec() == QDialog::Accepted){
 

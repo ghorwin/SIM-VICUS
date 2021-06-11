@@ -105,6 +105,7 @@ SOURCES += \
 								../../src/SVDBZoneIdealHeatingCoolingEditWidget.cpp \
 								../../src/SVDBZoneIdealHeatingCoolingTableModel.cpp \
 								../../src/SVNetworkControllerDialog.cpp \
+								../../src/SVNetworkDialogSelectPipes.cpp \
 								../../src/SVPropAddWindowWidget.cpp \
 								../../src/SVShadingCalculationDialog.cpp \
 								../../src/SVView3DDialog.cpp \
@@ -178,7 +179,6 @@ SOURCES += \
 								../../src/SVDBZoneTemplateEditWidget.cpp \
 								../../src/SVDBZoneTemplateTreeModel.cpp \
 								../../src/SVDebugApplication.cpp \
-								../../src/SVDialogSelectNetworkPipes.cpp \
 								../../src/SVGeometryView.cpp \
 								../../src/SVImportIDFDialog.cpp \
 								../../src/SVInternalLoadsPersonDetailedWidget.cpp \
@@ -254,6 +254,7 @@ HEADERS  += \
 								../../src/SVDBZoneIdealHeatingCoolingEditWidget.h \
 								../../src/SVDBZoneIdealHeatingCoolingTableModel.h \
 								../../src/SVNetworkControllerDialog.h \
+								../../src/SVNetworkDialogSelectPipes.h \
 								../../src/SVPropAddWindowWidget.h \
 								../../src/SVShadingCalculationDialog.h \
 								../../src/SVView3DDialog.h \
@@ -330,7 +331,6 @@ HEADERS  += \
 								../../src/SVDBZoneTemplateEditWidget.h \
 								../../src/SVDBZoneTemplateTreeModel.h \
 								../../src/SVDebugApplication.h \
-								../../src/SVDialogSelectNetworkPipes.h \
 								../../src/SVGeometryView.h \
 								../../src/SVImportIDFDialog.h \
 								../../src/SVInternalLoadsPersonDetailedWidget.h \
@@ -410,7 +410,6 @@ FORMS    += \
 								../../src/SVDBWindowEditWidget.ui \
 								../../src/SVDBZoneTemplateEditDialog.ui \
 								../../src/SVDBZoneTemplateEditWidget.ui \
-								../../src/SVDialogSelectNetworkPipes.ui \
 								../../src/SVImportIDFDialog.ui \
 								../../src/SVInternalLoadsPersonDetailedWidget.ui \
 								../../src/SVInternalLoadsPersonManagerWidget.ui \
@@ -419,6 +418,7 @@ FORMS    += \
 								../../src/SVMainWindow.ui \
 								../../src/SVNavigationTreeWidget.ui \
 								../../src/SVNetworkControllerDialog.ui \
+								../../src/SVNetworkDialogSelectPipes.ui \
 								../../src/SVNetworkImportDialog.ui \
 								../../src/SVPreferencesDialog.ui \
 								../../src/SVPreferencesPageStyle.ui \

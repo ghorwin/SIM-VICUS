@@ -40,7 +40,7 @@
 #include "SVUndoModifyNetwork.h"
 #include "SVProjectHandler.h"
 #include "SVSettings.h"
-#include "SVDialogSelectNetworkPipes.h"
+#include "SVNetworkDialogSelectPipes.h"
 #include "SVMainWindow.h"
 #include "SVDatabaseEditDialog.h"
 #include "SVDBNetworkFluidEditWidget.h"
@@ -1004,7 +1004,7 @@ void SVPropNetworkEditWidget::on_pushButtonSelectPipes_clicked()
 	if (!setNetwork())
 		return;
 
-	SVDialogSelectNetworkPipes *dialog = new SVDialogSelectNetworkPipes(this);
+	SVNetworkDialogSelectPipes *dialog = new SVNetworkDialogSelectPipes(this);
 	dialog->edit(m_currentNetwork);
 
 	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
