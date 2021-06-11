@@ -33,6 +33,7 @@ bool HydraulicNetworkComponent::operator!=(const HydraulicNetworkComponent &othe
 
 	if (m_id != other.m_id)									return true;
 	if (m_displayName != other.m_displayName)				return true;
+	if (m_modelType != other.m_modelType)					return true;
 
 	if (!sameParametersAs(other))							return true;
 
@@ -46,6 +47,7 @@ bool HydraulicNetworkComponent::sameParametersAs(const HydraulicNetworkComponent
 			return false;
 	}
 	if (m_modelType != other.m_modelType)					return false;
+	if (m_polynomCoefficients != other.m_polynomCoefficients) return false;
 	return true;
 }
 
@@ -63,11 +65,11 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) {
 		}
 
 		// check data table
-		if (m_modelType == MT_HeatPumpRealSourceSide){
+		if (m_modelType == MT_HeatPumpRealSourceSide) {
 			if (m_polynomCoefficients.m_values["QdotCondensator"].size() != 6)
-				throw IBK::Exception("There must be exactly 6 values in QdotCondensator", FUNC_ID);
+				throw IBK::Exception("'HeatPumpRealSourceSide' requires polynom coefficient parameter 'QdotCondensator' with exactly 6 values.", FUNC_ID);
 			if (m_polynomCoefficients.m_values["Pel"].size() != 6)
-				throw IBK::Exception("There must be exactly 6 values in Pel", FUNC_ID);
+				throw IBK::Exception("'HeatPumpRealSourceSide' requires polynom coefficient parameter 'Pel' with exactly 6 values.", FUNC_ID);
 		}
 
 		// check optional parameters, if given
