@@ -695,6 +695,40 @@ bool SVProjectHandler::importEmbeddedDB() {
 		);
 	}
 
+	// sub-surface component
+	std::map<unsigned int, unsigned int> subSurfaceComponentIDMap;
+	for (VICUS::SubSurfaceComponent & e : m_project->m_embeddedDB.m_subSurfaceComponents) {
+		replaceID(e.m_idWindow, windowIDMap);
+		replaceID(e.m_idConstructionType, constructionIDMap);
+		replaceID(e.m_idSideABoundaryCondition, boundaryConditionsIDMap);
+		replaceID(e.m_idSideBBoundaryCondition, boundaryConditionsIDMap);
+
+		importDBElement(e, db.m_subSurfaceComponents, subSurfaceComponentIDMap,
+			"Sub-surface component '%1' with #%2 imported -> new ID #%3.\n",
+			"Sub-surface component '%1' with #%2 exists already -> new ID #%3.\n"
+		);
+	}
+
+	// schedules
+	std::map<unsigned int, unsigned int> schedulesIDMap;
+	for (VICUS::Schedule & e : m_project->m_embeddedDB.m_schedules) {
+
+		importDBElement(e, db.m_schedules, schedulesIDMap,
+			"Schedule '%1' with #%2 imported -> new ID #%3.\n",
+			"Schedule '%1' with #%2 exists already -> new ID #%3.\n"
+		);
+	}
+
+	// InternalLoad
+	std::map<unsigned int, unsigned int> internalLoadIDMap;
+	for (VICUS::InternalLoad & e : m_project->m_embeddedDB.m_internalLoads) {
+
+		importDBElement(e, db.m_internalLoads, internalLoadIDMap,
+			"Internal loads '%1' with #%2 imported -> new ID #%3.\n",
+			"Internal loads '%1' with #%2 exists already -> new ID #%3.\n"
+		);
+	}
+
 	// any ids modified?
 	idsModified |= !materialIDMap.empty();
 	idsModified |= !constructionIDMap.empty();
@@ -702,6 +736,9 @@ bool SVProjectHandler::importEmbeddedDB() {
 	idsModified |= !glazingSystemsIDMap.empty();
 	idsModified |= !boundaryConditionsIDMap.empty();
 	idsModified |= !componentIDMap.empty();
+	idsModified |= !subSurfaceComponentIDMap.empty();
+	idsModified |= !schedulesIDMap.empty();
+	idsModified |= !internalLoadIDMap.empty();
 	return idsModified;
 }
 
