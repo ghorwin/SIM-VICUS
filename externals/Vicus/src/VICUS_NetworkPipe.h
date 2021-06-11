@@ -45,8 +45,8 @@ public:
 
 	enum para_t{
 		P_DiameterOutside,					// Keyword: DiameterOutside						[mm]	'Outer diameter'
-		P_ThicknessWall,					// Keyword: ThicknessWall						[mm]	'Pipe wall thickness'
-		P_RoughnessWall,					// Keyword: RoughnessWall						[mm]	'Pipe wall surface roughness'
+		P_ThicknessWall,						// Keyword: ThicknessWall							[mm]	'Pipe wall thickness'
+		P_RoughnessWall,						// Keyword: RoughnessWall							[mm]	'Pipe wall surface roughness'
 		P_ThermalConductivityWall,			// Keyword: ThermalConductivityWall				[W/mK]	'Thermal conductivity of pipe wall'
 		P_ThicknessInsulation,				// Keyword: ThicknessInsulation					[mm]	'Insulation thickness'
 		P_ThermalConductivityInsulation,	// Keyword: ThermalConductivityInsulation		[W/mK]	'Thermal conductivity of insulation'
@@ -75,11 +75,11 @@ public:
 	/*! Display name of fluid. */
 	IBK::MultiLanguageString			m_displayName;					// XML:A
 	/*! Identification color. */
-	QColor								m_color;						// XML:A
+	QColor								m_color;								// XML:A
 
 	std::string							m_categoryName;					// XML:A
 
-	IBK::Parameter						m_para[NUM_P];					// XML:E
+	IBK::Parameter						m_para[NUM_P];						// XML:E
 
 };
 

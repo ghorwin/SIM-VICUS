@@ -62,10 +62,13 @@ private slots:
 	void on_lineEditInsulationThickness_editingFinished();
 	void on_lineEditInsulationLambda_editingFinished();
 	void on_pushButtonPipeColor_colorChanged();
+	void on_lineEditCategory_editingFinished();
 
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
+
+	std::string nameFromData(const VICUS::NetworkPipe & current);
 
 	Ui::SVDBPipeEditWidget	*m_ui;
 

@@ -49,8 +49,8 @@ SVDBPipeEditWidget::SVDBPipeEditWidget(QWidget *parent) :
 	m_ui->lineEditOuterDiameter->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Outer diameter"), true, true);
 	m_ui->lineEditWallRoughness->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Roughness"), true, true);
 	m_ui->lineEditWallThickness->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Wall thickness"), true, true);
-	m_ui->lineEditInsulationLambda->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Thermal conductivity of the insulation material"), true, true);
-	m_ui->lineEditInsulationThickness->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Insulation thickness"), true, true);
+	m_ui->lineEditInsulationLambda->setup(0, std::numeric_limits<double>::max(), tr("Thermal conductivity of the insulation material"), true, true);
+	m_ui->lineEditInsulationThickness->setup(0, std::numeric_limits<double>::max(), tr("Insulation thickness"), true, true);
 }
 
 
@@ -81,6 +81,7 @@ void SVDBPipeEditWidget::updateInput(int id) {
 	if (!isEnabled) {
 		// clear input controls
 		m_ui->lineEditName->setString(IBK::MultiLanguageString());
+		m_ui->lineEditCategory->clear();
 		m_ui->lineEditOuterDiameter->clear();
 		m_ui->lineEditWallThickness->clear();
 		m_ui->lineEditWallLambda->clear();
@@ -96,12 +97,13 @@ void SVDBPipeEditWidget::updateInput(int id) {
 
 	// now update the GUI controls
 	m_ui->lineEditName->setString(pipe->m_displayName);
+	m_ui->lineEditCategory->setText(QString::fromStdString(pipe->m_categoryName));
 	m_ui->lineEditWallLambda->setValue(pipe->m_para[VICUS::NetworkPipe::P_ThermalConductivityWall].value);
-	m_ui->lineEditOuterDiameter->setValue(pipe->m_para[VICUS::NetworkPipe::P_DiameterOutside].value);
-	m_ui->lineEditWallThickness->setValue(pipe->m_para[VICUS::NetworkPipe::P_ThicknessWall].value);
-	m_ui->lineEditWallRoughness->setValue(pipe->m_para[VICUS::NetworkPipe::P_RoughnessWall].value);
+	m_ui->lineEditOuterDiameter->setValue(pipe->m_para[VICUS::NetworkPipe::P_DiameterOutside].get_value("mm"));
+	m_ui->lineEditWallThickness->setValue(pipe->m_para[VICUS::NetworkPipe::P_ThicknessWall].get_value("mm"));
+	m_ui->lineEditWallRoughness->setValue(pipe->m_para[VICUS::NetworkPipe::P_RoughnessWall].get_value("mm"));
 	m_ui->lineEditInsulationLambda->setValue(pipe->m_para[VICUS::NetworkPipe::P_ThermalConductivityInsulation].value);
-	m_ui->lineEditInsulationThickness->setValue(pipe->m_para[VICUS::NetworkPipe::P_ThicknessInsulation].value);
+	m_ui->lineEditInsulationThickness->setValue(pipe->m_para[VICUS::NetworkPipe::P_ThicknessInsulation].get_value("mm"));
 
 	m_ui->pushButtonPipeColor->blockSignals(true);
 	m_ui->pushButtonPipeColor->setColor(pipe->m_color);
@@ -112,7 +114,8 @@ void SVDBPipeEditWidget::updateInput(int id) {
 	if (pipe->m_builtIn)
 		isEditable = false;
 
-	m_ui->lineEditName->setReadOnly(!isEditable);
+	m_ui->lineEditName->setReadOnly(true);
+	m_ui->lineEditCategory->setReadOnly(!isEditable);
 	m_ui->lineEditWallLambda->setReadOnly(!isEditable);
 	m_ui->lineEditOuterDiameter->setReadOnly(!isEditable);
 	m_ui->lineEditWallThickness->setReadOnly(!isEditable);
@@ -123,19 +126,21 @@ void SVDBPipeEditWidget::updateInput(int id) {
 }
 
 
-void SVDBPipeEditWidget::on_lineEditOuterDiameter_editingFinished() {
+void SVDBPipeEditWidget::on_lineEditName_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
-	if (m_ui->lineEditOuterDiameter->isValid()) {
-		m_current->m_para[VICUS::NetworkPipe::P_DiameterOutside].value = m_ui->lineEditOuterDiameter->value();
+	if (m_current->m_displayName != m_ui->lineEditName->string()) {
+		m_current->m_displayName = IBK::MultiLanguageString(nameFromData(*m_current));
 		modelModify();
 	}
 }
 
 
-void SVDBPipeEditWidget::on_lineEditName_editingFinished() {
+void SVDBPipeEditWidget::on_lineEditOuterDiameter_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
-	if (m_current->m_displayName != m_ui->lineEditName->string()) {
-		m_current->m_displayName = m_ui->lineEditName->string();
+	if (m_ui->lineEditOuterDiameter->isValid()) {
+		VICUS::KeywordList::setParameter(m_current->m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_DiameterOutside,
+										 m_ui->lineEditOuterDiameter->value());
+		m_current->m_displayName = IBK::MultiLanguageString(nameFromData(*m_current));
 		modelModify();
 	}
 }
@@ -143,7 +148,9 @@ void SVDBPipeEditWidget::on_lineEditName_editingFinished() {
 
 void SVDBPipeEditWidget::on_lineEditWallThickness_editingFinished() {
 	if (m_ui->lineEditWallThickness->isValid()) {
-		m_current->m_para[VICUS::NetworkPipe::P_ThicknessWall].value = m_ui->lineEditWallThickness->value();
+		VICUS::KeywordList::setParameter(m_current->m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_ThicknessWall,
+										 m_ui->lineEditWallThickness->value());
+		m_current->m_displayName = IBK::MultiLanguageString(nameFromData(*m_current));
 		modelModify();
 	}
 }
@@ -151,7 +158,8 @@ void SVDBPipeEditWidget::on_lineEditWallThickness_editingFinished() {
 
 void SVDBPipeEditWidget::on_lineEditWallLambda_editingFinished() {
 	if (m_ui->lineEditWallLambda->isValid()) {
-		m_current->m_para[VICUS::NetworkPipe::P_ThermalConductivityWall].value = m_ui->lineEditWallLambda->value();
+		VICUS::KeywordList::setParameter(m_current->m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_ThermalConductivityWall,
+										 m_ui->lineEditWallLambda->value());
 		modelModify();
 	}
 }
@@ -159,21 +167,24 @@ void SVDBPipeEditWidget::on_lineEditWallLambda_editingFinished() {
 
 void SVDBPipeEditWidget::on_lineEditWallRoughness_editingFinished() {
 	if (m_ui->lineEditWallRoughness->isValid()) {
-		m_current->m_para[VICUS::NetworkPipe::P_RoughnessWall].value = m_ui->lineEditWallRoughness->value();
+		VICUS::KeywordList::setParameter(m_current->m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_RoughnessWall,
+										 m_ui->lineEditWallRoughness->value());
 		modelModify();
 	}
 }
 
 void SVDBPipeEditWidget::on_lineEditInsulationThickness_editingFinished(){
 	if (m_ui->lineEditInsulationThickness->isValid()) {
-		m_current->m_para[VICUS::NetworkPipe::P_ThicknessInsulation].value = m_ui->lineEditInsulationThickness->value();
+		VICUS::KeywordList::setParameter(m_current->m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_ThicknessInsulation,
+										 m_ui->lineEditInsulationThickness->value());
 		modelModify();
 	}
 }
 
 void SVDBPipeEditWidget::on_lineEditInsulationLambda_editingFinished(){
 	if (m_ui->lineEditInsulationLambda->isValid()) {
-		m_current->m_para[VICUS::NetworkPipe::P_ThermalConductivityInsulation].value = m_ui->lineEditInsulationLambda->value();
+		VICUS::KeywordList::setParameter(m_current->m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_ThermalConductivityInsulation,
+										 m_ui->lineEditInsulationLambda->value());
 		modelModify();
 	}
 }
@@ -186,7 +197,23 @@ void SVDBPipeEditWidget::on_pushButtonPipeColor_colorChanged() {
 	}
 }
 
+void SVDBPipeEditWidget::on_lineEditCategory_editingFinished()
+{
+	m_current->m_categoryName = m_ui->lineEditCategory->text().toStdString();
+	m_current->m_displayName = IBK::MultiLanguageString(nameFromData(*m_current));
+	modelModify();
+}
+
 void SVDBPipeEditWidget::modelModify() {
 	m_db->m_pipes.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 }
+
+std::string SVDBPipeEditWidget::nameFromData(const VICUS::NetworkPipe & current)
+{
+	IBK::FormatString str = IBK::FormatString("%1 %2 x %3").arg(current.m_categoryName)
+			.arg(current.m_para[VICUS::NetworkPipe::P_DiameterOutside].value*1000)
+			.arg(current.m_para[VICUS::NetworkPipe::P_ThicknessWall].value*1000);
+	return str.str();
+}
+

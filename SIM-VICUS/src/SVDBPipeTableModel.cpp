@@ -71,6 +71,7 @@ QVariant SVDBPipeTableModel::data ( const QModelIndex & index, int role) const {
 			switch (index.column()) {
 				case ColId					: return it->first;
 				case ColName				: return QString::fromStdString(it->second.m_displayName.string(langId, fallBackLangId));
+				case Category				: return QString::fromStdString(it->second.m_categoryName);
 			}
 		} break;
 
@@ -121,6 +122,7 @@ QVariant SVDBPipeTableModel::headerData(int section, Qt::Orientation orientation
 			switch ( section ) {
 				case ColId					: return tr("Id");
 				case ColName				: return tr("Name");
+				case Category				: return tr("Category");
 			}
 		} break;
 
@@ -149,6 +151,8 @@ QModelIndex SVDBPipeTableModel::addNewItem() {
 	pipe.m_para[VICUS::NetworkPipe::P_ThermalConductivityWall].value = 0.4;
 	pipe.m_para[VICUS::NetworkPipe::P_DiameterOutside].value = 0;
 	pipe.m_para[VICUS::NetworkPipe::P_ThicknessWall].value = 0;
+	pipe.m_para[VICUS::NetworkPipe::P_ThicknessInsulation].value = 0;
+	pipe.m_para[VICUS::NetworkPipe::P_ThermalConductivityInsulation].value = 0;
 
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_pipes.add( pipe );
@@ -189,6 +193,7 @@ void SVDBPipeTableModel::setColumnResizeModes(QTableView * tableView) {
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBPipeTableModel::ColId, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBPipeTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBPipeTableModel::ColName, QHeaderView::Stretch);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBPipeTableModel::Category, QHeaderView::Fixed);
 }
 
 
