@@ -755,6 +755,7 @@ TNIdealHeaterCooler::TNIdealHeaterCooler(unsigned int flowElementId, const NANDR
 
 void TNIdealHeaterCooler::setInflowTemperature(double Tinflow) {
 
+	IBK_ASSERT(m_fluidOutletSetpointScheduleRef != nullptr);
 	m_meanTemperature = *m_fluidOutletSetpointScheduleRef;
 	double absMassFlux = std::fabs(m_massFlux);
 
