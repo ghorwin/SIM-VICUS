@@ -715,11 +715,74 @@ bool SVProjectHandler::importEmbeddedDB() {
 		}
 	}
 
+	// boundary conditions
+	std::map<unsigned int, unsigned int> boundaryConditionsIDMap;
+	for (VICUS::BoundaryCondition & e : m_project->m_embeddedDB.m_boundaryConditions) {
+		const VICUS::BoundaryCondition * existingElement = db.m_boundaryConditions.findEqual(e);
+		if (existingElement == nullptr) {
+			unsigned int oldId = e.m_id;
+			unsigned int newId = db.m_boundaryConditions.add(e, oldId);
+			IBK::IBK_Message( IBK::FormatString("Boundary condition '%1' with #%2 imported -> new ID #%3.\n")
+				.arg(e.m_displayName.string(),50,std::ios_base::left).arg(oldId).arg(newId),
+							  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+			if (newId != oldId)
+				boundaryConditionsIDMap[oldId] = newId;
+		}
+		else {
+			if (existingElement->m_id != e.m_id) {
+				boundaryConditionsIDMap[e.m_id] = existingElement->m_id;
+				IBK::IBK_Message( IBK::FormatString("Boundary condition '%1' with #%2 exists already -> new ID #%3.\n")
+					.arg(e.m_displayName.string(),50,std::ios_base::left).arg(e.m_id).arg(existingElement->m_id),
+								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+			}
+		}
+	}
+
+	// component
+	std::map<unsigned int, unsigned int> componentIDMap;
+	for (VICUS::Component & e : m_project->m_embeddedDB.m_components) {
+		auto idIt = constructionIDMap.find(e.m_idConstruction);
+		if (idIt != constructionIDMap.end())
+			e.m_idConstruction = idIt->second; // replace ID
+
+		if (e.m_idSideABoundaryCondition != VICUS::INVALID_ID) {
+			auto bcIt = boundaryConditionsIDMap.find(e.m_idSideABoundaryCondition);
+			if (bcIt != boundaryConditionsIDMap.end())
+				e.m_idSideABoundaryCondition = idIt->second; // replace ID
+		}
+		if (e.m_idSideBBoundaryCondition != VICUS::INVALID_ID) {
+			auto bcIt = boundaryConditionsIDMap.find(e.m_idSideBBoundaryCondition);
+			if (bcIt != boundaryConditionsIDMap.end())
+				e.m_idSideBBoundaryCondition = idIt->second; // replace ID
+		}
+		const VICUS::Component * existingElement = db.m_components.findEqual(e);
+		if (existingElement == nullptr) {
+			unsigned int oldId = e.m_id;
+			unsigned int newId = db.m_components.add(e, oldId);
+			IBK::IBK_Message( IBK::FormatString("Component '%1' with #%2 imported -> new ID #%3.\n")
+				.arg(e.m_displayName.string(),50,std::ios_base::left).arg(oldId).arg(newId),
+							  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+			if (newId != oldId)
+				componentIDMap[oldId] = newId;
+		}
+		else {
+			// check if IDs match
+			if (existingElement->m_id != e.m_id) {
+				componentIDMap[e.m_id] = existingElement->m_id;
+				IBK::IBK_Message( IBK::FormatString("Component '%1' with #%2 exists already -> new ID #%3.\n")
+					.arg(e.m_displayName.string(),50,std::ios_base::left).arg(e.m_id).arg(existingElement->m_id),
+								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+			}
+		}
+	}
+
 	// any ids modified?
 	idsModified |= !materialIDMap.empty();
 	idsModified |= !constructionIDMap.empty();
 	idsModified |= !windowIDMap.empty();
 	idsModified |= !glazingSystemsIDMap.empty();
+	idsModified |= !boundaryConditionsIDMap.empty();
+	idsModified |= !componentIDMap.empty();
 	return idsModified;
 }
 
