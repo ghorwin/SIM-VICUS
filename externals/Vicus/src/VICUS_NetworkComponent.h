@@ -82,7 +82,7 @@ public:
 	bool isValid() const;
 
 	/*! Comparison operator */
-	ComparisonResult equal(const AbstractDBElement *other) const;
+	ComparisonResult equal(const AbstractDBElement *other) const override;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
