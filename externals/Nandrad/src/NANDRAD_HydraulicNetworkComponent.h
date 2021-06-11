@@ -27,6 +27,7 @@
 #include "NANDRAD_CodeGenMacros.h"
 #include "NANDRAD_Constants.h"
 #include "NANDRAD_LinearSplineParameter.h"
+#include "NANDRAD_DataTable.h"
 
 
 namespace NANDRAD {
@@ -45,7 +46,7 @@ public:
 		MT_HeatExchanger,					// Keyword: HeatExchanger					'Simple heat exchanger with given heat flux'
 		MT_HeatPumpIdealCarnotSourceSide,	// Keyword: HeatPumpIdealCarnotSourceSide	'Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)'
 		MT_HeatPumpIdealCarnotSupplySide,	// Keyword: HeatPumpIdealCarnotSupplySide	'Heat pump with variable heating power based on carnot efficiency, installed at supply side'
-//		MT_HeatPumpReal,					// xKeyword: HeatPumpReal					'On-off-type heat pump with based on manufacturer data sheet'
+		MT_HeatPumpRealSourceSide,			// Keyword: HeatPumpRealSourceSide			'On-off-type heat pump based on polynoms, installed at source side'
 		MT_ControlledValve,					// Keyword: ControlledValve					'Valve with associated control model'
 		MT_IdealHeaterCooler,				// Keyword: IdealHeaterCooler				'Adapter model that provides a defined supply temperature to the network and calculates the heat loss/gain'
 		NUM_MT
@@ -94,6 +95,9 @@ public:
 
 	/*! Parameters of the flow component. */
 	IBK::Parameter					m_para[NUM_P];										// XML:E
+
+	/*! Array parameters of the flow component */
+	DataTable						m_polynomCoefficients;								// XML:E
 
 	// *** STATIC FUNCTIONS ***
 

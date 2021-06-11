@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -30,9 +30,10 @@ bool VICUS::NetworkPipe::isValid() const
 {
 	if (m_id == INVALID_ID)
 		return false;
-	if (m_diameterOutside <= 0 || m_wallThickness <= 0 || m_roughness <= 0 || m_lambdaWall <= 0)
+	if (m_para[VICUS::NetworkPipe::P_DiameterOutside].value <= 0 || m_para[VICUS::NetworkPipe::P_ThicknessWall].value <= 0
+			|| m_para[VICUS::NetworkPipe::P_RoughnessWall].value <= 0 || m_para[VICUS::NetworkPipe::P_ThermalConductivityWall].value <= 0)
 		return false;
-	if (m_insulationThickness < 0 || m_lambdaInsulation < 0)
+	if (m_para[VICUS::NetworkPipe::P_ThicknessInsulation].value < 0 || m_para[VICUS::NetworkPipe::P_ThermalConductivityInsulation].value < 0)
 		return false;
 	return true;
 }
@@ -45,17 +46,12 @@ VICUS::AbstractDBElement::ComparisonResult VICUS::NetworkPipe::equal(const VICUS
 	//first check critical data
 
 	//check parameters
-//	for(unsigned int i=0; i<NUM_P; ++i){
-//		if(m_para[i] != otherEPD->m_para[i])
-//			return Different;
-//	}
+	for(unsigned int i=0; i<NUM_P; ++i){
+		if(m_para[i] != otherNetPipe->m_para[i])
+			return Different;
+	}
 
-	if(m_diameterOutside != otherNetPipe->m_diameterOutside ||
-			m_wallThickness != otherNetPipe->m_wallThickness||
-			m_lambdaWall != otherNetPipe->m_lambdaWall ||
-			m_roughness != otherNetPipe->m_roughness ||
-			m_insulationThickness != otherNetPipe->m_insulationThickness ||
-			m_lambdaInsulation != otherNetPipe->m_lambdaInsulation)
+	if (m_categoryName != otherNetPipe->m_categoryName)
 		return Different;
 
 	//check meta data

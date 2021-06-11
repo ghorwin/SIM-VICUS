@@ -34,6 +34,7 @@
 #include "VICUS_AbstractDBElement.h"
 
 #include <IBK_MultiLanguageString.h>
+#include <IBK_Parameter.h>
 
 #include <QColor>
 
@@ -42,13 +43,23 @@ namespace VICUS {
 class NetworkPipe: public AbstractDBElement {
 public:
 
+	enum para_t{
+		P_DiameterOutside,					// Keyword: DiameterOutside						[mm]	'Outer diameter'
+		P_ThicknessWall,					// Keyword: ThicknessWall						[mm]	'Pipe wall thickness'
+		P_RoughnessWall,					// Keyword: RoughnessWall						[mm]	'Pipe wall surface roughness'
+		P_ThermalConductivityWall,			// Keyword: ThermalConductivityWall				[W/mK]	'Thermal conductivity of pipe wall'
+		P_ThicknessInsulation,				// Keyword: ThicknessInsulation					[mm]	'Insulation thickness'
+		P_ThermalConductivityInsulation,	// Keyword: ThermalConductivityInsulation		[W/mK]	'Thermal conductivity of insulation'
+		NUM_P
+	};
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
 	double diameterInside() const{
-		return m_diameterOutside - 2 * m_wallThickness;
+		return m_para[P_DiameterOutside].value - 2 * m_para[P_ThicknessWall].value;
 	}
 
 	/*! Checks if all parameters are valid. */
@@ -66,20 +77,9 @@ public:
 	/*! Identification color. */
 	QColor								m_color;						// XML:A
 
-	///TODO Hauke bitte die variablen in ein array m_para[...] umbauen
+	std::string							m_categoryName;					// XML:A
 
-	/*! Outside diameter pipe in [mm]. */
-	double								m_diameterOutside;				// XML:A:required
-	/*! Wall thickness pipe in [mm]. */
-	double								m_wallThickness;				// XML:A:required
-	/*! Pipe wall thermal conductivity in [W/mK] */
-	double								m_lambdaWall;					// XML:A:required
-	/*! Pipe wall roughness in [mm] */
-	double								m_roughness;					// XML:A:required
-	/*! outisde diameter of insulation in [mm] */
-	double								m_insulationThickness = 0.0;	// XML:A
-	/*! thermal conductivity of insulation in [W/mK] */
-	double								m_lambdaInsulation = 0.0;		// XML:A
+	IBK::Parameter						m_para[NUM_P];					// XML:E
 
 };
 

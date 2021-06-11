@@ -62,6 +62,14 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) {
 			checkModelParameter(m_para[i], i);
 		}
 
+		// check data table
+		if (m_modelType == MT_HeatPumpRealSourceSide){
+			if (m_polynomCoefficients.m_values["QdotCondensator"].size() != 6)
+				throw IBK::Exception("There must be exactly 6 values in QdotCondensator", FUNC_ID);
+			if (m_polynomCoefficients.m_values["Pel"].size() != 6)
+				throw IBK::Exception("There must be exactly 6 values in Pel", FUNC_ID);
+		}
+
 		// check optional parameters, if given
 		if (!m_para[P_FractionOfMotorInefficienciesToFluidStream].name.empty())
 			checkModelParameter(m_para[P_FractionOfMotorInefficienciesToFluidStream], P_FractionOfMotorInefficienciesToFluidStream);
@@ -96,6 +104,7 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 				return {P_MassFlux};
 			case MT_HeatPumpIdealCarnotSupplySide:
 			case MT_HeatPumpIdealCarnotSourceSide:
+			case MT_HeatPumpRealSourceSide:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter};
 			case MT_HeatExchanger:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter};
@@ -122,7 +131,6 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 				return {P_PumpEfficiency, P_Volume}; // Note: P_FractionOfMotorInefficienciesToFluidStream is optional and defaults to 1
 			case MT_HeatPumpIdealCarnotSupplySide:
 			case MT_HeatPumpIdealCarnotSourceSide:
-				// TODO Hauke, check mandatory parameters for both heat pump variants
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume, P_CarnotEfficiency, P_MaximumHeatingPower};
 			case MT_HeatExchanger:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
@@ -132,7 +140,10 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 				return {};
 			case MT_ControlledValve:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
+			case MT_HeatPumpRealSourceSide:
+				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
 			case MT_IdealHeaterCooler: // no parameters needed
+			case MT_SupplyTemperatureAdapter: // no parameters needed
 			case NUM_MT: ;
 		}
 	}

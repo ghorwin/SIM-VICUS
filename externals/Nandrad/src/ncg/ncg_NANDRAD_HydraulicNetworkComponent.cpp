@@ -85,6 +85,8 @@ void HydraulicNetworkComponent::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
+			else if (cName == "PolynomCoefficients")
+				m_polynomCoefficients.setEncodedString(c->GetText());
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -115,6 +117,8 @@ TiXmlElement * HydraulicNetworkComponent::writeXML(TiXmlElement * parent) const 
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 		}
 	}
+	if (!m_polynomCoefficients.m_values.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "PolynomCoefficients", nullptr, std::string(), m_polynomCoefficients.encodedString());
 	return e;
 }
 

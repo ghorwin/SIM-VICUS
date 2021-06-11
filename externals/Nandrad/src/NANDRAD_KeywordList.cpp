@@ -202,6 +202,8 @@ namespace NANDRAD {
 				case 7 : return "HeatPumpIdealCarnotSupplySide";
 				case 8 : return "ControlledValve";
 				case 9 : return "IdealHeaterCooler";
+				case 8 : return "HeatPumpRealSourceSide";
+				case 9 : return "ControlledValve";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -818,6 +820,11 @@ namespace NANDRAD {
 				case 7 : return "HeatPumpIdealCarnotSupplySide";
 				case 8 : return "ControlledValve";
 				case 9 : return "IdealHeaterCooler";
+
+				case 8 : return "HeatPumpRealSourceSide";
+				case 9 : return "ControlledValve";
+				case 10 : return "SupplyTemperatureAdapter";
+
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -1435,6 +1442,10 @@ namespace NANDRAD {
 				case 7 : return "Heat pump with variable heating power based on carnot efficiency, installed at supply side";
 				case 8 : return "Valve with associated control model";
 				case 9 : return "Adapter model that provides a defined supply temperature to the network and calculates the heat loss/gain";
+				case 8 : return "On-off-type heat pump based on polynoms, installed at source side";
+				case 9 : return "Valve with associated control model";
+				case 10 : return "Adapter model that provides a defined supply temperature to the network";
+
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -2051,6 +2062,7 @@ namespace NANDRAD {
 				case 7 : return "";
 				case 8 : return "";
 				case 9 : return "";
+				case 10 : return "";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -2667,6 +2679,7 @@ namespace NANDRAD {
 				case 7 : return "#FFFFFF";
 				case 8 : return "#FFFFFF";
 				case 9 : return "#FFFFFF";
+				case 10 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -3283,6 +3296,7 @@ namespace NANDRAD {
 				case 7 : return std::numeric_limits<double>::quiet_NaN();
 				case 8 : return std::numeric_limits<double>::quiet_NaN();
 				case 9 : return std::numeric_limits<double>::quiet_NaN();
+				case 10 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -3851,7 +3865,7 @@ namespace NANDRAD {
 			// HydraulicNetwork::para_t
 			case 8 : return 3;
 			// HydraulicNetworkComponent::ModelType
-			case 9 : return 10;
+			case 9 : return 11;
 			// HydraulicNetworkComponent::para_t
 			case 10 : return 10;
 			// HydraulicNetworkControlElement::modelType_t
@@ -4027,7 +4041,7 @@ namespace NANDRAD {
 			// HydraulicNetwork::para_t
 			case 8 : return 2;
 			// HydraulicNetworkComponent::ModelType
-			case 9 : return 9;
+			case 9 : return 10;
 			// HydraulicNetworkComponent::para_t
 			case 10 : return 9;
 			// HydraulicNetworkControlElement::modelType_t

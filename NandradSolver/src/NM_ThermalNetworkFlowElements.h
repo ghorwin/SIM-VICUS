@@ -541,6 +541,92 @@ private:
 
 
 
+
+// **** TNHeatPumpReal ***
+
+class TNHeatPumpReal : public TNElementWithExternalHeatLoss { // NO KEYWORDS
+
+public:
+	/*! C'tor, takes and caches parameters needed for function evaluation. */
+	TNHeatPumpReal(unsigned int flowElementId,
+						  const NANDRAD::HydraulicFluid & fluid,
+						  const NANDRAD::HydraulicNetworkElement & e);
+
+	/*! Publishes individual model quantities via descriptions. */
+	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
+		quantities.push_back(QuantityDescription("COP","---", "Coefficient of performance for heat pump", false));
+		quantities.push_back(QuantityDescription("ElectricalPower", "W", "Electrical power for heat pump", false));
+		quantities.push_back(QuantityDescription("CondenserHeatFlux", "W", "Heat Flux at condenser side of heat pump", false));
+		quantities.push_back(QuantityDescription("EvaporatorHeatFlux", "W", "Heat Flux at evaporator side of heat pump", false));
+		quantities.push_back(QuantityDescription("TemperatureDifference", "K", "Outlet temperature minus inlet temperature", false));
+		quantities.push_back(QuantityDescription("CondenserOutletTemperature", "C", "Outlet temperature of condenser", false));
+		quantities.push_back(QuantityDescription("EvaporatorInletTemperature", "C", "Inlet temperature of Evaporator", false));
+	}
+
+	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
+	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
+		valRefs.push_back(&m_COP);
+		valRefs.push_back(&m_electricalPower);
+		valRefs.push_back(&m_condenserHeatFlux);
+		valRefs.push_back(&m_evaporatorHeatFlux);
+		valRefs.push_back(&m_temperatureDifference);
+		valRefs.push_back(&m_condenserOutletTemperature);
+		valRefs.push_back(&m_evaporatorInletTemperature);
+	}
+
+	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
+	void setInflowTemperature(double Tinflow) override;
+
+	/*! Adds flow-element-specific input references (schedules etc.) to the list of input references.
+	*/
+	void inputReferences(std::vector<NANDRAD_MODEL::InputReference> & inputRefs) const override;
+
+	/*! Provides the element with its own requested model inputs.
+		The element must take exactly as many input values from the vector and move the iterator forward.
+		When the function returns, the iterator must point to the first input reference past this element's inputs.
+	*/
+	void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
+
+	/*! Function for retrieving heat fluxes out of the flow element.*/
+	void internalDerivatives(double *ydot) override;
+
+private:
+	/*! Cached parametrization for heat pump flow element. */
+	const NANDRAD::HydraulicNetworkElement	*m_flowElement = nullptr;
+
+	/*! Temperatures from schedules [K] which will be set through input references */
+	const double							*m_condenserOutletSetpointRef = nullptr;
+	const double							*m_onOffSignalRef = nullptr;
+
+	/*! Id number of flow element. */
+	unsigned int							m_flowElementId = NANDRAD::INVALID_ID;
+
+	/*! Actual heating power of heat pump (condenser) in [W] */
+	double									m_condenserHeatFlux = 999999;
+
+	/*! Actual heating power of heat pump (condenser) in [W] */
+	double									m_evaporatorHeatFlux = 999999;
+
+	/*! Coefficient of performance for heat pump */
+	double									m_COP = 999;
+
+	/*! Electrical power of the heat pump compressor [W] */
+	double									m_electricalPower = 999;
+
+	/*! Temperature difference across flow element [K]. */
+	double									m_temperatureDifference = 999;
+
+	double									m_condenserOutletTemperature = 999;
+	double									m_evaporatorInletTemperature = 999;
+
+	/*! polynom coefficients */
+	std::vector<double>						m_coeffsQcond;
+	std::vector<double>						m_coeffsPel;
+
+};
+
+
+
 // **** Supply temperature adapter model ***
 
 class TNIdealHeaterCooler : public ThermalNetworkAbstractFlowElement { // NO KEYWORDS

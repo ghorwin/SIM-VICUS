@@ -142,6 +142,7 @@ void HydraulicNetworkModel::setup() {
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide :
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide :
+			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpRealSourceSide :
 			case NANDRAD::HydraulicNetworkComponent::MT_ControlledValve:
 			{
 				// Note: HeatPumpIdealCarnotXXX does not use flow controller, but is still a regular pressure loss element
