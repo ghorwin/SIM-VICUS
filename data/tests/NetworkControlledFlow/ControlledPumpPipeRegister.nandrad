@@ -118,7 +118,7 @@
 						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" displayName="Pipe" modelType="SimplePipe"/>
-					<HydraulicNetworkComponent id="3" displayName="SupplyTemperatureAdapter" modelType="IdealHeaterCooler"/>
+					<HydraulicNetworkComponent id="3" displayName="IdealHeaterCooler" modelType="IdealHeaterCooler"/>
 				</Components>
 
 				<ControlElements>
@@ -172,7 +172,7 @@
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0</TimePoints>
 								<Values>
-									SupplyTemperatureSchedule [C]:35;
+									FluidOutletSetpointSchedule [C]:35;
 									MassFluxSetpointSchedule [kg/s]:0.02
 								</Values>
 							</DailyCycle>

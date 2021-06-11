@@ -114,7 +114,7 @@
 
 					<HydraulicNetworkComponent id="2" displayName="Pipe" modelType="SimplePipe"/>
 
-					<HydraulicNetworkComponent id="3" displayName="SupplyTemperatureAdapter" modelType="SupplyTemperatureAdapter"/>
+					<HydraulicNetworkComponent id="3" displayName="IdealHeaterCooler" modelType="IdealHeaterCooler"/>
 				</Components>
 
 				<ControlElements>
@@ -166,7 +166,7 @@
 						<DailyCycles>
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0</TimePoints>
-								<Values>SupplyTemperatureSchedule [C]:35</Values>
+								<Values>FluidOutletSetpointSchedule [C]:35</Values>
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>
