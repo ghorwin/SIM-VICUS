@@ -117,7 +117,7 @@
 						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" displayName="Pipe" modelType="SimplePipe"/>
-					<HydraulicNetworkComponent id="3" displayName="SupplyTemperatureAdapter" modelType="SupplyTemperatureAdapter"/>
+					<HydraulicNetworkComponent id="3" displayName="IdealHeaterCooler" modelType="IdealHeaterCooler"/>
 				</Components>
 
 				<ControlElements>

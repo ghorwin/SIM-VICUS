@@ -86,6 +86,7 @@ public:
 		SQ_TemperatureDifferenceSetpointSchedule,				// Keyword: TemperatureDifferenceSetpointSchedule			[K]
 		SQ_MassFluxSetpointSchedule,							// Keyword: MassFluxSetpointSchedule						[kg/s]
 		SQ_HeatPumpOnOffSignalSchedule,							// Keyword: HeatPumpOnOffSignalSchedule						[---]
+		SQ_SupplyTemperatureSchedule,							// Keyword: SupplyTemperatureSchedule						[C]
 		NUM_SQ
 	};
 
