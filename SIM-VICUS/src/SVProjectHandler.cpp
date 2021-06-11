@@ -581,10 +581,39 @@ void replaceID(unsigned int & id, const std::map<unsigned int, unsigned int> & i
 	}
 }
 
+template <typename T>
+void importDBElement(T & e, VICUS::Database<T> & db, std::map<unsigned int, unsigned int> & idSubstitutionMap,
+					 const char * const importMsg, const char * const existingMsg)
+{
+	FUNCID(SVProjectHandler-importDBElement);
+	// check, if element exists in built-in DB
+	const T * existingElement = db.findEqual(e);
+	if (existingElement == nullptr) {
+		// element does not yet exist, import element; we try to keep the id from the embedded element
+		// but if this is already taken, the database assigns a new unused id for use
+		unsigned int oldId = e.m_id;
+		unsigned int newId = db.add(e, oldId); // e.m_id gets modified here!
+		IBK::IBK_Message( IBK::FormatString(importMsg)
+			.arg(e.m_displayName.string(),50,std::ios_base::left).arg(oldId).arg(newId),
+						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		if (newId != oldId)
+			idSubstitutionMap[oldId] = newId;
+	}
+	else {
+		// check if IDs match
+		if (existingElement->m_id != e.m_id) {
+			// we need to adjust the ID name of material
+			idSubstitutionMap[e.m_id] = existingElement->m_id;
+			IBK::IBK_Message( IBK::FormatString(existingMsg)
+				.arg(e.m_displayName.string(),50,std::ios_base::left).arg(e.m_id).arg(existingElement->m_id),
+							  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		}
+	}
+
+}
+
 
 bool SVProjectHandler::importEmbeddedDB() {
-	FUNCID(SVProjectHandler::importEmbeddedDB);
-
 	bool idsModified = false;
 
 	// we sync the embedded database with the built-in DB
@@ -603,28 +632,10 @@ bool SVProjectHandler::importEmbeddedDB() {
 	std::map<unsigned int, unsigned int> materialIDMap; // newID = materialIDMap[oldID];
 	for (VICUS::Material & e : m_project->m_embeddedDB.m_materials) {
 		// check, if element exists in built-in DB
-		const VICUS::Material * existingElement = db.m_materials.findEqual(e);
-		if (existingElement == nullptr) {
-			// element does not yet exist, import element; we try to keep the id from the embedded element
-			// but if this is already taken, the database assigns a new unused id for use
-			unsigned int oldId = e.m_id;
-			unsigned int newId = db.m_materials.add(e, oldId); // e.m_id gets modified here!
-			IBK::IBK_Message( IBK::FormatString("Material '%1' with #%2 imported -> new ID #%3.\n")
-				.arg(e.m_displayName.string(),50,std::ios_base::left).arg(oldId).arg(newId),
-							  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-			if (newId != oldId)
-				materialIDMap[oldId] = newId;
-		}
-		else {
-			// check if IDs match
-			if (existingElement->m_id != e.m_id) {
-				// we need to adjust the ID name of material
-				materialIDMap[e.m_id] = existingElement->m_id;
-				IBK::IBK_Message( IBK::FormatString("Material '%1' with #%2 exists already -> new ID #%3.\n")
-					.arg(e.m_displayName.string(),50,std::ios_base::left).arg(e.m_id).arg(existingElement->m_id),
-								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-			}
-		}
+		importDBElement(e, db.m_materials, materialIDMap,
+			"Material '%1' with #%2 imported -> new ID #%3.\n",
+			"Material '%1' with #%2 exists already -> new ID #%3.\n"
+		);
 	}
 
 	// constructions
@@ -634,52 +645,19 @@ bool SVProjectHandler::importEmbeddedDB() {
 		for (VICUS::MaterialLayer & lay : e.m_materialLayers)
 			replaceID(lay.m_matId, materialIDMap);
 
-		// check, if element exists in built-in DB
-		const VICUS::Construction * existingElement = db.m_constructions.findEqual(e);
-		if (existingElement == nullptr) {
-			// element does not yet exist, import element; we try to keep the id from the embedded element
-			// but if this is already taken, the database assigns a new unused id for use
-			unsigned int oldId = e.m_id;
-			unsigned int newId = db.m_constructions.add(e, oldId);
-			IBK::IBK_Message( IBK::FormatString("Construction type '%1' with #%2 imported -> new ID #%3.\n")
-				.arg(e.m_displayName.string(),50,std::ios_base::left).arg(oldId).arg(newId),
-							  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-			if (newId != oldId)
-				constructionIDMap[oldId] = newId;
-		}
-		else {
-			// check if IDs match
-			if (existingElement->m_id != e.m_id) {
-				// we need to adjust the ID name of material
-				constructionIDMap[e.m_id] = existingElement->m_id;
-				IBK::IBK_Message( IBK::FormatString("Construction type '%1' with #%2 exists already -> new ID #%3.\n")
-					.arg(e.m_displayName.string(),50,std::ios_base::left).arg(e.m_id).arg(existingElement->m_id),
-								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-			}
-		}
+		importDBElement(e, db.m_constructions, constructionIDMap,
+			"Construction type '%1' with #%2 imported -> new ID #%3.\n",
+			"Construction type '%1' with #%2 exists already -> new ID #%3.\n"
+		);
 	}
 
 	// window glazing systems
 	std::map<unsigned int, unsigned int> glazingSystemsIDMap;
 	for (VICUS::WindowGlazingSystem & e : m_project->m_embeddedDB.m_windowGlazingSystems) {
-		const VICUS::WindowGlazingSystem * existingElement = db.m_windowGlazingSystems.findEqual(e);
-		if (existingElement == nullptr) {
-			unsigned int oldId = e.m_id;
-			unsigned int newId = db.m_windowGlazingSystems.add(e, oldId);
-			IBK::IBK_Message( IBK::FormatString("Window glazing system '%1' with #%2 imported -> new ID #%3.\n")
-				.arg(e.m_displayName.string(),50,std::ios_base::left).arg(oldId).arg(newId),
-							  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-			if (newId != oldId)
-				glazingSystemsIDMap[oldId] = newId;
-		}
-		else {
-			if (existingElement->m_id != e.m_id) {
-				glazingSystemsIDMap[e.m_id] = existingElement->m_id;
-				IBK::IBK_Message( IBK::FormatString("Window glazing system '%1' with #%2 exists already -> new ID #%3.\n")
-					.arg(e.m_displayName.string(),50,std::ios_base::left).arg(e.m_id).arg(existingElement->m_id),
-								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-			}
-		}
+		importDBElement(e, db.m_windowGlazingSystems, glazingSystemsIDMap,
+			"Window glazing system '%1' with #%2 imported -> new ID #%3.\n",
+			"Window glazing system '%1' with #%2 exists already -> new ID #%3.\n"
+		);
 	}
 
 	// windows
@@ -689,51 +667,19 @@ bool SVProjectHandler::importEmbeddedDB() {
 		replaceID(e.m_frame.m_id, materialIDMap);
 		replaceID(e.m_divider.m_id, materialIDMap);
 
-		const VICUS::Window * existingElement = db.m_windows.findEqual(e);
-		if (existingElement == nullptr) {
-			// element does not yet exist, import element; we try to keep the id from the embedded element
-			// but if this is already taken, the database assigns a new unused id for use
-			unsigned int oldId = e.m_id;
-			unsigned int newId = db.m_windows.add(e, oldId);
-			IBK::IBK_Message( IBK::FormatString("Window '%1' with #%2 imported -> new ID #%3.\n")
-				.arg(e.m_displayName.string(),50,std::ios_base::left).arg(oldId).arg(newId),
-							  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-			if (newId != oldId)
-				windowIDMap[oldId] = newId;
-		}
-		else {
-			// check if IDs match
-			if (existingElement->m_id != e.m_id) {
-				// we need to adjust the ID name of material
-				windowIDMap[e.m_id] = existingElement->m_id;
-				IBK::IBK_Message( IBK::FormatString("Window '%1' with #%2 exists already -> new ID #%3.\n")
-					.arg(e.m_displayName.string(),50,std::ios_base::left).arg(e.m_id).arg(existingElement->m_id),
-								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-			}
-		}
+		importDBElement(e, db.m_windows, windowIDMap,
+			"Window '%1' with #%2 imported -> new ID #%3.\n",
+			"Window '%1' with #%2 exists already -> new ID #%3.\n"
+		);
 	}
 
 	// boundary conditions
 	std::map<unsigned int, unsigned int> boundaryConditionsIDMap;
 	for (VICUS::BoundaryCondition & e : m_project->m_embeddedDB.m_boundaryConditions) {
-		const VICUS::BoundaryCondition * existingElement = db.m_boundaryConditions.findEqual(e);
-		if (existingElement == nullptr) {
-			unsigned int oldId = e.m_id;
-			unsigned int newId = db.m_boundaryConditions.add(e, oldId);
-			IBK::IBK_Message( IBK::FormatString("Boundary condition '%1' with #%2 imported -> new ID #%3.\n")
-				.arg(e.m_displayName.string(),50,std::ios_base::left).arg(oldId).arg(newId),
-							  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-			if (newId != oldId)
-				boundaryConditionsIDMap[oldId] = newId;
-		}
-		else {
-			if (existingElement->m_id != e.m_id) {
-				boundaryConditionsIDMap[e.m_id] = existingElement->m_id;
-				IBK::IBK_Message( IBK::FormatString("Boundary condition '%1' with #%2 exists already -> new ID #%3.\n")
-					.arg(e.m_displayName.string(),50,std::ios_base::left).arg(e.m_id).arg(existingElement->m_id),
-								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-			}
-		}
+		importDBElement(e, db.m_boundaryConditions, boundaryConditionsIDMap,
+			"Boundary condition '%1' with #%2 imported -> new ID #%3.\n",
+			"Boundary condition '%1' with #%2 exists already -> new ID #%3.\n"
+		);
 	}
 
 	// component
@@ -743,25 +689,10 @@ bool SVProjectHandler::importEmbeddedDB() {
 		replaceID(e.m_idSideABoundaryCondition, boundaryConditionsIDMap);
 		replaceID(e.m_idSideBBoundaryCondition, boundaryConditionsIDMap);
 
-		const VICUS::Component * existingElement = db.m_components.findEqual(e);
-		if (existingElement == nullptr) {
-			unsigned int oldId = e.m_id;
-			unsigned int newId = db.m_components.add(e, oldId);
-			IBK::IBK_Message( IBK::FormatString("Component '%1' with #%2 imported -> new ID #%3.\n")
-				.arg(e.m_displayName.string(),50,std::ios_base::left).arg(oldId).arg(newId),
-							  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-			if (newId != oldId)
-				componentIDMap[oldId] = newId;
-		}
-		else {
-			// check if IDs match
-			if (existingElement->m_id != e.m_id) {
-				componentIDMap[e.m_id] = existingElement->m_id;
-				IBK::IBK_Message( IBK::FormatString("Component '%1' with #%2 exists already -> new ID #%3.\n")
-					.arg(e.m_displayName.string(),50,std::ios_base::left).arg(e.m_id).arg(existingElement->m_id),
-								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-			}
-		}
+		importDBElement(e, db.m_components, componentIDMap,
+			"Component '%1' with #%2 imported -> new ID #%3.\n",
+			"Component '%1' with #%2 exists already -> new ID #%3.\n"
+		);
 	}
 
 	// any ids modified?
