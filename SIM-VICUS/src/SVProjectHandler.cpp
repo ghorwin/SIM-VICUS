@@ -572,6 +572,16 @@ void SVProjectHandler::addToRecentFiles(const QString& fname) {
 }
 
 
+void replaceID(unsigned int & id, const std::map<unsigned int, unsigned int> & idSubstitutionMap) {
+	// only replace if set
+	if (id != VICUS::INVALID_ID) {
+		std::map<unsigned int, unsigned int>::const_iterator idIt = idSubstitutionMap.find(id);
+		if (idIt != idSubstitutionMap.end())
+			id = idIt->second; // replace ID
+	}
+}
+
+
 bool SVProjectHandler::importEmbeddedDB() {
 	FUNCID(SVProjectHandler::importEmbeddedDB);
 
@@ -621,11 +631,9 @@ bool SVProjectHandler::importEmbeddedDB() {
 	std::map<unsigned int, unsigned int> constructionIDMap;
 	for (VICUS::Construction & e : m_project->m_embeddedDB.m_constructions) {
 		// apply material ID substitutions
-		for (VICUS::MaterialLayer & lay : e.m_materialLayers) {
-			auto idIt = materialIDMap.find(lay.m_matId);
-			if (idIt != materialIDMap.end())
-				lay.m_matId = idIt->second; // replace ID
-		}
+		for (VICUS::MaterialLayer & lay : e.m_materialLayers)
+			replaceID(lay.m_matId, materialIDMap);
+
 		// check, if element exists in built-in DB
 		const VICUS::Construction * existingElement = db.m_constructions.findEqual(e);
 		if (existingElement == nullptr) {
@@ -677,20 +685,10 @@ bool SVProjectHandler::importEmbeddedDB() {
 	// windows
 	std::map<unsigned int, unsigned int> windowIDMap;
 	for (VICUS::Window & e : m_project->m_embeddedDB.m_windows) {
-		auto idIt = glazingSystemsIDMap.find(e.m_idGlazingSystem);
-		if (idIt != glazingSystemsIDMap.end())
-			e.m_idGlazingSystem = idIt->second; // replace ID
-		// material IDs in frame and divider
-		if (e.m_frame.m_id != VICUS::INVALID_ID) {
-			auto matIt = materialIDMap.find(e.m_frame.m_idMaterial);
-			if (matIt != materialIDMap.end())
-				e.m_frame.m_idMaterial = idIt->second; // replace ID
-		}
-		if (e.m_divider.m_id != VICUS::INVALID_ID) {
-			auto matIt = materialIDMap.find(e.m_divider.m_idMaterial);
-			if (matIt != materialIDMap.end())
-				e.m_divider.m_idMaterial = idIt->second; // replace ID
-		}
+		replaceID(e.m_idGlazingSystem, glazingSystemsIDMap);
+		replaceID(e.m_frame.m_id, materialIDMap);
+		replaceID(e.m_divider.m_id, materialIDMap);
+
 		const VICUS::Window * existingElement = db.m_windows.findEqual(e);
 		if (existingElement == nullptr) {
 			// element does not yet exist, import element; we try to keep the id from the embedded element
@@ -741,20 +739,10 @@ bool SVProjectHandler::importEmbeddedDB() {
 	// component
 	std::map<unsigned int, unsigned int> componentIDMap;
 	for (VICUS::Component & e : m_project->m_embeddedDB.m_components) {
-		auto idIt = constructionIDMap.find(e.m_idConstruction);
-		if (idIt != constructionIDMap.end())
-			e.m_idConstruction = idIt->second; // replace ID
+		replaceID(e.m_idConstruction, constructionIDMap);
+		replaceID(e.m_idSideABoundaryCondition, boundaryConditionsIDMap);
+		replaceID(e.m_idSideBBoundaryCondition, boundaryConditionsIDMap);
 
-		if (e.m_idSideABoundaryCondition != VICUS::INVALID_ID) {
-			auto bcIt = boundaryConditionsIDMap.find(e.m_idSideABoundaryCondition);
-			if (bcIt != boundaryConditionsIDMap.end())
-				e.m_idSideABoundaryCondition = idIt->second; // replace ID
-		}
-		if (e.m_idSideBBoundaryCondition != VICUS::INVALID_ID) {
-			auto bcIt = boundaryConditionsIDMap.find(e.m_idSideBBoundaryCondition);
-			if (bcIt != boundaryConditionsIDMap.end())
-				e.m_idSideBBoundaryCondition = idIt->second; // replace ID
-		}
 		const VICUS::Component * existingElement = db.m_components.findEqual(e);
 		if (existingElement == nullptr) {
 			unsigned int oldId = e.m_id;
