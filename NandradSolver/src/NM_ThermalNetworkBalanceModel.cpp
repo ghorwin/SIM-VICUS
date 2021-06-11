@@ -149,7 +149,7 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 	// mark end of vector
 	m_modelQuantityOffset.push_back(m_modelQuantities.size());
 
-	// resize vectors
+	// resize vectors (guaranteed to be not empty)
 	m_ydot.resize(m_statesModel->nPrimaryStateResults());
 }
 
@@ -441,11 +441,21 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 
 		// try to retrieve individual dependencies of ydot and y
 		std::vector<std::pair<const double *, const double *> > deps;
-		fe->dependencies(&m_ydot[offset], &m_statesModel->m_y[offset],
-						 m_statesModel->m_p->m_fluidMassFluxes + i,
-						 &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexInlet],
-						 &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexOutlet],
-						 deps);
+		// special handling for elements without states
+		if (fe->nInternalStates() == 0) {
+			fe->dependencies(nullptr, nullptr,
+							 m_statesModel->m_p->m_fluidMassFluxes + i,
+							 &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexInlet],
+							 &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexOutlet],
+							 deps);
+		}
+		else {
+			fe->dependencies(&m_ydot[offset], &m_statesModel->m_y[offset],
+							 m_statesModel->m_p->m_fluidMassFluxes + i,
+							 &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexInlet],
+							 &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexOutlet],
+							 deps);
+		}
 
 		// copy dependencies
 		if (!deps.empty()) {
@@ -500,7 +510,9 @@ int ThermalNetworkBalanceModel::update() {
 	// update derivatives
 	unsigned int offset = 0;
 	for(ThermalNetworkAbstractFlowElement *fe : m_statesModel->m_p->m_flowElements) {
-		fe->internalDerivatives(&m_ydot[offset]);
+		// skip elements without states
+		if (fe->nInternalStates() != 0)
+			fe->internalDerivatives(&m_ydot[offset]);
 		offset += fe->nInternalStates();
 	}
 

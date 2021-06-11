@@ -319,6 +319,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 	for (ThermalNetworkAbstractFlowElement* fe :m_p->m_flowElements) {
 		m_n += fe->nInternalStates();
 	}
+	if (m_n == 0)
+		throw IBK::Exception("Network requires at least one flow element with energy balance enabled!", FUNC_ID);
 	m_y.resize(m_n,0.0);
 
 	// resize reference values
