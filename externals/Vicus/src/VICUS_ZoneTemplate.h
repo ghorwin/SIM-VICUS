@@ -54,14 +54,15 @@ public:
 		//dont change the order
 		//first have a look to
 		//SVSimulationStartNandrad::generateBuildingProjectData
-		ST_IntLoadPerson,			// Keyword: IntLoadPerson
-		ST_IntLoadEquipment,		// Keyword: IntLoadEquipment
-		ST_IntLoadLighting,			// Keyword: IntLoadLighting
-		ST_IntLoadOther,			// Keyword: IntLoadOther
-		ST_ControlThermostat,		// Keyword: ControlThermostat
-		ST_Infiltration,			// Keyword: Infiltration
-		ST_VentilationNatural,		// Keyword: NaturalVentilation
-		ST_IdealHeatingCooling,		// Keyword: IdealHeatingCooling
+		ST_IntLoadPerson,					// Keyword: IntLoadPerson
+		ST_IntLoadEquipment,				// Keyword: IntLoadEquipment
+		ST_IntLoadLighting,					// Keyword: IntLoadLighting
+		ST_IntLoadOther,					// Keyword: IntLoadOther
+		ST_ControlThermostat,				// Keyword: ControlThermostat
+		ST_ControlNaturalVentilation,		// Keyword: ControlNaturalVentilation
+		ST_Infiltration,					// Keyword: Infiltration
+		ST_VentilationNatural,				// Keyword: NaturalVentilation
+		ST_IdealHeatingCooling,				// Keyword: IdealHeatingCooling
 		NUM_ST
 	};
 
