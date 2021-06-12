@@ -64,6 +64,9 @@ public:
 	/*! Add a value to a schedule interval and returns the result. */
 	ScheduleInterval add(double val) const;
 
+	/*! Create a schedule interval with a constant value for all days. */
+	void createConstScheduleInterval(double val = 0);
+
 	/*! Comparsion operator. */
 	bool operator!=(const ScheduleInterval &other) const;
 

@@ -186,6 +186,12 @@ Schedule Schedule::add(double val) const{
 	return sched;
 }
 
+void Schedule::createConstSchedule(double val) {
+	ScheduleInterval si;
+	si.createConstScheduleInterval(val);
+	m_periods.push_back(si);
+}
+
 AbstractDBElement::ComparisonResult Schedule::equal(const AbstractDBElement *other) const {
 	const Schedule * otherSched = dynamic_cast<const Schedule*>(other);
 	if (otherSched  == nullptr)

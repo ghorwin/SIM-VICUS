@@ -61,6 +61,9 @@ public:
 	/*! Add a constant value to a schedule. Returns the result schedule. */
 	Schedule add(double val) const;
 
+	/*! Create a constant schedule with value val. */
+	void createConstSchedule(double val = 0);
+
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;
 
