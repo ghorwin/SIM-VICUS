@@ -44,14 +44,25 @@ namespace VICUS {
 class ZoneControlNaturalVentilation : public AbstractDBElement {
 public:
 
+
 	/*! Schedule types for control. */
+//	enum ScheduleType{
+//		ST_TemperatureAirMax,		// Keyword: TemperatureAirMax							'Upper limit for room air temperature.'
+//		ST_TemperatureAirMin,		// Keyword: TemperatureAirMin							'Lower limit for room air temperature.'
+//		ST_TemperatureOutsideMax,	// Keyword: TemperatureOutsideMax						'Upper limit for outside air temperature.'
+//		ST_TemperatureOutsideMin,	// Keyword: TemperatureOutsideMin						'Lower limit for outside air temperature.'
+//		ST_TemperatureDifference,	// Keyword: TemperatureDifference						'Temperature difference limit (inside - outside).'
+//		ST_WindSpeedMax,			// Keyword: WindSpeedMax								'Limit for wind speed .'
+//		NUM_ST
+//	};
+
 	enum ScheduleType{
-		ST_TemperatureAirMax,		// Keyword: TemperatureAirMax							'Upper limit for room air temperature.'
-		ST_TemperatureAirMin,		// Keyword: TemperatureAirMin							'Lower limit for room air temperature.'
-		ST_TemperatureOutsideMax,	// Keyword: TemperatureOutsideMax						'Upper limit for outside air temperature.'
-		ST_TemperatureOutsideMin,	// Keyword: TemperatureOutsideMin						'Lower limit for outside air temperature.'
-		ST_TemperatureDifference,	// Keyword: TemperatureDifference						'Temperature difference limit (inside - outside).'
-		ST_WindSpeedMax,			// Keyword: WindSpeedMax								'Limit for wind speed .'
+		ST_TemperatureAirMax,		// Keyword: TemperatureAirMax					[C]		'Upper limit for room air temperature.'
+		ST_TemperatureAirMin,		// Keyword: TemperatureAirMin					[C]		'Lower limit for room air temperature.'
+		ST_TemperatureOutsideMax,	// Keyword: TemperatureOutsideMax				[C]		'Upper limit for outside air temperature.'
+		ST_TemperatureOutsideMin,	// Keyword: TemperatureOutsideMin				[C]		'Lower limit for outside air temperature.'
+		ST_TemperatureDifference,	// Keyword: TemperatureDifference				[K]		'Temperature difference limit (inside - outside).'
+		ST_WindSpeedMax,			// Keyword: WindSpeedMax						[m/s]	'Limit for wind speed .'
 		NUM_ST
 	};
 
