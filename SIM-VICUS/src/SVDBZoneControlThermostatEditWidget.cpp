@@ -67,8 +67,7 @@ SVDBZoneControlThermostatEditWidget::SVDBZoneControlThermostatEditWidget(QWidget
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Zone control thermostat model name"));
 
-	m_ui->lineEditTolerance->setup(0, 50, tr("Thermostat tolerance for heating mode."), true, true);
-
+	m_ui->lineEditTolerance->setup(0.1, 50, tr("Thermostat tolerance for heating and/or cooling mode. Min 0.1 C, Max 50 C."), true, true);
 
 	// initial state is "nothing selected"
 	updateInput(-1);
