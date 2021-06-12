@@ -52,10 +52,14 @@ public:
 	/*! Checks if all referenced schedule is valid. */
 	bool isValid() const;
 
-	/*! Multiply a schedule with another schedule. */
+	/*! Multiply a schedule with another schedule. Returns the result schedule. */
 	Schedule multiply(const Schedule &other) const;
 
+	/*! Multiply a schedule with constant value. Returns the result schedule. */
 	Schedule multiply(double val) const;
+
+	/*! Add a constant value to a schedule. Returns the result schedule. */
+	Schedule add(double val) const;
 
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;

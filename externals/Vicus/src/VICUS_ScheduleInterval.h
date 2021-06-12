@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -60,6 +60,9 @@ public:
 
 	/*! Multiply a value to schedule intervals and create a new one. */
 	ScheduleInterval multiply(double val)const;
+
+	/*! Add a value to a schedule interval and returns the result. */
+	ScheduleInterval add(double val) const;
 
 	/*! Comparsion operator. */
 	bool operator!=(const ScheduleInterval &other) const;

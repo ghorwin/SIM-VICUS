@@ -159,6 +159,22 @@ DailyCycle DailyCycle::multiply(double val) const {
 	return dc;
 }
 
+DailyCycle DailyCycle::add(double val) const{
+	FUNCID(DailyCycle::add);
+	DailyCycle dc;
+	if(!isValid()){
+		//Schedule interval '%1' with (id=%2) is not valid.
+		return dc;
+	}
+
+	dc = *this;
+
+	for(unsigned int i=0; i<dc.m_values.size(); ++i)
+		dc.m_values[i] += val;
+
+	return dc;
+}
+
 
 bool DailyCycle::operator!=(const DailyCycle & other) const {
 	if (m_values != other.m_values)  return true;

@@ -167,6 +167,25 @@ Schedule Schedule::multiply(double val) const {
 	return sched;
 }
 
+Schedule Schedule::add(double val) const{
+	FUNCID(Schedule::add(double));
+
+	Schedule sched;
+
+	if(!isValid()){
+		//Schedule '%1' with (id=%2) is not valid.
+		return sched;
+	}
+
+	//make a copy of the other schedule to the new schedule
+	sched = *this;
+
+	for(unsigned int i=0; i<sched.m_periods.size(); ++i)
+		sched.m_periods[i] = sched.m_periods[i].add(val);
+
+	return sched;
+}
+
 AbstractDBElement::ComparisonResult Schedule::equal(const AbstractDBElement *other) const {
 	const Schedule * otherSched = dynamic_cast<const Schedule*>(other);
 	if (otherSched  == nullptr)

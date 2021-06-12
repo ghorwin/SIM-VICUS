@@ -190,6 +190,22 @@ ScheduleInterval ScheduleInterval::multiply(double val) const{
 
 }
 
+ScheduleInterval ScheduleInterval::add(double val) const{
+	FUNCID(ScheduleInterval::add);
+	ScheduleInterval schedInt;
+	if(!isValid()){
+		//Schedule interval '%1' with (id=%2) is not valid.
+		return schedInt;
+	}
+
+	schedInt = *this;
+
+	for(unsigned int i=0; i<schedInt.m_dailyCycles.size(); ++i)
+		schedInt.m_dailyCycles[i] = schedInt.m_dailyCycles[i].add(val);
+
+	return schedInt;
+}
+
 bool ScheduleInterval::operator!=(const ScheduleInterval &other) const {
 	if(m_displayName != other.m_displayName ||
 			m_intervalStartDay != other.m_intervalStartDay)
