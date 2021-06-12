@@ -1183,18 +1183,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 	//create a zero-value schedule for internal loads later
 	VICUS::Schedule zeroValueSched;
-	zeroValueSched.m_periods.push_back(VICUS::ScheduleInterval());
-	VICUS::ScheduleInterval & zeroSchedInt = zeroValueSched.m_periods.back();
-	zeroSchedInt.m_intervalStartDay = 0;
-	zeroSchedInt.m_displayName.setEncodedString("Zero Value");
-	zeroSchedInt.m_dailyCycles.push_back(VICUS::DailyCycle());
-	VICUS::DailyCycle &zeroDC = zeroSchedInt.m_dailyCycles.back();
-	zeroDC.m_timePoints.push_back(0);
-	zeroDC.m_values.push_back(0);
-	zeroDC.m_dayTypes = std::vector<int>{NANDRAD::Schedule::ST_MONDAY, NANDRAD::Schedule::ST_TUESDAY, NANDRAD::Schedule::ST_WEDNESDAY,
-			NANDRAD::Schedule::ST_THURSDAY, NANDRAD::Schedule::ST_FRIDAY, NANDRAD::Schedule::ST_SATURDAY, NANDRAD::Schedule::ST_SUNDAY};
-
-
+	zeroValueSched.createConstSchedule();
 
 	//loop for zone templates
 	for (const std::pair<unsigned int,std::map< double,  std::vector<unsigned int>>> &ob : zoneTemplateIdToAreaToRoomIds) {
@@ -1592,42 +1581,53 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 				unsigned int heatingSchedId = thermo->m_heatingSetpointScheduleId;
 				unsigned int coolingSchedId = thermo->m_coolingSetpointScheduleId;
 
-				bool foundHeatOrCoolSched = false;
-				if(heatingSchedId != VICUS::INVALID_ID){
-					//check if schedule is in data base
-					const VICUS::Schedule *heatingSched = element(m_embeddedDB.m_schedules, heatingSchedId);
-					if(heatingSched != nullptr){
-						foundHeatOrCoolSched = true;
-						if(!heatingSched->isValid())
-							IBK::Exception(IBK::FormatString("Heating schedule with id %1 and name '%2' is not in valid.")
-										   .arg(heatingSchedId).arg(heatingSched->m_displayName.string()), FUNC_ID);
-						std::string heatSchedParaName = NANDRAD::KeywordList::Keyword("Thermostat::para_t", NANDRAD::Thermostat::P_HeatingSetpoint);
-								heatSchedParaName += "Schedule [C]";
-
-						addVicusScheduleToNandradProject(*heatingSched, heatSchedParaName, p, thermoN.m_zoneObjectList);
-					}
-				}
-				if(coolingSchedId != VICUS::INVALID_ID){
-					//check if schedule is in data base
-					const VICUS::Schedule *coolingSched = element(m_embeddedDB.m_schedules, coolingSchedId);
-					if(coolingSched != nullptr){
-						foundHeatOrCoolSched = true;
-						if(!coolingSched->isValid())
-							IBK::Exception(IBK::FormatString("Coolting schedule with id %1 and name '%2' is not in valid.")
-										   .arg(coolingSchedId).arg(coolingSched->m_displayName.string()), FUNC_ID);
-						std::string coolSchedParaName = NANDRAD::KeywordList::Keyword("Thermostat::para_t", NANDRAD::Thermostat::P_CoolingSetpoint);
-								coolSchedParaName += "Schedule [C]";
-
-						addVicusScheduleToNandradProject(*coolingSched, coolSchedParaName, p, thermoN.m_zoneObjectList);
-					}
-				}
-
-				if(!foundHeatOrCoolSched){
+				if(heatingSchedId == VICUS::INVALID_ID && coolingSchedId == VICUS::INVALID_ID){
 					throw IBK::Exception(IBK::FormatString("No valid heating or cooling schedules were found. "
 									"Error in Thermostat #%1 with name '%2'").arg(thermo->m_id).arg(thermo->m_displayName.string()), FUNC_ID);
 				}
 
-				//we dont support RadiantTemperature
+				std::string heatSchedParaName = NANDRAD::KeywordList::Keyword("Thermostat::para_t", NANDRAD::Thermostat::P_HeatingSetpoint);
+						heatSchedParaName += "Schedule [C]";
+				if(heatingSchedId != VICUS::INVALID_ID){
+					//check if schedule is in data base
+					const VICUS::Schedule *heatingSched = nullptr;
+					heatingSched = element(m_embeddedDB.m_schedules, heatingSchedId);
+					if(heatingSched != nullptr){
+						if(!heatingSched->isValid())
+							IBK::Exception(IBK::FormatString("Heating schedule with id %1 and name '%2' is not in valid.")
+										   .arg(heatingSchedId).arg(heatingSched->m_displayName.string()), FUNC_ID);
+
+						addVicusScheduleToNandradProject(*heatingSched, heatSchedParaName, p, thermoN.m_zoneObjectList);
+					}
+				}
+				else{
+					VICUS::Schedule *hs = new VICUS::Schedule();
+					//create a heating schedule with a very low heating value
+					hs->createConstSchedule(-100);
+					addVicusScheduleToNandradProject(*hs, heatSchedParaName, p, thermoN.m_zoneObjectList);
+				}
+
+				std::string coolSchedParaName = NANDRAD::KeywordList::Keyword("Thermostat::para_t", NANDRAD::Thermostat::P_CoolingSetpoint);
+						coolSchedParaName += "Schedule [C]";
+				if(coolingSchedId != VICUS::INVALID_ID){
+					//check if schedule is in data base
+					const VICUS::Schedule *coolingSched = element(m_embeddedDB.m_schedules, coolingSchedId);
+					if(coolingSched != nullptr){
+						if(!coolingSched->isValid())
+							IBK::Exception(IBK::FormatString("Coolting schedule with id %1 and name '%2' is not in valid.")
+										   .arg(coolingSchedId).arg(coolingSched->m_displayName.string()), FUNC_ID);
+
+						addVicusScheduleToNandradProject(*coolingSched, coolSchedParaName, p, thermoN.m_zoneObjectList);
+					}
+				}
+				else{
+					VICUS::Schedule *cs = new VICUS::Schedule();
+					//create a cooling schedule with a very high cooling value
+					cs->createConstSchedule(200);
+					addVicusScheduleToNandradProject(*cs, coolSchedParaName, p, thermoN.m_zoneObjectList);
+				}
+
+				//we dont support RadiantTemperature now
 				thermoN.m_temperatureType =  thermo->m_controlValue == VICUS::ZoneControlThermostat::CV_AirTemperature ?
 																	  NANDRAD::Thermostat::TT_AirTemperature :
 																	  NANDRAD::Thermostat::TT_OperativeTemperature;
@@ -1642,12 +1642,25 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 		// *** infiltration and ventilation ***
 		{
+			unsigned int idNatVentCtrl = zt->m_idReferences[VICUS::ZoneTemplate::ST_ControlNaturalVentilation];
+			const VICUS::ZoneControlNaturalVentilation * natVentCtrl = nullptr;
+			bool isCtrl = false;
+			if(idNatVentCtrl != VICUS::INVALID_ID){
+				natVentCtrl = element(m_embeddedDB.m_zoneControlVentilationNatural, idNatVentCtrl);
+				if(natVentCtrl != nullptr){
+					//set bool for ventilation models later
+					isCtrl = true;
+
+				}
+			}
+
 			//TODO Dirk
 			enum VentiType{
 				Infiltration,
 				Ventilation,
-				InfAndVenti
+				InfAndVenti,
 			};
+			//get ids and check
 			type = VICUS::ZoneTemplate::ST_Infiltration;
 			unsigned int idSubTempInf = zt->m_idReferences[type];
 			bool isInf = idSubTempInf != VICUS::INVALID_ID;
@@ -1704,19 +1717,44 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 						ztBools[counter].m_subTemplateId[type] = idSubTempVent;
 						const VICUS::VentilationNatural* vent = element(m_embeddedDB.m_ventilationNatural, idSubTempVent);
 						if(vent != nullptr){
-							natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Scheduled;
+							if(isCtrl){
+								natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR;
+								NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+																   NANDRAD::NaturalVentilationModel::P_VentilationRate,
+																   0);
+								//set all control values
+								NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+																   NANDRAD::NaturalVentilationModel::P_MaximumEnviromentAirTemperatureACRLimit,
+																   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMax].get_value("C"));
+								NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+																   NANDRAD::NaturalVentilationModel::P_MaximumRoomAirTemperatureACRLimit,
+																   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMax].get_value("C"));
+								NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+																   NANDRAD::NaturalVentilationModel::P_MinimumEnviromentAirTemperatureACRLimit,
+																   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMin].get_value("C"));
+								NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+																   NANDRAD::NaturalVentilationModel::P_MinimumRoomAirTemperatureACRLimit,
+																   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMin].get_value("C"));
+								NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+																   NANDRAD::NaturalVentilationModel::P_DeltaTemperatureACRLimit,
+																   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureDifference].get_value("K"));
+								NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+																   NANDRAD::NaturalVentilationModel::P_WindSpeedACRLimit,
+																   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_WindSpeedMax].get_value("m/s"));
+
+							}
+							else
+								natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Scheduled;
 							unsigned int schedId = vent->m_scheduleId;
 							const VICUS::Schedule *schedMan = element(m_embeddedDB.m_schedules, schedId);
 							if(schedMan == nullptr)
-								IBK::Exception(IBK::FormatString("Air change rate modification schedule with id %1 is not in database.")
+								IBK::Exception(IBK::FormatString("Air change rate modification schedule with id #%1 is not in database.")
 											   .arg(schedId), FUNC_ID);
 							if(!schedMan->isValid())
-								IBK::Exception(IBK::FormatString("Air change rate modification schedule with id %1 and name '%2' is not in valid.")
+								IBK::Exception(IBK::FormatString("Air change rate modification schedule with id #%1 and name '%2' is not in valid.")
 											   .arg(schedId).arg(schedMan->m_displayName.string()), FUNC_ID);
 							VICUS::Schedule ventSched = schedMan->multiply(vent->m_para[VICUS::VentilationNatural::P_AirChangeRate].get_value("1/h"));
 
-//							std::string uniqueName = createUniqueNandradObjListAndName(zt->m_displayName.string(), allRoomIdsForThisZt, p, NANDRAD::ModelInputReference::MRT_ZONE);
-//							mapObjListNameToRoomIds[uniqueName] = allRoomIdsForThisZt;
 							addVicusScheduleToNandradProject(ventSched, "VentilationRateSchedule [1/h]", p, natVentMod.m_zoneObjectList);
 						}
 					}break;
@@ -1728,42 +1766,73 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 						ztBools[counter].m_subTemplateId[type2] = idSubTempVent;
 						const VICUS::VentilationNatural* vent = element(m_embeddedDB.m_ventilationNatural, idSubTempVent);
 						if(inf == nullptr || vent == nullptr)
-							throw IBK::Exception(IBK::FormatString("Infiltration id %1 and/or ventilation id %2 model is not found.")
+							throw IBK::Exception(IBK::FormatString("Infiltration id #%1 and/or ventilation id #%2 model is not found.")
 												 .arg(idSubTempInf).arg(idSubTempVent), FUNC_ID);
-						natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR;
+						if(!inf->isValid())
+							throw IBK::Exception(IBK::FormatString("Infiltration id #%1 is not valid.")
+												 .arg(idSubTempInf), FUNC_ID);
+						/* TODO Dirk->Andreas wie bekomm ich hier die Datenbanken rein?
+						if(!vent->isValid())
+							throw IBK::Exception(IBK::FormatString("Ventilation id #%1 is not valid.")
+												 .arg(idSubTempVent), FUNC_ID);
+						*/
+
+						//check infiltration value
+						double infVal = 0;
 						switch(inf->m_airChangeType){
 							case VICUS::Infiltration::AC_normal:{
-								NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
-																   NANDRAD::NaturalVentilationModel::P_VentilationRate,
-																   inf->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h"));
+								infVal = inf->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h");
 							}break;
 							case VICUS::Infiltration::AC_n50:{
-								double val = inf->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h");
-								val *= inf->m_para[VICUS::Infiltration::P_ShieldingCoefficient].get_value("-");
-								NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
-																   NANDRAD::NaturalVentilationModel::P_VentilationRate,
-																   val);
+								infVal = inf->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h");
+								infVal *= inf->m_para[VICUS::Infiltration::P_ShieldingCoefficient].get_value("-");
 							}break;
-							case VICUS::Infiltration::NUM_AC:{
-								NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
-																   NANDRAD::NaturalVentilationModel::P_VentilationRate,
-																   0);
-							}break;
+							case VICUS::Infiltration::NUM_AC: break;		//only for compiler
 						}
+
+						// get ventilation schedule
+						// multiply const value with scheduele
 						unsigned int schedId = vent->m_scheduleId;
 						const VICUS::Schedule *schedMan = element(m_embeddedDB.m_schedules, schedId);
 						if(schedMan == nullptr)
-							IBK::Exception(IBK::FormatString("Air change rate modification schedule with id %1 is not in database.")
+							IBK::Exception(IBK::FormatString("Air change rate modification schedule with id #%1 is not in database.")
 										   .arg(schedId), FUNC_ID);
 						if(!schedMan->isValid())
 							IBK::Exception(IBK::FormatString("Air change rate modification schedule with id %1 and name '%2' is not in valid.")
 										   .arg(schedId).arg(schedMan->m_displayName.string()), FUNC_ID);
 						VICUS::Schedule ventSched = schedMan->multiply(vent->m_para[VICUS::VentilationNatural::P_AirChangeRate].get_value("1/h"));
 
-						//							std::string uniqueName = createUniqueNandradObjListAndName(zt->m_displayName.string(), allRoomIdsForThisZt, p, NANDRAD::ModelInputReference::MRT_ZONE);
-						//							mapObjListNameToRoomIds[uniqueName] = allRoomIdsForThisZt;
+						if(isCtrl){
+							natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR;
+							NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+															   NANDRAD::NaturalVentilationModel::P_VentilationRate,
+															   infVal);
+							//all control values
+							NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+															   NANDRAD::NaturalVentilationModel::P_MaximumEnviromentAirTemperatureACRLimit,
+															   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMax].get_value("C"));
+							NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+															   NANDRAD::NaturalVentilationModel::P_MaximumRoomAirTemperatureACRLimit,
+															   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMax].get_value("C"));
+							NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+															   NANDRAD::NaturalVentilationModel::P_MinimumEnviromentAirTemperatureACRLimit,
+															   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMin].get_value("C"));
+							NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+															   NANDRAD::NaturalVentilationModel::P_MinimumRoomAirTemperatureACRLimit,
+															   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMin].get_value("C"));
+							NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+															   NANDRAD::NaturalVentilationModel::P_DeltaTemperatureACRLimit,
+															   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureDifference].get_value("K"));
+							NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+															   NANDRAD::NaturalVentilationModel::P_WindSpeedACRLimit,
+															   natVentCtrl->m_para[VICUS::ZoneControlNaturalVentilation::ST_WindSpeedMax].get_value("m/s"));
+						}
+						else{
+							natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Scheduled;
+							if(infVal > 0)
+								ventSched = ventSched.add(infVal);
+						}
 						addVicusScheduleToNandradProject(ventSched, "VentilationRateSchedule [1/h]", p, natVentMod.m_zoneObjectList);
-
 					}break;
 				}
 				p.m_models.m_naturalVentilationModels.push_back(natVentMod);
