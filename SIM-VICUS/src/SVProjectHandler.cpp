@@ -729,6 +729,75 @@ bool SVProjectHandler::importEmbeddedDB() {
 		);
 	}
 
+	// infiltration
+	std::map<unsigned int, unsigned int> infiltrationIDMap;
+	for (VICUS::Infiltration & e : m_project->m_embeddedDB.m_infiltration) {
+
+		importDBElement(e, db.m_infiltration, infiltrationIDMap,
+						"Infiltration '%1' with #%2 imported -> new ID #%3.\n",
+						"Infiltration '%1' with #%2 exists already -> new ID #%3.\n"
+		);
+	}
+
+	// ventilation
+	std::map<unsigned int, unsigned int> ventilationIDMap;
+	for (VICUS::VentilationNatural & e : m_project->m_embeddedDB.m_ventilationNatural) {
+
+		importDBElement(e, db.m_ventilationNatural, ventilationIDMap,
+						"Natural ventilation '%1' with #%2 imported -> new ID #%3.\n",
+						"Natural ventilation '%1' with #%2 exists already -> new ID #%3.\n"
+		);
+	}
+
+	// zone control thermostat
+	std::map<unsigned int, unsigned int> thermostatIDMap;
+	for (VICUS::ZoneControlThermostat & e : m_project->m_embeddedDB.m_zoneControlThermostat) {
+
+		importDBElement(e, db.m_zoneControlThermostat, thermostatIDMap,
+						"Thermostat '%1' with #%2 imported -> new ID #%3.\n",
+						"Thermostat '%1' with #%2 exists already -> new ID #%3.\n"
+		);
+	}
+
+	// zone control natural ventilation
+	std::map<unsigned int, unsigned int> ventilationCtrlIDMap;
+	for (VICUS::ZoneControlNaturalVentilation & e : m_project->m_embeddedDB.m_zoneControlVentilationNatural) {
+
+		importDBElement(e, db.m_zoneControlVentilationNatural, ventilationCtrlIDMap,
+						"Natural ventilation control '%1' with #%2 imported -> new ID #%3.\n",
+						"Natural ventilation control '%1' with #%2 exists already -> new ID #%3.\n"
+		);
+	}
+
+	// zone control shading
+	std::map<unsigned int, unsigned int> shadingCtrlIDMap;
+	for (VICUS::ZoneControlShading & e : m_project->m_embeddedDB.m_zoneControlShading) {
+
+		importDBElement(e, db.m_zoneControlShading, shadingCtrlIDMap,
+						"Shading control '%1' with #%2 imported -> new ID #%3.\n",
+						"Shading control '%1' with #%2 exists already -> new ID #%3.\n"
+		);
+	}
+
+	// HVAC ideal heating
+	std::map<unsigned int, unsigned int> idealHeatingCoolingIDMap;
+	for (VICUS::ZoneIdealHeatingCooling & e : m_project->m_embeddedDB.m_zoneIdealHeatingCooling) {
+
+		importDBElement(e, db.m_zoneIdealHeatingCooling, idealHeatingCoolingIDMap,
+						"HVAC ideal heating/cooling '%1' with #%2 imported -> new ID #%3.\n",
+						"HVAC ideal heating/cooling '%1' with #%2 exists already -> new ID #%3.\n"
+		);
+	}
+
+	// zone templates
+	std::map<unsigned int, unsigned int> zoneTemplatesIDMap;
+	for (VICUS::ZoneTemplate & e : m_project->m_embeddedDB.m_zoneTemplates) {
+
+		importDBElement(e, db.m_zoneTemplates, zoneTemplatesIDMap,
+						"Zone template '%1' with #%2 imported -> new ID #%3.\n",
+						"Zone template '%1' with #%2 exists already -> new ID #%3.\n"
+		);
+	}
 	// any ids modified?
 	idsModified |= !materialIDMap.empty();
 	idsModified |= !constructionIDMap.empty();
@@ -739,6 +808,13 @@ bool SVProjectHandler::importEmbeddedDB() {
 	idsModified |= !subSurfaceComponentIDMap.empty();
 	idsModified |= !schedulesIDMap.empty();
 	idsModified |= !internalLoadIDMap.empty();
+	idsModified |= !infiltrationIDMap.empty();
+	idsModified |= !ventilationIDMap.empty();
+	idsModified |= !thermostatIDMap.empty();
+	idsModified |= !ventilationCtrlIDMap.empty();
+	idsModified |= !shadingCtrlIDMap.empty();
+	idsModified |= !idealHeatingCoolingIDMap.empty();
+	idsModified |= !zoneTemplatesIDMap.empty();
 	return idsModified;
 }
 
