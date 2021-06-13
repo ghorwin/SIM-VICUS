@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SVDialogSelectNetworkPipes</class>
- <widget class="QDialog" name="SVDialogSelectNetworkPipes">
+ <class>SVNetworkDialogSelectPipes</class>
+ <widget class="QDialog" name="SVNetworkDialogSelectPipes">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -34,7 +34,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>SVDialogSelectNetworkPipes</receiver>
+   <receiver>SVNetworkDialogSelectPipes</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -50,7 +50,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>SVDialogSelectNetworkPipes</receiver>
+   <receiver>SVNetworkDialogSelectPipes</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

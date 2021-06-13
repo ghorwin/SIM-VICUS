@@ -24,7 +24,7 @@
 */
 
 #include "SVNetworkDialogSelectPipes.h"
-#include "ui_SVDialogSelectNetworkPipes.h"
+#include "ui_SVNetworkDialogSelectPipes.h"
 
 #include "SVSettings.h"
 
@@ -32,7 +32,7 @@
 
 SVNetworkDialogSelectPipes::SVNetworkDialogSelectPipes(QWidget *parent) :
 	QDialog(parent),
-	m_ui(new Ui::SVDialogSelectNetworkPipes)
+	m_ui(new Ui::SVNetworkDialogSelectPipes)
 {
 	m_ui->setupUi(this);
 }

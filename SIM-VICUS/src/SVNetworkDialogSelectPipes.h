@@ -33,7 +33,7 @@ namespace VICUS {
 }
 
 namespace Ui {
-class SVDialogSelectNetworkPipes;
+	class SVNetworkDialogSelectPipes;
 }
 
 class SVNetworkDialogSelectPipes : public QDialog
@@ -47,7 +47,7 @@ public:
 	void edit(VICUS::Network &network);
 
 private:
-	Ui::SVDialogSelectNetworkPipes *m_ui;
+	Ui::SVNetworkDialogSelectPipes *m_ui;
 };
 
 #endif // SVDialogSelectNetworkPipesH
