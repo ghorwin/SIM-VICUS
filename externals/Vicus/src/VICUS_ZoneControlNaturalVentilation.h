@@ -47,12 +47,12 @@ public:
 
 	/*! Schedule types for control. */
 //	enum ScheduleType{
-//		ST_TemperatureAirMax,		// Keyword: TemperatureAirMax							'Upper limit for room air temperature.'
-//		ST_TemperatureAirMin,		// Keyword: TemperatureAirMin							'Lower limit for room air temperature.'
-//		ST_TemperatureOutsideMax,	// Keyword: TemperatureOutsideMax						'Upper limit for outside air temperature.'
-//		ST_TemperatureOutsideMin,	// Keyword: TemperatureOutsideMin						'Lower limit for outside air temperature.'
-//		ST_TemperatureDifference,	// Keyword: TemperatureDifference						'Temperature difference limit (inside - outside).'
-//		ST_WindSpeedMax,			// Keyword: WindSpeedMax								'Limit for wind speed .'
+//		ST_TemperatureAirMax,		// Keywordx: TemperatureAirMax							'Upper limit for room air temperature.'
+//		ST_TemperatureAirMin,		// Keywordx: TemperatureAirMin							'Lower limit for room air temperature.'
+//		ST_TemperatureOutsideMax,	// Keywordx: TemperatureOutsideMax						'Upper limit for outside air temperature.'
+//		ST_TemperatureOutsideMin,	// Keywordx: TemperatureOutsideMin						'Lower limit for outside air temperature.'
+//		ST_TemperatureDifference,	// Keywordx: TemperatureDifference						'Temperature difference limit (inside - outside).'
+//		ST_WindSpeedMax,			// Keywordx: WindSpeedMax								'Limit for wind speed .'
 //		NUM_ST
 //	};
 
