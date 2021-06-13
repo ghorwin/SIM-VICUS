@@ -54,12 +54,12 @@
 					<EmbeddedObject id="1000" displayName="Simple window, with frame and divider">
 						<IBK:Parameter name="Area" unit="m2">5</IBK:Parameter>
 						<!-- A total of 2.5 m2 (half of the gross window area) is occupied by a frame material. -->
-						<Window glazingSystemID="10000">
-							<Frame materialID="1004">
+						<Window glazingSystemId="10000">
+							<Frame materialId="1004">
 								<IBK:Parameter name="Area" unit="m2">1</IBK:Parameter>
 								<IBK:Parameter name="Thickness" unit="cm">1</IBK:Parameter>
 							</Frame>
-							<Divider materialID="1004">
+							<Divider materialId="1004">
 								<IBK:Parameter name="Area" unit="m2">1.5</IBK:Parameter>
 								<IBK:Parameter name="Thickness" unit="cm">1</IBK:Parameter>
 							</Divider>

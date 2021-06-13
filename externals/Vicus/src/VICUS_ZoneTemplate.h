@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -33,6 +33,13 @@
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
+#include "VICUS_Database.h"
+#include "VICUS_InternalLoad.h"
+#include "VICUS_Schedule.h"
+#include "VICUS_ZoneControlThermostat.h"
+#include "VICUS_Infiltration.h"
+#include "VICUS_VentilationNatural.h"
+#include "VICUS_ZoneIdealHeatingCooling.h"
 
 namespace VICUS {
 
@@ -47,13 +54,15 @@ public:
 		//dont change the order
 		//first have a look to
 		//SVSimulationStartNandrad::generateBuildingProjectData
-		ST_IntLoadPerson,			// Keyword: IntLoadPerson
-		ST_IntLoadEquipment,		// Keyword: IntLoadEquipment
-		ST_IntLoadLighting,			// Keyword: IntLoadLighting
-		ST_IntLoadOther,			// Keyword: IntLoadOther
-		ST_ControlThermostat,		// Keyword: ControlThermostat
-		ST_Infiltration,			// Keyword: Infiltration
-		ST_VentilationNatural,		// Keyword: NaturalVentilation
+		ST_IntLoadPerson,					// Keyword: IntLoadPerson
+		ST_IntLoadEquipment,				// Keyword: IntLoadEquipment
+		ST_IntLoadLighting,					// Keyword: IntLoadLighting
+		ST_IntLoadOther,					// Keyword: IntLoadOther
+		ST_ControlThermostat,				// Keyword: ControlThermostat
+		ST_ControlNaturalVentilation,		// Keyword: ControlNaturalVentilation
+		ST_Infiltration,					// Keyword: Infiltration
+		ST_VentilationNatural,				// Keyword: NaturalVentilation
+		ST_IdealHeatingCooling,				// Keyword: IdealHeatingCooling
 		NUM_ST
 	};
 
@@ -65,19 +74,18 @@ public:
 	VICUS_COMPARE_WITH_ID
 
 	/*! Checks if all referenced ZoneTemplate is valid. */
-	bool isValid() const;
+	bool isValid(const Database<InternalLoad> & intLoadDB,
+				 const Database<ZoneControlThermostat> & thermostatDB,
+				 const Database<Schedule> &schedulesDB,
+				 const Database<Infiltration> &infiltraionDB,
+				 const Database<VentilationNatural> &ventilationDB,
+				 const Database<ZoneIdealHeatingCooling> &idealHeatingCoolingDB) const;
 
 	/*! Returns number of assigned sub-templates (needed by tree-model). */
 	unsigned int subTemplateCount() const;
 
-	///TODO Dirk->Andreas das funktioniert nicht wie beschrieben oder ich hab die Beschreibung nicht kapiert
-	/// wenn ich eine valide id in m_idReferences[ST_IntLoadEquipment] habe z.B. 70001
-	/// und sonst invalide ids nur
-	/// und ich den index ST_IntLoadEquipment (index wäre dann 1) abfrage
-	/// dann liefert er mir NUM_ST
-	/// das ist doch falsch oder?
 	/*! Returns the type of reference by index, counting only the used references, i.e. references not INVALID_ID.
-		For example, if m_idIntLoadPerson == INVALID_ID and m_idIntLoadElectricEquipment has a valid ID, than
+		For example, if m_idReferences[ST_IntLoadPerson] == INVALID_ID and m_idReferences[ST_IntLoadEquipment] has a valid ID, than
 		usedReference(0) returns ST_IntLoadEquipment.
 		\return Returns type of corresponding id reference or NUM_ST, if index is larger than the number of non-empty
 				id references.
@@ -85,7 +93,7 @@ public:
 	SubTemplateType usedReference(unsigned int index) const;
 
 	/*! Comparison operator */
-	ComparisonResult equal(const AbstractDBElement *other) const;
+	ComparisonResult equal(const AbstractDBElement *other) const override;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -106,35 +114,6 @@ public:
 
 	/*! Stores id references for all sub-templates. */
 	IDType							m_idReferences[NUM_ST];							// XML:E
-
-#if 0
-	/*! Internal loads person model id. */
-	unsigned int					m_idIntLoadPerson			= INVALID_ID;
-
-	/*! Internal loads electric equipment model id. */
-	unsigned int					m_idIntLoadElectricEquipment = INVALID_ID;
-
-	/*! Internal loads electric lighting model id. */
-	unsigned int					m_idIntLoadLighting			= INVALID_ID;
-
-	/*! Internal loads other equipment model id. */
-	unsigned int					m_idIntLoadOther			= INVALID_ID;
-
-	/*! Control thermostat model id. */
-	unsigned int					m_idControlThermostat		= INVALID_ID;
-
-	/*! Control shading model id. */
-	unsigned int					m_idControlShading			= INVALID_ID;
-
-	/*! Natural ventilation model id. */
-	unsigned int					m_idNaturalVentilation		= INVALID_ID;
-
-	/*! Mechanical ventilation model id. */
-	unsigned int					m_idMechanicalVentilation	= INVALID_ID;
-
-	/*! Infiltration model id. */
-	unsigned int					m_idInfiltration			= INVALID_ID;
-#endif
 };
 
 

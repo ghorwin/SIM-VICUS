@@ -52,7 +52,7 @@ SVDBZoneTemplateEditWidget::SVDBZoneTemplateEditWidget(QWidget *parent) :
 	m_ui->lineEditName->setDialog3Caption("Boundary condition identification name");
 
 	// initial state is "nothing selected"
-	updateInput(-1, -1, 0);
+	updateInput(-1, -1, VICUS::ZoneTemplate::NUM_ST);
 }
 
 
@@ -67,7 +67,7 @@ void SVDBZoneTemplateEditWidget::setup(SVDatabase * db, SVDBZoneTemplateTreeMode
 }
 
 
-void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, int subTemplateType) {
+void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, VICUS::ZoneTemplate::SubTemplateType subTemplateType) {
 	m_current = nullptr; // disable edit triggers
 
 	bool isEnabled = id == -1 ? false : true;
@@ -77,9 +77,23 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, int subT
 	m_ui->lineEditName->setEnabled(isEnabled);
 	m_ui->pushButtonColor->setEnabled(isEnabled);
 
-	m_ui->pushButtonAddPersonLoad->setEnabled(false);		m_ui->pushButtonAddPersonLoad->setChecked(false);
-	m_ui->pushButtonAddElectricLoad->setEnabled(false);		m_ui->pushButtonAddElectricLoad->setChecked(false);
-	m_ui->pushButtonAddLightLoad->setEnabled(false);		m_ui->pushButtonAddLightLoad->setChecked(false);
+	m_ui->pushButtonAddPersonLoad->setEnabled(false);					m_ui->pushButtonAddPersonLoad->setChecked(false);
+	m_ui->pushButtonAddElectricLoad->setEnabled(false);					m_ui->pushButtonAddElectricLoad->setChecked(false);
+	m_ui->pushButtonAddLightLoad->setEnabled(false);					m_ui->pushButtonAddLightLoad->setChecked(false);
+
+	m_ui->pushButtonAddInfiltration->setEnabled(false);					m_ui->pushButtonAddInfiltration->setChecked(false);
+	m_ui->pushButtonAddVentilationNatural->setEnabled(false);			m_ui->pushButtonAddVentilationNatural->setChecked(false);
+
+	m_ui->pushButtonAddThermostat->setEnabled(false);					m_ui->pushButtonAddThermostat->setChecked(false);
+	m_ui->pushButtonAddIdealHeatingCooling->setEnabled(false);			m_ui->pushButtonAddIdealHeatingCooling->setChecked(false);
+
+	///TODO Dirk später aktivieren wenn funktion eingebaut ist
+	m_ui->pushButtonAddShading->setEnabled(false);						m_ui->pushButtonAddShading->setChecked(false);
+	m_ui->pushButtonAddVentilationNaturalControl->setEnabled(false);	m_ui->pushButtonAddVentilationNaturalControl->setChecked(false);
+
+	m_ui->pushButtonAddShading->setVisible(false);
+	m_ui->pushButtonAddVentilationNaturalControl->setVisible(false);
+
 
 	if (!isEnabled) {
 		// clear input controls
@@ -134,10 +148,22 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, int subT
 		m_ui->pushButtonAddInfiltration->setChecked(true);
 	}
 	if (item->m_idReferences[VICUS::ZoneTemplate::ST_VentilationNatural] == VICUS::INVALID_ID)
-		m_ui->pushButtonAddVentilationNatrual->setEnabled(true);
+		m_ui->pushButtonAddVentilationNatural->setEnabled(true);
 	else{
-		m_ui->pushButtonAddVentilationNatrual->setEnabled(false);
-		m_ui->pushButtonAddVentilationNatrual->setChecked(true);
+		m_ui->pushButtonAddVentilationNatural->setEnabled(false);
+		m_ui->pushButtonAddVentilationNatural->setChecked(true);
+	}
+	if (item->m_idReferences[VICUS::ZoneTemplate::ST_ControlThermostat] == VICUS::INVALID_ID)
+		m_ui->pushButtonAddThermostat->setEnabled(true);
+	else{
+		m_ui->pushButtonAddThermostat->setEnabled(false);
+		m_ui->pushButtonAddThermostat->setChecked(true);
+	}
+	if (item->m_idReferences[VICUS::ZoneTemplate::ST_IdealHeatingCooling] == VICUS::INVALID_ID)
+		m_ui->pushButtonAddIdealHeatingCooling->setEnabled(true);
+	else{
+		m_ui->pushButtonAddIdealHeatingCooling->setEnabled(false);
+		m_ui->pushButtonAddIdealHeatingCooling->setChecked(true);
 	}
 
 
@@ -151,7 +177,7 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, int subT
 	m_ui->widget->setVisible(true);
 
 	// determine which sub-template was selected
-	switch ((VICUS::ZoneTemplate::SubTemplateType)subTemplateType) {
+	switch (subTemplateType) {
 		case VICUS::ZoneTemplate::ST_Infiltration: {
 			m_ui->labelSubTemplate->setText(tr("Infiltration:"));
 			// lookup corresponding dataset entry in database
@@ -207,7 +233,25 @@ void SVDBZoneTemplateEditWidget::updateInput(int id, int subTemplateId, int subT
 		break;
 		case VICUS::ZoneTemplate::ST_IntLoadOther:
 		break;
-		case VICUS::ZoneTemplate::ST_ControlThermostat:
+		case VICUS::ZoneTemplate::ST_ControlThermostat:{
+			m_ui->labelSubTemplate->setText(tr("Thermostat:"));
+			// lookup corresponding dataset entry in database
+			const VICUS::ZoneControlThermostat * thermo = m_db->m_zoneControlThermostat[(unsigned int)subTemplateId];
+			if (thermo == nullptr)
+				m_ui->lineEditSubComponent->setText(tr("<select>"));
+			else
+				m_ui->lineEditSubComponent->setText( QtExt::MultiLangString2QString(thermo->m_displayName) );
+		}
+		break;
+		case VICUS::ZoneTemplate::ST_IdealHeatingCooling:{
+			m_ui->labelSubTemplate->setText(tr("Ideal Heating/Cooling:"));
+			// lookup corresponding dataset entry in database
+			const VICUS::ZoneIdealHeatingCooling * ideal = m_db->m_zoneIdealHeatingCooling[(unsigned int)subTemplateId];
+			if (ideal == nullptr)
+				m_ui->lineEditSubComponent->setText(tr("<select>"));
+			else
+				m_ui->lineEditSubComponent->setText( QtExt::MultiLangString2QString(ideal->m_displayName) );
+		}
 		break;
 
 		case VICUS::ZoneTemplate::NUM_ST:
@@ -224,8 +268,8 @@ void SVDBZoneTemplateEditWidget::on_lineEditName_editingFinished() {
 		m_current->m_displayName = m_ui->lineEditName->string();
 		modelModify();
 	}
+	refreshUi();
 }
-
 
 void SVDBZoneTemplateEditWidget::on_pushButtonColor_colorChanged() {
 	Q_ASSERT(m_current != nullptr);
@@ -234,106 +278,128 @@ void SVDBZoneTemplateEditWidget::on_pushButtonColor_colorChanged() {
 		m_current->m_color = m_ui->pushButtonColor->color();
 		modelModify();
 	}
+	refreshUi();
 }
 
-
-
 void SVDBZoneTemplateEditWidget::on_toolButtonSelectSubComponent_clicked() {
-	unsigned int id = VICUS::INVALID_ID;
+	unsigned int id = m_current->m_idReferences[m_currentSubTemplateType];
 
-	switch (m_currentSubTemplateType) {
-		case VICUS::ZoneTemplate::ST_Infiltration:
-			id = SVMainWindow::instance().dbInfiltrationEditDialog()->select(m_current->m_idReferences[m_currentSubTemplateType]);
-		break;
-		case VICUS::ZoneTemplate::ST_VentilationNatural:
-			id = SVMainWindow::instance().dbVentilationNaturalEditDialog()->select(m_current->m_idReferences[m_currentSubTemplateType]);
-		break;
-		case VICUS::ZoneTemplate::ST_IntLoadPerson:
-			id = SVMainWindow::instance().dbInternalLoadsPersonEditDialog()->select(m_current->m_idReferences[m_currentSubTemplateType]);
-		break;
-		case VICUS::ZoneTemplate::ST_IntLoadEquipment:
-			id = SVMainWindow::instance().dbInternalLoadsElectricEquipmentEditDialog()->select(m_current->m_idReferences[m_currentSubTemplateType]);
-		break;
-		case VICUS::ZoneTemplate::ST_IntLoadLighting:
-			id = SVMainWindow::instance().dbInternalLoadsLightsEditDialog()->select(m_current->m_idReferences[m_currentSubTemplateType]);
-		break;
+	if(id != VICUS::INVALID_ID){
+		switch (m_currentSubTemplateType) {
+			case VICUS::ZoneTemplate::ST_IntLoadPerson:			on_pushButtonAddPersonLoad_clicked();			break;
+			case VICUS::ZoneTemplate::ST_IntLoadEquipment:		on_pushButtonAddElectricLoad_clicked();			break;
+			case VICUS::ZoneTemplate::ST_IntLoadLighting:		on_pushButtonAddLightLoad_clicked();			break;
+			case VICUS::ZoneTemplate::ST_IntLoadOther:						break;
+			case VICUS::ZoneTemplate::ST_ControlThermostat:		on_pushButtonAddThermostat_clicked();			break;
+			case VICUS::ZoneTemplate::ST_Infiltration:			on_pushButtonAddInfiltration_clicked();			break;
+			case VICUS::ZoneTemplate::ST_VentilationNatural:	on_pushButtonAddVentilationNatural_clicked();	break;
+			case VICUS::ZoneTemplate::ST_IdealHeatingCooling:	on_pushButtonAddIdealHeatingCooling_clicked();	break;
+			case VICUS::ZoneTemplate::NUM_ST:
+			break;
 
+		}
 	}
+
+
 	if (id != VICUS::INVALID_ID) {
 		// modify existing
 		m_current->m_idReferences[m_currentSubTemplateType] = id;
 		modelModify();
 	}
 	// we must assume that the name of the referenced sub-template has changed, so update controls accordingly
-	updateInput((int)m_current->m_id, (int)m_current->m_idReferences[m_currentSubTemplateType], m_currentSubTemplateType);
+	refreshUi();
 }
 
-
 void SVDBZoneTemplateEditWidget::on_toolButtonRemoveSubComponent_clicked() {
+
 	m_dbModel->deleteChildItem( m_dbModel->indexById(m_current->m_id), m_currentSubTemplateType);
-	emit selectSubTemplate(m_current->m_id, VICUS::ZoneTemplate::NUM_ST);
+
+	// model is updated, view shows state before model update
+	// with different node selected (parent or child)
+	// we need make the treeview to tell the dialog that his index
+	// has changed (triggers selectSubTemplate)
+	// because the treeview
+
+	// m_currentSubTemplate is now parent or an child element
+	emit selectSubTemplate(m_current->m_id, m_currentSubTemplateType);
 }
 
 
 void SVDBZoneTemplateEditWidget::on_pushButtonAddPersonLoad_clicked() {
 	Q_ASSERT(m_current != nullptr);
+	VICUS::ZoneTemplate::SubTemplateType subType = VICUS::ZoneTemplate::ST_IntLoadPerson;
 
 	// open the Internal Loads DB dialog and let user select one
 	unsigned int id = SVMainWindow::instance().dbInternalLoadsPersonEditDialog()->select(VICUS::INVALID_ID);
-	if (id == VICUS::INVALID_ID) return;
-	if (m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson] != id) {
-		if (m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson] == VICUS::INVALID_ID) {
+	if (id == VICUS::INVALID_ID){
+		m_ui->pushButtonAddPersonLoad->setChecked(false);
+		return;
+	}
+	if (m_current->m_idReferences[subType] != id) {
+		if (m_current->m_idReferences[subType] == VICUS::INVALID_ID) {
 			// add new child
-			m_dbModel->addChildItem( m_dbModel->indexById(m_current->m_id), VICUS::ZoneTemplate::ST_IntLoadPerson, id);
-			emit selectSubTemplate(m_current->m_id, (int)VICUS::ZoneTemplate::ST_IntLoadPerson);
+			m_dbModel->addChildItem( m_dbModel->indexById(m_current->m_id), subType, id);
+			emit selectSubTemplate(m_current->m_id, subType);
 		}
 		else {
 			// modify existing
-			m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson] = id;
+			m_current->m_idReferences[subType] = id;
 			modelModify();
 		}
 	}
+	// we must assume that the name of the referenced sub-template has changed, so update controls accordingly
+	refreshUi();
 }
 
 
 void SVDBZoneTemplateEditWidget::on_pushButtonAddElectricLoad_clicked() {
 	Q_ASSERT(m_current != nullptr);
+	VICUS::ZoneTemplate::SubTemplateType subType = VICUS::ZoneTemplate::ST_IntLoadEquipment;
 
 	// open the Internal Loads DB dialog and let user select one
 	unsigned int id = SVMainWindow::instance().dbInternalLoadsElectricEquipmentEditDialog()->select(VICUS::INVALID_ID);
-	if (id == VICUS::INVALID_ID) return;
-	if (m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadEquipment] != id) {
-		if (m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadEquipment] == VICUS::INVALID_ID) {
+	if (id == VICUS::INVALID_ID){
+		m_ui->pushButtonAddElectricLoad->setChecked(false);
+		return;
+	}
+	if (m_current->m_idReferences[subType] != id) {
+		if (m_current->m_idReferences[subType] == VICUS::INVALID_ID) {
 			// add new child
-			m_dbModel->addChildItem( m_dbModel->indexById(m_current->m_id), VICUS::ZoneTemplate::ST_IntLoadEquipment, id);
-			emit selectSubTemplate(m_current->m_id, (int)VICUS::ZoneTemplate::ST_IntLoadEquipment);
+			m_dbModel->addChildItem( m_dbModel->indexById(m_current->m_id), subType, id);
+			emit selectSubTemplate(m_current->m_id, subType);
 		}
 		else {
 			// modify existing
-			m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadEquipment] = id;
+			m_current->m_idReferences[subType] = id;
 			modelModify();
 		}
 	}
+	refreshUi();
 }
 
 void SVDBZoneTemplateEditWidget::on_pushButtonAddLightLoad_clicked() {
 	Q_ASSERT(m_current != nullptr);
+	VICUS::ZoneTemplate::SubTemplateType subType = VICUS::ZoneTemplate::ST_IntLoadLighting;
 
 	// open the Internal Loads DB dialog and let user select one
 	unsigned int id = SVMainWindow::instance().dbInternalLoadsLightsEditDialog()->select(VICUS::INVALID_ID);
-	if (id == VICUS::INVALID_ID) return;
-	if (m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadLighting] != id) {
-		if (m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadLighting] == VICUS::INVALID_ID) {
+	if (id == VICUS::INVALID_ID){
+		m_ui->pushButtonAddLightLoad->setChecked(false);
+		return;
+	}
+	if (m_current->m_idReferences[subType] != id) {
+		if (m_current->m_idReferences[subType] == VICUS::INVALID_ID) {
 			// add new child
-			m_dbModel->addChildItem( m_dbModel->indexById(m_current->m_id), VICUS::ZoneTemplate::ST_IntLoadLighting, id);
-			emit selectSubTemplate(m_current->m_id, (int)VICUS::ZoneTemplate::ST_IntLoadLighting);
+			m_dbModel->addChildItem( m_dbModel->indexById(m_current->m_id), subType, id);
+			emit selectSubTemplate(m_current->m_id, subType);
 		}
 		else {
 			// modify existing
-			m_current->m_idReferences[VICUS::ZoneTemplate::ST_IntLoadLighting] = id;
+			m_current->m_idReferences[subType] = id;
 			modelModify();
 		}
 	}
+	refreshUi();
 }
 
 void SVDBZoneTemplateEditWidget::on_pushButtonAddInfiltration_clicked() {
@@ -341,12 +407,15 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddInfiltration_clicked() {
 	VICUS::ZoneTemplate::SubTemplateType subType = VICUS::ZoneTemplate::ST_Infiltration;
 	// open the infiltration DB dialog and let user select one
 	unsigned int id = SVMainWindow::instance().dbInfiltrationEditDialog()->select(VICUS::INVALID_ID);
-	if (id == VICUS::INVALID_ID) return;
+	if (id == VICUS::INVALID_ID) {
+		m_ui->pushButtonAddInfiltration->setChecked(false);
+		return;
+	}
 	if (m_current->m_idReferences[subType] != id) {
 		if (m_current->m_idReferences[subType] == VICUS::INVALID_ID) {
 			// add new child
 			m_dbModel->addChildItem( m_dbModel->indexById(m_current->m_id), subType, id);
-			emit selectSubTemplate(m_current->m_id, (int)subType);
+			emit selectSubTemplate(m_current->m_id, subType);
 		}
 		else {
 			// modify existing
@@ -354,19 +423,23 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddInfiltration_clicked() {
 			modelModify();
 		}
 	}
+	refreshUi();
 }
 
-void SVDBZoneTemplateEditWidget::on_pushButtonAddVentilationNatrual_clicked(){
+void SVDBZoneTemplateEditWidget::on_pushButtonAddVentilationNatural_clicked(){
 	Q_ASSERT(m_current != nullptr);
 	VICUS::ZoneTemplate::SubTemplateType subType = VICUS::ZoneTemplate::ST_VentilationNatural;
 	// open the ventilation DB dialog and let user select one
 	unsigned int id = SVMainWindow::instance().dbVentilationNaturalEditDialog()->select(VICUS::INVALID_ID);
-	if (id == VICUS::INVALID_ID) return;
+	if (id == VICUS::INVALID_ID){
+		m_ui->pushButtonAddVentilationNatural->setChecked(false);
+		return;
+	}
 	if (m_current->m_idReferences[subType] != id) {
 		if (m_current->m_idReferences[subType] == VICUS::INVALID_ID) {
 			// add new child
 			m_dbModel->addChildItem( m_dbModel->indexById(m_current->m_id), subType, id);
-			emit selectSubTemplate(m_current->m_id, (int)subType);
+			emit selectSubTemplate(m_current->m_id, subType);
 		}
 		else {
 			// modify existing
@@ -374,11 +447,64 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddVentilationNatrual_clicked(){
 			modelModify();
 		}
 	}
+	refreshUi();
+}
 
+void SVDBZoneTemplateEditWidget::on_pushButtonAddThermostat_clicked(){
+	Q_ASSERT(m_current != nullptr);
+	VICUS::ZoneTemplate::SubTemplateType subType = VICUS::ZoneTemplate::ST_ControlThermostat;
+	// open the thermostat DB dialog and let user select one
+	unsigned int id = SVMainWindow::instance().dbZoneControlThermostatEditDialog()->select(VICUS::INVALID_ID);
+	if (id == VICUS::INVALID_ID){
+		m_ui->pushButtonAddThermostat->setChecked(false);
+		return;
+	}
+	if (m_current->m_idReferences[subType] != id) {
+		if (m_current->m_idReferences[subType] == VICUS::INVALID_ID) {
+			// add new child
+			m_dbModel->addChildItem( m_dbModel->indexById(m_current->m_id), subType, id);
+			emit selectSubTemplate(m_current->m_id, subType);
+		}
+		else {
+			// modify existing
+			m_current->m_idReferences[subType] = id;
+			modelModify();
+		}
+	}
+	refreshUi();
+}
+
+void SVDBZoneTemplateEditWidget::on_pushButtonAddIdealHeatingCooling_clicked(){
+	Q_ASSERT(m_current != nullptr);
+	VICUS::ZoneTemplate::SubTemplateType subType = VICUS::ZoneTemplate::ST_IdealHeatingCooling;
+	// open the ideal heating cooling DB dialog and let user select one
+	unsigned int id = SVMainWindow::instance().dbZoneIdealHeatingCoolingEditDialog()->select(VICUS::INVALID_ID);
+	if (id == VICUS::INVALID_ID){
+		m_ui->pushButtonAddIdealHeatingCooling->setChecked(false);
+		return;
+	}
+	if (m_current->m_idReferences[subType] != id) {
+		if (m_current->m_idReferences[subType] == VICUS::INVALID_ID) {
+			// add new child
+			m_dbModel->addChildItem( m_dbModel->indexById(m_current->m_id), subType, id);
+			emit selectSubTemplate(m_current->m_id, subType);
+		}
+		else {
+			// modify existing
+			m_current->m_idReferences[subType] = id;
+			modelModify();
+		}
+	}
+	refreshUi();
 }
 
 void SVDBZoneTemplateEditWidget::modelModify() {
 	m_db->m_zoneTemplates.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 
+}
+
+void SVDBZoneTemplateEditWidget::refreshUi() {
+	if (m_currentSubTemplateType != VICUS::ZoneTemplate::NUM_ST)
+		updateInput((int)m_current->m_id, (int)m_current->m_idReferences[m_currentSubTemplateType], m_currentSubTemplateType);
 }

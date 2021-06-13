@@ -53,7 +53,7 @@ void ShadingControlModel::checkParameters(const std::vector<Sensor> &sensors,
 
 	// test if m_sensor is the ID of a sensor
 	std::vector<Sensor>::const_iterator sit =
-			std::find(sensors.begin(), sensors.end(), m_sensorID);
+			std::find(sensors.begin(), sensors.end(), m_sensorId);
 	if (sit != sensors.end()) {
 		m_sensor = &(*sit); // set reference
 	}
@@ -61,7 +61,7 @@ void ShadingControlModel::checkParameters(const std::vector<Sensor> &sensors,
 	else {
 		// find construction instance id
 		std::vector<NANDRAD::ConstructionInstance>::const_iterator conit =
-				std::find(conInstances.begin(), conInstances.end(), m_sensorID);
+				std::find(conInstances.begin(), conInstances.end(), m_sensorId);
 
 		if (conit != conInstances.end()) {
 
@@ -69,7 +69,7 @@ void ShadingControlModel::checkParameters(const std::vector<Sensor> &sensors,
 			if (conit->interfaceAZoneID() != 0 && conit->interfaceBZoneID() != 0) {
 				throw IBK::Exception(IBK::FormatString("Construction #%1 is an inside construction "
 													   "and may therefore not be referenced.")
-									 .arg(m_sensorID), FUNC_ID);
+									 .arg(m_sensorId), FUNC_ID);
 			}
 
 			// set reference to construction instance (contains orientation and inclination)
@@ -83,7 +83,7 @@ void ShadingControlModel::checkParameters(const std::vector<Sensor> &sensors,
 				std::vector<NANDRAD::EmbeddedObject>::const_iterator embit =
 						std::find(conInstance.m_embeddedObjects.begin(),
 								  conInstance.m_embeddedObjects.end(),
-								  m_sensorID);
+								  m_sensorId);
 
 				if (embit != conInstance.m_embeddedObjects.end()) {
 
@@ -92,7 +92,7 @@ void ShadingControlModel::checkParameters(const std::vector<Sensor> &sensors,
 					if (conInstance.interfaceAZoneID() != 0 && conInstance.interfaceBZoneID() != 0) {
 						throw IBK::Exception(IBK::FormatString("Embedded object with id #%1 is part of an inside construction "
 															   "and may therefore not be referenced.")
-											 .arg(m_sensorID), FUNC_ID);
+											 .arg(m_sensorId), FUNC_ID);
 					}
 
 					// set reference to embedded object
@@ -106,7 +106,7 @@ void ShadingControlModel::checkParameters(const std::vector<Sensor> &sensors,
 	// we must have at least one valid source of radiation intensity referenced!
 	if(m_sensor == nullptr && m_constructionInstance == nullptr && m_embeddedObject == nullptr)
 		throw IBK::Exception(IBK::FormatString("Neither sensor nor construction instance nor embedded object with id #%1 does exist.")
-							 .arg(m_sensorID), FUNC_ID);
+							 .arg(m_sensorId), FUNC_ID);
 }
 
 

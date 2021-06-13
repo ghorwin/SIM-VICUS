@@ -46,8 +46,8 @@ public:
 
 	bool operator<(const FMIVariableDefinition & other) const {
 		// Note: compare properties starting with fast comparisons (integers) before strings.
-		if (m_objectID < other.m_objectID) return true;
-		if (m_objectID > other.m_objectID) return false;
+		if (m_objectId < other.m_objectId) return true;
+		if (m_objectId > other.m_objectId) return false;
 
 		if (m_vectorIndex < other.m_vectorIndex) return true;
 		if (m_vectorIndex > other.m_vectorIndex) return false;
@@ -67,7 +67,7 @@ public:
 
 	/*! Compares NANDRAD model variable definitions (not FMI variables). */
 	bool sameModelVarAs(const FMIVariableDefinition & other) const {
-		return m_objectID == other.m_objectID &&
+		return m_objectId == other.m_objectId &&
 				m_vectorIndex == other.m_vectorIndex &&
 				m_varName == other.m_varName;
 	}
@@ -91,7 +91,7 @@ public:
 	*/
 	std::string m_varName;																	// XML:E:required
 	/*! The ID of the referenced object. */
-	IDType m_objectID = NANDRAD::INVALID_ID;												// XML:E:required
+	IDType m_objectId = NANDRAD::INVALID_ID;												// XML:E:required
 	/*! Vector ID/Index for vector valued quantities. */
 	IDType m_vectorIndex = NANDRAD::INVALID_ID;												// XML:E
 };

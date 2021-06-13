@@ -38,6 +38,8 @@ public:
 	enum para_t {
 		P_MaxHeatingPowerPerArea,	// Keyword: MaxHeatingPowerPerArea		[W/m2]		'Maximum heating power per floor area'
 		P_MaxCoolingPowerPerArea,	// Keyword: MaxCoolingPowerPerArea		[W/m2]		'Maximum cooling power per floor area'
+		P_Kp,						// Keyword: Kp							[---]		'Kp-parameter'
+		P_Ki,						// Keyword: Ki							[---]		'Ki-parameter'
 		NUM_P
 	};
 

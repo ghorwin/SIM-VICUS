@@ -61,7 +61,7 @@ public:
 	/*! Sensor ID of global radiation sensor, or window/construction surface.
 		This sensor corresponds to any surface in the model (sensor, embedded object, construction).
 	*/
-	unsigned int						m_sensorID = NANDRAD::INVALID_ID;	// XML:A:required
+	unsigned int						m_sensorId = NANDRAD::INVALID_ID;	// XML:A:required
 
 	/*! Model parameters. */
 	IBK::Parameter						m_para[NUM_P];						// XML:E

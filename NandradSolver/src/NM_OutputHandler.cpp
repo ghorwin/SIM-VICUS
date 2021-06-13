@@ -45,6 +45,7 @@ const char * const STATE_QUANTITIES[] = {
 	"SurfaceTemperatureA",
 	"SurfaceTemperatureB",
 	"ElementTemperature",
+	"ActiveLayerTemperature",
 	"ShadingFactor",
 	"ShadingControlValue",
 	"ReturnTemperature"
@@ -73,6 +74,7 @@ const char * const FLUX_QUANTITIES[] = {
 	"WindowSolarRadiationFluxSum",
 	"NetworkHeatLoad",
 	"ThermalLoad",
+	"ActiveLayerThermalLoad",
 	"SolarIntensityOnShadingSensor",
 	"IdealHeatingLoad",
 	"IdealCoolingLoad",

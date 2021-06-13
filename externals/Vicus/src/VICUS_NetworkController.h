@@ -38,9 +38,9 @@ public:
 
 	/*! Model parameters. */
 	enum para_t {
-		P_Kp,					// Keyword: Kp						'Kp-parameter'
-		P_Ki,					// Keyword: Ki						'Ki-parameter'
-		P_Kd,					// Keyword: Kd						'Kd-parameter'
+		P_Kp,					// Keyword: Kp		[---]			'Proportional value of controller'
+		P_Ki,					// Keyword: Ki		[---]			'Integral value of controller'
+		P_Kd,					// Keyword: Kd		[---]			'Differential value of controller'
 		NUM_P
 	};
 

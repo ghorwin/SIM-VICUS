@@ -35,17 +35,23 @@ void ThermalNetworkAbstractFlowElement::setInitialTemperature(double T0) {
 
 
 void ThermalNetworkAbstractFlowElement::initialInternalStates(double * y0) {
+	if (nInternalStates() == 0)
+		return;
 	// base implementation used exactly one fluid volume
 	y0[0] = m_meanTemperature * m_fluidHeatCapacity * m_fluidVolume * m_fluidDensity;
 }
 
 
 void ThermalNetworkAbstractFlowElement::setInternalStates(const double * y) {
+	if (nInternalStates() == 0)
+		return;
 	m_meanTemperature = y[0] / (m_fluidHeatCapacity * m_fluidVolume * m_fluidDensity);
 }
 
 
 void ThermalNetworkAbstractFlowElement::internalDerivatives(double * ydot) {
+	if (nInternalStates() == 0)
+		return;
 	// basic implementation assume adiabatic flow element
 	// and balance energy into and out of the fluid: kg/s * J/kgK * K
 	ydot[0] = std::fabs(m_massFlux) * m_fluidHeatCapacity * (m_inflowTemperature - outflowTemperature());
@@ -56,6 +62,14 @@ void ThermalNetworkAbstractFlowElement::dependencies(const double *ydot, const d
 			const double *mdot, const double* TInflowLeft, const double*TInflowRight,
 			std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const
 {
+	// outflow conditions depend on mean temperature
+	resultInputDependencies.push_back(std::make_pair(TInflowLeft, &m_meanTemperature) );
+	resultInputDependencies.push_back(std::make_pair(TInflowRight, &m_meanTemperature) );
+
+	// stop here if we have no internal states
+	if (nInternalStates() == 0)
+		return;
+
 	// meanTemperature is computed from y
 	resultInputDependencies.push_back(std::make_pair(&m_meanTemperature, y) );
 
@@ -65,9 +79,6 @@ void ThermalNetworkAbstractFlowElement::dependencies(const double *ydot, const d
 	resultInputDependencies.push_back(std::make_pair(ydot, mdot) );
 	resultInputDependencies.push_back(std::make_pair(ydot, &m_meanTemperature) );
 
-	// outflow conditions depend on mean temperature
-	resultInputDependencies.push_back(std::make_pair(TInflowLeft, &m_meanTemperature) );
-	resultInputDependencies.push_back(std::make_pair(TInflowRight, &m_meanTemperature) );
 }
 
 

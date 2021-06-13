@@ -109,12 +109,13 @@ private:
 	static SVDatabaseEditDialog * createZoneControlThermostatEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createZoneControlVentilationNaturalEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createZoneControlShadingEditDialog(QWidget * parent);
+	static SVDatabaseEditDialog * createZoneIdealHeatingCoolingEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createInfiltrationEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createVentilationNaturalEditDialog(QWidget * parent);
 
 	static SVDatabaseEditDialog * createNetworkComponentEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createPipeEditDialog(QWidget * parent);
-	static SVDatabaseEditDialog *createFluidEditDialog(QWidget * parent);
+	static SVDatabaseEditDialog * createFluidEditDialog(QWidget * parent);
 
 
 	Ui::SVDatabaseEditDialog *m_ui;

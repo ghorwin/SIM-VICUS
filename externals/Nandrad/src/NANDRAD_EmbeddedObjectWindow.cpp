@@ -33,7 +33,7 @@ namespace NANDRAD {
 
 bool EmbeddedObjectWindow::operator!=(const EmbeddedObjectWindow & other) const {
 	// model comparison
-	if (m_glazingSystemID != other.m_glazingSystemID)		return true;
+	if (m_glazingSystemId != other.m_glazingSystemId)		return true;
 	if (m_frame != other.m_frame)							return true;
 	if (m_divider != other.m_divider)						return true;
 
@@ -70,9 +70,9 @@ void EmbeddedObjectWindow::checkParameters(double grossArea,
 	}
 
 	double frameDividerArea = 0;
-	if (m_frame.m_materialID != INVALID_ID)
+	if (m_frame.m_materialId != INVALID_ID)
 		frameDividerArea += m_frame.m_area.value;
-	if (m_divider.m_materialID != INVALID_ID)
+	if (m_divider.m_materialId != INVALID_ID)
 		frameDividerArea += m_divider.m_area.value;
 
 	// check that sum doesn't exceed limit
@@ -85,9 +85,9 @@ void EmbeddedObjectWindow::checkParameters(double grossArea,
 	m_glasArea = grossArea - frameDividerArea;
 
 	// now lookup glazing system
-	std::vector<WindowGlazingSystem>::const_iterator it = std::find(glazingSystems.begin(), glazingSystems.end(), m_glazingSystemID);
+	std::vector<WindowGlazingSystem>::const_iterator it = std::find(glazingSystems.begin(), glazingSystems.end(), m_glazingSystemId);
 	if (it == glazingSystems.end())
-		throw IBK::Exception(IBK::FormatString("Glazing system with ID %1 not defined.").arg(m_glazingSystemID), FUNC_ID);
+		throw IBK::Exception(IBK::FormatString("Glazing system with ID %1 not defined.").arg(m_glazingSystemId), FUNC_ID);
 	// cache pointer
 	m_glazingSystem = &(*it);
 }

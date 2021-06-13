@@ -44,7 +44,8 @@ public:
 	*/
 	SVUndoCopySurfaces(const QString & label, const std::vector<VICUS::Surface> & copiedSurfaces,
 					   const std::set<unsigned int> & deselectedSurfaceUniqueIDs,
-					   const std::vector<VICUS::ComponentInstance> & compInstances);
+					   const std::vector<VICUS::ComponentInstance> & compInstances,
+					   const std::vector<VICUS::SubSurfaceComponentInstance> & subSurfCompInstances);
 
 	virtual void undo();
 	virtual void redo();
@@ -57,6 +58,8 @@ private:
 	std::set<unsigned int>					m_deselectedSurfaceUniqueIDs;
 	/*! Optionally copied component instances. */
 	std::vector<VICUS::ComponentInstance>	m_newComponentInstances;
+	/*! Optionally copied sub Surface component instances. */
+	std::vector<VICUS::SubSurfaceComponentInstance>	m_newSubSurfaceComponentInstances;
 };
 
 

@@ -137,10 +137,6 @@ Schedule Schedule::multiply(const Schedule &other) const {
 			++j;
 		}
 	}
-	///TODO Dirk->Andreas der neu erstellte Zeitplan hat jetzt die gleiche ID wie der OTHER
-	/// damit kracht es jetzt
-	/// Wie unterbinde ich das?
-	/// Wie finde ich eine Unique Id?
 	return sched;
 }
 
@@ -168,11 +164,32 @@ Schedule Schedule::multiply(double val) const {
 	for(unsigned int i=0; i<sched.m_periods.size(); ++i)
 		sched.m_periods[i] = sched.m_periods[i].multiply(val);
 
-	///TODO Dirk->Andreas der neu erstellte Zeitplan hat jetzt die gleiche ID wie der OTHER
-	/// damit kracht es jetzt
-	/// Wie unterbinde ich das?
-	/// Wie finde ich eine Unique Id?
 	return sched;
+}
+
+Schedule Schedule::add(double val) const{
+	FUNCID(Schedule::add(double));
+
+	Schedule sched;
+
+	if(!isValid()){
+		//Schedule '%1' with (id=%2) is not valid.
+		return sched;
+	}
+
+	//make a copy of the other schedule to the new schedule
+	sched = *this;
+
+	for(unsigned int i=0; i<sched.m_periods.size(); ++i)
+		sched.m_periods[i] = sched.m_periods[i].add(val);
+
+	return sched;
+}
+
+void Schedule::createConstSchedule(double val) {
+	ScheduleInterval si;
+	si.createConstScheduleInterval(val);
+	m_periods.push_back(si);
 }
 
 AbstractDBElement::ComparisonResult Schedule::equal(const AbstractDBElement *other) const {

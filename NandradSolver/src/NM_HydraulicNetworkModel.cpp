@@ -24,6 +24,7 @@
 #include <NANDRAD_HydraulicNetwork.h>
 #include <NANDRAD_HydraulicNetworkComponent.h>
 #include <NANDRAD_KeywordList.h>
+#include <NANDRAD_Thermostat.h>
 
 #include <IBK_messages.h>
 #include <IBK_Exception.h>
@@ -38,8 +39,9 @@ namespace NANDRAD_MODEL {
 // *** HydraulicNetworkModel members ***
 
 HydraulicNetworkModel::HydraulicNetworkModel(const NANDRAD::HydraulicNetwork & nw,
-	unsigned int id, const std::string &displayName) :
-	m_id(id), m_displayName(displayName),m_hydraulicNetwork(&nw)
+											 const std::vector<NANDRAD::Thermostat> &thermostats,
+											 unsigned int id, const std::string &displayName) :
+	m_id(id), m_displayName(displayName),m_hydraulicNetwork(&nw), m_thermostats(thermostats)
 {
 	// first register all nodes
 	std::set<unsigned int> nodeIds;
@@ -76,6 +78,7 @@ const Network * HydraulicNetworkModel::network() const {
 	return &m_p->m_network;
 }
 
+
 void HydraulicNetworkModel::setup() {
 	FUNCID(HydraulicNetworkModel::setup);
 
@@ -96,7 +99,10 @@ void HydraulicNetworkModel::setup() {
 			{
 				IBK_ASSERT(e.m_pipeProperties != nullptr);
 				// create hydraulic pipe model
-				HNPipeElement * pipeElement = new HNPipeElement(e, *e.m_pipeProperties, m_hydraulicNetwork->m_fluid);
+				HNPipeElement * pipeElement = new HNPipeElement(e, *e.m_pipeProperties,
+																m_hydraulicNetwork->m_fluid,
+																e.m_controlElement,
+																m_thermostats);
 				// add to flow elements
 				m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 			} break;
@@ -119,15 +125,44 @@ void HydraulicNetworkModel::setup() {
 				m_pumpElements.push_back(pumpElement);
 			} break;
 
-			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
-			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot :
+			case NANDRAD::HydraulicNetworkComponent::MT_ControlledPump :
 			{
-				// create pressure loss flow element - controller is set up later
-				HNPressureLossCoeffElement * hxElement = new HNPressureLossCoeffElement(*e.m_component, m_hydraulicNetwork->m_fluid);
-				m_p->m_flowElements.push_back(hxElement); // transfer ownership
+				if (e.m_controlElement == nullptr)
+					throw IBK::Exception("Flow element component of type 'ControlledPump' requires mass flow controller.", FUNC_ID);
+
+				// create pump model
+				HNControlledPump * pumpElement = new HNControlledPump(e.m_id, e.m_controlElement);
+				// setup ID of following element, if such a controller is defined
+				setFollowingElementId(pumpElement, e);
+				// add to flow elements
+				m_p->m_flowElements.push_back(pumpElement); // transfer ownership
+				m_pumpElements.push_back(pumpElement);
 			} break;
 
-			case NANDRAD::HydraulicNetworkComponent::NUM_MT:{
+			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
+			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide :
+			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide :
+			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpRealSourceSide :
+			case NANDRAD::HydraulicNetworkComponent::MT_ControlledValve:
+			{
+				// Note: HeatPumpIdealCarnotXXX does not use flow controller, but is still a regular pressure loss element
+
+				// create pressure loss flow element - controller is set up later
+				HNPressureLossCoeffElement * pressLossCoeffelement = new HNPressureLossCoeffElement(e.m_id, *e.m_component, m_hydraulicNetwork->m_fluid, e.m_controlElement);
+				// setup ID of following element, if such a controller is defined
+				setFollowingElementId(pressLossCoeffelement, e);
+				m_p->m_flowElements.push_back(pressLossCoeffelement); // transfer ownership
+
+			} break;
+
+			case NANDRAD::HydraulicNetworkComponent::MT_IdealHeaterCooler :
+			{
+				// create pressure loss flow element - controller is set up later
+				HNPressureLossCoeffElement * pressLossCoeffelement = new HNPressureLossCoeffElement(e.m_id, *e.m_component, m_hydraulicNetwork->m_fluid, e.m_controlElement);
+				m_p->m_flowElements.push_back(pressLossCoeffelement); // transfer ownership
+			} break;
+
+			case NANDRAD::HydraulicNetworkComponent::NUM_MT: {
 				throw IBK::Exception(IBK::FormatString("Unsupported model type for "
 									"HydraulicNetworkComponent with id %1!")
 									.arg(e.m_componentId),FUNC_ID);
@@ -136,13 +171,28 @@ void HydraulicNetworkModel::setup() {
 		// fill ids
 		m_elementIds.push_back(e.m_id);
 		m_elementDisplayNames.push_back(e.m_displayName);
+
+		// retrieve model quantities
+		m_modelQuantityOffset.push_back(m_modelQuantities.size());
+		// retrieve current flow element (m_flowElements vector has same size as
+		const HydraulicNetworkAbstractFlowElement *fe = m_p->m_flowElements.back();
+		fe->modelQuantities(m_modelQuantities);
+		fe->modelQuantityValueRefs(m_modelQuantityRefs);
+		// correct type and id of quantity description
+		for(unsigned int k = m_modelQuantityOffset.back(); k < m_modelQuantities.size(); ++k) {
+			m_modelQuantities[k].m_id = m_elementIds.back();
+			m_modelQuantities[k].m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+		}
+		// implementation check
+		IBK_ASSERT(m_modelQuantities.size() == m_modelQuantityRefs.size());
 	} // for m_hydraulicNetwork->m_elements
+	// mark end of vector
+	m_modelQuantityOffset.push_back(m_modelQuantities.size());
 
 	// set initial temperature in case of HydraulicNetwork
 	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_HydraulicNetwork) {
-		double fluidTemp = m_hydraulicNetwork->m_para[NANDRAD::HydraulicNetwork::P_DefaultFluidTemperature].value;
 		for (HydraulicNetworkAbstractFlowElement * e : m_p->m_flowElements)
-			e->setFluidTemperature(fluidTemp);
+			e->m_fluidTemperatureRef = &m_hydraulicNetwork->m_para[NANDRAD::HydraulicNetwork::P_DefaultFluidTemperature].value;
 	}
 
 	// set reference pressure
@@ -206,20 +256,10 @@ void HydraulicNetworkModel::resultDescriptions(std::vector<QuantityDescription> 
 		desc.m_id = m_elementIds[i];
 		resDesc.push_back(desc);
 	}
-}
 
-
-void HydraulicNetworkModel::resultValueRefs(std::vector<const double *> & res) const {
-	// mass flux vector is a result quantity
-	for(unsigned int i = 0; i < m_p->m_fluidMassFluxes.size(); ++i)
-		res.push_back(&m_p->m_fluidMassFluxes[i]);
-	// inlet and outlet node pressure are result quantities
-	for(unsigned int i = 0; i < m_p->m_inletNodePressures.size(); ++i)
-		res.push_back(&m_p->m_inletNodePressures[i]);
-	for(unsigned int i = 0; i < m_p->m_outletNodePressures.size(); ++i)
-		res.push_back(&m_p->m_outletNodePressures[i]);
-	for(unsigned int i = 0; i < m_p->m_outletNodePressures.size(); ++i)
-		res.push_back(&m_p->m_pressureDifferences[i]);
+	// add individual model results
+	if (!m_modelQuantities.empty())
+		resDesc.insert(resDesc.end(), m_modelQuantities.begin(), m_modelQuantities.end());
 }
 
 
@@ -232,14 +272,18 @@ const double * HydraulicNetworkModel::resultValueRef(const InputReference & quan
 		// id must be ID of network, and reftype must be NETWORK
 		if (quantity.m_id == id() && quantity.m_referenceType == NANDRAD::ModelInputReference::MRT_NETWORK) {
 
-			// no element index? maybe the entire vector is requested
+			// no element id? maybe the entire vector is requested
 			if (quantity.m_name.m_index == -1)
 				return &m_p->m_fluidMassFluxes[0];
 			else {
-				if ((unsigned int)quantity.m_name.m_index >= m_p->m_fluidMassFluxes.size())
-					throw IBK::Exception(IBK::FormatString("Index out of range in requested output quantity '%1'")
-										 .arg(quantity.m_name.encodedString()), FUNC_ID);
-				return &m_p->m_fluidMassFluxes[quantity.m_name.m_index];
+				// we have published values via ID, so search through m_elementIds
+				for (unsigned int i=0; i<m_elementIds.size(); ++i) {
+					if (m_elementIds[i] == (unsigned int)quantity.m_name.m_index) {
+						return &m_p->m_fluidMassFluxes[i]; // return memory location of requested element
+					}
+				}
+				throw IBK::Exception(IBK::FormatString("Unknown flow element ID '%1' out of range in requested output quantity '%2'")
+									 .arg(quantity.m_name.m_index).arg(quantity.m_name.encodedString()), FUNC_ID);
 			}
 		}
 		return nullptr; // invalid ID or reftype...
@@ -266,6 +310,21 @@ const double * HydraulicNetworkModel::resultValueRef(const InputReference & quan
 	else if (quantityName == std::string("PressureDifference"))
 		return &m_p->m_pressureDifferences[pos];
 
+	// search for quantity inside individual element results
+	IBK_ASSERT(pos < m_modelQuantityOffset.size() - 1);
+	unsigned int startIdx = m_modelQuantityOffset[pos];
+	unsigned int endIdx = m_modelQuantityOffset[pos + 1];
+
+	// check if element contains requested quantity
+	for (unsigned int resIdx = startIdx; resIdx < endIdx; ++resIdx) {
+		const QuantityDescription &modelDesc = m_modelQuantities[resIdx];
+		if (modelDesc.m_name == quantityName.m_name) {
+			// index is not allowed for network element output
+			if (quantityName.m_index != -1)
+				return nullptr;
+			return m_modelQuantityRefs[resIdx];
+		}
+	}
 	// unknown quantity name
 	return nullptr;
 }
@@ -302,30 +361,9 @@ void HydraulicNetworkModel::inputReferences(std::vector<InputReference> & inputR
 			inputRefs.push_back(inputRef);
 		}
 	}
-	// generate optional input references for all pump elements
-	for (const HydraulicNetworkAbstractFlowElement* pumpE : m_pumpElements) {
-		// different handling for different pumps
-		const HNConstantPressurePump * pump = dynamic_cast<const HNConstantPressurePump *>(pumpE);
-		if (pump != nullptr) {
-			InputReference inputRef;
-			inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
-			inputRef.m_name = std::string("PumpPressureHead");
-			inputRef.m_required = false;
-			inputRef.m_id = pump->m_id;
-			inputRefs.push_back(inputRef);
-			continue;
-		}
-		const HNConstantMassFluxPump * pumpConstantMassFlux = dynamic_cast<const HNConstantMassFluxPump *>(pumpE);
-		if (pumpConstantMassFlux != nullptr) {
-			InputReference inputRef;
-			inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
-			inputRef.m_name = std::string("PumpMassFlux");
-			inputRef.m_required = false;
-			inputRef.m_id = pumpConstantMassFlux->m_id;
-			inputRefs.push_back(inputRef);
-			continue;
-		}
-	}
+	// loop over all elements and ask them to request individual inputs, for example scheduled quantities
+	for (unsigned int i = 0; i < m_p->m_flowElements.size(); ++i)
+		m_p->m_flowElements[i]->inputReferences(inputRefs);
 }
 
 
@@ -334,31 +372,21 @@ void HydraulicNetworkModel::setInputValueRefs(const std::vector<QuantityDescript
 {
 	unsigned int currentIndex = 0;
 	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
-		// copy references into fluid temperature vector
-		for (unsigned int i = 0; i < m_elementIds.size(); ++i)
-			m_fluidTemperatureRefs.push_back(resultValueRefs[i]);
+		// set all fluid temperature references
+		for (unsigned int i = 0; i < m_elementIds.size(); ++i) {
+			HydraulicNetworkAbstractFlowElement *fe = m_p->m_flowElements[i];
+			fe->m_fluidTemperatureRef = resultValueRefs[i];
+		}
 		currentIndex = m_elementIds.size();
 	}
-	// now transfer input references to pump models
-	for (HydraulicNetworkAbstractFlowElement* pumpE : m_pumpElements) {
-		// different handling for different pumps
-		HNConstantPressurePump * pump = dynamic_cast<HNConstantPressurePump *>(pumpE);
-		if (pump != nullptr) {
-			// is the optional pressure head provided?
-			if (resultValueRefs[currentIndex] != nullptr)
-				pump->m_pressureHeadRef = resultValueRefs[currentIndex];
-			++currentIndex;
-			continue;
-		}
-		HNConstantMassFluxPump * pumpConstantMassFlux = dynamic_cast<HNConstantMassFluxPump *>(pumpE);
-		if (pumpConstantMassFlux != nullptr) {
-			// is the optional pressure head provided?
-			if (resultValueRefs[currentIndex] != nullptr)
-				pumpConstantMassFlux->m_massFluxRef = resultValueRefs[currentIndex];
-			++currentIndex;
-			continue;
-		}
-	}
+
+	// now provide elements with their specific input quantities
+	std::vector<const double *>::const_iterator valRefIt = resultValueRefs.begin() + currentIndex; // Mind the index increase here
+
+	for (unsigned int i = 0; i < m_p->m_flowElements.size(); ++i)
+		m_p->m_flowElements[i]->setInputValueRefs(valRefIt);
+
+	IBK_ASSERT(valRefIt == resultValueRefs.end());
 }
 
 
@@ -369,14 +397,6 @@ void HydraulicNetworkModel::stateDependencies(std::vector<std::pair<const double
 
 int HydraulicNetworkModel::update() {
 	FUNCID(HydraulicNetworkModel::update);
-
-	if (m_hydraulicNetwork->m_modelType == NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork) {
-		// set all fluid temperatures
-		for(unsigned int i = 0; i < m_elementIds.size(); ++i) {
-			HydraulicNetworkAbstractFlowElement *fe = m_p->m_flowElements[i];
-			fe->setFluidTemperature(*m_fluidTemperatureRefs[i]);
-		}
-	}
 
 	// re-compute hydraulic network
 
@@ -389,6 +409,11 @@ int HydraulicNetworkModel::update() {
 			IBK_FastMessage(IBK::VL_DETAILED)("Network solver returned recoverable error.", IBK::MSG_ERROR, FUNC_ID, IBK::VL_DETAILED);
 			return res;
 		}
+		// update all model results
+		for (unsigned int i = 0; i < m_elementIds.size(); ++i) {
+			HydraulicNetworkAbstractFlowElement *fe = m_p->m_flowElements[i];
+			fe->updateResults(m_p->m_fluidMassFluxes[i], m_p->m_inletNodePressures[i], m_p->m_outletNodePressures[i]);
+		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex,
@@ -398,6 +423,57 @@ int HydraulicNetworkModel::update() {
 	}
 
 	return 0; // signal success
+}
+
+
+void HydraulicNetworkModel::stepCompleted(double /*t*/) {
+	m_p->storeSolution();
+}
+
+
+void HydraulicNetworkModel::setFollowingElementId(HydraulicNetworkAbstractFlowElement * element, const NANDRAD::HydraulicNetworkElement & e) {
+	FUNCID(HydraulicNetworkModel::setFollowingElementId);
+
+	// no controller?
+	if (e.m_controlElement == nullptr)
+		return;
+
+	// not the right controller property?
+	if (e.m_controlElement->m_controlledProperty != NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement)
+		return;
+
+	// make sure there is no other element with the same outlet id
+	// (then our outlet temperature would not be equal to the next elements inlet temperature)
+	for (const NANDRAD::HydraulicNetworkElement & otherElems : m_hydraulicNetwork->m_elements) {
+		if (e.m_outletNodeId == otherElems.m_outletNodeId && e.m_id != otherElems.m_id )
+			throw IBK::Exception(IBK::FormatString("The element with id #%1 has a controller that has controlledProperty 'TemperatureDifferenceOfFollowingElement'."
+												   "This element cannot be connected in parallel to any other element (share the same outletNodeId)")
+										 .arg(e.m_id), FUNC_ID);
+	}
+	// make sure there is only one following element (not another one in parallel)
+	unsigned int followingElementId = 0;
+	for (const NANDRAD::HydraulicNetworkElement & otherElems : m_hydraulicNetwork->m_elements) {
+		if (e.m_outletNodeId == otherElems.m_inletNodeId) {
+			if (followingElementId != 0)
+				// there cannot be two following flow elements in parallel (with same inletNodeId)
+				throw IBK::Exception(IBK::FormatString("The element with id #%1 has a controller that has controlledProperty 'TemperatureDifferenceOfFollowingElement'."
+													   "The follwoing element can not be connected in parallel to any other element (share the same inletNodeId)")
+									 .arg(e.m_id), FUNC_ID);
+			else
+				followingElementId = otherElems.m_id;
+		}
+	}
+
+	// store following element Id in respective element
+	if (dynamic_cast<HNPressureLossCoeffElement*>(element) != nullptr)
+		dynamic_cast<HNPressureLossCoeffElement*>(element)->m_followingflowElementId = followingElementId;
+	else if (dynamic_cast<HNControlledPump*>(element) != nullptr)
+		dynamic_cast<HNControlledPump*>(element)->m_followingflowElementId = followingElementId;
+	else {
+		throw IBK::Exception(IBK::FormatString("The element with id #%1 has a controller that has controlledProperty 'TemperatureDifferenceOfFollowingElement'."
+											   "However, flow elements with component '%2' cannot be used with such controllers.")
+							 .arg(e.m_id).arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::ModelType", e.m_component->m_modelType)), FUNC_ID);
+	}
 }
 
 
@@ -453,6 +529,8 @@ HydraulicNetworkModelImpl::~HydraulicNetworkModelImpl() {
 		klu_free_numeric(&(m_sparseSolver.m_KLUNumeric), &(m_sparseSolver.m_KLUParas));
 		delete m_sparseSolver.m_KLUNumeric;
 	}
+	for (HydraulicNetworkAbstractFlowElement* e : m_flowElements)
+		delete e;
 }
 
 
@@ -593,6 +671,7 @@ void HydraulicNetworkModelImpl::setup() {
 
 	// set initial conditions (pressures and mass fluxes)
 	m_y.resize(n, 10);
+	m_yLast.resize(n, 10);
 
 	m_G.resize(n);
 	m_fluidMassFluxes.resize(m_elementCount);
@@ -653,7 +732,9 @@ int HydraulicNetworkModelImpl::solve() {
 
 	unsigned int n = m_nodeCount + m_elementCount;
 
-	std::vector<double> rhs(n);
+	// reset initial guess
+	std::vector<double> rhs(n, 0);
+	std::memcpy(m_y.data(), m_yLast.data(), sizeof(double)*n);
 
 	// now start the Newton iteration
 	int iterations = 100;
@@ -758,6 +839,12 @@ int HydraulicNetworkModelImpl::solve() {
 	}
 
 }
+
+
+void HydraulicNetworkModelImpl::storeSolution() {
+	std::memcpy(m_yLast.data(), m_y.data(), sizeof(double)*m_y.size());
+}
+
 
 void HydraulicNetworkModelImpl::jacobianInit() {
 
@@ -900,7 +987,7 @@ void HydraulicNetworkModelImpl::jacobianInit() {
 		// use COLAMD method for reduced fill-ordering
 		m_sparseSolver.m_KLUParas.ordering = 1;
 		// setup synmbolic matrix factorization
-		m_sparseSolver.m_KLUSymbolic = klu_analyze(n, (int*) (&ia[0]),
+		m_sparseSolver.m_KLUSymbolic = klu_analyze((int)n, (int*) (&ia[0]),
 						   (int*) (&ja[0]), &(m_sparseSolver.m_KLUParas));
 		// error may only occur if a wrong network topology was tolerated
 		IBK_ASSERT(m_sparseSolver.m_KLUSymbolic != nullptr);
@@ -1000,7 +1087,13 @@ int HydraulicNetworkModelImpl::jacobianSetup() {
 				m_y[j] -= eps;
 			}
 		} // for i
+
 		// calculate lu composition for klu object (creating a new pivit ordering)
+		if (m_sparseSolver.m_KLUNumeric != nullptr) {
+			klu_free_numeric(&(m_sparseSolver.m_KLUNumeric), &(m_sparseSolver.m_KLUParas));
+			delete m_sparseSolver.m_KLUNumeric;
+			m_sparseSolver.m_KLUNumeric = nullptr;
+		}
 		m_sparseSolver.m_KLUNumeric = klu_factor((int*) jacobian.ia(),
 					(int*) jacobian.ja(),
 					 jacobian.data(),

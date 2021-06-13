@@ -74,12 +74,6 @@ public:
 	*/
 	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const override;
 
-	/*! Returns vector of all scalar and vector-valued results pointer.
-		\param res Vector with pointers to resulting values. First the addresses to all m_value members in
-			the m_results vector are added, then the addresses of the vector valued quantities are added.
-	*/
-	virtual void resultValueRefs(std::vector<const double *> &res) const override;
-
 	/*! Looks up a referenced quantity and returns a pointer to the double value memory location.
 		The default implementation uses the KeywordList and searches enumeration 'Results' for matching quantity names.
 		The function then returns a pointer to the respective memory location.

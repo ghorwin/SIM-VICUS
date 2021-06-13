@@ -25,6 +25,9 @@
 
 #include "SVUndoDeleteBuilding.h"
 
+#include "SVProjectHandler.h"
+#include <VICUS_Project.h>
+
 SVUndoDeleteBuilding::SVUndoDeleteBuilding(const QString & label, unsigned int buildingIndex)
 	: m_buildingIndex(buildingIndex)
 {

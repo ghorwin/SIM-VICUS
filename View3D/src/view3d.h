@@ -30,11 +30,12 @@
 /*  include file for the VIEW3D program */
 
 #include <string.h> /* prototype: memcpy */
+#include "types.h"
 
 #define MAXNV 4     /* max number of vertices for an initial surface */
 #define MAXNV1 5    /* max number of vertices after 1 clip */
 #define MAXNV2 12   /* max number of vertices clipped projection */
-/*#define NAMELEN 12  /* length of a name */
+//#define NAMELEN 12  /* length of a name */
 #ifdef XXX
 #define PI       3.141592653589793238
 #define PIt2     6.283185307179586477   /* 2 * pi */
@@ -68,18 +69,18 @@ typedef struct v3d {     /* structure for a 3D vertex or vector */
 
 /*  VECTOR:  define vector C from vertex A to vextex B.  */
 #define VECTOR(a,b,c)   \
-    c->x = b->x - a->x; \
-    c->y = b->y - a->y; \
-    c->z = b->z - a->z; 
+	c->x = b->x - a->x; \
+	c->y = b->y - a->y; \
+	c->z = b->z - a->z;
 
 /*  VCOPY:  copy elements from vertex/vector A to B.  */
 #define VCOPY(a,b)  { b->x = a->x; b->y = a->y; b->z = a->z; }
 
 /*  VMID:  define vertex C midway between vertices A and B.  */
 #define VMID(a,b,c)   \
-    c->x = 0.5 * (a->x + b->x); \
-    c->y = 0.5 * (a->y + b->y); \
-    c->z = 0.5 * (a->z + b->z); 
+	c->x = 0.5 * (a->x + b->x); \
+	c->y = 0.5 * (a->y + b->y); \
+	c->z = 0.5 * (a->z + b->z);
 
 /*  VDOT:  compute dot product of vectors A and B.  */
 #define VDOT(a,b)   (a->x * b->x + a->y * b->y + a->z * b->z)
@@ -92,15 +93,15 @@ typedef struct v3d {     /* structure for a 3D vertex or vector */
 
 /*  VCROSS:  compute vector C as cross product of A and B.  */
 #define VCROSS(a,b,c)   \
-    c->x = a->y * b->z - a->z * b->y; \
-    c->y = a->z * b->x - a->x * b->z; \
-    c->z = a->x * b->y - a->y * b->x; 
+	c->x = a->y * b->z - a->z * b->y; \
+	c->y = a->z * b->x - a->x * b->z; \
+	c->z = a->x * b->y - a->y * b->x;
 
 /*  VSCALE:  vector B = scalar C times vector A.  */
 #define VSCALE(c,a,b)  \
-    b->x = c * a->x; \
-    b->y = c * a->y; \
-    b->z = c * a->z; 
+	b->x = c * a->x; \
+	b->y = c * a->y; \
+	b->z = c * a->z;
 
 typedef struct dircos {       /* structure for direction cosines */
   R8  x;  /* X-direction cosine */
@@ -120,8 +121,8 @@ typedef struct srfdat3d {     /* structure for 3D surface data */
   VERTEX3D ctd;       /* coordinates of centroid */
   VERTEX3D *v[MAXNV]; /* pointers to coordinates of up to MAXNV vertices */
   IX NrelS;           /* orientation of srf N relative to S:
-                         -1: N behind S; +1: N in front of S;
-                          0: part of N behind S, part in front */
+						 -1: N behind S; +1: N in front of S;
+						  0: part of N behind S, part in front */
   IX MrelS;           /* orientation of srf M relative to S */
 } SRFDAT3D;
 
@@ -173,7 +174,7 @@ typedef struct edgediv {   /* structure for Gaussian division of polygon edge */
 typedef struct {         /* view factor calculation control values */
   IX nAllSrf;       /* total number of surfaces */
   IX nRadSrf;       /* number of radiating surfaces;
-                         initially includes mask & null surfaces */
+						 initially includes mask & null surfaces */
   IX nMaskSrf;      /* number of mask & null surfaces */
   IX nObstrSrf;     /* number of obstruction surfaces */
   IX nVertices;     /* number of vertices */
@@ -205,10 +206,10 @@ typedef struct {         /* view factor calculation control values */
   IX failConverge;  /* 1 if any calculation failed to converge */
   SRFDAT3X srf1T;   /* participating surface; transformed coordinates */
   SRFDAT3X srf2T;   /* participating surface; transformed coordinates;
-                       view from srf1T toward srf2T. */
+					   view from srf1T toward srf2T. */
   SRFDAT3X *srfOT;  /* pointer to array of view obstrucing surfaces;
-                       dimensioned from 0 to maxSrfT in View3d();
-                       coordinates transformed relative to srf2T. */
+					   dimensioned from 0 to maxSrfT in View3d();
+					   coordinates transformed relative to srf2T. */
 } VFCTRL;
 
 #define UNK -1  /* unknown integration method */
@@ -242,49 +243,49 @@ typedef struct poly { /* description of a polygon */
 /* input / output */
 void CountVS3D(I1 *title, VFCTRL *vfCtrl);
 void GetVS3D(I1 **name, R4 *emit, IX *base, IX *cmbn,SRFDAT3D *srf,
-             VERTEX3D *xyz, VFCTRL *vfCtrl);
+			 VERTEX3D *xyz, VFCTRL *vfCtrl);
 void GetVS3Da(I1 **name, R4 *emit, IX *base, IX *cmbn,SRFDAT3D *srf,
-              VERTEX3D *xyz, VFCTRL *vfCtrl);
+			  VERTEX3D *xyz, VFCTRL *vfCtrl);
 R8 VolPrism(VERTEX3D *a, VERTEX3D *b, VERTEX3D *c);
 void SetPlane(SRFDAT3D *srf);
-void ReportAF(const IX nSrf, const IX encl, const I1 *title, I1 ** name, 
-              const R4 *area, const R4 *emit, const IX *base, R8 ** AF,
-              IX flag);
+void ReportAF(const IX nSrf, const IX encl, const I1 *title, I1 ** name,
+			  const R4 *area, const R4 *emit, const IX *base, R8 ** AF,
+			  IX flag);
 
 /* 3-D view factor functions */
 void View3D(SRFDAT3D *srf, const IX *base, IX *possibleObstr,R8 **AF,
-            VFCTRL *vfCtrl);
+			VFCTRL *vfCtrl);
 IX ProjectionDirection(SRFDAT3D *srf, SRFDATNM *srfn, SRFDATNM *srfm,
-                       IX *los, VFCTRL *vfCtrl);
+					   IX *los, VFCTRL *vfCtrl);
 
 R8 ViewUnobstructed(VFCTRL *vfCtrl, IX row, IX col);
-R8 View2AI(const IX nss1, const DIRCOS *dc1, const VERTEX3D *pt1, 
-           const R8 *area1, const IX nss2, const DIRCOS *dc2,
-           const VERTEX3D *pt2, const R8 *area2);
+R8 View2AI(const IX nss1, const DIRCOS *dc1, const VERTEX3D *pt1,
+		   const R8 *area1, const IX nss2, const DIRCOS *dc2,
+		   const VERTEX3D *pt2, const R8 *area2);
 R8 View2LI(const IX nd1, const IX nv1, const EDGEDCS *rc1, EDGEDIV **dv1,
-           const IX nd2, const IX nv2, const EDGEDCS *rc2, EDGEDIV **dv2);
+		   const IX nd2, const IX nv2, const EDGEDCS *rc2, EDGEDIV **dv2);
 R8 View1LI(const IX nd1, const IX nv1, const EDGEDCS *rc1, EDGEDIV **dv1,
-           const VERTEX3D *v1, const IX nv2, const VERTEX3D *v2);
+		   const VERTEX3D *v1, const IX nv2, const VERTEX3D *v2);
 R8 V1LIpart(const VERTEX3D *pp, const VERTEX3D *b0, const VERTEX3D *b1,
-            const VECTOR3D *B, const R8 b2, IX *flag);
-R8 V1LIxact(const VERTEX3D *a0, const VERTEX3D *a1, const R8 a, 
-            const VERTEX3D *b0, const VERTEX3D *b1, const R8 b);
+			const VECTOR3D *B, const R8 b2, IX *flag);
+R8 V1LIxact(const VERTEX3D *a0, const VERTEX3D *a1, const R8 a,
+			const VERTEX3D *b0, const VERTEX3D *b1, const R8 b);
 R8 V1LIadapt(VERTEX3D Pold[3], R8 dFold[3], R8 h, const VERTEX3D *b0,
 const VERTEX3D *b1, const VECTOR3D *B, const R8 b2, IX level,
 VFCTRL *vfCtrl);
 R8 ViewALI(const IX nv1, const VERTEX3D *v1, const IX nv2, const VERTEX3D *v2,
-           VFCTRL *vfCtrl);
+		   VFCTRL *vfCtrl);
 void ViewsInit(IX maxDiv, IX init);
 IX DivideEdges(IX nd, IX nv, VERTEX3D *vs, EDGEDCS *rc, EDGEDIV **dv);
 IX GQParallelogram(const IX nDiv, const VERTEX3D *vp, VERTEX3D *p, R8 *w);
 IX GQTriangle(const IX nDiv, const VERTEX3D *vt, VERTEX3D *p, R8 *w);
 IX SubSrf(const IX nDiv, const IX nv, const VERTEX3D *v, const R8 area,
-          VERTEX3D *pt, R8 *wt);
+		  VERTEX3D *pt, R8 *wt);
 
 R8 ViewObstructed(VFCTRL *vfCtrl, IX nv1, VERTEX3D v1[], R8 area, IX nDiv);
 R8 View1AI(IX nss, VERTEX3D *p1, R8 *area1, DIRCOS *dc1, SRFDAT3X *srf2);
 R8 V1AIpart(const IX nv, const VERTEX3D p2[],const VERTEX3D *p1,
-            const DIRCOS *u1);
+			const DIRCOS *u1);
 IX Subsurface(SRFDAT3X *srf, SRFDAT3X sub[]);
 R8 SetCentroid(const IX nv, VERTEX3D *vs, VERTEX3D *ctd);
 R8 Triangle(VERTEX3D *p1, VERTEX3D *p2, VERTEX3D *p3, void *dc, IX dcflag);
@@ -294,19 +295,19 @@ R8 ViewRP(VERTEX3D v1[], R8 area, IX level, VFCTRL *vfCtrl);
 
 /* 3-D view test functions */
 IX AddMaskSrf(SRFDAT3D *srf, const SRFDATNM *srfN, const SRFDATNM *srfM,
-              const IX *maskSrf, const IX *baseSrf, VFCTRL *vfCtrl, IX *los,
-              IX nPoss);
+			  const IX *maskSrf, const IX *baseSrf, VFCTRL *vfCtrl, IX *los,
+			  IX nPoss);
 IX BoxTest(SRFDAT3D *srf, SRFDATNM *srfn, SRFDATNM *srfm, VFCTRL *vfCtrl,
-           IX *los, IX nProb);
+		   IX *los, IX nProb);
 IX ClipPolygon(const IX flag, const IX nv, VERTEX3D *v, R8 *dot, VERTEX3D *vc);
 IX ConeRadiusTest(SRFDAT3D *srf, SRFDATNM *srfn, SRFDATNM *srfm,
-                  VFCTRL *vfCtrl, IX *los, IX nProb, R8 distNM);
+				  VFCTRL *vfCtrl, IX *los, IX nProb, R8 distNM);
 IX CylinderRadiusTest(SRFDAT3D *srf, SRFDATNM *srfN, SRFDATNM *srfM, IX *los,
-                      R8 distNM, IX nProb);
+					  R8 distNM, IX nProb);
 IX OrientationTest(SRFDAT3D *srf, SRFDATNM *srfn, SRFDATNM *srfm,
-                   VFCTRL *vfCtrl, IX *los, IX nProb);
+				   VFCTRL *vfCtrl, IX *los, IX nProb);
 IX OrientationTestN(SRFDAT3D *srf, IX N, VFCTRL *vfCtrl, IX *possibleObstr,
-                    IX nPossObstr);
+					IX nPossObstr);
 void SelfObstructionClip(SRFDATNM *srfn);
 IX SetShape(const IX nv, VERTEX3D *v, R8 *area);
 IX SelfObstructionTest3D(SRFDAT3D *srf1, SRFDAT3D *srf2, SRFDATNM *srfn);
@@ -328,8 +329,8 @@ void InitTmpVertMem(void);
 void FreeTmpVertMem(void);
 void InitPolygonMem(const R8 epsDist, const R8 epsArea);
 void FreePolygonMem(void);
-IX LimitPolygon(IX nVrt, VERTEX2D polyVrt[], const R8 maxX, const R8 minX, 
-                const R8 maxY, const R8 minY);
+IX LimitPolygon(IX nVrt, VERTEX2D polyVrt[], const R8 maxX, const R8 minX,
+				const R8 maxY, const R8 minY);
 void DumpHC(I1 *title, const POLY *pfp, const POLY *plp);
 void DumpFreePolygons(void);
 void DumpFreeVertices(void);
@@ -338,7 +339,7 @@ void DumpP3D(I1 *title, const IX nvs, VERTEX3D *vs);
 
 /* vector functions */
 void CoordTrans3D(SRFDAT3D *srfAll, SRFDATNM *srf1, SRFDATNM *srf2,
-                  IX *probableObstr, VFCTRL *vfCtrl);
+				  IX *probableObstr, VFCTRL *vfCtrl);
 void DumpSrf3D(I1 *title, SRFDAT3D *srf);
 void DumpSrfNM(I1 *title, SRFDATNM *srf);
 void Dump3X(I1 *tittle, SRFDAT3X *srfT);
@@ -346,9 +347,9 @@ void DumpVA(I1 *title, const IX rows, const IX cols, R8 *a);
 
 /* post processing */
 IX DelNull(const IX nSrf, SRFDAT3D *srf, IX *base, IX *cmbn, R4 *emit,
-           R4 *area, I1 **name, R8 **AF);
+		   R4 *area, I1 **name, R8 **AF);
 void NormAF(const IX nSrf, const R4 *emit, const R4 *area, R8 **AF,
-            const R8 eMax, const IX itMax);
+			const R8 eMax, const IX itMax);
 IX Combine(const IX nSrf, const IX *cmbn, R4 *area, I1 **name, R8 **AF);
 void Separate(const IX nSrf, const IX *base, R4 *area, R8 **AF);
 void IntFac(const IX nSrf, const R4 *emit, const R4 *area, R8 **AF);

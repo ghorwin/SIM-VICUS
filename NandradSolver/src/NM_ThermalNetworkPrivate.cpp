@@ -37,6 +37,11 @@
 namespace NANDRAD_MODEL {
 
 
+ThermalNetworkModelImpl::~ThermalNetworkModelImpl() {
+	for (ThermalNetworkAbstractFlowElement* e : m_flowElements)
+		delete e;
+}
+
 
 void ThermalNetworkModelImpl::setup(const Network &nw,
 									const NANDRAD::HydraulicFluid &fluid) {

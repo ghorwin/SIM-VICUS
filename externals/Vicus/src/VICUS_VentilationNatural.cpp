@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -29,19 +29,20 @@
 namespace VICUS {
 
 
-bool VentilationNatural::isValid() const {
-	///TODO DIRK/KATJA
+bool VentilationNatural::isValid(const Database<Schedule> &scheduleDB) const {
 
-	// is id valid?
 	if ( m_id == INVALID_ID )
 		return false;
 
-	// is a schedule ID set?
 	if ( m_scheduleId == INVALID_ID )
 		return false;
 	else {
-	/// TODO Check Schedule ID
-	/// we have to check also if the schedule with the specified ID exists!
+		// check if schedule ID is existing and valid
+		const Schedule * sched = scheduleDB[m_scheduleId];
+		if (sched == nullptr)
+			return false;
+		if (!sched->isValid())
+			return false;
 	}
 
 	try {

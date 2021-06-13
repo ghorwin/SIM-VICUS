@@ -49,7 +49,7 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Material used for divider (INVALID_ID for no divider). */
-	unsigned int	m_materialID = INVALID_ID;						// XML:A:required
+	unsigned int	m_materialId = INVALID_ID;						// XML:A:required
 	/*! Cross section occupied by all divider elements in this window (required when m_materialID is given). */
 	IBK::Parameter	m_area;											// XML:E:required
 	/*! Thickness of frame */
@@ -64,7 +64,7 @@ public:
 
 
 inline bool WindowDivider::operator!=(const WindowDivider & other) const {
-	if (m_materialID != other.m_materialID) return true;
+	if (m_materialId != other.m_materialId) return true;
 	if (m_area != other.m_area) return true;
 	return false;
 }
@@ -73,12 +73,12 @@ inline bool WindowDivider::operator!=(const WindowDivider & other) const {
 inline void WindowDivider::checkParameters(const std::vector<Material> & materials) {
 	FUNCID(WindowDivider::checkParameters);
 
-	if (m_materialID == INVALID_ID)
+	if (m_materialId == INVALID_ID)
 		return;
 	// search material list for required material
-	std::vector<Material>::const_iterator it = std::find(materials.begin(), materials.end(), m_materialID);
+	std::vector<Material>::const_iterator it = std::find(materials.begin(), materials.end(), m_materialId);
 	if (it == materials.end())
-		throw IBK::Exception(IBK::FormatString("Material with ID %1 not defined.").arg(m_materialID), FUNC_ID);
+		throw IBK::Exception(IBK::FormatString("Material with ID %1 not defined.").arg(m_materialId), FUNC_ID);
 	m_lambda = it->m_para[Material::P_Conductivity].value;
 
 	m_area.checkedValue("Area", "m2", "m2", 0, true, (std::numeric_limits<double>::max)(), true,

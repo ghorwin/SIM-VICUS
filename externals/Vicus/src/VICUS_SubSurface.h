@@ -64,7 +64,7 @@ public:
 	/*! Unique ID of sub surface. */
 	unsigned int						m_id = INVALID_ID;			// XML:A:required
 
-	QString								m_displayName;				// XML:A
+	//:inherited	QString				m_displayName;				// XML:A
 
 	/*! The actual geometry. */
 	Polygon2D							m_polygon2D;				// XML:E

@@ -115,6 +115,8 @@ public:
 		PM_VertexList,
 		/*! Shows the widget with global site (and view) properties. */
 		PM_SiteProperties,
+		/*! Shows the widget for adding sub-surface geometries. */
+		PM_AddSubSurfaceGeometry,
 		/*! Shows the widget with building properties. */
 		PM_BuildingProperties,
 		/*! Shows the widget with network properties. */
@@ -156,6 +158,10 @@ public:
 		/*! All surfaces of rooms with associated zone template are colored based on that zone template color.
 		*/
 		OCM_ZoneTemplates,
+		/*! When this mode is active, all but the selected surfaces are shown in dark gray, but the selected surfaces
+			are shown in orange.
+		*/
+		OCM_SelectedSurfacesHighlighted,
 		OCM_Network			=	0x1000,
 		OCM_NetworkNode,
 		OCM_NetworkEdge,

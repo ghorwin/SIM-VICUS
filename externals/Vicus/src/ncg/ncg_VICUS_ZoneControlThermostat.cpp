@@ -62,6 +62,10 @@ void ZoneControlThermostat::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'ControlValue' element.") ), FUNC_ID);
 
+		if (!element->FirstChildElement("ControllerType"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'ControllerType' element.") ), FUNC_ID);
+
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
@@ -90,6 +94,15 @@ void ZoneControlThermostat::readXML(const TiXmlElement * element) {
 			else if (cName == "ControlValue") {
 				try {
 					m_controlValue = (ControlValue)KeywordList::Enumeration("ZoneControlThermostat::ControlValue", c->GetText());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
+				}
+			}
+			else if (cName == "ControllerType") {
+				try {
+					m_controllerType = (ControllerType)KeywordList::Enumeration("ZoneControlThermostat::ControllerType", c->GetText());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
@@ -131,6 +144,9 @@ TiXmlElement * ZoneControlThermostat::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "HeatingSetpointScheduleId", nullptr, std::string(), IBK::val2string<unsigned int>(m_heatingSetpointScheduleId));
 	if (m_coolingSetpointScheduleId != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "CoolingSetpointScheduleId", nullptr, std::string(), IBK::val2string<unsigned int>(m_coolingSetpointScheduleId));
+
+	if (m_controllerType != NUM_CT)
+		TiXmlElement::appendSingleAttributeElement(e, "ControllerType", nullptr, std::string(), KeywordList::Keyword("ZoneControlThermostat::ControllerType",  m_controllerType));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {

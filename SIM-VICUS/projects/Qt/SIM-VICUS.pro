@@ -102,7 +102,11 @@ SOURCES += \
 								../../src/SVDBZoneControlThermostatTableModel.cpp \
 								../../src/SVDBZoneControlVentilationNaturalEditWidget.cpp \
 								../../src/SVDBZoneControlVentilationNaturalTableModel.cpp \
+								../../src/SVDBZoneIdealHeatingCoolingEditWidget.cpp \
+								../../src/SVDBZoneIdealHeatingCoolingTableModel.cpp \
 								../../src/SVNetworkControllerDialog.cpp \
+								../../src/SVNetworkDialogSelectPipes.cpp \
+								../../src/SVPropAddWindowWidget.cpp \
 								../../src/SVShadingCalculationDialog.cpp \
 								../../src/SVView3DDialog.cpp \
 								../../src/actions/SVUndoAddBuilding.cpp \
@@ -117,6 +121,7 @@ SOURCES += \
 								../../src/actions/SVUndoModifyBuildingLevel.cpp \
 								../../src/actions/SVUndoModifyBuildingTopology.cpp \
 								../../src/actions/SVUndoModifyComponentInstances.cpp \
+								../../src/actions/SVUndoModifyObjectName.cpp \
 								../../src/actions/SVUndoModifyProject.cpp \
 								../../src/actions/SVUndoModifyRoomZoneTemplateAssociation.cpp \
 								../../src/actions/SVUndoModifySiteData.cpp \
@@ -127,6 +132,7 @@ SOURCES += \
 								../../src/core3D/Vic3DGridObject.cpp \
 								../../src/core3D/Vic3DKeyboardMouseHandler.cpp \
 								../../src/core3D/Vic3DNewGeometryObject.cpp \
+								../../src/core3D/Vic3DNewSubSurfaceObject.cpp \
 								../../src/core3D/Vic3DOpaqueGeometryObject.cpp \
 								../../src/core3D/Vic3DOpenGLWindow.cpp \
 								../../src/core3D/Vic3DOrbitControllerObject.cpp \
@@ -173,7 +179,6 @@ SOURCES += \
 								../../src/SVDBZoneTemplateEditWidget.cpp \
 								../../src/SVDBZoneTemplateTreeModel.cpp \
 								../../src/SVDebugApplication.cpp \
-								../../src/SVDialogSelectNetworkPipes.cpp \
 								../../src/SVGeometryView.cpp \
 								../../src/SVImportIDFDialog.cpp \
 								../../src/SVInternalLoadsPersonDetailedWidget.cpp \
@@ -246,7 +251,11 @@ HEADERS  += \
 								../../src/SVDBZoneControlThermostatTableModel.h \
 								../../src/SVDBZoneControlVentilationNaturalEditWidget.h \
 								../../src/SVDBZoneControlVentilationNaturalTableModel.h \
+								../../src/SVDBZoneIdealHeatingCoolingEditWidget.h \
+								../../src/SVDBZoneIdealHeatingCoolingTableModel.h \
 								../../src/SVNetworkControllerDialog.h \
+								../../src/SVNetworkDialogSelectPipes.h \
+								../../src/SVPropAddWindowWidget.h \
 								../../src/SVShadingCalculationDialog.h \
 								../../src/SVView3DDialog.h \
 								../../src/actions/SVUndoAddBuilding.h \
@@ -261,6 +270,7 @@ HEADERS  += \
 								../../src/actions/SVUndoModifyBuildingLevel.h \
 								../../src/actions/SVUndoModifyBuildingTopology.h \
 								../../src/actions/SVUndoModifyComponentInstances.h \
+								../../src/actions/SVUndoModifyObjectName.h \
 								../../src/actions/SVUndoModifyProject.h \
 								../../src/actions/SVUndoModifyRoomZoneTemplateAssociation.h \
 								../../src/actions/SVUndoModifySiteData.h \
@@ -273,6 +283,7 @@ HEADERS  += \
 								../../src/core3D/Vic3DGridObject.h \
 								../../src/core3D/Vic3DKeyboardMouseHandler.h \
 								../../src/core3D/Vic3DNewGeometryObject.h \
+								../../src/core3D/Vic3DNewSubSurfaceObject.h \
 								../../src/core3D/Vic3DOpaqueGeometryObject.h \
 								../../src/core3D/Vic3DOpenGLException.h \
 								../../src/core3D/Vic3DOpenGLWindow.h \
@@ -320,7 +331,6 @@ HEADERS  += \
 								../../src/SVDBZoneTemplateEditWidget.h \
 								../../src/SVDBZoneTemplateTreeModel.h \
 								../../src/SVDebugApplication.h \
-								../../src/SVDialogSelectNetworkPipes.h \
 								../../src/SVGeometryView.h \
 								../../src/SVImportIDFDialog.h \
 								../../src/SVInternalLoadsPersonDetailedWidget.h \
@@ -385,6 +395,7 @@ FORMS    += \
 								../../src/SVDBZoneControlShadingEditWidget.ui \
 								../../src/SVDBZoneControlThermostatEditWidget.ui \
 								../../src/SVDBZoneControlVentilationNaturalEditWidget.ui \
+								../../src/SVDBZoneIdealHeatingCoolingEditWidget.ui \
 								../../src/SVDatabaseEditDialog.ui \
 								../../src/SVDBBoundaryConditionEditWidget.ui \
 								../../src/SVDBComponentEditWidget.ui \
@@ -399,7 +410,6 @@ FORMS    += \
 								../../src/SVDBWindowEditWidget.ui \
 								../../src/SVDBZoneTemplateEditDialog.ui \
 								../../src/SVDBZoneTemplateEditWidget.ui \
-								../../src/SVDialogSelectNetworkPipes.ui \
 								../../src/SVImportIDFDialog.ui \
 								../../src/SVInternalLoadsPersonDetailedWidget.ui \
 								../../src/SVInternalLoadsPersonManagerWidget.ui \
@@ -408,10 +418,12 @@ FORMS    += \
 								../../src/SVMainWindow.ui \
 								../../src/SVNavigationTreeWidget.ui \
 								../../src/SVNetworkControllerDialog.ui \
+								../../src/SVNetworkDialogSelectPipes.ui \
 								../../src/SVNetworkImportDialog.ui \
 								../../src/SVPreferencesDialog.ui \
 								../../src/SVPreferencesPageStyle.ui \
 								../../src/SVPreferencesPageTools.ui \
+								../../src/SVPropAddWindowWidget.ui \
 								../../src/SVPropBuildingEditWidget.ui \
 								../../src/SVPropEditGeometry.ui \
 								../../src/SVPropFloorManagerWidget.ui \

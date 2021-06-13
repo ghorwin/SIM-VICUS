@@ -26,7 +26,7 @@
 namespace NANDRAD {
 
 bool WindowShading::operator!=(const WindowShading & other) const {
-	if (m_controlModelID != other.m_controlModelID) return true;
+	if (m_controlModelId != other.m_controlModelId) return true;
 	if (m_modelType != other.m_modelType) return true;
 	for (unsigned int i=0; i<NUM_P; ++i)
 		if (m_para[i] != other.m_para[i]) return true;
@@ -55,15 +55,15 @@ void WindowShading::checkParameters(const std::vector<ShadingControlModel> &cont
 		break;
 
 		case MT_Controlled :
-			if (m_controlModelID == INVALID_ID)
+			if (m_controlModelId == INVALID_ID)
 				throw IBK::Exception("Shading model requires reference to shading control model (tag 'ControlModelID')", FUNC_ID);
 			// check for existence of shading model parameter block
 			std::vector<ShadingControlModel>::const_iterator sit =
-					std::find(controlModels.begin(), controlModels.end(), m_controlModelID);
+					std::find(controlModels.begin(), controlModels.end(), m_controlModelId);
 
 			if(sit == controlModels.end()) {
 				throw IBK::Exception(IBK::FormatString("ShadingControlModel with id #%1 does not exist.")
-									 .arg(m_controlModelID), FUNC_ID);
+									 .arg(m_controlModelId), FUNC_ID);
 			}
 		break;
 	}

@@ -52,7 +52,7 @@ void NetworkEdge::readXML(const TiXmlElement * element) {
 			if (attribName == "supply")
 				m_supply = NANDRAD::readPODAttributeValue<bool>(element, attrib);
 			else if (attribName == "displayName")
-				m_displayName = attrib->ValueStr();
+				m_displayName = QString::fromStdString(attrib->ValueStr());
 			else if (attribName == "visible")
 				m_visible = NANDRAD::readPODAttributeValue<bool>(element, attrib);
 			else if (attribName == "nodeId1")
@@ -97,8 +97,8 @@ TiXmlElement * NetworkEdge::writeXML(TiXmlElement * parent) const {
 
 	if (m_supply != NetworkEdge().m_supply)
 		e->SetAttribute("supply", IBK::val2string<bool>(m_supply));
-	if (!m_displayName.empty())
-		e->SetAttribute("displayName", m_displayName);
+	if (!m_displayName.isEmpty())
+		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (m_visible != NetworkEdge().m_visible)
 		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 	if (m_nodeId1 != VICUS::INVALID_ID)

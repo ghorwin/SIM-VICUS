@@ -58,7 +58,7 @@ void IdealSurfaceHeatingCoolingModel::setup(const NANDRAD::IdealSurfaceHeatingCo
 
 
 	// store zone
-	m_thermostatZoneId = model.m_thermostatZoneID;
+	m_thermostatZoneId = model.m_thermostatZoneId;
 
 	// resize result vector
 	m_vectorValuedResults.resize(NUM_VVR);

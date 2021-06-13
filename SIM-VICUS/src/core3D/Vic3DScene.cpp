@@ -84,14 +84,13 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 
 	// we create the new geometry object here, but data is added once it is used
 	m_newGeometryObject.create(m_fixedColorTransformShader);
+	m_newSubSurfaceObject.create(m_buildingShader->shaderProgram());
 
 	// create surface normals object already, though we update vertex buffer object later when we actually have geometry
 	m_surfaceNormalsObject.create(m_surfaceNormalsShader);
 
 	m_gridPlanes.push_back( VICUS::PlaneGeometry(VICUS::Polygon3D::T_Triangle,
 												 IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(1,0,0), IBKMK::Vector3D(0,1,0)) );
-
-
 }
 
 
@@ -259,6 +258,9 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 		m_opaqueGeometryObject.create(m_buildingShader->shaderProgram()); // Note: does nothing, if already existing
 
 		// transfer data from building geometry to vertex array caches
+		const SVViewState & vs = SVViewStateHandler::instance().viewState();
+		if (vs.m_viewMode == SVViewState::VM_PropertyEditMode)
+			recolorObjects(vs.m_objectColorMode, vs.m_colorModePropertyID); // only changes color set in objects
 		generateBuildingGeometry();
 	}
 
@@ -302,6 +304,7 @@ void Scene::destroy() {
 	m_coordinateSystemObject.destroy();
 	m_smallCoordinateSystemObject.destroy();
 	m_newGeometryObject.destroy();
+	m_newSubSurfaceObject.destroy();
 	m_surfaceNormalsObject.destroy();
 }
 
@@ -428,7 +431,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 			m_camera.rotate(-MOUSE_ROTATION_SPEED * mouse_dx, LocalUp);
 			m_camera.rotate(-MOUSE_ROTATION_SPEED * mouse_dy, m_camera.right());
 			// cursor wrap adjustment
-			adjustCurserDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
+			adjustCursorDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
 		}
 	}
 
@@ -437,7 +440,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		// only do panning, if not in any other mode
 		if (m_navigationMode == NUM_NM) {
 			// we enter pan mode
-			panStart(localMousePos, pickObject);
+			panStart(localMousePos, pickObject, false);
 		}
 		if ((mouseDelta != QPoint(0,0)) && (m_navigationMode == NM_Panning)) {
 
@@ -451,7 +454,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 
 			m_camera.setTranslation(QtExt::IBKVector2QVector(m_panCameraStart + cameraTrans));
 			// cursor wrap adjustment
-			adjustCurserDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
+			adjustCursorDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
 		}
 	}
 
@@ -611,7 +614,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 						m_camera.setTranslation(newCamPos);
 
 						// cursor wrap adjustment
-						adjustCurserDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
+						adjustCursorDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
 					} break; // orbit controller active
 
 					case NM_InteractiveTranslation: {
@@ -753,6 +756,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		if (m_navigationMode == NM_Panning) {
 			qDebug() << "Leaving panning mode";
 			m_navigationMode = NUM_NM;
+			m_panObjectDepth = 0.01; // reset pan object depth
 		}
 	}
 
@@ -978,40 +982,6 @@ void Scene::render() {
 
 
 
-	// *** movable coordinate system  ***
-
-	if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
-		vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry ||
-		vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
-		vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem )
-	{
-		m_coordinateSystemShader->bind();
-
-		// When we translate/rotate the local coordinate system, we actually move the world with respect to the camera
-		// by left-multiplying the model2world matrix with the coordinate system object.
-
-		// Suppose the local coordinate system shall be located at 20,0,0 and the camera looks at the coordinate
-		// system's origin from 20,-40,2. Now, inside the shader, all coordinates are multiplied by the
-		// model2world matrix, which basically moves all coordinates +20 in x direction. Now light and view position
-		// (the latter only being used to compute the phong shading) are at 40, -40, 2, wheras the local coordinate
-		// system is moved from local 0,0,0 to the desired 20,0,0.
-		// Consequently, the light and view position cause the phong shader to draw the sphere as if lighted slightly
-		// from the direction of positive x.
-
-		// To fix this, we translate/rotate the view/light position inversely to the model2world transformation and
-		// this revert the effect introduced by the model2world matrix on the light/view coordinates.
-		QVector3D translatedViewPos = m_coordinateSystemObject.inverseTransformationMatrix() * viewPos;
-//		qDebug() << viewPos << m_coordinateSystemObject.translation();
-
-		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[0], m_worldToView);
-		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[1], translatedViewPos); // lightpos
-		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[2], QtExt::QVector3DFromQColor(m_lightColor));
-		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[3], translatedViewPos); // viewpos
-		m_coordinateSystemObject.renderOpaque();
-		m_coordinateSystemShader->release();
-	}
-
-
 	// *** opaque background geometry ***
 
 	// tell OpenGL to show only faces whose normal vector points towards us
@@ -1045,6 +1015,8 @@ void Scene::render() {
 
 	m_opaqueGeometryObject.renderOpaque();
 
+	m_newSubSurfaceObject.renderOpaque();
+
 	m_buildingShader->release();
 
 	// *** surface normals
@@ -1067,7 +1039,6 @@ void Scene::render() {
 	m_gridShader->release();
 
 
-
 	// *** transparent geometry ***
 
 	glEnable(GL_BLEND);
@@ -1078,12 +1049,14 @@ void Scene::render() {
 	// disable update of depth test but still use it
 	glDepthMask (GL_FALSE);
 
+
 	// ... windows, ...
+	m_buildingShader->bind();
 	if (m_opaqueGeometryObject.canDrawTransparent() != 0) {
-		m_buildingShader->bind();
 		m_opaqueGeometryObject.renderTransparent();
-		m_buildingShader->release();
 	}
+	m_newSubSurfaceObject.renderTransparent();
+	m_buildingShader->release();
 
 
 	// *** new polygon draw object (transparent plane) ***
@@ -1095,10 +1068,53 @@ void Scene::render() {
 		m_fixedColorTransformShader->release();
 	}
 
+	// turn off blending
+	glDisable(GL_BLEND);
 	// re-enable updating of z-buffer
 	glDepthMask(GL_TRUE);
 	// tell OpenGL to turn on culling
 	glEnable(GL_CULL_FACE);
+
+	// clear depth buffer because we want to paint on top of all
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	// *** movable coordinate system  ***
+
+	if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
+		vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry ||
+		vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
+		vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem )
+	{
+		m_coordinateSystemShader->bind();
+
+		// When we translate/rotate the local coordinate system, we actually move the world with respect to the camera
+		// by left-multiplying the model2world matrix with the coordinate system object.
+
+		// Suppose the local coordinate system shall be located at 20,0,0 and the camera looks at the coordinate
+		// system's origin from 20,-40,2. Now, inside the shader, all coordinates are multiplied by the
+		// model2world matrix, which basically moves all coordinates +20 in x direction. Now light and view position
+		// (the latter only being used to compute the phong shading) are at 40, -40, 2, wheras the local coordinate
+		// system is moved from local 0,0,0 to the desired 20,0,0.
+		// Consequently, the light and view position cause the phong shader to draw the sphere as if lighted slightly
+		// from the direction of positive x.
+
+		// To fix this, we translate/rotate the view/light position inversely to the model2world transformation and
+		// this revert the effect introduced by the model2world matrix on the light/view coordinates.
+		QVector3D translatedViewPos = m_coordinateSystemObject.inverseTransformationMatrix() * viewPos;
+//		qDebug() << viewPos << m_coordinateSystemObject.translation();
+
+		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[0], m_worldToView);
+		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[1], translatedViewPos); // lightpos
+		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[2], QtExt::QVector3DFromQColor(m_lightColor));
+		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[3], translatedViewPos); // viewpos
+		m_coordinateSystemObject.renderOpaque();
+		m_coordinateSystemShader->release();
+	}
+
+	// clear depth buffer because we want to paint on top of all
+	glClear(GL_DEPTH_BUFFER_BIT);
+	// turn on blending
+	glEnable(GL_BLEND);
 
 	if (m_smallCoordinateSystemObjectVisible) {
 		glViewport(m_smallViewPort.x(), m_smallViewPort.y(), m_smallViewPort.width(), m_smallViewPort.height());
@@ -1246,7 +1262,9 @@ void Scene::generateBuildingGeometry() {
 							if (comp != nullptr) {
 								// now select transparent or opaque surface based on type
 								if (comp->m_type == VICUS::SubSurfaceComponent::CT_Window) {
-									transparentSubsurfaces.push_back(std::make_pair(&sub, &s.geometry().holeTriangulationData()[i]) );
+									// only add to transparent subsurfaces if visible and not selected
+									if (sub.m_visible && !sub.m_selected)
+										transparentSubsurfaces.push_back(std::make_pair(&sub, &s.geometry().holeTriangulationData()[i]) );
 									continue; // next surface
 								}
 							}
@@ -1432,6 +1450,21 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 	switch (ocm) {
 		case SVViewState::OCM_None: break;
 
+		case SVViewState::OCM_SelectedSurfacesHighlighted: {
+			for (const VICUS::Building & b : p.m_buildings) {
+				for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+					for (const VICUS::Room & r : bl.m_rooms) {
+						for (const VICUS::Surface & s : r.m_surfaces) {
+
+							// change color of selected surfaces
+							if (s.m_selected)
+								s.m_color = QColor(255,144,0,255); // nice orange
+						}
+					}
+				}
+			}
+		} break;
+
 		case SVViewState::OCM_Components:
 		case SVViewState::OCM_SubSurfaceComponents:
 		case SVViewState::OCM_ComponentOrientation:
@@ -1476,7 +1509,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 						}
 					break;
 
-					// the color modes below are not handled here and are only added to get rid of compiler warnins
+						// the color modes below are not handled here and are only added to get rid of compiler warnins
 					case SVViewState::OCM_ZoneTemplates:
 					case SVViewState::OCM_SubSurfaceComponents:
 					case SVViewState::OCM_None:
@@ -1538,10 +1571,11 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 						}
 					break;
 
-					// the color modes below are not handled here and are only added to get rid of compiler warnins
+						// the color modes below are not handled here and are only added to get rid of compiler warnins
 					case SVViewState::OCM_ZoneTemplates:
 					case SVViewState::OCM_Components:
 					case SVViewState::OCM_None:
+					case SVViewState::OCM_SelectedSurfacesHighlighted:
 					case SVViewState::OCM_Network:
 					case SVViewState::OCM_NetworkEdge:
 					case SVViewState::OCM_NetworkNode:
@@ -1567,7 +1601,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 							// color all surfaces of room based on zone template color
 							for (const VICUS::Surface & s : r.m_surfaces)
 								s.m_color = zt->m_color;
-								// TODO : subsurfaces
+							// TODO : subsurfaces
 
 						}
 					}
@@ -1616,8 +1650,9 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					}
 					break;
 
-					// rest only to avoid compiler warnings
+						// rest only to avoid compiler warnings
 					case SVViewState::OCM_None:
+					case SVViewState::OCM_SelectedSurfacesHighlighted:
 					case SVViewState::OCM_Components:
 					case SVViewState::OCM_SubSurfaceComponents:
 					case SVViewState::OCM_ComponentOrientation:
@@ -2282,7 +2317,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 }
 
 
-void Scene::adjustCurserDuringMouseDrag(const QPoint & mouseDelta, const QPoint & localMousePos,
+void Scene::adjustCursorDuringMouseDrag(const QPoint & mouseDelta, const QPoint & localMousePos,
 											 QPoint & newLocalMousePos, PickObject & pickObject)
 {
 	// cursor position moves out of window?
@@ -2297,9 +2332,11 @@ void Scene::adjustCurserDuringMouseDrag(const QPoint & mouseDelta, const QPoint 
 	}
 
 	if (localMousePos.y() < WINDOW_MOVE_MARGIN && mouseDelta.y() < 0) {
+		qDebug() << "Resetting mousepos to bottom side of window.";
 		newLocalMousePos.setY(m_viewPort.height()-WINDOW_MOVE_MARGIN);
 	}
 	else if (localMousePos.y() > (m_viewPort.height()-WINDOW_MOVE_MARGIN) && mouseDelta.y() > 0) {
+		qDebug() << "Resetting mousepos to top side of window.";
 		newLocalMousePos.setY(WINDOW_MOVE_MARGIN);
 	}
 
@@ -2307,7 +2344,7 @@ void Scene::adjustCurserDuringMouseDrag(const QPoint & mouseDelta, const QPoint 
 	if (m_navigationMode == NM_Panning && newLocalMousePos != localMousePos) {
 		pickObject.m_localMousePos = newLocalMousePos;
 		pick(pickObject);
-		panStart(newLocalMousePos, pickObject);
+		panStart(newLocalMousePos, pickObject, true);
 	}
 }
 
@@ -2433,34 +2470,46 @@ IBKMK::Vector3D Scene::calculateFarPoint(const QPoint & mousPos, const QMatrix4x
 }
 
 
-void Scene::panStart(const QPoint & localMousePos, PickObject & pickObject) {
+void Scene::panStart(const QPoint & localMousePos, PickObject & pickObject, bool reuseDepth) {
+	qDebug() << "Entering panning mode";
+	m_navigationMode = NM_Panning;
 
 	// configure the pick object and pick a point on the XY plane/or any visible surface
 	if (!pickObject.m_pickPerformed)
 		pick(pickObject);
 
 	// only enter orbit controller mode, if we actually hit something
-	if (!pickObject.m_candidates.empty()) {
-		m_navigationMode = NM_Panning;
-		qDebug() << "Entering panning mode";
+	if (pickObject.m_candidates.empty()) {
+		// create a virtual pick-point to start panning somewhere in the middle distance
+		PickObject::PickResult r;
+		r.m_depth = m_panObjectDepth;
+		r.m_pickPoint = pickObject.m_lineOfSightOffset + pickObject.m_lineOfSightDirection*r.m_depth;
+		pickObject.m_candidates.push_back(r);
+	}
+	else if (reuseDepth) {
+		pickObject.m_candidates.front().m_depth = m_panObjectDepth;
+		pickObject.m_candidates.front().m_pickPoint =
+				pickObject.m_lineOfSightOffset + pickObject.m_lineOfSightDirection*pickObject.m_candidates.front().m_depth;
+	}
 
-		// we need to store initial camera pos, selected object pos, far point
-		m_panCameraStart = QtExt::QVector2IBKVector(m_camera.translation());	// Point A
-		m_panObjectStart = pickObject.m_candidates.front().m_pickPoint;			// Point C
-		m_panFarPointStart = pickObject.m_lineOfSightOffset + pickObject.m_lineOfSightDirection;	// Point B
-		double BADistance = (m_panFarPointStart - m_panCameraStart).magnitude(); // Same as far distance?
-		double CADistance = (m_panObjectStart - m_panCameraStart).magnitude();
-		m_panCABARatio = CADistance/BADistance;
-		m_panMousePos = localMousePos;
+	// if pick point is very far away, we limit the depth and adjust the pick point
 
-		// invert world2view matrix, with m_worldToView = m_projection * m_camera.toMatrix() * m_transform.toMatrix();
-		bool invertible;
-		m_panOriginalTransformMatrix = m_worldToView.inverted(&invertible);
-		if (!invertible) {
-			qWarning()<< "Cannot invert projection matrix.";
-			m_panOriginalTransformMatrix = QMatrix4x4();
-		}
+	// we need to store initial camera pos, selected object pos, far point
+	m_panCameraStart = QtExt::QVector2IBKVector(m_camera.translation());	// Point A
+	m_panObjectStart = pickObject.m_candidates.front().m_pickPoint;			// Point C
+	m_panFarPointStart = pickObject.m_lineOfSightOffset + pickObject.m_lineOfSightDirection;	// Point B
+	m_panObjectDepth = pickObject.m_candidates.front().m_depth;
+	double BADistance = (m_panFarPointStart - m_panCameraStart).magnitude(); // Same as far distance?
+	double CADistance = (m_panObjectStart - m_panCameraStart).magnitude();
+	m_panCABARatio = CADistance/BADistance;
+	m_panMousePos = localMousePos;
 
+	// invert world2view matrix, with m_worldToView = m_projection * m_camera.toMatrix() * m_transform.toMatrix();
+	bool invertible;
+	m_panOriginalTransformMatrix = m_worldToView.inverted(&invertible);
+	if (!invertible) {
+		qWarning()<< "Cannot invert projection matrix.";
+		m_panOriginalTransformMatrix = QMatrix4x4();
 	}
 }
 

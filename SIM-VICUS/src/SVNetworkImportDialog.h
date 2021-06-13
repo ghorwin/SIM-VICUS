@@ -76,7 +76,7 @@ private:
 
 	unsigned generateId();
 
-	std::string uniqueName(const std::string &name);
+	QString uniqueName(const QString & name);
 };
 
 #endif // SVNetworkImportDialogH

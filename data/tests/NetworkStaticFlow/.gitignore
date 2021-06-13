@@ -24,3 +24,5 @@
 /HydraulicNetworkPipeRegister/
 /ThermoHydraulicNetworkHeatPumpIdealSource/
 /ThermoHydraulicNetworkHeatPumpIdealSupply/
+/ThermoHydraulicNetworkPumpWithLossesAndFraction/
+/ThermoHydraulicNetworkHeatPumpRealSource/

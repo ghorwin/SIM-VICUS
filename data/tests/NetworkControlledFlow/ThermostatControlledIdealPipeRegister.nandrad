@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.999">
+	<Project>
+		<ProjectInfo />
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">53</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="%">20</IBK:Parameter>
+			<TimeZone>13</TimeZone>
+			<ClimateFilePath>${Project Directory}/../climate/Constant_Min10C.c6b</ClimateFilePath>
+		</Location>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<Interval>
+				<IBK:Parameter name="End" unit="d">5</IBK:Parameter>
+			</Interval>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<Zones>
+			<Zone id="1" displayName="dummy" type="Active">
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<ConstructionInstances>
+			<ConstructionInstance id="3001" displayName="Floor">
+				<ConstructionTypeId>10001</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<InterfaceA id="1" zoneId="1">
+					<!--Interface to 'Room'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+			</ConstructionInstance>
+		</ConstructionInstances>
+		<ConstructionTypes>
+			<ConstructionType id="10001" displayName="Construction with heated slab">
+				<!-- Layer index starts with 0 (index matches index in MaterialLayers vector) -->
+				<ActiveLayerIndex>1</ActiveLayerIndex>
+				<MaterialLayers>
+					<MaterialLayer thickness="0.06" matId="1001" /> <!-- heated layer -->
+					<MaterialLayer thickness="0.01" matId="1002" />
+					<MaterialLayer thickness="0.12" matId="1001" />
+				</MaterialLayers>
+			</ConstructionType>
+		</ConstructionTypes>
+		
+		<Materials>
+			<Material id="1001" displayName="Beton/Estrich">
+				<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+			</Material>
+			<Material id="1002" displayName="Trittschalldämmung"><!-- changed by Dirk -->
+				<IBK:Parameter name="Density" unit="kg/m3">35</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
+			</Material>
+		</Materials>
+
+		<Models>
+			<NaturalVentilationModels>
+				<NaturalVentilationModel id="501" displayName="Zone ventilation" modelType="Constant">
+					<ZoneObjectList>Zones</ZoneObjectList>
+					<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
+				</NaturalVentilationModel>
+			</NaturalVentilationModels>
+			
+			<Thermostats>
+				<!-- A thermostat with scheduled heating set point, no cooling. Uses air temperature as sensor value. -->
+				<Thermostat id="601" displayName="Air temperature thermostat" modelType="Scheduled">
+					<ZoneObjectList>Zones</ZoneObjectList>
+					<!-- P-controller is accurate to 0.2 K -->
+					<IBK:Parameter name="TemperatureTolerance" unit="K">0.2</IBK:Parameter>
+				</Thermostat>
+			</Thermostats>
+
+			<IdealPipeRegisterModels>
+				<IdealPipeRegisterModel id="701" modelType="Constant">
+					<ThermostatZoneId>1</ThermostatZoneId>
+					<ConstructionObjectList>Floor</ConstructionObjectList>
+					<!-- 
+						grober überschlag der wärmeeinträge
+						
+						Q = m*c*deltaT
+						Q = 0,06 kg/s * 4180 J/kgK * (35°C - 28°C) <- Vorlauf minus Rücklauf
+						Q = 1755,6 J/s = 1755,6 W
+						
+						auf 10 m2
+						175 W/m2
+						auch das wieder viel zu viel
+						
+						würde ich runter nehmen den massestrom
+						 
+						richtwert 0,02 kg/s -> damit ergibt sich eine geschwindigkeit im rohr von 0,13 m/s auch das ist gut
+						Q wäre dann 585,2 W oder 58,5 W/m2
+						
+						damit brennt der fußboden net :)
+											
+					-->
+					<IBK:Parameter name="SupplyTemperature" unit="C">35</IBK:Parameter><!-- changed 40 to 35  und das ist schon bissel hoch bei der außenluft --> 
+					<IBK:Parameter name="MaxMassFlux" unit="kg/s">0.02</IBK:Parameter><!-- nach bissel rechnen kommt man dann hier auf 0,39 m/s das ist ok; dazu volumenstrom, querschnittsfläche (rohr) ausrechnen und den massestrom einsetzen; v sollte nicht über 1 m/s kommen -->
+					<!-- Verlegeabstand 10 cm -->
+					<IBK:Parameter name="PipeLength" unit="m">100</IBK:Parameter>
+					<!-- Standardrohr: dn = 16 mm, en = 2 mm, lambda = 0.35 W/mK --><!-- normalerweise gibt man den außendurchmesser und die wanddicke an also 16-2x2 wären 12 aber belassen wir es bei 14 mm innendurchmesser -->
+					<IBK:Parameter name="PipeInnerDiameter" unit="mm">14</IBK:Parameter>
+					<IBK:Parameter name="UValuePipeWall" unit="W/mK">3.66</IBK:Parameter>
+					<!-- The default value for number of pipes is 1, so this could be omitted. -->
+					<IBK:IntPara name="NumberParallelPipes">1</IBK:IntPara>
+					<!-- Fluid properties of water -->
+					<HydraulicFluid displayName="Water">
+						<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
+						<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
+						<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
+						<LinearSplineParameter name="KinematicViscosity" interpolationMethod="linear">
+							<X unit="C">0 90 </X>
+							<Y unit="m2/s">1.307e-06 1.307e-06</Y>
+						</LinearSplineParameter>
+					</HydraulicFluid>
+				</IdealPipeRegisterModel>
+			</IdealPipeRegisterModels>		
+			
+		</Models>
+
+		<Schedules>
+			<WeekEndDays>Sat,Sun</WeekEndDays>
+			<ScheduleGroups>
+				<ScheduleGroup objectList="Zones">
+					<Schedule type="AllDays">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0 6 18</TimePoints>
+								<Values>HeatingSetpointSchedule [C]:18 22 18</Values>
+							</DailyCycle>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>CoolingSetpointSchedule [C]:40</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+
+			</ScheduleGroups>
+		</Schedules>
+		
+		<Outputs>
+			<Definitions>
+				
+				<OutputDefinition>
+					<Quantity>VentilationHeatLoad</Quantity>
+					<ObjectListName>Zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>ConstructionHeatConductionLoad</Quantity>
+					<ObjectListName>Zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>ActiveLayerThermalLoad</Quantity>
+					<ObjectListName>Floor</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				
+				<OutputDefinition>
+					<Quantity>ActiveLayerTemperature</Quantity>
+					<ObjectListName>Floor</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<ObjectListName>Zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				
+				<OutputDefinition>
+					<Quantity>MassFlux[3001]</Quantity>
+					<ObjectListName>Register Model</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				
+			</Definitions>
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="min">30</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="Register Model">
+				<FilterID>701</FilterID>
+				<ReferenceType>Model</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Zones">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Floor">
+				<FilterID>3001</FilterID>
+				<ReferenceType>ConstructionInstance</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+		
+	</Project>
+</NandradProject>

@@ -80,13 +80,13 @@
 					<!-- Control temperature is "Air temperature", this is the default and could be omitted -->
 					<TemperatureType>AirTemperature</TemperatureType>
 					<!-- Controller type PController is the default, so we could omit this-->
-					<ControllerType>PController</ControllerType>
+					<ControllerType>Analog</ControllerType>
 				</Thermostat>
 			</Thermostats>
 
 			<IdealPipeRegisterModels>
 				<IdealPipeRegisterModel id="701" modelType="Scheduled">
-					<ThermostatZoneID>1</ThermostatZoneID>
+					<ThermostatZoneId>1</ThermostatZoneId>
 					<ConstructionObjectList>Floor</ConstructionObjectList>
 					<IBK:Parameter name="PipeLength" unit="m">100</IBK:Parameter>
 					<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
@@ -159,13 +159,13 @@
 				</OutputDefinition>
 
 				<OutputDefinition>
-					<Quantity>ThermalLoad[1]</Quantity>
+					<Quantity>ActiveLayerThermalLoad</Quantity>
 					<ObjectListName>Floor</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				
 				<OutputDefinition>
-					<Quantity>ElementTemperature[1]</Quantity>
+					<Quantity>ActiveLayerTemperature</Quantity>
 					<ObjectListName>Floor</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>

@@ -49,7 +49,7 @@
 				<EmbeddedObjects>
 					<EmbeddedObject id="201" displayName="Simple window">
 						<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
-						<Window glazingSystemID="100">
+						<Window glazingSystemId="100">
 						</Window>
 					</EmbeddedObject>
 				</EmbeddedObjects>

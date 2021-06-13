@@ -32,6 +32,7 @@
 
 namespace Vic3D {
 	class NewGeometryObject;
+	class NewSubSurfaceObject;
 	class CoordinateSystemObject;
 	class WireFrameObject;
 }
@@ -42,6 +43,7 @@ class SVPropVertexListWidget;
 class SVGeometryView;
 class SVPropModeSelectionWidget;
 class SVLocalCoordinateView;
+class SVPropAddWindowWidget;
 
 /*! This singleton makes the current UI view state available to all.
 	Widgets that need to be informed from view state changes, should
@@ -84,6 +86,9 @@ public:
 	*/
 	Vic3D::NewGeometryObject			*m_newGeometryObject = nullptr;
 
+	/*! Caches pointer to the new sub-surface object, to allow direct access when sub-surfaces are being created. */
+	Vic3D::NewSubSurfaceObject			*m_newSubSurfaceObject = nullptr;
+
 	/*! Caches pointer to the coordinate system object, to allow direct access to object when removing vertexes.
 		The pointer is set in constructor of Vic3D::CoordinateSystemObject, object is not owned.
 		DO NOT DELETE the object or do any other crazy stuff with this pointer!
@@ -114,6 +119,9 @@ public:
 		when switching edit modes.
 	*/
 	SVPropModeSelectionWidget			*m_propModeSelectionWidget = nullptr;
+
+	/*! Pointer to property widget for adding windows/doors */
+	SVPropAddWindowWidget				*m_propAddWindowWidget = nullptr;
 
 signals:
 	/*! Emitted, when the state has changed. */

@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -51,6 +51,9 @@ public:
 
 	/*! Multiply a value to the daily cycle. */
 	DailyCycle multiply(double val) const;
+
+	/*! Add a value to the daily cycle returns the result. */
+	DailyCycle add(double val) const;
 
 	/*! Multiply operator. */
 	DailyCycle operator *(const DailyCycle &other) const {return multiply(other);}

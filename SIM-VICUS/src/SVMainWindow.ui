@@ -115,7 +115,7 @@
     </property>
     <widget class="QMenu" name="menuInternal_Loads">
      <property name="title">
-      <string>Internal Loads</string>
+      <string>Internal loads</string>
      </property>
      <addaction name="actionDBInternalLoadsPerson"/>
      <addaction name="actionDBInternalLoadsElectricEquipment"/>
@@ -148,6 +148,7 @@
     <addaction name="menuInternal_Loads"/>
     <addaction name="menuVentilation_Infiltration"/>
     <addaction name="menuZone_Control"/>
+    <addaction name="actionDBZoneIdealHeatingCooling"/>
     <addaction name="actionDBZoneTemplates"/>
     <addaction name="separator"/>
     <addaction name="actionDBNetworkPipes"/>
@@ -574,14 +575,6 @@
     <string>Internal loads: Electric equipment</string>
    </property>
   </action>
-  <action name="actionDBZoneTemplates">
-   <property name="text">
-    <string>Zone templates...</string>
-   </property>
-   <property name="toolTip">
-    <string>Zone templates...</string>
-   </property>
-  </action>
   <action name="actionDBInternalLoadsLights">
    <property name="text">
     <string>Lights...</string>
@@ -659,6 +652,21 @@
   <action name="actionDBSubSurfaceComponents">
    <property name="text">
     <string>Window/Door (sub-surface) components...</string>
+   </property>
+  </action>
+  <action name="actiondsadd">
+   <property name="text">
+    <string>dsadd</string>
+   </property>
+  </action>
+  <action name="actionDBZoneIdealHeatingCooling">
+   <property name="text">
+    <string>Zone ideal heating/cooling...</string>
+   </property>
+  </action>
+  <action name="actionDBZoneTemplates">
+   <property name="text">
+    <string>Zone templates...</string>
    </property>
   </action>
  </widget>

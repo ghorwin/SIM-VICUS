@@ -151,13 +151,13 @@
 					<!-- Control temperature is "Air temperature", this is the default and could be omitted -->
 					<TemperatureType>AirTemperature</TemperatureType>
 					<!-- Controller type PController is the default, so we could omit this-->
-					<ControllerType>PController</ControllerType>
+					<ControllerType>Analog</ControllerType>
 				</Thermostat>
 			</Thermostats>
 
 			<IdealPipeRegisterModels>
 				<IdealPipeRegisterModel id="701" modelType="Scheduled">
-					<ThermostatZoneID>1</ThermostatZoneID>
+					<ThermostatZoneId>1</ThermostatZoneId>
 					<ConstructionObjectList>Ground Floor</ConstructionObjectList>
 					<IBK:Parameter name="PipeLength" unit="m">100</IBK:Parameter>
 					<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
@@ -177,7 +177,7 @@
 				</IdealPipeRegisterModel>
 
 				<IdealPipeRegisterModel id="702" modelType="Scheduled">
-					<ThermostatZoneID>2</ThermostatZoneID>
+					<ThermostatZoneId>2</ThermostatZoneId>
 					<ConstructionObjectList>Upper Floor</ConstructionObjectList>
 					<IBK:Parameter name="PipeLength" unit="m">100</IBK:Parameter>
 					<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
@@ -212,17 +212,8 @@
 
 			<NetworkInterfaceAdapterModels>
 				<!-- Model for translating heat load into temperature spread inside a hydraulic networl-->
-				<NetworkInterfaceAdapterModel id="802" summationModelID="801">
-					<!-- Definition of hydraulic fluid -->
-					<HydraulicFluid displayName="Water">
-						<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
-						<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
-						<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
-						<LinearSplineParameter name="KinematicViscosity" interpolationMethod="linear">
-							<X unit="C">0 90 </X>
-							<Y unit="m2/s">1.307e-06 1.307e-06</Y>
-						</LinearSplineParameter>
-					</HydraulicFluid>
+				<NetworkInterfaceAdapterModel id="802" summationModelId="801">
+					<IBK:Parameter name="FluidHeatCapacity" unit="J/kgK">4180</IBK:Parameter>
 				</NetworkInterfaceAdapterModel>
 			</NetworkInterfaceAdapterModels>
 
@@ -253,7 +244,7 @@
 						<DailyCycles>
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0</TimePoints>
-								<Values>SupplyTemperatureSchedule [C]:40</Values>
+								<Values>FluidOutletSetpointSchedule [C]:40</Values>
 							</DailyCycle>
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0</TimePoints>

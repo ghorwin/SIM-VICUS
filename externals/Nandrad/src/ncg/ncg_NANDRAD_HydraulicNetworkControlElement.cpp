@@ -42,9 +42,9 @@ void HydraulicNetworkControlElement::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
 
-		if (!TiXmlAttribute::attributeByName(element, "controllerType"))
+		if (!TiXmlAttribute::attributeByName(element, "modelType"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'controllerType' attribute.") ), FUNC_ID);
+				IBK::FormatString("Missing required 'modelType' attribute.") ), FUNC_ID);
 
 		if (!TiXmlAttribute::attributeByName(element, "controlledProperty"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
@@ -56,6 +56,14 @@ void HydraulicNetworkControlElement::readXML(const TiXmlElement * element) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id")
 				m_id = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "modelType")
+				try {
+					m_modelType = (modelType_t)KeywordList::Enumeration("HydraulicNetworkControlElement::modelType_t", attrib->ValueStr());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
+				}
 			else if (attribName == "controllerType")
 				try {
 					m_controllerType = (ControllerType)KeywordList::Enumeration("HydraulicNetworkControlElement::ControllerType", attrib->ValueStr());
@@ -82,28 +90,32 @@ void HydraulicNetworkControlElement::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "IBK:Parameter") {
+			if (cName == "MaximumControllerResultValue")
+				m_maximumControllerResultValue = NANDRAD::readPODElement<double>(c, cName);
+			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
 				bool success = false;
-				if (p.name == "SetPoint") {
-					m_setPoint = p; success = true;
-				}
-				if (!success) {
 				para_t ptype;
 				try {
 					ptype = (para_t)KeywordList::Enumeration("HydraulicNetworkControlElement::para_t", p.name);
 					m_para[ptype] = p; success = true;
 				}
 				catch (...) { /* intentional fail */  }
-				}
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
-			else if (cName == "MaximumControllerResultValue")
-				m_maximumControllerResultValue = NANDRAD::readPODElement<double>(c, cName);
 			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+				bool found = false;
+				for (int i=0; i<NUM_ID; ++i) {
+					if (cName == KeywordList::Keyword("HydraulicNetworkControlElement::References",i)) {
+						m_idReferences[i] = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
+						found = true;
+						break;
+					}
+				}
+				if (!found)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			c = c->NextSiblingElement();
 		}
@@ -121,13 +133,16 @@ TiXmlElement * HydraulicNetworkControlElement::writeXML(TiXmlElement * parent) c
 	parent->LinkEndChild(e);
 
 	e->SetAttribute("id", IBK::val2string<IDType>(m_id));
+	if (m_modelType != NUM_MT)
+		e->SetAttribute("modelType", KeywordList::Keyword("HydraulicNetworkControlElement::modelType_t",  m_modelType));
 	if (m_controllerType != NUM_CT)
 		e->SetAttribute("controllerType", KeywordList::Keyword("HydraulicNetworkControlElement::ControllerType",  m_controllerType));
 	if (m_controlledProperty != NUM_CP)
 		e->SetAttribute("controlledProperty", KeywordList::Keyword("HydraulicNetworkControlElement::ControlledProperty",  m_controlledProperty));
-	if (!m_setPoint.name.empty()) {
-		IBK_ASSERT("SetPoint" == m_setPoint.name);
-		TiXmlElement::appendIBKParameterElement(e, "SetPoint", m_setPoint.IO_unit.name(), m_setPoint.get_value());
+
+	for (int i=0; i<NUM_ID; ++i) {
+		if (m_idReferences[i] != NANDRAD::INVALID_ID)
+				TiXmlElement::appendSingleAttributeElement(e, KeywordList::Keyword("HydraulicNetworkControlElement::References",  i), nullptr, std::string(), IBK::val2string<unsigned int>(m_idReferences[i]));
 	}
 	TiXmlElement::appendSingleAttributeElement(e, "MaximumControllerResultValue", nullptr, std::string(), IBK::val2string<double>(m_maximumControllerResultValue));
 

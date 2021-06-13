@@ -109,15 +109,6 @@ public:
 	*/
 	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const { (void)resDesc; }
 
-	/*! Returns vector of all scalar and vector valued results pointer.
-		\param res Vector with pointers to resulting values.
-
-		\todo Anne, Clarify, when this is needed...for iterative solution of cycles?
-
-		Default implementation does nothing (i.e. no results generated).
-	*/
-	virtual void resultValueRefs(std::vector<const double *> &res) const { (void)res; }
-
 	/*! Looks up a result quantity and returns a pointer to the double value memory location.
 		Must be implemented by derived models that generate results.
 		Default implementation returns a nullptr (i.e. variable does not exist).

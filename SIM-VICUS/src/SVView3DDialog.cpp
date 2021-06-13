@@ -168,7 +168,6 @@ void SVView3D::exportView3d() {
 			}
 		}
 
-		unsigned int id = itRoom->first;
 		const std::vector<view3dSurface> &surfaces = room.m_surfaces;
 		const std::vector<view3dVertex> &vertexes = room.m_vertexes;
 
@@ -277,8 +276,8 @@ void SVView3D::exportView3d() {
 }
 
 void SVView3D::readView3dResults(IBK::Path fname, const view3dRoom &v3dRoom) {
-	FUNCID(SVView3D::readView3dResults);
 #if 0
+	FUNCID(SVView3D::readView3dResults);
 	std::vector<std::string> cont;
 	// we take the IBK File Reader in order to read result files
 	try {

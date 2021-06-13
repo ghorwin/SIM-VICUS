@@ -102,7 +102,7 @@
 					<!-- Control temperature is "Air temperature", this is the default and could be omitted -->
 					<TemperatureType>AirTemperature</TemperatureType>
 					<!-- Controller type PController is the default, so we could omit this-->
-					<ControllerType>PController</ControllerType>
+					<ControllerType>Analog</ControllerType>
 				</Thermostat>
 			</Thermostats>
 

@@ -54,7 +54,7 @@ class SolverStats:
 		"""
 		
 		# compare counters
-		print "  {:30s}  {:>12s}    {:>12s}".format("", "Reference", "New")
+		#print "  {:30s}  {:>12s}    {:>12s}".format("", "Reference", "New")
 		# print side-by-side differences
 		s1keys = s1.counters.keys()
 		s2keys = s2.counters.keys()
@@ -66,7 +66,7 @@ class SolverStats:
 				if s2.counters.has_key(k):
 					match = s1.counters[k] == s2.counters[k]
 					if match:
-						print("  {:30s}  {:12d} == {:12d}".format(k, s1.counters[k], s2.counters[k]))
+						pass #print("  {:30s}  {:12d} == {:12d}".format(k, s1.counters[k], s2.counters[k]))
 					else:
 						printError("  {:30s}  {:12d} <> {:12d}".format(k, s1.counters[k], s2.counters[k]))
 						fail = True
@@ -82,7 +82,7 @@ class SolverStats:
 		s2keys = s2.timers.keys()
 		s1keys = list(set(s1keys + s2keys))
 		s1keys.sort()
-		print "  --"
+		#print "  --"
 		THRESHOLD = 0.1
 		for k in s1keys:
 			if s1.timers.has_key(k):
@@ -94,14 +94,14 @@ class SolverStats:
 					if abs(val1-val2) < 1:
 						match = True
 					if match:
-						print("  {:30s}  {:12.2f} ~~ {:12.2f}".format(k, s1.timers[k], s2.timers[k]))
+						pass#print("  {:30s}  {:12.2f} ~~ {:12.2f}".format(k, s1.timers[k], s2.timers[k]))
 					else:
 						printWarning("  {:30s}  {:12.2f} <> {:12.2f}".format(k, s1.timers[k], s2.timers[k]))
 				else:
 					printWarning("  {:30s}  {:12.2f} <> {:12s}".format(k, s1.timers[k], ""))
 			else:
 				printWarning("  {:30s}  {:12s} <> {:12.2f}".format(k, "", s2.timers[k]))
-		print "\n"
+		#print "\n"
 			
 		return not fail
 		
@@ -133,7 +133,7 @@ class SolverStats:
 						printError("Mismatching content of file (byte difference) '{}'".format(f))
 						fail = True
 					else:
-						print f
+						pass#print f
 				else:
 					# try to open reference and result files
 					try:

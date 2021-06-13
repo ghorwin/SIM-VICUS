@@ -23,6 +23,7 @@
 #define NM_ThermalNetworkStatesModelH
 
 #include "NM_AbstractModel.h"
+#include "NM_AbstractTimeDependency.h"
 
 
 namespace NANDRAD {
@@ -46,7 +47,7 @@ class ThermalNetworkModelImpl;
 	id = (id of flow element)
 	Quantity = FluidTemperature  (in [K])
 */
-class ThermalNetworkStatesModel : public AbstractModel {
+class ThermalNetworkStatesModel : public AbstractModel, public AbstractTimeDependency {
 public:
 
 	/*! Constructor. */
@@ -60,7 +61,8 @@ public:
 
 	/*! Initializes model. */
 	void setup(const NANDRAD::HydraulicNetwork & nw,
-			   const HydraulicNetworkModel &networkModel);
+			   const HydraulicNetworkModel &networkModel,
+			   const NANDRAD::SimulationParameter &simPara);
 
 	// *** Re-implemented from AbstractModel
 
@@ -87,13 +89,24 @@ public:
 	*/
 	virtual const double * resultValueRef(const InputReference & quantity) const override;
 
+	// *** Re-implemented from AbstractTimeStateDependency
+
+	/*! Updates time-dependent spline data (temperatures/heat losses). */
+	virtual int setTime(double t) override;
+
+
 	// *** Other public member functions
 
 	/*! Returns number of conserved variables (i.e. length of y vector passed to yInitial() and update() ). */
 	unsigned int nPrimaryStateResults() const { return m_n; }
 
-	/*! Returns a vector of dependencies of all result quantities from y input quantities). */
-	void stateDependencies(std::vector< std::pair<const double *, const double *> > & resultInputValueReferences) const;
+	// NOTE: this model does not publish state dependencies on purpose!
+	//
+	// The mean temperatures depend on the internal energies, but some elements like dynamic pipe
+	// have several states that impact a single mean temperature.
+
+	// This dependency is currently formulated in ThermalNetworkBalanceModel::stateDependencies(), or more specifically
+	// in ThermalNetworkAbstractFlowElement::dependencies() and derived class implementations.
 
 	/*! Sets initial states in y vector.
 		This function is called after setup(), so that parameters needed for
@@ -130,11 +143,19 @@ private:
 		Result quantity of current model, published as 'FluidTemperature' result for each flow element. */
 	std::vector<const double*>						m_meanTemperatureRefs;
 
+	/*! Container for all interpolated spline values (size = m_elementIds.size()), values for elements without
+		heat exchange splines (most of the elements) are unused.
+	*/
+	std::vector<double>								m_heatExchangeSplineValues;
+
 	/*! Pointer to NANDRAD network structure*/
 	const NANDRAD::HydraulicNetwork					*m_network=nullptr;
 
 	/*! Private implementation (Pimpl) of the network solver. */
 	ThermalNetworkModelImpl							*m_p = nullptr;
+
+	/*! Pointer to simulation parameter object. */
+	const NANDRAD::SimulationParameter				*m_simPara = nullptr;
 
 
 	friend class ThermalNetworkBalanceModel;

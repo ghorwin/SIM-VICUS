@@ -99,7 +99,8 @@ public:
 	virtual void initInputReferences(const std::vector<AbstractModel*> & /* models */) override {}
 
 	/*! Provides the object with references to requested input variables (persistent memory location). */
-	virtual void setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) override;
+	virtual void setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions,
+								   const std::vector<const double *> & resultValueRefs) override;
 
 	/*! We have nothing to do here, output handling is done outside the actual evaluation. */
 	virtual int update() override { return 0; }

@@ -106,7 +106,7 @@ void Project::readXML(const TiXmlElement * element) {
 				m_simulationParameter.readXML(c);
 			else if (cName == "Location")
 				m_location.readXML(c);
-			else if (cName == "VICUS::Outputs")
+			else if (cName == "Outputs")
 				m_outputs.readXML(c);
 			else if (cName == "ViewSettings")
 				m_viewSettings.readXML(c);

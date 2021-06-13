@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -72,7 +72,7 @@ table {
 <h1>NANDRAD Modell-Referenz</h1>
 <div class="details">
 <span id="author" class="author">Andreas Nicolai &lt;andreas.nicolai@tu-dresden.de&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke</span><br>
-<span id="revnumber">version 0.2 (25.05.2021)</span>
+<span id="revnumber">version 0.2 (13.06.2021)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Inhaltsverzeichnis</div>
@@ -258,6 +258,16 @@ table {
 <li><a href="#_ausgaben_5">17.9.2. Ausgaben</a></li>
 </ul>
 </li>
+<li><a href="#model_heat_load_summation">17.10. Modell für die Summation von Heiz- und Kühlleistungen</a>
+<ul class="sectlevel3">
+<li><a href="#_ausgaben_6">17.10.1. Ausgaben</a></li>
+</ul>
+</li>
+<li><a href="#model_network_interface_adapter">17.11. Schnittstellen-Modell für die Anbindung externer Anlagennetze</a>
+<ul class="sectlevel3">
+<li><a href="#_ausgaben_7">17.11.1. Ausgaben</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#networks">18. Thermo-hydraulische Netzwerke</a>
@@ -267,9 +277,9 @@ table {
 <li><a href="#_parameter">18.1.1. Parameter</a></li>
 </ul>
 </li>
-<li><a href="#HydraulicFluid">18.2. Medieneigenschaften</a></li>
-<li><a href="#PipeProperties">18.3. Rohreigenschaften</a></li>
-<li><a href="#HydraulicNetworkComponents">18.4. Komponentendefinitionen</a>
+<li><a href="#NetworkHydraulicFluid">18.2. Medieneigenschaften</a></li>
+<li><a href="#NetworkPipeProperties">18.3. Rohreigenschaften</a></li>
+<li><a href="#NetworkComponents">18.4. Komponentendefinitionen</a>
 <ul class="sectlevel3">
 <li><a href="#HydraulicElement_SimplePipe">18.4.1. Modelltyp: SimplePipe</a></li>
 <li><a href="#HydraulicElement_DynamicPipe">18.4.2. Modelltyp: DynamicPipe</a></li>
@@ -278,21 +288,31 @@ table {
 <li><a href="#_modelltyp_heatpumpidealcarnot">18.4.5. ModellTyp: HeatPumpIdealCarnot</a></li>
 </ul>
 </li>
-<li><a href="#HydraulicNetworkElements">18.5. Strömungselemente</a>
+<li><a href="#NetworkElements">18.5. Strömungselemente</a>
 <ul class="sectlevel3">
 <li><a href="#_rohr_elemente">18.5.1. Rohr-Elemente</a></li>
 </ul>
 </li>
-<li><a href="#HeatExchangeType">18.6. Definition der Wärmeaustauschmodells (HeatExchangeType)</a>
+<li><a href="#NetworkHeatExchange">18.6. Wärmeaustauschmodelle</a>
 <ul class="sectlevel3">
 <li><a href="#_parameter_für_wärmeaustauschdefinition">18.6.1. Parameter für Wärmeaustauschdefinition</a></li>
 </ul>
 </li>
 <li><a href="#_regelung_von_strömungselementen">18.7. Regelung von Strömungselementen</a></li>
-<li><a href="#_ausgaben_6">18.8. Ausgaben</a>
+<li><a href="#NetworkControlElements">18.8. Regler und Massenstromkontrollmodelle</a>
 <ul class="sectlevel3">
-<li><a href="#_verfügbare_ausgaben">18.8.1. Verfügbare Ausgaben</a></li>
-<li><a href="#_variablennamen_in_ausgabedateien">18.8.2. Variablennamen in Ausgabedateien</a></li>
+<li><a href="#_regler_temperaturedifference">18.8.1. Regler: TemperatureDifference</a></li>
+<li><a href="#_regler_temperaturedifferenceoffollowingelement">18.8.2. Regler: TemperatureDifferenceOfFollowingElement</a></li>
+<li><a href="#_regler_thermostatvalue">18.8.3. Regler: ThermostatValue</a></li>
+<li><a href="#_parameter_für_die_regler_logik">18.8.4. Parameter für die Regler-Logik</a></li>
+</ul>
+</li>
+<li><a href="#_ausgaben_8">18.9. Ausgaben</a>
+<ul class="sectlevel3">
+<li><a href="#_verfügbare_ausgaben">18.9.1. Verfügbare Ausgaben</a></li>
+<li><a href="#_ausgaben_der_rein_hydraulischen_netzwerkberechnung">18.9.2. Ausgaben der rein hydraulischen Netzwerkberechnung</a></li>
+<li><a href="#_ausgaben_der_thermo_hydraulischen_berechnung">18.9.3. Ausgaben der thermo-hydraulischen Berechnung</a></li>
+<li><a href="#_ausgaben_des_netzwerks">18.9.4. Ausgaben des Netzwerks</a></li>
 </ul>
 </li>
 </ul>
@@ -2092,7 +2112,7 @@ Im Folgenden wird dies im Detail beschrieben.</p>
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;EmbeddedObject</span> <span class="na">id=</span><span class="s">"2000"</span> <span class="na">displayName=</span><span class="s">"Ein Fenster"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Area"</span> <span class="na">unit=</span><span class="s">"m2"</span><span class="nt">&gt;</span>8<span class="nt">&lt;/IBK:Parameter&gt;</span>
-    <span class="nt">&lt;Window</span> <span class="na">glazingSystemID=</span><span class="s">"123"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;Window</span> <span class="na">glazingSystemId=</span><span class="s">"123"</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/EmbeddedObject&gt;</span></code></pre>
 </div>
 </div>
@@ -2111,11 +2131,11 @@ Im Folgenden wird dies im Detail beschrieben.</p>
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;EmbeddedObject</span> <span class="na">id=</span><span class="s">"2000"</span> <span class="na">displayName=</span><span class="s">"Ein Fenster"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Area"</span> <span class="na">unit=</span><span class="s">"m2"</span><span class="nt">&gt;</span>8<span class="nt">&lt;/IBK:Parameter&gt;</span>
-  <span class="nt">&lt;Window</span> <span class="na">glazingSystemID=</span><span class="s">"123"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;Frame</span> <span class="na">materialID=</span><span class="s">"1001"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;Window</span> <span class="na">glazingSystemId=</span><span class="s">"123"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;Frame</span> <span class="na">materialId=</span><span class="s">"1001"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Area"</span> <span class="na">unit=</span><span class="s">"m2"</span><span class="nt">&gt;</span>3<span class="nt">&lt;/IBK:Parameter&gt;</span>
     <span class="nt">&lt;/Frame&gt;</span>
-    <span class="nt">&lt;Divider</span> <span class="na">materialID=</span><span class="s">"1002"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;Divider</span> <span class="na">materialId=</span><span class="s">"1002"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Area"</span> <span class="na">unit=</span><span class="s">"m2"</span><span class="nt">&gt;</span>2<span class="nt">&lt;/IBK:Parameter&gt;</span>
     <span class="nt">&lt;/Divider&gt;</span>
   <span class="nt">&lt;/Window&gt;</span>
@@ -2205,7 +2225,7 @@ Im Folgenden wird dies im Detail beschrieben.</p>
 <div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Window</span> <span class="na">glazingSystemID=</span><span class="s">"123"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Window</span> <span class="na">glazingSystemId=</span><span class="s">"123"</span><span class="nt">&gt;</span>
     ...
   <span class="nt">&lt;Shading</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"ReductionFactor"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.6<span class="nt">&lt;/IBK:Parameter&gt;</span>
@@ -2257,7 +2277,7 @@ Im Folgenden wird dies im Detail beschrieben.</p>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>controlModelID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>controlModelId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ID des Verschattungskontrollmodells</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">ID</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich für</em> <code>Controlled</code></p></td>
@@ -3537,7 +3557,7 @@ Sie werden z. B. in den folgenden Objekten oder Objektlisten verwendet:</p>
 <div class="content">
 <img src="./images/ScheduleExample_weekly.png" alt="ScheduleExample weekly">
 </div>
-<div class="title">Abbildung 7. Abbildung des wöchentlichen Zeitplans, definiert durch das Beispiel <a href="#ex_schedule_week">Beispiel 35</a></div>
+<div class="title">Abbildung 7. Abbildung des wöchentlichen Zeitplans, definiert durch <a href="#ex_schedule_week">Beispiel 35</a></div>
 </div>
 </div>
 <div class="sect3">
@@ -5591,6 +5611,14 @@ Start = 14*24 + 6 = 342 h</pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>IdealPipeRegisterModels</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Idealisierte Rohrregister-Flächenheizungen &#8594; <a href="#model_ideal_pipe_register">Modell für idealisierte Rohrregister-Flächenheizungen</a></p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>HeatLoadSummationModels</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Summationsmodelle für Heizleistungen &#8594; <a href="#model_heat_load_summation">Modell für die Summation von Heiz- und Kühlleistungen</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>NetworkInterfaceAdapterModels</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Adaptermodelle für externe Netzwerkschnittstellen &#8594; <a href="#model_network_interface_adapter">Schnittstellen-Modell für die Anbindung externer Anlagennetze</a></p></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
@@ -5651,7 +5679,7 @@ Start = 14*24 + 6 = 342 h</pre>
 </table>
 </div>
 <div class="paragraph">
-<p>Das <code>NaturalVentilationModel</code> muss mit den folgenden XML-Attributen definiert werden:</p>
+<p>Das <code>NaturalVentilationModel</code> unterstützt folgende XML-Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch indent-me">
 <caption class="title">Tabelle 27. Attribute</caption>
@@ -5931,7 +5959,7 @@ n = n_Grundluftwechsel + n_erhöhterLuftwechsel  // wenn Bedingungen erfüllt</c
         0 = keine Reduktion (Verschattung offen)
         1 = volle Reduktion (Verschattung geschlossen)
       --&gt;</span>
-      <span class="nt">&lt;ShadingControlModel</span> <span class="na">id=</span><span class="s">"2000"</span> <span class="na">displayName=</span><span class="s">"Global horizontal sensor controller"</span> <span class="na">sensorID=</span><span class="s">"50000"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;ShadingControlModel</span> <span class="na">id=</span><span class="s">"2000"</span> <span class="na">displayName=</span><span class="s">"Global horizontal sensor controller"</span> <span class="na">sensorId=</span><span class="s">"50000"</span><span class="nt">&gt;</span>
         <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"MaxIntensity"</span> <span class="na">unit=</span><span class="s">"W/m2"</span><span class="nt">&gt;</span>300<span class="nt">&lt;/IBK:Parameter&gt;</span>
         <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"MinIntensity"</span> <span class="na">unit=</span><span class="s">"W/m2"</span><span class="nt">&gt;</span>150<span class="nt">&lt;/IBK:Parameter&gt;</span>
       <span class="nt">&lt;/ShadingControlModel&gt;</span>
@@ -5942,10 +5970,44 @@ n = n_Grundluftwechsel + n_erhöhterLuftwechsel  // wenn Bedingungen erfüllt</c
 </div>
 </div>
 <div class="paragraph">
+<p>Das <code>ShadingControlModel</code> unterstützt folgende XML-Attribute:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch indent-me">
+<caption class="title">Tabelle 28. Attribute</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 60%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribut</th>
+<th class="tableblock halign-left valign-top">Beschreibung</th>
+<th class="tableblock halign-center valign-top">Format</th>
+<th class="tableblock halign-center valign-top">Verwendung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Kennung des Modells</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Anzeigename/Beschreibung</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p>Das Verschattungskontrollmodell verlangt zwei Parameter <code>MaxIntensity</code> und <code>MinIntensity</code> und implementiert eine digitale Regelung mit Hysterese. Zunächst muss die Globalstrahlungsintensität auf den Sensor den oberen Grenzwert (<code>MaxIntensity</code>) überschreiten, wonach die Verschattung geschlossen wird (Kontrollmodell liefert 1). Danach muss die Strahlungsintensität zunächst unter die untere Grenze sinken (<code>MinIntensity</code>), bevor die Verschattung wieder geöffnet wird (Kontrollmodell liefert 0).</p>
 </div>
 <div class="paragraph">
-<p>Für die Auswertung wird eine Horizontalstrahlung benötigt. Dafür muss eine Oberfläche ausgewählt werden und als <code>sensorID</code> angegeben werden.</p>
+<p>Für die Auswertung wird eine Horizontalstrahlung benötigt. Dafür muss eine Oberfläche ausgewählt werden und als <code>sensorId</code> angegeben werden.</p>
 </div>
 <div class="paragraph">
 <p>Möglich sind hier 3 Optionen:</p>
@@ -6002,10 +6064,10 @@ n = n_Grundluftwechsel + n_erhöhterLuftwechsel  // wenn Bedingungen erfüllt</c
 </div>
 </div>
 <div class="paragraph">
-<p>Das <code>InternalLoadsModel</code> muss mit den folgenden XML-Attributen definiert werden:</p>
+<p>Das <code>InternalLoadsModel</code> unterstützt folgende XML-Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch indent-me">
-<caption class="title">Tabelle 28. Attribute</caption>
+<caption class="title">Tabelle 29. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -6211,18 +6273,18 @@ Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in den
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"TemperatureTolerance"</span> <span class="na">unit=</span><span class="s">"K"</span><span class="nt">&gt;</span>0.2<span class="nt">&lt;/IBK:Parameter&gt;</span>
   <span class="c">&lt;!-- Control temperature is "Air temperature", this is the default and could be omitted --&gt;</span>
   <span class="nt">&lt;TemperatureType&gt;</span>AirTemperature<span class="nt">&lt;/TemperatureType&gt;</span>
-  <span class="c">&lt;!-- Controller type PController is the default, so we could omit this--&gt;</span>
-  <span class="nt">&lt;ControllerType&gt;</span>PController<span class="nt">&lt;/ControllerType&gt;</span>
+  <span class="c">&lt;!-- Controller type Analog is the default, so we could omit this--&gt;</span>
+  <span class="nt">&lt;ControllerType&gt;</span>Analog<span class="nt">&lt;/ControllerType&gt;</span>
 <span class="nt">&lt;/Thermostat&gt;</span></code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="paragraph">
-<p>Das <code>Thermostat</code>-Element unterstützt folgende XML-Attributen:</p>
+<p>Das <code>Thermostat</code>-Element unterstützt folgende XML-Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch indent-me">
-<caption class="title">Tabelle 29. Attribute</caption>
+<caption class="title">Tabelle 30. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -6305,6 +6367,20 @@ Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in den
 <td class="tableblock halign-center valign-top"><p class="tableblock">&gt; <code>HeatingSetpoint</code></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich für Modelltyp</em> <code>Constant</code></p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TemperatureTolerance</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">K</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Toleranz für analoges Thermostat und Normalisierungswert</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&gt; 0</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich für Controllertyp</em> <code>Analog</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TemperatureBand</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">K</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Totband für digitales Thermostat</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&gt; 0</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich für Controllertyp</em> <code>Digital</code></p></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
@@ -6343,7 +6419,7 @@ Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in den
 <p>Das XML-Element <code>TemperatureType</code> enthält eine Zeichenkette zur Auswahl eines bestimmten Typs (<code>AirTemperature</code> wird standardmäßig verwendet, wenn das Element fehlt).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 30. Verfügbare Temperatursensoren</caption>
+<caption class="title">Tabelle 31. Verfügbare Temperatursensoren</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 80%;">
@@ -6369,10 +6445,10 @@ Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in den
 <div class="sect3">
 <h4 id="_controllertype">17.5.2. ControllerType</h4>
 <div class="paragraph">
-<p>Das XML-Element <code>ControllerType</code> enthält eine Zeichenkette zur Auswahl eines bestimmten Controllers (<code>PController</code> wird standardmäßig verwendet, wenn das Element fehlt).</p>
+<p>Das XML-Element <code>ControllerType</code> enthält eine Zeichenkette zur Auswahl des gewünschten Signaltyps (<code>Analog</code> wird standardmäßig verwendet, wenn das Element fehlt).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 31. Verfügbare Controller</caption>
+<caption class="title">Tabelle 32. Verfügbare Schalt-/Regelsignale</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 80%;">
@@ -6385,20 +6461,20 @@ Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in den
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PController</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Ein einfacher P-Controller wird verwendet.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Analog</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Die Abweichung zwischen Solltemperatur und Sensortemperatur wird durch die <code>TemperatureTolerance</code> geteilt zurückgeliefert. Je weiter von 0 verschieden das Sensorsignal ist, umso größer ist die Abweichung. Ein Wert &lt; 1 besagt, dass die Abweichung noch in der Toleranz liegt.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DigitalController</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Digital</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Ein digitaler Controller mit Hysterese wird verwendet.</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Beim <code>PController</code> muss der Parameter <code>TemperatureTolerance</code> angegeben werden, welche die maximale erlaubte Regelabweichung definiert. Wird z.B. die Heizsolltemperatur um genau diese Toleranz unterschritten, so liefert der Regler eine 1 zurück (bei größeren Abweichungen entsprechend höhere Werte). Damit entspricht diese Toleranz dem inversen des KP-Parameters: <code>Kp = 1/TemperatureTolerance</code>.</p>
+<p>Beim Typ <code>Analog</code> muss der Parameter <code>TemperatureTolerance</code> angegeben werden, welche die nominal erlaubte Regelabweichung definiert. Wird z.B. die Heizsolltemperatur um genau diese Toleranz unterschritten, so liefert der Regler eine 1 zurück (bei größeren Abweichungen entsprechend höhere Werte).</p>
 </div>
 <div class="paragraph">
-<p>Beim <code>DigitalController</code> muss der Parameter <code>TemperatureBand</code> angegeben werden. Der Regler regelt dann im Bereich;</p>
+<p>Beim Typ <code>Digital</code> muss der Parameter <code>TemperatureBand</code> angegeben werden. Der Regler regelt dann im Bereich;</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -6482,7 +6558,7 @@ untere Grenze = Sollwert - TemperatureBand</pre>
 <div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;IdealHeatingCoolingModel</span> <span class="na">id=</span><span class="s">"200"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;IdealHeatingCoolingModel</span> <span class="na">id=</span><span class="s">"200"</span> <span class="na">displayName=</span><span class="s">"Air heating"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;ZoneObjectList&gt;</span>Office zones<span class="nt">&lt;/ZoneObjectList&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"MaxHeatingPowerPerArea"</span> <span class="na">unit=</span><span class="s">"W/m2"</span><span class="nt">&gt;</span>50<span class="nt">&lt;/IBK:Parameter&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"MaxCoolingPowerPerArea"</span> <span class="na">unit=</span><span class="s">"W/m2"</span><span class="nt">&gt;</span>20<span class="nt">&lt;/IBK:Parameter&gt;</span>
@@ -6492,10 +6568,10 @@ untere Grenze = Sollwert - TemperatureBand</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Das <code>IdealHeatingCoolingModel</code> muss mit den folgenden XML-Attributen definiert werden:</p>
+<p>Das <code>IdealHeatingCoolingModel</code> unterstützt folgende XML-Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch indent-me">
-<caption class="title">Tabelle 32. Attribute</caption>
+<caption class="title">Tabelle 33. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -6516,6 +6592,12 @@ untere Grenze = Sollwert - TemperatureBand</pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Kennung des Modells</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Anzeigename/Beschreibung</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -6554,6 +6636,20 @@ untere Grenze = Sollwert - TemperatureBand</pre>
 <td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;=&#160;0.0&#160;</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Kp</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Faktor für den propotionalen Teil des Kontrollers</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;=&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Ki</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Faktor für den integralen Teil des Kontrollers</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;=&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
+</tr>
 </tbody>
 </table>
 <div class="admonitionblock important">
@@ -6579,10 +6675,13 @@ untere Grenze = Sollwert - TemperatureBand</pre>
 <div class="sect3">
 <h4 id="_heiz_und_kühlleistung">17.7.1. Heiz- und Kühlleistung</h4>
 <div class="paragraph">
-<p>Das Regelsignal <code>HeatingControlValue</code> bzw. <code>IdealHeatingControlValue</code> wird als Wert zwischen 0..1 intepretiert. Werte außerhalb dieser Grenzen werden abgeschnitten. Bei 1 läuft die Heizung mit maximaler Heizlast, entsprechend des <code>MaxHeatingPowerPerArea</code>-Parameters. Bei 0 ist die Heizung aus. Dazwischen wird linear interpoliert.</p>
+<p>Das Regelsignal <code>HeatingControlValue</code> bzw. <code>IdealHeatingControlValue</code> wird als Wert zwischen 0..1 interpretiert. Werte außerhalb dieser Grenzen werden abgeschnitten. Bei 1 läuft die Heizung mit maximaler Heizlast. Bei 0 ist die Heizung aus. Dazwischen wird linear interpoliert.</p>
 </div>
 <div class="paragraph">
 <p>Die Kühlung ist analog definiert. Bei einem Kontrollwert von 1 läuft die Kühlung mit maximaler Kraft, bei 0 ist sie aus.</p>
+</div>
+<div class="paragraph">
+<p>Das so bestimmte Regeleingangssignal geht in einen P-Regler ein. Falls der <code>Ki</code> Parameter gegeben ist, wird stattdessen ein PI-Regler verwendet. Die so berechnet Heiz- und Kühlleistung wird durch den <code>MaxHeatingPowerPerArea</code>-Parameter bzw. <code>MaxCoolingPowerPerArea</code>-Parameter begrenzt.</p>
 </div>
 </div>
 <div class="sect3">
@@ -6630,9 +6729,9 @@ Z. B. ist <code>Model&lt;IdealHeatingCoolingModel_id&gt;).IdealHeatingLoad[id=3]
 <div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;IdealSurfaceHeatingCoolingModel</span> <span class="na">id=</span><span class="s">"701"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;IdealSurfaceHeatingCoolingModel</span> <span class="na">id=</span><span class="s">"701"</span> <span class="na">displayName=</span><span class="s">"Floor heating"</span><span class="nt">&gt;</span>
   <span class="c">&lt;!-- Use thermostat in zone 1 for control --&gt;</span>
-  <span class="nt">&lt;ThermostatZoneID&gt;</span>1<span class="nt">&lt;/ThermostatZoneID&gt;</span>
+  <span class="nt">&lt;ThermostatZoneId&gt;</span>1<span class="nt">&lt;/ThermostatZoneId&gt;</span>
   <span class="nt">&lt;ConstructionObjectList&gt;</span>Floor<span class="nt">&lt;/ConstructionObjectList&gt;</span>
   <span class="c">&lt;!-- Maximum heating power per construction/surface area, here: 10 m2 * 150 W/m2 = 1500 W --&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"MaxHeatingPowerPerArea"</span> <span class="na">unit=</span><span class="s">"W/m2"</span><span class="nt">&gt;</span>150<span class="nt">&lt;/IBK:Parameter&gt;</span>
@@ -6642,10 +6741,10 @@ Z. B. ist <code>Model&lt;IdealHeatingCoolingModel_id&gt;).IdealHeatingLoad[id=3]
 </div>
 </div>
 <div class="paragraph">
-<p>Das <code>IdealSurfaceHeatingCoolingModel</code> muss mit den folgenden XML-Attributen definiert werden:</p>
+<p>Das <code>IdealSurfaceHeatingCoolingModel</code> unterstützt folgende XML-Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch indent-me">
-<caption class="title">Tabelle 33. Attribute</caption>
+<caption class="title">Tabelle 34. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -6666,6 +6765,12 @@ Z. B. ist <code>Model&lt;IdealHeatingCoolingModel_id&gt;).IdealHeatingLoad[id=3]
 <td class="tableblock halign-left valign-top"><p class="tableblock">Kennung des Modells</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Anzeigename/Beschreibung</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -6724,7 +6829,7 @@ Z. B. ist <code>Model&lt;IdealHeatingCoolingModel_id&gt;).IdealHeatingLoad[id=3]
 </table>
 </div>
 <div class="paragraph">
-<p>Die Flächenheizung/-kühlung wird durch ein Thermostat gesteuert. Die Zone, in der sich das Thermostat befindet, wird im Element <code>ThermostatZoneID</code> angegeben.</p>
+<p>Die Flächenheizung/-kühlung wird durch ein Thermostat gesteuert. Die Zone, in der sich das Thermostat befindet, wird im Element <code>ThermostatZoneId</code> angegeben.</p>
 </div>
 <div class="sect3">
 <h4 id="_heiz_und_kühlleistung_2">17.8.1. Heiz- und Kühlleistung</h4>
@@ -6777,8 +6882,8 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;IdealPipeRegisterModel</span> <span class="na">id=</span><span class="s">"701"</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;ThermostatZoneID&gt;</span>1<span class="nt">&lt;/ThermostatZoneID&gt;</span>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;IdealPipeRegisterModel</span> <span class="na">id=</span><span class="s">"701"</span> <span class="na">displayName=</span><span class="s">"Floor heating"</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;ThermostatZoneId&gt;</span>1<span class="nt">&lt;/ThermostatZoneId&gt;</span>
   <span class="nt">&lt;ConstructionObjectList&gt;</span>Floor<span class="nt">&lt;/ConstructionObjectList&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"SupplyTemperature"</span> <span class="na">unit=</span><span class="s">"C"</span><span class="nt">&gt;</span>8<span class="nt">&lt;/IBK:Parameter&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"MaxMassFlow"</span> <span class="na">unit=</span><span class="s">"kg/s"</span><span class="nt">&gt;</span>0.2<span class="nt">&lt;/IBK:Parameter&gt;</span>
@@ -6820,13 +6925,13 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 </table>
 </div>
 <div class="paragraph">
-<p>Die Heizleistung wird über die Anpassung des Massestroms in Abhängigkeit eines Thermostat-Kontrollsignals gesteuert. Die Zone, in der sich das Thermostat befindet, wird im Element <code>ThermostatZoneID</code> angegeben.</p>
+<p>Die Heizleistung wird über die Anpassung des Massestroms in Abhängigkeit eines Thermostat-Kontrollsignals gesteuert. Die Zone, in der sich das Thermostat befindet, wird im Element <code>ThermostatZoneId</code> angegeben.</p>
 </div>
 <div class="paragraph">
-<p>Das <code>IdealPipeRegisterModel</code> muss mit den folgenden XML-Attributen definiert werden:</p>
+<p>Das <code>IdealPipeRegisterModel</code> unterstützt die folgenden XML-Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch indent-me">
-<caption class="title">Tabelle 34. Attribute</caption>
+<caption class="title">Tabelle 35. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -6847,6 +6952,12 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <td class="tableblock halign-left valign-top"><p class="tableblock">Kennung des Modells</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Anzeigename/Beschreibung</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>modelType</code></p></td>
@@ -7020,6 +7131,199 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="model_heat_load_summation">17.10. Modell für die Summation von Heiz- und Kühlleistungen</h3>
+<div class="paragraph">
+<p>Das Modell summiert die Heizleistungen der ausgewählten Objekte und liefert die Gesamtwärmeleistung (Heizung/Kühlung).</p>
+</div>
+<div class="exampleblock">
+<div class="title">Beispiel 57. Definitionsblock für ein Summationsmodell</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;HeatLoadSummationModel</span> <span class="na">id=</span><span class="s">"801"</span> <span class="na">displayName=</span><span class="s">"Floor heating loads"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;ObjectList&gt;</span>Floors<span class="nt">&lt;/ObjectList&gt;</span>
+<span class="nt">&lt;/HeatLoadSummationModel&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Das <code>HeatLoadSummationModel</code> muss mit den folgenden XML-Attributen definiert werden:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch indent-me">
+<caption class="title">Tabelle 36. Attribute</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 60%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribut</th>
+<th class="tableblock halign-left valign-top">Beschreibung</th>
+<th class="tableblock halign-center valign-top">Format</th>
+<th class="tableblock halign-center valign-top">Verwendung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Kennung des Modells</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Anzeigename/Beschreibung</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Ein <code>HeatLoadSummationModel</code> summiert die Heiz- und Kühlleistung mehrerer Konstruktionen. Dafür identifiziert der Objektlisten-tag <code>ObjectList</code> die Konstruktion, deren Heizlast erfasst und summiert werden soll.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Falls in der Objektliste referenzierte Konstruktionen keine aktive Schicht definiert haben (siehe <a href="#construction_active_layer">Aktive/beheizte Schichten</a>), so werden diese einfach ignoriert.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_ausgaben_6">17.10.1. Ausgaben</h4>
+<div class="paragraph">
+<p>Das Modell liefert die Summe der thermischen Lasten in der Ergebnisgröße <code>TotalThermalLoad</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Die <code>TotalThermalLoad</code> ist positiv bei Beheizung der Fläche und negativ bei Kühlung.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="model_network_interface_adapter">17.11. Schnittstellen-Modell für die Anbindung externer Anlagennetze</h3>
+<div class="paragraph">
+<p>Diese Modell ist für alleinstehende Simulation unwichtig und wird primär für die Co-Simulation mittels FMI gebraucht. Es bildet den Wärmeentzug des Gebäudes auf ein strömendes Medium ab, bspw. ein Versorgungsnetzwerk. Das Medium strömt mit gegebener Vorlauftemperatur und Massenstrom ins Gebäude und das <code>NetworkInterfaceAdapterModel</code> berechnet die resultierende Rücklauftemperatur.</p>
+</div>
+<div class="paragraph">
+<p>Vorlauftemperatur und Massenstrom werden als Zeitpläne benötigt:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>SupplyTemperatureSchedule</code></p>
+</li>
+<li>
+<p><code>SupplyMassFlowSchedule</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Bei Verwendung der FMI-Kopplung sind diese Größen durch FMI-Input-Variablen zu überschreiben.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Beispiel 58. Definitionsblock für ein solches Schnittstellenmodell</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;NetworkInterfaceAdapterModel</span> <span class="na">id=</span><span class="s">"802"</span> <span class="na">summationModelId=</span><span class="s">"801"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"FluidHeatCapacity"</span> <span class="na">unit=</span><span class="s">"J/kgK"</span><span class="nt">&gt;</span>4180<span class="nt">&lt;/IBK:Parameter&gt;</span>
+<span class="nt">&lt;/NetworkInterfaceAdapterModel&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Das <code>NetworkInterfaceAdapterModel</code> muss mit den folgenden XML-Attributen definiert werden:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch indent-me">
+<caption class="title">Tabelle 37. Attribute</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 60%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribut</th>
+<th class="tableblock halign-left valign-top">Beschreibung</th>
+<th class="tableblock halign-center valign-top">Format</th>
+<th class="tableblock halign-center valign-top">Verwendung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Kennung des Modells</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Anzeigename/Beschreibung</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>summationModelId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ID des Summationsmodells, welches die Heiz-/Kühlleistung im Gebäude berechnet</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Für die Berechnung ist die spezifische Wärmekapazität des strömenden Mediums notwendig, angegeben im IBK-Parameterelement <code>FluidHeatCapacity</code>.</p>
+</div>
+<div class="sect3">
+<h4 id="_ausgaben_7">17.11.1. Ausgaben</h4>
+<div class="paragraph">
+<p>Das Modell hat eine einzige Ergebnisgröße:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ReturnTemperature [C]</code></p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Achtung"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Der Wärmeentzug aus dem Versorgungsstrang erfolgt unabhängig eventueller physikalischer Grenzen. So kann in der Realität die Rücklauftemperatur niemals unterhalb der Raum-/Konstruktionstemperatur sinken. Entsprechend sollten nachfolgende Modelle diese Temperatur nur für Regelungen als Sensorgröße behandeln und ggfs. auf sinnvolle Wertebereiche begrenzen.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -7032,7 +7336,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <p>In einer Projektdatei kann es mehrere Netzwerke geben. Diese sind im XML-tag <code>HydraulicNetworks</code> abgelegt.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 57. Hydraulische Netzwerke</div>
+<div class="title">Beispiel 59. Hydraulische Netzwerke</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7072,7 +7376,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <p>Ein einzelnes Netzwerk wird im XML-tag <code>HydraulicNetwork</code> definiert, wie im folgenden Beispiel:</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 58. Typische Definition eines einzelnen Netzwerks</div>
+<div class="title">Beispiel 60. Typische Definition eines einzelnen Netzwerks</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7094,6 +7398,10 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
         ... <span class="c">&lt;!-- network flow elements with topology definition --&gt;</span>
   <span class="nt">&lt;/Elements&gt;</span>
 
+  <span class="nt">&lt;ControlElements&gt;</span>
+        ... <span class="c">&lt;!-- network flow controller parameters --&gt;</span>
+  <span class="nt">&lt;/ControlElements&gt;</span>
+
 <span class="nt">&lt;/HydraulicNetwork&gt;</span></code></pre>
 </div>
 </div>
@@ -7103,7 +7411,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <p>Der XML-tag <code>HydraulicNetwork</code> hat folgende Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 35. Attributes</caption>
+<caption class="title">Tabelle 38. Attributes</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 40%;">
@@ -7147,10 +7455,10 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 </tbody>
 </table>
 <div class="paragraph">
-<p>Das optionale Attribut <code>modelType</code> beschreibt, welches Berechnungsmodell zu verwenden ist ( <a href="#tab_network_modelType">Tabelle 36</a>).</p>
+<p>Das optionale Attribut <code>modelType</code> beschreibt, welches Berechnungsmodell zu verwenden ist ( <a href="#tab_network_modelType">Tabelle 39</a>).</p>
 </div>
 <table id="tab_network_modelType" class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 36. Werte für Attribut <code>modelType</code></caption>
+<caption class="title">Tabelle 39. Werte für Attribut <code>modelType</code></caption>
 <colgroup>
 <col style="width: 30%;">
 <col style="width: 70%;">
@@ -7227,23 +7535,26 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <div class="ulist">
 <ul>
 <li>
-<p><code>HydraulicFluid</code> - <a href="#HydraulicFluid">definiert Medieneigenschaften</a></p>
+<p><code>HydraulicFluid</code> - <a href="#NetworkHydraulicFluid">definiert Medieneigenschaften</a></p>
 </li>
 <li>
-<p><code>PipeProperties</code> - <a href="#PipeProperties">Rohreigenschaften</a></p>
+<p><code>PipeProperties</code> - <a href="#NetworkPipeProperties">Rohreigenschaften</a></p>
 </li>
 <li>
-<p><code>Components</code> - <a href="#HydraulicNetworkComponents">Komponentendefinitionen</a></p>
+<p><code>Components</code> - <a href="#NetworkComponents">Komponentendefinitionen</a></p>
 </li>
 <li>
-<p><code>Elements</code> - <a href="#HydraulicNetworkElements">Netzwerkelemente und Netzwerktopologie</a></p>
+<p><code>Elements</code> - <a href="#NetworkElements">Netzwerkelemente und Netzwerktopologie</a></p>
+</li>
+<li>
+<p><code>ControlElements</code> - <a href="#NetworkControlElements">Massenstromregler</a></p>
 </li>
 </ul>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="HydraulicFluid">18.2. Medieneigenschaften</h3>
+<h3 id="NetworkHydraulicFluid">18.2. Medieneigenschaften</h3>
 <div class="paragraph">
 <p>Der XML-tag <code>HydraulicFluid</code> enthält die Definition des im Netzwerk strömenden Mediums.</p>
 </div>
@@ -7262,7 +7573,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 </table>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 59. Definition eines Netzwerkfluids</div>
+<div class="title">Beispiel 61. Definition eines Netzwerkfluids</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7283,7 +7594,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <p>Der XML-tag <code>HydraulicFluid</code> hat folgende Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 37. Attributes</caption>
+<caption class="title">Tabelle 40. Attributes</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -7397,18 +7708,18 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 </table>
 </div>
 <div class="sect2">
-<h3 id="PipeProperties">18.3. Rohreigenschaften</h3>
+<h3 id="NetworkPipeProperties">18.3. Rohreigenschaften</h3>
 <div class="paragraph">
 <p>Die Rohreigenschaften legen die physikalische/geometrischen Eigenschaften eines Rohrtyps fest. Diese werden in XML-tags we <code>HydraulicNetworkPipeProperties</code> im Katalog <code>PipeProperties</code> mit eindeutigen IDs aufgelistet.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 60. Definition von Rohreigenschaften</div>
+<div class="title">Beispiel 62. Definition von Rohreigenschaften</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;PipeProperties&gt;</span>
   <span class="nt">&lt;HydraulicNetworkPipeProperties</span> <span class="na">id=</span><span class="s">"1"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"PipeRoughness"</span> <span class="na">unit=</span><span class="s">"m"</span><span class="nt">&gt;</span>0.007<span class="nt">&lt;/IBK:Parameter&gt;</span>
+    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"PipeRoughness"</span> <span class="na">unit=</span><span class="s">"mm"</span><span class="nt">&gt;</span>0.07<span class="nt">&lt;/IBK:Parameter&gt;</span>
     <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"PipeInnerDiameter"</span> <span class="na">unit=</span><span class="s">"mm"</span><span class="nt">&gt;</span>25.6<span class="nt">&lt;/IBK:Parameter&gt;</span>
     <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"PipeOuterDiameter"</span> <span class="na">unit=</span><span class="s">"mm"</span><span class="nt">&gt;</span>32<span class="nt">&lt;/IBK:Parameter&gt;</span>
     <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"UValuePipeWall"</span> <span class="na">unit=</span><span class="s">"W/mK"</span><span class="nt">&gt;</span>5<span class="nt">&lt;/IBK:Parameter&gt;</span>
@@ -7421,10 +7732,10 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 </div>
 </div>
 <div class="paragraph">
-<p>Rohreigenschaften werden über das Attribut <code>pipePropertyId</code> eines Netzwerkelements (siehe <a href="#HydraulicNetworkElements">Section 18.5</a>) referenziert.</p>
+<p>Rohreigenschaften werden über das Attribut <code>pipePropertyId</code> eines Netzwerkelements (siehe <a href="#NetworkElements">Section 18.5</a>) referenziert.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 38. Attribute</caption>
+<caption class="title">Tabelle 41. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -7507,12 +7818,12 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 </div>
 </div>
 <div class="sect2">
-<h3 id="HydraulicNetworkComponents">18.4. Komponentendefinitionen</h3>
+<h3 id="NetworkComponents">18.4. Komponentendefinitionen</h3>
 <div class="paragraph">
 <p>Eine <code>HydraulicNetworkComponent</code> definiert die Basiseigenschaften eines Strömungselements. Diese werden in dem Katalog <code>Components</code> mit eindeutigen IDs aufgelistet.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 61. Definition einer Komponente</div>
+<div class="title">Beispiel 63. Definition einer Komponente</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7529,7 +7840,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 39. Attribute</caption>
+<caption class="title">Tabelle 42. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -7563,7 +7874,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <p>Die Parameter und Attribute sind dann abhängig vom <code>modelType</code> der Komponente und dem <code>modelType</code> des Netzwerks.</p>
 </div>
 <div class="paragraph">
-<p>Im thermischen Modell kann für jeden Modelltyp noch ein (optionales) Wärmeaustauschmodell definiert werden (siehe <a href="#HeatExchangeType">Section 18.6</a>).</p>
+<p>Im thermischen Modell kann für jeden Modelltyp noch ein (optionales) Wärmeaustauschmodell definiert werden (siehe <a href="#NetworkHeatExchange">Section 18.6</a>).</p>
 </div>
 <div class="sect3">
 <h4 id="HydraulicElement_SimplePipe">18.4.1. Modelltyp: SimplePipe</h4>
@@ -7648,6 +7959,13 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>benötigt für Modelltyp</em> <code>ThermalHydraulicNetwork</code></p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>FractionOfMotorInefficienciesToFluidStream</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Anteil der ans Fluid abgegebenen Wärmeverluste der Pumpe (Standardwert 100%, Nassläufer)</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0&#8230;&#8203;1,&#160;&gt;&#160;0.0</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional für Modelltyp</em> <code>ThermalHydraulicNetwork</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Volume</code></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">m3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Fluid volume inside the pump</p></td>
@@ -7657,7 +7975,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 </tbody>
 </table>
 <div class="paragraph">
-<p>Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definiert. D.h. die durch Volumenstrom und Druckhöhe gegebene mechanische Arbeit entspricht diesem Anteil der Gesamtarbeit. Die Differenz der Leistungen wird als Wärmequelle dem Fluid aufgeprägt.</p>
+<p>Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definiert. D.h. die durch Volumenstrom und Druckhöhe gegebene mechanische Arbeit entspricht diesem Anteil der Gesamtarbeit. Die Differenz der Leistungen wird als anteilig entsprechend des Parameters <code>FractionOfMotorInefficienciesToFluidStream</code> als Wärmequelle dem Fluid aufgeprägt.</p>
 </div>
 </div>
 <div class="sect3">
@@ -7784,7 +8102,7 @@ Wird der Modus <code>SupplySide</code> gewählt, müssen die Parameter <code>Eva
 </table>
 </div>
 <div id="xml_HeatPumpIdealCarnot" class="exampleblock">
-<div class="title">Beispiel 62. Definition einer HeatPumpIdealCarnot</div>
+<div class="title">Beispiel 64. Definition einer HeatPumpIdealCarnot</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7803,7 +8121,7 @@ Wird der Modus <code>SupplySide</code> gewählt, müssen die Parameter <code>Eva
 </div>
 </div>
 <div class="sect2">
-<h3 id="HydraulicNetworkElements">18.5. Strömungselemente</h3>
+<h3 id="NetworkElements">18.5. Strömungselemente</h3>
 <div class="paragraph">
 <p>Das eigentliche Netzwerk wird durch die Definition konkreter Strömungselemente aufgebaut. Diese sind untereinander durch Einlass- und Auslassknoten verknüpft.</p>
 </div>
@@ -7811,7 +8129,7 @@ Wird der Modus <code>SupplySide</code> gewählt, müssen die Parameter <code>Eva
 <p>Die tatsächlichen Strömungselemente des Netzwerks werden innerhalb des XML-tags <code>Elements</code> mit dem XML-tag <code>HydraulicNetworkElement</code> definiert.</p>
 </div>
 <div id="xml_example_flow_element" class="exampleblock">
-<div class="title">Beispiel 63. Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)</div>
+<div class="title">Beispiel 65. Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7831,7 +8149,7 @@ Wird der Modus <code>SupplySide</code> gewählt, müssen die Parameter <code>Eva
 <p><code>HydraulicNetworkElement</code>-tags haben die folgenden Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 40. Attribute</caption>
+<caption class="title">Tabelle 43. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -7909,10 +8227,10 @@ Wird der Modus <code>SupplySide</code> gewählt, müssen die Parameter <code>Eva
 <p>Die Strömungselemente sind miteinander durch Knoten verknüpft. In jedem Strömungselement fließt das Fluid (geplant) von dem Knoten mit der <code>inletNodeId</code> zu dem Knoten mit der <code>outletNodeId</code>. Während der Berechnung ist es jedoch möglich, dass sich der Massestrom umkehrt. Dies ändert aber nichts an der Topologiedefinition des Netzwerkes. Man könnte <code>inletNodeId</code> auch mit "Knoten 1 des Elements" und <code>outletNodeId</code> mit "Knoten 2 des Elements" bezeichnen.</p>
 </div>
 <div class="paragraph">
-<p><a href="#fig_network_example1">Abbildung 12</a> zeigt ein einfaches Netzwerk bestehend aus 3 Elementen.  Ein solches Netzwerk würde wie folgt definiert werden (<a href="#ex_network_example1">Beispiel 64</a>).</p>
+<p><a href="#fig_network_example1">Abbildung 12</a> zeigt ein einfaches Netzwerk bestehend aus 3 Elementen.  Ein solches Netzwerk würde wie folgt definiert werden (<a href="#ex_network_example1">Beispiel 66</a>).</p>
 </div>
 <div id="ex_network_example1" class="exampleblock">
-<div class="title">Beispiel 64. XML-Definition eines einfachen Strömungsnetzwerks mit 3 Knoten und 3 Elementen</div>
+<div class="title">Beispiel 66. XML-Definition eines einfachen Strömungsnetzwerks mit 3 Knoten und 3 Elementen</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -7955,7 +8273,7 @@ Wird der Modus <code>SupplySide</code> gewählt, müssen die Parameter <code>Eva
 <p>Ist eine Komponente ein Rohr (z.B. <code>DynamicPipe</code>), <strong>müssen</strong> entsprechende Rohrparameter mit der <code>pipePropertiesId</code> referenziert werden.</p>
 </div>
 <div class="paragraph">
-<p>Weiterhin <strong>muss</strong> für ein Rohrelement der Parameter <code>Length</code> definiert werden (siehe auch <a href="#ex_pipe_element">Beispiel 65</a>):</p>
+<p>Weiterhin <strong>muss</strong> für ein Rohrelement der Parameter <code>Length</code> definiert werden (siehe auch <a href="#ex_pipe_element">Beispiel 67</a>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -7985,7 +8303,7 @@ Wird der Modus <code>SupplySide</code> gewählt, müssen die Parameter <code>Eva
 </tbody>
 </table>
 <div id="ex_pipe_element" class="exampleblock">
-<div class="title">Beispiel 65. Definition eines Rohrelements</div>
+<div class="title">Beispiel 67. Definition eines Rohrelements</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -8002,7 +8320,7 @@ Wird der Modus <code>SupplySide</code> gewählt, müssen die Parameter <code>Eva
 <p>Durch Angabe des <code>IBK:IntPara</code> Tags mit dem Namen <code>NumberParallelPipes</code> kann man ein Rohrregister definieren und so z.B. eine Flächenheizung/Fußbodenheizung modellieren. Dabei strömt letztlich das Fluid parallel durch die angebene Anzahl gleichartiger Rohre.</p>
 </div>
 <div id="ex_pipe_register" class="exampleblock">
-<div class="title">Beispiel 66. Definition eines Rohrregisters</div>
+<div class="title">Beispiel 68. Definition eines Rohrregisters</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -8033,17 +8351,19 @@ Wird der Modus <code>SupplySide</code> gewählt, müssen die Parameter <code>Eva
 </div>
 </div>
 <div class="sect2">
-<h3 id="HeatExchangeType">18.6. Definition der Wärmeaustauschmodells (HeatExchangeType)</h3>
+<h3 id="NetworkHeatExchange">18.6. Wärmeaustauschmodelle</h3>
 <div class="paragraph">
-<p>Für thermische Netzwerken kann für jedes Strömungselement (<a href="#HydraulicNetworkElements">Section 18.5</a>) ein Wärmeaustausch definiert werden. Dafür muss innerhalb der Definition des Strömungselements ein XML-Element <code>HeatExchangeType</code> definiert werden.</p>
+<p>In thermische Netzwerken kann für ein Strömungselement (<a href="#NetworkElements">Section 18.5</a>) ein Wärmeaustausch (mit der Umgebung, anderen Modellen, etc.) definiert werden. Dafür muss innerhalb der Definition des Strömungselements ein XML-Element <code>HydraulicNetworkHeatExchange</code> definiert werden.</p>
 </div>
 <div id="ex_heat_exchange_type" class="exampleblock">
-<div class="title">Beispiel 67. Definition von Strömungselementen mit <code>HeatExchangeType</code></div>
+<div class="title">Beispiel 69. Definition von Strömungselementen mit <code>HydraulicNetworkHeatExchange</code></div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="c">&lt;!-- Heat exchange with heat loss/gain pre-defined in time series --&gt;</span>
-<span class="nt">&lt;HydraulicNetworkElement</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">inletNodeId=</span><span class="s">"1"</span> <span class="na">outletNodeId=</span><span class="s">"2"</span> <span class="na">componentId=</span><span class="s">"2"</span> <span class="na">displayName=</span><span class="s">"heat exchanger"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;HydraulicNetworkElement</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">inletNodeId=</span><span class="s">"1"</span> <span class="na">outletNodeId=</span><span class="s">"2"</span>
+    <span class="na">componentId=</span><span class="s">"2"</span> <span class="na">displayName=</span><span class="s">"heat exchanger"</span><span class="nt">&gt;</span>
+
     <span class="c">&lt;!-- Definition of pre-defined heat loss --&gt;</span>
   <span class="nt">&lt;HydraulicNetworkHeatExchange</span> <span class="na">modelType=</span><span class="s">"HeatLossSpline"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;LinearSplineParameter</span> <span class="na">name=</span><span class="s">"HeatLoss"</span> <span class="na">interpolationMethod=</span><span class="s">"linear"</span><span class="nt">&gt;</span>
@@ -8053,7 +8373,9 @@ Wird der Modus <code>SupplySide</code> gewählt, müssen die Parameter <code>Eva
 <span class="nt">&lt;/HydraulicNetworkElement&gt;</span>
 
 <span class="c">&lt;!-- Pipe with heat exchange to the environment (with constant environment temperature) --&gt;</span>
-<span class="nt">&lt;HydraulicNetworkElement</span> <span class="na">id=</span><span class="s">"2"</span> <span class="na">inletNodeId=</span><span class="s">"2"</span> <span class="na">outletNodeId=</span><span class="s">"3"</span> <span class="na">componentId=</span><span class="s">"3"</span> <span class="na">pipePropertiesId=</span><span class="s">"1"</span> <span class="na">displayName=</span><span class="s">"pipe"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;HydraulicNetworkElement</span> <span class="na">id=</span><span class="s">"2"</span> <span class="na">inletNodeId=</span><span class="s">"2"</span> <span class="na">outletNodeId=</span><span class="s">"3"</span>
+    <span class="na">componentId=</span><span class="s">"3"</span> <span class="na">pipePropertiesId=</span><span class="s">"1"</span> <span class="na">displayName=</span><span class="s">"pipe"</span><span class="nt">&gt;</span>
+
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Length"</span> <span class="na">unit=</span><span class="s">"m"</span><span class="nt">&gt;</span>100<span class="nt">&lt;/IBK:Parameter&gt;</span>
     <span class="c">&lt;!-- Definition of heat exchange with environment --&gt;</span>
   <span class="nt">&lt;HydraulicNetworkHeatExchange</span> <span class="na">modelType=</span><span class="s">"TemperatureConstant"</span><span class="nt">&gt;</span>
@@ -8066,7 +8388,7 @@ Wird der Modus <code>SupplySide</code> gewählt, müssen die Parameter <code>Eva
 </div>
 </div>
 <div class="paragraph">
-<p>Der <code>HeatExchangeType</code> kann folgende Werte haben:</p>
+<p>Es gibt verschiedene Modelltypen für den Wärmeaustausch, angegeben über das Attribut <code>modelType</code>:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -8076,51 +8398,51 @@ Wird der Modus <code>SupplySide</code> gewählt, müssen die Parameter <code>Eva
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">HeatExchangeType</th>
+<th class="tableblock halign-left valign-top"><code>modelType</code></th>
 <th class="tableblock halign-left valign-top">Beschreibung</th>
-<th class="tableblock halign-center valign-top">Verwendbar für Modelltyp</th>
+<th class="tableblock halign-center valign-top">Verwendbar für Komponente</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>TemperatureConstant</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmeaustausch basierend auf Temperaturunterschied zwischen Medium und Umgebungstemperatur; Konstante Umgebungstemperatur ist als Parameter im <code>HydraulicNetworkElement</code> gegeben. Es muss zusätzlich der Parameter <code>ExternalHeatTransferCoefficient</code> gegeben sein.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmeaustausch basierend auf Temperaturunterschied zwischen Medium und Umgebungstemperatur; Konstante Umgebungstemperatur ist als Parameter <code>Temperature</code> im <code>HydraulicNetworkElement</code> gegeben. Es muss zusätzlich der Parameter <code>ExternalHeatTransferCoefficient</code> gegeben sein.</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>SimplePipe</code>, <code>DynamicPipe</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>TemperatureSpline</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmeaustausch basierend auf Temperaturunterschied zwischen Medium und Umgebungstemperatur; Umgebungstemperatur ist als Zeitreihe in einem LinearSplineParameter (<a href="#LinearSplineParameter">Section 3.5</a>) gegeben. Es muss zusätzlich der Parameter <code>ExternalHeatTransferCoefficient</code> gegeben sein.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmeaustausch basierend auf Temperaturunterschied zwischen Medium und Umgebungstemperatur; Umgebungstemperatur ist als Zeitreihe in einem LinearSplineParameter (<a href="#LinearSplineParameter">Section 3.5</a>) mit Namen <code>Temperature</code> gegeben. Es muss zusätzlich der Parameter <code>ExternalHeatTransferCoefficient</code> gegeben sein.</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>SimplePipe</code>, <code>DynamicPipe</code></p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TemperatureSplineEvaporator</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmeaustasch via Wärmepumpe, basierend auf gegebener Verdampfertemperatur. Verdampfertemperatur ist als  Zeitreihe in einem LinearSplineParameter (<a href="#LinearSplineParameter">Section 3.5</a>) mit Namen <code>Temperature</code> gegeben</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>HeatPumpIdealCarnot</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>TemperatureZone</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmeaustausch mit einer Zone; Raumlufttemperatur wird als Umgebungstemperatur verwendet.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmeaustausch mit einer Zone. Raumlufttemperatur der referenzierten Zone (<code>ZoneId</code>) wird als Umgebungstemperatur verwendet. Es muss zusätzlich der Parameter <code>ExternalHeatTransferCoefficient</code> gegeben sein.</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>SimplePipe</code>, <code>DynamicPipe</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>TemperatureConstructionLayer</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmeaustausch mit einer Konstruktionsschicht (Fußbodenheizung/Flächenheizung); Schichttemperatur wird als Umgebungstemperatur verwendet.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmeaustausch mit einer Konstruktionsschicht (Fußbodenheizung/Flächenheizung); Schichttemperatur (aktive Schicht) der referenzierten Konstruktion (<code>ConstructionInstanceId</code>) wird als Umgebungstemperatur verwendet.</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>SimplePipe</code>, <code>DynamicPipe</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>HeatLossConstant</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Konstanter Wärmestrom (positiv aus dem Element) ist als konstanter Parameter gegeben</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Konstanter Wärmestrom (positiv aus dem Element) ist als konstanter Parameter <code>HeatLoss</code> gegeben.</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>SimplePipe</code>, <code>DynamicPipe</code>, <code>HeatExchanger</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>HeatLossSpline</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmestrom (positiv aus dem Element) ist als Zeitreihe in einem LinearSplineParameter (<a href="#LinearSplineParameter">Section 3.5</a>) gegeben</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmestrom (positiv aus dem Element) ist als Zeitreihe in einem LinearSplineParameter (<a href="#LinearSplineParameter">Section 3.5</a>) mit Namen <code>HeatLoss</code> gegeben</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>SimplePipe</code>, <code>DynamicPipe</code>, <code>HeatExchanger</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>HeatLossSplineCondenser</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmestrom (positiv aus dem Element) des Kondensators bei Verwendung eines Wärmepumpen-Modells als Zeitreihe in einem LinearSplineParameter (<a href="#LinearSplineParameter">Section 3.5</a>) gegeben</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmestrom (positiv aus dem Element) des Kondensators bei Verwendung eines Wärmepumpen-Modells als Zeitreihe in einem LinearSplineParameter (<a href="#LinearSplineParameter">Section 3.5</a>) mit Namen <code>HeatLoss</code> gegeben</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>HeatPumpIdealCarnot</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TemperatureFMUInterface</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Temperatur wird von FMU gegeben</p></td>
-<td class="tableblock halign-center valign-top"></td>
 </tr>
 </tbody>
 </table>
@@ -8132,7 +8454,7 @@ Wird der Modus <code>SupplySide</code> gewählt, müssen die Parameter <code>Eva
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Wenn des XML-Element <code>HeatExchangeType</code> fehlt, wird die entsprechende Komponente als adiabat behandelt und verlangt entsprechend auch keine weiteren Parameter.</p>
+<p>Wenn des XML-Element <code>HydraulicNetworkHeatExchange</code> fehlt, wird die entsprechende Komponente als adiabat behandelt.</p>
 </div>
 </td>
 </tr>
@@ -8259,47 +8581,120 @@ Wird der Modus <code>SupplySide</code> gewählt, müssen die Parameter <code>Eva
 <div class="sect2">
 <h3 id="_regelung_von_strömungselementen">18.7. Regelung von Strömungselementen</h3>
 <div class="paragraph">
-<p>Strömungselemente können ein geregeltes Ventil enthalten. Das Ventil wird z.B. so geregelt, dass eine vorgegebene Temperaturdifferenz oder ein vorgegebener Massenstrom erreicht wird. Ein Beispiel zeigt <a href="#controlled_heat_exchanger">Beispiel 68</a>.
-Das <code>HydraulicNetworkElement</code> enthält dazu ein <code>ControlElement</code>.</p>
+<p>Strömungselemente können ein geregeltes Ventil enthalten. Das Ventil wird z.B. so geregelt, dass eine vorgegebene Temperaturdifferenz oder ein vorgegebener Massenstrom erreicht wird. Im <a href="#controlled_heat_exchanger">Beispiel 70</a> referenziert
+das <code>HydraulicNetworkElement</code> dafür ein <code>HydraulicNetworkControlElement</code> im Attribut <code>controlElementID</code>.</p>
 </div>
 <div id="controlled_heat_exchanger" class="exampleblock">
-<div class="title">Beispiel 68. Beispiel für ein Wärmeübertrager mit geregelter Temperaturdifferenz</div>
+<div class="title">Beispiel 70. Beispiel für ein Wärmeübertrager mit geregelter Temperaturdifferenz</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;HydraulicNetworkElement</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">inletNodeId=</span><span class="s">"0"</span> <span class="na">outletNodeId=</span><span class="s">"101"</span> <span class="na">componentId=</span><span class="s">"1000"</span> <span class="na">displayName=</span><span class="s">"heat exchanger"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;HydraulicNetworkElement</span> <span class="na">id=</span><span class="s">"2"</span> <span class="na">inletNodeId=</span><span class="s">"0"</span> <span class="na">outletNodeId=</span><span class="s">"101"</span> <span class="na">componentId=</span><span class="s">"2"</span>
+    <span class="na">controlElementId=</span><span class="s">"1"</span> <span class="na">displayName=</span><span class="s">"Heat exchanger"</span><span class="nt">&gt;</span>
+
+  <span class="c">&lt;!-- Heat loss from element (to environment) is given via time-series.
+     This heat loss is used together with the current mass
+     flux to compute the temperature difference between
+     inlet and outlet. Then, this temperature difference
+     goes into the controller referenced via
+     controlElementId which then computes a correction
+     zeta-value (flow resistance) and effectively controls
+     the mass flux.
+  --&gt;</span>
   <span class="nt">&lt;HydraulicNetworkHeatExchange</span> <span class="na">modelType=</span><span class="s">"HeatLossSpline"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;LinearSplineParameter</span> <span class="na">name=</span><span class="s">"HeatLoss"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;X</span> <span class="na">unit=</span><span class="s">"d"</span><span class="nt">&gt;</span>0 1   2    2.2  2.3  2.7  2.8 3<span class="nt">&lt;/X&gt;</span>
       <span class="nt">&lt;Y</span> <span class="na">unit=</span><span class="s">"W"</span><span class="nt">&gt;</span>0 500 1000 1000 3000 3000 800 0<span class="nt">&lt;/Y&gt;</span>
     <span class="nt">&lt;/LinearSplineParameter&gt;</span>
   <span class="nt">&lt;/HydraulicNetworkHeatExchange&gt;</span>
-    <span class="nt">&lt;ControlElement</span> <span class="na">controlType=</span><span class="s">"ControlTemperatureDifference"</span> <span class="na">controllerId=</span><span class="s">"1"</span><span class="nt">&gt;</span>
-      <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"SetPoint"</span> <span class="na">unit=</span><span class="s">"K"</span><span class="nt">&gt;</span>3<span class="nt">&lt;/IBK:Parameter&gt;</span>
-      <span class="nt">&lt;MaximumControllerResultValue&gt;</span>10000<span class="nt">&lt;/MaximumControllerResultValue&gt;</span>
-    <span class="nt">&lt;/ControlElement&gt;</span>
-<span class="nt">&lt;/HydraulicNetworkElement&gt;</span>
 
-...
-
-<span class="nt">&lt;Controllers&gt;</span>
-  <span class="nt">&lt;Controller</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">modelType=</span><span class="s">"PController"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;Type&gt;</span>PController<span class="nt">&lt;/Type&gt;</span>
-    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Kp"</span> <span class="na">unit=</span><span class="s">"-"</span><span class="nt">&gt;</span>1e5<span class="nt">&lt;/IBK:Parameter&gt;</span>
-  <span class="nt">&lt;/Controller&gt;</span>
-<span class="nt">&lt;/Controllers&gt;</span></code></pre>
+<span class="nt">&lt;/HydraulicNetworkElement&gt;</span></code></pre>
 </div>
 </div>
+</div>
+</div>
+<div class="paragraph">
+<p>Die konkrete Parametrierung des Kontrollers ist im referenzierten <code>HydraulicNetworkControlElement</code> enthalten. Die Massenstromregler arbeiten unterschiedlich und verlangen dabei wie im <a href="#controlled_heat_exchanger">Beispiel 70</a> eine entsprechende Wärmeaustauschparametrierung (<code>HydraulicNetworkHeatExchange</code>). Details zu diesen Abhängigkeiten sind in Abschnitt <a href="#NetworkControlElements">Section 18.8</a> beschrieben.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="NetworkControlElements">18.8. Regler und Massenstromkontrollmodelle</h3>
+<div class="paragraph">
+<p>Alle Reglerkomponenten werden in einer Liste <code>ControlElements</code> abgelegt, welche sich innerhalb des <code>HydraulicNetwork</code> Elements befindet.</p>
+</div>
+<div id="ex_controlElement" class="exampleblock">
+<div class="title">Beispiel 71. Definitionsliste von Massenstrom-Reglermodellen</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;ControlElements&gt;</span>
+  <span class="c">&lt;!-- This controller generates a control signal based on
+       temperature difference using a P-controller.
+     The temperature difference is computed from heat loss
+     and current mass flux. Hence, this controller can only
+     be used in a flow element that defines heat exchange
+     via prescribed heat loss.
+     This control element can be referenced by all flow
+     elements with similar mass flow control strategy.
+  --&gt;</span>
+  <span class="nt">&lt;HydraulicNetworkControlElement</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">controlledProperty=</span><span class="s">"TemperatureDifference"</span> <span class="na">modelType=</span><span class="s">"Constant"</span> <span class="na">controllerType=</span><span class="s">"PController"</span> <span class="nt">&gt;</span>
+    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Kp"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>1e6<span class="nt">&lt;/IBK:Parameter&gt;</span>
+    <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"TemperatureDifferenceSetpoint"</span> <span class="na">unit=</span><span class="s">"K"</span><span class="nt">&gt;</span>3<span class="nt">&lt;/IBK:Parameter&gt;</span>
+    <span class="c">&lt;!-- Deactivate upper limit of controller result value
+         - this is the default and could be omitted --&gt;</span>
+    <span class="nt">&lt;MaximumControllerResultValue&gt;</span>0<span class="nt">&lt;/MaximumControllerResultValue&gt;</span>
+  <span class="nt">&lt;/HydraulicNetworkControlElement&gt;</span>
+<span class="nt">&lt;/ControlElements&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Eine Reglerdefinition <code>HydraulicNetworkControlElement</code> beschreibt sowohl die Sensorgröße(n), das Berechnungsverfahren für das Reglereingangssignal und das Reglermodell selbst (P, PI-Regler, &#8230;&#8203;). Das Ergebnis des Reglers ist ein zusätzlicher Druckverlustbeiwert zwischen 0 (kein zusätzlicher Strömungswiderstand) bis zu einem sehr hohen Wert (bspw. Ventil geschlossen).</p>
+</div>
+<div class="paragraph">
+<p>Die Art der Regelung bzw. die zu überwachende Größe wird im Attribut <code>controlledProperty</code> definiert.
+Das Attribute <code>modelType</code> (Optionen <code>Constant</code> oder <code>Scheduled</code>) definiert, ob die Setpoints als feste Parameter im <code>HydraulicNetworkControlElement</code> angegeben sind, oder als Zeitplanparameter angegeben sind.</p>
+</div>
+<div class="sect3">
+<h4 id="_regler_temperaturedifference">18.8.1. Regler: TemperatureDifference</h4>
+<div class="paragraph">
+<p>Dieser Regler kann nur bei Elementen mit vorgegebenem Wärmeverluststrom verwendet werden (Wärmeaustauschmodell <code>HeatLossConstant</code> oder <code>HeatLossSpline</code>). Aus dem gegebenen Wärmeverlust wird mit dem aktuellen Massenstrom der Temperaturabfall über dem Strömungselement berechnet. Dieser wird mit einem Sollwert (Parameter <code>TemperatureDifferenceSetpoint</code>) verglichen - die Differenz zwischen Sollwert und Ist-Temperturdifferenz ist das Reglereingangssignal (Fehlerwert).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_regler_temperaturedifferenceoffollowingelement">18.8.2. Regler: TemperatureDifferenceOfFollowingElement</h4>
+<div class="paragraph">
+<p>Mit diesem Regler wird ein Ventil implementiert, welches die Temperaturdifferenz des nächsten Strömungselements (in Verknüpfungsreihenfolge) regelt. Das nächste Strömungselement wird automatisch ermittelt und es wird geprüft ob der dazwischenliegende Knoten mit einem weiteren Strömungslement verbunden ist. In diesem Fall wäre die Regelung nicht mehr anwendbar und es wird ein Fehler ausgegeben.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_regler_thermostatvalue">18.8.3. Regler: ThermostatValue</h4>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p>TODO Anne</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_parameter_für_die_regler_logik">18.8.4. Parameter für die Regler-Logik</h4>
+<div class="paragraph">
+<p>P-Controller &#8594; Kp</p>
+</div>
+<div class="paragraph">
+<p>TODO Hauke</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_ausgaben_6">18.8. Ausgaben</h3>
+<h3 id="_ausgaben_8">18.9. Ausgaben</h3>
 <div class="paragraph">
-<p>Die Ergebnisgrößen eines thermo-hydraulischen Netzwerkmodells werden wie folgt definiert. Als Referenzierungstyp dient entweder <code>Network</code> für Ausgaben des Netzwerks insgesamt, oder <code>NetworkElement</code> für die Adressierung individueller Strömungselemente (siehe <a href="#ex_objectList_networks">Beispiel 69</a>).</p>
+<p>Die Ergebnisgrößen eines thermo-hydraulischen Netzwerkmodells werden wie folgt definiert. Als Referenzierungstyp dient entweder <code>Network</code> für Ausgaben des Netzwerks insgesamt, oder <code>NetworkElement</code> für die Adressierung individueller Strömungselemente (siehe <a href="#ex_objectList_networks">Beispiel 72</a>).</p>
 </div>
 <div id="ex_objectList_networks" class="exampleblock">
-<div class="title">Beispiel 69. Objektlist für die Referenzierung eines Netzwerks mit der ID 1 und ausgewählter Elemente des Netzwerks</div>
+<div class="title">Beispiel 72. Objektlist für die Referenzierung eines Netzwerks mit der ID 1 und ausgewählter Elemente des Netzwerks</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -8318,15 +8713,9 @@ Das <code>HydraulicNetworkElement</code> enthält dazu ein <code>ControlElement<
 </div>
 </div>
 <div class="sect3">
-<h4 id="_verfügbare_ausgaben">18.8.1. Verfügbare Ausgaben</h4>
+<h4 id="_verfügbare_ausgaben">18.9.1. Verfügbare Ausgaben</h4>
 <div class="paragraph">
-<p>Das Netzwerk-Objekt liefert eine Vielzahl von Ergebnisgrößen für die einzelnen Strömungselemente.</p>
-</div>
-<div class="paragraph">
-<p>Die Anforderungen an die Netzwerkausgaben richten sich allerdings nach der späteren Visualisierungsebene. Grundlegend ist davon auszugehen, dass im Postprozessing eine weitere Sicht erforderlich sein wird, welche neben dem Gebäude eine Auswertung der hydraulischen Netzwerke erlaubt. Um die Übersichtlichkeit zu wahren, wird diese Sicht von derjenigen des Gebäudes getrennt sein.</p>
-</div>
-<div class="paragraph">
-<p>Die Netzwerkausgaben werden daher räumlich getrennt in eigenen Dateien mit dem Namensschema:</p>
+<p>Die Ausgaben der thermo-hydraulischen Netzwerkberechnung werden je nach Referenzierungstyp in eigenen Dateien mit dem Namensschema:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -8342,7 +8731,7 @@ Das <code>HydraulicNetworkElement</code> enthält dazu ein <code>ControlElement<
 <p>angelegt. Wie bei regulären Ausgaben (siehe <a href="#output_filenames">Section 15.3.2</a>) wird der Suffix <code>_&lt;gridname&gt;</code> weggelassen, wenn es nur eine Ausgabedatei mit einem Ausgaberaster gibt.</p>
 </div>
 <div class="paragraph">
-<p>Für Analyse der Netzwerke und Übergabesysteme sind sowohl die Masseströme und Temperaturen im Innere eines Verbindungselementes, aber auch an den Verbindungsstellen zwischen zwei Elementen von Interesse. Letzerer Fall ist beispielsweise typisch für gekoppelte Erzeuger- und Verbraucherkreisläufe, wobei eine Kontrolle der Zulauf- und Rücklauftemperatur möglich sein muss.</p>
+<p>Für die Analyse der Netzwerke und Übergabesysteme sind sowohl die Masseströme und Temperaturen im Inneren eines Verbindungselementes, aber auch an den Verbindungsstellen zwischen zwei Elementen von Interesse. Letzerer Fall ist beispielsweise typisch für gekoppelte Erzeuger- und Verbraucherkreisläufe, wobei eine Kontrolle der Zulauf- und Rücklauftemperatur möglich sein muss.</p>
 </div>
 <div class="paragraph">
 <p>Da die Netzwerkvisualisierungsebene keine Knoten kennt, müssen Knotentemperaturen am Ein- und Auslass des Verbindungselementes abgegriffen werden. Ein- und Auslässe sind unabhängig von der Strömungsrichtung entsprechend der Netzwerktopologie definiert.</p>
@@ -8355,10 +8744,10 @@ Das <code>HydraulicNetworkElement</code> enthält dazu ein <code>ControlElement<
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Es wird bei der Topologiedefinition eines Netzwerks mittels der <code>HydraulicNetworkElement</code> tags von einer nominalen Strömungsrichtung ausgegangen. Deshalb werden Einlass- und Auslassknoten mittels der IDs <code>inletNodeId</code> und <code>outletNodeId</code> referenziert.</p>
+<p>Es wird bei der Topologiedefinition eines Netzwerks mittels der <code>HydraulicNetworkElement</code> Elements von einer nominalen Strömungsrichtung ausgegangen. Deshalb werden Einlass- und Auslassknoten mittels der IDs <code>inletNodeId</code> und <code>outletNodeId</code> referenziert.</p>
 </div>
 <div class="paragraph">
-<p>Je nach Bedingungen im Netzwerk ist es jedoch auch möglich, dass sich die Strömungsrichtung umkehrt, und das Medium nun auf der Einströmseite eines Rohres ausströmt. Dies wirkt sich zwar im Vorzeichen des Massestroms aus, jedoch nicht in der Bezeichung der <em>geometrischen</em> Ein- und Auslässe eines Strömungselements.</p>
+<p>Je nach Bedingungen im Netzwerk ist es jedoch auch möglich, dass sich die Strömungsrichtung umkehrt, und das Medium nun auf der Einströmseite eines Rohres ausströmt. Dies wirkt sich zwar im Vorzeichen des Massestroms aus, jedoch nicht in der Bezeichung der nur von der Einbaurichtung abhängigen Ein- und Auslässe eines Strömungselements.</p>
 </div>
 </td>
 </tr>
@@ -8372,16 +8761,17 @@ Das <code>HydraulicNetworkElement</code> enthält dazu ein <code>ControlElement<
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Möchte man alle Knotendrücke oder Knotentemperaturen erhalten, so kann man einfach von allen Strömungselementen die Drück am Auslass erfragen. Darüber erhält man dann alle Drücke an den jeweiligen Knoten.</p>
+<p>Möchte man alle Knotendrücke oder Knotentemperaturen erhalten, so kann man einfach von allen Strömungselementen die Drücke am Auslass erfragen. Darüber erhält man dann alle Drücke an den jeweiligen Knoten.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
-<div class="sect4">
-<h5 id="_ausgaben_der_hydraulischen_netzwerkberechnung">Ausgaben der hydraulischen Netzwerkberechnung</h5>
+</div>
+<div class="sect3">
+<h4 id="_ausgaben_der_rein_hydraulischen_netzwerkberechnung">18.9.2. Ausgaben der rein hydraulischen Netzwerkberechnung</h4>
 <div class="paragraph">
-<p>Für jedes Strömungselement kann ein Massestrom ausgegen werden, wobei die Strömungsrichtung immer von <em>inletNode</em> zu <em>outletNode</em> positiv definiert ist. Der Massestrom kann über die Größe <code>FluidMassFlux</code> (in kg/s) abgefragt werden (Referenztyp <code>NetworkElement</code>).</p>
+<p>Für jedes Strömungselement kann ein Massenstrom ausgegeben werden, wobei die Strömungsrichtung immer von <em>inletNode</em> zu <em>outletNode</em> positiv definiert ist. Der Massenstrom kann über die Größe <code>FluidMassFlux</code> (in kg/s) abgefragt werden (Referenztyp <code>NetworkElement</code>).</p>
 </div>
 <div class="paragraph">
 <p>Ebenso sind für jedes Strömungselement die Drücke am Ein- und Auslass abrufbar:</p>
@@ -8397,8 +8787,8 @@ Das <code>HydraulicNetworkElement</code> enthält dazu ein <code>ControlElement<
 </ul>
 </div>
 </div>
-<div class="sect4">
-<h5 id="_ausgaben_der_thermo_hydraulischen_berechnung">Ausgaben der thermo-hydraulischen Berechnung</h5>
+<div class="sect3">
+<h4 id="_ausgaben_der_thermo_hydraulischen_berechnung">18.9.3. Ausgaben der thermo-hydraulischen Berechnung</h4>
 <div class="paragraph">
 <p>Jedes Strömungselement hat eine (mittlere) Temperatur, welche über die Ausgabegröße <code>FluidTemperature</code> abgefragt werden kann (Referenztyp <code>NetworkElement</code>).</p>
 </div>
@@ -8431,7 +8821,7 @@ Das <code>HydraulicNetworkElement</code> enthält dazu ein <code>ControlElement<
 </table>
 </div>
 <div class="paragraph">
-<p>Die Temperaturen am Ein- bzw. Auslass sind (wie die Drücke) an den physischen Positionen <em>inletNode</em> und <em>outletNode</em> definiert und können ausgegeben werden. Es sind folgende Ausgabevariablen für den Referenztyp <code>NetworkElement</code> definiert:</p>
+<p>Die Temperaturen am Ein- bzw. Auslass sind (wie die Drücke) an den physischen Positionen <em>inletNode</em> und <em>outletNode</em> definiert und können ausgegeben werden. Es sind beispielsweise folgende Ausgabevariablen für den Referenztyp <code>NetworkElement</code> definiert:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -8445,30 +8835,6 @@ Das <code>HydraulicNetworkElement</code> enthält dazu ein <code>ControlElement<
 <p><code>FlowElementHeatLoss</code> in W - Wärmestrom abgegeben vom Strömungselement (Energie wird dem Fluid in diesem Element entzogen). Positive Werte bedeuten Abkühlen des Mediums (Wärmeverlust).</p>
 </li>
 </ul>
-</div>
-<div class="paragraph">
-<p>Übersicht über Element-Ausgabegrößen:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>ElectricalPower                     [W]         Requested electrical power for current working point
-FlowElementHeatLoss                 [W]         Heat flux from flow element into environment
-FluidMassFlux                       [kg/s]      Fluid mass flux through a flow element
-FluidTemperature                    [C]         Internal fluid temperature of network element
-FluidVelocity                       [m/s]       Fluid velocity
-FluidViscosity                      [m2/s]      Fluid dynamic viscosity
-FluidVolumeFlow                     [m3/h]      Fluid Volume flow
-InletNodePressure                   [Pa]        Fluid pressure at inlet node of a flow element
-InletNodeTemperature                [C]         Inlet node temperature of a flow element
-MechanicalPower                     [W]         Mechanical power for current working point
-Nusselt                             [---]       Nusselt number
-OutletNodePressure                  [Pa]        Fluid pressure at outlet node of a flow element
-OutletNodeTemperature               [C]         Outlet node temperature of a flow element
-Prandtl                             [---]       Prandtl number
-PressureDifference                  [Pa]        Difference between pressures at outlet and inlet nodes
-Reynolds                            [---]       Reynolds number
-ThermalTransmittance                [W/K]       Total thermal transmittance of fluid and pipe wall</pre>
-</div>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -8484,61 +8850,47 @@ ThermalTransmittance                [W/K]       Total thermal transmittance of f
 </tr>
 </table>
 </div>
-</div>
-<div class="sect4">
-<h5 id="_ausgaben_des_netzwerks">Ausgaben des Netzwerks</h5>
 <div class="paragraph">
-<p>Zur Vereinfachung gibt es Variablen, welche für ein gesamtes Netzwerk abgerufen werden können (Referenztyp <code>Network</code>). Diese enthalten jeweils Ausgaben für alle Strömungselemente.</p>
+<p>Je nach verwendetem Strömungselement sind individuelle zusätzliche Ausgabegrößen abrufbar (siehe Dokumentation der Strömungselemente).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_ausgaben_des_netzwerks">18.9.4. Ausgaben des Netzwerks</h4>
+<div class="paragraph">
+<p>Es gibt seitens des Netzwerks selbst auch Variablen, welche für ein gesamtes Netzwerk abgerufen werden können (Referenztyp <code>Network</code>):</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>FluidMassFluxes</code> - Masseströme durch alle Strömungselemente des Netzwerks</p>
+<p><code>FluidMassFluxes</code> - Masseströme [kg/s] durch alle Strömungselemente des Netzwerks</p>
 </li>
 <li>
-<p><code>FluidTemperatures</code> - Mittlere Temperaturen alle Strömungselemente des Netzwerks</p>
+<p><code>ActiveLayerThermalLoad</code> - Wärmestrom [W] in beheizte Schichten einer Konstruktion</p>
+</li>
+<li>
+<p><code>NetworkZoneThermalLoad</code> - Wärmestrom [W] in eine Zone</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Die Variablen sind vektor-wertige Größen und es muss der <em>Index</em> des jeweils angeforderten Vektorelements verwendet werden. Die Indizierung entspricht der Reihenfolge der  <code>HydraulicNetworkElement</code> Tags. <a href="#ex_network_outputs">Beispiel 70</a> zeigt die Definition einer indexbasierten Ausgabe für Masseströme des Netzwerks.</p>
+<p>Diese Variablen sind vektor-wertige Größen und es muss die <em>Id</em> des jeweils angeforderten Vektorelements verwendet werden. <a href="#ex_network_outputs">Beispiel 73</a> zeigt die Definition einer ID-basierten Ausgabe für Massenströme des Netzwerks.</p>
 </div>
 <div id="ex_network_outputs" class="exampleblock">
-<div class="title">Beispiel 70. Beispiel für Ausgabedefinitionen mit Network als Referenztyp</div>
+<div class="title">Beispiel 73. Beispiel für Ausgabedefinitionen mit Network als Referenztyp</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="c">&lt;!-- Outputs go to file 'network.tsv' --&gt;</span>
 <span class="nt">&lt;OutputDefinition&gt;</span>
-  <span class="c">&lt;!-- We choose the flow through the second element (pipe 101) as reference flux
-     for the entire network --&gt;</span>
-  <span class="nt">&lt;Quantity&gt;</span>FluidMassFluxes[1]<span class="nt">&lt;/Quantity&gt;</span>
+  <span class="c">&lt;!-- We choose the flow through the second element
+       (pipe 101) as reference flux for the entire network --&gt;</span>
+  <span class="nt">&lt;Quantity&gt;</span>FluidMassFluxes[id=101]<span class="nt">&lt;/Quantity&gt;</span>
   <span class="nt">&lt;ObjectListName&gt;</span>Entire network<span class="nt">&lt;/ObjectListName&gt;</span>
   <span class="nt">&lt;GridName&gt;</span>hourly<span class="nt">&lt;/GridName&gt;</span>
 <span class="nt">&lt;/OutputDefinition&gt;</span></code></pre>
 </div>
 </div>
 </div>
-</div>
-<div class="paragraph">
-<p>Übersicht über Netzwerk-Ausgabegrößen:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>FluidMassFluxes(id,4)                       [kg/s]      Fluid mass flux trough all flow elements
-NetworkZoneHeatLoad(id,1)                   [W]         Complete Heat load to zones from all hydraulic network elements
-NetworkActiveLayerHeatLoad(id,1)            [W]         Heat load to the construction layers from all hydraulic network elements</pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_variablennamen_in_ausgabedateien">18.8.2. Variablennamen in Ausgabedateien</h4>
-<div class="paragraph">
-<p>Variablen für Ausgaben vom Referenztyp <code>NetworkElement</code> werden in den Ausgabedateien wie folgt angegeben: <code>NetworkElement(id=1).FluidMassFlux</code> wobei hier <code>id=1</code> die ID des ausgewählten Netzwerkelements.</p>
-</div>
-<div class="paragraph">
-<p>TODO : Datei <code>VariableSubstitutions.txt</code> beschreiben.</p>
 </div>
 </div>
 </div>
@@ -9115,8 +9467,8 @@ NetworkActiveLayerHeatLoad(id,1)            [W]         Heat load to the constru
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.2 (25.05.2021)<br>
-Last updated 2021-05-25 17:25:35 +0200
+Version 0.2 (13.06.2021)<br>
+Last updated 2021-06-13 18:26:28 +0200
 </div>
 </div>
 <style>

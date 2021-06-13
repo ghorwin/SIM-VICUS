@@ -31,6 +31,7 @@
 
 
 #include <VICUS_Project.h>
+#include <NANDRAD_Project.h>
 
 #include <QtExt_Directories.h>
 

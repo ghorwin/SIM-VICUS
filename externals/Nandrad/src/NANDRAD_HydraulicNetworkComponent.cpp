@@ -33,6 +33,7 @@ bool HydraulicNetworkComponent::operator!=(const HydraulicNetworkComponent &othe
 
 	if (m_id != other.m_id)									return true;
 	if (m_displayName != other.m_displayName)				return true;
+	if (m_modelType != other.m_modelType)					return true;
 
 	if (!sameParametersAs(other))							return true;
 
@@ -46,6 +47,7 @@ bool HydraulicNetworkComponent::sameParametersAs(const HydraulicNetworkComponent
 			return false;
 	}
 	if (m_modelType != other.m_modelType)					return false;
+	if (m_polynomCoefficients != other.m_polynomCoefficients) return false;
 	return true;
 }
 
@@ -62,6 +64,25 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) {
 			checkModelParameter(m_para[i], i);
 		}
 
+		// check data table
+		if (m_modelType == MT_HeatPumpRealSourceSide) {
+			if (m_polynomCoefficients.m_values["QdotCondensator"].size() != 6)
+				throw IBK::Exception("'HeatPumpRealSourceSide' requires polynom coefficient parameter 'QdotCondensator' with exactly 6 values.", FUNC_ID);
+			if (m_polynomCoefficients.m_values["Pel"].size() != 6)
+				throw IBK::Exception("'HeatPumpRealSourceSide' requires polynom coefficient parameter 'Pel' with exactly 6 values.", FUNC_ID);
+		}
+
+		// check optional parameters, if given
+		if (!m_para[P_FractionOfMotorInefficienciesToFluidStream].name.empty())
+			checkModelParameter(m_para[P_FractionOfMotorInefficienciesToFluidStream], P_FractionOfMotorInefficienciesToFluidStream);
+		else
+			m_para[P_FractionOfMotorInefficienciesToFluidStream].value = 1; // set default value
+
+		// for MT_SupplyTemperatureAdapter, initialize zeta and diameter with defaults
+		if (m_modelType == MT_IdealHeaterCooler) {
+			m_para[P_HydraulicDiameter].value=1;
+			m_para[P_PressureLossCoefficient].value=0;
+		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Missing/invalid parameters for component '%1' (#%2) of type %3.")
@@ -72,7 +93,8 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) {
 
 
 std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const HydraulicNetworkComponent::ModelType modelType,
-																	   int networkModelType) {
+																	   int networkModelType)
+{
 	HydraulicNetwork::ModelType netModelType = (HydraulicNetwork::ModelType) networkModelType;
 
 	// Hydraulic network with constant temperature
@@ -80,9 +102,11 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 		switch (modelType) {
 			case MT_ConstantPressurePump:
 				return {P_PressureHead};
-			case MT_ConstantMassFluxPump:
+			case MT_ConstantMassFluxPump :
 				return {P_MassFlux};
-			case MT_HeatPumpIdealCarnot:
+			case MT_HeatPumpIdealCarnotSupplySide:
+			case MT_HeatPumpIdealCarnotSourceSide:
+			case MT_HeatPumpRealSourceSide:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter};
 			case MT_HeatExchanger:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter};
@@ -90,6 +114,10 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 				return {P_PipeMaxDiscretizationWidth};
 			case MT_SimplePipe:
 				return {};
+			case MT_ControlledValve:
+				return {P_PressureLossCoefficient, P_HydraulicDiameter};
+			case MT_ControlledPump:
+			case MT_IdealHeaterCooler: // no parameters needed
 			case NUM_MT:
 				return {};
 		}
@@ -98,10 +126,13 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 	else {
 		switch (modelType) {
 			case MT_ConstantPressurePump:
-				return {P_PressureHead, P_PumpEfficiency, P_Volume};
-			case MT_ConstantMassFluxPump:
+				return {P_PressureHead, P_PumpEfficiency, P_Volume}; // Note: P_FractionOfMotorInefficienciesToFluidStream is optional and defaults to 1
+			case MT_ConstantMassFluxPump :
 				return {P_MassFlux, P_PumpEfficiency, P_Volume};
-			case MT_HeatPumpIdealCarnot:
+			case MT_ControlledPump:
+				return {P_PumpEfficiency, P_Volume}; // Note: P_FractionOfMotorInefficienciesToFluidStream is optional and defaults to 1
+			case MT_HeatPumpIdealCarnotSupplySide:
+			case MT_HeatPumpIdealCarnotSourceSide:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume, P_CarnotEfficiency, P_MaximumHeatingPower};
 			case MT_HeatExchanger:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
@@ -109,6 +140,11 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 				return {P_PipeMaxDiscretizationWidth};
 			case MT_SimplePipe:
 				return {};
+			case MT_ControlledValve:
+				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
+			case MT_HeatPumpRealSourceSide:
+				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
+			case MT_IdealHeaterCooler: // no parameters needed
 			case NUM_MT: ;
 		}
 	}
@@ -133,18 +169,14 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 		}
 		// value must be >0 and <1
 		case P_CarnotEfficiency:
-		case P_PumpEfficiency: {
+		case P_PumpEfficiency:
+		case P_FractionOfMotorInefficienciesToFluidStream: {
 			para.checkedValue(name, unit, unit, 0, false, 1.0, true, nullptr);
 			break;
 		}
 		// value can be negative
 		case P_PressureHead: {
 			para.checkedValue(name, unit, unit, std::numeric_limits<double>::lowest(), true,
-							  std::numeric_limits<double>::max(), true, nullptr);
-			break;
-		}
-		case P_MassFlux: {
-			para.checkedValue(name, unit, unit, 0, true,
 							  std::numeric_limits<double>::max(), true, nullptr);
 			break;
 		}

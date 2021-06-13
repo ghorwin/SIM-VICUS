@@ -76,9 +76,9 @@ void IdealPipeRegisterModel::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'ConstructionObjectList' element.") ), FUNC_ID);
 
-		if (!element->FirstChildElement("ThermostatZoneID"))
+		if (!element->FirstChildElement("ThermostatZoneId"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'ThermostatZoneID' element.") ), FUNC_ID);
+				IBK::FormatString("Missing required 'ThermostatZoneId' element.") ), FUNC_ID);
 
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
@@ -86,8 +86,8 @@ void IdealPipeRegisterModel::readXML(const TiXmlElement * element) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "ConstructionObjectList")
 				m_constructionObjectList = c->GetText();
-			else if (cName == "ThermostatZoneID")
-				m_thermostatZoneID = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "ThermostatZoneId")
+				m_thermostatZoneId = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
@@ -143,8 +143,8 @@ TiXmlElement * IdealPipeRegisterModel::writeXML(TiXmlElement * parent) const {
 	m_fluid.writeXML(e);
 	if (!m_constructionObjectList.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "ConstructionObjectList", nullptr, std::string(), m_constructionObjectList);
-	if (m_thermostatZoneID != NANDRAD::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "ThermostatZoneID", nullptr, std::string(), IBK::val2string<unsigned int>(m_thermostatZoneID));
+	if (m_thermostatZoneId != NANDRAD::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "ThermostatZoneId", nullptr, std::string(), IBK::val2string<unsigned int>(m_thermostatZoneId));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {

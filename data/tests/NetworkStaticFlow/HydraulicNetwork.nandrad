@@ -28,7 +28,7 @@
 			<HydraulicNetwork id="1" displayName="simple test" modelType="HydraulicNetwork" referenceElementId="201">
 				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
 				<IBK:Parameter name="DefaultFluidTemperature" unit="C">20</IBK:Parameter>
-				<HydraulicFluid id="1" displayName="Water">
+				<HydraulicFluid displayName="Water">
 					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
@@ -76,7 +76,7 @@
 				<OutputDefinition>
 					<!-- We choose the flow through the second element (pipe 101) as reference flux
 						 for the entire network -->
-					<Quantity>FluidMassFluxes[1]</Quantity>
+					<Quantity>FluidMassFluxes[id=101]</Quantity>
 					<ObjectListName>Entire network</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>

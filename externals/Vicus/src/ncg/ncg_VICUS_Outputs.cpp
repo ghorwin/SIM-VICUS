@@ -45,7 +45,7 @@ void Outputs::readXMLPrivate(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "NANDRAD::OutputDefinition")
+					if (c2Name != "OutputDefinition")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					NANDRAD::OutputDefinition obj;
 					obj.readXML(c2);
@@ -57,7 +57,7 @@ void Outputs::readXMLPrivate(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "NANDRAD::OutputGrid")
+					if (c2Name != "OutputGrid")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					NANDRAD::OutputGrid obj;
 					obj.readXML(c2);

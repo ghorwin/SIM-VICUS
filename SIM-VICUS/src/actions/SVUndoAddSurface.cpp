@@ -26,6 +26,8 @@
 #include "SVUndoAddSurface.h"
 #include "SVProjectHandler.h"
 
+#include <VICUS_Project.h>
+
 SVUndoAddSurface::SVUndoAddSurface(const QString & label, const VICUS::Surface & addedSurface,
 								   unsigned int parentNodeID, const VICUS::ComponentInstance * compInstance) :
 	m_addedSurface(addedSurface),

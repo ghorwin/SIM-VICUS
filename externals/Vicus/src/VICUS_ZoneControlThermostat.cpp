@@ -34,8 +34,10 @@ bool ZoneControlThermostat::isValid(const Database<Schedule> & scheduleDB) const
 	if(m_id == INVALID_ID)
 		return false;
 
-	if (m_controlValue == NUM_CV)
+	if (m_controlValue == NUM_CV ||
+			m_controllerType == NUM_CT)
 		return false;
+
 
 	// if both setpoint schedules are undefined, the definition is incomplete (one is required)
 	if (m_coolingSetpointScheduleId == INVALID_ID && m_heatingSetpointScheduleId == INVALID_ID)
@@ -43,7 +45,7 @@ bool ZoneControlThermostat::isValid(const Database<Schedule> & scheduleDB) const
 
 	try {
 		if (m_heatingSetpointScheduleId != INVALID_ID) {
-			m_para[P_ToleranceHeating].checkedValue(KeywordList::Keyword("ZoneControlThermostat::para_t", P_ToleranceHeating),
+			m_para[P_Tolerance].checkedValue(KeywordList::Keyword("ZoneControlThermostat::para_t", P_Tolerance),
 								 "K", "K", 0, true, 5, true, nullptr);
 			// check if schedule ID is existing and valid
 			const Schedule * sched = scheduleDB[m_heatingSetpointScheduleId];
@@ -52,18 +54,6 @@ bool ZoneControlThermostat::isValid(const Database<Schedule> & scheduleDB) const
 			if (!sched->isValid())
 				return false;
 		}
-
-		if (m_coolingSetpointScheduleId != INVALID_ID) {
-			m_para[P_ToleranceCooling].checkedValue(KeywordList::Keyword("ZoneControlThermostat::para_t", P_ToleranceCooling),
-							 "K", "K", 0, true, 5, true, nullptr);
-			// check if schedule ID is existing and valid
-			const Schedule * sched = scheduleDB[m_coolingSetpointScheduleId];
-			if (sched == nullptr)
-				return false;
-			if (!sched->isValid())
-				return false;
-		}
-
 	}
 	catch (...) {
 		return false;
@@ -87,7 +77,8 @@ AbstractDBElement::ComparisonResult ZoneControlThermostat::equal(const AbstractD
 	}
 	if(m_heatingSetpointScheduleId != otherCtrl->m_heatingSetpointScheduleId ||
 			m_coolingSetpointScheduleId != otherCtrl->m_coolingSetpointScheduleId ||
-			m_controlValue != otherCtrl->m_controlValue)
+			m_controlValue != otherCtrl->m_controlValue ||
+			m_controllerType != otherCtrl->m_controllerType)
 		return Different;
 
 	//check meta data

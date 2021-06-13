@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -52,13 +52,20 @@ public:
 	/*! Checks if all referenced schedule is valid. */
 	bool isValid() const;
 
-	/*! Multiply a schedule with another schedule. */
+	/*! Multiply a schedule with another schedule. Returns the result schedule. */
 	Schedule multiply(const Schedule &other) const;
 
+	/*! Multiply a schedule with constant value. Returns the result schedule. */
 	Schedule multiply(double val) const;
 
+	/*! Add a constant value to a schedule. Returns the result schedule. */
+	Schedule add(double val) const;
+
+	/*! Create a constant schedule with value val. */
+	void createConstSchedule(double val = 0);
+
 	/*! Comparison operator */
-	ComparisonResult equal(const AbstractDBElement *other) const;
+	ComparisonResult equal(const AbstractDBElement *other) const override;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

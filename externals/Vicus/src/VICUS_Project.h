@@ -32,8 +32,11 @@
 
 #include <IBK_Path.h>
 
-#include <NANDRAD_Project.h>
+#include <NANDRAD_ProjectInfo.h>
+#include <NANDRAD_Location.h>
 #include <NANDRAD_SolverParameter.h>
+#include <NANDRAD_SimulationParameter.h>
+#include <NANDRAD_Interface.h>
 #include <NANDRAD_FMIDescription.h>
 
 #include "VICUS_CodeGenMacros.h"
@@ -325,7 +328,7 @@ public:
 		string relative_path = "${Database}/db_materials.xml";
 		\endcode
 	*/
-	std::map< std::string, IBK::Path >	m_placeholders;
+	std::map< std::string, IBK::Path >					m_placeholders;
 
 
 	/*! Holds the database elements referenced in the project. These are a copy of db elements

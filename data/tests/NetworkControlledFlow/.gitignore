@@ -1,2 +1,11 @@
 /TemperatureDifferenceControlHeatLossSpline/
 /TemperatureDifferenceControlHeatPump/
+/ThermostatControlFloorHeating/
+/ThermostatControlRegisterHeating/
+/ControlledValveConstantMassFlux/
+/ControlledValveTemperatureDifferenceFollowingElement/
+/ThermostatControlledIdealFloorHeating/
+/ThermostatControlledIdealPipeRegister/
+/ThermostatControlledPipeRegister/
+/ControlledPumpPipeRegister/
+/ConstantMassFluxThermostatControlledPipeRegister/

@@ -84,13 +84,13 @@
 					<!-- Control temperature is "Air temperature", this is the default and could be omitted -->
 					<TemperatureType>AirTemperature</TemperatureType>
 					<!-- Controller type PController is the default, so we could omit this-->
-					<ControllerType>PController</ControllerType>
+					<ControllerType>Analog</ControllerType>
 				</Thermostat>
 			</Thermostats>
 
 			<IdealSurfaceHeatingCoolingModels>
 				<IdealSurfaceHeatingCoolingModel id="701">
-					<ThermostatZoneID>1</ThermostatZoneID>
+					<ThermostatZoneId>1</ThermostatZoneId>
 					<ConstructionObjectList>Floor</ConstructionObjectList>
 					<IBK:Parameter name="MaxCoolingPowerPerArea" unit="W/m2">150</IBK:Parameter>
 				</IdealSurfaceHeatingCoolingModel>
@@ -114,13 +114,13 @@
 				</OutputDefinition>
 
 				<OutputDefinition>
-					<Quantity>ThermalLoad[1]</Quantity>
+					<Quantity>ActiveLayerThermalLoad</Quantity>
 					<ObjectListName>Floor</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 
 				<OutputDefinition>
-					<Quantity>ElementTemperature[1]</Quantity>
+					<Quantity>ActiveLayerTemperature</Quantity>
 					<ObjectListName>Floor</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>

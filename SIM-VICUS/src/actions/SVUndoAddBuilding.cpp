@@ -26,6 +26,8 @@
 #include "SVUndoAddBuilding.h"
 #include "SVProjectHandler.h"
 
+#include <VICUS_Project.h>
+
 SVUndoAddBuilding::SVUndoAddBuilding(const QString & label, const VICUS::Building & addedBuilding, bool topologyOnly) :
 	m_addedBuilding(addedBuilding),
 	m_topologyOnly(topologyOnly)

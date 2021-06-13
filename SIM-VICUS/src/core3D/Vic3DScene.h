@@ -40,6 +40,7 @@
 #include "Vic3DSmallCoordinateSystemObject.h"
 #include "Vic3DWireFrameObject.h"
 #include "Vic3DNewGeometryObject.h"
+#include "Vic3DNewSubSurfaceObject.h"
 #include "Vic3DSurfaceNormalsObject.h"
 #include "Vic3DPickObject.h"
 
@@ -154,7 +155,7 @@ private:
 	/*! Determines a new local mouse position (local to this viewport) such that a mouse passing over a border
 		while dragging/rotating the view is avoided through placement of the mouse to the other side of the window.
 	*/
-	void adjustCurserDuringMouseDrag(const QPoint & mouseDelta, const QPoint & localMousePos,
+	void adjustCursorDuringMouseDrag(const QPoint & mouseDelta, const QPoint & localMousePos,
 									 QPoint & newLocalMousePos, PickObject & pickObject);
 
 	/*! Due something with the mouse click, depending on current operation mode. */
@@ -174,7 +175,7 @@ private:
 	IBKMK::Vector3D calculateFarPoint(const QPoint & mousPos, const QMatrix4x4 & projectionMatrixInverted);
 
 	/*! Initializes the pan operation. */
-	void panStart(const QPoint & localMousePos, PickObject & pickObject);
+	void panStart(const QPoint & localMousePos, PickObject & pickObject, bool reuseDepth);
 
 	/*! Cached pointer to parent widget - needed so that we can tell a QObject-based class to send
 		out signals.
@@ -234,6 +235,8 @@ private:
 	CoordinateSystemObject	m_coordinateSystemObject;
 	/*! Object to display newly drawn geometry. */
 	NewGeometryObject		m_newGeometryObject;
+	/*! Object to display new subsurface geometry. */
+	NewSubSurfaceObject		m_newSubSurfaceObject;
 
 	/*! The small coordinate system at the bottom/left. */
 	SmallCoordinateSystemObject	m_smallCoordinateSystemObject;
@@ -306,6 +309,8 @@ private:
 	QMatrix4x4				m_panOriginalTransformMatrix;
 
 	double					m_panCABARatio;
+	/*! Cached distance of object when staring panning. */
+	double					m_panObjectDepth = 0.01;
 
 	/*! Cached last scene coloring mode. Updated in onModified() and setViewState(). Used
 		to prevent excessive updates of geometry when unrelated view state properties change.

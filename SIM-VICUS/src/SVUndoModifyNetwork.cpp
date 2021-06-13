@@ -24,6 +24,7 @@
 */
 
 #include "SVUndoModifyNetwork.h"
+#include "SVProjectHandler.h"
 
 #include "SVSettings.h"
 

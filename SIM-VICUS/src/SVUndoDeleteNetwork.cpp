@@ -24,6 +24,9 @@
 */
 
 #include "SVUndoDeleteNetwork.h"
+#include "SVProjectHandler.h"
+
+#include <VICUS_Project.h>
 
 SVUndoDeleteNetwork::SVUndoDeleteNetwork(const QString & label, unsigned int networkIndex)
 	: m_networkIndex(networkIndex)

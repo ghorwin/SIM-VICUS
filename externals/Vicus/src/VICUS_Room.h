@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -77,7 +77,7 @@ public:
 	/*! Unique ID of building. */
 	unsigned int						m_id = INVALID_ID;					// XML:A:required
 
-	QString								m_displayName;						// XML:A
+	//:inherited	QString				m_displayName;						// XML:A
 
 	/*! Reference to assigned zone template (optional). */
 	IDType								m_idZoneTemplate = INVALID_ID;		// XML:E

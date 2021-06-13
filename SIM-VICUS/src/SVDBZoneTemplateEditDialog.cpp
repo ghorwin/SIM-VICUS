@@ -218,7 +218,7 @@ void SVDBZoneTemplateEditDialog::onCurrentIndexChanged(const QModelIndex &curren
 		m_ui->toolButtonRemove->setEnabled(false);
 		m_ui->toolButtonCopy->setEnabled(false);
 		m_groupBox->setEnabled(false);
-		m_editWidget->updateInput(-1, -1, 0); // nothing selected
+		m_editWidget->updateInput(-1, -1, VICUS::ZoneTemplate::NUM_ST); // nothing selected
 	}
 	else {
 		m_groupBox->setEnabled(true);
@@ -232,13 +232,13 @@ void SVDBZoneTemplateEditDialog::onCurrentIndexChanged(const QModelIndex &curren
 		// retrieve current ID
 		int id = sourceIndex.data(Role_Id).toInt();
 		int subTemplateID = -1;
-		int subTemplateType = 0;
+		VICUS::ZoneTemplate::SubTemplateType subTemplateType = VICUS::ZoneTemplate::NUM_ST;
 		// sub-template selected?
 		if (sourceIndex.internalPointer() != nullptr) {
 			subTemplateID = id;
 			QModelIndex parentIndex = sourceIndex.parent();
 			id = parentIndex.data(Role_Id).toInt();
-			subTemplateType = sourceIndex.data(SVDBZoneTemplateTreeModel::Role_SubTemplateType).toInt();
+			subTemplateType = (VICUS::ZoneTemplate::SubTemplateType)sourceIndex.data(SVDBZoneTemplateTreeModel::Role_SubTemplateType).toInt();
 		}
 		m_editWidget->updateInput(id, subTemplateID, subTemplateType);
 	}
@@ -257,7 +257,7 @@ void SVDBZoneTemplateEditDialog::on_pushButtonReloadUserDB_clicked() {
 		m_dbModel->resetModel();
 		onCurrentIndexChanged(QModelIndex(), QModelIndex());
 		m_ui->treeView->expandAll();
-		m_editWidget->updateInput(-1, -1, 0);
+		m_editWidget->updateInput(-1, -1, VICUS::ZoneTemplate::NUM_ST);
 	}
 }
 
@@ -289,11 +289,12 @@ void SVDBZoneTemplateEditDialog::on_treeView_doubleClicked(const QModelIndex &in
 }
 
 
-void SVDBZoneTemplateEditDialog::onSelectSubTemplate(unsigned int zoneTemplateID, int subTemplateType) {
+void SVDBZoneTemplateEditDialog::onSelectSubTemplate(unsigned int zoneTemplateID,
+													 VICUS::ZoneTemplate::SubTemplateType subTemplateType) {
 	// if subTemplateType is NUM_ST, select only the top item
 	if (subTemplateType == VICUS::ZoneTemplate::NUM_ST) {
 		selectItemById((unsigned int)zoneTemplateID);
-		m_editWidget->updateInput((int)zoneTemplateID, -1, 0);
+		m_editWidget->updateInput((int)zoneTemplateID, -1, subTemplateType);
 	}
 	else {
 		// first find the zone template index, then search its children for matching subTemplateType
@@ -303,7 +304,7 @@ void SVDBZoneTemplateEditDialog::onSelectSubTemplate(unsigned int zoneTemplateID
 				// now loop over all children and pick the one with the correct subTemplateType
 				for (int j=0, count = m_dbModel->rowCount(sourceIndex); j<count; ++j) {
 					QModelIndex subTemplateSourceIndex = m_dbModel->index(j,0,sourceIndex);
-					if (subTemplateSourceIndex.data(Qt::UserRole + 20).toInt() == subTemplateType) {
+					if (subTemplateSourceIndex.data(Qt::UserRole + 20).toInt() == (int)subTemplateType) {
 						QModelIndex proxyIndex = m_proxyModel->mapFromSource(subTemplateSourceIndex);
 						if (proxyIndex.isValid()) {
 							m_ui->treeView->blockSignals(true);
@@ -314,10 +315,7 @@ void SVDBZoneTemplateEditDialog::onSelectSubTemplate(unsigned int zoneTemplateID
 						return;
 					}
 				}
-
 			}
 		}
-
 	}
-
 }

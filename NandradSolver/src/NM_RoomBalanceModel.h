@@ -95,9 +95,6 @@ public:
 	/*! Populates the vector resDesc with descriptions of all results provided by this model. */
 	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const override;
 
-	/*! Returns vector of all scalar and vector valued results pointer. */
-	virtual void resultValueRefs(std::vector<const double *> &res) const override;
-
 	/*! Retrieves reference pointer to a value with given quantity ID name.
 		\note For quantity 'ydot' the memory with computed ydot-values is returned.
 		\return Returns pointer to memory location with this quantity, otherwise nullptr if parameter ID was not found.
@@ -125,7 +122,8 @@ public:
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override;
 
 	/*! Provides the object with references to requested input variables (persistent memory location). */
-	virtual void setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) override;
+	virtual void setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions,
+								   const std::vector<const double *> & resultValueRefs) override;
 
 	/*! Returns dependencies between result variables and input variables. */
 	virtual void stateDependencies(std::vector< std::pair<const double *, const double *> > & resultInputValueReferences) const override;

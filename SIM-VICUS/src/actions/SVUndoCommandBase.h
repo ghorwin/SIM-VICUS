@@ -29,8 +29,15 @@
 #include <QUndoCommand>
 #include <QCoreApplication>
 
-#include <VICUS_Project.h>
-#include "SVProjectHandler.h"
+namespace VICUS {
+	class Project;
+}
+
+/*! Abstract base class for all modification data containers. */
+class ModificationInfo {
+public:
+	virtual ~ModificationInfo();
+};
 
 /*! Abstract base class for all undo commands.
 	It provides the member function push() which puts the command to the global stack.

@@ -68,7 +68,7 @@ void NetworkInterfaceAdapterModel::inputReferences(std::vector<InputReference> &
 	// - supply temperature from schedule
 
 	InputReference ref;
-	ref.m_id = m_modelData->m_summationModelID;
+	ref.m_id = m_modelData->m_summationModelId;
 	ref.m_referenceType = NANDRAD::ModelInputReference::MRT_MODEL;
 	ref.m_name.m_name = "TotalHeatLoad";
 	ref.m_required = true;
@@ -76,7 +76,7 @@ void NetworkInterfaceAdapterModel::inputReferences(std::vector<InputReference> &
 
 	// the scheduled parameters must be provided with the same ID as ourselfs (our own parameters)
 	ref.m_id = m_id;
-	ref.m_name.m_name = "SupplyTemperatureSchedule";
+	ref.m_name.m_name = "FluidOutletSetpointSchedule";
 	inputRefs.push_back(ref);
 
 	ref.m_name.m_name = "SupplyMassFlowSchedule";
@@ -106,7 +106,7 @@ int NetworkInterfaceAdapterModel::update() {
 	double massFlux = *m_valueRefs[2]; // kg/s
 
 	// J/kgK
-	double heatCapacity = m_modelData->m_fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+	double heatCapacity = m_modelData->m_fluidHeatCapacity.value;
 
 	if (massFlux <= 0)
 		m_results[R_ReturnTemperature] = supplyTemp;

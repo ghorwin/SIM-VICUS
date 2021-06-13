@@ -772,6 +772,7 @@ const char * const DEFAULT_UNITS =
 "1/s          * 60 1/min          * 3600 1/h ;"
 "W/m2s *  3600.0000000       W/m2h  /  1000.0000000      kW/m2s /  1.000000e+06      MW/m2s /   100.0000000      W/dm2s / 10000.0000000      W/cm2s ;"
 "Person/m2    ;"
+"m2/Person    ;"
 "W/Person     / 1000 kW/Person    ;"
 "W/K          ;"
 "kWh/m2a;"

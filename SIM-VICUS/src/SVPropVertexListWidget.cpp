@@ -371,8 +371,8 @@ void SVPropVertexListWidget::setExtrusionDistance(double dist) {
 
 void SVPropVertexListWidget::onModified(int modificationType, ModificationInfo * /*data*/) {
 	// only do something here, if this widget is actually visible
-	if (!isVisibleTo(qobject_cast<QWidget*>(parent())) )
-		return;
+//	if (!isVisibleTo(qobject_cast<QWidget*>(parent())) )
+//		return;
 	SVProjectHandler::ModificationTypes mod = (SVProjectHandler::ModificationTypes)modificationType;
 	switch (mod) {
 		// We only need to handle changes of the building topology, in all other cases
@@ -380,7 +380,10 @@ void SVPropVertexListWidget::onModified(int modificationType, ModificationInfo *
 		case SVProjectHandler::BuildingTopologyChanged:
 			updateBuildingComboBox(); // this will also update the other combo boxes
 		break;
-		default:;
+		default: {
+			// clear the new geometry object
+			SVViewStateHandler::instance().m_newGeometryObject->clear();
+		}
 	}
 }
 

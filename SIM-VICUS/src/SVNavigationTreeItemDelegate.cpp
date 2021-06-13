@@ -122,6 +122,7 @@ bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemMode
 																		   !withoutChildren,
 																		   !visible);
 					action->push();
+					return false; // handled
 				}
 			}
 			iconRect = QRect(targetRect.x() + 18, targetRect.y(), 16, 16);
@@ -138,6 +139,7 @@ bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemMode
 																		   !withoutChildren,
 																		   !selected);
 					action->push();
+					return false; // handled
 				}
 			}
 		}
@@ -145,4 +147,11 @@ bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemMode
 	}
 
 	return QItemDelegate::editorEvent(event, model, option, index);
+}
+
+
+void SVNavigationTreeItemDelegate::updateEditorGeometry(QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & index) const {
+	QItemDelegate::updateEditorGeometry(editor, option, index);
+	// move inside a little
+	editor->setGeometry(editor->pos().x() + 34, editor->pos().y(),  editor->width()-34, editor->height());
 }

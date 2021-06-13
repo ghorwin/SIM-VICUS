@@ -102,9 +102,9 @@ public:
 	/*! Returns true if construction is connected on either side via existing Interface definition to
 		the zone with given zoneID.
 	*/
-	bool connectedTo(unsigned int zoneID) const {
-		return ( (m_interfaceA.m_id != INVALID_ID && m_interfaceA.m_zoneId == zoneID) ||
-				 (m_interfaceB.m_id != INVALID_ID && m_interfaceB.m_zoneId == zoneID) );
+	bool connectedTo(unsigned int zoneId) const {
+		return ( (m_interfaceA.m_id != INVALID_ID && m_interfaceA.m_zoneId == zoneId) ||
+				 (m_interfaceB.m_id != INVALID_ID && m_interfaceB.m_zoneId == zoneId) );
 	}
 
 	// *** PUBLIC MEMBER VARIABLES ***

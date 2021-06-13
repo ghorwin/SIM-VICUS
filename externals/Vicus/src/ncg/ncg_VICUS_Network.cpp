@@ -53,8 +53,8 @@ void Network::readXML(const TiXmlElement * element) {
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "fluidID")
 				m_fluidID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "name")
-				m_name = attrib->ValueStr();
+			else if (attribName == "displayName")
+				m_displayName = QString::fromStdString(attrib->ValueStr());
 			else if (attribName == "visible")
 				m_visible = NANDRAD::readPODAttributeValue<bool>(element, attrib);
 			else {
@@ -110,7 +110,7 @@ void Network::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "NANDRAD::HydraulicNetwork")
+					if (c2Name != "HydraulicNetwork")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					NANDRAD::HydraulicNetwork obj;
 					obj.readXML(c2);
@@ -139,7 +139,7 @@ void Network::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "VICUS::NetworkController")
+					if (c2Name != "NetworkController")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					VICUS::NetworkController obj;
 					obj.readXML(c2);
@@ -178,8 +178,8 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (m_fluidID != VICUS::INVALID_ID)
 		e->SetAttribute("fluidID", IBK::val2string<unsigned int>(m_fluidID));
-	if (!m_name.empty())
-		e->SetAttribute("name", m_name);
+	if (!m_displayName.isEmpty())
+		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (m_visible != Network().m_visible)
 		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 

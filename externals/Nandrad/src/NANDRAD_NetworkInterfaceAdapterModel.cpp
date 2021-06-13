@@ -20,14 +20,15 @@
 */
 
 #include "NANDRAD_NetworkInterfaceAdapterModel.h"
-#include "NANDRAD_HydraulicNetwork.h"
 
 #include "NANDRAD_KeywordList.h"
 
 namespace NANDRAD {
 
 void NetworkInterfaceAdapterModel::checkParameters() const {
-	const_cast<NetworkInterfaceAdapterModel*>(this)->m_fluid.checkParameters(HydraulicNetwork::MT_ThermalHydraulicNetwork);
+	m_fluidHeatCapacity.checkedValue("FluidHeatCapacity", "J/kgK", "J/kgK",
+									 0, false, std::numeric_limits<double>::max(), false,
+								   "Heat capacity of fluid must be > 0 J/kgK.");
 }
 
 } // namespace NANDRAD

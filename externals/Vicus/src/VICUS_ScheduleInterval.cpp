@@ -190,6 +190,37 @@ ScheduleInterval ScheduleInterval::multiply(double val) const{
 
 }
 
+ScheduleInterval ScheduleInterval::add(double val) const{
+	FUNCID(ScheduleInterval::add);
+	ScheduleInterval schedInt;
+	if(!isValid()){
+		//Schedule interval '%1' with (id=%2) is not valid.
+		return schedInt;
+	}
+
+	schedInt = *this;
+
+	for(unsigned int i=0; i<schedInt.m_dailyCycles.size(); ++i)
+		schedInt.m_dailyCycles[i] = schedInt.m_dailyCycles[i].add(val);
+
+	return schedInt;
+}
+
+void ScheduleInterval::createConstScheduleInterval(double val){
+	m_intervalStartDay=0;
+	m_dailyCycles.push_back(DailyCycle());
+	DailyCycle &dc = m_dailyCycles.back();
+	dc.m_dayTypes.push_back(NANDRAD::Schedule::ST_MONDAY);
+	dc.m_dayTypes.push_back(NANDRAD::Schedule::ST_TUESDAY);
+	dc.m_dayTypes.push_back(NANDRAD::Schedule::ST_WEDNESDAY);
+	dc.m_dayTypes.push_back(NANDRAD::Schedule::ST_THURSDAY);
+	dc.m_dayTypes.push_back(NANDRAD::Schedule::ST_FRIDAY);
+	dc.m_dayTypes.push_back(NANDRAD::Schedule::ST_SATURDAY);
+	dc.m_dayTypes.push_back(NANDRAD::Schedule::ST_SUNDAY);
+	dc.m_timePoints.push_back(0);
+	dc.m_values.push_back(val);
+}
+
 bool ScheduleInterval::operator!=(const ScheduleInterval &other) const {
 	if(m_displayName != other.m_displayName ||
 			m_intervalStartDay != other.m_intervalStartDay)

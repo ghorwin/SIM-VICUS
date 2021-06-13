@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -102,7 +102,7 @@ public:
 	bool behavesLike(const EPDDataset &other) const;
 
 	/*! Comparison operator */
-	ComparisonResult equal(const AbstractDBElement *other) const;
+	ComparisonResult equal(const AbstractDBElement *other) const override;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

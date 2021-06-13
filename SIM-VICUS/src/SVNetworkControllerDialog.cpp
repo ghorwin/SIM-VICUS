@@ -42,8 +42,10 @@ unsigned int SVNetworkControllerDialog::select(unsigned int networkId, unsigned 
 {
 	VICUS::Project p = project();
 
+	Q_ASSERT(p.element(project().m_geometricNetworks, networkId) != nullptr);
 	VICUS::Network nw = *p.element(project().m_geometricNetworks, networkId);
 	VICUS::NetworkController *currentController = p.element(nw.m_controllers, controllerId);
+
 	if (currentController != nullptr)
 		m_controller = *currentController;
 	else {
@@ -53,22 +55,24 @@ unsigned int SVNetworkControllerDialog::select(unsigned int networkId, unsigned 
 
 	update();
 
-	if (exec() != QDialog::Accepted)
+	int res = exec();
+	if (res != QDialog::Accepted)
 		return 0;
 
 	nw.m_controllers.clear();
 	nw.m_controllers.push_back(m_controller);
 
+	// undo action
+	nw.updateNodeEdgeConnectionPointers();
 
-	// TODO Hauke
+	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(),
+											  project().element(project().m_geometricNetworks, networkId));
+	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, nw);
+	undo->push(); // modifies project and updates views
 
-//	// undo action
-//	nw.updateNodeEdgeConnectionPointers();
-//	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), dynamic_cast<const VICUS::Network*>(&nw));
-//	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, nw);
-//	undo->push(); // modifies project and updates views
-
+	return m_controller.m_id;
 }
+
 
 void SVNetworkControllerDialog::update()
 {
@@ -79,7 +83,7 @@ void SVNetworkControllerDialog::update()
 	int propIdx = m_ui->comboBoxProperty->findData(m_controller.m_controlledProperty);
 	m_ui->comboBoxProperty->setCurrentIndex(propIdx);
 	int typeIdx = m_ui->comboBoxControllerType->findData(m_controller.m_controllerType);
-	m_ui->comboBoxProperty->setCurrentIndex(typeIdx);
+	m_ui->comboBoxControllerType->setCurrentIndex(typeIdx);
 }
 
 
@@ -92,7 +96,7 @@ void SVNetworkControllerDialog::on_lineEditName_editingFinished()
 void SVNetworkControllerDialog::on_lineEditSetpoint_editingFinished()
 {
 	if (m_ui->lineEditSetpoint->isValid())
-		m_controller.m_setPoint.set("Setpoint", m_ui->lineEditSetpoint->value(), "-");
+		m_controller.m_setPoint.set("SetPoint", m_ui->lineEditSetpoint->value(), "---");
 }
 
 void SVNetworkControllerDialog::on_lineEditKp_editingFinished()

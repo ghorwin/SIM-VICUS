@@ -26,7 +26,7 @@
 #include "SVUndoModifyRoomZoneTemplateAssociation.h"
 #include "SVProjectHandler.h"
 
-#include <VICUS_Building.h>
+#include <VICUS_Project.h>
 
 SVUndoModifyRoomZoneTemplateAssociation::SVUndoModifyRoomZoneTemplateAssociation(const QString & label,
 			const std::vector<unsigned int> & roomIDs, unsigned int zoneTemplateID) :

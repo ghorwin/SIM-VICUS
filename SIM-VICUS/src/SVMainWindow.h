@@ -151,6 +151,8 @@ public:
 	/*! Returns the internal zone control shading edit dialog. */
 	SVDatabaseEditDialog *dbZoneControlShadingEditDialog();
 	/*! Returns the internal infiltration edit dialog. */
+	SVDatabaseEditDialog *dbZoneIdealHeatingCoolingEditDialog();
+	/*! Returns the internal infiltration edit dialog. */
 	SVDatabaseEditDialog *dbInfiltrationEditDialog();
 	/*! Returns the internal ventilation edit dialog. */
 	SVDatabaseEditDialog *dbVentilationNaturalEditDialog();
@@ -263,6 +265,8 @@ private slots:
 	void on_actionDBZoneControlVentilationNatural_triggered();
 	void on_actionDBZoneControlShading_triggered();
 
+	void on_actionDBZoneIdealHeatingCooling_triggered();
+
 	void on_actionDBInfiltration_triggered();
 	void on_actionDBVentilationNatural_triggered();
 
@@ -298,6 +302,7 @@ private slots:
 	void on_actionExportView3D_triggered();
 
 	void on_actionCalculateShadingFactors_triggered();
+
 
 
 
@@ -451,6 +456,7 @@ private:
 	SVDatabaseEditDialog				*m_dbZoneControlThermostatEditDialog			= nullptr;
 	SVDatabaseEditDialog				*m_dbZoneControlVentilationNaturalEditDialog	= nullptr;
 	SVDatabaseEditDialog				*m_dbZoneControlShadingEditDialog				= nullptr;
+	SVDatabaseEditDialog				*m_dbZoneIdealHeatingCoolingEditDialog			= nullptr;
 	SVDatabaseEditDialog				*m_dbInfiltrationEditDialog						= nullptr;
 	SVDatabaseEditDialog				*m_dbVentilationNaturalEditDialog				= nullptr;
 

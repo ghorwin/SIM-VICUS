@@ -559,7 +559,7 @@ void SVPropBuildingEditWidget::updateUi() {
 			QTableWidgetItem * item = new QTableWidgetItem();
 			// special handling for components with "invalid" component id
 			if (it->first == nullptr)
-				item->setBackground(QColor(255,128,128));
+				item->setBackground(QColor(64,64,64));
 			else
 				item->setBackground(it->first->m_color);
 			item->setFlags(Qt::ItemIsEnabled); // cannot select color item!

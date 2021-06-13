@@ -62,6 +62,7 @@ public:
 		M_NetworkProperties,
 		M_BuildingProperties,
 		M_FloorManager,
+		M_AddWindowWidget,
 		NUM_M
 	};
 

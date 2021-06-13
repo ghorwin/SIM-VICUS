@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -27,6 +27,8 @@
 #define VICUS_DatabaseH
 
 #include <map>
+
+#include <VICUS_AbstractDBElement.h>
 
 #include <IBK_Path.h>
 #include <IBK_messages.h>
@@ -64,6 +66,19 @@ public:
 		typename std::map<unsigned int, T>::const_iterator it = m_data.find(id);
 		if (it == m_data.end())		return nullptr;
 		else						return &(it->second);
+	}
+
+	/*! Tries to find an element in the DB that matches content-wise the provided element
+		(i.e. ignores ID during comparison, calls T::equal()).
+		\return Returns nullptr if no such element exists, otherwise a pointer to the respective existing element.
+	*/
+	const T * findEqual(const T & elem) const {
+		for (typename std::map<unsigned int, T>::const_iterator it = m_data.begin(); it != m_data.end(); ++it) {
+			const T * elemPtr = &(it->second);
+			if (elem.equal(elemPtr) != VICUS::AbstractDBElement::Different)
+				return elemPtr;
+		}
+		return nullptr;
 	}
 
 	/*! Returns begin for iterator-type read-only access to data store. */

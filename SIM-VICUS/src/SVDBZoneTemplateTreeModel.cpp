@@ -81,7 +81,8 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 
 			case Qt::DecorationRole : {
 				if (index.column() == ColCheck) {
-					if (it->second.isValid())
+					if (it->second.isValid(m_db->m_internalLoads, m_db->m_zoneControlThermostat,m_db->m_schedules,
+										   m_db->m_infiltration, m_db->m_ventilationNatural, m_db->m_zoneIdealHeatingCooling))
 						return QIcon("://gfx/actions/16x16/ok.png");
 					else
 						return QIcon("://gfx/actions/16x16/error.png");
@@ -172,7 +173,38 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 					else return iload->m_color;
 				}
 			} break;
-			case VICUS::ZoneTemplate::ST_ControlThermostat:
+			case VICUS::ZoneTemplate::ST_ControlThermostat:{
+				// lookup item in question
+				const VICUS::ZoneControlThermostat * thermo = m_db->m_zoneControlThermostat[zt.m_idReferences[subType]];
+				// Mind: il might be a nullptr, if index wasn't given
+				if (role == Qt::DisplayRole && index.column() == ColName) {
+					if (thermo == nullptr)
+						return tr("<invalid ID reference>");
+					else
+						return QtExt::MultiLangString2QString(thermo->m_displayName);
+				}
+				else if (role == Qt::BackgroundRole && index.column() == ColColor) {
+					if (thermo == nullptr) return QVariant();
+					else return thermo->m_color;
+				}
+			}
+			break;
+			case VICUS::ZoneTemplate::ST_IdealHeatingCooling:{
+				// lookup item in question
+				const VICUS::ZoneIdealHeatingCooling * ideal = m_db->m_zoneIdealHeatingCooling[zt.m_idReferences[subType]];
+				// Mind: il might be a nullptr, if index wasn't given
+				if (role == Qt::DisplayRole && index.column() == ColName) {
+					if (ideal == nullptr)
+						return tr("<invalid ID reference>");
+					else
+						return QtExt::MultiLangString2QString(ideal->m_displayName);
+				}
+				else if (role == Qt::BackgroundRole && index.column() == ColColor) {
+					if (ideal == nullptr) return QVariant();
+					else return ideal->m_color;
+				}
+			}
+			break;
 			case VICUS::ZoneTemplate::NUM_ST:
 			break;
 		}
@@ -342,6 +374,7 @@ void SVDBZoneTemplateTreeModel::deleteItem(const QModelIndex & index) {
 void SVDBZoneTemplateTreeModel::deleteChildItem(const QModelIndex & templateIndex, int subTemplateType) {
 	if (!templateIndex.isValid())
 		return;
+
 	const VICUS::Database<VICUS::ZoneTemplate> & db = m_db->m_zoneTemplates;
 	Q_ASSERT(templateIndex.isValid() && templateIndex.row() < (int)db.size());
 	std::map<unsigned int, VICUS::ZoneTemplate>::const_iterator it = db.begin();
@@ -352,6 +385,8 @@ void SVDBZoneTemplateTreeModel::deleteChildItem(const QModelIndex & templateInde
 		if (it->second.m_idReferences[i] != VICUS::INVALID_ID)
 			++rowIndex;
 	}
+	// next call updates selection and updates sub-template widget
+	// also updates m_currentSubTemplate
 	beginRemoveRows(templateIndex, rowIndex, rowIndex);
 	VICUS::ZoneTemplate * zt = const_cast<VICUS::ZoneTemplate*>(m_db->m_zoneTemplates[it->second.m_id]);
 	Q_ASSERT(zt != nullptr);

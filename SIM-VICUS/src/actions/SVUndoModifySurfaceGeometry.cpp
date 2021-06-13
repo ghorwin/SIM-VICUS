@@ -25,8 +25,10 @@
 
 #include "SVUndoModifySurfaceGeometry.h"
 #include "SVProjectHandler.h"
-#include "SVViewStateHandler.h"
 
+#include <VICUS_Project.h>
+
+#include "SVViewStateHandler.h"
 #include "Vic3DWireFrameObject.h"
 
 SVUndoModifySurfaceGeometry::SVUndoModifySurfaceGeometry(const QString & label,

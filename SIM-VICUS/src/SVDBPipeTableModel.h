@@ -39,6 +39,7 @@ public:
 		ColColor,
 		ColCheck,
 		ColName,
+		Category,
 		NumColumns
 	};
 

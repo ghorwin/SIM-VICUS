@@ -41,9 +41,9 @@ void ShadingControlModel::readXMLPrivate(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
 
-		if (!TiXmlAttribute::attributeByName(element, "sensorID"))
+		if (!TiXmlAttribute::attributeByName(element, "sensorId"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'sensorID' attribute.") ), FUNC_ID);
+				IBK::FormatString("Missing required 'sensorId' attribute.") ), FUNC_ID);
 
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
@@ -53,8 +53,8 @@ void ShadingControlModel::readXMLPrivate(const TiXmlElement * element) {
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName = attrib->ValueStr();
-			else if (attribName == "sensorID")
-				m_sensorID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "sensorId")
+				m_sensorId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -100,8 +100,8 @@ TiXmlElement * ShadingControlModel::writeXMLPrivate(TiXmlElement * parent) const
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
-	if (m_sensorID != NANDRAD::INVALID_ID)
-		e->SetAttribute("sensorID", IBK::val2string<unsigned int>(m_sensorID));
+	if (m_sensorId != NANDRAD::INVALID_ID)
+		e->SetAttribute("sensorId", IBK::val2string<unsigned int>(m_sensorId));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {

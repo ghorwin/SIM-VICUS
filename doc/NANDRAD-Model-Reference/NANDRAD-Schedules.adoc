@@ -249,7 +249,7 @@ Es ist möglich, unterschiedliche Zeitpläne für einzelne Zeiträume des Jahres
 ====
 
 [[fig_schedule_week]]
-.Abbildung des wöchentlichen Zeitplans, definiert durch das Beispiel <<ex_schedule_week>>
+.Abbildung des wöchentlichen Zeitplans, definiert durch <<ex_schedule_week>>
 image::ScheduleExample_weekly.png[pdfwidth=12cm]
 
 

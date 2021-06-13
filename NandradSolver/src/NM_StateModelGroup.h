@@ -142,9 +142,6 @@ public:
 	/*! Returns group type.*/
 	ZEPPELIN::DependencyGroup::Type groupType() const { return m_groupType; }
 
-	/*! Constant access to all result references.*/
-	void resultValueRefs(std::vector<const double *> &res);
-
 	/*! Initializes group (non-linear solver) from a dependency group.*/
 	void init(const ZEPPELIN::DependencyGroup &group, const NANDRAD::SolverParameter &solverPara);
 

@@ -378,16 +378,16 @@ void OutputFile::cacheOutputs(double t_out, double t_timeOfYear) {
 					// special handling for first output value: we store the current values
 					if (m_tLastStep == m_tCurrentStep) {
 						vals[col] = *m_valueRefs[i];
-						m_integralsAtLastOutput[col] = 0; // initialize last output values with 0
+						m_integralsAtLastOutput[i] = 0; // initialize last output values with 0
 					}
 					else {
 						// we first compute the change in integral values between integral value at last output and
 						// the current interval value stored in vals[col]
-						double deltaValue = vals[col] - m_integralsAtLastOutput[col];
+						double deltaValue = vals[col] - m_integralsAtLastOutput[i];
 						double deltaTime = t_out - m_tLastOutput;
 						IBK_ASSERT(deltaTime > 0);
 						// store current integral value
-						m_integralsAtLastOutput[col] = vals[col];
+						m_integralsAtLastOutput[i] = vals[col];
 						// compute and store average value
 						vals[col] = deltaValue/deltaTime;
 					}

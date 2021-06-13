@@ -70,6 +70,8 @@
 #include "SVDBZoneControlShadingTableModel.h"
 #include "SVDBZoneControlVentilationNaturalEditWidget.h"
 #include "SVDBZoneControlVentilationNaturalTableModel.h"
+#include "SVDBZoneIdealHeatingCoolingEditWidget.h"
+#include "SVDBZoneIdealHeatingCoolingTableModel.h"
 #include "SVDBInfiltrationEditWidget.h"
 #include "SVDBInfiltrationTableModel.h"
 #include "SVDBVentilationNaturalEditWidget.h"
@@ -472,6 +474,16 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createZoneControlShadingEditDialog(Q
 		new SVDBZoneControlShadingEditWidget(parent),
 		tr("Zone Control Shading Database"), tr("Zone Control Shading properties"), true
 		);
+	dlg->resize(1400,800);
+	return dlg;
+}
+
+SVDatabaseEditDialog *SVDatabaseEditDialog::createZoneIdealHeatingCoolingEditDialog(QWidget *parent){
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+										  new SVDBZoneIdealHeatingCoolingTableModel(parent, SVSettings::instance().m_db),
+										  new SVDBZoneIdealHeatingCoolingEditWidget(parent),
+										  tr("Zone Ideal Heating/Cooling Database"), tr("Zone Ideal Heating/Cooling properties"), true
+										  );
 	dlg->resize(1400,800);
 	return dlg;
 }

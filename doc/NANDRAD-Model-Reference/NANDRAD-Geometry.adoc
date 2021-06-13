@@ -478,7 +478,7 @@ Ein Fenster besteht aus einer Verglasung und optional einem Rahmen und Trennwän
 ----
 <EmbeddedObject id="2000" displayName="Ein Fenster">
 	<IBK:Parameter name="Area" unit="m2">8</IBK:Parameter>
-    <Window glazingSystemID="123"/>
+    <Window glazingSystemId="123"/>
 </EmbeddedObject>
 ----
 ====
@@ -493,11 +493,11 @@ Das Fenster kann einen Rahmen und/oder Trennwände haben. Diese sind separate En
 ----
 <EmbeddedObject id="2000" displayName="Ein Fenster">
 	<IBK:Parameter name="Area" unit="m2">8</IBK:Parameter>
-	<Window glazingSystemID="123">
-		<Frame materialID="1001">
+	<Window glazingSystemId="123">
+		<Frame materialId="1001">
 			<IBK:Parameter name="Area" unit="m2">3</IBK:Parameter>
 		</Frame>
-		<Divider materialID="1002">
+		<Divider materialId="1002">
 			<IBK:Parameter name="Area" unit="m2">2</IBK:Parameter>
 		</Divider>
 	</Window>
@@ -544,7 +544,7 @@ Alternativ oder zusätzlich zur vorberechneten Umgebungsverschattung ist es mög
 ====
 [source,xml, indent=0]
 ----
-<Window glazingSystemID="123">
+<Window glazingSystemId="123">
     ...
 	<Shading modelType="Constant">
 		<IBK:Parameter name="ReductionFactor" unit="---">0.6</IBK:Parameter>
@@ -569,7 +569,7 @@ a| Setzt den Typ des Schattierungsmodells
 
 | key | _erforderlich_
 
-| `controlModelID` | ID des Verschattungskontrollmodells | ID | _erforderlich für_ `Controlled`
+| `controlModelId` | ID des Verschattungskontrollmodells | ID | _erforderlich für_ `Controlled`
 |====================
 
 .Child-Tags

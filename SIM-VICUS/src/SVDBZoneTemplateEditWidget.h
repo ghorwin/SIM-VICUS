@@ -27,14 +27,15 @@
 #define SVDBZoneTemplateEditWidgetH
 
 #include <QWidget>
+#include <VICUS_ZoneTemplate.h>
 
 namespace Ui {
 	class SVDBZoneTemplateEditWidget;
 }
 
-namespace VICUS {
-	class ZoneTemplate;
-}
+//namespace VICUS {
+//	class ZoneTemplate;
+//}
 
 class SVDBZoneTemplateTreeModel;
 class SVDatabase;
@@ -58,7 +59,7 @@ public:
 	void setup(SVDatabase * db, SVDBZoneTemplateTreeModel * dbModel);
 
 	/*! Update widget with this. */
-	void updateInput(int id, int subTemplateId, int subTemplateType);
+	void updateInput(int id, int subTemplateId, VICUS::ZoneTemplate::SubTemplateType subTemplateType);
 
 public slots:
 	void on_toolButtonRemoveSubComponent_clicked();
@@ -70,7 +71,7 @@ signals:
 		The selection change in the tree must cause a call to updateInput() afterwards, even if
 		the same item was re-selected.
 	*/
-	void selectSubTemplate(unsigned int id, int subTemplateType);
+	void selectSubTemplate(unsigned int id, VICUS::ZoneTemplate::SubTemplateType subTemplateType);
 
 private slots:
 	void on_lineEditName_editingFinished();
@@ -85,11 +86,17 @@ private slots:
 
 	void on_pushButtonAddInfiltration_clicked();
 
-	void on_pushButtonAddVentilationNatrual_clicked();
+	void on_pushButtonAddVentilationNatural_clicked();
+
+	void on_pushButtonAddThermostat_clicked();
+	void on_pushButtonAddIdealHeatingCooling_clicked();
 
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
+
+	/*! Refresh ui buttons and content. */
+	void refreshUi();
 
 	Ui::SVDBZoneTemplateEditWidget *m_ui;
 
@@ -105,7 +112,7 @@ private:
 	*/
 	VICUS::ZoneTemplate					*m_current;
 
-	int									m_currentSubTemplateType;
+	VICUS::ZoneTemplate::SubTemplateType	m_currentSubTemplateType;
 };
 
 #endif // SVDBZoneTemplateEditWidgetH

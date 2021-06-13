@@ -37,16 +37,16 @@ void EmbeddedObjectWindow::readXMLPrivate(const TiXmlElement * element) {
 
 	try {
 		// search for mandatory attributes
-		if (!TiXmlAttribute::attributeByName(element, "glazingSystemID"))
+		if (!TiXmlAttribute::attributeByName(element, "glazingSystemId"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'glazingSystemID' attribute.") ), FUNC_ID);
+				IBK::FormatString("Missing required 'glazingSystemId' attribute.") ), FUNC_ID);
 
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
-			if (attribName == "glazingSystemID")
-				m_glazingSystemID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			if (attribName == "glazingSystemId")
+				m_glazingSystemId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -81,8 +81,8 @@ TiXmlElement * EmbeddedObjectWindow::writeXMLPrivate(TiXmlElement * parent) cons
 	TiXmlElement * e = new TiXmlElement("EmbeddedObjectWindow");
 	parent->LinkEndChild(e);
 
-	if (m_glazingSystemID != NANDRAD::INVALID_ID)
-		e->SetAttribute("glazingSystemID", IBK::val2string<unsigned int>(m_glazingSystemID));
+	if (m_glazingSystemId != NANDRAD::INVALID_ID)
+		e->SetAttribute("glazingSystemId", IBK::val2string<unsigned int>(m_glazingSystemId));
 
 	{
 		TiXmlElement * customElement = m_frame.writeXML(e);

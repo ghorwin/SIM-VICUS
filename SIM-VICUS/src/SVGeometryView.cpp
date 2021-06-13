@@ -105,7 +105,7 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	hlay->setSpacing(0);
 	hlay->addWidget(m_splitter);
 	m_splitter->setCollapsible(0, false);
-	m_splitter->setCollapsible(1, false);
+	m_splitter->setCollapsible(1, true);
 	m_splitter->setStretchFactor(0,1);
 	m_splitter->setStretchFactor(1,0);
 

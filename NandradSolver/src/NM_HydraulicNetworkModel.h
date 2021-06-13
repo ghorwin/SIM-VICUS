@@ -24,10 +24,13 @@
 
 #include "NM_AbstractModel.h"
 #include "NM_AbstractStateDependency.h"
+#include "NM_AbstractTimeDependency.h"
 
 namespace NANDRAD {
 	class HydraulicNetwork;
 	class HydraulicNetworkComponent;
+	class Thermostat;
+	class HydraulicNetworkElement;
 }
 
 #define BIDIRECTIONAL
@@ -48,10 +51,11 @@ struct Network;
 	The hydraulic network depends at runtime from other model inputs, for example through controlled valve
 	settings (may be supplied via scheduled parameters) and thermal properties (that may impact kinematic fluid viscosity).
 */
-class HydraulicNetworkModel : public AbstractModel, public AbstractStateDependency {
+class HydraulicNetworkModel : public AbstractModel, public AbstractStateDependency, public AbstractTimeDependency {
 public:
 	/*! Constructor. */
 	HydraulicNetworkModel(const NANDRAD::HydraulicNetwork & nw,
+		const std::vector<NANDRAD::Thermostat> &thermostats,
 		unsigned int id, const std::string &displayName);
 
 	/*! D'tor, released pimpl object. */
@@ -88,9 +92,6 @@ public:
 	/*! Populates the vector resDesc with descriptions of all results provided by this model. */
 	virtual void resultDescriptions(std::vector<QuantityDescription> & resDesc) const override;
 
-	/*! Returns vector of all scalar and vector valued results pointer. */
-	virtual void resultValueRefs(std::vector<const double *> &res) const override;
-
 	/*! Retrieves reference pointer to a value with given quantity ID name.
 		\note For quantity 'ydot' the memory with computed ydot-values is returned.
 		\return Returns pointer to memory location with this quantity, otherwise nullptr if parameter ID was not found.
@@ -113,7 +114,8 @@ public:
 	virtual void inputReferences(std::vector<InputReference>  & inputRefs) const override;
 
 	/*! Provides the object with references to requested input variables (persistent memory location). */
-	virtual void setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions, const std::vector<const double *> & resultValueRefs) override;
+	virtual void setInputValueRefs(const std::vector<QuantityDescription> & resultDescriptions,
+								   const std::vector<const double *> & resultValueRefs) override;
 
 	/*! Returns dependencies between result variables and input variables. */
 	virtual void stateDependencies(std::vector< std::pair<const double *, const double *> > & resultInputValueReferences) const override;
@@ -122,7 +124,19 @@ public:
 	int update() override;
 
 
+	// *** Re-implemented from AbstractTimeDependency
+
+	/*! Dummy, does nothing */
+	int setTime(double t) override { (void)t; return 0; }
+
+	/*! Stores last solution from Newton solver as new initial solution for next call. */
+	void stepCompleted(double t) override;
+
 private:
+
+	/*! Convenience function that determines ID number of next element in flow network, when the flow element
+		is configured with a mass flow controller of type CP_TemperatureDifferenceOfFollowingElement */
+	void setFollowingElementId(HydraulicNetworkAbstractFlowElement* element, const NANDRAD::HydraulicNetworkElement & e);
 
 	/*! Construction instance ID. */
 	unsigned int									m_id;
@@ -134,12 +148,11 @@ private:
 	std::vector<std::string>						m_elementDisplayNames;
 	/*! Constant reference to NANDRAD network data structure */
 	const NANDRAD::HydraulicNetwork					*m_hydraulicNetwork= nullptr;
+	/*! Constant reference to all NANDRAD thermostat data structures */
+	const std::vector<NANDRAD::Thermostat>			&m_thermostats;
 
 	/*! Private implementation (Pimpl) of the network solver. */
 	HydraulicNetworkModelImpl						*m_p = nullptr;
-
-	/*! Container with global pointer to calculated fluid temperatures.	*/
-	std::vector<const double*>						m_fluidTemperatureRefs;
 
 	/*! Container with global pointer to calculated fluid temperatures.	*/
 	std::vector<const double*>						m_fluidHeatLossesRefs;
@@ -154,10 +167,19 @@ private:
 	*/
 	std::vector<HydraulicNetworkAbstractFlowElement*> m_pumpElements;
 
+	/*! Vector of all additional model quantities for outputs. */
+	std::vector<QuantityDescription>				m_modelQuantities;
+	/*! Vector of all additional model quantity references. */
+	std::vector<const double *>						m_modelQuantityRefs;
+	/*! Offset of quantities for all models inside modelQuantities and modelQuantityRefs vector. */
+	std::vector<unsigned int>						m_modelQuantityOffset;
+
 
 	friend class ThermalNetworkStatesModel;
 
+
 };
+
 
 } // namespace NANDRAD_MODEL
 

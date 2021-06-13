@@ -35,9 +35,11 @@
 class SVUndoCopyZones : public SVUndoCommandBase {
 	Q_DECLARE_TR_FUNCTIONS(SVUndoCopyZone)
 public:
-	SVUndoCopyZones(const QString & label, unsigned int buildingLevelUUID,
-				  const std::vector<VICUS::Room> copiedRooms,
-				  const std::vector<VICUS::ComponentInstance> * componentInstances = nullptr);
+	SVUndoCopyZones(const QString & label,
+					const std::vector<VICUS::Room> copiedRooms,
+					const std::set<unsigned int> deselectedRoomUniqueIDs,
+					const std::vector<VICUS::ComponentInstance> componentInstances,
+					const std::vector<VICUS::SubSurfaceComponentInstance> subSurfacecomponentInstances);
 
 	virtual void undo();
 	virtual void redo();
@@ -45,12 +47,16 @@ public:
 private:
 
 	/*! Cache for added item. */
-	std::vector<VICUS::Room>				m_copiedRooms;
+	std::vector<VICUS::Room>						m_copiedRooms;
 
-	unsigned int							m_buildingLevelUUID;
+	/*! UniqueIDs of original surfaces that need to be deselected. */
+	std::set<unsigned int>							m_deselectedUniqueIDs;
 
 	/*! If not empty, this vector contains component instances that are created alongside the room's surfaces. */
-	std::vector<VICUS::ComponentInstance>	m_componentInstances;
+	std::vector<VICUS::ComponentInstance>			m_newComponentInstances;
+
+	/*! If not empty, this vector contains sub surface component instances that are created alongside the room's surfaces. */
+	std::vector<VICUS::SubSurfaceComponentInstance>	m_newSubSurfaceComponentInstances;
 };
 
 

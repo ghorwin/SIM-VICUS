@@ -74,6 +74,9 @@ public:
 	*/
 	int solve();
 
+	/*! Copies current solution in m_y to m_yLast vector. */
+	void storeSolution();
+
 	/*! Container for flow element implementation objects.
 		Need to be populated before calling setup.
 	*/
@@ -163,6 +166,10 @@ private:
 
 	/*! Vector with unknowns. */
 	std::vector<double>					m_y;
+	/*! Vector with solution obtained after last integration step was completed, used
+		to re-initialize solution for next step.
+	*/
+	std::vector<double>					m_yLast;
 	/*! Vector with system function. */
 	std::vector<double>					m_G;
 };

@@ -77,7 +77,7 @@
 			</OutputDefinition>
 			<OutputDefinition>
 				<Quantity>FlowElementHeatLoss</Quantity>
-				<ObjectListName>Network Elements</ObjectListName>
+				<ObjectListName>Pump</ObjectListName>
 				<GridName>hourly</GridName>
 			</OutputDefinition>
 			</Definitions>
@@ -94,6 +94,10 @@
 		<ObjectLists>
 			<ObjectList name="Network Elements">
 				<FilterID>*</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Pump">
+				<FilterID>201</FilterID>
 				<ReferenceType>NetworkElement</ReferenceType>
 			</ObjectList>
 		</ObjectLists>

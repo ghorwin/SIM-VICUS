@@ -1,0 +1,506 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\usepackage{parskip}
+
+\usepackage[hang,scriptsize]{subfigure}
+\usepackage[format=hang,
+font={footnotesize},
+labelfont={bf},
+margin=1cm,
+aboveskip=5pt,
+position=bottom]{caption}
+
+\usepackage{float}
+\usepackage{color}
+\usepackage{calc}
+
+\definecolor{linkblue}{rgb}{0,0,0.4}
+\definecolor{navy}{rgb}{0,0,0.3}
+\definecolor{light-gray}{gray}{0.98}
+\definecolor{dark-gray}{gray}{0.45}
+
+% for PDA/A complience, insert fonts correctly
+\usepackage[T1]{fontenc}
+
+\usepackage[utf8]{inputenc}
+
+\newcommand{\wframe}[1]{\frame{#1}}
+
+\usepackage[ruled,vlined]{algorithm2e}
+
+\usepackage{lastpage}
+\end_preamble
+\options fleqn
+\use_default_options false
+\begin_modules
+customHeadersFooters
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding utf8
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize 10
+\spacing single
+\use_hyperref true
+\pdf_title "Co-Simulations-Masteralgorithmen - Analyse und Details der Implementierung am Beispiel des Masterprogramms MASTERSIM"
+\pdf_author "Andreas Nicolai"
+\pdf_keywords "Co-Simulation, FMI, MASTERSIM, Masteralgorithmus, Gauss-Seidel, Richardson"
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks true
+\pdf_backref false
+\pdf_pdfusetitle true
+\pdf_quoted_options "linkcolor=linkblue, citecolor=linkblue, urlcolor=linkblue, bookmarksnumbered=true"
+\papersize a4paper
+\use_geometry true
+\use_package amsmath 2
+\use_package amssymb 2
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine biblatex-natbib
+\cite_engine_type authoryear
+\biblio_style plain
+\biblatex_bibstyle authoryear
+\biblatex_citestyle authoryear
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\use_minted 0
+\index Stichwortverzeichnis
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.5cm
+\topmargin 2.5cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip smallskip
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\listings_params "basicstyle={\scriptsize\ttfamily\color{black}},commentstyle={\ttfamily\itshape\color{dark-gray}},numberstyle={{\tiny}},stepnumber=1,showspaces=false,showstringspaces=false,showtabs=false,frame=single,tabsize=4,captionpos=b,breaklines=true,breakatwhitespace=false,texcl=true"
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Section
+\start_of_appendix
+Alternative solution procedures
+\end_layout
+
+\begin_layout Subsection
+Solving for nodal pressures alone
+\end_layout
+
+\begin_layout Standard
+The composition of such an equation system like in example 1 is rather straight-
+forward.
+ The number of nodes in the network determine the number of unknowns and
+ equations.
+ For each node the mass fluxes through the connected flow elements are summed
+ up using the inlet/outlet sign definition.
+\end_layout
+
+\begin_layout Standard
+We could now solve the equation system for the unknowns 
+\begin_inset Formula $\boldsymbol{p}$
+\end_inset
+
+.
+ Since the entire system is non-linear, a Newton iteration seems in order,
+ which leads to the following Newton iteration scheme (with 
+\begin_inset Formula $m$
+\end_inset
+
+ being the iteration level):
+\begin_inset Formula 
+\[
+\left.\frac{\partial G}{\partial p}\right|_{m}\Delta p_{m+1}=-G\left(p_{m}\right)
+\]
+
+\end_inset
+
+However, we face a minor problem because of our implicit formulation of
+ the flow element equations, that we cannot easily re-arranged to be expressions
+ for mass fluxes 
+\begin_inset Formula $\dot{m}$
+\end_inset
+
+.
+ This makes the evaluation of the non-linear equation system function 
+\begin_inset Formula $\boldsymbol{G}\left(\boldsymbol{p_{m}}\right)$
+\end_inset
+
+ expensive (where 
+\begin_inset Formula $\boldsymbol{p_{m}}$
+\end_inset
+
+ is the vector with the current estimate of the nodal pressures), since
+ we cannot just take the estimated pressures and evaluate each mass flux
+ to obtain the residuals.
+ Instead, we would need to iteratively determine each flow element system
+ function until we find the 
+\begin_inset Formula $\dot{m}$
+\end_inset
+
+ for the given inlet and outlet pressures.
+ In the example 1 this would mean that we take estimates for 
+\begin_inset Formula $p_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $p_{3}$
+\end_inset
+
+ and solve 
+\begin_inset Formula $0=f_{1}\left(\dot{m},p_{1},p_{3}\right)$
+\end_inset
+
+ with a Newton method
+\begin_inset Formula 
+\[
+\left.\frac{df_{1}}{d\dot{m}}\right|_{n}\Delta\dot{m}_{n+1}=-f_{1}\left(\dot{m}_{n}\right)
+\]
+
+\end_inset
+
+until we have found the matching mass flux 
+\begin_inset Formula $\dot{m}$
+\end_inset
+
+ .
+ In this Newton method 
+\begin_inset Formula $n$
+\end_inset
+
+ is the iteration level and 
+\begin_inset Formula $p_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $p_{3}$
+\end_inset
+
+ are given constants.
+\end_layout
+
+\begin_layout Standard
+Having an iterative calculation procedure inside another iteration method
+ is generally not a good idea, even though this is probably not as bad as
+ it looks, since:
+\end_layout
+
+\begin_layout Itemize
+it is a scalar function and thus a Newton method (or even Newton method
+ stabilized by some secand method) is fairly fast and robust (i.e.
+ no equation system solving involved)
+\end_layout
+
+\begin_layout Itemize
+since we solve this function repeatedly for small changing 
+\begin_inset Formula $\dot{m}$
+\end_inset
+
+ and 
+\begin_inset Formula $p$
+\end_inset
+
+ the initial guess will very often be very close to the solution
+\end_layout
+
+\begin_layout Itemize
+selecting convergence tolerances sufficiently tight is not a problem
+\end_layout
+
+\begin_layout Itemize
+implementation can be well encapsulated so that an evaluation of 
+\begin_inset Formula $\dot{m}\left(p_{1},p_{2}\right)$
+\end_inset
+
+ is not problematic
+\end_layout
+
+\begin_layout Itemize
+the same mass fluxes are used in several equations (at least twice), so
+ that caching these variables speeds up calculation of 
+\begin_inset Formula $\boldsymbol{G}\left(\boldsymbol{p_{m}}\right)$
+\end_inset
+
+ somewhat
+\end_layout
+
+\begin_layout Standard
+However, there is the issue of computing the Jacobian matrix 
+\begin_inset Formula $\frac{\partial G}{\partial p}$
+\end_inset
+
+ of the general solution method which ultimately requires computation of
+ derivatives 
+\begin_inset Formula $d\dot{m}/dp$
+\end_inset
+
+ for the various mass flux equations and pressures.
+ Obtaining analytical expressions for these derivatives is difficult (or
+ nearly impossible in some cases).
+ 
+\end_layout
+
+\begin_layout Standard
+The most simple and straight-forward approach is to generate a lookup table
+ of the relation 
+\begin_inset Formula $\dot{m}\left(p\right)$
+\end_inset
+
+ and use linear (or any other form of) interpolation to approximate the
+ relationship.
+ This can be implemented in a very generic way, and the small errors from
+ the approximation won't be critical, since only the Jacobian is affected.
+ For some flow elements like the pump there is a parameterized 
+\begin_inset Formula $\Delta p\left(\dot{m}\right)$
+\end_inset
+
+ curve which can be inverted and yields the required derivative right away.
+ 
+\end_layout
+
+\begin_layout Standard
+For models that have a large temperature dependence (where 
+\begin_inset Formula $\dot{m}\left(p\right)$
+\end_inset
+
+ might change drastically depending on temperature), a single lookup table
+ might not be sufficient.
+ Either, a correction factor is used to adjust the results of some reference
+ curve 
+\begin_inset Formula $\dot{m}\left(p,T_{ref}\right)$
+\end_inset
+
+ somewhat to account for the temperature effect.
+ Or, if that still gives too much of an error, we can still approximate
+ the derivative with a small trick.
+\end_layout
+
+\begin_layout Standard
+Suppose we had the partial derivatives 
+\begin_inset Formula $\frac{\partial f}{\partial p}$
+\end_inset
+
+ and 
+\begin_inset Formula $\frac{\partial f}{\partial\dot{m}}$
+\end_inset
+
+ and we can somehow invert the second gradient to 
+\begin_inset Formula $\frac{\partial\dot{m}}{\partial f}$
+\end_inset
+
+ we get our required derivative: 
+\begin_inset Formula 
+\[
+\frac{\partial\dot{m}}{\partial p}=\frac{\partial\dot{m}}{\partial f}\frac{\partial f}{\partial p}
+\]
+
+\end_inset
+
+Since both variables 
+\begin_inset Formula $p$
+\end_inset
+
+ and 
+\begin_inset Formula $\dot{m}$
+\end_inset
+
+ are related, the inversion of the gradient is done with:
+\begin_inset Formula 
+\[
+\frac{\partial\dot{m}}{\partial f}=-\frac{1}{\frac{\partial f}{\partial\dot{m}}}
+\]
+
+\end_inset
+
+@Anne: is there somewhere a mathematical proof why this works? For scalar
+ functions it is 
+\begin_inset Formula $\frac{dy}{dx}=\frac{1}{\frac{dx}{dy}}$
+\end_inset
+
+ but for partial derivatives we need the minus sign.
+ This has something to do with the difference between gradients and niveau-line
+ slopes, but why does inserting the minus gives correct results?
+\end_layout
+
+\begin_layout Standard
+Lets illustrate this with an example.
+ Suppose our flow element system function looks like
+\begin_inset Formula 
+\[
+f\left(p_{1},p_{2},\dot{m}\right)=0=p_{1}-p_{2}-a\dot{m}^{2}
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $a$
+\end_inset
+
+ is some friction coefficient and 
+\begin_inset Formula $a\dot{m}^{2}$
+\end_inset
+
+ corresponds to the pressure loss that increases quadratically with the
+ flow rate.
+ This function can easily be rearranged to:
+\begin_inset Formula 
+\[
+\dot{m}\left(p_{1}\right)=\sqrt{\frac{p_{1}-p_{2}}{a}}
+\]
+
+\end_inset
+
+and the derivative we look for is
+\begin_inset Formula 
+\[
+\frac{\partial\dot{m}}{\partial p_{1}}=\frac{1}{2}\left(\frac{p_{1}-p_{2}}{a}\right)^{-\frac{1}{2}}\frac{1}{a}=\frac{1}{2a\sqrt{\frac{p_{1}-p_{2}}{a}}}=\frac{1}{2a\dot{m}}
+\]
+
+\end_inset
+
+Now let try to construct this without rearranging the equation.
+ We first get the partial derivatives
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial f}{\partial p_{1}} & =1\\
+\frac{\partial f}{\partial\dot{m}} & =-2a\dot{m}
+\end{align*}
+
+\end_inset
+
+invert the second partial derivative
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial\dot{m}}{\partial f} & =\frac{1}{2a\dot{m}}
+\end{align*}
+
+\end_inset
+
+and apply the chain rule to get:
+\begin_inset Formula 
+\[
+\frac{\partial\dot{m}}{\partial f}\frac{\partial f}{\partial p_{1}}=\frac{\partial\dot{m}}{\partial p_{1}}=\frac{1}{2a\dot{m}}
+\]
+
+\end_inset
+
+This even works for more complex system functions.
+ Let's try constructing 
+\begin_inset Formula $dy/dx$
+\end_inset
+
+ for a function: 
+\begin_inset Formula 
+\[
+f\left(x,y\right)=y/\sin x+2=0
+\]
+
+\end_inset
+
+First the direct approach:
+\begin_inset Formula 
+\begin{align*}
+y & =-2\sin x\\
+-2 & =\frac{y}{\sin x}\\
+\frac{dy}{dx} & =-2\cos x\\
+ & =\frac{y\cos x}{\sin x}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and now the indirect approach using partial derivatives:
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial f}{\partial x} & =-\frac{y\cos x}{\sin^{2}x}\\
+\frac{\partial f}{\partial y} & =\frac{1}{\sin x}\\
+\frac{\partial y}{\partial f} & =-\sin x\\
+\frac{\partial y}{\partial f}\frac{\partial f}{\partial x} & =-\sin x\cdot-\frac{y\cos x}{\sin^{2}x}\\
+ & =\frac{y\cos x}{\sin x}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In a generic implementation, i.e.
+ where there's no knowledge of the function 
+\begin_inset Formula $f\left(p_{1},p_{2},\dot{m}\right)$
+\end_inset
+
+, the derivatives 
+\begin_inset Formula $\frac{\partial f}{\partial p}$
+\end_inset
+
+ and 
+\begin_inset Formula $\frac{\partial f}{\partial\dot{m}}$
+\end_inset
+
+ can be obtained using finite difference quotients.
+\end_layout
+
+\end_body
+\end_document

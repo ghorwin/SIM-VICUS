@@ -32,17 +32,12 @@
 #include <QDateTime>
 
 #include <IBK_Path.h>
+#include "SVUndoCommandBase.h"
 
 namespace VICUS {
 	class Project;
 	class ViewSettings;
 }
-
-/*! Abstract base class for all modification data containers. */
-class ModificationInfo {
-public:
-	virtual ~ModificationInfo();
-};
 
 /*! Utility class that manages common project-related functions, in particular
 	modification state setting, project file reading/writing and other.
@@ -99,6 +94,8 @@ public:
 			Note: if any selection property was changed, this undo-action also executes the SelectionChanged modification.
 		*/
 		NodeStateModified,
+		/*! An object's display name was renamed. Modification data is a pointer to the modified object. */
+		ObjectRenamed,
 		/*! Used whenever the project data changes completely (new project created, project loaded etc.)
 			and a complete reset of all views and models is needed.
 		*/
@@ -317,6 +314,15 @@ private:
 		\sa updateRecentProjects()
 	*/
 	void addToRecentFiles(const QString& fname);
+
+	/*! Compares embedded database in project with built-in and user database in SIM-VICUS and imports
+		all not-yet-existing DB elements.
+		For existing DB elements the IDs are compared and if different, the IDs in the project are
+		adjusted.
+		Afterwards, the embedded database is removed from the project data.
+		\return Returns true in the case of modified IDs. False, if the project's IDs are not modified.
+	*/
+	bool importEmbeddedDB();
 
 	/*! Set new colors for each invalid color in the surface data. */
 	void updateSurfaceColors();

@@ -40,6 +40,10 @@ public:
 	/*! Default constructor. */
 	IntegratorExplicitEuler();
 
+
+	/*! Release allocated resources (statistics file stream etc). */
+	~IntegratorExplicitEuler() override;
+
 	/*! Initializes the Integrator.
 		\param model The physical model instance.
 		\param lesSolver Linear equation system solver, can be nullptr if (explicit) solver doesn't need LES solver functionality.
@@ -119,7 +123,7 @@ private:
 	std::vector<double> m_res;
 
 	/*! Statistics file stream. */
-	std::ostream *m_statsFileStream;
+	std::ostream *m_statsFileStream = nullptr;
 
 	/*! Stores total number of steps. */
 	unsigned int m_statNumSteps;

@@ -35,6 +35,8 @@
 #include "SVProjectHandler.h"
 #include "SVUndoModifyNetwork.h"
 
+#include <NANDRAD_Project.h>
+
 #include <VICUS_Project.h>
 #include <VICUS_KeywordList.h>
 
@@ -60,7 +62,7 @@ void SVSimulationStartNetworkSim::edit() {
 	// populate networks combobox
 	m_networksMap.clear();
 	for (const VICUS::Network & n : project().m_geometricNetworks)
-		m_networksMap.insert(QString::fromStdString(n.m_name), n.m_id);
+		m_networksMap.insert(n.m_displayName, n.m_id);
 	m_ui->comboBoxNetwork->clear();
 	m_ui->comboBoxNetwork->addItems(m_networksMap.keys());
 	m_ui->comboBoxNetwork->setCurrentIndex(0);
@@ -231,7 +233,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	NANDRAD::HydraulicNetwork nandradNetwork;
 	nandradNetwork.m_modelType = NANDRAD::HydraulicNetwork::ModelType(m_ui->comboBoxModelType->currentData().toUInt());
 	nandradNetwork.m_id = vicusNetwork.m_id;
-	nandradNetwork.m_displayName = vicusNetwork.m_name;
+	nandradNetwork.m_displayName = vicusNetwork.m_displayName.toStdString();
 	nandradNetwork.m_para[NANDRAD::HydraulicNetwork::P_DefaultFluidTemperature] =
 			vicusNetwork.m_para[VICUS::Network::P_DefaultFluidTemperature];
 	nandradNetwork.m_para[NANDRAD::HydraulicNetwork::P_InitialFluidTemperature] =
@@ -306,24 +308,29 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		NANDRAD::HydraulicNetworkPipeProperties pipeProp;
 		pipeProp.m_id = pipe->m_id;
 
-		// calculate length-specific pipe wall U-Value in W/mK
+		// calculate length-specific pipe wall U-Value in W/mK, some references to understand the equation better
 		double UValue;
-		if (pipe->m_insulationThickness>0 && pipe->m_lambdaInsulation>0){
-			UValue = 2*PI/ ( 1/pipe->m_lambdaWall * IBK::f_log(pipe->m_diameterOutside / pipe->diameterInside())
-						+ 1/pipe->m_lambdaInsulation *
-						  IBK::f_log((pipe->m_diameterOutside + 2*pipe->m_insulationThickness) / pipe->m_diameterOutside) );
+		const double &dInsulation = pipe->m_para[VICUS::NetworkPipe::P_ThicknessInsulation].value;
+		const double &lambdaInsulation = pipe->m_para[VICUS::NetworkPipe::P_ThermalConductivityInsulation].value;
+		const double &da = pipe->m_para[VICUS::NetworkPipe::P_DiameterOutside].value;
+		const double &lambdaWall = pipe->m_para[VICUS::NetworkPipe::P_ThermalConductivityWall].value;
+
+		if (dInsulation>0 && lambdaInsulation>0){
+			UValue = 2*PI/ ( 1/lambdaWall * IBK::f_log(da / pipe->diameterInside())
+						+ 1/lambdaInsulation *
+						  IBK::f_log((da + 2*dInsulation) / da) );
 		}
 		else {
-			UValue = 2*PI/ ( 1/pipe->m_lambdaWall * IBK::f_log(pipe->m_diameterOutside / pipe->diameterInside()) );
+			UValue = 2*PI/ ( lambdaWall * IBK::f_log(da / pipe->diameterInside()) );
 		}
 
 		// set pipe properties
 		NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
-										   NANDRAD::HydraulicNetworkPipeProperties::P_PipeOuterDiameter, pipe->m_diameterOutside);
+										   NANDRAD::HydraulicNetworkPipeProperties::P_PipeOuterDiameter, da);
 		NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
 										   NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter, pipe->diameterInside());
 		NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
-										   NANDRAD::HydraulicNetworkPipeProperties::P_PipeRoughness, pipe->m_roughness);
+										   NANDRAD::HydraulicNetworkPipeProperties::P_PipeRoughness, pipe->m_para[VICUS::NetworkPipe::P_RoughnessWall].value);
 		NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
 										   NANDRAD::HydraulicNetworkPipeProperties::P_UValuePipeWall, UValue);
 		nandradNetwork.m_pipeProperties.push_back(pipeProp);
@@ -348,12 +355,12 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		// place the source in reverse order
 		if (node.m_type == VICUS::NetworkNode::NT_Source){
 			elem = NANDRAD::HydraulicNetworkElement(node.m_id, node.m_id+ idOffsetOutlet, node.m_id, node.m_componentId);
-			elem.m_displayName = node.m_displayName;
+			elem.m_displayName = node.m_displayName.toStdString();
 			nandradNetwork.m_referenceElementId = node.m_id;
 		}
 		else{
 			elem = NANDRAD::HydraulicNetworkElement(node.m_id, node.m_id, node.m_id + idOffsetOutlet, node.m_componentId);
-			elem.m_displayName = node.m_displayName;
+			elem.m_displayName = node.m_displayName.toStdString();
 		}
 
 		// small hack to get component name in display name
@@ -411,7 +418,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 													edge->m_componentId,
 													edge->m_pipeId,
 													edge->length());
-		inletPipe.m_displayName = edge->m_displayName;
+		inletPipe.m_displayName = edge->m_displayName.toStdString();
 		inletPipe.m_heatExchange = edge->m_heatExchange.toNandradHeatExchange();
 
 		// small hack to get component name in display name
@@ -427,7 +434,7 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 													edge->m_componentId,
 													edge->m_pipeId,
 													edge->length());
-		outletPipe.m_displayName = edge->m_displayName;
+		outletPipe.m_displayName = edge->m_displayName.toStdString();
 		outletPipe.m_heatExchange = edge->m_heatExchange.toNandradHeatExchange();
 
 		// small hack to get component name in display name

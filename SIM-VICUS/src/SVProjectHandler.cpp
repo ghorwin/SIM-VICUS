@@ -213,7 +213,7 @@ void SVProjectHandler::loadProject(QWidget * parent, const QString & fileName,	b
 	try {
 		bool have_modified_project = false;
 
-		/// \todo Dirk: add code merge embedded project database with built-in/user db
+		have_modified_project = importEmbeddedDB();
 
 		/// \todo Hauke, check uniqueness of IDs in networks
 
@@ -569,6 +569,177 @@ void SVProjectHandler::addToRecentFiles(const QString& fname) {
 
 	// update recent project list
 	emit updateRecentProjects();
+}
+
+
+void replaceID(unsigned int & id, const std::map<unsigned int, unsigned int> & idSubstitutionMap) {
+	// only replace if set
+	if (id != VICUS::INVALID_ID) {
+		std::map<unsigned int, unsigned int>::const_iterator idIt = idSubstitutionMap.find(id);
+		if (idIt != idSubstitutionMap.end())
+			id = idIt->second; // replace ID
+	}
+}
+
+template <typename T>
+void importDBElement(T & e, VICUS::Database<T> & db, std::map<unsigned int, unsigned int> & idSubstitutionMap,
+					 const char * const importMsg, const char * const existingMsg)
+{
+	FUNCID(SVProjectHandler-importDBElement);
+	// check, if element exists in built-in DB
+	const T * existingElement = db.findEqual(e);
+	if (existingElement == nullptr) {
+		// element does not yet exist, import element; we try to keep the id from the embedded element
+		// but if this is already taken, the database assigns a new unused id for use
+		unsigned int oldId = e.m_id;
+		unsigned int newId = db.add(e, oldId); // e.m_id gets modified here!
+		IBK::IBK_Message( IBK::FormatString(importMsg)
+			.arg(e.m_displayName.string(),50,std::ios_base::left).arg(oldId).arg(newId),
+						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		if (newId != oldId)
+			idSubstitutionMap[oldId] = newId;
+	}
+	else {
+		// check if IDs match
+		if (existingElement->m_id != e.m_id) {
+			// we need to adjust the ID name of material
+			idSubstitutionMap[e.m_id] = existingElement->m_id;
+			IBK::IBK_Message( IBK::FormatString(existingMsg)
+				.arg(e.m_displayName.string(),50,std::ios_base::left).arg(e.m_id).arg(existingElement->m_id),
+							  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		}
+	}
+
+}
+
+
+bool SVProjectHandler::importEmbeddedDB() {
+	bool idsModified = false;
+
+	// we sync the embedded database with the built-in DB
+	// we process all lists
+	// - for each DB element, we check if such an element exists already in the DB
+	// - if not, it is imported into the user DB
+	// - if yes, the ID is checked and if mismatching, the ID is changed
+	// - the old-new-ID transfer is recorded in db element-specific ID-map
+
+	// Importing an element works as follows:
+	// - check if ID is already used? -> given new ID and add with new ID
+
+	SVDatabase & db = SVSettings::instance().m_db; // readibility-improvement
+
+	// materials
+	std::map<unsigned int, unsigned int> materialIDMap; // newID = materialIDMap[oldID];
+	for (VICUS::Material & e : m_project->m_embeddedDB.m_materials) {
+		// check, if element exists in built-in DB
+		importDBElement(e, db.m_materials, materialIDMap,
+			"Material '%1' with #%2 imported -> new ID #%3.\n",
+			"Material '%1' with #%2 exists already -> new ID #%3.\n"
+		);
+	}
+
+	// constructions
+	std::map<unsigned int, unsigned int> constructionIDMap;
+	for (VICUS::Construction & e : m_project->m_embeddedDB.m_constructions) {
+		// apply material ID substitutions
+		for (VICUS::MaterialLayer & lay : e.m_materialLayers)
+			replaceID(lay.m_matId, materialIDMap);
+
+		importDBElement(e, db.m_constructions, constructionIDMap,
+			"Construction type '%1' with #%2 imported -> new ID #%3.\n",
+			"Construction type '%1' with #%2 exists already -> new ID #%3.\n"
+		);
+	}
+
+	// window glazing systems
+	std::map<unsigned int, unsigned int> glazingSystemsIDMap;
+	for (VICUS::WindowGlazingSystem & e : m_project->m_embeddedDB.m_windowGlazingSystems) {
+		importDBElement(e, db.m_windowGlazingSystems, glazingSystemsIDMap,
+			"Window glazing system '%1' with #%2 imported -> new ID #%3.\n",
+			"Window glazing system '%1' with #%2 exists already -> new ID #%3.\n"
+		);
+	}
+
+	// windows
+	std::map<unsigned int, unsigned int> windowIDMap;
+	for (VICUS::Window & e : m_project->m_embeddedDB.m_windows) {
+		replaceID(e.m_idGlazingSystem, glazingSystemsIDMap);
+		replaceID(e.m_frame.m_id, materialIDMap);
+		replaceID(e.m_divider.m_id, materialIDMap);
+
+		importDBElement(e, db.m_windows, windowIDMap,
+			"Window '%1' with #%2 imported -> new ID #%3.\n",
+			"Window '%1' with #%2 exists already -> new ID #%3.\n"
+		);
+	}
+
+	// boundary conditions
+	std::map<unsigned int, unsigned int> boundaryConditionsIDMap;
+	for (VICUS::BoundaryCondition & e : m_project->m_embeddedDB.m_boundaryConditions) {
+		importDBElement(e, db.m_boundaryConditions, boundaryConditionsIDMap,
+			"Boundary condition '%1' with #%2 imported -> new ID #%3.\n",
+			"Boundary condition '%1' with #%2 exists already -> new ID #%3.\n"
+		);
+	}
+
+	// component
+	std::map<unsigned int, unsigned int> componentIDMap;
+	for (VICUS::Component & e : m_project->m_embeddedDB.m_components) {
+		replaceID(e.m_idConstruction, constructionIDMap);
+		replaceID(e.m_idSideABoundaryCondition, boundaryConditionsIDMap);
+		replaceID(e.m_idSideBBoundaryCondition, boundaryConditionsIDMap);
+
+		importDBElement(e, db.m_components, componentIDMap,
+			"Component '%1' with #%2 imported -> new ID #%3.\n",
+			"Component '%1' with #%2 exists already -> new ID #%3.\n"
+		);
+	}
+
+	// sub-surface component
+	std::map<unsigned int, unsigned int> subSurfaceComponentIDMap;
+	for (VICUS::SubSurfaceComponent & e : m_project->m_embeddedDB.m_subSurfaceComponents) {
+		replaceID(e.m_idWindow, windowIDMap);
+		replaceID(e.m_idConstructionType, constructionIDMap);
+		replaceID(e.m_idSideABoundaryCondition, boundaryConditionsIDMap);
+		replaceID(e.m_idSideBBoundaryCondition, boundaryConditionsIDMap);
+
+		importDBElement(e, db.m_subSurfaceComponents, subSurfaceComponentIDMap,
+			"Sub-surface component '%1' with #%2 imported -> new ID #%3.\n",
+			"Sub-surface component '%1' with #%2 exists already -> new ID #%3.\n"
+		);
+	}
+
+	// schedules
+	std::map<unsigned int, unsigned int> schedulesIDMap;
+	for (VICUS::Schedule & e : m_project->m_embeddedDB.m_schedules) {
+
+		importDBElement(e, db.m_schedules, schedulesIDMap,
+			"Schedule '%1' with #%2 imported -> new ID #%3.\n",
+			"Schedule '%1' with #%2 exists already -> new ID #%3.\n"
+		);
+	}
+
+	// InternalLoad
+	std::map<unsigned int, unsigned int> internalLoadIDMap;
+	for (VICUS::InternalLoad & e : m_project->m_embeddedDB.m_internalLoads) {
+
+		importDBElement(e, db.m_internalLoads, internalLoadIDMap,
+			"Internal loads '%1' with #%2 imported -> new ID #%3.\n",
+			"Internal loads '%1' with #%2 exists already -> new ID #%3.\n"
+		);
+	}
+
+	// any ids modified?
+	idsModified |= !materialIDMap.empty();
+	idsModified |= !constructionIDMap.empty();
+	idsModified |= !windowIDMap.empty();
+	idsModified |= !glazingSystemsIDMap.empty();
+	idsModified |= !boundaryConditionsIDMap.empty();
+	idsModified |= !componentIDMap.empty();
+	idsModified |= !subSurfaceComponentIDMap.empty();
+	idsModified |= !schedulesIDMap.empty();
+	idsModified |= !internalLoadIDMap.empty();
+	return idsModified;
 }
 
 

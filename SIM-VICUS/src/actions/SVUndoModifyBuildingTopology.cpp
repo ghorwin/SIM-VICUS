@@ -26,6 +26,8 @@
 #include "SVUndoModifyBuildingTopology.h"
 #include "SVProjectHandler.h"
 
+#include <VICUS_Project.h>
+
 SVUndoModifyBuildingTopology::SVUndoModifyBuildingTopology(const QString & label, const std::vector<VICUS::Building> & buildings) :
 	m_buildings(buildings)
 {

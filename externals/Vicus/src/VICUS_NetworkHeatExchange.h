@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -46,14 +46,15 @@ public:
 
 	/*! Defines the type of heat exchange */
 	enum ModelType {
-		T_TemperatureConstant,				// Keyword: TemperatureConstant			'Constant ambient temperature'
-		T_TemperatureSpline,				// Keyword: TemperatureSpline			'Time-dependent ambient temperature from spline'
+		T_TemperatureConstant,				// Keyword: TemperatureConstant			'Difference to constant temperature'
+		T_TemperatureSpline,				// Keyword: TemperatureSpline			'Difference to time-dependent temperature from spline'
+		T_TemperatureSplineEvaporator,		// Keyword: TemperatureSplineEvaporator	'Evaporator medium temperature for heat pump'
+		T_TemperatureZone,					// Keyword: TemperatureZone				'Difference to zone air temperature'
+		T_TemperatureConstructionLayer,		// Keyword: TemperatureConstructionLayer 'Difference to active construction layer (floor heating)'
 		T_HeatLossConstant,					// Keyword: HeatLossConstant			'Constant heat loss'
 		T_HeatLossSpline,					// Keyword: HeatLossSpline				'Heat loss from spline'
+		/*! Heat loss from condenser is not the heat loss of the fluid, hence different parameter than T_HeatLossSpline. */
 		T_HeatLossSplineCondenser,			// Keyword: HeatLossSplineCondenser		'Heat loss of condenser in heat pump model'
-		T_TemperatureZone,					// Keyword: TemperatureZone				'Zone air temperature'
-		T_TemperatureConstructionLayer,		// Keyword: TemperatureConstructionLayer	'Active construction layer (floor heating)'
-		T_TemperatureFMUInterface,			// Keyword: TemperatureFMUInterface		'Temperature from FMU interface, provided heat flux to FMU'
 		NUM_T
 	};
 
@@ -65,9 +66,11 @@ public:
 		NUM_P
 	};
 
+	/*! Spline parameter as functions of time. Defined similarly as time series for location object (i.e. with start time shift). */
 	enum splinePara_t {
 		SPL_Temperature,					// Keyword: Temperature							[C]		'Temperature for heat exchange'
-		SPL_HeatLoss,						// Keyword: HeatLoss							[W]		'Heat flux out of the element (heat loss)'
+		/*! Heat loss spline is used for models T_HeatLossSpline and T_HeatLossSplineCondenser. */
+		SPL_HeatLoss,						// Keyword: HeatLoss							[W]		'Constant heat flux out of the element (heat loss)'
 		NUM_SPL
 	};
 

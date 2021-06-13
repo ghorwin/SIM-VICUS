@@ -46,11 +46,16 @@ void NetworkFluid::defaultFluidWater(unsigned int id){
 
 
 bool NetworkFluid::isValid() const {
-	if (! (m_para[P_Density].value > 0 && m_para[P_Conductivity].value > 0 && m_para[P_HeatCapacity].value > 0))
+	if (m_para[P_Density].value <= 0)
 		return false;
+	if (m_para[P_Conductivity].value <= 0)
+		return false;
+	if (m_para[P_HeatCapacity].value <= 0)
+		return false;
+
 	try {
 		NANDRAD::LinearSplineParameter kinVisc = m_kinematicViscosity;
-		kinVisc.checkAndInitialize("KinematicViscosity", IBK::Unit("C"), IBK::Unit("m2/s"), IBK::Unit("m2/s"),
+		kinVisc.checkAndInitialize("KinematicViscosity", IBK::Unit("K"), IBK::Unit("m2/s"), IBK::Unit("m2/s"),
 									std::numeric_limits<double>::lowest(), true,
 									std::numeric_limits<double>::max(), true, nullptr);
 	}

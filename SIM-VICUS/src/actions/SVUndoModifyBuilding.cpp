@@ -26,6 +26,8 @@
 #include "SVUndoModifyBuilding.h"
 #include "SVProjectHandler.h"
 
+#include <VICUS_Project.h>
+
 SVUndoModifyBuilding::SVUndoModifyBuilding(const QString & label, const VICUS::Building & b, unsigned int buildingIndex, bool withoutLevels) :
 	m_building(b), m_buildingIndex(buildingIndex), m_withoutLevels(withoutLevels)
 {

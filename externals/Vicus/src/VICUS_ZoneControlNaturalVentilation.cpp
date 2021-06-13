@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -39,7 +39,7 @@ bool ZoneControlNaturalVentilation::isValid() const
 
 	for (unsigned int i = 0; i < NUM_ST; ++i) {
 		// is a schedule ID set?
-		if ( m_scheduleId[i] == INVALID_ID )
+		if (m_scheduleId[i].empty())
 			return false;
 		else {
 		/// TODO Check Schedule ID
