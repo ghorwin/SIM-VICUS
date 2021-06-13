@@ -86,7 +86,7 @@ Das Modell für natürliche Lüftung definiert den Luftaustausch mit der Außenl
 Es darf nur ein Lüftungsmodellblock pro Zone gelten. Es dürfen also nicht zwei Lüftungsmodellblöcke mit Objektlisten definiert werden, die beide die gleiche(n) Zone(n) enthalten.
 ====
 
-Das `NaturalVentilationModel` muss mit den folgenden XML-Attributen definiert werden:
+Das `NaturalVentilationModel` unterstützt folgende XML-Attribute:
 
 .Attribute
 [.indent-me]
@@ -233,6 +233,17 @@ Ein Verschattungregelungsmodell ist eine spezielle Art von Regelungsmodell, das 
 ----
 ====
 
+Das `ShadingControlModel` unterstützt folgende XML-Attribute:
+
+.Attribute
+[.indent-me]
+[options="header",cols="20%,60%,^ 10%,^ 10%",width="100%"]
+|====================
+| Attribut | Beschreibung | Format | Verwendung 
+| `id` | Kennung des Modells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+| `displayName` | Anzeigename/Beschreibung | string | _optional_
+|====================
+
 Das Verschattungskontrollmodell verlangt zwei Parameter `MaxIntensity` und `MinIntensity` und implementiert eine digitale Regelung mit Hysterese. Zunächst muss die Globalstrahlungsintensität auf den Sensor den oberen Grenzwert (`MaxIntensity`) überschreiten, wonach die Verschattung geschlossen wird (Kontrollmodell liefert 1). Danach muss die Strahlungsintensität zunächst unter die untere Grenze sinken (`MinIntensity`), bevor die Verschattung wieder geöffnet wird (Kontrollmodell liefert 0).
 
 Für die Auswertung wird eine Horizontalstrahlung benötigt. Dafür muss eine Oberfläche ausgewählt werden und als `sensorId` angegeben werden. 
@@ -271,7 +282,7 @@ Das Modell für interne Lasten wird verwendet, um die Wärmelasten von Geräten,
 ====
 
 
-Das `InternalLoadsModel` muss mit den folgenden XML-Attributen definiert werden:
+Das `InternalLoadsModel` unterstützt folgende XML-Attribute:
 
 .Attribute
 [.indent-me]
@@ -365,7 +376,7 @@ Der Objektlisten-tag `ZoneObjectList` identifiziert die Zonen, in denen Thermost
 ====
 
 
-Das `Thermostat`-Element unterstützt folgende XML-Attributen:
+Das `Thermostat`-Element unterstützt folgende XML-Attribute:
 
 .Attribute
 [.indent-me]
@@ -392,6 +403,8 @@ Fließkommaparameter (siehe <<IBK_Parameter>> für eine Beschreibung des Element
 |Name|Vorgabeeinheit|Beschreibung|Wertebereich |Verwendung
 | `HeatingSetpoint` | C | konstanter Heizsollwert | < `CoolingSetpoint` | _erforderlich für Modelltyp_ `Constant`
 | `CoolingSetpoint` | C | konstanter Kühlsollwert | > `HeatingSetpoint` | _erforderlich für Modelltyp_ `Constant`
+| `TemperatureTolerance` | K | Toleranz für analoges Thermostat und Normalisierungswert | > 0 | _erforderlich für Controllertyp_ `Analog`
+| `TemperatureBand` | K | Totband für digitales Thermostat | > 0 | _erforderlich für Controllertyp_ `Digital`
 |====================
 
 Der Modelltyp `Constant` übernimmt die Sollwerte aus den Parametern (siehe oben).
@@ -439,8 +452,6 @@ Beim Typ `Digital` muss der Parameter `TemperatureBand` angegeben werden. Der Re
 obere Grenze = Sollwert + TemperatureBand
 untere Grenze = Sollwert - TemperatureBand
 ----
-
-
 
 ### Ausgaben
 
@@ -492,7 +503,7 @@ Das Modell beschreibt eine ideale thermisches Raumluftkonditionierung. Der Objek
 ====
 [source,xml]
 ----
-<IdealHeatingCoolingModel id="200">
+<IdealHeatingCoolingModel id="200" displayName="Air heating">
 	<ZoneObjectList>Office zones</ZoneObjectList>
 	<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">50</IBK:Parameter>
 	<IBK:Parameter name="MaxCoolingPowerPerArea" unit="W/m2">20</IBK:Parameter>
@@ -500,7 +511,7 @@ Das Modell beschreibt eine ideale thermisches Raumluftkonditionierung. Der Objek
 ----
 ====
 
-Das `IdealHeatingCoolingModel` muss mit den folgenden XML-Attributen definiert werden:
+Das `IdealHeatingCoolingModel` unterstützt folgende XML-Attribute:
 
 .Attribute
 [.indent-me]
@@ -508,6 +519,7 @@ Das `IdealHeatingCoolingModel` muss mit den folgenden XML-Attributen definiert w
 |====================
 | Attribut | Beschreibung | Format | Verwendung 
 | `id` | Kennung des Modells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+| `displayName` | Anzeigename/Beschreibung | string | _optional_
 |====================
 
 
@@ -518,6 +530,8 @@ Fließkommaparameter (siehe <<IBK_Parameter>> für eine Beschreibung des Element
 |Name|Vorgabeeinheit|Beschreibung|Wertebereich |Verwendung
 | `MaxHeatingPowerPerArea` | W/m2 | maximale flächenbezogene Heizleistung in Bezug auf Raumnutzfläche | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_ 
 | `MaxCoolingPowerPerArea` | W/m2 | maximale flächenbezogene Kühlleistung in Bezug auf Raumnutzfläche | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_ 
+| `Kp` | --- | Faktor für den propotionalen Teil des Kontrollers | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_ 
+| `Ki` | --- | Faktor für den integralen Teil des Kontrollers | {nbsp}>={nbsp}0.0{nbsp} | _optional_ 
 |====================
 
 [IMPORTANT]
@@ -531,9 +545,11 @@ Ein zwischengeschaltetes `HVACControlSystem` kann optional verwendet werden (auc
 
 ### Heiz- und Kühlleistung
 
-Das Regelsignal `HeatingControlValue` bzw. `IdealHeatingControlValue` wird als Wert zwischen 0..1 intepretiert. Werte außerhalb dieser Grenzen werden abgeschnitten. Bei 1 läuft die Heizung mit maximaler Heizlast, entsprechend des `MaxHeatingPowerPerArea`-Parameters. Bei 0 ist die Heizung aus. Dazwischen wird linear interpoliert.
+Das Regelsignal `HeatingControlValue` bzw. `IdealHeatingControlValue` wird als Wert zwischen 0..1 interpretiert. Werte außerhalb dieser Grenzen werden abgeschnitten. Bei 1 läuft die Heizung mit maximaler Heizlast. Bei 0 ist die Heizung aus. Dazwischen wird linear interpoliert.
 
 Die Kühlung ist analog definiert. Bei einem Kontrollwert von 1 läuft die Kühlung mit maximaler Kraft, bei 0 ist sie aus. 
+
+Das so bestimmte Regeleingangssignal geht in einen P-Regler ein. Falls der `Ki` Parameter gegeben ist, wird stattdessen ein PI-Regler verwendet. Die so berechnet Heiz- und Kühlleistung wird durch den `MaxHeatingPowerPerArea`-Parameter bzw. `MaxCoolingPowerPerArea`-Parameter begrenzt.
 
 ### Ausgaben
 
@@ -561,7 +577,7 @@ Das Modell beschreibt ein ideales thermisches Konditionierungsmodell für eine F
 ====
 [source,xml]
 ----
-<IdealSurfaceHeatingCoolingModel id="701">
+<IdealSurfaceHeatingCoolingModel id="701" displayName="Floor heating">
 	<!-- Use thermostat in zone 1 for control -->
 	<ThermostatZoneId>1</ThermostatZoneId>
 	<ConstructionObjectList>Floor</ConstructionObjectList>
@@ -571,7 +587,7 @@ Das Modell beschreibt ein ideales thermisches Konditionierungsmodell für eine F
 ----
 ====
 
-Das `IdealSurfaceHeatingCoolingModel` muss mit den folgenden XML-Attributen definiert werden:
+Das `IdealSurfaceHeatingCoolingModel` unterstützt folgende XML-Attribute:
 
 .Attribute
 [.indent-me]
@@ -579,6 +595,7 @@ Das `IdealSurfaceHeatingCoolingModel` muss mit den folgenden XML-Attributen defi
 |====================
 | Attribut | Beschreibung | Format | Verwendung 
 | `id` | Kennung des Modells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+| `displayName` | Anzeigename/Beschreibung | string | _optional_
 |====================
 
 
@@ -631,7 +648,7 @@ Das Modell beschreibt ein Rohrregister, welches zur Beheizung/Kühlung von Fläc
 ====
 [source,xml]
 ----
-<IdealPipeRegisterModel id="701" modelType="Constant">
+<IdealPipeRegisterModel id="701" displayName="Floor heating" modelType="Constant">
 	<ThermostatZoneId>1</ThermostatZoneId>
 	<ConstructionObjectList>Floor</ConstructionObjectList>
 	<IBK:Parameter name="SupplyTemperature" unit="C">8</IBK:Parameter>
@@ -664,7 +681,7 @@ Die in der Objektliste referenzierten Konstruktionen müssen einen Konstruktions
 
 Die Heizleistung wird über die Anpassung des Massestroms in Abhängigkeit eines Thermostat-Kontrollsignals gesteuert. Die Zone, in der sich das Thermostat befindet, wird im Element `ThermostatZoneId` angegeben. 
 
-Das `IdealPipeRegisterModel` muss mit den folgenden XML-Attributen definiert werden:
+Das `IdealPipeRegisterModel` unterstützt die folgenden XML-Attribute:
 
 .Attribute
 [.indent-me]
@@ -672,6 +689,8 @@ Das `IdealPipeRegisterModel` muss mit den folgenden XML-Attributen definiert wer
 |====================
 | Attribut | Beschreibung | Format | Verwendung 
 | `id` | Kennung des Modells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+| `displayName` | Anzeigename/Beschreibung | string | _optional_
+
 | `modelType` 
 a| Definiert die Vorlauftemperatur
 
@@ -762,6 +781,7 @@ Das `HeatLoadSummationModel` muss mit den folgenden XML-Attributen definiert wer
 |====================
 | Attribut | Beschreibung | Format | Verwendung 
 | `id` | Kennung des Modells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+| `displayName` | Anzeigename/Beschreibung | string | _optional_
 |====================
 
 Ein `HeatLoadSummationModel` summiert die Heiz- und Kühlleistung mehrerer Konstruktionen. Dafür identifiziert der Objektlisten-tag `ObjectList` die Konstruktion, deren Heizlast erfasst und summiert werden soll.
@@ -773,7 +793,7 @@ Falls in der Objektliste referenzierte Konstruktionen keine aktive Schicht defin
 
 ### Ausgaben
 
-Das Modell hat eine einzige Ergebnisgröße:
+Das Modell liefert die Summe der thermischen Lasten in der Ergebnisgröße `TotalThermalLoad`.
 
 [NOTE]
 ====
@@ -812,6 +832,7 @@ Das `NetworkInterfaceAdapterModel` muss mit den folgenden XML-Attributen definie
 |====================
 | Attribut | Beschreibung | Format | Verwendung 
 | `id` | Kennung des Modells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
+| `displayName` | Anzeigename/Beschreibung | string | _optional_
 | `summationModelId` | ID des Summationsmodells, welches die Heiz-/Kühlleistung im Gebäude berechnet | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
 |====================
 

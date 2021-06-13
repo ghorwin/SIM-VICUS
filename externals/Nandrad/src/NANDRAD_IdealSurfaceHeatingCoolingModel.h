@@ -38,7 +38,7 @@ public:
 	/*! Model parameters. */
 	enum para_t {
 		P_MaxHeatingPowerPerArea,	// Keyword: MaxHeatingPowerPerArea		[W/m2]		'Maximum heating power per surface area'
-		P_MaxCoolingPowerPerArea,	// Keyword: MaxCoolingPowerPerArea		[W/m2]		'Maximum heating power per surface area'
+		P_MaxCoolingPowerPerArea,	// Keyword: MaxCoolingPowerPerArea		[W/m2]		'Maximum cooling power per surface area'
 		NUM_P
 	};
 

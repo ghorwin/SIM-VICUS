@@ -72,7 +72,7 @@ table {
 <h1>NANDRAD Modell-Referenz</h1>
 <div class="details">
 <span id="author" class="author">Andreas Nicolai &lt;andreas.nicolai@tu-dresden.de&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke</span><br>
-<span id="revnumber">version 0.2 (08.06.2021)</span>
+<span id="revnumber">version 0.2 (13.06.2021)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Inhaltsverzeichnis</div>
@@ -302,8 +302,9 @@ table {
 <li><a href="#NetworkControlElements">18.8. Regler und Massenstromkontrollmodelle</a>
 <ul class="sectlevel3">
 <li><a href="#_regler_temperaturedifference">18.8.1. Regler: TemperatureDifference</a></li>
-<li><a href="#_regler_thermostatvalue">18.8.2. Regler: ThermostatValue</a></li>
-<li><a href="#_parameter_für_die_regler_logik">18.8.3. Parameter für die Regler-Logik</a></li>
+<li><a href="#_regler_temperaturedifferenceoffollowingelement">18.8.2. Regler: TemperatureDifferenceOfFollowingElement</a></li>
+<li><a href="#_regler_thermostatvalue">18.8.3. Regler: ThermostatValue</a></li>
+<li><a href="#_parameter_für_die_regler_logik">18.8.4. Parameter für die Regler-Logik</a></li>
 </ul>
 </li>
 <li><a href="#_ausgaben_8">18.9. Ausgaben</a>
@@ -5678,7 +5679,7 @@ Start = 14*24 + 6 = 342 h</pre>
 </table>
 </div>
 <div class="paragraph">
-<p>Das <code>NaturalVentilationModel</code> muss mit den folgenden XML-Attributen definiert werden:</p>
+<p>Das <code>NaturalVentilationModel</code> unterstützt folgende XML-Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch indent-me">
 <caption class="title">Tabelle 27. Attribute</caption>
@@ -5969,6 +5970,40 @@ n = n_Grundluftwechsel + n_erhöhterLuftwechsel  // wenn Bedingungen erfüllt</c
 </div>
 </div>
 <div class="paragraph">
+<p>Das <code>ShadingControlModel</code> unterstützt folgende XML-Attribute:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch indent-me">
+<caption class="title">Tabelle 28. Attribute</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 60%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribut</th>
+<th class="tableblock halign-left valign-top">Beschreibung</th>
+<th class="tableblock halign-center valign-top">Format</th>
+<th class="tableblock halign-center valign-top">Verwendung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Kennung des Modells</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Anzeigename/Beschreibung</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p>Das Verschattungskontrollmodell verlangt zwei Parameter <code>MaxIntensity</code> und <code>MinIntensity</code> und implementiert eine digitale Regelung mit Hysterese. Zunächst muss die Globalstrahlungsintensität auf den Sensor den oberen Grenzwert (<code>MaxIntensity</code>) überschreiten, wonach die Verschattung geschlossen wird (Kontrollmodell liefert 1). Danach muss die Strahlungsintensität zunächst unter die untere Grenze sinken (<code>MinIntensity</code>), bevor die Verschattung wieder geöffnet wird (Kontrollmodell liefert 0).</p>
 </div>
 <div class="paragraph">
@@ -6029,10 +6064,10 @@ n = n_Grundluftwechsel + n_erhöhterLuftwechsel  // wenn Bedingungen erfüllt</c
 </div>
 </div>
 <div class="paragraph">
-<p>Das <code>InternalLoadsModel</code> muss mit den folgenden XML-Attributen definiert werden:</p>
+<p>Das <code>InternalLoadsModel</code> unterstützt folgende XML-Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch indent-me">
-<caption class="title">Tabelle 28. Attribute</caption>
+<caption class="title">Tabelle 29. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -6246,10 +6281,10 @@ Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in den
 </div>
 </div>
 <div class="paragraph">
-<p>Das <code>Thermostat</code>-Element unterstützt folgende XML-Attributen:</p>
+<p>Das <code>Thermostat</code>-Element unterstützt folgende XML-Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch indent-me">
-<caption class="title">Tabelle 29. Attribute</caption>
+<caption class="title">Tabelle 30. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -6332,6 +6367,20 @@ Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in den
 <td class="tableblock halign-center valign-top"><p class="tableblock">&gt; <code>HeatingSetpoint</code></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich für Modelltyp</em> <code>Constant</code></p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TemperatureTolerance</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">K</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Toleranz für analoges Thermostat und Normalisierungswert</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&gt; 0</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich für Controllertyp</em> <code>Analog</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TemperatureBand</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">K</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Totband für digitales Thermostat</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&gt; 0</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich für Controllertyp</em> <code>Digital</code></p></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
@@ -6370,7 +6419,7 @@ Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in den
 <p>Das XML-Element <code>TemperatureType</code> enthält eine Zeichenkette zur Auswahl eines bestimmten Typs (<code>AirTemperature</code> wird standardmäßig verwendet, wenn das Element fehlt).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 30. Verfügbare Temperatursensoren</caption>
+<caption class="title">Tabelle 31. Verfügbare Temperatursensoren</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 80%;">
@@ -6399,7 +6448,7 @@ Der Objektlisten-tag <code>ZoneObjectList</code> identifiziert die Zonen, in den
 <p>Das XML-Element <code>ControllerType</code> enthält eine Zeichenkette zur Auswahl des gewünschten Signaltyps (<code>Analog</code> wird standardmäßig verwendet, wenn das Element fehlt).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 31. Verfügbare Schalt-/Regelsignale</caption>
+<caption class="title">Tabelle 32. Verfügbare Schalt-/Regelsignale</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 80%;">
@@ -6509,7 +6558,7 @@ untere Grenze = Sollwert - TemperatureBand</pre>
 <div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;IdealHeatingCoolingModel</span> <span class="na">id=</span><span class="s">"200"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;IdealHeatingCoolingModel</span> <span class="na">id=</span><span class="s">"200"</span> <span class="na">displayName=</span><span class="s">"Air heating"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;ZoneObjectList&gt;</span>Office zones<span class="nt">&lt;/ZoneObjectList&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"MaxHeatingPowerPerArea"</span> <span class="na">unit=</span><span class="s">"W/m2"</span><span class="nt">&gt;</span>50<span class="nt">&lt;/IBK:Parameter&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"MaxCoolingPowerPerArea"</span> <span class="na">unit=</span><span class="s">"W/m2"</span><span class="nt">&gt;</span>20<span class="nt">&lt;/IBK:Parameter&gt;</span>
@@ -6519,10 +6568,10 @@ untere Grenze = Sollwert - TemperatureBand</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Das <code>IdealHeatingCoolingModel</code> muss mit den folgenden XML-Attributen definiert werden:</p>
+<p>Das <code>IdealHeatingCoolingModel</code> unterstützt folgende XML-Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch indent-me">
-<caption class="title">Tabelle 32. Attribute</caption>
+<caption class="title">Tabelle 33. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -6543,6 +6592,12 @@ untere Grenze = Sollwert - TemperatureBand</pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Kennung des Modells</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Anzeigename/Beschreibung</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -6581,6 +6636,20 @@ untere Grenze = Sollwert - TemperatureBand</pre>
 <td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;=&#160;0.0&#160;</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Kp</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Faktor für den propotionalen Teil des Kontrollers</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;=&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Ki</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Faktor für den integralen Teil des Kontrollers</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;=&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
+</tr>
 </tbody>
 </table>
 <div class="admonitionblock important">
@@ -6606,10 +6675,13 @@ untere Grenze = Sollwert - TemperatureBand</pre>
 <div class="sect3">
 <h4 id="_heiz_und_kühlleistung">17.7.1. Heiz- und Kühlleistung</h4>
 <div class="paragraph">
-<p>Das Regelsignal <code>HeatingControlValue</code> bzw. <code>IdealHeatingControlValue</code> wird als Wert zwischen 0..1 intepretiert. Werte außerhalb dieser Grenzen werden abgeschnitten. Bei 1 läuft die Heizung mit maximaler Heizlast, entsprechend des <code>MaxHeatingPowerPerArea</code>-Parameters. Bei 0 ist die Heizung aus. Dazwischen wird linear interpoliert.</p>
+<p>Das Regelsignal <code>HeatingControlValue</code> bzw. <code>IdealHeatingControlValue</code> wird als Wert zwischen 0..1 interpretiert. Werte außerhalb dieser Grenzen werden abgeschnitten. Bei 1 läuft die Heizung mit maximaler Heizlast. Bei 0 ist die Heizung aus. Dazwischen wird linear interpoliert.</p>
 </div>
 <div class="paragraph">
 <p>Die Kühlung ist analog definiert. Bei einem Kontrollwert von 1 läuft die Kühlung mit maximaler Kraft, bei 0 ist sie aus.</p>
+</div>
+<div class="paragraph">
+<p>Das so bestimmte Regeleingangssignal geht in einen P-Regler ein. Falls der <code>Ki</code> Parameter gegeben ist, wird stattdessen ein PI-Regler verwendet. Die so berechnet Heiz- und Kühlleistung wird durch den <code>MaxHeatingPowerPerArea</code>-Parameter bzw. <code>MaxCoolingPowerPerArea</code>-Parameter begrenzt.</p>
 </div>
 </div>
 <div class="sect3">
@@ -6657,7 +6729,7 @@ Z. B. ist <code>Model&lt;IdealHeatingCoolingModel_id&gt;).IdealHeatingLoad[id=3]
 <div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;IdealSurfaceHeatingCoolingModel</span> <span class="na">id=</span><span class="s">"701"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;IdealSurfaceHeatingCoolingModel</span> <span class="na">id=</span><span class="s">"701"</span> <span class="na">displayName=</span><span class="s">"Floor heating"</span><span class="nt">&gt;</span>
   <span class="c">&lt;!-- Use thermostat in zone 1 for control --&gt;</span>
   <span class="nt">&lt;ThermostatZoneId&gt;</span>1<span class="nt">&lt;/ThermostatZoneId&gt;</span>
   <span class="nt">&lt;ConstructionObjectList&gt;</span>Floor<span class="nt">&lt;/ConstructionObjectList&gt;</span>
@@ -6669,10 +6741,10 @@ Z. B. ist <code>Model&lt;IdealHeatingCoolingModel_id&gt;).IdealHeatingLoad[id=3]
 </div>
 </div>
 <div class="paragraph">
-<p>Das <code>IdealSurfaceHeatingCoolingModel</code> muss mit den folgenden XML-Attributen definiert werden:</p>
+<p>Das <code>IdealSurfaceHeatingCoolingModel</code> unterstützt folgende XML-Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch indent-me">
-<caption class="title">Tabelle 33. Attribute</caption>
+<caption class="title">Tabelle 34. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -6693,6 +6765,12 @@ Z. B. ist <code>Model&lt;IdealHeatingCoolingModel_id&gt;).IdealHeatingLoad[id=3]
 <td class="tableblock halign-left valign-top"><p class="tableblock">Kennung des Modells</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Anzeigename/Beschreibung</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -6804,7 +6882,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;IdealPipeRegisterModel</span> <span class="na">id=</span><span class="s">"701"</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;IdealPipeRegisterModel</span> <span class="na">id=</span><span class="s">"701"</span> <span class="na">displayName=</span><span class="s">"Floor heating"</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;ThermostatZoneId&gt;</span>1<span class="nt">&lt;/ThermostatZoneId&gt;</span>
   <span class="nt">&lt;ConstructionObjectList&gt;</span>Floor<span class="nt">&lt;/ConstructionObjectList&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"SupplyTemperature"</span> <span class="na">unit=</span><span class="s">"C"</span><span class="nt">&gt;</span>8<span class="nt">&lt;/IBK:Parameter&gt;</span>
@@ -6850,10 +6928,10 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <p>Die Heizleistung wird über die Anpassung des Massestroms in Abhängigkeit eines Thermostat-Kontrollsignals gesteuert. Die Zone, in der sich das Thermostat befindet, wird im Element <code>ThermostatZoneId</code> angegeben.</p>
 </div>
 <div class="paragraph">
-<p>Das <code>IdealPipeRegisterModel</code> muss mit den folgenden XML-Attributen definiert werden:</p>
+<p>Das <code>IdealPipeRegisterModel</code> unterstützt die folgenden XML-Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch indent-me">
-<caption class="title">Tabelle 34. Attribute</caption>
+<caption class="title">Tabelle 35. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -6874,6 +6952,12 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <td class="tableblock halign-left valign-top"><p class="tableblock">Kennung des Modells</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Anzeigename/Beschreibung</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>modelType</code></p></td>
@@ -7068,7 +7152,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <p>Das <code>HeatLoadSummationModel</code> muss mit den folgenden XML-Attributen definiert werden:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch indent-me">
-<caption class="title">Tabelle 35. Attribute</caption>
+<caption class="title">Tabelle 36. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -7089,6 +7173,12 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <td class="tableblock halign-left valign-top"><p class="tableblock">Kennung des Modells</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Anzeigename/Beschreibung</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -7112,7 +7202,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <div class="sect3">
 <h4 id="_ausgaben_6">17.10.1. Ausgaben</h4>
 <div class="paragraph">
-<p>Das Modell hat eine einzige Ergebnisgröße:</p>
+<p>Das Modell liefert die Summe der thermischen Lasten in der Ergebnisgröße <code>TotalThermalLoad</code>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -7167,7 +7257,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <p>Das <code>NetworkInterfaceAdapterModel</code> muss mit den folgenden XML-Attributen definiert werden:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch indent-me">
-<caption class="title">Tabelle 36. Attribute</caption>
+<caption class="title">Tabelle 37. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -7188,6 +7278,12 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <td class="tableblock halign-left valign-top"><p class="tableblock">Kennung des Modells</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0&#160;</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Anzeigename/Beschreibung</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>summationModelId</code></p></td>
@@ -7315,7 +7411,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <p>Der XML-tag <code>HydraulicNetwork</code> hat folgende Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 37. Attributes</caption>
+<caption class="title">Tabelle 38. Attributes</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 40%;">
@@ -7359,10 +7455,10 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 </tbody>
 </table>
 <div class="paragraph">
-<p>Das optionale Attribut <code>modelType</code> beschreibt, welches Berechnungsmodell zu verwenden ist ( <a href="#tab_network_modelType">Tabelle 38</a>).</p>
+<p>Das optionale Attribut <code>modelType</code> beschreibt, welches Berechnungsmodell zu verwenden ist ( <a href="#tab_network_modelType">Tabelle 39</a>).</p>
 </div>
 <table id="tab_network_modelType" class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 38. Werte für Attribut <code>modelType</code></caption>
+<caption class="title">Tabelle 39. Werte für Attribut <code>modelType</code></caption>
 <colgroup>
 <col style="width: 30%;">
 <col style="width: 70%;">
@@ -7498,7 +7594,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <p>Der XML-tag <code>HydraulicFluid</code> hat folgende Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 39. Attributes</caption>
+<caption class="title">Tabelle 40. Attributes</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -7639,7 +7735,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <p>Rohreigenschaften werden über das Attribut <code>pipePropertyId</code> eines Netzwerkelements (siehe <a href="#NetworkElements">Section 18.5</a>) referenziert.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 40. Attribute</caption>
+<caption class="title">Tabelle 41. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -7744,7 +7840,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 41. Attribute</caption>
+<caption class="title">Tabelle 42. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -7863,6 +7959,13 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>benötigt für Modelltyp</em> <code>ThermalHydraulicNetwork</code></p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>FractionOfMotorInefficienciesToFluidStream</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Anteil der ans Fluid abgegebenen Wärmeverluste der Pumpe (Standardwert 100%, Nassläufer)</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0&#8230;&#8203;1,&#160;&gt;&#160;0.0</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional für Modelltyp</em> <code>ThermalHydraulicNetwork</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Volume</code></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">m3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Fluid volume inside the pump</p></td>
@@ -7872,7 +7975,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 </tbody>
 </table>
 <div class="paragraph">
-<p>Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definiert. D.h. die durch Volumenstrom und Druckhöhe gegebene mechanische Arbeit entspricht diesem Anteil der Gesamtarbeit. Die Differenz der Leistungen wird als Wärmequelle dem Fluid aufgeprägt.</p>
+<p>Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definiert. D.h. die durch Volumenstrom und Druckhöhe gegebene mechanische Arbeit entspricht diesem Anteil der Gesamtarbeit. Die Differenz der Leistungen wird als anteilig entsprechend des Parameters <code>FractionOfMotorInefficienciesToFluidStream</code> als Wärmequelle dem Fluid aufgeprägt.</p>
 </div>
 </div>
 <div class="sect3">
@@ -8046,7 +8149,7 @@ Wird der Modus <code>SupplySide</code> gewählt, müssen die Parameter <code>Eva
 <p><code>HydraulicNetworkElement</code>-tags haben die folgenden Attribute:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Tabelle 42. Attribute</caption>
+<caption class="title">Tabelle 43. Attribute</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 60%;">
@@ -8534,7 +8637,7 @@ das <code>HydraulicNetworkElement</code> dafür ein <code>HydraulicNetworkContro
      This control element can be referenced by all flow
      elements with similar mass flow control strategy.
   --&gt;</span>
-  <span class="nt">&lt;HydraulicNetworkControlElement</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">controlledProperty=</span><span class="s">"TemperatureDifference"</span> <span class="na">controllerType=</span><span class="s">"PController"</span> <span class="nt">&gt;</span>
+  <span class="nt">&lt;HydraulicNetworkControlElement</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">controlledProperty=</span><span class="s">"TemperatureDifference"</span> <span class="na">modelType=</span><span class="s">"Constant"</span> <span class="na">controllerType=</span><span class="s">"PController"</span> <span class="nt">&gt;</span>
     <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Kp"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>1e6<span class="nt">&lt;/IBK:Parameter&gt;</span>
     <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"TemperatureDifferenceSetpoint"</span> <span class="na">unit=</span><span class="s">"K"</span><span class="nt">&gt;</span>3<span class="nt">&lt;/IBK:Parameter&gt;</span>
     <span class="c">&lt;!-- Deactivate upper limit of controller result value
@@ -8550,7 +8653,8 @@ das <code>HydraulicNetworkElement</code> dafür ein <code>HydraulicNetworkContro
 <p>Eine Reglerdefinition <code>HydraulicNetworkControlElement</code> beschreibt sowohl die Sensorgröße(n), das Berechnungsverfahren für das Reglereingangssignal und das Reglermodell selbst (P, PI-Regler, &#8230;&#8203;). Das Ergebnis des Reglers ist ein zusätzlicher Druckverlustbeiwert zwischen 0 (kein zusätzlicher Strömungswiderstand) bis zu einem sehr hohen Wert (bspw. Ventil geschlossen).</p>
 </div>
 <div class="paragraph">
-<p>Die Art der Regelung bzw. die zu überwachende Größe wird im Attribut <code>controlledProperty</code> definiert.</p>
+<p>Die Art der Regelung bzw. die zu überwachende Größe wird im Attribut <code>controlledProperty</code> definiert.
+Das Attribute <code>modelType</code> (Optionen <code>Constant</code> oder <code>Scheduled</code>) definiert, ob die Setpoints als feste Parameter im <code>HydraulicNetworkControlElement</code> angegeben sind, oder als Zeitplanparameter angegeben sind.</p>
 </div>
 <div class="sect3">
 <h4 id="_regler_temperaturedifference">18.8.1. Regler: TemperatureDifference</h4>
@@ -8559,7 +8663,13 @@ das <code>HydraulicNetworkElement</code> dafür ein <code>HydraulicNetworkContro
 </div>
 </div>
 <div class="sect3">
-<h4 id="_regler_thermostatvalue">18.8.2. Regler: ThermostatValue</h4>
+<h4 id="_regler_temperaturedifferenceoffollowingelement">18.8.2. Regler: TemperatureDifferenceOfFollowingElement</h4>
+<div class="paragraph">
+<p>Mit diesem Regler wird ein Ventil implementiert, welches die Temperaturdifferenz des nächsten Strömungselements (in Verknüpfungsreihenfolge) regelt. Das nächste Strömungselement wird automatisch ermittelt und es wird geprüft ob der dazwischenliegende Knoten mit einem weiteren Strömungslement verbunden ist. In diesem Fall wäre die Regelung nicht mehr anwendbar und es wird ein Fehler ausgegeben.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_regler_thermostatvalue">18.8.3. Regler: ThermostatValue</h4>
 <div class="olist lowerroman">
 <ol class="lowerroman" type="i">
 <li>
@@ -8569,7 +8679,7 @@ das <code>HydraulicNetworkElement</code> dafür ein <code>HydraulicNetworkContro
 </div>
 </div>
 <div class="sect3">
-<h4 id="_parameter_für_die_regler_logik">18.8.3. Parameter für die Regler-Logik</h4>
+<h4 id="_parameter_für_die_regler_logik">18.8.4. Parameter für die Regler-Logik</h4>
 <div class="paragraph">
 <p>P-Controller &#8594; Kp</p>
 </div>
@@ -9357,8 +9467,8 @@ das <code>HydraulicNetworkElement</code> dafür ein <code>HydraulicNetworkContro
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.2 (08.06.2021)<br>
-Last updated 2021-06-08 05:33:32 +0200
+Version 0.2 (13.06.2021)<br>
+Last updated 2021-06-13 18:26:28 +0200
 </div>
 </div>
 <style>

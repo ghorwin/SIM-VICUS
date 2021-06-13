@@ -112,7 +112,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Length-specific U-Value of pipe wall incl. insulation");
 	tr("Number of parallel pipes");
 	tr("Maximum heating power per surface area");
-	tr("Maximum heating power per surface area");
+	tr("Maximum cooling power per surface area");
 	tr("Pressure coeffient.");
 	tr("Use results from external wind flow calculation.");
 	tr("Constant heat exchange coefficient");

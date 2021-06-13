@@ -1568,7 +1568,7 @@ namespace NANDRAD {
 			case 27 :
 			switch (t) {
 				case 0 : return "Maximum heating power per surface area";
-				case 1 : return "Maximum heating power per surface area";
+				case 1 : return "Maximum cooling power per surface area";
 			} break;
 			// InterfaceAirFlow::splinePara_t
 			case 28 :
