@@ -635,7 +635,9 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 	proc.setArguments(commandLineArgs);
 
 	connect(&proc, &QProcess::started, this, &NandradFMUGeneratorWidget::onProcessStarted);
+#if QT_VERSION >= 0x050600
 	connect(&proc, &QProcess::errorOccurred, this, &NandradFMUGeneratorWidget::onProcessErrorOccurred);
+#endif
 	proc.start();
 	// start process
 	bool success = proc.waitForStarted();
