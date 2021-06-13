@@ -54,6 +54,7 @@ NandradSolver.depends = NandradModel DataIO CCM TiCPP IBK IntegratorFramework Na
 NandradSolverFMI.depends = NandradModel DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
 NandradCodeGenerator.depends = IBK Nandrad QtExt TiCPP
 SIM-VICUS.depends = QuaZIP qwt Vicus Nandrad IBK TiCPP CCM QtExt Zeppelin GenericBuildings
+NandradFMUGenerator.depends = IBK Nandrad QtExt QuaZIP TiCPP
 
 CCM.depends = IBK TiCPP
 Shading.depends = IBK TiCPP CCM IBKMK DataIO
