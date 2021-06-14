@@ -87,6 +87,7 @@ public:
 		SQ_MassFluxSetpointSchedule,							// Keyword: MassFluxSetpointSchedule						[kg/s]
 		SQ_HeatPumpOnOffSignalSchedule,							// Keyword: HeatPumpOnOffSignalSchedule						[---]
 		SQ_SupplyTemperatureSchedule,							// Keyword: SupplyTemperatureSchedule						[C]
+		SQ_PumpPressureHeadSchedule,							// Keyword: PumpPressureHeadSchedule						[Pa]
 		NUM_SQ
 	};
 
