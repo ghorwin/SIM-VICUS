@@ -1,13 +1,16 @@
-#ifndef INPUTVARIABLESTABLEMODEL_H
-#define INPUTVARIABLESTABLEMODEL_H
+#ifndef VariableTableModelH
+#define VariableTableModelH
 
 #include <QAbstractTableModel>
 
 #include <NANDRAD_Project.h>
 
 
-class InputVariablesTableModel : public QAbstractTableModel
-{
+/*! A table model to show a list of FMI variables in a table view.
+	The same model is used for input and output variables.
+	Flag m_inputVars indicates, that this is indeed a table model for input variables (determines model behaviour).
+*/
+class VariableTableModel : public QAbstractTableModel {
 	Q_OBJECT
 
 public:
@@ -23,7 +26,7 @@ public:
 		NUM_Columns
 	};
 
-	explicit InputVariablesTableModel(QObject *parent = nullptr);
+	explicit VariableTableModel(QObject *parent = nullptr, bool inputVars = true);
 
 	// Header:
 	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
@@ -38,11 +41,18 @@ public:
 	bool updateVariableLists(const QString &nandradProjectFilePath, QString &errmsg);
 
 	/*! Reads a variable definition file and generates a map with model variables versus object/vector IDs. */
-	bool parseVariableList(const QString & varsFile, std::vector<NANDRAD::FMIVariableDefinition> & modelVariables, QString &errmsg);
+	bool parseVariableList(const QString & varsFile, QString &errmsg);
+
+	/*! Grant read-only access to model data. */
+	const std::vector<NANDRAD::FMIVariableDefinition> & variables() const { return m_variables; }
 
 private:
-	/*! Holds all _available_ input variable definitions. */
-	std::vector<NANDRAD::FMIVariableDefinition>		m_availableInputVariables;
+	bool parseVariableFile(const QString & varsFile, QString &errmsg);
+
+	bool											m_inputVars;
+	/*! Holds all _available_ variable definitions, that are managed by this table model. */
+	std::vector<NANDRAD::FMIVariableDefinition>		m_variables;
+
 
 };
 

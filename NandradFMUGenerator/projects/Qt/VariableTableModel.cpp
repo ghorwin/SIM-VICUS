@@ -1,15 +1,15 @@
-#include "InputVariablesTableModel.h"
+#include "VariableTableModel.h"
 
 #include <QColor>
 #include <QFile>
 
-InputVariablesTableModel::InputVariablesTableModel(QObject *parent)
-	: QAbstractTableModel(parent)
+VariableTableModel::VariableTableModel(QObject *parent, bool inputVars)
+	: QAbstractTableModel(parent), m_inputVars(inputVars)
 {
 }
 
-QVariant InputVariablesTableModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
+
+QVariant VariableTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
 	if (orientation == Qt::Horizontal) {
 		if( role == Qt::DisplayRole) {
 			switch(section)
@@ -22,7 +22,7 @@ QVariant InputVariablesTableModel::headerData(int section, Qt::Orientation orien
 				case C_FMIValueReference: return tr("FMI value reference");
 				case C_FMIType: return tr("FMI Type");
 				case C_Description: return tr("Description");
-			};
+			}
 		}
 		else if (role == Qt::DisplayRole)
 			return QString("%1").arg(section + 1);
@@ -30,35 +30,35 @@ QVariant InputVariablesTableModel::headerData(int section, Qt::Orientation orien
 	return QVariant();
 }
 
-int InputVariablesTableModel::rowCount(const QModelIndex &/*parent*/) const
-{
-	return m_availableInputVariables.size();
+
+int VariableTableModel::rowCount(const QModelIndex &/*parent*/) const {
+	return m_variables.size();
 }
 
-int InputVariablesTableModel::columnCount(const QModelIndex &parent) const
-{
+
+int VariableTableModel::columnCount(const QModelIndex &parent) const {
 	if (parent.isValid())
 		return 0;
 	return NUM_Columns;
 }
 
-QVariant InputVariablesTableModel::data(const QModelIndex &index, int role) const
-{
+
+QVariant VariableTableModel::data(const QModelIndex &index, int role) const {
 	if (!index.isValid())
 		return QVariant();
 
-	if (!index.isValid() || index.row()<0 || index.row() >= static_cast<int>(m_availableInputVariables.size()))
+	if (!index.isValid() || index.row()<0 || index.row() >= static_cast<int>(m_variables.size()))
 		return QVariant();
 
 	int column(index.column());
-	const NANDRAD::FMIVariableDefinition& inputVar = m_availableInputVariables[(unsigned int) index.row()];
+	const NANDRAD::FMIVariableDefinition& inputVar = m_variables[(unsigned int) index.row()];
 
 	switch(role) {
 		case Qt::DisplayRole:
 		case Qt::EditRole: {
 			switch(column) {
 				case C_VariableName: return QString(inputVar.m_fmiVarName.c_str());
-				case C_ObjectId: return inputVar.m_objectID;
+				case C_ObjectId: return inputVar.m_objectId;
 				case C_VectorValueIndexId: {
 					if(inputVar.m_vectorIndex == NANDRAD::INVALID_ID)
 						return QVariant();
@@ -86,16 +86,16 @@ QVariant InputVariablesTableModel::data(const QModelIndex &index, int role) cons
 	}
 }
 
-bool InputVariablesTableModel::updateVariableLists(const QString & nandradProjectFilePath, QString & errmsg)
-{
+
+bool VariableTableModel::updateVariableLists(const QString & nandradProjectFilePath, QString & errmsg) {
 	// now parse the variable lists
 	IBK::Path varDir(nandradProjectFilePath.toStdString());
 	varDir = varDir.withoutExtension() / "var";
 
-	m_availableInputVariables.clear();
+	m_variables.clear();
 	QString inputVarsFile = QString::fromStdString( (varDir / "input_reference_list.txt").str() );
 	// an error occured-> show message
-	if(!parseVariableList(inputVarsFile, m_availableInputVariables, errmsg) )
+	if (!parseVariableList(inputVarsFile, errmsg) )
 		return false;
 
 	beginResetModel();
@@ -104,10 +104,16 @@ bool InputVariablesTableModel::updateVariableLists(const QString & nandradProjec
 }
 
 
-bool InputVariablesTableModel::parseVariableList(const QString & varsFile,
-												  std::vector<NANDRAD::FMIVariableDefinition> & modelVariables,
-												  QString &errmsg)
-{
+bool VariableTableModel::parseVariableList(const QString & varsFile, QString &errmsg) {
+	beginResetModel();
+	bool result = parseVariableFile(varsFile, errmsg);
+	endResetModel();
+	return result;
+}
+
+
+bool VariableTableModel::parseVariableFile(const QString & varsFile, QString &errmsg) {
+	m_variables.clear();
 	QFile inputVarF(varsFile);
 	if (!inputVarF.open(QFile::ReadOnly)) {
 			errmsg = QString("Could not read file '%1'. Re-run solver initialization!")
@@ -173,7 +179,7 @@ bool InputVariablesTableModel::parseVariableList(const QString & varsFile,
 
 
 		// split object IDs and vector-value IDs
-		std::vector<unsigned int>	m_objectIDs;
+		std::vector<unsigned int>	m_objectIds;
 		std::vector<unsigned int>	m_vectorIndexes;
 		QString idString = tokens[1].trimmed();
 		if (idString.isEmpty()) {
@@ -183,7 +189,7 @@ bool InputVariablesTableModel::parseVariableList(const QString & varsFile,
 		}
 		QStringList ids = idString.split(",");
 		for (QString idstr : ids)
-			m_objectIDs.push_back( idstr.toUInt());
+			m_objectIds.push_back( idstr.toUInt());
 
 
 		idString = tokens[2].trimmed();
@@ -194,7 +200,7 @@ bool InputVariablesTableModel::parseVariableList(const QString & varsFile,
 		}
 
 		// generate a variable for each combination of object ID and vector reference
-		for (unsigned int objID : m_objectIDs) {
+		for (unsigned int objID : m_objectIds) {
 
 			if (m_vectorIndexes.empty()) {
 				NANDRAD::FMIVariableDefinition varDef;
@@ -203,7 +209,7 @@ bool InputVariablesTableModel::parseVariableList(const QString & varsFile,
 				varDef.m_fmiVarName = QString("%1(%2).%3")
 						.arg(objTypeName).arg(objID).arg(nandradVarName)
 						.toStdString();
-				varDef.m_objectID = objID;
+				varDef.m_objectId = objID;
 				varDef.m_vectorIndex = NANDRAD::INVALID_ID;
 				varDef.m_fmiTypeName = ""; // TODO : how to determine the correct type?
 				varDef.m_unit = unit.toStdString();
@@ -214,7 +220,7 @@ bool InputVariablesTableModel::parseVariableList(const QString & varsFile,
 				if (varDef.m_unit == "K")				varDef.m_fmiStartValue = 293.15;
 				else if (varDef.m_unit == "Pa")			varDef.m_fmiStartValue = 101325;
 
-				modelVariables.push_back(varDef);
+				m_variables.push_back(varDef);
 			}
 			else {
 				for (unsigned int vecIdx : m_vectorIndexes) {
@@ -223,7 +229,7 @@ bool InputVariablesTableModel::parseVariableList(const QString & varsFile,
 					varDef.m_fmiVarName = QString("%1(%2).%3(%4)")
 							.arg(objTypeName).arg(objID).arg(nandradVarName).arg(vecIdx)
 							.toStdString();
-					varDef.m_objectID = objID;
+					varDef.m_objectId = objID;
 					varDef.m_vectorIndex = vecIdx;
 					varDef.m_fmiTypeName = ""; // TODO : how to determine the correct type?
 					varDef.m_unit = unit.toStdString();
@@ -234,7 +240,7 @@ bool InputVariablesTableModel::parseVariableList(const QString & varsFile,
 					if (varDef.m_unit == "K")				varDef.m_fmiStartValue = 293.15;
 					else if (varDef.m_unit == "Pa")			varDef.m_fmiStartValue = 101325;
 
-					modelVariables.push_back(varDef);
+					m_variables.push_back(varDef);
 				}
 
 			}
@@ -242,4 +248,5 @@ bool InputVariablesTableModel::parseVariableList(const QString & varsFile,
 	}
 	return true;
 }
+
 

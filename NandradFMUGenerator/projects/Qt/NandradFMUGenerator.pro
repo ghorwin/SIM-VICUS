@@ -49,14 +49,14 @@ PRE_TARGETDEPS += \
 SOURCES +=  \
 	../../src/NandradFMUGeneratorWidget.cpp \
 	../../src/main.cpp \
-    InputVariablesTableModel.cpp
+	VariableTableModel.cpp
 
 FORMS += \
 	../../src/NandradFMUGeneratorWidget.ui
 
 HEADERS += \
 	../../src/NandradFMUGeneratorWidget.h \
-    InputVariablesTableModel.h
+	VariableTableModel.h
 
 RESOURCES += \
 	../../resources/NandradFMUGenerator.qrc

@@ -154,7 +154,7 @@
         </widget>
        </item>
        <item row="0" column="0" colspan="3">
-        <widget class="QTableView" name="inputVariablesTableView"/>
+        <widget class="QTableView" name="tableViewInputVars"/>
        </item>
       </layout>
      </widget>
@@ -176,9 +176,6 @@
           </size>
          </property>
         </widget>
-       </item>
-       <item row="0" column="0" colspan="3">
-        <widget class="QTableWidget" name="tableWidgetOutputVars"/>
        </item>
        <item row="1" column="0">
         <widget class="QToolButton" name="toolButtonAddOutputVariable">
@@ -206,6 +203,9 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item row="0" column="0" colspan="3">
+        <widget class="QTableView" name="tableViewOutputVars"/>
        </item>
       </layout>
      </widget>

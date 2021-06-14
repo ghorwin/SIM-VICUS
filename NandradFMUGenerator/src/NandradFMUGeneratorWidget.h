@@ -11,7 +11,7 @@ namespace Ui {
 
 class QTableWidgetItem;
 class QTableWidget;
-class InputVariablesTableModel;
+class VariableTableModel;
 
 /*! The dialog for configuring and exporting NANDRAD FMUs.
 */
@@ -65,11 +65,9 @@ private slots:
 
 	void on_toolButtonAddInputVariable_clicked();
 	void on_toolButtonRemoveInputVariable_clicked();
-	void on_tableWidgetInputVars_itemDoubleClicked(QTableWidgetItem *item);
 
 	void on_toolButtonAddOutputVariable_clicked();
 	void on_toolButtonRemoveOutputVariable_clicked();
-	void on_tableWidgetOutputVars_itemDoubleClicked(QTableWidgetItem *item);
 
 	void on_pushButtonGenerate_clicked();
 
@@ -85,13 +83,11 @@ private slots:
 	/*! Called when solver process could not be started. */
 	void onProcessErrorOccurred();
 
-	void on_tableWidgetInputVars_itemChanged(QTableWidgetItem *item);
-
-	void on_tableWidgetOutputVars_itemChanged(QTableWidgetItem *item);
+	void on_tableViewOutputVars_doubleClicked(const QModelIndex &index);
 
 private:
 	/*! Input varaibles table mdoel holds all input fmu data infromation. */
-	InputVariablesTableModel*				m_inputVariablesTableModel;
+	VariableTableModel*				m_inputVariablesTableModel;
 
 	/*! Toggles the GUI state depending on whether a valid NANDRAD Project was read or not. */
 	void setGUIState(bool active);
@@ -122,15 +118,6 @@ private:
 	*/
 	void updateFMUVariableTables();
 
-	/*! This fills in a table with FMI variables. */
-	void populateTable(QTableWidget * table, const std::vector<NANDRAD::FMIVariableDefinition> & availableVars);
-
-	/*! Adds a new row to a table widget.
-		\param tableWidget The target table widget.
-		\param var The variable to add.
-	*/
-	void appendVariableEntry(QTableWidget * tableWidget, const NANDRAD::FMIVariableDefinition & var);
-
 	void dumpUsedValueRefs() const;
 
 	/*! This function returns detailed variable information to be used when generating FMU variables.
@@ -146,8 +133,6 @@ private:
 	*/
 	static void variableInfo(const std::string & fullVarName, QString & description, std::string & unit, std::string & fmuType);
 
-
-
 	Ui::NandradFMUGeneratorWidget		*m_ui;
 
 	/*! The project, contains the currently defined FMI input/output variables. */
@@ -156,10 +141,10 @@ private:
 	/*! This set contains a list of all value references currently used by variables
 		in the NANDRAD Project (i.e. configured variables).
 	*/
-	std::set<unsigned int>							m_usedValueRefs;
+	std::set<unsigned int>				m_usedValueRefs;
 
-	/*! Holds all _available_ output variable definitions. */
-	std::vector<NANDRAD::FMIVariableDefinition>		m_availableOutputVariables;
+	VariableTableModel					*m_availableInputVariables = nullptr;
+	VariableTableModel					*m_availableOutputVariables = nullptr;
 
 };
 
