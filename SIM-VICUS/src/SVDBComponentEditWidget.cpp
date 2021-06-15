@@ -279,3 +279,10 @@ void SVDBComponentEditWidget::modelModify(){
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 }
 
+void SVDBComponentEditWidget::on_toolButtonRemoveConstruction_clicked() {
+
+	m_current->m_idConstruction = VICUS::INVALID_ID;
+
+	modelModify();
+	updateInput((int)m_current->m_id);
+}
