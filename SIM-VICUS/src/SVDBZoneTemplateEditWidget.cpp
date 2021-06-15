@@ -300,13 +300,8 @@ void SVDBZoneTemplateEditWidget::on_toolButtonSelectSubComponent_clicked() {
 		}
 	}
 
-
-	if (id != VICUS::INVALID_ID) {
-		// modify existing
-		m_current->m_idReferences[m_currentSubTemplateType] = id;
-		modelModify();
-	}
 	// we must assume that the name of the referenced sub-template has changed, so update controls accordingly
+	modelModify();
 	refreshUi();
 }
 
