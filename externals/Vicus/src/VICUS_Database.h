@@ -75,7 +75,7 @@ public:
 	const T * findEqual(const T & elem) const {
 		for (typename std::map<unsigned int, T>::const_iterator it = m_data.begin(); it != m_data.end(); ++it) {
 			const T * elemPtr = &(it->second);
-			if (elem.equal(elemPtr) != VICUS::AbstractDBElement::Different)
+			if (elem.equal(elemPtr) == VICUS::AbstractDBElement::Equal)
 				return elemPtr;
 		}
 		return nullptr;
