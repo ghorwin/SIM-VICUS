@@ -220,7 +220,15 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2">
+      <item row="0" column="2">
+       <widget class="QToolButton" name="toolButtonRemoveBoundaryConditA">
+        <property name="icon">
+         <iconset resource="../resources/SIM-VICUS.qrc">
+          <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="3">
        <widget class="QTextBrowser" name="textBrowserBCSideA"/>
       </item>
      </layout>
@@ -242,7 +250,15 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2">
+      <item row="0" column="2">
+       <widget class="QToolButton" name="toolButtonRemoveBoundaryConditB">
+        <property name="icon">
+         <iconset resource="../resources/SIM-VICUS.qrc">
+          <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="3">
        <widget class="QTextBrowser" name="textBrowserBCSideB"/>
       </item>
      </layout>

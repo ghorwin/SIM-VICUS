@@ -227,5 +227,19 @@ void SVDBZoneControlThermostatEditWidget::on_toolButtonSelectCoolingSchedule_cli
 	updateInput((int)m_current->m_id);
 }
 
+void SVDBZoneControlThermostatEditWidget::on_toolButtonRemoveHeatingSetpointSchedule_clicked() {
+
+	m_current->m_heatingSetpointScheduleId = VICUS::INVALID_ID;
+
+	modelModify();
+	updateInput((int)m_current->m_id);
+}
+void SVDBZoneControlThermostatEditWidget::on_toolButtonRemoveCoolingSetpointSchedule_clicked() {
+
+	m_current->m_coolingSetpointScheduleId = VICUS::INVALID_ID;
+
+	modelModify();
+	updateInput((int)m_current->m_id);
+}
 
 

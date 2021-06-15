@@ -74,6 +74,8 @@ private slots:
 	void on_pushButtonComponentColor_colorChanged();
 
 	void on_toolButtonRemoveConstruction_clicked();
+	void on_toolButtonRemoveBoundaryConditA_clicked();
+	void on_toolButtonRemoveBoundaryConditB_clicked();
 
 private:
 	/*! Set up the modified variable of the model to true. */

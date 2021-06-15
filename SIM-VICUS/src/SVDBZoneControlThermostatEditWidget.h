@@ -61,6 +61,8 @@ private slots:
 	void on_lineEditTolerance_editingFinished();
 	void on_toolButtonSelectHeatingSchedule_clicked();
 	void on_toolButtonSelectCoolingSchedule_clicked();
+	void on_toolButtonRemoveHeatingSetpointSchedule_clicked();
+	void on_toolButtonRemoveCoolingSetpointSchedule_clicked();
 
 private:
 

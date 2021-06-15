@@ -286,3 +286,17 @@ void SVDBComponentEditWidget::on_toolButtonRemoveConstruction_clicked() {
 	modelModify();
 	updateInput((int)m_current->m_id);
 }
+void SVDBComponentEditWidget::on_toolButtonRemoveBoundaryConditA_clicked() {
+
+	m_current->m_idSideABoundaryCondition = VICUS::INVALID_ID;
+
+	modelModify();
+	updateInput((int)m_current->m_id);
+}
+void SVDBComponentEditWidget::on_toolButtonRemoveBoundaryConditB_clicked() {
+
+	m_current->m_idSideBBoundaryCondition = VICUS::INVALID_ID;
+
+	modelModify();
+	updateInput((int)m_current->m_id);
+}

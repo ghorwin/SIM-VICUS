@@ -242,6 +242,18 @@ void SVDBSubSurfaceComponentEditWidget::on_pushButtonFalseColor_clicked() {
 		m_db->m_subSurfaceComponents.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
+}
+void SVDBSubSurfaceComponentEditWidget::on_toolButtonRemoveBoundaryConditA_clicked() {
 
+	m_current->m_idSideABoundaryCondition = VICUS::INVALID_ID;
 
+	modelModify();
+	updateInput((int)m_current->m_id);
+}
+void SVDBSubSurfaceComponentEditWidget::on_toolButtonRemoveBoundaryConditB_clicked() {
+
+	m_current->m_idSideBBoundaryCondition = VICUS::INVALID_ID;
+
+	modelModify();
+	updateInput((int)m_current->m_id);
 }
