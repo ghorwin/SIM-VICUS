@@ -781,7 +781,11 @@ void SVPropVertexListWidget::on_comboBoxBuildingLevel_currentIndexChanged(int /*
 	// also transfer nominal height into zone-height line edit
 	if (bl != nullptr) {
 		m_ui->lineEditZoneHeight->setValue(bl->m_height);
-		on_lineEditZoneHeight_editingFinishedSuccessfully();
+		// only trigger zone height editing finished, when we are in new vertex mode
+		// Mind: widget may be hidden
+		SVViewState vs = SVViewStateHandler::instance().viewState();
+		if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex)
+			on_lineEditZoneHeight_editingFinishedSuccessfully();
 	}
 }
 
