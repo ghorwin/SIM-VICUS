@@ -1370,10 +1370,6 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 																   1 - pers->m_para[VICUS::InternalLoad::P_ConvectiveHeatFactor].get_value("---"));
 							}
 
-
-
-
-
 							//allModelIds.push_back(intLoadSched.m_id);
 						}
 						break;
@@ -1482,6 +1478,10 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 						unsigned int heatingSchedId = thermo->m_heatingSetpointScheduleId;
 						unsigned int coolingSchedId = thermo->m_coolingSetpointScheduleId;
 
+						std::string heatSchedParaName = NANDRAD::KeywordList::Keyword("Thermostat::para_t", NANDRAD::Thermostat::P_HeatingSetpoint);
+								heatSchedParaName += "Schedule [C]";
+						std::string coolSchedParaName = NANDRAD::KeywordList::Keyword("Thermostat::para_t", NANDRAD::Thermostat::P_CoolingSetpoint);
+								coolSchedParaName += "Schedule [C]";
 						bool foundHeatOrCoolSched = false;
 						if(heatingSchedId != VICUS::INVALID_ID){
 							//check if schedule is in data base
@@ -1491,11 +1491,14 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 								if(!heatingSched->isValid())
 									IBK::Exception(IBK::FormatString("Heating schedule with id %1 and name '%2' is not in valid.")
 												   .arg(heatingSchedId).arg(heatingSched->m_displayName.string()), FUNC_ID);
-								std::string heatSchedParaName = NANDRAD::KeywordList::Keyword("Thermostat::para_t", NANDRAD::Thermostat::P_HeatingSetpoint);
-										heatSchedParaName += "Schedule [C]";
-
 								addVicusScheduleToNandradProject(*heatingSched, heatSchedParaName, p, thermoN.m_zoneObjectList);
 							}
+						}
+						else{
+							VICUS::Schedule *hs = new VICUS::Schedule();
+							//create a heating schedule with a very low heating value
+							hs->createConstSchedule(-100);
+							addVicusScheduleToNandradProject(*hs, heatSchedParaName, p, thermoN.m_zoneObjectList);
 						}
 						if(coolingSchedId != VICUS::INVALID_ID){
 							//check if schedule is in data base
@@ -1505,11 +1508,14 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 								if(!coolingSched->isValid())
 									IBK::Exception(IBK::FormatString("Coolting schedule with id %1 and name '%2' is not in valid.")
 												   .arg(coolingSchedId).arg(coolingSched->m_displayName.string()), FUNC_ID);
-								std::string coolSchedParaName = NANDRAD::KeywordList::Keyword("Thermostat::para_t", NANDRAD::Thermostat::P_CoolingSetpoint);
-										coolSchedParaName += "Schedule [C]";
-
 								addVicusScheduleToNandradProject(*coolingSched, coolSchedParaName, p, thermoN.m_zoneObjectList);
 							}
+						}
+						else{
+							VICUS::Schedule *cs = new VICUS::Schedule();
+							//create a cooling schedule with a very high cooling value
+							cs->createConstSchedule(200);
+							addVicusScheduleToNandradProject(*cs, coolSchedParaName, p, thermoN.m_zoneObjectList);
 						}
 
 						if(!foundHeatOrCoolSched){
@@ -1934,7 +1940,6 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 					//TODO Dirk Divider einbauen sobald verfügbar
 				}
 			}
-
 		}
 		else {
 			// we must have a side B surface, otherwise this is an invalid component instance
@@ -2008,6 +2013,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 		p.m_constructionTypes.push_back(conType);
 	}
 	// TODO Andreas, Dirk, Stephan: Transfer other database elements/generate NANDRAD data objects
+
 }
 
 
