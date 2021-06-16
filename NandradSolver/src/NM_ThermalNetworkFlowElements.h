@@ -636,7 +636,7 @@ public:
 
 private:
 	unsigned int	m_id = 0;
-	const double	*m_fluidOutletSetpointScheduleRef = nullptr;
+	const double	*m_supplyTemperatureScheduleRef = nullptr;
 
 	// *** ThermalNetworkAbstractFlowElement interface
 
@@ -644,7 +644,7 @@ private:
 	unsigned int nInternalStates() const override { return 0; }
 	void setInflowTemperature(double Tinflow) override;
 	/*! Simply return given supply temperature. */
-	double outflowTemperature() const override { return *m_fluidOutletSetpointScheduleRef; }
+	double outflowTemperature() const override { return *m_supplyTemperatureScheduleRef; }
 	/*! Publish request to supply temperature schedule and optional mass flux setpoint. */
 	void inputReferences(std::vector<InputReference> & inputRefs) const override;
 	void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;

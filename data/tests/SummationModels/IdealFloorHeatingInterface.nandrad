@@ -192,7 +192,7 @@
 					 and scheduled mass flux and supply temperatures. Input refs needed for the model:
 					 'Model(id=801).TotalHeatLoad'
 					 'Model(id=1212).SupplyTemperatureSchedule'
-					 'Model(id=1212).SupplyMassFluxSchedule'
+					 'Model(id=1212).MassFluxSchedule'
 					 
 					 Provides return temperature in medium: Model(id=1212).ReturnTemperature
 				-->
@@ -213,8 +213,8 @@
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0</TimePoints>
 								<Values>
-									FluidOutletSetpointSchedule [C]:30;
-									SupplyMassFlowSchedule [kg/s]:0.1
+									SupplyTemperatureSchedule [C]:30;
+									MassFluxSchedule [kg/s]:0.1
 								</Values>
 							</DailyCycle>
 						</DailyCycles>

@@ -232,7 +232,7 @@
 							</DailyCycle>
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0</TimePoints>
-								<Values>MaxMassFlowSchedule [kg/s]:0.05</Values>
+								<Values>MaxMassFluxSchedule [kg/s]:0.05</Values>
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>
@@ -244,11 +244,11 @@
 						<DailyCycles>
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0</TimePoints>
-								<Values>FluidOutletSetpointSchedule [C]:40</Values>
+								<Values>SupplyTemperatureSchedule [C]:40</Values>
 							</DailyCycle>
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0</TimePoints>
-								<Values>SupplyMassFlowSchedule [kg/s]:0.05</Values>
+								<Values>MassFluxSchedule [kg/s]:0.05</Values>
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>

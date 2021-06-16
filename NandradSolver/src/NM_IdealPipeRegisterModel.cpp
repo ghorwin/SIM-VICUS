@@ -185,7 +185,7 @@ void IdealPipeRegisterModel::initInputReferences(const std::vector<AbstractModel
 			// store reference
 			m_inputRefs.push_back(r);
 		}
-		r.m_name.m_name = "MaxMassFlowSchedule";
+		r.m_name.m_name = "MaxMassFluxSchedule";
 		for (unsigned int key : indexKeys) {
 			r.m_id = key;
 			// store reference

@@ -754,8 +754,8 @@ TNIdealHeaterCooler::TNIdealHeaterCooler(unsigned int flowElementId, const NANDR
 
 void TNIdealHeaterCooler::setInflowTemperature(double Tinflow) {
 
-	IBK_ASSERT(m_fluidOutletSetpointScheduleRef != nullptr);
-	m_meanTemperature = *m_fluidOutletSetpointScheduleRef;
+	IBK_ASSERT(m_supplyTemperatureScheduleRef != nullptr);
+	m_meanTemperature = *m_supplyTemperatureScheduleRef;
 	double absMassFlux = std::fabs(m_massFlux);
 
 	// heat needed to provide the given temperature (If we are heating up the fluid, this is negative)
@@ -766,7 +766,7 @@ void TNIdealHeaterCooler::setInflowTemperature(double Tinflow) {
 		double massFluxByPass = *m_massFluxSetpointRef - absMassFlux;
 		// compute blended temperature
 
-		m_mixedReturnTemperature = Tinflow*absMassFlux + *m_fluidOutletSetpointScheduleRef*massFluxByPass;
+		m_mixedReturnTemperature = Tinflow*absMassFlux + *m_supplyTemperatureScheduleRef*massFluxByPass;
 		m_mixedReturnTemperature /= *m_massFluxSetpointRef + 1e-10; // add small offset to avoid diff-by-zero
 	}
 	else {
@@ -780,18 +780,18 @@ void TNIdealHeaterCooler::inputReferences(std::vector<InputReference> & inputRef
 	InputReference ref;
 	ref.m_id = m_id;
 	ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
-	ref.m_name.m_name = "FluidOutletSetpointSchedule";
+	ref.m_name.m_name = "SupplyTemperatureSchedule";
 	ref.m_required = true;
 	inputRefs.push_back(ref);
 
-	ref.m_name.m_name = "MassFluxSetpointSchedule";
+	ref.m_name.m_name = "MassFluxSchedule";
 	ref.m_required = false;
 	inputRefs.push_back(ref);
 }
 
 
 void TNIdealHeaterCooler::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
-	m_fluidOutletSetpointScheduleRef = *(resultValueRefs++);
+	m_supplyTemperatureScheduleRef = *(resultValueRefs++);
 
 	m_massFluxSetpointRef = *(resultValueRefs++); // may be nullptr
 }

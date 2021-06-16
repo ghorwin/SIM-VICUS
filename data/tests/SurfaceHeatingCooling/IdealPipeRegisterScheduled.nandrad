@@ -120,7 +120,7 @@
 							</DailyCycle>
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0</TimePoints>
-								<Values>MaxMassFlowSchedule [kg/s]:0.2</Values>
+								<Values>MaxMassFluxSchedule [kg/s]:0.2</Values>
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>

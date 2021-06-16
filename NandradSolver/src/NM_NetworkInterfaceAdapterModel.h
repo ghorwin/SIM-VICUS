@@ -37,7 +37,7 @@ namespace NANDRAD_MODEL {
 
 		 'Model(id=801).TotalHeatLoad'
 		 'Model(id=1212).SupplyTemperatureSchedule'
-		 'Model(id=1212).SupplyMassFluxSchedule'
+		 'Model(id=1212).MassFluxSchedule'
 
 	Provides return temperature of medium: 'Model(id=1234).ReturnTemperature'
 */

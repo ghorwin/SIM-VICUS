@@ -170,7 +170,7 @@
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0 6 18</TimePoints>
 								<Values>
-									FluidOutletSetpointSchedule [C]:22 35 22
+									SupplyTemperatureSchedule [C]:22 35 22
 								</Values>
 							</DailyCycle>
 						</DailyCycles>

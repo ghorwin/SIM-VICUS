@@ -125,7 +125,7 @@
 					<!-- Massestrom-geregelte Pumpe -->
 					<HydraulicNetworkControlElement id="1" controlledProperty="MassFlux" controllerType="PController" modelType="Constant">
 						<IBK:Parameter name="Kp" unit="---">1e6</IBK:Parameter>
-						<IBK:Parameter name="MassFluxSetpoint" unit="kg/s">0.02</IBK:Parameter>
+						<IBK:Parameter name="MassFluxSetpoint" unit="kg/s">0.02</IBK:Parameter> 
 						<!-- Maximale Druckhöhe (Pressure Head) in Pa -->
 						<MaximumControllerResultValue>10000</MaximumControllerResultValue>
 					</HydraulicNetworkControlElement>
@@ -166,14 +166,16 @@
 						</DailyCycles>
 					</Schedule>
 				</ScheduleGroup>
+				
+				<!-- IdealHeaterCooler schedule values -->
 				<ScheduleGroup objectList="Adapter">
 					<Schedule type="AllDays">
 						<DailyCycles>
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0</TimePoints>
 								<Values>
-									FluidOutletSetpointSchedule [C]:35;
-									MassFluxSetpointSchedule [kg/s]:0.02
+									SupplyTemperatureSchedule [C]:35;
+									MassFluxSchedule [kg/s]:0.02
 								</Values>
 							</DailyCycle>
 						</DailyCycles>

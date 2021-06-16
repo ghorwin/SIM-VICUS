@@ -80,14 +80,15 @@ public:
 		SQ_CondenserMeanTemperatureSchedule,					// Keyword: CondenserMeanTemperatureSchedule				[C]
 		SQ_CondenserOutletSetpointSchedule,						// Keyword: CondenserOutletSetpointSchedule					[C]
 		SQ_EvaporatorMeanTemperatureSchedule,					// Keyword: EvaporatorMeanTemperatureSchedule				[C]
-		SQ_FluidOutletSetpointSchedule,							// Keyword: FluidOutletSetpointSchedule						[C]
-		SQ_MaxMassFlowSchedule,									// Keyword: MaxMassFlowSchedule								[kg/s]
-		SQ_SupplyMassFlowSchedule,								// Keyword: SupplyMassFlowSchedule							[kg/s]
-		SQ_TemperatureDifferenceSetpointSchedule,				// Keyword: TemperatureDifferenceSetpointSchedule			[K]
+		SQ_MaxMassFluxSchedule,									// Keyword: MaxMassFluxSchedule								[kg/s]
+		/*! This schedule is used when the mass flux is defined/given. */
+		SQ_MassFluxSchedule,									// Keyword: MassFluxSchedule								[kg/s]
+		/*! This schedule is used when the mass flux is desired (as a setpoint value) and used as input for a controller. */
 		SQ_MassFluxSetpointSchedule,							// Keyword: MassFluxSetpointSchedule						[kg/s]
+		SQ_TemperatureDifferenceSetpointSchedule,				// Keyword: TemperatureDifferenceSetpointSchedule			[K]
 		SQ_HeatPumpOnOffSignalSchedule,							// Keyword: HeatPumpOnOffSignalSchedule						[---]
 		SQ_SupplyTemperatureSchedule,							// Keyword: SupplyTemperatureSchedule						[C]
-		SQ_PumpPressureHeadSchedule,							// Keyword: PumpPressureHeadSchedule						[Pa]
+		SQ_PressureHeadSchedule,								// Keyword: PressureHeadSchedule							[Pa]
 		NUM_SQ
 	};
 
