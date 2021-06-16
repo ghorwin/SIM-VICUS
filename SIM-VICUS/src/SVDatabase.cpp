@@ -200,43 +200,44 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 
 	// *** components ***
 
-	for (VICUS::ComponentInstance & ci : p.m_componentInstances)
-		referencedComponents.insert(m_components[ci.m_componentID]); // bad/missing IDs yield a nullptr
+	for (VICUS::ComponentInstance & ci : p.m_componentInstances) {
+		const VICUS::Component * c = m_components[ci.m_componentID]; // bad/missing IDs yield a nullptr
+		if (c == nullptr) continue;
 
-	// *** everything referenced from components: constructions, bc, ... ***
+		referencedComponents.insert(c);
 
-	for (const VICUS::Component * c : referencedComponents) {
+		// *** everything referenced from components: constructions, bc, ... ***
+
 		referencedConstructions.insert(m_constructions[c->m_idConstruction]); // bad/missing IDs yield a nullptr
 		referencedBC.insert(m_boundaryConditions[c->m_idSideABoundaryCondition]); // bad/missing IDs yield a nullptr
 		referencedBC.insert(m_boundaryConditions[c->m_idSideBBoundaryCondition]); // bad/missing IDs yield a nullptr
 	}
 
 	// *** sub-surface components ***
-	for (VICUS::SubSurfaceComponentInstance & ci : p.m_subSurfaceComponentInstances)
-		referencedSubSurfaceComponents.insert(m_subSurfaceComponents[ci.m_subSurfaceComponentID]); // bad/missing IDs yield a nullptr
+	for (VICUS::SubSurfaceComponentInstance & ci : p.m_subSurfaceComponentInstances) {
+		const VICUS::SubSurfaceComponent * c = m_subSurfaceComponents[ci.m_subSurfaceComponentID]; // bad/missing IDs yield a nullptr
+		if (c == nullptr) continue;
 
-	// collect referenced windows
-	for (const VICUS::SubSurfaceComponent * c : referencedSubSurfaceComponents) {
+		referencedSubSurfaceComponents.insert(c);
+
+		// collect referenced windows
 		const VICUS::Window * w = m_windows[c->m_idWindow];
-		if (w != nullptr) {
-			referencedWindows.insert(w); // bad/missing IDs yield a nullptr
-			referencedGlazingSystems.insert(m_windowGlazingSystems[w->m_idGlazingSystem]); // bad/missing IDs yield a nullptr
-			referencedBC.insert(m_boundaryConditions[c->m_idSideABoundaryCondition]); // bad/missing IDs yield a nullptr
-			referencedBC.insert(m_boundaryConditions[c->m_idSideBBoundaryCondition]); // bad/missing IDs yield a nullptr
-		}
+		if (w == nullptr) continue;
+
+		referencedWindows.insert(w);
+		referencedGlazingSystems.insert(m_windowGlazingSystems[w->m_idGlazingSystem]); // bad/missing IDs yield a nullptr
+		referencedBC.insert(m_boundaryConditions[c->m_idSideABoundaryCondition]); // bad/missing IDs yield a nullptr
+		referencedBC.insert(m_boundaryConditions[c->m_idSideBBoundaryCondition]); // bad/missing IDs yield a nullptr
 	}
 
 
 	// *** zone templates ***
 
-	for(const VICUS::Building & b : p.m_buildings){
-		for(const VICUS::BuildingLevel & bl : b.m_buildingLevels){
-			for(const VICUS::Room &  r : bl.m_rooms){
+	for (const VICUS::Building & b : p.m_buildings)
+		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels)
+			for (const VICUS::Room &  r : bl.m_rooms)
 				referencedZoneTemplates.insert(m_zoneTemplates[r.m_idZoneTemplate]);	// bad/missing IDs yield a nullptr
-			}
-		}
-	}
-
+	referencedZoneTemplates.erase(nullptr);
 
 	// *** materials ***
 	//
@@ -264,8 +265,8 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 			const VICUS::ZoneIdealHeatingCooling * idealHeatCool = m_zoneIdealHeatingCooling[idType];
 			const VICUS::Infiltration *inf = m_infiltration[idType];
 			const VICUS::VentilationNatural *ventiNat = m_ventilationNatural[idType];
-			if(intLoad	!= nullptr){
-				referencedInternalLoads.insert(intLoad); // bad/missing IDs yield a nullptr
+			if (intLoad	!= nullptr){
+				referencedInternalLoads.insert(intLoad);
 				VICUS::ZoneTemplate::SubTemplateType tempType = (VICUS::ZoneTemplate::SubTemplateType)i;
 				switch (tempType){
 					case VICUS::ZoneTemplate::ST_IntLoadPerson:{
