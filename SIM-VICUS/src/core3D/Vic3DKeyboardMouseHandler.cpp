@@ -72,6 +72,15 @@ void KeyboardMouseHandler::mousePressEvent(QMouseEvent *event) {
 
 void KeyboardMouseHandler::mouseReleaseEvent(QMouseEvent *event) {
 	releaseButton(static_cast<Qt::MouseButton>(event->button()), event->globalPos());
+	// If we have any modifier keys held, set these states.
+	// This is a fix if, for example, Shift was pressed while the focus was still elsewhere in the world
+	// and now someone clicked with the mouse into the scene.
+	// In this case, the key press event was not received by the keyboard mouse handler and hence needs to
+	// be set manually.
+	if (event->modifiers() & Qt::ShiftModifier)
+		pressKey(Qt::Key_Shift);
+	if (event->modifiers() & Qt::ControlModifier)
+		pressKey(Qt::Key_Control);
 }
 
 

@@ -2398,8 +2398,7 @@ void Scene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandler, P
 
 void Scene::handleSelection(const KeyboardMouseHandler & keyboardHandler, PickObject & o) {
 	// this will be a selection click - execute pick() operation
-	if (!o.m_pickPerformed)
-		pick(o);
+	pick(o);
 
 	// check if any of the pick candidates is of type object
 	unsigned int uniqueID = 0;
