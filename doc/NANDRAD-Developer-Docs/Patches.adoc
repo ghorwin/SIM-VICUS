@@ -1,0 +1,176 @@
+:imagesdir: ./images
+# Änderungen in abgeleiteten Projekten übernehmen
+
+## Ausgangspunkt
+
+Es gibt eine VICUS oder NANDRAD Projektdatei im ASCII-Format. Es werden davon mittels Texteditor modifizierte Versionen erstellt, Beispiel:
+
+```bash
+# Original
+Reihenhaus_Basis.nandrad
+# Variante mit Fußbodenheizung
+Reihenhaus_Fussbodenheizung.nandrad
+# Variante mit FMU Interface B1
+B1_Reihenhaus_Fussbodenheizung_FMI.nandrad
+```
+
+Die Änderungen zwischen zwei Dateiversionen lassen sich grafisch z.B. mit `meld` oder `kompare` anzeigen:
+
+```bash
+> meld Reihenhaus_Basis.nandrad Reihenhaus_Fussbodenheizung.nandrad
+# oder
+> kompare Reihenhaus_Basis.nandrad Reihenhaus_Fussbodenheizung.nandrad
+```
+
+Die Änderung von Datei 1 zu 2 lassen sich mit dem Befehl:
+
+```bash
+> diff -U 3 -dHrN -- Reihenhaus_Basis.nandrad Reihenhaus_Fussbodenheizung.nandrad
+```
+
+als *diff* vereinigt in der Konsole anzeigen, z.B.:
+
+```diff
+--- Townhouse_reference_210609.nandrad	2021-06-11 14:54:46.000000000 +0200
++++ B1_Townhouse_1_210614.nandrad	2021-06-11 15:47:29.000000000 +0200
+@@ -351,6 +351,7 @@
+ 				</MaterialLayers>
+ 			</ConstructionType>
+ 			<ConstructionType id="20006" displayName="[FMI4BIM] Town house Floor Upper Floor">
++			<ActiveLayerIndex>1</ActiveLayerIndex>
+ 				<MaterialLayers>
+ 					<MaterialLayer thickness="0.015" matId="10017" />
+ 					<MaterialLayer thickness="0.065" matId="10019" />
+@@ -424,15 +425,29 @@
+ 						</DailyCycles>
+ 					</Schedule>
+ 				</ScheduleGroup>
++				<ScheduleGroup objectList="[FMI4BIM] Townhouse Adapter">
++					<Schedule type="AllDays">
++						<DailyCycles>
++							<DailyCycle interpolation="Constant">
++								<TimePoints>0</TimePoints>
++								<Values>FluidOutletSetpointSchedule [C]:40</Values>
++							</DailyCycle>
++							<DailyCycle interpolation="Constant">
++								<TimePoints>0</TimePoints>
++								<Values>SupplyMassFlowSchedule [kg/s]:0.05</Values>
++							</DailyCycle>
++						</DailyCycles>
++					</Schedule>
++				</ScheduleGroup>
+ 			</ScheduleGroups>
+ 		</Schedules>
+ 		<Models>
+ 			<NaturalVentilationModels>
+-				<NaturalVentilationModel id="4" displayName="[FMI4BIM] Townhouse ZoneTemplate Living Space" modelType="Constant">
++				<NaturalVentilationModel id="5" displayName="[FMI4BIM] Townhouse ZoneTemplate Living Space" modelType="Constant">
+ 					<ZoneObjectList>[FMI4BIM] Townhouse ZoneTemplate Living Space</ZoneObjectList>
+ 					<IBK:Parameter name="VentilationRate" unit="1/h">0.65</IBK:Parameter>
+ 				</NaturalVentilationModel>
+-				<NaturalVentilationModel id="5" displayName="[FMI4BIM] Townhouse ZoneTemplate Roof" modelType="Constant">
++				<NaturalVentilationModel id="6" displayName="[FMI4BIM] Townhouse ZoneTemplate Roof" modelType="Constant">
+ 					<ZoneObjectList>[FMI4BIM] Townhouse ZoneTemplate Roof</ZoneObjectList>
+ 					<IBK:Parameter name="VentilationRate" unit="1/h">1.1</IBK:Parameter>
+ 				</NaturalVentilationModel>
+@@ -453,13 +468,29 @@
+ 					<ControllerType>Analog</ControllerType>
+ 				</Thermostat>
+ 			</Thermostats>
+-			<IdealHeatingCoolingModels>
+-				<IdealHeatingCoolingModel id="3">
+-					<ZoneObjectList>[FMI4BIM] Townhouse ZoneTemplate Living Space</ZoneObjectList>
++			<IdealSurfaceHeatingCoolingModels>
++				<IdealSurfaceHeatingCoolingModel id="3">
++					<ThermostatZoneId>13</ThermostatZoneId>
++					<ConstructionObjectList>[FMI4BIM] Townhouse Ground Floor</ConstructionObjectList>
+ 					<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">50</IBK:Parameter>
+-					<IBK:Parameter name="MaxCoolingPowerPerArea" unit="W/m2">0</IBK:Parameter>
+-				</IdealHeatingCoolingModel>
+-			</IdealHeatingCoolingModels>
++				</IdealSurfaceHeatingCoolingModel>
++				<IdealSurfaceHeatingCoolingModel id="4">
++					<ThermostatZoneId>14</ThermostatZoneId>
++					<ConstructionObjectList>[FMI4BIM] Townhouse Upper Floor</ConstructionObjectList>
++					<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">50</IBK:Parameter>
++				</IdealSurfaceHeatingCoolingModel>
++			</IdealSurfaceHeatingCoolingModels>
++			<HeatLoadSummationModels>
++				<HeatLoadSummationModel id="7">
++					<ObjectList>All constructions</ObjectList>
++				</HeatLoadSummationModel>
++			</HeatLoadSummationModels>
++			<NetworkInterfaceAdapterModels>
++				<NetworkInterfaceAdapterModel id="8" summationModelId="7">
++					<IBK:Parameter name="FluidHeatCapacity" unit="J/kgK">4180</IBK:Parameter>
++				</NetworkInterfaceAdapterModel>
++			</NetworkInterfaceAdapterModels>
++
+ 		</Models>
+ 		<Outputs>
+ 			<Definitions>
+@@ -468,6 +499,41 @@
+ 					<ObjectListName>All zones</ObjectListName>
+ 					<GridName>Hourly values</GridName>
+ 				</OutputDefinition>
++				<OutputDefinition>
++					<Quantity>ActiveLayerThermalLoad</Quantity>
++					<ObjectListName>All constructions</ObjectListName>
++					<GridName>Hourly values</GridName>
++				</OutputDefinition>
++				<OutputDefinition>
++					<Quantity>VentilationHeatLoad</Quantity>
++					<ObjectListName>All zones</ObjectListName>
++					<GridName>Hourly values</GridName>
++				</OutputDefinition>
++				<OutputDefinition>
++					<Quantity>ConstructionHeatConductionLoad</Quantity>
++					<ObjectListName>All zones</ObjectListName>
++					<GridName>Hourly values</GridName>
++				</OutputDefinition>
++				<OutputDefinition>
++					<Quantity>WindowHeatConductionLoad</Quantity>
++					<ObjectListName>All zones</ObjectListName>
++					<GridName>Hourly values</GridName>
++				</OutputDefinition>
++				<OutputDefinition>
++					<Quantity>WindowSolarRadiationLoad</Quantity>
++					<ObjectListName>All zones</ObjectListName>
++					<GridName>Hourly values</GridName>
++				</OutputDefinition>
++				<OutputDefinition>
++					<Quantity>TotalHeatLoad</Quantity>
++					<ObjectListName>Summation</ObjectListName>
++					<GridName>Hourly values</GridName>
++				</OutputDefinition>
++				<OutputDefinition>
++					<Quantity>ReturnTemperature</Quantity>
++					<ObjectListName>[FMI4BIM] Townhouse Adapter</ObjectListName>
++					<GridName>Hourly values</GridName>
++				</OutputDefinition>
+ 			</Definitions>
+ 			<Grids>
+ 				<OutputGrid name="Hourly values">
+ 				
+ 				... <Rest abgeschnitten>...
+```
+
+Die Ausgabe lässt sich in eine Datei umleiten:
+
+```bash
+> diff -U 3 -dHrN -- Reihenhaus_Basis.nandrad Reihenhaus_Fussbodenheizung.nandrad > patch-zuFussbodenheizung.diff
+```
+
+Wird nun die originale Datei verändert, z.B. als `Reihenhaus_Basis_v1.nandrad` gespeichert, kann man die Änderungen erneut anwenden:
+
+```bash
+> patch Reihenhaus_Basis_v1.nandrad patch-zuFussbodenheizung.diff
+```
+Hierbei wird die Datei `Reihenhaus_Basis_v1.nandrad` verändert.
+
+Das Ganze lässt sich geskriptet benutzen, um eine Reihe von aufeinander aufbauenden Dateien zu patchen. 
+
+[TIP]
+====
+Um Datenverlust bei Patchkonflikten zu vermeiden, sollte man das betreffende Verzeichnis und die zu patchenden Dateien in ein git-Repository einpacken, sodass man zur Not die Änderungen rückgängig machen kann.
+====

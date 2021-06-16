@@ -73,7 +73,7 @@ table {
 <div class="details">
 <span id="author" class="author">Andreas Nicolai</span><br>
 <span id="email" class="email"><a href="mailto:andreas.nicolai@tu-dresden.de">andreas.nicolai@tu-dresden.de</a></span><br>
-<span id="revdate">0.2.0 (30.04.2021)</span>
+<span id="revdate">0.2.0 (15.06.2021)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -169,6 +169,15 @@ table {
 <li><a href="#_debugging_nandrad_fmus_mit_qt_creator_und_mastersim">5.1. Debugging NANDRAD FMUs mit Qt Creator und MasterSim</a>
 <ul class="sectlevel3">
 <li><a href="#_linux_2">5.1.1. Linux</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_patchesdiffs">6. Patches/Diffs</a>
+<ul class="sectlevel2">
+<li><a href="#_änderungen_in_abgeleiteten_projekten_übernehmen">6.1. Änderungen in abgeleiteten Projekten übernehmen</a>
+<ul class="sectlevel3">
+<li><a href="#_ausgangspunkt">6.1.1. Ausgangspunkt</a></li>
 </ul>
 </li>
 </ul>
@@ -2474,10 +2483,217 @@ erfolgt in folgenden Schritten:</p>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_patchesdiffs">6. Patches/Diffs</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_änderungen_in_abgeleiteten_projekten_übernehmen">6.1. Änderungen in abgeleiteten Projekten übernehmen</h3>
+<div class="sect3">
+<h4 id="_ausgangspunkt">6.1.1. Ausgangspunkt</h4>
+<div class="paragraph">
+<p>Es gibt eine VICUS oder NANDRAD Projektdatei im ASCII-Format. Es werden davon mittels Texteditor modifizierte Versionen erstellt, Beispiel:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="c"># Original</span>
+Reihenhaus_Basis.nandrad
+<span class="c"># Variante mit Fußbodenheizung</span>
+Reihenhaus_Fussbodenheizung.nandrad
+<span class="c"># Variante mit FMU Interface B1</span>
+B1_Reihenhaus_Fussbodenheizung_FMI.nandrad</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Die Änderungen zwischen zwei Dateiversionen lassen sich grafisch z.B. mit <code>meld</code> oder <code>kompare</code> anzeigen:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="o">&gt;</span> meld Reihenhaus_Basis.nandrad Reihenhaus_Fussbodenheizung.nandrad
+<span class="c"># oder</span>
+<span class="o">&gt;</span> kompare Reihenhaus_Basis.nandrad Reihenhaus_Fussbodenheizung.nandrad</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Die Änderung von Datei 1 zu 2 lassen sich mit dem Befehl:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="o">&gt;</span> diff <span class="nt">-U</span> 3 <span class="nt">-dHrN</span> <span class="nt">--</span> Reihenhaus_Basis.nandrad Reihenhaus_Fussbodenheizung.nandrad</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>als <strong>diff</strong> vereinigt in der Konsole anzeigen, z.B.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="diff"><span class="gd">--- Townhouse_reference_210609.nandrad	2021-06-11 14:54:46.000000000 +0200
+</span><span class="gi">+++ B1_Townhouse_1_210614.nandrad	2021-06-11 15:47:29.000000000 +0200
+</span><span class="p">@@ -351,6 +351,7 @@</span>
+ 				&lt;/MaterialLayers&gt;
+ 			&lt;/ConstructionType&gt;
+ 			&lt;ConstructionType id="20006" displayName="[FMI4BIM] Town house Floor Upper Floor"&gt;
+<span class="gi">+			&lt;ActiveLayerIndex&gt;1&lt;/ActiveLayerIndex&gt;
+</span> 				&lt;MaterialLayers&gt;
+ 					&lt;MaterialLayer thickness="0.015" matId="10017" /&gt;
+ 					&lt;MaterialLayer thickness="0.065" matId="10019" /&gt;
+<span class="p">@@ -424,15 +425,29 @@</span>
+ 						&lt;/DailyCycles&gt;
+ 					&lt;/Schedule&gt;
+ 				&lt;/ScheduleGroup&gt;
+<span class="gi">+				&lt;ScheduleGroup objectList="[FMI4BIM] Townhouse Adapter"&gt;
++					&lt;Schedule type="AllDays"&gt;
++						&lt;DailyCycles&gt;
++							&lt;DailyCycle interpolation="Constant"&gt;
++								&lt;TimePoints&gt;0&lt;/TimePoints&gt;
++								&lt;Values&gt;FluidOutletSetpointSchedule [C]:40&lt;/Values&gt;
++							&lt;/DailyCycle&gt;
++							&lt;DailyCycle interpolation="Constant"&gt;
++								&lt;TimePoints&gt;0&lt;/TimePoints&gt;
++								&lt;Values&gt;SupplyMassFlowSchedule [kg/s]:0.05&lt;/Values&gt;
++							&lt;/DailyCycle&gt;
++						&lt;/DailyCycles&gt;
++					&lt;/Schedule&gt;
++				&lt;/ScheduleGroup&gt;
+</span> 			&lt;/ScheduleGroups&gt;
+ 		&lt;/Schedules&gt;
+ 		&lt;Models&gt;
+ 			&lt;NaturalVentilationModels&gt;
+<span class="gd">-				&lt;NaturalVentilationModel id="4" displayName="[FMI4BIM] Townhouse ZoneTemplate Living Space" modelType="Constant"&gt;
+</span><span class="gi">+				&lt;NaturalVentilationModel id="5" displayName="[FMI4BIM] Townhouse ZoneTemplate Living Space" modelType="Constant"&gt;
+</span> 					&lt;ZoneObjectList&gt;[FMI4BIM] Townhouse ZoneTemplate Living Space&lt;/ZoneObjectList&gt;
+ 					&lt;IBK:Parameter name="VentilationRate" unit="1/h"&gt;0.65&lt;/IBK:Parameter&gt;
+ 				&lt;/NaturalVentilationModel&gt;
+<span class="gd">-				&lt;NaturalVentilationModel id="5" displayName="[FMI4BIM] Townhouse ZoneTemplate Roof" modelType="Constant"&gt;
+</span><span class="gi">+				&lt;NaturalVentilationModel id="6" displayName="[FMI4BIM] Townhouse ZoneTemplate Roof" modelType="Constant"&gt;
+</span> 					&lt;ZoneObjectList&gt;[FMI4BIM] Townhouse ZoneTemplate Roof&lt;/ZoneObjectList&gt;
+ 					&lt;IBK:Parameter name="VentilationRate" unit="1/h"&gt;1.1&lt;/IBK:Parameter&gt;
+ 				&lt;/NaturalVentilationModel&gt;
+<span class="p">@@ -453,13 +468,29 @@</span>
+ 					&lt;ControllerType&gt;Analog&lt;/ControllerType&gt;
+ 				&lt;/Thermostat&gt;
+ 			&lt;/Thermostats&gt;
+<span class="gd">-			&lt;IdealHeatingCoolingModels&gt;
+-				&lt;IdealHeatingCoolingModel id="3"&gt;
+-					&lt;ZoneObjectList&gt;[FMI4BIM] Townhouse ZoneTemplate Living Space&lt;/ZoneObjectList&gt;
+</span><span class="gi">+			&lt;IdealSurfaceHeatingCoolingModels&gt;
++				&lt;IdealSurfaceHeatingCoolingModel id="3"&gt;
++					&lt;ThermostatZoneId&gt;13&lt;/ThermostatZoneId&gt;
++					&lt;ConstructionObjectList&gt;[FMI4BIM] Townhouse Ground Floor&lt;/ConstructionObjectList&gt;
+</span> 					&lt;IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2"&gt;50&lt;/IBK:Parameter&gt;
+<span class="gd">-					&lt;IBK:Parameter name="MaxCoolingPowerPerArea" unit="W/m2"&gt;0&lt;/IBK:Parameter&gt;
+-				&lt;/IdealHeatingCoolingModel&gt;
+-			&lt;/IdealHeatingCoolingModels&gt;
+</span><span class="gi">+				&lt;/IdealSurfaceHeatingCoolingModel&gt;
++				&lt;IdealSurfaceHeatingCoolingModel id="4"&gt;
++					&lt;ThermostatZoneId&gt;14&lt;/ThermostatZoneId&gt;
++					&lt;ConstructionObjectList&gt;[FMI4BIM] Townhouse Upper Floor&lt;/ConstructionObjectList&gt;
++					&lt;IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2"&gt;50&lt;/IBK:Parameter&gt;
++				&lt;/IdealSurfaceHeatingCoolingModel&gt;
++			&lt;/IdealSurfaceHeatingCoolingModels&gt;
++			&lt;HeatLoadSummationModels&gt;
++				&lt;HeatLoadSummationModel id="7"&gt;
++					&lt;ObjectList&gt;All constructions&lt;/ObjectList&gt;
++				&lt;/HeatLoadSummationModel&gt;
++			&lt;/HeatLoadSummationModels&gt;
++			&lt;NetworkInterfaceAdapterModels&gt;
++				&lt;NetworkInterfaceAdapterModel id="8" summationModelId="7"&gt;
++					&lt;IBK:Parameter name="FluidHeatCapacity" unit="J/kgK"&gt;4180&lt;/IBK:Parameter&gt;
++				&lt;/NetworkInterfaceAdapterModel&gt;
++			&lt;/NetworkInterfaceAdapterModels&gt;
++
+</span> 		&lt;/Models&gt;
+ 		&lt;Outputs&gt;
+ 			&lt;Definitions&gt;
+<span class="p">@@ -468,6 +499,41 @@</span>
+ 					&lt;ObjectListName&gt;All zones&lt;/ObjectListName&gt;
+ 					&lt;GridName&gt;Hourly values&lt;/GridName&gt;
+ 				&lt;/OutputDefinition&gt;
+<span class="gi">+				&lt;OutputDefinition&gt;
++					&lt;Quantity&gt;ActiveLayerThermalLoad&lt;/Quantity&gt;
++					&lt;ObjectListName&gt;All constructions&lt;/ObjectListName&gt;
++					&lt;GridName&gt;Hourly values&lt;/GridName&gt;
++				&lt;/OutputDefinition&gt;
++				&lt;OutputDefinition&gt;
++					&lt;Quantity&gt;VentilationHeatLoad&lt;/Quantity&gt;
++					&lt;ObjectListName&gt;All zones&lt;/ObjectListName&gt;
++					&lt;GridName&gt;Hourly values&lt;/GridName&gt;
++				&lt;/OutputDefinition&gt;
++				&lt;OutputDefinition&gt;
++					&lt;Quantity&gt;ConstructionHeatConductionLoad&lt;/Quantity&gt;
++					&lt;ObjectListName&gt;All zones&lt;/ObjectListName&gt;
++					&lt;GridName&gt;Hourly values&lt;/GridName&gt;
++				&lt;/OutputDefinition&gt;
++				&lt;OutputDefinition&gt;
++					&lt;Quantity&gt;WindowHeatConductionLoad&lt;/Quantity&gt;
++					&lt;ObjectListName&gt;All zones&lt;/ObjectListName&gt;
++					&lt;GridName&gt;Hourly values&lt;/GridName&gt;
++				&lt;/OutputDefinition&gt;
++				&lt;OutputDefinition&gt;
++					&lt;Quantity&gt;WindowSolarRadiationLoad&lt;/Quantity&gt;
++					&lt;ObjectListName&gt;All zones&lt;/ObjectListName&gt;
++					&lt;GridName&gt;Hourly values&lt;/GridName&gt;
++				&lt;/OutputDefinition&gt;
++				&lt;OutputDefinition&gt;
++					&lt;Quantity&gt;TotalHeatLoad&lt;/Quantity&gt;
++					&lt;ObjectListName&gt;Summation&lt;/ObjectListName&gt;
++					&lt;GridName&gt;Hourly values&lt;/GridName&gt;
++				&lt;/OutputDefinition&gt;
++				&lt;OutputDefinition&gt;
++					&lt;Quantity&gt;ReturnTemperature&lt;/Quantity&gt;
++					&lt;ObjectListName&gt;[FMI4BIM] Townhouse Adapter&lt;/ObjectListName&gt;
++					&lt;GridName&gt;Hourly values&lt;/GridName&gt;
++				&lt;/OutputDefinition&gt;
+</span> 			&lt;/Definitions&gt;
+ 			&lt;Grids&gt;
+ 				&lt;OutputGrid name="Hourly values"&gt;
+
+ 				... &lt;Rest abgeschnitten&gt;...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Die Ausgabe lässt sich in eine Datei umleiten:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="o">&gt;</span> diff <span class="nt">-U</span> 3 <span class="nt">-dHrN</span> <span class="nt">--</span> Reihenhaus_Basis.nandrad Reihenhaus_Fussbodenheizung.nandrad <span class="o">&gt;</span> patch-zuFussbodenheizung.diff</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wird nun die originale Datei verändert, z.B. als <code>Reihenhaus_Basis_v1.nandrad</code> gespeichert, kann man die Änderungen erneut anwenden:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="o">&gt;</span> patch Reihenhaus_Basis_v1.nandrad patch-zuFussbodenheizung.diff</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Hierbei wird die Datei <code>Reihenhaus_Basis_v1.nandrad</code> verändert.</p>
+</div>
+<div class="paragraph">
+<p>Das Ganze lässt sich geskriptet benutzen, um eine Reihe von aufeinander aufbauenden Dateien zu patchen.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Um Datenverlust bei Patchkonflikten zu vermeiden, sollte man das betreffende Verzeichnis und die zu patchenden Dateien in ein git-Repository einpacken, sodass man zur Not die Änderungen rückgängig machen kann.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-04-30 13:30:06 +0200
+Last updated 2021-06-15 13:27:13 +0200
 </div>
 </div>
 <style>

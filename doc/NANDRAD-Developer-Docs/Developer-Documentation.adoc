@@ -1,7 +1,7 @@
 NANDRAD Developers Manual
 =========================
 Andreas Nicolai <andreas.nicolai@tu-dresden.de>
-0.2.0 (30.04.2021)
+0.2.0 (15.06.2021)
 // 0.2.0 date_on_line_above
 :Author Initials: AN
 :toc: left
@@ -46,3 +46,8 @@ include::UISelectionHandling.adoc[leveloffset=+2]
 ## NANDRAD FMU
 
 include::FMU-Debugging.adoc[leveloffset=+2]
+
+## Patches/Diffs
+
+include::Patches.adoc[leveloffset=+2]
+
