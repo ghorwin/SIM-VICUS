@@ -634,10 +634,6 @@ public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	TNIdealHeaterCooler(unsigned int flowElementId, const NANDRAD::HydraulicFluid & fluid);
 
-private:
-	unsigned int	m_id = 0;
-	const double	*m_supplyTemperatureScheduleRef = nullptr;
-
 	// *** ThermalNetworkAbstractFlowElement interface
 
 	/*! We have no internal state. */
@@ -651,21 +647,17 @@ private:
 
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
-		quantities.push_back(QuantityDescription("MixedReturnTemperature", "C", "Mixed temperature from inlet and implied bypass", false));
 		quantities.push_back(QuantityDescription("HeatLoss", "W", "Heat loss of element", false));
 	}
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
 	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
-		valRefs.push_back(&m_mixedReturnTemperature);
 		valRefs.push_back(&m_heatLoss);
 	}
 
-	/*! Reference to scheduled mass flux setpoint, if provided */
-	const double	*m_massFluxSetpointRef = nullptr;
-
-	/*! Mixed return temperature, updated in setInflowTemperature. */
-	double			m_mixedReturnTemperature = 888;
+private:
+	unsigned int	m_id = NANDRAD::INVALID_ID;
+	const double	*m_supplyTemperatureScheduleRef = nullptr;
 
 	/*! Heat loss needed to provide the given supply temperature (If we add heat this is negative).
 		 Is not part of the base class since we use ThermalNetworkAbstractFlowElement */

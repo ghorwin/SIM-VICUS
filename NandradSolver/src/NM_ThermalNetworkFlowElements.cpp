@@ -743,7 +743,7 @@ void TNHeatPumpIdealCarnot::internalDerivatives(double *ydot) {
 
 
 
-// *** TNSupplyTemperatureAdapter ***
+// *** TNIdealHeaterCooler ***
 
 TNIdealHeaterCooler::TNIdealHeaterCooler(unsigned int flowElementId, const NANDRAD::HydraulicFluid & fluid) :
 	m_id(flowElementId)
@@ -760,19 +760,6 @@ void TNIdealHeaterCooler::setInflowTemperature(double Tinflow) {
 
 	// heat needed to provide the given temperature (If we are heating up the fluid, this is negative)
 	m_heatLoss = absMassFlux * m_fluidHeatCapacity * (Tinflow - m_meanTemperature);
-
-	if (m_massFluxSetpointRef != nullptr) {
-		// compute implied bypass flow
-		double massFluxByPass = *m_massFluxSetpointRef - absMassFlux;
-		// compute blended temperature
-
-		m_mixedReturnTemperature = Tinflow*absMassFlux + *m_supplyTemperatureScheduleRef*massFluxByPass;
-		m_mixedReturnTemperature /= *m_massFluxSetpointRef + 1e-10; // add small offset to avoid diff-by-zero
-	}
-	else {
-		// no mass flux schedule, no mixed temperature
-		m_mixedReturnTemperature = m_meanTemperature;
-	}
 }
 
 
@@ -783,17 +770,11 @@ void TNIdealHeaterCooler::inputReferences(std::vector<InputReference> & inputRef
 	ref.m_name.m_name = "SupplyTemperatureSchedule";
 	ref.m_required = true;
 	inputRefs.push_back(ref);
-
-	ref.m_name.m_name = "MassFluxSchedule";
-	ref.m_required = false;
-	inputRefs.push_back(ref);
 }
 
 
 void TNIdealHeaterCooler::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
 	m_supplyTemperatureScheduleRef = *(resultValueRefs++);
-
-	m_massFluxSetpointRef = *(resultValueRefs++); // may be nullptr
 }
 
 
@@ -813,8 +794,7 @@ TNHeatPumpReal::TNHeatPumpReal(unsigned int flowElementId, const NANDRAD::Hydrau
 }
 
 
-void TNHeatPumpReal::setInflowTemperature(double Tinflow)
-{
+void TNHeatPumpReal::setInflowTemperature(double Tinflow) {
 	ThermalNetworkAbstractFlowElementWithHeatLoss::setInflowTemperature(Tinflow);
 
 	IBK_ASSERT(m_condenserOutletSetpointRef != nullptr);
@@ -863,8 +843,7 @@ void TNHeatPumpReal::setInflowTemperature(double Tinflow)
 }
 
 
-void TNHeatPumpReal::inputReferences(std::vector<InputReference> &inputRefs) const
-{
+void TNHeatPumpReal::inputReferences(std::vector<InputReference> &inputRefs) const {
 	switch (m_flowElement->m_component->m_modelType) {
 
 		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpRealSourceSide: {
@@ -899,8 +878,9 @@ void TNHeatPumpReal::setInputValueRefs(std::vector<const double *>::const_iterat
 	}
 }
 
-void TNHeatPumpReal::internalDerivatives(double *ydot)
-{
+
+void TNHeatPumpReal::internalDerivatives(double *ydot) {
+	// Bypass parent class's internalDerivatives() function
 	ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(ydot);
 }
 

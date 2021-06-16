@@ -350,7 +350,7 @@ Die Berechnung der Verlustwärme und elektrischen Leistung erfolgt analog zur `C
 
 ### Modelltyp: ControlledPump
 
-...
+... TODO Andreas
 
 
 ### ModellTyp: HeatExchanger
@@ -367,9 +367,13 @@ Das Model `HeatExchanger` ist ein einfacher Wärmeübertrager, welcher mit dem F
 
 
 
-### ModellTyp: HeatPumpIdealCarnot
+### ModellTyp: HeatPumpIdealCarnotSourceSide
 
-Das Model `HeatPumpIdealCarnot` ist eine ideale Wärmepumpe mit gegebener Carnot-Effizienz. Es werden diese Parameter benötigt:
+Das Model `HeatPumpIdealCarnotSourceSide` ist eine ideale Wärmepumpe mit gegebener Carnot-Effizienz, welche die Quellenseite abbildet.
+
+TODO : Hauke, detailliert erläutern und Beispiel/Parameterliste prüfen/korrigieren
+
+Es werden diese Parameter benötigt:
 
 [options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
 |====================
@@ -387,25 +391,49 @@ Außerdem muss noch der Parameter `HeatPumpIntegration` mit den Werten `SourceSi
 Es werden verschiedene Parameter als Schedules benötigt: Ist der Modus `SourceSide` gewählt muss der Parameter `CondenserMeanTemperatureSchedule` als Schedule gegeben sein. 
 Wird der Modus `SupplySide` gewählt, müssen die Parameter `EvaporatorMeanTemperatureSchedule` und `CondenserOutletSetpointSchedule` als Schedule gegeben sein.
 
-[[xml_HeatPumpIdealCarnot]]
-.Definition einer HeatPumpIdealCarnot
+[[ex_HeatPumpIdealCarnotSourceSide]]
+.Definition einer HeatPumpIdealCarnotSourceSide
 ====
 [source,xml]
 ----
-<HydraulicNetworkComponent id="2" modelType="HeatPumpIdealCarnot">
+<HydraulicNetworkComponent id="2" modelType="HeatPumpIdealCarnotSourceSide">
 	<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
 	<IBK:Parameter name="PressureLossCoefficient" unit="-">5</IBK:Parameter>
 	<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 	<IBK:Parameter name="CarnotEfficiency" unit="---">0.4</IBK:Parameter>
 	<IBK:Parameter name="MaximumHeatingPower" unit="W">4000</IBK:Parameter>
-	<HeatPumpIntegration>SourceSide</HeatPumpIntegration>
 </HydraulicNetworkComponent>
 ----
 ====
 
 
-[[HydraulicElement_DynamicPipe]]
-### Modelltyp: DynamicPipe
+
+### ModellTyp: HeatPumpIdealCarnotSupplySide
+
+Das Model `HeatPumpIdealCarnotSupplySide` ist eine ideale Wärmepumpe mit gegebener Carnot-Effizienz, welche die Versorgungsseite abbildet.
+
+TODO : Hauke, detailliert erläutern
+
+
+[[HydraulicElement_HeatPumpRealSourceSide]]
+### Modelltyp: HeatPumpRealSourceSide
+
+TODO : Hauke, detailliert erläutern
+
+
+[[HydraulicElement_ControlledValve]]
+### Modelltyp: ControlledValve
+
+Ein Ventil, welches nach bestimmten Kriterien geregelt wird. 
+
+TODO : Andreas
+
+
+[[HydraulicElement_IdealHeaterCooler]]
+### Modelltyp: IdealHeaterCooler
+
+TODO : Andreas
+
 
 
 

@@ -652,7 +652,7 @@ Das Modell beschreibt ein Rohrregister, welches zur Beheizung/Kühlung von Fläc
 	<ThermostatZoneId>1</ThermostatZoneId>
 	<ConstructionObjectList>Floor</ConstructionObjectList>
 	<IBK:Parameter name="SupplyTemperature" unit="C">8</IBK:Parameter>
-	<IBK:Parameter name="MaxMassFlow" unit="kg/s">0.2</IBK:Parameter>
+	<IBK:Parameter name="MaxMassFlux" unit="kg/s">0.2</IBK:Parameter>
 	<IBK:Parameter name="PipeLength" unit="m">100</IBK:Parameter>
 	<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
 	<IBK:Parameter name="UValuePipeWall" unit="W/mK">5</IBK:Parameter>
@@ -700,12 +700,12 @@ a| Definiert die Vorlauftemperatur
 | key | _erforderlich_
 |====================
 
-Für den Modelltyp `Scheduled` müssen Zeitpläne für die Größen:
+Wenn der Modelltyp `Scheduled` verwendet wird, sind folgende Zeitplanparameter erforderlich:
 
-- `SupplyTemperatureSchedule` und
-- `MaxMassFlowSchedule`
+- `SupplyTemperatureSchedule [C]` 
+- `MaxMassFluxSchedule [kg/s]`
 
-für die Konstruktion definiert werden. Häufig ist es sinnvoll, die gleiche Objektliste für die Schedule-Definition wie auch für das `IdealPipeRegisterModel` zu verwenden.
+Diese müssen für die Konstruktion definiert werden. Häufig ist es sinnvoll, die gleiche Objektliste für die Schedule-Definition wie auch für das `IdealPipeRegisterModel` zu verwenden.
 
 Folgende Fließkommaparameter (siehe <<IBK_Parameter>> für eine Beschreibung des Elementtyps `IBK:Parameter`) sind anzugeben:
 
@@ -720,6 +720,7 @@ Folgende Fließkommaparameter (siehe <<IBK_Parameter>> für eine Beschreibung de
 |====================
 
 Der Parameter `NumberParallelPipes` gibt an, wie viele Rohre parallel in der Konstruktion durchströmt werden.
+
 
 [TIP]
 ====
@@ -805,12 +806,12 @@ Die `TotalThermalLoad` ist positiv bei Beheizung der Fläche und negativ bei Kü
 [[model_network_interface_adapter]]
 ## Schnittstellen-Modell für die Anbindung externer Anlagennetze 
 
-Diese Modell ist für alleinstehende Simulation unwichtig und wird primär für die Co-Simulation mittels FMI gebraucht. Es bildet den Wärmeentzug des Gebäudes auf ein strömendes Medium ab, bspw. ein Versorgungsnetzwerk. Das Medium strömt mit gegebener Vorlauftemperatur und Massenstrom ins Gebäude und das `NetworkInterfaceAdapterModel` berechnet die resultierende Rücklauftemperatur.
+Diese Modell ist für alleinstehende Simulationen unwichtig und wird primär für die Co-Simulation mittels FMI gebraucht. Es bildet den Wärmeentzug des Gebäudes auf ein strömendes Medium ab, bspw. ein Versorgungsnetzwerk. Das Medium strömt mit gegebener Vorlauftemperatur und Massenstrom ins Gebäude und das `NetworkInterfaceAdapterModel` berechnet die resultierende Rücklauftemperatur.
 
 Vorlauftemperatur und Massenstrom werden als Zeitpläne benötigt:
 
-- `SupplyTemperatureSchedule`
-- `SupplyMassFlowSchedule`
+- `SupplyTemperatureSchedule [C]`
+- `MassFluxSchedule [kg/s]`
 
 Bei Verwendung der FMI-Kopplung sind diese Größen durch FMI-Input-Variablen zu überschreiben.
 
