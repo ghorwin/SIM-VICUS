@@ -186,6 +186,7 @@ bool ClassInfo::parse(const IBK::Path & headerFilePath) {
 					varName = IBK::trim_copy(varName.substr(0, equalPos));
 
 				std::string xmlSpec = line.substr(pos+7);
+				IBK::trim(xmlSpec);
 				// we support only a subset of type declarations
 //				std::cout << typeStr << " : " << varName << " : " << xmlSpec << std::endl;
 
