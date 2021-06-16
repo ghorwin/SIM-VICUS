@@ -83,19 +83,15 @@ class SolverStats:
 		s1keys = list(set(s1keys + s2keys))
 		s1keys.sort()
 		#print "  --"
-		THRESHOLD = 0.1
+		THRESHOLD = 0.1 # 10 %
 		for k in s1keys:
 			if s1.timers.has_key(k):
 				if s2.timers.has_key(k):
 					val1 = s1.timers[k]
 					val2 = s2.timers[k]
 					match = val1*(1+THRESHOLD) > val2 and val2*(1+THRESHOLD) > val1
-					# if time is too small to be meaningful, always accept match
-					if abs(val1-val2) < 1:
-						match = True
-					if match:
-						pass#print("  {:30s}  {:12.2f} ~~ {:12.2f}".format(k, s1.timers[k], s2.timers[k]))
-					else:
+					# if time is too small to be meaningful, do not print warning
+					if abs(val1-val2) > 0.1:
 						printWarning("  {:30s}  {:12.2f} <> {:12.2f}".format(k, s1.timers[k], s2.timers[k]))
 				else:
 					printWarning("  {:30s}  {:12.2f} <> {:12s}".format(k, s1.timers[k], ""))

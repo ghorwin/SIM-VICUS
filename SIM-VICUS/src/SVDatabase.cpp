@@ -164,56 +164,70 @@ void SVDatabase::writeDatabases() const {
 }
 
 
+template <typename T>
+void storeVector(std::vector<T> & vec, const std::set<const T*> & container) {
+	// clear target vector
+	vec.clear();
+	// store objects but skip nullptr
+	for (const T * c : container)
+		if (c != nullptr) vec.push_back(*c);
+}
+
 void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
+
+	// create sets for objects that are referenced from other objects
+	std::set<const VICUS::Material *>				referencedMaterials;
+	std::set<const VICUS::Construction *>			referencedConstructions;
+	std::set<const VICUS::Window *>					referencedWindows;
+	std::set<const VICUS::WindowGlazingSystem *>	referencedGlazingSystems;
+	std::set<const VICUS::BoundaryCondition *>		referencedBC;
+	std::set<const VICUS::Component *>				referencedComponents;
+	std::set<const VICUS::SubSurfaceComponent *>	referencedSubSurfaceComponents;
+	std::set<const VICUS::Schedule *>				referencedSchedule;
+	std::set<const VICUS::InternalLoad *>			referencedInternalLoads;
+	std::set<const VICUS::ZoneControlThermostat *>	referencedThermostats;
+	std::set<const VICUS::ZoneIdealHeatingCooling *> referencedIdealHeatCool;
+	std::set<const VICUS::VentilationNatural *>		referencedVentilation;
+	std::set<const VICUS::Infiltration *>			referencedInfiltration;
+	std::set<const VICUS::ZoneTemplate *>			referencedZoneTemplates;
+
+
+	// we first collect all objects that are not referenced themselves
+	// then, we collect objects that are referenced from an already collected object
+	// this is continued until we have collected all objects that are used somewhere in the
+	// project
 
 
 	// *** components ***
-	std::set<const VICUS::Component *> referencedComponents;
+
 	for (VICUS::ComponentInstance & ci : p.m_componentInstances)
 		referencedComponents.insert(m_components[ci.m_componentID]); // bad/missing IDs yield a nullptr
-	referencedComponents.erase(nullptr);
-
-	p.m_embeddedDB.m_components.clear();
-	for (const VICUS::Component * c : referencedComponents)
-		p.m_embeddedDB.m_components.push_back(*c);
-
 
 	// *** everything referenced from components: constructions, bc, ... ***
 
-	std::set<const VICUS::Construction *> referencedConstructions;
-	std::set<const VICUS::BoundaryCondition *> referencedBC;
 	for (const VICUS::Component * c : referencedComponents) {
 		referencedConstructions.insert(m_constructions[c->m_idConstruction]); // bad/missing IDs yield a nullptr
 		referencedBC.insert(m_boundaryConditions[c->m_idSideABoundaryCondition]); // bad/missing IDs yield a nullptr
 		referencedBC.insert(m_boundaryConditions[c->m_idSideBBoundaryCondition]); // bad/missing IDs yield a nullptr
 	}
-	referencedConstructions.erase(nullptr);
-	referencedBC.erase(nullptr);
 
-	// TODO : subsurfacecomponents
+	// *** sub-surface components ***
+	for (VICUS::SubSurfaceComponentInstance & ci : p.m_subSurfaceComponentInstances)
+		referencedSubSurfaceComponents.insert(m_subSurfaceComponents[ci.m_subSurfaceComponentID]); // bad/missing IDs yield a nullptr
 
-	p.m_embeddedDB.m_constructions.clear();
-	for (const VICUS::Construction * c : referencedConstructions)
-		p.m_embeddedDB.m_constructions.push_back(*c);
-	p.m_embeddedDB.m_boundaryConditions.clear();
-	for (const VICUS::BoundaryCondition * c : referencedBC)
-		p.m_embeddedDB.m_boundaryConditions.push_back(*c);
-
-
-	// *** materials ***
-	std::set<const VICUS::Material *> referencedMaterials;
-	for (const VICUS::Construction * c : referencedConstructions) {
-		for (const VICUS::MaterialLayer & ml : c->m_materialLayers)
-			referencedMaterials.insert(m_materials[ml.m_matId]); // bad/missing IDs yield a nullptr
+	// collect referenced windows
+	for (const VICUS::SubSurfaceComponent * c : referencedSubSurfaceComponents) {
+		const VICUS::Window * w = m_windows[c->m_idWindow];
+		if (w != nullptr) {
+			referencedWindows.insert(w); // bad/missing IDs yield a nullptr
+			referencedGlazingSystems.insert(m_windowGlazingSystems[w->m_idGlazingSystem]); // bad/missing IDs yield a nullptr
+			referencedBC.insert(m_boundaryConditions[c->m_idSideABoundaryCondition]); // bad/missing IDs yield a nullptr
+			referencedBC.insert(m_boundaryConditions[c->m_idSideBBoundaryCondition]); // bad/missing IDs yield a nullptr
+		}
 	}
-	referencedMaterials.erase(nullptr);
 
-	p.m_embeddedDB.m_materials.clear();
-	for (const VICUS::Material * c : referencedMaterials)
-		p.m_embeddedDB.m_materials.push_back(*c);
 
 	// *** zone templates ***
-	std::set<const VICUS::ZoneTemplate *> referencedZoneTemplates;
 
 	for(const VICUS::Building & b : p.m_buildings){
 		for(const VICUS::BuildingLevel & bl : b.m_buildingLevels){
@@ -223,23 +237,25 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 		}
 	}
 
-	referencedZoneTemplates.erase(nullptr);
 
-	p.m_embeddedDB.m_zoneTemplates.clear();
-	for (const VICUS::ZoneTemplate * zt : referencedZoneTemplates)
-		p.m_embeddedDB.m_zoneTemplates.push_back(*zt);
+	// *** materials ***
+	//
+	// referenced from constructions and window (frame+divider)
 
-	// *** schedules ***
-	std::set<const VICUS::Schedule *> referencedSchedule;
+	for (const VICUS::Construction * c : referencedConstructions) {
+		for (const VICUS::MaterialLayer & ml : c->m_materialLayers)
+			referencedMaterials.insert(m_materials[ml.m_matId]); // bad/missing IDs yield a nullptr
+	}
+	for (const VICUS::Window * c : referencedWindows) {
+		referencedMaterials.insert(m_materials[c->m_frame.m_idMaterial]); // bad/missing IDs yield a nullptr
+		referencedMaterials.insert(m_materials[c->m_divider.m_idMaterial]); // bad/missing IDs yield a nullptr
+	}
 
-	// *** internal loads, ... ***
-	std::set<const VICUS::InternalLoad *> referencedInternalLoads;
-	std::set<const VICUS::ZoneControlThermostat *> referencedThermostats;
-	std::set<const VICUS::Infiltration *> referencedInfiltration;
-	std::set<const VICUS::VentilationNatural *> referencedVentilation;
-	std::set<const VICUS::ZoneIdealHeatingCooling *> referencedIdealHeatCool;
 
-	//also add all schedules
+	// *** everything that is referenced from zone templates
+
+	// TODO Dirk, Review and check for completeness!
+
 	for (const VICUS::ZoneTemplate * zt : referencedZoneTemplates) {
 		for (unsigned int i=0; i<VICUS::ZoneTemplate::NUM_ST; ++i){
 			IDType idType = zt->m_idReferences[i];
@@ -297,29 +313,40 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 		}
 	}
 
-	p.m_embeddedDB.m_internalLoads.clear();
-	for (const VICUS::InternalLoad * il : referencedInternalLoads)
-		p.m_embeddedDB.m_internalLoads.push_back(*il);
 
-	p.m_embeddedDB.m_zoneControlThermostat.clear();
-	for (const VICUS::ZoneControlThermostat * thermo : referencedThermostats)
-		p.m_embeddedDB.m_zoneControlThermostat.push_back(*thermo);
 
-	p.m_embeddedDB.m_infiltration.clear();
-	for (const VICUS::Infiltration * inf : referencedInfiltration)
-		p.m_embeddedDB.m_infiltration.push_back(*inf);
 
-	p.m_embeddedDB.m_ventilationNatural.clear();
-	for (const VICUS::VentilationNatural * venti : referencedVentilation)
-		p.m_embeddedDB.m_ventilationNatural.push_back(*venti);
 
-	p.m_embeddedDB.m_zoneIdealHeatingCooling.clear();
-	for (const VICUS::ZoneIdealHeatingCooling * ideal : referencedIdealHeatCool)
-		p.m_embeddedDB.m_zoneIdealHeatingCooling.push_back(*ideal);
+	// *** transfer collected objects to project's embedded database ***
 
-	p.m_embeddedDB.m_schedules.clear();
-	for (const VICUS::Schedule * sched : referencedSchedule)
-		p.m_embeddedDB.m_schedules.push_back(*sched);
+	storeVector(p.m_embeddedDB.m_materials, referencedMaterials);
+	storeVector(p.m_embeddedDB.m_constructions, referencedConstructions);
+	storeVector(p.m_embeddedDB.m_windows, referencedWindows);
+	storeVector(p.m_embeddedDB.m_windowGlazingSystems, referencedGlazingSystems);
+	storeVector(p.m_embeddedDB.m_boundaryConditions, referencedBC);
+	storeVector(p.m_embeddedDB.m_components, referencedComponents);
+	storeVector(p.m_embeddedDB.m_subSurfaceComponents, referencedSubSurfaceComponents);
+
+
+	// TODO m_pipes
+	// TODO m_fluids
+	// TODO m_networkComponents
+	// TODO m_EPDElements
+
+	storeVector(p.m_embeddedDB.m_schedules, referencedSchedule);
+	storeVector(p.m_embeddedDB.m_internalLoads, referencedInternalLoads);
+	storeVector(p.m_embeddedDB.m_zoneControlThermostats, referencedThermostats);
+
+
+	// TODO m_zoneControlShadings
+
+	storeVector(p.m_embeddedDB.m_zoneIdealHeatingCooling, referencedIdealHeatCool);
+
+	// TODO m_zoneControlVentilationNaturals
+
+	storeVector(p.m_embeddedDB.m_ventilationNatural, referencedVentilation);
+	storeVector(p.m_embeddedDB.m_infiltration, referencedInfiltration);
+	storeVector(p.m_embeddedDB.m_zoneTemplates, referencedZoneTemplates);
 
 }
 

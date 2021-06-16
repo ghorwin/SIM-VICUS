@@ -1460,7 +1460,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 				VICUS::ZoneTemplate::SubTemplateType thermoType = VICUS::ZoneTemplate::ST_ControlThermostat;
 				if(zt->m_idReferences[thermoType] != VICUS::INVALID_ID){
 					ztBools[counter].m_subTemplateId[thermoType] = zt->m_idReferences[thermoType];
-					const VICUS::ZoneControlThermostat * thermo =  element(m_embeddedDB.m_zoneControlThermostat,
+					const VICUS::ZoneControlThermostat * thermo =  element(m_embeddedDB.m_zoneControlThermostats,
 																		   zt->m_idReferences[thermoType]);
 					if(thermo != nullptr){
 						//first create an obj list for thermostat
@@ -1569,7 +1569,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 		}
 		// *** check for thermostat in zone template ***
 		else if(zt->m_idReferences[VICUS::ZoneTemplate::ST_ControlThermostat] != VICUS::INVALID_ID){
-			const VICUS::ZoneControlThermostat * thermo =  element(m_embeddedDB.m_zoneControlThermostat,
+			const VICUS::ZoneControlThermostat * thermo =  element(m_embeddedDB.m_zoneControlThermostats,
 																   zt->m_idReferences[VICUS::ZoneTemplate::ST_ControlThermostat]);
 			if(thermo != nullptr){
 				//first create an obj list for thermostat

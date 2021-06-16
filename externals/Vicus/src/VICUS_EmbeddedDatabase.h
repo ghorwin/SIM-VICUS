@@ -99,7 +99,7 @@ public:
 	std::vector<VICUS::InternalLoad>					m_internalLoads;					// XML:E
 
 	/*! Map of all database Zone Control Thermostats. */
-	std::vector<VICUS::ZoneControlThermostat>			m_zoneControlThermostat;			// XML:E
+	std::vector<VICUS::ZoneControlThermostat>			m_zoneControlThermostats;			// XML:E
 
 	/*! Map of all database Zone Control Thermostats. */
 	std::vector<VICUS::ZoneControlShading>				m_zoneControlShading;				// XML:E

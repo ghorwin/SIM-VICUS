@@ -196,7 +196,7 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
-			else if (cName == "ZoneControlThermostat") {
+			else if (cName == "ZoneControlThermostats") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
@@ -204,7 +204,7 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					VICUS::ZoneControlThermostat obj;
 					obj.readXML(c2);
-					m_zoneControlThermostat.push_back(obj);
+					m_zoneControlThermostats.push_back(obj);
 					c2 = c2->NextSiblingElement();
 				}
 			}
@@ -455,12 +455,12 @@ TiXmlElement * EmbeddedDatabase::writeXML(TiXmlElement * parent) const {
 	}
 
 
-	if (!m_zoneControlThermostat.empty()) {
-		TiXmlElement * child = new TiXmlElement("ZoneControlThermostat");
+	if (!m_zoneControlThermostats.empty()) {
+		TiXmlElement * child = new TiXmlElement("ZoneControlThermostats");
 		e->LinkEndChild(child);
 
-		for (std::vector<VICUS::ZoneControlThermostat>::const_iterator it = m_zoneControlThermostat.begin();
-			it != m_zoneControlThermostat.end(); ++it)
+		for (std::vector<VICUS::ZoneControlThermostat>::const_iterator it = m_zoneControlThermostats.begin();
+			it != m_zoneControlThermostats.end(); ++it)
 		{
 			it->writeXML(child);
 		}

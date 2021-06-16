@@ -634,7 +634,7 @@ bool SVProjectHandler::importEmbeddedDB() {
 		// check, if element exists in built-in DB
 		importDBElement(e, db.m_materials, materialIDMap,
 			"Material '%1' with #%2 imported -> new ID #%3.\n",
-			"Material '%1' with #%2 exists already -> new ID #%3.\n"
+			"Material '%1' with #%2 exists already -> ID #%3.\n"
 		);
 	}
 
@@ -647,7 +647,7 @@ bool SVProjectHandler::importEmbeddedDB() {
 
 		importDBElement(e, db.m_constructions, constructionIDMap,
 			"Construction type '%1' with #%2 imported -> new ID #%3.\n",
-			"Construction type '%1' with #%2 exists already -> new ID #%3.\n"
+			"Construction type '%1' with #%2 exists already -> ID #%3.\n"
 		);
 	}
 
@@ -656,7 +656,7 @@ bool SVProjectHandler::importEmbeddedDB() {
 	for (VICUS::WindowGlazingSystem & e : m_project->m_embeddedDB.m_windowGlazingSystems) {
 		importDBElement(e, db.m_windowGlazingSystems, glazingSystemsIDMap,
 			"Window glazing system '%1' with #%2 imported -> new ID #%3.\n",
-			"Window glazing system '%1' with #%2 exists already -> new ID #%3.\n"
+			"Window glazing system '%1' with #%2 exists already -> ID #%3.\n"
 		);
 	}
 
@@ -669,7 +669,7 @@ bool SVProjectHandler::importEmbeddedDB() {
 
 		importDBElement(e, db.m_windows, windowIDMap,
 			"Window '%1' with #%2 imported -> new ID #%3.\n",
-			"Window '%1' with #%2 exists already -> new ID #%3.\n"
+			"Window '%1' with #%2 exists already -> ID #%3.\n"
 		);
 	}
 
@@ -678,7 +678,7 @@ bool SVProjectHandler::importEmbeddedDB() {
 	for (VICUS::BoundaryCondition & e : m_project->m_embeddedDB.m_boundaryConditions) {
 		importDBElement(e, db.m_boundaryConditions, boundaryConditionsIDMap,
 			"Boundary condition '%1' with #%2 imported -> new ID #%3.\n",
-			"Boundary condition '%1' with #%2 exists already -> new ID #%3.\n"
+			"Boundary condition '%1' with #%2 exists already -> ID #%3.\n"
 		);
 	}
 
@@ -691,7 +691,7 @@ bool SVProjectHandler::importEmbeddedDB() {
 
 		importDBElement(e, db.m_components, componentIDMap,
 			"Component '%1' with #%2 imported -> new ID #%3.\n",
-			"Component '%1' with #%2 exists already -> new ID #%3.\n"
+			"Component '%1' with #%2 exists already -> ID #%3.\n"
 		);
 	}
 
@@ -705,7 +705,7 @@ bool SVProjectHandler::importEmbeddedDB() {
 
 		importDBElement(e, db.m_subSurfaceComponents, subSurfaceComponentIDMap,
 			"Sub-surface component '%1' with #%2 imported -> new ID #%3.\n",
-			"Sub-surface component '%1' with #%2 exists already -> new ID #%3.\n"
+			"Sub-surface component '%1' with #%2 exists already -> ID #%3.\n"
 		);
 	}
 
@@ -715,7 +715,7 @@ bool SVProjectHandler::importEmbeddedDB() {
 
 		importDBElement(e, db.m_schedules, schedulesIDMap,
 			"Schedule '%1' with #%2 imported -> new ID #%3.\n",
-			"Schedule '%1' with #%2 exists already -> new ID #%3.\n"
+			"Schedule '%1' with #%2 exists already -> ID #%3.\n"
 		);
 	}
 
@@ -725,7 +725,7 @@ bool SVProjectHandler::importEmbeddedDB() {
 
 		importDBElement(e, db.m_internalLoads, internalLoadIDMap,
 			"Internal loads '%1' with #%2 imported -> new ID #%3.\n",
-			"Internal loads '%1' with #%2 exists already -> new ID #%3.\n"
+			"Internal loads '%1' with #%2 exists already -> ID #%3.\n"
 		);
 	}
 
@@ -735,7 +735,7 @@ bool SVProjectHandler::importEmbeddedDB() {
 
 		importDBElement(e, db.m_infiltration, infiltrationIDMap,
 						"Infiltration '%1' with #%2 imported -> new ID #%3.\n",
-						"Infiltration '%1' with #%2 exists already -> new ID #%3.\n"
+						"Infiltration '%1' with #%2 exists already -> ID #%3.\n"
 		);
 	}
 
@@ -745,17 +745,17 @@ bool SVProjectHandler::importEmbeddedDB() {
 
 		importDBElement(e, db.m_ventilationNatural, ventilationIDMap,
 						"Natural ventilation '%1' with #%2 imported -> new ID #%3.\n",
-						"Natural ventilation '%1' with #%2 exists already -> new ID #%3.\n"
+						"Natural ventilation '%1' with #%2 exists already -> ID #%3.\n"
 		);
 	}
 
 	// zone control thermostat
 	std::map<unsigned int, unsigned int> thermostatIDMap;
-	for (VICUS::ZoneControlThermostat & e : m_project->m_embeddedDB.m_zoneControlThermostat) {
+	for (VICUS::ZoneControlThermostat & e : m_project->m_embeddedDB.m_zoneControlThermostats) {
 
 		importDBElement(e, db.m_zoneControlThermostat, thermostatIDMap,
 						"Thermostat '%1' with #%2 imported -> new ID #%3.\n",
-						"Thermostat '%1' with #%2 exists already -> new ID #%3.\n"
+						"Thermostat '%1' with #%2 exists already -> ID #%3.\n"
 		);
 	}
 
@@ -765,7 +765,7 @@ bool SVProjectHandler::importEmbeddedDB() {
 
 		importDBElement(e, db.m_zoneControlVentilationNatural, ventilationCtrlIDMap,
 						"Natural ventilation control '%1' with #%2 imported -> new ID #%3.\n",
-						"Natural ventilation control '%1' with #%2 exists already -> new ID #%3.\n"
+						"Natural ventilation control '%1' with #%2 exists already -> ID #%3.\n"
 		);
 	}
 
@@ -775,7 +775,7 @@ bool SVProjectHandler::importEmbeddedDB() {
 
 		importDBElement(e, db.m_zoneControlShading, shadingCtrlIDMap,
 						"Shading control '%1' with #%2 imported -> new ID #%3.\n",
-						"Shading control '%1' with #%2 exists already -> new ID #%3.\n"
+						"Shading control '%1' with #%2 exists already -> ID #%3.\n"
 		);
 	}
 
@@ -785,7 +785,7 @@ bool SVProjectHandler::importEmbeddedDB() {
 
 		importDBElement(e, db.m_zoneIdealHeatingCooling, idealHeatingCoolingIDMap,
 						"HVAC ideal heating/cooling '%1' with #%2 imported -> new ID #%3.\n",
-						"HVAC ideal heating/cooling '%1' with #%2 exists already -> new ID #%3.\n"
+						"HVAC ideal heating/cooling '%1' with #%2 exists already -> ID #%3.\n"
 		);
 	}
 
@@ -795,7 +795,7 @@ bool SVProjectHandler::importEmbeddedDB() {
 
 		importDBElement(e, db.m_zoneTemplates, zoneTemplatesIDMap,
 						"Zone template '%1' with #%2 imported -> new ID #%3.\n",
-						"Zone template '%1' with #%2 exists already -> new ID #%3.\n"
+						"Zone template '%1' with #%2 exists already -> ID #%3.\n"
 		);
 	}
 	// any ids modified?
