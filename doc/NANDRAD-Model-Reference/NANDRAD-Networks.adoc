@@ -432,8 +432,55 @@ TODO : Andreas
 [[HydraulicElement_IdealHeaterCooler]]
 ### Modelltyp: IdealHeaterCooler
 
-TODO : Andreas
+Dieses Modell ermöglicht das präzise Vorgeben einer Medientemperatur in einem Strömungselement und der Berechnung der für die Temperaturänderung benötigten Heiz-/Kühlenergie.
 
+
+[[ex_HydraulicElement_IdealHeaterCooler]]
+.Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)
+====
+[source,xml]
+----
+<Components>
+    ...
+    
+	<HydraulicNetworkComponent id="3" displayName="ideal heater cooler" modelType="IdealHeaterCooler"/>
+</Components>
+
+<Elements>
+
+    ...
+
+    <!-- The ideal heat exchanger element requires 'SupplyTemperatureSchedule' schedule parameter -->
+	<HydraulicNetworkElement id="3" inletNodeId="101" outletNodeId="100" componentId="3" displayName="Perfect heater/cooler"/>
+
+</Elements>
+
+...
+
+    <ScheduleGroup objectList="Ideal heat exchanger">
+    	<Schedule type="AllDays">
+    		<DailyCycles>
+    			<DailyCycle interpolation="Constant">
+    				<TimePoints>0 6 18</TimePoints>
+    				<Values>
+    					SupplyTemperatureSchedule [C]:22 35 22
+    				</Values>
+    			</DailyCycle>
+    		</DailyCycles>
+    	</Schedule>
+    </ScheduleGroup>
+
+...
+
+	<ObjectList name="Ideal heat exchanger">
+		<FilterID>3</FilterID>
+		<ReferenceType>NetworkElement</ReferenceType>
+	</ObjectList>
+
+----
+====
+
+Es sind keine weiteren Parameter notwendig. Es wird der Zeitplanparameter `SupplyTemperatureSchedule` erwartet (siehe <<ex_HydraulicElement_IdealHeaterCooler>>).
 
 
 
