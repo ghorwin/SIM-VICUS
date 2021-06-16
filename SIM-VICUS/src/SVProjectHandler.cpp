@@ -798,6 +798,27 @@ bool SVProjectHandler::importEmbeddedDB() {
 						"Zone template '%1' with #%2 exists already -> ID #%3.\n"
 		);
 	}
+
+	// network pipes
+	std::map<unsigned int, unsigned int> pipesIDMap;
+	for (VICUS::NetworkPipe & e : m_project->m_embeddedDB.m_pipes) {
+
+		importDBElement(e, db.m_pipes, pipesIDMap,
+						"Pipe '%1' with #%2 imported -> new ID #%3.\n",
+						"Pipe '%1' with #%2 exists already -> ID #%3.\n"
+		);
+	}
+
+	// network fluids
+	std::map<unsigned int, unsigned int> fluidsIDMap;
+	for (VICUS::NetworkFluid & e : m_project->m_embeddedDB.m_fluids) {
+
+		importDBElement(e, db.m_fluids, fluidsIDMap,
+						"Fluid '%1' with #%2 imported -> new ID #%3.\n",
+						"Fluid '%1' with #%2 exists already -> ID #%3.\n"
+		);
+	}
+
 	// any ids modified?
 	idsModified |= !materialIDMap.empty();
 	idsModified |= !constructionIDMap.empty();
@@ -815,6 +836,8 @@ bool SVProjectHandler::importEmbeddedDB() {
 	idsModified |= !shadingCtrlIDMap.empty();
 	idsModified |= !idealHeatingCoolingIDMap.empty();
 	idsModified |= !zoneTemplatesIDMap.empty();
+	idsModified |= !pipesIDMap.empty();
+	idsModified |= !fluidsIDMap.empty();
 	return idsModified;
 }
 

@@ -75,11 +75,11 @@ public:
 	/*! Display name of fluid. */
 	IBK::MultiLanguageString			m_displayName;					// XML:A
 	/*! Identification color. */
-	QColor								m_color;								// XML:A
+	QColor								m_color;						// XML:A
 
 	std::string							m_categoryName;					// XML:A
 
-	IBK::Parameter						m_para[NUM_P];						// XML:E
+	IBK::Parameter						m_para[NUM_P];					// XML:E
 
 };
 

@@ -43,21 +43,15 @@ VICUS::AbstractDBElement::ComparisonResult VICUS::NetworkPipe::equal(const VICUS
 	if (otherNetPipe == nullptr)
 		return Different;
 
-	//first check critical data
-
 	//check parameters
 	for(unsigned int i=0; i<NUM_P; ++i){
 		if(m_para[i] != otherNetPipe->m_para[i])
 			return Different;
 	}
 
-	if (m_categoryName != otherNetPipe->m_categoryName)
-		return Different;
-
 	//check meta data
-
-	if(m_displayName != otherNetPipe->m_displayName ||
-			m_color != otherNetPipe->m_color)
+	if(m_displayName != otherNetPipe->m_displayName || m_color != otherNetPipe->m_color
+			|| m_categoryName != otherNetPipe->m_categoryName)
 		return OnlyMetaDataDiffers;
 
 	return Equal;

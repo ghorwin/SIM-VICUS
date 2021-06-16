@@ -55,6 +55,7 @@ HEADERS += \
 	../../src/VICUS_NetworkComponent.h \
 	../../src/VICUS_NetworkController.h \
 	../../src/VICUS_NetworkEdge.h \
+	../../src/VICUS_NetworkElement.h \
 	../../src/VICUS_NetworkFluid.h \
 	../../src/VICUS_NetworkHeatExchange.h \
 	../../src/VICUS_NetworkLine.h \
@@ -71,6 +72,7 @@ HEADERS += \
 	../../src/VICUS_RotationMatrix.h \
 	../../src/VICUS_Schedule.h \
 	../../src/VICUS_ScheduleInterval.h \
+	../../src/VICUS_SubNetwork.h \
 	../../src/VICUS_SubSurface.h \
 	../../src/VICUS_SubSurfaceComponent.h \
 	../../src/VICUS_SubSurfaceComponentInstance.h \
@@ -107,6 +109,7 @@ SOURCES += \
 	../../src/VICUS_NetworkComponent.cpp \
 	../../src/VICUS_NetworkController.cpp \
 	../../src/VICUS_NetworkEdge.cpp \
+	../../src/VICUS_NetworkElement.cpp \
 	../../src/VICUS_NetworkFluid.cpp \
 	../../src/VICUS_NetworkHeatExchange.cpp \
 	../../src/VICUS_NetworkLine.cpp \
@@ -120,6 +123,7 @@ SOURCES += \
 	../../src/VICUS_Project.cpp \
 	../../src/VICUS_Schedule.cpp \
 	../../src/VICUS_ScheduleInterval.cpp \
+	../../src/VICUS_SubNetwork.cpp \
 	../../src/VICUS_SubSurface.cpp \
 	../../src/VICUS_SubSurfaceComponent.cpp \
 	../../src/VICUS_Surface.cpp \
