@@ -262,12 +262,10 @@ Eine `HydraulicNetworkComponent` definiert die Basiseigenschaften eines Strömun
 | Attribut  | Beschreibung | Format | Verwendung
 | `id` |  Eindeutige Identifikationsnummer der Komponente | {nbsp}>{nbsp}0{nbsp}  | _benötigt_
 | `modelType` |  Modelltyp  | string | _benötigt_
+| `displayName` | Anzeigename/Beschreibung | string | _optional_
 |====================
 
-Die Parameter und Attribute sind dann abhängig vom `modelType` der Komponente und dem `modelType` des Netzwerks.
-
-Im thermischen Modell kann für jeden Modelltyp noch ein (optionales) Wärmeaustauschmodell definiert werden (siehe <<NetworkHeatExchange>>).
-
+Die weiteren Parameter sind dann abhängig vom `modelType` der Komponente und dem `modelType` des Netzwerks.
 
 
 [[HydraulicElement_SimplePipe]]
@@ -296,7 +294,7 @@ Es werden die folgenden Parameter benötigt
 
 ### Modelltyp: ConstantPressurePump
 
-Für das Model `ConstantPressurePump` werden diese Parameter benötigt:
+Diese Komponente stellt prägt eine Druckdifferenz unabhängig vom Massenstrom auf (eine idealisierte, druckgeregelte Pumpe). Für das Model `ConstantPressurePump` werden diese Parameter benötigt:
 
 [options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
 |====================
@@ -307,7 +305,52 @@ Für das Model `ConstantPressurePump` werden diese Parameter benötigt:
 | `Volume` | m3 | Fluid volume inside the pump | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
 |====================
 
-Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definiert. D.h. die durch Volumenstrom und Druckhöhe gegebene mechanische Arbeit entspricht diesem Anteil der Gesamtarbeit. Die Differenz der Leistungen wird als anteilig entsprechend des Parameters `FractionOfMotorInefficienciesToFluidStream` als Wärmequelle dem Fluid aufgeprägt.
+Der Parameter `PressureHead` legt eine konstante Druckhöhe fest. Es ist jedoch auch möglich, eine Zeitreihe für diesen Parameter im Zeitplanparameter `PressureHeadSchedule` anzugeben. Wird in solcher Zeitplan für das jeweilige Pumpen-Strömungselement gefunden, so wird dieser Anstelle des konstanten Parameters verwendet.
+
+[WARNING]
+====
+Im Gegensatz zu anderen Modellen in NANDRAD, bei denen explizit zwischen konstantem Parameter und Zeitplänen unterschieden wird, erfolgt bei diesem Modell die Auswahl nach Verfügbarkeit eines definierten Parameters. Dies birgt das Risiko, dass bei Eingabe-/Modellierungsfehlern (z.B. falsche Objektlisten) der Parameter `PressureHeadSchedule` nicht für das Pumpenelement gefunden wird, und dies nicht zu einer Warnung/Fehlermeldung führt. Stattdessen würde stillschweigend der konstante Parameter verwendet werden.
+
+Da sich dies in den Simulationsergebnissen jedoch leicht erkennen lässt, sollten entsprechende Fehler doch recht einfach zu finden sein. Deshalb wird in diesem Modell auf ein zusätzliches Attribut zur Wahl der Parametrierung verzichtet.
+====
+
+[TIP]
+====
+Die Modellabhängigkeit von der Zeitplanvariable `PressureHeadSchedule` kann genutzt werden, um die Druckhöhe als FMU-Eingangsgröße zu definieren.
+====
+
+Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definiert. D.h. die durch Volumenstrom und Druckhöhe gegebene mechanische Arbeit entspricht diesem Anteil der Gesamtarbeit. Die Differenz der Leistungen wird anteilig entsprechend des Parameters `FractionOfMotorInefficienciesToFluidStream` als Wärmequelle dem Fluid aufgeprägt.
+
+
+
+### Modelltyp: ConstantMassFluxPump
+
+Analog zur idealen druckgeführten Pumpe prägt dieses Modell einen vorgegebenen Massenstrom auf. 
+
+[CAUTION]
+====
+Es ist sehr leicht mit diesen Pumpenelementen unlösbare Gleichungssysteme zu formulieren. Beispielsweise können die Netzwerkgleichgen bei zwei solcher Pumpenelemente in einem seriellen Kreis und unterschiedlichen Vorgabemassenströmen nicht gelöst werden. Bei der Modellierung muss dies entsprechend geprüft werden.
+====
+
+Für das Model `ConstantMassFluxPump` werden diese Parameter benötigt:
+
+[options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
+|====================
+|Name | Einheit | Beschreibung | Wertebereich | Verwendung
+| `MassFlux` | kg/s | Vorgegebener Massenstrom durch die Pumpe | >{nbsp}0  | 
+| `PumpEfficiency` | - | Gesamtwirkungsgrad der Pumpe | 0...1,{nbsp}>{nbsp}0.0 | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `FractionOfMotorInefficienciesToFluidStream` | - | Anteil der ans Fluid abgegebenen Wärmeverluste der Pumpe (Standardwert 100%, Nassläufer) | 0...1,{nbsp}>{nbsp}0.0 | _optional für Modelltyp_ `ThermalHydraulicNetwork`
+| `Volume` | m3 | Fluid volume inside the pump | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+|====================
+
+Wie beim Modelltyp `ConstantPressurePump` kann der konstante Massenstrom im Parameter `MassFlux` durch einen optional gegebenen Zeitplan `MassFluxSchedule` (siehe Erläuterung oben beim Modelltyp `ConstantPressurePump`).
+
+Die Berechnung der Verlustwärme und elektrischen Leistung erfolgt analog zur `ConstantPressurePump`.
+
+
+### Modelltyp: ControlledPump
+
+...
 
 
 ### ModellTyp: HeatExchanger
@@ -359,6 +402,11 @@ Wird der Modus `SupplySide` gewählt, müssen die Parameter `EvaporatorMeanTempe
 </HydraulicNetworkComponent>
 ----
 ====
+
+
+[[HydraulicElement_DynamicPipe]]
+### Modelltyp: DynamicPipe
+
 
 
 [[NetworkElements]]

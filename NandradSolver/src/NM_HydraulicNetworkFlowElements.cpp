@@ -555,7 +555,7 @@ void HNConstantPressurePump::inputReferences(std::vector<InputReference> & input
 	//       It should be replaced by another flow element called "ScheduledPressurePump" or something like this
 	InputReference inputRef;
 	inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
-	inputRef.m_name = std::string("PumpPressureHeadSchedule");
+	inputRef.m_name = std::string("PressureHeadSchedule");
 	inputRef.m_required = false;
 	inputRef.m_id = m_id;
 	inputRefs.push_back(inputRef);
@@ -578,18 +578,18 @@ HNConstantMassFluxPump::HNConstantMassFluxPump(unsigned int id, const NANDRAD::H
 	m_massFluxRef = &component.m_para[NANDRAD::HydraulicNetworkComponent::P_MassFlux].value;
 }
 
-void HNConstantMassFluxPump::modelQuantities(std::vector<QuantityDescription> & quantities) const
-{
+
+void HNConstantMassFluxPump::modelQuantities(std::vector<QuantityDescription> & quantities) const {
 	quantities.push_back(QuantityDescription("PumpPressureHead","Pa", "The calculated controlled pressure head of the pump", false));
 }
 
-void HNConstantMassFluxPump::modelQuantityValueRefs(std::vector<const double *> & valRefs) const
-{
+
+void HNConstantMassFluxPump::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
 	valRefs.push_back(&m_pressureHead);
 }
 
-void HNConstantMassFluxPump::inputReferences(std::vector<InputReference> &inputRefs) const
-{
+
+void HNConstantMassFluxPump::inputReferences(std::vector<InputReference> &inputRefs) const {
 	InputReference ref;
 	ref.m_id = m_id;
 	ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
