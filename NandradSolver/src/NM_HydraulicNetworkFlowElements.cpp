@@ -804,6 +804,7 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 		case NANDRAD::HydraulicNetworkControlElement::CT_PController: {
 			// relate controller error e to zeta
 			const double y = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value * e;
+
 			// apply clipping (only when pressureHeadMax > 0)
 			if (y > pressHeadMax && pressHeadMax > 0)
 				pressHeadControlled = pressHeadMax;
@@ -817,7 +818,8 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CT: break; // just to make compiler happy
 	}
 
-return pressHeadControlled;
+
+	return pressHeadControlled;
 }
 
 void HNControlledPump::updateResults(double mdot, double /*p_inlet*/, double /*p_outlet*/) {
