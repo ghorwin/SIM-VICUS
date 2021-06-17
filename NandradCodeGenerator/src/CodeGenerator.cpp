@@ -786,6 +786,7 @@ void CodeGenerator::generateReadWriteCode() {
 					else if (xmlInfo.typeStr == "IDType") {
 						attribs +=
 							"				m_"+attribName+" = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);\n";
+						includes.insert("NANDRAD_Utilities.h");
 						elseStr = "else ";
 					}
 					else if (xmlInfo.typeStr == "IBK::Path") {
@@ -1016,6 +1017,7 @@ void CodeGenerator::generateReadWriteCode() {
 							"						break;\n"
 							"					}\n"
 							"				}\n";
+							includes.insert("NANDRAD_Utilities.h");
 							continue; // avoid adding an "else" to elseStr here
 						}
 						else {
