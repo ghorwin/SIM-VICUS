@@ -7,10 +7,11 @@
 
 namespace VICUS {
 
-class SubNetwork
-{
+class SubNetwork {
 public:
 	SubNetwork();
+
+	VICUS_READWRITE
 
 private:
 
