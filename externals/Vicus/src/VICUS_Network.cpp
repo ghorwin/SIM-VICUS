@@ -81,9 +81,10 @@ unsigned Network::addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeType 
 				return n.m_id;
 		}
 	}
+
+	// else add new node
 	unsigned id = m_nodes.size();
 	m_nodes.push_back(NetworkNode(id, type, v));
-
 	updateNodeEdgeConnectionPointers();
 
 	return id;
@@ -92,10 +93,6 @@ unsigned Network::addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeType 
 
 unsigned Network::addNode(const NetworkNode &node, const bool considerCoordinates) {
 	unsigned id = addNode(node.m_position, node.m_type, considerCoordinates);
-	m_nodes[id].m_componentId = node.m_componentId;
-	m_nodes[id].m_subNetworkId = node.m_subNetworkId;
-//	for (unsigned n=0; n<NANDRAD::HydraulicNetworkElement::NUM_HP; ++n)
-//		m_nodes[id].m_heatExchangePara[n] = node.m_heatExchangePara[n];
 	m_nodes[id].m_maxHeatingDemand = node.m_maxHeatingDemand;
 	return id;
 }
@@ -172,8 +169,8 @@ void Network::updateVisualizationRadius(const VICUS::Database<VICUS::NetworkPipe
 		switch (no.m_type) {
 			case NetworkNode::NT_Building: {
 				// scale node by heating demand - 1 mm / 1000 W; 4800 W -> 48 * 0.01 = radius = 0.48
-				if (no.m_maxHeatingDemand > 0)
-					radius *= no.m_maxHeatingDemand / 1000;
+				if (no.m_maxHeatingDemand.value > 0)
+					radius *= no.m_maxHeatingDemand.value / 1000;
 			} break;
 			case NetworkNode::NT_Source:
 			case NetworkNode::NT_Mixer: {
@@ -296,7 +293,7 @@ void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heat
 			continue;
 		// add node
 		unsigned id = addNodeExt(IBKMK::Vector3D(IBK::string2val<double>(xyStr[0]), IBK::string2val<double>(xyStr[1]), 0), NetworkNode::NT_Building);
-		m_nodes[id].m_maxHeatingDemand = heatDemand;
+		m_nodes[id].m_maxHeatingDemand = IBK::Parameter("MaxHeatingDemand", heatDemand, "W");
 	}
 }
 
@@ -519,7 +516,7 @@ FUNCID(Network::sizePipeDimensions);
 	for (NetworkNode &node: m_nodes) {
 		if (node.m_type != NetworkNode::NT_Building)
 			continue;
-		if (node.m_maxHeatingDemand <= 0)
+		if (node.m_maxHeatingDemand.value <= 0)
 			throw IBK::Exception(IBK::FormatString("Maximum heating demand of node '%1' must be >0").arg(node.m_id), FUNC_ID);
 
 		// for each source find the shortest path to current node. Finally select the shortest of these paths
@@ -537,7 +534,7 @@ FUNCID(Network::sizePipeDimensions);
 			}
 		}
 		for (NetworkEdge * edge: minPath)
-			edge->m_maxHeatingDemand += node.m_maxHeatingDemand;
+			edge->m_maxHeatingDemand += node.m_maxHeatingDemand.value;
 	}
 
 	// in case there is a pipe which is not part of any path (e.g. in circular grid): assign the adjacent heating demand
@@ -736,7 +733,7 @@ void Network::writeBuildingsCSV(const IBK::Path &file) const {
 	f.precision(10);
 	for (const NetworkNode &n: m_nodes){
 		if (n.m_type==NetworkNode::NT_Building)
-			f << std::fixed << n.m_position.m_x << "\t" << n.m_position.m_y << "\t" << n.m_maxHeatingDemand << std::endl;
+			f << std::fixed << n.m_position.m_x << "\t" << n.m_position.m_y << "\t" << n.m_maxHeatingDemand.value << std::endl;
 	}
 	f.close();
 }

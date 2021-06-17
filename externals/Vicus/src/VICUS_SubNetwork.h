@@ -8,6 +8,9 @@
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Database.h"
 
+#include <NANDRAD_HydraulicNetworkElement.h>
+#include <NANDRAD_HydraulicNetworkHeatExchange.h>
+
 namespace VICUS {
 
 /*! Defines the structure of a sub-network (e.g. building heat exchanger with control value) that
@@ -30,22 +33,30 @@ public:
 	VICUS_COMPARE_WITH_ID
 
 	/*! Checks if all referenced materials exist and if their parameters are valid. */
-	bool isValid(const VICUS::Database<VICUS::NetworkHeatExchange> & heatExchangeParameters) const;
+	bool isValid(const VICUS::Database<NANDRAD::HydraulicNetworkHeatExchange> & heatExchangeParameters) const;
 
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;
 
 private:
 	/*! Unique ID of the sub-network. */
-	IDType							m_id = INVALID_ID;						// XML:A:required
+	IDType												m_id = INVALID_ID;						// XML:A:required
+
+	/*! Display name. */
+	IBK::MultiLanguageString							m_displayName;							// XML:A
 
 	/*! Defines sub-network through elements, connected by implicitely numbered internal nodes.
 		Nodes with ID 0 represent inlet and outlet node (there must be only one ID 0 inlet and outlet node!).
+		NOTE: the heat exchange property of the elements are not used, instead, we assign the heat exchange property
+		of the correspoinding node (the parent of this SubNetwork) using the heatExchangeElementId
 	*/
-	std::vector<NetworkElement>		m_elements;								// XML:E
+	std::vector<NANDRAD::HydraulicNetworkElement>		m_elements;								// XML:E
 
-	/*! Stores index of element with heat exchange parameterization. INVALID_ID means no heat exchange. */
-	unsigned int					m_heatExchangeElementIdx = INVALID_ID;
+	/*! Stores id of element with heat exchange parameterization. INVALID_ID means no heat exchange. */
+	unsigned int										m_heatExchangeElementId = INVALID_ID;
+
+	/*! Controllers of the sub network, will be referenced by the elements */
+	std::vector<NANDRAD::HydraulicNetworkControlElement> m_controllerElements;					// XML:E
 
 };
 

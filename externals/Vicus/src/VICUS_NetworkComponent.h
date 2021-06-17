@@ -62,22 +62,22 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	NANDRAD::HydraulicNetworkComponent	m_componentData;								// XML:E:tag=Data
+	NANDRAD::HydraulicNetworkComponent	m_componentData;									// XML:E:tag=Data
 
 	/*! Display name. */
-	IBK::MultiLanguageString		m_displayName;										// XML:A
+	IBK::MultiLanguageString			m_displayName;										// XML:A
 
 	/*! False color. */
-	QColor							m_color;											// XML:A
+	QColor								m_color;											// XML:A
 
 	/*! Notes. */
-	IBK::MultiLanguageString		m_notes;											// XML:E
+	IBK::MultiLanguageString			m_notes;											// XML:E
 
 	/*! Manufacturer. */
-	IBK::MultiLanguageString		m_manufacturer;										// XML:E
+	IBK::MultiLanguageString			m_manufacturer;										// XML:E
 
 	/*! Data source. */
-	IBK::MultiLanguageString		m_dataSource;										// XML:E
+	IBK::MultiLanguageString			m_dataSource;										// XML:E
 };
 
 } // namespace VICUS

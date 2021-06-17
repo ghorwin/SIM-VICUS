@@ -68,6 +68,7 @@ public:
 
 	/*! Unique id number. */
 	unsigned int						m_id = INVALID_ID;				// XML:A:required
+
 	/*! Display name of fluid. */
 	IBK::MultiLanguageString			m_displayName;					// XML:A
 

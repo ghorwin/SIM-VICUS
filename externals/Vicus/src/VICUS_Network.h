@@ -252,7 +252,8 @@ private:
 		ALWAYS use this function if you add nodes with coordinates that where calculated based on already existing coordinates */
 	unsigned addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool considerCoordinates=true);
 
-	/*! addNode using Node constructor */
+	/*! addNode using Node constructor for convenience,
+	 * does only copy position, type and maxHeatingDemand */
 	unsigned addNode(const NetworkNode & node, const bool considerCoordinates=true);
 
 	/*! Calculates Reynolds number of a moving fluid.
