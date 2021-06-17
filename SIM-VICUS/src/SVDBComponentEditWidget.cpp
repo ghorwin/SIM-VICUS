@@ -274,10 +274,12 @@ void SVDBComponentEditWidget::on_pushButtonComponentColor_colorChanged() {
 
 }
 
+
 void SVDBComponentEditWidget::modelModify(){
 	m_db->m_components.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 }
+
 
 void SVDBComponentEditWidget::on_toolButtonRemoveConstruction_clicked() {
 
@@ -286,14 +288,18 @@ void SVDBComponentEditWidget::on_toolButtonRemoveConstruction_clicked() {
 	modelModify();
 	updateInput((int)m_current->m_id);
 }
-void SVDBComponentEditWidget::on_toolButtonRemoveBoundaryConditA_clicked() {
+
+
+void SVDBComponentEditWidget::on_toolButtonRemoveBoundaryConditionSideA_clicked() {
 
 	m_current->m_idSideABoundaryCondition = VICUS::INVALID_ID;
 
 	modelModify();
 	updateInput((int)m_current->m_id);
 }
-void SVDBComponentEditWidget::on_toolButtonRemoveBoundaryConditB_clicked() {
+
+
+void SVDBComponentEditWidget::on_toolButtonRemoveBoundaryConditionSideB_clicked() {
 
 	m_current->m_idSideBBoundaryCondition = VICUS::INVALID_ID;
 
