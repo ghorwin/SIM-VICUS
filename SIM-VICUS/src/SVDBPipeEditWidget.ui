@@ -184,6 +184,17 @@
    <header location="global">QtExt_LanguageStringEditWidget1.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>lineEditName</tabstop>
+  <tabstop>pushButtonPipeColor</tabstop>
+  <tabstop>lineEditCategory</tabstop>
+  <tabstop>lineEditOuterDiameter</tabstop>
+  <tabstop>lineEditWallThickness</tabstop>
+  <tabstop>lineEditWallRoughness</tabstop>
+  <tabstop>lineEditWallLambda</tabstop>
+  <tabstop>lineEditInsulationThickness</tabstop>
+  <tabstop>lineEditInsulationLambda</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

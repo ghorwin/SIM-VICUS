@@ -30,6 +30,7 @@ bool VICUS::NetworkPipe::isValid() const
 {
 	if (m_id == INVALID_ID)
 		return false;
+	// TODO : Unit checks!
 	if (m_para[VICUS::NetworkPipe::P_DiameterOutside].value <= 0 || m_para[VICUS::NetworkPipe::P_ThicknessWall].value <= 0
 			|| m_para[VICUS::NetworkPipe::P_RoughnessWall].value <= 0 || m_para[VICUS::NetworkPipe::P_ThermalConductivityWall].value <= 0)
 		return false;

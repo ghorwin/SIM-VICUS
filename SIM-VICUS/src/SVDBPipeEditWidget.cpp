@@ -45,12 +45,12 @@ SVDBPipeEditWidget::SVDBPipeEditWidget(QWidget *parent) :
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Pipe"));
 
-	m_ui->lineEditWallLambda->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Thermal conductivity"), false, true);
-	m_ui->lineEditOuterDiameter->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Outer diameter"), true, true);
-	m_ui->lineEditWallRoughness->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Roughness"), true, true);
-	m_ui->lineEditWallThickness->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), tr("Wall thickness"), true, true);
-	m_ui->lineEditInsulationLambda->setup(0, std::numeric_limits<double>::max(), tr("Thermal conductivity of the insulation material"), true, true);
-	m_ui->lineEditInsulationThickness->setup(0, std::numeric_limits<double>::max(), tr("Insulation thickness"), true, true);
+	m_ui->lineEditWallLambda->setup(0, std::numeric_limits<double>::max(), tr("Thermal conductivity"), false, true);
+	m_ui->lineEditOuterDiameter->setup(0, std::numeric_limits<double>::max(), tr("Outer diameter"), false, true);
+	m_ui->lineEditWallRoughness->setup(0, std::numeric_limits<double>::max(), tr("Roughness"), false, true);
+	m_ui->lineEditWallThickness->setup(0, std::numeric_limits<double>::max(), tr("Wall thickness"), false, true);
+	m_ui->lineEditInsulationLambda->setup(0, std::numeric_limits<double>::max(), tr("Thermal conductivity of the insulation material"), false, true);
+	m_ui->lineEditInsulationThickness->setup(0, std::numeric_limits<double>::max(), tr("Insulation thickness"), false, true);
 }
 
 
@@ -98,12 +98,16 @@ void SVDBPipeEditWidget::updateInput(int id) {
 	// now update the GUI controls
 	m_ui->lineEditName->setString(pipe->m_displayName);
 	m_ui->lineEditCategory->setText(QString::fromStdString(pipe->m_categoryName));
+
+	// Mind: some parameters may not be set, yet
+	//       however, we expect the parameter to hold values converted to the base SI-unit -> if no unit, or an
+	//       invalid unit is given, we might just show invalid values, but there are invalid anyway
 	m_ui->lineEditWallLambda->setValue(pipe->m_para[VICUS::NetworkPipe::P_ThermalConductivityWall].value);
-	m_ui->lineEditOuterDiameter->setValue(pipe->m_para[VICUS::NetworkPipe::P_DiameterOutside].get_value("mm"));
-	m_ui->lineEditWallThickness->setValue(pipe->m_para[VICUS::NetworkPipe::P_ThicknessWall].get_value("mm"));
-	m_ui->lineEditWallRoughness->setValue(pipe->m_para[VICUS::NetworkPipe::P_RoughnessWall].get_value("mm"));
+	m_ui->lineEditOuterDiameter->setValue(pipe->m_para[VICUS::NetworkPipe::P_DiameterOutside].value * 1000);
+	m_ui->lineEditWallThickness->setValue(pipe->m_para[VICUS::NetworkPipe::P_ThicknessWall].value * 1000);
+	m_ui->lineEditWallRoughness->setValue(pipe->m_para[VICUS::NetworkPipe::P_RoughnessWall].value * 1000);
 	m_ui->lineEditInsulationLambda->setValue(pipe->m_para[VICUS::NetworkPipe::P_ThermalConductivityInsulation].value);
-	m_ui->lineEditInsulationThickness->setValue(pipe->m_para[VICUS::NetworkPipe::P_ThicknessInsulation].get_value("mm"));
+	m_ui->lineEditInsulationThickness->setValue(pipe->m_para[VICUS::NetworkPipe::P_ThicknessInsulation].value * 1000);
 
 	m_ui->pushButtonPipeColor->blockSignals(true);
 	m_ui->pushButtonPipeColor->setColor(pipe->m_color);
