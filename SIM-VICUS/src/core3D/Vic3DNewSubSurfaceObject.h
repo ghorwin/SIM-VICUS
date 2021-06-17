@@ -63,6 +63,22 @@ namespace Vic3D {
 class NewSubSurfaceObject {
 public:
 
+	/*! Encapsulates all data needed for window generation. */
+	struct WindowComputationData {
+		WindowComputationData() {
+			for (int i=0; i<4; ++i)  m_priorities[i] = i+1;
+		}
+
+		int		m_priorities[4];
+		double	m_width;
+		double	m_height;
+		double	m_windowSillHeight;
+		double	m_distance;
+		bool	m_byPercentage;
+		double	m_percentage;
+		double	m_baseLineOffset;
+	};
+
 	NewSubSurfaceObject();
 
 	/*! The function is called during OpenGL initialization, where the OpenGL context is current.
@@ -77,8 +93,7 @@ public:
 	// Functions related to modifying the stored geometry
 
 	/*! This function clears the current buffer and vertex lists. */
-	void createByPercentage(const std::vector<const VICUS::Surface*> & sel, double w, double h, double sillHeight, double distance, double percentage, unsigned int baseLineOffset);
-	void createWithOffset(const std::vector<const VICUS::Surface*> & sel, double w, double h, double sillHeight, double distance, double offset, unsigned int baseLineOffset);
+	void create(const std::vector<const VICUS::Surface*> & sel, const WindowComputationData & inputData);
 
 	/*! Renders opaque parts of geometry. */
 	void renderOpaque();

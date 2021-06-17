@@ -131,21 +131,12 @@ void NewSubSurfaceObject::destroy() {
 }
 
 
-void NewSubSurfaceObject::createByPercentage(const std::vector<const VICUS::Surface *> & sel,
-											 double w, double h, double sillHeight, double distance, double percentage,
-											 unsigned int baseLineOffset)
-{
+void NewSubSurfaceObject::create(const std::vector<const VICUS::Surface*> & sel, const WindowComputationData & inputData) {
 	// populate PlaneGeometry-object
+
+
+	updateBuffers();
 }
-
-
-void NewSubSurfaceObject::createWithOffset(const std::vector<const VICUS::Surface *> & sel,
-										   double w, double h, double sillHeight, double distance, double offset,
-										   unsigned int baseLineOffset)
-{
-	// populate PlaneGeometry-object
-}
-
 
 void NewSubSurfaceObject::updateBuffers() {
 	if (m_indexBufferData.empty())

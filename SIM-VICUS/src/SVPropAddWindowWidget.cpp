@@ -30,14 +30,23 @@ SVPropAddWindowWidget::SVPropAddWindowWidget(QWidget *parent) :
 	m_ui->lineEditWindowOffset->setValue(0.4);
 	m_ui->lineEditWindowPercentage->setValue(35);
 
-	connect(m_ui->spinBoxWindowWidth, SIGNAL(valueChanged(int)),
-			this, SLOT(onSpinBoxValueChanged(int)));
-	connect(m_ui->spinBoxWindowHeight, SIGNAL(valueChanged(int)),
-			this, SLOT(onSpinBoxValueChanged(int)));
-	connect(m_ui->spinBoxWindowSillHeight, SIGNAL(valueChanged(int)),
-			this, SLOT(onSpinBoxValueChanged(int)));
-	connect(m_ui->lineEditWindowWidthDistance, SIGNAL(valueChanged(int)),
-			this, SLOT(onSpinBoxValueChanged(int)));
+	m_windowInputData.m_width = 1.8;
+	m_windowInputData.m_height = 2.2;
+	m_windowInputData.m_windowSillHeight = 0.4;
+	m_windowInputData.m_distance = 0.5;
+	m_windowInputData.m_priorities[0] = 1;
+	m_windowInputData.m_priorities[1] = 2;
+	m_windowInputData.m_priorities[2] = 3;
+	m_windowInputData.m_priorities[3] = 4;
+
+	m_prioritySpinBoxes[0] = m_ui->spinBoxWindowWidth;
+	m_prioritySpinBoxes[1] = m_ui->spinBoxWindowHeight;
+	m_prioritySpinBoxes[2] = m_ui->spinBoxWindowSillHeight;
+	m_prioritySpinBoxes[3] = m_ui->spinBoxWindowWidthDistance;
+
+	for (unsigned int i=0; i<4; ++i)
+		connect(m_prioritySpinBoxes[i], SIGNAL(valueChanged(int)),
+				this, SLOT(onSpinBoxValueChanged(int)));
 
 	SVViewStateHandler::instance().m_propAddWindowWidget = this;
 }
@@ -73,13 +82,25 @@ void SVPropAddWindowWidget::onModified(int modificationType, ModificationInfo * 
 
 void SVPropAddWindowWidget::onSpinBoxValueChanged(int val) {
 	// check sender's value against anyone elses
-//	QSpinBox * senderBox = qobject_cast<QSpinBox*>(sender());
-//	if (m_ui->spinBoxWindowWidth != senderBox && m_ui->spinBoxWindowWidth->value() == val) {
-//		senderBox->blockSignals(true);
-//		senderBox->setValue(m_ui->spinBoxWindowWidth->value());
-//		senderBox->blockSignals(false);
-//	}
+	QSpinBox * senderBox = qobject_cast<QSpinBox*>(sender());
+	unsigned int senderIdx = 4;
+	unsigned int otherIdx = 4;
+	for (unsigned int i=0; i<4; ++i) {
+		if (m_windowInputData.m_priorities[i] == val)
+			otherIdx = i;
+		if (m_prioritySpinBoxes[i] == senderBox)
+			senderIdx = i;
+	}
+	Q_ASSERT(senderIdx != 4);
+	Q_ASSERT(otherIdx != 4);
+	m_prioritySpinBoxes[otherIdx]->blockSignals(true);
+	m_prioritySpinBoxes[otherIdx]->setValue(m_windowInputData.m_priorities[senderIdx]);
+	m_prioritySpinBoxes[otherIdx]->blockSignals(false);
 
+	// now swap the stored values
+	std::swap(m_windowInputData.m_priorities[senderIdx], m_windowInputData.m_priorities[otherIdx]);
+
+	updateGeometryObject();
 }
 
 
@@ -109,21 +130,15 @@ void SVPropAddWindowWidget::updateGeometryObject() {
 	p.selectedSurfaces(sel, VICUS::Project::SG_Building);
 	Q_ASSERT(!sel.empty());
 
-	// get width, height, window-sill-height, offset, etc.
-	double surfW = m_ui->lineEditWindowWidth->value();
-	double surfH = m_ui->lineEditWindowHeight->value();
-	double surfWSH = m_ui->lineEditWindowSillHeight->value();
-	double dist = m_ui->lineEditWindowWidthDistance->value();
-
-	if (m_ui->tabWidgetWindow->currentIndex() == 0) {
-		// percentage
-		double surfPercentage = m_ui->lineEditWindowOffset->value();
-		SVViewStateHandler::instance().m_newSubSurfaceObject->createByPercentage(sel, surfW, surfH, surfWSH, dist, surfPercentage, 0);
-	}
-	else {
-		double surfOff = m_ui->lineEditWindowOffset->value();
-		SVViewStateHandler::instance().m_newSubSurfaceObject->createWithOffset(sel, surfW, surfH, surfWSH, dist, surfOff, 0);
-	}
+//	if (m_ui->tabWidgetWindow->currentIndex() == 0) {
+//		// percentage
+//		m_
+//		SVViewStateHandler::instance().m_newSubSurfaceObject->createByPercentage(sel, surfW, surfH, surfWSH, dist, surfPercentage, 0);
+//	}
+//	else {
+//		double surfOff = m_ui->lineEditWindowOffset->value();
+//		SVViewStateHandler::instance().m_newSubSurfaceObject->createWithOffset(sel, surfW, surfH, surfWSH, dist, surfOff, 0);
+//	}
 
 }
 
@@ -137,6 +152,6 @@ void SVPropAddWindowWidget::setup() {
 
 
 void SVPropAddWindowWidget::on_lineEditWindowWidth_editingFinishedSuccessfully() {
-
-
+	m_windowInputData.m_width = m_ui->lineEditWindowWidth->value();
 }
+

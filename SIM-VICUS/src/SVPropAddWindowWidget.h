@@ -7,6 +7,8 @@ namespace Ui {
 class SVPropAddWindowWidget;
 }
 
+class QSpinBox;
+
 class ModificationInfo;
 
 /*! Property widget for adding sub-surfaces. */
@@ -33,6 +35,14 @@ private slots:
 	void on_lineEditWindowWidth_editingFinishedSuccessfully();
 
 private:
+	struct WindowComputationData {
+		int m_priorities[4];
+		double m_width;
+		double m_height;
+		double m_windowSillHeight;
+		double m_distance;
+	};
+
 	/*! Updates widget to current project state. */
 	void updateUi();
 
@@ -40,6 +50,10 @@ private:
 	void updateGeometryObject();
 
 	Ui::SVPropAddWindowWidget *m_ui;
+
+	WindowComputationData		m_windowInputData;
+
+	QSpinBox					*m_prioritySpinBoxes[4];
 };
 
 #endif // SVPropAddWindowWidgetH
