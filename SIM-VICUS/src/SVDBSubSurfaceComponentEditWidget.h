@@ -70,8 +70,8 @@ private slots:
 	void on_toolButtonSelectWindow_clicked();
 	void on_toolButtonSelectBoundaryConditionSideAName_clicked();
 	void on_toolButtonSelectBoundaryConditionSideBName_clicked();
-	void on_toolButtonRemoveBoundaryConditA_clicked();
-	void on_toolButtonRemoveBoundaryConditB_clicked();
+	void on_toolButtonRemoveBoundaryConditionSideA_clicked();
+	void on_toolButtonRemoveBoundaryConditionSideB_clicked();
 
 	void on_pushButtonFalseColor_clicked();
 

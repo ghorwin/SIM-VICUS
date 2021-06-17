@@ -195,10 +195,12 @@ void SVDBZoneControlThermostatEditWidget::on_lineEditTolerance_editingFinished()
 
 }
 
+
 void SVDBZoneControlThermostatEditWidget::modelModify() {
 	m_db->m_zoneControlThermostat.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 }
+
 
 void SVDBZoneControlThermostatEditWidget::on_pushButtonColor_colorChanged() {
 	if (m_current->m_color != m_ui->pushButtonColor->color()) {
@@ -206,6 +208,7 @@ void SVDBZoneControlThermostatEditWidget::on_pushButtonColor_colorChanged() {
 		modelModify();
 	}
 }
+
 
 void SVDBZoneControlThermostatEditWidget::on_toolButtonSelectHeatingSchedule_clicked() {
 	// open schedule edit dialog in selection mode
@@ -217,6 +220,7 @@ void SVDBZoneControlThermostatEditWidget::on_toolButtonSelectHeatingSchedule_cli
 	updateInput((int)m_current->m_id);
 }
 
+
 void SVDBZoneControlThermostatEditWidget::on_toolButtonSelectCoolingSchedule_clicked() {
 	// open schedule edit dialog in selection mode
 	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_coolingSetpointScheduleId);
@@ -227,6 +231,7 @@ void SVDBZoneControlThermostatEditWidget::on_toolButtonSelectCoolingSchedule_cli
 	updateInput((int)m_current->m_id);
 }
 
+
 void SVDBZoneControlThermostatEditWidget::on_toolButtonRemoveHeatingSetpointSchedule_clicked() {
 
 	m_current->m_heatingSetpointScheduleId = VICUS::INVALID_ID;
@@ -234,6 +239,8 @@ void SVDBZoneControlThermostatEditWidget::on_toolButtonRemoveHeatingSetpointSche
 	modelModify();
 	updateInput((int)m_current->m_id);
 }
+
+
 void SVDBZoneControlThermostatEditWidget::on_toolButtonRemoveCoolingSetpointSchedule_clicked() {
 
 	m_current->m_coolingSetpointScheduleId = VICUS::INVALID_ID;
@@ -241,5 +248,3 @@ void SVDBZoneControlThermostatEditWidget::on_toolButtonRemoveCoolingSetpointSche
 	modelModify();
 	updateInput((int)m_current->m_id);
 }
-
-
