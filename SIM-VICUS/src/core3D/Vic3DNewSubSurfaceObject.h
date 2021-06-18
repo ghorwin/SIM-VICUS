@@ -92,8 +92,10 @@ public:
 
 	// Functions related to modifying the stored geometry
 
-	/*! This function clears the current buffer and vertex lists. */
-	void create(const std::vector<const VICUS::Surface*> & sel, const WindowComputationData & inputData);
+	/*! This function pupulates/updates m_surfaceGeometries based on the currently selected surfaces and
+		parametrization data.
+	*/
+	void generateSubSurfaces(const std::vector<const VICUS::Surface*> & sel, const WindowComputationData & inputData);
 
 	/*! Renders opaque parts of geometry. */
 	void renderOpaque();
@@ -113,8 +115,10 @@ private:
 	void updateBuffers();
 
 
-	/*! Stores the current geometry of the painted polygon or floor polygon. */
-	VICUS::PlaneGeometry			m_planeGeometry;
+	/*! Stores the modified geometries of the selected surfaces with windows.
+		These are then drawn with this object.
+	*/
+	std::vector<VICUS::PlaneGeometry>	m_surfaceGeometries;
 
 	/*! This list holds all points a the drawing method (even points of collinear segments).
 		This list may not give a valid polygon or a polygon at all.

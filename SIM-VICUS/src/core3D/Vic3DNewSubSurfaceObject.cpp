@@ -131,9 +131,12 @@ void NewSubSurfaceObject::destroy() {
 }
 
 
-void NewSubSurfaceObject::create(const std::vector<const VICUS::Surface*> & sel, const WindowComputationData & inputData) {
-	// populate PlaneGeometry-object
+void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Surface*> & sel, const WindowComputationData & inputData) {
+	// populate PlaneGeometry-objects
 
+	m_surfaceGeometries.clear();
+
+	// TODO : Dirk
 
 	updateBuffers();
 }
@@ -162,9 +165,12 @@ void NewSubSurfaceObject::renderOpaque() {
 	if (m_vertexBufferData.empty())
 		return;
 
-	// bind all buffers ("position", "normal" and "color" arrays)
+
 	m_vao.bind();
-	// now draw the opaque
+
+	// first render opaque polygon
+
+	// here we render the lines around the sub-surfaces; invalid surfaces get a red line
 	glDrawElements(GL_LINES, m_lineIndex, GL_UNSIGNED_INT,
 				   (const GLvoid*)(sizeof(GLuint) * (unsigned long)((GLsizei)m_indexBufferData.size() - m_lineIndex)) );
 	// release buffers again
