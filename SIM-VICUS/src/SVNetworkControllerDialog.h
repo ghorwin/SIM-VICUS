@@ -3,7 +3,7 @@
 
 #include <QDialog>
 
-#include <VICUS_NetworkController.h>
+#include <NANDRAD_HydraulicNetworkControlElement.h>
 
 namespace Ui {
 class SVNetworkControllerDialog;
@@ -37,7 +37,7 @@ private slots:
 private:
 	Ui::SVNetworkControllerDialog	*m_ui;
 
-	VICUS::NetworkController		m_controller;
+	NANDRAD::HydraulicNetworkControlElement		m_controller;
 
 };
 

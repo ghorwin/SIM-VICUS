@@ -10,6 +10,7 @@
 
 #include <NANDRAD_HydraulicNetworkElement.h>
 #include <NANDRAD_HydraulicNetworkHeatExchange.h>
+#include <NANDRAD_HydraulicNetworkControlElement.h>
 
 namespace VICUS {
 
@@ -53,7 +54,7 @@ private:
 	std::vector<NANDRAD::HydraulicNetworkElement>		m_elements;								// XML:E
 
 	/*! Stores id of element with heat exchange parameterization. INVALID_ID means no heat exchange. */
-	unsigned int										m_heatExchangeElementId = INVALID_ID;
+	unsigned int										m_heatExchangeElementId = INVALID_ID;	// XML:A
 
 	/*! Controllers of the sub network, will be referenced by the elements */
 	std::vector<NANDRAD::HydraulicNetworkControlElement> m_controllerElements;					// XML:E

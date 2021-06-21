@@ -43,19 +43,6 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	HydraulicNetworkHeatExchange() {
-		for (unsigned int & i : m_idReferences) i = INVALID_ID;
-	}
-
-	NANDRAD_READWRITE
-
-	/*! Tests all parameter and initializes linear spline parameters for calculation,
-		including reading of potentially referenced TSV files.
-	*/
-	void checkParameters(const std::map<std::string, IBK::Path> &placeholders,
-						 const std::vector<Zone> &zones,
-						 const std::vector<ConstructionInstance> &conInstances);
-
 	/*! Defines the type of heat exchange */
 	enum ModelType {
 		T_TemperatureConstant,				// Keyword: TemperatureConstant			'Difference to constant temperature'
@@ -69,6 +56,26 @@ public:
 		T_HeatLossSplineCondenser,			// Keyword: HeatLossSplineCondenser		'Heat loss of condenser in heat pump model'
 		NUM_T
 	};
+
+	HydraulicNetworkHeatExchange() {
+		for (unsigned int & i : m_idReferences) i = INVALID_ID;
+	}
+
+	HydraulicNetworkHeatExchange(ModelType modelType) {
+		HydraulicNetworkHeatExchange();
+		m_modelType = modelType;
+	}
+
+	NANDRAD_READWRITE
+
+	/*! Tests all parameter and initializes linear spline parameters for calculation,
+		including reading of potentially referenced TSV files.
+	*/
+	void checkParameters(const std::map<std::string, IBK::Path> &placeholders,
+						 const std::vector<Zone> &zones,
+						 const std::vector<ConstructionInstance> &conInstances);
+
+	bool operator!=(const HydraulicNetworkHeatExchange & other) const;
 
 	/*! Parameters for the element . */
 	enum para_t {

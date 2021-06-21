@@ -46,7 +46,7 @@ namespace VICUS {
 	We cannot use inheritence here, but since both objects are very similar it should be easy to copy/paste back
 	and forth between objects.
 */
-class NetworkComponent : public AbstractDBElement {
+class NetworkComponent : public AbstractDBElement, public NANDRAD::HydraulicNetworkComponent {
 public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -62,10 +62,8 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	NANDRAD::HydraulicNetworkComponent	m_componentData;									// XML:E:tag=Data
-
 	/*! Display name. */
-	IBK::MultiLanguageString			m_displayName;										// XML:A
+	IBK::MultiLanguageString			m_displayNameML;									// XML:A
 
 	/*! False color. */
 	QColor								m_color;											// XML:A
@@ -78,6 +76,58 @@ public:
 
 	/*! Data source. */
 	IBK::MultiLanguageString			m_dataSource;										// XML:E
+
+
+
+
+	/*!
+		*** Only for Code Generator ***
+		*** NANDRAD::HydraulicNetworkComponent interface ***
+
+	enum ModelType {
+		MT_SimplePipe,						// Keyword: SimplePipe						'Pipe with a single fluid volume and with heat exchange'
+		MT_DynamicPipe,						// Keyword: DynamicPipe						'Pipe with a discretized fluid volume and heat exchange'
+		MT_ConstantPressurePump,			// Keyword: ConstantPressurePump			'Pump with constant/externally defined pressure'
+		MT_ConstantMassFluxPump,			// Keyword: ConstantMassFluxPump			'Pump with constant/externally defined mass flux'
+		MT_ControlledPump,					// Keyword: ControlledPump					'Pump with pressure head controlled based on flow controller'
+		MT_HeatExchanger,					// Keyword: HeatExchanger					'Simple heat exchanger with given heat flux'
+		MT_HeatPumpIdealCarnotSourceSide,	// Keyword: HeatPumpIdealCarnotSourceSide	'Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)'
+		MT_HeatPumpIdealCarnotSupplySide,	// Keyword: HeatPumpIdealCarnotSupplySide	'Heat pump with variable heating power based on carnot efficiency, installed at supply side'
+		MT_HeatPumpRealSourceSide,			// Keyword: HeatPumpRealSourceSide			'On-off-type heat pump based on polynoms, installed at source side'
+		MT_ControlledValve,					// Keyword: ControlledValve					'Valve with associated control model'
+		MT_IdealHeaterCooler,				// Keyword: IdealHeaterCooler				'Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain'
+		NUM_MT
+	};
+
+	enum para_t {
+		P_HydraulicDiameter,					// Keyword: HydraulicDiameter					[mm]	'Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)'
+		P_PressureLossCoefficient,				// Keyword: PressureLossCoefficient				[---]	'Pressure loss coefficient for the component (zeta-value)'
+		P_PressureHead,							// Keyword: PressureHead						[Pa]	'Pressure head for a pump'
+		P_MassFlux,								// Keyword: MassFlux							[kg/s]	'Pump predefined mass flux'
+		P_PumpEfficiency,						// Keyword: PumpEfficiency						[---]	'Pump efficiency'
+		P_FractionOfMotorInefficienciesToFluidStream,	// Keyword: FractionOfMotorInefficienciesToFluidStream	[---]	'Fraction of pump heat loss due to inefficiency that heats up the fluid'
+		P_Volume,								// Keyword: Volume								[m3]	'Water or air volume of the component'
+		P_PipeMaxDiscretizationWidth,			// Keyword: PipeMaxDiscretizationWidth			[m]		'Maximum width of discretized volumes in pipe'
+		P_CarnotEfficiency,						// Keyword: CarnotEfficiency					[---]	'Carnot efficiency eta'
+		P_MaximumHeatingPower,					// Keyword: MaximumHeatingPower					[W]		'Maximum heating power'
+		NUM_P
+	};
+
+
+	unsigned int					m_id			= NANDRAD::INVALID_ID;				// XML:A:required
+
+
+	ModelType						m_modelType		= NUM_MT;							// XML:A:required
+
+
+	IBK::Parameter					m_para[NUM_P];										// XML:E
+
+
+	DataTable						m_polynomCoefficients;								// XML:E
+
+	*/
+
+
 };
 
 } // namespace VICUS

@@ -127,10 +127,10 @@ void SVSmartSelectDialog::onSelectClicked() {
 					if (nodeTypeFilter != VICUS::NetworkNode::NUM_NT && n.m_type != nodeTypeFilter)
 						continue;
 
-					if (n.m_maxHeatingDemand > maxHeatingDemandBelowFilter)
+					if (n.m_maxHeatingDemand.value > maxHeatingDemandBelowFilter)
 						continue;
 
-					if (n.m_maxHeatingDemand < maxHeatingDemandAboveFilter)
+					if (n.m_maxHeatingDemand.value < maxHeatingDemandAboveFilter)
 						continue;
 
 					// all filters match, store unique ID of this node

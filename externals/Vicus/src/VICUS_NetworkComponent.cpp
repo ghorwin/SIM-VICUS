@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -44,6 +44,7 @@ bool NetworkComponent::isValid() const {
 	return true;
 }
 
+
 AbstractDBElement::ComparisonResult NetworkComponent::equal(const AbstractDBElement *other) const {
 	const NetworkComponent * otherNetComp = dynamic_cast<const NetworkComponent*>(other);
 	if (otherNetComp == nullptr)
@@ -52,7 +53,7 @@ AbstractDBElement::ComparisonResult NetworkComponent::equal(const AbstractDBElem
 	//first check critical data
 
 	//check parameters
-	for(unsigned int i=0; i<NUM_P; ++i){
+	for(unsigned int i=0; i<NANDRAD::HydraulicNetworkComponent::NUM_P; ++i){
 		if(m_para[i] != otherNetComp->m_para[i])
 			return Different;
 	}

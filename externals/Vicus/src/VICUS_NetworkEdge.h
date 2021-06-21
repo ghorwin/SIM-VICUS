@@ -31,7 +31,6 @@
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Object.h"
 #include "VICUS_NetworkPipe.h"
-#include "VICUS_NetworkHeatExchange.h"
 
 #include <NANDRAD_HydraulicNetworkHeatExchange.h>
 
@@ -56,7 +55,8 @@ public:
 
 	enum ModelType {
 		MT_SimplePipe,			// Keyword: SimplePipe			'Pipe with a single fluid volume and with heat exchange'
-		MT_DynamicPipe			// Keyword: DynamicPipe			'Pipe with a discretized fluid volume and heat exchange'
+		MT_DynamicPipe,			// Keyword: DynamicPipe			'Pipe with a discretized fluid volume and heat exchange'
+		NUM_MT
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -109,7 +109,7 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Defines which pipe model will be instantiated in NANDRAD */
-	ModelType											m_modelType;					// XML:A
+	ModelType											m_model = MT_DynamicPipe;		// XML:A
 
 	/*! If true, nodes of type Building can connect to this edge.
 		This is used for the automatic algorithm that connects buildings with the network */

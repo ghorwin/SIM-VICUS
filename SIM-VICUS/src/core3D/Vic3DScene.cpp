@@ -1637,16 +1637,16 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					}
 					break;
 					case SVViewState::OCM_NetworkComponents: {
-						for (const VICUS::NetworkEdge & edge: net.m_edges){
-							unsigned int id = edge.m_componentId;
-							if (db.m_networkComponents[id] != nullptr)
-								edge.m_color = db.m_networkComponents[id]->m_color;
-						}
-						for (const VICUS::NetworkNode & node: net.m_nodes){
-							unsigned int id = node.m_componentId;
-							if (db.m_networkComponents[id] != nullptr)
-								node.m_color = db.m_networkComponents[id]->m_color;
-						}
+//						for (const VICUS::NetworkEdge & edge: net.m_edges){
+//							unsigned int id = edge.m_componentId;
+//							if (db.m_networkComponents[id] != nullptr)
+//								edge.m_color = db.m_networkComponents[id]->m_color;
+//						}
+//						for (const VICUS::NetworkNode & node: net.m_nodes){
+//							unsigned int id = node.m_componentId;
+//							if (db.m_networkComponents[id] != nullptr)
+//								node.m_color = db.m_networkComponents[id]->m_color;
+//						}
 					}
 					break;
 

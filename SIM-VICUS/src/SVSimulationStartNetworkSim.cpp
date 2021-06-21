@@ -151,11 +151,11 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 	unsigned int networkId = m_networksMap.value(m_ui->comboBoxNetwork->currentText());
 	const VICUS::Network vicusNetwork = *proj.element(proj.m_geometricNetworks, networkId);
 
-	// node can have only one: componentId or subNetworkId
-	for (const VICUS::NetworkNode &n: vicusNetwork.m_nodes){
-		if (n.m_componentId != VICUS::INVALID_ID && n.m_subNetworkId != VICUS::INVALID_ID)
-			throw IBK::Exception(IBK::FormatString("node with id '%1' has both subnetworkId and componentId.").arg(n.m_id), FUNC_ID);
-	}
+//	// node can have only one: componentId or subNetworkId
+//	for (const VICUS::NetworkNode &n: vicusNetwork.m_nodes){
+//		if (n.m_componentId != VICUS::INVALID_ID && n.m_subNetworkId != VICUS::INVALID_ID)
+//			throw IBK::Exception(IBK::FormatString("node with id '%1' has both subnetworkId and componentId.").arg(n.m_id), FUNC_ID);
+//	}
 
 	// sources and buildings can only have one connected edge
 	for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes){
@@ -257,36 +257,41 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 
 	// *** Transfer COMPONENTS from Vicus to Nandrad
 
-	// --> collect all componentIDs used in vicus network
-	std::vector<unsigned int> componentIds;
-	for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes){
-		if (node.m_type == VICUS::NetworkNode::NT_Mixer)
-			continue;
-		if(node.m_componentId == VICUS::INVALID_ID)
-				throw IBK::Exception(IBK::FormatString("Node '%1' has no referenced component").arg(node.m_id),
-									 FUNC_ID);
-		if (std::find(componentIds.begin(), componentIds.end(), node.m_componentId) == componentIds.end())
-			componentIds.push_back(node.m_componentId);
-	}
-	for (const VICUS::NetworkEdge &edge: vicusNetwork.m_edges){
-		if(edge.m_componentId == VICUS::INVALID_ID)
-				throw IBK::Exception(IBK::FormatString("Edge '%1'->'%2' has no referenced component")
-									 .arg(edge.nodeId1()).arg(edge.nodeId2()), FUNC_ID);
-		if (std::find(componentIds.begin(), componentIds.end(), edge.m_componentId) == componentIds.end())
-			componentIds.push_back(edge.m_componentId);
-	}
-	// --> transfer
-	for (unsigned int id: componentIds){
-		const VICUS::NetworkComponent *comp = db.m_networkComponents[id];
-		Q_ASSERT(comp != nullptr);
-		NANDRAD::HydraulicNetworkComponent nandradComp;
-		nandradComp.m_id = comp->m_id;
-		nandradComp.m_displayName = comp->m_displayName.string(IBK::MultiLanguageString::m_language, "en");
-		nandradComp.m_modelType = (NANDRAD::HydraulicNetworkComponent::ModelType) comp->m_modelType;
-		for (int i=0; i<VICUS::NetworkComponent::NUM_P; ++i)
-			nandradComp.m_para[i] = comp->m_para[i];
-		nandradNetwork.m_components.push_back(nandradComp);
-	}
+
+	// TODO Hauke:
+
+
+
+//	// --> collect all componentIDs used in vicus network
+//	std::vector<unsigned int> componentIds;
+//	for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes){
+//		if (node.m_type == VICUS::NetworkNode::NT_Mixer)
+//			continue;
+//		if(node.m_componentId == VICUS::INVALID_ID)
+//				throw IBK::Exception(IBK::FormatString("Node '%1' has no referenced component").arg(node.m_id),
+//									 FUNC_ID);
+//		if (std::find(componentIds.begin(), componentIds.end(), node.m_componentId) == componentIds.end())
+//			componentIds.push_back(node.m_componentId);
+//	}
+//	for (const VICUS::NetworkEdge &edge: vicusNetwork.m_edges){
+//		if(edge.m_componentId == VICUS::INVALID_ID)
+//				throw IBK::Exception(IBK::FormatString("Edge '%1'->'%2' has no referenced component")
+//									 .arg(edge.nodeId1()).arg(edge.nodeId2()), FUNC_ID);
+//		if (std::find(componentIds.begin(), componentIds.end(), edge.m_componentId) == componentIds.end())
+//			componentIds.push_back(edge.m_componentId);
+//	}
+//	// --> transfer
+//	for (unsigned int id: componentIds){
+//		const VICUS::NetworkComponent *comp = db.m_networkComponents[id];
+//		Q_ASSERT(comp != nullptr);
+//		NANDRAD::HydraulicNetworkComponent nandradComp;
+//		nandradComp.m_id = comp->m_id;
+//		nandradComp.m_displayName = comp->m_displayName.string(IBK::MultiLanguageString::m_language, "en");
+//		nandradComp.m_modelType = (NANDRAD::HydraulicNetworkComponent::ModelType) comp->m_modelType;
+//		for (int i=0; i<VICUS::NetworkComponent::NUM_P; ++i)
+//			nandradComp.m_para[i] = comp->m_para[i];
+//		nandradNetwork.m_components.push_back(nandradComp);
+//	}
 
 
 	// *** Transform PIPES from Vicus to NANDRAD
@@ -352,25 +357,28 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 		// create element
 		NANDRAD::HydraulicNetworkElement elem;
 
-		// place the source in reverse order
-		if (node.m_type == VICUS::NetworkNode::NT_Source){
-			elem = NANDRAD::HydraulicNetworkElement(node.m_id, node.m_id+ idOffsetOutlet, node.m_id, node.m_componentId);
-			elem.m_displayName = node.m_displayName.toStdString();
-			nandradNetwork.m_referenceElementId = node.m_id;
-		}
-		else{
-			elem = NANDRAD::HydraulicNetworkElement(node.m_id, node.m_id, node.m_id + idOffsetOutlet, node.m_componentId);
-			elem.m_displayName = node.m_displayName.toStdString();
-		}
 
-		// small hack to get component name in display name
-		const VICUS::NetworkComponent *comp = db.m_networkComponents[elem.m_componentId];
-		Q_ASSERT(comp!=nullptr);
-		elem.m_displayName = IBK::FormatString("%1_%2_%3").arg(comp->m_displayName.string()).arg(elem.m_id).arg(elem.m_displayName).str();
+		// TODO Hauke:
+
+//		// place the source in reverse order
+//		if (node.m_type == VICUS::NetworkNode::NT_Source){
+//			elem = NANDRAD::HydraulicNetworkElement(node.m_id, node.m_id+ idOffsetOutlet, node.m_id, node.m_componentId);
+//			elem.m_displayName = node.m_displayName.toStdString();
+//			nandradNetwork.m_referenceElementId = node.m_id;
+//		}
+//		else{
+//			elem = NANDRAD::HydraulicNetworkElement(node.m_id, node.m_id, node.m_id + idOffsetOutlet, node.m_componentId);
+//			elem.m_displayName = node.m_displayName.toStdString();
+//		}
+
+//		// small hack to get component name in display name
+//		const VICUS::NetworkComponent *comp = db.m_networkComponents[elem.m_componentId];
+//		Q_ASSERT(comp!=nullptr);
+//		elem.m_displayName = IBK::FormatString("%1_%2_%3").arg(comp->m_displayName.string()).arg(elem.m_id).arg(elem.m_displayName).str();
 
 
-		// transform heatExchange properties
-		elem.m_heatExchange = node.m_heatExchange.toNandradHeatExchange();
+//		// transform heatExchange properties
+//		elem.m_heatExchange = node.m_heatExchange.toNandradHeatExchange();
 
 		nandradNetwork.m_elements.push_back(elem);
 
@@ -396,52 +404,57 @@ bool SVSimulationStartNetworkSim::generateNandradProject(NANDRAD::Project & p) c
 
 	for (const VICUS::NetworkEdge *edge: orderedEdges) {
 
-		// check if the component has a model type which corresponds to a pipe
-		const VICUS::NetworkComponent *comp = db.m_networkComponents[edge->m_componentId];
-		Q_ASSERT(comp!=nullptr);
-		if ( ! (comp->m_modelType == VICUS::NetworkComponent ::MT_SimplePipe ||
-				comp->m_modelType == VICUS::NetworkComponent ::MT_DynamicPipe) )
-			throw IBK::Exception(IBK::FormatString("Component of edge %1->%2 does not represent a pipe")
-													.arg(edge->nodeId1()).arg(edge->nodeId2()), FUNC_ID);
-
-		// check if there is a reference to a pipe from DB
-		const VICUS::NetworkPipe *pipe = db.m_pipes[edge->m_pipeId];
-		if (pipe == nullptr)
-			throw IBK::Exception(IBK::FormatString("Edge  %1->%2 has no defined pipe from database")
-								 .arg(edge->m_node1->m_id).arg(edge->m_node2->m_id), FUNC_ID);
 
 
-		// add inlet pipe element
-		NANDRAD::HydraulicNetworkElement inletPipe(VICUS::Project::largestUniqueId(nandradNetwork.m_elements),
-													edge->m_nodeIdInlet,
-													edge->m_nodeIdOutlet,
-													edge->m_componentId,
-													edge->m_pipeId,
-													edge->length());
-		inletPipe.m_displayName = edge->m_displayName.toStdString();
-		inletPipe.m_heatExchange = edge->m_heatExchange.toNandradHeatExchange();
+		// TODO Hauke:
 
-		// small hack to get component name in display name
-		inletPipe.m_displayName = IBK::FormatString("%1_%2_%3").arg(comp->m_displayName.string())
-									.arg(inletPipe.m_id).arg(inletPipe.m_displayName).str();
+//		// check if the component has a model type which corresponds to a pipe
+//		const VICUS::NetworkComponent *comp = db.m_networkComponents[edge->m_componentId];
+//		Q_ASSERT(comp!=nullptr);
+//		if ( ! (comp->m_modelType == VICUS::NetworkComponent ::MT_SimplePipe ||
+//				comp->m_modelType == VICUS::NetworkComponent ::MT_DynamicPipe) )
+//			throw IBK::Exception(IBK::FormatString("Component of edge %1->%2 does not represent a pipe")
+//													.arg(edge->nodeId1()).arg(edge->nodeId2()), FUNC_ID);
 
-		nandradNetwork.m_elements.push_back(inletPipe);
+//		// check if there is a reference to a pipe from DB
+//		const VICUS::NetworkPipe *pipe = db.m_pipes[edge->m_pipeId];
+//		if (pipe == nullptr)
+//			throw IBK::Exception(IBK::FormatString("Edge  %1->%2 has no defined pipe from database")
+//								 .arg(edge->m_node1->m_id).arg(edge->m_node2->m_id), FUNC_ID);
 
-		// add outlet pipe element
-		NANDRAD::HydraulicNetworkElement outletPipe(VICUS::Project::largestUniqueId(nandradNetwork.m_elements),
-													edge->m_nodeIdOutlet + idOffsetOutlet,
-													edge->m_nodeIdInlet + idOffsetOutlet,
-													edge->m_componentId,
-													edge->m_pipeId,
-													edge->length());
-		outletPipe.m_displayName = edge->m_displayName.toStdString();
-		outletPipe.m_heatExchange = edge->m_heatExchange.toNandradHeatExchange();
 
-		// small hack to get component name in display name
-		outletPipe.m_displayName = IBK::FormatString("%1_%2_%3").arg(comp->m_displayName.string())
-									.arg(outletPipe.m_id).arg(outletPipe.m_displayName).str();
 
-		nandradNetwork.m_elements.push_back(outletPipe);
+//		// add inlet pipe element
+//		NANDRAD::HydraulicNetworkElement inletPipe(VICUS::Project::largestUniqueId(nandradNetwork.m_elements),
+//													edge->m_nodeIdInlet,
+//													edge->m_nodeIdOutlet,
+//													edge->m_componentId,
+//													edge->m_pipeId,
+//													edge->length());
+//		inletPipe.m_displayName = edge->m_displayName.toStdString();
+//		inletPipe.m_heatExchange = edge->m_heatExchange.toNandradHeatExchange();
+
+//		// small hack to get component name in display name
+//		inletPipe.m_displayName = IBK::FormatString("%1_%2_%3").arg(comp->m_displayName.string())
+//									.arg(inletPipe.m_id).arg(inletPipe.m_displayName).str();
+
+//		nandradNetwork.m_elements.push_back(inletPipe);
+
+//		// add outlet pipe element
+//		NANDRAD::HydraulicNetworkElement outletPipe(VICUS::Project::largestUniqueId(nandradNetwork.m_elements),
+//													edge->m_nodeIdOutlet + idOffsetOutlet,
+//													edge->m_nodeIdInlet + idOffsetOutlet,
+//													edge->m_componentId,
+//													edge->m_pipeId,
+//													edge->length());
+//		outletPipe.m_displayName = edge->m_displayName.toStdString();
+//		outletPipe.m_heatExchange = edge->m_heatExchange.toNandradHeatExchange();
+
+//		// small hack to get component name in display name
+//		outletPipe.m_displayName = IBK::FormatString("%1_%2_%3").arg(comp->m_displayName.string())
+//									.arg(outletPipe.m_id).arg(outletPipe.m_displayName).str();
+
+//		nandradNetwork.m_elements.push_back(outletPipe);
 
 	}
 

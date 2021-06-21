@@ -63,14 +63,8 @@ void NetworkNode::readXML(const TiXmlElement * element) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 						IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
 				}
-			else if (attribName == "maxHeatingDemand")
-				m_maxHeatingDemand = NANDRAD::readPODAttributeValue<double>(element, attrib);
-			else if (attribName == "componentId")
-				m_componentId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "subNetworkId")
 				m_subNetworkId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "controllerId")
-				m_controllerId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName = QString::fromStdString(attrib->ValueStr());
 			else if (attribName == "visible")
@@ -102,7 +96,19 @@ void NetworkNode::readXML(const TiXmlElement * element) {
 										  .arg("Invalid vector data."), FUNC_ID);
 				}
 			}
-			else if (cName == "NetworkHeatExchange")
+			else if (cName == "IBK:Parameter") {
+				IBK::Parameter p;
+				NANDRAD::readParameterElement(c, p);
+				bool success = false;
+				if (p.name == "MaxHeatingDemand") {
+					m_maxHeatingDemand = p; success = true;
+				}
+				if (!success) {
+				}
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			else if (cName == "HydraulicNetworkHeatExchange")
 				m_heatExchange.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
@@ -126,13 +132,8 @@ TiXmlElement * NetworkNode::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (m_type != NUM_NT)
 		e->SetAttribute("type", KeywordList::Keyword("NetworkNode::NodeType",  m_type));
-	e->SetAttribute("maxHeatingDemand", IBK::val2string<double>(m_maxHeatingDemand));
-	if (m_componentId != VICUS::INVALID_ID)
-		e->SetAttribute("componentId", IBK::val2string<unsigned int>(m_componentId));
 	if (m_subNetworkId != VICUS::INVALID_ID)
 		e->SetAttribute("subNetworkId", IBK::val2string<unsigned int>(m_subNetworkId));
-	if (m_controllerId != VICUS::INVALID_ID)
-		e->SetAttribute("controllerId", IBK::val2string<unsigned int>(m_controllerId));
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (m_visible != NetworkNode().m_visible)
@@ -140,6 +141,10 @@ TiXmlElement * NetworkNode::writeXML(TiXmlElement * parent) const {
 	{
 		std::vector<double> v = { m_position.m_x, m_position.m_y, m_position.m_z};
 		TiXmlElement::appendSingleAttributeElement(e, "Position", nullptr, std::string(), IBK::vector2string<double>(v," "));
+	}
+	if (!m_maxHeatingDemand.name.empty()) {
+		IBK_ASSERT("MaxHeatingDemand" == m_maxHeatingDemand.name);
+		TiXmlElement::appendIBKParameterElement(e, "MaxHeatingDemand", m_maxHeatingDemand.IO_unit.name(), m_maxHeatingDemand.get_value());
 	}
 
 	m_heatExchange.writeXML(e);

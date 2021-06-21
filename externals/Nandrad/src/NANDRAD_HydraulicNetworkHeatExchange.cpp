@@ -151,6 +151,31 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 
 
 
+bool HydraulicNetworkHeatExchange::operator!=(const HydraulicNetworkHeatExchange &other) const
+{
+	if (m_modelType != other.m_modelType)
+		return true;
+
+	for (unsigned int i=0; i<NUM_P; ++i){
+		if (m_para[i] != other.m_para[i])
+			return true;
+	}
+
+	for (unsigned int i=0; i<NUM_SPL; ++i){
+		if (m_splPara[i] != other.m_splPara[i])
+			return true;
+	}
+
+	for (unsigned int i=0; i<NUM_ID; ++i){
+		if (m_idReferences[i] != other.m_idReferences[i])
+			return true;
+	}
+
+	return false;
+}
+
+
+
 std::vector<HydraulicNetworkHeatExchange::ModelType> NANDRAD::HydraulicNetworkHeatExchange::availableHeatExchangeTypes(
 		const NANDRAD::HydraulicNetworkComponent::ModelType modelType)
 {

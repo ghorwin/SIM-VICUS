@@ -29,7 +29,6 @@
 #include "VICUS_Constants.h"
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Object.h"
-#include "VICUS_NetworkHeatExchange.h"
 
 #include <NANDRAD_HydraulicNetworkHeatExchange.h>
 
@@ -120,7 +119,7 @@ public:
 	NodeType									m_type = NUM_NT;										// XML:A:required
 
 	/*! Heating demand.	*/
-	IBK::Parameter								m_maxHeatingDemand;										// XML:A
+	IBK::Parameter								m_maxHeatingDemand;										// XML:E
 
 	/*! reference id to a VICUS::SubNetwork */
 	unsigned int								m_subNetworkId = INVALID_ID;							// XML:A

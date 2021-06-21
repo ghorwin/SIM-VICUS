@@ -135,18 +135,6 @@ void Network::readXML(const TiXmlElement * element) {
 				m_scaleNodes = NANDRAD::readPODElement<double>(c, cName);
 			else if (cName == "ScaleEdges")
 				m_scaleEdges = NANDRAD::readPODElement<double>(c, cName);
-			else if (cName == "Controllers") {
-				const TiXmlElement * c2 = c->FirstChildElement();
-				while (c2) {
-					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "NetworkController")
-						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					VICUS::NetworkController obj;
-					obj.readXML(c2);
-					m_controllers.push_back(obj);
-					c2 = c2->NextSiblingElement();
-				}
-			}
 			else if (cName == "Type") {
 				try {
 					m_type = (NetworkType)KeywordList::Enumeration("Network::NetworkType", c->GetText());
@@ -234,18 +222,6 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 	}
 	TiXmlElement::appendSingleAttributeElement(e, "ScaleNodes", nullptr, std::string(), IBK::val2string<double>(m_scaleNodes));
 	TiXmlElement::appendSingleAttributeElement(e, "ScaleEdges", nullptr, std::string(), IBK::val2string<double>(m_scaleEdges));
-
-	if (!m_controllers.empty()) {
-		TiXmlElement * child = new TiXmlElement("Controllers");
-		e->LinkEndChild(child);
-
-		for (std::vector<VICUS::NetworkController>::const_iterator it = m_controllers.begin();
-			it != m_controllers.end(); ++it)
-		{
-			it->writeXML(child);
-		}
-	}
-
 	return e;
 }
 

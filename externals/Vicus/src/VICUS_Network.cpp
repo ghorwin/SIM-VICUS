@@ -400,7 +400,7 @@ void Network::connectBuildings(const bool extendSupplyPipes) {
 int Network::nextUnconnectedBuilding() const{
 	for (const NetworkNode &nBuilding: m_nodes){
 		if (nBuilding.m_type == NetworkNode::NT_Building && nBuilding.m_edges.size()==0)
-			return nBuilding.m_id;
+			return (int)nBuilding.m_id;
 	}
 	return -1;
 }

@@ -26,23 +26,21 @@
 #include "SVDBNetworkComponentEditWidget.h"
 #include "ui_SVDBNetworkComponentEditWidget.h"
 
-#include <VICUS_KeywordList.h>
-#include <VICUS_KeywordListQt.h>
-#include <VICUS_NetworkComponent.h>
-
-#include <NANDRAD_HydraulicNetworkComponent.h>
-#include <NANDRAD_KeywordList.h>
-
-#include <QtExt_LanguageHandler.h>
-#include "QtExt_Locale.h"
-#include <SVConstants.h>
-
 #include "SVSettings.h"
 #include "SVDBNetworkComponentTableModel.h"
 #include "SVDatabaseEditDialog.h"
 #include "SVMainWindow.h"
 #include "SVStyle.h"
 
+#include <VICUS_NetworkComponent.h>
+
+#include <NANDRAD_HydraulicNetworkComponent.h>
+#include <NANDRAD_KeywordList.h>
+#include <NANDRAD_KeywordListQt.h>
+
+#include <QtExt_LanguageHandler.h>
+#include <QtExt_Locale.h>
+#include <SVConstants.h>
 SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) :
 	SVAbstractDatabaseEditWidget(parent),
 	m_ui(new Ui::SVDBNetworkComponentEditWidget)
@@ -55,10 +53,10 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 	// enter categories into combo box
 	// block signals to avoid getting "changed" calls
 	m_ui->comboBoxComponentType->blockSignals(true);
-	for (int i=0; i<VICUS::NetworkComponent::NUM_MT; ++i)
+	for (int i=0; i<NANDRAD::HydraulicNetworkComponent::NUM_MT; ++i)
 		m_ui->comboBoxComponentType->addItem(QString("%1 (%2)")
-											 .arg(VICUS::KeywordListQt::Keyword("NetworkComponent::ModelType", i))
-											 .arg(VICUS::KeywordListQt::Description("NetworkComponent::ModelType", i)),
+											 .arg(NANDRAD::KeywordListQt::Keyword("HydraulicNetworkComponent::ModelType", i))
+											 .arg(NANDRAD::KeywordListQt::Description("HydraulicNetworkComponent::ModelType", i)),
 											 i);
 	m_ui->comboBoxComponentType->blockSignals(false);
 
@@ -74,23 +72,6 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 	m_ui->tableWidgetParameters->setSortingEnabled(false);
 
 	updateInput(-1);
-
-	// check if enums are identical
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter == (int)VICUS::NetworkComponent::P_HydraulicDiameter);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient == (int)VICUS::NetworkComponent::P_PressureLossCoefficient);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_PressureHead == (int)VICUS::NetworkComponent::P_PressureHead);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency == (int)VICUS::NetworkComponent::P_PumpEfficiency);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_Volume == (int)VICUS::NetworkComponent::P_Volume);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_PipeMaxDiscretizationWidth == (int)VICUS::NetworkComponent::P_PipeMaxDiscretizationWidth);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiency == (int)VICUS::NetworkComponent::P_CarnotEfficiency);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_MaximumHeatingPower == (int)VICUS::NetworkComponent::P_MaximumHeatingPower);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::NUM_P == (int)VICUS::NetworkComponent::NUM_P);
-
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_SimplePipe == (int)VICUS::NetworkComponent::MT_SimplePipe);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe == (int)VICUS::NetworkComponent::MT_DynamicPipe);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump == (int)VICUS::NetworkComponent::MT_ConstantPressurePump);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger == (int)VICUS::NetworkComponent::MT_HeatExchanger);
-//	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::NUM_MT == (int)VICUS::NetworkComponent::NUM_MT);
 }
 
 
@@ -132,7 +113,7 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	m_currentComponent = comp;
 
 	// now update the GUI controls
-	m_ui->lineEditName->setString(comp->m_displayName);
+	m_ui->lineEditName->setString(comp->m_displayNameML);
 
 	m_ui->comboBoxComponentType->blockSignals(true);
 	int typeIdx = m_ui->comboBoxComponentType->findData(comp->m_modelType);
@@ -149,7 +130,7 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	// only insert parameters that are actually needed for the current model type
 
 	// NOTE: we assume that ModelType enums are the same in both objects!
-	NANDRAD::HydraulicNetworkComponent::ModelType nandradModelType = (NANDRAD::HydraulicNetworkComponent::ModelType)m_currentComponent->m_modelType;
+	NANDRAD::HydraulicNetworkComponent::ModelType nandradModelType = m_currentComponent->m_modelType;
 
 	std::vector<unsigned int> paraVec = NANDRAD::HydraulicNetworkComponent::requiredParameter(nandradModelType, 1);
 	m_ui->tableWidgetParameters->setRowCount(paraVec.size());
@@ -161,11 +142,11 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 
 	m_ui->tableWidgetParameters->blockSignals(true);
 	for (unsigned int i=0; i<paraVec.size(); ++i) {
-		QTableWidgetItem * item = new QTableWidgetItem(VICUS::KeywordListQt::Keyword("NetworkComponent::para_t", (int)paraVec[i]));
+		QTableWidgetItem * item = new QTableWidgetItem(NANDRAD::KeywordListQt::Keyword("HydraulicNetworkComponent::para_t", (int)paraVec[i]));
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetParameters->setItem((int)i, 0, item);
 		try {
-			IBK::Unit ioUnit(VICUS::KeywordListQt::Unit("NetworkComponent::para_t", (int)paraVec[i]));
+			IBK::Unit ioUnit(NANDRAD::KeywordListQt::Unit("HydraulicNetworkComponent::para_t", (int)paraVec[i]));
 			item = new QTableWidgetItem(QString::fromStdString(ioUnit.name()));
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 			m_ui->tableWidgetParameters->setItem((int)i, 2, item);
@@ -199,8 +180,8 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 void SVDBNetworkComponentEditWidget::on_lineEditName_editingFinished(){
 	Q_ASSERT(m_currentComponent != nullptr);
 
-	if (m_currentComponent->m_displayName != m_ui->lineEditName->string()) {
-		m_currentComponent->m_displayName = m_ui->lineEditName->string();
+	if (m_currentComponent->m_displayNameML != m_ui->lineEditName->string()) {
+		m_currentComponent->m_displayNameML = m_ui->lineEditName->string();
 		modelModify();
 	}
 }
@@ -209,7 +190,8 @@ void SVDBNetworkComponentEditWidget::on_lineEditName_editingFinished(){
 void SVDBNetworkComponentEditWidget::on_comboBoxComponentType_currentIndexChanged(int /*index*/) {
 	if (m_currentComponent == nullptr) return; // m_current is nullptr, when nothing is selected and controls are defaulted to "empty"
 
-	VICUS::NetworkComponent::ModelType ct = static_cast<VICUS::NetworkComponent::ModelType>(m_ui->comboBoxComponentType->currentData().toInt());
+	NANDRAD::HydraulicNetworkComponent::ModelType ct = static_cast<NANDRAD::HydraulicNetworkComponent::ModelType>(
+														m_ui->comboBoxComponentType->currentData().toInt());
 	if (ct != m_currentComponent->m_modelType) {
 		m_currentComponent->m_modelType = ct;
 		modelModify();
@@ -243,13 +225,13 @@ void SVDBNetworkComponentEditWidget::on_tableWidgetParameters_cellChanged(int ro
 		errMsg = "Only numbers allowed!";
 
 	std::string parName = m_ui->tableWidgetParameters->item(row, 0)->text().toStdString();
-	VICUS::NetworkComponent::para_t paraNum = VICUS::NetworkComponent::para_t(
-												VICUS::KeywordList::Enumeration("NetworkComponent::para_t", parName));
+	NANDRAD::HydraulicNetworkComponent::para_t paraNum = NANDRAD::HydraulicNetworkComponent::para_t(
+												NANDRAD::KeywordList::Enumeration("HydraulicNetworkComponent::para_t", parName));
 
 	// now do parameter specific checks
 	if (ok){
-		IBK::Parameter parameter(VICUS::KeywordList::Keyword("NetworkComponent::para_t", paraNum), val,
-								 VICUS::KeywordList::Unit("NetworkComponent::para_t", paraNum));
+		IBK::Parameter parameter(NANDRAD::KeywordList::Keyword("HydraulicNetworkComponent::para_t", paraNum), val,
+								 NANDRAD::KeywordList::Unit("HydraulicNetworkComponent::para_t", paraNum));
 		try {
 			NANDRAD::HydraulicNetworkComponent::checkModelParameter(parameter, paraNum);
 		} catch (IBK::Exception &ex) {
@@ -273,7 +255,7 @@ void SVDBNetworkComponentEditWidget::on_tableWidgetParameters_cellChanged(int ro
 	}
 
 	// finally set value
-	VICUS::KeywordList::setParameter(m_currentComponent->m_para, "NetworkComponent::para_t", paraNum, val);
+	NANDRAD::KeywordList::setParameter(m_currentComponent->m_para, "HydraulicNetworkComponent::para_t", paraNum, val);
 	modelModify();
 }
 
