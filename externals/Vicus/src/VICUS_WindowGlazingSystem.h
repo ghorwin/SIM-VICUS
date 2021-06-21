@@ -72,10 +72,10 @@ public:
 	ComparisonResult equal(const AbstractDBElement *other) const override;
 
 	/*! Returns the calculate or given uValue depending on model type. [W/m2K] */
-	double uValue();
+	double uValue() const;
 
 	/*! Returns the calculate or given SHGC depending on model type. [---] */
-	double SHGC();
+	double SHGC() const;
 
 	bool isValid() const;
 
