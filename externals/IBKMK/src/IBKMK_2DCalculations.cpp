@@ -45,11 +45,11 @@ bool intersectsLine2D(const std::vector<Vector2D> & polygon,
 					  const IBK::point2D<double> &p1, const IBK::point2D<double> &p2, IBK::point2D<double> & intersectionPoint)
 {
 	IBK::Line line(p1, p2);
-	unsigned int polySize = polygon.size();
-	for(unsigned int i=0; i<polySize; ++i){
+	unsigned int polySize = (unsigned int)polygon.size();
+	for (unsigned int i=0; i<polySize; ++i){
 		IBK::Line otherLine(polygon[i], polygon[(i+1)%polySize]);
 
-		if(line.intersects(otherLine, intersectionPoint))
+		if (line.intersects(otherLine, intersectionPoint))
 			return true;
 	}
 	return false;

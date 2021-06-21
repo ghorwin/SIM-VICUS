@@ -194,7 +194,7 @@ static bool eleminateColinearPtsHelper(std::vector<IBKMK::Vector3D> &polyline) {
 		return false;
 
 	const double eps = 1e-4;
-	unsigned int polySize = polyline.size();
+	unsigned int polySize = (unsigned int)polyline.size();
 
 	for(unsigned int idx=0; idx<polySize; ++idx){
 		unsigned int idx0 = idx-1;
