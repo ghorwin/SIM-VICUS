@@ -350,7 +350,28 @@ Die Berechnung der Verlustwärme und elektrischen Leistung erfolgt analog zur `C
 
 ### Modelltyp: ControlledPump
 
-... TODO Andreas
+Dieses Modell ist ähnlich der `ConstantPressurePump`, nur dass diesmal die Druckhöhe nicht fest vorgegeben ist, sonder anhand verschiedener Regelmodelle angepasst wird.
+
+.Definition einer ControlledPump
+====
+[source,xml]
+----
+<!-- Komponentendefinition ist ähnlich der normalen Pumpe -->
+<HydraulicNetworkComponent id="1" displayName="Pump" modelType="ControlledPump">
+	<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
+	<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
+</HydraulicNetworkComponent>
+
+...
+
+<!-- Das dazugehörige Element muss eine Kontrollelement referenzieren -->
+<HydraulicNetworkElement id="1" inletNodeId="100" outletNodeId="0" componentId="1" controlElementId="1" displayName="Pump" />
+----
+====
+
+Die Parameter und Attribute der `ControlledPump` Definition entsprechen denen der `ConstantPressurePump`. Der Parameter `PressureHead` wird nicht benötigt.
+
+Die tatsächliche Pumpenleistung ergibt sich durch Anwendung des Massenstromkontrollmodells, welches vom Netzwerelement im Attribut `controlElementId` referenziert wird (siehe auch <<NetworkControlElements>>).
 
 
 ### ModellTyp: HeatExchanger
@@ -366,10 +387,10 @@ Das Model `HeatExchanger` ist ein einfacher Wärmeübertrager, welcher mit dem F
 |====================
 
 
-
+[[HydraulicElement_HeatPumpIdealCarnotSourceSide]]
 ### ModellTyp: HeatPumpIdealCarnotSourceSide
 
-Das Model `HeatPumpIdealCarnotSourceSide` ist eine ideale Wärmepumpe mit gegebener Carnot-Effizienz, welche die Quellenseite der Wärmepumpe modelliert. Mit diesem Modell wird also der Wärmeübertrager der kalten Seite (Verdampfer) der Wärmepumpe als Teil des Netzwerks modelliert. Dem Fluid wird dort Wärme entzogen. Die von der Wärmepumpe erzeugte Wärme an der warmen Seite (Kondensator) wird durch ein Wärmeaustauschmodell (<<HydraulicNetworkHeatExchange>>) als Randbedingung angegeben. Weiterhin muss die mittlere Kondensatortemperatur (d.h. der geschätzte Mittelwert zwischen Ein- und Austrittstemperatur am Kondensator, z.B. 32.5°C) in Form eines Schedules mit der Bezeichnung `CondenserMeanTemperatureSchedule` angegeben werden.
+Das Model `HeatPumpIdealCarnotSourceSide` ist eine ideale Wärmepumpe mit gegebener Carnot-Effizienz, welche die Quellenseite der Wärmepumpe modelliert. Mit diesem Modell wird also der Wärmeübertrager der kalten Seite (Verdampfer) der Wärmepumpe als Teil des Netzwerks modelliert. Dem Fluid wird dort Wärme entzogen. Die von der Wärmepumpe erzeugte Wärme an der warmen Seite (Kondensator) wird durch ein Wärmeaustauschmodell (<<NetworkHeatExchange>>) als Randbedingung angegeben. Weiterhin muss die mittlere Kondensatortemperatur (d.h. der geschätzte Mittelwert zwischen Ein- und Austrittstemperatur am Kondensator, z.B. 32.5°C) in Form eines Schedules mit der Bezeichnung `CondenserMeanTemperatureSchedule` angegeben werden.
 
 Weiterhin werden diese Parameter benötigt:
 
@@ -419,9 +440,9 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 
 ### ModellTyp: HeatPumpIdealCarnotSupplySide
 
-Das Model `HeatPumpIdealCarnotSupplySide` ist eine ideale Wärmepumpe mit gegebener Carnot-Effizienz, welche die Senkenseite der Wärmepumpe modelliert. Mit diesem Modell wird also der Wärmeübertrager der warmen Seite (Kondensator) der Wärmepumpe als Teil des Netzwerks modelliert. Die auf der kalten Seite gegebene Temperatur wird durch ein Wärmeaustauschmodell (<<HydraulicNetworkHeatExchange>>) als Randbedingung angegeben. Die Wärmeabgabe der Wärmepumpe wird ideal geregelt so dass immer die gegebene Kondensatoraustrittstemperatur (= Heizungsvorlauftemperatur, z.B. 35°C) erreicht wird. die Kondensatoraustrittstemperatur muss in Form eines Schedules mit der Bezeichnung `CondenserOutletSetpointSchedule` angegeben werden.
+Das Model `HeatPumpIdealCarnotSupplySide` ist eine ideale Wärmepumpe mit gegebener Carnot-Effizienz, welche die Senkenseite der Wärmepumpe modelliert. Mit diesem Modell wird also der Wärmeübertrager der warmen Seite (Kondensator) der Wärmepumpe als Teil des Netzwerks modelliert. Die auf der kalten Seite gegebene Temperatur wird durch ein Wärmeaustauschmodell (<<NetworkHeatExchange>>) als Randbedingung angegeben. Die Wärmeabgabe der Wärmepumpe wird ideal geregelt so dass immer die gegebene Kondensatoraustrittstemperatur (= Heizungsvorlauftemperatur, z.B. 35°C) erreicht wird. die Kondensatoraustrittstemperatur muss in Form eines Schedules mit der Bezeichnung `CondenserOutletSetpointSchedule` angegeben werden.
 
-Die benötigten Parameter sind identisch mit dem Modell <<HeatPumpIdealCarnotSourceSide>> und in <<Parameter_HeatPumpIdealCarnotSourceSide>> gegeben.
+Die benötigten Parameter sind identisch mit dem Modell <<HydraulicElement_HeatPumpIdealCarnotSourceSide>> und in <<Parameter_HeatPumpIdealCarnotSourceSide>> gegeben.
 
 
 [[HydraulicElement_HeatPumpRealSourceSide]]
@@ -775,10 +796,10 @@ ID-Referenzen:
 
 ## Regelung von Strömungselementen
 
-Strömungselemente können ein geregeltes Ventil enthalten. Das Ventil wird z.B. so geregelt, dass eine vorgegebene Temperaturdifferenz oder ein vorgegebener Massenstrom erreicht wird. Im <<controlled_heat_exchanger>> referenziert
-das `HydraulicNetworkElement` dafür ein `HydraulicNetworkControlElement` im Attribut `controlElementID`.
+Strömungselemente können ein geregeltes Ventil enthalten. Das Ventil wird z.B. so geregelt, dass eine vorgegebene Temperaturdifferenz oder ein vorgegebener Massenstrom erreicht wird. Im <<ex_controlled_heat_exchanger>> referenziert
+das `HydraulicNetworkElement` dafür ein `HydraulicNetworkControlElement` im Attribut `controlElementId`.
 
-[[controlled_heat_exchanger]]
+[[ex_controlled_heat_exchanger]]
 .Beispiel für ein Wärmeübertrager mit geregelter Temperaturdifferenz
 ====
 [source,xml]
@@ -806,7 +827,7 @@ das `HydraulicNetworkElement` dafür ein `HydraulicNetworkControlElement` im Att
 ----
 ====
 
-Die konkrete Parametrierung des Kontrollers ist im referenzierten `HydraulicNetworkControlElement` enthalten. Die Massenstromregler arbeiten unterschiedlich und verlangen dabei wie im <<controlled_heat_exchanger>> eine entsprechende Wärmeaustauschparametrierung (`HydraulicNetworkHeatExchange`). Details zu diesen Abhängigkeiten sind in Abschnitt <<NetworkControlElements>> beschrieben.
+Die konkrete Parametrierung des Kontrollers ist im referenzierten `HydraulicNetworkControlElement` enthalten. Die Massenstromregler arbeiten unterschiedlich und verlangen dabei wie im <<ex_controlled_heat_exchanger>> eine entsprechende Wärmeaustauschparametrierung (`HydraulicNetworkHeatExchange`). Details zu diesen Abhängigkeiten sind in Abschnitt <<NetworkControlElements>> beschrieben.
 
 
 [[NetworkControlElements]]
