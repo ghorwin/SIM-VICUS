@@ -268,7 +268,35 @@ public:
 		return largest+1; // Mind: plus one, to get past the largest _existing_ ID
 	}
 
-
+	/*! Simple valid function. */
+	template <typename T>
+	bool isValidTemplate(const std::vector<T> elements, QStringList &errorStack, const QString &name ){
+		bool valid = true;
+		for(const  T &e : elements){
+			if(!e.isValid() ){
+				errorStack << tr("The %3 with #%1 and name '%2' is not valid! Export failed.")
+							  .arg(e.m_id).arg(QString::fromStdString(e.m_displayName.string()).arg(name));
+				valid = false;
+			}
+		}
+		return valid;
+	}
+	/*! Simple valid function elements with schedules. */
+	///TODO Dirk->Andreas wie kann ich hier die schedules mit einbinden?
+	/// auf SVSettings::instance().m_db kann ich hier doch nicht zugreifen das gibt doch ein circelbezug oder?
+	/// muss ich dass dann übergeben?
+//	template <typename T>
+//	bool isValidTemplate(const std::vector<T> elements, QStringList &errorStack, const QString &name ){
+//		bool valid = true;
+//		for(const  T &e : elements){
+//			if(!e.isValid() ){
+//				errorStack << tr("The %3 with #%1 and name '%2' is not valid! Export failed.")
+//							  .arg(e.m_id).arg(QString::fromStdString(e.m_displayName.string()).arg(name));
+//				valid = false;
+//			}
+//		}
+//		return valid;
+//	}
 
 	/*! Generates a new unique name in format "basename" or "basename [<nr>]" with increasing numbers until
 		the name no longer exists in set existingNames.
@@ -285,6 +313,8 @@ public:
 		}
 		return name;
 	}
+
+
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -345,11 +375,23 @@ public:
 
 
 private:
+
+	/*! For mapping the SIM-VICUS ids to NANDRAD unique ids. */
+	struct IdMap{
+		std::map<unsigned int, unsigned int>			m_vicusToNandrad;	// mapping for VICUS to NANDRAD ids
+		std::vector<unsigned int>						m_ids;				// this vector hold all ids (NANDRAD) in this space
+	};
+
 	/*! Return room name by id.
 		TODO Coding style beachten!
 	*/
 	std::string getRoomNameById(unsigned int id) const;
 
+	/*! Check all models for validity. */
+	bool allModelsValid();
+
+	void exportSubSurfaces(QStringList & errorStack, const std::vector<VICUS::SubSurface> &subSurfs, std::vector<IdMap> &idMaps,
+						   const VICUS::ComponentInstance & ci, NANDRAD::ConstructionInstance &cinst) const;
 
 	/*! For mapping the SIM-VICUS ids to NANDRAD unique ids. */
 	enum IdSpaces{
@@ -363,12 +405,6 @@ private:
 		Zone,
 		Profile,
 		NUM_IdSpaces
-	};
-
-	/*! For mapping the SIM-VICUS ids to NANDRAD unique ids. */
-	struct IdMap{
-		std::map<unsigned int, unsigned int>			m_vicusToNandrad;	// mapping for VICUS to NANDRAD ids
-		std::vector<unsigned int>						m_ids;				// this vector hold all ids (NANDRAD) in this space
 	};
 
 

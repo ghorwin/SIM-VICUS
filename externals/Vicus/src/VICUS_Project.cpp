@@ -1090,6 +1090,123 @@ std::string Project::getRoomNameById(unsigned int id) const {
 	}
 	return "";
 }
+
+
+
+bool Project::allModelsValid(){
+
+	QStringList errorStack;
+
+	isValidTemplate(m_embeddedDB.m_boundaryConditions, errorStack, "boundary condition");
+	isValidTemplate(m_embeddedDB.m_materials, errorStack, "material");
+	isValidTemplate(m_embeddedDB.m_infiltration, errorStack, "infiltration");
+	isValidTemplate(m_embeddedDB.m_schedules, errorStack, "schedule");
+
+
+	//	isValidTemplate(m_embeddedDB.m_ventilationNatural, errorStack, "material");
+
+	for(const  VICUS::Construction &c : m_embeddedDB.m_constructions){
+		///TODO Dirk->Andreas wie komm ich hier an die argumente für die datenbankeinträge?
+//		if(!c.isValid(m_materials, m_embeddedDB.m_constructions, m_embeddedDB.m_boundaryConditions) ){
+
+//		}
+	}
+
+	for(const  VICUS::Component &c : m_embeddedDB.m_components){
+		///TODO Dirk->Andreas wie komm ich hier an die argumente für die datenbankeinträge?
+		//		if(!c.isValid(m_materials, m_embeddedDB.m_constructions, m_embeddedDB.m_boundaryConditions) ){
+
+		//		}
+	}
+
+
+
+}
+
+void Project::exportSubSurfaces(QStringList & errorStack, const std::vector<VICUS::SubSurface> &subSurfs, std::vector<IdMap> &idMaps,
+								const VICUS::ComponentInstance & ci, NANDRAD::ConstructionInstance &cinst) const{
+
+	double embArea = 0;
+	// get area of surface
+	double areaA = ci.m_sideASurface->geometry().area();
+
+	for(const SubSurface &ss : subSurfs){
+		NANDRAD::EmbeddedObject emb;
+		emb.m_id = uniqueIdWithPredef2(ConstructionInstance, 1, idMaps, true);
+		//get surface are of emb. obj.
+		NANDRAD::KeywordList::setParameter(emb.m_para, "EmbeddedObject::para_t",
+										   NANDRAD::EmbeddedObject::P_Area, ss.m_polygon2D.area());
+		embArea += ss.m_polygon2D.area();
+		if(embArea > areaA){
+			errorStack << tr("Area of sub surfaces is bigger than area of parent surface #%1, '%2'.").arg(ci.m_sideASurface->m_id)
+						  .arg(ci.m_sideASurface->m_displayName);
+			continue;
+		}
+		emb.m_displayName = ss.m_displayName.toStdString();
+
+		unsigned int subSurfaceComponentId = VICUS::INVALID_ID;
+		//find sub surface component instance
+		for(const VICUS::SubSurfaceComponentInstance &ssci : m_subSurfaceComponentInstances){
+			if(ssci.m_sideASurfaceID == ss.m_id || ssci.m_sideBSurfaceID == ss.m_id){
+				subSurfaceComponentId = ssci.m_subSurfaceComponentID;
+
+				break;
+			}
+		}
+		if(subSurfaceComponentId == VICUS::INVALID_ID){
+			errorStack << tr("No component was assigned to the SubSurface #%1 with name '%2'. Sub surface is not exported.")
+						  .arg(ss.m_id).arg(ss.m_displayName);
+			continue;
+		}
+		bool foundSubSurfComp = false;
+		//search for sub surface component
+		for(const VICUS::SubSurfaceComponent &ssc : m_embeddedDB.m_subSurfaceComponents){
+			if(ssc.m_id == subSurfaceComponentId){
+				foundSubSurfComp = true;
+				//only simple windows are supported now
+				if(ssc.m_type == VICUS::SubSurfaceComponent::CT_Window){
+					//ssc.m_idConstructionType
+					if(ssc.m_idWindow == VICUS::INVALID_ID){
+						errorStack << tr("The sub surface component with #%1 and name '%2' has no valid window id. Sub surface #%3 is not exported.")
+									  .arg(ssc.m_id).arg(QString::fromStdString(ssc.m_displayName.string())).arg(ss.m_id);
+						break;
+					}
+					bool foundWindow =false;
+					//search for the window
+					for(const VICUS::Window &winV : m_embeddedDB.m_windows){
+						if(winV.m_id == ssc.m_idWindow){
+							if(winV.m_idGlazingSystem == VICUS::INVALID_ID){
+								errorStack << tr("The window with #%1 and name '%2' has no valid glazing system. Sub surface #%3 is not exported.")
+											  .arg(winV.m_id).arg(QString::fromStdString(winV.m_displayName.string())).arg(ss.m_id);
+								break;
+							}
+							//save id for glazing system later
+							emb.m_window.m_glazingSystemId = uniqueIdWithPredef2(Window, winV.m_idGlazingSystem, idMaps, true);
+							foundWindow = true;
+							break;
+						}
+					}
+				}
+				else{
+					//TODO Dirk Fehler werfen
+					errorStack << tr("The sub surface component with #%1 and name '%2' is not supported by the export.")
+								  .arg(ssc.m_id).arg(QString::fromStdString(ssc.m_displayName.string()));
+					continue;
+				}
+			}
+		}
+		if(!foundSubSurfComp){
+			errorStack << tr("No component was found for the sub surface with #%1 and name '%2'. No export of this sub surface.")
+						  .arg(ss.m_id).arg(ss.m_displayName);
+			continue;
+		}
+		//add emb. obj. to nandrad project
+		cinst.m_embeddedObjects.push_back(emb);
+		//TODO Dirk Frame einbauen sobald verfügbar
+		//TODO Dirk Divider einbauen sobald verfügbar
+	}
+}
+
 //#define test01
 void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 	FUNCID(Project::generateBuildingProjectData);
@@ -1104,6 +1221,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 	// we process all zones and buildings and create NANDRAD project data
 	// we also transfer all database components
 
+	QStringList errorStack;
 
 	//zone template id
 	//floor area (rounded)
@@ -1168,6 +1286,10 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 
 	// ############################## Zone Templates
+
+
+	//Check all models for validity
+
 
 	//holds a bool for all sub zone templates if the model already assigned in NANDRAD project
 	struct ztBool{
@@ -1851,6 +1973,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 	// *** m_constructionInstances ***
 
+
 	// now process all components and generate construction instances
 	for (const VICUS::ComponentInstance & ci : m_componentInstances) {
 		// Note: component ID may be invalid or component may have been deleted from DB already
@@ -1873,6 +1996,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 		const double SAME_DISTANCE_PARAMETER_ABSTOL = 1e-4;
 
+		bool bothSidesHasSurfaces = false;
 		// we have either one or two surfaces associated
 		if (ci.m_sideASurface != nullptr) {
 			// get area of surface A
@@ -1880,6 +2004,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 			// do we have surfaces at both sides?
 			if (ci.m_sideBSurface != nullptr) {
 				// have both
+				bothSidesHasSurfaces = true;
 				double areaB = ci.m_sideBSurface->geometry().area();
 				// check if both areas are approximately the same
 				if (std::fabs(areaA - areaB) > SAME_DISTANCE_PARAMETER_ABSTOL) {
@@ -1916,28 +2041,13 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
 											   NANDRAD::ConstructionInstance::P_Area, areaA);
 
-			// sub surface
-			const std::vector<SubSurface> & subSurfs = ci.m_sideASurface->subSurfaces();
-			if(subSurfs.size()>0){
-				//we have sub surfaces
-
-				double embArea = 0;
-
-				for(const SubSurface &ss : subSurfs){
-					NANDRAD::EmbeddedObject emb;
-
-					emb.m_id = uniqueIdWithPredef2(ConstructionInstance, 1, m_idMaps, true);
-					NANDRAD::KeywordList::setParameter(emb.m_para, "ConstructionInstance::para_t",
-													   NANDRAD::EmbeddedObject::P_Area, areaA);
-					emb.m_displayName = ss.m_displayName.toStdString();
-
-					NANDRAD::EmbeddedObjectWindow window;
-
-					//TODO Dirk hier muss noch eine ID rein
-					window.m_glazingSystemId = uniqueIdWithPredef2(Window, 1, m_idMaps, true);
-
-					//TODO Dirk Frame einbauen sobald verfügbar
-					//TODO Dirk Divider einbauen sobald verfügbar
+			//for the first time we support only sub surfaces to outside air
+			if(!bothSidesHasSurfaces){
+				// sub surface
+				const std::vector<SubSurface> & subSurfs = ci.m_sideASurface->subSurfaces();
+				if(subSurfs.size()>0){
+					//we have sub surfaces
+					exportSubSurfaces(errorStack, subSurfs, m_idMaps, ci, cinst);
 				}
 			}
 		}
@@ -1962,6 +2072,12 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 											   NANDRAD::ConstructionInstance::P_Area, area);
 
 			cinst.m_displayName = ci.m_sideBSurface->m_displayName.toStdString();
+			// sub surface
+			const std::vector<SubSurface> & subSurfs = ci.m_sideASurface->subSurfaces();
+			if(subSurfs.size()>0){
+				//we have sub surfaces
+				exportSubSurfaces(errorStack, subSurfs, m_idMaps, ci, cinst);
+			}
 		}
 
 
@@ -1991,7 +2107,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 		matdata.m_para[NANDRAD::Material::P_HeatCapacity] = m.m_para[VICUS::Material::P_HeatCapacity];
 		matdata.m_para[NANDRAD::Material::P_Conductivity] = m.m_para[VICUS::Material::P_Conductivity];
 
-		// add to material list
+		// addConstruction to material list
 		p.m_materials.push_back(matdata);
 	}
 
@@ -2011,6 +2127,33 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 		// add to construction type list
 		p.m_constructionTypes.push_back(conType);
+	}
+
+
+
+	for(const VICUS::WindowGlazingSystem &w : m_embeddedDB.m_windowGlazingSystems){
+		if(w.m_modelType != VICUS::WindowGlazingSystem::MT_Simple){
+			errorStack << tr("The window glazing system with #%1 and name '%2' is not supported by the export.")
+						  .arg(w.m_id).arg(QString::fromStdString(w.m_displayName.string()));
+			continue;
+		}
+		else{
+			NANDRAD::WindowGlazingSystem winG;
+			if(!w.isValid()){
+				errorStack << tr("The window glazing system with #%1 and name '%2' is not valid. Export failed.")
+							  .arg(w.m_id).arg(QString::fromStdString(w.m_displayName.string()));
+				continue;
+			}
+			winG.m_displayName = w.m_displayName.string();
+			winG.m_id = uniqueIdWithPredef2(Window, w.m_id, m_idMaps);
+			winG.m_modelType = NANDRAD::WindowGlazingSystem::MT_Simple;
+			NANDRAD::KeywordList::setParameter(winG.m_para, "WindowGlazingSystem::para_t",
+											   NANDRAD::WindowGlazingSystem::P_ThermalTransmittance,
+											   w.uValue());
+			winG.m_splinePara[NANDRAD::WindowGlazingSystem::SP_SHGC]= w.m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC];
+
+			p.m_windowGlazingSystems.push_back(winG);
+		}
 	}
 	// TODO Andreas, Dirk, Stephan: Transfer other database elements/generate NANDRAD data objects
 
