@@ -136,11 +136,11 @@ void SVPropModeSelectionWidget::selectionChanged() {
 		m_ui->comboBoxSelectedNetwork->clear();
 		if (selectedNetworks.empty()) {
 			for (const VICUS::Network & n : project().m_geometricNetworks)
-				m_ui->comboBoxSelectedNetwork->addItem(n.m_displayName);
+				m_ui->comboBoxSelectedNetwork->addItem(n.m_displayName, n.m_id);
 			m_ui->comboBoxSelectedNetwork->setEnabled(true);
 		}
 		else if (selectedNetworks.size() == 1) {
-			m_ui->comboBoxSelectedNetwork->addItem((*selectedNetworks.begin())->m_displayName);
+			m_ui->comboBoxSelectedNetwork->addItem((*selectedNetworks.begin())->m_displayName, (*selectedNetworks.begin())->m_id);
 			m_ui->comboBoxSelectedNetwork->setEnabled(false);
 		}
 		else {
@@ -208,6 +208,11 @@ void SVPropModeSelectionWidget::viewStateProperties(SVViewState & vs) const {
 
 		default:; // just to make compiler happy
 	}
+}
+
+unsigned int SVPropModeSelectionWidget::currentNetworkId() const
+{
+	return m_ui->comboBoxSelectedNetwork->currentData().toUInt();
 }
 
 
@@ -288,4 +293,9 @@ void SVPropModeSelectionWidget::updateViewState() {
 
 	// now set the new viewstate to update property widgets and scene coloring at the same time
 	SVViewStateHandler::instance().setViewState(vs);
+}
+
+void SVPropModeSelectionWidget::on_comboBoxSelectedNetwork_currentIndexChanged(int /*index*/)
+{
+	updateViewState();
 }

@@ -56,6 +56,8 @@ public:
 	*/
 	void setPropertyMode(int propertyIndex);
 
+	void setNetworkId(unsigned int id);
+
 	void showNetworkProperties();
 
 	void showNodeProperties();
@@ -63,6 +65,14 @@ public:
 	void showEdgeProperties();
 
 	void showComponentProperties();
+
+	/*! This function is called whenever the current selection of edges/nodes/objects has changed.
+		This can be due to user interaction with the scene, or because objects were added/deleted or
+		because a project was newly loaded.
+		In any case, the currently shown input widgets must be updated according to the current
+		selection in the project.
+	*/
+	void selectionChanged(unsigned int networkId);
 
 public slots:
 
@@ -123,13 +133,6 @@ private slots:
 
 
 private:
-	/*! This function is called whenever the current selection of edges/nodes/objects has changed.
-		This can be due to user interaction with the scene, or because objects were added/deleted or
-		because a project was newly loaded.
-		In any case, the currently shown input widgets must be updated according to the current
-		selection in the project.
-	*/
-	void selectionChanged();
 
 	void setupComboBoxComponents();
 

@@ -102,7 +102,12 @@
           </item>
           <item>
            <property name="text">
-            <string>Component</string>
+            <string>SubNetwork</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>HeatExchange</string>
            </property>
           </item>
          </widget>

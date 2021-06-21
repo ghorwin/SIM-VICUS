@@ -86,61 +86,59 @@ void SVPropNetworkEditWidget::setPropertyMode(int propertyIndex) {
 	qDebug() << "SVPropNetworkEditWidget::setPropertyMode: propertyIndex =" << propertyIndex;
 
 	switch (propertyIndex) {
-		case 0 : showNetworkProperties(); break;
-		case 1 : showNodeProperties(); break;
-		case 2 : showEdgeProperties(); break;
-		case 3 : showComponentProperties(); break;
+		case 0 : m_ui->stackedWidget->setCurrentIndex(0); break; // page Network
+		case 1 : m_ui->stackedWidget->setCurrentIndex(1); break; // page Node
+		case 2 : m_ui->stackedWidget->setCurrentIndex(2); break; // page Edge
+		case 3 : m_ui->stackedWidget->setCurrentIndex(3); break; // page SubNetwork
+		case 4 : m_ui->stackedWidget->setCurrentIndex(4); break; // page HeatExchange
 	}
+}
 
-	selectionChanged();
+void SVPropNetworkEditWidget::setNetworkId(unsigned int id)
+{
+
 }
 
 
-void SVPropNetworkEditWidget::selectionChanged() {
-	std::set<const VICUS::Object *> objs;
-	// get all selected objects of type network, objects must be visible
-	project().selectObjects(objs, VICUS::Project::SG_Network, true, true);
+void SVPropNetworkEditWidget::selectionChanged(unsigned int networkId) {
 
 	m_currentEdges.clear();
 	m_currentNodes.clear();
-	std::vector<const VICUS::Network*> networks;
 
-	// cast objects to nodes, edges and network
-	for (const VICUS::Object* o : objs) {
-		// if an entire network is selected directly: cast it and dont cast any nodes / edges
-		const VICUS::Network * network = dynamic_cast<const VICUS::Network*>(o);
-		if (network != nullptr && std::find(networks.begin(), networks.end(), network) == networks.end()) {
-			networks.push_back(network);
-			break;
-		}
-		// in case the network is only a parent: continue casting nodes, edges
-		network = dynamic_cast<const VICUS::Network*>(o->m_parent);
-		if (network != nullptr && std::find(networks.begin(), networks.end(), network) == networks.end()) {
-			networks.push_back(network);
-		}
-		const VICUS::NetworkEdge * edge = dynamic_cast<const VICUS::NetworkEdge*>(o);
-		if (edge != nullptr) {
-			m_currentEdges.push_back(edge);
-			continue;
-		}
-		const VICUS::NetworkNode * node = dynamic_cast<const VICUS::NetworkNode*>(o);
-		if (node != nullptr) {
-			m_currentNodes.push_back(node);
-			continue;
+	// set current network based on given id
+	m_currentConstNetwork = VICUS::Project::element(project().m_geometricNetworks, networkId);
+
+	// can be nullptr if no network was selected
+	if (m_currentConstNetwork != nullptr){
+
+		// get all selected objects of type network, objects must be visible
+		std::set<const VICUS::Object *> objs;
+		project().selectObjects(objs, VICUS::Project::SG_Network, true, true);
+
+		// We already have the correct networkId and m_currentConstNetwork is already set correctly
+		// So we only cast the nodes / edges here
+		for (const VICUS::Object* o : objs) {
+
+			// if parent does not exist, this is an entire network
+			if (o->m_parent == nullptr){
+				continue;
+			}
+
+			// else we have nodes or edges which we want to cast
+			else {
+				const VICUS::NetworkEdge * edge = dynamic_cast<const VICUS::NetworkEdge*>(o);
+				if (edge != nullptr) {
+					m_currentEdges.push_back(edge);
+					continue;
+				}
+				const VICUS::NetworkNode * node = dynamic_cast<const VICUS::NetworkNode*>(o);
+				if (node != nullptr) {
+					m_currentNodes.push_back(node);
+					continue;
+				}
+			}
 		}
 	}
-
-	// assign current network only if there is exactly one selected,
-	// if more than one network was selected: clear all, nothing should be shown or edited
-	if (networks.empty())
-		m_currentConstNetwork = nullptr;
-	else if (networks.size()>1){
-		m_currentConstNetwork = nullptr;
-		m_currentEdges.clear();
-		m_currentNodes.clear();
-	}
-	else
-		m_currentConstNetwork = networks[0];
 
 	// now update UI
 	setAllEnabled(false);
@@ -685,7 +683,7 @@ bool SVPropNetworkEditWidget::setNetwork() {
 
 
 void SVPropNetworkEditWidget::showNetworkProperties() {
-//	m_ui->stackedWi
+
 }
 
 
@@ -728,16 +726,20 @@ void SVPropNetworkEditWidget::showComponentProperties(){
 
 
 void SVPropNetworkEditWidget::onModified(int modificationType, ModificationInfo * /*data*/) {
-	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
-	switch (modType) {
-		case SVProjectHandler::NetworkModified:
-		case SVProjectHandler::AllModified:
-		case SVProjectHandler::NodeStateModified:
-			selectionChanged(); // updates m_currentXXXX and the UI
-		break;
 
-		default: ; // just to make compiler happy
-	}
+	// remove this ???
+
+
+	//	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
+//	switch (modType) {
+//		case SVProjectHandler::NetworkModified:
+//		case SVProjectHandler::AllModified:
+//		case SVProjectHandler::NodeStateModified:
+//			selectionChanged(); // updates m_currentXXXX and the UI
+//		break;
+
+//		default: ; // just to make compiler happy
+//	}
 }
 
 

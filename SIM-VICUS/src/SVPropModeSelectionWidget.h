@@ -69,6 +69,8 @@ public:
 	/*! Sets the properties m_propertyWidgetMode and m_objectColorMode based on current selections in the widget. */
 	void viewStateProperties(SVViewState & vs) const;
 
+	unsigned int currentNetworkId() const;
+
 public slots:
 	/*! Connected to SVProjectHandler::modified() */
 	void onModified(int modificationType, ModificationInfo * );
@@ -83,6 +85,8 @@ private slots:
 	void on_comboBoxNetworkProperties_currentIndexChanged(int);
 
 	void on_comboBoxBuildingProperties_currentIndexChanged(int);
+
+	void on_comboBoxSelectedNetwork_currentIndexChanged(int index);
 
 private:
 	/*! Based on selected properties, switch to one of the specific edit modes, based on

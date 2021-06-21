@@ -133,9 +133,13 @@ void SVPropertyWidget::onViewStateChanged() {
 
 		case SVViewState::PM_NetworkProperties : {
 			showPropertyWidget<SVPropNetworkEditWidget>(M_NetworkProperties);
+			SVPropNetworkEditWidget *propNetworkEditWidget = qobject_cast<SVPropNetworkEditWidget*>(m_propWidgets[M_NetworkProperties]);
 			// select highlighting/edit mode -> this will send a signal to update the scene's geometry coloring
 			int networkPropertyType = m_propModeSelectionWidget->currentNetworkPropertyType();
-			qobject_cast<SVPropNetworkEditWidget*>(m_propWidgets[M_NetworkProperties])->setPropertyMode(networkPropertyType);
+			propNetworkEditWidget->setPropertyMode(networkPropertyType);
+			// set current network id from combobox selection
+			unsigned int networkId  = m_propModeSelectionWidget->currentNetworkId();
+			propNetworkEditWidget->selectionChanged(networkId);
 		} break;
 	}
 }
