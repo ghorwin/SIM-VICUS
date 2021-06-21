@@ -56,16 +56,6 @@ public:
 	*/
 	void setPropertyMode(int propertyIndex);
 
-	void setNetworkId(unsigned int id);
-
-	void showNetworkProperties();
-
-	void showNodeProperties();
-
-	void showEdgeProperties();
-
-	void showComponentProperties();
-
 	/*! This function is called whenever the current selection of edges/nodes/objects has changed.
 		This can be due to user interaction with the scene, or because objects were added/deleted or
 		because a project was newly loaded.
@@ -86,8 +76,6 @@ private slots:
 	void on_lineEditNodeX_editingFinished();
 
 	void on_lineEditNodeY_editingFinished();
-
-	void on_comboBoxPipeDB_activated(int index);
 
 	void on_checkBoxSupplyPipe_clicked();
 
@@ -131,22 +119,30 @@ private slots:
 
 	void on_pushButtonEditController_clicked();
 
+	void on_pushButtonAssignPipe_clicked();
+
+	void on_pushButtonEditPipe_clicked();
 
 private:
 
-	void setupComboBoxComponents();
+	/*! Update information related to one or multiple nodes
+	 */
+	void updateNodeProperties();
 
-	void setupComboboxPipeDB();
+	/*! Update information related to one or multiple edges
+	 */
+	void updateEdgeProperties();
+
+	/*! Update all information that can be updated when knowing only the network,
+	 * no edge/node need to be selected here
+	 */
+	void updateNetworkProperties();
+
+
+	void setupComboBoxComponents();
 
 	void setupComboboxHeatExchangeType();
 
-	void updateSizingParams();
-
-	void updateNodeProperties();
-
-	void updateEdgeProperties();
-
-	void updateNetworkProperties();
 
 	void updateHeatExchangeWidgets();
 

@@ -45,6 +45,7 @@
 #include "SVDatabaseEditDialog.h"
 #include "SVDBNetworkFluidEditWidget.h"
 #include "SVNetworkControllerDialog.h"
+#include "SVStyle.h"
 
 
 SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
@@ -57,9 +58,9 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 	m_ui->pushButtonSimplify->setVisible(false);
 	m_ui->pushButtonReduceRedundantNodes->setVisible(false);
 
+	// network property page
+	m_ui->stackedWidget->setCurrentIndex(0);
 
-
-	showNetworkProperties();
 	setAllHeatExchangeWidgetsVisible(false);
 
 	// setup combobox node types
@@ -73,6 +74,15 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 
 	// connect browse filename widgets
 	connect(m_ui->widgetBrowseFileNameTSVFile, SIGNAL(editingFinished()), this, SLOT(on_heatExchangeDataFile_editingFinished()));
+
+	// setup table widgets
+	m_ui->tableWidgetPipes->setColumnCount(2);
+	m_ui->tableWidgetPipes->setHorizontalHeaderLabels(QStringList() << QString() << tr("Pipes"));
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetPipes);
+	m_ui->tableWidgetPipes->setSortingEnabled(false);
+	m_ui->tableWidgetPipes->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+	m_ui->tableWidgetPipes->horizontalHeader()->resizeSection(0,20);
+	m_ui->tableWidgetPipes->horizontalHeader()->setStretchLastSection(true);
 
 }
 
@@ -92,11 +102,6 @@ void SVPropNetworkEditWidget::setPropertyMode(int propertyIndex) {
 		case 3 : m_ui->stackedWidget->setCurrentIndex(3); break; // page SubNetwork
 		case 4 : m_ui->stackedWidget->setCurrentIndex(4); break; // page HeatExchange
 	}
-}
-
-void SVPropNetworkEditWidget::setNetworkId(unsigned int id)
-{
-
 }
 
 
@@ -143,12 +148,7 @@ void SVPropNetworkEditWidget::selectionChanged(unsigned int networkId) {
 	// now update UI
 	setAllEnabled(false);
 	if (m_currentConstNetwork != nullptr){
-		m_ui->groupBoxProperties->setEnabled(true);
-		m_ui->groupBoxEditNetwork->setEnabled(true);
-		m_ui->groupBoxVisualisation->setEnabled(true);
-		m_ui->groupBoxSizePipes->setEnabled(true);
 		updateNetworkProperties();
-		updateSizingParams();
 	}
 	else{
 		clearUI();
@@ -157,23 +157,14 @@ void SVPropNetworkEditWidget::selectionChanged(unsigned int networkId) {
 
 	// node(s) selected
 	if (!m_currentNodes.empty() && m_currentEdges.empty()){
-		m_ui->groupBoxNode->setEnabled(true);
-		m_ui->groupBoxComponent->setEnabled(true);
-		m_ui->groupBoxHeatExchange->setEnabled(true);
 		updateNodeProperties();
 	}
 	// edge(s) selected
 	else if(m_currentNodes.empty() && !m_currentEdges.empty()){
-		m_ui->groupBoxEdge->setEnabled(true);
-		m_ui->groupBoxComponent->setEnabled(true);
-		m_ui->groupBoxHeatExchange->setEnabled(true);
 		updateEdgeProperties();
 	}
 	// none selected
 	else if (m_currentConstNetwork == nullptr){
-		m_ui->groupBoxNode->setEnabled(false);
-		m_ui->groupBoxEdge->setEnabled(false);
-		m_ui->groupBoxComponent->setEnabled(false);
 		clearUI();
 	}
 }
@@ -238,9 +229,11 @@ void SVPropNetworkEditWidget::updateEdgeProperties() {
 
 	Q_ASSERT(!m_currentEdges.empty());
 
-	setupComboBoxComponents();
-	setupComboboxPipeDB();
+	// enable / disable widgets
+	m_ui->groupBoxEdge->setEnabled(true);
+	m_ui->groupBoxSelectedPipe->setEnabled(true);
 
+	// update edge length and display name
 	if (m_currentEdges.size() == 1){
 		m_ui->labelPipeLength->setText(QString("%1 m").arg(m_currentEdges[0]->length()));
 		m_ui->lineEditEdgeDisplayName->setText(m_currentEdges[0]->m_displayName);
@@ -250,34 +243,24 @@ void SVPropNetworkEditWidget::updateEdgeProperties() {
 		m_ui->lineEditEdgeDisplayName->clear();
 	}
 
-	if (uniformProperty(m_currentEdges, &VICUS::NetworkEdge::m_pipeId)) {
-		int idx = m_ui->comboBoxPipeDB->findData(m_currentEdges[0]->m_pipeId);
-		m_ui->comboBoxPipeDB->setCurrentIndex(idx);
-	}
-	else
-		m_ui->comboBoxPipeDB->setCurrentIndex(-1);
-
-
+	// update supply property
 	if (uniformProperty(m_currentEdges, &VICUS::NetworkEdge::m_supply))
 		m_ui->checkBoxSupplyPipe->setChecked(m_currentEdges[0]->m_supply);
 	else
 		m_ui->checkBoxSupplyPipe->setCheckState(Qt::CheckState::PartiallyChecked);
 
-//	m_ui->comboBoxComponent->blockSignals(true);
-//	if (uniformProperty(m_currentEdges, &VICUS::NetworkEdge::m_componentId))
-//		m_ui->comboBoxComponent->setCurrentIndex(m_ui->comboBoxComponent->findData(m_currentEdges[0]->m_componentId));
-//	else
-//		m_ui->comboBoxComponent->setCurrentIndex(-1);
-//	m_ui->comboBoxComponent->blockSignals(false);
-
-	// update combobox
-	NANDRAD::HydraulicNetworkHeatExchange hx;
-	if (uniformProperty(m_currentEdges, &VICUS::NetworkEdge::m_heatExchange)){
-		hx = m_currentEdges[0]->m_heatExchange;
-		m_ui->comboBoxHeatExchangeType->setCurrentIndex(m_ui->comboBoxHeatExchangeType->findData(hx.m_modelType));
+	// update pipe label
+	if (uniformProperty(m_currentEdges, &VICUS::NetworkEdge::m_pipeId)){
+		const SVDatabase  & db = SVSettings::instance().m_db;
+		const VICUS::NetworkPipe * pipe = db.m_pipes[m_currentEdges[0]->m_pipeId];
+		if(pipe == nullptr)
+			m_ui->labelSelectedPipe->setText("-");
+		else
+			m_ui->labelSelectedPipe->setText(QString::fromStdString(pipe->m_displayName.string("en")));
 	}
-	// update hx widgets
-	updateHeatExchangeWidgets();
+	else{
+		m_ui->labelSelectedPipe->clear();
+	}
 }
 
 
@@ -285,6 +268,14 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 {
 	Q_ASSERT(m_currentConstNetwork != nullptr);
 
+	// enable / disable widgets
+	m_ui->groupBoxProperties->setEnabled(true);
+	m_ui->groupBoxEditNetwork->setEnabled(true);
+	m_ui->groupBoxVisualisation->setEnabled(true);
+	m_ui->groupBoxSizePipes->setEnabled(true);
+	m_ui->groupBoxCurrentPipes->setEnabled(true);
+
+	// general network infos
 	m_ui->labelNetworkName->setText(m_currentConstNetwork->m_displayName);
 	m_ui->labelEdgeCount->setText(QString("%1").arg(m_currentConstNetwork->m_edges.size()));
 	m_ui->labelNodeCount->setText(QString("%1").arg(m_currentConstNetwork->m_nodes.size()));
@@ -314,8 +305,52 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 	m_ui->labelLargestDiameter->setText(largestDiameter());
 	m_ui->labelSmallestDiameter->setText(smallestDiameter());
 
+	// scales
 	m_ui->horizontalSliderScaleEdges->setValue((int)m_currentConstNetwork->m_scaleEdges);
 	m_ui->horizontalSliderScaleNodes->setValue((int)m_currentConstNetwork->m_scaleNodes);
+
+	// Pipe sizing algotithm parameters
+	m_ui->doubleSpinBoxTemperatureSetpoint->setValue(m_currentConstNetwork->m_para[VICUS::Network::P_TemperatureSetpoint].get_value(IBK::Unit("C")));
+	m_ui->doubleSpinBoxTemperatureDifference->setValue(m_currentConstNetwork->m_para[VICUS::Network::P_TemperatureDifference].value);
+	m_ui->doubleSpinBoxMaximumPressureLoss->setValue(m_currentConstNetwork->m_para[VICUS::Network::P_MaxPressureLoss].value);
+
+
+	//  *** Update pipes table widget ***#
+
+	std::vector<unsigned int> pipeIds;
+	for (const VICUS::NetworkEdge &e: m_currentConstNetwork->m_edges){
+		if (std::find(pipeIds.begin(), pipeIds.end(), e.m_pipeId) == pipeIds.end())
+			pipeIds.push_back(e.m_pipeId);
+	}
+	int currentRow = m_ui->tableWidgetPipes->currentRow();
+	m_ui->tableWidgetPipes->blockSignals(true);
+	m_ui->tableWidgetPipes->clearContents();
+	m_ui->tableWidgetPipes->setRowCount(pipeIds.size());
+	int row = 0;
+	for (unsigned int id: pipeIds){
+		 const VICUS::NetworkPipe *pipe = db.m_pipes[id];
+		 QTableWidgetItem * item = new QTableWidgetItem();
+		 // special handling for components with "invalid" component id
+		 if (pipe == nullptr)
+			 item->setBackground(QColor(64,64,64));
+		 else
+			 item->setBackground(pipe->m_color);
+		 item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
+		 m_ui->tableWidgetPipes->setItem(row, 0, item);
+
+		 item = new QTableWidgetItem();
+		 if (pipe == nullptr)
+			 item->setText(tr("<invalid pipe id>"));
+		 else
+			 item->setText(QString::fromStdString(pipe->m_displayName.string(IBK::MultiLanguageString::m_language, "en")));
+		 item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		 m_ui->tableWidgetPipes->setItem(row, 1, item);
+
+		 ++row;
+	}
+	// reselect row
+	m_ui->tableWidgetPipes->blockSignals(false);
+	m_ui->tableWidgetPipes->selectRow(std::min(currentRow, m_ui->tableWidgetPipes->rowCount()-1));
 }
 
 
@@ -405,13 +440,6 @@ void SVPropNetworkEditWidget::updateControllerCombobox()
 }
 
 
-void SVPropNetworkEditWidget::updateSizingParams() {
-	if (m_currentConstNetwork != nullptr){
-		m_ui->doubleSpinBoxTemperatureSetpoint->setValue(m_currentConstNetwork->m_para[VICUS::Network::P_TemperatureSetpoint].get_value(IBK::Unit("C")));
-		m_ui->doubleSpinBoxTemperatureDifference->setValue(m_currentConstNetwork->m_para[VICUS::Network::P_TemperatureDifference].value);
-		m_ui->doubleSpinBoxMaximumPressureLoss->setValue(m_currentConstNetwork->m_para[VICUS::Network::P_MaxPressureLoss].value);
-	}
-}
 
 
 void SVPropNetworkEditWidget::clearUI(){
@@ -424,7 +452,6 @@ void SVPropNetworkEditWidget::clearUI(){
 	m_ui->labelPipeLength->clear();
 	m_ui->labelPipeLength->clear();
 	m_ui->checkBoxSupplyPipe->setChecked(false);
-	m_ui->comboBoxPipeDB->setCurrentIndex(-1);
 	m_ui->labelEdgeCount->clear();
 	m_ui->labelNodeCount->clear();
 	m_ui->labelNetworkConnected->clear();
@@ -598,26 +625,6 @@ void SVPropNetworkEditWidget::modifyController()
 }
 
 
-void SVPropNetworkEditWidget::setupComboboxPipeDB()
-{
-	const SVDatabase  & db = SVSettings::instance().m_db;
-
-	m_ui->comboBoxPipeDB->blockSignals(true);
-	m_ui->comboBoxPipeDB->clear();
-	for (unsigned int pipeID : m_currentConstNetwork->m_availablePipes) {
-		// lookup pipe in DB
-		const VICUS::NetworkPipe * pipe = db.m_pipes[pipeID];
-		// skip missing pipes
-		if (pipe == nullptr)
-			continue;
-		m_ui->comboBoxPipeDB->addItem(QString::fromStdString(IBK::FormatString("%1 [%2 mm]")
-			.arg(pipe->m_displayName.string(IBK::MultiLanguageString::m_language, "en"))
-			.arg(pipe->m_para[VICUS::NetworkPipe::P_DiameterOutside].value).str()), pipeID);
-	}
-	m_ui->comboBoxPipeDB->blockSignals(false);
-}
-
-
 void SVPropNetworkEditWidget::setupComboboxHeatExchangeType()
 {
 	m_ui->comboBoxHeatExchangeType->clear();
@@ -682,49 +689,6 @@ bool SVPropNetworkEditWidget::setNetwork() {
 }
 
 
-void SVPropNetworkEditWidget::showNetworkProperties() {
-
-}
-
-
-void SVPropNetworkEditWidget::showNodeProperties() {
-	m_ui->groupBoxProperties->setVisible(false);
-	m_ui->groupBoxSizePipes->setVisible(false);
-	m_ui->groupBoxVisualisation->setVisible(false);
-	m_ui->groupBoxEditNetwork->setVisible(false);
-	m_ui->groupBoxNode->setVisible(true);
-	m_ui->groupBoxEdge->setVisible(false);
-	m_ui->groupBoxComponent->setVisible(false);
-	m_ui->groupBoxHeatExchange->setVisible(false);
-	m_ui->groupBoxController->setVisible(false);
-}
-
-
-void SVPropNetworkEditWidget::showEdgeProperties() {
-	m_ui->groupBoxProperties->setVisible(false);
-	m_ui->groupBoxSizePipes->setVisible(false);
-	m_ui->groupBoxVisualisation->setVisible(false);
-	m_ui->groupBoxEditNetwork->setVisible(false);
-	m_ui->groupBoxNode->setVisible(false);
-	m_ui->groupBoxEdge->setVisible(true);
-	m_ui->groupBoxComponent->setVisible(false);
-	m_ui->groupBoxHeatExchange->setVisible(false);
-	m_ui->groupBoxController->setVisible(false);
-}
-
-void SVPropNetworkEditWidget::showComponentProperties(){
-	m_ui->groupBoxProperties->setVisible(false);
-	m_ui->groupBoxSizePipes->setVisible(false);
-	m_ui->groupBoxVisualisation->setVisible(false);
-	m_ui->groupBoxEditNetwork->setVisible(false);
-	m_ui->groupBoxNode->setVisible(false);
-	m_ui->groupBoxEdge->setVisible(false);
-	m_ui->groupBoxComponent->setVisible(true);
-	m_ui->groupBoxHeatExchange->setVisible(true);
-	m_ui->groupBoxController->setVisible(true);
-}
-
-
 void SVPropNetworkEditWidget::onModified(int modificationType, ModificationInfo * /*data*/) {
 
 	// remove this ???
@@ -763,11 +727,6 @@ void SVPropNetworkEditWidget::on_lineEditNodeY_editingFinished()
 		return;
 	IBKMK::Vector3D	vec(m_ui->lineEditNodeX->value(), m_ui->lineEditNodeY->value(), 0);
 	modifyNodeProperty(&VICUS::NetworkNode::m_position, vec);
-}
-
-void SVPropNetworkEditWidget::on_comboBoxPipeDB_activated(int /*index*/)
-{
-	modifyEdgeProperty(&VICUS::NetworkEdge::m_pipeId, m_ui->comboBoxPipeDB->currentData().toUInt());
 }
 
 void SVPropNetworkEditWidget::on_checkBoxSupplyPipe_clicked()
@@ -885,7 +844,6 @@ void SVPropNetworkEditWidget::on_pushButtonSizePipeDimensions_clicked()
 	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
 	undo->push(); // modifies project and updates views
 	updateNetworkProperties();
-	updateSizingParams();
 }
 
 void SVPropNetworkEditWidget::on_pushButtonGenerateIntersections_clicked()
@@ -1104,3 +1062,20 @@ void SVPropNetworkEditWidget::modifyNodeProperty(TNodeProp property, const Tval 
 	undo->push(); // modifies project and updates views
 }
 
+
+void SVPropNetworkEditWidget::on_pushButtonAssignPipe_clicked()
+{
+	unsigned int currentId = 0;
+	if (m_currentEdges.size() > 0)
+		currentId = m_currentEdges[0]->m_pipeId;
+	unsigned int newId = SVMainWindow::instance().dbPipeEditDialog()->select(currentId);
+	modifyEdgeProperty(&VICUS::NetworkEdge::m_pipeId, newId);
+}
+
+void SVPropNetworkEditWidget::on_pushButtonEditPipe_clicked()
+{
+	unsigned int currentId = 0;
+	if (m_currentEdges.size() > 0)
+		currentId = m_currentEdges[0]->m_pipeId;
+	SVMainWindow::instance().dbPipeEditDialog()->edit(currentId);
+}
