@@ -53,10 +53,12 @@ private slots:
 
 private:
 
+	/*! updates the right table widget which contains the current selection */
 	void updateNetworkTableWidget();
 
 	Ui::SVNetworkDialogSelectPipes		*m_ui;
 
+	/*! stores the current selection */
 	std::vector<unsigned int>			m_selectedPipeIds;
 };
 

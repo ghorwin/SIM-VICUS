@@ -50,8 +50,6 @@ AbstractDBElement::ComparisonResult NetworkComponent::equal(const AbstractDBElem
 	if (otherNetComp == nullptr)
 		return Different;
 
-	//first check critical data
-
 	//check parameters
 	for(unsigned int i=0; i<NANDRAD::HydraulicNetworkComponent::NUM_P; ++i){
 		if(m_para[i] != otherNetComp->m_para[i])
@@ -61,7 +59,6 @@ AbstractDBElement::ComparisonResult NetworkComponent::equal(const AbstractDBElem
 		return Different;
 
 	//check meta data
-
 	if(m_displayName != otherNetComp->m_displayName ||
 			m_color != otherNetComp->m_color ||
 			m_dataSource != otherNetComp->m_dataSource ||

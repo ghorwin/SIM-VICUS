@@ -1,39 +1,15 @@
-/*	SIM-VICUS - Building and District Energy Simulation Tool.
-
-	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
-
-	Primary authors:
-	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
-	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
-	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
-	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-
-	  ... all the others from the SIM-VICUS team ... :-)
-
-	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
-
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-*/
-
-#ifndef SVDBNetworkComponentTableModelH
-#define SVDBNetworkComponentTableModelH
+#ifndef SVDBNETWORKCONTROLLERTABLEMODEL_H
+#define SVDBNETWORKCONTROLLERTABLEMODEL_H
 
 #include "SVAbstractDatabaseEditWidget.h"
 #include "SVDatabase.h"
 
 
-/*! Model for accessing the network components in the network component database. */
-class SVDBNetworkComponentTableModel : public SVAbstractDatabaseTableModel {
+class SVDBNetworkControllerTableModel:  public SVAbstractDatabaseTableModel {
 	Q_OBJECT
 public:
+	SVDBNetworkControllerTableModel();
+
 	/*! Columns shown in the table view. */
 	enum Columns {
 		ColId,
@@ -47,7 +23,7 @@ public:
 	/*! Constructor, requires a read/write pointer to the central database object.
 		\note Pointer to database must be valid throughout the lifetime of the Model!
 		*/
-	SVDBNetworkComponentTableModel(QObject * parent, SVDatabase & db);
+	SVDBNetworkControllerTableModel(QObject * parent, SVDatabase & db);
 
 	// ** QAbstractItemModel interface **
 
@@ -80,4 +56,4 @@ private:
 	SVDatabase	* m_db;
 };
 
-#endif // SVDBNetworkComponentTableModelH
+#endif // SVDBNETWORKCONTROLLERTABLEMODEL_H

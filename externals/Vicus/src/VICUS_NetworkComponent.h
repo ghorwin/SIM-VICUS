@@ -78,8 +78,6 @@ public:
 	IBK::MultiLanguageString			m_dataSource;										// XML:E
 
 
-
-
 	/*!
 		*** Only for Code Generator ***
 		*** NANDRAD::HydraulicNetworkComponent interface ***

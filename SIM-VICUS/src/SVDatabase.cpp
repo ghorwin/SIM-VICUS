@@ -46,6 +46,7 @@ SVDatabase::SVDatabase() :
 	m_pipes(USER_ID_SPACE_START*100),
 	m_fluids(USER_ID_SPACE_START*1001),
 	m_networkComponents(USER_ID_SPACE_START*1002),
+	m_networkControllers(USER_ID_SPACE_START*1003),
 	m_EPDElements(USER_ID_SPACE_START),
 	m_schedules(6*USER_ID_SPACE_START),
 	m_internalLoads(7*USER_ID_SPACE_START),

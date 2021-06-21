@@ -87,6 +87,8 @@ SOURCES += \
 								../../src/SVDBInternalLoadsElectricEquipmentEditWidget.cpp \
 								../../src/SVDBInternalLoadsLightsEditWidget.cpp \
 								../../src/SVDBInternalLoadsOtherEditWidget.cpp \
+								../../src/SVDBNetworkControllerEditWidget.cpp \
+								../../src/SVDBNetworkControllerTableModel.cpp \
 								../../src/SVDBNetworkFluidEditWidget.cpp \
 								../../src/SVDBNetworkFluidTableModel.cpp \
 								../../src/SVDBSubSurfaceComponentEditWidget.cpp \
@@ -236,6 +238,8 @@ HEADERS  += \
 								../../src/SVDBInternalLoadsElectricEquipmentEditWidget.h \
 								../../src/SVDBInternalLoadsLightsEditWidget.h \
 								../../src/SVDBInternalLoadsOtherEditWidget.h \
+								../../src/SVDBNetworkControllerEditWidget.h \
+								../../src/SVDBNetworkControllerTableModel.h \
 								../../src/SVDBNetworkFluidEditWidget.h \
 								../../src/SVDBNetworkFluidTableModel.h \
 								../../src/SVDBSubSurfaceComponentEditWidget.h \
@@ -388,6 +392,7 @@ FORMS    += \
 								../../src/SVDBInternalLoadsElectricEquipmentEditWidget.ui \
 								../../src/SVDBInternalLoadsLightsEditWidget.ui \
 								../../src/SVDBInternalLoadsOtherEditWidget.ui \
+								../../src/SVDBNetworkControllerEditWidget.ui \
 								../../src/SVDBNetworkFluidEditWidget.ui \
 								../../src/SVDBSubSurfaceComponentEditWidget.ui \
 								../../src/SVDBVentilationNaturalEditWidget.ui \

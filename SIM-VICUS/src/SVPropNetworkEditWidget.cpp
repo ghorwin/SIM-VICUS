@@ -256,7 +256,8 @@ void SVPropNetworkEditWidget::updateEdgeProperties() {
 		if(pipe == nullptr)
 			m_ui->labelSelectedPipe->setText("-");
 		else
-			m_ui->labelSelectedPipe->setText(QString::fromStdString(pipe->m_displayName.string("en")));
+			m_ui->labelSelectedPipe->setText(QString::fromStdString(pipe->m_displayName.string(
+																		IBK::MultiLanguageString::m_language, "en")));
 	}
 	else{
 		m_ui->labelSelectedPipe->clear();
@@ -315,13 +316,16 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 	m_ui->doubleSpinBoxMaximumPressureLoss->setValue(m_currentConstNetwork->m_para[VICUS::Network::P_MaxPressureLoss].value);
 
 
-	//  *** Update pipes table widget ***#
+	//  *** Update pipes table widget ***
 
 	std::vector<unsigned int> pipeIds;
 	for (const VICUS::NetworkEdge &e: m_currentConstNetwork->m_edges){
 		if (std::find(pipeIds.begin(), pipeIds.end(), e.m_pipeId) == pipeIds.end())
 			pipeIds.push_back(e.m_pipeId);
 	}
+	// sort in ascending order of ids
+	std::sort(pipeIds.begin(), pipeIds.end());
+
 	int currentRow = m_ui->tableWidgetPipes->currentRow();
 	m_ui->tableWidgetPipes->blockSignals(true);
 	m_ui->tableWidgetPipes->clearContents();
