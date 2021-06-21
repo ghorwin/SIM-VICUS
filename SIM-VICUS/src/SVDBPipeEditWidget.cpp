@@ -133,7 +133,9 @@ void SVDBPipeEditWidget::updateInput(int id) {
 void SVDBPipeEditWidget::on_lineEditName_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {
-		m_current->m_displayName = IBK::MultiLanguageString(nameFromData(*m_current));
+		IBK::MultiLanguageString str;
+		str.setString(nameFromData(*m_current), "en");
+		m_current->m_displayName = str;
 		modelModify();
 	}
 }
