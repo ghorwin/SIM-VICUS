@@ -72,11 +72,11 @@ void SolverFeedback::writeFeedback(double t, bool betweenOutputs) {
 		ave_real_time = 60; // one minute
 	}
 	// calculate sliding average over past 20 mins
-	int i = m_outputTimes.size();
+	int i = (int)m_outputTimes.size();
 	double delta_t_real = 0;
 	while (i > 0) {
 		--i;
-		delta_t_real = m_outputTimes.back().first - m_outputTimes[i].first;
+		delta_t_real = m_outputTimes.back().first - m_outputTimes[(unsigned int)i].first;
 		if (delta_t_real >= ave_real_time) break; // got enough real time to calculate average
 	}
 	// compute sliding average of computation speed
@@ -85,7 +85,7 @@ void SolverFeedback::writeFeedback(double t, bool betweenOutputs) {
 		slidingAverageSpeed = 0;
 	}
 	else {
-		double delta_t_sim = m_outputTimes.back().second - m_outputTimes[i].second;
+		double delta_t_sim = m_outputTimes.back().second - m_outputTimes[(unsigned int)i].second;
 		slidingAverageSpeed = delta_t_sim/delta_t_real;
 	}
 	// compute estimated time of completion
