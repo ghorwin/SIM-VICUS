@@ -174,7 +174,7 @@ void CSVReader::read(const IBK::Path & filename, bool headerOnly, bool extractUn
 		throw IBK::Exception( ex, IBK::FormatString("Error reading file '%1'.").arg(filename), FUNC_ID);
 	}
 	// store final number of rows
-	m_nRows = m_values.size();
+	m_nRows = (unsigned int)m_values.size();
 }
 // ----------------------------------------------------------------------------
 
