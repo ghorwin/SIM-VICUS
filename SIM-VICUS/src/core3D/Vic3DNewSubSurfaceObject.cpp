@@ -136,12 +136,50 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 
 	m_surfaceGeometries.clear();
 
+	for (const VICUS::Surface* s : sel) {
+		m_surfaceGeometries.push_back(s->geometry());
+	}
+
 	// TODO : Dirk
 
 	updateBuffers();
 }
 
+
 void NewSubSurfaceObject::updateBuffers() {
+	m_indexBufferData.clear();
+	m_vertexBufferData.clear();
+	m_colorBufferData.clear();
+
+	// populate buffers
+	unsigned int currentVertexIndex = 0;
+	unsigned int currentElementIndex = 0;
+
+	// buffer layout:
+	// 1 - opaque polygon geometry of all surfaces
+	// 2 - transparent polygon geometry of all surfaces (i.e. existing holes/windows)
+	// 3 - polygon outline lines
+
+	// first we store the opaque geometry
+	for (const VICUS::PlaneGeometry & geometry : m_surfaceGeometries) {
+		// change color depending on visibility state and selection state
+		QColor col("#8040d0");
+		// first add the plane regular
+		addPlane(geometry.triangulationData(), col, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_colorBufferData, m_indexBufferData, false);
+		// then add the plane again inverted
+		addPlane(geometry.triangulationData(), col, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_colorBufferData, m_indexBufferData, true);
+
+		// for now leave out the holes
+		// TODO : draw previously existing holes
+	}
+
+	m_lineIndex = currentElementIndex;
+	// now we add vertexes of the polygon outline and the outlines of the holes
+	// first we store the opaque geometry
+	for (const VICUS::PlaneGeometry & geometry : m_surfaceGeometries) {
+
+	}
+
 	if (m_indexBufferData.empty())
 		return;
 
@@ -169,9 +207,10 @@ void NewSubSurfaceObject::renderOpaque() {
 	m_vao.bind();
 
 	// first render opaque polygon
+	glDrawElements(GL_TRIANGLES, (GLsizei)m_transparentStartIndex, GL_UNSIGNED_INT, nullptr);
 
 	// here we render the lines around the sub-surfaces; invalid surfaces get a red line
-	glDrawElements(GL_LINES, m_lineIndex, GL_UNSIGNED_INT,
+	glDrawElements(GL_LINES, (GLsizei)m_lineIndex, GL_UNSIGNED_INT,
 				   (const GLvoid*)(sizeof(GLuint) * (unsigned long)((GLsizei)m_indexBufferData.size() - m_lineIndex)) );
 	// release buffers again
 	m_vao.release();
@@ -188,6 +227,9 @@ void NewSubSurfaceObject::renderTransparent() {
 	if (!m_indexBufferData.empty()) {
 		// bind all buffers ("position", "normal" and "color" arrays)
 		m_vao.bind();
+
+		glDrawElements(GL_TRIANGLES, (GLsizei)(m_lineIndex - m_transparentStartIndex),
+			GL_UNSIGNED_INT, (const GLvoid*)(sizeof(GLuint) * (unsigned long)m_transparentStartIndex));
 
 		// put OpenGL in offset mode
 		glEnable(GL_POLYGON_OFFSET_FILL);

@@ -62,7 +62,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page">
       <layout class="QVBoxLayout" name="verticalLayoutPage1">
@@ -681,7 +681,7 @@
   <customwidget>
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
-   <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <header>QtExt_ValidatingLineEdit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

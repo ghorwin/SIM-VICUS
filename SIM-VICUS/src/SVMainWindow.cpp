@@ -718,6 +718,15 @@ void SVMainWindow::onStyleChanged() {
 }
 
 
+void SVMainWindow::onDockWidgetToggled() {
+	// get sender
+	QAction * toggleAction = qobject_cast<QAction*>(sender());
+	if (m_logDockWidget->toggleViewAction() == toggleAction) {
+		m_dockWidgetVisibility[m_logDockWidget] = toggleAction->isChecked();
+	}
+}
+
+
 void SVMainWindow::on_actionFileNew_triggered() {
 	// move input focus away from any input fields (to allow editingFinished() events to fire)
 	setFocus();
@@ -1514,7 +1523,9 @@ void SVMainWindow::setupDockWidgets() {
 	m_logDockWidget->setWindowTitle(tr("Application Log"));
 	m_logDockWidget->setFeatures(QDockWidget::AllDockWidgetFeatures | titleBarOption);
 	m_logDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
-	m_ui->menu_View->addAction(m_logDockWidget->toggleViewAction());
+	QAction * toggleAction = m_logDockWidget->toggleViewAction();
+	m_ui->menu_View->addAction(toggleAction);
+	connect(toggleAction, &QAction::toggled, this, &SVMainWindow::onDockWidgetToggled);
 	m_logDockWidget->setWidget(m_logWidget);
 	addDockWidget(Qt::BottomDockWidgetArea,m_logDockWidget);
 

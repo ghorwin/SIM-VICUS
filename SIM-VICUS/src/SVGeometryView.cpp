@@ -210,12 +210,14 @@ bool SVGeometryView::handleGlobalKeyPress(Qt::Key k) {
 
 		// *** F4 - toggle "align coordinate system" mode ****
 		case Qt::Key_F4 :
-			m_sceneView->toggleAlignCoordinateSystem();
+			if (m_actionlocalCoordinateSystemCoordinates->isVisible())
+				m_sceneView->toggleAlignCoordinateSystem();
 		break;
 
 		// *** F5 - toggle "move local coordinate system" mode ****
 		case Qt::Key_F5 :
-			m_sceneView->toggleTranslateCoordinateSystem();
+			if (m_actionlocalCoordinateSystemCoordinates->isVisible())
+				m_sceneView->toggleTranslateCoordinateSystem();
 		break;
 
 		default:
@@ -253,17 +255,22 @@ void SVGeometryView::onViewStateChanged() {
 
 	m_actionCoordinateInput->setVisible(lockVisible);
 
-	if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
+	bool localCoordinateSystemVisible =
+	(vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
 		vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry ||
 		vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
-		vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem)
-	{
-		m_actionlocalCoordinateSystem->setVisible(true);
+		vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem);
+
+	if (vs.m_propertyWidgetMode == SVViewState::PM_AddSubSurfaceGeometry)
+		localCoordinateSystemVisible = false;
+
+	if (localCoordinateSystemVisible) {
+		m_actionlocalCoordinateSystemCoordinates->setVisible(true);
 		m_localCoordinateSystemView->setAlignCoordinateSystemButtonChecked(vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem);
 		m_localCoordinateSystemView->setMoveCoordinateSystemButtonChecked(vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem);
 	}
 	else {
-		m_actionlocalCoordinateSystem->setVisible(false);
+		m_actionlocalCoordinateSystemCoordinates->setVisible(false);
 	}
 }
 
@@ -480,6 +487,6 @@ void SVGeometryView::setupToolBar() {
 
 	// the local coordinate system info
 	m_localCoordinateSystemView = new SVLocalCoordinateView(this);
-	m_actionlocalCoordinateSystem = m_toolBar->addWidget(m_localCoordinateSystemView);
+	m_actionlocalCoordinateSystemCoordinates = m_toolBar->addWidget(m_localCoordinateSystemView);
 }
 

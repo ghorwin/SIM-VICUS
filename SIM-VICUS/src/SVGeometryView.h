@@ -121,7 +121,7 @@ private:
 
 	/*! Local Coordinate System View Widget */
 	SVLocalCoordinateView		*m_localCoordinateSystemView				= nullptr;
-	QAction						*m_actionlocalCoordinateSystem				= nullptr;
+	QAction						*m_actionlocalCoordinateSystemCoordinates	= nullptr;
 };
 
 

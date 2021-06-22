@@ -228,6 +228,7 @@ private slots:
 	void onFixProjectAfterRead();
 	void onStyleChanged();
 
+	void onDockWidgetToggled();
 
 	// all menu action slots below
 

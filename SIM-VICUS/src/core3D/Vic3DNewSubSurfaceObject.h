@@ -92,6 +92,8 @@ public:
 
 	// Functions related to modifying the stored geometry
 
+	void clear() { generateSubSurfaces(std::vector<const VICUS::Surface*>(), WindowComputationData());  }
+
 	/*! This function pupulates/updates m_surfaceGeometries based on the currently selected surfaces and
 		parametrization data.
 	*/
@@ -132,8 +134,12 @@ private:
 	/*! Index buffer on CPU memory. */
 	std::vector<GLuint>				m_indexBufferData;
 
-	/*! Startindex for line vertex numbers. */
-	int								m_lineIndex = 0;
+	/*! Start element index for transparent planes. */
+	unsigned int					m_transparentStartIndex = 0;
+
+	/*! Start element index for line numbers. */
+	unsigned int					m_lineIndex = 0;
+
 
 	/*! VertexArrayObject, references the vertex, color and index buffers. */
 	QOpenGLVertexArrayObject		m_vao;

@@ -135,6 +135,9 @@ public:
 	/*! If true, the surface normals (lines) are shown for each visible surface. */
 	bool m_surfaceNormalsVisible = false;
 
+	/*! If true, the grid will be drawn and is active for snapping. */
+	bool m_gridVisible = true;
+
 private:
 	void generateBuildingGeometry();
 	void generateNetworkGeometry();
@@ -222,7 +225,7 @@ private:
 	/*! The grid draw object. */
 	GridObject				m_gridObject;
 	/*! A geometry drawing object (no transparency) for building (room) surfaces.*/
-	OpaqueGeometryObject	m_opaqueGeometryObject;
+	OpaqueGeometryObject	m_buildingGeometryObject;
 	/*! A geometry drawing object (no transparency) for network elements.*/
 	OpaqueGeometryObject	m_networkGeometryObject;
 	/*! A geometry for drawing selected primitives with overlayed wireframe. */

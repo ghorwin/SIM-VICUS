@@ -228,7 +228,7 @@ private:
 		This function switches also between AddGeometry and EditGeometry mode, when first selection is made or
 		everything is deselected.
 	*/
-	void update();
+	void updateUi();
 
 	/*! Increases/decreases value in line edit depending on scroll wheel. */
 	void onWheelTurned(double offset, QtExt::ValidatingLineEdit * lineEdit);

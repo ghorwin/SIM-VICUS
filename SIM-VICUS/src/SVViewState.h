@@ -71,7 +71,7 @@ public:
 		navigation.
 	*/
 	enum SceneOperationMode {
-		/*! The scene is in passive mode and has at least one selected surface/element.
+		/*! The scene is in passive geometry edit mode and has at least one selected surface/element.
 			User can navigate and click on object to change selection.
 			In this mode the local coordinate system is shown permanently at a fixed location and
 			can be moved/rotated as needed.
@@ -105,7 +105,10 @@ public:
 	};
 
 
-	/*! Defines which view should be active in the property widget. */
+	/*! Defines which view should be active in the property widget.
+		This also determines the current operation, we are in, i.e. PM_VertexList = we are constructing geometry,
+		PM_AddSubSurfaceGeometry = we add windows, the rest is just selection stuff.
+	*/
 	enum PropertyWidgetMode {
 		/*! Shows the "Add geometry" widget and tool page. */
 		PM_AddGeometry,

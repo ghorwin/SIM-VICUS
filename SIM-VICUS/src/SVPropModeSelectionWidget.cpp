@@ -196,6 +196,53 @@ void SVPropModeSelectionWidget::viewStateProperties(SVViewState & vs) const {
 }
 
 
+void SVPropModeSelectionWidget::setDefaultViewState() {
+	// this function is called when we return from any intermediate mode like "align
+	// coordinate system" mode and get back to what we where doing before
+
+	// if we are in geometry mode, we need to distinguish between PlaceVertex mode or SelectedGeometry mode
+	// or NUM mode (nothing)
+
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+
+	if (vs.m_viewMode == SVViewState::VM_PropertyEditMode) {
+		// we always have scene operation mode none
+		vs.m_sceneOperationMode = SVViewState::NUM_OM;
+		SVViewStateHandler::instance().setViewState(vs);
+		return;
+	}
+
+	switch (vs.m_propertyWidgetMode) {
+		case SVViewState::PM_AddGeometry:
+		case SVViewState::PM_EditGeometry:
+		case SVViewState::PM_SiteProperties:
+		case SVViewState::PM_BuildingProperties:
+		case SVViewState::PM_NetworkProperties: {
+			// do we have any selected geometries
+			std::set<const VICUS::Object *> sel;
+			project().selectObjects(sel, VICUS::Project::SG_All, true, true);
+			if (sel.empty())
+				vs.m_sceneOperationMode = SVViewState::NUM_OM;
+			else
+				vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+			SVViewStateHandler::instance().setViewState(vs);
+			return;
+		}
+
+		case SVViewState::PM_VertexList:
+			vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
+			SVViewStateHandler::instance().setViewState(vs);
+			return;
+
+		case SVViewState::PM_AddSubSurfaceGeometry:
+			vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+			SVViewStateHandler::instance().setViewState(vs);
+			return;
+	}
+
+}
+
+
 void SVPropModeSelectionWidget::on_pushButtonBuilding_toggled(bool on) {
 	// Note: this slot is also called when the button is turned off due to another
 	//       button being turned on. But we don't want to change the view state twice,

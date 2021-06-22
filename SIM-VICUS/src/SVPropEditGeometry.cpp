@@ -186,33 +186,33 @@ void SVPropEditGeometry::setRotation(const IBKMK::Vector3D &normal) {
 void SVPropEditGeometry::onModified(int modificationType, ModificationInfo * ) {
 	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
 	switch (modType) {
-	case SVProjectHandler::BuildingGeometryChanged:
-	case SVProjectHandler::NodeStateModified:
-		// when the building geometry has changed, we need to update the geometrical info
-		// in the widget based on the current selection
-		// also, we assume any change in node states (visibility/selection) may impact our local
-		// coordinate system position
-		update(); // this might update the location of the local coordinate system!
+		case SVProjectHandler::BuildingGeometryChanged:
+		case SVProjectHandler::NodeStateModified:
+			// When the building geometry has changed, we need to update the geometrical info
+			// in the widget based on the current selection.
+
+			// Also, if the selection has changed, we need to distinguish between no selection and selection
+			// and update the buttons accordingly.
+			updateUi();
 		break;
 
-	default: ; // just to make compiler happy
+		default: ; // just to make compiler happy
 	}
 }
 
 
 void SVPropEditGeometry::onViewStateChanged() {
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
-	if (vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry) {
-		m_ui->pushButtonEdit->setEnabled(true);
-	}
-	else {
+	if (vs.m_sceneOperationMode == SVViewState::NUM_OM) {
 		setCurrentPage(O_AddGeometry);
 		m_ui->pushButtonEdit->setEnabled(false);
 		// clear current selection transformation matrix
 		SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 	}
-
-	updateCoordinateSystemLook();
+	else {
+		m_ui->pushButtonEdit->setEnabled(true);
+		updateCoordinateSystemLook();
+	}
 }
 
 
@@ -278,13 +278,11 @@ void SVPropEditGeometry::on_lineEditX_editingFinished() {
 	on_lineEditX_returnPressed();
 }
 
-void SVPropEditGeometry::on_lineEditY_editingFinished()
-{
+void SVPropEditGeometry::on_lineEditY_editingFinished() {
 	on_lineEditY_returnPressed();
 }
 
-void SVPropEditGeometry::on_lineEditZ_editingFinished()
-{
+void SVPropEditGeometry::on_lineEditZ_editingFinished() {
 	on_lineEditZ_returnPressed();
 }
 
@@ -441,9 +439,10 @@ int SVPropEditGeometry::requestCopyOperation(QWidget * parent, const QString & t
 		return 2;
 }
 
+
 // *** private functions ***
 
-void SVPropEditGeometry::update() {
+void SVPropEditGeometry::updateUi() {
 
 	// update our selection lists
 	std::set<const VICUS::Object*> sel;
@@ -484,9 +483,6 @@ void SVPropEditGeometry::update() {
 		// TODO Stephan
 	}
 
-	// we get the view state
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-
 	// enable copy functions only if respective objects are selected
 	m_ui->pushButtonCopySurfaces->setEnabled(!m_selSurfaces.empty());
 	m_ui->pushButtonCopyRooms->setEnabled(!m_selRooms.empty());
@@ -495,14 +491,6 @@ void SVPropEditGeometry::update() {
 //	m_ui->pushButtonCopyBuilding->setEnabled(false);
 
 	if (!m_selSurfaces.empty()) {
-		// adjust the view state to show selected geometry (i.e. local coordinate system is visible)
-		// and edit geometry property widget (makes us visible), but only, if we are in
-		// geometry editing mode
-		if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
-			vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-			vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
-			SVViewStateHandler::instance().setViewState(vs);
-		}
 
 		if ( m_selSurfaces.size() == 1 ) {
 			const VICUS::Surface *s = m_selSurfaces[0];
@@ -521,16 +509,13 @@ void SVPropEditGeometry::update() {
 		t.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
 		setCoordinates( t ); // calls updateInputs() internally
 
-		// update scaling factor
+		// position local coordinate system, but only if we are showing the edit page
 		SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+		// enable "add subsurface" button
+		m_ui->pushButtonAddWindow->setEnabled(true);
 	}
 	else {
-		// only switch view state back to "Add geometry", when we are in geometry mode
-		if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
-			vs.m_sceneOperationMode = SVViewState::NUM_OM;
-			vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
-			SVViewStateHandler::instance().setViewState(vs);
-		}
+		m_ui->pushButtonAddWindow->setEnabled(false);
 	}
 
 }

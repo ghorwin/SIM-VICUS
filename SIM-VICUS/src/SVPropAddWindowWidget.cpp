@@ -113,6 +113,7 @@ void SVPropAddWindowWidget::updateUi() {
 		m_ui->labelSelectSurfaces->show();
 		m_ui->groupBoxWindows->setEnabled(false);
 		// clear "new subsurfaces" object
+		SVViewStateHandler::instance().m_newSubSurfaceObject->clear();
 		return;
 	}
 	else {
