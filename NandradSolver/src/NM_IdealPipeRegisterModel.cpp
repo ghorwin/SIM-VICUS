@@ -391,7 +391,7 @@ int IdealPipeRegisterModel::update() {
 			double thermalMassDecay = heatingMassFlow * m_fluidHeatCapacity *
 					(1. - std::exp(-UAValueTotal / (std::fabs(heatingMassFlow) * m_fluidHeatCapacity ) ) );
 			// calculate heat gain in [W]
-			surfaceLoadPtr[i] = (supplyTemperature - layerTemperature) * thermalMassDecay;
+			surfaceLoadPtr[i] = (supplyTemperature - layerTemperature) * thermalMassDecay * m_nParallelPipes;
 		}
 	}
 	// cooling is requested
@@ -432,7 +432,7 @@ int IdealPipeRegisterModel::update() {
 					(1. - std::exp(-UAValueTotal / (std::fabs(coolingMassFlow) * m_fluidHeatCapacity ) ) );
 
 			// calculate heat loss in [W]
-			surfaceLoadPtr[i] = (supplyTemperature - layerTemperature) * thermalMassDecay;
+			surfaceLoadPtr[i] = (supplyTemperature - layerTemperature) * thermalMassDecay * m_nParallelPipes;
 		}
 	}
 
