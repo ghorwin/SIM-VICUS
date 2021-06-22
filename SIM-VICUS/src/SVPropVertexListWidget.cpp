@@ -416,7 +416,7 @@ void SVPropVertexListWidget::on_pushButtonCancel_clicked() {
 	// signal, that we are no longer in "add vertex" mode
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_sceneOperationMode = SVViewState::NUM_OM;
-	vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+	vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
 	// reset locks
 	vs.m_locks = SVViewState::NUM_L;
 

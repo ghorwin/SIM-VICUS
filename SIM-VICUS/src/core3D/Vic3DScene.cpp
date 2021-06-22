@@ -121,7 +121,7 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 			SVViewState vs = SVViewStateHandler::instance().viewState();
 			if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
 				vs.m_sceneOperationMode = SVViewState::NUM_OM;
-				vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+				vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
 			}
 
 			// clear selection object, to avoid accessing invalidated pointers
@@ -230,7 +230,7 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 			if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
 				if (selectedObjects.empty()) {
 					vs.m_sceneOperationMode = SVViewState::NUM_OM;
-					vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+					vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
 				}
 				else {
 					vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;

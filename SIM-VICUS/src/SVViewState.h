@@ -111,7 +111,7 @@ public:
 	*/
 	enum PropertyWidgetMode {
 		/*! Shows the "Add/edit geometry" widget and tool page. */
-		PM_AddGeometry,
+		PM_AddEditGeometry,
 		/*! Shows the "Widget with list of newly placed vertexes" */
 		PM_VertexList,
 		/*! Shows the widget with global site (and view) properties. */
@@ -196,7 +196,7 @@ public:
 
 	ViewMode				m_viewMode				= VM_GeometryEditMode;
 	SceneOperationMode		m_sceneOperationMode	= NUM_OM;
-	PropertyWidgetMode		m_propertyWidgetMode	= PM_AddGeometry;
+	PropertyWidgetMode		m_propertyWidgetMode	= PM_AddEditGeometry;
 	/*! Indicates which color mode shall be used to color opaque geometry. */
 	ObjectColorMode			m_objectColorMode		= OCM_None;
 	/*! Some color modes require an additional ID property. */

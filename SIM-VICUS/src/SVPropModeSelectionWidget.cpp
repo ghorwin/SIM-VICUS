@@ -213,7 +213,7 @@ void SVPropModeSelectionWidget::setDefaultViewState() {
 	}
 
 	switch (vs.m_propertyWidgetMode) {
-		case SVViewState::PM_AddGeometry:
+		case SVViewState::PM_AddEditGeometry:
 		case SVViewState::PM_SiteProperties:
 		case SVViewState::PM_BuildingProperties:
 		case SVViewState::PM_NetworkProperties: {

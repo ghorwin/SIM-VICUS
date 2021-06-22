@@ -1417,8 +1417,13 @@ void SVMainWindow::on_actionViewToggleGeometryMode_triggered() {
 	// switch view state to geometry edit mode
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_viewMode = SVViewState::VM_GeometryEditMode;
-	vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
-	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
+	std::set<const VICUS::Object *> sel;
+	project().selectObjects(sel, VICUS::Project::SG_All, true, true);
+	if (sel.empty())
+		vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	else
+		vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
 	vs.m_objectColorMode = SVViewState::OCM_None;
 	SVViewStateHandler::instance().setViewState(vs);
 	m_ui->actionViewToggleGeometryMode->setChecked(true);

@@ -94,7 +94,7 @@ void SVPropertyWidget::onViewStateChanged() {
 	// now show the respective property widget
 	SVViewState::PropertyWidgetMode m = vs.m_propertyWidgetMode;
 	switch (m) {
-		case SVViewState::PM_AddGeometry :
+		case SVViewState::PM_AddEditGeometry :
 			showPropertyWidget<SVPropEditGeometry>(M_Geometry);
 		break;
 
