@@ -33,6 +33,8 @@
 
 #include <QTableWidgetItem>
 
+#include <QtExt_Conversions.h>
+
 SVNetworkDialogSelectPipes::SVNetworkDialogSelectPipes(QWidget *parent) :
 	QDialog(parent),
 	m_ui(new Ui::SVNetworkDialogSelectPipes)
@@ -68,7 +70,8 @@ SVNetworkDialogSelectPipes::~SVNetworkDialogSelectPipes()
 void SVNetworkDialogSelectPipes::edit(VICUS::Network &network)
 {
 	// title of right table
-	m_ui->tableWidgetNetwork->setHorizontalHeaderLabels(QStringList() << QString() << tr("Network: ") << network.m_displayName);
+	m_ui->tableWidgetNetwork->setHorizontalHeaderLabels(QStringList() << QString() <<
+														QString("Network: %1").arg(network.m_displayName));
 
 	const SVDatabase & db = SVSettings::instance().m_db;
 
@@ -87,7 +90,7 @@ void SVNetworkDialogSelectPipes::edit(VICUS::Network &network)
 		// pipe name
 		item = new QTableWidgetItem();
 		auto t = it->second.m_displayName;
-		item->setText(QString::fromStdString(it->second.m_displayName.string(IBK::MultiLanguageString::m_language, "en")));
+		item->setText(QtExt::MultiLangString2QString(it->second.m_displayName));
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		item->setData(Qt::UserRole, it->second.m_id);
 		m_ui->tableWidgetDatabase->setItem(row, 1, item);
@@ -174,7 +177,7 @@ void SVNetworkDialogSelectPipes::updateNetworkTableWidget()
 			item->setData(Qt::UserRole, VICUS::INVALID_ID);
 		}
 		else{
-			item->setText(QString::fromStdString(pipe->m_displayName.string(IBK::MultiLanguageString::m_language, "en")));
+			item->setText(QtExt::MultiLangString2QString(pipe->m_displayName));
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 			item->setData(Qt::UserRole, pipe->m_id);
 		}

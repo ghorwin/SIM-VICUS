@@ -32,6 +32,8 @@
 
 #include <VICUS_KeywordList.h>
 
+#include <QtExt_Conversions.h>
+
 #include "Vic3DWireFrameObject.h"
 
 #include "SVViewStateHandler.h"
@@ -83,6 +85,13 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 	m_ui->tableWidgetPipes->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
 	m_ui->tableWidgetPipes->horizontalHeader()->resizeSection(0,20);
 	m_ui->tableWidgetPipes->horizontalHeader()->setStretchLastSection(true);
+
+	// validating line edits
+	m_ui->lineEditNodeMaxHeatingDemand->setup(0, std::numeric_limits<double>::max(), tr("Maximum Heating Demand"), false, true);
+
+	// TODO Hauke: remaining line edits setup
+	// !!!
+
 
 }
 
@@ -254,10 +263,9 @@ void SVPropNetworkEditWidget::updateEdgeProperties() {
 		const SVDatabase  & db = SVSettings::instance().m_db;
 		const VICUS::NetworkPipe * pipe = db.m_pipes[m_currentEdges[0]->m_pipeId];
 		if(pipe == nullptr)
-			m_ui->labelSelectedPipe->setText("-");
+			m_ui->labelSelectedPipe->clear();
 		else
-			m_ui->labelSelectedPipe->setText(QString::fromStdString(pipe->m_displayName.string(
-																		IBK::MultiLanguageString::m_language, "en")));
+			m_ui->labelSelectedPipe->setText(QtExt::MultiLangString2QString(pipe->m_displayName));
 	}
 	else{
 		m_ui->labelSelectedPipe->clear();
@@ -284,7 +292,7 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 	const SVDatabase & db = SVSettings::instance().m_db;
 	const VICUS::NetworkFluid * fluid = db.m_fluids[m_currentNetwork.m_fluidID];
 	if (fluid != nullptr){
-		m_ui->labelFluidName->setText(QString::fromStdString(fluid->m_displayName.string("de")));
+		m_ui->labelFluidName->setText(QtExt::MultiLangString2QString(fluid->m_displayName));
 		m_ui->labelFluidName->setStyleSheet("QLabel {color: black}");
 	}
 	else{
@@ -346,7 +354,7 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 		 if (pipe == nullptr)
 			 item->setText(tr("<invalid pipe id>"));
 		 else
-			 item->setText(QString::fromStdString(pipe->m_displayName.string(IBK::MultiLanguageString::m_language, "en")));
+			 item->setText(QtExt::MultiLangString2QString(pipe->m_displayName));
 		 item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		 m_ui->tableWidgetPipes->setItem(row, 1, item);
 
