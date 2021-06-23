@@ -37,16 +37,15 @@ QVariant SVDBNetworkControllerTableModel::data ( const QModelIndex & index, int 
 
 			switch (index.column()) {
 				case ColId					: return it->first;
-				case ColName				: return QString::fromStdString(it->second.m_displayNameML.string(langId, fallBackLangId));
-					// Note: description is too long here for "Type"
-				case ColType				: return VICUS::KeywordList::Keyword("NetworkController::ModelType",
-																				 it->second.m_modelType);
+				case ColName				: return QString::fromStdString(it->second.m_displayName.string(langId, fallBackLangId));
+				case ColType				: return VICUS::KeywordList::Keyword("NetworkController::ControlledProperty",
+																				 it->second.m_controlledProperty);
 			}
 		} break;
 
 		case Qt::DecorationRole : {
 			if (index.column() == ColCheck) {
-				if (it->second.isValid())
+				if (it->second.isValid(m_db->m_schedules))
 					return QIcon("://gfx/actions/16x16/ok.png");
 				else
 					return QIcon("://gfx/actions/16x16/error.png");
@@ -91,7 +90,7 @@ QVariant SVDBNetworkControllerTableModel::headerData(int section, Qt::Orientatio
 			switch ( section ) {
 				case ColId					: return tr("Id");
 				case ColName				: return tr("Name");
-				case ColType				: return tr("Type");
+				case ColType				: return tr("Property");
 				default: ;
 			}
 		} break;
@@ -115,7 +114,10 @@ void SVDBNetworkControllerTableModel::resetModel() {
 
 QModelIndex SVDBNetworkControllerTableModel::addNewItem() {
 	VICUS::NetworkController c;
-	c.m_displayNameML.setEncodedString("en:<new controller>");
+	c.m_displayName.setEncodedString("en:<new controller>");
+	c.m_modelType = VICUS::NetworkController::MT_Constant;
+	c.m_controlledProperty = VICUS::NetworkController::CP_TemperatureDifference;
+	c.m_controllerType = VICUS::NetworkController::CT_PController;
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_networkControllers.add( c );
 	endInsertRows();

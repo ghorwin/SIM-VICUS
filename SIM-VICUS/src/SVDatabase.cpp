@@ -78,6 +78,7 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_pipes.readXML(					dbDir / "db_pipes.xml", "NetworkPipes", "NetworkPipe", true);
 		m_fluids.readXML(					dbDir / "db_fluids.xml", "NetworkFluids", "NetworkFluid", true);
 		m_networkComponents.readXML(		dbDir / "db_networkComponents.xml", "NetworkComponents", "NetworkComponent", true);
+		m_networkControllers.readXML(		dbDir / "db_networkControllers.xml", "NetworkControllers", "NetworkControllers", true);
 		m_schedules.readXML(				dbDir / "db_schedules.xml", "Schedules", "Schedule", true);
 		m_internalLoads.readXML(			dbDir / "db_internalLoads.xml", "InternalLoads", "InternalLoad", true);
 		m_zoneControlThermostat.readXML(	dbDir / "db_zoneControlThermostat.xml", "ZoneControlThermostats", "ZoneControlThermostat", true);
@@ -116,6 +117,8 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_fluids.readXML(			userDbDir / "db_fluids.xml", "NetworkFluids", "NetworkFluid", false);
 	if (t == NUM_DT || t == DT_NetworkComponents)
 		m_networkComponents.readXML(userDbDir / "db_networkComponents.xml", "NetworkComponents", "NetworkComponent", false);
+	if (t == NUM_DT || t == DT_NetworkControllers)
+		m_networkControllers.readXML(userDbDir / "db_networkControllers.xml", "NetworkControllers", "NetworkControllers", false);
 	if (t == NUM_DT || t == DT_Schedules)
 		m_schedules.readXML(		userDbDir / "db_schedules.xml", "Schedules", "Schedule", false);
 	if (t == NUM_DT || t == DT_InternalLoads)
@@ -152,6 +155,7 @@ void SVDatabase::writeDatabases() const {
 	m_pipes.writeXML(				userDbDir / "db_pipes.xml", "NetworkPipes");
 	m_fluids.writeXML(				userDbDir / "db_fluids.xml", "NetworkFluids");
 	m_networkComponents.writeXML(	userDbDir / "db_networkComponents.xml", "NetworkComponents");
+	m_networkControllers.writeXML(	userDbDir / "db_networkControllers.xml", "NetworkControllers");
 	m_schedules.writeXML(			userDbDir / "db_schedules.xml", "Schedules");
 	m_internalLoads.writeXML(		userDbDir / "db_internalLoads.xml", "InternalLoads");
 	m_zoneControlThermostat.writeXML(userDbDir / "db_zoneControlThermostat.xml", "ZoneControlThermostats");

@@ -278,6 +278,21 @@ SVDatabaseEditDialog *SVMainWindow::dbFluidEditDialog()
 	return m_dbFluidEditDialog;
 }
 
+SVDatabaseEditDialog *SVMainWindow::dbNetworkControllerEditDialog()
+{
+	if (m_dbNetworkControllerEditDialog == nullptr)
+		m_dbNetworkControllerEditDialog = SVDatabaseEditDialog::createNetworkControllerEditDialog(this);
+	return m_dbNetworkControllerEditDialog;
+}
+
+SVDatabaseEditDialog *SVMainWindow::dbSubNetworkEditDialog()
+{
+	if (m_dbSubNetworkEditDialog == nullptr)
+		// TODO
+//		m_dbSubNetworkEditDialog = SVDatabaseEditDialog::createNetworkControllerEditDialog(this);
+	return m_dbSubNetworkEditDialog;
+}
+
 SVDatabaseEditDialog *SVMainWindow::dbScheduleEditDialog() {
 	if (m_dbScheduleEditDialog == nullptr)
 		m_dbScheduleEditDialog = SVDatabaseEditDialog::createScheduleEditDialog(this);
@@ -457,6 +472,17 @@ void SVMainWindow::on_actionDBFluids_triggered()
 void SVMainWindow::on_actionDBHydraulicComponents_triggered() {
 	dbNetworkComponentEditDialog()->edit();
 }
+
+void SVMainWindow::on_actionDBControllers_triggered()
+{
+	dbNetworkControllerEditDialog()->edit();
+}
+
+void SVMainWindow::on_actionDBSub_networks_triggered()
+{
+	dbSubNetworkEditDialog()->edit();
+}
+
 
 // *** protected functions ***
 
@@ -1799,4 +1825,3 @@ void SVMainWindow::on_actionCalculateShadingFactors_triggered() {
 		undo->push();
 	}
 }
-

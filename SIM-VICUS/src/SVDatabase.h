@@ -73,6 +73,8 @@ public:
 		DT_Pipes,
 		DT_Fluids,
 		DT_NetworkComponents,
+		DT_NetworkControllers,
+		DT_SubNetworks,
 		DT_Schedules,
 		DT_InternalLoads,
 		DT_ZoneTemplates,

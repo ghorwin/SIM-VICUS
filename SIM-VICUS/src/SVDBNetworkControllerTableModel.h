@@ -35,7 +35,7 @@ public:
 	// ** SVAbstractDatabaseTableModel interface **
 
 	int columnIndexId() const override { return ColId; }
-	SVDatabase::DatabaseTypes databaseType() const override { return SVDatabase::DT_NetworkComponents; }
+	SVDatabase::DatabaseTypes databaseType() const override { return SVDatabase::DT_NetworkControllers; }
 	virtual void resetModel() override;
 	QModelIndex addNewItem() override;
 	QModelIndex copyItem(const QModelIndex & index) override;

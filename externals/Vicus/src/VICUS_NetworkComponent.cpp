@@ -46,8 +46,13 @@ bool NetworkComponent::isValid() const {
 
 
 AbstractDBElement::ComparisonResult NetworkComponent::equal(const AbstractDBElement *other) const {
+
 	const NetworkComponent * otherNetComp = dynamic_cast<const NetworkComponent*>(other);
 	if (otherNetComp == nullptr)
+		return Different;
+
+	// check id
+	if (m_id != otherNetComp->m_id)
 		return Different;
 
 	//check parameters
@@ -56,6 +61,10 @@ AbstractDBElement::ComparisonResult NetworkComponent::equal(const AbstractDBElem
 			return Different;
 	}
 	if(m_modelType != otherNetComp->m_modelType)
+		return Different;
+
+	// check data table
+	if (m_polynomCoefficients != otherNetComp->m_polynomCoefficients)
 		return Different;
 
 	//check meta data

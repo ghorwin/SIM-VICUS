@@ -145,6 +145,7 @@ void SVDBNetworkComponentTableModel::resetModel() {
 QModelIndex SVDBNetworkComponentTableModel::addNewItem() {
 	VICUS::NetworkComponent c;
 	c.m_displayNameML.setEncodedString("en:<new component type>");
+	c.m_modelType = VICUS::NetworkComponent::MT_HeatExchanger;
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_networkComponents.add( c );
 	endInsertRows();

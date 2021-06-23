@@ -160,6 +160,10 @@ public:
 	SVDBZoneTemplateEditDialog * dbZoneTemplateEditDialog();
 	/*! Returns the pipe edit dialog. */
 	SVDatabaseEditDialog *dbFluidEditDialog();
+	/*! Returns the network controller edit dialog. */
+	SVDatabaseEditDialog *dbNetworkControllerEditDialog();
+	/*! Returns the sub network edit dialog. */
+	SVDatabaseEditDialog *dbSubNetworkEditDialog();
 
 	/*! Returns the pointer to the Start Simulation Nandrad Widget */
 	SVSimulationStartNandrad * simulationStartNandrad() const;
@@ -305,6 +309,9 @@ private slots:
 
 
 
+	void on_actionDBControllers_triggered();
+
+	void on_actionDBSub_networks_triggered();
 
 private:
 	/*! Sets up all dock widgets with definition lists. */
@@ -447,6 +454,8 @@ private:
 	SVDatabaseEditDialog				*m_dbBoundaryConditionEditDialog				= nullptr;
 	SVDatabaseEditDialog				*m_dbPipeEditDialog								= nullptr;
 	SVDatabaseEditDialog				*m_dbFluidEditDialog							= nullptr;
+	SVDatabaseEditDialog				*m_dbNetworkControllerEditDialog				= nullptr;
+	SVDatabaseEditDialog				*m_dbSubNetworkEditDialog						= nullptr;
 	SVDatabaseEditDialog				*m_dbNetworkComponentEditDialog					= nullptr;
 	SVDatabaseEditDialog				*m_dbScheduleEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbInternalLoadsPersonEditDialog				= nullptr;

@@ -3,6 +3,9 @@
 
 #include "VICUS_AbstractDBElement.h"
 #include "VICUS_CodeGenMacros.h"
+#include "VICUS_Constants.h"
+#include "VICUS_Database.h"
+#include "VICUS_Schedule.h"
 
 #include <NANDRAD_HydraulicNetworkControlElement.h>
 
@@ -22,7 +25,7 @@ public:
 	VICUS_COMP(NetworkController)
 
 	/*! Checks if all parameters are valid. */
-	bool isValid() const;
+	bool isValid(const Database<Schedule> &scheduleDB) const;
 
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;
@@ -31,18 +34,20 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Display name. */
-	IBK::MultiLanguageString			m_displayNameML;									// XML:A
+	IBK::MultiLanguageString			m_displayName;									// XML:A
 
 	/*! False color. */
-	QColor								m_color;											// XML:A
+	QColor								m_color;										// XML:A
 
+	/*! reference to schedule */
+	unsigned int						m_scheduleId = INVALID_ID;						// XML:A
 
 	/*!
 		*** Only for Code Generator ***
 		*** NANDRAD::HydraulicNetworkComponent interface ***
 
 
-	enum modelType_t {
+	enum ModelType {
 		MT_Constant,					// Keyword: Constant				'Set points are given as constant parameters'
 		MT_Scheduled,					// Keyword: Scheduled				'Scheduled set point values'
 		NUM_MT
@@ -57,8 +62,8 @@ public:
 	};
 
 	enum ControllerType {
-		CT_PController,			// Keyword: PController				'PController'
-		CT_PIController,		// Keyword: PIController			'PIController'
+		CT_PController,			// Keyword: PController				'P-Controller'
+		CT_PIController,		// Keyword: PIController			'PI-Controller'
 		NUM_CT
 	};
 
@@ -78,7 +83,7 @@ public:
 
 	IDType							m_id = NANDRAD::INVALID_ID;						// XML:A:required
 
-	modelType_t						m_modelType;									// XML:A:required
+	ModelType						m_modelType = MT_Constant;						// XML:A:required
 
 	ControllerType					m_controllerType = NUM_CT;						// XML:A
 
