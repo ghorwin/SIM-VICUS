@@ -9,8 +9,6 @@
 namespace SH {
 
 void ShadedSurfaceObject::setPolygon(const IBKMK::Polygon3D & surface, double gridWidth) {
-	FUNCID(ShadedSurfaceObject::setPolygon);
-
 	IBK_ASSERT(gridWidth > 0);
 
 	//find min and max in x and y direction
@@ -61,43 +59,25 @@ double ShadedSurfaceObject::calcShadingFactor(const IBKMK::Vector3D &sunNormal, 
 			// compute intersection point of sun beam onto obstacle's plane
 			const IBKMK::Vector3D & offset = m_obstacles[j].vertexes()[0];
 			IBKMK::Vector3D intersectionPoint;
+			double dist;
+			if (!IBKMK::linePlaneIntersection(offset, m_obstacles[j].normal(), // plane
+											  m_gridPoints[i], sunNormal, // line
+											  intersectionPoint, dist))
+				continue; // no intersection, next obstacle plane
 
-			// compose line of sight
-		}
+			// compute local coordinates of intersection point with obstacle
+			double x,y;
+			if (!IBKMK::planeCoordinates(offset, m_obstacles[j].localX(), m_obstacles[j].localY(), intersectionPoint, x, y))
+				continue; // projection not possible - this shouldn't happen, really!
 
-	}
-
-
-#if 0
-	// now process all grid points
-		for ()
-
-
-		IBKMK::Vector3D nPlane = m_obstacles[j].calcNormal();
-		Polygon otherPoly(m_obstacles[j].m_polyline);
-
-		double d = nPlane.scalarProduct(m_obstacles[j].m_polyline[0]);
-
-
-			// point of the plane
-			const IBKMK::Vector3D &mP = m_gridPoints[i];
-
-			// TODO Stephan, formel raussuchen
-			double lambda = (d - (nPlane.m_x * mP.m_x + nPlane.m_y * mP.m_y + nPlane.m_z * mP.m_z)) /
-					(nPlane.m_x * sunNormal.m_x + nPlane.m_y * sunNormal.m_y + nPlane.m_z * sunNormal.m_z);
-			// wrong direction
-			if (lambda<=0)
-				continue;
-
-			IBKMK::Vector3D obstacleIntersectionPlanePoint(mP.m_x + lambda * sunNormal.m_x, mP.m_y + lambda * sunNormal.m_y, mP.m_z + lambda * sunNormal.m_z);
-
-			//hit obstacle
-			//int testDirk = otherPoly.pointInPolygon(obstacleIntersectionPlanePoint);
-			if (otherPoly.pointInPolygon(obstacleIntersectionPlanePoint)!=-1)
-				++counterShadedPoints; // increase shaded grid point count
+			// now test if x,y coordinates are inside obstacle's polyline
+			if (IBKMK::pointInPolygon(m_obstacles[j].polyline().vertexes(), IBK::point2D<double>(x,y))) {
+				++counterShadedPoints;
+				break; // we are shaded, stop searching
+			}
 		}
 	}
-#endif
+
 	double sf = double(counterShadedPoints)/sizeMiddlePoints;
 	return sf;
 }
