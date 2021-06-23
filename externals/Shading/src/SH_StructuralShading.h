@@ -95,7 +95,7 @@ public:
 	const std::vector<SunPosition> & sunPositions() const { return m_sunPositions; }
 
 	/*! Exports Shading Factors to a TSV-File */
-	void writeShadingFactorsToTSV(const IBK::Path &path);
+	void writeShadingFactorsToTSV(const IBK::Path &path, const std::vector<unsigned int> & surfaceIDs);
 
 	/*! Exports Shading Factors to a DataIO-File */
 	void writeShadingFactorsToDataIO(const IBK::Path &path, bool isBinary = true);

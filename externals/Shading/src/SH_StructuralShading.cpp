@@ -117,6 +117,12 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 	// TODO Stephan, input data check
 
 	m_gridWidth = gridWidth;
+	if (gridWidth <= 0)
+		throw IBK::Exception("Invalid grid width, must be > 0 m.", FUNC_ID);
+
+	// if we didn't do a sun normal calculation, yet, do it now!
+	if (m_sunConeNormals.empty())
+		createSunNormals();
 
 	// prepare target memory
 	m_shadingFactors.resize(m_sunConeNormals.size());
@@ -162,7 +168,7 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 
 }
 
-void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path) {
+void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path, const std::vector<unsigned int> & surfaceIDs) {
 	FUNCID(StructuralShading::shadingFactorsTSV);
 
 	std::vector< double >			   timePoints;
@@ -170,6 +176,9 @@ void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path) {
 
 	if (!path.isValid())
 		throw IBK::Exception("Invalid filename or no filename set.", FUNC_ID);
+
+	if (surfaceIDs.size() != m_surfaces.size())
+		throw IBK::Exception("Size of surface ID vector does not match number of surfaces passed to calculation function.", FUNC_ID);
 
 	// check for correct file extension
 	std::string ext = path.extension();
@@ -188,26 +197,62 @@ void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path) {
 
 	if ( !tsvFile.is_open() )
 		throw IBK::Exception(IBK::FormatString("Could not open output file '%1'\n").arg(path.str() ), FUNC_ID );
-#if 0
+
+
+	// we have a map of different sunConeNormals to sunPositions i.e. time points in vector m_indexesOfSimilarNormals
+	// we now generate the reverse mapping by creating a vector of sunConeNormal indexes corresponding to each sampling
+	// interval
+
+	unsigned int stepCount = (unsigned int)std::ceil(m_duration/m_samplingPeriod);
+	IBK_ASSERT(stepCount == m_sunPositions.size());
+	std::vector<unsigned int> samplingIndexToConeNormalMap(stepCount, (unsigned int)-1); // initialize with -1, which means: none available
+
+	// now process all sunCodeNormal indexes and put them into revers mapping vector
+	for (unsigned int i=0; i<m_indexesOfSimilarNormals.size(); ++i) {
+		for (unsigned int intervalIdx : m_indexesOfSimilarNormals[i])
+			samplingIndexToConeNormalMap[intervalIdx] = i;
+	}
+
 	// write header line
 	tsvFile << "Time [h]\t"; // write header
 	for ( unsigned int i=0; i<m_surfaces.size(); ++i ) {
-		tsvFile << m_surfaces[i].m_id << " [---]\t";
+		tsvFile << surfaceIDs[i] << " [---]";
+		if (i+1 < m_surfaces.size())
+			tsvFile << '\t';
 	}
 	tsvFile << "\n";
 
-	for( unsigned int i=0; i<m_sunPositions.size(); ++i) {
-		tsvFile << IBK::val2string<int>(m_sunPositions[i].m_secOfYear/3600) << "\t";
-		for ( unsigned int j=0; j<m_surfaces.size(); ++j ) {
-			const Polygon &poly = m_surfaces[j];
+	// now write the data
+	unsigned int startStep = (unsigned int)std::floor(m_startTime.secondsOfYear()/m_samplingPeriod);
+	for (unsigned int i=0; i<stepCount; ++i) {
+		unsigned int timeInSec = startStep + i*m_samplingPeriod;
+		tsvFile << IBK::val2string<int>(timeInSec/3600) << "\t";
 
-			tsvFile	<< poly.m_shadingFactors.value(m_sunPositions[i].m_secOfYear) << "\t";
+		// get index of corresponding shading factor data
+		unsigned int sfDataIndex = samplingIndexToConeNormalMap[i];
+
+		// no data available? (night-time?)
+		if (sfDataIndex == (unsigned int)-1) {
+			for (unsigned int j=0; j<m_surfaces.size(); ++j)  {
+				tsvFile	<< "0";
+				if (j+1 < m_surfaces.size())
+					tsvFile << '\t';
+			}
+		}
+		else {
+			// write the cached shading factors
+			const std::vector<double> & sfData = m_shadingFactors[sfDataIndex];
+			for (unsigned int j=0; j<m_surfaces.size(); ++j) {
+				tsvFile	<< sfData[j];
+				if (j+1 < m_surfaces.size())
+					tsvFile << '\t';
+			}
 		}
 		tsvFile << "\n";
 	}
-#endif
 	tsvFile.close();
 }
+
 
 void StructuralShading::writeShadingFactorsToDataIO(const IBK::Path & path, bool isBinary) {
 

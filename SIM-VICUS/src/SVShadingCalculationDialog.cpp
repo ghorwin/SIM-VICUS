@@ -50,15 +50,18 @@
 class ShadingCalculationProgress : public SH::Notification {
 public:
 	void notify() override {}
-	void notify(double percentage) override {
-		m_dlg->setValue(m_dlg->maximum() * percentage);
-		qApp->processEvents();
-		if (m_dlg->wasCanceled())
-			m_aborted = true;
-	}
+	void notify(double percentage) override;
 
+	char				pad[7]; // fix padding, silences compiler warning
 	QProgressDialog		*m_dlg = nullptr;
 };
+
+void ShadingCalculationProgress::notify(double percentage) {
+	m_dlg->setValue((int)(m_dlg->maximum() * percentage));
+	qApp->processEvents();
+	if (m_dlg->wasCanceled())
+		m_aborted = true;
+}
 
 
 SVShadingCalculationDialog::SVShadingCalculationDialog(QWidget *parent) :
@@ -350,6 +353,7 @@ void SVShadingCalculationDialog::calculateShadingFactors() {
 		selObst.push_back( s->geometry().polygon().vertexes() );
 
 	// *** compose vector with selected surfaces
+	std::vector<unsigned int> surfaceIDs; // holds IDs of calculated surfaces
 	for (const VICUS::Surface *s: m_selSurfaces) {
 
 		if ( s->m_componentInstance == nullptr )
@@ -362,6 +366,7 @@ void SVShadingCalculationDialog::calculateShadingFactors() {
 
 		// we compute shading factors for this surface
 		selSurf.push_back( s->geometry().polygon().vertexes() );
+		surfaceIDs.push_back(s->m_id);
 
 		// Mind: surface planes may also shade other surfaces
 		selObst.push_back( s->geometry().polygon().vertexes() );
@@ -397,21 +402,21 @@ void SVShadingCalculationDialog::calculateShadingFactors() {
 		throw IBK::Exception( IBK::FormatString("Could not create directory '%1'").arg(shadingPath.toStdString()), FUNC_ID );
 
 	switch ( m_outputType ) {
-	case TsvFile : {
-		QString pathTSV = shadingPath  + projectName + "_shadingFactors.tsv" ;
-		IBK::Path exportFileTSV(pathTSV.toStdString() );
-		m_shading.writeShadingFactorsToTSV(exportFileTSV);
-	} break;
-	case D6oFile : {
-		QString pathD6O = shadingPath  + projectName + "_shadingFactors.d6o" ;
-		IBK::Path exportFileD6O(pathD6O.toStdString() );
-		m_shading.writeShadingFactorsToDataIO(exportFileD6O, false);
-	} break;
-	case D6bFile : {
-		QString pathD6B = shadingPath  + projectName + "_shadingFactors.d6b" ;
-		IBK::Path exportFileD6B(pathD6B.toStdString() );
-		m_shading.writeShadingFactorsToDataIO(exportFileD6B, true);
-	} break;
+		case TsvFile : {
+			QString pathTSV = shadingPath  + projectName + "_shadingFactors.tsv" ;
+			IBK::Path exportFileTSV(pathTSV.toStdString() );
+			m_shading.writeShadingFactorsToTSV(exportFileTSV, surfaceIDs);
+		} break;
+		case D6oFile : {
+			QString pathD6O = shadingPath  + projectName + "_shadingFactors.d6o" ;
+			IBK::Path exportFileD6O(pathD6O.toStdString() );
+			m_shading.writeShadingFactorsToDataIO(exportFileD6O, false);
+		} break;
+		case D6bFile : {
+			QString pathD6B = shadingPath  + projectName + "_shadingFactors.d6b" ;
+			IBK::Path exportFileD6B(pathD6B.toStdString() );
+			m_shading.writeShadingFactorsToDataIO(exportFileD6B, true);
+		} break;
 	}
 
 }

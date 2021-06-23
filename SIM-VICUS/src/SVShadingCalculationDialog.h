@@ -54,8 +54,7 @@ public:
 	enum OutputType {
 		TsvFile,		///< write output to tsv file
 		D6oFile,		///< write output to d6o file
-		D6bFile,		///< write output to d6b file
-		NUM_OT
+		D6bFile			///< write output to d6b file
 	};
 
 	/*! Defines the detail type */
