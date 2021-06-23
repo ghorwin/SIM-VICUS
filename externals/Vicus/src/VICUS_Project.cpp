@@ -1120,8 +1120,9 @@ bool Project::allModelsValid(){
 	}
 
 
-
+	return errorStack.isEmpty();
 }
+
 
 void Project::exportSubSurfaces(QStringList & errorStack, const std::vector<VICUS::SubSurface> &subSurfs, std::vector<IdMap> &idMaps,
 								const VICUS::ComponentInstance & ci, NANDRAD::ConstructionInstance &cinst) const{
