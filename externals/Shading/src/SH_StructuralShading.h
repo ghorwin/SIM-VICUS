@@ -22,11 +22,10 @@
 
 #include <IBK_LinearSpline.h>
 #include <IBK_Time.h>
+#include <IBK_NotificationHandler.h>
 
 #include <IBKMK_Vector3D.h>
-
-#include "SH_SunShadingAlgorithm.h"
-#include "SH_Polygon.h"
+#include <IBKMK_Polygon3D.h>
 
 namespace SH {
 
@@ -77,7 +76,7 @@ public:
 		\param obstacles vector with all obstacle interfaces
 	*/
 	void setGeometry(const std::vector<std::vector<IBKMK::Vector3D> > & surfaces, const std::vector<std::vector<IBKMK::Vector3D> > & obstacles);
-	void setGeometry(const std::vector<Polygon> & surfaces, const std::vector<Polygon> & obstacles);
+	void setGeometry(const std::vector<IBKMK::Polygon3D> & surfaces, const std::vector<IBKMK::Polygon3D> & obstacles);
 
 	/*! Calculates the shading factors for the given period
 		\param duration Duration of period in seconds
@@ -129,9 +128,9 @@ private:
 	unsigned int										m_duration = 365*24*3600;				/// Duration in [s]
 	unsigned int										m_samplingPeriod = 3600;			/// Sampling peroid/step size in [s]
 
-	std::vector<Polygon>								m_obstacles;						///< Shading obstacles
+	std::vector<IBKMK::Polygon3D>						m_obstacles;						///< Shading obstacles
 
-	std::vector<Polygon>								m_surfaces;							///< Shading surface
+	std::vector<IBKMK::Polygon3D>						m_surfaces;							///< Shading surface
 
 	double												m_gridWidth;						///< Grid width in m used for shading calculation
 

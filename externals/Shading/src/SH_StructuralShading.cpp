@@ -79,28 +79,30 @@ void StructuralShading::setGeometry(const std::vector<std::vector<IBKMK::Vector3
 
 	// first we set our obstacles
 		for (const std::vector<IBKMK::Vector3D> &polyline : surfaces) {
-			m_surfaces.push_back( Polygon(polyline) );
+			m_surfaces.push_back( IBKMK::Polygon3D(polyline) );
 		}
 		for (const std::vector<IBKMK::Vector3D> &polyline : obstacles) {
-			m_obstacles.push_back( Polygon(polyline) );
+			m_obstacles.push_back( IBKMK::Polygon3D(polyline) );
 		}
 		// error checking is done in setGeometry()
 		setGeometry(m_surfaces, m_obstacles);
 }
 
 
-void StructuralShading::setGeometry(const std::vector<Polygon> & surfaces, const std::vector<Polygon> & obstacles) {
+void StructuralShading::setGeometry(const std::vector<IBKMK::Polygon3D> & surfaces, const std::vector<IBKMK::Polygon3D> & obstacles) {
 	FUNCID(StructuralShading::setGeometry);
 	try {
-		// TODO : content check
-//		if(obj.m_polygon.m_polyline.size() < 3)
-//			throw IBK::Exception(IBK::FormatString("Polyline is not valid."), FUNC_ID);
-
 		m_surfaces = surfaces;
 		m_obstacles = obstacles;
 
-		for (Polygon & p : m_surfaces)
-			p.removePointsInLine();
+		for (IBKMK::Polygon3D & p : m_surfaces) {
+			if (!p.isValid())
+				throw IBK::Exception(IBK::FormatString("Polygon is not valid."), FUNC_ID);
+		}
+		for (IBKMK::Polygon3D & p : m_obstacles) {
+			if (!p.isValid())
+				throw IBK::Exception(IBK::FormatString("Polygon is not valid."), FUNC_ID);
+		}
 
 	}
 	catch (IBK::Exception &ex) {
@@ -138,7 +140,7 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 			continue;
 
 		// readability improvement
-		const Polygon & surf = m_surfaces[(unsigned int)surfCounter];
+		const IBKMK::Polygon3D & surf = m_surfaces[(unsigned int)surfCounter];
 
 		// 1. split polygon 'surf' into sub-polygons based on grid information and compute center point of these sub-polygons
 
@@ -154,7 +156,7 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 			// 3. store shaded/not shaded information for sub-polygon and its surface area
 			// 4. compute area-weighted sum of shading factors and devide by orginal polygon surface
 			// 5. store in result vector
-			m_shadingFactors[i][surfCounter] = sf;
+			m_shadingFactors[i][(unsigned int)surfCounter] = sf;
 		}
 	} // omp for loop
 
@@ -186,7 +188,7 @@ void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path) {
 
 	if ( !tsvFile.is_open() )
 		throw IBK::Exception(IBK::FormatString("Could not open output file '%1'\n").arg(path.str() ), FUNC_ID );
-
+#if 0
 	// write header line
 	tsvFile << "Time [h]\t"; // write header
 	for ( unsigned int i=0; i<m_surfaces.size(); ++i ) {
@@ -203,7 +205,7 @@ void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path) {
 		}
 		tsvFile << "\n";
 	}
-
+#endif
 	tsvFile.close();
 }
 
@@ -226,10 +228,10 @@ void StructuralShading::writeShadingFactorsToDataIO(const IBK::Path & path, bool
 	for( unsigned int i=0; i<m_sunPositions.size(); ++i) {
 		timePoints[i] = m_sunPositions[i].m_secOfYear; // mind that we need time points in seconds
 	}
-
+#if 0
 	for( unsigned int j=0; j<m_sunPositions.size(); ++j) {
 		for ( unsigned int i=0; i<m_surfaces.size(); ++i ) {
-			const Polygon &poly = m_surfaces[i];
+			const IBKMK::Polygon3D &poly = m_surfaces[i];
 			if ( j == 0 ) {
 				nums.emplace_back(poly.m_id);
 				quantity += IBK::val2string<unsigned int>(poly.m_id);
@@ -239,7 +241,7 @@ void StructuralShading::writeShadingFactorsToDataIO(const IBK::Path & path, bool
 			values[j][i] = poly.m_shadingFactors.value(m_sunPositions[j].m_secOfYear);
 		}
 	}
-
+#endif
 	// we set our data
 	dataContainer.m_nums = nums;
 	dataContainer.m_quantity = quantity;
