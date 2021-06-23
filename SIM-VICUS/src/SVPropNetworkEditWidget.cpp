@@ -46,7 +46,6 @@
 #include "SVMainWindow.h"
 #include "SVDatabaseEditDialog.h"
 #include "SVDBNetworkFluidEditWidget.h"
-#include "SVNetworkControllerDialog.h"
 #include "SVStyle.h"
 
 

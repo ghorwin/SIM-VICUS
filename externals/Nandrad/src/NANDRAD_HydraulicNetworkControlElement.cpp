@@ -14,6 +14,9 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<NANDRAD::
 	if (m_controlledProperty == NUM_CP)
 		throw IBK::Exception("Missing attribute 'controlledProperty'.", FUNC_ID);
 
+	if (m_modelType == NUM_MT)
+		throw IBK::Exception("Missing attribute 'modelType'.", FUNC_ID);
+
 	try {
 		// check individual configuations for different controller properties
 		switch (m_controlledProperty) {

@@ -24,12 +24,17 @@ SVDBNetworkControllerEditWidget::SVDBNetworkControllerEditWidget(QWidget *parent
 		m_ui->comboBoxProperty->addItem(QString("%1")
 											 .arg(VICUS::KeywordList::Description("NetworkController::ControlledProperty", i)),
 											 i);
-
 	m_ui->comboBoxControllerType->clear();
 	for (int i=0; i<VICUS::NetworkController::NUM_CT; ++i)
 		m_ui->comboBoxControllerType->addItem(QString("%1")
 											 .arg(VICUS::KeywordList::Description("NetworkController::ControllerType", i)),
 											 i);
+
+	// setup line edits
+	m_ui->lineEditKi->setup(0, std::numeric_limits<double>::max(), "Integration Constant", false, true);
+	m_ui->lineEditKp->setup(0, std::numeric_limits<double>::max(), "Controller Gain", false, true);
+	m_ui->lineEditSetpoint->setup(0, std::numeric_limits<double>::max(), "Set Point", false, true);
+
 }
 
 SVDBNetworkControllerEditWidget::~SVDBNetworkControllerEditWidget()
@@ -45,7 +50,6 @@ void SVDBNetworkControllerEditWidget::setup(SVDatabase * db, SVAbstractDatabaseT
 
 
 void SVDBNetworkControllerEditWidget::updateInput(int id) {
-	FUNCID(SVDBNetworkControllerEditWidget::updateInput);
 
 	m_current = nullptr; // disable edit triggers
 
@@ -59,8 +63,8 @@ void SVDBNetworkControllerEditWidget::updateInput(int id) {
 		m_ui->lineEditSchedule->clear();
 		m_ui->lineEditKp->clear();
 		m_ui->lineEditKi->clear();
-//		m_ui->comboBoxProperty->setCurrentIndex(-1);
-//		m_ui->comboBoxControllerType->setCurrentIndex(-1);
+		m_ui->comboBoxProperty->setCurrentIndex(-1);
+		m_ui->comboBoxControllerType->setCurrentIndex(-1);
 
 		// Note: color button is disabled, hence color is gray
 		return;

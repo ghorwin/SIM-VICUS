@@ -40,9 +40,6 @@ VICUS::AbstractDBElement::ComparisonResult VICUS::NetworkController::equal(const
 
 	// check important parameters
 
-	if (m_id != otherCtrl->m_id)
-		return Different;
-
 	if (m_modelType != otherCtrl->m_modelType
 		|| m_controllerType != otherCtrl->m_controllerType
 		|| m_controlledProperty != otherCtrl->m_controlledProperty
