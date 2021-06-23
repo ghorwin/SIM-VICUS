@@ -30,12 +30,14 @@ INCLUDEPATH +=	\
 		../../../DataIO/src
 
 SOURCES += \
+		../../src/SH_ShadedSurfaceObject.cpp \
 		../../src/SH_StructuralShading.cpp \
 		../../src/SH_Polygon.cpp \
 		../../src/SH_SunShadingAlgorithm.cpp
 
 
 HEADERS += \
+		../../src/SH_ShadedSurfaceObject.h \
 		../../src/SH_StructuralShading.h \
 		../../src/SH_Polygon.h \
 		../../src/SH_SunShadingAlgorithm.h

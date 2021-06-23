@@ -6,8 +6,7 @@
 
 namespace SH {
 
-double Polygon::calcSurfaceSize() {
-	removePointsInLine();
+double Polygon::calcSurfaceSize() const {
 	IBKMK::Vector3D surfSize = m_polyline.back().crossProduct(m_polyline[0]);
 
 	for (size_t i=0; i<m_polyline.size()-1; ++i) {
@@ -17,13 +16,12 @@ double Polygon::calcSurfaceSize() {
 }
 
 
-IBKMK::Vector3D Polygon::calcNormal(bool normalize) {
+IBKMK::Vector3D Polygon::calcNormal(bool normalize) const {
 	FUNCID(Polygon::calcNormal);
 
 	if(m_polyline.size()<3)
 		throw	IBK::Exception(IBK::FormatString( "Polyline has less then 3 Points." ), FUNC_ID);
 
-	removePointsInLine();
 	//Newell Verfahren zum Bestimmen der Normalen
 	//n x + n y + n z + D = 0
 
@@ -57,7 +55,7 @@ void Polygon::writeLine(const std::string &message){
 }
 
 
-double Polygon::distancePointToPlane(const IBK::point3D<double> & p0) {
+double Polygon::distancePointToPlane(const IBK::point3D<double> & p0) const {
 	const IBKMK::Vector3D n = this->calcNormal();
 	double d =(n.m_x*m_polyline[0].m_x + n.m_y*m_polyline[0].m_y +n.m_z*m_polyline[0].m_z);
 	double dist = (n.m_x* p0.m_x + n.m_y* p0.m_y + n.m_z* p0.m_z - d) / n.magnitude();
@@ -84,10 +82,10 @@ int crossProdTest(IBKMK::Vector3D a, IBKMK::Vector3D b, IBKMK::Vector3D c){
 	else					return	0;
 }
 
-int Polygon::pointInPolygon(const IBKMK::Vector3D &point)
-{
-	//rotate polyline to a coordinate-plane
 
+int Polygon::pointInPolygon(const IBKMK::Vector3D &point) const {
+	//rotate polyline to a coordinate-plane
+#if 0
 	//get normal of polygon
 	IBKMK::Vector3D n = calcNormal();
 	IBKMK::Vector3D zAxis(0,0,1);
@@ -124,7 +122,8 @@ int Polygon::pointInPolygon(const IBKMK::Vector3D &point)
 			break;
 	}
 	this->m_polyline.swap(originalPolyline);
-	return  t;
+#endif
+	return  0;
 }
 
 IBK::matrix<double> Polygon::rotationMatrixForStraightOrigin(const double & cosRotationAngle,

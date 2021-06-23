@@ -29,17 +29,17 @@ public:
 	static void writeLine(const std::string &message);
 
 	/*! calculate the surface size of konvex and non konvex polygons*/
-	double calcSurfaceSize();
+	double calcSurfaceSize() const;
 
 	/*! calcs the normal of a polygon
 			positve normal is in rotation of polygon points
 			right hand rule
 			\param normalize standard value true
 	*/
-	IBKMK::Vector3D calcNormal(bool normalize = true);
+	IBKMK::Vector3D calcNormal(bool normalize = true) const;
 
 	/*! calculates distance point to plane*/
-	double distancePointToPlane(const IBK::point3D<double> & p0);
+	double distancePointToPlane(const IBK::point3D<double> & p0) const;
 
 	/*! Point in Polygon function. Result:
 		-1 point not in polyline
@@ -50,13 +50,7 @@ public:
 		Source https://de.wikipedia.org/wiki/Punkt-in-Polygon-Test_nach_Jordan
 
 	*/
-	int pointInPolygon(const IBKMK::Vector3D & point);
-
-	/*! Calculates the rotation matrix for an original straight line and a rotation angle. */
-	static IBK::matrix<double> rotationMatrixForStraightOrigin(
-			const double & cosRotationAngle,
-			const IBKMK::Vector3D & nStraightOrigin,
-			bool positiveRota);
+	int pointInPolygon(const IBKMK::Vector3D & point) const;
 
 	/*! Calculates the rotation matrix for an original straight line and a rotation angle. */
 	IBK::matrix<double> rotationMatrixForStraightOrigin(
@@ -83,6 +77,18 @@ public:
 		this->m_polyline.push_back(other);
 	}
 
+	/*! remove points in a line*/
+	void removePointsInLine();
+
+	// *** STATIC FUNCTIONS ***
+
+	/*! Calculates the rotation matrix for an original straight line and a rotation angle. */
+	static IBK::matrix<double> rotationMatrixForStraightOrigin(
+			const double & cosRotationAngle,
+			const IBKMK::Vector3D & nStraightOrigin,
+			bool positiveRota);
+
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	unsigned int							m_id;
@@ -98,8 +104,6 @@ private:
 
 	// *** PRIVATE MEMBER FUNCTIONS ***
 
-	/*! remove points in a line*/
-	void removePointsInLine();
 
 	/*! remove duplicate points in series */
 	void removeDuplicatePoints();

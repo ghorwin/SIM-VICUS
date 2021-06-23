@@ -33,6 +33,8 @@
 
 #include <cmath>
 
+#include "SH_ShadedSurfaceObject.h"
+
 #if defined(_OPENMP)
 #include <omp.h> // needed for omp_get_num_threads()
 #endif
@@ -46,78 +48,7 @@ static double angleVectors(const IBKMK::Vector3D &v1, const IBKMK::Vector3D &v2)
 
 	return angle;
 }
-#if 0
-/*! Checks weather a sun normal lies within the specified sun cone
-	Returns the timepoint of the sun normal if a sun normal can be found
-	Returns -1 if no sun cone was found and a new entry in the map was added
-	Returns -2 if sun does not shine on the surface ( vector between normals is bigger than 90 Deg )
 
-	\param timepointToNormal	map of all sun normals
-	\param timepoint			time point
-	\param sunNormal			normal vector of sun beam ( pointing from window to sun )
-*/
-
-static int createSimilarNormals(std::map<unsigned int, IBKMK::Vector3D> & timepointToNormal, unsigned int timepoint,
-								const IBKMK::Vector3D &sunNormal, const double maxDiffAngleDeg=3) {
-
-
-	// if sun is not above horizon
-	if( sunNormal.m_z<0 )
-		return -2;
-
-	// now if sun shines on window we search for sun cones in which the new sun beam lies
-	for(std::map<unsigned int, IBKMK::Vector3D>::iterator it=timepointToNormal.begin();
-		it!=timepointToNormal.end();
-		++it){
-		double diffAngle = angleVectors(it->second, sunNormal);
-		if(std::abs(diffAngle) <=  maxDiffAngleDeg)
-			return it->first;
-	}
-
-	timepointToNormal[timepoint] = sunNormal;
-	return -1;
-}
-
-/*! Checks weather a sun normal lies within the specified sun cone
-	Returns the timepoint of the sun normal if a sun normal can be found
-	Returns -1 if no sun cone was found and a new entry in the map was added
-	Returns -2 if sun does not shine on the surface ( vector between normals is bigger than 90 Deg )
-
-	\param timepointToNormal	map of all sun normals
-	\param timepoint			time point
-	\param sunNormal			normal vector of sun beam ( pointing from window to sun )
-	\param windowNormal			normal vector of window
-*/
-
-static int createSimilarNormals(std::map<unsigned int, IBKMK::Vector3D> & timepointToNormal, unsigned int timepoint,
-								const IBKMK::Vector3D &sunNormal, const IBKMK::Vector3D &windowNormal, const double maxDiffAngleDeg=3) {
-
-
-	double angleWindowSun = angleVectors(sunNormal, windowNormal);
-
-	// if sun is not above horizon
-	if( sunNormal.m_z<0 )
-		return -2;
-
-	if ( angleWindowSun < 90 && angleWindowSun > ( 90 - maxDiffAngleDeg ) ) {
-		timepointToNormal[timepoint] = sunNormal;
-		return -1;
-	} else if ( angleWindowSun > 90 )
-		return -2;
-
-	// now if sun shines on window we search for sun cones in which the new sun beam lies
-	for(std::map<unsigned int, IBKMK::Vector3D>::iterator it=timepointToNormal.begin();
-		it!=timepointToNormal.end();
-		++it){
-		double diffAngle = angleVectors(it->second, sunNormal);
-		if(std::abs(diffAngle) <=  maxDiffAngleDeg)
-			return it->first;
-	}
-
-	timepointToNormal[timepoint] = sunNormal;
-	return -1;
-}
-#endif
 
 void StructuralShading::initializeShadingCalculation(int timeZone, double longitudeInDeg, double latitudeInDeg,
 									const IBK::Time & startTime, unsigned int duration, unsigned int samplingPeriod,
@@ -168,6 +99,8 @@ void StructuralShading::setGeometry(const std::vector<Polygon> & surfaces, const
 		m_surfaces = surfaces;
 		m_obstacles = obstacles;
 
+		for (Polygon & p : m_surfaces)
+			p.removePointsInLine();
 
 	}
 	catch (IBK::Exception &ex) {
@@ -208,123 +141,21 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 		const Polygon & surf = m_surfaces[(unsigned int)surfCounter];
 
 		// 1. split polygon 'surf' into sub-polygons based on grid information and compute center point of these sub-polygons
+
+		ShadedSurfaceObject surfaceObject;
+		surfaceObject.setPolygon(surf, m_gridWidth);
+
 		// 2. for each center point perform intersection tests again _all_ obstacle polygons
-		// 3. store shaded/not shaded information for sub-polygon and its surface area
-		// 4. compute area-weighted sum of shading factors and devide by orginal polygon surface
-		// 5. store in result vector
 
+		for (unsigned int i=0; i<m_sunConeNormals.size(); ++i) {
 
-#if 0
-		// create thread-specific shading calculation object
-		SunShadingAlgorithm shading;
-		shading.m_obstacles = m_obstacles;
-		shading.m_shadingObjects.clear();
+			double sf = surfaceObject.calcShadingFactor(m_sunConeNormals[i], m_obstacles);
 
-		SunShadingAlgorithm::ShadingObj shadingObj;
-		shadingObj.m_polygon = surf;
-		shading.m_shadingObjects.push_back(shadingObj);
-
-		// now we initialize our shading calculation object
-		try {
-			shading.m_gridLength = m_gridWidth;
-			shading.initializeGrid();
+			// 3. store shaded/not shaded information for sub-polygon and its surface area
+			// 4. compute area-weighted sum of shading factors and devide by orginal polygon surface
+			// 5. store in result vector
+			m_shadingFactors[i][surfCounter] = sf;
 		}
-		catch (IBK::Exception &ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Could not initialize grid for calculation!"), FUNC_ID);
-		}
-
-		// result vector
-		std::vector<double> sunShadings(m_sunPositions.size(),0);
-
-		IBKMK::Vector3D vSun, vSunTemp;
-		IBKMK::Vector3D newSunNormal, sunNormal;
-
-		unsigned int mapSize = m_timepointToAllEqualTimepoints.size();
-		unsigned int counter = 0;
-
-		for (std::map<unsigned int, std::vector<unsigned int>>::iterator itNormal = m_timepointToAllEqualTimepoints.begin();
-			 itNormal != m_timepointToAllEqualTimepoints.end();
-			 ++itNormal) {
-
-			++counter;
-
-			unsigned int i = itNormal->first;
-
-			if ( counter % 10 == 0 ) {
-
-#if defined(_OPENMP)
-				if (omp_get_thread_num() == 0)
-#endif
-					notify->notify(double(surfCounter*mapSize + counter) / (m_surfaces.size()*mapSize));
-
-				if (notify->m_aborted)
-					continue;
-			}
-
-			if(i==std::numeric_limits<unsigned int>::max())
-				continue;
-
-			try {
-				double alti = m_sunPositions[i].m_altitude;
-				double azi = m_sunPositions[i].m_azimuth;
-
-
-				double altiInDeg = m_sunPositions[i].m_altitude / IBK::DEG2RAD;
-				double aziInDeg = m_sunPositions[i].m_azimuth / IBK::DEG2RAD;
-
-
-				//sun is not in zenith
-				if(alti < IBK::PI * 0.5 ) {
-					sunNormal.m_x = std::cos(alti) * std::sin(azi);
-					sunNormal.m_y = std::cos(alti) * std::cos(azi);
-					sunNormal.m_z = std::sin(alti);
-				}
-				//sun is in zenith
-				else {
-					sunNormal.m_x = std::cos(IBK::PI) * std::sin(azi);
-					sunNormal.m_y = std::cos(IBK::PI) * std::cos(azi);
-					sunNormal.m_z = std::sin(IBK::PI);
-				}
-
-				// rotate sun to fit to south wall
-				IBKMK::Vector3D sunVector ( sunNormal.m_x, sunNormal.m_y, sunNormal.m_z );
-
-				// calculate shading factors
-				shading.calcShading(sunVector);
-
-				for (size_t j=0; j<itNormal->second.size(); ++j)
-					sunShadings[itNormal->second[j]] = shading.m_shadingObjects.back().m_shadingValue;
-
-				// give back shading factor
-				sunShadings[i] = shading.m_shadingObjects.back().m_shadingValue;
-
-
-
-			}
-			catch (IBK::Exception &ex) {
-				throw IBK::Exception(ex, IBK::FormatString("Could not finish shading calculation!"), FUNC_ID);
-			}
-		}
-
-		IBK::UnitVector time(m_sunPositions.size(), 0, IBK::Unit(IBK_UNIT_ID_SECONDS));
-		IBK::UnitVector shadingFact(m_sunPositions.size(), 1, IBK::Unit("---"));
-		for(size_t i=0; i<m_sunPositions.size(); ++i) {
-			time.m_data[i] = m_sunPositions[i].m_secOfYear;
-			shadingFact.m_data[i] = sunShadings[i];
-		}
-		// now generate the spline
-		try {
-			surf.m_shadingFactors.setValues(time.m_data, shadingFact.m_data);
-			std::string errorMsg;
-			if (!surf.m_shadingFactors.makeSpline(errorMsg))
-				throw IBK::Exception(errorMsg, FUNC_ID);
-		}
-		catch (IBK::Exception & ex) {
-			throw IBK::Exception(ex, IBK::FormatString("Unable to create shading vector."), FUNC_ID);
-		}
-#endif
-
-
 	} // omp for loop
 
 }
