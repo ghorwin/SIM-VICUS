@@ -86,6 +86,8 @@
 #include "SVDBNetworkFluidEditWidget.h"
 #include "SVDBNetworkControllerEditWidget.h"
 #include "SVDBNetworkControllerTableModel.h"
+#include "SVDBSubNetworkEditWidget.h"
+#include "SVDBSubNetworkTableModel.h"
 
 #include "SVViewStateHandler.h"
 #include "SVGeometryView.h"
@@ -558,13 +560,11 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createNetworkControllerEditDialog(QW
 
 
 SVDatabaseEditDialog *SVDatabaseEditDialog::createSubNetworkEditDialog(QWidget *parent) {
-	// TODO
-//	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
-//		new SVDBNetworkControllerTableModel(parent, SVSettings::instance().m_db),
-//		new SVDBNetworkControllerEditWidget(parent),
-//		tr("Network Controllers Database"), tr("Network Controllers Properties"), true
-//	);
-//	dlg->resize(1400,800);
-//	return dlg;
-	return nullptr;
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBSubNetworkTableModel(parent, SVSettings::instance().m_db),
+		new SVDBSubNetworkEditWidget(parent),
+		tr("Sub Networks Database"), tr("Sub Networks Properties"), true
+	);
+	dlg->resize(1400,800);
+	return dlg;
 }

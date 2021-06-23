@@ -81,6 +81,8 @@ public:
 	NANDRAD_READWRITE
 	NANDRAD_COMPARE_WITH_ID
 
+	bool operator!=(const HydraulicNetworkElement &other) const;
+
 	/*! Checks for valid and required parameters (value ranges).
 		If referenced TSV file is given, this is read and checked and data is transferred into
 		variable m_tsvFileContent.

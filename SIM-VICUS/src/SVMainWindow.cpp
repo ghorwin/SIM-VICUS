@@ -288,8 +288,7 @@ SVDatabaseEditDialog *SVMainWindow::dbNetworkControllerEditDialog()
 SVDatabaseEditDialog *SVMainWindow::dbSubNetworkEditDialog()
 {
 	if (m_dbSubNetworkEditDialog == nullptr)
-		// TODO
-//		m_dbSubNetworkEditDialog = SVDatabaseEditDialog::createNetworkControllerEditDialog(this);
+		m_dbSubNetworkEditDialog = SVDatabaseEditDialog::createSubNetworkEditDialog(this);
 	return m_dbSubNetworkEditDialog;
 }
 

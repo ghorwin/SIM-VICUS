@@ -39,6 +39,7 @@
 #include <VICUS_NetworkFluid.h>
 #include <VICUS_NetworkComponent.h>
 #include <VICUS_NetworkController.h>
+#include <VICUS_SubNetwork.h>
 #include <VICUS_EPDDataset.h>
 #include <VICUS_Schedule.h>
 #include <VICUS_InternalLoad.h>
@@ -141,6 +142,9 @@ public:
 
 	/*! Map of all hydraulic network controllers */
 	VICUS::Database<VICUS::NetworkController>			m_networkControllers;
+
+	/*! Map of all hydraulic sub networks */
+	VICUS::Database<VICUS::SubNetwork>					m_subNetworks;
 
 	/*! Map of all database EPD elements */
 	VICUS::Database<VICUS::EPDDataset>					m_EPDElements;
