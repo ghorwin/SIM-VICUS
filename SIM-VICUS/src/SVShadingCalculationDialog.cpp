@@ -70,34 +70,9 @@ SVShadingCalculationDialog::SVShadingCalculationDialog(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
-	// we save a local copy of our project
-	m_localProject = project();
-	m_simulationParameter = &m_localProject.m_simulationParameter; // readability improvements
-
 	// we set the duration time of the simulation
 	m_ui->lineEditDuration->setup(m_ui->comboBoxUnitDuration, IBK::Unit("h"),
 								  0, std::numeric_limits<double>::max(), tr("Duration of the simulation.") );
-
-	if ( m_simStartWidget == nullptr ) {
-		m_simStartWidget = new SVSimulationStartNandrad();
-		m_simStartWidget->exec();
-	}
-
-	if ( m_localProject.m_location.m_para[NANDRAD::Location::P_Latitude].empty() ||
-		 m_localProject.m_location.m_para[NANDRAD::Location::P_Longitude].empty() ) {
-		m_ui->lineEditLatitude->setText( QString::number(13) );
-		m_ui->lineEditLongitude->setText( QString::number(50) );
-	}
-	else {
-
-		try {
-			m_ui->lineEditLatitude->setText( QString::number(m_localProject.m_location.m_para[NANDRAD::Location::P_Latitude].get_value(IBK::Unit("Deg") ), 'f', 2 ) );
-			m_ui->lineEditLongitude->setText( QString::number(m_localProject.m_location.m_para[NANDRAD::Location::P_Longitude].get_value(IBK::Unit("Deg") ), 'f', 2 ) );
-			m_ui->lineEditTimeZone->setText( QString::number(m_localProject.m_location.m_timeZone, 'f', 2 ) );
-		} catch (IBK::Exception &ex) {
-
-		}
-	}
 
 	m_ui->comboBoxFileType->addItem( "tsv" );
 	m_ui->comboBoxFileType->addItem( "d6o" );
@@ -117,7 +92,7 @@ SVShadingCalculationDialog::~SVShadingCalculationDialog() {
 int SVShadingCalculationDialog::edit() {
 
 	// create a copy of the current project
-	m_localProject = project(); // Mind: addresses to member variables m_solverParameters, m_location etc. do not change here!
+	m_localProject = project();			// Mind: addresses to member variables m_solverParameters, m_location etc. do not change here!
 	m_localProject.updatePointers();
 
 	// initialize defaults

@@ -1490,6 +1490,21 @@ void SVMainWindow::on_actionSimulationHydraulicNetwork_triggered() {
 }
 
 
+void SVMainWindow::on_actionSimulationCalculateShadingFactors_triggered() {
+	if (m_shadingCalculationDialog == nullptr)
+		m_shadingCalculationDialog = new SVShadingCalculationDialog;
+	// open simulation start dialog, with settings for climate location, simulation and
+	// solver settings and simulation start button
+	int res = m_shadingCalculationDialog->edit();
+	if (res == QDialog::Accepted) {
+		// transfer data to VICUS project
+		// create an undo action for modification of the (entire) project
+		SVUndoModifyProject * undo = new SVUndoModifyProject(tr("Updated simulation parameters"), m_simulationStartNandrad->localProject());
+		undo->push();
+	}
+}
+
+
 void SVMainWindow::on_actionHelpOnlineManual_triggered() {
 	QDesktopServices::openUrl( QUrl(MANUAL_URL));
 }
@@ -1802,17 +1817,4 @@ void SVMainWindow::on_actionExportView3D_triggered() {
 	v3d.exportView3d();
 }
 
-void SVMainWindow::on_actionCalculateShadingFactors_triggered() {
-	if (m_shadingCalculationDialog == nullptr)
-		m_shadingCalculationDialog = new SVShadingCalculationDialog;
-	// open simulation start dialog, with settings for climate location, simulation and
-	// solver settings and simulation start button
-	int res = m_shadingCalculationDialog->edit();
-	if (res == QDialog::Accepted) {
-		// transfer data to VICUS project
-		// create an undo action for modification of the (entire) project
-		SVUndoModifyProject * undo = new SVUndoModifyProject(tr("Updated simulation parameters"), m_simulationStartNandrad->localProject());
-		undo->push();
-	}
-}
 

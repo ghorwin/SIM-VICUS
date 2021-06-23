@@ -164,7 +164,7 @@
     <addaction name="separator"/>
     <addaction name="actionSimulationExportFMI"/>
     <addaction name="actionExportView3D"/>
-    <addaction name="actionCalculateShadingFactors"/>
+    <addaction name="actionSimulationCalculateShadingFactors"/>
    </widget>
    <widget class="QMenu" name="menu_Buildings">
     <property name="title">
@@ -639,9 +639,9 @@
     <string>Export View3D</string>
    </property>
   </action>
-  <action name="actionCalculateShadingFactors">
+  <action name="actionSimulationCalculateShadingFactors">
    <property name="text">
-    <string>Calculate Shading Factors</string>
+    <string>Calculate Shading Factors...</string>
    </property>
   </action>
   <action name="actionDBWindowGlazingSystems">

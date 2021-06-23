@@ -287,6 +287,7 @@ private slots:
 
 	void on_actionSimulationNANDRAD_triggered();
 	void on_actionSimulationHydraulicNetwork_triggered();
+	void on_actionSimulationCalculateShadingFactors_triggered();
 
 	void on_actionHelpAboutQt_triggered();
 	void on_actionHelpAbout_triggered();
@@ -301,9 +302,6 @@ private slots:
 	void on_actionResetView_triggered();
 
 	void on_actionExportView3D_triggered();
-
-	void on_actionCalculateShadingFactors_triggered();
-
 
 
 
