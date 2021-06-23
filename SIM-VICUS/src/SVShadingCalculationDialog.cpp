@@ -307,25 +307,15 @@ void SVShadingCalculationDialog::calculateShadingFactors() {
 	FUNCID(SVShadingCalculationDialog::calculateShadingFactors);
 
 	std::vector<std::vector<IBKMK::Vector3D> > selObst;
-	std::vector<const VICUS::Surface *> selSurf;
+	std::vector<std::vector<IBKMK::Vector3D> > selSurf;
 
 	// We take all our selected surfaces
 	project().selectedSurfaces(m_selSurfaces,VICUS::Project::SG_Building);
 	project().selectedSurfaces(m_selObstacles,VICUS::Project::SG_Obstacle);
 
-	//
 	const NANDRAD::Location &loc = project().m_location;
 
 	const NANDRAD::SimulationParameter &simuPara = project().m_simulationParameter;
-
-	const SVDatabase &db = SVSettings::instance().m_db;
-
-	m_shading = SH::StructuralShading(loc.m_timeZone, loc.m_para[NANDRAD::Location::P_Latitude].value, loc.m_para[NANDRAD::Location::P_Longitude].value,
-									  m_ui->lineEditGridSize->value(), m_ui->lineEditSunCone->value() );
-
-	for (const VICUS::Surface *s: m_selObstacles) {
-		selObst.push_back( s->geometry().polygon().vertexes() );
-	}
 
 	IBK::IntPara startYear = simuPara.m_intPara[NANDRAD::SimulationParameter::IP_StartYear];
 	IBK::Parameter startDay = simuPara.m_interval.m_para[NANDRAD::Interval::P_Start];
@@ -340,36 +330,44 @@ void SVShadingCalculationDialog::calculateShadingFactors() {
 	if ( endDay.empty() )
 		throw IBK::Exception( IBK::FormatString("End day of simulation has not been set.") , FUNC_ID );
 
+	IBK::Time simTimeStart (startYear.value, startDay.value );
+	IBK::Time simTimeEnd (startYear.value, endDay.value );
 
+	unsigned int durationInSec = (unsigned int)simTimeStart.secondsUntil(simTimeEnd);
+
+	m_shading.initializeShadingCalculation(loc.m_timeZone,
+										   loc.m_para[NANDRAD::Location::P_Longitude].value,
+										   loc.m_para[NANDRAD::Location::P_Latitude].value,
+										   simTimeStart,
+										   durationInSec,
+										   3600, // TODO : Stephan, get from UI input
+										   m_ui->lineEditSunCone->value() );
+
+
+	// *** compose vectors with obstacles
+
+	for (const VICUS::Surface *s: m_selObstacles)
+		selObst.push_back( s->geometry().polygon().vertexes() );
+
+	// *** compose vector with selected surfaces
 	for (const VICUS::Surface *s: m_selSurfaces) {
 
 		if ( s->m_componentInstance == nullptr )
-			continue; // we want to take only surface connected to ambient
+			continue;  // skip invalid surfaces - surfaces without component are not computed in calculation and thus do not require shading factors
 
-		VICUS::Component::ComponentType type = db.m_components[ s->m_componentInstance->m_componentID ]->m_type;
-		if ( type == VICUS::Component::CT_InsideWall ||	type == VICUS::Component::CT_FloorToCellar ||
-			 type == VICUS::Component::CT_FloorToAir || type == VICUS::Component::CT_FloorToGround )
-			continue;
+		// we want to take only surface connected to ambient, that means, the associated component instance
+		// must have one zone with ID 0 assigned
+		if (s->m_componentInstance->m_sideASurfaceID != 0 && s->m_componentInstance->m_sideBSurfaceID != 0)
+			continue; // skip inside constructions
 
+		// we compute shading factors for this surface
+		selSurf.push_back( s->geometry().polygon().vertexes() );
+
+		// Mind: surface planes may also shade other surfaces
 		selObst.push_back( s->geometry().polygon().vertexes() );
-		selSurf.push_back( s );
 	}
 
-	IBK::Time simTimeStart (startYear.value, startDay.get_value(IBK::Unit("s") ) );
-	IBK::Time simTimeEnd (startYear.value, endDay.get_value(IBK::Unit("s") ) );
-
-	double periodInSec = simTimeStart.secondsUntil(simTimeEnd);
-
-	// we initialize our period
-	m_shading.setCalculationPeriod(simTimeStart, periodInSec);
-
-	// we initialize our sun positions
-	m_shading.initializeShadingCalculation(selObst);
-
-
-	for (const VICUS::Surface *s: selSurf) {
-		m_shading.m_surfaces.push_back( SH::Polygon(s->m_id, s->geometry().polygon().vertexes() ) );
-	}
+	m_shading.setGeometry(selSurf, selObst);
 
 	QProgressDialog progressDialog(tr("Calculate shading factors"), tr("Abort"), 0, 100, this);
 	progressDialog.setValue(0);
@@ -381,7 +379,8 @@ void SVShadingCalculationDialog::calculateShadingFactors() {
 	ShadingCalculationProgress progressNotifyer;
 	progressNotifyer.m_dlg = &progressDialog;
 
-	m_shading.calculateShadingFactors(&progressNotifyer);
+	// *** compute shading ***
+	m_shading.calculateShadingFactors(&progressNotifyer, m_ui->lineEditGridSize->value());
 
 	if (progressNotifyer.m_aborted)
 		return;

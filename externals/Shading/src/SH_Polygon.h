@@ -13,15 +13,16 @@ class Polygon {
 public:
 	Polygon(){}
 
-	Polygon(std::vector<IBKMK::Vector3D> polyline):
+	Polygon(const std::vector<IBKMK::Vector3D> & polyline):
 		m_id( (std::numeric_limits<unsigned int>::max)() ),
 		m_polyline(polyline)
 	{}
 
-	Polygon(unsigned int id, std::vector<IBKMK::Vector3D> polyline):
+	Polygon(unsigned int id, const std::vector<IBKMK::Vector3D> & polyline):
 		m_id(id),
 		m_polyline(polyline)
 	{}
+
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 

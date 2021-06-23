@@ -46,7 +46,7 @@ static double angleVectors(const IBKMK::Vector3D &v1, const IBKMK::Vector3D &v2)
 
 	return angle;
 }
-
+#if 0
 /*! Checks weather a sun normal lies within the specified sun cone
 	Returns the timepoint of the sun normal if a sun normal can be found
 	Returns -1 if no sun cone was found and a new entry in the map was added
@@ -117,61 +117,77 @@ static int createSimilarNormals(std::map<unsigned int, IBKMK::Vector3D> & timepo
 	timepointToNormal[timepoint] = sunNormal;
 	return -1;
 }
+#endif
+
+void StructuralShading::initializeShadingCalculation(int timeZone, double longitudeInDeg, double latitudeInDeg,
+									const IBK::Time & startTime, unsigned int duration, unsigned int samplingPeriod,
+									double sunConeDeg)
+{
+	// TODO Stephan, validity checks, throw IBK::Exception if out of range
+	m_timeZone =  timeZone;
+	m_longitudeInDeg = longitudeInDeg;
+	m_latitudeInDeg = latitudeInDeg;
+
+	m_startTime = startTime;
+	m_duration = duration;
+	m_samplingPeriod = samplingPeriod;
+
+	m_sunConeDeg = sunConeDeg;
+
+	IBK_ASSERT(m_samplingPeriod > 0);
+	// TODO : issue warning, if duration/samplingPeriod has reminder
+
+	// create a vector with sun positions for sampling periods
+	createSunNormals();
+}
 
 
-void StructuralShading::initializeShadingCalculation(const std::vector<std::vector<IBKMK::Vector3D> > &obstacles) {
-	FUNCID(StructuralShading::initializeShadingCalculation);
-
+void StructuralShading::setGeometry(const std::vector<std::vector<IBKMK::Vector3D> > &surfaces, const std::vector<std::vector<IBKMK::Vector3D> > &obstacles) {
+	m_surfaces.clear();
 	m_obstacles.clear();
 
 	// first we set our obstacles
-	try {
+		for (const std::vector<IBKMK::Vector3D> &polyline : surfaces) {
+			m_surfaces.push_back( Polygon(polyline) );
+		}
 		for (const std::vector<IBKMK::Vector3D> &polyline : obstacles) {
 			m_obstacles.push_back( Polygon(polyline) );
 		}
+		// error checking is done in setGeometry()
+		setGeometry(m_surfaces, m_obstacles);
+}
+
+
+void StructuralShading::setGeometry(const std::vector<Polygon> & surfaces, const std::vector<Polygon> & obstacles) {
+	FUNCID(StructuralShading::setGeometry);
+	try {
+		// TODO : content check
+//		if(obj.m_polygon.m_polyline.size() < 3)
+//			throw IBK::Exception(IBK::FormatString("Polyline is not valid."), FUNC_ID);
+
+		m_surfaces = surfaces;
+		m_obstacles = obstacles;
+
+
 	}
 	catch (IBK::Exception &ex) {
-		throw IBK::Exception(ex, IBK::FormatString("Could not set obstacles for calculation!"), FUNC_ID);
+		throw IBK::Exception(ex, IBK::FormatString("Could not set geometry for calculation!"), FUNC_ID);
 	}
-
-
-	// we initialize the sun positions
-	if ( m_location.m_timeZone == 99 )
-		throw IBK::Exception(IBK::FormatString("Location was not set."), FUNC_ID);
-
-	// create a vector with sun positions for all 8760 hours of a year
-	createSunNormals(m_sunPositions);
-
-	std::map<unsigned int, IBKMK::Vector3D>				timepointToNormal;
-
-	/// we initialize all our coresponding sun normals
-	/// in angles around 90 Deg between our surface normal and the sun beam
-	/// we can get faulty shading factors. But since radiation loads are also
-	/// low, we accept this. When the sun cone angle gets lower (eg 1 Deg) we
-	/// minimize this problem
-	for (size_t i=0; i<m_sunPositions.size(); ++i) {
-
-		int id = createSimilarNormals(timepointToNormal, i, m_sunPositions[i].calcNormal(), m_sunConeDeg);
-		if(id==-1)
-			m_timepointToAllEqualTimepoints[i];
-		else if(id==-2)
-			m_timepointToAllEqualTimepoints[std::numeric_limits<unsigned int>::max()].push_back(i);
-		else
-			m_timepointToAllEqualTimepoints[id].push_back(i);
-	}
-
-
-
-}
-
-void StructuralShading::setCalculationPeriod(IBK::Time startTime, double duration) {
-	m_startTime = startTime;
-	m_periodInSec = duration;
 }
 
 
-void StructuralShading::calculateShadingFactors(Notification * notify) {
+void StructuralShading::calculateShadingFactors(Notification * notify, double gridWidth) {
 	FUNCID(StructuralShading::calculateShadingFactors);
+
+	// TODO Stephan, input data check
+
+	m_gridWidth = gridWidth;
+
+	// prepare target memory
+	m_shadingFactors.resize(m_sunConeNormals.size());
+	for (std::vector<double> & sf : m_shadingFactors) {
+		sf.resize(m_surfaces.size(), 0); // fully shaded, i.e. default since we do not handle night-time
+	}
 
 #if defined(_OPENMP)
 #pragma omp parallel
@@ -181,17 +197,26 @@ void StructuralShading::calculateShadingFactors(Notification * notify) {
 	}
 #endif
 
+#if defined(_OPENMP)
 #pragma omp parallel for
-	for (int surfCounter = 0; surfCounter < m_surfaces.size(); ++surfCounter) {
+#endif
+	for (int surfCounter = 0; surfCounter < (int)m_surfaces.size(); ++surfCounter) {
 		if (notify->m_aborted)
 			continue;
-		Polygon &surf = m_surfaces[surfCounter];
 
-		IBKMK::Vector3D surfaceNormal;
+		// readability improvement
+		const Polygon & surf = m_surfaces[(unsigned int)surfCounter];
 
-		Polygon shadingPoly (surf);
+		// 1. split polygon 'surf' into sub-polygons based on grid information and compute center point of these sub-polygons
+		// 2. for each center point perform intersection tests again _all_ obstacle polygons
+		// 3. store shaded/not shaded information for sub-polygon and its surface area
+		// 4. compute area-weighted sum of shading factors and devide by orginal polygon surface
+		// 5. store in result vector
 
-		SunShadingAlgorithm shading = m_shading;
+
+#if 0
+		// create thread-specific shading calculation object
+		SunShadingAlgorithm shading;
 		shading.m_obstacles = m_obstacles;
 		shading.m_shadingObjects.clear();
 
@@ -297,7 +322,11 @@ void StructuralShading::calculateShadingFactors(Notification * notify) {
 		catch (IBK::Exception & ex) {
 			throw IBK::Exception(ex, IBK::FormatString("Unable to create shading vector."), FUNC_ID);
 		}
-	}
+#endif
+
+
+	} // omp for loop
+
 }
 
 void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path) {
@@ -389,30 +418,79 @@ void StructuralShading::writeShadingFactorsToDataIO(const IBK::Path & path, bool
 }
 
 
-void StructuralShading::createSunNormals(std::vector<SunPosition>& sunPositions){
+void StructuralShading::createSunNormals() {
+
+	// *** first calculation sun positions for each sampling interval
+
+	m_sunPositions.clear();
 
 	CCM::SunPositionModel sunModel;
 
-	sunModel.m_latitude = m_location.m_latitudeInDeg * IBK::DEG2RAD;
-	sunModel.m_longitude = m_location.m_longitudeInDeg * IBK::DEG2RAD;
+	sunModel.m_latitude = m_latitudeInDeg * IBK::DEG2RAD;
+	sunModel.m_longitude = m_longitudeInDeg * IBK::DEG2RAD;
 
-	unsigned int startHourOfYear = m_startTime.secondsOfYear()/60/60;
-	unsigned int periodLenght = m_periodInSec/60/60;
+	unsigned int startStep = (unsigned int)std::floor(m_startTime.secondsOfYear()/m_samplingPeriod);
+	unsigned int stepCount = (unsigned int)std::ceil(m_duration/m_samplingPeriod);
 
-	for( unsigned int i=0; i<periodLenght; ++i) {
-		double timeInSec = ( startHourOfYear + i ) * 3600.0;
-		double localMeanTime = CCM::SolarRadiationModel::localMeanTimeFromLocalStandardTime(timeInSec,m_location.m_timeZone,
-																							m_location.m_longitudeInDeg);
+	for (unsigned int i=0; i<stepCount; ++i) {
+		unsigned int timeInSec = startStep + i*m_samplingPeriod;
+		double localMeanTime = CCM::SolarRadiationModel::localMeanTimeFromLocalStandardTime(timeInSec, m_timeZone, m_longitudeInDeg);
 		double apparentTime = CCM::SolarRadiationModel::apparentSolarTimeFromLocalMeanTime(localMeanTime);
 		sunModel.setTime(apparentTime);		//sun position at middle of the hour; hourly interval
 
-		sunPositions.emplace_back( SunPosition( timeInSec, sunModel.m_azimuth, sunModel.m_elevation ) );
+		m_sunPositions.emplace_back( SunPosition( timeInSec, sunModel.m_azimuth, sunModel.m_elevation ) );
 	}
+
+	// *** compute sun normals (clustered)
+
+	m_sunConeNormals.clear();
+	m_sunConeNormalTimePoints.clear();
+
+	/// We initialize all our coresponding sun normals.
+	///
+	/// For each sampling interval we first compute the corresponding sun' normal vector.
+	/// Then, we search through our vector of previously computed sun normals and check if we are close enough.
+	/// This is done in function findSimilarNormal(). This function returns the index of the existing normal vector
+	/// if we are close enough, or -1 if we are too far away or -2 if sun is beyond horizon
+	///
+	/// NOTE: in angles around 90 Deg between our surface normal and the sun beam
+	/// we can get faulty shading factors. But since radiation loads are also
+	/// low, we accept this. When the sun cone angle gets lower (eg 1 Deg) we
+	/// minimize this problem
+
+	for (size_t i=0; i<m_sunPositions.size(); ++i) {
+		IBKMK::Vector3D n = m_sunPositions[i].calcNormal();
+		int id = findSimilarNormals(n);
+
+		// record new different sun normal
+		if (id == -1) {
+			m_sunConeNormals.push_back(n);
+			m_sunConeNormalTimePoints.push_back(startStep + i*m_samplingPeriod);
+			m_indexesOfSimilarNormals.push_back( std::vector<unsigned int>(1, i) );
+		}
+		else if (id > 0) {
+			// similar normal exists, append current sun positions index to vector
+			m_indexesOfSimilarNormals[(unsigned int)id].push_back(i);
+		}
+	}
+
 }
 
-std::vector<StructuralShading::SunPosition> StructuralShading::sunPositions() const {
-	return m_sunPositions;
-}
 
+int StructuralShading::findSimilarNormals(const IBKMK::Vector3D &sunNormal) const {
+
+	// if sun is not above horizon
+	if (sunNormal.m_z < 0)
+		return -2;
+
+	// search through all previous computed normals and check if angle between normals is below threshold
+	for (unsigned int i=0; i<m_sunConeNormals.size(); ++i) {
+		double diffAngle = angleVectors(m_sunConeNormals[i], sunNormal);
+		if (std::fabs(diffAngle) <= m_sunConeDeg)
+			return (int)i;
+	}
+
+	return -1;
+}
 
 } // namespace TH
