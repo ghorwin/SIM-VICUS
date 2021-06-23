@@ -12,3 +12,18 @@ SVDBSubNetworkEditWidget::~SVDBSubNetworkEditWidget()
 {
 	delete m_ui;
 }
+
+void SVDBSubNetworkEditWidget::setup(SVDatabase *db, SVAbstractDatabaseTableModel *dbModel)
+{
+
+}
+
+void SVDBSubNetworkEditWidget::updateInput(int id)
+{
+
+}
+
+void SVDBSubNetworkEditWidget::modelModify()
+{
+
+}

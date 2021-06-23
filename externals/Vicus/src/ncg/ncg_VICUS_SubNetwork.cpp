@@ -49,6 +49,8 @@ void SubNetwork::readXML(const TiXmlElement * element) {
 				m_id = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName.setEncodedString(attrib->ValueStr());
+			else if (attribName == "color")
+				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
 			else if (attribName == "heatExchangeElementId")
 				m_heatExchangeElementId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
@@ -73,18 +75,6 @@ void SubNetwork::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
-			else if (cName == "ControllerElements") {
-				const TiXmlElement * c2 = c->FirstChildElement();
-				while (c2) {
-					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "HydraulicNetworkControlElement")
-						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					NANDRAD::HydraulicNetworkControlElement obj;
-					obj.readXML(c2);
-					m_controllerElements.push_back(obj);
-					c2 = c2->NextSiblingElement();
-				}
-			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -106,6 +96,8 @@ TiXmlElement * SubNetwork::writeXML(TiXmlElement * parent) const {
 	e->SetAttribute("id", IBK::val2string<IDType>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName.encodedString());
+	if (m_color.isValid())
+		e->SetAttribute("color", m_color.name().toStdString());
 	if (m_heatExchangeElementId != VICUS::INVALID_ID)
 		e->SetAttribute("heatExchangeElementId", IBK::val2string<unsigned int>(m_heatExchangeElementId));
 
@@ -115,18 +107,6 @@ TiXmlElement * SubNetwork::writeXML(TiXmlElement * parent) const {
 
 		for (std::vector<NANDRAD::HydraulicNetworkElement>::const_iterator it = m_elements.begin();
 			it != m_elements.end(); ++it)
-		{
-			it->writeXML(child);
-		}
-	}
-
-
-	if (!m_controllerElements.empty()) {
-		TiXmlElement * child = new TiXmlElement("ControllerElements");
-		e->LinkEndChild(child);
-
-		for (std::vector<NANDRAD::HydraulicNetworkControlElement>::const_iterator it = m_controllerElements.begin();
-			it != m_controllerElements.end(); ++it)
 		{
 			it->writeXML(child);
 		}

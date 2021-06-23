@@ -26,12 +26,13 @@ namespace VICUS {
 */
 class SubNetwork : public AbstractDBElement {
 public:
+
 	SubNetwork();
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	VICUS_READWRITE
-	VICUS_COMPARE_WITH_ID
+	VICUS_COMP(SubNetwork)
 
 	/*! Checks if all referenced materials exist and if their parameters are valid. */
 	bool isValid() const;

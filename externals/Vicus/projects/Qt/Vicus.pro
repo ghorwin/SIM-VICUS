@@ -159,6 +159,7 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_RotationMatrix.cpp \
 	../../src/ncg/ncg_VICUS_Schedule.cpp \
 	../../src/ncg/ncg_VICUS_ScheduleInterval.cpp \
+	../../src/ncg/ncg_VICUS_SubNetwork.cpp \
 	../../src/ncg/ncg_VICUS_SubSurface.cpp \
 	../../src/ncg/ncg_VICUS_SubSurfaceComponent.cpp \
 	../../src/ncg/ncg_VICUS_SubSurfaceComponentInstance.cpp \
