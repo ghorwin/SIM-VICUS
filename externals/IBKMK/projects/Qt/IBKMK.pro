@@ -39,6 +39,8 @@ SOURCES += \
 	../../src/IBKMK_2DCalculations.cpp \
 	../../src/IBKMK_3DCalculations.cpp \
 	../../src/IBKMK_DenseMatrix.cpp \
+	../../src/IBKMK_Polygon2D.cpp \
+	../../src/IBKMK_Polygon3D.cpp \
 	../../src/IBKMK_SparseMatrixCSR.cpp \
 	../../src/IBKMK_SparseMatrixPattern.cpp \
 	../../src/IBKMKC_ilut.c \
@@ -59,6 +61,8 @@ HEADERS += \
 	../../src/IBKMK_2DCalculations.h \
 	../../src/IBKMK_3DCalculations.h \
 	../../src/IBKMK_DenseMatrix.h \
+	../../src/IBKMK_Polygon2D.h \
+	../../src/IBKMK_Polygon3D.h \
 	../../src/IBKMK_SparseMatrix.h \
 	../../src/IBKMK_SparseMatrixCSR.h \
 	../../src/IBKMK_SparseMatrixPattern.h \
