@@ -127,7 +127,7 @@ void HydraulicNetwork::checkParameters(const Project & prj)  {
 	// check control elements
 	for (HydraulicNetworkControlElement &e : m_controlElements) {
 		try {
-			e.checkParameters(prj.m_zones);
+			e.checkParameters(&prj.m_zones);
 		}
 		catch(IBK::Exception &ex) {
 			throw IBK::Exception(ex, IBK::FormatString("Error initializing control element with id #%1.")

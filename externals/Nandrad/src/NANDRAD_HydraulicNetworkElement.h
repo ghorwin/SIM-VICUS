@@ -65,13 +65,13 @@ public:
 
 	/*! Parameters for the element . */
 	enum para_t {
-		P_Length,						// Keyword: Length									[m]		'Pipe length'
+		P_Length,						// Keyword: Length						[m]		'Pipe length'
 		NUM_P
 	};
 
 	/*! Whole number parameters. */
 	enum intPara_t {
-		IP_NumberParallelPipes,			// Keyword: NumberParallelPipes								'Number of parallel pipes'
+		IP_NumberParallelPipes,			// Keyword: NumberParallelPipes					'Number of parallel pipes'
 		NUM_IP
 	};
 

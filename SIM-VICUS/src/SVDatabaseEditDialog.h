@@ -116,6 +116,8 @@ private:
 	static SVDatabaseEditDialog * createNetworkComponentEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createPipeEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createFluidEditDialog(QWidget * parent);
+	static SVDatabaseEditDialog * createNetworkControllerEditDialog(QWidget * parent);
+	static SVDatabaseEditDialog * createSubNetworkEditDialog(QWidget * parent);
 
 
 	Ui::SVDatabaseEditDialog *m_ui;

@@ -64,6 +64,7 @@
 #include "SVDBInternalLoadsLightsEditWidget.h"
 #include "SVDBInternalLoadsOtherEditWidget.h"
 
+
 #include "SVDBZoneControlThermostatEditWidget.h"
 #include "SVDBZoneControlThermostatTableModel.h"
 #include "SVDBZoneControlShadingEditWidget.h"
@@ -83,6 +84,9 @@
 #include "SVDBPipeEditWidget.h"
 #include "SVDBNetworkFluidTableModel.h"
 #include "SVDBNetworkFluidEditWidget.h"
+#include "SVDBNetworkControllerEditWidget.h"
+#include "SVDBNetworkControllerTableModel.h"
+
 #include "SVViewStateHandler.h"
 #include "SVGeometryView.h"
 
@@ -513,7 +517,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createNetworkComponentEditDialog(QW
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
 		new SVDBNetworkComponentTableModel(parent, SVSettings::instance().m_db),
 		new SVDBNetworkComponentEditWidget(parent),
-		tr("Network Component Database"), QString(), true ///TODO Hauke muss hier der QString() auch ersetzt werden?
+		tr("Network Component Database"), tr("Network Component Properties"), true
 	);
 	dlg->resize(1400,800);
 	return dlg;
@@ -524,7 +528,7 @@ SVDatabaseEditDialog * SVDatabaseEditDialog::createPipeEditDialog(QWidget * pare
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
 		new SVDBPipeTableModel(parent, SVSettings::instance().m_db),
 		new SVDBPipeEditWidget(parent),
-		tr("Network Pipes Database"), QString(), true///TODO Hauke muss hier der QString() auch ersetzt werden?
+		tr("Network Pipes Database"), tr("Network Pipes Properties"), true
 	);
 	dlg->resize(1400,800);
 	return dlg;
@@ -535,8 +539,32 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createFluidEditDialog(QWidget *paren
 	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
 		new SVDBNetworkFluidTableModel(parent, SVSettings::instance().m_db),
 		new SVDBNetworkFluidEditWidget(parent),
-		tr("Network Fluids Database"), QString(), true///TODO Hauke muss hier der QString() auch ersetzt werden?
+		tr("Network Fluids Database"), tr("Network Fluids Properties"), true
 	);
 	dlg->resize(1400,800);
 	return dlg;
+}
+
+
+SVDatabaseEditDialog *SVDatabaseEditDialog::createNetworkControllerEditDialog(QWidget *parent) {
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBNetworkControllerTableModel(parent, SVSettings::instance().m_db),
+		new SVDBNetworkControllerEditWidget(parent),
+		tr("Network Controllers Database"), tr("Network Controllers Properties"), true
+	);
+	dlg->resize(1400,800);
+	return dlg;
+}
+
+
+SVDatabaseEditDialog *SVDatabaseEditDialog::createSubNetworkEditDialog(QWidget *parent) {
+	// TODO
+//	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+//		new SVDBNetworkControllerTableModel(parent, SVSettings::instance().m_db),
+//		new SVDBNetworkControllerEditWidget(parent),
+//		tr("Network Controllers Database"), tr("Network Controllers Properties"), true
+//	);
+//	dlg->resize(1400,800);
+//	return dlg;
+	return nullptr;
 }
