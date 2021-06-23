@@ -106,7 +106,6 @@ SOURCES += \
 								../../src/SVDBZoneControlVentilationNaturalTableModel.cpp \
 								../../src/SVDBZoneIdealHeatingCoolingEditWidget.cpp \
 								../../src/SVDBZoneIdealHeatingCoolingTableModel.cpp \
-								../../src/SVNetworkControllerDialog.cpp \
 								../../src/SVNetworkDialogSelectPipes.cpp \
 								../../src/SVPropAddWindowWidget.cpp \
 								../../src/SVShadingCalculationDialog.cpp \
@@ -257,7 +256,6 @@ HEADERS  += \
 								../../src/SVDBZoneControlVentilationNaturalTableModel.h \
 								../../src/SVDBZoneIdealHeatingCoolingEditWidget.h \
 								../../src/SVDBZoneIdealHeatingCoolingTableModel.h \
-								../../src/SVNetworkControllerDialog.h \
 								../../src/SVNetworkDialogSelectPipes.h \
 								../../src/SVPropAddWindowWidget.h \
 								../../src/SVShadingCalculationDialog.h \
@@ -422,7 +420,6 @@ FORMS    += \
 								../../src/SVLogFileDialog.ui \
 								../../src/SVMainWindow.ui \
 								../../src/SVNavigationTreeWidget.ui \
-								../../src/SVNetworkControllerDialog.ui \
 								../../src/SVNetworkDialogSelectPipes.ui \
 								../../src/SVNetworkImportDialog.ui \
 								../../src/SVPreferencesDialog.ui \
