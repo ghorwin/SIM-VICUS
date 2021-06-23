@@ -339,8 +339,8 @@ void SVShadingCalculationDialog::calculateShadingFactors() {
 	unsigned int durationInSec = (unsigned int)simTimeStart.secondsUntil(simTimeEnd);
 
 	m_shading.initializeShadingCalculation(loc.m_timeZone,
-										   loc.m_para[NANDRAD::Location::P_Longitude].value,
-										   loc.m_para[NANDRAD::Location::P_Latitude].value,
+										   loc.m_para[NANDRAD::Location::P_Longitude].value/IBK::DEG2RAD,
+										   loc.m_para[NANDRAD::Location::P_Latitude].value/IBK::DEG2RAD,
 										   simTimeStart,
 										   durationInSec,
 										   3600, // TODO : Stephan, get from UI input

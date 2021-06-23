@@ -135,15 +135,11 @@ private:
 	double												m_gridWidth;						///< Grid width in m used for shading calculation
 
 
-
-
 	std::vector<SunPosition>							m_sunPositions;						///< Vector with all sun positions (size = number of sampling intervals)
 	/*! Vector with cached normal vectors for each sun cone (size = number of cones, i.e. sufficiently different normal vectors */
 	std::vector<IBKMK::Vector3D>						m_sunConeNormals;
-	/*! Time points matching the selected sun cone normals (size = number of cones). */
-	std::vector<unsigned int>							m_sunConeNormalTimePoints;
 
-	/*!
+	/*! Shading factors for each sunCone and surface.
 		\code
 		m_shadingFactors[sunConeIndex][surfaceIndex] = ... ; // shading factor of surface and sun cone
 

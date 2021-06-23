@@ -346,19 +346,18 @@ void StructuralShading::createSunNormals() {
 	// *** compute sun normals (clustered)
 
 	m_sunConeNormals.clear();
-	m_sunConeNormalTimePoints.clear();
 
-	/// We initialize all our coresponding sun normals.
-	///
-	/// For each sampling interval we first compute the corresponding sun' normal vector.
-	/// Then, we search through our vector of previously computed sun normals and check if we are close enough.
-	/// This is done in function findSimilarNormal(). This function returns the index of the existing normal vector
-	/// if we are close enough, or -1 if we are too far away or -2 if sun is beyond horizon
-	///
-	/// NOTE: in angles around 90 Deg between our surface normal and the sun beam
-	/// we can get faulty shading factors. But since radiation loads are also
-	/// low, we accept this. When the sun cone angle gets lower (eg 1 Deg) we
-	/// minimize this problem
+	// We initialize all our coresponding sun normals.
+	//
+	// For each sampling interval we first compute the corresponding sun' normal vector.
+	// Then, we search through our vector of previously computed sun normals and check if we are close enough.
+	// This is done in function findSimilarNormal(). This function returns the index of the existing normal vector
+	// if we are close enough, or -1 if we are too far away or -2 if sun is beyond horizon
+	//
+	// NOTE: in angles around 90 Deg between our surface normal and the sun beam
+	// we can get faulty shading factors. But since radiation loads are also
+	// low, we accept this. When the sun cone angle gets lower (eg 1 Deg) we
+	// minimize this problem
 
 	for (size_t i=0; i<m_sunPositions.size(); ++i) {
 		IBKMK::Vector3D n = m_sunPositions[i].calcNormal();
@@ -367,7 +366,6 @@ void StructuralShading::createSunNormals() {
 		// record new different sun normal
 		if (id == -1) {
 			m_sunConeNormals.push_back(n);
-			m_sunConeNormalTimePoints.push_back(startStep + i*m_samplingPeriod);
 			m_indexesOfSimilarNormals.push_back( std::vector<unsigned int>(1, i) );
 		}
 		else if (id > 0) {
