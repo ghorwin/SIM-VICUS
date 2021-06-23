@@ -74,13 +74,17 @@ SVShadingCalculationDialog::SVShadingCalculationDialog(QWidget *parent) :
 	m_ui->lineEditDuration->setup(m_ui->comboBoxUnitDuration, IBK::Unit("h"),
 								  0, std::numeric_limits<double>::max(), tr("Duration of the simulation.") );
 
+	m_ui->lineEditSunCone->setup(0, 45, tr("Half-angle of sun cone must be > 0 Deg!"), false, true);
+	m_ui->lineEditGridSize->setup(0, 1000, tr("Grid size must be > 0 m!"), false, true);
+
 	m_ui->comboBoxFileType->addItem( "tsv" );
 	m_ui->comboBoxFileType->addItem( "d6o" );
 	m_ui->comboBoxFileType->addItem( "d6b" );
 
 	m_ui->radioButtonFast->toggle();
 
-	m_ui->comboBoxFileType->setCurrentIndex( m_outputType );
+	// TODO : restore previously used setting
+	m_ui->comboBoxFileType->setCurrentIndex( 0 );
 }
 
 
@@ -162,20 +166,24 @@ void SVShadingCalculationDialog::updateTimeFrameEdits() {
 	m_ui->lineEditDuration->blockSignals(false);
 }
 
+
 void SVShadingCalculationDialog::setSimulationParameters(const DetailType & dt) {
 
 	m_ui->lineEditSunCone->setEnabled(false);
 	m_ui->lineEditGridSize->setEnabled(false);
 
+	double	gridSize = 0.1;	// size of grid in [m]
+	double	sunCone = 3;	// half opening angle of the cone for sun mapping [Deg]
+
 	switch (dt) {
 		case Fast: {
-			m_gridSize = 0.2;
-			m_sunCone = 2;
+			gridSize = 0.2;
+			sunCone = 2;
 		}
 		break;
 		case Detailed: {
-			m_gridSize = 0.1;
-			m_sunCone = 1;
+			gridSize = 0.1;
+			sunCone = 1;
 		}
 		break;
 		case Manual: {
@@ -185,8 +193,8 @@ void SVShadingCalculationDialog::setSimulationParameters(const DetailType & dt) 
 		break;
 	}
 
-	m_ui->lineEditGridSize->setText( IBK::val2string<double>(m_gridSize).c_str() );
-	m_ui->lineEditSunCone->setText( IBK::val2string<double>(m_sunCone).c_str() );
+	m_ui->lineEditGridSize->setValue( gridSize );
+	m_ui->lineEditSunCone->setValue( sunCone );
 }
 
 
@@ -260,27 +268,6 @@ void SVShadingCalculationDialog::on_pushButtonCalculate_clicked(){
 }
 
 
-void SVShadingCalculationDialog::on_lineEditGridSize_editingFinished() {
-	if (m_ui->lineEditGridSize->isValid() )
-		m_gridSize = m_ui->lineEditGridSize->value();
-	else {
-		m_ui->lineEditGridSize->setValue(m_gridSize);
-	}
-}
-
-
-void SVShadingCalculationDialog::on_lineEditSunCone_editingFinished() {
-	if (m_ui->lineEditSunCone->isValid() )
-		m_sunCone = m_ui->lineEditSunCone->value();
-	else {
-		m_ui->lineEditGridSize->setValue(m_sunCone);
-	}
-}
-
-void SVShadingCalculationDialog::on_comboBoxFileType_currentIndexChanged(int index) {
-	m_outputType = (OutputType)index;
-}
-
 void SVShadingCalculationDialog::calculateShadingFactors() {
 	FUNCID(SVShadingCalculationDialog::calculateShadingFactors);
 
@@ -312,6 +299,11 @@ void SVShadingCalculationDialog::calculateShadingFactors() {
 	IBK::Time simTimeEnd (startYear.value, endDay.value );
 
 	unsigned int durationInSec = (unsigned int)simTimeStart.secondsUntil(simTimeEnd);
+	double sunConeDeg = m_ui->lineEditSunCone->value();
+
+	OutputType outputType = (OutputType)m_ui->comboBoxFileType->currentIndex();
+
+
 
 	m_shading.initializeShadingCalculation(loc.m_timeZone,
 										   loc.m_para[NANDRAD::Location::P_Longitude].value/IBK::DEG2RAD,
@@ -319,7 +311,7 @@ void SVShadingCalculationDialog::calculateShadingFactors() {
 										   simTimeStart,
 										   durationInSec,
 										   3600, // TODO : Stephan, get from UI input
-										   m_ui->lineEditSunCone->value() );
+										   sunConeDeg );
 
 
 	// *** compose vectors with obstacles
@@ -360,12 +352,16 @@ void SVShadingCalculationDialog::calculateShadingFactors() {
 	progressNotifyer.m_dlg = &progressDialog;
 
 	// *** compute shading ***
-	m_shading.calculateShadingFactors(&progressNotifyer, m_ui->lineEditGridSize->value());
+
+	double gridSize = m_ui->lineEditGridSize->value();
+	m_shading.calculateShadingFactors(&progressNotifyer, gridSize);
 
 	if (progressNotifyer.m_aborted)
 		return;
 
 	SVProjectHandler &prj = SVProjectHandler::instance();
+
+	// TODO Stephan, what if project hasn't been saved yet? projectName is empty then
 
 	QString projectName = QFileInfo(prj.projectFile()).completeBaseName();
 	QString shadingPath = QFileInfo(prj.projectFile()).dir().filePath(projectName) + '/';
@@ -376,7 +372,7 @@ void SVShadingCalculationDialog::calculateShadingFactors() {
 	if ( !shadingDir.exists() && !shadingDir.mkdir(shadingPath) )
 		throw IBK::Exception( IBK::FormatString("Could not create directory '%1'").arg(shadingPath.toStdString()), FUNC_ID );
 
-	switch ( m_outputType ) {
+	switch ( outputType ) {
 		case TsvFile : {
 			QString pathTSV = shadingPath  + projectName + "_shadingFactors.tsv" ;
 			IBK::Path exportFileTSV(pathTSV.toStdString() );

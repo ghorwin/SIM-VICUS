@@ -77,15 +77,14 @@ void StructuralShading::setGeometry(const std::vector<std::vector<IBKMK::Vector3
 	m_surfaces.clear();
 	m_obstacles.clear();
 
-	// first we set our obstacles
-		for (const std::vector<IBKMK::Vector3D> &polyline : surfaces) {
-			m_surfaces.push_back( IBKMK::Polygon3D(polyline) );
-		}
-		for (const std::vector<IBKMK::Vector3D> &polyline : obstacles) {
-			m_obstacles.push_back( IBKMK::Polygon3D(polyline) );
-		}
-		// error checking is done in setGeometry()
-		setGeometry(m_surfaces, m_obstacles);
+	for (const std::vector<IBKMK::Vector3D> &polyline : surfaces) {
+		m_surfaces.push_back( IBKMK::Polygon3D(polyline) );
+	}
+	for (const std::vector<IBKMK::Vector3D> &polyline : obstacles) {
+		m_obstacles.push_back( IBKMK::Polygon3D(polyline) );
+	}
+	// error checking is done in setGeometry()
+	setGeometry(m_surfaces, m_obstacles);
 }
 
 

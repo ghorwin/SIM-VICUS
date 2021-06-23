@@ -76,12 +76,6 @@ private slots:
 
 	void on_lineEditDuration_editingFinishedSuccessfully();
 
-	void on_lineEditGridSize_editingFinished();
-
-	void on_lineEditSunCone_editingFinished();
-
-	void on_comboBoxFileType_currentIndexChanged(int index);
-
 	void on_pushButtonChangeTime_clicked();
 
 	void on_radioButtonFast_toggled(bool checked);
@@ -110,11 +104,6 @@ private:
 
 	NANDRAD::SimulationParameter		*m_simulationParameter = nullptr;	///< stores pointer to NANDRAD simulation parameters
 	SVSimulationStartNandrad			*m_simStartWidget = nullptr;		///< stores pointer to SV Simulation parameters
-
-	double								m_gridSize = 0.1;					///< size of grid
-	double								m_sunCone = 3;						///< half opening angle of the cone for sun mapping
-
-	OutputType							m_outputType = OutputType::TsvFile;	///< stores the output file type
 
 	std::vector<const VICUS::Surface*>	m_selSurfaces;						///< vector with selected surfaces
 	std::vector<const VICUS::Surface*>	m_selObstacles;						///< vector with selected dump geometry (obstacles)
