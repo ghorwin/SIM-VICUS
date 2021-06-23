@@ -98,7 +98,7 @@ public:
 	void writeShadingFactorsToTSV(const IBK::Path &path, const std::vector<unsigned int> & surfaceIDs);
 
 	/*! Exports Shading Factors to a DataIO-File */
-	void writeShadingFactorsToDataIO(const IBK::Path &path, bool isBinary = true);
+	void writeShadingFactorsToDataIO(const IBK::Path &path, const std::vector<unsigned int> & surfaceIDs, bool isBinary = true);
 
 
 private:

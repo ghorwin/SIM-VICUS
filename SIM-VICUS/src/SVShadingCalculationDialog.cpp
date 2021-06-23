@@ -410,12 +410,12 @@ void SVShadingCalculationDialog::calculateShadingFactors() {
 		case D6oFile : {
 			QString pathD6O = shadingPath  + projectName + "_shadingFactors.d6o" ;
 			IBK::Path exportFileD6O(pathD6O.toStdString() );
-			m_shading.writeShadingFactorsToDataIO(exportFileD6O, false);
+			m_shading.writeShadingFactorsToDataIO(exportFileD6O, surfaceIDs, false);
 		} break;
 		case D6bFile : {
 			QString pathD6B = shadingPath  + projectName + "_shadingFactors.d6b" ;
 			IBK::Path exportFileD6B(pathD6B.toStdString() );
-			m_shading.writeShadingFactorsToDataIO(exportFileD6B, true);
+			m_shading.writeShadingFactorsToDataIO(exportFileD6B, surfaceIDs, true);
 		} break;
 	}
 

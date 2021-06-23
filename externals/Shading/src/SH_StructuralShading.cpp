@@ -168,6 +168,7 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 
 }
 
+
 void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path, const std::vector<unsigned int> & surfaceIDs) {
 	FUNCID(StructuralShading::shadingFactorsTSV);
 
@@ -254,7 +255,7 @@ void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path, const s
 }
 
 
-void StructuralShading::writeShadingFactorsToDataIO(const IBK::Path & path, bool isBinary) {
+void StructuralShading::writeShadingFactorsToDataIO(const IBK::Path & path, const std::vector<unsigned int> & surfaceIDs, bool isBinary) {
 
 	// We create a dataIO container
 	DATAIO::DataIO dataContainer;
@@ -265,28 +266,51 @@ void StructuralShading::writeShadingFactorsToDataIO(const IBK::Path & path, bool
 	dataContainer.m_timeType = DATAIO::DataIO::TT_NONE;
 	dataContainer.m_timeUnit = "h";
 
-	std::vector< double > timePoints ( m_sunPositions.size() ) ;
-	std::vector< std::vector<double> > values ( m_sunPositions.size(), std::vector<double> (m_surfaces.size() ) );
-	std::vector<unsigned int> nums;
-	std::string quantity;
+	unsigned int stepCount = (unsigned int)std::ceil(m_duration/m_samplingPeriod);
+	IBK_ASSERT(stepCount == m_sunPositions.size());
+	std::vector<unsigned int> samplingIndexToConeNormalMap(stepCount, (unsigned int)-1); // initialize with -1, which means: none available
 
-	for( unsigned int i=0; i<m_sunPositions.size(); ++i) {
-		timePoints[i] = m_sunPositions[i].m_secOfYear; // mind that we need time points in seconds
+	// now process all sunCodeNormal indexes and put them into reverse mapping vector
+	for (unsigned int i=0; i<m_indexesOfSimilarNormals.size(); ++i) {
+		for (unsigned int intervalIdx : m_indexesOfSimilarNormals[i])
+			samplingIndexToConeNormalMap[intervalIdx] = i;
 	}
-#if 0
-	for( unsigned int j=0; j<m_sunPositions.size(); ++j) {
-		for ( unsigned int i=0; i<m_surfaces.size(); ++i ) {
-			const IBKMK::Polygon3D &poly = m_surfaces[i];
-			if ( j == 0 ) {
-				nums.emplace_back(poly.m_id);
-				quantity += IBK::val2string<unsigned int>(poly.m_id);
-				if ( i < m_surfaces.size() - 1 )
-					quantity += " | ";
-			}
-			values[j][i] = poly.m_shadingFactors.value(m_sunPositions[j].m_secOfYear);
+
+	// INDICES = <surface IDs>
+	std::vector<unsigned int> nums = surfaceIDs;
+
+	// QUANTITY = <id1> | <id2> | ... | <idn>
+	std::string quantity;
+	for (unsigned int i=0; i<surfaceIDs.size(); ++i) {
+		quantity += IBK::val2string(surfaceIDs[i]);
+		if (i+1 < surfaceIDs.size())
+			quantity +=" | ";
+	}
+
+
+	// reserve memory for time points and values
+	std::vector< double > timePoints ( stepCount ) ;
+	std::vector< std::vector<double> > values ( stepCount );
+
+	unsigned int startStep = (unsigned int)std::floor(m_startTime.secondsOfYear()/m_samplingPeriod);
+	for (unsigned int i=0; i<stepCount; ++i) {
+		// store time point in seconds
+		timePoints[i] = startStep + i*m_samplingPeriod;
+
+		// get index of corresponding shading factor data
+		unsigned int sfDataIndex = samplingIndexToConeNormalMap[i];
+
+		// no data available? (night-time?)
+		if (sfDataIndex == (unsigned int)-1) {
+			values[i] = std::vector<double>(m_surfaces.size(), 0);
+		}
+		else {
+			// write the cached shading factors
+			const std::vector<double> & sfData = m_shadingFactors[sfDataIndex];
+			values[i] = sfData;
 		}
 	}
-#endif
+
 	// we set our data
 	dataContainer.m_nums = nums;
 	dataContainer.m_quantity = quantity;
