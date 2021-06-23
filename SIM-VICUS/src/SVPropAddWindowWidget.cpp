@@ -38,6 +38,9 @@ SVPropAddWindowWidget::SVPropAddWindowWidget(QWidget *parent) :
 	m_windowInputData.m_priorities[1] = 2;
 	m_windowInputData.m_priorities[2] = 3;
 	m_windowInputData.m_priorities[3] = 4;
+	m_windowInputData.m_byPercentage = true;
+	m_windowInputData.m_percentage = 60;
+	m_windowInputData.m_baseLineOffset = 0.4;
 
 	m_prioritySpinBoxes[0] = m_ui->spinBoxWindowWidth;
 	m_prioritySpinBoxes[1] = m_ui->spinBoxWindowHeight;
@@ -49,6 +52,10 @@ SVPropAddWindowWidget::SVPropAddWindowWidget(QWidget *parent) :
 				this, SLOT(onSpinBoxValueChanged(int)));
 
 	SVViewStateHandler::instance().m_propAddWindowWidget = this;
+
+	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
+			this, &SVPropAddWindowWidget::onModified);
+
 }
 
 
@@ -63,7 +70,8 @@ void SVPropAddWindowWidget::onModified(int modificationType, ModificationInfo * 
 		case SVProjectHandler::AllModified:
 		case SVProjectHandler::NodeStateModified:
 		case SVProjectHandler::BuildingGeometryChanged:
-			updateUi();
+			if (isVisible())
+				updateUi();
 		break;
 
 		// nothing to do for the remaining modification types
@@ -131,16 +139,7 @@ void SVPropAddWindowWidget::updateGeometryObject() {
 	p.selectedSurfaces(sel, VICUS::Project::SG_Building);
 	Q_ASSERT(!sel.empty());
 
-//	if (m_ui->tabWidgetWindow->currentIndex() == 0) {
-//		// percentage
-//		m_
-//		SVViewStateHandler::instance().m_newSubSurfaceObject->createByPercentage(sel, surfW, surfH, surfWSH, dist, surfPercentage, 0);
-//	}
-//	else {
-//		double surfOff = m_ui->lineEditWindowOffset->value();
-//		SVViewStateHandler::instance().m_newSubSurfaceObject->createWithOffset(sel, surfW, surfH, surfWSH, dist, surfOff, 0);
-//	}
-
+	SVViewStateHandler::instance().m_newSubSurfaceObject->generateSubSurfaces(sel, m_windowInputData);
 }
 
 

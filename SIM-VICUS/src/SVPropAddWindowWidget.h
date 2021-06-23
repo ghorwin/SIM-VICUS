@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+#include "Vic3DNewSubSurfaceObject.h"
+
 namespace Ui {
 class SVPropAddWindowWidget;
 }
@@ -35,25 +37,17 @@ private slots:
 	void on_lineEditWindowWidth_editingFinishedSuccessfully();
 
 private:
-	struct WindowComputationData {
-		int m_priorities[4];
-		double m_width;
-		double m_height;
-		double m_windowSillHeight;
-		double m_distance;
-	};
-
 	/*! Updates widget to current project state. */
 	void updateUi();
 
 	/*! Collects input data from widget and updates data in window geometry object. */
 	void updateGeometryObject();
 
-	Ui::SVPropAddWindowWidget *m_ui;
+	Ui::SVPropAddWindowWidget							*m_ui;
 
-	WindowComputationData		m_windowInputData;
+	Vic3D::NewSubSurfaceObject::WindowComputationData	m_windowInputData;
 
-	QSpinBox					*m_prioritySpinBoxes[4];
+	QSpinBox											*m_prioritySpinBoxes[4];
 };
 
 #endif // SVPropAddWindowWidgetH

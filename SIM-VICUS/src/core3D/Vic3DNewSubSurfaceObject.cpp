@@ -174,6 +174,7 @@ void NewSubSurfaceObject::updateBuffers() {
 	}
 
 	m_lineIndex = currentElementIndex;
+	m_transparentStartIndex = currentElementIndex;
 	// now we add vertexes of the polygon outline and the outlines of the holes
 	// first we store the opaque geometry
 	for (const VICUS::PlaneGeometry & geometry : m_surfaceGeometries) {
@@ -200,18 +201,17 @@ void NewSubSurfaceObject::updateBuffers() {
 
 
 void NewSubSurfaceObject::renderOpaque() {
-	if (m_vertexBufferData.empty())
+	if (m_indexBufferData.empty())
 		return;
-
 
 	m_vao.bind();
 
 	// first render opaque polygon
-	glDrawElements(GL_TRIANGLES, (GLsizei)m_transparentStartIndex, GL_UNSIGNED_INT, nullptr);
+	glDrawElements(GL_TRIANGLES, (GLsizei)m_lineIndex, GL_UNSIGNED_INT, nullptr);
 
 	// here we render the lines around the sub-surfaces; invalid surfaces get a red line
-	glDrawElements(GL_LINES, (GLsizei)m_lineIndex, GL_UNSIGNED_INT,
-				   (const GLvoid*)(sizeof(GLuint) * (unsigned long)((GLsizei)m_indexBufferData.size() - m_lineIndex)) );
+//	glDrawElements(GL_LINES, (GLsizei)m_lineIndex, GL_UNSIGNED_INT,
+//				   (const GLvoid*)(sizeof(GLuint) * (unsigned long)((GLsizei)m_indexBufferData.size() - m_transparentStartIndex)) );
 	// release buffers again
 	m_vao.release();
 }
@@ -223,6 +223,7 @@ void NewSubSurfaceObject::renderTransparent() {
 	//   shader program has already transform uniform set
 	//   glDisable(GL_CULL_FACE);
 
+	return;
 	// the render code below is the same for all geometry types, since only the index buffer is used
 	if (!m_indexBufferData.empty()) {
 		// bind all buffers ("position", "normal" and "color" arrays)

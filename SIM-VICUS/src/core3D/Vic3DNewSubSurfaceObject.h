@@ -70,13 +70,13 @@ public:
 		}
 
 		int		m_priorities[4];
-		double	m_width;
-		double	m_height;
-		double	m_windowSillHeight;
-		double	m_distance;
+		double	m_width; // in m
+		double	m_height; // in m
+		double	m_windowSillHeight; // in m
+		double	m_distance; // in m
 		bool	m_byPercentage;
-		double	m_percentage;
-		double	m_baseLineOffset;
+		double	m_percentage; // in percent 0..100
+		double	m_baseLineOffset; // in m
 	};
 
 	NewSubSurfaceObject();
