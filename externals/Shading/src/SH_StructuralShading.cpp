@@ -253,7 +253,7 @@ void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path, const s
 			// write the cached shading factors
 			const std::vector<double> & sfData = m_shadingFactors[sfDataIndex];
 			for (unsigned int j=0; j<m_surfaces.size(); ++j) {
-				tsvFile	<< -sfData[j];
+				tsvFile	<< sfData[j];
 				if (j+1 < m_surfaces.size())
 					tsvFile << '\t';
 			}
