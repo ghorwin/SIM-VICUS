@@ -1,5 +1,7 @@
 #include "VICUS_SubNetwork.h"
 
+#include "VICUS_Project.h"
+
 #include <NANDRAD_HydraulicNetworkElement.h>
 
 namespace VICUS {
@@ -34,6 +36,17 @@ AbstractDBElement::ComparisonResult SubNetwork::equal(const AbstractDBElement *o
 		return OnlyMetaDataDiffers;
 
 	return Equal;
+}
+
+const NetworkComponent * SubNetwork::heatExchangeComponent(const Database<NetworkComponent> &compDB) const
+{
+	const NANDRAD::HydraulicNetworkElement *elem = Project::element(m_elements, m_heatExchangeElementId);
+	if (elem == nullptr)
+		return nullptr;
+
+	unsigned int compId = elem->m_componentId;
+
+	return compDB[compId];
 }
 
 

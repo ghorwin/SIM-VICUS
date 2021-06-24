@@ -7,6 +7,7 @@
 #include "VICUS_NetworkElement.h"
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Database.h"
+#include "VICUS_NetworkComponent.h"
 
 #include <NANDRAD_HydraulicNetworkElement.h>
 
@@ -39,6 +40,9 @@ public:
 
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;
+
+	/*! Access function to the component of the heat exchanging element */
+	const NetworkComponent * heatExchangeComponent(const Database<NetworkComponent> &compDB) const;
 
 	/*! Unique ID of the sub-network. */
 	IDType												m_id = INVALID_ID;						// XML:A:required

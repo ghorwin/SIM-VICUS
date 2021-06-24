@@ -17,7 +17,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="pageNetwork">
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -598,49 +598,96 @@
      <widget class="QWidget" name="pageSubNetwork">
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
-        <widget class="QGroupBox" name="groupBoxComponent">
+        <widget class="QGroupBox" name="groupBoxCurrentSubNetworks">
          <property name="title">
-          <string>Component</string>
+          <string>Sub networks used in current project</string>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_6">
-          <item>
-           <widget class="QComboBox" name="comboBoxComponent"/>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButtonEditComponents">
-            <property name="maximumSize">
+         <layout class="QGridLayout" name="gridLayout_7">
+          <item row="1" column="0">
+           <widget class="QPushButton" name="pushButtonEditSubNetworks">
+            <property name="text">
+             <string>Edit...</string>
+            </property>
+            <property name="iconSize">
              <size>
-              <width>100</width>
-              <height>16777215</height>
+              <width>24</width>
+              <height>24</height>
              </size>
             </property>
-            <property name="text">
-             <string>...</string>
-            </property>
            </widget>
+          </item>
+          <item row="1" column="1">
+           <spacer name="horizontalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>280</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QTableWidget" name="tableWidgetSubNetworks"/>
           </item>
          </layout>
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBoxController">
+        <widget class="QGroupBox" name="groupBoxSelectedSubNetwork">
          <property name="title">
-          <string>Controller</string>
+          <string>Selected sub network</string>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <widget class="QComboBox" name="comboBoxController"/>
+         <layout class="QGridLayout" name="gridLayout_8">
+          <item row="1" column="0" colspan="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QPushButton" name="pushButtonAssignSubNetwork">
+              <property name="text">
+               <string>Assign sub network...</string>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>24</width>
+                <height>24</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_5">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>558</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </item>
-          <item>
-           <widget class="QPushButton" name="pushButtonEditController">
-            <property name="maximumSize">
-             <size>
-              <width>100</width>
-              <height>16777215</height>
-             </size>
+          <item row="0" column="1">
+           <widget class="QLabel" name="labelSelectedSubNetwork">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
             <property name="text">
-             <string>...</string>
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_16">
+            <property name="text">
+             <string>Selected:</string>
             </property>
            </widget>
           </item>
@@ -670,35 +717,19 @@
           <string>Heat Exchange</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
+          <item row="5" column="0">
+           <widget class="QLabel" name="labelZoneId">
+            <property name="text">
+             <string>Zone Id</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0">
            <widget class="QLabel" name="labelHeatFlux">
             <property name="text">
              <string>Heat flux [W]</string>
             </property>
            </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QtExt::ValidatingLineEdit" name="lineEditHeatFlux"/>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="labelTemperature">
-            <property name="text">
-             <string>Temperature [C]</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QtExt::ValidatingLineEdit" name="lineEditTemperature"/>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="labelHXTransferCoefficient">
-            <property name="text">
-             <string>External heat transfer coefficient [W/m²K]</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QtExt::ValidatingLineEdit" name="lineEditHXTransferCoefficient"/>
           </item>
           <item row="4" column="0">
            <widget class="QLabel" name="labelDataFile">
@@ -707,31 +738,49 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
-           <widget class="QtExt::BrowseFilenameWidget" name="widgetBrowseFileNameTSVFile" native="true"/>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="labelFMUFile">
+          <item row="3" column="0">
+           <widget class="QLabel" name="labelHXTransferCoefficient">
             <property name="text">
-             <string>FMU file</string>
+             <string>External heat transfer coefficient [W/m²K]</string>
             </property>
            </widget>
           </item>
           <item row="5" column="1">
-           <widget class="QtExt::BrowseFilenameWidget" name="widgetBrowseFileNameFMU" native="true"/>
-          </item>
-          <item row="6" column="0">
-           <widget class="QLabel" name="labelZoneId">
-            <property name="text">
-             <string>Zone Id</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="1">
            <widget class="QComboBox" name="comboBoxZoneId"/>
+          </item>
+          <item row="2" column="1">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditTemperature"/>
+          </item>
+          <item row="4" column="1">
+           <widget class="QtExt::BrowseFilenameWidget" name="widgetBrowseFileNameTSVFile" native="true"/>
+          </item>
+          <item row="3" column="1">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditHXTransferCoefficient"/>
           </item>
           <item row="0" column="0" colspan="2">
            <widget class="QComboBox" name="comboBoxHeatExchangeType"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="labelTemperature">
+            <property name="text">
+             <string>Temperature [C]</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditHeatFlux"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBoxCurrentSubNetworks_2">
+         <property name="title">
+          <string>Heat Exchange Types used in current project</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_9">
+          <item row="0" column="0" colspan="2">
+           <widget class="QTableWidget" name="tableWidgetHeatExchange"/>
           </item>
          </layout>
         </widget>
