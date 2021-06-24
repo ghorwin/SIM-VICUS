@@ -242,6 +242,15 @@ public:
 	*/
 	IBK::rectangle<double>					m_extends;
 
+
+	// *** STATIC FUNCTIONS
+
+	/*! returns a specific color for each heat exchange type */
+	static QColor colorHeatExchangeType(NANDRAD::HydraulicNetworkHeatExchange::ModelType heatExchangeType);
+
+
+
+
 private:
 
 	/*! add node to network based on coordinates and type and return the node id.

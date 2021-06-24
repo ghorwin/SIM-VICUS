@@ -142,8 +142,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Control temperature difference of the following element");
 	tr("Control zone thermostat values");
 	tr("Control mass flux");
-	tr("P-Controller");
-	tr("PI-Controller");
+	tr("PController");
+	tr("PIController");
 	tr("Kp-parameter");
 	tr("Ki-parameter");
 	tr("Kd-parameter");

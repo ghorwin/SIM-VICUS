@@ -46,42 +46,10 @@ namespace VICUS {
 	We cannot use inheritence here, but since both objects are very similar it should be easy to copy/paste back
 	and forth between objects.
 */
-class NetworkComponent : public AbstractDBElement, public NANDRAD::HydraulicNetworkComponent {
+class NetworkComponent : public AbstractDBElement {
 public:
 
-	// *** PUBLIC MEMBER FUNCTIONS ***
-
-	VICUS_READWRITE
-	VICUS_COMP(NetworkComponent)
-
-	/*! Checks if all parameters are valid. */
-	bool isValid() const;
-
-	/*! Comparison operator */
-	ComparisonResult equal(const AbstractDBElement *other) const override;
-
-	// *** PUBLIC MEMBER VARIABLES ***
-
-	/*! Display name. */
-	IBK::MultiLanguageString			m_displayNameML;									// XML:A
-
-	/*! False color. */
-	QColor								m_color;											// XML:A
-
-	/*! Notes. */
-	IBK::MultiLanguageString			m_notes;											// XML:E
-
-	/*! Manufacturer. */
-	IBK::MultiLanguageString			m_manufacturer;										// XML:E
-
-	/*! Data source. */
-	IBK::MultiLanguageString			m_dataSource;										// XML:E
-
-
-	/*!
-		*** Only for Code Generator ***
-		*** NANDRAD::HydraulicNetworkComponent interface ***
-
+	/*! The various types (equations) of the hydraulic component. */
 	enum ModelType {
 		MT_SimplePipe,						// Keyword: SimplePipe						'Pipe with a single fluid volume and with heat exchange'
 		MT_DynamicPipe,						// Keyword: DynamicPipe						'Pipe with a discretized fluid volume and heat exchange'
@@ -97,6 +65,7 @@ public:
 		NUM_MT
 	};
 
+	/*! Parameters for the component. */
 	enum para_t {
 		P_HydraulicDiameter,					// Keyword: HydraulicDiameter					[mm]	'Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)'
 		P_PressureLossCoefficient,				// Keyword: PressureLossCoefficient				[---]	'Pressure loss coefficient for the component (zeta-value)'
@@ -111,20 +80,48 @@ public:
 		NUM_P
 	};
 
+	// *** PUBLIC MEMBER FUNCTIONS ***
 
+	VICUS_READWRITE
+	VICUS_COMP(NetworkComponent)
+
+	/*! Checks if all parameters are valid. */
+	bool isValid() const;
+
+	/*! Comparison operator */
+	ComparisonResult equal(const AbstractDBElement *other) const override;
+
+	// *** PUBLIC MEMBER VARIABLES added for VICUS ***
+
+	/*! Display name. */
+	IBK::MultiLanguageString			m_displayName;										// XML:A
+
+	/*! False color. */
+	QColor								m_color;											// XML:A
+
+	/*! Notes. */
+	IBK::MultiLanguageString			m_notes;											// XML:E
+
+	/*! Manufacturer. */
+	IBK::MultiLanguageString			m_manufacturer;										// XML:E
+
+	/*! Data source. */
+	IBK::MultiLanguageString			m_dataSource;										// XML:E
+
+
+	// *** PUBLIC MEMBER VARIABLES from NANDRAD::HydraulicNetworkComponent (without m_displayName) ***
+
+	/*! Unique ID for this component. */
 	unsigned int					m_id			= NANDRAD::INVALID_ID;				// XML:A:required
 
-
+	/*! Model type. */
 	ModelType						m_modelType		= NUM_MT;							// XML:A:required
 
-
+	/*! Parameters of the flow component. */
 	IBK::Parameter					m_para[NUM_P];										// XML:E
 
-
-	DataTable						m_polynomCoefficients;								// XML:E
-
-	*/
-
+	/*! Array parameters of the flow component */
+	NANDRAD::DataTable				m_polynomCoefficients;								// XML:E
 
 };
 

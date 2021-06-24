@@ -79,8 +79,8 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_pipes.readXML(					dbDir / "db_pipes.xml", "NetworkPipes", "NetworkPipe", true);
 		m_fluids.readXML(					dbDir / "db_fluids.xml", "NetworkFluids", "NetworkFluid", true);
 		m_networkComponents.readXML(		dbDir / "db_networkComponents.xml", "NetworkComponents", "NetworkComponent", true);
-		m_networkControllers.readXML(		dbDir / "db_networkControllers.xml", "NetworkControllers", "NetworkControllers", true);
-		m_subNetworks.readXML		(		dbDir / "db_subNetworks.xml", "SubNetworks", "SubNetworks", true);
+		m_networkControllers.readXML(		dbDir / "db_networkControllers.xml", "NetworkControllers", "NetworkController", true);
+		m_subNetworks.readXML		(		dbDir / "db_subNetworks.xml", "SubNetworks", "SubNetwork", true);
 		m_schedules.readXML(				dbDir / "db_schedules.xml", "Schedules", "Schedule", true);
 		m_internalLoads.readXML(			dbDir / "db_internalLoads.xml", "InternalLoads", "InternalLoad", true);
 		m_zoneControlThermostat.readXML(	dbDir / "db_zoneControlThermostat.xml", "ZoneControlThermostats", "ZoneControlThermostat", true);
@@ -120,9 +120,9 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 	if (t == NUM_DT || t == DT_NetworkComponents)
 		m_networkComponents.readXML(userDbDir / "db_networkComponents.xml", "NetworkComponents", "NetworkComponent", false);
 	if (t == NUM_DT || t == DT_NetworkControllers)
-		m_networkControllers.readXML(userDbDir / "db_networkControllers.xml", "NetworkControllers", "NetworkControllers", false);
+		m_networkControllers.readXML(userDbDir / "db_networkControllers.xml", "NetworkControllers", "NetworkController", false);
 	if (t == NUM_DT || t == DT_SubNetworks)
-		m_subNetworks.readXML(userDbDir / "db_subNetworks.xml", "SubNetworks", "SubNetworks", false);
+		m_subNetworks.readXML(userDbDir / "db_subNetworks.xml", "SubNetworks", "SubNetwork", false);
 	if (t == NUM_DT || t == DT_Schedules)
 		m_schedules.readXML(		userDbDir / "db_schedules.xml", "Schedules", "Schedule", false);
 	if (t == NUM_DT || t == DT_InternalLoads)

@@ -50,8 +50,8 @@ void NetworkComponent::readXML(const TiXmlElement * element) {
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
-			if (attribName == "displayNameML")
-				m_displayNameML.setEncodedString(attrib->ValueStr());
+			if (attribName == "displayName")
+				m_displayName.setEncodedString(attrib->ValueStr());
 			else if (attribName == "color")
 				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
 			else if (attribName == "id")
@@ -113,8 +113,8 @@ TiXmlElement * NetworkComponent::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("NetworkComponent");
 	parent->LinkEndChild(e);
 
-	if (!m_displayNameML.empty())
-		e->SetAttribute("displayNameML", m_displayNameML.encodedString());
+	if (!m_displayName.empty())
+		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
 	if (m_id != VICUS::INVALID_ID)

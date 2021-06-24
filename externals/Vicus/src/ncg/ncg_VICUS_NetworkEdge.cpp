@@ -50,9 +50,9 @@ void NetworkEdge::readXML(const TiXmlElement * element) {
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
-			if (attribName == "model")
+			if (attribName == "pipeModel")
 				try {
-					m_pipeModel = (PipeModel)KeywordList::Enumeration("NetworkEdge::ModelType", attrib->ValueStr());
+					m_pipeModel = (PipeModel)KeywordList::Enumeration("NetworkEdge::PipeModel", attrib->ValueStr());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
@@ -103,7 +103,7 @@ TiXmlElement * NetworkEdge::writeXML(TiXmlElement * parent) const {
 	parent->LinkEndChild(e);
 
 	if (m_pipeModel != NUM_PM)
-		e->SetAttribute("model", KeywordList::Keyword("NetworkEdge::ModelType",  m_pipeModel));
+		e->SetAttribute("pipeModel", KeywordList::Keyword("NetworkEdge::PipeModel",  m_pipeModel));
 	if (m_supply != NetworkEdge().m_supply)
 		e->SetAttribute("supply", IBK::val2string<bool>(m_supply));
 	if (m_pipeId != VICUS::INVALID_ID)

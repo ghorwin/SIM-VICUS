@@ -224,6 +224,31 @@ void Network::setDefaultColors() const
 }
 
 
+QColor Network::colorHeatExchangeType(NANDRAD::HydraulicNetworkHeatExchange::ModelType heatExchangeType)
+{
+	switch (heatExchangeType) {
+		case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
+			return QColor("#484747");
+		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureZone:
+			return QColor("#E69F00");
+		case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant:
+			return QColor("#56B4E9");
+		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline:
+			return QColor("#009E73");
+		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstant:
+			return QColor("#F0E442");
+		case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
+			return QColor("#0072B2");
+		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSplineEvaporator:
+			return QColor("#D55E00");
+		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer:
+			return QColor("#CC79A7");
+		case NANDRAD::HydraulicNetworkHeatExchange::NUM_T:
+			return QColor("#9C9595");
+	}
+}
+
+
 bool Network::checkConnectedGraph() const {
 	if (m_edges.size()==0 || m_nodes.size()==0)
 		return false;

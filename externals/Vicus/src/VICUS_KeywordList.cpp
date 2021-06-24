@@ -58,7 +58,7 @@ namespace VICUS {
 		"NetworkController::ControllerType",
 		"NetworkController::para_t",
 		"NetworkController::References",
-		"NetworkEdge::ModelType",
+		"NetworkEdge::PipeModel",
 		"NetworkFluid::para_t",
 		"NetworkNode::NodeType",
 		"NetworkPipe::para_t",
@@ -320,7 +320,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "ThermostatZoneId";
 			} break;
-			// NetworkEdge::ModelType
+			// NetworkEdge::PipeModel
 			case 23 :
 			switch (t) {
 				case 0 : return "SimplePipe";
@@ -748,7 +748,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "ThermostatZoneId";
 			} break;
-			// NetworkEdge::ModelType
+			// NetworkEdge::PipeModel
 			case 23 :
 			switch (t) {
 				case 0 : return "SimplePipe";
@@ -1160,8 +1160,8 @@ namespace VICUS {
 			// NetworkController::ControllerType
 			case 20 :
 			switch (t) {
-				case 0 : return "P-Controller";
-				case 1 : return "PI-Controller";
+				case 0 : return "PController";
+				case 1 : return "PIController";
 			} break;
 			// NetworkController::para_t
 			case 21 :
@@ -1177,7 +1177,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "ID of zone containing thermostat";
 			} break;
-			// NetworkEdge::ModelType
+			// NetworkEdge::PipeModel
 			case 23 :
 			switch (t) {
 				case 0 : return "Pipe with a single fluid volume and with heat exchange";
@@ -1605,7 +1605,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "-";
 			} break;
-			// NetworkEdge::ModelType
+			// NetworkEdge::PipeModel
 			case 23 :
 			switch (t) {
 				case 0 : return "";
@@ -2033,7 +2033,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
-			// NetworkEdge::ModelType
+			// NetworkEdge::PipeModel
 			case 23 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -2461,7 +2461,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// NetworkEdge::ModelType
+			// NetworkEdge::PipeModel
 			case 23 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -2718,7 +2718,7 @@ namespace VICUS {
 			case 21 : return 5;
 			// NetworkController::References
 			case 22 : return 1;
-			// NetworkEdge::ModelType
+			// NetworkEdge::PipeModel
 			case 23 : return 2;
 			// NetworkFluid::para_t
 			case 24 : return 3;
@@ -2830,7 +2830,7 @@ namespace VICUS {
 			case 21 : return 4;
 			// NetworkController::References
 			case 22 : return 0;
-			// NetworkEdge::ModelType
+			// NetworkEdge::PipeModel
 			case 23 : return 1;
 			// NetworkFluid::para_t
 			case 24 : return 2;

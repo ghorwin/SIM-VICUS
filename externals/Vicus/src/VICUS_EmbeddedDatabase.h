@@ -41,6 +41,8 @@
 #include "VICUS_NetworkPipe.h"
 #include "VICUS_NetworkFluid.h"
 #include "VICUS_NetworkComponent.h"
+#include "VICUS_NetworkController.h"
+#include "VICUS_SubNetwork.h"
 #include "VICUS_EPDDataset.h"
 #include "VICUS_Schedule.h"
 #include "VICUS_InternalLoad.h"
@@ -88,6 +90,12 @@ public:
 
 	/*! Map of all hydraulic network components */
 	std::vector<VICUS::NetworkComponent>				m_networkComponents;				// XML:E
+
+	/*! Map of all hydraulic network controllers */
+	std::vector<VICUS::NetworkController>				m_networkControllers;				// XML:E
+
+	/*! Map of all hydraulic sub networks */
+	std::vector<VICUS::SubNetwork>						m_subNetworks;						// XML:E
 
 	/*! Map of all database EPD elements */
 	std::vector<VICUS::EPDDataset>						m_EPDElements;						// XML:E
