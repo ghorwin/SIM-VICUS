@@ -249,8 +249,9 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 	double gridSize = m_ui->lineEditGridSize->value();
 	m_shading->calculateShadingFactors(&progressNotifyer, gridSize);
 
-	if (progressNotifyer.m_aborted)
+	if (progressNotifyer.m_aborted) {
 		return;
+	}
 
 	SVProjectHandler &prj = SVProjectHandler::instance();
 	QDir projectDir = QFileInfo(prj.projectFile()).dir();
