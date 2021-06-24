@@ -133,10 +133,10 @@ if compilerID == None:
 else:
 	print "Compiler ID            : " + compilerID
 
+args.path = os.path.abspath(args.path)
 print "Test suite             : " + args.path
 print "Binaries directory     : " + args.binaries
 
-print os.environ
 if not 'MASTERSIM_PATH' in os.environ:
 	printError("Environment variable 'MASTERSIM_PATH' missing.")
 	exit(1)
@@ -178,11 +178,12 @@ for project in projects:
 	nandradFiles = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f)) and f.endswith(".nandrad")]
 
 	# now generate all FMUs for all nandrad projects
+	fmuGenerationFailed = False
 	for np in nandradFiles:
-		fmuName = np[:-(1+len('nandrad'))] + ".fmu"
-		fmuPath = os.path.join(path, fmuName)
+		fmuBaseName = np[:-(1+len('nandrad'))]
+		fmuPath = os.path.join(path, fmuBaseName + ".fmu")
 		printNotification('Generating {}'.format(fmuPath))
-		cmdline = [NANDRADFMUGEN_BIN, '--generate=' + fmuName, os.path.join(path, np)]
+		cmdline = [NANDRADFMUGEN_BIN, '--generate=' + fmuBaseName, os.path.join(path, np)]
 		try:
 			# run solver 
 			FNULL = open(os.devnull, 'w')
@@ -197,9 +198,16 @@ for project in projects:
 				failed_projects.append(project)
 				# and print error message
 				printError("Generation of NANDRAD FMU '{}' failed.".format(fmuPath))
+				fmuGenerationFailed = True
 		except OSError as e:
 			printError("Error starting NandradFMUGenerator executable '{}', error: {}".format(args.binaries + '/NandradFMUGenerator', e))
 			exit(1)
+			
+	if fmuGenerationFailed:
+		# mark project as failed
+		failed_projects.append(project)
+		continue # next msim-project
+	
 
 	skipResultCheck = False
 
@@ -223,7 +231,8 @@ for project in projects:
 			cmdline.append("--verbosity-level=0")
 			retcode = subprocess.call(cmdline, creationflags=subprocess.CREATE_NEW_CONSOLE)
 		else:
-			retcode = subprocess.call(cmdline, stdout=FNULL, stderr=subprocess.STDOUT)
+			retcode = subprocess.call(cmdline)
+#			retcode = subprocess.call(cmdline, stdout=FNULL, stderr=subprocess.STDOUT)
 		# check return code
 		if retcode == 0:
 			# successful run
