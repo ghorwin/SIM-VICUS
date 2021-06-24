@@ -52,6 +52,9 @@ private slots:
 
 	void on_tabWidgetWindow_currentChanged(int index);
 
+
+	void on_pushButtonCreate_clicked();
+
 private:
 	/*! Updates widget to current project state. */
 	void updateUi();

@@ -218,3 +218,8 @@ void SVPropAddWindowWidget::on_tabWidgetWindow_currentChanged(int index) {
 	m_windowInputData.m_byPercentage = (index == 0);
 	updateGeometryObject();
 }
+
+
+void SVPropAddWindowWidget::on_pushButtonCreate_clicked() {
+
+}
