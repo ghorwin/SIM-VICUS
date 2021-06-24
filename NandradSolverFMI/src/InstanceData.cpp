@@ -248,7 +248,7 @@ void InstanceData::integrateTo(double tCommunicationIntervalEnd) {
 			m_model.setTime(m_model.t0());
 			m_model.setY(m_model.y0());
 			m_model.ydot(nullptr);
-			m_model.pushOutputOnBuffer( m_model.t0(), m_model.y0());
+			m_model.writeOutputs( m_model.t0(), m_model.y0());
 		}
 		else {
 			// reset outputs if necessary
@@ -286,7 +286,7 @@ void InstanceData::integrateTo(double tCommunicationIntervalEnd) {
 				m_model.setTime(tOutput);
 				m_model.setY(yOutput);
 				m_model.ydot(nullptr);
-				m_model.pushOutputOnBuffer( tOutput, yOutput);
+				m_model.writeOutputs(tOutput, yOutput);
 
 				// retrieve new output time point
 				tOutputNext = outputScheduler->nextOutputTime(tOutput);
@@ -414,6 +414,11 @@ void InstanceData::deserializeFMUstate(void * FMUstate) {
 		jacobian->deserialize(dataStart);
 	modelInterface->deserialize(dataStart);
 #endif
+}
+
+void InstanceData::finish()
+{
+	m_model.writeFinalOutputs();
 }
 
 

@@ -138,6 +138,11 @@ public:
 	*/
 	virtual void clearBuffers() {}
 
+	/*! Called from fmi2FreeInstance() in CoSimulation at the end of simulation.
+		Write outputs here.
+	*/
+	virtual void finish() {}
+
 	/*! Global unique ID that identifies this FMU.
 		Must match the GUID in the ModelDescription file.
 		\note This GUID is model-specific, so you must define this static symbol

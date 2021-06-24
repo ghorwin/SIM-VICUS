@@ -140,6 +140,7 @@ void* fmi2Instantiate(fmi2String instanceName, fmi2Type fmuType, fmi2String guid
 // Free allocated instance data structure
 void fmi2FreeInstance(void* c) {
 	InstanceData * modelInstance = static_cast<InstanceData*>(c);
+	modelInstance->finish();
 	modelInstance->logger(fmi2OK, "progress", "fmi2FreeInstance: Model instance deleted.");
 	delete modelInstance;
 }
