@@ -539,7 +539,8 @@ void SVMainWindow::closeEvent(QCloseEvent * event) {
 
 	// TODO : other dock widgets view configs
 
-	if (m_dockWidgetVisibility[m_logDockWidget])	dockWidgetVisibility.append("Log");
+	if (m_dockWidgetVisibility[m_logDockWidget])
+		dockWidgetVisibility.append("Log");
 	SVSettings::instance().m_visibleDockWidgets = dockWidgetVisibility;
 
 	// save user config and recent file list
@@ -718,11 +719,11 @@ void SVMainWindow::onStyleChanged() {
 }
 
 
-void SVMainWindow::onDockWidgetToggled() {
+void SVMainWindow::onDockWidgetToggled(bool visible) {
 	// get sender
 	QAction * toggleAction = qobject_cast<QAction*>(sender());
 	if (m_logDockWidget->toggleViewAction() == toggleAction) {
-		m_dockWidgetVisibility[m_logDockWidget] = toggleAction->isChecked();
+		m_dockWidgetVisibility[m_logDockWidget] = visible;
 	}
 }
 
@@ -1210,12 +1211,11 @@ void SVMainWindow::onUpdateActions() {
 
 	// Dock-Widgets are only visible when project is there
 	if (!have_project) {
-		// store dock widget visibility, but only if we are in construction view mode
-		storeDockWidgetVisibility();
-
 		m_logDockWidget->toggleViewAction()->setEnabled(false);
 
+		m_logDockWidget->toggleViewAction()->blockSignals(true);
 		m_logDockWidget->setVisible(false);
+		m_logDockWidget->toggleViewAction()->blockSignals(false);
 	}
 	// Note: in case of a project, the dock widgets visibility is set in onNavigationBarViewChanged() below
 
@@ -1526,7 +1526,6 @@ void SVMainWindow::on_actionHelpKeyboardAndMouseControls_triggered() {
 }
 
 
-
 // *** Private Functions ***
 
 void SVMainWindow::setupDockWidgets() {
@@ -1661,14 +1660,6 @@ void SVMainWindow::processThread() {
 }
 
 
-void SVMainWindow::storeDockWidgetVisibility() {
-	// TODO : other dock widgets
-	m_dockWidgetVisibility[m_logDockWidget] = m_logDockWidget->isVisible();
-}
-
-
-
-
 bool SVMainWindow::processProjectPackage(QString & filename, bool renameProjectFileAfterwards) {
 	if (filename.endsWith(".vicpac")) {
 		// determine a suitable starting directory - how about the last directory something was saved in?
@@ -1758,8 +1749,8 @@ bool SVMainWindow::exportProjectCopy(QString targetDirPath, const VICUS::Project
 	return true;
 }
 
-SVSimulationStartNandrad * SVMainWindow::simulationStartNandrad() const
-{
+
+SVSimulationStartNandrad * SVMainWindow::simulationStartNandrad() const {
 	return m_simulationStartNandrad;
 }
 

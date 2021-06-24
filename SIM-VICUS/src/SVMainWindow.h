@@ -228,7 +228,7 @@ private slots:
 	void onFixProjectAfterRead();
 	void onStyleChanged();
 
-	void onDockWidgetToggled();
+	void onDockWidgetToggled(bool);
 
 	// all menu action slots below
 
@@ -303,8 +303,6 @@ private slots:
 
 	void on_actionExportView3D_triggered();
 
-
-
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();
@@ -339,9 +337,6 @@ private:
 	/*! This will start the processing of the thread pool.
 		If a thread is currently running, the call is ignored. */
 	void processThread();
-
-	/*! Caches visibility information of dock widgets. */
-	void storeDockWidgetVisibility();
 
 	/*! Tests of file is a project package, and if yes, asks user to select an extraction
 		directory, imports the project and adjusts filename to point to the extracted
