@@ -162,6 +162,16 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 			// 4. compute area-weighted sum of shading factors and devide by orginal polygon surface
 			// 5. store in result vector
 			m_shadingFactors[i][(unsigned int)surfCounter] = sf;
+
+			if ( i % 10 == 0 ) { // we do not want to send updates to progress bar all the time
+#if defined(_OPENMP)
+				if (omp_get_thread_num() == 0)
+#endif
+					notify->notify(double(surfCounter*m_sunConeNormals.size() + i) / (m_surfaces.size()*m_sunConeNormals.size()));
+
+				if (notify->m_aborted)
+					continue;
+			}
 		}
 	} // omp for loop
 
@@ -226,7 +236,7 @@ void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path, const s
 	unsigned int startStep = (unsigned int)std::floor(m_startTime.secondsOfYear()/m_samplingPeriod);
 	for (unsigned int i=0; i<stepCount; ++i) {
 		unsigned int timeInSec = startStep + i*m_samplingPeriod;
-		tsvFile << IBK::val2string<int>(timeInSec/3600) << "\t";
+		tsvFile << IBK::val2string<double>((double)timeInSec/3600) << "\t";
 
 		// get index of corresponding shading factor data
 		unsigned int sfDataIndex = samplingIndexToConeNormalMap[i];
@@ -243,7 +253,7 @@ void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path, const s
 			// write the cached shading factors
 			const std::vector<double> & sfData = m_shadingFactors[sfDataIndex];
 			for (unsigned int j=0; j<m_surfaces.size(); ++j) {
-				tsvFile	<< sfData[j];
+				tsvFile	<< -sfData[j];
 				if (j+1 < m_surfaces.size())
 					tsvFile << '\t';
 			}
