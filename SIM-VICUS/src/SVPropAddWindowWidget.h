@@ -36,6 +36,22 @@ private slots:
 
 	void on_lineEditWindowWidth_editingFinishedSuccessfully();
 
+	void on_lineEditWindowHeight_editingFinishedSuccessfully();
+
+	void on_lineEditWindowSillHeight_editingFinishedSuccessfully();
+
+	void on_lineEditWindowDistance_editingFinishedSuccessfully();
+
+	void on_lineEditWindowOffset_editingFinishedSuccessfully();
+
+	void on_lineEditWindowPercentage_editingFinishedSuccessfully();
+
+	void on_spinBoxMaxHoleCount_valueChanged(int arg1);
+
+	void on_radioButtonSubSurfaceTypeWindow_toggled(bool checked);
+
+	void on_tabWidgetWindow_currentChanged(int index);
+
 private:
 	/*! Updates widget to current project state. */
 	void updateUi();
@@ -44,6 +60,9 @@ private:
 	void updateGeometryObject();
 
 	Ui::SVPropAddWindowWidget							*m_ui;
+
+	/*! Caches currently selected surfaces. Updated in updateUi(). */
+	std::vector<const VICUS::Surface*>					m_currentSelection;
 
 	Vic3D::NewSubSurfaceObject::WindowComputationData	m_windowInputData;
 

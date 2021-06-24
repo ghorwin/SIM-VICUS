@@ -7,8 +7,12 @@
 
 #include "SVViewStateHandler.h"
 #include "SVProjectHandler.h"
+#include "SVDatabase.h"
+#include "SVSettings.h"
 
 #include "Vic3DNewSubSurfaceObject.h"
+
+#include <QtExt_Conversions.h>
 
 SVPropAddWindowWidget::SVPropAddWindowWidget(QWidget *parent) :
 	QWidget(parent),
@@ -19,17 +23,11 @@ SVPropAddWindowWidget::SVPropAddWindowWidget(QWidget *parent) :
 	m_ui->lineEditWindowWidth->setup(0, std::numeric_limits<double>::max(), tr("Window width in [m] must be > 0."), false, true);
 	m_ui->lineEditWindowHeight->setup(0, std::numeric_limits<double>::max(), tr("Window height in [m] must be > 0."), false, true);
 	m_ui->lineEditWindowSillHeight->setup(0, std::numeric_limits<double>::max(), tr("Window-sill height in [m] must be > 0."), false, true);
-	m_ui->lineEditWindowWidthDistance->setup(0, std::numeric_limits<double>::max(), tr("Window distance in [m] must be > 0."), false, true);
+	m_ui->lineEditWindowDistance->setup(0, std::numeric_limits<double>::max(), tr("Window distance in [m] must be > 0."), false, true);
 	m_ui->lineEditWindowOffset->setup(0, std::numeric_limits<double>::max(), tr("Window offset in [m] must be > 0."), false, true);
 	m_ui->lineEditWindowPercentage->setup(0, 100, tr("Window area percentage must be between 0 .. 100%."), true, true);
 
-	m_ui->lineEditWindowWidth->setValue(0.6);
-	m_ui->lineEditWindowHeight->setValue(1.2);
-	m_ui->lineEditWindowSillHeight->setValue(0.8);
-	m_ui->lineEditWindowWidthDistance->setValue(1.2);
-	m_ui->lineEditWindowOffset->setValue(0.4);
-	m_ui->lineEditWindowPercentage->setValue(35);
-
+	// TODO  : restore previously used settings
 	m_windowInputData.m_width = 1.8;
 	m_windowInputData.m_height = 2.2;
 	m_windowInputData.m_windowSillHeight = 0.4;
@@ -115,8 +113,7 @@ void SVPropAddWindowWidget::onSpinBoxValueChanged(int val) {
 void SVPropAddWindowWidget::updateUi() {
 	// get selected objects - must have at least one surface selected
 	const VICUS::Project & p = project();
-	std::vector<const VICUS::Surface*> sel;
-	bool haveAny = p.selectedSurfaces(sel, VICUS::Project::SG_Building);
+	bool haveAny = p.selectedSurfaces(m_currentSelection, VICUS::Project::SG_Building);
 	if (!haveAny) {
 		m_ui->labelSelectSurfaces->show();
 		m_ui->groupBoxWindows->setEnabled(false);
@@ -133,25 +130,91 @@ void SVPropAddWindowWidget::updateUi() {
 
 
 void SVPropAddWindowWidget::updateGeometryObject() {
-	// get list of selected surfaces
-	const VICUS::Project & p = project();
-	std::vector<const VICUS::Surface*> sel;
-	p.selectedSurfaces(sel, VICUS::Project::SG_Building);
-	Q_ASSERT(!sel.empty());
-
-	SVViewStateHandler::instance().m_newSubSurfaceObject->generateSubSurfaces(sel, m_windowInputData);
+	SVViewStateHandler::instance().m_newSubSurfaceObject->generateSubSurfaces(m_currentSelection, m_windowInputData);
 }
 
 
 void SVPropAddWindowWidget::setup() {
-	updateUi();
-
 	// populate input fields with meaningful defaults
+	m_ui->lineEditWindowWidth->setValue(m_windowInputData.m_width);
+	m_ui->lineEditWindowHeight->setValue(m_windowInputData.m_height);
+	m_ui->lineEditWindowDistance->setValue(m_windowInputData.m_distance);
+	m_ui->lineEditWindowOffset->setValue(m_windowInputData.m_baseLineOffset);
+	m_ui->lineEditWindowPercentage->setValue(m_windowInputData.m_percentage);
+	m_ui->lineEditWindowSillHeight->setValue(m_windowInputData.m_windowSillHeight);
 
+	m_ui->spinBoxMaxHoleCount->blockSignals(true);
+	m_ui->spinBoxMaxHoleCount->setValue((int)m_windowInputData.m_maxHoleCount);
+	m_ui->spinBoxMaxHoleCount->blockSignals(false);
+	m_ui->tabWidgetWindow->blockSignals(true);
+	if (m_windowInputData.m_byPercentage)
+		m_ui->tabWidgetWindow->setCurrentIndex(0);
+	else
+		m_ui->tabWidgetWindow->setCurrentIndex(1);
+	m_ui->tabWidgetWindow->blockSignals(false);
+
+	// TODO : set priorities
+
+	on_radioButtonSubSurfaceTypeWindow_toggled(m_ui->radioButtonSubSurfaceTypeWindow->isChecked());
+	updateUi();
 }
 
 
 void SVPropAddWindowWidget::on_lineEditWindowWidth_editingFinishedSuccessfully() {
 	m_windowInputData.m_width = m_ui->lineEditWindowWidth->value();
+	updateGeometryObject();
 }
 
+void SVPropAddWindowWidget::on_lineEditWindowHeight_editingFinishedSuccessfully() {
+	m_windowInputData.m_height = m_ui->lineEditWindowHeight->value();
+	updateGeometryObject();
+}
+
+void SVPropAddWindowWidget::on_lineEditWindowSillHeight_editingFinishedSuccessfully() {
+	m_windowInputData.m_windowSillHeight = m_ui->lineEditWindowSillHeight->value();
+	updateGeometryObject();
+}
+
+void SVPropAddWindowWidget::on_lineEditWindowDistance_editingFinishedSuccessfully() {
+	m_windowInputData.m_distance = m_ui->lineEditWindowDistance->value();
+	updateGeometryObject();
+}
+
+void SVPropAddWindowWidget::on_lineEditWindowOffset_editingFinishedSuccessfully() {
+	m_windowInputData.m_baseLineOffset = m_ui->lineEditWindowOffset->value();
+	updateGeometryObject();
+}
+
+void SVPropAddWindowWidget::on_lineEditWindowPercentage_editingFinishedSuccessfully() {
+	m_windowInputData.m_percentage = m_ui->lineEditWindowPercentage->value();
+	updateGeometryObject();
+}
+
+void SVPropAddWindowWidget::on_spinBoxMaxHoleCount_valueChanged(int arg1) {
+	m_windowInputData.m_maxHoleCount = (unsigned int)arg1;
+	updateGeometryObject();
+}
+
+void SVPropAddWindowWidget::on_radioButtonSubSurfaceTypeWindow_toggled(bool checked) {
+	// TODO : populate component combo box
+	if (checked) {
+		m_ui->comboBoxSubSurfaceComponent->setEnabled(true);
+		m_ui->comboBoxSubSurfaceComponent->clear();
+		// process all window components and populate box
+		const SVDatabase & db = SVSettings::instance().m_db;
+		for (const auto & w : db.m_windows) {
+			m_ui->comboBoxSubSurfaceComponent->addItem( QtExt::MultiLangString2QString(w.second.m_displayName) );
+		}
+		m_ui->comboBoxSubSurfaceComponent->setCurrentIndex(m_ui->comboBoxSubSurfaceComponent->count()-1);
+	}
+	else {
+		m_ui->comboBoxSubSurfaceComponent->setEnabled(false);
+		m_ui->comboBoxSubSurfaceComponent->clear();
+	}
+}
+
+
+void SVPropAddWindowWidget::on_tabWidgetWindow_currentChanged(int index) {
+	m_windowInputData.m_byPercentage = (index == 0);
+	updateGeometryObject();
+}

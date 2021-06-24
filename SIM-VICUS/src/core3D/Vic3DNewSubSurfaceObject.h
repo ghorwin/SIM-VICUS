@@ -70,13 +70,15 @@ public:
 		}
 
 		int		m_priorities[4];
-		double	m_width; // in m
-		double	m_height; // in m
-		double	m_windowSillHeight; // in m
-		double	m_distance; // in m
-		bool	m_byPercentage;
-		double	m_percentage; // in percent 0..100
-		double	m_baseLineOffset; // in m
+		double	m_width = 1.2; // in m
+		double	m_height = 1.6; // in m
+		double	m_windowSillHeight = 0.5; // in m
+		double	m_distance = 0.6; // in m
+		bool	m_byPercentage = true;
+		double	m_percentage = 60; // in percent 0..100
+		double	m_baseLineOffset = 0.3; // in m
+
+		unsigned int m_maxHoleCount = 4; // max number of holes/windows
 	};
 
 	NewSubSurfaceObject();

@@ -136,6 +136,8 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 
 	m_surfaceGeometries.clear();
 
+	qDebug() << "Generating windows for" << sel.size() << " surfaces.";
+
 	for (const VICUS::Surface* s : sel) {
 		m_surfaceGeometries.push_back(s->geometry());
 	}
