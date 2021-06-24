@@ -1071,7 +1071,7 @@ void SVMainWindow::on_actionSimulationExportFMI_triggered() {
 	if (m_simulationStartNandrad == nullptr)
 		m_simulationStartNandrad = new SVSimulationStartNandrad;
 	// open simulation start dialog with FMI export option
-	m_simulationStartNandrad->edit();
+	m_simulationStartNandrad->edit(true);
 }
 
 
