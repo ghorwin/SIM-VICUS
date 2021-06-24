@@ -819,6 +819,36 @@ bool SVProjectHandler::importEmbeddedDB() {
 		);
 	}
 
+	// network components
+	std::map<unsigned int, unsigned int> netComponentsIDMap;
+	for (VICUS::NetworkComponent & e : m_project->m_embeddedDB.m_networkComponents) {
+
+		importDBElement(e, db.m_networkComponents, netComponentsIDMap,
+						"Network Component '%1' with #%2 imported -> new ID #%3.\n",
+						"Network Component '%1' with #%2 exists already -> ID #%3.\n"
+		);
+	}
+
+	// network controllers
+	std::map<unsigned int, unsigned int> netControllersIDMap;
+	for (VICUS::NetworkController & e : m_project->m_embeddedDB.m_networkControllers) {
+
+		importDBElement(e, db.m_networkControllers, netControllersIDMap,
+						"Network Controller '%1' with #%2 imported -> new ID #%3.\n",
+						"Network Controller '%1' with #%2 exists already -> ID #%3.\n"
+		);
+	}
+
+	// network components
+	std::map<unsigned int, unsigned int> subNetworksIDMap;
+	for (VICUS::SubNetwork & e : m_project->m_embeddedDB.m_subNetworks) {
+
+		importDBElement(e, db.m_subNetworks, subNetworksIDMap,
+						"Sub Network '%1' with #%2 imported -> new ID #%3.\n",
+						"Sub Network '%1' with #%2 exists already -> ID #%3.\n"
+		);
+	}
+
 	// any ids modified?
 	idsModified |= !materialIDMap.empty();
 	idsModified |= !constructionIDMap.empty();
@@ -838,6 +868,9 @@ bool SVProjectHandler::importEmbeddedDB() {
 	idsModified |= !zoneTemplatesIDMap.empty();
 	idsModified |= !pipesIDMap.empty();
 	idsModified |= !fluidsIDMap.empty();
+	idsModified |= !netComponentsIDMap.empty();
+	idsModified |= !netControllersIDMap.empty();
+	idsModified |= !subNetworksIDMap.empty();
 	return idsModified;
 }
 

@@ -66,7 +66,7 @@ QVariant SVDBNetworkComponentTableModel::data ( const QModelIndex & index, int r
 
 			switch (index.column()) {
 				case ColId					: return it->first;
-				case ColName				: return QString::fromStdString(it->second.m_displayNameML.string(langId, fallBackLangId));
+				case ColName				: return QString::fromStdString(it->second.m_displayName.string(langId, fallBackLangId));
 					// Note: description is too long here for "Type"
 				case ColType				: return VICUS::KeywordList::Keyword("NetworkComponent::ModelType",
 																				 it->second.m_modelType);
@@ -144,7 +144,7 @@ void SVDBNetworkComponentTableModel::resetModel() {
 
 QModelIndex SVDBNetworkComponentTableModel::addNewItem() {
 	VICUS::NetworkComponent c;
-	c.m_displayNameML.setEncodedString("en:<new component type>");
+	c.m_displayName.setEncodedString("en:<new component type>");
 	c.m_modelType = VICUS::NetworkComponent::MT_HeatExchanger;
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_networkComponents.add( c );

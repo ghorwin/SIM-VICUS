@@ -32,9 +32,34 @@ public:
 	void updateInput(int id) override;
 
 
+private slots:
+
+	void on_pushButtonColor_clicked();
+
+	void on_pushButtonAddElement_clicked();
+
+	void on_pushButtonRemoveElement_clicked();
+
+	void on_tableWidgetElements_itemSelectionChanged();
+
+	void on_lineEditElementName_editingFinished();
+
+	void on_toolButtonEditComponent_clicked();
+
+	void on_toolButtonEditController_clicked();
+
+	void on_lineEditSubNetworkName_editingFinished();
+
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
+
+	void updateTableWidget();
+
+	void updateElementProperties();
+
+	void setInletOutletIds();
+
 
 	Ui::SVDBSubNetworkEditWidget			*m_ui;
 
@@ -48,7 +73,10 @@ private:
 		The pointer is updated whenever updateInput() is called.
 		A nullptr pointer means that there is no subsurface to edit.
 	*/
-	VICUS::SubNetwork						*m_current;
+	VICUS::SubNetwork						*m_currentSubNet;
+
+	int										m_currentElementIdx = -1;
+
 };
 
 #endif // SVDBSUBNETWORKEDITWIDGET_H

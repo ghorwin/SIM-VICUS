@@ -1516,7 +1516,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					case SVViewState::OCM_Network:
 					case SVViewState::OCM_NetworkEdge:
 					case SVViewState::OCM_NetworkNode:
-					case SVViewState::OCM_NetworkComponents:
+					case SVViewState::OCM_NetworkSubNetworks:
 					break;
 				}
 			}
@@ -1579,7 +1579,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					case SVViewState::OCM_Network:
 					case SVViewState::OCM_NetworkEdge:
 					case SVViewState::OCM_NetworkNode:
-					case SVViewState::OCM_NetworkComponents:
+					case SVViewState::OCM_NetworkSubNetworks:
 					break;
 				} // switch
 			}
@@ -1613,7 +1613,8 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 		case SVViewState::OCM_Network:
 		case SVViewState::OCM_NetworkNode:
 		case SVViewState::OCM_NetworkEdge:
-		case SVViewState::OCM_NetworkComponents:
+		case SVViewState::OCM_NetworkHeatExchange:
+		case SVViewState::OCM_NetworkSubNetworks:
 			for (const VICUS::Network & net: p.m_geometricNetworks){
 
 				switch (ocm) {
@@ -1636,17 +1637,14 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 						}
 					}
 					break;
-					case SVViewState::OCM_NetworkComponents: {
-//						for (const VICUS::NetworkEdge & edge: net.m_edges){
-//							unsigned int id = edge.m_componentId;
-//							if (db.m_networkComponents[id] != nullptr)
-//								edge.m_color = db.m_networkComponents[id]->m_color;
-//						}
-//						for (const VICUS::NetworkNode & node: net.m_nodes){
-//							unsigned int id = node.m_componentId;
-//							if (db.m_networkComponents[id] != nullptr)
-//								node.m_color = db.m_networkComponents[id]->m_color;
-//						}
+					case SVViewState::OCM_NetworkHeatExchange: {
+						for (const VICUS::NetworkEdge & edge: net.m_edges)
+							edge.m_color = VICUS::Network::colorHeatExchangeType(edge.m_heatExchange.m_modelType);
+						for (const VICUS::NetworkNode & node: net.m_nodes)
+							node.m_color = VICUS::Network::colorHeatExchangeType(node.m_heatExchange.m_modelType);
+					}
+					break;
+					case SVViewState::OCM_NetworkSubNetworks: {
 					}
 					break;
 

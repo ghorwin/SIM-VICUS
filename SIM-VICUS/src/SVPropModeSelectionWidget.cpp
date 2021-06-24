@@ -202,7 +202,10 @@ void SVPropModeSelectionWidget::viewStateProperties(SVViewState & vs) const {
 				case 2 : vs.m_objectColorMode = SVViewState::OCM_NetworkEdge; break;
 
 				// component: show network component association
-				case 3 : vs.m_objectColorMode = SVViewState::OCM_NetworkComponents; break;
+				case 3 : vs.m_objectColorMode = SVViewState::OCM_NetworkSubNetworks; break;
+
+				// component: show network component association
+				case 4 : vs.m_objectColorMode = SVViewState::OCM_NetworkHeatExchange; break;
 			}
 		break;
 

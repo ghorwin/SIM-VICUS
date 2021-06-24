@@ -113,7 +113,7 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	m_currentComponent = comp;
 
 	// now update the GUI controls
-	m_ui->lineEditName->setString(comp->m_displayNameML);
+	m_ui->lineEditName->setString(comp->m_displayName);
 
 	m_ui->comboBoxComponentType->blockSignals(true);
 	int typeIdx = m_ui->comboBoxComponentType->findData(comp->m_modelType);
@@ -178,8 +178,8 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 void SVDBNetworkComponentEditWidget::on_lineEditName_editingFinished(){
 	Q_ASSERT(m_currentComponent != nullptr);
 
-	if (m_currentComponent->m_displayNameML != m_ui->lineEditName->string()) {
-		m_currentComponent->m_displayNameML = m_ui->lineEditName->string();
+	if (m_currentComponent->m_displayName != m_ui->lineEditName->string()) {
+		m_currentComponent->m_displayName = m_ui->lineEditName->string();
 		modelModify();
 	}
 }

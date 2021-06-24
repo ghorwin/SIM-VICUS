@@ -27,7 +27,6 @@
 #define SVPropNetworkEditWidgetH
 
 #include <QWidget>
-#include <QColor>
 
 #include <VICUS_Network.h>
 
@@ -183,22 +182,6 @@ private:
 	std::vector<const VICUS::NetworkEdge *> m_currentEdges;
 
 	std::vector<const VICUS::NetworkNode *> m_currentNodes;
-
-
-	// *** CONSTANTS
-
-	/*! map for coloring of heat exchange types */
-	const std::map<NANDRAD::HydraulicNetworkHeatExchange::ModelType, QColor> m_hxColorMap = {
-		{NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline,  QColor("#484747")},
-		{NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureZone,  QColor("#E69F00")},
-		{NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant,  QColor("#56B4E9")},
-		{NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline,  QColor("#009E73")},
-		{NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstant,  QColor("#F0E442")},
-		{NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser,  QColor("#0072B2")},
-		{NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSplineEvaporator,  QColor("#D55E00")},
-		{NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer,  QColor("#CC79A7")},
-		{NANDRAD::HydraulicNetworkHeatExchange::NUM_T,  QColor("#9C9595")}
-	};
 
 };
 

@@ -363,15 +363,18 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 
 	//  *** Update heat exchange table widget ***
 
+	// collect hx types used in this network
 	std::vector<NANDRAD::HydraulicNetworkHeatExchange::ModelType> hxTypes;
 	for (const VICUS::NetworkEdge &e: m_currentConstNetwork->m_edges){
 		if (std::find(hxTypes.begin(), hxTypes.end(), e.m_heatExchange.m_modelType) == hxTypes.end())
 			hxTypes.push_back(e.m_heatExchange.m_modelType);
 	}
+	for (const VICUS::NetworkNode &n: m_currentConstNetwork->m_nodes){
+		if (std::find(hxTypes.begin(), hxTypes.end(), n.m_heatExchange.m_modelType) == hxTypes.end())
+			hxTypes.push_back(n.m_heatExchange.m_modelType);
+	}
 
-	// sort in ascending order of ids
-	std::sort(hxTypes.begin(), hxTypes.end());
-
+	// fill table widget
 	currentRow = m_ui->tableWidgetHeatExchange->currentRow();
 	m_ui->tableWidgetHeatExchange->blockSignals(true);
 	m_ui->tableWidgetHeatExchange->clearContents();
@@ -379,7 +382,7 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 	row = 0;
 	for (NANDRAD::HydraulicNetworkHeatExchange::ModelType type: hxTypes){
 		 QTableWidgetItem * item = new QTableWidgetItem();
-		 item->setBackground(m_hxColorMap.at(type));
+		 item->setBackground(VICUS::Network::colorHeatExchangeType(type));
 		 item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
 		 m_ui->tableWidgetHeatExchange->setItem(row, 0, item);
 		 item = new QTableWidgetItem();

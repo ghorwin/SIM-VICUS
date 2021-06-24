@@ -1,6 +1,7 @@
 #include "SVDBSubNetworkTableModel.h"
 
 #include "SVConstants.h"
+#include "SVStyle.h"
 
 #include <QIcon>
 #include <QFont>
@@ -10,6 +11,8 @@
 #include <QtExt_LanguageHandler.h>
 
 #include <VICUS_SubNetwork.h>
+
+
 
 SVDBSubNetworkTableModel::SVDBSubNetworkTableModel(QObject *parent, SVDatabase &db) :
 	SVAbstractDatabaseTableModel(parent),
@@ -23,14 +26,18 @@ QVariant SVDBSubNetworkTableModel::data ( const QModelIndex & index, int role) c
 	if (!index.isValid())
 		return QVariant();
 
+	if (index.column() == ColColor && role == Role_Color) {
+		return true;
+	}
+
 	// readability improvement
-	const VICUS::Database<VICUS::SubNetwork> & db = m_db->m_subNetworks;
+	const VICUS::Database<VICUS::SubNetwork> & bcDB = m_db->m_subNetworks;
 
 	int row = index.row();
-	if (row >= (int)db.size())
+	if (row >= (int)bcDB.size())
 		return QVariant();
 
-	std::map<unsigned int, VICUS::SubNetwork>::const_iterator it = db.begin();
+	std::map<unsigned int, VICUS::SubNetwork>::const_iterator it = bcDB.begin();
 	std::advance(it, row);
 
 	switch (role) {
@@ -48,27 +55,24 @@ QVariant SVDBSubNetworkTableModel::data ( const QModelIndex & index, int role) c
 		case Qt::SizeHintRole :
 			switch (index.column()) {
 				case ColCheck :
+				case ColColor :
 					return QSize(22, 16);
 			} // switch
 		break;
 
-		case Qt::TextAlignmentRole :
-			switch (index.column()) {
-				case ColId					: return int(Qt::AlignLeft | Qt::AlignVCenter);
-				case ColName				: return int(Qt::AlignLeft | Qt::AlignVCenter);
-				case ColCheck				: return int(Qt::AlignCenter | Qt::AlignVCenter);
-			}
-			break;
-
 		case Qt::DecorationRole : {
-			switch (index.column()) {
-				case ColCheck:
-					if (it->second.isValid())
-						return QIcon("://gfx/actions/16x16/ok.png");
-					else
-						return QIcon("://gfx/actions/16x16/error.png");
+			if (index.column() == ColCheck) {
+				if (it->second.isValid())
+					return QIcon("://gfx/actions/16x16/ok.png");
+				else
+					return QIcon("://gfx/actions/16x16/error.png");
+			}
+		} break;
 
-			} // switch
+		case Qt::BackgroundRole : {
+			if (index.column() == ColColor) {
+				return it->second.m_color;
+			}
 		} break;
 
 		case Role_Id :
@@ -83,7 +87,7 @@ QVariant SVDBSubNetworkTableModel::data ( const QModelIndex & index, int role) c
 
 
 int SVDBSubNetworkTableModel::rowCount ( const QModelIndex & ) const {
-	return (int)m_db->m_schedules.size();
+	return (int)m_db->m_subNetworks.size();
 }
 
 
@@ -95,13 +99,6 @@ QVariant SVDBSubNetworkTableModel::headerData(int section, Qt::Orientation orien
 			switch ( section ) {
 				case ColId					: return tr("Id");
 				case ColName				: return tr("Name");
-				case ColCheck				: break;
-			}
-		} break;
-
-		case Qt::ToolTipRole:{
-			switch (section) {
-				case ColCheck				: return QString(tr("Indicates if schedule data is valid."));
 			}
 		} break;
 
@@ -123,11 +120,12 @@ void SVDBSubNetworkTableModel::resetModel() {
 
 
 QModelIndex SVDBSubNetworkTableModel::addNewItem() {
-	VICUS::SubNetwork subNet;
-	subNet.m_displayName.setEncodedString("en:<new schedule>");
+	VICUS::SubNetwork bc;
+	bc.m_displayName.setEncodedString("en:<new sub network>");
+	bc.m_color = SVStyle::randomColor();
 
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
-	unsigned int id = m_db->m_subNetworks.add( subNet );
+	unsigned int id = m_db->m_subNetworks.add( bc );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
 	return idx;
@@ -143,6 +141,7 @@ QModelIndex SVDBSubNetworkTableModel::copyItem(const QModelIndex & existingItemI
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	// create new item and insert into DB
 	VICUS::SubNetwork newItem(it->second);
+	newItem.m_color = SVStyle::randomColor();
 	unsigned int id = m_db->m_subNetworks.add( newItem );
 	endInsertRows();
 	QModelIndex idx = indexById(id);
@@ -163,6 +162,7 @@ void SVDBSubNetworkTableModel::deleteItem(const QModelIndex & index) {
 void SVDBSubNetworkTableModel::setColumnResizeModes(QTableView * tableView) {
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBSubNetworkTableModel::ColId, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBSubNetworkTableModel::ColCheck, QHeaderView::Fixed);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBSubNetworkTableModel::ColColor, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBSubNetworkTableModel::ColName, QHeaderView::Stretch);
 }
 
