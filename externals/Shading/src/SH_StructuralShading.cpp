@@ -355,6 +355,7 @@ void StructuralShading::createSunNormals() {
 	// *** compute sun normals (clustered)
 
 	m_sunConeNormals.clear();
+	m_indexesOfSimilarNormals.clear();
 
 	// We initialize all our coresponding sun normals.
 	//
