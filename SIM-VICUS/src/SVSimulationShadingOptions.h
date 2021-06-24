@@ -41,7 +41,16 @@ namespace SH {
 	class StructuralShading;
 }
 
-/*! The widget holds all data needed for pre calculated shading factors. */
+/*! The widget holds all data needed for pre calculated shading factors.
+	The pre-computed shading data depends on:
+	- (selection of/all) surfaces and their geometry (and subsurface geometry)
+	- (selection of/all) obstacles and their geometry
+	- simulation time frame
+	- generation options (grid width, sun cone radius)
+
+	All these parameters are merged into a single hash code which is used as part of the resulting
+	shading file name.
+*/
 class SVSimulationShadingOptions : public QDialog {
 	Q_OBJECT
 
@@ -61,9 +70,19 @@ public:
 	enum DetailType {
 		Fast,			///< fast calculation parameters
 		Detailed,		///< detailed calculation paramtesers
-		Manual,			///< manually defined parameters
-		NUM_DT
+		Manual			///< manually defined parameters
 	};
+
+	/*! Here, we update our file name based on current selection. */
+	void updateUi();
+
+	/*! This function takes the current input and computes a hash value based on the selected data.
+		Then, it composes a file name and checks if a file with this hash code in the name exists already.
+		If yes, the function returns the filename of this file.
+		If different files with same hash-code, yet different extensions are found, it takes preference in
+		order d6b, d6o, tsv.
+	*/
+	bool checkForCurrentShadingFile() const;
 
 	/*! Defines whether to use "all geometry" or "only selected geometry". */
 	bool m_useOnlySelectedSurfaces = false;
@@ -77,7 +96,12 @@ private slots:
 
 	void on_radioButtonDetailed_toggled(bool checked);
 
+	void on_comboBoxFileType_currentIndexChanged(int index);
+
 private:
+	/*! Updates m_shadingFactorBaseName and the line edit in the user interface. */
+	void updateFileName();
+
 	/*! Function that calculates the shading factors for selected outside surfaces
 		Returns false if some error occurred during creation of the NANDRAD project.
 	*/
@@ -95,6 +119,8 @@ private:
 
 	std::vector<const VICUS::Surface*>	m_selSurfaces;						///< vector with selected surfaces
 	std::vector<const VICUS::Surface*>	m_selObstacles;						///< vector with selected dump geometry (obstacles)
+
+	QString								m_shadingFactorBaseName;			///< Holds the basename for the shading factor file.
 
 	SH::StructuralShading				*m_shading = nullptr;				///< Owned, managed as pointer-to-object to hide SH namespace
 };

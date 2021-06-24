@@ -85,8 +85,6 @@ private slots:
 
 	void on_pushButtonTestInit_clicked();
 
-	void on_comboBoxFileType_currentIndexChanged(int index);
-
 private:
 	/*! Composes correct command line (stored in m_cmdArgs). */
 	void updateCmdLine();

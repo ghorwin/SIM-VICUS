@@ -94,10 +94,15 @@ SVSimulationShadingOptions::~SVSimulationShadingOptions() {
 }
 
 
+void SVSimulationShadingOptions::updateUi() {
+	updateFileName();
+}
+
+
 void SVSimulationShadingOptions::setSimulationParameters(const DetailType & dt) {
 
-	m_ui->lineEditSunCone->setEnabled(false);
-	m_ui->lineEditGridSize->setEnabled(false);
+	m_ui->lineEditSunCone->setReadOnly(true);
+	m_ui->lineEditGridSize->setReadOnly(true);
 
 	double	gridSize = 0.1;	// size of grid in [m]
 	double	sunCone = 3;	// half opening angle of the cone for sun mapping [Deg]
@@ -114,25 +119,29 @@ void SVSimulationShadingOptions::setSimulationParameters(const DetailType & dt) 
 		}
 		break;
 		case Manual: {
-			m_ui->lineEditSunCone->setEnabled(true);
-			m_ui->lineEditGridSize->setEnabled(true);
+			m_ui->lineEditSunCone->setReadOnly(false);
+			m_ui->lineEditGridSize->setReadOnly(false);
 		}
 		break;
 	}
 
 	m_ui->lineEditGridSize->setValue( gridSize );
 	m_ui->lineEditSunCone->setValue( sunCone );
+
+	updateFileName();
 }
 
 
 void SVSimulationShadingOptions::on_pushButtonCalculate_clicked(){
 	try {
 		calculateShadingFactors();
-	} catch (IBK::Exception &ex) {
-
-		QMessageBox msgBox(QMessageBox::Critical, "Error", ex.what(), QMessageBox::Ok, this);
+	}
+	catch (IBK::Exception &ex) {
+		QMessageBox msgBox(QMessageBox::Critical, QString(), tr("The calculation was aborted or an error has occurred "
+																"during the calculation of shading factors."
+																), QMessageBox::Ok, this);
+		msgBox.setDetailedText(ex.what());
 		msgBox.exec();
-
 	}
 }
 
@@ -177,8 +186,6 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		return;
 	}
 
-	// T
-
 	IBK::IntPara startYear = simuPara.m_intPara[NANDRAD::SimulationParameter::IP_StartYear];
 	IBK::Parameter startDay = simuPara.m_interval.m_para[NANDRAD::Interval::P_Start];
 	IBK::Parameter endDay = simuPara.m_interval.m_para[NANDRAD::Interval::P_End];
@@ -188,8 +195,6 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 	unsigned int durationInSec = (unsigned int)simTimeStart.secondsUntil(simTimeEnd);
 	double sunConeDeg = m_ui->lineEditSunCone->value();
-
-	OutputType outputType = (OutputType)m_ui->comboBoxFileType->currentIndex();
 
 
 	m_shading->initializeShadingCalculation(loc.m_timeZone,
@@ -248,31 +253,21 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		return;
 
 	SVProjectHandler &prj = SVProjectHandler::instance();
+	QDir projectDir = QFileInfo(prj.projectFile()).dir();
 
-	// TODO Stephan, what if project hasn't been saved yet? projectName is empty then
-
-	QString projectName = QFileInfo(prj.projectFile()).completeBaseName();
-	QString shadingPath = QFileInfo(prj.projectFile()).dir().filePath(projectName) + '/';
-
-	QDir shadingDir (shadingPath);
-
-
-	if ( !shadingDir.exists() && !shadingDir.mkdir(shadingPath) )
-		throw IBK::Exception( IBK::FormatString("Could not create directory '%1'").arg(shadingPath.toStdString()), FUNC_ID );
-
+	OutputType outputType = (OutputType)m_ui->comboBoxFileType->currentIndex();
 	switch ( outputType ) {
 		case TsvFile : {
-			QString pathTSV = shadingPath  + projectName + "_shadingFactors.tsv" ;
-			IBK::Path exportFileTSV(pathTSV.toStdString() );
+			IBK::Path exportFileTSV( (projectDir.absoluteFilePath(m_shadingFactorBaseName) + ".tsv").toStdString() );
 			m_shading->writeShadingFactorsToTSV(exportFileTSV, surfaceIDs);
 		} break;
 		case D6oFile : {
-			QString pathD6O = shadingPath  + projectName + "_shadingFactors.d6o" ;
+			QString pathD6O = projectDir.absoluteFilePath(m_shadingFactorBaseName) + ".d6o" ;
 			IBK::Path exportFileD6O(pathD6O.toStdString() );
 			m_shading->writeShadingFactorsToDataIO(exportFileD6O, surfaceIDs, false);
 		} break;
 		case D6bFile : {
-			QString pathD6B = shadingPath  + projectName + "_shadingFactors.d6b" ;
+			QString pathD6B = projectDir.absoluteFilePath(m_shadingFactorBaseName) + ".d6b" ;
 			IBK::Path exportFileD6B(pathD6B.toStdString() );
 			m_shading->writeShadingFactorsToDataIO(exportFileD6B, surfaceIDs, true);
 		} break;
@@ -280,14 +275,46 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 }
 
+
 void SVSimulationShadingOptions::on_radioButtonFast_toggled(bool checked) {
-	setSimulationParameters(DetailType::Fast);
+	if (checked)
+		setSimulationParameters(DetailType::Fast);
 }
+
 
 void SVSimulationShadingOptions::on_radioButtonManual_toggled(bool checked) {
-	setSimulationParameters(DetailType::Manual);
+	if (checked)
+		setSimulationParameters(DetailType::Manual);
 }
 
+
 void SVSimulationShadingOptions::on_radioButtonDetailed_toggled(bool checked) {
-	setSimulationParameters(DetailType::Detailed);
+	if (checked)
+		setSimulationParameters(DetailType::Detailed);
+}
+
+
+void SVSimulationShadingOptions::updateFileName() {
+	SVProjectHandler &prj = SVProjectHandler::instance();
+
+	QString projectName = QFileInfo(prj.projectFile()).completeBaseName();
+
+	QString hashCode = "0815";
+
+	m_shadingFactorBaseName = projectName + "_shadingFactors_" + hashCode;
+
+	OutputType outputType = (OutputType)m_ui->comboBoxFileType->currentIndex();
+	QString shadingFilePath = m_shadingFactorBaseName;
+	switch ( outputType ) {
+		case TsvFile : shadingFilePath += ".tsv"; break;
+		case D6oFile : shadingFilePath += ".d6o"; break;
+		case D6bFile : shadingFilePath += ".d6b"; break;
+	}
+
+	m_ui->lineEditShadingFactorFilename->setText(shadingFilePath);
+}
+
+
+void SVSimulationShadingOptions::on_comboBoxFileType_currentIndexChanged(int index) {
+	updateFileName();
 }

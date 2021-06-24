@@ -196,9 +196,25 @@ int SVSimulationStartNandrad::edit(bool fmiExport) {
 	m_simulationLocationOptions->updateUi();
 	m_simulationOutputOptions->updateUi();
 	m_simulationModelOptions->updateUi();
+	m_simulationShadingOptions->updateUi();
 
 	updateTimeFrameEdits();
 	updateCmdLine();
+
+	// do we have any selected surfaces?
+	std::vector<const VICUS::Surface*> sel;
+	project().selectedSurfaces(sel, VICUS::Project::SG_Building);
+	if (sel.empty()) {
+		m_ui->radioButtonEntireProject->setEnabled(false);
+		m_ui->radioButtonSelectedGeometry->setEnabled(false);
+		m_ui->radioButtonEntireProject->setChecked(true);
+	}
+	else {
+		m_ui->radioButtonEntireProject->setEnabled(true);
+		m_ui->radioButtonSelectedGeometry->setEnabled(true);
+		m_ui->radioButtonSelectedGeometry->setChecked(true);
+	}
+
 
 	if (fmiExport) {
 		SVSettings::instance().showDoNotShowAgainMessage(this, "FMUExportInfoMessage", tr("FMU Export"),
@@ -464,7 +480,3 @@ void SVSimulationStartNandrad::on_pushButtonTestInit_clicked() {
 }
 
 
-void SVSimulationStartNandrad::on_comboBoxFileType_currentIndexChanged(int index) {
-	// determine new shading factor file name
-//	m_ui->lineEditShadingFileName
-}

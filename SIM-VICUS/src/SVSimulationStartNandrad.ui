@@ -17,13 +17,13 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>5</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabSimStart">
       <attribute name="title">
        <string>Simulation</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,1">
+      <layout class="QGridLayout" name="gridLayout_4" rowstretch="0,1">
        <item row="0" column="0">
         <widget class="QGroupBox" name="groupBoxSimulationTimeFrame">
          <property name="title">
@@ -126,11 +126,11 @@
              <enum>Qt::Vertical</enum>
             </property>
             <property name="sizeType">
-             <enum>QSizePolicy::Preferred</enum>
+             <enum>QSizePolicy::MinimumExpanding</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>20</width>
+              <width>50</width>
               <height>0</height>
              </size>
             </property>
