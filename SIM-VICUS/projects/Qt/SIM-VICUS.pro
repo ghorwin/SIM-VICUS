@@ -82,51 +82,30 @@ PRE_TARGETDEPS += \
 SOURCES += \
 								../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
 								../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
-								../../src/SVDBInfiltrationEditWidget.cpp \
-								../../src/SVDBInfiltrationTableModel.cpp \
-								../../src/SVDBInternalLoadsElectricEquipmentEditWidget.cpp \
-								../../src/SVDBInternalLoadsLightsEditWidget.cpp \
-								../../src/SVDBInternalLoadsOtherEditWidget.cpp \
-								../../src/SVDBNetworkFluidEditWidget.cpp \
-								../../src/SVDBNetworkFluidTableModel.cpp \
-								../../src/SVDBSubSurfaceComponentEditWidget.cpp \
-								../../src/SVDBSubSurfaceComponentTableModel.cpp \
-								../../src/SVDBVentilationNaturalEditWidget.cpp \
-								../../src/SVDBVentilationNaturalTableModel.cpp \
-								../../src/SVDBWindowGlazingSystemEditWidget.cpp \
-								../../src/SVDBWindowGlazingSystemTableModel.cpp \
-								../../src/SVDBWindowTableModel.cpp \
-								../../src/SVDBZoneControlShadingEditWidget.cpp \
-								../../src/SVDBZoneControlShadingTableModel.cpp \
-								../../src/SVDBZoneControlThermostatEditWidget.cpp \
-								../../src/SVDBZoneControlThermostatTableModel.cpp \
-								../../src/SVDBZoneControlVentilationNaturalEditWidget.cpp \
-								../../src/SVDBZoneControlVentilationNaturalTableModel.cpp \
-								../../src/SVDBZoneIdealHeatingCoolingEditWidget.cpp \
-								../../src/SVDBZoneIdealHeatingCoolingTableModel.cpp \
-								../../src/SVNetworkControllerDialog.cpp \
-								../../src/SVNetworkDialogSelectPipes.cpp \
-								../../src/SVPropAddWindowWidget.cpp \
-								../../src/SVShadingCalculationDialog.cpp \
-								../../src/SVView3DDialog.cpp \
 								../../src/actions/SVUndoAddBuilding.cpp \
 								../../src/actions/SVUndoAddBuildingLevel.cpp \
 								../../src/actions/SVUndoAddNetwork.cpp \
 								../../src/actions/SVUndoAddSurface.cpp \
 								../../src/actions/SVUndoAddZone.cpp \
 								../../src/actions/SVUndoCommandBase.cpp \
+								../../src/actions/SVUndoCopySurfaces.cpp \
 								../../src/actions/SVUndoCopyZones.cpp \
+								../../src/actions/SVUndoDeleteBuilding.cpp \
+								../../src/actions/SVUndoDeleteBuildingLevel.cpp \
+								../../src/actions/SVUndoDeleteNetwork.cpp \
 								../../src/actions/SVUndoDeleteSelected.cpp \
 								../../src/actions/SVUndoModifyBuilding.cpp \
 								../../src/actions/SVUndoModifyBuildingLevel.cpp \
 								../../src/actions/SVUndoModifyBuildingTopology.cpp \
 								../../src/actions/SVUndoModifyComponentInstances.cpp \
+								../../src/actions/SVUndoModifyNetwork.cpp \
 								../../src/actions/SVUndoModifyObjectName.cpp \
 								../../src/actions/SVUndoModifyProject.cpp \
 								../../src/actions/SVUndoModifyRoomZoneTemplateAssociation.cpp \
 								../../src/actions/SVUndoModifySiteData.cpp \
 								../../src/actions/SVUndoModifySubSurfaceComponentInstances.cpp \
 								../../src/actions/SVUndoModifySurfaceGeometry.cpp \
+								../../src/actions/SVUndoTreeNodeState.cpp \
 								../../src/core3D/Vic3DCoordinateSystemObject.cpp \
 								../../src/core3D/Vic3DGeometryHelpers.cpp \
 								../../src/core3D/Vic3DGridObject.cpp \
@@ -161,6 +140,11 @@ SOURCES += \
 								../../src/SVDBConstructionEditWidget.cpp \
 								../../src/SVDBConstructionTableModel.cpp \
 								../../src/SVDBDailyCycleInputWidget.cpp \
+								../../src/SVDBInfiltrationEditWidget.cpp \
+								../../src/SVDBInfiltrationTableModel.cpp \
+								../../src/SVDBInternalLoadsElectricEquipmentEditWidget.cpp \
+								../../src/SVDBInternalLoadsLightsEditWidget.cpp \
+								../../src/SVDBInternalLoadsOtherEditWidget.cpp \
 								../../src/SVDBInternalLoadsPersonEditWidget.cpp \
 								../../src/SVDBInternalLoadsTableModel.cpp \
 								../../src/SVDBMaterialEditWidget.cpp \
@@ -168,13 +152,30 @@ SOURCES += \
 								../../src/SVDBModelDelegate.cpp \
 								../../src/SVDBNetworkComponentEditWidget.cpp \
 								../../src/SVDBNetworkComponentTableModel.cpp \
+								../../src/SVDBNetworkFluidEditWidget.cpp \
+								../../src/SVDBNetworkFluidTableModel.cpp \
 								../../src/SVDBPipeEditWidget.cpp \
 								../../src/SVDBPipeTableModel.cpp \
 								../../src/SVDBScheduleAddDialog.cpp \
 								../../src/SVDBScheduleDailyCycleEditWidget.cpp \
 								../../src/SVDBScheduleEditWidget.cpp \
 								../../src/SVDBScheduleTableModel.cpp \
+								../../src/SVDBSubSurfaceComponentEditWidget.cpp \
+								../../src/SVDBSubSurfaceComponentTableModel.cpp \
+								../../src/SVDBVentilationNaturalEditWidget.cpp \
+								../../src/SVDBVentilationNaturalTableModel.cpp \
 								../../src/SVDBWindowEditWidget.cpp \
+								../../src/SVDBWindowGlazingSystemEditWidget.cpp \
+								../../src/SVDBWindowGlazingSystemTableModel.cpp \
+								../../src/SVDBWindowTableModel.cpp \
+								../../src/SVDBZoneControlShadingEditWidget.cpp \
+								../../src/SVDBZoneControlShadingTableModel.cpp \
+								../../src/SVDBZoneControlThermostatEditWidget.cpp \
+								../../src/SVDBZoneControlThermostatTableModel.cpp \
+								../../src/SVDBZoneControlVentilationNaturalEditWidget.cpp \
+								../../src/SVDBZoneControlVentilationNaturalTableModel.cpp \
+								../../src/SVDBZoneIdealHeatingCoolingEditWidget.cpp \
+								../../src/SVDBZoneIdealHeatingCoolingTableModel.cpp \
 								../../src/SVDBZoneTemplateEditDialog.cpp \
 								../../src/SVDBZoneTemplateEditWidget.cpp \
 								../../src/SVDBZoneTemplateTreeModel.cpp \
@@ -191,6 +192,8 @@ SOURCES += \
 								../../src/SVMessageHandler.cpp \
 								../../src/SVNavigationTreeItemDelegate.cpp \
 								../../src/SVNavigationTreeWidget.cpp \
+								../../src/SVNetworkControllerDialog.cpp \
+								../../src/SVNetworkDialogSelectPipes.cpp \
 								../../src/SVNetworkImportDialog.cpp \
 								../../src/SVPostProcBindings.cpp \
 								../../src/SVPostProcHandler.cpp \
@@ -198,6 +201,7 @@ SOURCES += \
 								../../src/SVPreferencesPageStyle.cpp \
 								../../src/SVPreferencesPageTools.cpp \
 								../../src/SVProjectHandler.cpp \
+								../../src/SVPropAddWindowWidget.cpp \
 								../../src/SVPropBuildingEditWidget.cpp \
 								../../src/SVPropEditGeometry.cpp \
 								../../src/SVPropertyWidget.cpp \
@@ -209,6 +213,7 @@ SOURCES += \
 								../../src/SVPropVertexListWidget.cpp \
 								../../src/SVScheduleHolidayWidget.cpp \
 								../../src/SVSettings.cpp \
+								../../src/SVShadingCalculationDialog.cpp \
 								../../src/SVSimulationLocationOptions.cpp \
 								../../src/SVSimulationModelOptions.cpp \
 								../../src/SVSimulationOutputOptions.cpp \
@@ -219,63 +224,37 @@ SOURCES += \
 								../../src/SVSmartSelectDialog.cpp \
 								../../src/SVStyle.cpp \
 								../../src/SVThreadBase.cpp \
-								../../src/SVUndoCopySurfaces.cpp \
-								../../src/SVUndoDeleteBuilding.cpp \
-								../../src/SVUndoDeleteBuildingLevel.cpp \
-								../../src/SVUndoDeleteNetwork.cpp \
-								../../src/SVUndoModifyNetwork.cpp \
-								../../src/SVUndoTreeNodeState.cpp \
 								../../src/SVUtils.cpp \
+								../../src/SVView3DDialog.cpp \
 								../../src/SVViewState.cpp \
 								../../src/SVViewStateHandler.cpp \
 								../../src/SVWelcomeScreen.cpp
 
 HEADERS  += \
-								../../src/SVDBInfiltrationEditWidget.h \
-								../../src/SVDBInfiltrationTableModel.h \
-								../../src/SVDBInternalLoadsElectricEquipmentEditWidget.h \
-								../../src/SVDBInternalLoadsLightsEditWidget.h \
-								../../src/SVDBInternalLoadsOtherEditWidget.h \
-								../../src/SVDBNetworkFluidEditWidget.h \
-								../../src/SVDBNetworkFluidTableModel.h \
-								../../src/SVDBSubSurfaceComponentEditWidget.h \
-								../../src/SVDBSubSurfaceComponentTableModel.h \
-								../../src/SVDBVentilationNaturalEditWidget.h \
-								../../src/SVDBVentilationNaturalTableModel.h \
-								../../src/SVDBWindowGlazingSystemEditWidget.h \
-								../../src/SVDBWindowGlazingSystemTableModel.h \
-								../../src/SVDBWindowTableModel.h \
-								../../src/SVDBZoneControlShadingEditWidget.h \
-								../../src/SVDBZoneControlShadingTableModel.h \
-								../../src/SVDBZoneControlThermostatEditWidget.h \
-								../../src/SVDBZoneControlThermostatTableModel.h \
-								../../src/SVDBZoneControlVentilationNaturalEditWidget.h \
-								../../src/SVDBZoneControlVentilationNaturalTableModel.h \
-								../../src/SVDBZoneIdealHeatingCoolingEditWidget.h \
-								../../src/SVDBZoneIdealHeatingCoolingTableModel.h \
-								../../src/SVNetworkControllerDialog.h \
-								../../src/SVNetworkDialogSelectPipes.h \
-								../../src/SVPropAddWindowWidget.h \
-								../../src/SVShadingCalculationDialog.h \
-								../../src/SVView3DDialog.h \
 								../../src/actions/SVUndoAddBuilding.h \
 								../../src/actions/SVUndoAddBuildingLevel.h \
 								../../src/actions/SVUndoAddNetwork.h \
 								../../src/actions/SVUndoAddSurface.h \
 								../../src/actions/SVUndoAddZone.h \
 								../../src/actions/SVUndoCommandBase.h \
+								../../src/actions/SVUndoCopySurfaces.h \
 								../../src/actions/SVUndoCopyZones.h \
+								../../src/actions/SVUndoDeleteBuilding.h \
+								../../src/actions/SVUndoDeleteBuildingLevel.h \
+								../../src/actions/SVUndoDeleteNetwork.h \
 								../../src/actions/SVUndoDeleteSelected.h \
 								../../src/actions/SVUndoModifyBuilding.h \
 								../../src/actions/SVUndoModifyBuildingLevel.h \
 								../../src/actions/SVUndoModifyBuildingTopology.h \
 								../../src/actions/SVUndoModifyComponentInstances.h \
+								../../src/actions/SVUndoModifyNetwork.h \
 								../../src/actions/SVUndoModifyObjectName.h \
 								../../src/actions/SVUndoModifyProject.h \
 								../../src/actions/SVUndoModifyRoomZoneTemplateAssociation.h \
 								../../src/actions/SVUndoModifySiteData.h \
 								../../src/actions/SVUndoModifySubSurfaceComponentInstances.h \
 								../../src/actions/SVUndoModifySurfaceGeometry.h \
+								../../src/actions/SVUndoTreeNodeState.h \
 								../../src/core3D/Vic3DCamera.h \
 								../../src/core3D/Vic3DConstants.h \
 								../../src/core3D/Vic3DCoordinateSystemObject.h \
@@ -313,6 +292,11 @@ HEADERS  += \
 								../../src/SVDBConstructionEditWidget.h \
 								../../src/SVDBConstructionTableModel.h \
 								../../src/SVDBDailyCycleInputWidget.h \
+								../../src/SVDBInfiltrationEditWidget.h \
+								../../src/SVDBInfiltrationTableModel.h \
+								../../src/SVDBInternalLoadsElectricEquipmentEditWidget.h \
+								../../src/SVDBInternalLoadsLightsEditWidget.h \
+								../../src/SVDBInternalLoadsOtherEditWidget.h \
 								../../src/SVDBInternalLoadsPersonEditWidget.h \
 								../../src/SVDBInternalLoadsTableModel.h \
 								../../src/SVDBMaterialEditWidget.h \
@@ -320,13 +304,30 @@ HEADERS  += \
 								../../src/SVDBModelDelegate.h \
 								../../src/SVDBNetworkComponentEditWidget.h \
 								../../src/SVDBNetworkComponentTableModel.h \
+								../../src/SVDBNetworkFluidEditWidget.h \
+								../../src/SVDBNetworkFluidTableModel.h \
 								../../src/SVDBPipeEditWidget.h \
 								../../src/SVDBPipeTableModel.h \
 								../../src/SVDBScheduleAddDialog.h \
 								../../src/SVDBScheduleDailyCycleEditWidget.h \
 								../../src/SVDBScheduleEditWidget.h \
 								../../src/SVDBScheduleTableModel.h \
+								../../src/SVDBSubSurfaceComponentEditWidget.h \
+								../../src/SVDBSubSurfaceComponentTableModel.h \
+								../../src/SVDBVentilationNaturalEditWidget.h \
+								../../src/SVDBVentilationNaturalTableModel.h \
 								../../src/SVDBWindowEditWidget.h \
+								../../src/SVDBWindowGlazingSystemEditWidget.h \
+								../../src/SVDBWindowGlazingSystemTableModel.h \
+								../../src/SVDBWindowTableModel.h \
+								../../src/SVDBZoneControlShadingEditWidget.h \
+								../../src/SVDBZoneControlShadingTableModel.h \
+								../../src/SVDBZoneControlThermostatEditWidget.h \
+								../../src/SVDBZoneControlThermostatTableModel.h \
+								../../src/SVDBZoneControlVentilationNaturalEditWidget.h \
+								../../src/SVDBZoneControlVentilationNaturalTableModel.h \
+								../../src/SVDBZoneIdealHeatingCoolingEditWidget.h \
+								../../src/SVDBZoneIdealHeatingCoolingTableModel.h \
 								../../src/SVDBZoneTemplateEditDialog.h \
 								../../src/SVDBZoneTemplateEditWidget.h \
 								../../src/SVDBZoneTemplateTreeModel.h \
@@ -343,6 +344,8 @@ HEADERS  += \
 								../../src/SVMessageHandler.h \
 								../../src/SVNavigationTreeItemDelegate.h \
 								../../src/SVNavigationTreeWidget.h \
+								../../src/SVNetworkControllerDialog.h \
+								../../src/SVNetworkDialogSelectPipes.h \
 								../../src/SVNetworkImportDialog.h \
 								../../src/SVPostProcBindings.h \
 								../../src/SVPostProcHandler.h \
@@ -350,6 +353,7 @@ HEADERS  += \
 								../../src/SVPreferencesPageStyle.h \
 								../../src/SVPreferencesPageTools.h \
 								../../src/SVProjectHandler.h \
+								../../src/SVPropAddWindowWidget.h \
 								../../src/SVPropBuildingEditWidget.h \
 								../../src/SVPropEditGeometry.h \
 								../../src/SVPropertyWidget.h \
@@ -361,6 +365,7 @@ HEADERS  += \
 								../../src/SVPropVertexListWidget.h \
 								../../src/SVScheduleHolidayWidget.h \
 								../../src/SVSettings.h \
+								../../src/SVShadingCalculationDialog.h \
 								../../src/SVSimulationLocationOptions.h \
 								../../src/SVSimulationModelOptions.h \
 								../../src/SVSimulationOutputOptions.h \
@@ -371,43 +376,38 @@ HEADERS  += \
 								../../src/SVSmartSelectDialog.h \
 								../../src/SVStyle.h \
 								../../src/SVThreadBase.h \
-								../../src/SVUndoCopySurfaces.h \
-								../../src/SVUndoDeleteBuilding.h \
-								../../src/SVUndoDeleteBuildingLevel.h \
-								../../src/SVUndoDeleteNetwork.h \
-								../../src/SVUndoModifyNetwork.h \
-								../../src/SVUndoTreeNodeState.h \
 								../../src/SVUtils.h \
+								../../src/SVView3DDialog.h \
 								../../src/SVViewState.h \
 								../../src/SVViewStateHandler.h \
 								../../src/SVWelcomeScreen.h
 
 FORMS    += \
 								../../src/SVAboutDialog.ui \
+								../../src/SVDatabaseEditDialog.ui \
+								../../src/SVDBBoundaryConditionEditWidget.ui \
+								../../src/SVDBComponentEditWidget.ui \
+								../../src/SVDBConstructionEditWidget.ui \
 								../../src/SVDBInfiltrationEditWidget.ui \
 								../../src/SVDBInternalLoadsElectricEquipmentEditWidget.ui \
 								../../src/SVDBInternalLoadsLightsEditWidget.ui \
 								../../src/SVDBInternalLoadsOtherEditWidget.ui \
+								../../src/SVDBInternalLoadsPersonEditWidget.ui \
+								../../src/SVDBMaterialEditWidget.ui \
+								../../src/SVDBNetworkComponentEditWidget.ui \
 								../../src/SVDBNetworkFluidEditWidget.ui \
+								../../src/SVDBPipeEditWidget.ui \
+								../../src/SVDBScheduleAddDialog.ui \
+								../../src/SVDBScheduleDailyCycleEditWidget.ui \
+								../../src/SVDBScheduleEditWidget.ui \
 								../../src/SVDBSubSurfaceComponentEditWidget.ui \
 								../../src/SVDBVentilationNaturalEditWidget.ui \
+								../../src/SVDBWindowEditWidget.ui \
 								../../src/SVDBWindowGlazingSystemEditWidget.ui \
 								../../src/SVDBZoneControlShadingEditWidget.ui \
 								../../src/SVDBZoneControlThermostatEditWidget.ui \
 								../../src/SVDBZoneControlVentilationNaturalEditWidget.ui \
 								../../src/SVDBZoneIdealHeatingCoolingEditWidget.ui \
-								../../src/SVDatabaseEditDialog.ui \
-								../../src/SVDBBoundaryConditionEditWidget.ui \
-								../../src/SVDBComponentEditWidget.ui \
-								../../src/SVDBConstructionEditWidget.ui \
-								../../src/SVDBInternalLoadsPersonEditWidget.ui \
-								../../src/SVDBMaterialEditWidget.ui \
-								../../src/SVDBNetworkComponentEditWidget.ui \
-								../../src/SVDBPipeEditWidget.ui \
-								../../src/SVDBScheduleAddDialog.ui \
-								../../src/SVDBScheduleDailyCycleEditWidget.ui \
-								../../src/SVDBScheduleEditWidget.ui \
-								../../src/SVDBWindowEditWidget.ui \
 								../../src/SVDBZoneTemplateEditDialog.ui \
 								../../src/SVDBZoneTemplateEditWidget.ui \
 								../../src/SVImportIDFDialog.ui \

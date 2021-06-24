@@ -33,13 +33,6 @@
      </property>
      <addaction name="actionFileImportEneryPlusIDF"/>
     </widget>
-    <widget class="QMenu" name="menuExport">
-     <property name="title">
-      <string>Export</string>
-     </property>
-     <addaction name="actionFileExportNANDRAD"/>
-     <addaction name="actionFileExportEnergyPlus"/>
-    </widget>
     <addaction name="actionFileNew"/>
     <addaction name="actionFileOpen"/>
     <addaction name="menuImport"/>
@@ -51,9 +44,8 @@
     <addaction name="actionFileClose"/>
     <addaction name="separator"/>
     <addaction name="actionFileOpenProjectDir"/>
-    <addaction name="menuExport"/>
-    <addaction name="actionFileExport"/>
-    <addaction name="actionFileExportFMU"/>
+    <addaction name="actionFileExportProjectPackage"/>
+    <addaction name="actionFileExportView3D"/>
     <addaction name="separator"/>
     <addaction name="actionFileQuit"/>
    </widget>
@@ -92,7 +84,7 @@
      <string>&amp;View</string>
     </property>
     <addaction name="separator"/>
-    <addaction name="actionResetView"/>
+    <addaction name="actionViewResetView"/>
     <addaction name="actionViewShowSurfaceNormals"/>
     <addaction name="separator"/>
    </widget>
@@ -100,8 +92,8 @@
     <property name="title">
      <string>&amp;Tools</string>
     </property>
-    <addaction name="actionViewExternalPostProcessing"/>
-    <addaction name="actionViewCCMeditor"/>
+    <addaction name="actionToolsExternalPostProcessing"/>
+    <addaction name="actionToolsCCMeditor"/>
    </widget>
    <widget class="QMenu" name="menuNetworks">
     <property name="title">
@@ -163,8 +155,6 @@
     <addaction name="actionSimulationHydraulicNetwork"/>
     <addaction name="separator"/>
     <addaction name="actionSimulationExportFMI"/>
-    <addaction name="actionExportView3D"/>
-    <addaction name="actionSimulationCalculateShadingFactors"/>
    </widget>
    <widget class="QMenu" name="menu_Buildings">
     <property name="title">
@@ -255,17 +245,12 @@
     <string>Ctrl+Shift+S</string>
    </property>
   </action>
-  <action name="actionFileExport">
+  <action name="actionFileExportProjectPackage">
    <property name="text">
     <string>&amp;Export project package...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+E</string>
-   </property>
-  </action>
-  <action name="actionFileExportFMU">
-   <property name="text">
-    <string>Export Functional Mock-up Unit...</string>
    </property>
   </action>
   <action name="actionFileClose">
@@ -321,22 +306,6 @@
     <string>F8</string>
    </property>
   </action>
-  <action name="actionFileExportNANDRAD">
-   <property name="text">
-    <string>Export NANDRAD project...</string>
-   </property>
-   <property name="toolTip">
-    <string>Exports NANDRAD simulation project and input data.</string>
-   </property>
-  </action>
-  <action name="actionFileExportEnergyPlus">
-   <property name="text">
-    <string>Export EnergyPlus project...</string>
-   </property>
-   <property name="toolTip">
-    <string>Exports EnergyPlus project.</string>
-   </property>
-  </action>
   <action name="actionEditTextEditProject">
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
@@ -369,7 +338,7 @@
     <string>Ctrl+Shift+C</string>
    </property>
   </action>
-  <action name="actionViewExternalPostProcessing">
+  <action name="actionToolsExternalPostProcessing">
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
      <normaloff>:/gfx/actions/32x32/PostProcApp_32x32.png</normaloff>:/gfx/actions/32x32/PostProcApp_32x32.png</iconset>
@@ -381,7 +350,7 @@
     <string>Launches the external Post-Processing.</string>
    </property>
   </action>
-  <action name="actionViewCCMeditor">
+  <action name="actionToolsCCMeditor">
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
      <normaloff>:/gfx/actions/32x32/CCMEditor_32.png</normaloff>:/gfx/actions/32x32/CCMEditor_32.png</iconset>
@@ -588,7 +557,7 @@
     <string>Fluids...</string>
    </property>
   </action>
-  <action name="actionResetView">
+  <action name="actionViewResetView">
    <property name="text">
     <string>Reset view</string>
    </property>
@@ -627,6 +596,10 @@
    </property>
   </action>
   <action name="actionSimulationExportFMI">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/32x32/FMU_32x32.png</normaloff>:/gfx/actions/32x32/FMU_32x32.png</iconset>
+   </property>
    <property name="text">
     <string>Export Functional Mock-Up Unit (NANDRAD FMU)...</string>
    </property>
@@ -634,14 +607,9 @@
     <string>Opens the FMU export dialog.</string>
    </property>
   </action>
-  <action name="actionExportView3D">
+  <action name="actionFileExportView3D">
    <property name="text">
-    <string>Export View3D</string>
-   </property>
-  </action>
-  <action name="actionSimulationCalculateShadingFactors">
-   <property name="text">
-    <string>Calculate Shading Factors...</string>
+    <string>Export geometry in View3D format...</string>
    </property>
   </action>
   <action name="actionDBWindowGlazingSystems">
@@ -652,11 +620,6 @@
   <action name="actionDBSubSurfaceComponents">
    <property name="text">
     <string>Window/Door (sub-surface) components...</string>
-   </property>
-  </action>
-  <action name="actiondsadd">
-   <property name="text">
-    <string>dsadd</string>
    </property>
   </action>
   <action name="actionDBZoneIdealHeatingCooling">

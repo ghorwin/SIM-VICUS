@@ -124,7 +124,7 @@ SVSimulationStartNandrad::~SVSimulationStartNandrad() {
 }
 
 
-int SVSimulationStartNandrad::edit() {
+int SVSimulationStartNandrad::edit(bool fmiExport) {
 
 	m_solverExecutable = SVSettings::nandradSolverExecutable();
 
@@ -190,11 +190,15 @@ int SVSimulationStartNandrad::edit() {
 	m_simulationOutputOptions->updateUi();
 	m_simulationModelOptions->updateUi();
 
-	// TODO : Hauke
-	// m_simulationNetworkOptions->updateUi();
-
 	updateTimeFrameEdits();
 	updateCmdLine();
+
+	if (fmiExport) {
+		SVSettings::instance().showDoNotShowAgainMessage(this, "FMUExportInfoMessage", tr("FMU Export"),
+			tr("Adjust the simulation parameters in this dialog as needed, test-initialize the simulation and "
+			   "then start the FMU generation process by pressing 'Export FMU...'")
+			);
+	}
 
 	return exec();
 	// if dialog was confirmed, data is transfered into project

@@ -238,11 +238,10 @@ private slots:
 	void on_actionFileSaveAs_triggered();
 	void on_actionFileReload_triggered();
 	void on_actionFileImportEneryPlusIDF_triggered();
-	void on_actionFileExport_triggered();
-	void on_actionFileExportFMU_triggered();
-	void on_actionFileExportNANDRAD_triggered();
 	void on_actionFileOpenProjectDir_triggered();
 	void on_actionFileClose_triggered();
+	void on_actionFileExportProjectPackage_triggered();
+	void on_actionFileExportView3D_triggered();
 	void on_actionFileQuit_triggered();
 
 	void on_actionEditTextEditProject_triggered();
@@ -278,16 +277,24 @@ private slots:
 
 	void on_actionBuildingFloorManager_triggered();
 
+
 	void on_actionNetworkImport_triggered();
 
-	void on_actionViewExternalPostProcessing_triggered();
-	void on_actionViewCCMeditor_triggered();
+
+	void on_actionToolsExternalPostProcessing_triggered();
+	void on_actionToolsCCMeditor_triggered();
+
+
 	void on_actionViewToggleGeometryMode_triggered();
 	void on_actionViewToggleParametrizationMode_triggered();
+	void on_actionViewShowSurfaceNormals_toggled(bool visible);
+	void on_actionViewResetView_triggered();
+
 
 	void on_actionSimulationNANDRAD_triggered();
 	void on_actionSimulationHydraulicNetwork_triggered();
-	void on_actionSimulationCalculateShadingFactors_triggered();
+	void on_actionSimulationExportFMI_triggered();
+
 
 	void on_actionHelpAboutQt_triggered();
 	void on_actionHelpAbout_triggered();
@@ -297,11 +304,6 @@ private slots:
 	void on_actionHelpOnlineManual_triggered();
 	void on_actionHelpKeyboardAndMouseControls_triggered();
 
-	void on_actionViewShowSurfaceNormals_toggled(bool visible);
-
-	void on_actionResetView_triggered();
-
-	void on_actionExportView3D_triggered();
 
 private:
 	/*! Sets up all dock widgets with definition lists. */

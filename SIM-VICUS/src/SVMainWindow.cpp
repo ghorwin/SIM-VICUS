@@ -904,7 +904,14 @@ void SVMainWindow::on_actionFileOpenProjectDir_triggered() {
 }
 
 
-void SVMainWindow::on_actionFileExport_triggered() {
+void SVMainWindow::on_actionFileClose_triggered() {
+	// move input focus away from any input fields (to allow editingFinished() events to fire)
+	setFocus();
+	m_projectHandler.closeProject(this);
+}
+
+
+void SVMainWindow::on_actionFileExportProjectPackage_triggered() {
 	// project must have been saved once already
 	if (!saveProject())
 		return;
@@ -943,23 +950,9 @@ void SVMainWindow::on_actionFileExport_triggered() {
 }
 
 
-void SVMainWindow::on_actionFileExportFMU_triggered() {
-	// project must have been saved once, already
-	if (!saveProject())
-		return;
-
-	// TODO : Implement FMU export dialog
-
-	//	if (m_fmiExportDialog == nullptr)
-//		m_fmiExportDialog = new SVFMIExportDialog(this);
-
-}
-
-
-void SVMainWindow::on_actionFileClose_triggered() {
-	// move input focus away from any input fields (to allow editingFinished() events to fire)
-	setFocus();
-	m_projectHandler.closeProject(this);
+void SVMainWindow::on_actionFileExportView3D_triggered() {
+	SVView3D v3d;
+	v3d.exportView3d();
 }
 
 
@@ -1027,7 +1020,108 @@ void SVMainWindow::on_actionNetworkImport_triggered() {
 }
 
 
-void SVMainWindow::on_actionViewExternalPostProcessing_triggered() {
+
+void SVMainWindow::on_actionSimulationNANDRAD_triggered() {
+	// we need a saved project, before we can start the simulation
+	// we require a saved project with at least one network definition
+	if (SVProjectHandler::instance().projectFile().isEmpty()) {
+		QMessageBox::critical(this, QString(), tr("The project must be saved, first!"));
+		if (!saveProject())
+			return;
+	}
+	if (m_simulationStartNandrad == nullptr)
+		m_simulationStartNandrad = new SVSimulationStartNandrad;
+	// open simulation start dialog, with settings for climate location, simulation and
+	// solver settings and simulation start button
+	int res = m_simulationStartNandrad->edit();
+	if (res == QDialog::Accepted) {
+		// transfer data to VICUS project
+		// create an undo action for modification of the (entire) project
+		SVUndoModifyProject * undo = new SVUndoModifyProject(tr("Updated simulation parameters"), m_simulationStartNandrad->localProject());
+		undo->push();
+	}
+}
+
+
+void SVMainWindow::on_actionSimulationHydraulicNetwork_triggered() {
+	if (m_simulationStartNetworkSim == nullptr)
+		m_simulationStartNetworkSim = new SVSimulationStartNetworkSim(this);
+	// we require a saved project with at least one network definition
+	if (SVProjectHandler::instance().projectFile().isEmpty()) {
+		QMessageBox::critical(this, QString(), tr("The project must be saved, first!"));
+		if (!saveProject())
+			return;
+	}
+	if (project().m_geometricNetworks.empty()) {
+		QMessageBox::critical(this, QString(), tr("You need to define at least one network!"));
+		return;
+	}
+
+	m_simulationStartNetworkSim->edit();
+}
+
+
+void SVMainWindow::on_actionSimulationExportFMI_triggered() {
+	// we require a saved project with at least one network definition
+	if (SVProjectHandler::instance().projectFile().isEmpty()) {
+		QMessageBox::critical(this, QString(), tr("The project must be saved, first!"));
+		if (!saveProject())
+			return;
+	}
+	if (m_simulationStartNandrad == nullptr)
+		m_simulationStartNandrad = new SVSimulationStartNandrad;
+	// open simulation start dialog with FMI export option
+	m_simulationStartNandrad->edit();
+}
+
+
+
+void SVMainWindow::on_actionViewToggleGeometryMode_triggered() {
+	// switch view state to geometry edit mode
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_viewMode = SVViewState::VM_GeometryEditMode;
+	vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
+	std::set<const VICUS::Object *> sel;
+	project().selectObjects(sel, VICUS::Project::SG_All, true, true);
+	if (sel.empty())
+		vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	else
+		vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+	vs.m_objectColorMode = SVViewState::OCM_None;
+	SVViewStateHandler::instance().setViewState(vs);
+	m_ui->actionViewToggleGeometryMode->setChecked(true);
+	m_ui->actionViewToggleParametrizationMode->setChecked(false);
+	// switch to add geometry mode, if we do not have a selection, otherwise use edit geometry widget
+	// let this change do the SVPropEditGeometry widget, which at the same time can update the local coordinate
+	// system; since update() is private, we trick the widget into believing a selection has changed
+	Q_ASSERT(SVViewStateHandler::instance().m_propEditGeometryWidget != nullptr);
+	SVViewStateHandler::instance().m_propEditGeometryWidget->onModified(SVProjectHandler::NodeStateModified, nullptr);
+}
+
+
+void SVMainWindow::on_actionViewToggleParametrizationMode_triggered() {
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	// switch to property edit mode
+	vs.m_viewMode = SVViewState::VM_PropertyEditMode;
+	// turn off any special scene modes
+	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	// select property mode based on what's being selected in the mode selection
+	// property widget (this sets m_propertyWidgetMode and m_objectColorMode)
+	SVViewStateHandler::instance().m_propModeSelectionWidget->viewStateProperties(vs);
+	SVViewStateHandler::instance().setViewState(vs);
+
+	m_ui->actionViewToggleParametrizationMode->setChecked(true);
+	m_ui->actionViewToggleGeometryMode->setChecked(false);
+}
+
+
+void SVMainWindow::on_actionViewShowSurfaceNormals_toggled(bool visible) {
+	// set corresponding flag in View
+	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->setNormalVectorsVisible(visible);
+}
+
+
+void SVMainWindow::on_actionToolsExternalPostProcessing_triggered() {
 	// configure PostProc session, save parallel to project and open session in post
 
 	if (SVSettings::instance().m_postProcExecutable.isEmpty() ||
@@ -1095,7 +1189,7 @@ void SVMainWindow::on_actionViewExternalPostProcessing_triggered() {
 }
 
 
-void SVMainWindow::on_actionViewCCMeditor_triggered() {
+void SVMainWindow::on_actionToolsCCMeditor_triggered() {
 
 	QString ccmPath = SVSettings::instance().m_CCMEditorExecutable;
 	if (ccmPath.isEmpty() || !QFileInfo::exists(ccmPath)) {
@@ -1132,15 +1226,40 @@ void SVMainWindow::on_actionHelpBugReport_triggered() {
 	QDesktopServices::openUrl( QUrl(BUG_REPORT_URL));
 }
 
-void SVMainWindow::on_actionHelpCheckForUpdates_triggered() {
-
-}
-
 
 void SVMainWindow::on_actionHelpVisitDiscussionForum_triggered() {
 	QDesktopServices::openUrl( QUrl(FORUM_URL));
 }
 
+
+void SVMainWindow::on_actionHelpCheckForUpdates_triggered() {
+	// TODO :
+}
+
+
+void SVMainWindow::on_actionHelpOnlineManual_triggered() {
+	QDesktopServices::openUrl( QUrl(MANUAL_URL));
+}
+
+
+void SVMainWindow::on_actionHelpKeyboardAndMouseControls_triggered() {
+	// show keyboard/mouse control cheat sheet
+	QDialog dlg(this);
+	QVBoxLayout * lay = new QVBoxLayout(&dlg);
+	QTextEdit * w = new QTextEdit(&dlg);
+	lay->addWidget(w);
+	dlg.setLayout(lay);
+	QFile manual_en(":/doc/KeyboardMouseControls.html");
+	manual_en.open(QFile::ReadOnly);
+	QString manual = manual_en.readAll();
+	w->setHtml(manual);
+	dlg.resize(1400,800);
+	dlg.exec();
+}
+
+
+
+// *** other slots (not main menu slots) ***
 
 void SVMainWindow::onActionOpenRecentFile() {
 	QAction *action = qobject_cast<QAction *>(sender());
@@ -1160,7 +1279,6 @@ void SVMainWindow::onActionSwitchLanguage() {
 }
 
 
-
 void SVMainWindow::onUpdateActions() {
 	// purpose of this function is to update the view layout based on the existance of a project or none
 
@@ -1172,11 +1290,10 @@ void SVMainWindow::onUpdateActions() {
 
 	m_ui->actionFileSave->setEnabled(have_project);
 	m_ui->actionFileSaveAs->setEnabled(have_project);
-	m_ui->actionFileExport->setEnabled(have_project);
 	m_ui->actionFileReload->setEnabled(have_project);
 	m_ui->actionFileClose->setEnabled(have_project);
-	m_ui->actionFileExportNANDRAD->setEnabled(have_project);
-	m_ui->actionFileExportEnergyPlus->setEnabled(have_project);
+	m_ui->actionFileExportProjectPackage->setEnabled(have_project);
+	m_ui->actionFileExportView3D->setEnabled(have_project);
 	m_ui->actionFileOpenProjectDir->setEnabled(have_project);
 
 	m_ui->actionEditTextEditProject->setEnabled(have_project);
@@ -1188,13 +1305,11 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionNetworkEdit->setEnabled(have_project);
 
 	m_ui->actionViewToggleGeometryMode->setEnabled(have_project);
+	m_ui->actionViewResetView->setEnabled(have_project);
 
 	m_ui->actionSimulationNANDRAD->setEnabled(have_project);
 	m_ui->actionSimulationHydraulicNetwork->setEnabled(have_project);
 	m_ui->actionSimulationExportFMI->setEnabled(have_project);
-
-	// also disable menues that are not possible without project
-	m_ui->menuExport->setEnabled(have_project);
 
 	// no project, no undo actions -> clearing undostack also disables undo actions
 	if (!have_project)
@@ -1404,7 +1519,6 @@ void SVMainWindow::onWorkerThreadFinished() {
 }
 
 
-
 void SVMainWindow::onFixProjectAfterRead() {
 	// here we do all entry checks that will tell users about suggested changes in project
 
@@ -1412,118 +1526,6 @@ void SVMainWindow::onFixProjectAfterRead() {
 
 }
 
-
-void SVMainWindow::on_actionViewToggleGeometryMode_triggered() {
-	// switch view state to geometry edit mode
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_viewMode = SVViewState::VM_GeometryEditMode;
-	vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
-	std::set<const VICUS::Object *> sel;
-	project().selectObjects(sel, VICUS::Project::SG_All, true, true);
-	if (sel.empty())
-		vs.m_sceneOperationMode = SVViewState::NUM_OM;
-	else
-		vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-	vs.m_objectColorMode = SVViewState::OCM_None;
-	SVViewStateHandler::instance().setViewState(vs);
-	m_ui->actionViewToggleGeometryMode->setChecked(true);
-	m_ui->actionViewToggleParametrizationMode->setChecked(false);
-	// switch to add geometry mode, if we do not have a selection, otherwise use edit geometry widget
-	// let this change do the SVPropEditGeometry widget, which at the same time can update the local coordinate
-	// system; since update() is private, we trick the widget into believing a selection has changed
-	Q_ASSERT(SVViewStateHandler::instance().m_propEditGeometryWidget != nullptr);
-	SVViewStateHandler::instance().m_propEditGeometryWidget->onModified(SVProjectHandler::NodeStateModified, nullptr);
-}
-
-
-void SVMainWindow::on_actionViewToggleParametrizationMode_triggered() {
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	// switch to property edit mode
-	vs.m_viewMode = SVViewState::VM_PropertyEditMode;
-	// turn off any special scene modes
-	vs.m_sceneOperationMode = SVViewState::NUM_OM;
-	// select property mode based on what's being selected in the mode selection
-	// property widget (this sets m_propertyWidgetMode and m_objectColorMode)
-	SVViewStateHandler::instance().m_propModeSelectionWidget->viewStateProperties(vs);
-	SVViewStateHandler::instance().setViewState(vs);
-
-	m_ui->actionViewToggleParametrizationMode->setChecked(true);
-	m_ui->actionViewToggleGeometryMode->setChecked(false);
-}
-
-
-void SVMainWindow::on_actionFileExportNANDRAD_triggered() {
-	// ask user for target file name
-	// open export dialog, call via edit(fname) (with ok and cancel)
-}
-
-
-void SVMainWindow::on_actionSimulationNANDRAD_triggered() {
-	if (m_simulationStartNandrad == nullptr)
-		m_simulationStartNandrad = new SVSimulationStartNandrad;
-	// open simulation start dialog, with settings for climate location, simulation and
-	// solver settings and simulation start button
-	int res = m_simulationStartNandrad->edit();
-	if (res == QDialog::Accepted) {
-		// transfer data to VICUS project
-		// create an undo action for modification of the (entire) project
-		SVUndoModifyProject * undo = new SVUndoModifyProject(tr("Updated simulation parameters"), m_simulationStartNandrad->localProject());
-		undo->push();
-	}
-}
-
-
-void SVMainWindow::on_actionSimulationHydraulicNetwork_triggered() {
-	if (m_simulationStartNetworkSim == nullptr)
-		m_simulationStartNetworkSim = new SVSimulationStartNetworkSim(this);
-	// we require a saved project with at least one network definition
-	if (SVProjectHandler::instance().projectFile().isEmpty()) {
-		QMessageBox::critical(this, QString(), tr("The project must be saved, first!"));
-		return;
-	}
-	if (project().m_geometricNetworks.empty()) {
-		QMessageBox::critical(this, QString(), tr("You need to define at least one network!"));
-		return;
-	}
-
-	m_simulationStartNetworkSim->edit();
-}
-
-
-void SVMainWindow::on_actionSimulationCalculateShadingFactors_triggered() {
-	if (m_shadingCalculationDialog == nullptr)
-		m_shadingCalculationDialog = new SVShadingCalculationDialog;
-	// open simulation start dialog, with settings for climate location, simulation and
-	// solver settings and simulation start button
-	int res = m_shadingCalculationDialog->edit();
-	if (res == QDialog::Accepted) {
-		// transfer data to VICUS project
-		// create an undo action for modification of the (entire) project
-		SVUndoModifyProject * undo = new SVUndoModifyProject(tr("Updated simulation parameters"), m_simulationStartNandrad->localProject());
-		undo->push();
-	}
-}
-
-
-void SVMainWindow::on_actionHelpOnlineManual_triggered() {
-	QDesktopServices::openUrl( QUrl(MANUAL_URL));
-}
-
-
-void SVMainWindow::on_actionHelpKeyboardAndMouseControls_triggered() {
-	// show keyboard/mouse control cheat sheet
-	QDialog dlg(this);
-	QVBoxLayout * lay = new QVBoxLayout(&dlg);
-	QTextEdit * w = new QTextEdit(&dlg);
-	lay->addWidget(w);
-	dlg.setLayout(lay);
-	QFile manual_en(":/doc/KeyboardMouseControls.html");
-	manual_en.open(QFile::ReadOnly);
-	QString manual = manual_en.readAll();
-	w->setHtml(manual);
-	dlg.resize(1400,800);
-	dlg.exec();
-}
 
 
 // *** Private Functions ***
@@ -1792,20 +1794,10 @@ static bool copyRecursively(const QString &srcFilePath,
 }
 
 
-void SVMainWindow::on_actionViewShowSurfaceNormals_toggled(bool visible) {
-	// set corresponding flag in View
-	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->setNormalVectorsVisible(visible);
-}
 
-
-void SVMainWindow::on_actionResetView_triggered() {
+void SVMainWindow::on_actionViewResetView_triggered() {
 	// set scene view to recenter its camera
 	SVViewStateHandler::instance().m_geometryView->resetCamera();
-}
-
-void SVMainWindow::on_actionExportView3D_triggered() {
-	SVView3D v3d;
-	v3d.exportView3d();
 }
 
 

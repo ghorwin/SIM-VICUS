@@ -60,7 +60,7 @@ public:
 	explicit SVSimulationStartNandrad(QWidget *parent = nullptr);
 	~SVSimulationStartNandrad();
 
-	int edit();
+	int edit(bool fmiExport = false);
 
 	/*! Returns a copy of the locally modified version of the project. */
 	const VICUS::Project & localProject() const { return m_localProject; }
