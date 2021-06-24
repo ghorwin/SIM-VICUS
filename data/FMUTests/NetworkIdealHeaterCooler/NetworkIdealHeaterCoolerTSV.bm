@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BlockMod>
+	<!--Blocks-->
+	<Blocks>
+		<Block name="IdealHeaterCoolerFixedMassFlow">
+			<Position>-640, -464</Position>
+			<Size>224, 80</Size>
+			<!--Sockets-->
+			<Sockets>
+				<Socket name="NetworkElement(3).SupplyTemperatureSchedule">
+					<Position>0, 16</Position>
+					<Orientation>Horizontal</Orientation>
+					<Inlet>true</Inlet>
+				</Socket>
+				<Socket name="Location(0).Temperature">
+					<Position>224, 16</Position>
+					<Orientation>Horizontal</Orientation>
+					<Inlet>false</Inlet>
+				</Socket>
+				<Socket name="Zone(1).AirTemperature">
+					<Position>224, 32</Position>
+					<Orientation>Horizontal</Orientation>
+					<Inlet>false</Inlet>
+				</Socket>
+			</Sockets>
+		</Block>
+		<Block name="SupplyTemperature">
+			<Position>-1200, -464</Position>
+			<Size>128, 80</Size>
+			<!--Sockets-->
+			<Sockets>
+				<Socket name="SupplyTemperature">
+					<Position>128, 16</Position>
+					<Orientation>Horizontal</Orientation>
+					<Inlet>false</Inlet>
+				</Socket>
+			</Sockets>
+		</Block>
+	</Blocks>
+	<!--Connectors-->
+	<Connectors>
+		<Connector name="new connector">
+			<Source>SupplyTemperature.SupplyTemperature</Source>
+			<Target>IdealHeaterCoolerFixedMassFlow.NetworkElement(3).SupplyTemperatureSchedule</Target>
+			<!--Connector segments (between start and end lines)-->
+			<Segments>
+				<Segment>
+					<Orientation>Vertical</Orientation>
+					<Offset>0</Offset>
+				</Segment>
+				<Segment>
+					<Orientation>Horizontal</Orientation>
+					<Offset>368</Offset>
+				</Segment>
+				<Segment>
+					<Orientation>Vertical</Orientation>
+					<Offset>0</Offset>
+				</Segment>
+				<Segment>
+					<Orientation>Horizontal</Orientation>
+					<Offset>0</Offset>
+				</Segment>
+			</Segments>
+		</Connector>
+	</Connectors>
+</BlockMod>

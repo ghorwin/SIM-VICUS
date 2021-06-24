@@ -1,0 +1,25 @@
+# Created:	Do. Juni 24 12:37:25 2021
+# LastModified:	Do. Juni 24 12:44:40 2021
+
+tStart                   0 a
+tEnd                     1 d
+hMax                     30 min
+hMin                     1e-05 s
+hFallBackLimit           0.001 s
+hStart                   10 min
+hOutputMin               10 min
+outputTimeUnit           s
+adjustStepSize           no
+preventOversteppingOfEndTime yes
+absTol                   1e-06
+relTol                   1e-05
+MasterMode               GAUSS_SEIDEL
+ErrorControlMode         NONE
+maxIterations            1
+writeInternalVariables   no
+
+simulator 0 0 IdealHeaterCoolerFixedMassFlow #ffd700 "IdealHeaterCoolerFixedMassFlow.fmu"
+simulator 1 0 SupplyTemperature #008000 "SupplyTemperature.tsv"
+
+graph SupplyTemperature.SupplyTemperature IdealHeaterCoolerFixedMassFlow.NetworkElement(3).SupplyTemperatureSchedule
+
