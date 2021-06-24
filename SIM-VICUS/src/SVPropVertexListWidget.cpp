@@ -29,14 +29,18 @@
 #include <QMessageBox>
 #include <QInputDialog>
 
+#include <IBK_physics.h>
+
 #include <IBKMK_Vector3D.h>
+#include <IBKMK_Triangulation.h>
 
 #include <QtExt_LanguageHandler.h>
+#include <QtExt_Conversions.h>
 
 #include <VICUS_Project.h>
-#include <QtExt_Conversions.h>
 #include <VICUS_KeywordList.h>
 #include <VICUS_ComponentInstance.h>
+#include <VICUS_Polygon3D.h>
 
 #include "SVProjectHandler.h"
 #include "SVViewStateHandler.h"
@@ -50,6 +54,7 @@
 
 #include "Vic3DNewGeometryObject.h"
 #include "Vic3DCoordinateSystemObject.h"
+
 
 SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 	QWidget(parent),
@@ -238,6 +243,475 @@ void SVPropVertexListWidget::updateZoneComboBox() {
 	}
 	m_ui->comboBoxZone->blockSignals(false);
 	updateEnabledStates();
+}
+
+void SVPropVertexListWidget::createRoofZone() {
+
+	///TODO Dirk->Andreas wie baue ich das alles ordnungsgemäß ein?
+	/// Zuerst müssen die Eingaben als member umfunktioniert werden
+	/// Wie wird die Geometry aktualisiert? Wo werden die Punkte gespeichert?
+	///
+	/// we need all the time a local coordinate system where all points have a z-value of 0
+
+	enum RoofType{
+		SinglePitchRoof,		//Pultdach
+		DoublePitchRoof,		//Satteldach
+		MansardRoof,			//Mansarddach
+		HipRoof,				//Walmdach
+		Complex,				//Komplexe Dachform (darunter fällt auch Zeltdach)
+	};
+
+	//Eingaben die später aus der Oberfläche kommen müssen
+	RoofType type = DoublePitchRoof;
+	bool isHeightPredefined = true;		//entweder Höhe oder Dachneigungswinkel
+	double inputHeight = 2;				// in m Das ist die Höhe über dem Kniestock
+	double inputAngle = 20;				// in Deg
+
+	bool hasFlapTile = false;			//Kniestockwand?
+	double inputFlapTileHeight = 1.5;
+
+	std::vector<IBKMK::Vector3D>	polyline;	//das ist das floor polygon
+	polyline.push_back(IBKMK::Vector3D(0,0,0));
+	polyline.push_back(IBKMK::Vector3D(5,0,0));
+	polyline.push_back(IBKMK::Vector3D(5,4,0));
+
+	// First calculate the height or slope angle of the roof.
+	// Always update the other LineEdit
+	// The 2nd and 3rd points of the polyline are used for the calculation.
+
+	/// TODO Dirk add a valid check
+
+	//all roof polygons stored in the following vector
+	std::vector<VICUS::Polygon3D> polys;
+	if(type != Complex){
+
+		// all polygons of the roof room are stored following vector
+		std::vector<std::vector<IBKMK::Vector3D>> polygons;
+
+		// If there are only 3 points and the roof shape is not COMPLEX then a 4th point is always added.
+		// If there are more than 3 points, all further points are discarded. This ensures that there is always a rectangle.
+		if(polyline.size() > 3)
+			polyline.erase(polyline.begin()+3, polyline.end());
+		// Add fourth point
+		polyline.push_back(polyline[2]+(polyline[1]-polyline[0]));
+
+		//distance of point 2 to 3
+		double distBC = polyline[2].distanceTo(polyline[1]);
+
+		//calculate height
+		if(!isHeightPredefined)
+			inputHeight = std::tan(inputAngle * IBK::DEG2RAD) * distBC;
+		//calculate angle
+		else{
+			///TODO Dirk->Andreas fehlerbehandlung?
+			if(distBC>0)
+				inputAngle = std::atan(inputHeight/distBC);
+			else
+				inputAngle = 0;
+		}
+
+		/// TODO Dirk->Andreas jetzt würden die einzelfunktionen kommen ich schreib die einfach mal auf
+		/// irgendwie müssen diese dann einsortiert werden
+
+		/// TODO Dirk check if floor polygon has the right normal
+		IBKMK::Vector3D hFlapTile(0,0,hasFlapTile ? inputFlapTileHeight : 0);
+		switch (type){
+			case SinglePitchRoof:{
+				// Create a single pitch roof with floor, roof, 3x wall
+				polygons.resize(5);
+				//floor
+				polygons[0] = polyline;
+				IBKMK::Vector3D h1(0,0,inputHeight);
+				//roof
+				polygons[1].push_back(polyline[0]+hFlapTile);
+				polygons[1].push_back(polyline[1]+h1+hFlapTile);
+				polygons[1].push_back(polyline[2]+h1+hFlapTile);
+				polygons[1].push_back(polyline[3]+hFlapTile);
+				//wall 1
+				polygons[2].push_back(polyline[0]+hFlapTile);
+				if(hasFlapTile) polygons[2].push_back(polyline[0]);
+				polygons[2].push_back(polyline[1]);
+				polygons[2].push_back(polyline[1]+h1+hFlapTile);
+				//wall 2
+				polygons[3].push_back(polyline[1]);
+				polygons[3].push_back(polyline[2]);
+				polygons[3].push_back(polyline[2]+h1+hFlapTile);
+				polygons[3].push_back(polyline[1]+h1+hFlapTile);
+				//wall 3
+				polygons[4].push_back(polyline[2]);
+				polygons[4].push_back(polyline[3]);
+				if(hasFlapTile) polygons[4].push_back(polyline[3]+hFlapTile);
+				polygons[4].push_back(polyline[2]+h1+hFlapTile);
+
+			}
+			break;
+			case DoublePitchRoof:{
+				// Create a double pitch roof with floor, 2x roof, 2x wall
+				polygons.resize(5);
+				//floor
+				polygons[0] = polyline;
+
+				IBKMK::Vector3D middleBA= (polyline[1]-polyline[0])*0.5;
+				IBKMK::Vector3D h1(0,0,inputHeight);
+				//roof 1
+				polygons[1].push_back(polyline[0]);
+				polygons[1].push_back(polyline[0]+ middleBA+h1+hFlapTile);
+				polygons[1].push_back(polyline[3]+ middleBA+h1+hFlapTile);
+				polygons[1].push_back(polyline[3]);
+				//roof 2
+				polygons[2].push_back(polyline[1]);
+				polygons[2].push_back(polyline[2]);
+				polygons[2].push_back(polyline[2]- middleBA+h1+hFlapTile);
+				polygons[2].push_back(polyline[1]- middleBA+h1+hFlapTile);
+				//wall 1
+				polygons[3].push_back(polyline[0]);
+				polygons[3].push_back(polyline[1]);
+				polygons[3].push_back(polyline[1]+hFlapTile);
+				polygons[3].push_back(polyline[0]+ middleBA+h1+hFlapTile);
+				polygons[3].push_back(polyline[0]+hFlapTile);
+				//wall 2
+				polygons[4].push_back(polyline[2]);
+				polygons[4].push_back(polyline[3]);
+				polygons[4].push_back(polyline[3]+hFlapTile);
+				polygons[4].push_back(polyline[3]+ middleBA+h1+hFlapTile);
+				polygons[4].push_back(polyline[2]+hFlapTile);
+			}
+			break;
+			case MansardRoof:{
+				// Create a mansard roof with floor, 4x roof, 2x wall, if flapTile>0 then additional 2x wall
+				polygons.resize(hasFlapTile ? 9 : 7 );
+				//floor
+				polygons[0] = polyline;
+
+				IBKMK::Vector3D middleBA= (polyline[1]-polyline[0])*0.5;
+				IBKMK::Vector3D vec1= (polyline[1]-polyline[0])*0.1;
+				IBKMK::Vector3D h1(0,0,inputHeight), h2(0,0,inputHeight*0.5);
+				//roof 1
+				polygons[1].push_back(polyline[0]+hFlapTile);
+				polygons[1].push_back(polyline[0]+vec1+h2+hFlapTile);
+				polygons[1].push_back(polyline[3]+vec1+h2+hFlapTile);
+				polygons[1].push_back(polyline[3]+hFlapTile);
+				//roof 2
+				polygons[2].push_back(polyline[0]+vec1+h2+hFlapTile);
+				polygons[2].push_back(polyline[0]+middleBA+h1+hFlapTile);
+				polygons[2].push_back(polyline[3]+middleBA+h1+hFlapTile);
+				polygons[2].push_back(polyline[3]+vec1+h2+hFlapTile);
+				//roof 3
+				polygons[3].push_back(polyline[1]+hFlapTile);
+				polygons[3].push_back(polyline[2]+hFlapTile);
+				polygons[3].push_back(polyline[2]-vec1+h2+hFlapTile);
+				polygons[3].push_back(polyline[1]-vec1+h2+hFlapTile);
+				//roof 4
+				polygons[4].push_back(polyline[1]-vec1+h2+hFlapTile);
+				polygons[4].push_back(polyline[2]-vec1+h2+hFlapTile);
+				polygons[4].push_back(polyline[2]-middleBA+h1+hFlapTile);
+				polygons[4].push_back(polyline[1]-middleBA+h1+hFlapTile);
+
+				//wall 1
+				polygons[5].push_back(polyline[0]);
+				polygons[5].push_back(polyline[1]);
+				polygons[5].push_back(polyline[1]+hFlapTile);
+				polygons[5].push_back(polyline[1]-vec1+h2+hFlapTile);
+				polygons[5].push_back(polyline[0]+middleBA+h1+hFlapTile);
+				polygons[5].push_back(polyline[0]+vec1+h2+hFlapTile);
+				polygons[5].push_back(polyline[0]+hFlapTile);
+				//wall 2
+				polygons[6].push_back(polyline[2]);
+				polygons[6].push_back(polyline[3]);
+				polygons[6].push_back(polyline[3]+hFlapTile);
+				polygons[6].push_back(polyline[3]+vec1+h2+hFlapTile);
+				polygons[6].push_back(polyline[3]+middleBA+h1+hFlapTile);
+				polygons[6].push_back(polyline[2]-vec1+h2+hFlapTile);
+				polygons[6].push_back(polyline[2]+hFlapTile);
+
+				if(hasFlapTile){
+					//wall 3
+					polygons[7].push_back(polyline[3]);
+					polygons[7].push_back(polyline[0]);
+					polygons[7].push_back(polyline[0]+hFlapTile);
+					polygons[7].push_back(polyline[3]+hFlapTile);
+
+					//wall 4
+					polygons[8].push_back(polyline[1]);
+					polygons[8].push_back(polyline[2]);
+					polygons[8].push_back(polyline[2]+hFlapTile);
+					polygons[8].push_back(polyline[1]+hFlapTile);
+				}
+			}
+			break;
+			case HipRoof:{
+				// Create a hip roof with floor, 2x roof, 2x wall, if flapTile>0 then additional 4x wall
+				polygons.resize(hasFlapTile ? 9 : 5);
+				//floor
+				polygons[0] = polyline;
+
+				IBKMK::Vector3D middleBA= (polyline[1]-polyline[0])*0.5;
+				IBKMK::Vector3D h1(0,0,inputHeight);
+				IBKMK::Vector3D d1(0,0,0);
+				double len = polyline[2].distanceTo(polyline[1]);
+				double wid = polyline[1].distanceTo(polyline[0]);
+				if(len != 0)
+					d1 = (polyline[1]-polyline[0]).normalized() * (wid/len*2);
+
+				//roof 1
+				polygons[1].push_back(polyline[3] + hFlapTile);
+				polygons[1].push_back(polyline[0] + hFlapTile);
+				polygons[1].push_back(polyline[0]+ middleBA+d1+h1 + hFlapTile);
+				polygons[1].push_back(polyline[3]+ middleBA-d1+h1 + hFlapTile);
+				//roof 2
+				polygons[2].push_back(polyline[1] + hFlapTile);
+				polygons[2].push_back(polyline[2] + hFlapTile);
+				polygons[2].push_back(polyline[2]- middleBA+d1+h1 + hFlapTile);
+				polygons[2].push_back(polyline[1]- middleBA-d1+h1 + hFlapTile);
+				//wall 1
+				polygons[3].push_back(polyline[0] + hFlapTile);
+				polygons[3].push_back(polyline[1] + hFlapTile);
+				polygons[3].push_back(polyline[0]+ middleBA+d1+h1 + hFlapTile);
+				//wall 2
+				polygons[4].push_back(polyline[2] + hFlapTile);
+				polygons[4].push_back(polyline[3] + hFlapTile);
+				polygons[4].push_back(polyline[3]+ middleBA-d1+h1 + hFlapTile);
+
+				if(hasFlapTile){
+					// additional walls
+					for(unsigned int i1 = 0; i1<3; ++i1){
+						unsigned int i2 = (i1+1) % 4;
+						polygons[5+i1].push_back(polyline[i1]);
+						polygons[5+i1].push_back(polyline[i2]);
+						polygons[5+i1].push_back(polyline[i2]+hFlapTile);
+						polygons[5+i1].push_back(polyline[i1]+hFlapTile);
+
+					}
+				}
+			}
+			break;
+			case Complex:
+				//do nothing because the frist if does not allow complex
+			break;
+		}
+		//add all polygons to the poly vec and flip all normals of the roof elements to positiv z-value
+		for(unsigned int i=0; i<polygons.size(); ++i){
+			polys.push_back(polygons[i]);
+			//skip floor plane
+			if(i>0 && polys[i].normal().m_z < 0)
+					polys[i].flip();
+		}
+	}
+	else if(type == Complex){
+		//now create a complex roof structure
+
+		unsigned int polySize = polyline.size();
+		std::vector<IBK::point2D<double>> points2D(polySize);
+		std::vector<std::pair<unsigned int, unsigned int>> edges;
+		/// TODO Dirk->Andreas transformieren der 3D Punkte in 2D Punkte
+		/// für polyline
+		/// jetzt geht das erstmal nur über weglassen der z-Koordinate
+		for(unsigned int i=0; i<polySize; ++i){
+			points2D[i].m_x = polyline[i].m_x;
+			points2D[i].m_y = polyline[i].m_y;
+			edges.push_back(std::pair<unsigned int, unsigned int>(i, (i+1)%polySize));
+		}
+
+
+
+		IBKMK::Triangulation triangu;
+		triangu.setPoints(points2D,edges);
+
+		// For each triangle, store all edges that have neighbors.
+		std::map<unsigned int, std::vector<std::pair<unsigned int, unsigned int>>> neighboringEdgesOfTri;
+		for(unsigned int i=0; i<triangu.m_triangles.size(); ++i){
+			const IBKMK::Triangulation::triangle_t &tri1 = triangu.m_triangles[i];
+
+			//create a set with the first three point indicies
+			std::set<unsigned int> indexSet;
+			indexSet.insert(tri1.i1);
+			indexSet.insert(tri1.i2);
+			indexSet.insert(tri1.i3);
+
+			for(unsigned int j=i; j<triangu.m_triangles.size(); ++j){
+				const IBKMK::Triangulation::triangle_t &tri2 = triangu.m_triangles[j];
+				unsigned int counter = 3;
+				std::set<unsigned int> saveIdxSet, tempSet;
+				tempSet = indexSet;
+				//check if 2 indicies are in the set --> then we have a midpoint
+				tempSet.insert(tri2.i1);
+				if(tempSet.size() == counter)
+					saveIdxSet.insert(tri2.i1);
+				else
+					++counter;
+				tempSet.insert(tri2.i2);
+				if(tempSet.size() == counter)
+					saveIdxSet.insert(tri2.i2);
+				else
+					++counter;
+				tempSet.insert(tri2.i3);
+				if(tempSet.size() == counter)
+					saveIdxSet.insert(tri2.i3);
+				else
+					++counter;
+
+				//found midpoint
+				if(saveIdxSet.size()==2){
+					//Store the two indices of the points that form the center
+					neighboringEdgesOfTri[i].push_back(std::pair<unsigned int, unsigned int>(*saveIdxSet.begin(), *saveIdxSet.end()));
+				}
+			}
+		}
+
+
+		//Now three cases may have arisen.
+		//1. one high point -> two roof triangles are created
+		//2. two high points -> three roof triangles are created
+		//3. three high points -> four roof triangles are created, one of them forms a horizontal plane
+		for(auto &e : neighboringEdgesOfTri){
+			//get triangle
+			const IBKMK::Triangulation::triangle_t &tri = triangu.m_triangles[e.first];
+			//get points
+			std::vector<IBKMK::Vector3D> pts(3, IBKMK::Vector3D(0,0,0));
+			pts[0].m_x = points2D[tri.i1].m_x;
+			pts[0].m_y = points2D[tri.i1].m_y;
+
+			pts[1].m_x = points2D[tri.i2].m_x;
+			pts[1].m_y = points2D[tri.i2].m_y;
+
+			pts[2].m_x = points2D[tri.i3].m_x;
+			pts[2].m_y = points2D[tri.i3].m_y;
+
+			switch(e.second.size()){
+				case 1 :{
+					IBKMK::Vector2D p1 = points2D[e.second.front().first];
+					IBKMK::Vector2D p2 = points2D[e.second.front().second];
+					IBKMK::Vector2D p3;
+					if(tri.i1 != e.second.front().first && tri.i1 != e.second.front().second)
+						p3 = points2D[tri.i1];
+					else if (tri.i2 != e.second.front().first && tri.i2 != e.second.front().second)
+						p3 = points2D[tri.i2];
+					else
+						p3 = points2D[tri.i3];
+
+					IBKMK::Vector2D mid2D = p1+ (p2 - p1)*0.5;
+
+					VICUS::Polygon3D poly3d;
+					//first poly
+					poly3d.addVertex(IBKMK::Vector3D(mid2D.m_x, mid2D.m_y, inputHeight));
+					poly3d.addVertex(IBKMK::Vector3D(p1.m_x, p1.m_y, 0));
+					poly3d.addVertex(IBKMK::Vector3D(p3.m_x, p3.m_y, 0));
+					polys.push_back(poly3d);
+
+					//second poly
+					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
+										   IBKMK::Vector3D(mid2D.m_x, mid2D.m_y, inputHeight),
+										   IBKMK::Vector3D(p2.m_x, p2.m_y, 0),
+										   IBKMK::Vector3D(p3.m_x, p3.m_y, 0)
+									   });
+					polys.push_back(poly3d);
+				}
+				break;
+				case 2:{
+					std::vector<IBKMK::Vector2D> pts2DVec{
+						points2D[e.second.front().first],
+						points2D[e.second.front().second],
+						points2D[e.second.back().first],
+						points2D[e.second.back().second]
+					};
+					//index of the common point
+					unsigned int idxCommon = 0;
+					IBKMK::Vector2D commonPoint;
+					IBKMK::Vector2D p1, p2;
+
+					//midpoints
+					IBKMK::Vector2D mid2Da = pts2DVec[0]+ (pts2DVec[1] - pts2DVec[0])*0.5;
+					IBKMK::Vector2D mid2Db = pts2DVec[2]+ (pts2DVec[3] - pts2DVec[2])*0.5;
+
+					//find common point and the other two points
+					if(pts2DVec[0] == pts2DVec[2] || pts2DVec[0] == pts2DVec[3]){
+						commonPoint = pts2DVec[0];
+						p1 = pts2DVec[1];
+					}
+					else{
+						p1 = pts2DVec[0];
+						commonPoint = pts2DVec[1];
+					}
+					p2 = commonPoint == pts2DVec[2] ? pts2DVec[3] : pts2DVec[2];
+
+					VICUS::Polygon3D poly3d;
+					//create first triangle with the two mid points and the common point
+					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
+										   IBKMK::Vector3D(mid2Da.m_x, mid2Da.m_y, inputHeight),
+										   IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, inputHeight),
+										   IBKMK::Vector3D(commonPoint.m_x, commonPoint.m_y, 0)
+									   });
+					polys.push_back(poly3d);
+
+					//create second triangle with the one mid point and the two other points
+					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
+										   IBKMK::Vector3D(mid2Da.m_x, mid2Da.m_y, inputHeight),
+										   IBKMK::Vector3D(p1.m_x, p1.m_y,0),
+										   IBKMK::Vector3D(p2.m_x, p2.m_y,0)
+									   });
+					polys.push_back(poly3d);
+
+					//create third triangle with the two mid points and the one other point
+					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
+										   IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, inputHeight),
+										   IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, inputHeight),
+										   commonPoint == pts2DVec[2] ? IBKMK::Vector3D(pts2DVec[3].m_x, pts2DVec[3].m_y,0) :
+										   IBKMK::Vector3D(pts2DVec[2].m_x, pts2DVec[2].m_y,0)
+									   });
+					polys.push_back(poly3d);
+
+				}
+				break;
+				case 3: {
+
+					//index of the common point
+					unsigned int idxCommon = 0;
+					IBKMK::Vector2D commonPoint;
+					std::vector<IBKMK::Vector2D> pts2DVec{points2D[tri.i1],points2D[tri.i2],points2D[tri.i3]};
+					std::vector<IBKMK::Vector2D> midPts2DVec(3);
+
+					//midpoints
+					for(unsigned int i3=0; i3<3; ++i3){
+						unsigned int i2 = (i3+1)%3;
+						midPts2DVec[i3] = pts2DVec[i3] + (pts2DVec[i2]-pts2DVec[i3])*0.5;
+					}
+
+					VICUS::Polygon3D poly3d;
+					//create first triangle --> all mid points
+					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
+										   IBKMK::Vector3D(midPts2DVec[0].m_x, midPts2DVec[0].m_y, inputHeight),
+										   IBKMK::Vector3D(midPts2DVec[1].m_x, midPts2DVec[1].m_y, inputHeight),
+										   IBKMK::Vector3D(midPts2DVec[2].m_x, midPts2DVec[2].m_y, inputHeight)
+									   });
+					polys.push_back(poly3d);
+
+					//create three more triangles
+					//each has two mid points and a other point
+					for(unsigned int i3=0; i3<3; ++i3){
+						//find the other point which belongs to the two mid points
+						poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
+											   IBKMK::Vector3D(midPts2DVec[i3].m_x, midPts2DVec[i3].m_y, inputHeight),
+											   IBKMK::Vector3D(midPts2DVec[(i3+1)%3].m_x, midPts2DVec[(i3+1)%3].m_y, inputHeight),
+											   IBKMK::Vector3D(pts2DVec[(i3+1)%3].m_x, pts2DVec[(i3+1)%3].m_y,0)
+										   });
+						polys.push_back(poly3d);
+
+
+					}
+				}
+				break;
+			}
+		}
+
+		for(unsigned int i=0; i<polys.size(); ++i){
+			//flip polygon because wrong direction of normal
+			if(polys[i].normal().m_z < 0 )
+				polys[i].flip();
+		}
+	}
+
+
+
 }
 
 

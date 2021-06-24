@@ -156,6 +156,10 @@ private:
 	*/
 	void updateZoneComboBox();
 
+	/*! Creates a room with a roof shape such as a gable roof instead of a prism (room).
+	 *  In addition, you can choose whether a knee floor exists or not. */
+	void createRoofZone();
+
 	Ui::SVPropVertexListWidget	*m_ui;
 };
 
