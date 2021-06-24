@@ -190,8 +190,8 @@ for project in projects:
 			if platform.system() == "Windows":
 				retcode = subprocess.call(cmdline, creationflags=subprocess.CREATE_NEW_CONSOLE, cwd=args.binaries)
 			else:
-				retcode = subprocess.call(cmdline, cwd=args.binaries)
-#				retcode = subprocess.call(cmdline, stdout=FNULL, stderr=subprocess.STDOUT, cwd=args.binaries)
+#				retcode = subprocess.call(cmdline, cwd=args.binaries)
+				retcode = subprocess.call(cmdline, stdout=FNULL, stderr=subprocess.STDOUT, cwd=args.binaries)
 			# check return code
 			if not retcode == 0:
 				# mark project as failed
@@ -231,8 +231,8 @@ for project in projects:
 			cmdline.append("--verbosity-level=0")
 			retcode = subprocess.call(cmdline, creationflags=subprocess.CREATE_NEW_CONSOLE)
 		else:
-			retcode = subprocess.call(cmdline)
-#			retcode = subprocess.call(cmdline, stdout=FNULL, stderr=subprocess.STDOUT)
+#			retcode = subprocess.call(cmdline)
+			retcode = subprocess.call(cmdline, stdout=FNULL, stderr=subprocess.STDOUT)
 		# check return code
 		if retcode == 0:
 			# successful run
