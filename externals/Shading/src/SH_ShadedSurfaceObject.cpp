@@ -71,7 +71,7 @@ double ShadedSurfaceObject::calcShadingFactor(const IBKMK::Vector3D &sunNormal, 
 				continue; // projection not possible - this shouldn't happen, really!
 
 			// now test if x,y coordinates are inside obstacle's polyline
-			if (IBKMK::pointInPolygon(m_obstacles[j].polyline().vertexes(), IBK::point2D<double>(x,y))) {
+			if (IBKMK::pointInPolygon(m_obstacles[j].polyline().vertexes(), IBK::point2D<double>(x,y)) >= 0) {
 				++counterShadedPoints;
 				break; // we are shaded, stop searching
 			}
