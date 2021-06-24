@@ -302,55 +302,6 @@
 		<Mapper name="Varinate 09.1 - Sonnenlichtfaktor">
 			<Extractors>
 				<Extractor>
-					<DataIOFileName>Aixlib.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>ETU.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>IDAICE.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>NANDRAD.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>Therakles.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>TRNSYS.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>TAS.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
 					<DataIOFileName>Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
@@ -371,45 +322,37 @@
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
+				<Extractor>
+					<DataIOFileName>ShadingFactor_091_0.15_2.00.tsv?3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ShadingFactor_091_0.20_1.00.tsv?3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ShadingFactor_091_0.30_0.05.tsv?3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ShadingFactor_091_0.50_0.01.tsv?3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
 			</Extractors>
 			<ChartModel chartType="2D">
 				<SeriesProperties>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#7c00bf</PenColor>
-						<MarkerColor>#7c00bf</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#8ae234</PenColor>
-						<MarkerColor>#8ae234</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#e50c0c</PenColor>
-						<MarkerColor>#e50c0c</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenWidth>6</PenWidth>
-						<PenColor>#ffc120</PenColor>
-						<MarkerColor>#ffc120</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#c17d11</PenColor>
-						<MarkerColor>#c17d11</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#c17d11</PenColor>
-						<MarkerColor>#c17d11</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#0369a3</PenColor>
-						<MarkerColor>#0369a3</MarkerColor>
-					</Series>
 					<Series>
 						<TitleText>Referenz</TitleText>
 						<MarkerStyle>0</MarkerStyle>
@@ -432,27 +375,53 @@
 						<MarkerColor>#000000</MarkerColor>
 						<MarkerSize>20</MarkerSize>
 					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<PenColor>#c5000b</PenColor>
+						<MarkerColor>#c5000b</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<PenWidth>4</PenWidth>
+						<PenColor>#0084d1</PenColor>
+						<MarkerColor>#0084d1</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<PenColor>#004586</PenColor>
+						<MarkerColor>#004586</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<PenWidth>4</PenWidth>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<IBK:Unit name="AxisUnit">min</IBK:Unit>
-						<Maximum>959518800000</Maximum>
-						<Minimum>959493600000</Minimum>
+						<Maximum>991140648623.46472</Maximum>
+						<Minimum>991117296433.94568</Minimum>
 						<DateTimeEnabled>1</DateTimeEnabled>
+						<DateTimeZero>978307200000</DateTimeZero>
 					</Axis>
-					<Axis index="1">
+					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">-</IBK:Unit>
+						<Maximum>0.83044408444819662</Maximum>
+						<Minimum>-0.093783944055366164</Minimum>
 					</Axis>
-					<Axis index="2" enabled="0">
+					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>469.36577761200067</Maximum>
+						<Minimum>469.28826488194642</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
 					<TitleText>Varinate 09.1 - Sonnenlichtfaktor</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
-					<Legend visible="0">
+					<Legend>
 						<Position>Inside</Position>
 						<Alignment>5</Alignment>
 						<MaxColumns>1</MaxColumns>
@@ -1424,13 +1393,118 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>ShadingFactor_091_0.10_3.00.tsv?3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ShadingFactor_091_0.15_2.00.tsv?3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ShadingFactor_091_0.20_1.00.tsv?3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ShadingFactor_091_0.30_0.05.tsv?3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ShadingFactor_091_0.50_0.01.tsv?3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<PenColor>#ff420e</PenColor>
+						<MarkerColor>#ff420e</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<PenColor>#004586</PenColor>
+						<MarkerColor>#004586</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<PenColor>#aecf00</PenColor>
+						<MarkerColor>#aecf00</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<PenColor>#ffd320</PenColor>
+						<MarkerColor>#ffd320</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<MarkerStyle>0</MarkerStyle>
+						<PenColor>#579d1c</PenColor>
+						<MarkerColor>#579d1c</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<TitleText>Time [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+						<Maximum>991139888534.10742</Maximum>
+						<Minimum>991120702467.34399</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
+						<DateTimeZero>978307200000</DateTimeZero>
+					</Axis>
+					<Axis index="1" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">-</IBK:Unit>
+						<Maximum>0.71149144254278729</Maximum>
+						<Minimum>0.045843520782396063</Minimum>
+					</Axis>
+					<Axis index="2" enabled="0" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>469.40044807852553</Maximum>
+						<Minimum>469.20977272818152</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>$project: $basename</TitleText>
+					<Legend />
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
 	</Mappers>
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="8" size1="1" size2="1" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="9" size1="1" size2="1" orientation="2" />
 		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 
