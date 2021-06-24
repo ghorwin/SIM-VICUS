@@ -1,0 +1,292 @@
+/*	SIM-VICUS - Building and District Energy Simulation Tool.
+
+	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
+	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
+	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
+
+	  ... all the others from the SIM-VICUS team ... :-)
+
+	This program is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+*/
+
+#include "SVSimulationShadingOptions.h"
+#include "ui_SVSimulationShadingOptions.h"
+
+#include <QDate>
+#include <QElapsedTimer>
+#include <QTimer>
+
+#include <QtExt_DateTimeInputDialog.h>
+
+#include <vector>
+#include <fstream>
+
+#include <IBK_physics.h>
+#include <IBK_Time.h>
+
+#include <VICUS_Surface.h>
+#include <VICUS_Project.h>
+
+#include <SVProjectHandler.h>
+#include <SVSimulationStartNandrad.h>
+#include <SVSettings.h>
+#include <SVMainWindow.h>
+
+#include <SH_StructuralShading.h>
+
+class ShadingCalculationProgress : public SH::Notification {
+public:
+	void notify() override {}
+	void notify(double percentage) override;
+
+	char				pad[7]; // fix padding, silences compiler warning
+	QProgressDialog		*m_dlg = nullptr;
+};
+
+void ShadingCalculationProgress::notify(double percentage) {
+	m_dlg->setValue((int)(m_dlg->maximum() * percentage));
+	qApp->processEvents();
+	if (m_dlg->wasCanceled())
+		m_aborted = true;
+}
+
+
+SVSimulationShadingOptions::SVSimulationShadingOptions(QWidget *parent, NANDRAD::SimulationParameter & simParams, NANDRAD::Location & location) :
+	QDialog(parent),
+	m_ui(new Ui::SVSimulationShadingOptions),
+	m_simParams(&simParams),
+	m_location(&location),
+	m_shading(new SH::StructuralShading)
+{
+	m_ui->setupUi(this);
+
+	m_ui->lineEditSunCone->setup(0, 45, tr("Half-angle of sun cone must be > 0 Deg!"), false, true);
+	m_ui->lineEditGridSize->setup(0, 1000, tr("Grid size must be > 0 m!"), false, true);
+
+	m_ui->comboBoxFileType->addItem( "tsv" );
+	m_ui->comboBoxFileType->addItem( "d6o" );
+	m_ui->comboBoxFileType->addItem( "d6b" );
+
+	m_ui->radioButtonFast->toggle();
+
+	// TODO : restore previously used setting
+	m_ui->comboBoxFileType->setCurrentIndex( 0 );
+}
+
+
+SVSimulationShadingOptions::~SVSimulationShadingOptions() {
+	delete m_ui;
+	delete m_shading;
+}
+
+
+void SVSimulationShadingOptions::setSimulationParameters(const DetailType & dt) {
+
+	m_ui->lineEditSunCone->setEnabled(false);
+	m_ui->lineEditGridSize->setEnabled(false);
+
+	double	gridSize = 0.1;	// size of grid in [m]
+	double	sunCone = 3;	// half opening angle of the cone for sun mapping [Deg]
+
+	switch (dt) {
+		case Fast: {
+			gridSize = 0.2;
+			sunCone = 2;
+		}
+		break;
+		case Detailed: {
+			gridSize = 0.1;
+			sunCone = 1;
+		}
+		break;
+		case Manual: {
+			m_ui->lineEditSunCone->setEnabled(true);
+			m_ui->lineEditGridSize->setEnabled(true);
+		}
+		break;
+	}
+
+	m_ui->lineEditGridSize->setValue( gridSize );
+	m_ui->lineEditSunCone->setValue( sunCone );
+}
+
+
+void SVSimulationShadingOptions::on_pushButtonCalculate_clicked(){
+	try {
+		calculateShadingFactors();
+	} catch (IBK::Exception &ex) {
+
+		QMessageBox msgBox(QMessageBox::Critical, "Error", ex.what(), QMessageBox::Ok, this);
+		msgBox.exec();
+
+	}
+}
+
+
+void SVSimulationShadingOptions::calculateShadingFactors() {
+	FUNCID(SVSimulationShadingOptions::calculateShadingFactors);
+
+	std::vector<std::vector<IBKMK::Vector3D> > selObst;
+	std::vector<std::vector<IBKMK::Vector3D> > selSurf;
+
+	// We take all our selected surfaces
+	if (m_useOnlySelectedSurfaces) {
+		project().selectedSurfaces(m_selSurfaces,VICUS::Project::SG_Building);
+		project().selectedSurfaces(m_selObstacles,VICUS::Project::SG_Obstacle);
+	}
+	else {
+		std::set<const VICUS::Object*> sel;
+		// take all, regardless of visibility or selection state
+		project().selectObjects(sel, VICUS::Project::SelectionGroups(VICUS::Project::SG_Building | VICUS::Project::SG_Obstacle), false, false);
+		// filter out surfaces
+		m_selSurfaces.clear();
+		m_selObstacles.clear();
+		for (const VICUS::Object* o : sel) {
+			const VICUS::Surface * surf = dynamic_cast<const VICUS::Surface*>(o);
+			if (surf != nullptr) {
+				if (surf->m_parent != nullptr)
+					m_selSurfaces.push_back(surf);
+				else
+					m_selObstacles.push_back(surf);
+			}
+		}
+	}
+
+	const NANDRAD::Location &loc = *m_location;
+	const NANDRAD::SimulationParameter &simuPara = *m_simParams;
+
+	try {
+		simuPara.m_interval.checkParameters();
+	} catch (...) {
+		QMessageBox::critical(this, QString(), tr("Simulation time interval is not properly configured. Please set a valid simulation time interval and "
+												  "compute shading afterwards!"));
+		return;
+	}
+
+	// T
+
+	IBK::IntPara startYear = simuPara.m_intPara[NANDRAD::SimulationParameter::IP_StartYear];
+	IBK::Parameter startDay = simuPara.m_interval.m_para[NANDRAD::Interval::P_Start];
+	IBK::Parameter endDay = simuPara.m_interval.m_para[NANDRAD::Interval::P_End];
+
+	IBK::Time simTimeStart (startYear.value, startDay.value );
+	IBK::Time simTimeEnd (startYear.value, endDay.value );
+
+	unsigned int durationInSec = (unsigned int)simTimeStart.secondsUntil(simTimeEnd);
+	double sunConeDeg = m_ui->lineEditSunCone->value();
+
+	OutputType outputType = (OutputType)m_ui->comboBoxFileType->currentIndex();
+
+
+	m_shading->initializeShadingCalculation(loc.m_timeZone,
+										   loc.m_para[NANDRAD::Location::P_Longitude].value/IBK::DEG2RAD,
+										   loc.m_para[NANDRAD::Location::P_Latitude].value/IBK::DEG2RAD,
+										   simTimeStart,
+										   durationInSec,
+										   3600, // TODO : Stephan, get from UI input
+										   sunConeDeg );
+
+
+	// *** compose vectors with obstacles
+
+	for (const VICUS::Surface *s: m_selObstacles)
+		selObst.push_back( s->geometry().polygon().vertexes() );
+
+	// *** compose vector with selected surfaces
+	std::vector<unsigned int> surfaceIDs; // holds IDs of calculated surfaces
+	for (const VICUS::Surface *s: m_selSurfaces) {
+
+		if ( s->m_componentInstance == nullptr )
+			continue;  // skip invalid surfaces - surfaces without component are not computed in calculation and thus do not require shading factors
+
+		// we want to take only surface connected to ambient, that means, the associated component instance
+		// must have one zone with ID 0 assigned
+		if (s->m_componentInstance->m_sideASurfaceID != 0 && s->m_componentInstance->m_sideBSurfaceID != 0)
+			continue; // skip inside constructions
+
+		// we compute shading factors for this surface
+		selSurf.push_back( s->geometry().polygon().vertexes() );
+		surfaceIDs.push_back(s->m_id);
+
+		// Mind: surface planes may also shade other surfaces
+		selObst.push_back( s->geometry().polygon().vertexes() );
+	}
+
+	m_shading->setGeometry(selSurf, selObst);
+
+	QProgressDialog progressDialog(tr("Calculate shading factors"), tr("Abort"), 0, 100, this);
+	progressDialog.setValue(0);
+	progressDialog.show();
+
+//	QElapsedTimer progressTimer;
+//	progressTimer.start();
+
+	ShadingCalculationProgress progressNotifyer;
+	progressNotifyer.m_dlg = &progressDialog;
+
+	// *** compute shading ***
+
+	double gridSize = m_ui->lineEditGridSize->value();
+	m_shading->calculateShadingFactors(&progressNotifyer, gridSize);
+
+	if (progressNotifyer.m_aborted)
+		return;
+
+	SVProjectHandler &prj = SVProjectHandler::instance();
+
+	// TODO Stephan, what if project hasn't been saved yet? projectName is empty then
+
+	QString projectName = QFileInfo(prj.projectFile()).completeBaseName();
+	QString shadingPath = QFileInfo(prj.projectFile()).dir().filePath(projectName) + '/';
+
+	QDir shadingDir (shadingPath);
+
+
+	if ( !shadingDir.exists() && !shadingDir.mkdir(shadingPath) )
+		throw IBK::Exception( IBK::FormatString("Could not create directory '%1'").arg(shadingPath.toStdString()), FUNC_ID );
+
+	switch ( outputType ) {
+		case TsvFile : {
+			QString pathTSV = shadingPath  + projectName + "_shadingFactors.tsv" ;
+			IBK::Path exportFileTSV(pathTSV.toStdString() );
+			m_shading->writeShadingFactorsToTSV(exportFileTSV, surfaceIDs);
+		} break;
+		case D6oFile : {
+			QString pathD6O = shadingPath  + projectName + "_shadingFactors.d6o" ;
+			IBK::Path exportFileD6O(pathD6O.toStdString() );
+			m_shading->writeShadingFactorsToDataIO(exportFileD6O, surfaceIDs, false);
+		} break;
+		case D6bFile : {
+			QString pathD6B = shadingPath  + projectName + "_shadingFactors.d6b" ;
+			IBK::Path exportFileD6B(pathD6B.toStdString() );
+			m_shading->writeShadingFactorsToDataIO(exportFileD6B, surfaceIDs, true);
+		} break;
+	}
+
+}
+
+void SVSimulationShadingOptions::on_radioButtonFast_toggled(bool checked) {
+	setSimulationParameters(DetailType::Fast);
+}
+
+void SVSimulationShadingOptions::on_radioButtonManual_toggled(bool checked) {
+	setSimulationParameters(DetailType::Manual);
+}
+
+void SVSimulationShadingOptions::on_radioButtonDetailed_toggled(bool checked) {
+	setSimulationParameters(DetailType::Detailed);
+}

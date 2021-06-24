@@ -41,6 +41,7 @@
 #include "SVSimulationLocationOptions.h"
 #include "SVSimulationOutputOptions.h"
 #include "SVSimulationModelOptions.h"
+#include "SVSimulationShadingOptions.h"
 #include "SVSimulationRunRequestDialog.h"
 #include "SVConstants.h"
 #include "SVLogFileDialog.h"
@@ -115,6 +116,12 @@ SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 		QHBoxLayout * h = new QHBoxLayout;
 		h->addWidget(m_simulationModelOptions);
 		m_ui->tabSimOptions->setLayout(h);
+	}
+	{
+		m_simulationShadingOptions = new SVSimulationShadingOptions(this, m_localProject.m_simulationParameter, m_localProject.m_location);
+		QHBoxLayout * h = new QHBoxLayout;
+		h->addWidget(m_simulationShadingOptions);
+		m_ui->tabShadingCalculation->setLayout(h);
 	}
 }
 
@@ -454,4 +461,10 @@ void SVSimulationStartNandrad::on_comboBoxTermEmulator_currentIndexChanged(int i
 
 void SVSimulationStartNandrad::on_pushButtonTestInit_clicked() {
 	startSimulation(true);
+}
+
+
+void SVSimulationStartNandrad::on_comboBoxFileType_currentIndexChanged(int index) {
+	// determine new shading factor file name
+//	m_ui->lineEditShadingFileName
 }

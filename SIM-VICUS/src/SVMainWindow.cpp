@@ -82,7 +82,7 @@
 #include "SVStyle.h"
 #include "SVPropFloorManagerWidget.h"
 #include "SVView3DDialog.h"
-#include "SVShadingCalculationDialog.h"
+#include "SVSimulationShadingOptions.h"
 
 #include "SVDatabaseEditDialog.h"
 #include "SVDBZoneTemplateEditDialog.h"

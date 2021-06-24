@@ -82,6 +82,7 @@ PRE_TARGETDEPS += \
 SOURCES += \
 								../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
 								../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
+								../../src/SVSimulationShadingOptions.cpp \
 								../../src/actions/SVUndoAddBuilding.cpp \
 								../../src/actions/SVUndoAddBuildingLevel.cpp \
 								../../src/actions/SVUndoAddNetwork.cpp \
@@ -213,7 +214,6 @@ SOURCES += \
 								../../src/SVPropVertexListWidget.cpp \
 								../../src/SVScheduleHolidayWidget.cpp \
 								../../src/SVSettings.cpp \
-								../../src/SVShadingCalculationDialog.cpp \
 								../../src/SVSimulationLocationOptions.cpp \
 								../../src/SVSimulationModelOptions.cpp \
 								../../src/SVSimulationOutputOptions.cpp \
@@ -231,6 +231,7 @@ SOURCES += \
 								../../src/SVWelcomeScreen.cpp
 
 HEADERS  += \
+								../../src/SVSimulationShadingOptions.h \
 								../../src/actions/SVUndoAddBuilding.h \
 								../../src/actions/SVUndoAddBuildingLevel.h \
 								../../src/actions/SVUndoAddNetwork.h \
@@ -365,7 +366,6 @@ HEADERS  += \
 								../../src/SVPropVertexListWidget.h \
 								../../src/SVScheduleHolidayWidget.h \
 								../../src/SVSettings.h \
-								../../src/SVShadingCalculationDialog.h \
 								../../src/SVSimulationLocationOptions.h \
 								../../src/SVSimulationModelOptions.h \
 								../../src/SVSimulationOutputOptions.h \
@@ -432,12 +432,12 @@ FORMS    += \
 								../../src/SVPropSiteWidget.ui \
 								../../src/SVPropVertexListWidget.ui \
 								../../src/SVScheduleHolidayWidget.ui \
-								../../src/SVShadingCalculationDialog.ui \
 								../../src/SVSimulationLocationOptions.ui \
 								../../src/SVSimulationModelOptions.ui \
 								../../src/SVSimulationOutputOptions.ui \
 								../../src/SVSimulationPerformanceOptions.ui \
 								../../src/SVSimulationRunRequestDialog.ui \
+								../../src/SVSimulationShadingOptions.ui \
 								../../src/SVSimulationStartNandrad.ui \
 								../../src/SVSimulationStartNetworkSim.ui \
 								../../src/SVSmartSelectDialog.ui \

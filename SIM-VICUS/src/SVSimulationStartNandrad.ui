@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>5</number>
      </property>
      <widget class="QWidget" name="tabSimStart">
       <attribute name="title">
@@ -331,7 +331,7 @@
      </widget>
      <widget class="QWidget" name="tabShadingCalculation">
       <attribute name="title">
-       <string>Seite</string>
+       <string>Shading calculation</string>
       </attribute>
      </widget>
     </widget>

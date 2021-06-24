@@ -55,7 +55,7 @@ class SVNetworkEditDialog;
 class SVViewStateHandler;
 class SVSimulationStartNandrad;
 class SVSimulationStartNetworkSim;
-class SVShadingCalculationDialog;
+class SVSimulationShadingOptions;
 
 class SVDatabaseEditDialog;
 class SVDBZoneTemplateEditDialog;
@@ -418,7 +418,7 @@ private:
 	SVSimulationStartNetworkSim	*m_simulationStartNetworkSim							= nullptr;
 
 	/*! FMI Export dialog. */
-	SVShadingCalculationDialog	*m_shadingCalculationDialog								= nullptr;
+	SVSimulationShadingOptions	*m_shadingCalculationDialog								= nullptr;
 
 
 	/*! Contains the 3D scene view (and tool buttons and stuff). */

@@ -38,6 +38,7 @@ class SVSimulationPerformanceOptions;
 class SVSimulationLocationOptions;
 class SVSimulationOutputOptions;
 class SVSimulationModelOptions;
+class SVSimulationShadingOptions;
 class SVSimulationRunRequestDialog;
 
 /*! The start dialog for a NANDRAD simulation.
@@ -84,6 +85,8 @@ private slots:
 
 	void on_pushButtonTestInit_clicked();
 
+	void on_comboBoxFileType_currentIndexChanged(int index);
+
 private:
 	/*! Composes correct command line (stored in m_cmdArgs). */
 	void updateCmdLine();
@@ -114,6 +117,8 @@ private:
 	SVSimulationOutputOptions		*m_simulationOutputOptions = nullptr;
 	/*! Page with all other model options. */
 	SVSimulationModelOptions		*m_simulationModelOptions = nullptr;
+	/*! Page with shading calculation options. */
+	SVSimulationShadingOptions		*m_simulationShadingOptions = nullptr;
 
 	SVSimulationRunRequestDialog	*m_simulationRunRequestDialog = nullptr;
 };
