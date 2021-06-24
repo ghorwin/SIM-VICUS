@@ -84,6 +84,7 @@ void SubNetwork::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * SubNetwork::writeXML(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("SubNetwork");
 	parent->LinkEndChild(e);
 

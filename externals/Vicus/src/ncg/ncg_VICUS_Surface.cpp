@@ -90,6 +90,7 @@ void Surface::readXMLPrivate(const TiXmlElement * element) {
 }
 
 TiXmlElement * Surface::writeXMLPrivate(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("Surface");
 	parent->LinkEndChild(e);
 

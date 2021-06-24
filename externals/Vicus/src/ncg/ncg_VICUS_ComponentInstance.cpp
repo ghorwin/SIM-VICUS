@@ -68,6 +68,7 @@ void ComponentInstance::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * ComponentInstance::writeXML(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("ComponentInstance");
 	parent->LinkEndChild(e);
 

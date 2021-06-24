@@ -84,6 +84,7 @@ void Interface::readXMLPrivate(const TiXmlElement * element) {
 }
 
 TiXmlElement * Interface::writeXMLPrivate(TiXmlElement * parent) const {
+	if (m_id == NANDRAD::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("Interface");
 	parent->LinkEndChild(e);
 

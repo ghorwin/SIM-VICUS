@@ -106,6 +106,7 @@ void InternalLoadsModel::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * InternalLoadsModel::writeXML(TiXmlElement * parent) const {
+	if (m_id == NANDRAD::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("InternalLoadsModel");
 	parent->LinkEndChild(e);
 

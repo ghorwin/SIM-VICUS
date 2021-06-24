@@ -122,6 +122,7 @@ void EPDDataset::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * EPDDataset::writeXML(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("EPDDataset");
 	parent->LinkEndChild(e);
 

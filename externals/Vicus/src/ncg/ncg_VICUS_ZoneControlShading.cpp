@@ -107,6 +107,7 @@ void ZoneControlShading::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * ZoneControlShading::writeXML(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("ZoneControlShading");
 	parent->LinkEndChild(e);
 

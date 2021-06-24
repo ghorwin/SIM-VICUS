@@ -103,6 +103,7 @@ void HVACControlModel::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * HVACControlModel::writeXML(TiXmlElement * parent) const {
+	if (m_id == NANDRAD::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("HVACControlModel");
 	parent->LinkEndChild(e);
 

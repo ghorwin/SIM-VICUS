@@ -103,6 +103,7 @@ void Room::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * Room::writeXML(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("Room");
 	parent->LinkEndChild(e);
 

@@ -89,6 +89,7 @@ void EmbeddedObject::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * EmbeddedObject::writeXML(TiXmlElement * parent) const {
+	if (m_id == NANDRAD::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("EmbeddedObject");
 	parent->LinkEndChild(e);
 

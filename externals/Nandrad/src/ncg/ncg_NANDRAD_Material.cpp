@@ -87,6 +87,7 @@ void Material::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * Material::writeXML(TiXmlElement * parent) const {
+	if (m_id == NANDRAD::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("Material");
 	parent->LinkEndChild(e);
 

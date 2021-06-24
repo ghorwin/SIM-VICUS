@@ -80,6 +80,7 @@ void HeatLoadSummationModel::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * HeatLoadSummationModel::writeXML(TiXmlElement * parent) const {
+	if (m_id == NANDRAD::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("HeatLoadSummationModel");
 	parent->LinkEndChild(e);
 

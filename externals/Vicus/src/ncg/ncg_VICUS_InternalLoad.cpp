@@ -131,6 +131,7 @@ void InternalLoad::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * InternalLoad::writeXML(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("InternalLoad");
 	parent->LinkEndChild(e);
 

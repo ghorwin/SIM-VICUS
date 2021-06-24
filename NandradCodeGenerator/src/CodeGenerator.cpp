@@ -399,6 +399,21 @@ void CodeGenerator::generateReadWriteCode() {
 
 			std::string elements;
 
+			// special handling for elements with mandatory m_id attribute which may be INVALID_ID
+			bool haveMandatoryIDTag = false;
+			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
+				if (xmlInfo.element) continue;
+				if (xmlInfo.varName == "id" && xmlInfo.required) {
+					haveMandatoryIDTag = true;
+					break;
+				}
+			}
+			if (haveMandatoryIDTag)
+				writeCode = IBK::replace_string(writeCode, "${MANDATORY_INVALID_ID_CHECK}", "	if (m_id == "+ m_namespace + "::INVALID_ID)  return nullptr;\n");
+			else
+				writeCode = IBK::replace_string(writeCode, "${MANDATORY_INVALID_ID_CHECK}", "");
+
+
 			for (const ClassInfo::XMLInfo & xmlInfo : ci.m_xmlInfo) {
 				if (!xmlInfo.element) continue;
 				std::string varName = xmlInfo.varName;

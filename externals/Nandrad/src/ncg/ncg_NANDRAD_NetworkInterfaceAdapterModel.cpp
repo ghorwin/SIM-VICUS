@@ -92,6 +92,7 @@ void NetworkInterfaceAdapterModel::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * NetworkInterfaceAdapterModel::writeXML(TiXmlElement * parent) const {
+	if (m_id == NANDRAD::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("NetworkInterfaceAdapterModel");
 	parent->LinkEndChild(e);
 

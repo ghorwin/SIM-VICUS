@@ -86,6 +86,7 @@ void BoundaryCondition::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * BoundaryCondition::writeXML(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("BoundaryCondition");
 	parent->LinkEndChild(e);
 

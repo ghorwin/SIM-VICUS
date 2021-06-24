@@ -92,6 +92,7 @@ void BuildingLevel::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * BuildingLevel::writeXML(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("BuildingLevel");
 	parent->LinkEndChild(e);
 

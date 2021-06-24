@@ -89,6 +89,7 @@ void ZoneTemplate::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * ZoneTemplate::writeXML(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("ZoneTemplate");
 	parent->LinkEndChild(e);
 

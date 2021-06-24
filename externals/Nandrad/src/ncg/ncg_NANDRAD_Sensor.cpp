@@ -89,6 +89,7 @@ void Sensor::readXMLPrivate(const TiXmlElement * element) {
 }
 
 TiXmlElement * Sensor::writeXMLPrivate(TiXmlElement * parent) const {
+	if (m_id == NANDRAD::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("Sensor");
 	parent->LinkEndChild(e);
 
