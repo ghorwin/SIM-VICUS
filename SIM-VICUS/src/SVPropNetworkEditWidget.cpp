@@ -436,13 +436,13 @@ void SVPropNetworkEditWidget::updateHeatExchangeProperties()
 	}
 	// if we have edge(s)
 	else if (!m_currentEdges.empty())
-		modelType = VICUS::NetworkComponent::ModelType( m_currentEdges[0]->networkComponentModelType() );
+		modelType =  m_currentEdges[0]->networkComponentModelType() ;
 	else
 		return;
 
 	// now get the available heat exchange types
 	std::vector<NANDRAD::HydraulicNetworkHeatExchange::ModelType> availableHxTypes =
-			NANDRAD::HydraulicNetworkHeatExchange::availableHeatExchangeTypes(modelType);
+			NANDRAD::HydraulicNetworkHeatExchange::availableHeatExchangeTypes(NANDRAD::HydraulicNetworkComponent::ModelType(modelType));
 
 	// if no hx type is possible return
 	if (availableHxTypes.empty())

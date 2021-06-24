@@ -8,6 +8,7 @@
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Database.h"
 #include "VICUS_NetworkComponent.h"
+#include "VICUS_NetworkController.h"
 
 #include <NANDRAD_HydraulicNetworkElement.h>
 
@@ -36,7 +37,9 @@ public:
 	VICUS_COMP(SubNetwork)
 
 	/*! Checks if all referenced materials exist and if their parameters are valid. */
-	bool isValid() const;
+	bool isValid(const Database<NetworkComponent> &compDB,
+				 const Database<NetworkController> &ctrlDB,
+				 const Database<Schedule> &scheduleDB) const;
 
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;

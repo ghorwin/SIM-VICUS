@@ -31,8 +31,7 @@
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Object.h"
 #include "VICUS_NetworkPipe.h"
-
-#include <NANDRAD_HydraulicNetworkHeatExchange.h>
+#include "VICUS_NetworkComponent.h"
 
 #include <vector>
 #include <set>
@@ -108,7 +107,7 @@ public:
 
 
 	/*! returns the corresponding NetworkComponent model type based on the PipeModel */
-	unsigned int networkComponentModelType() const;
+	NetworkComponent::ModelType networkComponentModelType() const;
 
 
 	// *** PUBLIC MEMBER VARIABLES ***

@@ -26,7 +26,6 @@
 #include "VICUS_NetworkEdge.h"
 #include "VICUS_NetworkLine.h"
 #include "VICUS_Project.h"
-#include "VICUS_NetworkComponent.h"
 
 #include <IBK_assert.h>
 
@@ -99,7 +98,7 @@ void NetworkEdge::setNodeId2(unsigned int nodeId2)
 }
 
 
-unsigned int NetworkEdge::networkComponentModelType() const
+NetworkComponent::ModelType NetworkEdge::networkComponentModelType() const
 {
 	switch (m_pipeModel) {
 		case PM_SimplePipe:

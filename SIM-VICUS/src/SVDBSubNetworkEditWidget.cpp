@@ -184,20 +184,23 @@ void SVDBSubNetworkEditWidget::on_pushButtonColor_clicked()
 	updateInput((int)m_currentSubNet->m_id);
 }
 
-void SVDBSubNetworkEditWidget::on_pushButtonAddElement_clicked()
+
+void SVDBSubNetworkEditWidget::on_toolButtonAdd_clicked()
 {
 	Q_ASSERT(m_currentSubNet != nullptr);
 
 	if (m_currentSubNet->m_elements.size()>10)
 		return;
 	NANDRAD::HydraulicNetworkElement el;
+	el.m_id = VICUS::Project::uniqueId(m_currentSubNet->m_elements);
+	el.m_displayName = IBK::FormatString("new element %1").arg(el.m_id).str();
 	m_currentSubNet->m_elements.push_back(el);
 	setInletOutletIds();
 	modelModify();
 	updateTableWidget();
 }
 
-void SVDBSubNetworkEditWidget::on_pushButtonRemoveElement_clicked()
+void SVDBSubNetworkEditWidget::on_toolButtonRemove_clicked()
 {
 	if (m_currentSubNet->m_elements.size()==0)
 		return;
@@ -250,5 +253,6 @@ void SVDBSubNetworkEditWidget::on_toolButtonEditController_clicked()
 	}
 
 }
+
 
 
