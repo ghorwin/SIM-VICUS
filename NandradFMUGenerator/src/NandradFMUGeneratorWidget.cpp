@@ -255,7 +255,7 @@ void NandradFMUGeneratorWidget::autoGenerate() {
 	setModelName(m_autoExportModelName);
 	bool success = generate();
 	if (!success)
-		QApplication::exit(); // exit with return code 1
+		QApplication::exit(1); // exit with return code 1
 	else
 		QApplication::quit(); // exit with return code 0 = success
 }
