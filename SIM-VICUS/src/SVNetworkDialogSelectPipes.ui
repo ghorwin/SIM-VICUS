@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Select Pipes</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -23,15 +23,17 @@
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QPushButton" name="pushButtonAdd">
-         <property name="text">
-          <string>--&gt;</string>
+         <property name="icon">
+          <iconset resource="../resources/SIM-VICUS.qrc">
+           <normaloff>:/gfx/actions/24x24/right.png</normaloff>:/gfx/actions/24x24/right.png</iconset>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pushButtonRemove">
-         <property name="text">
-          <string>&lt;--</string>
+         <property name="icon">
+          <iconset resource="../resources/SIM-VICUS.qrc">
+           <normaloff>:/gfx/actions/24x24/left.png</normaloff>:/gfx/actions/24x24/left.png</iconset>
          </property>
         </widget>
        </item>
@@ -67,7 +69,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources/SIM-VICUS.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

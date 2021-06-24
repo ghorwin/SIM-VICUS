@@ -39,7 +39,6 @@ SVNetworkDialogSelectPipes::SVNetworkDialogSelectPipes(QWidget *parent) :
 	QDialog(parent),
 	m_ui(new Ui::SVNetworkDialogSelectPipes)
 {
-	this->setWindowTitle("Select Pipes");
 	m_ui->setupUi(this);
 
 	// setup table widgets

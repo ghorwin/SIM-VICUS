@@ -36,10 +36,6 @@ private slots:
 
 	void on_pushButtonColor_clicked();
 
-	void on_pushButtonAddElement_clicked();
-
-	void on_pushButtonRemoveElement_clicked();
-
 	void on_tableWidgetElements_itemSelectionChanged();
 
 	void on_lineEditElementName_editingFinished();
@@ -49,6 +45,10 @@ private slots:
 	void on_toolButtonEditController_clicked();
 
 	void on_lineEditSubNetworkName_editingFinished();
+
+	void on_toolButtonAdd_clicked();
+
+	void on_toolButtonRemove_clicked();
 
 private:
 	/*! Set up the modified variable of the model to true. */
