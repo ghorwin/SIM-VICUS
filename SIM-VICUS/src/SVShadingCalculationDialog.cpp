@@ -286,6 +286,10 @@ void SVShadingCalculationDialog::calculateShadingFactors() {
 	IBK::Parameter startDay = simuPara.m_interval.m_para[NANDRAD::Interval::P_Start];
 	IBK::Parameter endDay = simuPara.m_interval.m_para[NANDRAD::Interval::P_End];
 
+	startYear = IBK::IntPara("Start Year", 2007);
+	startDay = IBK::Parameter("Start Day", 0, IBK::Unit("d") );
+	endDay = IBK::Parameter("End Day", 365, IBK::Unit("d") );
+
 	if ( startYear.empty() )
 		throw IBK::Exception( IBK::FormatString("Start year of simulation has not been set.") , FUNC_ID );
 
@@ -305,12 +309,20 @@ void SVShadingCalculationDialog::calculateShadingFactors() {
 
 
 
-	m_shading.initializeShadingCalculation(loc.m_timeZone,
-										   loc.m_para[NANDRAD::Location::P_Longitude].value/IBK::DEG2RAD,
-										   loc.m_para[NANDRAD::Location::P_Latitude].value/IBK::DEG2RAD,
+//	m_shading.initializeShadingCalculation(loc.m_timeZone,
+//										   loc.m_para[NANDRAD::Location::P_Longitude].value/IBK::DEG2RAD,
+//										   loc.m_para[NANDRAD::Location::P_Latitude].value/IBK::DEG2RAD,
+//										   simTimeStart,
+//										   durationInSec,
+//										   1800, // TODO : Stephan, get from UI input
+//										   sunConeDeg );
+
+	m_shading.initializeShadingCalculation(1,
+										   14.27,
+										   50,
 										   simTimeStart,
 										   durationInSec,
-										   3600, // TODO : Stephan, get from UI input
+										   1800, // TODO : Stephan, get from UI input
 										   sunConeDeg );
 
 
@@ -328,7 +340,8 @@ void SVShadingCalculationDialog::calculateShadingFactors() {
 
 		// we want to take only surface connected to ambient, that means, the associated component instance
 		// must have one zone with ID 0 assigned
-		if (s->m_componentInstance->m_sideASurfaceID != 0 && s->m_componentInstance->m_sideBSurfaceID != 0)
+		if (s->m_componentInstance->m_sideASurfaceID != VICUS::INVALID_ID &&
+				s->m_componentInstance->m_sideBSurfaceID != VICUS::INVALID_ID)
 			continue; // skip inside constructions
 
 		// we compute shading factors for this surface
@@ -358,7 +371,6 @@ void SVShadingCalculationDialog::calculateShadingFactors() {
 
 	if (progressNotifyer.m_aborted)
 		return;
-
 	SVProjectHandler &prj = SVProjectHandler::instance();
 
 	// TODO Stephan, what if project hasn't been saved yet? projectName is empty then
