@@ -320,6 +320,8 @@ void SVPropEditGeometry::translate() {
 
 	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Translated geometry"), modifiedSurfaces );
 	undo->push();
+	// reset local transformation matrix
+	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 }
 
 
@@ -368,9 +370,10 @@ void SVPropEditGeometry::scale() {
 		return;
 
 
-
 	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Scaled geometry"), modifiedSurfaces );
 	undo->push();
+	// reset local transformation matrix
+	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 }
 
 
@@ -415,6 +418,8 @@ void SVPropEditGeometry::rotate() {
 
 	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Rotated geometry"), modifiedSurfaces );
 	undo->push();
+	// reset local transformation matrix
+	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 }
 
 
@@ -1690,5 +1695,7 @@ void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
 	// create undo-action
 	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Flipped normal vectors"), modifiedSurfaces );
 	undo->push();
+	// reset local transformation matrix
+	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 }
 

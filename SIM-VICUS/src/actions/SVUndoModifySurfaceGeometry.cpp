@@ -32,10 +32,15 @@
 #include "Vic3DWireFrameObject.h"
 
 SVUndoModifySurfaceGeometry::SVUndoModifySurfaceGeometry(const QString & label,
-														 const std::vector<VICUS::Surface> & surfaces)
+														 const std::vector<VICUS::Surface> & surfaces,
+														 const std::vector<VICUS::SubSurfaceComponentInstance> * subSurfaceComponentInstances)
 	: m_surfaces(surfaces)
 {
 	setText( label );
+	if (subSurfaceComponentInstances != nullptr) {
+		m_modifySubSurfaceComponentInstances = true;
+		m_subSurfaceComponentInstances = *subSurfaceComponentInstances;
+	}
 }
 
 
@@ -68,8 +73,12 @@ void SVUndoModifySurfaceGeometry::undo() {
 		}
 	}
 
-	// reset local transformation matrix
-	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
+	// also modified sub-surface components, if needed
+	if (m_modifySubSurfaceComponentInstances) {
+		m_subSurfaceComponentInstances.swap(theProject().m_subSurfaceComponentInstances);
+	}
+
+	theProject().updatePointers();
 
 	// tell project that geometry has changed
 	// NOTE: this may be slow for larger geometries...

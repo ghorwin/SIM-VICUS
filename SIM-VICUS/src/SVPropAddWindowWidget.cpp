@@ -3,6 +3,8 @@
 
 #include <QSpinBox>
 
+#include <QtExt_Conversions.h>
+
 #include <VICUS_Project.h>
 
 #include "SVViewStateHandler.h"
@@ -11,8 +13,8 @@
 #include "SVSettings.h"
 
 #include "Vic3DNewSubSurfaceObject.h"
+#include "SVUndoModifySurfaceGeometry.h"
 
-#include <QtExt_Conversions.h>
 
 SVPropAddWindowWidget::SVPropAddWindowWidget(QWidget *parent) :
 	QWidget(parent),
@@ -202,8 +204,9 @@ void SVPropAddWindowWidget::on_radioButtonSubSurfaceTypeWindow_toggled(bool chec
 		m_ui->comboBoxSubSurfaceComponent->clear();
 		// process all window components and populate box
 		const SVDatabase & db = SVSettings::instance().m_db;
-		for (const auto & w : db.m_windows) {
-			m_ui->comboBoxSubSurfaceComponent->addItem( QtExt::MultiLangString2QString(w.second.m_displayName) );
+		for (const auto & w : db.m_subSurfaceComponents) {
+			m_ui->comboBoxSubSurfaceComponent->addItem( QtExt::MultiLangString2QString(w.second.m_displayName),
+														w.second.m_id);
 		}
 		m_ui->comboBoxSubSurfaceComponent->setCurrentIndex(m_ui->comboBoxSubSurfaceComponent->count()-1);
 	}
@@ -221,5 +224,67 @@ void SVPropAddWindowWidget::on_tabWidgetWindow_currentChanged(int index) {
 
 
 void SVPropAddWindowWidget::on_pushButtonCreate_clicked() {
+	// retrieve generated geometry from new subsurface object
+	// and create undo-action
 
+	// process all selected surface
+	std::vector<VICUS::Surface> modSurfaces; // here, we store only the modified surfaces
+
+	// in case the original surfaces did have already subsurface components assigned, search and remove them
+	std::set<unsigned int> subSurfaceIDsToRemove;
+	for (unsigned int i=0; i<m_currentSelection.size(); ++i) {
+		const VICUS::Surface* s = m_currentSelection[i];
+		for (const VICUS::SubSurface & sub : s->subSurfaces()) {
+			if (sub.m_subSurfaceComponentInstance != nullptr)
+				subSurfaceIDsToRemove.insert(sub.m_subSurfaceComponentInstance->m_id);
+		}
+	}
+
+	// populate a vector with existing and remaining subsurface component instances
+	std::vector<VICUS::SubSurfaceComponentInstance> subSurfaceComponentInstances;
+
+	for (const VICUS::SubSurfaceComponentInstance & subComp : project().m_subSurfaceComponentInstances) {
+		if (subSurfaceIDsToRemove.find(subComp.m_id) == subSurfaceIDsToRemove.end())
+			subSurfaceComponentInstances.push_back(subComp);
+	}
+
+	const std::vector<VICUS::PlaneGeometry> & geometries = SVViewStateHandler::instance().m_newSubSurfaceObject->surfaceGeometries();
+	IBK_ASSERT(geometries.size() == m_currentSelection.size());
+
+	for (unsigned int i=0; i<m_currentSelection.size(); ++i) {
+		const VICUS::Surface* s = m_currentSelection[i];
+
+		VICUS::Surface newSurf(*s);
+		newSurf.setPolygon3D( geometries[i].polygon() ); // update polygon (is this really necessary?)
+
+		// now add subsurface objects for each hole in the polygon
+		std::vector<VICUS::SubSurface> subs;
+		for (const VICUS::Polygon2D & p : geometries[i].holes()) {
+			VICUS::SubSurface subsurf;
+			subsurf.m_id = subsurf.uniqueID();
+			subsurf.m_polygon2D = p;
+			subsurf.m_displayName = tr("Window #").arg(subsurf.m_id);
+			subs.push_back(subsurf);
+
+			// also create subsurface component instances
+			// but only if we have a valid subsurface component selected
+			if (s->m_componentInstance != nullptr &&
+				m_ui->comboBoxSubSurfaceComponent->count() != 0 &&
+				m_ui->comboBoxSubSurfaceComponent->currentIndex() != -1)
+			{
+				VICUS::SubSurfaceComponentInstance subInstance;
+				subInstance.m_id = VICUS::Project::uniqueId(subSurfaceComponentInstances);
+				subInstance.m_subSurfaceComponentID = m_ui->comboBoxSubSurfaceComponent->currentData().toUInt();
+				subInstance.m_sideASurfaceID = s->m_componentInstance->m_sideASurfaceID;
+				subInstance.m_sideBSurfaceID = s->m_componentInstance->m_sideBSurfaceID;
+				subSurfaceComponentInstances.push_back(subInstance);
+			}
+		}
+		newSurf.setSubSurfaces(subs);
+		modSurfaces.push_back(newSurf);
+	}
+
+	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Added sub-surfaces/windows"),
+		modSurfaces, &subSurfaceComponentInstances);
+	undo->push();
 }

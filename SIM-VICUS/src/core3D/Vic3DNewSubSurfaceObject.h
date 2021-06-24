@@ -106,6 +106,9 @@ public:
 	/*! Renders transparent parts of geometry. */
 	void renderTransparent();
 
+	/*! Gives read-only access to generated geometries. */
+	const std::vector<VICUS::PlaneGeometry> & surfaceGeometries() const { return m_surfaceGeometries; }
+
 private:
 	/*! Populates the color and vertex buffer with data for the "last segment" line and the polygon.
 		Resizes vertex and element buffers on GPU memory and copies data from locally stored vertex/element arrays to GPU.

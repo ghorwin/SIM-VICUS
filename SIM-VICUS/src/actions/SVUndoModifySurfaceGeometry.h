@@ -34,7 +34,8 @@
 class SVUndoModifySurfaceGeometry : public SVUndoCommandBase {
 	Q_DECLARE_TR_FUNCTIONS(SVUndoModifySurfaceGeometry)
 public:
-	SVUndoModifySurfaceGeometry(const QString & label, const std::vector<VICUS::Surface> & surfaces);
+	SVUndoModifySurfaceGeometry(const QString & label, const std::vector<VICUS::Surface> & surfaces,
+								const std::vector<VICUS::SubSurfaceComponentInstance> * subSurfaceComponentInstances = nullptr);
 
 	virtual void undo();
 	virtual void redo();
@@ -42,7 +43,12 @@ public:
 private:
 
 	/*! Object copies of modified surfaces. */
-	std::vector<VICUS::Surface>					m_surfaces;
+	std::vector<VICUS::Surface>								m_surfaces;
+
+	/*! True, if we also modify the sub-surface component instances (i.e. we add windows). */
+	bool													m_modifySubSurfaceComponentInstances = false;
+	/*! Copies of modified sub-surface component instances. */
+	std::vector<VICUS::SubSurfaceComponentInstance>			m_subSurfaceComponentInstances;
 };
 
 
