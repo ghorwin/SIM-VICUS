@@ -224,6 +224,7 @@ void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path, const s
 	}
 
 	// write header line
+//	tsvFile << "Time [h]\tAzimuth [Deg]\tAltitude [Deg]\t"; // write header
 	tsvFile << "Time [h]\t"; // write header
 	for ( unsigned int i=0; i<m_surfaces.size(); ++i ) {
 		tsvFile << surfaceIDs[i] << " [---]";
@@ -235,11 +236,16 @@ void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path, const s
 	// now write the data
 	unsigned int startStep = (unsigned int)std::floor(m_startTime.secondsOfYear()/m_samplingPeriod);
 	for (unsigned int i=0; i<stepCount; ++i) {
-		unsigned int timeInSec = startStep + i*m_samplingPeriod;
-		tsvFile << IBK::val2string<double>((double)timeInSec/3600) << "\t";
+		unsigned int timeInSec = (startStep + i)*m_samplingPeriod;
+//		tsvFile << IBK::val2string<double>((double)timeInSec/3600, 4 ) << "\t";
+		double time = (double)timeInSec/3600;
+		tsvFile << std::to_string(time) << "\t";
 
 		// get index of corresponding shading factor data
 		unsigned int sfDataIndex = samplingIndexToConeNormalMap[i];
+
+//		tsvFile << m_sunPositions[i].m_azimuth / IBK::DEG2RAD << "\t";
+//		tsvFile << m_sunPositions[i].m_altitude / IBK::DEG2RAD << "\t";
 
 		// no data available? (night-time?)
 		if (sfDataIndex == (unsigned int)-1) {
@@ -304,7 +310,7 @@ void StructuralShading::writeShadingFactorsToDataIO(const IBK::Path & path, cons
 	unsigned int startStep = (unsigned int)std::floor(m_startTime.secondsOfYear()/m_samplingPeriod);
 	for (unsigned int i=0; i<stepCount; ++i) {
 		// store time point in seconds
-		timePoints[i] = startStep + i*m_samplingPeriod;
+		timePoints[i] = (startStep + i)*m_samplingPeriod;
 
 		// get index of corresponding shading factor data
 		unsigned int sfDataIndex = samplingIndexToConeNormalMap[i];
@@ -344,7 +350,7 @@ void StructuralShading::createSunNormals() {
 	unsigned int stepCount = (unsigned int)std::ceil(m_duration/m_samplingPeriod);
 
 	for (unsigned int i=0; i<stepCount; ++i) {
-		unsigned int timeInSec = startStep + i*m_samplingPeriod;
+		unsigned int timeInSec = (startStep + i)*m_samplingPeriod;
 		double localMeanTime = CCM::SolarRadiationModel::localMeanTimeFromLocalStandardTime(timeInSec, m_timeZone, m_longitudeInDeg);
 		double apparentTime = CCM::SolarRadiationModel::apparentSolarTimeFromLocalMeanTime(localMeanTime);
 		sunModel.setTime(apparentTime);		//sun position at middle of the hour; hourly interval
