@@ -84,6 +84,8 @@ void Polygon3D::removeVertex(unsigned int idx){
 void Polygon3D::checkPolygon() {
 	m_valid = false;
 	m_polyline.clear();
+	if (m_vertexes.size() < 3)
+		return;
 
 	eleminateColinearPts();
 

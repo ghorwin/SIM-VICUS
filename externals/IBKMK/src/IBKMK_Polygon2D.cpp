@@ -45,6 +45,8 @@ void Polygon2D::removeVertex(unsigned int idx){
 
 void Polygon2D::checkPolygon() {
 	m_valid = false;
+	if (m_vertexes.size() < 3)
+		return;
 	eleminateColinearPts();
 
 	// try to simplify polygon to internal rectangle/parallelogram definition
@@ -72,7 +74,7 @@ bool Polygon2D::intersectsLine2D(const IBK::point2D<double> &p1, const IBK::poin
 
 void Polygon2D::setVertexes(const std::vector<IBKMK::Vector2D> & vertexes) {
 	m_vertexes = vertexes;
-	checkPolygon();
+	checkPolygon(); // if we have a triangle/rectangle, this is detected here
 }
 
 
