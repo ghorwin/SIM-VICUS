@@ -136,7 +136,9 @@ public:
 
 	/*! This function clears the current buffer and vertex lists. */
 	void startNewGeometry(NewGeometryMode m) {
-		clear();
+		// when drawing polygons or rectangles, we always start from scratch
+		if (m == NGM_Rect || m == NGM_Polygon)
+			clear();
 		m_newGeometryMode = m;
 	}
 

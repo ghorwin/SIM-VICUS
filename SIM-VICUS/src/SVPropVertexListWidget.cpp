@@ -69,23 +69,10 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 	m_ui->lineEditZoneHeight->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(),
 									tr("Zone height in [m]."),true, true);
 
-
 	SVViewStateHandler::instance().m_propVertexListWidget = this;
-
-	connect(m_ui->toolButtonEditComponents1, &QToolButton::clicked,
-			this, &SVPropVertexListWidget::onEditComponents);
-	connect(m_ui->toolButtonEditComponents2, &QToolButton::clicked,
-			this, &SVPropVertexListWidget::onEditComponents);
-	connect(m_ui->toolButtonEditComponents3, &QToolButton::clicked,
-			this, &SVPropVertexListWidget::onEditComponents);
-	connect(m_ui->toolButtonEditComponents4, &QToolButton::clicked,
-			this, &SVPropVertexListWidget::onEditComponents);
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropVertexListWidget::onModified);
-
-	m_ui->pushButtonFloorDone->setEnabled(false);
-	m_ui->pushButtonFinish->setEnabled(false);
 }
 
 
@@ -95,66 +82,132 @@ SVPropVertexListWidget::~SVPropVertexListWidget() {
 
 
 void SVPropVertexListWidget::setup(int newGeometryType) {
-	m_ui->groupBoxPolygonVertexes->setVisible(false);
-	m_ui->groupBoxPolygonVertexes->setEnabled(true);
-	m_ui->groupBoxZoneProperties->setVisible(false);
-	m_ui->groupBoxSurfaceProperties->setVisible(false);
-	m_ui->checkBoxAnnonymousGeometry->setVisible(false);
-	QString baseName(tr("New surface"));
-	switch (newGeometryType) {
-		case Vic3D::NewGeometryObject::NGM_Rect :
-			m_ui->groupBoxSurfaceProperties->setVisible(true);
-			m_ui->checkBoxAnnonymousGeometry->setVisible(true);
-			m_ui->pushButtonFinish->setText(tr("Create surface"));
-		break;
-		case Vic3D::NewGeometryObject::NGM_Polygon :
-			m_ui->groupBoxPolygonVertexes->setVisible(true);
-			m_ui->groupBoxSurfaceProperties->setVisible(true);
-			m_ui->checkBoxAnnonymousGeometry->setVisible(true);
-			m_ui->pushButtonFinish->setText(tr("Create surface"));
-		break;
-		case Vic3D::NewGeometryObject::NGM_ZoneFloor :
-			m_ui->groupBoxPolygonVertexes->setVisible(true);
-			m_ui->groupBoxZoneProperties->setVisible(true);
-			baseName = tr("New zone");
-			m_ui->pushButtonFinish->setText(tr("Create zone"));
-		break;
-
-		// we do not have other geometries, yet
-		default:;
-	}
-
-	// populate component combo boxes
-	updateBuildingComboBox(); // this will also update the other combo boxes
-	updateComponentComboBoxes();
-
-	// compose object names until we found a unique object name
-	std::set<QString> existingNames;
-	for (const VICUS::Surface & s : project().m_plainGeometry)
-		existingNames.insert(s.m_displayName);
-
-	// set new unique object/surface name
-	m_ui->lineEditName->setText( VICUS::Project::uniqueName(baseName, existingNames));
+	// switch to vertex list widget
+	m_ui->stackedWidget->setCurrentIndex(0);
+	// clear the polygon vertex list
 	clearPolygonVertexList();
+
+	// initialize new geometry object
+	switch ((Vic3D::NewGeometryObject::NewGeometryMode)newGeometryType) {
+		case Vic3D::NewGeometryObject::NGM_Rect :
+			SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_Rect);
+		break;
+
+		case Vic3D::NewGeometryObject::NGM_Polygon :
+		case Vic3D::NewGeometryObject::NGM_Zone :
+		case Vic3D::NewGeometryObject::NGM_Roof :
+			SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_Polygon);
+		break;
+
+		case Vic3D::NewGeometryObject::NUM_NGM: ; // just for the compiler
+	}
 }
 
 
-bool SVPropVertexListWidget::reselectById(QComboBox * combo, int id) const {
-	combo->setEnabled(true);
-	if (id != -1) {
-		id = combo->findData(id);
-		if (id != -1) {
-			combo->setCurrentIndex(id);
-			return true;
+void SVPropVertexListWidget::updateComponentComboBoxes() {
+	// remember currently selected component IDs
+	int floorCompID = -1;
+	int ceilingCompID = -1;
+	int wallCompID = -1;
+	int surfaceCompID = -1;
+	if (m_ui->comboBoxComponentFloor->currentIndex() != -1)
+		floorCompID = m_ui->comboBoxComponentFloor->currentData().toInt();
+	if (m_ui->comboBoxComponentCeiling->currentIndex() != -1)
+		ceilingCompID = m_ui->comboBoxComponentCeiling->currentData().toInt();
+	if (m_ui->comboBoxComponentWalls->currentIndex() != -1)
+		wallCompID = m_ui->comboBoxComponentWalls->currentData().toInt();
+	if (m_ui->comboBoxComponent->currentIndex() != -1)
+		surfaceCompID = m_ui->comboBoxComponent->currentData().toInt();
+
+	m_ui->comboBoxComponentFloor->clear();
+	m_ui->comboBoxComponentCeiling->clear();
+	m_ui->comboBoxComponentWalls->clear();
+	m_ui->comboBoxComponent->clear();
+
+	std::string langID = QtExt::LanguageHandler::instance().langId().toStdString();
+	for (auto & c : SVSettings::instance().m_db.m_components) {
+		switch (c.second.m_type) {
+			case VICUS::Component::CT_OutsideWall :
+			case VICUS::Component::CT_OutsideWallToGround :
+			case VICUS::Component::CT_InsideWall :
+				m_ui->comboBoxComponentWalls->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
+			break;
+
+			case VICUS::Component::CT_FloorToCellar :
+			case VICUS::Component::CT_FloorToAir :
+			case VICUS::Component::CT_FloorToGround :
+				m_ui->comboBoxComponentFloor->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
+			break;
+
+			case VICUS::Component::CT_Ceiling :
+			case VICUS::Component::CT_SlopedRoof :
+			case VICUS::Component::CT_FlatRoof :
+			case VICUS::Component::CT_ColdRoof :
+			case VICUS::Component::CT_WarmRoof :
+				m_ui->comboBoxComponentCeiling->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
+			break;
+
+			case VICUS::Component::CT_Miscellaneous :
+			case VICUS::Component::NUM_CT:
+				m_ui->comboBoxComponentFloor->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
+				m_ui->comboBoxComponentCeiling->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
+				m_ui->comboBoxComponentWalls->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
+			break;
 		}
+
+		m_ui->comboBoxComponent->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
 	}
-	if (combo->count() != 0)
-		combo->setCurrentIndex(0);
-	else {
-		combo->setEnabled(false);
-	}
-	return false;
+
+	// reselect previously selected components
+	reselectById(m_ui->comboBoxComponentFloor, floorCompID);
+	reselectById(m_ui->comboBoxComponentCeiling, ceilingCompID);
+	reselectById(m_ui->comboBoxComponentWalls, wallCompID);
+	reselectById(m_ui->comboBoxComponent, surfaceCompID);
 }
+
+
+void SVPropVertexListWidget::addVertex(const IBKMK::Vector3D & p) {
+	// Note: the vertex is already in the NewGeometryObject, we only
+	//       modify the table widget and update the button enabled states
+	int row = m_ui->tableWidgetVertexes->rowCount();
+	m_ui->tableWidgetVertexes->setRowCount(row + 1);
+	QTableWidgetItem * item = new QTableWidgetItem(QString("%1").arg(row+1));
+	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	m_ui->tableWidgetVertexes->setItem(row,0,item);
+	item = new QTableWidgetItem(QString("%L1,%L2,%L3").arg(p.m_x).arg(p.m_y).arg(p.m_z));
+	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	m_ui->tableWidgetVertexes->setItem(row,1,item);
+
+	m_ui->pushButtonDeleteLast->setEnabled(true);
+
+	// we may now switch to another mode
+	m_ui->pushButtonCompletePolygon->setEnabled(SVViewStateHandler::instance().m_newGeometryObject->canComplete());
+}
+
+
+void SVPropVertexListWidget::removeVertex(unsigned int idx) {
+	// Note: the vertex has already been removed in the NewGeometryObject, we only
+	//       modify the table widget and update the button enabled states
+	int rows = m_ui->tableWidgetVertexes->rowCount();
+	Q_ASSERT(rows > 0);
+	Q_ASSERT((int)idx < m_ui->tableWidgetVertexes->rowCount());
+	// now remove selected row from table widget
+	m_ui->tableWidgetVertexes->removeRow((int)idx);
+	m_ui->pushButtonDeleteLast->setEnabled(rows > 1);
+
+	// disable/enable "Complete polygon" button, depending on wether the surface is complete
+	m_ui->pushButtonCompletePolygon->setEnabled(SVViewStateHandler::instance().m_newGeometryObject->canComplete());
+
+	// repaint the scene
+	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
+}
+
+
+
+// *** PRIVATE MEMBERS ***
+
+
+
 
 
 void SVPropVertexListWidget::updateBuildingComboBox() {
@@ -245,138 +298,44 @@ void SVPropVertexListWidget::updateZoneComboBox() {
 	updateEnabledStates();
 }
 
+
+
+
+
+bool SVPropVertexListWidget::reselectById(QComboBox * combo, int id) const {
+	combo->setEnabled(true);
+	if (id != -1) {
+		id = combo->findData(id);
+		if (id != -1) {
+			combo->setCurrentIndex(id);
+			return true;
+		}
+	}
+	if (combo->count() != 0)
+		combo->setCurrentIndex(0);
+	else {
+		combo->setEnabled(false);
+	}
+	return false;
+}
+
+
+
+
 void SVPropVertexListWidget::createRoofZone() {
 
-
-
 }
 
 
-void SVPropVertexListWidget::updateComponentComboBoxes() {
-	// remember currently selected component IDs
-	int floorCompID = -1;
-	int ceilingCompID = -1;
-	int wallCompID = -1;
-	int surfaceCompID = -1;
-	if (m_ui->comboBoxComponentFloor->currentIndex() != -1)
-		floorCompID = m_ui->comboBoxComponentFloor->currentData().toInt();
-	if (m_ui->comboBoxComponentCeiling->currentIndex() != -1)
-		ceilingCompID = m_ui->comboBoxComponentCeiling->currentData().toInt();
-	if (m_ui->comboBoxComponentWalls->currentIndex() != -1)
-		wallCompID = m_ui->comboBoxComponentWalls->currentData().toInt();
-	if (m_ui->comboBoxComponent->currentIndex() != -1)
-		surfaceCompID = m_ui->comboBoxComponent->currentData().toInt();
-
-	m_ui->comboBoxComponentFloor->clear();
-	m_ui->comboBoxComponentCeiling->clear();
-	m_ui->comboBoxComponentWalls->clear();
-	m_ui->comboBoxComponent->clear();
-
-	std::string langID = QtExt::LanguageHandler::instance().langId().toStdString();
-	for (auto & c : SVSettings::instance().m_db.m_components) {
-		switch (c.second.m_type) {
-			case VICUS::Component::CT_OutsideWall :
-			case VICUS::Component::CT_OutsideWallToGround :
-			case VICUS::Component::CT_InsideWall :
-				m_ui->comboBoxComponentWalls->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
-			break;
-
-			case VICUS::Component::CT_FloorToCellar :
-			case VICUS::Component::CT_FloorToAir :
-			case VICUS::Component::CT_FloorToGround :
-				m_ui->comboBoxComponentFloor->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
-			break;
-
-			case VICUS::Component::CT_Ceiling :
-			case VICUS::Component::CT_SlopedRoof :
-			case VICUS::Component::CT_FlatRoof :
-			case VICUS::Component::CT_ColdRoof :
-			case VICUS::Component::CT_WarmRoof :
-				m_ui->comboBoxComponentCeiling->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
-			break;
-
-			case VICUS::Component::CT_Miscellaneous :
-			case VICUS::Component::NUM_CT:
-				m_ui->comboBoxComponentFloor->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
-				m_ui->comboBoxComponentCeiling->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
-				m_ui->comboBoxComponentWalls->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
-			break;
-		}
-
-		m_ui->comboBoxComponent->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
-	}
-
-	// reselect previously selected components
-	reselectById(m_ui->comboBoxComponentFloor, floorCompID);
-	reselectById(m_ui->comboBoxComponentCeiling, ceilingCompID);
-	reselectById(m_ui->comboBoxComponentWalls, wallCompID);
-	reselectById(m_ui->comboBoxComponent, surfaceCompID);
-}
 
 
-void SVPropVertexListWidget::updateSubSurfaceComponentComboBoxes() {
-	// TODO
-}
 
 
-void SVPropVertexListWidget::addVertex(const IBKMK::Vector3D & p) {
-	// Note: the vertex is already in the NewGeometryObject, we only
-	//       modify the table widget and update the button enabled states
-	int row = m_ui->tableWidgetVertexes->rowCount();
-	m_ui->tableWidgetVertexes->setRowCount(row + 1);
-	QTableWidgetItem * item = new QTableWidgetItem(QString("%1").arg(row+1));
-	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-	m_ui->tableWidgetVertexes->setItem(row,0,item);
-	item = new QTableWidgetItem(QString("%L1,%L2,%L3").arg(p.m_x).arg(p.m_y).arg(p.m_z));
-	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-	m_ui->tableWidgetVertexes->setItem(row,1,item);
 
-	m_ui->pushButtonDeleteLast->setEnabled(true);
-
-	m_ui->pushButtonFinish->setEnabled(SVViewStateHandler::instance().m_newGeometryObject->canComplete());
-	if (SVViewStateHandler::instance().m_newGeometryObject->planeGeometry().isValid()) {
-		// only enabled floor done button (i.e. start extrusion) if we are in NGM_ZoneFloor mode
-		if (SVViewStateHandler::instance().m_newGeometryObject->newGeometryMode() == Vic3D::NewGeometryObject::NGM_ZoneFloor)
-			m_ui->pushButtonFloorDone->setEnabled(m_ui->tableWidgetVertexes->rowCount() > 2);
-	}
-	else {
-		m_ui->pushButtonFloorDone->setEnabled(false);
-	}
-}
-
-
-void SVPropVertexListWidget::removeVertex(unsigned int idx) {
-	// Note: the vertex has already been removed in the NewGeometryObject, we only
-	//       modify the table widget and update the button enabled states
-	int rows = m_ui->tableWidgetVertexes->rowCount();
-	Q_ASSERT(rows > 0);
-	Q_ASSERT((int)idx < m_ui->tableWidgetVertexes->rowCount());
-	// now remove selected row from table widget
-	m_ui->tableWidgetVertexes->removeRow((int)idx);
-	m_ui->pushButtonDeleteLast->setEnabled(rows > 1);
-	m_ui->pushButtonFinish->setEnabled(SVViewStateHandler::instance().m_newGeometryObject->canComplete());
-	if (SVViewStateHandler::instance().m_newGeometryObject->planeGeometry().isValid()) {
-		// only enabled floor done button (i.e. start extrusion) if we are in NGM_ZoneFloor mode
-		if (SVViewStateHandler::instance().m_newGeometryObject->newGeometryMode() == Vic3D::NewGeometryObject::NGM_ZoneFloor)
-			m_ui->pushButtonFloorDone->setEnabled(m_ui->tableWidgetVertexes->rowCount() > 2);
-	}
-	else {
-		m_ui->pushButtonFloorDone->setEnabled(false);
-	}
-
-	// continue in place-vertex mode (setting the viewstate also triggers a repaint)
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
-	vs.m_propertyWidgetMode = SVViewState::PM_VertexList;
-	SVViewStateHandler::instance().setViewState(vs);
-	SVViewStateHandler::instance().m_geometryView->focusSceneView();
-}
-
-
-void SVPropVertexListWidget::setExtrusionDistance(double dist) {
-	if (m_ui->groupBoxZoneProperties->isVisibleTo(this)) {
-		m_ui->lineEditZoneHeight->setText(QString("%L1").arg(dist));
-	}
+void SVPropVertexListWidget::setZoneHeight(double dist) {
+	m_ui->lineEditZoneHeight->blockSignals(true);
+	m_ui->lineEditZoneHeight->setText(QString("%L1").arg(dist));
+	m_ui->lineEditZoneHeight->blockSignals(false);
 }
 
 
@@ -402,8 +361,7 @@ void SVPropVertexListWidget::onModified(int modificationType, ModificationInfo *
 void SVPropVertexListWidget::clearPolygonVertexList() {
 	// clear table widget and disable "delete" and "finish" buttons
 	m_ui->tableWidgetVertexes->setRowCount(0);
-	m_ui->pushButtonFinish->setEnabled(false);
-	m_ui->pushButtonFloorDone->setEnabled(false);
+	m_ui->pushButtonCompletePolygon->setEnabled(false);
 	m_ui->pushButtonDeleteLast->setEnabled(false);
 	m_ui->pushButtonDeleteSelected->setEnabled(false);
 }
@@ -421,24 +379,24 @@ void SVPropVertexListWidget::on_tableWidgetVertexes_itemSelectionChanged() {
 }
 
 
-void SVPropVertexListWidget::on_pushButtonCancel_clicked() {
-	// reset new polygon object, so that it won't be drawn anylonger
-	SVViewStateHandler::instance().m_newGeometryObject->clear();
-	// signal, that we are no longer in "add vertex" mode
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_sceneOperationMode = SVViewState::NUM_OM;
-	vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
-	// reset locks
-	vs.m_locks = SVViewState::NUM_L;
+//void SVPropVertexListWidget::on_pushButtonCancel_clicked() {
+//	// reset new polygon object, so that it won't be drawn anylonger
+//	SVViewStateHandler::instance().m_newGeometryObject->clear();
+//	// signal, that we are no longer in "add vertex" mode
+//	SVViewState vs = SVViewStateHandler::instance().viewState();
+//	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+//	vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
+//	// reset locks
+//	vs.m_locks = SVViewState::NUM_L;
 
-	// take xy plane out of snap option mask
-	vs.m_snapEnabled = true;
-	// now tell all UI components to toggle their view state
-	SVViewStateHandler::instance().setViewState(vs);
+//	// take xy plane out of snap option mask
+//	vs.m_snapEnabled = true;
+//	// now tell all UI components to toggle their view state
+//	SVViewStateHandler::instance().setViewState(vs);
 
-	// we also have do clean our table
-	m_ui->tableWidgetVertexes->clearContents();
-}
+//	// we also have do clean our table
+//	m_ui->tableWidgetVertexes->clearContents();
+//}
 
 
 void SVPropVertexListWidget::on_pushButtonDeleteSelected_clicked() {
@@ -449,7 +407,7 @@ void SVPropVertexListWidget::on_pushButtonDeleteSelected_clicked() {
 	po->removeVertex((unsigned int)currentRow); // this will in turn call removeVertex() above
 }
 
-
+#if 0
 void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 	if (m_ui->lineEditName->text().trimmed().isEmpty()) {
 		QMessageBox::critical(this, QString(), tr("Please enter a descriptive name!"));
@@ -634,7 +592,7 @@ void SVPropVertexListWidget::onEditComponents() {
 	// Note: SVMainWindow::instance().on_actionDBComponents_triggered() calls updateComponentCombos() itself, so
 	//       no need to call this here
 }
-
+#endif
 
 void SVPropVertexListWidget::on_toolButtonAddBuilding_clicked() {
 	std::set<QString> existingNames;
@@ -714,12 +672,13 @@ bool SVPropVertexListWidget::createAnnonymousGeometry() const {
 	return (m_ui->checkBoxAnnonymousGeometry->isVisibleTo(this) && m_ui->checkBoxAnnonymousGeometry->isChecked());
 }
 
+
 void SVPropVertexListWidget::updateEnabledStates() {
+	// update states of "Create surface" page
+
 	// if checkbox is visible, we adjust the enabled state of other inputs
 	bool annonymousGeometry = createAnnonymousGeometry();
 	if (annonymousGeometry) {
-		m_ui->groupBoxSurfaceProperties->setEnabled(false);
-
 		m_ui->labelBuilding->setEnabled(false);
 		m_ui->comboBoxBuilding->setEnabled(false);
 		m_ui->toolButtonAddBuilding->setEnabled(false);
@@ -731,9 +690,15 @@ void SVPropVertexListWidget::updateEnabledStates() {
 		m_ui->labelZone->setEnabled(false);
 		m_ui->comboBoxZone->setEnabled(false);
 		m_ui->toolButtonAddZone->setEnabled(false);
+
+		m_ui->labelCompont->setEnabled(false);
+		m_ui->comboBoxComponent->setEnabled(false);
+		m_ui->toolButtonEditComponents1->setEnabled(false);
 	}
 	else {
-		m_ui->groupBoxSurfaceProperties->setEnabled(true);
+		m_ui->labelCompont->setEnabled(true);
+		m_ui->comboBoxComponent->setEnabled(true);
+		m_ui->toolButtonEditComponents1->setEnabled(true);
 
 		// building controls
 		if (m_ui->comboBoxBuilding->count() == 0) {
@@ -757,7 +722,7 @@ void SVPropVertexListWidget::updateEnabledStates() {
 		m_ui->toolButtonAddBuildingLevel->setEnabled(m_ui->comboBoxBuilding->count() != 0);
 		m_ui->labelBuildingLevel->setEnabled(m_ui->comboBoxBuilding->count() != 0);
 
-
+#if 0
 		// room controls
 		// never enabled when we create zones
 		if (m_ui->groupBoxZoneProperties->isVisibleTo(this)) {
@@ -776,6 +741,7 @@ void SVPropVertexListWidget::updateEnabledStates() {
 			m_ui->toolButtonAddZone->setEnabled(m_ui->comboBoxBuildingLevel->count() != 0);
 			m_ui->labelZone->setEnabled(m_ui->comboBoxBuildingLevel->count() != 0);
 		}
+#endif
 	}
 }
 
@@ -800,7 +766,7 @@ void SVPropVertexListWidget::on_comboBoxBuildingLevel_currentIndexChanged(int /*
 	}
 }
 
-
+#if 0
 void SVPropVertexListWidget::on_pushButtonFloorDone_clicked() {
 	// we switch to floor-extrusion mode now
 	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
@@ -843,7 +809,7 @@ void SVPropVertexListWidget::on_pushButtonFloorDone_clicked() {
 	if (m_ui->lineEditZoneHeight->isValid())
 		on_lineEditZoneHeight_editingFinishedSuccessfully();
 }
-
+#endif
 
 void SVPropVertexListWidget::on_lineEditZoneHeight_editingFinishedSuccessfully() {
 	// read entered line height and if valid move local coordinate system to new height

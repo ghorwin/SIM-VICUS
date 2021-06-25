@@ -53,9 +53,10 @@ class SVPropVertexListWidget : public QWidget {
 	Q_OBJECT
 
 public:
+
+
 	explicit SVPropVertexListWidget(QWidget *parent = nullptr);
 	~SVPropVertexListWidget();
-
 
 	/*! Sets up the widget to be used for creating geometry of a given type.
 		\param newGeometryType A type as declared in NewGeometryObject::NewGeometryMode
@@ -64,9 +65,6 @@ public:
 
 	/*! Updates the component combo boxes (this needs to be done whenever the component DB has been changed). */
 	void updateComponentComboBoxes();
-
-	/*! Updates the subsurface.component combo boxes (this needs to be done whenever the subsurface component DB has been changed). */
-	void updateSubSurfaceComponentComboBoxes();
 
 	/*! Appends a new vertex to the list of vertexes in the table widget.
 		Called from NewGeometryObject.
@@ -78,8 +76,8 @@ public:
 	*/
 	void removeVertex(unsigned int idx);
 
-	/*! Transfers the distance into the respective line widget. */
-	void setExtrusionDistance(double dist);
+	/*! Called from NewGeometryWidget with new zone height, to be shown in respective line widget. */
+	void setZoneHeight(double dist);
 
 public slots:
 
@@ -92,24 +90,12 @@ public slots:
 	/*! Called, when user starts with a new polygon/geometry. */
 	void clearPolygonVertexList();
 
-	/*! Finishes the geometry and creates the undo action to modify the
-		project.
-	*/
-	void on_pushButtonFinish_clicked();
-
-	/*! Switches from floor polygon mode to extrusion mode. */
-	void on_pushButtonFloorDone_clicked();
-
 private slots:
 	void on_pushButtonDeleteLast_clicked();
 
 	void on_tableWidgetVertexes_itemSelectionChanged();
 
-	void on_pushButtonCancel_clicked();
-
 	void on_pushButtonDeleteSelected_clicked();
-
-	void onEditComponents();
 
 	void on_toolButtonAddBuilding_clicked();
 
@@ -122,7 +108,6 @@ private slots:
 	void on_comboBoxBuilding_currentIndexChanged(int index);
 
 	void on_comboBoxBuildingLevel_currentIndexChanged(int index);
-
 
 	void on_lineEditZoneHeight_editingFinishedSuccessfully();
 

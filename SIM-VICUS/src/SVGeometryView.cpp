@@ -311,16 +311,12 @@ void SVGeometryView::onNumberKeyPressed(Qt::Key k) {
 
 void SVGeometryView::coordinateInputFinished() {
 	// either, the line edit coordinate input is empty, in which case the polygon object may be completed
-	// (if possible); or if in zoneFloor mode, the zoneFloor mode is completed
+	// (if possible)
 
 	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
 	if (m_lineEditCoordinateInput->text().trimmed().isEmpty()) {
 		if (po->planeGeometry().isValid()) {
-			if (po->newGeometryMode() == Vic3D::NewGeometryObject::NGM_ZoneFloor) {
-				SVViewStateHandler::instance().m_propVertexListWidget->on_pushButtonFloorDone_clicked();
-			}
-			else
-				po->finish();
+//			SVViewStateHandler::instance().m_propVertexListWidget->on_pushButtonCompletePolygon_clicked();
 		}
 		else
 			QMessageBox::critical(this, QString(), tr("Invalid polygon (must be planar and not winding)."));

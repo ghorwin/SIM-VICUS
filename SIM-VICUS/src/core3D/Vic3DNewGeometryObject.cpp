@@ -210,10 +210,10 @@ void NewGeometryObject::removeVertex(unsigned int idx) {
 	m_vertexList.erase(m_vertexList.begin()+idx);
 	switch (m_newGeometryMode) {
 		case NGM_Polygon :
+		case NGM_Rect :
 			m_polygonGeometry.setPolygon( VICUS::Polygon3D(m_vertexList) );
 			SVViewStateHandler::instance().m_propVertexListWidget->removeVertex(idx);
 		break;
-		case NGM_Rect :
 		case NGM_Zone :
 		case NGM_Roof :
 		case NUM_NGM :
@@ -312,7 +312,7 @@ void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p)
 				// also store the absolute height and update the generated geometry
 				setZoneHeight((double)verticalOffset.length()); // this also updates the buffers
 				// inform property widget about new zone height (for display in the line edit)
-				SVViewStateHandler::instance().m_propVertexListWidget->setExtrusionDistance(m_zoneHeight);
+				SVViewStateHandler::instance().m_propVertexListWidget->setZoneHeight(m_zoneHeight);
 			}
 		}
 		break;
@@ -349,7 +349,7 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 	Q_ASSERT(m_newGeometryMode == NGM_Roof);
 	Q_ASSERT(m_polygonGeometry.isValid());
 	// generate roof geometry
-
+#if 0
 	// we need all the time a local coordinate system where all points have a z-value of 0
 
 	// Get a _copy_ of the floor polygon
@@ -787,7 +787,7 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 				polys[i].flip();
 		}
 	}
-
+#endif
 }
 
 

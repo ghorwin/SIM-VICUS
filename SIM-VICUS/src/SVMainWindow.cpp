@@ -81,6 +81,7 @@
 #include "SVPropEditGeometry.h"
 #include "SVStyle.h"
 #include "SVPropFloorManagerWidget.h"
+#include "SVPropAddWindowWidget.h"
 #include "SVView3DDialog.h"
 #include "SVSimulationShadingOptions.h"
 
@@ -378,14 +379,16 @@ void SVMainWindow::on_actionDBComponents_triggered() {
 	// update all widgets that show the components somewhere (in a combo box or else)
 	if (SVViewStateHandler::instance().m_propVertexListWidget != nullptr) // guard against not yet created property widget
 		SVViewStateHandler::instance().m_propVertexListWidget->updateComponentComboBoxes();
+	if (SVViewStateHandler::instance().m_propAddWindowWidget != nullptr) // guard against not yet created property widget
+		SVViewStateHandler::instance().m_propAddWindowWidget->updateSubSurfaceComponentList();
 }
 
 
 void SVMainWindow::on_actionDBSubSurfaceComponents_triggered() {
 	dbSubSurfaceComponentEditDialog()->edit();
 	// update all widgets that show the components somewhere (in a combo box or else)
-	if (SVViewStateHandler::instance().m_propVertexListWidget != nullptr) // guard against not yet created property widget
-		SVViewStateHandler::instance().m_propVertexListWidget->updateSubSurfaceComponentComboBoxes();
+	if (SVViewStateHandler::instance().m_propAddWindowWidget != nullptr) // guard against not yet created property widget
+		SVViewStateHandler::instance().m_propAddWindowWidget->updateSubSurfaceComponentList();
 }
 
 
