@@ -1267,7 +1267,7 @@ void SVPropVertexListWidget::on_comboBoxBuildingLevel_currentIndexChanged(int /*
 void SVPropVertexListWidget::on_pushButtonFloorDone_clicked() {
 	// we switch to floor-extrusion mode now
 	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
-	po->switchTo(Vic3D::NewGeometryObject::NGM_ZoneExtrusion);
+	po->setNewGeometryMode(Vic3D::NewGeometryObject::NGM_ZoneExtrusion);
 	m_ui->pushButtonFloorDone->setEnabled(false);
 	m_ui->pushButtonFinish->setEnabled(true);
 	m_ui->groupBoxPolygonVertexes->setEnabled(false);

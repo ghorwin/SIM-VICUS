@@ -2,14 +2,50 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Mo. Jan. 4 22:04:35 2021</Created>
-		<LastEdited>Mo. Juni 21 09:21:05 2021</LastEdited>
+		<LastEdited>Fr. Juni 25 09:00:53 2021</LastEdited>
 	</ProjectInfo>
+	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
+	<DirectoryPlaceholders>
+		<Placeholder name="Database">/home/ghorwin/git/SIM-VICUS/data</Placeholder>
+	</DirectoryPlaceholders>
 	<Project>
-		<SolverParameter />
-		<SimulationParameter />
+		<SolverParameter>
+			<Integrator>CVODE</Integrator>
+			<LesSolver>KLU</LesSolver>
+			<Preconditioner>ILU</Preconditioner>
+		</SolverParameter>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<IBK:IntPara name="StartYear">2019</IBK:IntPara>
+			<Interval>
+				<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+				<IBK:Parameter name="End" unit="a">1</IBK:Parameter>
+			</Interval>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+				<IBK:Parameter name="RadiationLoadFractionZone" unit="%">50</IBK:Parameter>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
 		<Location>
-			<TimeZone>13</TimeZone>
+			<IBK:Parameter name="Latitude" unit="Deg">50.32</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">11.88</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<TimeZone>1</TimeZone>
+			<ClimateFilePath>${Database}/DB_climate/Europe/Germany/TRY2011/DE-10-TRY-2010__Hof__Jahr_00000K0_00567m.c6b</ClimateFilePath>
 		</Location>
+		<Outputs>
+			<Grids>
+				<OutputGrid name="Hourly values">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+			<IBK:Flag name="CreateDefaultZoneOutputs">true</IBK:Flag>
+		</Outputs>
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
@@ -115,14 +151,23 @@
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
 				</Material>
-				<Material id="10007" displayName="de:[SimQuality] Gipsputz|en:[SimQuality] Gypsum plaster" color="#cbb4b4">
-					<Notes>en:Plaster to be used in SimQuality test cases (TF12).|de:Putz zur Verwendung in SimQuality (TF12).</Notes>
+				<Material id="10012" displayName="de:[SimQuality] Teppichboden|en:[SimQuality] Carpeting" color="#bf6e40">
+					<Notes>en:Insulation to be used in SimQuality test cases (TF12).|de:Dämmstoff zur Verwendung in SimQuality (TF12).</Notes>
 					<Manufacturer>generic</Manufacturer>
 					<DataSource>SimQuality</DataSource>
-					<Category>Plaster</Category>
-					<IBK:Parameter name="Density" unit="kg/m3">1000</IBK:Parameter>
-					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
-					<IBK:Parameter name="Conductivity" unit="W/mK">0.4</IBK:Parameter>
+					<Category>Insulations</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">200</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1300</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.06</IBK:Parameter>
+				</Material>
+				<Material id="10013" displayName="de:[SimQuality] PUR|en:[SimQuality] PUR" color="#a2b84b">
+					<Notes>en:Insulation to be used in SimQuality test cases (TF12).|de:Dämmstoff zur Verwendung in SimQuality (TF12).</Notes>
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>SimQuality</DataSource>
+					<Category>Insulations</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">20</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
 				</Material>
 				<Material id="10009" displayName="de:[SimQuality] Stahlbeton|en:[SimQuality] reinforced concrete" color="#a29f2f">
 					<Notes>en:Contrete to be used in SimQuality test cases (TF12).|de:Beton zur Verwendung in SimQuality (TF12).</Notes>
@@ -142,39 +187,30 @@
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">850</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">1.4</IBK:Parameter>
 				</Material>
-				<Material id="10012" displayName="de:[SimQuality] Teppichboden|en:[SimQuality] Carpeting" color="#bf6e40">
-					<Notes>en:Insulation to be used in SimQuality test cases (TF12).|de:Dämmstoff zur Verwendung in SimQuality (TF12).</Notes>
+				<Material id="10007" displayName="de:[SimQuality] Gipsputz|en:[SimQuality] Gypsum plaster" color="#cbb4b4">
+					<Notes>en:Plaster to be used in SimQuality test cases (TF12).|de:Putz zur Verwendung in SimQuality (TF12).</Notes>
 					<Manufacturer>generic</Manufacturer>
 					<DataSource>SimQuality</DataSource>
-					<Category>Insulations</Category>
-					<IBK:Parameter name="Density" unit="kg/m3">200</IBK:Parameter>
-					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1300</IBK:Parameter>
-					<IBK:Parameter name="Conductivity" unit="W/mK">0.06</IBK:Parameter>
-				</Material>
-				<Material id="10013" displayName="de:[SimQuality] PUR|en:[SimQuality] PUR" color="#a2b84b">
-					<Notes>en:Insulation to be used in SimQuality test cases (TF12).|de:Dämmstoff zur Verwendung in SimQuality (TF12).</Notes>
-					<Manufacturer>generic</Manufacturer>
-					<DataSource>SimQuality</DataSource>
-					<Category>Insulations</Category>
-					<IBK:Parameter name="Density" unit="kg/m3">20</IBK:Parameter>
-					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
-					<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
+					<Category>Plaster</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">1000</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.4</IBK:Parameter>
 				</Material>
 			</Materials>
 			<Constructions>
-				<Construction id="1005" displayName="DE: [SimQuality] TF08 |EN: [SimQuality] TF08 ">
+				<Construction id="1001" displayName="DE: [SimQuality] TF03 Konstruktionstyp 1 (Betonwand) |EN: [SimQuality] TF03 Construction 1 (concrete wall)">
 					<UsageType>OutsideWall</UsageType>
-					<InsulationKind>OutsideInsulation</InsulationKind>
-					<MaterialKind>NaturalStoneMasonry</MaterialKind>
 					<MaterialLayers>
-						<MaterialLayer matId="10003">
+						<MaterialLayer matId="10000">
 							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
 						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="1002" displayName="DE: [SimQuality] TF03 Konstruktionstyp 2 (Dämmung) |EN: [SimQuality] TF03 Construction 2 (insulation)">
+					<UsageType>OutsideWall</UsageType>
+					<MaterialLayers>
 						<MaterialLayer matId="10002">
 							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
-						</MaterialLayer>
-						<MaterialLayer matId="10001">
-							<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>
 				</Construction>
@@ -192,19 +228,19 @@
 						</MaterialLayer>
 					</MaterialLayers>
 				</Construction>
-				<Construction id="1002" displayName="DE: [SimQuality] TF03 Konstruktionstyp 2 (Dämmung) |EN: [SimQuality] TF03 Construction 2 (insulation)">
+				<Construction id="1005" displayName="DE: [SimQuality] TF08 |EN: [SimQuality] TF08 ">
 					<UsageType>OutsideWall</UsageType>
+					<InsulationKind>OutsideInsulation</InsulationKind>
+					<MaterialKind>NaturalStoneMasonry</MaterialKind>
 					<MaterialLayers>
+						<MaterialLayer matId="10003">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						</MaterialLayer>
 						<MaterialLayer matId="10002">
 							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
 						</MaterialLayer>
-					</MaterialLayers>
-				</Construction>
-				<Construction id="1001" displayName="DE: [SimQuality] TF03 Konstruktionstyp 1 (Betonwand) |EN: [SimQuality] TF03 Construction 1 (concrete wall)">
-					<UsageType>OutsideWall</UsageType>
-					<MaterialLayers>
-						<MaterialLayer matId="10000">
-							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						<MaterialLayer matId="10001">
+							<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>
 				</Construction>
@@ -230,8 +266,7 @@
 				</Construction>
 			</Constructions>
 			<Windows>
-				<Window id="3001" displayName="DE: Standardfenster" idGlazingSystem="3001" color="#99ff9a" methodFrame="None" methodDivider="None">
-				</Window>
+				<Window id="3001" displayName="DE: Standardfenster" idGlazingSystem="3001" color="#99ff9a" methodFrame="None" methodDivider="None" />
 			</Windows>
 			<WindowGlazingSystems>
 				<WindowGlazingSystem id="3001" displayName="DE: Doppelscheibenverglasung |EN: Double-layer glazing" color="#66f4ff" modelType="Simple">
@@ -257,15 +292,21 @@
 				</BoundaryCondition>
 			</BoundaryConditions>
 			<Components>
+				<Component id="1001" displayName="DE: [SimQuality] Komponente für TF03.1 |EN: [SimQuality] Component for TF03.1" color="#f57900">
+					<Type>OutsideWall</Type>
+					<IdConstruction>1001</IdConstruction>
+					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
+				</Component>
 				<Component id="1002" displayName="DE: [SimQuality] Komponente für TF03.2 |EN: [SimQuality] Component for TF03.2" color="#a40000">
 					<Type>OutsideWall</Type>
 					<IdConstruction>1002</IdConstruction>
 					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="1001" displayName="DE: [SimQuality] Komponente für TF03.1 |EN: [SimQuality] Component for TF03.1" color="#f57900">
+				<Component id="1003" displayName="DE: [SimQuality] Komponente für TF03.3 |EN: [SimQuality] Component for TF03.3" color="#73d216">
 					<Type>OutsideWall</Type>
-					<IdConstruction>1001</IdConstruction>
+					<IdConstruction>1003</IdConstruction>
 					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 				</Component>
@@ -280,12 +321,6 @@
 					<IdConstruction>1009</IdConstruction>
 					<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1003" displayName="DE: [SimQuality] Komponente für TF03.3 |EN: [SimQuality] Component for TF03.3" color="#73d216">
-					<Type>OutsideWall</Type>
-					<IdConstruction>1003</IdConstruction>
-					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 				</Component>
 			</Components>
 			<SubSurfaceComponents>

@@ -104,7 +104,7 @@ void NewGeometryObject::create(ShaderProgram * shaderProgram) {
 	m_vertexBufferObject.release();
 	m_indexBufferObject.release();
 
-	m_planeGeometry = VICUS::PlaneGeometry();
+	m_polygonGeometry = VICUS::PlaneGeometry();
 }
 
 
@@ -115,10 +115,14 @@ void NewGeometryObject::destroy() {
 }
 
 
-void NewGeometryObject::switchTo(NewGeometryObject::NewGeometryMode m) {
+void NewGeometryObject::setNewGeometryMode(NewGeometryObject::NewGeometryMode m) {
 	switch (m) {
-		case NGM_ZoneExtrusion :
-			Q_ASSERT(m_newGeometryMode == NGM_ZoneFloor);
+		case NGM_Zone :
+			Q_ASSERT(m_newGeometryMode == NGM_Polygon);
+			m_newGeometryMode = m;
+		break;
+		case NGM_Roof :
+			Q_ASSERT(m_newGeometryMode == NGM_Polygon);
 			m_newGeometryMode = m;
 		break;
 		default:;
@@ -128,10 +132,9 @@ void NewGeometryObject::switchTo(NewGeometryObject::NewGeometryMode m) {
 
 
 void NewGeometryObject::flipGeometry() {
-	// TODO : Andreas, improve performance?
-	VICUS::Polygon3D polygon = m_planeGeometry.polygon();
+	VICUS::Polygon3D polygon = m_polygonGeometry.polygon();
 	polygon.flip();
-	m_planeGeometry.setPolygon(polygon); // Note: no holes in this polygon, no need to flip the holes as well
+	m_polygonGeometry.setPolygon(polygon); // Note: no holes in this polygon, no need to flip the holes as well
 	updateBuffers(false);
 }
 
@@ -145,10 +148,9 @@ void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
 	switch (m_newGeometryMode) {
 		case NGM_Rect :
 			// if the rectangle is complete and we have a click, consider this as confirmation (rather than rejecting it)
-			if (m_planeGeometry.isValid()) {
-				finish();
+			if (m_polygonGeometry.isValid())
 				return;
-			}
+
 			// if we have already 2 points and a third is added (that is not the same as the first),
 			// finish the shape by creating a polygon object
 			if (m_vertexList.size() == 2) {
@@ -160,37 +162,33 @@ void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
 				IBKMK::Vector3D b = m_vertexList.back();
 				IBKMK::Vector3D c = p;
 				IBKMK::Vector3D d = a + (c-b);
-				m_planeGeometry = VICUS::PlaneGeometry(VICUS::Polygon3D::T_Rectangle, a, b, d);
-				SVViewStateHandler::instance().m_propVertexListWidget->addVertex(p);
+				m_polygonGeometry = VICUS::PlaneGeometry(VICUS::Polygon3D::T_Rectangle, a, b, d);
+				SVViewStateHandler::instance().m_propVertexListWidget->addVertex(p); // this also informs the property list widget that our rectangle is now complete
 			}
 			else {
 				m_vertexList.push_back(p);
-				m_planeGeometry.setPolygon( VICUS::Polygon3D(m_vertexList) );
+				m_polygonGeometry.setPolygon( VICUS::Polygon3D(m_vertexList) );
 				// also tell the vertex list widget about our new point
 				SVViewStateHandler::instance().m_propVertexListWidget->addVertex(p);
 			}
 		break;
 
 		case NGM_Polygon :
-		case NGM_ZoneFloor :
 			// if we have already a valid plane (i.e. normal vector not 0,0,0), then check if point is in plane
-			if (m_planeGeometry.normal() != IBKMK::Vector3D(0,0,0)) {
+			if (m_polygonGeometry.normal() != IBKMK::Vector3D(0,0,0)) {
 				IBKMK::Vector3D projected;
-				IBKMK::pointProjectedOnPlane(m_planeGeometry.offset(), m_planeGeometry.normal(), p, projected);
+				IBKMK::pointProjectedOnPlane(m_polygonGeometry.offset(), m_polygonGeometry.normal(), p, projected);
 				m_vertexList.push_back(projected);
 			}
 			else
 				m_vertexList.push_back(p);
-			m_planeGeometry.setPolygon( VICUS::Polygon3D(m_vertexList) );
+			m_polygonGeometry.setPolygon( VICUS::Polygon3D(m_vertexList) );
 			// also tell the vertex list widget about our new point
 			SVViewStateHandler::instance().m_propVertexListWidget->addVertex(p);
 		break;
 
-		case NGM_ZoneExtrusion :
-			// just signal the property list widget that we are done with the zone
-			finish();
-		break;
-
+		case NGM_Zone:
+		case NGM_Roof:
 		case NUM_NGM:
 			return; // nothing to do here
 	}
@@ -212,12 +210,12 @@ void NewGeometryObject::removeVertex(unsigned int idx) {
 	m_vertexList.erase(m_vertexList.begin()+idx);
 	switch (m_newGeometryMode) {
 		case NGM_Polygon :
-		case NGM_ZoneFloor :
-			m_planeGeometry.setPolygon( VICUS::Polygon3D(m_vertexList) );
+			m_polygonGeometry.setPolygon( VICUS::Polygon3D(m_vertexList) );
 			SVViewStateHandler::instance().m_propVertexListWidget->removeVertex(idx);
 		break;
 		case NGM_Rect :
-		case NGM_ZoneExtrusion :
+		case NGM_Zone :
+		case NGM_Roof :
 		case NUM_NGM :
 			Q_ASSERT(false); // operation not allowed
 			return;
@@ -229,13 +227,13 @@ void NewGeometryObject::removeVertex(unsigned int idx) {
 void NewGeometryObject::removeLastVertex() {
 	switch (m_newGeometryMode) {
 		case NGM_Polygon :
-		case NGM_ZoneFloor :
 			Q_ASSERT(!m_vertexList.empty());
 			removeVertex(m_vertexList.size()-1);
 		break;
 
 		case NGM_Rect :
-		case NGM_ZoneExtrusion :
+		case NGM_Zone :
+		case NGM_Roof :
 		case NUM_NGM :
 			Q_ASSERT(false); // operation not allowed
 			return;
@@ -244,7 +242,8 @@ void NewGeometryObject::removeLastVertex() {
 
 
 void NewGeometryObject::clear() {
-	m_planeGeometry.setPolygon( VICUS::Polygon3D() );
+	m_polygonGeometry.setPolygon( VICUS::Polygon3D() );
+	m_generatedGeometry.clear();
 	m_vertexList.clear();
 	updateBuffers(false);
 }
@@ -254,49 +253,16 @@ bool NewGeometryObject::canComplete() const {
 	switch (m_newGeometryMode) {
 		case NGM_Rect :
 		case NGM_Polygon :
-			return m_planeGeometry.isValid();
+			return m_polygonGeometry.isValid();
 
-		case NGM_ZoneFloor :
-		case NGM_ZoneExtrusion :
+		case NGM_Zone :
+		case NGM_Roof :
 		case NUM_NGM :
 			return false;
 	}
 	return false;
 }
 
-
-bool NewGeometryObject::canDrawTransparent() const {
-	return !m_indexBufferData.empty();
-}
-
-
-void NewGeometryObject::finish() {
-	switch (m_newGeometryMode) {
-		case NGM_Rect :
-		case NGM_Polygon :
-		case NGM_ZoneExtrusion :
-			if (m_planeGeometry.isValid()) {
-				// tell property widget to modify the project with our data
-				SVViewStateHandler::instance().m_propVertexListWidget->on_pushButtonFinish_clicked();
-			}
-			return;
-		case NGM_ZoneFloor : break; // nothing to do - cannot "finish" zone floor
-		case NUM_NGM : break; // nothing to do
-	}
-}
-
-
-VICUS::PlaneGeometry NewGeometryObject::offsetPlaneGeometry() const {
-	Q_ASSERT(m_planeGeometry.isValid());
-	VICUS::PlaneGeometry pg(planeGeometry());
-	IBKMK::Vector3D offset = QtExt::QVector2IBKVector(m_localCoordinateSystemPosition) - m_planeGeometry.offset();
-	// now offset all the coordinates
-	std::vector<IBKMK::Vector3D> vertexes(pg.polygon().vertexes());
-	for (IBKMK::Vector3D & v : vertexes)
-		v += offset;
-	pg.setPolygon( VICUS::Polygon3D(vertexes) );
-	return pg;
-}
 
 
 void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p) {
@@ -307,66 +273,81 @@ void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p)
 		break;
 
 		case NGM_Polygon :
-		case NGM_ZoneFloor :
 			// if we have already a valid plane (i.e. normal vector not 0,0,0),
 			// then check if point is in plane
-			if (m_planeGeometry.normal() != IBKMK::Vector3D(0,0,0)) {
+			if (m_polygonGeometry.normal() != IBKMK::Vector3D(0,0,0)) {
 				IBKMK::Vector3D p2(QtExt::QVector2IBKVector(p));
 				IBKMK::Vector3D projected;
-				IBKMK::pointProjectedOnPlane(m_planeGeometry.offset(), m_planeGeometry.normal(), p2, projected);
+				IBKMK::pointProjectedOnPlane(m_polygonGeometry.offset(), m_polygonGeometry.normal(), p2, projected);
 				newPoint = QtExt::IBKVector2QVector(projected);
 			}
+			// any change to the previously stored point?
+			if (m_localCoordinateSystemPosition == newPoint)
+				return;
+
+			// store new position
+			m_localCoordinateSystemPosition = newPoint;
+
+			// update buffer (but only that portion that depends on the local coordinate system's location)
+			updateBuffers(true);
 		break;
-		case NGM_ZoneExtrusion : {
-			Q_ASSERT(m_planeGeometry.isValid());
-			// we need to distinguish between interactive and fixed mode
-			if (!m_interactiveZoneExtrusionMode) {
-				IBKMK::Vector3D a = planeGeometry().polygon().vertexes()[0];
-				IBKMK::Vector3D offset = m_zoneHeight*planeGeometry().normal();
-				newPoint = QtExt::IBKVector2QVector(a+offset);
-			}
-			else {
+
+		case NGM_Zone: {
+			Q_ASSERT(m_polygonGeometry.isValid());
+			// only relevant if in interactive zone extrusion mode
+			if (m_interactiveZoneExtrusionMode) {
 
 				// compute the projection of the current coordinate systems position on the plane
 				IBKMK::Vector3D p2(QtExt::QVector2IBKVector(p));
 				IBKMK::Vector3D projected;
-				IBKMK::pointProjectedOnPlane(m_planeGeometry.offset(), m_planeGeometry.normal(), p2, projected);
+				IBKMK::pointProjectedOnPlane(m_polygonGeometry.offset(), m_polygonGeometry.normal(), p2, projected);
 				newPoint = QtExt::IBKVector2QVector(projected);
 				// now get the offset vector
 				QVector3D verticalOffset = p-newPoint; // Note: this vector should be collinear to the plane's normal
 				if (verticalOffset.length() < 0.001f)
-					verticalOffset = QtExt::IBKVector2QVector( m_planeGeometry.offset() + 1*planeGeometry().normal() );
+					verticalOffset = QtExt::IBKVector2QVector( m_polygonGeometry.offset() + 1*planeGeometry().normal() );
 				// and add it to the first vertex of the polygon
-				newPoint = verticalOffset + QtExt::IBKVector2QVector(m_planeGeometry.offset());
-				// also store the absolute height
-				m_zoneHeight = (double)verticalOffset.length();
+				newPoint = verticalOffset + QtExt::IBKVector2QVector(m_polygonGeometry.offset());
+				m_localCoordinateSystemPosition = newPoint;
+				// also store the absolute height and update the generated geometry
+				setZoneHeight((double)verticalOffset.length()); // this also updates the buffers
+				// inform property widget about new zone height (for display in the line edit)
 				SVViewStateHandler::instance().m_propVertexListWidget->setExtrusionDistance(m_zoneHeight);
 			}
 		}
 		break;
 
+		case NGM_Roof :
 		case NUM_NGM :
 			Q_ASSERT(false); // invalid call
 			return;
 	} // switch
-
-
-	// any change to the previously stored point?
-	if (m_localCoordinateSystemPosition == newPoint)
-		return;
-
-	// store new position
-	m_localCoordinateSystemPosition = newPoint;
-
-	// update buffer (but only that portion that depends on the local coordinate system's location)
-	updateBuffers(true);
 }
 
 
 void NewGeometryObject::setZoneHeight(double height) {
-	Q_ASSERT(m_newGeometryMode == NGM_ZoneExtrusion);
+	Q_ASSERT(m_newGeometryMode == NGM_Zone);
+	Q_ASSERT(m_polygonGeometry.isValid());
+
 	m_zoneHeight = height;
-	updateLocalCoordinateSystemPosition(QVector3D(0,0,0)); // point coordinates are irrelevant
+
+	IBKMK::Vector3D offset = m_zoneHeight*planeGeometry().normal();
+
+	// generate extruded ceiling plane
+	VICUS::PlaneGeometry pg(planeGeometry());
+	// now offset all the coordinates
+	std::vector<IBKMK::Vector3D> vertexes(pg.polygon().vertexes());
+	for (IBKMK::Vector3D & v : vertexes)
+		v += offset;
+	pg.setPolygon( VICUS::Polygon3D(vertexes) );
+	m_generatedGeometry.clear();
+	m_generatedGeometry.push_back(pg);
+}
+
+
+void NewGeometryObject::setRoofGeometry(const NewGeometryObject::RoofInputData & roofGeo) {
+	// generate roof geometry
+
 }
 
 
@@ -393,7 +374,7 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 
 	// no vertexes, nothing to draw - we need at least one vertex in the geometry, so that we
 	// can draw a line from the last vertex to the current coordinate system's location
-	if (m_planeGeometry.polygon().vertexes().empty())
+	if (m_polygonGeometry.polygon().vertexes().empty())
 		return;
 
 	unsigned int currentVertexIndex = 0;
@@ -408,8 +389,8 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 			// - if we have 2 vertexes: VC (first vertex) | VC (second vertex) | VC (local coordinate system) | VC (computed 4th vertex) | VC (first vertex)
 			// - if we have a valid polygon: 4 * VC
 
-			if (m_planeGeometry.isValid()) {
-				addPlane(m_planeGeometry.triangulationData(), currentVertexIndex, currentElementIndex,
+			if (m_polygonGeometry.isValid()) {
+				addPlane(m_polygonGeometry.triangulationData(), currentVertexIndex, currentElementIndex,
 						 m_vertexBufferData, m_indexBufferData);
 				// re-add first vertex so that we have a closed loop
 				m_vertexBufferData.push_back( m_vertexBufferData[0] );
@@ -434,8 +415,7 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 		}
 		break;
 
-		case NGM_Polygon :
-		case NGM_ZoneFloor : {
+		case NGM_Polygon : {
 
 			// Buffer layout:
 			//  - if we have a valid polygon:    npg x VC | VC (first vertex) | VC (last placed vertex) | VC (local coordinate system) | VC (first vertex)
@@ -457,8 +437,8 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 			//
 			//   the transparent shape is drawn only for valid polygons
 
-			if (m_planeGeometry.isValid()) {
-				addPlane(m_planeGeometry.triangulationData(), currentVertexIndex, currentElementIndex,
+			if (m_polygonGeometry.isValid()) {
+				addPlane(m_polygonGeometry.triangulationData(), currentVertexIndex, currentElementIndex,
 						 m_vertexBufferData, m_indexBufferData);
 				// re-add first vertex so that we have a closed loop
 				m_vertexBufferData.push_back( m_vertexBufferData[0] );
@@ -481,7 +461,7 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 		} break;
 
 
-		case NGM_ZoneExtrusion : {
+		case NGM_Zone : {
 			// Buffer layout:
 			//  - we add 2 polygons (top and bottom), and also nSegments planes for each wall, with m_zoneHeight as height.
 			//    after each plane we add a vertex for the first point of the plane, so that we can draw outlines
@@ -492,33 +472,23 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 			//  - height of the polygon is taken from m_zoneHeight
 
 			if (m_zoneHeight != 0.0) {
-				Q_ASSERT(m_planeGeometry.isValid());
+				Q_ASSERT(m_polygonGeometry.isValid());
 				// we need to create at first the base polygon
-				addPlane(m_planeGeometry.triangulationData(), currentVertexIndex, currentElementIndex,
+				addPlane(m_polygonGeometry.triangulationData(), currentVertexIndex, currentElementIndex,
 						 m_vertexBufferData, m_indexBufferData);
-				// re-add first vertex so that we have a closed loop
-				m_vertexBufferData.push_back( m_vertexBufferData[0] ); ++currentVertexIndex;
-
-				// now we create the polygon that is offset by m_zoneHeight along the plane normal vector
-				VICUS::PlaneGeometry topPlane;
-				std::vector<IBKMK::Vector3D> vertexes = m_planeGeometry.triangulationData().m_vertexes; // create copy since we move vertexes
-
-				// the offset vector is the normal vector times the zoneHeight
-				IBKMK::Vector3D offset = QtExt::QVector2IBKVector(m_localCoordinateSystemPosition) - vertexes[0];
-				for (IBKMK::Vector3D & v : vertexes)
-					v += offset;
-				topPlane.setPolygon( VICUS::Polygon3D(vertexes) );
-				addPlane(topPlane.triangulationData(), currentVertexIndex, currentElementIndex,
+				IBK_ASSERT(m_generatedGeometry.size() == 1);
+				// now the roof geometry
+				addPlane(m_generatedGeometry[0].triangulationData(), currentVertexIndex, currentElementIndex,
 						 m_vertexBufferData, m_indexBufferData);
-				// re-add first vertex so that we have a closed loop
-				m_vertexBufferData.push_back( m_vertexBufferData[0] ); ++currentVertexIndex;
+
+				 const std::vector<IBKMK::Vector3D> & floorPolygonVertexes = m_polygonGeometry.polygon().vertexes();
+				 const std::vector<IBKMK::Vector3D> & ceilingPolygonVertexes = m_generatedGeometry[0].polygon().vertexes();
 
 				// now add vertexes to draw the vertical zone walls
-				for (unsigned int i=0; i<vertexes.size(); ++i) {
-					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(m_planeGeometry.triangulationData().m_vertexes[i])) );
-					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(vertexes[i])) );
+				for (unsigned int i=0; i<floorPolygonVertexes.size(); ++i) {
+					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(floorPolygonVertexes[i])) );
+					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(ceilingPolygonVertexes[i])) );
 				}
-
 			}
 
 		} break;
@@ -566,12 +536,11 @@ void NewGeometryObject::renderOpaque() {
 		} break;
 
 		case NGM_Polygon:
-		case NGM_ZoneFloor:
 			// draw the polygon line first
 			if (m_vertexBufferData.size() > 1) {
 
 				QColor lineCol;
-				if (m_planeGeometry.isValid()) {
+				if (m_polygonGeometry.isValid()) {
 					if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
 						lineCol = QColor("#2ed655");
 					else
@@ -588,8 +557,8 @@ void NewGeometryObject::renderOpaque() {
 
 				// if we have a valid polygon, draw the outline using the first npg+1 vertexes
 				size_t offset = 0;
-				size_t vertexCount = m_planeGeometry.triangulationData().m_vertexes.size();
-				if (m_planeGeometry.isValid()) {
+				size_t vertexCount = m_polygonGeometry.triangulationData().m_vertexes.size();
+				if (m_polygonGeometry.isValid()) {
 					glDrawArrays(GL_LINE_STRIP, 0, vertexCount + 1);
 					// start offset for the two lines of the local coordinate system - use the last vertex again
 					offset = vertexCount + 1;
@@ -610,7 +579,7 @@ void NewGeometryObject::renderOpaque() {
 			}
 		break;
 
-		case NGM_ZoneExtrusion: {
+		case NGM_Zone: {
 			QColor lineCol;
 			if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
 				lineCol = QColor("#32c5ea");
@@ -619,7 +588,7 @@ void NewGeometryObject::renderOpaque() {
 
 			m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], lineCol);
 			// draw outlines of bottom and top polygons first
-			size_t vertexCount = m_planeGeometry.triangulationData().m_vertexes.size();
+			size_t vertexCount = m_polygonGeometry.triangulationData().m_vertexes.size();
 			glDrawArrays(GL_LINE_STRIP, 0, vertexCount+1);
 			// draw outlines of bottom and top polygons first
 			glDrawArrays(GL_LINE_STRIP, vertexCount+1, vertexCount+1);
@@ -660,6 +629,11 @@ void NewGeometryObject::renderOpaque() {
 
 	// release buffers again
 	m_vao.release();
+}
+
+
+bool NewGeometryObject::canDrawTransparent() const {
+	return !m_indexBufferData.empty();
 }
 
 

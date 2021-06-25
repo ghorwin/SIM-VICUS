@@ -64,6 +64,8 @@ class ShaderProgram;
 	Uses two shaders: one for drawing transparent planes in renderTransparent(),
 	as the coordinate system object, but is drawn with blending enabled.
 
+	In Zone mode, the extrusion is shown with lines and the ceiling surfaces as well.
+	In Roof mode, a preview of the roof geometry is shown.
 
 	Note: the user may create invalid geometry, or geometry that is simplified during
 		  generation of polygons. The list of vertexes actually entered by the user
@@ -72,6 +74,25 @@ class ShaderProgram;
 */
 class NewGeometryObject {
 public:
+
+	/*! Holds all input data for a roof geometry definition. */
+	struct RoofInputData {
+		enum RoofType {
+			SinglePitchRoof,		//Pultdach
+			DoublePitchRoof,		//Satteldach
+			MansardRoof,			//Mansarddach
+			HipRoof,				//Walmdach
+			Complex					//Komplexe Dachform (darunter fällt auch Zeltdach)
+		};
+
+		RoofType	m_type = DoublePitchRoof;
+		bool		m_isHeightPredefined = true;	//entweder Höhe oder Dachneigungswinkel
+		double		m_height = 2;					// in m Das ist die Höhe über dem Kniestock
+		double		m_angle = 20;					// in Deg
+
+		bool		m_hasFlapTile = false;			//Kniestockwand?
+		double		m_flapTileHeight = 1.5;
+	};
 
 	/*! Defines the state that the system is currently at, when adding new geometry.
 		The state is initialized when some "Add..." button is pressed and afterwards
@@ -82,7 +103,8 @@ public:
 			the third vertex is a projection onto the line perpendicular to the first and
 			in the plane of the three vertexes. Also, a fourth vertex is automatically added,
 			that closes the rectangle. A rectangle plane is drawn (using Vic3DNewRectObject) once the first
-			two vertexes have been placed. Confirming the third point, the plane is created.
+			two vertexes have been placed. Confirming the third point, the rectangle/polygon is created and no
+			further vertexes are accepted.
 		*/
 		NGM_Rect,
 		/*! A polygon is being created - after the third non-collinear vertex has been drawn, all subsequent
@@ -90,9 +112,11 @@ public:
 			To create the polygon, it must be valid (not winding).
 		*/
 		NGM_Polygon,
-		/*! Mode when drawing the zone floor polygon. */
-		NGM_ZoneFloor,
-		NGM_ZoneExtrusion,
+		/*! Mode when floor polygon is complete and extrusion is shown. */
+		NGM_Zone,
+		/*! Mode when floor polygon is complete and roof preview is shown. */
+		NGM_Roof,
+		/*! Invalid mode - i.e. no geometry to show/generate. */
 		NUM_NGM
 	};
 
@@ -120,7 +144,7 @@ public:
 	NewGeometryMode newGeometryMode() const {	return m_newGeometryMode; }
 
 	/*! For two-stage geometry construction, you can here switch from one mode to another. */
-	void switchTo(NewGeometryMode m);
+	void setNewGeometryMode(NewGeometryMode m);
 
 	/*! Reverses the current polygon in the geometry object, hereby effectively flipping the object so that
 		the normal vector points into the opposite direction.
@@ -159,21 +183,14 @@ public:
 	*/
 	bool canComplete() const;
 
-	/*! Can be used to check if object has data to paint - this can be used to check if there is a polygon object at all.
-		Hence, this function could be named 'isVisible()' as well.
-	*/
-	bool canDrawTransparent() const;
-
-	/*! Adds the newly created geometry polygon to the data structure. */
-	void finish();
 
 
 	// Functions for retrieving the current geometry/vertex data input
 
 	/*! Provides read-only access to the current plane geometry. */
-	const VICUS::PlaneGeometry planeGeometry() const { return m_planeGeometry; }
-	/*! Returns the plane geometry for extruded surface (i.e. zone ceiling). */
-	VICUS::PlaneGeometry offsetPlaneGeometry() const;
+	const VICUS::PlaneGeometry planeGeometry() const { return m_polygonGeometry; }
+	/*! Returns generated planes. */
+	const std::vector<VICUS::PlaneGeometry> & generatedGeometry() const { return m_generatedGeometry; }
 
 	/*! Gives access to the internally stored vertex list. */
 	const std::vector<IBKMK::Vector3D> & vertexList() const { return m_vertexList; }
@@ -193,14 +210,24 @@ public:
 	*/
 	void updateLocalCoordinateSystemPosition(const QVector3D & p);
 
+
 	/*! Sets the extrusion height in [m].
 		Must only be called in NGM_ZoneExtrusion mode.
 	*/
 	void setZoneHeight(double height);
 
+	/*! Sets the roof geometry.
+		Must only be called in NGM_Roof mode.
+	*/
+	void setRoofGeometry(const RoofInputData & roofGeo);
+
 
 	/*! Renders opaque parts of geometry. */
 	void renderOpaque();
+	/*! Can be used to check if object has data to paint - this can be used to check if there is a polygon object at all.
+		Hence, this function could be named 'isVisible()' as well.
+	*/
+	bool canDrawTransparent() const;
 	/*! Renders transparent parts of geometry. */
 	void renderTransparent();
 
@@ -223,7 +250,12 @@ private:
 	ShaderProgram					*m_shaderProgram = nullptr;
 
 	/*! Stores the current geometry of the painted polygon or floor polygon. */
-	VICUS::PlaneGeometry			m_planeGeometry;
+	VICUS::PlaneGeometry			m_polygonGeometry;
+
+	/*! Contains the additional geometry generated for zones and roofs.
+		For zones, the first is always the ceiling, and all the others are walls. The floor polygon is stored in m_planeGeometry;
+	*/
+	std::vector<VICUS::PlaneGeometry>	m_generatedGeometry;
 
 	/*! This list holds all points a the drawing method (even points of collinear segments).
 		This list may not give a valid polygon or a polygon at all.
