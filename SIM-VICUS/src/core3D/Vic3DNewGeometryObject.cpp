@@ -360,7 +360,7 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 	Q_ASSERT(m_newGeometryMode == NGM_Roof);
 	Q_ASSERT(m_polygonGeometry.isValid());
 	// generate roof geometry
-#if 0
+
 	// we need all the time a local coordinate system where all points have a z-value of 0
 
 	// Get a _copy_ of the floor polygon
@@ -796,7 +796,6 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 			m_generatedGeometry.push_back(pg);
 		}
 	}
-#endif
 }
 
 
