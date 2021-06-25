@@ -147,7 +147,7 @@ void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
 	}
 	switch (m_newGeometryMode) {
 		case NGM_Rect :
-			// if the rectangle is complete and we have a click, consider this as confirmation (rather than rejecting it)
+			// if the rectangle is complete and we have a click, just ignore it
 			if (m_polygonGeometry.isValid())
 				return;
 
@@ -163,14 +163,15 @@ void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
 				IBKMK::Vector3D c = p;
 				IBKMK::Vector3D d = a + (c-b);
 				m_polygonGeometry = VICUS::PlaneGeometry(VICUS::Polygon3D::T_Rectangle, a, b, d);
-				SVViewStateHandler::instance().m_propVertexListWidget->addVertex(p); // this also informs the property list widget that our rectangle is now complete
+				// Note: the vertex list will still only contain 3 points!
+				m_vertexList.push_back(p);
 			}
 			else {
 				m_vertexList.push_back(p);
 				m_polygonGeometry.setPolygon( VICUS::Polygon3D(m_vertexList) );
-				// also tell the vertex list widget about our new point
-				SVViewStateHandler::instance().m_propVertexListWidget->addVertex(p);
 			}
+			// also tell the vertex list widget about our new point
+			SVViewStateHandler::instance().m_propVertexListWidget->addVertex(p);
 		break;
 
 		case NGM_Polygon :
@@ -227,11 +228,11 @@ void NewGeometryObject::removeVertex(unsigned int idx) {
 void NewGeometryObject::removeLastVertex() {
 	switch (m_newGeometryMode) {
 		case NGM_Polygon :
+		case NGM_Rect :
 			Q_ASSERT(!m_vertexList.empty());
 			removeVertex(m_vertexList.size()-1);
 		break;
 
-		case NGM_Rect :
 		case NGM_Zone :
 		case NGM_Roof :
 		case NUM_NGM :
@@ -269,7 +270,16 @@ void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p)
 	QVector3D newPoint = p;
 
 	switch (m_newGeometryMode) {
-		case NGM_Rect : // nothing to do - we can only ever add 3 points here
+		case NGM_Rect :
+			// any change to the previously stored point?
+			if (m_localCoordinateSystemPosition == newPoint)
+				return;
+
+			// store new position
+			m_localCoordinateSystemPosition = newPoint;
+
+			// update buffer (but only that portion that depends on the local coordinate system's location)
+			updateBuffers(true);
 		break;
 
 		case NGM_Polygon :
