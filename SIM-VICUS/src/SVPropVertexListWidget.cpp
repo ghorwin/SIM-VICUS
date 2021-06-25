@@ -215,6 +215,8 @@ void SVPropVertexListWidget::setZoneHeight(double dist) {
 	m_ui->lineEditZoneHeight->blockSignals(true);
 	m_ui->lineEditZoneHeight->setText(QString("%L1").arg(dist));
 	m_ui->lineEditZoneHeight->blockSignals(false);
+	if (!SVViewStateHandler::instance().m_newGeometryObject->m_interactiveZoneExtrusionMode)
+		m_ui->pushButtonPickZoneHeight->setChecked(false);
 }
 
 

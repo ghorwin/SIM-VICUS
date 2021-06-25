@@ -136,8 +136,16 @@ void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
 		IBK::IBK_Message("Identical point added. Ignored.");
 		return; // ignore the vertex
 	}
+	// nothing to do in passive mode
 	if (m_passiveMode)
 		return;
+	// if in zone interactive mode, we leave it
+	if (m_interactiveZoneExtrusionMode) {
+		m_interactiveZoneExtrusionMode = false;
+		// inform property widget about new zone height (for display in the line edit), this also
+		// turns of the button for interactive mode
+		SVViewStateHandler::instance().m_propVertexListWidget->setZoneHeight(m_zoneHeight);
+	}
 	switch (m_newGeometryMode) {
 		case NGM_Rect :
 			// if the rectangle is complete and we have a click, just ignore it
@@ -345,6 +353,7 @@ void NewGeometryObject::setZoneHeight(double height) {
 	pg.setPolygon( VICUS::Polygon3D(vertexes) );
 	m_generatedGeometry.clear();
 	m_generatedGeometry.push_back(pg);
+	updateBuffers(false);
 }
 
 
@@ -923,8 +932,15 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 				addPlane(m_generatedGeometry[0].triangulationData(), currentVertexIndex, currentElementIndex,
 						 m_vertexBufferData, m_indexBufferData);
 
-				 const std::vector<IBKMK::Vector3D> & floorPolygonVertexes = m_polygonGeometry.polygon().vertexes();
-				 const std::vector<IBKMK::Vector3D> & ceilingPolygonVertexes = m_generatedGeometry[0].polygon().vertexes();
+				const std::vector<IBKMK::Vector3D> & floorPolygonVertexes = m_polygonGeometry.polygon().vertexes();
+				const std::vector<IBKMK::Vector3D> & ceilingPolygonVertexes = m_generatedGeometry[0].polygon().vertexes();
+
+				// now add a line strip for the bottom polygon
+				for (unsigned int i=0; i<=floorPolygonVertexes.size(); ++i)
+					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(floorPolygonVertexes[i % floorPolygonVertexes.size()])) );
+				// now add a line strip for the top polygon
+				for (unsigned int i=0; i<=ceilingPolygonVertexes.size(); ++i)
+					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(ceilingPolygonVertexes[i % ceilingPolygonVertexes.size()])) );
 
 				// now add vertexes to draw the vertical zone walls
 				for (unsigned int i=0; i<floorPolygonVertexes.size(); ++i) {
@@ -1031,14 +1047,15 @@ void NewGeometryObject::renderOpaque() {
 			m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], lineCol);
 			// draw outlines of bottom and top polygons first
 			size_t vertexCount = m_polygonGeometry.triangulationData().m_vertexes.size();
-			glDrawArrays(GL_LINE_STRIP, 0, vertexCount+1);
+			unsigned int offset = 2*vertexCount;
+			glDrawArrays(GL_LINE_STRIP, (GLint)offset, vertexCount+1);
 			// draw outlines of bottom and top polygons first
-			glDrawArrays(GL_LINE_STRIP, vertexCount+1, vertexCount+1);
+			glDrawArrays(GL_LINE_STRIP, (GLint)(offset + vertexCount+1), vertexCount+1);
 
 			// now draw the zone wall segments
-			unsigned int offset = 2*vertexCount+2;
+			offset += 2*vertexCount+2;
 			for (unsigned int i=0; i<vertexCount; ++i) {
-				glDrawArrays(GL_LINES, (int)(2*i + offset), 2);
+				glDrawArrays(GL_LINES, (GLint)(2*i + offset), 2);
 			}
 
 		} break;
