@@ -67,7 +67,7 @@ double ShadedSurfaceObject::calcShadingFactor(const IBKMK::Vector3D &sunNormal, 
 
 			// compute local coordinates of intersection point with obstacle
 			double x,y;
-			if (!IBKMK::planeCoordinates(offset, m_obstacles[j].localX(), m_obstacles[j].localY(), intersectionPoint, x, y))
+			if (!IBKMK::planeCoordinates(offset, m_obstacles[j].localX(), m_obstacles[j].localY(), intersectionPoint, x, y, 1e-6))
 				continue; // projection not possible - this shouldn't happen, really!
 
 			// now test if x,y coordinates are inside obstacle's polyline
@@ -78,7 +78,7 @@ double ShadedSurfaceObject::calcShadingFactor(const IBKMK::Vector3D &sunNormal, 
 		}
 	}
 
-	double sf = double(counterShadedPoints)/sizeMiddlePoints;
+	double sf = 1 - double(counterShadedPoints)/sizeMiddlePoints;
 	return sf;
 }
 
