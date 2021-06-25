@@ -30,7 +30,7 @@ bool SubNetwork::isValid(const Database<NetworkComponent> &compDB,
 		if (compDB[e.m_componentId] == nullptr)
 			return false;
 		else{
-			if (!compDB[e.m_componentId]->isValid())
+			if (!compDB[e.m_componentId]->isValid(scheduleDB))
 				return false;
 		}
 

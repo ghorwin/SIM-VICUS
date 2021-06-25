@@ -70,6 +70,10 @@ private slots:
 
 	void on_tableWidgetParameters_cellChanged(int row, int column);
 
+	void on_toolButtonSchedule1_clicked();
+
+	void on_toolButtonSchedule2_clicked();
+
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
@@ -86,7 +90,7 @@ private:
 		The pointer is updated whenever updateInput() is called.
 		A nullptr pointer means that there is no component to edit.
 	*/
-	VICUS::NetworkComponent				*m_currentComponent;
+	VICUS::NetworkComponent				*m_current;
 };
 
 #endif // SVDBNetworkComponentEditWidgetH

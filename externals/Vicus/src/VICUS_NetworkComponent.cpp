@@ -30,10 +30,11 @@
 namespace VICUS {
 
 
-bool NetworkComponent::isValid() const {
+bool NetworkComponent::isValid(const Database<Schedule> &scheduleDB) const {
 
-	std::vector<unsigned int> paraVec = NANDRAD::HydraulicNetworkComponent::requiredParameter(
-										static_cast<NANDRAD::HydraulicNetworkComponent::ModelType>(m_modelType), 1);
+	NANDRAD::HydraulicNetworkComponent::ModelType nandradModelType = NANDRAD::HydraulicNetworkComponent::ModelType (m_modelType);
+
+	std::vector<unsigned int> paraVec = NANDRAD::HydraulicNetworkComponent::requiredParameter(nandradModelType, 1);
 	for (unsigned int i: paraVec){
 		try {
 			NANDRAD::HydraulicNetworkComponent::checkModelParameter(m_para[i], i);
@@ -41,6 +42,23 @@ bool NetworkComponent::isValid() const {
 			return false;
 		}
 	}
+
+	// check if given schedules really exist
+	std::vector<std::string> reqSchedules = NANDRAD::HydraulicNetworkComponent::requiredScheduleNames(nandradModelType);
+	std::vector<std::string> exSchedules;
+	for (unsigned int id: m_scheduleIds){
+		const Schedule *sched = scheduleDB[id];
+		if (sched == nullptr)
+			return false;
+		exSchedules.push_back(sched->m_displayName.string());
+	}
+
+	// check if required schedules are given
+	for (const std::string &reqSchedule: reqSchedules){
+		if (std::find(exSchedules.begin(), exSchedules.end(), reqSchedule) == exSchedules.end())
+			return false;
+	}
+
 	return true;
 }
 

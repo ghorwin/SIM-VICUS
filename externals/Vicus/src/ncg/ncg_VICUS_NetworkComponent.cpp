@@ -80,6 +80,8 @@ void NetworkComponent::readXML(const TiXmlElement * element) {
 				m_manufacturer.setEncodedString(c->GetText());
 			else if (cName == "DataSource")
 				m_dataSource.setEncodedString(c->GetText());
+			else if (cName == "ScheduleIds")
+				NANDRAD::readVector(c, "ScheduleIds", m_scheduleIds);
 			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
@@ -127,6 +129,7 @@ TiXmlElement * NetworkComponent::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "Manufacturer", nullptr, std::string(), m_manufacturer.encodedString());
 	if (!m_dataSource.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.encodedString());
+	NANDRAD::writeVector(e, "ScheduleIds", m_scheduleIds);
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {

@@ -116,6 +116,10 @@ private slots:
 
 	void on_pushButtonEditPipe_clicked();
 
+	void on_pushButtonEditSubNetworks_clicked();
+
+	void on_pushButtonAssignSubNetwork_clicked();
+
 private:
 
 	/*! Update information related to one or multiple nodes

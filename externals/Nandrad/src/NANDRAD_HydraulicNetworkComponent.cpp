@@ -152,6 +152,31 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 }
 
 
+std::vector<std::string> HydraulicNetworkComponent::requiredScheduleNames(const HydraulicNetworkComponent::ModelType modelType)
+{
+	switch (modelType)	{
+		case MT_HeatPumpIdealCarnotSourceSide:
+			return {"CondenserMeanTemperatureSchedule"};
+		case MT_HeatPumpIdealCarnotSupplySide:
+			return {"CondenserOutletSetpointSchedule"};
+		case MT_HeatPumpRealSourceSide:
+			return {"CondenserOutletSetpointSchedule", "HeatPumpOnOffSignalSchedule"};
+		case MT_IdealHeaterCooler:
+			return {"SupplyTemperatureSchedule"};
+		case MT_ConstantPressurePump:
+		case MT_ConstantMassFluxPump :
+		case MT_ControlledPump:
+		case MT_HeatExchanger:
+		case MT_DynamicPipe:
+		case MT_SimplePipe:
+		case MT_ControlledValve:
+		case NUM_MT: ;
+			return {};
+	}
+
+}
+
+
 void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, const unsigned int numPara) {
 	const char * enumName = "HydraulicNetworkComponent::para_t";
 	const char * name = KeywordList::Keyword(enumName, (int)numPara);

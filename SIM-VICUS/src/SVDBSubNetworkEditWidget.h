@@ -50,6 +50,8 @@ private slots:
 
 	void on_toolButtonRemove_clicked();
 
+	void on_checkBoxElementHasHeatExchange_clicked(bool checked);
+
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();

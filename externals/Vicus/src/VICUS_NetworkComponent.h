@@ -35,6 +35,7 @@
 #include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
 #include "VICUS_Database.h"
+#include "VICUS_Schedule.h"
 
 #include <NANDRAD_HydraulicNetworkComponent.h>
 
@@ -86,7 +87,7 @@ public:
 	VICUS_COMP(NetworkComponent)
 
 	/*! Checks if all parameters are valid. */
-	bool isValid() const;
+	bool isValid(const Database<Schedule> &scheduleDB) const;
 
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;
@@ -107,6 +108,9 @@ public:
 
 	/*! Data source. */
 	IBK::MultiLanguageString			m_dataSource;										// XML:E
+
+	/*! Schedules for this component */
+	std::vector<unsigned int>			m_scheduleIds;										// XML:E
 
 
 	// *** PUBLIC MEMBER VARIABLES from NANDRAD::HydraulicNetworkComponent (without m_displayName) ***

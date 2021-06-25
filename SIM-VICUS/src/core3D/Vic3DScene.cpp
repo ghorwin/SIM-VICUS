@@ -1627,26 +1627,27 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 							else // Building
 								node.m_color = QColor(0, 107, 179); // blue
 						}
-					}
-					break;
+					} break;
 					case SVViewState::OCM_NetworkEdge: {
 						for (const VICUS::NetworkEdge & edge: net.m_edges){
 							unsigned int id = edge.m_pipeId;
 							if (db.m_pipes[id] != nullptr)
 								edge.m_color = db.m_pipes[id]->m_color;
 						}
-					}
-					break;
+					} break;
 					case SVViewState::OCM_NetworkHeatExchange: {
 						for (const VICUS::NetworkEdge & edge: net.m_edges)
 							edge.m_color = VICUS::Network::colorHeatExchangeType(edge.m_heatExchange.m_modelType);
 						for (const VICUS::NetworkNode & node: net.m_nodes)
 							node.m_color = VICUS::Network::colorHeatExchangeType(node.m_heatExchange.m_modelType);
-					}
-					break;
+					} break;
 					case SVViewState::OCM_NetworkSubNetworks: {
-					}
-					break;
+						for (const VICUS::NetworkNode & node: net.m_nodes){
+							unsigned int id = node.m_subNetworkId;
+							if (db.m_subNetworks[id] != nullptr)
+								node.m_color = db.m_subNetworks[id]->m_color;
+						}
+					} break;
 
 						// rest only to avoid compiler warnings
 					case SVViewState::OCM_None:

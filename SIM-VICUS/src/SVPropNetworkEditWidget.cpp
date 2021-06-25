@@ -34,6 +34,7 @@
 
 #include <VICUS_KeywordList.h>
 
+
 #include <QtExt_Conversions.h>
 
 #include "Vic3DWireFrameObject.h"
@@ -92,6 +93,14 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 	m_ui->tableWidgetHeatExchange->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
 	m_ui->tableWidgetHeatExchange->horizontalHeader()->resizeSection(0,20);
 	m_ui->tableWidgetHeatExchange->horizontalHeader()->setStretchLastSection(true);
+
+	m_ui->tableWidgetSubNetworks->setColumnCount(2);
+	m_ui->tableWidgetSubNetworks->setHorizontalHeaderLabels(QStringList() << QString() << tr("Sub Networks"));
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetSubNetworks);
+	m_ui->tableWidgetSubNetworks->setSortingEnabled(false);
+	m_ui->tableWidgetSubNetworks->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+	m_ui->tableWidgetSubNetworks->horizontalHeader()->resizeSection(0,20);
+	m_ui->tableWidgetSubNetworks->horizontalHeader()->setStretchLastSection(true);
 
 	// validating line edits
 	m_ui->lineEditNodeMaxHeatingDemand->setup(0, std::numeric_limits<double>::max(), tr("Maximum Heating Demand"), false, true);
@@ -218,13 +227,18 @@ void SVPropNetworkEditWidget::updateNodeProperties() {
 	else
 		m_ui->lineEditNodeMaxHeatingDemand->clear();
 
+	// current sub network name
+	const SVDatabase & db = SVSettings::instance().m_db;
+	if (uniformProperty(m_currentNodes, &VICUS::NetworkNode::m_subNetworkId)){
+		const VICUS::SubNetwork *subNet = db.m_subNetworks[m_currentNodes[0]->m_subNetworkId];
+		if (subNet != nullptr)
+			m_ui->labelSelectedSubNetwork->setText(QtExt::MultiLangString2QString(subNet->m_displayName));
+	}
+	else
+		m_ui->labelSelectedSubNetwork->clear();
 
 	//  *** Update hx properties
 	updateHeatExchangeProperties();
-
-	// *** Update Sub networks
-
-
 }
 
 
@@ -265,6 +279,7 @@ void SVPropNetworkEditWidget::updateEdgeProperties() {
 		m_ui->labelSelectedPipe->clear();
 	}
 
+	//  *** Update hx properties
 	updateHeatExchangeProperties();
 }
 
@@ -324,7 +339,8 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 
 	std::vector<unsigned int> pipeIds;
 	for (const VICUS::NetworkEdge &e: m_currentConstNetwork->m_edges){
-		if (std::find(pipeIds.begin(), pipeIds.end(), e.m_pipeId) == pipeIds.end())
+		if (std::find(pipeIds.begin(), pipeIds.end(), e.m_pipeId) == pipeIds.end() &&
+			e.m_pipeId != VICUS::INVALID_ID)
 			pipeIds.push_back(e.m_pipeId);
 	}
 	// sort in ascending order of ids
@@ -397,6 +413,47 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 	}
 	// reselect row
 	m_ui->tableWidgetHeatExchange->blockSignals(false);
+
+
+	//  *** Update sub networks table widget ***
+
+	std::vector<unsigned int> subNetworkIds;
+	for (const VICUS::NetworkNode &n: m_currentConstNetwork->m_nodes){
+		if (std::find(subNetworkIds.begin(), subNetworkIds.end(), n.m_subNetworkId) == subNetworkIds.end() &&
+				n.m_subNetworkId != VICUS::INVALID_ID)
+			subNetworkIds.push_back(n.m_subNetworkId);
+	}
+
+	currentRow = m_ui->tableWidgetSubNetworks->currentRow();
+	m_ui->tableWidgetSubNetworks->blockSignals(true);
+	m_ui->tableWidgetSubNetworks->clearContents();
+	m_ui->tableWidgetSubNetworks->setRowCount(subNetworkIds.size());
+	row = 0;
+	for (unsigned int id: subNetworkIds){
+		 const VICUS::SubNetwork *subNet = db.m_subNetworks[id];
+		 QTableWidgetItem * item = new QTableWidgetItem();
+		 // special handling for components with "invalid" component id
+		 if (subNet == nullptr)
+			 item->setBackground(QColor(64,64,64));
+		 else
+			 item->setBackground(subNet->m_color);
+		 item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
+		 m_ui->tableWidgetSubNetworks->setItem(row, 0, item);
+
+		 item = new QTableWidgetItem();
+		 if (subNet == nullptr)
+			 item->setText(tr("<invalid sub network id>"));
+		 else
+			 item->setText(QtExt::MultiLangString2QString(subNet->m_displayName));
+		 item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		 m_ui->tableWidgetSubNetworks->setItem(row, 1, item);
+
+		 ++row;
+	}
+	// reselect row
+	m_ui->tableWidgetSubNetworks->blockSignals(false);
+	m_ui->tableWidgetSubNetworks->selectRow(std::min(currentRow, m_ui->tableWidgetSubNetworks->rowCount()-1));
+
 }
 
 
@@ -1029,6 +1086,25 @@ void SVPropNetworkEditWidget::on_pushButtonEditPipe_clicked()
 	if (m_currentEdges.size() > 0)
 		currentId = m_currentEdges[0]->m_pipeId;
 	SVMainWindow::instance().dbPipeEditDialog()->edit(currentId);
+}
+
+
+void SVPropNetworkEditWidget::on_pushButtonEditSubNetworks_clicked()
+{
+	unsigned int currentId = 0;
+	if (m_currentNodes.size() > 0)
+		currentId = m_currentNodes[0]->m_subNetworkId;
+	SVMainWindow::instance().dbSubNetworkEditDialog()->edit(currentId);
+}
+
+
+void SVPropNetworkEditWidget::on_pushButtonAssignSubNetwork_clicked()
+{
+	unsigned int currentId = 0;
+	if (m_currentNodes.size() > 0)
+		currentId = m_currentNodes[0]->m_subNetworkId;
+	unsigned int newId = SVMainWindow::instance().dbSubNetworkEditDialog()->select(currentId);
+	modifyNodeProperty(&VICUS::NetworkNode::m_subNetworkId, newId);
 }
 
 

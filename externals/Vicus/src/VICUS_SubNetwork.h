@@ -4,7 +4,6 @@
 #include "VICUS_AbstractDBElement.h"
 
 #include "VICUS_Constants.h"
-#include "VICUS_NetworkElement.h"
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Database.h"
 #include "VICUS_NetworkComponent.h"

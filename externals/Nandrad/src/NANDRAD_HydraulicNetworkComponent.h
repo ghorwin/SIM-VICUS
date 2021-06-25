@@ -106,6 +106,8 @@ public:
 	*/
 	static std::vector<unsigned int> requiredParameter(const ModelType modelType, int networkModelType);
 
+	static std::vector<std::string> requiredScheduleNames(const ModelType modelType);
+
 	/*! Helper function that implements specific rules for testing a single parameter.
 		This is useful if the same parameter is used by several models and we want to avoid implementing
 		the same checking rule multiple times.

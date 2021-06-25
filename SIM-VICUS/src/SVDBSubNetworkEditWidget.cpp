@@ -127,8 +127,14 @@ void SVDBSubNetworkEditWidget::updateElementProperties()
 
 	// if we have at least one element: update infos
 	if (m_currentElementIdx >= 0){
-		m_ui->groupBoxEditElement->setEnabled(true);
+
 		const NANDRAD::HydraulicNetworkElement &elem = m_currentSubNet->m_elements[(unsigned int)m_currentElementIdx];
+
+		// checkBox
+		m_ui->checkBoxElementHasHeatExchange->setChecked(elem.m_id == m_currentSubNet->m_heatExchangeElementId);
+
+		// line edits
+		m_ui->groupBoxEditElement->setEnabled(true);
 		m_ui->lineEditElementName->setText(QString::fromStdString(elem.m_displayName));
 		if (m_db->m_networkComponents[elem.m_componentId] != nullptr)
 			m_ui->lineEditComponent->setText(QtExt::MultiLangString2QString(
@@ -141,6 +147,7 @@ void SVDBSubNetworkEditWidget::updateElementProperties()
 												  m_db->m_networkControllers[elem.m_controlElementId]->m_displayName));
 		else
 			m_ui->lineEditController->clear();
+
 	}
 	else
 		m_ui->groupBoxEditElement->setEnabled(false);
@@ -255,4 +262,19 @@ void SVDBSubNetworkEditWidget::on_toolButtonEditController_clicked()
 }
 
 
+void SVDBSubNetworkEditWidget::on_checkBoxElementHasHeatExchange_clicked(bool checked)
+{
+	Q_ASSERT((unsigned int)m_currentElementIdx < m_currentSubNet->m_elements.size());
 
+	unsigned int hxId;
+	if (checked)
+		hxId = m_currentSubNet->m_elements[(unsigned int)m_currentElementIdx].m_id;
+	else
+		hxId = VICUS::INVALID_ID;
+
+	if (hxId != m_currentSubNet->m_heatExchangeElementId){
+		m_currentSubNet->m_heatExchangeElementId = hxId;
+		modelModify();
+		updateElementProperties();
+	}
+}
