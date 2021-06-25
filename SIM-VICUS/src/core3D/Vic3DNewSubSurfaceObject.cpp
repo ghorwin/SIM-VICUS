@@ -139,10 +139,175 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 	qDebug() << "Generating windows for" << sel.size() << " surfaces.";
 
 	for (const VICUS::Surface* s : sel) {
-		m_surfaceGeometries.push_back(s->geometry());
-	}
+		const VICUS::PlaneGeometry &surfacePoly = s->geometry();
+		m_surfaceGeometries.push_back(surfacePoly);
 
-	// TODO : Dirk
+		//get normal
+		IBKMK::Vector3D n = surfacePoly.normal();
+		double lowestZ = std::numeric_limits<unsigned int>::max();
+		if(n.m_z == 1 || n.m_z == -1){
+			//now we have a flat roof or floor
+			//so we need a ground line
+			//TODO Dirk
+		}
+		else{
+			//we take the ground line from the lowest z-value
+			//We assume that there is a baseline with the point that has the smallest z-value
+		}
+
+		//we assume that the local coordinate system is ok and we take the x-axis as baseline
+		const std::vector<IBKMK::Vector2D> & vertexes2D = surfacePoly.polygon().polyline().vertexes();
+
+		double xMin = std::numeric_limits<double>::max();
+		double yMin = xMin;
+		double xMax = std::numeric_limits<double>::min();
+		double yMax = xMax;
+
+		for(unsigned int i=0; i<vertexes2D.size(); ++i){
+			const IBKMK::Vector2D & pt = vertexes2D[i];
+			//find highest/lowest point (x- and y-values)
+			if(pt.m_x < xMin)	xMin = pt.m_x;
+			if(pt.m_y < yMin)	yMin = pt.m_y;
+			if(pt.m_x > xMax)	xMax = pt.m_x;
+			if(pt.m_y > yMax)	yMax = pt.m_y;
+		}
+		//now we have the bounding box
+		double hSurf = yMax - yMin;
+		double wSurf = xMax - xMin;
+		double minDistance = 0.01; //this is the minimum distance
+
+		if(hSurf <= minDistance * 2 || wSurf <= minDistance * 2){
+			// area too small kick out this surface
+			continue;
+		}
+
+		//window definitions
+		double hPre = inputData.m_height;
+		double wPre = inputData.m_width;
+		double hPreSill = inputData.m_windowSillHeight;
+		double distWin = inputData.m_distance;
+		double hMax = hSurf - 2 * minDistance;
+		double wMax = wSurf - 2 * minDistance;
+		double frac = inputData.m_percentage;
+
+		//vector for window geometry
+		std::vector<VICUS::Polygon2D> windows;
+		if(inputData.m_byPercentage){
+			if(inputData.m_percentage > 1 || inputData.m_percentage <=0 ){
+				//throw IBK::Exception("Percentage value is out of range!");
+			}
+			//area of the surface
+			double surfA = surfacePoly.area(); //kann sein dass das durch hPre * wPre ersetzt werden muss -> testen
+			double surfWinA = surfA * inputData.m_percentage;
+
+			if(hMax<hPre)	hPre = hMax;
+			if(wMax<wPre)	wPre = wMax;
+			if(hPreSill < minDistance)	hPreSill = minDistance;
+
+			double count1 = (surfWinA - minDistance * hPre) / ((wPre + minDistance) * hPre);
+			double count2 = (wSurf - minDistance) / (wPre + minDistance);
+			int count = (int)std::floor(count2);
+
+			double surfWinA2 = count * hMax * wPre;														//calc with predefined width
+			double surfWinMaxA2 = count2 * hMax * wPre;
+			double surfWinA3 = hPre * (wSurf - minDistance * (count + 1));								//calc with predefined height
+			double surfWinA4 = (hMax - minDistance - hPreSill) * (wSurf - minDistance * (count +1));	//calc with predefined sill height
+
+			double height = hPre;
+			double width = wPre;
+			double sillHeight = hPreSill;
+
+			enum Priority{
+				Height,
+				Width,
+				SillHeight,
+				Distance
+			};
+
+			Priority prio = Height;
+
+			if(inputData.m_priorities[0] == 0)	prio = Height;
+			if(inputData.m_priorities[1] == 0)	prio = Width;
+			if(inputData.m_priorities[2] == 0)	prio = SillHeight;
+			if(inputData.m_priorities[3] == 0)	prio = Distance;
+
+			switch(prio){
+				case Height:{
+					if (surfWinA3 >= surfWinA) {
+						//height = hPre;
+						//width = surfWinA / (count * height);
+						count = (int)std::floor(surfWinA / (height * wPre));
+						if (count == 0)
+							count = 1;
+						width = surfWinA / (count * height);
+					}
+					else {
+						width = (wSurf - (count + 1) * minDistance) / count;
+						height = std::min(surfWinA / (width * count), hMax);
+					}
+				}
+				break;
+				case Width:{
+					if (surfWinA2>= surfWinA) {
+						//width = wPre;
+						height = surfWinA / (count * width);
+						count = (int)std::floor(surfWinA / (width * height));
+						if (count == 0)
+							count = 1;
+						height = std::min(surfWinA / (count * width), hMax);
+					}
+					else {
+						height = hMax;
+						width = surfWinMaxA2 / (hMax * count);
+					}
+				}
+				break;
+				case SillHeight:{
+					if (surfWinA4 >= surfWinA) {
+						height = hPre;
+						width = surfWinA / (count * height);
+					}
+					else {
+						width = (wSurf - (count + 1) * minDistance) / count;
+						height = std::min(surfWinA / (width * count), hMax);
+					}
+				}
+				break;
+			}
+			//check sill height
+			if( hSurf - height -minDistance < hPreSill)
+				sillHeight = hSurf - height - minDistance;
+			else
+				sillHeight = hPreSill;
+
+			double dist = (wSurf - count * width) / (count + 1);		//testen ob hier die +1 hin muss!!!
+
+			//now create the windows
+			for (unsigned int i=0; i<count; ++i){
+				VICUS::Polygon2D poly1;
+				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + i * (dist + width), sillHeight));
+				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + width + i * (dist + width), sillHeight));
+				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + width + i * (dist + width), sillHeight + height));
+				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + i * (dist + width), sillHeight + height));
+			}
+		}
+		else{
+			//now create the windows
+			double dist = inputData.m_baseLineOffset;
+			for (unsigned int i=0; i<inputData.m_maxHoleCount; ++i){
+				VICUS::Polygon2D poly1;
+				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + i * (dist + wPre), hPreSill));
+				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + wPre + i * (dist + wPre), hPreSill));
+				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + wPre + i * (dist + wPre), hPreSill + hPre));
+				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + i * (dist + wPre), hPreSill + hPre));
+			}
+
+		}
+		//add the windows to the surface
+		if(!windows.empty())
+			m_surfaceGeometries.back().setHoles(windows);
+		// TODO Dirk->Andreas hier muss jetzt ein check rein ob alle Fenster im gültigen Bereich sind
+	}
 
 	updateBuffers();
 }
@@ -200,6 +365,7 @@ void NewSubSurfaceObject::updateBuffers() {
 	m_colorBufferObject.allocate(m_colorBufferData.data(), m_colorBufferData.size()*sizeof(ColorRGBA) );
 	m_colorBufferObject.release();
 }
+
 
 
 void NewSubSurfaceObject::renderOpaque() {

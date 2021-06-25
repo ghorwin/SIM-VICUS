@@ -69,14 +69,14 @@ public:
 			for (int i=0; i<4; ++i)  m_priorities[i] = i+1;
 		}
 
-		int		m_priorities[4];
-		double	m_width = 1.2; // in m
-		double	m_height = 1.6; // in m
-		double	m_windowSillHeight = 0.5; // in m
-		double	m_distance = 0.6; // in m
-		bool	m_byPercentage = true;
-		double	m_percentage = 60; // in percent 0..100
-		double	m_baseLineOffset = 0.3; // in m
+		int		m_priorities[4];		//das gibt die Priorität von Höhe, Breite, Brüstungshöhe und Fensterzwischenabstand an
+		double	m_width = 1.2;			// Fensterbreite in m
+		double	m_height = 1.6;			// Fensterhöhe in m
+		double	m_windowSillHeight = 0.5; // Brüstungshöhe in m
+		double	m_distance = 0.6;		// Abstand zwischen 2 Fenstern in m
+		bool	m_byPercentage = true;	// Modus Fensterflächenanteil
+		double	m_percentage = 60;		// Fensterflächenanteil in percent 0..100
+		double	m_baseLineOffset = 0.3; // Das ist meiner Meinung nach Quark oder soll das der Erstabstand sein? in m
 
 		unsigned int m_maxHoleCount = 4; // max number of holes/windows
 	};
@@ -120,6 +120,9 @@ private:
 			buffer may be needed to be redrawn.
 	*/
 	void updateBuffers();
+
+	/*! Creates windows for one surface. */
+	void createWindows(VICUS::Surface &s);
 
 
 	/*! Stores the modified geometries of the selected surfaces with windows.
