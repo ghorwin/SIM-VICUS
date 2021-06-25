@@ -73,6 +73,9 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropVertexListWidget::onModified);
+
+	connect(m_ui->pushButtonCancel1, &QPushButton::clicked, this,
+			&SVPropVertexListWidget::onCancel);
 }
 
 
@@ -84,8 +87,11 @@ SVPropVertexListWidget::~SVPropVertexListWidget() {
 void SVPropVertexListWidget::setup(int newGeometryType) {
 	// switch to vertex list widget
 	m_ui->stackedWidget->setCurrentIndex(0);
-	// clear the polygon vertex list
-	clearPolygonVertexList();
+	// clear vertex table widget and disable "delete" and "finish" buttons
+	m_ui->tableWidgetVertexes->setRowCount(0);
+	m_ui->pushButtonCompletePolygon->setEnabled(false);
+	m_ui->pushButtonDeleteLast->setEnabled(false);
+	m_ui->pushButtonDeleteSelected->setEnabled(false);
 
 	// initialize new geometry object
 	switch ((Vic3D::NewGeometryObject::NewGeometryMode)newGeometryType) {
@@ -101,6 +107,7 @@ void SVPropVertexListWidget::setup(int newGeometryType) {
 
 		case Vic3D::NewGeometryObject::NUM_NGM: ; // just for the compiler
 	}
+	m_geometryMode = newGeometryType;
 }
 
 
@@ -203,6 +210,107 @@ void SVPropVertexListWidget::removeVertex(unsigned int idx) {
 }
 
 
+void SVPropVertexListWidget::setZoneHeight(double dist) {
+	m_ui->lineEditZoneHeight->blockSignals(true);
+	m_ui->lineEditZoneHeight->setText(QString("%L1").arg(dist));
+	m_ui->lineEditZoneHeight->blockSignals(false);
+}
+
+
+// *** SLOTS ***
+
+void SVPropVertexListWidget::onModified(int modificationType, ModificationInfo * /*data*/) {
+	SVProjectHandler::ModificationTypes mod = (SVProjectHandler::ModificationTypes)modificationType;
+	switch (mod) {
+		// We only need to handle changes of the building topology, in all other cases
+		// the "create new geometry" action is aborted and the widget will be hidden.
+		case SVProjectHandler::BuildingTopologyChanged:
+			updateBuildingComboBox(); // this will also update the other combo boxes
+		break;
+		default: {
+			// clear the new geometry object
+			SVViewStateHandler::instance().m_newGeometryObject->clear();
+		}
+	}
+}
+
+
+void SVPropVertexListWidget::on_pushButtonDeleteLast_clicked() {
+	// remove last vertex from polygon
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+	po->removeLastVertex();
+}
+
+
+void SVPropVertexListWidget::on_tableWidgetVertexes_itemSelectionChanged() {
+	m_ui->pushButtonDeleteSelected->setEnabled( m_ui->tableWidgetVertexes->currentRow() != -1);
+}
+
+
+void SVPropVertexListWidget::on_pushButtonDeleteSelected_clicked() {
+	int currentRow = m_ui->tableWidgetVertexes->currentRow();
+	Q_ASSERT(currentRow != -1);
+	// remove selected vertex from polygon
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+	po->removeVertex((unsigned int)currentRow); // this will in turn call removeVertex() above
+}
+
+
+void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+	// switch to different stacked widget, depending on geometry to be created
+	switch ((Vic3D::NewGeometryObject::NewGeometryMode)m_geometryMode) {
+		case Vic3D::NewGeometryObject::NGM_Rect:
+		case Vic3D::NewGeometryObject::NGM_Polygon:
+			m_ui->stackedWidget->setCurrentIndex(1);
+			updateBuildingComboBox(); // also updates all others and enables/disables relevant buttons
+			updateComponentComboBoxes(); // update all component combo boxes in surface page
+			po->m_passiveMode = true; // disallow changes to surface geometry
+		break;
+
+		case Vic3D::NewGeometryObject::NGM_Zone:
+			m_ui->stackedWidget->setCurrentIndex(2);
+			updateBuildingComboBox(); // also updates all others and enables/disables relevant buttons
+			updateComponentComboBoxes(); // update all component combo boxes in surface page
+			po->setNewGeometryMode(Vic3D::NewGeometryObject::NGM_Zone);
+			on_lineEditZoneHeight_editingFinishedSuccessfully();
+		break;
+		case Vic3D::NewGeometryObject::NGM_Roof:
+			m_ui->stackedWidget->setCurrentIndex(3);
+			updateBuildingComboBox(); // also updates all others and enables/disables relevant buttons
+			updateComponentComboBoxes(); // update all component combo boxes in surface page
+			po->setNewGeometryMode(Vic3D::NewGeometryObject::NGM_Roof);
+//			on_lineEditZoneHeight_editingFinishedSuccessfully();
+		break;
+		case Vic3D::NewGeometryObject::NUM_NGM: ; // just for the compiler
+	}
+
+}
+
+
+void SVPropVertexListWidget::onCancel() {
+	// reset new polygon object, so that it won't be drawn anylonger
+	SVViewStateHandler::instance().m_newGeometryObject->clear();
+	// signal, that we are no longer in "add vertex" mode
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
+	// reset locks
+	vs.m_locks = SVViewState::NUM_L;
+
+	// take xy plane out of snap option mask
+	vs.m_snapEnabled = true;
+	// now tell all UI components to toggle their view state
+	SVViewStateHandler::instance().setViewState(vs);
+}
+
+
+
+
+
+
+
+
 
 // *** PRIVATE MEMBERS ***
 
@@ -295,7 +403,7 @@ void SVPropVertexListWidget::updateZoneComboBox() {
 		}
 	}
 	m_ui->comboBoxZone->blockSignals(false);
-	updateEnabledStates();
+	updateSurfacePageState();
 }
 
 
@@ -332,80 +440,13 @@ void SVPropVertexListWidget::createRoofZone() {
 
 
 
-void SVPropVertexListWidget::setZoneHeight(double dist) {
-	m_ui->lineEditZoneHeight->blockSignals(true);
-	m_ui->lineEditZoneHeight->setText(QString("%L1").arg(dist));
-	m_ui->lineEditZoneHeight->blockSignals(false);
-}
 
 
-void SVPropVertexListWidget::onModified(int modificationType, ModificationInfo * /*data*/) {
-	// only do something here, if this widget is actually visible
-//	if (!isVisibleTo(qobject_cast<QWidget*>(parent())) )
-//		return;
-	SVProjectHandler::ModificationTypes mod = (SVProjectHandler::ModificationTypes)modificationType;
-	switch (mod) {
-		// We only need to handle changes of the building topology, in all other cases
-		// the "create new geometry" action is aborted and the widget will be hidden.
-		case SVProjectHandler::BuildingTopologyChanged:
-			updateBuildingComboBox(); // this will also update the other combo boxes
-		break;
-		default: {
-			// clear the new geometry object
-			SVViewStateHandler::instance().m_newGeometryObject->clear();
-		}
-	}
-}
 
 
-void SVPropVertexListWidget::clearPolygonVertexList() {
-	// clear table widget and disable "delete" and "finish" buttons
-	m_ui->tableWidgetVertexes->setRowCount(0);
-	m_ui->pushButtonCompletePolygon->setEnabled(false);
-	m_ui->pushButtonDeleteLast->setEnabled(false);
-	m_ui->pushButtonDeleteSelected->setEnabled(false);
-}
 
 
-void SVPropVertexListWidget::on_pushButtonDeleteLast_clicked() {
-	// remove last vertex from polygon
-	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
-	po->removeLastVertex();
-}
 
-
-void SVPropVertexListWidget::on_tableWidgetVertexes_itemSelectionChanged() {
-	m_ui->pushButtonDeleteSelected->setEnabled( m_ui->tableWidgetVertexes->currentRow() != -1);
-}
-
-
-//void SVPropVertexListWidget::on_pushButtonCancel_clicked() {
-//	// reset new polygon object, so that it won't be drawn anylonger
-//	SVViewStateHandler::instance().m_newGeometryObject->clear();
-//	// signal, that we are no longer in "add vertex" mode
-//	SVViewState vs = SVViewStateHandler::instance().viewState();
-//	vs.m_sceneOperationMode = SVViewState::NUM_OM;
-//	vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
-//	// reset locks
-//	vs.m_locks = SVViewState::NUM_L;
-
-//	// take xy plane out of snap option mask
-//	vs.m_snapEnabled = true;
-//	// now tell all UI components to toggle their view state
-//	SVViewStateHandler::instance().setViewState(vs);
-
-//	// we also have do clean our table
-//	m_ui->tableWidgetVertexes->clearContents();
-//}
-
-
-void SVPropVertexListWidget::on_pushButtonDeleteSelected_clicked() {
-	int currentRow = m_ui->tableWidgetVertexes->currentRow();
-	Q_ASSERT(currentRow != -1);
-	// remove selected vertex from polygon
-	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
-	po->removeVertex((unsigned int)currentRow); // this will in turn call removeVertex() above
-}
 
 #if 0
 void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
@@ -664,7 +705,7 @@ void SVPropVertexListWidget::on_toolButtonAddZone_clicked() {
 
 
 void SVPropVertexListWidget::on_checkBoxAnnonymousGeometry_stateChanged(int /*arg1*/) {
-	updateEnabledStates();
+	updateSurfacePageState();
 }
 
 
@@ -673,7 +714,7 @@ bool SVPropVertexListWidget::createAnnonymousGeometry() const {
 }
 
 
-void SVPropVertexListWidget::updateEnabledStates() {
+void SVPropVertexListWidget::updateSurfacePageState() {
 	// update states of "Create surface" page
 
 	// if checkbox is visible, we adjust the enabled state of other inputs
@@ -811,15 +852,18 @@ void SVPropVertexListWidget::on_pushButtonFloorDone_clicked() {
 }
 #endif
 
+
 void SVPropVertexListWidget::on_lineEditZoneHeight_editingFinishedSuccessfully() {
-	// read entered line height and if valid move local coordinate system to new height
-	double val = m_ui->lineEditZoneHeight->value();
+	// Guard against call when aborting/focus is lost during undo!
 	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
-	if (po->newGeometryMode() == Vic3D::NewGeometryObject::NGM_Zone) {
-		po->setZoneHeight(val);
-		// we need to trigger a redraw here
-		SVViewStateHandler::instance().m_geometryView->refreshSceneView();
-	}
+	if (po->newGeometryMode() != Vic3D::NewGeometryObject::NGM_Zone)
+		return;
+
+	// read entered line height and if valid set new height in scene view (and move local coordinate system accordingly)
+	double val = m_ui->lineEditZoneHeight->value();
+	po->setZoneHeight(val);
+	// we need to trigger a redraw here
+	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
 }
 
 
@@ -829,3 +873,4 @@ void SVPropVertexListWidget::on_pushButtonPickZoneHeight_clicked() {
 	// check if interactive mode is already enabled
 	po->m_interactiveZoneExtrusionMode = !po->m_interactiveZoneExtrusionMode;
 }
+

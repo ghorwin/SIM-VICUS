@@ -137,8 +137,13 @@ public:
 	/*! This function clears the current buffer and vertex lists. */
 	void startNewGeometry(NewGeometryMode m) {
 		// when drawing polygons or rectangles, we always start from scratch
-		if (m == NGM_Rect || m == NGM_Polygon)
+		if (m == NGM_Rect || m == NGM_Polygon) {
 			clear();
+			m_passiveMode = false;
+		}
+		else {
+			m_passiveMode = true;
+		}
 		m_newGeometryMode = m;
 	}
 
@@ -234,6 +239,8 @@ public:
 	void renderTransparent();
 
 	bool							m_interactiveZoneExtrusionMode = false;
+	/*! If passive mode is turned on, the user can no longer append/remove new vertexes. */
+	bool							m_passiveMode = false;
 
 private:
 	/*! Populates the color and vertex buffer with data for the "last segment" line and the polygon.

@@ -53,8 +53,6 @@ class SVPropVertexListWidget : public QWidget {
 	Q_OBJECT
 
 public:
-
-
 	explicit SVPropVertexListWidget(QWidget *parent = nullptr);
 	~SVPropVertexListWidget();
 
@@ -82,20 +80,30 @@ public:
 public slots:
 
 	/*! Connected to SVProjectHandler::modified().
-		Updates the building, building level and zone combo boxes with data from the project.
-		This function does nothing, if the widget is currently inactive/invisible.
+		Updates the building, building level and zone combo boxes with data from the project, if these were only
+		renamed. Otherwise the new geometry operation is aborted.
 	*/
 	void onModified( int modificationType, ModificationInfo * data );
 
-	/*! Called, when user starts with a new polygon/geometry. */
-	void clearPolygonVertexList();
-
 private slots:
+
+	// page vertexes
+
 	void on_pushButtonDeleteLast_clicked();
 
 	void on_tableWidgetVertexes_itemSelectionChanged();
 
 	void on_pushButtonDeleteSelected_clicked();
+
+	void on_pushButtonCompletePolygon_clicked();
+
+	/*! This slot is called from all cancel buttons in all widgets. It basically
+		aborts the current operation, clears the new geometry widget and aborts the widget. */
+	void onCancel();
+
+
+
+	// page vertexes
 
 	void on_toolButtonAddBuilding_clicked();
 
@@ -113,12 +121,13 @@ private slots:
 
 	void on_pushButtonPickZoneHeight_clicked();
 
+
 private:
 	/*! Returns true, if annonymous geometry is being created (i.e. checkbox is visible and checked). */
 	bool createAnnonymousGeometry() const;
 
 	/*! Updates the enabled/disable states of all labels/combo boxes and tool buttons depending on available data. */
-	void updateEnabledStates();
+	void updateSurfacePageState();
 
 	bool reselectById(QComboBox * combo, int id) const;
 
@@ -146,6 +155,12 @@ private:
 	void createRoofZone();
 
 	Ui::SVPropVertexListWidget	*m_ui;
+
+	/*! What kind of geometry is being created.
+		\note In two-stage processes, it does not always correspond to the geometry mode set in the
+		new geometry object.
+	*/
+	int							m_geometryMode;
 };
 
 

@@ -117,17 +117,7 @@ void NewGeometryObject::destroy() {
 
 
 void NewGeometryObject::setNewGeometryMode(NewGeometryObject::NewGeometryMode m) {
-	switch (m) {
-		case NGM_Zone :
-			Q_ASSERT(m_newGeometryMode == NGM_Polygon);
-			m_newGeometryMode = m;
-		break;
-		case NGM_Roof :
-			Q_ASSERT(m_newGeometryMode == NGM_Polygon);
-			m_newGeometryMode = m;
-		break;
-		default:;
-	}
+	m_newGeometryMode = m;
 	updateBuffers(false);
 }
 
@@ -146,6 +136,8 @@ void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
 		IBK::IBK_Message("Identical point added. Ignored.");
 		return; // ignore the vertex
 	}
+	if (m_passiveMode)
+		return;
 	switch (m_newGeometryMode) {
 		case NGM_Rect :
 			// if the rectangle is complete and we have a click, just ignore it
