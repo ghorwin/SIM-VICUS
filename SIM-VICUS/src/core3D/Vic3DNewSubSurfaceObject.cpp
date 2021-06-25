@@ -226,10 +226,10 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 
 			Priority prio = Height;
 
-			if(inputData.m_priorities[0] == 0)	prio = Height;
-			if(inputData.m_priorities[1] == 0)	prio = Width;
-			if(inputData.m_priorities[2] == 0)	prio = SillHeight;
-			if(inputData.m_priorities[3] == 0)	prio = Distance;
+			if(inputData.m_priorities[0] == 1)	prio = Height;
+			if(inputData.m_priorities[1] == 1)	prio = Width;
+			if(inputData.m_priorities[2] == 1)	prio = SillHeight;
+			if(inputData.m_priorities[3] == 1)	prio = Distance;
 
 			switch(prio){
 				case Height:{
