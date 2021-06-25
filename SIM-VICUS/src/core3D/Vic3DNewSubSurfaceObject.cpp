@@ -304,8 +304,7 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 
 		}
 		//add the windows to the surface
-		if(!windows.empty())
-			m_surfaceGeometries.back().setHoles(windows);
+		m_surfaceGeometries.back().setHoles(windows);
 		// TODO Dirk->Andreas hier muss jetzt ein check rein ob alle Fenster im gültigen Bereich sind
 	}
 
