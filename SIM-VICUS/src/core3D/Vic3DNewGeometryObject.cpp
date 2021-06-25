@@ -882,8 +882,9 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 						 m_vertexBufferData, m_indexBufferData);
 				// re-add first vertex so that we have a closed loop
 				m_vertexBufferData.push_back( m_vertexBufferData[0] );
-				// add last placed vertex to draw line to current local coordinate system
-				m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(m_vertexList.back())) );
+				if (!m_passiveMode)
+					// add last placed vertex to draw line to current local coordinate system
+					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(m_vertexList.back())) );
 			}
 			else {
 				// for invalid polygons
@@ -893,11 +894,13 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 			}
 			// last vertex in buffer is now the last placed vertex
 
-			// now also add a vertex for the current coordinate system's position
-			m_vertexBufferData.push_back( VertexC(m_localCoordinateSystemPosition ) );
+			if (!m_passiveMode) {
+				// now also add a vertex for the current coordinate system's position
+				m_vertexBufferData.push_back( VertexC(m_localCoordinateSystemPosition ) );
 
-			// add again the first point of the polygon in order to draw a blue line from local coordinate system to first point of polygon
-			m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(m_vertexList.front())) );
+				// add again the first point of the polygon in order to draw a blue line from local coordinate system to first point of polygon
+				m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(m_vertexList.front())) );
+			}
 		} break;
 
 

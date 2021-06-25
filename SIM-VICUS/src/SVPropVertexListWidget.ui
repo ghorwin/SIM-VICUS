@@ -14,7 +14,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="pageVertexes">
       <layout class="QGridLayout" name="gridLayout_8">
@@ -241,7 +241,7 @@
         </widget>
        </item>
        <item row="1" column="2">
-        <widget class="QPushButton" name="pushButtonCancelSurface">
+        <widget class="QPushButton" name="pushButtonCancel2">
          <property name="text">
           <string>Cancel</string>
          </property>
@@ -265,9 +265,6 @@
          <property name="text">
           <string>Create surface</string>
          </property>
-         <property name="default">
-          <bool>true</bool>
-         </property>
         </widget>
        </item>
        <item row="2" column="1">
@@ -285,7 +282,7 @@
        </item>
       </layout>
       <zorder>pushButtonCreateSurface</zorder>
-      <zorder>pushButtonCancelSurface</zorder>
+      <zorder>pushButtonCancel2</zorder>
       <zorder>horizontalSpacer_2</zorder>
       <zorder>groupBoxObjectProperties</zorder>
       <zorder>verticalSpacer_3</zorder>
@@ -296,9 +293,6 @@
         <widget class="QPushButton" name="pushButtonCreateZone">
          <property name="text">
           <string>Create zone</string>
-         </property>
-         <property name="default">
-          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -316,7 +310,7 @@
         </spacer>
        </item>
        <item row="1" column="2">
-        <widget class="QPushButton" name="pushButtonCancelZone">
+        <widget class="QPushButton" name="pushButtonCancel3">
          <property name="text">
           <string>Cancel</string>
          </property>
@@ -368,7 +362,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="lineEditName_2"/>
+             <widget class="QLineEdit" name="lineEditNameZone"/>
             </item>
            </layout>
           </item>
@@ -542,9 +536,6 @@
          <property name="text">
           <string>Create roof</string>
          </property>
-         <property name="default">
-          <bool>true</bool>
-         </property>
         </widget>
        </item>
        <item row="1" column="1">
@@ -561,7 +552,7 @@
         </spacer>
        </item>
        <item row="1" column="2">
-        <widget class="QPushButton" name="pushButtonCancelRoof">
+        <widget class="QPushButton" name="pushButtonCancel4">
          <property name="text">
           <string>Cancel</string>
          </property>
@@ -831,7 +822,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="lineEditName_3"/>
+             <widget class="QLineEdit" name="lineEditNameRoof"/>
             </item>
            </layout>
           </item>
@@ -851,6 +842,60 @@
    <header location="global">QtExt_ValidatingLineEdit.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>lineEditName</tabstop>
+  <tabstop>checkBoxAnnonymousGeometry</tabstop>
+  <tabstop>comboBoxBuilding</tabstop>
+  <tabstop>toolButtonAddBuilding</tabstop>
+  <tabstop>comboBoxBuildingLevel</tabstop>
+  <tabstop>toolButtonAddBuildingLevel</tabstop>
+  <tabstop>comboBoxZone</tabstop>
+  <tabstop>toolButtonAddZone</tabstop>
+  <tabstop>comboBoxComponent</tabstop>
+  <tabstop>toolButtonEditComponents1</tabstop>
+  <tabstop>pushButtonCreateSurface</tabstop>
+  <tabstop>pushButtonCancel2</tabstop>
+  <tabstop>pushButtonCompletePolygon</tabstop>
+  <tabstop>pushButtonDeleteLast</tabstop>
+  <tabstop>tableWidgetVertexes</tabstop>
+  <tabstop>pushButtonDeleteSelected</tabstop>
+  <tabstop>pushButtonCancel1</tabstop>
+  <tabstop>pushButtonCreateZone</tabstop>
+  <tabstop>pushButtonCancel3</tabstop>
+  <tabstop>toolButtonEditComponents2</tabstop>
+  <tabstop>comboBoxComponentCeiling</tabstop>
+  <tabstop>lineEditNameZone</tabstop>
+  <tabstop>toolButtonAddBuildingLevel_2</tabstop>
+  <tabstop>toolButtonAddBuilding_2</tabstop>
+  <tabstop>toolButtonEditComponents3</tabstop>
+  <tabstop>comboBoxComponentFloor</tabstop>
+  <tabstop>pushButtonPickZoneHeight</tabstop>
+  <tabstop>comboBoxBuildingLevel_2</tabstop>
+  <tabstop>toolButtonEditComponents4</tabstop>
+  <tabstop>lineEditZoneHeight</tabstop>
+  <tabstop>comboBoxComponentWalls</tabstop>
+  <tabstop>comboBoxBuilding_2</tabstop>
+  <tabstop>pushButtonCreateRoof</tabstop>
+  <tabstop>pushButtonCancel4</tabstop>
+  <tabstop>comboBoxBuildingLevel_3</tabstop>
+  <tabstop>checkBoxFlapTile</tabstop>
+  <tabstop>comboBoxComponentFloor_2</tabstop>
+  <tabstop>toolButtonEditComponents2_2</tabstop>
+  <tabstop>lineEditFlapTileHeight</tabstop>
+  <tabstop>lineEditRoofInclination</tabstop>
+  <tabstop>toolButtonEditComponents4_2</tabstop>
+  <tabstop>comboBoxRoofType</tabstop>
+  <tabstop>toolButtonAddBuilding_3</tabstop>
+  <tabstop>radioButtonRoofInclination</tabstop>
+  <tabstop>toolButtonEditComponents3_2</tabstop>
+  <tabstop>radioButtonRoofHeight</tabstop>
+  <tabstop>toolButtonAddBuildingLevel_3</tabstop>
+  <tabstop>lineEditZoneHeight_2</tabstop>
+  <tabstop>comboBoxComponentWalls_2</tabstop>
+  <tabstop>comboBoxComponentCeiling_2</tabstop>
+  <tabstop>comboBoxBuilding_3</tabstop>
+  <tabstop>lineEditNameRoof</tabstop>
+ </tabstops>
  <resources>
   <include location="../resources/SIM-VICUS.qrc"/>
  </resources>

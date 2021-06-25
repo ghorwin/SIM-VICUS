@@ -75,6 +75,7 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	m_toolBar = new QToolBar(this);
 	m_toolBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 	m_toolBar->setMaximumHeight(32);
+	m_toolBar->layout()->setMargin(0);
 
 //	m_dockWidget = new QWidget(this);
 //	m_dockWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -84,6 +85,7 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	vbLay->addWidget(m_sceneViewContainerWidget);
 	vbLay->addWidget(m_toolBar);
 	vbLay->setMargin(0);
+	vbLay->setSpacing(0);
 
 	QWidget* w = new QWidget(this);
 	w->setLayout(vbLay);
@@ -104,7 +106,7 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	hlay->setMargin(0);
 	hlay->setSpacing(0);
 	hlay->addWidget(m_splitter);
-	m_splitter->setCollapsible(0, false);
+	m_splitter->setCollapsible(0, true);
 	m_splitter->setCollapsible(1, true);
 	m_splitter->setStretchFactor(0,1);
 	m_splitter->setStretchFactor(1,0);

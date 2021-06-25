@@ -77,6 +77,11 @@ public:
 	/*! Called from NewGeometryWidget with new zone height, to be shown in respective line widget. */
 	void setZoneHeight(double dist);
 
+	/*! If we are in "draw polygon mode" and completing is possible, do it (same as clicking on "Complete polygon" button).
+		This function is called globally, when user presses Return while drawing.
+	*/
+	bool completePolygonIfPossible();
+
 public slots:
 
 	/*! Connected to SVProjectHandler::modified().
@@ -103,7 +108,7 @@ private slots:
 
 
 
-	// page vertexes
+	// page surfaces
 
 	void on_toolButtonAddBuilding_clicked();
 
@@ -117,9 +122,15 @@ private slots:
 
 	void on_comboBoxBuildingLevel_currentIndexChanged(int index);
 
+	void on_pushButtonCreateSurface_clicked();
+
+
+	// page zone
+
 	void on_lineEditZoneHeight_editingFinishedSuccessfully();
 
 	void on_pushButtonPickZoneHeight_clicked();
+
 
 
 private:
