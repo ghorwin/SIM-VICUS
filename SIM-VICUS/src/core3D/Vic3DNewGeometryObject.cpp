@@ -33,6 +33,7 @@
 #include <QtExt_Conversions.h>
 
 #include <IBKMK_3DCalculations.h>
+#include <IBK_physics.h>
 
 #include "SVProjectHandler.h"
 #include "SVSettings.h"
@@ -373,8 +374,6 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 
 	if (roofData.m_type != RoofInputData::Complex) {
 
-		// all polygons of the roof room are stored following vector
-		std::vector<std::vector<IBKMK::Vector3D>> polygons;
 
 		// If there are only 3 points and the roof shape is not COMPLEX then a 4th point is always added.
 		// If there are more than 3 points, all further points are discarded. This ensures that there is always a rectangle.
@@ -385,31 +384,34 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 
 		//distance of point 2 to 3
 		double distBC = polyline[2].distanceTo(polyline[1]);
-
+		double height =0, angle=0;
 		//calculate height
 		if (!roofData.m_isHeightPredefined)
-			inputHeight = std::tan(inputAngle * IBK::DEG2RAD) * distBC;
+			height = std::tan(roofData.m_angle * IBK::DEG2RAD) * distBC;
 		//calculate angle
 		else{
 			///TODO Dirk->Andreas fehlerbehandlung?
 			if(distBC>0)
-				inputAngle = std::atan(inputHeight/distBC);
+				angle = std::atan(roofData.m_height/distBC);
 			else
-				inputAngle = 0;
+				angle = 0;
 		}
+		// all polygons of the roof room are stored following vector
+		std::vector<std::vector<IBKMK::Vector3D>> polygons;
+
+		//add for calculation floor
+		polygons[0] = polyline;
 
 		/// TODO Dirk->Andreas jetzt würden die einzelfunktionen kommen ich schreib die einfach mal auf
 		/// irgendwie müssen diese dann einsortiert werden
 
 		/// TODO Dirk check if floor polygon has the right normal
-		IBKMK::Vector3D hFlapTile(0,0,hasFlapTile ? inputFlapTileHeight : 0);
-		switch (type){
-			case SinglePitchRoof:{
+		IBKMK::Vector3D hFlapTile(0,0,roofData.m_hasFlapTile ? roofData.m_flapTileHeight : 0);
+		switch (roofData.m_type){
+			case RoofInputData::SinglePitchRoof:{
 				// Create a single pitch roof with floor, roof, 3x wall
 				polygons.resize(5);
-				//floor
-				polygons[0] = polyline;
-				IBKMK::Vector3D h1(0,0,inputHeight);
+				IBKMK::Vector3D h1(0,0,height);
 				//roof
 				polygons[1].push_back(polyline[0]+hFlapTile);
 				polygons[1].push_back(polyline[1]+h1+hFlapTile);
@@ -417,7 +419,7 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 				polygons[1].push_back(polyline[3]+hFlapTile);
 				//wall 1
 				polygons[2].push_back(polyline[0]+hFlapTile);
-				if(hasFlapTile) polygons[2].push_back(polyline[0]);
+				if(roofData.m_hasFlapTile) polygons[2].push_back(polyline[0]);
 				polygons[2].push_back(polyline[1]);
 				polygons[2].push_back(polyline[1]+h1+hFlapTile);
 				//wall 2
@@ -428,19 +430,17 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 				//wall 3
 				polygons[4].push_back(polyline[2]);
 				polygons[4].push_back(polyline[3]);
-				if(hasFlapTile) polygons[4].push_back(polyline[3]+hFlapTile);
+				if(roofData.m_hasFlapTile) polygons[4].push_back(polyline[3]+hFlapTile);
 				polygons[4].push_back(polyline[2]+h1+hFlapTile);
 
 			}
 			break;
-			case DoublePitchRoof:{
+			case RoofInputData::DoublePitchRoof:{
 				// Create a double pitch roof with floor, 2x roof, 2x wall
 				polygons.resize(5);
-				//floor
-				polygons[0] = polyline;
 
 				IBKMK::Vector3D middleBA= (polyline[1]-polyline[0])*0.5;
-				IBKMK::Vector3D h1(0,0,inputHeight);
+				IBKMK::Vector3D h1(0,0,height);
 				//roof 1
 				polygons[1].push_back(polyline[0]);
 				polygons[1].push_back(polyline[0]+ middleBA+h1+hFlapTile);
@@ -465,15 +465,13 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 				polygons[4].push_back(polyline[2]+hFlapTile);
 			}
 			break;
-			case MansardRoof:{
+			case RoofInputData::MansardRoof:{
 				// Create a mansard roof with floor, 4x roof, 2x wall, if flapTile>0 then additional 2x wall
-				polygons.resize(hasFlapTile ? 9 : 7 );
-				//floor
-				polygons[0] = polyline;
+				polygons.resize(roofData.m_hasFlapTile ? 9 : 7 );
 
 				IBKMK::Vector3D middleBA= (polyline[1]-polyline[0])*0.5;
 				IBKMK::Vector3D vec1= (polyline[1]-polyline[0])*0.1;
-				IBKMK::Vector3D h1(0,0,inputHeight), h2(0,0,inputHeight*0.5);
+				IBKMK::Vector3D h1(0,0,roofData.m_height), h2(0,0,roofData.m_height*0.5);
 				//roof 1
 				polygons[1].push_back(polyline[0]+hFlapTile);
 				polygons[1].push_back(polyline[0]+vec1+h2+hFlapTile);
@@ -512,7 +510,7 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 				polygons[6].push_back(polyline[2]-vec1+h2+hFlapTile);
 				polygons[6].push_back(polyline[2]+hFlapTile);
 
-				if(hasFlapTile){
+				if(roofData.m_hasFlapTile){
 					//wall 3
 					polygons[7].push_back(polyline[3]);
 					polygons[7].push_back(polyline[0]);
@@ -527,14 +525,12 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 				}
 			}
 			break;
-			case HipRoof:{
+			case RoofInputData::HipRoof:{
 				// Create a hip roof with floor, 2x roof, 2x wall, if flapTile>0 then additional 4x wall
-				polygons.resize(hasFlapTile ? 9 : 5);
-				//floor
-				polygons[0] = polyline;
+				polygons.resize(roofData.m_hasFlapTile ? 9 : 5);
 
 				IBKMK::Vector3D middleBA= (polyline[1]-polyline[0])*0.5;
-				IBKMK::Vector3D h1(0,0,inputHeight);
+				IBKMK::Vector3D h1(0,0,height);
 				IBKMK::Vector3D d1(0,0,0);
 				double len = polyline[2].distanceTo(polyline[1]);
 				double wid = polyline[1].distanceTo(polyline[0]);
@@ -560,7 +556,7 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 				polygons[4].push_back(polyline[3] + hFlapTile);
 				polygons[4].push_back(polyline[3]+ middleBA-d1+h1 + hFlapTile);
 
-				if(hasFlapTile){
+				if(roofData.m_hasFlapTile){
 					// additional walls
 					for(unsigned int i1 = 0; i1<3; ++i1){
 						unsigned int i2 = (i1+1) % 4;
@@ -573,19 +569,20 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 				}
 			}
 			break;
-			case Complex:
+			case RoofInputData::Complex:
 				//do nothing because the frist if does not allow complex
 			break;
 		}
 		//add all polygons to the poly vec and flip all normals of the roof elements to positiv z-value
-		for(unsigned int i=0; i<polygons.size(); ++i){
+		//dont take floor polygon so we start by index 1
+		for(unsigned int i=1; i<polygons.size(); ++i){
 			polys.push_back(polygons[i]);
-			//skip floor plane
-			if(i>0 && polys[i].normal().m_z < 0)
+
+			if(polys[i].normal().m_z < 0)
 					polys[i].flip();
 		}
 	}
-	else if(type == Complex){
+	else if(roofData.m_type == RoofInputData::Complex){
 		//now create a complex roof structure
 
 		unsigned int polySize = polyline.size();
@@ -599,8 +596,6 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 			points2D[i].m_y = polyline[i].m_y;
 			edges.push_back(std::pair<unsigned int, unsigned int>(i, (i+1)%polySize));
 		}
-
-
 
 		IBKMK::Triangulation triangu;
 		triangu.setPoints(points2D,edges);
@@ -681,14 +676,14 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 
 					VICUS::Polygon3D poly3d;
 					//first poly
-					poly3d.addVertex(IBKMK::Vector3D(mid2D.m_x, mid2D.m_y, inputHeight));
+					poly3d.addVertex(IBKMK::Vector3D(mid2D.m_x, mid2D.m_y, roofData.m_height));
 					poly3d.addVertex(IBKMK::Vector3D(p1.m_x, p1.m_y, 0));
 					poly3d.addVertex(IBKMK::Vector3D(p3.m_x, p3.m_y, 0));
 					polys.push_back(poly3d);
 
 					//second poly
 					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
-										   IBKMK::Vector3D(mid2D.m_x, mid2D.m_y, inputHeight),
+										   IBKMK::Vector3D(mid2D.m_x, mid2D.m_y, roofData.m_height),
 										   IBKMK::Vector3D(p2.m_x, p2.m_y, 0),
 										   IBKMK::Vector3D(p3.m_x, p3.m_y, 0)
 									   });
@@ -725,15 +720,15 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 					VICUS::Polygon3D poly3d;
 					//create first triangle with the two mid points and the common point
 					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
-										   IBKMK::Vector3D(mid2Da.m_x, mid2Da.m_y, inputHeight),
-										   IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, inputHeight),
+										   IBKMK::Vector3D(mid2Da.m_x, mid2Da.m_y, roofData.m_height),
+										   IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, roofData.m_height),
 										   IBKMK::Vector3D(commonPoint.m_x, commonPoint.m_y, 0)
 									   });
 					polys.push_back(poly3d);
 
 					//create second triangle with the one mid point and the two other points
 					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
-										   IBKMK::Vector3D(mid2Da.m_x, mid2Da.m_y, inputHeight),
+										   IBKMK::Vector3D(mid2Da.m_x, mid2Da.m_y, roofData.m_height),
 										   IBKMK::Vector3D(p1.m_x, p1.m_y,0),
 										   IBKMK::Vector3D(p2.m_x, p2.m_y,0)
 									   });
@@ -741,8 +736,8 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 
 					//create third triangle with the two mid points and the one other point
 					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
-										   IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, inputHeight),
-										   IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, inputHeight),
+										   IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, roofData.m_height),
+										   IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, roofData.m_height),
 										   commonPoint == pts2DVec[2] ? IBKMK::Vector3D(pts2DVec[3].m_x, pts2DVec[3].m_y,0) :
 										   IBKMK::Vector3D(pts2DVec[2].m_x, pts2DVec[2].m_y,0)
 									   });
@@ -767,9 +762,9 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 					VICUS::Polygon3D poly3d;
 					//create first triangle --> all mid points
 					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
-										   IBKMK::Vector3D(midPts2DVec[0].m_x, midPts2DVec[0].m_y, inputHeight),
-										   IBKMK::Vector3D(midPts2DVec[1].m_x, midPts2DVec[1].m_y, inputHeight),
-										   IBKMK::Vector3D(midPts2DVec[2].m_x, midPts2DVec[2].m_y, inputHeight)
+										   IBKMK::Vector3D(midPts2DVec[0].m_x, midPts2DVec[0].m_y, roofData.m_height),
+										   IBKMK::Vector3D(midPts2DVec[1].m_x, midPts2DVec[1].m_y, roofData.m_height),
+										   IBKMK::Vector3D(midPts2DVec[2].m_x, midPts2DVec[2].m_y, roofData.m_height)
 									   });
 					polys.push_back(poly3d);
 
@@ -778,8 +773,8 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 					for(unsigned int i3=0; i3<3; ++i3){
 						//find the other point which belongs to the two mid points
 						poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
-											   IBKMK::Vector3D(midPts2DVec[i3].m_x, midPts2DVec[i3].m_y, inputHeight),
-											   IBKMK::Vector3D(midPts2DVec[(i3+1)%3].m_x, midPts2DVec[(i3+1)%3].m_y, inputHeight),
+											   IBKMK::Vector3D(midPts2DVec[i3].m_x, midPts2DVec[i3].m_y, roofData.m_height),
+											   IBKMK::Vector3D(midPts2DVec[(i3+1)%3].m_x, midPts2DVec[(i3+1)%3].m_y, roofData.m_height),
 											   IBKMK::Vector3D(pts2DVec[(i3+1)%3].m_x, pts2DVec[(i3+1)%3].m_y,0)
 										   });
 						polys.push_back(poly3d);
@@ -795,6 +790,10 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 			//flip polygon because wrong direction of normal
 			if(polys[i].normal().m_z < 0 )
 				polys[i].flip();
+
+			VICUS::PlaneGeometry pg;
+			pg.setPolygon(polys[i]);
+			m_generatedGeometry.push_back(pg);
 		}
 	}
 #endif

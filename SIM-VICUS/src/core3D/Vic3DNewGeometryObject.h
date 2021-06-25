@@ -85,7 +85,7 @@ public:
 			Complex					//Komplexe Dachform (darunter fällt auch Zeltdach)
 		};
 
-		RoofType	m_type = DoublePitchRoof;
+		RoofType	m_type = Complex;
 		bool		m_isHeightPredefined = true;	//entweder Höhe oder Dachneigungswinkel
 		double		m_height = 2;					// in m Das ist die Höhe über dem Kniestock
 		double		m_angle = 20;					// in Deg
