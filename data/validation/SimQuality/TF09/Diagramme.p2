@@ -3,8 +3,13 @@
 	<!--List of all directories-->
 	<Directories>
 		<Directory>
-			<Path>.</Path>
-			<SubDir Color="#ff007f" Checked="1">.</SubDir>
+			<Path>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten</Path>
+			<SubDir Color="#ff007f" Checked="0">.</SubDir>
+		</Directory>
+		<Directory>
+			<Path>B:/git/SIM-VICUS/data/vicus/ShadingTest</Path>
+			<SubDir Color="#ffaa00" Checked="1">.</SubDir>
+			<SubDir Color="#ff007f" Checked="0">SimQ_09.1</SubDir>
 		</Directory>
 	</Directories>
 
@@ -15,56 +20,56 @@
 		<Mapper name="Varinate 09 - Azimuth">
 			<Extractors>
 				<Extractor>
-					<DataIOFileName>Aixlib.tsv?1|2</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Aixlib.tsv?1|2</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>ETU.tsv?1|2</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/ETU.tsv?1|2</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>IDAICE.tsv?1|2</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/IDAICE.tsv?1|2</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>NANDRAD.tsv?1|2</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD.tsv?1|2</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>TAS.tsv?1|2</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/TAS.tsv?1|2</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>TRNSYS.tsv?1|2</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/TRNSYS.tsv?1|2</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>Therakles.tsv?1|2</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Therakles.tsv?1|2</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>Referenzwerte.tsv?1|2</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte.tsv?1|2</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
@@ -158,56 +163,56 @@
 		<Mapper name="Varinate 09 - Altitude">
 			<Extractors>
 				<Extractor>
-					<DataIOFileName>Aixlib.tsv?1|2</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Aixlib.tsv?1|2</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>1</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>ETU.tsv?1|2</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/ETU.tsv?1|2</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>1</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>IDAICE.tsv?1|2</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/IDAICE.tsv?1|2</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>1</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>NANDRAD.tsv?1|2</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD.tsv?1|2</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>1</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>TAS.tsv?1|2</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/TAS.tsv?1|2</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>1</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>TRNSYS.tsv?1|2</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/TRNSYS.tsv?1|2</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>1</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>Therakles.tsv?1|2</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Therakles.tsv?1|2</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>1</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>Referenzwerte.tsv?1|2</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte.tsv?1|2</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
@@ -302,49 +307,28 @@
 		<Mapper name="Varinate 09.1 - Sonnenlichtfaktor">
 			<Extractors>
 				<Extractor>
-					<DataIOFileName>Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>ShadingFactor_091_0.15_2.00.tsv?3</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>ShadingFactor_091_0.20_1.00.tsv?3</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>ShadingFactor_091_0.30_0.05.tsv?3</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>ShadingFactor_091_0.50_0.01.tsv?3</DataIOFileName>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
@@ -376,52 +360,32 @@
 						<MarkerSize>20</MarkerSize>
 					</Series>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#c5000b</PenColor>
-						<MarkerColor>#c5000b</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenWidth>4</PenWidth>
-						<PenColor>#0084d1</PenColor>
-						<MarkerColor>#0084d1</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#004586</PenColor>
-						<MarkerColor>#004586</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenWidth>4</PenWidth>
-						<MarkerColor>#000000</MarkerColor>
+						<TitleText>SIM VICUS</TitleText>
+						<PenWidth>7</PenWidth>
+						<PenColor>#ff950e</PenColor>
+						<MarkerColor>#ff950e</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<IBK:Unit name="AxisUnit">min</IBK:Unit>
-						<Maximum>991140648623.46472</Maximum>
-						<Minimum>991117296433.94568</Minimum>
+						<Maximum>959518800000</Maximum>
+						<Minimum>959493600000</Minimum>
 						<DateTimeEnabled>1</DateTimeEnabled>
-						<DateTimeZero>978307200000</DateTimeZero>
 					</Axis>
-					<Axis index="1" autoscale="0">
+					<Axis index="1">
 						<TitleText>$quantity [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">-</IBK:Unit>
-						<Maximum>0.83044408444819662</Maximum>
-						<Minimum>-0.093783944055366164</Minimum>
+						<IBK:Unit name="AxisUnit">---</IBK:Unit>
 					</Axis>
-					<Axis index="2" enabled="0" autoscale="0">
+					<Axis index="2" enabled="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>469.36577761200067</Maximum>
-						<Minimum>469.28826488194642</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
 					<TitleText>Varinate 09.1 - Sonnenlichtfaktor</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
-					<Legend>
+					<Legend visible="0">
 						<Position>Inside</Position>
 						<Alignment>5</Alignment>
 						<MaxColumns>1</MaxColumns>
@@ -433,113 +397,36 @@
 		<Mapper name="Varinate 09.2 - Sonnenlichtfaktor">
 			<Extractors>
 				<Extractor>
-					<DataIOFileName>Aixlib.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>1</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>ETU.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>1</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>IDAICE.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>1</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>NANDRAD.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>Therakles.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>TRNSYS.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>TAS.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
+					<ColumnIndex>3</ColumnIndex>
 				</Extractor>
 			</Extractors>
 			<ChartModel chartType="2D">
 				<SeriesProperties>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#7c00bf</PenColor>
-						<MarkerColor>#7c00bf</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#8ae234</PenColor>
-						<MarkerColor>#8ae234</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#e50c0c</PenColor>
-						<MarkerColor>#e50c0c</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#ffc120</PenColor>
-						<MarkerColor>#ffc120</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#7ea921</PenColor>
-						<MarkerColor>#7ea921</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#c17d11</PenColor>
-						<MarkerColor>#c17d11</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#0369a3</PenColor>
-						<MarkerColor>#0369a3</MarkerColor>
-					</Series>
 					<Series>
 						<TitleText>Referenz</TitleText>
 						<MarkerStyle>0</MarkerStyle>
@@ -564,6 +451,12 @@
 						<MarkerColor>#4b1f6f</MarkerColor>
 						<MarkerSize>20</MarkerSize>
 					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenWidth>5</PenWidth>
+						<PenColor>#ff950e</PenColor>
+						<MarkerColor>#ff950e</MarkerColor>
+					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
@@ -574,7 +467,7 @@
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">-</IBK:Unit>
+						<IBK:Unit name="AxisUnit">---</IBK:Unit>
 						<Maximum>1.1000000000000001</Maximum>
 					</Axis>
 					<Axis index="2" enabled="0">
@@ -599,113 +492,36 @@
 		<Mapper name="Varinate 09.3 - Sonnenlichtfaktor">
 			<Extractors>
 				<Extractor>
-					<DataIOFileName>Aixlib.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>2</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>ETU.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>2</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>IDAICE.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>2</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>NANDRAD.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>2</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>Therakles.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>2</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>TRNSYS.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>2</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>TAS.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>2</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>2</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>2</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>2</ColumnIndex>
+					<ColumnIndex>1</ColumnIndex>
 				</Extractor>
 			</Extractors>
 			<ChartModel chartType="2D">
 				<SeriesProperties>
-					<Series>
-						<TitleText>Referenz</TitleText>
-						<PenColor>#7c00bf</PenColor>
-						<MarkerColor>#7c00bf</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#8ae234</PenColor>
-						<MarkerColor>#8ae234</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#e50c0c</PenColor>
-						<MarkerColor>#e50c0c</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#ffc120</PenColor>
-						<MarkerColor>#ffc120</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#c17d11</PenColor>
-						<MarkerColor>#c17d11</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#c17d11</PenColor>
-						<MarkerColor>#c17d11</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#0369a3</PenColor>
-						<MarkerColor>#0369a3</MarkerColor>
-					</Series>
 					<Series>
 						<TitleText>$quantity</TitleText>
 						<MarkerStyle>0</MarkerStyle>
@@ -730,6 +546,12 @@
 						<MarkerColor>#4b1f6f</MarkerColor>
 						<MarkerSize>20</MarkerSize>
 					</Series>
+					<Series>
+						<TitleText>SIM-VICUS</TitleText>
+						<PenWidth>5</PenWidth>
+						<PenColor>#ff950e</PenColor>
+						<MarkerColor>#ff950e</MarkerColor>
+					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
@@ -740,7 +562,7 @@
 					</Axis>
 					<Axis index="1">
 						<TitleText>$quantity [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">-</IBK:Unit>
+						<IBK:Unit name="AxisUnit">---</IBK:Unit>
 						<Maximum>0.47962197282929708</Maximum>
 						<Minimum>0.46190194920259892</Minimum>
 					</Axis>
@@ -766,113 +588,36 @@
 		<Mapper name="Varinate 09.4 - Sonnenlichtfaktor">
 			<Extractors>
 				<Extractor>
-					<DataIOFileName>Aixlib.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>3</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>ETU.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>3</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>IDAICE.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>3</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>NANDRAD.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>3</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>Therakles.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>3</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>TRNSYS.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>3</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>TAS.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>3</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>3</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>3</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>3</ColumnIndex>
+					<ColumnIndex>2</ColumnIndex>
 				</Extractor>
 			</Extractors>
 			<ChartModel chartType="2D">
 				<SeriesProperties>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#7c00bf</PenColor>
-						<MarkerColor>#7c00bf</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#8ae234</PenColor>
-						<MarkerColor>#8ae234</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#e50c0c</PenColor>
-						<MarkerColor>#e50c0c</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#ffc120</PenColor>
-						<MarkerColor>#ffc120</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#c17d11</PenColor>
-						<MarkerColor>#c17d11</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#c17d11</PenColor>
-						<MarkerColor>#c17d11</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#0369a3</PenColor>
-						<MarkerColor>#0369a3</MarkerColor>
-					</Series>
 					<Series>
 						<TitleText>Referenz</TitleText>
 						<MarkerStyle>0</MarkerStyle>
@@ -897,6 +642,12 @@
 						<MarkerColor>#4b1f6f</MarkerColor>
 						<MarkerSize>20</MarkerSize>
 					</Series>
+					<Series>
+						<TitleText>SIM-VICUS</TitleText>
+						<PenWidth>4</PenWidth>
+						<PenColor>#ff950e</PenColor>
+						<MarkerColor>#ff950e</MarkerColor>
+					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
@@ -907,7 +658,7 @@
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">-</IBK:Unit>
+						<IBK:Unit name="AxisUnit">---</IBK:Unit>
 						<Maximum>1.2</Maximum>
 						<Minimum>-0.20000000000000001</Minimum>
 					</Axis>
@@ -933,113 +684,36 @@
 		<Mapper name="Varinate 09.5 - Sonnenlichtfaktor">
 			<Extractors>
 				<Extractor>
-					<DataIOFileName>Aixlib.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>4</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>ETU.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>4</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>IDAICE.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>4</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>NANDRAD.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>4</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>Therakles.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>4</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>TRNSYS.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>4</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>TAS.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>4</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>4</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>4</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>4</ColumnIndex>
+					<ColumnIndex>5</ColumnIndex>
 				</Extractor>
 			</Extractors>
 			<ChartModel chartType="2D">
 				<SeriesProperties>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#7c00bf</PenColor>
-						<MarkerColor>#7c00bf</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#8ae234</PenColor>
-						<MarkerColor>#8ae234</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#e50c0c</PenColor>
-						<MarkerColor>#e50c0c</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#ffc120</PenColor>
-						<MarkerColor>#ffc120</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#c17d11</PenColor>
-						<MarkerColor>#c17d11</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#c17d11</PenColor>
-						<MarkerColor>#c17d11</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#0369a3</PenColor>
-						<MarkerColor>#0369a3</MarkerColor>
-					</Series>
 					<Series>
 						<TitleText>Referenz</TitleText>
 						<MarkerStyle>0</MarkerStyle>
@@ -1064,6 +738,12 @@
 						<MarkerColor>#4b1f6f</MarkerColor>
 						<MarkerSize>20</MarkerSize>
 					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenWidth>4</PenWidth>
+						<PenColor>#ff950e</PenColor>
+						<MarkerColor>#ff950e</MarkerColor>
+					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
@@ -1074,7 +754,7 @@
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">-</IBK:Unit>
+						<IBK:Unit name="AxisUnit">---</IBK:Unit>
 						<Maximum>1.1000000000000001</Maximum>
 						<Minimum>-0.10000000000000001</Minimum>
 					</Axis>
@@ -1100,114 +780,36 @@
 		<Mapper name="Varinate 09.6 - Sonnenlichtfaktor">
 			<Extractors>
 				<Extractor>
-					<DataIOFileName>Aixlib.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>5</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>ETU.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>5</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>IDAICE.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>5</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>NANDRAD.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>5</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>Therakles.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>5</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>TRNSYS.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>5</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>TAS.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>5</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>5</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>5</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>5</ColumnIndex>
+					<ColumnIndex>4</ColumnIndex>
 				</Extractor>
 			</Extractors>
 			<ChartModel chartType="2D">
 				<SeriesProperties>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#7c00bf</PenColor>
-						<MarkerColor>#7c00bf</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#8ae234</PenColor>
-						<MarkerColor>#8ae234</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#e50c0c</PenColor>
-						<MarkerColor>#e50c0c</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenWidth>2</PenWidth>
-						<PenColor>#ffc120</PenColor>
-						<MarkerColor>#ffc120</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#7ea921</PenColor>
-						<MarkerColor>#7ea921</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#c17d11</PenColor>
-						<MarkerColor>#c17d11</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#0369a3</PenColor>
-						<MarkerColor>#0369a3</MarkerColor>
-					</Series>
 					<Series>
 						<TitleText>Referenz</TitleText>
 						<MarkerStyle>0</MarkerStyle>
@@ -1232,24 +834,30 @@
 						<MarkerColor>#4b1f6f</MarkerColor>
 						<MarkerSize>20</MarkerSize>
 					</Series>
+					<Series>
+						<TitleText>SIM-VICUS</TitleText>
+						<PenWidth>4</PenWidth>
+						<PenColor>#ff950e</PenColor>
+						<MarkerColor>#ff950e</MarkerColor>
+					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<IBK:Unit name="AxisUnit">min</IBK:Unit>
-						<Maximum>959518800073</Maximum>
-						<Minimum>959493600209</Minimum>
+						<Maximum>959521549966.64673</Maximum>
+						<Minimum>959491091245.07617</Minimum>
 						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">-</IBK:Unit>
-						<Maximum>1.1000000000000001</Maximum>
-						<Minimum>-0.10000000000000001</Minimum>
+						<IBK:Unit name="AxisUnit">---</IBK:Unit>
+						<Maximum>1.0810810228802152</Maximum>
+						<Minimum>-0.20286406460296114</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>469.48291648074047</Maximum>
-						<Minimum>469.19681590914985</Minimum>
+						<Maximum>469.45500539365429</Maximum>
+						<Minimum>469.4513718465858</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -1265,52 +873,24 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
-		<Mapper name="Variante 09.7 - Sonnenlichtfaktor">
+		<Mapper name="Variante 09.7 - Azimut">
 			<Extractors>
 				<Extractor>
-					<DataIOFileName>Aixlib_Var7.tsv?3</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD_Var7.tsv?1|2</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>ETU_Var7.tsv?3</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/TRNSYS_Var7.tsv?1|2</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>IDAICE_Var7.tsv?3</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>NANDRAD_Var7.tsv?3</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>Therakles_Var7.tsv?3</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>TRNSYS_Var7.tsv?3</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>TAS_Var7.tsv?3</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Therakles_Var7.tsv?1|2</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
@@ -1321,36 +901,303 @@
 				<SeriesProperties>
 					<Series>
 						<TitleText>$basename</TitleText>
-						<PenWidth>3</PenWidth>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename</TitleText>
+						<PenColor>#ff420e</PenColor>
+						<MarkerColor>#ff420e</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename</TitleText>
+						<PenColor>#004586</PenColor>
+						<MarkerColor>#004586</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<TitleText>Time [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+						<Maximum>961545600000</Maximum>
+						<Minimum>961459200000</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">Deg</IBK:Unit>
+					</Axis>
+					<Axis index="2" enabled="0">
+						<TitleText>$quantity [$unit]</TitleText>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>Variante 09.7 - Azimtuh</TitleText>
+					<Legend />
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="Variante 09.7 - Altitude">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD_Var7.tsv?1|2</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/TRNSYS_Var7.tsv?1|2</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<PenColor>#ff420e</PenColor>
+						<MarkerColor>#ff420e</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<TitleText>Time [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+						<Maximum>961545600000</Maximum>
+						<Minimum>961459200000</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">Deg</IBK:Unit>
+					</Axis>
+					<Axis index="2" enabled="0">
+						<TitleText>$quantity [$unit]</TitleText>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>Variante 09.7 - Altitude</TitleText>
+					<Legend />
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="Variante 09.7 - GlobalStrahlung">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Aixlib_Var7.tsv?4</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/ETU_Var7.tsv?4</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/IDAICE_Var7.tsv?4</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD_Var7.tsv?4</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Therakles_Var7.tsv?4</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/TRNSYS_Var7.tsv?4</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/TAS_Var7.tsv?4</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$basename</TitleText>
 						<PenColor>#7c00bf</PenColor>
 						<MarkerColor>#7c00bf</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>$basename</TitleText>
-						<PenWidth>4</PenWidth>
+						<PenWidth>7</PenWidth>
 						<PenColor>#8ae234</PenColor>
 						<MarkerColor>#8ae234</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>$basename</TitleText>
-						<PenWidth>3</PenWidth>
 						<PenColor>#e50c0c</PenColor>
 						<MarkerColor>#e50c0c</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>$basename</TitleText>
-						<PenWidth>5</PenWidth>
+						<PenWidth>7</PenWidth>
 						<PenColor>#ffc120</PenColor>
 						<MarkerColor>#ffc120</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>$basename</TitleText>
+						<PenWidth>10</PenWidth>
 						<PenColor>#7ea921</PenColor>
 						<MarkerColor>#7ea921</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>$basename</TitleText>
-						<PenWidth>10</PenWidth>
+						<PenColor>#c17d11</PenColor>
+						<MarkerColor>#c17d11</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename</TitleText>
+						<PenColor>#0369a3</PenColor>
+						<MarkerColor>#0369a3</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<TitleText>Time [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+						<Maximum>961545600636</Maximum>
+						<Minimum>961459200141</Minimum>
+						<DateTimeEnabled>1</DateTimeEnabled>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">W/m2</IBK:Unit>
+						<Maximum>448.55776352824148</Maximum>
+						<Minimum>440.78665199387683</Minimum>
+					</Axis>
+					<Axis index="2" enabled="0" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">---</IBK:Unit>
+						<Maximum>469.45660837921463</Maximum>
+						<Minimum>469.45471165673746</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>Variante 09.7 - GlobalStrahlung</TitleText>
+					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend visible="0">
+						<Position>Inside</Position>
+						<Alignment>5</Alignment>
+						<MaxColumns>1</MaxColumns>
+						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="Variante 09.7 - Sonnenlichtfaktor">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Aixlib_Var7.tsv?3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/ETU_Var7.tsv?3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/IDAICE_Var7.tsv?3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD_Var7.tsv?3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Therakles_Var7.tsv?3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/TRNSYS_Var7.tsv?3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/TAS_Var7.tsv?3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$basename</TitleText>
+						<PenColor>#7c00bf</PenColor>
+						<MarkerColor>#7c00bf</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename</TitleText>
+						<PenWidth>7</PenWidth>
+						<PenColor>#8ae234</PenColor>
+						<MarkerColor>#8ae234</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename</TitleText>
+						<PenColor>#e50c0c</PenColor>
+						<MarkerColor>#e50c0c</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename</TitleText>
+						<PenWidth>2</PenWidth>
+						<PenColor>#ffc120</PenColor>
+						<MarkerColor>#ffc120</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename</TitleText>
+						<PenWidth>8</PenWidth>
+						<PenColor>#7ea921</PenColor>
+						<MarkerColor>#7ea921</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename</TitleText>
 						<PenColor>#c17d11</PenColor>
 						<MarkerColor>#c17d11</MarkerColor>
 					</Series>
@@ -1364,20 +1211,21 @@
 					<Axis index="0" autoscale="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">min</IBK:Unit>
-						<Maximum>961980666879.18152</Maximum>
-						<Minimum>961891174901.30298</Minimum>
+						<Maximum>961545839805.16809</Maximum>
+						<Minimum>961458711762.84009</Minimum>
 						<DateTimeEnabled>1</DateTimeEnabled>
 					</Axis>
 					<Axis index="1" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">-</IBK:Unit>
-						<Maximum>1.0345765078809814</Maximum>
-						<Minimum>-0.086060564415542773</Minimum>
+						<IBK:Unit name="AxisUnit">---</IBK:Unit>
+						<Maximum>1.054615444750123</Maximum>
+						<Minimum>-0.062596877693212205</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>486.51621132273664</Maximum>
-						<Minimum>430.44550454940651</Minimum>
+						<IBK:Unit name="AxisUnit">---</IBK:Unit>
+						<Maximum>0.43619582005265156</Maximum>
+						<Minimum>0.32357790789746305</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -1396,100 +1244,91 @@
 		<Mapper name="$project: $basename">
 			<Extractors>
 				<Extractor>
-					<DataIOFileName>ShadingFactor_091_0.10_3.00.tsv?3</DataIOFileName>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>ShadingFactor_091_0.15_2.00.tsv?3</DataIOFileName>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
+					<ColumnIndex>4</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>ShadingFactor_091_0.20_1.00.tsv?3</DataIOFileName>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
+					<ColumnIndex>5</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>ShadingFactor_091_0.30_0.05.tsv?3</DataIOFileName>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
+					<ColumnIndex>3</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>ShadingFactor_091_0.50_0.01.tsv?3</DataIOFileName>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
+					<ColumnIndex>2</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
+					<ColumnIndex>1</ColumnIndex>
 				</Extractor>
 			</Extractors>
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>$quantity</TitleText>
 						<MarkerColor>#000000</MarkerColor>
 					</Series>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>$quantity</TitleText>
 						<PenColor>#ff420e</PenColor>
 						<MarkerColor>#ff420e</MarkerColor>
 					</Series>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>$quantity</TitleText>
 						<PenColor>#004586</PenColor>
 						<MarkerColor>#004586</MarkerColor>
 					</Series>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>$quantity</TitleText>
 						<PenColor>#aecf00</PenColor>
 						<MarkerColor>#aecf00</MarkerColor>
 					</Series>
 					<Series>
-						<TitleText>$basename:$quantity</TitleText>
+						<TitleText>$quantity</TitleText>
 						<PenColor>#ffd320</PenColor>
 						<MarkerColor>#ffd320</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>$quantity</TitleText>
-						<MarkerStyle>0</MarkerStyle>
 						<PenColor>#579d1c</PenColor>
 						<MarkerColor>#579d1c</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
-					<Axis index="0" autoscale="0">
+					<Axis index="0">
 						<TitleText>Time [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>991139888534.10742</Maximum>
-						<Minimum>991120702467.34399</Minimum>
-						<DateTimeEnabled>1</DateTimeEnabled>
-						<DateTimeZero>978307200000</DateTimeZero>
 					</Axis>
-					<Axis index="1" autoscale="0">
+					<Axis index="1">
 						<TitleText>$quantity [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">-</IBK:Unit>
-						<Maximum>0.71149144254278729</Maximum>
-						<Minimum>0.045843520782396063</Minimum>
+						<IBK:Unit name="AxisUnit">---</IBK:Unit>
 					</Axis>
-					<Axis index="2" enabled="0" autoscale="0">
+					<Axis index="2" enabled="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>469.40044807852553</Maximum>
-						<Minimum>469.20977272818152</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
@@ -1504,8 +1343,9 @@
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="9" size1="1" size2="1" orientation="2" />
-		<FocusedWidget>0</FocusedWidget>
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="11" size1="966" size2="851" orientation="2" />
+		<Widget id="2" parent="1" viewTable="0" mapperIndex="6" size1="966" size2="851" orientation="2" />
+		<FocusedWidget>2</FocusedWidget>
 	</Splitting>
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
