@@ -914,12 +914,11 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 			//  - for valid polygons we draw the line segments of the individual planes only, but no triangulation grids
 			//  - height of the polygon is taken from m_zoneHeight
 
-			if (m_zoneHeight != 0.0) {
+			if (m_zoneHeight != 0.0 && m_generatedGeometry.size() == 1) { // note: protect against incomplete data - if just switching to Zone mode
 				Q_ASSERT(m_polygonGeometry.isValid());
 				// we need to create at first the base polygon
 				addPlane(m_polygonGeometry.triangulationData(), currentVertexIndex, currentElementIndex,
 						 m_vertexBufferData, m_indexBufferData);
-				IBK_ASSERT(m_generatedGeometry.size() == 1);
 				// now the roof geometry
 				addPlane(m_generatedGeometry[0].triangulationData(), currentVertexIndex, currentElementIndex,
 						 m_vertexBufferData, m_indexBufferData);

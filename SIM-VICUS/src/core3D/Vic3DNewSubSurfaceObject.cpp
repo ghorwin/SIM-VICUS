@@ -303,9 +303,13 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 			}
 
 		}
-		//add the windows to the surface
+		// add the windows to the surface
 		m_generatedSurfaces.back().setHoles(windows);
-		// TODO Dirk->Andreas hier muss jetzt ein check rein ob alle Fenster im gültigen Bereich sind
+
+		// Note: invalid hole polygons (i.e. overlapping, or outside surface polygon) will still be added
+		//       as hole polygons, yet their triangulation data -> holeTriangulationData()[holeIdx] will be empty.
+		//       This way the renderer can distinguish between valid hole geometries and invalid geometries.
+		//       Invalid geometries are drawn with red outline.
 	}
 
 	updateBuffers();
