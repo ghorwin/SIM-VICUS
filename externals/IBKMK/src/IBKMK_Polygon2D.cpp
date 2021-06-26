@@ -184,6 +184,10 @@ void Polygon2D::eleminateColinearPts() {
 		}
 		if(IBK::near_zero(dx1) || IBK::near_zero(dx2))
 			continue;
+		// FIXME : Dirk, critical bug here!
+		//         Try points 0,0  4,0    4,2   2,2
+		//         Consider moving this code into IBKMK_2DCalculations, and use a procedure as for
+		//         3D vertex lists!
 		if( IBK::near_zero(std::abs(dy1/dx1) - std::abs(dy2/dx2))){
 			//eleminate point
 			erasePointIdx.push_back((i+1)%vertexCount);
