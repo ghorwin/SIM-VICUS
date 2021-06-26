@@ -95,11 +95,8 @@ private slots:
 	// page vertexes
 
 	void on_pushButtonDeleteLast_clicked();
-
 	void on_tableWidgetVertexes_itemSelectionChanged();
-
 	void on_pushButtonDeleteSelected_clicked();
-
 	void on_pushButtonCompletePolygon_clicked();
 
 	/*! This slot is called from all cancel buttons in all widgets. It basically
@@ -107,29 +104,24 @@ private slots:
 	void onCancel();
 
 
-
 	// page surfaces
 
-	void on_toolButtonAddBuilding_clicked();
-
-	void on_toolButtonAddBuildingLevel_clicked();
-
+	void on_toolButtonAddBuilding_clicked(); // also used by zone/roof pages
+	void on_toolButtonAddBuildingLevel_clicked(); // also used by zone/roof pages
 	void on_toolButtonAddZone_clicked();
-
 	void on_checkBoxAnnonymousGeometry_stateChanged(int arg1);
-
 	void on_comboBoxBuilding_currentIndexChanged(int index);
-
 	void on_comboBoxBuildingLevel_currentIndexChanged(int index);
-
 	void on_pushButtonCreateSurface_clicked();
 
 
 	// page zone
 
 	void on_lineEditZoneHeight_editingFinishedSuccessfully();
-
 	void on_pushButtonPickZoneHeight_clicked();
+	void on_comboBoxBuilding2_currentIndexChanged(int index);
+	void on_comboBoxBuildingLevel2_currentIndexChanged(int index);
+	void on_pushButtonCreateZone_clicked();
 
 
 
@@ -144,22 +136,19 @@ private:
 
 	/*! Updates the content of the building combo box with data from the project.
 		The current item is kept (identified via unique ID), if it still exists after the update.
-		If the current item changed, the function updateBuildingLevelsComboBox() will be called to update
-		the dependent combo boxes.
+		You should call updateBuildingLevelsComboBox afterwards to update the available options.
 	*/
-	void updateBuildingComboBox();
-
-	/*! Updates the content of the building levels combo box with data from the project.
-		The current item is kept (identified via unique ID), if it still exists after the update.
-		If the current item changed, the function updateZoneComboBox() will be called to update
-		the dependent combo boxes.
-	*/
-	void updateBuildingLevelsComboBox();
+	void updateBuildingComboBox(QComboBox * combo);
 
 	/*! Updates the content of the building levels combo box with data from the project.
 		The current item is kept (identified via unique ID), if it still exists after the update.
 	*/
-	void updateZoneComboBox();
+	void updateBuildingLevelsComboBox(QComboBox * combo, const QComboBox * buildingCombo);
+
+	/*! Updates the content of the building levels combo box with data from the project.
+		The current item is kept (identified via unique ID), if it still exists after the update.
+	*/
+	void updateZoneComboBox(QComboBox * combo, const QComboBox * buildingLevelCombo);
 
 	/*! Creates a room with a roof shape such as a gable roof instead of a prism (room).
 	 *  In addition, you can choose whether a knee floor exists or not. */

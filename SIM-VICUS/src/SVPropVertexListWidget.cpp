@@ -77,6 +77,12 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 	connect(m_ui->pushButtonCancel2, &QPushButton::clicked, this, &SVPropVertexListWidget::onCancel);
 	connect(m_ui->pushButtonCancel3, &QPushButton::clicked, this, &SVPropVertexListWidget::onCancel);
 	connect(m_ui->pushButtonCancel4, &QPushButton::clicked, this, &SVPropVertexListWidget::onCancel);
+
+	connect(m_ui->toolButtonAddBuilding2, &QToolButton::clicked, this, &SVPropVertexListWidget::on_toolButtonAddBuilding_clicked);
+	connect(m_ui->toolButtonAddBuilding3, &QToolButton::clicked, this, &SVPropVertexListWidget::on_toolButtonAddBuilding_clicked);
+
+	connect(m_ui->toolButtonAddBuildingLevel2, &QToolButton::clicked, this, &SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked);
+	connect(m_ui->toolButtonAddBuildingLevel3, &QToolButton::clicked, this, &SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked);
 }
 
 
@@ -253,8 +259,17 @@ void SVPropVertexListWidget::onModified(int modificationType, ModificationInfo *
 		// We only need to handle changes of the building topology, in all other cases
 		// the "create new geometry" action is aborted and the widget will be hidden.
 		case SVProjectHandler::BuildingTopologyChanged:
-			updateBuildingComboBox(); // this will also update the other combo boxes
+			updateBuildingComboBox(m_ui->comboBoxBuilding);
+			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel, m_ui->comboBoxBuilding);
+			updateZoneComboBox(m_ui->comboBoxZone, m_ui->comboBoxBuildingLevel);
+
+			updateBuildingComboBox(m_ui->comboBoxBuilding2);
+			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel2, m_ui->comboBoxBuilding2);
+
+			updateBuildingComboBox(m_ui->comboBoxBuilding3);
+			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel3, m_ui->comboBoxBuilding3);
 		break;
+
 		default: {
 			// clear the new geometry object
 			SVViewStateHandler::instance().m_newGeometryObject->clear();
@@ -304,7 +319,9 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 		case Vic3D::NewGeometryObject::NGM_Rect:
 		case Vic3D::NewGeometryObject::NGM_Polygon:
 			m_ui->stackedWidget->setCurrentIndex(1);
-			updateBuildingComboBox(); // also updates all others and enables/disables relevant buttons
+			updateBuildingComboBox(m_ui->comboBoxBuilding);
+			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel, m_ui->comboBoxBuilding);
+			updateZoneComboBox(m_ui->comboBoxZone, m_ui->comboBoxBuildingLevel);
 			updateComponentComboBoxes(); // update all component combo boxes in surface page
 			m_ui->lineEditName->setText(tr("Surface"));
 			po->m_passiveMode = true; // disallow changes to surface geometry
@@ -312,16 +329,21 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 
 		case Vic3D::NewGeometryObject::NGM_Zone:
 			m_ui->stackedWidget->setCurrentIndex(2);
-			updateBuildingComboBox(); // also updates all others and enables/disables relevant buttons
+			updateBuildingComboBox(m_ui->comboBoxBuilding2);
+			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel2, m_ui->comboBoxBuilding2);
+
 			updateComponentComboBoxes(); // update all component combo boxes in surface page
 			po->setNewGeometryMode(Vic3D::NewGeometryObject::NGM_Zone);
+			// transfer zone height into line edit, if we have already a building level defined
+			on_comboBoxBuildingLevel2_currentIndexChanged(0); // index argument does not matter, not used
 			on_lineEditZoneHeight_editingFinishedSuccessfully();
 			m_ui->lineEditNameZone->setText(tr("Room"));
 		break;
 
 		case Vic3D::NewGeometryObject::NGM_Roof:
 			m_ui->stackedWidget->setCurrentIndex(3);
-			updateBuildingComboBox(); // also updates all others and enables/disables relevant buttons
+			updateBuildingComboBox(m_ui->comboBoxBuilding3);
+			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel3, m_ui->comboBoxBuilding3);
 			updateComponentComboBoxes(); // update all component combo boxes in surface page
 			po->setNewGeometryMode(Vic3D::NewGeometryObject::NGM_Roof);
 			m_ui->lineEditNameRoof->setText(tr("Roof"));
@@ -365,13 +387,39 @@ void SVPropVertexListWidget::on_toolButtonAddBuilding_clicked() {
 	undo->push(); // this will update our combo boxes
 
 	// now also select the matching item
-	reselectById(m_ui->comboBoxBuilding, (int)b.uniqueID());
+	if (sender() == m_ui->toolButtonAddBuilding)
+		reselectById(m_ui->comboBoxBuilding, (int)b.uniqueID());
+	else if (sender() == m_ui->toolButtonAddBuilding2)
+		reselectById(m_ui->comboBoxBuilding2, (int)b.uniqueID());
+	else if (sender() == m_ui->toolButtonAddBuilding3)
+		reselectById(m_ui->comboBoxBuilding3, (int)b.uniqueID());
+	else {
+		Q_ASSERT(false);
+	}
 }
 
 
 void SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked() {
+	QComboBox * buildingCombo;
+	QComboBox * buildingLevelCombo;
+	if (sender() == m_ui->toolButtonAddBuildingLevel) {
+		buildingCombo = m_ui->comboBoxBuilding;
+		buildingLevelCombo = m_ui->comboBoxBuildingLevel;
+	}
+	else if (sender() == m_ui->toolButtonAddBuildingLevel2) {
+		buildingCombo = m_ui->comboBoxBuilding2;
+		buildingLevelCombo = m_ui->comboBoxBuildingLevel2;
+	}
+	else if (sender() == m_ui->toolButtonAddBuildingLevel3) {
+		buildingCombo = m_ui->comboBoxBuilding3;
+		buildingLevelCombo = m_ui->comboBoxBuildingLevel3;
+	}
+	else {
+		Q_ASSERT(false);
+	}
+
 	// get currently selected building
-	unsigned int buildingUniqueID = m_ui->comboBoxBuilding->currentData().toUInt();
+	unsigned int buildingUniqueID = buildingCombo->currentData().toUInt();
 	const VICUS::Building * b = dynamic_cast<const VICUS::Building*>(project().objectById(buildingUniqueID));
 	Q_ASSERT(b != nullptr);
 
@@ -390,7 +438,7 @@ void SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked() {
 	undo->push(); // this will update our combo boxes
 
 	// now also select the matching item
-	reselectById(m_ui->comboBoxBuildingLevel, (int)bl.uniqueID());
+	reselectById(buildingLevelCombo, (int)bl.uniqueID());
 }
 
 
@@ -425,12 +473,15 @@ void SVPropVertexListWidget::on_checkBoxAnnonymousGeometry_stateChanged(int /*ar
 
 
 void SVPropVertexListWidget::on_comboBoxBuilding_currentIndexChanged(int /*index*/) {
-	updateBuildingLevelsComboBox();
+	updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel, m_ui->comboBoxBuilding);
+	updateZoneComboBox(m_ui->comboBoxZone, m_ui->comboBoxBuildingLevel);
 }
 
 
 void SVPropVertexListWidget::on_comboBoxBuildingLevel_currentIndexChanged(int /*index*/) {
-	updateZoneComboBox();
+	updateZoneComboBox(m_ui->comboBoxZone, m_ui->comboBoxBuildingLevel);
+	if (m_ui->comboBoxBuildingLevel->count() == 0)
+		return;
 	unsigned int buildingLevelUniqueID = m_ui->comboBoxBuildingLevel->currentData().toUInt();
 	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(project().objectById(buildingLevelUniqueID));
 	// also transfer nominal height into zone-height line edit
@@ -497,6 +548,53 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 }
 
 
+void SVPropVertexListWidget::on_lineEditZoneHeight_editingFinishedSuccessfully() {
+	// Guard against call when aborting/focus is lost during undo!
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+	if (po->newGeometryMode() != Vic3D::NewGeometryObject::NGM_Zone)
+		return;
+
+	// read entered line height and if valid set new height in scene view (and move local coordinate system accordingly)
+	double val = m_ui->lineEditZoneHeight->value();
+	po->setZoneHeight(val);
+	// we need to trigger a redraw here
+	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
+}
+
+
+void SVPropVertexListWidget::on_pushButtonPickZoneHeight_clicked() {
+	// enable interactive zone extrusion mode
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+	// check if interactive mode is already enabled
+	po->m_interactiveZoneExtrusionMode = !po->m_interactiveZoneExtrusionMode;
+}
+
+
+void SVPropVertexListWidget::on_comboBoxBuilding2_currentIndexChanged(int /*index*/) {
+	updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel2, m_ui->comboBoxBuilding2);
+}
+
+
+void SVPropVertexListWidget::on_comboBoxBuildingLevel2_currentIndexChanged(int /*index*/) {
+	if (m_ui->comboBoxBuildingLevel2->count() == 0)
+		return;
+	unsigned int buildingLevelUniqueID = m_ui->comboBoxBuildingLevel2->currentData().toUInt();
+	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(project().objectById(buildingLevelUniqueID));
+	// also transfer nominal height into zone-height line edit
+	if (bl != nullptr) {
+		m_ui->lineEditZoneHeight->setValue(bl->m_height);
+		// only trigger zone height editing finished, when we are in new vertex mode
+		// Mind: widget may be hidden
+		SVViewState vs = SVViewStateHandler::instance().viewState();
+		if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex)
+			on_lineEditZoneHeight_editingFinishedSuccessfully();
+	}
+}
+
+
+void SVPropVertexListWidget::on_pushButtonCreateZone_clicked() {
+	// get floor and ceiling polygons from geometry object
+}
 
 
 
@@ -513,95 +611,87 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 
 
 
-void SVPropVertexListWidget::updateBuildingComboBox() {
+void SVPropVertexListWidget::updateBuildingComboBox(QComboBox * combo) {
 	// populate the combo boxes
-	m_ui->comboBoxBuilding->blockSignals(true);
-	unsigned int currentUniqueId = m_ui->comboBoxBuilding->currentData().toUInt();
-	m_ui->comboBoxBuilding->clear();
+	combo->blockSignals(true);
+	unsigned int currentUniqueId = combo->currentData().toUInt();
+	combo->clear();
 
 	const VICUS::Project & prj = project();
 	int rowOfCurrent = -1;
 	for (unsigned int i=0; i<prj.m_buildings.size(); ++i) {
 		const VICUS::Building & b = prj.m_buildings[i];
-		m_ui->comboBoxBuilding->addItem(b.m_displayName, b.uniqueID());
+		combo->addItem(b.m_displayName, b.uniqueID());
 		if (b.uniqueID() == currentUniqueId)
 			rowOfCurrent = (int)i;
 	}
 
 	if (rowOfCurrent != -1) {
-		m_ui->comboBoxBuilding->setCurrentIndex(rowOfCurrent);
+		combo->setCurrentIndex(rowOfCurrent);
 	}
 	else {
-		m_ui->comboBoxBuilding->setCurrentIndex(m_ui->comboBoxBuilding->count()-1); // Note: if no buildings, nothing will be selected
+		combo->setCurrentIndex(combo->count()-1); // Note: if no buildings, nothing will be selected
 	}
-	m_ui->comboBoxBuilding->blockSignals(false);
-
-	// also update the building levels combo box
-	updateBuildingLevelsComboBox();
+	combo->blockSignals(false);
 }
 
 
-void SVPropVertexListWidget::updateBuildingLevelsComboBox() {
-	m_ui->comboBoxBuildingLevel->blockSignals(true);
-	unsigned int currentUniqueId = m_ui->comboBoxBuildingLevel->currentData().toUInt();
-	m_ui->comboBoxBuildingLevel->clear();
+void SVPropVertexListWidget::updateBuildingLevelsComboBox(QComboBox * combo, const QComboBox * buildingCombo) {
+	combo->blockSignals(true);
+	unsigned int currentUniqueId = combo->currentData().toUInt();
+	combo->clear();
 	// only add items if we have a building selected
-	if (m_ui->comboBoxBuilding->count() != 0) {
+	if (buildingCombo->count() != 0) {
 		const VICUS::Project & prj = project();
-		unsigned int buildingUniqueID = m_ui->comboBoxBuilding->currentData().toUInt();
+		unsigned int buildingUniqueID = buildingCombo->currentData().toUInt();
 		const VICUS::Building * b = dynamic_cast<const VICUS::Building*>(prj.objectById(buildingUniqueID));
 		Q_ASSERT(b != nullptr);
 		int rowOfCurrent = -1;
 		for (unsigned int i=0; i<b->m_buildingLevels.size(); ++i) {
 			const VICUS::BuildingLevel & bl = b->m_buildingLevels[i];
-			m_ui->comboBoxBuildingLevel->addItem(bl.m_displayName, bl.uniqueID());
+			combo->addItem(bl.m_displayName, bl.uniqueID());
 			if (bl.uniqueID() == currentUniqueId)
 				rowOfCurrent = (int)i;
 		}
 		if (rowOfCurrent != -1) {
-			m_ui->comboBoxBuildingLevel->setCurrentIndex(rowOfCurrent);
+			combo->setCurrentIndex(rowOfCurrent);
 		}
 		else {
-			m_ui->comboBoxBuildingLevel->setCurrentIndex(m_ui->comboBoxBuildingLevel->count()-1); // Note: if none, nothing will be selected
+			combo->setCurrentIndex(combo->count()-1); // Note: if none, nothing will be selected
 		}
 
 	}
-	m_ui->comboBoxBuildingLevel->blockSignals(false);
-
-	// also update the zones combo box
-	on_comboBoxBuildingLevel_currentIndexChanged(m_ui->comboBoxBuildingLevel->currentIndex());
+	combo->blockSignals(false);
 }
 
 
-void SVPropVertexListWidget::updateZoneComboBox() {
-	m_ui->comboBoxZone->blockSignals(true);
-	unsigned int currentUniqueId = m_ui->comboBoxZone->currentData().toUInt();
-	m_ui->comboBoxZone->clear();
+void SVPropVertexListWidget::updateZoneComboBox(QComboBox * combo, const QComboBox * buildingLevelCombo) {
+	combo->blockSignals(true);
+	unsigned int currentUniqueId = combo->currentData().toUInt();
+	combo->clear();
 	// only add items if we have a building level selected
-	if (m_ui->comboBoxBuildingLevel->count() != 0) {
+	if (buildingLevelCombo->count() != 0) {
 		const VICUS::Project & prj = project();
-		unsigned int buildingLevelUniqueID = m_ui->comboBoxBuildingLevel->currentData().toUInt();
+		unsigned int buildingLevelUniqueID = buildingLevelCombo->currentData().toUInt();
 		const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(prj.objectById(buildingLevelUniqueID));
 		Q_ASSERT(bl != nullptr);
 		int rowOfCurrent = -1;
 		for (unsigned int i=0; i<bl->m_rooms.size(); ++i) {
 			const VICUS::Room & r = bl->m_rooms[i];
-			m_ui->comboBoxZone->addItem(r.m_displayName, r.uniqueID());
+			combo->addItem(r.m_displayName, r.uniqueID());
 			if (r.uniqueID() == currentUniqueId)
 				rowOfCurrent = (int)i;
 		}
 		if (rowOfCurrent != -1) {
-			m_ui->comboBoxZone->setCurrentIndex(rowOfCurrent);
+			combo->setCurrentIndex(rowOfCurrent);
 		}
 		else {
-			m_ui->comboBoxZone->setCurrentIndex(m_ui->comboBoxZone->count()-1); // Note: if none, nothing will be selected
+			combo->setCurrentIndex(combo->count()-1); // Note: if none, nothing will be selected
 		}
 	}
-	m_ui->comboBoxZone->blockSignals(false);
+	combo->blockSignals(false);
 	updateSurfacePageState();
 }
-
-
 
 
 
@@ -912,25 +1002,5 @@ void SVPropVertexListWidget::on_pushButtonFloorDone_clicked() {
 #endif
 
 
-void SVPropVertexListWidget::on_lineEditZoneHeight_editingFinishedSuccessfully() {
-	// Guard against call when aborting/focus is lost during undo!
-	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
-	if (po->newGeometryMode() != Vic3D::NewGeometryObject::NGM_Zone)
-		return;
-
-	// read entered line height and if valid set new height in scene view (and move local coordinate system accordingly)
-	double val = m_ui->lineEditZoneHeight->value();
-	po->setZoneHeight(val);
-	// we need to trigger a redraw here
-	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
-}
-
-
-void SVPropVertexListWidget::on_pushButtonPickZoneHeight_clicked() {
-	// enable interactive zone extrusion mode
-	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
-	// check if interactive mode is already enabled
-	po->m_interactiveZoneExtrusionMode = !po->m_interactiveZoneExtrusionMode;
-}
 
 

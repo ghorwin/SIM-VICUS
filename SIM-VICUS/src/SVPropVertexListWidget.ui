@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>569</width>
-    <height>558</height>
+    <width>573</width>
+    <height>615</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="pageVertexes">
       <layout class="QGridLayout" name="gridLayout_8">
@@ -122,7 +122,7 @@
       </layout>
      </widget>
      <widget class="QWidget" name="pageSurface">
-      <layout class="QGridLayout" name="gridLayout_6" rowstretch="0,1,0">
+      <layout class="QGridLayout" name="gridLayout_6">
        <item row="0" column="0" colspan="3">
         <widget class="QGroupBox" name="groupBoxObjectProperties">
          <property name="title">
@@ -287,7 +287,7 @@
       <zorder>groupBoxObjectProperties</zorder>
       <zorder>verticalSpacer_3</zorder>
      </widget>
-     <widget class="QWidget" name="page">
+     <widget class="QWidget" name="pageZone">
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="1" column="0">
         <widget class="QPushButton" name="pushButtonCreateZone">
@@ -367,7 +367,7 @@
            </layout>
           </item>
           <item row="3" column="2">
-           <widget class="QToolButton" name="toolButtonAddBuildingLevel_2">
+           <widget class="QToolButton" name="toolButtonAddBuildingLevel2">
             <property name="icon">
              <iconset resource="../resources/SIM-VICUS.qrc">
               <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
@@ -382,7 +382,7 @@
            </widget>
           </item>
           <item row="2" column="2">
-           <widget class="QToolButton" name="toolButtonAddBuilding_2">
+           <widget class="QToolButton" name="toolButtonAddBuilding2">
             <property name="icon">
              <iconset resource="../resources/SIM-VICUS.qrc">
               <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
@@ -417,7 +417,7 @@
             <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
-              <height>16</height>
+              <height>20</height>
              </size>
             </property>
            </spacer>
@@ -447,7 +447,7 @@
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QComboBox" name="comboBoxBuildingLevel_2"/>
+           <widget class="QComboBox" name="comboBoxBuildingLevel2"/>
           </item>
           <item row="5" column="0">
            <widget class="QLabel" name="label_6">
@@ -500,13 +500,13 @@
             <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
-              <height>16</height>
+              <height>20</height>
              </size>
             </property>
            </spacer>
           </item>
           <item row="2" column="1">
-           <widget class="QComboBox" name="comboBoxBuilding_2"/>
+           <widget class="QComboBox" name="comboBoxBuilding2"/>
           </item>
           <item row="8" column="1">
            <spacer name="verticalSpacer_11">
@@ -529,7 +529,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_2">
+     <widget class="QWidget" name="pageRoof">
       <layout class="QGridLayout" name="gridLayout_7">
        <item row="1" column="0">
         <widget class="QPushButton" name="pushButtonCreateRoof">
@@ -578,7 +578,7 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
           <item row="3" column="1">
-           <widget class="QComboBox" name="comboBoxBuildingLevel_3"/>
+           <widget class="QComboBox" name="comboBoxBuildingLevel3"/>
           </item>
           <item row="5" column="0">
            <widget class="QLabel" name="label_10">
@@ -595,7 +595,7 @@
            </widget>
           </item>
           <item row="5" column="1">
-           <widget class="QComboBox" name="comboBoxComponentFloor_2"/>
+           <widget class="QComboBox" name="comboBoxComponentRoof3"/>
           </item>
           <item row="5" column="2">
            <widget class="QToolButton" name="toolButtonEditComponents2_2">
@@ -698,7 +698,7 @@
            <widget class="QComboBox" name="comboBoxRoofType"/>
           </item>
           <item row="2" column="2">
-           <widget class="QToolButton" name="toolButtonAddBuilding_3">
+           <widget class="QToolButton" name="toolButtonAddBuilding3">
             <property name="icon">
              <iconset resource="../resources/SIM-VICUS.qrc">
               <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
@@ -730,6 +730,9 @@
            <widget class="QRadioButton" name="radioButtonRoofHeight">
             <property name="text">
              <string>Roof height:</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -764,7 +767,7 @@
            </spacer>
           </item>
           <item row="3" column="2">
-           <widget class="QToolButton" name="toolButtonAddBuildingLevel_3">
+           <widget class="QToolButton" name="toolButtonAddBuildingLevel3">
             <property name="icon">
              <iconset resource="../resources/SIM-VICUS.qrc">
               <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
@@ -788,10 +791,10 @@
            </widget>
           </item>
           <item row="7" column="1">
-           <widget class="QComboBox" name="comboBoxComponentWalls_2"/>
+           <widget class="QComboBox" name="comboBoxComponentWall3"/>
           </item>
           <item row="6" column="1">
-           <widget class="QComboBox" name="comboBoxComponentCeiling_2"/>
+           <widget class="QComboBox" name="comboBoxComponentFloor3"/>
           </item>
           <item row="1" column="1">
            <spacer name="verticalSpacer_7">
@@ -810,7 +813,7 @@
            </spacer>
           </item>
           <item row="2" column="1">
-           <widget class="QComboBox" name="comboBoxBuilding_3"/>
+           <widget class="QComboBox" name="comboBoxBuilding3"/>
           </item>
           <item row="0" column="0" colspan="3">
            <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -865,35 +868,35 @@
   <tabstop>toolButtonEditComponents2</tabstop>
   <tabstop>comboBoxComponentCeiling</tabstop>
   <tabstop>lineEditNameZone</tabstop>
-  <tabstop>toolButtonAddBuildingLevel_2</tabstop>
-  <tabstop>toolButtonAddBuilding_2</tabstop>
+  <tabstop>toolButtonAddBuildingLevel2</tabstop>
+  <tabstop>toolButtonAddBuilding2</tabstop>
   <tabstop>toolButtonEditComponents3</tabstop>
   <tabstop>comboBoxComponentFloor</tabstop>
   <tabstop>pushButtonPickZoneHeight</tabstop>
-  <tabstop>comboBoxBuildingLevel_2</tabstop>
+  <tabstop>comboBoxBuildingLevel2</tabstop>
   <tabstop>toolButtonEditComponents4</tabstop>
   <tabstop>lineEditZoneHeight</tabstop>
   <tabstop>comboBoxComponentWalls</tabstop>
-  <tabstop>comboBoxBuilding_2</tabstop>
+  <tabstop>comboBoxBuilding2</tabstop>
   <tabstop>pushButtonCreateRoof</tabstop>
   <tabstop>pushButtonCancel4</tabstop>
-  <tabstop>comboBoxBuildingLevel_3</tabstop>
+  <tabstop>comboBoxBuildingLevel3</tabstop>
   <tabstop>checkBoxFlapTile</tabstop>
-  <tabstop>comboBoxComponentFloor_2</tabstop>
+  <tabstop>comboBoxComponentRoof3</tabstop>
   <tabstop>toolButtonEditComponents2_2</tabstop>
   <tabstop>lineEditFlapTileHeight</tabstop>
   <tabstop>lineEditRoofInclination</tabstop>
   <tabstop>toolButtonEditComponents4_2</tabstop>
   <tabstop>comboBoxRoofType</tabstop>
-  <tabstop>toolButtonAddBuilding_3</tabstop>
+  <tabstop>toolButtonAddBuilding3</tabstop>
   <tabstop>radioButtonRoofInclination</tabstop>
   <tabstop>toolButtonEditComponents3_2</tabstop>
   <tabstop>radioButtonRoofHeight</tabstop>
-  <tabstop>toolButtonAddBuildingLevel_3</tabstop>
+  <tabstop>toolButtonAddBuildingLevel3</tabstop>
   <tabstop>lineEditZoneHeight_2</tabstop>
-  <tabstop>comboBoxComponentWalls_2</tabstop>
-  <tabstop>comboBoxComponentCeiling_2</tabstop>
-  <tabstop>comboBoxBuilding_3</tabstop>
+  <tabstop>comboBoxComponentWall3</tabstop>
+  <tabstop>comboBoxComponentFloor3</tabstop>
+  <tabstop>comboBoxBuilding3</tabstop>
   <tabstop>lineEditNameRoof</tabstop>
  </tabstops>
  <resources>
