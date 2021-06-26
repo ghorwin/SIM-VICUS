@@ -14,7 +14,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="pageVertexes">
       <layout class="QGridLayout" name="gridLayout_8">
@@ -598,7 +598,7 @@
            <widget class="QComboBox" name="comboBoxComponentRoof3"/>
           </item>
           <item row="5" column="2">
-           <widget class="QToolButton" name="toolButtonEditComponents2_2">
+           <widget class="QToolButton" name="toolButtonEditComponents5">
             <property name="text">
              <string>...</string>
             </property>
@@ -688,7 +688,7 @@
            </widget>
           </item>
           <item row="7" column="2">
-           <widget class="QToolButton" name="toolButtonEditComponents4_2">
+           <widget class="QToolButton" name="toolButtonEditComponents7">
             <property name="text">
              <string>...</string>
             </property>
@@ -720,7 +720,7 @@
            </widget>
           </item>
           <item row="6" column="2">
-           <widget class="QToolButton" name="toolButtonEditComponents3_2">
+           <widget class="QToolButton" name="toolButtonEditComponents6">
             <property name="text">
              <string>...</string>
             </property>
@@ -775,7 +775,7 @@
            </widget>
           </item>
           <item row="10" column="1">
-           <widget class="QtExt::ValidatingLineEdit" name="lineEditZoneHeight_2">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditRoofHeight">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -843,6 +843,9 @@
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <slots>
+    <signal>editingFinishedSuccessfully()</signal>
+   </slots>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -883,17 +886,17 @@
   <tabstop>comboBoxBuildingLevel3</tabstop>
   <tabstop>checkBoxFlapTile</tabstop>
   <tabstop>comboBoxComponentRoof3</tabstop>
-  <tabstop>toolButtonEditComponents2_2</tabstop>
+  <tabstop>toolButtonEditComponents5</tabstop>
   <tabstop>lineEditFlapTileHeight</tabstop>
   <tabstop>lineEditRoofInclination</tabstop>
-  <tabstop>toolButtonEditComponents4_2</tabstop>
+  <tabstop>toolButtonEditComponents7</tabstop>
   <tabstop>comboBoxRoofType</tabstop>
   <tabstop>toolButtonAddBuilding3</tabstop>
   <tabstop>radioButtonRoofInclination</tabstop>
-  <tabstop>toolButtonEditComponents3_2</tabstop>
+  <tabstop>toolButtonEditComponents6</tabstop>
   <tabstop>radioButtonRoofHeight</tabstop>
   <tabstop>toolButtonAddBuildingLevel3</tabstop>
-  <tabstop>lineEditZoneHeight_2</tabstop>
+  <tabstop>lineEditRoofHeight</tabstop>
   <tabstop>comboBoxComponentWall3</tabstop>
   <tabstop>comboBoxComponentFloor3</tabstop>
   <tabstop>comboBoxBuilding3</tabstop>

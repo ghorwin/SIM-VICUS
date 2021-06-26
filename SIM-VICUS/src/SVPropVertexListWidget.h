@@ -128,6 +128,14 @@ private slots:
 	void on_comboBoxBuildingLevel2_currentIndexChanged(int index);
 	void on_pushButtonCreateZone_clicked();
 
+
+	// page roof
+
+	void on_comboBoxBuilding3_currentIndexChanged(int index);
+	void on_comboBoxBuildingLevel3_currentIndexChanged(int index);
+	void on_lineEditRoofHeight_editingFinishedSuccessfully();
+	void on_pushButtonCreateRoof_clicked();
+
 private:
 	/*! Returns true, if annonymous geometry is being created (i.e. checkbox is visible and checked). */
 	bool createAnnonymousGeometry() const;
@@ -153,9 +161,8 @@ private:
 	*/
 	void updateZoneComboBox(QComboBox * combo, const QComboBox * buildingLevelCombo);
 
-	/*! Creates a room with a roof shape such as a gable roof instead of a prism (room).
-	 *  In addition, you can choose whether a knee floor exists or not. */
-	void createRoofZone();
+	/*! Takes modified input data from widget and transfers it to the new geometry object. */
+	void updateRoofGeometry();
 
 	Ui::SVPropVertexListWidget	*m_ui;
 
@@ -164,6 +171,7 @@ private:
 		new geometry object.
 	*/
 	int							m_geometryMode;
+
 };
 
 

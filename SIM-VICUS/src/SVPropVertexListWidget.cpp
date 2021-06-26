@@ -88,6 +88,9 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 	connect(m_ui->toolButtonEditComponents2, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
 	connect(m_ui->toolButtonEditComponents3, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
 	connect(m_ui->toolButtonEditComponents4, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponents5, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponents6, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponents7, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
 }
 
 
@@ -352,7 +355,8 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 			updateComponentComboBoxes(); // update all component combo boxes in surface page
 			po->setNewGeometryMode(Vic3D::NewGeometryObject::NGM_Roof);
 			m_ui->lineEditNameRoof->setText(tr("Roof"));
-//			on_lineEditZoneHeight_editingFinishedSuccessfully();
+
+			updateRoofGeometry();
 		break;
 		case Vic3D::NewGeometryObject::NUM_NGM: ; // just for the compiler
 	}
@@ -717,6 +721,43 @@ void SVPropVertexListWidget::on_pushButtonCreateZone_clicked() {
 }
 
 
+void SVPropVertexListWidget::on_comboBoxBuilding3_currentIndexChanged(int /*index*/) {
+	updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel3, m_ui->comboBoxBuilding3);
+}
+
+
+void SVPropVertexListWidget::on_comboBoxBuildingLevel3_currentIndexChanged(int /*index*/) {
+	if (m_ui->comboBoxBuildingLevel3->count() == 0)
+		return;
+	unsigned int buildingLevelUniqueID = m_ui->comboBoxBuildingLevel3->currentData().toUInt();
+	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(project().objectById(buildingLevelUniqueID));
+	// also transfer nominal height into zone-height line edit
+	if (bl != nullptr) {
+		m_ui->lineEditRoofHeight->setValue(bl->m_height);
+		// only trigger zone height editing finished, when we are in new vertex mode
+		// Mind: widget may be hidden
+		SVViewState vs = SVViewStateHandler::instance().viewState();
+		if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex)
+			on_lineEditRoofHeight_editingFinishedSuccessfully();
+	}
+}
+
+
+void SVPropVertexListWidget::on_lineEditRoofHeight_editingFinishedSuccessfully() {
+	// Guard against call when aborting/focus is lost during undo!
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+	if (po->newGeometryMode() != Vic3D::NewGeometryObject::NGM_Roof)
+		return;
+
+	updateRoofGeometry();
+}
+
+
+void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
+	// TODO : create roof
+}
+
+
 // *** PRIVATE MEMBERS ***
 
 
@@ -803,6 +844,23 @@ void SVPropVertexListWidget::updateZoneComboBox(QComboBox * combo, const QComboB
 	}
 	combo->blockSignals(false);
 	updateSurfacePageState();
+}
+
+
+void SVPropVertexListWidget::updateRoofGeometry() {
+	// Guard against call when aborting/focus is lost during undo!
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+	if (po->newGeometryMode() != Vic3D::NewGeometryObject::NGM_Zone)
+		return;
+
+	Vic3D::NewGeometryObject::RoofInputData roofData;
+
+	// TODO
+
+	po->setRoofGeometry(roofData);
+
+	// we need to trigger a redraw here
+	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
 }
 
 
@@ -912,6 +970,9 @@ void SVPropVertexListWidget::updateSurfacePageState() {
 #endif
 	}
 }
+
+
+
 
 
 
