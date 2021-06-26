@@ -386,7 +386,8 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 
 		//distance of point 2 to 3
 		double distBC = polyline[2].distanceTo(polyline[1]);
-		double height =0, angle=0;
+		double height = roofData.m_height;
+		double angle  = roofData.m_angle;
 		//calculate height
 		if (!roofData.m_isHeightPredefined)
 			height = std::tan(roofData.m_angle * IBK::DEG2RAD) * distBC;
@@ -399,13 +400,10 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 				angle = 0;
 		}
 		// all polygons of the roof room are stored following vector
-		std::vector<std::vector<IBKMK::Vector3D>> polygons(1); // start with a single polygon
+		std::vector<std::vector<IBKMK::Vector3D> > polygons;
 
-		//add for calculation floor
-		polygons[0] = polyline;
-
-		/// TODO Dirk->Andreas jetzt würden die einzelfunktionen kommen ich schreib die einfach mal auf
-		/// irgendwie müssen diese dann einsortiert werden
+		// add already calculated floor polygon
+		polygons.push_back(polyline);
 
 		/// TODO Dirk check if floor polygon has the right normal
 		IBKMK::Vector3D hFlapTile(0,0,roofData.m_hasFlapTile ? roofData.m_flapTileHeight : 0);
@@ -413,6 +411,7 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 			case RoofInputData::SinglePitchRoof:{
 				// Create a single pitch roof with floor, roof, 3x wall
 				polygons.resize(5);
+				// Note: floor polygon is already set at index [0]
 				IBKMK::Vector3D h1(0,0,height);
 				//roof
 				polygons[1].push_back(polyline[0]+hFlapTile);
@@ -1122,6 +1121,8 @@ void NewGeometryObject::renderTransparent() {
 
 		// set selected plane color (QColor is passed as vec4, so no conversion is needed, here).
 		QColor planeCol = QColor(255,0,128,64);
+		if (m_newGeometryMode == NGM_Roof)
+			planeCol = QColor(255,0,128,198);
 		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], planeCol);
 		// put OpenGL in offset mode
 		glEnable(GL_POLYGON_OFFSET_FILL);
