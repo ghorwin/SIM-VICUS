@@ -134,13 +134,13 @@ void NewSubSurfaceObject::destroy() {
 void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Surface*> & sel, const WindowComputationData & inputData) {
 	// populate PlaneGeometry-objects
 
-	m_surfaceGeometries.clear();
+	m_generatedSurfaces.clear();
 
 	qDebug() << "Generating windows for" << sel.size() << " surfaces.";
 
 	for (const VICUS::Surface* s : sel) {
 		const VICUS::PlaneGeometry &surfacePoly = s->geometry();
-		m_surfaceGeometries.push_back(surfacePoly);
+		m_generatedSurfaces.push_back(surfacePoly);
 
 		//get normal
 		IBKMK::Vector3D n = surfacePoly.normal();
@@ -305,9 +305,13 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 			}
 
 		}
-		//add the windows to the surface
-		m_surfaceGeometries.back().setHoles(windows);
-		// TODO Dirk->Andreas hier muss jetzt ein check rein ob alle Fenster im gültigen Bereich sind
+		// add the windows to the surface
+		m_generatedSurfaces.back().setHoles(windows);
+
+		// Note: invalid hole polygons (i.e. overlapping, or outside surface polygon) will still be added
+		//       as hole polygons, yet their triangulation data -> holeTriangulationData()[holeIdx] will be empty.
+		//       This way the renderer can distinguish between valid hole geometries and invalid geometries.
+		//       Invalid geometries are drawn with red outline.
 	}
 
 	updateBuffers();
@@ -329,7 +333,7 @@ void NewSubSurfaceObject::updateBuffers() {
 	// 3 - polygon outline lines
 
 	// first we store the opaque geometry
-	for (const VICUS::PlaneGeometry & geometry : m_surfaceGeometries) {
+	for (const VICUS::PlaneGeometry & geometry : m_generatedSurfaces) {
 		// change color depending on visibility state and selection state
 		QColor col("#8040d0");
 		// first add the plane regular
@@ -345,7 +349,7 @@ void NewSubSurfaceObject::updateBuffers() {
 	m_transparentStartIndex = currentElementIndex;
 	// now we add vertexes of the polygon outline and the outlines of the holes
 	// first we store the opaque geometry
-	for (const VICUS::PlaneGeometry & geometry : m_surfaceGeometries) {
+	for (const VICUS::PlaneGeometry & geometry : m_generatedSurfaces) {
 
 	}
 

@@ -33,6 +33,7 @@
 #include <QtExt_Conversions.h>
 
 #include <IBKMK_3DCalculations.h>
+#include <IBK_physics.h>
 
 #include "SVProjectHandler.h"
 #include "SVSettings.h"
@@ -104,7 +105,7 @@ void NewGeometryObject::create(ShaderProgram * shaderProgram) {
 	m_vertexBufferObject.release();
 	m_indexBufferObject.release();
 
-	m_planeGeometry = VICUS::PlaneGeometry();
+	m_polygonGeometry = VICUS::PlaneGeometry();
 }
 
 
@@ -115,23 +116,16 @@ void NewGeometryObject::destroy() {
 }
 
 
-void NewGeometryObject::switchTo(NewGeometryObject::NewGeometryMode m) {
-	switch (m) {
-		case NGM_ZoneExtrusion :
-			Q_ASSERT(m_newGeometryMode == NGM_ZoneFloor);
-			m_newGeometryMode = m;
-		break;
-		default:;
-	}
+void NewGeometryObject::setNewGeometryMode(NewGeometryObject::NewGeometryMode m) {
+	m_newGeometryMode = m;
 	updateBuffers(false);
 }
 
 
 void NewGeometryObject::flipGeometry() {
-	// TODO : Andreas, improve performance?
-	VICUS::Polygon3D polygon = m_planeGeometry.polygon();
+	VICUS::Polygon3D polygon = m_polygonGeometry.polygon();
 	polygon.flip();
-	m_planeGeometry.setPolygon(polygon); // Note: no holes in this polygon, no need to flip the holes as well
+	m_polygonGeometry.setPolygon(polygon); // Note: no holes in this polygon, no need to flip the holes as well
 	updateBuffers(false);
 }
 
@@ -142,13 +136,22 @@ void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
 		IBK::IBK_Message("Identical point added. Ignored.");
 		return; // ignore the vertex
 	}
+	// nothing to do in passive mode
+	if (m_passiveMode)
+		return;
+	// if in zone interactive mode, we leave it
+	if (m_interactiveZoneExtrusionMode) {
+		m_interactiveZoneExtrusionMode = false;
+		// inform property widget about new zone height (for display in the line edit), this also
+		// turns of the button for interactive mode
+		SVViewStateHandler::instance().m_propVertexListWidget->setZoneHeight(m_zoneHeight);
+	}
 	switch (m_newGeometryMode) {
 		case NGM_Rect :
-			// if the rectangle is complete and we have a click, consider this as confirmation (rather than rejecting it)
-			if (m_planeGeometry.isValid()) {
-				finish();
+			// if the rectangle is complete and we have a click, just ignore it
+			if (m_polygonGeometry.isValid())
 				return;
-			}
+
 			// if we have already 2 points and a third is added (that is not the same as the first),
 			// finish the shape by creating a polygon object
 			if (m_vertexList.size() == 2) {
@@ -160,37 +163,34 @@ void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
 				IBKMK::Vector3D b = m_vertexList.back();
 				IBKMK::Vector3D c = p;
 				IBKMK::Vector3D d = a + (c-b);
-				m_planeGeometry = VICUS::PlaneGeometry(VICUS::Polygon3D::T_Rectangle, a, b, d);
-				SVViewStateHandler::instance().m_propVertexListWidget->addVertex(p);
+				m_polygonGeometry = VICUS::PlaneGeometry(VICUS::Polygon3D::T_Rectangle, a, b, d);
+				// Note: the vertex list will still only contain 3 points!
+				m_vertexList.push_back(p);
 			}
 			else {
 				m_vertexList.push_back(p);
-				m_planeGeometry.setPolygon( VICUS::Polygon3D(m_vertexList) );
-				// also tell the vertex list widget about our new point
-				SVViewStateHandler::instance().m_propVertexListWidget->addVertex(p);
+				m_polygonGeometry.setPolygon( VICUS::Polygon3D(m_vertexList) );
 			}
-		break;
-
-		case NGM_Polygon :
-		case NGM_ZoneFloor :
-			// if we have already a valid plane (i.e. normal vector not 0,0,0), then check if point is in plane
-			if (m_planeGeometry.normal() != IBKMK::Vector3D(0,0,0)) {
-				IBKMK::Vector3D projected;
-				IBKMK::pointProjectedOnPlane(m_planeGeometry.offset(), m_planeGeometry.normal(), p, projected);
-				m_vertexList.push_back(projected);
-			}
-			else
-				m_vertexList.push_back(p);
-			m_planeGeometry.setPolygon( VICUS::Polygon3D(m_vertexList) );
 			// also tell the vertex list widget about our new point
 			SVViewStateHandler::instance().m_propVertexListWidget->addVertex(p);
 		break;
 
-		case NGM_ZoneExtrusion :
-			// just signal the property list widget that we are done with the zone
-			finish();
+		case NGM_Polygon :
+			// if we have already a valid plane (i.e. normal vector not 0,0,0), then check if point is in plane
+			if (m_polygonGeometry.normal() != IBKMK::Vector3D(0,0,0)) {
+				IBKMK::Vector3D projected;
+				IBKMK::pointProjectedOnPlane(m_polygonGeometry.offset(), m_polygonGeometry.normal(), p, projected);
+				m_vertexList.push_back(projected);
+			}
+			else
+				m_vertexList.push_back(p);
+			m_polygonGeometry.setPolygon( VICUS::Polygon3D(m_vertexList) );
+			// also tell the vertex list widget about our new point
+			SVViewStateHandler::instance().m_propVertexListWidget->addVertex(p);
 		break;
 
+		case NGM_Zone:
+		case NGM_Roof:
 		case NUM_NGM:
 			return; // nothing to do here
 	}
@@ -212,12 +212,12 @@ void NewGeometryObject::removeVertex(unsigned int idx) {
 	m_vertexList.erase(m_vertexList.begin()+idx);
 	switch (m_newGeometryMode) {
 		case NGM_Polygon :
-		case NGM_ZoneFloor :
-			m_planeGeometry.setPolygon( VICUS::Polygon3D(m_vertexList) );
+		case NGM_Rect :
+			m_polygonGeometry.setPolygon( VICUS::Polygon3D(m_vertexList) );
 			SVViewStateHandler::instance().m_propVertexListWidget->removeVertex(idx);
 		break;
-		case NGM_Rect :
-		case NGM_ZoneExtrusion :
+		case NGM_Zone :
+		case NGM_Roof :
 		case NUM_NGM :
 			Q_ASSERT(false); // operation not allowed
 			return;
@@ -229,13 +229,13 @@ void NewGeometryObject::removeVertex(unsigned int idx) {
 void NewGeometryObject::removeLastVertex() {
 	switch (m_newGeometryMode) {
 		case NGM_Polygon :
-		case NGM_ZoneFloor :
+		case NGM_Rect :
 			Q_ASSERT(!m_vertexList.empty());
 			removeVertex(m_vertexList.size()-1);
 		break;
 
-		case NGM_Rect :
-		case NGM_ZoneExtrusion :
+		case NGM_Zone :
+		case NGM_Roof :
 		case NUM_NGM :
 			Q_ASSERT(false); // operation not allowed
 			return;
@@ -244,7 +244,8 @@ void NewGeometryObject::removeLastVertex() {
 
 
 void NewGeometryObject::clear() {
-	m_planeGeometry.setPolygon( VICUS::Polygon3D() );
+	m_polygonGeometry.setPolygon( VICUS::Polygon3D() );
+	m_generatedGeometry.clear();
 	m_vertexList.clear();
 	updateBuffers(false);
 }
@@ -254,10 +255,10 @@ bool NewGeometryObject::canComplete() const {
 	switch (m_newGeometryMode) {
 		case NGM_Rect :
 		case NGM_Polygon :
-			return m_planeGeometry.isValid();
+			return m_polygonGeometry.isValid();
 
-		case NGM_ZoneFloor :
-		case NGM_ZoneExtrusion :
+		case NGM_Zone :
+		case NGM_Roof :
 		case NUM_NGM :
 			return false;
 	}
@@ -265,108 +266,535 @@ bool NewGeometryObject::canComplete() const {
 }
 
 
-bool NewGeometryObject::canDrawTransparent() const {
-	return !m_indexBufferData.empty();
-}
-
-
-void NewGeometryObject::finish() {
-	switch (m_newGeometryMode) {
-		case NGM_Rect :
-		case NGM_Polygon :
-		case NGM_ZoneExtrusion :
-			if (m_planeGeometry.isValid()) {
-				// tell property widget to modify the project with our data
-				SVViewStateHandler::instance().m_propVertexListWidget->on_pushButtonFinish_clicked();
-			}
-			return;
-		case NGM_ZoneFloor : break; // nothing to do - cannot "finish" zone floor
-		case NUM_NGM : break; // nothing to do
-	}
-}
-
-
-VICUS::PlaneGeometry NewGeometryObject::offsetPlaneGeometry() const {
-	Q_ASSERT(m_planeGeometry.isValid());
-	VICUS::PlaneGeometry pg(planeGeometry());
-	IBKMK::Vector3D offset = QtExt::QVector2IBKVector(m_localCoordinateSystemPosition) - m_planeGeometry.offset();
-	// now offset all the coordinates
-	std::vector<IBKMK::Vector3D> vertexes(pg.polygon().vertexes());
-	for (IBKMK::Vector3D & v : vertexes)
-		v += offset;
-	pg.setPolygon( VICUS::Polygon3D(vertexes) );
-	return pg;
-}
-
 
 void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p) {
 	QVector3D newPoint = p;
 
 	switch (m_newGeometryMode) {
-		case NGM_Rect : // nothing to do - we can only ever add 3 points here
+		case NGM_Rect :
+			// any change to the previously stored point?
+			if (m_localCoordinateSystemPosition == newPoint)
+				return;
+
+			// store new position
+			m_localCoordinateSystemPosition = newPoint;
+
+			// update buffer (but only that portion that depends on the local coordinate system's location)
+			updateBuffers(true);
 		break;
 
 		case NGM_Polygon :
-		case NGM_ZoneFloor :
 			// if we have already a valid plane (i.e. normal vector not 0,0,0),
 			// then check if point is in plane
-			if (m_planeGeometry.normal() != IBKMK::Vector3D(0,0,0)) {
+			if (m_polygonGeometry.normal() != IBKMK::Vector3D(0,0,0)) {
 				IBKMK::Vector3D p2(QtExt::QVector2IBKVector(p));
 				IBKMK::Vector3D projected;
-				IBKMK::pointProjectedOnPlane(m_planeGeometry.offset(), m_planeGeometry.normal(), p2, projected);
+				IBKMK::pointProjectedOnPlane(m_polygonGeometry.offset(), m_polygonGeometry.normal(), p2, projected);
 				newPoint = QtExt::IBKVector2QVector(projected);
 			}
+			// any change to the previously stored point?
+			if (m_localCoordinateSystemPosition == newPoint)
+				return;
+
+			// store new position
+			m_localCoordinateSystemPosition = newPoint;
+
+			// update buffer (but only that portion that depends on the local coordinate system's location)
+			updateBuffers(true);
 		break;
-		case NGM_ZoneExtrusion : {
-			Q_ASSERT(m_planeGeometry.isValid());
-			// we need to distinguish between interactive and fixed mode
-			if (!m_interactiveZoneExtrusionMode) {
-				IBKMK::Vector3D a = planeGeometry().polygon().vertexes()[0];
-				IBKMK::Vector3D offset = m_zoneHeight*planeGeometry().normal();
-				newPoint = QtExt::IBKVector2QVector(a+offset);
-			}
-			else {
+
+		case NGM_Zone: {
+			Q_ASSERT(m_polygonGeometry.isValid());
+			// only relevant if in interactive zone extrusion mode
+			if (m_interactiveZoneExtrusionMode) {
 
 				// compute the projection of the current coordinate systems position on the plane
 				IBKMK::Vector3D p2(QtExt::QVector2IBKVector(p));
 				IBKMK::Vector3D projected;
-				IBKMK::pointProjectedOnPlane(m_planeGeometry.offset(), m_planeGeometry.normal(), p2, projected);
+				IBKMK::pointProjectedOnPlane(m_polygonGeometry.offset(), m_polygonGeometry.normal(), p2, projected);
 				newPoint = QtExt::IBKVector2QVector(projected);
 				// now get the offset vector
 				QVector3D verticalOffset = p-newPoint; // Note: this vector should be collinear to the plane's normal
 				if (verticalOffset.length() < 0.001f)
-					verticalOffset = QtExt::IBKVector2QVector( m_planeGeometry.offset() + 1*planeGeometry().normal() );
+					verticalOffset = QtExt::IBKVector2QVector( m_polygonGeometry.offset() + 1*planeGeometry().normal() );
 				// and add it to the first vertex of the polygon
-				newPoint = verticalOffset + QtExt::IBKVector2QVector(m_planeGeometry.offset());
-				// also store the absolute height
-				m_zoneHeight = (double)verticalOffset.length();
-				SVViewStateHandler::instance().m_propVertexListWidget->setExtrusionDistance(m_zoneHeight);
+				newPoint = verticalOffset + QtExt::IBKVector2QVector(m_polygonGeometry.offset());
+				m_localCoordinateSystemPosition = newPoint;
+				// also store the absolute height and update the generated geometry
+				setZoneHeight((double)verticalOffset.length()); // this also updates the buffers
+				// inform property widget about new zone height (for display in the line edit)
+				SVViewStateHandler::instance().m_propVertexListWidget->setZoneHeight(m_zoneHeight);
 			}
 		}
 		break;
+
+		case NGM_Roof :
+			return; // nothing to do here
 
 		case NUM_NGM :
 			Q_ASSERT(false); // invalid call
 			return;
 	} // switch
-
-
-	// any change to the previously stored point?
-	if (m_localCoordinateSystemPosition == newPoint)
-		return;
-
-	// store new position
-	m_localCoordinateSystemPosition = newPoint;
-
-	// update buffer (but only that portion that depends on the local coordinate system's location)
-	updateBuffers(true);
 }
 
 
 void NewGeometryObject::setZoneHeight(double height) {
-	Q_ASSERT(m_newGeometryMode == NGM_ZoneExtrusion);
+	Q_ASSERT(m_newGeometryMode == NGM_Zone);
+	Q_ASSERT(m_polygonGeometry.isValid());
+
 	m_zoneHeight = height;
-	updateLocalCoordinateSystemPosition(QVector3D(0,0,0)); // point coordinates are irrelevant
+
+	IBKMK::Vector3D offset = m_zoneHeight*planeGeometry().normal();
+
+	// generate extruded ceiling plane
+	VICUS::PlaneGeometry pg(planeGeometry());
+	// now offset all the coordinates
+	std::vector<IBKMK::Vector3D> vertexes(pg.polygon().vertexes());
+	for (IBKMK::Vector3D & v : vertexes)
+		v += offset;
+	pg.setPolygon( VICUS::Polygon3D(vertexes) );
+	m_generatedGeometry.clear();
+	m_generatedGeometry.push_back(pg);
+	updateBuffers(false);
+}
+
+
+void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
+	Q_ASSERT(m_newGeometryMode == NGM_Roof);
+	Q_ASSERT(m_polygonGeometry.isValid());
+	// generate roof geometry
+
+	// we need all the time a local coordinate system where all points have a z-value of 0
+
+	// Get a _copy_ of the floor polygon
+	std::vector<IBKMK::Vector3D> polyline = m_polygonGeometry.polygon().vertexes();
+
+	// All roof polygons stored in the following vector.
+	// Once we are done, we generate PlaneGeometry objects for each polygon.
+	std::vector<VICUS::Polygon3D> polys;
+
+	// for all but complex shape
+	if (roofData.m_type != RoofInputData::Complex) {
+
+
+		// If there are only 3 points and the roof shape is not COMPLEX then a 4th point is always added.
+		// If there are more than 3 points, all further points are discarded. This ensures that there is always a rectangle.
+		if(polyline.size() > 3)
+			polyline.erase(polyline.begin()+3, polyline.end());
+		// Add fourth point
+		polyline.push_back(polyline[2]+(polyline[1]-polyline[0]));
+
+		//distance of point 2 to 3
+		double distBC = polyline[2].distanceTo(polyline[1]);
+		double height = roofData.m_height;
+		double angle  = roofData.m_angle;
+		//calculate height
+		if (!roofData.m_isHeightPredefined)
+			height = std::tan(roofData.m_angle * IBK::DEG2RAD) * distBC;
+		//calculate angle
+		else{
+			///TODO Dirk->Andreas fehlerbehandlung?
+			if(distBC>0)
+				angle = std::atan(roofData.m_height/distBC);
+			else
+				angle = 0;
+		}
+		// all polygons of the roof room are stored following vector
+		std::vector<std::vector<IBKMK::Vector3D> > polygons;
+
+		// add already calculated floor polygon
+		polygons.push_back(polyline);
+
+		/// TODO Dirk check if floor polygon has the right normal
+		IBKMK::Vector3D hFlapTile(0,0,roofData.m_hasFlapTile ? roofData.m_flapTileHeight : 0);
+		switch (roofData.m_type){
+			case RoofInputData::SinglePitchRoof:{
+				// Create a single pitch roof with floor, roof, 3x wall
+				polygons.resize(5);
+				// Note: floor polygon is already set at index [0]
+				IBKMK::Vector3D h1(0,0,height);
+				//roof
+				polygons[1].push_back(polyline[0]+hFlapTile);
+				polygons[1].push_back(polyline[1]+h1+hFlapTile);
+				polygons[1].push_back(polyline[2]+h1+hFlapTile);
+				polygons[1].push_back(polyline[3]+hFlapTile);
+				//wall 1
+				polygons[2].push_back(polyline[0]+hFlapTile);
+				if(roofData.m_hasFlapTile) polygons[2].push_back(polyline[0]);
+				polygons[2].push_back(polyline[1]);
+				polygons[2].push_back(polyline[1]+h1+hFlapTile);
+				//wall 2
+				polygons[3].push_back(polyline[1]);
+				polygons[3].push_back(polyline[2]);
+				polygons[3].push_back(polyline[2]+h1+hFlapTile);
+				polygons[3].push_back(polyline[1]+h1+hFlapTile);
+				//wall 3
+				polygons[4].push_back(polyline[2]);
+				polygons[4].push_back(polyline[3]);
+				if(roofData.m_hasFlapTile) polygons[4].push_back(polyline[3]+hFlapTile);
+				polygons[4].push_back(polyline[2]+h1+hFlapTile);
+
+			}
+			break;
+			case RoofInputData::DoublePitchRoof:{
+				// Create a double pitch roof with floor, 2x roof, 2x wall
+				polygons.resize(5);
+
+				IBKMK::Vector3D middleBA= (polyline[1]-polyline[0])*0.5;
+				IBKMK::Vector3D h1(0,0,height);
+				//roof 1
+				polygons[1].push_back(polyline[0]);
+				polygons[1].push_back(polyline[0]+ middleBA+h1+hFlapTile);
+				polygons[1].push_back(polyline[3]+ middleBA+h1+hFlapTile);
+				polygons[1].push_back(polyline[3]);
+				//roof 2
+				polygons[2].push_back(polyline[1]);
+				polygons[2].push_back(polyline[2]);
+				polygons[2].push_back(polyline[2]- middleBA+h1+hFlapTile);
+				polygons[2].push_back(polyline[1]- middleBA+h1+hFlapTile);
+				//wall 1
+				polygons[3].push_back(polyline[0]);
+				polygons[3].push_back(polyline[1]);
+				polygons[3].push_back(polyline[1]+hFlapTile);
+				polygons[3].push_back(polyline[0]+ middleBA+h1+hFlapTile);
+				polygons[3].push_back(polyline[0]+hFlapTile);
+				//wall 2
+				polygons[4].push_back(polyline[2]);
+				polygons[4].push_back(polyline[3]);
+				polygons[4].push_back(polyline[3]+hFlapTile);
+				polygons[4].push_back(polyline[3]+ middleBA+h1+hFlapTile);
+				polygons[4].push_back(polyline[2]+hFlapTile);
+			}
+			break;
+			case RoofInputData::MansardRoof:{
+				// Create a mansard roof with floor, 4x roof, 2x wall, if flapTile>0 then additional 2x wall
+				polygons.resize(roofData.m_hasFlapTile ? 9 : 7 );
+
+				IBKMK::Vector3D middleBA= (polyline[1]-polyline[0])*0.5;
+				IBKMK::Vector3D vec1= (polyline[1]-polyline[0])*0.1;
+				IBKMK::Vector3D h1(0,0,roofData.m_height), h2(0,0,roofData.m_height*0.5);
+				//roof 1
+				polygons[1].push_back(polyline[0]+hFlapTile);
+				polygons[1].push_back(polyline[0]+vec1+h2+hFlapTile);
+				polygons[1].push_back(polyline[3]+vec1+h2+hFlapTile);
+				polygons[1].push_back(polyline[3]+hFlapTile);
+				//roof 2
+				polygons[2].push_back(polyline[0]+vec1+h2+hFlapTile);
+				polygons[2].push_back(polyline[0]+middleBA+h1+hFlapTile);
+				polygons[2].push_back(polyline[3]+middleBA+h1+hFlapTile);
+				polygons[2].push_back(polyline[3]+vec1+h2+hFlapTile);
+				//roof 3
+				polygons[3].push_back(polyline[1]+hFlapTile);
+				polygons[3].push_back(polyline[2]+hFlapTile);
+				polygons[3].push_back(polyline[2]-vec1+h2+hFlapTile);
+				polygons[3].push_back(polyline[1]-vec1+h2+hFlapTile);
+				//roof 4
+				polygons[4].push_back(polyline[1]-vec1+h2+hFlapTile);
+				polygons[4].push_back(polyline[2]-vec1+h2+hFlapTile);
+				polygons[4].push_back(polyline[2]-middleBA+h1+hFlapTile);
+				polygons[4].push_back(polyline[1]-middleBA+h1+hFlapTile);
+
+				//wall 1
+				polygons[5].push_back(polyline[0]);
+				polygons[5].push_back(polyline[1]);
+				polygons[5].push_back(polyline[1]+hFlapTile);
+				polygons[5].push_back(polyline[1]-vec1+h2+hFlapTile);
+				polygons[5].push_back(polyline[0]+middleBA+h1+hFlapTile);
+				polygons[5].push_back(polyline[0]+vec1+h2+hFlapTile);
+				polygons[5].push_back(polyline[0]+hFlapTile);
+				//wall 2
+				polygons[6].push_back(polyline[2]);
+				polygons[6].push_back(polyline[3]);
+				polygons[6].push_back(polyline[3]+hFlapTile);
+				polygons[6].push_back(polyline[3]+vec1+h2+hFlapTile);
+				polygons[6].push_back(polyline[3]+middleBA+h1+hFlapTile);
+				polygons[6].push_back(polyline[2]-vec1+h2+hFlapTile);
+				polygons[6].push_back(polyline[2]+hFlapTile);
+
+				if(roofData.m_hasFlapTile){
+					//wall 3
+					polygons[7].push_back(polyline[3]);
+					polygons[7].push_back(polyline[0]);
+					polygons[7].push_back(polyline[0]+hFlapTile);
+					polygons[7].push_back(polyline[3]+hFlapTile);
+
+					//wall 4
+					polygons[8].push_back(polyline[1]);
+					polygons[8].push_back(polyline[2]);
+					polygons[8].push_back(polyline[2]+hFlapTile);
+					polygons[8].push_back(polyline[1]+hFlapTile);
+				}
+			}
+			break;
+			case RoofInputData::HipRoof:{
+				// Create a hip roof with floor, 2x roof, 2x wall, if flapTile>0 then additional 4x wall
+				polygons.resize(roofData.m_hasFlapTile ? 9 : 5);
+
+				IBKMK::Vector3D middleBA= (polyline[1]-polyline[0])*0.5;
+				IBKMK::Vector3D h1(0,0,height);
+				IBKMK::Vector3D d1(0,0,0);
+				double len = polyline[2].distanceTo(polyline[1]);
+				double wid = polyline[1].distanceTo(polyline[0]);
+				if(len != 0)
+					d1 = (polyline[1]-polyline[0]).normalized() * (wid/len*2);
+
+				//roof 1
+				polygons[1].push_back(polyline[3] + hFlapTile);
+				polygons[1].push_back(polyline[0] + hFlapTile);
+				polygons[1].push_back(polyline[0]+ middleBA+d1+h1 + hFlapTile);
+				polygons[1].push_back(polyline[3]+ middleBA-d1+h1 + hFlapTile);
+				//roof 2
+				polygons[2].push_back(polyline[1] + hFlapTile);
+				polygons[2].push_back(polyline[2] + hFlapTile);
+				polygons[2].push_back(polyline[2]- middleBA+d1+h1 + hFlapTile);
+				polygons[2].push_back(polyline[1]- middleBA-d1+h1 + hFlapTile);
+				//wall 1
+				polygons[3].push_back(polyline[0] + hFlapTile);
+				polygons[3].push_back(polyline[1] + hFlapTile);
+				polygons[3].push_back(polyline[0]+ middleBA+d1+h1 + hFlapTile);
+				//wall 2
+				polygons[4].push_back(polyline[2] + hFlapTile);
+				polygons[4].push_back(polyline[3] + hFlapTile);
+				polygons[4].push_back(polyline[3]+ middleBA-d1+h1 + hFlapTile);
+
+				if(roofData.m_hasFlapTile){
+					// additional walls
+					for(unsigned int i1 = 0; i1<3; ++i1){
+						unsigned int i2 = (i1+1) % 4;
+						polygons[5+i1].push_back(polyline[i1]);
+						polygons[5+i1].push_back(polyline[i2]);
+						polygons[5+i1].push_back(polyline[i2]+hFlapTile);
+						polygons[5+i1].push_back(polyline[i1]+hFlapTile);
+
+					}
+				}
+			}
+			break;
+			case RoofInputData::Complex:
+				//do nothing because the frist if does not allow complex
+			break;
+		}
+		//add all polygons to the poly vec and flip all normals of the roof elements to positiv z-value
+		//dont take floor polygon so we start by index 1
+		for(unsigned int i=1; i<polygons.size(); ++i)
+			polys.push_back(polygons[i]);
+	}
+	else if(roofData.m_type == RoofInputData::Complex){
+		//now create a complex roof structure
+
+		unsigned int polySize = polyline.size();
+		std::vector<IBK::point2D<double>> points2D(polySize);
+		std::vector<std::pair<unsigned int, unsigned int>> edges;
+		/// TODO Dirk->Andreas transformieren der 3D Punkte in 2D Punkte
+		/// für polyline
+		/// jetzt geht das erstmal nur über weglassen der z-Koordinate
+		for(unsigned int i=0; i<polySize; ++i){
+			points2D[i].m_x = polyline[i].m_x;
+			points2D[i].m_y = polyline[i].m_y;
+			edges.push_back(std::pair<unsigned int, unsigned int>(i, (i+1)%polySize));
+		}
+
+		IBKMK::Triangulation triangu;
+		triangu.setPoints(points2D,edges);
+
+		// For each triangle, store all edges that have neighbors.
+		std::map<unsigned int, std::vector<std::pair<unsigned int, unsigned int>>> neighboringEdgesOfTri;
+		for(unsigned int i=0; i<triangu.m_triangles.size(); ++i){
+			const IBKMK::Triangulation::triangle_t &tri1 = triangu.m_triangles[i];
+
+			//create a set with the first three point indicies
+			std::set<unsigned int> indexSet;
+			indexSet.insert(tri1.i1);
+			indexSet.insert(tri1.i2);
+			indexSet.insert(tri1.i3);
+
+			for(unsigned int j=i; j<triangu.m_triangles.size(); ++j){
+				const IBKMK::Triangulation::triangle_t &tri2 = triangu.m_triangles[j];
+				unsigned int counter = 3;
+				std::set<unsigned int> saveIdxSet, tempSet;
+				tempSet = indexSet;
+				//check if 2 indicies are in the set --> then we have a midpoint
+				tempSet.insert(tri2.i1);
+				if(tempSet.size() == counter)
+					saveIdxSet.insert(tri2.i1);
+				else
+					++counter;
+				tempSet.insert(tri2.i2);
+				if(tempSet.size() == counter)
+					saveIdxSet.insert(tri2.i2);
+				else
+					++counter;
+				tempSet.insert(tri2.i3);
+				if(tempSet.size() == counter)
+					saveIdxSet.insert(tri2.i3);
+				else
+					++counter;
+
+				//found midpoint
+				if(saveIdxSet.size()==2){
+					//Store the two indices of the points that form the center
+					neighboringEdgesOfTri[i].push_back(std::pair<unsigned int, unsigned int>(*saveIdxSet.begin(), *saveIdxSet.end()));
+				}
+			}
+		}
+
+
+		//Now three cases may have arisen.
+		//1. one high point -> two roof triangles are created
+		//2. two high points -> three roof triangles are created
+		//3. three high points -> four roof triangles are created, one of them forms a horizontal plane
+		for(auto &e : neighboringEdgesOfTri){
+			//get triangle
+			const IBKMK::Triangulation::triangle_t &tri = triangu.m_triangles[e.first];
+			//get points
+			std::vector<IBKMK::Vector3D> pts(3, IBKMK::Vector3D(0,0,0));
+			pts[0].m_x = points2D[tri.i1].m_x;
+			pts[0].m_y = points2D[tri.i1].m_y;
+
+			pts[1].m_x = points2D[tri.i2].m_x;
+			pts[1].m_y = points2D[tri.i2].m_y;
+
+			pts[2].m_x = points2D[tri.i3].m_x;
+			pts[2].m_y = points2D[tri.i3].m_y;
+
+			switch(e.second.size()){
+				case 1 :{
+					IBKMK::Vector2D p1 = points2D[e.second.front().first];
+					IBKMK::Vector2D p2 = points2D[e.second.front().second];
+					IBKMK::Vector2D p3;
+					if(tri.i1 != e.second.front().first && tri.i1 != e.second.front().second)
+						p3 = points2D[tri.i1];
+					else if (tri.i2 != e.second.front().first && tri.i2 != e.second.front().second)
+						p3 = points2D[tri.i2];
+					else
+						p3 = points2D[tri.i3];
+
+					IBKMK::Vector2D mid2D = p1+ (p2 - p1)*0.5;
+
+					VICUS::Polygon3D poly3d;
+					//first poly
+					poly3d.addVertex(IBKMK::Vector3D(mid2D.m_x, mid2D.m_y, roofData.m_height));
+					poly3d.addVertex(IBKMK::Vector3D(p1.m_x, p1.m_y, 0));
+					poly3d.addVertex(IBKMK::Vector3D(p3.m_x, p3.m_y, 0));
+					polys.push_back(poly3d);
+
+					//second poly
+					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
+										   IBKMK::Vector3D(mid2D.m_x, mid2D.m_y, roofData.m_height),
+										   IBKMK::Vector3D(p2.m_x, p2.m_y, 0),
+										   IBKMK::Vector3D(p3.m_x, p3.m_y, 0)
+									   });
+					polys.push_back(poly3d);
+				}
+				break;
+				case 2:{
+					std::vector<IBKMK::Vector2D> pts2DVec{
+						points2D[e.second.front().first],
+						points2D[e.second.front().second],
+						points2D[e.second.back().first],
+						points2D[e.second.back().second]
+					};
+					//index of the common point
+					unsigned int idxCommon = 0;
+					IBKMK::Vector2D commonPoint;
+					IBKMK::Vector2D p1, p2;
+
+					//midpoints
+					IBKMK::Vector2D mid2Da = pts2DVec[0]+ (pts2DVec[1] - pts2DVec[0])*0.5;
+					IBKMK::Vector2D mid2Db = pts2DVec[2]+ (pts2DVec[3] - pts2DVec[2])*0.5;
+
+					//find common point and the other two points
+					if(pts2DVec[0] == pts2DVec[2] || pts2DVec[0] == pts2DVec[3]){
+						commonPoint = pts2DVec[0];
+						p1 = pts2DVec[1];
+					}
+					else{
+						p1 = pts2DVec[0];
+						commonPoint = pts2DVec[1];
+					}
+					p2 = commonPoint == pts2DVec[2] ? pts2DVec[3] : pts2DVec[2];
+
+					VICUS::Polygon3D poly3d;
+					//create first triangle with the two mid points and the common point
+					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
+										   IBKMK::Vector3D(mid2Da.m_x, mid2Da.m_y, roofData.m_height),
+										   IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, roofData.m_height),
+										   IBKMK::Vector3D(commonPoint.m_x, commonPoint.m_y, 0)
+									   });
+					polys.push_back(poly3d);
+
+					//create second triangle with the one mid point and the two other points
+					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
+										   IBKMK::Vector3D(mid2Da.m_x, mid2Da.m_y, roofData.m_height),
+										   IBKMK::Vector3D(p1.m_x, p1.m_y,0),
+										   IBKMK::Vector3D(p2.m_x, p2.m_y,0)
+									   });
+					polys.push_back(poly3d);
+
+					//create third triangle with the two mid points and the one other point
+					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
+										   IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, roofData.m_height),
+										   IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, roofData.m_height),
+										   commonPoint == pts2DVec[2] ? IBKMK::Vector3D(pts2DVec[3].m_x, pts2DVec[3].m_y,0) :
+										   IBKMK::Vector3D(pts2DVec[2].m_x, pts2DVec[2].m_y,0)
+									   });
+					polys.push_back(poly3d);
+
+				}
+				break;
+				case 3: {
+
+					//index of the common point
+					unsigned int idxCommon = 0;
+					IBKMK::Vector2D commonPoint;
+					std::vector<IBKMK::Vector2D> pts2DVec{points2D[tri.i1],points2D[tri.i2],points2D[tri.i3]};
+					std::vector<IBKMK::Vector2D> midPts2DVec(3);
+
+					//midpoints
+					for(unsigned int i3=0; i3<3; ++i3){
+						unsigned int i2 = (i3+1)%3;
+						midPts2DVec[i3] = pts2DVec[i3] + (pts2DVec[i2]-pts2DVec[i3])*0.5;
+					}
+
+					VICUS::Polygon3D poly3d;
+					//create first triangle --> all mid points
+					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
+										   IBKMK::Vector3D(midPts2DVec[0].m_x, midPts2DVec[0].m_y, roofData.m_height),
+										   IBKMK::Vector3D(midPts2DVec[1].m_x, midPts2DVec[1].m_y, roofData.m_height),
+										   IBKMK::Vector3D(midPts2DVec[2].m_x, midPts2DVec[2].m_y, roofData.m_height)
+									   });
+					polys.push_back(poly3d);
+
+					//create three more triangles
+					//each has two mid points and a other point
+					for(unsigned int i3=0; i3<3; ++i3){
+						//find the other point which belongs to the two mid points
+						poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
+											   IBKMK::Vector3D(midPts2DVec[i3].m_x, midPts2DVec[i3].m_y, roofData.m_height),
+											   IBKMK::Vector3D(midPts2DVec[(i3+1)%3].m_x, midPts2DVec[(i3+1)%3].m_y, roofData.m_height),
+											   IBKMK::Vector3D(pts2DVec[(i3+1)%3].m_x, pts2DVec[(i3+1)%3].m_y,0)
+										   });
+						polys.push_back(poly3d);
+
+
+					}
+				}
+				break;
+			}
+		}
+	}
+
+	m_generatedGeometry.clear();
+	for(unsigned int i=0; i<polys.size(); ++i){
+		//flip polygon because wrong direction of normal
+		if(polys[i].normal().m_z < 0 )
+			polys[i].flip();
+
+		VICUS::PlaneGeometry pg;
+		pg.setPolygon(polys[i]);
+		m_generatedGeometry.push_back(pg);
+	}
+	updateBuffers(false);
 }
 
 
@@ -393,7 +821,7 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 
 	// no vertexes, nothing to draw - we need at least one vertex in the geometry, so that we
 	// can draw a line from the last vertex to the current coordinate system's location
-	if (m_planeGeometry.polygon().vertexes().empty())
+	if (m_polygonGeometry.polygon().vertexes().empty())
 		return;
 
 	unsigned int currentVertexIndex = 0;
@@ -408,8 +836,8 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 			// - if we have 2 vertexes: VC (first vertex) | VC (second vertex) | VC (local coordinate system) | VC (computed 4th vertex) | VC (first vertex)
 			// - if we have a valid polygon: 4 * VC
 
-			if (m_planeGeometry.isValid()) {
-				addPlane(m_planeGeometry.triangulationData(), currentVertexIndex, currentElementIndex,
+			if (m_polygonGeometry.isValid()) {
+				addPlane(m_polygonGeometry.triangulationData(), currentVertexIndex, currentElementIndex,
 						 m_vertexBufferData, m_indexBufferData);
 				// re-add first vertex so that we have a closed loop
 				m_vertexBufferData.push_back( m_vertexBufferData[0] );
@@ -434,8 +862,7 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 		}
 		break;
 
-		case NGM_Polygon :
-		case NGM_ZoneFloor : {
+		case NGM_Polygon : {
 
 			// Buffer layout:
 			//  - if we have a valid polygon:    npg x VC | VC (first vertex) | VC (last placed vertex) | VC (local coordinate system) | VC (first vertex)
@@ -457,13 +884,14 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 			//
 			//   the transparent shape is drawn only for valid polygons
 
-			if (m_planeGeometry.isValid()) {
-				addPlane(m_planeGeometry.triangulationData(), currentVertexIndex, currentElementIndex,
+			if (m_polygonGeometry.isValid()) {
+				addPlane(m_polygonGeometry.triangulationData(), currentVertexIndex, currentElementIndex,
 						 m_vertexBufferData, m_indexBufferData);
 				// re-add first vertex so that we have a closed loop
 				m_vertexBufferData.push_back( m_vertexBufferData[0] );
-				// add last placed vertex to draw line to current local coordinate system
-				m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(m_vertexList.back())) );
+				if (!m_passiveMode)
+					// add last placed vertex to draw line to current local coordinate system
+					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(m_vertexList.back())) );
 			}
 			else {
 				// for invalid polygons
@@ -473,15 +901,17 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 			}
 			// last vertex in buffer is now the last placed vertex
 
-			// now also add a vertex for the current coordinate system's position
-			m_vertexBufferData.push_back( VertexC(m_localCoordinateSystemPosition ) );
+			if (!m_passiveMode) {
+				// now also add a vertex for the current coordinate system's position
+				m_vertexBufferData.push_back( VertexC(m_localCoordinateSystemPosition ) );
 
-			// add again the first point of the polygon in order to draw a blue line from local coordinate system to first point of polygon
-			m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(m_vertexList.front())) );
+				// add again the first point of the polygon in order to draw a blue line from local coordinate system to first point of polygon
+				m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(m_vertexList.front())) );
+			}
 		} break;
 
 
-		case NGM_ZoneExtrusion : {
+		case NGM_Zone : {
 			// Buffer layout:
 			//  - we add 2 polygons (top and bottom), and also nSegments planes for each wall, with m_zoneHeight as height.
 			//    after each plane we add a vertex for the first point of the plane, so that we can draw outlines
@@ -491,37 +921,43 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 			//  - for valid polygons we draw the line segments of the individual planes only, but no triangulation grids
 			//  - height of the polygon is taken from m_zoneHeight
 
-			if (m_zoneHeight != 0.0) {
-				Q_ASSERT(m_planeGeometry.isValid());
+			if (m_zoneHeight != 0.0 && m_generatedGeometry.size() == 1) { // note: protect against incomplete data - if just switching to Zone mode
+				Q_ASSERT(m_polygonGeometry.isValid());
 				// we need to create at first the base polygon
-				addPlane(m_planeGeometry.triangulationData(), currentVertexIndex, currentElementIndex,
+				addPlane(m_polygonGeometry.triangulationData(), currentVertexIndex, currentElementIndex,
 						 m_vertexBufferData, m_indexBufferData);
-				// re-add first vertex so that we have a closed loop
-				m_vertexBufferData.push_back( m_vertexBufferData[0] ); ++currentVertexIndex;
-
-				// now we create the polygon that is offset by m_zoneHeight along the plane normal vector
-				VICUS::PlaneGeometry topPlane;
-				std::vector<IBKMK::Vector3D> vertexes = m_planeGeometry.triangulationData().m_vertexes; // create copy since we move vertexes
-
-				// the offset vector is the normal vector times the zoneHeight
-				IBKMK::Vector3D offset = QtExt::QVector2IBKVector(m_localCoordinateSystemPosition) - vertexes[0];
-				for (IBKMK::Vector3D & v : vertexes)
-					v += offset;
-				topPlane.setPolygon( VICUS::Polygon3D(vertexes) );
-				addPlane(topPlane.triangulationData(), currentVertexIndex, currentElementIndex,
+				// now the roof geometry
+				addPlane(m_generatedGeometry[0].triangulationData(), currentVertexIndex, currentElementIndex,
 						 m_vertexBufferData, m_indexBufferData);
-				// re-add first vertex so that we have a closed loop
-				m_vertexBufferData.push_back( m_vertexBufferData[0] ); ++currentVertexIndex;
+
+				const std::vector<IBKMK::Vector3D> & floorPolygonVertexes = m_polygonGeometry.polygon().vertexes();
+				const std::vector<IBKMK::Vector3D> & ceilingPolygonVertexes = m_generatedGeometry[0].polygon().vertexes();
+
+				// now add a line strip for the bottom polygon
+				for (unsigned int i=0; i<=floorPolygonVertexes.size(); ++i)
+					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(floorPolygonVertexes[i % floorPolygonVertexes.size()])) );
+				// now add a line strip for the top polygon
+				for (unsigned int i=0; i<=ceilingPolygonVertexes.size(); ++i)
+					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(ceilingPolygonVertexes[i % ceilingPolygonVertexes.size()])) );
 
 				// now add vertexes to draw the vertical zone walls
-				for (unsigned int i=0; i<vertexes.size(); ++i) {
-					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(m_planeGeometry.triangulationData().m_vertexes[i])) );
-					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(vertexes[i])) );
+				for (unsigned int i=0; i<floorPolygonVertexes.size(); ++i) {
+					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(floorPolygonVertexes[i])) );
+					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(ceilingPolygonVertexes[i])) );
 				}
-
 			}
 
 		} break;
+
+		case NGM_Roof :
+			// we need to create at first the base polygon
+			addPlane(m_polygonGeometry.triangulationData(), currentVertexIndex, currentElementIndex,
+					 m_vertexBufferData, m_indexBufferData);
+			// now all the planes belonging to the roof
+			for (unsigned int i=0; i<m_generatedGeometry.size(); ++i)
+				addPlane(m_generatedGeometry[i].triangulationData(), currentVertexIndex, currentElementIndex,
+						 m_vertexBufferData, m_indexBufferData);
+		break;
 
 		case NUM_NGM :
 			Q_ASSERT(false); // invalid call
@@ -566,12 +1002,11 @@ void NewGeometryObject::renderOpaque() {
 		} break;
 
 		case NGM_Polygon:
-		case NGM_ZoneFloor:
 			// draw the polygon line first
 			if (m_vertexBufferData.size() > 1) {
 
 				QColor lineCol;
-				if (m_planeGeometry.isValid()) {
+				if (m_polygonGeometry.isValid()) {
 					if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
 						lineCol = QColor("#2ed655");
 					else
@@ -588,8 +1023,8 @@ void NewGeometryObject::renderOpaque() {
 
 				// if we have a valid polygon, draw the outline using the first npg+1 vertexes
 				size_t offset = 0;
-				size_t vertexCount = m_planeGeometry.triangulationData().m_vertexes.size();
-				if (m_planeGeometry.isValid()) {
+				size_t vertexCount = m_polygonGeometry.triangulationData().m_vertexes.size();
+				if (m_polygonGeometry.isValid()) {
 					glDrawArrays(GL_LINE_STRIP, 0, vertexCount + 1);
 					// start offset for the two lines of the local coordinate system - use the last vertex again
 					offset = vertexCount + 1;
@@ -610,7 +1045,7 @@ void NewGeometryObject::renderOpaque() {
 			}
 		break;
 
-		case NGM_ZoneExtrusion: {
+		case NGM_Zone: {
 			QColor lineCol;
 			if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
 				lineCol = QColor("#32c5ea");
@@ -619,15 +1054,16 @@ void NewGeometryObject::renderOpaque() {
 
 			m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], lineCol);
 			// draw outlines of bottom and top polygons first
-			size_t vertexCount = m_planeGeometry.triangulationData().m_vertexes.size();
-			glDrawArrays(GL_LINE_STRIP, 0, vertexCount+1);
+			size_t vertexCount = m_polygonGeometry.triangulationData().m_vertexes.size();
+			unsigned int offset = 2*vertexCount;
+			glDrawArrays(GL_LINE_STRIP, (GLint)offset, vertexCount+1);
 			// draw outlines of bottom and top polygons first
-			glDrawArrays(GL_LINE_STRIP, vertexCount+1, vertexCount+1);
+			glDrawArrays(GL_LINE_STRIP, (GLint)(offset + vertexCount+1), vertexCount+1);
 
 			// now draw the zone wall segments
-			unsigned int offset = 2*vertexCount+2;
+			offset += 2*vertexCount+2;
 			for (unsigned int i=0; i<vertexCount; ++i) {
-				glDrawArrays(GL_LINES, (int)(2*i + offset), 2);
+				glDrawArrays(GL_LINES, (GLint)(2*i + offset), 2);
 			}
 
 		} break;
@@ -663,6 +1099,11 @@ void NewGeometryObject::renderOpaque() {
 }
 
 
+bool NewGeometryObject::canDrawTransparent() const {
+	return !m_indexBufferData.empty();
+}
+
+
 void NewGeometryObject::renderTransparent() {
 	// we expect:
 	//   glDepthMask(GL_FALSE);
@@ -680,6 +1121,8 @@ void NewGeometryObject::renderTransparent() {
 
 		// set selected plane color (QColor is passed as vec4, so no conversion is needed, here).
 		QColor planeCol = QColor(255,0,128,64);
+		if (m_newGeometryMode == NGM_Roof)
+			planeCol = QColor(255,0,128,198);
 		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], planeCol);
 		// put OpenGL in offset mode
 		glEnable(GL_POLYGON_OFFSET_FILL);

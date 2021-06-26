@@ -27,6 +27,12 @@ public:
 	*/
 	void setup();
 
+	/*! Updates the list of sub-surface components to select.
+		This function is called from DB edit widgets when either sub-surface or regular component instances
+		have been edited.
+	*/
+	void updateSubSurfaceComponentList();
+
 public slots:
 
 	void onModified(int modificationType, ModificationInfo * /*data*/);

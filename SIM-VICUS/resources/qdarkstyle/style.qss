@@ -1012,7 +1012,7 @@ QPushButton:disabled {
   border: 1px solid #3a3b3f;
   color: #787878;
   border-radius: 0px;
-  padding: 3px;
+  padding: 5px 10px 5px 10px;
 }
 
 QPushButton:checked {

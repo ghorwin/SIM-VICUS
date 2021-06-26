@@ -250,8 +250,6 @@ void SVPropEditGeometry::on_pushButtonAddRect_clicked() {
 
 
 void SVPropEditGeometry::on_pushButtonAddZone_clicked() {
-	// reset new polygon object and set it into zone floor drawing mode
-	SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_ZoneFloor);
 	// signal, that we want to start adding a new polygon
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
@@ -259,7 +257,20 @@ void SVPropEditGeometry::on_pushButtonAddZone_clicked() {
 	// now tell all UI components to toggle their view state
 	SVViewStateHandler::instance().setViewState(vs);
 	// clear vertex list in property widget
-	SVViewStateHandler::instance().m_propVertexListWidget->setup(Vic3D::NewGeometryObject::NGM_ZoneFloor);
+	SVViewStateHandler::instance().m_propVertexListWidget->setup(Vic3D::NewGeometryObject::NGM_Zone);
+	SVViewStateHandler::instance().m_geometryView->focusSceneView();
+}
+
+
+void SVPropEditGeometry::on_pushButtonAddRoof_clicked() {
+	// signal, that we want to start adding a new polygon
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
+	vs.m_propertyWidgetMode = SVViewState::PM_VertexList;
+	// now tell all UI components to toggle their view state
+	SVViewStateHandler::instance().setViewState(vs);
+	// clear vertex list in property widget
+	SVViewStateHandler::instance().m_propVertexListWidget->setup(Vic3D::NewGeometryObject::NGM_Roof);
 	SVViewStateHandler::instance().m_geometryView->focusSceneView();
 }
 
@@ -1699,4 +1710,5 @@ void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
 	// reset local transformation matrix
 	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 }
+
 

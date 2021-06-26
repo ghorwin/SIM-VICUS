@@ -107,7 +107,7 @@ public:
 	void renderTransparent();
 
 	/*! Gives read-only access to generated geometries. */
-	const std::vector<VICUS::PlaneGeometry> & surfaceGeometries() const { return m_surfaceGeometries; }
+	const std::vector<VICUS::PlaneGeometry> & generatedSurfaces() const { return m_generatedSurfaces; }
 
 private:
 	/*! Populates the color and vertex buffer with data for the "last segment" line and the polygon.
@@ -128,7 +128,7 @@ private:
 	/*! Stores the modified geometries of the selected surfaces with windows.
 		These are then drawn with this object.
 	*/
-	std::vector<VICUS::PlaneGeometry>	m_surfaceGeometries;
+	std::vector<VICUS::PlaneGeometry>	m_generatedSurfaces;
 
 	/*! This list holds all points a the drawing method (even points of collinear segments).
 		This list may not give a valid polygon or a polygon at all.

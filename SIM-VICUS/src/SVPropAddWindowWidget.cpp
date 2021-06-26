@@ -165,6 +165,11 @@ void SVPropAddWindowWidget::setup() {
 }
 
 
+void SVPropAddWindowWidget::updateSubSurfaceComponentList() {
+	on_radioButtonSubSurfaceTypeWindow_toggled(m_ui->radioButtonSubSurfaceTypeWindow->isChecked());
+}
+
+
 void SVPropAddWindowWidget::on_lineEditWindowWidth_editingFinishedSuccessfully() {
 	m_windowInputData.m_width = m_ui->lineEditWindowWidth->value();
 	updateGeometryObject();
@@ -201,7 +206,6 @@ void SVPropAddWindowWidget::on_spinBoxMaxHoleCount_valueChanged(int arg1) {
 }
 
 void SVPropAddWindowWidget::on_radioButtonSubSurfaceTypeWindow_toggled(bool checked) {
-	// TODO : populate component combo box
 	if (checked) {
 		m_ui->comboBoxSubSurfaceComponent->setEnabled(true);
 		m_ui->comboBoxSubSurfaceComponent->clear();
@@ -251,7 +255,7 @@ void SVPropAddWindowWidget::on_pushButtonCreate_clicked() {
 			subSurfaceComponentInstances.push_back(subComp);
 	}
 
-	const std::vector<VICUS::PlaneGeometry> & geometries = SVViewStateHandler::instance().m_newSubSurfaceObject->surfaceGeometries();
+	const std::vector<VICUS::PlaneGeometry> & geometries = SVViewStateHandler::instance().m_newSubSurfaceObject->generatedSurfaces();
 	IBK_ASSERT(geometries.size() == m_currentSelection.size());
 
 	for (unsigned int i=0; i<m_currentSelection.size(); ++i) {

@@ -61,7 +61,7 @@ const float MOUSE_ROTATION_SPEED = 0.5f;
 const int SUBWINDOWSIZE = 150;
 
 /// \todo All: adjust the THRESHOLD based on DPI/Screenresolution or have it as user option
-const float MOUSE_MOVE_DISTANCE_ORBIT_CONTROLLER = 1;
+const float MOUSE_MOVE_DISTANCE_ORBIT_CONTROLLER = 5;
 
 namespace Vic3D {
 

@@ -61,31 +61,39 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 	m_ui(new Ui::SVPropVertexListWidget)
 {
 	m_ui->setupUi(this);
-
-	QSizePolicy sp_retain = m_ui->groupBoxPolygonVertexes->sizePolicy();
-	sp_retain.setRetainSizeWhenHidden(true);
-	m_ui->groupBoxPolygonVertexes->setSizePolicy(sp_retain);
+	m_ui->verticalLayout->setMargin(0);
+	for (int i=0; i<4; ++i)
+		m_ui->stackedWidget->widget(i)->layout()->setMargin(0);
 
 	m_ui->lineEditZoneHeight->setup(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(),
 									tr("Zone height in [m]."),true, true);
 
-
 	SVViewStateHandler::instance().m_propVertexListWidget = this;
 
-	connect(m_ui->toolButtonEditComponents1, &QToolButton::clicked,
-			this, &SVPropVertexListWidget::onEditComponents);
-	connect(m_ui->toolButtonEditComponents2, &QToolButton::clicked,
-			this, &SVPropVertexListWidget::onEditComponents);
-	connect(m_ui->toolButtonEditComponents3, &QToolButton::clicked,
-			this, &SVPropVertexListWidget::onEditComponents);
-	connect(m_ui->toolButtonEditComponents4, &QToolButton::clicked,
-			this, &SVPropVertexListWidget::onEditComponents);
+	on_radioButtonRoofHeight_toggled(m_ui->radioButtonRoofHeight->isChecked());
+	on_checkBoxFlapTile_toggled(m_ui->checkBoxFlapTile->isChecked());
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropVertexListWidget::onModified);
 
-	m_ui->pushButtonFloorDone->setEnabled(false);
-	m_ui->pushButtonFinish->setEnabled(false);
+	connect(m_ui->pushButtonCancel1, &QPushButton::clicked, this, &SVPropVertexListWidget::onCancel);
+	connect(m_ui->pushButtonCancel2, &QPushButton::clicked, this, &SVPropVertexListWidget::onCancel);
+	connect(m_ui->pushButtonCancel3, &QPushButton::clicked, this, &SVPropVertexListWidget::onCancel);
+	connect(m_ui->pushButtonCancel4, &QPushButton::clicked, this, &SVPropVertexListWidget::onCancel);
+
+	connect(m_ui->toolButtonAddBuilding2, &QToolButton::clicked, this, &SVPropVertexListWidget::on_toolButtonAddBuilding_clicked);
+	connect(m_ui->toolButtonAddBuilding3, &QToolButton::clicked, this, &SVPropVertexListWidget::on_toolButtonAddBuilding_clicked);
+
+	connect(m_ui->toolButtonAddBuildingLevel2, &QToolButton::clicked, this, &SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked);
+	connect(m_ui->toolButtonAddBuildingLevel3, &QToolButton::clicked, this, &SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked);
+
+	connect(m_ui->toolButtonEditComponents1, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponents2, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponents3, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponents4, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponents5, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponents6, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponents7, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
 }
 
 
@@ -95,623 +103,29 @@ SVPropVertexListWidget::~SVPropVertexListWidget() {
 
 
 void SVPropVertexListWidget::setup(int newGeometryType) {
-	m_ui->groupBoxPolygonVertexes->setVisible(false);
-	m_ui->groupBoxPolygonVertexes->setEnabled(true);
-	m_ui->groupBoxZoneProperties->setVisible(false);
-	m_ui->groupBoxSurfaceProperties->setVisible(false);
-	m_ui->checkBoxAnnonymousGeometry->setVisible(false);
-	QString baseName(tr("New surface"));
-	switch (newGeometryType) {
+	// switch to vertex list widget
+	m_ui->stackedWidget->setCurrentIndex(0);
+	// clear vertex table widget and disable "delete" and "finish" buttons
+	m_ui->tableWidgetVertexes->setRowCount(0);
+	m_ui->pushButtonCompletePolygon->setEnabled(false);
+	m_ui->pushButtonDeleteLast->setEnabled(false);
+	m_ui->pushButtonDeleteSelected->setEnabled(false);
+
+	// initialize new geometry object
+	switch ((Vic3D::NewGeometryObject::NewGeometryMode)newGeometryType) {
 		case Vic3D::NewGeometryObject::NGM_Rect :
-			m_ui->groupBoxSurfaceProperties->setVisible(true);
-			m_ui->checkBoxAnnonymousGeometry->setVisible(true);
-			m_ui->pushButtonFinish->setText(tr("Create surface"));
+			SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_Rect);
 		break;
+
 		case Vic3D::NewGeometryObject::NGM_Polygon :
-			m_ui->groupBoxPolygonVertexes->setVisible(true);
-			m_ui->groupBoxSurfaceProperties->setVisible(true);
-			m_ui->checkBoxAnnonymousGeometry->setVisible(true);
-			m_ui->pushButtonFinish->setText(tr("Create surface"));
-		break;
-		case Vic3D::NewGeometryObject::NGM_ZoneFloor :
-			m_ui->groupBoxPolygonVertexes->setVisible(true);
-			m_ui->groupBoxZoneProperties->setVisible(true);
-			baseName = tr("New zone");
-			m_ui->pushButtonFinish->setText(tr("Create zone"));
+		case Vic3D::NewGeometryObject::NGM_Zone :
+		case Vic3D::NewGeometryObject::NGM_Roof :
+			SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_Polygon);
 		break;
 
-		// we do not have other geometries, yet
-		default:;
+		case Vic3D::NewGeometryObject::NUM_NGM: ; // just for the compiler
 	}
-
-	// populate component combo boxes
-	updateBuildingComboBox(); // this will also update the other combo boxes
-	updateComponentComboBoxes();
-
-	// compose object names until we found a unique object name
-	std::set<QString> existingNames;
-	for (const VICUS::Surface & s : project().m_plainGeometry)
-		existingNames.insert(s.m_displayName);
-
-	// set new unique object/surface name
-	m_ui->lineEditName->setText( VICUS::Project::uniqueName(baseName, existingNames));
-	clearPolygonVertexList();
-}
-
-
-bool SVPropVertexListWidget::reselectById(QComboBox * combo, int id) const {
-	combo->setEnabled(true);
-	if (id != -1) {
-		id = combo->findData(id);
-		if (id != -1) {
-			combo->setCurrentIndex(id);
-			return true;
-		}
-	}
-	if (combo->count() != 0)
-		combo->setCurrentIndex(0);
-	else {
-		combo->setEnabled(false);
-	}
-	return false;
-}
-
-
-void SVPropVertexListWidget::updateBuildingComboBox() {
-	// populate the combo boxes
-	m_ui->comboBoxBuilding->blockSignals(true);
-	unsigned int currentUniqueId = m_ui->comboBoxBuilding->currentData().toUInt();
-	m_ui->comboBoxBuilding->clear();
-
-	const VICUS::Project & prj = project();
-	int rowOfCurrent = -1;
-	for (unsigned int i=0; i<prj.m_buildings.size(); ++i) {
-		const VICUS::Building & b = prj.m_buildings[i];
-		m_ui->comboBoxBuilding->addItem(b.m_displayName, b.uniqueID());
-		if (b.uniqueID() == currentUniqueId)
-			rowOfCurrent = (int)i;
-	}
-
-	if (rowOfCurrent != -1) {
-		m_ui->comboBoxBuilding->setCurrentIndex(rowOfCurrent);
-	}
-	else {
-		m_ui->comboBoxBuilding->setCurrentIndex(m_ui->comboBoxBuilding->count()-1); // Note: if no buildings, nothing will be selected
-	}
-	m_ui->comboBoxBuilding->blockSignals(false);
-
-	// also update the building levels combo box
-	updateBuildingLevelsComboBox();
-}
-
-
-void SVPropVertexListWidget::updateBuildingLevelsComboBox() {
-	m_ui->comboBoxBuildingLevel->blockSignals(true);
-	unsigned int currentUniqueId = m_ui->comboBoxBuildingLevel->currentData().toUInt();
-	m_ui->comboBoxBuildingLevel->clear();
-	// only add items if we have a building selected
-	if (m_ui->comboBoxBuilding->count() != 0) {
-		const VICUS::Project & prj = project();
-		unsigned int buildingUniqueID = m_ui->comboBoxBuilding->currentData().toUInt();
-		const VICUS::Building * b = dynamic_cast<const VICUS::Building*>(prj.objectById(buildingUniqueID));
-		Q_ASSERT(b != nullptr);
-		int rowOfCurrent = -1;
-		for (unsigned int i=0; i<b->m_buildingLevels.size(); ++i) {
-			const VICUS::BuildingLevel & bl = b->m_buildingLevels[i];
-			m_ui->comboBoxBuildingLevel->addItem(bl.m_displayName, bl.uniqueID());
-			if (bl.uniqueID() == currentUniqueId)
-				rowOfCurrent = (int)i;
-		}
-		if (rowOfCurrent != -1) {
-			m_ui->comboBoxBuildingLevel->setCurrentIndex(rowOfCurrent);
-		}
-		else {
-			m_ui->comboBoxBuildingLevel->setCurrentIndex(m_ui->comboBoxBuildingLevel->count()-1); // Note: if none, nothing will be selected
-		}
-
-	}
-	m_ui->comboBoxBuildingLevel->blockSignals(false);
-
-	// also update the zones combo box
-	on_comboBoxBuildingLevel_currentIndexChanged(m_ui->comboBoxBuildingLevel->currentIndex());
-}
-
-
-void SVPropVertexListWidget::updateZoneComboBox() {
-	m_ui->comboBoxZone->blockSignals(true);
-	unsigned int currentUniqueId = m_ui->comboBoxZone->currentData().toUInt();
-	m_ui->comboBoxZone->clear();
-	// only add items if we have a building level selected
-	if (m_ui->comboBoxBuildingLevel->count() != 0) {
-		const VICUS::Project & prj = project();
-		unsigned int buildingLevelUniqueID = m_ui->comboBoxBuildingLevel->currentData().toUInt();
-		const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(prj.objectById(buildingLevelUniqueID));
-		Q_ASSERT(bl != nullptr);
-		int rowOfCurrent = -1;
-		for (unsigned int i=0; i<bl->m_rooms.size(); ++i) {
-			const VICUS::Room & r = bl->m_rooms[i];
-			m_ui->comboBoxZone->addItem(r.m_displayName, r.uniqueID());
-			if (r.uniqueID() == currentUniqueId)
-				rowOfCurrent = (int)i;
-		}
-		if (rowOfCurrent != -1) {
-			m_ui->comboBoxZone->setCurrentIndex(rowOfCurrent);
-		}
-		else {
-			m_ui->comboBoxZone->setCurrentIndex(m_ui->comboBoxZone->count()-1); // Note: if none, nothing will be selected
-		}
-	}
-	m_ui->comboBoxZone->blockSignals(false);
-	updateEnabledStates();
-}
-
-void SVPropVertexListWidget::createRoofZone() {
-
-	///TODO Dirk->Andreas wie baue ich das alles ordnungsgemäß ein?
-	/// Zuerst müssen die Eingaben als member umfunktioniert werden
-	/// Wie wird die Geometry aktualisiert? Wo werden die Punkte gespeichert?
-	///
-	/// we need all the time a local coordinate system where all points have a z-value of 0
-
-	enum RoofType{
-		SinglePitchRoof,		//Pultdach
-		DoublePitchRoof,		//Satteldach
-		MansardRoof,			//Mansarddach
-		HipRoof,				//Walmdach
-		Complex,				//Komplexe Dachform (darunter fällt auch Zeltdach)
-	};
-
-	//Eingaben die später aus der Oberfläche kommen müssen
-	RoofType type = DoublePitchRoof;
-	bool isHeightPredefined = true;		//entweder Höhe oder Dachneigungswinkel
-	double inputHeight = 2;				// in m Das ist die Höhe über dem Kniestock
-	double inputAngle = 20;				// in Deg
-
-	bool hasFlapTile = false;			//Kniestockwand?
-	double inputFlapTileHeight = 1.5;
-
-	std::vector<IBKMK::Vector3D>	polyline;	//das ist das floor polygon
-	polyline.push_back(IBKMK::Vector3D(0,0,0));
-	polyline.push_back(IBKMK::Vector3D(5,0,0));
-	polyline.push_back(IBKMK::Vector3D(5,4,0));
-
-	// First calculate the height or slope angle of the roof.
-	// Always update the other LineEdit
-	// The 2nd and 3rd points of the polyline are used for the calculation.
-
-	/// TODO Dirk add a valid check
-
-	//all roof polygons stored in the following vector
-	std::vector<VICUS::Polygon3D> polys;
-	if(type != Complex){
-
-		// all polygons of the roof room are stored following vector
-		std::vector<std::vector<IBKMK::Vector3D>> polygons;
-
-		// If there are only 3 points and the roof shape is not COMPLEX then a 4th point is always added.
-		// If there are more than 3 points, all further points are discarded. This ensures that there is always a rectangle.
-		if(polyline.size() > 3)
-			polyline.erase(polyline.begin()+3, polyline.end());
-		// Add fourth point
-		polyline.push_back(polyline[2]+(polyline[1]-polyline[0]));
-
-		//distance of point 2 to 3
-		double distBC = polyline[2].distanceTo(polyline[1]);
-
-		//calculate height
-		if(!isHeightPredefined)
-			inputHeight = std::tan(inputAngle * IBK::DEG2RAD) * distBC;
-		//calculate angle
-		else{
-			///TODO Dirk->Andreas fehlerbehandlung?
-			if(distBC>0)
-				inputAngle = std::atan(inputHeight/distBC);
-			else
-				inputAngle = 0;
-		}
-
-		/// TODO Dirk->Andreas jetzt würden die einzelfunktionen kommen ich schreib die einfach mal auf
-		/// irgendwie müssen diese dann einsortiert werden
-
-		/// TODO Dirk check if floor polygon has the right normal
-		IBKMK::Vector3D hFlapTile(0,0,hasFlapTile ? inputFlapTileHeight : 0);
-		switch (type){
-			case SinglePitchRoof:{
-				// Create a single pitch roof with floor, roof, 3x wall
-				polygons.resize(5);
-				//floor
-				polygons[0] = polyline;
-				IBKMK::Vector3D h1(0,0,inputHeight);
-				//roof
-				polygons[1].push_back(polyline[0]+hFlapTile);
-				polygons[1].push_back(polyline[1]+h1+hFlapTile);
-				polygons[1].push_back(polyline[2]+h1+hFlapTile);
-				polygons[1].push_back(polyline[3]+hFlapTile);
-				//wall 1
-				polygons[2].push_back(polyline[0]+hFlapTile);
-				if(hasFlapTile) polygons[2].push_back(polyline[0]);
-				polygons[2].push_back(polyline[1]);
-				polygons[2].push_back(polyline[1]+h1+hFlapTile);
-				//wall 2
-				polygons[3].push_back(polyline[1]);
-				polygons[3].push_back(polyline[2]);
-				polygons[3].push_back(polyline[2]+h1+hFlapTile);
-				polygons[3].push_back(polyline[1]+h1+hFlapTile);
-				//wall 3
-				polygons[4].push_back(polyline[2]);
-				polygons[4].push_back(polyline[3]);
-				if(hasFlapTile) polygons[4].push_back(polyline[3]+hFlapTile);
-				polygons[4].push_back(polyline[2]+h1+hFlapTile);
-
-			}
-			break;
-			case DoublePitchRoof:{
-				// Create a double pitch roof with floor, 2x roof, 2x wall
-				polygons.resize(5);
-				//floor
-				polygons[0] = polyline;
-
-				IBKMK::Vector3D middleBA= (polyline[1]-polyline[0])*0.5;
-				IBKMK::Vector3D h1(0,0,inputHeight);
-				//roof 1
-				polygons[1].push_back(polyline[0]);
-				polygons[1].push_back(polyline[0]+ middleBA+h1+hFlapTile);
-				polygons[1].push_back(polyline[3]+ middleBA+h1+hFlapTile);
-				polygons[1].push_back(polyline[3]);
-				//roof 2
-				polygons[2].push_back(polyline[1]);
-				polygons[2].push_back(polyline[2]);
-				polygons[2].push_back(polyline[2]- middleBA+h1+hFlapTile);
-				polygons[2].push_back(polyline[1]- middleBA+h1+hFlapTile);
-				//wall 1
-				polygons[3].push_back(polyline[0]);
-				polygons[3].push_back(polyline[1]);
-				polygons[3].push_back(polyline[1]+hFlapTile);
-				polygons[3].push_back(polyline[0]+ middleBA+h1+hFlapTile);
-				polygons[3].push_back(polyline[0]+hFlapTile);
-				//wall 2
-				polygons[4].push_back(polyline[2]);
-				polygons[4].push_back(polyline[3]);
-				polygons[4].push_back(polyline[3]+hFlapTile);
-				polygons[4].push_back(polyline[3]+ middleBA+h1+hFlapTile);
-				polygons[4].push_back(polyline[2]+hFlapTile);
-			}
-			break;
-			case MansardRoof:{
-				// Create a mansard roof with floor, 4x roof, 2x wall, if flapTile>0 then additional 2x wall
-				polygons.resize(hasFlapTile ? 9 : 7 );
-				//floor
-				polygons[0] = polyline;
-
-				IBKMK::Vector3D middleBA= (polyline[1]-polyline[0])*0.5;
-				IBKMK::Vector3D vec1= (polyline[1]-polyline[0])*0.1;
-				IBKMK::Vector3D h1(0,0,inputHeight), h2(0,0,inputHeight*0.5);
-				//roof 1
-				polygons[1].push_back(polyline[0]+hFlapTile);
-				polygons[1].push_back(polyline[0]+vec1+h2+hFlapTile);
-				polygons[1].push_back(polyline[3]+vec1+h2+hFlapTile);
-				polygons[1].push_back(polyline[3]+hFlapTile);
-				//roof 2
-				polygons[2].push_back(polyline[0]+vec1+h2+hFlapTile);
-				polygons[2].push_back(polyline[0]+middleBA+h1+hFlapTile);
-				polygons[2].push_back(polyline[3]+middleBA+h1+hFlapTile);
-				polygons[2].push_back(polyline[3]+vec1+h2+hFlapTile);
-				//roof 3
-				polygons[3].push_back(polyline[1]+hFlapTile);
-				polygons[3].push_back(polyline[2]+hFlapTile);
-				polygons[3].push_back(polyline[2]-vec1+h2+hFlapTile);
-				polygons[3].push_back(polyline[1]-vec1+h2+hFlapTile);
-				//roof 4
-				polygons[4].push_back(polyline[1]-vec1+h2+hFlapTile);
-				polygons[4].push_back(polyline[2]-vec1+h2+hFlapTile);
-				polygons[4].push_back(polyline[2]-middleBA+h1+hFlapTile);
-				polygons[4].push_back(polyline[1]-middleBA+h1+hFlapTile);
-
-				//wall 1
-				polygons[5].push_back(polyline[0]);
-				polygons[5].push_back(polyline[1]);
-				polygons[5].push_back(polyline[1]+hFlapTile);
-				polygons[5].push_back(polyline[1]-vec1+h2+hFlapTile);
-				polygons[5].push_back(polyline[0]+middleBA+h1+hFlapTile);
-				polygons[5].push_back(polyline[0]+vec1+h2+hFlapTile);
-				polygons[5].push_back(polyline[0]+hFlapTile);
-				//wall 2
-				polygons[6].push_back(polyline[2]);
-				polygons[6].push_back(polyline[3]);
-				polygons[6].push_back(polyline[3]+hFlapTile);
-				polygons[6].push_back(polyline[3]+vec1+h2+hFlapTile);
-				polygons[6].push_back(polyline[3]+middleBA+h1+hFlapTile);
-				polygons[6].push_back(polyline[2]-vec1+h2+hFlapTile);
-				polygons[6].push_back(polyline[2]+hFlapTile);
-
-				if(hasFlapTile){
-					//wall 3
-					polygons[7].push_back(polyline[3]);
-					polygons[7].push_back(polyline[0]);
-					polygons[7].push_back(polyline[0]+hFlapTile);
-					polygons[7].push_back(polyline[3]+hFlapTile);
-
-					//wall 4
-					polygons[8].push_back(polyline[1]);
-					polygons[8].push_back(polyline[2]);
-					polygons[8].push_back(polyline[2]+hFlapTile);
-					polygons[8].push_back(polyline[1]+hFlapTile);
-				}
-			}
-			break;
-			case HipRoof:{
-				// Create a hip roof with floor, 2x roof, 2x wall, if flapTile>0 then additional 4x wall
-				polygons.resize(hasFlapTile ? 9 : 5);
-				//floor
-				polygons[0] = polyline;
-
-				IBKMK::Vector3D middleBA= (polyline[1]-polyline[0])*0.5;
-				IBKMK::Vector3D h1(0,0,inputHeight);
-				IBKMK::Vector3D d1(0,0,0);
-				double len = polyline[2].distanceTo(polyline[1]);
-				double wid = polyline[1].distanceTo(polyline[0]);
-				if(len != 0)
-					d1 = (polyline[1]-polyline[0]).normalized() * (wid/len*2);
-
-				//roof 1
-				polygons[1].push_back(polyline[3] + hFlapTile);
-				polygons[1].push_back(polyline[0] + hFlapTile);
-				polygons[1].push_back(polyline[0]+ middleBA+d1+h1 + hFlapTile);
-				polygons[1].push_back(polyline[3]+ middleBA-d1+h1 + hFlapTile);
-				//roof 2
-				polygons[2].push_back(polyline[1] + hFlapTile);
-				polygons[2].push_back(polyline[2] + hFlapTile);
-				polygons[2].push_back(polyline[2]- middleBA+d1+h1 + hFlapTile);
-				polygons[2].push_back(polyline[1]- middleBA-d1+h1 + hFlapTile);
-				//wall 1
-				polygons[3].push_back(polyline[0] + hFlapTile);
-				polygons[3].push_back(polyline[1] + hFlapTile);
-				polygons[3].push_back(polyline[0]+ middleBA+d1+h1 + hFlapTile);
-				//wall 2
-				polygons[4].push_back(polyline[2] + hFlapTile);
-				polygons[4].push_back(polyline[3] + hFlapTile);
-				polygons[4].push_back(polyline[3]+ middleBA-d1+h1 + hFlapTile);
-
-				if(hasFlapTile){
-					// additional walls
-					for(unsigned int i1 = 0; i1<3; ++i1){
-						unsigned int i2 = (i1+1) % 4;
-						polygons[5+i1].push_back(polyline[i1]);
-						polygons[5+i1].push_back(polyline[i2]);
-						polygons[5+i1].push_back(polyline[i2]+hFlapTile);
-						polygons[5+i1].push_back(polyline[i1]+hFlapTile);
-
-					}
-				}
-			}
-			break;
-			case Complex:
-				//do nothing because the frist if does not allow complex
-			break;
-		}
-		//add all polygons to the poly vec and flip all normals of the roof elements to positiv z-value
-		for(unsigned int i=0; i<polygons.size(); ++i){
-			polys.push_back(polygons[i]);
-			//skip floor plane
-			if(i>0 && polys[i].normal().m_z < 0)
-					polys[i].flip();
-		}
-	}
-	else if(type == Complex){
-		//now create a complex roof structure
-
-		unsigned int polySize = polyline.size();
-		std::vector<IBK::point2D<double>> points2D(polySize);
-		std::vector<std::pair<unsigned int, unsigned int>> edges;
-		/// TODO Dirk->Andreas transformieren der 3D Punkte in 2D Punkte
-		/// für polyline
-		/// jetzt geht das erstmal nur über weglassen der z-Koordinate
-		for(unsigned int i=0; i<polySize; ++i){
-			points2D[i].m_x = polyline[i].m_x;
-			points2D[i].m_y = polyline[i].m_y;
-			edges.push_back(std::pair<unsigned int, unsigned int>(i, (i+1)%polySize));
-		}
-
-
-
-		IBKMK::Triangulation triangu;
-		triangu.setPoints(points2D,edges);
-
-		// For each triangle, store all edges that have neighbors.
-		std::map<unsigned int, std::vector<std::pair<unsigned int, unsigned int>>> neighboringEdgesOfTri;
-		for(unsigned int i=0; i<triangu.m_triangles.size(); ++i){
-			const IBKMK::Triangulation::triangle_t &tri1 = triangu.m_triangles[i];
-
-			//create a set with the first three point indicies
-			std::set<unsigned int> indexSet;
-			indexSet.insert(tri1.i1);
-			indexSet.insert(tri1.i2);
-			indexSet.insert(tri1.i3);
-
-			for(unsigned int j=i; j<triangu.m_triangles.size(); ++j){
-				const IBKMK::Triangulation::triangle_t &tri2 = triangu.m_triangles[j];
-				unsigned int counter = 3;
-				std::set<unsigned int> saveIdxSet, tempSet;
-				tempSet = indexSet;
-				//check if 2 indicies are in the set --> then we have a midpoint
-				tempSet.insert(tri2.i1);
-				if(tempSet.size() == counter)
-					saveIdxSet.insert(tri2.i1);
-				else
-					++counter;
-				tempSet.insert(tri2.i2);
-				if(tempSet.size() == counter)
-					saveIdxSet.insert(tri2.i2);
-				else
-					++counter;
-				tempSet.insert(tri2.i3);
-				if(tempSet.size() == counter)
-					saveIdxSet.insert(tri2.i3);
-				else
-					++counter;
-
-				//found midpoint
-				if(saveIdxSet.size()==2){
-					//Store the two indices of the points that form the center
-					neighboringEdgesOfTri[i].push_back(std::pair<unsigned int, unsigned int>(*saveIdxSet.begin(), *saveIdxSet.end()));
-				}
-			}
-		}
-
-
-		//Now three cases may have arisen.
-		//1. one high point -> two roof triangles are created
-		//2. two high points -> three roof triangles are created
-		//3. three high points -> four roof triangles are created, one of them forms a horizontal plane
-		for(auto &e : neighboringEdgesOfTri){
-			//get triangle
-			const IBKMK::Triangulation::triangle_t &tri = triangu.m_triangles[e.first];
-			//get points
-			std::vector<IBKMK::Vector3D> pts(3, IBKMK::Vector3D(0,0,0));
-			pts[0].m_x = points2D[tri.i1].m_x;
-			pts[0].m_y = points2D[tri.i1].m_y;
-
-			pts[1].m_x = points2D[tri.i2].m_x;
-			pts[1].m_y = points2D[tri.i2].m_y;
-
-			pts[2].m_x = points2D[tri.i3].m_x;
-			pts[2].m_y = points2D[tri.i3].m_y;
-
-			switch(e.second.size()){
-				case 1 :{
-					IBKMK::Vector2D p1 = points2D[e.second.front().first];
-					IBKMK::Vector2D p2 = points2D[e.second.front().second];
-					IBKMK::Vector2D p3;
-					if(tri.i1 != e.second.front().first && tri.i1 != e.second.front().second)
-						p3 = points2D[tri.i1];
-					else if (tri.i2 != e.second.front().first && tri.i2 != e.second.front().second)
-						p3 = points2D[tri.i2];
-					else
-						p3 = points2D[tri.i3];
-
-					IBKMK::Vector2D mid2D = p1+ (p2 - p1)*0.5;
-
-					VICUS::Polygon3D poly3d;
-					//first poly
-					poly3d.addVertex(IBKMK::Vector3D(mid2D.m_x, mid2D.m_y, inputHeight));
-					poly3d.addVertex(IBKMK::Vector3D(p1.m_x, p1.m_y, 0));
-					poly3d.addVertex(IBKMK::Vector3D(p3.m_x, p3.m_y, 0));
-					polys.push_back(poly3d);
-
-					//second poly
-					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
-										   IBKMK::Vector3D(mid2D.m_x, mid2D.m_y, inputHeight),
-										   IBKMK::Vector3D(p2.m_x, p2.m_y, 0),
-										   IBKMK::Vector3D(p3.m_x, p3.m_y, 0)
-									   });
-					polys.push_back(poly3d);
-				}
-				break;
-				case 2:{
-					std::vector<IBKMK::Vector2D> pts2DVec{
-						points2D[e.second.front().first],
-						points2D[e.second.front().second],
-						points2D[e.second.back().first],
-						points2D[e.second.back().second]
-					};
-					//index of the common point
-					unsigned int idxCommon = 0;
-					IBKMK::Vector2D commonPoint;
-					IBKMK::Vector2D p1, p2;
-
-					//midpoints
-					IBKMK::Vector2D mid2Da = pts2DVec[0]+ (pts2DVec[1] - pts2DVec[0])*0.5;
-					IBKMK::Vector2D mid2Db = pts2DVec[2]+ (pts2DVec[3] - pts2DVec[2])*0.5;
-
-					//find common point and the other two points
-					if(pts2DVec[0] == pts2DVec[2] || pts2DVec[0] == pts2DVec[3]){
-						commonPoint = pts2DVec[0];
-						p1 = pts2DVec[1];
-					}
-					else{
-						p1 = pts2DVec[0];
-						commonPoint = pts2DVec[1];
-					}
-					p2 = commonPoint == pts2DVec[2] ? pts2DVec[3] : pts2DVec[2];
-
-					VICUS::Polygon3D poly3d;
-					//create first triangle with the two mid points and the common point
-					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
-										   IBKMK::Vector3D(mid2Da.m_x, mid2Da.m_y, inputHeight),
-										   IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, inputHeight),
-										   IBKMK::Vector3D(commonPoint.m_x, commonPoint.m_y, 0)
-									   });
-					polys.push_back(poly3d);
-
-					//create second triangle with the one mid point and the two other points
-					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
-										   IBKMK::Vector3D(mid2Da.m_x, mid2Da.m_y, inputHeight),
-										   IBKMK::Vector3D(p1.m_x, p1.m_y,0),
-										   IBKMK::Vector3D(p2.m_x, p2.m_y,0)
-									   });
-					polys.push_back(poly3d);
-
-					//create third triangle with the two mid points and the one other point
-					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
-										   IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, inputHeight),
-										   IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, inputHeight),
-										   commonPoint == pts2DVec[2] ? IBKMK::Vector3D(pts2DVec[3].m_x, pts2DVec[3].m_y,0) :
-										   IBKMK::Vector3D(pts2DVec[2].m_x, pts2DVec[2].m_y,0)
-									   });
-					polys.push_back(poly3d);
-
-				}
-				break;
-				case 3: {
-
-					//index of the common point
-					unsigned int idxCommon = 0;
-					IBKMK::Vector2D commonPoint;
-					std::vector<IBKMK::Vector2D> pts2DVec{points2D[tri.i1],points2D[tri.i2],points2D[tri.i3]};
-					std::vector<IBKMK::Vector2D> midPts2DVec(3);
-
-					//midpoints
-					for(unsigned int i3=0; i3<3; ++i3){
-						unsigned int i2 = (i3+1)%3;
-						midPts2DVec[i3] = pts2DVec[i3] + (pts2DVec[i2]-pts2DVec[i3])*0.5;
-					}
-
-					VICUS::Polygon3D poly3d;
-					//create first triangle --> all mid points
-					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
-										   IBKMK::Vector3D(midPts2DVec[0].m_x, midPts2DVec[0].m_y, inputHeight),
-										   IBKMK::Vector3D(midPts2DVec[1].m_x, midPts2DVec[1].m_y, inputHeight),
-										   IBKMK::Vector3D(midPts2DVec[2].m_x, midPts2DVec[2].m_y, inputHeight)
-									   });
-					polys.push_back(poly3d);
-
-					//create three more triangles
-					//each has two mid points and a other point
-					for(unsigned int i3=0; i3<3; ++i3){
-						//find the other point which belongs to the two mid points
-						poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
-											   IBKMK::Vector3D(midPts2DVec[i3].m_x, midPts2DVec[i3].m_y, inputHeight),
-											   IBKMK::Vector3D(midPts2DVec[(i3+1)%3].m_x, midPts2DVec[(i3+1)%3].m_y, inputHeight),
-											   IBKMK::Vector3D(pts2DVec[(i3+1)%3].m_x, pts2DVec[(i3+1)%3].m_y,0)
-										   });
-						polys.push_back(poly3d);
-
-
-					}
-				}
-				break;
-			}
-		}
-
-		for(unsigned int i=0; i<polys.size(); ++i){
-			//flip polygon because wrong direction of normal
-			if(polys[i].normal().m_z < 0 )
-				polys[i].flip();
-		}
-	}
-
-
-
+	m_geometryMode = newGeometryType;
 }
 
 
@@ -777,11 +191,6 @@ void SVPropVertexListWidget::updateComponentComboBoxes() {
 }
 
 
-void SVPropVertexListWidget::updateSubSurfaceComponentComboBoxes() {
-	// TODO
-}
-
-
 void SVPropVertexListWidget::addVertex(const IBKMK::Vector3D & p) {
 	// Note: the vertex is already in the NewGeometryObject, we only
 	//       modify the table widget and update the button enabled states
@@ -796,15 +205,8 @@ void SVPropVertexListWidget::addVertex(const IBKMK::Vector3D & p) {
 
 	m_ui->pushButtonDeleteLast->setEnabled(true);
 
-	m_ui->pushButtonFinish->setEnabled(SVViewStateHandler::instance().m_newGeometryObject->canComplete());
-	if (SVViewStateHandler::instance().m_newGeometryObject->planeGeometry().isValid()) {
-		// only enabled floor done button (i.e. start extrusion) if we are in NGM_ZoneFloor mode
-		if (SVViewStateHandler::instance().m_newGeometryObject->newGeometryMode() == Vic3D::NewGeometryObject::NGM_ZoneFloor)
-			m_ui->pushButtonFloorDone->setEnabled(m_ui->tableWidgetVertexes->rowCount() > 2);
-	}
-	else {
-		m_ui->pushButtonFloorDone->setEnabled(false);
-	}
+	// we may now switch to another mode
+	m_ui->pushButtonCompletePolygon->setEnabled(SVViewStateHandler::instance().m_newGeometryObject->canComplete());
 }
 
 
@@ -817,58 +219,86 @@ void SVPropVertexListWidget::removeVertex(unsigned int idx) {
 	// now remove selected row from table widget
 	m_ui->tableWidgetVertexes->removeRow((int)idx);
 	m_ui->pushButtonDeleteLast->setEnabled(rows > 1);
-	m_ui->pushButtonFinish->setEnabled(SVViewStateHandler::instance().m_newGeometryObject->canComplete());
-	if (SVViewStateHandler::instance().m_newGeometryObject->planeGeometry().isValid()) {
-		// only enabled floor done button (i.e. start extrusion) if we are in NGM_ZoneFloor mode
-		if (SVViewStateHandler::instance().m_newGeometryObject->newGeometryMode() == Vic3D::NewGeometryObject::NGM_ZoneFloor)
-			m_ui->pushButtonFloorDone->setEnabled(m_ui->tableWidgetVertexes->rowCount() > 2);
-	}
-	else {
-		m_ui->pushButtonFloorDone->setEnabled(false);
-	}
 
-	// continue in place-vertex mode (setting the viewstate also triggers a repaint)
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
-	vs.m_propertyWidgetMode = SVViewState::PM_VertexList;
-	SVViewStateHandler::instance().setViewState(vs);
-	SVViewStateHandler::instance().m_geometryView->focusSceneView();
+	// disable/enable "Complete polygon" button, depending on wether the surface is complete
+	m_ui->pushButtonCompletePolygon->setEnabled(SVViewStateHandler::instance().m_newGeometryObject->canComplete());
+
+	// repaint the scene
+	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
 }
 
 
-void SVPropVertexListWidget::setExtrusionDistance(double dist) {
-	if (m_ui->groupBoxZoneProperties->isVisibleTo(this)) {
-		m_ui->lineEditZoneHeight->setText(QString("%L1").arg(dist));
-	}
+void SVPropVertexListWidget::setZoneHeight(double dist) {
+	m_ui->lineEditZoneHeight->blockSignals(true);
+	m_ui->lineEditZoneHeight->setText(QString("%L1").arg(dist));
+	m_ui->lineEditZoneHeight->blockSignals(false);
+	if (!SVViewStateHandler::instance().m_newGeometryObject->m_interactiveZoneExtrusionMode)
+		m_ui->pushButtonPickZoneHeight->setChecked(false);
 }
 
+
+bool SVPropVertexListWidget::completePolygonIfPossible() {
+	switch (m_ui->stackedWidget->currentIndex()) {
+		case 0 :
+			if (m_ui->pushButtonCompletePolygon->isEnabled()) {
+				m_ui->pushButtonCompletePolygon->click();
+				return true;
+			}
+		break;
+
+		case 1 :
+			m_ui->pushButtonCreateSurface->click();
+			return true;
+
+		case 2 :
+			m_ui->pushButtonCreateZone->click();
+			return true;
+
+		case 3 :
+			m_ui->pushButtonCreateRoof->click();
+			return true;
+	}
+	return false;
+}
+
+
+// *** SLOTS ***
 
 void SVPropVertexListWidget::onModified(int modificationType, ModificationInfo * /*data*/) {
-	// only do something here, if this widget is actually visible
-//	if (!isVisibleTo(qobject_cast<QWidget*>(parent())) )
-//		return;
 	SVProjectHandler::ModificationTypes mod = (SVProjectHandler::ModificationTypes)modificationType;
 	switch (mod) {
 		// We only need to handle changes of the building topology, in all other cases
 		// the "create new geometry" action is aborted and the widget will be hidden.
 		case SVProjectHandler::BuildingTopologyChanged:
-			updateBuildingComboBox(); // this will also update the other combo boxes
+			updateBuildingComboBox(m_ui->comboBoxBuilding);
+			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel, m_ui->comboBoxBuilding);
+			updateZoneComboBox(m_ui->comboBoxZone, m_ui->comboBoxBuildingLevel);
+
+			updateBuildingComboBox(m_ui->comboBoxBuilding2);
+			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel2, m_ui->comboBoxBuilding2);
+
+			updateBuildingComboBox(m_ui->comboBoxBuilding3);
+			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel3, m_ui->comboBoxBuilding3);
 		break;
+
 		default: {
 			// clear the new geometry object
 			SVViewStateHandler::instance().m_newGeometryObject->clear();
+			// and reset view state, if we are still in vertex list mode
+			SVViewState vs = SVViewStateHandler::instance().viewState();
+			if (vs.m_propertyWidgetMode == SVViewState::PM_VertexList) {
+				vs.m_sceneOperationMode = SVViewState::NUM_OM;
+				vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
+				// reset locks
+				vs.m_locks = SVViewState::NUM_L;
+
+				// take xy plane out of snap option mask
+				vs.m_snapEnabled = true;
+				// now tell all UI components to toggle their view state
+				SVViewStateHandler::instance().setViewState(vs);
+			}
 		}
 	}
-}
-
-
-void SVPropVertexListWidget::clearPolygonVertexList() {
-	// clear table widget and disable "delete" and "finish" buttons
-	m_ui->tableWidgetVertexes->setRowCount(0);
-	m_ui->pushButtonFinish->setEnabled(false);
-	m_ui->pushButtonFloorDone->setEnabled(false);
-	m_ui->pushButtonDeleteLast->setEnabled(false);
-	m_ui->pushButtonDeleteSelected->setEnabled(false);
 }
 
 
@@ -884,7 +314,60 @@ void SVPropVertexListWidget::on_tableWidgetVertexes_itemSelectionChanged() {
 }
 
 
-void SVPropVertexListWidget::on_pushButtonCancel_clicked() {
+void SVPropVertexListWidget::on_pushButtonDeleteSelected_clicked() {
+	int currentRow = m_ui->tableWidgetVertexes->currentRow();
+	Q_ASSERT(currentRow != -1);
+	// remove selected vertex from polygon
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+	po->removeVertex((unsigned int)currentRow); // this will in turn call removeVertex() above
+}
+
+
+void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+	// switch to different stacked widget, depending on geometry to be created
+	switch ((Vic3D::NewGeometryObject::NewGeometryMode)m_geometryMode) {
+		case Vic3D::NewGeometryObject::NGM_Rect:
+		case Vic3D::NewGeometryObject::NGM_Polygon:
+			m_ui->stackedWidget->setCurrentIndex(1);
+			updateBuildingComboBox(m_ui->comboBoxBuilding);
+			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel, m_ui->comboBoxBuilding);
+			updateZoneComboBox(m_ui->comboBoxZone, m_ui->comboBoxBuildingLevel);
+			updateComponentComboBoxes(); // update all component combo boxes in surface page
+			m_ui->lineEditName->setText(tr("Surface"));
+			po->m_passiveMode = true; // disallow changes to surface geometry
+		break;
+
+		case Vic3D::NewGeometryObject::NGM_Zone:
+			m_ui->stackedWidget->setCurrentIndex(2);
+			updateBuildingComboBox(m_ui->comboBoxBuilding2);
+			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel2, m_ui->comboBoxBuilding2);
+
+			updateComponentComboBoxes(); // update all component combo boxes in surface page
+			po->setNewGeometryMode(Vic3D::NewGeometryObject::NGM_Zone);
+			// transfer zone height into line edit, if we have already a building level defined
+			on_comboBoxBuildingLevel2_currentIndexChanged(0); // index argument does not matter, not used
+			on_lineEditZoneHeight_editingFinishedSuccessfully();
+			m_ui->lineEditNameZone->setText(tr("Room"));
+		break;
+
+		case Vic3D::NewGeometryObject::NGM_Roof:
+			m_ui->stackedWidget->setCurrentIndex(3);
+			updateBuildingComboBox(m_ui->comboBoxBuilding3);
+			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel3, m_ui->comboBoxBuilding3);
+			updateComponentComboBoxes(); // update all component combo boxes in surface page
+			po->setNewGeometryMode(Vic3D::NewGeometryObject::NGM_Roof);
+			m_ui->lineEditNameRoof->setText(tr("Roof"));
+
+			updateRoofGeometry();
+		break;
+		case Vic3D::NewGeometryObject::NUM_NGM: ; // just for the compiler
+	}
+
+}
+
+
+void SVPropVertexListWidget::onCancel() {
 	// reset new polygon object, so that it won't be drawn anylonger
 	SVViewStateHandler::instance().m_newGeometryObject->clear();
 	// signal, that we are no longer in "add vertex" mode
@@ -898,196 +381,6 @@ void SVPropVertexListWidget::on_pushButtonCancel_clicked() {
 	vs.m_snapEnabled = true;
 	// now tell all UI components to toggle their view state
 	SVViewStateHandler::instance().setViewState(vs);
-
-	// we also have do clean our table
-	m_ui->tableWidgetVertexes->clearContents();
-}
-
-
-void SVPropVertexListWidget::on_pushButtonDeleteSelected_clicked() {
-	int currentRow = m_ui->tableWidgetVertexes->currentRow();
-	Q_ASSERT(currentRow != -1);
-	// remove selected vertex from polygon
-	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
-	po->removeVertex((unsigned int)currentRow); // this will in turn call removeVertex() above
-}
-
-
-void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
-	if (m_ui->lineEditName->text().trimmed().isEmpty()) {
-		QMessageBox::critical(this, QString(), tr("Please enter a descriptive name!"));
-		m_ui->lineEditName->selectAll();
-		m_ui->lineEditName->setFocus();
-		return;
-	}
-	// depending on the type of geometry that's being created,
-	// perform additional checks
-	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
-	switch (po->newGeometryMode()) {
-		case Vic3D::NewGeometryObject::NGM_Rect:
-		case Vic3D::NewGeometryObject::NGM_Polygon: {
-			// compose a surface object based on the current content of the new polygon object
-			VICUS::Surface s;
-			s.m_displayName = m_ui->lineEditName->text().trimmed();
-			s.setPolygon3D( po->planeGeometry().polygon() );
-
-			// we need all properties, unless we create annonymous geometry
-			if (m_ui->checkBoxAnnonymousGeometry->isChecked()) {
-				s.m_color = QColor("silver");
-				s.m_id = VICUS::Project::uniqueId(project().m_plainGeometry);
-				// modify project
-				SVUndoAddSurface * undo = new SVUndoAddSurface(tr("Added surface '%1'").arg(s.m_displayName), s, 0);
-				undo->push();
-			}
-			else {
-				// we need inputs for room (if there is a room, there is also a building and level)
-				if (m_ui->comboBoxZone->currentIndex() == -1) {
-					QMessageBox::critical(this, QString(), tr("First select a zone to add the surface to!"));
-					return;
-				}
-				unsigned int zoneUUID = m_ui->comboBoxZone->currentData().toUInt();
-				Q_ASSERT(zoneUUID != 0);
-
-				s.updateColor(); // set color based on orientation
-				// the surface will get the unique ID as persistant ID
-				s.m_id = s.uniqueID();
-				// also store component information
-				VICUS::ComponentInstance compInstance;
-				compInstance.m_id = VICUS::Project::uniqueId(project().m_componentInstances);
-				compInstance.m_componentID = m_ui->comboBoxComponent->currentData().toUInt();
-				// for now we assume that the zone's surface is connected to the b-side of the component
-				compInstance.m_sideBSurfaceID = s.m_id;
-				// modify project
-				SVUndoAddSurface * undo = new SVUndoAddSurface(tr("Added surface '%1'").arg(s.m_displayName), s, zoneUUID, &compInstance);
-				undo->push();
-			}
-		} break;
-
-		case Vic3D::NewGeometryObject::NGM_ZoneExtrusion : {
-
-			// we need a building level
-			if (m_ui->comboBoxBuildingLevel->currentIndex() == -1) {
-				QMessageBox::critical(this, QString(), tr("First select a building level to add the zone/room to!"));
-				return;
-			}
-			// tricky part starts now
-			// 1. we need to get a list of surfaces and make their normal vectors point outwards
-			// 2. we need to assign colors to the surfaces and default components based on
-			//    inclination
-			// 3. we need to create an undo-action
-
-			// take the polygon
-			VICUS::Polygon3D floor = po->planeGeometry().polygon();
-			VICUS::Polygon3D ceiling = po->offsetPlaneGeometry().polygon();
-			// Note: both polygons still have the same normal vector!
-
-			// compute offset vector
-			IBKMK::Vector3D offset = ceiling.vertexes()[0] - floor.vertexes()[0];
-			// now check if ceiling is offset in same direction as normal vector of floor plane?
-			double dotProduct = offset.scalarProduct(floor.normal());
-			if (dotProduct > 0) {
-				// same direction, we need to reverse floor polygon
-				floor.flip();
-			}
-			else {
-				// opposite direction, we need to reverse the ceiling polygon
-				ceiling.flip();
-			}
-
-			std::vector<VICUS::ComponentInstance> componentInstances;
-			VICUS::Room r;
-			r.m_displayName = m_ui->lineEditName->text().trimmed();
-			// now we can create the surfaces for top and bottom
-			// compose a surface object based on the current content of the new polygon object
-			VICUS::Surface sFloor;
-			sFloor.m_displayName = QString("Floor");
-			sFloor.m_id = sFloor.uniqueID();
-			VICUS::Surface sCeiling;
-			sCeiling.m_displayName = QString("Ceiling");
-			sCeiling.m_id = sCeiling.uniqueID();
-			// if the ceiling has a normal vector pointing up, we take it as ceiling, otherwise it's going to be the floor
-			if (IBKMK::Vector3D(0,0,1).scalarProduct(ceiling.normal()) > 0) {
-				sCeiling.setPolygon3D(ceiling);
-				sFloor.setPolygon3D(floor);
-			}
-			else {
-				sCeiling.setPolygon3D(floor);
-				sFloor.setPolygon3D(ceiling);
-			}
-
-			sFloor.updateColor();
-			// get the smallest yet free ID for component instances/construction instances
-			unsigned int conInstID = VICUS::Project::largestUniqueId(project().m_componentInstances);
-			// Note: surface is attached to "Side A"
-			componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
-				 m_ui->comboBoxComponentFloor->currentData().toUInt(), sFloor.m_id, VICUS::INVALID_ID));
-
-			sCeiling.updateColor();
-			// Note: surface is attached to "Side A"
-			componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
-				 m_ui->comboBoxComponentCeiling->currentData().toUInt(), sCeiling.m_id, VICUS::INVALID_ID));
-
-			r.m_id = r.uniqueID();
-			r.m_surfaces.push_back(sFloor);
-			r.m_surfaces.push_back(sCeiling);
-
-			// now loop around the circle and create planes for wall segments
-			// we take the floor polygon
-
-			unsigned int nVert = floor.vertexes().size();
-			unsigned int wallComponentID = m_ui->comboBoxComponentWalls->currentData().toUInt();
-			for (unsigned int i=0; i<nVert; ++i) {
-				// mind the winding order
-				// when looked from above, floor vertexes go clock-wise,
-				// and ceiling vertices go anti-clockwise
-				unsigned int vIdx2 = (i+1) % nVert;
-				//IBKMK::Vector3D p0 = floor.vertexes()[ i ];
-				//IBKMK::Vector3D p1 = floor.vertexes()[ vIdx2 ];
-				//IBKMK::Vector3D p2 = floor.vertexes()[ i ] + offset;	//take offset as last point for rectangle; rounding errors by vector-sum?
-
-				IBKMK::Vector3D p0 = floor.vertexes()[ vIdx2 ];
-				IBKMK::Vector3D p1 = floor.vertexes()[ i ];
-				IBKMK::Vector3D p2 = floor.vertexes()[ vIdx2 ] + offset;	//take offset as last point for rectangle; rounding errors by vector-sum?
-
-				//				IBKMK::Vector3D a = p1-p0;
-				//				IBKMK::Vector3D b = p2-p0;
-
-				//				qDebug() << "Plane: " << VICUS::IBKVector2String(a) << " : " << VICUS::IBKVector2String(b);
-
-				VICUS::Surface sWall;
-				sWall.m_id = sWall.uniqueID();
-				sWall.m_displayName = tr("Wall %1").arg(i+1);
-				sWall.setPolygon3D( VICUS::Polygon3D(VICUS::Polygon3D::T_Rectangle, p0, p1, p2) );
-				sWall.updateColor();
-				// wall surface is attached to "Side A"
-				componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
-															  wallComponentID, sWall.m_id, VICUS::INVALID_ID));
-
-				r.m_surfaces.push_back(sWall);
-			}
-
-			double area = sFloor.geometry().area();
-			VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Area, area);
-			VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Volume, area*offset.magnitude());
-
-			// now create the undo action
-			unsigned int buildingLevelUid = m_ui->comboBoxBuildingLevel->currentData().toUInt();
-			Q_ASSERT(buildingLevelUid != 0);
-			SVUndoAddZone * undo = new SVUndoAddZone(tr("Adding new zone '%1'").arg(r.m_displayName),
-													 buildingLevelUid,
-													 r, false, &componentInstances);
-			undo->push();
-		}
-		break;
-
-		case Vic3D::NewGeometryObject::NGM_ZoneFloor:
-		case Vic3D::NewGeometryObject::NUM_NGM:
-			Q_ASSERT(false); // invalid operation
-			return;
-	}
-
-	// reset view
-	on_pushButtonCancel_clicked();
 }
 
 
@@ -1114,13 +407,39 @@ void SVPropVertexListWidget::on_toolButtonAddBuilding_clicked() {
 	undo->push(); // this will update our combo boxes
 
 	// now also select the matching item
-	reselectById(m_ui->comboBoxBuilding, (int)b.uniqueID());
+	if (sender() == m_ui->toolButtonAddBuilding)
+		reselectById(m_ui->comboBoxBuilding, (int)b.uniqueID());
+	else if (sender() == m_ui->toolButtonAddBuilding2)
+		reselectById(m_ui->comboBoxBuilding2, (int)b.uniqueID());
+	else if (sender() == m_ui->toolButtonAddBuilding3)
+		reselectById(m_ui->comboBoxBuilding3, (int)b.uniqueID());
+	else {
+		Q_ASSERT(false);
+	}
 }
 
 
 void SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked() {
+	QComboBox * buildingCombo;
+	QComboBox * buildingLevelCombo;
+	if (sender() == m_ui->toolButtonAddBuildingLevel) {
+		buildingCombo = m_ui->comboBoxBuilding;
+		buildingLevelCombo = m_ui->comboBoxBuildingLevel;
+	}
+	else if (sender() == m_ui->toolButtonAddBuildingLevel2) {
+		buildingCombo = m_ui->comboBoxBuilding2;
+		buildingLevelCombo = m_ui->comboBoxBuildingLevel2;
+	}
+	else if (sender() == m_ui->toolButtonAddBuildingLevel3) {
+		buildingCombo = m_ui->comboBoxBuilding3;
+		buildingLevelCombo = m_ui->comboBoxBuildingLevel3;
+	}
+	else {
+		Q_ASSERT(false);
+	}
+
 	// get currently selected building
-	unsigned int buildingUniqueID = m_ui->comboBoxBuilding->currentData().toUInt();
+	unsigned int buildingUniqueID = buildingCombo->currentData().toUInt();
 	const VICUS::Building * b = dynamic_cast<const VICUS::Building*>(project().objectById(buildingUniqueID));
 	Q_ASSERT(b != nullptr);
 
@@ -1139,7 +458,7 @@ void SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked() {
 	undo->push(); // this will update our combo boxes
 
 	// now also select the matching item
-	reselectById(m_ui->comboBoxBuildingLevel, (int)bl.uniqueID());
+	reselectById(buildingLevelCombo, (int)bl.uniqueID());
 }
 
 
@@ -1169,7 +488,401 @@ void SVPropVertexListWidget::on_toolButtonAddZone_clicked() {
 
 
 void SVPropVertexListWidget::on_checkBoxAnnonymousGeometry_stateChanged(int /*arg1*/) {
-	updateEnabledStates();
+	updateSurfacePageState();
+}
+
+
+void SVPropVertexListWidget::on_comboBoxBuilding_currentIndexChanged(int /*index*/) {
+	updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel, m_ui->comboBoxBuilding);
+	updateZoneComboBox(m_ui->comboBoxZone, m_ui->comboBoxBuildingLevel);
+}
+
+
+void SVPropVertexListWidget::on_comboBoxBuildingLevel_currentIndexChanged(int /*index*/) {
+	updateZoneComboBox(m_ui->comboBoxZone, m_ui->comboBoxBuildingLevel);
+	if (m_ui->comboBoxBuildingLevel->count() == 0)
+		return;
+	unsigned int buildingLevelUniqueID = m_ui->comboBoxBuildingLevel->currentData().toUInt();
+	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(project().objectById(buildingLevelUniqueID));
+	// also transfer nominal height into zone-height line edit
+	if (bl != nullptr) {
+		m_ui->lineEditZoneHeight->setValue(bl->m_height);
+		// only trigger zone height editing finished, when we are in new vertex mode
+		// Mind: widget may be hidden
+		SVViewState vs = SVViewStateHandler::instance().viewState();
+		if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex)
+			on_lineEditZoneHeight_editingFinishedSuccessfully();
+	}
+}
+
+
+void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
+	if (m_ui->lineEditName->text().trimmed().isEmpty()) {
+		QMessageBox::critical(this, QString(), tr("Please enter a descriptive name!"));
+		m_ui->lineEditName->selectAll();
+		m_ui->lineEditName->setFocus();
+		return;
+	}
+	// depending on the type of geometry that's being created,
+	// perform additional checks
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+	IBK_ASSERT(po->m_passiveMode == true);
+	IBK_ASSERT(po->newGeometryMode() == Vic3D::NewGeometryObject::NGM_Rect ||
+			   po->newGeometryMode() == Vic3D::NewGeometryObject::NGM_Polygon);
+
+	// compose a surface object based on the current content of the new polygon object
+	VICUS::Surface s;
+	s.m_displayName = m_ui->lineEditName->text().trimmed();
+	s.setPolygon3D( po->planeGeometry().polygon() );
+
+	// we need all properties, unless we create annonymous geometry
+	if (m_ui->checkBoxAnnonymousGeometry->isChecked()) {
+		s.m_color = QColor("#206000");
+		s.m_id = VICUS::Project::uniqueId(project().m_plainGeometry);
+		// modify project
+		SVUndoAddSurface * undo = new SVUndoAddSurface(tr("Added surface '%1'").arg(s.m_displayName), s, 0);
+		undo->push();
+	}
+	else {
+		// we need inputs for room (if there is a room, there is also a building and level)
+		if (m_ui->comboBoxZone->currentIndex() == -1) {
+			QMessageBox::critical(this, QString(), tr("First select a zone to add the surface to!"));
+			return;
+		}
+		unsigned int zoneUUID = m_ui->comboBoxZone->currentData().toUInt();
+		Q_ASSERT(zoneUUID != 0);
+
+		s.updateColor(); // set color based on orientation
+		// the surface will get the unique ID as persistant ID
+		s.m_id = s.uniqueID();
+		// also store component information
+		VICUS::ComponentInstance compInstance;
+		compInstance.m_id = VICUS::Project::uniqueId(project().m_componentInstances);
+		compInstance.m_componentID = m_ui->comboBoxComponent->currentData().toUInt();
+		// for now we assume that the zone's surface is connected to the b-side of the component
+		compInstance.m_sideBSurfaceID = s.m_id;
+		// modify project
+		SVUndoAddSurface * undo = new SVUndoAddSurface(tr("Added surface '%1'").arg(s.m_displayName), s, zoneUUID, &compInstance);
+		undo->push();
+	}
+}
+
+
+void SVPropVertexListWidget::on_lineEditZoneHeight_editingFinishedSuccessfully() {
+	// Guard against call when aborting/focus is lost during undo!
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+	if (po->newGeometryMode() != Vic3D::NewGeometryObject::NGM_Zone)
+		return;
+
+	// read entered line height and if valid set new height in scene view (and move local coordinate system accordingly)
+	double val = m_ui->lineEditZoneHeight->value();
+	po->setZoneHeight(val);
+	// we need to trigger a redraw here
+	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
+}
+
+
+void SVPropVertexListWidget::on_pushButtonPickZoneHeight_clicked() {
+	// enable interactive zone extrusion mode
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+	// check if interactive mode is already enabled
+	po->m_interactiveZoneExtrusionMode = !po->m_interactiveZoneExtrusionMode;
+}
+
+
+void SVPropVertexListWidget::on_comboBoxBuilding2_currentIndexChanged(int /*index*/) {
+	updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel2, m_ui->comboBoxBuilding2);
+}
+
+
+void SVPropVertexListWidget::on_comboBoxBuildingLevel2_currentIndexChanged(int /*index*/) {
+	if (m_ui->comboBoxBuildingLevel2->count() == 0)
+		return;
+	unsigned int buildingLevelUniqueID = m_ui->comboBoxBuildingLevel2->currentData().toUInt();
+	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(project().objectById(buildingLevelUniqueID));
+	// also transfer nominal height into zone-height line edit
+	if (bl != nullptr) {
+		m_ui->lineEditZoneHeight->setValue(bl->m_height);
+		// only trigger zone height editing finished, when we are in new vertex mode
+		// Mind: widget may be hidden
+		SVViewState vs = SVViewStateHandler::instance().viewState();
+		if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex)
+			on_lineEditZoneHeight_editingFinishedSuccessfully();
+	}
+}
+
+
+void SVPropVertexListWidget::on_pushButtonCreateZone_clicked() {
+	// we need a building level
+	if (m_ui->comboBoxBuildingLevel2->currentIndex() == -1) {
+		QMessageBox::critical(this, QString(), tr("First select a building level to add the zone/room to!"));
+		return;
+	}
+	// tricky part starts now
+	// 1. we need to get a list of surfaces and make their normal vectors point outwards
+	// 2. we need to assign colors to the surfaces and default components based on
+	//    inclination
+	// 3. we need to create an undo-action
+
+	// get floor and ceiling polygons from geometry object
+
+	// take the polygon
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+	VICUS::Polygon3D floor = po->planeGeometry().polygon();
+	IBK_ASSERT(po->generatedGeometry().size() == 1);
+	VICUS::Polygon3D ceiling = po->generatedGeometry()[0].polygon();
+	// Note: both polygons still have the same normal vector!
+
+	// compute offset vector
+	IBKMK::Vector3D offset = ceiling.vertexes()[0] - floor.vertexes()[0];
+	// now check if ceiling is offset in same direction as normal vector of floor plane?
+	double dotProduct = offset.scalarProduct(floor.normal());
+	if (dotProduct > 0) {
+		// same direction, we need to reverse floor polygon
+		floor.flip();
+	}
+	else {
+		// opposite direction, we need to reverse the ceiling polygon
+		ceiling.flip();
+	}
+
+	std::vector<VICUS::ComponentInstance> componentInstances;
+	VICUS::Room r;
+	r.m_displayName = m_ui->lineEditNameZone->text().trimmed();
+	// now we can create the surfaces for top and bottom
+	// compose a surface object based on the current content of the new polygon object
+	VICUS::Surface sFloor;
+	sFloor.m_displayName = QString("Floor");
+	sFloor.m_id = sFloor.uniqueID();
+	VICUS::Surface sCeiling;
+	sCeiling.m_displayName = QString("Ceiling");
+	sCeiling.m_id = sCeiling.uniqueID();
+	// if the ceiling has a normal vector pointing up, we take it as ceiling, otherwise it's going to be the floor
+	if (IBKMK::Vector3D(0,0,1).scalarProduct(ceiling.normal()) > 0) {
+		sCeiling.setPolygon3D(ceiling);
+		sFloor.setPolygon3D(floor);
+	}
+	else {
+		sCeiling.setPolygon3D(floor);
+		sFloor.setPolygon3D(ceiling);
+	}
+
+	sFloor.updateColor();
+	// get the smallest yet free ID for component instances/construction instances
+	unsigned int conInstID = VICUS::Project::largestUniqueId(project().m_componentInstances);
+	// Note: surface is attached to "Side A"
+	componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
+		 m_ui->comboBoxComponentFloor->currentData().toUInt(), sFloor.m_id, VICUS::INVALID_ID));
+
+	sCeiling.updateColor();
+	// Note: surface is attached to "Side A"
+	componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
+		 m_ui->comboBoxComponentCeiling->currentData().toUInt(), sCeiling.m_id, VICUS::INVALID_ID));
+
+	r.m_id = r.uniqueID();
+	r.m_surfaces.push_back(sFloor);
+	r.m_surfaces.push_back(sCeiling);
+
+	// now loop around the circle and create planes for wall segments
+	// we take the floor polygon
+
+	unsigned int nVert = floor.vertexes().size();
+	unsigned int wallComponentID = m_ui->comboBoxComponentWalls->currentData().toUInt();
+	for (unsigned int i=0; i<nVert; ++i) {
+		// mind the winding order
+		// when looked from above, floor vertexes go clock-wise,
+		// and ceiling vertices go anti-clockwise
+		unsigned int vIdx2 = (i+1) % nVert;
+
+		IBKMK::Vector3D p0 = floor.vertexes()[ vIdx2 ];
+		IBKMK::Vector3D p1 = floor.vertexes()[ i ];
+		IBKMK::Vector3D p2 = floor.vertexes()[ vIdx2 ] + offset;	//take offset as last point for rectangle; rounding errors by vector-sum?
+
+		VICUS::Surface sWall;
+		sWall.m_id = sWall.uniqueID();
+		sWall.m_displayName = tr("Wall %1").arg(i+1);
+		sWall.setPolygon3D( VICUS::Polygon3D(VICUS::Polygon3D::T_Rectangle, p0, p1, p2) );
+		sWall.updateColor();
+		// wall surface is attached to "Side A"
+		componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
+													  wallComponentID, sWall.m_id, VICUS::INVALID_ID));
+
+		r.m_surfaces.push_back(sWall);
+	}
+
+	double area = sFloor.geometry().area();
+	VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Area, area);
+	VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Volume, area*offset.magnitude());
+
+	// now create the undo action
+	unsigned int buildingLevelUid = m_ui->comboBoxBuildingLevel2->currentData().toUInt();
+	Q_ASSERT(buildingLevelUid != 0);
+	SVUndoAddZone * undo = new SVUndoAddZone(tr("Adding new zone '%1'").arg(r.m_displayName),
+											 buildingLevelUid,
+											 r, false, &componentInstances);
+	undo->push();
+}
+
+
+void SVPropVertexListWidget::on_comboBoxBuilding3_currentIndexChanged(int /*index*/) {
+	updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel3, m_ui->comboBoxBuilding3);
+}
+
+
+void SVPropVertexListWidget::on_comboBoxBuildingLevel3_currentIndexChanged(int /*index*/) {
+	if (m_ui->comboBoxBuildingLevel3->count() == 0)
+		return;
+	unsigned int buildingLevelUniqueID = m_ui->comboBoxBuildingLevel3->currentData().toUInt();
+	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(project().objectById(buildingLevelUniqueID));
+	// also transfer nominal height into zone-height line edit
+	if (bl != nullptr) {
+		m_ui->lineEditRoofHeight->setValue(bl->m_height);
+		// only trigger zone height editing finished, when we are in new vertex mode
+		// Mind: widget may be hidden
+		SVViewState vs = SVViewStateHandler::instance().viewState();
+		if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex)
+			on_lineEditRoofHeight_editingFinishedSuccessfully();
+	}
+}
+
+
+void SVPropVertexListWidget::on_lineEditRoofHeight_editingFinishedSuccessfully() {
+	// Guard against call when aborting/focus is lost during undo!
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+	if (po->newGeometryMode() != Vic3D::NewGeometryObject::NGM_Roof)
+		return;
+
+	updateRoofGeometry();
+}
+
+
+void SVPropVertexListWidget::on_comboBoxRoofType_currentIndexChanged(int /*index*/) {
+	updateRoofGeometry();
+}
+
+
+void SVPropVertexListWidget::on_radioButtonRoofHeight_toggled(bool checked) {
+	m_ui->lineEditRoofHeight->setEnabled(checked);
+	m_ui->lineEditRoofInclination->setEnabled(!checked);
+	updateRoofGeometry();
+}
+
+
+void SVPropVertexListWidget::on_checkBoxFlapTile_toggled(bool checked) {
+	m_ui->lineEditFlapTileHeight->setEnabled(checked);
+	updateRoofGeometry();
+}
+
+
+void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
+	// TODO : create roof
+}
+
+
+// *** PRIVATE MEMBERS ***
+
+
+
+
+
+void SVPropVertexListWidget::updateBuildingComboBox(QComboBox * combo) {
+	// populate the combo boxes
+	combo->blockSignals(true);
+	unsigned int currentUniqueId = combo->currentData().toUInt();
+	combo->clear();
+
+	const VICUS::Project & prj = project();
+	int rowOfCurrent = -1;
+	for (unsigned int i=0; i<prj.m_buildings.size(); ++i) {
+		const VICUS::Building & b = prj.m_buildings[i];
+		combo->addItem(b.m_displayName, b.uniqueID());
+		if (b.uniqueID() == currentUniqueId)
+			rowOfCurrent = (int)i;
+	}
+
+	if (rowOfCurrent != -1) {
+		combo->setCurrentIndex(rowOfCurrent);
+	}
+	else {
+		combo->setCurrentIndex(combo->count()-1); // Note: if no buildings, nothing will be selected
+	}
+	combo->blockSignals(false);
+}
+
+
+void SVPropVertexListWidget::updateBuildingLevelsComboBox(QComboBox * combo, const QComboBox * buildingCombo) {
+	combo->blockSignals(true);
+	unsigned int currentUniqueId = combo->currentData().toUInt();
+	combo->clear();
+	// only add items if we have a building selected
+	if (buildingCombo->count() != 0) {
+		const VICUS::Project & prj = project();
+		unsigned int buildingUniqueID = buildingCombo->currentData().toUInt();
+		const VICUS::Building * b = dynamic_cast<const VICUS::Building*>(prj.objectById(buildingUniqueID));
+		Q_ASSERT(b != nullptr);
+		int rowOfCurrent = -1;
+		for (unsigned int i=0; i<b->m_buildingLevels.size(); ++i) {
+			const VICUS::BuildingLevel & bl = b->m_buildingLevels[i];
+			combo->addItem(bl.m_displayName, bl.uniqueID());
+			if (bl.uniqueID() == currentUniqueId)
+				rowOfCurrent = (int)i;
+		}
+		if (rowOfCurrent != -1) {
+			combo->setCurrentIndex(rowOfCurrent);
+		}
+		else {
+			combo->setCurrentIndex(combo->count()-1); // Note: if none, nothing will be selected
+		}
+
+	}
+	combo->blockSignals(false);
+}
+
+
+void SVPropVertexListWidget::updateZoneComboBox(QComboBox * combo, const QComboBox * buildingLevelCombo) {
+	combo->blockSignals(true);
+	unsigned int currentUniqueId = combo->currentData().toUInt();
+	combo->clear();
+	// only add items if we have a building level selected
+	if (buildingLevelCombo->count() != 0) {
+		const VICUS::Project & prj = project();
+		unsigned int buildingLevelUniqueID = buildingLevelCombo->currentData().toUInt();
+		const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(prj.objectById(buildingLevelUniqueID));
+		Q_ASSERT(bl != nullptr);
+		int rowOfCurrent = -1;
+		for (unsigned int i=0; i<bl->m_rooms.size(); ++i) {
+			const VICUS::Room & r = bl->m_rooms[i];
+			combo->addItem(r.m_displayName, r.uniqueID());
+			if (r.uniqueID() == currentUniqueId)
+				rowOfCurrent = (int)i;
+		}
+		if (rowOfCurrent != -1) {
+			combo->setCurrentIndex(rowOfCurrent);
+		}
+		else {
+			combo->setCurrentIndex(combo->count()-1); // Note: if none, nothing will be selected
+		}
+	}
+	combo->blockSignals(false);
+	updateSurfacePageState();
+}
+
+
+bool SVPropVertexListWidget::reselectById(QComboBox * combo, int id) const {
+	combo->setEnabled(true);
+	if (id != -1) {
+		id = combo->findData(id);
+		if (id != -1) {
+			combo->setCurrentIndex(id);
+			return true;
+		}
+	}
+	if (combo->count() != 0)
+		combo->setCurrentIndex(0);
+	else {
+		combo->setEnabled(false);
+	}
+	return false;
 }
 
 
@@ -1177,12 +890,13 @@ bool SVPropVertexListWidget::createAnnonymousGeometry() const {
 	return (m_ui->checkBoxAnnonymousGeometry->isVisibleTo(this) && m_ui->checkBoxAnnonymousGeometry->isChecked());
 }
 
-void SVPropVertexListWidget::updateEnabledStates() {
+
+void SVPropVertexListWidget::updateSurfacePageState() {
+	// update states of "Create surface" page
+
 	// if checkbox is visible, we adjust the enabled state of other inputs
 	bool annonymousGeometry = createAnnonymousGeometry();
 	if (annonymousGeometry) {
-		m_ui->groupBoxSurfaceProperties->setEnabled(false);
-
 		m_ui->labelBuilding->setEnabled(false);
 		m_ui->comboBoxBuilding->setEnabled(false);
 		m_ui->toolButtonAddBuilding->setEnabled(false);
@@ -1194,9 +908,15 @@ void SVPropVertexListWidget::updateEnabledStates() {
 		m_ui->labelZone->setEnabled(false);
 		m_ui->comboBoxZone->setEnabled(false);
 		m_ui->toolButtonAddZone->setEnabled(false);
+
+		m_ui->labelCompont->setEnabled(false);
+		m_ui->comboBoxComponent->setEnabled(false);
+		m_ui->toolButtonEditComponents1->setEnabled(false);
 	}
 	else {
-		m_ui->groupBoxSurfaceProperties->setEnabled(true);
+		m_ui->labelCompont->setEnabled(true);
+		m_ui->comboBoxComponent->setEnabled(true);
+		m_ui->toolButtonEditComponents1->setEnabled(true);
 
 		// building controls
 		if (m_ui->comboBoxBuilding->count() == 0) {
@@ -1219,110 +939,30 @@ void SVPropVertexListWidget::updateEnabledStates() {
 		// enable tool button to add new levels
 		m_ui->toolButtonAddBuildingLevel->setEnabled(m_ui->comboBoxBuilding->count() != 0);
 		m_ui->labelBuildingLevel->setEnabled(m_ui->comboBoxBuilding->count() != 0);
-
-
-		// room controls
-		// never enabled when we create zones
-		if (m_ui->groupBoxZoneProperties->isVisibleTo(this)) {
-			m_ui->labelZone->setEnabled(false);
-			m_ui->comboBoxZone->setEnabled(false);
-			m_ui->toolButtonAddZone->setEnabled(false);
-		}
-		else {
-			if (m_ui->comboBoxZone->count() == 0) {
-				m_ui->comboBoxZone->setEnabled(false);
-			}
-			else {
-				m_ui->comboBoxZone->setEnabled(true);
-			}
-			// enable tool button to add new zones
-			m_ui->toolButtonAddZone->setEnabled(m_ui->comboBoxBuildingLevel->count() != 0);
-			m_ui->labelZone->setEnabled(m_ui->comboBoxBuildingLevel->count() != 0);
-		}
 	}
 }
 
 
-void SVPropVertexListWidget::on_comboBoxBuilding_currentIndexChanged(int /*index*/) {
-	updateBuildingLevelsComboBox();
-}
 
 
-void SVPropVertexListWidget::on_comboBoxBuildingLevel_currentIndexChanged(int /*index*/) {
-	updateZoneComboBox();
-	unsigned int buildingLevelUniqueID = m_ui->comboBoxBuildingLevel->currentData().toUInt();
-	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(project().objectById(buildingLevelUniqueID));
-	// also transfer nominal height into zone-height line edit
-	if (bl != nullptr) {
-		m_ui->lineEditZoneHeight->setValue(bl->m_height);
-		// only trigger zone height editing finished, when we are in new vertex mode
-		// Mind: widget may be hidden
-		SVViewState vs = SVViewStateHandler::instance().viewState();
-		if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex)
-			on_lineEditZoneHeight_editingFinishedSuccessfully();
-	}
-}
-
-
-void SVPropVertexListWidget::on_pushButtonFloorDone_clicked() {
-	// we switch to floor-extrusion mode now
+void SVPropVertexListWidget::updateRoofGeometry() {
+	// Guard against call when aborting/focus is lost during undo!
 	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
-	po->switchTo(Vic3D::NewGeometryObject::NGM_ZoneExtrusion);
-	m_ui->pushButtonFloorDone->setEnabled(false);
-	m_ui->pushButtonFinish->setEnabled(true);
-	m_ui->groupBoxPolygonVertexes->setEnabled(false);
+	if (po->newGeometryMode() != Vic3D::NewGeometryObject::NGM_Roof)
+		return;
 
-	// we now must align the local coordinate system to the newly created plane
+	Vic3D::NewGeometryObject::RoofInputData roofData;
 
-	IBKMK::Vector3D x = po->planeGeometry().localX();
-	IBKMK::Vector3D y = po->planeGeometry().localY();
-	IBKMK::Vector3D z = po->planeGeometry().normal();
+	// get all data from UI
+	roofData.m_type = (Vic3D::NewGeometryObject::RoofInputData::RoofType)m_ui->comboBoxRoofType->currentIndex();
+	roofData.m_angle = m_ui->lineEditRoofInclination->value(); // in Deg
+	roofData.m_height = m_ui->lineEditRoofHeight->value(); // in m
+	roofData.m_flapTileHeight = m_ui->lineEditFlapTileHeight->value(); // in m
+	roofData.m_hasFlapTile = m_ui->checkBoxFlapTile->isChecked();
+	roofData.m_isHeightPredefined = m_ui->radioButtonRoofHeight->isChecked();
 
-	// special handling - normal vector of a horizontal plane should always point upwards
+	po->setRoofGeometry(roofData);
 
-	double proj = z.scalarProduct(IBKMK::Vector3D(0,0,1));
-	if (std::fabs(proj) > 0.999999) {
-		if (proj < 0) {
-			// invert floor polygon and set inverted polygon in polygon object
-			qDebug() << "Zone with horizontal floor drawn, but upside-down normal. Flipping surface.";
-			po->flipGeometry();
-			x = po->planeGeometry().localX();
-			y = po->planeGeometry().localY();
-			z = po->planeGeometry().normal();
-		}
-	}
-
-
-	QQuaternion q2 = QQuaternion::fromAxes(QtExt::IBKVector2QVector(x.normalized()),
-										   QtExt::IBKVector2QVector(y.normalized()),
-										   QtExt::IBKVector2QVector(z.normalized()));
-	SVViewStateHandler::instance().m_coordinateSystemObject->setRotation(q2);
-
-	// now also enable the z snap operation
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_locks = SVViewState::L_LocalZ; // local Z axis is locked
-	SVViewStateHandler::instance().setViewState(vs);
-	// now also transfer the zone height to the zone object
-	if (m_ui->lineEditZoneHeight->isValid())
-		on_lineEditZoneHeight_editingFinishedSuccessfully();
-}
-
-
-void SVPropVertexListWidget::on_lineEditZoneHeight_editingFinishedSuccessfully() {
-	// read entered line height and if valid move local coordinate system to new height
-	double val = m_ui->lineEditZoneHeight->value();
-	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
-	if (po->newGeometryMode() == Vic3D::NewGeometryObject::NGM_ZoneExtrusion) {
-		po->setZoneHeight(val);
-		// we need to trigger a redraw here
-		SVViewStateHandler::instance().m_geometryView->refreshSceneView();
-	}
-}
-
-
-void SVPropVertexListWidget::on_pushButtonPickZoneHeight_clicked() {
-	// enable interactive zone extrusion mode
-	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
-	// check if interactive mode is already enabled
-	po->m_interactiveZoneExtrusionMode = !po->m_interactiveZoneExtrusionMode;
+	// we need to trigger a redraw here
+	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
 }

@@ -168,6 +168,7 @@ private slots:
 	void on_pushButtonAddPolygon_clicked();
 	void on_pushButtonAddRect_clicked();
 	void on_pushButtonAddZone_clicked();
+	void on_pushButtonAddRoof_clicked();
 	void on_pushButtonAddWindow_clicked();
 
 	// all line edit specific functions
@@ -219,6 +220,7 @@ private slots:
 	void on_pushButtonThreePointRotation_clicked();
 
 	void on_pushButtonFlipNormals_clicked();
+
 
 private:
 	/*! Updates the property widget regarding to all geometry data.
