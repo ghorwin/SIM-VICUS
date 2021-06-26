@@ -373,8 +373,7 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 	// Once we are done, we generate PlaneGeometry objects for each polygon.
 	std::vector<VICUS::Polygon3D> polys;
 
-	// First calculate the height or slope angle of the roof.
-
+	// for all but complex shape
 	if (roofData.m_type != RoofInputData::Complex) {
 
 
@@ -400,7 +399,7 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 				angle = 0;
 		}
 		// all polygons of the roof room are stored following vector
-		std::vector<std::vector<IBKMK::Vector3D>> polygons;
+		std::vector<std::vector<IBKMK::Vector3D>> polygons(1); // start with a single polygon
 
 		//add for calculation floor
 		polygons[0] = polyline;
@@ -578,12 +577,8 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 		}
 		//add all polygons to the poly vec and flip all normals of the roof elements to positiv z-value
 		//dont take floor polygon so we start by index 1
-		for(unsigned int i=1; i<polygons.size(); ++i){
+		for(unsigned int i=1; i<polygons.size(); ++i)
 			polys.push_back(polygons[i]);
-
-			if(polys[i].normal().m_z < 0)
-					polys[i].flip();
-		}
 	}
 	else if(roofData.m_type == RoofInputData::Complex){
 		//now create a complex roof structure
@@ -788,17 +783,19 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 				break;
 			}
 		}
-
-		for(unsigned int i=0; i<polys.size(); ++i){
-			//flip polygon because wrong direction of normal
-			if(polys[i].normal().m_z < 0 )
-				polys[i].flip();
-
-			VICUS::PlaneGeometry pg;
-			pg.setPolygon(polys[i]);
-			m_generatedGeometry.push_back(pg);
-		}
 	}
+
+	m_generatedGeometry.clear();
+	for(unsigned int i=0; i<polys.size(); ++i){
+		//flip polygon because wrong direction of normal
+		if(polys[i].normal().m_z < 0 )
+			polys[i].flip();
+
+		VICUS::PlaneGeometry pg;
+		pg.setPolygon(polys[i]);
+		m_generatedGeometry.push_back(pg);
+	}
+	updateBuffers(false);
 }
 
 
@@ -952,6 +949,16 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 			}
 
 		} break;
+
+		case NGM_Roof :
+			// we need to create at first the base polygon
+			addPlane(m_polygonGeometry.triangulationData(), currentVertexIndex, currentElementIndex,
+					 m_vertexBufferData, m_indexBufferData);
+			// now all the planes belonging to the roof
+			for (unsigned int i=0; i<m_generatedGeometry.size(); ++i)
+				addPlane(m_generatedGeometry[i].triangulationData(), currentVertexIndex, currentElementIndex,
+						 m_vertexBufferData, m_indexBufferData);
+		break;
 
 		case NUM_NGM :
 			Q_ASSERT(false); // invalid call
