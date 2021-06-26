@@ -1036,7 +1036,8 @@ void Scene::render() {
 	m_buildingGeometryObject.renderOpaque();
 
 	// render opaque part of new sub-surface object
-	m_newSubSurfaceObject.renderOpaque(); // might do nothing, if no sub-surface is being created
+	if (vs.m_propertyWidgetMode == SVViewState::PM_AddSubSurfaceGeometry)
+		m_newSubSurfaceObject.renderOpaque(); // might do nothing, if no sub-surface is being created
 
 	m_buildingShader->release();
 
@@ -1077,7 +1078,8 @@ void Scene::render() {
 	if (m_buildingGeometryObject.canDrawTransparent() != 0) {
 		m_buildingGeometryObject.renderTransparent();
 	}
-	m_newSubSurfaceObject.renderTransparent(); // might do nothing, if no subsurface is being constructed
+	if (vs.m_propertyWidgetMode == SVViewState::PM_AddSubSurfaceGeometry)
+		m_newSubSurfaceObject.renderTransparent(); // might do nothing, if no subsurface is being constructed
 	m_buildingShader->release();
 
 

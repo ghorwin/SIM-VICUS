@@ -80,7 +80,7 @@ public:
 	/*! Comparison operator. */
 	bool operator!=(const Polygon2D &other) const;
 
-private:
+protected:
 
 	// *** PRIVATE MEMBER FUNCTIONS ***
 

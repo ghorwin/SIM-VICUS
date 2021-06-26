@@ -11,6 +11,7 @@
 #include "SVProjectHandler.h"
 #include "SVDatabase.h"
 #include "SVSettings.h"
+#include "SVGeometryView.h"
 
 #include "Vic3DNewSubSurfaceObject.h"
 #include "SVUndoModifySurfaceGeometry.h"
@@ -133,6 +134,8 @@ void SVPropAddWindowWidget::updateUi() {
 
 void SVPropAddWindowWidget::updateGeometryObject() {
 	SVViewStateHandler::instance().m_newSubSurfaceObject->generateSubSurfaces(m_currentSelection, m_windowInputData);
+	// we need to trigger a redraw here
+	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
 }
 
 
@@ -279,8 +282,8 @@ void SVPropAddWindowWidget::on_pushButtonCreate_clicked() {
 				VICUS::SubSurfaceComponentInstance subInstance;
 				subInstance.m_id = VICUS::Project::uniqueId(subSurfaceComponentInstances);
 				subInstance.m_subSurfaceComponentID = m_ui->comboBoxSubSurfaceComponent->currentData().toUInt();
-				subInstance.m_sideASurfaceID = s->m_componentInstance->m_sideASurfaceID;
-				subInstance.m_sideBSurfaceID = s->m_componentInstance->m_sideBSurfaceID;
+				subInstance.m_sideASurfaceID = subsurf.m_id;
+				subInstance.m_sideBSurfaceID = VICUS::INVALID_ID; // currently, all our new windows are outside windows
 				subSurfaceComponentInstances.push_back(subInstance);
 			}
 		}

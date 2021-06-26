@@ -45,6 +45,8 @@ void Polygon2D::removeVertex(unsigned int idx){
 
 void Polygon2D::checkPolygon() {
 	m_valid = false;
+	if (m_vertexes.size() < 3)
+		return;
 	eleminateColinearPts();
 
 	// try to simplify polygon to internal rectangle/parallelogram definition
@@ -72,7 +74,7 @@ bool Polygon2D::intersectsLine2D(const IBK::point2D<double> &p1, const IBK::poin
 
 void Polygon2D::setVertexes(const std::vector<IBKMK::Vector2D> & vertexes) {
 	m_vertexes = vertexes;
-	checkPolygon();
+	checkPolygon(); // if we have a triangle/rectangle, this is detected here
 }
 
 
@@ -182,6 +184,10 @@ void Polygon2D::eleminateColinearPts() {
 		}
 		if(IBK::near_zero(dx1) || IBK::near_zero(dx2))
 			continue;
+		// FIXME : Dirk, critical bug here!
+		//         Try points 0,0  4,0    4,2   2,2
+		//         Consider moving this code into IBKMK_2DCalculations, and use a procedure as for
+		//         3D vertex lists!
 		if( IBK::near_zero(std::abs(dy1/dx1) - std::abs(dy2/dx2))){
 			//eleminate point
 			erasePointIdx.push_back((i+1)%vertexCount);

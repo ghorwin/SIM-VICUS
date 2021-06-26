@@ -364,11 +364,12 @@ void SVPropEditGeometry::scale() {
 			}
 			VICUS::Surface modS(*s);
 
+			modS.setPolygon3D( VICUS::Polygon3D(vertexes) );
+
 			// We update the floor area
-			if (modS.geometry().normal().m_z < -0.707)
+			if (modS.m_parent != nullptr && modS.geometry().normal().m_z < -0.707)
 				VICUS::KeywordList::setParameter(dynamic_cast<VICUS::Room*>(modS.m_parent)->m_para, "Room::para_t", VICUS::Room::P_Area, modS.geometry().area() );
 
-			modS.setPolygon3D( VICUS::Polygon3D(vertexes) );
 			modifiedSurfaces.push_back(modS);
 		}
 		// TODO : Netzwerk zeugs

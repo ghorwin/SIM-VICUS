@@ -188,17 +188,17 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 		double distWin = inputData.m_distance;
 		double hMax = hSurf - 2 * minDistance;
 		double wMax = wSurf - 2 * minDistance;
-		double frac = inputData.m_percentage;
+		double frac = inputData.m_percentage/100;
 
 		//vector for window geometry
 		std::vector<VICUS::Polygon2D> windows;
 		if(inputData.m_byPercentage){
-			if(inputData.m_percentage > 1 || inputData.m_percentage <=0 ){
+			if(frac > 1 || frac <=0 ){
 				//throw IBK::Exception("Percentage value is out of range!");
 			}
 			//area of the surface
 			double surfA = surfacePoly.area(); //kann sein dass das durch hPre * wPre ersetzt werden muss -> testen
-			double surfWinA = surfA * inputData.m_percentage;
+			double surfWinA = surfA * frac;
 
 			if(hMax<hPre)	hPre = hMax;
 			if(wMax<wPre)	wPre = wMax;
@@ -226,10 +226,10 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 
 			Priority prio = Height;
 
-			if(inputData.m_priorities[0] == 0)	prio = Height;
-			if(inputData.m_priorities[1] == 0)	prio = Width;
-			if(inputData.m_priorities[2] == 0)	prio = SillHeight;
-			if(inputData.m_priorities[3] == 0)	prio = Distance;
+			if(inputData.m_priorities[0] == 1)	prio = Height;
+			if(inputData.m_priorities[1] == 1)	prio = Width;
+			if(inputData.m_priorities[2] == 1)	prio = SillHeight;
+			if(inputData.m_priorities[3] == 1)	prio = Distance;
 
 			switch(prio){
 				case Height:{
@@ -289,6 +289,7 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + width + i * (dist + width), sillHeight));
 				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + width + i * (dist + width), sillHeight + height));
 				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + i * (dist + width), sillHeight + height));
+				windows.push_back(poly1);
 			}
 		}
 		else{
@@ -300,6 +301,7 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + wPre + i * (dist + wPre), hPreSill));
 				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + wPre + i * (dist + wPre), hPreSill + hPre));
 				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + i * (dist + wPre), hPreSill + hPre));
+				windows.push_back(poly1);
 			}
 
 		}
