@@ -329,6 +329,8 @@ void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p)
 		break;
 
 		case NGM_Roof :
+			return; // nothing to do here
+
 		case NUM_NGM :
 			Q_ASSERT(false); // invalid call
 			return;

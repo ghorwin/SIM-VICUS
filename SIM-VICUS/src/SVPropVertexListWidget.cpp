@@ -753,6 +753,24 @@ void SVPropVertexListWidget::on_lineEditRoofHeight_editingFinishedSuccessfully()
 }
 
 
+void SVPropVertexListWidget::on_comboBoxRoofType_currentIndexChanged(int /*index*/) {
+	updateRoofGeometry();
+}
+
+
+void SVPropVertexListWidget::on_radioButtonRoofHeight_toggled(bool checked) {
+	m_ui->lineEditRoofHeight->setEnabled(checked);
+	m_ui->lineEditRoofInclination->setEnabled(!checked);
+	updateRoofGeometry();
+}
+
+
+void SVPropVertexListWidget::on_checkBoxFlapTile_toggled(bool checked) {
+	m_ui->lineEditFlapTileHeight->setEnabled(checked);
+	updateRoofGeometry();
+}
+
+
 void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 	// TODO : create roof
 }
@@ -970,6 +988,7 @@ void SVPropVertexListWidget::updateSurfacePageState() {
 #endif
 	}
 }
+
 
 
 

@@ -134,6 +134,9 @@ private slots:
 	void on_comboBoxBuilding3_currentIndexChanged(int index);
 	void on_comboBoxBuildingLevel3_currentIndexChanged(int index);
 	void on_lineEditRoofHeight_editingFinishedSuccessfully();
+	void on_comboBoxRoofType_currentIndexChanged(int index);
+	void on_radioButtonRoofHeight_toggled(bool checked);
+	void on_checkBoxFlapTile_toggled(bool checked);
 	void on_pushButtonCreateRoof_clicked();
 
 private:
