@@ -70,6 +70,9 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 
 	SVViewStateHandler::instance().m_propVertexListWidget = this;
 
+	on_radioButtonRoofHeight_toggled(m_ui->radioButtonRoofHeight->isChecked());
+	on_checkBoxFlapTile_toggled(m_ui->checkBoxFlapTile->isChecked());
+
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropVertexListWidget::onModified);
 
@@ -865,24 +868,6 @@ void SVPropVertexListWidget::updateZoneComboBox(QComboBox * combo, const QComboB
 }
 
 
-void SVPropVertexListWidget::updateRoofGeometry() {
-	// Guard against call when aborting/focus is lost during undo!
-	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
-	if (po->newGeometryMode() != Vic3D::NewGeometryObject::NGM_Zone)
-		return;
-
-	Vic3D::NewGeometryObject::RoofInputData roofData;
-
-	// TODO
-
-	po->setRoofGeometry(roofData);
-
-	// we need to trigger a redraw here
-	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
-}
-
-
-
 bool SVPropVertexListWidget::reselectById(QComboBox * combo, int id) const {
 	combo->setEnabled(true);
 	if (id != -1) {
@@ -899,17 +884,6 @@ bool SVPropVertexListWidget::reselectById(QComboBox * combo, int id) const {
 	}
 	return false;
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 bool SVPropVertexListWidget::createAnnonymousGeometry() const {
@@ -965,34 +939,30 @@ void SVPropVertexListWidget::updateSurfacePageState() {
 		// enable tool button to add new levels
 		m_ui->toolButtonAddBuildingLevel->setEnabled(m_ui->comboBoxBuilding->count() != 0);
 		m_ui->labelBuildingLevel->setEnabled(m_ui->comboBoxBuilding->count() != 0);
-
-#if 0
-		// room controls
-		// never enabled when we create zones
-		if (m_ui->groupBoxZoneProperties->isVisibleTo(this)) {
-			m_ui->labelZone->setEnabled(false);
-			m_ui->comboBoxZone->setEnabled(false);
-			m_ui->toolButtonAddZone->setEnabled(false);
-		}
-		else {
-			if (m_ui->comboBoxZone->count() == 0) {
-				m_ui->comboBoxZone->setEnabled(false);
-			}
-			else {
-				m_ui->comboBoxZone->setEnabled(true);
-			}
-			// enable tool button to add new zones
-			m_ui->toolButtonAddZone->setEnabled(m_ui->comboBoxBuildingLevel->count() != 0);
-			m_ui->labelZone->setEnabled(m_ui->comboBoxBuildingLevel->count() != 0);
-		}
-#endif
 	}
 }
 
 
 
 
+void SVPropVertexListWidget::updateRoofGeometry() {
+	// Guard against call when aborting/focus is lost during undo!
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+	if (po->newGeometryMode() != Vic3D::NewGeometryObject::NGM_Roof)
+		return;
 
+	Vic3D::NewGeometryObject::RoofInputData roofData;
 
+	// get all data from UI
+	roofData.m_type = (Vic3D::NewGeometryObject::RoofInputData::RoofType)m_ui->comboBoxRoofType->currentIndex();
+	roofData.m_angle = m_ui->lineEditRoofInclination->value(); // in Deg
+	roofData.m_height = m_ui->lineEditRoofHeight->value(); // in m
+	roofData.m_flapTileHeight = m_ui->lineEditFlapTileHeight->value(); // in m
+	roofData.m_hasFlapTile = m_ui->checkBoxFlapTile->isChecked();
+	roofData.m_isHeightPredefined = m_ui->radioButtonRoofHeight->isChecked();
 
+	po->setRoofGeometry(roofData);
 
+	// we need to trigger a redraw here
+	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
+}
