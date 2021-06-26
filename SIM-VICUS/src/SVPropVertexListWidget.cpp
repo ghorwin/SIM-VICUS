@@ -83,6 +83,11 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 
 	connect(m_ui->toolButtonAddBuildingLevel2, &QToolButton::clicked, this, &SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked);
 	connect(m_ui->toolButtonAddBuildingLevel3, &QToolButton::clicked, this, &SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked);
+
+	connect(m_ui->toolButtonEditComponents1, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponents2, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponents3, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponents4, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
 }
 
 
@@ -369,6 +374,14 @@ void SVPropVertexListWidget::onCancel() {
 	vs.m_snapEnabled = true;
 	// now tell all UI components to toggle their view state
 	SVViewStateHandler::instance().setViewState(vs);
+}
+
+
+void SVPropVertexListWidget::onEditComponents() {
+	// ask main window to show database dialog, afterwards update component combos
+	SVMainWindow::instance().on_actionDBComponents_triggered();
+	// Note: SVMainWindow::instance().on_actionDBComponents_triggered() calls updateComponentCombos() itself, so
+	//       no need to call this here
 }
 
 
@@ -814,52 +827,10 @@ bool SVPropVertexListWidget::reselectById(QComboBox * combo, int id) const {
 
 
 
-void SVPropVertexListWidget::createRoofZone() {
-
-}
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-#if 0
-void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
-
-
-		case Vic3D::NewGeometryObject::NGM_ZoneExtrusion : {
-
-
-		}
-		break;
-
-		case Vic3D::NewGeometryObject::NGM_ZoneFloor:
-		case Vic3D::NewGeometryObject::NUM_NGM:
-			Q_ASSERT(false); // invalid operation
-			return;
-	}
-
-	// reset view
-	on_pushButtonCancel_clicked();
-}
-
-
-void SVPropVertexListWidget::onEditComponents() {
-	// ask main window to show database dialog, afterwards update component combos
-	SVMainWindow::instance().on_actionDBComponents_triggered();
-	// Note: SVMainWindow::instance().on_actionDBComponents_triggered() calls updateComponentCombos() itself, so
-	//       no need to call this here
-}
-#endif
 
 
 
@@ -941,53 +912,6 @@ void SVPropVertexListWidget::updateSurfacePageState() {
 #endif
 	}
 }
-
-
-
-#if 0
-void SVPropVertexListWidget::on_pushButtonFloorDone_clicked() {
-	// we switch to floor-extrusion mode now
-	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
-	po->setNewGeometryMode(Vic3D::NewGeometryObject::NGM_ZoneExtrusion);
-	m_ui->pushButtonFloorDone->setEnabled(false);
-	m_ui->pushButtonFinish->setEnabled(true);
-	m_ui->groupBoxPolygonVertexes->setEnabled(false);
-
-	// we now must align the local coordinate system to the newly created plane
-
-	IBKMK::Vector3D x = po->planeGeometry().localX();
-	IBKMK::Vector3D y = po->planeGeometry().localY();
-	IBKMK::Vector3D z = po->planeGeometry().normal();
-
-	// special handling - normal vector of a horizontal plane should always point upwards
-
-	double proj = z.scalarProduct(IBKMK::Vector3D(0,0,1));
-	if (std::fabs(proj) > 0.999999) {
-		if (proj < 0) {
-			// invert floor polygon and set inverted polygon in polygon object
-			qDebug() << "Zone with horizontal floor drawn, but upside-down normal. Flipping surface.";
-			po->flipGeometry();
-			x = po->planeGeometry().localX();
-			y = po->planeGeometry().localY();
-			z = po->planeGeometry().normal();
-		}
-	}
-
-
-	QQuaternion q2 = QQuaternion::fromAxes(QtExt::IBKVector2QVector(x.normalized()),
-										   QtExt::IBKVector2QVector(y.normalized()),
-										   QtExt::IBKVector2QVector(z.normalized()));
-	SVViewStateHandler::instance().m_coordinateSystemObject->setRotation(q2);
-
-	// now also enable the z snap operation
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_locks = SVViewState::L_LocalZ; // local Z axis is locked
-	SVViewStateHandler::instance().setViewState(vs);
-	// now also transfer the zone height to the zone object
-	if (m_ui->lineEditZoneHeight->isValid())
-		on_lineEditZoneHeight_editingFinishedSuccessfully();
-}
-#endif
 
 
 

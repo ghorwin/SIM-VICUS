@@ -103,6 +103,11 @@ private slots:
 		aborts the current operation, clears the new geometry widget and aborts the widget. */
 	void onCancel();
 
+	/*! This slot is called from all edit component tool buttons.
+		It updates all component combo boxes after DB dialog has finished.
+	*/
+	void onEditComponents();
+
 
 	// page surfaces
 
@@ -122,8 +127,6 @@ private slots:
 	void on_comboBoxBuilding2_currentIndexChanged(int index);
 	void on_comboBoxBuildingLevel2_currentIndexChanged(int index);
 	void on_pushButtonCreateZone_clicked();
-
-
 
 private:
 	/*! Returns true, if annonymous geometry is being created (i.e. checkbox is visible and checked). */
