@@ -593,16 +593,115 @@ void SVPropVertexListWidget::on_comboBoxBuildingLevel2_currentIndexChanged(int /
 
 
 void SVPropVertexListWidget::on_pushButtonCreateZone_clicked() {
+	// we need a building level
+	if (m_ui->comboBoxBuildingLevel2->currentIndex() == -1) {
+		QMessageBox::critical(this, QString(), tr("First select a building level to add the zone/room to!"));
+		return;
+	}
+	// tricky part starts now
+	// 1. we need to get a list of surfaces and make their normal vectors point outwards
+	// 2. we need to assign colors to the surfaces and default components based on
+	//    inclination
+	// 3. we need to create an undo-action
+
 	// get floor and ceiling polygons from geometry object
+
+	// take the polygon
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+	VICUS::Polygon3D floor = po->planeGeometry().polygon();
+	IBK_ASSERT(po->generatedGeometry().size() == 1);
+	VICUS::Polygon3D ceiling = po->generatedGeometry()[0].polygon();
+	// Note: both polygons still have the same normal vector!
+
+	// compute offset vector
+	IBKMK::Vector3D offset = ceiling.vertexes()[0] - floor.vertexes()[0];
+	// now check if ceiling is offset in same direction as normal vector of floor plane?
+	double dotProduct = offset.scalarProduct(floor.normal());
+	if (dotProduct > 0) {
+		// same direction, we need to reverse floor polygon
+		floor.flip();
+	}
+	else {
+		// opposite direction, we need to reverse the ceiling polygon
+		ceiling.flip();
+	}
+
+	std::vector<VICUS::ComponentInstance> componentInstances;
+	VICUS::Room r;
+	r.m_displayName = m_ui->lineEditNameZone->text().trimmed();
+	// now we can create the surfaces for top and bottom
+	// compose a surface object based on the current content of the new polygon object
+	VICUS::Surface sFloor;
+	sFloor.m_displayName = QString("Floor");
+	sFloor.m_id = sFloor.uniqueID();
+	VICUS::Surface sCeiling;
+	sCeiling.m_displayName = QString("Ceiling");
+	sCeiling.m_id = sCeiling.uniqueID();
+	// if the ceiling has a normal vector pointing up, we take it as ceiling, otherwise it's going to be the floor
+	if (IBKMK::Vector3D(0,0,1).scalarProduct(ceiling.normal()) > 0) {
+		sCeiling.setPolygon3D(ceiling);
+		sFloor.setPolygon3D(floor);
+	}
+	else {
+		sCeiling.setPolygon3D(floor);
+		sFloor.setPolygon3D(ceiling);
+	}
+
+	sFloor.updateColor();
+	// get the smallest yet free ID for component instances/construction instances
+	unsigned int conInstID = VICUS::Project::largestUniqueId(project().m_componentInstances);
+	// Note: surface is attached to "Side A"
+	componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
+		 m_ui->comboBoxComponentFloor->currentData().toUInt(), sFloor.m_id, VICUS::INVALID_ID));
+
+	sCeiling.updateColor();
+	// Note: surface is attached to "Side A"
+	componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
+		 m_ui->comboBoxComponentCeiling->currentData().toUInt(), sCeiling.m_id, VICUS::INVALID_ID));
+
+	r.m_id = r.uniqueID();
+	r.m_surfaces.push_back(sFloor);
+	r.m_surfaces.push_back(sCeiling);
+
+	// now loop around the circle and create planes for wall segments
+	// we take the floor polygon
+
+	unsigned int nVert = floor.vertexes().size();
+	unsigned int wallComponentID = m_ui->comboBoxComponentWalls->currentData().toUInt();
+	for (unsigned int i=0; i<nVert; ++i) {
+		// mind the winding order
+		// when looked from above, floor vertexes go clock-wise,
+		// and ceiling vertices go anti-clockwise
+		unsigned int vIdx2 = (i+1) % nVert;
+
+		IBKMK::Vector3D p0 = floor.vertexes()[ vIdx2 ];
+		IBKMK::Vector3D p1 = floor.vertexes()[ i ];
+		IBKMK::Vector3D p2 = floor.vertexes()[ vIdx2 ] + offset;	//take offset as last point for rectangle; rounding errors by vector-sum?
+
+		VICUS::Surface sWall;
+		sWall.m_id = sWall.uniqueID();
+		sWall.m_displayName = tr("Wall %1").arg(i+1);
+		sWall.setPolygon3D( VICUS::Polygon3D(VICUS::Polygon3D::T_Rectangle, p0, p1, p2) );
+		sWall.updateColor();
+		// wall surface is attached to "Side A"
+		componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
+													  wallComponentID, sWall.m_id, VICUS::INVALID_ID));
+
+		r.m_surfaces.push_back(sWall);
+	}
+
+	double area = sFloor.geometry().area();
+	VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Area, area);
+	VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Volume, area*offset.magnitude());
+
+	// now create the undo action
+	unsigned int buildingLevelUid = m_ui->comboBoxBuildingLevel2->currentData().toUInt();
+	Q_ASSERT(buildingLevelUid != 0);
+	SVUndoAddZone * undo = new SVUndoAddZone(tr("Adding new zone '%1'").arg(r.m_displayName),
+											 buildingLevelUid,
+											 r, false, &componentInstances);
+	undo->push();
 }
-
-
-
-
-
-
-
-
 
 
 // *** PRIVATE MEMBERS ***
@@ -739,118 +838,7 @@ void SVPropVertexListWidget::on_pushButtonFinish_clicked() {
 
 		case Vic3D::NewGeometryObject::NGM_ZoneExtrusion : {
 
-			// we need a building level
-			if (m_ui->comboBoxBuildingLevel->currentIndex() == -1) {
-				QMessageBox::critical(this, QString(), tr("First select a building level to add the zone/room to!"));
-				return;
-			}
-			// tricky part starts now
-			// 1. we need to get a list of surfaces and make their normal vectors point outwards
-			// 2. we need to assign colors to the surfaces and default components based on
-			//    inclination
-			// 3. we need to create an undo-action
 
-			// take the polygon
-			VICUS::Polygon3D floor = po->planeGeometry().polygon();
-			VICUS::Polygon3D ceiling = po->offsetPlaneGeometry().polygon();
-			// Note: both polygons still have the same normal vector!
-
-			// compute offset vector
-			IBKMK::Vector3D offset = ceiling.vertexes()[0] - floor.vertexes()[0];
-			// now check if ceiling is offset in same direction as normal vector of floor plane?
-			double dotProduct = offset.scalarProduct(floor.normal());
-			if (dotProduct > 0) {
-				// same direction, we need to reverse floor polygon
-				floor.flip();
-			}
-			else {
-				// opposite direction, we need to reverse the ceiling polygon
-				ceiling.flip();
-			}
-
-			std::vector<VICUS::ComponentInstance> componentInstances;
-			VICUS::Room r;
-			r.m_displayName = m_ui->lineEditName->text().trimmed();
-			// now we can create the surfaces for top and bottom
-			// compose a surface object based on the current content of the new polygon object
-			VICUS::Surface sFloor;
-			sFloor.m_displayName = QString("Floor");
-			sFloor.m_id = sFloor.uniqueID();
-			VICUS::Surface sCeiling;
-			sCeiling.m_displayName = QString("Ceiling");
-			sCeiling.m_id = sCeiling.uniqueID();
-			// if the ceiling has a normal vector pointing up, we take it as ceiling, otherwise it's going to be the floor
-			if (IBKMK::Vector3D(0,0,1).scalarProduct(ceiling.normal()) > 0) {
-				sCeiling.setPolygon3D(ceiling);
-				sFloor.setPolygon3D(floor);
-			}
-			else {
-				sCeiling.setPolygon3D(floor);
-				sFloor.setPolygon3D(ceiling);
-			}
-
-			sFloor.updateColor();
-			// get the smallest yet free ID for component instances/construction instances
-			unsigned int conInstID = VICUS::Project::largestUniqueId(project().m_componentInstances);
-			// Note: surface is attached to "Side A"
-			componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
-				 m_ui->comboBoxComponentFloor->currentData().toUInt(), sFloor.m_id, VICUS::INVALID_ID));
-
-			sCeiling.updateColor();
-			// Note: surface is attached to "Side A"
-			componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
-				 m_ui->comboBoxComponentCeiling->currentData().toUInt(), sCeiling.m_id, VICUS::INVALID_ID));
-
-			r.m_id = r.uniqueID();
-			r.m_surfaces.push_back(sFloor);
-			r.m_surfaces.push_back(sCeiling);
-
-			// now loop around the circle and create planes for wall segments
-			// we take the floor polygon
-
-			unsigned int nVert = floor.vertexes().size();
-			unsigned int wallComponentID = m_ui->comboBoxComponentWalls->currentData().toUInt();
-			for (unsigned int i=0; i<nVert; ++i) {
-				// mind the winding order
-				// when looked from above, floor vertexes go clock-wise,
-				// and ceiling vertices go anti-clockwise
-				unsigned int vIdx2 = (i+1) % nVert;
-				//IBKMK::Vector3D p0 = floor.vertexes()[ i ];
-				//IBKMK::Vector3D p1 = floor.vertexes()[ vIdx2 ];
-				//IBKMK::Vector3D p2 = floor.vertexes()[ i ] + offset;	//take offset as last point for rectangle; rounding errors by vector-sum?
-
-				IBKMK::Vector3D p0 = floor.vertexes()[ vIdx2 ];
-				IBKMK::Vector3D p1 = floor.vertexes()[ i ];
-				IBKMK::Vector3D p2 = floor.vertexes()[ vIdx2 ] + offset;	//take offset as last point for rectangle; rounding errors by vector-sum?
-
-				//				IBKMK::Vector3D a = p1-p0;
-				//				IBKMK::Vector3D b = p2-p0;
-
-				//				qDebug() << "Plane: " << VICUS::IBKVector2String(a) << " : " << VICUS::IBKVector2String(b);
-
-				VICUS::Surface sWall;
-				sWall.m_id = sWall.uniqueID();
-				sWall.m_displayName = tr("Wall %1").arg(i+1);
-				sWall.setPolygon3D( VICUS::Polygon3D(VICUS::Polygon3D::T_Rectangle, p0, p1, p2) );
-				sWall.updateColor();
-				// wall surface is attached to "Side A"
-				componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
-															  wallComponentID, sWall.m_id, VICUS::INVALID_ID));
-
-				r.m_surfaces.push_back(sWall);
-			}
-
-			double area = sFloor.geometry().area();
-			VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Area, area);
-			VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Volume, area*offset.magnitude());
-
-			// now create the undo action
-			unsigned int buildingLevelUid = m_ui->comboBoxBuildingLevel->currentData().toUInt();
-			Q_ASSERT(buildingLevelUid != 0);
-			SVUndoAddZone * undo = new SVUndoAddZone(tr("Adding new zone '%1'").arg(r.m_displayName),
-													 buildingLevelUid,
-													 r, false, &componentInstances);
-			undo->push();
 		}
 		break;
 
