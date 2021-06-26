@@ -14,7 +14,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="pageVertexes">
       <layout class="QGridLayout" name="gridLayout_8">
@@ -283,9 +283,7 @@
       </layout>
       <zorder>pushButtonCreateSurface</zorder>
       <zorder>pushButtonCancel2</zorder>
-      <zorder>horizontalSpacer_2</zorder>
       <zorder>groupBoxObjectProperties</zorder>
-      <zorder>verticalSpacer_3</zorder>
      </widget>
      <widget class="QWidget" name="pageZone">
       <layout class="QGridLayout" name="gridLayout_3">
