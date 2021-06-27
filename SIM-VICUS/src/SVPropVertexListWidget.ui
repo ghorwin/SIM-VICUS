@@ -14,7 +14,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="pageVertexes">
       <layout class="QGridLayout" name="gridLayout_8">
@@ -575,35 +575,8 @@
           <string>Roof properties</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
-          <item row="3" column="1">
-           <widget class="QComboBox" name="comboBoxBuildingLevel3"/>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="label_10">
-            <property name="text">
-             <string>Roof component:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="12" column="0">
-           <widget class="QCheckBox" name="checkBoxFlapTile">
-            <property name="text">
-             <string>Flap tile height:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1">
-           <widget class="QComboBox" name="comboBoxComponentRoof3"/>
-          </item>
-          <item row="5" column="2">
-           <widget class="QToolButton" name="toolButtonEditComponents5">
-            <property name="text">
-             <string>...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="12" column="1">
-           <widget class="QtExt::ValidatingLineEdit" name="lineEditFlapTileHeight">
+          <item row="9" column="1">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditRoofHeight">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -611,33 +584,10 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>0.6</string>
+             <string>2</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="1">
-           <spacer name="verticalSpacer_10">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Preferred</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="7" column="0">
-           <widget class="QLabel" name="label_12">
-            <property name="text">
-             <string>Wall component:</string>
             </property>
            </widget>
           </item>
@@ -648,21 +598,69 @@
             </property>
            </widget>
           </item>
-          <item row="12" column="2">
-           <widget class="QLabel" name="label_16">
+          <item row="6" column="2">
+           <widget class="QToolButton" name="toolButtonEditComponents7">
             <property name="text">
-             <string>m</string>
+             <string>...</string>
             </property>
            </widget>
           </item>
-          <item row="9" column="0">
+          <item row="6" column="1">
+           <widget class="QComboBox" name="comboBoxComponentWall3"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="labelBuildingLevel_3">
+            <property name="text">
+             <string>Building level:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="3">
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QLabel" name="label_9">
+              <property name="text">
+               <string>Name:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEditNameRoof"/>
+            </item>
+           </layout>
+          </item>
+          <item row="5" column="2">
+           <widget class="QToolButton" name="toolButtonEditComponents5">
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="11" column="0">
+           <widget class="QCheckBox" name="checkBoxFlapTile">
+            <property name="text">
+             <string>Flap tile height:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>Roof component:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="0">
            <widget class="QLabel" name="labelBuilding_4">
             <property name="text">
              <string>Roof type:</string>
             </property>
            </widget>
           </item>
-          <item row="11" column="1">
+          <item row="2" column="1">
+           <widget class="QComboBox" name="comboBoxBuilding3"/>
+          </item>
+          <item row="10" column="1">
            <widget class="QtExt::ValidatingLineEdit" name="lineEditRoofInclination">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -678,21 +676,41 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="labelBuildingLevel_3">
+          <item row="1" column="1">
+           <spacer name="verticalSpacer_7">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Preferred</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="3" column="1">
+           <widget class="QComboBox" name="comboBoxBuildingLevel3"/>
+          </item>
+          <item row="9" column="2">
+           <widget class="QLabel" name="label_14">
             <property name="text">
-             <string>Building level:</string>
+             <string>m</string>
             </property>
            </widget>
           </item>
-          <item row="7" column="2">
-           <widget class="QToolButton" name="toolButtonEditComponents7">
-            <property name="text">
-             <string>...</string>
+          <item row="3" column="2">
+           <widget class="QToolButton" name="toolButtonAddBuildingLevel3">
+            <property name="icon">
+             <iconset resource="../resources/SIM-VICUS.qrc">
+              <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
             </property>
            </widget>
           </item>
-          <item row="9" column="1">
+          <item row="8" column="1">
            <widget class="QComboBox" name="comboBoxRoofType">
             <item>
              <property name="text">
@@ -721,36 +739,7 @@
             </item>
            </widget>
           </item>
-          <item row="2" column="2">
-           <widget class="QToolButton" name="toolButtonAddBuilding3">
-            <property name="icon">
-             <iconset resource="../resources/SIM-VICUS.qrc">
-              <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
-            </property>
-           </widget>
-          </item>
-          <item row="11" column="0">
-           <widget class="QRadioButton" name="radioButtonRoofInclination">
-            <property name="text">
-             <string>Roof inclination:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
-           <widget class="QLabel" name="label_11">
-            <property name="text">
-             <string>Floor component:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="2">
-           <widget class="QToolButton" name="toolButtonEditComponents6">
-            <property name="text">
-             <string>...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="10" column="0">
+          <item row="9" column="0">
            <widget class="QRadioButton" name="radioButtonRoofHeight">
             <property name="text">
              <string>Roof height:</string>
@@ -760,17 +749,37 @@
             </property>
            </widget>
           </item>
-          <item row="10" column="2">
-           <widget class="QLabel" name="label_14">
-            <property name="text">
-             <string>m</string>
+          <item row="2" column="2">
+           <widget class="QToolButton" name="toolButtonAddBuilding3">
+            <property name="icon">
+             <iconset resource="../resources/SIM-VICUS.qrc">
+              <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
             </property>
            </widget>
           </item>
-          <item row="11" column="2">
-           <widget class="QLabel" name="label_15">
+          <item row="5" column="1">
+           <widget class="QComboBox" name="comboBoxComponentRoof3"/>
+          </item>
+          <item row="7" column="1">
+           <spacer name="verticalSpacer_10">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Preferred</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="10" column="0">
+           <widget class="QRadioButton" name="radioButtonRoofInclination">
             <property name="text">
-             <string>Deg</string>
+             <string>Roof inclination:</string>
             </property>
            </widget>
           </item>
@@ -790,16 +799,8 @@
             </property>
            </spacer>
           </item>
-          <item row="3" column="2">
-           <widget class="QToolButton" name="toolButtonAddBuildingLevel3">
-            <property name="icon">
-             <iconset resource="../resources/SIM-VICUS.qrc">
-              <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
-            </property>
-           </widget>
-          </item>
-          <item row="10" column="1">
-           <widget class="QtExt::ValidatingLineEdit" name="lineEditRoofHeight">
+          <item row="11" column="1">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditFlapTileHeight">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -807,51 +808,33 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>2</string>
+             <string>0.6</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
            </widget>
           </item>
-          <item row="7" column="1">
-           <widget class="QComboBox" name="comboBoxComponentWall3"/>
-          </item>
-          <item row="6" column="1">
-           <widget class="QComboBox" name="comboBoxComponentFloor3"/>
-          </item>
-          <item row="1" column="1">
-           <spacer name="verticalSpacer_7">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
+          <item row="10" column="2">
+           <widget class="QLabel" name="label_15">
+            <property name="text">
+             <string>Deg</string>
             </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Preferred</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
+           </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QComboBox" name="comboBoxBuilding3"/>
+          <item row="11" column="2">
+           <widget class="QLabel" name="label_16">
+            <property name="text">
+             <string>m</string>
+            </property>
+           </widget>
           </item>
-          <item row="0" column="0" colspan="3">
-           <layout class="QHBoxLayout" name="horizontalLayout_4">
-            <item>
-             <widget class="QLabel" name="label_9">
-              <property name="text">
-               <string>Name:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="lineEditNameRoof"/>
-            </item>
-           </layout>
+          <item row="6" column="0">
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>Flap tile component:</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -912,8 +895,6 @@
   <tabstop>toolButtonAddBuildingLevel3</tabstop>
   <tabstop>comboBoxComponentRoof3</tabstop>
   <tabstop>toolButtonEditComponents5</tabstop>
-  <tabstop>comboBoxComponentFloor3</tabstop>
-  <tabstop>toolButtonEditComponents6</tabstop>
   <tabstop>comboBoxComponentWall3</tabstop>
   <tabstop>toolButtonEditComponents7</tabstop>
   <tabstop>comboBoxRoofType</tabstop>

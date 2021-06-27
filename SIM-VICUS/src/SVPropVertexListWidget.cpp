@@ -92,7 +92,6 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 	connect(m_ui->toolButtonEditComponents3, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
 	connect(m_ui->toolButtonEditComponents4, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
 	connect(m_ui->toolButtonEditComponents5, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
-	connect(m_ui->toolButtonEditComponents6, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
 	connect(m_ui->toolButtonEditComponents7, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
 }
 
@@ -652,10 +651,10 @@ void SVPropVertexListWidget::on_pushButtonCreateZone_clicked() {
 	// now we can create the surfaces for top and bottom
 	// compose a surface object based on the current content of the new polygon object
 	VICUS::Surface sFloor;
-	sFloor.m_displayName = QString("Floor");
+	sFloor.m_displayName = tr("Floor");
 	sFloor.m_id = sFloor.uniqueID();
 	VICUS::Surface sCeiling;
-	sCeiling.m_displayName = QString("Ceiling");
+	sCeiling.m_displayName = tr("Ceiling");
 	sCeiling.m_id = sCeiling.uniqueID();
 	// if the ceiling has a normal vector pointing up, we take it as ceiling, otherwise it's going to be the floor
 	if (IBKMK::Vector3D(0,0,1).scalarProduct(ceiling.normal()) > 0) {
@@ -775,7 +774,97 @@ void SVPropVertexListWidget::on_checkBoxFlapTile_toggled(bool checked) {
 
 
 void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
-	// TODO : create roof
+	// we need a building level
+	if (m_ui->comboBoxBuildingLevel3->currentIndex() == -1) {
+		QMessageBox::critical(this, QString(), tr("First select a building level to add the roof zone to!"));
+		return;
+	}
+
+	// get floor polygon from geometry object
+	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+	const VICUS::Polygon3D & floor = po->planeGeometry().polygon();
+
+	// generate floor surface (no component assigned!)
+	VICUS::Room r;
+	r.m_displayName = m_ui->lineEditNameRoof->text().trimmed();
+	// now we can create the surfaces for top and bottom
+	// compose a surface object based on the current content of the new polygon object
+	VICUS::Surface sFloor;
+	sFloor.m_displayName = tr("Roof floor");
+	sFloor.m_id = sFloor.uniqueID();
+	sFloor.setPolygon3D(floor);
+	sFloor.updateColor();
+
+	r.m_id = r.uniqueID();
+	r.m_surfaces.push_back(sFloor);
+
+	std::vector<VICUS::ComponentInstance> componentInstances;
+	unsigned int compInstID = VICUS::Project::largestUniqueId(project().m_componentInstances);
+	// now process all other generated surfaces and create roof surfaces
+	unsigned int roofSurfaceCount = 0;
+	unsigned int flapTileCount = 0;
+	for (unsigned int i=0; i<po->generatedGeometry().size(); ++i) {
+		VICUS::Surface sRoof;
+		sRoof.m_displayName = tr("Roof surface %1").arg(++roofSurfaceCount);
+		sRoof.m_id = sRoof.uniqueID();
+		sRoof.setPolygon3D(po->generatedGeometry()[i].polygon());
+		sRoof.updateColor();
+
+		unsigned int componentID = VICUS::INVALID_ID;
+		if (m_ui->comboBoxComponentRoof3->count() > 0)
+			componentID = m_ui->comboBoxComponentRoof3->currentData().toUInt();
+		// special handling for flap tile
+		if (m_ui->checkBoxFlapTile->isChecked()) {
+			// TODO Dirk: for flap-tile surfaces adjust sRoof.m_displayName and componentID
+			switch ((Vic3D::NewGeometryObject::RoofInputData::RoofType)m_ui->comboBoxRoofType->currentIndex()) {
+				case Vic3D::NewGeometryObject::RoofInputData::SinglePitchRoof:
+					if (i==1) {
+						sRoof.m_displayName = tr("Flap tile %1").arg(++flapTileCount);
+						if (m_ui->comboBoxComponentWall3->count() == 0)
+							componentID = VICUS::INVALID_ID;
+						else
+							componentID = m_ui->comboBoxComponentWall3->currentData().toUInt();
+					}
+				break;
+				case Vic3D::NewGeometryObject::RoofInputData::DoublePitchRoof:
+					//
+				break;
+				case Vic3D::NewGeometryObject::RoofInputData::MansardRoof:
+					//
+				break;
+				case Vic3D::NewGeometryObject::RoofInputData::HipRoof:
+					//
+				break;
+				case Vic3D::NewGeometryObject::RoofInputData::Complex:
+					//
+				break;
+			}
+		}
+
+		if (componentID != VICUS::INVALID_ID) {
+			// new surfaces are attached to "Side A"
+			componentInstances.push_back(
+						VICUS::ComponentInstance(++compInstID, componentID, sRoof.m_id, VICUS::INVALID_ID));
+		}
+
+		// add surface to roof zone
+		r.m_surfaces.push_back(sRoof);
+	}
+
+	double area = sFloor.geometry().area();
+	VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Area, area);
+
+	// TODO Dirk: compute roof volume, this should be done by NewGeometryObject
+	double volume = 10;
+	VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Volume, volume);
+
+	// now create the undo action
+	unsigned int buildingLevelUid = m_ui->comboBoxBuildingLevel3->currentData().toUInt();
+	Q_ASSERT(buildingLevelUid != 0);
+	SVUndoAddZone * undo = new SVUndoAddZone(tr("Adding roof zone '%1'").arg(r.m_displayName),
+											 buildingLevelUid,
+											 r, false, &componentInstances);
+	undo->push();
 }
 
 
