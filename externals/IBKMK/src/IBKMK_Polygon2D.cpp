@@ -47,6 +47,7 @@ void Polygon2D::checkPolygon() {
 	m_valid = false;
 	if (m_vertexes.size() < 3)
 		return;
+
 	eleminateColinearPts();
 
 	// try to simplify polygon to internal rectangle/parallelogram definition
@@ -157,50 +158,10 @@ bool Polygon2D::isSimplePolygon() const {
 	return true;
 }
 
-
 void Polygon2D::eleminateColinearPts() {
-
-	unsigned int vertexCount = m_vertexes.size();
-	std::vector<unsigned int> erasePointIdx;
-	for (unsigned int i=0; i<vertexCount; ++i){
-		const IBKMK::Vector2D &p0 = m_vertexes[i];
-		const IBKMK::Vector2D &p1 = m_vertexes[(i+1)%vertexCount];
-		const IBKMK::Vector2D &p2 = m_vertexes[(i+2)%vertexCount];
-
-		if(p1==p2){
-			erasePointIdx.push_back((i+1)%vertexCount);
-			continue;
-		}
-
-		double dx1 = p1.m_x - p0.m_x;
-		double dx2 = p2.m_x - p0.m_x;
-		double dy1 = p1.m_y - p0.m_y;
-		double dy2 = p2.m_y - p0.m_y;
-
-		if( IBK::near_zero(dx1) && IBK::near_zero(dx2)){
-			//eleminate point
-			erasePointIdx.push_back((i+1)%vertexCount);
-			continue;
-		}
-		if(IBK::near_zero(dx1) || IBK::near_zero(dx2))
-			continue;
-		// FIXME : Dirk, critical bug here!
-		//         Try points 0,0  4,0    4,2   2,2
-		//         Consider moving this code into IBKMK_2DCalculations, and use a procedure as for
-		//         3D vertex lists!
-		if( IBK::near_zero(std::abs(dy1/dx1) - std::abs(dy2/dx2))){
-			//eleminate point
-			erasePointIdx.push_back((i+1)%vertexCount);
-			continue;
-		}
-	}
-
-	unsigned int count=0;
-	while (count<erasePointIdx.size()) {
-		m_vertexes.erase(m_vertexes.begin()+erasePointIdx[count]);
-		++count;
-	}
+	IBKMK::eleminateColinearPoints(m_vertexes);
 }
+
 
 
 

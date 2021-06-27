@@ -60,6 +60,8 @@ bool intersectsLine2D(const std::vector<Vector2D> & polygon,
 */
 int pointInPolygon(const std::vector<Vector2D> & poly, const IBK::point2D<double> &p);
 
+/*! Eleminates colinear points in a polygon. */
+void eleminateColinearPoints(std::vector<IBKMK::Vector2D> & polygon);
 
 } // namespace IBKMK
 
