@@ -204,7 +204,7 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 			if(wMax<wPre)	wPre = wMax;
 			if(hPreSill < minDistance)	hPreSill = minDistance;
 
-			double count1 = (surfWinA - minDistance * hPre) / ((wPre + minDistance) * hPre);
+
 			double count2 = (wSurf - minDistance) / (wPre + minDistance);
 			int count = (int)std::floor(count2);
 
@@ -226,8 +226,8 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 
 			Priority prio = Height;
 
-			if(inputData.m_priorities[0] == 1)	prio = Height;
-			if(inputData.m_priorities[1] == 1)	prio = Width;
+			if(inputData.m_priorities[0] == 1)	prio = Width;
+			if(inputData.m_priorities[1] == 1)	prio = Height;
 			if(inputData.m_priorities[2] == 1)	prio = SillHeight;
 			if(inputData.m_priorities[3] == 1)	prio = Distance;
 
@@ -280,7 +280,7 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 			else
 				sillHeight = hPreSill;
 
-			double dist = (wSurf - count * width) / (count + 1);		//testen ob hier die +1 hin muss!!!
+			double dist = (wSurf - count * width) / (count /*+ 1*/);		//testen ob hier die +1 hin muss!!!
 
 			//now create the windows
 			for (unsigned int i=0; i<count; ++i){
