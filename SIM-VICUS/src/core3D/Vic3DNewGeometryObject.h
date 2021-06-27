@@ -195,7 +195,7 @@ public:
 	// Functions for retrieving the current geometry/vertex data input
 
 	/*! Provides read-only access to the current plane geometry. */
-	const VICUS::PlaneGeometry planeGeometry() const { return m_polygonGeometry; }
+	const VICUS::PlaneGeometry & planeGeometry() const { return m_polygonGeometry; }
 	/*! Returns generated planes. */
 	const std::vector<VICUS::PlaneGeometry> & generatedGeometry() const { return m_generatedGeometry; }
 
