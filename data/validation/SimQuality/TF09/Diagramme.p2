@@ -4,12 +4,13 @@
 	<Directories>
 		<Directory>
 			<Path>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten</Path>
-			<SubDir Color="#ff007f" Checked="0">.</SubDir>
+			<SubDir Color="#ff007f" Checked="1">.</SubDir>
 		</Directory>
 		<Directory>
 			<Path>B:/git/SIM-VICUS/data/vicus/ShadingTest</Path>
 			<SubDir Color="#ffaa00" Checked="1">.</SubDir>
 			<SubDir Color="#ff007f" Checked="0">SimQ_09.1</SubDir>
+			<ExpandedSubDir>.</ExpandedSubDir>
 		</Directory>
 	</Directories>
 
@@ -75,6 +76,13 @@
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?1|2</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
 			</Extractors>
 			<ChartModel chartType="2D">
 				<SeriesProperties>
@@ -119,6 +127,11 @@
 						<MarkerStyle>0</MarkerStyle>
 						<MarkerColor>#000000</MarkerColor>
 						<MarkerSize>7</MarkerSize>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#314004</PenColor>
+						<MarkerColor>#314004</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
@@ -218,6 +231,13 @@
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>1</ColumnIndex>
 				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?1|2</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
 			</Extractors>
 			<ChartModel chartType="2D">
 				<SeriesProperties>
@@ -263,6 +283,11 @@
 						<PenStyle>0</PenStyle>
 						<MarkerColor>#000000</MarkerColor>
 						<MarkerSize>11</MarkerSize>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#314004</PenColor>
+						<MarkerColor>#314004</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
@@ -328,7 +353,28 @@
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_detailed.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_fast.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_opt.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
@@ -360,18 +406,34 @@
 						<MarkerSize>20</MarkerSize>
 					</Series>
 					<Series>
-						<TitleText>SIM VICUS</TitleText>
-						<PenWidth>7</PenWidth>
-						<PenColor>#ff950e</PenColor>
-						<MarkerColor>#ff950e</MarkerColor>
+						<TitleText>SHADING Lib old accurate</TitleText>
+						<PenStyle>2</PenStyle>
+						<PenColor>#ff0000</PenColor>
+						<MarkerColor>#ff0000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS detailed</TitleText>
+						<PenColor>#579d1c</PenColor>
+						<MarkerColor>#579d1c</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS fast</TitleText>
+						<PenColor>#ffaa00</PenColor>
+						<MarkerColor>#ffaa00</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS accurate</TitleText>
+						<PenColor>#0055ff</PenColor>
+						<MarkerColor>#0055ff</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<IBK:Unit name="AxisUnit">min</IBK:Unit>
-						<Maximum>959518800000</Maximum>
-						<Minimum>959493600000</Minimum>
+						<Maximum>991141200000</Maximum>
+						<Minimum>991116000000</Minimum>
 						<DateTimeEnabled>1</DateTimeEnabled>
+						<DateTimeZero>978307200000</DateTimeZero>
 					</Axis>
 					<Axis index="1">
 						<TitleText>$quantity [$unit]</TitleText>
@@ -385,9 +447,8 @@
 					<TitleText>Varinate 09.1 - Sonnenlichtfaktor</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
-					<Legend visible="0">
+					<Legend>
 						<Position>Inside</Position>
-						<Alignment>5</Alignment>
 						<MaxColumns>1</MaxColumns>
 						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
 					</Legend>
@@ -418,7 +479,28 @@
 					<ColumnIndex>1</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_detailed.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>3</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_fast.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>3</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_opt.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
@@ -434,53 +516,64 @@
 						<MarkerColor>#000000</MarkerColor>
 						<MarkerSize>6</MarkerSize>
 					</Series>
-					<Series>
+					<Series inLegend="0">
 						<TitleText>$quantity</TitleText>
 						<LineStyle>-1</LineStyle>
 						<MarkerStyle>10</MarkerStyle>
 						<PenStyle>0</PenStyle>
-						<PenColor>#314004</PenColor>
-						<MarkerColor>#314004</MarkerColor>
+						<MarkerColor>#000000</MarkerColor>
 						<MarkerSize>20</MarkerSize>
 					</Series>
-					<Series>
+					<Series inLegend="0">
 						<TitleText>$quantity</TitleText>
 						<MarkerStyle>10</MarkerStyle>
 						<PenStyle>0</PenStyle>
-						<PenColor>#4b1f6f</PenColor>
-						<MarkerColor>#4b1f6f</MarkerColor>
+						<MarkerColor>#000000</MarkerColor>
 						<MarkerSize>20</MarkerSize>
 					</Series>
 					<Series>
-						<TitleText>$quantity</TitleText>
-						<PenWidth>5</PenWidth>
-						<PenColor>#ff950e</PenColor>
-						<MarkerColor>#ff950e</MarkerColor>
+						<TitleText>SHADING Lib old accurate</TitleText>
+						<PenStyle>2</PenStyle>
+						<PenColor>#ff0000</PenColor>
+						<MarkerColor>#ff0000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS detailed</TitleText>
+						<PenColor>#579d1c</PenColor>
+						<MarkerColor>#579d1c</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS fast</TitleText>
+						<PenColor>#ffaa00</PenColor>
+						<MarkerColor>#ffaa00</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS accurate</TitleText>
+						<PenColor>#0055ff</PenColor>
+						<MarkerColor>#0055ff</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<IBK:Unit name="AxisUnit">min</IBK:Unit>
-						<Maximum>959518800000</Maximum>
-						<Minimum>959493600000</Minimum>
+						<Maximum>991141200000</Maximum>
+						<Minimum>991116000000</Minimum>
 						<DateTimeEnabled>1</DateTimeEnabled>
+						<DateTimeZero>978307200000</DateTimeZero>
 					</Axis>
-					<Axis index="1" autoscale="0">
+					<Axis index="1">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">---</IBK:Unit>
-						<Maximum>1.1000000000000001</Maximum>
 					</Axis>
 					<Axis index="2" enabled="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>815.46775094576424</Maximum>
-						<Minimum>815.46772114508201</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
 					<TitleText>Varinate 09.2 - Sonnenlichtfaktor</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
-					<Legend visible="0">
+					<Legend>
 						<Position>Inside</Position>
 						<Alignment>5</Alignment>
 						<MaxColumns>1</MaxColumns>
@@ -513,7 +606,28 @@
 					<ColumnIndex>2</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>2</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_detailed.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_fast.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_opt.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
@@ -523,60 +637,70 @@
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>$quantity</TitleText>
+						<TitleText>Referenz</TitleText>
 						<MarkerStyle>0</MarkerStyle>
 						<PenStyle>0</PenStyle>
 						<MarkerColor>#000000</MarkerColor>
 						<MarkerSize>6</MarkerSize>
 					</Series>
-					<Series>
+					<Series inLegend="0">
 						<TitleText>$quantity</TitleText>
 						<LineStyle>-1</LineStyle>
 						<MarkerStyle>10</MarkerStyle>
 						<PenStyle>0</PenStyle>
-						<PenColor>#314004</PenColor>
-						<MarkerColor>#314004</MarkerColor>
+						<MarkerColor>#000000</MarkerColor>
 						<MarkerSize>20</MarkerSize>
 					</Series>
-					<Series>
+					<Series inLegend="0">
 						<TitleText>$quantity</TitleText>
 						<MarkerStyle>10</MarkerStyle>
 						<PenStyle>0</PenStyle>
-						<PenColor>#4b1f6f</PenColor>
-						<MarkerColor>#4b1f6f</MarkerColor>
+						<MarkerColor>#000000</MarkerColor>
 						<MarkerSize>20</MarkerSize>
 					</Series>
 					<Series>
-						<TitleText>SIM-VICUS</TitleText>
-						<PenWidth>5</PenWidth>
-						<PenColor>#ff950e</PenColor>
-						<MarkerColor>#ff950e</MarkerColor>
+						<TitleText>SHADING Lib old accurate</TitleText>
+						<PenStyle>2</PenStyle>
+						<PenColor>#ff0000</PenColor>
+						<MarkerColor>#ff0000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS detailed</TitleText>
+						<PenColor>#579d1c</PenColor>
+						<MarkerColor>#579d1c</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS fast</TitleText>
+						<PenColor>#ffaa00</PenColor>
+						<MarkerColor>#ffaa00</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS accurate</TitleText>
+						<PenColor>#0055ff</PenColor>
+						<MarkerColor>#0055ff</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<IBK:Unit name="AxisUnit">min</IBK:Unit>
-						<Maximum>959518800000</Maximum>
-						<Minimum>959493600000</Minimum>
+						<Maximum>991141200000</Maximum>
+						<Minimum>991116000000</Minimum>
 						<DateTimeEnabled>1</DateTimeEnabled>
+						<DateTimeZero>978307200000</DateTimeZero>
 					</Axis>
 					<Axis index="1">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">---</IBK:Unit>
-						<Maximum>0.47962197282929708</Maximum>
-						<Minimum>0.46190194920259892</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>815.46773542990184</Maximum>
-						<Minimum>815.46773542670928</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>Varinate 09.3 - Sonnenlichtfaktor</TitleText>
+					<TitleText>Varinate 09.4 - Sonnenlichtfaktor</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
-					<Legend visible="0">
+					<Legend>
 						<Position>Inside</Position>
 						<Alignment>5</Alignment>
 						<MaxColumns>1</MaxColumns>
@@ -609,7 +733,28 @@
 					<ColumnIndex>3</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>3</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_detailed.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>2</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_fast.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>2</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_opt.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
@@ -625,54 +770,64 @@
 						<MarkerColor>#000000</MarkerColor>
 						<MarkerSize>6</MarkerSize>
 					</Series>
-					<Series>
+					<Series inLegend="0">
 						<TitleText>$quantity</TitleText>
 						<LineStyle>-1</LineStyle>
 						<MarkerStyle>10</MarkerStyle>
 						<PenStyle>0</PenStyle>
-						<PenColor>#314004</PenColor>
-						<MarkerColor>#314004</MarkerColor>
+						<MarkerColor>#000000</MarkerColor>
 						<MarkerSize>20</MarkerSize>
 					</Series>
-					<Series>
+					<Series inLegend="0">
 						<TitleText>$quantity</TitleText>
 						<MarkerStyle>10</MarkerStyle>
 						<PenStyle>0</PenStyle>
-						<PenColor>#4b1f6f</PenColor>
-						<MarkerColor>#4b1f6f</MarkerColor>
+						<MarkerColor>#000000</MarkerColor>
 						<MarkerSize>20</MarkerSize>
 					</Series>
 					<Series>
-						<TitleText>SIM-VICUS</TitleText>
-						<PenWidth>4</PenWidth>
-						<PenColor>#ff950e</PenColor>
-						<MarkerColor>#ff950e</MarkerColor>
+						<TitleText>SHADING Lib old accurate</TitleText>
+						<PenStyle>2</PenStyle>
+						<PenColor>#ff0000</PenColor>
+						<MarkerColor>#ff0000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS detailed</TitleText>
+						<PenColor>#579d1c</PenColor>
+						<MarkerColor>#579d1c</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS fast</TitleText>
+						<PenColor>#ffaa00</PenColor>
+						<MarkerColor>#ffaa00</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS accurate</TitleText>
+						<PenColor>#0055ff</PenColor>
+						<MarkerColor>#0055ff</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<IBK:Unit name="AxisUnit">min</IBK:Unit>
-						<Maximum>959518800000</Maximum>
-						<Minimum>959493600000</Minimum>
+						<Maximum>991141200000</Maximum>
+						<Minimum>991116000000</Minimum>
 						<DateTimeEnabled>1</DateTimeEnabled>
+						<DateTimeZero>978307200000</DateTimeZero>
 					</Axis>
-					<Axis index="1" autoscale="0">
+					<Axis index="1">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">---</IBK:Unit>
-						<Maximum>1.2</Maximum>
-						<Minimum>-0.20000000000000001</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>815.46773542772496</Maximum>
-						<Minimum>815.46773542769108</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
 					<TitleText>Varinate 09.4 - Sonnenlichtfaktor</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
-					<Legend visible="0">
+					<Legend>
 						<Position>Inside</Position>
 						<Alignment>5</Alignment>
 						<MaxColumns>1</MaxColumns>
@@ -705,7 +860,28 @@
 					<ColumnIndex>4</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>4</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_detailed.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>5</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_fast.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>5</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_opt.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
@@ -721,56 +897,65 @@
 						<MarkerColor>#000000</MarkerColor>
 						<MarkerSize>6</MarkerSize>
 					</Series>
-					<Series>
+					<Series inLegend="0">
 						<TitleText>$quantity</TitleText>
 						<LineStyle>-1</LineStyle>
 						<MarkerStyle>10</MarkerStyle>
 						<PenStyle>0</PenStyle>
-						<PenColor>#314004</PenColor>
-						<MarkerColor>#314004</MarkerColor>
+						<MarkerColor>#000000</MarkerColor>
 						<MarkerSize>20</MarkerSize>
 					</Series>
-					<Series>
+					<Series inLegend="0">
 						<TitleText>$quantity</TitleText>
 						<MarkerStyle>10</MarkerStyle>
 						<PenStyle>0</PenStyle>
-						<PenColor>#4b1f6f</PenColor>
-						<MarkerColor>#4b1f6f</MarkerColor>
+						<MarkerColor>#000000</MarkerColor>
 						<MarkerSize>20</MarkerSize>
 					</Series>
 					<Series>
-						<TitleText>$quantity</TitleText>
-						<PenWidth>4</PenWidth>
-						<PenColor>#ff950e</PenColor>
-						<MarkerColor>#ff950e</MarkerColor>
+						<TitleText>SHADING Lib old accurate</TitleText>
+						<PenStyle>2</PenStyle>
+						<PenColor>#ff0000</PenColor>
+						<MarkerColor>#ff0000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS detailed</TitleText>
+						<PenColor>#579d1c</PenColor>
+						<MarkerColor>#579d1c</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS fast</TitleText>
+						<PenColor>#ffaa00</PenColor>
+						<MarkerColor>#ffaa00</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS accurate</TitleText>
+						<PenColor>#0055ff</PenColor>
+						<MarkerColor>#0055ff</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<IBK:Unit name="AxisUnit">min</IBK:Unit>
-						<Maximum>959518800000</Maximum>
-						<Minimum>959493600000</Minimum>
+						<Maximum>991141200000</Maximum>
+						<Minimum>991116000000</Minimum>
 						<DateTimeEnabled>1</DateTimeEnabled>
+						<DateTimeZero>978307200000</DateTimeZero>
 					</Axis>
-					<Axis index="1" autoscale="0">
+					<Axis index="1">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">---</IBK:Unit>
-						<Maximum>1.1000000000000001</Maximum>
-						<Minimum>-0.10000000000000001</Minimum>
 					</Axis>
 					<Axis index="2" enabled="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>815.46773542770495</Maximum>
-						<Minimum>815.46773542770404</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
 					<TitleText>Varinate 09.5 - Sonnenlichtfaktor</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
-					<Legend visible="0">
+					<Legend>
 						<Position>Inside</Position>
-						<Alignment>5</Alignment>
 						<MaxColumns>1</MaxColumns>
 						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
 					</Legend>
@@ -801,7 +986,28 @@
 					<ColumnIndex>5</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>5</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_detailed.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>4</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_fast.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>4</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_opt.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
@@ -817,56 +1023,66 @@
 						<MarkerColor>#000000</MarkerColor>
 						<MarkerSize>6</MarkerSize>
 					</Series>
-					<Series>
+					<Series inLegend="0">
 						<TitleText>Max</TitleText>
 						<LineStyle>-1</LineStyle>
 						<MarkerStyle>10</MarkerStyle>
 						<PenStyle>0</PenStyle>
-						<PenColor>#314004</PenColor>
-						<MarkerColor>#314004</MarkerColor>
+						<MarkerColor>#000000</MarkerColor>
 						<MarkerSize>20</MarkerSize>
 					</Series>
-					<Series>
+					<Series inLegend="0">
 						<TitleText>Min</TitleText>
 						<MarkerStyle>10</MarkerStyle>
 						<PenStyle>0</PenStyle>
-						<PenColor>#4b1f6f</PenColor>
-						<MarkerColor>#4b1f6f</MarkerColor>
+						<MarkerColor>#000000</MarkerColor>
 						<MarkerSize>20</MarkerSize>
 					</Series>
 					<Series>
-						<TitleText>SIM-VICUS</TitleText>
-						<PenWidth>4</PenWidth>
-						<PenColor>#ff950e</PenColor>
-						<MarkerColor>#ff950e</MarkerColor>
+						<TitleText>SHADING Lib old accurate</TitleText>
+						<PenStyle>2</PenStyle>
+						<PenColor>#ff0000</PenColor>
+						<MarkerColor>#ff0000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS detailed</TitleText>
+						<PenColor>#579d1c</PenColor>
+						<MarkerColor>#579d1c</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS fast</TitleText>
+						<PenColor>#ffaa00</PenColor>
+						<MarkerColor>#ffaa00</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS accurate</TitleText>
+						<PenColor>#0055ff</PenColor>
+						<MarkerColor>#0055ff</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
 						<IBK:Unit name="AxisUnit">min</IBK:Unit>
-						<Maximum>959521549966.64673</Maximum>
-						<Minimum>959491091245.07617</Minimum>
+						<Maximum>991141200000</Maximum>
+						<Minimum>991116000000</Minimum>
 						<DateTimeEnabled>1</DateTimeEnabled>
+						<DateTimeZero>978307200000</DateTimeZero>
 					</Axis>
-					<Axis index="1" autoscale="0">
+					<Axis index="1">
 						<TitleText>$quantity [$unit]</TitleText>
 						<IBK:Unit name="AxisUnit">---</IBK:Unit>
-						<Maximum>1.0810810228802152</Maximum>
-						<Minimum>-0.20286406460296114</Minimum>
 					</Axis>
-					<Axis index="2" enabled="0" autoscale="0">
+					<Axis index="2" enabled="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>469.45500539365429</Maximum>
-						<Minimum>469.4513718465858</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
 					<TitleText>Varinate 09.6 - Sonnenlichtfaktor</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
-					<Legend visible="0">
+					<Legend>
 						<Position>Inside</Position>
-						<Alignment>5</Alignment>
+						<Alignment>1</Alignment>
 						<MaxColumns>1</MaxColumns>
 						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
 					</Legend>
@@ -1343,9 +1559,8 @@
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="11" size1="966" size2="851" orientation="2" />
-		<Widget id="2" parent="1" viewTable="0" mapperIndex="6" size1="966" size2="851" orientation="2" />
-		<FocusedWidget>2</FocusedWidget>
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="7" size1="1" size2="1" orientation="2" />
+		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
