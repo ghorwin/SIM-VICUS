@@ -369,6 +369,14 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 	// Get a _copy_ of the floor polygon
 	std::vector<IBKMK::Vector3D> polyline = m_polygonGeometry.polygon().vertexes();
 
+	if (roofData.m_rotate) {
+		unsigned int vertexCount = polyline.size();
+		std::vector<IBKMK::Vector3D> rotatedPolyline;
+		for (unsigned int i=0; i<vertexCount; ++i)
+			rotatedPolyline.push_back(polyline[(i + 1) % vertexCount]);
+		rotatedPolyline.swap(polyline);
+	}
+
 	// All roof polygons stored in the following vector.
 	// Once we are done, we generate PlaneGeometry objects for each polygon.
 	std::vector<VICUS::Polygon3D> polys;

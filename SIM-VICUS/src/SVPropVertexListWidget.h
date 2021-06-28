@@ -139,6 +139,8 @@ private slots:
 	void on_checkBoxFlapTile_toggled(bool checked);
 	void on_pushButtonCreateRoof_clicked();
 
+	void on_pushButtonRotateFloorPolygon_clicked();
+
 private:
 	/*! Returns true, if annonymous geometry is being created (i.e. checkbox is visible and checked). */
 	bool createAnnonymousGeometry() const;
@@ -183,6 +185,8 @@ private:
 	*/
 	int							m_geometryMode;
 
+	/*! If true, user requested rotation of polygon. */
+	bool						m_polygonRotation = false;
 };
 
 

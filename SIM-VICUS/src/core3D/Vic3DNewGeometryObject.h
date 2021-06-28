@@ -92,6 +92,9 @@ public:
 
 		bool		m_hasFlapTile = false;			//Kniestockwand?
 		double		m_flapTileHeight = 1.5;
+
+		/*! If true, we rotate the floor polygon by one index before the alorithm starts. */
+		bool		m_rotate = false;
 	};
 
 	/*! Defines the state that the system is currently at, when adding new geometry.

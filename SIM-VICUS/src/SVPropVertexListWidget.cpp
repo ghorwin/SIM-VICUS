@@ -1141,9 +1141,18 @@ void SVPropVertexListWidget::updateRoofGeometry() {
 	roofData.m_flapTileHeight = m_ui->lineEditFlapTileHeight->value(); // in m
 	roofData.m_hasFlapTile = m_ui->checkBoxFlapTile->isChecked();
 	roofData.m_isHeightPredefined = m_ui->radioButtonRoofHeight->isChecked();
+	roofData.m_rotate = m_polygonRotation;
+
+	m_polygonRotation = false; // reset flag until next click
 
 	po->setRoofGeometry(roofData);
 
 	// we need to trigger a redraw here
 	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
+}
+
+
+void SVPropVertexListWidget::on_pushButtonRotateFloorPolygon_clicked() {
+	m_polygonRotation = true; // set temporarily to true
+	updateRoofGeometry();
 }
