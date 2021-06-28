@@ -498,7 +498,6 @@ void SVPropEditGeometry::updateUi() {
 			if (sub->m_selected && sub->m_visible)
 				m_selSubSurfaces.push_back(sub);
 		}
-		// TODO Stephan
 	}
 
 	// enable copy functions only if respective objects are selected
@@ -520,7 +519,7 @@ void SVPropEditGeometry::updateUi() {
 			setRotation( QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis() ) );
 		}
 		// compute dimensions of bounding box (dx, dy, dz) and center point of all selected surfaces
-		m_boundingBoxDimension = project().boundingBox(m_selSurfaces, m_boundingBoxCenter);
+		m_boundingBoxDimension = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_boundingBoxCenter);
 
 		// update local coordinates
 		Vic3D::Transform3D t;

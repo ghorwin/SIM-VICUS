@@ -684,11 +684,12 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 						qDebug() << QtExt::IBKVector2String(newPoint) << QtExt::IBKVector2String(projectedVector) << cosBeta << sinGamma << rotAngle;
 
 						std::vector<const VICUS::Surface*> selSurfaces;
+						std::vector<const VICUS::SubSurface*> selSubSurfaces;
 
 						project().selectedSurfaces(selSurfaces, VICUS::Project::SG_All);
 
 						IBKMK::Vector3D center, newCenter;
-						IBKMK::Vector3D boundingBoxDimensions = project().boundingBox(selSurfaces, center);
+						IBKMK::Vector3D boundingBoxDimensions = project().boundingBox(selSurfaces, selSubSurfaces, center);
 
 						QQuaternion q = QQuaternion::fromAxisAndAngle( QtExt::IBKVector2QVector(m_rotationAxis), rotAngle);
 

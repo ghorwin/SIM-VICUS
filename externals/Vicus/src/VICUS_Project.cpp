@@ -635,10 +635,13 @@ bool Project::selectedRooms(std::vector<const Room *> & rooms) const {
 }
 
 
-IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces, IBKMK::Vector3D &center) {
+IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces,
+									 std::vector<const SubSurface*> &subsurfaces,
+									 IBKMK::Vector3D &center)
+{
 
 	// store selected surfaces
-	if ( surfaces.empty() )
+	if ( surfaces.empty() && subsurfaces.empty())
 		return IBKMK::Vector3D ( 0,0,0 );
 
 	double maxX = std::numeric_limits<double>::lowest();
@@ -656,6 +659,22 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces, IBKM
 			( v.m_x < minX ) ? minX = v.m_x : 0;
 			( v.m_y < minY ) ? minY = v.m_y : 0;
 			( v.m_z < minZ ) ? minZ = v.m_z : 0;
+		}
+	}
+	for (const VICUS::SubSurface *sub : subsurfaces ) {
+		const VICUS::Surface *s = dynamic_cast<const VICUS::Surface *>(sub->m_parent);
+		for (unsigned int i=0; i<s->subSurfaces().size(); ++i) {
+			if (&(s->subSurfaces()[i]) == sub) {
+				for ( IBKMK::Vector3D v : s->geometry().holeTriangulationData()[i].m_vertexes ) {
+					( v.m_x > maxX ) ? maxX = v.m_x : 0;
+					( v.m_y > maxY ) ? maxY = v.m_y : 0;
+					( v.m_z > maxZ ) ? maxZ = v.m_z : 0;
+
+					( v.m_x < minX ) ? minX = v.m_x : 0;
+					( v.m_y < minY ) ? minY = v.m_y : 0;
+					( v.m_z < minZ ) ? minZ = v.m_z : 0;
+				}
+			}
 		}
 	}
 
