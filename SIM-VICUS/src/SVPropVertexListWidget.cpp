@@ -670,6 +670,10 @@ void SVPropVertexListWidget::on_pushButtonCreateZone_clicked() {
 	VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Area, area);
 	VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Volume, area*offset.magnitude());
 
+	// transfer default colors
+	for (VICUS::Surface & s : r.m_surfaces)
+		s.m_color = s.m_displayColor;
+
 	// now create the undo action
 	unsigned int buildingLevelUid = m_ui->comboBoxBuildingLevel2->currentData().toUInt();
 	Q_ASSERT(buildingLevelUid != 0);
@@ -896,6 +900,10 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 	// TODO Dirk: compute roof volume, this should be done by NewGeometryObject
 	double volume = 10;
 	VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Volume, volume);
+
+	// transfer default colors
+	for (VICUS::Surface & s : r.m_surfaces)
+		s.m_color = s.m_displayColor;
 
 	// now create the undo action
 	unsigned int buildingLevelUid = m_ui->comboBoxBuildingLevel3->currentData().toUInt();
