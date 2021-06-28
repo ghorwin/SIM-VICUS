@@ -44,6 +44,7 @@ TNSimplePipeElement::TNSimplePipeElement(const NANDRAD::HydraulicNetworkElement 
 							const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
 							const NANDRAD::HydraulicFluid & fluid)
 {
+	m_flowElementId = elem.m_id;
 	m_length = elem.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
 	m_innerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
 	m_outerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeOuterDiameter].value;
@@ -61,6 +62,46 @@ TNSimplePipeElement::TNSimplePipeElement(const NANDRAD::HydraulicNetworkElement 
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 	m_fluidConductivity = fluid.m_para[NANDRAD::HydraulicFluid::P_Conductivity].value;
 	m_fluidViscosity = fluid.m_kinematicViscosity.m_values;
+}
+
+
+void TNSimplePipeElement::modelQuantities(std::vector<QuantityDescription> & quantities) const{
+	quantities.push_back(QuantityDescription("FluidVelocity","m/s","Fluid velocity", false));
+	quantities.push_back(QuantityDescription("FluidVolumeFlow","m3/h","Fluid volume flow", false));
+	quantities.push_back(QuantityDescription("FluidViscosity","m2/s","Fluid dynamic viscosity", false));
+	quantities.push_back(QuantityDescription("Reynolds","---","Reynolds number", false));
+	quantities.push_back(QuantityDescription("Prandtl","---","Prandtl number", false));
+	quantities.push_back(QuantityDescription("Nusselt","---","Nusselt number", false));
+	quantities.push_back(QuantityDescription("ThermalTransmittance","W/K","Total thermal transmittance of fluid and pipe wall", false));
+}
+
+
+void TNSimplePipeElement::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
+	valRefs.push_back(&m_velocity);
+	valRefs.push_back(&m_volumeFlow);
+	valRefs.push_back(&m_viscosity);
+	valRefs.push_back(&m_reynolds);
+	valRefs.push_back(&m_prandtl);
+	valRefs.push_back(&m_nusselt);
+	valRefs.push_back(&m_UAValue);
+}
+
+
+void TNSimplePipeElement::inputReferences(std::vector<InputReference> & inputRefs) const {
+	InputReference ref;
+	ref.m_id = m_flowElementId;
+	ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	ref.m_name.m_name = "HeatExchangeTemperature";
+	ref.m_required = false;
+	inputRefs.push_back(ref);
+}
+
+
+void TNSimplePipeElement::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
+
+	if(*resultValueRefs != nullptr)
+		m_heatExchangeTemperatureRef =  *resultValueRefs;
+	++resultValueRefs;
 }
 
 
@@ -99,11 +140,18 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 				);
 	}
 
-	IBK_ASSERT(m_heatExchangeValueRef != nullptr);
-	const double externalTemperature = *m_heatExchangeValueRef;
+	IBK_ASSERT(m_heatExchangeTemperatureRef != nullptr);
+	const double externalTemperature = *m_heatExchangeTemperatureRef;
 	// calculate heat loss with given parameters
 	// Q in [W] = DeltaT * UAValueTotal
 	m_heatLoss = m_UAValue * (m_meanTemperature - externalTemperature) * m_nParallelPipes;
+}
+
+void TNSimplePipeElement::dependencies(const double * ydot, const double * y, const double * mdot, const double * TInflowLeft, const double * TInflowRight, std::vector<std::pair<const double *, const double *> > &resultInputDependencies) const
+{
+	ThermalNetworkAbstractFlowElementWithHeatLoss::dependencies(ydot, y , mdot, TInflowLeft, TInflowRight, resultInputDependencies);
+
+	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, m_heatExchangeTemperatureRef) );
 }
 
 
@@ -175,6 +223,7 @@ TNDynamicPipeElement::TNDynamicPipeElement(const NANDRAD::HydraulicNetworkElemen
 							const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
 							const NANDRAD::HydraulicFluid & fluid)
 {
+	m_flowElementId = elem.m_id;
 	m_length = elem.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
 	m_innerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
 	m_outerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeOuterDiameter].value;
@@ -211,10 +260,49 @@ TNDynamicPipeElement::TNDynamicPipeElement(const NANDRAD::HydraulicNetworkElemen
 }
 
 
+void TNDynamicPipeElement::modelQuantities(std::vector<QuantityDescription> & quantities) const {
+	quantities.push_back(QuantityDescription("FluidVolumeFlow","m3/h","Fluid volume flow", false));
+	quantities.push_back(QuantityDescription("FluidVelocity","m/s","Fluid velocity", false));
+	quantities.push_back(QuantityDescription("FluidViscosity","m2/s","Fluid dynamic viscosity", false));
+	quantities.push_back(QuantityDescription("Reynolds","---","Reynolds number", false));
+	quantities.push_back(QuantityDescription("Prandtl","---","Prandtl number", false));
+	quantities.push_back(QuantityDescription("Nusselt","---","Nusselt number", false));
+	quantities.push_back(QuantityDescription("ThermalTransmittance","W/K","Total thermal transmittance of fluid and pipe wall", false));
+}
+
+
+void TNDynamicPipeElement::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
+	valRefs.push_back(&m_volumeFlow);
+	valRefs.push_back(&m_velocity);
+	valRefs.push_back(&m_viscosity);
+	valRefs.push_back(&m_reynolds);
+	valRefs.push_back(&m_prandtl);
+	valRefs.push_back(&m_nusselt);
+	valRefs.push_back(&m_UAValue);
+}
+
+
+void TNDynamicPipeElement::inputReferences(std::vector<InputReference> & inputRefs) const {
+	InputReference ref;
+	ref.m_id = m_flowElementId;
+	ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	ref.m_name.m_name = "HeatExchangeTemperature";
+	ref.m_required = false;
+	inputRefs.push_back(ref);
+}
+
+
+void TNDynamicPipeElement::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
+	if(*resultValueRefs != nullptr)
+		m_heatExchangeTemperatureRef =  *resultValueRefs;
+	++resultValueRefs;
+}
+
+
 void TNDynamicPipeElement::setInitialTemperature(double T0) {
 	// use standard implementation
 	ThermalNetworkAbstractFlowElementWithHeatLoss::setInitialTemperature(T0);
-	// fill vector valued quantiteis
+	// fill vector valued quantities
 	std::fill(m_temperatures.begin(), m_temperatures.end(), T0);
 }
 
@@ -256,8 +344,8 @@ void TNDynamicPipeElement::setInflowTemperature(double Tinflow) {
 	}
 
 
-	IBK_ASSERT(m_heatExchangeValueRef != nullptr);
-	const double externalTemperature = *m_heatExchangeValueRef;
+	IBK_ASSERT(m_heatExchangeTemperatureRef != nullptr);
+	const double externalTemperature = *m_heatExchangeTemperatureRef;
 	for (unsigned int i = 0; i < m_nVolumes; ++i) {
 		// calculate heat loss with given parameters
 		// TODO : Hauke, check equation... hier fehlt glaub ich noch der Faktor 1/m_nVolumes
@@ -349,7 +437,7 @@ void TNDynamicPipeElement::dependencies(const double *ydot, const double *y,
 		// set dependency to mdot
 		resultInputDependencies.push_back(std::make_pair(ydot + n, mdot) );
 		// and to external temperature
-		resultInputDependencies.push_back(std::make_pair(ydot + n, m_heatExchangeValueRef));
+		resultInputDependencies.push_back(std::make_pair(ydot + n, m_heatExchangeTemperatureRef));
 
 		// set dependency to Qdot
 		resultInputDependencies.push_back(std::make_pair(&m_heatLoss, y + n) );
@@ -357,7 +445,7 @@ void TNDynamicPipeElement::dependencies(const double *ydot, const double *y,
 
 	// set dependency to Qdot
 	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, mdot) );
-	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, m_heatExchangeValueRef) );
+	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, m_heatExchangeTemperatureRef) );
 }
 
 
@@ -391,6 +479,18 @@ TNDynamicAdiabaticPipeElement::TNDynamicAdiabaticPipeElement(const NANDRAD::Hydr
 
 	// calculate segment specific quantities
 	m_discVolume = m_fluidVolume/(double) m_nVolumes;
+}
+
+
+void TNDynamicAdiabaticPipeElement::modelQuantities(std::vector<QuantityDescription> & quantities) const{
+	quantities.push_back(QuantityDescription("FluidVolumeFlow","m3/h","Fluid volume flow", false));
+	quantities.push_back(QuantityDescription("FluidVelocity","m/s","Fluid velocity", false));
+}
+
+
+void TNDynamicAdiabaticPipeElement::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
+	valRefs.push_back(&m_volumeFlow);
+	valRefs.push_back(&m_velocity);
 }
 
 
@@ -502,6 +602,18 @@ TNPumpWithPerformanceLoss::TNPumpWithPerformanceLoss(const NANDRAD::HydraulicFlu
 }
 
 
+void TNPumpWithPerformanceLoss::modelQuantities(std::vector<QuantityDescription> & quantities) const{
+	quantities.push_back(QuantityDescription("ElectricalPower","W","Requested electrical power for current working point", false));
+	quantities.push_back(QuantityDescription("MechanicalPower","W","Mechanical power for current working point", false));
+}
+
+
+void TNPumpWithPerformanceLoss::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
+	valRefs.push_back(&m_electricalPower);
+	valRefs.push_back(&m_mechanicalPower);
+}
+
+
 void TNPumpWithPerformanceLoss::setInflowTemperature(double Tinflow) {
 	m_inflowTemperature = Tinflow;
 
@@ -541,8 +653,9 @@ TNAdiabaticElement::TNAdiabaticElement(const NANDRAD::HydraulicFluid & fluid, do
 
 // *** ElementWithExternalHeatLoss ***
 
-TNElementWithExternalHeatLoss::TNElementWithExternalHeatLoss(const NANDRAD::HydraulicFluid & fluid, double fluidVolume)
+TNElementWithExternalHeatLoss::TNElementWithExternalHeatLoss(unsigned int flowElementId, const NANDRAD::HydraulicFluid & fluid, double fluidVolume)
 {
+	m_flowElementId = flowElementId;
 	m_fluidVolume = fluidVolume;
 	// copy fluid properties
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
@@ -552,10 +665,33 @@ TNElementWithExternalHeatLoss::TNElementWithExternalHeatLoss(const NANDRAD::Hydr
 
 void TNElementWithExternalHeatLoss::internalDerivatives(double * ydot) {
 	// set heat loss
-	IBK_ASSERT(m_heatExchangeValueRef != nullptr);
-	m_heatLoss = *m_heatExchangeValueRef;
+	IBK_ASSERT(m_heatExchangeHeatLossRef != nullptr);
+	m_heatLoss = *m_heatExchangeHeatLossRef;
 	// use basic routine
 	ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(ydot);
+}
+
+
+void TNElementWithExternalHeatLoss::inputReferences(std::vector<InputReference> & inputRefs) const {
+	InputReference ref;
+	ref.m_id = m_flowElementId;
+	ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	ref.m_name.m_name = "HeatExchangeHeatLoss";
+	ref.m_required = true;
+	inputRefs.push_back(ref);
+}
+
+
+void TNElementWithExternalHeatLoss::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
+	m_heatExchangeHeatLossRef =  *(resultValueRefs++);
+}
+
+void TNElementWithExternalHeatLoss::dependencies(const double * ydot, const double * y, const double * mdot, const double * TInflowLeft, const double * TInflowRight, std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const
+{
+	ThermalNetworkAbstractFlowElementWithHeatLoss::dependencies(ydot, y , mdot, TInflowLeft, TInflowRight, resultInputDependencies);
+
+	if(m_heatExchangeHeatLossRef != nullptr)
+		resultInputDependencies.push_back(std::make_pair(&m_heatLoss, m_heatExchangeHeatLossRef) );
 }
 
 
@@ -563,18 +699,37 @@ void TNElementWithExternalHeatLoss::internalDerivatives(double * ydot) {
 
 // *** TNHeatPumpIdealCarnot ***
 
-TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(unsigned int flowElementId,
-											 const NANDRAD::HydraulicFluid & fluid,
+TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(const NANDRAD::HydraulicFluid & fluid,
 											 const NANDRAD::HydraulicNetworkElement & e) :
-	TNElementWithExternalHeatLoss(fluid, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value),
 	m_flowElement(&e)
 {
-	m_flowElementId = flowElementId;
 	m_fluidVolume = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
 	m_carnotEfficiency = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiency].value;
 	m_condenserMaximumHeatFlux = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumHeatingPower].value;
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+}
+
+
+void TNHeatPumpIdealCarnot::modelQuantities(std::vector<QuantityDescription> & quantities) const{
+	quantities.push_back(QuantityDescription("COP","---", "Coefficient of performance for heat pump", false));
+	quantities.push_back(QuantityDescription("ElectricalPower", "W", "Electrical power for heat pump", false));
+	quantities.push_back(QuantityDescription("CondenserHeatFlux", "W", "Heat Flux at condenser side of heat pump", false));
+	quantities.push_back(QuantityDescription("EvaporatorHeatFlux", "W", "Heat Flux at evaporator side of heat pump", false));
+	quantities.push_back(QuantityDescription("EvaporatorMeanTemperature", "C", "Mean temperature at evaporator side of heat pump", false));
+	quantities.push_back(QuantityDescription("CondenserMeanTemperature", "C", "Mean temperature at condenser side of heat pump", false));
+	quantities.push_back(QuantityDescription("TemperatureDifference", "K", "Outlet temperature minus inlet temperature", false));
+}
+
+
+void TNHeatPumpIdealCarnot::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
+	valRefs.push_back(&m_COP);
+	valRefs.push_back(&m_electricalPower);
+	valRefs.push_back(&m_condenserHeatFlux);
+	valRefs.push_back(&m_evaporatorHeatFlux);
+	valRefs.push_back(&m_evaporatorMeanTemperature);
+	valRefs.push_back(&m_condenserMeanTemperature);
+	valRefs.push_back(&m_temperatureDifference);
 }
 
 
@@ -602,8 +757,8 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 			m_condenserMeanTemperature = *m_condenserMeanTemperatureRef;
 
 			// cut condenser heat flux
-			IBK_ASSERT(m_heatExchangeValueRef != nullptr);
-			m_condenserHeatFlux = *m_heatExchangeValueRef;
+			IBK_ASSERT(m_heatExchangeCondensorHeatLossRef != nullptr);
+			m_condenserHeatFlux = *m_heatExchangeCondensorHeatLossRef;
 			if (m_condenserHeatFlux > m_condenserMaximumHeatFlux)
 				m_condenserHeatFlux = m_condenserMaximumHeatFlux;
 
@@ -622,7 +777,7 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 				(m_evaporatorMeanTemperature < m_condenserMeanTemperature*(1-m_carnotEfficiency)) )
 			{
 				IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("Evaporator temperature < -20 C, turning of "
-																	"HeatPumpIdealCarnot, flow element with id '%1'\n").arg(m_flowElementId),
+																	"HeatPumpIdealCarnot, flow element with id '%1'\n").arg(m_flowElement->m_id),
 													IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
 			}
 			else if (m_condenserMeanTemperature - m_evaporatorMeanTemperature < MIN_TEMPERATURE_DIFFERENCE_CONDENSER) {
@@ -652,9 +807,9 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 			m_temperatureDifference = 0;
 
 			// get scheduled temperatures
-			IBK_ASSERT(m_heatExchangeValueRef != nullptr);
+			IBK_ASSERT(m_heatExchangeEvaporatorTemperatureRef != nullptr);
 			IBK_ASSERT(m_condenserOutletSetpointRef != nullptr);
-			m_evaporatorMeanTemperature = *m_heatExchangeValueRef;
+			m_evaporatorMeanTemperature = *m_heatExchangeEvaporatorTemperatureRef;
 			const double outletSetpointTemperature = *m_condenserOutletSetpointRef;
 
 			// condenser heat flux (heating power required by building/added to fluid)
@@ -672,7 +827,7 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 					(m_evaporatorMeanTemperature < m_condenserMeanTemperature*(1-m_carnotEfficiency)) )
 				{
 					IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("Evaporator temperature < -20 C, turning of "
-																		"HeatPumpIdealCarnot, flow element with id '%1'\n").arg(m_flowElementId),
+																		"HeatPumpIdealCarnot, flow element with id '%1'\n").arg(m_flowElement->m_id),
 														IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
 				}
 				else if (m_condenserMeanTemperature - m_evaporatorMeanTemperature < MIN_TEMPERATURE_DIFFERENCE_CONDENSER) {
@@ -702,19 +857,24 @@ void TNHeatPumpIdealCarnot::inputReferences(std::vector<InputReference> & inputR
 
 		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide: {
 			InputReference ref;
-			ref.m_id = m_flowElementId;
+			ref.m_id = m_flowElement->m_id;
 			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
-			ref.m_name.m_name = "CondenserMeanTemperatureSchedule";
 			ref.m_required = true;
+			ref.m_name.m_name = "HeatExchangeHeatLossCondenser";
+			inputRefs.push_back(ref);
+
+			ref.m_name.m_name = "CondenserMeanTemperatureSchedule";
 			inputRefs.push_back(ref);
 		} break;
 
 		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide: {
 			InputReference ref;
-			ref.m_id = m_flowElementId;
+			ref.m_id = m_flowElement->m_id;
 			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
-			ref.m_name.m_name = "CondenserOutletSetpointSchedule";
 			ref.m_required = true;
+			ref.m_name.m_name = "HeatExchangeTemperatureEvaporator";
+			inputRefs.push_back(ref);
+			ref.m_name.m_name = "CondenserOutletSetpointSchedule";
 			inputRefs.push_back(ref);
 		} break;
 
@@ -724,12 +884,15 @@ void TNHeatPumpIdealCarnot::inputReferences(std::vector<InputReference> & inputR
 
 
 void TNHeatPumpIdealCarnot::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
+
 	// now store the pointer returned for our input ref request and advance the iterator by one
 	switch (m_flowElement->m_component->m_modelType) {
 		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide:
+			m_heatExchangeCondensorHeatLossRef = *(resultValueRefs++); // HeatLossCondenser
 			m_condenserMeanTemperatureRef = *(resultValueRefs++); // CondenserMeanTemperatureSchedule
 			break;
 		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide:
+			m_heatExchangeEvaporatorTemperatureRef = *(resultValueRefs++); // TemperatureEvaporator
 			m_condenserOutletSetpointRef = *(resultValueRefs++); // CondenserOutletSetpointSchedule
 			break;
 		default : ;
@@ -739,6 +902,19 @@ void TNHeatPumpIdealCarnot::setInputValueRefs(std::vector<const double *>::const
 
 void TNHeatPumpIdealCarnot::internalDerivatives(double *ydot) {
 	ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(ydot);
+}
+
+
+void TNHeatPumpIdealCarnot::dependencies(const double * ydot, const double * y, const double * mdot, const double * TInflowLeft, const double * TInflowRight, std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const
+{
+	ThermalNetworkAbstractFlowElementWithHeatLoss::dependencies(ydot, y, mdot, TInflowLeft, TInflowRight, resultInputDependencies);
+
+	// add consdenser heat flux
+	if(m_heatExchangeCondensorHeatLossRef != nullptr)
+		resultInputDependencies.push_back(std::make_pair(&m_heatLoss, m_heatExchangeCondensorHeatLossRef));
+	// add evaporator temperature
+	if(m_heatExchangeEvaporatorTemperatureRef != nullptr)
+		resultInputDependencies.push_back(std::make_pair(&m_heatLoss, m_heatExchangeEvaporatorTemperatureRef));
 }
 
 
@@ -778,19 +954,49 @@ void TNIdealHeaterCooler::setInputValueRefs(std::vector<const double *>::const_i
 }
 
 
+void TNIdealHeaterCooler::modelQuantities(std::vector<QuantityDescription> & quantities) const{
+	quantities.push_back(QuantityDescription("HeatLoss", "W", "Heat loss of element", false));
+}
+
+
+void TNIdealHeaterCooler::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
+	valRefs.push_back(&m_heatLoss);
+}
+
+
 
 // *** TNHeatPumpReal ***
 
-TNHeatPumpReal::TNHeatPumpReal(unsigned int flowElementId, const NANDRAD::HydraulicFluid &fluid, const NANDRAD::HydraulicNetworkElement &e):
-	TNElementWithExternalHeatLoss(fluid, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value),
+TNHeatPumpReal::TNHeatPumpReal(const NANDRAD::HydraulicFluid &fluid, const NANDRAD::HydraulicNetworkElement &e):
 	m_flowElement(&e)
 {
-	m_flowElementId = flowElementId;
 	m_fluidVolume = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 	m_coeffsQcond = e.m_component->m_polynomCoefficients.m_values.at("QdotCondensator");
 	m_coeffsPel = e.m_component->m_polynomCoefficients.m_values.at("Pel");
+}
+
+
+void TNHeatPumpReal::modelQuantities(std::vector<QuantityDescription> & quantities) const{
+	quantities.push_back(QuantityDescription("COP","---", "Coefficient of performance for heat pump", false));
+	quantities.push_back(QuantityDescription("ElectricalPower", "W", "Electrical power for heat pump", false));
+	quantities.push_back(QuantityDescription("CondenserHeatFlux", "W", "Heat Flux at condenser side of heat pump", false));
+	quantities.push_back(QuantityDescription("EvaporatorHeatFlux", "W", "Heat Flux at evaporator side of heat pump", false));
+	quantities.push_back(QuantityDescription("TemperatureDifference", "K", "Outlet temperature minus inlet temperature", false));
+	quantities.push_back(QuantityDescription("CondenserOutletTemperature", "C", "Outlet temperature of condenser", false));
+	quantities.push_back(QuantityDescription("EvaporatorInletTemperature", "C", "Inlet temperature of Evaporator", false));
+}
+
+
+void TNHeatPumpReal::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
+	valRefs.push_back(&m_COP);
+	valRefs.push_back(&m_electricalPower);
+	valRefs.push_back(&m_condenserHeatFlux);
+	valRefs.push_back(&m_evaporatorHeatFlux);
+	valRefs.push_back(&m_temperatureDifference);
+	valRefs.push_back(&m_condenserOutletTemperature);
+	valRefs.push_back(&m_evaporatorInletTemperature);
 }
 
 
@@ -844,18 +1050,19 @@ void TNHeatPumpReal::setInflowTemperature(double Tinflow) {
 
 
 void TNHeatPumpReal::inputReferences(std::vector<InputReference> &inputRefs) const {
+
 	switch (m_flowElement->m_component->m_modelType) {
 
 		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpRealSourceSide: {
 			InputReference ref;
-			ref.m_id = m_flowElementId;
+			ref.m_id = m_flowElement->m_id;
 			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 			ref.m_name.m_name = "CondenserOutletSetpointSchedule";
 			ref.m_required = true;
 			inputRefs.push_back(ref);
 
 			InputReference ref2;
-			ref2.m_id = m_flowElementId;
+			ref2.m_id = m_flowElement->m_id;
 			ref2.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 			ref2.m_name.m_name = "HeatPumpOnOffSignalSchedule";
 			ref2.m_required = true;
@@ -868,6 +1075,7 @@ void TNHeatPumpReal::inputReferences(std::vector<InputReference> &inputRefs) con
 
 
 void TNHeatPumpReal::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
+
 	// now store the pointer returned for our input ref request and advance the iterator by one
 	switch (m_flowElement->m_component->m_modelType) {
 		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpRealSourceSide:{

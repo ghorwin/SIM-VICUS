@@ -26,6 +26,7 @@
 #include "NM_HydraulicNetworkModel.h"
 #include "NM_HydraulicNetworkModelPrivate.h"
 #include "NM_ThermalNetworkBalanceModel.h"
+#include "NM_ThermalNetworkFlowElements.h"
 #include "NM_ThermalNetworkStatesModel.h"
 
 #include "NM_KeywordList.h"
@@ -380,23 +381,37 @@ void ThermalNetworkBalanceModel::setInputValueRefs(const std::vector<QuantityDes
 		it->m_activeLayerTemperatureRef = resultValueRefs[resultValIdx++];
 	}
 
-	// now transfer stored references to elements
+	// overwrite references of heat exchange temperature for all pipes
 	for (unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
 		const FlowElementProperties &elemProp = m_flowElementProperties[i];
 
-		// do we have a zone temperature dependence?
+		// do we have a zone temperature dependency?
 		if (elemProp.m_zoneProperties != nullptr) {
-			ThermalNetworkAbstractFlowElementWithHeatLoss *fe =
-					dynamic_cast<ThermalNetworkAbstractFlowElementWithHeatLoss *>(m_statesModel->m_p->m_flowElements[i]);
-			IBK_ASSERT(fe != nullptr);
-			fe->m_heatExchangeValueRef = elemProp.m_zoneProperties->m_zoneTemperatureRef;
+			TNSimplePipeElement *simplePipe =
+					dynamic_cast<TNSimplePipeElement *>(m_statesModel->m_p->m_flowElements[i]);
+			TNDynamicPipeElement *dynamicPipe =
+					dynamic_cast<TNDynamicPipeElement *>(m_statesModel->m_p->m_flowElements[i]);
+
+			if(simplePipe != nullptr) {
+				simplePipe->m_heatExchangeTemperatureRef = elemProp.m_zoneProperties->m_zoneTemperatureRef;
+			}
+			else if (dynamicPipe != nullptr){
+				dynamicPipe->m_heatExchangeTemperatureRef = elemProp.m_zoneProperties->m_zoneTemperatureRef;
+			}
 		}
 		// or do we have an active layer temperature dependence?
 		else if (elemProp.m_activeLayerProperties != nullptr) {
-			ThermalNetworkAbstractFlowElementWithHeatLoss *fe =
-					dynamic_cast<ThermalNetworkAbstractFlowElementWithHeatLoss *>(m_statesModel->m_p->m_flowElements[i]);
-			IBK_ASSERT(fe != nullptr);
-			fe->m_heatExchangeValueRef = elemProp.m_activeLayerProperties->m_activeLayerTemperatureRef;
+			TNSimplePipeElement *simplePipe =
+					dynamic_cast<TNSimplePipeElement *>(m_statesModel->m_p->m_flowElements[i]);
+			TNDynamicPipeElement *dynamicPipe =
+					dynamic_cast<TNDynamicPipeElement *>(m_statesModel->m_p->m_flowElements[i]);
+
+			if(simplePipe != nullptr) {
+				simplePipe->m_heatExchangeTemperatureRef = elemProp.m_activeLayerProperties->m_activeLayerTemperatureRef;
+			}
+			else if (dynamicPipe != nullptr){
+				dynamicPipe->m_heatExchangeTemperatureRef = elemProp.m_activeLayerProperties->m_activeLayerTemperatureRef;
+			}
 		}
 	}
 
