@@ -224,8 +224,8 @@ void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path, const s
 	}
 
 	// write header line
-//	tsvFile << "Time [h]\tAzimuth [Deg]\tAltitude [Deg]\t"; // write header
-	tsvFile << "Time [h]\t"; // write header
+	tsvFile << "Time [h]\tAzimuth [Deg]\tAltitude [Deg]\t"; // write header
+	//tsvFile << "Time [h]\t"; // write header
 	for ( unsigned int i=0; i<m_surfaces.size(); ++i ) {
 		tsvFile << surfaceIDs[i] << " [---]";
 		if (i+1 < m_surfaces.size())
@@ -244,8 +244,8 @@ void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path, const s
 		// get index of corresponding shading factor data
 		unsigned int sfDataIndex = samplingIndexToConeNormalMap[i];
 
-//		tsvFile << m_sunPositions[i].m_azimuth / IBK::DEG2RAD << "\t";
-//		tsvFile << m_sunPositions[i].m_altitude / IBK::DEG2RAD << "\t";
+		tsvFile << m_sunPositions[i].m_azimuth / IBK::DEG2RAD << "\t";
+		tsvFile << m_sunPositions[i].m_altitude / IBK::DEG2RAD << "\t";
 
 		// no data available? (night-time?)
 		if (sfDataIndex == (unsigned int)-1) {
