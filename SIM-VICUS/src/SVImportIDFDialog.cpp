@@ -184,7 +184,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		surf.m_displayName = QString::fromStdString(bsd.m_name);
 		surf.setPolygon3D( VICUS::Polygon3D( bsd.m_polyline ) );
 
-		surf.updateColor();
+		surf.initializeColorBasedOnInclination();
 		bl.m_rooms[idx].m_surfaces.push_back(surf);
 
 		mapBsdNameIDmap[bsd.m_name] = surf.m_id;

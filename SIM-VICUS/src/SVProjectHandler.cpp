@@ -847,7 +847,9 @@ void SVProjectHandler::updateSurfaceColors() {
 		for (VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			for (VICUS::Room &r : bl.m_rooms) {
 				for (VICUS::Surface &s : r.m_surfaces) {
-					s.updateColor();
+					if (!s.m_displayColor.isValid())
+						s.initializeColorBasedOnInclination();
+					s.m_color = s.m_displayColor;
 					for (const VICUS::SubSurface &sub : s.subSurfaces()) {
 						const_cast<VICUS::SubSurface &>(sub).updateColor();
 					}

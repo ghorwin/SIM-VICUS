@@ -508,7 +508,7 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 		unsigned int zoneUUID = m_ui->comboBoxZone->currentData().toUInt();
 		Q_ASSERT(zoneUUID != 0);
 
-		s.updateColor(); // set color based on orientation
+		s.initializeColorBasedOnInclination(); // set color based on orientation
 		// the surface will get the unique ID as persistant ID
 		s.m_id = s.uniqueID();
 		// also store component information
@@ -623,14 +623,14 @@ void SVPropVertexListWidget::on_pushButtonCreateZone_clicked() {
 		sFloor.setPolygon3D(ceiling);
 	}
 
-	sFloor.updateColor();
+	sFloor.initializeColorBasedOnInclination();
 	// get the smallest yet free ID for component instances/construction instances
 	unsigned int conInstID = VICUS::Project::largestUniqueId(project().m_componentInstances);
 	// Note: surface is attached to "Side A"
 	componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
 		 m_ui->comboBoxComponentFloor->currentData().toUInt(), sFloor.m_id, VICUS::INVALID_ID));
 
-	sCeiling.updateColor();
+	sCeiling.initializeColorBasedOnInclination();
 	// Note: surface is attached to "Side A"
 	componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
 		 m_ui->comboBoxComponentCeiling->currentData().toUInt(), sCeiling.m_id, VICUS::INVALID_ID));
@@ -658,7 +658,7 @@ void SVPropVertexListWidget::on_pushButtonCreateZone_clicked() {
 		sWall.m_id = sWall.uniqueID();
 		sWall.m_displayName = tr("Wall %1").arg(i+1);
 		sWall.setPolygon3D( VICUS::Polygon3D(VICUS::Polygon3D::T_Rectangle, p0, p1, p2) );
-		sWall.updateColor();
+		sWall.initializeColorBasedOnInclination();
 		// wall surface is attached to "Side A"
 		componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
 													  wallComponentID, sWall.m_id, VICUS::INVALID_ID));
@@ -750,7 +750,7 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 	sFloor.m_displayName = tr("Floor");
 	sFloor.m_id = sFloor.uniqueID();
 	sFloor.setPolygon3D(floor);
-	sFloor.m_color = QColor(150,50,20,255);	//for floor
+	sFloor.initializeColorBasedOnInclination();
 
 	r.m_id = r.uniqueID();
 	r.m_surfaces.push_back(sFloor);
@@ -765,7 +765,7 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 		sRoof.m_displayName = tr("Wall surface");//.arg(++roofSurfaceCount);
 		sRoof.m_id = sRoof.uniqueID();
 		sRoof.setPolygon3D(po->generatedGeometry()[i].polygon());
-		sRoof.m_color = QColor(200,200,140,255);	//for walls
+		sRoof.m_displayColor = QColor(200,200,140,255);	//for walls
 
 		unsigned int componentID = VICUS::INVALID_ID;
 		if (m_ui->comboBoxComponentRoof3->count() > 0)
@@ -782,7 +782,7 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 						componentID = VICUS::INVALID_ID;
 					else
 						componentID = m_ui->comboBoxComponentRoof3->currentData().toUInt();
-					sRoof.m_color = QColor("#566094");	//for roofs
+					sRoof.m_displayColor = QColor("#566094");	//for roofs
 				}
 				else {
 					sRoof.m_displayName =  tr("Wall surface %1").arg(++wallCount);
@@ -801,7 +801,7 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 						componentID = VICUS::INVALID_ID;
 					else
 						componentID = m_ui->comboBoxComponentRoof3->currentData().toUInt();
-					sRoof.m_color = QColor("#566094");	//for roofs
+					sRoof.m_displayColor = QColor("#566094");	//for roofs
 				}
 				else{
 					sRoof.m_displayName =  tr("Wall surface %1").arg(++wallCount);
@@ -820,7 +820,7 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 						componentID = VICUS::INVALID_ID;
 					else
 						componentID = m_ui->comboBoxComponentRoof3->currentData().toUInt();
-					sRoof.m_color = QColor("#566094");	//for roofs
+					sRoof.m_displayColor = QColor("#566094");	//for roofs
 				}
 				else {
 					sRoof.m_displayName =  tr("Wall surface %1").arg(++wallCount);
@@ -839,7 +839,7 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 						componentID = VICUS::INVALID_ID;
 					else
 						componentID = m_ui->comboBoxComponentRoof3->currentData().toUInt();
-					sRoof.m_color = QColor("#566094");	//for roofs
+					sRoof.m_displayColor = QColor("#566094");	//for roofs
 				}
 				else {
 					sRoof.m_displayName =  tr("Wall surface %1").arg(++wallCount);
@@ -858,7 +858,7 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 						componentID = VICUS::INVALID_ID;
 					else
 						componentID = m_ui->comboBoxComponentRoof3->currentData().toUInt();
-					sRoof.m_color = QColor("#566094");	//for roofs
+					sRoof.m_displayColor = QColor("#566094");	//for roofs
 				}
 //				else if(i>0){
 //					sRoof.m_displayName =  tr("Wall surface %1").arg(++wallCount);

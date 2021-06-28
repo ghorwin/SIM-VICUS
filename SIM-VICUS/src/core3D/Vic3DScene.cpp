@@ -1439,7 +1439,9 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 
 					if (ocm == SVViewState::OCM_None) {
 						// const cast is ok here, since color is not a project property
-						const_cast<VICUS::Surface&>(s).updateColor();
+						if (!s.m_displayColor.isValid())
+							const_cast<VICUS::Surface&>(s).initializeColorBasedOnInclination();
+						const_cast<VICUS::Surface&>(s).m_color = s.m_displayColor;
 					}
 					else {
 						// set "not interested/not applicable" color
