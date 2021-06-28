@@ -403,6 +403,7 @@ void ThermalNetworkStatesModel::resultDescriptions(std::vector<QuantityDescripti
 	// export all heat exchange values
 	for (unsigned int i=0; i<m_elementIds.size(); ++i) {
 		switch (m_network->m_elements[i].m_heatExchange.m_modelType) {
+			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant :
 			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline : {
 				QuantityDescription desc("HeatExchangeHeatLoss", "W", "Pre-described heat loss.", false);
 				desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
@@ -460,6 +461,11 @@ const double * ThermalNetworkStatesModel::resultValueRef(const InputReference & 
 	{
 		for (unsigned int i=0; i<m_elementIds.size(); ++i) {
 			if (quantity.m_id != m_network->m_elements[i].m_id) continue; // not our element
+			// special case: constant parameter
+			const NANDRAD::HydraulicNetworkHeatExchange &heatExchange = m_network->m_elements[i].m_heatExchange;
+			if(!heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_HeatLoss].name.empty())
+				return &heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_HeatLoss].value;
+			// otherwise spline is requested
 			return &m_heatExchangeSplineValues[i];
 		}
 	}
