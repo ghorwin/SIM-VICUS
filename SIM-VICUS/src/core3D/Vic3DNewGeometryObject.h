@@ -301,6 +301,8 @@ private:
 	/*! Handle for index buffer on GPU memory */
 	QOpenGLBuffer					m_indexBufferObject;
 
+	/*! Index where line vertexes start (to be drawn with line strip). */
+	unsigned int					m_lineStartVertex = 0;
 
 };
 

@@ -1000,7 +1000,7 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 
 		} break;
 
-		case NGM_Roof :
+		case NGM_Roof : {
 			// we need to create at first the base polygon
 			addPlane(m_polygonGeometry.triangulationData(), currentVertexIndex, currentElementIndex,
 					 m_vertexBufferData, m_indexBufferData);
@@ -1008,6 +1008,20 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 			for (unsigned int i=0; i<m_generatedGeometry.size(); ++i)
 				addPlane(m_generatedGeometry[i].triangulationData(), currentVertexIndex, currentElementIndex,
 						 m_vertexBufferData, m_indexBufferData);
+
+			m_lineStartVertex = currentVertexIndex;
+
+			// now add a line strip for the bottom polygon
+			const std::vector<IBKMK::Vector3D> & vertexes = m_polygonGeometry.triangulationData().m_vertexes;
+			for (unsigned int i=0; i<=vertexes.size(); ++i)
+				m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(vertexes[i % vertexes.size()])) );
+			// now add a line strip for all other planes
+			for (unsigned int j=0; j<m_generatedGeometry.size(); ++j) {
+				const std::vector<IBKMK::Vector3D> & vertexes2 = m_generatedGeometry[j].triangulationData().m_vertexes;
+				for (unsigned int i=0; i<=vertexes2.size(); ++i)
+					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(vertexes2[i % vertexes2.size()])) );
+			}
+		}
 		break;
 
 		case NUM_NGM :
@@ -1119,6 +1133,27 @@ void NewGeometryObject::renderOpaque() {
 
 		} break;
 
+		case NGM_Roof: {
+			QColor lineCol;
+			if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
+				lineCol = QColor("#ff97bc");
+			else
+				lineCol = QColor("#c31818");
+
+			m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], lineCol);
+			// draw outlines of bottom and top polygons first
+			size_t vertexCount = m_polygonGeometry.triangulationData().m_vertexes.size() + 1; // mind the additional vertex to close the polygon loop
+			GLint lineStartVertex = (GLint)m_lineStartVertex;
+			glDrawArrays(GL_LINE_STRIP, lineStartVertex, vertexCount);
+			lineStartVertex += vertexCount;
+			for (unsigned int j=0; j<m_generatedGeometry.size(); ++j) {
+				const std::vector<IBKMK::Vector3D> & vertexes2 = m_generatedGeometry[j].triangulationData().m_vertexes;
+				vertexCount = vertexes2.size() + 1;
+				glDrawArrays(GL_LINE_STRIP, lineStartVertex, vertexCount);
+				lineStartVertex += vertexCount;
+			}
+		} break;
+
 		case NUM_NGM :
 			Q_ASSERT(false); // invalid call
 			return;
@@ -1173,7 +1208,7 @@ void NewGeometryObject::renderTransparent() {
 		// set selected plane color (QColor is passed as vec4, so no conversion is needed, here).
 		QColor planeCol = QColor(255,0,128,64);
 		if (m_newGeometryMode == NGM_Roof)
-			planeCol = QColor(255,0,128,198);
+			planeCol = QColor(255,0,128,64);
 		m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[2], planeCol);
 		// put OpenGL in offset mode
 		glEnable(GL_POLYGON_OFFSET_FILL);
