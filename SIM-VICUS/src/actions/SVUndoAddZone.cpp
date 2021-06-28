@@ -54,6 +54,7 @@ void SVUndoAddZone::undo() {
 	// remove appended component instances (if any)
 	Q_ASSERT(theProject().m_componentInstances.size() >= m_componentInstances.size());
 	theProject().m_componentInstances.resize(theProject().m_componentInstances.size() - m_componentInstances.size());
+	theProject().updatePointers();
 
 	// tell project that the geometry has changed (i.e. rebuild navigation tree and scene)
 	if (m_topologyOnly)
