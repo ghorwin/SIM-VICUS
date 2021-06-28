@@ -382,7 +382,7 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 		if(polyline.size() > 3)
 			polyline.erase(polyline.begin()+3, polyline.end());
 		// Add fourth point
-		polyline.push_back(polyline[2]+(polyline[1]-polyline[0]));
+		polyline.push_back(polyline[2]+(polyline[0]-polyline[1]));
 
 		//distance of point 2 to 3
 		double distBC = polyline[2].distanceTo(polyline[1]);
@@ -409,8 +409,8 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 		IBKMK::Vector3D hFlapTile(0,0,roofData.m_hasFlapTile ? roofData.m_flapTileHeight : 0);
 		switch (roofData.m_type){
 			case RoofInputData::SinglePitchRoof:{
-				// Create a single pitch roof with floor, roof, 3x wall
-				polygons.resize(5);
+				// Create a single pitch roof with floor, roof, 3x wall, if flapTile>0 then additional 1x wall
+				polygons.resize(roofData.m_hasFlapTile ? 6 : 5);
 				// Note: floor polygon is already set at index [0]
 				IBKMK::Vector3D h1(0,0,height);
 				//roof
@@ -433,37 +433,57 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 				polygons[4].push_back(polyline[3]);
 				if(roofData.m_hasFlapTile) polygons[4].push_back(polyline[3]+hFlapTile);
 				polygons[4].push_back(polyline[2]+h1+hFlapTile);
+				//wall 4 only by flap tile mode
+				if(roofData.m_hasFlapTile){
+					polygons[5].push_back(polyline[3]);
+					polygons[5].push_back(polyline[0]);
+					polygons[5].push_back(polyline[0]+hFlapTile);
+					polygons[5].push_back(polyline[3]+hFlapTile);
+				}
 
 			}
 			break;
 			case RoofInputData::DoublePitchRoof:{
-				// Create a double pitch roof with floor, 2x roof, 2x wall
-				polygons.resize(5);
+				// Create a double pitch roof with floor, 2x roof, 2x wall, if flapTile>0 then additional 2x wall
+				polygons.resize(roofData.m_hasFlapTile ? 7 : 5);
 
 				IBKMK::Vector3D middleBA= (polyline[1]-polyline[0])*0.5;
 				IBKMK::Vector3D h1(0,0,height);
 				//roof 1
-				polygons[1].push_back(polyline[0]);
+				polygons[1].push_back(polyline[0]+hFlapTile);
 				polygons[1].push_back(polyline[0]+ middleBA+h1+hFlapTile);
 				polygons[1].push_back(polyline[3]+ middleBA+h1+hFlapTile);
-				polygons[1].push_back(polyline[3]);
+				polygons[1].push_back(polyline[3]+hFlapTile);
 				//roof 2
-				polygons[2].push_back(polyline[1]);
-				polygons[2].push_back(polyline[2]);
+				polygons[2].push_back(polyline[1]+hFlapTile);
+				polygons[2].push_back(polyline[2]+hFlapTile);
 				polygons[2].push_back(polyline[2]- middleBA+h1+hFlapTile);
 				polygons[2].push_back(polyline[1]- middleBA+h1+hFlapTile);
 				//wall 1
 				polygons[3].push_back(polyline[0]);
 				polygons[3].push_back(polyline[1]);
-				polygons[3].push_back(polyline[1]+hFlapTile);
+				if(roofData.m_hasFlapTile) polygons[3].push_back(polyline[1]+hFlapTile);
 				polygons[3].push_back(polyline[0]+ middleBA+h1+hFlapTile);
-				polygons[3].push_back(polyline[0]+hFlapTile);
+				if(roofData.m_hasFlapTile) polygons[3].push_back(polyline[0]+hFlapTile);
 				//wall 2
 				polygons[4].push_back(polyline[2]);
 				polygons[4].push_back(polyline[3]);
-				polygons[4].push_back(polyline[3]+hFlapTile);
+				if(roofData.m_hasFlapTile) polygons[4].push_back(polyline[3]+hFlapTile);
 				polygons[4].push_back(polyline[3]+ middleBA+h1+hFlapTile);
-				polygons[4].push_back(polyline[2]+hFlapTile);
+				if(roofData.m_hasFlapTile) polygons[4].push_back(polyline[2]+hFlapTile);
+
+				//wall 3 & 4 only by flap tile mode
+				if(roofData.m_hasFlapTile){
+					polygons[5].push_back(polyline[3]);
+					polygons[5].push_back(polyline[0]);
+					polygons[5].push_back(polyline[0]+hFlapTile);
+					polygons[5].push_back(polyline[3]+hFlapTile);
+
+					polygons[6].push_back(polyline[1]);
+					polygons[6].push_back(polyline[2]);
+					polygons[6].push_back(polyline[2]+hFlapTile);
+					polygons[6].push_back(polyline[1]+hFlapTile);
+				}
 			}
 			break;
 			case RoofInputData::MansardRoof:{
@@ -497,19 +517,19 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 				//wall 1
 				polygons[5].push_back(polyline[0]);
 				polygons[5].push_back(polyline[1]);
-				polygons[5].push_back(polyline[1]+hFlapTile);
+				if(roofData.m_hasFlapTile) polygons[5].push_back(polyline[1]+hFlapTile);
 				polygons[5].push_back(polyline[1]-vec1+h2+hFlapTile);
 				polygons[5].push_back(polyline[0]+middleBA+h1+hFlapTile);
 				polygons[5].push_back(polyline[0]+vec1+h2+hFlapTile);
-				polygons[5].push_back(polyline[0]+hFlapTile);
+				if(roofData.m_hasFlapTile) polygons[5].push_back(polyline[0]+hFlapTile);
 				//wall 2
 				polygons[6].push_back(polyline[2]);
 				polygons[6].push_back(polyline[3]);
-				polygons[6].push_back(polyline[3]+hFlapTile);
+				if(roofData.m_hasFlapTile) polygons[6].push_back(polyline[3]+hFlapTile);
 				polygons[6].push_back(polyline[3]+vec1+h2+hFlapTile);
 				polygons[6].push_back(polyline[3]+middleBA+h1+hFlapTile);
 				polygons[6].push_back(polyline[2]-vec1+h2+hFlapTile);
-				polygons[6].push_back(polyline[2]+hFlapTile);
+				if(roofData.m_hasFlapTile) polygons[6].push_back(polyline[2]+hFlapTile);
 
 				if(roofData.m_hasFlapTile){
 					//wall 3
@@ -536,30 +556,30 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 				double len = polyline[2].distanceTo(polyline[1]);
 				double wid = polyline[1].distanceTo(polyline[0]);
 				if(len != 0)
-					d1 = (polyline[1]-polyline[0]).normalized() * (wid/len*2);
+					d1 = (polyline[2]-polyline[1]).normalized() * (wid/len*2);
 
 				//roof 1
 				polygons[1].push_back(polyline[3] + hFlapTile);
 				polygons[1].push_back(polyline[0] + hFlapTile);
-				polygons[1].push_back(polyline[0]+ middleBA+d1+h1 + hFlapTile);
-				polygons[1].push_back(polyline[3]+ middleBA-d1+h1 + hFlapTile);
+				polygons[1].push_back(polyline[0] + middleBA+d1+h1 + hFlapTile);
+				polygons[1].push_back(polyline[3] + middleBA-d1+h1 + hFlapTile);
 				//roof 2
 				polygons[2].push_back(polyline[1] + hFlapTile);
 				polygons[2].push_back(polyline[2] + hFlapTile);
-				polygons[2].push_back(polyline[2]- middleBA+d1+h1 + hFlapTile);
-				polygons[2].push_back(polyline[1]- middleBA-d1+h1 + hFlapTile);
+				polygons[2].push_back(polyline[2] - middleBA-d1+h1 + hFlapTile);
+				polygons[2].push_back(polyline[1] - middleBA+d1+h1 + hFlapTile);
 				//wall 1
 				polygons[3].push_back(polyline[0] + hFlapTile);
 				polygons[3].push_back(polyline[1] + hFlapTile);
-				polygons[3].push_back(polyline[0]+ middleBA+d1+h1 + hFlapTile);
+				polygons[3].push_back(polyline[0] + middleBA+d1+h1 + hFlapTile);
 				//wall 2
 				polygons[4].push_back(polyline[2] + hFlapTile);
 				polygons[4].push_back(polyline[3] + hFlapTile);
-				polygons[4].push_back(polyline[3]+ middleBA-d1+h1 + hFlapTile);
+				polygons[4].push_back(polyline[3] + middleBA-d1+h1 + hFlapTile);
 
 				if(roofData.m_hasFlapTile){
 					// additional walls
-					for(unsigned int i1 = 0; i1<3; ++i1){
+					for(unsigned int i1 = 0; i1<4; ++i1){
 						unsigned int i2 = (i1+1) % 4;
 						polygons[5+i1].push_back(polyline[i1]);
 						polygons[5+i1].push_back(polyline[i2]);
@@ -571,7 +591,7 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 			}
 			break;
 			case RoofInputData::Complex:
-				//do nothing because the frist if does not allow complex
+				//do nothing because the frist "if" does not allow complex
 			break;
 		}
 		//add all polygons to the poly vec and flip all normals of the roof elements to positiv z-value
@@ -608,32 +628,36 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 			indexSet.insert(tri1.i2);
 			indexSet.insert(tri1.i3);
 
-			for(unsigned int j=i; j<triangu.m_triangles.size(); ++j){
+			for(unsigned int j=i+1; j<triangu.m_triangles.size(); ++j){
 				const IBKMK::Triangulation::triangle_t &tri2 = triangu.m_triangles[j];
 				unsigned int counter = 3;
-				std::set<unsigned int> saveIdxSet, tempSet;
+				std::set<unsigned int> tempSet;
+				std::vector<unsigned int> saveIdx;
 				tempSet = indexSet;
 				//check if 2 indicies are in the set --> then we have a midpoint
 				tempSet.insert(tri2.i1);
 				if(tempSet.size() == counter)
-					saveIdxSet.insert(tri2.i1);
+					saveIdx.push_back(tri2.i1);
 				else
 					++counter;
 				tempSet.insert(tri2.i2);
 				if(tempSet.size() == counter)
-					saveIdxSet.insert(tri2.i2);
+					saveIdx.push_back(tri2.i2);
 				else
 					++counter;
 				tempSet.insert(tri2.i3);
 				if(tempSet.size() == counter)
-					saveIdxSet.insert(tri2.i3);
+					saveIdx.push_back(tri2.i3);
 				else
 					++counter;
 
 				//found midpoint
-				if(saveIdxSet.size()==2){
+				if(saveIdx.size()==2){
 					//Store the two indices of the points that form the center
-					neighboringEdgesOfTri[i].push_back(std::pair<unsigned int, unsigned int>(*saveIdxSet.begin(), *saveIdxSet.end()));
+					unsigned int testDirk01 = saveIdx[0];
+					unsigned int testDirk02 = saveIdx[1];
+					neighboringEdgesOfTri[i].push_back(std::pair<unsigned int, unsigned int>(saveIdx[0], saveIdx[1]));
+					neighboringEdgesOfTri[j].push_back(std::pair<unsigned int, unsigned int>(saveIdx[0], saveIdx[1]));
 				}
 			}
 		}
@@ -733,7 +757,7 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 
 					//create third triangle with the two mid points and the one other point
 					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
-										   IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, roofData.m_height),
+										   IBKMK::Vector3D(mid2Da.m_x, mid2Da.m_y, roofData.m_height),
 										   IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, roofData.m_height),
 										   commonPoint == pts2DVec[2] ? IBKMK::Vector3D(pts2DVec[3].m_x, pts2DVec[3].m_y,0) :
 										   IBKMK::Vector3D(pts2DVec[2].m_x, pts2DVec[2].m_y,0)
