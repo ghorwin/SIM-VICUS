@@ -654,8 +654,6 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 				//found midpoint
 				if(saveIdx.size()==2){
 					//Store the two indices of the points that form the center
-					unsigned int testDirk01 = saveIdx[0];
-					unsigned int testDirk02 = saveIdx[1];
 					neighboringEdgesOfTri[i].push_back(std::pair<unsigned int, unsigned int>(saveIdx[0], saveIdx[1]));
 					neighboringEdgesOfTri[j].push_back(std::pair<unsigned int, unsigned int>(saveIdx[0], saveIdx[1]));
 				}
@@ -719,7 +717,6 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 						points2D[e.second.back().second]
 					};
 					//index of the common point
-					unsigned int idxCommon = 0;
 					IBKMK::Vector2D commonPoint;
 					IBKMK::Vector2D p1, p2;
 
