@@ -383,6 +383,10 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 		// Add fourth point
 		polyline.push_back(polyline[2]+(polyline[0]-polyline[1]));
 
+		//make a horizontal plane
+		for(auto &p : polyline)
+			p.m_z = polyline[0].m_z;
+
 		//create floor polygon
 		{
 			VICUS::Polygon3D poly3d;
@@ -555,16 +559,16 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 			}
 			break;
 			case RoofInputData::HipRoof:{
-				// Create a hip roof with floor, 2x roof, 2x wall, if flapTile>0 then additional 4x wall
+				// Create a hip roof with floor, 4 roof, 0x wall, if flapTile>0 then additional 4x wall
 				polygons.resize(roofData.m_hasFlapTile ? 9 : 5);
 
 				IBKMK::Vector3D middleBA= (polyline[1]-polyline[0])*0.5;
 				IBKMK::Vector3D h1(0,0,height);
 				IBKMK::Vector3D d1(0,0,0);
-				double len = polyline[2].distanceTo(polyline[1]);
-				double wid = polyline[1].distanceTo(polyline[0]);
+				double wid = polyline[2].distanceTo(polyline[1]);
+				double len = polyline[1].distanceTo(polyline[0]);
 				if(len != 0)
-					d1 = (polyline[2]-polyline[1]).normalized() * (wid/len*2);
+					d1 = (polyline[2]-polyline[1]) * 0.1;
 
 				//roof 1
 				polygons[1].push_back(polyline[3] + hFlapTile);
@@ -576,11 +580,11 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 				polygons[2].push_back(polyline[2] + hFlapTile);
 				polygons[2].push_back(polyline[2] - middleBA-d1+h1 + hFlapTile);
 				polygons[2].push_back(polyline[1] - middleBA+d1+h1 + hFlapTile);
-				//wall 1
+				//roof 3
 				polygons[3].push_back(polyline[0] + hFlapTile);
 				polygons[3].push_back(polyline[1] + hFlapTile);
 				polygons[3].push_back(polyline[0] + middleBA+d1+h1 + hFlapTile);
-				//wall 2
+				//roof 4
 				polygons[4].push_back(polyline[2] + hFlapTile);
 				polygons[4].push_back(polyline[3] + hFlapTile);
 				polygons[4].push_back(polyline[3] + middleBA-d1+h1 + hFlapTile);
