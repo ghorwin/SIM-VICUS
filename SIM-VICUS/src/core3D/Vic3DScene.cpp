@@ -2001,18 +2001,21 @@ void Scene::pick(PickObject & pickObject) {
 					// can also pick both sides
 					int holeIndex;
 					if (s.geometry().intersectsLine(nearPoint, direction, intersectionPoint, dist, holeIndex, true)) {
-						PickObject::PickResult r;
-						r.m_snapPointType = PickObject::RT_Object;
-						r.m_depth = dist;
-						r.m_pickPoint = intersectionPoint;
-						if (holeIndex != -1) {
-							IBK_ASSERT(s.subSurfaces().size() > (unsigned int)holeIndex);
-							// store ID of window/embedded surface
-							r.m_uniqueObjectID = s.subSurfaces()[(unsigned int)holeIndex].uniqueID();
+						// if a hole was clicked on, that is invisible, ignore this click
+						if (holeIndex == -1 || s.subSurfaces()[(unsigned int)holeIndex].m_visible) {
+							PickObject::PickResult r;
+							r.m_snapPointType = PickObject::RT_Object;
+							r.m_depth = dist;
+							r.m_pickPoint = intersectionPoint;
+							if (holeIndex != -1) {
+								IBK_ASSERT(s.subSurfaces().size() > (unsigned int)holeIndex);
+								// store ID of window/embedded surface
+								r.m_uniqueObjectID = s.subSurfaces()[(unsigned int)holeIndex].uniqueID();
+							}
+							else
+								r.m_uniqueObjectID = s.uniqueID();
+							pickObject.m_candidates.push_back(r);
 						}
-						else
-							r.m_uniqueObjectID = s.uniqueID();
-						pickObject.m_candidates.push_back(r);
 					}
 				}
 			}
