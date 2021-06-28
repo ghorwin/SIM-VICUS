@@ -2007,8 +2007,8 @@ void Scene::pick(PickObject & pickObject) {
 							r.m_snapPointType = PickObject::RT_Object;
 							r.m_depth = dist;
 							r.m_pickPoint = intersectionPoint;
+							r.m_holeIdx = holeIndex;
 							if (holeIndex != -1) {
-								IBK_ASSERT(s.subSurfaces().size() > (unsigned int)holeIndex);
 								// store ID of window/embedded surface
 								r.m_uniqueObjectID = s.subSurfaces()[(unsigned int)holeIndex].uniqueID();
 							}
@@ -2245,8 +2245,9 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 				const VICUS::Object * obj = project().objectById(r.m_uniqueObjectID);
 				Q_ASSERT(obj != nullptr);
 
-				const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(obj);
+				// *** surfaces ***
 
+				const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(obj);
 				if (s != nullptr) {
 					// a surface object might have several snap points which we collect first in a vector
 					std::vector<SnapCandidate> snapCandidates;
@@ -2317,6 +2318,83 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 					snapPoint = snapCandidates.front().m_pickPoint;
 					snapInfo = "snap to object";
 				} // if (s != nullptr)
+
+				// *** sub-surfaces ***
+
+				const VICUS::SubSurface * sub = dynamic_cast<const VICUS::SubSurface *>(obj);
+				if (sub != nullptr) {
+					s = dynamic_cast<const VICUS::Surface *>(sub->m_parent);
+					IBK_ASSERT(r.m_holeIdx != -1);
+					// a sub-surface object might have several snap points which we collect first in a vector
+					std::vector<SnapCandidate> snapCandidates;
+					float closestDepthSoFar = SNAP_DISTANCES_THRESHHOLD;
+
+					// for now we snap to the vertexes of the outer polygon and all holes
+					const std::vector<IBKMK::Vector3D> & sVertexes = s->geometry().holeTriangulationData()[(unsigned int)r.m_holeIdx].m_vertexes;
+
+					// we always add the intersection point with the surface as fall-back snappoint,
+					// but with a large distance so that it is only used as last resort
+					SnapCandidate sc;
+					sc.m_distToLineOfSight = (double)SNAP_DISTANCES_THRESHHOLD*2;
+					sc.m_pickPoint = r.m_pickPoint;
+					snapCandidates.push_back(sc);
+
+					if (snapOptions & SVViewState::Snap_ObjectVertex) {
+						// insert distances to all vertexes of selected object
+						for (const IBKMK::Vector3D & v : sVertexes) {
+							QVector3D p = QtExt::IBKVector2QVector(v);
+							float dist = (p - pickPoint).lengthSquared();
+							// Only add if close enough (< SNAP_DISTANCES_THRESHHOLD) and if there isn't yet
+							// another snap point that's closer.
+							if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
+								sc.m_distToLineOfSight = (double)dist;
+								sc.m_pickPoint = v;
+								snapCandidates.push_back(sc);
+								closestDepthSoFar = dist;
+							}
+						}
+					}
+					if (snapOptions & SVViewState::Snap_ObjectCenter) {
+						// insert center point
+						IBKMK::Vector3D center(0,0,0);
+						for (const IBKMK::Vector3D & v : sVertexes)
+							center += v;
+						center /= sVertexes.size();
+						QVector3D p = QtExt::IBKVector2QVector(center);
+						float dist = (p - pickPoint).lengthSquared();
+						if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
+							sc.m_distToLineOfSight = (double)dist;
+							sc.m_pickPoint = center;
+							snapCandidates.push_back(sc);
+							closestDepthSoFar = dist;
+						}
+					}
+					if (snapOptions & SVViewState::Snap_ObjectEdgeCenter) {
+						// process all edges
+						IBKMK::Vector3D lastNode = sVertexes.front();
+						for (unsigned int i=0; i<sVertexes.size()+1; ++i) {
+							IBKMK::Vector3D center = lastNode;
+							lastNode = sVertexes[i % sVertexes.size()];
+							center += lastNode;
+							center /= 2;
+							QVector3D p = QtExt::IBKVector2QVector(center);
+							float dist = (p - pickPoint).lengthSquared();
+							if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
+								sc.m_distToLineOfSight = (double)dist;
+								sc.m_pickPoint = center;
+								snapCandidates.push_back(sc);
+								closestDepthSoFar = dist;
+							}
+						}
+					}
+
+					// now we take the snap point that's closest - even if all the snap options of an object are
+					// turned off, we still get the intersection point as last straw to pick.
+					std::sort(snapCandidates.begin(), snapCandidates.end());
+					snapPoint = snapCandidates.front().m_pickPoint;
+					snapInfo = "snap to object";
+				} // if (s != nullptr)
+
 
 				// currently there is such snapping to nodes, yet
 
