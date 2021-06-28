@@ -1780,8 +1780,6 @@ void Scene::deselectAll() {
 
 
 void Scene::deleteSelected() {
-	// process all project geometry and keep (in a copy) only those that need to be removed
-	std::vector<unsigned int> selectedObjectIDs;
 	// generate vector of surfaces
 	std::set<const VICUS::Object *> selectedObjects;
 	project().selectObjects(selectedObjects, VICUS::Project::SG_All, true, true);
@@ -1790,12 +1788,8 @@ void Scene::deleteSelected() {
 	if (selectedObjects.empty())
 		return;
 
-	// collect unique IDs of selected objects
-	for (const VICUS::Object * o : selectedObjects)
-		selectedObjectIDs.push_back(o->uniqueID());
-
 	// clear selected objects (since they are now removed)
-	SVUndoDeleteSelected * undo = new SVUndoDeleteSelected(tr("Removing selected geometry"), selectedObjectIDs);
+	SVUndoDeleteSelected * undo = new SVUndoDeleteSelected(tr("Removing selected geometry"), selectedObjects);
 	// clear selection
 	undo->push();
 }
