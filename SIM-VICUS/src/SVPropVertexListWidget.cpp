@@ -93,6 +93,7 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 	connect(m_ui->toolButtonEditComponents4, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
 	connect(m_ui->toolButtonEditComponents5, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
 	connect(m_ui->toolButtonEditComponents7, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+	connect(m_ui->toolButtonEditComponents8, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
 }
 
 
@@ -128,65 +129,17 @@ void SVPropVertexListWidget::setup(int newGeometryType) {
 }
 
 
+
+
 void SVPropVertexListWidget::updateComponentComboBoxes() {
-	// remember currently selected component IDs
-	int floorCompID = -1;
-	int ceilingCompID = -1;
-	int wallCompID = -1;
-	int surfaceCompID = -1;
-	if (m_ui->comboBoxComponentFloor->currentIndex() != -1)
-		floorCompID = m_ui->comboBoxComponentFloor->currentData().toInt();
-	if (m_ui->comboBoxComponentCeiling->currentIndex() != -1)
-		ceilingCompID = m_ui->comboBoxComponentCeiling->currentData().toInt();
-	if (m_ui->comboBoxComponentWalls->currentIndex() != -1)
-		wallCompID = m_ui->comboBoxComponentWalls->currentData().toInt();
-	if (m_ui->comboBoxComponent->currentIndex() != -1)
-		surfaceCompID = m_ui->comboBoxComponent->currentData().toInt();
+	updateComponentComboBox(m_ui->comboBoxComponent, -1);
+	updateComponentComboBox(m_ui->comboBoxComponentWalls, 0);
+	updateComponentComboBox(m_ui->comboBoxComponentFloor, 1);
+	updateComponentComboBox(m_ui->comboBoxComponentCeiling, 2);
 
-	m_ui->comboBoxComponentFloor->clear();
-	m_ui->comboBoxComponentCeiling->clear();
-	m_ui->comboBoxComponentWalls->clear();
-	m_ui->comboBoxComponent->clear();
-
-	std::string langID = QtExt::LanguageHandler::instance().langId().toStdString();
-	for (auto & c : SVSettings::instance().m_db.m_components) {
-		switch (c.second.m_type) {
-			case VICUS::Component::CT_OutsideWall :
-			case VICUS::Component::CT_OutsideWallToGround :
-			case VICUS::Component::CT_InsideWall :
-				m_ui->comboBoxComponentWalls->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
-			break;
-
-			case VICUS::Component::CT_FloorToCellar :
-			case VICUS::Component::CT_FloorToAir :
-			case VICUS::Component::CT_FloorToGround :
-				m_ui->comboBoxComponentFloor->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
-			break;
-
-			case VICUS::Component::CT_Ceiling :
-			case VICUS::Component::CT_SlopedRoof :
-			case VICUS::Component::CT_FlatRoof :
-			case VICUS::Component::CT_ColdRoof :
-			case VICUS::Component::CT_WarmRoof :
-				m_ui->comboBoxComponentCeiling->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
-			break;
-
-			case VICUS::Component::CT_Miscellaneous :
-			case VICUS::Component::NUM_CT:
-				m_ui->comboBoxComponentFloor->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
-				m_ui->comboBoxComponentCeiling->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
-				m_ui->comboBoxComponentWalls->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
-			break;
-		}
-
-		m_ui->comboBoxComponent->addItem( QString::fromStdString(c.second.m_displayName.string(langID, "en")), c.first);
-	}
-
-	// reselect previously selected components
-	reselectById(m_ui->comboBoxComponentFloor, floorCompID);
-	reselectById(m_ui->comboBoxComponentCeiling, ceilingCompID);
-	reselectById(m_ui->comboBoxComponentWalls, wallCompID);
-	reselectById(m_ui->comboBoxComponent, surfaceCompID);
+	updateComponentComboBox(m_ui->comboBoxComponentWall3, 0);
+	updateComponentComboBox(m_ui->comboBoxComponentFloor3, 1);
+	updateComponentComboBox(m_ui->comboBoxComponentRoof3, 2);
 }
 
 
@@ -342,7 +295,7 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 			updateBuildingComboBox(m_ui->comboBoxBuilding2);
 			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel2, m_ui->comboBoxBuilding2);
 
-			updateComponentComboBoxes(); // update all component combo boxes in surface page
+			updateComponentComboBoxes(); // update all component combo boxes in zone page
 			po->setNewGeometryMode(Vic3D::NewGeometryObject::NGM_Zone);
 			// transfer zone height into line edit, if we have already a building level defined
 			on_comboBoxBuildingLevel2_currentIndexChanged(0); // index argument does not matter, not used
@@ -350,15 +303,19 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 			m_ui->lineEditNameZone->setText(tr("Room"));
 		break;
 
-		case Vic3D::NewGeometryObject::NGM_Roof:
+		case Vic3D::NewGeometryObject::NGM_Roof: {
 			m_ui->stackedWidget->setCurrentIndex(3);
 			updateBuildingComboBox(m_ui->comboBoxBuilding3);
 			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel3, m_ui->comboBoxBuilding3);
-			updateComponentComboBoxes(); // update all component combo boxes in surface page
+			updateComponentComboBoxes(); // update all component combo boxes in roof page
+			const VICUS::PlaneGeometry & pg = po->planeGeometry();
+			if (pg.polygon().type() != IBKMK::Polygon3D::T_Rectangle)
+				m_ui->comboBoxRoofType->setCurrentIndex(4); // not a rectangle, select complex roof
 			po->setNewGeometryMode(Vic3D::NewGeometryObject::NGM_Roof);
 			m_ui->lineEditNameRoof->setText(tr("Roof"));
 
 			updateRoofGeometry();
+		}
 		break;
 		case Vic3D::NewGeometryObject::NUM_NGM: ; // just for the compiler
 	}
@@ -1029,6 +986,51 @@ void SVPropVertexListWidget::updateSurfacePageState() {
 		m_ui->toolButtonAddBuildingLevel->setEnabled(m_ui->comboBoxBuilding->count() != 0);
 		m_ui->labelBuildingLevel->setEnabled(m_ui->comboBoxBuilding->count() != 0);
 	}
+}
+
+void SVPropVertexListWidget::updateComponentComboBox(QComboBox * combo, int type) {
+	// remember currently selected component IDs
+	int compID = -1;
+	if (combo->currentIndex() != -1)
+		compID = combo->currentData().toInt();
+
+	combo->clear();
+
+	std::string langID = QtExt::LanguageHandler::instance().langId().toStdString();
+	for (auto & c : SVSettings::instance().m_db.m_components) {
+		switch (c.second.m_type) {
+			case VICUS::Component::CT_OutsideWall :
+			case VICUS::Component::CT_OutsideWallToGround :
+			case VICUS::Component::CT_InsideWall :
+				if (type == -1 || type == 0)
+					combo->addItem( QtExt::MultiLangString2QString(c.second.m_displayName), c.first);
+			break;
+
+			case VICUS::Component::CT_FloorToCellar :
+			case VICUS::Component::CT_FloorToAir :
+			case VICUS::Component::CT_FloorToGround :
+				if (type == -1 || type == 1)
+					combo->addItem( QtExt::MultiLangString2QString(c.second.m_displayName), c.first);
+			break;
+
+			case VICUS::Component::CT_Ceiling :
+			case VICUS::Component::CT_SlopedRoof :
+			case VICUS::Component::CT_FlatRoof :
+			case VICUS::Component::CT_ColdRoof :
+			case VICUS::Component::CT_WarmRoof :
+				if (type == -1 || type == 2)
+					combo->addItem( QtExt::MultiLangString2QString(c.second.m_displayName), c.first);
+			break;
+
+			case VICUS::Component::CT_Miscellaneous :
+			case VICUS::Component::NUM_CT:
+				combo->addItem( QtExt::MultiLangString2QString(c.second.m_displayName), c.first);
+			break;
+		}
+	}
+
+	// reselect previously selected components
+	reselectById(combo, compID);
 }
 
 

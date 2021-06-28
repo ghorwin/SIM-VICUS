@@ -146,6 +146,14 @@ private:
 	/*! Updates the enabled/disable states of all labels/combo boxes and tool buttons depending on available data. */
 	void updateSurfacePageState();
 
+	/*! Populates the combo box with components of matching type:
+		0 - wall
+		1 - floor
+		2 - roof/ceiling
+		-1 - all
+	*/
+	void updateComponentComboBox(QComboBox * combo, int type);
+
 	bool reselectById(QComboBox * combo, int id) const;
 
 	/*! Updates the content of the building combo box with data from the project.
