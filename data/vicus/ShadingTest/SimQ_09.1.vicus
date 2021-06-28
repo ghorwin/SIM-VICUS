@@ -2,23 +2,52 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Di Apr 13 17:44:07 2021</Created>
-		<LastEdited>Fr Jun 25 10:53:50 2021</LastEdited>
+		<LastEdited>Fr Jun 25 15:29:31 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
-		<SolverParameter />
-		<SimulationParameter />
+		<SolverParameter>
+			<Integrator>CVODE</Integrator>
+			<LesSolver>KLU</LesSolver>
+			<Preconditioner>ILU</Preconditioner>
+		</SolverParameter>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<IBK:IntPara name="StartYear">2007</IBK:IntPara>
+			<Interval>
+				<IBK:Parameter name="Start" unit="s">12700800</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">149</IBK:Parameter>
+			</Interval>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+				<IBK:Parameter name="RadiationLoadFractionZone" unit="%">50</IBK:Parameter>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
 		<Location>
-			<TimeZone>13</TimeZone>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<TimeZone>1</TimeZone>
 		</Location>
+		<Outputs>
+			<Grids>
+				<OutputGrid name="Hourly values">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+			<IBK:Flag name="CreateDefaultZoneOutputs">true</IBK:Flag>
+		</Outputs>
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<CameraTranslation>19.8981 58.5834 7.7883</CameraTranslation>
+			<CameraTranslation>-29.5068 -29.5124 24.3882</CameraTranslation>
 			<RotationMatrix>
-				<Wp>-0.0388437</Wp>
-				<X>-0.0229094</X>
-				<Y>0.507488</Y>
-				<Z>0.860394</Z>
+				<Wp>-0.910421</Wp>
+				<X>-0.387887</X>
+				<Y>-0.0607875</Y>
+				<Z>-0.12965</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 		</ViewSettings>
@@ -34,22 +63,22 @@
 								<IBK:Parameter name="Volume" unit="m3">2.700000048</IBK:Parameter>
 								<Surfaces>
 									<Surface id="60" displayName="091">
-										<Polygon3D>-52 0 0, -50 0 0, -50 0 2, -52 0 2</Polygon3D>
+										<Polygon3D>-52 -10 0, -50 -10 0, -50 -10 2, -52 -10 2</Polygon3D>
 									</Surface>
 									<Surface id="1" displayName="093">
-										<Polygon3D>-32 0 0, -30 0 0, -30 0 2, -32 0 2</Polygon3D>
+										<Polygon3D>-32 -10 0, -30 -10 0, -30 -10 2, -32 -10 2</Polygon3D>
 									</Surface>
 									<Surface id="160" displayName="094">
 										<Polygon3D>5 -5 0, 10 -5 0, 10 -5 5, 5 -5 5</Polygon3D>
 									</Surface>
 									<Surface id="2" displayName="092">
-										<Polygon3D>-42 0 0, -40 0 0, -40 0 2, -42 0 2</Polygon3D>
+										<Polygon3D>-42 -10 0, -40 -10 0, -40 -10 2, -42 -10 2</Polygon3D>
 									</Surface>
 									<Surface id="4" displayName="096">
 										<Polygon3D>20 5 0, 20 10 0, 20 10 5, 20 5 5</Polygon3D>
 									</Surface>
 									<Surface id="3" displayName="095">
-										<Polygon3D>20.01 47 0.499998, 20.01 49 0.499998, 20.01 49 2.5, 20.01 47 2.5</Polygon3D>
+										<Polygon3D>20 47 0.499999, 20 49 0.499999, 20 49 2.5, 20 47 2.5</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -73,22 +102,22 @@
 		</ComponentInstances>
 		<PlainGeometry>
 			<Surface id="1" displayName="New surface">
-				<Polygon3D>-49 0 2.5, -49 -1 2.5, -53 -1 2.5, -53 0 2.5</Polygon3D>
+				<Polygon3D>-49 -10 2.5, -49 -11 2.5, -53 -11 2.5, -53 -10 2.5</Polygon3D>
 			</Surface>
 			<Surface id="2" displayName="New surface [2]">
-				<Polygon3D>-33 0 2.5, -29 0 2.5, -29 -1 2.5, -33 -1 2.5</Polygon3D>
+				<Polygon3D>-33 -10 2.5, -29 -10 2.5, -29 -11 2.5, -33 -11 2.5</Polygon3D>
 			</Surface>
 			<Surface id="3" displayName="New surface [3]">
-				<Polygon3D>-33 -1 2.5, -33 0 2.5, -33 1.90735e-06 -0.499996, -33 -1 -0.499999</Polygon3D>
+				<Polygon3D>-33 -10 2.5, -33 -11 2.5, -33 -11 -0.499996, -33 -10 -0.5</Polygon3D>
 			</Surface>
 			<Surface id="4" displayName="New surface [4]">
-				<Polygon3D>-29 -9.53674e-07 -0.5, -29 -1 -0.5, -29 -1 2.5, -29 0 2.5</Polygon3D>
+				<Polygon3D>-29 -10 -0.5, -29 -11 -0.5, -29 -11 2.5, -29 -10 2.5</Polygon3D>
 			</Surface>
 			<Surface id="3" displayName="New surface [3]">
-				<Polygon3D>-43 -1 2.5, -43 -9.53674e-07 2.5, -43 9.53676e-07 -0.499996, -43 -1 -0.499999</Polygon3D>
+				<Polygon3D>-43 -10 2.5, -43 -11 2.5, -43 -11 -0.499996, -43 -10 -0.5</Polygon3D>
 			</Surface>
 			<Surface id="4" displayName="New surface [4]">
-				<Polygon3D>-39 -1.90735e-06 -0.5, -39 -1 -0.5, -39 -1 2.5, -39 -9.53674e-07 2.5</Polygon3D>
+				<Polygon3D>-39 -10 -0.5, -39 -11 -0.5, -39 -11 2.5, -39 -10 2.5</Polygon3D>
 			</Surface>
 			<Surface id="5" displayName="New surface [5]">
 				<Polygon3D>0 -10 10, 15 -10 10, 15 -10 0, 0 -10 0</Polygon3D>
@@ -97,7 +126,7 @@
 				<Polygon3D>20 46 3, 20 50 3, 21 50 3, 21 46 3</Polygon3D>
 			</Surface>
 			<Surface id="3" displayName="New surface [3]">
-				<Polygon3D>21 46 3, 20 46 3, 20 46 6.67572e-06, 21 46 9.5367e-07</Polygon3D>
+				<Polygon3D>20 46 2.99998, 21 46 2.99999, 21 46 1.09673e-05, 20 46 -1.57356e-05</Polygon3D>
 			</Surface>
 			<Surface id="4" displayName="New surface [4]">
 				<Polygon3D>20 50 2.14844e-13, 21 50 -1.90735e-06, 21 50 3, 20 50 3</Polygon3D>
