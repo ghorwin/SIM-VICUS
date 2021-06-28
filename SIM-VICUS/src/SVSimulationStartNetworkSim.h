@@ -72,6 +72,18 @@ private:
 
 	void toggleRunButton();
 
+	template <typename t>
+	static bool contained(const std::vector<t> &vec, const t &elem) {
+		return std::find(vec.begin(), vec.end(), elem) != vec.end();
+	}
+
+	template <typename t>
+	static void insertIfNotContained(std::vector<t> &vec, const t &elem) {
+		if (!contained(vec, elem))
+			vec.push_back(elem);
+	}
+
+
 	Ui::SVSimulationStartNetworkSim		*m_ui;
 
 	QMap<QString, unsigned int>			m_networksMap;
