@@ -750,7 +750,7 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 	sFloor.m_displayName = tr("Floor");
 	sFloor.m_id = sFloor.uniqueID();
 	sFloor.setPolygon3D(floor);
-	sFloor.initializeColorBasedOnInclination();
+	sFloor.m_displayColor = QColor(150,50,20,255);	//for floor
 
 	r.m_id = r.uniqueID();
 	r.m_surfaces.push_back(sFloor);
