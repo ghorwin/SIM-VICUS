@@ -376,13 +376,21 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 	// for all but complex shape
 	if (roofData.m_type != RoofInputData::Complex) {
 
-
 		// If there are only 3 points and the roof shape is not COMPLEX then a 4th point is always added.
 		// If there are more than 3 points, all further points are discarded. This ensures that there is always a rectangle.
 		if(polyline.size() > 3)
 			polyline.erase(polyline.begin()+3, polyline.end());
 		// Add fourth point
 		polyline.push_back(polyline[2]+(polyline[0]-polyline[1]));
+
+		//create floor polygon
+		{
+			VICUS::Polygon3D poly3d;
+			poly3d.setVertexes(polyline);
+			if(poly3d.normal().m_z > 0)
+				poly3d.flip();
+			m_polygonGeometry.setPolygon(poly3d);
+		}
 
 		//distance of point 2 to 3
 		double distBC = polyline[2].distanceTo(polyline[1]);
@@ -598,6 +606,24 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 		//dont take floor polygon so we start by index 1
 		for(unsigned int i=1; i<polygons.size(); ++i)
 			polys.push_back(polygons[i]);
+	}
+	else if(roofData.m_type == RoofInputData::Complex && polyline.size()==3){
+		//create middle point of all 3 points
+		//then create 3 triangles
+		IBKMK::Vector2D p0(polyline[0].m_x, polyline[0].m_y);
+		IBKMK::Vector2D p1(polyline[1].m_x, polyline[1].m_y);
+		IBKMK::Vector2D p2(polyline[2].m_x, polyline[2].m_y);
+		IBKMK::Vector2D mid2D = ( p0 +  p1 + p2);
+		mid2D *= (1/3.);
+
+		//create 3x roof
+		for(unsigned int i=0; i<3; ++i){
+			VICUS::Polygon3D poly3d;
+			poly3d.addVertex(IBKMK::Vector3D(mid2D.m_x, mid2D.m_y, roofData.m_height));
+			poly3d.addVertex(IBKMK::Vector3D(polyline[i].m_x, polyline[i].m_y, 0));
+			poly3d.addVertex(IBKMK::Vector3D(polyline[(i+1)%3].m_x, polyline[(i+1)%3].m_y, 0));
+			polys.push_back(poly3d);
+		}
 	}
 	else if(roofData.m_type == RoofInputData::Complex){
 		//now create a complex roof structure
