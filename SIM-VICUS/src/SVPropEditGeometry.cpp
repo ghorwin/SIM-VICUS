@@ -507,6 +507,7 @@ void SVPropEditGeometry::updateUi() {
 //	m_ui->pushButtonCopyBuildingLvls->setEnabled(false);
 //	m_ui->pushButtonCopyBuilding->setEnabled(false);
 
+	// handling if surfaces are selected
 	if (!m_selSurfaces.empty()) {
 
 		if ( m_selSurfaces.size() == 1 ) {
@@ -518,22 +519,39 @@ void SVPropEditGeometry::updateUi() {
 			m_ui->labelIndication->setText(tr("z-Axis:"));
 			setRotation( QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis() ) );
 		}
-		// compute dimensions of bounding box (dx, dy, dz) and center point of all selected surfaces
-		m_boundingBoxDimension = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_boundingBoxCenter);
 
-		// update local coordinates
-		Vic3D::Transform3D t;
-		t.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
-		setCoordinates( t ); // calls updateInputs() internally
-
-		// position local coordinate system, but only if we are showing the edit page
-		SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
 		// enable "add subsurface" button
 		m_ui->pushButtonAddWindow->setEnabled(true);
 	}
 	else {
 		m_ui->pushButtonAddWindow->setEnabled(false);
+
+		// handling if only sub-surfaces are selected
+		if (!m_selSubSurfaces.empty()) {
+
+			if ( m_selSubSurfaces.size() == 1 ) {
+				const VICUS::SubSurface *sub = m_selSubSurfaces[0];
+				const VICUS::Surface *s = dynamic_cast<const VICUS::Surface*>(sub->m_parent);
+				m_ui->labelIndication->setText(tr("Normal:"));
+				setRotation(s->geometry().normal() );
+			}
+			else {
+				m_ui->labelIndication->setText(tr("z-Axis:"));
+				setRotation( QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis() ) );
+			}
+		}
 	}
+
+
+	// compute dimensions of bounding box (dx, dy, dz) and center point of all selected surfaces
+	m_boundingBoxDimension = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_boundingBoxCenter);
+	// position local coordinate system, but only if we are showing the edit page
+	SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+
+	// update local coordinates
+	Vic3D::Transform3D t;
+	t.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+	setCoordinates( t ); // calls updateInputs() internally
 
 }
 
