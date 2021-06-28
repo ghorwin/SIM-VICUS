@@ -759,44 +759,168 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 	unsigned int compInstID = VICUS::Project::largestUniqueId(project().m_componentInstances);
 	// now process all other generated surfaces and create roof surfaces
 	unsigned int roofSurfaceCount = 0;
-	unsigned int flapTileCount = 0;
+	unsigned int wallCount = 0;
 	for (unsigned int i=0; i<po->generatedGeometry().size(); ++i) {
 		VICUS::Surface sRoof;
-		sRoof.m_displayName = tr("Roof surface %1").arg(++roofSurfaceCount);
+		sRoof.m_displayName = tr("Wall surface");//.arg(++roofSurfaceCount);
 		sRoof.m_id = sRoof.uniqueID();
 		sRoof.setPolygon3D(po->generatedGeometry()[i].polygon());
-		sRoof.updateColor();
+		sRoof.m_color = QColor(200,200,140,255);	//for walls
 
 		unsigned int componentID = VICUS::INVALID_ID;
 		if (m_ui->comboBoxComponentRoof3->count() > 0)
 			componentID = m_ui->comboBoxComponentRoof3->currentData().toUInt();
 		// special handling for flap tile
-		if (m_ui->checkBoxFlapTile->isChecked()) {
+		//if (m_ui->checkBoxFlapTile->isChecked()) {
 			// TODO Dirk: for flap-tile surfaces adjust sRoof.m_displayName and componentID
-			switch ((Vic3D::NewGeometryObject::RoofInputData::RoofType)m_ui->comboBoxRoofType->currentIndex()) {
-				case Vic3D::NewGeometryObject::RoofInputData::SinglePitchRoof:
-					if (i==1) {
-						sRoof.m_displayName = tr("Flap tile %1").arg(++flapTileCount);
-						if (m_ui->comboBoxComponentWall3->count() == 0)
-							componentID = VICUS::INVALID_ID;
-						else
-							componentID = m_ui->comboBoxComponentWall3->currentData().toUInt();
-					}
-				break;
-				case Vic3D::NewGeometryObject::RoofInputData::DoublePitchRoof:
-					//
-				break;
-				case Vic3D::NewGeometryObject::RoofInputData::MansardRoof:
-					//
-				break;
-				case Vic3D::NewGeometryObject::RoofInputData::HipRoof:
-					//
-				break;
-				case Vic3D::NewGeometryObject::RoofInputData::Complex:
-					//
-				break;
+		switch ((Vic3D::NewGeometryObject::RoofInputData::RoofType)m_ui->comboBoxRoofType->currentIndex()) {
+			case Vic3D::NewGeometryObject::RoofInputData::SinglePitchRoof:{
+				unsigned int roofElements = 1;
+				if (i>0 && i<= roofElements) {
+					sRoof.m_displayName =  tr("Roof surface %1").arg(++roofSurfaceCount);
+					if (m_ui->comboBoxComponentRoof3->count() == 0)
+						componentID = VICUS::INVALID_ID;
+					else
+						componentID = m_ui->comboBoxComponentRoof3->currentData().toUInt();
+					sRoof.m_color = QColor("#566094");	//for roofs
+				}
+				else if(i>0){
+					sRoof.m_displayName =  tr("Wall surface %1").arg(++wallCount);
+					if (m_ui->comboBoxComponentWall3->count() == 0)
+						componentID = VICUS::INVALID_ID;
+					else
+						componentID = m_ui->comboBoxComponentWall3->currentData().toUInt();
+				}
+				else{
+					sRoof.m_displayName =  tr("Floor surface");
+					//TODO Dirk hier muss noch die Floor Schaltfläche rein sobald Andreas die nachgerüstet hat
+					if (m_ui->comboBoxComponentWall3->count() == 0)
+						componentID = VICUS::INVALID_ID;
+					else
+						componentID = m_ui->comboBoxComponentWall3->currentData().toUInt();
+					sRoof.m_color = QColor(150,50,20,255);	//for floor
+
+				}
 			}
+			break;
+			case Vic3D::NewGeometryObject::RoofInputData::DoublePitchRoof:{
+				unsigned int roofElements = 2;
+				if (i>0 && i<= roofElements) {
+					sRoof.m_displayName =  tr("Roof surface %1").arg(++roofSurfaceCount);
+					if (m_ui->comboBoxComponentRoof3->count() == 0)
+						componentID = VICUS::INVALID_ID;
+					else
+						componentID = m_ui->comboBoxComponentRoof3->currentData().toUInt();
+					sRoof.m_color = QColor("#566094");	//for roofs
+				}
+				else if(i>0){
+					sRoof.m_displayName =  tr("Wall surface %1").arg(++wallCount);
+					if (m_ui->comboBoxComponentWall3->count() == 0)
+						componentID = VICUS::INVALID_ID;
+					else
+						componentID = m_ui->comboBoxComponentWall3->currentData().toUInt();
+				}
+				else{
+					sRoof.m_displayName =  tr("Floor surface");
+					//TODO Dirk hier muss noch die Floor Schaltfläche rein sobald Andreas die nachgerüstet hat
+					if (m_ui->comboBoxComponentWall3->count() == 0)
+						componentID = VICUS::INVALID_ID;
+					else
+						componentID = m_ui->comboBoxComponentWall3->currentData().toUInt();
+					sRoof.m_color = QColor(150,50,20,255);	//for floor
+
+				}
+			}
+			break;
+			case Vic3D::NewGeometryObject::RoofInputData::MansardRoof:{
+				unsigned int roofElements = 4;
+				if (i>0 && i<= roofElements) {
+					sRoof.m_displayName =  tr("Roof surface %1").arg(++roofSurfaceCount);
+					if (m_ui->comboBoxComponentRoof3->count() == 0)
+						componentID = VICUS::INVALID_ID;
+					else
+						componentID = m_ui->comboBoxComponentRoof3->currentData().toUInt();
+					sRoof.m_color = QColor("#566094");	//for roofs
+				}
+				else if(i>0){
+					sRoof.m_displayName =  tr("Wall surface %1").arg(++wallCount);
+					if (m_ui->comboBoxComponentWall3->count() == 0)
+						componentID = VICUS::INVALID_ID;
+					else
+						componentID = m_ui->comboBoxComponentWall3->currentData().toUInt();
+				}
+				else{
+					sRoof.m_displayName =  tr("Floor surface");
+					//TODO Dirk hier muss noch die Floor Schaltfläche rein sobald Andreas die nachgerüstet hat
+					if (m_ui->comboBoxComponentWall3->count() == 0)
+						componentID = VICUS::INVALID_ID;
+					else
+						componentID = m_ui->comboBoxComponentWall3->currentData().toUInt();
+					sRoof.m_color = QColor(150,50,20,255);	//for floor
+
+				}
+			}
+			break;
+			case Vic3D::NewGeometryObject::RoofInputData::HipRoof:{
+				unsigned int roofElements = 4;
+				if (i>0 && i<= roofElements) {
+					sRoof.m_displayName =  tr("Roof surface %1").arg(++roofSurfaceCount);
+					if (m_ui->comboBoxComponentRoof3->count() == 0)
+						componentID = VICUS::INVALID_ID;
+					else
+						componentID = m_ui->comboBoxComponentRoof3->currentData().toUInt();
+					sRoof.m_color = QColor("#566094");	//for roofs
+				}
+				else if(i>0){
+					sRoof.m_displayName =  tr("Wall surface %1").arg(++wallCount);
+					if (m_ui->comboBoxComponentWall3->count() == 0)
+						componentID = VICUS::INVALID_ID;
+					else
+						componentID = m_ui->comboBoxComponentWall3->currentData().toUInt();
+				}
+				else{
+					sRoof.m_displayName =  tr("Floor surface");
+					//TODO Dirk hier muss noch die Floor Schaltfläche rein sobald Andreas die nachgerüstet hat
+					if (m_ui->comboBoxComponentWall3->count() == 0)
+						componentID = VICUS::INVALID_ID;
+					else
+						componentID = m_ui->comboBoxComponentWall3->currentData().toUInt();
+					sRoof.m_color = QColor(150,50,20,255);	//for floor
+
+				}
+			}
+			break;
+			case Vic3D::NewGeometryObject::RoofInputData::Complex:{
+				//TODO Dirk später noch den Kniestock beachten
+				if (i>0) {
+					sRoof.m_displayName =  tr("Roof surface %1").arg(++roofSurfaceCount);
+					if (m_ui->comboBoxComponentRoof3->count() == 0)
+						componentID = VICUS::INVALID_ID;
+					else
+						componentID = m_ui->comboBoxComponentRoof3->currentData().toUInt();
+					sRoof.m_color = QColor("#566094");	//for roofs
+				}
+//				else if(i>0){
+//					sRoof.m_displayName =  tr("Wall surface %1").arg(++wallCount);
+//					if (m_ui->comboBoxComponentWall3->count() == 0)
+//						componentID = VICUS::INVALID_ID;
+//					else
+//						componentID = m_ui->comboBoxComponentWall3->currentData().toUInt();
+//				}
+				else{
+					sRoof.m_displayName =  tr("Floor surface");
+					//TODO Dirk hier muss noch die Floor Schaltfläche rein sobald Andreas die nachgerüstet hat
+					if (m_ui->comboBoxComponentWall3->count() == 0)
+						componentID = VICUS::INVALID_ID;
+					else
+						componentID = m_ui->comboBoxComponentWall3->currentData().toUInt();
+					sRoof.m_color = QColor(150,50,20,255);	//for floor
+
+				}
+			}
+			break;
 		}
+		//}
 
 		if (componentID != VICUS::INVALID_ID) {
 			// new surfaces are attached to "Side A"
