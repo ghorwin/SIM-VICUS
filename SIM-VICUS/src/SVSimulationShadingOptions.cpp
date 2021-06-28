@@ -76,6 +76,7 @@ SVSimulationShadingOptions::SVSimulationShadingOptions(QWidget *parent, NANDRAD:
 
 	m_ui->lineEditSunCone->setup(0, 45, tr("Half-angle of sun cone must be > 0 Deg!"), false, true);
 	m_ui->lineEditGridSize->setup(0, 1000, tr("Grid size must be > 0 m!"), false, true);
+	m_ui->lineEditSteps->setup(1, 60, tr("Steps per hour must be between 1 and 60!"), true, true);
 
 	m_ui->comboBoxFileType->addItem( "tsv" );
 	m_ui->comboBoxFileType->addItem( "d6o" );
@@ -104,18 +105,19 @@ void SVSimulationShadingOptions::setSimulationParameters(const DetailType & dt) 
 	m_ui->lineEditSunCone->setReadOnly(true);
 	m_ui->lineEditGridSize->setReadOnly(true);
 
-	double	gridSize = 0.1;	// size of grid in [m]
-	double	sunCone = 3;	// half opening angle of the cone for sun mapping [Deg]
+	double	gridSize = 0.05;	// size of grid in [m]
+	double	sunCone = 0.01;	// half opening angle of the cone for sun mapping [Deg]
+	unsigned int stepCount = 1;
 
 	switch (dt) {
 		case Fast: {
-			gridSize = 0.2;
+			gridSize = 0.1;
 			sunCone = 2;
 		}
 		break;
 		case Detailed: {
-			gridSize = 0.1;
-			sunCone = 1;
+			gridSize = 0.05;
+			sunCone = 0.5;
 		}
 		break;
 		case Manual: {
@@ -127,6 +129,7 @@ void SVSimulationShadingOptions::setSimulationParameters(const DetailType & dt) 
 
 	m_ui->lineEditGridSize->setValue( gridSize );
 	m_ui->lineEditSunCone->setValue( sunCone );
+	m_ui->lineEditSteps->setValue( stepCount );
 
 	updateFileName();
 }
@@ -186,6 +189,21 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		return;
 	}
 
+	if ( !m_ui->lineEditGridSize->isValid() ) {
+		QMessageBox::critical(this, QString(), "Grid size must be > 0 m!");
+		return;
+	}
+
+	if ( !m_ui->lineEditSunCone->isValid() ) {
+		QMessageBox::critical(this, QString(), "Half-angle of sun cone must be > 0 Deg!");
+		return;
+	}
+
+	if ( !m_ui->lineEditSteps->isValid() ) {
+		QMessageBox::critical(this, QString(), "Steps per hour must be between 1 and 60!");
+		return;
+	}
+
 	IBK::IntPara startYear = simuPara.m_intPara[NANDRAD::SimulationParameter::IP_StartYear];
 	IBK::Parameter startDay = simuPara.m_interval.m_para[NANDRAD::Interval::P_Start];
 	IBK::Parameter endDay = simuPara.m_interval.m_para[NANDRAD::Interval::P_End];
@@ -196,13 +214,15 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 	unsigned int durationInSec = (unsigned int)simTimeStart.secondsUntil(simTimeEnd);
 	double sunConeDeg = m_ui->lineEditSunCone->value();
 
+	double stepDuration = 3600/m_ui->lineEditSteps->value();
+
 
 	m_shading->initializeShadingCalculation(loc.m_timeZone,
-										   loc.m_para[NANDRAD::Location::P_Longitude].value/IBK::DEG2RAD,
-										   loc.m_para[NANDRAD::Location::P_Latitude].value/IBK::DEG2RAD,
+										   14.27,
+										   50,
 										   simTimeStart,
 										   durationInSec,
-										   3600, // TODO : Stephan, get from UI input
+										   stepDuration,
 										   sunConeDeg );
 
 
@@ -319,3 +339,4 @@ void SVSimulationShadingOptions::updateFileName() {
 void SVSimulationShadingOptions::on_comboBoxFileType_currentIndexChanged(int index) {
 	updateFileName();
 }
+

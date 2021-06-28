@@ -98,6 +98,7 @@ private slots:
 
 	void on_comboBoxFileType_currentIndexChanged(int index);
 
+
 private:
 	/*! Updates m_shadingFactorBaseName and the line edit in the user interface. */
 	void updateFileName();

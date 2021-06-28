@@ -20,40 +20,6 @@
       <string>Shading calculation parameters</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Detail presets:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0" colspan="2">
-       <widget class="Line" name="line_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>Similarity angle threshold (sun cone) [Deg]:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="label_7">
-        <property name="text">
-         <string>Output Type:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditSunCone"/>
-      </item>
-      <item row="6" column="1">
-       <widget class="QComboBox" name="comboBoxFileType"/>
-      </item>
       <item row="1" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
@@ -92,8 +58,53 @@
         </item>
        </layout>
       </item>
-      <item row="2" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditGridSize"/>
+      <item row="5" column="0" colspan="2">
+       <widget class="Line" name="line_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QLineEdit" name="lineEditShadingFactorFilename">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Detail presets:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Similarity angle threshold (sun cone) [Deg]:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Output Type:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QComboBox" name="comboBoxFileType"/>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Shading factor file name:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditSunCone"/>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_3">
@@ -102,17 +113,20 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="0">
-       <widget class="QLabel" name="label_2">
+      <item row="2" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditGridSize"/>
+      </item>
+      <item row="6" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditSteps">
         <property name="text">
-         <string>Shading factor file name:</string>
+         <string/>
         </property>
        </widget>
       </item>
-      <item row="7" column="1">
-       <widget class="QLineEdit" name="lineEditShadingFactorFilename">
-        <property name="readOnly">
-         <bool>true</bool>
+      <item row="6" column="0">
+       <widget class="QLabel" name="labelSteps">
+        <property name="text">
+         <string>Steps per hour [-]:</string>
         </property>
        </widget>
       </item>
