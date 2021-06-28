@@ -360,19 +360,17 @@ void SVMainWindow::on_actionDBMaterials_triggered() {
 	dbMaterialEditDialog()->edit();
 }
 
-
 void SVMainWindow::on_actionDBConstructions_triggered() {
 	dbConstructionEditDialog()->edit();
 }
 
-
 void SVMainWindow::on_actionDBWindows_triggered() {
 	dbWindowEditDialog()->edit();
 }
+
 void SVMainWindow::on_actionDBWindowGlazingSystems_triggered() {
 	dbWindowGlazingSystemEditDialog()->edit();
 }
-
 
 void SVMainWindow::on_actionDBComponents_triggered() {
 	dbComponentEditDialog()->edit();
@@ -383,7 +381,6 @@ void SVMainWindow::on_actionDBComponents_triggered() {
 		SVViewStateHandler::instance().m_propAddWindowWidget->updateSubSurfaceComponentList();
 }
 
-
 void SVMainWindow::on_actionDBSubSurfaceComponents_triggered() {
 	dbSubSurfaceComponentEditDialog()->edit();
 	// update all widgets that show the components somewhere (in a combo box or else)
@@ -391,16 +388,13 @@ void SVMainWindow::on_actionDBSubSurfaceComponents_triggered() {
 		SVViewStateHandler::instance().m_propAddWindowWidget->updateSubSurfaceComponentList();
 }
 
-
 void SVMainWindow::on_actionDBBoundaryConditions_triggered() {
 	dbBoundaryConditionEditDialog()->edit();
 }
 
-
 void SVMainWindow::on_actionDBSchedules_triggered() {
 	dbScheduleEditDialog()->edit();
 }
-
 
 void SVMainWindow::on_actionDBInternalLoadsPerson_triggered() {
 	dbInternalLoadsPersonEditDialog()->edit();

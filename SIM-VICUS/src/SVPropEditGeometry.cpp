@@ -186,6 +186,7 @@ void SVPropEditGeometry::setRotation(const IBKMK::Vector3D &normal) {
 void SVPropEditGeometry::onModified(int modificationType, ModificationInfo * ) {
 	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
 	switch (modType) {
+		case SVProjectHandler::AllModified:
 		case SVProjectHandler::BuildingGeometryChanged:
 		case SVProjectHandler::NodeStateModified:
 			// When the building geometry has changed, we need to update the geometrical info
