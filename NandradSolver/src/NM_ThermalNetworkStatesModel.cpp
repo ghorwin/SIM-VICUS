@@ -138,7 +138,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						{
 							// create pipe model with heat exchange
 							TNSimplePipeElement * pipeElement = new TNSimplePipeElement(e, *e.m_component,
-																						*e.m_pipeProperties, m_network->m_fluid);
+																	*e.m_pipeProperties, m_network->m_fluid);
 							// add to flow elements
 							m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 							m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer
@@ -175,7 +175,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						{
 							// create pipe model with heat exchange
 							TNDynamicPipeElement * pipeElement = new TNDynamicPipeElement(e,
-																						  *e.m_component, *e.m_pipeProperties, m_network->m_fluid);
+																	*e.m_component, *e.m_pipeProperties, m_network->m_fluid);
 							// add to flow elements
 							m_p->m_flowElements.push_back(pipeElement); // transfer ownership
 							m_p->m_heatLossElements.push_back(pipeElement); // copy of pointer

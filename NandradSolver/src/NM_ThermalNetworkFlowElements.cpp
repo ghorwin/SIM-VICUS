@@ -92,16 +92,14 @@ void TNSimplePipeElement::inputReferences(std::vector<InputReference> & inputRef
 	ref.m_id = m_flowElementId;
 	ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	ref.m_name.m_name = "HeatExchangeTemperature";
-	ref.m_required = false;
+	ref.m_required = true;
 	inputRefs.push_back(ref);
 }
 
 
 void TNSimplePipeElement::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
 
-	if(*resultValueRefs != nullptr)
-		m_heatExchangeTemperatureRef =  *resultValueRefs;
-	++resultValueRefs;
+	m_heatExchangeTemperatureRef =  *(resultValueRefs++);
 }
 
 
@@ -287,15 +285,13 @@ void TNDynamicPipeElement::inputReferences(std::vector<InputReference> & inputRe
 	ref.m_id = m_flowElementId;
 	ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	ref.m_name.m_name = "HeatExchangeTemperature";
-	ref.m_required = false;
+	ref.m_required = true;
 	inputRefs.push_back(ref);
 }
 
 
 void TNDynamicPipeElement::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
-	if(*resultValueRefs != nullptr)
-		m_heatExchangeTemperatureRef =  *resultValueRefs;
-	++resultValueRefs;
+	m_heatExchangeTemperatureRef =  *(resultValueRefs++);
 }
 
 

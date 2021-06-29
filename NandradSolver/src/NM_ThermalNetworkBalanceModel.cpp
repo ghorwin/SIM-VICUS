@@ -345,9 +345,46 @@ void ThermalNetworkBalanceModel::inputReferences(std::vector<InputReference> & i
 		}
 	}
 
+	std::vector<InputReference> modelInputRefs;
 	// loop over all elements and ask them to request individual inputs, for example scheduled quantities
 	for (unsigned int i = 0; i < m_statesModel->m_p->m_flowElements.size(); ++i)
-		m_statesModel->m_p->m_flowElements[i]->inputReferences(inputRefs);
+		m_statesModel->m_p->m_flowElements[i]->inputReferences(modelInputRefs);
+
+
+	// redirect references to zone air and active layer temperature
+	if (!m_zoneProperties.empty() || !m_activeProperties.empty()) {
+
+		// filter input references to heat exchange temperatur
+		for(unsigned int i = 0; i < modelInputRefs.size(); ++i) {
+			InputReference &inputRef = modelInputRefs[i];
+			// skip inunteresting references
+			if(inputRef.m_name.m_name != "HeatExchangeTemperature")
+				continue;
+			// find flow element properties
+			std::vector<FlowElementProperties>::const_iterator fIt =
+					std::find(m_flowElementProperties.begin(), m_flowElementProperties.end(), inputRef.m_id);
+
+			IBK_ASSERT(fIt != m_flowElementProperties.end());
+
+			// we assign a zone
+			if(fIt->m_zoneProperties != nullptr) {
+				// redirect to zone air temperature
+				inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+				inputRef.m_id = fIt->m_zoneProperties->m_zoneId;
+				inputRef.m_name = QuantityName("AirTemperature");
+			}
+			// we assign an active construction layer
+			else if(fIt->m_activeLayerProperties != nullptr) {
+				// redirect to zone air temperature
+				inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
+				inputRef.m_id = fIt->m_activeLayerProperties->m_constructionInstanceId;
+				inputRef.m_name = QuantityName("ActiveLayerTemperature");
+			}
+		}
+	}
+
+	// add to global list
+	inputRefs.insert(inputRefs.end(), modelInputRefs.begin(), modelInputRefs.end());
 
 }
 
@@ -379,40 +416,6 @@ void ThermalNetworkBalanceModel::setInputValueRefs(const std::vector<QuantityDes
 	{
 		// set reference to zone temperature
 		it->m_activeLayerTemperatureRef = resultValueRefs[resultValIdx++];
-	}
-
-	// overwrite references of heat exchange temperature for all pipes
-	for (unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
-		const FlowElementProperties &elemProp = m_flowElementProperties[i];
-
-		// do we have a zone temperature dependency?
-		if (elemProp.m_zoneProperties != nullptr) {
-			TNSimplePipeElement *simplePipe =
-					dynamic_cast<TNSimplePipeElement *>(m_statesModel->m_p->m_flowElements[i]);
-			TNDynamicPipeElement *dynamicPipe =
-					dynamic_cast<TNDynamicPipeElement *>(m_statesModel->m_p->m_flowElements[i]);
-
-			if(simplePipe != nullptr) {
-				simplePipe->m_heatExchangeTemperatureRef = elemProp.m_zoneProperties->m_zoneTemperatureRef;
-			}
-			else if (dynamicPipe != nullptr){
-				dynamicPipe->m_heatExchangeTemperatureRef = elemProp.m_zoneProperties->m_zoneTemperatureRef;
-			}
-		}
-		// or do we have an active layer temperature dependence?
-		else if (elemProp.m_activeLayerProperties != nullptr) {
-			TNSimplePipeElement *simplePipe =
-					dynamic_cast<TNSimplePipeElement *>(m_statesModel->m_p->m_flowElements[i]);
-			TNDynamicPipeElement *dynamicPipe =
-					dynamic_cast<TNDynamicPipeElement *>(m_statesModel->m_p->m_flowElements[i]);
-
-			if(simplePipe != nullptr) {
-				simplePipe->m_heatExchangeTemperatureRef = elemProp.m_activeLayerProperties->m_activeLayerTemperatureRef;
-			}
-			else if (dynamicPipe != nullptr){
-				dynamicPipe->m_heatExchangeTemperatureRef = elemProp.m_activeLayerProperties->m_activeLayerTemperatureRef;
-			}
-		}
 	}
 
 	// resultValIdx now points to the first input reference past the active layer/zone temperatures
