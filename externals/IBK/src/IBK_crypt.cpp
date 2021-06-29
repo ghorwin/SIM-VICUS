@@ -1,4 +1,4 @@
-﻿/*	Copyright (c) 2001-2017, Institut für Bauklimatik, TU Dresden, Germany
+/*	Copyright (c) 2001-2017, Institut für Bauklimatik, TU Dresden, Germany
 
 	Written by A. Nicolai, H. Fechner, St. Vogelsang, A. Paepcke, J. Grunewald
 	All rights reserved.
@@ -181,7 +181,7 @@ public:
 
 	//RSA MD5 Implementierung
 	bool transform(const std::vector<unsigned char>& Block, int& error);
-	void update(std::vector<unsigned char>& Input, int& error);
+	void update(const std::vector<unsigned char> & Input, int& error);
 	std::string finalStr(int& iErrorCalculate);
 	std::vector<unsigned char> final(int& iErrorCalculate);
 	bool final(std::vector<unsigned int>& res, int& error);
@@ -598,7 +598,7 @@ bool md5_hash::final(std::vector<unsigned int>& res, int& error) {
 }
 
 
-void md5_hash::update(std::vector<unsigned char>& Input, int& error) {
+void md5_hash::update(const std::vector<unsigned char>& Input, int& error) {
 	//Anzahl der Bytes mod 64 berechnen
 	unsigned int nInputLen(static_cast<unsigned int>(Input.size()));
 	unsigned int nIndex = (unsigned int)((m_Count[0] >> 3) & 0x3F);
@@ -1546,6 +1546,14 @@ std::string md5_str(const std::string& val) {
 	return TestOut;
 }
 
+std::string md5_str(const std::vector<unsigned char> & data) {
+	md5_hash TestHash;
+	int error;
+	TestHash.update(data, error);
+	std::string TestOut = TestHash.finalStr(error);
+	return TestOut;
+}
+
 std::string md5_str(const std::string& val, unsigned int length) {
 	md5_hash TestHash;
 	std::vector<unsigned char> TestIn(val.begin(), val.end());
@@ -1623,23 +1631,30 @@ bool blowfish_decode(const std::vector<unsigned char>& key, const std::vector<un
 }
 
 
-std::string blowfish_decodeStr(const std::string& key, const std::string& Value) {
+std::string blowfish_decodeStr(const std::string& key, const std::string& Value, std::string& errstr) {
 	try {
 		const std::vector<unsigned char> Key(key.begin(), key.end());
 		BlowFish bf(Key);
 		const std::vector<unsigned char> Input(Value.begin(), Value.end());
 		unsigned int inSize = Input.size();
 		if(inSize == 0 || inSize % 8 != 0) {
+			errstr = inSize == 0 ? "String has size 0" : "String size not valid";
 			return std::string();
 		}
 		std::vector<unsigned char> Output;
 		bf.decrypt(Input, Output);
 		return std::string(Output.begin(), Output.end());
 	}
+	catch(std::exception& e) {
+		errstr = e.what();
+		return std::string();
+	}
 	catch(...) {
+		errstr = "Unknown exception";
 		return std::string();
 	}
 }
+
 
 
 }	// namespace IBK

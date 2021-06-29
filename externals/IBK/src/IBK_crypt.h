@@ -1,4 +1,4 @@
-﻿/*	Copyright (c) 2001-2017, Institut für Bauklimatik, TU Dresden, Germany
+/*	Copyright (c) 2001-2017, Institut für Bauklimatik, TU Dresden, Germany
 
 	Written by A. Nicolai, H. Fechner, St. Vogelsang, A. Paepcke, J. Grunewald
 	All rights reserved.
@@ -125,6 +125,7 @@ purpose and non-infringement.
 
 */
 
+#include <vector>
 
 namespace IBK {
 
@@ -199,6 +200,13 @@ std::vector<unsigned int> md5(const std::string& val);
 */
 std::string md5_str(const std::string& val);
 
+/*! Creates a MD5 hash from the given string.
+	The hash will be represented as string with 32 hex numbers.
+	\param data Input data as vector of char
+	\return resulting the hash as string
+*/
+std::string md5_str(const std::vector<unsigned char>& data);
+
 /*! Creates a shortened MD5 hash from the given string with a given length beginning at random position.
 	The resulting string contains begin position in first 2 chars.
 	\param val Input string
@@ -245,9 +253,10 @@ bool blowfish_decode(const std::vector<unsigned char>& key, const std::vector<un
 	The result is depending the given key (should be the same as encoding).
 	\param key Code key as string
 	\param Value Input vector
-	\return resulting the encoded string or an empty one.
+	\param errstr Includes error string in case of an error.
+	\return resulting the encoded string or an empty one if an error occures (\sa errstr).
 */
-std::string blowfish_decodeStr(const std::string& key, const std::string& Value);
+std::string blowfish_decodeStr(const std::string& key, const std::string& Value, std::string& errstr);
 
 }	// namespace IBK
 
