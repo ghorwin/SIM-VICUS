@@ -63,6 +63,11 @@ public:
 	/*! ID of surface at side B (optional, ID = 0 reserved for "ambient", INVALID_ID means adiabatic). */
 	unsigned int						m_sideBSurfaceID = INVALID_ID;		// XML:A
 
+	/*! ID of surface heating definition, to be used when component has active layer. */
+	unsigned int						m_surfaceHeatingID				= INVALID_ID;	// XML:E
+	/*! ID of zone containing thermostat for control of surface heating. */
+	unsigned int						m_surfaceHeatingControlZoneID	= INVALID_ID;	// XML:E
+
 	// *** RUNTIME VARIABLES ***
 
 	// These pointers are updated in VICUS::Project::updatePointers() and can be used

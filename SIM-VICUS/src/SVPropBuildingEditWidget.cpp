@@ -923,15 +923,46 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 		if (componentFilterID != VICUS::INVALID_ID && comp->m_id != componentFilterID)
 			continue;
 
+		// add new row
 		int row = m_ui->tableWidgetSurfaceHeating->rowCount();
 		m_ui->tableWidgetSurfaceHeating->setRowCount(row + 1);
+
+
 		QTableWidgetItem * item = new QTableWidgetItem;
 		item->setFlags(Qt::ItemIsEnabled);
 		// look-up surface heating system
+		const VICUS::SurfaceHeating * surfHeat = db.m_surfaceHeatings[ci.m_surfaceHeatingID];
+		if (surfHeat == nullptr)
+			item->setBackgroundColor(QColor(255,128,128));
+		else
+			item->setBackgroundColor(surfHeat->m_color);
+		m_ui->tableWidgetSurfaceHeating->setItem(row, 0, item);
 
-		item->setBackgroundColor(QColor(255,128,128));
-//		m_ui->tableWidgetSurfaceHeating->setItem()
+		item = new QTableWidgetItem(QtExt::MultiLangString2QString(comp->m_displayName));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
+		m_ui->tableWidgetSurfaceHeating->setItem(row, 1, item);
 
+		item = new QTableWidgetItem;
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
+		if (surfHeat == nullptr)
+			item->setText("---");
+		else
+			item->setText(QtExt::MultiLangString2QString(surfHeat->m_displayName));
+		m_ui->tableWidgetSurfaceHeating->setItem(row, 2, item);
+
+		item = new QTableWidgetItem;
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
+		if (surfHeat == nullptr)
+			item->setText("---");
+		else {
+			// lookup zone with ID
+			const VICUS::Room * r = dynamic_cast<const VICUS::Room *>(project().objectById(ci.m_surfaceHeatingControlZoneID));
+			if (r == nullptr)
+				item->setText("---");
+			else
+				item->setText(r->m_displayName);
+		}
+		m_ui->tableWidgetSurfaceHeating->setItem(row, 3, item);
 	}
 	m_ui->tableWidgetSurfaceHeating->blockSignals(false);
 	m_ui->tableWidgetSurfaceHeating->selectionModel()->blockSignals(false);
