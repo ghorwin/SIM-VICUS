@@ -33,6 +33,7 @@
 
 #include <IBK_messages.h>
 #include <IBK_FormatString.h>
+#include <IBK_crypt.h>
 
 #include "QtExt_Settings.h"
 
@@ -86,11 +87,7 @@ int AutoUpdateDialog::run(const QString & currentVersion, const QString & newVer
 	m_ui->labelCurrentVersionNumber->setText(currentVersion);
 	m_ui->labelNewVersionNumber->setText(newVersion);
 	m_ui->textEditChangeLog->setPlainText(changeLogText);
-#if defined(Q_OS_UNIX) || defined(Q_OS_MAC)
-	m_localFilePath = QString(localFilePath).replace("version", newVersion);
-#else
-	m_localFilePath = localFilePath;
-#endif
+	m_localFilePath = localFilePath; // holds directory to place the downloaded file into
 	m_downloadUrl = downloadUrl;
 	return exec();
 }
@@ -129,18 +126,26 @@ void AutoUpdateDialog::onDownloadFinished(QNetworkReply* reply) {
 	}
 	else {
 		// store downloaded file in selected location
-		QFileInfo finfo(m_localFilePath);
-		QDir baseDir = finfo.absoluteDir();
+		QString targetFile = m_localFilePath + "/" + QFileInfo(m_downloadUrl).fileName();
+		targetFile = QDir::toNativeSeparators(targetFile);
+		QFileInfo finfo(targetFile);
+		QDir baseDir(m_localFilePath);
 		if (!baseDir.exists())
-			baseDir.mkpath(baseDir.absolutePath());
-		QFile f(m_localFilePath);
+			baseDir.mkpath(m_localFilePath);
+		QFile f(targetFile);
 		f.open(QIODevice::WriteOnly);
-		f.write(reply->readAll());
+		// this might be several Megabytes (..100Mb), but that isn't an issue with todays memory availability, right?
+		QByteArray downloadedData = reply->readAll();
+		f.write(downloadedData);
+		// compute MD5 hash
+		std::vector<unsigned char> data(downloadedData.data(), downloadedData.data() + downloadedData.size());
+		m_updateFileMD5 = IBK::md5_str(data);
 		f.close();
+
 
 		// now check if the file was actually written or if it was moved by
 		// virus scan software etc.
-		if (!QFileInfo::exists(m_localFilePath) || QFileInfo(m_localFilePath).size() == 0) {
+		if (!QFileInfo::exists(targetFile) || QFileInfo(targetFile).size() == 0) {
 			QMessageBox::information(this, tr("Download complete"), tr("The update installer could not be stored "
 																	   "on the machine, possibly through access restrictions. "
 																	   "Please download and install the update manually."));
@@ -148,22 +153,26 @@ void AutoUpdateDialog::onDownloadFinished(QNetworkReply* reply) {
 		else {
 
 #if defined(Q_OS_WIN)
-			QMessageBox::information(this, tr("Download complete"), tr("The software updater has downloaded the update installer (to '%1').\n"
-																	   "You must restart the program to apply the update!")
-				.arg(m_localFilePath) );
+			QMessageBox msgBox(QMessageBox::Information, tr("Download complete"),
+							   tr("The software updater has downloaded the update installer (to '%1').\n"
+								   "You must restart the program to apply the update!").arg(targetFile), QMessageBox::Ok | QMessageBox::Close, this);
+			msgBox.setButtonText(QMessageBox::Ok, tr("Close PostProc and install update"));
+			int res = msgBox.exec();
+			if (res == QMessageBox::Ok)
+				qApp->closeAllWindows();
 
 #elif defined(Q_OS_MAC)
 			QMessageBox::information(this, tr("Download complete"), tr("The software updater has downloaded the new software package in %1.\n"
 																	   "The disk image will now be mounted (you may need to enable third party "
 																	   "app downloads in the security settings).")
-									 .arg(m_localFilePath) );
+									 .arg(targetFile) );
 			// open DMG
 			QString openCommand("open");
-			QStringList args  = QStringList() << m_localFilePath;
+			QStringList args  = QStringList() << targetFile;
 			QProcess::execute(openCommand, args);
 #elif defined(Q_OS_UNIX)
 			QMessageBox::information(this, tr("Download complete"), tr("The software updater has downloaded the new software package in %1.")
-									 .arg(m_localFilePath) );
+									 .arg(targetFile) );
 #endif
 		}
 	}

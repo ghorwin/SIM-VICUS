@@ -223,22 +223,18 @@ bool Directories::checkForWriteAccess(const QString & newFileName) {
 QString Directories::updateFilePath() {
 	// In user-data-dir 'updates' check for
 #ifdef _WIN32
-	QDir userDir(Directories::userDataDir() + "/updates");
-
-#ifdef _WIN64
-	QString updateFile = userDir.absoluteFilePath("update_win64.exe");
-#else
-	QString updateFile = userDir.absoluteFilePath("update.exe");
-#endif
-	return updateFile;
+	// on Windows, we store user data unter %HOME%/AppData/Local
+	QString fname = QDir::toNativeSeparators(QDir::home().absolutePath() + "/AppData/Local/" + appname + "/updates");
+	return fname;
 #elif defined(Q_OS_MAC)
 	// "version" will be replaced by new version number
-	return QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)+"/" + appname + "_version.dmg";
+	return QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
 #else
 	// "version" will be replaced by new version number
-	return QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)+"/" + appname + "_version.7z";
+	return QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
 #endif
 }
+
 
 // helper function to remove a complete directory hierarchie
 bool Directories::removeDirRecursively(const QString & directory) {

@@ -1,20 +1,13 @@
-/*	QtExt - Qt-based utility classes and functions (extends Qt library)
+/*	Authors: H. Fechner, A. Nicolai
 
-	Copyright (c) 2014-today, Institut für Bauklimatik, TU Dresden, Germany
+	This file is part of the QtExt Library.
+	All rights reserved.
 
-	Primary authors:
-	  Heiko Fechner
-	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
-
-	This library is free software; you can redistribute it and/or
-	modify it under the terms of the GNU Lesser General Public
-	License as published by the Free Software Foundation; either
-	version 3 of the License, or (at your option) any later version.
-
-	This library is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-	Lesser General Public License for more details.
+	This software is copyrighted by the principle author(s).
+	The right to reproduce the work (copy all or part of the source code),
+	modify the source code or documentation, compile it to form object code,
+	and the sole right to copy the object code thereby produced is hereby
+	retained for the author(s) unless explicitely granted by the author(s).
 
 */
 

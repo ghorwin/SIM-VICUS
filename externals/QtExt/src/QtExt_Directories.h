@@ -74,7 +74,7 @@ public:
 	*/
 	static bool checkForWriteAccess(const QString & newFileName);
 
-	/*! Local file path to update-installer. */
+	/*! Local file path to update-installer (without filename). */
 	static QString updateFilePath();
 
 	/*! Qt4 function for removing directory structures recursively, in Qt5 use QDir::removeRecursively(). */

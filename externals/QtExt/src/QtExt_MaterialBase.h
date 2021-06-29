@@ -100,6 +100,36 @@ public:
 	/*! Name of data source.*/
 	virtual QString	dataSource() const { return QString(); }
 
+	/*! Investigator for the data.*/
+	virtual QString	investigator() const { return QString(); }
+
+	/*! Sample IDs.*/
+	virtual QString	sampleID() const { return QString(); }
+
+	/*! Description of methods for sampling.*/
+	virtual QString	samplingMethod() const { return QString(); }
+
+	/*! Country there the material is mainly used.*/
+	virtual QString	country() const { return QString(); }
+
+	/*! Copyright of material data.*/
+	virtual QString	copyright() const { return QString(); }
+
+	/*! Description (name) of u direction for non-isotropic materials.*/
+	virtual QString	uDirectionDescription() const { return QString(); }
+
+	/*! Description (name) of v direction for non-isotropic materials.*/
+	virtual QString	vDirectionDescription() const { return QString(); }
+
+	/*! Description (name) of w direction for non-isotropic materials.*/
+	virtual QString	wDirectionDescription() const { return QString(); }
+
+	/*! Name of signature source.*/
+	virtual QString	signatureSource() const { return QString(); }
+
+	/*! URL of a suorce for the producers material data sheet.*/
+	virtual QString	dataSheetSource() const { return QString(); }
+
 	/*! Bulk density in [kg/m3].*/
 	virtual double						rho() const = 0;
 
@@ -169,6 +199,15 @@ public:
 
 	/*! Return if a material is marked as deprecated (value > 0) or deleted (value = -1).*/
 	int deprecatedState() const { return 0; }
+
+	/*! Return the quality flags (not yet specified).*/
+	int qualityFlags() const { return 0; }
+
+	/*! Return the aquisition ID of the speciefied lab.*/
+	int aquisitionID() const { return 0; }
+
+	/*! Return a list of database types.*/
+	std::vector<int> dataBaseType() const { return std::vector<int>(); }
 
 	/*! Returns a string of the parameter value. Formating depends on value type.*/
 	QString materialValueFormatter(parameter_t type, double value) {

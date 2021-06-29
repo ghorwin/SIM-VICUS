@@ -52,6 +52,9 @@ public:
 	/*! Set to true, if user rejects update. */
 	bool m_updateRejected;
 
+	/*! Here the MD5 hash of the downloaded update file is stored. */
+	std::string m_updateFileMD5;
+
 private slots:
 
 	void on_pushButtonDownload_clicked();

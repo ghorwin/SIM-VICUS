@@ -50,6 +50,7 @@ HEADERS += \
 	../../src/QtExt_DateTimeInputDialog.h \
 	../../src/QtExt_Directories.h \
 	../../src/QtExt_FeatureWidget.h \
+	../../src/QtExt_FilterComboBox.h \
 	../../src/QtExt_GraphicsRectItemWithHatch.h \
 	../../src/QtExt_IconButton.h \
 	../../src/QtExt_LanguageHandler.h \
@@ -87,6 +88,7 @@ SOURCES += \
 	../../src/QtExt_DateTimeInputDialog.cpp \
 	../../src/QtExt_Directories.cpp \
 	../../src/QtExt_FeatureWidget.cpp \
+	../../src/QtExt_FilterComboBox.cpp \
 	../../src/QtExt_GraphicsRectItemWithHatch.cpp \
 	../../src/QtExt_IconButton.cpp \
 	../../src/QtExt_LanguageHandler.cpp \

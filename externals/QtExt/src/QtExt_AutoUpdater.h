@@ -94,18 +94,18 @@ class AutoUpdater : public QObject {
 public:
 	explicit AutoUpdater(QObject *parent = nullptr);
 
-	/*! D'tor, releases network manager. */
-	~AutoUpdater();
-
+#if defined(Q_OS_WIN)
 	/*! Call this function from main.cpp to check if a downloaded update installer is available on the specified
-		location and run the installation if possible.
-		If such an update file exists, it is checked if it was installed already (file + .run) exists. In this
-		case the downloaded file and .run info file is removed. Otherwise, the update process is
-		started and the .run file is created.
+		location.
+		In fact, any executable in the given path is treated like an update installer, moved to a temporary directory
+		and executed in a new process.
+		To ensure that really only the correct executable file is run, you may pass an md5hash of the file's content.
+		Then, the function will open all *.exe files in the
 		\return Returns true, if a process with the update file was started (in this case the calling program should
 			terminate right away).
 	*/
-	static bool installUpdateWhenAvailable(const QString & localPath);
+	static bool installUpdateWhenAvailable(const QString & localPath, const std::string & md5hash = "");
+#endif // defined(Q_OS_WIN)
 
 
 	/*! Attempts to download the update-info file from a given URL and returns true if
@@ -124,7 +124,7 @@ public:
 			it failed), that shows new version and change log (downloaded separately). If false, function emits the signal
 			updateInfoRetrieved(). The receiver of the signal can then check and compare the version number and either
 			start the update dialog manually, or show any other means of update notification.
-		\param downloadFilePath Path, where downloaded update install shall be stored in.
+		\param downloadFilePath Path, where downloaded update install shall be stored in. Filename will be the same as the downloaded file.
 		\param newestRejectedVersion Only applicable when "interactive=false", i.e. when
 
 		\warning On Windows it is possible, that the current user of DELPHIN does not have install privileges. When installing
@@ -145,7 +145,11 @@ public:
 		Updates m_newestRejectedVersion when update was skipped.
 	*/
 	static void showUpdateDialog(QWidget * parent, QString currentVersion, QString newVersion,
-								 QString changeLogText, QString downloadUrl, QString downloadFilePath, bool & rejected);
+								 QString changeLogText, QString downloadUrl, QString downloadFilePath,
+								 std::string & downloadedFileMD5, bool & rejected);
+
+	/*! MD5 hash of downloaded file (empty if nothing was downloaded). */
+	std::string				m_downloadedFileMD5;
 
 signals:
 	/*! Signals is emitted when checkForUpdateInfo() was called in non-interactive mode.

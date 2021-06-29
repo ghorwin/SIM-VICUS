@@ -23,6 +23,7 @@
 #include <QSettings>
 #include <QProcess> // for open text editor
 #include <QCheckBox>
+#include <QFileInfo>
 
 #include <IBK_ArgParser.h>
 
@@ -63,9 +64,22 @@ void Settings::setDefaults() {
 	// determine text executable
 	m_textEditorExecutable.clear();
 #ifdef Q_OS_UNIX
-	m_textEditorExecutable = "gedit";
+	m_textEditorExecutable = "geany";
 #elif defined(Q_OS_WIN)
-	m_textEditorExecutable = "C:\\Program Files (x86)\\Notepad++\\notepad++.exe";
+	QStringList textEditorInstallLocations;
+	textEditorInstallLocations
+			<< "C:\\ProgramData\\chocolatey\\bin\\notepad++.exe"
+			<< "C:\\Users\\All Users\\chocolatey\\bin\\notepad++.exe"
+			<< "C:\\Program Files\\Notepad++\\notepad++.exe"
+			<< "C:\\Program Files (x86)\\Notepad++\\notepad++.exe";
+
+	m_textEditorExecutable.clear();
+	for (QString installLoc : textEditorInstallLocations) {
+		if (QFileInfo(installLoc).exists()) {
+			m_textEditorExecutable = installLoc;
+			break;
+		}
+	}
 #else
 	// OS x editor?
 #endif
@@ -96,6 +110,9 @@ void Settings::applyCommandLineArgs(const IBK::ArgParser & argParser) {
 		m_initialProjectFile = QString::fromLatin1(str.c_str() );
 #else
 		m_initialProjectFile = QString::fromUtf8( str.c_str() );
+		// remove "file://" prefix
+		if (m_initialProjectFile.indexOf("file://") == 0)
+			m_initialProjectFile = m_initialProjectFile.mid(7);
 #endif
 	}
 }
