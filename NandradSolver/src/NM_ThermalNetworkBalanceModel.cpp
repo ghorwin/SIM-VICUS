@@ -355,10 +355,10 @@ void ThermalNetworkBalanceModel::inputReferences(std::vector<InputReference> & i
 	if (!m_zoneProperties.empty() || !m_activeProperties.empty()) {
 
 		// filter input references to heat exchange temperatur
-		for(unsigned int i = 0; i < modelInputRefs.size(); ++i) {
+		for (unsigned int i = 0; i < modelInputRefs.size(); ++i) {
 			InputReference &inputRef = modelInputRefs[i];
-			// skip inunteresting references
-			if(inputRef.m_name.m_name != "HeatExchangeTemperature")
+			// skip uninteresting references
+			if (inputRef.m_name.m_name != "HeatExchangeTemperature")
 				continue;
 			// find flow element properties
 			std::vector<FlowElementProperties>::const_iterator fIt =
