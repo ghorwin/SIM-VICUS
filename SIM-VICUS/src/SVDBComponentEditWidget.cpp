@@ -246,7 +246,7 @@ void SVDBComponentEditWidget::on_toolButtonSelectConstruction_clicked() {
 	// get construction edit dialog from mainwindow
 	SVDatabaseEditDialog * conEditDialog = SVMainWindow::instance().dbConstructionEditDialog();
 	unsigned int conId = conEditDialog->select(m_current->m_idConstruction);
-	if (conId != m_current->m_idConstruction) {
+	if (conId != VICUS::INVALID_ID && conId != m_current->m_idConstruction) {
 		m_current->m_idConstruction = conId;
 		modelModify();
 	}
@@ -258,7 +258,7 @@ void SVDBComponentEditWidget::on_toolButtonSelectBoundaryConditionSideAName_clic
 	// get boundary condition edit dialog from mainwindow
 	SVDatabaseEditDialog * bcEditDialog = SVMainWindow::instance().dbBoundaryConditionEditDialog();
 	unsigned int bcId = bcEditDialog->select(m_current->m_idSideABoundaryCondition);
-	if (bcId != m_current->m_idSideABoundaryCondition) {
+	if (bcId != VICUS::INVALID_ID && bcId != m_current->m_idSideABoundaryCondition) {
 		m_current->m_idSideABoundaryCondition = bcId;
 		modelModify();
 	}
@@ -270,7 +270,7 @@ void SVDBComponentEditWidget::on_toolButtonSelectBoundaryConditionSideBName_clic
 	// get boundary condition edit dialog from mainwindow
 	SVDatabaseEditDialog * bcEditDialog = SVMainWindow::instance().dbBoundaryConditionEditDialog();
 	unsigned int bcId = bcEditDialog->select(m_current->m_idSideBBoundaryCondition);
-	if (bcId != m_current->m_idSideBBoundaryCondition) {
+	if (bcId != VICUS::INVALID_ID && bcId != m_current->m_idSideBBoundaryCondition) {
 		m_current->m_idSideBBoundaryCondition = bcId;
 		modelModify();
 	}

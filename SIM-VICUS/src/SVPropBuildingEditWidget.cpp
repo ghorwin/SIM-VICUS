@@ -93,7 +93,7 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->tableWidgetZoneTemplates->horizontalHeader()->setStretchLastSection(true);
 
 	m_ui->tableWidgetSurfaceHeating->setColumnCount(4);
-	m_ui->tableWidgetZoneTemplates->setHorizontalHeaderLabels(QStringList() << QString() << tr("Component") << tr("Heating") << tr("Thermostat-Zone"));
+	m_ui->tableWidgetSurfaceHeating->setHorizontalHeaderLabels(QStringList() << QString() << tr("Component") << tr("Heating") << tr("Thermostat-Zone"));
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetSurfaceHeating);
 	m_ui->tableWidgetSurfaceHeating->setSortingEnabled(false);
 	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
@@ -895,6 +895,8 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 	m_ui->comboBoxSurfaceHeatingComponentFilter->clear();
 	m_ui->comboBoxSurfaceHeatingComponentFilter->addItem(tr("All components"), VICUS::INVALID_ID);
 	for (const auto & compEntry : db.m_components) {
+		if (compEntry.second.m_activeLayerIndex == VICUS::INVALID_ID)
+			continue;
 		if (compEntry.second.m_id == currentComponent)
 			selectedIndex = m_ui->comboBoxSurfaceHeatingComponentFilter->count();
 		m_ui->comboBoxSurfaceHeatingComponentFilter->addItem( QtExt::MultiLangString2QString(compEntry.second.m_displayName), compEntry.second.m_id);
