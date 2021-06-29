@@ -163,6 +163,8 @@ SOURCES += \
 								../../src/SVDBScheduleTableModel.cpp \
 								../../src/SVDBSubSurfaceComponentEditWidget.cpp \
 								../../src/SVDBSubSurfaceComponentTableModel.cpp \
+								../../src/SVDBSurfaceHeatingEditWidget.cpp \
+								../../src/SVDBSurfaceHeatingTableModel.cpp \
 								../../src/SVDBVentilationNaturalEditWidget.cpp \
 								../../src/SVDBVentilationNaturalTableModel.cpp \
 								../../src/SVDBWindowEditWidget.cpp \
@@ -315,6 +317,8 @@ HEADERS  += \
 								../../src/SVDBScheduleTableModel.h \
 								../../src/SVDBSubSurfaceComponentEditWidget.h \
 								../../src/SVDBSubSurfaceComponentTableModel.h \
+								../../src/SVDBSurfaceHeatingEditWidget.h \
+								../../src/SVDBSurfaceHeatingTableModel.h \
 								../../src/SVDBVentilationNaturalEditWidget.h \
 								../../src/SVDBVentilationNaturalTableModel.h \
 								../../src/SVDBWindowEditWidget.h \
@@ -401,6 +405,7 @@ FORMS    += \
 								../../src/SVDBScheduleDailyCycleEditWidget.ui \
 								../../src/SVDBScheduleEditWidget.ui \
 								../../src/SVDBSubSurfaceComponentEditWidget.ui \
+								../../src/SVDBSurfaceHeatingEditWidget.ui \
 								../../src/SVDBVentilationNaturalEditWidget.ui \
 								../../src/SVDBWindowEditWidget.ui \
 								../../src/SVDBWindowGlazingSystemEditWidget.ui \
