@@ -31,8 +31,7 @@ namespace VICUS {
 
 
 
-bool SurfaceHeating::isValid() const
-{
+bool SurfaceHeating::isValid() const {
 	if(m_id == INVALID_ID)
 		return false;
 
@@ -49,7 +48,7 @@ bool SurfaceHeating::isValid() const
 			}
 		}
 		break;
-		case VICUS::SurfaceHeating::T_SurfaceHeatingI:{
+		case VICUS::SurfaceHeating::T_IdealPipeRegister:{
 			try {
 				m_para[P_TemperatureDifferenceSupplyReturn].checkedValue(VICUS::KeywordList::Keyword("SurfaceHeating::para_t", P_TemperatureDifferenceSupplyReturn),
 																				"K", "K", 1, true, 80, true, nullptr);
@@ -80,6 +79,7 @@ bool SurfaceHeating::isValid() const
 	return true;
 }
 
+
 AbstractDBElement::ComparisonResult SurfaceHeating::equal(const AbstractDBElement *other) const{
 	const SurfaceHeating * surfHeat = dynamic_cast<const SurfaceHeating*>(other);
 	if (surfHeat == nullptr)
@@ -100,7 +100,7 @@ AbstractDBElement::ComparisonResult SurfaceHeating::equal(const AbstractDBElemen
 				m_para[P_CoolingLimit] != surfHeat->m_para[P_CoolingLimit])
 			return Different;
 	}
-	else if(m_type == T_SurfaceHeatingI){
+	else if(m_type == T_IdealPipeRegister){
 		if(m_idPipe != surfHeat->m_idPipe)
 			return Different;
 		if(m_para[P_TemperatureDifferenceSupplyReturn] != surfHeat->m_para[P_TemperatureDifferenceSupplyReturn] ||
@@ -120,4 +120,4 @@ AbstractDBElement::ComparisonResult SurfaceHeating::equal(const AbstractDBElemen
 	return Equal;
 }
 
-}
+} // namespace VICUS

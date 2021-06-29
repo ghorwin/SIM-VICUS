@@ -48,15 +48,15 @@ public:
 	/*! Basic parameters. */
 	enum para_t {
 		/*! Heating limit. */
-		P_HeatingLimit,						// Keyword: HeatingLimit				[W/m2]		'Heating limit.'
+		P_HeatingLimit,							// Keyword: HeatingLimit				[W/m2]		'Heating limit'
 		/*! Cooling limit. */
-		P_CoolingLimit,						// Keyword: CoolingLimit				[W/m2]		'Cooling limit.'
+		P_CoolingLimit,							// Keyword: CoolingLimit				[W/m2]		'Cooling limit'
 		/*! Pipe spacing. */
-		P_PipeSpacing,						// Keyword: PipeSpacing					[m]			'Pipe spacing.'
+		P_PipeSpacing,							// Keyword: PipeSpacing					[m]			'Pipe spacing'
 		/*! Maximum fluid velocity. */
-		P_MaxFluidVelocity,					// Keyword: MaxFluidVelocity			[m/s]		'Maximum fluid velocity.'
+		P_MaxFluidVelocity,						// Keyword: MaxFluidVelocity			[m/s]		'Maximum fluid velocity'
 		/*! Temperature difference between supply and return fluid temperature. */
-		P_TemperatureDifferenceSupplyReturn,// Keyword: TemperatureDifferenceSupplyReturn	[K]		'Temperature difference between supply and return fluid temperature.'
+		P_TemperatureDifferenceSupplyReturn,	// Keyword: TemperatureDifferenceSupplyReturn	[K]		'Temperature difference between supply and return fluid temperature'
 
 		NUM_P
 	};
@@ -65,8 +65,8 @@ public:
 	/*! Surface Heating Types. */
 	// TODO all hier brauchen wir mal bessere Namen
 	enum Type{
-		T_Ideal,				// Keyword: ideal
-		T_SurfaceHeatingI,		// Keyword: SurfaceHeatingI
+		T_Ideal,				// Keyword: Ideal												'Ideal surface conditioning'
+		T_IdealPipeRegister,	// Keyword: IdealPipeRegister									'Water-based surface conditioning'
 		NUM_T
 	};
 

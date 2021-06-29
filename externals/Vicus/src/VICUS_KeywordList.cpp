@@ -406,8 +406,8 @@ namespace VICUS {
 			// SurfaceHeating::Type
 			case 34 :
 			switch (t) {
-				case 0 : return "ideal";
-				case 1 : return "SurfaceHeatingI";
+				case 0 : return "Ideal";
+				case 1 : return "IdealPipeRegister";
 			} break;
 			// SurfaceProperties::para_t
 			case 35 :
@@ -869,8 +869,8 @@ namespace VICUS {
 			// SurfaceHeating::Type
 			case 34 :
 			switch (t) {
-				case 0 : return "ideal";
-				case 1 : return "SurfaceHeatingI";
+				case 0 : return "Ideal";
+				case 1 : return "IdealPipeRegister";
 			} break;
 			// SurfaceProperties::para_t
 			case 35 :
@@ -1324,17 +1324,17 @@ namespace VICUS {
 			// SurfaceHeating::para_t
 			case 33 :
 			switch (t) {
-				case 0 : return "Heating limit.";
-				case 1 : return "Cooling limit.";
-				case 2 : return "Pipe spacing.";
-				case 3 : return "Maximum fluid velocity.";
-				case 4 : return "Temperature difference between supply and return fluid temperature.";
+				case 0 : return "Heating limit";
+				case 1 : return "Cooling limit";
+				case 2 : return "Pipe spacing";
+				case 3 : return "Maximum fluid velocity";
+				case 4 : return "Temperature difference between supply and return fluid temperature";
 			} break;
 			// SurfaceHeating::Type
 			case 34 :
 			switch (t) {
-				case 0 : if (no_description != nullptr) *no_description = true; return "ideal";
-				case 1 : if (no_description != nullptr) *no_description = true; return "SurfaceHeatingI";
+				case 0 : return "Ideal surface conditioning";
+				case 1 : return "Water-based surface conditioning";
 			} break;
 			// SurfaceProperties::para_t
 			case 35 :

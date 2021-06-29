@@ -106,29 +106,37 @@ void SVDBSurfaceHeatingEditWidget::updateInput(int id) {
 	m_ui->comboBoxType->blockSignals(true);
 	m_ui->comboBoxType->setCurrentIndex(m_current->m_type);
 	Q_ASSERT(m_ui->comboBoxType->currentIndex() != -1);
-	on_comboBoxType_currentIndexChanged(m_ui->comboBoxType->currentIndex());
+	m_ui->stackedWidget->setCurrentIndex(m_ui->comboBoxType->currentIndex());
 	m_ui->comboBoxType->blockSignals(false);
 
 	switch (m_current->m_type) {
 		case VICUS::SurfaceHeating::T_Ideal:
-		case VICUS::SurfaceHeating::NUM_T:{
+		case VICUS::SurfaceHeating::NUM_T: {
 			try {
-				m_ui->lineEditHeatingLimit->setValue(m_current->m_para[VICUS::SurfaceHeating::P_HeatingLimit].get_value(IBK::Unit("W/m2")));
-			}  catch (IBK::Exception &ex) {
-				//set up a new value
-				m_ui->lineEditHeatingLimit->setValue(50);
+				// test user data for value input
+				m_current->m_para[VICUS::SurfaceHeating::P_HeatingLimit].checkedValue("HeatingLimit", "W/m2", "W/m2",
+																					  0, true, 1000, false, nullptr);
+			}
+			catch (...) {
+				VICUS::KeywordList::setParameter(m_current->m_para, "SurfaceHeating::para_t", VICUS::SurfaceHeating::P_HeatingLimit, 50);
 				modelModify();
 			}
+			m_ui->lineEditHeatingLimit->setValue(m_current->m_para[VICUS::SurfaceHeating::P_HeatingLimit].value); // input is in base SI unit
+
+			// TODO Dirk
 			try {
 				m_ui->lineEditCoolingLimit->setValue(m_current->m_para[VICUS::SurfaceHeating::P_CoolingLimit].get_value(IBK::Unit("W/m2")));
-			}  catch (IBK::Exception &ex) {
+			}  catch (...) {
 				//set up a new value
 				m_ui->lineEditCoolingLimit->setValue(40);
 				modelModify();
 			}
 		}
 		break;
-		case VICUS::SurfaceHeating::T_SurfaceHeatingI:{
+
+		// TODO Dirk all below
+
+		case VICUS::SurfaceHeating::T_IdealPipeRegister:{
 			try {
 				m_ui->lineEditFluidVelocity->setValue(m_current->m_para[VICUS::SurfaceHeating::P_MaxFluidVelocity].get_value(IBK::Unit("m/s")));
 			}  catch (IBK::Exception &ex) {
@@ -150,14 +158,12 @@ void SVDBSurfaceHeatingEditWidget::updateInput(int id) {
 				m_ui->lineEditPipeSpacing->setValue(0.1);
 				modelModify();
 			}
-			if(m_current->m_idPipe != VICUS::INVALID_ID){
-				// lookup corresponding dataset entry in database
-				const VICUS::NetworkPipe * pipe = m_db->m_pipes[m_current->m_idPipe];
-				m_ui->lineEditPipeName->setText(QString::fromStdString(pipe->m_displayName.string()));
-			}
-			else
+			// lookup corresponding dataset entry in database
+			const VICUS::NetworkPipe * pipe = m_db->m_pipes[m_current->m_idPipe];
+			if (pipe == nullptr)
 				m_ui->lineEditPipeName->setText("");
-
+			else
+				m_ui->lineEditPipeName->setText( QtExt::MultiLangString2QString(pipe->m_displayName) );
 		}
 		break;
 	}
@@ -190,16 +196,11 @@ void SVDBSurfaceHeatingEditWidget::on_lineEditName_editingFinished() {
 void SVDBSurfaceHeatingEditWidget::on_comboBoxType_currentIndexChanged(int index) {
 	Q_ASSERT(m_current != nullptr);
 
-	for(int i=0; i<VICUS::SurfaceHeating::Type::NUM_T; ++i){
-		if(index == i){
-			m_current->m_type = static_cast<VICUS::SurfaceHeating::Type>(i);
-			modelModify();
-		}
+	if (static_cast<VICUS::SurfaceHeating::Type>(index) != m_current->m_type) {
+		m_current->m_type = static_cast<VICUS::SurfaceHeating::Type>(index);
+		modelModify();
 	}
-
 	m_ui->stackedWidget->setCurrentIndex(index);
-	updateInput(m_current->m_id);
-
 }
 
 
@@ -208,6 +209,7 @@ void SVDBSurfaceHeatingEditWidget::modelModify() {
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 }
 
+
 void SVDBSurfaceHeatingEditWidget::on_pushButtonColor_colorChanged() {
 	if (m_current->m_color != m_ui->pushButtonColor->color()) {
 		m_current->m_color = m_ui->pushButtonColor->color();
@@ -215,35 +217,32 @@ void SVDBSurfaceHeatingEditWidget::on_pushButtonColor_colorChanged() {
 	}
 }
 
+
 void SVDBSurfaceHeatingEditWidget::on_lineEditPipeSpacing_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
-	if(m_ui->lineEditPipeSpacing->isValid()){
-		double val = m_ui->lineEditPipeSpacing->value();
-
-		VICUS::SurfaceHeating::para_t paraName= VICUS::SurfaceHeating::P_PipeSpacing;
-		if (m_current->m_para[paraName].empty() ||
-				val != m_current->m_para[paraName].value) {
-			VICUS::KeywordList::setParameter(m_current->m_para, "SurfaceHeating::para_t", paraName, val);
-			modelModify();
-		}
+	double val = m_ui->lineEditPipeSpacing->value();
+	VICUS::SurfaceHeating::para_t paraName= VICUS::SurfaceHeating::P_PipeSpacing;
+	if (m_current->m_para[paraName].empty() || val != m_current->m_para[paraName].value) {
+		VICUS::KeywordList::setParameter(m_current->m_para, "SurfaceHeating::para_t", paraName, val);
+		modelModify();
 	}
 }
+
 
 void SVDBSurfaceHeatingEditWidget::on_lineEditFluidVelocity_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
-	if(m_ui->lineEditFluidVelocity->isValid()){
-		double val = m_ui->lineEditFluidVelocity->value();
+	double val = m_ui->lineEditFluidVelocity->value();
 
-		VICUS::SurfaceHeating::para_t paraName= VICUS::SurfaceHeating::P_MaxFluidVelocity;
-		if (m_current->m_para[paraName].empty() ||
-				val != m_current->m_para[paraName].value) {
-			VICUS::KeywordList::setParameter(m_current->m_para, "SurfaceHeating::para_t", paraName, val);
-			modelModify();
-		}
+	VICUS::SurfaceHeating::para_t paraName= VICUS::SurfaceHeating::P_MaxFluidVelocity;
+	if (m_current->m_para[paraName].empty() ||
+			val != m_current->m_para[paraName].value) {
+		VICUS::KeywordList::setParameter(m_current->m_para, "SurfaceHeating::para_t", paraName, val);
+		modelModify();
 	}
 }
+
 
 void SVDBSurfaceHeatingEditWidget::on_lineEditTemperaturDifference_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
