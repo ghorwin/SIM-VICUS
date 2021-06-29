@@ -160,6 +160,8 @@ public:
 	SVDBZoneTemplateEditDialog * dbZoneTemplateEditDialog();
 	/*! Returns the pipe edit dialog. */
 	SVDatabaseEditDialog *dbFluidEditDialog();
+	/*! Returns the surface heating system edit dialog. */
+	SVDatabaseEditDialog *dbSurfaceHeatingSystemEditDialog();
 
 	/*! Returns the pointer to the Start Simulation Nandrad Widget */
 	SVSimulationStartNandrad * simulationStartNandrad() const;
@@ -455,6 +457,7 @@ private:
 	SVDatabaseEditDialog				*m_dbZoneIdealHeatingCoolingEditDialog			= nullptr;
 	SVDatabaseEditDialog				*m_dbInfiltrationEditDialog						= nullptr;
 	SVDatabaseEditDialog				*m_dbVentilationNaturalEditDialog				= nullptr;
+	SVDatabaseEditDialog				*m_dbVSurfaceHeatingSystemEditDialog			= nullptr;
 
 	// special edit dialogs
 	SVDBZoneTemplateEditDialog			*m_dbZoneTemplateEditDialog						= nullptr;

@@ -146,6 +146,7 @@
     <addaction name="actionDBNetworkPipes"/>
     <addaction name="actionDBHydraulicComponents"/>
     <addaction name="actionDBFluids"/>
+    <addaction name="actionDBSurfaceHeatingSystems"/>
    </widget>
    <widget class="QMenu" name="menuSimulation">
     <property name="title">
@@ -630,6 +631,11 @@
   <action name="actionDBZoneTemplates">
    <property name="text">
     <string>Zone templates...</string>
+   </property>
+  </action>
+  <action name="actionDBSurfaceHeatingSystems">
+   <property name="text">
+    <string>Surface Heating Systems...</string>
    </property>
   </action>
  </widget>

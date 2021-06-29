@@ -351,6 +351,11 @@ SVDBZoneTemplateEditDialog * SVMainWindow::dbZoneTemplateEditDialog() {
 	return m_dbZoneTemplateEditDialog;
 }
 
+SVDatabaseEditDialog * SVMainWindow::dbSurfaceHeatingSystemEditDialog() {
+	if (m_dbVSurfaceHeatingSystemEditDialog == nullptr)
+		m_dbVSurfaceHeatingSystemEditDialog = SVDatabaseEditDialog::createSurfaceHeatingSystemEditDialog(this);
+	return m_dbVSurfaceHeatingSystemEditDialog;
+}
 
 
 // *** public slots ***
