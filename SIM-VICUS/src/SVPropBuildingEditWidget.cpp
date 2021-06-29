@@ -92,12 +92,16 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->tableWidgetZoneTemplates->horizontalHeader()->resizeSection(0,20);
 	m_ui->tableWidgetZoneTemplates->horizontalHeader()->setStretchLastSection(true);
 
-	m_ui->tableWidgetSurfaceHeating->setColumnCount(4);
-	m_ui->tableWidgetSurfaceHeating->setHorizontalHeaderLabels(QStringList() << QString() << tr("Component") << tr("Heating") << tr("Thermostat-Zone"));
+	m_ui->tableWidgetSurfaceHeating->setColumnCount(5);
+	m_ui->tableWidgetSurfaceHeating->setHorizontalHeaderLabels(QStringList() << QString() << QString() << tr("Heating") << tr("Control zone") << tr("Surfaces, side A/B"));
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetSurfaceHeating);
 	m_ui->tableWidgetSurfaceHeating->setSortingEnabled(false);
 	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Fixed);
 	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->resizeSection(0,20);
+	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->resizeSection(1,20);
+	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->resizeSection(2,100);
+	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->resizeSection(3,120);
 	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->setStretchLastSection(true);
 
 	// init widget to correct initial state
@@ -643,7 +647,7 @@ void SVPropBuildingEditWidget::updateUi() {
 			QTableWidgetItem * item = new QTableWidgetItem();
 			// special handling for components with "invalid" component id
 			if (it->first == nullptr)
-				item->setBackground(QColor(255,128,128));
+				item->setBackground(QColor(64,64,64));
 			else
 				item->setBackground(it->first->m_color);
 			item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
@@ -821,7 +825,7 @@ void SVPropBuildingEditWidget::updateUi() {
 			QTableWidgetItem * item = new QTableWidgetItem();
 			// special handling for zone template with "invalid" id
 			if (it->first == nullptr)
-				item->setBackground(QColor(255,128,128));
+				item->setBackground(QColor(64,64,64));
 			else
 				item->setBackground(it->first->m_color);
 			item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
@@ -910,6 +914,9 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 	m_ui->tableWidgetSurfaceHeating->blockSignals(true);
 	m_ui->tableWidgetSurfaceHeating->selectionModel()->blockSignals(true);
 	m_ui->tableWidgetSurfaceHeating->setRowCount(0);
+
+
+
 	// process all component instances
 	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
 		// skip all without components - these should be removed as invalid from the start
@@ -929,21 +936,30 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 		int row = m_ui->tableWidgetSurfaceHeating->rowCount();
 		m_ui->tableWidgetSurfaceHeating->setRowCount(row + 1);
 
+		// look-up surface heating system
+		const VICUS::SurfaceHeating * surfHeat = db.m_surfaceHeatings[ci.m_surfaceHeatingID];
+
+
+		// column 0 - valid icon
 
 		QTableWidgetItem * item = new QTableWidgetItem;
 		item->setFlags(Qt::ItemIsEnabled);
-		// look-up surface heating system
-		const VICUS::SurfaceHeating * surfHeat = db.m_surfaceHeatings[ci.m_surfaceHeatingID];
-		if (surfHeat == nullptr)
-			item->setBackgroundColor(QColor(255,128,128));
+		if (comp->isValid(db.m_materials, db.m_constructions, db.m_boundaryConditions))
+			item->setIcon(QIcon("://gfx/actions/16x16/ok.png"));
 		else
-			item->setBackgroundColor(surfHeat->m_color);
+			item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
 		m_ui->tableWidgetSurfaceHeating->setItem(row, 0, item);
 
-		item = new QTableWidgetItem(QtExt::MultiLangString2QString(comp->m_displayName));
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
+		// column 1 - color of heating
+		item = new QTableWidgetItem;
+		item->setFlags(Qt::ItemIsEnabled);
+		if (surfHeat == nullptr)
+			item->setBackgroundColor(QColor(64,64,64));
+		else
+			item->setBackgroundColor(surfHeat->m_color);
 		m_ui->tableWidgetSurfaceHeating->setItem(row, 1, item);
 
+		// column 2 - heating name
 		item = new QTableWidgetItem;
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
 		if (surfHeat == nullptr)
@@ -952,6 +968,7 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 			item->setText(QtExt::MultiLangString2QString(surfHeat->m_displayName));
 		m_ui->tableWidgetSurfaceHeating->setItem(row, 2, item);
 
+		// column 3 - control zone ID name
 		item = new QTableWidgetItem;
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
 		if (surfHeat == nullptr)
@@ -965,10 +982,22 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 				item->setText(r->m_displayName);
 		}
 		m_ui->tableWidgetSurfaceHeating->setItem(row, 3, item);
+
+		// column 4 - surface names
+
+		QString surfaceNames;
+		if (ci.m_sideASurface != nullptr)
+			surfaceNames = ci.m_sideASurface->m_displayName;
+		surfaceNames += "/";
+		if (ci.m_sideBSurface != nullptr)
+			surfaceNames = ci.m_sideBSurface->m_displayName;
+
+		item = new QTableWidgetItem(surfaceNames);
+		item->setFlags(Qt::ItemIsEnabled);
+		m_ui->tableWidgetSurfaceHeating->setItem(row, 4, item);
 	}
 	m_ui->tableWidgetSurfaceHeating->blockSignals(false);
 	m_ui->tableWidgetSurfaceHeating->selectionModel()->blockSignals(false);
-
 }
 
 
@@ -1424,3 +1453,6 @@ void SVPropBuildingEditWidget::on_tableWidgetZoneTemplates_itemClicked(QTableWid
 }
 
 
+void SVPropBuildingEditWidget::on_comboBoxSurfaceHeatingComponentFilter_currentIndexChanged(int /*index*/) {
+	updateSurfaceHeatingPage();
+}
