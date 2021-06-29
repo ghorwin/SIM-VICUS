@@ -886,11 +886,55 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 	// populate table with all components that are currently selected by filter
 	// we only show assigned components with active layers
 
+	const SVDatabase & db = SVSettings::instance().m_db;
+
+	// populate combo box with components
+	m_ui->comboBoxSurfaceHeatingComponentFilter->blockSignals(true);
+	unsigned int currentComponent = m_ui->comboBoxSurfaceHeatingComponentFilter->currentData().toUInt(); // unique ID of currently selected component
+	int selectedIndex = -1;
+	m_ui->comboBoxSurfaceHeatingComponentFilter->clear();
+	m_ui->comboBoxSurfaceHeatingComponentFilter->addItem(tr("All components"), VICUS::INVALID_ID);
+	for (const auto & compEntry : db.m_components) {
+		if (compEntry.second.m_id == currentComponent)
+			selectedIndex = m_ui->comboBoxSurfaceHeatingComponentFilter->count();
+		m_ui->comboBoxSurfaceHeatingComponentFilter->addItem( QtExt::MultiLangString2QString(compEntry.second.m_displayName), compEntry.second.m_id);
+	}
+	if (selectedIndex == -1)
+		m_ui->comboBoxSurfaceHeatingComponentFilter->setCurrentIndex(0);
+	else
+		m_ui->comboBoxSurfaceHeatingComponentFilter->setCurrentIndex(selectedIndex);
+	m_ui->comboBoxSurfaceHeatingComponentFilter->blockSignals(false);
+
+	m_ui->tableWidgetSurfaceHeating->blockSignals(true);
+	m_ui->tableWidgetSurfaceHeating->selectionModel()->blockSignals(true);
+	m_ui->tableWidgetSurfaceHeating->setRowCount(0);
 	// process all component instances
 	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+		// skip all without components - these should be removed as invalid from the start
+		const VICUS::Component * comp = db.m_components[ci.m_componentID];
+		if (comp == nullptr)
+			continue;
 		// skip all that do not have active layers
+		if (comp->m_activeLayerIndex == VICUS::INVALID_ID)
+			continue;
+
+		// skip if not in combo box filter
+		unsigned int componentFilterID = m_ui->comboBoxSurfaceHeatingComponentFilter->currentData().toUInt();
+		if (componentFilterID != VICUS::INVALID_ID && comp->m_id != componentFilterID)
+			continue;
+
+		int row = m_ui->tableWidgetSurfaceHeating->rowCount();
+		m_ui->tableWidgetSurfaceHeating->setRowCount(row + 1);
+		QTableWidgetItem * item = new QTableWidgetItem;
+		item->setFlags(Qt::ItemIsEnabled);
+		// look-up surface heating system
+
+		item->setBackgroundColor(QColor(255,128,128));
+//		m_ui->tableWidgetSurfaceHeating->setItem()
 
 	}
+	m_ui->tableWidgetSurfaceHeating->blockSignals(false);
+	m_ui->tableWidgetSurfaceHeating->selectionModel()->blockSignals(false);
 
 }
 
