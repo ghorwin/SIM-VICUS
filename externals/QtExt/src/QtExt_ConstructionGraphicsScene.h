@@ -35,8 +35,7 @@ public:
 		\param layers Vector of layers for drawing (material and thickness).
 	*/
 	void setup(QRect frame, QPaintDevice *device, double res,
-			   const QVector<ConstructionLayer>& layers,
-			   QString leftLabel = tr("Outside"), QString rightLabel = tr("Room side"));
+			   const QVector<ConstructionLayer>& layers, const QString & leftLabel, const QString & rightLabel);
 
 signals:
 

@@ -77,7 +77,7 @@ void ConstructionView::resizeEvent( QResizeEvent * event) {
 	if( std::abs(diffSize.width()) > m_margins - 1 ||  std::abs(diffSize.height()) > m_margins - 1) {
 		QRect frame(QPoint(0,0), event->size());
 		frame = frame.adjusted(m_margins, m_margins, m_margins * -1, m_margins * -1);
-		m_diagramScene->setup(frame, m_device, m_resolution, m_inputData);
+		m_diagramScene->setup(frame, m_device, m_resolution, m_inputData, m_leftSideLabel, m_rightSideLabel);
 	}
 }
 
@@ -99,7 +99,7 @@ void ConstructionView::print(QPrinter* printer) {
 	QPainter painter;
 	painter.begin(printer);
 	ConstructionGraphicsScene sketch(true, printer);
-	sketch.setup(frame, printer, 1.0, m_inputData);
+	sketch.setup(frame, printer, 1.0, m_inputData, m_leftSideLabel, m_rightSideLabel);
 
 	sketch.render(&painter);
 	painter.end();
@@ -119,7 +119,7 @@ QPixmap ConstructionView::createPixmap() {
 	painter.begin(&pixmap);
 
 	ConstructionGraphicsScene sketch(true, &pixmap);
-	sketch.setup(frame, &pixmap, 1.0, m_inputData);
+	sketch.setup(frame, &pixmap, 1.0, m_inputData, m_leftSideLabel, m_rightSideLabel);
 
 	sketch.render(&painter);
 
@@ -146,7 +146,7 @@ void ConstructionView::createSvg(QIODevice * outputDevice) {
 	QPainter painter;
 	painter.begin(&generator);
 	ConstructionGraphicsScene sketch(true, &generator);
-	sketch.setup(frame, &generator, 1.0, m_inputData);
+	sketch.setup(frame, &generator, 1.0, m_inputData, m_leftSideLabel, m_rightSideLabel);
 
 	sketch.render(&painter);
 	painter.end();

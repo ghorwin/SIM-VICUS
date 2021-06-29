@@ -193,7 +193,7 @@ QString ConstructionGraphicsScene::dimLabel(double d) {
 
 void ConstructionGraphicsScene::setup(QRect frame, QPaintDevice *device, double res,
 						 const QVector<ConstructionLayer>& layers,
-						 QString leftLabel, QString rightLabel)
+						 const QString & leftLabel, const QString & rightLabel)
 {
 	Q_ASSERT(device);
 	m_device = device;
