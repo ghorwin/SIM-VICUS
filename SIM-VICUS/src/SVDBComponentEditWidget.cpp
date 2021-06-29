@@ -205,6 +205,9 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	m_ui->toolButtonSelectConstruction->setEnabled(isEditable);
 	m_ui->toolButtonSelectBoundaryConditionSideAName->setEnabled(isEditable);
 	m_ui->toolButtonSelectBoundaryConditionSideBName->setEnabled(isEditable);
+	m_ui->toolButtonRemoveConstruction->setEnabled(isEditable);
+	m_ui->toolButtonRemoveBoundaryConditionSideA->setEnabled(isEditable);
+	m_ui->toolButtonRemoveBoundaryConditionSideB->setEnabled(isEditable);
 	m_ui->pushButtonDaylight->setEnabled(isEditable);
 
 	m_ui->lineEditBoundaryConditionSideAName->setReadOnly(!isEditable);

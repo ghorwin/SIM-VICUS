@@ -103,6 +103,7 @@ void SVDBVentilationNaturalEditWidget::updateInput(int id) {
 	bool isbuiltIn = m_current->m_builtIn;
 	m_ui->lineEditName->setReadOnly(isbuiltIn);
 	m_ui->pushButtonColor->setReadOnly(isbuiltIn);
+	m_ui->toolButtonSelectSchedule->setEnabled(!isbuiltIn);
 	m_ui->lineEditScheduleName->setEnabled(!isbuiltIn);
 
 	m_ui->lineEditAirChangeRate->setEnabled(!isbuiltIn);

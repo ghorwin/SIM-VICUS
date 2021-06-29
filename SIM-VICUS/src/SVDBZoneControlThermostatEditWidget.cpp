@@ -140,6 +140,9 @@ void SVDBZoneControlThermostatEditWidget::updateInput(int id) {
 	m_ui->lineEditHeatingScheduleName->setEnabled(!isbuiltIn);
 	m_ui->lineEditCoolingScheduleName->setEnabled(!isbuiltIn);
 
+	m_ui->toolButtonRemoveHeatingSetpointSchedule->setEnabled(!isbuiltIn);
+	m_ui->toolButtonRemoveCoolingSetpointSchedule->setEnabled(!isbuiltIn);
+
 	m_ui->lineEditTolerance->setEnabled(!isbuiltIn);
 }
 

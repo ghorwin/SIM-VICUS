@@ -167,6 +167,9 @@ void SVDBSubSurfaceComponentEditWidget::updateInput(int id) {
 
 	m_ui->lineEditBoundaryConditionSideAName->setReadOnly(!isEditable);
 	m_ui->lineEditBoundaryConditionSideBName->setReadOnly(!isEditable);
+
+	m_ui->toolButtonRemoveBoundaryConditionSideA->setEnabled(isEditable);
+	m_ui->toolButtonRemoveBoundaryConditionSideB->setEnabled(isEditable);
 }
 
 

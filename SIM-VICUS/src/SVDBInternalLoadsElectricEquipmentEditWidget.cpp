@@ -133,6 +133,7 @@ void SVDBInternalLoadsElectricEquipmentEditWidget::updateInput(int id) {
 	m_ui->lineEditConvectiveFactor->setEnabled(!isbuiltIn);
 	m_ui->lineEditLatentFactor->setEnabled(!isbuiltIn);
 	m_ui->lineEditLossFactor->setEnabled(!isbuiltIn);
+	m_ui->toolButtonRemovePowerManagementSchedule->setEnabled(!isbuiltIn);
 }
 
 

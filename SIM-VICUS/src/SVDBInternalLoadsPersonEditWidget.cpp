@@ -145,6 +145,8 @@ void SVDBInternalLoadsPersonEditWidget::updateInput(int id) {
 	m_ui->lineEditConvectiveFactor->setEnabled(!isbuiltIn);
 	m_ui->lineEditActivityScheduleName->setEnabled(!isbuiltIn);
 	m_ui->lineEditOccupancyScheduleName->setEnabled(!isbuiltIn);
+	m_ui->toolButtonRemoveActivitySchedule->setEnabled(!isbuiltIn);
+	m_ui->toolButtonRemoveOccupancySchedule->setEnabled(!isbuiltIn);
 
 }
 
