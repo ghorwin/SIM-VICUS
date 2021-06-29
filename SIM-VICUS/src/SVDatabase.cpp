@@ -43,6 +43,7 @@ SVDatabase::SVDatabase() :
 	m_boundaryConditions(4*USER_ID_SPACE_START),
 	m_components(5*USER_ID_SPACE_START),
 	m_subSurfaceComponents(16*USER_ID_SPACE_START),
+	m_surfaceHeatings(35*USER_ID_SPACE_START),
 	m_pipes(USER_ID_SPACE_START*100),
 	m_fluids(USER_ID_SPACE_START*1001),
 	m_networkComponents(USER_ID_SPACE_START*1002),
@@ -74,6 +75,7 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_boundaryConditions.readXML(		dbDir / "db_boundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", true);
 		m_components.readXML(				dbDir / "db_components.xml", "Components", "Component", true);
 		m_subSurfaceComponents.readXML(		dbDir / "db_subSurfaceComponents.xml", "SubSurfaceComponents", "SubSurfaceComponent", true);
+		m_surfaceHeatings.readXML(			dbDir / "db_surfaceHeatings.xml", "SurfaceHeatings", "SurfaceHeating", true);
 		m_pipes.readXML(					dbDir / "db_pipes.xml", "NetworkPipes", "NetworkPipe", true);
 		m_fluids.readXML(					dbDir / "db_fluids.xml", "NetworkFluids", "NetworkFluid", true);
 		m_networkComponents.readXML(		dbDir / "db_networkComponents.xml", "NetworkComponents", "NetworkComponent", true);
@@ -96,43 +98,45 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 	// now read user databases - for dialogs which request reloading of an individual user DB, the parameter
 	// t indicates which database to read. By default t is NUM_DT (at program start), which means: read all user DB files.
 	if (t == NUM_DT || t == DT_Materials)
-		m_materials.readXML(		userDbDir / "db_materials.xml", "Materials", "Material", false);
+		m_materials.readXML(				userDbDir / "db_materials.xml", "Materials", "Material", false);
 	if (t == NUM_DT || t == DT_Constructions)
-		m_constructions.readXML(	userDbDir / "db_constructions.xml", "Constructions", "Construction", false);
+		m_constructions.readXML(			userDbDir / "db_constructions.xml", "Constructions", "Construction", false);
 	if (t == NUM_DT || t == DT_Windows)
-		m_windows.readXML(			userDbDir / "db_windows.xml", "Windows", "Window", false);
+		m_windows.readXML(					userDbDir / "db_windows.xml", "Windows", "Window", false);
 	if (t == NUM_DT || t == DT_WindowGlazingSystems)
-		m_windowGlazingSystems.readXML(			userDbDir / "db_windowGlazingSystems.xml", "WindowGlazingSystems", "WindowGlazingSystem", false);
+		m_windowGlazingSystems.readXML(		userDbDir / "db_windowGlazingSystems.xml", "WindowGlazingSystems", "WindowGlazingSystem", false);
 	if (t == NUM_DT || t == DT_BoundaryConditions)
-		m_boundaryConditions.readXML(userDbDir / "db_boundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", false);
+		m_boundaryConditions.readXML(		userDbDir / "db_boundaryConditions.xml", "BoundaryConditions", "BoundaryCondition", false);
 	if (t == NUM_DT || t == DT_Components)
-		m_components.readXML(		userDbDir / "db_components.xml", "Components", "Component", false);
+		m_components.readXML(				userDbDir / "db_components.xml", "Components", "Component", false);
 	if (t == NUM_DT || t == DT_SubSurfaceComponents)
 		m_subSurfaceComponents.readXML(		userDbDir / "db_subSurfaceComponents.xml", "SubSurfaceComponents", "SubSurfaceComponent", false);
+	if (t == NUM_DT || t == DT_SurfaceHeating)
+		m_surfaceHeatings.readXML(			userDbDir / "db_surfaceHeatings.xml", "SurfaceHeatings", "SurfaceHeating", false);
 	if (t == NUM_DT || t == DT_Pipes)
-		m_pipes.readXML(			userDbDir / "db_pipes.xml", "NetworkPipes", "NetworkPipe", false);
+		m_pipes.readXML(					userDbDir / "db_pipes.xml", "NetworkPipes", "NetworkPipe", false);
 	if (t == NUM_DT || t == DT_Fluids)
-		m_fluids.readXML(			userDbDir / "db_fluids.xml", "NetworkFluids", "NetworkFluid", false);
+		m_fluids.readXML(					userDbDir / "db_fluids.xml", "NetworkFluids", "NetworkFluid", false);
 	if (t == NUM_DT || t == DT_NetworkComponents)
-		m_networkComponents.readXML(userDbDir / "db_networkComponents.xml", "NetworkComponents", "NetworkComponent", false);
+		m_networkComponents.readXML(		userDbDir / "db_networkComponents.xml", "NetworkComponents", "NetworkComponent", false);
 	if (t == NUM_DT || t == DT_Schedules)
-		m_schedules.readXML(		userDbDir / "db_schedules.xml", "Schedules", "Schedule", false);
+		m_schedules.readXML(				userDbDir / "db_schedules.xml", "Schedules", "Schedule", false);
 	if (t == NUM_DT || t == DT_InternalLoads)
-		m_internalLoads.readXML(	userDbDir / "db_internalLoads.xml", "InternalLoads", "InternalLoad", false);
+		m_internalLoads.readXML(			userDbDir / "db_internalLoads.xml", "InternalLoads", "InternalLoad", false);
 	if (t == NUM_DT || t == DT_ZoneControlThermostat)
 		m_zoneControlThermostat.readXML(	userDbDir / "db_zoneControlThermostat.xml", "ZoneControlThermostats", "ZoneControlThermostat", false);
 	if (t == NUM_DT || t == DT_ZoneControlNaturalVentilation)
 		m_zoneControlVentilationNatural.readXML(	userDbDir / "db_zoneControlVentilationNatural.xml", "ZoneControlVentilationNaturals", "ZoneControlVentilationNatural", false);
 	if (t == NUM_DT || t == DT_ZoneControlShading)
-		m_zoneControlShading.readXML(	userDbDir / "db_zoneControlShading.xml", "ZoneControlShadings", "ZoneControlShading", false);
+		m_zoneControlShading.readXML(		userDbDir / "db_zoneControlShading.xml", "ZoneControlShadings", "ZoneControlShading", false);
 	if (t == NUM_DT || t == DT_ZoneIdealHeatingCooling)
 		m_zoneIdealHeatingCooling.readXML(	userDbDir / "db_zoneIdealHeatingCooling.xml", "ZoneIdealHeatingCoolings", "ZoneIdealHeatingCooling", false);
 	if (t == NUM_DT || t == DT_Infiltration)
-		m_infiltration.readXML(	userDbDir / "db_infiltration.xml", "Infiltrations", "Infiltration", false);
+		m_infiltration.readXML(				userDbDir / "db_infiltration.xml", "Infiltrations", "Infiltration", false);
 	if (t == NUM_DT || t == DT_VentilationNatural)
-		m_ventilationNatural.readXML(	userDbDir / "db_ventilationNatural.xml", "VentilationNaturals", "VentilationNatural", false);
+		m_ventilationNatural.readXML(		userDbDir / "db_ventilationNatural.xml", "VentilationNaturals", "VentilationNatural", false);
 	if (t == NUM_DT || t == DT_ZoneTemplates)
-		m_zoneTemplates.readXML(	userDbDir / "db_zoneTemplates.xml", "ZoneTemplates", "ZoneTemplate", false);
+		m_zoneTemplates.readXML(			userDbDir / "db_zoneTemplates.xml", "ZoneTemplates", "ZoneTemplate", false);
 }
 
 
@@ -148,6 +152,7 @@ void SVDatabase::writeDatabases() const {
 	m_boundaryConditions.writeXML(	userDbDir / "db_boundaryConditions.xml", "BoundaryConditions");
 	m_components.writeXML(			userDbDir / "db_components.xml", "Components");
 	m_subSurfaceComponents.writeXML(userDbDir / "db_subSurfaceComponents.xml", "SubSurfaceComponents");
+	m_surfaceHeatings.writeXML(		userDbDir / "db_surfaceHeatings.xml", "SurfaceHeatings");
 	m_pipes.writeXML(				userDbDir / "db_pipes.xml", "NetworkPipes");
 	m_fluids.writeXML(				userDbDir / "db_fluids.xml", "NetworkFluids");
 	m_networkComponents.writeXML(	userDbDir / "db_networkComponents.xml", "NetworkComponents");
@@ -183,7 +188,8 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	std::set<const VICUS::BoundaryCondition *>		referencedBC;
 	std::set<const VICUS::Component *>				referencedComponents;
 	std::set<const VICUS::SubSurfaceComponent *>	referencedSubSurfaceComponents;
-	std::set<const VICUS::Schedule *>				referencedSchedule;
+	std::set<const VICUS::SurfaceHeating *>			referencedSurfaceHeatings;
+	std::set<const VICUS::Schedule *>				referencedSchedule;		// TODO Dirk noch ausprogrammieren
 	std::set<const VICUS::InternalLoad *>			referencedInternalLoads;
 	std::set<const VICUS::ZoneControlThermostat *>	referencedThermostats;
 	std::set<const VICUS::ZoneIdealHeatingCooling *> referencedIdealHeatCool;
