@@ -76,6 +76,7 @@ HEADERS += \
 	../../src/VICUS_SubSurface.h \
 	../../src/VICUS_SubSurfaceComponent.h \
 	../../src/VICUS_SubSurfaceComponentInstance.h \
+	../../src/VICUS_SurfaceHeating.h \
 	../../src/VICUS_Surface.h \
 	../../src/VICUS_SurfaceProperties.h \
 	../../src/VICUS_VentilationNatural.h \
@@ -127,6 +128,7 @@ SOURCES += \
 	../../src/VICUS_SubSurface.cpp \
 	../../src/VICUS_SubSurfaceComponent.cpp \
 	../../src/VICUS_Surface.cpp \
+	../../src/VICUS_SurfaceHeating.cpp \
 	../../src/VICUS_VentilationNatural.cpp \
 	../../src/VICUS_Window.cpp \
 	../../src/VICUS_WindowGlazingSystem.cpp \
