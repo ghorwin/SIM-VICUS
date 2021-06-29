@@ -136,7 +136,6 @@ void SVDBZoneIdealHeatingCoolingEditWidget::on_lineEditName_editingFinished() {
 void SVDBZoneIdealHeatingCoolingEditWidget::on_lineEditHeatingLimit_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
-	if(m_ui->lineEditHeatingLimit->isValid()){
 		double val = m_ui->lineEditHeatingLimit->value();
 
 		VICUS::ZoneIdealHeatingCooling::para_t paraName= VICUS::ZoneIdealHeatingCooling::P_HeatingLimit;
@@ -146,14 +145,12 @@ void SVDBZoneIdealHeatingCoolingEditWidget::on_lineEditHeatingLimit_editingFinis
 			VICUS::KeywordList::setParameter(m_current->m_para, "ZoneIdealHeatingCooling::para_t", paraName, val);
 			modelModify();
 		}
-	}
 	updateInput((int)m_current->m_id);
 }
 
 void SVDBZoneIdealHeatingCoolingEditWidget::on_lineEditCoolingLimit_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
-	if(m_ui->lineEditCoolingLimit->isValid()){
 		double val = m_ui->lineEditCoolingLimit->value();
 
 		VICUS::ZoneIdealHeatingCooling::para_t paraName = VICUS::ZoneIdealHeatingCooling::P_CoolingLimit;
@@ -163,7 +160,6 @@ void SVDBZoneIdealHeatingCoolingEditWidget::on_lineEditCoolingLimit_editingFinis
 			VICUS::KeywordList::setParameter(m_current->m_para, "ZoneIdealHeatingCooling::para_t", paraName, val);
 			modelModify();
 		}
-	}
 	updateInput((int)m_current->m_id);
 }
 

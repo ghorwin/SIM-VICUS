@@ -135,11 +135,11 @@ void SVDBZoneControlVentilationNaturalEditWidget::updateInput(int id) {
 		m_ui->lineEditWindSpeedMax->setValue(0);
 	}
 
-//	VICUS::Schedule * sched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_heatingSetpointScheduleId]);
-//	if (sched != nullptr)
-//		m_ui->lineEditHeatingScheduleName->setText(QtExt::MultiLangString2QString(sched->m_displayName));
-//	else
-//		m_ui->lineEditHeatingScheduleName->setText(tr("<select schedule>"));
+	//	VICUS::Schedule * sched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_heatingSetpointScheduleId]);
+	//	if (sched != nullptr)
+	//		m_ui->lineEditHeatingScheduleName->setText(QtExt::MultiLangString2QString(sched->m_displayName));
+	//	else
+	//		m_ui->lineEditHeatingScheduleName->setText(tr("<select schedule>"));
 
 
 	// for built-ins, disable editing/make read-only
@@ -172,15 +172,13 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirOutsi
 	VICUS::ZoneControlNaturalVentilation::ScheduleType paraName = VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMax;
 	std::string keywordList = "ZoneControlNaturalVentilation::ScheduleType";
 
-	if(lineEdit->isValid()){
-		double val = lineEdit->value();
+	double val = lineEdit->value();
 
-		if (m_current->m_para[paraName].empty() ||
+	if (m_current->m_para[paraName].empty() ||
 			val != m_current->m_para[paraName].value)
-		{
-			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
-			modelModify();
-		}
+	{
+		VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
+		modelModify();
 	}
 }
 
@@ -192,15 +190,13 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirOutsi
 	VICUS::ZoneControlNaturalVentilation::ScheduleType paraName = VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMin;
 	std::string keywordList = "ZoneControlNaturalVentilation::ScheduleType";
 
-	if(lineEdit->isValid()){
-		double val = lineEdit->value();
+	double val = lineEdit->value();
 
-		if (m_current->m_para[paraName].empty() ||
-				val != m_current->m_para[paraName].value)
-		{
-			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
-			modelModify();
-		}
+	if (m_current->m_para[paraName].empty() ||
+			val != m_current->m_para[paraName].value)
+	{
+		VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
+		modelModify();
 	}
 }
 
@@ -212,15 +208,13 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirRoomM
 	VICUS::ZoneControlNaturalVentilation::ScheduleType paraName = VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMax;
 	std::string keywordList = "ZoneControlNaturalVentilation::ScheduleType";
 
-	if(lineEdit->isValid()){
-		double val = lineEdit->value();
+	double val = lineEdit->value();
 
-		if (m_current->m_para[paraName].empty() ||
-				val != m_current->m_para[paraName].value)
-		{
-			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
-			modelModify();
-		}
+	if (m_current->m_para[paraName].empty() ||
+			val != m_current->m_para[paraName].value)
+	{
+		VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
+		modelModify();
 	}
 }
 
@@ -232,15 +226,13 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirRoomM
 	VICUS::ZoneControlNaturalVentilation::ScheduleType paraName = VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMin;
 	std::string keywordList = "ZoneControlNaturalVentilation::ScheduleType";
 
-	if(lineEdit->isValid()){
-		double val = lineEdit->value();
+	double val = lineEdit->value();
 
-		if (m_current->m_para[paraName].empty() ||
-				val != m_current->m_para[paraName].value)
-		{
-			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
-			modelModify();
-		}
+	if (m_current->m_para[paraName].empty() ||
+			val != m_current->m_para[paraName].value)
+	{
+		VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
+		modelModify();
 	}
 }
 
@@ -252,15 +244,13 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureDifferen
 	VICUS::ZoneControlNaturalVentilation::ScheduleType paraName = VICUS::ZoneControlNaturalVentilation::ST_TemperatureDifference;
 	std::string keywordList = "ZoneControlNaturalVentilation::ScheduleType";
 
-	if(lineEdit->isValid()){
-		double val = lineEdit->value();
+	double val = lineEdit->value();
 
-		if (m_current->m_para[paraName].empty() ||
-				val != m_current->m_para[paraName].value)
-		{
-			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
-			modelModify();
-		}
+	if (m_current->m_para[paraName].empty() ||
+			val != m_current->m_para[paraName].value)
+	{
+		VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
+		modelModify();
 	}
 }
 
@@ -272,16 +262,14 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditWindSpeedMax_editin
 	VICUS::ZoneControlNaturalVentilation::ScheduleType paraName = VICUS::ZoneControlNaturalVentilation::ST_WindSpeedMax;
 	std::string keywordList = "ZoneControlNaturalVentilation::ScheduleType";
 
-	if(lineEdit->isValid()){
-		double val = lineEdit->value();
+	double val = lineEdit->value();
 
-		if (m_current->m_para[paraName].empty() ||
-				val != m_current->m_para[paraName].value)
-		{
-			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
-			modelModify();
+	if (m_current->m_para[paraName].empty() ||
+			val != m_current->m_para[paraName].value)
+	{
+		VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
+		modelModify();
 
-		}
 	}
 }
 

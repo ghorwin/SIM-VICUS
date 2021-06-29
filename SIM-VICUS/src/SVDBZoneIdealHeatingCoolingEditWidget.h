@@ -56,8 +56,8 @@ private slots:
 	void on_lineEditName_editingFinished();
 	void on_pushButtonColor_colorChanged();
 
-	void on_lineEditHeatingLimit_editingFinished();
-	void on_lineEditCoolingLimit_editingFinished();
+	void on_lineEditHeatingLimit_editingFinishedSuccessfully();
+	void on_lineEditCoolingLimit_editingFinishedSuccessfully();
 
 	void on_checkBoxHeatingLimit_toggled(bool checked);
 	void on_checkBoxCoolingLimit_toggled(bool checked);
