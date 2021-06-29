@@ -179,6 +179,13 @@ KeywordListQt::KeywordListQt() {
 	tr("A window");
 	tr("A door");
 	tr("Some other component type");
+	tr("Heating limit.");
+	tr("Cooling limit.");
+	tr("Pipe spacing.");
+	tr("Maximum fluid velocity.");
+	tr("Temperature difference between supply and return fluid temperature.");
+	tr("ideal");
+	tr("SurfaceHeatingI");
 	tr("Specularity of the material.");
 	tr("Roughness of the material.");
 	tr("Plastic");

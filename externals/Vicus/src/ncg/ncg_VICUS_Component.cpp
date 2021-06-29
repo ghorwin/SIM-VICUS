@@ -80,6 +80,8 @@ void Component::readXML(const TiXmlElement * element) {
 				m_idSideBBoundaryCondition = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IdSurfaceProperty")
 				m_idSurfaceProperty = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "ActiveLayerIndex")
+				m_activeLayerIndex = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "Type") {
 				try {
 					m_type = (ComponentType)KeywordList::Enumeration("Component::ComponentType", c->GetText());
@@ -131,6 +133,8 @@ TiXmlElement * Component::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "IdSideBBoundaryCondition", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSideBBoundaryCondition));
 	if (m_idSurfaceProperty != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "IdSurfaceProperty", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSurfaceProperty));
+	if (m_activeLayerIndex != VICUS::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "ActiveLayerIndex", nullptr, std::string(), IBK::val2string<unsigned int>(m_activeLayerIndex));
 	return e;
 }
 
