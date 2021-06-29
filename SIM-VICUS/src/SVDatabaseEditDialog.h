@@ -111,6 +111,7 @@ private:
 	static SVDatabaseEditDialog * createZoneControlShadingEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createZoneIdealHeatingCoolingEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createInfiltrationEditDialog(QWidget * parent);
+	static SVDatabaseEditDialog * createSurfaceHeatingSystemEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createVentilationNaturalEditDialog(QWidget * parent);
 
 	static SVDatabaseEditDialog * createNetworkComponentEditDialog(QWidget * parent);

@@ -77,6 +77,9 @@
 #include "SVDBVentilationNaturalEditWidget.h"
 #include "SVDBVentilationNaturalTableModel.h"
 
+#include "SVDBSurfaceHeatingEditWidget.h"
+#include "SVDBSurfaceHeatingTableModel.h"
+
 #include "SVDBNetworkComponentTableModel.h"
 #include "SVDBNetworkComponentEditWidget.h"
 #include "SVDBPipeTableModel.h"
@@ -504,6 +507,17 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createInfiltrationEditDialog(QWidget
 		new SVDBInfiltrationEditWidget(parent),
 		tr("Infiltration Database"), tr("Infiltration properties"), true
 		);
+	dlg->resize(1400,800);
+	return dlg;
+}
+
+SVDatabaseEditDialog *SVDatabaseEditDialog::createSurfaceHeatingSystemEditDialog(QWidget *parent){
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+										  new SVDBSurfaceHeatingTableModel(parent, SVSettings::instance().m_db),
+										  new SVDBSurfaceHeatingEditWidget(parent),
+										  tr("Surface Heating/Cooling System Database"),
+														  tr("Surface Heating/Cooling System properties"), true
+										  );
 	dlg->resize(1400,800);
 	return dlg;
 }
