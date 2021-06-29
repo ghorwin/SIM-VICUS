@@ -14,7 +14,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>6</number>
      </property>
      <widget class="QWidget" name="pageEmpty"/>
      <widget class="QWidget" name="pageComponents">
@@ -604,6 +604,65 @@
              <string>TextLabel</string>
             </property>
            </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="page">
+      <layout class="QVBoxLayout" name="verticalLayoutSurfaceHeating">
+       <item>
+        <widget class="QGroupBox" name="groupBox_7">
+         <property name="title">
+          <string>Surface heating</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_11">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Component:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="comboBoxSurfaceHeatingComponentFilter">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="editable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QTableWidget" name="tableWidgetSurfaceHeating"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QPushButton" name="pushButtonRemoveSurfaceHeating">
+            <property name="text">
+             <string>Remove</string>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <spacer name="horizontalSpacer_9">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>280</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>

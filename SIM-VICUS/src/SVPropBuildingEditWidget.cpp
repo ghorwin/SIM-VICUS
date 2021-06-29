@@ -57,6 +57,7 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->verticalLayoutComponentOrientation->setMargin(0);
 	m_ui->verticalLayoutBoundaryConditions->setMargin(0);
 	m_ui->verticalLayoutZoneTemplates->setMargin(0);
+	m_ui->verticalLayoutSurfaceHeating->setMargin(0);
 
 	// configure tables
 	m_ui->tableWidgetComponents->setColumnCount(2);
@@ -90,6 +91,14 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->tableWidgetZoneTemplates->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
 	m_ui->tableWidgetZoneTemplates->horizontalHeader()->resizeSection(0,20);
 	m_ui->tableWidgetZoneTemplates->horizontalHeader()->setStretchLastSection(true);
+
+	m_ui->tableWidgetSurfaceHeating->setColumnCount(4);
+	m_ui->tableWidgetZoneTemplates->setHorizontalHeaderLabels(QStringList() << QString() << tr("Component") << tr("Heating") << tr("Thermostat-Zone"));
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetSurfaceHeating);
+	m_ui->tableWidgetSurfaceHeating->setSortingEnabled(false);
+	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->resizeSection(0,20);
+	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->setStretchLastSection(true);
 
 	// init widget to correct initial state
 	m_ui->labelComponentSelection->setEnabled(false);
@@ -130,6 +139,7 @@ void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
 		case BT_ComponentOrientation	: m_ui->stackedWidget->setCurrentIndex(3); break;
 		case BT_BoundaryConditions		: m_ui->stackedWidget->setCurrentIndex(4); break;
 		case BT_ZoneTemplates			: m_ui->stackedWidget->setCurrentIndex(5); break;
+		case BT_SurfaceHeating			: m_ui->stackedWidget->setCurrentIndex(6); break;
 		case BT_FloorManager : break; // just to remove compiler warning, FloorManager is not handled here
 	}
 }
@@ -142,9 +152,14 @@ void SVPropBuildingEditWidget::onModified(int modificationType, ModificationInfo
 		case SVProjectHandler::BuildingGeometryChanged:
 		case SVProjectHandler::BuildingTopologyChanged: // used when zone templates are assigned
 		case SVProjectHandler::ComponentInstancesModified:
+		case SVProjectHandler::SubSurfaceComponentInstancesModified:
 		case SVProjectHandler::NodeStateModified:
 
 			updateUi(); // we do not change the property type here
+		break;
+
+		case SVProjectHandler::ObjectRenamed: // we only show zone names in surface heating
+			updateSurfaceHeatingPage();
 		break;
 
 		// nothing to do for the remaining modification types
@@ -862,6 +877,21 @@ void SVPropBuildingEditWidget::updateUi() {
 		// update table related button states
 		on_tableWidgetZoneTemplates_itemSelectionChanged();
 	}
+
+	updateSurfaceHeatingPage();
+}
+
+
+void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
+	// populate table with all components that are currently selected by filter
+	// we only show assigned components with active layers
+
+	// process all component instances
+	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+		// skip all that do not have active layers
+
+	}
+
 }
 
 

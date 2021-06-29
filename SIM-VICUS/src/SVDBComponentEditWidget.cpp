@@ -177,8 +177,22 @@ void SVDBComponentEditWidget::updateInput(int id) {
 
 		if (validUValue)
 			m_ui->lineEditUValue->setText(QString("%L1").arg(UValue, 0, 'f', 4));
+		m_ui->checkBoxActiveLayerEnabled->setEnabled(true);
+		m_ui->checkBoxActiveLayerEnabled->blockSignals(true);
+		m_ui->checkBoxActiveLayerEnabled->setChecked(m_current->m_activeLayerIndex != VICUS::INVALID_ID);
+		m_ui->checkBoxActiveLayerEnabled->blockSignals(false);
+		m_ui->spinBoxActiveLayerIndex->blockSignals(true);
+		m_ui->spinBoxActiveLayerIndex->setEnabled(m_ui->checkBoxActiveLayerEnabled->isChecked());
+		m_ui->spinBoxActiveLayerIndex->setMaximum(con->m_materialLayers.size());
+		if (m_current->m_activeLayerIndex != VICUS::INVALID_ID)
+			m_ui->spinBoxActiveLayerIndex->setValue((int)m_current->m_activeLayerIndex);
+		m_ui->spinBoxActiveLayerIndex->blockSignals(false);
 	}
 	else {
+		m_ui->checkBoxActiveLayerEnabled->setEnabled(false);
+		m_ui->checkBoxActiveLayerEnabled->setChecked(false);
+		m_ui->spinBoxActiveLayerIndex->setEnabled(false);
+		m_ui->spinBoxActiveLayerIndex->setValue(0);
 		m_ui->lineEditUValue->setText("---");
 		m_ui->lineEditConstructionName->setText("");
 	}
@@ -305,4 +319,23 @@ void SVDBComponentEditWidget::on_toolButtonRemoveBoundaryConditionSideB_clicked(
 
 	modelModify();
 	updateInput((int)m_current->m_id);
+}
+
+
+void SVDBComponentEditWidget::on_checkBoxActiveLayerEnabled_toggled(bool checked) {
+	m_ui->spinBoxActiveLayerIndex->setEnabled(checked);
+	if (checked) {
+		m_current->m_activeLayerIndex = (unsigned int)m_ui->spinBoxActiveLayerIndex->value();
+		modelModify();
+	}
+	else {
+		m_current->m_activeLayerIndex = VICUS::INVALID_ID;
+		modelModify();
+	}
+}
+
+
+void SVDBComponentEditWidget::on_spinBoxActiveLayerIndex_valueChanged(int arg1) {
+	m_current->m_activeLayerIndex = (unsigned int)arg1;
+	modelModify();
 }

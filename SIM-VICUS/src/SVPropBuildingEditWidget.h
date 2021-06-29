@@ -163,6 +163,9 @@ private:
 	/*! Updates widget to current project state. */
 	void updateUi();
 
+	/*! Updates the surface heating page based on current project's content. */
+	void updateSurfaceHeatingPage();
+
 	/*! This function opens the component DB dialog and lets the user select a component.
 		Then, it creates new component instances for all selected surfaces.
 		If insideWall is true, the two selected surfaces are connected to each other with an inside-wall-component.

@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -62,7 +62,6 @@ public:
 	unsigned int						m_sideASurfaceID = INVALID_ID;		// XML:A
 	/*! ID of surface at side B (optional, ID = 0 reserved for "ambient", INVALID_ID means adiabatic). */
 	unsigned int						m_sideBSurfaceID = INVALID_ID;		// XML:A
-
 
 	// *** RUNTIME VARIABLES ***
 
