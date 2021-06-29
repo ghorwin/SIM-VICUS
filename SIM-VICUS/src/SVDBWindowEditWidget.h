@@ -76,13 +76,13 @@ private slots:
 
 	void on_toolButtonSelectDividerMaterial_clicked();
 
-	void on_lineEditFrameMaterialThickness_editingFinished();
+	void on_lineEditFrameMaterialThickness_editingFinishedSuccessfully();
 
-	void on_lineEditDividerMaterialThickness_editingFinished();
+	void on_lineEditDividerMaterialThickness_editingFinishedSuccessfully();
 
-	void on_lineEditDividerInput_editingFinished();
+	void on_lineEditDividerInput_editingFinishedSuccessfully();
 
-	void on_lineEditFrameInput_editingFinished();
+	void on_lineEditFrameInput_editingFinishedSuccessfully();
 
 	void on_comboBoxFrameMethod_currentIndexChanged(int index);
 

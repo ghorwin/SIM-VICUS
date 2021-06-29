@@ -56,7 +56,7 @@ private slots:
 	void on_lineEditName_editingFinished();
 	void on_pushButtonColor_colorChanged();
 
-	void on_lineEditAirChangeRate_editingFinished();
+	void on_lineEditAirChangeRate_editingFinishedSuccessfully();
 	void on_toolButtonSelectSchedule_clicked();
 
 

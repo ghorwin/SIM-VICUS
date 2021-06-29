@@ -50,8 +50,8 @@ SVDBInfiltrationEditWidget::SVDBInfiltrationEditWidget(QWidget *parent) :
 
 	for (unsigned int i=0; i<VICUS::Infiltration::NUM_AC; ++i) {
 		m_ui->comboBoxMethod->addItem(QString("%1 [%2]")
-			.arg(VICUS::KeywordListQt::Description("Infiltration::AirChangeType", (int)i))
-			.arg(VICUS::KeywordListQt::Keyword("Infiltration::AirChangeType", (int)i)), i);
+									  .arg(VICUS::KeywordListQt::Description("Infiltration::AirChangeType", (int)i))
+									  .arg(VICUS::KeywordListQt::Keyword("Infiltration::AirChangeType", (int)i)), i);
 	}
 	m_ui->comboBoxMethod->blockSignals(false);
 
@@ -143,11 +143,9 @@ void SVDBInfiltrationEditWidget::on_lineEditName_editingFinished() {
 void SVDBInfiltrationEditWidget::on_comboBoxMethod_currentIndexChanged(int index) {
 	Q_ASSERT(m_current != nullptr);
 
-	for(int i=0; i<VICUS::Infiltration::AirChangeType::NUM_AC; ++i){
-		if(index == i){
-			m_current->m_airChangeType = static_cast<VICUS::Infiltration::AirChangeType>(i);
-			modelModify();
-		}
+	if (static_cast<VICUS::SurfaceHeating::Type>(index) != m_current->m_airChangeType) {
+		m_current->m_airChangeType = static_cast<VICUS::Infiltration::AirChangeType>(index);
+		modelModify();
 	}
 
 	switch(m_current->m_airChangeType){
@@ -164,37 +162,34 @@ void SVDBInfiltrationEditWidget::on_comboBoxMethod_currentIndexChanged(int index
 }
 
 
-void SVDBInfiltrationEditWidget::on_lineEditShieldCoefficient_editingFinished() {
+void SVDBInfiltrationEditWidget::on_lineEditShieldCoefficient_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
-	if(m_ui->lineEditShieldCoefficient->isValid()){
-		double val = m_ui->lineEditShieldCoefficient->value();
+	double val = m_ui->lineEditShieldCoefficient->value();
 
-		VICUS::Infiltration::para_t paraName = VICUS::Infiltration::P_ShieldingCoefficient;
-		if (m_current->m_para[paraName].empty() ||
+	VICUS::Infiltration::para_t paraName = VICUS::Infiltration::P_ShieldingCoefficient;
+	if (m_current->m_para[paraName].empty() ||
 			val != m_current->m_para[paraName].value)
-		{
-			VICUS::KeywordList::setParameter(m_current->m_para, "Infiltration::para_t", paraName, val);
-			modelModify();
-		}
+	{
+		VICUS::KeywordList::setParameter(m_current->m_para, "Infiltration::para_t", paraName, val);
+		modelModify();
 	}
+
 
 }
 
-void SVDBInfiltrationEditWidget::on_lineEditAirChangeRate_editingFinished() {
+void SVDBInfiltrationEditWidget::on_lineEditAirChangeRate_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
-	if(m_ui->lineEditAirChangeRate->isValid()){
-		double val = m_ui->lineEditAirChangeRate->value();
+	double val = m_ui->lineEditAirChangeRate->value();
 
-		VICUS::Infiltration::para_t paraName= VICUS::Infiltration::P_AirChangeRate;
-		if (m_current->m_para[paraName].empty() ||
-				val != m_current->m_para[paraName].value)
-		{
-			VICUS::KeywordList::setParameter(m_current->m_para, "Infiltration::para_t", paraName, val);
-			modelModify();
+	VICUS::Infiltration::para_t paraName= VICUS::Infiltration::P_AirChangeRate;
+	if (m_current->m_para[paraName].empty() ||
+			val != m_current->m_para[paraName].value)
+	{
+		VICUS::KeywordList::setParameter(m_current->m_para, "Infiltration::para_t", paraName, val);
+		modelModify();
 
-		}
 	}
 }
 

@@ -58,7 +58,7 @@ private slots:
 	void on_comboBoxControllerType_currentIndexChanged(int index);
 	void on_pushButtonColor_colorChanged();
 
-	void on_lineEditTolerance_editingFinished();
+	void on_lineEditTolerance_editingFinishedSuccessfully();
 	void on_toolButtonSelectHeatingSchedule_clicked();
 	void on_toolButtonSelectCoolingSchedule_clicked();
 	void on_toolButtonRemoveHeatingSetpointSchedule_clicked();

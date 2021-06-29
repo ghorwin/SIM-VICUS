@@ -55,11 +55,15 @@ public:
 private slots:
 	void on_lineEditName_editingFinished();
 	void on_comboBoxPersonMethod_currentIndexChanged(int index);
-	void on_lineEditPersonCount_editingFinished();
-	void on_lineEditConvectiveFactor_editingFinished();
+	void on_lineEditPersonCount_editingFinishedSuccessfully();
+	void on_lineEditConvectiveFactor_editingFinishedSuccessfully();
 	void on_pushButtonPersonColor_colorChanged();
 	void on_toolButtonSelectOccupancy_clicked();
 	void on_toolButtonSelectActivity_clicked();
+
+	void on_toolButtonRemoveOccupancySchedule_clicked();
+
+	void on_toolButtonRemoveActivitySchedule_clicked();
 
 private:
 	/*! Set up the modified variable of the model to true. */

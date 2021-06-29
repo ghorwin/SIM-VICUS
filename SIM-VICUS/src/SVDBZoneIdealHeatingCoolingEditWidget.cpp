@@ -133,7 +133,7 @@ void SVDBZoneIdealHeatingCoolingEditWidget::on_lineEditName_editingFinished() {
 	updateInput((int)m_current->m_id);
 }
 
-void SVDBZoneIdealHeatingCoolingEditWidget::on_lineEditHeatingLimit_editingFinished() {
+void SVDBZoneIdealHeatingCoolingEditWidget::on_lineEditHeatingLimit_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
 	if(m_ui->lineEditHeatingLimit->isValid()){
@@ -150,7 +150,7 @@ void SVDBZoneIdealHeatingCoolingEditWidget::on_lineEditHeatingLimit_editingFinis
 	updateInput((int)m_current->m_id);
 }
 
-void SVDBZoneIdealHeatingCoolingEditWidget::on_lineEditCoolingLimit_editingFinished() {
+void SVDBZoneIdealHeatingCoolingEditWidget::on_lineEditCoolingLimit_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
 	if(m_ui->lineEditCoolingLimit->isValid()){
@@ -189,7 +189,7 @@ void SVDBZoneIdealHeatingCoolingEditWidget::on_checkBoxHeatingLimit_toggled(bool
 	if(checked){
 		VICUS::KeywordList::setParameter(m_current->m_para, "ZoneIdealHeatingCooling::para_t", paraName,
 										 0);
-		on_lineEditHeatingLimit_editingFinished();
+		on_lineEditHeatingLimit_editingFinishedSuccessfully();
 	}
 	else
 		m_current->m_para[paraName].clear();
@@ -205,7 +205,7 @@ void SVDBZoneIdealHeatingCoolingEditWidget::on_checkBoxCoolingLimit_toggled(bool
 	if(checked){
 		VICUS::KeywordList::setParameter(m_current->m_para, "ZoneIdealHeatingCooling::para_t", paraName,
 										 0);
-		on_lineEditCoolingLimit_editingFinished();
+		on_lineEditCoolingLimit_editingFinishedSuccessfully();
 	}
 	else
 		m_current->m_para[paraName].clear();

@@ -161,7 +161,7 @@ void SVDBInternalLoadsElectricEquipmentEditWidget::on_comboBoxMethod_currentInde
 }
 
 
-void SVDBInternalLoadsElectricEquipmentEditWidget::on_lineEditPower_editingFinished() {
+void SVDBInternalLoadsElectricEquipmentEditWidget::on_lineEditPower_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
 	if ( m_ui->lineEditPower->isValid() ) {
@@ -185,7 +185,7 @@ void SVDBInternalLoadsElectricEquipmentEditWidget::on_lineEditPower_editingFinis
 }
 
 
-void SVDBInternalLoadsElectricEquipmentEditWidget::on_lineEditConvectiveFactor_editingFinished() {
+void SVDBInternalLoadsElectricEquipmentEditWidget::on_lineEditConvectiveFactor_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
 	if ( m_ui->lineEditConvectiveFactor->isValid() ) {
@@ -201,7 +201,7 @@ void SVDBInternalLoadsElectricEquipmentEditWidget::on_lineEditConvectiveFactor_e
 	}
 }
 
-void SVDBInternalLoadsElectricEquipmentEditWidget::on_lineEditLatentFactor_editingFinished() {
+void SVDBInternalLoadsElectricEquipmentEditWidget::on_lineEditLatentFactor_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
 	if ( m_ui->lineEditLatentFactor->isValid() ) {
@@ -217,19 +217,17 @@ void SVDBInternalLoadsElectricEquipmentEditWidget::on_lineEditLatentFactor_editi
 	}
 }
 
-void SVDBInternalLoadsElectricEquipmentEditWidget::on_lineEditLossFactor_editingFinished() {
+void SVDBInternalLoadsElectricEquipmentEditWidget::on_lineEditLossFactor_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
-	if ( m_ui->lineEditLossFactor->isValid() ) {
-		double val = m_ui->lineEditLossFactor->value();
-		// update database but only if different from original
-		VICUS::InternalLoad::para_t paraName = VICUS::InternalLoad::P_LossHeatFactor;
-		if (m_current->m_para[paraName].empty() ||
-				val != m_current->m_para[paraName].value)
-		{
-			VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
-			modelModify();
-		}
+	double val = m_ui->lineEditLossFactor->value();
+	// update database but only if different from original
+	VICUS::InternalLoad::para_t paraName = VICUS::InternalLoad::P_LossHeatFactor;
+	if (m_current->m_para[paraName].empty() ||
+			val != m_current->m_para[paraName].value)
+	{
+		VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
+		modelModify();
 	}
 }
 
@@ -275,9 +273,17 @@ void SVDBInternalLoadsElectricEquipmentEditWidget::on_pushButtonColor_colorChang
 void SVDBInternalLoadsElectricEquipmentEditWidget::on_toolButtonSelectSchedule_clicked() {
 	// open schedule edit dialog in selection mode
 	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_powerManagementScheduleId);
-	if (m_current->m_powerManagementScheduleId != newId) {
+	if (newId != VICUS::INVALID_ID && m_current->m_powerManagementScheduleId != newId) {
 		m_current->m_powerManagementScheduleId = newId;
 		modelModify();
 	}
+	updateInput((int)m_current->m_id);
+}
+
+void SVDBInternalLoadsElectricEquipmentEditWidget::on_toolButtonRemovePowerManagementSchedule_clicked() {
+
+	m_current->m_powerManagementScheduleId = VICUS::INVALID_ID;
+
+	modelModify();
 	updateInput((int)m_current->m_id);
 }

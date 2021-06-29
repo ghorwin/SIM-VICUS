@@ -164,7 +164,7 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditName_editingFinishe
 }
 
 
-void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirOutsideMaximum_editingFinished() {
+void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirOutsideMaximum_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
 	//change this only:
@@ -184,7 +184,7 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirOutsi
 	}
 }
 
-void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirOutsideMinimum_editingFinished() {
+void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirOutsideMinimum_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
 	//change this only:
@@ -204,7 +204,7 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirOutsi
 	}
 }
 
-void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirRoomMaximum_editingFinished() {
+void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirRoomMaximum_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
 	//change this only:
@@ -224,7 +224,7 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirRoomM
 	}
 }
 
-void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirRoomMinimum_editingFinished() {
+void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirRoomMinimum_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
 	//change this only:
@@ -244,7 +244,7 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureAirRoomM
 	}
 }
 
-void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureDifference_editingFinished() {
+void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureDifference_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
 	//change this only:
@@ -264,7 +264,7 @@ void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditTemperatureDifferen
 	}
 }
 
-void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditWindSpeedMax_editingFinished() {
+void SVDBZoneControlVentilationNaturalEditWidget::on_lineEditWindSpeedMax_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
 	//change this only:
