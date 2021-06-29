@@ -153,6 +153,11 @@ QModelIndex SVDBSurfaceHeatingTableModel::addNewItem() {
 	VICUS::KeywordList::setParameter(surfHeat.m_para, "SurfaceHeating::para_t", VICUS::SurfaceHeating::P_HeatingLimit, 50);
 	VICUS::KeywordList::setParameter(surfHeat.m_para, "SurfaceHeating::para_t", VICUS::SurfaceHeating::P_CoolingLimit, 40);
 
+	VICUS::KeywordList::setParameter(surfHeat.m_para, "SurfaceHeating::para_t", VICUS::SurfaceHeating::P_PipeSpacing, 0.1);
+	VICUS::KeywordList::setParameter(surfHeat.m_para, "SurfaceHeating::para_t", VICUS::SurfaceHeating::P_TemperatureDifferenceSupplyReturn, 7);
+	VICUS::KeywordList::setParameter(surfHeat.m_para, "SurfaceHeating::para_t", VICUS::SurfaceHeating::P_MaxFluidVelocity, 1);
+
+
 	surfHeat.m_color = SVStyle::randomColor();
 
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());

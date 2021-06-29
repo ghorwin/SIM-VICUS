@@ -49,9 +49,9 @@ SVDBSurfaceHeatingEditWidget::SVDBSurfaceHeatingEditWidget(QWidget *parent) :
 	m_ui->comboBoxType->blockSignals(true);
 
 	for (unsigned int i=0; i<VICUS::SurfaceHeating::NUM_T; ++i) {
-		m_ui->comboBoxType->addItem(QString("%1 [%2]")
-			.arg(VICUS::KeywordListQt::Description("SurfaceHeating::Type", (int)i))
-			.arg(VICUS::KeywordListQt::Keyword("SurfaceHeating::Type", (int)i)), i);
+		m_ui->comboBoxType->addItem(QString("%1")
+			.arg(VICUS::KeywordListQt::Description("SurfaceHeating::Type", (int)i)));
+			//.arg(VICUS::KeywordListQt::Keyword("SurfaceHeating::Type", (int)i)), i);
 	}
 	m_ui->comboBoxType->blockSignals(false);
 
@@ -198,6 +198,7 @@ void SVDBSurfaceHeatingEditWidget::on_comboBoxType_currentIndexChanged(int index
 	}
 
 	m_ui->stackedWidget->setCurrentIndex(index);
+	updateInput(m_current->m_id);
 
 }
 

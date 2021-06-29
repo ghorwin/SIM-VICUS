@@ -49,7 +49,7 @@ public:
 	/*! Needs to be called once, before the widget is being used. */
 	void setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) override;
 
-	/*! Sets up the widget for a Schedule with a given ID. */
+	/*! Sets up the widget for a infiltration with a given ID. */
 	void updateInput(int id) override;
 
 private slots:
