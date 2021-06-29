@@ -88,7 +88,7 @@ public:
 	unsigned int					m_id = INVALID_ID;						// XML:A:required
 
 	/*! Air change type. */
-	Type							m_type = NUM_T;							// XML:A:required
+	Type							m_type = T_Ideal;						// XML:A:required
 
 	/*! Display name of SurfaceHeating. */
 	IBK::MultiLanguageString		m_displayName;							// XML:A

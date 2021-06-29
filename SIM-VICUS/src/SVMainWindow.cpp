@@ -445,6 +445,10 @@ void SVMainWindow::on_actionDBZoneIdealHeatingCooling_triggered() {
 	dbZoneIdealHeatingCoolingEditDialog()->edit();
 }
 
+void SVMainWindow::on_actionDBSurfaceHeatingSystems_triggered() {
+	dbSurfaceHeatingSystemEditDialog()->edit();
+}
+
 
 void SVMainWindow::on_actionDBNetworkPipes_triggered() {
 	dbPipeEditDialog()->edit();

@@ -272,6 +272,8 @@ private slots:
 	void on_actionDBInfiltration_triggered();
 	void on_actionDBVentilationNatural_triggered();
 
+	void on_actionDBSurfaceHeatingSystems_triggered();
+
 	void on_actionDBHydraulicComponents_triggered();
 	void on_actionDBNetworkPipes_triggered();
 	void on_actionDBFluids_triggered();

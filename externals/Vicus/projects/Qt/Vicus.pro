@@ -170,6 +170,7 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_SubSurfaceComponent.cpp \
 	../../src/ncg/ncg_VICUS_SubSurfaceComponentInstance.cpp \
 	../../src/ncg/ncg_VICUS_Surface.cpp \
+	../../src/ncg/ncg_VICUS_SurfaceHeating.cpp \
 	../../src/ncg/ncg_VICUS_SurfaceProperties.cpp \
 	../../src/ncg/ncg_VICUS_VentilationNatural.cpp \
 	../../src/ncg/ncg_VICUS_ViewSettings.cpp \

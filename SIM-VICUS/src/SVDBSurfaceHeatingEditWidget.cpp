@@ -105,6 +105,8 @@ void SVDBSurfaceHeatingEditWidget::updateInput(int id) {
 	//set method
 	m_ui->comboBoxType->blockSignals(true);
 	m_ui->comboBoxType->setCurrentIndex(m_current->m_type);
+	Q_ASSERT(m_ui->comboBoxType->currentIndex() != -1);
+	on_comboBoxType_currentIndexChanged(m_ui->comboBoxType->currentIndex());
 	m_ui->comboBoxType->blockSignals(false);
 
 	switch (m_current->m_type) {
@@ -195,15 +197,8 @@ void SVDBSurfaceHeatingEditWidget::on_comboBoxType_currentIndexChanged(int index
 		}
 	}
 
-	switch(m_current->m_type){
-		case VICUS::SurfaceHeating::T_Ideal:
-		case VICUS::SurfaceHeating::NUM_T:{
-			m_ui->stackedWidget->setCurrentIndex(0);
-		} break;
-		case VICUS::SurfaceHeating::T_SurfaceHeatingI:{
-			m_ui->stackedWidget->setCurrentIndex(0);
-		}break;
-	}
+	m_ui->stackedWidget->setCurrentIndex(index);
+
 }
 
 
