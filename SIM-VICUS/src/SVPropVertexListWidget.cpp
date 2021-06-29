@@ -713,6 +713,7 @@ void SVPropVertexListWidget::on_lineEditRoofHeight_editingFinishedSuccessfully()
 		return;
 
 	updateRoofGeometry();
+	//TODO hole geometrie
 }
 
 
