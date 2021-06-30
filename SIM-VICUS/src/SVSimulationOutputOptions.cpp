@@ -56,8 +56,12 @@ SVSimulationOutputOptions::~SVSimulationOutputOptions() {
 
 
 void SVSimulationOutputOptions::updateUi() {
+
 	m_ui->checkBoxDefaultZoneOutputs->setChecked(
 				m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].isEnabled());
+
+	m_ui->checkBoxDefaultNetworkOutputs->setChecked(
+				m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs].isEnabled());
 
 	m_ui->tableWidgetOutputGrids->clearContents();
 	m_ui->tableWidgetOutputGrids->setRowCount(m_outputs->m_grids.size());
@@ -120,4 +124,12 @@ void SVSimulationOutputOptions::on_checkBoxDefaultZoneOutputs_toggled(bool check
 				.set(VICUS::KeywordList::Keyword("Outputs::flag_t", VICUS::Outputs::F_CreateDefaultZoneOutputs), checked);
 	else
 		m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].clear();
+}
+
+void SVSimulationOutputOptions::on_checkBoxDefaultNetworkOutputs_toggled(bool checked){
+	if (checked)
+		m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs]
+				.set(VICUS::KeywordList::Keyword("Outputs::flag_t", VICUS::Outputs::F_CreateDefaultNetworkOutputs), checked);
+	else
+		m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs].clear();
 }

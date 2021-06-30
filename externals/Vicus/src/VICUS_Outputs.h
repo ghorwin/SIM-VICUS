@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -53,6 +53,7 @@ public:
 	enum flag_t {
 		F_BinaryOutputs,				// Keyword: BinaryOutputs				'If true, output files are written in binary format (the default, if flag is missing).'
 		F_CreateDefaultZoneOutputs,		// Keyword: CreateDefaultZoneOutputs	'If true, default output definitions for zones are created.'
+		F_CreateDefaultNetworkOutputs,	// Keyword: CreateDefaultNetworkOutputs	'If true, default output definitions for networks are created.'
 		NUM_F
 	};
 
