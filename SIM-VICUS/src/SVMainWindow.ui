@@ -162,7 +162,6 @@
      <string>&amp;Simulation</string>
     </property>
     <addaction name="actionSimulationNANDRAD"/>
-    <addaction name="actionSimulationHydraulicNetwork"/>
     <addaction name="separator"/>
     <addaction name="actionSimulationExportFMI"/>
     <addaction name="actionExportView3D"/>

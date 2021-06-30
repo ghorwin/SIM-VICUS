@@ -88,7 +88,6 @@
 #include "SVDBZoneTemplateEditDialog.h"
 
 #include "SVSimulationStartNandrad.h"
-#include "SVSimulationStartNetworkSim.h"
 #include "SVDBInternalLoadsTableModel.h"
 
 #include "SVGeometryView.h"
@@ -1481,23 +1480,6 @@ void SVMainWindow::on_actionSimulationNANDRAD_triggered() {
 		SVUndoModifyProject * undo = new SVUndoModifyProject(tr("Updated simulation parameters"), m_simulationStartNandrad->localProject());
 		undo->push();
 	}
-}
-
-
-void SVMainWindow::on_actionSimulationHydraulicNetwork_triggered() {
-	if (m_simulationStartNetworkSim == nullptr)
-		m_simulationStartNetworkSim = new SVSimulationStartNetworkSim(this);
-	// we require a saved project with at least one network definition
-	if (SVProjectHandler::instance().projectFile().isEmpty()) {
-		QMessageBox::critical(this, QString(), tr("The project must be saved, first!"));
-		return;
-	}
-	if (project().m_geometricNetworks.empty()) {
-		QMessageBox::critical(this, QString(), tr("You need to define at least one network!"));
-		return;
-	}
-
-	m_simulationStartNetworkSim->edit();
 }
 
 

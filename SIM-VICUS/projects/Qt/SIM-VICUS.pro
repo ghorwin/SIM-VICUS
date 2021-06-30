@@ -219,7 +219,6 @@ SOURCES += \
 								../../src/SVSimulationPerformanceOptions.cpp \
 								../../src/SVSimulationRunRequestDialog.cpp \
 								../../src/SVSimulationStartNandrad.cpp \
-								../../src/SVSimulationStartNetworkSim.cpp \
 								../../src/SVSmartSelectDialog.cpp \
 								../../src/SVStyle.cpp \
 								../../src/SVThreadBase.cpp \
@@ -375,7 +374,6 @@ HEADERS  += \
 								../../src/SVSimulationPerformanceOptions.h \
 								../../src/SVSimulationRunRequestDialog.h \
 								../../src/SVSimulationStartNandrad.h \
-								../../src/SVSimulationStartNetworkSim.h \
 								../../src/SVSmartSelectDialog.h \
 								../../src/SVStyle.h \
 								../../src/SVThreadBase.h \
@@ -449,7 +447,6 @@ FORMS    += \
 								../../src/SVSimulationPerformanceOptions.ui \
 								../../src/SVSimulationRunRequestDialog.ui \
 								../../src/SVSimulationStartNandrad.ui \
-								../../src/SVSimulationStartNetworkSim.ui \
 								../../src/SVSmartSelectDialog.ui \
 								../../src/SVWelcomeScreen.ui
 

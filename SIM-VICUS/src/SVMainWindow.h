@@ -289,7 +289,6 @@ private slots:
 	void on_actionViewToggleParametrizationMode_triggered();
 
 	void on_actionSimulationNANDRAD_triggered();
-	void on_actionSimulationHydraulicNetwork_triggered();
 
 	void on_actionHelpAboutQt_triggered();
 	void on_actionHelpAbout_triggered();
