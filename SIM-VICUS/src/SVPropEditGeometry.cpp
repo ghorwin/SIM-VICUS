@@ -175,7 +175,6 @@ void SVPropEditGeometry::setRotation(const IBKMK::Vector3D &normal) {
 	m_normal = normal.normalized();
 
 	m_ui->lineEditInclination->setText( QString("%L1").arg(std::acos(normal.m_z)/IBK::DEG2RAD, 0, 'f', 3) );
-
 	// positive y Richtung = Norden = Orientation 0°
 	// positive x Richtung = Osten = Orientation 90°
 
@@ -429,10 +428,12 @@ void SVPropEditGeometry::rotate() {
 	if (modifiedSurfaces.empty())
 		return;
 
+	blockSignals(true);
 	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Rotated geometry"), modifiedSurfaces );
 	undo->push();
 	// reset local transformation matrix
 	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
+	blockSignals(false);
 }
 
 
@@ -885,6 +886,8 @@ void SVPropEditGeometry::showDeg(const bool & show) {
 
 void SVPropEditGeometry::showRotation(const bool & abs) {
 	// we show all that is necessary for absolute Rotation Mode
+	m_ui->lineEditOrientation->blockSignals(true);
+	m_ui->lineEditInclination->blockSignals(true);
 	if ( abs ) {
 		m_ui->widgetXYZ->hide();
 		m_ui->widgetRota->show();
@@ -893,6 +896,8 @@ void SVPropEditGeometry::showRotation(const bool & abs) {
 		m_ui->widgetXYZ->show();
 		m_ui->widgetRota->hide();
 	}
+	m_ui->lineEditOrientation->blockSignals(false);
+	m_ui->lineEditInclination->blockSignals(false);
 }
 
 
@@ -1137,11 +1142,14 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 
 					// we find the rotation axis by taking the cross product of the normal vector and the normal vector we want to
 					// rotate to
-					IBKMK::Vector3D rotationAxis ( m_normal.crossProduct(newNormal) );
+					IBKMK::Vector3D rotationAxis ( m_normal.crossProduct(newNormal).normalized() );
 
 					Vic3D::Transform3D rota;
 					// we now also have to find the angle between both normals
-					rota.rotate((float)angleBetweenVectorsDeg(m_normal, newNormal), QtExt::IBKVector2QVector(rotationAxis) );
+
+					double angle = (float)angleBetweenVectorsDeg(m_normal, newNormal);
+
+					rota.rotate(angle, QtExt::IBKVector2QVector(rotationAxis) );
 
 					// we take the QQuarternion to rotate
 					QQuaternion centerRota = rota.rotation();
