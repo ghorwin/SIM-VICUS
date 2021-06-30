@@ -440,7 +440,13 @@ void Project::updatePointers() {
 				ci.m_sideBSurface->m_componentInstance = &ci;
 			}
 		}
-
+		if (ci.m_surfaceHeatingControlZoneID != VICUS::INVALID_ID) {
+			for (VICUS::Building & b : m_buildings)
+				for (VICUS::BuildingLevel & bl : b.m_buildingLevels)
+					for (VICUS::Room & r : bl.m_rooms)
+						if (r.m_id == ci.m_surfaceHeatingControlZoneID)
+							ci.m_surfaceHeatingControlZone = &r;
+		}
 	}
 
 	// update pointers in subsurfaces

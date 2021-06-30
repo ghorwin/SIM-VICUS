@@ -985,17 +985,11 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 		if (surfHeat == nullptr)
 			item->setText("---");
 		else {
-			// lookup zone with ID
-			const VICUS::Room * r = nullptr;
-			try {
-				r = dynamic_cast<const VICUS::Room *>(project().objectById(ci.m_surfaceHeatingControlZoneID));
-			} catch (...) {
-			}
-			if (r == nullptr)
+			if (ci.m_surfaceHeatingControlZone == nullptr)
 				item->setText("---");
 			else {
-				item->setText(r->m_displayName);
-				item->setData(Qt::UserRole, r->m_id);
+				item->setText(ci.m_surfaceHeatingControlZone->m_displayName);
+				item->setData(Qt::UserRole, ci.m_surfaceHeatingControlZone->m_id);
 			}
 		}
 		m_ui->tableWidgetSurfaceHeating->setItem(row, 3, item);

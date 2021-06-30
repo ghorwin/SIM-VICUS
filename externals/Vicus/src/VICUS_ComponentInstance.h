@@ -32,6 +32,7 @@
 namespace VICUS {
 
 class Surface;
+class Room;
 
 /*! Defines a construction/component of the building.
 	It is basically just a connection data member and does not hold any
@@ -73,8 +74,10 @@ public:
 	// These pointers are updated in VICUS::Project::updatePointers() and can be used
 	// to quicky travers the data model.
 
-	VICUS::Surface		*m_sideASurface		= nullptr;
-	VICUS::Surface		*m_sideBSurface		= nullptr;
+	VICUS::Surface		*m_sideASurface					= nullptr;
+	VICUS::Surface		*m_sideBSurface					= nullptr;
+
+	VICUS::Room			*m_surfaceHeatingControlZone	= nullptr;
 };
 
 } // namespace VICUS
