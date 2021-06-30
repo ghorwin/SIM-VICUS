@@ -565,7 +565,7 @@ void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellDoubleClicked(int row, in
 
 	Q_ASSERT( m_current->m_periods.size() > schedIdx );
 
-	if ( colIdx == 1 )
+	if ( colIdx > 0 )
 		return; // we only want to set a new start date for an intervall
 
 	if ( schedIdx == 0 )
