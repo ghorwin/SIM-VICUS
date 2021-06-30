@@ -50,7 +50,7 @@ SVDBPipeEditWidget::SVDBPipeEditWidget(QWidget *parent) :
 	m_ui->lineEditWallRoughness->setup(0, std::numeric_limits<double>::max(), tr("Roughness"), false, true);
 	m_ui->lineEditWallThickness->setup(0, std::numeric_limits<double>::max(), tr("Wall thickness"), false, true);
 	m_ui->lineEditInsulationLambda->setup(0, std::numeric_limits<double>::max(), tr("Thermal conductivity of the insulation material"), false, true);
-	m_ui->lineEditInsulationThickness->setup(0, std::numeric_limits<double>::max(), tr("Insulation thickness"), false, true);
+	m_ui->lineEditInsulationThickness->setup(0, std::numeric_limits<double>::max(), tr("Insulation thickness"), true, true);
 }
 
 
