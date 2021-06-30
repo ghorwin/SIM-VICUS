@@ -65,8 +65,8 @@ bool SurfaceHeating::isValid() const {
 
 			if(m_heatingCoolingCurvePoints.m_values.size() != 2)
 				return false;
-			if(m_heatingCoolingCurvePoints.m_values.find("Tsupply") != m_heatingCoolingCurvePoints.m_values.end() ||
-					m_heatingCoolingCurvePoints.m_values.find("Tout") != m_heatingCoolingCurvePoints.m_values.end())
+			if(m_heatingCoolingCurvePoints.m_values.find("Tsupply") == m_heatingCoolingCurvePoints.m_values.end() ||
+					m_heatingCoolingCurvePoints.m_values.find("Tout") == m_heatingCoolingCurvePoints.m_values.end())
 				return false;
 			if(m_heatingCoolingCurvePoints.valueVector("Tsupply").size() != 4 ||
 					m_heatingCoolingCurvePoints.valueVector("Tout").size() != 4)
