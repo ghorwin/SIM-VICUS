@@ -359,28 +359,12 @@ void SVPropSurfaceHeatingDelegate::updateEditorGeometry(QWidget *editor, const Q
 #endif
 
 void SVPropSurfaceHeatingDelegate::paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const {
-	// find out if our index is of a built-in element
-	bool enabled = index.flags() & Qt::ItemIsEditable;
-	if (enabled) {
-		// draw background
-		QBrush b = painter->brush();/* = option.;
-		if (option.features & QStyleOptionViewItem::Alternate)
-			b = QBrush(SVStyle::instance().m_alternativeBackgroundText);
-		else
-			b = QBrush();*/
-		painter->fillRect(option.rect, b);
-	}
 	QItemDelegate::paint(painter, option, index);
 	if (index.column() == 2 || index.column() == 3) {
 		QStyleOptionButton button;
 		QRect r = option.rect;//getting the rect of the cell
-		int buttonSize = r.height();
-		int x,y,w,h;
-		x = r.left() + r.width() - buttonSize;//the X coordinate
-		y = r.top();//the Y coordinate
-		w = buttonSize;//button width
-		h = buttonSize;//button height
-		button.rect = QRect(x,y,w,h);
+		r.setLeft(r.left() + r.width() - r.height());
+		button.rect = r;
 		button.text = "...";
 		button.state = QStyle::State_Enabled;
 
@@ -397,33 +381,18 @@ bool SVPropSurfaceHeatingDelegate::editorEvent(QEvent *event, QAbstractItemModel
 
 			QRect r = option.rect;//getting the rect of the cell
 			r.setLeft(r.left() + r.width() - r.height());
-	//		int buttonSize = r.height();
-	//		int x,y,w,h;
-	//		x = r.left() + r.width() - buttonSize;//the X coordinate
-	//		y = r.top();//the Y coordinate
-	//		w = buttonSize;//button width
-	//		h = buttonSize;//button height
-
-	//		if( clickX > x && clickX < x + w )
-	//			if( clickY > y && clickY < y + h ) {
 
 			if (r.contains(clickX,clickY)) {
 				unsigned int selectedID = index.data(Qt::UserRole).toUInt();
 				if (index.column() == 2) {
 					selectedID = SVMainWindow::instance().dbSurfaceHeatingSystemEditDialog()->select(selectedID);
 					if (selectedID != VICUS::INVALID_ID) {
-						model->setData(index, selectedID, Qt::UserRole);
-						const VICUS::SurfaceHeating * surfHeat =  SVSettings::instance().m_db.m_surfaceHeatings[selectedID];
-						Q_ASSERT(surfHeat != nullptr);
-						model->setData(index, QtExt::MultiLangString2QString(surfHeat->m_displayName), Qt::DisplayRole);
-						model->setData(index, QtExt::MultiLangString2QString(surfHeat->m_displayName), Qt::EditRole);
-						qDebug() << "editorEvent()" << index.data(Qt::DisplayRole).toString();
-						qDebug() << "editorEvent()" << model->data(index, Qt::DisplayRole).toString();
+						model->setData(index, selectedID, Qt::UserRole); // this will trigger an undo event for changing a component instance
 						return true;
 					}
 				}
 				else {
-					// TODO
+					// TODO : Implement zone selection dialog
 				}
 			}
 			else

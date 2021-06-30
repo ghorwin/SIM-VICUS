@@ -46,6 +46,7 @@
 #include "SVUndoModifyRoomZoneTemplateAssociation.h"
 #include "SVUndoTreeNodeState.h"
 #include "SVPropSurfaceHeatingDelegate.h"
+#include "SVUndoModifyComponentInstances.h"
 
 SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	QWidget(parent),
@@ -921,6 +922,7 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 
 
 	// process all component instances
+	unsigned int componentFilterID = m_ui->comboBoxSurfaceHeatingComponentFilter->currentData().toUInt();
 	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
 		// skip all without components - these should be removed as invalid from the start
 		const VICUS::Component * comp = db.m_components[ci.m_componentID];
@@ -931,7 +933,6 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 			continue;
 
 		// skip if not in combo box filter
-		unsigned int componentFilterID = m_ui->comboBoxSurfaceHeatingComponentFilter->currentData().toUInt();
 		if (componentFilterID != VICUS::INVALID_ID && comp->m_id != componentFilterID)
 			continue;
 
@@ -943,10 +944,11 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 		const VICUS::SurfaceHeating * surfHeat = db.m_surfaceHeatings[ci.m_surfaceHeatingID];
 
 
-		// column 0 - valid icon
+		// column 0 - valid icon, also stores unique ID of this component instance
 
 		QTableWidgetItem * item = new QTableWidgetItem;
 		item->setFlags(Qt::ItemIsEnabled);
+		item->setData(Qt::UserRole, ci.m_id);
 		if (comp->isValid(db.m_materials, db.m_constructions, db.m_boundaryConditions))
 			item->setIcon(QIcon("://gfx/actions/16x16/ok.png"));
 		else
@@ -982,7 +984,11 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 			item->setText("---");
 		else {
 			// lookup zone with ID
-			const VICUS::Room * r = dynamic_cast<const VICUS::Room *>(project().objectById(ci.m_surfaceHeatingControlZoneID));
+			const VICUS::Room * r = nullptr;
+			try {
+				r = dynamic_cast<const VICUS::Room *>(project().objectById(ci.m_surfaceHeatingControlZoneID));
+			} catch (...) {
+			}
 			if (r == nullptr)
 				item->setText("---");
 			else
@@ -1467,11 +1473,15 @@ void SVPropBuildingEditWidget::on_comboBoxSurfaceHeatingComponentFilter_currentI
 
 void SVPropBuildingEditWidget::on_tableWidgetSurfaceHeating_itemChanged(QTableWidgetItem *item) {
 	if (item->column() == 2) {
-		m_ui->tableWidgetSurfaceHeating->blockSignals(true);
-		QString newText = item->data(Qt::DisplayRole).toString();
-		qDebug() << newText;
-//		item->setText(newText);
-
-		m_ui->tableWidgetSurfaceHeating->blockSignals(false);
+		QTableWidgetItem * firstItem = m_ui->tableWidgetSurfaceHeating->item(item->row(), 0);
+		unsigned int ciID = firstItem->data(Qt::UserRole).toUInt();
+		std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
+		for (unsigned int i=0; i<cis.size(); ++i)
+			if (cis[i].m_id == ciID) {
+				cis[i].m_surfaceHeatingID = item->data(Qt::UserRole).toUInt();
+				break;
+			}
+		SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Assigned surface heating"), cis);
+		undo->push();
 	}
 }
