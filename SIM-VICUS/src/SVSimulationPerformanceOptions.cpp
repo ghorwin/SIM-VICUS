@@ -262,7 +262,7 @@ void SVSimulationPerformanceOptions::intParameterEditingFinished(int paraEnum, c
 		int val = (int)edit->value();
 		// update parameter value
 		m_solverParams->m_intPara[paraEnum] = IBK::IntPara(
-												NANDRAD::KeywordList::Keyword("SolverParameter::para_t", paraEnum),
+												NANDRAD::KeywordList::Keyword("SolverParameter::intPara_t", paraEnum),
 												val);
 	}
 }
