@@ -322,36 +322,15 @@ void ThermalNetworkBalanceModel::inputReferences(std::vector<InputReference> & i
 	// register reference
 	inputRefs.push_back(inputRef);
 
-	// request zone air temperatures
-	if (!m_zoneProperties.empty()) {
-		InputReference inputRef;
-		inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
-		inputRef.m_name = std::string("AirTemperature");
-		inputRef.m_required = true;
-		for (const ZoneProperties &zoneProp : m_zoneProperties) {
-			inputRef.m_id = zoneProp.m_zoneId;
-			inputRefs.push_back(inputRef);
-		}
-	}
-	// request construction layer temperatures
-	if (!m_activeProperties.empty()) {
-		InputReference inputRef;
-		inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
-		inputRef.m_name = std::string("ActiveLayerTemperature");
-		inputRef.m_required = true;
-		for (const ActiveLayerProperties &actLayerProp : m_activeProperties) {
-			inputRef.m_id = actLayerProp.m_constructionInstanceId;
-			inputRefs.push_back(inputRef);
-		}
-	}
 
 	std::vector<InputReference> modelInputRefs;
 	// loop over all elements and ask them to request individual inputs, for example scheduled quantities
 	for (unsigned int i = 0; i < m_statesModel->m_p->m_flowElements.size(); ++i)
 		m_statesModel->m_p->m_flowElements[i]->inputReferences(modelInputRefs);
 
-
-	// redirect references to zone air and active layer temperature
+	// Note: for constant and spline requests, we provide respective pointers by ThermalNetworkStatesModel. For
+	//       requests of results from other models, we redirect references accordingly, for example to zone air and
+	//       active layer temperature (by renaming requested quantities and source objects)
 	if (!m_zoneProperties.empty() || !m_activeProperties.empty()) {
 
 		// filter input references to heat exchange temperatur
@@ -394,29 +373,13 @@ void ThermalNetworkBalanceModel::setInputValueRefs(const std::vector<QuantityDes
 {
 	// layout of resultValueRefs vector:
 	// 0                                 - FluidMassFluxes
-	// 1..m_zoneProperties.size()        - AirTemperature
-	// ...m_activeProperties.size()      - ActiveLayerTemperature
 	// ...elements                       - ..
 
 	// copy references into mass flux vector
 	m_statesModel->m_p->m_fluidMassFluxes = resultValueRefs[0];
 
-	// set zone temparture references inside network
+	//
 	unsigned int resultValIdx = 1;
-	for (std::list<ZoneProperties>::iterator it = m_zoneProperties.begin();
-		 it != m_zoneProperties.end(); ++it)
-	{
-		// set reference to zone temperature
-		it->m_zoneTemperatureRef = resultValueRefs[resultValIdx++];
-	}
-
-	// set active layer references inside network
-	for (std::list<ActiveLayerProperties>::iterator it = m_activeProperties.begin();
-		 it != m_activeProperties.end(); ++it)
-	{
-		// set reference to zone temperature
-		it->m_activeLayerTemperatureRef = resultValueRefs[resultValIdx++];
-	}
 
 	// resultValIdx now points to the first input reference past the active layer/zone temperatures
 

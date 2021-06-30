@@ -91,6 +91,11 @@ void TNSimplePipeElement::inputReferences(std::vector<InputReference> & inputRef
 	InputReference ref;
 	ref.m_id = m_flowElementId;
 	ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	// TNSimplePipeElement is instantiated for heat exchange types TemperatureConstant, TemperatureSpline, TemperatureZone,
+	// TemperatureConstructionLayer. We do not know here, where the individual memory slots are. So we generically request
+	// a "HeatExchangeTemperature" and let the ThermalNetworkBalanceModel decide and adjust the request as needed.
+	// For example, for TemperatureZone the input reference request will be modified to ask for an AirTemperature provided
+	// by a zone model.
 	ref.m_name.m_name = "HeatExchangeTemperature";
 	ref.m_required = true;
 	inputRefs.push_back(ref);
@@ -284,6 +289,7 @@ void TNDynamicPipeElement::inputReferences(std::vector<InputReference> & inputRe
 	InputReference ref;
 	ref.m_id = m_flowElementId;
 	ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	// see comment in TNSimplePipeElement::inputReferences()
 	ref.m_name.m_name = "HeatExchangeTemperature";
 	ref.m_required = true;
 	inputRefs.push_back(ref);

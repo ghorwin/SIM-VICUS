@@ -420,10 +420,22 @@ const double * ThermalNetworkStatesModel::resultValueRef(const InputReference & 
 			if (quantity.m_id != m_network->m_elements[i].m_id) continue; // not our element
 			// special case: constant parameter
 			const NANDRAD::HydraulicNetworkHeatExchange &heatExchange = m_network->m_elements[i].m_heatExchange;
-			if(!heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_HeatLoss].name.empty())
-				return &heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_HeatLoss].value;
-			// otherwise spline is requested
-			return &m_heatExchangeSplineValues[i];
+			switch (heatExchange.m_modelType) {
+				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant:
+					IBK_ASSERT(!heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_HeatLoss].name.empty());
+					return &heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_HeatLoss].value;
+
+				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
+					return &m_heatExchangeSplineValues[i];
+
+				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstant:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSplineEvaporator:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureZone:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer:
+				case NANDRAD::HydraulicNetworkHeatExchange::NUM_T: ; // nothing to do, not our quantity
+			}
 		}
 	}
 
@@ -434,10 +446,23 @@ const double * ThermalNetworkStatesModel::resultValueRef(const InputReference & 
 			if (quantity.m_id != m_network->m_elements[i].m_id) continue; // not our element
 			// special case: constant parameter
 			const NANDRAD::HydraulicNetworkHeatExchange &heatExchange = m_network->m_elements[i].m_heatExchange;
-			if(!heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_Temperature].name.empty())
-				return &heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_Temperature].value;
-			// otherwise spline is requested (may be zero)
-			return &m_heatExchangeSplineValues[i];
+			switch (heatExchange.m_modelType) {
+				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstant:
+					IBK_ASSERT(!heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_Temperature].name.empty());
+					return &heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_Temperature].value;
+
+				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSplineEvaporator:
+					return &m_heatExchangeSplineValues[i];
+
+				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureZone:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
+				case NANDRAD::HydraulicNetworkHeatExchange::NUM_T: ; // nothing to do, not our quantity
+			}
+
 		}
 	}
 
