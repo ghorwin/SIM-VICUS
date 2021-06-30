@@ -240,6 +240,11 @@ void SVDBSubNetworkEditWidget::on_toolButtonEditComponent_clicked()
 
 	unsigned int compId = m_currentSubNet->m_elements[(unsigned int)m_currentElementIdx].m_componentId;
 	unsigned int newId = SVMainWindow::instance().dbNetworkComponentEditDialog()->select(compId);
+
+	// if dialog was canceled do nothing
+	if (newId == VICUS::INVALID_ID)
+		return;
+
 	if (newId != compId){
 		m_currentSubNet->m_elements[(unsigned int)m_currentElementIdx].m_componentId = newId;
 		modelModify();
@@ -253,6 +258,11 @@ void SVDBSubNetworkEditWidget::on_toolButtonEditController_clicked()
 
 	unsigned int ctrId = m_currentSubNet->m_elements[(unsigned int)m_currentElementIdx].m_controlElementId;
 	unsigned int newId = SVMainWindow::instance().dbNetworkControllerEditDialog()->select(ctrId);
+
+	// if dialog was canceled do nothing
+	if (newId == VICUS::INVALID_ID)
+		return;
+
 	if (newId != ctrId){
 		m_currentSubNet->m_elements[(unsigned int)m_currentElementIdx].m_controlElementId = newId;
 		modelModify();

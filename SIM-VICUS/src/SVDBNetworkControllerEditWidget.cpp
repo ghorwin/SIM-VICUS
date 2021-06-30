@@ -234,6 +234,11 @@ void SVDBNetworkControllerEditWidget::on_toolButtonSchedule_clicked()
 {
 	// open schedule edit dialog in selection mode
 	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_scheduleId);
+
+	// if dialog was canceled do nothing
+	if (newId == VICUS::INVALID_ID)
+		return;
+
 	if (m_current->m_scheduleId != newId) {
 		m_current->m_scheduleId = newId;
 		modelModify();

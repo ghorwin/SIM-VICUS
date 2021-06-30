@@ -140,16 +140,16 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 
 	// update Schedule names (based on existing schedules)
 
-		if (m_current->m_scheduleIds.size()>0){
-			Q_ASSERT(m_db->m_schedules[m_current->m_scheduleIds[0]] != nullptr);
-			m_ui->lineEditSchedule1->setText(QtExt::MultiLangString2QString(
-												 m_db->m_schedules[m_current->m_scheduleIds[0]]->m_displayName));
-		}
-		if (m_current->m_scheduleIds.size()>1){
-			Q_ASSERT(m_db->m_schedules[m_current->m_scheduleIds[1]] != nullptr);
-			m_ui->lineEditSchedule2->setText(QtExt::MultiLangString2QString(
-												 m_db->m_schedules[m_current->m_scheduleIds[1]]->m_displayName));
-		}
+	if (m_current->m_scheduleIds.size()>0){
+		Q_ASSERT(m_db->m_schedules[m_current->m_scheduleIds[0]] != nullptr);
+		m_ui->lineEditSchedule1->setText(QtExt::MultiLangString2QString(
+											 m_db->m_schedules[m_current->m_scheduleIds[0]]->m_displayName));
+	}
+	if (m_current->m_scheduleIds.size()>1){
+		Q_ASSERT(m_db->m_schedules[m_current->m_scheduleIds[1]] != nullptr);
+		m_ui->lineEditSchedule2->setText(QtExt::MultiLangString2QString(
+											 m_db->m_schedules[m_current->m_scheduleIds[1]]->m_displayName));
+	}
 
 
 	// populate table widget with properties
@@ -240,7 +240,14 @@ void SVDBNetworkComponentEditWidget::on_toolButtonSchedule1_clicked()
 	unsigned int id = 0;
 	if (m_current->m_scheduleIds.size()>0)
 		id = m_current->m_scheduleIds[0];
+
 	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(id);
+
+	// if dialog was canceled do nothing
+	if (newId == VICUS::INVALID_ID)
+		return;
+
+	// else if we have a new id set it
 	if (id != newId) {
 		if (m_current->m_scheduleIds.size()>0)
 			m_current->m_scheduleIds[0] = newId;
@@ -260,7 +267,13 @@ void SVDBNetworkComponentEditWidget::on_toolButtonSchedule2_clicked()
 	unsigned int id = 0;
 	if (m_current->m_scheduleIds.size()==2)
 		id = m_current->m_scheduleIds[1];
+
 	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(id);
+
+	// if dialog was canceled do nothing
+	if (newId == VICUS::INVALID_ID)
+		return;
+
 	if (id != newId) {
 		if (m_current->m_scheduleIds.size()==2)
 			m_current->m_scheduleIds[1] = newId;
