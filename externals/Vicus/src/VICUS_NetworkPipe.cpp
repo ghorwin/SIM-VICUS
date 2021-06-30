@@ -25,17 +25,25 @@
 
 #include "VICUS_NetworkPipe.h"
 
+#include "VICUS_KeywordList.h"
 
 bool VICUS::NetworkPipe::isValid() const
 {
 	if (m_id == INVALID_ID)
 		return false;
-	// TODO : Unit checks!
-	if (m_para[VICUS::NetworkPipe::P_DiameterOutside].value <= 0 || m_para[VICUS::NetworkPipe::P_ThicknessWall].value <= 0
-			|| m_para[VICUS::NetworkPipe::P_RoughnessWall].value <= 0 || m_para[VICUS::NetworkPipe::P_ThermalConductivityWall].value <= 0)
-		return false;
-	if (m_para[VICUS::NetworkPipe::P_ThicknessInsulation].value < 0 || m_para[VICUS::NetworkPipe::P_ThermalConductivityInsulation].value < 0)
-		return false;
+
+	for (unsigned int i=0; i<NUM_P; ++i){
+		bool zeroAllowed = para_t(i) == P_ThicknessInsulation;
+		int ii = (int)i;
+		try {
+			m_para[i].checkedValue(KeywordList::Keyword("NetworkPipe::para_t", ii), KeywordList::Unit("NetworkPipe::para_t", ii),
+								   KeywordList::Unit("NetworkPipe::para_t", ii), 0, zeroAllowed, std::numeric_limits<double>::max(),
+								   false, nullptr);
+		} catch (...) {
+			return false;
+		}
+	}
+
 	return true;
 }
 

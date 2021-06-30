@@ -111,6 +111,7 @@ SOURCES += \
 								../../src/SVNetworkDialogSelectPipes.cpp \
 								../../src/SVPropAddWindowWidget.cpp \
 								../../src/SVShadingCalculationDialog.cpp \
+								../../src/SVSimulationNetworkOptions.cpp \
 								../../src/SVView3DDialog.cpp \
 								../../src/actions/SVUndoAddBuilding.cpp \
 								../../src/actions/SVUndoAddBuildingLevel.cpp \
@@ -263,6 +264,7 @@ HEADERS  += \
 								../../src/SVNetworkDialogSelectPipes.h \
 								../../src/SVPropAddWindowWidget.h \
 								../../src/SVShadingCalculationDialog.h \
+								../../src/SVSimulationNetworkOptions.h \
 								../../src/SVView3DDialog.h \
 								../../src/actions/SVUndoAddBuilding.h \
 								../../src/actions/SVUndoAddBuildingLevel.h \
@@ -442,6 +444,7 @@ FORMS    += \
 								../../src/SVShadingCalculationDialog.ui \
 								../../src/SVSimulationLocationOptions.ui \
 								../../src/SVSimulationModelOptions.ui \
+								../../src/SVSimulationNetworkOptions.ui \
 								../../src/SVSimulationOutputOptions.ui \
 								../../src/SVSimulationPerformanceOptions.ui \
 								../../src/SVSimulationRunRequestDialog.ui \

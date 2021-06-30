@@ -34,6 +34,7 @@ public:
 
 	VICUS_READWRITE
 	VICUS_COMP(SubNetwork)
+	VICUS_COMPARE_WITH_ID
 
 	/*! Checks if all referenced materials exist and if their parameters are valid. */
 	bool isValid(const Database<NetworkComponent> &compDB,

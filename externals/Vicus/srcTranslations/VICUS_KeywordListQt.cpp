@@ -107,6 +107,8 @@ KeywordListQt::KeywordListQt() {
 	tr("CladdingSystems");
 	tr("Foils");
 	tr("Miscellaneous");
+	tr("Only Hydraulic calculation with constant temperature");
+	tr("Thermo-hydraulic calculation");
 	tr("SinglePipe");
 	tr("DoublePipe");
 	tr("Temperature for pipe dimensioning algorithm");

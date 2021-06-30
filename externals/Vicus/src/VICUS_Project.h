@@ -189,6 +189,7 @@ public:
 	void generateBuildingProjectData(NANDRAD::Project & p) const;
 	void generateNetworkProjectData(NANDRAD::Project & p) const;
 
+
 	// *** STATIC FUNCTIONS ***
 
 	/*! This function computes the bounding box of all selected surfaces and the center point.
@@ -234,6 +235,14 @@ public:
 				return id;
 		}
 		return 999999; // just to make compiler happy, we will find an unused ID in the loop above
+	}
+
+	/*! Function to generate unique ID and add this id to the vector. */
+	template <typename T>
+	static unsigned int uniqueIdAdd(std::vector<T>& vec) {
+		unsigned int id = uniqueId(vec);
+		vec.push_back(id);
+		return id;
 	}
 
 	/*! Function to generate unique ID. First check predefined id. And the Id to the container. */
@@ -339,8 +348,6 @@ public:
 
 	/*! Definitions for exporting an FMU from the model. */
 	NANDRAD::FMIDescription								m_fmiDescription;			// XML:E
-
-
 
 
 

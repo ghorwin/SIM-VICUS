@@ -61,6 +61,13 @@ public:
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
+	/*! The various types (equations) of the hydraulic component. */
+	enum ModelType {
+		MT_HydraulicNetwork,				// Keyword: HydraulicNetwork				'Only Hydraulic calculation with constant temperature'
+		MT_ThermalHydraulicNetwork,			// Keyword: ThermalHydraulicNetwork			'Thermo-hydraulic calculation'
+		NUM_MT
+	};
+
 	enum NetworkType {
 		NET_SinglePipe,						// Keyword: SinglePipe
 		NET_DoublePipe,						// Keyword: DoublePipe
@@ -224,6 +231,12 @@ public:
 	double									m_scaleNodes = 30;							// XML:E
 
 	double									m_scaleEdges = 30;							// XML:E
+
+	ModelType								m_modelType = MT_ThermalHydraulicNetwork;	// XML:A
+
+
+	/*! determines if this network is currently selected for simulation */
+	unsigned int							m_selectedForSimulation = false;			// XML:E
 
 
 	/*! Stores visibility information for this network.

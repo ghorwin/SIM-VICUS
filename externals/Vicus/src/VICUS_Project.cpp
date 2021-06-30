@@ -40,6 +40,9 @@
 
 #include "VICUS_Constants.h"
 
+#define PI				3.141592653589793238
+
+
 namespace VICUS {
 
 Project::Project() {
@@ -2018,7 +2021,440 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 
 void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
-	// TODO : Hauke
+	FUNCID(Project::generateNetworkProjectData);
+
+	// get selected Vicus Network
+	unsigned int networkId = VICUS::INVALID_ID;
+	for (const VICUS::Network &net: m_geometricNetworks){
+		if (net.m_selectedForSimulation){
+			networkId = net.m_id;
+			break;
+		}
+	}
+	// if there is no network selected return
+	if(element(m_geometricNetworks, networkId) == nullptr)
+		return;
+
+	const VICUS::Network vicusNetwork = *element(m_geometricNetworks, networkId);
+
+	// nodes must have subNetworkId
+	for (const VICUS::NetworkNode &n: vicusNetwork.m_nodes){
+		if (n.m_subNetworkId != VICUS::INVALID_ID)
+			throw IBK::Exception(IBK::FormatString("Missing subNetworkId in node with id #%1 ('%2')")
+								 .arg(n.m_id).arg(n.m_displayName.toStdString()), FUNC_ID);
+	}
+
+	// buildings can only have one connected edge
+	for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes){
+		if (node.m_type == VICUS::NetworkNode::NT_Building && node.m_edges.size()>1 )
+			throw IBK::Exception(IBK::FormatString("Node with id #%1 has more than one edge connected, but is a building.")
+								 .arg(node.m_id), FUNC_ID);
+	}
+
+	// check network type
+	if (vicusNetwork.m_type != VICUS::Network::NET_DoublePipe)
+		throw IBK::Exception("This NetworkType is not yet implemented. Use networkType 'DoublePipe'", FUNC_ID);
+
+
+	// create dummy zone
+	NANDRAD::Zone z;
+	z.m_id = 1;
+	z.m_displayName = "dummy";
+	z.m_type = NANDRAD::Zone::ZT_Active;
+	NANDRAD::KeywordList::setParameter(z.m_para, "Zone::para_t", NANDRAD::Zone::P_Volume, 100);
+	NANDRAD::KeywordList::setParameter(z.m_para, "Zone::para_t", NANDRAD::Zone::P_Area, 10);
+	p.m_zones.push_back(z);
+
+	// set outputs
+	double startTime = p.m_simulationParameter.m_interval.m_para[NANDRAD::Interval::P_Start].get_value("d");
+	double endTime = p.m_simulationParameter.m_interval.m_para[NANDRAD::Interval::P_End].get_value("d");
+	NANDRAD::Interval inter;
+	NANDRAD::KeywordList::setParameter(inter.m_para, "Interval::para_t", NANDRAD::Interval::P_Start, startTime); // d
+	NANDRAD::KeywordList::setParameter(inter.m_para, "Interval::para_t", NANDRAD::Interval::P_End, endTime); // d
+	NANDRAD::KeywordList::setParameter(inter.m_para, "Interval::para_t", NANDRAD::Interval::P_StepSize, 1); // h
+
+	NANDRAD::OutputGrid grid;
+	grid.m_name = "hourly";
+	grid.m_intervals.push_back(inter);
+	NANDRAD::IDGroup ids;
+	ids.m_allIDs = true;
+
+	NANDRAD::ObjectList objList;
+	objList.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	objList.m_filterID = ids;
+	objList.m_name = "the objects";
+
+	NANDRAD::Outputs outputs;
+	outputs.m_timeUnit = IBK::Unit("h");
+	std::vector<std::string> quantities = {"FluidMassFlux", "OutletNodeTemperature", "PressureDifference", "Reynolds"};
+
+	for (const std::string &q: quantities){
+		NANDRAD::OutputDefinition def;
+		def.m_quantity = q;
+		def.m_timeType = NANDRAD::OutputDefinition::OTT_NONE;
+		def.m_gridName = grid.m_name;
+		def.m_objectListName = objList.m_name;
+		outputs.m_definitions.push_back(def);
+	}
+	outputs.m_grids.push_back(grid);
+	p.m_outputs = outputs;
+	p.m_objectLists.push_back(objList);
+
+
+	// *** create Nandrad Network
+	p.m_hydraulicNetworks.clear();
+	NANDRAD::HydraulicNetwork nandradNetwork;
+	nandradNetwork.m_modelType = NANDRAD::HydraulicNetwork::ModelType();
+	nandradNetwork.m_id = vicusNetwork.m_id;
+	nandradNetwork.m_displayName = vicusNetwork.m_displayName.toStdString();
+	nandradNetwork.m_para[NANDRAD::HydraulicNetwork::P_DefaultFluidTemperature] =
+			vicusNetwork.m_para[VICUS::Network::P_DefaultFluidTemperature];
+	nandradNetwork.m_para[NANDRAD::HydraulicNetwork::P_InitialFluidTemperature] =
+			vicusNetwork.m_para[VICUS::Network::P_InitialFluidTemperature];
+	nandradNetwork.m_para[NANDRAD::HydraulicNetwork::P_ReferencePressure] =
+			vicusNetwork.m_para[VICUS::Network::P_ReferencePressure];
+
+
+	// *** Transfer FLUID from Vicus to Nandrad
+
+	VICUS::NetworkFluid fluid;
+	fluid.defaultFluidWater(1);
+	nandradNetwork.m_fluid.m_displayName = fluid.m_displayName.string();
+
+	fluid.m_kinematicViscosity.m_values.setValues(std::vector<double>{0,20}, std::vector<double>{1.793e-6,1.793e-6});
+
+	nandradNetwork.m_fluid.m_kinematicViscosity = fluid.m_kinematicViscosity;
+	for (int i=0; i<VICUS::NetworkFluid::NUM_P; ++i)
+		nandradNetwork.m_fluid.m_para[i] = fluid.m_para[i];
+
+
+	// *** Transfer COMPONENTS from Vicus to Nandrad
+
+	// --> collect sub networks
+	std::set<unsigned int> subNetworkIds, componentIds;
+	for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes){
+		if (node.m_type == VICUS::NetworkNode::NT_Mixer)
+			continue;
+		subNetworkIds.insert(node.m_subNetworkId);
+	}
+
+	// --> collect and check components
+	unsigned int maxNumberElements = 1;
+	for (unsigned int subId: subNetworkIds){
+		const VICUS::SubNetwork *sub = element(m_embeddedDB.m_subNetworks, subId);
+		if (sub == nullptr)
+			throw IBK::Exception(IBK::FormatString("Sub Network with id #%1 does not exist in database").arg(subId), FUNC_ID);
+		if (sub->m_elements.size() > maxNumberElements)
+			maxNumberElements = sub->m_elements.size();
+		for (const NANDRAD::HydraulicNetworkElement &el: sub->m_elements){
+			componentIds.insert(el.m_componentId);
+		}
+	}
+
+	// --> transfer
+	for (unsigned int compId: componentIds){
+		const VICUS::NetworkComponent *comp = element(m_embeddedDB.m_networkComponents, compId);
+		Q_ASSERT(comp != nullptr);
+		NANDRAD::HydraulicNetworkComponent nandradComp;
+		nandradComp.m_id = comp->m_id;
+		nandradComp.m_displayName = comp->m_displayName.string(IBK::MultiLanguageString::m_language, "en");
+		nandradComp.m_modelType = (NANDRAD::HydraulicNetworkComponent::ModelType) comp->m_modelType;
+		nandradComp.m_polynomCoefficients = comp->m_polynomCoefficients;
+		for (int i=0; i<VICUS::NetworkComponent::NUM_P; ++i)
+			nandradComp.m_para[i] = comp->m_para[i];
+		nandradNetwork.m_components.push_back(nandradComp);
+	}
+
+
+	// *** Transform PIPES from Vicus to NANDRAD
+
+	// --> collect all pipeIds used in vicus network
+	std::set<unsigned int> pipeIds;
+	for (const VICUS::NetworkEdge &edge: vicusNetwork.m_edges){
+		if(edge.m_pipeId == VICUS::INVALID_ID)
+				throw IBK::Exception(IBK::FormatString("Edge '%1'->'%2' has no referenced pipe")
+									 .arg(edge.nodeId1()).arg(edge.nodeId2()), FUNC_ID);
+		pipeIds.insert(edge.m_pipeId);
+	}
+
+	// --> transfer
+	for(unsigned int pipeId: pipeIds){
+		const VICUS::NetworkPipe *pipe = element(m_embeddedDB.m_pipes, pipeId);
+		Q_ASSERT(pipe != nullptr);
+		NANDRAD::HydraulicNetworkPipeProperties pipeProp;
+		pipeProp.m_id = pipe->m_id;
+
+		// calculate length-specific pipe wall U-Value in W/mK, some references to understand the equation better
+		double UValue;
+		const double &dInsulation = pipe->m_para[VICUS::NetworkPipe::P_ThicknessInsulation].value;
+		const double &lambdaInsulation = pipe->m_para[VICUS::NetworkPipe::P_ThermalConductivityInsulation].value;
+		const double &da = pipe->m_para[VICUS::NetworkPipe::P_DiameterOutside].value;
+		const double &lambdaWall = pipe->m_para[VICUS::NetworkPipe::P_ThermalConductivityWall].value;
+
+		if (dInsulation>0 && lambdaInsulation>0){
+			UValue = 2*PI/ ( 1/lambdaWall * IBK::f_log(da / pipe->diameterInside())
+						+ 1/lambdaInsulation *
+						  IBK::f_log((da + 2*dInsulation) / da) );
+		}
+		else {
+			UValue = 2*PI/ ( lambdaWall * IBK::f_log(da / pipe->diameterInside()) );
+		}
+
+		// set pipe properties
+		NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
+										   NANDRAD::HydraulicNetworkPipeProperties::P_PipeOuterDiameter, da);
+		NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
+										   NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter, pipe->diameterInside());
+		NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
+										   NANDRAD::HydraulicNetworkPipeProperties::P_PipeRoughness, pipe->m_para[VICUS::NetworkPipe::P_RoughnessWall].value);
+		NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
+										   NANDRAD::HydraulicNetworkPipeProperties::P_UValuePipeWall, UValue);
+		nandradNetwork.m_pipeProperties.push_back(pipeProp);
+	}
+
+
+	// *** Transfer ELEMENTS from Vicus to Nandrad
+
+	// estimated number of elements
+	nandradNetwork.m_elements.reserve(vicusNetwork.m_nodes.size() * maxNumberElements + 2 * vicusNetwork.m_edges.size());
+
+	// --> offset for ids of return pipes
+	unsigned int idOffsetOutlet = (unsigned int) std::pow( 10, std::ceil( std::log10(vicusNetwork.m_nodes.size())) + 1 );
+
+
+	std::map<unsigned int, std::vector<unsigned int>> componentElementMap; // this map stores the element ids for each component
+	std::vector<unsigned int> allNodeIds = {0};			// stores all nodeIds of the network (the ids which are used to connect elements)
+	std::vector<unsigned int> allElementIds = {0};		// stores all element ids of the network
+	std::map<unsigned int, unsigned int> supplyNodeIdMap; // a map that stores for each VICUS geometric node the NANDRAD inlet node
+	std::map<unsigned int, unsigned int> returnNodeIdMap; // a map that stores for each VICUS geometric node the NANDRAD outlet node
+
+	// iterate over all geometric network nodes
+	for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes) {
+
+		// for each vicus geometric node: store two new node ids (supply and return) for the nandrad network
+		supplyNodeIdMap[node.m_id] = VICUS::Project::uniqueIdAdd(allNodeIds);
+		returnNodeIdMap[node.m_id] = VICUS::Project::uniqueIdAdd(allNodeIds);
+
+		// if this is a mixer continue
+		if (node.m_type == VICUS::NetworkNode::NT_Mixer)
+			continue;
+
+		// check if there is a valid sub network
+		const VICUS::SubNetwork *sub = element(m_embeddedDB.m_subNetworks, node.m_subNetworkId);
+		if (sub == nullptr)
+			throw IBK::Exception(IBK::FormatString("Node with id #%1 has not a valid referenced sub network!").arg(node.m_id), FUNC_ID);
+
+
+		// Check if we have at least one element that has inletNodeId=0 (this is the sub network inlet)
+		// and at least one element with outletNodeId=0 (this is the sub network outlet)
+		// Moreover: for the nodes which are not sub network inlet/outlet, but (local) inlet/outlet node ids:
+		// create a map that stores new unique ids for them
+		bool subInletFound = false;
+		bool subOutletFound = false;
+		std::map<unsigned int, unsigned int> subNetNodeIdMap;
+		for (const NANDRAD::HydraulicNetworkElement &elem: sub->m_elements){
+			if (elem.m_inletNodeId == 0){
+				subInletFound = true;
+			}
+			if (elem.m_outletNodeId == 0){
+				subOutletFound = true;
+			}
+			else{
+				if (subNetNodeIdMap.find(elem.m_inletNodeId) == subNetNodeIdMap.end())
+					subNetNodeIdMap[elem.m_inletNodeId] = uniqueIdAdd(allNodeIds);
+				if (subNetNodeIdMap.find(elem.m_outletNodeId) == subNetNodeIdMap.end())
+					subNetNodeIdMap[elem.m_outletNodeId] = uniqueIdAdd(allNodeIds);
+			}
+		}
+		if (!subInletFound)
+			throw IBK::Exception(IBK::FormatString("Sub Network with id #%1 does not have an element with inletNodeId=0, "
+												   "This is required for every sub network").arg(node.m_id), FUNC_ID);
+		if (!subOutletFound)
+			throw IBK::Exception(IBK::FormatString("Sub Network with id #%1 does not have an element with outletNodeId=0, "
+												   "This is required for every sub network").arg(node.m_id), FUNC_ID);
+
+
+		// now we can create the new nandrad elements and map the repsctive nodes
+		for (const NANDRAD::HydraulicNetworkElement &origElem: sub->m_elements){
+
+			// 1. copy the element and create a unique element id for it
+			NANDRAD::HydraulicNetworkElement newElement = origElem;
+			newElement.m_id = VICUS::Project::uniqueIdAdd(allElementIds);
+
+			// 2. map the node ids to elements
+			if (origElem.m_inletNodeId == 0) {
+				if (node.m_type == VICUS::NetworkNode::NT_Source)  // in case this a source node: switch inlet and outlet
+					newElement.m_inletNodeId = returnNodeIdMap[node.m_id];
+				else
+					newElement.m_inletNodeId = supplyNodeIdMap[node.m_id];
+
+				newElement.m_outletNodeId = subNetNodeIdMap[origElem.m_outletNodeId];
+			}
+			else if(origElem.m_outletNodeId == 0){
+				if (node.m_type == VICUS::NetworkNode::NT_Source) // in case this a source node: switch inlet and outlet
+					newElement.m_outletNodeId = supplyNodeIdMap[node.m_id];
+				else
+					newElement.m_outletNodeId = returnNodeIdMap[node.m_id];
+
+				newElement.m_inletNodeId = subNetNodeIdMap[origElem.m_inletNodeId];
+			}
+			else{
+				newElement.m_inletNodeId = subNetNodeIdMap[origElem.m_inletNodeId];
+				newElement.m_outletNodeId = subNetNodeIdMap[origElem.m_outletNodeId];
+			}
+
+			// 3. small hack to get component name in display name
+			const VICUS::NetworkComponent *comp = element(m_embeddedDB.m_networkComponents, newElement.m_componentId);
+			Q_ASSERT(comp!=nullptr);
+			newElement.m_displayName = IBK::FormatString("%1_%2_%3")
+					.arg(comp->m_displayName.string()).arg(newElement.m_id).arg(node.m_displayName.toStdString()).str();
+
+			// 4. if this is a source node: set the respective reference element id of the network (for pressure calculation)
+			if (node.m_type == VICUS::NetworkNode::NT_Source)
+				nandradNetwork.m_referenceElementId = newElement.m_id;
+
+			// 5. if this element is the one which shall exchange heat: we copy the respective heat exchange properties from the node
+			// we recognize this using the original element id (origElem.m_id)
+			if (origElem.m_id == sub->m_heatExchangeElementId)
+				newElement.m_heatExchange = node.m_heatExchange;
+
+			// 6. add element to the nandrad network
+			nandradNetwork.m_elements.push_back(newElement);
+
+			// we store the element ids for each component, with this info we can create the schedules and object lists
+			componentElementMap[origElem.m_componentId].push_back(newElement.m_id);
+		}
+
+
+	}  // end of iteration over network nodes
+
+
+
+	// *** Transfer SCHEDULES from Vicus to Nandrad
+
+	for (auto it=componentElementMap.begin(); it!=componentElementMap.end(); ++it){
+
+		const VICUS::NetworkComponent *comp = element(m_embeddedDB.m_networkComponents, it->first);
+
+		if (comp->m_scheduleIds.empty())
+			continue;
+
+		// create and add object list
+		NANDRAD::ObjectList objList;
+		objList.m_name = comp->m_displayName.string(IBK::MultiLanguageString::m_language, "en") + " elements";
+		objList.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+		for (unsigned int elementId: it->second)
+			objList.m_filterID.m_ids.insert(elementId);
+		p.m_objectLists.push_back(objList);
+
+		// get a list with required schedule names, they correspond to the component schedule ids
+		std::vector<std::string> scheduleNames= NANDRAD::HydraulicNetworkComponent::requiredScheduleNames(
+					NANDRAD::HydraulicNetworkComponent::ModelType(comp->m_modelType));
+		Q_ASSERT(scheduleNames.size() == comp->m_scheduleIds.size());
+
+		// add schedules of component to nandrad
+		for (unsigned int i = 0; i<comp->m_scheduleIds.size(); ++i){
+			const VICUS::Schedule *sched = element(m_embeddedDB.m_schedules, comp->m_scheduleIds[i]);
+			if (sched == nullptr)
+				throw IBK::Exception(IBK::FormatString("Schedule with id #%1, referenced in network component with id #%2"
+													   " does not exist").arg(comp->m_scheduleIds[i]).arg(comp->m_id), FUNC_ID);
+			addVicusScheduleToNandradProject(*sched, scheduleNames[i], p, objList.m_name);
+		}
+	}
+
+
+	// *** Transfer EDGES / PIPE ELEMENTS from Vicus to Nandrad
+
+	// find source node and create set of edges, which are ordered according to their distance to the source node
+	std::set<const VICUS::NetworkNode *> dummyNodeSet;
+	std::set<VICUS::NetworkEdge *> orderedEdges;
+	for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes){
+		if (node.m_type == VICUS::NetworkNode::NT_Source){
+			node.setInletOutletNode(dummyNodeSet, orderedEdges);
+			break;
+		}
+	}
+
+	// collect all current model types and ids
+	std::map<NANDRAD::HydraulicNetworkComponent::ModelType, unsigned int> componentsMap;
+	for (const NANDRAD::HydraulicNetworkComponent &comp: nandradNetwork.m_components)
+		componentsMap[comp.m_modelType] = comp.m_id;
+
+	// now iterate over edges
+	for (const VICUS::NetworkEdge *edge: orderedEdges) {
+
+		// check and transform pipe model type
+		NANDRAD::HydraulicNetworkComponent::ModelType pipeModelType;
+		switch (edge->m_pipeModel ) {
+			case VICUS::NetworkEdge::PM_SimplePipe:{
+				pipeModelType = NANDRAD::HydraulicNetworkComponent::MT_SimplePipe;
+			} break;
+			case VICUS::NetworkEdge::PM_DynamicPipe:{
+				pipeModelType = NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe;
+			} break;
+			case VICUS::NetworkEdge::NUM_PM:
+				throw IBK::Exception(IBK::FormatString("Edge %1->%2 has no valid pipe model type")
+									 .arg(edge->m_node1->m_id).arg(edge->m_node2->m_id), FUNC_ID);
+		}
+
+		// add respective component for pipe, if not yet existing
+		unsigned int pipeComponentId;
+		if (componentsMap.find(pipeModelType) == componentsMap.end()){
+			NANDRAD::HydraulicNetworkComponent comp;
+			comp.m_id = VICUS::Project::uniqueId(std::vector<unsigned int>(componentIds.begin(), componentIds.end()));
+			comp.m_modelType = pipeModelType;
+			if (pipeModelType == NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe)
+
+				// TODO: Hauke get pipe discretization width from Ui !!
+
+				NANDRAD::KeywordList::setParameter(comp.m_para, "HydraulicNetworkComponent::para_t",
+												   NANDRAD::HydraulicNetworkComponent::P_PipeMaxDiscretizationWidth,
+												   2.0);
+			nandradNetwork.m_components.push_back(comp);
+
+			pipeComponentId = comp.m_id;
+		}
+		else
+			pipeComponentId = componentsMap[pipeModelType];
+
+		// check if there is a reference to a pipe from DB
+		const VICUS::NetworkPipe *pipe = element(m_embeddedDB.m_pipes, edge->m_pipeId);
+		if (pipe == nullptr)
+			throw IBK::Exception(IBK::FormatString("Edge %1->%2 has no defined pipe from database")
+								 .arg(edge->m_node1->m_id).arg(edge->m_node2->m_id), FUNC_ID);
+
+
+		// add inlet pipe element
+		unsigned int inletNode = supplyNodeIdMap[edge->m_nodeIdInlet];
+		unsigned int outletNode = supplyNodeIdMap[edge->m_nodeIdOutlet];
+		NANDRAD::HydraulicNetworkElement inletPipe(VICUS::Project::largestUniqueId(nandradNetwork.m_elements),
+													inletNode,
+													outletNode,
+													pipeComponentId,
+													edge->m_pipeId,
+													edge->length());
+		inletPipe.m_displayName = edge->m_displayName.toStdString();
+		inletPipe.m_heatExchange = edge->m_heatExchange;
+		nandradNetwork.m_elements.push_back(inletPipe);
+
+		// add outlet pipe element
+		inletNode = returnNodeIdMap[edge->m_nodeIdOutlet];
+		outletNode = returnNodeIdMap[edge->m_nodeIdInlet];
+		NANDRAD::HydraulicNetworkElement outletPipe(VICUS::Project::largestUniqueId(nandradNetwork.m_elements),
+													inletNode,
+													outletNode,
+													pipeComponentId,
+													edge->m_pipeId,
+													edge->length());
+		outletPipe.m_displayName = edge->m_displayName.toStdString();
+		outletPipe.m_heatExchange = edge->m_heatExchange;
+		nandradNetwork.m_elements.push_back(outletPipe);
+
+	}
+
+	 // we are DONE !!!
+	 // finally add to nandrad project
+	p.m_hydraulicNetworks.push_back(nandradNetwork);
 
 }
 
