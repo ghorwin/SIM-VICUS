@@ -314,8 +314,8 @@
               <item>
                <widget class="QToolButton" name="toolButtonBackward">
                 <property name="icon">
-                 <iconset resource="../resources/SIM-VICUS.qrc">
-                  <normaloff>:/gfx/actions/24x24/undo.png</normaloff>:/gfx/actions/24x24/undo.png</iconset>
+                 <iconset resource="../resources/qdarkstyle/style.qrc">
+                  <normaloff>:/qss_icons/rc/arrow_left_focus.png</normaloff>:/qss_icons/rc/arrow_left_focus.png</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -328,8 +328,8 @@
               <item>
                <widget class="QToolButton" name="toolButtonForward">
                 <property name="icon">
-                 <iconset resource="../resources/SIM-VICUS.qrc">
-                  <normaloff>:/gfx/actions/24x24/redo.png</normaloff>:/gfx/actions/24x24/redo.png</iconset>
+                 <iconset resource="../resources/qdarkstyle/style.qrc">
+                  <normaloff>:/qss_icons/rc/arrow_right_focus.png</normaloff>:/qss_icons/rc/arrow_right_focus.png</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -396,6 +396,7 @@
   </customwidget>
  </customwidgets>
  <resources>
+  <include location="../resources/qdarkstyle/style.qrc"/>
   <include location="../resources/SIM-VICUS.qrc"/>
  </resources>
  <connections/>
