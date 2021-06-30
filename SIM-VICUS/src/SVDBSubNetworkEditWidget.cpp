@@ -158,14 +158,14 @@ void SVDBSubNetworkEditWidget::setInletOutletIds()
 	Q_ASSERT(m_currentSubNet != nullptr);
 
 	// set inlet and outlet ids of elements
-	// first elements inletId and last eleemnts outletId shall be 0
+	// first elements inletId shall be INLET_ID and last elements outletID shall be OUTLET_ID
 	for (unsigned int i = 0; i < m_currentSubNet->m_elements.size(); ++i){
 		m_currentSubNet->m_elements[i].m_inletNodeId = i;
 		m_currentSubNet->m_elements[i].m_outletNodeId = i+1;
 		if (i==0)
-			m_currentSubNet->m_elements[i].m_inletNodeId = 0;
+			m_currentSubNet->m_elements[i].m_inletNodeId = VICUS::SubNetwork::INLET_ID;
 		if (i==m_currentSubNet->m_elements.size()-1)
-			m_currentSubNet->m_elements[i].m_outletNodeId = 0;
+			m_currentSubNet->m_elements[i].m_outletNodeId = VICUS::SubNetwork::OUTLET_ID;
 	}
 }
 

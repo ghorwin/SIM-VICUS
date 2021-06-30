@@ -81,6 +81,7 @@ public:
 
 	VICUS_READWRITE
 	VICUS_COMP(NetworkController)
+	VICUS_COMPARE_WITH_ID
 
 	/*! Checks if all parameters are valid. */
 	bool isValid(const Database<Schedule> &scheduleDB) const;

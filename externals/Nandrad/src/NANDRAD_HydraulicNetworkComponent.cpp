@@ -156,13 +156,13 @@ std::vector<std::string> HydraulicNetworkComponent::requiredScheduleNames(const 
 {
 	switch (modelType)	{
 		case MT_HeatPumpIdealCarnotSourceSide:
-			return {"CondenserMeanTemperatureSchedule"};
+			return {"CondenserMeanTemperatureSchedule [C]"};
 		case MT_HeatPumpIdealCarnotSupplySide:
-			return {"CondenserOutletSetpointSchedule"};
+			return {"CondenserOutletSetpointSchedule [C]"};
 		case MT_HeatPumpRealSourceSide:
-			return {"CondenserOutletSetpointSchedule", "HeatPumpOnOffSignalSchedule"};
+			return {"CondenserOutletSetpointSchedule [C]", "HeatPumpOnOffSignalSchedule [---]"};
 		case MT_IdealHeaterCooler:
-			return {"SupplyTemperatureSchedule"};
+			return {"SupplyTemperatureSchedule [C]"};
 		case MT_ConstantPressurePump:
 		case MT_ConstantMassFluxPump :
 		case MT_ControlledPump:

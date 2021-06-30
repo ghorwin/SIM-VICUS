@@ -57,7 +57,8 @@ public:
 	QColor												m_color;								// XML:A
 
 	/*! Defines sub-network through elements, connected by implicitely numbered internal nodes.
-		Nodes with ID 0 represent inlet and outlet node (there must be only one ID 0 inlet and outlet node!).
+		Nodes with INLET_ID and OUTLET_ID represent inlet and outlet nodes of the sub network respectively
+		There must be only one inlet and one outlet node!
 		NOTE: the heat exchange property of the elements are not used, instead, we assign the heat exchange property
 		of the correspoinding node (the parent of this SubNetwork) using the heatExchangeElementId
 	*/
@@ -66,7 +67,8 @@ public:
 	/*! Stores id of element with heat exchange parameterization. INVALID_ID means no heat exchange. */
 	unsigned int										m_heatExchangeElementId = INVALID_ID;	// XML:A
 
-
+	const static unsigned int INLET_ID = 333333;
+	const static unsigned int OUTLET_ID = 666666;
 };
 
 

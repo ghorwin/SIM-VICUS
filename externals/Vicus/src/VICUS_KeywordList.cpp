@@ -362,6 +362,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "BinaryOutputs";
 				case 1 : return "CreateDefaultZoneOutputs";
+				case 2 : return "CreateDefaultNetworkOutputs";
 			} break;
 			// Room::para_t
 			case 29 :
@@ -796,6 +797,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "BinaryOutputs";
 				case 1 : return "CreateDefaultZoneOutputs";
+				case 2 : return "CreateDefaultNetworkOutputs";
 			} break;
 			// Room::para_t
 			case 29 :
@@ -1231,6 +1233,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "If true, output files are written in binary format (the default, if flag is missing).";
 				case 1 : return "If true, default output definitions for zones are created.";
+				case 2 : return "If true, default output definitions for networks are created.";
 			} break;
 			// Room::para_t
 			case 29 :
@@ -1665,6 +1668,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
+				case 2 : return "";
 			} break;
 			// Room::para_t
 			case 29 :
@@ -2099,6 +2103,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
 			} break;
 			// Room::para_t
 			case 29 :
@@ -2533,6 +2538,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// Room::para_t
 			case 29 :
@@ -2766,7 +2772,7 @@ namespace VICUS {
 			// NetworkPipe::para_t
 			case 27 : return 6;
 			// Outputs::flag_t
-			case 28 : return 2;
+			case 28 : return 3;
 			// Room::para_t
 			case 29 : return 2;
 			// SubSurfaceComponent::SubSurfaceComponentType
@@ -2880,7 +2886,7 @@ namespace VICUS {
 			// NetworkPipe::para_t
 			case 27 : return 5;
 			// Outputs::flag_t
-			case 28 : return 1;
+			case 28 : return 2;
 			// Room::para_t
 			case 29 : return 1;
 			// SubSurfaceComponent::SubSurfaceComponentType

@@ -201,6 +201,12 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	std::set<const VICUS::Infiltration *>			referencedInfiltration;
 	std::set<const VICUS::ZoneTemplate *>			referencedZoneTemplates;
 
+	std::set<const VICUS::NetworkPipe*>				referencedNetworkPipes;
+	std::set<const VICUS::NetworkComponent *>		referencedNetworkComponents;
+	std::set<const VICUS::NetworkController *>		referencedNetworkControllers;
+	std::set<const VICUS::SubNetwork *>				referencedSubNetworks;
+	std::set<const VICUS::NetworkFluid *>			referencedNetworkFluids;
+
 
 	// we first collect all objects that are not referenced themselves
 	// then, we collect objects that are referenced from an already collected object
@@ -325,8 +331,55 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	}
 
 
+	// iterate through networks
+	for (const VICUS::Network &net: p.m_geometricNetworks){
 
+		// fluids
+		const VICUS::NetworkFluid * f = m_fluids[net.m_fluidID];
+		if (f != nullptr)
+			referencedNetworkFluids.insert(f);
 
+		// pipes
+		for (const VICUS::NetworkEdge &edge: net.m_edges){
+			const VICUS::NetworkPipe * p = m_pipes[edge.m_pipeId];
+			if (p != nullptr)
+				referencedNetworkPipes.insert(p);
+		}
+
+		// sub networks
+		for (const VICUS::NetworkNode &node: net.m_nodes){
+			const VICUS::SubNetwork * sub = m_subNetworks[node.m_subNetworkId];
+			if (sub != nullptr)
+				referencedSubNetworks.insert(sub);
+		}
+	}
+
+	// iterate through collected sub networks
+	for (const VICUS::SubNetwork *sub: referencedSubNetworks){
+		for (const NANDRAD::HydraulicNetworkElement &el: sub->m_elements){
+
+		// network components
+		const VICUS::NetworkComponent * comp = m_networkComponents[el.m_componentId];
+		if (comp != nullptr)
+			referencedNetworkComponents.insert(comp);
+
+		// network controllers
+		const VICUS::NetworkController * ctrl = m_networkControllers[el.m_controlElementId];
+		if (ctrl != nullptr)
+			referencedNetworkControllers.insert(ctrl);
+		}
+	}
+
+	// iterate through components
+	for (const VICUS::NetworkComponent *comp: referencedNetworkComponents){
+
+		// schedules
+		for (unsigned int i: comp->m_scheduleIds){
+			const VICUS::Schedule *sched = m_schedules[i];
+			if (sched != nullptr)
+				referencedSchedule.insert(sched);
+		}
+	}
 
 	// *** transfer collected objects to project's embedded database ***
 
@@ -338,10 +391,13 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	storeVector(p.m_embeddedDB.m_components, referencedComponents);
 	storeVector(p.m_embeddedDB.m_subSurfaceComponents, referencedSubSurfaceComponents);
 
+	storeVector(p.m_embeddedDB.m_networkComponents, referencedNetworkComponents);
+	storeVector(p.m_embeddedDB.m_fluids, referencedNetworkFluids);
+	storeVector(p.m_embeddedDB.m_pipes, referencedNetworkPipes);
+	storeVector(p.m_embeddedDB.m_networkControllers, referencedNetworkControllers);
+	storeVector(p.m_embeddedDB.m_subNetworks, referencedSubNetworks);
 
-	// TODO m_pipes
-	// TODO m_fluids
-	// TODO m_networkComponents
+
 	// TODO m_EPDElements
 
 	storeVector(p.m_embeddedDB.m_schedules, referencedSchedule);

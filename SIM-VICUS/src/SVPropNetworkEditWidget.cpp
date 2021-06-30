@@ -294,6 +294,8 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 	m_ui->groupBoxVisualisation->setEnabled(true);
 	m_ui->groupBoxSizePipes->setEnabled(true);
 	m_ui->groupBoxCurrentPipes->setEnabled(true);
+	m_ui->pushButtonAssignSubNetwork->setEnabled(!m_currentNodes.empty() && m_currentEdges.empty());
+	m_ui->pushButtonAssignPipe->setEnabled(!m_currentEdges.empty() && m_currentNodes.empty());
 
 	// general network infos
 	m_ui->labelNetworkName->setText(m_currentConstNetwork->m_displayName);

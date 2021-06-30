@@ -168,6 +168,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Thermal conductivity of insulation");
 	tr("If true, output files are written in binary format (the default, if flag is missing).");
 	tr("If true, default output definitions for zones are created.");
+	tr("If true, default output definitions for networks are created.");
 	tr("Floor area of the zone.");
 	tr("Volume of the zone.");
 	tr("A window");
