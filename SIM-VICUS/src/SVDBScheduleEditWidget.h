@@ -91,6 +91,8 @@ private slots:
 	*/
 	void onValidityInfoUpdated();
 
+	void on_toolButtonAddCurrentDailyCycle_pressed();
+
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();

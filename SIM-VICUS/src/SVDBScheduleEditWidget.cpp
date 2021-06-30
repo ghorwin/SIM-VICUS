@@ -408,10 +408,10 @@ void SVDBScheduleEditWidget::on_toolButtonForward_clicked() {
 	// m_currentDailyCycleIndex points to the last daily cycle -> in this case we add a new daily cycle
 	// otherwise we just switch to the next daily cycle
 
-	//create a new daily cycle
-	if (m_currentDailyCycleIndex == m_currentInterval->m_dailyCycles.size()-1) {
-		m_currentInterval->m_dailyCycles.push_back(VICUS::DailyCycle());
-	}
+//	//create a new daily cycle
+//	if (m_currentDailyCycleIndex == m_currentInterval->m_dailyCycles.size()-1) {
+//		m_currentInterval->m_dailyCycles.push_back(VICUS::DailyCycle());
+//	}
 	++m_currentDailyCycleIndex;
 	selectDailyCycle();
 }
@@ -510,11 +510,13 @@ void SVDBScheduleEditWidget::updateDailyCycleSelectButtons() {
 		// any days free?
 		enableButton = enableButton && !m_currentInterval->freeDayTypes().empty();
 		// check all check boxes and if we find one that is enabled and checked we have a modified
-		m_ui->toolButtonForward->setEnabled(enableButton);
+		m_ui->toolButtonAddCurrentDailyCycle->setEnabled(enableButton);
+		m_ui->toolButtonForward->setEnabled(false);
 	}
 	else {
 		// navigation forward is always possible
 		m_ui->toolButtonForward->setEnabled(true);
+		m_ui->toolButtonAddCurrentDailyCycle->setEnabled(false);
 	}
 
 	// remove button requires more than one daily cycle
@@ -657,4 +659,14 @@ void SVDBScheduleEditWidget::modelModify() {
 
 	m_db->m_schedules.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id);
+}
+
+void SVDBScheduleEditWidget::on_toolButtonAddCurrentDailyCycle_pressed() {
+	//create a new daily cycle
+	if (m_currentDailyCycleIndex == m_currentInterval->m_dailyCycles.size()-1) {
+		m_currentInterval->m_dailyCycles.push_back(VICUS::DailyCycle());
+	}
+
+	++m_currentDailyCycleIndex;
+	selectDailyCycle();
 }
