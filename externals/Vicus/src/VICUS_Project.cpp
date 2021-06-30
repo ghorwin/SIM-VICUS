@@ -2304,7 +2304,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 			newElement.m_inletNodeId = subNetNodeIdMap[elem.m_inletNodeId];
 			newElement.m_outletNodeId = subNetNodeIdMap[elem.m_outletNodeId];
 
-			// 3. small hack to get component name in display name
+			// 3. get component name in display name
 			const VICUS::NetworkComponent *comp = element(m_embeddedDB.m_networkComponents, newElement.m_componentId);
 			Q_ASSERT(comp!=nullptr);
 			newElement.m_displayName = IBK::FormatString("%1_%2_%3")
@@ -2377,7 +2377,6 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 	}
 
 	// now iterate over edges
-	std::map<NANDRAD::HydraulicNetworkComponent::ModelType, unsigned int> pipeComponentsMap;
 	std::vector<unsigned int> compIds(componentIds.begin(), componentIds.end());
 	for (const VICUS::NetworkEdge *edge: orderedEdges) {
 
@@ -2395,22 +2394,30 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 									 .arg(edge->m_node1->m_id).arg(edge->m_node2->m_id), FUNC_ID);
 		}
 
-		// add respective component for pipe, if not yet existing
-		if (pipeComponentsMap.find(pipeModelType) == pipeComponentsMap.end()){
+		// check if a pipe component with this model type exists already
+		const NANDRAD::HydraulicNetworkComponent *pipeComp = nullptr;
+		for (const NANDRAD::HydraulicNetworkComponent &comp: nandradNetwork.m_components){
+			if (comp.m_modelType == pipeModelType){
+				pipeComp = &comp;
+				break;
+			}
+		}
+
+		// if there was none, add respective component for pipe
+		if (pipeComp == nullptr){
 			NANDRAD::HydraulicNetworkComponent comp;
 			comp.m_id = VICUS::Project::uniqueIdAdd(compIds);
 			comp.m_modelType = pipeModelType;
-			pipeComponentsMap[pipeModelType] = comp.m_id;
 			if (pipeModelType == NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe){
 
 				// TODO: Hauke get pipe discretization width from Ui !!
 
 				NANDRAD::KeywordList::setParameter(comp.m_para, "HydraulicNetworkComponent::para_t",
 												   NANDRAD::HydraulicNetworkComponent::P_PipeMaxDiscretizationWidth,
-												   2.0);
+												   5.0);
 			}
-
 			nandradNetwork.m_components.push_back(comp);
+			pipeComp = &comp;
 		}
 
 		// check if there is a reference to a pipe from DB
@@ -2426,10 +2433,11 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 		NANDRAD::HydraulicNetworkElement inletPipe(VICUS::Project::largestUniqueId(nandradNetwork.m_elements),
 													inletNode,
 													outletNode,
-													pipeComponentsMap[pipeModelType],
+													pipeComp->m_id,
 													edge->m_pipeId,
 													edge->length());
-		inletPipe.m_displayName = edge->m_displayName.toStdString();
+		inletPipe.m_displayName = IBK::FormatString("%1_%2_%3")
+				.arg(pipeComp->m_displayName).arg(pipe->m_displayName).arg(edge->m_displayName.toStdString()).str();
 		inletPipe.m_heatExchange = edge->m_heatExchange;
 		nandradNetwork.m_elements.push_back(inletPipe);
 
@@ -2439,10 +2447,11 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 		NANDRAD::HydraulicNetworkElement outletPipe(VICUS::Project::largestUniqueId(nandradNetwork.m_elements),
 													inletNode,
 													outletNode,
-													pipeComponentsMap[pipeModelType],
+													pipeComp->m_id,
 													edge->m_pipeId,
 													edge->length());
-		outletPipe.m_displayName = edge->m_displayName.toStdString();
+		outletPipe.m_displayName = IBK::FormatString("%1_%2_%3")
+				.arg(pipeComp->m_displayName).arg(pipe->m_displayName).arg(edge->m_displayName.toStdString()).str();
 		outletPipe.m_heatExchange = edge->m_heatExchange;
 		nandradNetwork.m_elements.push_back(outletPipe);
 
