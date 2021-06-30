@@ -45,6 +45,7 @@
 #include "SVUndoModifySubSurfaceComponentInstances.h"
 #include "SVUndoModifyRoomZoneTemplateAssociation.h"
 #include "SVUndoTreeNodeState.h"
+#include "SVPropSurfaceHeatingDelegate.h"
 
 SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	QWidget(parent),
@@ -103,6 +104,8 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->resizeSection(2,100);
 	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->resizeSection(3,120);
 	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->setStretchLastSection(true);
+
+	m_ui->tableWidgetSurfaceHeating->setItemDelegate(new SVPropSurfaceHeatingDelegate(this));
 
 	// init widget to correct initial state
 	m_ui->labelComponentSelection->setEnabled(false);
@@ -962,10 +965,14 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 		// column 2 - heating name
 		item = new QTableWidgetItem;
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
-		if (surfHeat == nullptr)
+		if (surfHeat == nullptr) {
 			item->setText("---");
-		else
+			item->setData(Qt::UserRole, VICUS::INVALID_ID);
+		}
+		else {
 			item->setText(QtExt::MultiLangString2QString(surfHeat->m_displayName));
+			item->setData(Qt::UserRole, surfHeat->m_id);
+		}
 		m_ui->tableWidgetSurfaceHeating->setItem(row, 2, item);
 
 		// column 3 - control zone ID name
@@ -1455,4 +1462,16 @@ void SVPropBuildingEditWidget::on_tableWidgetZoneTemplates_itemClicked(QTableWid
 
 void SVPropBuildingEditWidget::on_comboBoxSurfaceHeatingComponentFilter_currentIndexChanged(int /*index*/) {
 	updateSurfaceHeatingPage();
+}
+
+
+void SVPropBuildingEditWidget::on_tableWidgetSurfaceHeating_itemChanged(QTableWidgetItem *item) {
+	if (item->column() == 2) {
+		m_ui->tableWidgetSurfaceHeating->blockSignals(true);
+		QString newText = item->data(Qt::DisplayRole).toString();
+		qDebug() << newText;
+//		item->setText(newText);
+
+		m_ui->tableWidgetSurfaceHeating->blockSignals(false);
+	}
 }

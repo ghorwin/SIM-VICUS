@@ -82,6 +82,7 @@ PRE_TARGETDEPS += \
 SOURCES += \
 								../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
 								../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
+								../../src/SVPropSurfaceHeatingDelegate.cpp \
 								../../src/SVSimulationShadingOptions.cpp \
 								../../src/actions/SVUndoAddBuilding.cpp \
 								../../src/actions/SVUndoAddBuildingLevel.cpp \
@@ -233,6 +234,7 @@ SOURCES += \
 								../../src/SVWelcomeScreen.cpp
 
 HEADERS  += \
+								../../src/SVPropSurfaceHeatingDelegate.h \
 								../../src/SVSimulationShadingOptions.h \
 								../../src/actions/SVUndoAddBuilding.h \
 								../../src/actions/SVUndoAddBuildingLevel.h \

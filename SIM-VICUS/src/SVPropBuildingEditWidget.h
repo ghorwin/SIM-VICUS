@@ -154,6 +154,8 @@ private slots:
 
 	void on_comboBoxSurfaceHeatingComponentFilter_currentIndexChanged(int index);
 
+	void on_tableWidgetSurfaceHeating_itemChanged(QTableWidgetItem *item);
+
 private:
 	/*! Returns a pointer to the currently selected component in the component table. */
 	const VICUS::Component * currentlySelectedComponent() const;
