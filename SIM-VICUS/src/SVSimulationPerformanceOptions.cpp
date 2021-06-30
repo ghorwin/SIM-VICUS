@@ -110,10 +110,17 @@ void SVSimulationPerformanceOptions::updateUi() {
 		m_solverParams->m_para[NANDRAD::SolverParameter::P_NonlinSolverConvCoeff], IBK::Unit("---"));
 	m_ui->lineEditIterative->setFromParameter(
 		m_solverParams->m_para[NANDRAD::SolverParameter::P_IterativeSolverConvCoeff], IBK::Unit("---"));
-	m_ui->lineEditMaxOrder->setFromParameter(
-		m_solverParams->m_para[NANDRAD::SolverParameter::IP_MaxOrder], IBK::Unit("---"));
-	m_ui->lineEditMaxKry->setFromParameter(
-		m_solverParams->m_para[NANDRAD::SolverParameter::IP_MaxKrylovDim], IBK::Unit("---"));
+
+	if (m_solverParams->m_intPara[NANDRAD::SolverParameter::IP_MaxOrder].empty())
+		m_ui->lineEditMaxOrder->setText("");
+	else
+		m_ui->lineEditMaxOrder->setValue(m_solverParams->m_intPara[NANDRAD::SolverParameter::IP_MaxOrder].value);
+
+	if (m_solverParams->m_intPara[NANDRAD::SolverParameter::IP_MaxKrylovDim].empty())
+		m_ui->lineEditMaxKry->setText("");
+	else
+		m_ui->lineEditMaxKry->setValue(m_solverParams->m_intPara[NANDRAD::SolverParameter::IP_MaxKrylovDim].value);
+
 	if (m_solverParams->m_para[NANDRAD::SolverParameter::P_MinTimeStep].name.empty())
 		m_ui->lineEditMinDT->setFromParameter( s.m_para[NANDRAD::SolverParameter::P_MinTimeStep]);
 	else
@@ -185,7 +192,7 @@ void SVSimulationPerformanceOptions::currentIndexChanged(int /*index*/) {
 
 
 void SVSimulationPerformanceOptions::on_lineEditMaxOrder_editingFinishedSuccessfully() {
-	parameterEditingFinished(NANDRAD::SolverParameter::IP_MaxOrder, m_ui->lineEditMaxOrder);
+	intParameterEditingFinished(NANDRAD::SolverParameter::IP_MaxOrder, m_ui->lineEditMaxOrder);
 }
 
 
@@ -195,7 +202,7 @@ void SVSimulationPerformanceOptions::on_lineEditNonLin_editingFinishedSuccessful
 
 
 void SVSimulationPerformanceOptions::on_lineEditMaxKry_editingFinishedSuccessfully() {
-	parameterEditingFinished(NANDRAD::SolverParameter::IP_MaxKrylovDim, m_ui->lineEditMaxKry);
+	intParameterEditingFinished(NANDRAD::SolverParameter::IP_MaxKrylovDim, m_ui->lineEditMaxKry);
 }
 
 
@@ -205,7 +212,7 @@ void SVSimulationPerformanceOptions::on_lineEditIterative_editingFinishedSuccess
 
 
 void SVSimulationPerformanceOptions::on_lineEditPreILU_editingFinishedSuccessfully() {
-	parameterEditingFinished(NANDRAD::SolverParameter::IP_PreILUWidth, m_ui->lineEditPreILU);
+	intParameterEditingFinished(NANDRAD::SolverParameter::IP_PreILUWidth, m_ui->lineEditPreILU);
 }
 
 
@@ -239,5 +246,23 @@ void SVSimulationPerformanceOptions::parameterEditingFinished(int paraEnum, cons
 		double val = edit->value();
 		// update parameter value
 		NANDRAD::KeywordList::setParameter(m_solverParams->m_para, "SolverParameter::para_t", paraEnum, val);
+	}
+}
+
+void SVSimulationPerformanceOptions::intParameterEditingFinished(int paraEnum, const QtExt::ValidatingLineEdit *edit)
+{
+	if (edit->isValid() && edit->text().trimmed().isEmpty()) {
+		// clear parameter
+		if (m_solverParams->m_intPara[paraEnum].name.empty())
+			return; // parameter not changed, no undo action needed
+		// clear parameter
+		m_solverParams->m_intPara[paraEnum] = IBK::IntPara();
+	}
+	else {
+		int val = (int)edit->value();
+		// update parameter value
+		m_solverParams->m_intPara[paraEnum] = IBK::IntPara(
+												NANDRAD::KeywordList::Keyword("SolverParameter::para_t", paraEnum),
+												val);
 	}
 }

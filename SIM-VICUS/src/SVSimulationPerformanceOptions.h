@@ -70,6 +70,7 @@ private slots:
 
 private:
 	void parameterEditingFinished(int paraEnum, const QtExt::ValidatingLineEdit *edit);
+	void intParameterEditingFinished(int paraEnum, const QtExt::ValidatingLineEdit *edit);
 
 	/*! UI pointer. */
 	Ui::SVSimulationPerformanceOptions	*m_ui;
