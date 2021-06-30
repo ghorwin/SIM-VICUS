@@ -92,6 +92,8 @@ private slots:
 	void onValidityInfoUpdated();
 
 	void on_toolButtonAddCurrentDailyCycle_pressed();
+	
+	void on_toolButtonCopyPeriod_clicked();
 
 private:
 	/*! Set up the modified variable of the model to true. */

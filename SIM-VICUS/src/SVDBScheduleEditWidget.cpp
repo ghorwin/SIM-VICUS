@@ -670,3 +670,53 @@ void SVDBScheduleEditWidget::on_toolButtonAddCurrentDailyCycle_pressed() {
 	++m_currentDailyCycleIndex;
 	selectDailyCycle();
 }
+
+
+void SVDBScheduleEditWidget::on_toolButtonCopyPeriod_clicked() {
+
+	Q_ASSERT(m_current != nullptr);
+	//copy schedule interval
+	VICUS::ScheduleInterval schedInt = *m_currentInterval;
+
+	// request start date
+	QDate initialDate(2021,1,1);
+	if ( m_currentInterval != nullptr)
+		initialDate = initialDate.addDays(m_currentInterval->m_intervalStartDay+1);
+
+	QDate startDate = QtExt::DateTimeInputDialog::requestDate(tr("Select start date of period"),
+															  tr("Enter start date (dd.MM.):"), tr("dd.MM."), &initialDate);
+
+	if(!startDate.isValid())
+		return;		//The period is not valid. Action canceled.
+
+	// convert date to dayofyear
+	unsigned int startDateInt = startDate.dayOfYear()-1;
+	unsigned int idx=0;
+	// check if such a period starting day has already been used, and if yes,
+	for(unsigned int i=0; i<m_current->m_periods.size(); ++i){
+		const VICUS::ScheduleInterval &schedInt = m_current->m_periods[i];
+		if(schedInt.m_intervalStartDay == startDateInt) {
+			QMessageBox::critical(this,QString(), "A period with this start day already exists.");
+			return;
+		}
+		//save index for later adding schedule interval
+		if(schedInt.m_intervalStartDay < startDateInt)
+			idx=i;
+	}
+
+	// now create a new ScheduleInverval and insert into vector at appropriate position (sorted) and
+	//VICUS::ScheduleInterval schedInt;
+	schedInt.m_intervalStartDay = startDateInt;
+	std::string newName = m_currentInterval->m_displayName.string() + " copy";
+	schedInt.m_displayName.setString(newName, "de");
+
+	// get resulting index of new ScheduleInverval in vector
+	m_current->m_periods.insert(m_current->m_periods.begin()+idx+1,schedInt);
+	modelModify();
+
+	// update table widget
+	updatePeriodTable(m_current->m_periods.size()-1 );
+
+	// select ScheduleInverval table row by ScheduleInverval index -> this will show the editor for the newly created schedule
+	m_ui->tableWidgetPeriods->selectRow(idx+1);
+}
