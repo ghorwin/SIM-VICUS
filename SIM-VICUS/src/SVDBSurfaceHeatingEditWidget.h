@@ -38,6 +38,7 @@ namespace VICUS {
 
 class SVDBSurfaceHeatingTableModel;
 class SVDatabase;
+class QTableWidgetItem;
 
 class SVDBSurfaceHeatingEditWidget : public SVAbstractDatabaseEditWidget {
 	Q_OBJECT
@@ -68,6 +69,10 @@ private slots:
 	void on_lineEditCoolingLimit_editingFinishedSuccessfully();
 
 	void on_toolButtonSelectPipes_clicked();
+
+	void on_tableWidget_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous);
+
+	void on_tableWidget_itemChanged(QTableWidgetItem *item);
 
 private:
 
