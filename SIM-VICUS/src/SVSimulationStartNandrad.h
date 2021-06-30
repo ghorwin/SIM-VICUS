@@ -39,6 +39,7 @@ class SVSimulationLocationOptions;
 class SVSimulationOutputOptions;
 class SVSimulationModelOptions;
 class SVSimulationRunRequestDialog;
+class SVSimulationNetworkOptions;
 
 /*! The start dialog for a NANDRAD simulation.
 	Contains pages for all global simulation properties.
@@ -114,8 +115,11 @@ private:
 	SVSimulationOutputOptions		*m_simulationOutputOptions = nullptr;
 	/*! Page with all other model options. */
 	SVSimulationModelOptions		*m_simulationModelOptions = nullptr;
+	/*! Page with newtork options */
+	SVSimulationNetworkOptions		*m_simulationNetworkOptions = nullptr;
 
 	SVSimulationRunRequestDialog	*m_simulationRunRequestDialog = nullptr;
+
 };
 
 #endif // SVSimulationStartNandradH

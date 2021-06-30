@@ -13,11 +13,11 @@
   <property name="windowTitle">
    <string>Start building energy simulation</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>5</number>
      </property>
      <widget class="QWidget" name="tabSimStart">
       <attribute name="title">
@@ -289,9 +289,14 @@
        <string>Performance options</string>
       </attribute>
      </widget>
+     <widget class="QWidget" name="tabNetworkOptions">
+      <attribute name="title">
+       <string>Network Settings</string>
+      </attribute>
+     </widget>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QPushButton" name="pushButtonRun">

@@ -45,6 +45,7 @@
 #include "SVConstants.h"
 #include "SVLogFileDialog.h"
 #include "SVUndoModifyProject.h"
+#include "SVSimulationNetworkOptions.h"
 
 SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 	QDialog(parent),
@@ -115,6 +116,12 @@ SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 		QHBoxLayout * h = new QHBoxLayout;
 		h->addWidget(m_simulationModelOptions);
 		m_ui->tabSimOptions->setLayout(h);
+	}
+	{
+		m_simulationNetworkOptions = new SVSimulationNetworkOptions(this, m_localProject.m_geometricNetworks);
+		QHBoxLayout * h = new QHBoxLayout;
+		h->addWidget(m_simulationNetworkOptions);
+		m_ui->tabNetworkOptions->setLayout(h);
 	}
 }
 
@@ -189,9 +196,8 @@ int SVSimulationStartNandrad::edit() {
 	m_simulationLocationOptions->updateUi();
 	m_simulationOutputOptions->updateUi();
 	m_simulationModelOptions->updateUi();
+	m_simulationNetworkOptions->updateUi();
 
-	// TODO : Hauke
-	// m_simulationNetworkOptions->updateUi();
 
 	updateTimeFrameEdits();
 	updateCmdLine();
