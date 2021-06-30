@@ -81,6 +81,7 @@ public:
 		P_ReferencePressure,				// Keyword: ReferencePressure					[Pa]	'Reference pressure applied to reference element'
 		P_DefaultFluidTemperature,			// Keyword: DefaultFluidTemperature				[C]		'Fluid temperature for hydraulic calculation, else initial temperature'
 		P_InitialFluidTemperature,			// Keyword: InitialFluidTemperature				[C]		'Initial Fluid temperature for thermo-hydraulic calculation'
+		P_MaxPipeDiscretization,			// Keyword: MaxPipeDiscretization				[m]		'Maximum discretization step for dynamic pipe model'
 		NUM_P
 	};
 
@@ -233,7 +234,6 @@ public:
 	double									m_scaleEdges = 30;							// XML:E
 
 	ModelType								m_modelType = MT_ThermalHydraulicNetwork;	// XML:A
-
 
 	/*! determines if this network is currently selected for simulation */
 	unsigned int							m_selectedForSimulation = false;			// XML:E

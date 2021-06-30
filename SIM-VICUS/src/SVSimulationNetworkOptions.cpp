@@ -64,6 +64,9 @@ void SVSimulationNetworkOptions::updateUi()
 		m_ui->lineEditReferencePressure->setValue(network->m_para[VICUS::Network::P_ReferencePressure].value);
 	if (!network->m_para[VICUS::Network::P_DefaultFluidTemperature].empty())
 		m_ui->lineEditDefaultFluidTemperature->setValue(network->m_para[VICUS::Network::P_DefaultFluidTemperature].get_value("C"));
+
+	if (!network->m_para[VICUS::Network::P_MaxPipeDiscretization].empty())
+		m_ui->lineEditMaxPipeDiscretization->setValue(network->m_para[VICUS::Network::P_MaxPipeDiscretization].value);
 }
 
 
@@ -87,6 +90,10 @@ void SVSimulationNetworkOptions::modify()
 		network->m_para[VICUS::Network::P_InitialFluidTemperature] =
 				IBK::Parameter("InitialFluidTemperature", m_ui->lineEditDefaultFluidTemperature->value(), IBK::Unit("C"));
 	}
+
+	if (m_ui->lineEditMaxPipeDiscretization->isValid())
+		VICUS::KeywordList::setParameter(network->m_para, "Network::para_t", VICUS::Network::P_MaxPipeDiscretization,
+										 m_ui->lineEditMaxPipeDiscretization->value());
 
 	unsigned int networkIndex = std::distance(&m_networks->front(), VICUS::Project::element(*m_networks, m_currentId));
 	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network properties updated"), networkIndex, *network);
@@ -123,6 +130,12 @@ void SVSimulationNetworkOptions::on_lineEditDefaultFluidTemperature_editingFinis
 }
 
 void SVSimulationNetworkOptions::on_lineEditReferencePressure_editingFinished()
+{
+	modify();
+	updateUi();
+}
+
+void SVSimulationNetworkOptions::on_lineEditMaxPipeDiscretization_editingFinished()
 {
 	modify();
 	updateUi();

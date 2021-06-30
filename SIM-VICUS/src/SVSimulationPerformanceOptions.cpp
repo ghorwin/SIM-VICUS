@@ -108,6 +108,7 @@ void SVSimulationPerformanceOptions::updateUi() {
 
 	m_ui->lineEditNonLin->setFromParameter(
 		m_solverParams->m_para[NANDRAD::SolverParameter::P_NonlinSolverConvCoeff], IBK::Unit("---"));
+
 	m_ui->lineEditIterative->setFromParameter(
 		m_solverParams->m_para[NANDRAD::SolverParameter::P_IterativeSolverConvCoeff], IBK::Unit("---"));
 
@@ -126,12 +127,20 @@ void SVSimulationPerformanceOptions::updateUi() {
 	else
 		m_ui->lineEditMinDT->setFromParameter(
 			m_solverParams->m_para[NANDRAD::SolverParameter::P_MinTimeStep]);
+
 	if (m_solverParams->m_para[NANDRAD::SolverParameter::P_InitialTimeStep].name.empty())
 		m_ui->lineEditInitialDT->setFromParameter(
 			s.m_para[NANDRAD::SolverParameter::P_InitialTimeStep]);
 	else
 		m_ui->lineEditInitialDT->setFromParameter(
 			m_solverParams->m_para[NANDRAD::SolverParameter::P_InitialTimeStep]);
+
+	if (m_solverParams->m_para[NANDRAD::SolverParameter::P_RelTol].empty())
+		m_ui->lineEditRelTol->setFromParameter(
+					s.m_para[NANDRAD::SolverParameter::P_RelTol], IBK::Unit("---"));
+	else
+		m_ui->lineEditRelTol->setFromParameter(
+					m_solverParams->m_para[NANDRAD::SolverParameter::P_RelTol], IBK::Unit("---"));
 
 	if (m_solverParams->m_integrator == NANDRAD::SolverParameter::NUM_I)
 		m_ui->comboBoxIntegrator->setCurrentIndex(NANDRAD::SolverParameter::I_CVODE);
@@ -265,4 +274,9 @@ void SVSimulationPerformanceOptions::intParameterEditingFinished(int paraEnum, c
 												NANDRAD::KeywordList::Keyword("SolverParameter::intPara_t", paraEnum),
 												val);
 	}
+}
+
+void SVSimulationPerformanceOptions::on_lineEditRelTol_editingFinished()
+{
+	parameterEditingFinished(NANDRAD::SolverParameter::P_RelTol, m_ui->lineEditRelTol);
 }

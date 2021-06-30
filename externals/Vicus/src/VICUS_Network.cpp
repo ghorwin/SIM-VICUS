@@ -228,23 +228,23 @@ QColor Network::colorHeatExchangeType(NANDRAD::HydraulicNetworkHeatExchange::Mod
 {
 	switch (heatExchangeType) {
 		case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
-			return QColor("#484747");
+			return QColor("#8E1517");
 		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureZone:
-			return QColor("#E69F00");
+			return QColor("#F82529");
 		case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant:
-			return QColor("#56B4E9");
+			return QColor("#F3722C");
 		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline:
-			return QColor("#009E73");
+			return QColor("#F8961E");
 		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstant:
-			return QColor("#F0E442");
+			return QColor("#F9C74F");
 		case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
-			return QColor("#0072B2");
+			return QColor("#364959");
 		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSplineEvaporator:
-			return QColor("#D55E00");
+			return QColor("#90BE6D");
 		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer:
-			return QColor("#CC79A7");
+			return QColor("#34836c");
 		case NANDRAD::HydraulicNetworkHeatExchange::NUM_T:
-			return QColor("#9C9595");
+			return QColor("#5B4869");
 	}
 }
 

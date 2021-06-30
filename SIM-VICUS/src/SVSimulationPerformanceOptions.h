@@ -68,6 +68,8 @@ private slots:
 
 	void on_checkBoxDisableKinsolLineSearch_stateChanged(int arg1);
 
+	void on_lineEditRelTol_editingFinished();
+
 private:
 	void parameterEditingFinished(int paraEnum, const QtExt::ValidatingLineEdit *edit);
 	void intParameterEditingFinished(int paraEnum, const QtExt::ValidatingLineEdit *edit);

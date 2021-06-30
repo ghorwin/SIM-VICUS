@@ -2050,6 +2050,8 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 }
 
 
+
+
 void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 	FUNCID(Project::generateNetworkProjectData);
 
@@ -2410,11 +2412,13 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 			comp.m_modelType = pipeModelType;
 			if (pipeModelType == NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe){
 
-				// TODO: Hauke get pipe discretization width from Ui !!
-
+				if (vicusNetwork.m_para[VICUS::Network::P_MaxPipeDiscretization].empty())
+					throw IBK::Exception(IBK::FormatString("Missing Parameter '%1' in network with id #%2")
+										.arg(VICUS::KeywordList::Keyword("Network::para_t", VICUS::Network::P_MaxPipeDiscretization))
+										.arg(vicusNetwork.m_id), FUNC_ID);
 				NANDRAD::KeywordList::setParameter(comp.m_para, "HydraulicNetworkComponent::para_t",
-												   NANDRAD::HydraulicNetworkComponent::P_PipeMaxDiscretizationWidth,
-												   5.0);
+													NANDRAD::HydraulicNetworkComponent::P_PipeMaxDiscretizationWidth,
+													vicusNetwork.m_para[VICUS::Network::P_MaxPipeDiscretization].value);
 			}
 			nandradNetwork.m_components.push_back(comp);
 			pipeComp = &comp;
