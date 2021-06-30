@@ -156,6 +156,10 @@ private slots:
 
 	void on_tableWidgetSurfaceHeating_itemChanged(QTableWidgetItem *item);
 
+	void on_pushButtonRemoveSurfaceHeating_clicked();
+
+	void on_pushButtonAssignSurfaceHeating_clicked();
+
 private:
 	/*! Returns a pointer to the currently selected component in the component table. */
 	const VICUS::Component * currentlySelectedComponent() const;

@@ -105,6 +105,8 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->resizeSection(2,100);
 	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->resizeSection(3,120);
 	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->setStretchLastSection(true);
+	m_ui->tableWidgetSurfaceHeating->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	m_ui->tableWidgetSurfaceHeating->setSelectionBehavior(QAbstractItemView::SelectItems);
 
 	m_ui->tableWidgetSurfaceHeating->setItemDelegate(new SVPropSurfaceHeatingDelegate(this));
 
@@ -966,7 +968,7 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 
 		// column 2 - heating name
 		item = new QTableWidgetItem;
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
 		if (surfHeat == nullptr) {
 			item->setText("---");
 			item->setData(Qt::UserRole, VICUS::INVALID_ID);
@@ -979,7 +981,7 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 
 		// column 3 - control zone ID name
 		item = new QTableWidgetItem;
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
 		if (surfHeat == nullptr)
 			item->setText("---");
 		else {
@@ -991,8 +993,10 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 			}
 			if (r == nullptr)
 				item->setText("---");
-			else
+			else {
 				item->setText(r->m_displayName);
+				item->setData(Qt::UserRole, r->m_id);
+			}
 		}
 		m_ui->tableWidgetSurfaceHeating->setItem(row, 3, item);
 
@@ -1003,7 +1007,7 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 			surfaceNames = ci.m_sideASurface->m_displayName;
 		surfaceNames += "/";
 		if (ci.m_sideBSurface != nullptr)
-			surfaceNames = ci.m_sideBSurface->m_displayName;
+			surfaceNames += ci.m_sideBSurface->m_displayName;
 
 		item = new QTableWidgetItem(surfaceNames);
 		item->setFlags(Qt::ItemIsEnabled);
@@ -1472,16 +1476,90 @@ void SVPropBuildingEditWidget::on_comboBoxSurfaceHeatingComponentFilter_currentI
 
 
 void SVPropBuildingEditWidget::on_tableWidgetSurfaceHeating_itemChanged(QTableWidgetItem *item) {
-	if (item->column() == 2) {
+	if (item->column() == 2 || item->column() == 3) {
 		QTableWidgetItem * firstItem = m_ui->tableWidgetSurfaceHeating->item(item->row(), 0);
 		unsigned int ciID = firstItem->data(Qt::UserRole).toUInt();
 		std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
 		for (unsigned int i=0; i<cis.size(); ++i)
 			if (cis[i].m_id == ciID) {
-				cis[i].m_surfaceHeatingID = item->data(Qt::UserRole).toUInt();
+				if (item->column() == 2)
+					cis[i].m_surfaceHeatingID = item->data(Qt::UserRole).toUInt();
+				else
+					cis[i].m_surfaceHeatingControlZoneID = item->data(Qt::UserRole).toUInt();
 				break;
 			}
 		SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Assigned surface heating"), cis);
 		undo->push();
 	}
+}
+
+
+void SVPropBuildingEditWidget::on_pushButtonRemoveSurfaceHeating_clicked() {
+	// process all selected elements, modify component instances and issue undo action
+
+	std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
+	for (int row=0; row<m_ui->tableWidgetSurfaceHeating->rowCount(); ++row) {
+		// is any of the two editable cells selected?
+		if (m_ui->tableWidgetSurfaceHeating->item(row, 2)->isSelected() ||
+			m_ui->tableWidgetSurfaceHeating->item(row, 3)->isSelected())
+		{
+			// get unique ID of component instance
+			QTableWidgetItem * firstItem = m_ui->tableWidgetSurfaceHeating->item(row, 0);
+			unsigned int ciID = firstItem->data(Qt::UserRole).toUInt();
+			// find matching component instance
+			for (unsigned int i=0; i<cis.size(); ++i)
+				if (cis[i].m_id == ciID) {
+					if (m_ui->tableWidgetSurfaceHeating->item(row, 2)->isSelected())
+						cis[i].m_surfaceHeatingID = VICUS::INVALID_ID;
+					if (m_ui->tableWidgetSurfaceHeating->item(row, 3)->isSelected())
+						cis[i].m_surfaceHeatingControlZoneID = VICUS::INVALID_ID;
+					break;
+				}
+		}
+	}
+	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Removed surface heating assignment"), cis);
+	undo->push();
+}
+
+
+void SVPropBuildingEditWidget::on_pushButtonAssignSurfaceHeating_clicked() {
+	// popup surface heating DB dialog and if user selects one, assign it to all selected component instances
+	unsigned int selectedID = SVMainWindow::instance().dbSurfaceHeatingSystemEditDialog()->select(VICUS::INVALID_ID);
+	if (selectedID == VICUS::INVALID_ID)
+		return;
+
+	std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
+
+	// process all selected components
+	for (VICUS::ComponentInstance & ci : cis) {
+		// check if current ci is in list of selected component instances
+		std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
+		for (; ciIt != m_selectedComponentInstances.end(); ++ciIt) {
+			if ((*ciIt)->m_id == ci.m_id)
+				break;
+		}
+		if (ciIt == m_selectedComponentInstances.end())
+			continue;
+		// if component instance does not have an active layer assigned, inform the user
+		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_componentID];
+		if (comp == nullptr) {
+			QMessageBox::critical(this, QString(), tr("One or more of the selected surfaces have no valid component, yet."));
+			return;
+		}
+		// inform if no active layer is present
+		if (comp->m_activeLayerIndex == VICUS::INVALID_ID) {
+			QMessageBox::critical(this, QString(), tr("One or more of the selected components have no active layer set (needed for surface conditioning systems)."));
+			return;
+		}
+		// now get room associated with selected component
+		const VICUS::Surface * s = ci.m_sideASurface;
+		if (s == nullptr)
+			s = ci.m_sideBSurface;
+		Q_ASSERT(s != nullptr);
+		const VICUS::Room * room = dynamic_cast<const VICUS::Room *>(s->m_parent);
+		ci.m_surfaceHeatingID = selectedID;
+		ci.m_surfaceHeatingControlZoneID = room->m_id;
+	}
+	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Assigned surface heatings"), cis);
+	undo->push();
 }

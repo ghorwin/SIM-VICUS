@@ -1499,6 +1499,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 		case SVViewState::OCM_Components:
 		case SVViewState::OCM_SubSurfaceComponents:
 		case SVViewState::OCM_ComponentOrientation:
+		case SVViewState::OCM_SurfaceHeating:
 		case SVViewState::OCM_BoundaryConditions: {
 			// now color all surfaces, this works by first looking up the components, associated with each surface
 			for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
@@ -1540,6 +1541,18 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 						}
 					break;
 
+					case SVViewState::OCM_SurfaceHeating: {
+						// lookup surface heating definition
+						const VICUS::SurfaceHeating * surfHeat = db.m_surfaceHeatings[ci.m_surfaceHeatingID];
+						if (surfHeat != nullptr) {
+							if (ci.m_sideASurface != nullptr)
+								ci.m_sideASurface->m_color = surfHeat->m_color;
+							if (ci.m_sideBSurface != nullptr)
+								ci.m_sideBSurface->m_color = surfHeat->m_color;
+						}
+					}
+					break;
+
 						// the color modes below are not handled here and are only added to get rid of compiler warnins
 					case SVViewState::OCM_ZoneTemplates:
 					case SVViewState::OCM_SubSurfaceComponents:
@@ -1548,6 +1561,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					case SVViewState::OCM_NetworkEdge:
 					case SVViewState::OCM_NetworkNode:
 					case SVViewState::OCM_NetworkComponents:
+					case SVViewState::OCM_SelectedSurfacesHighlighted:
 					break;
 				}
 			}
@@ -1611,6 +1625,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					case SVViewState::OCM_NetworkEdge:
 					case SVViewState::OCM_NetworkNode:
 					case SVViewState::OCM_NetworkComponents:
+					case SVViewState::OCM_SurfaceHeating:
 					break;
 				} // switch
 			}
@@ -1689,6 +1704,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					case SVViewState::OCM_ComponentOrientation:
 					case SVViewState::OCM_BoundaryConditions:
 					case SVViewState::OCM_ZoneTemplates:
+					case SVViewState::OCM_SurfaceHeating:
 					case SVViewState::OCM_Network:
 					break;
 				}
