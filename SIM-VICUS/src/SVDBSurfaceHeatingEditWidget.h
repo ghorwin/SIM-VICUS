@@ -67,6 +67,8 @@ private slots:
 
 	void on_lineEditCoolingLimit_editingFinishedSuccessfully();
 
+	void on_toolButtonSelectPipes_clicked();
+
 private:
 
 	/*! Set up the modified variable of the model to true. */

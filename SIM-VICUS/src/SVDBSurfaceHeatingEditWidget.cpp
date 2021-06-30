@@ -88,7 +88,9 @@ void SVDBSurfaceHeatingEditWidget::updateInput(int id) {
 		m_ui->lineEditCoolingLimit->setText("");
 		m_ui->lineEditHeatingLimit->setText("");
 		m_ui->stackedWidget->setCurrentIndex(0);
+		m_ui->comboBoxType->blockSignals(true);
 		m_ui->comboBoxType->setCurrentIndex(0);
+		m_ui->comboBoxType->blockSignals(false);
 		m_ui->stackedWidget->setEnabled(false);
 		return;
 	}
@@ -274,4 +276,16 @@ void SVDBSurfaceHeatingEditWidget::on_lineEditCoolingLimit_editingFinishedSucces
 		VICUS::KeywordList::setParameter(m_current->m_para, "SurfaceHeating::para_t", paraName, val);
 		modelModify();
 	}
+}
+
+void SVDBSurfaceHeatingEditWidget::on_toolButtonSelectPipes_clicked() {
+	Q_ASSERT(m_current != nullptr);
+	// get pipe edit dialog from mainwindow
+	SVDatabaseEditDialog * pipeEditDialog = SVMainWindow::instance().dbPipeEditDialog();
+	unsigned int pipeId = pipeEditDialog->select(m_current->m_idPipe);
+	if (pipeId != VICUS::INVALID_ID && pipeId != m_current->m_idPipe){
+		m_current->m_idPipe = pipeId;
+		modelModify();
+	}
+	updateInput((int)m_current->m_id);
 }
