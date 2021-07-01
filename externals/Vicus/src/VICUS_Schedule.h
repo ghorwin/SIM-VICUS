@@ -64,6 +64,9 @@ public:
 	/*! Create a constant schedule with value val. */
 	void createConstSchedule(double val = 0);
 
+	/*! Create a data and a timepoint vector for the hole schedule. Only period based schedules. */
+	void createYearDataVector(std::vector<double> &timepoints, std::vector<double> &data) const;
+
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;
 

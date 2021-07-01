@@ -192,6 +192,60 @@ void Schedule::createConstSchedule(double val) {
 	m_periods.push_back(si);
 }
 
+void Schedule::createYearDataVector(std::vector<double> &timepoints, std::vector<double> &data) const {
+	if(m_periods.empty())
+		return;
+
+	for(unsigned int i=0; i<m_periods.size(); ++i){
+		const ScheduleInterval &si = m_periods[i];
+		int dayCount =0;
+		int weekCount = 0;
+		int startDay = si.m_intervalStartDay%7;		// 0 -> Monday, 1 -> Tuesday, ... , 6 -> Sunday
+		//find next period to get the size of days
+		if(i+1 == m_periods.size()){
+			//now we have last period
+			dayCount = 365 - (int)si.m_intervalStartDay;
+		}
+		else{
+			dayCount = (int)m_periods[i+1].m_intervalStartDay - (int)si.m_intervalStartDay;
+		}
+		weekCount = dayCount/7;
+		int remainingDays = dayCount%7;
+		//get week time and data points
+		std::vector<double> tp, d, tpSum, dSum;
+		si.createWeekDataVector(tp,d);
+		if(tp.empty())
+			continue;
+
+		for(unsigned int n=0; n<weekCount; ++n){
+			tpSum.insert(tpSum.end(), tp.begin(), tp.end());
+			dSum.insert(dSum.end(), d.begin(), d.end());
+		}
+
+		int addedDays = 0;
+		//add day to fill up current week wich is in timepoints/data vector
+		if(startDay>0){
+			addedDays = 7-startDay;
+			tpSum.insert(tpSum.begin(), tp.begin()+startDay, tp.end());
+			dSum.insert(dSum.begin(), d.begin()+startDay, d.end());
+		}
+		//look if we have more or less remaining days
+		int daysLeft = remainingDays - addedDays;
+		if(daysLeft<0){
+			//subtract days
+			tpSum.erase(tpSum.begin()+tpSum.size() + daysLeft, tpSum.end());
+			dSum.erase(dSum.begin()+dSum.size() + daysLeft, dSum.end());
+		}
+		else if(daysLeft>0){
+			//add days
+			tpSum.insert(tpSum.end(), tp.begin(), tp.begin()+daysLeft);
+			dSum.insert(dSum.end(), d.begin(), d.begin()+daysLeft);
+		}
+		timepoints.insert(timepoints.end(), tpSum.begin(), tpSum.end());
+		data.insert(data.end(), dSum.begin(), dSum.end());
+	}
+}
+
 AbstractDBElement::ComparisonResult Schedule::equal(const AbstractDBElement *other) const {
 	const Schedule * otherSched = dynamic_cast<const Schedule*>(other);
 	if (otherSched  == nullptr)

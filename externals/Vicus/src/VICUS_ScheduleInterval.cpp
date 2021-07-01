@@ -221,6 +221,72 @@ void ScheduleInterval::createConstScheduleInterval(double val){
 	dc.m_values.push_back(val);
 }
 
+
+
+void ScheduleInterval::createWeekDataVector(std::vector<double> &timepoints, std::vector<double> &data) const {
+
+	std::vector<NANDRAD::Schedule::ScheduledDayType> dts{
+		NANDRAD::Schedule::ST_MONDAY,
+		NANDRAD::Schedule::ST_TUESDAY,
+		NANDRAD::Schedule::ST_WEDNESDAY,
+		NANDRAD::Schedule::ST_THURSDAY,
+		NANDRAD::Schedule::ST_FRIDAY,
+		NANDRAD::Schedule::ST_SATURDAY,
+		NANDRAD::Schedule::ST_SUNDAY
+	};
+	for(NANDRAD::Schedule::ScheduledDayType dt1 : dts){
+		for(unsigned int i = 0; i<m_dailyCycles.size(); ++i){
+			const DailyCycle &dc = m_dailyCycles[i];
+			for(unsigned int j = 0; j<dc.m_dayTypes.size(); ++j){
+				NANDRAD::Schedule::ScheduledDayType dt = (NANDRAD::Schedule::ScheduledDayType)dc.m_dayTypes[j];
+				if(dt == dt1){
+					double addTime = 0;
+					switch (dt1) {
+						case NANDRAD::Schedule::ST_ALLDAYS:
+						case NANDRAD::Schedule::ST_WEEKDAY:
+						case NANDRAD::Schedule::ST_WEEKEND:
+							//not used
+						break;
+						case NANDRAD::Schedule::ST_MONDAY:
+							// is 0
+						break;
+						case NANDRAD::Schedule::ST_TUESDAY:
+							addTime +=24*1;
+						break;
+						case NANDRAD::Schedule::ST_WEDNESDAY:
+							addTime +=24*2;
+						break;
+						case NANDRAD::Schedule::ST_THURSDAY:
+							addTime +=24*3;
+						break;
+						case NANDRAD::Schedule::ST_FRIDAY:
+							addTime +=24*4;
+						break;
+						case NANDRAD::Schedule::ST_SATURDAY:
+							addTime +=24*5;
+						break;
+						case NANDRAD::Schedule::ST_SUNDAY:
+							addTime +=24*6;
+						break;
+						case NANDRAD::Schedule::ST_HOLIDAY:
+							//not taken into account
+						break;
+						case NANDRAD::Schedule::NUM_ST:
+						break;
+
+					}
+					//add timepoints
+					for(double tp : dc.m_timePoints)
+						timepoints.push_back(tp+addTime);
+					//add data
+					data.insert(data.end(), dc.m_values.begin(), dc.m_values.end());
+				}
+			}
+		}
+	}
+	//now the data vector contains all data for a week starting at monday
+}
+
 bool ScheduleInterval::operator!=(const ScheduleInterval &other) const {
 	if(m_displayName != other.m_displayName ||
 			m_intervalStartDay != other.m_intervalStartDay)
