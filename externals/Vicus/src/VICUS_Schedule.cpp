@@ -199,7 +199,6 @@ void Schedule::createYearDataVector(std::vector<double> &timepoints, std::vector
 	for(unsigned int i=0; i<m_periods.size(); ++i){
 		const ScheduleInterval &si = m_periods[i];
 		int dayCount =0;
-		int weekCount = 0;
 		int startDay = si.m_intervalStartDay%7;		// 0 -> Monday, 1 -> Tuesday, ... , 6 -> Sunday
 		//find next period to get the size of days
 		if(i+1 == m_periods.size()){
@@ -209,7 +208,7 @@ void Schedule::createYearDataVector(std::vector<double> &timepoints, std::vector
 		else{
 			dayCount = (int)m_periods[i+1].m_intervalStartDay - (int)si.m_intervalStartDay;
 		}
-		weekCount = dayCount/7;
+		int endDayFirstWeek = std::min(7, startDay + dayCount);
 		int remainingDays = dayCount%7;
 		//get week time and data points
 		std::vector<double> tp, d, tpSum, dSum;
@@ -217,32 +216,55 @@ void Schedule::createYearDataVector(std::vector<double> &timepoints, std::vector
 		if(tp.empty())
 			continue;
 
-		for(unsigned int n=0; n<weekCount; ++n){
-			tpSum.insert(tpSum.end(), tp.begin(), tp.end());
-			dSum.insert(dSum.end(), d.begin(), d.end());
-		}
-
 		int addedDays = 0;
-		//add day to fill up current week wich is in timepoints/data vector
-		if(startDay>0){
-			addedDays = 7-startDay;
-			tpSum.insert(tpSum.begin(), tp.begin()+startDay, tp.end());
-			dSum.insert(dSum.begin(), d.begin()+startDay, d.end());
+		int weekCount = si.m_intervalStartDay/7  ;
+
+		//add first days to fill up current week
+		if(startDay > 0 ){
+
+			for(unsigned int n=0; n<tp.size(); ++n){
+				if(tp[n] >= endDayFirstWeek * 24 )
+					break;
+				addedDays = tp[n] / 24 - startDay;
+				if(tp[n] >= startDay * 24){
+					timepoints.push_back(tp[n] + weekCount*7*24);
+					data.push_back(d[n]);
+				}
+			}
 		}
-		//look if we have more or less remaining days
-		int daysLeft = remainingDays - addedDays;
-		if(daysLeft<0){
-			//subtract days
-			tpSum.erase(tpSum.begin()+tpSum.size() + daysLeft, tpSum.end());
-			dSum.erase(dSum.begin()+dSum.size() + daysLeft, dSum.end());
+		//no days left take next period
+		if(addedDays > dayCount)
+			continue;
+		weekCount = (dayCount- addedDays)/7  ;
+		int weekOfYear = (si.m_intervalStartDay + addedDays )/7;
+
+		for(unsigned int n=0; n<weekCount; ++n){
+			++weekOfYear;
+			std::vector<double> newTps = tp;
+			for(unsigned int j=0; j<newTps.size(); ++j){
+				newTps[j] += weekOfYear * 24 * 7;
+			}
+			timepoints.insert(timepoints.end(), newTps.begin(), newTps.end());
+			data.insert(data.end(), d.begin(), d.end());
+			addedDays += 7;
 		}
-		else if(daysLeft>0){
-			//add days
-			tpSum.insert(tpSum.end(), tp.begin(), tp.begin()+daysLeft);
-			dSum.insert(dSum.end(), d.begin(), d.begin()+daysLeft);
+		if(weekOfYear>0){
+			++weekOfYear;
+			++addedDays;
 		}
-		timepoints.insert(timepoints.end(), tpSum.begin(), tpSum.end());
-		data.insert(data.end(), dSum.begin(), dSum.end());
+		//check if we have days left
+		if(addedDays > dayCount)
+			continue;
+
+		//add left days to timepoints/data vector
+		int addedDays2=0;
+		for(unsigned int n=0; n<tp.size(); ++n){
+			addedDays2 = tp[n] / 24;
+			if(addedDays2 >= dayCount - addedDays)
+				break;
+			timepoints.push_back(tp[n] + weekOfYear*7*24);
+			data.push_back(d[n]);
+		}
 	}
 }
 
