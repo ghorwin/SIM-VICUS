@@ -96,7 +96,11 @@ SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTa
 										   SVAbstractDatabaseEditWidget * editWidget,
 										   const QString & title, const QString & editWidgetTitle,
 										   bool horizontalLayout) :
-	QDialog(parent),
+	QDialog(parent
+#ifdef Q_OS_LINUX
+			, Qt::Window | Qt::CustomizeWindowHint | Qt::WindowMaximizeButtonHint | Qt::WindowCloseButtonHint /*| Qt::WindowSystemMenuHint*/
+#endif
+			),
 	m_ui(new Ui::SVDatabaseEditDialog),
 	m_dbModel(tableModel),
 	m_editWidget(editWidget)
