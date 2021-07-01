@@ -96,7 +96,7 @@
 												
 					-->
 					<IBK:Parameter name="SupplyTemperature" unit="C">35</IBK:Parameter>
-					<IBK:Parameter name="MaxMassFlux" unit="kg/s">0.02</IBK:Parameter>
+					<IBK:Parameter name="MaxMassFlux" unit="kg/s">0.1</IBK:Parameter>
 					<!-- Verlegeabstand 10 cm -->
 					<IBK:Parameter name="PipeLength" unit="m">100</IBK:Parameter>
 					<!-- Standardrohr: dn = 16 mm, en = 2 mm, lambda = 0.35 W/mK --><!-- normalerweise gibt man den außendurchmesser und die wanddicke an also 16-2x2 wären 12 aber belassen wir es bei 14 mm innendurchmesser -->
