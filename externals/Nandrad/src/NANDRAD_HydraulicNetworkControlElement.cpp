@@ -83,6 +83,7 @@ std::vector<HydraulicNetworkControlElement::ControlledProperty> HydraulicNetwork
 {
 	switch (modelType) {
 		case HydraulicNetworkComponent::MT_SimplePipe:
+		case HydraulicNetworkComponent::MT_DynamicPipe:
 			return {CP_ThermostatValue};
 		case HydraulicNetworkComponent::MT_HeatExchanger:
 			return {CP_TemperatureDifference};
@@ -92,7 +93,6 @@ std::vector<HydraulicNetworkControlElement::ControlledProperty> HydraulicNetwork
 			return {CP_MassFlux, CP_TemperatureDifferenceOfFollowingElement};
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
 		case HydraulicNetworkComponent::MT_ConstantMassFluxPump :
-		case HydraulicNetworkComponent::MT_DynamicPipe:
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide:
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide:
 		case HydraulicNetworkComponent::MT_HeatPumpRealSourceSide:
