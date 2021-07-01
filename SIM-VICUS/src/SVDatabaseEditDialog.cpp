@@ -32,6 +32,7 @@
 #include <QDebug>
 #include <QGroupBox>
 #include <QTimer>
+#include <QSplitter>
 
 #include "SVSettings.h"
 #include "SVStyle.h"
@@ -113,10 +114,11 @@ SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTa
 	m_proxyModel = new QSortFilterProxyModel(this);
 	m_proxyModel->setSourceModel(dynamic_cast<QAbstractTableModel*>(m_dbModel));
 	m_ui->tableView->setModel(m_proxyModel);
-	QString newTitle = title;
-	if(newTitle.contains(" Database"))
-		newTitle = newTitle.mid(0, newTitle.length()-9);
 
+	// TODO Dirk, i18n fix
+	QString newTitle = title;
+	if (newTitle.contains(" Database"))
+		newTitle = newTitle.mid(0, newTitle.length()-9);
 	m_ui->groupBoxTableView->setTitle(newTitle);
 
 	// create groupbox and adjust layout for edit widget
@@ -129,20 +131,16 @@ SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTa
 		QWidget * wg = new QWidget(this);
 		m_editWidgetContainerWidget = wg;
 	}
-	if (horizontalLayout) {
-		m_ui->gridLayoutMaster->addWidget(m_editWidgetContainerWidget, 0, 1);
-		m_ui->horizontalLayout->setParent(nullptr);
-		m_ui->gridLayoutMaster->addLayout(m_ui->horizontalLayout, 1, 0, 1, 2);
-		QSize ewSize = editWidget->sizeHint();
-		editWidget->setMinimumWidth(ewSize.width());
-		m_ui->gridLayoutMaster->setColumnStretch(0,2);
-		m_ui->gridLayoutMaster->setColumnStretch(1,1);
-	}
-	else {
-		m_ui->horizontalLayout->setParent(nullptr);
-		m_ui->gridLayoutMaster->addLayout(m_ui->horizontalLayout, 2, 0);
-		m_ui->gridLayoutMaster->addWidget(m_editWidgetContainerWidget, 1, 0);
-	}
+	// splitter contains group box and custom edit widget
+	QSplitter * split = new QSplitter(this);
+	split->setOrientation(horizontalLayout ? Qt::Horizontal : Qt::Vertical);
+	split->addWidget(m_ui->groupBoxTableView);
+	split->addWidget(m_editWidgetContainerWidget);
+	split->setCollapsible(0, false);
+	split->setCollapsible(1, false);
+	QSize ewSize = editWidget->sizeHint();
+	editWidget->setMinimumWidth(ewSize.width());
+	m_ui->verticalLayout->insertWidget(0, split);
 
 	QVBoxLayout * verticalLay = new QVBoxLayout(m_editWidgetContainerWidget);
 	verticalLay->addWidget(editWidget);
