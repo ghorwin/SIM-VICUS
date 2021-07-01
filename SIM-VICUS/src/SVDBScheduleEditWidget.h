@@ -67,11 +67,17 @@ public:
 private slots:
 	void on_lineEditName_editingFinished();
 	void on_toolButtonAddPeriod_clicked();
+	void on_toolButtonCopyPeriod_clicked();
 	void on_toolButtonRemovePeriode_clicked();
 	void on_tableWidgetPeriods_currentCellChanged(int currentRow, int , int, int);
+
 	void on_toolButtonBackward_clicked();
+	void on_toolButtonAddCurrentDailyCycle_pressed();
 	void on_toolButtonForward_clicked();
+	void on_toolButtonDeleteCurrentDailyCycle_clicked();
 	void on_tableWidgetPeriods_cellChanged(int row, int column);
+	void on_tableWidgetPeriods_cellDoubleClicked(int row, int column);
+
 	void on_checkBoxTuesday_toggled(bool checked);
 	void on_checkBoxHoliday_toggled(bool checked);
 	void on_checkBoxWednesday_toggled(bool checked);
@@ -80,8 +86,6 @@ private slots:
 	void on_checkBoxSaturday_toggled(bool checked);
 	void on_checkBoxSunday_toggled(bool checked);
 	void on_checkBoxMonday_toggled(bool checked);
-	void on_toolButtonDeleteCurrentDailyCycle_clicked();
-	void on_tableWidgetPeriods_cellDoubleClicked(int row, int column);
 	void on_pushButtonSelectWeekDays_clicked();
 	void on_pushButtonSelectWeekEnds_clicked();
 	void on_radioButtonLinear_toggled(bool checked);
@@ -91,9 +95,7 @@ private slots:
 	*/
 	void onValidityInfoUpdated();
 
-	void on_toolButtonAddCurrentDailyCycle_pressed();
 
-	void on_toolButtonCopyPeriod_clicked();
 
 private:
 	/*! Set up the modified variable of the model to true. */

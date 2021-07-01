@@ -28,9 +28,6 @@
 
 #include <QDate>
 
-#include "SVConstants.h"
-#include "SVSettings.h"
-
 #include <NANDRAD_KeywordListQt.h>
 #include <NANDRAD_KeywordList.h>
 
@@ -39,12 +36,13 @@
 #include <QtExt_LanguageHandler.h>
 #include <QtExt_DateTimeInputDialog.h>
 #include <QtExt_Conversions.h>
-#include <SVConstants.h>
 
+#include "SVSettings.h"
 #include "SVDBScheduleTableModel.h"
 #include "SVDBScheduleDailyCycleEditWidget.h"
 #include "SVStyle.h"
 #include "SVChartUtils.h"
+#include "SVConstants.h"
 
 
 SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
@@ -81,8 +79,11 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
 	QFontMetrics fm(m_ui->tableWidgetPeriods->horizontalHeader()->font());
 	int width = fm.boundingRect(tr("Start date")).width();
-	m_ui->tableWidgetPeriods->setColumnWidth(0, width);
+#ifdef Q_OS_LINUX
+	width = fm.boundingRect(tr("Start datexxxx")).width();
+#endif
 	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Fixed);
+	m_ui->tableWidgetPeriods->setColumnWidth(0, width);
 	m_ui->tableWidgetPeriods->setColumnWidth(1, 24);
 	m_ui->tableWidgetPeriods->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
 }
@@ -218,7 +219,7 @@ void SVDBScheduleEditWidget::selectDailyCycle() {
 
 	for (unsigned int i=0; i< m_currentInterval->m_dailyCycles.size(); ++i){
 		bool enabled = false;
-		if(i==m_currentDailyCycleIndex)
+		if (i==m_currentDailyCycleIndex)
 			enabled = true && m_isEditable;
 
 		for(unsigned int j=0; j<m_currentInterval->m_dailyCycles[i].m_dayTypes.size(); ++j){
@@ -294,34 +295,34 @@ void SVDBScheduleEditWidget::on_toolButtonAddPeriod_clicked(){
 
 	// request start date
 	QDate initialDate(2021,1,1);
-	if ( m_currentInterval != nullptr)
+	if (m_currentInterval != nullptr)
 		initialDate = initialDate.addDays(m_currentInterval->m_intervalStartDay+1);
 
 	QDate startDate = QtExt::DateTimeInputDialog::requestDate(tr("Select start date of period"),
 															  tr("Enter start date (dd.MM.):"), tr("dd.MM."), &initialDate);
 
-	if(!startDate.isValid())
+	if (!startDate.isValid())
 		return;		//The period is not valid. Action canceled.
 
 	// convert date to dayofyear
-	unsigned int startDateInt = startDate.dayOfYear()-1;
+	unsigned int startDateInt = (unsigned int)startDate.dayOfYear()-1;
 	unsigned int idx=0;
 	// check if such a period starting day has already been used, and if yes,
 	for(unsigned int i=0; i<m_current->m_periods.size(); ++i){
 		const VICUS::ScheduleInterval &schedInt = m_current->m_periods[i];
-		if(schedInt.m_intervalStartDay == startDateInt) {
-			QMessageBox::critical(this,QString(), "A period with this start day already exists.");
+		if (schedInt.m_intervalStartDay == startDateInt) {
+			QMessageBox::critical(this,QString(), tr("A period with this start day already exists.") );
 			return;
 		}
 		//save index for later adding schedule interval
-		if(schedInt.m_intervalStartDay < startDateInt)
+		if (schedInt.m_intervalStartDay < startDateInt)
 			idx=i;
 	}
 
 	// now create a new ScheduleInverval and insert into vector at appropriate position (sorted) and
 	VICUS::ScheduleInterval schedInt;
 	schedInt.m_intervalStartDay = startDateInt;
-	schedInt.m_displayName.setString("newInterval", "de");
+	schedInt.m_displayName.setString("New interval", "en");
 
 	// get resulting index of new ScheduleInverval in vector
 	m_current->m_periods.insert(m_current->m_periods.begin()+idx+1,schedInt);
@@ -331,9 +332,57 @@ void SVDBScheduleEditWidget::on_toolButtonAddPeriod_clicked(){
 	updatePeriodTable(m_current->m_periods.size()-1 );
 
 	// select ScheduleInverval table row by ScheduleInverval index -> this will show the editor for the newly created schedule
-	m_ui->tableWidgetPeriods->selectRow(idx+1);
+	m_ui->tableWidgetPeriods->selectRow((int)idx+1);
 }
 
+
+void SVDBScheduleEditWidget::on_toolButtonCopyPeriod_clicked() {
+	Q_ASSERT(m_current != nullptr);
+	// copy schedule interval
+	VICUS::ScheduleInterval schedInt(*m_currentInterval);
+
+	// request start date
+	QDate initialDate(2021,1,1);
+	if (m_currentInterval != nullptr)
+		initialDate = initialDate.addDays(m_currentInterval->m_intervalStartDay+1);
+
+	QDate startDate = QtExt::DateTimeInputDialog::requestDate(tr("Select start date of period"),
+															  tr("Enter start date (dd.MM.):"), tr("dd.MM."), &initialDate);
+
+	if (!startDate.isValid())
+		return;		//The period is not valid. Action canceled.
+
+	// convert date to dayofyear
+	unsigned int startDateInt = (unsigned int)startDate.dayOfYear()-1;
+	unsigned int idx=0;
+	// check if such a period starting day has already been used, and if yes,
+	for(unsigned int i=0; i<m_current->m_periods.size(); ++i){
+		const VICUS::ScheduleInterval &schedInt = m_current->m_periods[i];
+		if (schedInt.m_intervalStartDay == startDateInt) {
+			QMessageBox::critical(this,QString(), "A period with this start day already exists.");
+			return;
+		}
+		//save index for later adding schedule interval
+		if (schedInt.m_intervalStartDay < startDateInt)
+			idx=i;
+	}
+
+	// now create a new ScheduleInverval and insert into vector at appropriate position (sorted) and
+	schedInt.m_intervalStartDay = startDateInt;
+	// TODO : language handling
+	std::string newName = m_currentInterval->m_displayName.string() + tr("-copy").toStdString();
+	schedInt.m_displayName.setString(newName, "de");
+
+	// get resulting index of new ScheduleInverval in vector
+	m_current->m_periods.insert(m_current->m_periods.begin()+idx+1,schedInt);
+	modelModify();
+
+	// update table widget
+	updatePeriodTable(m_current->m_periods.size()-1 );
+
+	// select ScheduleInverval table row by ScheduleInverval index -> this will show the editor for the newly created schedule
+	m_ui->tableWidgetPeriods->selectRow((unsigned int)idx+1);
+}
 
 
 void SVDBScheduleEditWidget::on_toolButtonRemovePeriode_clicked(){
@@ -341,26 +390,24 @@ void SVDBScheduleEditWidget::on_toolButtonRemovePeriode_clicked(){
 
 	int rowIdx = m_ui->tableWidgetPeriods->currentRow();
 
-	//erase period
+	// erase period
 	m_current->m_periods.erase(m_current->m_periods.begin() + rowIdx);
-	//if first period is erased then change startDay of the next period to 0
-	if( rowIdx == 0)
+	// if first period is erased then change startDay of the next period to 0
+	if (rowIdx == 0)
 		m_current->m_periods.front().m_intervalStartDay = 0;
 	modelModify();
 	updatePeriodTable();
 }
 
 
-
-void SVDBScheduleEditWidget::on_tableWidgetPeriods_currentCellChanged(int currentRow, int /* currentColumn*/, int /*previousRow*/, int /*previousColumn*/)
-{
+void SVDBScheduleEditWidget::on_tableWidgetPeriods_currentCellChanged(int currentRow, int /* currentColumn*/, int /*previousRow*/, int /*previousColumn*/) {
 	Q_ASSERT(m_current != nullptr);
-	Q_ASSERT(currentRow < m_ui->tableWidgetPeriods->rowCount() );
+	Q_ASSERT(currentRow >= 0 && currentRow < m_ui->tableWidgetPeriods->rowCount() );
 
 	m_rowIdx = currentRow;
 	m_ui->widgetDailyCycleAndDayTypes->setEnabled(m_rowIdx >= 0);
 
-	m_currentInterval = &m_current->m_periods[m_rowIdx];
+	m_currentInterval = &m_current->m_periods[(unsigned int)m_rowIdx];
 	m_currentDailyCycleIndex = 0;
 
 	selectDailyCycle();
@@ -371,13 +418,12 @@ void SVDBScheduleEditWidget::on_toolButtonBackward_clicked() {
 	Q_ASSERT(m_currentDailyCycleIndex !=0);
 
 	// if we just left a cycle, and this has no daytypes set, remove it
-	if (m_currentDailyCycleIndex == m_currentInterval->m_dailyCycles.size()-1)
-	{
+	if (m_currentDailyCycleIndex == m_currentInterval->m_dailyCycles.size()-1) {
 		// we can delete the last cycle, if no daytypes are checked and if all
 		// values are zero
 		if (m_currentInterval->m_dailyCycles[m_currentDailyCycleIndex].m_dayTypes.empty() &&
 			m_currentInterval->m_dailyCycles[m_currentDailyCycleIndex].m_values.size() == 1 &&
-				m_currentInterval->m_dailyCycles[m_currentDailyCycleIndex].m_values[0] == 0.0)
+			m_currentInterval->m_dailyCycles[m_currentDailyCycleIndex].m_values[0] == 0.0)
 		{
 			m_currentInterval->m_dailyCycles.resize(m_currentDailyCycleIndex);
 		}
@@ -388,15 +434,19 @@ void SVDBScheduleEditWidget::on_toolButtonBackward_clicked() {
 }
 
 
-void SVDBScheduleEditWidget::on_toolButtonForward_clicked() {
-	// we have two cases:
-	// m_currentDailyCycleIndex points to the last daily cycle -> in this case we add a new daily cycle
-	// otherwise we just switch to the next daily cycle
+void SVDBScheduleEditWidget::on_toolButtonAddCurrentDailyCycle_pressed() {
+	// create a new daily cycle
+	if (m_currentDailyCycleIndex == m_currentInterval->m_dailyCycles.size()-1) {
+		m_currentInterval->m_dailyCycles.push_back(VICUS::DailyCycle());
+	}
 
-//	//create a new daily cycle
-//	if (m_currentDailyCycleIndex == m_currentInterval->m_dailyCycles.size()-1) {
-//		m_currentInterval->m_dailyCycles.push_back(VICUS::DailyCycle());
-//	}
+	++m_currentDailyCycleIndex;
+	selectDailyCycle();
+}
+
+
+void SVDBScheduleEditWidget::on_toolButtonForward_clicked() {
+	// this button is only active when we have already another daily cycle we can switch to
 	++m_currentDailyCycleIndex;
 	selectDailyCycle();
 }
@@ -419,7 +469,6 @@ void SVDBScheduleEditWidget::on_toolButtonDeleteCurrentDailyCycle_clicked() {
 }
 
 
-
 void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellChanged(int row, int column) {
 	size_t colIdx = (size_t)column;
 	size_t schedIdx = (size_t)row;
@@ -427,13 +476,69 @@ void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellChanged(int row, int colu
 	if ( colIdx ==0 )
 		return; // we only want to set the display name to our data object
 
+	// TODO : Language handling
 	QString periodName = m_ui->tableWidgetPeriods->item(schedIdx, colIdx)->text();
 	m_current->m_periods[schedIdx].m_displayName.setString(periodName.toStdString(), "de");
 	modelModify();
 }
 
 
+void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellDoubleClicked(int row, int column) {
+	size_t colIdx = (size_t)column;
+	size_t schedIdx = (size_t)row;
 
+	Q_ASSERT( m_current->m_periods.size() > schedIdx );
+
+	if ( colIdx > 0 )
+		return; // we only want to set a new start date for an intervall
+
+	if ( schedIdx == 0 )
+		return; // we cannot change the start date of the first period
+
+	// we cache our selected periode
+	VICUS::ScheduleInterval periode = m_current->m_periods[(size_t)row];
+
+	m_current->m_periods.erase(m_current->m_periods.begin()+row);
+
+	// we take from the periods our selected and take the interval start day
+	QDate periodStartDate(2021,1,1);
+
+	unsigned int shift = periode.m_intervalStartDay;
+	periodStartDate = periodStartDate.addDays(shift);
+	periodStartDate = QtExt::DateTimeInputDialog::requestDate(tr("Modify start date of period"),
+															  tr("Enter start date (dd.MM.):"), tr("dd.MM."),
+															  &periodStartDate);
+
+	if (!periodStartDate.isValid() ) {
+		m_current->m_periods.insert(m_current->m_periods.begin()+row, periode);
+		return; // no input has been done by user
+	}
+
+	// convert date to dayofyear
+	unsigned int startDateInt = (unsigned int)periodStartDate.dayOfYear()-1;
+	unsigned int idx=0;
+	// check if such a period starting day has already been used, and if yes,
+	for (unsigned int i=0; i<m_current->m_periods.size(); ++i){
+		const VICUS::ScheduleInterval &schedInt = m_current->m_periods[i];
+		if(schedInt.m_intervalStartDay == startDateInt) {
+			QMessageBox::critical(this,QString(), "A period with this start day already exists.");
+			m_current->m_periods.insert(m_current->m_periods.begin()+row, periode);
+			return;
+		}
+		//save index for later adding schedule interval
+		if (schedInt.m_intervalStartDay < startDateInt)
+			idx=i;
+	}
+
+	// set new start date
+	periode.m_intervalStartDay = startDateInt;
+
+	m_current->m_periods.insert(m_current->m_periods.begin()+idx+1, periode);
+	modelModify();
+
+	// update table widget
+	updatePeriodTable((int)idx+1);
+}
 
 
 void SVDBScheduleEditWidget::updateDayTypes(const NANDRAD::Schedule::ScheduledDayType &dt, bool checked) {
@@ -443,9 +548,9 @@ void SVDBScheduleEditWidget::updateDayTypes(const NANDRAD::Schedule::ScheduledDa
 	//find current indx in vector
 	int idx=-1;
 	int dayIdx = (int)dt;
-	for(unsigned int i=0; i<dc.m_dayTypes.size(); ++i) {
-		if( dayIdx == dc.m_dayTypes[i]){
-			idx=i;
+	for (unsigned int i=0; i<dc.m_dayTypes.size(); ++i) {
+		if( dayIdx == dc.m_dayTypes[i]) {
+			idx=(int)i;
 			break;
 		}
 	}
@@ -542,66 +647,6 @@ void SVDBScheduleEditWidget::on_checkBoxSunday_toggled(bool checked) {
 }
 
 
-
-
-void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellDoubleClicked(int row, int column) {
-	size_t colIdx = (size_t)column;
-	size_t schedIdx = (size_t)row;
-
-	Q_ASSERT( m_current->m_periods.size() > schedIdx );
-
-	if ( colIdx > 0 )
-		return; // we only want to set a new start date for an intervall
-
-	if ( schedIdx == 0 )
-		return; // we cannot change the start date of the first period
-
-	// we cache our selected periode
-	VICUS::ScheduleInterval periode = m_current->m_periods[(size_t)row];
-
-	m_current->m_periods.erase(m_current->m_periods.begin()+row);
-
-	// we take from the periods our selected and take the interval start day
-	QDate periodStartDate(2021,1,1);
-
-	unsigned int shift = periode.m_intervalStartDay;
-	periodStartDate = periodStartDate.addDays(shift);
-	periodStartDate = QtExt::DateTimeInputDialog::requestDate(tr("Modify start date of period"),
-															  tr("Enter start date (dd.MM.):"), tr("dd.MM."),
-															  &periodStartDate);
-
-	if ( !periodStartDate.isValid() ) {
-		m_current->m_periods.insert(m_current->m_periods.begin()+row, periode);
-		return; // no input has been done by user
-	}
-
-	// convert date to dayofyear
-	unsigned int startDateInt = periodStartDate.dayOfYear()-1;
-	unsigned int idx=0;
-	// check if such a period starting day has already been used, and if yes,
-	for(unsigned int i=0; i<m_current->m_periods.size(); ++i){
-		const VICUS::ScheduleInterval &schedInt = m_current->m_periods[i];
-		if(schedInt.m_intervalStartDay == startDateInt) {
-			QMessageBox::critical(this,QString(), "A period with this start day already exists.");
-			m_current->m_periods.insert(m_current->m_periods.begin()+row, periode);
-			return;
-		}
-		//save index for later adding schedule interval
-		if(schedInt.m_intervalStartDay < startDateInt)
-			idx=i;
-	}
-
-	// set new start date
-	periode.m_intervalStartDay = startDateInt;
-
-	m_current->m_periods.insert(m_current->m_periods.begin()+idx+1, periode);
-	modelModify();
-
-	// update table widget
-	updatePeriodTable(idx+1);
-}
-
-
 void SVDBScheduleEditWidget::on_pushButtonSelectWeekDays_clicked() {
 	m_ui->checkBoxMonday->setChecked(true);
 	m_ui->checkBoxTuesday->setChecked(true);
@@ -616,8 +661,7 @@ void SVDBScheduleEditWidget::on_pushButtonSelectWeekEnds_clicked() {
 }
 
 
-void SVDBScheduleEditWidget::on_radioButtonLinear_toggled(bool checked)
-{
+void SVDBScheduleEditWidget::on_radioButtonLinear_toggled(bool checked) {
 	if ( m_current == nullptr )
 		return;
 
@@ -631,7 +675,7 @@ void SVDBScheduleEditWidget::onValidityInfoUpdated() {
 	// get index of currently edited item
 	int currentIdx = m_ui->tableWidgetPeriods->currentRow(); // Must be != -1
 	Q_ASSERT(currentIdx != -1);
-	if (m_current->m_periods[currentIdx].isValid())
+	if (m_current->m_periods[(unsigned int)currentIdx].isValid())
 		m_ui->tableWidgetPeriods->item(currentIdx,1)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/ok.png"));
 	else
 		m_ui->tableWidgetPeriods->item(currentIdx,1)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/error.png"));
@@ -640,68 +684,11 @@ void SVDBScheduleEditWidget::onValidityInfoUpdated() {
 	modelModify();
 }
 
+
 void SVDBScheduleEditWidget::modelModify() {
 
 	m_db->m_schedules.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id);
 }
 
-void SVDBScheduleEditWidget::on_toolButtonAddCurrentDailyCycle_pressed() {
-	//create a new daily cycle
-	if (m_currentDailyCycleIndex == m_currentInterval->m_dailyCycles.size()-1) {
-		m_currentInterval->m_dailyCycles.push_back(VICUS::DailyCycle());
-	}
 
-	++m_currentDailyCycleIndex;
-	selectDailyCycle();
-}
-
-
-void SVDBScheduleEditWidget::on_toolButtonCopyPeriod_clicked() {
-
-	Q_ASSERT(m_current != nullptr);
-	//copy schedule interval
-	VICUS::ScheduleInterval schedInt = *m_currentInterval;
-
-	// request start date
-	QDate initialDate(2021,1,1);
-	if ( m_currentInterval != nullptr)
-		initialDate = initialDate.addDays(m_currentInterval->m_intervalStartDay+1);
-
-	QDate startDate = QtExt::DateTimeInputDialog::requestDate(tr("Select start date of period"),
-															  tr("Enter start date (dd.MM.):"), tr("dd.MM."), &initialDate);
-
-	if(!startDate.isValid())
-		return;		//The period is not valid. Action canceled.
-
-	// convert date to dayofyear
-	unsigned int startDateInt = startDate.dayOfYear()-1;
-	unsigned int idx=0;
-	// check if such a period starting day has already been used, and if yes,
-	for(unsigned int i=0; i<m_current->m_periods.size(); ++i){
-		const VICUS::ScheduleInterval &schedInt = m_current->m_periods[i];
-		if(schedInt.m_intervalStartDay == startDateInt) {
-			QMessageBox::critical(this,QString(), "A period with this start day already exists.");
-			return;
-		}
-		//save index for later adding schedule interval
-		if(schedInt.m_intervalStartDay < startDateInt)
-			idx=i;
-	}
-
-	// now create a new ScheduleInverval and insert into vector at appropriate position (sorted) and
-	//VICUS::ScheduleInterval schedInt;
-	schedInt.m_intervalStartDay = startDateInt;
-	std::string newName = m_currentInterval->m_displayName.string() + " copy";
-	schedInt.m_displayName.setString(newName, "de");
-
-	// get resulting index of new ScheduleInverval in vector
-	m_current->m_periods.insert(m_current->m_periods.begin()+idx+1,schedInt);
-	modelModify();
-
-	// update table widget
-	updatePeriodTable(m_current->m_periods.size()-1 );
-
-	// select ScheduleInverval table row by ScheduleInverval index -> this will show the editor for the newly created schedule
-	m_ui->tableWidgetPeriods->selectRow(idx+1);
-}
