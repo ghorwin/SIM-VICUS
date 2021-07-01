@@ -82,8 +82,8 @@ private slots:
 	void on_checkBoxMonday_toggled(bool checked);
 	void on_toolButtonDeleteCurrentDailyCycle_clicked();
 	void on_tableWidgetPeriods_cellDoubleClicked(int row, int column);
-	void on_pushButton_clicked();
-	void on_pushButton_2_clicked();
+	void on_pushButtonSelectWeekDays_clicked();
+	void on_pushButtonSelectWeekEnds_clicked();
 	void on_radioButtonLinear_toggled(bool checked);
 
 	/*! Triggered, when editing of the current schedule requires re-evaluation of "valid" status and
@@ -92,7 +92,7 @@ private slots:
 	void onValidityInfoUpdated();
 
 	void on_toolButtonAddCurrentDailyCycle_pressed();
-	
+
 	void on_toolButtonCopyPeriod_clicked();
 
 private:

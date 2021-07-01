@@ -276,14 +276,14 @@
              </spacer>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton">
+             <widget class="QPushButton" name="pushButtonSelectWeekDays">
               <property name="text">
                <string>Select all week days</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_2">
+             <widget class="QPushButton" name="pushButtonSelectWeekEnds">
               <property name="text">
                <string>Select all week end days</string>
               </property>
@@ -410,8 +410,8 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../resources/qdarkstyle/style.qrc"/>
   <include location="../resources/SIM-VICUS.qrc"/>
+  <include location="../resources/qdarkstyle/style.qrc"/>
  </resources>
  <connections/>
 </ui>
