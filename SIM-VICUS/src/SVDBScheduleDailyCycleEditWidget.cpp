@@ -153,7 +153,6 @@ void SVDBScheduleDailyCycleEditWidget::on_tableWidgetDayCycle_cellChanged(int ro
 	}
 
 	// we set the value to all rows
-	// TODO : use QtExt::Locale::toDoubleWithFallback()
 	QList<QTableWidgetSelectionRange> range = m_ui->tableWidgetDayCycle->selectedRanges();
 
 	for (int i=0; i<range.size(); ++i) {
@@ -169,6 +168,7 @@ void SVDBScheduleDailyCycleEditWidget::on_tableWidgetDayCycle_cellChanged(int ro
 		}
 	}
 
+	// TODO : use QtExt::Locale::toDoubleWithFallback()
 	std::vector<double> timepoints(1,0), values(1, m_ui->tableWidgetDayCycle->item(0,1)->text().toDouble());
 	unsigned int lastIdx=0;
 	for(int i=1; i<m_ui->tableWidgetDayCycle->rowCount(); ++i){
