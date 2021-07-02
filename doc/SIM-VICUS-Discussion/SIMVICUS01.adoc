@@ -1,0 +1,72 @@
+= Was ist SIM-VICUS
+
+Die Software SIM-VICUS ist eine leistungsfähige Eingabeoberfläche für die Erstellung von Gebäude- und Anlagensimulationen. Zur Simulation wird der Simulationskern https://www.bauklimatik-dresden.de/nandrad/index.php[NANDRAD] verwendet. Der Anwendungsbereich der Software umfasst folgende Szenarien:
+
+* Bedarfsberechnung für Heizung, Kühlung und Strom (Energiesimulationen)
+* Berechnung von Raumtemperaturen und Analyse der Behaglichkeit
+* Berechung des sommerlichen Wärmeschutzes nach DIN 4108-2
+* Heiz- und Kühllastauslegungen von Übergabe-, Verteil- und Versorgungssystemen
+* Heizlastberechnung nach DIN 12831
+* Verschattungsanalysen
+* Untersuchung von Regelstrategien der Anlagentechnik
+
+Eingesetzt werden kann die Software von Ingenieuren zur erweiterten Planung von Gebäuden als auch von Mitarbeitern im universitären Umfeld.
+
+= Download
+
+Die Software kann derzeit nur auf Anfrage vom https://tu-dresden.de/bauklimatik[Institut für Bauklimatik] der TU Dresden bezogen werden. Ansprechpartner sind mailto:andreas.nicolai@tu-dresden.de[Herr Nicolai] und mailto:dirk.weiss@tu-dresden.de[Herr Weiß]. Die Software für alle Betriebssysteme geeignet.
+
+== Installation
+
+TODO
+
+= Aufteilung der Oberfläche
+
+
+
+= Funktionsleiste
+
+Die Funktionsleiste enthält verschieden Schnellfunktionen wie "neues Projekt", "Projekt laden" oder "Projekt speichern". Zudem wird entweder der Geometriebearbeitungsmodus und den Parametrisierungsmodus aktiviert. 
+
+Liste der Funktionsfähigkeit:
+
+* neues Projekt
+* Projekt laden
+* Projekt speichern
+* Geometriebearbeitungsmodus aktivieren
+* Parametrierungsmodus aktivieren
+* letzten Schritt zurücksetzen (Undo)
+* rückgängig gesetzten Schritt wiederholen (Redo)
+
+
+
+= Geometriebearbeitung
+
+Im Geometriemodus können Flächen, Räume, etc. hinzugefügt oder editiert werden. Das Hinzufügen von Objekten ist nur bei aktiven "Add"-Button möglich. Wird hingegen der "Edit"-Button aktiviert sind Verschiebungen, Rotationen und Skalierungen von Objekten möglich. Weiterhin ist das Kopieren von Objekten möglich.
+
+== Add-Modus
+
+Innerhalb diese Modus können Flächen und Räume erstellt werden. 
+
+[[CreateSurfacePolygon]]
+=== Flächenerstellung
+
+Eine Fläche kann man entweder als Viereck (Rect-Button TODO UMBENNEN) wie beispielsweise Rechteck oder Parallelogramm oder als Polygon (Polygon-Button) erstellen. Sobald man den "Rect"- oder "Polygon"-Button aktiviert, schaltet das Optionsfenster in der Flächenmodus um. Durch klicken in der 3D-Szene können Punkte abgesetzt werden. Diese werden automatisch nach absetzen in der Tabelle im Optionsfenster eingetragen. Es ist möglich den letzten Punkt oder einen ausgewählten Punkt aus der bestehenden Eingabeliste zu löschen. 
+
+Ein valides Polygon stellt sich durch eine grüne Linie und einer rot gefüllten Fläche in der 3D-Szene dar. Ist die Polyline verwunden oder nicht valide wird die Linienfarbe nach rot gewechselt und das Polygon wird nicht mehr mit rot ausgefüllt. Ein abschließen des Polygons ist nur möglich, wenn ein valides Polygon vorliegt. 
+
+Nachdem die Punkteingabe abgeschlossen wurde, wechselt das Optionsfenster in die Flächeneigenschaften. Darin können Name und Zuordnung eingetragen werden. Das Polygon kann als "vereinfachtes" Geometrieobjekt ohne Eigenschaften oder als Bauteil mit Raum- und Komponentenzuordnung abgelegt werden. Über den Button "Create surface" wird die Erstellung abgeschlossen.
+
+=== Raumerstellung
+
+Bei der Raumerstellung wird zuerst die Fußbodenfläche erstellt. Dazu werden alle Schritte wie unter <<CreateSurfacePolygon, Flächenerstellung>> beschrieben durchgeführt. Nachdem Erstellung der Fußbodenfläche werden die Raumeigenschaften wie Name, Gebäude, Geschoss, Komponenten der Bauteile der Hüllfläche und die Raumhöhe zugewiesen. Durch einen Klick auf den Button "Create zone" werden die Eingaben übernommen und die Raumerstellung abgeschlossen.
+
+=== Dacherstellung
+
+Die Dacherstellung ist bis auf die Dachauswahl identisch zur Raumerstellung. Zusätzlich werden Dachhöhe (Abstand Fußpfette bis Firstpfette) und Kniestockhöhe definiert. 
+
+=== Fenstererstellung
+
+Für die Fenstererstellung müssen eine oder mehrere Fläche selektiert werden. Anschließend wird das Button "Window/Door" aktiviert. Bei der Fenstererstellung müssen Prioritäten für die Fenstererstellung gesetzt werden. Priorisiert werden kann die Fensterhöhe, -breite, die Brüstungshöhe oder der Abstand zwischen zwei Fenstern. Weiterhin muss der Fensterflächenanteil angegeben werden. Dieser Fensterflächenanteil beschreibt die Rohbauöffnung. Zusätzlich wird jedem Fenster eine Fensterkomponente zugewiesen. Diese Komponente beschreibt die bauphysikalischen Parameter des Fensterpaketes.
+
+== Edit-Modus
