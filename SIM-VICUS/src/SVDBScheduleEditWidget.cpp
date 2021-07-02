@@ -37,6 +37,8 @@
 #include <QtExt_DateTimeInputDialog.h>
 #include <QtExt_Conversions.h>
 
+#include <qwt_plot_curve.h>
+
 #include "SVSettings.h"
 #include "SVDBScheduleTableModel.h"
 #include "SVDBScheduleDailyCycleEditWidget.h"
@@ -69,6 +71,8 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 	m_ui->widgetDayTypes->layout()->setMargin(0);
 
 	configureChart(m_ui->plotWidget);
+	m_curve = addConfiguredCurve(m_ui->plotWidget);
+
 
 	// initial state is "nothing selected"
 	updateInput(-1);
@@ -89,9 +93,9 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 }
 
 
-
 SVDBScheduleEditWidget::~SVDBScheduleEditWidget() {
 	delete m_ui;
+	delete m_curve;
 }
 
 
@@ -103,6 +107,7 @@ void SVDBScheduleEditWidget::setup(SVDatabase * db, SVAbstractDatabaseTableModel
 
 void SVDBScheduleEditWidget::updateInput(int id) {
 	m_current = nullptr; // disable edit triggers
+	m_currentInterval = nullptr;
 
 	if (id == -1) {
 		// clear input controls
@@ -120,6 +125,9 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 		}
 		m_ui->widgetDailyCycle->updateInput( nullptr , m_db, m_isEditable);
 
+		m_curve->setSamples(QVector<QPointF>());
+		m_ui->plotWidget->replot();
+
 		return;
 	}
 
@@ -128,22 +136,22 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 	Q_ASSERT(m_current != nullptr);
 
 	m_ui->lineEditName->setString(m_current->m_displayName);
+	m_ui->radioButtonLinear->blockSignals(true);
 	m_ui->radioButtonLinear->setChecked(m_current->m_useLinearInterpolation);
 	m_ui->radioButtonLinear->toggled(m_current->m_useLinearInterpolation);
+	m_ui->radioButtonLinear->blockSignals(false);
 
-	// period schedule
+	// period schedule?
 	if (m_current->m_annualSchedule.x().empty()) {
 
-		// initialize period with one period
+		// check that this schedule has a period
+		// if not create first period
 		if (m_current->m_periods.empty()) {
 			m_current->m_periods.push_back(VICUS::ScheduleInterval());
 			modelModify();
 		}
-		m_ui->tableWidgetPeriods->selectRow(0);
-
-		// check that this schedule has a period
-		//if not create first period
-		updatePeriodTable();
+		// populate table and select first row
+		updatePeriodTable(0);
 	}
 	// annualSchedule
 	else {
@@ -160,27 +168,32 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 }
 
 
-void SVDBScheduleEditWidget::updatePeriodTable(const int &activeRow) {
+void SVDBScheduleEditWidget::updatePeriodTable(unsigned int activeRow) {
 	m_ui->tableWidgetPeriods->blockSignals(true);
 
-	//create a julian day to get the right date in dd.MM.
+	// create a julian day to get the right date in dd.MM.
 	qint64 julianD = QDate(2021,1,1).toJulianDay();
 
-	//set up all periods with name and day
+	// set up all periods with name and day
 	m_ui->tableWidgetPeriods->setRowCount(m_current->m_periods.size());
+	Q_ASSERT(activeRow < m_current->m_periods.size());
 	for (int i=0; i<(int)m_current->m_periods.size(); ++i) {
 		const VICUS::ScheduleInterval & intervalData = m_current->m_periods[(unsigned int)i];
 		unsigned int startDay = intervalData.m_intervalStartDay;
 		QTableWidgetItem *itemDate = new QTableWidgetItem(QDate::fromJulianDay(julianD+startDay).toString(tr("dd.MM.") ) );
-		itemDate->setFlags(itemDate->flags() ^ Qt::ItemIsEditable);
+		itemDate->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetPeriods->setItem(i,0,itemDate);
 		m_ui->tableWidgetPeriods->setItem(i,2,new QTableWidgetItem(QtExt::MultiLangString2QString(intervalData.m_displayName)));
 		m_ui->tableWidgetPeriods->setItem(i,1,new QTableWidgetItem());
 		m_ui->tableWidgetPeriods->item(i,0)->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
 		m_ui->tableWidgetPeriods->item(i,2)->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-		if (!m_isEditable){
-			m_ui->tableWidgetPeriods->item(i,1)->setFlags(m_ui->tableWidgetPeriods->item(i,1)->flags() ^ Qt::ItemIsEditable);
-			m_ui->tableWidgetPeriods->item(i,2)->setFlags(m_ui->tableWidgetPeriods->item(i,1)->flags() ^ Qt::ItemIsEditable);
+		if (m_isEditable){
+			m_ui->tableWidgetPeriods->item(i,1)->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
+			m_ui->tableWidgetPeriods->item(i,2)->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
+		}
+		else {
+			m_ui->tableWidgetPeriods->item(i,1)->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			m_ui->tableWidgetPeriods->item(i,2)->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		}
 
 		if (intervalData.isValid())
@@ -188,15 +201,49 @@ void SVDBScheduleEditWidget::updatePeriodTable(const int &activeRow) {
 		else
 			m_ui->tableWidgetPeriods->item(i,1)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/error.png"));
 
-
 	}
-	m_ui->tableWidgetPeriods->setCurrentCell(activeRow,1);
-	on_tableWidgetPeriods_currentCellChanged(activeRow,0,0,0);
-
+	m_ui->tableWidgetPeriods->setCurrentCell((int)activeRow,1);
+	on_tableWidgetPeriods_currentCellChanged((int)activeRow,0,0,0);
 	m_ui->tableWidgetPeriods->blockSignals(false);
 
 	// if more than one period left, activate remove button
 	m_ui->toolButtonRemovePeriode->setEnabled(m_current->m_periods.size()>1);
+}
+
+
+void SVDBScheduleEditWidget::updateDiagram() {
+	// show period data in plot preview
+	std::vector<double> timepoints;
+	std::vector<double> data;
+
+	Q_ASSERT(m_currentInterval != nullptr);
+
+	m_currentInterval->createWeekDataVector(timepoints, data);
+	// convert time points to days
+	for (double & d : timepoints)
+		d /= 24;
+
+	// if we are in "constant" mode, duplicate values to get steps
+	if (m_ui->radioButtonConstant->isChecked()) {
+		std::vector<double> timepointsCopy;
+		std::vector<double> dataCopy;
+		for (unsigned int i = 0; i<timepoints.size(); ++i) {
+			timepointsCopy.push_back(timepoints[i]);
+			// get next time point, unless it is the last, in this case we use "end of week = 7 d"
+			double nexttp = 7;
+			if (i+1<timepoints.size())
+				nexttp = timepoints[i+1]-2./(24*3600);
+			timepointsCopy.push_back(nexttp);
+			dataCopy.push_back(data[i]);
+			dataCopy.push_back(data[i]);
+		}
+		timepoints.swap(timepointsCopy);
+		data.swap(dataCopy);
+	}
+
+	// copy data to schedule
+	m_curve->setSamples(&timepoints[0], &data[0], timepoints.size());
+	m_ui->plotWidget->replot();
 }
 
 
@@ -381,12 +428,15 @@ void SVDBScheduleEditWidget::on_toolButtonCopyPeriod_clicked() {
 	updatePeriodTable(m_current->m_periods.size()-1 );
 
 	// select ScheduleInverval table row by ScheduleInverval index -> this will show the editor for the newly created schedule
-	m_ui->tableWidgetPeriods->selectRow((unsigned int)idx+1);
+	m_ui->tableWidgetPeriods->selectRow((int)idx+1);
 }
 
 
 void SVDBScheduleEditWidget::on_toolButtonRemovePeriode_clicked(){
 	Q_ASSERT(m_current!=nullptr);
+
+	// we must not delete the last row!
+	Q_ASSERT(m_current->m_periods.size() > 1);
 
 	int rowIdx = m_ui->tableWidgetPeriods->currentRow();
 
@@ -396,7 +446,7 @@ void SVDBScheduleEditWidget::on_toolButtonRemovePeriode_clicked(){
 	if (rowIdx == 0)
 		m_current->m_periods.front().m_intervalStartDay = 0;
 	modelModify();
-	updatePeriodTable();
+	updatePeriodTable(std::min<unsigned int>((unsigned int)rowIdx, m_current->m_periods.size()-1));
 }
 
 
@@ -411,6 +461,7 @@ void SVDBScheduleEditWidget::on_tableWidgetPeriods_currentCellChanged(int curren
 	m_currentDailyCycleIndex = 0;
 
 	selectDailyCycle();
+	updateDiagram();
 }
 
 
@@ -473,7 +524,7 @@ void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellChanged(int row, int colu
 	size_t colIdx = (size_t)column;
 	size_t schedIdx = (size_t)row;
 
-	if ( colIdx ==0 )
+	if (colIdx != 1)
 		return; // we only want to set the display name to our data object
 
 	// TODO : Language handling
@@ -686,9 +737,12 @@ void SVDBScheduleEditWidget::onValidityInfoUpdated() {
 
 
 void SVDBScheduleEditWidget::modelModify() {
-
 	m_db->m_schedules.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id);
+	updateDiagram();
 }
 
 
+void SVDBScheduleEditWidget::on_widgetDailyCycle_dataChanged() {
+	updateDiagram();
+}

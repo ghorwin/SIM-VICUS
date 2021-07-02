@@ -40,8 +40,8 @@ class SVDatabase;
 
 class QItemDelegate;
 
-class SVDBScheduleDailyCycleEditWidget : public QWidget
-{
+/*! A widget that shows a daily cycle based on 24 hourly values. */
+class SVDBScheduleDailyCycleEditWidget : public QWidget {
 	Q_OBJECT
 
 public:
@@ -49,6 +49,10 @@ public:
 	~SVDBScheduleDailyCycleEditWidget();
 
 	void updateInput(VICUS::DailyCycle *dc, SVDatabase *db, bool isEditable);
+
+signals:
+	/*! Emitted when data has been changed due to user interaction. */
+	void dataChanged();
 
 private slots:
 	void on_tableWidgetDayCycle_cellChanged(int row, int);

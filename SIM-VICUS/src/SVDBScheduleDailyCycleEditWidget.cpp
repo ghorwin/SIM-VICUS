@@ -99,9 +99,9 @@ void SVDBScheduleDailyCycleEditWidget::updateInput(VICUS::DailyCycle *dc, SVData
 	// set values
 	std::vector<double> hourlyValues;
 
-	// timepoints in seconds
-	if (m_dailyCycle->m_timePoints.empty()){
-		m_dailyCycle->m_timePoints.push_back(0);
+	// if daily cycle is still empty, add a default value
+	if (m_dailyCycle->m_timePoints.empty()) {
+		m_dailyCycle->m_timePoints.push_back(0); // timepoints in seconds
 		m_dailyCycle->m_values.push_back(0);
 		modelModify();
 	}
@@ -144,11 +144,11 @@ void SVDBScheduleDailyCycleEditWidget::on_tableWidgetDayCycle_cellChanged(int ro
 	m_ui->tableWidgetDayCycle->item(row,1)->text().toDouble(&ok);
 	if (!ok){
 		m_ui->tableWidgetDayCycle->blockSignals(true);
-		//m_ui->tableWidgetDayCycle->item(row,1)->setText("0");
 		m_ui->tableWidgetDayCycle->setFocus();
 		m_ui->tableWidgetDayCycle->setCurrentCell(row,1);
 		m_ui->tableWidgetDayCycle->blockSignals(false);
 		QMessageBox::critical(this, QString(), tr("Wrong input in cell at row %1. Only values are allowed.").arg(row));
+		// TODO : reset orignal value?
 		return;
 	}
 
@@ -191,5 +191,5 @@ void SVDBScheduleDailyCycleEditWidget::on_tableWidgetDayCycle_cellChanged(int ro
 
 void SVDBScheduleDailyCycleEditWidget::modelModify() {
 	m_db->m_schedules.m_modified = true;
-
+	emit dataChanged();
 }

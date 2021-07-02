@@ -39,6 +39,7 @@ namespace VICUS {
 	class ScheduleInterval;
 }
 
+class QwtPlotCurve;
 class SVDBScheduleTableModel;
 class SVDatabase;
 
@@ -70,13 +71,18 @@ private slots:
 	void on_toolButtonCopyPeriod_clicked();
 	void on_toolButtonRemovePeriode_clicked();
 	void on_tableWidgetPeriods_currentCellChanged(int currentRow, int , int, int);
+	/*! Names of periods can be changed in-place, this function transfers new name
+		into data structure.
+		\todo remove and use double-click as well?
+	*/
+	void on_tableWidgetPeriods_cellChanged(int row, int column);
+	/*! Double-click on date column (0) opens date/time selection dialog. */
+	void on_tableWidgetPeriods_cellDoubleClicked(int row, int column);
 
 	void on_toolButtonBackward_clicked();
 	void on_toolButtonAddCurrentDailyCycle_pressed();
 	void on_toolButtonForward_clicked();
 	void on_toolButtonDeleteCurrentDailyCycle_clicked();
-	void on_tableWidgetPeriods_cellChanged(int row, int column);
-	void on_tableWidgetPeriods_cellDoubleClicked(int row, int column);
 
 	void on_checkBoxTuesday_toggled(bool checked);
 	void on_checkBoxHoliday_toggled(bool checked);
@@ -97,12 +103,24 @@ private slots:
 
 
 
+	void on_widgetDailyCycle_dataChanged();
+
 private:
-	/*! Set up the modified variable of the model to true. */
+	/*! Set up the modified variable of the model to true.
+		Also updates the diagram.
+	*/
 	void modelModify();
 
-	/*! Update the period table. */
-	void updatePeriodTable(const int &activeRow = 0);
+	/*! Updates the period table.
+		This function is called whenever the interval dataset has been modified (i.e. new periods
+		have been added or periods have been removed). Also selects a row in the table.
+	*/
+	void updatePeriodTable(unsigned int activeRow);
+
+	/*! Updates diagram preview based on currently selected schedule interval, interpolation mode and
+		"Full year" checkbox.
+	*/
+	void updateDiagram();
 
 	/*! Called when a new daily cycle has been selected,i.e. m_currentDailyCycleIndex has changed. */
 	void selectDailyCycle();
@@ -139,6 +157,9 @@ private:
 
 	/*! Is built in schedule. */
 	bool								m_isEditable=true;
+
+	/*! The curve used to plot the preview data. */
+	QwtPlotCurve						*m_curve = nullptr;
 };
 
 

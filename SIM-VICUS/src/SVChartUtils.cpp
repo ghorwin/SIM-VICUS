@@ -48,8 +48,8 @@ void configureChart(QwtPlot * plot) {
 
 	// axes
 
-	plot->setAxisScale( QwtPlot::yLeft, 0.0, 10.0 );
-	plot->setAxisScale( QwtPlot::xBottom, 0.0, 7.0 ); // 7 days
+//	plot->setAxisScale( QwtPlot::yLeft, 0.0, 10.0 );
+//	plot->setAxisScale( QwtPlot::xBottom, 0.0, 7.0 ); // 7 days
 
 	// grid
 
@@ -58,23 +58,17 @@ void configureChart(QwtPlot * plot) {
 	grid->attach( plot );
 
 	// no legend
-
-	// lines
-	// add curves
-	QwtPlotCurve *curve1 = new QwtPlotCurve("Curve 1");
-	curve1->setTitle( "Some Points" ); // will later be used in legend
-	curve1->setPen( Qt::blue, 1 ); // color and thickness in pixels
-	curve1->setRenderHint( QwtPlotItem::RenderAntialiased, true ); // use antialiasing
-
-	QwtPlotCurve *curve2 = new QwtPlotCurve("Curve 2");
-
-	// connect or copy the data to the curves
-	QPolygonF points;
-	curve1->setSamples(points);
-	curve2->setSamples(points);
-
-	curve1->attach(plot);
-	curve2->attach(plot);
 }
 
+
+QwtPlotCurve * addConfiguredCurve(QwtPlot * plot) {
+	// add curve
+	QwtPlotCurve *curve = new QwtPlotCurve("Curve 1");
+	curve->setTitle( "Some Points" ); // will later be used in legend
+	curve->setPen( QColor("#600000"), 1 ); // color and thickness in pixels
+	curve->setRenderHint( QwtPlotItem::RenderAntialiased, true ); // use antialiasing
+
+	curve->attach(plot);
+	return curve;
+}
 
