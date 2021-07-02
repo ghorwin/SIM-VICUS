@@ -209,7 +209,6 @@ void Schedule::createYearDataVector(std::vector<double> &timepoints, std::vector
 			dayCount = (int)m_periods[i+1].m_intervalStartDay - (int)si.m_intervalStartDay;
 		}
 		int endDayFirstWeek = std::min(7, startDay + dayCount);
-		int remainingDays = dayCount%7;
 		//get week time and data points
 		std::vector<double> tp, d, tpSum, dSum;
 		si.createWeekDataVector(tp,d);
@@ -221,7 +220,6 @@ void Schedule::createYearDataVector(std::vector<double> &timepoints, std::vector
 
 		//add first days to fill up current week
 		if(startDay > 0 ){
-
 			for(unsigned int n=0; n<tp.size(); ++n){
 				if(tp[n] >= endDayFirstWeek * 24 )
 					break;
@@ -241,9 +239,8 @@ void Schedule::createYearDataVector(std::vector<double> &timepoints, std::vector
 		for(unsigned int n=0; n<weekCount; ++n){
 			++weekOfYear;
 			std::vector<double> newTps = tp;
-			for(unsigned int j=0; j<newTps.size(); ++j){
+			for(unsigned int j=0; j<newTps.size(); ++j)
 				newTps[j] += weekOfYear * 24 * 7;
-			}
 			timepoints.insert(timepoints.end(), newTps.begin(), newTps.end());
 			data.insert(data.end(), d.begin(), d.end());
 			addedDays += 7;
