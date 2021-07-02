@@ -280,6 +280,7 @@ private slots:
 
 
 	void on_actionBuildingFloorManager_triggered();
+	void on_actionBuildingSurfaceHeatings_triggered();
 
 
 	void on_actionNetworkImport_triggered();
@@ -307,6 +308,7 @@ private slots:
 	void on_actionHelpCheckForUpdates_triggered();
 	void on_actionHelpOnlineManual_triggered();
 	void on_actionHelpKeyboardAndMouseControls_triggered();
+
 
 
 private:

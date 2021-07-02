@@ -1017,6 +1017,23 @@ void SVMainWindow::on_actionBuildingFloorManager_triggered() {
 }
 
 
+void SVMainWindow::on_actionBuildingSurfaceHeatings_triggered() {
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	// switch to property edit mode
+	vs.m_viewMode = SVViewState::VM_PropertyEditMode;
+	// turn off any special scene modes
+	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	vs.m_propertyWidgetMode = SVViewState::PM_BuildingProperties;
+	// adjust appearance of selector widget
+	SVViewStateHandler::instance().m_propModeSelectionWidget->setBuildingPropertyType(BT_SurfaceHeating);
+	SVViewStateHandler::instance().setViewState(vs);
+
+	m_ui->actionViewToggleParametrizationMode->setChecked(true);
+	m_ui->actionViewToggleGeometryMode->setChecked(false);
+}
+
+
+
 void SVMainWindow::on_actionNetworkImport_triggered() {
 	// opens import network dialog
 	if (m_networkImportDialog == nullptr)
@@ -1306,6 +1323,7 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionEditCleanProject->setEnabled(have_project);
 
 	m_ui->actionBuildingFloorManager->setEnabled(have_project);
+	m_ui->actionBuildingSurfaceHeatings->setEnabled(have_project);
 
 	m_ui->actionNetworkImport->setEnabled(have_project);
 	m_ui->actionNetworkEdit->setEnabled(have_project);
@@ -1805,5 +1823,6 @@ void SVMainWindow::on_actionViewResetView_triggered() {
 	// set scene view to recenter its camera
 	SVViewStateHandler::instance().m_geometryView->resetCamera();
 }
+
 
 

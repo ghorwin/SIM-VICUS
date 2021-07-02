@@ -123,7 +123,7 @@
     </widget>
     <widget class="QMenu" name="menuZone_Control">
      <property name="title">
-      <string>Zone Control</string>
+      <string>Zone controls</string>
      </property>
      <addaction name="actionDBZoneControlThermostat"/>
      <addaction name="actionDBZoneControlShading"/>
@@ -138,15 +138,15 @@
     <addaction name="actionDBBoundaryConditions"/>
     <addaction name="actionDBSchedules"/>
     <addaction name="menuInternal_Loads"/>
-    <addaction name="menuVentilation_Infiltration"/>
     <addaction name="menuZone_Control"/>
+    <addaction name="menuVentilation_Infiltration"/>
+    <addaction name="actionDBSurfaceHeatingSystems"/>
     <addaction name="actionDBZoneIdealHeatingCooling"/>
     <addaction name="actionDBZoneTemplates"/>
     <addaction name="separator"/>
     <addaction name="actionDBNetworkPipes"/>
     <addaction name="actionDBHydraulicComponents"/>
     <addaction name="actionDBFluids"/>
-    <addaction name="actionDBSurfaceHeatingSystems"/>
    </widget>
    <widget class="QMenu" name="menuSimulation">
     <property name="title">
@@ -162,6 +162,7 @@
      <string>&amp;Buildings</string>
     </property>
     <addaction name="actionBuildingFloorManager"/>
+    <addaction name="actionBuildingSurfaceHeatings"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
@@ -395,7 +396,7 @@
   </action>
   <action name="actionDBMaterials">
    <property name="text">
-    <string>Materials...</string>
+    <string>&amp;Materials...</string>
    </property>
   </action>
   <action name="actionDBConstructions">
@@ -405,7 +406,7 @@
   </action>
   <action name="actionDBWindows">
    <property name="text">
-    <string>Windows...</string>
+    <string>&amp;Windows...</string>
    </property>
    <property name="toolTip">
     <string>Edit window database</string>
@@ -413,7 +414,7 @@
   </action>
   <action name="actionDBComponents">
    <property name="text">
-    <string>Components...</string>
+    <string>&amp;Components...</string>
    </property>
   </action>
   <action name="actionDBBoundaryConditions">
@@ -512,6 +513,9 @@
    <property name="text">
     <string>Floor manager...</string>
    </property>
+   <property name="toolTip">
+    <string>Switches to building/level/floor manager property view</string>
+   </property>
   </action>
   <action name="actionViewShowSurfaceNormals">
    <property name="checkable">
@@ -523,7 +527,7 @@
   </action>
   <action name="actionDBSchedules">
    <property name="text">
-    <string>Schedules...</string>
+    <string>&amp;Schedules...</string>
    </property>
    <property name="toolTip">
     <string>Schedules</string>
@@ -636,6 +640,14 @@
   <action name="actionDBSurfaceHeatingSystems">
    <property name="text">
     <string>Surface Heating Systems...</string>
+   </property>
+  </action>
+  <action name="actionBuildingSurfaceHeatings">
+   <property name="text">
+    <string>Surface heatings...</string>
+   </property>
+   <property name="toolTip">
+    <string>Switches to surface heating property view</string>
    </property>
   </action>
  </widget>
