@@ -117,6 +117,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Reference pressure applied to reference element");
 	tr("Fluid temperature for hydraulic calculation, else initial temperature");
 	tr("Initial Fluid temperature for thermo-hydraulic calculation");
+	tr("Maximum discretization step for dynamic pipe model");
 	tr("Pipe with a single fluid volume and with heat exchange");
 	tr("Pipe with a discretized fluid volume and heat exchange");
 	tr("Pump with constant/externally defined pressure");

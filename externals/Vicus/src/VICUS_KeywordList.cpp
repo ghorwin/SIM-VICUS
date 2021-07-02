@@ -263,6 +263,7 @@ namespace VICUS {
 				case 3 : return "ReferencePressure";
 				case 4 : return "DefaultFluidTemperature";
 				case 5 : return "InitialFluidTemperature";
+				case 6 : return "MaxPipeDiscretization";
 			} break;
 			// NetworkComponent::ModelType
 			case 17 :
@@ -698,6 +699,7 @@ namespace VICUS {
 				case 3 : return "ReferencePressure";
 				case 4 : return "DefaultFluidTemperature";
 				case 5 : return "InitialFluidTemperature";
+				case 6 : return "MaxPipeDiscretization";
 			} break;
 			// NetworkComponent::ModelType
 			case 17 :
@@ -1134,6 +1136,7 @@ namespace VICUS {
 				case 3 : return "Reference pressure applied to reference element";
 				case 4 : return "Fluid temperature for hydraulic calculation, else initial temperature";
 				case 5 : return "Initial Fluid temperature for thermo-hydraulic calculation";
+				case 6 : return "Maximum discretization step for dynamic pipe model";
 			} break;
 			// NetworkComponent::ModelType
 			case 17 :
@@ -1569,6 +1572,7 @@ namespace VICUS {
 				case 3 : return "Pa";
 				case 4 : return "C";
 				case 5 : return "C";
+				case 6 : return "m";
 			} break;
 			// NetworkComponent::ModelType
 			case 17 :
@@ -2004,6 +2008,7 @@ namespace VICUS {
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
 				case 5 : return "#FFFFFF";
+				case 6 : return "#FFFFFF";
 			} break;
 			// NetworkComponent::ModelType
 			case 17 :
@@ -2439,6 +2444,7 @@ namespace VICUS {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
+				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkComponent::ModelType
 			case 17 :
@@ -2748,7 +2754,7 @@ namespace VICUS {
 			// Network::NetworkType
 			case 15 : return 2;
 			// Network::para_t
-			case 16 : return 6;
+			case 16 : return 7;
 			// NetworkComponent::ModelType
 			case 17 : return 11;
 			// NetworkComponent::para_t
@@ -2862,7 +2868,7 @@ namespace VICUS {
 			// Network::NetworkType
 			case 15 : return 1;
 			// Network::para_t
-			case 16 : return 5;
+			case 16 : return 6;
 			// NetworkComponent::ModelType
 			case 17 : return 10;
 			// NetworkComponent::para_t
