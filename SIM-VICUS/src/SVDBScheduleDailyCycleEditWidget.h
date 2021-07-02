@@ -57,7 +57,10 @@ signals:
 private slots:
 	void on_tableWidgetDayCycle_cellChanged(int row, int);
 
+	void on_dailyCycleInputWidget_valueChanged();
+
 private:
+	void updateTable(bool updateDailyCycleWidget);
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
 
@@ -72,6 +75,8 @@ private:
 	/*! Cached pointer to item delegate. */
 	QItemDelegate						*m_delegate;
 
+	/*! Editable widget? */
+	bool								m_isEditable;
 };
 
 #endif // SVDBScheduleDailyCycleEditWidgetH
