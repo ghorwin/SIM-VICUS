@@ -136,10 +136,13 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 	Q_ASSERT(m_current != nullptr);
 
 	m_ui->lineEditName->setString(m_current->m_displayName);
+	// Note: since both radio buttons are linked, we need to block both signals before modifying any of the two
 	m_ui->radioButtonLinear->blockSignals(true);
+	m_ui->radioButtonConstant->blockSignals(true);
 	m_ui->radioButtonLinear->setChecked(m_current->m_useLinearInterpolation);
-	m_ui->radioButtonLinear->toggled(m_current->m_useLinearInterpolation);
+	m_ui->radioButtonConstant->setChecked(!m_current->m_useLinearInterpolation);
 	m_ui->radioButtonLinear->blockSignals(false);
+	m_ui->radioButtonConstant->blockSignals(false);
 
 	// period schedule?
 	if (m_current->m_annualSchedule.x().empty()) {
@@ -180,28 +183,28 @@ void SVDBScheduleEditWidget::updatePeriodTable(unsigned int activeRow) {
 	for (int i=0; i<(int)m_current->m_periods.size(); ++i) {
 		const VICUS::ScheduleInterval & intervalData = m_current->m_periods[(unsigned int)i];
 		unsigned int startDay = intervalData.m_intervalStartDay;
-		QTableWidgetItem *itemDate = new QTableWidgetItem(QDate::fromJulianDay(julianD+startDay).toString(tr("dd.MM.") ) );
-		itemDate->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		m_ui->tableWidgetPeriods->setItem(i,0,itemDate);
-		m_ui->tableWidgetPeriods->setItem(i,2,new QTableWidgetItem(QtExt::MultiLangString2QString(intervalData.m_displayName)));
-		m_ui->tableWidgetPeriods->setItem(i,1,new QTableWidgetItem());
-		m_ui->tableWidgetPeriods->item(i,0)->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
-		m_ui->tableWidgetPeriods->item(i,2)->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-		if (m_isEditable){
-			m_ui->tableWidgetPeriods->item(i,1)->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
-			m_ui->tableWidgetPeriods->item(i,2)->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
-		}
-		else {
-			m_ui->tableWidgetPeriods->item(i,1)->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-			m_ui->tableWidgetPeriods->item(i,2)->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		}
+		QTableWidgetItem * item = new QTableWidgetItem(QDate::fromJulianDay(julianD+startDay).toString(tr("dd.MM.") ) );
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+		m_ui->tableWidgetPeriods->setItem(i,0, item);
 
+		item = new QTableWidgetItem();
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		if (intervalData.isValid())
-			m_ui->tableWidgetPeriods->item(i,1)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/ok.png"));
+			item->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/ok.png"));
 		else
-			m_ui->tableWidgetPeriods->item(i,1)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/error.png"));
+			item->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/error.png"));
+		m_ui->tableWidgetPeriods->setItem(i,1, item);
 
+		item = new QTableWidgetItem(QtExt::MultiLangString2QString(intervalData.m_displayName));
+		item->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+		if (m_isEditable)
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
+		else
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->tableWidgetPeriods->setItem(i,2, item);
 	}
+
 	m_ui->tableWidgetPeriods->setCurrentCell((int)activeRow,1);
 	on_tableWidgetPeriods_currentCellChanged((int)activeRow,0,0,0);
 	m_ui->tableWidgetPeriods->blockSignals(false);
@@ -588,7 +591,7 @@ void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellDoubleClicked(int row, in
 	modelModify();
 
 	// update table widget
-	updatePeriodTable((int)idx+1);
+	updatePeriodTable(idx+1);
 }
 
 
