@@ -87,7 +87,7 @@ public:
 	/*! Unique ID of SurfaceHeating. */
 	unsigned int					m_id = INVALID_ID;						// XML:A:required
 
-	/*! Air change type. */
+	/*! Surface heating type. */
 	Type							m_type = T_Ideal;						// XML:A:required
 
 	/*! Display name of SurfaceHeating. */
