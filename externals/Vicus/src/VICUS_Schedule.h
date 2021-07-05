@@ -87,7 +87,7 @@ public:
 	/*! If true, values are linearly interpolated between given time points.
 		Applies to both daily cycle and annual schedules. Defaults to true.
 	*/
-	bool							m_useLinearInterpolation = true;	// XML:E
+	bool							m_useLinearInterpolation = false;	// XML:E
 
 	/*! Annual schedules are simply stored as linear spline. */
 	IBK::LinearSpline				m_annualSchedule;					// XML:E

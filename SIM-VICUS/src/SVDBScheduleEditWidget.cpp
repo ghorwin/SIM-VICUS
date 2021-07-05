@@ -151,6 +151,7 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 		// if not create first period
 		if (m_current->m_periods.empty()) {
 			m_current->m_periods.push_back(VICUS::ScheduleInterval());
+			m_currentInterval = &m_current->m_periods.back();
 			modelModify();
 		}
 		// populate table and select first row
