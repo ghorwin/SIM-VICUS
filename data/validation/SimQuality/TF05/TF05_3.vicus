@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Mi. Juni 30 22:34:24 2021</Created>
-		<LastEdited>Mo. Juli 5 13:23:23 2021</LastEdited>
+		<LastEdited>Mo. Juli 5 16:48:58 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter>
@@ -45,7 +45,7 @@
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<CameraTranslation>4.03062 -23.9828 11.0086</CameraTranslation>
+			<CameraTranslation>3.35007 -19.4399 9.03411</CameraTranslation>
 			<RotationMatrix>
 				<Wp>0.768032</Wp>
 				<X>0.630477</X>
@@ -140,16 +140,16 @@
 				</Construction>
 			</Constructions>
 			<BoundaryConditions>
-				<BoundaryCondition id="1002" displayName="DE: [SimQuality] TF03 Inside conditions (only heat conduction) |EN: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
-					<Color>#cc0000</Color>
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</BoundaryCondition>
 				<BoundaryCondition id="1001" displayName="DE: [SimQuality] TF03 Outside conditions (only heat conduction) |EN: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
 					<Color>#204a87</Color>
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+				<BoundaryCondition id="1002" displayName="DE: [SimQuality] TF03 Inside conditions (only heat conduction) |EN: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
+					<Color>#cc0000</Color>
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</BoundaryCondition>
 			</BoundaryConditions>
@@ -170,7 +170,7 @@
 								<DailyCycle>
 									<DayTypes>8,9,3,4,5,6,7,10</DayTypes>
 									<TimePoints>0</TimePoints>
-									<Values>0</Values>
+									<Values>0.25</Values>
 								</DailyCycle>
 							</DailyCycles>
 						</ScheduleInterval>
@@ -178,8 +178,8 @@
 							<DailyCycles>
 								<DailyCycle>
 									<DayTypes>3,4,5,6,7,8,9,10</DayTypes>
-									<TimePoints>0,7,20</TimePoints>
-									<Values>1,0,1</Values>
+									<TimePoints>0,6,20</TimePoints>
+									<Values>1,0.25,1</Values>
 								</DailyCycle>
 							</DailyCycles>
 						</ScheduleInterval>
@@ -188,7 +188,7 @@
 								<DailyCycle>
 									<DayTypes>3,4,5,6,7,8,9,10</DayTypes>
 									<TimePoints>0</TimePoints>
-									<Values>0</Values>
+									<Values>0.25</Values>
 								</DailyCycle>
 							</DailyCycles>
 						</ScheduleInterval>
