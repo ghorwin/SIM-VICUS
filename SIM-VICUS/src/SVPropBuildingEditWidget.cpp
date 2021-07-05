@@ -962,9 +962,9 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 		item = new QTableWidgetItem;
 		item->setFlags(Qt::ItemIsEnabled);
 		if (surfHeat == nullptr)
-			item->setBackgroundColor(QColor(64,64,64));
+			item->setBackground(QColor(64,64,64));
 		else
-			item->setBackgroundColor(surfHeat->m_color);
+			item->setBackground(surfHeat->m_color);
 		m_ui->tableWidgetSurfaceHeating->setItem(row, 1, item);
 
 		// column 2 - heating name
@@ -983,15 +983,11 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 		// column 3 - control zone ID name
 		item = new QTableWidgetItem;
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
-		if (surfHeat == nullptr)
+		if (ci.m_surfaceHeatingControlZone == nullptr)
 			item->setText("---");
 		else {
-			if (ci.m_surfaceHeatingControlZone == nullptr)
-				item->setText("---");
-			else {
-				item->setText(ci.m_surfaceHeatingControlZone->m_displayName);
-				item->setData(Qt::UserRole, ci.m_surfaceHeatingControlZone->m_id);
-			}
+			item->setText(ci.m_surfaceHeatingControlZone->m_displayName);
+			item->setData(Qt::UserRole, ci.m_surfaceHeatingControlZone->m_id);
 		}
 		m_ui->tableWidgetSurfaceHeating->setItem(row, 3, item);
 
@@ -1557,4 +1553,10 @@ void SVPropBuildingEditWidget::on_pushButtonAssignSurfaceHeating_clicked() {
 	}
 	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Assigned surface heatings"), cis);
 	undo->push();
+}
+
+void SVPropBuildingEditWidget::on_tableWidgetSurfaceHeating_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn) {
+	QTableWidgetItem * item = m_ui->tableWidgetSurfaceHeating->item(previousRow, previousColumn);
+	if (item != nullptr)
+		m_ui->tableWidgetSurfaceHeating->closePersistentEditor(item);
 }

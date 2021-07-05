@@ -160,6 +160,8 @@ private slots:
 
 	void on_pushButtonAssignSurfaceHeating_clicked();
 
+	void on_tableWidgetSurfaceHeating_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
+
 private:
 	/*! Returns a pointer to the currently selected component in the component table. */
 	const VICUS::Component * currentlySelectedComponent() const;

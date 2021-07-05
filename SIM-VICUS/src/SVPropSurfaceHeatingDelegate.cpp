@@ -31,6 +31,7 @@
 #include <QMouseEvent>
 #include <QApplication>
 #include <QTableWidget>
+#include <QLineEdit>
 
 #include <QtExt_Conversions.h>
 #include <QtExt_FilterComboBox.h>
@@ -58,6 +59,8 @@ QWidget * SVPropSurfaceHeatingDelegate::createEditor(QWidget * parent, const QSt
 		return nullptr;
 
 	QtExt::FilterComboBox * combo = new QtExt::FilterComboBox(parent);
+	combo->setFont(m_view->font());
+	combo->lineEdit()->setFont(m_view->font());
 	// populate with zones
 	for (const VICUS::Building & b : project().m_buildings)
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels)
@@ -92,16 +95,18 @@ void SVPropSurfaceHeatingDelegate::setModelData (QWidget * editor, QAbstractItem
 	if (index.column() != 3)
 		return;
 	QtExt::FilterComboBox * combo = qobject_cast<QtExt::FilterComboBox *>(editor);
-	model->setData(index, combo->currentData());
+	unsigned int id = combo->currentData().toUInt();
+	model->setData(index, id, Qt::UserRole);
+	combo->releaseKeyboard();
 }
 
 
 void SVPropSurfaceHeatingDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const {
 	QItemDelegate::updateEditorGeometry(editor, option, index);
-	if (index.column() == 3) {
+//	if (index.column() == 3) {
 //		QtExt::FilterComboBox * combo = qobject_cast<QtExt::FilterComboBox *>(editor);
 //		combo->showPopup();
-	}
+//	}
 }
 
 
@@ -148,3 +153,4 @@ bool SVPropSurfaceHeatingDelegate::editorEvent(QEvent *event, QAbstractItemModel
 
 	return false;
 }
+
