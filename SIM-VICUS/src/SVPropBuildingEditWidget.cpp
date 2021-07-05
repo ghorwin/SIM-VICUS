@@ -1555,7 +1555,7 @@ void SVPropBuildingEditWidget::on_pushButtonAssignSurfaceHeating_clicked() {
 	undo->push();
 }
 
-void SVPropBuildingEditWidget::on_tableWidgetSurfaceHeating_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn) {
+void SVPropBuildingEditWidget::on_tableWidgetSurfaceHeating_currentCellChanged(int /*currentRow*/, int /*currentColumn*/, int previousRow, int previousColumn) {
 	QTableWidgetItem * item = m_ui->tableWidgetSurfaceHeating->item(previousRow, previousColumn);
 	if (item != nullptr)
 		m_ui->tableWidgetSurfaceHeating->closePersistentEditor(item);
