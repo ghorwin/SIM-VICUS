@@ -160,6 +160,8 @@ void SVDBScheduleDailyCycleEditWidget::on_tableWidgetDayCycle_cellChanged(int ro
 	m_dailyCycle->m_timePoints.swap(timepoints);
 	m_dailyCycle->m_values.swap(values);
 
+	// update preview
+	updateTable(true);
 	//set database to modified
 	modelModify();
 }
