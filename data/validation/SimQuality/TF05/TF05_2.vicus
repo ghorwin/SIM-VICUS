@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Mi. Juni 30 22:34:24 2021</Created>
-		<LastEdited>Mi. Juni 30 22:46:16 2021</LastEdited>
+		<LastEdited>Mo. Juli 5 15:05:32 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter>
@@ -14,7 +14,7 @@
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 			<IBK:IntPara name="StartYear">2019</IBK:IntPara>
 			<Interval>
-				<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+				<IBK:Parameter name="Start" unit="s">0</IBK:Parameter>
 				<IBK:Parameter name="End" unit="a">1</IBK:Parameter>
 			</Interval>
 			<SolarLoadsDistributionModel>
@@ -27,7 +27,7 @@
 			<IBK:Parameter name="Longitude" unit="Deg">13.067</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<TimeZone>1</TimeZone>
-			<ClimateFilePath>/home/uni/cloudSimquali/SimQuality/AP4/TF05-Lueftung/Aufgabenstellung/Wetterdaten/SIMQ_TF05_Klima.epw</ClimateFilePath>
+			<ClimateFilePath>/home/uni/cloudSimquali/SimQuality/AP4/TF05-Lueftung/Aufgabenstellung/Wetterdaten/SIMQ_Potsdam.epw</ClimateFilePath>
 		</Location>
 		<Outputs>
 			<Grids>
@@ -45,12 +45,12 @@
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<CameraTranslation>4.38929 -7.5361 4.1505</CameraTranslation>
+			<CameraTranslation>14.4263 -18.133 10.1939</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.809659</Wp>
-				<X>0.551254</X>
-				<Y>0.11332</Y>
-				<Z>0.166517</Z>
+				<Wp>0.815804</Wp>
+				<X>0.494449</X>
+				<Y>0.157209</Y>
+				<Z>0.255474</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 		</ViewSettings>
@@ -74,19 +74,19 @@
 										<DisplayColor>#963214</DisplayColor>
 										<Polygon3D>0 5 3, 0 0 3, 2 0 3, 2 5 3</Polygon3D>
 									</Surface>
-									<Surface id="47" displayName="Wall 1">
+									<Surface id="47" displayName="East">
 										<DisplayColor>#c8c88c</DisplayColor>
 										<Polygon3D>2 0 0, 2 5 0, 2 5 3, 2 0 3</Polygon3D>
 									</Surface>
-									<Surface id="48" displayName="Wall 2">
+									<Surface id="48" displayName="South">
 										<DisplayColor>#c8c88c</DisplayColor>
 										<Polygon3D>0 0 0, 2 0 0, 2 0 3, 0 0 3</Polygon3D>
 									</Surface>
-									<Surface id="49" displayName="Wall 3">
+									<Surface id="49" displayName="West">
 										<DisplayColor>#c8c88c</DisplayColor>
 										<Polygon3D>0 5 0, 0 0 0, 0 0 3, 0 5 3</Polygon3D>
 									</Surface>
-									<Surface id="50" displayName="Wall 4">
+									<Surface id="50" displayName="North">
 										<DisplayColor>#c8c88c</DisplayColor>
 										<Polygon3D>2 5 0, 0 5 0, 0 5 3, 2 5 3</Polygon3D>
 									</Surface>
@@ -170,7 +170,7 @@
 								<DailyCycle>
 									<DayTypes>3,4,5,6,7,8,9,10</DayTypes>
 									<TimePoints>0</TimePoints>
-									<Values>2</Values>
+									<Values>1</Values>
 								</DailyCycle>
 							</DailyCycles>
 						</ScheduleInterval>
