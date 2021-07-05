@@ -2051,7 +2051,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 			cinst.m_displayName = ci.m_sideBSurface->m_displayName.toStdString();
 			// sub surface
-			const std::vector<SubSurface> & subSurfs = ci.m_sideASurface->subSurfaces();
+			const std::vector<SubSurface> & subSurfs = ci.m_sideBSurface->subSurfaces();
 			if(subSurfs.size()>0){
 				//we have sub surfaces
 				exportSubSurfaces(errorStack, subSurfs, m_idMaps, ci, cinst);
