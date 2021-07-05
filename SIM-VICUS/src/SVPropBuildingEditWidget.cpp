@@ -108,7 +108,8 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->tableWidgetSurfaceHeating->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	m_ui->tableWidgetSurfaceHeating->setSelectionBehavior(QAbstractItemView::SelectItems);
 
-	m_ui->tableWidgetSurfaceHeating->setItemDelegate(new SVPropSurfaceHeatingDelegate(this));
+	// Mind: parent of the item delegate must be its widget!
+	m_ui->tableWidgetSurfaceHeating->setItemDelegate(new SVPropSurfaceHeatingDelegate(m_ui->tableWidgetSurfaceHeating));
 
 	// init widget to correct initial state
 	m_ui->labelComponentSelection->setEnabled(false);

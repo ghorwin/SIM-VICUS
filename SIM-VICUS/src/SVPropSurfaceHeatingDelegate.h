@@ -28,6 +28,8 @@
 
 #include <QItemDelegate>
 
+class QTableWidget;
+
 /*!	Creates specialized editors for heating system and control zone inputs. */
 class SVPropSurfaceHeatingDelegate : public QItemDelegate {
 	Q_OBJECT
@@ -42,10 +44,12 @@ public:
 	QWidget * createEditor(QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index) const override;
 	void setEditorData(QWidget * editor, const QModelIndex & index) const override;
 	void updateEditorGeometry(QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & index) const override;
-	void setModelData(QWidget * editor, QAbstractItemModel * model, const QModelIndex & index ) const;
+	void setModelData(QWidget * editor, QAbstractItemModel * model, const QModelIndex & index ) const override;
 	void paint(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const override;
 	bool editorEvent(QEvent * event, QAbstractItemModel * model, const QStyleOptionViewItem & option, const QModelIndex & index) override;
 
+
+	QTableWidget * m_view;
 };
 
 

@@ -30,6 +30,7 @@
 #include <QStyleOptionViewItem>
 #include <QMouseEvent>
 #include <QApplication>
+#include <QTableWidget>
 
 #include <QtExt_Conversions.h>
 #include <QtExt_FilterComboBox.h>
@@ -40,9 +41,11 @@
 #include "SVDatabaseEditDialog.h"
 
 SVPropSurfaceHeatingDelegate::SVPropSurfaceHeatingDelegate(QObject * parent) :
-	QItemDelegate(parent)
+	QItemDelegate(parent),
+	m_view(qobject_cast<QTableWidget*>(parent))
 {
 }
+
 
 SVPropSurfaceHeatingDelegate::~SVPropSurfaceHeatingDelegate() {
 }
@@ -61,9 +64,10 @@ QWidget * SVPropSurfaceHeatingDelegate::createEditor(QWidget * parent, const QSt
 			for (const VICUS::Room & r : bl.m_rooms) {
 				combo->addItem(r.m_displayName, r.m_id);
 			}
-	for (int i=0; i<combo->count(); ++i)
-		qDebug() << combo->itemData(i).toUInt();
+//	for (int i=0; i<combo->count(); ++i)
+//		qDebug() << combo->itemData(i).toUInt();
 
+	combo->showPopup();
 	return combo;
 }
 
@@ -94,12 +98,15 @@ void SVPropSurfaceHeatingDelegate::setModelData (QWidget * editor, QAbstractItem
 
 void SVPropSurfaceHeatingDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const {
 	QItemDelegate::updateEditorGeometry(editor, option, index);
+	if (index.column() == 3) {
+		combo->showPopup();
+	}
 }
 
 
 void SVPropSurfaceHeatingDelegate::paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const {
 	QItemDelegate::paint(painter, option, index);
-	if (index.column() == 2 || index.column() == 3) {
+	if (index.column() == 2) {
 		QStyleOptionButton button;
 		QRect r = option.rect;//getting the rect of the cell
 		r.setLeft(r.left() + r.width() - r.height());
@@ -109,34 +116,33 @@ void SVPropSurfaceHeatingDelegate::paint( QPainter * painter, const QStyleOption
 
 		QApplication::style()->drawControl( QStyle::CE_PushButton, &button, painter);
 	}
+	else if (index.column() == 3) {
+
+	}
 }
 
 bool SVPropSurfaceHeatingDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index) {
-	if (index.column() == 2 || index.column() == 3) {
-		if( event->type() == QEvent::MouseButtonRelease ) 	{
-			QMouseEvent * e = (QMouseEvent *)event;
-			int clickX = e->x();
-			int clickY = e->y();
+	if (index.column() == 2 && event->type() == QEvent::MouseButtonRelease ) 	{
+		QMouseEvent * e = (QMouseEvent *)event;
+		int clickX = e->x();
+		int clickY = e->y();
 
-			QRect r = option.rect;//getting the rect of the cell
-			r.setLeft(r.left() + r.width() - r.height());
+		QRect r = option.rect;//getting the rect of the cell
+		r.setLeft(r.left() + r.width() - r.height());
 
-			if (r.contains(clickX,clickY)) {
-				unsigned int selectedID = index.data(Qt::UserRole).toUInt();
-				if (index.column() == 2) {
-					selectedID = SVMainWindow::instance().dbSurfaceHeatingSystemEditDialog()->select(selectedID);
-					if (selectedID != VICUS::INVALID_ID) {
-						model->setData(index, selectedID, Qt::UserRole); // this will trigger an undo event for changing a component instance
-						return true;
-					}
-				}
-				else {
-					return false;
-				}
+		if (r.contains(clickX,clickY)) {
+			unsigned int selectedID = index.data(Qt::UserRole).toUInt();
+			selectedID = SVMainWindow::instance().dbSurfaceHeatingSystemEditDialog()->select(selectedID);
+			if (selectedID != VICUS::INVALID_ID) {
+				model->setData(index, selectedID, Qt::UserRole); // this will trigger an undo event for changing a component instance
+				return true;
 			}
-			else
-				return false;
 		}
+		else
+			return false;
+	}
+	if (index.column() == 3 && event->type() == QEvent::MouseButtonDblClick) {
+		m_view->openPersistentEditor(m_view->item(index.row(), index.column()));
 	}
 
 	return false;
