@@ -99,7 +99,8 @@ void SVPropSurfaceHeatingDelegate::setModelData (QWidget * editor, QAbstractItem
 void SVPropSurfaceHeatingDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const {
 	QItemDelegate::updateEditorGeometry(editor, option, index);
 	if (index.column() == 3) {
-		combo->showPopup();
+//		QtExt::FilterComboBox * combo = qobject_cast<QtExt::FilterComboBox *>(editor);
+//		combo->showPopup();
 	}
 }
 
