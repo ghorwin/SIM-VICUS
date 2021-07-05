@@ -115,15 +115,13 @@ void SVDBScheduleDailyCycleEditWidget::on_tableWidgetDayCycle_cellChanged(int ro
 
 	// validate input
 	bool ok;
-	// TODO : use QtExt::Locale::toDoubleWithFallback()
-	m_ui->tableWidgetDayCycle->item(row,1)->text().toDouble(&ok);
+	double currVal = QtExt::Locale().toDoubleWithFallback(m_ui->tableWidgetDayCycle->item(row,1)->text(), &ok);
 	if (!ok){
 		m_ui->tableWidgetDayCycle->blockSignals(true);
 		m_ui->tableWidgetDayCycle->setFocus();
 		m_ui->tableWidgetDayCycle->setCurrentCell(row,1);
 		m_ui->tableWidgetDayCycle->blockSignals(false);
 		QMessageBox::critical(this, QString(), tr("Wrong input in cell at row %1. Only values are allowed.").arg(row));
-		// TODO : reset orignal value?
 		return;
 	}
 
@@ -131,10 +129,9 @@ void SVDBScheduleDailyCycleEditWidget::on_tableWidgetDayCycle_cellChanged(int ro
 	QList<QTableWidgetSelectionRange> range = m_ui->tableWidgetDayCycle->selectedRanges();
 
 	for (int i=0; i<range.size(); ++i) {
-		// can we hav two ranges?
+		// can we have two ranges?
 		int topRow = range[i].topRow();
 		int bottomRow = range[i].bottomRow()+1;
-		double currVal = m_ui->tableWidgetDayCycle->item(row,1)->text().toDouble();
 
 		for (int j=topRow; j<bottomRow; ++j) {
 			m_ui->tableWidgetDayCycle->blockSignals(true);
@@ -143,16 +140,20 @@ void SVDBScheduleDailyCycleEditWidget::on_tableWidgetDayCycle_cellChanged(int ro
 		}
 	}
 
-	// TODO : use QtExt::Locale::toDoubleWithFallback()
-	std::vector<double> timepoints(1,0), values(1, m_ui->tableWidgetDayCycle->item(0,1)->text().toDouble());
+	double val = QtExt::Locale().toDoubleWithFallback(m_ui->tableWidgetDayCycle->item(0,1)->text(), &ok);
+	// add first value and time "0 h" to vector
+	std::vector<double> timepoints(1,0);
+	std::vector<double> values(1, val);
 	unsigned int lastIdx=0;
-	for(int i=1; i<m_ui->tableWidgetDayCycle->rowCount(); ++i){
-		double currVal = m_ui->tableWidgetDayCycle->item(i,1)->text().toDouble();
-		// TODO : check accuracy should be related to nominal quantity magnitude
-		if (IBK::nearly_equal<3>(values[lastIdx],currVal))
+
+	// process all subsequent values but only add those that differ in value
+	for (int i=1; i<m_ui->tableWidgetDayCycle->rowCount(); ++i) {
+		val = QtExt::Locale().toDoubleWithFallback(m_ui->tableWidgetDayCycle->item(i,1)->text(), &ok);
+		// TODO Dirk: check accuracy should be related to nominal quantity magnitude
+		if (IBK::nearly_equal<3>(values[lastIdx],val))
 			continue;
-		timepoints.push_back(i/**3600*/);
-		values.push_back(currVal);
+		timepoints.push_back(i); // in hours
+		values.push_back(val);
 		++lastIdx;
 	}
 
@@ -207,7 +208,7 @@ void SVDBScheduleDailyCycleEditWidget::updateTable(bool updateDailyCycleWidget) 
 				break;
 		}
 		hourlyValues.push_back(val);
-		// TODO : Dirk, value formatting should/may depend on quantity being edited
+		// TODO Dirk: value formatting should/may depend on quantity being edited
 		m_ui->tableWidgetDayCycle->item(j, 1)->setText(QString("%L1").arg(val, 0, 'g', 3));
 		m_ui->tableWidgetDayCycle->item(j, 1)->setTextAlignment(Qt::AlignCenter);
 
@@ -220,5 +221,5 @@ void SVDBScheduleDailyCycleEditWidget::updateTable(bool updateDailyCycleWidget) 
 
 	if (updateDailyCycleWidget)
 		m_ui->dailyCycleInputWidget->setValues(hourlyValues);
-	// TODO : adjust min/max values based on edited quantity
+	// TODO Dirk: adjust min/max values based on edited quantity
 }

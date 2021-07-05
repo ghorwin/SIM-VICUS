@@ -40,8 +40,8 @@
 
 const int MARGIN_LEFT = 50;
 const int MARGIN_TOP = 10;
-int MARGIN_RIGHT = 20;
-int MARGIN_BOTTOM = 25;
+static int MARGIN_RIGHT = 20;
+static int MARGIN_BOTTOM = 25;
 
 QRectF SVDBDailyCycleInputWidget::m_clippingRect;
 
