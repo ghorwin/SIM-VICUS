@@ -366,6 +366,8 @@ void SVDBDailyCycleInputWidget::rescaleMaxMinValues() {
 	if (m_values.empty())
 		return;
 
+	resizeEvent(nullptr); // quick fix workaround, TODO : split geometrical update from min/max update
+
 	// compute maximum value of all entered values
 	double maxVal = m_values[0];
 	double minVal = m_values[0];
