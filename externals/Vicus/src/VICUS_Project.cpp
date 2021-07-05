@@ -1463,6 +1463,187 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 	VICUS::Schedule zeroValueSched;
 	zeroValueSched.createConstSchedule();
 
+	//key zone id to vector of component instance pointer
+	struct DataSurfaceHeating{
+		unsigned int					m_zoneId;
+
+		struct Data{
+			std::vector<unsigned int>	m_contructionInstanceIds;
+			std::map<int, std::vector<unsigned int>> m_areaToIds;
+		};
+
+		std::map<unsigned int, Data>	m_idSurfaceSystemToIds;
+	};
+
+	std::vector<DataSurfaceHeating>	m_surfaceSystems;
+
+
+	// *** m_constructionInstances ***
+
+
+	// now process all components and generate construction instances
+	for (const VICUS::ComponentInstance & ci : m_componentInstances) {
+		// Note: component ID may be invalid or component may have been deleted from DB already
+		const VICUS::Component * comp = element(m_embeddedDB.m_components, ci.m_componentID);
+		if (comp == nullptr)
+			throw ConversionError(ConversionError::ET_InvalidID,
+				tr("Component ID #%1 is referenced from component instance with id #%2, but there is no such component.")
+							 .arg(ci.m_componentID).arg(ci.m_id));
+
+		// now generate a construction instance
+		NANDRAD::ConstructionInstance cinst;
+		//cinst.m_id = uniqueIdWithPredef(allModelIds, ci.m_id, vicusToNandradIds);
+		cinst.m_id = uniqueIdWithPredef2(ConstructionInstance, ci.m_id, m_idMaps, true);
+
+		// store reference to construction type (i.e. to be generated from component)
+		// std::vector<unsigned int>	m_contructionInstanceIds;
+		cinst.m_constructionTypeId = uniqueIdWithPredef2(Construction, comp->m_idConstruction, m_idMaps);
+
+		// set construction instance parameters, area, orientation etc.
+
+		const double SAME_DISTANCE_PARAMETER_ABSTOL = 1e-4;
+		double area = 0;
+
+		bool bothSidesHasSurfaces = false;
+		// we have either one or two surfaces associated
+		if (ci.m_sideASurface != nullptr) {
+			// get area of surface A
+			area = ci.m_sideASurface->geometry().area();
+			// do we have surfaces at both sides?
+			if (ci.m_sideBSurface != nullptr) {
+				// have both
+				bothSidesHasSurfaces = true;
+				double areaB = ci.m_sideBSurface->geometry().area();
+				// check if both areas are approximately the same
+				if (std::fabs(area - areaB) > SAME_DISTANCE_PARAMETER_ABSTOL) {
+					throw ConversionError(ConversionError::ET_MismatchingSurfaceArea,
+						tr("Component/construction #%1 references surfaces #%2 and #%3, with mismatching "
+						   "areas %3 and %4 m2.")
+								  .arg(ci.m_id).arg(ci.m_sideASurfaceID).arg(ci.m_sideBSurfaceID)
+								  .arg(area).arg(areaB));
+				}
+
+				// if we have both surfaces, then this is an internal construction and orientation/inclination are
+				// not important and we just don't set these
+
+				/// TODO Dirk : do we need to also store a displayname for each component instance/construction instance?
+				///             We could also name internal walls automatically using zone names, such as
+				///				"Wall between 'Bath' and 'Kitchen'".
+				cinst.m_displayName = tr("Internal wall between surfaces '#%1' and '#%2'")
+						.arg(ci.m_sideASurface->m_displayName).arg(ci.m_sideBSurface->m_displayName).toStdString();
+			}
+			else {
+
+				// we only have side A, take orientation and inclination from side A
+				const VICUS::Surface * s = ci.m_sideASurface;
+
+				// set parameters
+				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+												   NANDRAD::ConstructionInstance::P_Inclination, s->geometry().inclination());
+				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+												   NANDRAD::ConstructionInstance::P_Orientation, s->geometry().orientation());
+
+				cinst.m_displayName = ci.m_sideASurface->m_displayName.toStdString();
+			}
+			// set area parameter (computed from side A, but if side B is given as well, the area is the same
+			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+											   NANDRAD::ConstructionInstance::P_Area, area);
+
+			//for the first time we support only sub surfaces to outside air
+			if(!bothSidesHasSurfaces){
+				// sub surface
+				const std::vector<SubSurface> & subSurfs = ci.m_sideASurface->subSurfaces();
+				if(subSurfs.size()>0){
+					//we have sub surfaces
+					exportSubSurfaces(errorStack, subSurfs, m_idMaps, ci, cinst);
+				}
+			}
+		}
+		else {
+			// we must have a side B surface, otherwise this is an invalid component instance
+			if (ci.m_sideBSurface == nullptr)
+				throw ConversionError(ConversionError::ET_InvalidID,
+									  tr("Component instance #%1 does neither reference a valid surface on side A nor on side B.")
+									  .arg(ci.m_id));
+
+			const VICUS::Surface * s = ci.m_sideBSurface;
+
+			// set parameters
+			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+											   NANDRAD::ConstructionInstance::P_Inclination, s->geometry().inclination());
+			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+											   NANDRAD::ConstructionInstance::P_Orientation, s->geometry().orientation());
+
+			// set area parameter
+			area = ci.m_sideBSurface->geometry().area();
+			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
+											   NANDRAD::ConstructionInstance::P_Area, area);
+
+			cinst.m_displayName = ci.m_sideBSurface->m_displayName.toStdString();
+			// sub surface
+			const std::vector<SubSurface> & subSurfs = ci.m_sideBSurface->subSurfaces();
+			if(subSurfs.size()>0){
+				//we have sub surfaces
+				exportSubSurfaces(errorStack, subSurfs, m_idMaps, ci, cinst);
+			}
+		}
+
+
+		// now generate interfaces
+		cinst.m_interfaceA = generateInterface(ci, comp->m_idSideABoundaryCondition, m_idMaps, ++interfaceID);
+		cinst.m_interfaceB = generateInterface(ci, comp->m_idSideBBoundaryCondition, m_idMaps, ++interfaceID, false);
+
+		// add to list of construction instances
+		p.m_constructionInstances.push_back(cinst);
+		//get an area check for surface heating systems
+		if(area <= 1e-4){
+			//todo errorstack
+			continue;
+		}
+		//create surface heating system data
+		if(ci.m_surfaceHeatingControlZoneID != INVALID_ID && ci.m_surfaceHeatingID != INVALID_ID){
+			unsigned int zoneId = INVALID_ID;
+
+			int posDataSH = -1;
+			for(unsigned int i=0; i<m_surfaceSystems.size(); ++i){
+				if(m_surfaceSystems[i].m_zoneId == ci.m_surfaceHeatingControlZoneID){
+					//found zone id
+					posDataSH = (int)i;
+					zoneId = ci.m_surfaceHeatingControlZoneID;
+					break;
+				}
+			}
+
+			if(zoneId != INVALID_ID){
+				//add new element
+				if(posDataSH == -1){
+					m_surfaceSystems.push_back(DataSurfaceHeating());
+					posDataSH = m_surfaceSystems.size()-1;
+					m_surfaceSystems.back().m_zoneId = zoneId;
+				}
+				DataSurfaceHeating &dsh = m_surfaceSystems[posDataSH];
+				dsh.m_idSurfaceSystemToIds[ci.m_surfaceHeatingID].m_contructionInstanceIds.push_back(cinst.m_id);
+				dsh.m_idSurfaceSystemToIds[ci.m_surfaceHeatingID].m_areaToIds[area*10000].push_back(cinst.m_id);
+			}
+			else{
+				//todo errorstack füllen
+			}
+		}
+
+	}
+
+	//search all internal surface heating/cooling systems
+	for (const VICUS::ComponentInstance & ci : m_componentInstances) {
+		// Note: component ID may be invalid or component may have been deleted from DB already
+		const VICUS::Component * comp = element(m_embeddedDB.m_components, ci.m_componentID);
+		if (comp == nullptr){
+			throw ConversionError(ConversionError::ET_InvalidID,
+				tr("Component ID #%1 is referenced from component instance with id #%2, but there is no such component.")
+							 .arg(ci.m_componentID).arg(ci.m_id));
+			continue;
+		}
+	}
+
 	//loop for zone templates
 	for (const std::pair<unsigned int,std::map< double,  std::vector<unsigned int>>> &ob : zoneTemplateIdToAreaToRoomIds) {
 		//take zone template
@@ -1740,7 +1921,100 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 					errorStack << tr("Error in Export. Ideal Heating Cooling in zonetemplate #%1 with name '%2' was not exported. ")
 								  .arg(zt->m_id).arg(QString::fromUtf8(zt->m_displayName.string().c_str()));
 
+				//create surface heating/cooling for each zone/room
+				for(unsigned int i=0; i<allRoomIdsForThisZt.size(); ++i){
+					//search in surface conditing system if there is a surface heating element
+					for(unsigned int j=0; j<m_surfaceSystems.size(); ++j){
+						DataSurfaceHeating &dsh = m_surfaceSystems[j];
+						if(dsh.m_zoneId == allRoomIdsForThisZt[i]){
+							//add all surface systems of this room
+							for(std::map<unsigned int, DataSurfaceHeating::Data>::const_iterator it;
+								it != dsh.m_idSurfaceSystemToIds.end();
+								++it){
+								const VICUS::SurfaceHeating * shSys = element(m_embeddedDB.m_surfaceHeatings, it->first);
 
+								if(shSys == nullptr){
+									//todo errorstack füllen
+									continue;
+								}
+
+								switch (shSys->m_type) {
+									case VICUS::SurfaceHeating::T_Ideal:
+									case VICUS::SurfaceHeating::NUM_T:{
+										NANDRAD::IdealSurfaceHeatingCoolingModel surfSysNandrad;
+										surfSysNandrad.m_thermostatZoneId = dsh.m_zoneId;
+										surfSysNandrad.m_constructionObjectList =
+												createUniqueNandradObjListAndName("SurfaceHeatingConstructions", it->second.m_contructionInstanceIds, p,
+																													NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE);
+										NANDRAD::KeywordList::setParameter(surfSysNandrad.m_para, "IdealSurfaceHeatingCoolingModel::para_t",
+																		   NANDRAD::IdealSurfaceHeatingCoolingModel::P_MaxHeatingPowerPerArea, shSys->m_para[VICUS::SurfaceHeating::P_HeatingLimit].value);
+										NANDRAD::KeywordList::setParameter(surfSysNandrad.m_para, "IdealSurfaceHeatingCoolingModel::para_t",
+																		   NANDRAD::IdealSurfaceHeatingCoolingModel::P_MaxCoolingPowerPerArea, shSys->m_para[VICUS::SurfaceHeating::P_CoolingLimit].value);
+										p.m_models.m_idealSurfaceHeatingCoolingModels.push_back(surfSysNandrad);
+									}
+									break;
+									case VICUS::SurfaceHeating::T_IdealPipeRegister:{
+										//get pipe data
+
+										const VICUS::NetworkPipe * pipe = element(m_embeddedDB.m_pipes, shSys->m_idPipe);
+										if(pipe == nullptr){
+											//todo errorstack
+											continue;
+										}
+
+										//anlegen der grunddaten
+										NANDRAD::HydraulicFluid hyFluid;
+										hyFluid.defaultFluidWater();
+
+										NANDRAD::IdealPipeRegisterModel idealPipe;
+
+										NANDRAD::KeywordList::setParameter(idealPipe.m_para, "IdealPipeRegisterModel::para_t",
+																		   NANDRAD::IdealPipeRegisterModel::P_UValuePipeWall, pipe->calculateUValue());
+										NANDRAD::KeywordList::setParameter(idealPipe.m_para, "IdealPipeRegisterModel::para_t",
+																		   NANDRAD::IdealPipeRegisterModel::P_PipeInnerDiameter, pipe->insideDiameter());
+										idealPipe.m_thermostatZoneId = dsh.m_zoneId;
+										idealPipe.m_fluid = hyFluid;
+
+										//alle gleich großen Flächen bekommen das gleiche
+										double pipeSpacing = shSys->m_para[VICUS::SurfaceHeating::P_PipeSpacing].value;
+										for(std::map<int, std::vector<unsigned int>>::const_iterator it2 = it->second.m_areaToIds.begin();
+														it2 != it->second.m_areaToIds.end();
+														++it2){
+											double length = it2->first / (pipeSpacing * 10000); //Achtung umrechnung beachten
+											int parallelPipes = 1;
+											//get parallel pipes and adjust length
+											if(length > 100){
+												parallelPipes = std::ceil(length / 100);
+												length /= parallelPipes;
+											}
+
+											NANDRAD::KeywordList::setParameter(idealPipe.m_para, "IdealPipeRegisterModel::para_t",
+																			   NANDRAD::IdealPipeRegisterModel::P_PipeLength, length);
+											NANDRAD::KeywordList::setIntPara(idealPipe.m_intPara, "IdealPipeRegisterModel::intPara_t",
+																			 NANDRAD::IdealPipeRegisterModel::IP_NumberParallelPipes,
+																			 parallelPipes);
+											idealPipe.m_constructionObjectList =
+													createUniqueNandradObjListAndName("SurfaceHeatingConstructions", it2->second, p,
+																					  NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE);
+											p.m_models.m_idealPipeRegisterModels.push_back(idealPipe);
+
+											//TODO add heating and cooling schedule
+											//dazu muss die klimadatei geparst werden die lufttemperatur ermitteln
+											//dann mit den punkten für heiz und kühllastkurve die fluidtemperaturen ermitteln
+											//und einen jahreszeitplan rausschreiben
+										}
+									}
+									break;
+
+								}
+
+
+							}
+
+
+						}
+					}
+				}
 
 			}
 
@@ -1949,123 +2223,6 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 	// ############################## Zone Templates
 
 
-	// *** m_constructionInstances ***
-
-
-	// now process all components and generate construction instances
-	for (const VICUS::ComponentInstance & ci : m_componentInstances) {
-		// Note: component ID may be invalid or component may have been deleted from DB already
-		const VICUS::Component * comp = element(m_embeddedDB.m_components, ci.m_componentID);
-		if (comp == nullptr)
-			throw ConversionError(ConversionError::ET_InvalidID,
-				tr("Component ID #%1 is referenced from component instance with id #%2, but there is no such component.")
-							 .arg(ci.m_componentID).arg(ci.m_id));
-
-		// now generate a construction instance
-		NANDRAD::ConstructionInstance cinst;
-		//cinst.m_id = uniqueIdWithPredef(allModelIds, ci.m_id, vicusToNandradIds);
-		cinst.m_id = uniqueIdWithPredef2(ConstructionInstance, ci.m_id, m_idMaps, true);
-
-		// store reference to construction type (i.e. to be generated from component)
-		//cinst.m_constructionTypeId = uniqueIdWithPredef<unsigned int>(allModelIds, comp->m_idConstruction, vicusToNandradIds);
-		cinst.m_constructionTypeId = uniqueIdWithPredef2(Construction, comp->m_idConstruction, m_idMaps);
-
-		// set construction instance parameters, area, orientation etc.
-
-		const double SAME_DISTANCE_PARAMETER_ABSTOL = 1e-4;
-
-		bool bothSidesHasSurfaces = false;
-		// we have either one or two surfaces associated
-		if (ci.m_sideASurface != nullptr) {
-			// get area of surface A
-			double areaA = ci.m_sideASurface->geometry().area();
-			// do we have surfaces at both sides?
-			if (ci.m_sideBSurface != nullptr) {
-				// have both
-				bothSidesHasSurfaces = true;
-				double areaB = ci.m_sideBSurface->geometry().area();
-				// check if both areas are approximately the same
-				if (std::fabs(areaA - areaB) > SAME_DISTANCE_PARAMETER_ABSTOL) {
-					throw ConversionError(ConversionError::ET_MismatchingSurfaceArea,
-						tr("Component/construction #%1 references surfaces #%2 and #%3, with mismatching "
-						   "areas %3 and %4 m2.")
-								  .arg(ci.m_id).arg(ci.m_sideASurfaceID).arg(ci.m_sideBSurfaceID)
-								  .arg(areaA).arg(areaB));
-				}
-
-				// if we have both surfaces, then this is an internal construction and orientation/inclination are
-				// not important and we just don't set these
-
-				/// TODO Dirk : do we need to also store a displayname for each component instance/construction instance?
-				///             We could also name internal walls automatically using zone names, such as
-				///				"Wall between 'Bath' and 'Kitchen'".
-				cinst.m_displayName = tr("Internal wall between surfaces '#%1' and '#%2'")
-						.arg(ci.m_sideASurface->m_displayName).arg(ci.m_sideBSurface->m_displayName).toStdString();
-			}
-			else {
-
-				// we only have side A, take orientation and inclination from side A
-				const VICUS::Surface * s = ci.m_sideASurface;
-
-				// set parameters
-				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
-												   NANDRAD::ConstructionInstance::P_Inclination, s->geometry().inclination());
-				NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
-												   NANDRAD::ConstructionInstance::P_Orientation, s->geometry().orientation());
-
-				cinst.m_displayName = ci.m_sideASurface->m_displayName.toStdString();
-			}
-			// set area parameter (computed from side A, but if side B is given as well, the area is the same
-			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
-											   NANDRAD::ConstructionInstance::P_Area, areaA);
-
-			//for the first time we support only sub surfaces to outside air
-			if(!bothSidesHasSurfaces){
-				// sub surface
-				const std::vector<SubSurface> & subSurfs = ci.m_sideASurface->subSurfaces();
-				if(subSurfs.size()>0){
-					//we have sub surfaces
-					exportSubSurfaces(errorStack, subSurfs, m_idMaps, ci, cinst);
-				}
-			}
-		}
-		else {
-			// we must have a side B surface, otherwise this is an invalid component instance
-			if (ci.m_sideBSurface == nullptr)
-				throw ConversionError(ConversionError::ET_InvalidID,
-									  tr("Component instance #%1 does neither reference a valid surface on side A nor on side B.")
-									  .arg(ci.m_id));
-
-			const VICUS::Surface * s = ci.m_sideBSurface;
-
-			// set parameters
-			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
-											   NANDRAD::ConstructionInstance::P_Inclination, s->geometry().inclination());
-			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
-											   NANDRAD::ConstructionInstance::P_Orientation, s->geometry().orientation());
-
-			// set area parameter
-			double area = ci.m_sideBSurface->geometry().area();
-			NANDRAD::KeywordList::setParameter(cinst.m_para, "ConstructionInstance::para_t",
-											   NANDRAD::ConstructionInstance::P_Area, area);
-
-			cinst.m_displayName = ci.m_sideBSurface->m_displayName.toStdString();
-			// sub surface
-			const std::vector<SubSurface> & subSurfs = ci.m_sideBSurface->subSurfaces();
-			if(subSurfs.size()>0){
-				//we have sub surfaces
-				exportSubSurfaces(errorStack, subSurfs, m_idMaps, ci, cinst);
-			}
-		}
-
-
-		// now generate interfaces
-		cinst.m_interfaceA = generateInterface(ci, comp->m_idSideABoundaryCondition, m_idMaps, ++interfaceID);
-		cinst.m_interfaceB = generateInterface(ci, comp->m_idSideBBoundaryCondition, m_idMaps, ++interfaceID, false);
-
-		// add to list of construction instances
-		p.m_constructionInstances.push_back(cinst);
-	}
 
 
 	// database elements
