@@ -39,3 +39,16 @@ Ein Tagesgang enthält eine Reihe an Zeitpunkten und einen oder mehrere Werte f�
 === Nicht zyklische Zeitpläne
 
 Diese Zeitpläne werden durch eine bestimmte Anzahl an individuelle Wertepaarvorgabe für Zeitpunkt und Wert definiert. Somit sind Messreihen oder spezielle Vorgaben möglich.
+
+== Beispiele zur Erstellung von  Zeitplänen
+
+<<exampleSchedule>> zeigt einen Zeitplan, der drei verschiedene Perioden enthält. Die Werte sind für die einzelnen Wochentage, sowie Feiertage stundenweise anzugeben. Die Darstellung unten links im Bild zeigt den Tagesverlauf. Oben rechts ist der Wochenverlauf der angewählten Periode abgebildet.
+
+[[exampleSchedule]]
+:xrefstyle: short
+.Definition eines Zeitplans
+image::BspZeitplan.png[pdfwidth=10cm]
+
+=== Ventilation
+
+Die Natural Ventilation setzt sich aus der Multiplikation der `Air change rate (Natural Ventilation properties)` und der Werte aus dem `Daily schedule` zusammen. Damit wird der Wert der maximalen Luftwechselrate als `Air change rate` angegeben, die Werte im Zeitplan werden hingegen anteilig angegeben. Das bedeutet, dass in den Stunden, in denen es zur maximalen Luftwechserate kommt, der Wert 1 (100%) in den Zeitplan eingetragen wird. 
