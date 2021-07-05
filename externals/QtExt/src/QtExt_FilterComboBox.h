@@ -22,16 +22,19 @@
 #define QtExt_FilterComboBoxH
 
 #include <QComboBox>
-#include <QObject>
 #include <QSortFilterProxyModel>
-#include <QStringListModel>
+
+class QStandardItemModel;
 
 namespace QtExt {
 
-class FilterProxyModel;
+class FilterComboBoxProxyModel;
+class ComboLineEdit;
 
-class FilterComboBox : public QComboBox
-{
+/*! A specialized combo box that shows a list of filtered options while typing
+	in the line edit.
+*/
+class FilterComboBox : public QComboBox {
 	Q_OBJECT
 public:
 	FilterComboBox(QWidget* parent = nullptr);
@@ -44,13 +47,14 @@ private slots:
 	void onEditTextChanged(const QString& text);
 
 private:
-	FilterProxyModel*	m_filterModel;
-	QStringListModel*	m_model;
+	FilterComboBoxProxyModel*	m_filterModel;
+	QStandardItemModel*	m_model;
 };
 
-class FilterProxyModel : public QSortFilterProxyModel {
+/*! The filter proxy model that is used by the filter combo box. */
+class FilterComboBoxProxyModel : public QSortFilterProxyModel {
 public:
-	FilterProxyModel(QObject* parent = nullptr);
+	FilterComboBoxProxyModel(QObject* parent = nullptr);
 
 	void setFilter(const QString& filter);
 
@@ -59,8 +63,8 @@ protected:
 
 private:
 	QString m_filter;
-
 };
+
 
 } // namespace QtExt
 

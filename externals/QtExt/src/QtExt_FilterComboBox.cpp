@@ -20,12 +20,17 @@
 
 #include "QtExt_FilterComboBox.h"
 
+#include <QKeyEvent>
+#include <QtDebug>
+#include <QStandardItemModel>
+#include <QLineEdit>
+
 namespace QtExt {
 
 FilterComboBox::FilterComboBox(QWidget* parent) :
 	QComboBox(parent),
-	m_filterModel(new FilterProxyModel(this)),
-	m_model(new QStringListModel(this))
+	m_filterModel(new FilterComboBoxProxyModel(this)),
+	m_model(new QStandardItemModel(0, 1, this))
 {
 	m_filterModel->setSourceModel(m_model);
 	connect(this, &FilterComboBox::editTextChanged, this, &FilterComboBox::onEditTextChanged);
@@ -56,29 +61,34 @@ void FilterComboBox::addItems(const QStringList &texts) {
 void FilterComboBox::onEditTextChanged(const QString& text) {
 	m_filterModel->setFilter(text);
 	showPopup();
+	lineEdit()->setFocus();
+	lineEdit()->grabKeyboard();
 }
 
-// FilterProxy
 
-FilterProxyModel::FilterProxyModel(QObject* parent) :
+// FilterComboBoxProxyModel
+
+FilterComboBoxProxyModel::FilterComboBoxProxyModel(QObject* parent) :
 	QSortFilterProxyModel(parent)
 {
 	setSortCaseSensitivity(Qt::CaseInsensitive);
 }
 
-bool FilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const {
+bool FilterComboBoxProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const {
 	bool accepted = true;
 	QModelIndex sindex = sourceModel()->index(source_row, 0, source_parent);
 	if(sindex.isValid()) {
 		QString str = sourceModel()->data(sindex).toString();
-		accepted = str.contains(m_filter);
+		accepted = str.contains(m_filter, Qt::CaseInsensitive);
 	}
 	return accepted;
 }
 
-void FilterProxyModel::setFilter(const QString& filter) {
+
+void FilterComboBoxProxyModel::setFilter(const QString& filter) {
 	m_filter = filter;
 	invalidate();
 }
+
 
 } // namespace QtExt
