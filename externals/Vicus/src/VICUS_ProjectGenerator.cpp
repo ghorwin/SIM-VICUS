@@ -4,6 +4,10 @@
 
 namespace VICUS {
 
+inline QString MultiLangString2QString(const IBK::MultiLanguageString & mls) {
+	return QString::fromStdString(mls.string(IBK::MultiLanguageString::m_language, "en"));
+}
+
 
 class ModelGeneratorBase {
 public:
@@ -54,7 +58,7 @@ public:
 		if (subTemplate == nullptr)
 			throw IBK::Exception( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
 								  .arg(zoneTemplate->m_idReferences[subType])
-								  .arg(zoneTemplate->m_id).arg(QString::fromStdString(zoneTemplate->m_displayName.string())).toStdString(), FUNC_ID);
+								  .arg(zoneTemplate->m_id).arg(MultiLangString2QString(zoneTemplate->m_displayName)).toStdString(), FUNC_ID);
 		return subTemplate;
 	}
 
@@ -95,6 +99,12 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 	std::vector<const VICUS::Room *> zones;
 	generateNandradZones(zones, idSet, p, errorStack);
 	if (!errorStack.isEmpty())	return;
+
+
+	// *** Schedules ***
+
+	// check for unique IDs
+	// TODO
 
 
 	// *** Models based on zone templates ***
@@ -170,14 +180,13 @@ void InternalLoadsModelGenerator::generate(const Room * r, QStringList & errorSt
 
 	// InternalLoad holds data for sub templates ST_IntLoadPerson, ST_IntLoadEquipment or ST_IntLoadLighting
 	// we check if at least one of those is defined
-	const InternalLoad * intLoad = nullptr;
+	const InternalLoad * intLoadPerson = nullptr;
+	const InternalLoad * intLoadEquipment = nullptr;
+	const InternalLoad * intLoadLighting = nullptr;
 	try {
-
-		intLoad = findZoneSubTemplate<InternalLoad>(r, VICUS::ZoneTemplate::ST_IntLoadPerson);
-		if (intLoad == nullptr)
-			intLoad = findZoneSubTemplate<InternalLoad>(r, VICUS::ZoneTemplate::ST_IntLoadEquipment);
-		if (intLoad == nullptr)
-			intLoad = findZoneSubTemplate<InternalLoad>(r, VICUS::ZoneTemplate::ST_IntLoadLighting);
+		intLoadPerson = findZoneSubTemplate<InternalLoad>(r, VICUS::ZoneTemplate::ST_IntLoadPerson);
+		intLoadEquipment = findZoneSubTemplate<InternalLoad>(r, VICUS::ZoneTemplate::ST_IntLoadEquipment);
+		intLoadLighting = findZoneSubTemplate<InternalLoad>(r, VICUS::ZoneTemplate::ST_IntLoadLighting);
 	}
 	catch (IBK::Exception & ex) {
 		errorStack.append( QString::fromStdString(ex.what()) );
@@ -185,10 +194,80 @@ void InternalLoadsModelGenerator::generate(const Room * r, QStringList & errorSt
 	}
 
 	// no internal loads defined?
-	if (intLoad == nullptr)
+	if (intLoadPerson == nullptr && intLoadEquipment == nullptr && intLoadLighting == nullptr)
 		return;
 
 	// generate schedules
+
+	std::string personSchedName = (std::string)NANDRAD::KeywordList::Keyword("InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_PersonHeatLoadPerArea) + "Schedule [W/m2]";
+	std::string equipmentSchedName = (std::string)NANDRAD::KeywordList::Keyword("InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_EquipmentHeatLoadPerArea) + "Schedule [W/m2]";
+	std::string lightingSchedName = (std::string)NANDRAD::KeywordList::Keyword("InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_LightingHeatLoadPerArea) + "Schedule [W/m2]";
+
+	// schedule generation:
+	//
+	// 1. create basic schedule (name?)
+	std::vector<NANDRAD::Schedule> scheds; // contains all schedules for this internal loads parametrization
+
+	// 2. initialize with "AllDays" DailyCycle
+	NANDRAD::Schedule allDays;
+	allDays.m_type = NANDRAD::Schedule::ST_ALLDAYS;
+	NANDRAD::DailyCycle dc;
+	dc.m_interpolation = NANDRAD::DailyCycle::IT_Constant;
+	dc.m_timePoints.push_back(0);
+	if (intLoadPerson == nullptr)		dc.m_values.m_values[personSchedName].push_back(0);
+	if (intLoadEquipment == nullptr)	dc.m_values.m_values[equipmentSchedName].push_back(0);
+	if (intLoadLighting == nullptr)		dc.m_values.m_values[lightingSchedName].push_back(0);
+	allDays.m_dailyCycles.push_back( dc );
+
+	scheds.push_back(allDays);
+
+	// for each given VICUS schedule, generate a set of schedules and insert them in vector scheds (unless already existing, in which case these are extended)
+
+	// Person loads (category = IC_Person)
+	VICUS::Database<Schedule> scheduleDB(0);
+	// Schedule DB ID test has been done already
+	scheduleDB.setData(m_project->m_embeddedDB.m_schedules);
+	if (intLoadPerson != nullptr) {
+		if (!intLoadPerson->isValid(scheduleDB)) {
+			errorStack.append(qApp->tr("Invalid parameters in internal loads model #%1 '%2'").arg(intLoadPerson->m_id)
+							  .arg(MultiLangString2QString(intLoadPerson->m_displayName)) );
+		}
+		else {
+			IBK_ASSERT(intLoadPerson->m_category == InternalLoad::IC_Person);
+
+			// - depending on parametrization option (m_personCountMethod) compute W/m2
+			double personPerArea;
+			switch (intLoadPerson->m_personCountMethod) {
+				case VICUS::InternalLoad::PCM_PersonPerArea:
+					personPerArea = intLoadPerson->m_para[InternalLoad::P_PersonPerArea].value;
+				break;
+				case VICUS::InternalLoad::PCM_AreaPerPerson:
+					personPerArea = 1./intLoadPerson->m_para[InternalLoad::P_AreaPerPerson].value;
+				break;
+				case VICUS::InternalLoad::PCM_PersonCount:
+					personPerArea = intLoadPerson->m_para[InternalLoad::P_PersonCount].value/r->m_para[VICUS::Room::P_Area].value;
+				break;
+				case VICUS::InternalLoad::NUM_PCM: ; // just to make compiler happy
+			}
+
+			// - retrieve schedules referenced via m_occupancyScheduleId and m_activityScheduleId -> incl. error checks
+			const Schedule * activitySchedule = scheduleDB[intLoadPerson->m_activityScheduleId];
+			const Schedule * occupancySchedule = scheduleDB[intLoadPerson->m_occupancyScheduleId];
+			// - multiply all three values for each sample in each schedule -> VICUS::Schedule with time series of time points and values for different day types
+			VICUS::Schedule combinedSchedule = activitySchedule->multiply(*occupancySchedule);
+			combinedSchedule = combinedSchedule.multiply(personPerArea);
+
+			// - convert VICUS::Schedule to NANDRAD Schedule
+
+
+			// - insert into scheds !
+		}
+	}
+
+
+	// only continue if there were no errors so far
+	if (!errorStack.isEmpty())
+		return;
 
 	// generate NANDRAD::InternalLoads object
 	// generate object lists

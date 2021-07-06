@@ -47,7 +47,6 @@ public:
 
 	/*! Basic parameters. */
 	enum para_t {
-		//thermal paramters
 		/*! Person Count. */
 		P_PersonCount,					// Keyword: PersonCount				[-]			'Person count'
 		/*! Person per area. */

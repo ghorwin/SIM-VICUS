@@ -90,6 +90,15 @@ public:
 	/*! Returns true if database is empty. */
 	bool empty() const { return m_data.empty(); }
 
+	/*! Initializes database with data from a vector.
+		Throws an exception if duplicate IDs are found.
+	*/
+	void setData(const std::vector<T> & data) {
+		m_data.clear();
+		for (const T & t : data)
+			m_data[t.m_id] = t;
+	}
+
 	/*! Adds a new item to the database.
 		\param newData New object to be added.
 		\param suggestedId ID of object to insert (possibly when adding this data object from a project file), or 0,

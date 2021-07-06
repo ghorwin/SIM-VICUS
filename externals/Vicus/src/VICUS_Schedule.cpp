@@ -288,4 +288,9 @@ AbstractDBElement::ComparisonResult Schedule::equal(const AbstractDBElement *oth
 }
 
 
+void Schedule::insertIntoNandradSchedulegroup(const std::string & varName, std::vector<NANDRAD::Schedule> & scheduleGroup) const {
+	// TODO : Dirk
+}
+
+
 } // namespace VICUS

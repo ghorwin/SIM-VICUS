@@ -377,12 +377,14 @@ bool SVSimulationStartNandrad::startSimulation(bool testInit) {
 	// generate NANDRAD project
 	NANDRAD::Project p;
 
+	QStringList errorStack;
+
 	SVSettings::instance().m_db.updateEmbeddedDatabase(m_localProject);
 	try {
 		//add default placeholder
 		p.m_placeholders[VICUS::DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::databasesDir()).toStdString());
 		p.m_placeholders[VICUS::USER_DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::userDataDir()).toStdString());
-		m_localProject.generateNandradProject(p);
+		m_localProject.generateNandradProject(p, errorStack);
 	}
 	catch (VICUS::Project::ConversionError & ex) {
 		QMessageBox::critical(this, tr("NANDRAD Project Generation Error"), ex.what());

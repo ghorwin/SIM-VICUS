@@ -31,6 +31,8 @@
 #include <IBK_Flag.h>
 #include <IBK_Parameter.h>
 
+#include <NANDRAD_Schedule.h>
+
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
 #include "VICUS_ScheduleInterval.h"
@@ -70,6 +72,12 @@ public:
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;
 
+	/*! Generates NANDRAD schedules from data stored in this object and inserts these into the given schedule group.
+		The variable to be inserted into the schedule group is given in parameter 'varName' (formatted including unit).
+	*/
+	void insertIntoNandradSchedulegroup(const std::string & varName, std::vector<NANDRAD::Schedule> & scheduleGroup) const;
+
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of Schedule. */
@@ -96,9 +104,6 @@ public:
 		Periods in vector must be consecutive in time.
 	*/
 	std::vector<ScheduleInterval>	m_periods;							// XML:E
-
-
-
 };
 
 } // namespace VICUS
