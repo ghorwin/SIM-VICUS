@@ -56,9 +56,13 @@ public:
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	NANDRAD_READWRITE
+	NANDRAD_COMPARE_WITH_ID
 
 	/*! Checks for valid parameters (value ranges). */
 	void checkParameters() const;
+
+	/*! Comparies objects by physical parametrization (excluding ID and displayname). */
+	bool equal(const InternalLoadsModel & other) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

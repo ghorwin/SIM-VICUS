@@ -351,28 +351,26 @@ AbstractDBElement::ComparisonResult Schedule::equal(const AbstractDBElement *oth
 
 
 void Schedule::insertIntoNandradSchedulegroup(const std::string & varName, std::vector<NANDRAD::Schedule> & scheduleGroup) const {
-	// TODO : Dirk
-
-	if(scheduleGroup.empty()){
-		//create for each period a new NANDRAD schedule
-		for(unsigned int i=0; i<m_periods.size(); ++i){
+	if (scheduleGroup.empty()){
+		// create for each period a new NANDRAD schedule
+		for (unsigned int i=0; i<m_periods.size(); ++i){
 			const ScheduleInterval &period = m_periods[i];
-			//find day types for NANDRAD schedule
-			for(unsigned int j=0; j<period.m_dailyCycles.size(); ++j){
+			// find day types for NANDRAD schedule
+			for (unsigned int j=0; j<period.m_dailyCycles.size(); ++j){
 				const DailyCycle &dc = period.m_dailyCycles[j];
 
-				//merge all possible day types
+				// merge all possible day types
 				std::vector<NANDRAD::Schedule::ScheduledDayType> dts = mergeDayType(dc.m_dayTypes);
 
-				//create for each day type in merge vector a new NANDRAD schedule
-				for(NANDRAD::Schedule::ScheduledDayType dt : dts){
+				// create for each day type in merge vector a new NANDRAD schedule
+				for (NANDRAD::Schedule::ScheduledDayType dt : dts){
 					NANDRAD::Schedule s;
 					//set up start day
-					if(period.m_intervalStartDay > 0)
+					if (period.m_intervalStartDay > 0)
 						s.m_startDayOfTheYear = period.m_intervalStartDay;
-					//set up end day
-					//search in next period for a start day
-					if(i+1 < m_periods.size())
+					// set up end day
+					// search in next period for a start day
+					if (i+1 < m_periods.size())
 						s.m_endDayOfTheYear = m_periods[i+1].m_intervalStartDay - 1;
 					s.m_type = dt;
 					NANDRAD::DailyCycle dcNANDRAD;
@@ -385,21 +383,21 @@ void Schedule::insertIntoNandradSchedulegroup(const std::string & varName, std::
 			}
 		}
 	}
-	else{
-		for(unsigned int i=0; i<m_periods.size(); ++i){
+	else {
+		for (unsigned int i=0; i<m_periods.size(); ++i){
 			const VICUS::ScheduleInterval &period = m_periods[i];
 
-			for(unsigned int j=0; j<period.m_dailyCycles.size(); ++j){
+			for (unsigned int j=0; j<period.m_dailyCycles.size(); ++j){
 				const VICUS::DailyCycle &dc = period.m_dailyCycles[j];
 
-				//merge all possible day types
+				// merge all possible day types
 				std::vector<NANDRAD::Schedule::ScheduledDayType> dts = mergeDayType(dc.m_dayTypes);
 
-				//loop over all day types of vicus schedule
+				// loop over all day types of vicus schedule
 				for(NANDRAD::Schedule::ScheduledDayType dt : dts){
 
 					bool valuesAdded = false;
-					//check if a period with equal start+end date exists
+					// check if a period with equal start+end date exists
 					for(NANDRAD::Schedule &schedNandrad : scheduleGroup){
 
 						//now check day types of vicus schedule with nandrad schedule
