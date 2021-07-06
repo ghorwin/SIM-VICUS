@@ -317,7 +317,52 @@ alpha$ & $W/m^2K$ & Wärmeübergangskoeffizient
 
 \begin_layout Plain Layout
 
-$a$ & $[0..1]$ & Adsorbtion rate for solar radiation
+$a$ & $[0..1]$ & Absorptionskoeffizient für kurzwelligige Solarstrahlung
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$A$ & $m^2$ & Fläche
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$A_Z$ & $m^2$ & Zonengrundfläche
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$V$ & $m^3$ & Volumen
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$d$ & $m$ & Dicke einer Konstruktionsschicht
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$L_W$ & $m$ & Wanddicke
 \backslash
 
 \backslash
@@ -328,7 +373,8 @@ $a$ & $[0..1]$ & Adsorbtion rate for solar radiation
 
 $
 \backslash
-tau$ & $[0..1]$ & Transmission rate for solar radiation
+gamma_{SWRad,conv}$ & $[0..1]$ & Anteil der in konvektive Wärme umgewandelter
+ kurzwelliger Strahlungslast
 \backslash
 
 \backslash
@@ -337,7 +383,7 @@ tau$ & $[0..1]$ & Transmission rate for solar radiation
 
 \begin_layout Plain Layout
 
-$r$ & $[0..1]$ & Reflection rate for solar radiation
+$f$ & $[0..1]$ & Rahmenanteil von Fenstern
 \backslash
 
 \backslash
@@ -346,9 +392,7 @@ $r$ & $[0..1]$ & Reflection rate for solar radiation
 
 \begin_layout Plain Layout
 
-$
-\backslash
-varepsilon$ & $[0..1]$ & Emission rate for long wave radiation
+$z$ & $[0..1]$ & Verschattungsfaktor von Fenstern
 \backslash
 
 \backslash
@@ -357,9 +401,7 @@ varepsilon$ & $[0..1]$ & Emission rate for long wave radiation
 
 \begin_layout Plain Layout
 
-$
-\backslash
-Phi$ & $[0..1]$ & View factor between a point and a surface/ different surfaces
+$U$ & $W/m^2K$ & Wärmetransmissionskoeffizient, äußerer U-Wert
 \backslash
 
 \backslash
@@ -368,7 +410,7 @@ Phi$ & $[0..1]$ & View factor between a point and a surface/ different surfaces
 
 \begin_layout Plain Layout
 
-$A$ & $m^2$ & Area
+$n_N$ & $1/s$ & Luftwechselrate für natürliche Lüftung
 \backslash
 
 \backslash
@@ -377,7 +419,7 @@ $A$ & $m^2$ & Area
 
 \begin_layout Plain Layout
 
-$A_Z$ & $m^2$ & Zone floor area
+$N_P$ & & Maximale Personenbelegung eines Raumes
 \backslash
 
 \backslash
@@ -386,25 +428,7 @@ $A_Z$ & $m^2$ & Zone floor area
 
 \begin_layout Plain Layout
 
-$V$ & $m^3$ & Volume
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$d$ & $m$ & Thickness of a construction layer
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$L_W$ & $m$ & Wall thickness
+$f_P$ & $[0..1]$ & Anteil der ausgenutzten maximalen Personenbelegung
 \backslash
 
 \backslash
@@ -415,7 +439,7 @@ $L_W$ & $m$ & Wall thickness
 
 $
 \backslash
-gamma_{conv}$ & $[0..1]$ & Rate of convective loads
+dot{Q}$ & $W = J/s$ & Wärmestrom
 \backslash
 
 \backslash
@@ -424,94 +448,7 @@ gamma_{conv}$ & $[0..1]$ & Rate of convective loads
 
 \begin_layout Plain Layout
 
-$
-\backslash
-gamma_{rad}$ & $[0..1]$ & Rate of radiant loads
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$
-\backslash
-gamma_{visible}$ & $[0..1]$ & Rate of visible loads
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$f$ & $[0..1]$ & Frame factor of a window
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$z$ & $[0..1]$ & Shading factoe of a window
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$U$ & $W/m^2K$ & Heat transmission coefficient, U-value
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$n_N$ & $1/s$ & Natural ventilation air change rate
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$N_P$ & & Maximum number of persons inside a room
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$f_P$ & $[0..1]$ & Rate of person occupancy
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$
-\backslash
-dot{Q}$ & $W = J/s$ & Heat flux
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$q$ & $W/m^2$ & Heat flux density
+$q$ & $W/m^2$ & Wärmestromdichte
 \backslash
 
 \backslash
@@ -524,7 +461,7 @@ $q_{rad,
 \backslash
 alpha
 \backslash
-beta}$ & $W/m^2$ &  Global solar radiation at an inclined surface
+beta}$ & $W/m^2$ & Globale Solarstrahlung auf eine geneigte Oberfläche
 \backslash
 
 \backslash
@@ -535,7 +472,7 @@ beta}$ & $W/m^2$ &  Global solar radiation at an inclined surface
 
 $
 \backslash
-dot{u}$ & $W/m^3$ & Heat source inside a volume
+dot{u}$ & $W/m^3$ & Volumenbezogene Wärmequelle
 \backslash
 
 \backslash
@@ -546,8 +483,7 @@ dot{u}$ & $W/m^3$ & Heat source inside a volume
 
 $
 \backslash
-dot{e}$ & $W/m^2$ & Long wave radiation intrinsic emission of an inside
- surface
+dot{Q}_{act}$ & $W$ & Personenlast
 \backslash
 
 \backslash
@@ -558,7 +494,7 @@ dot{e}$ & $W/m^2$ & Long wave radiation intrinsic emission of an inside
 
 $
 \backslash
-dot{f}$ & $W/m^2$ & Long wave radiance of an inside surface
+dot{Q}_{loss}$ & $W$ & Thermische Verluste durch Personen
 \backslash
 
 \backslash
@@ -569,7 +505,8 @@ dot{f}$ & $W/m^2$ & Long wave radiance of an inside surface
 
 $
 \backslash
-dot{h}$ & $W/m^2$ & Incoming long wave radiation at an inside surface
+dot{q}_{elec}$ & $W/m^2$ & Zonengrundflächenbezogene maximale Wärmelast
+ durch elektrische Geräte
 \backslash
 
 \backslash
@@ -580,42 +517,8 @@ dot{h}$ & $W/m^2$ & Incoming long wave radiation at an inside surface
 
 $
 \backslash
-dot{Q}_{act}$ & $W$ & Load from person activity
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$
-\backslash
-dot{Q}_{loss}$ & $W$ & Thermal losses from person occupancy
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$
-\backslash
-dot{q}_{elec}$ & $W/m^2$ & Maximum thermal loads from equipment per zone
- floor area
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$
-\backslash
-dot{q}_{lights}$ & $W/m^2$ & Maximum thermal loads from lighting per zone
- floor area
+dot{q}_{lights}$ & $W/m^2$ & Zonengrundflächenbezogene maximale Wärmelast
+ durch Beleuchtung
 \backslash
 
 \backslash
@@ -651,7 +554,7 @@ begin{longtable}{ll}
 
 \begin_layout Plain Layout
 
-Symbol & Description 
+Symbol & Becshreibung 
 \backslash
 
 \backslash
@@ -700,7 +603,7 @@ bottomrule
 
 
 \backslash
-caption{List of indices}
+caption{Indexliste}
 \end_layout
 
 \begin_layout Plain Layout
@@ -718,7 +621,7 @@ endlastfoot
 
 $
 \backslash
-psi$ & Abstract physical quantity
+psi$ & Abstrakte physikalische Größe
 \backslash
 
 \backslash
@@ -729,7 +632,7 @@ psi$ & Abstract physical quantity
 
 $
 \backslash
-psi_Z$ & Physical quantity of a zone
+psi_Z$ & Physikalische Größe einer Zone
 \backslash
 
 \backslash
@@ -740,7 +643,7 @@ psi_Z$ & Physical quantity of a zone
 
 $
 \backslash
-psi_e$ & Ambient physical quantity
+psi_e$ & Physikalische Größe der außenliegenden Umgebung
 \backslash
 
 \backslash
@@ -751,7 +654,7 @@ psi_e$ & Ambient physical quantity
 
 $
 \backslash
-psi_W$ & Physical quantity of a wall surface
+psi_W$ & Physikalische Größe einer Wandoberfläche
 \backslash
 
 \backslash
@@ -762,7 +665,7 @@ psi_W$ & Physical quantity of a wall surface
 
 $
 \backslash
-psi_F$ & Physical quantity of a window inside surface
+psi_F$ & Physikalische Größe einer Fensterinnenoberfläche
 \backslash
 
 \backslash
@@ -773,7 +676,7 @@ psi_F$ & Physical quantity of a window inside surface
 
 $
 \backslash
-psi_{H}$ & Physical quantity due to zone heating
+psi_{H}$ & Physikalische Größe ideale Zonenheizung
 \backslash
 
 \backslash
@@ -784,7 +687,7 @@ psi_{H}$ & Physical quantity due to zone heating
 
 $
 \backslash
-psi_{C}$ & Physical quantity due to zone cooling
+psi_{C}$ & Physikalische Größe ideale Zonenkühlung
 \backslash
 
 \backslash
@@ -795,7 +698,7 @@ psi_{C}$ & Physical quantity due to zone cooling
 
 $
 \backslash
-psi_{AB}$ & Physical quantity inside active elements of constructions
+psi_{AB}$ & Physikalische Größe innerhalb einer aktiven Konstruktionsschicht
 \backslash
 
 \backslash
@@ -806,7 +709,7 @@ psi_{AB}$ & Physical quantity inside active elements of constructions
 
 $
 \backslash
-psi_{conv}$ & Convective transport flux/ flux density
+psi_{conv}$ & Konvektiver Transportstrom/-dichte
 \backslash
 
 \backslash
@@ -817,7 +720,7 @@ psi_{conv}$ & Convective transport flux/ flux density
 
 $
 \backslash
-psi_{rad}$ & Radiant transport flux/ flux density
+psi_{rad}$ & Transportstrom/-dichte durch langwellige und kurzwellige Strahlung
 \backslash
 
 \backslash
@@ -828,7 +731,7 @@ psi_{rad}$ & Radiant transport flux/ flux density
 
 $
 \backslash
-psi_{LWRad}$ & Long wave radiation transport flux/ flux density
+psi_{SWRad}$ & Transportstrom/-dichte durch kurzwellige Strahlung
 \backslash
 
 \backslash
@@ -839,7 +742,7 @@ psi_{LWRad}$ & Long wave radiation transport flux/ flux density
 
 $
 \backslash
-psi_{SWRad}$ & Short wave radiation transport flux/ flux density
+psi_{LWRad}$ & Transportstrom/-dichte durch langwellige Strahlung
 \backslash
 
 \backslash
@@ -850,7 +753,7 @@ psi_{SWRad}$ & Short wave radiation transport flux/ flux density
 
 $
 \backslash
-psi_{trans}$ & Transmission transport flux/flux density
+psi_{cond}$ & Transportstrom/-dichte durch Wärmeleitung
 \backslash
 
 \backslash
@@ -861,7 +764,7 @@ psi_{trans}$ & Transmission transport flux/flux density
 
 $
 \backslash
-psi_N$ &  Quantity due to natural ventilation
+psi_N$ &  Physikalische Größe durch natürliche Lüftung
 \backslash
 
 \backslash
@@ -872,7 +775,7 @@ psi_N$ &  Quantity due to natural ventilation
 
 $
 \backslash
-psi_I$ &  Quantity due to infiltration
+psi_P$ &  Physikalische Größe durch Personenbelegung
 \backslash
 
 \backslash
@@ -883,7 +786,7 @@ psi_I$ &  Quantity due to infiltration
 
 $
 \backslash
-psi_P$ &  Quantity due to person occupancy
+psi_E$ &  Physikalische Größe durch elektrische Geräte
 \backslash
 
 \backslash
@@ -894,7 +797,7 @@ psi_P$ &  Quantity due to person occupancy
 
 $
 \backslash
-psi_E$ &  Quantity due to equipment
+psi_L$ &  Physikalische Größe durch Beleuchtung
 \backslash
 
 \backslash
@@ -905,7 +808,8 @@ psi_E$ &  Quantity due to equipment
 
 $
 \backslash
-psi_L$ &  Quantity due to lighting
+psi_NW$ &  Physikalische Größe durch Gesamtheit aller Netzwerkelemente in
+ einer Zone/Wand
 \backslash
 
 \backslash
@@ -957,11 +861,11 @@ In the case of building simulation we interpret the room as a zone node
  The room is filled with dry air.
  Further, furnishings significantly increase the thermal storage capability
  of the zone volume.
- Consequently, zone energy transport mechanisms are considered as transient.
+ Consequently, zone energy transport mechanisms are considered as transient
 \begin_inset Formula 
 \begin{align*}
-\frac{\text{d}Q_{R}}{\text{d}t}=\dot{Q}_{N}+\dot{Q}_{I}+\sum\limits _{i}^{n_{F}}\dot{Q}_{F,trans,i}+\sum\limits _{i}^{n_{W}}\dot{Q}_{W,conv,i}+\sum\limits _{i}^{n_{C}}\dot{Q}_{C,i}+\sum\limits _{i}^{n_{H}}\dot{Q}_{H,conv,i}\\
-+\gamma_{SW,conv}\sum\limits _{i}^{n_{F}}\dot{Q}_{SWRad,i}+\dot{Q}_{P,conv}+\dot{Q}_{E,conv}+\dot{Q}_{L,conv}
+\frac{\text{d}Q_{R}}{\text{d}t}=\dot{Q}_{N}+\sum\limits _{i}^{n_{F}}\dot{Q}_{F,cond,i}+\sum\limits _{i}^{n_{W}}\dot{Q}_{W,cond,i}+\sum\limits _{i}^{n_{C}}\dot{Q}_{C,i}+\sum\limits _{i}^{n_{H}}\dot{Q}_{H,i}\\
++\gamma_{SWRad,conv}\sum\limits _{i}^{n_{F}}\dot{Q}_{F,SWRad,i}+\dot{Q}_{P,conv}+\dot{Q}_{E,conv}+\dot{Q}_{L,conv}+\dot{Q}_{NW,i}
 \end{align*}
 
 \end_inset
@@ -971,16 +875,12 @@ Internal energy changes with time due to natural ventilation heat loads
 \begin_inset Formula $\dot{Q}_{N}$
 \end_inset
 
-, infiltration loads 
-\begin_inset Formula $\dot{Q}_{I}$
-\end_inset
-
 , heat conduction fluxes through the surrounding wall constructions 
-\begin_inset Formula $\dot{Q}_{W,conv,i}$
+\begin_inset Formula $\dot{Q}_{W,cond,i}$
 \end_inset
 
 , transmission fluxes through windows 
-\begin_inset Formula $\dot{Q}_{F,trans,i}$
+\begin_inset Formula $\dot{Q}_{F,cond,i}$
 \end_inset
 
 , internal cooling loads 
@@ -988,11 +888,11 @@ Internal energy changes with time due to natural ventilation heat loads
 \end_inset
 
 , convective heating loads 
-\begin_inset Formula $\dot{Q}_{H,conv,i}$
+\begin_inset Formula $\dot{Q}_{H,i}$
 \end_inset
 
 , conctively transfered gains of incoming short wave radiation 
-\begin_inset Formula $\gamma_{SWRad}\dot{Q}_{SWRad,i}$
+\begin_inset Formula $\gamma_{conv}\dot{Q}_{F,SWRad,i}$
 \end_inset
 
  and convective person, equipment and lighting loads 
@@ -1007,11 +907,15 @@ Internal energy changes with time due to natural ventilation heat loads
 \begin_inset Formula $\dot{Q}_{L,conv}$
 \end_inset
 
+ and 
+\begin_inset Formula $\dot{Q}_{NW}$
+\end_inset
+
 .
  Short wave radiation heat gains on single wall surfaces and the related
  increased heat transfer due to air convection is included in the coefficient
  
-\begin_inset Formula $\gamma_{SW,conv}$
+\begin_inset Formula $\gamma_{SWRad,conv}$
 \end_inset
 
 .
@@ -1063,22 +967,18 @@ Boundary condition model for wall inside surfaces
 \begin_layout Standard
 At the inside wall surface several heat tranfer mechanisms are present:
  the convective heat transfer between wall surface and room air 
-\begin_inset Formula $q_{conv,W,si}$
+\begin_inset Formula $q_{conv,W,i}$
 \end_inset
 
 , heat gains due to short wave radiation heat flux densities 
-\begin_inset Formula $q_{SWRad,W,si}$
+\begin_inset Formula $q_{rad,W,i}$
 \end_inset
 
- and long wave radiation heat flux densities 
-\begin_inset Formula $\dot{q}_{LWRad,W,si}$
-\end_inset
-
-.
+ .
  
 \begin_inset Formula 
 \begin{eqnarray*}
-q_{W,si} & = & q_{conv,W,si}+q_{SWRad,W,si}+\dot{q}_{LWRad,W,si}
+q_{W,i} & = & q_{conv,W,i}+q_{rad,W,i}
 \end{eqnarray*}
 
 \end_inset
@@ -1090,12 +990,12 @@ The convective heat transfer between the wall surface and the room air is
 \end_inset
 
  and wall surface temperature 
-\begin_inset Formula $\vartheta_{W,si}$
+\begin_inset Formula $\vartheta_{W,i}$
 \end_inset
 
 .
  At the current model state the heat transfer coefficient 
-\begin_inset Formula $\alpha_{W,si}$
+\begin_inset Formula $\alpha_{W,i}$
 \end_inset
 
  both includes convective mechanisms as well as the long wave radiation
@@ -1106,20 +1006,16 @@ The convective heat transfer between the wall surface and the room air is
  
 \begin_inset Formula 
 \begin{eqnarray*}
-q_{conv,W,si} & = & \alpha_{W,si}\left(\vartheta_{R}-\vartheta_{W,si}\right)\\
-q_{SWRad,W,si} & = & q_{SWRad,W}\\
-\dot{q}_{LWRad,W,si} & = & q_{H,W}+q_{P,W}+q_{E,W}+q_{L,W}
+q_{conv,W,i} & = & \alpha_{W,i}\left(\vartheta_{R}-\vartheta_{W,i}\right)\\
+q_{rad,W,i} & = & q_{LWRad,W}+q_{P,W}+q_{E,W}+q_{L,W}
 \end{eqnarray*}
 
 \end_inset
 
 We assume a uniform distribution of long wave and short wave radiation loads
  at all internal wall surfaces.
- The long wave radiation entries result from radiant heating 
-\begin_inset Formula $q_{HC,W}$
-\end_inset
-
-, radiant loads from persons, equipment and lighting 
+ The entries result from radiant loads from persons, equipment and lighting
+ 
 \begin_inset Formula $q_{P,W}$
 \end_inset
 
@@ -1152,23 +1048,22 @@ Thermal conditions at the outside wall surfaces are affected by the heat
 ).
  These effects are lead to heat fluxes with respect to convective heat transfer
  
-\begin_inset Formula $q_{conv,W,si}$
+\begin_inset Formula $q_{conv,W,i}$
 \end_inset
 
  and adsorbed radiation gains 
-\begin_inset Formula $q_{SWRad,W,si}$
+\begin_inset Formula $q_{SWRad,W,i}$
 \end_inset
 
  with 
-\begin_inset Formula $a_{W,si}$
+\begin_inset Formula $a_{W,i}$
 \end_inset
 
  denoting the solar adsorbtion coefficient.
 \begin_inset Formula 
 \begin{eqnarray*}
-q_{conv,W,si} & = & \alpha_{W,si}\left(\vartheta_{e}\left(t\right)-\vartheta_{W,si}\right)\\
-q_{SWRad,W,si} & = & a_{W,si}q_{rad,si}\\
-\dot{q}_{LWRad,W,si} & = & 0
+q_{conv,W,i} & = & \alpha_{W,i}\left(\vartheta_{e}\left(t\right)-\vartheta_{W,i}\right)\\
+q_{rad,W,i} & = & a_{W,i}q_{SWRad,i}
 \end{eqnarray*}
 
 \end_inset
@@ -1185,9 +1080,8 @@ Boundary condition model for adiabatic wall surfaces
 Adiabtic wall surfaces do not provide heat fluxes.
 \begin_inset Formula 
 \begin{eqnarray*}
-q_{conv,W,si} & = & 0\\
-q_{SWRad,W,si} & = & 0\\
-\dot{q}_{LWRad,W,si} & = & 0
+q_{conv,W,i} & = & 0\\
+q_{rad,W,i} & = & 0
 \end{eqnarray*}
 
 \end_inset
@@ -1246,14 +1140,14 @@ Non-geometric models usually do not provide information for the distribution
 
  therefore is a suitable approach.
  The incoming short wave radiation 
-\begin_inset Formula $\sum\limits _{i}^{n_{F}}\dot{Q}_{SWRad,i}$
+\begin_inset Formula $\sum\limits _{k}^{n_{F}}\dot{Q}_{SWRad,k}$
 \end_inset
 
  includes the rate of energy that is convectively transfered into the room.
  This amount needs to be excluded from short wave radiation balance.
 \begin_inset Formula 
 \begin{align*}
-q_{SWRad,W} & =\frac{\left(1-\gamma_{SWRad}\right)\sum\limits _{i}^{n_{F}}\dot{Q}_{SWRad,i}}{\sum\limits _{j}A_{W,j}}
+q_{LWRad,W} & =\frac{\left(1-\gamma_{SWRad,conv}\right)\sum\limits _{i}^{n_{F}}\dot{Q}_{SWRad,i}}{\sum\limits _{i}^{n_{W}}A_{W,i}}
 \end{align*}
 
 \end_inset
@@ -1263,36 +1157,6 @@ q_{SWRad,W} & =\frac{\left(1-\gamma_{SWRad}\right)\sum\limits _{i}^{n_{F}}\dot{Q
 \end_inset
 
  denotes the sum of internal netto wall surfaces.
-\end_layout
-
-\begin_layout Subsubsection*
-Distribution of heating radiation gains
-\end_layout
-
-\begin_layout Standard
-Long wave radiation gains 
-\begin_inset Formula $\dot{Q}_{H,rad,i}$
-\end_inset
-
- are transfered between the heating and the wall surfaces and explicitely
- are provided by most heating elements.
- In a similar manner to the short wave radiation gains long wave radiation
- heat gains are described by an uniformely distributed heat flux density
- 
-\begin_inset Formula $q_{H,W}$
-\end_inset
-
- towards all wall surfaces.
-\begin_inset Formula 
-\begin{align*}
-q_{H,W} & =\frac{\sum\limits _{i}^{n_{H}}\dot{Q}_{H,rad,i}}{\sum\limits _{j}A_{W,j}}
-\end{align*}
-
-\end_inset
-
-Assuming an uniform distribution the gains of all heating elements may cumulativ
-ely be supplied.
- 
 \end_layout
 
 \begin_layout Subsubsection*
@@ -1316,7 +1180,7 @@ No geometrical information is required for the calculation of long wave
  
 \begin_inset Formula 
 \begin{align*}
-q_{P,E,L,W} & =\frac{\dot{Q}_{P,E,L,rad}}{\sum\limits _{j}A_{W,j}}
+q_{P,E,L,W} & =\frac{\dot{Q}_{P,E,L,LWRad}}{\sum\limits _{i}^{n_{W}}A_{W,i}}
 \end{align*}
 
 \end_inset
@@ -1325,89 +1189,11 @@ q_{P,E,L,W} & =\frac{\dot{Q}_{P,E,L,rad}}{\sum\limits _{j}A_{W,j}}
 \end_layout
 
 \begin_layout Subsubsection*
-Long wave radiation exchange
-\end_layout
-
-\begin_layout Standard
-If view factors between all inside wall and window surfaces are defined,
- long wave radiation exchange is considered.
- We consider the intrinsic emission 
-\begin_inset Formula $\dot{e}_{W,si}$
-\end_inset
-
-, radiance 
-\begin_inset Formula $\dot{f}_{W,si}$
-\end_inset
-
- (the amount of emitted radiation) and incoming radiation 
-\begin_inset Formula $\dot{h}_{W,si}$
-\end_inset
-
- of the wall surface.
- Using thermal equilibrium approach the emitted radiation is equal to the
- adsorbed one and may be described by Stefan-Boltzmans law.
- Radiance includes intrinsic emission and reflected radiation from all other
- surfaces generates.
- The visibility of the current surface to each other surface is described
- by the view factor 
-\begin_inset Formula $\Phi_{si,sj}$
-\end_inset
-
-.
- We calculate the reflected amount of incoming radiation by 
-\begin_inset Formula $\left(1-\varepsilon_{W,si}\right)\dot{h}_{W,si}$
-\end_inset
-
-.
-\begin_inset Formula 
-\begin{eqnarray*}
-\dot{e}_{W,si} & = & \varepsilon_{W,si}k_{B}T_{W,si}^{4}\\
-\dot{h}_{W,si} & = & \sum_{j\neq i}^{n_{W}}\Phi_{si,sj}\dot{f}_{W,sj}\\
-\dot{f}_{W,si} & = & \dot{e}_{W,si}+\left(1-\varepsilon_{W,si}\right)\dot{h}_{W,si}
-\end{eqnarray*}
-
-\end_inset
-
-The long wave radiation balance forms a linear system of equations for the
- radiances 
-\begin_inset Formula $\dot{f}_{W,si}$
-\end_inset
-
-.
- In order to avoid external couplings we introduce a model that solves long
- wave radiation balance for all interacting surfaces of one zone.
- The result of this model are the long wave radiation gains towards each
- wall 
-\begin_inset Formula $\dot{q}_{LWRad,W,si}$
-\end_inset
-
- that result from the remaining difference of incoming and emitted radiation.
- 
-\begin_inset Formula 
-\begin{eqnarray*}
-\dot{q}_{LWRad,W,si} & = & \dot{h}_{W,si}-\dot{f}_{W,si}
-\end{eqnarray*}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Windows are considered as opaque and do not adsorb long wave radiation.
- Long wave emissivity of each window is set to 
-\begin_inset Formula $\varepsilon_{F,i}=$
-\end_inset
-
-0.
-\end_layout
-
-\begin_layout Subsubsection*
 Thermal comfort 
 \end_layout
 
 \begin_layout Standard
-The mean radiant temperature r 
+The mean radiant temperature 
 \begin_inset Formula $\vartheta_{rad}$
 \end_inset
 
@@ -1475,7 +1261,7 @@ We use a steady state monolayer window model and caclculate the transmitted
 \begin_inset Formula 
 \begin{eqnarray*}
 \dot{Q}_{SWRad,i} & = & z_{F,i}\left(t\right)\,\tau_{F,i}\,f_{F,i}\,q_{rad,\alpha\beta,i}\left(t\right)A_{F,i}\\
-\dot{Q}_{F,trans,i} & = & U_{F,i}\left(\vartheta_{e}\left(t\right)-\vartheta_{Z}\right)A_{F,i}\\
+\dot{Q}_{F,cond,i} & = & U_{F,i}\left(\vartheta_{e}\left(t\right)-\vartheta_{Z}\right)A_{F,i}\\
 \vartheta_{F,i} & = & \vartheta_{Z}+\frac{1}{\alpha_{F,i}}\dot{q}_{F,trans,i}
 \end{eqnarray*}
 
@@ -1508,11 +1294,11 @@ The CCM climate module provides an ambient temperature
 \end_inset
 
  and the direct/diffuse solar radiation at a given surface 
-\begin_inset Formula $q_{rad,direct,si}\left(t\right)$
+\begin_inset Formula $q_{rad,direct,i}\left(t\right)$
 \end_inset
 
  and 
-\begin_inset Formula $q_{rad,diffuse,si}\left(t\right)$
+\begin_inset Formula $q_{rad,diffuse,i}\left(t\right)$
 \end_inset
 
 .
@@ -1524,14 +1310,14 @@ The CCM climate module provides an ambient temperature
 \begin_layout Standard
 \begin_inset Formula 
 \begin{eqnarray*}
-q_{rad,si}(t) & = & q_{rad,direct,si}\left(t\right)+q_{rad,diffuse,si}\left(t\right)
+q_{rad,i}(t) & = & q_{rad,direct,i}\left(t\right)+q_{rad,diffuse,i}\left(t\right)
 \end{eqnarray*}
 
 \end_inset
 
 With respect to external objects shading current wall or window, the user
  can reference time dependend shading factors 
-\begin_inset Formula $z_{W,si}\left(t\right)$
+\begin_inset Formula $z_{W,i}\left(t\right)$
 \end_inset
 
  defined for period of one year.
@@ -1539,7 +1325,7 @@ With respect to external objects shading current wall or window, the user
  
 \begin_inset Formula 
 \begin{eqnarray*}
-q_{rad,si}(t) & =z_{W,si}(t) & q_{rad,direct,si}\left(t\right)+q_{rad,diffuse,si}\left(t\right)
+q_{rad,i}(t) & =z_{W,i}(t) & q_{rad,direct,i}\left(t\right)+q_{rad,diffuse,si}\left(t\right)
 \end{eqnarray*}
 
 \end_inset
@@ -1630,7 +1416,7 @@ Each load is both transfered convectively to the room air and as long wave
 \begin{align*}
 \dot{Q}_{P,conv} & =\left(1-\gamma_{P,rad}\right)\dot{Q}_{P}\\
 \dot{Q}_{E,conv} & =\left(1-\gamma_{E,rad}\right)\dot{Q}_{E}\\
-\dot{Q}_{L,conv} & =\left(1-\gamma_{L,rad}-\gamma_{L,visib}\right)\dot{Q}_{E}
+\dot{Q}_{L,conv} & =\left(1-\gamma_{L,rad}\right)\dot{Q}_{E}
 \end{align*}
 
 \end_inset
@@ -1713,24 +1499,6 @@ An ideal heating model can be activated for each space type by choosing
 
 \end_inset
 
-In order to reach an optimal control result we choose the heat transfer
- type of the heating according to the cotrol temperature.
- The heating is considered to be convectively if zone air temperature is
- chosen as control quantity.
- If opertaive temperature is chosen we split heating power in an equal convectiv
-e and radiant load.
- 
-\begin_inset Formula 
-\begin{align*}
-\dot{Q}_{H,conv} & =\begin{cases}
-\dot{Q}_{H} & \mbox{if }\vartheta_{C}=\vartheta_{Z}\\
-0.5\cdot\dot{Q}_{H} & \mbox{if }\vartheta_{C}=\vartheta_{op}
-\end{cases}\\
-\dot{Q}_{H,rad} & =\dot{Q}_{H}-\dot{Q}_{H,conv}
-\end{align*}
-
-\end_inset
-
 Currently, cooling control is only allowed with respect to zone air temperature.
  Consequently, cooling only convective cooling is taken into account.
  
@@ -1743,50 +1511,6 @@ Currently, cooling control is only allowed with respect to zone air temperature.
 \end_inset
 
 
-\end_layout
-
-\begin_layout Subsubsection*
-Heating point source (generic model)
-\end_layout
-
-\begin_layout Standard
-The point source model is simplest heating model.
- The heating load 
-\begin_inset Formula $\dot{Q}_{H,load}\left(t\right)$
-\end_inset
-
- is a scheduled input quantity being interpreted as convective or radiant
- load.
- Dividing the heat load into these parts a constant parameter 
-\begin_inset Formula $\gamma_{H,i}$
-\end_inset
-
- is introduced.
- We allow the definition of more than one point source.
- 
-\begin_inset Formula 
-\begin{eqnarray*}
-\dot{Q}_{H,rad,i} & = & \gamma_{H,i}\dot{Q}_{H,load}\left(t\right)\\
-\dot{Q}_{H,conv,i} & = & \left(1-\gamma_{H,i}\right)\dot{Q}_{H,load}\left(t\right)
-\end{eqnarray*}
-
-\end_inset
-
-View factors for each inside surface to a point source 
-\begin_inset Formula $\Phi_{H,sj}$
-\end_inset
-
- may be defined.
- In this case equal distribution of long wave radiation gains towards all
- surfaces is substituted by individual calculation for all surfaces.
-\begin_inset Formula 
-\begin{align*}
-q_{H,W,sj} & =\Phi_{H,sj}\frac{\gamma_{H,i}\dot{Q}_{H,rad,i}\left(t\right)}{A_{W,j}}
-\end{align*}
-
-\end_inset
-
-Long wave radiation gains may only be allowed on solid room inside surfaces.
 \end_layout
 
 \begin_layout Subsubsection*
@@ -1865,7 +1589,7 @@ At the current delevpment state (passive operation of teh building with
 \begin_inset Formula 
 \begin{align*}
 \dot{m}_{N} & =\rho_{Air}\,n_{N}(t)\,V_{Z}\\
-\dot{m}_{I} & =\rho_{Air}\,n_{I}(t)\,V_{Z}
+\dot{m}_{I} & =\rho_{Air}\,n_{I}\,V_{Z}
 \end{align*}
 
 \end_inset
