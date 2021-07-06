@@ -70,7 +70,6 @@ public:
 	NANDRAD_READWRITE
 	NANDRAD_COMP(Schedules)
 
-	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! This function does all the work in the actual schedule-by-daily-cycle implementation.
 		It constructs a linear spline for cyclic annual use by processing all days of the year,
@@ -85,6 +84,13 @@ public:
 							  IBK::LinearSpline & spline,
 							  DailyCycle::interpolation_t & interpolationType
 							  ) const;
+
+
+	/*! Compares two schedule groups by schedule content, hereby ignoring the name of the schedule group. */
+	static bool equalSchedules(const std::vector<Schedule> & first, const std::vector<Schedule> & second);
+
+
+	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! List of holiday days, stored in "day of the year", not including leap days. */
 	std::set< unsigned int>													m_holidays;

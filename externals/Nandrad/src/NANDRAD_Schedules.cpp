@@ -546,5 +546,11 @@ void Schedules::generateLinearSpline(const std::string & objectListName, const s
 }
 
 
+bool Schedules::equalSchedules(const std::vector<Schedule> & first, const std::vector<Schedule> & second) {
+	// TODO Dirk
+	return false;
+}
+
+
 } // namespace NANDRAD
 

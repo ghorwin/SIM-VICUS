@@ -77,9 +77,9 @@ public:
 
 	QStringList errorStack;
 
-	std::vector<NANDRAD::InternalLoadsModel>	m_internalLoadObjects;
-	std::vector<NANDRAD::ObjectList>			m_objLists;
-	std::vector<NANDRAD::Schedule>				m_schedules;
+	std::vector<NANDRAD::InternalLoadsModel>		m_internalLoadObjects;
+	std::vector<NANDRAD::ObjectList>				m_objLists;
+	std::vector< std::vector<NANDRAD::Schedule> >	m_schedules;
 
 };
 
@@ -366,15 +366,20 @@ void InternalLoadsModelGenerator::generate(const Room * r, QStringList & errorSt
 	NANDRAD::KeywordList::setParameter(internalLoadsModel.m_para, "InternalLoadsModel::para_t", NANDRAD::InternalLoadsModel::P_LightingRadiationFraction, lightingRadiationFraction);
 
 	// Now we check if we have already an internal loads model object with exactly the same parameters (except ID and name).
-	// Then, we lookup the schedule for the same object list.
+	// Then, we also compare the matching schedule (the internal loads model object and corresponding schedule have same ID).
 	// If this schedule is also identitical to our generated schedule, we simply extend the object list by our zone ID
 	// otherwise we add load and schedule definitions and generate a new object list.
 
-
-
-
-	// generate object lists
-
+	for (unsigned int i=0; i<m_internalLoadObjects.size(); ++i) {
+		if (m_internalLoadObjects[i].equal(internalLoadsModel) &&
+			NANDRAD::Schedules::equalSchedules(m_schedules[i], scheds) )
+		{
+			// insert our zone ID in object list
+		}
+		else {
+			// append definitions and create new object list
+		}
+	}
 
 }
 
