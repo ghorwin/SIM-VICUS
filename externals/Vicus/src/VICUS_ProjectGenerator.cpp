@@ -236,7 +236,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, QStringList & errorSt
 			IBK_ASSERT(intLoadPerson->m_category == InternalLoad::IC_Person);
 
 			// - depending on parametrization option (m_personCountMethod) compute W/m2
-			double personPerArea;
+			double personPerArea = 0;
 			switch (intLoadPerson->m_personCountMethod) {
 				case VICUS::InternalLoad::PCM_PersonPerArea:
 					personPerArea = intLoadPerson->m_para[InternalLoad::P_PersonPerArea].value;
@@ -250,26 +250,29 @@ void InternalLoadsModelGenerator::generate(const Room * r, QStringList & errorSt
 				case VICUS::InternalLoad::NUM_PCM: ; // just to make compiler happy
 			}
 
-			// - retrieve schedules referenced via m_occupancyScheduleId and m_activityScheduleId -> incl. error checks
+			// - retrieve schedules referenced via m_occupancyScheduleId and m_activityScheduleId
+			//   valid schedule references have been checked in isValid() already
 			const Schedule * activitySchedule = scheduleDB[intLoadPerson->m_activityScheduleId];
 			const Schedule * occupancySchedule = scheduleDB[intLoadPerson->m_occupancyScheduleId];
 			// - multiply all three values for each sample in each schedule -> VICUS::Schedule with time series of time points and values for different day types
 			VICUS::Schedule combinedSchedule = activitySchedule->multiply(*occupancySchedule);
 			combinedSchedule = combinedSchedule.multiply(personPerArea);
 
-			// - convert VICUS::Schedule to NANDRAD Schedule
-
-
-			// - insert into scheds !
+			// - convert and insert VICUS::Schedule to NANDRAD schedule group
+			combinedSchedule.insertIntoNandradSchedulegroup(personSchedName, scheds);
 		}
 	}
-
 
 	// only continue if there were no errors so far
 	if (!errorStack.isEmpty())
 		return;
 
+	// now we have a valid schedule group, yet without object list name
+
 	// generate NANDRAD::InternalLoads object
+	NANDRAD::InternalLoadsModel internalLoadsModel;
+	internalLoadsModel.m_id = 1;
+
 	// generate object lists
 
 }
