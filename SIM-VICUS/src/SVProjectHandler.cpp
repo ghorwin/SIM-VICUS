@@ -457,8 +457,8 @@ bool SVProjectHandler::read(const QString & fname) {
 
 		m_lastReadTime = QFileInfo(fname).lastModified();
 
-		//update the colors
-		//if project has invalid colors nothing is drawn ...
+		// update the colors
+		// if project has invalid colors nothing is drawn ...
 		updateSurfaceColors();
 
 		// after reading the project file, we should update the views

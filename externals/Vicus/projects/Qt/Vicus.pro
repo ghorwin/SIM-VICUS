@@ -122,6 +122,7 @@ SOURCES += \
 	../../src/VICUS_Polygon2D.cpp \
 	../../src/VICUS_Polygon3D.cpp \
 	../../src/VICUS_Project.cpp \
+	../../src/VICUS_ProjectGenerator.cpp \
 	../../src/VICUS_Schedule.cpp \
 	../../src/VICUS_ScheduleInterval.cpp \
 	../../src/VICUS_SubNetwork.cpp \

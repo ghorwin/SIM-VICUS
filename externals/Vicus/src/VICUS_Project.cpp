@@ -700,7 +700,7 @@ Project::ConversionError::~ConversionError() {
 }
 
 
-void Project::generateNandradProject(NANDRAD::Project & p) const {
+void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorStack) const {
 
 	// simulation settings
 	p.m_simulationParameter = m_simulationParameter;
@@ -721,7 +721,7 @@ void Project::generateNandradProject(NANDRAD::Project & p) const {
 
 	// *** building geometry data and databases ***
 
-	generateBuildingProjectData(p);
+	generateBuildingProjectDataNeu(p, errorStack);
 
 
 	// *** generate network data ***
@@ -1390,6 +1390,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 	std::vector<IdMap>									m_idMaps{NUM_IdSpaces};
 
 	std::map<unsigned int, unsigned int>				vicusToNandradConstructionIds;
+
 	// *** m_zones ***
 
 	for (const VICUS::Building & b : m_buildings) {

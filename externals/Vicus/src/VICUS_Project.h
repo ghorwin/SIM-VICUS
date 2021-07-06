@@ -185,9 +185,12 @@ public:
 		This function throws an error message in case the conversion failed.
 		\param p The NANDRAD project to be populated.
 	*/
-	void generateNandradProject(NANDRAD::Project & p) const;
+	void generateNandradProject(NANDRAD::Project & p, QStringList & errorStack) const;
 	void generateBuildingProjectData(NANDRAD::Project & p) const;
+	void generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack) const;
 	void generateNetworkProjectData(NANDRAD::Project & p) const;
+
+	void generateNandradZones(std::vector<const VICUS::Room *> & zones, std::set<unsigned int> & idSet, NANDRAD::Project & p, QStringList & errorStack) const;
 
 	// *** STATIC FUNCTIONS ***
 
@@ -283,22 +286,6 @@ public:
 		}
 		return valid;
 	}
-	/*! Simple valid function elements with schedules. */
-	///TODO Dirk->Andreas wie kann ich hier die schedules mit einbinden?
-	/// auf SVSettings::instance().m_db kann ich hier doch nicht zugreifen das gibt doch ein circelbezug oder?
-	/// muss ich dass dann übergeben?
-//	template <typename T>
-//	bool isValidTemplate(const std::vector<T> elements, QStringList &errorStack, const QString &name ){
-//		bool valid = true;
-//		for(const  T &e : elements){
-//			if(!e.isValid() ){
-//				errorStack << tr("The %3 with #%1 and name '%2' is not valid! Export failed.")
-//							  .arg(e.m_id).arg(QString::fromStdString(e.m_displayName.string()).arg(name));
-//				valid = false;
-//			}
-//		}
-//		return valid;
-//	}
 
 	/*! Generates a new unique name in format "basename" or "basename [<nr>]" with increasing numbers until
 		the name no longer exists in set existingNames.
@@ -316,7 +303,34 @@ public:
 		return name;
 	}
 
+	/*! Test function that checks that all objects in the given vector have unique m_id parameters.
+		The set passed as second argument is used for comparison. Pass an empty set if only the elements
+		in the vector itself shall be tested. You can re-use the populated set for another call
+		to this function, if you want to ensure uniqueness of several object vectors.
+	*/
+	template <typename T>
+	static void checkForUniqueIDs(const std::vector<T> & vec, std::set<unsigned int> & usedIDs) {
+		FUNCID(Project::checkForUniqueIDs);
 
+		for (const T & t : vec) {
+			if (usedIDs.find(t.m_id) != usedIDs.end())
+				throw IBK::Exception(IBK::FormatString("Duplicate model/object ID #%1.")
+									 .arg(t.m_id), FUNC_ID);
+			usedIDs.insert(t.m_id);
+		}
+	}
+
+	template <typename T>
+	static void checkForUniqueIDs(const std::vector<const T*> & vec, std::set<unsigned int> & usedIDs) {
+		FUNCID(Project::checkForUniqueIDs);
+
+		for (const T * t : vec) {
+			if (usedIDs.find(t->m_id) != usedIDs.end())
+				throw IBK::Exception(IBK::FormatString("Duplicate model/object ID #%1.")
+									 .arg(t->m_id), FUNC_ID);
+			usedIDs.insert(t->m_id);
+		}
+	}
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
