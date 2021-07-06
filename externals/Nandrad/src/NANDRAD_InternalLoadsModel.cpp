@@ -81,10 +81,17 @@ void InternalLoadsModel::checkParameters() const {
 	}
 }
 
-
 bool InternalLoadsModel::equal(const InternalLoadsModel & other) const {
-	// TODO : Dirk
-	return false;
+	//check parameters
+	for(unsigned int i=0; i<NUM_P; ++i){
+		if(m_para[i] != other.m_para[i])
+			return false;
+	}
+
+	if(m_modelType != other.m_modelType)
+		return false;
+
+	return true;
 }
 
 } // namespace NANDRAD
