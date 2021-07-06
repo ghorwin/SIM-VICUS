@@ -907,68 +907,7 @@ std::string createUniqueNandradObjListAndName(const std::string &name,
 }
 
 /* Returns the possible merged day types. If no merge is possible returns dts. */
-std::vector<NANDRAD::Schedule::ScheduledDayType> mergeDayType(const std::vector<int> &dts){
-//	unsigned int weekDayCount=0, weekEndCount=0;
-//	bool hasHoli = false;
-	std::set<int> dtSet,weekDaySet,weekEndSet,holiSet;
-	for(int v : dts){
-		if(v == NANDRAD::Schedule::ST_MONDAY ||
-				v == NANDRAD::Schedule::ST_TUESDAY ||
-				v == NANDRAD::Schedule::ST_WEDNESDAY ||
-				v == NANDRAD::Schedule::ST_THURSDAY ||
-				v == NANDRAD::Schedule::ST_FRIDAY)
-			weekDaySet.insert(v);
-		else if(v == NANDRAD::Schedule::ST_SATURDAY ||
-				v == NANDRAD::Schedule::ST_SUNDAY)
-			weekEndSet.insert(v);
-		else if(v == NANDRAD::Schedule::ST_HOLIDAY)
-			holiSet.insert(v);
-		dtSet.insert(v);
-	}
-
-	std::vector<NANDRAD::Schedule::ScheduledDayType> schedDts;
-	if(!holiSet.empty())
-		schedDts.push_back(NANDRAD::Schedule::ST_HOLIDAY);
-
-//	std::set<int>::iterator it = holiSet.begin();
-//	int aa = *it;
-
-	//AllDays
-	if(weekDaySet.size() + weekEndSet.size() == 7)
-		return std::vector<NANDRAD::Schedule::ScheduledDayType> {NANDRAD::Schedule::ST_ALLDAYS};
-	//WeekDay
-	else if(weekDaySet.size() == 5){
-		//on pos 1 can be holiday -> swap weekday to pos 1
-		schedDts.insert(schedDts.begin(), NANDRAD::Schedule::ST_WEEKDAY);
-		switch (weekEndSet.size()) {
-			case 0:		return schedDts;
-			case 1:{
-				for(int val : weekEndSet)
-					schedDts.push_back((NANDRAD::Schedule::ScheduledDayType)val);
-				std::swap(schedDts[1], schedDts.back());
-				return schedDts;
-			}
-		}
-	}
-	//WeekEnd
-	else if(weekEndSet.size() == 2){
-		//on pos 1 can be holiday -> swap weekend to pos 1
-		schedDts.insert(schedDts.begin(), NANDRAD::Schedule::ST_WEEKEND);
-		if(weekDaySet.empty())
-			return schedDts;
-		else{
-			for (int i : weekDaySet)
-				schedDts.push_back(NANDRAD::Schedule::ScheduledDayType(i));
-			std::swap(schedDts[1], schedDts.back());
-			return schedDts;
-		}
-	}
-	//no merge possible
-	schedDts.clear();
-	for (int i : dts)
-		schedDts.push_back(NANDRAD::Schedule::ScheduledDayType(i));
-	return schedDts;
-}
+std::vector<NANDRAD::Schedule::ScheduledDayType> mergeDayType(const std::vector<int> &dts);
 
 
 /* Important in the NANDRAD project the scheduleQuantity is not added. Otherwise the project is inconsistent. */
