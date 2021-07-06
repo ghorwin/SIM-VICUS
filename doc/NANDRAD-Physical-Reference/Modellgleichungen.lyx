@@ -1,0 +1,224 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\usepackage[hang,scriptsize]{subfigure}
+\usepackage{float}
+\usepackage{color}
+\usepackage{calc}
+
+\definecolor{linkblue}{rgb}{0,0,0.4}
+\definecolor{navy}{rgb}{0,0,0.3}
+\definecolor{light-gray}{gray}{0.98}
+\definecolor{dark-gray}{gray}{0.45}
+
+%\usepackage{dsfont}
+
+\newcommand{\wframe}[1]{\frame{#1}}
+
+%
+% fancy header stuff
+%
+\fancyhead{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\fancyhead[RE]{\footnotesize{CHAP.} \normalsize{\thechapter} }
+\fancyhead[LO]{\footnotesize{SEC.} \normalsize{\thesection} }
+
+%\renewcommand\thepage{\Large{\arabic{page}}}
+\newlength{\pagenumwidth}
+\newlength{\headertextwidth}
+\settowidth{\pagenumwidth}{\Large{\thepage}}
+\setlength{\headertextwidth}{\textwidth}
+\addtolength{\headertextwidth}{-3cm}
+\addtolength{\headertextwidth}{-1\pagenumwidth}
+\fancyhead[LE]{\Large{\thepage} \hspace{0.2cm}  \parbox[b]{\headertextwidth}{\leftmark}}
+\fancyhead[RO]{\parbox[b]{\headertextwidth}{\flushright\rightmark} \hspace{0.2cm} \Large{\thepage}}
+
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage[font=small, labelfont=bf, format=hang]{caption}
+
+
+% Zur Verwendung des Grad-Zeichens auf deutschen Tastaturen
+\DeclareUnicodeCharacter{00B0}{^\circ}
+\end_preamble
+\options fleqn
+\use_default_options true
+\begin_modules
+pdfform
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format pdf2
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref true
+\pdf_title "NANDRAD Modelgleichungen"
+\pdf_author "Anne Paepcke, Andreas Nicolai, Dirk Weiß"
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks true
+\pdf_backref section
+\pdf_pdfusetitle true
+\pdf_quoted_options "linkcolor=linkblue, citecolor=linkblue"
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 0
+\use_package mhchem 1
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.5cm
+\topmargin 2cm
+\rightmargin 3cm
+\bottommargin 2.5cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip smallskip
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 2
+\paperpagestyle fancy
+\listings_params "basicstyle={\scriptsize\ttfamily\color{black}},breakatwhitespace=false,breaklines=false,captionpos=b,commentstyle={\ttfamily\itshape\color{dark-gray}},language={C++},showspaces=false,showstringspaces=false,showtabs=false,tabsize=4,texcl=true"
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setlength{
+\backslash
+headheight}{38.44pt}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+fancyhead{}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+fancyfoot{}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+renewcommand{
+\backslash
+headrulewidth}{0pt}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+renewcommand{
+\backslash
+footrulewidth}{0pt}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Title
+NANDRAD Modellgleichungen
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand include
+filename "Gebaeude.lyx"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand include
+filename "Netzwerkgleichungen.lyx"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

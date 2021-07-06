@@ -1,0 +1,1902 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\usepackage[hang,scriptsize]{subfigure}
+\usepackage{float}
+\usepackage{color}
+\usepackage{calc}
+
+\definecolor{linkblue}{rgb}{0,0,0.4}
+\definecolor{navy}{rgb}{0,0,0.3}
+\definecolor{light-gray}{gray}{0.98}
+\definecolor{dark-gray}{gray}{0.45}
+
+%\usepackage{dsfont}
+
+\newcommand{\wframe}[1]{\frame{#1}}
+
+%
+% fancy header stuff
+%
+\fancyhead{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\fancyhead[RE]{\footnotesize{CHAP.} \normalsize{\thechapter} }
+\fancyhead[LO]{\footnotesize{SEC.} \normalsize{\thesection} }
+
+%\renewcommand\thepage{\Large{\arabic{page}}}
+\newlength{\pagenumwidth}
+\newlength{\headertextwidth}
+\settowidth{\pagenumwidth}{\Large{\thepage}}
+\setlength{\headertextwidth}{\textwidth}
+\addtolength{\headertextwidth}{-3cm}
+\addtolength{\headertextwidth}{-1\pagenumwidth}
+\fancyhead[LE]{\Large{\thepage} \hspace{0.2cm}  \parbox[b]{\headertextwidth}{\leftmark}}
+\fancyhead[RO]{\parbox[b]{\headertextwidth}{\flushright\rightmark} \hspace{0.2cm} \Large{\thepage}}
+
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage[font=small, labelfont=bf, format=hang]{caption}
+
+
+% Zur Verwendung des Grad-Zeichens auf deutschen Tastaturen
+\DeclareUnicodeCharacter{00B0}{^\circ}
+\end_preamble
+\options fleqn
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref true
+\pdf_title "NANDRAD Modelgleichungen"
+\pdf_author "Anne Paepcke, Andreas Nicolai, Dirk Weiß"
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks true
+\pdf_backref section
+\pdf_pdfusetitle true
+\pdf_quoted_options "linkcolor=linkblue, citecolor=linkblue"
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 0
+\use_package mhchem 1
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.5cm
+\topmargin 2cm
+\rightmargin 3cm
+\bottommargin 2.5cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip smallskip
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 2
+\paperpagestyle fancy
+\listings_params "basicstyle={\scriptsize\ttfamily\color{black}},breakatwhitespace=false,breaklines=false,captionpos=b,commentstyle={\ttfamily\itshape\color{dark-gray}},language={C++},showspaces=false,showstringspaces=false,showtabs=false,tabsize=4,texcl=true"
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Section
+Gebäudemodellgleichungen
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{longtable}{lll}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+Symbol & Basiseinheit & Beschreibung 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+toprule
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+endfirsthead
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bottomrule
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+caption{Symbolverzeichnis}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+endlastfoot
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$t$ & $s$ & Zeit 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+vartheta$ & $^
+\backslash
+circ C$ & Temperatur
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+vartheta_{op}$ & $^
+\backslash
+circ C$ & Empfindungstemperatur 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+vartheta_{rad}$ & $K$ & Strahlungstemperatur
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$T$ & $K$ & Thermodynamische Temperatur
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+varrho$ & $kg/m^3$ & Massedichte, bezogen auf Einheitsvolumen
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$c$ & $J/kgK$ & Spezifische Wärmekapazität
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+lambda$ & $W/mK$ & Wärmeleitfähigkeit
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+alpha$ & $W/m^2K$ & Wärmeübergangskoeffizient
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$a$ & $[0..1]$ & Adsorbtion rate for solar radiation
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+tau$ & $[0..1]$ & Transmission rate for solar radiation
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$r$ & $[0..1]$ & Reflection rate for solar radiation
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+varepsilon$ & $[0..1]$ & Emission rate for long wave radiation
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Phi$ & $[0..1]$ & View factor between a point and a surface/ different surfaces
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$A$ & $m^2$ & Area
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$A_Z$ & $m^2$ & Zone floor area
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$V$ & $m^3$ & Volume
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$d$ & $m$ & Thickness of a construction layer
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$L_W$ & $m$ & Wall thickness
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+gamma_{conv}$ & $[0..1]$ & Rate of convective loads
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+gamma_{rad}$ & $[0..1]$ & Rate of radiant loads
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+gamma_{visible}$ & $[0..1]$ & Rate of visible loads
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$f$ & $[0..1]$ & Frame factor of a window
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$z$ & $[0..1]$ & Shading factoe of a window
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$U$ & $W/m^2K$ & Heat transmission coefficient, U-value
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$n_N$ & $1/s$ & Natural ventilation air change rate
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$N_P$ & & Maximum number of persons inside a room
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$f_P$ & $[0..1]$ & Rate of person occupancy
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+dot{Q}$ & $W = J/s$ & Heat flux
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$q$ & $W/m^2$ & Heat flux density
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$q_{rad,
+\backslash
+alpha
+\backslash
+beta}$ & $W/m^2$ &  Global solar radiation at an inclined surface
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+dot{u}$ & $W/m^3$ & Heat source inside a volume
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+dot{e}$ & $W/m^2$ & Long wave radiation intrinsic emission of an inside
+ surface
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+dot{f}$ & $W/m^2$ & Long wave radiance of an inside surface
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+dot{h}$ & $W/m^2$ & Incoming long wave radiation at an inside surface
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+dot{Q}_{act}$ & $W$ & Load from person activity
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+dot{Q}_{loss}$ & $W$ & Thermal losses from person occupancy
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+dot{q}_{elec}$ & $W/m^2$ & Maximum thermal loads from equipment per zone
+ floor area
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+dot{q}_{lights}$ & $W/m^2$ & Maximum thermal loads from lighting per zone
+ floor area
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{longtable}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{longtable}{ll}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+Symbol & Description 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+toprule
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+endfirsthead
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bottomrule
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+caption{List of indices}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+endlastfoot
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi$ & Abstract physical quantity
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi_Z$ & Physical quantity of a zone
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi_e$ & Ambient physical quantity
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi_W$ & Physical quantity of a wall surface
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi_F$ & Physical quantity of a window inside surface
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi_{H}$ & Physical quantity due to zone heating
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi_{C}$ & Physical quantity due to zone cooling
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi_{AB}$ & Physical quantity inside active elements of constructions
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi_{conv}$ & Convective transport flux/ flux density
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi_{rad}$ & Radiant transport flux/ flux density
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi_{LWRad}$ & Long wave radiation transport flux/ flux density
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi_{SWRad}$ & Short wave radiation transport flux/ flux density
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi_{trans}$ & Transmission transport flux/flux density
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi_N$ &  Quantity due to natural ventilation
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi_I$ &  Quantity due to infiltration
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi_P$ &  Quantity due to person occupancy
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi_E$ &  Quantity due to equipment
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi_L$ &  Quantity due to lighting
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{longtable}
+\end_layout
+
+\end_inset
+
+The governing equations contain both dynamic and algebraic balance equations.
+ Dynamic thermal zone air and construction balance consider thermal storage
+ of zone air, furniture and wall constructions.
+ All related heat gains and boundary conditions are encapsulated into algebraic
+ model equations.
+ We seperately treat heat gains inside the zone, at inside and outside surfaces
+ (index 
+\begin_inset Formula $si$
+\end_inset
+
+) and inside the construction (index 
+\begin_inset Formula $i$
+\end_inset
+
+).
+ 
+\end_layout
+
+\begin_layout Subsubsection*
+Zone air balance
+\end_layout
+
+\begin_layout Standard
+In the case of building simulation we interpret the room as a zone node
+ owning a mean air temperature 
+\begin_inset Formula $T$
+\end_inset
+
+ and internal energy 
+\begin_inset Formula $Q_{R}$
+\end_inset
+
+.
+ The room is filled with dry air.
+ Further, furnishings significantly increase the thermal storage capability
+ of the zone volume.
+ Consequently, zone energy transport mechanisms are considered as transient.
+\begin_inset Formula 
+\begin{align*}
+\frac{\text{d}Q_{R}}{\text{d}t}=\dot{Q}_{N}+\dot{Q}_{I}+\sum\limits _{i}^{n_{F}}\dot{Q}_{F,trans,i}+\sum\limits _{i}^{n_{W}}\dot{Q}_{W,conv,i}+\sum\limits _{i}^{n_{C}}\dot{Q}_{C,i}+\sum\limits _{i}^{n_{H}}\dot{Q}_{H,conv,i}\\
++\gamma_{SW,conv}\sum\limits _{i}^{n_{F}}\dot{Q}_{SWRad,i}+\dot{Q}_{P,conv}+\dot{Q}_{E,conv}+\dot{Q}_{L,conv}
+\end{align*}
+
+\end_inset
+
+Internal energy changes with time due to natural ventilation heat loads
+ 
+\begin_inset Formula $\dot{Q}_{N}$
+\end_inset
+
+, infiltration loads 
+\begin_inset Formula $\dot{Q}_{I}$
+\end_inset
+
+, heat conduction fluxes through the surrounding wall constructions 
+\begin_inset Formula $\dot{Q}_{W,conv,i}$
+\end_inset
+
+, transmission fluxes through windows 
+\begin_inset Formula $\dot{Q}_{F,trans,i}$
+\end_inset
+
+, internal cooling loads 
+\begin_inset Formula $\dot{Q}_{C,i}$
+\end_inset
+
+, convective heating loads 
+\begin_inset Formula $\dot{Q}_{H,conv,i}$
+\end_inset
+
+, conctively transfered gains of incoming short wave radiation 
+\begin_inset Formula $\gamma_{SWRad}\dot{Q}_{SWRad,i}$
+\end_inset
+
+ and convective person, equipment and lighting loads 
+\begin_inset Formula $\dot{Q}_{P,conv}$
+\end_inset
+
+, 
+\begin_inset Formula $\dot{Q}_{E,conv}$
+\end_inset
+
+, 
+\begin_inset Formula $\dot{Q}_{L,conv}$
+\end_inset
+
+.
+ Short wave radiation heat gains on single wall surfaces and the related
+ increased heat transfer due to air convection is included in the coefficient
+ 
+\begin_inset Formula $\gamma_{SW,conv}$
+\end_inset
+
+.
+ In detail, this factor denotes the rate of short wave radiation that is
+ converted into convective heat gains
+\end_layout
+
+\begin_layout Subsubsection*
+Wall balance
+\end_layout
+
+\begin_layout Standard
+The wall constructions are considered as one dimensional multilayered compound
+ structures of different materials over the wall thickness.
+ Each material itself is treated as continuum allowing thermal storage and
+ conduction heat transfer.
+ These requirements are satisfied by the transient heat equation with 
+\begin_inset Formula $u$
+\end_inset
+
+ denoting the the internal energy density as solution quantity.
+\begin_inset Formula 
+\begin{eqnarray*}
+\frac{\partial u}{\partial t} & = & -\frac{\partial}{\partial x}q+\dot{u}_{AB}
+\end{eqnarray*}
+
+\end_inset
+
+Transient changes of internal energy density at an infinte small volume
+ are caused by thermal transport processes at the volume boundaries, in
+ the case of a porous dry material we consider the conductivity heat flux
+ density 
+\begin_inset Formula $q$
+\end_inset
+
+.
+ Further, for the purpose of active building component modelling we consider
+ heat sources inside a construction layer 
+\begin_inset Formula $\dot{u}_{AB}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection*
+Boundary condition model for wall inside surfaces
+\end_layout
+
+\begin_layout Standard
+At the inside wall surface several heat tranfer mechanisms are present:
+ the convective heat transfer between wall surface and room air 
+\begin_inset Formula $q_{conv,W,si}$
+\end_inset
+
+, heat gains due to short wave radiation heat flux densities 
+\begin_inset Formula $q_{SWRad,W,si}$
+\end_inset
+
+ and long wave radiation heat flux densities 
+\begin_inset Formula $\dot{q}_{LWRad,W,si}$
+\end_inset
+
+.
+ 
+\begin_inset Formula 
+\begin{eqnarray*}
+q_{W,si} & = & q_{conv,W,si}+q_{SWRad,W,si}+\dot{q}_{LWRad,W,si}
+\end{eqnarray*}
+
+\end_inset
+
+The convective heat transfer between the wall surface and the room air is
+ considered as a boundary layer phenomena beeing caused by the temperature
+ gradient between mean room air 
+\begin_inset Formula $\vartheta_{R}$
+\end_inset
+
+ and wall surface temperature 
+\begin_inset Formula $\vartheta_{W,si}$
+\end_inset
+
+.
+ At the current model state the heat transfer coefficient 
+\begin_inset Formula $\alpha_{W,si}$
+\end_inset
+
+ both includes convective mechanisms as well as the long wave radiation
+ heat transfer to other surfaces.
+ The latter transport mechanism kleads to a componsation of temperature
+ gradients between different wall surfaces and is approximately described
+ by heat exchange between the walls and the mean room air temperature between.
+ 
+\begin_inset Formula 
+\begin{eqnarray*}
+q_{conv,W,si} & = & \alpha_{W,si}\left(\vartheta_{R}-\vartheta_{W,si}\right)\\
+q_{SWRad,W,si} & = & q_{SWRad,W}\\
+\dot{q}_{LWRad,W,si} & = & q_{H,W}+q_{P,W}+q_{E,W}+q_{L,W}
+\end{eqnarray*}
+
+\end_inset
+
+We assume a uniform distribution of long wave and short wave radiation loads
+ at all internal wall surfaces.
+ The long wave radiation entries result from radiant heating 
+\begin_inset Formula $q_{HC,W}$
+\end_inset
+
+, radiant loads from persons, equipment and lighting 
+\begin_inset Formula $q_{P,W}$
+\end_inset
+
+, 
+\begin_inset Formula $q_{E,W}$
+\end_inset
+
+ and 
+\begin_inset Formula $q_{L,W}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection*
+Boundary condition model for wall outside surfaces
+\end_layout
+
+\begin_layout Standard
+Thermal conditions at the outside wall surfaces are affected by the heat
+ exchange with ambient air with temperature 
+\begin_inset Formula $\vartheta_{e}$
+\end_inset
+
+ as well as gains by direct and diffuse solar radiation (radiant energy
+ flux density 
+\begin_inset Formula $q_{rad,\alpha\beta}$
+\end_inset
+
+).
+ These effects are lead to heat fluxes with respect to convective heat transfer
+ 
+\begin_inset Formula $q_{conv,W,si}$
+\end_inset
+
+ and adsorbed radiation gains 
+\begin_inset Formula $q_{SWRad,W,si}$
+\end_inset
+
+ with 
+\begin_inset Formula $a_{W,si}$
+\end_inset
+
+ denoting the solar adsorbtion coefficient.
+\begin_inset Formula 
+\begin{eqnarray*}
+q_{conv,W,si} & = & \alpha_{W,si}\left(\vartheta_{e}\left(t\right)-\vartheta_{W,si}\right)\\
+q_{SWRad,W,si} & = & a_{W,si}q_{rad,si}\\
+\dot{q}_{LWRad,W,si} & = & 0
+\end{eqnarray*}
+
+\end_inset
+
+Regarding the lack of information due to the building environment long wave
+ radiation heat gains are not taken into account.
+\end_layout
+
+\begin_layout Subsubsection*
+Boundary condition model for adiabatic wall surfaces
+\end_layout
+
+\begin_layout Standard
+Adiabtic wall surfaces do not provide heat fluxes.
+\begin_inset Formula 
+\begin{eqnarray*}
+q_{conv,W,si} & = & 0\\
+q_{SWRad,W,si} & = & 0\\
+\dot{q}_{LWRad,W,si} & = & 0
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Field condition for thermal active wall elements
+\end_layout
+
+\begin_layout Standard
+Representing thermal active construction elements field conditions are defined
+ at a construction layer of a wall.
+ The heating gains 
+\begin_inset Formula $\dot{Q}_{AB}$
+\end_inset
+
+ are assumed to be equally distributed at the wall corresponding active
+ layer with longitudal area 
+\begin_inset Formula $A_{W}$
+\end_inset
+
+ and thickness 
+\begin_inset Formula $d$
+\end_inset
+
+.
+ They correspond to the heat source 
+\begin_inset Formula $\dot{u}_{AB}$
+\end_inset
+
+.
+ 
+\begin_inset Formula 
+\begin{eqnarray*}
+\dot{u}_{AB} & = & \frac{\dot{Q}_{AB}}{A_{W}d}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Distribution of short wave radiation gains
+\end_layout
+
+\begin_layout Standard
+Non-geometric models usually do not provide information for the distribution
+ of radiation gains.
+ The assumption of an equally distributed radiation intensity on all wall
+ surfaces 
+\begin_inset Formula $q_{SWRad,W}$
+\end_inset
+
+ therefore is a suitable approach.
+ The incoming short wave radiation 
+\begin_inset Formula $\sum\limits _{i}^{n_{F}}\dot{Q}_{SWRad,i}$
+\end_inset
+
+ includes the rate of energy that is convectively transfered into the room.
+ This amount needs to be excluded from short wave radiation balance.
+\begin_inset Formula 
+\begin{align*}
+q_{SWRad,W} & =\frac{\left(1-\gamma_{SWRad}\right)\sum\limits _{i}^{n_{F}}\dot{Q}_{SWRad,i}}{\sum\limits _{j}A_{W,j}}
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Formula $\sum\limits _{j}A_{W,j}$
+\end_inset
+
+ denotes the sum of internal netto wall surfaces.
+\end_layout
+
+\begin_layout Subsubsection*
+Distribution of heating radiation gains
+\end_layout
+
+\begin_layout Standard
+Long wave radiation gains 
+\begin_inset Formula $\dot{Q}_{H,rad,i}$
+\end_inset
+
+ are transfered between the heating and the wall surfaces and explicitely
+ are provided by most heating elements.
+ In a similar manner to the short wave radiation gains long wave radiation
+ heat gains are described by an uniformely distributed heat flux density
+ 
+\begin_inset Formula $q_{H,W}$
+\end_inset
+
+ towards all wall surfaces.
+\begin_inset Formula 
+\begin{align*}
+q_{H,W} & =\frac{\sum\limits _{i}^{n_{H}}\dot{Q}_{H,rad,i}}{\sum\limits _{j}A_{W,j}}
+\end{align*}
+
+\end_inset
+
+Assuming an uniform distribution the gains of all heating elements may cumulativ
+ely be supplied.
+ 
+\end_layout
+
+\begin_layout Subsubsection*
+Distribution of occupancy radiation gains
+\end_layout
+
+\begin_layout Standard
+No geometrical information is required for the calculation of long wave
+ radiation gains from persons, technical equipment and lighing 
+\begin_inset Formula $\dot{Q}_{P,E,L}$
+\end_inset
+
+.
+ Therefore, the assumption of uniformely distributed radiation gains appears
+ as a permissible compromise.
+ We obtain a uniform radiant flux density at all wall surfaces 
+\begin_inset Formula $q_{P,E,L,W}$
+\end_inset
+
+.
+ 
+\begin_inset Formula 
+\begin{align*}
+q_{P,E,L,W} & =\frac{\dot{Q}_{P,E,L,rad}}{\sum\limits _{j}A_{W,j}}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Long wave radiation exchange
+\end_layout
+
+\begin_layout Standard
+If view factors between all inside wall and window surfaces are defined,
+ long wave radiation exchange is considered.
+ We consider the intrinsic emission 
+\begin_inset Formula $\dot{e}_{W,si}$
+\end_inset
+
+, radiance 
+\begin_inset Formula $\dot{f}_{W,si}$
+\end_inset
+
+ (the amount of emitted radiation) and incoming radiation 
+\begin_inset Formula $\dot{h}_{W,si}$
+\end_inset
+
+ of the wall surface.
+ Using thermal equilibrium approach the emitted radiation is equal to the
+ adsorbed one and may be described by Stefan-Boltzmans law.
+ Radiance includes intrinsic emission and reflected radiation from all other
+ surfaces generates.
+ The visibility of the current surface to each other surface is described
+ by the view factor 
+\begin_inset Formula $\Phi_{si,sj}$
+\end_inset
+
+.
+ We calculate the reflected amount of incoming radiation by 
+\begin_inset Formula $\left(1-\varepsilon_{W,si}\right)\dot{h}_{W,si}$
+\end_inset
+
+.
+\begin_inset Formula 
+\begin{eqnarray*}
+\dot{e}_{W,si} & = & \varepsilon_{W,si}k_{B}T_{W,si}^{4}\\
+\dot{h}_{W,si} & = & \sum_{j\neq i}^{n_{W}}\Phi_{si,sj}\dot{f}_{W,sj}\\
+\dot{f}_{W,si} & = & \dot{e}_{W,si}+\left(1-\varepsilon_{W,si}\right)\dot{h}_{W,si}
+\end{eqnarray*}
+
+\end_inset
+
+The long wave radiation balance forms a linear system of equations for the
+ radiances 
+\begin_inset Formula $\dot{f}_{W,si}$
+\end_inset
+
+.
+ In order to avoid external couplings we introduce a model that solves long
+ wave radiation balance for all interacting surfaces of one zone.
+ The result of this model are the long wave radiation gains towards each
+ wall 
+\begin_inset Formula $\dot{q}_{LWRad,W,si}$
+\end_inset
+
+ that result from the remaining difference of incoming and emitted radiation.
+ 
+\begin_inset Formula 
+\begin{eqnarray*}
+\dot{q}_{LWRad,W,si} & = & \dot{h}_{W,si}-\dot{f}_{W,si}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Windows are considered as opaque and do not adsorb long wave radiation.
+ Long wave emissivity of each window is set to 
+\begin_inset Formula $\varepsilon_{F,i}=$
+\end_inset
+
+0.
+\end_layout
+
+\begin_layout Subsubsection*
+Thermal comfort 
+\end_layout
+
+\begin_layout Standard
+The mean radiant temperature r 
+\begin_inset Formula $\vartheta_{rad}$
+\end_inset
+
+ and the operative temperature 
+\begin_inset Formula $\vartheta_{op}$
+\end_inset
+
+ are denote parameters for thermal comfort.
+ Approximately we use an area weighted average of all wall and window inside
+ surface temperatures with 
+\begin_inset Formula $\sum_{i}A_{W,i}+\sum_{i}A_{F,i}$
+\end_inset
+
+ denoting the sum of all inside brutto surface areas (including the window
+ areas).
+ Operative temperature is considered as arithmetic mean of room air temperature
+ 
+\begin_inset Formula $\vartheta_{R}$
+\end_inset
+
+ and radiant temperature.
+\begin_inset Formula 
+\begin{align*}
+\vartheta_{rad}=\frac{\sum_{i}A_{W,i}\cdot\vartheta_{W,si}+\sum_{i}A_{F,i}\cdot\vartheta_{F,i}}{\sum_{i}A_{W,i}}\\
+\vartheta_{op}=\frac{\vartheta_{Z}+\vartheta_{rad}}{2}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Window 
+\end_layout
+
+\begin_layout Standard
+We use a steady state monolayer window model and caclculate the transmitted
+ solar radiation heat gains 
+\begin_inset Formula $\dot{Q}_{SWRad,F,i}$
+\end_inset
+
+ as well as heat loads by heat transmission through the window 
+\begin_inset Formula $\dot{Q}_{Trans,F,i}$
+\end_inset
+
+.
+ Assuming a conservation of the normal heat transmission flux density 
+\begin_inset Formula $\dot{q}_{F,trans,i}$
+\end_inset
+
+ we are able to predict the window surface temperature 
+\begin_inset Formula $\vartheta_{F,i}$
+\end_inset
+
+ by use of heat transfer coefficient 
+\begin_inset Formula $\alpha_{F,i}$
+\end_inset
+
+.
+ We assume the heat transfer between surface and wall to be independent
+ from the surface material and we simply copy the corresponding heat transfer
+ coefficient from the properties of the surrounding wall surface.
+ 
+\begin_inset Formula 
+\begin{eqnarray*}
+\dot{Q}_{SWRad,i} & = & z_{F,i}\left(t\right)\,\tau_{F,i}\,f_{F,i}\,q_{rad,\alpha\beta,i}\left(t\right)A_{F,i}\\
+\dot{Q}_{F,trans,i} & = & U_{F,i}\left(\vartheta_{e}\left(t\right)-\vartheta_{Z}\right)A_{F,i}\\
+\vartheta_{F,i} & = & \vartheta_{Z}+\frac{1}{\alpha_{F,i}}\dot{q}_{F,trans,i}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Constant shading 
+\end_layout
+
+\begin_layout Standard
+We allow a constant coefficient as well as an incidence angle dependent
+ shading coefficient 
+\begin_inset Formula $z_{F,i}\left(t\right)$
+\end_inset
+
+.
+ We use a linear spline interpolation to describe the latter dependency.
+\end_layout
+
+\begin_layout Subsubsection*
+Climatic model
+\end_layout
+
+\begin_layout Standard
+The CCM climate module provides an ambient temperature 
+\begin_inset Formula $\vartheta_{e}\left(t\right)$
+\end_inset
+
+ and the direct/diffuse solar radiation at a given surface 
+\begin_inset Formula $q_{rad,direct,si}\left(t\right)$
+\end_inset
+
+ and 
+\begin_inset Formula $q_{rad,diffuse,si}\left(t\right)$
+\end_inset
+
+.
+ Default implementation assumes free view of each external wall and window
+ surface towards the surrounding ground or hemisphere.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+q_{rad,si}(t) & = & q_{rad,direct,si}\left(t\right)+q_{rad,diffuse,si}\left(t\right)
+\end{eqnarray*}
+
+\end_inset
+
+With respect to external objects shading current wall or window, the user
+ can reference time dependend shading factors 
+\begin_inset Formula $z_{W,si}\left(t\right)$
+\end_inset
+
+ defined for period of one year.
+ In this case, direct solar radiation on the surface is reduced.
+ 
+\begin_inset Formula 
+\begin{eqnarray*}
+q_{rad,si}(t) & =z_{W,si}(t) & q_{rad,direct,si}\left(t\right)+q_{rad,diffuse,si}\left(t\right)
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Occupancy 
+\end_layout
+
+\begin_layout Standard
+The occupancy of a room describes different usage scenarios with the help
+ of schedules.
+ We consider loads from the presence of persons, the usage of electric equipment
+ and lighting.
+ For this purpose we make up the balance between heat gains from person
+ activity 
+\begin_inset Formula $\dot{Q}_{act}$
+\end_inset
+
+ and heat reduction by persons 
+\begin_inset Formula $\dot{Q}_{loss}$
+\end_inset
+
+ in the case the person adsorbes energy for a maximum occupancy of 
+\begin_inset Formula $N_{P}$
+\end_inset
+
+ users, heat gains (per floor area) by electric equipment 
+\begin_inset Formula $\dot{q}_{elec}$
+\end_inset
+
+ and lighting 
+\begin_inset Formula $\dot{q}_{light}$
+\end_inset
+
+.
+ All these quantities correlate to the maximum usage of the zone and are
+ classified as constant space type properties.
+ The dynamic of usage scenario is reached by reducing the maximujm occupancy
+ with the ratios 
+\begin_inset Formula $f_{P}\left(t\right)$
+\end_inset
+
+, 
+\begin_inset Formula $f_{E}\left(t\right)$
+\end_inset
+
+ and 
+\begin_inset Formula $f_{L}\left(t\right)$
+\end_inset
+
+.
+ Consequently, these factors refer to scheduled quantities.
+ 
+\begin_inset Formula 
+\begin{align*}
+\dot{Q}_{P} & =N_{P}f_{P}\left(t\right)\left(\dot{Q}_{act}-\dot{Q}_{loss}\right)\\
+\dot{Q}_{E} & =f_{E}\left(t\right)\dot{q}_{elec}A_{Z}\\
+\dot{Q}_{L} & =f_{L}\left(t\right)\dot{q}_{light}A_{Z}
+\end{align*}
+
+\end_inset
+
+Each load is both transfered convectively to the room air and as long wave
+ radiation towards the wall surfaces.
+ We define ratios for the long wave radiation part of each load 
+\begin_inset Formula $\gamma_{P,rad}$
+\end_inset
+
+, 
+\begin_inset Formula $\gamma_{E,rad}$
+\end_inset
+
+ and 
+\begin_inset Formula $\gamma_{L,rad}$
+\end_inset
+
+.
+ The lighting loads additionally provide a ratio 
+\begin_inset Formula $\gamma_{L,visib}$
+\end_inset
+
+ of energy that is emitted by visible light.
+ 
+\begin_inset Formula 
+\begin{align*}
+\dot{Q}_{P,conv} & =\left(1-\gamma_{P,rad}\right)\dot{Q}_{P}\\
+\dot{Q}_{E,conv} & =\left(1-\gamma_{E,rad}\right)\dot{Q}_{E}\\
+\dot{Q}_{L,conv} & =\left(1-\gamma_{L,rad}-\gamma_{L,visib}\right)\dot{Q}_{E}
+\end{align*}
+
+\end_inset
+
+Convective loads 
+\begin_inset Formula $\dot{Q}_{P,conv}$
+\end_inset
+
+, 
+\begin_inset Formula $\dot{Q}_{E,conv}$
+\end_inset
+
+ and 
+\begin_inset Formula $\dot{Q}_{L,conv}$
+\end_inset
+
+ are obtained by excluding the energy that is comitted by long wave radiation
+ 
+\begin_inset Formula $\dot{Q}_{P,rad}$
+\end_inset
+
+, 
+\begin_inset Formula $\dot{Q}_{E,rad}$
+\end_inset
+
+ and 
+\begin_inset Formula $\dot{Q}_{L,rad}$
+\end_inset
+
+ as well as the visible lighting energy.
+ While convective loads have an effect on room air balance radiant loads
+ are distributed towards the wall surfaces.
+ Currently the balance of visible light is ignored.
+ 
+\begin_inset Formula 
+\begin{align*}
+\dot{Q}_{P,rad} & =\gamma_{P,rad}\dot{Q}_{P}\\
+\dot{Q}_{E,rad} & =\gamma_{E,rad}\dot{Q}_{E}\\
+\dot{Q}_{L,rad} & =\gamma_{L,rad}\dot{Q}_{E}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Ideal heating and cooling 
+\end_layout
+
+\begin_layout Standard
+An ideal heating model can be activated for each space type by choosing
+ a control temperature 
+\begin_inset Formula $\vartheta_{C}$
+\end_inset
+
+ (air or operative temperature).
+ We simply use a P-control model with linear slope 
+\begin_inset Formula $k_{P}$
+\end_inset
+
+ and set point temperature 
+\begin_inset Formula $\vartheta_{Set}$
+\end_inset
+
+.
+ Set point temperature is considered to be related to the usage scenario
+ of the zone and defined via schedules.
+ For the purpose of robustness we bound the heating loads 
+\begin_inset Formula $\dot{Q}_{H}$
+\end_inset
+
+ to upper and lower limits.
+ 
+\begin_inset Formula 
+\begin{align*}
+\dot{Q}_{H,nominal} & =\max\left(0,k_{P}\left(\vartheta_{Set}(t)-\vartheta_{C}\right)\right)\\
+\dot{Q}_{H} & =\min\left(10000,\dot{Q}_{H,nominal}\right)
+\end{align*}
+
+\end_inset
+
+In order to reach an optimal control result we choose the heat transfer
+ type of the heating according to the cotrol temperature.
+ The heating is considered to be convectively if zone air temperature is
+ chosen as control quantity.
+ If opertaive temperature is chosen we split heating power in an equal convectiv
+e and radiant load.
+ 
+\begin_inset Formula 
+\begin{align*}
+\dot{Q}_{H,conv} & =\begin{cases}
+\dot{Q}_{H} & \mbox{if }\vartheta_{C}=\vartheta_{Z}\\
+0.5\cdot\dot{Q}_{H} & \mbox{if }\vartheta_{C}=\vartheta_{op}
+\end{cases}\\
+\dot{Q}_{H,rad} & =\dot{Q}_{H}-\dot{Q}_{H,conv}
+\end{align*}
+
+\end_inset
+
+Currently, cooling control is only allowed with respect to zone air temperature.
+ Consequently, cooling only convective cooling is taken into account.
+ 
+\begin_inset Formula 
+\begin{align*}
+\dot{Q}_{C,nominal} & =\min\left(0,k_{P}\left(\vartheta_{Set}(t)-\vartheta_{Z}\right)\right)\\
+\dot{Q}_{C} & =\max\left(-10000,\dot{Q}_{C,nominal}\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Heating point source (generic model)
+\end_layout
+
+\begin_layout Standard
+The point source model is simplest heating model.
+ The heating load 
+\begin_inset Formula $\dot{Q}_{H,load}\left(t\right)$
+\end_inset
+
+ is a scheduled input quantity being interpreted as convective or radiant
+ load.
+ Dividing the heat load into these parts a constant parameter 
+\begin_inset Formula $\gamma_{H,i}$
+\end_inset
+
+ is introduced.
+ We allow the definition of more than one point source.
+ 
+\begin_inset Formula 
+\begin{eqnarray*}
+\dot{Q}_{H,rad,i} & = & \gamma_{H,i}\dot{Q}_{H,load}\left(t\right)\\
+\dot{Q}_{H,conv,i} & = & \left(1-\gamma_{H,i}\right)\dot{Q}_{H,load}\left(t\right)
+\end{eqnarray*}
+
+\end_inset
+
+View factors for each inside surface to a point source 
+\begin_inset Formula $\Phi_{H,sj}$
+\end_inset
+
+ may be defined.
+ In this case equal distribution of long wave radiation gains towards all
+ surfaces is substituted by individual calculation for all surfaces.
+\begin_inset Formula 
+\begin{align*}
+q_{H,W,sj} & =\Phi_{H,sj}\frac{\gamma_{H,i}\dot{Q}_{H,rad,i}\left(t\right)}{A_{W,j}}
+\end{align*}
+
+\end_inset
+
+Long wave radiation gains may only be allowed on solid room inside surfaces.
+\end_layout
+
+\begin_layout Subsubsection*
+Thermal active construction element (generic model)
+\end_layout
+
+\begin_layout Standard
+An thermal active element is defined as a heat source inside a construction
+ layer.
+ Per default the heating power is limited by a maximum value 
+\begin_inset Formula $\dot{Q}_{H,max}$
+\end_inset
+
+ that correlates with real performance.
+ We describe the operation of the heating element as an ideal P-control
+ for control tempertaure 
+\begin_inset Formula $\vartheta_{C}$
+\end_inset
+
+, set point temperature 
+\begin_inset Formula $\vartheta_{Set}(t)$
+\end_inset
+
+ and slope 
+\begin_inset Formula $k_{P}$
+\end_inset
+
+.
+ 
+\begin_inset Formula 
+\begin{align*}
+\dot{Q}_{H,nominal} & =\max\left(0,k_{P}\left(\vartheta_{Set}(t)-\vartheta_{C}\right)\right)\\
+\dot{Q}_{AB} & =\min\left(\dot{Q}_{H,max},\dot{Q}_{H,nominal}\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Natural ventilation (generic models)
+\end_layout
+
+\begin_layout Standard
+At the current delevpment state (passive operation of teh building with
+ ideal loads calculations) we take into consideration air conditioning due
+ to natural ventilation and air exchange by infiltration.
+ The corresponding air change rate for natural ventilation 
+\begin_inset Formula $n_{L}(t)$
+\end_inset
+
+ correlates to user behaviour and needs to be provided by the schedules.
+ The same way of parametrization is used for the infiltration air change
+ rates 
+\begin_inset Formula $n_{I}(t)$
+\end_inset
+
+.
+ The supply air mass flux corresponds both to air change rate and zone volume
+ 
+\begin_inset Formula $V_{R}$
+\end_inset
+
+.
+ We assume an ideal homogenious zone air temperature with mass density 
+\begin_inset Formula $\rho_{Air}$
+\end_inset
+
+ and heat capacity 
+\begin_inset Formula $c_{Air}$
+\end_inset
+
+.
+ 
+\begin_inset Formula 
+\begin{align*}
+\dot{m}_{N} & =\rho_{Air}\,n_{N}(t)\,V_{Z}\\
+\dot{m}_{I} & =\rho_{Air}\,n_{I}(t)\,V_{Z}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Our assumtions allow the calculation of enthalpy fluxes for the incoming
+ and outgoing air with unique temperatures 
+\begin_inset Formula $\vartheta_{e}\left(t\right)$
+\end_inset
+
+ and 
+\begin_inset Formula $\vartheta_{Z}$
+\end_inset
+
+.
+ These enthalpy fluxes strongly effect room energy balance and must be taken
+ into consideration.
+ 
+\begin_inset Formula 
+\begin{align*}
+\dot{Q}_{N} & =\dot{m}_{N}\,c_{Air}\left(\vartheta_{e}\left(t\right)-\vartheta_{Z}\right)\\
+\dot{Q}_{I} & =\dot{m}_{I}\,c_{Air}\left(\vartheta_{e}\left(t\right)-\vartheta_{Z}\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
