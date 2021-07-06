@@ -719,6 +719,9 @@ bool SVProjectHandler::importEmbeddedDB() {
 		);
 	}
 
+	// TODO Dirk, mind renamed schedule IDs in all sub template models
+	//      also, mind renamed sub-template models in zone templates
+
 	// InternalLoad
 	std::map<unsigned int, unsigned int> internalLoadIDMap;
 	for (VICUS::InternalLoad & e : m_project->m_embeddedDB.m_internalLoads) {

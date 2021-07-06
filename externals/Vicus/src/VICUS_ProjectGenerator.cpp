@@ -75,9 +75,6 @@ public:
 
 	void generate(const VICUS::Room * r, QStringList & errorStack);
 
-
-	QStringList errorStack;
-
 	// All definition lists below have the same size and share the same index
 	// i.e. m_internalLoadObjects[3] references m_objLists[3] and
 	//      m_schedules[3] corresponds also to m_objLists[3]
@@ -130,15 +127,21 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 	InternalLoadsModelGenerator internalLoads(this);
 	for (const VICUS::Room * r : zones) {
 		internalLoads.generate(r, errorStack);
+//		infiltration.generate(r, errorStack);
+//		idealHeating.generate(r, errorStack);
 	}
 	if (!errorStack.isEmpty())	return;
 
+
 	// transfer data to project
+
+	// *** InternalLoads ***
 	p.m_models.m_internalLoadsModels = internalLoads.m_internalLoadObjects;
 	p.m_objectLists.insert(p.m_objectLists.end(), internalLoads.m_objLists.begin(), internalLoads.m_objLists.end());
 	for (unsigned int i=0; i<internalLoads.m_schedules.size(); ++i)
 		p.m_schedules.m_scheduleGroups[internalLoads.m_objLists[i].m_name] = internalLoads.m_schedules[i];
 
+	// *** ...
 
 }
 

@@ -1330,6 +1330,7 @@ void SVMainWindow::onUpdateActions() {
 
 	m_ui->actionViewToggleGeometryMode->setEnabled(have_project);
 	m_ui->actionViewResetView->setEnabled(have_project);
+	m_ui->actionViewShowSurfaceNormals->setEnabled(have_project);
 
 	m_ui->actionSimulationNANDRAD->setEnabled(have_project);
 	m_ui->actionSimulationHydraulicNetwork->setEnabled(have_project);

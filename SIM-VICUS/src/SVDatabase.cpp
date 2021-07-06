@@ -189,7 +189,7 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	std::set<const VICUS::Component *>				referencedComponents;
 	std::set<const VICUS::SubSurfaceComponent *>	referencedSubSurfaceComponents;
 	std::set<const VICUS::SurfaceHeating *>			referencedSurfaceHeatings;
-	std::set<const VICUS::Schedule *>				referencedSchedule;		// TODO Dirk noch ausprogrammieren
+	std::set<const VICUS::Schedule *>				referencedSchedule;
 	std::set<const VICUS::InternalLoad *>			referencedInternalLoads;
 	std::set<const VICUS::ZoneControlThermostat *>	referencedThermostats;
 	std::set<const VICUS::ZoneIdealHeatingCooling *> referencedIdealHeatCool;
